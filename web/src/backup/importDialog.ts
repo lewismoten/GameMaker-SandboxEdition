@@ -13,6 +13,7 @@ import { plural, type ProjectChoice } from './sections/types';
 import { readWorld } from './world';
 import { applyImport } from './applyImport';
 import { saveFile } from './exportDialog';
+import { formatBytes } from './formatBytes';
 
 const when = (iso: string) => {
   const d = new Date(iso);
@@ -64,7 +65,8 @@ export async function importDialog(backup: ReadBackup): Promise<void> {
       }
       const n = Object.keys(choices.sections).length;
       go.disabled = !n;
-      status.textContent = n ? '' : 'Choose at least one part to bring back.';
+      const bytes = Object.keys(choices.sections).reduce((a, id) => a + (backup.sizes[id as SectionId] ?? 0), 0);
+      status.textContent = n ? `${n} of ${inFile.length} parts chosen · about ${formatBytes(bytes)} before packing` : 'Choose at least one part to bring back.';
     }
 
     const rows = inFile.map((s) => {
@@ -182,12 +184,29 @@ export async function importDialog(backup: ReadBackup): Promise<void> {
         { class: 'backup-lead' },
         `A backup made ${when(m.created)}${m.site?.version ? ` by version ${m.site.version}` : ''}. Only the parts ticked here are changed.`,
       ),
-      h('fieldset', { class: 'backup-sections' }, h('legend', null, 'What to bring back'), h('ul', { class: 'backup-list' }, ...rows)),
-      missing.length ? h('p', { class: 'backup-about' }, `Not in this file, left as they are: ${missing.map((s) => s.title).join(', ')}.`) : null,
-      backup.unknown.length ? h('p', { class: 'backup-about' }, `Skipped, from a newer version of the site: ${backup.unknown.join(', ')}.`) : null,
-      h('label', { class: 'backup-row backup-safety', for: safety.id }, safety, h('span', null, 'First download a backup of everything here now')),
-      status,
-      h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), go),
+      h(
+        'div',
+        { class: 'backup-sections', role: 'group', 'aria-labelledby': 'backup-legend' },
+        h('div', { class: 'backup-bar' }, h('h3', { id: 'backup-legend', class: 'backup-legend' }, 'What to bring back')),
+        h(
+          'div',
+          { class: 'backup-scroll' },
+          h('ul', { class: 'backup-list' }, ...rows),
+          missing.length
+            ? h('p', { class: 'backup-about backup-note' }, `Not in this file, left as they are: ${missing.map((s) => s.title).join(', ')}.`)
+            : null,
+          backup.unknown.length
+            ? h('p', { class: 'backup-about backup-note' }, `Skipped, from a newer version of the site: ${backup.unknown.join(', ')}.`)
+            : null,
+        ),
+      ),
+      h(
+        'div',
+        { class: 'backup-foot' },
+        h('label', { class: 'backup-row backup-safety', for: safety.id }, safety, h('span', null, 'First download a backup of everything here now')),
+        status,
+        h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), go),
+      ),
     );
   });
   if (done) await resultDialog(done);
@@ -201,14 +220,18 @@ async function resultDialog(changes: SectionChange[]): Promise<void> {
       { class: 'backup restore-done' },
       changed.length
         ? h(
-            'ul',
-            { class: 'backup-list' },
-            ...changed.map((c) =>
-              h(
-                'li',
-                null,
-                h('strong', null, `${sectionById(c.id)!.title} (${c.mode === 'merge' ? 'merged' : 'replaced'})`),
-                h('ul', { class: 'backup-changes' }, ...c.lines.map((l) => h('li', null, l))),
+            'div',
+            { class: 'backup-scroll' },
+            h(
+              'ul',
+              { class: 'backup-list' },
+              ...changed.map((c) =>
+                h(
+                  'li',
+                  null,
+                  h('strong', null, `${sectionById(c.id)!.title} (${c.mode === 'merge' ? 'merged' : 'replaced'})`),
+                  h('ul', { class: 'backup-changes' }, ...c.lines.map((l) => h('li', null, l))),
+                ),
               ),
             ),
           )

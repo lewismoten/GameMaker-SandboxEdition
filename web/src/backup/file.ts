@@ -86,6 +86,8 @@ export interface ReadBackup {
   payloads: Partial<Record<SectionId, unknown>>;
   /** Sections this version doesn't know (from a later one), skipped. */
   unknown: string[];
+  /** Each section's size in the file, before packing. */
+  sizes: Partial<Record<SectionId, number>>;
 }
 
 const LIMITS = { maxEntries: 256, maxBytes: 2 * 1024 * 1024 * 1024 };
@@ -128,6 +130,7 @@ export async function readBackup(bytes: Uint8Array): Promise<ReadBackup> {
   if (!Array.isArray(m.sections) || typeof m.created !== 'string') throw new BackupError('This backup file is damaged (its manifest is incomplete).');
   const manifest = m as unknown as Manifest;
   const payloads: Partial<Record<SectionId, unknown>> = {};
+  const sizes: Partial<Record<SectionId, number>> = {};
   const unknown: string[] = [];
   for (const entry of manifest.sections) {
     if (!isRecord(entry) || typeof entry.id !== 'string') throw new BackupError('This backup file is damaged (its manifest is incomplete).');
@@ -138,7 +141,9 @@ export async function readBackup(bytes: Uint8Array): Promise<ReadBackup> {
     }
     let raw: unknown;
     try {
-      raw = decode(await text(`sections/${s.id}.json`));
+      const t = await text(`sections/${s.id}.json`);
+      sizes[s.id] = new TextEncoder().encode(t).length;
+      raw = decode(t);
     } catch (e) {
       if (e instanceof BackupError) throw e;
       throw new BackupError(`This backup file is damaged (${s.title} can’t be read).`);
@@ -150,5 +155,5 @@ export async function readBackup(bytes: Uint8Array): Promise<ReadBackup> {
       throw new BackupError(`This backup file is damaged (${s.title} can’t be read).`);
     }
   }
-  return { manifest, payloads, unknown };
+  return { manifest, payloads, unknown, sizes };
 }

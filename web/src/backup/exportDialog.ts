@@ -55,7 +55,8 @@ export async function exportDialog(): Promise<'restore' | undefined> {
     function count() {
       const n = [...boxes.values()].filter((b) => b.checked).length;
       const of = [...boxes.values()].filter((b) => !b.disabled).length;
-      status.textContent = n ? `${n} of ${of} parts chosen.` : 'Choose at least one part to back up.';
+      const bytes = snaps.filter((x) => boxes.get(x.id)?.checked).reduce((a, x) => a + x.bytes, 0);
+      status.textContent = n ? `${n} of ${of} parts chosen · about ${formatBytes(bytes)} before packing` : 'Choose at least one part to back up.';
       go.disabled = !n;
     }
     const setAll = (on: boolean) => {
@@ -64,6 +65,7 @@ export async function exportDialog(): Promise<'restore' | undefined> {
     };
     withKey.addEventListener('change', async () => {
       snaps = await snapshot(world, { withApiKey: withKey.checked });
+      count();
     });
     const go = h('button', { type: 'submit', class: 'primary' }, 'Download backup');
     count();
@@ -93,24 +95,28 @@ export async function exportDialog(): Promise<'restore' | undefined> {
         'Keep what this browser holds in one file, to bring back here or in another browser. Imported games stay out; their notes and ratings come along.',
       ),
       h(
-        'fieldset',
-        { class: 'backup-sections' },
-        h('legend', null, 'What to back up'),
+        'div',
+        { class: 'backup-sections', role: 'group', 'aria-labelledby': 'backup-legend' },
         h(
           'div',
-          { class: 'backup-quick' },
+          { class: 'backup-bar' },
+          h('h3', { id: 'backup-legend', class: 'backup-legend' }, 'What to back up'),
           h('button', { type: 'button', onclick: () => setAll(true) }, 'Everything'),
           h('button', { type: 'button', onclick: () => setAll(false) }, 'Nothing'),
         ),
-        h('ul', { class: 'backup-list' }, ...rows),
+        h('div', { class: 'backup-scroll' }, h('ul', { class: 'backup-list' }, ...rows)),
       ),
-      status,
       h(
         'div',
-        { class: 'buttons backup-buttons' },
-        h('button', { type: 'button', class: 'backup-restore', onclick: () => close('restore') }, 'Restore from a file…'),
-        h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
-        go,
+        { class: 'backup-foot' },
+        status,
+        h(
+          'div',
+          { class: 'buttons backup-buttons' },
+          h('button', { type: 'button', class: 'backup-restore', onclick: () => close('restore') }, 'Restore from a file…'),
+          h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'),
+          go,
+        ),
       ),
     );
   });

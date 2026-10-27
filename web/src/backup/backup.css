@@ -3,7 +3,18 @@
 dialog.modal:has(.backup) {
   width: min(640px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
-  overflow: auto;
+}
+
+/* the dialog fits the window: its head, the intro and the foot stay put, and the list scrolls */
+dialog.modal[open]:has(.backup) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+dialog.modal:has(.backup) > .backup {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .backup {
@@ -21,27 +32,52 @@ dialog.modal:has(.backup) {
 }
 
 .backup-sections {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  min-width: 0;
-}
-
-.backup-sections legend {
-  float: left;
-  margin: 4px 0;
-  font-weight: 600;
-}
-
-.backup-quick {
   display: flex;
-  justify-content: flex-end;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+
+.backup-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+}
+
+.backup-legend {
+  flex: 1;
+  margin: 0;
+  font-size: 15px;
+}
+
+.backup-scroll {
+  flex: 1 1 auto;
+  min-height: 72px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 2px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.backup-note {
+  margin-top: 8px !important;
+}
+
+.backup-foot {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.backup-foot .buttons {
+  margin-top: 0;
 }
 
 .backup-list {
-  clear: both;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -114,6 +150,10 @@ dialog.modal .backup-key label {
 .backup-warn {
   color: var(--danger);
   font-size: 13px;
+}
+
+.backup-status {
+  font-size: 14px;
 }
 
 .backup-status:empty {
@@ -203,5 +243,30 @@ dialog.modal .backup-key label {
 
   .backup-buttons {
     flex-wrap: wrap;
+  }
+
+  .backup-lead {
+    font-size: 14px;
+  }
+}
+
+/* a short window (a phone on its side): the intro gives the list its room */
+@media (max-height: 500px) {
+  .backup-lead {
+    font-size: 13px;
+  }
+
+  .backup-foot,
+  .backup {
+    gap: 4px;
+  }
+
+  dialog.modal:has(.backup) {
+    max-height: calc(100dvh - 16px);
+    padding: 12px 20px;
+  }
+
+  dialog.modal:has(.backup) .modal-head {
+    margin-bottom: 4px;
   }
 }
