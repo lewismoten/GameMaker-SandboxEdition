@@ -6,7 +6,7 @@
 // short, and near the limit older requests are put away for a summary (compact.ts). Everything
 // is kept whole in the archive, which recall() searches.
 import { toOpenAITools, type OpenAITool } from '../openai';
-import type { ToolDef, ToolResult } from '../tools/types';
+import type { JsonSchema, ToolDef, ToolResult } from '../tools/types';
 import { Archive, RECALL_SCHEMA, recallText } from './archive';
 import { fixedSummary, requestStarts, splitForCompaction, summaryMessages } from './compact';
 import type { ChatMessage, ChatReply, ChatRequest, ToolCall } from './providers';
@@ -78,6 +78,16 @@ const EDITS_PER_PICTURE = 3;
 
 let textIds = 0;
 
+/** The same failure, or the same call, this many times in one request stops it. */
+const REPEATS = 3;
+
+/** Keys small models carry over from load_tools or the call's own wrapper ("group", "type"), dropped when the tool has no such argument. */
+const STRAYS = ['group', 'type'];
+function withoutStrays(schema: JsonSchema, args: Record<string, unknown>): Record<string, unknown> {
+  const own = schema.properties ?? {};
+  return Object.fromEntries(Object.entries(args).filter(([k]) => !STRAYS.includes(k) || k in own));
+}
+
 export class Agent {
   /** The context's messages after the system one. */
   messages: ChatMessage[] = [];
@@ -89,6 +99,9 @@ export class Agent {
   private latestRequest = '';
   private editsSincePicture = EDITS_PER_PICTURE;
   private lastPicture = '';
+  /** How often each call, or each failure, has come up in this request; and why it stopped, if it went round in circles. */
+  private repeats = new Map<string, number>();
+  private stuck = '';
   private own: AgentTool[];
 
   constructor(private readonly o: AgentOptions) {
@@ -271,6 +284,8 @@ export class Agent {
     onEvent?.({ type: 'tools', loaded: this.toolset.loadedIds });
     this.messages.push({ role: 'user', content: text });
     this.archive.add({ turn: this.turn, role: 'user', text });
+    this.repeats.clear();
+    this.stuck = '';
     const max = this.o.maxSteps ?? 24;
     for (let step = 0; step < max; step++) {
       signal?.throwIfAborted();
@@ -280,6 +295,12 @@ export class Agent {
       while (req.tokens > budget && this.squeeze()) req = await this.prepare();
       const done = await this.step(req, opts);
       if (!done.calls.length) return done.content;
+      if (this.stuck) {
+        const note = `I stopped: I kept ${this.stuck}. A larger model, or asking for one small step at a time, may do better.`;
+        this.messages.push({ role: 'assistant', content: note });
+        onEvent?.({ type: 'reply', content: note, calls: [] });
+        return note;
+      }
     }
     const note = `I stopped after ${max} steps. Say “go on” to let me continue.`;
     this.messages.push({ role: 'assistant', content: note });
@@ -356,7 +377,7 @@ export class Agent {
     else if (c.badArgs !== undefined) result = text(`The arguments for ${c.name} weren’t a JSON object: ${c.badArgs.slice(0, 200)}`, true);
     else {
       // "2" for 2 and the like, so the line, the change's place and the tool all see the meaning
-      c.args = coerceArgs(tool.def.inputSchema, c.args);
+      c.args = withoutStrays(tool.def.inputSchema, coerceArgs(tool.def.inputSchema, c.args));
       onEvent?.({ type: 'running', call: c });
       if (this.toolset.touch(c.name)) onEvent?.({ type: 'tools', loaded: this.toolset.loadedIds });
       const refused = PICTURE_TOOLS.has(c.name) ? this.pictureRefused(c) : undefined;
@@ -371,6 +392,7 @@ export class Agent {
       }
     }
     const full = resultText(result) || (result.isError ? 'It failed.' : 'Done.');
+    this.countRepeat(c, result, full);
     this.archive.add({ turn: this.turn, role: 'tool', name: c.name, text: full });
     let words = full;
     const budget = this.resultBudget * 4;
@@ -385,6 +407,22 @@ export class Agent {
     }
     results.push({ role: 'tool', callId: c.id, name: c.name, content: result.isError ? `Error: ${words}` : words });
     onEvent?.({ type: 'result', call: c, result, skipped });
+  }
+
+  /**
+   * Notes a third failure the same way, or a third identical call with the same result (timings
+   * aside), in one request: the model going round in circles.
+   */
+  private countRepeat(c: ToolCall, result: ToolResult, full: string): void {
+    if (full === STOPPED || full === SKIPPED) return;
+    const said = full
+      .split('\n')[0]
+      .replace(/ It takes.*$/, '')
+      .replace(/\.$/, '');
+    const key = result.isError ? said : `${c.name} ${JSON.stringify(c.args)} ${full.replace(/\d+/g, '#')}`;
+    const n = (this.repeats.get(key) ?? 0) + 1;
+    this.repeats.set(key, n);
+    if (n >= REPEATS) this.stuck ||= result.isError ? `failing: ${said}` : `calling ${c.name} and getting the same answer`;
   }
 
   /** Keeps pictures for when they help: not the same one twice with nothing changed, and not every step unless asked. */

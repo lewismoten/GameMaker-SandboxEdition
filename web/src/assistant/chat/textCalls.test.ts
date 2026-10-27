@@ -47,6 +47,10 @@ describe('tool calls written as text', () => {
     expect(s.shown).toBe('Building.\n\nThere.');
   });
 
+  it('leave no reply of just a ";" between calls', () => {
+    expect(scanText('{"name":"get_map","arguments":{"file":"a.map"}};', names).shown).toBe('');
+  });
+
   it('leave other JSON and braces as words', () => {
     const s = scanText('The hero {"name": "Penny"} jumps {high}. {"name":"rm_rf","arguments":{}}', names);
     expect(s.calls).toEqual([]);

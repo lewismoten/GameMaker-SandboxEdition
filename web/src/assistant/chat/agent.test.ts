@@ -103,6 +103,23 @@ describe('the chat loop', () => {
     expect(results[1]).toMatch(/weren’t a JSON object/);
   });
 
+  it('drops a stray "group" or "type", and stops a model going round in circles', async () => {
+    const ctx = tiny();
+    const again = () => calls(['set_map', { name: 'My Game', walls: 'True' }]);
+    const m = scripted([
+      calls(['get_map', { file: 'test.map', group: 'maps', type: 'get_map' }], ['set_map', { name: 'My Game', walls: 'True' }]),
+      again(),
+      again(),
+      again(),
+    ]);
+    const reply = await agentOn(ctx, m.chat).send('Make a game');
+    const results = m.seen[1].filter((x) => x.role === 'tool').map((x) => x.content);
+    expect(results[0]).not.toMatch(/^Error/);
+    expect(results[1]).toMatch(/^Error: set_map: file is required\. It takes: file \(required\)/);
+    expect(m.seen).toHaveLength(3);
+    expect(reply).toMatch(/^I stopped: I kept failing: set_map: file is required/);
+  });
+
   it('Stop ends the turn; every call it made still gets an answer', async () => {
     const ctx = tiny();
     const stop = new AbortController();

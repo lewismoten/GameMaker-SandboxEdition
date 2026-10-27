@@ -107,5 +107,7 @@ export function scanText(text: string, names: ReadonlySet<string>): { calls: Tex
   shown += text.slice(at, pendingAt >= 0 ? Math.max(at, pendingAt) : text.length);
   // a fence or tag left open just before a call still arriving
   if (pendingAt >= 0) shown = shown.replace(WRAP_OPEN, '').replace(/(```(?:json|tool_call)?|<tool_call>|\[)\s*$/, '');
-  return { calls, shown: shown.replace(/\n{3,}/g, '\n\n').trim(), pending: pendingAt >= 0 };
+  shown = shown.replace(/\n{3,}/g, '\n\n').trim();
+  // a lone ";" or "," left between calls is no reply
+  return { calls, shown: /^[;,.:]*$/.test(shown) ? '' : shown, pending: pendingAt >= 0 };
 }
