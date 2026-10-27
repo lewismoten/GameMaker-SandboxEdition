@@ -15,6 +15,7 @@
     "dosbox": "vite-node scripts/dosbox.ts",
     "voice": "vite-node scripts/narrate.ts --",
     "voice:all": "vite-node scripts/narrate.ts -- --force",
+    "voice:setup": "npm install --prefix ../.narrate --no-save kokoro-js@1.2.1",
     "dosbox:open": "../dosbox/DOSBOX.command",
     "mcp": "vite-node -c scripts/mcp/vite.config.ts scripts/mcp/main.ts --",
     "typecheck": "tsc --noEmit",

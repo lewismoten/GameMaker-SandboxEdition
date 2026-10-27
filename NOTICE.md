@@ -227,8 +227,9 @@ game folder opens in the browser unchanged.
   photo. The poster's DOC LEO lettering is set in **Phosphate** (Steve Jackaman and Ashley
   Muir; © International TypeFounders, Inc.), a typeface that comes with macOS: only the
   lettering's pixels are in the poster pictures, and no font file is in the repository.
-- **The guided tour's voice** (`web/public/tour/voice`): each line is spoken in **Lewis Moten's
-  own voice**, cloned from a recording of himself that he made for it, with his consent, by
+- **The guided tour's voices** (`web/public/tour/voice`): Doc Leo's lines (and Teddy's, when he
+  talks) are spoken in voices cloned from **Lewis Moten's own recordings**, made by him, with his
+  consent, by
   **Pocket TTS** (Kyutai, [huggingface.co/kyutai/pocket-tts](https://huggingface.co/kyutai/pocket-tts),
   model weights under the Creative Commons Attribution 4.0 International License, CC BY 4.0),
   in **vlapky**'s ONNX conversion,
@@ -241,6 +242,12 @@ game folder opens in the browser unchanged.
   and Lewis's recording stay on his computer and are not in the repository or any download;
   Pocket TTS's built-in voices are never used. Only the generated clips are committed, and they
   play on the site only (exported games don't carry them).
+  Gwinn's lines are spoken in **Kokoro**'s stock "Sky" voice (`af_sky`), pitched up: **Kokoro-82M**
+  by hexgrad ([huggingface.co/hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M),
+  Apache-2.0) in the ONNX Community's conversion, run by **kokoro-js** (Apache-2.0) with Hugging
+  Face's **Transformers.js** (Apache-2.0), the **phonemizer** package (Apache-2.0) and ONNX
+  Runtime (MIT). These are installed by `npm run voice:setup` into a git-ignored folder outside
+  the app's own packages, and the model stays on Lewis's computer.
 - **Teddy's and Gwinn's barks** (`web/public/tour/sfx`): Lewis Moten's own recordings of his
   dogs, cut into short clips for the guided tour. The whole recordings stay on his computer.
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for

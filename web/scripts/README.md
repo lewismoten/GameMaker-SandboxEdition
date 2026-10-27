@@ -38,7 +38,9 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     is kept as he said it.
 - The guided tour's voice: `narrate.ts` (`npm run voice`; `npm run voice:all` records every
   line again) speaks each line of `tour/lines.ts` in its host's voice (cloned from one of Lewis's voice
-  samples with Pocket TTS, then shifted in pitch and speed as `HOSTS` in `tour/steps.ts` says),
+  samples with Pocket TTS, or one of Kokoro's stock voices via `kokoro.ts`, which runs Kokoro in
+  a child process from the git-ignored `/.narrate` folder that `npm run voice:setup` fills; then
+  shifted in pitch and speed as `HOSTS` in `tour/steps.ts` says),
   locally, into `../public/tour/voice/<chapter>/<id>.ogg` (Opus, mono, about 10 kbps), and
   rewrites `index.json` (id → chapter, where, words, seconds and hashes, so unchanged lines are
   skipped) and the generated `README.md` there. Its parts are in `narrate/`: `pocketTts.ts` (the

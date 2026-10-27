@@ -58,8 +58,14 @@ export function aiToolsSection(): HTMLElement {
       tool(
         'Pocket TTS',
         'Kyutai · CC BY 4.0',
-        'The guided tour’s voice: each line spoken in Lewis’s own voice, cloned from his recording with his consent. Runs on the developer’s computer.',
+        'The guided tour’s voices cloned from Lewis’s own recordings, with his consent (Doc Leo’s, and Teddy’s when he talks). Runs on the developer’s computer.',
         'Kyutai’s model, in vlapky’s ONNX conversion (pocket-tts-onnx), run by a script ported from vlapky’s pocket-tts-js (MIT) with Microsoft’s ONNX Runtime (MIT). Its built-in voices are never used; only the clips it makes ship.',
+      ),
+      tool(
+        'Kokoro',
+        'hexgrad · Apache-2.0',
+        'Gwinn’s voice in the guided tour: Kokoro’s stock “Sky” voice, pitched up. Runs on the developer’s computer.',
+        'Kokoro-82M in the ONNX Community’s conversion, run by kokoro-js (Apache-2.0) with Hugging Face’s Transformers.js (Apache-2.0), the phonemizer package (Apache-2.0) and Microsoft’s ONNX Runtime (MIT). Only the clips it makes ship.',
       ),
       tool('Whisper', 'OpenAI · MIT License', 'Word timings for cutting the voice clips. Runs on the developer’s computer; nothing ships.'),
     ),

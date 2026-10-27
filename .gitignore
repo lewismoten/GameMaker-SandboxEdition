@@ -19,3 +19,6 @@ __pycache__/
 /dosbox-broken/
 # setups, saved games and high scores npm run dosbox backs up before each rebuild
 /dosbox-saves/
+
+# Kokoro for web/scripts/narrate.ts (npm run voice:setup), kept out of the app's own packages
+/.narrate/

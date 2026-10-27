@@ -51,6 +51,7 @@ npm run check:games -- --game <id> --quick         # one game, without the rebui
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox
 npm run voice                                      # tour voice clips for new or changed lines (local Pocket TTS; -- --only <id> retakes one)
 npm run voice:all                                  # every tour voice clip again
+npm run voice:setup                                # once: Kokoro (Gwinn's voice) into the git-ignored .narrate/
 ```
 
 After changing a game, rebuild it and run its checks (`npm run check:games -- --game <id>` runs

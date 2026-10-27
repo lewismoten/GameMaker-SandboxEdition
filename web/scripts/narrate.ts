@@ -18,12 +18,16 @@ import { CLIP_OGG, clearestWindow, normalize, readMono, shiftVoice, writeOgg } f
 import { clipPath, indexJson, lineProblems, planTakes, refreshPlaces, staleIds, textHash, type Line, type VoiceIndex } from './narrate/lineIndex';
 import { PocketTts, randomSource } from './narrate/pocketTts';
 import { voiceReadme } from './narrate/voiceReadme';
+import { loadKokoro, type Kokoro } from './narrate/kokoro';
 
 const WORKSPACE = join(homedir(), 'Documents/rivers-of-memory-workspace');
 const DEFAULTS = {
   engine: process.env.POCKET_TTS_ENGINE ?? join(WORKSPACE, 'engines/Pocket-TTS'),
   model: process.env.POCKET_TTS_MODEL ?? join(WORKSPACE, 'models/Pocket-TTS-english_2026-04'),
   out: process.env.NARRATE_OUT ?? 'public/tour/voice',
+  // kokoro-js's packages (npm run voice:setup) and Kokoro-82M's ONNX model
+  tools: process.env.NARRATE_TOOLS ?? fileURLToPath(new URL('../../.narrate', import.meta.url)),
+  kokoro: process.env.KOKORO_MODEL ?? join(WORKSPACE, 'models/Kokoro-82M-Q8'),
 };
 
 /**
@@ -80,15 +84,19 @@ async function main() {
   const out = resolve(str('out', DEFAULTS.out));
   // --sample puts every line in one recording (to compare samples); otherwise each host's own
   const override = typeof o.sample === 'string' ? need(o.sample, 'sample') : undefined;
+  // a voice is a sample of Lewis's cloned by Pocket TTS, or one of Kokoro's stock voices ('kokoro:<voice>')
   const voiceOf = (l: Line) => {
     const name = l.voice?.sample ?? 'lewis';
+    const shift = { semitones: l.voice?.semitones ?? 0, tempo: l.voice?.tempo ?? 1 };
+    if (!override && name.startsWith('kokoro:')) return { kokoro: name.slice(7), path: '', ...shift };
     const path = override ?? samplePath(name);
     if (!path) throw new Error(`${l.id}: there is no voice sample named ${name} (scripts/narrate.ts SAMPLES)`);
-    return { path, semitones: l.voice?.semitones ?? 0, tempo: l.voice?.tempo ?? 1 };
+    return { kokoro: undefined, path, ...shift };
   };
   const sampleHashes = new Map<string, string>();
   const voiceHash = (l: Line) => {
     const v = voiceOf(l);
+    if (v.kokoro) return textHash(`kokoro:${v.kokoro}|${v.semitones}|${v.tempo}`);
     if (!sampleHashes.has(v.path)) sampleHashes.set(v.path, textHash(new Uint8Array(readFileSync(need(v.path, 'sample')))));
     return textHash(`${sampleHashes.get(v.path)}|${v.semitones}|${v.tempo}`);
   };
@@ -101,7 +109,7 @@ async function main() {
   const stale = staleIds(lines, index);
   if (stale.length) console.warn(`in the index but no longer a line (delete their clips by hand): ${stale.join(', ')}`);
   console.log(`${todo.length} of ${lines.length} lines to record into ${out}`);
-  if (o['dry-run']) return todo.forEach((id) => console.log(`  ${id}`));
+  if (o['dry-run']) return void todo.forEach((id) => console.log(`  ${id}`));
 
   const save = () => {
     refreshPlaces(lines, index);
@@ -109,19 +117,30 @@ async function main() {
     writeFileSync(indexFile, indexJson(index));
     writeFileSync(join(out, 'README.md'), voiceReadme(lines, index));
   };
-  if (!todo.length) return save();
+  if (!todo.length) return void save();
 
-  const tts = await PocketTts.load(need(str('engine', DEFAULTS.engine), 'engine folder'), need(str('model', DEFAULTS.model), 'model folder'));
-  const rate = tts.sampleRate;
-  // each sample is cloned once, when a line first needs it
-  const clones = new Map<string, Awaited<ReturnType<typeof tts.cloneVoice>>>();
-  const cloneOf = async (path: string) => {
-    if (!clones.has(path)) {
-      const reference = clearestWindow(readMono(path, rate), rate);
-      console.log(`voice: ${path} (${(reference.length / rate).toFixed(1)} s used)`);
-      clones.set(path, await tts.cloneVoice(reference));
+  // each engine loads, and each sample is cloned, only when a line first needs it
+  let pocket: Promise<PocketTts> | undefined;
+  let kokoro: Promise<Kokoro> | undefined;
+  const clones = new Map<string, Awaited<ReturnType<PocketTts['cloneVoice']>>>();
+  const speak = async (text: string, v: ReturnType<typeof voiceOf>) => {
+    if (v.kokoro) {
+      kokoro ??= loadKokoro(str('tools', DEFAULTS.tools), need(str('kokoro', DEFAULTS.kokoro), 'kokoro model folder'));
+      const take = await (await kokoro).generate(text, v.kokoro);
+      // the quiet tail Pocket TTS's takes end with, so no clip is cut off
+      const audio = new Float32Array(take.audio.length + Math.round(take.rate * 0.35));
+      audio.set(take.audio);
+      return { audio, rate: take.rate, genSeconds: take.genSeconds };
     }
-    return clones.get(path)!;
+    pocket ??= PocketTts.load(need(str('engine', DEFAULTS.engine), 'engine folder'), need(str('model', DEFAULTS.model), 'model folder'));
+    const tts = await pocket;
+    if (!clones.has(v.path)) {
+      const reference = clearestWindow(readMono(v.path, tts.sampleRate), tts.sampleRate);
+      console.log(`voice: ${v.path} (${(reference.length / tts.sampleRate).toFixed(1)} s used)`);
+      clones.set(v.path, await tts.cloneVoice(reference));
+    }
+    const take = await tts.generate(text, clones.get(v.path)!, randomSource(seed));
+    return { audio: take.audio, rate: tts.sampleRate, genSeconds: take.genSeconds };
   };
   const ogg = { kbps: Number(str('kbps', String(CLIP_OGG.kbps))), rate: Number(str('rate', String(CLIP_OGG.rate))) };
   const seed = typeof o.seed === 'string' ? Number(o.seed) : undefined;
@@ -130,7 +149,8 @@ async function main() {
   for (const id of todo) {
     const line = lines.find((l) => l.id === id)!;
     const v = voiceOf(line);
-    const take = await tts.generate(line.text, await cloneOf(v.path), randomSource(seed));
+    const take = await speak(line.text, v);
+    const rate = take.rate;
     take.audio = normalize(shiftVoice(take.audio, rate, v.semitones, v.tempo), rate);
     const seconds = Math.round((take.audio.length / rate) * 100) / 100;
     const file = join(out, clipPath(line));
@@ -143,6 +163,7 @@ async function main() {
     console.log(`  ${clipPath(line)}: ${seconds.toFixed(2)} s in ${take.genSeconds.toFixed(1)} s`);
   }
   console.log(`${spoken.toFixed(1)} s of speech in ${spent.toFixed(1)} s (${(spoken / spent).toFixed(2)}× real time)`);
+  if (kokoro) (await kokoro).close();
 }
 
 /** A 16-bit mono WAV, for comparing encodings of one take. */
