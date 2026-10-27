@@ -68,7 +68,7 @@ export function launchFli(): Uint8Array {
     const gy = 150 + t * t * 260;
     c.rect(0, Math.round(gy), 320, 200, C('green')[2]);
     for (let x = 0; x < 320; x += 4) c.rect(x, Math.round(gy) - ((x * 7) % 5), 4, 6, C('green')[3]);
-    c.rect(150, Math.round(gy) - 4, 22, 4, C('grey')[4]);
+    c.rect(150, Math.round(gy) - 4, 22, 4, C('gray')[4]);
     // the pod and its flame
     const py = 100 - t * 10;
     for (let i = 0; i < 26 + (f % 3) * 4; i++)

@@ -54,9 +54,9 @@ function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> 
 }
 
 /** Doc Leo's stroll, in pixels per tick (Teddy trots at 5). */
-export const LSTEP = 4;
+const LSTEP = 4;
 /** His hop (Teddy's is 11). */
-export const LHOP = 11;
+const LHOP = 11;
 
 export function buildLeo(): Character {
   const ch = newCharacter();

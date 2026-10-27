@@ -74,11 +74,6 @@ export function rotate(src: Pixels): Pixels {
   return p.map((x, y) => src.get(y, src.w - 1 - x));
 }
 
-export function flipY(src: Pixels): Pixels {
-  const p = new Pixels(src.w, src.h);
-  return p.map((x, y) => src.get(x, src.h - 1 - y));
-}
-
 /** ASCII-art sprite on a transparent 20x20 (or w x h) canvas, bottom aligned and centered. */
 export function sprite(rows: string[], key: Record<string, number>, w = 20, h = 20, dx?: number, dy?: number): Pixels {
   const p = new Pixels(w, h, T);

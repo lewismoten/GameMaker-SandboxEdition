@@ -139,7 +139,37 @@
   background: #b3261e;
 }
 
+/* scrolled (readView.ts): every map in a column beside the list, which stays in view */
+.lm-view.scrolled {
+  flex: none;
+  align-items: flex-start;
+}
+
+.lm-view.scrolled .lm-side {
+  position: sticky;
+  top: 0;
+  max-height: calc(100dvh - 120px);
+}
+
+.lm-view.scrolled .lm-map {
+  background: #fffdf7;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+.lm-view .rv-folio {
+  align-self: stretch;
+  font: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 1;
+}
+
 @media (max-width: 700px) {
+  .lm-view.scrolled .lm-side {
+    position: static;
+    max-height: none;
+  }
+
   .lm-view {
     flex-direction: column;
   }

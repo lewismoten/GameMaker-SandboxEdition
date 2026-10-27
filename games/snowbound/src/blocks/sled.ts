@@ -1,18 +1,18 @@
 // The Jamie Street sled run: most of the slope is GLIDE ground (grav 5, up and down at once:
 // the pulls cancel so the sled keeps its speed), steep stretches pull it down (grav 4), moguls
 // kick it up (grav 1), rocks and trees hurt, gate flags line the run, and a dollar bill and a
-// cocoa mug wait on the snow.
-import { rng } from '../../../kit/pixels';
+// cocoa mug wait on the snow. Jamie Street's own blocks (hill.ts) reuse the slope and the fir.
+import { rng, type Pixels } from '../../../kit/pixels';
 import { blob, shadeAt } from '../art/draw';
 import { Ctx, MONEY, SOLID } from './book';
 import type { addThings } from './things';
 
 type Treats = ReturnType<typeof addThings>;
 
-export function addSled(k: Ctx, { mug, bill }: Treats) {
-  const { book, R, c, snow, P } = k;
-  // ---------- the Jamie Street sled run ----------
-  const slope = (seed: number, tracks: boolean, steep = 0) => {
+/** A 20x20 picture of the run's snow (seeded), with sled tracks or the steep band's chevrons. */
+export function slopePainter(k: Ctx) {
+  const { c, snow, P } = k;
+  return (seed: number, tracks: boolean, steep = 0) => {
     const p = P();
     const r = rng(seed);
     for (let y = 0; y < 20; y++)
@@ -28,6 +28,22 @@ export function addSled(k: Ctx, { mug, bill }: Treats) {
         for (let i = 0; i < 3; i++) p.set(x - i, y - i, c('snow', 2)).set(x + i, y - i, c('snow', 2));
     return p;
   };
+}
+
+/** A snowy fir filling its block, over `p` (the run's snow). */
+export function drawFir(k: Ctx, p: Pixels): Pixels {
+  const { R, c, snow } = k;
+  blob(p, 10, 10.5, 10, 9.6, R('pine'), 0, 4);
+  blob(p, 8, 6, 6.5, 3.5, snow, 4, 6);
+  blob(p, 13, 12, 4, 2, snow, 3, 5);
+  p.rect(9, 18, 2, 2, c('wood', 1));
+  return p;
+}
+
+export function addSled(k: Ctx, { mug, bill }: Treats) {
+  const { book, R, c, snow } = k;
+  // ---------- the Jamie Street sled run ----------
+  const slope = slopePainter(k);
   // grav 5 = up AND down: the pulls cancel, so the sled keeps whatever speed it has.
   const GLIDE = 5;
   book.add('slope', slope(1, false), { grav: GLIDE });
@@ -40,15 +56,11 @@ export function addSled(k: Ctx, { mug, bill }: Treats) {
   // one hurts once: the bump swaps in a look-alike that is still solid but harmless, so a
   // sled stopped against it (or pushing off into it) isn't hurt again and again.
   const rock = slope(5, false);
-  blob(rock, 10, 10.5, 9.8, 9.4, R('grey'), 0, 3);
+  blob(rock, 10, 10.5, 9.8, 9.4, R('gray'), 0, 3);
   blob(rock, 9, 5, 7.5, 3.5, snow, 4, 6);
   book.add('rock', rock, { solid: SOLID, hp: -8, touch: 'rockHit' });
   book.add('rockHit', rock, { solid: SOLID });
-  const fir = slope(6, false);
-  blob(fir, 10, 10.5, 10, 9.6, R('pine'), 0, 4);
-  blob(fir, 8, 6, 6.5, 3.5, snow, 4, 6);
-  blob(fir, 13, 12, 4, 2, snow, 3, 5);
-  fir.rect(9, 18, 2, 2, c('wood', 1));
+  const fir = drawFir(k, slope(6, false));
   book.add('slopeTree', fir, { solid: SOLID, hp: -10, touch: 'slopeTreeHit' });
   book.add('slopeTreeHit', fir, { solid: SOLID });
   const flag = (col: string) => {

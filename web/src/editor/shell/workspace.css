@@ -85,7 +85,7 @@
   display: none;
 }
 
-/* The top of the file list: Play test (and on phones the "Files" button beside it). */
+/* The top of the file list: Play Game and Play Level (playButtons.css), and on phones the "Files" button beside them. */
 .sidebar .side-top {
   display: flex;
   gap: 6px;
@@ -346,4 +346,14 @@
     height: 24px;
     font-size: 14px;
   }
+}
+
+/* The Assistant button beside the file's title (assistant/bridge/panel.ts): shown on phones
+   too, unlike the keyboard shortcuts beside it. */
+.editor .assistant-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  padding-inline: 8px;
 }

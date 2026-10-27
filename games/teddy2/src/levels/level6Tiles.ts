@@ -10,7 +10,7 @@ import { c, canvas, cloud, copy, cut, dirt, grassTop, hedge, r, sky, tuft } from
 import { road, sign } from './common';
 
 export const G = 40;
-export const bandRow = (y: number) => (y <= 27 ? 0 : y <= 31 ? 1 : y <= 35 ? 2 : 3);
+const bandRow = (y: number) => (y <= 27 ? 0 : y <= 31 ? 1 : y <= 35 ? 2 : 3);
 export const skyAt = (y: number) => `sky${bandRow(y)}`;
 
 /** Corn stalks over `base`: green leaves, a few yellow ears. */

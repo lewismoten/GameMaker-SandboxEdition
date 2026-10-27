@@ -83,7 +83,7 @@ export function facade(chase = 0, lit = 1): Pixels {
       const base = shadeAt(r('rain'), 0, 1, (y - 150) / 50, x, y);
       p.set(x, y, (y + x) % 3 === 0 && refl >= 0 && (refl === c('glow', 1) || refl === c('glow', 4) || refl === c('neon', 2)) ? refl : base);
     }
-  p.rect(0, 150, W, 2, c('grey', 2));
+  p.rect(0, 150, W, 2, c('gray', 2));
   return p;
 }
 
@@ -189,8 +189,8 @@ export function actor(who: Who, h = 64, pose: 'stand' | 'raise' | 'fall' | 'bow'
 
 /** A dagger held up (for the cartoons). */
 export function dagger(p: Pixels, x: number, y: number, real: boolean): void {
-  p.line(x, y, x, y - 14, real ? c('grey', 7) : c('grey', 5));
-  p.line(x + 1, y, x + 1, y - 13, real ? c('ghost', 3) : c('grey', 4));
+  p.line(x, y, x, y - 14, real ? c('gray', 7) : c('gray', 5));
+  p.line(x + 1, y, x + 1, y - 13, real ? c('ghost', 3) : c('gray', 4));
   p.rect(x - 3, y, 8, 2, c('gold', 3));
   p.rect(x - 1, y + 2, 3, 5, c('black', 1));
   p.disc(x + 1, y + 8, 2, real ? c('black', 0) : c('gold', 3));
@@ -216,7 +216,7 @@ export function caseFile(heading: string, seed = 1): Pixels {
     centered(p, 28, heading, c('black', 0), 1, undefined, 162);
   }
   // a paper clip and a coffee ring
-  p.rect(260, 18, 6, 18, c('grey', 5)).rect(261, 20, 4, 14, c('paper', 4));
+  p.rect(260, 18, 6, 18, c('gray', 5)).rect(261, 20, 4, 14, c('paper', 4));
   // (the ring sits off the sheet's corner, clear of PLAYGAME's MORE... at x 224..280, y 168)
   p.ring(300, 181, 12, c('wood', 3));
   return p;

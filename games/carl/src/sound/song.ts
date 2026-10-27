@@ -32,7 +32,7 @@ import { sbi } from '../../../kit/music';
 import { CELESTA, Writer, type Groove } from '../../../kit/song';
 import { DRUM, Fx, boomPatch, detuned, sweep } from '../../../kit/songFx';
 
-export const BPM = 133;
+const BPM = 133;
 
 // ---- the patches --------------------------------------------------------------------------
 
@@ -470,7 +470,7 @@ function breakdown(a: Arranger, cutBeforeSeen = true): void {
 }
 
 /** Title: the intro, Carl flies by, "There's a fly in the room" with the whole band. */
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   const a = new Arranger();
   intro(a, false);
   a.section(
@@ -484,7 +484,7 @@ export function titleSong(): Uint8Array {
 }
 
 /** Story pages: verse 1, gently: the uke plucked, a shaker, Carl buzzing in. */
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const a = new Arranger(126);
   intro(a);
   a.section(VERSE1, { uke: 'pluck', sing: 'solo', bass: 'long', drums: ['shaker'], vel: 92, buzz: true });
@@ -492,7 +492,7 @@ export function storySong(): Uint8Array {
 }
 
 /** The six levels. */
-export function levelSongs(): Uint8Array[] {
+function levelSongs(): Uint8Array[] {
   // the couch: the intro, verse 1, chorus 1
   const one = new Arranger();
   intro(one);
@@ -544,7 +544,7 @@ export function levelSongs(): Uint8Array[] {
 }
 
 /** Won: the last chorus and the outro, "Carl's got the aux cord now", and Carl flies off. */
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const a = new Arranger();
   a.section({ name: 'pickup', chords: ['A'], tune: ['r w'] }, { uke: 'strum', sing: 'none', bass: 'bounce', drums: ['fill'], vel: 100 });
   a.flyBy(1, 2.5, 64, 80);
@@ -557,7 +557,7 @@ export function wonSong(): Uint8Array {
 }
 
 /** Lost: "I've named it Carl. I hate Carl.", slow and alone, the last "Carl" stuttering, and Carl buzzes off laughing. */
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const a = new Arranger(100);
   a.section(
     { name: 'i hate carl', chords: ['C', 'C F', 'Bb A', 'Dm'], tune: [CHORUS2.tune[4], CHORUS2.tune[5], CHORUS2.tune[6], 'r w'] },
@@ -569,7 +569,7 @@ export function lostSong(): Uint8Array {
 }
 
 /** The menu: the whole song in order, intro to "Carl's got the aux cord now." */
-export function wholeSong(): Uint8Array {
+function wholeSong(): Uint8Array {
   const a = new Arranger();
   intro(a);
   a.section(VERSE1, { uke: 'strum', sing: 'solo', bass: 'bounce', drums: bounce(8), vel: 98, buzz: true, lite: true });

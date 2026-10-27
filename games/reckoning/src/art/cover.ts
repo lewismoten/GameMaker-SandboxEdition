@@ -8,8 +8,8 @@
 // turns and pulses, the clock's colon blinks, and lightning flashes once.
 import { rng } from '../../../kit/pixels';
 
-export const COVER_W = 320;
-export const COVER_H = 200;
+const COVER_W = 320;
+const COVER_H = 200;
 
 type RGB = [number, number, number];
 

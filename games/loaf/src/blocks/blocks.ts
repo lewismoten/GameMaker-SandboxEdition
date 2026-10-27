@@ -21,11 +21,11 @@ import { BASKETS, BASKETS_NEEDED, CRUMBS, CRUMBS_NEEDED, MON } from '../ids';
 
 export { BlockBook, SOLID };
 /** Solid on top only: stand on it, rise up through it. */
-export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, down: 4 } as const;
+const LEDGE = 1;
+const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between flying fish from a fish basket. */
-export const FISH_EVERY = 70;
+const FISH_EVERY = 70;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();
@@ -540,7 +540,7 @@ export function buildBlocks(pal: Pal): BlockBook {
       `tinHeart${k || ''}`,
       drawTinHeart(
         book.pics.get('gloom')!.crop(0, 0, 20, 20),
-        { ink: c('ink', 0), tin: [c('grey', 1), c('grey', 2), c('grey', 3)], white: c('white', 2), dark: c('grey', 0) },
+        { ink: c('ink', 0), tin: [c('gray', 1), c('gray', 2), c('gray', 3)], white: c('white', 2), dark: c('gray', 0) },
         k,
       ),
       {

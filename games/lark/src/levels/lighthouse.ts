@@ -4,7 +4,7 @@
 import type { Bestiary, BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const LIGHTHOUSE_ROWS = [
+const LIGHTHOUSE_ROWS = [
   '##############',
   '#............#',
   '#.....l......#',

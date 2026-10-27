@@ -3,7 +3,7 @@
 // next read, which shows as an extra blank line.
 import type { Story } from '../stories';
 
-export const COLS = 30;
+const COLS = 30;
 export const PAGE = 16;
 
 /** Wraps paragraphs to `width` columns; lines starting with spaces keep their indent; THE CHEZ stays on one line. */
@@ -58,7 +58,7 @@ function flow(lines: string[]): string[][] {
 }
 
 /** The heading every story page 1 opens with. */
-export function storyHeading(s: Story): string[] {
+function storyHeading(s: Story): string[] {
   return [...wrap(s.title.toUpperCase()), 'by Lewis Moten', ...wrap(`${s.date}, ${s.week}`), ...wrap(`Topic: ${s.topic}`), ''];
 }
 

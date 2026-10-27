@@ -1,11 +1,13 @@
 // Checks the multi-block objects on the built disk's maps (games/kit/align.ts): the houses (roof
 // over eaves over a one-colored front), garages, the mall, the stores, the arcade, the signs,
 // the parked cars (and THE CHEZ), the fair's strongman bell, the lot's cart return, and that
-// their art joins up across the block edges.
+// their art joins up across the block edges (Jamie Street and LaVale Mall by their own sets' names).
 // Run by tools/check.ts.
 import { alignGame, namesOf, type Need, type PartRule } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';
+import { hillBook } from '../src/blocks/hill';
+import { CARS, lotBook } from '../src/blocks/lot';
 
 const is = (...s: string[]) => ({ test: (g: string) => s.includes(g), toString: () => s.join('|') });
 const roofMid = ['roofM', 'chimney', 'chimney2'];
@@ -16,8 +18,13 @@ const run = (seq: string[]): PartRule[] =>
   seq.map((n, i) => ({ part: n, need: [...(i > 0 ? [[-1, 0, seq[i - 1]]] : []), ...(i < seq.length - 1 ? [[1, 0, seq[i + 1]]] : [])] as Need }));
 
 export function align(): number {
-  const book = buildBlocks(buildPalette('noon'));
+  const noon = buildPalette('noon');
+  const book = buildBlocks(noon);
   const names = namesOf(book.index);
+  // Jamie Street has its own copy of the set (JAMIE.BBL), with the run's blocks in the houses' slots
+  const hill = namesOf(hillBook(book, noon).index);
+  // and LaVale Mall its own (LAVALE.BBL), with more cars in them
+  const lot = namesOf(lotBook(book, noon).index);
   const RULES: PartRule[] = [
     {
       part: 'roofL',
@@ -89,7 +96,7 @@ export function align(): number {
     ...[...book.index.keys()].filter((n) => /^st.*0$/.test(n) && book.index.has(n.slice(0, -1) + '1')).flatMap((n) => run([n, n.slice(0, -1) + '1'])),
     ...run(['board0', 'board1']),
     ...run(['cartSign0', 'cartSign1', 'cartCorral']),
-    ...['blueCar', 'greenCar', 'tanCar'].flatMap((n) => run([`${n}L`, `${n}R`])),
+    ...CARS.flatMap((n) => run([`${n}L`, `${n}R`])),
     ...run(['chezL', 'chezR']),
     { part: 'fairMan', need: [[1, 0, /^fairBell[LR]?$/]] },
     {
@@ -101,5 +108,5 @@ export function align(): number {
     },
     { part: 'fairFlag', need: [[-1, 0, /^fairBell[LR]?$/]] },
   ];
-  return alignGame('snowbound', () => names, RULES);
+  return alignGame('snowbound', (map) => (map === 'jamie.map' ? hill : map === 'lavale.map' ? lot : names), RULES);
 }

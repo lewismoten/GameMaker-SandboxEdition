@@ -8,10 +8,10 @@ import { PaletteBuilder } from '../../../kit/palette';
 import { encodeFli } from '../../../../web/src/formats/fli';
 import { text } from './screens';
 
-export const SP = new PaletteBuilder();
+const SP = new PaletteBuilder();
 SP.color(0, 0, 0);
 /** The 16 ANSI colors, for the file listing and the transfer window. */
-export const A: number[] = [
+const A: number[] = [
   [0, 0, 0],
   [0, 0, 170],
   [0, 170, 0],
@@ -43,7 +43,7 @@ const LEASH = SP.ramp('leash', 3, [24, 48, 96], [110, 160, 220]);
 const PLAZA = SP.ramp('plaza', 5, [112, 96, 70], [222, 206, 170]);
 const PINK = SP.ramp('pink', 3, [150, 60, 70], [250, 170, 170]);
 SP.designerColors();
-export const SYSOP_PAL = SP.pal.slice();
+const SYSOP_PAL = SP.pal.slice();
 
 const W = 320;
 const H = 200;
@@ -294,7 +294,7 @@ function lewis(p: Pixels): void {
   // His ear on the left.
   oval(p, 30, 104, 9, 16, (x, y, u) => sh(SKIN, 4.6 + u * 0.8, x, y));
   p.line(30, 94, 28, 112, SKIN[3]);
-  // Shaggy grey-brown hair: a bowl cut combed forward, its fringe ragged, strands of grey.
+  // Shaggy gray-brown hair: a bowl cut combed forward, its fringe ragged, strands of gray.
   const inHair = (x: number, y: number) => {
     const u = (x - 90) / 66;
     const v = (y - 76) / 50;
@@ -487,7 +487,7 @@ function teddy(p: Pixels): void {
 }
 
 /** The whole picture, 320x200. */
-export function sysopPicture(): Pixels {
+function sysopPicture(): Pixels {
   const p = new Pixels(W, H, SKY[2]);
   background(p);
   gazebo(p);

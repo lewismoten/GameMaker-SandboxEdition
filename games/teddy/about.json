@@ -18,6 +18,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "5 levels across town",
     "hours": 2,
     "background": "#1d5fb8",
     "accent": "#ffd23f",
@@ -43,5 +44,6 @@
       ["klub.map", 64, 26]
     ],
     "rating": "Ages 6 and up"
-  }
+  },
+  "acceptedFindings": ["link-solid s3 Link 2 at (16, 37) is inside block 96, which is solid on every side"]
 }

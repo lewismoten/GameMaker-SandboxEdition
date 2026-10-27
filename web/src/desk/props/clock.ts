@@ -2,11 +2,15 @@
 // hour like a sport watch, and now and then, where a cuckoo would be, Sir Reginald
 // Cluckington III (Doc Leo's rubber chicken) pops out of it and squawks. At 3:17 a.m. the
 // fridge downstairs stirs (The Great Dairy Reckoning of 3:17 A.M.); at midnight the chicken
-// comes out in a party hat for the brand-new day.
+// comes out in a party hat for the brand-new day. After he has come out a few times, a small tin
+// heart drops out with him (clockHeart.ts). Where the clock isn't drawn, every third TIME at the
+// DOS prompt lets him out instead, heard but not seen, and the heart rolls out by the monitor.
 import { h } from '../../editor/core/ui';
 import { flash, pressable, say } from './propKit';
 import { roomSound } from './propSound';
 import { deskNow } from '../../retro/dos/deskClock';
+import { DOS_TIME_EVENT } from '../../retro/dos/dosTimeEvent';
+import { clockHeart } from './clockHeart';
 
 const time = (d: Date) => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
@@ -40,6 +44,9 @@ export function clockProp(clock: HTMLElement): () => void {
   // the rubber chicken, ready to pop out from behind the watch's face like a cuckoo
   const bird = h('div', { class: 'clock-cuckoo', 'aria-hidden': 'true' });
   clock.append(bird);
+  const heart = clockHeart(clock);
+  /** A line about the heart coming out too, or nothing. */
+  const withHeart = (out: boolean, line: string) => (out ? ` ${line}` : '');
   const use = () => {
     presses++;
     const now = deskNow();
@@ -57,11 +64,14 @@ export function clockProp(clock: HTMLElement): () => void {
       bird.replaceChildren(chickenArt(midnight));
       flash(bird, 'out', 1900);
       roomSound.squawk(midnight ? 3 : 2);
+      const out = heart.popped();
+      if (out) heart.show('clock');
       say(
         clock,
-        midnight
+        (midnight
           ? `Midnight! The date flips to the ${now.getDate()}${ordinal(now.getDate())}. SQUAWK! Sir Reginald Cluckington III, in a party hat: happy brand-new day.`
-          : `SQUAWK! Sir Reginald Cluckington III pops out of the watch. (Nobody knows how a rubber chicken got in there.) It’s ${t}.`,
+          : `SQUAWK! Sir Reginald Cluckington III pops out of the watch. (Nobody knows how a rubber chicken got in there.) It’s ${t}.`) +
+          withHeart(out, 'Something small and shiny drops out after him. Tick, tock.'),
         chickenArt(midnight),
       );
       return;
@@ -70,10 +80,32 @@ export function clockProp(clock: HTMLElement): () => void {
     flash(clock, 'clock-tick', 700);
     say(clock, BEEPS[presses % BEEPS.length](t));
   };
-  return pressable(clock, '', use, {
+  // where the clock isn't drawn, asking DOS for the time stands in for pressing it
+  let asked = 0;
+  const onTime = () => {
+    const desk = clock.closest<HTMLElement>('.desk');
+    if (!desk?.isConnected || clock.getClientRects().length || ++asked % 3) return;
+    roomSound.squawk(2);
+    const out = heart.popped();
+    if (out) heart.show('pc');
+    const mon = desk.querySelector('.monitor') ?? desk;
+    say(
+      mon,
+      'SQUAWK! Over on the wall, out of sight from here, the wristwatch clock lets its rubber chicken out.' +
+        withHeart(out, 'Something small and shiny rolls out by the monitor. Tick, tock.'),
+      chickenArt(false),
+    );
+  };
+  window.addEventListener(DOS_TIME_EVENT, onTime);
+  const unpress = pressable(clock, '', use, {
     id: 'desk-clock',
     title: 'The wall clock: press it to hear the time',
   });
+  return () => {
+    unpress();
+    window.removeEventListener(DOS_TIME_EVENT, onTime);
+    heart.off();
+  };
 }
 
 const ordinal = (n: number) => (n % 100 >= 11 && n % 100 <= 13 ? 'th' : (['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'));

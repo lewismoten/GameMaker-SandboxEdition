@@ -9,7 +9,7 @@ import { CK } from './klown';
 const c = (n: string, k: number) => P.c(n, k);
 const K: Record<string, number> = { ...CK, l: c('lilac', 3), L: c('lilac', 1), f: c('frost', 2), F: c('frost', 1), a: c('orange', 3), A: c('orange', 1) };
 
-export const ERRANDS: Record<string, string[]> = {
+const ERRANDS: Record<string, string[]> = {
   // THE CHEZ's keys on their ring, with a little rubber chicken fob.
   keys: [
     '....mmmm....',

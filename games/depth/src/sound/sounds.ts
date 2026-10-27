@@ -22,7 +22,7 @@ const bell = (hz: number, start = 0, len = 1): Synth => {
   return (t) => (t < start ? 0 : (s(t) * 0.6 + s2(t) * 0.28 + s3(t) * 0.12) * Math.exp(-(t - start) * (4 / len)));
 };
 
-export interface SoundFiles {
+interface SoundFiles {
   set: Uint8Array;
   vocs: Record<string, Uint8Array>;
 }

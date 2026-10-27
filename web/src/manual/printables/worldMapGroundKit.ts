@@ -26,7 +26,7 @@ export interface GroundInput {
   lines: Point[][];
 }
 
-export interface KeyEntry {
+interface KeyEntry {
   draw: (x: number, y: number) => SVGElement;
   name: string;
 }
@@ -42,7 +42,7 @@ export interface Ground {
 }
 
 /** Which parts of the sheet are taken (by places, paths and drawings), half a unit to a cell. */
-export class Mask {
+class Mask {
   private cols: number;
   private m: Uint8Array;
   constructor(

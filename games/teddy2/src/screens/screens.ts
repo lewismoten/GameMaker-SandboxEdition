@@ -44,7 +44,7 @@ const c = (n: string, k: number) => SP.c(n, k);
 const W = 320;
 const H = 200;
 
-export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
+function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
@@ -112,7 +112,7 @@ function leoBig(p: Pixels, x: number, y: number, s: number, wearing?: Costume, w
 }
 
 /** The text panel Game-Maker writes into (x 40..288, y 40..167), with a heading above. */
-export function page(heading: string, seed = 3): Pixels {
+function page(heading: string, seed = 3): Pixels {
   const p = landscape(seed, false);
   // polka-dot border
   const R = rng(seed);
@@ -136,7 +136,7 @@ export function page(heading: string, seed = 3): Pixels {
  * The load and save pages: Game-Maker writes the names in yellow, so each sits on a dark
  * strip, and its blue message at y 185 on the panel, which reaches down past it.
  */
-export function slotsPage(heading: string, seed: number): Pixels {
+function slotsPage(heading: string, seed: number): Pixels {
   const p = page(heading, seed);
   p.rect(28, 186, 264, 12, c('ink', 0));
   p.rect(30, 180, 260, 16, c('cream', 3));
@@ -148,7 +148,7 @@ export function slotsPage(heading: string, seed: number): Pixels {
  * blue from x 20, and "Hit any key" in red at the bottom (x 116..203, y 192..199), so
  * each sits on a cream plate rather than the bunting or the grass.
  */
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = landscape(11, false);
   const R = rng(11);
   for (let i = 0; i < 40; i++) blob(p, R() * W, R() * H, 3, 3, SP.r(['red', 'yellow', 'blue', 'green', 'purple'][i % 5]), 1, 3);
@@ -165,7 +165,7 @@ export function scoresScreen(): Pixels {
 }
 
 /** The menu: logo, the cast, and the panel Game-Maker writes the choices on. */
-export function menuScreen(): Pixels {
+function menuScreen(): Pixels {
   const p = landscape(5);
   logo(p, 4);
   p.rect(58, 96, 204, 78, c('ink', 0));
@@ -178,7 +178,7 @@ export function menuScreen(): Pixels {
 }
 
 /** The title poster. */
-export function titleScreen(): Pixels {
+function titleScreen(): Pixels {
   const p = landscape(7);
   logo(p, 6);
   leoBig(p, 132, 92, 2, undefined, true);
@@ -194,7 +194,7 @@ export function titleScreen(): Pixels {
 }
 
 /** A level card: a framed view of the level, where it falls (LEVEL 2 OF n), and what is new there. */
-export function card(l: Level, n: number, of: number, lines: string[]): Pixels {
+function card(l: Level, n: number, of: number, lines: string[]): Pixels {
   const pal = buildPalette(l.time);
   const cc = (name: string, k: number) => pal.c(name, k);
   const p = new Pixels(W, H, cc('ink', 0));
@@ -286,7 +286,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
  * Teddy beside her, Doc Leo applauding; a real snapshot of the two of them taped up beside
  * the ribbon board. Returns the picture and its palette.
  */
-export function wonScreen(): [Pixels, Uint8Array] {
+function wonScreen(): [Pixels, Uint8Array] {
   const p = new Pixels(W, H, c('ink', 0));
   // the barn's red boards, a spotlight, the ring
   for (let x = 0; x < W; x++) for (let y = 0; y < 150; y++) p.set(x, y, Math.floor(x / 16) % 2 ? c('red', 0) : c('tent', 0));
@@ -312,7 +312,7 @@ export function wonScreen(): [Pixels, Uint8Array] {
 }
 
 /** Game over: Teddy asleep in his doghouse under the stars. */
-export function lostScreen(): Pixels {
+function lostScreen(): Pixels {
   const p = new Pixels(W, H);
   gradient(p, 0, 0, W, 140, [c('ink', 0), c('blue', 0), c('blue', 1)], 0, 2);
   const R = rng(9);
@@ -337,7 +337,7 @@ export function lostScreen(): Pixels {
  * trail (it is electric: no exhaust, just a whirr), Doc Leo at the wheel behind the door window
  * and Teddy beside him in the front passenger seat, his head out of the window, ears flapping.
  */
-export function driveFli(): Uint8Array {
+function driveFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const bg = landscape(11);
   bg.rect(0, 168, W, 32, c('asphalt', 1));

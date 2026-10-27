@@ -8,10 +8,13 @@ import { addCommon } from '../characters/sharedMonsters';
 import { ARENA_START, STRIP_START, type Grid } from './mapkit';
 import { Bestiary } from '../characters/mons';
 import type { Pal, Theme } from '../art/pal';
+import type { DiagTrack } from './diagTrack';
+import type { Ride } from '../bus/rides';
 import { addStageTiles, pad, type StageArt, type TileOpts } from '../blocks/tiles';
 import { EGG_BLOCK, eggPic } from '../blocks/egg';
+import { turnBbl, turnMbl, turnMon, type TurnSpec } from './turned';
 
-export interface Kit {
+interface Kit {
   bs: BlockSet;
   beasts: Bestiary;
 }
@@ -21,19 +24,39 @@ export interface Leg {
   file: string;
   /** File name base of its .pal/.bbl/.mon/.mbl (shared by the scrolling legs of a stage). */
   kitFile: string;
+  /** File name base of its .map, when it shares another leg's (stages/turned.ts). */
+  mapFile?: string;
+  /** File name base of its own palette, when it shares another leg's. */
+  palFile?: string;
   title: string;
-  kind: 'scroll' | 'boss';
+  /**
+   * A strip scrolling up (or, turned, down), a fixed boss arena, a slanted, wrapping track, a
+   * band scrolling right (or, turned, left), or a data bus ride.
+   */
+  kind: 'scroll' | 'down' | 'boss' | 'diag' | 'side' | 'left' | 'bus';
   grid: Grid;
   kit: Kit;
   /** Card lines shown before the leg. */
   card: string[];
+  /** Its own palette (<file>.pal), when not the stage's. */
+  pal?: Pal;
+  /** Where the ship starts, when not on a strip's launch pad or in an arena. */
+  start?: { x: number; y: number };
+  /** The top-left map cell of the card's 16x5 look at the leg, when not the strip's. */
+  cardView?: { x: number; y: number };
+  /** A diagonal leg's track, and where Right hops a lane early: [lap, first column, columns]. */
+  diag?: { track: DiagTrack; shortcuts: [number, number, number][] };
+  /** A data bus ride's timetable and sign (src/bus). */
+  bus?: Ride;
+  /** A turned leg: how its blocks, virus pictures and paths turn (stages/turned.ts). */
+  turn?: TurnSpec;
 }
 
 /**
  * A room off the beaten path: a link cell in one leg (not one of its gate's links, so the
  * bot never takes it) leads in; its way out shows a page, then plays the next leg again.
  */
-export interface SideRoom {
+interface SideRoom {
   /** The leg with the way in, and the map cell of the way in. */
   from: string;
   cell: { x: number; y: number };
@@ -77,7 +100,7 @@ export function kit(art: StageArt, own: (bs: BlockSet) => void, virus: (b: Besti
   return { bs, beasts };
 }
 
-export interface BuiltLeg {
+interface BuiltLeg {
   map: GameMap;
   bbl: Block[];
   mbl: Block[];
@@ -86,12 +109,20 @@ export interface BuiltLeg {
 
 export function buildLeg(l: Leg): BuiltLeg {
   const names = l.kit.beasts;
+  const bbl = l.kit.bs.build((n) => names.id(n));
+  const mb = l.kit.beasts.mb;
+  const mbl = mb.build(undefined, true);
+  const mon = l.kit.beasts.build();
+  const t = l.turn;
   return {
     map: l.grid.done(),
-    bbl: l.kit.bs.build((n) => names.id(n)),
-    mbl: l.kit.beasts.mb.build(undefined, true),
-    mon: l.kit.beasts.build(),
+    bbl: t ? turnBbl(bbl, l.kit.bs.names, t) : bbl,
+    mbl: t ? turnMbl(mbl, mb.names, t, (n) => mb.isUpright(n)) : mbl,
+    mon: t ? turnMon(mon, t) : mon,
   };
 }
 
-export const startOf = (l: Leg) => (l.kind === 'boss' ? ARENA_START : STRIP_START);
+/** A run's letter in its stage (a, b, c...): the data bus ride before the first run has none. */
+export const legLetter = (s: Stage, l: Leg): string => 'abcdef'[s.legs.filter((x) => x.kind !== 'bus').indexOf(l)] ?? '';
+
+export const startOf = (l: Leg) => l.start ?? (l.kind === 'boss' ? ARENA_START : STRIP_START);

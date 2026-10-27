@@ -32,9 +32,9 @@ import { BLUES, BRIDGE, BUZZ, CHASE, EPIC, fold, HOME, OFFICE, OUTSIDE, PC, type
 import { BRASS, CLARINET, GUITAR, MUTE, PIANO, PIPE, RHODES, STRINGS, TENOR, VIBES } from './patches';
 
 /** The level songs a monologue may name, and the songs of the title, menu, story, endings and intermissions. */
-export const LEVEL_SONGS = ['office', 'shop', 'home', 'outside', 'epic', 'chase', 'blues', 'triumph'] as const;
-export const SCREEN_SONGS = ['title', 'menu', 'story', 'won', 'lost', 'hive', 'inter1', 'inter2', 'inter3', 'finale'] as const;
-export type SongName = (typeof LEVEL_SONGS)[number] | (typeof SCREEN_SONGS)[number];
+const LEVEL_SONGS = ['office', 'shop', 'home', 'outside', 'epic', 'chase', 'blues', 'triumph'] as const;
+const SCREEN_SONGS = ['title', 'menu', 'story', 'won', 'lost', 'hive', 'inter1', 'inter2', 'inter3', 'finale'] as const;
+type SongName = (typeof LEVEL_SONGS)[number] | (typeof SCREEN_SONGS)[number];
 
 // ---- the gags -----------------------------------------------------------------------------
 

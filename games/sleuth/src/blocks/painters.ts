@@ -16,7 +16,7 @@ export const clone = (p: Pixels) => {
 // ---------------------------------------------------------------- floors
 
 /** Planks running left to right, 5 pixels wide, ends staggered. */
-export function planks(lo: number, hi: number, seed: number, rampName = 'wood'): Pixels {
+function planks(lo: number, hi: number, seed: number, rampName = 'wood'): Pixels {
   const p = T();
   const R = rng(seed);
   const w = r(rampName);
@@ -74,10 +74,10 @@ export function rug(base = 'plum'): Pixels {
 }
 
 export function flagstones(seed = 5): Pixels {
-  const p = speckle(T(), 0, 0, 20, 20, r('grey'), 2, 1, seed, 0.2);
-  for (let x = 0; x < 20; x++) p.set(x, 9, c('grey', 0)).set(x, 19, c('grey', 0));
-  for (let y = 0; y < 9; y++) p.set(seed % 2 ? 6 : 13, y, c('grey', 0));
-  for (let y = 10; y < 19; y++) p.set(seed % 2 ? 15 : 4, y, c('grey', 0));
+  const p = speckle(T(), 0, 0, 20, 20, r('gray'), 2, 1, seed, 0.2);
+  for (let x = 0; x < 20; x++) p.set(x, 9, c('gray', 0)).set(x, 19, c('gray', 0));
+  for (let y = 0; y < 9; y++) p.set(seed % 2 ? 6 : 13, y, c('gray', 0));
+  for (let y = 10; y < 19; y++) p.set(seed % 2 ? 15 : 4, y, c('gray', 0));
   return p;
 }
 
@@ -112,12 +112,12 @@ export function sconce(): Pixels {
 
 /** A stone wall face (under the stage). */
 export function stoneFace(): Pixels {
-  const p = T(c('grey', 3));
+  const p = T(c('gray', 3));
   for (let y = 0; y < 20; y++)
     for (let x = 0; x < 20; x++) {
       const row = Math.floor(y / 5);
       const edge = y % 5 === 4 || (x + (row % 2) * 5) % 10 === 9;
-      p.set(x, y, edge ? c('grey', 1) : shadeAt(r('grey'), 2, 4, ((x * 13 + y * 7) % 10) / 10, x, y));
+      p.set(x, y, edge ? c('gray', 1) : shadeAt(r('gray'), 2, 4, ((x * 13 + y * 7) % 10) / 10, x, y));
     }
   return p;
 }
@@ -205,7 +205,7 @@ export function chalkboard(lines: string[]): Pixels {
 
 // ---------------------------------------------------------------- furniture
 
-/** A theatre seat from above: the back at the top, the cushion, arms. */
+/** A theater seat from above: the back at the top, the cushion, arms. */
 export function seat(): Pixels {
   const p = carpet(1);
   p.rect(1, 2, 18, 6, c('velvet', 1)).rect(2, 3, 16, 4, c('velvet', 3));
@@ -233,11 +233,6 @@ export function footlight(bright: number): Pixels {
   return p;
 }
 
-export function table(top: Pixels | undefined, w = 'wood'): Pixels {
-  const p = top ? clone(top) : boards(9);
-  p.rect(1, 3, 18, 14, c(w, 2)).rect(1, 3, 18, 1, c(w, 4)).rect(1, 16, 18, 1, c(w, 0));
-  return p;
-}
 export const on = (base: Pixels, draw: (p: Pixels) => void) => {
   const p = clone(base);
   draw(p);
@@ -247,5 +242,5 @@ export const on = (base: Pixels, draw: (p: Pixels) => void) => {
 /** Solid on every side. */
 export const S = { solid: SOLID };
 
-/** Adds a named block to the theatre's set (see blockset.ts). */
+/** Adds a named block to the theater's set (see blockset.ts). */
 export type Add = (name: string, p: Pixels, d?: BlockDef) => number;

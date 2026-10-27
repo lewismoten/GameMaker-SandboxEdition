@@ -38,7 +38,7 @@ function icon(p: Pixels, x: number, y: number, kind: string): void {
       p.disc(x + 6, y + 6, 1, k('black', 0));
       break;
     case 'dagger':
-      p.line(x + 1, y + 11, x + 9, y + 3, k('grey', 6)).line(x + 2, y + 11, x + 10, y + 3, k('grey', 4));
+      p.line(x + 1, y + 11, x + 9, y + 3, k('gray', 6)).line(x + 2, y + 11, x + 10, y + 3, k('gray', 4));
       p.rect(x + 1, y + 8, 4, 2, k('gold', 3));
       p.line(x + 6, y + 2, x + 11, y + 7, k('velvet', 5));
       p.line(x + 11, y + 7, x + 9, y + 7, k('velvet', 5)).line(x + 11, y + 7, x + 11, y + 5, k('velvet', 5));
@@ -49,7 +49,7 @@ function icon(p: Pixels, x: number, y: number, kind: string): void {
       break;
     case 'bulb':
       p.disc(x + 6, y + 5, 5, k('black', 2));
-      p.rect(x + 4, y + 9, 5, 3, k('grey', 3));
+      p.rect(x + 4, y + 9, 5, 3, k('gray', 3));
       p.line(x + 1, y + 1, x + 11, y + 11, k('velvet', 5));
       break;
     case 'heart':
@@ -140,8 +140,8 @@ function roomProp(who: string, rug: Pixels): Pixels {
   } else {
     // the critic's typewriter, a page in it
     p.rect(3, 11, 14, 7, c('black', 1)).rect(4, 12, 12, 3, c('black', 2));
-    p.rect(6, 4, 8, 8, c('paper', 5)).rect(7, 6, 6, 1, c('grey', 3)).rect(7, 8, 5, 1, c('grey', 3));
-    for (let x = 5; x < 16; x += 2) p.set(x, 16, c('grey', 5));
+    p.rect(6, 4, 8, 8, c('paper', 5)).rect(7, 6, 6, 1, c('gray', 3)).rect(7, 8, 5, 1, c('gray', 3));
+    for (let x = 5; x < 16; x += 2) p.set(x, 16, c('gray', 5));
   }
   return p;
 }
@@ -225,9 +225,9 @@ export function buildParlorBlocks(): BlockSet {
     'fire',
     ((): Pixels => {
       const p = wallpaper();
-      p.rect(1, 3, 18, 15, c('grey', 3)).rect(4, 7, 12, 11, c('black', 0));
+      p.rect(1, 3, 18, 15, c('gray', 3)).rect(4, 7, 12, 11, c('black', 0));
       pool(p, 10, 16, 7, 6, r('glow'), 0, 3);
-      p.rect(1, 3, 18, 2, c('grey', 5));
+      p.rect(1, 3, 18, 2, c('gray', 5));
       return p;
     })(),
     { ...S, next: 'fire2', ntime: 4 },
@@ -236,9 +236,9 @@ export function buildParlorBlocks(): BlockSet {
     'fire2',
     ((): Pixels => {
       const p = wallpaper();
-      p.rect(1, 3, 18, 15, c('grey', 3)).rect(4, 7, 12, 11, c('black', 0));
+      p.rect(1, 3, 18, 15, c('gray', 3)).rect(4, 7, 12, 11, c('black', 0));
       pool(p, 10, 15, 6, 7, r('glow'), 0, 4);
-      p.rect(1, 3, 18, 2, c('grey', 5));
+      p.rect(1, 3, 18, 2, c('gray', 5));
       return p;
     })(),
     { ...S, next: 'fire', ntime: 5 },

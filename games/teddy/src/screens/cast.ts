@@ -23,7 +23,7 @@ const W = 320;
 const H = 200;
 
 /** The screen palette plus the ramps only the cast needs (the cycling colors last). */
-export const CP: Pal = (() => {
+const CP: Pal = (() => {
   const pal = buildScreenPalette();
   pal.b.ramp('tomato', 6, [90, 14, 10], [255, 178, 156], [200, 54, 38]);
   pal.b.ramp('amber', 3, [150, 90, 10], [255, 200, 60]);

@@ -22,7 +22,7 @@ const SKY = 16;
 const SKY_N = 32;
 const GRID = SKY + SKY_N;
 /** A glossy blue block: face, lit bevel, shaded bevel, the gap between blocks. */
-export const BLUE = { face: 90, lit: 91, shade: 92, gap: 93, glow: 94 };
+const BLUE = { face: 90, lit: 91, shade: 92, gap: 93, glow: 94 };
 /** A gold block: face, lit edge, shaded edge, the extrusion behind it, and the shine. */
 export const GOLD = { face: 100, lit: 101, shade: 102, deep: 103, shine: 104 };
 /** The DOS prompt's gray. */
@@ -93,8 +93,8 @@ export function blockWall(): Pixels {
 
 export const LOGO = 'GAME-MAKER';
 /** A font dot's size on screen. */
-export const DOT_W = 4;
-export const DOT_H = 5;
+const DOT_W = 4;
+const DOT_H = 5;
 /** Where the logo's top-left dot sits. */
 const LOGO_Y = 74;
 

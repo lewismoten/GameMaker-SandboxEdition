@@ -53,30 +53,6 @@ export function outline(p: Pixels, c: number, transparent = CLEAR): Pixels {
   return p;
 }
 
-/** ASCII art with a key; '.' and ' ' are transparent. */
-export function sprite(rows: string[], key: Record<string, number>, w = 20, h = 20): Pixels {
-  const p = new Pixels(w, h, CLEAR);
-  const ox = Math.floor((w - Math.max(...rows.map((r) => r.length))) / 2);
-  const oy = Math.floor((h - rows.length) / 2);
-  return p.draw(ox, oy, rows, key);
-}
-
-/** Mirror left to right. */
-export function mirror(p: Pixels): Pixels {
-  return p.flipX();
-}
-
-export function flipY(p: Pixels): Pixels {
-  const q = new Pixels(p.w, p.h);
-  return q.map((x, y) => p.get(x, p.h - 1 - y));
-}
-
-/** Rotate 90 degrees clockwise (square pictures). */
-export function rot90(p: Pixels): Pixels {
-  const q = new Pixels(p.h, p.w);
-  return q.map((x, y) => p.get(y, p.h - 1 - x));
-}
-
 /** Copies src scaled up by s (nearest), skipping CLEAR. */
 export function scaleBlit(dst: Pixels, src: Pixels, x: number, y: number, s: number, flip = false): Pixels {
   for (let yy = 0; yy < src.h * s; yy++)
@@ -138,7 +114,7 @@ export function gradient(p: Pixels, x: number, y: number, w: number, h: number, 
 
 // ------------------------------------------------------------------ block sets
 
-export type BlockProps = Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl' | 'birthMon'>> & {
+type BlockProps = Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl' | 'birthMon'>> & {
   /** Name of the block this animates into after ntime ticks. */
   next?: string;
   /** Name of the block this becomes when touched. */
@@ -158,7 +134,23 @@ export class BlockSet {
   constructor(
     readonly limit: number,
     readonly kind: string,
+    /** Turns every picture as the set is built (a side leg's monsters face left). */
+    readonly turn?: (p: Pixels) => Pixels,
   ) {}
+
+  /** Blocks the set's `turn` leaves alone (a note-head stays upright in a side leg). */
+  private upright = new Set<string>();
+
+  /** Is it a block that `turn` leaves as drawn? */
+  isUpright(name: string): boolean {
+    return this.upright.has(name);
+  }
+
+  /** Adds a block that `turn` leaves as drawn. */
+  addUpright(name: string, pic: Pixels, props: BlockProps = {}): number {
+    this.upright.add(name);
+    return this.add(name, pic, props);
+  }
 
   add(name: string, pic: Pixels, props: BlockProps = {}): number {
     if (this.names.includes(name)) throw new Error(`${this.kind}: block ${name} twice`);
@@ -191,6 +183,12 @@ export class BlockSet {
     return i;
   }
 
+  /** The blocks a block leads to: what it animates into and what it becomes when touched. */
+  leadsTo(name: string): string[] {
+    const { next, touch } = this.props[this.id(name)];
+    return [next, touch].filter((n): n is string => !!n);
+  }
+
   pic(name: string): Pixels {
     const pic = this.pics[this.id(name)];
     if (!pic) throw new Error(`${this.kind}: ${name} is an empty slot`);
@@ -204,7 +202,7 @@ export class BlockSet {
       const pic = this.pics[i];
       if (!pic) return void out.push(emptyBlock(i, transparentPad));
       const b = emptyBlock(i, transparentPad);
-      b.pixels = Uint8Array.from(pic.px);
+      b.pixels = Uint8Array.from((this.turn && !this.upright.has(name) ? this.turn(pic) : pic).px);
       const { next, touch, birth, ...rest } = pr;
       Object.assign(b, rest);
       if (next) b.nextBl = this.id(next);
@@ -293,4 +291,70 @@ export function micro(p: Pixels, x: number, y: number, s: string, c: number): Pi
   });
   ink?.end();
   return p;
+}
+
+/**
+ * A sprite turned 45 degrees clockwise (nose up becomes nose up-right), shrunk by `scale`
+ * so its corners stay in the block. Nearest pixel, so the palette stays exact.
+ */
+export function turn45(src: Pixels, scale = 0.86): Pixels {
+  const out = new Pixels(src.w, src.h, CLEAR);
+  const cx = (src.w - 1) / 2;
+  const cy = (src.h - 1) / 2;
+  const c = Math.SQRT1_2 / scale;
+  for (let y = 0; y < out.h; y++)
+    for (let x = 0; x < out.w; x++) {
+      const dx = x - cx;
+      const dy = y - cy;
+      // back by -45 degrees
+      const sx = Math.round(cx + (dx + dy) * c);
+      const sy = Math.round(cy + (dy - dx) * c);
+      if (sx < 0 || sy < 0 || sx >= src.w || sy >= src.h) continue;
+      out.set(x, y, src.get(sx, sy));
+    }
+  return out;
+}
+
+/** A sprite turned 90 degrees clockwise (nose up becomes nose right), pixel for pixel. */
+export function turn90(src: Pixels): Pixels {
+  const out = new Pixels(src.h, src.w, CLEAR);
+  for (let y = 0; y < out.h; y++) for (let x = 0; x < out.w; x++) out.set(x, y, src.get(y, src.h - 1 - x));
+  return out;
+}
+
+/** A sprite turned half a turn (nose up becomes nose down), pixel for pixel. */
+export function turn180(src: Pixels): Pixels {
+  const out = new Pixels(src.w, src.h, CLEAR);
+  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(src.w - 1 - x, src.h - 1 - y));
+  return out;
+}
+
+/** A picture flipped left to right (nose right becomes nose left). */
+export function flipX(src: Pixels): Pixels {
+  const out = new Pixels(src.w, src.h, CLEAR);
+  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(src.w - 1 - x, y));
+  return out;
+}
+
+/** A picture flipped top to bottom. */
+export function flipY(src: Pixels): Pixels {
+  const out = new Pixels(src.w, src.h);
+  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(x, src.h - 1 - y));
+  return out;
+}
+
+/** A sprite turned `deg` degrees clockwise about its middle, nearest pixel (the palette stays exact). */
+export function rotate(src: Pixels, deg: number): Pixels {
+  const out = new Pixels(src.w, src.h, CLEAR);
+  const a = (-deg * Math.PI) / 180;
+  const cx = (src.w - 1) / 2;
+  const cy = (src.h - 1) / 2;
+  for (let y = 0; y < out.h; y++)
+    for (let x = 0; x < out.w; x++) {
+      const sx = Math.round(cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a));
+      const sy = Math.round(cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a));
+      if (sx < 0 || sy < 0 || sx >= src.w || sy >= src.h) continue;
+      out.set(x, y, src.get(sx, sy));
+    }
+  return out;
 }

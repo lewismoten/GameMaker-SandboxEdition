@@ -3,7 +3,7 @@
 // plays better without it). Press its d-pad and buttons with the pointer and the game on the
 // PC reads them as PLAYGAME read a joystick (input/deskJoystick.ts); a real gamepad presses
 // them too, so you see what you push. Clicking the pad itself (or Enter on it) opens its large
-// controls (gamePadPanel.ts), labelled buttons big enough for a finger or the keyboard.
+// controls (gamePadPanel.ts), labeled buttons big enough for a finger or the keyboard.
 import './gamePad.css';
 import { h } from '../../editor/core/ui';
 import { readGamepad } from '../../input/gamepad';

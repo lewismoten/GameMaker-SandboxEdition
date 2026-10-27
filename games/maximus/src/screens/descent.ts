@@ -51,15 +51,15 @@ const LOOKS: Partial<Record<Biome, Look>> = {
     burn: 'cyan',
   },
   jungle: { label: 'JUNGLE WORLD', sky: ['lime', 4, 6], cloud: ['green', 6], ground: ['green', 1, 3], accent: ['lime', 4], shape: 'canopy', burn: 'yellow' },
-  lava: { label: 'LAVA WORLD', sky: ['red', 1, 3], cloud: ['grey', 2], ground: ['brown', 0, 1], accent: ['orange', 6], shape: 'lava', burn: 'yellow' },
+  lava: { label: 'LAVA WORLD', sky: ['red', 1, 3], cloud: ['gray', 2], ground: ['brown', 0, 1], accent: ['orange', 6], shape: 'lava', burn: 'yellow' },
   ash: {
     label: 'ASH WORLD',
-    sky: ['grey', 1, 3],
-    cloud: ['grey', 4],
-    ground: ['grey', 1, 2],
+    sky: ['gray', 1, 3],
+    cloud: ['gray', 4],
+    ground: ['gray', 1, 2],
     accent: ['red', 5],
     shape: 'volcano',
-    motes: ['grey', 5],
+    motes: ['gray', 5],
     burn: 'red',
   },
   toxic: {
@@ -92,8 +92,8 @@ const LOOKS: Partial<Record<Biome, Look>> = {
     burn: 'cyan',
   },
   ocean: { label: 'OCEAN WORLD', sky: ['cyan', 4, 6], cloud: ['ice', 7], ground: ['blue', 3, 5], accent: ['cyan', 6], shape: 'sea', burn: 'orange' },
-  abyss: { label: 'DEEP SEA WORLD', sky: ['violet', 1, 2], cloud: ['grey', 3], ground: ['blue', 0, 2], accent: ['cyan', 5], shape: 'sea', burn: 'violet' },
-  station: { label: 'STATION', sky: ['space', 0, 1], cloud: ['grey', 5], ground: ['grey', 2, 4], accent: ['yellow', 6], shape: 'dock', burn: 'cyan' },
+  abyss: { label: 'DEEP SEA WORLD', sky: ['violet', 1, 2], cloud: ['gray', 3], ground: ['blue', 0, 2], accent: ['cyan', 5], shape: 'sea', burn: 'violet' },
+  station: { label: 'STATION', sky: ['space', 0, 1], cloud: ['gray', 5], ground: ['gray', 2, 4], accent: ['yellow', 6], shape: 'dock', burn: 'cyan' },
 };
 
 /** The biomes that get a film of their own (every world's biome). */
@@ -102,7 +102,7 @@ export const descentFile = (b: Biome) => `d${b}.fli`;
 
 /** The cockpit around the canopy, with the dashboard and its fixed lettering. */
 function cockpit(c: Canvas, look: Look): void {
-  const hull = C('grey');
+  const hull = C('gray');
   // the frame: everything outside the canopy
   for (let y = 0; y < 200; y++)
     for (let x = 0; x < 320; x++) {
@@ -127,7 +127,7 @@ function cockpit(c: Canvas, look: Look): void {
   c.text(196, 146, look.shape === 'dock' ? 'RANGE' : 'ALTITUDE', C('cyan')[5]);
   // gauge lamps (static)
   for (let i = 0; i < 6; i++) c.rect(30 + i * 14, 174, 10, 6, [C('green')[5], C('green')[5], C('yellow')[6], C('green')[5], C('red')[5], C('green')[4]][i]);
-  c.text(126, 174, 'MAXIMUS', C('grey')[4]);
+  c.text(126, 174, 'MAXIMUS', C('gray')[4]);
 }
 
 /** A ridge line: heights across the canopy for one layer of ground. */
@@ -243,7 +243,7 @@ function lowerSky(w: Canvas, look: Look, seed: number, t: number, f: number): vo
   if (look.shape === 'volcano') {
     const vx = Math.round(WW * 0.62);
     const vy = horizon - Math.round(30 * (0.6 + t * 0.8));
-    for (let k = 0; k < 7; k++) w.sphere(vx + Math.sin(k + f) * 4 + k * 2, vy - k * 5, 3 + k * 0.6, [C('grey')[1], C('grey')[2], C('grey')[3]]);
+    for (let k = 0; k < 7; k++) w.sphere(vx + Math.sin(k + f) * 4 + k * 2, vy - k * 5, 3 + k * 0.6, [C('gray')[1], C('gray')[2], C('gray')[3]]);
     w.rect(vx - 2, vy, 5, 2, C('orange')[6]);
   }
 }
@@ -276,7 +276,7 @@ function motes(w: Canvas, look: Look, seed: number, f: number): void {
 
 /** The station seen from outside, then its bay. */
 function station(w: Canvas, t: number, f: number): void {
-  const G = C('grey');
+  const G = C('gray');
   const cx = WW / 2;
   const cy = WH / 2;
   const s = 10 + t * t * 260;
@@ -300,7 +300,7 @@ function station(w: Canvas, t: number, f: number): void {
 
 /** Inside the docking bay: guide lights rushing past, the pad ahead. */
 function bay(w: Canvas, t: number, f: number): void {
-  const G = C('grey');
+  const G = C('gray');
   w.rect(0, 0, WW, WH, G[0]);
   const cx = WW / 2;
   const cy = WH / 2;

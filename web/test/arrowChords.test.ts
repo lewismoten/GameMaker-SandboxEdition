@@ -4,8 +4,6 @@ import { describe, expect, it } from 'vitest';
 import { ArrowChords, chordKeys } from '../src/input/chords';
 import { Keyboard } from '../src/input/keyboard';
 import { macHint, withMacHint } from '../src/input/macKeys';
-import { cardRows } from '../src/desk/pc/keyCardRows';
-import type { GameKeyMap } from '../src/editor/keymap/keyMap';
 
 const UP = 72,
   LEFT = 75,
@@ -87,17 +85,5 @@ describe('Mac key names', () => {
     expect(macHint(71, false)).toBeUndefined();
     expect(withMacHint('End / Pad 1', 79, true)).toBe('End / Pad 1 (↓+← or fn →)');
     expect(withMacHint('End / Pad 1', 79, false)).toBe('End / Pad 1');
-  });
-
-  it('key cards write the chord on a Mac', () => {
-    const b = (scan: number, name: string, title: string) =>
-      ({ scan, name, uses: [{ action: { title, kind: /^Move/.test(title) ? 'move' : 'action' } }] }) as unknown as GameKeyMap['keys'][number];
-    const keys = [b(71, 'Home / Pad 7', 'Move up-left'), b(73, 'PgUp / Pad 9', 'Move up-right'), b(57, 'Space', 'Jump')];
-    expect(cardRows(keys, true, true)).toEqual([
-      { keys: ['↑+←', '↑+→'], does: 'Move' },
-      { keys: ['Space'], does: 'Jump' },
-    ]);
-    expect(cardRows(keys, true, false)[0].keys).toEqual(['Home', 'PgUp']);
-    expect(cardRows(keys, false, true)[0].keys).toEqual(['Home / Pad 7', '↑+←']);
   });
 });

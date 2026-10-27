@@ -10,12 +10,15 @@
 import { Machine } from './machine';
 import { Recorder } from './recorder';
 import { playScene, sceneFile, startGameInits, type Session, type SpeedSetting } from './scene';
-import { checkHighScores, drawDefaultScreen, gVertMenu, showHighScores } from './menus';
-import { match, RGB_BLUE, RGB_RED, showGraphic } from './showGraphic';
+import { checkHighScores, drawDefaultScreen, drawMenu, drawNoFile, gVertMenu, menuMarker, showHighScores } from './menus';
+import { showGraphic } from './showGraphic';
+import { playerLook, STOCK_LOOK } from './playerLook';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 import { newCharInfo } from './world';
 import { MAXSCENELINKS, parseGame, type Game } from '../formats/game';
 import { MLEN, MWID } from '../formats/map';
 import { PALETTE_SIZE } from '../formats/palette';
+import { gainAtEnd, newPlayGain } from './playGain';
 
 export interface RunOptions {
   /** Called when the player picks Quit; return true to show the menu again. */
@@ -34,10 +37,30 @@ export interface RunOptions {
   onFrame?: Session['onFrame'];
   /** Emulated PC speed (shared object: change slowPc at any time). */
   speed?: SpeedSetting;
+  /**
+   * Play as PLAYGAME.EXE, Game-Maker's own player: F1 shows this file (GMHELP.TXT from
+   * Game-Maker's directory) before the game's instructions. Left out, the game plays as
+   * XFERPLAY.EXE, the stand-alone player every transferred game runs on, whose F1 shows only
+   * the instructions (PLAYGAME.C HelpFiles: the gmhelp.txt part is #ifndef TRANSFER).
+   */
+  gmHelp?: Uint8Array;
+  /**
+   * The project's DOS player customizations (dosPlayer/): XFERPLAY's words, colors, frames,
+   * positions, times and F-keys as its patched .EXE shows them. Left out, the CD's player.
+   */
+  player?: PlayerPatches;
   /** A touch changed a map cell while the player played (never during a demo's playback). */
   onTouched?: Session['onTouched'];
   /** Play ended with this score (never during a demo's playback; see Session.onPlayEnd). */
   onPlayEnd?: Session['onPlayEnd'];
+  /**
+   * The editor's Play Level test only (never a saved, exported or DOS game): skip the title, its
+   * song and the menu, and start play at once by scene 0's first link (which the test copy points
+   * at the picked level and spot, editor/editors/integrator/startAt.ts) with a new game's
+   * character, as the menu's Play would. When that play ends (won, lost or Esc), the usual end
+   * follows (the won or dead picture, the high scores) and then the menu, as after any play.
+   */
+  skipTitle?: boolean;
 }
 
 export function gameNameOf(gamFile: string): string {
@@ -70,7 +93,10 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     onFrame: opts.onFrame,
     speed: opts.speed ?? {},
     onPlayEnd: opts.onPlayEnd,
+    gmHelp: opts.gmHelp,
+    look: playerLook(opts.player),
   };
+  const look = s.look!;
   const touched = opts.onTouched;
   if (touched) s.onTouched = (scene, x, y, bnum) => void (!s.rec.playing && touched(scene, x, y, bnum));
   m.keyboard.attach();
@@ -79,24 +105,31 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
   m.keyPollEnd = () => s.rec.finishWait();
   opts.onSession?.(s);
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
-  const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors });
+  const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors, look });
 
-  // Title (a hosted game may still be loading: m.need waits for files on their way)
-  m.want(file(0, 0), file(0, 2), file(0, 3));
-  await m.need(file(0, 1));
-  await m.audio.playSong(m.files.get(file(0, 1) ?? ''));
-  if (file(0, 0)) await show(file(0, 0)!);
-
-  if (opts.playback && s.rec.initPlayback(opts.playback)) {
-    m.audio.stopSong();
-    await play(s, 0);
-    return;
-  }
-  if (opts.record) {
-    m.audio.stopSong();
+  // The editor's Play Level test: straight into play, then the menu as after any play
+  if (opts.skipTitle) {
+    m.want(file(0, 2), file(0, 3));
     s.rec.initRecord();
     await play(s, 0);
-    return;
+  } else {
+    // Title (a hosted game may still be loading: m.need waits for files on their way)
+    m.want(file(0, 0), file(0, 2), file(0, 3));
+    await m.need(file(0, 1));
+    await m.audio.playSong(m.files.get(file(0, 1) ?? ''));
+    if (file(0, 0)) await show(file(0, 0)!);
+
+    if (opts.playback && s.rec.initPlayback(opts.playback)) {
+      m.audio.stopSong();
+      await play(s, 0);
+      return;
+    }
+    if (opts.record) {
+      m.audio.stopSong();
+      s.rec.initRecord();
+      await play(s, 0);
+      return;
+    }
   }
 
   const menuSong = async () => {
@@ -117,15 +150,13 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
       s.colors = menuScreen.palette.slice();
     }
     const restoreMenu = () => menuScreen && m.screen.restore(menuScreen.pixels);
-    const blue = match(s.colors, RGB_BLUE);
-    const red = match(s.colors, RGB_RED);
-    m.screen.write(12 * 8, 13 * 8, blue, game.scenes[0].desc);
-    ['Play', 'Read Instructions', 'Read Storyline', 'See Credits', 'See Highest Scores', 'Quit'].forEach((t, i) => m.screen.write(80, (15 + i) * 8, blue, t));
+    const blue = drawMenu(m.screen, look, s.colors, game.scenes[0].desc);
+    const marker = menuMarker(look);
 
     // 30 s idle timeout: GVertMenu then returns NumChoices+1 (7), the demo case. Keys
     // typed while the menu faded in stay for it, as in DOS (only the first went to the
     // menu picture's PauseTimeKey(0)).
-    choice = await gVertMenu(m, 70, 15 * 8 + 1, 8, 6, blue, 30, choice, false);
+    choice = await gVertMenu(m, marker.x, marker.y, marker.dy, 6, blue, marker.idle, choice, false, marker.width);
     switch (choice) {
       case 1:
         menuScreen = undefined;
@@ -138,8 +169,8 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
         restoreMenu();
         if (file(0, 6)) await show(file(0, 6)!);
         else {
-          m.screen.write(40, 80, red, 'No game-specific instructions.');
-          await m.pauseTimeKey(10);
+          drawNoFile(m.screen, look, s.colors, 'noInstructions');
+          await m.pauseTimeKey(look.seconds('timing.menuNoFile'));
         }
         break;
       case 3:
@@ -148,22 +179,22 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
         await m.audio.playSong(m.files.get(file(0, 5) ?? ''));
         if (file(0, 4)) await show(file(0, 4)!);
         else {
-          m.screen.write(40, 80, red, 'No game-specific storyline.');
-          await m.pauseTimeKey(10);
+          drawNoFile(m.screen, look, s.colors, 'noStoryline');
+          await m.pauseTimeKey(look.seconds('timing.menuNoFile'));
         }
         break;
       case 4:
         restoreMenu();
         if (file(0, 7)) await show(file(0, 7)!);
         else {
-          m.screen.write(40, 80, red, 'No game-specific credits given.');
-          await m.pauseTimeKey(10);
+          drawNoFile(m.screen, look, s.colors, 'noCredits');
+          await m.pauseTimeKey(look.seconds('timing.menuNoFile'));
         }
         break;
       case 5:
         if (file(0, 8)) await show(file(0, 8)!, s.colors, 0);
         else restoreMenu();
-        await showHighScores(m, s.gameName, s.colors, -1);
+        await showHighScores(m, s.gameName, s.colors, -1, look);
         break;
       case 7: // idle on the menu: run the demo recording
         await m.need(file(0, 11));
@@ -191,6 +222,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
 /** play(curlink): from scene 0's link to the end. */
 export async function play(s: Session, startLink: number): Promise<void> {
   const { m, game } = s;
+  const look = s.look ?? STOCK_LOOK;
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
   let curlink = startLink;
   let oldscene = 0;
@@ -229,7 +261,7 @@ export async function play(s: Session, startLink: number): Promise<void> {
 
   while (curscene < game.scenes.length && curscene !== 1) {
     s.onScene?.(curscene);
-    if (file(curscene, 9)) await showGraphic(m, file(curscene, 9)!, { gamePalette: s.colors });
+    if (file(curscene, 9)) await showGraphic(m, file(curscene, 9)!, { gamePalette: s.colors, look });
     const oldlink = curlink;
     const r = await playScene(s, curscene, oldscene, curlink);
     if (!r.ok) break;
@@ -243,7 +275,7 @@ export async function play(s: Session, startLink: number): Promise<void> {
     m.flushKeys();
     if (curlink > MAXSCENELINKS) break;
     if (curlink !== MAXSCENELINKS) {
-      if (file(curscene, 10)) await showGraphic(m, file(curscene, 10)!, { gamePalette: s.colors });
+      if (file(curscene, 10)) await showGraphic(m, file(curscene, 10)!, { gamePalette: s.colors, look });
       oldscene = curscene;
       curscene = game.scenes[oldscene].links[curlink].toScene;
     } else curlink = oldlink;
@@ -254,12 +286,12 @@ export async function play(s: Session, startLink: number): Promise<void> {
     s.onScene?.(1);
     await m.need(file(1, 1));
     await m.audio.playSong(m.files.get(file(1, 1) ?? ''));
-    if (file(1, 0)) await showGraphic(m, file(1, 0)!, { gamePalette: s.colors });
+    if (file(1, 0)) await showGraphic(m, file(1, 0)!, { gamePalette: s.colors, look });
   }
   if (curlink === MAXSCENELINKS + 2) {
     await m.need(file(1, 3));
     await m.audio.playSong(m.files.get(file(1, 3) ?? ''));
-    if (file(1, 2)) await showGraphic(m, file(1, 2)!, { gamePalette: s.colors });
+    if (file(1, 2)) await showGraphic(m, file(1, 2)!, { gamePalette: s.colors, look });
   }
   m.screen.clear();
   m.screen.setPalette(s.colors);
@@ -268,13 +300,13 @@ export async function play(s: Session, startLink: number): Promise<void> {
   // A playthrough that makes the high score table is kept as data<place>.rec; demo
   // playback never scores (score -1 leaves off the "Your Latest Score" line).
   if (!s.rec.playing) {
-    s.onPlayEnd?.(score, curscene === 1 ? 'won' : curlink === MAXSCENELINKS + 2 ? 'lost' : 'quit');
-    const place = await checkHighScores(m, s.gameName, s.colors, score);
+    s.onPlayEnd?.(score, curscene === 1 ? 'won' : curlink === MAXSCENELINKS + 2 ? 'lost' : 'quit', gainAtEnd(s.gain ?? newPlayGain(), score));
+    const place = await checkHighScores(m, s.gameName, s.colors, score, look);
     if (place) m.files.set(`data${place}.rec`, s.rec.save());
   } else score = -1;
-  if (file(0, 8)) await showGraphic(m, file(0, 8)!, { cols: s.colors, pause: 0, gamePalette: s.colors });
+  if (file(0, 8)) await showGraphic(m, file(0, 8)!, { cols: s.colors, pause: 0, gamePalette: s.colors, look });
   else m.screen.clear();
-  await showHighScores(m, s.gameName, s.colors, score);
+  await showHighScores(m, s.gameName, s.colors, score, look);
   m.audio.stopSong();
   s.rec.stop();
 }

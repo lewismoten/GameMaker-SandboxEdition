@@ -24,7 +24,7 @@ export function room(seed = 1): Pixels {
   bevel(p, 228, 12, 80, 70, SP.r('wood'), 2, 3);
   gradient(p, 232, 16, 72, 62, SP.r('blue'), 0, 1);
   const r = rng(seed);
-  for (let i = 0; i < 25; i++) p.set(234 + Math.floor(r() * 68), 18 + Math.floor(r() * 58), c('grey', 6 + (i % 2)));
+  for (let i = 0; i < 25; i++) p.set(234 + Math.floor(r() * 68), 18 + Math.floor(r() * 58), c('gray', 6 + (i % 2)));
   blob(p, 284, 32, 7, 7, SP.r('label'), 2, 4);
   p.rect(267, 16, 2, 62, c('wood', 3)).rect(232, 46, 72, 2, c('wood', 3));
   // a poster
@@ -82,7 +82,7 @@ export function glitchFace(g: Pixels, k = 0, scale = 1): void {
     blob(g, cx + side * 11 * s, cy - 8 * s, 3 * s, 3 * s, SP.r('glow'), 2, 4);
   }
   g.rect(cx - 12 * s, cy + 8 * s, 24 * s, 6 * s, c('ink', 0));
-  for (let x = cx - 11 * s; x < cx + 12 * s; x += 4 * s) g.rect(x, cy + 8 * s, 2 * s, 3 * s, c('grey', 7));
+  for (let x = cx - 11 * s; x < cx + 12 * s; x += 4 * s) g.rect(x, cy + 8 * s, 2 * s, 3 * s, c('gray', 7));
   // glitch tears
   const r = rng(3 + k);
   for (let i = 0; i < 6; i++) {

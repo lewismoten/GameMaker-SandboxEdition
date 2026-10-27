@@ -2,7 +2,7 @@
 import { ADVTYPE, emptyScene, newGame, type Game, type Link, type Point } from '../../../web/src/formats/game';
 import type { LevelMap } from './levels/levelmap';
 
-export interface Level {
+interface Level {
   name: string;
   desc: string;
   map: LevelMap;
@@ -13,7 +13,7 @@ export interface Level {
   pos: Point;
 }
 
-export interface Screens {
+interface Screens {
   title: string;
   menu: string;
   story: string;

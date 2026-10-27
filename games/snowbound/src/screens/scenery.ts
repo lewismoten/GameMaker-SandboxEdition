@@ -95,7 +95,7 @@ export function town(p: Pixels, pal: Pal, ground: number, seed: number, night: b
         p.set(xx, base - h - roofH + y, y < roofH - 2 ? c('snow', xx < x + w / 2 ? 6 : 4) : c('ink', 0));
     }
     p.rect(x + w - 8, base - h - roofH + 1, 4, 6, c('brick', 1));
-    for (let k = 0; k < 4; k++) blob(p, x + w - 6 + k * 2, base - h - roofH - 3 - k * 4, 2 + k * 0.5, 2, pal.r('grey'), 3, 5);
+    for (let k = 0; k < 4; k++) blob(p, x + w - 6 + k * 2, base - h - roofH - 3 - k * 4, 2 + k * 0.5, 2, pal.r('gray'), 3, 5);
     // Christmas lights under the eave
     const bulbs = pal.r('bulbs');
     for (let xx = x; xx < x + w; xx += 3) p.set(xx, base - h, bulbs[((xx / 3) % 4) | 0]);

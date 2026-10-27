@@ -61,7 +61,7 @@ export function meetingBlocks(book: BlockBook, pal: Pal): void {
     else p.set(8, 7, c('ink', 0)).set(12, 7, c('ink', 0)).rect(9, 11, 2, 1, c('ink', 0));
     return p;
   };
-  book.add('boss', coworker('grey', 'navy', 13, true), { ...AIR, birthMon: WORK_MON.buzz, birthTime: 110 });
+  book.add('boss', coworker('gray', 'navy', 13, true), { ...AIR, birthMon: WORK_MON.buzz, birthTime: 110 });
   book.add('coworker', coworker('hair', 'teal', 14, false), AIR);
   book.add('coworker2', coworker('yellow', 'red', 15, true), { ...AIR, birthMon: WORK_MON.buzz, birthTime: 130 });
   // the pull-down projector screen with this quarter's chart (2 x 2), and the projector hanging
@@ -87,9 +87,9 @@ export function meetingBlocks(book: BlockBook, pal: Pal): void {
   proj
     .rect(0, 18, 20, 2, c('beige', 0))
     .rect(9, 0, 2, 9, c('metal', 1))
-    .rect(4, 9, 12, 6, c('grey', 1))
-    .rect(4, 9, 12, 1, c('grey', 2))
-    .rect(4, 14, 12, 1, c('grey', 0));
+    .rect(4, 9, 12, 6, c('gray', 1))
+    .rect(4, 9, 12, 1, c('gray', 2))
+    .rect(4, 14, 12, 1, c('gray', 0));
   proj.disc(15, 12, 2, c('ink', 0)).set(15, 12, c('fluor', 0)).set(7, 11, c('green', 3));
   book.add('projector', proj, { solid: SOLID });
   const clock = (end: boolean) => {
@@ -188,11 +188,11 @@ export function meetingSprites(book: SpriteBook, pal: Pal): void {
   const c = pal.c;
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
-  // a buzzword: a grey speech bubble of meeting-speak
+  // a buzzword: a gray speech bubble of meeting-speak
   const buzz = (word: string, f: number) => {
     const p = P();
-    p.rect(1, 4 + f, 18, 9, c('grey', 2)).rect(2, 5 + f, 16, 7, c('white', 1));
-    p.set(15, 13 + f, c('grey', 2)).set(16, 14 + f, c('grey', 2));
+    p.rect(1, 4 + f, 18, 9, c('gray', 2)).rect(2, 5 + f, 16, 7, c('white', 1));
+    p.set(15, 13 + f, c('gray', 2)).set(16, 14 + f, c('gray', 2));
     micro(p, 10 - Math.floor((word.length * 4 - 1) / 2), 6 + f, word, c('navy', 1));
     return outline(p, ink);
   };
@@ -234,7 +234,7 @@ export function meetingSprites(book: SpriteBook, pal: Pal): void {
   book.add('ink1', puff(1));
 }
 
-export function meetingMonsters(set: Monster[], mb: SpriteBook): void {
+function meetingMonsters(set: Monster[], mb: SpriteBook): void {
   // buzzwords drift up and away to the left off the coworkers, and pop at the end of their path
   set[WORK_MON.buzz] = mon(anim(mb, 'buzz0', 'buzz1', 10), { power: POWER.foe, thru: 1, end: -1, newmon: WORK_MON.inkPuff }, [
     corner(0, 0, 2),

@@ -2,7 +2,7 @@
 // path; and choosing the monster born when it dies (pickmon).
 import { attr } from '../../retro/text/textScreen';
 import { MENUATTR, SHADATTR, askText, errorBox, vertMenu } from '../../retro/text/textUi';
-import { BLACK, BLEN, GREY2, LEFT, NONE, RIGHT } from '../shared/facelift';
+import { BLACK, BLEN, GRAY2, LEFT, NONE, RIGHT } from '../shared/facelift';
 import { LASTMON } from '../../formats/monster';
 import { MOLEN, MOX, MOX1, PATHHELPFILE, SELX, SELY, MOY2, TBOXX, TBOXY, MX3, MY3, pad, idiv } from './layout';
 import { MonsterPathEditor } from './path';
@@ -176,7 +176,7 @@ export abstract class MonsterMovement extends MonsterPathEditor {
     face.doneb(MX3, MY3 + 13);
     v.moucurbox(1, 1, 319, 199);
     this.drawlist(MOX, MOY2, MOLEN, LASTMON, this.curmon2, (n) => this.monnum2(n));
-    if (m.newmon === LASTMON) v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GREY2]);
+    if (m.newmon === LASTMON) v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GRAY2]);
     else drawNew();
     face.drawborder(TBOXX, TBOXY, 249, 9, 5, 2);
     face.boxWithText(TBOXX, TBOXY, 'Pick Monster to Appear at Death');
@@ -199,7 +199,7 @@ export abstract class MonsterMovement extends MonsterPathEditor {
           return;
         }
         if (y > MY3 && y < MY3 + 10) {
-          v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GREY2]);
+          v.boxFill(SELX, SELY, SELX + BLEN - 1, SELY + BLEN - 1, fc[GRAY2]);
           m.newmon = LASTMON;
           this.saved = false;
         }

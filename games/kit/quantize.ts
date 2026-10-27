@@ -5,7 +5,7 @@
 // frame to frame, which is what lets an FLI store only the changes.
 
 /** 8-bit RGB pixels, 3 bytes each. */
-export type Rgb = Uint8Array;
+type Rgb = Uint8Array;
 
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 

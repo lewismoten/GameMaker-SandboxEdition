@@ -24,7 +24,7 @@ export const CARDS = {
 } as const;
 
 /** What each suspect is asked in the second round: an item to show, or a topic. */
-export const ROUND2: Partial<Record<Who, (string | { item: string })[]>> = {
+const ROUND2: Partial<Record<Who, (string | { item: string })[]>> = {
   lila: ['LETTER?', { item: 'umbrella' }, { item: 'safe_ms' }],
   edgar: [{ item: 'umbrella' }, { item: 'ledger' }, 'ROLE?'],
   agatha: [{ item: 'policy' }, { item: 'chart' }, { item: 'safe_ms' }],
@@ -156,7 +156,7 @@ const TALK_FOR: Record<string, [number, number]> = { lila: [2, 3], edgar: [2, 6]
 /** On the stage at dawn, left to right. */
 export const LINEUP: Who[] = ['agatha', 'felix', 'pike', 'lila', 'edgar'];
 
-export const MONS: Who[] = ['lila', 'edgar', 'agatha', 'felix', 'pike', 'dobbs'];
+const MONS: Who[] = ['lila', 'edgar', 'agatha', 'felix', 'pike', 'dobbs'];
 
 export function buildParlorMonsters(): { mb: BlockSet; mon: Monster[] } {
   const mb = new BlockSet(100, true);

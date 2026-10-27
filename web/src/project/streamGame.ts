@@ -61,7 +61,6 @@ export function playOrder(gamName: string, gam: Uint8Array | undefined, names: s
     slots(0, FRONT_REST);
     slots(1, WON);
     add(`${gamName.replace(/\.[^.]*$/, '')}.his`);
-    add('gmhelp.txt');
   }
   for (const n of names) add(n);
   return out;

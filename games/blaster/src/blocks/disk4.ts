@@ -18,7 +18,7 @@ export function diskArt(p: Pal): StageArt {
     if (v === 1) for (let x = 1; x < 20; x += 3) t.rect(x, 12, 2, 1, p.c('base', 1));
     if (v === 2) t.line(2, 17, 17, 3, p.c('base', 6));
     if (v === 3) micro(t, 2, 7, 'S07', p.c('base', 1));
-    if (v === 4) t.set(5, 6, p.c('grey', 1)).set(14, 13, p.c('grey', 1)).set(9, 16, p.c('grey', 2));
+    if (v === 4) t.set(5, 6, p.c('gray', 1)).set(14, 13, p.c('gray', 1)).set(9, 16, p.c('gray', 2));
     return t;
   };
   const edge = (side: 'L' | 'R', v: number): Pixels => {

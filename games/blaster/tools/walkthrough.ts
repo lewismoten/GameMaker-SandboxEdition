@@ -1,7 +1,7 @@
 // Writes games/blaster/walkthrough.json: the bot pilot flies every leg of every stage in
 // order (as check.ts does), one key segment a leg, with the ship's energy, score and Nova
 // Bombs carried from leg to leg as the game carries them, and games/kit/walkthrough.ts checks
-// the whole run on the real engine (title, story, all sixteen legs, the ending, the credits).
+// the whole run on the real engine (title, story, every leg, the ending, the credits).
 // It never takes a side room's way in.
 //   cd web && npx vite-node ../games/blaster/tools/walkthrough.ts
 import { newCharInfo } from '../../../web/src/engine/world';
@@ -10,7 +10,8 @@ import type { RecordedKey } from '../../../web/src/formats/recording';
 import { writeWalkthrough } from '../../kit/walkthrough';
 import { STAGES } from '../src/stages/stages';
 import { fly } from './bot';
-import { arenaGoal, simOf } from './testkit';
+import { rideBus } from './busBot';
+import { diagGoal, goalOf, maxTicksOf, simOf } from './testkit';
 
 const ci = newCharInfo();
 const segments: WalkSegment[] = [];
@@ -29,7 +30,11 @@ for (const make of STAGES) {
       keys.push({ delta: at - last, key: k });
       last = at;
     };
-    const r = await fly(sim, { maxTicks: l.kind === 'boss' ? 2400 : 1600, goal: l.kind === 'boss' ? arenaGoal : undefined });
+    // on a diagonal leg, a steadier pilot that keeps to the middle and takes the last shortcut;
+    // on a side leg, steady hands too
+    const cable = l.kind === 'diag' ? { goal: diagGoal(l), stick: 80, every: 3 } : l.kind === 'side' || l.kind === 'left' ? { stick: 30, every: 3 } : {};
+    // on the data bus, a pilot who only sees traffic once it is well on its way and lets each lane change settle
+    const r = l.bus ? await rideBus(sim, l.bus, { notice: 72, calm: 4 }) : await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...cable });
     if (!r.ok) throw new Error(`${l.file}: the bot did not get through (${r.dead ? 'died' : 'timed out'}; ${r.log.slice(-1)[0] ?? ''})`);
     if (st.side?.from === l.file && sim.link >= l.grid.links.length) throw new Error(`${l.file}: the bot took the side room's way in`);
     console.log(`${l.file} ${l.title}: ${r.ticks} ticks, lost ${r.hpLost}, energy ${ci.hitpts}, score ${ci.score}`);

@@ -25,24 +25,31 @@ export const MON = {
   bee: 19,
 } as const;
 
-/** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). */
+/**
+ * Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop). PLAYGAME runs the first
+ * sequence on a key that is on, so the laced-up walks (5..8, on only while the laces are carried)
+ * come before the plain ones on the same keys (9..12): picking up the laces is the upgrade.
+ */
 export const SEQ = {
   idle: 0,
   die: 1,
   hurt: 2,
-  right: 5,
-  left: 6,
-  hop: 7,
-  hopLeft: 8,
-  hopRight: 9,
-  root: 10,
+  pickup: 3,
+  fastRight: 5,
+  fastLeft: 6,
+  fastRightD: 7,
+  fastLeftA: 8,
+  right: 9,
+  left: 10,
   rightD: 11,
   leftA: 12,
-  hopW: 13,
-  rootS: 14,
-  joy: 15,
-  hopLeft7: 17,
-  hopRight9: 18,
+  hop: 13,
+  hopLeft: 14,
+  hopRight: 15,
+  root: 16,
+  hopW: 17,
+  rootS: 18,
+  joy: 19,
 } as const;
 
 /** Keys (scan code << 8 | ASCII). */
@@ -58,12 +65,11 @@ export const KEY = {
   d: 0x2064,
   q: 0x1071,
   e: 0x1265,
-  home: 0x4700,
-  pgup: 0x4900,
+  enter: 0x1c0d,
 } as const;
 
 /** PC scan codes the bot and the demo press. */
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18 } as const;
+export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, enter: 28 } as const;
 
 /**
  * Water: raindrops caught and drops of groundwater. Counters 20 and up refuse a touch that
@@ -97,4 +103,6 @@ export const SND = {
   hurt: 11,
   wilt: 12,
   joy: 13,
+  /** The laces picked up: "...got the greatest feet!" */
+  laces: 14,
 } as const;

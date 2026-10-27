@@ -9,7 +9,7 @@
 //    gets a size over a megabyte and fails ("Not enough memory!").
 import { CMF_GAMEMAKER_CLOCK, isCmf, parseCmf } from '../formats/cmf';
 
-export interface LoadedSong {
+interface LoadedSong {
   music: Uint8Array;
   /** The records load_file read; any past the end of the file are zeros here (DOS left whatever was in memory). */
   instruments: Uint8Array[];

@@ -29,11 +29,11 @@ function ttyPaper(lines: string[]): Pixels {
   const p = tiled(new Pixels(40, 20), FLOORS.marble);
   p.rect(6, 0, 28, 18, C('paper', 2)).rect(6, 0, 1, 18, C('paper', 1)).rect(33, 0, 1, 18, C('paper', 0));
   // A torn top edge.
-  for (let x = 6; x < 34; x += 2) p.set(x, 0, C('grey', 3));
+  for (let x = 6; x < 34; x += 2) p.set(x, 0, C('gray', 3));
   const shown = lines.slice(-3);
   shown.forEach((s, i) => micro(p, 8, 12 - (shown.length - 1 - i) * 6, s, C('night', 1)));
   // The platen roller, with the type head under the end of the line being typed.
-  p.rect(3, 17, 34, 3, C('grey', 1)).rect(3, 17, 34, 1, C('grey', 3));
+  p.rect(3, 17, 34, 3, C('gray', 1)).rect(3, 17, 34, 1, C('gray', 3));
   const last = shown[shown.length - 1] ?? '';
   p.rect(8 + last.length * 4, 16, 3, 3, C('chrome', 6));
   return p;
@@ -42,10 +42,10 @@ function ttyPaper(lines: string[]): Pixels {
 /** The machine itself: a cream Model-28-ish cabinet with a round-key keyboard. 40x20. */
 function ttyBody(): Pixels {
   const p = tiled(new Pixels(40, 20), FLOORS.marble);
-  oval(p, 20, 18, 19, 2, C('grey', 1));
+  oval(p, 20, 18, 19, 2, C('gray', 1));
   p.rect(2, 0, 36, 16, C('concrete', 3)).rect(2, 0, 36, 2, C('concrete', 4)).rect(2, 14, 36, 2, C('concrete', 1));
   for (let row = 0; row < 3; row++)
-    for (let k = 0; k < 8; k++) p.disc(7 + k * 3.7 + row, 4 + row * 3, 1, C('grey', 1)).set(7 + k * 3.7 + row, 3 + row * 3, C('grey', 4));
+    for (let k = 0; k < 8; k++) p.disc(7 + k * 3.7 + row, 4 + row * 3, 1, C('gray', 1)).set(7 + k * 3.7 + row, 3 + row * 3, C('gray', 4));
   micro(p, 4, 9, 'TTY', C('red', 3));
   p.rect(33, 4, 3, 2, C('gold', 5));
   return p;
@@ -54,7 +54,7 @@ function ttyBody(): Pixels {
 /** A 1916 oak wall telephone: two brass bells, a horn mouthpiece and a crank on the side. */
 function crankPhone(ring: number): Pixels {
   const p = on('marble');
-  oval(p, 10, 19, 7, 1, C('grey', 1));
+  oval(p, 10, 19, 7, 1, C('gray', 1));
   p.rect(5, 1, 10, 18, C('wood', 2)).rect(5, 1, 10, 1, C('wood', 3)).rect(14, 1, 1, 18, C('wood', 1));
   p.rect(6, 7, 8, 1, C('wood', 1));
   // Bells, which shake apart when it rings.
@@ -62,9 +62,9 @@ function crankPhone(ring: number): Pixels {
   for (const bx of [7, 12]) p.disc(bx + shake * (bx < 10 ? 1 : -1), 4, 2, C('gold', 4)).set(bx + shake * (bx < 10 ? 1 : -1) - 1, 3, C('gold', 5));
   p.rect(9, 3, 2, 2, C('chrome', 5));
   // Horn mouthpiece and the receiver on its hook.
-  p.disc(10, 11, 2, C('grey', 0)).set(10, 11, C('grey', 2));
-  p.rect(9, 8, 2, 2, C('grey', 1));
-  p.rect(2, 7, 2, 6, C('grey', 0)).rect(4, 8, 1, 1, C('chrome', 4));
+  p.disc(10, 11, 2, C('gray', 0)).set(10, 11, C('gray', 2));
+  p.rect(9, 8, 2, 2, C('gray', 1));
+  p.rect(2, 7, 2, 6, C('gray', 0)).rect(4, 8, 1, 1, C('chrome', 4));
   // The crank: up when resting, round the other way while ringing.
   const up = ring !== 2;
   p.rect(15, 11, 2, 1, C('chrome', 4));

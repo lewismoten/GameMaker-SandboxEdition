@@ -41,6 +41,8 @@ interface PagedListing {
   entries: Lines<string[][]>;
   /** Each entry's one line on the compact listing, when the area has one. */
   compact?: Lines<string[]>;
+  /** Open on the compact listing however few pages the extended one takes (a short area whose DIZs run long). */
+  opensCompact?: boolean;
   /** Lines under the entries (the legend), the same number every time. */
   footer: Lines<string[]>;
 }
@@ -77,7 +79,7 @@ export class Pager {
         )
       : full;
     this.paged = { full, brief };
-    this.extended = !list.compact || full.length <= EXTENDED_PAGES;
+    this.extended = !list.compact || (!list.opensCompact && full.length <= EXTENDED_PAGES);
   }
 
   get pages(): number[][] {

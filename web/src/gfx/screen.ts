@@ -126,9 +126,15 @@ export class Screen {
     }
   }
 
-  /** GPutChar: transparent background, 8x8 glyph from the BIOS font (GetROMFont), all of CP437. */
+  /**
+   * GPutChar: transparent background, 8x8 glyph from the BIOS font (GetROMFont). That ROM font
+   * holds only characters 0-127, and GPutChar takes a signed char (code/GM/GRAPHC.C), so 128-255
+   * read whatever lies before the font: scribbles on a real VGA card. They draw nothing here.
+   * (Text read from a file with TextDecoder('latin1') brings 0x80-0x9F as code points above 255.)
+   */
   putChar(x: number, y: number, col: number, code: number): void {
-    const base = (code & 0xff) * 8;
+    if (code >= 0x80) return;
+    const base = code * 8;
     for (let row = 0; row < 8; row++) {
       const bits = FONT_CP437[base + row];
       if (!bits) continue;

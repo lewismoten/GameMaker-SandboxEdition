@@ -111,7 +111,7 @@ export type Block =
 
 /**
  * A small ad sharing an editorial page (half of it, or a third in a `beside`), framed and
- * labelled ADVERTISEMENT; listed in the advertiser index under `advertiser`.
+ * labeled ADVERTISEMENT; listed in the advertiser index under `advertiser`.
  */
 export interface HalfAd {
   t: 'halfad';

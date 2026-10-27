@@ -49,7 +49,7 @@ export const CLIPS = [
   'ashamed',
   'datewell',
 ] as const;
-export type ClipName = (typeof CLIPS)[number];
+type ClipName = (typeof CLIPS)[number];
 const RATE = 11025;
 
 const here = dirname(fileURLToPath(import.meta.url));

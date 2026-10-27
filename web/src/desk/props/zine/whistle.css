@@ -27,12 +27,13 @@
 }
 
 @media (min-width: 961px) {
-  /* on the desk top behind the shareware catalog */
+  /* on the desk top behind the disk box, half hidden by its smoked lid (which lets clicks
+     through), so it isn't the first thing anyone sees */
   .desk-scene .toy-whistle {
     position: absolute;
-    left: 136px;
-    top: 476px;
-    z-index: 1;
+    left: 262px;
+    top: 486px;
+    z-index: 0;
     transform: rotate(-4deg);
   }
 }

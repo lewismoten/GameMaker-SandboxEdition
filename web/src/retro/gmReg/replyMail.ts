@@ -3,7 +3,7 @@
 // and lies on the floor until it is opened; opened, its registration confirmation goes into
 // the Game-Maker box's tray (manual/printables/regConfirm.ts). Kept per browser, so each
 // reply comes only once: mailing another card for the same name brings no second envelope.
-import { SERIAL } from './registration';
+import { validSerial } from './registration';
 import type { Reply } from './mailCard';
 
 const KEY = 'gm-reg-mail';
@@ -21,11 +21,12 @@ export function mailComes(delivered: ReplyMail | undefined, reply: Reply): boole
   return !delivered || delivered.name !== reply.name || delivered.number !== reply.number;
 }
 
-/** What storage held, checked: undefined unless it is a whole envelope for this copy. */
+/** What storage held, checked: undefined unless it is a whole envelope (paper: it keeps the serial it was for). */
 export function readMail(raw: string | null): ReplyMail | undefined {
   try {
     const v = JSON.parse(raw ?? 'null') as Partial<ReplyMail> | null;
-    if (!v || typeof v.name !== 'string' || !v.name.trim() || typeof v.number !== 'string' || v.serial !== SERIAL) return undefined;
+    if (!v || typeof v.name !== 'string' || !v.name.trim() || typeof v.number !== 'string' || typeof v.serial !== 'number' || !validSerial(v.serial))
+      return undefined;
     return { name: v.name, number: v.number, serial: v.serial, opened: v.opened === true };
   } catch {
     return undefined;

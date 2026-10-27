@@ -1,6 +1,6 @@
 // NO CARRIER #3, the zine under the desk's toy whistle, as a piece of paper in the box viewer
 // (manual/printables/viewer.ts): on screen one quarter-letter leaf at a time (zineLeaf.ts), turned
-// with Back and Next; printed four leaves to a letter sheet, two by two in reading order, with
+// with Back and Next, or every leaf in one column to scroll (readView.ts); printed four leaves to a letter sheet, two by two in reading order, with
 // dashed lines to cut along and stack. The desk's whistle and the Library open it (openZine).
 import { h } from '../../editor/core/ui';
 import { sheet, type Sheet } from '../printables/kit';
@@ -8,6 +8,8 @@ import type { BoxItem } from '../printables/viewer';
 import { ZINE, ZINE_TITLE } from './zinePages';
 import { blankLeaf, zineLeaf } from './zineLeaf';
 import { unlockAchievement } from '../../achievements';
+import type { Reader, ReadView } from '../readView';
+import { scrollPages, type ScrollPages } from '../scrollPages';
 
 const TITLE = `${ZINE_TITLE} #3`;
 
@@ -21,9 +23,13 @@ function printSheets(): Sheet[] {
   return out;
 }
 
-/** One leaf at a time, with Back, Next and where you are. */
-function turner(): HTMLElement {
+/** The widest a leaf is shown scrolled. */
+const SCROLL_MOST = 560;
+
+/** One leaf at a time, with Back, Next and where you are; or every leaf in a column (Scroll). */
+function turner(start: ReadView, root: HTMLElement): Reader {
   let at = 0;
+  let view = start;
   const leaves = new Map<number, Sheet>();
   const leafAt = (i: number) => {
     let s = leaves.get(i);
@@ -33,18 +39,62 @@ function turner(): HTMLElement {
   const counter = h('span', { 'aria-live': 'polite' });
   const prev = h('button', { type: 'button', onclick: () => go(at - 1) }, '◀ Back');
   const next = h('button', { type: 'button', onclick: () => go(at + 1) }, 'Next ▶');
-  const view = h('div', { class: 'zine-turner' });
+  const el = h('div', { class: 'zine-turner' });
   const bar = h('div', { class: 'zine-bar' }, prev, counter, next);
-  const go = (n: number) => {
-    at = Math.max(0, Math.min(ZINE.length - 1, n));
-    view.replaceChildren(leafAt(at).el, bar);
+  let column: ScrollPages | undefined;
+  const reading = (i: number) => {
+    at = i;
     counter.textContent = `Page ${at + 1} of ${ZINE.length}`;
     prev.disabled = at === 0;
     next.disabled = at === ZINE.length - 1;
     if (next.disabled) unlockAchievement('zine-read');
   };
-  go(0);
-  return view;
+  const fit = () => column?.el.style.setProperty('--rv-w', `${Math.max(160, Math.min(root.clientWidth - 56, SCROLL_MOST))}px`);
+  const show = () => {
+    el.classList.toggle('scrolled', view === 'scroll');
+    if (view === 'pages') {
+      column?.dispose();
+      column = undefined;
+      el.replaceChildren(leafAt(at).el, bar);
+      reading(at);
+      return;
+    }
+    if (!column) {
+      // fresh leaves for the column: a page let go of far off is drawn again
+      column = scrollPages({
+        root,
+        count: ZINE.length,
+        ratio: () => 5.5 / 4.25,
+        page: (i) => zineLeaf(ZINE[i], i).el,
+        label: (i) => `Page ${i + 1}`,
+        showing: reading,
+      });
+      el.replaceChildren(column.el, bar);
+      fit();
+    }
+    column.scrollTo(at);
+    reading(at);
+  };
+  const go = (n: number) => {
+    at = Math.max(0, Math.min(ZINE.length - 1, n));
+    show();
+  };
+  addEventListener('resize', fit);
+  show();
+  return {
+    el,
+    view: (v) => {
+      if (v === view) return;
+      view = v;
+      if (v === 'pages') root.scrollTop = 0;
+      show();
+    },
+    step: (dir) => go(at + dir),
+    dispose: () => {
+      column?.dispose();
+      removeEventListener('resize', fit);
+    },
+  };
 }
 
 export function zineItem(): BoxItem {
@@ -53,7 +103,7 @@ export function zineItem(): BoxItem {
     title: TITLE,
     note: `${ZINE.length} quarter-letter pages, four to a sheet`,
     icon: '📠',
-    live: () => Promise.resolve(turner()),
+    reader: (view, root) => Promise.resolve(turner(view, root)),
     render: () => Promise.resolve(printSheets()),
   };
 }

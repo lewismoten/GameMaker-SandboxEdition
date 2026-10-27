@@ -12,9 +12,11 @@ import { SITE_URL } from '../seo/site';
 import { TICK_RATE } from '../audio/cmfPlayer';
 import { clock, WALKTHROUGH_FPS, youtubeText, type Walkthrough } from './format';
 import { WalkAudio, WalkRun } from './runtime';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
 import { claimMediaFocus } from '../media/mediaFocus';
 import { unlockAchievement, watchedWalkthrough } from '../achievements';
+import { catalogPatches } from '../dosPlayer/catalogPatches';
 
 const FRAME_MS = 1000 / WALKTHROUGH_FPS;
 /** A skip ahead moves the clock 40 timer ticks a frame: the most the engine's loop takes at once. */
@@ -94,12 +96,14 @@ export async function watchWalkthrough(
   onReady?: () => void,
   given?: Walkthrough,
   chapter?: number,
+  /** A project's DOS player patches (dosPlayer/): its menu and player screens as its .EXE shows them. */
+  player?: PlayerPatches,
 ): Promise<void> {
   // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
   let lose = () => {};
   const release = claimMediaFocus('player', () => lose());
   try {
-    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter);
+    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter, player);
   } finally {
     release?.();
   }
@@ -112,6 +116,7 @@ async function watch(
   onLose: (f: () => void) => void,
   given?: Walkthrough,
   chapter?: number,
+  player?: PlayerPatches,
 ): Promise<void> {
   // a walkthrough handed in (the editor's walkthrough bot made it), else the catalog's
   const [walk, files] = await Promise.all([given ? Promise.resolve(given) : loadWalkthrough(entry), loadFiles()]);
@@ -120,6 +125,8 @@ async function watch(
     return;
   }
   const gam = entry.gam;
+  // a catalog game's own DOS player look (an original game's player.json) unless a project's was handed in
+  player ??= catalogPatches(entry);
   const tl = walk.timeline;
   const total = tl.frames;
   /** Played to the end: the game's, or where a bot's walkthrough that stopped partway stops. */
@@ -199,7 +206,7 @@ async function watch(
 
   const fresh = () => {
     run?.stop();
-    run = new WalkRun(canvas, files.copy(), gam, walk, audio);
+    run = new WalkRun(canvas, files.copy(), gam, walk, audio, player);
     return run;
   };
 
@@ -427,6 +434,7 @@ async function watch(
         files,
         gam,
         walk,
+        player,
         from,
         to,
         signal: making.signal,
@@ -444,7 +452,7 @@ async function watch(
       unlockAchievement('download-mp4');
       status.textContent = `Saved ${name}: ${clock(res.frames / WALKTHROUGH_FPS)}, 320×200 at 60 fps, ${(res.blob.size / 1e6).toFixed(1)} MB${res.audio !== 'none' ? ` with ${DEMO_AUDIO_LABEL[mode]} sound (${res.audio.toUpperCase()})` : mode === 'none' ? ', without sound' : ', without sound (this browser has no audio encoder)'}.`;
     } catch (e) {
-      status.textContent = (e as Error).name === 'AbortError' ? 'Video cancelled.' : `The video could not be made: ${(e as Error).message}`;
+      status.textContent = (e as Error).name === 'AbortError' ? 'Video canceled.' : `The video could not be made: ${(e as Error).message}`;
     } finally {
       making = undefined;
       exportBtn.textContent = '⬇ Download MP4';

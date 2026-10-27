@@ -13,9 +13,9 @@ import { ORIGIN } from '../src/levels/maps';
 import { GameSim } from './sim';
 
 type Pt = { x: number; y: number };
-export type Dir = 'up' | 'down' | 'left' | 'right';
+type Dir = 'up' | 'down' | 'left' | 'right';
 const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, b: 48, c: 46 } as const;
+const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, b: 48, c: 46 } as const;
 
 /** GOAT.BBL's block numbers by name (the build's own BlockBook). */
 export const BLOCK = buildBlocks(buildPalette('day')).index;

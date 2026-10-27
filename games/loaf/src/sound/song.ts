@@ -29,7 +29,7 @@ import { sbi } from '../../../kit/music';
 import { EPIANO, Writer, type Groove } from '../../../kit/song';
 import { DRUM, Fx, boomPatch, detuned, leveled, sweep, waved } from '../../../kit/songFx';
 
-export const BPM = 62;
+const BPM = 62;
 
 // ---- the patches --------------------------------------------------------------------------
 
@@ -413,7 +413,7 @@ function chorus(a: Arranger, s: Section, o: { shift?: number; vel?: number } = {
 }
 
 /** Title: the organ swells up, a timpani roll, a pause... "But I'm still bread!" with the whole choir. */
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   const a = new Arranger();
   intro(a, false);
   a.roll(2).hit('Bb');
@@ -426,7 +426,7 @@ export function titleSong(): Uint8Array {
 }
 
 /** Story pages: verse 1, the soloist bluesy over a harp and a hush of hats. */
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const a = new Arranger(58);
   intro(a);
   a.section(VERSE1, { comp: 'harp', sing: 'solo', bass: 'long', drums: ['none', 'none', 'hush'], vel: 92 });
@@ -438,7 +438,7 @@ export function storySong(): Uint8Array {
  * wasteland, the bridge and the chorus under the stars (twelve baskets full), and verse 3 into
  * the last chorus on the way home, the second time up a half step.
  */
-export function levelSongs(): Uint8Array[] {
+function levelSongs(): Uint8Array[] {
   const one = new Arranger();
   intro(one);
   one.section(VERSE1, { comp: 'keys', sing: 'solo', bass: 'jam', drums: jam(8), vel: 100 });
@@ -468,7 +468,7 @@ export function levelSongs(): Uint8Array[] {
 }
 
 /** Won: the last chorus and the hush: "So here I rise, not famous... but fed. The Savior saw me. I'm still bread." */
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const a = new Arranger();
   a.section({ name: 'pickup', chords: ['F7'], tune: ['r h, r q, r e, Bb4 e'] }, { comp: 'organ', sing: 'solo', bass: 'long', drums: ['hush'], vel: 96 });
   a.roll(2).hit('Bb');
@@ -485,7 +485,7 @@ function outro(a: Arranger): void {
 }
 
 /** Lost: "Loaf number thirteen, left in the shade", slow and alone, then "...bread... bread". */
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const a = new Arranger(52);
   a.section(
     { name: 'left in the shade', chords: ['Gm', 'Eb', 'Cm', 'F7'], tune: VERSE2.tune.slice(0, 4) },
@@ -501,7 +501,7 @@ export function lostSong(): Uint8Array {
 }
 
 /** The menu: the whole song in order, intro to the last "I'm still bread." */
-export function wholeSong(): Uint8Array {
+function wholeSong(): Uint8Array {
   const a = new Arranger();
   intro(a);
   a.section(VERSE1, { comp: 'keys', sing: 'solo', bass: 'jam', drums: jam(8), vel: 98 });
@@ -534,5 +534,3 @@ export function allSongs(): Record<string, Uint8Array> {
     menu: wholeSong(),
   };
 }
-
-export { voicing, root };

@@ -10,7 +10,7 @@ import { lettering } from './logo';
 import { cam, floor, props, stage, still } from './stage';
 
 /** Chrome that runs from cyan at the top of the letters to amber at the bottom (far to near). */
-export const LOGO_CHROME = (z0: number, z1: number): Material => ({
+const LOGO_CHROME = (z0: number, z1: number): Material => ({
   color: (p) => mix(rgb(255, 170, 70), rgb(110, 220, 255), Math.max(0, Math.min(1, (p[2] - z0) / (z1 - z0)))),
   diffuse: 0.18,
   reflect: 0.72,

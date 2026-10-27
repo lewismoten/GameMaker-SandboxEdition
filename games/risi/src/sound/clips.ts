@@ -52,7 +52,7 @@ export type ClipName = keyof typeof CLIPS;
 const here = dirname(fileURLToPath(import.meta.url));
 
 /** A clip's samples (-1..1) at its own rate. */
-export function clipSamples(name: ClipName): Float32Array {
+function clipSamples(name: ClipName): Float32Array {
   const pcm = readFileSync(join(here, 'clips', `${name}.pcm`));
   const samples = new Float32Array(pcm.length);
   // encodeVoc writes round(v * 127 + 128), so this gives back the very bytes cutClips.py wrote.
@@ -61,7 +61,7 @@ export function clipSamples(name: ClipName): Float32Array {
 }
 
 /** Samples as a Creative Voice File (checked against Game-Maker's 16-bit size). */
-export function vocOf(name: string, samples: Float32Array, rate: number): Uint8Array {
+function vocOf(name: string, samples: Float32Array, rate: number): Uint8Array {
   const voc = encodeVoc(samples, rate);
   if (voc.length >= 40000) throw new Error(`${name}.voc is ${voc.length} bytes; Game-Maker reads 16 bits of size`);
   return voc;

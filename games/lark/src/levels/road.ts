@@ -9,13 +9,13 @@ import { rng } from '../../../kit/pixels';
 import type { BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const ROAD_W = 36;
-export const ROAD_H = 18;
+const ROAD_W = 36;
+const ROAD_H = 18;
 /** Lanes north: chapter 1's, 2's and 3's. */
-export const LANES = [10, 19, 27];
-export const ROAD_ROW = 12;
+const LANES = [10, 19, 27];
+const ROAD_ROW = 12;
 
-export function roadRows(leg = 1): string[] {
+function roadRows(leg = 1): string[] {
   const R = rng(leg === 1 ? 17 : leg === 2 ? 31 : 47);
   const g: string[][] = Array.from({ length: ROAD_H }, (_, y) =>
     Array.from({ length: ROAD_W }, (_, x) => {

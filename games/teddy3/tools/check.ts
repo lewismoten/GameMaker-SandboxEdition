@@ -41,6 +41,9 @@ for (const make of LEVELS) {
         },
         l.start,
         ci,
+        1,
+        // the dream run's scene never scrolls
+        !l.still,
       );
       return { sim, rec: new Recorder(sim, offset, last) };
     },

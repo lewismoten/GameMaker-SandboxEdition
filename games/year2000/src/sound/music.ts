@@ -1,4 +1,4 @@
-// The soundtrack: ten FM songs for the Sound Blaster, written as note strings. The
+// The soundtrack: eleven FM songs for the Sound Blaster, written as note strings. The
 // future, as it sounded in 1992: arpeggiators, pumping octave bass, and a lot of bells.
 import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
 
@@ -211,6 +211,36 @@ export function highwaySong(): Uint8Array {
     v(2, INSTRUMENTS.bass, bass(bars, 'octaves'), 110),
     v(3, INSTRUMENTS.pluck, arp(bars), 60),
     ...comp(bars, 're e. e. q q', INSTRUMENTS.organ, 46),
+  ]);
+}
+
+/** Level 2, "The Cloud Lane": Grandpa's CitiCar at full throttle, an arcade racer in 1976½ gear. */
+export function cloudSong(): Uint8Array {
+  const bars = ['G', 'Em', 'C', 'D', 'G', 'Em', 'Am', 'D7', 'C', 'D', 'Bb', 'C', 'G', 'Em', 'C', 'D'];
+  const melody = [
+    'G5 e, G5 e, D5 e, G5 e, B5 q, A5 q',
+    'G5 e, E5 e, B4 e, E5 e, G5 h',
+    'E5 e, G5 e, C6 e, B5 e, A5 q, G5 q',
+    'F#5 q, A5 q, D6 h',
+    'G5 e, G5 e, D5 e, G5 e, B5 q, D6 q',
+    'E6 q., D6 e, B5 h',
+    'C6 e, B5 e, A5 e, G5 e, E5 q, A5 q',
+    'F#5 h, A5 h',
+    'G5 q, E5 q, C5 q, E5 q',
+    'F#5 q, A5 q, D6 q, A5 q',
+    'F5 q, D5 q, Bb4 q, D5 q',
+    'E5 e, G5 e, C6 e, E6 e, G6 q, E6 q',
+    'D6 e, B5 e, G5 e, B5 e, D6 q, G6 q',
+    'E6 e, D6 e, B5 e, G5 e, E5 h',
+    'C6 e, D6 e, E6 e, C6 e, G5 q, C6 q',
+    'D6 h, F#5 h',
+  ];
+  return tune(160, [
+    v(0, INSTRUMENTS.brass, melody, 106),
+    v(1, VIBES, melody, 54, 12),
+    v(2, INSTRUMENTS.bass, bass(bars, 'octaves'), 112),
+    v(3, ZAPPY, arp(bars), 52),
+    ...comp(bars, 're e re e h', INSTRUMENTS.organ, 44),
   ]);
 }
 

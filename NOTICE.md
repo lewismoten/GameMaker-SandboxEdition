@@ -113,6 +113,45 @@ game folder opens in the browser unchanged.
   (A-J Games), _Hurdles_ (Roland Ludlam), _Seal Boarders_, and RSD's _Penguin Pete_. The games
   belong to their authors; the guide names them and describes their ideas in its own words, and
   copies none of their art, music, sounds or text.
+  Its section "Customizing the player's own words" describes the hex edit found by comparing
+  _Builder_'s player byte for byte with the CD's `XFERPLAY.EXE` (its menu words overwritten with
+  spaces) and that of A-J Games' unfinished _Rōdïp: Rover of the Deep_ (its status words renamed
+  Energy and Failsafes, the high-score words cleared): these two games led this project to map
+  every word the player shows, and the earlier players' `GMTITLE.GIF` title card, from the same survey; its table of
+  the player's words (`playerWords.ts`) is read from the CD's own `cd/gm/xferplay.exe`. No
+  author's player or registration details are copied or named.
+  The same two A-J Games players led to the **DOS player customizer**: the integrator's DOS player
+  panel (`web/src/editor/editors/integrator/dosPlayer/`) and the desk's `PLAYHACK.EXE`
+  (`web/src/retro/hacks/playHack.ts`), which patch a copy of the CD's `XFERPLAY.EXE` within the
+  rules their hand edits kept (`web/src/dosPlayer/`), with presets after Builder's blanked menu
+  and Rōdïp's renamed status words. Importing a game folder reads such a hand-edited player back
+  into the panel; Acord Games' shared player, whose renamed file extensions it recognizes and maps
+  back, is only read, never copied. The patch offsets were found in this project's own reading of
+  `cd/gm/xferplay.exe` against `code/GM/PLAYGAME.C` and `HISCOREL.C`.
+- **MD5** (`web/src/dosPlayer/md5.ts`) is written from the algorithm's description in RFC 1321
+  (R. Rivest, MIT Laboratory for Computer Science and RSA Data Security, Inc., 1992), only to tell
+  the CD's `XFERPLAY.EXE` from other files before patching it; no RSA reference code is used.
+- **Research: the whole Game-Maker Archive, ideas only.** A second survey read every Game-Maker
+  game in the Internet Archive's Game-Maker Archive collection, 271 games in all, with this
+  project's own file readers (no program from them was run). Its techniques are described,
+  without naming the games, in The Ultimate Owner's Guide's "More from the archive" (chapter 17,
+  `web/src/manual/ultimate/archiveTricks.ts`), chapter 4's "The gate is the exit" and "An AND
+  gate from monster power", and chapter 5's "Links that misfire", "Many rooms on one map" and
+  "Laps round the wrap" (`chaptersPlay.ts`), and in _TURBO BUTTON_'s "Masters, the next disk
+  box" (the third page of `sections/masters.ts`). The faults it found in those games shaped the
+  Level check's link, missing-part and speed-limit checks (`web/src/editor/check/checks/linkChecks.ts`,
+  `missingParts.ts`, `gameChecks.ts`). Ideas only: none of the games' art, music, sounds, text
+  or players is copied, and no author, owner or registration detail is named.
+- **Ideas from the same archive in this project's games.** A second survey of the community games in
+  the Internet Archive's Game-Maker Archive collection suggested touches to this project's own
+  games: _Quest for the Round Tuit_'s tide poles on the Dawdle Flats and _In The Year 2000!_'s
+  boarding-ramp countdown, both clocks read from a chain of timed blocks, as the archive's games
+  did with block rings and staged lights; and _A Fly Named Carl_'s sugar, a flight meter made of
+  the air itself (fresh air costs a counter, and with none left it no longer holds him up), as an
+  archive game's sky costs its flight counter; and _Mustard Seed Hustle_'s red laces, an upgrade
+  made by sequence order (faster walks placed before the plain ones on the same keys, on only
+  while the laces are carried), as an archive game's speed boots work. Ideas only: the blocks,
+  art and words are this project's own, and nothing from those games is copied.
 - **Research: watching people play Game-Maker games.** Observations from two videos informed
   The Ultimate Owner's Guide (chapters 2–4, 9–12, 15 and 17, `web/src/manual/ultimate/`) and
   _TURBO BUTTON_'s Design Desk letters (`sections/mailBag.ts`), "What Players Hate (and How to
@@ -358,6 +397,12 @@ formats from their published descriptions and from Game-Maker's own source.
   youtube-nocookie.com only when the visitor presses Play.
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
   `web/src/audio/opl.ts` was written for this project.
+- **PNG** (RFC 2083): the Assistant's pictures for AI tools (`web/src/assistant/png.ts`) are
+  written from the specification; compression is the browser's or Node's own.
+- **Model Context Protocol** and **WebMCP**: the local server for AI tools (`web/scripts/mcp`)
+  speaks the Model Context Protocol with its MIT-licensed TypeScript SDK (see Tools used to
+  build and test). The editor's Assistant can also offer its tools through WebMCP, a draft of
+  the W3C Web Machine Learning Community Group, implemented from the draft with no code used.
 - **The music editor and its FM instruments** were made for this project. The editor is an
   original design, not based on AdLib's Visual Composer, and no AdLib or Creative instrument
   bank is included. The classic piano and brass, and one kick drum used in two games, matched
@@ -630,9 +675,13 @@ Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
 [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/) and its vite-node (MIT), and
 `@types/node` (MIT), and checked with [Prettier](https://prettier.io/) and
 [ESLint](https://eslint.org/) with `@eslint/js`, `typescript-eslint`, `eslint-config-prettier`
-and `globals` (MIT). These are the only packages in `web/package.json`, all used only to build
-and test; none of their code ships in the app except Vite's small module runtime and preload
-helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
+and `globals` (MIT). The local MCP server for AI tools (`web/scripts/mcp`, `npm run mcp`) uses
+the [Model Context Protocol TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
+(`@modelcontextprotocol/sdk`, MIT, Anthropic, PBC) and [ws](https://github.com/websockets/ws)
+(MIT, Einar Otto Stangvik, Arnout Kazemier, Luigi Pinca and contributors) with `@types/ws`
+(MIT, DefinitelyTyped); they run only on the developer's own computer, in Node. These are the
+only packages in `web/package.json`, all used only to build, test and run local tools; none of
+their code ships in the app except Vite's small module runtime and preload helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
 they use, with versions and licenses, from `web/package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
 see above for what ends up in them.
 

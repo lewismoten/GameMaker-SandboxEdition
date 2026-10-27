@@ -161,7 +161,7 @@ export interface OfflineProgress {
   totalBytes: number;
 }
 
-type OfflineResult = { ok: true } | { ok: false; reason: 'cancelled' | 'quota' | 'network' | 'space'; message: string };
+type OfflineResult = { ok: true } | { ok: false; reason: 'canceled' | 'quota' | 'network' | 'space'; message: string };
 
 /** Room for this many more bytes, as far as the browser tells (true when it does not say). */
 export function hasRoom(status: Pick<OfflineStatus, 'usage' | 'quota'>, bytes: number): boolean {
@@ -188,7 +188,7 @@ export async function makeOffline(status: OfflineStatus, onProgress: (p: Offline
   const worker = async () => {
     while (!failure && queue.length) {
       if (signal.aborted) {
-        failure = { ok: false, reason: 'cancelled', message: 'Stopped. What came in so far is kept.' };
+        failure = { ok: false, reason: 'canceled', message: 'Stopped. What came in so far is kept.' };
         return;
       }
       const f = queue.shift()!;
@@ -197,7 +197,7 @@ export async function makeOffline(status: OfflineStatus, onProgress: (p: Offline
         if (!res.ok) throw new Error(`${res.status}`);
         await cache.put(urlOf(f.path), res);
       } catch (e) {
-        if (signal.aborted) failure ??= { ok: false, reason: 'cancelled', message: 'Stopped. What came in so far is kept.' };
+        if (signal.aborted) failure ??= { ok: false, reason: 'canceled', message: 'Stopped. What came in so far is kept.' };
         else if (isQuota(e)) failure ??= { ok: false, reason: 'quota', message: 'The browser ran out of room to keep it. What came in so far is kept.' };
         else failure ??= { ok: false, reason: 'network', message: 'A download failed (are you still online?). Try again to finish.' };
         return;

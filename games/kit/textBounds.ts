@@ -7,7 +7,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 /** A rectangle as [x0, y0, x1, y1], x1 and y1 exclusive. */
-export type Box = [number, number, number, number];
+type Box = [number, number, number, number];
 
 /** One string that ran past its picture or clip area. */
 export interface TextOverflow {
@@ -29,7 +29,7 @@ export interface TextOverflow {
 /** What the PC font draws (printable ASCII), and the red-nose O the Teddy games letter the Clown Club with. */
 const pcFont = (ch: string) => /[\x20-\x7e\u25cf\u2022]/.test(ch);
 
-export interface TextBoundsReport {
+interface TextBoundsReport {
   overflows: TextOverflow[];
   /**
    * Where each string (`${w}x${h} ${at} ${s}`) was drawn wholly inside, as the ink's top-left
@@ -77,7 +77,7 @@ if (file)
   });
 
 /** Collects one string's ink as a helper draws it; `end()` checks it against the area. */
-export class TextInk {
+class TextInk {
   private x0 = Infinity;
   private y0 = Infinity;
   private x1 = -Infinity;

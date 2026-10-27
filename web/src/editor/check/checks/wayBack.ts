@@ -127,7 +127,7 @@ export function leftBehind(rich: CharInfo, poor: CharInfo): string[] {
  * stranded; the finding says what was missing and where it could be left.
  */
 export function softlocks(main: Playtest, poor: Playtest, scenes: SceneData[], sceneName: (n: number) => string): Finding[] {
-  if (!main.won || poor.won || poor.cancelled) return [];
+  if (!main.won || poor.won || poor.canceled) return [];
   for (const p of poor.runs) {
     const m = main.runs.find((r) => r.scene === p.scene);
     if (!m || !onward(m, m.ex.exits).length || onward(p, p.ex.exits).length) continue;

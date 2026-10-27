@@ -77,7 +77,15 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     `<p>Opening a game lists every kind of file on the left, even the ones you have none of
     yet, and shows the selected file’s editor on the right. Changes are saved as you go.</p>
     <ul>
-      <li><b>▶ Play test</b> plays the game from its first scene.</li>
+      <li><b>▶ Play Game</b> plays the game from its title screen. <b>▶ Play Level</b> plays
+    from a level instead: its <b>▾</b> lists every way the game’s links bring the player into a
+    level (“Level 2 at 40,12, from Level 1’s exit”), and the button plays the last one you
+    picked, or the level whose map is open. It starts right in the level; the title and menu
+    come after play ends.</li>
+    <li>A map shows its links as markers: cyan ways in, where the hero arrives (a star for
+    where the game starts), and gold exits, where touching a block leads on (a flag for Game
+    won). Drag one or nudge it with the arrow keys to move it; click it to see the map or
+    screen at its other end and change or delete it. <b>＋ Exit</b> adds one.</li>
       <li>The <b>+</b> beside a kind adds one: a new file, one from the <b>library</b> (the free
       sample games on the CD, shown as pictures), one from your computer, or one made by a tool
       (see below). <b>+ Add a file…</b> shows every kind as a grid of cards.</li>
@@ -88,7 +96,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
       monsters and hero, on a fresh map of its own.</li>
       <li><b>↶ Undo</b> and <b>↷ Redo</b> (<kbd>Ctrl</kbd>+<kbd>Z</kbd> and
       <kbd>Ctrl</kbd>+<kbd>Y</kbd>) take back changes in the editor you are in.</li>
-      <li>A game started as <b>▶ Ready to play</b> has <b>🎓 First steps</b> beside Play test: ten
+      <li>A game started as <b>▶ Ready to play</b> has <b>🎓 First steps</b> beside Play Game: ten
       small jobs that make the starter your own (a color, a block, the level, the hero, a monster, a
       sound, a way to win…). Each ticks itself when you do it, and opens the file to do it in.</li>
     </ul>`,
@@ -128,7 +136,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     work in every game:</p>
     <table>
       <tr><td><kbd>Esc</kbd></td><td>Leave a level or a screen</td></tr>
-      <tr><td><kbd>F1</kbd></td><td>Help</td></tr>
+      <tr><td><kbd>F1</kbd></td><td>The game’s instructions</td></tr>
       <tr><td><kbd>F2</kbd></td><td>Status and inventory</td></tr>
       <tr><td><kbd>F3</kbd> / <kbd>F4</kbd></td><td>Music / sound on or off</td></tr>
       <tr><td><kbd>F5</kbd> / <kbd>F6</kbd></td><td>Save / restore the game</td></tr>
@@ -252,7 +260,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
       <b>Certified Rat Tickler</b>, Doc Leo turns mad scientist with a real certificate in rat
       tickling (Lewis earned one) and plots to raise a legion of giggling rats.</li>
       <li><b>Shakespeare in Sweatpants</b>: seventeen spoken monologues by a man in a starched
-      ruff and grey sweatpants about the most dramatic things that ever happened to him, like a
+      ruff and gray sweatpants about the most dramatic things that ever happened to him, like a
       lost pen, a dead ficus named Gerald and the self-checkout. The game puts him on stage at
       open-mic night.</li>
       <li><b>Veni, Vidi, Risi!</b>: six songs in Latin, as grand as Rome, about a dog who breaks

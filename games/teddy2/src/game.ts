@@ -16,12 +16,12 @@ import { show } from './levels/level8';
 export const LEVELS: (() => Level)[] = [house, main, night, river, farm, maze, lot, midway, show];
 
 /** Songs per level (CMF file names), in level order. */
-export const LEVEL_SONGS = ['house.cmf', 'main.cmf', 'night.cmf', 'river.cmf', 'farm.cmf', 'maze.cmf', 'lot.cmf', 'midway.cmf', 'show.cmf'];
+const LEVEL_SONGS = ['house.cmf', 'main.cmf', 'night.cmf', 'river.cmf', 'farm.cmf', 'maze.cmf', 'lot.cmf', 'midway.cmf', 'show.cmf'];
 
-export const TITLE = 'TEDDY 2: BIGGER!';
+const TITLE = 'TEDDY 2: BIGGER!';
 
 /** What plays on the way out of a level: THE CHEZ driving on, or Gwinn's own cartoon. */
-export const outro = (l: Level) => l.outro ?? (l.hero === 'teddy' ? 'drive.fli' : '');
+const outro = (l: Level) => l.outro ?? (l.hero === 'teddy' ? 'drive.fli' : '');
 
 /** An all-black palette, for a scene that is only passed through. */
 export const DARK = 'dark.pal';

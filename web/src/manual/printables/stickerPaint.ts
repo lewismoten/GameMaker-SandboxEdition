@@ -293,9 +293,9 @@ export function shaped(name: string, shape: StickerShape, words: Words, img?: Ar
       g.fillRect(-bleed * S, -bleed * S, W + 2 * bleed * S, H + 2 * bleed * S);
       const [bx, by, bw, bh] = innerBox(shape);
       if (img) {
-        const labelled = !!(words.text || words.sub);
+        const labeled = !!(words.text || words.sub);
         const round = shape !== 'rect' && shape !== 'badge' && shape !== 'bubble';
-        const bandTop = labelled ? H * (shape === 'heart' ? 0.5 : pointy ? 0.52 : round ? 0.64 : 0.72) : H;
+        const bandTop = labeled ? H * (shape === 'heart' ? 0.5 : pointy ? 0.52 : round ? 0.64 : 0.72) : H;
         const cx = W / 2;
         const cy = (Math.max(by * H, H * 0.06) + bandTop) / 2;
         sunburst(g, cx, cy, Math.max(W, H));
@@ -308,7 +308,7 @@ export function shaped(name: string, shape: StickerShape, words: Words, img?: Ar
         g.shadowOffsetY = S * 0.03;
         crisp(g, img, cx, cy, k);
         g.restore();
-        if (labelled) {
+        if (labeled) {
           g.fillStyle = words.ink;
           g.fillRect(-bleed * S, bandTop, W + 2 * bleed * S, H + bleed * S - bandTop);
           // round stickers narrow toward the bottom, so their words sit higher and narrower

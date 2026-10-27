@@ -35,9 +35,9 @@ const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, l
 const MIRROR = 0x40; // bottom block flipped left-right
 
 /** Pixels a step. */
-export const STEP = 4;
+const STEP = 4;
 /** Breath to start with: one scream each. */
-export const BREATH = 4;
+const BREATH = 4;
 
 type F = Partial<Frame> & { pic: number };
 function frames(list: F[]): Frame[] {
@@ -165,7 +165,7 @@ export interface MonsterOptions {
 }
 
 /** Ticks a cousin lies stiff after a scream. */
-export const FAINT_TICKS = 90;
+const FAINT_TICKS = 90;
 
 export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: MonsterOptions = {}): Monster[] {
   const set = newMonsterSet();

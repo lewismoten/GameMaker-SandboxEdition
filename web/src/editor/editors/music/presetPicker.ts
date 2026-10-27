@@ -25,7 +25,7 @@ function presetsFor(ch: number, rhythm: boolean): OplPreset[] {
 
 const words = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
-/** Opens the picker; resolves with the preset to use, or nothing when cancelled. */
+/** Opens the picker; resolves with the preset to use, or nothing when canceled. */
 export function pickPreset(doc: MusicDoc, at: PickFor): Promise<OplPreset | undefined> {
   const slot = doc.rhythm ? slotOfChannel(at.ch) : undefined;
   const list = presetsFor(at.ch, doc.rhythm);

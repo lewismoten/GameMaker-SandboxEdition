@@ -13,7 +13,7 @@ import { renderSprite, type SpritePic } from './render';
 /** Palette entries the sprites use. 0..8 are Game-Maker's designer colors. */
 export const SPRITE_FIRST = 9;
 export const SPRITE_COUNT = 64;
-export const SHADOW_INDEX = SPRITE_FIRST;
+const SHADOW_INDEX = SPRITE_FIRST;
 
 export interface SpriteSet {
   cbl: Block[];

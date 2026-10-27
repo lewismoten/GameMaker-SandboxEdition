@@ -39,7 +39,7 @@ export const DRUM = { kick: 11, snare: 12, tom: 13, cymbal: 14, hat: 15 } as con
 const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25, t: 1 / 3, x: 1 / 6 };
 
 /** One note of a phrase: MIDI (null for a rest), its length in beats, and how it moves. */
-export interface Tone {
+interface Tone {
   n: number | null;
   beats: number;
   /** Slide up into the note from this many semitones below. */
@@ -78,9 +78,6 @@ export function tones(s: string): Tone[] {
   return out;
 }
 
-/** How long a phrase is, in beats. */
-export const beatsOf = (s: string): number => tones(s).reduce((a, t) => a + t.beats, 0);
-
 /** A patch with its levels changed (total level 0 loudest .. 63 silent; the key scaling bits are kept). */
 export function leveled(inst: Uint8Array, o: { mod?: number; car?: number }): Uint8Array {
   const p = Uint8Array.from(inst);
@@ -115,7 +112,7 @@ export function sweep(inst: Uint8Array, steps: number, from: { mod?: number; car
 }
 
 /** Velocity from `from` to `to` at t (0..1). */
-export const ramp = (from: number, to: number, t: number): number => Math.max(1, Math.min(127, Math.round(from + (to - from) * Math.max(0, Math.min(1, t)))));
+const ramp = (from: number, to: number, t: number): number => Math.max(1, Math.min(127, Math.round(from + (to - from) * Math.max(0, Math.min(1, t)))));
 
 export class Fx {
   /** The patch each channel has now (after its program changes). */

@@ -25,7 +25,7 @@ import type { BlockSet } from '../blocks/sets';
 /** Where a room's top-left corner sits on the 100x100 map. */
 export const ORIGIN = { x: 2, y: 2 };
 
-export type Cell = string | { tile?: string; mon?: (b: Bestiary) => string };
+type Cell = string | { tile?: string; mon?: (b: Bestiary) => string };
 
 export interface RoomSpec {
   /** File name (8.3 base): its .map, .mon and .pal. */

@@ -11,7 +11,7 @@ import { buildScreenPalette } from '../art/pal';
 import { bigStar as star, skyline as town, stars as nightStars } from './night';
 import { AUTHOR } from './text';
 
-export interface ScreenExtras {
+interface ScreenExtras {
   /** The goat's sprites. */
   goat: Map<string, Pixels>;
 }

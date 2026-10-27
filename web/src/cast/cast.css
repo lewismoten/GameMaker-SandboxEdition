@@ -202,6 +202,8 @@ main.cast .lead {
 }
 
 .cast-anchor {
+  /* inline padding: a 24px target without moving the heading's line */
+  padding-block: 2px;
   color: var(--text);
   text-decoration: none;
 }
@@ -267,6 +269,41 @@ main.cast .lead {
   .cast-pic {
     width: 88px;
     height: 88px;
+  }
+
+  /* phones: the name and role beside the picture, the bio under both at the card's full width */
+  .cast-card {
+    row-gap: 0;
+  }
+
+  .cast-text {
+    display: contents;
+  }
+
+  .cast-card > .cast-pic {
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+
+  .cast-text > .cast-bio,
+  .cast-text > :nth-child(n + 4) {
+    grid-column: 1 / -1;
+    margin-top: 12px;
+  }
+
+  .cast-card > .cast-seen-box,
+  .cast-card > .cast-appears {
+    margin-top: 12px;
+  }
+
+  /* "Seen in": one row that scrolls sideways, not a tall grid */
+  .cast-seen {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: 96px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    overscroll-behavior-x: contain;
   }
 }
 
@@ -349,6 +386,112 @@ main.cast .lead {
 
 .cast-stage-play {
   min-width: 6.5rem;
+}
+
+/* ---- the small stage (castMini.ts): once the stage scrolls away, upper left on a wide window,
+   lower left on a narrow one, where it covers the end of the page rather than what is read ---- */
+
+.cast-mini {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 20;
+  width: 208px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--panel);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.cast-mini[hidden] {
+  display: none;
+}
+
+.cast-mini-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 160 / 70;
+  background: #1b1430;
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+
+.cast-mini-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+}
+
+.cast-mini-who {
+  flex: 1;
+  min-width: 0;
+  padding-left: 4px;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cast-mini-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0 4px;
+  font-size: 14px;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cast-mini {
+    animation: cast-mini-in 0.18s ease-out;
+  }
+}
+
+@keyframes cast-mini-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* a jump to a heading stops below the small stage */
+@media (min-width: 721px) {
+  main.cast:not(.cast-mini-closed) :is(h2, h3)[id]:not(#cast-stage-h) {
+    scroll-margin-top: 160px;
+  }
+}
+
+@media (max-width: 720px) {
+  /* room at the end so the last lines can scroll up past it */
+  main.cast:not(.cast-mini-closed) {
+    padding-bottom: 140px;
+  }
+
+  .cast-mini {
+    top: auto;
+    bottom: 12px;
+    width: 152px;
+  }
+
+  .cast-mini-who {
+    display: none;
+  }
+
+  .cast-mini-bar {
+    justify-content: space-between;
+  }
+
+  @keyframes cast-mini-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
 }
 
 /* ---- seen in ---- */

@@ -17,7 +17,8 @@ import { heartFauna } from './characters/fauna/heart';
 import { Grid, W, reachable } from './levels/mapkit';
 import { clearAround, placeFormation, ringCells, wordCells } from './levels/flock';
 import { oceanSet } from './blocks/ocean';
-import { buildPalette } from './art/palette';
+import { SHARED_END, buildPalette } from './art/palette';
+import { putSaveSign } from '../../kit/saveSign';
 import { checkPlanet, surfacePlanet, type PlanetResult } from './levels/planet';
 import { populate, type Spots } from './levels/populate';
 import { ROLES, themeFor, type Biome } from './art/roles';
@@ -213,7 +214,15 @@ export function buildGame(): Built {
   // galaxy scene
   const maelstrom = maelstromMap(sets.space, monsters.space2);
   {
-    const sc = setup(SCENE.galaxy, 'The Galaxy', { pal: 'galaxy.pal', map: 'galaxy.map', bbl: 'space.bbl', mon: 'space1.mon', mbl: 'space.mbl', chr: 'pod' });
+    // the save sign (kit/saveSign.ts), floating by where the pod comes out of the asteroid knot
+    // at the top of the chart. SPACE.BBL is full, so the galaxy gets its own copy (GALAXY.BBL)
+    // with two blocks it never shows given to the sign, in the colors every palette shares.
+    const palette = buildPalette(ROLES, themeFor('space', 7)).pal;
+    const gm = galaxy.grid.toMap();
+    const use = Array.from({ length: SHARED_END }, (_, i) => i);
+    put('galaxy.bbl', serializeBlocks(putSaveSign(bbl.space, gm, palette, 2, 2, { posts: false, use })));
+    for (const x of [2, 3]) galaxy.grid.set(x, 2, gm.blocks[2 * 100 + x], true);
+    const sc = setup(SCENE.galaxy, 'The Galaxy', { pal: 'galaxy.pal', map: 'galaxy.map', bbl: 'galaxy.bbl', mon: 'space1.mon', mbl: 'space.mbl', chr: 'pod' });
     sc.links[0] = link(SCENE.home, galaxy.dock, home.arrive);
     galaxy.sectors.forEach((s, k) => (sc.links[1 + k] = link(SCENE.sector(k), s.warp, sectorMaps[k].arrive)));
     sc.links[6] = link(SCENE.maelstrom, { x: galaxy.core.x + 1, y: galaxy.core.y + 1 }, maelstrom.arrive);
@@ -229,7 +238,7 @@ export function buildGame(): Built {
       map: galaxy.grid,
       bbl: 'space',
       chr: 'pod',
-      palette: buildPalette(ROLES, themeFor('space', 7)).pal,
+      palette,
     });
   }
   // sector scenes and their worlds
@@ -415,7 +424,7 @@ export function buildGame(): Built {
   // flashes up between the picture and the galaxy scene's own fade-in.
   {
     put('dark.pal', serializePalette(new Uint8Array(768)));
-    const sc = setup(SCENE.between, 'Between Worlds', { pal: 'dark.pal', map: 'galaxy.map', bbl: 'space.bbl', chr: 'pod' });
+    const sc = setup(SCENE.between, 'Between Worlds', { pal: 'dark.pal', map: 'galaxy.map', bbl: 'galaxy.bbl', chr: 'pod' });
     sc.links[0] = link(SCENE.galaxy, galaxy.knot.beacon, galaxy.knot.out);
     sc.pos = { x: 157, y: 30 };
   }

@@ -13,7 +13,18 @@
 // block an animation is showing (GetTouchbl's blkmap), a monster's first form after a hero's shot
 // can touch him (fromchar), monsters feel no gravity (moveallmons), and StartSceneInits takes the
 // starting values from the first character only.
+// "Customizing the player's own words" is the hex edit found in Builder's player (the notes'
+// "The players"), with the CD XFERPLAY.EXE's strings in playerWords.ts (PLAYGAME.C, HISCOREL.C;
+// F-keys from DoFunKy), the web player's own words in engine/game.ts and menus.ts, the desk's
+// transfer-disk .EXE a name with no bytes (computer/drives.ts, so hexedit/hexFiles.ts finds no
+// file), and GMTITLE.GIF from PLAYBACK.C (the earlier player, under TRANSFER). The DOS player panel
+// it points to is editor/editors/integrator/dosPlayer/ (rules in dosPlayer/; its Files tab's
+// extensions in dosPlayer/fileExtensions.ts), PLAYHACK retro/hacks/.
 import { opening, tip, type Chapter } from './chapter';
+import { PLAYER_EXE, PLAYER_WORDS } from './playerWords';
+import { ARCHIVE_TRICKS } from './archiveTricks';
+
+const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 export const SHAREWARE: Chapter = {
   id: 'shareware',
@@ -82,6 +93,12 @@ export const SHAREWARE: Chapter = {
   swipe that kills what it touches (<i>Ninja Tuck</i>). A monster that rises a little and vanishes
   after 30 ticks, as the <b>Becomes</b> of each enemy, is a score that pops up where the enemy fell
   (<i>Shanna</i>). Both use monster slots, so keep count on a busy screen.</p>
+  <p><i>Ricci’s Cow Hunt</i> shows the recipe for the pop-up whole. Each cow is worth 100 points and
+  a hit point, and its <b>Becomes</b> is a second monster: a “100” that flashes red, black and white so it shows on any ground, at power 255 so
+  nothing can knock it out of the air, whose path floats it up 1 pixel a tick and whose lifetime
+  ends it 30 ticks later. Walk over a cow and its score drifts up from the spot and fades out. Give
+  each prize its own pop-up picture (10, 100, a heart for a life) and the player reads what they
+  just got without looking at the status line.</p>
   <h2>Timing by hand</h2>
   <p>Even steps look mechanical. A jump whose frames rise fast and slow at the top
   (<i>Ninja Tuck</i>), a patrol that slows into each corner by giving each leg its own speed, and a
@@ -92,6 +109,69 @@ export const SHAREWARE: Chapter = {
   picture. Fade a picture in or out, flash it or cycle its colors that way, and the whole
   animation stays tiny and plays on any PC (RSD’s own text-box animations in <i>Penguin Pete</i>).
   Fade-in and fade-out animations round a text screen in a slide list make a cheap page turn.</p>
+  ${ARCHIVE_TRICKS}
+  <h2>Customizing the player’s own words</h2>
+  <p>A transferred game’s <code>.EXE</code> is Game-Maker’s own <code>XFERPLAY.EXE</code>, renamed
+  after the game by Transfer (or by this edition’s DOS download). PLAYGAME’s built-in words live
+  inside it as plain text: the menu’s six choices, the save and load lines, the high-score screen.
+  A hex editor can change them. <i>Builder</i> did: its author overwrote every menu word with
+  spaces, so its own menu picture shows clean with nothing written over it. The choices still
+  work; only the words are gone. The same author’s unfinished <i>Rōdïp: Rover of the Deep</i>
+  renamed the status line’s Hitpoints and Lives to Energy and Failsafes, and cleared the
+  high-score words. These two games led this edition to map every word the player shows.</p>
+  <p><b>The safe way now:</b> open your game’s <code>.gam</code> and press <b>DOS player</b> in the
+  integrator’s toolbar (on the desk PC, <code>PLAYHACK</code> from the BBS’s Warez area does the same).
+  It changes the words, and the player’s colors, frames, positions, waits and the F5, F6 and F9
+  keys, but only in ways the <code>.EXE</code> can take, with a preview of each screen as you type.
+  The DOS download writes your changes into its copy of the player and lists them in its
+  <code>README.TXT</code>; Play and the web-page download show them too. Import a game folder
+  whose player was hand-edited, and its changes come into the panel. By hand, the rules are
+  these:</p>
+  <ul>
+    <li><b>Back up first.</b> Edit a copy, never the only one.</li>
+    <li><b>Same length only.</b> Type over the letters, and pad a shorter word with spaces. Never
+    insert or delete a byte: everything after it would move.</li>
+    <li><b>Preserve the terminating zero byte</b> (00 in the hex editor) after each word: it marks
+    where the word ends.</li>
+    <li><b>Keep every <code>%</code> placeholder exactly.</b> The F2 status lines are formats such as
+    <code>Hitpoints: %d</code>: the player fills in the number where the <code>%d</code> is. Change
+    only the words before the placeholder, and keep the placeholder (<code>%d</code>,
+    <code>%ld</code>, <code>%02ld</code>) byte for byte, in the same place, with the line the same
+    length. That is how <i>Rōdïp</i> made <code>Hitpoints: %d</code> into
+    <code>Energy:    %d</code>. A changed placeholder reads the wrong value and can crash the
+    player.</li>
+    <li><b>Plain ASCII text only.</b> Letters, digits, punctuation and spaces are safe; no accents or
+    line drawing, which the player can’t draw.</li>
+    <li><b>Leave the credits alone.</b> The F10 box’s version line and RSD’s lines stay as they
+    are, out of respect, and because Game-Maker’s license notice should travel with the player.</li>
+    <li><b>Test in DOSBox</b> after every change: the menu, F1, F5, F6, a drop and a high score.</li>
+  </ul>
+  <p>A hand edit changes only that one <code>.EXE</code>: the web player and the other downloads
+  don’t read it, and every DOS download starts from a fresh copy of the CD’s player. The DOS
+  player panel’s changes travel with the game instead. The desk’s <code>HEXEDIT</code> can’t do
+  it either: the <code>.EXE</code> on a transfer disk is only a name there (the desk plays the
+  game in this edition’s player), and it answers <i>File not found</i>.</p>
+  <p><b>Other extensions.</b> Acord Games went further: their player looked for
+  <code>.Z0G</code>, <code>.Z0N</code> and the like in place of <code>.GAM</code>, <code>.GIF</code>
+  and the rest, and their games’ files were renamed to match, so another copy of Game-Maker 3.0
+  couldn’t open them. The panel’s <b>Files</b> tab does the same for the DOS download only. The
+  kinds the player finds by their extension (the game file, pictures, backdrops, animations, text
+  pages, slide lists, recordings, voices, high scores and saves) are patched in its
+  <code>.EXE</code>; the kinds the <code>.gam</code> names (palettes, maps, blocks, monsters,
+  characters, sound sets and songs) are only renamed, with their names in the <code>.gam</code>,
+  slide lists and backdrops rewritten. Each new extension keeps three letters or digits, and no two
+  kinds share one. Your project, Play and the other downloads keep Game-Maker’s own names. It isn’t
+  real protection: this edition’s import reads the player and renames the files back.</p>
+  <p>Here is where the words are in the CD’s <code>XFERPLAY.EXE</code>: ${PLAYER_EXE.bytes.toLocaleString('en-US')} bytes, SHA-256
+  <code class="ug-hash">${PLAYER_EXE.sha256}</code>. Check both before you edit: the offsets belong to
+  that file only. Lines marked with a <code>%</code> are formats (see above).</p>
+  <table class="ug-words">
+    <tr><th>Offset</th><th>Bytes (without the 00)</th><th>Text</th><th>Shown</th></tr>
+    ${PLAYER_WORDS.map((w) => `<tr><td><code>${w.offset.toString(16).toUpperCase()}</code></td><td>${w.length}</td><td><code>${esc(w.text)}</code></td><td>${w.where}</td></tr>`).join('\n    ')}
+  </table>
+  <p>Offsets are in hex, counted from the first byte of the file. The F9 joystick screens’ lines
+  follow <code>MORE...</code>, most of them padded with spaces to 29 or 30 characters.</p>
+  ${tip('Before 3.00:', 'Earlier players would not start a game without <code>GMTITLE.GIF</code>, a “Recreational Software Designs’ Game-Maker Presents:” card shown first, and authors redrew it as their own studio’s card. The 3.00 player never looks for it: your opening is the title slide list, and in this edition the start scene’s Opening sting.')}
   <h2>Recipes for bigger ideas</h2>
   <p>Players watching Game-Maker games have cheered for digging, sneaking, swinging and rolling
   dice, sometimes in games, sometimes in a demo made to show them off. Here is how each can be

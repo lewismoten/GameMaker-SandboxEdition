@@ -1,6 +1,7 @@
 // YARD.BBL: out the open window, the backyard, and the wild beyond it where the nature
-// documentary is filming. Open air has no gravity (Carl hovers) except the gusts, which blow
-// him to the left while they last (next/ntime turns them on and off). The attributes:
+// documentary is filming. Open sky costs a sugar the first time Carl flies into it (common.ts
+// fresh()), the grass gives a lick of sugar now and then, and the gusts blow him to the left
+// while they last (next/ntime turns them on and off). The attributes:
 //   - pie and lemonade are a snack and a sip; nectar in a flower heals;
 //   - the wasp nest gives birth to wasps, the flytrap, the cactus, the spider's web and the pond
 //     hurt;
@@ -12,14 +13,14 @@ import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';
 import { HOURS, HOURS_NEEDED, MON, SNACKS } from '../ids';
-import { AIR, BlockBook, GRAV, LEDGE, SOLID } from './common';
+import { AIR, BlockBook, GRAV, LEDGE, LICK_EVERY, SOLID, SUGAR, SUGAR_CUBE, fresh, sugarCube } from './common';
 import { cut } from './house';
 
 /** Ticks between wasps from the nest. */
-export const WASP_EVERY = 90;
+const WASP_EVERY = 90;
 /** Ticks a gust blows, and the calm between gusts. */
-export const GUST_ON = 8;
-export const GUST_OFF = 30;
+const GUST_ON = 8;
+const GUST_OFF = 30;
 
 export function buildYard(pal: Pal): BlockBook {
   const book = new BlockBook();
@@ -33,8 +34,8 @@ export function buildYard(pal: Pal): BlockBook {
     for (let i = 0; i < 5; i++) p.set(Math.floor(r() * 20), Math.floor(r() * 20), c('sky', k + (r() < 0.5 ? 1 : -1)));
     return p;
   };
-  book.add('sky', sky(1), AIR);
-  book.add('skyHi', sky(2, 2), AIR);
+  book.add('sky', sky(1), fresh('skyFlown'));
+  book.add('skyHi', sky(2, 2), fresh('skyHiFlown'));
   const cloud = sky(3);
   blob(cloud, 8, 11, 7, 4, R('white'), 2, 3);
   blob(cloud, 14, 9, 5, 4, R('white'), 2, 3);
@@ -60,8 +61,8 @@ export function buildYard(pal: Pal): BlockBook {
   // the same, solid: the edges of the yard (Carl can't fly round the house or off into the sky)
   book.add('sidingWall', sidingAt(P()), { solid: SOLID });
   book.add('skyWall', sky(5, 2), { solid: SOLID });
-  const eave = P().rect(0, 0, 20, 20, c('grey', 1));
-  for (let x = 0; x < 20; x += 5) eave.line(x, 0, x + 4, 10, c('grey', 0));
+  const eave = P().rect(0, 0, 20, 20, c('gray', 1));
+  for (let x = 0; x < 20; x += 5) eave.line(x, 0, x + 4, 10, c('gray', 0));
   eave.rect(0, 12, 20, 5, c('white', 3)).rect(0, 17, 20, 3, c('steel', 1));
   book.add('eave', eave, { solid: SOLID });
   book.add('eaveWall', eave.crop(0, 0, 20, 20), { solid: SOLID });
@@ -75,7 +76,7 @@ export function buildYard(pal: Pal): BlockBook {
   blob(open, 20, 19, 6, 6, R('skin'), 1, 3);
   open.rect(16, 18, 3, 1, c('ink', 0)).rect(22, 18, 3, 1, c('ink', 0)).disc(20, 23, 1.6, c('ink', 0));
   blob(open, 20, 14, 6, 3, R('hair'), 0, 2);
-  open.rect(2, 33, 36, 4, c('white', 3)).rect(2, 37, 36, 1, c('grey', 1));
+  open.rect(2, 33, 36, 4, c('white', 3)).rect(2, 37, 36, 1, c('gray', 1));
   book.add('owTL', cut(open, 0, 0), AIR);
   book.add('owTR', cut(open, 1, 0), AIR);
   book.add('owBL', cut(open, 0, 1), AIR);
@@ -105,7 +106,8 @@ export function buildYard(pal: Pal): BlockBook {
     return p;
   };
   book.add('earth', earth(11), { solid: SOLID });
-  book.add('grass', grass(12), { solid: SOLID });
+  // dew in the grass: landed on, it gives a lick of sugar, then none for a while
+  book.add('grass', grass(12), { solid: SOLID, effect: SUGAR, eamt: 1, next: 'grassLicked', ntime: 1 });
   const fence = sky(13);
   for (let x = 1; x < 20; x += 5) {
     fence
@@ -124,11 +126,11 @@ export function buildYard(pal: Pal): BlockBook {
   postTop.rect(8, 4, 4, 16, c('wood', 2)).rect(2, 3, 16, 3, c('wood', 1));
   book.add('postTop', postTop, { solid: SOLID });
   const line = sky(16);
-  line.line(0, 5, 20, 5, c('grey', 1));
+  line.line(0, 5, 20, 5, c('gray', 1));
   book.add('line', line, AIR);
   const pegged = (k: string) => {
     const p = sky(17);
-    p.line(0, 5, 20, 5, c('grey', 1));
+    p.line(0, 5, 20, 5, c('gray', 1));
     for (let y = 5; y < 19; y++)
       for (let x = 4; x < 16; x++) p.set(x + Math.round(Math.sin(y / 4)), y, (x + Math.floor(y / 3)) % 4 === 0 ? c('white', 3) : c(k, 2));
     p.rect(6, 4, 2, 3, c('wood', 3)).rect(13, 4, 2, 3, c('wood', 3));
@@ -175,9 +177,9 @@ export function buildYard(pal: Pal): BlockBook {
   const lemonade = sky(24);
   lemonade.rect(6, 6, 8, 13, c('daisy', 2)).rect(6, 6, 8, 3, c('white', 3)).rect(6, 6, 1, 13, c('white', 3)).line(11, 2, 13, 8, c('red', 2));
   lemonade.set(12, 12, c('white', 3)).set(9, 14, c('white', 3));
-  book.add('lemonade', lemonade, { hp: 30, score: 10, touch: 'sky' });
+  book.add('lemonade', lemonade, { hp: 30, score: 10, touch: 'skyFlown' });
   const bath = sky(25);
-  bath.rect(8, 8, 4, 12, c('grey', 2)).rect(2, 4, 16, 4, c('grey', 3)).rect(3, 4, 14, 2, c('water', 2));
+  bath.rect(8, 8, 4, 12, c('gray', 2)).rect(2, 4, 16, 4, c('gray', 3)).rect(3, 4, 14, 2, c('water', 2));
   book.add('birdbath', bath, { solid: SOLID });
   // the tall grass at the end of the yard: in there is the wild
   const tall = (seed: number, wild: boolean) => {
@@ -275,12 +277,12 @@ export function buildYard(pal: Pal): BlockBook {
   book.add(
     'hour0',
     glass(() => sky(36), 0),
-    { ...hour, touch: 'sky', next: 'hour1', ntime: 12 },
+    { ...hour, touch: 'skyFlown', next: 'hour1', ntime: 12 },
   );
   book.add(
     'hour1',
     glass(() => sky(36), 1),
-    { ...hour, touch: 'sky', next: 'hour0', ntime: 12 },
+    { ...hour, touch: 'skyFlown', next: 'hour0', ntime: 12 },
   );
   // the desert where Brother Camel rests: sand, a cactus (it pricks)
   const sandAt = (top: boolean) => {
@@ -311,7 +313,7 @@ export function buildYard(pal: Pal): BlockBook {
   for (let rr = 5; rr < 22; rr += 5) for (let a = 0; a < Math.PI / 2; a += 0.08) web.set(Math.cos(a) * rr, Math.sin(a) * rr, c('white', 1));
   book.add('web', web, { hp: -4 });
   const rock = sky(40);
-  blob(rock, 10, 12, 9.5, 8, R('grey'), 0, 3);
+  blob(rock, 10, 12, 9.5, 8, R('gray'), 0, 3);
   book.add('rock', rock, { solid: SOLID });
   // a flower: nectar heals
   const flower = sky(41);
@@ -324,12 +326,12 @@ export function buildYard(pal: Pal): BlockBook {
   book.add('stalk', stalk, AIR);
   // the documentary crew's boom microphone, poking in from above (scenery)
   const boom = sky(42);
-  boom.rect(9, 0, 2, 8, c('grey', 1));
-  blob(boom, 10, 13, 4, 6, R('grey'), 0, 2);
-  for (let y = 8; y < 19; y += 2) boom.line(7, y, 13, y, c('grey', 0));
+  boom.rect(9, 0, 2, 8, c('gray', 1));
+  blob(boom, 10, 13, 4, 6, R('gray'), 0, 2);
+  for (let y = 8; y < 19; y += 2) boom.line(7, y, 13, y, c('gray', 0));
   book.add('boom', boom, AIR);
   const pole = sky(43);
-  pole.rect(9, 0, 2, 20, c('grey', 1));
+  pole.rect(9, 0, 2, 20, c('gray', 1));
   book.add('boomPole', pole, AIR);
   // the big clock: it only breaks for twenty-four hours, and time stops here
   const clock = (broken: boolean) => {
@@ -349,5 +351,10 @@ export function buildYard(pal: Pal): BlockBook {
   book.add('clockBroken', clock(true), AIR);
   // (last, so every other block keeps its number)
   book.add('cactusTop', cactusTop, { solid: SOLID, hp: -6 });
+  // (last too) the flown twins of fresh sky, the licked grass, and a sugar cube in the air
+  book.add('skyFlown', sky(1), AIR);
+  book.add('skyHiFlown', sky(2, 2), AIR);
+  book.add('grassLicked', grass(12), { solid: SOLID, next: 'grass', ntime: LICK_EVERY });
+  book.add('sugarS', sugarCube(sky(1), pal), { effect: SUGAR, eamt: SUGAR_CUBE, touch: 'skyFlown' });
   return book;
 }

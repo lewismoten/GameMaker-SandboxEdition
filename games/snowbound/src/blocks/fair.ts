@@ -34,7 +34,7 @@ export function addFair(k: Ctx, { sidewalk }: Painters, { mallWall }: ReturnType
   const ink = c('ink', 0);
   volunteer.rect(5, 1, 10, 2, ink).rect(3, 2, 14, 1, ink).set(3, 1, ink).set(16, 1, ink).set(10, 0, ink);
   volunteer.rect(6, 3, 8, 5, c('skin', 2)).rect(6, 3, 8, 1, c('hair', 1)).rect(13, 4, 1, 3, c('skin', 1));
-  volunteer.set(7, 5, c('grey', 2)).set(8, 5, c('grey', 2)).set(11, 5, c('grey', 2)).set(12, 5, c('grey', 2)).set(9, 5, c('grey', 3)).set(10, 5, c('grey', 3));
+  volunteer.set(7, 5, c('gray', 2)).set(8, 5, c('gray', 2)).set(11, 5, c('gray', 2)).set(12, 5, c('gray', 2)).set(9, 5, c('gray', 3)).set(10, 5, c('gray', 3));
   volunteer.set(8, 5, ink).set(11, 5, ink).rect(9, 7, 2, 1, c('skin', 0));
   volunteer.rect(4, 8, 12, 3, c('snow', 5)).rect(3, 9, 14, 2, c('snow', 5)).rect(5, 8, 10, 1, c('snow', 6));
   for (let x = 3; x < 17; x += 2) volunteer.set(x, 10, c('snow', 3));

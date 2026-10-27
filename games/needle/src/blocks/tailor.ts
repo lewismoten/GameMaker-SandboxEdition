@@ -94,7 +94,7 @@ export function tailorBlocks(pal: Pal): Kit {
   table.rect(0, 0, 20, 2, c('wood', 4));
   book.add('table', table, { solid: SOLID });
   const treadle = panel(17, 2);
-  treadle.line(2, 0, 10, 19, c('grey', 1)).line(18, 0, 10, 19, c('grey', 1)).ring(10, 10, 5, c('grey', 2));
+  treadle.line(2, 0, 10, 19, c('gray', 1)).line(18, 0, 10, 19, c('gray', 1)).ring(10, 10, 5, c('gray', 2));
   book.add('treadle', treadle, air);
   // the machine itself, drawn whole (3 x 6 blocks) and cut: the head over the needle (the needle is
   // a monster that stabs down out of it), the arm, the pillar with its wheel, the bed on the table

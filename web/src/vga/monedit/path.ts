@@ -1,6 +1,6 @@
 // The path editor (makepath in MONEDIT.C): draw the corners of a monster's march path (or
 // attack path) on a grid, choosing the picture and speed of each stretch.
-import { BLACK, BLEN, GREEN, GREY2, GREY3, GREY4, RED1, RED2, RED3 } from '../shared/facelift';
+import { BLACK, BLEN, GREEN, GRAY2, GRAY3, GRAY4, RED1, RED2, RED3 } from '../shared/facelift';
 import { type March } from '../../formats/monster';
 import { LS, TS, PATHHELPFILE, OX, OY, PHX, PHY, PMX, PMY, TX, TY, TTX, FUNAR, pad, idiv } from './layout';
 import { MonsterMakerDraw } from './draw';
@@ -81,7 +81,7 @@ export abstract class MonsterPathEditor extends MonsterMakerDraw {
         if (!r.inBox) {
           v.moucur(true);
           frombox = false;
-          v.boxFill(TTX, TY - 1, TTX + 72, TY + 7, fc[GREY2]);
+          v.boxFill(TTX, TY - 1, TTX + 72, TY + 7, fc[GRAY2]);
         }
       } else if (r.inBox) {
         v.moucur(false);
@@ -232,8 +232,8 @@ export abstract class MonsterPathEditor extends MonsterMakerDraw {
           face.boxWithText(OX - 2, OY + 6 + BLEN, `Go To: ${pad(move[spot2].x - hl, 3)},${pad(-move[spot2].y + hw, 3)}`);
           this.drawbl(OX, OY, this.curPic(this.pick), move[spot2].orient);
         } else {
-          v.boxFill(OX - 2, OY + 6 + BLEN, OX + 110, OY + 14 + BLEN, fc[GREY2]);
-          v.boxFill(OX - 2, OY + 18 + BLEN, OX + 110, OY + 26 + BLEN, fc[GREY2]);
+          v.boxFill(OX - 2, OY + 6 + BLEN, OX + 110, OY + 14 + BLEN, fc[GRAY2]);
+          v.boxFill(OX - 2, OY + 18 + BLEN, OX + 110, OY + 26 + BLEN, fc[GRAY2]);
           this.drawFnButs(OX + BLEN + 31, OY + 9, 0);
         }
         if (spot === -1 && status === 3) v.point(LS + (oldx - LS) * 4, TS + (my - TS) * 4, fc[RED1]);
@@ -246,8 +246,8 @@ export abstract class MonsterPathEditor extends MonsterMakerDraw {
   protected drawFnButs(x: number, y: number, orient: number): void {
     const fc = this.face.cols;
     const col = [
-      [fc[GREY3], fc[RED1], fc[BLACK], fc[RED2]],
-      [fc[GREY3], fc[RED3], fc[GREEN], fc[GREY3]],
+      [fc[GRAY3], fc[RED1], fc[BLACK], fc[RED2]],
+      [fc[GRAY3], fc[RED3], fc[GREEN], fc[GRAY3]],
     ];
     const dir: number[] = [];
     for (let j = 0; j < 3; j++) {
@@ -276,24 +276,24 @@ export abstract class MonsterPathEditor extends MonsterMakerDraw {
     v.write(TX, TY + 12, fc[RED1], 'Relative to');
     if (status === 3) face.boxWithText(TTX, TY + 11, 'Character');
     else face.boxWithText(TTX, TY + 11, ' Monster ');
-    v.boxFill(TTX, TY - 1, TTX + 72, TY + 7, fc[GREY2]);
-    v.line(TTX - 1, TY - 1, TTX - 1, TY + 7, fc[GREY2]);
-    v.line(TTX - 1, TY - 2, TTX + 72, TY - 2, fc[GREY2]);
+    v.boxFill(TTX, TY - 1, TTX + 72, TY + 7, fc[GRAY2]);
+    v.line(TTX - 1, TY - 1, TTX - 1, TY + 7, fc[GRAY2]);
+    v.line(TTX - 1, TY - 2, TTX + 72, TY - 2, fc[GRAY2]);
 
     face.drawsurface(OX - 5, OY - 5, 118, BLEN + 34);
     v.write(OX + BLEN + 4, OY - 2, fc[RED1], 'Current Leg');
-    v.boxFill(OX + BLEN + 28, OY + 9, OX + BLEN + 65, OY + 20, fc[GREY3]);
+    v.boxFill(OX + BLEN + 28, OY + 9, OX + BLEN + 65, OY + 20, fc[GRAY3]);
     this.drawFnButs(OX + BLEN + 31, OY + 9, 0);
     v.boxFill(OX - 2, OY - 2, OX + BLEN + 1, OY + BLEN + 1, fc[GREEN]);
-    v.line(OX - 3, OY - 2, OX - 3, OY + BLEN + 1, fc[GREY3]);
-    v.line(OX - 3, OY - 3, OX + BLEN + 1, OY - 3, fc[GREY4]);
+    v.line(OX - 3, OY - 2, OX - 3, OY + BLEN + 1, fc[GRAY3]);
+    v.line(OX - 3, OY - 3, OX + BLEN + 1, OY - 3, fc[GRAY4]);
     this.drawbl(OX, OY, this.curPic(this.pick), 0);
-    v.boxFill(OX - 2, OY + BLEN + 6, OX + 110, OY + BLEN + 14, fc[GREY2]);
-    v.line(OX - 3, OY + BLEN + 5, OX - 3, OY + BLEN + 14, fc[GREY3]);
-    v.line(OX - 3, OY + BLEN + 5, OX + 110, OY + BLEN + 5, fc[GREY4]);
-    v.boxFill(OX - 2, OY + 18 + BLEN, OX + 110, OY + 26 + BLEN, fc[GREY2]);
-    v.line(OX - 3, OY + BLEN + 17, OX - 3, OY + BLEN + 26, fc[GREY3]);
-    v.line(OX - 3, OY + BLEN + 17, OX + 110, OY + BLEN + 17, fc[GREY4]);
+    v.boxFill(OX - 2, OY + BLEN + 6, OX + 110, OY + BLEN + 14, fc[GRAY2]);
+    v.line(OX - 3, OY + BLEN + 5, OX - 3, OY + BLEN + 14, fc[GRAY3]);
+    v.line(OX - 3, OY + BLEN + 5, OX + 110, OY + BLEN + 5, fc[GRAY4]);
+    v.boxFill(OX - 2, OY + 18 + BLEN, OX + 110, OY + 26 + BLEN, fc[GRAY2]);
+    v.line(OX - 3, OY + BLEN + 17, OX - 3, OY + BLEN + 26, fc[GRAY3]);
+    v.line(OX - 3, OY + BLEN + 17, OX + 110, OY + BLEN + 17, fc[GRAY4]);
 
     face.drawsurface(PHX - 3, PHY - 2, 42, 28); //  Draw the menu
     face.helpb(PHX, PHY);

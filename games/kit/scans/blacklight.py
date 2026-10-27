@@ -124,7 +124,7 @@ def regions(rgb: np.ndarray, inside: np.ndarray) -> np.ndarray:
     (x0, y0), (x1, y1) = BAND
     edge = y0 + (xs - x0) * (y1 - y0) / (x1 - x0)
     lab[hat & (ys < edge) & (ys > edge - 20)] = PARTS.index('band')
-    # the skin in two flat tones by how lit it is; the grey stubble one violet beard shape
+    # the skin in two flat tones by how lit it is; the gray stubble one violet beard shape
     # (the makeup, the glasses and the eyes are drawn over it: FEATURES)
     lab[face] = PARTS.index('shade')
     lab[face & (lum > 115)] = PARTS.index('face')
@@ -391,8 +391,8 @@ def compose(night: bool, look: int = 0) -> Image.Image:
         img = base * 0.6 + lit + glow * 0.55
     else:
         # plain light: the inks read as chalky pastels on the velvet, no glow
-        grey = ink.mean(-1, keepdims=True)
-        muted = (ink * 0.45 + grey * 0.35) * 0.75 + 30
+        gray = ink.mean(-1, keepdims=True)
+        muted = (ink * 0.45 + gray * 0.35) * 0.75 + 30
         img = base * (1 - level[..., None] * 0.85) + muted * level[..., None] * 0.85
     # the black flocking over it all (it doesn't glow)
     img = img * (1 - black[..., None] * 0.92) + VELVET * 0.5 * black[..., None] * 0.92

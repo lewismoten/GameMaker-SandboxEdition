@@ -1,5 +1,5 @@
 {
-  "pitch": "Sparky 3000 ate Dex Dynamo's science report: find 20 pages across the suburbs, the Superhighway, the Mega Mall and the Moon before the Science Fair at 3:00. Bring a quarter!",
+  "pitch": "Sparky 3000 ate Dex Dynamo's science report: find 20 pages across the suburbs, the clouds, the Superhighway, the Mega Mall and the Moon before the Science Fair at 3:00. Bring a quarter!",
   "keys": {
     "Space": "Fire the Laser-Tag Zapper (find it in your backyard first)",
     "F2": "Status: score, lives, hit points and quarters in your pocket"
@@ -16,21 +16,39 @@
           "hints": [
             {
               "q": "Where is the Laser-Tag Zapper?",
-              "a": "In your own backyard, north of the garage wall. You need the garage remote to open the GATE CLICK door first."
+              "a": "In your own backyard, north of the garage wall. The clicker on Grandpa's key ring opens the GATE CLICK door first."
             },
             {
-              "q": "Where is the garage remote?",
-              "a": "In the hedge garden at the bottom left of the neighborhood. Squeeze in through the gaps in the hedges; a robo-mower guards it."
+              "q": "Where are Grandpa's keys?",
+              "a": "In the hedge garden at the bottom left of the neighborhood. Squeeze in through the gaps in the hedges; a robo-mower guards them. The ring opens both the garage gate and the CitiCar."
             },
             {
-              "q": "Which phone booth works?",
-              "a": "Not the OUT one, and not the one that just rings. The working booth is in the far right corner, past the newspaper cannons. Keep a quarter for it!"
+              "q": "How do I leave the neighborhood?",
+              "a": "In Grandpa's CitiCar, plugged in by your dome. Its door has a note on it: KEYS? Find his key ring, then walk into the door. (The corner phone booths are all out of order today. Save your quarters for later.)"
             },
             { "q": "Can I zap the hoverboard kids?", "a": "No. They zoom up and down the roads, so look both ways and cross behind them." }
           ]
         },
         {
-          "head": "2. The Information Superhighway",
+          "head": "2. The Cloud Lane",
+          "hints": [
+            {
+              "q": "How do I drive this thing?",
+              "a": "You don't: Grandpa's CitiCar flies itself. Left and Right (or A and D) steer it one whole lane at a time. Up and Down do nothing up here."
+            },
+            {
+              "q": "The traffic keeps hitting me!",
+              "a": "Everything comes out of the middle of the horizon as a dot, then slides into its lane. Watch which way the dot drifts, and move as soon as you know. When two lanes are blocked, the third is clear, and often has a page in it."
+            },
+            {
+              "q": "Where does it end?",
+              "a": "Watch the sign: SKYWAY 9 MI counts down a mile every six seconds. At 0 MI the exit ramp lights up over the RIGHT lane. Be in the right lane and the car takes the ramp by itself."
+            },
+            { "q": "I'm low on hit points.", "a": "Dinner pills come down the lanes too. Steer into one for a turkey dinner." }
+          ]
+        },
+        {
+          "head": "3. The Information Superhighway",
           "hints": [
             {
               "q": "How do I cross fourteen lanes of traffic?",
@@ -44,7 +62,7 @@
           ]
         },
         {
-          "head": "3. Mega Mall 2000",
+          "head": "4. Mega Mall 2000",
           "hints": [
             {
               "q": "How do I get the STAFF ONLY keycard?",
@@ -62,7 +80,7 @@
           ]
         },
         {
-          "head": "4. The Teleport-A-Phone Exchange",
+          "head": "5. The Teleport-A-Phone Exchange",
           "hints": [
             {
               "q": "Which number do I dial?",
@@ -74,13 +92,13 @@
             },
             {
               "q": "How do I get on the Moon Shuttle?",
-              "a": "Walk up the boarding ramp right under the rocket. The booth on the launch pad only takes you back to the hall."
+              "a": "Walk up the boarding ramp right under the rocket. It's chained off while the countdown runs (6, 5, 4...): wait for its board to say GO. The booth on the launch pad only takes you back to the hall."
             },
             { "q": "I'm hurt. Is there help?", "a": "Booth 1 goes to Grandma's condo in Florida. She gives a big hug that heals you." }
           ]
         },
         {
-          "head": "5. The Moon",
+          "head": "6. The Moon",
           "hints": [
             { "q": "Where is the Moon Pass?", "a": "At the top left of the Moon, west of the big dome. Hop up meteor alley to get it." },
             {
@@ -94,7 +112,7 @@
           ]
         },
         {
-          "head": "6. The Science Fair",
+          "head": "7. The Science Fair",
           "hints": [
             {
               "q": "How do I catch Sparky?",
@@ -102,7 +120,7 @@
             },
             {
               "q": "The cover page vanished!",
-              "a": "You zapped it. A zap burns the cover page up, so stop firing once Sparky drops it. Start the level over and try again."
+              "a": "You zapped it. A zap burns the cover page up, so stop firing once Sparky drops it. The school keeps one spare cover, on the floor right beside the copier at the bottom of the gym: walk into it. There is only the one."
             },
             {
               "q": "What do I do at the judges' table?",

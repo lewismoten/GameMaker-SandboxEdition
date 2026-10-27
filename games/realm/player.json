@@ -1,0 +1,20 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.instructions": "How to Quest",
+    "str.menu.storyline": "The Legend",
+    "str.menu.highScores": "Hall of Heroes",
+    "str.hiscore.title": "Hall of Heroes",
+    "str.hiscore.congrats": "Huzzah, hero!",
+    "str.invent.money": "Gold:      %d",
+    "str.load.done": " Quest resumed!",
+    "str.save.done": "Quest kept!",
+    "color.rgb.hsGreen": [63, 58, 30],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.congrats.x": 108
+  }
+}

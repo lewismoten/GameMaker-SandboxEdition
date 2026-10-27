@@ -12,7 +12,7 @@ import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/forma
 import type { BlockBook } from '../blocks/common';
 import { MON } from '../ids';
 
-export interface LinkSpec {
+interface LinkSpec {
   from: [number, number];
   toScene: 'next' | 'won';
 }
@@ -20,7 +20,7 @@ export interface LinkSpec {
 /** Where a level's map sits in the 100x100 world (the rest is solid). */
 export const ORIGIN = 2;
 
-export class MapBuilder {
+class MapBuilder {
   readonly map: GameMap = newMap();
   readonly links: LinkSpec[] = [];
   private monCount = 0;
@@ -403,7 +403,7 @@ const EYE_SHADES: [number, number, number][] = [
   [38, 38, -0.5],
   [39, 43, 0],
 ];
-export const eyeShade = (row: number): number => {
+const eyeShade = (row: number): number => {
   const s = EYE_SHADES.find(([a, b]) => row >= a && row <= b)![2];
   return s < 0 ? Math.ceil(-s) : s;
 };

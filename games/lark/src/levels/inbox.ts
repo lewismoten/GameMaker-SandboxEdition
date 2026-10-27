@@ -6,7 +6,7 @@
 import type { Bestiary, BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const INBOX_ROWS = [
+const INBOX_ROWS = [
   '########################',
   '#......................#',
   '#......................#',

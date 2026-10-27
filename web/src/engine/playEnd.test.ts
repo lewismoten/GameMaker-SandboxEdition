@@ -15,14 +15,14 @@ const ROWS = [
 ];
 
 /** Plays the bot's walkthrough of the test game; `real` makes play look like a player's at the end. */
-async function playThrough(real: boolean): Promise<{ ends: [number, string][]; score: number; won: boolean }> {
+async function playThrough(real: boolean): Promise<{ ends: [number, string, number][]; score: number; won: boolean }> {
   const t = testGame(ROWS);
   const r = await autoWalk(t.game, t, 'test');
   const run = new WalkRun(headlessCanvas(), new GameFiles(t.files), 'test.gam', { ...r.walk!, story: false });
   await run.start();
   const s = run.session!;
-  const ends: [number, string][] = [];
-  s.onPlayEnd = (score, how) => ends.push([score, how]);
+  const ends: [number, string, number][] = [];
+  s.onPlayEnd = (score, how, gained) => ends.push([score, how, gained]);
   let won = false;
   const onScene = s.onScene!;
   s.onScene = (n) => {
@@ -44,7 +44,7 @@ describe('the end of play', () => {
     const p = await playThrough(true);
     expect(p.won).toBe(true);
     expect(p.score).toBeGreaterThan(0);
-    expect(p.ends).toEqual([[p.score, 'won']]);
+    expect(p.ends).toEqual([[p.score, 'won', p.score]]); // nothing loaded: all its own
   }, 60_000);
 
   it('is never told during playback', async () => {

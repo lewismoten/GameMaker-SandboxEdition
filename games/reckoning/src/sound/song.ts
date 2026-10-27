@@ -22,7 +22,7 @@ import { sbi } from '../../../kit/music';
 import { CELESTA, REED, Writer, type Groove } from '../../../kit/song';
 import { DRUM, Fx, boomPatch, detuned, leveled, sweep, waved } from '../../../kit/songFx';
 
-export const BPM = 100;
+const BPM = 100;
 
 // ---- the patches --------------------------------------------------------------------------
 
@@ -413,7 +413,7 @@ function overture(a: Arranger): void {
 }
 
 /** Title: the overture. */
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   const a = new Arranger(84);
   overture(a);
   a.ominous('Dm', 1, 96);
@@ -421,7 +421,7 @@ export function titleSong(): Uint8Array {
 }
 
 /** Story pages: the enemy-lover's theme, slow, on the organ, and the cow. */
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const a = new Arranger(72);
   a.section(TEMPT, { comp: 'organ', lead: REED, sing: 'solo', bass: 'long', drums: ['none'], vel: 90 });
   a.moo(100);
@@ -433,7 +433,7 @@ export function storySong(): Uint8Array {
  * enemy-lover's theme, swooning, the cow mooing; the galop; the Devil's tango, his cackle, the
  * tango again a whole step up.
  */
-export function levelSongs(): Record<'sneak' | 'fridge' | 'dash' | 'hell', Uint8Array> {
+function levelSongs(): Record<'sneak' | 'fridge' | 'dash' | 'hell', Uint8Array> {
   const sneak = new Arranger(96);
   sneak.section(SNEAK, { comp: 'pizz', lead: CELESTA, sing: 'solo', bass: 'tiptoe', drums: ['tiptoe'], vel: 92 });
   sneak.section(SNEAK, { comp: 'celesta', lead: PIZZ, sing: 'solo', bass: 'tiptoe', drums: ['tiptoe'], vel: 90 });
@@ -465,7 +465,7 @@ export function levelSongs(): Record<'sneak' | 'fridge' | 'dash' | 'hell', Uint8
 }
 
 /** Won: the tango in triumph, a dramatic pause, the thunder, then the lament humming away to nothing. */
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const a = new Arranger(112);
   a.section(TANGO, { comp: 'choir', lead: BRASS, sing: 'twin', bass: 'habanera', drums: tango(8), vel: 110, shift: 2 });
   a.pause(4).thunder(4, 120);
@@ -476,7 +476,7 @@ export function wonSong(): Uint8Array {
 }
 
 /** Lost: the sad trombone, and the cow. */
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const a = new Arranger(76);
   a.trombone();
   a.moo(96);
@@ -485,7 +485,7 @@ export function lostSong(): Uint8Array {
 }
 
 /** The menu: the whole score in order. */
-export function wholeSong(): Uint8Array {
+function wholeSong(): Uint8Array {
   const a = new Arranger(96);
   a.pause(4).thunder(4);
   a.ominous('Dm', 2);
@@ -507,5 +507,3 @@ export function allSongs(): Record<string, Uint8Array> {
   const levels = levelSongs();
   return { title: titleSong(), story: storySong(), ...levels, won: wonSong(), lost: lostSong(), menu: wholeSong() };
 }
-
-export { voicing, root };

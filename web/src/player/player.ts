@@ -183,7 +183,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
         await runGame(machine, gamFile, {
           joystick: readGamepad,
           onQuit: () => true,
-          onFrame: touch ? (w) => touch.setKeys(w.chr.sequences.map((s) => s.key >> 8)) : undefined,
+          onFrame: touch ? (w) => touch.setSequences(w.chr.sequences) : undefined,
           ...opts,
           ...(hearts && {
             onSession: (s) => (hearts.onSession(s), opts.onSession?.(s)),

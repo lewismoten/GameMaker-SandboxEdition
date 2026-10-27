@@ -1,7 +1,7 @@
 // Drawing the Integrator's world: scenes as small boxes colored by kind, the links between
 // them (drawn and erased with XOR, as GRATOR.C does), and the buttons.
 import { ADVTYPE, ENDTYPE, MAXSCENELINKS, NOSCENE, STARTTYPE, emptyLink, emptyScene } from '../../formats/game';
-import { Face, GREEN, GREY2, GREY3, GREY4, RED1, initStartCols } from '../shared/facelift';
+import { Face, GREEN, GRAY2, GRAY3, GRAY4, RED1, initStartCols } from '../shared/facelift';
 import {
   NOTUSED,
   NOLINK,
@@ -76,8 +76,8 @@ export abstract class IntegratorDraw extends IntegratorState {
   protected draw(): void {
     const { v, face, scns, curworld } = this;
     const fc = face.cols;
-    v.line(WX - 1, WORLDTOP, WX - 1, WORLDTOP + WWID, fc[GREY3]); // Erase the World
-    v.line(WX - 1, WORLDTOP - 1, WX + WLEN, WORLDTOP - 1, fc[GREY4]);
+    v.line(WX - 1, WORLDTOP, WX - 1, WORLDTOP + WWID, fc[GRAY3]); // Erase the World
+    v.line(WX - 1, WORLDTOP - 1, WX + WLEN, WORLDTOP - 1, fc[GRAY4]);
     v.boxFill(WX, WORLDTOP, WX + WLEN, WORLDTOP + WWID, this.worldcol);
     for (let lo = 0; lo < this.numScenes; lo++) if (scns[lo].gametype !== NOSCENE && lo !== curworld) this.drawSceneLinks(lo, BACKLINK);
     const sel = curworld !== NOTUSED && scns[curworld].gametype !== NOSCENE;
@@ -114,14 +114,14 @@ export abstract class IntegratorDraw extends IntegratorState {
     v.setAllPalTo(colors[face.bkg]);
     this.bcol = fc[RED1];
     this.acol = fc[GREEN];
-    this.speccol = fc[GREY4];
+    this.speccol = fc[GRAY4];
 
     face.drawsurface(WX - 3, WORLDTOP - 27, WLEN + 6, WWID + 30);
     v.moucurbox(2, 1, 318, 198);
     face.boxWithText(TEXTX, NORMDESCY, '              ');
     face.boxWithText(TEXTX, SELDESCY, '              ');
-    v.boxFill(TEXTX, NORMDESCY, TEXTX + 112, NORMDESCY + 8, fc[GREY2]);
-    v.boxFill(TEXTX, SELDESCY, TEXTX + 112, SELDESCY + 8, fc[GREY2]);
+    v.boxFill(TEXTX, NORMDESCY, TEXTX + 112, NORMDESCY + 8, fc[GRAY2]);
+    v.boxFill(TEXTX, SELDESCY, TEXTX + 112, SELDESCY + 8, fc[GRAY2]);
     v.write(TEXTX - 99, SELDESCY + 1, fc[RED1], '  Selected  ');
     v.write(TEXTX - 99, NORMDESCY + 1, fc[RED1], 'Last Touched');
     this.draw();

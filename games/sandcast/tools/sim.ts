@@ -48,7 +48,7 @@ export function loadDisk(): Map<string, Uint8Array> {
 }
 
 /** Key events for one stretch of play, from entering `scene` until the next scene. */
-export interface SimSegment {
+interface SimSegment {
   scene: number;
   keys: RecordedKey[];
 }

@@ -7,7 +7,7 @@ import type { Place } from '../sound/sounds';
 import type { SongName } from '../sound/song';
 import { banquet, baths, battle, kitchen, roofs, theater, type Level } from './maps';
 
-export interface LevelDef {
+interface LevelDef {
   file: string;
   desc: string;
   set: BlockSet;

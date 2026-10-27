@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { currentMail, deliverMail, mailComes, openMail, readMail } from './replyMail';
 import { replyTo } from './mailCard';
-import { SERIAL } from './registration';
+import { FACTORY_SERIAL as SERIAL } from './registration';
 
 describe('the registration reply’s envelope', () => {
   let store: Map<string, string>;
@@ -16,7 +16,7 @@ describe('the registration reply’s envelope', () => {
   });
   afterEach(() => vi.unstubAllGlobals());
 
-  const reply = replyTo({ name: 'John Smith' });
+  const reply = replyTo({ name: 'John Smith' }, SERIAL);
 
   it('comes for a first reply, and not again for the same one', () => {
     expect(mailComes(undefined, reply)).toBe(true);
@@ -37,7 +37,7 @@ describe('the registration reply’s envelope', () => {
   it('brings a new envelope for a reply to another name', () => {
     deliverMail(reply);
     openMail();
-    const other = deliverMail(replyTo({ name: 'Jane Doe' }));
+    const other = deliverMail(replyTo({ name: 'Jane Doe' }, SERIAL));
     expect(other).toMatchObject({ name: 'Jane Doe', opened: false });
   });
 
@@ -62,9 +62,9 @@ describe('the registration reply’s envelope', () => {
         throw new Error('blocked');
       },
     });
-    const m = deliverMail(replyTo({ name: 'Private Window' }));
+    const m = deliverMail(replyTo({ name: 'Private Window' }, SERIAL));
     expect(m?.name).toBe('Private Window');
     expect(currentMail()?.name).toBe('Private Window');
-    expect(deliverMail(replyTo({ name: 'Private Window' }))).toBeUndefined();
+    expect(deliverMail(replyTo({ name: 'Private Window' }, SERIAL))).toBeUndefined();
   });
 });

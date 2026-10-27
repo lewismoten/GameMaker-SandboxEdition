@@ -16,8 +16,10 @@ const ARROWS = new Set([72, 75, 77, 80, 71, 73, 79, 81]);
 
 /** Every word the game shows as text: its .txt screens. */
 export function gameText(files: GameFiles): string {
+  // GMHELP.TXT is Game-Maker's general help, which a stand-alone game's F1 never shows
   return files
     .byExtension('txt')
+    .filter((n) => n !== 'gmhelp.txt')
     .map((n) => new TextDecoder('latin1').decode(files.get(n)))
     .join('\n');
 }
@@ -27,7 +29,13 @@ export function mentions(text: string, scan: number): boolean {
   const name = scanName(scan);
   const words: Record<string, string[]> = { Space: ['space', 'spacebar', 'space bar'], Enter: ['enter', 'return'], Ctrl: ['ctrl', 'control'], Alt: ['alt'] };
   const alts = words[name] ?? [name];
-  return alts.some((w) => (w.length === 1 ? new RegExp(`(^|[^A-Za-z])${w}([^A-Za-z]|$)`).test(text) : new RegExp(`\\b${w}\\b`, 'i').test(text)));
+  return alts.some((w) => {
+    // a key named by punctuation ("(", "[") is matched as itself, not as a pattern
+    const e = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (w.length === 1) return new RegExp(`(^|[^A-Za-z])${e}([^A-Za-z]|$)`).test(text);
+    const edge = (c: string) => (/\w/.test(c) ? '\\b' : '');
+    return new RegExp(`${edge(w[0])}${e}${edge(w[w.length - 1])}`, 'i').test(text);
+  });
 }
 
 export function controls(files: GameFiles): Finding[] {
@@ -108,6 +116,35 @@ export function characterChecks(d: SceneData): Finding[] {
         where,
       });
   }
+  return out;
+}
+
+/** PLAYGAME's cap on the hero's move in one tick, frames and gravity together (PLAYGAME.C MAXGRAV). */
+const MAXSTEP = 11;
+
+/** Sequences with frames that step further than PLAYGAME lets the hero move in a tick. */
+export function speedCap(d: SceneData): Finding[] {
+  const out: Finding[] = [];
+  const use = blockUse(d.map);
+  const pullsDown = d.bbl.some((b, n) => use[n] && b.grav & 4 && !(b.grav & 1));
+  d.chr.sequences.forEach((s, i) => {
+    if (s.momentum || (i >= 5 && !s.key && !s.jstkMov && !s.jstkBut)) return;
+    const end = s.frames.findIndex((f) => f.pic2 === CHARBL + 1);
+    // a frame that births a monster uses its y for where (movechars), so only drawn frames move
+    const frames = s.frames.slice(0, end < 0 ? s.frames.length : end).filter((f) => f.pic2 < CHARBL);
+    // the cap is on the frame plus gravity, so a jump up against a pull down may come in under it
+    const steps = frames.map((f) => Math.max(Math.abs(f.x), f.y > 0 || !pullsDown ? Math.abs(f.y) : 0));
+    const big = Math.max(0, ...steps);
+    if (big <= MAXSTEP) return;
+    const what = i >= 5 && s.key ? `The ${scanName(s.key >> 8)} key’s sequence (${i})` : `Sequence ${i}`;
+    out.push({
+      check: 'speed-cap',
+      severity: 'warning',
+      title: `${what} moves the hero ${big} px in a frame, and PLAYGAME stops him at ${MAXSTEP}`,
+      detail: `PLAYGAME moves the hero at most ${MAXSTEP} px a tick, gravity included, so this move goes less far than it says, and a jump comes up short. For a longer move, give it more frames of ${MAXSTEP} px or less.`,
+      where: { scene: d.scene, file: d.names.chr },
+    });
+  });
   return out;
 }
 

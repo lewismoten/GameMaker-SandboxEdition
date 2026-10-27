@@ -9,8 +9,8 @@ F2 status F5 save F6 load
 
 SAND: scoop sand piles, and
 dig dunes by walking into them
-with the shovel. F2 shows your
-sand as Money. Sand plugs
+with the shovel. F2 counts the
+sand you carry. Sand plugs
 anthills, fills fords and
 builds towers.
 

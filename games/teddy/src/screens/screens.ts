@@ -27,7 +27,7 @@ const c = (n: string, k: number) => SP.c(n, k);
 const W = 320;
 const H = 200;
 
-export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
+function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
@@ -68,7 +68,7 @@ export function landscape(seed = 1, bigTop = true): Pixels {
 }
 
 /** The logo: TEDDY'S / LITTLE BIG / ADVENTURE in chunky outlined letters. */
-export function logo(p: Pixels, y: number, cx = W / 2): void {
+function logo(p: Pixels, y: number, cx = W / 2): void {
   const line = (s: string, yy: number, scale: number, fill: number, edge: number) => {
     const x = Math.round(cx - textWidth(s, scale) / 2);
     for (const [dx, dy] of [
@@ -95,7 +95,7 @@ function leoBig(p: Pixels, x: number, y: number, s: number, wearing?: Costume, w
 }
 
 /** The text panel Game-Maker writes into (x 40..288, y 40..167), with a heading above. */
-export function page(heading: string, seed = 3): Pixels {
+function page(heading: string, seed = 3): Pixels {
   const p = landscape(seed, false);
   // polka-dot border
   const R = rng(seed);
@@ -120,7 +120,7 @@ export function page(heading: string, seed = 3): Pixels {
  * on cream, so each slot is a dark strip) and its messages in blue at y 185, x 40..272, so
  * the panel runs down past them, with its red dashes below.
  */
-export function slotsPage(heading: string, seed: number): Pixels {
+function slotsPage(heading: string, seed: number): Pixels {
   const p = page(heading, seed);
   p.rect(30, 180, 260, 17, c('cream', 3));
   p.rect(28, 186, 2, 13, c('ink', 0)).rect(290, 186, 2, 13, c('ink', 0)).rect(28, 197, 264, 2, c('ink', 0));
@@ -134,7 +134,7 @@ export function slotsPage(heading: string, seed: number): Pixels {
  * blue from x 20, and "Hit any key" in red at the bottom (x 116..203, y 192..199), so
  * each sits on a cream plate rather than the bunting or the grass.
  */
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = landscape(11, false);
   const R = rng(11);
   for (let i = 0; i < 40; i++) blob(p, R() * W, R() * H, 3, 3, SP.r(['red', 'yellow', 'blue', 'green', 'purple'][i % 5]), 1, 3);
@@ -151,7 +151,7 @@ export function scoresScreen(): Pixels {
 }
 
 /** The menu: logo, the cast, and the panel Game-Maker writes the choices on. */
-export function menuScreen(): Pixels {
+function menuScreen(): Pixels {
   const p = landscape(5);
   logo(p, 4);
   // Teddy and Gwinn peek out from behind the panel, so nothing of theirs comes near the
@@ -166,7 +166,7 @@ export function menuScreen(): Pixels {
 }
 
 /** The title poster. */
-export function titleScreen(): Pixels {
+function titleScreen(): Pixels {
   const p = landscape(7);
   logo(p, 6);
   leoBig(p, 136, 92, 2, undefined, true);
@@ -181,7 +181,7 @@ export function titleScreen(): Pixels {
 }
 
 /** A level card: a framed view of the level, where it falls (LEVEL 2 OF n), and what is new there. */
-export function card(l: Level, n: number, of: number, lines: string[]): Pixels {
+function card(l: Level, n: number, of: number, lines: string[]): Pixels {
   const pal = buildPalette(l.time);
   const cc = (name: string, k: number) => pal.c(name, k);
   const p = new Pixels(W, H, cc('ink', 0));
@@ -271,7 +271,7 @@ export function buildScreens(levels: Level[]): Record<string, Uint8Array> {
 }
 
 /** The ending: Teddy takes a bow at the Big Show. Returns the picture and its palette. */
-export function wonScreen(): [Pixels, Uint8Array] {
+function wonScreen(): [Pixels, Uint8Array] {
   const p = new Pixels(W, H, c('ink', 0));
   // the big top inside: stripes and a spotlight
   for (let x = 0; x < W; x++) for (let y = 0; y < 150; y++) p.set(x, y, Math.floor((x + (150 - y) * 0.4) / 20) % 2 ? c('tent', 1) : c('tent', 0));
@@ -296,7 +296,7 @@ export function wonScreen(): [Pixels, Uint8Array] {
 }
 
 /** Game over: Teddy asleep in his doghouse under the stars. */
-export function lostScreen(): Pixels {
+function lostScreen(): Pixels {
   const p = new Pixels(W, H);
   gradient(p, 0, 0, W, 140, [c('ink', 0), c('blue', 0), c('blue', 1)], 0, 2);
   const R = rng(9);
@@ -321,7 +321,7 @@ export function lostScreen(): Pixels {
  * suitcase, costume pieces flying out; Teddy pops out of his doghouse and gives chase;
  * then the yard fades to black (the logo is the title picture's).
  */
-export function introFli(): Uint8Array {
+function introFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const bg = landscape(2);
   // the doghouse at left
@@ -383,7 +383,7 @@ export function introFli(): Uint8Array {
  * no exhaust, just a whirr), Pockets at the wheel behind the door window and Teddy beside him
  * in the front passenger seat, his head out of the front of the window, ears flapping.
  */
-export function driveFli(): Uint8Array {
+function driveFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const bg = landscape(11);
   bg.rect(0, 168, W, 32, c('asphalt', 1));

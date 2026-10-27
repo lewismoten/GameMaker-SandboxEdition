@@ -11,6 +11,8 @@
 // Every tick also goes to Unroll (editor/check/unroll.ts), so a map the hero walks off the edge
 // of (maps wrap) gets its box as the player goes through it, beside its seen box, with the rows
 // the hero stood on in each column (a way seen all round that he can't get round doesn't loop).
+// The walkthrough's own ride on each map also goes to findCourse (editor/check/course.ts): a map
+// it rides lap after lap corner to corner through the wrap is a course, kept with its path.
 // A walled scene seen from above (most of its open ground doesn't pull, and it doesn't open onto the
 // map's edge) also takes every cell joined to a way in by blocks that aren't solid on every side
 // or that change (doors), with half a screen round each: a room behind a locked door or off the
@@ -26,6 +28,7 @@ import { usedArea } from '../src/manual/printables/levelMapLayout';
 import { SCRNBLEN, SCRNBWID, type World } from '../src/engine/world';
 import { explore, type Entry } from '../src/editor/check/explore';
 import { Unroll } from '../src/editor/check/unroll';
+import { findCourse, type CoursePath } from '../src/editor/check/course';
 import { startCharInfo } from '../src/editor/check/sim';
 import { GameFiles } from '../src/project/files';
 import { headlessCanvas, WalkRun } from '../src/walkthrough/runtime';
@@ -48,6 +51,23 @@ class Seen {
   private readonly unrolls = new Map<string, Unroll>();
   /** Per map, the first and last row the hero stood on in each column (wrapped), for whether a way really goes round. */
   private readonly stood = new Map<string, Map<number, [number, number]>>();
+  /** Per map, the walkthrough's hero, a block a tick. */
+  private readonly rides = new Map<string, [number, number][]>();
+  /** The walkthrough's tick on a map (after look): where its hero is. */
+  ride(key: string, w: World): void {
+    let r = this.rides.get(key);
+    if (!r) this.rides.set(key, (r = []));
+    r.push([w.chr.x[0], w.chr.y[0]]);
+  }
+  /** The maps the walkthrough rides as a course through the wrap. */
+  courses(): Record<string, CoursePath> {
+    const out: Record<string, CoursePath> = {};
+    for (const [k, r] of [...this.rides].sort(([a], [b]) => a.localeCompare(b))) {
+      const c = findCourse(r);
+      if (c) out[k] = c;
+    }
+    return out;
+  }
   /** The next look at each map starts afresh (a new scene, or a run from another way in). */
   cut(): void {
     for (const u of this.unrolls.values()) u.cut();
@@ -118,7 +138,7 @@ async function walkthroughViews(game: Game, files: Map<string, Uint8Array>, walk
   };
   const onFrame = s.onFrame;
   s.onFrame = (w) => {
-    if (isLevel(game, scene)) seen.look(groupKey(game, scene), w);
+    if (isLevel(game, scene)) (seen.look(groupKey(game, scene), w), seen.ride(groupKey(game, scene), w));
     onFrame?.(w);
   };
   while (run.frame < 90 * 60 * 30 && (await run.step(false)));
@@ -241,7 +261,13 @@ export async function scanLevelViews(gamesDir: string, ids?: string[], log?: (s:
           if (key.startsWith(`${p.map.toLowerCase()}|`))
             seen.add(key, p.at[0] - SCRNBLEN / 2, p.at[1] - SCRNBWID / 2, p.at[0] + SCRNBLEN / 2 - 1, p.at[1] + SCRNBWID / 2 - 1);
     const unrolled = seen.unrolled();
-    out[id] = { hash: levelViewsHash(gamesDir, id)!, maps: seen.rects(), ...(Object.keys(unrolled).length ? { unrolled } : {}) };
+    const courses = seen.courses();
+    out[id] = {
+      hash: levelViewsHash(gamesDir, id)!,
+      maps: seen.rects(),
+      ...(Object.keys(unrolled).length ? { unrolled } : {}),
+      ...(Object.keys(courses).length ? { courses } : {}),
+    };
   }
   return out;
 }

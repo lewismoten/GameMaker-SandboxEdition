@@ -115,10 +115,10 @@ describe('integrator layout', () => {
       for (const l of s.links)
         if (l.toScene !== NOSCENE && l.toScene !== i && g.scenes[l.toScene] && g.scenes[l.toScene].gametype !== NOSCENE) pairs.push([i, l.toScene]);
     });
-    const centres = new Map([...pos].map(([s, p]) => [s, { x: p.x + 2, y: p.y + 2 }]));
+    const centers = new Map([...pos].map(([s, p]) => [s, { x: p.x + 2, y: p.y + 2 }]));
     // Final Curtain's conversations are scenes that all link to one another (each answer is
     // a scene you can ask the next question from), so its graph cannot be drawn flat.
-    if (!DENSE.has(_)) expect(layoutCost(pairs, centres, { w: 22, h: 18 }).cross).toBe(0);
+    if (!DENSE.has(_)) expect(layoutCost(pairs, centers, { w: 22, h: 18 }).cross).toBe(0);
     checkNoOverlap(g, spreadOut(g));
   });
 });

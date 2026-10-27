@@ -123,3 +123,15 @@ export function clipLists(files: Map<string, Uint8Array>, lists: string[], secon
     files.set(name, serializeSlideList(entries.flatMap((e) => (clipsOf(e) ? clipEntries(clipsOf(e)!, e.pause) : [e]))));
   }
 }
+
+/**
+ * `clipLists` on every slide list on the disk: the title's, story's and help's, and the
+ * game's own (endings, game over, cut scenes), so Esc answers within a few seconds anywhere.
+ */
+export function clipEveryList(files: Map<string, Uint8Array>, seconds = 4): void {
+  clipLists(
+    files,
+    [...files.keys()].filter((n) => n.endsWith('.lst')),
+    seconds,
+  );
+}

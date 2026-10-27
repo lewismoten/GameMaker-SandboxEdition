@@ -71,7 +71,9 @@ export function heroSpeed(chr: Character): number {
   return best;
 }
 
-const placed = (d: SceneData) => d.map.monsters.filter((p) => p.monnum < LASTMON && !!d.mon[p.monnum]);
+// a monster placed off the map (stray data in an old file) never appears, as the map's index leaves it out
+const placed = (d: SceneData) =>
+  d.map.monsters.filter((p) => p.monnum < LASTMON && !!d.mon[p.monnum] && p.curx >= 0 && p.curx < MLEN && p.cury >= 0 && p.cury < MWID);
 
 function density(d: SceneData): Finding[] {
   const foes = placed(d).filter((p) => hostile(d.mon[p.monnum], d.mbl));

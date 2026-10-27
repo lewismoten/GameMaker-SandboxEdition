@@ -1,7 +1,7 @@
 // POET.CBL, and the sprites every group's .MBL starts with. The poet is Will, The Hive's
 // open-mic regular, dressed for the part from the waist up and for the couch from the waist
 // down: a bald dome with a fringe of brown hair, a pointed beard, a gold earring, a starched
-// white ruff, a velvet doublet with gold buttons, grey sweatpants and fuzzy slippers. The common
+// white ruff, a velvet doublet with gold buttons, gray sweatpants and fuzzy slippers. The common
 // monster sprites: his word balloons ("ALAS!" and "FORSOOTH!" in gold on parchment) and the
 // friends who turn up all evening: Teddy and Gwinn asleep, Carl the fly, the third goat from the
 // left, and Doc Leo (fedora, navy corduroy, purple shirt, teal tie, red sneakers) walking his
@@ -329,19 +329,19 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
   // the third goat from the left, chewing
   const goat = (f: number) => {
     const p = P();
-    for (const x of [6, 9, 13, 16]) p.rect(x, 14, 1, 5, c('grey', 1));
-    blob(p, 11, 11, 6.5, 3.8, pal.r('grey'), 2, 3);
-    blob(p, 4.5, 8 + f * 0.5, 2.8, 2.6, pal.r('grey'), 2, 3);
-    p.line(3, 5, 1, 3, c('grey', 1)).line(5, 5, 6, 2, c('grey', 1));
+    for (const x of [6, 9, 13, 16]) p.rect(x, 14, 1, 5, c('gray', 1));
+    blob(p, 11, 11, 6.5, 3.8, pal.r('gray'), 2, 3);
+    blob(p, 4.5, 8 + f * 0.5, 2.8, 2.6, pal.r('gray'), 2, 3);
+    p.line(3, 5, 1, 3, c('gray', 1)).line(5, 5, 6, 2, c('gray', 1));
     p.set(4, 8, ink)
-      .set(2, 10 + f, c('grey', 1))
-      .set(3, 11 + f, c('grey', 1));
-    p.line(17, 9, 19, 8, c('grey', 2));
+      .set(2, 10 + f, c('gray', 1))
+      .set(3, 11 + f, c('gray', 1));
+    p.line(17, 9, 19, 8, c('gray', 2));
     return done(p);
   };
   book.add('goat0', goat(0), hello);
   book.add('goat1', goat(1), hello);
-  // Doc Leo, hobo clown: grey fedora, painted stubble, his own nose sunburned, navy corduroy, purple shirt, teal tie,
+  // Doc Leo, hobo clown: gray fedora, painted stubble, his own nose sunburned, navy corduroy, purple shirt, teal tie,
   // red sneakers, and the rubber chicken on its leash. Side on, walking right (mirrored for
   // left), the chicken trotting behind; f 0 is a stride, f 1 the legs passing.
   const leo = (f: number) => {
@@ -368,11 +368,11 @@ export function commonSprites(book: SpriteBook, pal: Pal): void {
     p.line(10, 9, 8, 12, c('navy', 1)).set(8, 12, c('skin', 3));
     // the head in profile: painted stubble, white mouth, his own sunburned nose out front, one eye in white paint
     blob(p, 11, 4.5, 3, 3, pal.r('skin'), 2, 4);
-    p.rect(10, 6, 4, 2, c('grey', 0)).set(12, 5, c('grey', 0)).set(13, 6, c('white', 2));
+    p.rect(10, 6, 4, 2, c('gray', 0)).set(12, 5, c('gray', 0)).set(13, 6, c('white', 2));
     p.set(13, 3, c('white', 2)).set(12, 2, c('white', 2));
     p.set(14, 4, c('pink', 1)).set(15, 4, c('pink', 1)).set(14, 5, c('pink', 0)).set(12, 3, ink).set(9, 4, c('skin', 1));
     // the fedora, side on: crown and brim
-    p.rect(8, 0, 6, 2, c('grey', 2)).rect(7, 2, 9, 1, c('grey', 1)).rect(8, 1, 6, 1, c('grey', 0));
+    p.rect(8, 0, 6, 2, c('gray', 2)).rect(7, 2, 9, 1, c('gray', 1)).rect(8, 1, 6, 1, c('gray', 0));
     return done(p);
   };
   book.add('leo0', leo(0), hello);

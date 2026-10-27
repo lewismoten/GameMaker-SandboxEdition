@@ -96,7 +96,7 @@ export class TextScreen {
     this.dirty = true;
   }
 
-  /** Game-Maker's SetTextColors (GENC.C): darker blues and greys for its menus. */
+  /** Game-Maker's SetTextColors (GENC.C): darker blues and grays for its menus. */
   gameMakerColors(): void {
     this.resetPalette();
     this.setColor(5, 10, 10, 10);
@@ -115,7 +115,7 @@ export class TextScreen {
    * Fits the picture to `scale` device pixels per VGA pixel. At a whole scale each VGA
    * pixel is drawn as k x k device pixels; otherwise it is drawn at the next whole scale off
    * screen and resampled to the exact size with high-quality smoothing, so strokes stay
-   * even (no doubled or dropped rows) and thin ones turn grey instead of vanishing.
+   * even (no doubled or dropped rows) and thin ones turn gray instead of vanishing.
    */
   setScale(scale: number): void {
     if (!(scale > 0)) return;

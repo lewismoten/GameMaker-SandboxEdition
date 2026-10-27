@@ -29,7 +29,7 @@ const ITEM_DEFS: Record<ItemName, BlockDef> = {
   battery: { effect: CTR.zap, eamt: 6, score: 10 },
   zapper: { effect: CTR.zap, eamt: 15, score: 250 },
   cola: { effect: CTR.lives, eamt: 1, score: 500 },
-  remote: { effect: CTR.remote, eamt: 1, score: 100 },
+  keys: { effect: CTR.keys, eamt: 2, score: 100 },
   keycard: { effect: CTR.keycard, eamt: 1, score: 100 },
   pass: { effect: CTR.moonpass, eamt: 1, score: 100 },
   cover: { effect: CTR.cover, eamt: 1, score: 1000 },
@@ -82,17 +82,19 @@ export function addBooths(set: BlockSet, floor: Floor): void {
     return p;
   };
   const phone = (p: Pixels) => {
-    p.rect(12, 4, 3, 5, C('grey', 1)).rect(12, 4, 1, 3, C('grey', 3));
+    p.rect(12, 4, 3, 5, C('gray', 1)).rect(12, 4, 1, 3, C('gray', 3));
   };
   set.add('booth_door', door(phone), { solid: SOLID, effect: CTR.quarters, eamt: -1, touch: 'booth_open' });
   set.add('booth_dead', door(phone, 'OUT'), { solid: SOLID });
-  set.add('booth_ring', door(phone), { solid: SOLID, next: 'booth_ring2', ntime: 5 });
-  const ring2 = door(phone);
+  // A booth that rings and rings but is out of order like the rest: the OUT sign, and nothing
+  // happens when you walk into it (it's only solid).
+  set.add('booth_ring', door(phone, 'OUT'), { solid: SOLID, next: 'booth_ring2', ntime: 5 });
+  const ring2 = door(phone, 'OUT');
   for (const [x, y] of [
-    [11, 3],
-    [16, 3],
-    [11, 9],
-    [16, 9],
+    [11, 2],
+    [16, 2],
+    [11, 15],
+    [16, 15],
   ])
     ring2.set(x, y, C('gold', 5));
   set.add('booth_ring2', ring2, { solid: SOLID, next: 'booth_ring', ntime: 12 });
@@ -104,7 +106,7 @@ export function addBooths(set: BlockSet, floor: Floor): void {
     for (let y = 1; y < 19; y++)
       for (let x = 4; x < 16; x++) p.set(x, y, shadeAt(R('teal'), 2, 5, ((y + k * 3) % 8) / 8 + (Math.abs(x - 9.5) < 2 ? 0.3 : 0), x, y));
     const r = rng(k + 3);
-    for (let i = 0; i < 9; i++) p.set(4 + r() * 12, 1 + r() * 18, C('grey', 7));
+    for (let i = 0; i < 9; i++) p.set(4 + r() * 12, 1 + r() * 18, C('gray', 7));
     return p;
   };
   set.add('booth_open', open(0), { next: 'booth_open2', ntime: 2 });
@@ -122,7 +124,7 @@ export function addLasers(set: BlockSet, floor: Floor, onTime: number, offTime: 
       for (const y of [6, 10, 14]) {
         p.rect(3, y, 14, 1, C('red', 4));
         p.rect(3, y - 1, 14, 1, C('red', 2)).rect(3, y + 1, 14, 1, C('red', 2));
-        for (let x = 4; x < 17; x += 4) p.set(x + (y % 3), y, C('grey', 7));
+        for (let x = 4; x < 17; x += 4) p.set(x + (y % 3), y, C('gray', 7));
       }
     return p;
   };
@@ -144,7 +146,7 @@ export function addWalkways(set: BlockSet, style: 'walk' | 'tube'): void {
     for (let k = 0; k < 2; k++) {
       const off = ((k * 10 + phase * 5) % 20) - 2;
       for (let i = 0; i < 5; i++) {
-        const col = tube ? C('grey', 7) : C('gold', 4);
+        const col = tube ? C('gray', 7) : C('gold', 4);
         const pts: [number, number][] = [
           [off + i, 5 + i],
           [off + i, 14 - i],
@@ -170,14 +172,14 @@ export function addBig(set: BlockSet, name: string, pic: Pixels, def: (col: numb
   for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) set.add(`${name}${j * cols + i}`, pic.crop(i * 20, j * 20, 20, 20), def(i, j));
 }
 
-export function staffDoor(kind: 'keycard' | 'remote' | 'pass', floor: Floor): Pixels {
+export function staffDoor(kind: 'keycard' | 'keys' | 'pass', floor: Floor): Pixels {
   const p = on(floor);
-  const col = kind === 'keycard' ? 'pink' : kind === 'remote' ? 'gold' : 'purple';
+  const col = kind === 'keycard' ? 'pink' : kind === 'keys' ? 'gold' : 'purple';
   p.rect(0, 0, 20, 20, C(col, 1));
   for (let y = 1; y < 20; y += 3) p.rect(1, y, 18, 2, C(col, 3));
   p.rect(0, 5, 20, 12, C('paper', 2));
-  micro(p, 1, 6, kind === 'keycard' ? 'STAFF' : kind === 'remote' ? 'GATE' : 'MOON', C(col, 1));
-  micro(p, 1, 11, kind === 'keycard' ? 'ONLY' : kind === 'remote' ? 'CLICK' : 'PASS', C('denim', 1));
+  micro(p, 1, 6, kind === 'keycard' ? 'STAFF' : kind === 'keys' ? 'GATE' : 'MOON', C(col, 1));
+  micro(p, 1, 11, kind === 'keycard' ? 'ONLY' : kind === 'keys' ? 'CLICK' : 'PASS', C('denim', 1));
   p.rect(15, 14, 3, 3, C('red', 4));
   return p;
 }

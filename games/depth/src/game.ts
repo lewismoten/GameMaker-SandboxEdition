@@ -6,13 +6,13 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
 import type { LevelSet } from './levels/blocks';
 
-export const TITLE = 'DEPTH PERCEPTION';
+const TITLE = 'DEPTH PERCEPTION';
 
 export const cardScene = (i: number) => 2 + i * 3;
 export const nearScene = (i: number) => 3 + i * 3;
 export const farScene = (i: number) => 4 + i * 3;
 
-export interface LevelFiles {
+interface LevelFiles {
   pal: string;
   map: Record<'near' | 'far', string>;
   bbl: Record<'near' | 'far', string>;
@@ -59,7 +59,7 @@ export function buildGame(sets: LevelSet[], lf: LevelFiles[], extra: Extra = {})
       const s = emptyScene(ADVTYPE);
       s.desc = `${i + 1}. ${p === 'near' ? 'Near' : 'Far'}: ${set.level.name}`.slice(0, 19);
       s.pos = { x: 30 + i * 46, y: p === 'near' ? 90 : 140 };
-      s.files = files([f.pal, f.map[p], f.bbl[p], 'depth.mon', 'depth.mbl', `${p}.chr`, 'ray.cbl', 'depth.snd', f.song]);
+      s.files = files([f.pal, f.map[p], f.bbl[p], 'depth.mon', 'depth.mbl', `${p}.chr`, 'ray.cbl', 'depth.snd', `${f.song}.cmf`]);
       const links: Link[] = b.rings.map((r) => {
         const off = p === 'near' ? r.spec.toFar : r.spec.toNear;
         return { toScene: p === 'near' ? farScene(i) : nearScene(i), from: pt(r.at), to: { x: r.at[0] + off[0], y: r.at[1] + off[1] } };

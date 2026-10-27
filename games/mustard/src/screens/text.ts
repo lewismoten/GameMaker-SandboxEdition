@@ -10,7 +10,7 @@ const page = (lines: string[], pages = 1) => {
   return lines.join('\n');
 };
 
-export const TITLE = 'MUSTARD SEED HUSTLE';
+const TITLE = 'MUSTARD SEED HUSTLE';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /**
@@ -66,11 +66,11 @@ export const INSTRUCTIONS = [
     'but sure as a seed, quicker',
     'once you have grown. UP or W',
     'hops: hold it longer to hop',
-    'higher. Q and E (or keypad 7',
-    'and 9) hop up and sideways;',
-    'steer as you fall.',
+    'higher. Q and E hop up and',
+    'sideways; steer as you fall.',
     '',
     'SPACE: Hallelujah!',
+    'ENTER picks things up.',
   ]),
   page([
     'ROOTS: soft dust gives way to',
@@ -108,6 +108,11 @@ export const INSTRUCTIONS = [
     'let the mole go by.',
   ]),
   page([
+    'LACES: a pair of red laces',
+    'waits on a flowerpot in the',
+    'garden. ENTER picks them up:',
+    'laced up, you hustle.',
+    '',
     "It don't shout, it don't brag:",
     'you have no way to fight. Big',
     'loud things hurt to bump',
@@ -192,6 +197,11 @@ palm of God's hand.
 No fighting. It don't shout, it
 don't brag, it don't make a
 fuss. Just hop.
+
+Lace up: a pair of red laces
+waits on a flowerpot in the
+garden (Enter picks them up),
+and laced up, the seed hustles.
 
 STARTING THE GAME
   Type MUSTARD and press Enter.

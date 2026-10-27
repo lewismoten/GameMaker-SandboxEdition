@@ -15,7 +15,7 @@ import { SOLID, type BlockDef } from './blockset';
  * block (rx about 6) up to the lore screen's close-up; the face and the stitches are
  * placed by hand at block size, where a formula would lose them.
  */
-export function feltEgg(p: Pixels, cx: number, cy: number, rx: number, ry: number): Pixels {
+function feltEgg(p: Pixels, cx: number, cy: number, rx: number, ry: number): Pixels {
   const small = rx < 10;
   const velvet = r('velvet');
   for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++)

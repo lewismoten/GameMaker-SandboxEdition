@@ -1,0 +1,23 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.storyline": "The Case",
+    "str.menu.highScores": "Top Detectives",
+    "str.hiscore.title": "Top Detectives",
+    "str.hiscore.congrats": "Case closed!",
+    "str.invent.money": "Evidence:  %d",
+    "str.invent.lives": "Chances:   %d",
+    "str.load.done": "  Case loaded!",
+    "str.save.done": "Case filed!",
+    "color.rgb.hsRed": [46, 4, 4],
+    "color.rgb.hsBlue": [4, 6, 36],
+    "color.rgb.hsGreen": [58, 58, 63],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsPrompt": "red",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.congrats.x": 112
+  }
+}

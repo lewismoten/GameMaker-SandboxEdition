@@ -22,7 +22,7 @@ const H = 200;
 /** Clear pixels in sprites. */
 const T = 255;
 /** 1/70 s per frame: about 12 frames a second. */
-export const SPEED = 6;
+const SPEED = 6;
 
 export interface Cast {
   /** The seed's sprites (the .CBL's pictures). */
@@ -339,7 +339,7 @@ export function lostFli(cast: Cast): Uint8Array {
   const c = pal.c;
   const r = new Reel(pal.pal);
   const bg = gardenBackdrop(pal, 150, 11);
-  // a grey evening
+  // a gray evening
   const sky = new Pixels(W, 136);
   gradient(sky, 0, 0, W, 136, pal.r('stone'), 1, 4);
   bg.map((x, y, v) => (y < 136 && v !== pal.c('grass', 3) && v !== pal.c('grass', 2) ? sky.get(x, y) : v));

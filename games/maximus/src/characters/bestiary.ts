@@ -11,9 +11,9 @@ import { drawPickup } from '../blocks/items';
 import { OUTLINE, S, WHITE, shared } from '../art/palette';
 import { R } from '../blocks/common';
 
-export type Corner = [dx: number, dy: number, speed: number, orient?: number];
+type Corner = [dx: number, dy: number, speed: number, orient?: number];
 
-export type Move =
+type Move =
   | { kind: 'still' }
   | { kind: 'path'; corners: Corner[] }
   | { kind: 'towards'; speed: number }
@@ -306,7 +306,7 @@ function sharedArt(): Pixels[] {
   return out;
 }
 
-export const SHARED_ART = {
+const SHARED_ART = {
   bolt: 80,
   plasma: 82,
   shield: 84,

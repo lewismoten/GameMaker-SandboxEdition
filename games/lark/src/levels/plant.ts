@@ -8,11 +8,11 @@ import type { BlockSet } from '../blocks/sets';
 import { band } from '../blocks/plant';
 import { stamp, type Stamped } from './stamp';
 
-export const PLANT_W = 16;
-export const PLANT_H = 38;
+const PLANT_W = 16;
+const PLANT_H = 38;
 
 /** The leaves: row, first and last column, kind (s steady, A and B on clocks, by turns). */
-export const LEAVES: [number, number, number, 's' | 'A' | 'B'][] = [
+const LEAVES: [number, number, number, 's' | 'A' | 'B'][] = [
   [34, 3, 6, 's'],
   [32, 8, 11, 'A'],
   [30, 3, 6, 'B'],
@@ -26,15 +26,15 @@ export const LEAVES: [number, number, number, 's' | 'A' | 'B'][] = [
   [4, 1, 6, 's'],
 ];
 /** Dandelion puffs (the balloon's air), the star, the seed and the curled leaf in front of him. */
-export const PUFFS: [number, number][] = [
+const PUFFS: [number, number][] = [
   [5, 23],
   [5, 18],
 ];
-export const STAR: [number, number] = [12, 5];
-export const SEED: [number, number] = [2, 3];
-export const CURL: [number, number] = [5, 3];
+const STAR: [number, number] = [12, 5];
+const SEED: [number, number] = [2, 3];
+const CURL: [number, number] = [5, 3];
 
-export function plantRows(): string[] {
+function plantRows(): string[] {
   const g: string[][] = Array.from({ length: PLANT_H }, (_, y) =>
     Array.from({ length: PLANT_W }, (_, x) =>
       y >= PLANT_H - 1 ? 'G' : x === 0 || x === PLANT_W - 1 ? 'S' : y === PLANT_H - 2 && x > 8 && x < 14 ? 'P' : x === 7 ? '|' : '.',

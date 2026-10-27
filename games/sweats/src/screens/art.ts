@@ -23,7 +23,7 @@ export interface CardView {
   pal: Pal;
 }
 
-export interface ArtExtras {
+interface ArtExtras {
   cards: CardView[];
   /** The poet's sprites, and the Hive's monster sprites (the common cast among them). */
   poet: Map<string, Pixels>;

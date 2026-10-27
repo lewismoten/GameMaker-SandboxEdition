@@ -9,7 +9,7 @@ import { h } from '../../editor/core/ui';
 import { PRODUCT, SHORT } from '../../edition';
 import { BBS_PHONE, html, sandboxBanner, sandboxLogo, sheet, type Sheet } from './kit';
 import { PLAYGAME_KEYS } from './keys';
-import { SERIAL } from '../../retro/gmReg/registration';
+import { pcExtras } from '../../retro/hacks/pcExtras';
 
 /** Sandbox Software's (made-up) numbers and addresses, as printed on the support card. */
 export const SUPPORT = {
@@ -98,7 +98,9 @@ export async function registrationCard(): Promise<Sheet[]> {
   const line = (label: string, cls = '') => h('div', { class: `grc-line ${cls}` }, h('span', null, label), h('i'));
   const boxes = (label: string, ...opts: string[]) =>
     h('div', { class: 'grc-row' }, h('span', null, label), ...opts.map((o) => h('span', { class: 'grc-box' }, h('i'), o)));
-  const serial = String(SERIAL); // this copy's, as GM REGISTER and the BBS's RSD line read it
+  // this copy's, as GM REGISTER and the BBS's RSD line read it (GMCRACK's RESERIAL can change it)
+  await pcExtras().ready;
+  const serial = String(pcExtras().serial);
   const form = sheet(
     7,
     4.25,

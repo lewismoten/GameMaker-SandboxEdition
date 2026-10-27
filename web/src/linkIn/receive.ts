@@ -75,7 +75,7 @@ export function receiveFiles(opts: { from?: string; timeoutMs?: number; signal?:
     }, opts.timeoutMs ?? WAIT_MS);
     opts.signal?.addEventListener('abort', () => {
       done();
-      reject(new LinkError('Cancelled.', 'declined'));
+      reject(new LinkError('Canceled.', 'declined'));
     });
     window.addEventListener('message', onMessage);
     // nothing private in it, so any origin may hear it (unless the address named one)

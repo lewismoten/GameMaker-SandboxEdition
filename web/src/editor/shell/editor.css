@@ -344,7 +344,7 @@ main.home {
 }
 
 .sidebar button.file .ext {
-  color: hsl(var(--ext-h) 75% 30%);
+  color: hsl(var(--ext-h) 75% 24%);
   font-weight: 600;
 }
 
@@ -733,12 +733,41 @@ dialog.modal .buttons {
 }
 
 .toast {
-  padding: 10px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 6px 10px 14px;
   background: var(--text);
   color: var(--bg);
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-  max-width: 360px;
+  max-width: min(360px, calc(100vw - 32px));
+}
+
+.toast > span {
+  flex: 1;
+}
+
+.toast .toast-close {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font:
+    700 16px/24px system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.toast .toast-close:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
 }
 
 .toast.error {

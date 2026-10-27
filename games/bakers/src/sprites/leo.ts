@@ -50,7 +50,7 @@ export function buildLeoBlocks(): BlockSet {
   );
   // playing dead: flat on his back, chicken on his chest
   const dead = new Pixels(20, 20, CLEAR);
-  dead.rect(1, 9, 18, 7, c('ink', 0)).rect(2, 10, 6, 5, c('grey', 2)).rect(8, 10, 5, 5, c('skin', 2)).rect(13, 10, 5, 5, c('blue', 1));
+  dead.rect(1, 9, 18, 7, c('ink', 0)).rect(2, 10, 6, 5, c('gray', 2)).rect(8, 10, 5, 5, c('skin', 2)).rect(13, 10, 5, 5, c('blue', 1));
   dead.rect(9, 13, 3, 1, c('paper', 4)).rect(10, 11, 1, 1, c('red', 3)).set(9, 10, c('ink', 0)).set(11, 10, c('ink', 0));
   dead.rect(14, 7, 4, 3, c('yellow', 3)).set(17, 6, c('red', 3));
   dead.rect(17, 16, 2, 2, c('red', 3)).rect(17, 9, 2, 2, c('red', 3));

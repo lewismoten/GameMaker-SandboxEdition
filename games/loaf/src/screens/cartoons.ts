@@ -18,10 +18,8 @@ import { AUTHOR, CARDS } from './text';
 
 const W = 320;
 const H = 200;
-/** Clear pixels in sprites. */
-const T = 255;
 /** 1/70 s per frame: about 12 frames a second. */
-export const SPEED = 6;
+const SPEED = 6;
 
 export interface Cast {
   /** The loaf's sprites (the .CBL's pictures). */
@@ -415,5 +413,3 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
   }
   return files;
 }
-
-export { T };

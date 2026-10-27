@@ -20,7 +20,7 @@ const K: Record<string, number> = {
 };
 
 /**
- * The Town Crier, 20x40: a black tricorn, wire glasses, grey-brown hair, an off-white linen
+ * The Town Crier, 20x40: a black tricorn, wire glasses, gray-brown hair, an off-white linen
  * hunting shirt with a fringed cape collar and a red placket, breeches, buckled shoes.
  * His bell is a monster of its own, held up beside him (see bell()).
  */

@@ -8,7 +8,7 @@ import { writePng } from '../../kit/png';
 
 const out = process.env.OUT ?? '/tmp';
 
-export function sheet(set: { pics: Pixels[] }, cols = 15): Pixels {
+function sheet(set: { pics: Pixels[] }, cols = 15): Pixels {
   const n = set.pics.length;
   const rows = Math.ceil(n / cols);
   const p = new Pixels(cols * 22, rows * 22, 0);

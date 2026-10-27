@@ -278,7 +278,7 @@ function star(c: Crayon, x: number, y: number, r: number): void {
 
 let drawn = 0;
 
-/** Joey's drawing, as an SVG labelled `alt`. */
+/** Joey's drawing, as an SVG labeled `alt`. */
 export function joeyDrawing(alt: string): Element {
   const id = `joey${drawn++}`;
   const c = new Crayon(id);

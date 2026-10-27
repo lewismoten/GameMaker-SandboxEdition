@@ -11,12 +11,10 @@ const page = (lines: string[], pages = 1) => {
   return lines.join('\n');
 };
 
-export const TITLE = 'CARL';
-export const SUBTITLE = 'A FLY NAMED CARL';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /** Who made the music the game's FM songs and sung clips come from. */
-export const MUSIC_CREDIT = 'music made with Riffusion (now Google Flow Music)';
+const MUSIC_CREDIT = 'music made with Riffusion (now Google Flow Music)';
 
 /**
  * Who made the song and the pictures: the lyrics, the recording, and the title and cover art,
@@ -74,6 +72,21 @@ export const INSTRUCTIONS = [
     '',
     'B: BUZZ, the way you last',
     'flew. It wakes sleeping ears.',
+  ]),
+  page([
+    'SUGAR keeps a fly flying.',
+    'Each bit of air you fly into',
+    'for the first time costs one',
+    "(air you've flown is free).",
+    'F2 counts your sugar: sugar',
+    "is a fly's only money.",
+    '',
+    'A SUGAR CUBE gives 25.',
+    '',
+    'Out of sugar, you sink. Hold',
+    'DOWN on the carpet (or the',
+    'grass) to lick up crumbs: a',
+    'sugar every moment or so.',
   ]),
   page([
     'SNACKS: the floor lamp only',
@@ -187,6 +200,12 @@ back and take the aux cord.
 
 You can't lose to a dish
 towel. Barrel roll.
+
+Flying takes sugar: fresh air
+costs a little, sugar cubes
+fill you up, and a tired fly
+sinks to the carpet to lick
+up crumbs.
 
 STARTING THE GAME
   Type CARL and press Enter.

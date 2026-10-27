@@ -1,0 +1,96 @@
+/* An achievement's details (achievements/details.ts), over dialog.modal (editor/shell/editor.css) */
+
+dialog.ach-dlg {
+  width: min(440px, calc(100vw - 32px));
+  min-width: 0;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  line-height: 1.5;
+}
+
+.ach-dlg-close {
+  display: flex;
+  justify-content: flex-end;
+  margin: -8px -8px 0 0;
+}
+
+.ach-dlg-top {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.ach-dlg-icon {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--panel-2);
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  font-size: 40px;
+  line-height: 1;
+}
+
+.ach-dlg-icon.is-locked {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+dialog.ach-dlg h2 {
+  margin: 0;
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+
+.ach-dlg-status {
+  margin: 2px 0 0;
+  color: var(--muted);
+}
+
+.ach-dlg-desc {
+  margin: 14px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.ach-dlg-progress {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ach-dlg-facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 14px 0 0;
+}
+
+.ach-dlg-facts dt {
+  color: var(--muted);
+}
+
+.ach-dlg-facts dd {
+  margin: 0;
+}
+
+.ach-dlg-facts a {
+  display: inline-block;
+  min-height: 24px;
+}
+
+.ach-dlg-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.ach-dlg-nav button {
+  min-height: 32px;
+}

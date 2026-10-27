@@ -60,7 +60,7 @@ export function eggPic(): Pixels {
   outline(p, C('teal', 0));
   // It hovers a little, like everything in the year 2000.
   const sh = new Pixels(20, 20, T);
-  oval(sh, 10, 18.6, 5, 1.2, C('grey', 1));
+  oval(sh, 10, 18.6, 5, 1.2, C('gray', 1));
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (p.get(x, y) === T && sh.get(x, y) !== T) p.set(x, y, sh.get(x, y));
   return p;
 }
@@ -96,7 +96,7 @@ function hatch(open: number): Pixels {
       const swirl = (Math.atan2(y - 10, x - 10) / Math.PI + d / 4 + open / 2) % 1;
       p.set(x, y, shadeAt(PAL.r('teal'), 2, 5, Math.abs(swirl) * (1 - d / 9) + 0.2, x, y));
     }
-  p.disc(10, 10, 1.5, C('grey', 7));
+  p.disc(10, 10, 1.5, C('gray', 7));
   return p;
 }
 

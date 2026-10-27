@@ -10,7 +10,7 @@
 //   < relay NC off 75 ... and the "hot" states (120) that Watt can't flip twice in a row.
 import { Bestiary, type BlockSet } from '../blocks/sets';
 
-export const POWER = {
+const POWER = {
   gate: 40,
   current: 60,
   ctrl: 70,
@@ -24,11 +24,11 @@ export const POWER = {
 } as const;
 
 /** Ticks a timer button stays on (about five and a half seconds). */
-export const TIMER_TICKS = 100;
+const TIMER_TICKS = 100;
 /** Ticks a switch ignores Watt after he flips it (so one bump flips it once). */
-export const HOT_TICKS = 9;
+const HOT_TICKS = 9;
 /** Pixels a tick that current runs. */
-export const SPARK_SPEED = 4;
+const SPARK_SPEED = 4;
 
 export interface Wire {
   /** Corners as cumulative block offsets from the battery. */
@@ -37,7 +37,7 @@ export interface Wire {
 }
 
 /** Monsters 0..COMMON_PARTS-1 are the shared parts; wire k is monster COMMON_PARTS + k. */
-export const COMMON_PARTS = 46;
+const COMMON_PARTS = 46;
 export const isWire = (monnum: number) => monnum >= COMMON_PARTS && monnum < 64;
 
 /** One room's monster list: the shared parts, then its wires. */

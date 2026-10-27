@@ -1,4 +1,4 @@
-// The magazine's drawn pictures as images: an <svg> with its markup, labelled for screen readers.
+// The magazine's drawn pictures as images: an <svg> with its markup, labeled for screen readers.
 // art.ts and the ad art beside it (notcherArt.ts, soundCardArt.ts, blankDisk.ts, joeyDrawing.ts) share it.
 
 /** An <svg> of `markup` in `viewBox`, an image named by `alt`, with the class `cls` if given. */

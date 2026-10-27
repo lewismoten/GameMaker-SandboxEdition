@@ -52,10 +52,10 @@ function chord(name: string): { root: number; tones: number[] } {
   return { root, tones };
 }
 
-export type Style =
+type Style =
   'heroic' | 'calm' | 'drive' | 'flow' | 'glass' | 'dark' | 'march' | 'storm' | 'tense' | 'folk' | 'aqua' | 'machine' | 'race' | 'boss' | 'triumph' | 'lament';
 
-export interface SongSpec {
+interface SongSpec {
   name: string;
   bpm: number;
   /** Chords, one per bar (4 beats), "|" separated; ":" splits a bar into two halves. */
@@ -104,7 +104,7 @@ function soften(inst: Uint8Array, att: number): Uint8Array {
 }
 
 /** Arranges a song; `only` keeps just those MIDI channels (for listening tests). */
-export function arrange(spec: SongSpec, only?: number[]): Uint8Array {
+function arrange(spec: SongSpec, only?: number[]): Uint8Array {
   const tpb = Math.round((146 * 60) / spec.bpm);
   const events: CmfEvent[] = [];
   const on = (ch: number, note: number, beat: number, len: number, vel = 100) => {
@@ -412,5 +412,3 @@ export function buildSongs(): Map<string, Uint8Array> {
   }
   return out;
 }
-
-export { CH };

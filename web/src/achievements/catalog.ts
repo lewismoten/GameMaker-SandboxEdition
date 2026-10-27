@@ -166,6 +166,29 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   // playing
   { id: 'play-first', title: 'Player one', desc: 'Played a game.', icon: '🎮', category: 'playing' },
   { id: 'play-finish', title: 'The end', desc: 'Played a game all the way to its ending.', icon: '🏁', category: 'playing' },
+  {
+    id: 'finish-desk',
+    title: 'After school special',
+    desc: 'Played a game start to finish on the 1994 desk’s PC.',
+    icon: '🎒',
+    category: 'playing',
+  },
+  { id: 'finish-dos', title: 'Real mode', desc: 'Played a game start to finish on DOS Game-Maker’s own page.', icon: '💽', category: 'playing' },
+  { id: 'finish-web', title: 'Surfin’ the Web', desc: 'Played a game start to finish in today’s web player.', icon: '🏄', category: 'playing' },
+  {
+    id: 'finish-phone-wide',
+    title: 'Sideways scroller',
+    desc: 'Played a game start to finish on a phone, held sideways most of the way.',
+    icon: '↔️',
+    category: 'playing',
+  },
+  {
+    id: 'finish-phone-tall',
+    title: 'Tall order',
+    desc: 'Played a game start to finish on a phone, held upright most of the way.',
+    icon: '↕️',
+    category: 'playing',
+  },
   { id: 'play-save', title: 'Save point', desc: 'Saved a game while playing it.', icon: '📼', category: 'playing' },
   {
     id: 'play-sandbox',
@@ -215,7 +238,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: 'blaster-big-name',
     title: 'Name in lights',
-    desc: 'Reached 3-C, The Big Name, on the face of the Sound Boaster in Virus Blaster.',
+    desc: 'Reached 3-D, The Big Name, on the face of the Sound Boaster in Virus Blaster.',
     icon: '🔊',
     category: 'playing',
   },

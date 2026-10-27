@@ -19,7 +19,7 @@ import { parseGame } from '../../formats/game';
 import { parseBackdrop } from '../../formats/graphicScripts';
 import type { GameFiles } from '../../project/files';
 
-/** Everything a thumbnail may need: the file and its neighbours (for palettes and blocks). */
+/** Everything a thumbnail may need: the file and its neighbors (for palettes and blocks). */
 export interface ThumbSource {
   files: GameFiles;
   /** The palette the file is shown with. */
@@ -74,7 +74,7 @@ function blocksMosaic(blocks: Block[], pal: Palette, count: number, cols: number
   return c;
 }
 
-/** The first frame of a 20x20 or 20x40 sprite, centred. */
+/** The first frame of a 20x20 or 20x40 sprite, centered. */
 function sprite(top: Block | undefined, bottom: Block | undefined, pal: Palette): HTMLCanvasElement {
   const px = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
   if (top) px.set(top.pixels, 0);

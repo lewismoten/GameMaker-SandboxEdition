@@ -17,7 +17,7 @@ import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
 export { T };
 
 /** Gives every drawn pixel's empty neighbors the outline color. */
-export function outline(p: Pixels, ink: number): Pixels {
+function outline(p: Pixels, ink: number): Pixels {
   const src = p.px.slice();
   for (let y = 0; y < p.h; y++)
     for (let x = 0; x < p.w; x++) {
@@ -38,7 +38,7 @@ export function outline(p: Pixels, ink: number): Pixels {
 }
 
 /** What the camel still carries. */
-export interface Load {
+interface Load {
   saddle: boolean;
   bags: boolean;
   shoes: boolean;
@@ -81,7 +81,7 @@ const WALK: Legs[] = [
   ],
 ];
 
-export interface CamelPose {
+interface CamelPose {
   legs: Legs | 'tuck' | 'kneel' | 'flop';
   /** Head: up (proud), chew (mouth moving), dream (eyes shut, chin up), ouch, faint. */
   head?: 'up' | 'chew' | 'dream' | 'ouch' | 'faint';
@@ -93,7 +93,7 @@ export interface CamelPose {
 }
 
 /** Brother Camel in the pal's ramps. `pose` gives a 20x40 picture (top block over bottom). */
-export function camelArt(pal: Pal) {
+function camelArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const fur = pal.r('camel');
@@ -329,10 +329,10 @@ export function buildMonsterBlocks(pal: Pal) {
   // A pigeon, flapping.
   const pigeon = (f: number) => {
     const p = P();
-    blob(p, 9, 11, 5, 3.4, pal.r('grey'), 1, 3);
-    blob(p, 14, 8, 2.4, 2.2, pal.r('grey'), 1, 4);
+    blob(p, 9, 11, 5, 3.4, pal.r('gray'), 1, 3);
+    blob(p, 14, 8, 2.4, 2.2, pal.r('gray'), 1, 4);
     p.rect(16, 8, 2, 1, c('pink', 1)).set(14, 7, ink).set(13, 10, c('purple', 3));
-    for (let k = 0; k < 6; k++) p.line(6 + k, 10, 4 + k, f ? 3 + k / 2 : 17 - k / 2, c('grey', 2));
+    for (let k = 0; k < 6; k++) p.line(6 + k, 10, 4 + k, f ? 3 + k / 2 : 17 - k / 2, c('gray', 2));
     return done(p);
   };
   book.add('pigeon0', pigeon(0), hurt(-4));
@@ -398,7 +398,7 @@ export function buildMonsterBlocks(pal: Pal) {
     leg(15, f ? -1 : 0);
     blob(p, 10, 11, 7, 4, pal.r('white'), 0, 2);
     blob(p, 16, 7, 3, 2.6, pal.r('white'), 0, 2);
-    p.line(15, 4, 13, 1, c('grey', 2)).line(17, 4, 16, 1, c('grey', 2));
+    p.line(15, 4, 13, 1, c('gray', 2)).line(17, 4, 16, 1, c('gray', 2));
     p.set(17, 7, ink).line(17, 10, 17, 12, c('white', 0));
     if (f) micro(p, 1, 1, '3', c('red', 2));
     return done(p);

@@ -230,7 +230,7 @@ export function inferChords(notes: MelNote[], key: Key, o: InferOptions): ChordS
     pick[u] = c;
     c = back[u][c];
   }
-  // merge equal neighbours inside a bar
+  // merge equal neighbors inside a bar
   const out: ChordSpan[] = [];
   pick.forEach((ci, u) => {
     const prev = out[out.length - 1];

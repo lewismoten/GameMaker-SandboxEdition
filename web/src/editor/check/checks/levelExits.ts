@@ -69,7 +69,18 @@ export function music(d: SceneData, game: Game, files: FileSource): Finding[] {
       },
     ];
   const bytes = files.get(song);
-  if (!bytes) return [];
+  if (!bytes)
+    return [
+      {
+        check: 'music',
+        severity: 'warning',
+        title: `${d.name}’s song, ${song}, isn’t in the game`,
+        detail: /\./.test(song)
+          ? 'PLAYGAME opens the song by the name the scene gives it, so this level plays in silence. Add the file, or choose another song.'
+          : 'PLAYGAME opens the song by exactly the name the scene gives it, and adds no .CMF, so this level plays in silence. Name it with its extension.',
+        where: { scene: d.scene, file: song },
+      },
+    ];
   let clock = 146;
   try {
     clock = parseCmf(bytes).clockTicks;

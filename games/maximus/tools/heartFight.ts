@@ -16,12 +16,12 @@ interface Body {
 }
 
 /** The eye's phases it can be hit in, as monster numbers of heart.mon. */
-export function eyeTargets(heart: MonsterSet): Set<number> {
+function eyeTargets(heart: MonsterSet): Set<number> {
   return new Set(['Heart Eye', 'Wounded Eye', 'Failing Eye'].map((n) => heart.index.get(n)!));
 }
 
 /** True once the seal is charged (its counter above 1). */
-export const sealCharged = (w: World) => w.ci.meter[SEAL_COUNTER] > 1;
+const sealCharged = (w: World) => w.ci.meter[SEAL_COUNTER] > 1;
 
 export async function fightEye(d: Body, heart: MonsterSet, maxTicks = 4000): Promise<boolean> {
   const targets = eyeTargets(heart);

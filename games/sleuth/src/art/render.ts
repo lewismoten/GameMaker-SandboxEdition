@@ -25,11 +25,3 @@ export function renderRegion(map: GameMap, bg: Block[], mbl: Block[], mons: Mons
   }
   return p;
 }
-
-/** Lays pictures out in a grid with a 2 pixel gap. */
-export function sheet(pics: Pixels[], cols = 10, bg = 255): Pixels {
-  const rows = Math.ceil(pics.length / cols);
-  const p = new Pixels(cols * 22, rows * 22, bg);
-  pics.forEach((q, i) => p.blit(q, (i % cols) * 22 + 1, Math.floor(i / cols) * 22 + 1));
-  return p;
-}

@@ -35,7 +35,7 @@ SCENE FILE-NAME POOL
   Limit: 65,520 bytes
          (PLAYGAME clamps it
          at 0xFFF0)
-  Used:  2952 bytes
+  Used:  2963 bytes
   Where: MAXIMUS.GAM
 
 LINKS PER SCENE

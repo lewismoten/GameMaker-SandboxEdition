@@ -75,7 +75,13 @@ const cellsOf = (d: SceneData, n: number) => {
 };
 
 /** Gravity bits that pull opposite ways: up (1) and down (4), right (2) and left (8). */
-const opposite = (a: number, b: number) => (a & 1 && b & 4) || (a & 4 && b & 1) || (a & 2 && b & 8) || (a & 8 && b & 2);
+/** A gravity's net pull on each axis: pulls both ways at once cancel (15, all four, is “glide”). */
+const pull = (g: number) => [(g & 2 ? 1 : 0) - (g & 8 ? 1 : 0), (g & 4 ? 1 : 0) - (g & 1 ? 1 : 0)];
+const opposite = (a: number, b: number) => {
+  const [ax, ay] = pull(a);
+  const [bx, by] = pull(b);
+  return (ax !== 0 && ax === -bx) || (ay !== 0 && ay === -by);
+};
 
 export function opposites(d: SceneData): Finding[] {
   // the scene's ordinary pull (what its most used open block does) is the background, not a
@@ -298,14 +304,14 @@ export function counterSources(scenes: SceneData[]): Set<number> {
 }
 
 /** The share of two blocks' pixels that are the same color in the same place (0 to 1). */
-export function likeness(a: Block, b: Block): number {
+function likeness(a: Block, b: Block): number {
   let same = 0;
   for (let i = 0; i < BLEN * BLEN; i++) if (a.pixels[i] === b.pixels[i]) same++;
   return same / (BLEN * BLEN);
 }
 
 /** Blocks this alike (the share of their pixels the same) look the same at a glance. */
-export const LOOK_ALIKE = 0.9;
+const LOOK_ALIKE = 0.9;
 /** Blocks used this often on a map are part of its look, not a one-off. */
 const COMMON = 4;
 

@@ -10,13 +10,14 @@
 //  - snow falls round Teenage Lewie (Snowbound's flakes).
 // Pause, step back and forth, or pick someone; a pick is kept in the address (#/cast?on=carl).
 // With reduced motion nobody walks and nothing happens: each simply stands there. Sound:
-// castSound.ts.
+// castSound.ts; the small stage that floats in a corner once this one scrolls away: castMini.ts.
 import { h } from '../editor/core/ui';
 import { currentRoute, type ViewState } from '../urlState';
 import { spriteCanvases, type CastSprite } from './castSprite';
 import type { CastMember } from './castData';
 import { StageSound, type Effect } from './castSound';
 import { unlockAchievement } from '../achievements';
+import { castMini } from './castMini';
 
 /** The stage in its own pixels; the canvas is scaled up with smoothing off. */
 const W = 160;
@@ -177,7 +178,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   const current = () => lineup[at];
   let paraded = 0;
   const spriteOf = (m: CastMember | { id: string }) => sprites.get(m.id);
-  const centre = (m: CastMember) => Math.round(W / 2 - (spriteOf(m)?.sprite.w ?? 0) / 2);
+  const center = (m: CastMember) => Math.round(W / 2 - (spriteOf(m)?.sprite.w ?? 0) / 2);
   const has = (...ids: string[]) => ids.every((id) => sprites.has(id));
   const isGwinn = (m: CastMember) => m.id === 'gwinn' && has('prop:hat');
   const hatGag = (m: CastMember) => m.id === 'leo' && has('teddy', 'prop:hat') && !!spriteOf(m)?.acts.bareWalk;
@@ -191,6 +192,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   const talkMs = (m: CastMember) => TALK_MS + m.hi.length * 25;
 
   function say(m: CastMember | undefined): void {
+    mini.say(m?.name ?? '');
     name.textContent = m ? `${m.name}: ` : '';
     line.textContent = m ? m.hi : '';
     bubble.classList.toggle('quiet', !m);
@@ -200,6 +202,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     playing = on;
     playBtn.textContent = on ? '❚❚ Pause' : '▶ Play';
     playBtn.setAttribute('aria-pressed', String(!on));
+    mini.setPlaying(on);
     bubble.setAttribute('aria-live', on ? 'off' : 'polite');
     sound.pause(!on);
     if (on && phase === 'talk') t0 = performance.now();
@@ -212,7 +215,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   }
 
   function hello(m: CastMember, now: number): void {
-    x = centre(m);
+    x = center(m);
     into('talk', now);
     say(m);
     const fx = HELLO_FX[m.id];
@@ -221,7 +224,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
 
   /** Stopped in the light: business first (Teddy with the hat), else hello. */
   function arrive(m: CastMember, now: number): void {
-    x = centre(m);
+    x = center(m);
     if (hatGag(m) && !hatOn) {
       into('pre', now);
       helper = { id: 'teddy', x: -24, left: false, speed: RUN, carry: 'hat' };
@@ -254,12 +257,13 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       if (fx) sound.effect(fx);
     } else {
       phase = 'talk';
-      x = centre(m);
+      x = center(m);
       say(m);
       // a pick while paused: the costume already lies where Gwinn dropped it
       if (isGwinn(m)) for (const [k, p] of PROPS.entries()) props.push(prop(p, DROPS[k] - 6, FLOOR, true));
     }
     draw(t0);
+    mini.mirror();
     loop();
   }
 
@@ -531,7 +535,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
       const t = now - t0;
       if (m.id === 'lewie') snow = phase === 'exit' ? Math.max(0, snow - dt * 1.4) : Math.min(1, snow + dt * 1.2);
       if (phase === 'enter') {
-        x = s.sprite.walk ? x + speed(m) * dt : centre(m);
+        x = s.sprite.walk ? x + speed(m) * dt : center(m);
         // the costume falls out behind her as she runs
         while (isGwinn(m) && dropped < PROPS.length && x >= DROPS[dropped]) {
           props.push(prop(PROPS[dropped], x + 2, FLOOR - 14));
@@ -539,10 +543,10 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
         }
         // Gwinn runs right across first and comes back; everyone else stops in the light
         if (isGwinn(m) && x >= TURN) into('back', now);
-        else if (!isGwinn(m) && x >= centre(m) && (s.sprite.walk || t > 600)) arrive(m, now);
+        else if (!isGwinn(m) && x >= center(m) && (s.sprite.walk || t > 600)) arrive(m, now);
       } else if (phase === 'back') {
         x -= speed(m) * dt;
-        if (x <= centre(m)) hello(m, now);
+        if (x <= center(m)) hello(m, now);
       } else if (phase === 'pre' && helper) {
         // Teddy runs up with the hat, hands it over with a happy bark, and runs back off
         if (helper.carry) {
@@ -595,33 +599,48 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     }
     stepProps(dt);
     draw(now);
+    mini.mirror();
     loop(false);
   }
 
   /** Asks for the next frame; `fresh` after a pause, so the time away is not walked at once. */
   function loop(fresh = true): void {
-    if (raf || !visible || document.hidden || (still && !playing)) return;
+    if (raf || !(visible || mini.shown) || document.hidden || (still && !playing)) return;
     if (fresh) last = 0;
     raf = requestAnimationFrame(tick);
   }
 
+  const box = h('div', { class: 'cast-stage-box' }, canvas, bubble);
+  const mini = castMini(canvas, {
+    toggle: () => setPlaying(!playing),
+    // up to the full stage, with the keyboard on its play button
+    back: () => {
+      playBtn.focus({ preventScroll: true });
+      root.scrollIntoView({ block: 'start', behavior: still ? 'auto' : 'smooth' });
+    },
+    change: () => loop(),
+  });
   const root = h(
     'section',
     { class: 'cast-stage', 'aria-labelledby': 'cast-stage-h' },
     h('h2', { id: 'cast-stage-h' }, 'On stage'),
-    h('div', { class: 'cast-stage-box' }, canvas, bubble),
+    box,
     h('div', { class: 'cast-stage-controls' }, prevBtn, playBtn, nextBtn, pick, soundBtn),
+    mini.el,
   );
   // the sound starts with a tap on the stage or its controls (browsers, and iPhones most of all,
   // only let it start from a gesture)
   root.addEventListener('click', () => (sound.start(), showSound()));
   canvas.addEventListener('click', () => setPlaying(!playing));
 
+  // the frames stop while none of the stage is in view, unless the small one shows them; it shows
+  // once the stage has scrolled away above
   const seen = new IntersectionObserver(([e]) => {
     visible = e.isIntersecting;
+    mini.stageInView(e.isIntersecting || e.boundingClientRect.top > 0);
     loop();
   });
-  seen.observe(root);
+  seen.observe(box);
   const onVisibility = () => loop();
   document.addEventListener('visibilitychange', onVisibility);
   // leaving the cast page: stop the music and the frames

@@ -7,6 +7,7 @@ import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { farScene, nearScene, type Extra } from '../game';
 import type { LevelSet } from '../levels/blocks';
 import { rgb } from '../render/tracer';
+import type { Col } from '../render/quant';
 import type { Picture } from '../render/image';
 import type { SpriteSet } from '../sprites/sprites';
 import { GM_BLUE, GM_PURPLE, GM_RED, GM_YELLOW, centered, toGif } from './draw';
@@ -17,7 +18,7 @@ import { storyPictures, wonPicture } from './story';
 import { CREDITS, EGG_TEXT, INSTRUCTIONS } from './text';
 import { titlePicture } from './title';
 
-export interface ScreenInput {
+interface ScreenInput {
   sprites: SpriteSet;
   sets: LevelSet[];
 }
@@ -29,8 +30,9 @@ export function buildScreens(input: ScreenInput, fast = false): { files: Record<
   const files: Record<string, Uint8Array | string> = {};
   // the pictures take minutes; DEPTH_FAST=1 builds keep the ones already on the disk
   if (fast) return { files, extra: eggScene(input.sets) };
-  // PLAYGAME writes in the colors nearest these; keep them exact in every picture
-  const fixed = [GM_PURPLE, GM_RED, GM_BLUE, GM_YELLOW];
+  // PLAYGAME writes in the colors nearest these; keep them exact in every picture. Black is
+  // color 0: the screen PLAYGAME clears for the high score prompt.
+  const fixed: Col[] = [[0, 0, 0], GM_PURPLE, GM_RED, GM_BLUE, GM_YELLOW];
   const gif = (name: string, pic: Picture) => (files[name] = toGif(pic, fixed));
 
   // the opening: the Sandbox logo, the cartoon, the title

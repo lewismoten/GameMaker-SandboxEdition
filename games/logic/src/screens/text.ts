@@ -4,7 +4,7 @@
 import { withCreditPage } from '../../../kit/license';
 
 /** Wraps paragraphs to `width` columns; lines starting with spaces keep their indent. */
-export function wrap(text: string, width = 30): string {
+function wrap(text: string, width = 30): string {
   const out: string[] = [];
   for (const para of text.split('\n')) {
     if (para.trim() === '') {
@@ -27,7 +27,7 @@ export function wrap(text: string, width = 30): string {
 }
 
 /** Pages of 16 lines (PLAYGAME shows MORE... between them). */
-export function pages(parts: string[]): string {
+function pages(parts: string[]): string {
   const lines: string[] = [];
   for (const part of parts) {
     const p = wrap(part).split('\n');
@@ -144,7 +144,7 @@ THE END
 There's no place like Ohm.`,
 ]);
 
-/** The page behind the fuse box's socket. */
+/** The page behind the fuse box's main switch. */
 export const FUSEBOX = pages([
   `THE LIVE WIRE EGG
 

@@ -182,3 +182,66 @@
 .pal-is-dismissed .pal-warn-go {
   border-style: dashed;
 }
+/* the note by color 0 and its dialog of the screens drawn on it (colorZeroDialog.ts) */
+.pal-zero-link {
+  min-height: 24px;
+  padding: 0 2px;
+  font: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+dialog.modal:has(.pal-zero) {
+  width: min(1040px, 96vw);
+  max-height: 92dvh;
+  overflow: auto;
+}
+.pal-zero p {
+  margin: 0 0 10px;
+  max-width: 75ch;
+}
+.pal-zero-warn {
+  font-weight: 600;
+}
+.pal-zero-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+}
+.pal-zero-fig {
+  margin: 0;
+  min-width: 0;
+}
+.pal-zero-fig figcaption {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.pal-zero-shot {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 8 / 5;
+  height: auto;
+  image-rendering: pixelated;
+  border: 1px solid var(--border);
+}
+.pal-zero-matches {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+.pal-zero-matches li {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  margin-top: 2px;
+}
+.pal-zero-chip {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--border);
+}

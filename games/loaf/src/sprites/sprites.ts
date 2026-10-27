@@ -312,9 +312,9 @@ export function buildMonsterBlocks(pal: Pal) {
     blob(p, 10, 11, 5, 2.6, pal.r('white'), 0, 2);
     blob(p, 15, 9, 2.4, 2.2, pal.r('white'), 0, 2);
     p.rect(17, 9, 3, 1, c('ochre', 3)).set(16, 8, ink);
-    p.line(4, 11, 1, 12, c('grey', 2));
-    if (f) for (let k = 0; k < 7; k++) p.line(6 + k, 10, 3 + k, 2 + k / 3, c('grey', k > 4 ? 1 : 3));
-    else for (let k = 0; k < 7; k++) p.line(6 + k, 12, 4 + k, 18 - k / 3, c('grey', k > 4 ? 1 : 3));
+    p.line(4, 11, 1, 12, c('gray', 2));
+    if (f) for (let k = 0; k < 7; k++) p.line(6 + k, 10, 3 + k, 2 + k / 3, c('gray', k > 4 ? 1 : 3));
+    else for (let k = 0; k < 7; k++) p.line(6 + k, 12, 4 + k, 18 - k / 3, c('gray', k > 4 ? 1 : 3));
     return done(p);
   };
   book.add('gull0', gull(0), hurt(-5));
@@ -375,26 +375,26 @@ export function buildMonsterBlocks(pal: Pal) {
   // A mouse in the wicker, nose twitching.
   const mouse = (f: number) => {
     const p = P();
-    p.line(2, 15, 6, 13 + f, c('grey', 2)).line(1, 13 - f, 2, 15, c('grey', 2));
-    blob(p, 10, 13, 5.5, 4, pal.r('grey'), 1, 3);
-    blob(p, 15, 12, 3, 2.6, pal.r('grey'), 1, 3);
+    p.line(2, 15, 6, 13 + f, c('gray', 2)).line(1, 13 - f, 2, 15, c('gray', 2));
+    blob(p, 10, 13, 5.5, 4, pal.r('gray'), 1, 3);
+    blob(p, 15, 12, 3, 2.6, pal.r('gray'), 1, 3);
     p.disc(13, 9, 1.8, c('red', 3))
       .set(18, 12 + f, c('red', 2))
       .set(15, 11, ink);
     p.line(17, 13, 19, 12 - f, c('white', 1)).line(17, 13, 19, 14 + f, c('white', 1));
-    p.line(8, 17, 7 + f, 18, c('grey', 1)).line(12, 17, 13 - f, 18, c('grey', 1));
+    p.line(8, 17, 7 + f, 18, c('gray', 1)).line(12, 17, 13 - f, 18, c('gray', 1));
     return lit(p);
   };
   book.add('mouse0', mouse(0), bite(-6));
   book.add('mouse1', mouse(1), bite(-6));
   // sitting up on its haunches, whiskers going, before it turns round
   const sit = P();
-  sit.line(4, 18, 1, 15, c('grey', 2));
-  blob(sit, 9, 13, 4, 5, pal.r('grey'), 1, 3);
-  blob(sit, 11, 7, 3, 2.8, pal.r('grey'), 1, 3);
+  sit.line(4, 18, 1, 15, c('gray', 2));
+  blob(sit, 9, 13, 4, 5, pal.r('gray'), 1, 3);
+  blob(sit, 11, 7, 3, 2.8, pal.r('gray'), 1, 3);
   sit.disc(9, 4, 1.6, c('red', 3)).disc(13, 4, 1.6, c('red', 3)).set(12, 6, ink).set(14, 8, c('red', 2));
-  sit.line(14, 8, 17, 6, c('white', 1)).line(14, 9, 17, 10, c('white', 1)).line(11, 11, 13, 12, c('grey', 1));
-  sit.line(7, 18, 12, 18, c('grey', 1));
+  sit.line(14, 8, 17, 6, c('white', 1)).line(14, 9, 17, 10, c('white', 1)).line(11, 11, 13, 12, c('gray', 1));
+  sit.line(7, 18, 12, 18, c('gray', 1));
   book.add('mouseSit', lit(sit), bite(-6));
   // A tiny mustard seed in tiny red sneakers, hopping along (from another song). Say hello.
   const seed = (f: number) => {

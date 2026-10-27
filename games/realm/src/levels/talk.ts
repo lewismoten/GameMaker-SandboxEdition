@@ -29,7 +29,7 @@ const keepChez = (s: string) => s.replace(/\b(THE|The) (CHEZ|Chez)\b/g, '$1\u00a
  * Word-wraps paragraphs (blank-line separated) to 30 columns, 16 lines a page, keeping short
  * paragraphs whole. THE CHEZ is never split across lines.
  */
-export function pages(text: string): string {
+function pages(text: string): string {
   const out: string[] = [];
   const paras = text.trim().split(/\n\s*\n/);
   for (const para of paras) {
@@ -59,7 +59,7 @@ export function pages(text: string): string {
 }
 
 /** What the start block of a talk gives: the conversation's reward. */
-export const GIFTS: Record<string, Attrs> = {
+const GIFTS: Record<string, Attrs> = {
   none: {},
   writ: { effect: C.writ, eamt: 1, score: 100 },
   dog: { effect: C.dogs, eamt: 1, score: 250 },
@@ -92,7 +92,7 @@ export interface Talk {
 
 const animals = animalPics();
 const hero = heroPics();
-export function portrait(who: string): Canvas {
+function portrait(who: string): Canvas {
   if (who === 'pip') return hero.get('down0')!;
   if (who === 'egg') {
     const cv = new Canvas(20, 20);

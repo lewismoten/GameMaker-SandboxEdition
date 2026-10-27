@@ -1,6 +1,6 @@
 // HIVE.BBL: The Hive, Oakland, a coffee house with a castle for a front (lightly fictionalized
 // from Lewis's memories of the Oakland Beehive; drawn here from scratch). Outside: the avenue at
-// night, a street lamp, the castle front of grey stone with its battlements, a little turret and
+// night, a street lamp, the castle front of gray stone with its battlements, a little turret and
 // the arched door. Inside: the counter (the espresso machine steaming, the pastry case, the
 // register that sells a cup of coffee for five tips), the little movie theater past the counter
 // (seats up the rake, the screen flickering an old film), the stairs, the tall room with its
@@ -75,8 +75,8 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
         glass: [c('night', 0), c('glass', 2)],
         roof: c('ink', 0),
         tire: c('ink', 0),
-        hub: c('grey', 3),
-        stripe: c('grey', 0),
+        hub: c('gray', 3),
+        stripe: c('gray', 0),
         pin: c('white', 2),
         rim: c('white', 2),
         bumper: c('ink', 1),
@@ -90,7 +90,7 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   }
   // the street lamp: its post and its glowing lantern
   const post = night(6);
-  post.rect(9, 0, 3, 20, c('ink', 1)).rect(10, 0, 1, 20, c('grey', 1));
+  post.rect(9, 0, 3, 20, c('ink', 1)).rect(10, 0, 1, 20, c('gray', 1));
   book.add('post', post, AIR);
   const lantern = night(7);
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x - 10) ** 2 + (y - 10) ** 2 < 90 && (x + y) % 2 === 0) lantern.set(x, y, c('lamp', 0));
@@ -116,7 +116,7 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   book.add('news', news, { solid: SOLID });
 
   // ---------- the castle front ----------
-  /** Grey stone in courses, each block of stone its own shade. */
+  /** Gray stone in courses, each block of stone its own shade. */
   const stone = (seed: number) => {
     const p = P();
     const r = rng(seed);
@@ -313,7 +313,7 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
   // the register: walk into it with five tips and it rings up a cup; walk into the cup to take it
   const register = (state: 'ready' | 'cup' | 'done') => {
     const p = counterFront.crop(0, 0, 20, 20);
-    p.rect(3, 1, 14, 9, c('grey', 1)).rect(4, 2, 12, 3, c('chalk', 1)).rect(3, 9, 14, 2, c('grey', 0));
+    p.rect(3, 1, 14, 9, c('gray', 1)).rect(4, 2, 12, 3, c('chalk', 1)).rect(3, 9, 14, 2, c('gray', 0));
     micro(p, 5, 3, state === 'ready' ? '$5' : 'TY', c('lamp', 1));
     if (state === 'cup') {
       p.rect(6, 12, 8, 8, c('white', 1)).rect(7, 12, 6, 7, c('white', 2)).rect(7, 12, 6, 1, c('coffee', 2)).rect(7, 15, 6, 2, c('coffee', 1));
@@ -359,10 +359,10 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
     // the film: a goat on a hill under the moon, then the goat turning to look at you
     pic.disc(46, 10, 4, c('screen', 2));
     pic.rect(2, 30, 56, 8, c('screen', 0));
-    blob(pic, 24, 26, 7, 4, R('grey'), 1, 2);
-    blob(pic, f ? 30 : 16, 22, 3, 3, R('grey'), 1, 2);
+    blob(pic, 24, 26, 7, 4, R('gray'), 1, 2);
+    blob(pic, f ? 30 : 16, 22, 3, 3, R('gray'), 1, 2);
     pic.set(f ? 30 : 15, 21, c('ink', 0));
-    for (const x of [19, 22, 26, 29]) pic.rect(x, 29, 1, 4, c('grey', 0));
+    for (const x of [19, 22, 26, 29]) pic.rect(x, 29, 1, 4, c('gray', 0));
     pic.frame(1, 1, 58, 38, c('ink', 1));
     addPicture(book, `film${f}`, pic, dark(54), (col, row) => ({ ...AIR, next: `film${1 - f}.${col}.${row}`, ntime: 14 }));
   }
@@ -521,7 +521,7 @@ export function buildHiveBlocks(book: BlockBook, pal: Pal): void {
       `tinHeart${k || ''}`,
       drawTinHeart(
         book.pics.get('books2')!.crop(0, 0, 20, 20),
-        { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 2)], white: c('white', 2), dark: c('grey', 0) },
+        { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 2)], white: c('white', 2), dark: c('gray', 0) },
         k,
       ),
       {

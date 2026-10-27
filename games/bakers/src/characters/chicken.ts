@@ -13,7 +13,7 @@ import { HIT_POINTS, STEP } from './leo';
 
 const MIRROR = 0x40;
 /** Pixels a glide frame covers: five of them are two blocks. */
-export const GLIDE = 8;
+const GLIDE = 8;
 
 export function buildChicken(cb: BlockSet): Character {
   const ch = newCharacter();

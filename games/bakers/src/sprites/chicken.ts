@@ -8,7 +8,7 @@ import { CLEAR, blob, outline, recolor } from '../art/draw';
 import { c, r } from '../art/pal';
 import { BlockSet } from '../blocks/sets';
 
-export type ChickPose = 'stand' | 'flap' | 'squawk' | 'blink';
+type ChickPose = 'stand' | 'flap' | 'squawk' | 'blink';
 
 const ink = () => c('ink', 0);
 
@@ -120,7 +120,7 @@ export function reggieBounce(stretch: boolean): Pixels {
 }
 
 /** Playing dead: flat as a pancake, X eyes; `puff` adds the last of the air going out. */
-export function reggieFlat(puff: boolean): Pixels {
+function reggieFlat(puff: boolean): Pixels {
   const p = new Pixels(20, 20, CLEAR);
   blob(p, 9, 15, 8, 2.2, r('yellow'), 0, 2);
   p.rect(14, 12, 5, 3, c('yellow', 2)).rect(19, 13, 1, 1, c('orange', 2)).set(15, 11, c('red', 3)).set(16, 11, c('red', 3));

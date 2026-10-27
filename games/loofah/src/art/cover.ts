@@ -7,8 +7,8 @@
 // sways on its hook, a glint runs along the rack, and its eyes open and glow.
 import { rng } from '../../../kit/pixels';
 
-export const COVER_W = 320;
-export const COVER_H = 200;
+const COVER_W = 320;
+const COVER_H = 200;
 
 type RGB = [number, number, number];
 

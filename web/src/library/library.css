@@ -308,3 +308,24 @@ main.library {
   background: rgba(0, 0, 0, 0.82);
   font-variant-numeric: tabular-nums;
 }
+
+/* "Showing: <game> · All games": what is picked, and the way back to everything */
+.lib-showing {
+  margin: -6px 0 16px;
+  font-size: 15px;
+}
+
+.lib-showing[hidden] {
+  display: none;
+}
+
+.lib-show-all {
+  min-height: 24px;
+  border: 0;
+  padding: 2px 4px;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

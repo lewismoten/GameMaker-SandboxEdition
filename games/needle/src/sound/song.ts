@@ -20,7 +20,7 @@
 import { INSTRUMENTS } from '../../../kit/music';
 import { CELESTA, EPIANO, FLUTE, ORGAN, OUD, REED, VOICE, Writer, ending, slice, vamp, type Part, type Section } from '../../../kit/song';
 
-export const BPM = 112;
+const BPM = 112;
 
 /** Lengths in eighths and their names in the note strings, longest first. */
 const SPANS: [number, string][] = [
@@ -36,7 +36,7 @@ const SPANS: [number, string][] = [
  * One bar from eighth-note onsets ("0:G4 3:E4", "4:r" for a rest): each note lasts to the next
  * onset or the bar line (past a dotted half, the rest of it is silence).
  */
-export function bar(onsets: string): string {
+function bar(onsets: string): string {
   const notes = onsets
     .trim()
     .split(/\s+/)

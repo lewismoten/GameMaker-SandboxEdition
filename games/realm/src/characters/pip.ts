@@ -39,7 +39,7 @@ export function frames(list: F[]): Frame[] {
 }
 
 /** Pixels a walking step moves, and the step count per walk cycle. */
-export const STEP = 4;
+const STEP = 4;
 
 export function buildPip(cb: SpriteSheet): Character {
   const ch = newCharacter();

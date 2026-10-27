@@ -90,8 +90,8 @@ export function addHouse(add: Add) {
   add(
     'shutter',
     on(wallFace(), (p) => {
-      p.rect(1, 3, 18, 15, c('grey', 2));
-      for (let y = 4; y < 18; y += 2) p.rect(1, y, 18, 1, c('grey', 1));
+      p.rect(1, 3, 18, 15, c('gray', 2));
+      for (let y = 4; y < 18; y += 2) p.rect(1, y, 18, 1, c('gray', 1));
       p.rect(4, 8, 12, 5, c('paper', 4));
       microC(p, 10, 8, 'SHUT', c('velvet', 2));
     }),
@@ -114,7 +114,7 @@ export function addHouse(add: Add) {
     'boarded',
     on(stairs, (p) => {
       p.rect(0, 3, 20, 4, c('wood', 4)).rect(0, 12, 20, 4, c('wood', 3));
-      p.set(2, 5, c('grey', 5)).set(17, 5, c('grey', 5)).set(2, 14, c('grey', 5)).set(17, 14, c('grey', 5));
+      p.set(2, 5, c('gray', 5)).set(17, 5, c('gray', 5)).set(2, 14, c('gray', 5)).set(17, 14, c('gray', 5));
     }),
     S,
   );
@@ -129,7 +129,7 @@ export function addHouse(add: Add) {
   );
   add(
     'stagedoor',
-    on(closedDoor('STAGE', 'grey'), (p) => {
+    on(closedDoor('STAGE', 'gray'), (p) => {
       for (let x = 0; x < 20; x++) p.set(x, 11 + Math.floor(x / 4), c('glow', 4)).set(x, 12 + Math.floor(x / 4), c('black', 0));
     }),
     S,

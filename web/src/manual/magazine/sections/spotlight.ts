@@ -120,7 +120,7 @@ export const SPOTLIGHT: MagSection = {
             star(
               ctx,
               'will',
-              'The open-mic regular in the starched ruff, the velvet doublet and grey sweatpants. Seventeen monologues, every one an epic, and no coffee, no stage.',
+              'The open-mic regular in the starched ruff, the velvet doublet and gray sweatpants. Seventeen monologues, every one an epic, and no coffee, no stage.',
               1,
             ),
           ],

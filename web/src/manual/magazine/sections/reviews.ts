@@ -58,8 +58,8 @@ const PAPER_AIRPLANE: Review = {
   from: 'BALSAWOOD',
   shot: {
     view: 'level',
-    alt: 'Paper Airplane’s first level: a small grey paper airplane on a grey floor, a rat on a post at the right',
-    caption: 'The little grey dart in the middle of the floor is you. And yes, that is a rat on the post at the top right.',
+    alt: 'Paper Airplane’s first level: a small gray paper airplane on a gray floor, a rat on a post at the right',
+    caption: 'The little gray dart in the middle of the floor is you. And yes, that is a rat on the post at the top right.',
     tilt: -1.5,
   },
 };

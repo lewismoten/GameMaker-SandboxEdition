@@ -346,6 +346,15 @@ registerEditor(['gam'], (host, project, file) => {
       h('span', { class: 'grator-spacer' }),
       h(
         'button',
+        {
+          title: 'Customize the DOS player’s own words, colors, frames and timings (the DOS export’s XFERPLAY.EXE)',
+          'aria-label': 'DOS player',
+          onclick: () => void import('./dosPlayer/playerPanel').then(({ openPlayerPanel }) => openPlayerPanel(project)),
+        },
+        ...toolFace('▤', 'DOS player'),
+      ),
+      h(
+        'button',
         { title: 'Download a picture of all the scenes and links', 'aria-label': 'Download PNG', onclick: () => void exportPng() },
         ...toolFace('⬇', 'PNG'),
       ),
@@ -598,8 +607,10 @@ registerEditor(['gam'], (host, project, file) => {
     void modal<void>(`Playing ${game.scenes[scene].desc || `level ${scene}`}`, (close) => {
       const host = h('div', { class: 'player-host rec-player' });
       // the player loads when first used; not if the dialog has closed by then
-      void import('../../../player/player').then(({ mountPlayer }) => {
-        if (host.isConnected) player = mountPlayer(host, files, project.gam, { title: project.name, record: true, onExit: () => close(undefined) });
+      void Promise.all([import('../../../player/player'), import('../../../dosPlayer/playerRecord')]).then(([{ mountPlayer }, { companionPatches }]) => {
+        const patches = companionPatches(project.companion, project.gam);
+        if (host.isConnected)
+          player = mountPlayer(host, files, project.gam, { title: project.name, record: true, player: patches, onExit: () => close(undefined) });
       });
       return h('div', { class: 'stack rec-dialog' }, host, h('p', { class: 'hint' }, 'Click the screen to start. Esc ends the level.'));
     }).then(() => player?.stop());

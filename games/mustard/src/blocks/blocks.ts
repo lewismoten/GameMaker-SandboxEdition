@@ -34,25 +34,25 @@ class ToneBook extends BlockBook {
  * darker (`name~1`, `name~2`): the sky deepens toward the top, so the plant stands out and the
  * height reads (MapBuilder.tone lays them). Each shift lists only what its rows show.
  */
-export const DUSK_TONED: Record<number, string[]> = {
+const DUSK_TONED: Record<number, string[]> = {
   2: ['sky', 'wisp', 'branch', 'breeze0', 'breeze1', 'cloudA', 'cloudB', 'cloudL', 'cloudR', 'waterSky', 'life', 'sun0', 'sun1'],
   1: ['sky', 'wisp', 'branch', 'nest', 'breeze0', 'breeze1', 'sun0', 'sun1', 'stalkL', 'stalkR'],
 };
 /** Blocks that blend one tone into the next down the block where two bands meet (`name~2to1`): [shift at the top, at the bottom, the blocks that row shows]. */
-export const SKY_BLENDS: [number, number, string[]][] = [
+const SKY_BLENDS: [number, number, string[]][] = [
   [0, 2, ['sky']],
   [2, 1, ['sky', 'sun0', 'sun1']],
   [1, 0, ['sky', 'stalkL', 'stalkR', 'breeze0', 'breeze1']],
 ];
 /** Solid on top only: stand on it, hop up through it. */
-export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, right: 2, down: 4 } as const;
+const LEDGE = 1;
+const GRAV = { none: 0, up: 1, right: 2, down: 4 } as const;
 /** Ticks the gust over the top branch stays calm, gathers (the warning) and blows. */
-export const GUST = { calm: 80, warn: 24, gust: 28 } as const;
+const GUST = { calm: 80, warn: 24, gust: 28 } as const;
 const LIFE = 1;
 /** Ticks between raindrops from a rain cloud, and between pebbles from the scree. */
-export const RAIN_EVERY = 120;
-export const SCREE_EVERY = 90;
+const RAIN_EVERY = 120;
+const SCREE_EVERY = 90;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new ToneBook();
@@ -534,7 +534,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   // air down in the dust by the buried junk (a glint crosses it now and then) and a painted Easter
   // egg at the foot of the great plant, far over on the left. Each is air like the cave or sky
   // around it, a few points, gone when touched (that is its touch block), with no sound of its own.
-  const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('white', 2), dark: c('grey', 1) };
+  const tin = { ink: c('ink', 0), tin: [c('gray', 2), c('gray', 3), c('gray', 4)], white: c('white', 2), dark: c('gray', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(`tinHeart${k || ''}`, drawTinHeart(cave(4), tin, k), {
       ...air,
@@ -599,5 +599,23 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('gustCalm', gust('calm'), { grav: GRAV.down, next: 'gustWarn', ntime: GUST.calm });
   book.add('gustWarn', gust('warn'), { grav: GRAV.down, next: 'gust', ntime: GUST.warn });
   book.add('gust', gust('gust'), { grav: GRAV.down | GRAV.right, next: 'gustCalm', ntime: GUST.gust });
+
+  // (last, so every other block keeps its number) a pair of red laces on the first flowerpot in
+  // the garden, an object: Enter picks them up, and laced up the seed hustles (characters.ts: the
+  // faster walks come first on the same keys, on only while the laces are carried)
+  const laces = sky(1);
+  for (const [cx, k] of [
+    [7, 0],
+    [13, 1],
+  ] as const) {
+    for (let a = 0; a < Math.PI * 2; a += 0.08) {
+      const x = cx + Math.cos(a) * (3.4 - k * 0.4);
+      const y = 12 + Math.sin(a) * 2.6;
+      laces.set(x, y, c('red', a < Math.PI ? 2 : 3));
+    }
+    laces.line(cx + 2, 14, cx + 4 - k * 6, 18, c('red', 2)).rect(cx + 3 - k * 6, 17, 2, 2, c('white', 2));
+  }
+  laces.line(5, 9, 15, 9, c('red', 1)).set(5, 8, c('white', 2)).set(15, 8, c('white', 2));
+  book.add('laces', laces, { ...air, obj: 1, touch: 'sky' });
   return book;
 }

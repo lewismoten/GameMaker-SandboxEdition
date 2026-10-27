@@ -36,6 +36,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "11 chapters down the Long Road",
     "hours": 13,
     "background": "#1c1838",
     "accent": "#e8b23a",

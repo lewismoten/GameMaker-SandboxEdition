@@ -57,7 +57,7 @@ export const COLLECTIONS: { name: string; tag: string; games: Record<string, str
   },
   {
     name: 'Shakespeare in Sweatpants',
-    tag: 'Monologues for the overly dramatic, in a starched ruff and grey sweatpants.',
+    tag: 'Monologues for the overly dramatic, in a starched ruff and gray sweatpants.',
     games: {
       sweats: 'Seventeen epic monologues at open-mic night: a lost pen, a murderous office chair, a dead ficus named Gerald. Declaim your way through.',
     },

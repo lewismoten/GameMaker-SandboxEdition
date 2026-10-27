@@ -10,7 +10,7 @@
 // MonsterMaker; layout.ts has the screen positions and tables.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, vertMenu } from '../retro/text/textUi';
-import { BLACK, BLEN, GREEN, GREY2, LEFT, NONE, RIGHT } from './shared/facelift';
+import { BLACK, BLEN, GREEN, GRAY2, LEFT, NONE, RIGHT } from './shared/facelift';
 import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
 import type { OpenDesigner } from '../retro/host';
 import { LASTMON, LASTSL, serializeMonsters } from '../formats/monster';
@@ -200,7 +200,7 @@ class MonsterMaker extends MonsterMovement {
           } else if (change2 !== MONBL) {
             change2 = MONBL;
             v.moucur(false);
-            v.boxFill(SLX + (SLLEN * BLEN) / 2 - 68, SLY1 + 3, SLX + (SLLEN * BLEN) / 2 + 68, SLY1 + 11, fc[GREY2]);
+            v.boxFill(SLX + (SLLEN * BLEN) / 2 - 68, SLY1 + 3, SLX + (SLLEN * BLEN) / 2 + 68, SLY1 + 11, fc[GRAY2]);
           }
           v.moucur(true);
         }

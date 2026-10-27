@@ -95,7 +95,7 @@ function sandboxCell(ctx: MagContext, id: string, questions: string[], max = 2):
 const BIZARRE_TIPS: [id: string, tip: string][] = [
   [
     'carl',
-    'BUZZ (B) wakes a sleeping ear. Fly into it while it twitches: three ears, and he opens the window. A barrel roll (Space) makes a towel or swatter MISS.',
+    'Flying burns SUGAR (F2 counts it as Money): fresh air costs one, air you’ve flown is free, a cube gives 25. Run dry and you sink: hold Down on the carpet to lick up crumbs. BUZZ (B) wakes a sleeping ear; fly into it while it twitches.',
   ],
   [
     'goat',
@@ -105,7 +105,7 @@ const BIZARRE_TIPS: [id: string, tip: string][] = [
   ['loofah', 'Touch a candle to light it. Six burning open the bathroom door upstairs. Rosemary splashes (Space) tame the wild loofahs.'],
   [
     'mustard',
-    'When the leaves shiver, a gust is coming that blows you off the branch: wait, and cross while it’s calm. Cornered in a tunnel? Push roots up and let the mole go by.',
+    'Stand on the first flowerpot and press Enter: the red laces make you hustle for the rest of the game. When the leaves shiver, a gust is coming: wait, and cross while it’s calm. Cornered in a tunnel? Push roots up and let the mole go by.',
   ],
   ['needle', 'The eye of the needle takes four graces, but it blinks: go in while it is wide open. Wait out the sandstorm gusts behind a boulder.'],
   ['reckoning', 'Celery is willpower: it takes all seven to face the cheesecake. And three rolls open the bathroom door. Never go in without three.'],

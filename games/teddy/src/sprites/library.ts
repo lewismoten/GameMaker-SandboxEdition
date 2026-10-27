@@ -10,7 +10,7 @@ import { tinyEgg } from './egg';
 
 const c = (n: string, k: number) => P.c(n, k);
 
-export interface LibraryState {
+interface LibraryState {
   /** A book taken from the shelf (a gap where it stood). */
   gap?: boolean;
   /** The middle snack drawer pulled open, empty. */

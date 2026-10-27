@@ -48,34 +48,9 @@ export function bevel(p: Pixels, x: number, y: number, w: number, h: number, ram
   return p;
 }
 
-/** ASCII art → a transparent sprite; each character maps to a color through `key`. */
-export function sprite(rows: string[], key: Record<string, number>, dx = 0, dy = 0, w = 20, h = 20): Pixels {
-  return new Pixels(w, h, CLEAR).draw(dx, dy, rows, key);
-}
-
-/** Adds a 1 pixel outline in `ink` around every opaque pixel. */
-export function outline(src: Pixels, ink: number): Pixels {
-  const p = new Pixels(src.w, src.h, CLEAR);
-  p.px.set(src.px);
-  for (let y = 0; y < src.h; y++)
-    for (let x = 0; x < src.w; x++) {
-      if (src.get(x, y) !== CLEAR) continue;
-      const n = [src.get(x - 1, y), src.get(x + 1, y), src.get(x, y - 1), src.get(x, y + 1)];
-      if (n.some((v) => v !== CLEAR && v !== -1)) p.set(x, y, ink);
-    }
-  return p;
-}
-
 /** Copies src over dst, skipping clear pixels. */
 export function over(dst: Pixels, src: Pixels, x = 0, y = 0): Pixels {
   return dst.blit(src, x, y, CLEAR);
-}
-
-/** Recolors every pixel through a lookup. */
-export function recolor(src: Pixels, fn: (c: number) => number): Pixels {
-  const p = new Pixels(src.w, src.h, CLEAR);
-  p.px.set(src.px.map((v) => (v === CLEAR ? CLEAR : fn(v))));
-  return p;
 }
 
 /** Text in the PC font; returns the width drawn. */

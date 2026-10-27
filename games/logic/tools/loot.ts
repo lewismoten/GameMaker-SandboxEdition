@@ -42,7 +42,7 @@ function path(rows: string[], from: [number, number], to: [number, number], wire
   return undefined;
 }
 
-export interface ScrewRun {
+interface ScrewRun {
   moves: string;
   played: Played;
   /** Ticks the detour added (0 when the board has no screw or no detour works). */

@@ -4,7 +4,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { CLEAR, Mask, fill, outline, shade } from '../art/draw';
 import { OUTLINE, S, WHITE, shared } from '../art/palette';
 
-export type Dir = 'idle' | 'r' | 'l' | 'u' | 'd' | 'ur' | 'ul' | 'dr' | 'dl';
+type Dir = 'idle' | 'r' | 'l' | 'u' | 'd' | 'ur' | 'ul' | 'dr' | 'dl';
 const VEC: Record<Dir, [number, number]> = {
   idle: [0, 0],
   r: [1, 0],

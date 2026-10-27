@@ -7,10 +7,10 @@ import { micro } from '../art/font';
 import { CTR } from '../ids';
 import { coverPic, pagePic } from '../blocks/items';
 import { C, PAL } from '../art/pal';
-import { flyingCiticar } from '../art/citicar';
+import { citicarRear, flyingCiticar } from '../art/citicar';
 
 const R = PAL.r;
-const K = () => C('grey', 0);
+const K = () => C('gray', 0);
 
 // ------------------------------------------------------------------ Dex
 function dexKey(): Record<string, number> {
@@ -21,13 +21,13 @@ function dexKey(): Record<string, number> {
     h: C('hair', 1),
     s: C('skin', 2),
     S: C('skin', 1),
-    e: C('grey', 0),
+    e: C('gray', 0),
     m: C('red', 2),
     j: C('chrome', 6),
     J: C('chrome', 4),
     p: C('teal', 3),
     g: C('gold', 4),
-    b: C('grey', 7),
+    b: C('gray', 7),
     B: C('neon', 2),
     z: C('teal', 4),
   };
@@ -85,9 +85,9 @@ function spacesuit(p: Pixels): Pixels {
   for (let a = 0; a < Math.PI * 2; a += 0.04) {
     const x = 9.5 + Math.cos(a) * 7.2;
     const y = 5.5 + Math.sin(a) * 6.2;
-    q.set(x, y, a > 3.6 && a < 4.6 ? C('grey', 7) : C('glass', 2));
+    q.set(x, y, a > 3.6 && a < 4.6 ? C('gray', 7) : C('glass', 2));
   }
-  q.set(5, 2, C('grey', 7)).set(6, 1, C('grey', 7));
+  q.set(5, 2, C('gray', 7)).set(6, 1, C('gray', 7));
   // Air tank peeking over the shoulder.
   q.rect(15, 9, 2, 5, C('chrome', 3));
   return q;
@@ -112,13 +112,13 @@ export function buildCharBlocks(): BlockSet {
   poses.push(['zap', zap]);
   const zap2 = dexPic([...D_HEAD, ...D_BODY, ...D_LEGS0]);
   zap2.rect(14, 9, 5, 3, C('chrome', 4));
-  oval(zap2, 18, 10, 2, 2, C('grey', 7));
+  oval(zap2, 18, 10, 2, 2, C('gray', 7));
   zap2.set(19, 7, C('gold', 5)).set(19, 13, C('gold', 5));
   poses.push(['zap2', zap2]);
   // Hurt: flash white and red.
   const base = poses[0][1];
-  poses.push(['hurt', recolor(base, (c) => (c === T ? T : c === K() ? C('red', 2) : C('grey', 7)))]);
-  poses.push(['hurt2', recolor(base, (c) => (c === T ? T : c === K() ? C('grey', 7) : C('red', 3)))]);
+  poses.push(['hurt', recolor(base, (c) => (c === T ? T : c === K() ? C('red', 2) : C('gray', 7)))]);
+  poses.push(['hurt2', recolor(base, (c) => (c === T ? T : c === K() ? C('gray', 7) : C('red', 3)))]);
   // Die: spin and flop, with little stars.
   const spin = rotate(base);
   poses.push(['die0', spin]);
@@ -138,6 +138,24 @@ export function buildCharBlocks(): BlockSet {
   poses.push(['die3', dizzy]);
   for (const [n, p] of poses) s.add(n, p);
   for (const [n, p] of poses) s.add(`m_${n}`, spacesuit(p));
+  // Grandpa's flying CitiCar from behind, for the Cloud Lane (CAR.CHR): humming, banking,
+  // flashing when bumped, and a spin into a cloud when the trip is over.
+  const car = citicarRear(0);
+  s.add('car0', car);
+  s.add('car1', citicarRear(1));
+  s.add('carL', citicarRear(0, -1));
+  s.add('carR', citicarRear(1, 1));
+  s.add(
+    'carHurt',
+    recolor(car, (c) => (c === T ? T : c === C('red', 0) ? C('gray', 7) : c === C('gray', 0) ? C('red', 2) : c)),
+  );
+  s.add('carDie0', rotate(car));
+  s.add('carDie1', rotate(rotate(car)));
+  const poof = new Pixels(20, 20, T);
+  oval(poof, 6, 12, 5, 4, C('sky', 6));
+  oval(poof, 14, 12, 5, 4, C('sky', 6));
+  oval(poof, 10, 9, 7, 5, C('gray', 7));
+  s.add('carDie2', poof);
   return s;
 }
 
@@ -147,7 +165,7 @@ const blankS = () => new Pixels(20, 20, T);
 function shotPic(k: number): Pixels {
   const p = blankS();
   oval(p, 10, 10, 6, 2.2, C('pink', 3));
-  oval(p, 10, 10, 4, 1.3, C('grey', 7));
+  oval(p, 10, 10, 4, 1.3, C('gray', 7));
   for (let i = 0; i < 4; i++) p.set(2 + i * 2 + k, 10 + (i % 2 ? 2 : -2), C('neon', 3));
   return p;
 }
@@ -157,26 +175,26 @@ function popPic(k: number): Pixels {
   for (let a = 0; a < 8; a++) {
     const ang = (a * Math.PI) / 4 + k * 0.4;
     const r0 = 2 + k * 3;
-    p.line(10 + Math.cos(ang) * r0, 10 + Math.sin(ang) * r0, 10 + Math.cos(ang) * (r0 + 3), 10 + Math.sin(ang) * (r0 + 3), a % 2 ? C('gold', 5) : C('grey', 7));
+    p.line(10 + Math.cos(ang) * r0, 10 + Math.sin(ang) * r0, 10 + Math.cos(ang) * (r0 + 3), 10 + Math.sin(ang) * (r0 + 3), a % 2 ? C('gold', 5) : C('gray', 7));
   }
-  if (k === 0) oval(p, 10, 10, 3, 3, C('grey', 7));
+  if (k === 0) oval(p, 10, 10, 3, 3, C('gray', 7));
   return p;
 }
 
 /** The robo-mower face on: it mows up and down the lawn toward you. */
 function mowerFrontPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 17, 8, 2, C('grey', 1));
+  oval(p, 10, 17, 8, 2, C('gray', 1));
   p.rect(3, 6, 14, 10, C('red', 2)).rect(3, 6, 14, 3, C('red', 4));
   blob(p, 10, 5, 4, 3, R('chrome'), 3, 7);
-  p.rect(8, 4, 1, 2, C('grey', 0)).rect(11, 4, 1, 2, C('grey', 0));
+  p.rect(8, 4, 1, 2, C('gray', 0)).rect(11, 4, 1, 2, C('gray', 0));
   p.line(10, 2, 10, 0, C('chrome', 5));
   p.set(10, 0, k ? C('red', 4) : C('gold', 5));
   // Spinning blades out the front.
   const by = 16;
   p.line(4, by, 16, by, C('chrome', 6));
   for (let x = 4 + k * 2; x < 17; x += 4) p.set(x, by + 1, C('green', 4)).set(x + 1, by - 1, C('green', 3));
-  p.rect(2, 8, 2, 6, C('grey', 1)).rect(16, 8, 2, 6, C('grey', 1));
+  p.rect(2, 8, 2, 6, C('gray', 1)).rect(16, 8, 2, 6, C('gray', 1));
   outline(p, K());
   return p;
 }
@@ -184,12 +202,12 @@ function mowerFrontPic(k: number): Pixels {
 /** The robo-mower side on, facing right (mirrored going left): it mows along the lawn. */
 function mowerPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 8, 1.5, C('grey', 1));
+  oval(p, 10, 18, 8, 1.5, C('gray', 1));
   p.rect(3, 8, 13, 7, C('red', 2)).rect(3, 8, 13, 2, C('red', 4));
   // the nose slopes down to the blade deck
   p.rect(16, 10, 1, 5, C('red', 2)).rect(17, 12, 1, 3, C('red', 2));
   blob(p, 10, 6, 4, 3, R('chrome'), 3, 7);
-  p.rect(11, 5, 1, 2, C('grey', 0));
+  p.rect(11, 5, 1, 2, C('gray', 0));
   p.line(9, 3, 9, 0, C('chrome', 5));
   p.set(9, 0, k ? C('red', 4) : C('gold', 5));
   // spinning blades under the nose, clippings thrown out the back
@@ -199,7 +217,7 @@ function mowerPic(k: number): Pixels {
     .set(0, 14 - k, C('green', 3))
     .set(2, 15 - k, C('green', 4));
   for (const x of [6, 13]) {
-    oval(p, x, 15, 2.2, 2.2, C('grey', 2));
+    oval(p, x, 15, 2.2, 2.2, C('gray', 2));
     p.set(x, 15, C('chrome', 6)).set(x - 1 + 2 * k, 14 + k, C('chrome', 4));
   }
   outline(p, K());
@@ -208,7 +226,7 @@ function mowerPic(k: number): Pixels {
 
 function dogPic(k: number, sparky = false, mad = false): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 7, 1.5, C('grey', 1));
+  oval(p, 10, 18, 7, 1.5, C('gray', 1));
   const body = sparky ? 'chrome' : 'gold';
   // A robot dog seen from the side: boxy body, round head, antenna tail.
   p.rect(4, 8, 10, 6, C(body, 4)).rect(4, 8, 10, 2, C(body, 6));
@@ -220,7 +238,7 @@ function dogPic(k: number, sparky = false, mad = false): Pixels {
   blob(p, 15, 7, 4, 4, R(body), 3, 7);
   p.rect(17, 8, 3, 2, C(body, 3));
   p.rect(13, 2, 2, 3, C(body, 2));
-  p.set(16, 6, mad ? C('red', 4) : C('grey', 0));
+  p.set(16, 6, mad ? C('red', 4) : C('gray', 0));
   p.line(4, 9, 1, 4 + k * 2, C('chrome', 3));
   p.set(1, 4 + k * 2, C('red', 4));
   if (sparky) {
@@ -236,7 +254,7 @@ function paperPic(k: number): Pixels {
   const p = blankS();
   const roll = blankS();
   roll.rect(5, 8, 10, 5, C('paper', 1)).rect(5, 8, 10, 1, C('paper', 2));
-  for (let x = 6; x < 15; x += 2) roll.set(x, 10, C('grey', 3));
+  for (let x = 6; x < 15; x += 2) roll.set(x, 10, C('gray', 3));
   roll.rect(9, 8, 2, 5, C('red', 3));
   p.blit(k ? rotate(roll) : roll, 0, 0, T);
   outline(p, K());
@@ -245,26 +263,26 @@ function paperPic(k: number): Pixels {
 
 function paperbotPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 5, 1.2, C('grey', 1));
+  oval(p, 10, 18, 5, 1.2, C('gray', 1));
   blob(p, 10, 6, 5, 5, R('purple'), 1, 5);
   oval(p, 10, 6, 3, 1.5, C('neon', 2));
   p.rect(6, 10, 8, 4, C('purple', 2));
   p.rect(12, 9, 5, 5, C('paper', 1)).rect(12, 9, 5, 1, C('red', 3));
   oval(p, 10, 15 + k, 4, 1, C('teal', 4));
-  oval(p, 10, 15 + k, 2, 0.6, C('grey', 7));
+  oval(p, 10, 15 + k, 2, 0.6, C('gray', 7));
   outline(p, K());
   return p;
 }
 
 function alienPic(k: number, ramp: 'alien' | 'purple'): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 5, 1.3, C('grey', 1));
+  oval(p, 10, 18, 5, 1.3, C('gray', 1));
   // Big head, huge friendly eyes, one hand waving hello.
   blob(p, 10, 6, 6, 5, R(ramp), 1, 3);
-  oval(p, 7.5, 6, 1.8, 2.3, C('grey', 0));
-  oval(p, 12.5, 6, 1.8, 2.3, C('grey', 0));
-  p.set(7, 5, C('grey', 7)).set(12, 5, C('grey', 7));
-  p.rect(9, 9, 3, 1, C('grey', 0));
+  oval(p, 7.5, 6, 1.8, 2.3, C('gray', 0));
+  oval(p, 12.5, 6, 1.8, 2.3, C('gray', 0));
+  p.set(7, 5, C('gray', 7)).set(12, 5, C('gray', 7));
+  p.rect(9, 9, 3, 1, C('gray', 0));
   p.rect(8, 11, 5, 5, C(ramp, 2));
   p.rect(8, 16, 2, 2, C(ramp, 1)).rect(11, 16, 2, 2, C(ramp, 1));
   p.line(13, 12, 16, 9 - k * 2, C(ramp, 2));
@@ -281,7 +299,7 @@ function alienPic(k: number, ramp: 'alien' | 'purple'): Pixels {
 
 function beamPic(k: number): Pixels {
   const p = blankS();
-  for (let y = 0; y < 20; y++) for (let x = 6; x < 14; x++) if ((x + y + k) % 3 === 0) p.set(x, y, k ? C('teal', 5) : C('grey', 7));
+  for (let y = 0; y < 20; y++) for (let x = 6; x < 14; x++) if ((x + y + k) % 3 === 0) p.set(x, y, k ? C('teal', 5) : C('gray', 7));
   for (const [x, y] of [
     [5, 4],
     [15, 9],
@@ -294,7 +312,7 @@ function beamPic(k: number): Pixels {
 
 function carPic(k: number, color: string, truck = false): Pixels {
   const p = blankS();
-  oval(p, 10, 17, 9, 1.8, C('grey', 1));
+  oval(p, 10, 17, 9, 1.8, C('gray', 1));
   const top = truck ? 3 : 5;
   for (let y = top; y < 15; y++)
     for (let x = 1; x < 19; x++) {
@@ -304,7 +322,7 @@ function carPic(k: number, color: string, truck = false): Pixels {
     }
   if (truck) {
     p.rect(2, 3, 10, 9, C(color, 2)).rect(2, 3, 10, 2, C(color, 4));
-    micro(p, 3, 6, 'FAX', C('grey', 7));
+    micro(p, 3, 6, 'FAX', C('gray', 7));
     oval(p, 15, 8, 3, 2.5, C('glass', 2));
   } else {
     oval(p, 12, 8, 4, 2.5, C('glass', 1));
@@ -320,13 +338,13 @@ function carPic(k: number, color: string, truck = false): Pixels {
 
 function faxbotPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 5, 1.2, C('grey', 1));
+  oval(p, 10, 18, 5, 1.2, C('gray', 1));
   p.rect(5, 6, 10, 8, C('concrete', 3)).rect(5, 6, 10, 2, C('concrete', 4));
-  p.rect(7, 3, 6, 4, C('paper', 2)).rect(8, 4, 4, 1, C('grey', 3));
+  p.rect(7, 3, 6, 4, C('paper', 2)).rect(8, 4, 4, 1, C('gray', 3));
   p.rect(7, 9, 3, 2, C('night', 1)).set(12, 10, C('neon', 3));
   for (const s of [-1, 1]) {
     const x = s < 0 ? 4 : 15;
-    p.line(x, 9, x + s * 4, 6 + k * 3, C('grey', 7)).line(x, 10, x + s * 4, 8 + k * 3, C('grey', 5));
+    p.line(x, 9, x + s * 4, 6 + k * 3, C('gray', 7)).line(x, 10, x + s * 4, 8 + k * 3, C('gray', 5));
   }
   outline(p, K());
   return p;
@@ -335,11 +353,11 @@ function faxbotPic(k: number): Pixels {
 /** The security robot side on, facing right (mirrored going left), its visor light sweeping. */
 function secbotPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 6, 1.5, C('grey', 1));
+  oval(p, 10, 18, 6, 1.5, C('gray', 1));
   p.rect(6, 8, 8, 9, C('denim', 2)).rect(6, 8, 8, 2, C('denim', 4));
   blob(p, 10, 6, 5, 4, R('chrome'), 3, 7);
   // the visor wraps round the front of the dome
-  p.rect(11, 5, 4, 2, C('grey', 0))
+  p.rect(11, 5, 4, 2, C('gray', 0))
     .set(12 + k, 5, C('red', 4))
     .set(13 + k, 5, C('red', 4));
   p.rect(8, 1, 2, 2, k ? C('red', 4) : C('denim', 4));
@@ -347,14 +365,14 @@ function secbotPic(k: number): Pixels {
   p.rect(12, 11, 2, 2, C('gold', 4));
   p.rect(9 - k, 10, 2, 5, C('denim', 1));
   // walking feet
-  p.rect(k ? 7 : 6, 17, 3, 2, C('grey', 2)).rect(k ? 10 : 11, 17, 3, 2, C('grey', 2));
+  p.rect(k ? 7 : 6, 17, 3, 2, C('gray', 2)).rect(k ? 10 : 11, 17, 3, 2, C('gray', 2));
   outline(p, K());
   return p;
 }
 
 function cartPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 7, 1.3, C('grey', 1));
+  oval(p, 10, 18, 7, 1.3, C('gray', 1));
   for (let y = 4; y < 13; y++) for (let x = 3 + (y - 4) / 3; x < 17; x++) if ((x + y) % 2 === 0 || y === 4 || y === 12) p.set(x, y, C('chrome', 6));
   p.rect(15, 2, 3, 2, C('red', 3));
   // Shopping: a giant box of food pills.
@@ -366,15 +384,15 @@ function cartPic(k: number): Pixels {
 
 function telemarketerPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 5, 1.2, C('grey', 1));
+  oval(p, 10, 18, 5, 1.2, C('gray', 1));
   p.rect(6, 9, 8, 8, C('gold', 3)).rect(6, 9, 8, 2, C('gold', 5));
   p.rect(7, 2, 6, 7, C('chrome', 5));
-  p.set(8, 4, C('grey', 0)).set(11, 4, C('grey', 0));
-  p.rect(8, 6, 4, 1, C('grey', 0));
+  p.set(8, 4, C('gray', 0)).set(11, 4, C('gray', 0));
+  p.rect(8, 6, 4, 1, C('gray', 0));
   // A headset and a big old telephone handset.
-  p.line(6, 2, 6, 6, C('grey', 1)).line(6, 6, 8, 7, C('grey', 1));
+  p.line(6, 2, 6, 6, C('gray', 1)).line(6, 6, 8, 7, C('gray', 1));
   p.rect(13, 9 + k, 4, 2, C('red', 3)).rect(15, 7 + k, 2, 6, C('red', 3));
-  micro(p, 4, 12, '800', C('grey', 0));
+  micro(p, 4, 12, '800', C('gray', 0));
   outline(p, K());
   return p;
 }
@@ -388,7 +406,7 @@ function staticPic(k: number): Pixels {
       const ny = (y - 9) / 8;
       if (nx * nx + ny * ny > 1 && y < 13) continue;
       if (y >= 13 && (x + k * 2) % 4 === 0) continue;
-      p.set(x, y, C('grey', 4 + Math.floor(r() * 4)));
+      p.set(x, y, C('gray', 4 + Math.floor(r() * 4)));
     }
   p.rect(7, 7, 2, 3, C('red', 2)).rect(11, 7, 2, 3, C('red', 2));
   // A hot pink rim, so the ghost reads against the snow it lives in.
@@ -401,7 +419,7 @@ function fishPic(k: number): Pixels {
   oval(p, 10, 10, 6, 4, C('orange', 3));
   oval(p, 10, 9, 5, 2, C('orange', 4));
   for (let i = 0; i < 4; i++) p.line(3, 10, 0, 7 + i * 2 + k, C('orange', 2));
-  p.set(14, 9, C('grey', 0));
+  p.set(14, 9, C('gray', 0));
   // It wears a tiny diving helmet. It's the future.
   p.ring(14, 9, 3, C('glass', 3));
   outline(p, K());
@@ -410,12 +428,12 @@ function fishPic(k: number): Pixels {
 
 function dinoPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 7, 1.3, C('grey', 1));
+  oval(p, 10, 18, 7, 1.3, C('gray', 1));
   p.rect(5, 8, 9, 7, C('green', 3)).rect(5, 8, 9, 2, C('green', 4));
   blob(p, 15, 6, 4, 3.5, R('green'), 2, 4);
   p.rect(16, 8, 4, 2, C('green', 2));
-  p.set(17, 9, C('grey', 7)).set(19, 9, C('grey', 7));
-  p.set(16, 5, C('grey', 0));
+  p.set(17, 9, C('gray', 7)).set(19, 9, C('gray', 7));
+  p.set(16, 5, C('gray', 0));
   p.line(5, 11, 0, 13 + k, C('green', 2));
   p.rect(6, 15, 2, 3 - k, C('green', 2)).rect(11, 15, 2, 2 + k, C('green', 2));
   p.rect(13, 11, 2, 1, C('green', 2));
@@ -425,14 +443,14 @@ function dinoPic(k: number): Pixels {
 
 function grandmaPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 5, 1.3, C('grey', 1));
-  oval(p, 10, 3, 3, 2.5, C('grey', 6));
+  oval(p, 10, 18, 5, 1.3, C('gray', 1));
+  oval(p, 10, 3, 3, 2.5, C('gray', 6));
   blob(p, 10, 6, 4, 3.5, R('skin'), 1, 3);
   p.rect(7, 6, 2, 1, C('chrome', 2)).rect(11, 6, 2, 1, C('chrome', 2));
   p.rect(9, 8, 2, 1, C('red', 2));
   p.rect(6, 10, 8, 7, C('purple', 3)).rect(6, 10, 8, 2, C('purple', 4));
   p.line(14, 11, 17, 8 - k * 2, C('purple', 3));
-  p.rect(7, 17, 2, 2, C('grey', 7)).rect(11, 17, 2, 2, C('grey', 7));
+  p.rect(7, 17, 2, 2, C('gray', 7)).rect(11, 17, 2, 2, C('gray', 7));
   outline(p, K());
   return p;
 }
@@ -451,7 +469,7 @@ function boomPic(k: number): Pixels {
   const p = blankS();
   blob(p, 10, 11, 7 - k, 6 - k, R('orange'), 1, 4);
   blob(p, 10, 10, 4 - k, 3, R('gold'), 3, 5);
-  for (let a = 0; a < 6; a++) p.set(10 + Math.cos(a) * (8 + k), 10 + Math.sin(a) * (8 + k), C('grey', 6));
+  for (let a = 0; a < 6; a++) p.set(10 + Math.cos(a) * (8 + k), 10 + Math.sin(a) * (8 + k), C('gray', 6));
   return p;
 }
 
@@ -462,9 +480,9 @@ function buggyPic(k: number): Pixels {
   p.rect(9, 5, 5, 4, C('chrome', 4));
   p.disc(12, 4, 2, C('glass', 3));
   for (const x of [5, 15]) {
-    p.disc(x, 15, 3, C('grey', 1));
+    p.disc(x, 15, 3, C('gray', 1));
     p.disc(x, 15, 1, C('chrome', 5));
-    p.set(x + (k ? 2 : -2), 15, C('grey', 3));
+    p.set(x + (k ? 2 : -2), 15, C('gray', 3));
   }
   p.line(4, 9, 2, 3, C('chrome', 5));
   p.set(2, 3, C('red', 4));
@@ -476,14 +494,14 @@ function lavaPic(k: number): Pixels {
   const p = blankS();
   blob(p, 10, 11 - k, 5, 5, R('orange'), 1, 4);
   p.set(8, 9 - k, C('gold', 5)).set(12, 12 - k, C('red', 3));
-  oval(p, 10, 18, 4, 1, C('grey', 1));
+  oval(p, 10, 18, 4, 1, C('gray', 1));
   outline(p, C('red', 1));
   return p;
 }
 
 function shopperPic(k: number): Pixels {
   const p = blankS();
-  oval(p, 10, 18, 5, 1.2, C('grey', 1));
+  oval(p, 10, 18, 5, 1.2, C('gray', 1));
   p.rect(7, 8, 6, 8, C('teal', 3));
   blob(p, 10, 5, 3.5, 3.5, R('chrome'), 3, 7);
   p.rect(8, 4, 4, 1, C('neon', 3));
@@ -496,7 +514,7 @@ function shopperPic(k: number): Pixels {
 function skaterPic(k: number): Pixels {
   const p = blankS();
   // A teenager on a hoverboard. Also from 1989's idea of 2015, which is close enough.
-  oval(p, 10, 19, 8, 1, C('grey', 1));
+  oval(p, 10, 19, 8, 1, C('gray', 1));
   p.rect(2, 15, 16, 2, C('pink', 3)).rect(2, 15, 16, 1, C('pink', 5));
   oval(p, 10, 17 + k, 5, 0.8, C('teal', 5));
   p.rect(7, 8, 6, 7, C('denim', 2));

@@ -1,9 +1,9 @@
-// The two acts in the theatre: who stands where.
+// The two acts in the theater: who stands where.
 import type { BlockSet } from '../blocks/blockset';
 import { MON } from '../characters/critters';
-import { buildTheatre, type Placed, type Theatre } from './theatre';
+import { buildTheater, type Placed, type Theater } from './theater';
 
-export function buildActs(bs: BlockSet): Theatre[] {
+export function buildActs(bs: BlockSet): Theater[] {
   const act1: Placed[] = [
     { mon: MON.dobbs, x: 21, y: 45 },
     { mon: MON.cat, x: 30, y: 31 },
@@ -17,5 +17,5 @@ export function buildActs(bs: BlockSet): Theatre[] {
     { mon: MON.wispWander, x: 24, y: 42 },
     { mon: MON.wispWander, x: 30, y: 15 },
   ];
-  return [buildTheatre(1, bs, act1), buildTheatre(2, bs, act2)];
+  return [buildTheater(1, bs, act1), buildTheater(2, bs, act2)];
 }

@@ -15,6 +15,7 @@ import { DemoAudioEngine, demoAudio, demoAudioPicker, onDemoAudio } from './demo
 import { attractRecording } from './attractDemo';
 import { ADDED_DEMO_NOTICE, extraDemoForGam, fetchExtraDemo, loadExtraDemos } from './extraDemos';
 import { claimMediaFocus } from './mediaFocus';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 
 const SKIP_KEY = 'gm-demo-skip-intro';
 
@@ -77,6 +78,8 @@ interface DemoOptions {
   heading?: string;
   /** A line under the screen, e.g. that the recording was not in the original game. */
   notice?: string;
+  /** The game's DOS player look (dosPlayer/): its player screens as its .EXE shows them. */
+  player?: PlayerPatches;
 }
 
 /** Plays a demo recording in a dialog: watch it, or save it as a video (screen and sound). */
@@ -129,6 +132,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
     sound = new DemoAudioEngine(demoAudio());
     player = mountPlayer(host, files, o.gam, {
       title: o.title,
+      player: o.player,
       playback: o.rec,
       audio: sound,
       speakerOnly: sound.mode !== 'blaster',
@@ -228,7 +232,7 @@ export function playDemo(o: DemoOptions): Promise<void> {
 }
 
 /** "▶ Watch demo" for a game card: plays the title screen's demo with its music and sounds. */
-export function demoButton(title: string, load: () => Promise<GameFiles>, gam: string | null | undefined): HTMLElement | null {
+export function demoButton(title: string, load: () => Promise<GameFiles>, gam: string | null | undefined, player?: PlayerPatches): HTMLElement | null {
   if (!gam) return null;
   return h(
     'button',
@@ -237,7 +241,7 @@ export function demoButton(title: string, load: () => Promise<GameFiles>, gam: s
       onclick: async () => {
         const files = await load();
         const rec = titleDemo(files, gam);
-        if (rec) return playDemo({ title, files, gam, rec, heading: `${title}: the demo` });
+        if (rec) return playDemo({ title, files, gam, rec, heading: `${title}: the demo`, player });
         // a CD game that shipped without one may have a demo added for this edition
         const added = extraDemoForGam(await loadExtraDemos(), files.get(gam));
         const bytes = added && (added.inGame ? files.get(added.file) : await fetchExtraDemo(added));
@@ -250,6 +254,7 @@ export function demoButton(title: string, load: () => Promise<GameFiles>, gam: s
             files,
             gam,
             rec: walk,
+            player,
             heading: `${title}: a preview`,
             notice: 'Preview — not a recorded demo: the hero walks back and forth with the game’s own keys. Nothing is saved to the game.',
           });
@@ -259,6 +264,7 @@ export function demoButton(title: string, load: () => Promise<GameFiles>, gam: s
           files,
           gam,
           rec: bytes,
+          player,
           heading: `${title}: the demo (added)`,
           notice: added.inGame ? added.made : `${ADDED_DEMO_NOTICE}. ${added.made}`,
         });

@@ -12,17 +12,18 @@
 // localStorage under OVERRIDES_KEY and never touch a save, as the felt eggs' do.
 //
 // Which games count: the catalog's Sandbox and Bard of Bizarre games that declare a heart. The
-// manifest never holds a secret game, so one never shows in a count or a list.
+// manifest never holds a secret game, so one never shows in a count or a list. The hunt is
+// those games' hearts and the room's (deskHearts.ts: the one in the wall clock); `huntStates`,
+// `heartCount` and `huntComplete` count all of them.
 import json from './hearts.json';
 import { isHeartAt, type HeartManifest, type HeartPlace } from './manifest';
 import { loadSaveData, SAVES_CHANGED, writeSaveFile } from '../project/storage';
 import type { Session } from '../engine/scene';
+import { CLOCK_FOUND_KEY, clockHeartTaken, DESK_HEARTS, grandfathered, TIN_HEARTS_CHANGED } from './deskHearts';
 
 export const MANIFEST = json as unknown as HeartManifest;
 export const FOUND_FILE = 'tinheart.dat';
 export const OVERRIDES_KEY = 'gm-tin-hearts';
-/** Fired on window when a heart is found, or EGG.EXE changes one. */
-const TIN_HEARTS_CHANGED = 'gm-tin-hearts-changed';
 
 type HeartOverride = 'added' | 'broken';
 type HeartStatus = 'saved' | 'added' | 'broken' | 'none';
@@ -173,15 +174,44 @@ export async function heartStates(games?: CountedGame[]): Promise<HeartState[]> 
   );
 }
 
-/** How many of the counted hearts are found. */
-export async function heartCount(): Promise<{ found: number; total: number }> {
-  const s = await heartStates();
-  return { found: s.filter((h) => h.found).length, total: s.length };
+/** Where the room's hearts stand (the clock's): taken in the room, or changed in EGG.EXE. */
+export function deskHeartStates(): HeartState[] {
+  const overrides = readOverrides();
+  return DESK_HEARTS.map((d) => {
+    const when = clockHeartTaken();
+    return { id: d.id, title: d.title, inSave: !!when, when, ...statusOf(!!when, overrides[d.id]) };
+  });
+}
+
+/** Every heart in the hunt: the counted games' (`games`, or the live catalog's), then the room's. */
+export async function huntStates(games?: CountedGame[]): Promise<HeartState[]> {
+  return [...(await heartStates(games)), ...deskHeartStates()];
+}
+
+const isDesk = (id: string) => DESK_HEARTS.some((d) => d.id === id);
+
+/**
+ * Whether the hunt is won, from `states` (huntStates): every heart found, or every game's heart
+ * found by someone who had found them all before the room's hearts joined (deskHearts.ts).
+ */
+export function huntComplete(states: Pick<HeartState, 'id' | 'found'>[]): boolean {
+  const games = states.filter((s) => !isDesk(s.id));
+  if (!games.length) return false; // not known yet (no catalog): nothing decided
+  const gamesDone = games.every((s) => s.found);
+  // asked every time, so the first answer is the one kept
+  const before = grandfathered(gamesDone);
+  return gamesDone && (before || states.every((s) => s.found));
+}
+
+/** How many of the hunt's hearts are found, and whether it is won (huntComplete). */
+export async function heartCount(): Promise<{ found: number; total: number; complete: boolean }> {
+  const s = await huntStates();
+  return { found: s.filter((h) => h.found).length, total: s.length, complete: huntComplete(s) };
 }
 
 /** Calls `f` whenever a find may have changed (here, a save written, EGG.EXE in another tab). */
 export function watchHearts(f: () => void): () => void {
-  const onStorage = (e: StorageEvent) => (e.key === OVERRIDES_KEY || e.key === null) && f();
+  const onStorage = (e: StorageEvent) => (e.key === OVERRIDES_KEY || e.key === CLOCK_FOUND_KEY || e.key === null) && f();
   window.addEventListener(TIN_HEARTS_CHANGED, f);
   window.addEventListener(SAVES_CHANGED, f);
   window.addEventListener('storage', onStorage);

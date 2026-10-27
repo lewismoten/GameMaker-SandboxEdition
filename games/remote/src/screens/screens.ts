@@ -11,7 +11,7 @@ import { centered, micro, outlined, text, textWidth } from '../../../snowbound/s
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 
-export interface ScreenExtras {
+interface ScreenExtras {
   /** Your sprites. */
   hero: Map<string, Pixels>;
 }
@@ -92,7 +92,7 @@ export function vcrArt(p: Pixels, pal: Pal, x: number, y: number, lit: boolean, 
   else if (lit) micro(p, x + 46, y + 4, '12:00', c('led', 1));
 }
 
-/** The remote: a big chunky grey 1995 clicker, upright, `s` pixels a unit (12 x 30 units). */
+/** The remote: a big chunky gray 1995 clicker, upright, `s` pixels a unit (12 x 30 units). */
 export function remoteArt(p: Pixels, pal: Pal, x: number, y: number, s = 1, glow = false): void {
   const c = pal.c;
   const R = (u: number, v: number, w: number, h: number, col: number) => p.rect(x + u * s, y + v * s, w * s, h * s, col);

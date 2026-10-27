@@ -193,7 +193,7 @@ export function portMap(mons: MonBook): { plan: Plan; harbor: TownSpots; falls: 
   p.put('flowers', 86, 5);
   p.put('tree', 71, 6);
   p.npc(npc('hermit'), [75, 4], TALK.hermit, [75, 5]);
-  p.link([83, 5], 'eggnote', [0, 0]);
+  p.link([83, 5], 'eggnote', [81, 5]); // back west of the stone, which is shut again
   // streets: the main street up from the south gate, a bridge east across the river
   p.cm.path('street', [
     [71, 66],

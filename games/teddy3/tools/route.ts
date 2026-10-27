@@ -10,6 +10,7 @@ import { route as mill } from './routes/mill';
 import { route as dig } from './routes/dig';
 import { route as road } from './routes/road';
 import { route as funhouse } from './routes/funhouse';
+import { route as dream } from './routes/dream';
 import { route as hill } from './routes/hill';
 import { route as meadow } from './routes/meadow';
 import { route as stage } from './routes/stage';
@@ -30,6 +31,7 @@ export const ROUTES: Record<string, Order[]> = {
   dig,
   pies,
   funhouse,
+  dream,
   hill,
   meadow,
   stage,

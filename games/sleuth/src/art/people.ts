@@ -42,7 +42,7 @@ export const PEOPLE: Record<Who, Look> = {
     hairLo: 0,
     hairHi: 2,
     style: 'slick',
-    coat: 'grey',
+    coat: 'gray',
     coatLo: 2,
     coatHi: 4,
     shirt: 'paper',
@@ -51,7 +51,7 @@ export const PEOPLE: Record<Who, Look> = {
   agatha: {
     name: 'AGATHA CRANE',
     role: 'The widow, co-owner',
-    hair: 'grey',
+    hair: 'gray',
     hairLo: 4,
     hairHi: 7,
     style: 'bun',
@@ -64,7 +64,7 @@ export const PEOPLE: Record<Who, Look> = {
   felix: {
     name: 'FELIX MORROW',
     role: 'Stage manager',
-    hair: 'grey',
+    hair: 'gray',
     hairLo: 5,
     hairHi: 7,
     style: 'fringe',
@@ -116,7 +116,7 @@ export const PEOPLE: Record<Who, Look> = {
   commish: {
     name: 'COMMISSIONER HALE',
     role: 'Port Ellery Police',
-    hair: 'grey',
+    hair: 'gray',
     hairLo: 4,
     hairHi: 6,
     style: 'cap',
@@ -233,7 +233,7 @@ export function portrait(who: Who, s: number): Pixels {
       eyeY - 0.045,
       0.07,
       0.012,
-      c(L.style === 'fringe' || L.style === 'bun' ? 'grey' : 'black', L.style === 'fringe' || L.style === 'bun' ? 5 : 1),
+      c(L.style === 'fringe' || L.style === 'bun' ? 'gray' : 'black', L.style === 'fringe' || L.style === 'bun' ? 5 : 1),
     );
   }
   rect(0.495, 0.47, 0.02, 0.06, c('skin', 2));
@@ -248,7 +248,7 @@ export function portrait(who: Who, s: number): Pixels {
     if (e === 'halfmoons') {
       for (const ex of [0.43, 0.57]) rect(ex - 0.045, eyeY + 0.01, 0.09, 0.015, c('gold', 3));
     }
-    if (e === 'mustache') rect(0.43, 0.535, 0.14, 0.02, c(L.hair === 'navy' ? 'grey' : L.hair, L.hair === 'navy' ? 5 : 1));
+    if (e === 'mustache') rect(0.43, 0.535, 0.14, 0.02, c(L.hair === 'navy' ? 'gray' : L.hair, L.hair === 'navy' ? 5 : 1));
     if (e === 'pearls') for (let i = 0; i < 7; i++) dot(0.4 + i * 0.033, 0.75 + Math.sin((i / 6) * Math.PI) * 0.04, 0.012, c('paper', 5));
     if (e === 'carnation') {
       dot(0.68, 0.84, 0.035, c('velvet', 5));

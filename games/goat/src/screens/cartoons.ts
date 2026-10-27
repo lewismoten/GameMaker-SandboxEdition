@@ -28,7 +28,7 @@ function musicNote(p: Pixels, x: number, y: number, two: boolean, fill: number, 
 /** Clear pixels in sprites. */
 const T = 255;
 /** 1/70 s per frame: about 12 frames a second. */
-export const SPEED = 6;
+const SPEED = 6;
 
 export interface Cast {
   /** The goat's sprites (the .CBL's pictures). */
@@ -60,7 +60,7 @@ function outline(p: Pixels, ink: number): Pixels {
 }
 
 /** An angel in a white robe with a gold halo, wings up (f 0) or down (f 1), a trumpet raised. */
-export function angel(pal: Pal, f: number): Pixels {
+function angel(pal: Pal, f: number): Pixels {
   const c = pal.c;
   const p = new Pixels(28, 30, T);
   // wings behind

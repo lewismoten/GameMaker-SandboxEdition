@@ -11,9 +11,9 @@ import { klub } from './levels/level5';
 export const LEVELS: (() => Level)[] = [backyard, street, park, city, klub];
 
 /** Songs per level (CMF file names), in level order. */
-export const LEVEL_SONGS = ['backyard.cmf', 'street.cmf', 'park.cmf', 'city.cmf', 'klub.cmf'];
+const LEVEL_SONGS = ['backyard.cmf', 'street.cmf', 'park.cmf', 'city.cmf', 'klub.cmf'];
 
-export const TITLE = "TEDDY'S ADVENTURE";
+const TITLE = "TEDDY'S ADVENTURE";
 
 /** An all-black palette, for a scene that is only passed through. */
 export const DARK = 'dark.pal';

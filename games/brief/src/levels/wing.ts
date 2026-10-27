@@ -21,7 +21,7 @@ import { CTR, WORDS_PER_BOOK, wingCounter } from '../ids';
 import { story, type Wing } from '../stories';
 import { Area, WIN_W, checkWords, type Cell, type Window } from './area';
 
-export interface BookSpec {
+interface BookSpec {
   /** The story's number (stories.ts). */
   n: number;
   /** The block under word slips, monsters and '@' ('.' in the rows). */
@@ -53,7 +53,7 @@ export interface WingSpec {
   books: BookSpec[];
 }
 
-export interface CompiledBook {
+interface CompiledBook {
   spec: BookSpec;
   win: Window;
   /** THE END page (solid until it takes a hundred words; open, it counts the story). */
@@ -76,7 +76,7 @@ export interface CompiledWing {
 }
 
 /** The nook: its own scene, two screens wide and scrolling, so its far end is never on screen as Joe comes in. */
-export interface Nook {
+interface Nook {
   /** The gap in the hallway's shelves (a link into the nook). */
   gap: { x: number; y: number };
   /** Where Joe comes in, and the way back out to the hallway. */
@@ -125,7 +125,7 @@ function edge(tint: string): Pixels {
 
 /** THE END: a closed book with a brass lock reading 100, then open, then open and counted. */
 /** Words a word lock wants to see before it turns. */
-export const LOCK_WORDS = 20;
+const LOCK_WORDS = 20;
 
 /** A word lock: a brass turnstile with a slot, stamped with the words it wants to see. */
 function lockPic(under: Pixels, tint: string): Pixels {
@@ -165,7 +165,7 @@ function endPage(state: 'shut' | 'open' | 'done', under: Pixels, tint: string): 
         [18, 17],
       ])
         p.set(x, y, c('yellow', 3));
-    p.rect(3, 12, 6, 1, c('grey', 3)).rect(11, 12, 6, 1, c('grey', 3));
+    p.rect(3, 12, 6, 1, c('gray', 3)).rect(11, 12, 6, 1, c('gray', 3));
   }
   return p;
 }

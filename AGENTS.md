@@ -102,7 +102,7 @@ preserve what was there.
   - Editor features must not change how games save or export to DOS.
   - Editor-only data goes in the project's companion file (`web/src/project/companion.ts`),
     which DOS, native and web-page exports never include.
-- **Accessibility and layout:** keyboard reachable, labelled, 24px targets, and no
+- **Accessibility and layout:** keyboard reachable, labeled, 24px targets, and no
   horizontal scroll at 390px. Editor and home views should fit one screen. Check new UI with
   axe at 1440 and 390, in light and dark.
 - **Permissions:** if a command is blocked, stop and report it. Don't work around it.

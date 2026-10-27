@@ -17,7 +17,7 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Scene } from '../../../web/src/formats/game';
 import type { CompiledRoom } from './levels/board';
 
-export const TITLE = 'OHM SWEET OHM';
+const TITLE = 'OHM SWEET OHM';
 
 function noLinks(): Scene['links'] {
   return Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
@@ -88,7 +88,7 @@ export function buildGame(rooms: CompiledRoom[], startAt = 0): Game {
     card.links[0] = { toScene: roomScene(ri), from: b.start, to: b.start };
     game.scenes.push(card);
   });
-  // Behind a seam in a board's housing: the fuse box. Its socket leads through a page of
+  // Behind a seam in a board's housing: the fuse box. Its main switch leads through a page of
   // text back onto that board's pad.
   rooms.forEach((r, ri) => {
     const fb = r.fusebox;

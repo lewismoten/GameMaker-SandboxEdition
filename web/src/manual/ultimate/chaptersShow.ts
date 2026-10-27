@@ -27,6 +27,9 @@ export const SHOW: Chapter = {
     picture is on the screen in the color nearest a deep purple. Show a plain “paper” picture
     first and the text sits on it. Keep lines to 30: PLAYGAME reads 31 characters at a time, so
     a line of exactly 31 leaves its line break behind as an extra blank line.</li>
+    <li>Write in-game text in plain ASCII. The player draws its letters from the PC’s built-in
+    font, which stops at character 127: accented letters, symbols and box lines come out as
+    scribbles in DOS (Level check: <b>Characters DOS can’t draw</b>).</li>
     <li>A <code>.LST</code> is a slide show: one file name per line, each with an optional
     pause in seconds. A line with no pause waits for a key, and <kbd>Esc</kbd> skips the rest.</li>
     <li>Left to themselves, a <code>.GIF</code> stays up 15 seconds, a backdrop 20, a text page 90,
@@ -204,5 +207,6 @@ export const NUMBERS: Chapter = {
     <tr><td>Menu idle before the demo</td><td>30 seconds</td></tr>
     <tr><td>Text page</td><td>16 lines of 30 characters (a 31st adds a blank line)</td></tr>
     <tr><td>Saved games</td><td>10 slots</td></tr>
+    <tr><td>A player’s word changed in a hex editor (Chapter 17)</td><td>the same number of bytes, and the 0 after it kept</td></tr>
   </table>`,
 };

@@ -35,7 +35,7 @@ const ok = (r: string | undefined, label: string) => {
 };
 
 /** The library at closing time: the storybook, then the workbench, which leads out to the road. */
-export const library: Step = async (bot) => {
+const library: Step = async (bot) => {
   await bot.wait(30);
   const book = at(4, 7);
   await bot.take(book.x, book.y, SCENE.talkBook, 'the storybook');
@@ -46,14 +46,14 @@ export const library: Step = async (bot) => {
 };
 
 /** The road, up the first lane to the clock. */
-export const toClock: Step = async (bot) => {
+const toClock: Step = async (bot) => {
   const lane = at(10, 1);
   await bot.take(lane.x, lane.y, SCENE.card1, 'the lane to the clock');
   await bot.pass(SCENE.square, 'chapter one');
 };
 
 /** The square at 6:59: Doc Leo, then the tower door. */
-export const square: Step = async (bot) => {
+const square: Step = async (bot) => {
   const leo = at(6, 6);
   await bot.take(leo.x, leo.y, SCENE.talkLeo, 'Doc Leo');
   await bot.pass(SCENE.square, 'back from Doc Leo');
@@ -71,7 +71,7 @@ async function waitFor(bot: Bot, x: number, y: number, block: number, label: str
 }
 
 /** Up the tower: the floors, the first gear, the escapement (tock, tick, tock), the second gear, the hatch. */
-export function tower(ids: { tick: number; tock: number }): Step {
+function tower(ids: { tick: number; tock: number }): Step {
   return async (bot) => {
     await bot.wait(10);
     ok(await bot.walk(3, 'under the first floor'), 'tower');
@@ -107,7 +107,7 @@ export function tower(ids: { tick: number; tock: number }): Step {
 }
 
 /** The belfry: the third gear, the hammer, the bell rope. */
-export const belfry: Step = async (bot) => {
+const belfry: Step = async (bot) => {
   await bot.wait(10);
   ok(await bot.walk(6, 'under the west floor'), 'belfry');
   ok(await bot.hop('left', 8, 'left', 4), 'up to the west floor');
@@ -119,7 +119,7 @@ export const belfry: Step = async (bot) => {
 };
 
 /** The square at seven: the rope, the key, Doc Leo, out by the swing gate, and down the lane. */
-export const square7: Step = async (bot) => {
+const square7: Step = async (bot) => {
   const rope = at(6, 8);
   ok(await bot.goto(rope.x, rope.y, 'the rope'), 'square7');
   const key = at(7, 6);
@@ -135,7 +135,7 @@ export const square7: Step = async (bot) => {
 };
 
 /** Chapter 2: Teddy at the gate, the lawn's valentines, Gwinn, the arch, Teddy's thank-you, out. */
-export const park: Step = async (bot) => {
+const park: Step = async (bot) => {
   const lane = at(19, 1);
   await bot.take(lane.x, lane.y, SCENE.card2, 'the lane to the park');
   await bot.pass(SCENE.park, 'chapter two');
@@ -164,7 +164,7 @@ export const park: Step = async (bot) => {
 };
 
 /** Chapter 3: across the parade for the drumsticks, the drum, the Bard's thank-you, and north to the road. */
-export const street: Step = async (bot) => {
+const street: Step = async (bot) => {
   const lane = at(27, 1);
   await bot.take(lane.x, lane.y, SCENE.card3, 'the lane to Main Street');
   await bot.pass(SCENE.street, 'chapter three');
@@ -198,7 +198,7 @@ export const street: Step = async (bot) => {
 };
 
 /** The road east, through the first leg's field gate to the shore road. */
-export const toShore: Step = async (bot) => {
+const toShore: Step = async (bot) => {
   const gate = at(33, 12);
   const end = at(34, 12);
   const r = await bot.goto(end.x, end.y, 'the shore road', (x, y) => x === gate.x && y === gate.y);
@@ -234,7 +234,7 @@ async function liftAt(bot: Bot, monnum: number, row: number, label: string, max 
 }
 
 /** Chapter 4: the goat, into the music box (the comb, the lift, the notes, the socket), and her thank-you. */
-export const musicBox =
+const musicBox =
   (ids: { toothA: number; toothB: number }): Step =>
   async (bot) => {
     const lane = at(10, 1);
@@ -282,7 +282,7 @@ export const musicBox =
   };
 
 /** Chapter 5: Doc Leo, the three breakers through the lot's gates, the charger, his thank-you. */
-export const lot: Step = async (bot) => {
+const lot: Step = async (bot) => {
   await bot.pass(SCENE.lot, 'chapter five');
   const d = at(4, 14);
   await bot.take(d.x, d.y, SCENE.talkLot, 'Doc Leo');
@@ -323,7 +323,7 @@ export const lot: Step = async (bot) => {
 };
 
 /** Chapter 6: across the dark cove, up the lighthouse by its lift and landings, the lamp, and Carl's thank-you. */
-export const lighthouse: Step = async (bot) => {
+const lighthouse: Step = async (bot) => {
   await bot.pass(SCENE.cove, 'chapter six');
   const door = at(21, 3);
   await bot.take(door.x, door.y, SCENE.lighthouse, 'the lighthouse door');
@@ -373,7 +373,7 @@ async function shovelTo(bot: Bot, x: number, y: number, label: string, drifts: n
 }
 
 /** Chapter 7: Lewie's shovel from the box, the drifts on five front walks and their doormats, his porch, his thank-you, and on. */
-export const snowDay =
+const snowDay =
   (ids: { drifts: number[] }): Step =>
   async (bot) => {
     const lane = at(10, 1);
@@ -410,7 +410,7 @@ export const snowDay =
   };
 
 /** Chapter 8: Will, his pages round the floor, the turret on the warm air and the fan's draft, the lit stage and his thank-you. */
-export const openMic: Step = async (bot) => {
+const openMic: Step = async (bot) => {
   await bot.pass(SCENE.hive, 'chapter eight');
   const will = at(13, 4);
   await bot.take(will.x, will.y, SCENE.talkWill, 'Will');
@@ -444,7 +444,7 @@ export const openMic: Step = async (bot) => {
 };
 
 /** Into the painted rocks: Loaf #13 calling from the cubby. */
-export const toRocks: Step = async (bot) => {
+const toRocks: Step = async (bot) => {
   await bot.pass(SCENE.talkLoaf, 'chapter nine');
   await bot.pass(SCENE.garden, 'Loaf #13');
 };
@@ -459,7 +459,7 @@ async function gone(bot: Bot, monnum: number, label: string, max = 300): Promise
 }
 
 /** Chapter 9: each painted rock sent rolling home and patted, Loaf's cubby, his thank-you, and the gate on. */
-export const rocks =
+const rocks =
   (next: number): Step =>
   async (bot) => {
     for (const [k, plan] of ROCK_PLAN.entries()) {
@@ -531,7 +531,7 @@ async function ontoHorse(bot: Bot, k: number): Promise<void> {
 }
 
 /** Chapter 10: up the carousel's horses to the canopy, Reggie caught, the turnstile, the heart balloon, Doc Leo. */
-export const fair =
+const fair =
   (next: number): Step =>
   async (bot) => {
     await bot.pass(SCENE.talkFair, 'chapter ten');
@@ -568,7 +568,7 @@ async function leafOpens(bot: Bot, x: number, y: number, label: string): Promise
 }
 
 /** Chapter 11: up the plant's leaves, the heart balloon up the bare stretch, the star, the seed. */
-export const plant =
+const plant =
   (next: number): Step =>
   async (bot) => {
     await bot.pass(SCENE.talkSeed, 'chapter eleven');
@@ -626,7 +626,7 @@ async function hello(bot: Bot, monnum: number, label: string, range = 4): Promis
 }
 
 /** The finale: the Smart Home's gadgets cheered up, up and over on the balloon and the spring hop, the Big Grumble, Watt, the gold, and out. */
-export const smartHome: Step = async (bot) => {
+const smartHome: Step = async (bot) => {
   await bot.pass(SCENE.home, 'the Smart Home');
   await bot.wait(10);
   const M = homeMonsters;

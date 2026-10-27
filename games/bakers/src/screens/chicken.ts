@@ -22,7 +22,7 @@ function say(p: Pixels, lines: string[]): void {
 
 /** Ebenezer's black iron range (1777): burners, a stovepipe, the oven door, and the gap under it. */
 function stove(p: Pixels, glow = 0): void {
-  const iron = (k: number) => c('grey', k);
+  const iron = (k: number) => c('gray', k);
   // stovepipe up the wall
   p.rect(SX + 112, 0, 18, 40, iron(1)).rect(SX + 112, 0, 3, 40, iron(2));
   for (const y of [12, 28]) p.rect(SX + 110, y, 22, 3, iron(0));
@@ -109,7 +109,7 @@ export function stoveInFli(): Uint8Array {
       const x = to.x + t * 6;
       big(p, reggieBounce(false), x, FLOOR + 1, false, 2);
       // the skirt and legs drawn back over him as he goes under
-      p.rect(SX, GAP_TOP - 6, SW, 6, c('grey', 0)).rect(SX + 2, GAP_TOP, 10, FLOOR - GAP_TOP, c('grey', 1));
+      p.rect(SX, GAP_TOP - 6, SW, 6, c('gray', 0)).rect(SX + 2, GAP_TOP, 10, FLOOR - GAP_TOP, c('gray', 1));
       if (t < 10) headline(p, 4, 'SQUEEEZE', 2, c('yellow', 3), c('red', 2), 200);
       say(p, ['In he goes.', '']);
     });
@@ -143,7 +143,7 @@ export function stoveOutFli(): Uint8Array {
     reel.frame(bg, (p) => {
       leo(p, false);
       big(p, jug, SX + 60 - t * 4, FLOOR + 2, false, 2);
-      p.rect(SX, GAP_TOP - 6, SW, 6, c('grey', 0));
+      p.rect(SX, GAP_TOP - 6, SW, 6, c('gray', 0));
       say(p, ['A long minute under the stove...', '']);
     });
   }

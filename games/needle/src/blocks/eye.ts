@@ -11,10 +11,10 @@ import type { Pal } from '../art/pal';
 import { EYE_GRACE, GRACE } from '../ids';
 
 /** Ticks the eye stays wide open, droops (the warning), stays shut and lifts again. */
-export const EYE_OPEN = 64;
-export const EYE_DROOP = 14;
-export const EYE_SHUT = 24;
-export const EYE_LIFT = 8;
+const EYE_OPEN = 64;
+const EYE_DROOP = 14;
+const EYE_SHUT = 24;
+const EYE_LIFT = 8;
 import { addGate, addGoodThings, addSoul, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 export function eyeBlocks(pal: Pal): Kit {

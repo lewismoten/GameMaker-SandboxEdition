@@ -182,7 +182,7 @@ export class SceneSim {
 
   /**
    * Puts the hero at a cell, at rest, as a scene's start does (startSceneInits' character part):
-   * his screen position is set afresh and the view centred on him, so nothing on the next tick
+   * his screen position is set afresh and the view centered on him, so nothing on the next tick
    * reads where he was before (a stale screen position would let a monster there push him).
    * Monsters and blocks carry on as they were. For probes that drop the hero somewhere.
    */

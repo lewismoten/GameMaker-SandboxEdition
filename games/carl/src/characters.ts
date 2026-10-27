@@ -9,18 +9,18 @@
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
 import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
 import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
-import { EARS, HOURS, KEY, MON, SEQ, SMILES, SND, SNACKS } from './ids';
+import { EARS, HOURS, KEY, MON, SEQ, SMILES, SND, SNACKS, SUGAR_START } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // the block flipped left-right (the bottom block's orientation is the high nibble)
 
 /** Pixels a tick flying straight. */
-export const STEP = 5;
+const STEP = 5;
 /** Pixels a tick each way flying a diagonal. */
-export const DIAG = 4;
+const DIAG = 4;
 /** How long a swatting thing stays "missed" after a barrel roll (ticks). */
-export const MISS_TIME = 54;
+const MISS_TIME = 54;
 
 type F = { pic: string; x?: number; y?: number; pause?: number; orient?: number };
 
@@ -111,6 +111,7 @@ export function buildCarl(cb: ReturnType<typeof buildCharBlocks>): Character {
   ch.meter[0] = 100; // patience (health)
   ch.meter[1] = 3; // lives
   for (const k of [SNACKS, SMILES, EARS, HOURS]) ch.meter[k] = 1; // shown as meter - 1: none yet
+  ch.meter[3] = SUGAR_START + 1; // sugar, the money counter (shown as meter - 1)
   ch.cseq = 0;
   ch.cframe = 0;
   return ch;
@@ -131,8 +132,6 @@ function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = stil
 
 /** Back and forth `run` blocks (to the right first) at `speed`, facing the way it goes. */
 const pace = (run: number, speed: number): March[] => [corner(0, 0, speed), corner(run, 0, speed, 0), corner(0, 0, speed, 4)];
-/** Up and down `run` blocks (up first). */
-const bob = (run: number, speed: number): March[] => [corner(0, 0, speed), corner(0, -run, speed), corner(0, 0, speed)];
 
 export interface MonsterOptions {
   /** Ticks a towel/clap/swatter waits between swings. */
@@ -237,4 +236,4 @@ export function buildMonsters(mb: ReturnType<typeof buildMonsterBlocks>, o: Mons
   return set;
 }
 
-export { MON, bob };
+export { MON };

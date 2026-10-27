@@ -10,13 +10,13 @@ import type { Bestiary, BlockSet } from '../blocks/sets';
 import { WALKS } from '../ids';
 import { paint, stamp, type Stamped } from './stamp';
 
-export const SNOW_W = 40;
-export const SNOW_H = 18;
+const SNOW_W = 40;
+const SNOW_H = 18;
 /** The plow's lane (drawing row), and the street's rows either side of it. */
 export const PLOW_ROW = 10;
 
 /** The houses by the drawing column of their west wall (three blocks wide, three deep, from row 1): the neighbors' and Lewie's (L). */
-export const HOUSES = [
+const HOUSES = [
   [2, 'A'],
   [7, 'B'],
   [12, 'C'],
@@ -46,7 +46,7 @@ const SOUTH_DRIFTS = [7, 30];
 /** The neighbors' doormats (drawing columns, row 4), west to east. */
 export const DOORMATS = HOUSES.filter(([, h]) => h !== 'L').map(([x0]) => x0 + 1);
 
-export function snowRows(): string[] {
+function snowRows(): string[] {
   const g: string[][] = Array.from({ length: SNOW_H }, (_, y) =>
     Array.from({ length: SNOW_W }, (_, x) => (x === 0 || y === 0 || x === SNOW_W - 1 || y === SNOW_H - 1 ? 'h' : 'b')),
   );

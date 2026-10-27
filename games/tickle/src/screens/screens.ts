@@ -9,7 +9,7 @@ import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 
-export interface ScreenExtras {
+interface ScreenExtras {
   /** Doc Leo's whole poses (20 x 40). */
   leo: (pose: string) => Pixels;
   /** Everybody else's sprites. */
@@ -46,7 +46,7 @@ export function labBackdrop(pal: Pal, floor = 160, seed = 3, flash = false): Pix
     .rect(wx - 4, 108, 80, 4, c('stone', 2));
   // the floor
   for (let y = floor; y < H; y++)
-    for (let x = 0; x < W; x++) p.set(x, y, (Math.floor(x / 20) + Math.floor((y - floor) / 10)) % 2 ? c('tile', 1) : c('grey', 0));
+    for (let x = 0; x < W; x++) p.set(x, y, (Math.floor(x / 20) + Math.floor((y - floor) / 10)) % 2 ? c('tile', 1) : c('gray', 0));
   // shelves of flasks along the back
   p.rect(10, 70, 120, 3, c('wood', 1));
   for (let k = 0; k < 7; k++) {

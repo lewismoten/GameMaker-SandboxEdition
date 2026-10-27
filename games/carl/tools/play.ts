@@ -6,7 +6,7 @@ import { theAux, theBed, theCouch, theWalls, theWild, theWindow } from './route'
 import { GameSim } from './sim';
 
 export const SEED = 1;
-export const LEVELS = [theCouch, theWalls, theBed, theWindow, theWild, theAux];
+const LEVELS = [theCouch, theWalls, theBed, theWindow, theWild, theAux];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: Bot }> {
   const sim = new GameSim(undefined, seed);

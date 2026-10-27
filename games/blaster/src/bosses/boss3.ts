@@ -19,7 +19,7 @@ function face(p: Pal, loud: boolean): Pixels {
   const big = new Pixels(40, 40, CLEAR);
   blob(big, 20, 20, 19, 19, p.r('gold'), 0, 3);
   for (const s of [-1, 1]) {
-    blob(big, 20 + s * 9, 10, 5, 4, p.r('grey'), 6, 7);
+    blob(big, 20 + s * 9, 10, 5, 4, p.r('gray'), 6, 7);
     blob(big, 20 + s * 9, 11, 2, 2, p.r('red'), 1, 3);
     big.rect(20 + s * 9 - 5, 4 - (s > 0 ? 0 : 0), 10, 2, p.c('ink', 0));
   }

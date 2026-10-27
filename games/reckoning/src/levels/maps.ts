@@ -97,7 +97,7 @@ const LEGEND: Record<string, string> = {
   '/': 'throne',
 };
 
-export interface LinkSpec {
+interface LinkSpec {
   from: [number, number];
   toScene: 'next' | 'won';
 }
@@ -105,7 +105,7 @@ export interface LinkSpec {
 /** Where an act's map sits in the 100x100 world (the rest is solid). */
 export const ORIGIN = 2;
 
-export class MapBuilder {
+class MapBuilder {
   readonly map: GameMap = newMap();
   readonly links: LinkSpec[] = [];
   private monCount = 0;

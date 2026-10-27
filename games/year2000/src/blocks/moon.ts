@@ -19,12 +19,12 @@ import { crtTv } from './city';
 function stars(seed: number, earth = false): Pixels {
   const p = blank(C('night', 0));
   const r = rng(seed);
-  for (let i = 0; i < 5; i++) p.set(r() * 20, r() * 20, C('grey', 4 + Math.floor(r() * 4)));
+  for (let i = 0; i < 5; i++) p.set(r() * 20, r() * 20, C('gray', 4 + Math.floor(r() * 4)));
   if (earth) {
     blob(p, 10, 10, 7, 7, R('sky'), 1, 5);
     blob(p, 8, 8, 3, 2, R('green'), 2, 4);
     blob(p, 12, 13, 2.5, 2, R('green'), 2, 4);
-    oval(p, 11, 6, 3, 1, C('grey', 7));
+    oval(p, 11, 6, 3, 1, C('gray', 7));
   }
   return p;
 }
@@ -43,7 +43,7 @@ function flag(): Pixels {
   p.rect(6, 2, 10, 7, C('paper', 2));
   for (let y = 2; y < 9; y += 2) p.rect(6, y, 10, 1, C('red', 3));
   p.rect(6, 2, 4, 4, C('denim', 2));
-  p.set(7, 3, C('grey', 7)).set(8, 4, C('grey', 7));
+  p.set(7, 3, C('gray', 7)).set(8, 4, C('gray', 7));
   return p;
 }
 
@@ -57,7 +57,7 @@ function baseWall(top: boolean): Pixels {
     gradient(p, 0, 0, 20, 20, R('chrome'), 3, 1);
     p.rect(0, 0, 20, 2, C('chrome', 7));
     p.rect(4, 6, 12, 6, C('glass', 1)).frame(4, 6, 12, 6, C('chrome', 5));
-    p.set(6, 7, C('grey', 7));
+    p.set(6, 7, C('gray', 7));
   }
   return p;
 }
@@ -69,7 +69,7 @@ function lockers(): Pixels {
     for (let y = 3; y < 9; y += 2) p.rect(x + 1, y, 3, 1, C('denim', 1));
     p.set(x + 3, 12, C('chrome', 6));
   }
-  p.rect(0, 18, 20, 2, C('grey', 1));
+  p.rect(0, 18, 20, 2, C('gray', 1));
   return p;
 }
 
@@ -111,28 +111,28 @@ function project(kind: 'volcano' | 'potato' | 'robot' | 'tv' | 'phone' | 'cpu650
     p.rect(1, 1, 18, 12, C('paper', 2)).frame(1, 1, 18, 12, C('paper', 0));
     for (let x = 2; x < 18; x += 2) p.set(x, 2, C('paper', 0)).set(x, 11, C('paper', 0));
     p.line(3, 3, 5, 11, C('red', 4)).line(17, 3, 14, 11, C('teal', 4)).line(9, 10, 17, 11, C('gold', 4));
-    p.rect(2, 4, 16, 6, C('grey', 1));
-    micro(p, 3, 4, '6502', C('grey', 6));
+    p.rect(2, 4, 16, 6, C('gray', 1));
+    micro(p, 3, 4, '6502', C('gray', 6));
     p.disc(17, 11, 1, kind === 'cpu6502b' ? C('red', 4) : C('red', 1));
     micro(p, 1, 14, '8-BIT', C('denim', 1));
   } else if (kind === 'cpu1802') {
     // The RCA 1802 on a little red card, and the planet it went to aboard Galileo.
     oval(p, 15, 3, 3.5, 2.5, C('orange', 3));
     p.rect(12, 2, 7, 1, C('orange', 1)).rect(12, 4, 7, 1, C('orange', 4));
-    p.line(6, 6, 12, 3, C('grey', 6));
-    p.rect(0, 6, 20, 7, C('red', 2)).rect(1, 7, 17, 5, C('grey', 1));
-    micro(p, 2, 7, '1802', C('grey', 6));
+    p.line(6, 6, 12, 3, C('gray', 6));
+    p.rect(0, 6, 20, 7, C('red', 2)).rect(1, 7, 17, 5, C('gray', 1));
+    micro(p, 2, 7, '1802', C('gray', 6));
     micro(p, 1, 14, 'SPACE', C('denim', 1));
   } else if (kind === 'capsule') {
     // A time capsule for America's 250th birthday: open on July 4, 2026.
     p.rect(6, 1, 8, 13, C('chrome', 5)).rect(6, 1, 8, 2, C('chrome', 7));
     for (let y = 4; y < 13; y += 2) p.rect(6, y, 8, 1, C('red', 4));
-    p.rect(6, 3, 4, 4, C('denim', 2)).set(7, 4, C('grey', 7)).set(8, 5, C('grey', 7));
+    p.rect(6, 3, 4, 4, C('denim', 2)).set(7, 4, C('gray', 7)).set(8, 5, C('gray', 7));
     micro(p, 3, 14, '2026', C('red', 3));
   } else {
     // Dex's own project: a "pocket telephone". The judges have their doubts.
-    p.rect(8, 3, 4, 10, C('grey', 1)).rect(9, 4, 2, 2, C('neon', 2)).line(11, 3, 12, 0, C('grey', 2));
-    for (let y = 7; y < 12; y += 2) p.set(9, y, C('grey', 5)).set(10, y, C('grey', 5));
+    p.rect(8, 3, 4, 10, C('gray', 1)).rect(9, 4, 2, 2, C('neon', 2)).line(11, 3, 12, 0, C('gray', 2));
+    for (let y = 7; y < 12; y += 2) p.set(9, y, C('gray', 5)).set(10, y, C('gray', 5));
     micro(p, 1, 14, 'PHONE', C('denim', 1));
   }
   return p;
@@ -166,7 +166,7 @@ function bleachers(): Pixels {
   return p;
 }
 
-/** The school's copier, seen from above: a grey body, the glass and a green PRINT button. */
+/** The school's copier, seen from above: a gray body, the glass and a green PRINT button. */
 function copier(): Pixels {
   const p = on('gym');
   p.rect(1, 2, 18, 17, C('chrome', 3)).rect(1, 2, 18, 2, C('chrome', 5)).rect(1, 17, 18, 2, C('chrome', 1));
@@ -180,6 +180,21 @@ function copier(): Pixels {
 function copierTray(): Pixels {
   const p = on('gym');
   p.rect(2, 0, 16, 9, C('chrome', 2)).rect(3, 0, 14, 7, C('chrome', 4)).rect(2, 8, 16, 1, C('chrome', 1));
+  return p;
+}
+
+/**
+ * Spare covers beside the copier: a SPARE card over two blank covers on the gym floor. Touch it
+ * for one cover page, in case a stray zap burned Sparky's. The COVER table takes only one, so a
+ * second cover changes nothing, and it scores nothing.
+ */
+function spareCovers(): Pixels {
+  const p = on('gym');
+  p.rect(0, 0, 20, 7, C('paper', 2));
+  micro(p, 1, 1, 'SPARE', C('red', 3));
+  p.rect(6, 10, 12, 9, C('denim', 1)).rect(5, 9, 12, 9, C('sky', 4));
+  p.rect(3, 8, 12, 10, C('sky', 6)).rect(3, 8, 12, 2, C('denim', 2));
+  p.set(12, 13, C('gold', 4)).set(11, 14, C('gold', 4)).set(12, 14, C('gold', 4)).set(13, 14, C('gold', 4)).set(12, 15, C('gold', 4));
   return p;
 }
 
@@ -234,12 +249,14 @@ export function moonSet(): BlockSet {
   s.add('podium', podium());
   addBig(s, 'banner', banner('SCIENCE FAIR 2000', 8, 1, 'denim', 'gold'));
   // How to finish: the cover page from Sparky, and pages from the copier when you are short
-  // (its tray prints a page every few seconds, MON.page), so no player reaches the fair stuck.
+  // (its tray prints a page every few seconds, MON.page), so no player reaches the fair stuck;
+  // beside the copier, one spare cover for a player whose cover a stray zap burned.
   const gymFloor = FLOORS.gym;
   addBig(s, 'bbSparky', billboard(['ZAP SPARKY 3 TIMES', 'FOR THE COVER PAGE!', 'NEEDS THE ZAPPER', 'AND BATTERIES.'], 'denim', 'gold', gymFloor, 5, 6));
   addBig(s, 'bbCopier', billboard(['SHORT ON PAGES?', 'WAIT AT THE COPIER.', 'IT PRINTS ONE EVERY', 'FEW SECONDS.'], 'purple', 'gold', gymFloor, 5, 6));
   s.add('copier', copier(), { solid: SOLID });
   s.add('copiertray', copierTray(), { birthMon: MON.page, birthTime: COPY_TICKS });
+  s.add('sparecover', spareCovers(), { effect: CTR.cover, eamt: 1, touch: 'gym' });
   // the save sign (kit/saveSign.ts), standing in the dust by the landing spot
   const dust = s.pic('moon');
   const sign = saveSignBlocks(PAL.pal, { board: [dust, dust], posts: [dust, dust] });

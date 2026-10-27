@@ -13,7 +13,7 @@ import { Ref, padTo, blankMonster } from './layout';
 
 export abstract class MonsterMakerState {
   mon: Monster[] = [];
-  /** blk: MONBL monster blocks, then blk[MONBL] (the grey "no frame" block) and blk[MONBL+1] (what is under a dragged block). */
+  /** blk: MONBL monster blocks, then blk[MONBL] (the gray "no frame" block) and blk[MONBL+1] (what is under a dragged block). */
   blk: Uint8Array[] = Array.from({ length: MONBL + 2 }, () => new Uint8Array(BLEN * BLEN));
   colors: RGBdata[] = initStartCols();
   curblk: Ref = { v: 0 };

@@ -11,8 +11,8 @@ import { WINGS } from '../../stories';
 
 function rock(under: Pixels, seed: number): Pixels {
   const p = on(under);
-  blob(p, 10 + (seed % 3) - 1, 12, 8, 7, r('grey'), 1, 4);
-  blob(p, 6, 14, 4, 3, r('grey'), 1, 3);
+  blob(p, 10 + (seed % 3) - 1, 12, 8, 7, r('gray'), 1, 4);
+  blob(p, 6, 14, 4, 3, r('gray'), 1, 3);
   return p;
 }
 
@@ -47,14 +47,14 @@ function mirror(under: Pixels): Pixels {
 
 function mistPuff(frame: number): Pixels {
   const p = blank();
-  blob(p, 8 + frame, 10, 7, 4, r('grey'), 4, 5);
-  blob(p, 13 - frame, 12, 5, 3, r('grey'), 4, 5);
+  blob(p, 8 + frame, 10, 7, 4, r('gray'), 4, 5);
+  blob(p, 13 - frame, 12, 5, 3, r('gray'), 4, 5);
   return p;
 }
 
 function goat(frame: number): Pixels {
   const p = blank();
-  p.rect(4, 8, 11, 6, c('paper', 3)).rect(13, 4, 5, 5, c('paper', 3)).set(13, 3, c('grey', 2)).set(16, 3, c('grey', 2));
+  p.rect(4, 8, 11, 6, c('paper', 3)).rect(13, 4, 5, 5, c('paper', 3)).set(13, 3, c('gray', 2)).set(16, 3, c('gray', 2));
   p.set(16, 6, c('ink', 0)).rect(15, 9, 2, 2, c('paper', 2));
   p.rect(5 + frame, 14, 2, 5, c('paper', 2)).rect(12 - frame, 14, 2, 5, c('paper', 2));
   return p;
@@ -102,7 +102,7 @@ function ledger(under: Pixels): Pixels {
   const p = on(under);
   p.rect(3, 12, 14, 6, c('brown', 2)).rect(3, 12, 14, 1, c('brown', 3));
   p.rect(2, 5, 16, 8, c('green', 1)).rect(3, 6, 6, 6, c('paper', 4)).rect(11, 6, 6, 6, c('paper', 4));
-  for (let y = 7; y < 12; y += 2) p.rect(4, y, 4, 1, c('grey', 2)).rect(12, y, 4, 1, c('red', 3));
+  for (let y = 7; y < 12; y += 2) p.rect(4, y, 4, 1, c('gray', 2)).rect(12, y, 4, 1, c('red', 3));
   return p;
 }
 
@@ -122,29 +122,29 @@ function hoot(frame: number): Pixels {
 
 function cot(under: Pixels): Pixels {
   const p = on(under);
-  p.rect(1, 7, 18, 8, c('grey', 2)).rect(1, 7, 6, 4, c('paper', 4)).rect(1, 15, 2, 4, c('ink', 1)).rect(17, 15, 2, 4, c('ink', 1));
+  p.rect(1, 7, 18, 8, c('gray', 2)).rect(1, 7, 6, 4, c('paper', 4)).rect(1, 15, 2, 4, c('ink', 1)).rect(17, 15, 2, 4, c('ink', 1));
   return p;
 }
 
 function barredWindow(): Pixels {
-  const p = wall('stone', 'grey', 3);
+  const p = wall('stone', 'gray', 3);
   p.rect(4, 3, 12, 11, c('night', 0));
   p.disc(12, 6, 2.5, c('paper', 4));
-  for (let x = 5; x < 16; x += 3) p.rect(x, 3, 1, 11, c('grey', 2));
+  for (let x = 5; x < 16; x += 3) p.rect(x, 3, 1, 11, c('gray', 2));
   return p;
 }
 
 function cellDoor(): Pixels {
-  const p = wall('stone', 'grey', 5);
-  bevel(p, 3, 2, 14, 18, r('grey'), 1, 1);
+  const p = wall('stone', 'gray', 5);
+  bevel(p, 3, 2, 14, 18, r('gray'), 1, 1);
   p.rect(7, 5, 6, 4, c('ink', 0));
-  for (let x = 8; x < 13; x += 2) p.rect(x, 5, 1, 4, c('grey', 3));
+  for (let x = 8; x < 13; x += 2) p.rect(x, 5, 1, 4, c('gray', 3));
   return p;
 }
 
 function echo(frame: number): Pixels {
   const p = blank();
-  blob(p, 10, 9, 9, 6, r('grey'), 3 - frame, 4);
+  blob(p, 10, 9, 9, 6, r('gray'), 3 - frame, 4);
   micro(p, 3, 7, frame ? 'SHUT' : 'UP!', c('ink', 0));
   return p;
 }
@@ -152,16 +152,16 @@ function echo(frame: number): Pixels {
 function newspaperChair(under: Pixels): Pixels {
   const p = on(under);
   bevel(p, 1, 6, 18, 13, r('brown'), 2, 2);
-  p.rect(4, 2, 12, 13, c('paper', 4)).rect(10, 2, 1, 13, c('grey', 3));
+  p.rect(4, 2, 12, 13, c('paper', 4)).rect(10, 2, 1, 13, c('gray', 3));
   micro(p, 5, 3, 'NEWS', c('ink', 0));
-  for (let y = 9; y < 14; y += 2) p.rect(5, y, 4, 1, c('grey', 2)).rect(12, y, 3, 1, c('grey', 2));
+  for (let y = 9; y < 14; y += 2) p.rect(5, y, 4, 1, c('gray', 2)).rect(12, y, 3, 1, c('gray', 2));
   p.rect(3, 6, 2, 3, c('skin', 2)).rect(15, 6, 2, 3, c('skin', 2));
   return p;
 }
 
 function papers(under: Pixels): Pixels {
   const p = on(under);
-  for (let i = 0; i < 6; i++) p.rect(3 + (i % 2), 17 - i * 3, 14, 3, c('paper', 3 + (i % 2))).rect(3 + (i % 2), 17 - i * 3, 14, 1, c('grey', 3));
+  for (let i = 0; i < 6; i++) p.rect(3 + (i % 2), 17 - i * 3, 14, 3, c('paper', 3 + (i % 2))).rect(3 + (i % 2), 17 - i * 3, 14, 1, c('gray', 3));
   return p;
 }
 
@@ -175,8 +175,8 @@ function diploma(): Pixels {
 
 function flyingPaper(frame: number): Pixels {
   const p = blank();
-  if (frame) p.rect(3, 7, 14, 7, c('paper', 4)).rect(3, 7, 14, 1, c('grey', 3));
-  else p.rect(6, 4, 8, 12, c('paper', 4)).rect(6, 4, 1, 12, c('grey', 3));
+  if (frame) p.rect(3, 7, 14, 7, c('paper', 4)).rect(3, 7, 14, 1, c('gray', 3));
+  else p.rect(6, 4, 8, 12, c('paper', 4)).rect(6, 4, 1, 12, c('gray', 3));
   return p;
 }
 
@@ -256,12 +256,12 @@ function art(a: Area): void {
 
   // Silence Has Teeth
   a.tile('cellfloor', floor('stone', 9));
-  a.solid('cellwall', wall('stone', 'grey', 7));
+  a.solid('cellwall', wall('stone', 'gray', 7));
   a.solid('cot', cot(a.tiles.pic('cellfloor')));
   a.solid('bars', barredWindow());
   a.solid('celldoor', cellDoor());
   a.prop('warden', 'cellfloor', figure({ shirt: ['blue', 1], pants: ['ink', 1], hat: { kind: 'cap', color: ['blue', 0] }, face: 'plain' }));
-  sign(['QUIET HOURS:', 'ALWAYS'], 3, { board: 'grey' }).forEach((px, i) => a.solid(`quiet${i}`, px));
+  sign(['QUIET HOURS:', 'ALWAYS'], 3, { board: 'gray' }).forEach((px, i) => a.solid(`quiet${i}`, px));
   a.monster(
     'echo',
     [
@@ -285,7 +285,7 @@ function art(a: Area): void {
   a.solid('reader', newspaperChair(a.tiles.pic('den')));
   a.solid('papers', papers(a.tiles.pic('den')));
   a.solid('phd', diploma());
-  a.prop('wife', 'den', figure({ shirt: ['teal', 3], dress: true, hair: ['grey', 4], hairStyle: 'bun', glasses: true, face: 'happy' }));
+  a.prop('wife', 'den', figure({ shirt: ['teal', 3], dress: true, hair: ['gray', 4], hairStyle: 'bun', glasses: true, face: 'happy' }));
   sign(['THE DAILY', 'COMPLETE', 'IDIOT'], 3, { board: 'paper' }).forEach((px, i) => a.solid(`daily${i}`, px));
   a.monster(
     'paper',

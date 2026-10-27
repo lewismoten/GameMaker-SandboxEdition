@@ -4,7 +4,7 @@
 // Sandbox, and Gwinn herself: one 120x80 picture cut into 6 x 4 blocks. She blinks by a
 // next/ntime chain (the eye block becomes 'catBlink' after 70 ticks, and back after 6), and
 // her mouth block gives birth to slobbery tennis balls.
-import { GRASS, GREY, OCHRE, PINK, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
+import { GRASS, GRAY, OCHRE, PINK, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
 import { MON, SEQ } from '../rules';
 import { Pixels, art, ball, bevel, dither, rng, shade, tile } from '../art/draw';
 import { DOWN, SOLID, bg, onSand, sprite20 } from './common';
@@ -12,7 +12,7 @@ import { DOWN, SOLID, bg, onSand, sprite20 } from './common';
 export function addPatio(): void {
   // ---------------------------------------------------------------- the patio, where Gwinn naps
   function flagstone(seed: number): Pixels {
-    const p = tile(GREY[0]);
+    const p = tile(GRAY[0]);
     const r = rng(seed);
     const stones = [
       [0, 0, 11, 8],
@@ -22,19 +22,19 @@ export function addPatio(): void {
       [12, 12, 8, 8],
     ];
     for (const [x, y, w, h] of stones) {
-      // dark slate (1-2 of the grey ramp), so Teddy's tan coat stands out against it at dusk
+      // dark slate (1-2 of the gray ramp), so Teddy's tan coat stands out against it at dusk
       const s = 1 + Math.floor(r() * 2);
-      p.rect(x + 1, y + 1, w - 1, h - 1, shade(GREY, s));
-      p.rect(x + 1, y + 1, w - 1, 1, shade(GREY, s + 1));
-      p.rect(x + 1, y + h - 1, w - 1, 1, shade(GREY, s - 1));
-      for (let k = 0; k < 3; k++) p.set(x + 2 + Math.floor(r() * (w - 3)), y + 2 + Math.floor(r() * (h - 3)), shade(GREY, s - 1));
+      p.rect(x + 1, y + 1, w - 1, h - 1, shade(GRAY, s));
+      p.rect(x + 1, y + 1, w - 1, 1, shade(GRAY, s + 1));
+      p.rect(x + 1, y + h - 1, w - 1, 1, shade(GRAY, s - 1));
+      for (let k = 0; k < 3; k++) p.set(x + 2 + Math.floor(r() * (w - 3)), y + 2 + Math.floor(r() * (h - 3)), shade(GRAY, s - 1));
     }
     return p;
   }
   bg.add('patio', flagstone(171));
   {
     // Old garden bricks, weathered and mossy.
-    const p = tile(GREY[1]);
+    const p = tile(GRAY[1]);
     const r = rng(176);
     for (let row = 0; row < 5; row++) {
       const off = row % 2 ? 5 : 0;
@@ -58,7 +58,7 @@ export function addPatio(): void {
       if (full) p.disc(8, 8, 2, WATER[7]).set(7, 7, WATER[9]);
       p.rect(5, 1, 10, 2, RED[4]);
       for (const x of [6, 9, 12]) p.rect(x, 1, 1, 2, STEEL[7]);
-      return onSand(173, p).map((_x, _y, c) => (SAND.includes(c) ? GREY[1] : c));
+      return onSand(173, p).map((_x, _y, c) => (SAND.includes(c) ? GRAY[1] : c));
     };
     bg.add('bowl', mk(true), { solid: SOLID, effect: SEQ.splash, eamt: 3 });
   }
@@ -89,7 +89,7 @@ export function addPatio(): void {
   }
   {
     // Gwinn's toy box, overflowing: every so often a rope toy comes flying out.
-    const p = tile(GREY[3]);
+    const p = tile(GRAY[3]);
     p.blit(flagstone(174), 0, 0);
     bevel(p, 2, 6, 16, 12, WOOD, 3, 1);
     p.rect(3, 10, 14, 1, WOOD[1]);

@@ -8,8 +8,8 @@
 import type { Bestiary, BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const HIVE_W = 26;
-export const HIVE_H = 16;
+const HIVE_W = 26;
+const HIVE_H = 16;
 
 /** Where each floor page starts going round (drawing cells), and the size of its loop. */
 export const PAGE_LOOPS: [number, number, number, number][] = [
@@ -18,7 +18,7 @@ export const PAGE_LOOPS: [number, number, number, number][] = [
   [20, 7, 2, 3],
 ];
 
-export function hiveRows(after: boolean): string[] {
+function hiveRows(after: boolean): string[] {
   const g: string[][] = Array.from({ length: HIVE_H }, (_, y) =>
     Array.from({ length: HIVE_W }, (_, x) => (x === 0 || y === 0 || x === HIVE_W - 1 || y === HIVE_H - 1 ? 'Z' : (x + y) % 7 ? '.' : ',')),
   );

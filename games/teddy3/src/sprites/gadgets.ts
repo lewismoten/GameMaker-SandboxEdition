@@ -197,17 +197,6 @@ export function cabinetOpen(): Pixels {
   return S(['ooo', 'obo', 'oBo', 'oBo', 'oBo', 'oBo', 'oBo', 'oMo', 'oWo', 'oMo', 'oBo', 'oBo', 'oBo', 'oBo', 'oBo', 'obo', 'ooo'], 1);
 }
 
-/** A warning light, on or off (it blinks while a timed door is open). */
-export function beacon(on: boolean): Pixels {
-  return S(
-    on
-      ? ['..oooo..', '.oYYYYo.', 'oYwYYYYo', 'oYYYYyYo', 'oyYYYyyo', '.oyyyyo.', 'oMMMMMMo', 'oooooooo']
-      : ['..oooo..', '.oqqqqo.', 'oqrqqqqo', 'oqqqqqqo', 'oqqqqqqo', '.oqqqqo.', 'oMMMMMMo', 'oooooooo'],
-    undefined,
-    2,
-  );
-}
-
 /** A see-saw's end: the plank's last stretch with its red handle, standing on its top edge. */
 export function seesawEnd(flip = false): Pixels {
   const rows = [

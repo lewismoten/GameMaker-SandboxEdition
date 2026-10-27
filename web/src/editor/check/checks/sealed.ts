@@ -13,7 +13,7 @@ import { isPickup } from './playChecks';
 import { prizeInView, seenFrom } from './inView';
 
 /** Blocks the hero might get through: not solid all round, or a wall that can open. */
-function passable(bg: Block[]): boolean[] {
+export function passable(bg: Block[]): boolean[] {
   return bg.map(
     (b, n) => n >= BACKBL || b.solid !== 15 || b.touchBl !== n || (b.effect > 0 && b.eamt < 0) || blockCycle(bg, n).some((c) => bg[c.n].solid !== 15),
   );

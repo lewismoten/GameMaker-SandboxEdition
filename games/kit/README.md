@@ -53,7 +53,8 @@ Making the files:
   straight to black): `encodeFliFadeOut` adds about half a second of palette-only frames to a plain frame list (a Reel
   has `fadeOut`).
 - `fliClips.ts` — a long intro cut into clips of about 4 seconds for its slide list (`fliClips`, `clipEntries`; `clipLists`
-  does it on a whole disk, for every list that plays the cartoon).
+  does it on a whole disk, for every list that plays the cartoon; `clipEveryList` does it for every list on the disk, so the
+  endings, game overs and cut scenes are cut too).
   PLAYGAME plays a whole FLI before it reads Esc, so a list of short clips lets the player skip within a few seconds.
   Cuts fall where the palette holds and least changes; the clips play exactly the frames of the whole one
   (`web/src/formats/fliClips.test.ts`).
@@ -73,6 +74,11 @@ Making the files:
   (about.json `"saveSign"`: `{ map, at, after }`); ordinary save reminders keep the game's own look. `putSaveSign` gives a
   game whose block set is full a copy of the set for that one map, with the sign in blocks the map never shows.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
+- `road3d.ts` — a road that comes at you, the pseudo-3D one-screen scene of year2000's Cloud Lane and blaster's data
+  bus rides: the road's perspective (`roadView`), the spawner chains that turn a timetable into blocks giving birth once
+  each (`spawnChains`), the traffic's leap onto the vanishing point and slide down its lane (`leapTo`, `laneSlide`,
+  `roadCorners`), its sizes in step (`growPics`) and a full-size picture shrunk to them (`shrinkSprite`, `ROAD_SIZES`).
+  Each game draws its own pictures and places its own blocks.
 - `saveSlots.ts` — where PLAYGAME writes the save names, marker and message on a game's load and save
   pictures, so a picture can leave dark and light strips under them.
 
@@ -80,14 +86,25 @@ Checking the games:
 
 - `checkGames.ts` — `cd web && npm run check:games`: every game's checks, one game at a time, and a table; exits 1 on
   any failure. Per game: a rebuild into a temp folder (`GAME_DISK_OUT`) that must match the committed `disk/` byte for
-  byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts` and `levelCheck.ts`; then `tinHearts.ts check`
-  and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
+  byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
+  `playerCheck.ts` (when the game has a player.json); then `tinHearts.ts check`,
+  `saveSignCheck.ts` and `syncCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
 - `saveSignCheck.ts` — `npx vite-node ../games/kit/saveSignCheck.ts [<id>...]`: every felt-egg game has exactly one save
   sign, where its about.json says, on the egg's map or one it links to; no other game has one.
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
   chapter marks it was recorded with, and cut off no clip.
+- `player.ts` / `playerCheck.ts` — a game's DOS player look, `games/<id>/player.json`: the `{ "base": "xferplay-3.00",
+"patches": { … } }` record a project keeps in its companion (`web/src/dosPlayer/playerRecord.ts`; ids and limits in
+  `web/src/dosPlayer/patchTable.ts`). The site shows it wherever the game plays or ships (`web/src/dosPlayer/
+catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never goes on `disk/`, so Game-Maker's own
+  PLAYGAME still shows the stock words (keep in-game text that names an F2 label neutral: "F2 counts your sugar").
+  Words, colors, frames and positions only: no timing or F-key patch (they would change play, and the bots and
+  walkthroughs play without the look) and no renamed extensions. `npx vite-node ../games/kit/playerCheck.ts [<id>...]`
+  checks each against the rules, writes it into the CD's player, and checks that a color it changes on the black
+  screens (F2, the drop picker, F1's no-help line, F10, the name prompt) stands 3 : 1 against color 0 in every level's
+  palette. `levelCheck.ts` judges the menu's words and the color 0 check with it.
 - `levelCheck.ts` — the editor's Level check (static part) on a built disk; only an error or warning missing from
   `levelCheck.baseline.json` fails. After looking at new findings and judging them fine (or after tuning the checks), run
   `npx vite-node ../games/kit/levelCheck.ts <id> --update` to rewrite that game's baseline. A game's about.json
@@ -127,7 +144,9 @@ Checking the games:
   each bot's path search adds the cost (`keepTo`, or year2000's `paths` option). Side-view games and rooms floored
   wall to wall have none.
 - `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
-  have the text on plain paper with enough contrast. Run it with
+  have the text on plain paper with enough contrast. `textfitCheck.ts` also fails any character 128-255 in the
+  words the player draws in play (text pages, the menu's name, a shipped .his), which DOS draws as scribbles
+  (the Level check's `dos-chars`). Run it with
   `cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]`.
 - `textBounds.ts` — no text cut off at the edge of its picture: the games' text helpers (`text`, `micro`, a canvas's
   `text`) report each string's ink, and a build run with `TEXT_BOUNDS=<file>` writes every string that runs past its

@@ -7,6 +7,8 @@ import { mark } from '../levels/stamp';
 import { below, type Scenes } from '../scenes';
 import { coveCritters, lighthouseCritters } from '../sprites/critters';
 
+const beside = (p: { x: number; y: number }) => ({ x: p.x + 1, y: p.y });
+
 export function lighthouseChapter(s: Scenes): void {
   const coveMons = coveCritters(s.mb, CARL_LOOP);
   const cove = coveMap(s.sets.night, coveMons, false);
@@ -30,8 +32,9 @@ export function lighthouseChapter(s: Scenes): void {
   s.passPlace(SCENE.talkCarl, 'Carl', 'dance', 'talkcarl.lst');
   s.passOn(SCENE.card6, SCENE.cove, mark(cove, '@'));
   s.door(SCENE.cove, mark(cove, 'D'), SCENE.lighthouse, mark(inside, '@'));
-  s.door(SCENE.lighthouse, mark(inside, 'D'), SCENE.cove, below(mark(cove, 'D')));
-  s.door(SCENE.lighthouse, mark(inside, 'l'), SCENE.coveLit, below(mark(coveLit, 'D')));
+  // back out on the sand beside the door (a rock is under it)
+  s.door(SCENE.lighthouse, mark(inside, 'D'), SCENE.cove, beside(mark(cove, 'D')));
+  s.door(SCENE.lighthouse, mark(inside, 'l'), SCENE.coveLit, beside(mark(coveLit, 'D')));
   s.talk(SCENE.coveLit, mark(coveLit, 'L'), SCENE.talkCarl, 'thanks', below(mark(coveLit, 'L')));
   // on over the hill
   s.door(SCENE.coveLit, mark(coveLit, 'S'), SCENE.over, s.passCell());

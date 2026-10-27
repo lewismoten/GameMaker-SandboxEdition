@@ -11,7 +11,7 @@ import { field, idx, seek, wrap, type Grab, type P, type SeekOpts } from './driv
 import { fightEye } from './heartFight';
 import type { Live } from './live';
 
-export interface Stop {
+interface Stop {
   scene: number;
   title: string;
 }

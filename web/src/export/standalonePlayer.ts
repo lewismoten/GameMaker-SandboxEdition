@@ -5,6 +5,7 @@ import { mountPlayer } from '../player/player';
 import { GameFiles } from '../project/files';
 import { decodeGame, fromBase64, GAME_ELEMENT_ID, toBase64, type SinglePageGame } from './singlePage';
 import { CREDIT } from './pageSeo';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 import './credit.css';
 
 const root = document.querySelector<HTMLElement>('#player')!;
@@ -63,6 +64,7 @@ async function main(): Promise<void> {
     mountPlayer(root, files, game.gam, {
       title: game.title,
       notice: game.notice,
+      player: game.player as PlayerPatches | undefined,
       onFileWrite: (name, bytes) => writeSave(game.id, name, bytes),
       onQuit: () => false, // "Quit" shows the game's menu again
       onExit: start,

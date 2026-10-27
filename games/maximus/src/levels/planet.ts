@@ -84,7 +84,7 @@ export function surfacePlanet(spec: PlanetSpec, s: SetBuilder): PlanetResult {
     const level = Math.round(raw[x]);
     for (let k = 0; k < len && x < W; k++, x++) h[x] = level;
   }
-  // never a step of more than 3 between neighbours (hop height); 1 for rover worlds
+  // never a step of more than 3 between neighbors (hop height); 1 for rover worlds
   const maxStep = f.rover ? 1 : 3;
   for (let pass = 0; pass < 6; pass++) for (let i = 0; i < W; i++) h[i] = Math.max(h[i], Math.min(h[(i + 1) % W], h[(i + W - 1) % W]) - maxStep);
   // --- arrival: the first long flat stretch

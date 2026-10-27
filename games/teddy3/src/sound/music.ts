@@ -94,7 +94,7 @@ export function storySong(): Uint8Array {
 }
 
 /** Level 1, the garage at dawn: the theme on a toy piano over a ticking bench clock. */
-export function garageSong(): Uint8Array {
+function garageSong(): Uint8Array {
   return arrange({
     bpm: 112,
     mel: join(TEDDY, TEDDY.replace(/C5 h$/, 'C5 q, G4 q')),
@@ -107,7 +107,7 @@ export function garageSong(): Uint8Array {
 }
 
 /** Level 2, Maple Street: the Road Song, humming along on an organ with a skipping banjo. */
-export function mapleSong(): Uint8Array {
+function mapleSong(): Uint8Array {
   return arrange({
     bpm: 132,
     mel: join(ROAD_A, ROAD_B, ROAD_A, ROAD_B.replace(/G4 h$/, 'G4 q, D4 q')),

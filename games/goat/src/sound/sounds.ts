@@ -50,11 +50,6 @@ function goatVoice(pitch: (t: number) => number, f1: number, f2: number, trem: n
   };
 }
 
-export interface SoundFiles {
-  set: SoundSet;
-  vocs: Record<string, Uint8Array>;
-}
-
 export type Place = 'outside' | 'stable';
 
 /** The VOCs every set shares, by name. */

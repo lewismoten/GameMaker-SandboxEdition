@@ -281,7 +281,7 @@ export const UPLOAD: Chapter = {
     <tr><td>☐</td><td>Solid monsters can’t trap the hero: their paths stop a block short of walls, stay off the map’s top and bottom rows and never close in</td></tr>
     <tr><td>☐</td><td>A few lives, not dozens: a death costs a little, not everything</td></tr>
     <tr><td>☐</td><td>Every item can be reached and no scenery looks like one; mazes have landmarks; no wait over 3 seconds</td></tr>
-    <tr><td>☐</td><td>Nothing shown can’t be used: no doors that lead nowhere, no prizes in view but out of reach, no prizes your own shots destroy</td></tr>
+    <tr><td>☐</td><td>Nothing shown can’t be used: no doors or links that lead nowhere, no prizes out of reach, none your own shots destroy</td></tr>
     <tr><td>☐</td><td>Someone with slower hands can finish: one key at a time, no split-second timing</td></tr>
     <tr><td>☐</td><td>The final boss has stages; the ending is a real scene that says you won, not an ad</td></tr>
     <tr><td>☐</td><td>Something new every level or two; the gimmick has its own level</td></tr>

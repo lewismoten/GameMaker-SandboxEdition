@@ -22,10 +22,8 @@ import { AUTHOR, CARDS } from './text';
 
 const W = 320;
 const H = 200;
-/** Clear pixels in sprites. */
-const T = 255;
 /** 1/70 s per frame: about 12 frames a second. */
-export const SPEED = 6;
+const SPEED = 6;
 
 export interface Cast {
   /** The man's sprites (the .CBL's pictures). */
@@ -37,7 +35,7 @@ export interface Cast {
 }
 
 /** The palette (6-bit VGA) washed toward blood red by `t` (0..1): the lights turn blood red. */
-export function bloodRed(pal: Uint8Array, t: number): Uint8Array {
+function bloodRed(pal: Uint8Array, t: number): Uint8Array {
   const out = Uint8Array.from(pal);
   for (let i = 0; i < 256; i++) {
     const [r, g, b] = [pal[i * 3], pal[i * 3 + 1], pal[i * 3 + 2]];
@@ -106,7 +104,7 @@ function bedroomBackdrop(pal: Pal): Pixels {
 
 /** The clock on the night stand: big red digits. */
 function clock(p: Pixels, pal: Pal, x: number, y: number, time: string, colon: boolean): void {
-  p.rect(x, y, 44, 18, pal.c('ink', 0)).frame(x, y, 44, 18, pal.c('grey', 1));
+  p.rect(x, y, 44, 18, pal.c('ink', 0)).frame(x, y, 44, 18, pal.c('gray', 1));
   outlined(p, x + 3, y + 5, colon ? time : time.replace(':', ' '), pal.c('digit', 1), pal.c('ink', 0));
 }
 
@@ -468,4 +466,4 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
   return files;
 }
 
-export { T, rng };
+export { rng };

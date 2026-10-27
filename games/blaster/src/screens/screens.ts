@@ -1,5 +1,6 @@
 // The 320x200 screens: the intro cartoon and title, the menu, the story/help/credits
-// pages, a card before every leg, the warp between stages, and the endings. Every page
+// pages, a card before every leg, the cartoons either side of the data bus rides between
+// stages (busCartoon.ts), and the endings. Every page
 // Game-Maker writes on has a pale panel where its text goes, so its purple, blue and red
 // letters stay readable over the art.
 import { encodeGif } from '../../../../web/src/formats/gif';
@@ -11,34 +12,46 @@ import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { clipEntries, fliClips } from '../../../kit/fliClips';
-import { CLEAR, centered, outlined, text } from '../art/draw';
+import { CLEAR, centered, flipX, outlined, text, turn180, turn45, turn90 } from '../art/draw';
 import { X0 } from '../stages/mapkit';
 import { renderRegion } from '../art/render';
-import { buildLeg, type Stage } from '../stages/stage';
-import { H, SHIP, SHIP_FLAME, SP, W, blob, c, circuit, dos, floppy, glitchFace, logo, monitor, panel, room, scaleBlit, speedLines, tower } from './cartoon';
+import { buildLeg, legLetter, type Stage } from '../stages/stage';
+import { arriveFli, warpFli } from './busCartoon';
+import { H, SHIP, SHIP_FLAME, SP, W, c, circuit, dos, floppy, glitchFace, logo, monitor, panel, room, scaleBlit, speedLines, tower } from './cartoon';
 import { CREDITS, DEBUG_EGG, HELP, LOST, README, STORY, WON } from './text';
 import { SONGS } from '../sound/music';
 
-export function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
+function gif(p: Pixels, pal: Uint8Array = SP.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
 /** The card before a leg: a framed look at it, its name and a few words. */
-export function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
-  const pc = (n: string, k: number) => s.pal.c(n, k);
+function card(s: Stage, of: number, legIndex: number, l = s.legs[legIndex], tagged?: string): Pixels {
+  const pc = (n: string, k: number) => (l.pal ?? s.pal).c(n, k);
   const p = new Pixels(W, H, pc('ink', 0));
   const b = buildLeg(l);
-  const y0 = l.kind === 'boss' ? l.grid.y(0) : l.grid.y(l.grid.cardAt ?? 40) - 4;
-  const view = renderRegion(b.map, b.bbl, b.mbl, b.mon, X0, y0, 16, 5);
+  const y0 = l.cardView?.y ?? (l.kind === 'boss' ? l.grid.y(0) : l.grid.y(l.grid.cardAt ?? 40) - 4);
+  const view = renderRegion(b.map, b.bbl, b.mbl, b.mon, l.cardView?.x ?? X0, y0, 16, 5);
   p.blit(view, 0, 0);
   p.rect(0, 100, W, 2, pc('trim', 3));
-  const tag = tagged ?? (l.kind === 'boss' ? (s.n === of ? 'WARNING! LAST BOSS!' : 'WARNING!') : `STAGE ${s.n}-${'ABCD'[legIndex]}`);
+  const bus = l.kind === 'bus';
+  const tag =
+    tagged ??
+    (l.kind === 'boss'
+      ? s.n === of
+        ? 'WARNING! LAST BOSS!'
+        : 'WARNING!'
+      : bus
+        ? 'ALL ABOARD THE DATA BUS!'
+        : `STAGE ${s.n}-${legLetter(s, l).toUpperCase()}`);
   outlined(p, 12, 110, tag, l.kind === 'boss' && !tagged ? pc('red', 3) : pc('gold', 4), pc('ink', 0), 1);
-  // the world's name, and where it falls in the game
-  outlined(p, 12, 122, `${s.title.toUpperCase()} (${s.n} OF ${of})`, pc('steel', 5), pc('ink', 0), 1);
+  // the world's name, and where it falls in the game (a ride: where it goes)
+  outlined(p, 12, 122, bus ? `NEXT STOP: ${s.title.toUpperCase()}` : `${s.title.toUpperCase()} (${s.n} OF ${of})`, pc('steel', 5), pc('ink', 0), 1);
   outlined(p, 12, 136, l.title.toUpperCase(), l.kind === 'boss' && !tagged ? pc('red', 4) : pc('cyan', 4), pc('ink', 0), 2);
-  l.card.forEach((line, i) => text(p, 12, 158 + i * 10, line, pc('grey', 6)));
-  if (l.kind !== 'boss') scaleBlit(p, SHIP, 268, 112, 2);
+  l.card.forEach((line, i) => text(p, 12, 158 + i * 10, line, pc('gray', 6)));
+  // the ship, facing the way the leg flies
+  const facing = { down: turn180(SHIP), side: turn90(SHIP), left: flipX(turn90(SHIP)), diag: turn45(SHIP, 0.97) } as Partial<Record<string, Pixels>>;
+  if (l.kind !== 'boss') scaleBlit(p, facing[l.kind] ?? SHIP, 268, 112, 2);
   return p;
 }
 
@@ -59,7 +72,7 @@ const caption = (p: Pixels, s: string) => {
 };
 
 /** The title poster: the logo, the BLASTER diving at GLITCH. */
-export function titleScreen(): Pixels {
+function titleScreen(): Pixels {
   const p = circuit(5);
   speedLines(p, 160, 150, 3, 'cyan', 60);
   const face = new Pixels(120, 82, CLEAR);
@@ -68,12 +81,12 @@ export function titleScreen(): Pixels {
   logo(p, 14);
   scaleBlit(p, SHIP, 34, 110, 3);
   scaleBlit(p, SHIP, 232, 124, 2);
-  centered(p, 186, '(C) 1995 SANDBOX SOFTWARE', c('grey', 7), 1, c('ink', 0));
+  centered(p, 186, '(C) 1995 SANDBOX SOFTWARE', c('gray', 7), 1, c('ink', 0));
   return p;
 }
 
 /** The menu: the logo, and a pale panel where PLAYGAME writes its choices in blue. */
-export function menuScreen(): Pixels {
+function menuScreen(): Pixels {
   const p = circuit(9);
   logo(p, 4, 160, false);
   panel(p, 64, 100, 256, 170);
@@ -86,7 +99,7 @@ export function menuScreen(): Pixels {
 }
 
 /** A page for text: a heading and the pale panel PLAYGAME writes on (x 40..288, y 40..167). */
-export function page(heading: string, seed: number): Pixels {
+function page(heading: string, seed: number): Pixels {
   const p = circuit(seed);
   panel(p, 34, 36, 292, 178);
   outlined(p, Math.round(160 - heading.length * 8), 10, heading, c('slime', 5), c('ink', 0), 2);
@@ -94,7 +107,7 @@ export function page(heading: string, seed: number): Pixels {
 }
 
 /** The high score backdrop: everything Game-Maker writes there lands on pale panels. */
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = circuit(21);
   panel(p, 8, 0, 311, 199);
   // Small ships in the top corners, clear of the widest row (a 22 letter name ends at x 284).
@@ -108,7 +121,7 @@ export function scoresScreen(): Pixels {
  * its messages ("Game Saved!", "This game has not been saved!") in blue at y 185, x 40..272,
  * so a pale strip under it.
  */
-export function slotScreen(heading: string): Pixels {
+function slotScreen(heading: string): Pixels {
   const p = circuit(heading.length);
   panel(p, 52, 30, 300, 175, c('ink', 0), c('steel', 4));
   panel(p, 34, 182, 286, 196);
@@ -125,7 +138,7 @@ function frame(p: Pixels): Uint8Array {
  * marked VACCINE goes into the drive, the BLASTER shrinks and flies in, and the logo slams
  * down.
  */
-export function introFli(): Uint8Array {
+function introFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const typed = ['C:\\>PKUNZIP COOLGAME', 'INFLATING: COOLGAME.EXE', 'C:\\>COOLGAME'];
   // 1. typing
@@ -187,22 +200,8 @@ export function introFli(): Uint8Array {
   return encodeFliFadeOut(frames, SP.pal, { speed: 9 });
 }
 
-/** Between stages: down the data bus to the next part of the machine. */
-export function warpFli(): Uint8Array {
-  const frames: Uint8Array[] = [];
-  for (let f = 0; f < 34; f++) {
-    const p = new Pixels(W, H, c('ink', 0));
-    speedLines(p, 160, 100, f, f % 6 < 3 ? 'cyan' : 'gold', 80);
-    blob(p, 160, 100, 14 + (f % 3), 14 + (f % 3), SP.r('glow'), 0, 2, 0.4);
-    scaleBlit(p, f % 2 ? SHIP_FLAME : SHIP, 140, 90 - Math.round(Math.sin(f / 3) * 4), 2);
-    caption(p, f < 17 ? 'STAGE CLEAR!' : 'RIDING THE DATA BUS...');
-    frames.push(frame(p));
-  }
-  return encodeFli(frames, SP.pal, { speed: 4 });
-}
-
 /** The ending cartoon: GLITCH bursts, the PC reboots clean. */
-export function wonFli(): Uint8Array {
+function wonFli(): Uint8Array {
   const frames: Uint8Array[] = [];
   const r = rng(9);
   const bits = Array.from({ length: 60 }, () => [60 + r() * 0, 41, (r() - 0.5) * 9, (r() - 0.7) * 7] as [number, number, number, number]);
@@ -247,7 +246,7 @@ export function wonFli(): Uint8Array {
 }
 
 /** Game over: GLITCH grinning from the monitor. */
-export function lostScreen(): Pixels {
+function lostScreen(): Pixels {
   const p = desk((g) => {
     glitchFace(g, 77, 1);
     text(g, 24, 70, 'HA HA HA HA', c('slime', 5));
@@ -262,8 +261,9 @@ export function buildScreens(stages: Stage[]): Record<string, Uint8Array> {
   const lst = (name: string, entries: [string, number?][]) => put(name, serializeSlideList(entries.map(([n, pause]) => ({ name: n, pause }))));
   for (const s of stages) {
     s.legs.forEach((l, i) => {
-      put(`${l.file}.gif`, gif(card(s, stages.length, i), s.pal.pal));
+      put(`${l.file}.gif`, gif(card(s, stages.length, i), (l.pal ?? s.pal).pal));
       lst(`${l.file}.lst`, [[`${l.file}.gif`, 4]]);
+      if (l.bus) put(`${l.file}.fli`, arriveFli(l.bus, s.title));
     });
     const side = s.side;
     if (side) {

@@ -104,7 +104,7 @@ export function buildMonsterBlocks(pal: Pal) {
       }
       for (const x of [5, 15]) {
         blob(p, x, 16, 3.4, 3.4, pal.r('ink'), 0, 1);
-        p.rect(x - 1, 15, 2, 2, c('grey', 3 + ((frame + x) % 2)));
+        p.rect(x - 1, 15, 2, 2, c('gray', 3 + ((frame + x) % 2)));
       }
     } else {
       if (plow) {
@@ -138,7 +138,7 @@ export function buildMonsterBlocks(pal: Pal) {
         if (frame) p.rect(17, 9, 3, 4, c('glow', 1));
       }
       blob(p, 8, 16, 3.4, 3.4, pal.r('ink'), 0, 1);
-      p.rect(7, 15, 2, 2, c('grey', 3 + frame));
+      p.rect(7, 15, 2, 2, c('gray', 3 + frame));
     }
     return p;
   };
@@ -154,8 +154,8 @@ export function buildMonsterBlocks(pal: Pal) {
   // A runaway shopping cart.
   const cart = (f: number) => {
     const p = new Pixels(20, 20, T);
-    const g = c('grey', 4);
-    p.rect(2, 5, 15, 9, c('grey', 2));
+    const g = c('gray', 4);
+    p.rect(2, 5, 15, 9, c('gray', 2));
     for (let x = 2; x < 17; x += 3) p.rect(x, 5, 1, 9, g);
     for (let y = 5; y < 14; y += 3) p.rect(2, y, 15, 1, g);
     p.line(17, 5, 19, 2, c('coat', 3)).rect(18, 1, 2, 2, c('coat', 3));

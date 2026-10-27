@@ -42,13 +42,13 @@ function drawChair(p: Pixels, pal: Pal, x: number, y: number, ok: boolean): void
     .rect(x + 4 + tilt, y + 1, 8, 7, c('cube', 1))
     .rect(x + 5 + tilt, y + 2, 1, 5, c('cube', 2));
   p.rect(x + 7, y + 9, 2, 2, c('metal', 0));
-  // the seat and the armrests, taped (grey, white, and the gummy worm)
+  // the seat and the armrests, taped (gray, white, and the gummy worm)
   p.rect(x + 1, y + 11, 14, 3, c('cube', 1)).rect(x + 1, y + 11, 14, 1, c('cube', 2));
   p.rect(x, y + 7, 3, 2, c('ink', 1))
     .rect(x + 13, y + 7, 3, 2, c('ink', 1))
     .rect(x + 1, y + 9, 1, 2, c('ink', 1))
     .rect(x + 14, y + 9, 1, 2, c('ink', 1));
-  p.rect(x, y + 7, 2, 2, c('grey', 2))
+  p.rect(x, y + 7, 2, 2, c('gray', 2))
     .rect(x + 14, y + 7, 2, 2, c('white', 2))
     .set(x + 13, y + 8, c('green', 3))
     .set(x + 12, y + 8, c('red', 3));
@@ -100,7 +100,7 @@ export function chairBlocks(book: BlockBook, pal: Pal): void {
   for (const [fx, fy, h] of [
     [4, 4, 'hair'],
     [10, 4, 'yellow'],
-    [4, 8, 'grey'],
+    [4, 8, 'gray'],
     [10, 8, 'liver'],
   ] as const) {
     monitor
@@ -124,7 +124,7 @@ export function chairBlocks(book: BlockBook, pal: Pal): void {
   const cart = new Pixels(40, 20, 255);
   cart.rect(2, 9, 18, 8, c('yellow', 1)).rect(2, 9, 18, 1, c('yellow', 2)).rect(5, 17, 2, 2, c('ink', 0)).rect(15, 17, 2, 2, c('ink', 0));
   cart.line(12, 9, 17, 0, c('wood', 3)).rect(15, 0, 5, 2, c('white', 1));
-  cart.rect(22, 4, 16, 13, c('grey', 1)).rect(22, 4, 16, 1, c('grey', 2)).rect(24, 17, 2, 2, c('ink', 0)).rect(34, 17, 2, 2, c('ink', 0));
+  cart.rect(22, 4, 16, 13, c('gray', 1)).rect(22, 4, 16, 1, c('gray', 2)).rect(24, 17, 2, 2, c('ink', 0)).rect(34, 17, 2, 2, c('ink', 0));
   blob(cart, 30, 2, 5, 3, R('ink2'), 0, 1);
   for (const x of [24, 28]) cart.rect(x, 6, 3, 6, c('teal', 2)).rect(x + 1, 4, 1, 2, c('white', 2));
   micro(cart, 5, 11, 'WET', c('ink', 0));
@@ -180,7 +180,7 @@ export function chairBlocks(book: BlockBook, pal: Pal): void {
   gate(book, 'chair', seat(false), 'chairOk', REPAIRS);
   // the four repairs: a roll of tape, the loose screw, the borrowed wrench, a wad of bubble gum
   plotThing(book, 'officeWall', 'tape@officeWall', (p) => {
-    p.disc(10, 14, 5, c('grey', 2)).disc(10, 14, 2, c('beige', 2)).ring(10, 14, 5, c('grey', 0)).rect(13, 17, 5, 3, c('grey', 2));
+    p.disc(10, 14, 5, c('gray', 2)).disc(10, 14, 2, c('beige', 2)).ring(10, 14, 5, c('gray', 0)).rect(13, 17, 5, 3, c('gray', 2));
   });
   plotThing(book, 'cubeBack', 'screw@cubeBack', (p) => {
     p.rect(6, 9, 8, 3, c('metal', 2)).rect(9, 12, 2, 7, c('metal', 1)).set(10, 19, c('metal', 0));
@@ -238,13 +238,13 @@ export function chairSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('intern0', intern(0), hurts(-10));
   book.add('intern1', intern(1), hurts(-10));
-  // the janitor: grey coveralls, a cap, a ring of keys; leaning on the mop
+  // the janitor: gray coveralls, a cap, a ring of keys; leaning on the mop
   const janitor = (f: number) => {
     const p = P();
-    p.rect(6, 7, 8, 8, c('grey', 1))
-      .rect(6, 7, 8, 1, c('grey', 2))
-      .rect(6, 15, 3, 4, c('grey', 0))
-      .rect(11, 15, 3, 4, c('grey', 0))
+    p.rect(6, 7, 8, 8, c('gray', 1))
+      .rect(6, 7, 8, 1, c('gray', 2))
+      .rect(6, 15, 3, 4, c('gray', 0))
+      .rect(11, 15, 3, 4, c('gray', 0))
       .rect(5, 19, 4, 1, ink)
       .rect(11, 19, 4, 1, ink);
     blob(p, 10, 4, 3, 3, pal.r('skin'), 1, 3);
@@ -261,12 +261,12 @@ export function chairSprites(book: SpriteBook, pal: Pal): void {
   const janitorWalk = (f: number) => {
     const p = P();
     const s = f ? 0 : 2;
-    p.rect(7, 7, 6, 8, c('grey', 1)).rect(7, 7, 6, 1, c('grey', 2)).rect(7, 7, 1, 8, c('grey', 0));
+    p.rect(7, 7, 6, 8, c('gray', 1)).rect(7, 7, 6, 1, c('gray', 2)).rect(7, 7, 1, 8, c('gray', 0));
     for (const [dx, k] of [
       [-s, 0],
       [s, 1],
     ])
-      p.rect(9 + dx, 15, 3, 4, c('grey', k)).rect(9 + dx, 19, 4, 1, ink);
+      p.rect(9 + dx, 15, 3, 4, c('gray', k)).rect(9 + dx, 19, 4, 1, ink);
     blob(p, 10, 4, 3, 3, pal.r('skin'), 1, 3);
     p.rect(7, 0, 6, 2, c('navy', 2)).rect(11, 2, 4, 1, c('navy', 1)).rect(7, 2, 2, 2, c('hair', 1));
     p.set(12, 4, ink).set(13, 5, c('skin', 3)).rect(11, 6, 2, 1, c('hair', 1));
@@ -277,7 +277,7 @@ export function chairSprites(book: SpriteBook, pal: Pal): void {
   book.add('janitorWalk1', janitorWalk(1));
 }
 
-export function chairMonsters(set: Monster[], mb: SpriteBook): void {
+function chairMonsters(set: Monster[], mb: SpriteBook): void {
   // (a screw rolls a block, so it turns a block short of the cubicle's walls and never pushes him into one)
   set[CHAIR_MON.screw] = mon(anim(mb, 'screw0', 'screw1', 3), { power: POWER.foe, thru: 1, newmon: CHAIR_MON.puff }, pace(1, 1));
   set[CHAIR_MON.squeak] = mon(anim(mb, 'squeak0', 'squeak1', 3), { power: POWER.foe, thru: 0, end: -1, newmon: CHAIR_MON.puff }, [

@@ -6,7 +6,7 @@ import { GameSim } from './sim';
 import { SCAN } from '../src/ids';
 
 type Pt = { x: number; y: number };
-export type Dir = 'up' | 'down' | 'left' | 'right';
+type Dir = 'up' | 'down' | 'left' | 'right';
 const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
 
 export class Bot {
@@ -146,7 +146,7 @@ export class Bot {
       this.say(`blocked on the way to ${label}; waiting`);
       const r = await this.wait(25);
       if (r) return r;
-      // nudge to a cell centre before trying again
+      // nudge to a cell center before trying again
     }
     throw new Error(`Could not reach ${x},${y} ${label}`);
   }

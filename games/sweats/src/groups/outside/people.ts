@@ -8,7 +8,7 @@ import { micro } from '../../../../snowbound/src/art/font';
 import type { Pal } from '../../art/pal';
 import { T, outline } from '../../common/sprites';
 
-export interface PersonOpts {
+interface PersonOpts {
   hair: string;
   shirt: string;
   pants: string;

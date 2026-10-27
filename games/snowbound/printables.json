@@ -157,17 +157,18 @@
     {
       "kind": "map",
       "title": "Jamie Street sled run poster",
-      "note": "Tall poster",
+      "note": "Poster",
       "heading": "JAMIE STREET SLED RUN",
-      "intro": "Closed for sledding. Top to bottom in one go.",
+      "intro": "Closed for sledding. Top to bottom in one go: the longest run in town.",
       "panels": [
         {
           "map": "jamie.map",
-          "x": 31,
-          "y": 5,
-          "w": 22,
-          "h": 79,
-          "caption": "From Leon Drive at the top to Bowden Drive at the bottom."
+          "x": 0,
+          "y": 0,
+          "w": 100,
+          "h": 100,
+          "caption": "The whole run as you ride it, top to bottom. Start at Leon Drive at the top of picture 1 and ride down; each picture carries on at the top of the next, where the numbered rings match. The street goes round the edges of the town map, so each lap is fresh hill: the firs, then the birches, then the lamps and lit firs, with the boards counting down 9 to 1 and the finish above Bowden Drive at the end of the last picture.",
+          "course": true
         }
       ]
     },
@@ -211,7 +212,11 @@
             },
             {
               "q": "I keep crashing on the sled.",
-              "a": "Brake with Up before the tree islands, not in them. If you stop dead, push off with Down."
+              "a": "Brake with Up before the tree islands, not in them. If you stop dead, push off with Down. The run bends right, so lean right now and then to keep to the middle, and let the ripples in the snow carry you round the squeezes."
+            },
+            {
+              "q": "How long is the Jamie Street sled run?",
+              "a": "Three stands of trees: firs, birches, then the lamps and lit firs of lower Jamie Street. The boards in the trees count down from 9 to 1. After the 1 comes a last steep drop between the lit firs, then the finish line above Bowden Drive."
             },
             {
               "q": "The creek ice carries me away.",

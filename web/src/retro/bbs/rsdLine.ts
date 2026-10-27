@@ -8,7 +8,8 @@
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
-import { CARD_NAME_MAX, SERIAL, registrationNumber, validSerial } from '../gmReg/registration';
+import { CARD_NAME_MAX, registrationNumber, validSerial } from '../gmReg/registration';
+import { pcExtras } from '../hacks/pcExtras';
 import { saveReply } from '../gmReg/mailCard';
 import { boxBottom, boxRow, boxTop, type Term } from './term';
 
@@ -16,18 +17,18 @@ type Answer =
   | { kind: 'noName' }
   | { kind: 'longName' }
   | { kind: 'badSerial' }
-  /** ours: the serial is this PC's copy (SERIAL) */
+  /** ours: the serial is this PC's copy (`own`, the one in its PLAYGAME.EXE) */
   | { kind: 'number'; name: string; serial: number; number: string; ours: boolean };
 
 /** What RSD's line answers for a name and a typed serial number (digits; spaces and commas are skipped). */
-export function rsdAnswer(name: string, serialText: string): Answer {
+export function rsdAnswer(name: string, serialText: string, own: number): Answer {
   const n = name.trim();
   if (!n) return { kind: 'noName' };
   if (n.length > CARD_NAME_MAX) return { kind: 'longName' };
   const digits = serialText.replace(/[\s,]/g, '');
   const serial = /^\d{1,10}$/.test(digits) ? Number(digits) : NaN;
   if (!(serial < 2 ** 32) || !validSerial(serial)) return { kind: 'badSerial' };
-  return { kind: 'number', name: n, serial, number: String(registrationNumber(n, serial)), ours: serial === SERIAL };
+  return { kind: 'number', name: n, serial, number: String(registrationNumber(n, serial)), ours: serial === own };
 }
 
 /** The R)egister menu: one caller's registration, then back to the main menu. */
@@ -38,6 +39,8 @@ export async function rsdLine(t: Term, h: RetroHost): Promise<void> {
     t.line();
     return got;
   };
+  await pcExtras().ready;
+  const own = pcExtras().serial;
   t.line();
   t.line(boxTop('RSD Registration Line'));
   t.line(boxRow('  |07Recreational Software Designs takes Game-Maker registrations'));
@@ -50,11 +53,11 @@ export async function rsdLine(t: Term, h: RetroHost): Promise<void> {
     t.line(`|07Type your name |15exactly|07 as you will type it into GM REGISTER (up to |14${CARD_NAME_MAX}|07 letters).`);
     const name = await ask('|11Your name |08(Enter quits)|11: |15', CARD_NAME_MAX);
     if (!name.trim()) return;
-    let a = rsdAnswer(name, '');
+    let a = rsdAnswer(name, '', own);
     for (;;) {
       const serial = await ask('|11Serial number: |15', 12);
       if (!serial.trim()) return;
-      a = rsdAnswer(name, serial);
+      a = rsdAnswer(name, serial, own);
       if (a.kind !== 'badSerial') break;
       t.line('|12*************************************');
       t.line('|12* |15This is an invalid serial number! |12*');

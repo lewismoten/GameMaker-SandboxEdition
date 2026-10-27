@@ -8,6 +8,8 @@ import { STACK_BYTES, cornerTiles, ramArt, ramTiles, ramVirus, stackTiles } from
 import { kit, type Leg, type Stage } from './stage';
 import { EGG_BLOCK } from '../blocks/egg';
 import { bossLeech } from '../bosses/boss2';
+import { ringLeg } from './ring';
+import { bankLeg } from './bank';
 import { saveSignBlocks } from '../../../kit/saveSign';
 
 function virus2(b: Parameters<typeof ramVirus>[0], p: Parameters<typeof ramVirus>[1]): void {
@@ -258,6 +260,7 @@ export function stage2(): Stage {
     bossSong: 'boss.cmf',
     side: { from: 's2a', cell: { x: X0 + 1, y: a.y(gap) }, room, then: 's2b', outro: 's2y' },
     legs: [
+      ringLeg(),
       {
         file: 's2a',
         kitFile: 's2',
@@ -276,6 +279,7 @@ export function stage2(): Stage {
         kit: ks,
         card: ['A lane between the chips.', 'Mind the crawlers that cut', 'across it.'],
       },
+      bankLeg(),
       bossLeech(art),
     ],
   };

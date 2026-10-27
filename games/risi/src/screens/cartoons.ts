@@ -22,7 +22,7 @@ import { AUTHOR, CARDS } from './text';
 const W = 320;
 const H = 200;
 /** 1/70 s per frame: about 12 frames a second. */
-export const SPEED = 6;
+const SPEED = 6;
 
 export interface Cast {
   /** Marcus's sprites (MARCUS.CBL's pictures). */

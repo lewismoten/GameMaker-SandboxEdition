@@ -21,6 +21,11 @@ No fighting. It don't shout, it
 don't brag, it don't make a
 fuss. Just hop.
 
+Lace up: a pair of red laces
+waits on a flowerpot in the
+garden (Enter picks them up),
+and laced up, the seed hustles.
+
 STARTING THE GAME
   Type MUSTARD and press Enter.
   VGA required. A Sound Blaster

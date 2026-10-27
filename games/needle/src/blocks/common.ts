@@ -19,7 +19,7 @@ export { BlockBook, SOLID };
 /** Solid on top only: stand on it, hop up through it. */
 export const LEDGE = 1;
 export const GRAV = { none: 0, up: 1, right: 2, down: 4, left: 8 } as const;
-export const LIFE = 1;
+const LIFE = 1;
 
 export interface Kit {
   book: BlockBook;
@@ -44,7 +44,7 @@ export function kit(pal: Pal): Kit {
   return { book, pal, c: pal.c, R: pal.r, P, sky, air: { grav: GRAV.down } };
 }
 
-export type Soul = 'beggar' | 'widow' | 'kids' | 'blind' | 'nomad' | 'seamstress';
+type Soul = 'beggar' | 'widow' | 'kids' | 'blind' | 'nomad' | 'seamstress';
 
 /**
  * A poor soul, drawn over `bg`: in need (holding out a hand or a bowl), thankful (hands up,

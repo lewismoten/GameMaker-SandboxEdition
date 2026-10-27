@@ -18,17 +18,19 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
-    "hours": 5,
+    "levels": "17 levels, 3 of them behind the wheel",
+    "hours": 6,
     "background": "#2a1a5e",
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "The littlest dog. The biggest day.",
     "back": "It's Teddy's birthday. Nobody says so.\n\nDoc Leo hands him a list of errands. Gwinn's bed is empty (again). So off they go in THE\u00a0CHEZ: the garage, Maple Street, Puddlewick Park, Downtown, the river and the old mill, the Fair's funhouse, a firefly meadow, and up Lookout Hill to the Clown Club's Big Top.\n\nTeddy doesn't know what you know. Every so often the story says MEANWHILE... and YOU are Gwinn, delivering invitations and digging up her best bone, or Doc Leo, twisting balloon dogs and ducking practice pies. Between stops you drive THE\u00a0CHEZ: honk, bump, and mind the charge. And at the very end, in the dark Big Top, the Clown Club has built Teddy a course of every trick he knows.",
     "features": [
-      "Sixteen stops: the trilogy's biggest adventure, from dawn in the garage to a surprise under the Big Top",
+      "Seventeen stops: the trilogy's biggest adventure, from dawn in the garage to a surprise under the Big Top",
       "Play as Teddy, as Gwinn, and for the first time as Doc Leo: SQUAWK the rubber chicken, ride a balloon dog up, and PRATFALL under the pies",
       "Drive THE\u00a0CHEZ, the little red CitiCar: honk the geese off the road, bump the potholes, plug in at the chargers and climb the hills on charge",
       "Buttons and timed doors, see-saws, conveyor belts, water wheels, drawbridges and a ferry, blinking floors, spotlights and the rigging lift",
+      "A dream run: Teddy hops on the spot while the hills, the town and the fence race by",
       "Every place and friend from the first two adventures, from Puddlewick Park to the Clown Club",
       "The Teddy Course: a finale built from every trick in all three games",
       "Sound Blaster music for every stop, with all four heroes' themes, and Happy Birthday at the end"
@@ -70,5 +72,10 @@
     "course.mon#44",
     "course.mon#45",
     "course.mon#55"
+  ],
+  "acceptedFindings": [
+    "speed-cap s5 The 3 key’s sequence (12) moves the hero 12 px in a frame, and PLAYGAME stops him at 11",
+    "facing s13 The hero faces the same way walking left and right",
+    "waits s13 Timed block 53 stays shut for 59.3 s at a time"
   ]
 }

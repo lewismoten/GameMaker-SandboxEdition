@@ -24,7 +24,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
  * `maxLoss` hit points (or goes wrong), it is taken back and played again after a short wait, so
  * the loaf sets out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -71,8 +71,8 @@ function picked(bot: Bot, x: number, y: number, what: string): void {
   if (b.scorePts > 0 || b.chHitPt > 0) throw new Error(`missed ${what} at ${x},${y}`);
 }
 
-export const crumbs = (bot: Bot) => bot.sim.meter(CRUMBS) - 1;
-export const baskets = (bot: Bot) => bot.sim.meter(BASKETS) - 1;
+const crumbs = (bot: Bot) => bot.sim.meter(CRUMBS) - 1;
+const baskets = (bot: Bot) => bot.sim.meter(BASKETS) - 1;
 
 /** 1. The hungry crowd: out of the basket, across the hillside, up on the warm air and into the stack of baskets. */
 export async function theCrowd(bot: Bot): Promise<void> {

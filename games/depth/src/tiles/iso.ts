@@ -11,13 +11,13 @@ import { THEMES, type Theme, type ThemeId } from './themes';
 
 /** Screen pixels per unit of height, and the height of a full-tier cube (its hexagon fills the block). */
 const ZPX = 12.5;
-export const ISO_H = 10 / ZPX;
+const ISO_H = 10 / ZPX;
 
 /** World (x, y, z) to block pixels: the cell's floor diamond fills the lower half of the block. */
-export const isoXY = (x: number, y: number, z: number): [number, number] => [10 + 10 * (x - y), 10 + 5 * (x + y) - ZPX * z];
+const isoXY = (x: number, y: number, z: number): [number, number] => [10 + 10 * (x - y), 10 + 5 * (x + y) - ZPX * z];
 
 /** The isometric camera: parallel rays from the south-east, above. */
-export function isoCamera(top = 4): Camera {
+function isoCamera(top = 4): Camera {
   const d = norm([-1, -1, -10 / ZPX]);
   return {
     ray(sx, sy) {
@@ -66,7 +66,7 @@ const solidOf = (c: V, emit = 0.1): Material => ({
 });
 
 /** A cube on the cell's unit square, `h` tall (in units of the full tier). */
-export function isoCube(mat: Material, h = 1, inset = 0.02): Shape {
+function isoCube(mat: Material, h = 1, inset = 0.02): Shape {
   const top = ISO_H * h;
   const r = 0.03;
   return new Sdf(
@@ -175,7 +175,7 @@ function isoWorld(shapes: Shape[], t: Theme): World {
 /** Light halos for isometric cells: [x, y, z, radius px, color] in the cell's own units. */
 function isoGlows(p: Picture, glows: [number, number, number, number, V][]): void {
   for (const [gx, gy, gz, r, c] of glows) {
-    // the oblique glow positions are given for the oblique cell (y 0.58 = the middle); recentre
+    // the oblique glow positions are given for the oblique cell (y 0.58 = the middle); recenter
     const [sx, sy] = isoXY(gx, gy - 0.08, gz);
     for (let y = 0; y < p.h; y++)
       for (let x = 0; x < p.w; x++) {
@@ -195,7 +195,7 @@ export function renderIsoCell(key: CellKey, plane: Plane, themeId: ThemeId, seed
   if (kind.ground(plane) === 'pit') throw new Error(`${key.kind}: no pits in isometric cells`);
   const shapes: Shape[] = [new Box([-4, -4, -1], [5, 5, 0], floorMat(t))];
   const own = isoShapes(key, plane, t) ?? kind.shapes?.(0, 0, plane, t, key.part ?? 0) ?? [];
-  // items made for the oblique cell stand a little south of the middle; centre them
+  // items made for the oblique cell stand a little south of the middle; center them
   shapes.push(...own);
   const world = isoWorld(shapes, t);
   const cam = isoCamera();

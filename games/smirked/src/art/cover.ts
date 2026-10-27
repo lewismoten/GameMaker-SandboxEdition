@@ -10,8 +10,8 @@
 // the windows flicker, lightning flashes, the sword shakes, and Lily's smirk grows.
 import { rng } from '../../../kit/pixels';
 
-export const COVER_W = 320;
-export const COVER_H = 200;
+const COVER_W = 320;
+const COVER_H = 200;
 
 type RGB = [number, number, number];
 
@@ -37,7 +37,7 @@ const N1 = noise2(61);
 const N2 = noise2(73);
 
 /** Where the moon is. */
-export const MOON = { x: 262, y: 44, r: 24 };
+const MOON = { x: 262, y: 44, r: 24 };
 
 export function coverRgb(t: number): Uint8Array {
   const W = COVER_W;
@@ -536,7 +536,7 @@ export function coverRgb(t: number): Uint8Array {
     );
     ellipse(gx, gy, 5, 5, (nx, ny) => shade([248, 200, 160], nx, ny));
     ellipse(gx + 7, gy + 3, 5, 5, (nx, ny) => shade([248, 200, 160], nx, ny));
-    // the foam sword: grey blade pointed up and away, yellow crossguard, the price tag still on
+    // the foam sword: gray blade pointed up and away, yellow crossguard, the price tag still on
     const ang = -2.05 + shake * 0.02;
     const bx = gx - 3;
     const by = gy - 5;

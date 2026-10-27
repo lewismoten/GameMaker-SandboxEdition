@@ -33,6 +33,15 @@ describe('box facts', () => {
     expect(sb.join()).not.toMatch(/cut-scenes|demo/);
   });
 
+  it('says what a game has in place of its scene count, when its box says so', () => {
+    const own = (levels?: string) =>
+      boxClaims({ files: ['a.gam'], original: { sound: 'sb', box: { levels } } } as unknown as Parameters<typeof boxClaims>[0], 75);
+    expect(own()).toContain('75 levels to explore');
+    expect(own('One night, five parts, five suspects')).toContain('One night, five parts, five suspects');
+    expect(own('One night, five parts, five suspects').some((c) => /levels to explore/.test(c))).toBe(false);
+    expect(own('').some((c) => /levels to explore/.test(c))).toBe(false);
+  });
+
   it('reads an age off the rating', () => {
     expect(ratingMark('Ages 8 and up')).toEqual({ mark: '8+', label: 'AGES 8 & UP' });
     expect(ratingMark(undefined).mark).toBe('E');

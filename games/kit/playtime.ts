@@ -17,7 +17,7 @@ import { claimedHours, playMinutes, PLAY_SCALE, type Timeline } from '../../web/
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Sets box.hours in about.json's text: replaces the line, or adds it as the box's first key. */
-export function setHours(text: string, hours: number): string {
+function setHours(text: string, hours: number): string {
   if (/^ {4}"hours": \d+,?$/m.test(text)) return text.replace(/^( {4}"hours": )\d+/m, `$1${hours}`);
   return text.replace(/^( {2}"box": \{\n)/m, `$1    "hours": ${hours},\n`);
 }

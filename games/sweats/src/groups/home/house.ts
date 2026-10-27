@@ -67,7 +67,7 @@ export function baseboard(pal: Pal, seed: number): Pixels {
 }
 
 /** Oak floorboards, seen edge-on (`top`: the walking surface). */
-export function floorboards(pal: Pal, top: boolean, seed: number): Pixels {
+function floorboards(pal: Pal, top: boolean, seed: number): Pixels {
   const c = pal.c;
   const p = new Pixels(20, 20);
   const r = rng(seed);
@@ -116,7 +116,7 @@ export function buildHouse(book: BlockBook, pal: Pal): void {
 }
 
 /** The window onto the night (2 x 2 blocks): the moon, falling snow, a snowy sill, curtains drawn back. */
-export function homeWindow(pal: Pal): Pixels {
+function homeWindow(pal: Pal): Pixels {
   const c = pal.c;
   const p = new Pixels(40, 40, 255);
   p.rect(5, 2, 30, 32, c('white', 2));

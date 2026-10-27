@@ -189,6 +189,35 @@ export const LOGIC: Chapter = {
     (Chapter 2): a door that opens and shuts every few seconds, a level that changes at
     the one-minute mark.</li>
   </ul>
+  <h2>The gate is the exit</h2>
+  <p>A “collect them all” level needs no key. Put the level’s only link on the cell of a gate
+  that takes exactly as many as the map holds: 70 dots, 10 rings, 25 coins. Each pickup adds 1;
+  the gate refuses every bump until the last one is in, then opens, and the next step into the
+  doorway is the link. The archive’s games use this for dot mazes, ring hunts and toll doors.</p>
+  <ul>
+    <li><b>Count exactly.</b> A gate that takes 19 on a map of 18 can never open (the Level
+    check’s <i>Counters that run out</i> says so). Recount after every edit to the map.</li>
+    <li><b>Mind the start.</b> A special counter that starts at 1 opens a gate of 10 with 9.
+    Start it at 0.</li>
+    <li><b>Mind the carry.</b> Counters travel between scenes but the map comes back fresh, so
+    a player who leaves and comes back can collect the same pickups twice. Make the gate take
+    what it needs, and the room one-way, or give each level its own counter.</li>
+  </ul>
+  <h2>An AND gate from monster power</h2>
+  <p>Monsters that meet compare power: the stronger kills the weaker, and two of the same power
+  pass through each other. That is enough for logic. A dial is a ring of monsters, each
+  becoming the next when shot. Give the right setting power 150 and the wrong ones 175. Then let
+  a birth block send a checker monster of power 150 along the row of dials every few seconds.
+  Any wrong dial kills it; only when every dial is right does it reach the end, where it beats
+  a weak lamp monster whose <b>Becomes</b> is the lit lamp. One of the archive’s word puzzles
+  is built exactly so.</p>
+  <ul>
+    <li>The hero’s shots must be stronger than every dial (over 175) to turn them.</li>
+    <li>Monsters never touch background blocks, so the lamp, not the checker, talks to the hero.
+    Give the lit lamp power 200, so later checkers can’t hurt it, and a monster block that adds
+    to a special counter when he touches it. The door is a gate on that counter.</li>
+    <li>An OR is two rows that each send a checker to the same lamp.</li>
+  </ul>
   <h2>A worked example: Ohm Sweet Ohm</h2>
   <p>The whole game is wiring made of blocks. Batteries are birth blocks that send sparks
   (monsters) along copper traces. A pulsed battery animates between a birth block and a
@@ -215,6 +244,25 @@ export const SCENES: Chapter = {
   scene can have 20 links. A link to scene 1 wins the game.</p>
   <p>When the hero dies and has lives left, the scene starts over and he enters again by the
   same link he came in by, intro picture and all.</p>
+  <h2>Links that misfire</h2>
+  <p>PLAYGAME checks a scene’s links in order, link 1 first, and takes the first one on a cell
+  the hero touches. The games in the Internet Archive’s Game-Maker Archive collection trip on
+  that rule in the same few ways, and the Level check looks for each:</p>
+  <ul>
+    <li><b>Two links on one cell.</b> Only the lower-numbered one ever fires. A level select
+    with two doors drawn on one spot loses a level.</li>
+    <li><b>A landing spot on a link.</b> The hero arrives standing on it and leaves on the first
+    tick. Its intro picture still shows, so a pass-through card is a fair trick; a level that
+    does it is skipped.</li>
+    <li><b>A link left at (0, 0).</b> An unplaced link sits in the map’s top-left corner. If that
+    corner is open floor, it is a warp hole for anyone who wanders, or wraps, into it.</li>
+    <li><b>Links and landings in walls.</b> A link inside a block solid on every side can never
+    be touched. A hero who lands inside one can walk out through walls he shouldn’t, so land him
+    beside the door, not on the rock under it.</li>
+    <li><b>Off the map.</b> Cells run from 0 to 99. A link at 100 never fires.</li>
+    <li><b>No way to win.</b> Follow the links from the title’s first link: one chain of them
+    must reach scene 1.</li>
+  </ul>
   <h2>What the camera sees first</h2>
   <p>The screen shows 16 by 10 blocks of a 100 by 100 map. A scene opens with the landing spot
   8 blocks from the left edge and 5 from the top; everything else is out of sight until the
@@ -227,6 +275,29 @@ export const SCENES: Chapter = {
   single-screen rooms, puzzle boards and shops. Then the screen stays where the scene opened,
   set by the landing spot, so every link into that room must land in the same place. A room
   with doors on both sides is easier as a scene that scrolls sideways only.</p>
+  <h2>Many rooms on one map</h2>
+  <p>Nothing says each scene needs its own map. In the archive’s games, a dozen one-screen
+  houses behind a town’s doors share a single map, a strip of four stages is one map with up
+  and down scrolling turned off so the view never leaves its strip, and three stages of a
+  platformer sit side by side on one file. Each room is its own scene, with its own landing
+  spot, links, song and cast, and the rooms really are next to each other.</p>
+  <ul>
+    <li><b>Fewer files,</b> one block set and one place to edit walls that rooms share.</li>
+    <li><b>A free checkpoint.</b> Dying starts only the current scene over, so splitting a long
+    stage into scenes on the same map saves the player’s progress at each split.</li>
+    <li><b>Wall the rooms off.</b> Solid blocks between them, or a scroll that stops, keep the
+    player from strolling into the next room without its scene’s rules.</li>
+    <li><b>Land in the same place.</b> In a room that doesn’t scroll, the landing spot sets what
+    the screen shows, so every link into the room should land on the same cell.</li>
+    <li><b>The map comes back fresh</b> on every visit. What the hero took in one room is back
+    when he returns, so keep prizes where he only goes once.</li>
+  </ul>
+  <h2>Laps round the wrap</h2>
+  <p>The map wraps: off the right edge is the left edge, off the bottom is the top. Racing games
+  in the archive put the finish line just behind the start, so the only way to reach it is all
+  the way round; an endless fall is a shaft that wraps top to bottom with scrolling only down; and
+  traffic that drives off one side comes back on the other forever. Put a one-way wall just
+  behind the start, or the player turns round and crosses the finish line at once.</p>
   <h2>Between scenes</h2>
   <p>Leaving by a link, the game fades out and shows the old scene’s exit picture, if it has
   one, then the new scene’s intro picture, and fades the new scene in. The music stops at the

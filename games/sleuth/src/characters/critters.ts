@@ -1,5 +1,5 @@
 // Who (and what) moves about the Paragon (PARAGON.MON / PARAGON.MBL): Sergeant Dobbs in
-// the lobby, Macbeth the theatre cat, sandbags on the fly lines, and at 2 AM the night
+// the lobby, Macbeth the theater cat, sandbags on the fly lines, and at 2 AM the night
 // watchman on his rounds, wisps from the ghost light and rats under the stage, which in the
 // dark are nothing but two red eyes.
 import { emptyMonster, type Monster } from '../../../../web/src/formats/monster';
@@ -16,9 +16,9 @@ const K: Record<string, number> = {
   k: c('skin', 4),
   K: c('skin', 2),
   e: c('black', 0),
-  m: c('grey', 5),
-  g: c('grey', 3),
-  G: c('grey', 1),
+  m: c('gray', 5),
+  g: c('gray', 3),
+  G: c('gray', 1),
   t: c('tan', 2),
   w: c('ghost', 3),
   W: c('ghost', 1),
@@ -129,8 +129,8 @@ function sandbag(): Pixels {
 function rat(step: number, lit: boolean): Pixels {
   const p = new Pixels(20, 20, CLEAR);
   if (lit) {
-    blob(p, 10, 12, 6, 4, r('grey'), 0, 2);
-    p.rect(3, 13, 2, 1, c('grey', 1)).rect(1, 12 + step, 2, 1, c('grey', 1));
+    blob(p, 10, 12, 6, 4, r('gray'), 0, 2);
+    p.rect(3, 13, 2, 1, c('gray', 1)).rect(1, 12 + step, 2, 1, c('gray', 1));
     p.set(15, 10, c('skin', 3)).set(16, 13, c('skin', 4));
   }
   p.set(13, 10, c('eyes', 1)).set(14, 10, c('eyes', 0)).set(15, 11, c('eyes', 1)).set(16, 11, c('eyes', 0));

@@ -5,7 +5,7 @@ import { TileBook } from '../tiles/book';
 import { ISO, KINDS, PLANES, type Ctx, type Plane } from '../tiles/cells';
 
 /** Text map characters every level understands. */
-export const LEGEND: Record<string, string> = {
+const LEGEND: Record<string, string> = {
   '#': 'wall',
   '.': 'floor',
   '@': 'floor',
@@ -44,7 +44,7 @@ export const LEGEND: Record<string, string> = {
   C: 'crowngate',
 };
 
-export interface MonsterMark {
+interface MonsterMark {
   mon: number;
   /** Which focus plane it lives in (it is not there at all in the other). */
   plane: Plane | 'both';
@@ -52,7 +52,7 @@ export interface MonsterMark {
   under?: string;
 }
 
-export interface RingSpec {
+interface RingSpec {
   /** Where Ray arrives, relative to the ring, after pulling focus to the far plane / back to near. */
   toFar: [number, number];
   toNear: [number, number];

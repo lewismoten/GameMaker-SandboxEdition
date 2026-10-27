@@ -18,6 +18,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "Four dungeons and a whole kingdom to explore",
     "background": "#1d2147",
     "accent": "#e8b84a",
     "ink": "#ffffff",

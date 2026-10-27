@@ -3,7 +3,7 @@
 // first. check.ts runs it against the built disk; demo.ts records the start of it.
 import { Bot } from './bot';
 import { SCAN, CTR } from '../src/ids';
-import { at } from '../src/levels/theatre';
+import { at } from '../src/levels/theater';
 import { buildParlorBlocks, buildParlorMap, center, LINEUP, ROOM, SUSPECTS } from '../src/levels/parlor';
 
 const PL = buildParlorMap(buildParlorBlocks()).links;
@@ -138,7 +138,7 @@ export async function act2(bot: Bot): Promise<void> {
 }
 
 /** The lobby's history wall: both smudged words of the clipping under the lens, then the plaque. */
-export async function readHistoryWall(bot: Bot): Promise<void> {
+async function readHistoryWall(bot: Bot): Promise<void> {
   const g = (x: number, y: number, label: string) => bot.goto(at(x, y).x, at(x, y).y, label);
   const block = (x: number) => bot.sim.blockAt(at(x, 39).x, at(x, 39).y);
   for (const x of [26, 28]) {

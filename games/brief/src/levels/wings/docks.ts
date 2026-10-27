@@ -39,13 +39,13 @@ function chest(under: Pixels, open: boolean): Pixels {
 function barrel(under: Pixels): Pixels {
   const p = on(under);
   blob(p, 10, 11, 7, 8, r('wood'), 1, 4);
-  p.rect(3, 6, 14, 1, c('grey', 2)).rect(3, 15, 14, 1, c('grey', 2));
+  p.rect(3, 6, 14, 1, c('gray', 2)).rect(3, 15, 14, 1, c('gray', 2));
   return p;
 }
 
 function cannon(under: Pixels): Pixels {
   const p = on(under);
-  p.rect(2, 8, 13, 6, c('ink', 1)).rect(2, 8, 13, 1, c('grey', 3)).rect(14, 7, 4, 8, c('ink', 0));
+  p.rect(2, 8, 13, 6, c('ink', 1)).rect(2, 8, 13, 1, c('gray', 3)).rect(14, 7, 4, 8, c('ink', 0));
   p.disc(6, 15, 3, c('wood', 2)).disc(12, 15, 3, c('wood', 2));
   return p;
 }
@@ -112,7 +112,7 @@ function bench(under: Pixels): Pixels {
 }
 
 function flutist(): Pixels {
-  const p = figure({ shirt: ['green', 2], pants: ['brown', 1], hair: ['grey', 3], beard: ['grey', 4], hat: { kind: 'cap', color: ['brown', 2] } });
+  const p = figure({ shirt: ['green', 2], pants: ['brown', 1], hair: ['gray', 3], beard: ['gray', 4], hat: { kind: 'cap', color: ['brown', 2] } });
   p.line(9, 8, 17, 10, c('tin', 5));
   micro(p, 14, 0, '~', c('purple', 4));
   return p;
@@ -149,7 +149,7 @@ function calliope(frame: number, under: Pixels): Pixels {
   const p = on(under);
   bevel(p, 1, 9, 18, 10, r('red'), 2, 1);
   for (let i = 0; i < 6; i++) p.rect(2 + i * 3, 1 + (i % 3), 2, 9 - (i % 3), c('brass', 3 + (i % 2)));
-  if (frame) for (const x of [3, 9, 15]) p.disc(x, 1, 1.5, c('grey', 5));
+  if (frame) for (const x of [3, 9, 15]) p.disc(x, 1, 1.5, c('gray', 5));
   p.rect(4, 13, 12, 2, c('paper', 4));
   return p;
 }
@@ -164,8 +164,8 @@ function framedPhoto(under: Pixels): Pixels {
 
 function steam(frame: number): Pixels {
   const p = blank();
-  blob(p, 10, 10 - frame, 6, 5, r('grey'), 3, 5);
-  blob(p, 6, 13 - frame, 4, 3, r('grey'), 3, 5);
+  blob(p, 10, 10 - frame, 6, 5, r('gray'), 3, 5);
+  blob(p, 6, 13 - frame, 4, 3, r('gray'), 3, 5);
   return p;
 }
 
@@ -261,7 +261,7 @@ function art(a: Area): void {
   a.solid('reeds', reeds(a.tiles.pic('lawn')));
   a.solid('pbench', bench(a.tiles.pic('lawn')));
   a.solid('flutist', on(a.tiles.pic('lawn'), flutist()));
-  a.prop('programmer', 'lawn', figure({ shirt: ['grey', 3], pants: ['blue', 1], hair: ['brown', 1], glasses: true }), true);
+  a.prop('programmer', 'lawn', figure({ shirt: ['gray', 3], pants: ['blue', 1], hair: ['brown', 1], glasses: true }), true);
   sign(['NO FISHING', 'FOR', 'COMPLIMENTS'], 3, { board: 'green', ink: 'paper' }).forEach((px, i) => a.solid(`fishing${i}`, px));
   a.monster(
     'fish',

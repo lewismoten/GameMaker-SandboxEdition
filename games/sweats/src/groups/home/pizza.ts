@@ -143,13 +143,13 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
     pic.rect(17, 18, 6, 1, c('red', 1)).set(23, 17, c('red', 1));
     addPicture(book, 'kevin', pic, wall(62), () => AIR);
   }
-  // Aunt Marge: a grey bun, cat-eye glasses, pearls; she demands to know who sneezed on the dip
+  // Aunt Marge: a gray bun, cat-eye glasses, pearls; she demands to know who sneezed on the dip
   {
     const pic = new Pixels(20, 40, 255);
     blob(pic, 10, 32, 8, 10, R('purple'), 0, 2);
     blob(pic, 10, 14, 6, 7, R('skin'), 1, 4);
-    blob(pic, 10, 5, 5, 4, R('grey'), 2, 3);
-    blob(pic, 10, 1.5, 2.6, 2.2, R('grey'), 2, 3);
+    blob(pic, 10, 5, 5, 4, R('gray'), 2, 3);
+    blob(pic, 10, 1.5, 2.6, 2.2, R('gray'), 2, 3);
     pic
       .frame(5, 12, 4, 3, c('teal', 0))
       .frame(11, 12, 4, 3, c('teal', 0))
@@ -164,13 +164,13 @@ export function pizzaBlocks(book: BlockBook, pal: Pal): void {
   }
   // the smoke alarm on the ceiling, beeping; the light over the table, flickering (the power)
   const alarm = book.pics.get('ceil')!.crop(0, 0, 20, 20);
-  alarm.disc(10, 15, 6, c('white', 2)).ring(10, 15, 6, c('grey', 1)).disc(10, 16, 1.6, c('red', 2)).rect(5, 13, 10, 1, c('grey', 1));
+  alarm.disc(10, 15, 6, c('white', 2)).ring(10, 15, 6, c('gray', 1)).disc(10, 16, 1.6, c('red', 2)).rect(5, 13, 10, 1, c('gray', 1));
   book.add('alarm', alarm, { solid: SOLID, birthMon: PIZZA_MON.beep, birthTime: 140 });
   const flicker = (on: boolean) => {
     const p = book.pics.get(on ? 'ceilLamp' : 'ceil')!.crop(0, 0, 20, 20);
     if (!on) {
       p.rect(9, 14, 2, 3, c('gold', 0));
-      blob(p, 10, 19, 5, 3, R('grey'), 0, 1);
+      blob(p, 10, 19, 5, 3, R('gray'), 0, 1);
     } else
       for (const [x, y] of [
         [3, 17],
@@ -313,22 +313,22 @@ export function pizzaSprites(book: SpriteBook, pal: Pal): void {
   };
   book.add('beep0', beep(0), hurts(-3));
   book.add('beep1', beep(1), hurts(-3));
-  // the cat: a grey tabby, sitting smug by the glass of water, tail flicking (too tough for words)
+  // the cat: a gray tabby, sitting smug by the glass of water, tail flicking (too tough for words)
   const cat = (f: number) => {
     const p = P();
-    blob(p, 10, 14, 5.5, 5.5, pal.r('grey'), 1, 3);
-    blob(p, 10, 7, 4.2, 3.8, pal.r('grey'), 1, 3);
-    p.line(6, 5, 7, 2, c('grey', 2)).line(7, 2, 8, 4, c('grey', 2)).line(14, 5, 13, 2, c('grey', 2)).line(13, 2, 12, 4, c('grey', 2));
-    for (const y of [11, 14, 17]) p.line(6, y, 9, y, c('grey', 0));
+    blob(p, 10, 14, 5.5, 5.5, pal.r('gray'), 1, 3);
+    blob(p, 10, 7, 4.2, 3.8, pal.r('gray'), 1, 3);
+    p.line(6, 5, 7, 2, c('gray', 2)).line(7, 2, 8, 4, c('gray', 2)).line(14, 5, 13, 2, c('gray', 2)).line(13, 2, 12, 4, c('gray', 2));
+    for (const y of [11, 14, 17]) p.line(6, y, 9, y, c('gray', 0));
     p.set(8, 7, c('green', 2)).set(12, 7, c('green', 2)).set(8, 8, ink).set(12, 8, ink).set(10, 9, c('pink', 2));
-    p.line(15, 18, 18, 14 - f * 3, c('grey', 2)).line(18, 14 - f * 3, 17, 11 - f * 4, c('grey', 2));
+    p.line(15, 18, 18, 14 - f * 3, c('gray', 2)).line(18, 14 - f * 3, 17, 11 - f * 4, c('gray', 2));
     return outline(p, ink);
   };
   book.add('cat0', cat(0), hurts(0));
   book.add('cat1', cat(1), hurts(0));
 }
 
-export function pizzaMonsters(set: Monster[], mb: SpriteBook): void {
+function pizzaMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   set[PIZZA_MON.fork] = mon(anim(mb, 'fork0', 'fork1', 4), { power: POWER.foe, thru: 1, newmon: PIZZA_MON.fluff }, pace(2, 2));
   set[PIZZA_MON.napkin] = mon(anim(mb, 'napkin0', 'napkin1', 8), { power: POWER.foe, thru: 1, newmon: PIZZA_MON.fluff }, pace(2, 1));

@@ -1,7 +1,7 @@
 // Background block art shared by the levels: skies, ground, wood, brick, fences, and the
 // Clown Car that waits at the end of every level.
 import { Pixels, rng } from '../../../kit/pixels';
-import { CLEAR, blob, gradient, over, shadeAt, speckle, sprite } from '../art/draw';
+import { CLEAR, blob, gradient, over, shadeAt, speckle } from '../art/draw';
 import { P } from '../art/pal';
 
 export const r = (name: string) => P.r(name);
@@ -91,7 +91,7 @@ export function tuft(base: Pixels, seed: number, flower?: string): Pixels {
 }
 
 /** Wood planks running horizontally. */
-export function planks(seed: number, ramp = 'wood', base = 3): Pixels {
+function planks(seed: number, ramp = 'wood', base = 3): Pixels {
   const p = new Pixels(20, 20);
   const R = rng(seed);
   for (let row = 0; row < 4; row++) {
@@ -193,23 +193,6 @@ export function tunnel(seed: number): Pixels {
   const R = rng(seed);
   for (let i = 0; i < 4; i++) p.set(Math.floor(R() * 20), Math.floor(R() * 20), c('dirt', 2));
   return p;
-}
-
-/** A treat marker painted on the ground: "X" marks a buried bone. */
-export function xMark(base: Pixels): Pixels {
-  const p = new Pixels(20, 20);
-  p.px.set(base.px);
-  for (let i = 0; i < 6; i++) {
-    p.set(7 + i, 1 + i, c('paint', 3)).set(12 - i, 1 + i, c('paint', 3));
-  }
-  return p;
-}
-
-/** Stamps an ASCII sprite (with its own key) onto a copy of a base block. */
-export function stampOn(base: Pixels, rows: string[], key: Record<string, number>, dx?: number, dy?: number): Pixels {
-  const p = new Pixels(20, 20);
-  p.px.set(base.px);
-  return over(p, sprite(rows, key, dx, dy));
 }
 
 /** Cuts a big drawing into 20x20 blocks: returns [row][col]. */

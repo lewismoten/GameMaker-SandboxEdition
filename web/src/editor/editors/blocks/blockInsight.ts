@@ -37,7 +37,7 @@ export function blockInsight(o: {
   const player = animPlayer({ blocks: () => o.blocks, pal: o.pal, transparent: o.sprites, label: 'The block’s animation as the game plays it', scale: 4 });
   const animText = h('p', { class: 'meta blk-anim-text', 'aria-live': 'off' });
   const usesList = h('ul', { class: 'blk-uses' });
-  const usesHead = h('h3', null, 'Used in');
+  const usesHead = h('h2', { class: 'blk-uses-head' }, 'Used in'); // the editor's first part heading (it comes before "Block N")
   let refreshUses: ReturnType<typeof setTimeout> | undefined;
 
   function drawTile(): void {

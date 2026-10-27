@@ -6,7 +6,7 @@
 //   1200 (Bell 212A): the 2225 Hz tone, then a short burst of scrambled data.
 //   2400 (V.22bis): the 2100 Hz answer tone with its phase flips, a "bong", a longer hiss.
 //   4800, 9600 (V.32) and 14,400 (V.32bis): the answer tone, the "bing-bong" (1800 Hz, then
-//     600 + 3000 Hz), then the echo canceller's long hiss.
+//     600 + 3000 Hz), then the echo canceler's long hiss.
 //   28,800 and 33,600 (V.34): the answer tone wobbling at 15 Hz (ANSam), the V.8 chirps,
 //     the line-probing chord, then training.
 //   56K (V.90): all of V.34's, then a second, longer round of probing and training.
@@ -282,7 +282,7 @@ export function dialSounds(ctx: AudioContext | undefined, number: string, speed:
     at(0.5, (l, w) => l.hiss(w, 1.4, 0.2, 1800));
     t += 2.0;
   } else if (speed === 4800 || speed === 9600 || speed === 14400) {
-    // V.32 and V.32bis: the answer tone, the bing-bong, the echo canceller's training
+    // V.32 and V.32bis: the answer tone, the bing-bong, the echo canceler's training
     at(0, (l, w) => l.answerTone(w, 2.5, false));
     t += 2.6;
     v32();

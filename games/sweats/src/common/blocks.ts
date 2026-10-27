@@ -9,7 +9,6 @@
 //     the monologue's opening line. It goes dark once he steps out of it.
 // Name them `<what>@<backdrop>`: coin@carpet, bill@carpet, mug@carpet, spot@stage.
 import { Pixels } from '../../../kit/pixels';
-import { blob } from '../../../snowbound/src/art/draw';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import { micro } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';
@@ -21,8 +20,6 @@ export const LEDGE = 1;
 export const GRAV = { none: 0, up: 1, right: 2, down: 4, left: 8 } as const;
 /** Air: what falls. */
 export const AIR = { grav: GRAV.down };
-/** Effect numbers for blocks (1 lives, 3 money, 20.. the extra counters). */
-export const LIFE = 1;
 
 const copy = (bg: Pixels) => bg.crop(0, 0, 20, 20);
 
@@ -48,7 +45,7 @@ export function drawBill(p: Pixels, pal: Pal, x = 3, y = 12): Pixels {
 }
 
 /** A white mug of coffee, steaming. */
-export function drawMug(p: Pixels, pal: Pal, x = 6, y = 11): Pixels {
+function drawMug(p: Pixels, pal: Pal, x = 6, y = 11): Pixels {
   const c = pal.c;
   p.rect(x, y, 8, 8, c('white', 1))
     .rect(x + 1, y, 6, 7, c('white', 2))
@@ -64,7 +61,7 @@ export function drawMug(p: Pixels, pal: Pal, x = 6, y = 11): Pixels {
 }
 
 /** The spotlight on the boards: an X of gaffer's tape in a pool of light. */
-export function drawSpot(p: Pixels, pal: Pal, on: boolean): Pixels {
+function drawSpot(p: Pixels, pal: Pal, on: boolean): Pixels {
   const c = pal.c;
   if (on)
     for (let y = 0; y < 20; y++) {
@@ -115,9 +112,4 @@ export function plotThing(book: BlockBook, bg: string, name: string, draw: (p: P
  */
 export function gate(book: BlockBook, name: string, closed: Pixels, open: string, need: number): void {
   book.add(name, closed, { solid: SOLID, effect: PLOT, eamt: -need, score: 1000, touch: open });
-}
-
-/** A soft lump of light for glows. */
-export function glow(p: Pixels, pal: Pal, cx: number, cy: number, r: number): Pixels {
-  return blob(p, cx, cy, r, r, pal.r('spot'), 0, 2);
 }

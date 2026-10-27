@@ -189,7 +189,7 @@ function seg(px: number, py: number, a: [number, number], b: [number, number]): 
 }
 
 /** Catmull-Rom through the points, `steps` samples per span. */
-export function spline(pts: [number, number][], steps = 10): [number, number][] {
+function spline(pts: [number, number][], steps = 10): [number, number][] {
   if (pts.length < 3) return pts;
   const out: [number, number][] = [];
   const P = (i: number) => pts[Math.max(0, Math.min(pts.length - 1, i))];

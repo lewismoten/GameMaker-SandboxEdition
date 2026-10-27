@@ -6,7 +6,7 @@ type RGB = [number, number, number];
 
 /** [name, shades, dark, light, mid?] */
 const RAMPS: [string, number, RGB, RGB, RGB?][] = [
-  ['grey', 8, [0, 0, 0], [255, 255, 255]],
+  ['gray', 8, [0, 0, 0], [255, 255, 255]],
   ['chrome', 8, [26, 30, 56], [244, 250, 255], [120, 140, 186]],
   ['teal', 6, [0, 54, 66], [150, 255, 236], [0, 176, 170]],
   ['pink', 6, [80, 0, 46], [255, 182, 232], [234, 40, 160]],
@@ -32,7 +32,7 @@ const RAMPS: [string, number, RGB, RGB, RGB?][] = [
   ['alien', 4, [20, 90, 30], [170, 255, 140]],
 ];
 
-export interface Pal {
+interface Pal {
   pal: Uint8Array;
   r: (name: string) => number[];
   /** Shade k of a ramp, clamped. */
@@ -43,7 +43,7 @@ export interface Pal {
   moreRed: number;
 }
 
-export function buildPalette(): Pal {
+function buildPalette(): Pal {
   const b = new PaletteBuilder();
   b.designerColors();
   for (const [name, n, from, to, mid] of RAMPS) b.ramp(name, n, from, to, mid);

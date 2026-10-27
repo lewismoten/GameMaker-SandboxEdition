@@ -18,6 +18,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "9 levels, two of them as Gwinn",
     "hours": 3,
     "background": "#d9381e",
     "accent": "#ffd23f",
@@ -44,5 +45,5 @@
     ],
     "rating": "Ages 6 and up"
   },
-  "acceptedFindings": ["one-way s7 One-way at (22, 39)"]
+  "acceptedFindings": ["one-way s7 One-way at (22, 39)", "speed-cap s4 The 3 key’s sequence (12) moves the hero 12 px in a frame, and PLAYGAME stops him at 11"]
 }

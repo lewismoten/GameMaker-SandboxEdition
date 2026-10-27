@@ -4,13 +4,13 @@
 import type { GameSim } from './gameSim';
 
 /** What a run needs of a game's bot: its sim, its log and a way to note a level done. */
-export interface LevelBot {
+interface LevelBot {
   readonly sim: GameSim;
   log: string[];
   say(s: string): void;
 }
 
-export type Level<B> = (bot: B) => Promise<unknown>;
+type Level<B> = (bot: B) => Promise<unknown>;
 
 /** Plays `levels[0..upTo)` in a row; a run of every level must end won, and none may lose a life. */
 export async function playLevels<B extends LevelBot>(bot: B, levels: Level<B>[], upTo = levels.length): Promise<void> {

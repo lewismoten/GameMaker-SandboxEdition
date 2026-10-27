@@ -9,7 +9,7 @@ import { WorkArea } from '../../retro/dos/workArea';
 import { BACKBL, BLEN, type Block } from '../../formats/blocks';
 import { type Monster } from '../../formats/monster';
 import { type RGBdata, type Vga } from '../shared/vga';
-import { BLACK, Face, GREEN, GREY3, RED1, RED2, RED3, initStartCols } from '../shared/facelift';
+import { BLACK, Face, GREEN, GRAY3, RED1, RED2, RED3, initStartCols } from '../shared/facelift';
 import { GLEN, newBlock, copyBlock } from './layout';
 
 export abstract class BlockDesignerState {
@@ -100,8 +100,8 @@ export abstract class BlockDesignerState {
   protected findEBcols(): void {
     this.face.setCols(this.colors);
     const fc = this.face.cols;
-    this.ebcols[0].set([fc[GREY3], fc[RED1], fc[BLACK], fc[RED2]]); // unselected buttons
-    this.ebcols[1].set([fc[GREY3], fc[RED3], fc[GREEN], fc[GREY3]]); // the selected button
+    this.ebcols[0].set([fc[GRAY3], fc[RED1], fc[BLACK], fc[RED2]]); // unselected buttons
+    this.ebcols[1].set([fc[GRAY3], fc[RED3], fc[GREEN], fc[GRAY3]]); // the selected button
   }
 
   protected fadeAllTo(c: RGBdata, time = 65): Promise<void> {

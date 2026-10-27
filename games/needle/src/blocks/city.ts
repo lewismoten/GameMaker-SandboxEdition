@@ -10,7 +10,7 @@ import { MON } from '../ids';
 import { addGoodThings, addSoul, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 /** Ticks between melons rolling off the cart. */
-export const MELON_EVERY = 180;
+const MELON_EVERY = 180;
 
 export function cityBlocks(pal: Pal): Kit {
   const k = kit(pal);

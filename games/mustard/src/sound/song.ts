@@ -19,7 +19,7 @@
 import { INSTRUMENTS } from '../../../kit/music';
 import { CELESTA, EPIANO, FLUTE, ORGAN, REED, VOICE, Writer, ending, slice, vamp, type Part, type Section } from '../../../kit/song';
 
-export const BPM = 95;
+const BPM = 95;
 
 // ---- the song's material ------------------------------------------------------------------
 

@@ -10,7 +10,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
 import { buildPalette } from './src/art/pal';
-import { buildTheatreBlocks } from './src/blocks/tiles';
+import { buildTheaterBlocks } from './src/blocks/tiles';
 import { buildCritters } from './src/characters/critters';
 import { buildAdaBlocks, buildCharacter } from './src/characters/character';
 import { buildActs } from './src/levels/acts';
@@ -32,7 +32,7 @@ disk.put('night.pal', serializePalette(buildPalette('night').pal));
 disk.put('dawn.pal', serializePalette(buildPalette('dawn').pal));
 // the pass-through scenes' palette (Solved and the wrong verdicts, src/game.ts): all black
 disk.put('dark.pal', serializePalette(new Uint8Array(768)));
-const tbs = buildTheatreBlocks();
+const tbs = buildTheaterBlocks();
 disk.put('paragon.bbl', serializeBlocks(tbs.build()));
 const critters = buildCritters();
 disk.put('paragon.mbl', serializeBlocks(critters.mb.build()));

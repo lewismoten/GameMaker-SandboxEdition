@@ -83,8 +83,8 @@ export function chrome(p: Pixels, x: number, y: number, s: string, scale: number
     const gy = y + Math.floor(r() * h * 0.4);
     if (mask.get(gx, gy) !== 1) continue;
     for (let k = -3; k <= 3; k++) {
-      p.set(gx + k, gy, C('grey', 7));
-      p.set(gx, gy + k, C('grey', 7));
+      p.set(gx + k, gy, C('gray', 7));
+      p.set(gx, gy + k, C('gray', 7));
     }
   }
 }
@@ -105,7 +105,7 @@ export function sunsetSky(p: Pixels, horizon: number, seed = 1): void {
   const r = rng(seed);
   for (let i = 0; i < 70; i++) {
     const y = Math.floor(r() * horizon * 0.45);
-    p.set(Math.floor(r() * W), y, C('grey', 5 + Math.floor(r() * 3)));
+    p.set(Math.floor(r() * W), y, C('gray', 5 + Math.floor(r() * 3)));
   }
 }
 
@@ -174,8 +174,8 @@ export function consoleTv(p: Pixels, sx: number, sy: number, sw: number, sh: num
   p.rect(x0, y0, w, h, C('wood', 2));
   for (let y = y0 + 2; y < y0 + h; y += 4) p.rect(x0, y, w, 1, C('wood', 1));
   p.frame(x0, y0, w, h, C('wood', 0));
-  p.rect(sx - 6, sy - 6, sw + 12, sh + 12, C('grey', 1));
-  p.rect(sx - 4, sy - 4, sw + 8, sh + 8, C('grey', 2));
+  p.rect(sx - 6, sy - 6, sw + 12, sh + 12, C('gray', 1));
+  p.rect(sx - 4, sy - 4, sw + 8, sh + 8, C('gray', 2));
   p.rect(sx, sy, sw, sh, screen);
   // Rounded corners of the tube.
   for (const [cx, cy] of [
@@ -184,7 +184,7 @@ export function consoleTv(p: Pixels, sx: number, sy: number, sw: number, sh: num
     [sx, sy + sh - 1],
     [sx + sw - 1, sy + sh - 1],
   ])
-    p.set(cx, cy, C('grey', 2));
+    p.set(cx, cy, C('gray', 2));
   // Knobs and speaker grille on the right.
   const kx = sx + sw + 14;
   oval(p, kx + 10, sy + 12, 7, 7, C('chrome', 3));
@@ -195,7 +195,7 @@ export function consoleTv(p: Pixels, sx: number, sy: number, sw: number, sh: num
   // Rabbit ears.
   p.line(sx + sw / 2 - 4, y0, sx + sw / 2 - 50, y0 - 40, C('chrome', 5));
   p.line(sx + sw / 2 + 4, y0, sx + sw / 2 + 40, y0 - 44, C('chrome', 5));
-  oval(p, sx + sw / 2, y0 - 2, 10, 4, C('grey', 1));
+  oval(p, sx + sw / 2, y0 - 2, 10, 4, C('gray', 1));
   p.disc(sx + sw / 2 - 50, y0 - 40, 2, C('chrome', 6));
   p.disc(sx + sw / 2 + 40, y0 - 44, 2, C('chrome', 6));
 }

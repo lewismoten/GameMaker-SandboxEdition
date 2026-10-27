@@ -19,19 +19,19 @@ import { MON, SCREAMSEQ, WOOL, WOOL_NEEDED } from '../ids';
 export { BlockBook, SOLID };
 const LIFE = 1;
 /** Ticks the empty place in the line stays open, leans shut (still open) and stays shut. */
-export const GAP_OPEN = 44;
-export const GAP_LEAN = 18;
-export const GAP_SHUT = 36;
+const GAP_OPEN = 44;
+const GAP_LEAN = 18;
+const GAP_SHUT = 36;
 /** Ticks between spits from a kneeling camel. */
-export const SPIT_EVERY = 46;
+const SPIT_EVERY = 46;
 /** Ticks a kneeling camel puffs its cheeks before each spit. */
-export const SPIT_WINDUP = 10;
+const SPIT_WINDUP = 10;
 /**
  * Water never runs out: a well, the oasis or a trough glints for one tick in every
  * SIP_EVERY + 1, and a goat pushing into it then takes a sip (one breath and one hit point),
  * so a goat who screamed her breath away can always get it back.
  */
-export const SIP_EVERY = 28;
+const SIP_EVERY = 28;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();
@@ -73,7 +73,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   const floor = (seed: number) => speckle(P(), 0, 0, 20, 20, R('dirt'), 1, 1, seed, 0.3);
   // Straw on the stable floor: two quiet tones (earth, and strands of one straw color), so
-  // the brown and grey animals on it stand out.
+  // the brown and gray animals on it stand out.
   const straw = (seed: number, base = speckle(P(), 0, 0, 20, 20, R('dirt'), 1, 1, seed, 0.06)) => {
     const r = rng(seed + 50);
     for (let k = 0; k < 10; k++) {
@@ -640,7 +640,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   // the far corner of the shepherds' field (a glint crosses it now and then) and a painted
   // Easter egg half in the sand by the caravan's west rocks: each a few points, gone when
   // touched (the ground under it is its touch block), with no sound of its own.
-  const tin = { ink: c('ink', 0), tin: [c('grey', 2), c('grey', 3), c('grey', 4)], white: c('star', 2), dark: c('grey', 1) };
+  const tin = { ink: c('ink', 0), tin: [c('gray', 2), c('gray', 3), c('gray', 4)], white: c('star', 2), dark: c('gray', 1) };
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(`tinHeart${k || ''}`, drawTinHeart(grass(23), tin, k), {
       next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
@@ -683,7 +683,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     'water',
     'cloth',
     'pink',
-    'grey',
+    'gray',
   ].flatMap((k) => R(k));
   book.add('lewie', straw(203).blit(lewieCameo(pal.pal, 'down0', { use: lit }), 0, 0, 255), { solid: SOLID });
 

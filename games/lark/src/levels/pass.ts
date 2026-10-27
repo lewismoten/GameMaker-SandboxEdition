@@ -6,7 +6,7 @@
 import type { BlockSet } from '../blocks/sets';
 import { mark, stamp, type Stamped } from './stamp';
 
-export const PASS_ROWS = ['vvvv', 'vacv', 'vvvv'];
+const PASS_ROWS = ['vvvv', 'vacv', 'vvvv'];
 
 export type Gift = 'none' | 'thanks';
 

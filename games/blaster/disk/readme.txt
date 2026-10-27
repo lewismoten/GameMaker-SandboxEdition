@@ -11,9 +11,9 @@ VACCINE.EXE, climb into the
 BLASTER nano-fighter and fly
 up through the motherboard,
 memory, the sound card, the
-hard disk and the CPU, and
-blast GLITCH out of the
-machine.
+hard disk, up its ribbon cable
+and into the CPU, and blast
+GLITCH out of the machine.
 
 STARTING THE GAME
 Type BLASTER and press Enter.
@@ -26,12 +26,31 @@ KEYS
 Arrows or W A S D  steer
 Q / E  up-left / up-right
 Number pad 7 9 1 3 diagonals
-Up     speed ahead
-Down   brake
+The arrow the way you fly
+       speeds ahead, the one
+       back brakes
 Space  Nova Bomb
 F1 help  F2 status
 F3 music F4 sounds
 F5 save  F6 load  Esc quit
+
+Each stage flies a loop: up,
+right, down and left round its
+edges, then corner to corner
+through the middle to its
+boss. On the runs that go
+corner to corner the keys turn
+with the track: Up goes
+faster, Left and Right steer
+across it. On the side-on runs
+Up and Down climb and dive.
+
+Between stages you ride the
+data bus, seen from behind.
+Left and Right hop a lane.
+Dodge what comes at you until
+the sign reads 0, then take
+the middle lane into the chip.
 
 The BLASTER flies forward and
 fires on its own whenever you
@@ -40,7 +59,7 @@ Nova Bombs, + for repairs.
 
 FILES ON THIS DISK
 BLASTER.GAM  the game
-*.MAP        17 maps
+*.MAP        31 maps
 *.BBL *.MBL  blocks
 *.MON        monsters
 SHIP.CHR     the BLASTER

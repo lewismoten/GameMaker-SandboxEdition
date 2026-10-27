@@ -24,7 +24,7 @@ const H = 200;
 /** Clear pixels in sprites. */
 const T = 255;
 /** 1/70 s per frame: about 12 frames a second. */
-export const SPEED = 6;
+const SPEED = 6;
 
 export interface Cast {
   /** Doc Leo's whole poses (20 x 40). */
@@ -531,5 +531,3 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
   }
   return files;
 }
-
-export { T };

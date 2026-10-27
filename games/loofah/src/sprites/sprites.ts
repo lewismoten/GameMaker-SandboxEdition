@@ -1,4 +1,4 @@
-// LOOFAH.CBL and LOOFAH.MBL: the man (Doc Leo off duty, out of the shower: shaggy grey bowl cut
+// LOOFAH.CBL and LOOFAH.MBL: the man (Doc Leo off duty, out of the shower: shaggy gray bowl cut
 // dripping wet, wire glasses, a bath towel round his middle, bare feet) and everything else that
 // moves: drips from the cursed shower head, bars of cursed grapefruit and mango soap, the
 // screaming towel and its cousins from the linen closet, soap bubbles, wild loofahs off the vine
@@ -17,7 +17,7 @@ import { PINK, SEQ } from '../ids';
 
 export { T, outline };
 
-export interface ManPose {
+interface ManPose {
   /** front: to you; side: walking right (mirror for left); back: climbing away from you. */
   face: 'front' | 'side' | 'back';
   /** Walk cycle (0..3); legs apart on 1 and 3. */
@@ -34,7 +34,7 @@ export interface ManPose {
 }
 
 /** The man's look, in the pal's ramps. */
-export function manArt(pal: Pal) {
+function manArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const body = (o: ManPose): Pixels => {
@@ -65,7 +65,7 @@ export function manArt(pal: Pal) {
     // the round bare belly (from behind, his bare back)
     blob(p, 10.5, 10.5 + crouch, 4.6, 3.4, pal.r('skin'), 1, 4);
     if (!back) p.set(side ? 12 : 10, 12 + crouch, c('skin', 0));
-    // the head: a shaggy grey bowl cut, dripping wet, wire glasses
+    // the head: a shaggy gray bowl cut, dripping wet, wire glasses
     const hx = side ? 11 : 10;
     const hy = 5 + crouch;
     blob(p, hx + 0.5, hy, 4.4, 4.2, pal.r('skin'), 1, 4);
@@ -304,8 +304,8 @@ export function buildMonsterBlocks(pal: Pal) {
   // Carl the fly (from another song), buzzing round the candles
   const carl = (f: number) => {
     const p = P();
-    blob(p, 10, 12, 3.4, 2.6, pal.r('grey'), 0, 2);
-    blob(p, 13, 11, 2, 2, pal.r('grey'), 0, 1);
+    blob(p, 10, 12, 3.4, 2.6, pal.r('gray'), 0, 2);
+    blob(p, 13, 11, 2, 2, pal.r('gray'), 0, 1);
     p.disc(14, 10, 1.2, c('red', 3));
     for (const s of [-1, 1]) blob(p, 9 + s * 2, f ? 7 : 9, 3, 2, pal.r('white'), 1, 2);
     p.line(8, 14, 7, 17, ink).line(11, 14, 12, 17, ink);

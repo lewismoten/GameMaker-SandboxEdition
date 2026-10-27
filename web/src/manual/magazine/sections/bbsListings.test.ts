@@ -12,7 +12,7 @@ describe('the BBS listings', async () => {
   const json = JSON.stringify(pages);
 
   it('print the numbers TERMINAL dials', () => {
-    expect(src('bbs.ts')).toContain(`const PHONE = '${SANDBOX_PHONE}'`);
+    expect(src('sandbox.ts')).toContain(`const PHONE = '${SANDBOX_PHONE}'`);
     expect(src('sofaPhone.ts')).toContain(`export const SOFA_PHONE = '${SOFA_PHONE}'`);
   });
 

@@ -10,6 +10,11 @@ when touched. The web knows it by its place: the map file and cell in `about.jso
 the player when a touch changes a map cell, and a touch at that place counts as a find. The find is
 saved in the game's save data as `tinheart.dat`. The disk and the game's play stay exactly as built.
 
+One more heart is in no game: it falls out of the desk's wall clock with the rubber chicken, once
+he has popped out a few times (`web/src/tinHearts/deskHearts.ts`, `web/src/desk/props/clockHeart.ts`).
+It counts toward the set like the others. Someone who had every game's heart before it was added
+keeps the trophy and what it opens, and is shown the clock's as one more to find.
+
 ## Placing a heart
 
 1. **Art.** Draw it with `kit/tinHeart.ts` in the game's own ramps, over the ground it sits on:
@@ -101,7 +106,7 @@ sprite colors.
 | --- | ------ | ----- |
 | Mystery Robot Joe | `joeCameo(hostPal, 'down' \| 'up' \| 'side', step)` | tin box robot, bulb, glasses, bow tie; a librarian, a counter of things |
 | Watt | `wattCameo(hostPal, 'down' \| 'up' \| 'side', step)` | repair robot on treads; likes fuse boxes, chargers, circuit boards |
-| Will (Shakespeare in Sweatpants) | `willCameo(hostPal, { face: 'front' \| 'side', arms, mood })` | bald, ruff, velvet doublet, grey sweatpants, fuzzy slippers; a playwright visiting |
+| Will (Shakespeare in Sweatpants) | `willCameo(hostPal, { face: 'front' \| 'side', arms, mood })` | bald, ruff, velvet doublet, gray sweatpants, fuzzy slippers; a playwright visiting |
 | Teenage Lewie (Snowbound) | `lewieCameo(hostPal, 'down0' \| 'side0' …)` | red knit hat, red coat, snow shovel; helping out |
 | Carl the fly | `carlPic(colors, pose)` in `kit/carlCameo.ts` | drawn straight in the host's ramps; "the bug" on any circuit board |
 | THE CHEZ | `kit/chez.ts` | the red CitiCar, two blocks, at a curb or in a lot |

@@ -89,7 +89,7 @@ export function text(p: Pixels, x: number, y: number, s: string, col: number, sc
   return cx - x;
 }
 
-export const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
+const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
 
 /** Text with an outline (and an optional drop shadow). */
 export function outlined(p: Pixels, x: number, y: number, s: string, col: number, outline: number, scale = 1, shadow?: number): void {

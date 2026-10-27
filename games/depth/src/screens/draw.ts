@@ -54,7 +54,7 @@ export function text(p: Picture, x: number, y: number, str: string, c: V, s = 1,
   return cx - x;
 }
 
-export const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
+const textWidth = (s: string, scale = 1) => s.length * 8 * scale;
 
 export function centered(p: Picture, y: number, str: string, c: V, s = 1, o: Parameters<typeof text>[6] = {}): void {
   text(p, Math.round((p.w - textWidth(str, s)) / 2), y, str, c, s, o);
@@ -92,7 +92,7 @@ export function toGif(p: Picture, fixed: Col[] = [], exposure = 1, pins: [number
   return encodeGif({ width: p.w, height: p.h, pixels, palette: pal });
 }
 
-export function indexed(p: Picture, fixed: Col[] = [], exposure = 1, ordered = false, pins: [number, Col][] = []): { pixels: Uint8Array; pal: Uint8Array } {
+function indexed(p: Picture, fixed: Col[] = [], exposure = 1, ordered = false, pins: [number, Col][] = []): { pixels: Uint8Array; pal: Uint8Array } {
   const bytes = toBytes(p, exposure);
   const pal = new Uint8Array(768);
   putColors(pal, 0, fixed);

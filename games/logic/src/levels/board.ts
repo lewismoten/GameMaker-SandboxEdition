@@ -91,7 +91,7 @@ export interface Board {
 }
 
 /** Behind the seam: the house's main fuse box, in the room's last slot. Watt lands on its
- * pad; its socket leads out again. # housing, . board, @ pad, S socket, e the felt egg,
+ * pad; its black main switch leads out again. # housing, . board, @ pad, S the switch, e the felt egg,
  * P tape on the wall, * % = & parts soldered to the board. */
 export const FUSEBOX = [
   '                ',
@@ -135,7 +135,7 @@ export interface Crawl {
 }
 
 export interface Fusebox {
-  /** The board whose seam leads in (and where the socket sends Watt back to). */
+  /** The board whose seam leads in (and where the main switch sends Watt back to). */
   from: Board;
   start: { x: number; y: number };
   exit: { x: number; y: number };

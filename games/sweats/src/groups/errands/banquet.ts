@@ -53,7 +53,7 @@ export function banquetBlocks(book: BlockBook, pal: Pal): void {
       if (o.lean) p.set(hx - 5, 7, c('gold', 3));
     });
   book.add('guestLady', guest('yellow', 'teal', { lean: true, long: true }), { ...AIR, birthMon: BM.cold, birthTime: 170 });
-  book.add('guestBrow', guest('grey', 'navy', { brow: true }), AIR);
+  book.add('guestBrow', guest('gray', 'navy', { brow: true }), AIR);
   book.add('guestCough', guest('hair', 'purple', { cough: true }), { ...AIR, birthMon: BM.cough, birthTime: 120 });
   // the dinner: a wilted salad, the overcooked chicken cordon bleu
   const dinner = over(wall(), pal, (p) => {
@@ -68,7 +68,7 @@ export function banquetBlocks(book: BlockBook, pal: Pal): void {
   // the podium and the speaker whose speech has not wilted (BLAH)
   const podium = clear(20, 40);
   blob(podium, 10, 8, 4, 4.4, R('skin'), 1, 4);
-  podium.rect(6, 3, 9, 2, c('grey', 2)).set(8, 8, ink).set(12, 8, ink).rect(9, 11, 3, 1, ink);
+  podium.rect(6, 3, 9, 2, c('gray', 2)).set(8, 8, ink).set(12, 8, ink).rect(9, 11, 3, 1, ink);
   podium.rect(4, 13, 13, 7, c('ink', 1)).rect(9, 13, 3, 4, c('white', 2)).rect(10, 14, 1, 4, c('red', 2));
   podium.line(15, 6, 13, 10, c('metal', 0)).rect(13, 9, 2, 2, c('metal', 1));
   podium.rect(2, 18, 16, 22, c('wood', 2)).rect(1, 17, 18, 3, c('wood', 3)).rect(4, 22, 12, 14, c('wood', 1));
@@ -255,7 +255,7 @@ export function banquetSprites(book: SpriteBook, pal: Pal): void {
   }
 }
 
-export function banquetMonsters(set: Monster[], mb: SpriteBook): void {
+function banquetMonsters(set: Monster[], mb: SpriteBook): void {
   const foe = { power: POWER.foe, thru: 1, newmon: BM.poof };
   set[BM.blah] = mon(anim(mb, 'blah0', 'blah1', 6), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 2), corner(0, 1, 2, 4), corner(-5, 0, 2, 4)]);
   set[BM.cough] = mon(anim(mb, 'cough0', 'cough1', 4), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-3, 0, 2, 4)]);

@@ -17,7 +17,7 @@ export const TL = 1;
 export const TR = 2;
 export const BR = 4;
 export const BL = 8;
-export const B = 20;
+const B = 20;
 const H = B / 2;
 const CORNER: Record<number, [number, number]> = { [TL]: [0, 0], [TR]: [B, 0], [BR]: [B, B], [BL]: [0, B] };
 
@@ -107,8 +107,6 @@ export const shore: Shader = (x, y, d) => {
   }
   return water(x, y, -d);
 };
-
-export const sand = (x: number, y: number): RGB => SAND(x, y);
 
 /** Open water by depth (pixels from shore), with tileable ripples. */
 export function water(x: number, y: number, depth: number, phase = 0): RGB {

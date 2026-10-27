@@ -7,7 +7,7 @@
 import './regSide.css';
 import { h, clear } from '../../editor/core/ui';
 import { onRegDesk, type RegAsk, type RegDesk } from './regDesk';
-import { CARD_NAME_MAX, NUMBER_MAX, SERIAL } from './registration';
+import { CARD_NAME_MAX, FACTORY_SERIAL, NUMBER_MAX } from './registration';
 import { BOUGHT, CD_NUMBER, COMPUTERS, MAIL_DAYS_MS, OWNER_ADDRESS, RSD_ADDRESS, mailCheck, replyTo, savedReply, saveReply, type Reply } from './mailCard';
 import { PRODUCT } from '../../edition';
 import type { BookPage } from '../../manual/printables/manualPages';
@@ -197,10 +197,13 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
   // registration number, and Register now writes PLAYGAME.REG as GM REGISTER would.
   const cardTitle = h('h2', { id: 'rs-card-h' });
   const cardLead = h('p', { class: 'rs-lead' });
-  let reply: Reply | undefined = savedReply();
+  // the serial printed on the card: CHK.EXE's (RegDesk.serial) once GM asks
+  let serial = FACTORY_SERIAL;
+  let reply: Reply | undefined = savedReply(serial);
   let days: ReturnType<typeof setTimeout> | undefined;
 
   const printed = (label: string, value: string) => [h('dt', null, label), h('dd', null, value)];
+  const serialDd = h('dd', null, String(serial));
   const pick = (legend: string, name: string, options: readonly string[]) =>
     h(
       'fieldset',
@@ -228,7 +231,14 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     'form',
     { class: 'rs-postcard', novalidate: true, 'aria-label': 'Registration card', onsubmit: (e: Event) => (e.preventDefault(), mail()) },
     h('div', { class: 'rs-pc-band' }, h('b', null, 'REGISTRATION CARD'), h('span', null, 'Please print · Mail today')),
-    h('dl', { class: 'rs-printed' }, printed('Product', PRODUCT), printed('Version', '3.0'), printed('Serial no.', String(SERIAL)), printed('CD #', CD_NUMBER)),
+    h(
+      'dl',
+      { class: 'rs-printed' },
+      printed('Product', PRODUCT),
+      printed('Version', '3.0'),
+      [h('dt', null, 'Serial no.'), serialDd],
+      printed('CD #', CD_NUMBER),
+    ),
     h('label', { for: 'rs-name', class: 'rs-name-l' }, 'Your name ', h('small', null, '(please print)')),
     nameIn,
     h(
@@ -376,7 +386,7 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     if (wrong) return problem(postMsg, wrong, nameIn);
     problem(postMsg);
     const picked = (name: string) => postcard.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)?.value;
-    reply = replyTo({ name: nameIn.value, bought: picked('rs-bought'), computer: picked('rs-pc') });
+    reply = replyTo({ name: nameIn.value, bought: picked('rs-bought'), computer: picked('rs-pc') }, serial);
     saveReply(reply);
     drawLetter(reply);
     clear(
@@ -532,6 +542,14 @@ export function regSide(monitor: () => HTMLElement | null, focusScreen: () => vo
     }
     const before = ask;
     desk = d;
+    if (d.serial !== serial) {
+      // GMCRACK stamped another serial into PLAYGAME.EXE: the card shows it, and a reply for the old one is no use
+      serial = d.serial;
+      serialDd.textContent = String(serial);
+      reply = savedReply(serial);
+      if (reply) drawLetter(reply);
+      else if (card.dataset.stage === 'reply') stage('card');
+    }
     ask = d.ask;
     const same = before && JSON.stringify(before) === JSON.stringify(ask);
     if (!same) {

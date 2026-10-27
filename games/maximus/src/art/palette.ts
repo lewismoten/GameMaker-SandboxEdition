@@ -39,7 +39,7 @@ export interface Theme {
   [role: string]: [RGB, RGB, RGB?];
 }
 
-export interface Pal {
+interface Pal {
   pal: Uint8Array;
   /** ramp name → palette indices dark..light */
   ramps: Map<string, number[]>;
@@ -60,7 +60,6 @@ function sharedBuilder(): PaletteBuilder {
   return p;
 }
 
-export const BLACK = 0;
 export const WHITE = 10;
 export const OUTLINE = 15;
 export const SHARED_END = sharedBuilder().used;
@@ -102,7 +101,7 @@ export function roleIndex(roles: Role[]): Map<string, number[]> {
   return out;
 }
 
-// ---- colour helpers for themes ----
+// ---- color helpers for themes ----
 
 export function hsl(h: number, s: number, l: number): RGB {
   h = ((h % 360) + 360) % 360;

@@ -9,7 +9,7 @@ import { Bot } from './bot';
 export type Route = (bot: Bot) => Promise<void>;
 
 /** The scene number of a scene by name (title 0, ending 1, SCENES from 2). */
-export const sceneOf = (name: string) => SCENES.findIndex((d) => d.name === name) + 2;
+const sceneOf = (name: string) => SCENES.findIndex((d) => d.name === name) + 2;
 
 export const expect = (bot: Bot, name: string) => {
   const n = sceneOf(name);

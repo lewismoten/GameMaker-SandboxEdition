@@ -13,7 +13,10 @@ import {
   countedOf,
   FOUND_FILE,
   heartHook,
+  heartCount,
   heartStates,
+  huntComplete,
+  huntStates,
   MANIFEST,
   parseFound,
   pendingOf,
@@ -25,6 +28,7 @@ import {
 } from './tinHearts';
 import { countWord, joeNote } from './trophy';
 import type { Session } from '../engine/scene';
+import { CLOCK_HEART, takeClockHeart } from './deskHearts';
 
 const store = new Map<string, string>();
 const games = [
@@ -99,6 +103,58 @@ describe('tin hearts', () => {
     ];
     expect(countedOf(catalog).map((g) => g.id)).toEqual(['realm']);
     expect(pendingOf(catalog).map((g) => g.id)).toEqual(MANIFEST.pending.includes('no-heart-yet') ? ['no-heart-yet'] : []);
+  });
+
+  it('counts the clock heart after the games’ hearts, with EGG.EXE’s overrides', async () => {
+    let s = await huntStates(games);
+    expect(s.map((h) => h.id)).toEqual(['realm', 'sleuth', CLOCK_HEART]);
+    expect(s.every((h) => !h.found)).toBe(true);
+    takeClockHeart();
+    s = await huntStates(games);
+    expect(s[2]).toMatchObject({ id: CLOCK_HEART, inSave: true, status: 'saved', found: true });
+    setOverride(CLOCK_HEART, 'broken');
+    expect((await huntStates(games))[2].found).toBe(false);
+    resetAllOverrides();
+    setAllOverrides(await huntStates(games), true);
+    expect((await huntStates(games)).every((h) => h.found)).toBe(true);
+  });
+
+  it('is won with every heart, the clock’s too', async () => {
+    // a new visitor: nothing found when the clock heart joined
+    expect(huntComplete(await huntStates(games))).toBe(false);
+    setOverride('realm', 'added');
+    setOverride('sleuth', 'added');
+    expect(huntComplete(await huntStates(games))).toBe(false);
+    takeClockHeart();
+    expect(huntComplete(await huntStates(games))).toBe(true);
+  });
+
+  it('keeps it won for whoever had every game’s heart before the clock’s joined', async () => {
+    setOverride('realm', 'added');
+    setOverride('sleuth', 'added');
+    const s = await huntStates(games);
+    expect(huntComplete(s)).toBe(true);
+    // the clock heart shows as one more to find
+    expect(s.filter((h) => h.found).length).toBe(2);
+    expect(s.length).toBe(3);
+    // losing a game's heart loses it; finding it again wins it back without the clock's
+    setOverride('sleuth', undefined);
+    expect(huntComplete(await huntStates(games))).toBe(false);
+    setOverride('sleuth', 'added');
+    expect(huntComplete(await huntStates(games))).toBe(true);
+  });
+
+  it('decides nothing before the games are known', async () => {
+    expect(huntComplete([{ id: CLOCK_HEART, found: false }])).toBe(false);
+    expect(store.has('gm-hearts-before-clock')).toBe(false);
+  });
+
+  it('counts the clock heart in the hunt’s total', async () => {
+    vi.doMock('../project/files', () => ({ loadGameList: async () => games.map((g) => ({ ...g, original: {} })) }));
+    const c = await heartCount();
+    expect(c.total).toBe(3);
+    expect(c.found).toBe(0);
+    vi.doUnmock('../project/files');
   });
 
   it('has Joe write the count out', () => {

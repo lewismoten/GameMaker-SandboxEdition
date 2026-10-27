@@ -20,13 +20,13 @@ const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, l
 const MIRROR = 0x40; // the block flipped left-right
 
 /** Pixels a tick tiptoeing. */
-export const STEP = 4;
+const STEP = 4;
 /** Pixels a tick sideways while hopping. */
-export const HOP_STEP = 4;
+const HOP_STEP = 4;
 /** Upward push a tick while Up is held (gravity takes one more away every tick). */
-export const HOP = 12;
+const HOP = 12;
 /** Pixels a tick sneaking (Down). */
-export const SNEAK_STEP = 2;
+const SNEAK_STEP = 2;
 
 type F = { pic: string; x?: number; y?: number; pause?: number; mirror?: boolean };
 

@@ -1,0 +1,150 @@
+/* The map editor's link markers (linkMarkers.ts) and their details panel (linkPopover.ts). */
+.lk-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.lk-layer[hidden] {
+  display: none;
+}
+
+/* Ways in are cyan and exits gold, as the map's squares under them; the game's start is a star,
+   an exit to Game won a flag. The ring leaves the block itself in sight. */
+.lk-mark {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 3px solid var(--lk-color);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 35%);
+  color: var(--lk-color);
+  font:
+    700 13px/1 system-ui,
+    sans-serif;
+  text-shadow: 0 0 2px #000;
+  box-shadow: 0 0 0 1px #000;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.lk-mark.lk-in {
+  --lk-color: #00e0ff;
+}
+
+.lk-mark.lk-out {
+  --lk-color: #ffd400;
+  border-radius: 4px;
+}
+
+.lk-mark.lk-won {
+  --lk-color: #ff9a3c;
+}
+
+/* an exit a lower one on the same block always beats */
+.lk-mark.lk-hidden {
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+.lk-mark:hover {
+  background: rgb(0 0 0 / 55%);
+}
+
+.lk-mark:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 1px;
+}
+
+.lk-mark.lk-dragging {
+  z-index: 2;
+  cursor: grabbing;
+  opacity: 0.85;
+}
+
+.lk-pop {
+  position: fixed;
+  z-index: 70;
+  max-height: calc(100dvh - 16px);
+  padding: 8px 12px 12px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 30%);
+}
+
+.lk-pop-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lk-pop-title {
+  margin: 0;
+  font-size: 15px;
+}
+
+.lk-pop-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lk-pop-body .hint,
+.lk-pop-body .callout {
+  margin: 0;
+}
+
+.lk-pop-shot {
+  margin: 0;
+}
+
+.lk-pop-shot canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  background: #000;
+}
+
+.lk-pop-none {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  border: 1px dashed var(--border);
+  border-radius: 4px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.lk-pop-xy {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: end;
+}
+
+.lk-pop-xy .lk-pop-label {
+  flex: 1 1 100%;
+  font-weight: 600;
+}
+
+.lk-pop-xy .field {
+  flex: 1 1 60px;
+}
+
+.lk-pop-xy .field input {
+  width: 100%;
+}
+
+.lk-pop-pick {
+  min-width: 32px;
+  min-height: 32px;
+}

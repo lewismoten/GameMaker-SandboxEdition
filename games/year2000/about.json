@@ -7,6 +7,7 @@
   "blurb": "It's the year 2000! Cars fly, robots mow, dinner comes in a pill, and every phone booth is a 25-cent teleporter. Dex Dynamo's robot dog ate his science report, and the Science Fair is on the Moon at 3:00.",
   "exe": "YEAR2000.EXE",
   "sound": "sb",
+  "sameEverySide": ["sky.mon#0", "sky.mon#1", "sky.mon#2", "sky.mon#3", "sky.mon#4", "sky.mon#5", "sky.mon#6", "sky.mon#7", "sky.mon#8", "sky.mon#9", "sky.mon#10", "sky.mon#11"],
   "egg": { "block": 149 },
   "tinHeart": { "map": "mall.map", "at": [42, 1] },
   "easterEgg": { "map": "exchange.map", "at": [46, 9] },
@@ -18,23 +19,24 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
-    "hours": 3,
+    "levels": "7 levels, due on the Moon by 3:00",
+    "hours": 4,
     "background": "#1a0838",
     "accent": "#3fe0d0",
     "ink": "#ffffff",
     "tagline": "The future is here. Bring a quarter.",
-    "back": "It's the year 2000! Cars fly. Robots mow the lawn. Dinner comes in a pill. The aliens next door are VERY friendly, and every phone booth on every corner is a Teleport-A-Phone - only 25 cents a call.\n\nDex Dynamo, age 11, wrote the greatest science fair report in the solar system. Then Sparky 3000, his robot dog, ate it! Dodge flying cars, zap robots, dial your way through a phone exchange full of wrong numbers, and get those pages to the Science Fair by 3:00. On the Moon. Bring a quarter!",
+    "back": "It's the year 2000! Cars fly. Robots mow the lawn. Dinner comes in a pill. The aliens next door are VERY friendly, and every phone booth on every corner is a Teleport-A-Phone - only 25 cents a call.\n\nDex Dynamo, age 11, wrote the greatest science fair report in the solar system. Then Sparky 3000, his robot dog, ate it! Steer Grandpa's flying CitiCar through the clouds, dodge hover traffic, zap robots, dial your way through a phone exchange full of wrong numbers, and get those pages to the Science Fair by 3:00. On the Moon. Bring a quarter!",
     "features": [
-      "Six levels of the future: dome homes, sky traffic, a mega mall, wrong-number teleports and the Moon",
+      "Seven levels of the future: dome homes, a flying CitiCar in the clouds, sky traffic, a mega mall, wrong-number teleports and the Moon",
       "Phone booths that teleport you for a quarter - if you dial the right one",
       "The Laser-Tag Zapper, robot dogs, telemarketer robots and very friendly aliens",
       "Arcade games and pinball machines that really eat your quarters",
       "A boss fight with your own robot dog at the Moon School Science Fair",
-      "Ten original Sound Blaster songs, digitized sound effects and FLI animations"
+      "Eleven original Sound Blaster songs, digitized sound effects and FLI animations"
     ],
     "shots": [
       ["dome.map", 0, 9],
-      ["skyway.map", 0, 4],
+      ["clouds.map", 0, 0],
       ["mall.map", 0, 0],
       ["exchange.map", 30, 0],
       ["moon.map", 0, 1]

@@ -56,7 +56,7 @@ export function keyLines(files: GameFiles): string[] {
   });
 }
 
-export interface InstructionCard {
+interface InstructionCard {
   title: string;
   goal: string;
   keys: string;
@@ -84,7 +84,7 @@ export function instructionLines(c: InstructionCard): string[] {
   return out;
 }
 
-export interface LevelCard {
+interface LevelCard {
   name: string;
   number: number;
   total: number;

@@ -40,6 +40,10 @@ Once the box arrived I went from moving snow to making software. I built tile-ba
 adventure games and learned how game logic works. Its sound editor stuck with me most: you
 drew a sound's wave with the mouse, and a few bytes became an 8-bit sound effect.
 
+My copy wouldn't start a game without its title card, `GMTITLE.GIF`: RSD's "Game-Maker
+Presents:" picture, shown before every game. Plenty of authors drew their own card in its place;
+I just left RSD's. (Game-Maker 3.00's player stopped asking for it.)
+
 I graduated in May 1994, and my parents gave me a 486 with a CD-ROM drive as a graduation
 gift. I left for Pittsburgh in June.
 
@@ -63,7 +67,7 @@ Game-Maker's sound designer did.
 
 ### Snowbound: The $89 Shovel
 
-*Snowbound* is that winter as a game. It is set in Fort Ashby in December 1992. A kid has a
+_Snowbound_ is that winter as a game. It is set in Fort Ashby in December 1992. A kid has a
 shovel, a coffee can and a plan. He has to clear the neighborhood's driveways at a dollar a
 scoop, sled down Jamie Street, and get $89 to LaVale Mall before the price of Game-Maker
 goes up. The streets are the ones I grew up on; the story is that year, told as a game made

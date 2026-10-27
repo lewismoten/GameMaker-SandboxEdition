@@ -138,7 +138,7 @@ export function antsBlocks(book: BlockBook, pal: Pal): void {
     pic
       .rect(1, 1, 18, 39, c('white', 1))
       .rect(1, 1, 18, 1, c('white', 2))
-      .rect(1, 14, 18, 1, c('grey', 1))
+      .rect(1, 14, 18, 1, c('gray', 1))
       .rect(15, 5, 2, 6, c('metal', 0))
       .rect(15, 18, 2, 10, c('metal', 0));
     pic.rect(4, 20, 4, 4, c('yellow', 2)).rect(9, 22, 3, 3, c('red', 2));
@@ -257,11 +257,11 @@ export function antsSprites(book: SpriteBook, pal: Pal): void {
   const c = pal.c;
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
-  // a dust bunny from 1978: a grey fluff with ears and a scowl
+  // a dust bunny from 1978: a gray fluff with ears and a scowl
   const dust = (f: number) => {
     const p = P();
-    for (let k = 0; k < 16; k++) p.disc(10 + Math.cos(k) * 5, 14 - f + Math.sin(k * 1.3) * 3, 2, c('grey', 1 + (k % 2)));
-    p.line(7, 10 - f, 6, 5 - f, c('grey', 2)).line(12, 10 - f, 13, 5 - f, c('grey', 2));
+    for (let k = 0; k < 16; k++) p.disc(10 + Math.cos(k) * 5, 14 - f + Math.sin(k * 1.3) * 3, 2, c('gray', 1 + (k % 2)));
+    p.line(7, 10 - f, 6, 5 - f, c('gray', 2)).line(12, 10 - f, 13, 5 - f, c('gray', 2));
     face(p, pal, 10, 13 - f, { angry: true });
     return outline(p, ink);
   };
@@ -328,7 +328,7 @@ export function antsSprites(book: SpriteBook, pal: Pal): void {
   book.add('kingB1', roach(1, 2), hurts(-6));
 }
 
-export function antsMonsters(set: Monster[], mb: SpriteBook): void {
+function antsMonsters(set: Monster[], mb: SpriteBook): void {
   set[ANTS_MON.dust] = mon(anim(mb, 'dust0', 'dust1', 4), { power: POWER.foe, thru: 1, end: -1, newmon: ANTS_MON.poof }, [
     corner(0, 0, 2),
     corner(-6, 0, 2, 4),

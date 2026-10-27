@@ -7,6 +7,8 @@ import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '../
 import { MLEN, MWID, parseMap } from '../../formats/map';
 import type { Rect } from './worldMapLayout';
 import type { SeenRect, StoodColumns, UnrolledMap } from './levelViews';
+import { layOutCourse, type CourseFit, type CourseLayout } from './levelCourse';
+import type { CoursePath } from '../../editor/check/course';
 import { unrolledAt, type Unrolled, type UnrolledBox as UnrolledBoxRect } from '../../editor/check/unroll';
 import {
   cutRooms,
@@ -86,7 +88,7 @@ export function usedArea(cells: ArrayLike<number>, keep: Point[] = [], pad = 1):
 /**
  * The map's background blocks with every secret one drawn as plain ground: what it turns
  * into when touched (a tin heart or an egg's touch block is the ground under it), else the
- * commonest of its neighbours that isn't secret, else the padding. Also returns the cells it
+ * commonest of its neighbors that isn't secret, else the padding. Also returns the cells it
  * covered, which are never marked.
  */
 export function hideSecrets(cells: ArrayLike<number>, blocks: Block[], secret: ReadonlySet<number>): { cells: Uint8Array; hidden: Set<number> } {
@@ -205,7 +207,7 @@ export function walledReach(cells: ArrayLike<number>, blocks: Block[], starts: P
 
 /**
  * The blocks a map is padded with: its padding block (fillerBlock) and any block scattered
- * through it (stars in space: three in four of its neighbours are the padding).
+ * through it (stars in space: three in four of its neighbors are the padding).
  */
 function paddingBlocks(cells: ArrayLike<number>): Set<number> {
   const filler = fillerBlock(cells);
@@ -523,6 +525,8 @@ export interface Level {
   unrolled?: Unrolled;
   /** With `unrolled`, the marks where they are on the map itself (for "Every block of the map"). */
   mapMarks?: LevelMark[];
+  /** A course through the wrap (levelCourse.ts): printed as the strip the way runs, not as `area`. */
+  course?: CourseLayout<LevelMark>;
   /** A room cut out of a map of rooms (levelRooms.ts): who you meet there, printed beside it. */
   cast?: { title: string; people: CastPerson[] };
   /** A room cut out of a map of rooms: what its copies change. */
@@ -669,7 +673,8 @@ function intersect(a: Rect, b: Rect): Rect | undefined {
  * a map the hero walks off the edge of as the player goes through it. A map the hero never walks
  * around in (every scene starts him on its way out) is left out, and a map of separate rooms
  * (levelRooms.ts; `rooms`, levelRoomHints.ts, says how a map's maker wants it cut) prints each
- * room as a level of its own.
+ * room as a level of its own. A map in `courses` (a course through the wrap, by "map|bbl") is
+ * laid out as its strip, its panels fitted to the paper (`fit`).
  */
 export function levelsOf(
   game: Game,
@@ -678,6 +683,8 @@ export function levelsOf(
   views: Record<string, SeenRect> = {},
   unrolled: Record<string, UnrolledMap> = {},
   rooms: Record<string, RoomsHint> = {},
+  courses: Record<string, CoursePath> = {},
+  fit: CourseFit = { pageW: 101, pageH: 62, padW: 13.2, padH: 6.4 },
 ): Level[] {
   const numbered: { cut: RoomCut; hint: RoomsHint }[] = [];
   const levels = mapGroups(game).flatMap((group): (Level | RoomPart)[] => {
@@ -700,6 +707,8 @@ export function levelsOf(
     if (reach) area = joinRects(area, reach, whole);
     area = trimPadding(area, cells, marks, [false, false], blocks);
     const level: Level = { group, cells, area, whole, marks, name, scene: group.scenes[0] };
+    const path = courses[key];
+    if (path) return [{ ...level, course: layOutCourse(cells, blocks, path, marks, fit) }];
     let top = level;
     if (unrolled[key]) {
       top = unrolledLevel(level, unrolled[key], wrapReach(map.blocks, blocks, starts), blocks, unrolled[key].stood);

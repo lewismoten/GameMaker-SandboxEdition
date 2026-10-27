@@ -5,15 +5,15 @@
 import { NOSCENE, type Game } from '../../../web/src/formats/game';
 import { arrangements, layoutCost } from '../../../web/src/editor/editors/integrator/integratorLayout';
 
-export function crossings(g: Game): number {
+function crossings(g: Game): number {
   const pos = arrangements(g, 1)[0].positions;
   const pairs: [number, number][] = [];
   g.scenes.forEach((s, i) => {
     if (s.gametype === NOSCENE) return;
     for (const l of s.links) if (l.toScene !== NOSCENE && l.toScene !== i && g.scenes[l.toScene]) pairs.push([i, l.toScene]);
   });
-  const centres = new Map([...pos].map(([s, p]) => [s, { x: p.x + 2, y: p.y + 2 }]));
-  return layoutCost(pairs, centres, { w: 22, h: 18 }).cross;
+  const centers = new Map([...pos].map(([s, p]) => [s, { x: p.x + 2, y: p.y + 2 }]));
+  return layoutCost(pairs, centers, { w: 22, h: 18 }).cross;
 }
 
 /** Reorders `scene`'s links (grouped by where they lead) until nothing crosses; returns the crossings left. */

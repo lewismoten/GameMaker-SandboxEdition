@@ -20,10 +20,10 @@ const O = () => c('ink', 0);
 
 // ------------------------------------------------------------------ Doc Leo
 
-export type Facing = 'down' | 'up' | 'side';
+type Facing = 'down' | 'up' | 'side';
 
 /**
- * Doc Leo, hobo clown, seen from a little above: a chewed grey fedora, the ash beard and the
+ * Doc Leo, hobo clown, seen from a little above: a chewed gray fedora, the ash beard and the
  * white mouth, a navy corduroy jacket over a purple shirt and a green tie, red sneakers with
  * the suit, and a yellow rubber chicken on a red dog leash. `step` swings the legs; `squawk`
  * holds the chicken up and squeezes it.
@@ -32,8 +32,8 @@ export function docLeo(facing: Facing, step = 0, squawk = false): Pixels {
   const p = blank();
   const ink = O();
   const skin = c('skin', 2);
-  const hat = c('grey', 2);
-  const hatD = c('grey', 1);
+  const hat = c('gray', 2);
+  const hatD = c('gray', 1);
   const jacket = c('blue', 1);
   const jacketL = c('blue', 2);
   const shirt = c('purple', 2);
@@ -103,7 +103,7 @@ export function docLeo(facing: Facing, step = 0, squawk = false): Pixels {
 }
 
 /** The rubber chicken: yellow, limp, orange beak, red comb. Held up (squeezed) or on its leash. */
-export function chicken(p: Pixels, x: number, y: number, squeezed: boolean): void {
+function chicken(p: Pixels, x: number, y: number, squeezed: boolean): void {
   const y2 = c('yellow', 3);
   const y1 = c('yellow', 1);
   if (squeezed) {
@@ -162,13 +162,13 @@ export function gwinn(step = 0, flip = false): Pixels {
 
 // ------------------------------------------------------------------ vermin and hazards
 
-/** A kitchen mouse, grey, pink ears and a long tail. `scared` sends it off with its ears back. */
+/** A kitchen mouse, gray, pink ears and a long tail. `scared` sends it off with its ears back. */
 export function mouse(step: number, scared = false): Pixels {
   const p = blank();
   const ink = O();
-  const fur = scared ? c('grey', 4) : c('grey', 3);
+  const fur = scared ? c('gray', 4) : c('gray', 3);
   p.rect(5, 15, 10, 2, c('dark', 0));
-  blob(p, 10, 12, 5, 3.5, [c('grey', 1), c('grey', 2), fur, c('grey', 4)], 0, 3);
+  blob(p, 10, 12, 5, 3.5, [c('gray', 1), c('gray', 2), fur, c('gray', 4)], 0, 3);
   p.disc(14, 10, 2.6, fur);
   p.disc(13, 7.5, 1.6, c('pink', 2)).disc(15.5, 8, 1.4, c('pink', 2));
   p.set(15, 10, ink).set(17, 11, c('pink', 1));
@@ -192,12 +192,12 @@ export function rollingPin(frame: number): Pixels {
 /** A kitchen knife, spinning point over handle. */
 export function knife(frame: number): Pixels {
   const p = blank();
-  const steel = c('grey', 5);
+  const steel = c('gray', 5);
   if (frame === 0) {
-    p.rect(3, 9, 10, 3, steel).set(13, 10, steel).set(14, 10, steel).rect(3, 9, 10, 1, c('grey', 3));
+    p.rect(3, 9, 10, 3, steel).set(13, 10, steel).set(14, 10, steel).rect(3, 9, 10, 1, c('gray', 3));
     p.rect(14, 8, 5, 5, c('brown', 1)).set(16, 10, c('brass', 3));
   } else {
-    p.rect(9, 2, 3, 10, steel).set(10, 12, steel).rect(9, 2, 1, 10, c('grey', 3));
+    p.rect(9, 2, 3, 10, steel).set(10, 12, steel).rect(9, 2, 1, 10, c('gray', 3));
     p.rect(8, 12, 5, 6, c('brown', 1)).set(10, 15, c('brass', 3));
   }
   return outline(p, O());
@@ -214,7 +214,7 @@ export function redcoat(step: number, retreat = false): Pixels {
   p.rect(5, 9, 9, 6, ink).rect(6, 9, 7, 5, c('redcoat', 2)).line(6, 9, 12, 14, c('paper', 4)).line(12, 9, 6, 14, c('paper', 4));
   p.rect(6, 15, 3, 3 - step, c('paper', 3)).rect(10, 15, 3, 2 + step, c('paper', 3));
   p.rect(4, 18, 11, 2, c('brown', 1));
-  if (!retreat) p.rect(14, 2, 1, 13, c('brown', 0)).set(14, 1, c('grey', 4));
+  if (!retreat) p.rect(14, 2, 1, 13, c('brown', 0)).set(14, 1, c('gray', 4));
   else p.rect(1, 5, 1, 10, c('paper', 4)).rect(2, 5, 4, 3, c('paper', 4)); // a white flag
   return outline(p, ink);
 }
@@ -226,7 +226,7 @@ export function redcoatSide(step: number): Pixels {
   p.rect(7, 0, 6, 6, ink).rect(8, 1, 4, 5, c('ink', 1));
   p.rect(8, 6, 4, 3, c('skin', 2)).set(12, 7, c('skin', 2)).set(10, 7, ink);
   p.rect(7, 9, 6, 6, ink).rect(8, 9, 4, 5, c('redcoat', 2)).line(8, 9, 11, 14, c('paper', 4));
-  p.rect(6, 2, 1, 13, c('brown', 0)).set(6, 1, c('grey', 4)).set(7, 11, c('skin', 2));
+  p.rect(6, 2, 1, 13, c('brown', 0)).set(6, 1, c('gray', 4)).set(7, 11, c('skin', 2));
   if (step) p.rect(8, 15, 2, 3, c('paper', 3)).rect(10, 15, 2, 3, c('paper', 3));
   else p.rect(7, 15, 2, 3, c('paper', 3)).rect(11, 15, 2, 3, c('paper', 3));
   p.rect(4, 18, 11, 2, c('brown', 1));
@@ -239,7 +239,7 @@ export function ant(step: number): Pixels {
   const ink = O();
   const body = c('ink', 1);
   p.disc(6, 10, 2.6, body).disc(10, 10, 2, body).disc(14, 10, 2.4, body);
-  p.set(5, 9, c('grey', 4)).set(14, 9, c('grey', 4));
+  p.set(5, 9, c('gray', 4)).set(14, 9, c('gray', 4));
   const a = step ? 1 : -1;
   for (const x of [8, 10, 12]) p.line(x, 11, x - 2, 14 + a, body).line(x, 9, x - 2, 6 - a, body);
   p.line(16, 9, 18, 6, body).line(16, 10, 19, 8, body);
@@ -259,7 +259,7 @@ export function fireball(frame: number): Pixels {
 /** A puff of steam, rising. */
 export function steam(frame: number): Pixels {
   const p = blank();
-  const ramp = [c('grey', 3), c('grey', 4), c('grey', 5), c('paper', 4)];
+  const ramp = [c('gray', 3), c('gray', 4), c('gray', 5), c('paper', 4)];
   blob(p, 8, 12 - frame, 5, 4, ramp, 0, 3);
   blob(p, 13, 9 - frame, 4, 3.5, ramp, 0, 3);
   blob(p, 10, 6 - frame, 3, 2.5, ramp, 1, 3);
@@ -387,7 +387,7 @@ export function kazoo(): Pixels {
   const p = blank();
   p.rect(2, 14, 16, 2, c('dark', 0));
   p.rect(3, 9, 13, 4, c('red', 3)).rect(3, 9, 13, 1, c('red', 4)).rect(14, 8, 4, 6, c('red', 2));
-  p.rect(8, 6, 3, 3, c('grey', 4)).rect(8, 6, 3, 1, c('grey', 5));
+  p.rect(8, 6, 3, 3, c('gray', 4)).rect(8, 6, 3, 1, c('gray', 5));
   return outline(p, O());
 }
 
@@ -412,22 +412,6 @@ export function chickenItem(): Pixels {
 
 // ------------------------------------------------------------------ the ingredients
 
-export const INGREDIENT_NAMES = [
-  'Sassafras Root',
-  'Wintergreen',
-  'Nutmeg',
-  'Molasses',
-  'Vanilla Bean',
-  'Boston Harbor Tea',
-  'Cane Sugar',
-  'Yeast (Gerald)',
-  'Cloves',
-  'Licorice Root',
-  'Bottled Lightning',
-  'Twice-Boiled Water',
-  'The Thirteenth',
-] as const;
-
 /** Ingredient n (1..13) as a 20x20 sprite with a soft golden glow behind it. */
 export function ingredient(n: number, frame = 0): Pixels {
   const p = blank();
@@ -446,8 +430,8 @@ export function ingredient(n: number, frame = 0): Pixels {
       break;
     case 3: // nutmeg: a brown seed with a grater
       blob(q, 8, 11, 4, 5, [c('brown', 0), c('brown', 1), c('brown', 2), c('brown', 3)], 0, 3);
-      q.line(6, 9, 10, 13, c('brown', 0)).rect(12, 4, 5, 12, c('grey', 4)).frame(12, 4, 5, 12, c('grey', 2));
-      for (let y = 6; y < 15; y += 2) q.set(14, y, c('grey', 1));
+      q.line(6, 9, 10, 13, c('brown', 0)).rect(12, 4, 5, 12, c('gray', 4)).frame(12, 4, 5, 12, c('gray', 2));
+      for (let y = 6; y < 15; y += 2) q.set(14, y, c('gray', 1));
       break;
     case 4: // molasses: a stoneware jug
       blob(q, 10, 12, 6, 5, [c('rootbeer', 0), c('rootbeer', 1), c('paper', 2), c('paper', 3)], 0, 3);
@@ -494,11 +478,11 @@ export function ingredient(n: number, frame = 0): Pixels {
       q.rect(5, 9, 11, 1, c('brass', 2));
       break;
     case 11: // bottled lightning: a Leyden jar with a bolt in it
-      q.rect(5, 6, 10, 11, c('glass', 3)).rect(5, 12, 10, 5, c('grey', 4)).rect(9, 2, 2, 5, c('brass', 3)).disc(10, 2, 1.5, c('brass', 4));
+      q.rect(5, 6, 10, 11, c('glass', 3)).rect(5, 12, 10, 5, c('gray', 4)).rect(9, 2, 2, 5, c('brass', 3)).disc(10, 2, 1.5, c('brass', 4));
       q.line(10, 6, 8, 10, c('yellow', 3)).line(8, 10, 12, 10, c('yellow', 3)).line(12, 10, 9, 15, c('yellow', 3));
       break;
     case 12: // water, boiled twice: a pail, steaming
-      q.rect(5, 8, 10, 8, c('grey', 3)).rect(5, 8, 10, 1, c('grey', 5)).rect(6, 9, 8, 2, c('sky', 3)).ring(10, 8, 5, c('grey', 2));
+      q.rect(5, 8, 10, 8, c('gray', 3)).rect(5, 8, 10, 1, c('gray', 5)).rect(6, 9, 8, 2, c('sky', 3)).ring(10, 8, 5, c('gray', 2));
       q.line(7, 6, 6, 3, c('paper', 4)).line(12, 6, 13, 3, c('paper', 4));
       micro(q, 7, 12, 'X2', c('ink', 0));
       break;
@@ -514,11 +498,11 @@ export function ingredient(n: number, frame = 0): Pixels {
 
 // ------------------------------------------------------------------ the two eggs
 
-/** The rotten egg: grey-green, cracked, stamped BEST BEFORE 1776, and you can see the smell. */
+/** The rotten egg: gray-green, cracked, stamped BEST BEFORE 1776, and you can see the smell. */
 export function eggRotten(): Pixels {
   const p = blank();
   p.rect(5, 17, 10, 2, c('dark', 0));
-  blob(p, 10, 12, 5, 6, [c('grass', 0), c('grass', 1), c('grey', 3), c('grey', 4)], 0, 3);
+  blob(p, 10, 12, 5, 6, [c('grass', 0), c('grass', 1), c('gray', 3), c('gray', 4)], 0, 3);
   p.line(7, 10, 9, 12, c('ink', 0)).line(9, 12, 8, 14, c('ink', 0)).line(9, 12, 11, 11, c('ink', 0));
   micro(p, 7, 14, '76', c('redcoat', 1));
   // stink lines

@@ -157,7 +157,7 @@ function pip(c: Ctx, x: number, y: number, s: number): void {
 }
 
 /**
- * Doc Leo: grey felt fedora, white face paint round his eyes and mouth, his own nose sunburned
+ * Doc Leo: gray felt fedora, white face paint round his eyes and mouth, his own nose sunburned
  * pink, painted stubble, navy corduroy, green tie, red sneakers.
  */
 function docLeo(c: Ctx, x: number, y: number, s: number): void {

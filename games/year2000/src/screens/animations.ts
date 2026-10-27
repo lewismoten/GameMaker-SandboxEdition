@@ -13,7 +13,7 @@ export function introFli(a: Art): Uint8Array {
   const cal = (year: string, flip: number) => {
     const p = new Pixels(W, H, C('night', 0));
     const r = rng(3);
-    for (let i = 0; i < 80; i++) p.set(Math.floor(r() * W), Math.floor(r() * H), C('grey', 3 + Math.floor(r() * 4)));
+    for (let i = 0; i < 80; i++) p.set(Math.floor(r() * W), Math.floor(r() * H), C('gray', 3 + Math.floor(r() * 4)));
     centeredText(p, 30, 'MEANWHILE, IN 1992, WE ASKED:', C('teal', 5));
     centeredText(p, 42, 'WHAT WILL THE FUTURE BE LIKE?', C('teal', 5));
     p.rect(80, 70, 160, 90, C('chrome', 2)).rect(84, 74, 152, 82, C('paper', 2));
@@ -40,9 +40,9 @@ export function introFli(a: Art): Uint8Array {
   sunsetSky(city, 112, 5);
   skyline(city, 112, 7);
   grid(city, 112);
-  const flash = new Pixels(W, H, C('grey', 7));
+  const flash = new Pixels(W, H, C('gray', 7));
   frames.push(flash, flash);
-  for (let k = 1; k <= 5; k++) frames.push(new Pixels(W, H).map((x, y) => (dither(x, y, k / 5) ? city.get(x, y) : C('grey', 7))));
+  for (let k = 1; k <= 5; k++) frames.push(new Pixels(W, H).map((x, y) => (dither(x, y, k / 5) ? city.get(x, y) : C('gray', 7))));
   for (let k = 0; k < 16; k++) {
     const p = new Pixels(W, H);
     p.px.set(city.px);
@@ -50,7 +50,7 @@ export function introFli(a: Art): Uint8Array {
     const y = 130 - Math.round(Math.sin((k / 15) * Math.PI) * 60);
     if (x < W) {
       scaleBlit(p, a.carT, x, y, 3);
-      speedLines(p, x, y + 4, 48, C('grey', 7));
+      speedLines(p, x, y + 4, 48, C('gray', 7));
     }
     frames.push(p);
   }
@@ -69,14 +69,14 @@ export function teleFli(a: Art): Uint8Array {
       p.ring(160, 100, rad + 1, C('teal', 2));
     }
     const r = rng(k + 1);
-    for (let i = 0; i < 40; i++) p.set(160 + (r() - 0.5) * 240, 100 + (r() - 0.5) * 160, C('grey', 7));
+    for (let i = 0; i < 40; i++) p.set(160 + (r() - 0.5) * 240, 100 + (r() - 0.5) * 160, C('gray', 7));
     if (k < 10) scaleBlit(p, a.dex, 130, 70, 3);
     else if (k < 13) {
       const d = new Pixels(20, 20, T).map((x, y) => (a.dex.get(x, y) !== T && (y + k) % (k - 8) === 0 ? C('teal', 5) : T));
       scaleBlit(p, d, 130, 70, 3);
     }
-    if (k >= 4 && k % 2 === 0) centeredText(p, 20, 'BZZZZZZT!', C('gold', 5), C('grey', 0), 2);
-    centeredText(p, 180, 'THANK YOU FOR USING TELEPORT-A-PHONE', C('grey', 6));
+    if (k >= 4 && k % 2 === 0) centeredText(p, 20, 'BZZZZZZT!', C('gold', 5), C('gray', 0), 2);
+    centeredText(p, 180, 'THANK YOU FOR USING TELEPORT-A-PHONE', C('gray', 6));
     frames.push(p);
   }
   return fli(frames, 5);
@@ -91,7 +91,7 @@ export function launchFli(a: Art): Uint8Array {
     for (let y = 0; y < H; y++) p.rect(0, y, W, 1, sky >= 1 ? C('night', 0) : C('sky', Math.min(7, Math.floor((1 - sky) * (y / H) * 8))));
     if (sky > 0.3) {
       const r = rng(5);
-      for (let i = 0; i < 80 * sky; i++) p.set(Math.floor(r() * W), Math.floor(r() * H), C('grey', 6));
+      for (let i = 0; i < 80 * sky; i++) p.set(Math.floor(r() * W), Math.floor(r() * H), C('gray', 6));
     }
     if (moonR > 0) blob(p, 160, 60, moonR, moonR, R('moon'), 1, 5);
     if (sky < 0.5) p.rect(0, 170 + sky * 60, W, 40, C('concrete', 2));
@@ -110,7 +110,7 @@ export function launchFli(a: Art): Uint8Array {
         const r = rng(k * 7 + rocketY);
         for (let i = 0; i < 30; i++) p.set(cx + (r() - 0.5) * (8 + k * 3), rocketY + 60 + k * 4 + r() * 6, i % 3 ? C('orange', 4) : C('gold', 5));
       }
-    if (count) centeredText(p, 20, count, C('gold', 5), C('grey', 0), 3);
+    if (count) centeredText(p, 20, count, C('gold', 5), C('gray', 0), 3);
     return p;
   };
   for (const c of ['3', '2', '1']) for (let i = 0; i < 5; i++) frames.push(scene(110, i % 2, 0, 0, c));

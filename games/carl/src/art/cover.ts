@@ -6,8 +6,8 @@
 // the right and misses, Carl's wings blur, the lamp warms up.
 import { rng } from '../../../kit/pixels';
 
-export const COVER_W = 320;
-export const COVER_H = 200;
+const COVER_W = 320;
+const COVER_H = 200;
 
 type RGB = [number, number, number];
 type Put = (x: number, y: number, c: RGB, a?: number) => void;
@@ -37,7 +37,7 @@ function noise2(seed: number) {
 const N1 = noise2(7);
 
 /** Where Carl sits: the middle of his head. */
-export const CARL = { x: 204, y: 86 };
+const CARL = { x: 204, y: 86 };
 /** The lamp shade: its top and bottom edges (y) and half widths. */
 const SHADE = { top: 128, bottom: 174, topW: 30, botW: 54, x: 204 };
 const RAIL = 128;

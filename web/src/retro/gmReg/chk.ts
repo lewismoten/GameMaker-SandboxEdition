@@ -8,7 +8,7 @@ import { attr } from '../text/textScreen';
 import { BARATTR, MENUATTR, SHADATTR, TITLEATTR, errorBox } from '../text/textUi';
 import { toCp437 } from '../text/cp437';
 import { pcExtras } from '../hacks/pcExtras';
-import { NAME_MAX, NUMBER_MAX, SERIAL, cardCheck, checkRegistration, regFile } from './registration';
+import { NAME_MAX, NUMBER_MAX, cardCheck, checkRegistration, regFile } from './registration';
 import { QUESTIONS, questionFor, rightAnswer } from './copyCheck';
 import { setRegDesk, type RegAsk } from './regDesk';
 import { unlockAchievement } from '../../achievements';
@@ -26,12 +26,14 @@ const CARD_KEY = 'RegistrationCard';
  */
 function offerCard(h: RetroHost, ask: RegAsk, onApplied?: (name: string) => void): { applied: () => boolean; done: () => void } {
   let applied = false;
+  const serial = pcExtras().serial;
   setRegDesk({
     ask,
+    serial,
     apply(name, number) {
-      const wrong = cardCheck(name, number);
+      const wrong = cardCheck(name, number, serial);
       if (wrong) return wrong;
-      pcExtras().setReg(regFile(name.trim(), SERIAL, number.trim()));
+      pcExtras().setReg(regFile(name.trim(), serial, number.trim()));
       applied = true;
       if (onApplied) onApplied(name.trim());
       else h.keys.push({ key: CARD_KEY, code: '', ctrl: false, shift: false, alt: false });
@@ -49,7 +51,7 @@ function offerCard(h: RetroHost, ask: RegAsk, onApplied?: (name: string) => void
  * Returns how to take the card away again, or undefined when the copy is registered.
  */
 export function offerCardAtMenu(h: RetroHost, onRegistered: (name: string) => void): (() => void) | undefined {
-  if (checkRegistration(pcExtras().reg).kind === 'registered') return undefined;
+  if (checkRegistration(pcExtras().reg, pcExtras().serial).kind === 'registered') return undefined;
   const card = offerCard(h, { kind: 'unregistered' }, (name) => {
     card.done();
     onRegistered(name);
@@ -102,7 +104,7 @@ async function regi(h: RetroHost): Promise<void> {
     const number = await qWindow(h, 13, 14, NUMBER_MAX, 'Enter registration number from card: ');
     if (card.applied()) return void (await complete());
     if (!number) return abort();
-    pcExtras().setReg(regFile(name.slice(0, NAME_MAX), SERIAL, number));
+    pcExtras().setReg(regFile(name.slice(0, NAME_MAX), pcExtras().serial, number));
   } finally {
     card.done();
   }
@@ -167,7 +169,7 @@ export async function chk(h: RetroHost, args: string[]): Promise<string | undefi
   if (args[0]?.toUpperCase() === 'REGISTER') await regi(h);
   // firststart()
   s.fill(0, 0, 79, 23, 0);
-  const r = checkRegistration(store.reg);
+  const r = checkRegistration(store.reg, store.serial);
   if (r.kind === 'missing') {
     await errorBox(h, 'Missing File:  PLAYGAME.REG', '(Q)uit');
     return undefined;
@@ -180,7 +182,7 @@ export async function chk(h: RetroHost, args: string[]): Promise<string | undefi
     if (!(await manualCheck(h))) return undefined;
     unlockAchievement('desk-copycheck');
     // registered with the card while GM asked: "Registered To:" the name
-    const now = checkRegistration(store.reg);
+    const now = checkRegistration(store.reg, store.serial);
     if (now.kind === 'registered') return now.userName;
   }
   return r.userName;

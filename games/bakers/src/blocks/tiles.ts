@@ -27,7 +27,7 @@ import { BlockSet, GRAV, SOLBOT, SOLID, SOLLEF, SOLRIG, SOLTOP } from './sets';
 export type Style = 'kitchen' | 'cellar' | 'parlor' | 'works';
 
 /** Which ingredients each set's rooms hold (the WORKS also has the Vault's thirteenth). */
-export const SET_INGREDIENTS: Record<Style, number[]> = {
+const SET_INGREDIENTS: Record<Style, number[]> = {
   kitchen: [1, 4, 7],
   cellar: [2, 5, 8],
   parlor: [3, 6, 9],
@@ -35,7 +35,7 @@ export const SET_INGREDIENTS: Record<Style, number[]> = {
 };
 
 /** Timings, in 18.2 Hz ticks. */
-export const TIMING = {
+const TIMING = {
   /** A timed panel stays shut, then open, this long (a short warning between). */
   panel: 46,
   warn: 8,
@@ -49,8 +49,8 @@ export const TIMING = {
 };
 
 /** One touch of a hot floor or a mousetrap and Doc Leo plays dead (the room starts over). */
-export const HOT_DAMAGE = -100;
-export const TRAP_DAMAGE = -100;
+const HOT_DAMAGE = -100;
+const TRAP_DAMAGE = -100;
 
 // ------------------------------------------------------------------ drawing
 
@@ -462,7 +462,7 @@ function stairs(base: Pixels): Pixels {
 }
 
 /** A 3x5-font sign cut into `blocks` blocks (5 characters a block), on a board of `board`. */
-export function signBlocks(lines: string[], blocks: number, base: Pixels, board = 'paper'): Pixels[] {
+function signBlocks(lines: string[], blocks: number, base: Pixels, board = 'paper'): Pixels[] {
   const W = blocks * 20;
   const p = new Pixels(W, 20);
   for (let i = 0; i < blocks; i++) p.blit(base, i * 20, 0);

@@ -271,7 +271,8 @@ export async function playgame(h: RetroHost): Promise<void> {
         await errorBox(h, `I can't find the game in ${pathText(pick)}.`, '(C)ontinue');
         continue;
       }
-      await h.playGame(game.files, pick.name.toLowerCase(), game.title, game.notice);
+      // PLAYGAME's F1 reads GMHELP.TXT from where it runs, Game-Maker's own directory
+      await h.playGame(game.files, pick.name.toLowerCase(), game.title, game.notice, undefined, await h.gmFile('gmhelp.txt'));
     } else if (choice === 2) {
       if (soundBlaster()) await errorBox(h, 'Sound Blaster at 220h, IRQ 7, and Auto-Detect VGA', 'are already set up for this PC.  (C)ontinue');
       else await errorBox(h, 'No Sound Blaster answers at 220h: sounds play on', 'the PC speaker, with no music.  (C)ontinue');

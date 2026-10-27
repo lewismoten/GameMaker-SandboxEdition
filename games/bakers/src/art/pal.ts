@@ -21,7 +21,7 @@ const FIXED: [string, number, RGB, RGB, RGB?][] = [
   ['brown', 4, [46, 24, 12], [176, 116, 70]],
   ['yellow', 4, [170, 120, 0], [255, 250, 150]],
   ['orange', 4, [150, 54, 0], [255, 196, 96]],
-  ['grey', 6, [28, 28, 32], [232, 232, 228]],
+  ['gray', 6, [28, 28, 32], [232, 232, 228]],
   ['pink', 4, [160, 44, 96], [255, 204, 228]],
   ['brass', 5, [96, 60, 8], [255, 240, 150], [214, 160, 40]],
   ['rootbeer', 5, [34, 12, 4], [236, 190, 120], [120, 52, 16]],
@@ -33,7 +33,7 @@ const FIXED: [string, number, RGB, RGB, RGB?][] = [
 ];
 
 /** The role ramps every room is drawn in, and how many shades each has. */
-export const ROLES = {
+const ROLES = {
   floor: 6,
   floor2: 5,
   wall: 6,
@@ -46,14 +46,14 @@ export const ROLES = {
   hazard: 5,
   dark: 3,
 } as const;
-export type Role = keyof typeof ROLES;
+type Role = keyof typeof ROLES;
 
-export type Theme = Record<Role, Ramp>;
+type Theme = Record<Role, Ramp>;
 
 const T = (o: Theme) => o;
 
 /** The rooms' lights, by palette file name (without .pal). */
-export const THEMES = {
+const THEMES = {
   // the KITCHEN tiles
   pantry: T({
     floor: [
@@ -798,7 +798,7 @@ export const THEMES = {
 
 export type ThemeName = keyof typeof THEMES;
 
-export interface Pal {
+interface Pal {
   pal: Uint8Array;
   /** Palette entries in use (the rest are free, e.g. for color cycling). */
   used: number;

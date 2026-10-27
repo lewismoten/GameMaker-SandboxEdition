@@ -6,12 +6,12 @@ import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type 
 import type { BlockSet } from '../blocks/book';
 import { CTR, MON, SEQ, SND } from '../ids';
 
-export const KEY = { right: 0x4d00, left: 0x4b00, up: 0x4800, down: 0x5000, space: 0x3920, g: 0x2267 };
+const KEY = { right: 0x4d00, left: 0x4b00, up: 0x4800, down: 0x5000, space: 0x3920, g: 0x2267 };
 /**
  * Alternate keys (scan code << 8 | ASCII). Game-Maker can't read two arrows at once, so the
  * diagonals get keys of their own: Q/E and the number pad's 7/9/1/3. W/A/S/D copy the arrows.
  */
-export const ALT = {
+const ALT = {
   w: 0x1177,
   a: 0x1e61,
   s: 0x1f73,
@@ -102,6 +102,48 @@ export function buildCharacter(cb: BlockSet, moon: boolean): Character {
   ch.meter[CTR.quarters] = 1;
   for (let i = 20; i < 30; i++) ch.meter[i] = 1;
   // No Zapper yet: you find it in the backyard.
+  ch.meter[SEQ.zap] = 0;
+  ch.cseq = 0;
+  ch.cframe = 0;
+  return ch;
+}
+
+/**
+ * CAR.CHR: Grandpa's flying CitiCar in the Cloud Lane, seen from behind. It only steers: Left
+ * and Right (or A and D, or the stick) move it a whole lane, 40 pixels in four frames of 10
+ * (under PLAYGAME's 11-pixel cap, so every frame counts). Every frame, steering or not, also
+ * pushes it 5 pixels up the screen: forward. The row above it is a wall of look-alikes, so the
+ * push holds it on its row, until the exit ramp opens over the right lane and lets it through.
+ */
+export function buildCarCharacter(cb: BlockSet): Character {
+  const f = (pic: string, pause: number, x = 0, y = 0): Frame => ({ ...emptyFrame(), x, y, pic1: CHARBL, pic2: cb.id(pic), pause });
+  const PUSH = -5;
+  const ch = newCharacter();
+  const S = ch.sequences;
+  set(S[SEQ.idle], [f('car0', 1, 0, PUSH), f('car1', 1, 0, PUSH)]);
+  set(S[SEQ.die], [f('carHurt', 2), f('carDie0', 3), f('carDie1', 3), f('carDie0', 3), f('carDie2', 24)], { sound: SND.die });
+  set(S[SEQ.hurt], [f('carHurt', 2, 0, PUSH)], { sound: SND.hurt });
+  set(S[SEQ.pickup], [], { key: 0 });
+  set(S[SEQ.drop], [], { key: 0 });
+  const steer: [number, number, number, number, string][] = [
+    [SEQ.right, KEY.right, 1, JOY.right, 'carR'],
+    [SEQ.left, KEY.left, -1, JOY.left, 'carL'],
+    [EXTRA + 0, ALT.d, 1, 0, 'carR'],
+    [EXTRA + 1, ALT.a, -1, 0, 'carL'],
+  ];
+  for (const [n, key, dx, joy, pic] of steer)
+    set(
+      S[n],
+      [0, 1, 2, 3].map(() => f(pic, 1, dx * 10, PUSH)),
+      // a key waits for the lane change to finish, so the car always ends up in a lane
+      { key, jstkMov: joy, jstkBut: 4, sound: SND.none, ground: 1 },
+    );
+  // the meters are Dex's (PLAYGAME keeps the first character's anyway)
+  ch.meter.fill(INF_REPEAT);
+  ch.meter[0] = 100;
+  ch.meter[CTR.lives] = 3;
+  ch.meter[CTR.quarters] = 1;
+  for (let i = 20; i < 30; i++) ch.meter[i] = 1;
   ch.meter[SEQ.zap] = 0;
   ch.cseq = 0;
   ch.cframe = 0;

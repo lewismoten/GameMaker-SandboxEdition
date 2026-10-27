@@ -1,0 +1,52 @@
+/* The Game-Maker: Sandbox Edition ad inside the front cover (sections/ads.ts) on the Owner's
+   Guide's blueprint (printables/gmCover.ts): the same dark blueprint blue, its white grid of
+   fine and heavy lines and its white border rule, with the words in white and the new things
+   boxed in a white drafting line. The page keeps these colors in light and dark, as every
+   printed page does. */
+.mag-page[data-page='ad-sandbox-edition'] .mag-adframe {
+  --bp-minor: rgba(255, 255, 255, 0.13);
+  --bp-major: rgba(255, 255, 255, 0.3);
+  border-color: #f4f8ff;
+  outline: 0.3em solid #143a76;
+  background:
+    linear-gradient(var(--bp-major) 0.06em, transparent 0.06em) 0 0 / 5em 5em,
+    linear-gradient(90deg, var(--bp-major) 0.06em, transparent 0.06em) 0 0 / 5em 5em,
+    linear-gradient(var(--bp-minor) 0.04em, transparent 0.04em) 0 0 / 1em 1em,
+    linear-gradient(90deg, var(--bp-minor) 0.04em, transparent 0.04em) 0 0 / 1em 1em,
+    radial-gradient(ellipse 80% 80% at 45% 35%, #1f4f9a, #1a4588 60%, #143a76);
+  color: #fff;
+}
+
+.mag-page[data-page='ad-sandbox-edition'] .mag-adframe h2 {
+  color: #fff;
+  text-shadow:
+    0.05em 0.05em 0 #d61f26,
+    0.09em 0.09em 0 #0b2148;
+}
+
+.mag-page[data-page='ad-sandbox-edition'] :is(.mag-ad-sub, figcaption) {
+  color: #fff;
+}
+
+/* the new things: a box drawn in white line on the blueprint, not a pasted-on card */
+.mag-page[data-page='ad-sandbox-edition'] .mag-side {
+  border: 0.12em solid #fff;
+  background: rgba(11, 33, 72, 0.55);
+  color: #fff;
+  box-shadow: none;
+}
+
+.mag-page[data-page='ad-sandbox-edition'] .mag-side h3 {
+  color: #ffd31a;
+}
+
+/* the link to the order form: white and bold, over the dark page's own link color */
+.mag-page[data-page='ad-sandbox-edition'] .mag-adframe p > a:not(.mag-btn, .mag-card > .mag-go) {
+  color: #fff;
+  font-weight: 700;
+}
+
+.mag-page[data-page='ad-sandbox-edition'] .mag-adframe > .mag-small {
+  color: #e8f0ff;
+  opacity: 1;
+}

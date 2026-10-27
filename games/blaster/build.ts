@@ -12,8 +12,8 @@ import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
 import { buildPalette } from './src/art/pal';
-import { buildShip, shipBlocks } from './src/characters/ship';
-import { DRIFT } from './src/ids';
+import { buildBusShip, buildDiagShip, buildDownShip, buildLeftShip, buildShip, buildSideShip, shipBlocks } from './src/characters/ship';
+import { DIAG_DRIFT, DRIFT } from './src/ids';
 import { buildSounds } from './src/sound/sounds';
 import { buildGame } from './src/game';
 import { STAGES } from './src/stages/stages';
@@ -29,6 +29,11 @@ const cb = shipBlocks(buildPalette('board'));
 disk.put('ship.cbl', serializeBlocks(cb.build(undefined, true)));
 disk.put('ship.chr', serializeCharacter(buildShip(cb, DRIFT)));
 disk.put('shipfree.chr', serializeCharacter(buildShip(cb, 0)));
+disk.put('shipdiag.chr', serializeCharacter(buildDiagShip(cb, DIAG_DRIFT)));
+disk.put('shipside.chr', serializeCharacter(buildSideShip(cb, DRIFT)));
+disk.put('shipdown.chr', serializeCharacter(buildDownShip(cb, DRIFT)));
+disk.put('shipleft.chr', serializeCharacter(buildLeftShip(cb, DRIFT)));
+disk.put('shipbus.chr', serializeCharacter(buildBusShip(cb)));
 const sounds = buildSounds();
 disk.put('blaster.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
@@ -38,7 +43,9 @@ for (const s of stages) {
   disk.put(`s${s.n}.pal`, serializePalette(s.pal.pal));
   for (const l of s.legs) {
     const b = buildLeg(l);
-    disk.put(`${l.file}.map`, serializeMap(b.map));
+    if (l.pal && !l.palFile) disk.put(`${l.file}.pal`, serializePalette(l.pal.pal));
+    // a map two legs share holds both, so it is written once both are laid in (the stage is built whole)
+    disk.put(`${l.mapFile ?? l.file}.map`, serializeMap(b.map));
     disk.put(`${l.kitFile}.bbl`, serializeBlocks(b.bbl));
     disk.put(`${l.kitFile}.mbl`, serializeBlocks(b.mbl));
     disk.put(`${l.kitFile}.mon`, serializeMonsters(b.mon));

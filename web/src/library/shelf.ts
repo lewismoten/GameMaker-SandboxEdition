@@ -30,10 +30,10 @@ export const SHELF_TYPES = [
   ['video', 'Videos'],
 ] as const;
 
-export type ShelfType = (typeof SHELF_TYPES)[number][0];
+type ShelfType = (typeof SHELF_TYPES)[number][0];
 
 /** How a thing opens: in its box's viewer at that piece, in the Game-Maker box, at a page of the site, the zine, a game's walkthrough player, or a video's player (videoDialog.ts, by its YouTube id). */
-export type Opening =
+type Opening =
   | { via: 'box'; game: string; start: string; maps?: boolean }
   | { via: 'gm'; start: string }
   | { via: 'href'; href: string }
@@ -131,15 +131,17 @@ export function typeOfPiece(owner: string, id: string, own?: Pick<PrintableItem,
 
 /**
  * The games with paper to read: Sandbox Software's boxed games (with a manual) and the Bard
- * of Bizarre's (their maps), Sandbox's first, each by title. Never a secret game, even one
- * an older dev server lists or a reveal has added.
+ * of Bizarre's (their maps), Sandbox's first, each by title. A secret game only when `unlocked`
+ * names it (one revealed in this browser, listing.ts); never one an older dev server lists while
+ * it is still hidden. An unlocked one with no manual gets its maps, as the Bard's games do.
  */
-export function shelfGames(entries: readonly CatalogEntry[]): { boxed: CatalogEntry[]; maps: CatalogEntry[] } {
-  const listed = entries.filter((e) => !isOldSecret(e.id));
+export function shelfGames(entries: readonly CatalogEntry[], unlocked: ReadonlySet<string> = new Set()): { boxed: CatalogEntry[]; maps: CatalogEntry[] } {
+  const revealed = (e: CatalogEntry) => isOldSecret(e.id) && unlocked.has(e.id);
+  const listed = entries.filter((e) => !isOldSecret(e.id) || revealed(e));
   const byTitle = (a: CatalogEntry, b: CatalogEntry) => a.title.localeCompare(b.title);
   return {
     boxed: listed.filter((e) => isSandboxGame(e) && !!e.original?.manual).sort(byTitle),
-    maps: listed.filter((e) => isBizarreGame(e) && !e.original?.manual).sort(byTitle),
+    maps: listed.filter((e) => (isBizarreGame(e) || (revealed(e) && !!e.original)) && !e.original?.manual).sort(byTitle),
   };
 }
 

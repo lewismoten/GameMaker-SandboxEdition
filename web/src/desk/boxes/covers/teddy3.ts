@@ -111,7 +111,7 @@ function chez(c: Ctx, x: number, ground: number, k: number): void {
 }
 
 /** Doc Leo, the friendly hobo clown, in his own face paint: white round both eyes and round the
- * mouth, painted grey stubble, wire glasses, and his own nose, sunburned pink (no clown nose).
+ * mouth, painted gray stubble, wire glasses, and his own nose, sunburned pink (no clown nose).
  * A felt fedora with a dark band, a navy jacket over a lavender shirt, a green tie and blue
  * suspenders; one hand waving, the other holding the rubber chicken's leash. (x, y) is the
  * ground between his red sneakers. */
@@ -119,7 +119,7 @@ function docLeo(c: Ctx, x: number, y: number, s: number): void {
   c.save();
   c.translate(x, y);
   c.scale(s, s);
-  // grey trousers, red sneakers
+  // gray trousers, red sneakers
   for (const lx of [-20, 20]) {
     poly(c, [lx - 15, -150, lx + 15, -150, lx + 16, -16, lx - 14, -16]);
     fill(

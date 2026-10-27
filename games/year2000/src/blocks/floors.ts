@@ -4,7 +4,7 @@ import { Pixels, rng } from '../../../kit/pixels';
 import { shadeAt, speckle } from '../art/draw';
 import { C, PAL } from '../art/pal';
 
-export type Painter = (seed?: number) => Pixels;
+type Painter = (seed?: number) => Pixels;
 
 const R = PAL.r;
 
@@ -96,7 +96,7 @@ export const FLOORS: Record<string, Painter> = {
   tile: () => {
     const p = new Pixels(20, 20, C('pink', 5));
     p.rect(0, 0, 20, 1, C('teal', 4)).rect(0, 0, 1, 20, C('teal', 4));
-    p.set(1, 1, C('grey', 7)).set(10, 10, C('grey', 7));
+    p.set(1, 1, C('gray', 7)).set(10, 10, C('gray', 7));
     return p;
   },
   /** Arcade carpet: the black carpet with neon squiggles every arcade had. */
@@ -149,7 +149,7 @@ export const FLOORS: Record<string, Painter> = {
   static: (seed = 51) => {
     const p = new Pixels(20, 20);
     const r = rng(seed);
-    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, C('grey', 1 + Math.floor(r() * 3)));
+    for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, C('gray', 1 + Math.floor(r() * 3)));
     return p;
   },
   seafloor: (seed = 61) => {
@@ -173,7 +173,7 @@ export const FLOORS: Record<string, Painter> = {
       p.set(x, y, C('concrete', 0));
     return p;
   },
-  /** Moon dust: fine grey with boot prints and pebbles. */
+  /** Moon dust: fine gray with boot prints and pebbles. */
   moon: (seed = 91) => {
     const p = new Pixels(20, 20);
     speckle(p, 0, 0, 20, 20, R('moon'), 3, 1, seed, 0.3);

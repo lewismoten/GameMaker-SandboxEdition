@@ -29,14 +29,14 @@ async function eggsFound(): Promise<boolean> {
 }
 
 /**
- * True once every tin heart counts as found. The hearts are counted from the manifest's games,
- * not the catalog's: loading the catalog comes back here (withSecretGames). Never throws.
+ * True once the tin heart hunt is won (huntComplete: every heart, the room's too, or every game's
+ * for someone who had them all before the room's joined). The games' hearts are counted from the
+ * manifest, not the catalog: loading the catalog comes back here (withSecretGames). Never throws.
  */
 async function heartsFound(): Promise<boolean> {
   try {
-    const { MANIFEST, heartStates } = await import('../tinHearts/tinHearts');
-    const states = await heartStates(Object.keys(MANIFEST.hearts).map((id) => ({ id, title: id })));
-    return states.length > 0 && states.every((s) => s.found);
+    const { MANIFEST, huntComplete, huntStates } = await import('../tinHearts/tinHearts');
+    return huntComplete(await huntStates(Object.keys(MANIFEST.hearts).map((id) => ({ id, title: id }))));
   } catch {
     return false;
   }

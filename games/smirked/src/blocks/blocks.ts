@@ -22,10 +22,10 @@ import { BATTERIES, BATTERIES_NEEDED, MONEY, SMIRKS, SORRY, SORRY_NEEDED, SWORD_
 
 export { BlockBook, SOLID };
 /** Ticks a fog machine rests, and puffs. */
-export const FOG_REST = 44;
+const FOG_REST = 44;
 /** The last ticks of its rest a fog machine rumbles first: wisps at the grate, its pilot light red. */
-export const FOG_WARN = 12;
-export const FOG_PUFF = 22;
+const FOG_WARN = 12;
+const FOG_PUFF = 22;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();

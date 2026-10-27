@@ -30,7 +30,7 @@ export const PALETTES: Chapter = {
   </ul>
   <p>Try the same trick for seasons (green, gold and white), underwater (everything pushed
   toward blue-green, the brightest colors pulled down), or a haunted version of a level you
-  already built (greys, a sickly green and one red you keep for eyes).</p>
+  already built (grays, a sickly green and one red you keep for eyes).</p>
   <h2>Plan in ramps</h2>
   <p>Palette swaps work best when the palette is planned, not grown. Lay it out in
   <i>ramps</i>: short runs of shades of one material, dark to light. Five shades of grass,
@@ -60,11 +60,40 @@ export const PALETTES: Chapter = {
   <table>
     <tr><th>Who looks</th><th>For</th><th>What it draws</th></tr>
     <tr><td>The game’s menu</td><td>a strong blue</td><td>the menu items and the game’s name, over your menu picture</td></tr>
-    <tr><td>The <kbd>F1</kbd>, <kbd>F2</kbd> and <kbd>F10</kbd> screens</td><td>blue and yellow</td><td>their frames and words: help, score, money, hit points, lives</td></tr>
+    <tr><td>The <kbd>F2</kbd> and <kbd>F10</kbd> screens</td><td>blue and yellow</td><td>their frames and words: score, money, hit points, lives</td></tr>
     <tr><td>Text screens (<code>.TXT</code>)</td><td>a deep purple</td><td>every line of the text</td></tr>
-    <tr><td>A menu choice you left empty</td><td>a bright red</td><td>“No game-specific…” notes</td></tr>
-    <tr><td>The design tools</td><td>greys, reds, black, a green</td><td>their own frames, buttons and lists</td></tr>
+    <tr><td>A menu choice you left empty, or <kbd>F1</kbd> with no instructions</td><td>a bright red</td><td>“No game-specific…” notes</td></tr>
+    <tr><td>The design tools</td><td>grays, reds, black, a green</td><td>their own frames, buttons and lists</td></tr>
   </table>
+  <h2>Color 0 is the background</h2>
+  <p>Before some of its own screens, PLAYGAME wipes the whole screen to palette color 0 and
+  writes on that: the “Congratulations” name prompt after a game ends, the high-score table when
+  the game has no high-score picture, the <kbd>F1</kbd> line when there are no instructions, and
+  the <kbd>F2</kbd>, <kbd>F5</kbd>, <kbd>F6</kbd>, <kbd>F9</kbd> and <kbd>F10</kbd> screens. They
+  show in the level’s palette; the name prompt shows in the palette of the last level played.</p>
+  <p>The words on them don’t come from colors you picked. The player carries a few fixed
+  targets, in the VGA’s 0 to 63 levels, and uses whichever palette entry is nearest:</p>
+  <table>
+    <tr><th>Target</th><th>Red, green, blue</th><th>Writes</th></tr>
+    <tr><td>Yellow</td><td>63, 63, 0</td><td><kbd>F10</kbd>’s words, load and save slot names</td></tr>
+    <tr><td>Red</td><td>63, 10, 10</td><td>“No game-specific…” notes, the <kbd>F1</kbd> line, slot markers</td></tr>
+    <tr><td>Blue</td><td>10, 10, 63</td><td>the menu, load and save headings, <kbd>F2</kbd>, the drop picker</td></tr>
+    <tr><td>Purple</td><td>50, 10, 50</td><td>text pages</td></tr>
+    <tr><td>High-score red</td><td>63, 10, 10</td><td>“Congratulations”, the name prompt, the table’s heading</td></tr>
+    <tr><td>High-score blue</td><td>10, 10, 63</td><td>the place line, the typed name, the table’s rows</td></tr>
+  </table>
+  <p>“Nearest” is simple arithmetic. For each of the 256 entries, take its difference from the
+  target in red, in green and in blue, square the three and add them up. The smallest total
+  wins, and on a tie the lower entry number wins. (In RSD’s source this is
+  <code>RGBdata::Match</code>.)</p>
+  <p>Black is the safe color 0. Those reds and blues were chosen to stand out on black; a gray
+  or bright color 0 turns every one of these screens that color, and the matched red and blue
+  can land at nearly its lightness. To aim the words somewhere else, open the <code>.gam</code>,
+  press <b>DOS player</b> in the integrator’s toolbar, and change a screen’s target or a
+  target’s levels; Play and every download follow it. The palette editor’s note by color 0
+  opens a preview of each of these screens in the palette you are editing, and the Level check
+  lists every palette whose color 0 isn’t black.</p>
+  ${tip('Troubleshooting: my high score screen is hard to read.', 'Open the palette of the game’s last level and select color 0. If it isn’t black, that color is the screen’s background. Make it black. If blocks use color 0 as a color of their own, first copy it into a spare entry and repaint those pixels with it, so the level looks the same.')}
   <h2>Index 255 is see-through</h2>
   <p>In monster and character blocks, pixel value 255 isn’t a color: it is the clear part
   that lets the background show around a sprite. Don’t spend entry 255 on a color you need.

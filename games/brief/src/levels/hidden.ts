@@ -20,10 +20,10 @@ import { LAB } from './wings/lab';
 import { OTHER } from './wings/other';
 
 /** Where Watt is, in book 1 of the Lab's own cells. */
-export const HIDDEN = { watt: { x: 9, y: 1 } };
+const HIDDEN = { watt: { x: 9, y: 1 } };
 
 /** The nook's top-left on its wing's map (under the hallway and the books, rows 0..9). */
-export const NOOK_AT = { x: 4, y: 20 };
+const NOOK_AT = { x: 4, y: 20 };
 
 /** The gap in the hallway's right-hand shelves that leads in (hallway cells). */
 const GAP = { x: 15, y: 7 };

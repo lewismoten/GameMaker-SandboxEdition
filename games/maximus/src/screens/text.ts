@@ -6,7 +6,7 @@ import { withCreditPage } from '../../../kit/license';
 
 /** Wraps text for Game-Maker's text screens: fgets reads 31 characters, so a full
  * 31-character line would leave its newline for the next read (a blank line); keep to 30. */
-export function wrap31(text: string): string {
+function wrap31(text: string): string {
   const out: string[] = [];
   for (const para of text.split('\n')) {
     if (!para.trim()) {

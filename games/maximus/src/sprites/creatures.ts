@@ -47,7 +47,7 @@ export type Archetype =
   | 'comet'
   | 'plate';
 
-export interface Look {
+interface Look {
   arch: Archetype;
   paint: Paint;
   /** 0.6 .. 1.2 scale of the body */

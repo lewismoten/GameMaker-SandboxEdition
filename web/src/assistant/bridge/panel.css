@@ -1,0 +1,119 @@
+/* The Assistant panel (panel.ts): a small window at the top right that stays open while the
+   editor is used, the chip at the bottom left while connected, and its change toasts above it. */
+dialog.assistant-panel {
+  position: fixed;
+  inset: 72px 16px auto auto;
+  margin: 0;
+  z-index: 90;
+  width: min(380px, calc(100vw - 32px));
+  min-width: 0;
+  max-height: calc(100vh - 96px);
+  overflow: auto;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+}
+
+dialog.assistant-panel code {
+  white-space: nowrap;
+}
+
+dialog.assistant-panel h3 {
+  margin: 14px 0 4px;
+  font-size: 14px;
+}
+
+.assistant-status {
+  margin: 10px 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--panel-2);
+  border-left: 4px solid var(--muted);
+}
+
+.assistant-status[data-state='connected'] {
+  border-left-color: var(--accent);
+}
+
+.assistant-form {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px 10px;
+  align-items: center;
+}
+
+.assistant-form input {
+  min-height: 28px;
+}
+
+.assistant-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+}
+
+.assistant-actions button {
+  min-height: 28px;
+}
+
+.assistant-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.assistant-check input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}
+
+.assistant-log {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.assistant-log .failed {
+  color: var(--danger);
+}
+
+.assistant-chip {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 95;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.assistant-chip button {
+  min-height: 28px;
+}
+
+.assistant-toasts {
+  left: 16px;
+  right: auto;
+  bottom: 64px;
+}
+
+.assistant-toasts .toast-undo {
+  flex: none;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.assistant-btn[data-connected='true'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}

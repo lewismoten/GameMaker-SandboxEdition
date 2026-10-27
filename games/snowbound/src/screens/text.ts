@@ -47,9 +47,9 @@ export const INSTRUCTIONS = [
   ]),
   page([
     'THE SLED: LEFT/RIGHT (A/D)',
-    'steer, UP (W) digs in your',
-    'heels, DOWN (S) pushes off,',
-    'Q/E brake and steer at once.',
+    'steer, UP (W) brakes, DOWN (S)',
+    'pushes, Q/E brake and steer.',
+    'Snow ripples > < carry you.',
     '',
     'THE MALL LOT snows over every',
     '20 seconds: shovel it again.',

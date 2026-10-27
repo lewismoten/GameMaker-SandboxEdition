@@ -20,7 +20,7 @@ import { Area, type Cell, type Window } from './area';
 import { shelf, type WingSpec } from './wing';
 
 /** Door labels, wing by wing (five letters fit on a door). */
-export const DOOR_LABELS = ['CLOWN', 'LAB', 'DOCKS', 'YARD', 'HOME', 'NIGHT', 'OTHER', '2000'];
+const DOOR_LABELS = ['CLOWN', 'LAB', 'DOCKS', 'YARD', 'HOME', 'NIGHT', 'OTHER', '2000'];
 
 function wingDoor(label: string, stamp: WingSpec['stamp'], seed: number): Pixels {
   const p = shelf(seed, 'red');
@@ -67,7 +67,7 @@ function wordCounter(part: string, shown: string): Pixels {
   // the crank, and a sad little paper tape
   big.rect(70, 12, 4, 14, c('tin', 3)).disc(72, 10, 3, c('red', 3));
   big.rect(6, 6, 6, 18, c('paper', 4));
-  for (let y = 8; y < 24; y += 3) big.rect(7, y, 4, 1, c('grey', 2));
+  for (let y = 8; y < 24; y += 3) big.rect(7, y, 4, 1, c('gray', 2));
   micro(big, 22, 32, 'WORD COUNTER', c('ink', 0));
   const [col, row] = [Number(part[0]), Number(part[1])];
   return big.crop(col * 20, row * 20, 20, 20);
@@ -115,7 +115,7 @@ function fern(under: Pixels): Pixels {
 function redDoor(half: 0 | 1): Pixels {
   const both = new Pixels(40, 20);
   both.blit(redDoorHalf(0), 0, 0).blit(redDoorHalf(1), 20, 0);
-  both.rect(3, 10, 34, 1, c('grey', 4)).rect(3, 11, 34, 2, c('grey', 2));
+  both.rect(3, 10, 34, 1, c('gray', 4)).rect(3, 11, 34, 2, c('gray', 2));
   const port = chezSide(
     both,
     12,
@@ -126,7 +126,7 @@ function redDoor(half: 0 | 1): Pixels {
       glass: [c('blue', 1), c('sky', 4)],
       roof: c('ink', 2),
       tire: c('ink', 0),
-      hub: c('grey', 5),
+      hub: c('gray', 5),
       rim: c('paper', 4),
       stripe: c('ink', 1),
       bumper: c('ink', 1),
@@ -137,7 +137,7 @@ function redDoor(half: 0 | 1): Pixels {
     'left',
     0.4,
   );
-  both.rect(31, 5, 2, 5, c('grey', 1)).set(31, 6, c('green', 4));
+  both.rect(31, 5, 2, 5, c('gray', 1)).set(31, 6, c('green', 4));
   both.line(port.portX + 1, port.portY, 30, 8, c('ink', 0));
   return both.crop(half * 20, 0, 20, 20);
 }
@@ -170,10 +170,10 @@ function gate(label: string, stamp: WingSpec['stamp'], open: boolean, under: Pix
   return p;
 }
 
-/** The thirty-third book: plain grey, its spine label typed: 2026-12-20, Christmas Hotel (WIP). */
+/** The thirty-third book: plain gray, its spine label typed: 2026-12-20, Christmas Hotel (WIP). */
 function blankBook(under: Pixels): Pixels {
   const p = on(under);
-  bevel(p, 4, 1, 12, 18, r('grey'), 3, 1);
+  bevel(p, 4, 1, 12, 18, r('gray'), 3, 1);
   p.rect(6, 4, 8, 10, c('paper', 4));
   micro(p, 6, 5, '33', c('ink', 0));
   micro(p, 6, 11 - 2, 'WIP', c('red', 2));
@@ -276,9 +276,9 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
       wingDoor(
         'SOON',
         [
-          ['grey', 3],
-          ['grey', 1],
-          ['grey', 4],
+          ['gray', 3],
+          ['gray', 1],
+          ['gray', 4],
         ],
         110 + i,
       ),
@@ -432,7 +432,7 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
       (() => {
         const p = blank();
         for (let i = 0; i < 16; i++) p.set(2 + i, 10 + Math.round(Math.sin(i / 2) * 3), c('ink', 0));
-        p.rect(15, 6, 4, 4, c('grey', 4)).frame(15, 6, 4, 4, c('ink', 0));
+        p.rect(15, 6, 4, 4, c('gray', 4)).frame(15, 6, 4, 4, c('ink', 0));
         p.rect(0, 13, 19, 7, c('paper', 4)).frame(0, 13, 19, 7, c('brass', 1));
         micro(p, 2, 14, 'CHEZ', c('red', 2));
         return p;
@@ -479,7 +479,7 @@ export function compileHub(wings: WingSpec[]): CompiledHub {
   // Doc Leo, standing backward in line (as usual), and the rest of the line
   a.prop('leoBack', 'floor', mirror(docLeo(0)));
   a.prop('patron', 'floor', figure({ shirt: ['teal', 3], hair: ['ink', 1], pants: ['brown', 1] }));
-  a.prop('patron2', 'floor', figure({ shirt: ['orange', 2], hair: ['grey', 4], hairStyle: 'bun', dress: true, glasses: true }));
+  a.prop('patron2', 'floor', figure({ shirt: ['orange', 2], hair: ['gray', 4], hairStyle: 'bun', dress: true, glasses: true }));
 
   // monsters
   a.addShusher();

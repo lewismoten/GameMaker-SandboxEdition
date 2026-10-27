@@ -1,0 +1,19 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.highScores": "Top Ten Laughs",
+    "str.hiscore.title": "Top Ten Laughs",
+    "str.hiscore.congrats": "Io triumphe!",
+    "str.invent.hitpoints": "Dignitas:  %d",
+    "color.rgb.hsRed": [46, 4, 4],
+    "color.rgb.hsBlue": [4, 6, 36],
+    "color.rgb.hsGreen": [63, 58, 30],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsPrompt": "red",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.congrats.x": 112
+  }
+}

@@ -32,7 +32,7 @@ export interface SimScene {
 }
 
 /** What Sim.snapshot() keeps. */
-export interface SimState {
+interface SimState {
   w: Omit<World, 'sound' | 'rand' | 'joystick' | 'bg' | 'mblk' | 'cblk' | 'mon' | 'palette' | 'chr'>;
   chr: Character;
   randA: number;

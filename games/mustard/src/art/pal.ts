@@ -32,7 +32,7 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
   ['seed', 5, [150, 84, 6], [255, 246, 150], [242, 190, 30], true],
   ['sun', 4, [220, 140, 20], [255, 252, 210], undefined, true],
   ['faith', 3, [210, 160, 40], [255, 255, 230], undefined, true],
-  ['grey', 6, [0, 0, 0], [255, 255, 255]],
+  ['gray', 6, [0, 0, 0], [255, 255, 255]],
 ];
 
 /** Each place's sky (top to bottom) and how the rest is lit. */

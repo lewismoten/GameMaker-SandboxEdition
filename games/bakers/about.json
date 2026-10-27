@@ -28,6 +28,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "13 booby-trapped rooms",
     "background": "#14214a",
     "accent": "#e8b84a",
     "ink": "#fff6e0",

@@ -17,7 +17,7 @@ export interface Scan {
 }
 
 /** Pixel width / height on a 4:3 monitor at 320x200. */
-export const VGA_PIXEL = 5 / 6;
+const VGA_PIXEL = 5 / 6;
 
 export function loadScan(name: string): Scan {
   const j = decodePartialJpeg(new Uint8Array(readFileSync(resolve(__dirname, 'scans', `${name}.jpg`))));
@@ -188,7 +188,7 @@ export function ditherTo(s: Scan, pal: Uint8Array, allowed: number[]): Uint8Arra
   return out;
 }
 
-export interface PasteOptions {
+interface PasteOptions {
   /** Most palette entries to give the photo (default: every free one). */
   colors?: number;
   /** Entries the picture needs kept as they are even though no pixel uses them yet. */
@@ -219,7 +219,7 @@ export function pastePhoto(p: Pixels, pal: Uint8Array, s: Scan, x: number, y: nu
   return { pal: out, slots };
 }
 
-export interface FrameColors {
+interface FrameColors {
   /** The print's white border. */
   paper: number;
   /** Its outline. */

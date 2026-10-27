@@ -2,7 +2,7 @@
 // Games left out (and why) are listed in SKIPPED.
 import type { BotOptions } from './bot';
 
-export interface CdDemoGame {
+interface CdDemoGame {
   id: string;
   kind: 'gameware' | 'shareware';
   gam: string;
@@ -198,7 +198,4 @@ export const CD_DEMO_GAMES: CdDemoGame[] = [
   },
 ];
 
-/** CD entries with no demo that get none, and why. */
-export const SKIPPED: Record<string, string> = {
-  library: 'a parts library: no game file to play',
-};
+// The CD's parts library gets no demo: it has no game file to play.

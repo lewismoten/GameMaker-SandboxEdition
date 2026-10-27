@@ -1,5 +1,5 @@
 // The tin heart: a small recurring object Lewis tucks into the games, a nod to the Tin Man
-// and the heart that ticks. A riveted tin heart, silver-grey with a highlight and a little
+// and the heart that ticks. A riveted tin heart, silver-gray with a highlight and a little
 // clock face in the middle, drawn into a 20x20 block in any game's palette; its frames move a
 // glint across the tin (a gentle shine). Touching one gives a small bonus. Its sound is a soft,
 // steady tick-tock on the PC speaker (`TICK_TOCK`, never a .VOC, so it never cuts a voice clip),
@@ -8,7 +8,7 @@ import { Pixels } from './pixels';
 import { speaker } from './sound';
 
 /** The colors it is drawn in, as palette indices of the game's own ramps. */
-export interface TinColors {
+interface TinColors {
   /** The outline. */
   ink: number;
   /** Tin, dark to light (at least three shades). */
@@ -89,11 +89,6 @@ export function drawTinHeart(p: Pixels, c: TinColors, frame = 0, dx = 0, dy = 0)
       if (at(x, y)) p.set(x + dx, y + dy, x === gx && y === gy ? c.white : hi);
   }
   return p;
-}
-
-/** A tin heart on its own (CLEAR around it), for a sprite set. */
-export function tinHeartSprite(c: TinColors, clear: number, frame = 0): Pixels {
-  return drawTinHeart(new Pixels(20, 20, clear), c, frame);
 }
 
 /** A soft, steady tick-tock on the PC speaker: tick, tock, tick, tock. */

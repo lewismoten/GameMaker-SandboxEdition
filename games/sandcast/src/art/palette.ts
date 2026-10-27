@@ -4,7 +4,7 @@
 // hose-soaked moat, and the patio at sunset where Gwinn naps).
 import { PaletteBuilder } from '../../../kit/palette';
 
-export const pb = new PaletteBuilder();
+const pb = new PaletteBuilder();
 // Index 0 is black: the screen border and fades use it.
 pb.color(0, 0, 0);
 
@@ -20,10 +20,10 @@ export const TABBY = pb.ramp('tabby', 8, [70, 30, 8], [255, 222, 170], [232, 122
 export const PINK = pb.ramp('pink', 4, [140, 50, 74], [255, 196, 210], [240, 120, 150]);
 export const BEETLE = pb.ramp('beetle', 6, [12, 22, 30], [130, 236, 200], [30, 120, 110]);
 export const PURPLE = pb.ramp('purple', 5, [36, 12, 52], [214, 160, 255], [124, 60, 180]);
-export const GREY = pb.ramp('grey', 6, [40, 40, 44], [220, 220, 224]);
+export const GRAY = pb.ramp('gray', 6, [40, 40, 44], [220, 220, 224]);
 
 // The 16 colors of an ANSI BBS screen (CGA order: black, blue, green, cyan, red,
-// magenta, brown, light grey, dark grey, light blue, light green, light cyan, light red,
+// magenta, brown, light gray, dark gray, light blue, light green, light cyan, light red,
 // light magenta, yellow, white).
 export const ANSI: number[] = [
   [0, 0, 0],
@@ -46,16 +46,13 @@ export const ANSI: number[] = [
 
 pb.designerColors();
 // Game-Maker writes story and instruction text in the color nearest (50, 10, 50) (6-bit).
-export const TEXT_MAGENTA = pb.color(202, 42, 202);
-
-export const BLACK = 0;
-export const WHITE = ANSI[15];
+pb.color(202, 42, 202);
 
 /** The daylight palette (6-bit VGA components). */
 export const DAY = pb.pal.slice();
 
 /** A tinted copy of the palette: each component scaled, then lifted, then clamped. */
-export function tint(pal: Uint8Array, mul: [number, number, number], add: [number, number, number] = [0, 0, 0], keep: number[] = []): Uint8Array {
+function tint(pal: Uint8Array, mul: [number, number, number], add: [number, number, number] = [0, 0, 0], keep: number[] = []): Uint8Array {
   const out = pal.slice();
   for (let i = 1; i < 256; i++) {
     if (keep.includes(i)) continue;
@@ -70,5 +67,3 @@ export const BURROW = tint(DAY, [0.66, 0.58, 0.6], [1, 1, 3]);
 export const DUSK = tint(DAY, [1.0, 0.72, 0.62], [3, 0, 4]);
 /** The Hosewater Moat: the hose has soaked everything, so the sand is darker and cooler. */
 export const MOAT = tint(DAY, [0.84, 0.92, 1.0], [0, 1, 4]);
-/** The BBS: the game's palette as-is (ANSI colors live in it). */
-export const BBS = DAY;

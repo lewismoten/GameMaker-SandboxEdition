@@ -1,12 +1,12 @@
 // EGG.EXE's tin heart page (T from the felt egg ledger): every game that counts toward the tin
-// hearts, whether its heart is found, and keys to add or take away finds by hand, set or
+// hearts and the room's hearts after them (deskHearts.ts: the wall clock's), whether each is found, and keys to add or take away finds by hand, set or
 // clear them all, or put them all back to what the saves say (X Reset all, or R). Like the egg ledger, it only changes EGG.EXE's overrides in localStorage
 // (tinHearts.ts), never a game's save. In development it also lists, dimmed, the games that
 // count but hide no heart yet. Game-Maker's text UI style.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
 import { toCp437 } from '../retro/text/cp437';
-import { countedOf, heartStates, pendingOf, resetAllOverrides, setAllOverrides, setOverride, type HeartState } from './tinHearts';
+import { countedOf, huntComplete, huntStates, pendingOf, resetAllOverrides, setAllOverrides, setOverride, type HeartState } from './tinHearts';
 
 const STATE_TEXT: Record<HeartState['status'], string> = {
   saved: 'Found in play',
@@ -35,7 +35,7 @@ export async function runTinHeartExe(ui: Ui): Promise<void> {
   let cur = 0;
   let top = 0;
   for (;;) {
-    const list = await heartStates(games);
+    const list = await huntStates(games);
     const rows = list.length + pending.length;
     const shown = Math.max(1, Math.min(VISIBLE, rows));
     const y = Math.max(2, Math.floor((24 - (shown + 5)) / 2));
@@ -65,12 +65,7 @@ export async function runTinHeartExe(ui: Ui): Promise<void> {
     if (top + shown < rows) s.write(x + w - 3, y + 1 + shown, MENUATTR, '\x19');
     const found = list.filter((h) => h.found).length;
     s.fill(x + 1, y + shown + 2, x + w - 2, y + shown + 3, MENUATTR);
-    s.write(
-      x + 2,
-      y + shown + 2,
-      MENUATTR,
-      toCp437(`Found ${found} of ${list.length}.${found === list.length && list.length ? ' The trophy is on the desk.' : ''}`),
-    );
+    s.write(x + 2, y + shown + 2, MENUATTR, toCp437(`Found ${found} of ${list.length}.${huntComplete(list) ? ' The trophy is on the desk.' : ''}`));
     s.write(x + 2, y + shown + 3, attr(7, 1), toCp437('Changes here never touch a saved game.'));
     s.write(0, 24, BARATTR, toCp437(' ↑↓ Choose  Enter Find/Lose  S Set all  C Clear all  X Reset all  Esc Back').padEnd(80).slice(0, 80));
     const k = await ui.keys.next();

@@ -11,10 +11,10 @@ import { MON } from '../ids';
 import { addGate, addGoodThings, addSoul, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 /** Ticks a sandstorm gust blows, and the calm between. */
-export const GUST = 36;
-export const CALM = 44;
+const GUST = 36;
+const CALM = 44;
 /** Ticks between tumbleweeds from the dry brush. */
-export const TUMBLE_EVERY = 140;
+const TUMBLE_EVERY = 140;
 
 export function desertBlocks(pal: Pal): Kit {
   const k = kit(pal);

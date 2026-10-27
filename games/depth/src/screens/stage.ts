@@ -8,13 +8,13 @@ import { teapotModel } from '../models/cast';
 export const W = 320;
 export const H = 200;
 
-export const CHECKER: Material = { color: checker(rgb(236, 232, 244), rgb(32, 30, 70), 1), diffuse: 0.9, reflect: 0.16, fresnel: 0.25, spec: 0.4, shine: 40 };
+const CHECKER: Material = { color: checker(rgb(236, 232, 244), rgb(32, 30, 70), 1), diffuse: 0.9, reflect: 0.16, fresnel: 0.25, spec: 0.4, shine: 40 };
 
 export function floor(mat: Material = CHECKER, z = 0): Shape {
   return new Box([-400, -400, z - 2], [400, 400, z], mat);
 }
 
-export interface StageOptions {
+interface StageOptions {
   key?: V;
   keyColor?: V;
   sky?: V;

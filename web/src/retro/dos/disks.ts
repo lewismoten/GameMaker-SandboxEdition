@@ -58,7 +58,7 @@ const hash = fnv1a;
 function looks(g: CatalogEntry): Pick<Disk, 'color' | 'stripe' | 'note' | 'density'> {
   const group = g.company ?? g.author;
   const rsd = RSD_GAMES.includes(g.id);
-  // Each publisher gets its own color, in the order they appear; others are light grey.
+  // Each publisher gets its own color, in the order they appear; others are light gray.
   const groupIndex = group ? [...new Set(PUBLISHERS)].indexOf(group) : -1;
   return {
     color: rsd ? RSD_PINK : groupIndex >= 0 ? COLORS[groupIndex % COLORS.length] : '#bdb8ad',

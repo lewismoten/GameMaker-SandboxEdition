@@ -1,8 +1,9 @@
 // Level 1: DOME SWEET DOME. Hover Heights, a subdivision of dome homes where the robots
 // mow the lawns and the newspaper is fired from a cannon. Sparky has scattered Dex's
-// report all over the neighborhood. The garage remote is lost in the hedge garden, the
-// Zapper is in the backyard, and the Teleport-A-Phone on the corner goes to the Skyway.
-// Grandpa's 1976½ CitiCar sits on its charger by the house: honk it for 1976 points.
+// report all over the neighborhood. Grandpa's key ring is lost in the hedge garden; its clicker
+// opens the garage gate to the backyard and the Zapper, and its keys open Grandpa's 1976½
+// CitiCar on its charger by the house (honk it for 1976 points). Step in, and it flies Dex to
+// the Skyway: that's the way out. The phone booths on the corner are all out of order today.
 import { LevelMap, type Legend } from './mapkit';
 import type { BlockSet } from '../blocks/book';
 import { MON } from '../ids';
@@ -28,7 +29,6 @@ const LEGEND: Legend = {
   G: 'garagedoor',
   g: 'garagewall',
   B: 'booth_top',
-  b: { tile: 'booth_door', mark: 'exit' },
   x: 'booth_dead',
   r: 'booth_ring',
   p: 'page_grass',
@@ -39,7 +39,7 @@ const LEGEND: Legend = {
   a: 'battery_grass',
   z: 'zapper_grass',
   L: 'cola_grass',
-  R: 'remote_grass',
+  R: 'keys_grass',
   D: { big: 'dome', w: 4, h: 3 },
   E: { big: 'domeB', w: 4, h: 3 },
   C: { big: 'citi', w: 2, h: 2 },
@@ -76,7 +76,7 @@ const ROWS = [
   'I.M.....,....:||..EEEE..........||:......x..r..I', // 14
   'I............:||.....q.......3..||:..*.........I', // 15
   'I.,,.....T...:||.T..............||:.......q...BI', // 16
-  'I..........3.:||.....2......T...||:...T.......bI', // 17
+  'I..........3.:||.....2......T...||:...T.......xI', // 17
   'I.q..HHH.....:||..,,.......q....||:............I', // 18
   'I....HHH.....:||................||:.....,,.....I', // 19
   '==============++================++=============I', // 20
@@ -96,5 +96,7 @@ const ROWS = [
 export function level1(set: BlockSet): LevelMap {
   const m = new LevelMap(set, 'void');
   m.stamp(0, 0, ROWS, LEGEND, 'grass');
+  // the CitiCar's door (its back half, lower block) is the way out
+  m.mark('exit', 10, 12);
   return m;
 }

@@ -22,7 +22,7 @@ import {
   type Scene,
 } from '../../formats/game';
 import { type Vga } from '../shared/vga';
-import { Face, GREY2 } from '../shared/facelift';
+import { Face, GRAY2 } from '../shared/facelift';
 import { NOTUSED, NOLINK, EXTRASCENEBUFFER, WORLDTOP, WX, WLEN, WWID, IN, Folder } from './layout';
 
 export abstract class IntegratorState {
@@ -41,7 +41,7 @@ export abstract class IntegratorState {
   curworld = NOTUSED;
   acol = 100; // Accent color (FaceCols[GREEN])
   bcol = 101; // Background color (FaceCols[RED1])
-  speccol = 102; // Special color, for start and end scenes (FaceCols[GREY4])
+  speccol = 102; // Special color, for start and end scenes (FaceCols[GRAY4])
   v!: Vga;
   face!: Face;
   work: WorkArea;
@@ -70,7 +70,7 @@ export abstract class IntegratorState {
   }
 
   protected get worldcol(): number {
-    return this.face.cols[GREY2];
+    return this.face.cols[GRAY2];
   }
 
   /** initalldata / GameClass::Init */

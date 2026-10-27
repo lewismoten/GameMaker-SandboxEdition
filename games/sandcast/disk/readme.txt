@@ -71,9 +71,8 @@ help.
   Tricks .. 2 sit, 3 spin,
             4 play dead,
             5 roll over
-  F2 ...... status (your sand
-            is shown as
-            "Money")
+  F2 ...... status (counts
+            your sand)
   F5 / F6 . save / load
   ESC ..... quit
 

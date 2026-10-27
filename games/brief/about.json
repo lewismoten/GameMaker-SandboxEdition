@@ -18,6 +18,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "32 stories to put back, in four chapters",
     "background": "#c8241e",
     "accent": "#ffd23f",
     "ink": "#fff6e0",

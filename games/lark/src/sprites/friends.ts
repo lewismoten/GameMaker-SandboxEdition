@@ -1,7 +1,7 @@
 // More friends, as 20x20 pictures in the game's ramps: Teddy (a red-gold corgi with a white
 // blaze, his two big ears up and matching), Gwinn (chocolate brown, amber eyes, a pink collar),
 // the Bard of Bizarre (a feathered hat, a lute, and his rooster in spectacles on his shoulder) and
-// the third goat from the left (grey and white, curled horns, a beard, ears out).
+// the third goat from the left (gray and white, curled horns, a beard, ears out).
 import { Pixels } from '../../../kit/pixels';
 import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
@@ -123,7 +123,7 @@ export function goat(happy: number): Pixels {
   p.ring(5, 3, 2, c('stone', 4)).ring(14, 3, 2, c('stone', 4));
   // ears out to the sides
   p.rect(1, 5, 4, 2, c('stone', 3)).rect(15, 5, 4, 2, c('stone', 3));
-  // head, a white blaze, a grey muzzle
+  // head, a white blaze, a gray muzzle
   p.disc(10, 7, 4.5, c('stone', 4));
   p.rect(9, 3, 2, 8, c('paper', 4));
   p.disc(10, 10, 2.5, c('stone', 3));

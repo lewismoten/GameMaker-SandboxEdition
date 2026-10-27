@@ -1,0 +1,21 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.highScores": "Top Ten Bards",
+    "str.hiscore.title": "Top Ten Bards",
+    "str.hiscore.congrats": "Encore! Encore!",
+    "str.invent.money": "Tips:      %d",
+    "str.invent.hitpoints": "Composure: %d",
+    "color.rgb.hsRed": [46, 4, 4],
+    "color.rgb.hsBlue": [4, 6, 36],
+    "color.rgb.hsGreen": [63, 58, 30],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsPrompt": "red",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.title.x": 108,
+    "layout.hiscore.congrats.x": 100
+  }
+}

@@ -66,9 +66,9 @@ export function dbltapBlocks(book: BlockBook, pal: Pal): void {
         [4, 12],
         [6, 14],
       ])
-        p.rect(2, y, w, 1, c('grey', 1));
+        p.rect(2, y, w, 1, c('gray', 1));
     else {
-      p.disc(4, 4, 2.4, c('glow', 2)).rect(8, 2, 9, 1, c('grey', 1)).rect(8, 5, 6, 1, c('grey', 1));
+      p.disc(4, 4, 2.4, c('glow', 2)).rect(8, 2, 9, 1, c('gray', 1)).rect(8, 5, 6, 1, c('gray', 1));
       heart(p, 16, 5, 2, c('red', 2));
     }
     return p;
@@ -112,11 +112,11 @@ export function dbltapBlocks(book: BlockBook, pal: Pal): void {
     for (let y = 7; y < 34; y += 9)
       pic
         .rect(7, y, 26, 6, c('white', 2))
-        .rect(9, y + 2, 14, 1, c('grey', 1))
-        .rect(9, y + 4, 10, 1, c('grey', 1));
+        .rect(9, y + 2, 14, 1, c('gray', 1))
+        .rect(9, y + 4, 10, 1, c('gray', 1));
     heart(pic, 29, 10, 2, c('red', 2));
     heart(pic, 29, 28, 2, c('red', 2));
-    pic.rect(16, 1, 8, 1, c('grey', 1)).disc(20, 38, 1.2, c('grey', 1));
+    pic.rect(16, 1, 8, 1, c('gray', 1)).disc(20, 38, 1.2, c('gray', 1));
     addPicture(
       book,
       'phone',
@@ -213,7 +213,7 @@ export function dbltapSprites(book: SpriteBook, pal: Pal): void {
   const petition = (f: number) => {
     const p = P();
     p.rect(4, 2, 12, 15, c('wood', 3)).rect(5, 4, 10, 12, c('white', 2)).rect(8, 1, 4, 3, c('metal', 2));
-    for (let y = 9; y < 15; y += 2) p.rect(6, y, 8, 1, c('grey', 1));
+    for (let y = 9; y < 15; y += 2) p.rect(6, y, 8, 1, c('gray', 1));
     face(p, pal, 10, 6, { angry: true });
     p.rect(5 + f * 2, 17, 2, 3, c('ink', 1)).rect(13 - f * 2, 17, 2, 3, c('ink', 1));
     return outline(p, ink);
@@ -223,7 +223,7 @@ export function dbltapSprites(book: SpriteBook, pal: Pal): void {
   // a newsletter from the artisanal mushroom rights mailing list, flapping
   const mail = (f: number) => {
     const p = P();
-    p.rect(3, 7, 14, 10, c('white', 2)).line(3, 7, 10, 12, c('grey', 1)).line(16, 7, 10, 12, c('grey', 1));
+    p.rect(3, 7, 14, 10, c('white', 2)).line(3, 7, 10, 12, c('gray', 1)).line(16, 7, 10, 12, c('gray', 1));
     if (f) p.line(3, 7, 0, 3, c('white', 1)).line(16, 7, 19, 3, c('white', 1));
     else p.line(3, 8, 0, 11, c('white', 1)).line(16, 8, 19, 11, c('white', 1));
     blob(p, 10, 14, 2.4, 1.5, pal.r('red'), 1, 3);
@@ -264,7 +264,7 @@ export function dbltapSprites(book: SpriteBook, pal: Pal): void {
   book.add('turtle1', turtle(1), hurts(0));
 }
 
-export function dbltapMonsters(set: Monster[], mb: SpriteBook): void {
+function dbltapMonsters(set: Monster[], mb: SpriteBook): void {
   houseMonsters(set, mb);
   // trending tags drift down off the hamster flag to the floor and away left
   set[DBLTAP_MON.trend] = mon(anim(mb, 'trend0', 'trend1', 6), { power: POWER.foe, thru: 1, end: -1, newmon: DBLTAP_MON.fluff }, [

@@ -33,10 +33,12 @@ export type ProgramRef =
       diskId?: string;
       /** Catalog games: where play saves go (IndexedDB saves, as on the play page). */ saveId?: string;
       /** GMCRACK "patched" this .EXE: the group's intro first. */ cracked?: string;
+      /** A game of yours: its DOS player choices (PLAYHACK, the editor's panel) show as it plays. */ projectId?: string;
     }
   | { kind: 'install'; /** GM30\INSTALL.EXE from the BBS's Warez area, not the CD's. */ from?: 'warez' }
   | { kind: 'gmcrack' }
   | { kind: 'savehack' }
+  | { kind: 'playhack' }
   | { kind: 'backup' }
   | { kind: 'hexedit' }
   | { kind: 'achieve' }

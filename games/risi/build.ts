@@ -33,7 +33,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
 /** The registration fee the 1995 README asks (Game-Maker's 1994 license: shareware asks at least $5). */
-export const PRICE = '$5';
+const PRICE = '$5';
 
 const base = buildPalette('plain');
 const books = Object.fromEntries(SETS.map((s) => [s, buildBlocks(s, base)])) as Record<(typeof SETS)[number], ReturnType<typeof buildBlocks>>;

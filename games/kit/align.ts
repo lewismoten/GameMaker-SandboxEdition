@@ -19,7 +19,7 @@ import { writePng } from './png';
 /** What a map cell holds, by block name ('' or undefined for unnamed). */
 export type NameAt = (x: number, y: number) => string | undefined;
 /** A wanted part: its name, or a test (a RegExp, or { test, toString } for the report). */
-export type Want = string | { test(got: string): boolean; toString(): string };
+type Want = string | { test(got: string): boolean; toString(): string };
 /** Where a part wants its neighbors: [dx, dy, wanted]. */
 export type Need = [number, number, Want][];
 /** A part and the parts that must sit beside it. `need` may be a function of the part's regex
@@ -191,8 +191,8 @@ export function sizesOf(names: Iterable<string>, re: RegExp): Map<string, [numbe
 }
 
 /** A block's picture: palette index at x, y (0..19). */
-export type Pic = (x: number, y: number) => number;
-export interface Seam {
+type Pic = (x: number, y: number) => number;
+interface Seam {
   a: string;
   b: string;
   dir: 'h' | 'v';
@@ -283,7 +283,7 @@ export function writeArea(file: string, sc: DiskScene, x: number, y: number, w: 
 }
 
 /** A PNG of named blocks laid out as rows of names ('' leaves a gap), scaled `s` times. */
-export function writeParts(file: string, pic: (name: string) => Pic, pal: Uint8Array, rows: string[][], s = 4, gap = 0): void {
+function writeParts(file: string, pic: (name: string) => Pic, pal: Uint8Array, rows: string[][], s = 4, gap = 0): void {
   const w = Math.max(...rows.map((r) => r.length));
   const p = new Pixels(w * (20 + gap), rows.length * (20 + gap), 255);
   rows.forEach((r, j) =>
@@ -298,7 +298,7 @@ export function writeParts(file: string, pic: (name: string) => Pic, pal: Uint8A
 
 /** Checks a built disk: every map's multi-block objects (names: each map file's block names by
  * number, undefined to skip the map) by the rules (or each map's own rules), and the art of every pair the maps join. */
-export function auditDisk(
+function auditDisk(
   disk: string,
   names: (map: string) => string[] | undefined,
   rules: PartRule[] | ((map: string) => PartRule[]),

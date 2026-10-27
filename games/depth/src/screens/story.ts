@@ -12,7 +12,7 @@ import { cam, floor, glowMat, props, stage, still, H, W } from './stage';
 const INK: V = rgb(16, 12, 40);
 
 /** A caption: up to four lines in a smoked band at the bottom. */
-export function caption(pic: Picture, lines: string[], color: V = rgb(255, 255, 255)): Picture {
+function caption(pic: Picture, lines: string[], color: V = rgb(255, 255, 255)): Picture {
   for (const l of lines) if (l.length > 39) throw new Error(`Caption line over 39 columns: "${l}"`);
   const top = H - 8 - lines.length * 10;
   panel(pic, 0, top - 4, W, H, rgb(8, 6, 26), 0.72);

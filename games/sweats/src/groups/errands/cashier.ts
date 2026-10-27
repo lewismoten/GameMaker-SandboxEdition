@@ -41,12 +41,12 @@ export function cashierBlocks(book: BlockBook, pal: Pal): void {
   const skyLow = sky(true);
   book.add('skyHigh', skyHigh, AIR);
   book.add('skyLow', skyLow, AIR);
-  // a heavy grey cloud
+  // a heavy gray cloud
   const cloud = clear(40, 20);
-  blob(cloud, 12, 12, 10, 6, R('grey'), 1, 3);
-  blob(cloud, 24, 9, 11, 8, R('grey'), 1, 3);
-  blob(cloud, 32, 13, 7, 5, R('grey'), 1, 3);
-  cloud.rect(3, 16, 36, 2, c('grey', 1));
+  blob(cloud, 12, 12, 10, 6, R('gray'), 1, 3);
+  blob(cloud, 24, 9, 11, 8, R('gray'), 1, 3);
+  blob(cloud, 32, 13, 7, 5, R('gray'), 1, 3);
+  cloud.rect(3, 16, 36, 2, c('gray', 1));
   cut(book, 'cloud', cloud, skyHigh, () => AIR);
   // the asphalt (sweating), a stall's yellow line, and under it
   const asphalt = (line: boolean) => {
@@ -224,8 +224,8 @@ export function cashierBlocks(book: BlockBook, pal: Pal): void {
     'receipt',
     thing((p) => {
       for (let y = 2; y < 18; y++) p.rect(5 + Math.round(Math.sin(y / 3) * 2), y, 9, 1, c('white', y % 2 ? 2 : 1));
-      for (let y = 4; y < 16; y += 2) p.rect(7 + Math.round(Math.sin(y / 3) * 2), y, 3 + ((y * 5) % 4), 1, c('grey', 1));
-      p.rect(6, 17, 9, 1, c('grey', 2));
+      for (let y = 4; y < 16; y += 2) p.rect(7 + Math.round(Math.sin(y / 3) * 2), y, 3 + ((y * 5) % 4), 1, c('gray', 1));
+      p.rect(6, 17, 9, 1, c('gray', 2));
     }),
   );
   plotThing(
@@ -369,16 +369,16 @@ export function cashierSprites(book: SpriteBook, pal: Pal): void {
       .rect(12, 6 + f, 1, 1, ink)
       .rect(10, 8 + f, 3, 1, c('skin', 1));
     p.line(14, 9, 16, 7, c('red', 2)).rect(16, 6, 3, 1, c('white', 2)).set(19, 6, c('orange', 3));
-    p.set(18, 3 - f, c('grey', 2))
-      .set(17, 1 - f, c('grey', 2))
-      .set(19, 2 - f, c('grey', 3));
+    p.set(18, 3 - f, c('gray', 2))
+      .set(17, 1 - f, c('gray', 2))
+      .set(19, 2 - f, c('gray', 3));
     return done(p);
   };
   book.add('cashier0', cashier(0), hello);
   book.add('cashier1', cashier(1), hello);
 }
 
-export function cashierMonsters(set: Monster[], mb: SpriteBook): void {
+function cashierMonsters(set: Monster[], mb: SpriteBook): void {
   const foe = { power: POWER.foe, thru: 1, newmon: CM.poof };
   set[CM.devil] = mon(anim(mb, 'devil0', 'devil1', 7), foe, pace(3, 1));
   set[CM.gnats] = mon(anim(mb, 'gnats0', 'gnats1', 2), { ...foe, thru: 0 }, [

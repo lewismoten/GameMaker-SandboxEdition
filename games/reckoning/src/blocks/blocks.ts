@@ -24,19 +24,19 @@ import { MILK_CARTON, MON, ROLLS, ROLLS_NEEDED, SEQ, STRAW, WILL, WILL_NEEDED } 
 
 export { BlockBook, SOLID };
 /** Solid on top only: stand on it, hop up through it. */
-export const LEDGE = 1;
-export const GRAV = { none: 0, up: 1, down: 4 } as const;
+const LEDGE = 1;
+const GRAV = { none: 0, up: 1, down: 4 } as const;
 const LIFE = 1;
 /** Ticks between milkshakes from the soda fountain. */
-export const SHAKE_EVERY = 40;
+const SHAKE_EVERY = 40;
 /** Ticks between cartons set out on the crate in the reckoning. */
-export const CARTON_EVERY = 160;
+const CARTON_EVERY = 160;
 /** Ticks into the reckoning before the second spout starts to rattle (it throws SPOUT_WARN later). */
-export const SPOUT_WAKE = 200;
+const SPOUT_WAKE = 200;
 /** Ticks the second spout rattles and steams, as a warning, before it throws. */
-export const SPOUT_WARN = 48;
+const SPOUT_WARN = 48;
 /** Ticks between milkshakes from the second spout, once it's awake. */
-export const SPOUT_EVERY = 56;
+const SPOUT_EVERY = 56;
 
 export function buildBlocks(pal: Pal): BlockBook {
   const book = new BlockBook();
@@ -289,7 +289,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   const remote = base.crop(0, 0, 20, 20);
   remote
     .rect(3, 13, 14, 4, c('ink', 1))
-    .rect(3, 13, 14, 1, c('grey', 1))
+    .rect(3, 13, 14, 1, c('gray', 1))
     .set(5, 15, c('red', 3))
     .set(8, 15, c('white', 1))
     .set(11, 15, c('white', 1))
@@ -299,9 +299,9 @@ export function buildBlocks(pal: Pal): BlockBook {
   // the TV, glowing with snow (scenery)
   const tv = (f: number) => {
     const p = wall(65);
-    p.rect(1, 3, 18, 15, c('wood', 1)).rect(3, 5, 14, 11, c('grey', 1));
+    p.rect(1, 3, 18, 15, c('wood', 1)).rect(3, 5, 14, 11, c('gray', 1));
     const r = rng(66 + f);
-    for (let y = 5; y < 16; y++) for (let x = 3; x < 17; x++) if (r() < 0.45) p.set(x, y, c('grey', 2 + Math.floor(r() * 2)));
+    for (let y = 5; y < 16; y++) for (let x = 3; x < 17; x++) if (r() < 0.45) p.set(x, y, c('gray', 2 + Math.floor(r() * 2)));
     p.rect(5, 18, 2, 2, c('wood', 0)).rect(13, 18, 2, 2, c('wood', 0));
     return p;
   };
@@ -360,7 +360,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   const counter = (top: boolean) => {
     const p = P().rect(0, 0, 20, 20, c('wood', 2));
     p.rect(2, 4, 16, 14, c('wood', 1)).disc(15, 11, 1, c('metal', 3));
-    if (top) p.rect(0, 0, 20, 4, c('grey', 3)).rect(0, 0, 20, 1, c('grey', 1)).rect(0, 4, 20, 1, c('grey', 0));
+    if (top) p.rect(0, 0, 20, 4, c('gray', 3)).rect(0, 0, 20, 1, c('gray', 1)).rect(0, 4, 20, 1, c('gray', 0));
     return p;
   };
   book.add('counter', counter(true), { solid: SOLID });
@@ -391,10 +391,10 @@ export function buildBlocks(pal: Pal): BlockBook {
   book.add('bulb', bulb, air);
   const fridgeWall = P();
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) fridgeWall.set(x, y, shadeAt(R('white'), 0, 2, 0.35 + x / 30, x, y));
-  fridgeWall.rect(17, 0, 3, 20, c('grey', 2));
+  fridgeWall.rect(17, 0, 3, 20, c('gray', 2));
   book.add('fridgeWall', fridgeWall, { solid: SOLID });
   const fridgeTop = fridgeWall.crop(0, 0, 20, 20);
-  fridgeTop.rect(0, 0, 20, 3, c('white', 2)).rect(0, 3, 20, 1, c('grey', 2));
+  fridgeTop.rect(0, 0, 20, 3, c('white', 2)).rect(0, 3, 20, 1, c('gray', 2));
   book.add('fridgeTop', fridgeTop, { solid: SOLID });
   const glassShelf = inside(5);
   glassShelf.rect(0, 2, 20, 3, c('white', 2)).rect(0, 2, 20, 1, c('fridge', 3)).rect(0, 5, 20, 1, c('metal', 1));
@@ -488,7 +488,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   const ceilingLight = (on: boolean) => {
     const p = crown.crop(0, 0, 20, 20);
     p.rect(6, 5, 8, 3, c('metal', 1));
-    p.disc(10, 9, 3.4, on ? c('moon', 2) : c('grey', 1));
+    p.disc(10, 9, 3.4, on ? c('moon', 2) : c('gray', 1));
     if (on)
       for (const [x, y] of [
         [4, 12],
@@ -520,7 +520,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   // a roll of toilet paper: counter 21 (never go in without three)
   const roll = (bg: Pixels) => {
     blob(bg, 10, 12, 6, 5, R('white'), 1, 2);
-    bg.disc(13, 12, 2, c('grey', 1)).disc(13, 12, 1, c('grey', 0));
+    bg.disc(13, 12, 2, c('gray', 1)).disc(13, 12, 1, c('gray', 0));
     bg.rect(4, 15, 6, 4, c('white', 2));
     return bg;
   };
@@ -554,7 +554,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   };
   book.add('bathWall', bathWall(), air);
   const toilet = bathWall();
-  toilet.rect(3, 2, 14, 10, c('grey', 0)).rect(5, 11, 10, 6, c('grey', 0)).rect(2, 13, 16, 6, c('grey', 0));
+  toilet.rect(3, 2, 14, 10, c('gray', 0)).rect(5, 11, 10, 6, c('gray', 0)).rect(2, 13, 16, 6, c('gray', 0));
   blob(toilet, 10, 16, 7, 3, R('white'), 0, 2);
   toilet.rect(4, 3, 12, 8, c('white', 2)).rect(4, 3, 12, 1, c('white', 1)).rect(6, 11, 8, 5, c('white', 1)).rect(13, 5, 2, 1, c('metal', 2));
   book.add('toilet', toilet, air);
@@ -624,7 +624,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     const jig = heat === 1 ? 1 : 0;
     p.rect(4 + jig, 8, 12, 12, c('metal', heat ? 2 : 1))
       .rect(4 + jig, 8, 12, 2, c('metal', 3))
-      .rect(6 + jig, 12, 8, 5, c(heat ? 'berry' : 'grey', heat ? 2 : 1));
+      .rect(6 + jig, 12, 8, 5, c(heat ? 'berry' : 'gray', heat ? 2 : 1));
     p.rect(14 + jig, 3, 3, 6, c('metal', 1)).rect(10 + jig, 3, 7, 2, c('metal', 1));
     if (heat) for (let k = 0; k < 3; k++) blob(p, 6 + k * 4 - jig, 4 - (k % 2) * 2, 2, 1.4, R('smoke'), 1, 2);
     if (heat === 2) p.set(11, 6, c('berry', 3)).set(11, 7, c('berry', 3));
@@ -679,7 +679,7 @@ export function buildBlocks(pal: Pal): BlockBook {
 
   // ---------- (last, so every other block keeps its number) hidden things and a guest ----------
   // a tin heart at the back of the fridge's bottom, in the cold glow: a glint crosses it now and then; 100 points
-  const tin = { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 3)], white: c('white', 2), dark: c('grey', 0) };
+  const tin = { ink: c('ink', 0), tin: [c('metal', 0), c('metal', 1), c('metal', 3)], white: c('white', 2), dark: c('gray', 0) };
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(`tinHeart${k || ''}`, drawTinHeart(inside(0), tin, k), {
       next: `tinHeart${(k + 1) % SHINE_FRAMES || ''}`,
@@ -700,7 +700,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     });
   // Teenage Lewie (Snowbound) in the hall's family photos: red knit hat, red coat, the snow shovel
   const lewie = lewieCameo(buildPalette('plain').pal, 'down0', {
-    use: ['ink', 'skin', 'hair', 'red', 'white', 'grey', 'metal', 'wood', 'pjs', 'night'].flatMap((n) => R(n)),
+    use: ['ink', 'skin', 'hair', 'red', 'white', 'gray', 'metal', 'wood', 'pjs', 'night'].flatMap((n) => R(n)),
   });
   book.add(
     'lewiePic',

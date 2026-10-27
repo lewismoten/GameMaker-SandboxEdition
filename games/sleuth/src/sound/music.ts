@@ -81,7 +81,7 @@ const v = (channel: number, instrument: Uint8Array, notes: string, velocity = 10
   transpose,
 });
 
-export function titleSong(): Uint8Array {
+function titleSong(): Uint8Array {
   const [a, b, c] = comp(PROG, 're q. re q.', 0);
   return song(84, [
     v(0, INSTRUMENTS.lead, THEME, 110),
@@ -92,7 +92,7 @@ export function titleSong(): Uint8Array {
   ]);
 }
 
-export function menuSong(): Uint8Array {
+function menuSong(): Uint8Array {
   const bars = ['Dm', 'Gm', 'Dm', 'A7'];
   const [a, b, c] = comp(bars, 'h h');
   return song(72, [
@@ -104,7 +104,7 @@ export function menuSong(): Uint8Array {
   ]);
 }
 
-export function storySong(): Uint8Array {
+function storySong(): Uint8Array {
   const [a, b, c] = comp(PROG, 'w', -1);
   return song(66, [
     v(0, INSTRUMENTS.strings, THEME, 105),
@@ -116,7 +116,7 @@ export function storySong(): Uint8Array {
 }
 
 /** Act One: a walking bass, piano stabs and the theme on a muted trumpet, then a bridge. */
-export function act1Song(): Uint8Array {
+function act1Song(): Uint8Array {
   const prog = [...PROG, 'Bb', 'Eb', 'Dm', 'A7'];
   const [a, b, c] = comp(prog, 'r q e. r s r h');
   const bridge = 'D5 q, C5 e, Bb4 e, A4 h, G4 q, F4 e, Eb4 e, D4 h, F4 q., G4 e, A4 q, D5 q, C#5 w';
@@ -131,7 +131,7 @@ export function act1Song(): Uint8Array {
 }
 
 /** Act Two: 2 AM. An organ moves a half step and back; a bell answers. */
-export function act2Song(): Uint8Array {
+function act2Song(): Uint8Array {
   const bars = ['Dm', 'Eb', 'Dm', 'Eb', 'Gm', 'A7', 'Dm', 'Dm'];
   const [a, b, c] = comp(bars, 'w', -1);
   return song(60, [
@@ -144,7 +144,7 @@ export function act2Song(): Uint8Array {
 }
 
 /** The green room: a clock on the mantel, and the tune very quietly underneath. */
-export function parlorSong(): Uint8Array {
+function parlorSong(): Uint8Array {
   const bars = ['Dm', 'Gm', 'Dm', 'A7'];
   const [a, b, c] = comp(bars, 'w');
   return song(80, [
@@ -157,7 +157,7 @@ export function parlorSong(): Uint8Array {
 }
 
 /** Dawn on the stage: the theme over pounding eighths. */
-export function dawnSong(): Uint8Array {
+function dawnSong(): Uint8Array {
   const [a, b, c] = comp(PROG, 'e e e e e e e e', -1);
   return song(96, [
     v(0, INSTRUMENTS.brass, THEME, 110),
@@ -170,7 +170,7 @@ export function dawnSong(): Uint8Array {
 }
 
 /** The curtain call: the theme in D major. */
-export function wonSong(): Uint8Array {
+function wonSong(): Uint8Array {
   const prog = ['D', 'D', 'G', 'A', 'D', 'G', 'Em', 'A'];
   const tune = THEME.replace(/F4/g, 'F#4').replace(/Bb4/g, 'B4').replace(/C#5/g, 'C#5');
   const [a, b, c] = comp(prog, 'q q q q');
@@ -183,7 +183,7 @@ export function wonSong(): Uint8Array {
   ]);
 }
 
-export function lostSong(): Uint8Array {
+function lostSong(): Uint8Array {
   const bars = ['Dm', 'Bb', 'Gm', 'A7'];
   const [a, b, c] = comp(bars, 'w', -1);
   return song(54, [

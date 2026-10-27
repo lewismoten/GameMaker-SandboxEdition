@@ -53,7 +53,7 @@ function stairs(seed: number): Pixels {
   const p = new Pixels(20, 20, c('paper', 4));
   for (let i = 0; i < 5; i++) {
     const s = seed % 2 ? i : 4 - i;
-    p.rect(i * 4, 16 - s * 4, 4, 4 + s * 4, c('grey', 3))
+    p.rect(i * 4, 16 - s * 4, 4, 4 + s * 4, c('gray', 3))
       .rect(i * 4, 16 - s * 4, 4, 1, c('ink', 1))
       .rect(i * 4, 16 - s * 4, 1, 4 + s * 4, c('ink', 1));
   }
@@ -76,7 +76,7 @@ function pencil(under: Pixels): Pixels {
 
 function vanishingPoint(frame: number, under: Pixels): Pixels {
   const p = on(under);
-  for (let k = 0; k < 4; k++) p.ring(10, 10, 2 + k * 2 + (frame ? 1 : 0), c(k % 2 ? 'ink' : 'grey', k % 2 ? 0 : 2));
+  for (let k = 0; k < 4; k++) p.ring(10, 10, 2 + k * 2 + (frame ? 1 : 0), c(k % 2 ? 'ink' : 'gray', k % 2 ? 0 : 2));
   p.disc(10, 10, 2, c('ink', 0));
   return p;
 }
@@ -87,7 +87,7 @@ function halfJim(): Pixels {
   for (let y = 0; y < 20; y++)
     for (let x = 10; x < 20; x++) {
       const v = p.get(x, y);
-      if (v !== 255) p.set(x, y, (x + y) % 3 === 0 ? c('grey', 2) : 255);
+      if (v !== 255) p.set(x, y, (x + y) % 3 === 0 ? c('gray', 2) : 255);
     }
   return p;
 }
@@ -100,7 +100,7 @@ function eraser(frame: number): Pixels {
 }
 
 function building(seed: number): Pixels {
-  const p = wall('brick', seed % 2 ? 'grey' : 'brown', seed);
+  const p = wall('brick', seed % 2 ? 'gray' : 'brown', seed);
   for (const x of [3, 12]) p.rect(x, 4, 5, 6, c('ink', 0)).rect(x + 1, 5, 3, 4, c(seed % 3 ? 'yellow' : 'sky', 2));
   return p;
 }
@@ -139,19 +139,19 @@ function underwood(frame: number): Pixels {
 /** The bird head on, wings flapping: its face coming down the map, its back going up. */
 function birdHeadOn(frame: number, face: boolean): Pixels {
   const p = blank();
-  p.rect(8, 8, 4, 6, c('grey', 3)).rect(8, 5, 4, 3, c('grey', face ? 4 : 3));
+  p.rect(8, 8, 4, 6, c('gray', 3)).rect(8, 5, 4, 3, c('gray', face ? 4 : 3));
   if (face) p.set(8, 6, c('ink', 0)).set(11, 6, c('ink', 0)).rect(9, 7, 2, 2, c('orange', 3));
-  else p.rect(9, 14, 2, 2, c('grey', 2));
-  if (frame) p.line(8, 9, 3, 5, c('grey', 2)).line(11, 9, 16, 5, c('grey', 2));
-  else p.line(8, 10, 3, 13, c('grey', 2)).line(11, 10, 16, 13, c('grey', 2));
+  else p.rect(9, 14, 2, 2, c('gray', 2));
+  if (frame) p.line(8, 9, 3, 5, c('gray', 2)).line(11, 9, 16, 5, c('gray', 2));
+  else p.line(8, 10, 3, 13, c('gray', 2)).line(11, 10, 16, 13, c('gray', 2));
   return p;
 }
 
 function conveyor(frame: number): Pixels {
   const p = new Pixels(20, 20, c('ink', 1));
-  p.rect(0, 4, 20, 12, c('grey', 2));
-  for (let x = (frame * 3) % 6; x < 20; x += 6) p.rect(x, 4, 2, 12, c('grey', 1));
-  p.rect(0, 3, 20, 1, c('grey', 4)).rect(0, 16, 20, 1, c('grey', 4));
+  p.rect(0, 4, 20, 12, c('gray', 2));
+  for (let x = (frame * 3) % 6; x < 20; x += 6) p.rect(x, 4, 2, 12, c('gray', 1));
+  p.rect(0, 3, 20, 1, c('gray', 4)).rect(0, 16, 20, 1, c('gray', 4));
   // corn on the belt
   p.rect(3 + frame * 2, 7, 6, 4, c('yellow', 3)).rect(3 + frame * 2, 7, 6, 1, c('green', 3));
   return p;
@@ -163,7 +163,7 @@ function chipper(part: number, frame: number): Pixels {
   big.rect(4, 4, 12, 12, c('ink', 0));
   for (let k = 0; k < 6; k++) {
     const a = (k / 6) * Math.PI * 2 + frame * 0.5;
-    big.line(10, 10, 10 + Math.cos(a) * 5, 10 + Math.sin(a) * 5, c('grey', 4));
+    big.line(10, 10, 10 + Math.cos(a) * 5, 10 + Math.sin(a) * 5, c('gray', 4));
   }
   micro(big, 20, 4, 'CHIP', c('yellow', 3));
   micro(big, 20, 11, 'PER', c('paper', 4));
@@ -310,7 +310,7 @@ function art(a: Area): void {
   );
 
   // Repeat Until Texture Is Uniform
-  a.tile('factory', floor('tile', 6, 'grey'));
+  a.tile('factory', floor('tile', 6, 'gray'));
   for (let f = 0; f < 3; f++) a.solid(`belt${f}`, conveyor(f), { next: `belt${(f + 1) % 3}`, ntime: 3 });
   for (let f = 0; f < 2; f++) for (let k = 0; k < 2; k++) a.solid(`chipper${k}${f}`, chipper(k, f), { next: `chipper${k}${1 - f}`, ntime: 4 });
   a.solid('husk', husk(a.tiles.pic('factory')));
@@ -363,7 +363,7 @@ export const OTHER: WingSpec = {
   tint: 'pink',
   stamp: [
     ['night', 3],
-    ['grey', 5],
+    ['gray', 5],
     ['purple', 3],
   ],
   signs: [

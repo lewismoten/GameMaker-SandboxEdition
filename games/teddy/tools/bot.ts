@@ -24,7 +24,7 @@ export type Order =
   | { face: 'left' | 'right' }
   | { until: string; maxTicks?: number; check: (s: Sim) => boolean };
 
-export interface RunResult {
+interface RunResult {
   ok: boolean;
   log: string[];
   keys: RecordedKey[];

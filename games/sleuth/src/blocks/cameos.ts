@@ -1,6 +1,6 @@
 // Friends from other Sandbox games, hung about the Paragon's lobby:
 //   - a playbill for Will, the bald bard of SHAKESPEARE IN SWEATPANTS, in his starched ruff,
-//     velvet doublet, grey sweatpants and fuzzy slippers: ALAS, BARD (two blocks, on the lobby wall)
+//     velvet doublet, gray sweatpants and fuzzy slippers: ALAS, BARD (two blocks, on the lobby wall)
 //   - a playbill for Doc Leo, the friendly hobo clown, with his rubber chicken on its leash
 //   - a tin heart with a little clock face, glinting on a flagstone in a far corner of the
 //     dark trap room (100 points; a glint crosses it now and then)
@@ -28,8 +28,8 @@ export function addCameos(add: Add) {
       // the velvet doublet and its gold buttons, sleeves and hands
       p.rect(7, 12, 7, 3, c('plum', 2)).set(10, 12, c('gold', 4)).set(10, 14, c('gold', 4));
       p.rect(6, 12, 1, 3, c('plum', 1)).rect(14, 12, 1, 3, c('plum', 1)).set(6, 15, c('skin', 3)).set(14, 15, c('skin', 3));
-      // the grey sweatpants and fuzzy pink slippers
-      p.rect(7, 15, 7, 2, c('grey', 5)).set(10, 16, c('grey', 3));
+      // the gray sweatpants and fuzzy pink slippers
+      p.rect(7, 15, 7, 2, c('gray', 5)).set(10, 16, c('gray', 3));
       p.rect(6, 17, 3, 1, c('velvet', 6)).rect(12, 17, 3, 1, c('velvet', 6));
     }),
     S,
@@ -48,10 +48,10 @@ export function addCameos(add: Add) {
     'leo0',
     on(wallFace(), (p) => {
       p.rect(2, 2, 18, 17, c('black', 1)).rect(2, 2, 18, 1, c('gold', 3)).rect(2, 18, 18, 1, c('gold', 3)).rect(2, 2, 1, 17, c('gold', 3));
-      // the chewed-up grey fedora
-      p.rect(7, 3, 6, 2, c('grey', 4)).rect(5, 5, 10, 1, c('grey', 3)).set(8, 4, c('velvet', 5));
+      // the chewed-up gray fedora
+      p.rect(7, 3, 6, 2, c('gray', 4)).rect(5, 5, 10, 1, c('gray', 3)).set(8, 4, c('velvet', 5));
       // the face: stubble, white round the eyes, his own nose, sunburned cheeks, a white mouth patch, a grin
-      p.rect(7, 6, 6, 4, c('skin', 4)).rect(7, 9, 6, 1, c('grey', 2));
+      p.rect(7, 6, 6, 4, c('skin', 4)).rect(7, 9, 6, 1, c('gray', 2));
       p.rect(7, 6, 2, 2, c('paper', 5)).rect(11, 6, 2, 2, c('paper', 5));
       p.set(8, 7, c('black', 0)).set(11, 7, c('black', 0)).rect(9, 7, 2, 2, c('skin', 2));
       p.set(7, 8, c('velvet', 7)).set(12, 8, c('velvet', 7));
@@ -78,7 +78,7 @@ export function addCameos(add: Add) {
     }),
     S,
   );
-  const tin = { ink: c('black', 0), tin: [c('grey', 3), c('grey', 5), c('grey', 6)], white: c('grey', 7), dark: c('grey', 1) };
+  const tin = { ink: c('black', 0), tin: [c('gray', 3), c('gray', 5), c('gray', 6)], white: c('gray', 7), dark: c('gray', 1) };
   // (two frames, plain and glinting: the block set has room for no more)
   add(
     'tinHeart',

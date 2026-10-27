@@ -10,12 +10,10 @@ const page = (lines: string[], pages = 1) => {
   return lines.join('\n');
 };
 
-export const TITLE = 'LOAF #13';
-export const SUBTITLE = '(LEFT IN THE BASKET)';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /** Who made the music the game's FM songs and sung clips come from. */
-export const MUSIC_CREDIT = 'music made with Riffusion (now Google Flow Music)';
+const MUSIC_CREDIT = 'music made with Riffusion (now Google Flow Music)';
 
 /**
  * Who made the song and the pictures: the lyrics, the recording, and the title and cover art,

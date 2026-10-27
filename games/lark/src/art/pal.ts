@@ -67,7 +67,7 @@ const LIGHTS: Record<Light, RGB> = {
   gold: [1, 1, 1],
 };
 
-export interface Pal {
+interface Pal {
   pal: Uint8Array;
   c: (name: string, k: number) => number;
   r: (name: string) => number[];

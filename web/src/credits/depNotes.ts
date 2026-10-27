@@ -13,6 +13,9 @@ export const DEP_NOTES: Record<string, string> = {
   'typescript-eslint': 'Lets ESLint read TypeScript, with its rules that use the types.',
   'eslint-config-prettier': 'Turns off ESLint’s layout rules, so ESLint and Prettier never disagree.',
   globals: 'The names browsers and Node.js define (window, process…), so ESLint knows they exist.',
+  '@modelcontextprotocol/sdk': 'The Model Context Protocol SDK, for the local server that lets AI tools open, check and edit games (npm run mcp).',
+  ws: 'WebSockets in Node.js, for that server’s link to the editor open in a browser tab.',
+  '@types/ws': 'Type descriptions of ws.',
   // sub-dependencies worth a line of their own
   esbuild: 'Turns TypeScript into JavaScript quickly, for Vite and Vitest.',
   rollup: 'Vite’s bundler for the production build.',

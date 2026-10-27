@@ -17,7 +17,7 @@ export function on(base: Pixels, ...sprites: Pixels[]): Pixels {
 
 // ------------------------------------------------------------------ floors and walls
 
-export type FloorKind =
+type FloorKind =
   | 'boards'
   | 'parquet'
   | 'tile'
@@ -70,8 +70,8 @@ export function floor(kind: FloorKind, seed = 1, tint = 'red'): Pixels {
       break;
     case 'marble':
       for (let y = 0; y < 20; y++)
-        for (let x = 0; x < 20; x++) p.set(x, y, Math.sin(x * 0.5 + y * 0.8 + Math.sin(y * 0.6) * 2 + seed) > 0.85 ? c('grey', 3) : c('grey', 5));
-      p.rect(0, 0, 20, 1, c('grey', 4)).rect(0, 0, 1, 20, c('grey', 4));
+        for (let x = 0; x < 20; x++) p.set(x, y, Math.sin(x * 0.5 + y * 0.8 + Math.sin(y * 0.6) * 2 + seed) > 0.85 ? c('gray', 3) : c('gray', 5));
+      p.rect(0, 0, 20, 1, c('gray', 4)).rect(0, 0, 1, 20, c('gray', 4));
       break;
     case 'grass':
       for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, R() < 0.15 ? c('green', 3) : R() < 0.1 ? c('green', 1) : c('green', 2));
@@ -88,7 +88,7 @@ export function floor(kind: FloorKind, seed = 1, tint = 'red'): Pixels {
         for (let x = 0; x < 20; x++) {
           const row = Math.floor(y / 5);
           const edge = y % 5 === 4 || (x + (row % 2) * 5) % 10 === 0;
-          p.set(x, y, edge ? c('grey', 1) : R() < 0.2 ? c('grey', 2) : c('grey', 3));
+          p.set(x, y, edge ? c('gray', 1) : R() < 0.2 ? c('gray', 2) : c('gray', 3));
         }
       break;
     case 'carpet':
@@ -109,16 +109,16 @@ export function floor(kind: FloorKind, seed = 1, tint = 'red'): Pixels {
       break;
     case 'mist':
       for (let y = 0; y < 20; y++)
-        for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(r('grey'), 3, 5, 0.5 + 0.5 * Math.sin(x * 0.4 + seed) * Math.cos(y * 0.3 + seed), x, y));
+        for (let x = 0; x < 20; x++) p.set(x, y, shadeAt(r('gray'), 3, 5, 0.5 + 0.5 * Math.sin(x * 0.4 + seed) * Math.cos(y * 0.3 + seed), x, y));
       break;
     case 'road':
-      for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, R() < 0.1 ? c('grey', 2) : c('grey', 1));
+      for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, R() < 0.1 ? c('gray', 2) : c('gray', 1));
       break;
     case 'dirt':
       for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, R() < 0.2 ? c('brown', 3) : c('brown', 2));
       break;
     case 'snow':
-      for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, R() < 0.1 ? c('sky', 3) : c('grey', 5));
+      for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, R() < 0.1 ? c('sky', 3) : c('gray', 5));
       break;
     case 'dark':
       for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) p.set(x, y, R() < 0.08 ? c('ink', 2) : c('ink', 1));
@@ -135,7 +135,7 @@ export function wall(kind: 'brick' | 'panel' | 'hedge' | 'stone' | 'fence' | 'wa
     for (let y = 0; y < 20; y++)
       for (let x = 0; x < 20; x++) {
         const row = Math.floor(y / 5);
-        p.set(x, y, y % 5 === 4 || (x + (row % 2) * 5) % 10 === 9 ? c('grey', 3) : c(tint, R() < 0.2 ? 1 : 2));
+        p.set(x, y, y % 5 === 4 || (x + (row % 2) * 5) % 10 === 9 ? c('gray', 3) : c(tint, R() < 0.2 ? 1 : 2));
       }
   else if (kind === 'panel') {
     bevel(p, 0, 0, 20, 20, r('wood'), 2, 2);
@@ -145,7 +145,7 @@ export function wall(kind: 'brick' | 'panel' | 'hedge' | 'stone' | 'fence' | 'wa
     for (let i = 0; i < 14; i++) blob(p, R() * 20, R() * 20, 4, 4, r('green'), 1, 4);
   } else if (kind === 'stone') {
     p.px.set(floor('stone', seed).px);
-    p.rect(0, 0, 20, 2, c('grey', 4));
+    p.rect(0, 0, 20, 2, c('gray', 4));
   } else if (kind === 'fence') {
     p.px.set(floor('grass', seed).px);
     for (let x = 1; x < 20; x += 5) p.rect(x, 2, 3, 18, c('wood', 4)).rect(x + 2, 2, 1, 18, c('wood', 2));
@@ -185,7 +185,7 @@ export function sign(lines: string[], blocks: number, o: { board?: string; ink?:
 
 // ------------------------------------------------------------------ people
 
-export interface FigureLook {
+interface FigureLook {
   skin?: string;
   hair?: [string, number];
   hairStyle?: 'short' | 'long' | 'bun' | 'bald' | 'pigtails' | 'wild';
@@ -388,7 +388,7 @@ export function gwinn(step = 0, flip = false): Pixels {
 }
 
 const DOC_LEO: FigureLook = {
-  hat: { kind: 'fedora', color: ['grey', 2] },
+  hat: { kind: 'fedora', color: ['gray', 2] },
   face: 'hobo',
   glasses: true,
   shirt: ['purple', 2],
@@ -585,7 +585,7 @@ export function wordSlip(value: number, frame: number): Pixels {
   p.rect(x + 1, y + 1, w, h, c('ink', 1)); // shadow
   p.rect(x, y, w, h, c('paper', 4)).frame(x, y, w, h, c('paper', 1));
   // a few lines of tiny "print"
-  for (let ly = y + 2; ly < y + h - 1; ly += 2) p.rect(x + 2, ly, w - 4 - ((ly * 3) % 4), 1, c('grey', 2));
+  for (let ly = y + 2; ly < y + h - 1; ly += 2) p.rect(x + 2, ly, w - 4 - ((ly * 3) % 4), 1, c('gray', 2));
   const label = String(value);
   const lx = x + w - label.length * 4 - 1;
   p.rect(lx - 1, y + h - 7, label.length * 4 + 1, 7, c('paper', 4));
@@ -595,14 +595,14 @@ export function wordSlip(value: number, frame: number): Pixels {
   return p;
 }
 
-/** A shusher: a grey ghost of a librarian with a bun, a finger to her lips, and SHH. */
+/** A shusher: a gray ghost of a librarian with a bun, a finger to her lips, and SHH. */
 export function shusher(frame: number): Pixels {
   const p = blank();
   const O = c('ink', 0);
-  const body = c('grey', 4);
+  const body = c('gray', 4);
   const dy = frame ? 1 : 0;
-  blob(p, 10, 8 + dy, 6, 6, r('grey'), 2, 5);
-  p.rect(7, 1 + dy, 6, 3, c('grey', 2)).disc(10, 1 + dy, 2, c('grey', 2)); // the bun
+  blob(p, 10, 8 + dy, 6, 6, r('gray'), 2, 5);
+  p.rect(7, 1 + dy, 6, 3, c('gray', 2)).disc(10, 1 + dy, 2, c('gray', 2)); // the bun
   p.rect(4, 10 + dy, 12, 7, body);
   for (let x = 4; x < 16; x += 3) p.rect(x, 17 + dy, 2, 1 - dy + 1, body); // wavy hem
   p.set(8, 7 + dy, O).set(12, 7 + dy, O);
@@ -636,7 +636,7 @@ export function bubble(rad: number, ramp = 'sky', dy = 0): Pixels {
     p.set(10 - rad / 2, 10 + dy - rad / 2, c('paper', 4));
   } else {
     blob(p, 10, 9 + dy, rad, rad * 1.15, r(ramp), 1, r(ramp).length - 1);
-    p.line(10, 9 + dy + rad * 1.15, 10, 19, c('grey', 4));
+    p.line(10, 9 + dy + rad * 1.15, 10, 19, c('gray', 4));
   }
   return p;
 }

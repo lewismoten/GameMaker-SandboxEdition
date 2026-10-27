@@ -4,13 +4,14 @@
 // DoFunKy, plus browser save/load in place of SaveGame/LoadGame.
 import type { Machine } from './machine';
 import type { Recorder } from './recorder';
-import { aboutScreen, helpScreen, pickDropSlot, pickSaveSlot, statusScreen } from './funcKeys';
+import { aboutScreen, drawLoadHeading, drawSaveHeading, helpScreen, pickDropSlot, pickSaveSlot, statusScreen } from './funcKeys';
 import { moveChars, moveCharGrav, handleJoystick, updateCharScreenPos } from './character';
 import { resetKeys, simKeyPress } from './keys';
 import { blockBirthMonsters, birthMon, moveAllMonsters, resetMonInfo } from './monsters';
 import { renderWorld, updateCharDrawState } from './render';
 import { changeScroll, drawScroll, initScroll } from './scroll';
-import { match, RGB_BLUE, showGraphic } from './showGraphic';
+import { showGraphic } from './showGraphic';
+import { STOCK_LOOK, type PlayerLook } from './playerLook';
 import { getTouchBlocks } from './touch';
 import {
   BACKBL,
@@ -42,11 +43,12 @@ import { parseSoundSet, type SoundSet } from '../formats/sound';
 import { MAXSCENELINKS, NOSCENE, type Game } from '../formats/game';
 import { TICK_RATE } from '../audio/cmfPlayer';
 import { scrollCost, SlowCpu, tickCost, type PcCosts } from './slowPc';
+import { gainAtLoad, newPlayGain, type PlayGain } from './playGain';
 
 const DEAD = 2;
 
 /** How a play ended: the Game Won scene, no lives left, or Esc (or a scene that could not load). */
-export type PlayEnd = 'won' | 'lost' | 'quit';
+type PlayEnd = 'won' | 'lost' | 'quit';
 
 /** Everything that lives across scenes (playgame's globals outside a level). */
 export interface Session {
@@ -68,6 +70,10 @@ export interface Session {
   onFrame?: (w: World) => void;
   /** Emulated PC speed; read every tick so it can change while playing. */
   speed: SpeedSetting;
+  /** RunOptions.gmHelp: Game-Maker's own GMHELP.TXT, which F1 shows first (PLAYGAME.EXE only). */
+  gmHelp?: Uint8Array;
+  /** RunOptions.player as the screens use it (engine/playerLook.ts); left out, the CD player's look. */
+  look?: PlayerLook;
   /** The random numbers a level's monsters get as it loads (default Math.random; a walkthrough seeds them). */
   rand?: () => () => number;
   /** Told the scene number each time play() enters a scene (before its picture). */
@@ -77,8 +83,11 @@ export interface Session {
   /**
    * Not PLAYGAME's: play ended (won, lost, or left with Esc) with this score, just before the
    * high score table. Never told during a demo's playback. It only listens: nothing changes.
+   * `gained` is the points the play scored itself, leaving out those F6 loaded (playGain.ts).
    */
-  onPlayEnd?: (score: number, how: PlayEnd) => void;
+  onPlayEnd?: (score: number, how: PlayEnd, gained: number) => void;
+  /** Not PLAYGAME's: the stretches of this play between F6 loads (playGain.ts). */
+  gain?: PlayGain;
   /**
    * The last level played. loadscene loads into globals, so a level that leaves its
    * palette, block or character slot blank keeps the previous level's (PLAYGAME.C 4239).
@@ -205,6 +214,7 @@ export function startGameInits(s: Session): void {
   ci.hitpts = -1;
   ci.lives = -1;
   ci.score = 0;
+  s.gain = newPlayGain();
   ci.inv.fill(BACKBL + 1);
   ci.meter.fill(-1);
 }
@@ -320,18 +330,16 @@ function checkLinks(s: Session, w: World, scene: number): number {
 
 async function missingFiles(s: Session, files: string[]): Promise<void> {
   const { m } = s;
+  const look = s.look ?? STOCK_LOOK;
   m.screen.setPalette(new Uint8Array(768));
-  m.screen.setColor(1, 63, 63, 0);
-  m.screen.setColor(2, 63, 0, 33);
-  m.screen.setColor(3, 0, 58, 58);
-  m.screen.setColor(4, 63, 0, 0);
+  for (let n = 1; n <= 4; n++) m.screen.setColor(n, ...look.rgb(`color.missing.${n}`));
   m.screen.clear();
-  m.screen.box(10, 10, 310, 190, 4);
-  m.screen.box(15, 15, 305, 185, 4);
-  m.screen.write(40, 20, 1, 'I am missing these game files:');
+  m.screen.box(...look.frame('border.missing.outer'), 4);
+  m.screen.box(...look.frame('border.missing.inner'), 4);
+  m.screen.write(40, 20, 1, look.text('str.missing.title'));
   files.forEach((f, i) => m.screen.write(32, (9 + i) * 8, 2, f));
-  m.screen.write(120, 168, 3, 'Hit any key...');
-  await m.pauseTimeKey(20);
+  m.screen.write(120, 168, 3, look.text('str.missing.anyKey'));
+  await m.pauseTimeKey(look.seconds('timing.missingFiles'));
 }
 
 interface SceneResult {
@@ -364,6 +372,7 @@ export interface Saved {
 /** playscene: plays one level. link in/out follows the original's conventions. */
 export async function playScene(s: Session, dosc: number, prev: number, linkIn: number): Promise<SceneResult> {
   const { m, game } = s;
+  const look = s.look ?? STOCK_LOOK;
   let doscene = dosc;
   let prevscene = prev;
   let linkin = linkIn;
@@ -449,7 +458,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     do {
       if (
         await moveChars(w, async () => {
-          const slot = await pickDropSlot(m, w);
+          const slot = await pickDropSlot(m, w, look);
           // DropBloc gave the keyboard back to the BIOS while its screen was up, so keys
           // pressed there (such as Esc to cancel) never reached the game.
           m.flushKeys();
@@ -478,12 +487,13 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
     m.flushKeys();
     const pal = w.palette;
     m.screen.setPalette(pal);
-    switch (n) {
+    // a key the player's patches turned off still blanks the screen for a moment (DoFunKy's 0x28F9)
+    switch (look.fkeyOn(n) ? n : 0) {
       case 1:
-        await helpScreen(m, w, sceneFile(game, 0, 6));
+        await helpScreen(m, w, sceneFile(game, 0, 6), s.gmHelp, look);
         break;
       case 2:
-        await statusScreen(m, w);
+        await statusScreen(m, w, look);
         break;
       case 5:
         await saveGame(s, w, { prevscene, doscene, linkin });
@@ -494,12 +504,12 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
         break;
       }
       case 9:
-        m.screen.write(40, 80, match(pal, RGB_BLUE), 'Joysticks are configured by');
-        m.screen.write(40, 88, match(pal, RGB_BLUE), 'your browser (Gamepad API).');
+        m.screen.write(40, 80, look.color(pal, 'color.select.joyText'), 'Joysticks are configured by');
+        m.screen.write(40, 88, look.color(pal, 'color.select.joyText'), 'your browser (Gamepad API).');
         await m.pauseTimeKey(5);
         break;
       case 10:
-        await aboutScreen(m, w);
+        await aboutScreen(m, w, look);
         break;
     }
     // Re-setup for play: everything restarts from the block grid around the character.
@@ -631,20 +641,20 @@ export function savedState(w: World, where: { prevscene: number; doscene: number
 
 async function saveGame(s: Session, w: World, where: { prevscene: number; doscene: number; linkin: number }): Promise<void> {
   const { m, game } = s;
+  const look = s.look ?? STOCK_LOOK;
   s.rec.pause();
   const bg = sceneFile(game, 0, 10);
   const cols = new Uint8Array(768);
-  if (bg) await showGraphic(m, bg, { cols, pause: 0, gamePalette: w.palette });
+  if (bg) await showGraphic(m, bg, { cols, pause: 0, gamePalette: w.palette, look });
   else {
     cols.set(w.palette);
-    m.screen.write(124, 10, match(cols, RGB_BLUE), 'Save Game');
-    for (let i = 0; i < 10; i++) m.screen.write(73, 40 + i * 14, match(cols, RGB_BLUE), '>');
+    drawSaveHeading(m.screen, look, cols);
   }
-  const slot = await pickSaveSlot(m, cols, true);
+  const slot = await pickSaveSlot(m, cols, true, look);
   if (slot >= 0) {
     m.files.set(SAVE_FILE(slot), new TextEncoder().encode(JSON.stringify(savedState(w, where, s.sndClock, s.rec))));
-    m.screen.write(112, 185, match(cols, RGB_BLUE), 'Game Saved!');
-    await m.pauseTimeKey(2);
+    m.screen.write(112, 185, look.color(cols, bg ? 'color.select.saveTextPic' : 'color.select.saveText'), look.text('str.save.done'));
+    await m.pauseTimeKey(look.seconds('timing.saveMessage'));
   }
   s.rec.unpause();
 }
@@ -681,20 +691,22 @@ export function restoreSaved(
 
 async function loadGame(s: Session, w: World): Promise<{ w: World; prevscene: number; doscene: number; linkin: number; song?: Uint8Array } | undefined> {
   const { m, game } = s;
+  const look = s.look ?? STOCK_LOOK;
   const bg = sceneFile(game, 0, 9);
   const cols = new Uint8Array(768);
-  if (bg) await showGraphic(m, bg, { cols, pause: 0, gamePalette: w.palette });
+  if (bg) await showGraphic(m, bg, { cols, pause: 0, gamePalette: w.palette, look });
   else {
     cols.set(w.palette);
-    m.screen.write(124, 10, match(cols, RGB_BLUE), 'Load Game');
+    drawLoadHeading(m.screen, look, cols);
   }
-  const slot = await pickSaveSlot(m, cols, false);
+  const slot = await pickSaveSlot(m, cols, false, look);
   if (slot < 0) return undefined;
   const bytes = m.files.get(SAVE_FILE(slot));
-  const blue = match(cols, RGB_BLUE);
+  const blue = look.color(cols, bg ? 'color.select.loadTextPic' : 'color.select.loadText');
+  const wait = look.seconds('timing.loadMessage');
   if (!bytes) {
-    m.screen.write(40, 185, blue, 'This game has not been saved!');
-    await m.pauseTimeKey(2);
+    m.screen.write(40, 185, blue, look.text('str.load.empty'));
+    await m.pauseTimeKey(wait);
     return undefined;
   }
   let data: Saved;
@@ -702,16 +714,18 @@ async function loadGame(s: Session, w: World): Promise<{ w: World; prevscene: nu
     data = JSON.parse(new TextDecoder().decode(bytes));
   } catch {
     m.screen.write(40, 185, blue, 'This saved game is damaged!');
-    await m.pauseTimeKey(2);
+    await m.pauseTimeKey(wait);
     return undefined;
   }
   await sceneReady(s, data.doscene);
+  const before = s.ci.score;
   const loaded = restoreSaved(s, w, data);
   if (!loaded) return undefined;
+  gainAtLoad((s.gain ??= newPlayGain()), before, s.ci.score);
   const nw = loaded.world;
   attachSound(s, nw, loaded.sounds);
-  m.screen.write(88, 185, blue, 'Old Game Loaded!');
-  await m.pauseTimeKey(2);
+  m.screen.write(88, 185, blue, look.text('str.load.done'));
+  await m.pauseTimeKey(wait);
   if (s.musicOn) void m.audio.playSong(loaded.song);
   return { w: nw, prevscene: data.prevscene, doscene: data.doscene, linkin: data.linkin, song: loaded.song };
 }

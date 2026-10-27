@@ -20,8 +20,8 @@ export function norm(v: V): V {
 }
 
 /** A 3x3 rotation as rows (object to world). */
-export type M3 = number[];
-export const IDENTITY: M3 = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+type M3 = number[];
+const IDENTITY: M3 = [1, 0, 0, 0, 1, 0, 0, 0, 1];
 export function rotX(a: number): M3 {
   const c = Math.cos(a);
   const s = Math.sin(a);
@@ -31,11 +31,6 @@ export function rotY(a: number): M3 {
   const c = Math.cos(a);
   const s = Math.sin(a);
   return [c, 0, s, 0, 1, 0, -s, 0, c];
-}
-export function rotZ(a: number): M3 {
-  const c = Math.cos(a);
-  const s = Math.sin(a);
-  return [c, -s, 0, s, c, 0, 0, 0, 1];
 }
 /** a then b: the rotation that applies `b` first, then `a`. */
 export function mulM(a: M3, b: M3): M3 {
@@ -50,14 +45,10 @@ export const apply = (m: M3, v: V): V => [
   m[3] * v[0] + m[4] * v[1] + m[5] * v[2],
   m[6] * v[0] + m[7] * v[1] + m[8] * v[2],
 ];
-export const applyT = (m: M3, v: V): V => [
-  m[0] * v[0] + m[3] * v[1] + m[6] * v[2],
-  m[1] * v[0] + m[4] * v[1] + m[7] * v[2],
-  m[2] * v[0] + m[5] * v[1] + m[8] * v[2],
-];
+const applyT = (m: M3, v: V): V => [m[0] * v[0] + m[3] * v[1] + m[6] * v[2], m[1] * v[0] + m[4] * v[1] + m[7] * v[2], m[2] * v[0] + m[5] * v[1] + m[8] * v[2]];
 
 /** Where a shape sits: object point p is at rot * (p * size) + pos in the world. */
-export interface Place {
+interface Place {
   rot: M3;
   pos: V;
   size: number;
@@ -65,7 +56,7 @@ export interface Place {
 export const placed = (pos: V = [0, 0, 0], rot: M3 = IDENTITY, size = 1): Place => ({ rot, pos, size });
 
 /** What a ray found, in object space (`p`, `n`) and the world (`n` is world). */
-export interface LocalHit {
+interface LocalHit {
   t: number;
   /** Object-space normal. */
   n: V;
@@ -161,7 +152,7 @@ export abstract class Shape {
 }
 
 /** Does a ray meet a box before tmax? */
-export function boxHit(box: [V, V], o: V, d: V, tmax: number): boolean {
+function boxHit(box: [V, V], o: V, d: V, tmax: number): boolean {
   const mn = box[0];
   const mx = box[1];
   let t0 = 0;

@@ -1,16 +1,18 @@
 // The level check's text-screen contrast: each text page drawn over a picture the check can know
 // (textScreens.ts), its text color (the palette's nearest deep purple, as PLAYGAME picks it)
-// against the picture under each letter; and the menu's blue words against the menu picture.
+// against the picture under each letter; and the menu's words (blue, or the project's DOS player
+// patches' color, words and places, engine/playerLook.ts) against the menu picture.
 // It measures with the WCAG contrast ratio (sceneData.ts), letter by letter.
 import type { Game } from '../../../formats/game';
-import { match, RGB_BLUE } from '../../../engine/showGraphic';
+import { playerLook, type PlayerLook } from '../../../engine/playerLook';
+import type { PlayerPatches } from '../../../dosPlayer/patchRules';
 import type { Finding } from '../findings';
 import { contrastRatio, luminance } from '../sceneData';
 import type { FileSource } from '../sim';
 import { menuScreen, textPages, type Backdrop, type TextPage, type TextRole } from '../textScreens';
 
 /** A letter is hard to read below this ratio against the picture under it (WCAG's floor for large text). */
-export const MIN_RATIO = 3;
+const MIN_RATIO = 3;
 /** A page is reported when at least this share of its letters is hard to read. */
 const HARD_SHARE = 0.2;
 
@@ -56,13 +58,16 @@ const ROLE_WORD: Record<TextRole, string> = {
 
 const pageWords = (p: TextPage) => p.lines.map((text, i) => ({ x: 40, y: (5 + i) * 8, text }));
 
-/** The menu's words as PLAYGAME writes them (engine/game.ts): the game's name and six choices. */
-const menuWords = (name: string) => [
-  { x: 96, y: 104, text: name },
-  ...['Play', 'Read Instructions', 'Read Storyline', 'See Credits', 'See Highest Scores', 'Quit'].map((text, i) => ({ x: 80, y: (15 + i) * 8, text })),
+const MENU_WORDS = ['play', 'instructions', 'storyline', 'credits', 'highScores', 'quit'];
+
+/** The menu's words as the player writes them (engine/menus.ts drawMenu): the game's name and six choices. */
+const menuWords = (look: PlayerLook, name: string) => [
+  { x: look.num('layout.menu.titleX'), y: look.num('layout.menu.titleY'), text: name },
+  ...MENU_WORDS.map((w) => ({ x: look.num(`layout.menu.${w}.x`), y: look.num(`layout.menu.${w}.y`), text: look.text(`str.menu.${w}`) })),
 ];
 
-export function textContrast(game: Game, files: FileSource): Finding[] {
+/** `player`: the project's DOS player patches, which can move, reword and recolor the menu. */
+export function textContrast(game: Game, files: FileSource, player?: PlayerPatches): Finding[] {
   const out: Finding[] = [];
   const pages = textPages(game, files);
   const seen = new Set<string>();
@@ -86,8 +91,9 @@ export function textContrast(game: Game, files: FileSource): Finding[] {
   const menuFile = game.scenes[0]?.files[2];
   const menu = menuFile ? menuScreen(game, files) : undefined;
   if (menuFile && menu) {
-    const blue = match(menu.palette, RGB_BLUE);
-    const m = measure(menu, blue, menuWords(game.scenes[0].desc));
+    const look = playerLook(player);
+    const blue = look.color(menu.palette, 'color.select.menu');
+    const m = measure(menu, blue, menuWords(look, game.scenes[0].desc));
     if (m.total && m.hard >= m.total * HARD_SHARE)
       out.push({
         check: 'text-contrast',

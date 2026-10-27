@@ -26,7 +26,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
  * `maxLoss` dignity (or goes wrong), it is taken back and played again after a short wait, so
  * he sets out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -52,10 +52,10 @@ export async function carefully(bot: Bot, label: string, maxLoss: number, stretc
   throw new Error(`${label}: no safe moment (${why})\n${bot.log.slice(-10).join('\n')}`);
 }
 
-export const will = (bot: Bot) => bot.sim.meter(WILL) - 1;
-export const rolls = (bot: Bot) => bot.sim.meter(ROLLS) - 1;
-export const straws = (bot: Bot) => bot.sim.meter(STRAW) - 1;
-export const milk = (bot: Bot) => bot.sim.meter(SEQ.throw);
+const will = (bot: Bot) => bot.sim.meter(WILL) - 1;
+const rolls = (bot: Bot) => bot.sim.meter(ROLLS) - 1;
+const straws = (bot: Bot) => bot.sim.meter(STRAW) - 1;
+const milk = (bot: Bot) => bot.sim.meter(SEQ.throw);
 
 /** I. 3:17 a.m.: out of bed, past the creaky board, the dogs, the basket and the toy blocks, through the living room to the kitchen. */
 export async function bedroom(bot: Bot): Promise<void> {

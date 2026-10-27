@@ -18,6 +18,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "levels": "23 haywire circuit boards",
     "background": "#0d3a24",
     "accent": "#ffd23c",
     "ink": "#ffffff",

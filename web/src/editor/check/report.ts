@@ -4,15 +4,20 @@
 // report the worker can post back (plain data: heat maps as typed arrays, no engine objects).
 import type { GameFiles } from '../../project/files';
 import { blockChecks, counterSources, counters } from './checks/blockChecks';
-import { characterChecks, controls, endingChecks, jumps, mechanics, soundChecks, variety } from './checks/gameChecks';
+import { characterChecks, controls, endingChecks, jumps, mechanics, soundChecks, speedCap, variety } from './checks/gameChecks';
+import { cornerLinks, offMap, shadowedLinks, solidLinks, startsOnLink, wonRoute } from './checks/linkChecks';
+import { missingFiles, missingVocs, outOfRange } from './checks/missingParts';
 import { monsterChecks, startThreat } from './checks/monsterChecks';
 import { sealed } from './checks/sealed';
 import { facing } from './checks/facing';
 import { fliCheck } from './checks/fliCheck';
+import type { PlayerPatches } from '../../dosPlayer/patchRules';
 import { lookalike, tapTwice, teachFirst } from './checks/playerChecks';
 import { keyReach } from './checks/keyReach';
 import { helpKeys } from './checks/helpKeys';
 import { textContrast } from './checks/textContrast';
+import { colorZero } from './checks/colorZero';
+import { dosChars } from './checks/dosChars';
 import { blankIdle, startValues } from './checks/heroStart';
 import { shotPrize } from './checks/shotPrize';
 import { changingKeys, keyHabits } from './checks/keyHabits';
@@ -56,7 +61,7 @@ export interface Report {
   won?: boolean;
   /** Level scenes play never got to. */
   unreached: number[];
-  cancelled: boolean;
+  canceled: boolean;
   ms: number;
 }
 
@@ -78,7 +83,18 @@ export interface CheckOptions {
   leaveBehind?: boolean;
   /** Head for the scene's links first (playtest.ts towardExits): a way through sooner, less of the rest. */
   towardExits?: boolean;
+  /** The project's DOS player patches (dosPlayer/), for the menu's words in the text-contrast check and the words the color 0 check matches. */
+  player?: PlayerPatches;
 }
+
+/** A scene the bot couldn't load or play: said, rather than stopping the whole check. */
+const couldNotPlay = (scene: number, name: string, error: string): Finding => ({
+  check: 'coverage',
+  severity: 'warning',
+  title: `The bot couldn’t play ${name}`,
+  detail: `${error}. Nothing in it was played, so its play checks didn’t run.`,
+  where: { scene },
+});
 
 function summarize(r: SceneRun, map?: string): RunSummary {
   return {
@@ -126,6 +142,14 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...noWayOut(d, game),
       ...music(d, game, files),
       ...flashing(d),
+      ...shadowedLinks(game, d),
+      ...startsOnLink(game, d, all),
+      ...cornerLinks(game, d),
+      ...solidLinks(game, d),
+      ...offMap(game, d),
+      ...missingVocs(d, files),
+      ...outOfRange(d),
+      ...speedCap(d),
     );
     findings.push(...(await landings(d, game, files)));
   }
@@ -133,7 +157,9 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
     findings.push(
       ...controls(files),
       ...helpKeys(game, files),
-      ...textContrast(game, files),
+      ...textContrast(game, files, opt.player),
+      ...colorZero(game, files, opt.player),
+      ...dosChars(game, files, files.mainGame()),
       ...startValues(game, all),
       ...stakes(game, all),
       ...changingKeys(files),
@@ -144,8 +170,10 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...mechanics(all),
       ...fliCheck(files),
       ...teachFirst(game, files, all),
+      ...wonRoute(game, all),
+      ...missingFiles(game, files, all),
     );
-  const report: Report = { findings, runs: [], unreached: [], cancelled: false, ms: 0 };
+  const report: Report = { findings, runs: [], unreached: [], canceled: false, ms: 0 };
   if (opt.play !== false) {
     const feed = new LiveFeed(now);
     const budgetMs = opt.budgetMs ?? 10_000;
@@ -159,20 +187,25 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
     const runs: SceneRun[] = [];
     const name = (n: number) => game.scenes[n]?.desc.trim() || `scene ${n}`;
     if (opt.scene !== undefined) {
-      const r = await playtestScene(game, files, opt.scene, { budgetMs: opt.budgetMs, progress, towardExits: opt.towardExits });
+      let r: SceneRun | undefined;
+      try {
+        r = await playtestScene(game, files, opt.scene, { budgetMs: opt.budgetMs, progress, towardExits: opt.towardExits });
+        if (!r) report.canceled = true;
+      } catch (e) {
+        findings.push(couldNotPlay(opt.scene, name(opt.scene), e instanceof Error ? e.message : String(e)));
+      }
       if (r) runs.push(r);
-      else report.cancelled = true;
     } else {
       const p = await playtestGame(game, files, { budgetMs: opt.budgetMs, progress, towardExits: opt.towardExits });
       runs.push(...p.runs);
       report.won = p.won;
       report.unreached = p.unreached;
-      report.cancelled = p.cancelled;
-      findings.push(...curve(runs));
+      report.canceled = p.canceled;
+      findings.push(...curve(runs), ...p.failed.map((f) => couldNotPlay(f.scene, name(f.scene), f.error)));
       // and again, leaving behind everything it can: is the end still in reach?
-      if (p.won && !p.cancelled && opt.leaveBehind !== false) {
+      if (p.won && !p.canceled && opt.leaveBehind !== false) {
         const poor = await playtestGame(game, files, { budgetMs: opt.budgetMs, progress, leaveBehind: true, towardExits: opt.towardExits });
-        report.cancelled ||= poor.cancelled;
+        report.canceled ||= poor.canceled;
         findings.push(...softlocks(p, poor, all, name));
       }
     }
@@ -181,12 +214,12 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       findings.push(...playFindings(r, d), ...oneWay(r, d));
       report.runs.push(summarize(r, d?.names.map));
     }
-    if (opt.steadyMs && !report.cancelled) {
+    if (opt.steadyMs && !report.canceled) {
       const ticks = Math.max(1, Math.round((opt.steadyMs / 1000) * 18.2));
       for (const r of runs) {
         const steady = await replayScene(game, files, r, { budgetMs: opt.budgetMs, progress, steadyTicks: ticks, towardExits: opt.towardExits });
         if (!steady) {
-          report.cancelled = true;
+          report.canceled = true;
           break;
         }
         findings.push(

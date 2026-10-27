@@ -2,7 +2,7 @@
    typewriter text, cut-out ransom-note headings, notes scrawled in the margin. Sized in cqw (a
    hundredth of the leaf's width), so a leaf looks the same at any size and in print. */
 
-.pp-zine {
+.pp-sheet.pp-zine {
   display: flex;
   flex-direction: column;
   padding: 7cqw 6cqw 4cqw 8cqw;
@@ -18,7 +18,7 @@
     monospace;
 }
 
-.pp-zine-blank {
+.pp-sheet.pp-zine-blank {
   background: #fafaf6;
 }
 
@@ -246,4 +246,23 @@
   background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.55) 25%, rgba(0, 0, 0, 0.35) 70%, transparent);
   filter: blur(0.08em);
   transform: rotate(-2deg);
+}
+
+/* scrolled (readView.ts): every leaf in a column, Back and Next kept at the foot */
+.zine-turner.scrolled {
+  padding-top: 4px;
+}
+
+.zine-turner.scrolled .rv-page > .pp-paper {
+  width: 100%;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.zine-turner.scrolled > .zine-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(20, 12, 6, 0.85);
 }

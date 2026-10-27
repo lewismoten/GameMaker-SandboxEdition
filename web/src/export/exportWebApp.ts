@@ -5,12 +5,14 @@
 import { createZip, type ZipEntry } from '../project/zip';
 import type { GameFiles } from '../project/files';
 import { hashText, serviceWorkerSource } from './serviceWorker';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 import { encodeGame, fillPage, GAME_MARK } from './singlePage';
 import { gameAbout } from './gameAbout';
 import { gameDescription, REPO_URL, SITE_URL } from '../seo/site';
 import { PRODUCT } from '../edition';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 import { PROJECT } from './notices';
+import { withoutExtensions } from '../dosPlayer/fileExtensions';
 
 export interface ExportOptions {
   title: string;
@@ -22,6 +24,8 @@ export interface ExportOptions {
   appBase?: string;
   /** Our own games: made now, presented as a 1990s release (fiction.ts). */
   fiction?: string;
+  /** The project's DOS player customizations, so the app shows XFERPLAY's screens as the DOS export does. */
+  player?: PlayerPatches;
 }
 
 const ICONS = ['icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'icon.svg', 'apple-touch-icon.png'];
@@ -63,7 +67,10 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
 
   const gameEntries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
   const { blurb, notice } = gameAbout(gameEntries);
-  const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice }, gameEntries);
+  // renamed file extensions are for the DOS download only
+  const look = opts.player && withoutExtensions(opts.player);
+  const player = look && Object.keys(look).length ? look : undefined;
+  const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice, player }, gameEntries);
   const audio = recordedAudioNotice(recordedClips(files), 78, '  ');
   entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb, fiction: opts.fiction, audio }), theme)) });
 

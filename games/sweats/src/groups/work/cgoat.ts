@@ -162,13 +162,13 @@ export function cgoatBlocks(book: BlockBook, pal: Pal): void {
   // employee of the month: a goat (he blinks, and there it is)
   const eom = wall(38);
   eom.rect(2, 1, 16, 18, c('wood', 1)).rect(4, 3, 12, 11, c('daylight', 2));
-  blob(eom, 10, 9, 3.4, 3, R('grey'), 1, 3);
+  blob(eom, 10, 9, 3.4, 3, R('gray'), 1, 3);
   eom
-    .line(7, 6, 5, 3, c('grey', 1))
-    .line(13, 6, 15, 3, c('grey', 1))
+    .line(7, 6, 5, 3, c('gray', 1))
+    .line(13, 6, 15, 3, c('gray', 1))
     .set(9, 8, c('ink', 0))
     .set(11, 8, c('ink', 0))
-    .rect(9, 12, 3, 2, c('grey', 2))
+    .rect(9, 12, 3, 2, c('gray', 2))
     .rect(4, 13, 12, 1, c('navy', 1));
   eom.rect(4, 15, 12, 3, c('gold', 2));
   micro(eom, 5, 15, 'NO1', c('ink', 0));
@@ -221,14 +221,14 @@ export function cgoatSprites(book: SpriteBook, pal: Pal): void {
   const { c, r: R } = pal;
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
-  // the static: a fuzz of grey dots round a question mark (SUGAR? CREAM?)
+  // the static: a fuzz of gray dots round a question mark (SUGAR? CREAM?)
   const fuzz = (f: number) => {
     const p = P();
     const r = rng(40 + f);
     for (let k = 0; k < 90; k++) {
       const a = r() * Math.PI * 2;
       const d = Math.sqrt(r()) * 8;
-      p.set(10 + Math.cos(a) * d, 10 + Math.sin(a) * d * 0.9, c('grey', 1 + Math.floor(r() * 3)));
+      p.set(10 + Math.cos(a) * d, 10 + Math.sin(a) * d * 0.9, c('gray', 1 + Math.floor(r() * 3)));
     }
     micro(p, 7, 6 + f, '?', c('white', 2), 2);
     return p;
@@ -281,7 +281,7 @@ export function cgoatSprites(book: SpriteBook, pal: Pal): void {
   book.add('mirage1', mirage(1), hurts(-6));
 }
 
-export function cgoatMonsters(set: Monster[], mb: SpriteBook): void {
+function cgoatMonsters(set: Monster[], mb: SpriteBook): void {
   set[CGOAT_MON.static] = mon(anim(mb, 'fuzz0', 'fuzz1', 3), { power: POWER.foe, thru: 1, newmon: CGOAT_MON.puff }, pace(3, 1));
   set[CGOAT_MON.creamer] = mon(anim(mb, 'creamer0', 'creamer1', 4), { power: POWER.foe, thru: 0, end: -1, newmon: CGOAT_MON.puff }, [
     corner(0, 0, 1),

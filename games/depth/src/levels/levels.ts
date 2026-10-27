@@ -27,7 +27,6 @@ const J = { mon: MON.jaggy, plane: 'both' } as const;
 const K = { mon: MON.jaggyV, plane: 'both' } as const;
 const M = { mon: MON.mirror, plane: 'both' } as const;
 const V = { mon: MON.wireV, plane: 'both' } as const;
-export const LONG = { mon: MON.wireH, plane: 'both' } as const;
 
 export const LEVELS: Level[] = [
   {

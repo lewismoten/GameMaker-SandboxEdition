@@ -44,7 +44,7 @@ export const CLIPS = {
   shins: 11025,
   lactaid: 11025,
 } as const;
-export type ClipName = keyof typeof CLIPS;
+type ClipName = keyof typeof CLIPS;
 
 const here = dirname(fileURLToPath(import.meta.url));
 

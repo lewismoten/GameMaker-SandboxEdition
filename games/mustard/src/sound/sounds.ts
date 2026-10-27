@@ -140,5 +140,7 @@ export function buildSoundSet(place: Place): SoundSet {
   add(SND.hurt, 'eep', SPEAKER.warble(900, 120, 2.4));
   add(SND.wilt, 'wilt', SPEAKER.fall(700, 120));
   add(SND.joy, place === 'sky' ? 'alive' : 'hallelu', SPEAKER.arpeggio([440, 554, 659, 880]));
+  // the laces picked up (Enter, in the garden): "...got the greatest feet!"
+  add(SND.laces, 'feet', SPEAKER.arpeggio([523, 659, 784, 1047]));
   return set;
 }

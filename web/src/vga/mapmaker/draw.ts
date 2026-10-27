@@ -1,7 +1,7 @@
 // Drawing the Map Maker's VGA screen: the visible part of the map with its monsters, the
 // block and monster lists, the scroll arrows, compass and tool buttons, and the mapping
 // between screen and map coordinates.
-import { BLACK, BLEN, Face, GREEN, GREY1, GREY2, GREY3, GREY4, RED1, RED2, RED3 } from '../shared/facelift';
+import { BLACK, BLEN, Face, GREEN, GRAY1, GRAY2, GRAY3, GRAY4, RED1, RED2, RED3 } from '../shared/facelift';
 import { BACKBL, MONBL } from '../../formats/blocks';
 import { LASTMON } from '../../formats/monster';
 import { LASTMM, MLEN, MWID } from '../../formats/map';
@@ -58,11 +58,11 @@ export abstract class MapMakerDraw extends MapMakerState {
     face.setCols(this.colors);
     const fc = face.cols;
     this.fbCols = [
-      [fc[GREY3], fc[RED1], fc[BLACK], fc[RED2]], // UNSELECTED BUTTONS
-      [fc[GREY3], fc[RED3], fc[GREEN], fc[GREY3]], // SELECTED BUTTON
-      [fc[GREY3], fc[RED3], fc[BLACK], fc[GREY3]], // INTERMEDIATE BUTTON (black for blinking)
+      [fc[GRAY3], fc[RED1], fc[BLACK], fc[RED2]], // UNSELECTED BUTTONS
+      [fc[GRAY3], fc[RED3], fc[GREEN], fc[GRAY3]], // SELECTED BUTTON
+      [fc[GRAY3], fc[RED3], fc[BLACK], fc[GRAY3]], // INTERMEDIATE BUTTON (black for blinking)
     ];
-    this.offCols = [fc[GREY1], fc[GREY2], fc[GREY1], fc[BLACK]]; // DISABLED BUTTON
+    this.offCols = [fc[GRAY1], fc[GRAY2], fc[GRAY1], fc[BLACK]]; // DISABLED BUTTON
   }
 
   protected async redrawall(): Promise<void> {
@@ -219,12 +219,12 @@ export abstract class MapMakerDraw extends MapMakerState {
     }
     if (this.status < NOTOOLS) {
       face.drawsurface(LMX - 41, LMY - 12, 72, 183);
-      v.line(LMX - 1, LMY - 1, LMX - 1, LMY + LMLEN * BLEN - 1, fc[GREY3]);
-      v.line(LMX - 1, LMY - 1, LMX + BLEN - 1, LMY - 1, fc[GREY4]);
+      v.line(LMX - 1, LMY - 1, LMX - 1, LMY + LMLEN * BLEN - 1, fc[GRAY3]);
+      v.line(LMX - 1, LMY - 1, LMX + BLEN - 1, LMY - 1, fc[GRAY4]);
       this.drawvArrows(LMX, LMY, LMLEN, 0);
       for (let lx = 0; lx < LMLEN; lx++) this.lightb(LMX + BLEN + 2, LMY + lx * BLEN, false);
       this.drawthelist();
-      v.boxFill(BUTX - 3, BUTY - 1, BUTX + 28, ZOOMY + 20, fc[GREY3]);
+      v.boxFill(BUTX - 3, BUTY - 1, BUTX + 28, ZOOMY + 20, fc[GRAY3]);
       this.drawButtons();
       this.drawcompass(0);
       face.menub(MENUX, MENUY);
@@ -245,13 +245,13 @@ export abstract class MapMakerDraw extends MapMakerState {
     const fc = this.face.cols;
     switch (selected) {
       case 1:
-        this.upb(x + 5, y - 10, [fc[GREY1], fc[RED3], fc[GREY1], fc[GREY1]]);
+        this.upb(x + 5, y - 10, [fc[GRAY1], fc[RED3], fc[GRAY1], fc[GRAY1]]);
         break;
       case 2:
-        this.downb(x + 5, y + BLEN * blnum + 2, [fc[GREY1], fc[RED3], fc[GREY1], fc[GREY1]]);
+        this.downb(x + 5, y + BLEN * blnum + 2, [fc[GRAY1], fc[RED3], fc[GRAY1], fc[GRAY1]]);
         break;
       default: {
-        const col = [fc[GREY1], fc[RED1], fc[RED2], fc[RED2]];
+        const col = [fc[GRAY1], fc[RED1], fc[RED2], fc[RED2]];
         this.upb(x + 5, y - 11, col);
         this.downb(x + 5, y + BLEN * blnum + 1, col);
       }
@@ -287,7 +287,7 @@ export abstract class MapMakerDraw extends MapMakerState {
       this.leftb(ZOOMX - 10, ZOOMY - 1 + hilite, fb[hilite]);
     } else {
       const fc = this.face.cols;
-      const col = [fc[GREY3], fc[GREY2], fc[GREY3], fc[GREY3]];
+      const col = [fc[GRAY3], fc[GRAY2], fc[GRAY3], fc[GRAY3]];
       this.upb(ZOOMX, ZOOMY - 7, col);
       this.downb(ZOOMX, ZOOMY + 12, col);
       this.leftb(ZOOMX - 10, ZOOMY, col);
@@ -350,9 +350,9 @@ export abstract class MapMakerDraw extends MapMakerState {
           }
           if (this.status >= NOTOOLS && x + BLEN - 1 > TOOLX - 3 && x < TOOLX + 40) {
             v.moucur(false);
-            v.box(TOOLX - 1, TOOLY, TOOLX + 36, TOOLY + 11, fc[GREY1]);
-            v.box(TOOLX - 2, TOOLY - 1, TOOLX + 37, TOOLY + 12, fc[GREY2]);
-            v.box(TOOLX - 3, TOOLY - 2, TOOLX + 38, TOOLY + 13, fc[GREY3]);
+            v.box(TOOLX - 1, TOOLY, TOOLX + 36, TOOLY + 11, fc[GRAY1]);
+            v.box(TOOLX - 2, TOOLY - 1, TOOLX + 37, TOOLY + 12, fc[GRAY2]);
+            v.box(TOOLX - 3, TOOLY - 2, TOOLX + 38, TOOLY + 13, fc[GRAY3]);
             this.toolb(TOOLX, TOOLY, this.face.facePen());
             v.moucur(true);
           }
@@ -379,7 +379,7 @@ export abstract class MapMakerDraw extends MapMakerState {
 
   protected lightb(x: number, y: number, onoff: boolean): void {
     const fc = this.face.cols;
-    const col = onoff ? [fc[GREY1], fc[RED2], fc[RED1], fc[RED3]] : [fc[GREY1], fc[GREY4], fc[GREY3], fc[GREY2]];
+    const col = onoff ? [fc[GRAY1], fc[RED2], fc[RED1], fc[RED3]] : [fc[GRAY1], fc[GRAY4], fc[GRAY3], fc[GRAY2]];
     this.v.draw4dat(x, y + BLEN / 2 - 3, LIGHTAR, 7, 6, col);
   }
 

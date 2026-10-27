@@ -12,7 +12,7 @@
 //    on MIDI channels 11..15),
 //  - the delta times, counted in 1/145.6 s timer ticks (the header's tempo fields are ignored),
 //  - the end marker (or anything else 0xF1..0xFF), where the song repeats.
-// Running status is honoured only for notes (the status of the last 0x8n/0x9n byte), so a data
+// Running status is honored only for notes (the status of the last 0x8n/0x9n byte), so a data
 // byte that follows a controller is played as a note; this model decodes it the same way.
 // Everything else (pitch bend, aftertouch, other controllers, sysex) is kept as raw bytes.
 //

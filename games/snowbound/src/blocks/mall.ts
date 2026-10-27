@@ -108,7 +108,7 @@ export function addMall(k: Ctx) {
       .rect(cx + 1, 6, 4, 4, c('money', 2))
       .set(cx + 2, 7, c('gold', 3))
       .set(cx + 3, 8, c('coat', 3));
-    arcadeWin.rect(cx + 1, 12, 4, 1, c('grey', 4)).set(cx + 2, 11, c('coat', 3));
+    arcadeWin.rect(cx + 1, 12, 4, 1, c('gray', 4)).set(cx + 2, 11, c('coat', 3));
   }
   arcadeWin.rect(1, 18, 18, 2, c('snow', 6));
   book.add('arcadeWin', arcadeWin, { solid: SOLID });
@@ -117,7 +117,7 @@ export function addMall(k: Ctx) {
   gradient(arcadeDoor, 3, 3, 14, 17, R('pink'), 1, 3);
   arcadeDoor.rect(5, 6, 10, 7, c('ink', 0));
   micro(arcadeDoor, 6, 7, '25', c('gold', 3));
-  arcadeDoor.rect(11, 8, 2, 3, c('grey', 4));
+  arcadeDoor.rect(11, 8, 2, 3, c('gray', 4));
   arcadeDoor.rect(15, 11, 1, 4, c('concrete', 3));
   book.add('arcadeDoor', arcadeDoor, { solid: SOLID, effect: MONEY, eamt: -1, hp: 5, score: 100 });
   return { mallWall };

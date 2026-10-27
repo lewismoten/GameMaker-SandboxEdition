@@ -28,7 +28,7 @@ const orient = (p: Point, q: Point, r: Point) => {
 const cross = (a: Point, b: Point, c: Point, d: Point) => orient(a, b, c) * orient(a, b, d) < 0 && orient(c, d, a) * orient(c, d, b) < 0;
 
 /** Does the segment a-b pass through the inside of `r`? */
-export function segmentHitsRect(a: Point, b: Point, r: Rect): boolean {
+function segmentHitsRect(a: Point, b: Point, r: Rect): boolean {
   let t0 = 0;
   let t1 = 1;
   const d = { x: b.x - a.x, y: b.y - a.y };

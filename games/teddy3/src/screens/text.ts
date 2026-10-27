@@ -107,8 +107,8 @@ export const HELP = pages(
     'F1 help  F2 your stuff',
     'F3 music F4 sounds',
     'F5 save  F6 load  ESC quit',
-    'F2 shows treats as "Money"',
-    'and energy as "Hitpoints".',
+    'F2 shows your treats',
+    'and your energy.',
   ],
 );
 
@@ -266,7 +266,7 @@ export const CARDS: Record<string, string[]> = {
 /** Lines on the disk's text files: 31 columns at most. */
 const README_WIDTH = 31;
 
-export function readme(price: string): string {
+function readme(price: string): string {
   const out = `
 TEDDY'S LITTLE BIGGEST
 ADVENTURE

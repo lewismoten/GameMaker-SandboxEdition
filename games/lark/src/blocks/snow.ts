@@ -15,7 +15,7 @@ import { ONE_WAY_SOUTH, addRope, barrier, on, sign, swingGate } from './tiles';
 const O = () => c('ink', 0);
 
 /** Fresh snow: soft white, blue in the hollows, a glint or two. */
-export function snow(seed: number): Pixels {
+function snow(seed: number): Pixels {
   const p = new Pixels(20, 20);
   const R = rng(seed);
   p.map((x, y) => shadeAt(r('snow'), 2, 4, 0.75 + 0.25 * Math.sin((x + seed * 3) / 3.1) * Math.cos((y - seed) / 4.3), x, y));
@@ -274,8 +274,8 @@ export function snowSet(): BlockSet {
 }
 
 /** How often (ticks) the plow sets off along Lewie's street. */
-export const PLOW_EVERY = 120;
+const PLOW_EVERY = 120;
 /** How often (ticks) snow slides off the roofs onto the walks: two clocks. */
-export const EAVE_EVERY = [70, 94];
+const EAVE_EVERY = [70, 94];
 /** Lewie's street's monster numbers (snow.mon, sprites/critters.ts snowCritters). */
-export const SNOW_MON = { plow: 0, plowOk: 1, snowfall: 2, snowfallHit: 3, snowfallOk: 4 } as const;
+const SNOW_MON = { plow: 0, plowOk: 1, snowfall: 2, snowfallHit: 3, snowfallOk: 4 } as const;

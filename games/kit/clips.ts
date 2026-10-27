@@ -15,12 +15,12 @@ import { decodeVoc } from '../../web/src/formats/voc';
 import type { AudioEvent } from '../../web/src/walkthrough/runtime';
 
 /** How long after a level's first frame a clip still counts as the one it starts with. */
-export const START_WINDOW_MS = 1000;
+const START_WINDOW_MS = 1000;
 /** A clip this long is a voice (a line or a lyric), not an effect. */
-export const VOICE_MS = 1000;
+const VOICE_MS = 1000;
 
 /** A clip may lose this much of its tail (its last few samples, a frame of the clock). */
-export const SLACK_MS = 30;
+const SLACK_MS = 30;
 
 export interface ClipCut {
   kind: 'end' | 'start';

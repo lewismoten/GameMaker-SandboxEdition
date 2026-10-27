@@ -14,7 +14,7 @@ import type { SceneSpec, LinkSpec } from '../game';
 import type { AreaFile } from './world';
 import { noteWays } from './walkPaths';
 
-export interface AreaScene {
+interface AreaScene {
   id: string;
   desc: string;
   cmf?: string;
@@ -25,7 +25,7 @@ export interface AreaScene {
   extra?: LinkSpec[];
 }
 
-export interface Area {
+interface Area {
   files: AreaFile[];
   scenes: SceneSpec[];
   map: GameMap;

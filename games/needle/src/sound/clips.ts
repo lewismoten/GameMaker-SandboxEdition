@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { encodeVoc } from '../../../../web/src/formats/voc';
 
 export const CLIPS = ['thread', 'squeeze', 'gold', 'dream', 'humpdown'] as const;
-export type ClipName = (typeof CLIPS)[number];
+type ClipName = (typeof CLIPS)[number];
 
 const here = dirname(fileURLToPath(import.meta.url));
 

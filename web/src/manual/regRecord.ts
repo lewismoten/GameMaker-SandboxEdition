@@ -9,14 +9,14 @@
 import './regRecord.css';
 import { h } from '../editor/core/ui';
 import { pcExtras } from '../retro/hacks/pcExtras';
-import { SERIAL, checkRegistration, registrationNumber } from '../retro/gmReg/registration';
+import { checkRegistration, registrationNumber } from '../retro/gmReg/registration';
 
 type Field = 'name' | 'number';
 
 /** The name and registration number PLAYGAME.REG registers this copy to, or none. */
-export function registeredTo(reg: string | null | undefined): Record<Field, string> | undefined {
-  const r = checkRegistration(reg);
-  return r.kind === 'registered' ? { name: r.userName, number: String(registrationNumber(r.userName, SERIAL)) } : undefined;
+export function registeredTo(reg: string | null | undefined, serial: number): Record<Field, string> | undefined {
+  const r = checkRegistration(reg, serial);
+  return r.kind === 'registered' ? { name: r.userName, number: String(registrationNumber(r.userName, serial)) } : undefined;
 }
 
 /** The printed records (each page's copies are clones of these), kept while they are in use. */
@@ -24,6 +24,9 @@ const records = new Set<WeakRef<HTMLElement>>();
 let listening = false;
 
 function write(root: ParentNode, to: Record<Field, string> | undefined): void {
+  // the serial printed at the factory, or the one GMCRACK's RESERIAL stamped into PLAYGAME.EXE
+  const serial = String(pcExtras().serial);
+  for (const el of root.querySelectorAll<HTMLElement>('.rr-printed[data-serial]')) if (el.textContent !== serial) el.textContent = serial;
   for (const el of root.querySelectorAll<HTMLElement>('.rr-hand[data-reg]')) {
     const text = to?.[el.dataset.reg as Field] ?? '';
     const blank = el.nextElementSibling;
@@ -33,7 +36,7 @@ function write(root: ParentNode, to: Record<Field, string> | undefined): void {
 }
 
 function refresh(): void {
-  const to = registeredTo(pcExtras().reg);
+  const to = registeredTo(pcExtras().reg, pcExtras().serial);
   write(document, to);
   for (const ref of records) {
     const el = ref.deref();
@@ -42,10 +45,10 @@ function refresh(): void {
   }
 }
 
-function line(label: string, field: Field | undefined, printed?: string): HTMLElement {
+function line(label: string, field: Field | undefined): HTMLElement {
   const value = field
     ? h('span', { class: 'rr-line' }, h('span', { class: `rr-hand rr-${field}`, 'data-reg': field }), h('span', { class: 'rr-blank' }, 'not filled in'))
-    : h('span', { class: 'rr-line rr-printed' }, printed ?? '');
+    : h('span', { class: 'rr-line rr-printed', 'data-serial': '' });
   return h('div', { class: 'rr-row' }, h('dt', null, label), h('dd', null, value));
 }
 
@@ -60,11 +63,11 @@ export function regRecord(kind: 'page' | 'cover'): HTMLElement {
           'div',
           { class: 'rr rr-page' },
           h('div', { class: 'rr-head' }, 'This copy is registered to'),
-          h('dl', null, line('Name', 'name'), line('Serial number', undefined, String(SERIAL)), line('Registration number', 'number')),
+          h('dl', null, line('Name', 'name'), line('Serial number', undefined), line('Registration number', 'number')),
           h('div', { class: 'rr-small' }, 'Write them in when the reply card comes back: GM REGISTER asks for both.'),
         )
       : h('div', { class: 'rr rr-cover' }, h('dl', null, line('Registered to', 'name'), line('Registration number', 'number')));
-  write(el, registeredTo(pcExtras().reg));
+  write(el, registeredTo(pcExtras().reg, pcExtras().serial));
   records.add(new WeakRef(el));
   if (!listening) {
     listening = true;

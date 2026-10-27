@@ -31,7 +31,7 @@ const LATE = { mugHp: 10 };
 /** What mends the umbrella. */
 export const MENDS = 4;
 /** Ticks between drops from a storm cloud. */
-export const DROP_EVERY = 70;
+const DROP_EVERY = 70;
 
 export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
   const { c, r: R } = pal;
@@ -61,7 +61,7 @@ export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
       [21, 8, 11, 8],
       [32, 12, 8, 6],
     ])
-      blob(pic, x, y, rx, ry, R('grey'), 0, 2);
+      blob(pic, x, y, rx, ry, R('gray'), 0, 2);
     pic.line(13, 7, 17, 9, c('ink', 1)).line(27, 7, 23, 9, c('ink', 1)).set(16, 10, c('ink', 0)).set(24, 10, c('ink', 0));
     pic.line(17, 14, 23, 14, c('ink', 1)).set(16, 15, c('ink', 1)).set(24, 15, c('ink', 1));
     addPicture(book, 'storm', pic, rain(124, 2), (col) => (col ? AIR : { ...AIR, birthMon: UMBR_MON.drop, birthTime: DROP_EVERY }));
@@ -85,7 +85,7 @@ export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
     for (let i = 0; i < 20; i++) p.set(i, 9, c('concrete', 1)).set(9, i, c('concrete', 1));
     p.rect(0, 17, 20, 3, c('metal', 0));
     if (tube) p.rect(2, 12, 16, 4, c('fluor2', tube === 1 ? 1 : 0)).rect(2, 12, 16, 1, c('metal', 1));
-    else p.rect(2, 12, 16, 4, c('grey', 1)).rect(2, 12, 16, 1, c('metal', 1));
+    else p.rect(2, 12, 16, 4, c('gray', 1)).rect(2, 12, 16, 1, c('metal', 1));
     return p;
   };
   book.add('sCeil', ceiling(2), { solid: SOLID });
@@ -132,7 +132,7 @@ export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
         [5, 15],
         [13, 15],
       ])
-        p.disc(x, y, 3.4, c('grey', 2)).disc(x, y, 1.6, c('wood', 3)).ring(x, y, 3.4, c('grey', 1));
+        p.disc(x, y, 3.4, c('gray', 2)).disc(x, y, 1.6, c('wood', 3)).ring(x, y, 3.4, c('gray', 1));
     return p;
   };
   book.add('shelfTools', shelf('tools'), { solid: LEDGE, grav: GRAV.down });
@@ -162,7 +162,7 @@ export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
         [5, 5],
         [14, 6],
       ])
-        p.line(x - 2, y - 2, x + 2, y + 2, c('grey', 2)).line(x - 2, y + 2, x + 2, y - 2, c('grey', 2));
+        p.line(x - 2, y - 2, x + 2, y + 2, c('gray', 2)).line(x - 2, y + 2, x + 2, y - 2, c('gray', 2));
       p.line(9, 2, 10, 16, c('metal', 1)).set(9, 1, c('gold', 3)).set(16, 0, c('gold', 3)).set(2, 1, c('gold', 3));
     } else {
       p.line(10, 4, 10, 18, c('metal', 1));
@@ -195,8 +195,8 @@ export function umbrellaBlocks(book: BlockBook, pal: Pal): void {
     p.line(10, 15, 18, 15, c('metal', 2)).line(10, 14, 17, 14, c('metal', 1));
   });
   plotThing(book, 'sWall', 'tape', (p) => {
-    p.disc(10, 11, 6.5, c('grey', 2)).ring(10, 11, 6.5, c('grey', 1)).disc(10, 11, 3, c('wood', 3)).ring(10, 11, 3, c('grey', 0));
-    p.line(15, 15, 18, 19, c('grey', 2)).line(16, 15, 19, 19, c('grey', 1));
+    p.disc(10, 11, 6.5, c('gray', 2)).ring(10, 11, 6.5, c('gray', 1)).disc(10, 11, 3, c('wood', 3)).ring(10, 11, 3, c('gray', 0));
+    p.line(15, 15, 18, 19, c('gray', 2)).line(16, 15, 19, 19, c('gray', 1));
   });
   loot(book, pal, 'sBase', LATE);
   coinOn(book, pal, 'sWall');
@@ -286,7 +286,7 @@ export function umbrellaSprites(book: SpriteBook, pal: Pal): void {
   book.add('canopyCalm', canopy(3, 0));
 }
 
-export function umbrellaMonsters(set: Monster[], mb: SpriteBook): void {
+function umbrellaMonsters(set: Monster[], mb: SpriteBook): void {
   set[UMBR_MON.drop] = mon(anim(mb, 'drop0', 'drop1', 3), { power: POWER.foe, thru: 0, end: -1, newmon: UMBR_MON.splash }, [corner(0, 0, 3), corner(0, 8, 3)]);
   set[UMBR_MON.splash] = mon(anim(mb, 'splash0', 'splash1', 3), { power: POWER.friend, thru: 0, end: 6 });
   set[UMBR_MON.tag] = mon(anim(mb, 'tag0', 'tag1', 6), { power: POWER.foe, thru: 1, newmon: UMBR_MON.poof }, pace(2, 1));

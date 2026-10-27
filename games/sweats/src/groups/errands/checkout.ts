@@ -284,7 +284,7 @@ export function checkoutBlocks(book: BlockBook, pal: Pal): void {
     const p = base.crop(0, 0, 20, 20).blit(last(open).crop(0, 40, 20, 20), 0, 0, 255);
     if (open) {
       p.rect(5, 2, 9, 14, c('white', 2)).rect(5, 2, 9, 1, c('white', 1));
-      for (let y = 4; y < 15; y += 2) p.rect(6, y, 2 + ((y * 3) % 6), 1, c('grey', 1));
+      for (let y = 4; y < 15; y += 2) p.rect(6, y, 2 + ((y * 3) % 6), 1, c('gray', 1));
     } else micro(p, 4, 12, 'GO', c('green', 3));
     return p;
   };
@@ -420,7 +420,7 @@ export function checkoutSprites(book: SpriteBook, pal: Pal): void {
   }
 }
 
-export function checkoutMonsters(set: Monster[], mb: SpriteBook): void {
+function checkoutMonsters(set: Monster[], mb: SpriteBook): void {
   const foe = { power: POWER.foe, thru: 1, newmon: CM.poof };
   set[CM.card] = mon(anim(mb, 'card0', 'card1', 4), foe, pace(4, 2));
   set[CM.unexpected] = mon(anim(mb, 'unexp0', 'unexp1', 5), { ...foe, thru: 0, end: -1 }, [corner(0, 0, 2), corner(-1, 1, 2, 4), corner(-9, 0, 3, 4)]);

@@ -35,7 +35,7 @@ export const KIND_LABELS: Record<FileKind, string> = {
 };
 
 /** Where an autosave is: begun, kept in IndexedDB, or refused (storage full, private mode…). */
-export type SaveState = 'saving' | 'saved' | 'failed';
+type SaveState = 'saving' | 'saved' | 'failed';
 
 export function kindOf(name: string): FileKind {
   const ext = (/\.([^.]+)$/.exec(name)?.[1] ?? '').toLowerCase();
@@ -87,7 +87,8 @@ export class Project {
       gam = 'game.gam';
       files.set(gam, serializeGame(newGame(name ?? 'My Game')));
     }
-    const title = name ?? (parseGame(files.get(gam)!).scenes[0]?.desc || gam);
+    // trimmed: authors padded the name with spaces to center it on the DOS menu
+    const title = name?.trim() || parseGame(files.get(gam)!).scenes[0]?.desc.trim() || gam;
     return new Project(id, title, gam, files, companion);
   }
 

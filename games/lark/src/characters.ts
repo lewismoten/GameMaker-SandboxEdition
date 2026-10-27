@@ -30,13 +30,13 @@ const WALK = [
 ] as const;
 
 /** Side view: pixels a tick walking, the hop's push a tick, and its sideways drift. */
-export const STEP = 3;
-export const HOP = 11;
-export const HOP_STEP = 3;
+const STEP = 3;
+const HOP = 11;
+const HOP_STEP = 3;
 /** The spring hop's one push (pixels a tick, into momentum). */
-export const SPRING = 15;
+const SPRING = 15;
 
-export const SEQ = {
+const SEQ = {
   idle: 0,
   die: 1,
   hurt: 2,
@@ -53,7 +53,7 @@ export const SEQ = {
 } as const;
 
 /** Side-view sequence numbers. */
-export const SIDE = {
+const SIDE = {
   right: 5,
   left: 6,
   d: 7,
@@ -76,10 +76,10 @@ export const SIDE = {
 /** The heart balloon's air is its sequence's counter (a dandelion puff's effect fills it). */
 export const AIR_SEQ = 16;
 /** The balloon's air (its sequence counter): what Joe starts with, and what each puff adds. */
-export const AIR = 8;
+const AIR = 8;
 export const PUFF = 8;
 /** The balloon's lift: added to his upward momentum every other tick (gravity takes 1 a tick). */
-export const LIFT = 3;
+const LIFT = 3;
 
 export function heroBlocks(): BlockSet {
   const cb = new BlockSet(50, true);

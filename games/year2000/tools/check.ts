@@ -3,11 +3,14 @@
 // from level to level like the real game does. The multi-block objects are checked first (tools/align.ts).
 //   cd web && npx vite-node ../games/year2000/tools/check.ts      (GOD=1 keeps the bot alive)
 import { newCharInfo } from '../../../web/src/engine/world';
-import { buildCharacter } from '../src/characters/character';
+import { buildCarCharacter, buildCharacter } from '../src/characters/character';
 import { CTR, MON, PAGES_NEEDED, SEQ } from '../src/ids';
 import { LEVELS, SETS } from '../src/levels/levels';
 import { DIALS } from '../src/levels/level4';
 import { buildMonsters } from '../src/characters/monsters';
+import { buildSkyMonsters } from '../src/characters/skyMonsters';
+import { buildSkyMonsterBlocks } from '../src/sprites/skySprites';
+import { FlyBot } from './flyBot';
 import { Sim, type SimScene } from './sim';
 import { readWalkPaths } from '../../kit/walkPaths';
 import { Bot } from './bot';
@@ -22,7 +25,10 @@ const mbl = mb.build();
 const mons = buildMonsters(mb);
 const cb = buildCharBlocks();
 const cbl = cb.build();
-const chars = { 'dex.chr': buildCharacter(cb, false), 'moon.chr': buildCharacter(cb, true) };
+const chars = { 'dex.chr': buildCharacter(cb, false), 'moon.chr': buildCharacter(cb, true), 'car.chr': buildCarCharacter(cb) };
+// the Cloud Lane's own traffic
+const skyMb = buildSkyMonsterBlocks();
+const sky = { mbl: skyMb.build(), mon: buildSkyMonsters(skyMb) };
 const ci = newCharInfo();
 const ROBOTS = new Set<number>([
   MON.mowerH,
@@ -44,7 +50,7 @@ const ROBOTS = new Set<number>([
   MON.sparky2,
   MON.sparky3,
 ]);
-const ITEMS = /^(page|quarter|pill|remote|zapper|battery|keycard|pass|cola)_/;
+const ITEMS = /^(page|quarter|pill|keys|zapper|battery|keycard|pass|cola)_/;
 let totalTicks = 0;
 let deaths = 0;
 /** Pages carried into the Science Fair (the judges take 20 of them there). */
@@ -95,7 +101,7 @@ async function shortOfPages(): Promise<void> {
   const scene: SimScene = { map: lm.done(), bbl: set.build(), mbl, mon: mons, chr: chars[l.chr], cbl, links: [{ from: lm.at('exit'), to: { x: 0, y: 0 } }] };
   const short = newCharInfo();
   const sim = new Sim(scene, lm.at('start'), short, 17);
-  const bot = new Bot(sim, { zapAt: (n) => ROBOTS.has(n) });
+  const bot = new Bot(sim, { zapAt: (n) => ROBOTS.has(n), avoid: new Set([set.id('sparecover')]) });
   const pages = () => short.meter[CTR.pages] - 1;
   const zaps0 = short.meter[SEQ.zap];
   await bot.collect(set.names, (n) => ITEMS.test(n), 'items');
@@ -114,19 +120,62 @@ async function shortOfPages(): Promise<void> {
   );
 }
 
+/**
+ * A player whose cover page a stray zap burned: Sparky's is gone, so the one spare cover beside
+ * the copier must get them to the podium. There is only one, and it is worth one cover.
+ */
+async function spareCover(): Promise<void> {
+  const l = LEVELS.find((v) => v.file === 'school')!;
+  const set = SETS[l.set]();
+  const lm = l.build(set);
+  const scene: SimScene = { map: lm.done(), bbl: set.build(), mbl, mon: mons, chr: chars[l.chr], cbl, links: [{ from: lm.at('exit'), to: { x: 0, y: 0 } }] };
+  const lost = newCharInfo();
+  const sim = new Sim(scene, lm.at('start'), lost, 19);
+  lost.meter[CTR.pages] = PAGES_NEEDED + 1; // a new game's counters are set as the scene starts
+  const bot = new Bot(sim, { zapAt: () => false });
+  const spare = bot.find(set.names, (n) => n === 'sparecover');
+  if (spare.length !== 1) throw new Error(`year2000: ${spare.length} spare covers in the gym (want 1)`);
+  if (!(await bot.goTo(spare, 'the spare cover'))) throw new Error('year2000: no way to the spare cover');
+  if (lost.meter[CTR.cover] !== 2) throw new Error(`year2000: the spare cover left the counter at ${lost.meter[CTR.cover] - 1} (want 1)`);
+  const ok = (await bot.goTo([[lm.at('exit').x, lm.at('exit').y]], 'exit')) && sim.link >= 0 && !sim.dead;
+  if (!ok)
+    throw new Error(
+      `year2000: with the spare cover, the bot did not finish (cover ${lost.meter[CTR.cover] - 1}, pages ${lost.meter[CTR.pages] - 1}, dead ${sim.dead})`,
+    );
+  console.log(`spare cover: Sparky's cover lost, took the spare beside the copier, won in ${(sim.ticks / 18.2).toFixed(0)}s`);
+}
+
+/** Dome Sweet Dome's only way out is Grandpa's CitiCar: one key ring on the map, and its door holds shut without it. */
+function keysAndCar(): void {
+  const l = LEVELS[0];
+  const set = SETS[l.set]();
+  const lm = l.build(set);
+  const rings = lm.count('keys_');
+  if (rings !== 1) throw new Error(`year2000: ${rings} key rings in Dome Sweet Dome (want 1)`);
+  const exit = lm.at('exit');
+  if (lm.get(exit.x, exit.y) !== 'citi3') throw new Error(`year2000: the dome's exit is ${lm.get(exit.x, exit.y)}, not the CitiCar's door`);
+  const door = set.def('citi3');
+  if (!door.solid || door.effect !== CTR.keys || (door.eamt ?? 0) >= 0) throw new Error('year2000: the CitiCar door does not take the keys');
+  const ring = set.def('keys_grass');
+  if ((ring.eamt ?? 0) < 2) throw new Error('year2000: the key ring must open both the garage gate and the car');
+  console.log('keys and car: one key ring (worth 2), the CitiCar door takes one, locked without it');
+}
+keysAndCar();
+
 for (const [i, l] of LEVELS.entries()) {
   const set = SETS[l.set]();
   const bbl = set.build();
   const lm = l.build(set);
   const map = lm.done();
   const names = set.names;
-  const avoid = new Set(['booth_door'].map((n) => set.id(n)));
+  // the spare cover is for a player whose cover a zap burned: the bot brings back Sparky's
+  const avoid = new Set(['booth_door', 'sparecover'].filter((n) => set.has(n)).map((n) => set.id(n)));
   // never the tin heart or the Easter egg: they're left for the player to find
   set.names.forEach((n, i) => /^(tinHeart|easterEgg)\d*$/.test(n) && avoid.add(i));
   const links: SimScene['links'] = [];
   if (l.file === 'exchange') for (const [from, to] of DIALS) links.push({ from: lm.at(from), to: lm.at(to) });
   links.push({ from: lm.at('exit'), to: { x: 0, y: 0 } });
-  const scene: SimScene = { map, bbl, mbl, mon: mons, chr: chars[l.chr], cbl, links };
+  const scene: SimScene = { map, bbl, ...(l.mon === 'sky' ? sky : { mbl, mon: mons }), chr: chars[l.chr], cbl, links };
   const startAt = lm.marks.has('start') ? lm.at('start') : lm.at('hall');
   let sim = new Sim(scene, startAt, ci, 7 + i);
   let arrival = startAt;
@@ -142,6 +191,13 @@ for (const [i, l] of LEVELS.entries()) {
   let outcome = '';
 
   const run = async (): Promise<boolean> => {
+    if (l.file === 'clouds') {
+      // Steer clear of the traffic until the ramp opens, then ride it up onto the link.
+      const fly = new FlyBot(sim);
+      const ok = await fly.fly();
+      bot.log.push(...fly.log);
+      return ok;
+    }
     if (l.file === 'exchange') {
       // Dial around the exchange: 1 -> Florida -> the sea -> the TV -> the jungle -> the launch pad.
       const DOOR: Record<string, string> = { hall: 'hall1', florida: 'floridaOut', sea: 'seaOut', tv: 'tvOut', jungle: 'jungleOut' };
@@ -156,7 +212,7 @@ for (const [i, l] of LEVELS.entries()) {
         fresh(to);
         bot = new Bot(sim, opts);
       }
-      return bot.goTo([[lm.at('exit').x, lm.at('exit').y]], 'the rocket');
+      return bot.board(lm.at('exit'));
     }
     await bot.collect(names, (n) => ITEMS.test(n), 'items');
     if (l.file === 'school' && !(await catchSparky(bot, names))) return false;
@@ -196,3 +252,4 @@ console.log(`${(totalTicks / 18.2 / 60).toFixed(1)} minutes; ${pagesAtFair} page
 if (!god && deaths) throw new Error(`year2000: the bot lost ${deaths} ${deaths === 1 ? 'life' : 'lives'}`);
 if (pagesAtFair < PAGES_NEEDED) throw new Error(`year2000: only ${pagesAtFair} of ${PAGES_NEEDED} pages reached the fair`);
 await shortOfPages();
+await spareCover();

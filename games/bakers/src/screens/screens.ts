@@ -44,7 +44,7 @@ import {
 import { wrap } from './pages';
 import { CREDITS, HELP, LOST, STORY, WON } from './text';
 
-export function gif(p: Pixels, pal = PAL.pal): Uint8Array {
+function gif(p: Pixels, pal = PAL.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
@@ -90,7 +90,7 @@ export function menuScreen(): Pixels {
 }
 
 /** Backdrop for text pages: PLAYGAME writes 31 columns at x=40, y=40..167 (purple). */
-export function pageScreen(title: string, seed: number, who: Pixels = leo()): Pixels {
+function pageScreen(title: string, seed: number, who: Pixels = leo()): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 186);
   p.rect(0, 0, W, 28, c('wood', 1));
@@ -104,7 +104,7 @@ export function pageScreen(title: string, seed: number, who: Pixels = leo()): Pi
   return p;
 }
 
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 190);
   // the ring stain goes right of the rows (x 20..285), below the last full one
@@ -112,7 +112,7 @@ export function scoresScreen(): Pixels {
   return p;
 }
 
-export function slotsScreen(): Pixels {
+function slotsScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 176);
   // the names are written in yellow: each gets a dark strip, the blue message the card
@@ -162,6 +162,8 @@ export function roomCard(room: Room, set: TileSet): { px: Pixels; pal: Uint8Arra
   scaleBlit(p, ingredient(n, 0), 56, 120, 2);
   text(p, 100, 128, 'FIND:', c('ink', 1));
   text(p, 100, 140, RECIPE[n - 1]?.name ?? '???', c('red', 2));
+  // the first room says how to keep your place
+  if (lvl === 1 && !room.spec.interlude) centered(p, 156, 'F5 SAVES  F6 LOADS', c('red', 2));
   if (room.spec.hero === 'chick') scaleBlit(p, reggie('down'), 234, 118, 2);
   else bigLeo(p, 236, 116, 0.75);
   return { px: p, pal: pal.pal };
@@ -189,7 +191,7 @@ export function recipePage(n: number): Pixels {
 
 // ------------------------------------------------------------------ the intro cartoon
 
-export function introFli(): Uint8Array {
+function introFli(): Uint8Array {
   const frames: Pixels[] = [];
   const say = (p: Pixels, lines: string[]) => {
     p.rect(0, 170, W, 30, c('ink', 0));
@@ -317,7 +319,7 @@ export function paradeScreen(): { px: Pixels; pal: Uint8Array } {
   return { px: p, pal };
 }
 
-export function lostScreen(): Pixels {
+function lostScreen(): Pixels {
   const p = new Pixels(W, H);
   kitchenWall(p, 140);
   scaleBlit(p, docLeo('down'), 120, 60, 1);
@@ -325,7 +327,7 @@ export function lostScreen(): Pixels {
   const dead = new Pixels(20, 20, 255);
   dead
     .rect(1, 9, 18, 7, c('ink', 0))
-    .rect(2, 10, 6, 5, c('grey', 2))
+    .rect(2, 10, 6, 5, c('gray', 2))
     .rect(8, 10, 5, 5, c('skin', 2))
     .rect(13, 10, 5, 5, c('blue', 1))
     .rect(14, 7, 4, 3, c('yellow', 3));

@@ -5,9 +5,9 @@ import type { TextKeys } from './textInput';
 import { toCp437 } from './cp437';
 
 export const MENUATTR = attr(14, 1); // yellow on navy
-export const SHADATTR = attr(0, 7); // shadow: dark grey background
+export const SHADATTR = attr(0, 7); // shadow: dark gray background
 export const ERRORATTR = attr(12, 4); // bright red on red
-export const BARCURSOR = attr(15, 7); // MENUC.C cursor: white on dark grey
+export const BARCURSOR = attr(15, 7); // MENUC.C cursor: white on dark gray
 export const CURATTR = 47; // WINDIO.C cursor (PGMTITLECOL): white on blue
 export const TITLEATTR = attr(15, 4);
 export const BARATTR = attr(15, 1);

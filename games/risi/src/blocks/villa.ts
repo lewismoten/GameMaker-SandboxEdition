@@ -19,7 +19,7 @@ import { AIR, AIR_NEEDED, CHEESE, CHEESE_NEEDED, MON } from '../ids';
 import { BlockBook, GRAV, LEDGE, LIFE, SOLID, column, context, copy, cup, denarius, grapes, outside, sparkle, wreath } from './common';
 
 /** Ticks between the clouds from under Rufus's table. */
-export const GAS_EVERY = 46;
+const GAS_EVERY = 46;
 
 export function buildVilla(pal: Pal): BlockBook {
   const x = context(pal);
@@ -463,7 +463,7 @@ export function buildVilla(pal: Pal): BlockBook {
   for (let k = 0; k < SHINE_FRAMES; k++)
     book.add(
       `tinHeart${k || ''}`,
-      drawTinHeart(copy(kbase), { ink: c('ink', 0), tin: [c('iron', 0), c('iron', 1), c('iron', 2)], white: c('marble', 3), dark: c('grey', 0) }, k),
+      drawTinHeart(copy(kbase), { ink: c('ink', 0), tin: [c('iron', 0), c('iron', 1), c('iron', 2)], white: c('marble', 3), dark: c('gray', 0) }, k),
       {
         score: 100,
         touch: 'kbase',

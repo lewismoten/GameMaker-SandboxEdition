@@ -65,7 +65,7 @@ export async function runLinkIn(req: LinkRequest, fallback: Target): Promise<Des
       origin = new URL(req.url).origin;
       files = await Promise.race([
         fetchGame(req.url, (done, total) => wait.say(`Fetching the game’s files: ${done} of ${total}…`)),
-        new Promise<never>((_, reject) => abort.signal.addEventListener('abort', () => reject(new LinkError('Cancelled.', 'declined')))),
+        new Promise<never>((_, reject) => abort.signal.addEventListener('abort', () => reject(new LinkError('Canceled.', 'declined')))),
       ]);
       name = cleanName(urlFileName(req.url).replace(/\.(zip|gmpak|html?|gam)$/i, ''));
     } else {

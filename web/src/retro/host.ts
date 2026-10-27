@@ -49,6 +49,8 @@ export interface InsertedDisk {
 export interface RetroHost extends Ui {
   /** The disk in drive A:, if any. */
   disk(): InsertedDisk | undefined;
+  /** Calls `fn` whenever a disk goes into drive A: or comes out (a utility swapping disks); returns the call that stops it. */
+  watchDisk(fn: () => void): () => void;
   /**
    * The project behind the disk in drive A:, ready for editing. Formats blank disks
    * and offers to copy write-protected originals. Undefined if the user declined.
@@ -64,8 +66,12 @@ export interface RetroHost extends Ui {
   leavePictureMode(): void;
   /** Shows a graphic editor on the monitor; resolves when the user leaves it. */
   openEditor(project: Project, file: string, program: string): Promise<void>;
-  /** Plays a game on the monitor; resolves when the player quits. */
-  playGame(files: GameFiles, gam: string, title: string, notice?: string): Promise<void>;
+  /**
+   * Plays a game on the monitor; resolves when the player quits. It plays as the stand-alone
+   * XFERPLAY.EXE unless `gmHelp` is given: then as PLAYGAME.EXE, whose F1 shows it first.
+   * `projectId`: a game of yours, whose XFERPLAY shows its DOS player choices (dosPlayer/).
+   */
+  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array, projectId?: string): Promise<void>;
   /** Leaves the 90s desk for today's web editor. */
   openModern(projectId: string, file?: string): void;
   /** A file from the installed C:\GM (help screens). */

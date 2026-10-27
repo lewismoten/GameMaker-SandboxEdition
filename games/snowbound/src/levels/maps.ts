@@ -5,6 +5,8 @@
 import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
+import { rng } from '../../../kit/pixels';
+import { CARS } from '../blocks/lot';
 
 /** ASCII legend → block name ('.' picks a yard variant). */
 const LEGEND: Record<string, string> = {
@@ -52,7 +54,7 @@ const LEGEND: Record<string, string> = {
   q: 'slopeCocoa',
 };
 
-export interface LinkSpec {
+interface LinkSpec {
   from: [number, number];
   toScene: 'next' | 'won' | 'woods';
   to: [number, number];
@@ -243,124 +245,7 @@ export function galeStreet(book: BlockBook) {
   return { m, start: [13, 16] as [number, number] };
 }
 
-// ------------------------------------------------------------------ level 2
-/**
- * Jamie Street, noon: the steep end of Jamie Street is closed for sledding, and it is the
- * fast way down from Leon Drive to Bowden Drive.
- */
-export function jamieHill(book: BlockBook) {
-  const m = new MapBuilder(book);
-  const x0 = 30;
-  // The sled starts on glide snow (it keeps whatever speed it has), so one push of Down
-  // carries it to the first steep band. Below that, four open rows to feel the drift
-  // before the first rock.
-  const rows = [
-    'TTTTTTTTTTTTTTTTTTTTTTTT',
-    'T,,,,,,,,,,,,,,,,,,,,,,T',
-    'T~~~~~n~~~~~~~~~~~~n~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~T~~~~~~~~~~~~~~~~T~~T',
-    'T!!!!!!!!!!!!!!!!!!!!!!T',
-    'T~~~~~~~~~~Q~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'TY~~~~~~~~~~~~~~~~~~~YYT',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~R~~~~~~~T',
-    'T~~~~~~Q~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'TYY~~~~~r~~~~e~~~~~~~~~T',
-    'T~~~~~~~~~Q~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~YT',
-    'T~~~~~~~~~~~~r~~~~e~~~~T',
-    'T~~~~~~~~~~~~~~Q~~~~~~~T',
-    'T~~~~R~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~r~~~~e~~~~~~~~T',
-    'T~~~~~~~~~~Q~~~~~~~~~~~T',
-    'T~~oo~~oo~~~~~oo~~oo~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~YYY~~~~~~~~~~~~~T',
-    'T~~~~~YYYYY~~~~~~RR~~~~T',
-    'T~~Q~~~YYY~~~~~~~~~~~~~T',
-    'T~~~~~~~Y~~~~~~~~~~~~qYT',
-    'T~~~~~~~~~~~~~~YYY~~~~YT',
-    'T~~~~~~~~~~~~~YYYYY~~~~T',
-    'T~~~~~~~~~~~~~~YYY~~~~~T',
-    'T~~~~~~~~~~~~~~~Y~~~Q~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T!!!!!!!!!!!!!!!!!!!!!!T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~Q~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~Q~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'TYYYYYY~~~~~~~~~~YYYYYYT',
-    'TYYYYYYY~~~~~~~~YYYYYYYT',
-    'TYYYYYYY~~~R~~~~YYYYYYYT',
-    'TYYYYYYY~~~~~~~~YYYYYYYT',
-    'TYYYYYY~~~Q~~~~~~YYYYYYT',
-    'TYYYYY~~~~~~~~~~~~YYYYYT',
-    'TYYY~~~~~~~~~~~~~~~~YYYT',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~o~~o~~o~~o~~o~~o~~o~T',
-    'T~o~~o~~o~~Q~~o~~o~~o~~T',
-    'T~~o~~o~~o~~o~~o~~o~~o~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T!!!!!!!!!!!!!!!!!!!!!!T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~YY~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~YY~~~~~T',
-    'T~~~Q~~~~~YY~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~Q~~T',
-    'TYY~~~~~~~~~~~YY~~~~~~~T',
-    'T~~~~~~~YY~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~YY~~~T',
-    'T~~~~YY~~~~~~Q~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~YY~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~r~~~~e~~~~~~~~~T',
-    'T~~~~~~~~~~Q~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~e~~~~r~~~~~T',
-    'T~~~~~~~~~~~~~Q~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~r~~~~e~~~~~~~~~~~T',
-    'T~~~~~~~Q~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'T~~~~~~~~~~~~~~~~~~~~~~T',
-    'TTXXXXXXXXXXXXXXXXXXXXTT',
-    'T,,,,,,,,,,,,,,,,,,,,,,T',
-    'T,,,,,,,,,,,,,,,,,,,,,,T',
-    'T,,,,,,,,,,,,,,,,,,,,,,T',
-    'TTTTTTTTTTTTTTTTTTTTTTTT',
-  ];
-  const y0 = 4;
-  // ':' tracks on plain slope rows for texture
-  m.patch(
-    x0,
-    y0,
-    rows.map((r, i) => (i % 9 === 4 ? r.replace(/~/g, ':') : r)),
-  );
-  const finishY = y0 + rows.findIndex((r) => r.includes('X'));
-  // the corner signs at the top and the bottom of the run
-  m.street(x0 + 7, y0 + 1, 'stLeonJamie');
-  m.street(x0 + 18, finishY - 2, 'stJamieBowden');
-  for (let x = x0 + 2; x < x0 + 22; x++) m.link(x, finishY, 'next', 0, 0);
-  // kids on toboggans cutting across
-  for (const [x, y] of [
-    [x0 + 3, y0 + 27],
-    [x0 + 12, y0 + 33],
-    [x0 + 4, y0 + 38],
-    [x0 + 13, y0 + 55],
-    [x0 + 2, y0 + 62],
-    [x0 + 9, y0 + 70],
-  ])
-    m.mon(MON.sledder, x, y);
-  return { m, start: [x0 + 11, y0 + 2] as [number, number] };
-}
+// Level 2, Jamie Street, is in jamie.ts.
 
 // ------------------------------------------------------------------ level 3
 /**
@@ -494,10 +379,16 @@ export function lavaleMall(book: BlockBook) {
   m.fill(X, 17, 60, 1, '=').fill(X, 18, 60, 1, '-');
   m.patch(X, 19, ['BBBB_BBLBB_BBBBBLBBB_BBBBBLBBBB__BBBLBBBB_BBBBBLBB_BBBB_BBBB']);
   // the lot: three rows of buried cars with lamp islands; some cars still need digging out.
-  // Each row is its own color (blue, green, tan) so you can tell where you are.
+  // The cars come in every color (lot.ts), picked with a fixed seed, never the same as the
+  // car beside one or the one parked across the aisle.
+  const pick = rng(1992);
+  const parked: string[][] = [];
   for (const [row, y] of [21, 26, 31].entries()) {
-    const car = ['blueCar', 'greenCar', 'tanCar'][row];
+    parked.push([]);
     for (let k = 0; k < 11; k++) {
+      const ok = CARS.filter((n) => n !== parked[row][k - 1] && n !== parked[row - 1]?.[k]);
+      const car = ok[Math.floor(pick() * ok.length)];
+      parked[row].push(car);
       const cx = X + 2 + k * 5 + (k >= 5 ? 3 : 0);
       m.set(cx, y, `${car}L`).set(cx + 1, y, `${car}R`);
       if ((k + row) % 2 === 0) m.set(cx, y + 1, 'P').set(cx + 1, y + 1, 'P');

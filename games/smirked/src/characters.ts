@@ -20,9 +20,9 @@ const MIRROR = 0x40; // the block flipped left-right
 const MONBL = 100;
 
 /** Pixels a step. */
-export const STEP = 4;
+const STEP = 4;
 /** Pixels a step on a diagonal. */
-export const DIAG = 3;
+const DIAG = 3;
 
 type F = Partial<Frame> & { pic: number };
 function frames(list: F[]): Frame[] {

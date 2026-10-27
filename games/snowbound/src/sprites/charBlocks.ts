@@ -84,7 +84,7 @@ export function buildCharBlocks(pal: Pal) {
       .rect(4 + lean, 10, 12, 1, pal.c('coat', 3));
     for (let y = 12; y < 17; y += 2) p.rect(5 + lean, y, 10, 1, pal.c('coat', 1));
     p.rect(5 + lean, 9, 3, 2, pal.c('gold', 2)).rect(12 + lean, 9, 3, 2, pal.c('gold', 2));
-    p.rect(2 + lean, 18, 16, 1, pal.c('grey', 4)).rect(3 + lean, 19, 14, 1, k);
+    p.rect(2 + lean, 18, 16, 1, pal.c('gray', 4)).rect(3 + lean, 19, 14, 1, k);
     if (brake) {
       p.rect(1, 13, 3, 4, pal.c('wood', 0)).rect(16, 13, 3, 4, pal.c('wood', 0));
       for (const [x, y] of [

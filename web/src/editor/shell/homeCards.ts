@@ -113,9 +113,6 @@ export interface HomeGame {
   hasDemo(): Promise<boolean>;
 }
 
-/** Recreational Software Designs' own games. */
-export const RSD_GAMES = ['sample', 'pipemare', 'nebula'];
-
 function searchText(...parts: (string | number | null | undefined)[]): string {
   return parts.filter(Boolean).join(' ').toLowerCase();
 }
@@ -176,13 +173,13 @@ export function projectGame(p: ProjectSummary, original?: CatalogEntry): HomeGam
   return {
     key: `my:${p.id}`,
     kind: 'mine',
-    title: p.name,
+    title: p.name.trim(),
     // the game it began as, when it is a copy
     byline: [editedWhen(p.updated), original?.gam ? `copy of ${original.title}` : null, p.gam].filter(Boolean).join(' · '),
     // two lines (pre-line in home.css), so a narrow tile never ends a line with a lone “·”
     tileByline: original?.gam ? `${editedWhen(p.updated)}\nfrom ${original.title}` : undefined,
     gam: p.gam,
-    search: searchText(p.name, p.gam),
+    search: searchText(p.name.trim(), p.gam),
     project: p,
     health: projectTarget(p.id, p.name, p.updated, original?.gam ? catalogTarget(original) : undefined),
     // the first level the title scene leads to, where the hero arrives
@@ -301,15 +298,17 @@ export function demoInPicture(
   const ready = (async () => {
     screen.classList.add('demo-loading');
     try {
-      const [files, { playDemoPreview }, { demoAudioPicker }] = await Promise.all([
+      const [files, { playDemoPreview }, { demoAudioPicker }, player] = await Promise.all([
         (game.previewFiles ?? game.files)(),
         demoPreview(),
         import('../../media/demoAudio'),
+        // a catalog game's DOS player look (its player.json)
+        game.entry ? import('../../dosPlayer/catalogPatches').then((m) => m.catalogPatches(game.entry)) : undefined,
       ]);
       if (stopped || !game.gam) return false;
       sound = demoAudioPicker({ compact: true, label: `${game.title} demo sound`, className: 'demo-sound' });
       screen.append(host, sound);
-      preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop, tag: false });
+      preview = playDemoPreview(host, files, game.gam, { title: game.title, loop: o.loop, onStop: stop, tag: false, player });
       if (!preview) {
         stop();
         return false;
@@ -391,7 +390,7 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
 
 /**
  * Makes an editable copy of a CD game, or picks the copy you have already: the project's id,
- * or undefined when cancelled. Edit a copy, and Make a copy on a game opened to look inside (released.ts).
+ * or undefined when canceled. Edit a copy, and Make a copy on a game opened to look inside (released.ts).
  */
 export async function copyCatalogGame(
   entry: CatalogEntry | undefined,
@@ -411,7 +410,9 @@ export async function copyCatalogGame(
   const files = await offerAddedDemo(entry, await loadFiles(), gam);
   if (!files) return;
   toast(`Copying ${title}…`);
-  const p = Project.fromFiles(files, name);
+  // the copy keeps the game's DOS player look (an original game's player.json) in its companion
+  const companion = entry && gam ? (await import('../../dosPlayer/catalogPatches')).catalogCompanion(entry, gam) : undefined;
+  const p = Project.fromFiles(files, name, undefined, companion);
   if (gam) p.gam = gam;
   await p.saveNow();
   rememberOrigin(p.id, entry?.id);
@@ -510,7 +511,13 @@ function lookInside(game: HomeGame, id: string, nav: HomeNav): HTMLElement {
 export function demoDialogButton(game: HomeGame): HTMLElement | null {
   if (!game.gam) return null;
   // the dialog and the video maker load when it is pressed (media/demo.ts does the rest)
-  const press = async () => (await import('../../media/demo')).demoButton(game.title, () => game.files(), game.gam)?.click();
+  const press = async () => {
+    const [{ demoButton }, player] = await Promise.all([
+      import('../../media/demo'),
+      game.entry ? import('../../dosPlayer/catalogPatches').then((m) => m.catalogPatches(game.entry)) : undefined,
+    ]);
+    demoButton(game.title, () => game.files(), game.gam, player)?.click();
+  };
   return h(
     'button',
     { class: 'with-ico', title: 'Watch the demo with its music and sounds, or save it as a video', onclick: () => void press() },

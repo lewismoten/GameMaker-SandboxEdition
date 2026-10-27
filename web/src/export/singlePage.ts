@@ -23,6 +23,8 @@ export interface SinglePageGame {
   data: string;
   /** Shareware: the author's notice, linked from the start screen. */
   notice?: string;
+  /** The project's DOS player customizations (dosPlayer/patchTable.ts ids), so the page plays as its DOS export looks. */
+  player?: Record<string, unknown>;
 }
 
 /** What the exporter knows about the game, for the page's tags and text (see pageSeo.ts). */
@@ -78,7 +80,10 @@ async function transform(data: Uint8Array, stream: CompressionStream | Decompres
   return new Uint8Array(await new Response(piped).arrayBuffer());
 }
 
-export async function encodeGame(meta: { id: string; title: string; gam: string; notice?: string }, entries: [string, Uint8Array][]): Promise<SinglePageGame> {
+export async function encodeGame(
+  meta: { id: string; title: string; gam: string; notice?: string; player?: Record<string, unknown> },
+  entries: [string, Uint8Array][],
+): Promise<SinglePageGame> {
   const { files, blob } = pack(entries);
   const gzip = typeof CompressionStream !== 'undefined';
   const data = gzip ? await transform(blob, new CompressionStream('gzip')) : blob;

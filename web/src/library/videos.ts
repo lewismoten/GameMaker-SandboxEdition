@@ -7,7 +7,7 @@
 // by scripts/videoTranscript.ts. A video plays only when asked (videoDialog.ts).
 import { SITE_OWNER, type ShelfItem } from './shelf';
 
-export interface Video {
+interface Video {
   /** Its YouTube id. */
   id: string;
   title: string;

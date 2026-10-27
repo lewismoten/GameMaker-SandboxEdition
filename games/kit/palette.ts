@@ -31,13 +31,16 @@ export class PaletteBuilder {
     return r;
   }
 
-  /** Game-Maker's designers look for these greys, reds, black and LCD green; keep them. */
+  /**
+   * Game-Maker's designers look for these grays, reds, black and LCD green; keep them. Black
+   * comes first: PLAYGAME clears the screen to color 0 before the high score prompt.
+   */
   designerColors(): void {
     for (const [r, g, b] of [
+      [0, 0, 0],
       [33, 33, 33],
       [43, 0, 0],
       [28, 0, 0],
-      [0, 0, 0],
       [28, 28, 28],
       [23, 23, 23],
       [18, 18, 18],

@@ -14,7 +14,7 @@ import { serializeGame } from '../../web/src/formats/game';
 import { Disk } from '../kit/disk';
 import { clipLists } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
-import { buildCharacter } from './src/characters/character';
+import { buildCarCharacter, buildCharacter } from './src/characters/character';
 import { demoRecording } from './src/demo';
 import { LEVELS, SETS } from './src/levels/levels';
 import { walkPaths } from './src/walkPaths';
@@ -22,10 +22,13 @@ import { writeWalkPaths } from '../kit/walkPaths';
 import { DIALS } from './src/levels/level4';
 import type { LevelMap } from './src/levels/mapkit';
 import { buildMonsters } from './src/characters/monsters';
+import { buildSkyMonsters } from './src/characters/skyMonsters';
+import { buildSkyMonsterBlocks } from './src/sprites/skySprites';
 import { lostSong, menuSong, storySong, titleSong, wonSong } from './src/sound/music';
 import { PAL } from './src/art/pal';
 import { renderMap } from './src/art/render';
 import * as S from './src/screens/screens';
+import { liftoffFli, parkingFli } from './src/screens/carCartoons';
 import { buildSounds } from './src/sound/sounds';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
 import { CREDITS, INSTRUCTIONS, POSTCARD, readme } from './src/screens/text';
@@ -39,8 +42,8 @@ const disk = new Disk(join(here, 'disk'));
 const lst = (name: string, entries: [string, number?][]) => disk.put(name, serializeSlideList(entries.map(([n, pause]) => ({ name: n, pause }))));
 
 // Shared data.
-const sets = { suburb: SETS.suburb(), city: SETS.city(), moon: SETS.moon() };
-const built = { suburb: sets.suburb.build(), city: sets.city.build(), moon: sets.moon.build() };
+const sets = { suburb: SETS.suburb(), city: SETS.city(), moon: SETS.moon(), sky: SETS.sky() };
+const built = { suburb: sets.suburb.build(), city: sets.city.build(), moon: sets.moon.build(), sky: sets.sky.build() };
 for (const k of Object.keys(sets) as (keyof typeof sets)[]) disk.put(`${k}.bbl`, serializeBlocks(built[k]));
 const mb = buildMonsterBlocks();
 const mbl = mb.build();
@@ -52,6 +55,13 @@ disk.put('y2k.mon', serializeMonsters(mons));
 disk.put('dex.cbl', serializeBlocks(cb.build()));
 disk.put('dex.chr', serializeCharacter(buildCharacter(cb, false)));
 disk.put('moon.chr', serializeCharacter(buildCharacter(cb, true)));
+disk.put('car.chr', serializeCharacter(buildCarCharacter(cb)));
+// the Cloud Lane's own traffic (its scene loads these instead of Y2K.MON and Y2K.MBL)
+const skyMb = buildSkyMonsterBlocks();
+const skyMbl = skyMb.build();
+const skyMons = buildSkyMonsters(skyMb);
+disk.put('sky.mbl', serializeBlocks(skyMbl));
+disk.put('sky.mon', serializeMonsters(skyMons));
 const sounds = buildSounds();
 disk.put('y2k.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
@@ -87,6 +97,9 @@ disk.put(SANDLOGO, sandLogoFli());
 disk.put('intro.fli', S.introFli(art));
 disk.put('tele.fli', S.teleFli(art));
 disk.put('launch.fli', S.launchFli(art));
+// the CitiCar's liftoff before the Cloud Lane, and its stop at the Skyway after
+disk.put('liftoff.fli', liftoffFli(art));
+disk.put('parking.fli', parkingFli(art));
 disk.put('won.fli', S.wonFli());
 disk.put('title.gif', S.gif(S.titleScreen(art)));
 disk.put('menu.gif', S.gif(S.menuScreen(art)));
@@ -134,8 +147,8 @@ LEVELS.forEach((l, i) => {
   disk.put(`${l.file}.cmf`, l.song());
   const start = map.marks.has('start') ? map.at('start') : map.at('hall');
   const [vx, vy] = l.card.view;
-  const view = renderMap(map.map, built[l.set], vx, vy, 16, 5, mbl, mons);
-  const dex = cb.pic(l.chr === 'moon.chr' ? 'm_down0' : 'down0');
+  const view = l.mon === 'sky' ? renderMap(map.map, built[l.set], vx, vy, 16, 5, skyMbl, skyMons) : renderMap(map.map, built[l.set], vx, vy, 16, 5, mbl, mons);
+  const dex = cb.pic(l.chr === 'moon.chr' ? 'm_down0' : l.chr === 'car.chr' ? 'car0' : 'down0');
   if (start.x >= vx && start.x < vx + 16 && start.y >= vy && start.y < vy + 5) view.blit(dex, (start.x - vx) * 20, (start.y - vy) * 20, 255);
   disk.put(`card${i + 1}.gif`, S.gif(S.levelCard(i + 1, LEVELS.length, l.card.title, l.card.lines, view)));
   lst(`lvl${i + 1}.lst`, [...l.intro.map((f) => [f, 0] as [string, number]), [`card${i + 1}.gif`, 8]]);
@@ -150,8 +163,8 @@ LEVELS.forEach((l, i) => {
     'y2k.pal',
     `${l.file}.map`,
     `${l.set}.bbl`,
-    'y2k.mon',
-    'y2k.mbl',
+    l.mon === 'sky' ? 'sky.mon' : 'y2k.mon',
+    l.mon === 'sky' ? 'sky.mbl' : 'y2k.mbl',
     l.chr,
     'dex.cbl',
     'y2k.snd',
@@ -219,6 +232,8 @@ disk.write();
 writeWalkPaths('year2000', walkPaths(sets));
 console.log(
   `${Object.entries(sets)
-    .map(([k, s]) => `${k} ${s.names.length}`)
-    .join(', ')} background blocks; ${mb.names.length} monster blocks; ${cb.names.length} character blocks; ${Object.keys(sounds.vocs).length} sounds`,
+    .map(([k, s]) => `${k} ${s.names.filter(Boolean).length}`)
+    .join(
+      ', ',
+    )} background blocks; ${mb.names.length} + ${skyMb.names.length} monster blocks; ${cb.names.length} character blocks; ${Object.keys(sounds.vocs).length} sounds`,
 );

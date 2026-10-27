@@ -10,7 +10,7 @@ import { c, canvas, cloud, copy, cut, dirt, grassTop, hedge, plankFence, planks,
 import { sign, water } from './common';
 
 export const G = 40;
-export const bandRow = (y: number) => (y <= 30 ? 0 : y <= 33 ? 1 : y <= 36 ? 2 : 3);
+const bandRow = (y: number) => (y <= 30 ? 0 : y <= 33 ? 1 : y <= 36 ? 2 : 3);
 export const skyAt = (y: number) => `sky${bandRow(y)}`;
 
 export function farmTiles(): Tiles {

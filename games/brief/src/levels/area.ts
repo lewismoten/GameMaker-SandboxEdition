@@ -12,14 +12,14 @@ import { bookwormEgg, floor, on, shusher, wordSlip } from '../art/kit';
 import { CTR, EGG_BLOCK, WORDS_PER_BOOK } from '../ids';
 
 export const WIN_W = 16;
-export const WIN_H = 10;
-export const ENTRY = { x: 8, y: 5 };
+const WIN_H = 10;
+const ENTRY = { x: 8, y: 5 };
 
 /** A map cell: a block, maybe a monster on it, maybe a named mark. */
 export type Cell = string | { tile: string; mon?: string; mark?: string };
 
 /** Word pickups by map character: the value each slip is worth. */
-export const WORD_CHARS: Record<string, number> = { '*': 20, '+': 10, '~': 5, o: 1 };
+const WORD_CHARS: Record<string, number> = { '*': 20, '+': 10, '~': 5, o: 1 };
 
 export interface Window {
   ox: number;

@@ -5,6 +5,7 @@
 // games); the drives and game folders are in computer/drives.ts and computer/folders.ts.
 import { attr } from './text/textScreen';
 import { type ProgramRef } from './dos/vfs';
+import { swapsDisks } from './diskSwap';
 import { ProgramAborted } from './text/textInput';
 import type { OpenDesigner } from './host';
 import { errorBox, askText } from './text/textUi';
@@ -183,7 +184,7 @@ export class Computer extends ComputerFolders {
                 if (e instanceof ProgramAborted) throw e;
                 console.warn('cracktro', e);
               });
-          await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId);
+          await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId, undefined, ref.projectId);
           break;
         }
         case 'gmcrack':
@@ -191,6 +192,9 @@ export class Computer extends ComputerFolders {
           break;
         case 'savehack':
           await (await import('./hacks/saveHack')).runSaveHack(this);
+          break;
+        case 'playhack':
+          await (await import('./hacks/playHack')).runPlayHack(this);
           break;
         case 'backup':
           await (await import('./hacks/backupExe')).runBackup(this, _args);
@@ -238,6 +242,11 @@ export class Computer extends ComputerFolders {
   /** Closes the web-style designer on the monitor, if one is open. */
   private closeEditor?: () => void;
   designer?: OpenDesigner;
+
+  /** A disk can go in or out of drive A: without quitting what is running (retro/diskSwap.ts). */
+  get diskSwappable(): boolean {
+    return this.busy && !this.player && swapsDisks(this.program);
+  }
 
   /** Game-Maker (or one of its designers) is running. */
   get inGameMaker(): boolean {
@@ -307,7 +316,7 @@ export class Computer extends ComputerFolders {
     return true;
   }
 
-  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string): Promise<void> {
+  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array, projectId?: string): Promise<void> {
     this.unlockAudio();
     this.keys.enabled = false;
     this.setMode('game');
@@ -316,16 +325,28 @@ export class Computer extends ComputerFolders {
     this.opts.onGame?.({ files, gam, title });
     // the game player (the engine) loads with the first game played (the desk fetches it ahead)
     return new Promise<void>((resolve) => {
+      // a game of yours plays with its DOS player choices (PLAYHACK, the editor's panel), a catalog
+      // game with its own (an original game's player.json); Game-Maker's PLAYGAME (gmHelp) has none
+      const catalogId = saveId?.startsWith('game:') ? saveId.slice('game:'.length) : undefined;
+      const patches = gmHelp
+        ? Promise.resolve(undefined)
+        : projectId
+          ? import('../dosPlayer/projectPatches').then((m) => m.loadProjectPatches(projectId))
+          : catalogId
+            ? import('../dosPlayer/catalogPatches').then((m) => m.catalogPatchesById(catalogId))
+            : Promise.resolve(undefined);
       const mount = () =>
-        void import('../player/player').then(
-          ({ mountPlayer }) =>
+        void Promise.all([import('../player/player'), patches]).then(
+          ([{ mountPlayer }, player]) =>
             (this.player = mountPlayer(host, files, gam, {
               title,
               notice,
+              player,
               autoStart: true,
               noKeysButton: true,
               exactPixels: true, // the monitor's size is never a whole multiple of 320x200
               speed: this.opts.speed,
+              gmHelp,
               // the game port: the desk's game pad (when the desk has one) and any real gamepad
               joystick: deskJoystick,
               // the card is looked for as the game starts, as PLAYGAME did (switching it mid-game waits for the next)
@@ -333,7 +354,7 @@ export class Computer extends ComputerFolders {
               onQuit: () => false, // back to DOS
               onFileWrite: saveId ? (name, bytes) => (playWrote(saveId, name), void writeSaveFile(saveId, name, bytes)) : undefined,
               saveId,
-              ...playAchievements(saveId),
+              ...playAchievements(saveId, this.opts.view ?? 'desk'),
               onExit: () => {
                 this.player = undefined;
                 if (this.restarting) {

@@ -92,7 +92,7 @@ export function layoutCost(
 
 function score(g: Graph, cells: Cells, at: Map<number, Point>, w: number, h: number, area: Area): number {
   const { cross, under } = layoutCost(g.pairs, at, { w: 22, h: 18 });
-  // long arrows, counted in steps between neighbouring cards
+  // long arrows, counted in steps between neighboring cards
   const { length } = layoutCost(g.pairs, new Map([...cells].map(([s, p]) => [s, { x: p.c, y: p.r }])), { w: 1, h: 1 }, false);
   // arrows that run backwards (right to left, bottom to top) from a scene to the ones it leads to first are harder to follow
   const { kids } = spanningForest(g);
@@ -115,7 +115,7 @@ const spacing = (w: number, h: number, a: Area) => ({
   dy: h > 1 ? Math.min(MAX_GAP.y, (a.y1 - a.y0) / (h - 1)) : 0,
 });
 
-/** Turns grid cells into Pos values, spaced evenly and centred in the world. */
+/** Turns grid cells into Pos values, spaced evenly and centered in the world. */
 function toPositions(cells: Cells, w: number, h: number, a: Area): Map<number, Point> {
   const { dx, dy } = spacing(w, h, a);
   const cx = (a.x0 + a.x1) / 2 - ((w - 1) * dx) / 2;
@@ -282,7 +282,7 @@ export function spreadOut(game: Game): Map<number, Point> {
   return out;
 }
 
-/** The empty room Close gaps leaves between neighbouring cards, in integrator units. */
+/** The empty room Close gaps leaves between neighboring cards, in integrator units. */
 export const SNUG_GAP = { x: Math.round(CARD_UNITS.w * 0.5), y: Math.round(CARD_UNITS.h * 0.6) };
 
 /** Where values (card starts, each `size` long) go when every empty band wider than `gap` shrinks to `gap`. */
@@ -303,7 +303,7 @@ const span = (vs: number[], size: number) => Math.max(...vs) - Math.min(...vs) +
 
 /**
  * Keeps the arrangement (every card's order across and down, rows stay rows) but closes up
- * wide empty space between cards, then centres the whole set in the world. Small games laid
+ * wide empty space between cards, then centers the whole set in the world. Small games laid
  * out the DOS way (title at the top, the end at the bottom) then fit the board at a size
  * where the cards can be read.
  */

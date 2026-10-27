@@ -16,7 +16,10 @@ import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { putSaveSign } from '../kit/saveSign';
 import { buildBlocks } from './src/blocks/blocks';
 import { MON } from './src/ids';
-import { bowdenDrive, galeStreet, jamieHill, lavaleMall, type MapBuilder } from './src/levels/maps';
+import { bowdenDrive, galeStreet, lavaleMall, type MapBuilder } from './src/levels/maps';
+import { jamieHill } from './src/levels/jamie';
+import { hillBook } from './src/blocks/hill';
+import { lotBook } from './src/blocks/lot';
 import { hillSong, lostSong, mainSong, mallSong, menuSong, pineSong, storySong, titleSong, wonSong } from './src/sound/music';
 import { buildPalette, type TimeOfDay } from './src/art/pal';
 import { renderRegion } from './src/art/render';
@@ -37,6 +40,10 @@ const disk = new Disk(join(here, 'disk'));
 const noon = buildPalette('noon');
 const book = buildBlocks(noon);
 const bbl = book.finish();
+// Jamie Street's own copy of the set, with the long run's banks, birches, lit firs and boards
+const hill = hillBook(book, noon);
+// LaVale Mall's, with parked cars of every color
+const lot = lotBook(book, noon);
 const mb = buildMonsterBlocks(noon);
 const cb = buildCharBlocks(noon);
 disk.put('snow.bbl', serializeBlocks(bbl));
@@ -79,15 +86,15 @@ const LEVELS: Level[] = [
     file: 'jamie',
     desc: 'Jamie Street',
     time: 'noon',
-    build: jamieHill,
+    build: () => jamieHill(hill),
     chr: 'sled.chr',
     song: ['jamie.cmf', hillSong],
     mons: {},
     card: {
       title: '2. JAMIE STREET',
       time: 'Noon. Closed for sledding!',
-      lines: ['Steer LEFT/RIGHT (A/D), UP (W)', 'brakes, DOWN (S) pushes. Grab', 'the dollars on the way down.'],
-      view: [30, 4],
+      lines: ['Steer LEFT/RIGHT (A/D), UP (W)', 'brakes, DOWN (S) pushes. The', 'run bends right, all the way', 'down: boards count 9 to 1.'],
+      view: [33, 4],
     },
   },
   {
@@ -109,7 +116,7 @@ const LEVELS: Level[] = [
     file: 'lavale',
     desc: 'LaVale Mall',
     time: 'night',
-    build: lavaleMall,
+    build: () => lavaleMall(lot),
     chr: 'kid.chr',
     song: ['lavale.cmf', mallSong],
     mons: { plowRun: 56, plow2Run: 52, plowSpeed: 4 },
@@ -133,11 +140,11 @@ let totalMoney = 0;
 built.forEach(({ l, m, start }, i) => {
   const pal = buildPalette(l.time);
   const map = m.build();
-  // Jamie Street, the level after the pines, shows the save sign by the sled's start; SNOW.BBL
-  // is full, so it gets its own copy (JAMIE.BBL) with blocks it never shows given to the sign
-  const set = l.file === 'jamie' ? putSaveSign(bbl, map, noon.pal, start[0] + 3, start[1] - 1) : bbl;
-  const bblFile = l.file === 'jamie' ? 'jamie.bbl' : 'snow.bbl';
-  if (l.file === 'jamie') disk.put(bblFile, serializeBlocks(set));
+  // Jamie Street, the level after the pines, shows the save sign by the sled's start, in its
+  // own copy of the set (JAMIE.BBL: SNOW.BBL is full), in blocks it never shows
+  const set = l.file === 'jamie' ? putSaveSign(hill.finish(), map, noon.pal, start[0] + 3, start[1] - 1) : l.file === 'lavale' ? lot.finish() : bbl;
+  const bblFile = set === bbl ? 'snow.bbl' : `${l.file}.bbl`;
+  if (set !== bbl) disk.put(bblFile, serializeBlocks(set));
   totalMoney += m.money;
   const mons = buildMonsters(mb, l.mons);
   disk.put(`${l.time}.pal`, serializePalette(pal.pal));
@@ -156,6 +163,8 @@ built.forEach(({ l, m, start }, i) => {
 
   const scene = emptyScene(ADVTYPE);
   scene.desc = l.desc;
+  // the sled run never scrolls back up the hill (it goes round the map's wrap, see levels/slant.ts)
+  if (l.file === 'jamie') scene.scroll = { ...scene.scroll, up: 0 };
   scene.pos = { x: 60 + i * 60, y: 110 };
   scene.files = [
     `${l.time}.pal`,
@@ -264,7 +273,8 @@ clipLists(disk.files, ['title.lst', 'story.lst', 'howto.lst', 'credits.lst']);
 disk.write();
 // the sidewalks, front walks and driveways (and the side streets, plowed down to the same
 // asphalt) the walkthrough's bot keeps to; not the main road, which it keeps off anyway (not on the disk)
-writeWalkPaths('snowbound', { 'snow.bbl': ['walk', 'deepWalk', 'stoop', 'stoopPaper', 'asphalt', 'deep', 'tip', 'rootBeer'].map((n) => book.n(n)) });
+const paths = ['walk', 'deepWalk', 'stoop', 'stoopPaper', 'asphalt', 'deep', 'tip', 'rootBeer'].map((n) => book.n(n));
+writeWalkPaths('snowbound', { 'snow.bbl': paths, 'lavale.bbl': paths });
 console.log(
   `${book.index.size} background blocks, ${mb.index.size} monster blocks, ${cb.index.size} character blocks, ${sounds.set.digital.filter(Boolean).length} sounds`,
 );

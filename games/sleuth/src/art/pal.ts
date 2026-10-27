@@ -6,11 +6,11 @@ import { PaletteBuilder } from '../../../kit/palette';
 import { matchColor } from '../../../../web/src/formats/palette';
 
 type RGB = [number, number, number];
-export type Light = 'house' | 'night' | 'dawn';
+type Light = 'house' | 'night' | 'dawn';
 
 /** [name, shades, dark, light, mid?, gives off light?] */
 const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
-  ['grey', 8, [24, 24, 30], [214, 214, 220]],
+  ['gray', 8, [24, 24, 30], [214, 214, 220]],
   ['wood', 8, [52, 30, 16], [214, 160, 98]],
   ['panel', 6, [26, 12, 10], [120, 64, 42]],
   ['velvet', 8, [44, 4, 10], [232, 52, 60], [150, 14, 26]],
@@ -49,7 +49,7 @@ const LIGHT: Record<Light, { mul: RGB; add: RGB }> = {
   dawn: { mul: [1.0, 0.86, 0.84], add: [20, 8, 18] },
 };
 
-export interface Pal {
+interface Pal {
   pal: Uint8Array;
   r: (name: string) => number[];
   /** Shade k of a ramp, clamped. */

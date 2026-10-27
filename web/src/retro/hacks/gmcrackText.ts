@@ -1,6 +1,7 @@
 // GMCRACK's words: the .NFO and FILE_ID.DIZ in GMCRACK.ZIP, and the fictional scene group
 // behind it. All of it is make-believe for the desk PC: GMCRACK only changes files on this
-// simulated computer (C:\GM\PLAYGAME.REG, and which shareware in C:\DOWNLOAD shows its intro).
+// simulated computer (C:\GM\PLAYGAME.REG, the serial in PLAYGAME.EXE, and which shareware in
+// C:\DOWNLOAD shows its intro).
 import { DIZ_WIDTH, warezSignoff } from '../bbs/fileId';
 
 export const GROUP = 'DiGiTAL DUNE';
@@ -22,7 +23,7 @@ export const GMCRACK_DIZ: string[] = [
   `Released ${RELEASED} by ${GROUP}`,
   '-'.repeat(DIZ_WIDTH),
   'Register or unregister Game-Maker SE 3.00,',
-  'KEYGEN for any name (valid per CHK.EXE),',
+  'KEYGEN for any name, RESERIAL PLAYGAME.EXE,',
   'and add a crack intro to Sandbox and Sofa',
   'games in C:\\DOWNLOAD (and take it out!). Read',
   'GMCRACK.NFO first. For this desk PC only.',
@@ -56,15 +57,23 @@ export const GMCRACK_NFO: string[] = [
   '',
   '  [1] REGiSTER ... writes PLAYGAME.REG with a name and a key.',
   '  [2] UNREGiSTER . keeps the name but spoils the key: hello, manual check!',
-  '  [3] KEYGEN ..... works out the key CHK.EXE wants for any name.',
+  '  [3] KEYGEN ..... works out the key CHK.EXE wants for any name. R makes up a',
+  '                   serial for some other copy: any counter x 1029, plus 4.',
+  '                   Like it? We stamp it into YOUR PLAYGAME.EXE and register.',
   '  [4] CRACK ...... gives a Sandbox or Sofa game in C:\\DOWNLOAD our intro.',
   "                   Its <GAME>.EXE is Game-Maker's XFERPLAY.EXE, named after the",
   '                   .GAM it plays. We keep it as <GAME>.BAK and put our patched',
   '                   XFERPLAY in as <GAME>.EXE (same name, or it finds no .GAM!).',
   '  [5] UNCRACK .... puts the .BAK back.  Download a game again: also original.',
   '  [7] ANSWERS .... the doc check bypass list: every page/paragraph/word.',
+  '  [8] RESERiAL ... stamps a new serial into PLAYGAME.EXE: 4 bytes at offset',
+  '                   181Eh (PLAYBYTE+30), shuffled 1,3,4,2 like CHK.EXE reads',
+  '                   them. Random, typed in, or F for the factory serial. Your',
+  '                   old PLAYGAME.REG goes BAD, so we KEYGEN you a new one.',
   '',
   '  From DOS:   GMCRACK /K <name>   prints a key.     GMCRACK /?   help.',
+  '              GMCRACK /R <name>   a key for a made-up serial of another copy.',
+  '              GMCRACK /S [n | F]  RESERIAL: random, serial n, or the factory.',
   "              GM REGISTER         Game-Maker's own way to enter a name and key.",
   '',
   '  A WORD FROM THE GROUP',

@@ -7,7 +7,6 @@ import { MAXFRAME, emptyFrame, newCharacter, type Character, type Frame, type Se
 import { keyOf, SCAN } from '../ids';
 
 export const NONE = CHARBL;
-export const END = CHARBL + 1;
 
 /** Collects 20x20 pictures into a block set, reusing identical ones. */
 export class BlockList {
@@ -50,13 +49,13 @@ export interface F {
   birth?: number;
 }
 
-export function frame(f: F): Frame {
+function frame(f: F): Frame {
   if (f.birth !== undefined) return { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, pic1: f.birth, pic2: MONBL, pause: f.pause ?? 0 };
   const o = f.o ?? 0;
   return { ...emptyFrame(), x: f.x ?? 0, y: f.y ?? 0, orient: (o & 15) | ((o & 15) << 4), pic1: f.top ?? NONE, pic2: f.bottom ?? NONE, pause: f.pause ?? 1 };
 }
 
-export interface SeqSpec {
+interface SeqSpec {
   key?: keyof typeof SCAN;
   frames: F[];
   sound?: number;

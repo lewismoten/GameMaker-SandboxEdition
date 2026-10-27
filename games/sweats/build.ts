@@ -36,9 +36,6 @@ import { renderRegion } from '../snowbound/src/art/render';
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
-/** The registration fee the 1995 README asks (Game-Maker's 1994 license: shareware asks at least $5). */
-export const PRICE = '$5';
-
 /** A group's blocks and sprites, drawn in a palette. */
 function blockSets(g: Group, pal: Pal) {
   const book = new BlockBook();

@@ -8,12 +8,12 @@
 import type { Bestiary, BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const HOME_W = 36;
-export const HOME_H = 14;
+const HOME_W = 36;
+const HOME_H = 14;
 /** The gadgets' patrols (blocks along the floor from where each starts). */
 export const RUNS = { toaster: 4, vacuum: 7 } as const;
 
-export function homeRows(gold: boolean): string[] {
+function homeRows(gold: boolean): string[] {
   const g: string[][] = Array.from({ length: HOME_H }, (_, y) =>
     Array.from({ length: HOME_W }, (_, x) => (y === HOME_H - 1 ? '_' : x === 0 || x === HOME_W - 1 ? 'C' : (x * 3 + y * 5) % 7 ? '.' : ',')),
   );

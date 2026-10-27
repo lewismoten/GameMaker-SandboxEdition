@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { plain } from '../inline';
 import { BBS_LISTINGS } from './bbsListings';
 import { CORRECTION, MAIL_BAG } from './mailBag';
+import { STOCK_LOOK } from '../../../engine/playerLook';
 
 const repo = join(__dirname, '../../../../..');
 const read = (...p: string[]) => readFileSync(join(repo, ...p), 'latin1');
@@ -24,7 +25,8 @@ describe('the Mail Bag', async () => {
     expect(read('code/GM/PLAYGAME.C')).toMatch(new RegExp(`case ${CORRECTION.right}: Display_Invent\\(\\)`));
     const funcKeys = read('web/src/engine/funcKeys.ts');
     expect(funcKeys).toContain(`/** F${CORRECTION.right}: Display_Invent */`);
-    expect(funcKeys).toContain('`Score:');
+    expect(funcKeys).toContain("look.format('str.invent.score', ci.score)");
+    expect(STOCK_LOOK.format('str.invent.score', 100)).toMatch(/^Score: +100$/);
     expect(text).toContain(`F${CORRECTION.said} turns the sound effects off`);
     expect(text).toContain(`press F${CORRECTION.right}`);
   });

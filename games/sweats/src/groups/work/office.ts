@@ -1,5 +1,5 @@
 // The NINE TO FIVE set's ramps and the office every one of its monologues shares: the beige
-// wall with its baseboard, the grey-blue carpet, the drop ceiling with its fluorescent panels,
+// wall with its baseboard, the gray-blue carpet, the drop ceiling with its fluorescent panels,
 // the window onto the city.
 import { Pixels, rng } from '../../../../kit/pixels';
 import { blob, shadeAt } from '../../../../snowbound/src/art/draw';
@@ -71,7 +71,7 @@ export function buildOffice(book: BlockBook, pal: Pal): void {
   const window = officeWall(pal, 5);
   window.rect(1, 1, 18, 18, c('metal', 1));
   for (let y = 2; y < 18; y++) for (let x = 2; x < 18; x++) window.set(x, y, shadeAt(R('daylight'), 0, 2, 1 - y / 18, x, y));
-  window.rect(2, 12, 16, 6, c('green', 1)).rect(4, 9, 3, 9, c('grey', 1)).rect(8, 7, 2, 11, c('grey', 2)).rect(12, 10, 4, 8, c('grey', 1));
+  window.rect(2, 12, 16, 6, c('green', 1)).rect(4, 9, 3, 9, c('gray', 1)).rect(8, 7, 2, 11, c('gray', 2)).rect(12, 10, 4, 8, c('gray', 1));
   window.line(2, 14, 17, 13, c('gold', 1));
   book.add('window', window, AIR);
   // the same window behind half-drawn blinds, a pull cord down the side
@@ -122,7 +122,7 @@ export function buildOffice(book: BlockBook, pal: Pal): void {
     [12, 'navy'],
   ] as const)
     cred.rect(x, 0, 3, 5, c(col, 1)).rect(x, 1, 3, 1, c('white', 1));
-  cred.rect(27, 2, 9, 3, c('grey', 1)).rect(26, 1, 4, 2, c('grey', 0)).rect(33, 1, 4, 2, c('grey', 0)).rect(29, 3, 4, 1, c('grey', 2));
+  cred.rect(27, 2, 9, 3, c('gray', 1)).rect(26, 1, 4, 2, c('gray', 0)).rect(33, 1, 4, 2, c('gray', 0)).rect(29, 3, 4, 1, c('gray', 2));
   addPicture(book, 'credenza', cred, officeBase(pal), () => AIR);
 }
 

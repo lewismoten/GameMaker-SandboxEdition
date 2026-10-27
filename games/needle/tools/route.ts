@@ -24,7 +24,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
  * than `maxLoss` hit points (or goes wrong), it is taken back and played again after a short
  * wait, so the camel sets out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -54,9 +54,9 @@ function picked(bot: Bot, x: number, y: number, what: string): void {
   if (b.scorePts > 0 || b.chHitPt > 0) throw new Error(`missed ${what} at ${x},${y}`);
 }
 
-export const gold = (bot: Bot) => bot.sim.meter(GOLD) - 1;
-export const grace = (bot: Bot) => bot.sim.meter(GRACE) - 1;
-export const thread = (bot: Bot) => bot.sim.meter(THREAD) - 1;
+const gold = (bot: Bot) => bot.sim.meter(GOLD) - 1;
+const grace = (bot: Bot) => bot.sim.meter(GRACE) - 1;
+const thread = (bot: Bot) => bot.sim.meter(THREAD) - 1;
 
 /** 1. The city gate: the market, the poor, over the roofs, out the needle gate on his knees. */
 export async function theCity(bot: Bot): Promise<void> {

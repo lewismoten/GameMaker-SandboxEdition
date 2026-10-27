@@ -225,7 +225,7 @@ export async function present(b: Built): Promise<void> {
 }
 
 /** A starting top ten, so the high score screen is not empty on a fresh disk. */
-export function startingScores(): Uint8Array {
+function startingScores(): Uint8Array {
   const names = [
     'Max',
     'Ada Starling',

@@ -22,7 +22,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
 }
 
 /** Collectibles still in the level (a pickup that changes when touched and gives something; gates are solid, so left out). */
-export function loot(bot: Bot): string[] {
+function loot(bot: Bot): string[] {
   const out: string[] = [];
   for (let y = ORIGIN; y < ORIGIN + 16; y++)
     for (let x = ORIGIN; x < ORIGIN + 70; x++) {
@@ -39,7 +39,7 @@ export function loot(bot: Bot): string[] {
  * `maxLoss` hit points (or goes wrong), it is taken back and played again after a short wait, so
  * Carl sets out at a better moment.
  */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -85,11 +85,14 @@ export async function theCouch(bot: Bot): Promise<void> {
     go(
       bot,
       [
+        [3, 8],
+        [4, 4],
         [6, 4],
         [7, 4],
         [10, 2],
+        [15, 4],
       ],
-      'candy on the shelf',
+      'sugar, candy on the shelf, sugar',
     ),
   );
   await carefully(bot, 'the coffee table', 10, () =>
@@ -112,6 +115,7 @@ export async function theCouch(bot: Bot): Promise<void> {
       [
         [29, 6],
         [30, 2],
+        [32, 2],
         [30, 4],
         [31, 4],
         [33, 4],
@@ -126,6 +130,7 @@ export async function theCouch(bot: Bot): Promise<void> {
       bot,
       [
         [37, 7],
+        [39, 9],
         [41, 7],
         [41, 1],
         [41, 4],
@@ -145,7 +150,8 @@ export async function theCouch(bot: Bot): Promise<void> {
       [
         [50, 1],
         [51, 10],
-        [52, 2],
+        [53, 6],
+        [53, 2],
         [56, 2],
       ],
       'through, the pizza on the floor, over the lamp',
@@ -162,6 +168,7 @@ export async function theWalls(bot: Bot): Promise<void> {
     go(
       bot,
       [
+        [3, 2],
         [4, 6],
         [6, 4],
         [7, 4],
@@ -172,8 +179,9 @@ export async function theWalls(bot: Bot): Promise<void> {
         [17, 2],
         [18, 2],
         [18, 6],
+        [20, 5],
       ],
-      'a recipe, a calendar, a clock',
+      'sugar, a recipe, a calendar, a clock, sugar',
     ),
   );
   await carefully(bot, 'the clap at the floor', 12, async () => {
@@ -185,17 +193,19 @@ export async function theWalls(bot: Bot): Promise<void> {
     go(
       bot,
       [
+        [26, 9],
         [27, 7],
         [28, 5],
         [31, 8],
         [33, 6],
+        [34, 1],
         [33, 3],
         [27, 3],
         [27, 2],
         [33, 6],
         [35, 10],
       ],
-      'a picture, a recipe, a calendar, a crumb, the donut',
+      'sugar, a picture, a recipe, a calendar, sugar, a crumb, the donut',
     ),
   );
   await carefully(bot, 'the swatter over the fridge', 12, async () => {
@@ -214,14 +224,17 @@ export async function theWalls(bot: Bot): Promise<void> {
     go(
       bot,
       [
+        [46, 2],
         [43, 4],
         [44, 7],
         [45, 7],
         [44, 9],
         [42, 9],
         [48, 9],
+        [48, 5],
+        [48, 9],
       ],
-      'a clock, a picture, a calendar',
+      'sugar, a clock, a picture, a calendar, sugar',
     ),
   );
   need(bot, SMILES, 6, 'smiles');
@@ -244,12 +257,13 @@ export async function theBed(bot: Bot): Promise<void> {
     await go(
       bot,
       [
+        [7, 6],
         [9, 3],
         [13, 7],
         [13, 8],
         [16, 4],
       ],
-      'the soda on the nightstand, over his head',
+      'sugar, the soda on the nightstand, over his head',
     );
     await buzzAt(bot, [16, 4], 'down');
     await go(bot, [[16, 7]], 'into his ear');
@@ -261,14 +275,16 @@ export async function theBed(bot: Bot): Promise<void> {
       bot,
       [
         [24, 3],
+        [27, 2],
         [29, 2],
         [30, 3],
         [33, 2],
         [38, 2],
+        [37, 5],
         [38, 9],
         [39, 9],
       ],
-      'to Teddy',
+      'sugar, sugar, to Teddy',
     ),
   );
   for (const n of [2, 3])
@@ -290,9 +306,11 @@ export async function theBed(bot: Bot): Promise<void> {
       bot,
       [
         [42, 8],
+        [46, 8],
+        [44, 2],
         [44, 4],
       ],
-      'the window',
+      'sugar, sugar, the window',
     );
     // straight out the window into the night: no new move, so nothing cuts "I've opened the window" off
     await leave(bot, bot.fly(55, 4, 'out'), 'the window');
@@ -306,11 +324,13 @@ export async function theWindow(bot: Bot): Promise<void> {
     go(
       bot,
       [
+        [11, 3],
         [10, 8],
         [17, 8],
+        [17, 10],
         [18, 5],
       ],
-      'the gusts',
+      'sugar, the gusts, sugar',
     ),
   );
   await carefully(bot, 'over the clothesline', 12, () => go(bot, [[31, 5]], 'the clothesline'));
@@ -331,10 +351,12 @@ export async function theWindow(bot: Bot): Promise<void> {
       bot,
       [
         [47, 9],
+        [49, 7],
         [53, 9],
+        [54, 10],
         [54, 5],
       ],
-      'the gusts again',
+      'sugar, the gusts again, sugar',
     ),
   );
   await carefully(bot, "over the neighbor's clothesline", 12, () => go(bot, [[65, 5]], 'the second clothesline'));
@@ -351,10 +373,12 @@ export async function theWild(bot: Bot): Promise<void> {
     go(
       bot,
       [
+        [2, 2],
         [4, 3],
         [8, 5],
         [12, 10],
         [12, 11],
+        [13, 6],
         [15, 2],
         [17, 7],
         [22, 9],
@@ -366,6 +390,7 @@ export async function theWild(bot: Bot): Promise<void> {
     go(
       bot,
       [
+        [24, 3],
         [27, 4],
         [31, 7],
         [35, 9],
@@ -377,10 +402,12 @@ export async function theWild(bot: Bot): Promise<void> {
     go(
       bot,
       [
+        [37, 6],
         [38, 4],
         [43, 7],
         [42, 10],
         [42, 11],
+        [47, 9],
         [47, 2],
       ],
       'hourglasses by the web',
@@ -392,7 +419,9 @@ export async function theWild(bot: Bot): Promise<void> {
       [
         [51, 7],
         [55, 9],
+        [60, 10],
         [58, 4],
+        [56, 2],
       ],
       'hourglasses by Brother Camel',
     ),
@@ -412,14 +441,18 @@ export async function theAux(bot: Bot): Promise<void> {
     go(
       bot,
       [
+        [6, 3],
+        [17, 6],
         [19, 3],
         [26, 2],
         [26, 8],
         [27, 2],
+        [30, 3],
         [36, 2],
         [36, 3],
+        [38, 8],
       ],
-      'the crumbs and the donut',
+      'sugar, the crumbs, sugar and the donut, sugar',
     ),
   );
   await carefully(bot, 'the clap in the bookcase gap', 12, async () => {
@@ -428,7 +461,14 @@ export async function theAux(bot: Bot): Promise<void> {
     await go(bot, [[42, 1]], 'through');
   });
   await carefully(bot, 'his hand over the stereo', 12, async () => {
-    await go(bot, [[42, 1]], 'by the gap');
+    await go(
+      bot,
+      [
+        [43, 6],
+        [42, 1],
+      ],
+      'sugar, by the gap',
+    );
     await rollAhead(bot, 'right');
     await go(bot, [[46, 1]], 'past his hand');
   });
@@ -443,10 +483,3 @@ export async function theAux(bot: Bot): Promise<void> {
     await leave(bot, bot.fly(49, 9, 'the aux cord'), 'the aux cord');
   });
 }
-
-export const counts = {
-  snacks: (b: Bot) => count(b, SNACKS),
-  smiles: (b: Bot) => count(b, SMILES),
-  ears: (b: Bot) => count(b, EARS),
-  hours: (b: Bot) => count(b, HOURS),
-};

@@ -3,8 +3,8 @@
   "keys": {
     "Up": "Speed ahead (W too)",
     "Down": "Brake (S too)",
-    "Left": "Strafe left (A too)",
-    "Right": "Strafe right (D too)",
+    "Left": "Strafe left (A too); a lane over on the bus",
+    "Right": "Strafe right (D too); a lane over on the bus",
     "W": "Speed ahead",
     "S": "Brake",
     "A": "Strafe left",
@@ -42,7 +42,7 @@
             },
             {
               "q": "How do I see my energy?",
-              "a": "Press F2. Hitpoints is your energy (40 when you start), Lives is your spare ships, and counter 5 is your Nova charges."
+              "a": "Press F2. It shows your energy (40 when you start), your spare ships, and your Nova charges as counter 5."
             }
           ]
         },
@@ -62,6 +62,18 @@
               "a": "The clock LED on a 555 timer. It keeps time for the homemade 6502 and for the firewall right past it. LED on, beam on. LED off: go!"
             },
             {
+              "q": "The screen went corner to corner and my keys feel wrong.",
+              "a": "On the copper traces the keys turn with the track. Up speeds you along the trace, Down slows you, Left steers toward its top edge and Right toward its bottom edge. Keep to the middle of the copper and let the guns do the work."
+            },
+            {
+              "q": "The trace ends at the edge of the screen and starts again!",
+              "a": "It bends flat and comes round the wrap as the next trace down. That is the way on. The silkscreen counts the traces left, 3, 2, 1, and the last one runs into the chip. A silver jumper wire halfway round bridges to the next trace: hold Right on it to save a lap."
+            },
+            {
+              "q": "Now I am flying sideways!",
+              "a": "Expansion Slots is seen from the side. Up and Down climb and dive, Right speeds ahead and Left brakes. Cards stand up from the board and the IDE cable hangs from the drive cage: fly over one and under the other."
+            },
+            {
               "q": "The BIOS Bug's head won't break.",
               "a": "Shoot its two eyes (the bottom half of the head) first; they take 9 hits each. Then the crown (6 each). Fly up through the hole where the head was."
             }
@@ -70,6 +82,14 @@
         {
           "head": "2. Memory Lane",
           "hints": [
+            {
+              "q": "Now I see the BLASTER from behind and it won't shoot!",
+              "a": "That's the Memory Bus, a ride between stages. The guns are cold on the bus. Left and Right hop a lane; stay out of the lanes the interrupts and Parity Bats come down. When the sign reads BUS: 0, steer into the middle lane and it carries you into the DRAM chip."
+            },
+            {
+              "q": "Where does the ring buffer end?",
+              "a": "At HEAD. You start reading at TAIL, and each row bends flat at the kink and wraps round onto the next one. The big numbers count the rows left: 3, 2, 1. The dotted cyan pointer on the way round jumps you a row early if you hold Right on it."
+            },
             {
               "q": "Something keeps pushing me sideways.",
               "a": "Data streams: the rows of flowing arrows. Steer the other way while you cross, or hold Up to cross faster."
@@ -83,6 +103,10 @@
               "a": "Leak Slugs never give up. They take three hits; shoot them as they come at you from ahead, because they are slower than you and can't catch up from behind."
             },
             {
+              "q": "Between the memory sticks, the stack shuts on me.",
+              "a": "It hangs from the upper stick and fills one byte at a time toward the floor, then pops. Stay low and slip through the gap under it, or wait for the pop. The chips stick up from the lower board and hang from the upper one, so pick your height early."
+            },
+            {
               "q": "I can't reach the Memory Leech's mouth.",
               "a": "Its coils soak up your shots. Each segment pops with one hit, so clear a few, then fire up through the gap at the mouth."
             }
@@ -91,6 +115,14 @@
         {
           "head": "3. The Sound Card",
           "hints": [
+            {
+              "q": "Which lane is safe on the ISA Bus?",
+              "a": "Watch under the chip on the horizon: everything starts there as a dot and slides down its own lane. Two hazards at once always leave one lane open. The green 1s and 0s are stray bits; they hurt less than an interrupt, but they still hurt."
+            },
+            {
+              "q": "The music is all over the screen!",
+              "a": "That is The Score, the song the FM chip is playing. Ride each staff corner to corner; it bends flat and wraps onto the next one, and the measure numbers count the staves left: 4, 3, 2, 1. The final double bar is the way out, and a tie on staff 2 hops you a staff early if you hold Right."
+            },
             {
               "q": "What do the big speakers do?",
               "a": "When a speaker thumps out, the middle of the cone kicks the BLASTER forward. Use it to rush past a crowd."
@@ -104,6 +136,10 @@
               "a": "It's the FM music chip, and its maker printed YO MAMA! HA HA HA right on it. The HAs fly out of its bottom corners. Shoot the collar off each corner (three hits) to shut it up."
             },
             {
+              "q": "The floor and ceiling keep moving up and down.",
+              "a": "In The Waveform they are the song itself, drawn by the oscilloscope. Follow the swing a little ahead of time: climb before a rise, dive before a dip. It gets louder (wider) toward the end."
+            },
+            {
               "q": "The Feedback Howler's grille blocks everything.",
               "a": "The bars slide two blocks each way. Fire when a gap lines up with the face, and slip through a gap the same way when the face is gone."
             }
@@ -113,12 +149,24 @@
           "head": "4. The Hard Disk",
           "hints": [
             {
+              "q": "On the IDE Bus the Skulls come two at a time.",
+              "a": "Pick the open lane while they are still small dots, and hop early: a hop takes a moment to finish. The bar beside the sign shows how much of the ride is left."
+            },
+            {
+              "q": "Where am I going on the slanted tracks?",
+              "a": "Following Mom's recipe file. It lies in four fragments over the platter: ride each one corner to corner, round the kink onto the next, 3, 2, 1, to EOF. The gold chain on fragment 2 is a cluster link: hold Right on it to jump a fragment early."
+            },
+            {
               "q": "The platter keeps throwing me around.",
               "a": "The wide streams of The Platter push hard. Hug the side the stream pushes you toward so you can't be shoved into a turret."
             },
             {
               "q": "How do I stop a Tank?",
               "a": "Six hits. They drive straight, so get out of the way first and shoot from the side as they pass."
+            },
+            {
+              "q": "Something keeps reaching across the gap between the platters.",
+              "a": "The read/write arms, seeking. Each one reaches in, burning like a firewall, then pulls back out. Wait for it to pull back, or fly over or under it."
             },
             {
               "q": "The Head Crash's shards are everywhere.",
@@ -129,6 +177,30 @@
         {
           "head": "5. The CPU",
           "hints": [
+            {
+              "q": "The Local Bus is too fast for me!",
+              "a": "Hop one lane at a time and start as soon as you see the dots. Grab the repair capsule if your energy is low. At 0 the middle lane lights up and pulls you into the 486: be in it."
+            },
+            {
+              "q": "The ribbon cable goes on forever!",
+              "a": "It is coiled, and it loops on purpose. Each lap of the screen ends at the kink, where the cable bends flat, and round the bend you are on the next coil down. The numbers printed on the cable count the coils left: 4, 3, 2, 1. The plug at the end of coil 1 is the way out. Just keep riding."
+            },
+            {
+              "q": "Which way is which on the cable?",
+              "a": "The keys turn with the track. Up speeds you along it, Down slows you down, Left steers toward its top edge (mostly up) and Right toward its bottom edge (mostly right)."
+            },
+            {
+              "q": "Something keeps zapping me near the colored stripes.",
+              "a": "Those are splits in the insulation, with the wires inside showing. The bright spot in the middle of each one spits sparks up toward the cable's top edge. Ride past on the bottom side, or speed through."
+            },
+            {
+              "q": "Is there a shortcut?",
+              "a": "Two strips of gray tape join one coil to the next across the board, one on coil 4 and one on coil 2. Hold Right as you pass one and you slide over onto the next coil, a whole lap early. Miss it and you just ride one more lap."
+            },
+            {
+              "q": "The last run is all fins and hot air.",
+              "a": "That is the heat sink over the 486. Fins rise from the bottom and the fan's grille hangs from the top, so pick your height a fin ahead. Where the arrows climb, the heat shoves you up: let it carry you over the next fin."
+            },
             {
               "q": "How do I beat GLITCH?",
               "a": "Its brain sits behind a sliding grille in its face. Stay in the middle, fire through the gaps, and watch out for the Leak Slugs that hunt you from the bottom corners. Grab the repair in the bottom-left corner when you need it. When the brain bursts, it isn't over: two bare cores still plug the way out, and two fast shards come hunting. Keep firing and keep moving."
@@ -148,11 +220,11 @@
             },
             {
               "q": "I flew all of Memory Lane and saw nothing.",
-              "a": "Don't rush the gate at the top of 2-A, The Address Bus. Just under it, the SIMM's edge at the far left is missing one gold finger. A tiny bug sits in the gap."
+              "a": "Don't rush the gate at the top of 2-B, The Address Bus. Just under it, the SIMM's edge at the far left is missing one gold finger. A tiny bug sits in the gap."
             },
             {
               "q": "Just give me the coordinates.",
-              "a": "Fly to the top of 2-A and hug the left wall. In the row right under the gate, fly onto the floor beside the missing finger (the first open cell from the left). You drop into A Corner of Memory. Fly over the pad and press Enter to pick up the felt egg, then fly up and out.",
+              "a": "Fly to the top of 2-B and hug the left wall. In the row right under the gate, fly onto the floor beside the missing finger (the first open cell from the left). You drop into A Corner of Memory. Fly over the pad and press Enter to pick up the felt egg, then fly up and out.",
               "sketch": {
                 "rows": [
                   "",
@@ -163,7 +235,7 @@
                   "|    @"
                 ],
                 "labels": [
-                  { "x": 2, "y": 0, "text": "THE GATE TO 2-B" },
+                  { "x": 2, "y": 0, "text": "THE GATE TO 2-C" },
                   { "x": 7, "y": 2, "text": "NO GOLD FINGER" },
                   { "x": 6, "y": 5, "text": "YOU" }
                 ]
@@ -403,7 +475,7 @@
     },
     {
       "head": "Scan every download",
-      "html": "<p>Virus Blaster starts with a mistake: late one night you download COOLGAME.ZIP from a BBS you never called before, and it turns out to be GLITCH, a virus that eats a PC from the inside out. Shrink down and blast your way up through the family 486: five stages, eleven scrolling runs and five bosses. It's only a game, but the moral is real. Scan every download.</p>"
+      "html": "<p>Virus Blaster starts with a mistake: late one night you download COOLGAME.ZIP from a BBS you never called before, and it turns out to be GLITCH, a virus that eats a PC from the inside out. Shrink down and blast your way up through the family 486: five stages, twelve scrolling runs and five bosses. It's only a game, but the moral is real. Scan every download.</p>"
     },
     {
       "head": "Since last issue: Watt made it home",

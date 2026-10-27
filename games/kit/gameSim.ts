@@ -50,7 +50,7 @@ class Rand {
 }
 
 /** Keys pressed in one scene, timed from the tick play entered it. */
-export interface SceneKeys {
+interface SceneKeys {
   scene: number;
   keys: RecordedKey[];
 }

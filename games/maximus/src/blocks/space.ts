@@ -286,7 +286,7 @@ function comet(): Pixels {
   return p;
 }
 
-export interface Ware {
+interface Ware {
   id: string;
   cost: number;
   effect: number;

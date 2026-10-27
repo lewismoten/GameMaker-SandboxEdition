@@ -1,19 +1,13 @@
 // Drawing tools for Maximus: ASCII sprites, masks shaded like lit volumes, automatic
 // outlines, and textures for terrain. Everything is 20x20 palette indices; 255 is clear.
 import { Pixels, rng } from '../../../kit/pixels';
-import { TRANSPARENT, emptyBlock, type Block } from '../../../../web/src/formats/blocks';
+import { TRANSPARENT } from '../../../../web/src/formats/blocks';
 
 export const CLEAR = TRANSPARENT;
-export const N = 20;
+const N = 20;
 
 export function sprite(): Pixels {
   return new Pixels(N, N, CLEAR);
-}
-
-/** ASCII art → pixels; unknown characters stay clear. */
-export function ascii(rows: string[], key: Record<string, number>, into = sprite()): Pixels {
-  rows.forEach((row, y) => [...row].forEach((ch, x) => ch in key && into.set(x, y, key[ch])));
-  return into;
 }
 
 /** A boolean mask (20x20 unless sized). */
@@ -153,20 +147,6 @@ export function outline(p: Pixels, c: number, diagonal = false): Pixels {
       if (near) p.set(x, y, c);
     }
   return p;
-}
-
-/** Copies pixels into a block record. */
-export function toBlock(p: Pixels, index: number, props: Partial<Block> = {}): Block {
-  const b = emptyBlock(index);
-  b.pixels.set(p.px);
-  return Object.assign(b, props);
-}
-
-/** Replaces colors through a map (palette-swapping a sprite between ramps). */
-export function recolor(p: Pixels, map: Map<number, number>): Pixels {
-  const q = new Pixels(p.w, p.h);
-  q.px.set(p.px);
-  return q.map((_x, _y, c) => map.get(c) ?? c);
 }
 
 /** Value noise in 0..1 that tiles every `period` pixels (for seamless block textures). */

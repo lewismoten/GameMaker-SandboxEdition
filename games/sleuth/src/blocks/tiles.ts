@@ -16,7 +16,7 @@ import { addUnder } from './under';
 import { addArchives } from './archives';
 import { addCameos } from './cameos';
 
-export function buildTheatreBlocks(): BlockSet {
+export function buildTheaterBlocks(): BlockSet {
   const bs = new BlockSet(150, false);
   const add = (name: string, p: Pixels, d: BlockDef = {}) => bs.add(name, p, d);
   addItems(bs, true);

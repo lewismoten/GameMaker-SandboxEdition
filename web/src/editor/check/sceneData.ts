@@ -1,7 +1,7 @@
 // The level check's view of a game's scenes: each level scene's map, blocks, monsters,
 // character, palette and sounds, parsed once. A slot left blank keeps the scene before's file,
 // as loadscene's globals do (taken here in scene order, which is play order for most games).
-import { BACKBL, CHARBL, MONBL, newBlockSet, parseBlocks, type Block } from '../../formats/blocks';
+import { BACKBL, CHARBL, MONBL, emptyBlock, newBlockSet, parseBlocks, type Block } from '../../formats/blocks';
 import { newCharacter, parseCharacter, type Character } from '../../formats/character';
 import { NOSCENE, type Game } from '../../formats/game';
 import { MLEN, newMap, parseMap, type GameMap } from '../../formats/map';
@@ -32,6 +32,16 @@ export interface SceneData {
 
 const SLOTS = ['pal', 'map', 'bbl', 'mon', 'mbl', 'chr', 'cbl', 'snd'] as const;
 
+/**
+ * The block set with an empty, see-through block for every number past it up to 255, the engine's
+ * stand-in (world.ts bgBlock), so a map cell naming block 150-255 reads as nothing rather than
+ * breaking a check (DOS reads stray memory there; missingParts.ts reports such cells).
+ */
+function padPastSet(bbl: Block[]): Block[] {
+  for (let n = bbl.length; n < 256; n++) bbl.push(emptyBlock(n, true));
+  return bbl;
+}
+
 /** Every level scene of the game, parsed (a file that won't parse is left as an empty one). */
 export function scenesOf(game: Game, files: FileSource): SceneData[] {
   const out: SceneData[] = [];
@@ -56,10 +66,12 @@ export function scenesOf(game: Game, files: FileSource): SceneData[] {
       name: s.desc.trim() || `Scene ${scene}`,
       names: { ...names },
       map: tryParse(names.map, parseMap, newMap),
-      bbl: tryParse(
-        names.bbl,
-        (b) => parseBlocks(b, BACKBL),
-        () => newBlockSet('bbl'),
+      bbl: padPastSet(
+        tryParse(
+          names.bbl,
+          (b) => parseBlocks(b, BACKBL),
+          () => newBlockSet('bbl'),
+        ),
       ),
       mbl: tryParse(
         names.mbl,

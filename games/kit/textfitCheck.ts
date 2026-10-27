@@ -1,6 +1,8 @@
-// Checks that PLAYGAME's text lands on plain paper in a built game (see textfit.ts).
+// Checks that PLAYGAME's text lands on plain paper in a built game (see textfit.ts), and that the
+// game's own words the player draws in play use no character 128-255, which DOS draws as
+// scribbles (the Level check's dos-chars, web/src/editor/check/checks/dosChars.ts).
 //   cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]
-// Lists every text line that touches art or reads badly and exits 1 if there are any.
+// Lists every text line that touches art, reads badly or DOS can't draw, and exits 1 if there are any.
 // --png writes each screen as the player sees it (art near text tinted magenta) to <dir>;
 // --all writes every screen, not just the ones with issues.
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -8,6 +10,8 @@ import { deflateSync } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkTextScreen, H, readDisk, renderRgb, textScreens, W, type TextFitIssue } from './textfit';
+import { parseGame } from '../../web/src/formats/game';
+import { asciiFor, gwriteLines, highChars } from '../../web/src/editor/check/checks/dosChars';
 
 /** A plain 24-bit PNG, scaled up `s` times. */
 function rgbPng(file: string, rgb: Uint8Array, w: number, h: number, s = 2): void {
@@ -62,5 +66,16 @@ for (const s of screens) {
   if (pngDir && (all || found.length)) rgbPng(join(pngDir, `${s.name.replace(/[^a-z0-9.]+/gi, '_')}.png`), renderRgb(s, marks), W, H);
 }
 for (const i of issues) console.log(`${i.screen}: "${i.text}" at (${i.x},${i.y}): ${i.problems.join(', ')}`);
-console.log(`${id}: ${screens.length} text screens, ${issues.length} lines with issues`);
-process.exit(issues.length ? 1 : 0);
+const gam = [...files.keys()].find((f) => f.endsWith('.gam'))!;
+const lines = gwriteLines(parseGame(files.get(gam)!), { get: (n) => files.get(n.toLowerCase()) }, gam);
+const high = lines.filter((l) => highChars(l.text).length);
+for (const l of high)
+  console.log(
+    `${l.file}: "${l.text}": characters DOS can't draw in the game: ${highChars(l.text)
+      .map((c) => `0x${c.toString(16)} (write "${asciiFor(c)}")`)
+      .join(', ')}`,
+  );
+console.log(
+  `${id}: ${screens.length} text screens, ${issues.length} lines with issues; ${lines.length} lines drawn in play, ${high.length} with characters DOS can't draw`,
+);
+process.exit(issues.length || high.length ? 1 : 0);

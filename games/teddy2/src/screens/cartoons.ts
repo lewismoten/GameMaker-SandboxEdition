@@ -64,7 +64,7 @@ function livingRoom(): Pixels {
  * a trail of confetti leads out the doggy door; Teddy sniffs it. Doc Leo comes in with a
  * letter: the Clown Club is booked at the Fair tonight. Then a fade to black (the logo is the title's).
  */
-export function morningFli(): Uint8Array {
+function morningFli(): Uint8Array {
   const r = new Reel(livingRoom());
   const teddy = (p: Pixels, pose: string, x = 46, flip = false) => scaleBlit(p, POSES[pose], x, 118, 3, flip);
   for (let f = 0; f < 16; f++)
@@ -103,7 +103,7 @@ export function morningFli(): Uint8Array {
 }
 
 /** The finale: fireworks over the Fair, THE CHEZ leading the parade, Teddy up front, Gwinn and her ribbon. */
-export function finaleFli(): Uint8Array {
+function finaleFli(): Uint8Array {
   const bg = new Pixels(W, H, c('ink', 0));
   for (let y = 0; y < 130; y++) for (let x = 0; x < W; x++) if ((x * 13 + y * 7) % 97 === 0) bg.set(x, y, c('glow', 3));
   // the Ferris wheel against the night
@@ -155,7 +155,7 @@ export function finaleFli(): Uint8Array {
  * After Gwinn's night out: the Clown Club's hay wagon rolls off into the night behind its
  * pickup, a brown head and a pink tongue poking up out of the hay.
  */
-export function wagonFli(): Uint8Array {
+function wagonFli(): Uint8Array {
   const bg = new Pixels(W, H, c('ink', 0));
   for (let y = 0; y < 150; y++) for (let x = 0; x < W; x++) if ((x * 17 + y * 11) % 89 === 0) bg.set(x, y, c('glow', 3));
   blob(bg, 260, 40, 18, 18, SP.r('glow'), 2, 3);
@@ -188,7 +188,7 @@ export function wagonFli(): Uint8Array {
 }
 
 /** After the farm: the Fair's ride truck rumbles off, a brown head in the Ferris wheel car. */
-export function truckFli(): Uint8Array {
+function truckFli(): Uint8Array {
   const bg = landscape(13, false);
   bg.rect(0, 160, W, 40, c('asphalt', 1));
   for (let x = 0; x < W; x += 40) bg.rect(x + 8, 176, 20, 3, c('yellow', 3));
@@ -215,7 +215,7 @@ export function truckFli(): Uint8Array {
  * After Gwinn signs up: Honker hands her the entry card, number 13, and a gust whisks it out
  * of her mouth, over the bandstand, round and round, up to the top of THE BIG DROP.
  */
-export function gustFli(): Uint8Array {
+function gustFli(): Uint8Array {
   const bg = landscape(21, false);
   bg.rect(0, 160, W, 40, c('grass', 2));
   // THE BIG DROP: a lattice tower on the right, its deck at the top

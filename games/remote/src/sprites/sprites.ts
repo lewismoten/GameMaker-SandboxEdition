@@ -16,9 +16,9 @@ import type { Pal } from '../art/pal';
 
 export { T, outline };
 
-export type Facing = 'down' | 'up' | 'side';
+type Facing = 'down' | 'up' | 'side';
 
-export interface HeroPose {
+interface HeroPose {
   facing: Facing;
   /** Walk phase: 0 standing, 1 and 2 the steps. */
   step?: 0 | 1 | 2;
@@ -28,7 +28,7 @@ export interface HeroPose {
 }
 
 /** Your look, in the pal's ramps. */
-export function heroArt(pal: Pal) {
+function heroArt(pal: Pal) {
   const c = pal.c;
   const ink = c('ink', 0);
   const P = () => new Pixels(20, 20, T);
@@ -230,7 +230,7 @@ export function buildMonsterBlocks(pal: Pal) {
   micro(echo, 7, 8, '?!', c('white', 1));
   book.add('echo', echo);
 
-  // Dust bunnies: grey fluff with two beady eyes and little ears, hopping.
+  // Dust bunnies: gray fluff with two beady eyes and little ears, hopping.
   const bunny = (f: number) => {
     const p = P();
     const y = 12 - f * 2;
@@ -263,7 +263,7 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('poof0', poof(0));
   book.add('poof1', poof(1));
 
-  // The cat, from above: a grey tabby padding along, tail up.
+  // The cat, from above: a gray tabby padding along, tail up.
   const cat = (f: number) => {
     const p = P();
     blob(p, 9, 12, 6, 3.4, pal.r('cat'), 1, 3);
@@ -413,7 +413,7 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('seedBye0', seed(0));
   book.add('seedBye1', seed(1));
 
-  // Lint: a grey wisp with a frown, drifting after you.
+  // Lint: a gray wisp with a frown, drifting after you.
   const lint = (f: number) => {
     const p = P();
     for (let i = 0; i < 40; i++) {

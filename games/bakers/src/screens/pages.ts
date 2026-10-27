@@ -1,8 +1,8 @@
 // Text screens: PLAYGAME shows .TXT pages 31 characters wide and 16 lines a page (MORE...
 // between pages). Lines are wrapped to 30: a line of exactly 31 leaves its line break for the
 // next read, which shows as an extra blank line.
-export const COLS = 30;
-export const PAGE = 16;
+const COLS = 30;
+const PAGE = 16;
 
 /** Wraps paragraphs to `width` columns; lines starting with spaces keep their indent. */
 export function wrap(text: string, width = COLS): string[] {

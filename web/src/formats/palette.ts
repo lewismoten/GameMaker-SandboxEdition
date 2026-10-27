@@ -52,10 +52,10 @@ export function matchColor(pal: Palette, r: number, g: number, b: number): numbe
   return best;
 }
 
-/** Default palette GameMaker editors start with: a rainbow ramp plus greys (port of RainbowCols-ish). */
+/** Default palette GameMaker editors start with: a rainbow ramp plus grays (port of RainbowCols-ish). */
 export function defaultPalette(): Palette {
   const pal = new Uint8Array(PALETTE_SIZE);
-  // 16 greys
+  // 16 grays
   for (let i = 0; i < 16; i++) pal.set([i * 4 + 3, i * 4 + 3, i * 4 + 3], i * 3);
   // 6x6x6 color cube
   let i = 16;

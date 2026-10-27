@@ -123,7 +123,7 @@ export const BLANK_DISKS: HalfAd = halfAd(
         [
           art(
             'blankdisk',
-            'A stack of three unlabelled 3½-inch floppy disks, the front one showing its metal shutter, write-protect hole and high-density hole',
+            'A stack of three unlabeled 3½-inch floppy disks, the front one showing its metal shutter, write-protect hole and high-density hole',
           ),
         ],
         [list(['**3½″ DS/DD 720K**: 25 for $9.95 · 50 for $18.95 · 100 for $34.95', '**3½″ DS/HD 1.44MB**: 25 for $14.95 · 50 for $27.95 · 100 for $49.95'])],

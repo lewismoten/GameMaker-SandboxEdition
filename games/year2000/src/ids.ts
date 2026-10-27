@@ -23,8 +23,11 @@ export const CTR = {
   zap: SEQ.zap,
   /** Pages of the science report Sparky chewed up. */
   pages: 20,
-  /** The garage door opener (Dome Sweet Dome). */
-  remote: 21,
+  /**
+   * Grandpa's key ring (Dome Sweet Dome): worth two, one for the garage gate's clicker and one
+   * for the CitiCar's door, so either can be opened first.
+   */
+  keys: 21,
   /** Employees Only keycard (Mega Mall 2000). */
   keycard: 22,
   /** The report's cover page, which Sparky has in his mouth. */
@@ -125,5 +128,24 @@ export const MON = {
   page: 55,
   /** Calm again after his dizzy spell: Sparky trots to Dex and drops the cover page at his feet. */
   sparkyFetch: 56,
+  none: 64,
+} as const;
+
+/**
+ * SKY.MON: the Cloud Lane's own monster list (its scene loads SKY.MON and SKY.MBL). Traffic and
+ * prizes come one monster per lane (left, middle, right), since each lane slides its own way.
+ */
+export const SKYMON = {
+  car: [0, 1, 2],
+  truck: [3, 4, 5],
+  page: [6, 7, 8],
+  pill: [9, 10, 11],
+  /** The dashes on the lines between the lanes, left and right. */
+  dashL: 12,
+  dashR: 13,
+  /** A car or truck that clipped the CitiCar swerves off into the clouds: a puff. */
+  puff: 14,
+  /** A prize, picked up. */
+  sparkle: 15,
   none: 64,
 } as const;

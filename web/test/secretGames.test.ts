@@ -11,7 +11,9 @@ vi.mock('../src/eggs/eggState', () => ({
 }));
 vi.mock('../src/tinHearts/tinHearts', () => ({
   MANIFEST: { hearts: { teddy: {}, logic: {}, brief: {} }, pending: [] },
-  heartStates: async (games: { id: string }[]) => games.map((g, i) => ({ id: g.id, found: found.hearts || i < games.length - 1 })),
+  // the whole hunt (the games' hearts and the room's), and whether it is won
+  huntStates: async (games: { id: string }[]) => games.map((g, i) => ({ id: g.id, found: found.hearts || i < games.length - 1 })),
+  huntComplete: (states: { found: boolean }[]) => states.length > 0 && states.every((s) => s.found),
 }));
 
 import { isOldSecret, secretsListed, withSecretGames } from '../src/project/secretGames';

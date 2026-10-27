@@ -13,7 +13,7 @@
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { BLEN } from '../formats/blocks';
-import { GREY1, LEFT, NONE, RIGHT } from './shared/facelift';
+import { GRAY1, LEFT, NONE, RIGHT } from './shared/facelift';
 import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
 import type { OpenDesigner } from '../retro/host';
 import { serializeBlocks } from '../formats/blocks';
@@ -558,7 +558,7 @@ class BlockDesigner extends BlockTransfer {
               this.drawgrid();
             } else {
               this.aniBut(ANIX, ANIY + 1, fc.hi);
-              v.line(ANIX, ANIY, ANIX + 35, ANIY, fc.cols[GREY1]);
+              v.line(ANIX, ANIY, ANIX + 35, ANIY, fc.cols[GRAY1]);
             }
           }
         }

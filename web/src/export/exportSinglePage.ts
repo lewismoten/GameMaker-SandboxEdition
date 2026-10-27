@@ -5,6 +5,8 @@ import { slug } from './exportWebApp';
 import { encodeGame, fillPage } from './singlePage';
 import { gameAbout } from './gameAbout';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
+import { withoutExtensions } from '../dosPlayer/fileExtensions';
 
 // Files a game writes while being played; exported pages start fresh.
 const SAVE_DATA = /^(game\d\.sav|savnames\.dat|data\d+\.rec)$/;
@@ -16,6 +18,8 @@ interface SinglePageOptions {
   appBase?: string;
   /** Our own games: made now, presented as a 1990s release (fiction.ts). */
   fiction?: string;
+  /** The project's DOS player customizations, so the page shows XFERPLAY's screens as the DOS export does. */
+  player?: PlayerPatches;
 }
 
 export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions): Promise<{ name: string; html: string }> {
@@ -28,6 +32,9 @@ export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions
   const id = slug(opts.title);
   const entries = files.entries().filter(([n]) => !SAVE_DATA.test(n));
   const { blurb, notice } = gameAbout(entries);
-  const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice }, entries);
+  // renamed file extensions are for the DOS download only
+  const look = opts.player && withoutExtensions(opts.player);
+  const player = look && Object.keys(look).length ? look : undefined;
+  const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice, player }, entries);
   return { name: `${id}.html`, html: fillPage(template, game, { blurb, fiction: opts.fiction, audio: recordedAudioNotice(recordedClips(files)) }) };
 }

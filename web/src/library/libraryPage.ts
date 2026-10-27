@@ -4,7 +4,12 @@
 // remembered per browser (prefs.ts). A card opens its piece
 // in the viewer that already shows it: its game's box (manual/gameManual.ts), the Game-Maker
 // box (manual/dosManual.ts), TURBO BUTTON, the Guide, the desk's zine (manual/zine), a game's
-// walkthrough, or a video's player (videoDialog.ts: nothing comes from YouTube until Play).
+// walkthrough, or a video's player (videoDialog.ts: nothing comes from YouTube until Play). The
+// Game-Maker box's piece and chapter stay in the address (&gm=ultimate&ch=12, readerAddress.ts).
+// Opened without a sort in the address just after showing one game (its page, a look inside it,
+// or a copy of it being made), it starts on that game's shelf instead (../libraryStart.ts). A
+// "Showing: <game> · All games" line says what is picked and goes back to everything.
+// Below the shelves, your imported games' ratings and notes (imported/notesShelf.ts).
 import './library.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
@@ -14,6 +19,13 @@ import { loadShelf, type Shelf } from './listing';
 import { rememberGame, rememberOnly, rememberOrder, savedGame, savedOnly, savedOrder } from './prefs';
 import { forgetThumbs, lazyThumb } from './thumbs';
 import { tally, unlockAchievement } from '../achievements';
+import { openFromLibrary, readerOpen } from './readerAddress';
+import { onCatalogChanged } from '../project/catalogWatch';
+import { originId } from '../editor/shell/homeOrigin';
+import { libraryStartGame } from '../libraryStart';
+
+/** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
+let unwatchShelf: (() => void) | undefined;
 
 const ORDERS: [ShelfOrder, string][] = [
   ['game', 'By game'],
@@ -48,8 +60,7 @@ async function openPiece(item: ShelfItem, games: Map<string, CatalogEntry>, from
       const done = o.maps ? m.openGameMaps(entry, undefined, o.start) : m.openGameManual(entry, undefined, undefined, o.start);
       await whenShown(done);
     } else if (o.via === 'gm') {
-      const { openDosManual } = await import('../manual/dosManual');
-      await whenShown(openDosManual(o.start));
+      await whenShown(openFromLibrary(o.start, undefined, true));
     } else if (o.via === 'walk') {
       const entry = games.get(o.game);
       if (!entry) return;
@@ -140,6 +151,13 @@ function groupSection(g: ShelfGroup, shelf: Shelf, order: ShelfOrder): HTMLEleme
 export function renderLibrary(el: HTMLElement): void {
   unlockAchievement('library-visit');
   const state = viewState(['library']);
+  // the address only moved within the Game-Maker box (a chapter, Back, closing it): the shelves stay
+  const shelfKey = () => ['by', 'only', 'game'].map((k) => state.get(k) ?? '').join('|');
+  const gm = state.get('gm');
+  if (el.dataset.library === shelfKey() && el.querySelector(':scope > .library')) {
+    if (gm && !readerOpen()) void openFromLibrary(gm, state.get('ch'), false); // Forward, back into it
+    return;
+  }
   const asked = state.get('by');
   let order: ShelfOrder = isShelfOrder(asked) ? asked : (savedOrder() ?? 'game');
   // the address's pick when it named the sort, else the one last picked for this sort
@@ -149,6 +167,21 @@ export function renderLibrary(el: HTMLElement): void {
   let shelf: Shelf | undefined;
   const list = h('div', { class: 'lib-shelf', id: 'lib-shelf' }, h('p', { class: 'lib-loading' }, 'Taking everything off the shelves…'));
   const count = h('p', { class: 'lib-count', role: 'status' });
+  // what is picked, said plainly, with the way back to everything beside it
+  const showingName = h('strong');
+  const showAll = h('button', {
+    type: 'button',
+    class: 'lib-show-all',
+    'aria-controls': 'lib-shelf',
+    onclick: () => {
+      only = undefined;
+      rememberOnly(order, only);
+      keepAddress();
+      show();
+      picker.focus();
+    },
+  });
+  const showing = h('p', { class: 'lib-showing', hidden: true }, 'Showing: ', showingName, h('span', { 'aria-hidden': 'true' }, ' · '), showAll);
   const pickLabel = h('label', { for: 'lib-only', class: 'lib-only-label' });
   const picker = h('select', {
     id: 'lib-only',
@@ -173,7 +206,10 @@ export function renderLibrary(el: HTMLElement): void {
     },
   });
   const gamePick = h('span', { class: 'lib-pick', hidden: true }, h('label', { for: 'lib-game', class: 'lib-only-label' }, 'Game'), gamePicker);
-  const keepAddress = () => state.set({ by: order === 'game' && !only ? undefined : order, only, game: order === 'type' && only ? game : undefined });
+  const keepAddress = () => {
+    state.set({ by: order === 'game' && !only ? undefined : order, only, game: order === 'type' && only ? game : undefined });
+    el.dataset.library = shelfKey();
+  };
   const buttons = ORDERS.map(([o, label]) =>
     h(
       'button',
@@ -205,6 +241,9 @@ export function renderLibrary(el: HTMLElement): void {
       ...groups.map((g) => h('option', { value: pickOf(g) }, g.heading)),
     );
     picker.value = only ?? '';
+    showing.hidden = !only;
+    showingName.textContent = groups.find((g) => pickOf(g) === only)?.heading ?? '';
+    showAll.textContent = order === 'game' ? 'All games' : 'All kinds';
     let shown = only ? groups.filter((g) => pickOf(g) === only) : groups;
     // one kind (By type) from several games: a second picker for the game
     const owners = order === 'type' && only && shown[0] ? ownersOf(shown[0].parts[0].items) : [];
@@ -241,13 +280,45 @@ export function renderLibrary(el: HTMLElement): void {
         gamePick,
         count,
       ),
+      showing,
       list,
     ),
   );
+  el.dataset.library = shelfKey();
+  // the imported games' ratings and notes, removed ones too (imported/notesShelf.ts), when there are any
+  const page = el.querySelector<HTMLElement>(':scope > .library');
+  void import('../imported/notesShelf')
+    .then((m) => m.notesShelf())
+    .then((notes) => notes && page?.isConnected && page.append(notes))
+    .catch(() => undefined);
+  // a link to a piece of the Game-Maker box, at a chapter (#/library?gm=ultimate&ch=12)
+  if (gm) void openFromLibrary(gm, state.get('ch'), false);
   void loadShelf()
     .then((s) => {
       shelf = s;
-      if (list.isConnected) show();
+      if (!list.isConnected) return;
+      // no sort in the address, just after showing one game with paper here: start on its shelf, as if picked
+      const start = isShelfOrder(asked) ? undefined : libraryStartGame((id) => groupShelf(s.items, 'game').some((g) => pickOf(g) === id), originId);
+      if (start) {
+        order = 'game';
+        only = start;
+        rememberOrder(order);
+        rememberOnly(order, only);
+        keepAddress();
+      }
+      show();
     })
     .catch(() => list.replaceChildren(h('p', { class: 'lib-loading' }, 'The shelves could not be loaded. Try reloading the page.')));
+  // a secret game revealed or hidden again (the felt eggs, the tin hearts, EGG.EXE): its pieces join or leave without a reload
+  unwatchShelf?.();
+  const unwatch = (unwatchShelf = onCatalogChanged(() => {
+    if (!list.isConnected) return unwatch();
+    void loadShelf()
+      .then((s) => {
+        if (!list.isConnected) return;
+        shelf = s;
+        show();
+      })
+      .catch(() => undefined); // the shelf as it was
+  }));
 }

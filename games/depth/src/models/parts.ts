@@ -2,9 +2,9 @@
 // blobs and primitives: each part has a material; the surface takes the nearest part's.
 import { Sdf, sd, type Material, type V } from '../render/tracer';
 
-export type Field = (x: number, y: number, z: number) => number;
+type Field = (x: number, y: number, z: number) => number;
 
-export interface Part {
+interface Part {
   d: Field;
   mat: Material;
 }

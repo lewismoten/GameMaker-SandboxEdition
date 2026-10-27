@@ -33,7 +33,7 @@ const reed = (hz: (t: number) => number, seed: number): Synth => {
   };
 };
 
-export interface SoundFiles {
+interface SoundFiles {
   set: SoundSet;
   vocs: Record<string, Uint8Array>;
 }

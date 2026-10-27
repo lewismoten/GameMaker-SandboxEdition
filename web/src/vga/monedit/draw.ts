@@ -2,7 +2,7 @@
 // block list, the monster list, a monster's frames and the buttons, plus dropping a
 // dragged block into a frame or a monster into a list slot.
 import { showHelpScreen } from '../../retro/text/textUi';
-import { BLACK, BLEN, Face, GREY1, GREY2, GREY3, GREY4, NONE, RED1, RED2, RED3 } from '../shared/facelift';
+import { BLACK, BLEN, Face, GRAY1, GRAY2, GRAY3, GRAY4, NONE, RED1, RED2, RED3 } from '../shared/facelift';
 import { LASTMON, LASTSL } from '../../formats/monster';
 import { MONBL, orientIndex } from '../../formats/blocks';
 import {
@@ -51,7 +51,7 @@ export abstract class MonsterMakerDraw extends MonsterMakerState {
     for (let ly = 0; ly < BLEN; ly++) for (let lx = 0; lx < BLEN; lx++) p[ly * BLEN + lx] = this.v.getCol(x + lx, y + ly);
   }
 
-  /** blk[n], or the grey empty block for numbers outside the array. */
+  /** blk[n], or the gray empty block for numbers outside the array. */
   protected b(n: number): Uint8Array {
     return this.blk[n] ?? this.blk[MONBL];
   }
@@ -191,9 +191,9 @@ export abstract class MonsterMakerDraw extends MonsterMakerState {
   protected drawlistbox(x: number, y: number, blnum: number): void {
     const { v, face } = this;
     const fc = face.cols;
-    v.line(x + BLEN * blnum, y, x + BLEN * blnum, y + BLEN - 1, fc[GREY3]);
-    v.line(x - 1, y, x - 1, y + BLEN - 1, fc[GREY3]);
-    v.line(x - 1, y - 1, x + BLEN * blnum, y - 1, fc[GREY4]);
+    v.line(x + BLEN * blnum, y, x + BLEN * blnum, y + BLEN - 1, fc[GRAY3]);
+    v.line(x - 1, y, x - 1, y + BLEN - 1, fc[GRAY3]);
+    v.line(x - 1, y - 1, x + BLEN * blnum, y - 1, fc[GRAY4]);
     face.drawArrows(x, y, blnum, NONE);
   }
 
@@ -206,15 +206,15 @@ export abstract class MonsterMakerDraw extends MonsterMakerState {
     this.drawlistbox(MOX, MOY, MOLEN);
     this.drawlistbox(BLX, BLY, BLLEN);
     this.drawlistbox(SLX, SLY, SLLEN);
-    this.blk[MONBL].fill(fc[GREY2]);
-    this.lightcol[0] = [fc[GREY1], fc[GREY4], fc[GREY3], fc[GREY2]];
-    this.lightcol[1] = [fc[GREY1], fc[RED2], fc[RED1], fc[RED3]];
+    this.blk[MONBL].fill(fc[GRAY2]);
+    this.lightcol[0] = [fc[GRAY1], fc[GRAY4], fc[GRAY3], fc[GRAY2]];
+    this.lightcol[1] = [fc[GRAY1], fc[RED2], fc[RED1], fc[RED3]];
     for (let lx = 0; lx < MOLEN; lx++) this.lightb(MOX - 3 + BLEN / 2 + BLEN * lx, MOY1 + 2, this.lightcol[0]);
-    v.line(SLX - 2 * BLEN - 6, SLY - 1, SLX - 2 * BLEN - 6, SLY + BLEN - 1, fc[GREY3]);
-    v.line(SLX - 2 * BLEN - 6, SLY - 1, SLX - BLEN - 6, SLY - 1, fc[GREY4]);
-    v.boxFill(SLX + (SLLEN * BLEN) / 2 - 68, SLY1 + 3, SLX + (SLLEN * BLEN) / 2 + 68, SLY1 + 11, fc[GREY2]);
-    v.line(SLX + (SLLEN * BLEN) / 2 - 69, SLY1 + 2, SLX + (SLLEN * BLEN) / 2 - 69, SLY1 + 11, fc[GREY3]);
-    v.line(SLX + (SLLEN * BLEN) / 2 - 69, SLY1 + 2, SLX + (SLLEN * BLEN) / 2 + 68, SLY1 + 2, fc[GREY4]);
+    v.line(SLX - 2 * BLEN - 6, SLY - 1, SLX - 2 * BLEN - 6, SLY + BLEN - 1, fc[GRAY3]);
+    v.line(SLX - 2 * BLEN - 6, SLY - 1, SLX - BLEN - 6, SLY - 1, fc[GRAY4]);
+    v.boxFill(SLX + (SLLEN * BLEN) / 2 - 68, SLY1 + 3, SLX + (SLLEN * BLEN) / 2 + 68, SLY1 + 11, fc[GRAY2]);
+    v.line(SLX + (SLLEN * BLEN) / 2 - 69, SLY1 + 2, SLX + (SLLEN * BLEN) / 2 - 69, SLY1 + 11, fc[GRAY3]);
+    v.line(SLX + (SLLEN * BLEN) / 2 - 69, SLY1 + 2, SLX + (SLLEN * BLEN) / 2 + 68, SLY1 + 2, fc[GRAY4]);
     face.drawlistframe(BLX, BLY, BLLEN);
     this.drawlist(SLX, SLY, SLLEN, LASTSL, this.cursel, (n) => this.selnum(n));
     this.drawlist(BLX, BLY, BLLEN, MONBL, this.curblk, (n) => this.blocnum(n));

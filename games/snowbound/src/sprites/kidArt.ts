@@ -22,17 +22,17 @@ export function keyFor(pal: Pal, scheme: 'kid' | 'bully' = 'kid'): Record<string
     S: c('skin', 1),
     e: c('ink', 0),
     r: c('hair', 1),
-    g: bully ? c('grey', 3) : c('gold', 3),
-    G: bully ? c('grey', 2) : c('gold', 1),
+    g: bully ? c('gray', 3) : c('gold', 3),
+    G: bully ? c('gray', 2) : c('gold', 1),
     c: bully ? c('pine', 3) : c('coat', 2),
     C: bully ? c('pine', 1) : c('coat', 1),
-    m: bully ? c('grey', 2) : c('gold', 2),
+    m: bully ? c('gray', 2) : c('gold', 2),
     j: c('jeans', 2),
     J: c('jeans', 0),
     b: c('wood', 0),
     w: c('wood', 3),
-    x: c('grey', 4),
-    X: c('grey', 2),
+    x: c('gray', 4),
+    X: c('gray', 2),
     d: c('dog', 2),
     D: c('dog', 0),
     l: c('dog', 3),
@@ -104,19 +104,13 @@ export function shovel(p: Pixels, pal: Pal, view: 'front' | 'side' | 'back'): Pi
   const c = pal.c;
   if (view === 'side') {
     p.line(9, 10, 16, 15, c('wood', 3)).line(9, 11, 16, 16, c('wood', 2));
-    p.rect(15, 14, 4, 5, c('grey', 4)).rect(18, 14, 1, 5, c('grey', 2)).rect(15, 18, 4, 1, c('grey', 2));
+    p.rect(15, 14, 4, 5, c('gray', 4)).rect(18, 14, 1, 5, c('gray', 2)).rect(15, 18, 4, 1, c('gray', 2));
   } else {
     const x = view === 'front' ? 16 : 3;
     p.rect(x, 4, 1, 12, c('wood', 3)).rect(x - 1, 3, 3, 1, c('wood', 1));
-    p.rect(x - 1, 15, 3, 5, c('grey', 4)).rect(x - 1, 19, 3, 1, c('grey', 2));
+    p.rect(x - 1, 15, 3, 5, c('gray', 4)).rect(x - 1, 19, 3, 1, c('gray', 2));
   }
   return p;
-}
-
-export interface Book<T> {
-  index: Map<string, number>;
-  pics: Map<string, Pixels>;
-  blocks: T[];
 }
 
 export function makeBook(kind: 'mbl' | 'cbl') {

@@ -37,7 +37,7 @@ ENTER: pick up what you are standing on.`,
   `WHAT TO FIND
 Every room keeps one ingredient on a little rug. Take it and the dumbwaiter takes you up to the next room.
 
-F2 shows what you carry. "Money" is ingredients. Ebenezer paid his debts in sassafras.`,
+F2 shows what you carry and counts your ingredients. Ebenezer paid his debts in sassafras.`,
   `THE KITCHEN
 Wooden spoons open spoon latches. Swing doors only push one way. Belts and greased boards slide you. Panels rise and fall in turn. Dough rises. Ice thaws. Burners get hot.
 

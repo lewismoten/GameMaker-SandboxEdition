@@ -6,7 +6,7 @@ import { P } from '../src/art/pal';
 import { POSES } from '../src/sprites/teddy';
 
 const out = process.argv[2] ?? '.';
-export function sheet(pics: Pixels[], cols = 8, bg = 255): Pixels {
+function sheet(pics: Pixels[], cols = 8, bg = 255): Pixels {
   const rows = Math.ceil(pics.length / cols);
   const p = new Pixels(cols * 22, rows * 22, bg);
   pics.forEach((q, i) => p.blit(q, (i % cols) * 22 + 1, Math.floor(i / cols) * 22 + 1));

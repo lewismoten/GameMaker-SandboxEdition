@@ -1,8 +1,19 @@
 // Game-Maker's registration and copy check, as CHK.C and TELLREG#.C worked them out.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { CARD_NAME_MAX, DEFAULT_REG, SERIAL, cardCheck, checkRegistration, regFile, registrationNumber, validSerial } from '../src/retro/gmReg/registration';
+import {
+  CARD_NAME_MAX,
+  defaultReg,
+  FACTORY_SERIAL as SERIAL,
+  cardCheck,
+  checkRegistration,
+  regFile,
+  registrationNumber,
+  validSerial,
+} from '../src/retro/gmReg/registration';
 import { QUESTIONS, rightAnswer } from '../src/retro/gmReg/copyCheck';
+
+const DEFAULT_REG = defaultReg(SERIAL);
 
 describe('Game-Maker registration (CHK.C)', () => {
   it('computes TELLREG#.C numbers', () => {
@@ -13,42 +24,42 @@ describe('Game-Maker registration (CHK.C)', () => {
   });
 
   it('starts unregistered with the desk’s PLAYGAME.REG: no name, this serial, no number', () => {
-    expect(checkRegistration(DEFAULT_REG)).toEqual({ kind: 'check', userName: String(SERIAL) });
+    expect(checkRegistration(DEFAULT_REG, SERIAL)).toEqual({ kind: 'check', userName: String(SERIAL) });
   });
 
   it('asks the manual when the number is wrong, showing the serial number', () => {
-    expect(checkRegistration(regFile('Somebody', SERIAL, '12345'))).toEqual({ kind: 'check', userName: String(SERIAL) });
-    expect(checkRegistration(regFile('Somebody', SERIAL, ''))).toEqual({ kind: 'check', userName: String(SERIAL) });
+    expect(checkRegistration(regFile('Somebody', SERIAL, '12345'), SERIAL)).toEqual({ kind: 'check', userName: String(SERIAL) });
+    expect(checkRegistration(regFile('Somebody', SERIAL, ''), SERIAL)).toEqual({ kind: 'check', userName: String(SERIAL) });
   });
 
   it('refuses a missing file or another copy’s serial', () => {
-    expect(checkRegistration(null)).toEqual({ kind: 'missing' });
-    expect(checkRegistration(undefined)).toEqual({ kind: 'missing' });
-    expect(checkRegistration(regFile('A', 1029 + 4, String(registrationNumber('A', 1033))))).toEqual({ kind: 'bad' });
-    expect(checkRegistration('garbage')).toEqual({ kind: 'bad' });
+    expect(checkRegistration(null, SERIAL)).toEqual({ kind: 'missing' });
+    expect(checkRegistration(undefined, SERIAL)).toEqual({ kind: 'missing' });
+    expect(checkRegistration(regFile('A', 1029 + 4, String(registrationNumber('A', 1033))), SERIAL)).toEqual({ kind: 'bad' });
+    expect(checkRegistration('garbage', SERIAL)).toEqual({ kind: 'bad' });
   });
 
   it('checks the desk’s registration card in plain words', () => {
     const key = String(registrationNumber('Gwinn', SERIAL));
-    expect(cardCheck('Gwinn', key)).toBeUndefined();
-    expect(cardCheck('  Gwinn ', ` ${key} `)).toBeUndefined();
-    expect(cardCheck('', key)).toMatch(/name/);
-    expect(cardCheck('Gwinn', '')).toMatch(/Mail the card/);
-    expect(cardCheck('Gwinn', '12ab')).toMatch(/digits/);
-    expect(cardCheck('Gwin', key)).toMatch(/doesn’t fit/);
-    expect(cardCheck('A'.repeat(CARD_NAME_MAX + 1), '1')).toMatch(/at most/);
+    expect(cardCheck('Gwinn', key, SERIAL)).toBeUndefined();
+    expect(cardCheck('  Gwinn ', ` ${key} `, SERIAL)).toBeUndefined();
+    expect(cardCheck('', key, SERIAL)).toMatch(/name/);
+    expect(cardCheck('Gwinn', '', SERIAL)).toMatch(/Mail the card/);
+    expect(cardCheck('Gwinn', '12ab', SERIAL)).toMatch(/digits/);
+    expect(cardCheck('Gwin', key, SERIAL)).toMatch(/doesn’t fit/);
+    expect(cardCheck('A'.repeat(CARD_NAME_MAX + 1), '1', SERIAL)).toMatch(/at most/);
     // whatever the card accepts, GM accepts
     const long = 'B'.repeat(CARD_NAME_MAX);
     const longKey = String(registrationNumber(long, SERIAL));
-    expect(cardCheck(long, longKey)).toBeUndefined();
-    expect(checkRegistration(regFile(long, SERIAL, longKey))).toEqual({ kind: 'registered', userName: long });
+    expect(cardCheck(long, longKey, SERIAL)).toBeUndefined();
+    expect(checkRegistration(regFile(long, SERIAL, longKey), SERIAL)).toEqual({ kind: 'registered', userName: long });
   });
 
   it('keeps CHK.C’s fgets quirk: a 29-character name loses its last letter', () => {
     const name = 'A'.repeat(29);
-    expect(checkRegistration(regFile(name, SERIAL, String(registrationNumber(name, SERIAL)))).kind).toBe('check');
+    expect(checkRegistration(regFile(name, SERIAL, String(registrationNumber(name, SERIAL))), SERIAL).kind).toBe('check');
     const short = 'A'.repeat(28);
-    expect(checkRegistration(regFile(short, SERIAL, String(registrationNumber(short, SERIAL)))).kind).toBe('registered');
+    expect(checkRegistration(regFile(short, SERIAL, String(registrationNumber(short, SERIAL))), SERIAL).kind).toBe('registered');
   });
 });
 

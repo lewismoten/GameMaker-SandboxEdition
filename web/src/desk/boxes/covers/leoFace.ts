@@ -1,11 +1,11 @@
 // Doc Leo's face for the painted covers (teddy, teddy2, teddy3): his own face paint, white round
-// both eyes and round the mouth, painted grey stubble, wire glasses, and his own nose and
+// both eyes and round the mouth, painted gray stubble, wire glasses, and his own nose and
 // cheeks a little sunburned. Drawn in docLeo()'s frame: the face is centered at (0, -326).
 import { type Ctx, blob, ell, fill, rad, seeded, stroke } from './paint';
 
 /** Paints the face, stubble to nose, before the fedora goes on. */
 export function leoFace(c: Ctx): void {
-  // the face and the painted grey stubble along the jaw
+  // the face and the painted gray stubble along the jaw
   ell(c, 0, -326, 36, 42);
   fill(c, '#f4c8a4');
   blob(c, [-35, -334, -32, -298, 0, -282, 32, -298, 35, -334, 18, -316, 0, -312, -18, -316]);

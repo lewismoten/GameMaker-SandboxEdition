@@ -33,7 +33,7 @@ function roundRect(ctx: CanvasRenderingContext2D, r: Rect, rad: number): void {
   ctx.roundRect(r.x, r.y, r.w, r.h, rad);
 }
 
-/** Where a line from the centre of `r` towards (tx, ty) leaves the rectangle. */
+/** Where a line from the center of `r` towards (tx, ty) leaves the rectangle. */
 function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
   const cx = r.x + r.w / 2;
   const cy = r.y + r.h / 2;

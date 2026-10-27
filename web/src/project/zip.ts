@@ -158,7 +158,21 @@ async function inflateCapped(data: Uint8Array, cap: number): Promise<Uint8Array>
   return out;
 }
 
-export async function readZip(bytes: Uint8Array, limits?: ZipLimits): Promise<ZipEntry[]> {
+/** An entry of a zip's directory, read only when asked (listZip). */
+export interface ZipListing {
+  name: string;
+  /** Unpacked bytes, as the directory says. */
+  size: number;
+  /** Inflates it (stored and deflated entries; others give undefined). */
+  read: () => Promise<Uint8Array | undefined>;
+}
+
+/**
+ * A zip's files from its central directory, without inflating any (a self-extracting .EXE's
+ * too, which is never run): an import looks for the
+ * .gam files first and reads the rest only for the games picked (project/importScan.ts).
+ */
+export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
   const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let eocd = -1;
   // The end record is 22 bytes plus a comment of up to 65535 bytes, so scan back from the
@@ -173,33 +187,52 @@ export async function readZip(bytes: Uint8Array, limits?: ZipLimits): Promise<Zi
   const count = v.getUint16(eocd + 10, true);
   if (limits && count > limits.maxEntries) throw new Error(`The ZIP holds ${count} entries, more than ${limits.maxEntries}`);
   let declared = 0;
-  let p = v.getUint32(eocd + 16, true);
+  // A self-extracting .EXE is a program with the zip after it: its packer may have counted the
+  // offsets from the zip's start, not the file's, so they are moved by however far the
+  // directory (which ends where the end record starts) really is from where they say.
+  const dirSize = v.getUint32(eocd + 12, true);
+  const dirAt = v.getUint32(eocd + 16, true);
+  const shift = Math.max(0, eocd - dirSize - dirAt);
+  let p = dirAt + shift;
   const dec = new TextDecoder();
-  const out: ZipEntry[] = [];
+  const out: ZipListing[] = [];
   for (let i = 0; i < count; i++) {
-    if (v.getUint32(p, true) !== 0x02014b50) throw new Error('Damaged ZIP directory');
+    if (p + 46 > bytes.length || v.getUint32(p, true) !== 0x02014b50) throw new Error('Damaged ZIP directory');
     const method = v.getUint16(p + 10, true);
     const size = v.getUint32(p + 20, true);
     const unpacked = v.getUint32(p + 24, true);
     const nameLen = v.getUint16(p + 28, true);
     const extraLen = v.getUint16(p + 30, true);
     const commentLen = v.getUint16(p + 32, true);
-    const localOffset = v.getUint32(p + 42, true);
+    const localOffset = v.getUint32(p + 42, true) + shift;
     const name = dec.decode(bytes.subarray(p + 46, p + 46 + nameLen));
     p += 46 + nameLen + extraLen + commentLen;
     // Folder entries carry no data. Sizes come from the central directory because the
     // local header's may be 0 when the writer used a data descriptor; its name and extra
     // lengths can differ from the directory's, so they are read from the local header.
-    // CRCs are not checked, and entries using other methods are skipped.
+    // CRCs are not checked, and entries using other methods read as undefined.
     if (name.endsWith('/')) continue;
-    const lNameLen = v.getUint16(localOffset + 26, true);
-    const lExtraLen = v.getUint16(localOffset + 28, true);
-    const start = localOffset + 30 + lNameLen + lExtraLen;
-    const body = bytes.subarray(start, start + size);
     if (limits && (declared += unpacked) > limits.maxBytes) throw new Error(`The ZIP unpacks to more than ${limits.maxBytes} bytes`);
-    if (method === 0) out.push({ name, data: body.slice() });
-    else if (method === 8)
-      out.push({ name, data: limits ? await inflateCapped(body, unpacked) : await transform(body, new DecompressionStream('deflate-raw')) });
+    const read = async (): Promise<Uint8Array | undefined> => {
+      if (localOffset + 30 > bytes.length) throw new Error('Damaged ZIP entry');
+      const lNameLen = v.getUint16(localOffset + 26, true);
+      const lExtraLen = v.getUint16(localOffset + 28, true);
+      const start = localOffset + 30 + lNameLen + lExtraLen;
+      const body = bytes.subarray(start, start + size);
+      if (method === 0) return body.slice();
+      if (method === 8) return limits ? inflateCapped(body, unpacked) : transform(body, new DecompressionStream('deflate-raw'));
+      return undefined;
+    };
+    out.push({ name, size: unpacked, read });
+  }
+  return out;
+}
+
+export async function readZip(bytes: Uint8Array, limits?: ZipLimits): Promise<ZipEntry[]> {
+  const out: ZipEntry[] = [];
+  for (const e of listZip(bytes, limits)) {
+    const data = await e.read();
+    if (data) out.push({ name: e.name, data });
   }
   return out;
 }

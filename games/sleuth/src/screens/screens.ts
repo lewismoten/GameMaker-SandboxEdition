@@ -44,12 +44,12 @@ import type { GameMap } from '../../../../web/src/formats/map';
 import type { Block } from '../../../../web/src/formats/blocks';
 import type { Monster } from '../../../../web/src/formats/monster';
 
-export function gif(p: Pixels, pal: Uint8Array = P.pal): Uint8Array {
+function gif(p: Pixels, pal: Uint8Array = P.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
 }
 
 /** The big title lettering: FINAL / CURTAIN, gold on a shadow. */
-export function logo(p: Pixels, y: number, cx = W / 2): void {
+function logo(p: Pixels, y: number, cx = W / 2): void {
   const line = (s: string, yy: number, scale: number) => {
     const x = Math.round(cx - (s.length * 8 * scale) / 2);
     text(p, x + 3, yy + 3, s, c('black', 0), scale);
@@ -59,7 +59,7 @@ export function logo(p: Pixels, y: number, cx = W / 2): void {
   line('CURTAIN', y + 26, 4);
 }
 
-export function titleScreen(): Pixels {
+function titleScreen(): Pixels {
   const p = facade(0, 1);
   rain(p, 3, 220);
   // darken the sky band for the logo
@@ -75,7 +75,7 @@ export function titleScreen(): Pixels {
 }
 
 /** The menu: a theater program; PLAYGAME writes the title at (96,104) and the choices at x 80, y 120..160. */
-export function menuScreen(): Pixels {
+function menuScreen(): Pixels {
   const p = stageView(0, 1);
   const a = actor('lila', 70, 'raise');
   const v = actor('victor', 74);
@@ -92,7 +92,7 @@ export function menuScreen(): Pixels {
 }
 
 /** High scores: red "Top Ten Scores" at the top, blue scores from x 20, red "Hit any key" at the bottom. */
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = new Pixels(W, H, c('paper', 4));
   for (let y = 26; y < 186; y += 11) p.rect(12, y + 9, 296, 1, c('paper', 3));
   p.rect(0, 0, W, 11, c('paper', 5));
@@ -106,7 +106,7 @@ export function scoresScreen(): Pixels {
 }
 
 /** Load and save: a dark case-file drawer; PLAYGAME writes the names in yellow at x 80. */
-export function drawerScreen(title: string): Pixels {
+function drawerScreen(title: string): Pixels {
   const p = new Pixels(W, H, c('black', 0));
   gradient(p, 0, 0, W, H, r('navy'), 0, 1);
   p.frame(50, 28, 240, 150, c('gold', 2)).frame(52, 30, 236, 146, c('gold', 0));
@@ -117,7 +117,7 @@ export function drawerScreen(title: string): Pixels {
 }
 
 /** The theater map's view behind the act cards. */
-export type MapView = { map: GameMap; bbl: Block[]; mbl: Block[]; mon: Monster[] };
+type MapView = { map: GameMap; bbl: Block[]; mbl: Block[]; mon: Monster[] };
 
 export function buildScreens(views: { act1: MapView; act2: MapView }): Record<string, Uint8Array> {
   const out: Record<string, Uint8Array> = {};
@@ -240,7 +240,7 @@ export function buildScreens(views: { act1: MapView; act2: MapView }): Record<st
 }
 
 /** Doc Avery's note, for the evidence board. */
-export function coronerNote(): Pixels {
+function coronerNote(): Pixels {
   const p = boards(11);
   p.rect(3, 2, 14, 16, c('paper', 5)).frame(3, 2, 14, 16, c('paper', 2));
   p.rect(5, 4, 10, 2, c('black', 1));

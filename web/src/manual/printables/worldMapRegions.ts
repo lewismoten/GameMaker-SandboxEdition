@@ -7,7 +7,7 @@ import { ENDTYPE, STARTTYPE, type Game } from '../../formats/game';
 import type { Graph } from '../../editor/editors/integrator/layoutCells';
 import { sceneLabel } from './worldMapGroups';
 
-export interface Region {
+interface Region {
   /** Its places, the first one naming it. */
   ids: number[];
   name: string;

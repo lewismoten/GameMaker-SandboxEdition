@@ -1,5 +1,5 @@
 // Sound Blaster samples (.VOC) made today: record your voice with the microphone (trimmed,
-// levelled and optionally given a period effect: robot, chipmunk, deep, radio) and save it as
+// leveled and optionally given a period effect: robot, chipmunk, deep, radio) and save it as
 // 8-bit 11 kHz mono, as the card played it. Synthesized effects come from the sound effect
 // maker (sfxMaker.ts), offered here too.
 import { h, modal, toast } from '../core/ui';
@@ -25,7 +25,7 @@ async function toMono(buf: AudioBuffer, rate = RATE): Promise<Float32Array> {
 
 /**
  * Starts recording from the microphone (asks for permission). stop() resolves with the
- * recording as mono samples at `rate`, quiet ends trimmed and levelled.
+ * recording as mono samples at `rate`, quiet ends trimmed and leveled.
  */
 export async function startRecording(rate = RATE): Promise<{ stop: () => Promise<Float32Array> }> {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });

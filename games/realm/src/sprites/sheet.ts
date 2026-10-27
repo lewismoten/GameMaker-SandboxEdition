@@ -7,7 +7,7 @@ import type { Canvas } from '../art/rgb';
 
 const FIXED = fixedPalette();
 
-export interface SpriteAttrs {
+interface SpriteAttrs {
   hp?: number;
   effect?: number;
   eamt?: number;

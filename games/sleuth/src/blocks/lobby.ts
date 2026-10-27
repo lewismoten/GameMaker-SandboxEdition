@@ -57,9 +57,9 @@ export function addLobby(add: Add, { B }: { B: Pixels }) {
   add(
     'coats',
     on(B, (p) => {
-      p.rect(0, 4, 20, 1, c('grey', 4));
+      p.rect(0, 4, 20, 1, c('gray', 4));
       const R = rng(8);
-      for (let x = 0; x < 20; x += 4) p.rect(x + 1, 5, 3, 12, c(['tan', 'black', 'navy', 'grey', 'auburn'][Math.floor(R() * 5)], 1 + Math.floor(R() * 2)));
+      for (let x = 0; x < 20; x += 4) p.rect(x + 1, 5, 3, 12, c(['tan', 'black', 'navy', 'gray', 'auburn'][Math.floor(R() * 5)], 1 + Math.floor(R() * 2)));
       for (let x = 2; x < 20; x += 4) p.rect(x, 13, 2, 3, c('paper', 4));
     }),
     S,
@@ -67,9 +67,9 @@ export function addLobby(add: Add, { B }: { B: Pixels }) {
   add(
     'board',
     on(B, (p) => {
-      p.rect(0, 3, 20, 14, c('black', 1)).rect(0, 3, 20, 1, c('grey', 4));
+      p.rect(0, 3, 20, 14, c('black', 1)).rect(0, 3, 20, 1, c('gray', 4));
       for (let x = 2; x < 19; x += 3) {
-        p.rect(x, 5, 1, 9, c('grey', 2));
+        p.rect(x, 5, 1, 9, c('gray', 2));
         p.rect(x - 1, 6 + ((x * 7) % 7), 3, 2, c('gold', 3));
       }
       p.set(3, 15, c('velvet', 5)).set(6, 15, c('green', 4)).set(9, 15, c('glow', 4));

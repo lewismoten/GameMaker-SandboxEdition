@@ -99,8 +99,9 @@ export function buildSoundSet(place: Place): SoundSet {
     'miss',
     speaker((i) => (i < 4 ? 700 - i * 100 : 0)),
   );
-  add(SND.money, 'ding', SPEAKER.coin());
-  add(SND.pay, 'creak', SPEAKER.noise(2, 80, 400));
+  // sugar is the PC speaker's alone: a lick of the carpet comes every few ticks while Carl rests,
+  // and a .VOC there would cut off whatever clip is playing
+  set.freqs[SND.money] = speaker((i) => (i < 5 ? 1047 + i * 260 : 0));
   add(SND.life, place === 'wild' ? 'seen' : 'hook', SPEAKER.arpeggio([587, 698, 880, 1175]));
   const ding = speaker((i) => (i < 6 ? 1568 : i < 14 ? 2349 : 0));
   // points in the bedroom are the PC speaker's alone: an ear that counts gives points the same
@@ -123,6 +124,8 @@ export function buildSoundSet(place: Place): SoundSet {
   // wings drone, not a beep; holding a key restarts it each move, so it runs on as one buzz
   const BUZZ = [118, 96, 132, 104, 126, 92, 138, 100, 122, 108];
   set.freqs[SND.fly] = speaker((i) => BUZZ[i] ?? 0);
+  // a sugar spent (each fresh bit of air): the same buzz, so a flight through fresh air drones on
+  set.freqs[SND.pay] = set.freqs[SND.fly];
   add(
     SND.roll,
     'roll',

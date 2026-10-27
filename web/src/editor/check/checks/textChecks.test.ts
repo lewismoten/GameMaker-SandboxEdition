@@ -94,4 +94,14 @@ describe('text-screen contrast', () => {
     const titles = textContrast(t.game, new GameFiles(t.files)).map((f) => f.title);
     expect(titles).toEqual(['9 of 9 letters on the credits are hard to read against the picture', expect.stringContaining('menu’s choices')]);
   });
+
+  it('reads the menu’s words from the project’s DOS player patches', () => {
+    const t = withScreens({ 2: 'menu.gif' }, { 'menu.gif': picture(3) });
+    t.game.scenes[0].desc = 'Test Game';
+    t.files.set('test.gam', serializeGame(t.game));
+    const menu = (player?: Record<string, string>) =>
+      textContrast(t.game, new GameFiles(t.files), player).find((f) => f.title.includes('menu’s choices'))?.title;
+    expect(menu()).toMatch(/^71 of 71 letters/);
+    expect(menu({ 'str.menu.play': 'Go' })).toMatch(/^69 of 69 letters/);
+  });
 });

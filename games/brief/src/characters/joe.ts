@@ -16,7 +16,7 @@ const WALK = [
   [6, 1],
 ] as const;
 
-export const SEQ = { idle: 0, die: 1, hurt: 2, up: 5, down: 6, left: 7, right: 8, w: 9, s: 10, a: 11, d: 12 } as const;
+const SEQ = { idle: 0, die: 1, hurt: 2, up: 5, down: 6, left: 7, right: 8, w: 9, s: 10, a: 11, d: 12 } as const;
 
 export function buildJoe(cb: BlockSet): Character {
   const ch = newCharacter();

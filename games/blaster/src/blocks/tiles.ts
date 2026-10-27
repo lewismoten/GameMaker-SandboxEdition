@@ -28,7 +28,7 @@ const copy = (p: Pixels) => {
 /** The firing direction of a turret mount, as a barrel vector. */
 const AIM: Record<string, [number, number]> = { L: [-0.6, 0.8], D: [0, 1], R: [0.6, 0.8] };
 
-function mount(a: StageArt, kind: 'L' | 'D' | 'R' | 'S' | 'F'): Pixels {
+export function mount(a: StageArt, kind: 'L' | 'D' | 'R' | 'S' | 'F'): Pixels {
   const p = a.pal;
   const t = copy(a.floor(0));
   // the socket
@@ -55,7 +55,7 @@ function mount(a: StageArt, kind: 'L' | 'D' | 'R' | 'S' | 'F'): Pixels {
   return t;
 }
 
-function hatch(a: StageArt, open: boolean): Pixels {
+export function hatch(a: StageArt, open: boolean): Pixels {
   const p = a.pal;
   const t = copy(a.floor(0));
   bevel(t, 1, 1, 18, 18, p.r('deep'), 2, 2);
@@ -77,7 +77,7 @@ function hatch(a: StageArt, open: boolean): Pixels {
   return t;
 }
 
-function post(a: StageArt, side: 'L' | 'R'): Pixels {
+export function post(a: StageArt, side: 'L' | 'R'): Pixels {
   const p = a.pal;
   const t = copy(a.floor(1));
   const x = side === 'L' ? 4 : 6;
@@ -87,7 +87,7 @@ function post(a: StageArt, side: 'L' | 'R'): Pixels {
   return t;
 }
 
-function beam(a: StageArt, on: boolean, phase: number): Pixels {
+export function beam(a: StageArt, on: boolean, phase: number): Pixels {
   const p = a.pal;
   const t = copy(a.floor(2));
   if (on) {
@@ -105,11 +105,11 @@ function beam(a: StageArt, on: boolean, phase: number): Pixels {
   return t;
 }
 
-function gap(a: StageArt): Pixels {
+export function gap(a: StageArt): Pixels {
   const p = a.pal;
   const t = copy(a.floor(2));
   for (let x = 0; x < 20; x++) if (x < 4 || x > 15) t.set(x, 10, p.c('glow', 1));
-  for (let i = 0; i < 6; i++) t.set(4 + ((i * 7) % 12), 8 + ((i * 3) % 5), p.c('grey', 2));
+  for (let i = 0; i < 6; i++) t.set(4 + ((i * 7) % 12), 8 + ((i * 3) % 5), p.c('gray', 2));
   return t;
 }
 
@@ -125,11 +125,13 @@ export function pad(a: StageArt): Pixels {
   return t;
 }
 
-type PickupKind = 'nova' | 'repair' | 'life' | 'bit';
+export type PickupKind = 'nova' | 'repair' | 'life' | 'bit';
 
-function pickup(a: StageArt, kind: PickupKind, k: number): Pixels {
+/** A pickup on its pad (or on `under`). */
+export function pickup(a: StageArt, kind: PickupKind, k: number, under = pad(a)): Pixels {
   const p = a.pal;
-  const t = pad(a);
+  const t = new Pixels(20, 20);
+  t.px.set(under.px);
   const glow = k ? 1 : 0;
   if (kind === 'nova') {
     blob(t, 9.5, 9.5, 7, 7, p.r('gold'), 0 + glow, 4);
@@ -137,7 +139,7 @@ function pickup(a: StageArt, kind: PickupKind, k: number): Pixels {
     t.draw(7, 7, N, { X: p.c('red', 1) });
   } else if (kind === 'repair') {
     blob(t, 9.5, 9.5, 7, 7, p.r('slime'), 1 + glow, 5);
-    t.rect(8, 5, 4, 10, p.c('grey', 7)).rect(5, 8, 10, 4, p.c('grey', 7));
+    t.rect(8, 5, 4, 10, p.c('gray', 7)).rect(5, 8, 10, 4, p.c('gray', 7));
     t.rect(9, 6, 2, 8, p.c('red', 2)).rect(6, 9, 8, 2, p.c('red', 2));
   } else if (kind === 'life') {
     blob(t, 9.5, 9.5, 7, 7, p.r('cyan'), 1 + glow, 5);
@@ -154,7 +156,7 @@ function pickup(a: StageArt, kind: PickupKind, k: number): Pixels {
   return t;
 }
 
-function current(a: StageArt, dir: 'L' | 'R', k: number): Pixels {
+export function current(a: StageArt, dir: 'L' | 'R', k: number): Pixels {
   const p = a.pal;
   const t = copy(a.floor(3));
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y * 3) % 7 === 0) t.set(x, y, p.c('glow', 1));
@@ -170,7 +172,7 @@ function current(a: StageArt, dir: 'L' | 'R', k: number): Pixels {
   return t;
 }
 
-function gate(a: StageArt, k: number): Pixels {
+export function gate(a: StageArt, k: number): Pixels {
   const p = a.pal;
   const t = new Pixels(20, 20, p.c('ink', 0));
   for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) t.set(x, y, shadeAt(p.r('cyan'), 0, 5, ((y + k * 5) % 20) / 19, x, y));
@@ -178,7 +180,7 @@ function gate(a: StageArt, k: number): Pixels {
   return t;
 }
 
-function launch(a: StageArt): Pixels {
+export function launch(a: StageArt): Pixels {
   const p = a.pal;
   const t = copy(a.floor(0));
   bevel(t, 0, 0, 20, 20, p.r('deep'), 2, 1);
@@ -263,6 +265,21 @@ export function addStageTiles(bs: BlockSet, a: StageArt, o: TileOpts): void {
   for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) bs.add(`pl${r}${c}`, plate(a, r, c));
   // solid wall (arenas only)
   bs.add('wall', plate(a, 1, 1, 'deep', 1), { solid: SOLTOP | SOLRIG | SOLBOT | SOLLEF });
+}
+
+/** Only the pads, pickups, gate and launch pad, for a leg with its own floor (the ribbon cable). */
+export function addPickupTiles(bs: BlockSet, a: StageArt): void {
+  bs.add('pad', pad(a));
+  const pk = (kind: PickupKind, props: object) => {
+    bs.add(`${kind}`, pickup(a, kind, 0), { next: `${kind}1`, ntime: 5, touch: 'pad', ...props });
+    bs.add(`${kind}1`, pickup(a, kind, 1), { next: kind, ntime: 5, touch: 'pad', ...props });
+  };
+  pk('nova', { effect: SEQ.nova, eamt: 2 });
+  pk('repair', { chHitPt: 10 });
+  pk('life', { effect: 1, eamt: 1 });
+  pk('bit', { scorePts: 50 });
+  for (let k = 0; k < 4; k++) bs.add(`gate${k}`, gate(a, k), { next: `gate${(k + 1) % 4}`, ntime: 2 });
+  bs.add('launch', launch(a));
 }
 
 export const PICKUPS = ['nova', 'repair', 'life', 'bit'] as const;

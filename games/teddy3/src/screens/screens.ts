@@ -105,7 +105,7 @@ function leoBig(p: Pixels, x: number, y: number, s: number, wave = false): void 
 }
 
 /** The text panel Game-Maker writes into (x 40..288, y 40..167), with a heading above. */
-export function page(heading: string, seed = 3): Pixels {
+function page(heading: string, seed = 3): Pixels {
   const p = landscape(seed, false);
   // polka-dot border
   const R = rng(seed);
@@ -129,7 +129,7 @@ export function page(heading: string, seed = 3): Pixels {
  * The load and save pages: Game-Maker writes the names in yellow, so each sits on a dark
  * strip, and its blue message at y 185 on the panel, which reaches down past it.
  */
-export function slotsPage(heading: string, seed: number): Pixels {
+function slotsPage(heading: string, seed: number): Pixels {
   const p = page(heading, seed);
   p.rect(28, 186, 264, 12, c('ink', 0));
   p.rect(30, 180, 260, 16, c('cream', 3));
@@ -141,7 +141,7 @@ export function slotsPage(heading: string, seed: number): Pixels {
  * blue from x 20, and "Hit any key" in red at the bottom (x 116..203, y 192..199), so
  * each sits on a cream plate rather than the bunting or the grass.
  */
-export function scoresScreen(): Pixels {
+function scoresScreen(): Pixels {
   const p = landscape(11, false);
   const R = rng(11);
   for (let i = 0; i < 40; i++) blob(p, R() * W, R() * H, 3, 3, SP.r(['red', 'yellow', 'blue', 'green', 'purple'][i % 5]), 1, 3);
@@ -158,7 +158,7 @@ export function scoresScreen(): Pixels {
 }
 
 /** The menu: logo, the cast, and the panel Game-Maker writes the choices on. */
-export function menuScreen(): Pixels {
+function menuScreen(): Pixels {
   const p = landscape(5);
   logo(p, 4);
   p.rect(58, 96, 204, 78, c('ink', 0));
@@ -174,7 +174,7 @@ export function menuScreen(): Pixels {
 }
 
 /** The title poster. */
-export function titleScreen(): Pixels {
+function titleScreen(): Pixels {
   const p = landscape(7);
   logo(p, 6);
   // all four heroes: Teddy, Doc Leo, Gwinn, and THE CHEZ waiting
@@ -204,7 +204,7 @@ function cardTitle(p: Pixels, x: number, y: number, s: string, col: number, edge
 }
 
 /** A level card: a framed view of the level, where it falls (LEVEL 2 OF n), and what is new there. */
-export function card(l: Level, n: number, of: number, lines: string[]): Pixels {
+function card(l: Level, n: number, of: number, lines: string[]): Pixels {
   const pal = buildPalette(l.time);
   const cc = (name: string, k: number) => pal.c(name, k);
   const p = new Pixels(W, H, cc('ink', 0));

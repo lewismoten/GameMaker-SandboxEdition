@@ -60,8 +60,8 @@ describe('things left behind', () => {
   });
 
   it('finds the scene a run carrying less can’t finish', () => {
-    const main: Playtest = { runs: [run(2, [exit(3)]), run(3, [exit(1)], ci([37]))], unreached: [], won: true, cancelled: false };
-    const poor: Playtest = { runs: [run(2, [exit(3)]), run(3, [], ci([]))], unreached: [], won: false, cancelled: false };
+    const main: Playtest = { runs: [run(2, [exit(3)]), run(3, [exit(1)], ci([37]))], unreached: [], won: true, canceled: false, failed: [] };
+    const poor: Playtest = { runs: [run(2, [exit(3)]), run(3, [], ci([]))], unreached: [], won: false, canceled: false, failed: [] };
     const f = softlocks(main, poor, [], (n) => `Level ${n}`);
     expect(f.map((x) => x.title)).toEqual(['Coming in with less, the hero can’t finish Level 3: without block 37']);
     expect(f[0].where).toEqual({ scene: 3, map: undefined, cell: cell(5, 5) });

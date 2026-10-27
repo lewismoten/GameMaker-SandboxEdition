@@ -1,12 +1,12 @@
 // Monsters by name: their pictures (in the stage's .mbl), powers, paths and what they turn
 // into, built into a 64-monster .mon file.
 import { LASTMON, MAXMARCH, emptyMonster, type March, type Monster } from '../../../../web/src/formats/monster';
-import { BlockSet } from '../art/draw';
+import { BlockSet, turn90 } from '../art/draw';
 
 /** One leg of a path: move (x, y) blocks at `speed` pixels a tick. */
 export type Leg = [x: number, y: number, speed: number];
 
-export interface MonDef {
+interface MonDef {
   /** Animation: [monster block name, ticks]. */
   pics: [string, number][];
   power: number;
@@ -23,6 +23,8 @@ export interface MonDef {
   path?: Leg[];
   /** Attack when the character comes within 8 columns and 5 rows. */
   attack?: { mode: 'own' | 'player'; legs: Leg[] };
+  /** In a side leg's bestiary: the paths are already drawn side-on (not turned). */
+  asIs?: boolean;
 }
 
 function marches(legs: Leg[] | undefined, cumulative: boolean, lead?: March): March[] {
@@ -45,12 +47,26 @@ function marches(legs: Leg[] | undefined, cumulative: boolean, lead?: March): Ma
   return out;
 }
 
+/** A leg turned a quarter turn clockwise: down the screen (toward the ship) becomes left. */
+const turnLeg = ([x, y, s]: Leg): Leg => [-y, x, s];
+
 export class Bestiary {
-  readonly mb = new BlockSet(100, 'mbl');
+  readonly mb: BlockSet;
   readonly names: string[] = [];
   private defs: MonDef[] = [];
+  /** In a side leg: pictures (by monster name, as `pics` adds them) left upright. */
+  readonly upright = new Set<string>();
+
+  /**
+   * `side`: for a side-scrolling leg, every path and picture is turned a quarter turn
+   * clockwise, so the virus built for the scrolling strips comes at the ship from the right.
+   */
+  constructor(readonly side = false) {
+    this.mb = new BlockSet(100, 'mbl', side ? turn90 : undefined);
+  }
 
   add(name: string, def: MonDef): number {
+    if (this.side && !def.asIs) def = { ...def, path: def.path?.map(turnLeg), attack: def.attack && { ...def.attack, legs: def.attack.legs.map(turnLeg) } };
     if (this.names.includes(name)) throw new Error(`Monster ${name} twice`);
     if (this.names.length >= LASTMON) throw new Error(`More than ${LASTMON} monsters (${name})`);
     if (def.pics.length > 20) throw new Error(`${name}: more than 20 pictures`);

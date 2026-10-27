@@ -11,7 +11,6 @@ const page = (lines: string[], pages = 1) => {
   return lines.join('\n');
 };
 
-export const TITLE = 'THREAD THE NEEDLE, BROTHER CAMEL';
 export const AUTHOR = 'The Bard of Bizarre';
 
 /**

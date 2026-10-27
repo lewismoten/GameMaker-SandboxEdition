@@ -24,7 +24,7 @@ const TRAFFIC = new Set<number>([
   MON.buggyV,
 ]);
 
-export const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, esc: 0x01 };
+const SCAN = { up: 0x48, down: 0x50, left: 0x4b, right: 0x4d, space: 0x39, esc: 0x01 };
 const DIRS: [number, number, number][] = [
   [1, 0, SCAN.right],
   [-1, 0, SCAN.left],
@@ -32,7 +32,7 @@ const DIRS: [number, number, number][] = [
   [0, -1, SCAN.up],
 ];
 
-export interface BotOptions {
+interface BotOptions {
   /** Keep hit points topped up (checks reachability, not difficulty). */
   god?: boolean;
   /** The moon suit: steer with a tolerance instead of stepping block by block. */
@@ -282,6 +282,14 @@ export class Bot {
         .join(' ')}`,
     );
     return false;
+  }
+
+  /** Boards the Moon Shuttle: up to the foot of its ramp, then waits out the countdown (the ramp
+   * is solid until it reads GO) and steps on. */
+  async board(exit: { x: number; y: number }): Promise<boolean> {
+    if (!(await this.goTo([[exit.x, exit.y + 1]], 'the foot of the ramp'))) return false;
+    for (let t = 0; t < 400 && this.blockAt(exit.x, exit.y).solid; t++) if (!(await this.tick())) return false;
+    return this.goTo([[exit.x, exit.y]], 'the rocket');
   }
 
   /** Every cell holding a block whose name passes `test`. */

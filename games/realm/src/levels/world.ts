@@ -7,7 +7,7 @@ import { CornerMap, N } from '../art/corners';
 import { cellHash } from './ground';
 import { rng } from '../../../kit/pixels';
 
-export type Pt = [number, number];
+type Pt = [number, number];
 
 /** Asserts that a polygon or path only runs straight or at exactly 45 degrees. */
 function octo(name: string, pts: Pt[], closed = true): Pt[] {
@@ -26,7 +26,7 @@ function octo(name: string, pts: Pt[], closed = true): Pt[] {
  * Breaks the long straight edges of an octilinear polygon into jogs of a corner or two (still
  * only straight and 45-degree steps), so coasts and wood edges wander instead of ruling lines.
  */
-export function roughen(pts: Pt[], seed: number, amp = 2, closed = true): Pt[] {
+function roughen(pts: Pt[], seed: number, amp = 2, closed = true): Pt[] {
   const r = rng(seed);
   const out: Pt[] = [];
   const n = closed ? pts.length : pts.length - 1;
@@ -66,7 +66,7 @@ export function roughen(pts: Pt[], seed: number, amp = 2, closed = true): Pt[] {
   return octo('rough', out, closed);
 }
 
-export const WEST = octo('west', [
+const WEST = octo('west', [
   [14, 10],
   [34, 10],
   [38, 14],
@@ -98,7 +98,7 @@ export const WEST = octo('west', [
   [8, 16],
 ]);
 
-export const EAST = octo('east', [
+const EAST = octo('east', [
   [68, 14],
   [86, 14],
   [90, 18],
@@ -116,7 +116,7 @@ export const EAST = octo('east', [
   [66, 16],
 ]);
 
-export interface WorldPlan {
+interface WorldPlan {
   cm: CornerMap;
   /** Features stamped over the ground: block name prefix and top-left block. */
   stamps: { name: string; x: number; y: number; w: number; h: number }[];

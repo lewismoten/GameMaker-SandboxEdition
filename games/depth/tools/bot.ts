@@ -7,9 +7,9 @@ import { COUNT_FAR, COUNT_NEAR, MON } from '../src/ids';
 import { INF_REPEAT } from '../../../web/src/formats/character';
 
 type Pt = { x: number; y: number };
-export type Dir = 'up' | 'down' | 'left' | 'right';
+type Dir = 'up' | 'down' | 'left' | 'right';
 const STEP: Record<Dir, Pt> = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, enter: 28, space: 57 } as const;
+const SCAN = { up: 72, down: 80, left: 75, right: 77, enter: 28, space: 57 } as const;
 
 /** Monsters worth a shot. */
 const FOES = new Set<number>([MON.wire, MON.wireH, MON.wireV, MON.jaggy, MON.jaggyV, MON.mirror, MON.bat, ...COUNT_NEAR, ...COUNT_FAR, MON.steam, MON.shard]);

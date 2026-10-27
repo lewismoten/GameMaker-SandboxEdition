@@ -31,7 +31,7 @@ export const MODULES = [
   { id: 'hydro', name: 'Hydro Jets', key: 'Q / E (sub)' },
   { id: 'spring', name: 'Spring Shocks', key: 'Up (rover)' },
 ] as const;
-export type ModuleId = (typeof MODULES)[number]['id'];
+type ModuleId = (typeof MODULES)[number]['id'];
 export const itemBlock = (id: ModuleId) => ITEM_BASE + MODULES.findIndex((m) => m.id === id);
 
 export const SHARDS = ['Ruby', 'Amber', 'Citrine', 'Emerald', 'Jade', 'Aqua', 'Sapphire', 'Amethyst', 'Rose', 'Pearl'] as const;

@@ -1,4 +1,5 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
+import { onPatchesChanged } from '../../dosPlayer/patchesChanged';
 import { currentRoute, formatHash, setHashParams } from '../../urlState';
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
@@ -13,7 +14,11 @@ import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
 import type { PlayerHandle } from '../../player/player';
 import { parseGame, serializeGame, type Game } from '../../formats/game';
-import { levelForMap, startingAt } from '../editors/integrator/startAt';
+import { levelForMap } from '../editors/integrator/startAt';
+import { sceneName, sourceName } from '../editors/integrator/linkSpots';
+import { playButtons } from './playButtons';
+import { currentPick, gameFor, parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
+import { keepPick, lastPick } from './playPickStore';
 import './workspace.css';
 import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
@@ -24,6 +29,8 @@ import { firstStepsState, notePlayed } from './firstSteps';
 import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
+import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
+import type { RunOptions } from '../../engine/game';
 
 const ORDER: FileKind[] = [
   'gam',
@@ -135,7 +142,7 @@ function matchesFile(name: string, query: string): boolean {
     .every((w) => n.includes(w));
 }
 
-export class Workspace {
+export class Workspace implements AssistantHost {
   readonly project: Project;
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
   private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
@@ -158,12 +165,14 @@ export class Workspace {
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     this.unlisten = project.onChange((name) => {
       if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
+      // links changed (the map's markers, the integrator): Play Level's menu follows
+      else if (name === project.gam) this.playEl?.replaceWith((this.playEl = this.playButton()));
     });
     this.renderSidebar();
     // a reload while play testing (…?play) starts the play test again
     const playing = currentRoute().params.play;
     this.open(file && project.files.has(file) ? file : project.gam);
-    if (playing !== undefined) this.play(playing === 'title');
+    if (playing !== undefined) this.play(playing === 'title' ? 'title' : parsePick(playing));
     // Phones: the dropped-down file list closes on Escape or a tap outside it.
     const close = () => {
       if (!this.sidebar.classList.contains('open')) return;
@@ -194,8 +203,61 @@ export class Workspace {
       void showShortcuts(this.current ? kindOf(this.current) : undefined);
     };
     document.addEventListener('keydown', onHelpKey);
-    this.unbind = () => (document.removeEventListener('pointerdown', onDown), document.removeEventListener('keydown', onHelpKey));
+    // the desk's PLAYHACK saved this game's DOS player patches: take them in, so the next autosave keeps them
+    const offPatches = onPatchesChanged((id, patches) => {
+      if (id !== project.id || project.readOnly) return;
+      void import('../../dosPlayer/playerRecord').then(({ companionPatches, playerRecord, PLAYER_SECTION }) => {
+        if (JSON.stringify(companionPatches(project.companion, project.gam)) !== JSON.stringify(patches))
+          project.setExtras(project.gam, PLAYER_SECTION, playerRecord(patches));
+      });
+    });
+    this.unbind = () => (document.removeEventListener('pointerdown', onDown), document.removeEventListener('keydown', onHelpKey), offPatches());
     if (firstStepsState(project)) void this.loadFirstSteps();
+    setAssistantHost(this);
+  }
+
+  // ---- for the Assistant (assistant/hostSlot.ts) ----
+
+  get editorArea(): HTMLElement {
+    return this.main;
+  }
+
+  get playing(): boolean {
+    return !!this.playBack;
+  }
+
+  /** The file a play test goes back to; set while one runs. */
+  private playBack?: string;
+
+  playTest(scene: number | undefined, watch: Pick<RunOptions, 'onSession' | 'onPlayEnd'>): boolean {
+    if (scene === undefined) {
+      this.play('title', this.current ?? this.playBack, watch);
+      return true;
+    }
+    const pick = playChoices(this.project.game()).find((c) => c.to === scene);
+    if (!pick) return false;
+    this.play(pick, this.current ?? this.playBack, watch);
+    return true;
+  }
+
+  stopPlay(): void {
+    const back = this.playBack;
+    if (back !== undefined) this.open(this.project.files.has(back) ? back : this.project.gam);
+  }
+
+  /** The Assistant button: opens the Assistant (its own chunk, loaded on the first press). */
+  private assistantButton(): HTMLElement {
+    return h(
+      'button',
+      {
+        class: 'assistant-btn',
+        title: 'Assistant: let an AI tool on this computer work on this game',
+        'aria-label': 'Assistant',
+        'aria-haspopup': 'dialog',
+        onclick: () => void import('../../assistant/bridge/panel').then((m) => m.openAssistant()),
+      },
+      h('span', { 'aria-hidden': 'true' }, '✦'),
+    );
   }
 
   /** The First steps panel (its own chunk, loaded only for games that have the checklist). */
@@ -204,7 +266,7 @@ export class Workspace {
     if (this.disposed) return;
     this.firstSteps = firstStepsPanel(this.project, {
       open: (f) => this.open(f),
-      play: () => this.play(true),
+      play: () => this.play('title'),
       upload: () => void import('../widgets/uploadChecklist').then((m) => m.uploadChecklist(this.project)),
     });
     this.renderSidebar();
@@ -237,6 +299,7 @@ export class Workspace {
     this.player?.stop();
     this.unlisten();
     this.unbind?.();
+    if (assistantHost() === this) setAssistantHost(undefined);
   }
 
   private renderSidebar(): void {
@@ -271,7 +334,7 @@ export class Workspace {
           `Files (${names.length})`,
           this.current ? h('span', { class: 'files-toggle-current' }, ` · ${this.current}`) : null,
         ),
-        this.playButton(),
+        (this.playEl = this.playButton()),
         this.firstSteps?.button(),
       ),
       h(
@@ -429,6 +492,7 @@ export class Workspace {
     this.cleanup = undefined;
     this.player?.stop();
     this.player = undefined;
+    this.playBack = undefined;
     this.current = file;
     noteOpened(this.project, file);
     this.sidebar.classList.remove('open');
@@ -483,6 +547,7 @@ export class Workspace {
             },
             keyboardIcon(),
           ),
+          this.assistantButton(),
           fileActions([
             ...(isGam || !changes ? [] : [{ label: 'Rename', run: () => void this.rename(file) }]),
             ...(changes ? [{ label: 'Duplicate', run: () => void this.duplicate(file) }] : []),
@@ -600,42 +665,56 @@ export class Workspace {
     }
   }
 
-  private playButton(): HTMLButtonElement {
-    const level = this.levelHere();
-    const name = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
-    return level
-      ? h(
-          'button',
-          { class: 'primary side-play', onclick: () => this.play(), title: `Play test from ${name}, the level that uses this map` },
-          '▶ Play this level',
-        )
-      : h('button', { class: 'primary side-play', onclick: () => this.play(), title: 'Play the game from its title screen' }, '▶ Play test');
+  private playEl?: HTMLElement;
+
+  /** Play Game and the Play Level split button (playButtons.ts). */
+  private playButton(): HTMLElement {
+    return playButtons({
+      game: () => {
+        try {
+          return parseGame(this.project.files.get(this.project.gam)!);
+        } catch {
+          return undefined;
+        }
+      },
+      here: () => this.levelHere()?.scene,
+      last: () => lastPick(this.project.id),
+      playGame: () => this.play('title'),
+      playLevel: (pick) => (keepPick(this.project.id, pick), this.play(pick)),
+    });
   }
 
-  /** Play tests the game: from the level being edited when a level's map is open, else from the title screen. Stop goes back to that file. */
-  private play(fromTitle = false, back = this.current): void {
-    const level = fromTitle ? undefined : this.levelHere(back);
+  /**
+   * Play tests the game: from the title screen, from a Play Level pick, or (no pick: the First
+   * steps' Play, an old address) from the level being edited when a level's map is open. Play
+   * Game shows the title and menu first, as in DOS; a level's play test skips them (RunOptions
+   * skipTitle, on the test copy only) and its menu comes after play ends. Stop goes back to that file.
+   */
+  private play(how?: 'title' | PlayPick, back = this.current, watch?: Pick<RunOptions, 'onSession' | 'onPlayEnd'>): void {
+    const level = how === 'title' ? undefined : (how ?? this.defaultPick(back));
     notePlayed(this.project);
-    setHashParams({ play: fromTitle ? 'title' : true });
+    setHashParams({ play: level ? pickParam(level) : 'title' });
     this.cleanup?.();
     this.cleanup = undefined;
     this.player?.stop();
     this.player = undefined;
     this.current = undefined;
+    this.playBack = back ?? this.project.gam;
     this.renderSidebar();
     const host = h('div', { class: 'player-host' });
-    const levelName = level ? level.game.scenes[level.scene].desc || `level ${level.scene}` : '';
+    const game = parseGame(this.project.files.get(this.project.gam)!);
+    const where = level ? `${sceneName(game, level.to)} at ${level.at.x},${level.at.y}` : '';
     clear(
       this.main,
       this.bar,
       h(
         'div',
         { class: 'row', style: 'justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px' },
-        h('h1', { class: 'file-title' }, level ? `Playing ${levelName}` : `Playing ${this.project.name}`),
+        h('h1', { class: 'file-title' }, level ? `Playing ${where}` : `Playing ${this.project.name}`),
         h(
           'div',
           { class: 'toolbar' },
-          level && h('button', { onclick: () => this.play(true, back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
+          level && h('button', { onclick: () => this.play('title', back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
           h(
             'button',
             { onclick: () => this.open(back && this.project.files.has(back) ? back : this.project.gam), title: back ? `Stop and go back to ${back}` : 'Stop' },
@@ -647,16 +726,31 @@ export class Workspace {
       h(
         'p',
         { class: 'hint' },
-        level ? `The title and menu still come first (press a key, then choose Play); then it starts at ${levelName}, the level that uses ${back}. ` : '',
+        level ? `It starts in ${where}, where ${sourceName(game, level)} leads, without the title and menu; they come after play ends. ` : '',
         'Play testing uses a copy of the files: high scores and saved games are not added to your project.',
       ),
     );
     const copy = new GameFiles(this.project.files.entries());
-    if (level) copy.set(this.project.gam, serializeGame(startingAt(level.game, level.scene)));
+    if (level) {
+      const start = gameFor(game, level);
+      if (start !== game) copy.set(this.project.gam, serializeGame(start));
+    }
     // the player loads with the first play test; not if another file was opened meanwhile
-    void import('../../player/player').then(({ mountPlayer }) => {
-      if (!this.disposed && host.isConnected) this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name });
+    void Promise.all([import('../../player/player'), import('../../dosPlayer/playerRecord')]).then(([{ mountPlayer }, { companionPatches }]) => {
+      const player = companionPatches(this.project.companion, this.project.gam);
+      if (!this.disposed && host.isConnected)
+        this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name, player, skipTitle: !!level, ...watch });
     });
+  }
+
+  /** Play Level's pick when none is given: the last one, else a way into the open map's level, else the first. */
+  private defaultPick(file = this.current): PlayPick | undefined {
+    try {
+      const game = parseGame(this.project.files.get(this.project.gam)!);
+      return currentPick(playChoices(game), lastPick(this.project.id), this.levelHere(file)?.scene);
+    } catch {
+      return undefined;
+    }
   }
 
   /** The "Add a file" dialog: a grid of every kind of file, with a picture of each. */
@@ -747,7 +841,7 @@ export class Workspace {
 
   /** The Download chooser (download.ts) for this game, as it is now. */
   private chooseDownload(): Promise<void> {
-    const title = this.project.game().scenes[0]?.desc || this.project.name;
+    const title = this.project.game().scenes[0]?.desc.trim() || this.project.name;
     return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true, companion: () => this.project.companion });
   }
 }

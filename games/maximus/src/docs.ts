@@ -16,14 +16,14 @@ import { SECTORS, SCENE, allWorlds } from './universe';
 import { SONGS } from './sound/music';
 import { wrapDoc } from './screens/text';
 
-export interface Limit {
+interface Limit {
   what: string;
   max: string;
   used: string;
   where: string;
 }
 
-export function limits(b: Built): Limit[] {
+function limits(b: Built): Limit[] {
   const g = b.game;
   const gam = serializeGame(g);
   const pool = (() => {
@@ -169,7 +169,7 @@ export function limitsTxt(b: Built): string {
 }
 
 /** The most interesting 16x10 window of a map: many different blocks, monsters, few empty cells. */
-export function bestView(b: Built, file: string, w = 16, h = 10, near?: { x: number; y: number; r: number }): [number, number] {
+function bestView(b: Built, file: string, w = 16, h = 10, near?: { x: number; y: number; r: number }): [number, number] {
   const s = b.scenes.find((x) => x.file === file)!;
   const g = s.map;
   let best: [number, number] = [0, 0];
@@ -205,18 +205,22 @@ export function about(b: Built): object {
     exe: 'MAXIMUS.EXE',
     sound: 'sb',
     egg: { block: EGG_BLOCK },
+    // the save sign (kit/saveSign.ts) where the pod comes out of the asteroid knot that hides the egg (src/game.ts)
+    saveSign: { map: 'galaxy.map', at: [2, 2], after: 'galaxy.map' },
     // the training deck's keepsakes (src/levels/home.ts): the tin heart and the Easter egg up under the windows past the practice range
     tinHeart: { map: 'home.map', at: [53, 43] },
     easterEgg: { map: 'home.map', at: [64, 43] },
     label: { background: '#0b1030', band: '#f0a020', ink: '#ffffff', logo: 'SANDBOX SOFTWARE' },
     box: {
+      // the claims line in place of the count of level scenes, which counts the charts and the Core too
+      levels: '88 worlds, ten star-shards to find',
       background: '#0b1030',
       accent: '#f0a020',
       ink: '#ffffff',
       tagline: 'One courier. A hundred worlds. Ten shards of light.',
       back: "The Maximus Core, the forge-star at the heart of the galaxy, has gone dark. Its light is scattered in ten star-shards across the Hundred Worlds.\n\nYou're Max, and couriers deliver. Fly your pod from world to world, then land and explore on foot, by rover or in the diving bell: grasslands, glaciers, lava fields, drowned temples and derelict stations. Walk east long enough and you come home! Raid the vaults, stock up at the trading posts, open the shard gates sector by sector, and brave the Maelstrom to the Heart of Maximus.",
       features: [
-        '100 scenes: a galaxy chart, 5 sector charts and 88 explorable worlds',
+        'A galaxy chart, 5 sector charts and 88 worlds to land on',
         'Four ways to travel - courier pod, jet-hopping on foot, the diving bell and the rover',
         'Every planet wraps around: a real little world with caves, ruins, lakes and floating islands',
         '176 creatures on land, at sea, in space and aboard the stations',

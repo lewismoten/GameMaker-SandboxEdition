@@ -6,7 +6,7 @@ import type { MonsterOptions } from '../characters';
 import type { Place } from '../sound/sounds';
 import { HALL_TOP, fakeWoods, fogHall, lastHall, zombieParade, type Level } from './maps';
 
-export interface LevelDef {
+interface LevelDef {
   file: string;
   desc: string;
   light: Light;

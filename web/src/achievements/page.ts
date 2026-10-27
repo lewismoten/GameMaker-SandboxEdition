@@ -1,11 +1,12 @@
 // "What you've done" (#/achievements): every achievement by part of the site, with how far
-// along the counted ones are and when each was unlocked. Hidden ones show "???" and a vague
-// hint until they are. The same record the desk's ACHIEVE.EXE shows (store.ts). A Reset at the
+// along the counted ones are and when each was unlocked, as badges of one size. Hidden ones show
+// "???" and a vague hint until they are. A badge opens its details (details.ts). The same record the desk's ACHIEVE.EXE shows (store.ts). A Reset at the
 // bottom forgets them all, after asking.
 import './page.css';
 import { h, clear, confirmDialog } from '../editor/core/ui';
 import { pageToc } from '../pageToc';
 import { ACHIEVEMENTS, CATEGORIES, progressOf, shownText, type Achievement } from './catalog';
+import { openDetails } from './details';
 import { refreshGoals } from './goals';
 import { ACHIEVEMENTS_CHANGED, loadAchievements, resetAchievements, type AchievementRecord } from './store';
 
@@ -29,28 +30,49 @@ function bar(n: number, of: number, label: string): HTMLElement {
   );
 }
 
-function card(a: Achievement, r: AchievementRecord): HTMLElement {
+function card(a: Achievement, r: AchievementRecord, open: () => void): HTMLElement {
   const when = r.unlocked[a.id];
   const shown = shownText(a, !!when);
   const p = progressOf(a, r);
+  const secret = a.hidden && !when;
   return h(
     'li',
-    { class: `ach-card${when ? ' is-done' : ''}${a.hidden && !when ? ' is-hidden' : ''}` },
-    h('span', { class: 'ach-icon', 'aria-hidden': 'true' }, shown.icon),
+    null,
     h(
-      'div',
-      { class: 'ach-body' },
-      h('h3', null, shown.title),
-      h('p', { class: 'ach-desc' }, shown.desc),
-      p
-        ? h('div', { class: 'ach-progress' }, bar(p.n, p.of, `${shown.title}: progress`), h('span', null, `${p.n} of ${p.of}${a.unit ? ` ${a.unit}` : ''}`))
-        : null,
+      'button',
+      {
+        type: 'button',
+        class: `ach-card${when ? ' is-done' : ''}${secret ? ' is-hidden' : ''}`,
+        'data-id': a.id,
+        'aria-haspopup': 'dialog',
+        title: secret ? 'Hidden achievement: show its hint' : `${shown.title}: show the details`,
+        onclick: open,
+      },
+      h('span', { class: 'ach-icon', 'aria-hidden': 'true' }, shown.icon),
       h(
-        'p',
-        { class: 'ach-when' },
-        when
-          ? h('span', null, 'Unlocked ', h('time', { datetime: dateOf(when).toISOString() }, longDate(when)))
-          : h('span', null, a.hidden ? 'Hidden' : 'Not yet'),
+        'span',
+        { class: 'ach-body' },
+        h(
+          'span',
+          { class: 'ach-title' },
+          secret ? [h('span', { 'aria-hidden': 'true' }, shown.title), h('span', { class: 'sr-only' }, 'Hidden achievement')] : shown.title,
+        ),
+        h('span', { class: 'ach-desc' }, shown.desc),
+        h(
+          'span',
+          { class: 'ach-progress' },
+          p
+            ? [
+                h('span', { class: 'ach-bar', 'aria-hidden': 'true' }, h('span', { style: `width:${p.of ? Math.round((p.n / p.of) * 100) : 0}%` })),
+                h('span', null, `${p.n} of ${p.of}${a.unit ? ` ${a.unit}` : ''}`),
+              ]
+            : null,
+        ),
+        h(
+          'span',
+          { class: 'ach-when' },
+          when ? ['Unlocked ', h('time', { datetime: dateOf(when).toISOString() }, longDate(when))] : secret ? 'Hidden' : 'Not yet',
+        ),
       ),
     ),
   );
@@ -59,7 +81,16 @@ function card(a: Achievement, r: AchievementRecord): HTMLElement {
 export function renderAchievements(el: HTMLElement): void {
   const main = h('main', { class: 'ach-page' });
   clear(el, main);
+  // every badge in page order, for the details' Previous and Next
+  const ordered = CATEGORIES.flatMap((c) => ACHIEVEMENTS.filter((a) => a.category === c.id));
+  let record: AchievementRecord | undefined;
+  const badge = (id: string) => main.querySelector<HTMLElement>(`.ach-card[data-id="${id}"]`);
+  const open = (a: Achievement) => {
+    const first = record;
+    if (first) openDetails(ordered, ordered.indexOf(a), () => record ?? first, badge);
+  };
   const draw = (r: AchievementRecord) => {
+    record = r;
     const total = ACHIEVEMENTS.length;
     const done = ACHIEVEMENTS.filter((a) => r.unlocked[a.id]).length;
     const sections = CATEGORIES.map((c) => {
@@ -72,7 +103,7 @@ export function renderAchievements(el: HTMLElement): void {
         h('div', { class: 'ach-section-head' }, h('h2', { id }, c.title), h('span', { class: 'ach-count' }, `${got} of ${list.length}`)),
         h('p', { class: 'ach-blurb' }, c.blurb),
         bar(got, list.length, `${c.title}: unlocked`),
-        h('ul', { class: 'ach-grid' }, ...list.map((a) => card(a, r))),
+        h('ul', { class: 'ach-grid' }, ...list.map((a) => card(a, r, () => open(a)))),
       );
     });
     clear(

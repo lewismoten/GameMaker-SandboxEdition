@@ -9,7 +9,7 @@ import type { Bestiary } from '../characters/mons';
 import type { StageArt } from '../blocks/tiles';
 
 export const X0 = 2;
-export const START_ROW = 94;
+const START_ROW = 94;
 export const EXIT_ROW = 6;
 /** Rows from the launch pad to the gate. */
 export const LENGTH = START_ROW - EXIT_ROW;
@@ -17,12 +17,13 @@ export const ARENA_TOP = 45;
 export const ARENA_START = { x: X0 + 8, y: ARENA_TOP + 5 };
 export const STRIP_START = { x: X0 + 8, y: START_ROW };
 
-export type TurretKind = 'sweep' | 'down' | 'seeker' | 'flak';
+type TurretKind = 'sweep' | 'down' | 'seeker' | 'flak';
 
 export class Grid {
-  readonly map: GameMap = newMap();
+  /** The map it builds (another grid's, once that grid hosts it: see host()). */
+  map: GameMap = newMap();
   private count = 0;
-  readonly links: { x: number; y: number }[] = [];
+  links: { x: number; y: number }[] = [];
   /** Distance shown on the leg's card. */
   cardAt?: number;
   readonly rnd: () => number;
@@ -34,14 +35,38 @@ export class Grid {
     readonly origin: number,
     readonly dir: 1 | -1,
     seed: number,
+    /** The whole map's blocks by map cell, instead of a strip's floor and edges. */
+    fill?: (x: number, y: number) => string,
   ) {
     this.rnd = rng(seed);
     for (let y = 0; y < MWID; y++)
       for (let x = 0; x < MLEN; x++) {
         const c = x - X0;
-        const name = c === 0 ? `edgeL${(y >> 1) % art.edges}` : c === 15 ? `edgeR${(y >> 1) % art.edges}` : this.floorName();
+        const name = fill ? fill(x, y) : c === 0 ? `edgeL${(y >> 1) % art.edges}` : c === 15 ? `edgeR${(y >> 1) % art.edges}` : this.floorName();
         this.map.blocks[y * MLEN + x] = bs.id(name);
       }
+  }
+
+  /** The block at map cell (x, y), by name. */
+  at(x: number, y: number): string {
+    return this.bs.names[this.map.blocks[y * MLEN + x]];
+  }
+
+  /** Sets map cell (x, y). */
+  put(x: number, y: number, name: string): this {
+    this.map.blocks[y * MLEN + x] = this.bs.id(name);
+    return this;
+  }
+
+  /** A monster at map cell (x, y). */
+  monAt(x: number, y: number, name: string): this {
+    return this.mon(x - X0, this.dir * (y - this.origin), name);
+  }
+
+  /** A way out at map cell (x, y). */
+  linkAt(x: number, y: number): this {
+    this.links.push({ x, y });
+    return this;
   }
 
   floorName(): string {
@@ -166,6 +191,32 @@ export class Grid {
       placed++;
     }
     return this;
+  }
+
+  /**
+   * Lays another grid's cells in `region` (and every monster it placed, which must all be in
+   * it) into this map, each cell moved by `to`, and gives that grid this map and its links
+   * moved the same way: two legs on one map, each in its own part of it.
+   */
+  host(src: Grid, region: { x: number; y: number; w: number; h: number }, to: (x: number, y: number) => [number, number]): void {
+    for (let y = region.y; y < region.y + region.h; y++)
+      for (let x = region.x; x < region.x + region.w; x++) {
+        const [hx, hy] = to(x, y);
+        this.map.blocks[hy * MLEN + hx] = src.map.blocks[y * MLEN + x];
+      }
+    for (let i = 0; i < src.count; i++) {
+      const m = src.map.monsters[i];
+      if (m.curx < region.x || m.curx >= region.x + region.w || m.cury < region.y || m.cury >= region.y + region.h)
+        throw new Error(`A monster outside the part laid in, at ${m.curx},${m.cury}`);
+      if (this.count >= LASTMM - 70) throw new Error(`Too many placed monsters on one map (keep slots for shots and bullets)`);
+      const [curx, cury] = to(m.curx, m.cury);
+      this.map.monsters[this.count++] = { ...m, curx, cury };
+    }
+    src.links = src.links.map(({ x, y }) => {
+      const [lx, ly] = to(x, y);
+      return { x: lx, y: ly };
+    });
+    src.map = this.map;
   }
 
   done(): GameMap {

@@ -25,7 +25,7 @@ HOVER-COLA is an extra life.
 FRIENDLY ALIENS give hugs, and
 hugs are good for you.
 
-KEYS: the garage remote, the
+KEYS: Grandpa's key ring, the
 STAFF ONLY keycard and the
 Moon Pass open their doors.
 
@@ -34,6 +34,15 @@ Walk through when they're off!
 
 GLASS TUBES and MOONWALK BELTS
 carry you along - fast.
+
+GRANDPA'S CITICAR opens with
+his keys, and flies itself.
+LEFT and RIGHT (or A and D)
+steer it from lane to lane.
+Dodge cars and trucks, catch
+pages and pills. At 0 MI the
+exit ramp opens on the right:
+keep RIGHT!
 
 ROBOTS can be zapped. CARS,
 buggies, dinos and skaters

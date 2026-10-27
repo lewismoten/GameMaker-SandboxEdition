@@ -8,14 +8,16 @@
 // A game without a title demo can still show one: a CD game may have a demo added for this
 // edition (extraDemos.ts, kept apart from its files), and any other game an "attract
 // mode" (attractDemo.ts) that walks its hero back and forth. `kind` tells them apart so the
-// page can say which it is.
+// page can say which it is (demoSource.ts picks the recording).
 import { DemoAudioEngine, demoAudio, onDemoAudio, type DemoAudio } from './demoAudio';
 import type { Session } from '../engine/scene';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 import type { GameFiles } from '../project/files';
+import type { PlayerPatches } from '../dosPlayer/patchRules';
 import { recordingTicks, titleDemo, withoutOpening } from './demo';
 import { attractRecording } from './attractDemo';
-import { extraDemoForGam, extraDemosLoaded, fetchExtraDemo, loadExtraDemos, type ExtraDemo } from './extraDemos';
+import { extraDemoForGam, loadExtraDemos } from './extraDemos';
+import { demoSource, type DemoSource } from './demoSource';
 import { DEMO_KIND_TAG, type DemoKind } from './demoKind';
 import { onSoundUnlocked, soundUnlocked } from '../audio/context';
 import { claimMediaFocus } from './mediaFocus';
@@ -36,35 +38,8 @@ export async function filesDemoKind(files: GameFiles, gam: string | null | undef
   return attractRecording(files, gam) ? 'attract' : undefined;
 }
 
-interface DemoSource {
-  kind: DemoKind;
-  rec: Uint8Array;
-  /** An added demo that is the game's own recording (one its title screen does not name). */
-  inGame?: boolean;
-}
-
 /** The tag over a game's own recording that its title screen never named (Houses, Peach). */
 const IN_GAME_DEMO_TAG = 'Its own recording · unused by the original';
-
-/** The recording a preview plays; a promise while an added demo is still being fetched. */
-function demoSource(files: GameFiles, gam: string, attract: boolean): DemoSource | Promise<DemoSource | undefined> | undefined {
-  const own = titleDemo(files, gam);
-  if (own) return { kind: 'recorded', rec: own };
-  const fallback = (): DemoSource | undefined => {
-    const rec = attract ? attractRecording(files, gam) : undefined;
-    return rec && { kind: 'attract', rec };
-  };
-  const added = (extra: ExtraDemo | undefined): DemoSource | Promise<DemoSource | undefined> | undefined => {
-    if (!extra) return fallback();
-    // one the game had all along (named nowhere) is in its files already
-    const inFiles = extra.inGame ? files.get(extra.file) : undefined;
-    if (inFiles) return { kind: 'added', rec: inFiles, inGame: true };
-    return fetchExtraDemo(extra).then((rec) => (rec ? { kind: 'added' as const, rec } : fallback()));
-  };
-  const index = extraDemosLoaded();
-  if (index) return added(extraDemoForGam(index, files.get(gam)));
-  return loadExtraDemos().then((i) => added(extraDemoForGam(i, files.get(gam))));
-}
 
 /**
  * True once the visitor has tapped, clicked or typed on the page: sound may start without
@@ -102,6 +77,8 @@ interface DemoPreviewOptions {
   attract?: boolean;
   /** Show DEMO_KIND_TAG over an added demo or the attract mode (default true). */
   tag?: boolean;
+  /** The game's DOS player look (dosPlayer/): its player screens as its .EXE shows them. */
+  player?: PlayerPatches;
 }
 
 /**
@@ -137,6 +114,7 @@ export function playDemoPreview(host: HTMLElement, files: GameFiles, gam: string
     let endedAt = 0;
     const p = mountPlayer(host, game, gam, {
       title: o.title,
+      player: o.player,
       playback: rec,
       preview: true,
       audio: sound,

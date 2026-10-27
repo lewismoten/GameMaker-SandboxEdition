@@ -121,7 +121,7 @@ export function diningBlocks(book: BlockBook, pal: Pal): void {
 }
 
 /** A speech bubble with a word in it (a whisper, a chuckle, a speech, a cough), bobbing a pixel. */
-export function bubble(pal: Pal, word: string, f: number, o: { fill?: string; text?: string; tail?: 'left' | 'right' } = {}): Pixels {
+function bubble(pal: Pal, word: string, f: number, o: { fill?: string; text?: string; tail?: 'left' | 'right' } = {}): Pixels {
   const c = pal.c;
   const p = clear();
   const y = 4 + f;

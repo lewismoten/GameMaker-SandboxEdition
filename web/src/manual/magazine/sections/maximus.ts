@@ -38,7 +38,7 @@ export const COUNTS = {
   monFiles: 9,
   /** Creatures in each .MON whose animation fills every step. */
   fullAnimations: 44,
-  bblFiles: 5,
+  bblFiles: 6,
   mblFiles: 5,
   heroes: 4,
   /** Sequences each hero has on a key (the rest are standing, dying and getting hurt). */
@@ -50,7 +50,7 @@ export const COUNTS = {
   colors: 255,
   /** The widest line on any of its text screens. */
   textWidth: 30,
-  files: 515,
+  files: 516,
   /** Megabytes on the disk, to one decimal. */
   megabytes: 6.9,
 };

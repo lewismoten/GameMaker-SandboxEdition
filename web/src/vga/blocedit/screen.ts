@@ -3,7 +3,7 @@
 // bar, and the tool and key buttons.
 import { BACKBL, BLEN, CHARBL, MONBL } from '../../formats/blocks';
 import { SIZEX, SIZEY } from '../shared/vga';
-import { BLACK, GREEN, GREY1, GREY3, GREY4 } from '../shared/facelift';
+import { BLACK, GREEN, GRAY1, GRAY3, GRAY4 } from '../shared/facelift';
 import { blocnum, drawblk, drawlist, getblk, pixelsOf } from '../shared/blocc';
 import {
   TRANSCOL,
@@ -68,25 +68,25 @@ export abstract class BlockDesignerScreen extends BlockPainter {
     this.drawpal();
     // Draw selected color box
     face.drawborder(COLPX1, COLPY, 2 * COLPLEN + 3, COLPWID + 12, 2, 2);
-    v.box(COLPX1 + COLPLEN, COLPY - 1, COLPX1 + COLPLEN + 1, COLPY + COLPWID - 1, fc[GREY1]);
-    v.line(COLPX1 + COLPLEN + 2, COLPY, COLPX1 + COLPLEN + 2, COLPY + COLPWID - 1, fc[GREY3]);
-    v.boxFill(COLPX1 - 1, COLPY + COLPWID, COLPX2 + COLPLEN, COLPY + COLPWID + 11, fc[GREY1]);
+    v.box(COLPX1 + COLPLEN, COLPY - 1, COLPX1 + COLPLEN + 1, COLPY + COLPWID - 1, fc[GRAY1]);
+    v.line(COLPX1 + COLPLEN + 2, COLPY, COLPX1 + COLPLEN + 2, COLPY + COLPWID - 1, fc[GRAY3]);
+    v.boxFill(COLPX1 - 1, COLPY + COLPWID, COLPX2 + COLPLEN, COLPY + COLPWID + 11, fc[GRAY1]);
     this.colprompt();
 
     face.drawsurface(BX - 2, BY - 26, 105, 141); // Draw zoom window
-    v.box(BX, BY, BX + BLEN * 5, BY + BLEN * 5, fc[GREY4]);
+    v.box(BX, BY, BX + BLEN * 5, BY + BLEN * 5, fc[GRAY4]);
     v.boxFill(BX + 1, BY + 1, BX + BLEN * 5 - 1, BY + BLEN * 5 - 1, fc[BLACK]);
     for (let ly = BY + 11; ly < BY1; ly += 25) {
-      v.line(BX, ly, BX, ly + 3, fc[GREY1]);
-      v.line(BX1, ly, BX1, ly + 3, fc[GREY1]);
+      v.line(BX, ly, BX, ly + 3, fc[GRAY1]);
+      v.line(BX1, ly, BX1, ly + 3, fc[GRAY1]);
     }
     for (let lx = BX + 11; lx < BX1; lx += 25) {
-      v.line(lx, BY, lx + 3, BY, fc[GREY1]);
-      v.line(lx, BY1, lx + 3, BY1, fc[GREY1]);
+      v.line(lx, BY, lx + 3, BY, fc[GRAY1]);
+      v.line(lx, BY1, lx + 3, BY1, fc[GRAY1]);
     }
     this.drawbig();
     // Draw the tool buttons
-    v.boxFill(KBX - 1, EBY, KBX1 - 1, KBY1 + 1, fc[GREY3]);
+    v.boxFill(KBX - 1, EBY, KBX1 - 1, KBY1 + 1, fc[GRAY3]);
     for (let ly = 0; ly < LASTEDITFN; ly++) this.drawFnBut(ly, EBX + ly * EBLEN, EBY, this.ebcols[0]);
     this.drawFnBut(this.editFn, EBX + this.editFn * EBLEN, EBY + 1, this.ebcols[1]); // Highlighted button
     for (let ly = 0; ly < LASTKEYBUT; ly++) this.drawKeyBut(ly, KBX + ly * KBLEN, KBY, this.ebcols[0]);
@@ -102,7 +102,7 @@ export abstract class BlockDesignerScreen extends BlockPainter {
     face.menub(MENUX, MENUY);
     this.infob(INFOX, INFOY, face.facePen());
     if (this.animate) {
-      v.line(ANIX, ANIY, ANIX + 35, ANIY, fc[GREY1]);
+      v.line(ANIX, ANIY, ANIX + 35, ANIY, fc[GRAY1]);
       this.aniBut(ANIX, ANIY, face.hi);
     } else this.aniBut(ANIX, ANIY, face.facePen());
 
@@ -171,7 +171,7 @@ export abstract class BlockDesignerScreen extends BlockPainter {
   protected colprompt(): void {
     const { v, face } = this;
     const fc = face.cols;
-    const cols = [fc[BLACK], fc[GREEN], fc[GREY4], fc[GREY4]];
+    const cols = [fc[BLACK], fc[GREEN], fc[GRAY4], fc[GRAY4]];
     const [c0, c1] = this.curcol;
     v.boxFill(COLPX1, COLPY, COLPX1 + COLPLEN - 1, COLPY + COLPWID - 1, c0);
     if (c0 !== TRANSCOL) face.boxWithText(COLPX1 + 2, COLPY + COLPWID + 3, d(c0, 3));

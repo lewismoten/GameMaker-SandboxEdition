@@ -13,6 +13,7 @@ import { mill } from './levels/mill';
 import { dig } from './levels/dig';
 import { road } from './levels/road';
 import { funhouse } from './levels/funhouse';
+import { dream } from './levels/dream';
 import { hill } from './levels/hill';
 import { meadow } from './levels/meadow';
 import { stage } from './levels/stage';
@@ -21,12 +22,30 @@ import { pies } from './levels/pies';
 import { rigging } from './levels/rigging';
 import { course } from './levels/course';
 
-export const LEVELS: (() => Level)[] = [garage, maple, park, invite, bakery, balloon, road, mill, dig, pies, funhouse, hill, meadow, stage, rigging, course];
+export const LEVELS: (() => Level)[] = [
+  garage,
+  maple,
+  park,
+  invite,
+  bakery,
+  balloon,
+  road,
+  mill,
+  dig,
+  pies,
+  funhouse,
+  dream,
+  hill,
+  meadow,
+  stage,
+  rigging,
+  course,
+];
 
-export const TITLE = 'TEDDY 3: BIGGEST!';
+const TITLE = 'TEDDY 3: BIGGEST!';
 
 /** What plays on the way out of a level: THE CHEZ driving on after Teddy's, or the level's own cartoon. */
-export const outro = (l: Level) => l.outro ?? (l.hero === 'teddy' ? 'drive.fli' : '');
+const outro = (l: Level) => l.outro ?? (l.hero === 'teddy' ? 'drive.fli' : '');
 
 /** An all-black palette, for a scene that is only passed through. */
 export const DARK = 'dark.pal';
@@ -70,6 +89,7 @@ export function buildGame(levels: Level[], startAt?: string): Game {
       levels[i + 1] ? outro(l) : '',
       ...new Array(9).fill(''),
     ];
+    if (l.still) scene.scroll = { ...scene.scroll, up: 0, down: 0, left: 0, right: 0 };
     scene.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));
     const next = levels[i + 1];
     scene.links[0] = { toScene: next ? i + 3 : 1, from: l.exit, to: next ? next.start : { x: 0, y: 0 } };

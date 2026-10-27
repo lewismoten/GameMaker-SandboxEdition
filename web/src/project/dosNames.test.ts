@@ -23,6 +23,9 @@ describe('DOS file names', () => {
     expect(normalize('MECHWORLD.MAP')).toBe('mechworl.map');
     expect(normalize('nejillian.gif')).toBe('nejillia.gif');
     expect(normalize('a.long')).toBe('a.lon');
+    // an empty extension is no extension, as in DOS (a player with its extensions blanked asks for "NAME.")
+    expect(normalize('vmd0001.    ')).toBe('vmd0001');
+    expect(normalize('VMD0001.')).toBe('vmd0001');
     expect(cdName('PARSEC-W.gif')).toBe('parsec_w.gif');
     expect(cdName("can't.gif")).toBe('can_t.gif');
   });

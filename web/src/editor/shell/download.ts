@@ -19,8 +19,9 @@ import { download, h, modal, toast } from '../core/ui';
 import { plainError } from '../core/plainError';
 import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
-import type { GameFiles } from '../../project/files';
+import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
+import type { PlayerPatches } from '../../dosPlayer/patchRules';
 import { REPO_URL } from '../../seo/site';
 
 export interface DownloadGame {
@@ -40,6 +41,8 @@ export interface DownloadGame {
   companion?: () => Companion | undefined;
   /** Our own games: made now, presented as a 1990s release (export/fiction.ts), for the About text. */
   fiction?: string;
+  /** A catalog game, for its DOS player look (an original game's player.json, dosPlayer/catalogPatches.ts); a game of yours keeps its own in `companion`. */
+  entry?: CatalogEntry;
 }
 
 type DownloadKind = 'windows' | 'mac' | 'linux' | 'web' | 'player' | 'dos' | 'files';
@@ -218,7 +221,14 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
   if (picked) await build(game, picked.kind, picked.alt);
 }
 
+/** The game's DOS player customizations (dosPlayer/), which the DOS, web-page and native exports show: a catalog game's own, or yours from its companion. */
+async function gamePatches(game: DownloadGame): Promise<PlayerPatches> {
+  if (game.entry) return (await import('../../dosPlayer/catalogPatches')).catalogPatches(game.entry);
+  return (await import('../../dosPlayer/playerRecord')).companionPatches(game.companion?.(), game.gam);
+}
+
 /** The options the native downloads share. */
+
 async function nativeOptions(game: DownloadGame, files: GameFiles) {
   const [{ exportSinglePage }, { slug }, mac, audio] = await Promise.all([
     import('../../export/exportSinglePage'),
@@ -226,7 +236,7 @@ async function nativeOptions(game: DownloadGame, files: GameFiles) {
     import('../../export/macApp'),
     import('../../export/recordedAudio'),
   ]);
-  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
+  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction, player: await gamePatches(game) });
   return {
     title: game.title,
     id: game.id ?? slug(game.title),
@@ -282,18 +292,26 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
         'Extract it, then run play.sh in the folder.',
       );
     } else if (kind === 'web' && alt) {
-      const { name, zip } = await (await import('../../export/exportWebApp')).exportWebApp(files, { title: game.title, gam: game.gam, fiction: game.fiction });
+      const { name, zip } = await (
+        await import('../../export/exportWebApp')
+      ).exportWebApp(files, { title: game.title, gam: game.gam, fiction: game.fiction, player: await gamePatches(game) });
       save(name, zip, 'application/zip', 'Unzip it onto any static web host.');
     } else if (kind === 'web') {
       const { name, html } = await (
         await import('../../export/exportSinglePage')
-      ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction });
+      ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction, player: await gamePatches(game) });
       save(name, html, 'text/html', 'Open it in any browser to play, no internet needed.');
     } else if (kind === 'player') {
       const { name, zip } = await (await import('../../export/exportWebPlayer')).exportWebPlayer(files, game);
       save(name, zip, 'application/zip', 'Unzip it onto any web host, then open index.html there.');
     } else if (kind === 'dos') {
-      const { name, zip, exe } = await (await import('../../export/exportDos')).exportDos(files, { title: game.title, gam: game.gam });
+      const { name, zip, exe } = await (
+        await import('../../export/exportDos')
+      ).exportDos(files, {
+        title: game.title,
+        gam: game.gam,
+        player: await gamePatches(game),
+      });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else {
       const [{ createZip }, { backupEntries }] = await Promise.all([import('../../project/zip'), import('../../project/companion')]);

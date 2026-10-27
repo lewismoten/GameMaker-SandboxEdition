@@ -9,7 +9,7 @@ import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 
-export interface ScreenExtras {
+interface ScreenExtras {
   /** The camel, posed (each a 20x40 picture: his top block over his bottom). */
   camel: (pose: string) => Pixels;
 }

@@ -14,7 +14,7 @@ const BALL = [c('leaf', 0), c('leaf', 2), c('green', 0), c('green', 1), c('green
  * The wobble ball: a lumpy lime sphere with four dimpled pockets. `turn` rolls the pockets
  * round the ball (in quarter turns), `tilt` leans it as it wobbles (-1..1), `r` is its radius.
  */
-export function wobbleBall(turn: number, tilt = 0, r = 5.5): Pixels {
+function wobbleBall(turn: number, tilt = 0, r = 5.5): Pixels {
   const n = Math.ceil(r * 2) + 2;
   const p = new Pixels(n, n, CLEAR);
   const cx = n / 2;
@@ -144,7 +144,7 @@ TOYS.rootBeer1 = rootBeer(0);
 TOYS.rootBeer2 = rootBeer(3);
 
 /** A dog book from the tiny little library: a red cover with a paw print. */
-export const BOOK = sprite(
+const BOOK = sprite(
   [
     '.oooooooooo.',
     'oqRRRRRRRRwo',

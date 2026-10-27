@@ -7,8 +7,8 @@ import { Pixels } from '../../../kit/pixels';
 import { FX } from '../sprites/fx';
 import { CTR } from '../ids';
 
-export type Cell = string | { tile?: string; mon?: string; mark?: string };
-export type Legend = Record<string, Cell>;
+type Cell = string | { tile?: string; mon?: string; mark?: string };
+type Legend = Record<string, Cell>;
 
 export class LevelMap {
   readonly map: GameMap = newMap();

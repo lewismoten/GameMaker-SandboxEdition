@@ -7,7 +7,7 @@
 import type { BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 
-export const LOFT_ROWS = [
+const LOFT_ROWS = [
   '################',
   '#uu....q.....X.#',
   '#uu#############',

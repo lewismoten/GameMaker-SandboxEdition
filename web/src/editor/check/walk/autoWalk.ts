@@ -186,7 +186,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     ex.heat.forEach((h, i) => h && (r[i] = 1));
     reached.set(sc, r);
   };
-  let cancelled = false;
+  let canceled = false;
   for (let guard = 0; guard < 200 && scene !== 1; guard++) {
     const s = game.scenes[scene];
     const name = s.desc.trim() || `Scene ${scene}`;
@@ -221,11 +221,11 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       const st = STRATEGIES.find((x) => x.id === 'collector')!;
       outcome.tried.push(st.id);
       const prog = (places: number) => {
-        if (opt.progress?.(scene, st.name, places)) cancelled = true;
-        return cancelled;
+        if (opt.progress?.(scene, st.name, places)) canceled = true;
+        return canceled;
       };
       const ex1 = await explore(game, scene, files, entry, { budgetMs: budget * 0.4, progress: prog });
-      if (cancelled) return false;
+      if (canceled) return false;
       if (!biggest || ex1.places.length > biggest.places.length) biggest = ex1;
       const startWorth = ex1.places[0]?.worth ?? 0;
       const best = ex1.places.filter((p) => p.via && p.worth > startWorth).sort((a, b) => b.worth - a.worth || a.tick - b.tick)[0];
@@ -233,7 +233,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       const r1 = await replayPath(game, files, scene, entry, ex1.moves, pathTo(ex1, best.via!), seed);
       if (!r1 || r1.link >= 0 || !r1.snap) return false;
       const ex2 = await explore(game, scene, files, entry, { goal, start: r1.snap, budgetMs: budget * 0.4, stopAt: (l) => wanted.has(l), progress: prog });
-      if (cancelled) return false;
+      if (canceled) return false;
       for (const e of ex2.exits.filter((x) => wanted.has(x.link)).sort((a, b) => a.tick - b.tick)) {
         const r2 = await replayPath(game, files, scene, entry, ex2.moves, pathTo(ex2, e.via), seed, { snap: r1.snap, ticks: r1.ticks });
         if (r2 && wanted.has(r2.link)) {
@@ -268,11 +268,11 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
           budgetMs: budget * st.share * (exact ? 0.5 : 1),
           stopAt: (l) => wanted.has(l),
           progress: (places) => {
-            if (opt.progress?.(scene, st.name, places)) cancelled = true;
-            return cancelled;
+            if (opt.progress?.(scene, st.name, places)) canceled = true;
+            return canceled;
           },
         });
-        if (cancelled) return undefined;
+        if (canceled) return undefined;
         if (!biggest || ex.places.length > biggest.places.length) biggest = ex;
         const exits = ex.exits.filter((e) => wanted.has(e.link)).sort((a, b) => a.tick - b.tick);
         for (const e of exits) {
@@ -293,15 +293,15 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
         const fit = replay.fit ?? { ticks: replay.ticks, moving: 0, onPath: 0 };
         if (paths && st.options(goal).goal && pathShare(fit) < ON_PATH_ENOUGH) {
           const kept = await tryStyle(st, { paths: { blocks: paths } });
-          const use = !cancelled && !!kept?.fit && preferPathRoute(fit, kept.fit);
+          const use = !canceled && !!kept?.fit && preferPathRoute(fit, kept.fit);
           if (use) found = { replay: kept, strategy: st };
           outcome.paths = { share: pathShare(use ? kept.fit! : fit), kept: use };
         } else if (paths) outcome.paths = { share: pathShare(fit), kept: false };
       }
-      if (found || cancelled) break;
+      if (found || canceled) break;
     }
-    if (!found && !cancelled && !backOnly) await collect();
-    if (cancelled) {
+    if (!found && !canceled && !backOnly) await collect();
+    if (canceled) {
       out.stopped = 'Stopped.';
       break;
     }

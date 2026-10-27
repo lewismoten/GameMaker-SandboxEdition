@@ -8,7 +8,7 @@ import { SLOTS } from './levels/board';
 
 const ROOMS: Record<string, string> = { kitchen: 'The Kitchen', living: 'The Living Room', garage: 'The Garage', attic: 'The Attic' };
 
-export function printables(): unknown {
+function printables(): unknown {
   // the home computer's corner of the attic map
   const n = BOARDS.filter((b) => b.room === 'attic').findIndex((b) => b.file === 'computer');
   const [OX, OY] = SLOTS[n];
@@ -172,7 +172,7 @@ function feltEgg(): { head: string; hints: { q: string; a: string; sketch?: unkn
       },
       {
         q: 'Show me the wiring.',
-        a: `On ${board.title}, roll down from the pad, left along the bottom row to the corner, and keep rolling down into the seam. You land in the house's main fuse box. Roll onto the felt egg and press the space bar to pick it up, then roll into the socket to get back.`,
+        a: `On ${board.title}, roll down from the pad, left along the bottom row to the corner, and keep rolling down into the seam. You land in the house's main fuse box. Roll onto the felt egg and press the space bar to pick it up, then roll into the black main switch to get back.`,
         sketch: {
           rows: ['-------------', '|    ---=---|', '|      @    |', '|      v    |', '|v<<<<<<    |', '|X-----------'],
           labels: [

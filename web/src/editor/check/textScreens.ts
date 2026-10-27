@@ -35,7 +35,7 @@ export interface TextPage {
 }
 
 /** Text lines per page (rows 5 to 20). */
-export const PAGE_LINES = 16;
+const PAGE_LINES = 16;
 
 interface Screen {
   pixels: Uint8Array;

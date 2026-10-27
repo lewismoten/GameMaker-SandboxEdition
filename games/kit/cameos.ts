@@ -23,7 +23,7 @@ import { buildCharBlocks as kidBlocks } from '../snowbound/src/sprites/charBlock
 
 export const CLEAR = 255;
 
-export interface RecolorOptions {
+interface RecolorOptions {
   /** The host palette entries the picture may use (default: all but 255). */
   use?: number[];
   /** The source's clear index (default 255), kept clear. */
@@ -63,7 +63,7 @@ export const wattCameo = (to: Uint8Array, view: View, step = 0, mood: 'ok' | 'bl
   recolor(watt(view, step, mood), LOGIC.pal, to, o);
 
 let sweats: ReturnType<typeof sweatsPalette> | undefined;
-/** Will the playwright: bald, ruff, velvet doublet, grey sweatpants, fuzzy slippers. */
+/** Will the playwright: bald, ruff, velvet doublet, gray sweatpants, fuzzy slippers. */
 export function willCameo(to: Uint8Array, pose: PoetPose = { face: 'front' }, o?: RecolorOptions): Pixels {
   sweats ??= sweatsPalette(COMMON);
   return recolor(poetArt(sweats).body(pose), sweats.pal, to, o);

@@ -1,6 +1,8 @@
-// Tricks of the Shareware Masters: a two-page feature on techniques other Game-Maker authors used,
+// Tricks of the Shareware Masters: a three-page feature on techniques other Game-Maker authors used,
 // each credited to its game by title, with a diagram of the boss chain (bossChain.ts), and a "did
-// you know" box of limits they pushed. From Lewis's
+// you know" box of limits they pushed, and a third page from a second, wider dig through the
+// archive (its tricks told without naming games, the Ultimate Owner's Guide chapter 17's "More
+// from the archive" in the zine's voice). From Lewis's
 // survey of the Game-Maker Archive's featured games at the Internet Archive (read with the
 // site's own file parsers). It describes the tricks only: no art, music or text from those games.
 import { art, cols, head, list, note, p, pull, side } from '../blocks';
@@ -84,6 +86,57 @@ export const MASTERS: MagSection = {
         ),
         note(
           'From the games’ own files in the Game-Maker Archive’s collection at the Internet Archive (archive.org). These games belong to their authors: we describe the tricks, and show none of their pictures, music or words. Every title is on [The Shareware Shelf](go:mag/shelf).',
+        ),
+      ],
+    },
+    {
+      kind: 'article',
+      tone: 'white',
+      blocks: [
+        head('Masters, the next disk box', {
+          kicker: 'Design workshop',
+          deck: 'We went back to the boards for another two hundred games. Same rules: plain Game-Maker, no patches, and every trick one you can wire up tonight.',
+          size: 's',
+          level: 2,
+        }),
+        cols(2, [
+          p(
+            '**Dirt that runs on a meter.** A block that takes from a counter gets refused when you’re broke, and a refused touch does nothing. So make earth that costs one shovel-charge and turns into tunnel: dig till you’re out, then it’s rock again. Do it with sky that turns into an updraft and you’ve got a jetpack with fuel.',
+            { drop: true },
+          ),
+          p(
+            '**The gate is the exit.** Put the level’s only link right on a gate that takes exactly as many dots as the maze holds. Eat the last one and the door swings open. Count twice: we found one gate asking for 19 keys on a level with 18.',
+          ),
+          p(
+            '**An AND gate made of monsters.** Equal powers pass through each other; higher kills lower. Make the right setting of each dial weaker than the wrong ones, then send a checker monster down the row. It only reaches the lamp at the end when every dial is right. Yes, logic. In Game-Maker.',
+          ),
+          p(
+            '**Aim with your feet.** A shot that chases instead of following a path flies whichever way the hero last moved. One monster, eight directions. Got four fire keys? Make each one nudge the hero a pixel first, or they all fire the same way.',
+          ),
+          p(
+            '**Doors on a timer.** A wall that turns into an open look-alike after 1,000 ticks makes a “hold out till the door opens” room. Put a ring of digit blocks beside it, 18 ticks a number, and the player can watch it count down.',
+          ),
+          p(
+            '**The ghost move.** Monsters only hit the hero where his pixels touch theirs, and see-through pixels never touch. Show a frame that’s all see-through and nothing can lay a finger on him. Spikes still sting, though: blocks hit by the square.',
+          ),
+          p(
+            '**One world, five copies.** One author kept a copy of every scene for each boss beaten. The links in each copy lead to the same copy, so when you go back, the world remembers. It costs scenes, not maps.',
+          ),
+        ]),
+        side(
+          'Did you know?',
+          [
+            list([
+              'PLAYGAME moves the hero 11 pixels a tick, tops. Draw a 30-pixel leap and he still goes 11. About twenty of the games we opened jump short because of it.',
+              'Two links on one square? Only the first one ever fires. One game’s level select lost a whole level that way.',
+              'Some authors hex-edit the player itself, to rename Lives or to keep Game-Maker from opening their files. Older players even carry the registered owner’s name inside.',
+              'The player opens the .GAM named after its own .EXE, so a second copy of both makes a shareware cut from the same files.',
+            ]),
+          ],
+          'yellow',
+        ),
+        note(
+          'From the games’ own files in the Game-Maker Archive’s collection at the Internet Archive, retold in our words. How to build each one is in [The Ultimate Owner’s Guide](go:ultimate/shareware).',
         ),
       ],
     },

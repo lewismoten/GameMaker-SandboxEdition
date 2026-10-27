@@ -10,7 +10,7 @@
 // the Maximus findings are TURBO BUTTON's
 // (manual/magazine/sections/maximus.ts). The wall glitch is code/GM/PLAYGAME.C ChkMonChr (the
 // axis the two are farther apart on, and which solid bit pushes which way) and movechars (the
-// hero put beside MMsolid with no wall check, that axis's move cancelled, chkmapbounds wrapping
+// hero put beside MMsolid with no wall check, that axis's move canceled, chkmapbounds wrapping
 // him), as engine/monsters.ts chkMonChr and engine/character.ts port them. The DOSBox screenshot
 // is Lewis's (NOTICE.md).
 import { opening, tip, type Chapter } from './chapter';
@@ -56,7 +56,7 @@ export const PLAYERS: Chapter = {
     each with room to get it wrong.</li>
     <li><b>Nothing that can kill in the first screen.</b> The first death should come after the
     player knows the keys.</li>
-    <li><b>A course to practise on.</b> A short training level, or a first level the instructions
+    <li><b>A course to practice on.</b> A short training level, or a first level the instructions
     call practice, takes the fear out of trying every key. Maximus starts on a training deck that
     teaches walking, hopping, picking up, shooting, paying a door and riding a lift before the
     first planet.</li>

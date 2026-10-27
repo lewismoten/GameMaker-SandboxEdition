@@ -30,7 +30,7 @@ export const ITEM = {
   checklist: (f: Pixels) =>
     onFloor(f, (p) => {
       p.rect(4, 2, 12, 16, c('wood', 3)).rect(5, 4, 10, 13, c('paper', 5));
-      p.rect(8, 1, 4, 3, c('grey', 5));
+      p.rect(8, 1, 4, 3, c('gray', 5));
       for (let i = 0; i < 4; i++) p.rect(6, 6 + i * 3, 6, 1, c('black', 1)).set(13, 6 + i * 3, c('velvet', 4));
       p.line(12, 12, 13, 13, c('velvet', 5)).line(13, 13, 15, 10, c('velvet', 5));
     }),
@@ -60,7 +60,7 @@ export const ITEM = {
       pool(p, 10, 11, 9, 8, r('glow'), 0, 1);
       p.rect(6, 6, 8, 11, c('black', 1)).rect(7, 7, 6, 8, c('glow', 3)).rect(9, 9, 2, 4, c('glow', 4));
       p.rect(5, 16, 10, 2, c('black', 1)).rect(7, 4, 6, 2, c('black', 1));
-      p.ring(10, 3, 2, c('grey', 4));
+      p.ring(10, 3, 2, c('gray', 4));
     }),
   ledger: (f: Pixels) =>
     onFloor(f, (p) => {
@@ -82,7 +82,7 @@ export const ITEM = {
       p.line(5, 15, 15, 5, c('navy', 1)).line(6, 16, 16, 6, c('navy', 2));
       p.ring(3, 17, 2, c('wood', 3));
       // the trick dagger hidden in its folds: a bright, blunt blade
-      p.line(9, 9, 14, 14, c('grey', 6)).line(10, 9, 15, 14, c('grey', 5));
+      p.line(9, 9, 14, 14, c('gray', 6)).line(10, 9, 15, 14, c('gray', 5));
       p.rect(8, 7, 3, 2, c('gold', 3));
       p.rect(14, 14, 5, 6, c('paper', 4));
       micro(p, 15, 15, '1', c('black', 0));
@@ -172,25 +172,25 @@ export function symbol(p: Pixels, x: number, y: number, s: (typeof SYMBOLS)[numb
 }
 
 export function dial(s: (typeof SYMBOLS)[number]): Pixels {
-  const p = T(c('grey', 1));
-  p.rect(0, 0, 20, 20, c('black', 1)).frame(0, 0, 20, 20, c('grey', 3));
-  p.disc(10, 10, 9, c('grey', 4));
-  p.disc(10, 10, 8, c('grey', 2));
-  symbol(p, 4, 4, s, c('gold', 4), c('grey', 2));
+  const p = T(c('gray', 1));
+  p.rect(0, 0, 20, 20, c('black', 1)).frame(0, 0, 20, 20, c('gray', 3));
+  p.disc(10, 10, 9, c('gray', 4));
+  p.disc(10, 10, 8, c('gray', 2));
+  symbol(p, 4, 4, s, c('gold', 4), c('gray', 2));
   p.rect(9, 0, 2, 2, c('velvet', 5));
   return p;
 }
 
 export function safeDoor(open: boolean, holds = false): Pixels {
   const p = T(c('black', 0));
-  p.frame(0, 0, 20, 20, c('grey', 3));
+  p.frame(0, 0, 20, 20, c('gray', 3));
   if (!open) {
-    p.rect(1, 1, 18, 18, c('grey', 2)).frame(3, 3, 14, 14, c('grey', 4));
+    p.rect(1, 1, 18, 18, c('gray', 2)).frame(3, 3, 14, 14, c('gray', 4));
     p.disc(13, 10, 2, c('gold', 3));
     microC(p, 9, 7, 'VC', c('gold', 2));
   } else {
     p.rect(1, 1, 18, 18, c('black', 1));
-    p.rect(0, 0, 3, 20, c('grey', 3));
+    p.rect(0, 0, 3, 20, c('gray', 3));
     if (holds) {
       p.rect(5, 6, 11, 11, c('paper', 3)).rect(6, 5, 11, 11, c('paper', 5)).rect(8, 7, 7, 2, c('black', 1));
       for (let i = 0; i < 3; i++) p.rect(8, 10 + i * 2, 7, 1, c('black', 3));

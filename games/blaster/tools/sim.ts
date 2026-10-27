@@ -33,7 +33,7 @@ import type { GameMap } from '../../../web/src/formats/map';
 import type { Monster } from '../../../web/src/formats/monster';
 import { rng } from '../../kit/pixels';
 
-export interface SimScene {
+interface SimScene {
   map: GameMap;
   bbl: Block[];
   mbl: Block[];

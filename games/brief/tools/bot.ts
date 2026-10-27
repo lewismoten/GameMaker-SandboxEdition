@@ -22,7 +22,7 @@ const STEPS: [Dir, number, number][] = [
 
 const BACK: Record<Dir, Dir> = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
-export interface Recorded {
+interface Recorded {
   tick: number;
   key: number;
 }
@@ -50,7 +50,7 @@ const solidAt = (sim: Sim, x: number, y: number) => {
 };
 
 /** Live monsters whose names start with `prefix`, at their nearest cells. */
-export function monstersNamed(sim: Sim, names: string[], test: (name: string) => boolean): { x: number; y: number }[] {
+function monstersNamed(sim: Sim, names: string[], test: (name: string) => boolean): { x: number; y: number }[] {
   const w = sim.w;
   const out: { x: number; y: number }[] = [];
   w.mm.forEach((m, i) => {
@@ -70,7 +70,7 @@ export function wordCells(sim: Sim, area: Area, box: { x0: number; y0: number; x
 }
 
 /** The first step of a shortest walk from Joe to any goal cell (goals may be solid: bumped). */
-export function firstStep(
+function firstStep(
   sim: Sim,
   goals: { x: number; y: number }[],
   box: { x0: number; y0: number; x1: number; y1: number },

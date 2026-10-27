@@ -1,0 +1,21 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.instructions": "Service Manual",
+    "str.menu.highScores": "Best Repairs",
+    "str.hiscore.title": "Best Repairs",
+    "str.hiscore.congrats": "Circuit closed!",
+    "str.invent.lives": "Batteries: %d",
+    "color.rgb.hsRed": [46, 4, 4],
+    "color.rgb.hsBlue": [4, 6, 36],
+    "color.rgb.hsGreen": [40, 63, 48],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsPrompt": "red",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.title.x": 112,
+    "layout.hiscore.congrats.x": 100
+  }
+}

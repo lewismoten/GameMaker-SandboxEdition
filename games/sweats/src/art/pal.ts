@@ -5,7 +5,7 @@
 // at the same entries, which is what lets every scene share the poet's POET.CBL.
 import { PaletteBuilder } from '../../../kit/palette';
 
-export type RGB = [number, number, number];
+type RGB = [number, number, number];
 /** [name, shades, dark, light, mid?, glows? (keeps its light in every scene)] */
 export type Ramp = [string, number, RGB, RGB, RGB?, boolean?];
 
@@ -13,7 +13,7 @@ export type Ramp = [string, number, RGB, RGB, RGB?, boolean?];
 export const COMMON: Ramp[] = [
   ['ink', 2, [18, 12, 18], [52, 40, 52]],
   ['skin', 5, [92, 50, 32], [252, 210, 172], [212, 146, 108]],
-  // the poet: grey sweatpants, a velvet doublet, a starched white ruff, a feather in his cap
+  // the poet: gray sweatpants, a velvet doublet, a starched white ruff, a feather in his cap
   ['sweats', 4, [62, 64, 74], [196, 198, 206]],
   ['velvet', 4, [50, 14, 40], [196, 80, 150], [130, 30, 96]],
   ['white', 3, [180, 178, 184], [255, 255, 255]],
@@ -32,7 +32,7 @@ export const COMMON: Ramp[] = [
   ['yellow', 3, [190, 140, 10], [255, 246, 120]],
   // Carl the fly, the goat
   ['fly', 3, [24, 30, 44], [120, 150, 190]],
-  ['grey', 4, [50, 50, 58], [204, 204, 212]],
+  ['gray', 4, [50, 50, 58], [204, 204, 212]],
   // the word balloons: parchment and their gold lettering
   ['paper', 3, [196, 176, 140], [255, 250, 232], undefined, true],
   ['spot', 3, [255, 220, 120], [255, 255, 236], undefined, true],
@@ -48,7 +48,7 @@ export interface Lighting {
   add: RGB;
 }
 
-export const PLAIN: Lighting = {
+const PLAIN: Lighting = {
   sky: [
     [30, 26, 40],
     [150, 130, 120],

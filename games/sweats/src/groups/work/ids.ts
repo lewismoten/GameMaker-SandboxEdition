@@ -15,7 +15,7 @@ export const WORK_MON = {
 
 /** The Coffee Goat in the Breakroom (its own .MON: the slots start over). */
 export const CGOAT_MON = {
-  /** His brain gone full static: a fuzz of grey with a question in it (SUGAR? CREAM?). */
+  /** His brain gone full static: a fuzz of gray with a question in it (SUGAR? CREAM?). */
   static: FIRST_GROUP_MON,
   /** The empty creamer, lovingly put back in the fridge, hopping out of it. */
   creamer: FIRST_GROUP_MON + 1,

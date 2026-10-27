@@ -56,9 +56,9 @@ function scissors(open: boolean): Pixels {
 
 function cot(under: Pixels): Pixels {
   const p = on(under);
-  p.rect(1, 7, 18, 6, c('paper', 4)).frame(1, 7, 18, 6, c('grey', 2));
+  p.rect(1, 7, 18, 6, c('paper', 4)).frame(1, 7, 18, 6, c('gray', 2));
   p.rect(8, 8, 4, 4, c('red', 3)).rect(9, 7, 2, 6, c('paper', 4)).rect(7, 9, 6, 2, c('paper', 4)).rect(9, 8, 2, 4, c('red', 3)).rect(8, 9, 4, 2, c('red', 3));
-  p.rect(2, 13, 2, 4, c('grey', 2)).rect(16, 13, 2, 4, c('grey', 2));
+  p.rect(2, 13, 2, 4, c('gray', 2)).rect(16, 13, 2, 4, c('gray', 2));
   return p;
 }
 
@@ -101,11 +101,11 @@ function balloonArt(kind: 'dog' | 'sword' | 'flower' | 'hat'): Pixels {
 /** The cheesy cover band: a grill sizzling with cheese. */
 function grill(frame: number): Pixels {
   const p = floor('marble', 5);
-  p.rect(2, 8, 16, 9, c('ink', 1)).rect(2, 8, 16, 2, c('grey', 2));
-  for (let x = 3; x < 17; x += 3) p.rect(x, 10, 1, 6, c('grey', 3));
+  p.rect(2, 8, 16, 9, c('ink', 1)).rect(2, 8, 16, 2, c('gray', 2));
+  for (let x = 3; x < 17; x += 3) p.rect(x, 10, 1, 6, c('gray', 3));
   p.rect(4, 5, 7, 4, c('yellow', 3)).rect(11, 6, 5, 3, c('orange', 3));
-  if (frame) p.set(6, 2, c('grey', 4)).set(8, 1, c('grey', 4)).set(13, 3, c('grey', 4));
-  else p.set(7, 3, c('grey', 4)).set(12, 1, c('grey', 4)).set(14, 2, c('grey', 4));
+  if (frame) p.set(6, 2, c('gray', 4)).set(8, 1, c('gray', 4)).set(13, 3, c('gray', 4));
+  else p.set(7, 3, c('gray', 4)).set(12, 1, c('gray', 4)).set(14, 2, c('gray', 4));
   return p;
 }
 
@@ -119,11 +119,11 @@ function cheddar(): Pixels {
 }
 
 function aisle(seed: number): Pixels {
-  const p = new Pixels(20, 20, c('grey', 3));
+  const p = new Pixels(20, 20, c('gray', 3));
   const pals = ['red', 'blue', 'green', 'yellow', 'orange', 'purple'];
   for (const top of [1, 8, 15]) {
     for (let x = 1; x < 19; x += 4) p.rect(x, top, 3, 5, c(pals[(x + top + seed) % 6], 3)).rect(x, top, 3, 1, c('paper', 4));
-    p.rect(0, top + 5, 20, 1, c('grey', 1));
+    p.rect(0, top + 5, 20, 1, c('gray', 1));
   }
   return p;
 }
@@ -139,10 +139,10 @@ function elfOnShelf(): Pixels {
 
 function cabinet(): Pixels {
   const p = blank();
-  bevel(p, 2, 0, 16, 20, r('grey'), 3, 1);
+  bevel(p, 2, 0, 16, 20, r('gray'), 3, 1);
   for (const y of [2, 8, 14])
-    p.rect(4, y, 12, 5, c('grey', 4))
-      .rect(8, y + 2, 4, 1, c('grey', 1))
+    p.rect(4, y, 12, 5, c('gray', 4))
+      .rect(8, y + 2, 4, 1, c('gray', 1))
       .rect(6, y + 1, 8, 1, c('paper', 4));
   return p;
 }
@@ -163,7 +163,7 @@ function cloud(dy: number): Pixels {
     [11, 8, 5],
     [15, 11, 3.5],
   ])
-    blob(p, x, y + dy, s, s * 0.8, r('grey'), 3, 5);
+    blob(p, x, y + dy, s, s * 0.8, r('gray'), 3, 5);
   micro(p, 1, 13 + dy, 'CLOUD', c('blue', 1));
   return p;
 }
@@ -345,7 +345,7 @@ function art(a: Area): void {
       ],
     },
   );
-  sign(['ACCOUNTS', 'PAYABLE', '(MOSTLY)'], 3, { board: 'grey' }).forEach((px, i) => a.solid(`acct${i}`, px));
+  sign(['ACCOUNTS', 'PAYABLE', '(MOSTLY)'], 3, { board: 'gray' }).forEach((px, i) => a.solid(`acct${i}`, px));
   a.solid('brick', wall('brick', 'red', 3));
 
   // the hallway's guest: Doc Leo himself, browsing

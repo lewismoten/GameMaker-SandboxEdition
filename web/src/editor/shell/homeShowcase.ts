@@ -15,6 +15,7 @@ import { savesButton } from '../../saves/button';
 import { chooseDownload, downloadButton } from './download';
 import { catalogDownloadable } from '../../export/downloadable';
 import { fictionNote } from '../../export/fiction';
+import { fillRating } from './homeRatings';
 
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
@@ -76,6 +77,7 @@ function catalogDownload(game: HomeGame): HTMLElement | null {
       year: e.year,
       box: e.original?.box,
       fiction: fictionNote(e),
+      entry: e,
     }),
   );
 }
@@ -112,13 +114,15 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
   // our own games: made now, presented as 1990s releases (export/fiction.ts)
   const fiction = h('p', { class: 'sc-fiction' });
   const blurb = h('p', { class: 'sc-blurb' });
+  // an imported game's stars and note (homeRatings.ts)
+  const rate = h('div', { class: 'sc-rate', role: 'group', 'aria-label': 'Your rating and note' });
   const actions = h('div', { class: 'sc-actions' });
   const notes = h('div', { class: 'sc-notes' });
   const el = h(
     'section',
     { class: 'showcase', 'aria-label': 'Selected game' },
     h('div', { class: 'sc-screen' }, screen),
-    h('div', { class: 'sc-info' }, label, title, byline, fiction, blurb, actions, notes),
+    h('div', { class: 'sc-info' }, label, title, byline, fiction, blurb, rate, actions, notes),
   );
   let current: HomeGame | undefined;
   let demo: { stop(): void } | undefined;
@@ -165,6 +169,9 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     fiction.hidden = !fiction.textContent;
     blurb.textContent = game.blurb ?? '';
     blurb.hidden = !game.blurb;
+    rate.hidden = !(game.project && isImported(game.project.id));
+    if (game.project && !rate.hidden) fillRating(rate, { id: game.project.id, name: game.title });
+    else rate.replaceChildren();
 
     const canvas = h('canvas', { class: 'sc-shot pixel', width: 320, height: 200, 'aria-hidden': 'true' });
     const playBtn = h('button', { class: 'sc-demo-btn', type: 'button', hidden: true });

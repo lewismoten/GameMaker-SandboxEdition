@@ -117,7 +117,7 @@
 }
 
 /* ---- the disk sleeve */
-.pp-gmd {
+.pp-sheet.pp-gmd {
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   gap: 4cqw;
@@ -198,7 +198,7 @@
 }
 
 /* ---- the product registration card */
-.pp-grc {
+.pp-sheet.pp-grc {
   padding: 3.2cqw 4cqw;
   background: #fbf8ef;
   font:
@@ -429,7 +429,7 @@
 }
 
 /* ---- the keyboard template: cardstock over the function keys */
-.pp-gkt {
+.pp-sheet.pp-gkt {
   display: flex;
   flex-direction: column;
   gap: 1cqw;
@@ -544,7 +544,7 @@
 }
 
 /* ---- the map planning grid */
-.pp-gmg {
+.pp-sheet.pp-gmg {
   display: flex;
   flex-direction: column;
   padding: 4cqw 5cqw;
@@ -691,7 +691,7 @@
 }
 
 /* ---- the customer support card */
-.pp-gsc {
+.pp-sheet.pp-gsc {
   display: flex;
   flex-direction: column;
   padding: 5cqw 6cqw;

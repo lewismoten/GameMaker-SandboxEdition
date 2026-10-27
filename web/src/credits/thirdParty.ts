@@ -42,6 +42,12 @@ export const PIECE_GROUPS: PieceGroup[] = [
         what: 'The checksum in the .zip files the site writes (web/src/project/zip.ts), written for this project from the standard ZIP polynomial and APPNOTE’s layout.',
       },
       {
+        name: 'MD5',
+        license: 'Algorithm (no code used)',
+        by: 'Ronald Rivest, RFC 1321 (MIT Laboratory for Computer Science and RSA Data Security, Inc., 1992)',
+        what: 'Tells the CD’s XFERPLAY.EXE from any other file before the DOS player customizer patches it (web/src/dosPlayer/md5.ts), written for this project from the RFC’s description.',
+      },
+      {
         name: 'FLI format',
         license: 'Format description',
         by: 'Jim Kent and Heidi Brumbaugh (Dancing Flame), via Andy Stone’s FLI.CPP',
@@ -121,6 +127,27 @@ export const PIECE_GROUPS: PieceGroup[] = [
         what: 'The 1994 desk, where nearly everything does something when clicked and some things are hidden to find. Lewis watched their Flash cartoons, where clicking things in the last scene turned up hidden extras. The names are their owners’.',
         url: 'https://homestarrunner.com/',
       },
+      {
+        name: 'Model Context Protocol',
+        license: 'Protocol specification (the SDK used is MIT)',
+        by: 'The Model Context Protocol project, begun by Anthropic',
+        what: 'How AI tools talk to the local server that opens, checks and edits games (web/scripts/mcp, with its TypeScript SDK) and to the editor’s Assistant through it. None of it is in the site or the downloads.',
+        url: 'https://modelcontextprotocol.io/',
+      },
+      {
+        name: 'WebMCP',
+        license: 'Draft specification (no code used)',
+        by: 'The W3C Web Machine Learning Community Group',
+        what: 'How the editor’s Assistant offers its tools to an AI agent built into the browser, when the browser has it and the visitor opts in (web/src/assistant/webmcp.ts).',
+        url: 'https://webmachinelearning.github.io/webmcp/',
+      },
+      {
+        name: 'PNG',
+        license: 'Format description (RFC 2083)',
+        by: 'Thomas Boutell and the PNG Development Group',
+        what: 'The pictures the Assistant shows an AI tool (web/src/assistant/png.ts), written for this project from the specification; the browser’s own compression packs them.',
+        url: 'https://www.rfc-editor.org/rfc/rfc2083',
+      },
     ],
   },
   {
@@ -138,9 +165,23 @@ export const PIECE_GROUPS: PieceGroup[] = [
       {
         name: 'Tricks from the shareware authors',
         license: 'Ideas described in this project’s own words; no art, music, sounds or text copied',
-        by: 'Community games in the Game-Maker Archive: Blinky 2 and 3, Ninja Tuck, A-J’s Quest and Builder (A-J Games), Parsec Man 3D (Mark Hadley), Shanna (Angelo Felix), Hurdles (Roland Ludlam), Seal Boarders, RSD’s Penguin Pete and others',
+        by: 'Community games in the Game-Maker Archive: Blinky 2 and 3, Ninja Tuck, A-J’s Quest, Builder, The Return of A-J and Ricci’s Cow Hunt (A-J Games), Parsec Man 3D (Mark Hadley), Shanna (Angelo Felix), Hurdles (Roland Ludlam), Seal Boarders and Seal Boarders 2, Zarlor 2 and Fox Party (John and Robert Brandon), Time After Time (New Age Warriors), Puzzle and Havok (Eclypse Games), Power Fights A.C.: Power Moves II (Alan Caudel), Jet! (likely Alan Caudel), Party of Four, an unfinished monster-movie fan game, the Return of the Jedi fan game, Ski, RSD’s Penguin Pete and Woman Warrior, and others',
         what: 'Chapter 17 of The Ultimate Owner’s Guide, the archive counts in its “Where Game-Maker Runs Out”, and TURBO BUTTON’s “Tricks of the Shareware Masters”.',
         url: 'https://archive.org/search?query=subject%3A%22Game-Maker+Archive+featured+games%22',
+      },
+      {
+        name: 'Playing the archive',
+        license: 'Lewis’s own play-throughs; nothing copied',
+        by: 'Lewis Moten',
+        what: 'Lewis played and reviewed many of the older DOS games in the Game-Maker Archive to see the techniques different authors used. What he spotted, such as an arrow or a hand as a hero to pick with, choices made by walking through a door, and a diagonal course that loops through the wrap, became sections of chapter 17 of The Ultimate Owner’s Guide.',
+        url: 'https://archive.org/search?query=subject%3A%22Game-Maker+games%22',
+      },
+      {
+        name: 'Hex-edited players',
+        license: 'Ideas described in this project’s own words; nothing copied',
+        by: 'A-J Games: Builder, whose player has its menu words blanked, and the unfinished Rōdïp: Rover of the Deep, whose player renames Hitpoints and Lives to Energy and Failsafes; and Acord Games, whose shared player asks for every file under a renamed extension (.z0g, .z0n…)',
+        what: 'These games led this project to map every word Game-Maker’s DOS player shows and where it sits in the file: The Ultimate Owner’s Guide’s “Customizing the player’s own words” and its table, and then the DOS player customizer: the integrator’s DOS player panel and the desk’s PLAYHACK, whose presets blank the menu as Builder did and rename the status words as Rōdïp did, and whose Files tab renames the extensions as Acord did.',
+        url: 'https://archive.org/details/game-maker_builder',
       },
       {
         name: 'Lewis’s DOSBox screenshot',

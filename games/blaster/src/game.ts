@@ -1,9 +1,31 @@
 // blaster.gam: the title scene, the ending, and every leg of every stage in order, each
 // one's gate linked to the launch pad of the next.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
-import { startOf, type Stage } from './stages/stage';
+import { legLetter, startOf, type Leg, type Stage } from './stages/stage';
 
-export const TITLE = 'VIRUS BLASTER';
+const TITLE = 'VIRUS BLASTER';
+
+/** The ship's flight program for each kind of leg (characters/ship.ts). */
+const SHIP_FILE: Record<Leg['kind'], string> = {
+  scroll: 'ship.chr',
+  down: 'shipdown.chr',
+  boss: 'shipfree.chr',
+  diag: 'shipdiag.chr',
+  side: 'shipside.chr',
+  left: 'shipleft.chr',
+  bus: 'shipbus.chr',
+};
+
+/**
+ * Which ways a leg's screen may scroll: strips up (turned ones down), diagonal legs up and
+ * right, side legs right (turned ones left), arenas and bus rides never.
+ */
+export const scrollOf = (l: Leg) => ({
+  up: l.kind === 'scroll' || l.kind === 'diag' ? 0xff : 0,
+  down: l.kind === 'down' ? 0xff : 0,
+  left: l.kind === 'left' ? 0xff : 0,
+  right: l.kind === 'diag' || l.kind === 'side' ? 0xff : 0,
+});
 
 export function buildGame(stages: Stage[], startAt?: string): Game {
   const game = newGame(TITLE);
@@ -29,24 +51,27 @@ export function buildGame(stages: Stage[], startAt?: string): Game {
   const legs = stages.flatMap((s) => s.legs.map((l) => ({ s, l })));
   legs.forEach(({ s, l }, i) => {
     const scene = emptyScene(ADVTYPE);
-    scene.desc = `${s.n}${'abcd'[s.legs.indexOf(l)]} ${l.title}`.slice(0, 19);
+    scene.desc = `${s.n}${legLetter(s, l) || '-'} ${l.title}`.slice(0, 19);
     scene.pos = { x: 24 + (i % 8) * 36, y: 90 + Math.floor(i / 8) * 50 };
     // Scrolling legs may only scroll up (the ship's drift carries the screen along, see
     // characters/ship.ts); boss arenas never scroll: one fixed screen.
-    scene.scroll = { ...scene.scroll, up: l.kind === 'scroll' ? 0xff : 0, down: 0, left: 0, right: 0 };
+    // The diagonal legs scroll up and right, wrapping round the map (see stages/diagLeg.ts);
+    // the side-scrolling legs only right (stages/sideLeg.ts).
+    scene.scroll = { ...scene.scroll, ...scrollOf(l) };
     const last = s.legs[s.legs.length - 1] === l;
     scene.files = [
-      `s${s.n}.pal`,
-      `${l.file}.map`,
+      l.pal ? `${l.palFile ?? l.file}.pal` : `s${s.n}.pal`,
+      `${l.mapFile ?? l.file}.map`,
       `${l.kitFile}.bbl`,
       `${l.kitFile}.mon`,
       `${l.kitFile}.mbl`,
-      l.kind === 'boss' ? 'shipfree.chr' : 'ship.chr',
+      SHIP_FILE[l.kind],
       'ship.cbl',
       'blaster.snd',
-      l.kind === 'boss' ? s.bossSong : s.song,
+      l.kind === 'boss' ? s.bossSong : l.kind === 'bus' ? 'bus.cmf' : s.song,
       `${l.file}.lst`,
-      last && legs[i + 1] ? 'warp.fli' : '',
+      // after a boss the cartoon boards the data bus; after a ride, it pulls into the next stage
+      last && legs[i + 1] ? 'warp.fli' : l.kind === 'bus' ? `${l.file}.fli` : '',
       ...new Array(9).fill(''),
     ];
     scene.links = Array.from({ length: MAXSCENELINKS }, () => ({ toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } }));

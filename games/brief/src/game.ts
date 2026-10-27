@@ -23,7 +23,7 @@ import type { CompiledHub } from './levels/hub';
 import type { CompiledWing } from './levels/wing';
 import { CHAPTERS } from './chapters';
 
-export const TITLE = 'KEEP IT BRIEF!';
+const TITLE = 'KEEP IT BRIEF!';
 export const GAM = 'brief.gam';
 
 function noLinks(): Link[] {
@@ -55,7 +55,7 @@ function scene(desc: string, f: string[], x: number, y: number): Scene {
   return s;
 }
 
-export interface SceneIds {
+interface SceneIds {
   room: number;
   stacks: number;
   card33: number;
