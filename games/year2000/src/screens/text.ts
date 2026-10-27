@@ -1,5 +1,6 @@
 // The text pages (shown 31 characters wide by Game-Maker) and README.TXT.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 
 function check(name: string, s: string, width = 30): string {
   for (const line of s.split('\n')) if (line.length > width) throw new Error(`${name}: line too long (${line.length}): ${line}`);
@@ -71,7 +72,7 @@ F5 Save   F6 Load   ESC Quit`,
 const CREDITS_TEXT = check(
   'credits',
   `IN THE YEAR 2000!
-Version 1.0 - 1993
+Version ${about.version} - 1993
 
 Game design, pictures, music
 and robot dog: Claude
@@ -151,7 +152,7 @@ export function readme(price: string): string {
   return wrapDoc(`IN THE YEAR 2000!
 A Future Adventure
 Sandbox Software, (C) 1993
-Version 1.0
+Version ${about.version}
 ==============================
 
 It's the year 2000! Cars fly. Robots mow the lawn. Dinner comes in a pill. The aliens next door are VERY friendly. And there's a phone booth on every single corner, because every phone booth is a Teleport-A-Phone now - only 25 cents a call.

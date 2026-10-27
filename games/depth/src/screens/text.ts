@@ -1,6 +1,7 @@
 // The words: text pages shown over frosted glass (30 columns, 16 lines a page) and the
 // readme on the disk.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 
 const page = (lines: string[], pages = 1) => {
   for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
@@ -160,7 +161,7 @@ export function readme(price: string): string {
   return `
     D E P T H
     P E R C E P T I O N
-    Version 1.0 - March 1996
+    Version ${about.version} - March 1996
     (c) 1996 Sandbox Software
 
 The render of the century was

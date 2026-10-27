@@ -4,6 +4,7 @@
   "company": "Sandbox Software",
   "year": 1995,
   "price": "$15",
+  "version": "1.0",
   "blurb": "Opening night at the Paragon Theatre, 1936: the star dies on stage in Act III, stabbed with a trick dagger that wasn't. Inspector Ada Penn has until dawn to search the empty theater, question five suspects and name the killer.",
   "exe": "FINAL.EXE",
   "sameEverySide": ["paragon.mon#2"],

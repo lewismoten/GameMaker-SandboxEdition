@@ -1,6 +1,7 @@
 // The words: text pages Game-Maker writes over the cream panels (30 columns, 16 lines a
 // page), the level cards, and the readme on the disk.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 
 /** Pads a page to 16 lines and checks the width. */
 const page = (lines: string[]) => {
@@ -127,7 +128,7 @@ const CREDITS_TEXT = pages(
   [
     "TEDDY'S LITTLE BIGGER",
     'ADVENTURE',
-    'Version 1.0, 1996',
+    `Version ${about.version}, 1996`,
     '',
     'Design, art, music and',
     'programming: Claude',
@@ -263,7 +264,7 @@ const README_WIDTH = 31;
 function readme(price: string): string {
   const out = `
 TEDDY'S LITTLE BIGGER ADVENTURE
-     Version 1.0 - 1996
+     Version ${about.version} - 1996
   (c) 1996 Sandbox Software
 
 The morning after the

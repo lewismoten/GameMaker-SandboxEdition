@@ -13,6 +13,7 @@ import { drawModule, drawShard } from '../blocks/items';
 import { buildPalette, hsl, type RGB, type Role, type Theme, S, WHITE, shared } from '../art/palette';
 import { drawDiver, drawPod, drawRover } from '../sprites/vehicles';
 import { MODULES, SHARDS } from '../ids';
+import about from '../../about.json';
 import { SECTORS, type World } from '../universe';
 
 // ------------------------------------------------------------------ the screen palette
@@ -145,7 +146,7 @@ export function titleScreen(): Uint8Array {
   for (let i = 0; i < 70; i++) c.set(70 + i, 132 + i * 0.12, C('orange')[Math.min(7, Math.floor(i / 9))]);
   c.sprite(drawPod('r', { flicker: 2, glow: 1 }), 140, 128, 3);
   c.center(180, '(C) 1995 SANDBOX SOFTWARE', C('gray')[5], { shadow: 0 });
-  c.center(190, 'SHAREWARE VERSION 1.0', C('gray')[3], { shadow: 0 });
+  c.center(190, `SHAREWARE VERSION ${about.version}`, C('gray')[3], { shadow: 0 });
   return gif(c);
 }
 

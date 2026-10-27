@@ -3,6 +3,7 @@
 // "There's a Fly in the Room (And It's Winning)", recorded as "A Fly Named Carl", by The Bard of
 // Bizarre.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 import { page } from '../../../kit/screenText';
 
 export const AUTHOR = 'The Bard of Bizarre';
@@ -173,7 +174,7 @@ export function readme(price: string): string {
   return `
     CARL
     A FLY NAMED CARL
-    Version 1.0 - June 1995
+    Version ${about.version} - June 1995
     by The Bard of Bizarre
 
 "There's a fly in the room

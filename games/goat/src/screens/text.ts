@@ -2,6 +2,7 @@
 // lines a page), the level cards' lines (from the song), and the disk's README.TXT.
 // The lyrics are from "Third Goat from the Left" by The Bard of Bizarre.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 import { page } from '../../../kit/screenText';
 
 const TITLE = 'THIRD GOAT FROM THE LEFT';
@@ -158,7 +159,7 @@ export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 export function readme(price: string): string {
   return `
     THIRD GOAT FROM THE LEFT
-    Version 1.0 - December 1995
+    Version ${about.version} - December 1995
     by The Bard of Bizarre
 
 "Third goat from the left -

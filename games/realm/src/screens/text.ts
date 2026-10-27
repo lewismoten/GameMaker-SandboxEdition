@@ -1,6 +1,7 @@
 // The words on the disk: the instructions and credits (Game-Maker text pages, 30 columns and
 // 16 lines a page) and README.TXT.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 
 const page = (lines: string[]) => {
   for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
@@ -112,7 +113,7 @@ export function readme(price: string): string {
   return `
     QUEST FOR THE ROUND TUIT
     A Realm of Procrastia Adventure
-    Version 1.0 - Spring 1996
+    Version ${about.version} - Spring 1996
     (c) 1996 Sandbox Software
 
 In the Kingdom of Procrastia

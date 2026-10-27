@@ -2,6 +2,7 @@
 // page), the level cards' lines (from the song), and the disk's README.TXT. The lyrics are from
 // "Certified Rat Tickler" by The Bard of Bizarre.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 import { NEEDED } from '../ids';
 import { page } from '../../../kit/screenText';
 
@@ -166,7 +167,7 @@ export const CREDITS = withCreditPage(CREDITS_TEXT);
 export function readme(price: string): string {
   return `
     CERTIFIED RAT TICKLER
-    Version 1.0 - June 1995
+    Version ${about.version} - June 1995
     by The Bard of Bizarre
 
 "I am a certified rat tickler.

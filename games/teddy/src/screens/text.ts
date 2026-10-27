@@ -1,6 +1,7 @@
 // The words: text pages Game-Maker writes over the cream panels (30 columns, 16 lines a
 // page), the level cards, and the readme on the disk.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 
 /** Pads a page to 16 lines and checks the width. */
 const page = (lines: string[]) => {
@@ -128,7 +129,7 @@ export const HELP = pages(
 const CREDITS_TEXT = pages(
   [
     "TEDDY'S LITTLE BIG ADVENTURE",
-    'Version 1.0, 1995',
+    `Version ${about.version}, 1995`,
     '',
     'Design, art, music and',
     'programming: Claude',
@@ -235,7 +236,7 @@ const README_WIDTH = 31;
 function readme(price: string): string {
   const out = `
  TEDDY'S LITTLE BIG ADVENTURE
-     Version 1.0 - 1995
+     Version ${about.version} - 1995
   (c) 1995 Sandbox Software
 
 Teddy is a Pembroke Welsh Corgi

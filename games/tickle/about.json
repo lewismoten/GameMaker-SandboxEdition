@@ -5,6 +5,7 @@
   "series": "bizarre",
   "year": 1995,
   "price": "$5",
+  "version": "1.0",
   "blurb": "Doc Leo, PhD (Comedic Science), has a brand new certificate in rat tickling and no rats yet. Pin first, then tickle, or a rat will never read it as a laugh: through a night classroom, a lab full of Tesla coils, the sewers under the city and up a tower in a storm, every rat you tickle chirps at 50 kHz and joins the laughing carpet, and each door opens only for a carpet big enough. No rats are harmed. Shareware from The Sofa BBS, based on the song by The Bard of Bizarre (lyrics shaped by ChatGPT from Lewis Moten's prompts; no recording came with the song, so its music was composed for the game by Claude Opus 5.5; title, cover and certificate art drawn for the game by Claude Opus 5.5).",
   "exe": "TICKLE.EXE",
   "sound": "sb",

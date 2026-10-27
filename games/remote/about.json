@@ -5,6 +5,7 @@
   "series": "bizarre",
   "year": 1995,
   "price": "$5",
+  "version": "1.0",
   "blurb": "Friday night, snacks, the tape in the VCR, and the remote is GONE. Lift the couch cushions, lift the dog, look under the cat, ask the Voice-O-Matic 2000 (it orders a pizza), open the fridge, find Mom's number on the fridge magnets and call her (\"Check your hand\"), fall into the void between the cushions where every lost thing goes for ten pennies and the pay TV home, and ride out the living room ride. Shareware from The Sofa BBS, based on the song by The Bard of Bizarre about a mundane thing nobody should care about (lyrics shaped by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); title and cover art drawn for the game by Claude Opus 5.5).",
   "exe": "REMOTE.EXE",
   "sound": "sb",

@@ -5,6 +5,7 @@
   "series": "bizarre",
   "year": 1995,
   "price": "$5",
+  "version": "1.0",
   "blurb": "You are Loaf #13, the one nobody picked when the five thousand were fed. Roll out of your basket and across the hillside past hungry hands, big feet and flying fish, climb the wicker wasteland for holy crumbs, help gather up twelve baskets full at dusk, and ride home in the hands of a child. Shareware from The Sofa BBS, based on the gospel slow jam by The Bard of Bizarre, one of his gospel oddities (lyrics shaped by ChatGPT from Lewis Moten's prompt; music made with Riffusion (now Google Flow Music); title and cover art drawn for the game by Claude Opus 5.5).",
   "exe": "LOAF.EXE",
   "sound": "sb",

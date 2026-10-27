@@ -2,6 +2,7 @@
 // page), the level cards' lines (from the song), and the disk's README.TXT. The lyrics are from
 // "Where's the Remote?" by The Bard of Bizarre, word for word (wrapped to fit the columns).
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 import { DIGITS_NEEDED, PENNIES_NEEDED, SPOTS_NEEDED } from '../ids';
 import { page } from '../../../kit/screenText';
 
@@ -225,7 +226,7 @@ export const CREDITS = withCreditPage([...SONG_PAGES, CREDITS_TEXT].join('\n'), 
 export function readme(price: string): string {
   return `
     WHERE'S THE REMOTE?!
-    Version 1.0 - June 1995
+    Version ${about.version} - June 1995
     by The Bard of Bizarre
 
 "Where's the remote?!

@@ -4,6 +4,7 @@
 // with a speech recognizer against ChatGPT's last draft, "Bravery Badge & the Exit Sign"),
 // wrapped to fit the columns.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 import { BATTERIES_NEEDED, SORRY_NEEDED, SWORD_PRICE } from '../ids';
 import { page } from '../../../kit/screenText';
 
@@ -252,7 +253,7 @@ export const CREDITS = withCreditPage([...SONG_PAGES, CREDITS_TEXT].join('\n'), 
 export function readme(price: string): string {
   return `
     I SCREAMED, SHE SMIRKED
-    Version 1.0 - October 1995
+    Version ${about.version} - October 1995
     by The Bard of Bizarre
 
 "She's eight, and I'm afraid,

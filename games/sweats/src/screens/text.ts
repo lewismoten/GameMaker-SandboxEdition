@@ -2,6 +2,7 @@
 // page), and the disk's README.TXT. The monologues are "Shakespeare in Sweatpants" by The Bard
 // of Bizarre.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 import { page } from '../../../kit/screenText';
 
 /**
@@ -152,7 +153,7 @@ export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 export function readme(price: string): string {
   return `
     SHAKESPEARE IN SWEATPANTS
-    Version 1.0 - Dec 1995
+    Version ${about.version} - Dec 1995
     by The Bard of Bizarre
 
 "It wasn't just a pen.

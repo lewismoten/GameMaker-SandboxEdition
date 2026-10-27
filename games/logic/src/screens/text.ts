@@ -2,6 +2,7 @@
 // .TXT pages 31 characters wide and 16 lines a page. Lines are wrapped to 30: a line of
 // exactly 31 leaves its line break for the next read, which shows as an extra blank line.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 
 /** Wraps paragraphs to `width` columns; lines starting with spaces keep their indent. */
 function wrap(text: string, width = 30): string {
@@ -169,7 +170,7 @@ Try again! Think before you roll.`,
 
 export function readme(price: string): string {
   return wrap(`OHM SWEET OHM
-Version 1.0 - Shareware
+Version ${about.version} - Shareware
 (c) 1995 Sandbox Software
 
 A logic puzzle game for IBM PC compatibles with VGA. Sound Blaster recommended.
