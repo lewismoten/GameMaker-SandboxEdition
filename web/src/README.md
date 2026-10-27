@@ -95,7 +95,8 @@ modules are in [`../test`](../test).
   - `voices.ts`: the people on the other end of the desk's phone line, in the browser's speech.
 - [`gfx/`](gfx): the mode 13h screen (`screen.ts`) and 8×8 fonts (`font8x8.ts`; all of CP437 in
   `cp437Glyphs.ts`), and pictures drawn from a game's own maps: `levelPicture.ts`,
-  `titlePicture.ts`, `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's).
+  `titlePicture.ts`, `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's), and
+  screenshots that are a moment of play (`shotFrame.ts`, shown by `frameShot.ts`).
 - [`input/`](input): keyboard scan codes (`scancodes.ts`, `keyboard.ts`), arrow chords and Mac
   keys for keyboards without a keypad (`chords.ts`, `macKeys.ts`), keys pressed with the mouse or
   a finger (`virtualKeys.ts`), the gamepad (`gamepad.ts`), and the desk's game pad and ball mouse
@@ -818,6 +819,10 @@ saved with `editor/core/ui.ts` `download`.
   - `levelViews.ts` (with `levelViewsScan.ts` and `levelViewsPlay.ts`; slow, so give it the game ids
     that changed) their `levelViews.json`;
   - `castHidden.ts` (with `castHiddenScan.ts`) the cast page's `hidden.json`;
+  - `shotFrames.ts` (with `shotFramesDraw.ts`) the moments of play that box shots and manual
+    shots ask for (`["clouds.map", 0, 0, { "tick": 840 }]`, `<shot … tick="840">`;
+    `gfx/shotFrame.ts`), replayed from each game's walkthrough (`walkthrough/frames.ts`) into
+    `../public/frames/`; give it the game ids that changed;
   - `gameMakerArchive.ts` the Shareware Shelf's `gameMakerArchive.json`;
   - `videoTranscript.ts` a Library video's `public/videos/<id>.transcript.json`, from its YouTube
     automatic captions (`yt-dlp --skip-download --write-auto-subs --sub-langs en-orig <url>`, then
