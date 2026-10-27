@@ -15,7 +15,7 @@ This fork is kept by Lewis Moten, who shoveled Fort Ashby's driveways in the win
 to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: see
 [Lewis and Game-Maker](docs/history.md).
 
-![The 1994 desk: a PC showing the Snowbound title screen, a shelf of game boxes, a disk box, a night window with the moon, a wristwatch clock and a door](web/public/og-image.png)
+![The 1994 desk by day: the PC showing Game-Maker's Sample title screen, the Doc Leo poster and shelves of Sandbox boxes on the wall, the disk box with its toy whistle, the GRAVITAS game pad on the keyboard tray, a snowy window, a wristwatch clock and a door](web/public/og-image.png)
 
 ## What's in it
 
@@ -90,12 +90,15 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
 
 | | |
 | --- | --- |
-| ![Today's web home page with the Sandbox tab open: twelve new games, and Snowbound's demo playing in the side panel](docs/screenshots/web-home-sandbox.png) | ![The map editor with Snowbound open on its Gale Street neighborhood, the file list on the left and block and monster pickers on the right](docs/screenshots/web-editor-snowbound.png) |
-| The home page's Sandbox games | Editing Snowbound's neighborhood map |
+| ![Today's web home page with the Sandbox tab open: thirteen new games, and Snowbound's demo playing in the side panel](docs/screenshots/web-home-sandbox.png) | ![The map editor with a copy of Snowbound open on its LaVale Mall map, the file list on the left and block and monster pickers on the right](docs/screenshots/web-editor-snowbound.png) |
+| The home page's Sandbox games | Editing a copy of Snowbound's LaVale Mall map |
 | ![Snowbound being played: the kid with his shovel on a snowy street, under the level's "1. Gale Street" briefing](docs/screenshots/web-play.png) | ![The Bizarre tab: twelve games from comic songs, with Third Goat from the Left's demo in the side panel](docs/screenshots/web-bizarre.png) |
 | Playing Snowbound | The Bizarre games |
 | ![Game-Maker 3.0's DOS menus, rebuilt from its source and running in the browser: the red and blue menu bar, with the Map Maker's menu open (By Gregory Stone, Copyright 1994) over Snowbound's disk](docs/screenshots/dos-gm-mapmaker.png) | ![Game-Maker's copy check in the browser: it asks for a word from the Owner's Guide, which is open beside it with the paragraph marked, and the registration card on the right](docs/screenshots/dos-gm-copycheck.png) |
 | Game-Maker's DOS menus, rebuilt from its source | Its copy check, with the Owner's Guide beside it |
+
+[A tour of the web editor](docs/editor.md) has a picture of each of its editors: maps, blocks,
+monsters, the hero, palettes, music, sounds, animations, the Integrator, the Level check and more.
 
 ## Run it yourself
 
@@ -150,7 +153,7 @@ compare, about 20 minutes) yourself before committing a game.
 | --- | --- |
 | [`web/`](web) | The browser app. [web/README.md](web/README.md) explains it; [web/src/README.md](web/src/README.md) maps the source. |
 | [`games/`](games) | The Sandbox Software and Bard of Bizarre games, built in code, and the shared kit that builds and play-tests them. See [games/README.md](games/README.md) and [games/kit/README.md](games/kit/README.md). |
-| [`docs/`](docs) | For site owners: [opening a game from your own site](docs/embed.md) and [the web player](docs/web-player.md); and [Lewis and Game-Maker](docs/history.md), how the project came about. |
+| [`docs/`](docs) | [A tour of the web editor](docs/editor.md); for site owners, [opening a game from your own site](docs/embed.md) and [the web player](docs/web-player.md); and [Lewis and Game-Maker](docs/history.md), how the project came about. |
 | [`mac/`](mac), [`win/`](win), [`linux/`](linux) | The small native players that a downloaded game runs in, and how they are built. See [mac/README.md](mac/README.md), [win/README.md](win/README.md) and [linux/README.md](linux/README.md). |
 | `cd/` | The original Game-Maker CD image, with its sample and shareware games. |
 | [`code/`](code) | The original DOS C/C++ source. See [code/README.md](code/README.md). |
