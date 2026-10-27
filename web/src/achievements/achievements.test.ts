@@ -179,7 +179,7 @@ describe('where they fire', () => {
           /\b(?:unlockAchievement|achieve|progress|tally)\('([\w-]+)'/g,
           /\{ id: '([\w-]+)'(?:, title|\s*\})/g,
           /detail: \{ id: '([\w-]+)'(?:, item: \w+)? \}/g,
-          /^\s*\w+: '(desk-[\w-]+)',$/gm, // DESK_PROGRAMS
+          /^\s*(?!id:)\w+: '(desk-[\w-]+)',$/gm, // DESK_PROGRAMS (not the guided tour's desk-… step ids)
         ];
         for (const re of res) for (const m of text.matchAll(re)) fired.add(m[1]);
       }
