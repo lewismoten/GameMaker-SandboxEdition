@@ -58,7 +58,8 @@ export function tourButton(look = 'topbar-gear'): HTMLElement {
       role: 'menuitem',
       tabindex: '-1',
       onclick: () => watchWholeTour(true),
-      title: 'For screen recordings: no pointer or buttons, a title card for each chapter. Space pauses, Esc ends.',
+      title:
+        'Records this tab as the tour plays (the browser asks to share it): each chapter downloads as its own video. No pointer or buttons; Space pauses, Esc ends.',
     },
     'Record the whole tour',
   );
