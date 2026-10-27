@@ -53,7 +53,8 @@ Making the files:
   straight to black): `encodeFliFadeOut` adds about half a second of palette-only frames to a plain frame list (a Reel
   has `fadeOut`).
 - `fliClips.ts` — a long intro cut into clips of about 4 seconds for its slide list (`fliClips`, `clipEntries`; `clipLists`
-  does it on a whole disk, for every list that plays the cartoon).
+  does it on a whole disk, for every list that plays the cartoon; `clipEveryList` does it for every list on the disk, so the
+  endings, game overs and cut scenes are cut too).
   PLAYGAME plays a whole FLI before it reads Esc, so a list of short clips lets the player skip within a few seconds.
   Cuts fall where the palette holds and least changes; the clips play exactly the frames of the whole one
   (`web/src/formats/fliClips.test.ts`).
@@ -95,9 +96,9 @@ Checking the games:
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
   chapter marks it was recorded with, and cut off no clip.
 - `player.ts` / `playerCheck.ts` — a game's DOS player look, `games/<id>/player.json`: the `{ "base": "xferplay-3.00",
-  "patches": { … } }` record a project keeps in its companion (`web/src/dosPlayer/playerRecord.ts`; ids and limits in
+"patches": { … } }` record a project keeps in its companion (`web/src/dosPlayer/playerRecord.ts`; ids and limits in
   `web/src/dosPlayer/patchTable.ts`). The site shows it wherever the game plays or ships (`web/src/dosPlayer/
-  catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never goes on `disk/`, so Game-Maker's own
+catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never goes on `disk/`, so Game-Maker's own
   PLAYGAME still shows the stock words (keep in-game text that names an F2 label neutral: "F2 counts your sugar").
   Words, colors, frames and positions only: no timing or F-key patch (they would change play, and the bots and
   walkthroughs play without the look) and no renamed extensions. `npx vite-node ../games/kit/playerCheck.ts [<id>...]`
