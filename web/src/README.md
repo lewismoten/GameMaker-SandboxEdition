@@ -292,8 +292,12 @@ modules are in [`../test`](../test).
 
 ### The 1994 desk and its PC
 
-- [`desk/`](desk): the 1994 desk. `desk.ts` lays out the scene (`stage.ts` scales it to the
-  window); `overlayFocus.ts` moves the keyboard into an overlay and back.
+- [`desk/`](desk): the 1994 desk. `desk.ts` puts it together and works it: the disks, the
+  boxes, the catalog and what the address asks for (`deskRestore.ts`). `deskScene.ts` draws the
+  scene (`stage.ts` scales it to the window); `deskPc.ts` switches the PC on and off and loads its
+  insides; `deskShelf.ts` fills the shelf, `deskGmBox.ts` opens the Game-Maker box, `deskLook.ts`
+  points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned.
+  `overlayFocus.ts` moves the keyboard into an overlay and back.
   - `pc/`: the case (`caseParts.ts`), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
     the colors of the picture on the tube), the keyboard (`keyboard.ts`) and the keyboard tray
     (`tray.ts`) with its mouse pad (its print, `padPrints.ts`, chosen in `padChooser.ts` from the
@@ -309,7 +313,8 @@ modules are in [`../test`](../test).
     `boxSeals.ts`, shelf wear (`boxWear.ts`), a glow under the black light (`boxUv.ts`) and a
     painted cover (`covers/<id>.ts`, with the brushes in `covers/paint.ts`); what came in it is
     `gameBoxContents.ts`, `boxList.ts` and `printContext.ts`. `gmBox.ts` is the Game-Maker box.
-  - `disks/`: the disk box (`diskBox.ts`) and the disks' labels (`diskLabel.ts`, RSD's own in
+  - `disks/`: the disk box (`diskBox.ts`; closed on the desk, `diskBoxFill.ts`), the buttons for
+    the disk in drive A: (`driveActions.ts`) and the disks' labels (`diskLabel.ts`, RSD's own in
     `rsdLabel.ts`).
   - `mug/`: the BBS mug (`mug.ts`, drawn in 3D by `mug3d.ts`, turned in `mugViewer.ts`). Its
     pictures (`mugArt.ts`) are badges: each Sandbox game's cut from its title screen
