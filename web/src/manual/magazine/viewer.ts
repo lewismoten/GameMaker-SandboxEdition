@@ -3,7 +3,8 @@
 // the arrows, the keys or a swipe of the contents menu; a Zoom to read one page at full width;
 // and printing a page, a spread or the whole issue on letter paper. Every page is laid out at
 // one size, a letter sheet at 96 CSS pixels to the inch, and scaled whole to fit the window,
-// so its lines break the same at any window size and in print. Its links open the site's
+// so its lines break the same at any window size and in print. Scroll (readView.ts) stacks
+// every page in one column instead, drawn as they near the view (scrollPages.ts). Its links open the site's
 // games, boxes and pages (goRun.ts). On the web it fills the page at #/magazine; on the desk
 // it opens over the desk (openMagazine).
 import './mag.css';
@@ -19,6 +20,8 @@ import { runGo, type DeskHooks } from './goRun';
 import type { Where } from './go';
 import type { Issue, PlacedPage } from './types';
 import { tally, unlockAchievement } from '../../achievements';
+import { readView, viewToggle } from '../readView';
+import { scrollPages, type ScrollPages } from '../scrollPages';
 
 interface Loaded {
   issue: Issue;
@@ -60,6 +63,8 @@ const PAGE_W = 816;
 const NARROW = 640;
 /** At least this wide for two pages side by side. */
 const TWO = 900;
+/** The widest a page is shown in the Scroll view. */
+const SCROLL_MOST = 900;
 
 /** Builds the viewer in `host`; returns its dispose. */
 export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void {
@@ -67,6 +72,11 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   let entries = new Map<string, CatalogEntry>();
   let at = 0;
   let zoom = false;
+  let view = readView();
+  const toggle = viewToggle(view, (v) => {
+    view = v;
+    show();
+  });
   const stage = h('div', { class: 'mag-stage', tabindex: 0, role: 'region', 'aria-label': `${MAG.name}, the pages` });
   const counter = h('span', { class: 'mag-counter', 'aria-live': 'polite' });
   const prev = h('button', { type: 'button', class: 'mag-turn', 'aria-label': 'Previous page', onclick: () => go(-1) }, '◀');
@@ -98,6 +108,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
       prev,
       counter,
       next,
+      toggle.el,
       zoomBtn,
       h('div', { class: 'mag-print-wrap' }, printBtn, printMenu),
       closeBtn,
@@ -109,15 +120,91 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
 
   const env: RenderEnv = { where: o.where, entry: (id) => entries.get(id) };
   const narrow = () => stage.clientWidth < NARROW;
-  const two = () => !zoom && !narrow() && stage.clientWidth >= TWO;
+  const two = () => view === 'pages' && !zoom && !narrow() && stage.clientWidth >= TWO;
   const pageAt = (key?: string) => {
     if (!issue || !key) return -1;
     const byId = issue.pages.findIndex((pg) => pg.id === key);
     return byId >= 0 ? byId : /^\d+$/.test(key) ? Math.min(issue.pages.length - 1, Math.max(0, Number(key) - 1)) : -1;
   };
 
+  // ---- Scroll: every page in one column
+  let column: (ScrollPages & { flow: boolean; w: number }) | undefined;
+  const dropColumn = () => {
+    if (!column) return;
+    column.dispose();
+    column = undefined;
+    stage.scrollTop = 0;
+  };
+  const counterFor = (shown: number[]) => {
+    const total = issue!.pages.length;
+    const [first, last] = [issue!.pages[shown[0]], issue!.pages[shown.at(-1)!]];
+    return narrow()
+      ? `${first.folio} / ${total}`
+      : first.folio === 1
+        ? `Cover · ${total} pages`
+        : first.kind === 'back'
+          ? 'Back cover'
+          : shown.length === 2
+            ? `Pages ${first.folio}–${last.folio} of ${total}`
+            : `Page ${first.folio} of ${total}`;
+  };
+  // the page in view (or turned to), as the bar, the contents and the address tell it
+  const reading = (shown: number[]) => {
+    const total = issue!.pages.length;
+    for (const i of shown) tally('mag-features', issue!.pages[i].section);
+    if (shown.includes(total - 1)) unlockAchievement('mag-back');
+    counter.textContent = counterFor(shown);
+    prev.disabled = at === 0;
+    next.disabled = shown.at(-1) === total - 1;
+    for (const li of tocList.querySelectorAll<HTMLElement>('li'))
+      li.querySelector('button')?.setAttribute('aria-current', String(shown.some((i) => issue!.pages[i].section === li.dataset.section)));
+    const first = issue!.pages[shown[0]];
+    if (o.where === 'web') setHashParams({ page: first.folio === 1 ? undefined : first.folio }, ['magazine']);
+  };
+  const scrollWidth = () => Math.max(160, narrow() ? stage.clientWidth : Math.min(stage.clientWidth - 24, SCROLL_MOST));
+  const fitColumn = (c: NonNullable<typeof column>, w: number) => {
+    c.w = w;
+    c.el.style.setProperty('--rv-w', `${w}px`);
+    c.el.style.setProperty('--pw', `${w}px`);
+    c.el.style.setProperty('--s', (w / PAGE_W).toFixed(4));
+  };
+  const showScroll = () => {
+    const pages = issue!.pages;
+    const flow = narrow();
+    const w = scrollWidth();
+    root.classList.toggle('flow', flow);
+    root.classList.toggle('narrow', flow);
+    root.classList.remove('zoomed');
+    zoomBtn.hidden = true;
+    // a flowing page's height follows its width: drawn afresh when the width changes
+    if (column && (column.flow !== flow || (flow && column.w !== w))) dropColumn();
+    if (!column) {
+      column = Object.assign(
+        scrollPages({
+          root: stage,
+          count: pages.length,
+          ratio: () => 11 / 8.5,
+          page: (i) => h('div', { class: 'mag-sheet' }, h('div', { class: 'mag-paper' }, renderPage(pages[i], env).el)),
+          label: (i) => (i === 0 ? 'Cover' : pages[i].kind === 'back' ? 'Back cover' : `Page ${pages[i].folio}`),
+          showing: (i) => ((at = i), reading([i])),
+        }),
+        { flow, w },
+      );
+      column.el.classList.add('mag-column');
+      stage.replaceChildren(column.el);
+      fitColumn(column, w);
+      column.scrollTo(at);
+    } else fitColumn(column, w);
+    reading([at]);
+  };
+
   const show = () => {
     if (!issue) return;
+    toggle.set(view);
+    root.classList.toggle('scrolled', view === 'scroll');
+    if (view === 'scroll') return showScroll();
+    dropColumn();
+    zoomBtn.hidden = false;
     const total = issue.pages.length;
     const isTwo = two();
     const shown = spreadAt(at, total, isTwo);
@@ -138,34 +225,20 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     for (const i of shown) spread.append(h('div', { class: 'mag-sheet' }, h('div', { class: 'mag-paper' }, renderPage(issue.pages[i], env).el)));
     stage.replaceChildren(spread);
     stage.scrollTop = 0;
-    for (const i of shown) tally('mag-features', issue.pages[i].section);
-    if (shown.includes(total - 1)) unlockAchievement('mag-back');
-    const [first, last] = [issue.pages[shown[0]], issue.pages[shown.at(-1)!]];
-    counter.textContent = narrow()
-      ? `${first.folio} / ${total}`
-      : first.folio === 1
-        ? `Cover · ${total} pages`
-        : first.kind === 'back'
-          ? 'Back cover'
-          : shown.length === 2
-            ? `Pages ${first.folio}–${last.folio} of ${total}`
-            : `Page ${first.folio} of ${total}`;
-    prev.disabled = at === 0;
-    next.disabled = shown.at(-1) === total - 1;
-    for (const li of tocList.querySelectorAll<HTMLElement>('li'))
-      li.querySelector('button')?.setAttribute('aria-current', String(shown.some((i) => issue!.pages[i].section === li.dataset.section)));
-    if (o.where === 'web') setHashParams({ page: first.folio === 1 ? undefined : first.folio }, ['magazine']);
+    reading(shown);
   };
   const go = (dir: 1 | -1) => {
     if (!issue) return;
     at = stepSpread(at, issue.pages.length, two(), dir);
-    show();
+    if (column) (column.scrollTo(at), reading([at]));
+    else show();
   };
   const turnTo = (key: string) => {
     const i = pageAt(key);
     if (i < 0) return;
     at = i;
-    show();
+    if (column) (column.scrollTo(at), reading([at]));
+    else show();
     stage.focus({ preventScroll: true });
   };
   const setZoom = (on: boolean) => {
@@ -228,8 +301,8 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
       else if (toc.open) toc.open = false;
       else if (o.onClose) o.onClose();
       else return;
-    } else if (e.key === 'ArrowRight' || (e.key === 'PageDown' && !zoom)) go(1);
-    else if (e.key === 'ArrowLeft' || (e.key === 'PageUp' && !zoom)) go(-1);
+    } else if (e.key === 'ArrowRight' || (e.key === 'PageDown' && !zoom && !column)) go(1);
+    else if (e.key === 'ArrowLeft' || (e.key === 'PageUp' && !zoom && !column)) go(-1);
     else if (e.key === 'Home' && !(e.target instanceof HTMLInputElement)) turnTo('1');
     else if (e.key === 'End') turnTo(String(issue?.pages.length ?? 1));
     else return;
@@ -257,6 +330,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   });
 
   return () => {
+    dropColumn();
     window.removeEventListener('keydown', onKey, true);
     window.removeEventListener('resize', onResize);
     window.removeEventListener('afterprint', afterPrint);

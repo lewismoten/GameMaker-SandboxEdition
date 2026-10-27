@@ -258,6 +258,12 @@
   .mag-counter {
     min-width: 0;
     flex: 1;
+    white-space: nowrap;
+  }
+
+  /* a phone scrolls the pages: the bar keeps to one row without Back and Next */
+  .scrolled .mag-turn {
+    display: none;
   }
 
   .mag-stage {
@@ -1601,4 +1607,10 @@
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* ---- the Scroll view (readView.ts): every page in one column ---------------------------- */
+.mag-column .rv-folio {
+  color: var(--muted, #9aa2b8);
+  opacity: 1;
 }
