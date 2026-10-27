@@ -11,6 +11,7 @@ import { closeMenu, findTarget, menuOpen, revealer, visible, waitFor } from './f
 import { offStage, placeBubble, standBy, type Point, type Rect } from './place';
 import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type TourStep } from './steps';
 import { TourSound } from './tourSound';
+import { hushDemos } from '../media/demoAudio';
 import { pageOf } from './tourPages';
 import type { Sprite } from '../cast/castStageDraw';
 
@@ -79,6 +80,8 @@ export class Tour {
     now.tour?.end();
     now.tour = this;
     document.documentElement.classList.toggle('tour-recording', !!this.opts.record);
+    // the game previews keep playing, but quietly: the guides do the talking
+    hushDemos(true);
     this.layer.append(this.ring, this.bubble);
     document.body.append(this.layer, this.bar);
     this.showSound();
@@ -449,6 +452,7 @@ export class Tour {
     this.opened.clear();
     this.clearHosts();
     this.sound.dispose();
+    hushDemos(false);
     this.card?.remove();
     this.layer.remove();
     this.bar.remove();
