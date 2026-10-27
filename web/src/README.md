@@ -41,7 +41,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 - [`play.ts`](play.ts): the play page's entry. [`dosPage/`](dosPage) is `dos.html`'s.
 - [`urlState.ts`](urlState.ts): what the address bar keeps. [`viewSwitch.ts`](viewSwitch.ts): the
   Desk | DOS | Web switch.
-- [`settingsMenu.ts`](settingsMenu.ts): today's web header's ⚙ Settings menu (play offline, the source, the theme, AI setup), its items also in the narrow ⋯ menu.
+- [`settingsMenu.ts`](settingsMenu.ts): today's web header's ⚙ Settings menu (play offline, the source, the theme, AI setup, back up / restore), its items also in the narrow ⋯ menu.
 - [`theme.ts`](theme.ts): light or dark for today's web, as the Settings menu's Theme item. [`edition.ts`](edition.ts): the fork's
   name, in one place. [`pageToc.ts`](pageToc.ts): "On this page" beside a reading page (the Mac,
   Windows and Linux pages, the cast, credits and achievements), or a row of its section links

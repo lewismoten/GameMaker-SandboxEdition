@@ -1,7 +1,7 @@
-// Today's web header: the ⚙ Settings menu (playing offline, the source code, the theme and AI
-// setup), and the same items for the ⋯ menu on narrow windows (main.ts). The Offline dialog and
-// AI setup load when chosen.
-import { h } from './editor/core/ui';
+// Today's web header: the ⚙ Settings menu (playing offline, the source code, the theme, AI setup
+// and back up / restore), and the same items for the ⋯ menu on narrow windows (main.ts). The
+// Offline dialog, AI setup and back up / restore load when chosen.
+import { h, toast } from './editor/core/ui';
 import { themeItem } from './theme';
 
 const SOURCE_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition';
@@ -11,6 +11,17 @@ const openOffline = () => void import('./offline/offlineDialog').then((m) => m.o
 
 /** AI setup for the assistant (assistant/chat/settingsDialog.ts). */
 const openAi = () => void import('./assistant/chat/settingsDialog').then((m) => m.openAiSetup());
+
+/**
+ * Back up / restore (backup/openDataBackup.ts, being built separately). A glob, so the menu
+ * works (and says so) before that module exists, and it loads only when chosen once it does.
+ */
+const backupModule = import.meta.glob<{ openDataBackup(): unknown }>('./backup/openDataBackup.ts');
+const openBackup = () => {
+  const load = Object.values(backupModule)[0];
+  if (!load) return toast('Back up / restore is not ready yet.', 'error');
+  void load().then((m) => m.openDataBackup());
+};
 
 const icon = (s: string) => h('span', { 'aria-hidden': 'true' }, s);
 
@@ -26,6 +37,12 @@ export function settingsItems(attrs: Record<string, string> = {}): HTMLElement[]
     h('a', { ...attrs, href: SOURCE_URL, target: '_blank', rel: 'noopener' }, icon('</>'), ' Source on GitHub'),
     themeItem(attrs),
     h('button', { ...attrs, type: 'button', onclick: openAi, title: 'Set up your own AI (Ollama or OpenAI) for the Assistant' }, icon('✦'), ' AI setup…'),
+    h(
+      'button',
+      { ...attrs, type: 'button', onclick: openBackup, title: 'Save everything this browser keeps to a file, or bring it back from one' },
+      icon('💾'),
+      ' Back up / restore…',
+    ),
   ];
 }
 
