@@ -70,7 +70,7 @@ function fliPixels(bytes: Uint8Array | undefined): LevelPicture | undefined {
  * frame, or the slide a slide list holds longest (its title, after the logos); text pages
  * (.txt) draw over whatever is up, so they have none. Splash screens and blank pictures are left out.
  */
-function graphicPixels(files: FileSource, name: string, depth = 0): LevelPicture | undefined {
+export function graphicPixels(files: FileSource, name: string, depth = 0): LevelPicture | undefined {
   if (!name || SPLASH.test(name)) return undefined;
   const bytes = files.get(name);
   let pic: LevelPicture | undefined;
