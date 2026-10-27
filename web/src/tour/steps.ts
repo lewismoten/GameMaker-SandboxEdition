@@ -49,7 +49,21 @@ export const SOUNDS = {
   sparkle: 'teddy/sparkle',
   tada: 'teddy/tada',
 } as const;
-export type SoundId = keyof typeof SOUNDS;
+
+/**
+ * The real dogs: Lewis's recordings of Teddy and Gwinn, cut into short clips in
+ * public/tour/sfx/<name>.ogg. A bark plays one of its clips at random, so it never repeats the same way.
+ */
+export const BARKS = {
+  teddyBark: ['teddy-bark-1', 'teddy-bark-2', 'teddy-bark-3', 'teddy-bark-4', 'teddy-bark-5', 'teddy-bark-6'],
+  gwinnBark: ['gwinn-bark-1', 'gwinn-bark-2'],
+  teddyYawn: ['teddy-yawn'],
+} as const;
+
+export type SoundId = keyof typeof SOUNDS | keyof typeof BARKS;
+
+/** Where a bark's clip is. */
+export const barkUrl = (name: string): string => `./tour/sfx/${name}.ogg`;
 
 /** Background music: a Sandbox game's .CMF song, played quietly on the site's OPL2 ('game/file.cmf'). */
 export const MUSIC = {

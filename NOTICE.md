@@ -241,6 +241,8 @@ game folder opens in the browser unchanged.
   and Lewis's recording stay on his computer and are not in the repository or any download;
   Pocket TTS's built-in voices are never used. Only the generated clips are committed, and they
   play on the site only (exported games don't carry them).
+- **Teddy's and Gwinn's barks** (`web/public/tour/sfx`): Lewis Moten's own recordings of his
+  dogs, cut into short clips for the guided tour. The whole recordings stay on his computer.
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
   this project (there is no recording to credit), but a few pieces quote older tunes whose
   compositions are in the public domain in the US:

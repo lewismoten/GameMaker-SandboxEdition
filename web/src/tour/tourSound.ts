@@ -1,11 +1,12 @@
 // The tour's sound: a Sandbox game's song quietly on the site's OPL2 music player and its
-// digitized effects (steps.ts MUSIC and SOUNDS: never the Bard of Bizarre's recordings), plus a
+// digitized effects (steps.ts MUSIC and SOUNDS: never the Bard of Bizarre's recordings), the
+// real dogs' barks (BARKS, public/tour/sfx), plus a
 // step's recorded voice line when there is one (public/tour/voice/<id>.ogg). Nothing plays
 // until a tour starts from a click; the mute switch is remembered in this browser, and a
 // browser whose demo sound is "None" starts muted.
 import { AudioEngine } from '../audio/engine';
 import { fetchGameFile, loadGameList } from '../project/files';
-import { MUSIC, SOUNDS, type MusicId, type SoundId } from './steps';
+import { BARKS, MUSIC, SOUNDS, barkUrl, type MusicId, type SoundId } from './steps';
 
 const KEY = 'gm-tour-sound';
 /** Quiet: the music sits under the words. */
@@ -67,7 +68,14 @@ export class TourSound {
 
   effect(id: SoundId | undefined): void {
     if (!id || !this.started) return;
-    void this.file(`${SOUNDS[id]}.voc`).then((b) => this.started && this.engine.playVoc(b));
+    if (id in BARKS) {
+      const clips: readonly string[] = BARKS[id as keyof typeof BARKS];
+      const a = new Audio(barkUrl(clips[Math.floor(Math.random() * clips.length)]));
+      a.volume = 0.6;
+      void a.play().catch(() => undefined);
+      return;
+    }
+    void this.file(`${SOUNDS[id as keyof typeof SOUNDS]}.voc`).then((b) => this.started && this.engine.playVoc(b));
   }
 
   pause(paused: boolean): void {

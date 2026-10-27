@@ -1,12 +1,12 @@
 // The tour's data: every step well formed, short enough for a phone's bubble, pointing at
 // controls the page's code really makes, and only Sandbox games' sprites, sounds and music
 // (never a secret game's, never the Bard of Bizarre's recordings).
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CHAPTERS } from './chapters/index';
 import { tourLines } from './lines';
-import { HOSTS, MAX_CAPTION, MAX_SAY, MUSIC, PROPS, SOUNDS, captionOf, cssList } from './steps';
+import { BARKS, HOSTS, MAX_CAPTION, MAX_SAY, MUSIC, PROPS, SOUNDS, captionOf, cssList } from './steps';
 import { CHAPTER_PAGES } from './tourPages';
 
 const GAMES = join(__dirname, '../../../games');
@@ -72,6 +72,14 @@ describe('the tour’s data', () => {
         for (const [, href] of sel.matchAll(/href="([^"]+)"/g)) expect(text.includes(`'${href}'`), `${c.id}: ${sel}`).toBe(true);
       }
       for (const s of c.steps) if (s.target?.text) expect(text.includes(s.target.text), `${s.id}: ${s.target.text}`).toBe(true);
+    }
+  });
+
+  it('has every bark clip, each a small file', () => {
+    for (const name of Object.values(BARKS).flat()) {
+      const file = join(__dirname, '../../public/tour/sfx', `${name}.ogg`);
+      expect(existsSync(file), name).toBe(true);
+      expect(statSync(file).size, name).toBeLessThan(4096);
     }
   });
 

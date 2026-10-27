@@ -32,9 +32,9 @@ export const homeChapter: Chapter = {
       action: 'enter',
       actor: 'gwinn',
       say: 'Hi! I’m Gwinn. This little guy is my brother Teddy. He and I will show you around.',
-      sound: 'yip',
+      sound: 'gwinnBark',
     },
-    { id: 'home-teddy', action: 'enter', speaker: 'teddy', say: 'Woof!', caption: 'Teddy: Woof! (That means “follow me.”)', sound: 'woof', ms: 2200 },
+    { id: 'home-teddy', action: 'enter', speaker: 'teddy', say: 'Woof!', caption: 'Teddy: Woof! (That means “follow me.”)', sound: 'teddyBark', ms: 2200 },
     {
       id: 'home-showcase',
       action: 'point',
