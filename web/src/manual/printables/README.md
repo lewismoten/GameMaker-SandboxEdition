@@ -84,6 +84,40 @@ A sticker's `sprite` is rows of block numbers from a `.mbl`, `.cbl` or `.bbl` fi
 - **Words:** a small line that would print under 6 pt is left off; seals and bangs keep their words inside their notches.
 - **On paper:** the bleed runs past each cut line. The dashed cut line (white dashes on a dark hairline, plain on any color) is drawn only when the screen's Show cut guides is ticked, for scissors and glue: a cutting machine's cut a little off would leave dashes showing.
 
+## The print shop: disk labels, CD labels and retail boxes
+
+Opened from the Library's cards (`library/printShelf.ts`), not from a box: `printShop.ts` shows a
+game's **Disk labels** and **Retail box**, or the **Game-Maker CD label** and **TURBO BUTTON CD
+label**, in the box viewer under "Print your own". Each sheet shows the art, the die cut, or the
+art with the die lines over it; options are a 1/8 in bleed (on by default) and, on the label
+sheets, crop marks; the choices are kept per browser. On screen and printed from here the sheets
+are drawn at 150 dpi; the files (Files to print or cut) are 300 dpi PNGs carrying their dpi, the
+art and the die cut the same size in pixels so one lies over the other, plus an SVG of the die
+lines with a layer each for cut, fold, safe and bleed. Names: `<id>-disk-labels-art.png`,
+`<id>-retail-box-lid-art.png`, `<id>-retail-box-bottom-art.png`, `<id>-retail-box-diecut.png`
+and `.svg`, `game-maker-cd-label-art.png`, `turbo-button-cd-label-art.png`, `disk-labels-diecut`,
+`cd-labels-diecut`; `-no-bleed` is added when the bleed is off.
+
+- `dieLines.ts`: the die lines (cuts, slits, folds, safe lines, bleed) in inches, drawn at any
+  dpi or written as SVG, and crop marks. Cut red, fold green dashed, safe cyan dashed, bleed a
+  gray band.
+- `labelSheets.ts`: letter sheets. Disk labels: the usual 2.75 × 2.75 in wrap-around 3.5"
+  diskette label (front 2.75 × 2 in, the desk's label; a 1/8 in fold over the top edge; a 5/8
+  in strip on the back, upside down), six to a sheet, 1/2 in apart, inside the 8 × 10.5 in the
+  viewer prints at actual size. CD labels: two full-face labels 117 mm across with a 41 mm hole.
+- `retailBoxTemplate.ts`: a two-piece box on the measurements of The Game Crafter's Large Retail
+  Box template (3975 × 4725 px at 300 dpi: a 13.25 × 15.75 in sheet, 1/8 in bleed, a 9.375 ×
+  11.875 in face, 1.125 in walls, 0.6875 in turn-ins, 1/2 in glue tabs slanted on the face's
+  side, the safe line 1/8 in inside each fold). One die for the lid and the bottom.
+- `retailBoxArt.ts`: the lid (the desk's front cover, `gameBox.ts` `drawPrintFaces`, at the
+  print's resolution with no wear or price sticker; spines, top and bottom lettered for the 1.125
+  in walls) and the bottom (the back cover). `diskLabelArt.ts` and `cdLabelArt.ts` draw the
+  labels in hundredths of an inch, the game's pixels enlarged without smoothing.
+- **Bleed:** each piece's own background color runs past the cut (a band's color, the box's
+  background, a CD label's ground into its hole too), never a picture, a shutter or a silver edge.
+- `dieLines.test.ts` checks the sizes; `library/printShelf.test.ts` that a secret game's labels
+  and box are listed only once it is revealed.
+
 Every item has `kind`, `title` (tray name), optional `note` (tray subtitle) and `promised: true`
 when the manual promises it to registered players (it gets a REG seal). If the manual promises
 something with registration, add it here so it is in the box.
