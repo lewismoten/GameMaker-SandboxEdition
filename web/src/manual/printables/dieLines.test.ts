@@ -4,7 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import { BLEED, DPI, SAFE, cropMarks, dieSvg, pixelSize, type DieLines, type Shape } from './dieLines';
 import { BOX, boxDie, boxPanels, boxStops } from './retailBoxTemplate';
-import { CD_CENTERS, CD_LABEL, cdSheetDie, diskSheetDie, diskSlots, DISK_LABEL, LETTER } from './labelSheets';
+import { CD_CENTERS, CD_LABEL, cdSheetDie, diskSheetDie, diskSlots, DISK_CASE, DISK_LABEL, LETTER } from './labelSheets';
 
 const bounds = (s: Shape): [number, number, number, number] =>
   s.kind === 'circle'
@@ -80,6 +80,17 @@ describe('the label sheets', () => {
     expect(b[0] - a[0] - DISK_LABEL.w).toBeGreaterThanOrEqual(2 * BLEED + 0.25);
     // two folds a label: back strip | top edge | front
     expect(die.folds).toHaveLength(12);
+  });
+
+  it('fit a disk label’s front in a 3.5" disk’s recess, clear of its windows, and its back strip above the hub', () => {
+    const { recess, window: win, hub } = DISK_CASE;
+    const x = (DISK_CASE.w - DISK_LABEL.w) / 2;
+    expect(x).toBeGreaterThanOrEqual(recess.x);
+    expect(x + DISK_LABEL.w).toBeLessThanOrEqual(recess.x + recess.w);
+    expect(x).toBeGreaterThan(win.inset + win.w);
+    expect(DISK_LABEL.h - DISK_LABEL.back - DISK_LABEL.edge).toBeLessThanOrEqual(recess.h);
+    expect(DISK_LABEL.back).toBeLessThan(hub.y - hub.r);
+    expect(DISK_LABEL.edge * 25.4).toBeCloseTo(3.2, 0);
   });
 
   it('put two 117 mm CD labels with 41 mm holes on a sheet, inside the 8 x 10.5 in', () => {

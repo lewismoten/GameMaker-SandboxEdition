@@ -16,6 +16,7 @@ import { BLEED, DPI, dieSvg, drawCropMarks, drawDie, pixelSize, type DieLines, t
 import { CD_CENTERS, cdSheetDie, diskSheetDie, diskSlots, DISK_LABEL, LETTER } from './labelSheets';
 import { BOX, boxDie } from './retailBoxTemplate';
 import { diskLabelArt, paintDiskLabel, type DiskLabelArt } from './diskLabelArt';
+import { diskLabelFit } from './diskLabelFit';
 import { CDS, paintCdLabel, type CdId } from './cdLabelArt';
 import { paintBoxSheet, printFaces, type BoxSheet } from './retailBoxArt';
 
@@ -108,8 +109,12 @@ function diskPiece(entry: CatalogEntry): PrintPiece {
     crop: true,
     about: [
       [
-        `Six 3½" disk labels on letter-size sticker paper: the usual wrap-around diskette label, ${DISK_LABEL.w} × ${DISK_LABEL.h} in. The front (${DISK_LABEL.w} × 2 in) is the label the desk's disks show; the strip above it folds over the disk's top edge onto the back (the two dashed lines are the folds), so its words are upside down here.`,
+        `Six 3½" disk labels on letter-size sticker paper, the ${DISK_LABEL.w} × ${DISK_LABEL.h} in square wrap-around diskette label (2¾" square labels, e.g. Avery 5096, 5196 or 5296, or Compulabel 311400). Its front (${DISK_LABEL.w} × 2 in) is the label the desk's disks show; the strip above it folds over the disk's top edge onto the back (the two dashed lines are the folds), so its words are upside down here.`,
       ],
+      [
+        'How it goes on: line the label’s front up in the recess on the front of the disk, between the two little windows, with the first fold right on the disk’s top edge. Press it down from the middle out, then fold the strip over the edge and press it flat across the top of the back, above the metal hub.',
+      ],
+      [diskLabelFit()],
       [
         'The labels are 1/2 in apart, inside a cutting machine’s print-then-cut area. Cut them by hand on the cut lines, or load the art and the die lines (the SVG’s cut layer) into a cutting program and line them up on the sheet.',
       ],

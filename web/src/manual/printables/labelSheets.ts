@@ -1,5 +1,6 @@
 // Where the labels sit on letter-size sticker paper, with their die lines (dieLines.ts):
-// - 3.5" disk labels: the usual wrap-around diskette label, 2.75 x 2.75 in, its front 2.75 x 2 in
+// - 3.5" disk labels: the usual 2.75 in square wrap-around diskette label (Avery 5096, 5196, 5296,
+//   Compulabel 311400 and the like), its front 2.75 x 2 in
 //   (the face the desk's disks show), a 1/8 in fold over the disk's top edge and a 5/8 in strip on
 //   the back; six to a sheet, two across and three down, 1/2 in apart so each label's bleed has
 //   white paper round it. The grid is 6 x 9.25 in, inside a cutting machine's print-then-cut area.
@@ -11,6 +12,24 @@ export const LETTER: [number, number] = [8.5, 11];
 
 /** The disk label, inches. */
 export const DISK_LABEL = { w: 2.75, h: 2.75, back: 0.625, edge: 0.125, corner: 1 / 16 } as const;
+/**
+ * A 3.5" disk, inches, measured from a drawing of one (3.50 x 3.66 in, not square): the label's
+ * recess on the front, open at the top edge between the two corner windows, and the shutter below
+ * it. The label's 2 in front sits in the recess, centered, its top on the top edge; 1/8 in folds
+ * over the edge (the case is about 3.3 mm thick); 5/8 in lies on the back, above the hub and the
+ * shutter.
+ */
+export const DISK_CASE = {
+  w: 3.5,
+  h: 3.66,
+  recess: { x: 0.31, w: 2.88, h: 2.12 },
+  /** The write-protect and high-density windows, each this far in from its side. */
+  window: { inset: 0.12, w: 0.16, y: 0.27, h: 0.15 },
+  shutter: { x: 0.79, w: 1.86, y: 2.39 },
+  /** The metal hub on the back, its center and radius. */
+  hub: { x: 1.75, y: 1.83, r: 0.5 },
+} as const;
+
 /** The labels' grid on the sheet. */
 export const DISK_GRID = { cols: 2, rows: 3, gap: 0.5 } as const;
 
