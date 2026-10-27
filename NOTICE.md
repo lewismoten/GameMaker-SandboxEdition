@@ -403,6 +403,14 @@ formats from their published descriptions and from Game-Maker's own source.
   speaks the Model Context Protocol with its MIT-licensed TypeScript SDK (see Tools used to
   build and test). The editor's Assistant can also offer its tools through WebMCP, a draft of
   the W3C Web Machine Learning Community Group, implemented from the draft with no code used.
+- **The Assistant chat** (`web/src/assistant/chat`) talks to the person's own AI with plain
+  `fetch`: OpenAI's Chat Completions API shape (which OpenAI, LM Studio and Ollama's `/v1`
+  take) and Ollama's `/api/chat`, both written from their public API documentation with no
+  code used. No model ships with the site; each person sets up their own (Ollama or an
+  OpenAI-compatible server). A game changed with it keeps an "Assistant: <model> via
+  <provider>" line in its companion data, and its Windows, Mac, Linux and web downloads show
+  that line in their About text. The chat was written by **Claude Opus 5.5** as Lewis
+  directed.
 - **The music editor and its FM instruments** were made for this project. The editor is an
   original design, not based on AdLib's Visual Composer, and no AdLib or Creative instrument
   bank is included. The classic piano and brass, and one kick drum used in two games, matched
