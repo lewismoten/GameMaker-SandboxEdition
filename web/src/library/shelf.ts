@@ -42,7 +42,7 @@ type ShelfType = (typeof SHELF_TYPES)[number][0];
  */
 type Opening =
   | { via: 'box'; game: string; start: string; maps?: boolean }
-  | { via: 'print'; game?: string; start: 'disklabels' | 'retailbox' | 'gmcd' | 'turbocd' }
+  | { via: 'print'; game?: string; start: 'disklabels' | 'retailbox' | 'gmbox' | 'gmcd' | 'turbocd' }
   | { via: 'gm'; start: string }
   | { via: 'href'; href: string }
   | { via: 'zine' }

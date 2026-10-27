@@ -28,7 +28,7 @@ them (`covers.ts` draws just the cover of manuals, hint books and TURBO BUTTON),
 every box (the catalog and the BBS ad) with how many boxes they are in, and `libraryPage.ts` is
 the page; a card opens its piece in the box viewer (`openBox`'s `start`), the magazine, the Guide or the zine.
 `printShelf.ts` adds the print shop's cards: each listed game's Disk labels and (with a box) Retail
-box, the Game-Maker CD's label with the Game-Maker box and TURBO BUTTON's cover disc with the site's
+box, the Game-Maker box flat and its CD's label with the Game-Maker box's paper, and TURBO BUTTON's cover disc with the site's
 reading, under the kinds Disk and CD labels and Retail boxes; they open in the print shop
 (`../manual/printables/printShop.ts`, loaded when one is opened or drawn).
 `readerAddress.ts` keeps the Game-Maker box's open piece and chapter in the address

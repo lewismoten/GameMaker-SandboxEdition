@@ -1,6 +1,6 @@
 // The print shop's cards on the Library's shelf (shelf.ts): each listed game's disk labels and,
-// when it has a box, its retail box laid out flat; the Game-Maker CD's label with the Game-Maker
-// box's paper and TURBO BUTTON's cover disc with the site's reading. Built only from the games
+// when it has a box, its retail box laid out flat; the Game-Maker box itself flat and its CD's
+// label with the Game-Maker box's paper; and TURBO BUTTON's cover disc with the site's reading. Built only from the games
 // the shelf lists (shelfGames), so a secret game's are there only once it is revealed.
 import type { CatalogEntry } from '../project/files';
 import { GM_OWNER, SITE_OWNER, type ShelfItem } from './shelf';
@@ -34,9 +34,22 @@ export function gamePrintItems(entry: CatalogEntry): ShelfItem[] {
   ];
 }
 
-/** The two CD labels: the Game-Maker CD with the Game-Maker box, TURBO BUTTON's disc with the site's reading. */
+/**
+ * The Game-Maker box flat and its CD's label, with the Game-Maker box's paper, then TURBO
+ * BUTTON's disc, with the site's reading.
+ */
 export function cdPrintItems(gmTitle: string): ShelfItem[] {
   return [
+    {
+      key: `${GM_OWNER}:gmbox`,
+      title: 'Game-Maker retail box',
+      note: 'The box laid out flat, with die lines',
+      icon: '📦',
+      type: 'retailbox',
+      owner: GM_OWNER,
+      ownerTitle: gmTitle,
+      open: { via: 'print', start: 'gmbox' },
+    },
     {
       key: `${GM_OWNER}:gmcd`,
       title: 'Game-Maker CD label',

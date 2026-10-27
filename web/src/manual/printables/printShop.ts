@@ -20,7 +20,7 @@ import { CDS, paintCdLabel, type CdId } from './cdLabelArt';
 import { paintBoxSheet, printFaces, type BoxSheet } from './retailBoxArt';
 
 /** The pieces, by the id the Library opens them at. */
-export type PrintId = 'disklabels' | 'retailbox' | CdId;
+export type PrintId = 'disklabels' | 'retailbox' | 'gmbox' | CdId;
 
 /** One sheet of a piece: its art and die lines, and the part shown and printed here (inches). */
 interface PrintSheet {
@@ -138,27 +138,37 @@ function diskPiece(entry: CatalogEntry): PrintPiece {
   };
 }
 
-/** A game's retail box, flat: the lid and the bottom, on The Game Crafter's large retail box layout. */
-function boxPiece(entry: CatalogEntry): PrintPiece {
-  const faces = new Map<number, ReturnType<typeof printFaces>>();
+type Faces = { front: HTMLCanvasElement; back: HTMLCanvasElement };
+
+/**
+ * A retail box, flat: the lid and the bottom, on The Game Crafter's large retail box layout. `id`
+ * names the files; `faces` draws the covers for a dpi, `paint` a sheet from them.
+ */
+function boxPiece(
+  id: 'retailbox' | 'gmbox',
+  name: string,
+  faces: (dpi: number) => Promise<Faces | undefined>,
+  paint: (which: BoxSheet, f: Faces, dpi: number) => HTMLCanvasElement | Promise<HTMLCanvasElement>,
+): PrintPiece {
+  const drawn = new Map<number, Promise<Faces | undefined>>();
   const sheetOf = (which: BoxSheet, label: string): PrintSheet => ({
     label,
-    file: `${entry.id}-retail-box-${which}`,
-    dieFile: `${entry.id}-retail-box`,
+    file: `${name}-retail-box-${which}`,
+    dieFile: `${name}-retail-box`,
     die: boxDie,
     window: [0, 0, BOX.sheet[0], BOX.sheet[1]],
     paint: async (dpi) => {
-      let f = faces.get(dpi);
-      if (!f) faces.set(dpi, (f = printFaces(entry, dpi)));
-      const drawn = await f;
-      if (!drawn) throw new Error('This game has no box');
-      return paintBoxSheet(entry, which, drawn, dpi);
+      let f = drawn.get(dpi);
+      if (!f) drawn.set(dpi, (f = faces(dpi)));
+      const both = await f;
+      if (!both) throw new Error('There is no box to draw');
+      return paint(which, both, dpi);
     },
   });
   const [fw, fh] = BOX.face;
   return {
-    id: 'retailbox',
-    title: 'Retail box',
+    id,
+    title: id === 'gmbox' ? 'Game-Maker retail box' : 'Retail box',
     note: 'The box laid out flat to print and fold: lid and bottom',
     icon: '📦',
     crop: false,
@@ -405,10 +415,28 @@ function itemOf(piece: PrintPiece, owner: string): BoxItem {
 
 /** A game's pieces: its disk labels, and its retail box when it has one. */
 function gamePieces(entry: CatalogEntry): PrintPiece[] {
-  return [diskPiece(entry), ...(entry.original?.box ? [boxPiece(entry)] : [])];
+  const box = () =>
+    boxPiece(
+      'retailbox',
+      entry.id,
+      (dpi) => printFaces(entry, dpi),
+      (which, f, dpi) => paintBoxSheet(entry, which, f, dpi),
+    );
+  return [diskPiece(entry), ...(entry.original?.box ? [box()] : [])];
 }
 
-const CD_PIECES = (): PrintPiece[] => [cdPiece('gmcd'), cdPiece('turbocd')];
+/** The Game-Maker box's and the magazine's pieces: the Game-Maker box flat, and the two CD labels. */
+const CD_PIECES = (): PrintPiece[] => [
+  boxPiece(
+    'gmbox',
+    'game-maker',
+    // loaded only when drawn: the desk's Game-Maker box module starts fetching its screenshots
+    async (dpi) => (await import('./gmBoxPrint')).gmPrintFaces(dpi),
+    async (which, f, dpi) => (await import('./gmBoxPrint')).paintGmBoxSheet(which, f, dpi),
+  ),
+  cdPiece('gmcd'),
+  cdPiece('turbocd'),
+];
 
 /**
  * Opens the print shop at a piece: a game's disk labels or retail box (with `listed`, the game
@@ -419,7 +447,7 @@ export async function openPrintShop(start: PrintId, listed?: CatalogEntry): Prom
   const pieces = entry ? gamePieces(entry) : CD_PIECES();
   const owner = entry?.title ?? 'CD';
   await openBox(
-    entry ? `${entry.title}: labels and box` : 'CD labels',
+    entry ? `${entry.title}: labels and box` : 'The Game-Maker box and CDs',
     [],
     pieces.map((p) => itemOf(p, owner)),
     { trayHeading: 'Print your own', start },

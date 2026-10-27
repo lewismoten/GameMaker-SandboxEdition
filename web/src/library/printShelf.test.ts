@@ -53,19 +53,20 @@ describe('the print shop’s cards', () => {
     for (const id of secret) expect(shown.filter((i) => i.owner === id).map((i) => i.title)).toEqual(['Disk labels', 'Retail box']);
   });
 
-  it('puts the Game-Maker CD with the Game-Maker box and TURBO BUTTON’s disc with the site’s reading', () => {
-    const [gm, turbo] = cdPrintItems('The Game-Maker box');
+  it('puts the Game-Maker box flat and its CD with the Game-Maker box and TURBO BUTTON’s disc with the site’s reading', () => {
+    const [box, gm, turbo] = cdPrintItems('The Game-Maker box');
+    expect([box.owner, box.type]).toEqual([GM_OWNER, 'retailbox']);
     expect(gm.owner).toBe(GM_OWNER);
     expect(turbo.owner).toBe(SITE_OWNER);
-    const other = groupShelf([...gamePrintItems(boxed('teddy')), gm, turbo], 'game').find((g) => g.key === 'other')!;
+    const other = groupShelf([...gamePrintItems(boxed('teddy')), box, gm, turbo], 'game').find((g) => g.key === 'other')!;
     expect(other.parts.map((p) => [p.heading, p.items.map((i) => i.title)])).toEqual([
       ['Magazines, guides and more', ['TURBO BUTTON CD label']],
-      ['The Game-Maker box', ['Game-Maker CD label']],
+      ['The Game-Maker box', ['Game-Maker retail box', 'Game-Maker CD label']],
     ]);
-    const byType = groupShelf([...gamePrintItems(boxed('teddy')), gm, turbo], 'type').map((g) => [g.heading, g.parts[0].items.length]);
+    const byType = groupShelf([...gamePrintItems(boxed('teddy')), box, gm, turbo], 'type').map((g) => [g.heading, g.parts[0].items.length]);
     expect(byType).toEqual([
       ['Disk and CD labels', 3],
-      ['Retail boxes', 1],
+      ['Retail boxes', 2],
     ]);
   });
 });

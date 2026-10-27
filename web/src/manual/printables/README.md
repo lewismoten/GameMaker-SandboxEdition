@@ -87,8 +87,8 @@ A sticker's `sprite` is rows of block numbers from a `.mbl`, `.cbl` or `.bbl` fi
 ## The print shop: disk labels, CD labels and retail boxes
 
 Opened from the Library's cards (`library/printShelf.ts`), not from a box: `printShop.ts` shows a
-game's **Disk labels** and **Retail box**, or the **Game-Maker CD label** and **TURBO BUTTON CD
-label**, in the box viewer under "Print your own". Each sheet shows the art, the die cut, or the
+game's **Disk labels** and **Retail box**, or the **Game-Maker retail box**, **Game-Maker CD label**
+and **TURBO BUTTON CD label**, in the box viewer under "Print your own". Each sheet shows the art, the die cut, or the
 art with the die lines over it; options are a 1/8 in bleed (on by default) and, on the label
 sheets, crop marks; the choices are kept per browser. On screen and printed from here the sheets
 are drawn at 150 dpi; the files (Files to print or cut) are 300 dpi PNGs carrying their dpi, the
@@ -112,7 +112,11 @@ and `.svg`, `game-maker-cd-label-art.png`, `turbo-button-cd-label-art.png`, `dis
 - `retailBoxArt.ts`: the lid (the desk's front cover, `gameBox.ts` `drawPrintFaces`, at the
   print's resolution with no wear or price sticker; spines, top and bottom lettered for the 1.125
   in walls) and the bottom (the back cover). `diskLabelArt.ts` and `cdLabelArt.ts` draw the
-  labels in hundredths of an inch, the game's pixels enlarged without smoothing.
+  labels in hundredths of an inch, the game's pixels enlarged without smoothing. `gmBoxPrint.ts`
+  is the Game-Maker box the same way (`gmBox.ts` `paintGmFaces`; the desk's box is the games'
+  size, so it fits the face at 1.25 times, the extra 1/4 in of height going to the front's grid
+  of screenshots and the back's space above the small print), its spines black with the logo
+  down them, its ends a black band with the logo on the pink. Files: `game-maker-retail-box-*`.
 - **Bleed:** each piece's own background color runs past the cut (a band's color, the box's
   background, a CD label's ground into its hole too), never a picture, a shutter or a silver edge.
 - `dieLines.test.ts` checks the sizes; `library/printShelf.test.ts` that a secret game's labels

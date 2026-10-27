@@ -123,14 +123,14 @@ export async function loadShelf(): Promise<Shelf> {
   });
   thumbs.set(`${GM_OWNER}:manual`, () => gmCoverSheet(entries.find((e) => e.id === 'teddy')));
   for (const piece of gmBoxItems(family)) add(GM_OWNER, gmTitle, piece, { via: 'gm', start: piece.id });
-  // the CD labels: the Game-Maker CD's after the Game-Maker box's paper, TURBO BUTTON's after the magazine
-  const [gmCd, turboCd] = cdPrintItems(gmTitle);
-  for (const it of [gmCd, turboCd])
+  // the Game-Maker box flat and the CD labels: the Game-Maker box's and its CD's after the Game-Maker box's paper, TURBO BUTTON's after the magazine
+  const [gmBox, gmCd, turboCd] = cdPrintItems(gmTitle);
+  for (const it of [gmBox, gmCd, turboCd])
     if (it.open.via === 'print') {
       const start = it.open.start;
       thumbs.set(it.key, async () => (await shop()).printThumb(start));
     }
-  items.push(gmCd);
+  items.push(gmBox, gmCd);
 
   const walked = await walks;
   items.push(...walked.items);
