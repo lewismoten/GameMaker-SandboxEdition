@@ -23,6 +23,7 @@ import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
 import type { PlayerPatches } from '../../dosPlayer/patchRules';
 import { REPO_URL } from '../../seo/site';
+import { companionCredits } from '../../assistant/chat/todo';
 
 export interface DownloadGame {
   title: string;
@@ -222,6 +223,12 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
 }
 
 /** The game's DOS player customizations (dosPlayer/), which the DOS, web-page and native exports show: a catalog game's own, or yours from its companion. */
+/** The About text's note: an original game's fiction note, and the assistant credits of a game of yours (assistant/chat/todo.ts). */
+function aboutNote(game: DownloadGame): string | undefined {
+  const credits = game.project ? companionCredits(game.companion?.(), game.gam) : [];
+  return [game.fiction, ...credits].filter(Boolean).join('\n') || undefined;
+}
+
 async function gamePatches(game: DownloadGame): Promise<PlayerPatches> {
   if (game.entry) return (await import('../../dosPlayer/catalogPatches')).catalogPatches(game.entry);
   return (await import('../../dosPlayer/playerRecord')).companionPatches(game.companion?.(), game.gam);
@@ -236,14 +243,14 @@ async function nativeOptions(game: DownloadGame, files: GameFiles) {
     import('../../export/macApp'),
     import('../../export/recordedAudio'),
   ]);
-  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction, player: await gamePatches(game) });
+  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: aboutNote(game), player: await gamePatches(game) });
   return {
     title: game.title,
     id: game.id ?? slug(game.title),
     html,
     author: game.author,
     year: game.year,
-    fiction: game.fiction,
+    fiction: aboutNote(game),
     picture: mac.iconPicture(files, game.gam),
     audio: audio.recordedAudioNotice(audio.recordedClips(files)),
     colors: mac.boxColors(game.box),
@@ -294,12 +301,12 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
     } else if (kind === 'web' && alt) {
       const { name, zip } = await (
         await import('../../export/exportWebApp')
-      ).exportWebApp(files, { title: game.title, gam: game.gam, fiction: game.fiction, player: await gamePatches(game) });
+      ).exportWebApp(files, { title: game.title, gam: game.gam, fiction: aboutNote(game), player: await gamePatches(game) });
       save(name, zip, 'application/zip', 'Unzip it onto any static web host.');
     } else if (kind === 'web') {
       const { name, html } = await (
         await import('../../export/exportSinglePage')
-      ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: game.fiction, player: await gamePatches(game) });
+      ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: aboutNote(game), player: await gamePatches(game) });
       save(name, html, 'text/html', 'Open it in any browser to play, no internet needed.');
     } else if (kind === 'player') {
       const { name, zip } = await (await import('../../export/exportWebPlayer')).exportWebPlayer(files, game);

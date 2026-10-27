@@ -120,6 +120,32 @@
   white-space: nowrap;
 }
 
+.lib-describe {
+  flex: none;
+  padding: 6px 12px;
+  border-radius: 17px;
+  white-space: nowrap;
+}
+
+/* phones: "✦ Describe", so the bar stays one row */
+@media (max-width: 700px) {
+  .lib-describe-more {
+    display: none;
+  }
+}
+
+/* Getting started's "AI setup" (assistant/chat/settingsDialog.ts): a link that opens a dialog */
+.home-start .link-btn {
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .lib-about {
   display: flex;
   flex-wrap: wrap;

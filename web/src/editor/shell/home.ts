@@ -34,6 +34,22 @@ export interface HomeNav {
   openProject(id: string): void;
 }
 
+/** "Describe a game…": the Assistant chat builds a new game from a description (assistant/chat/homeDescribe.ts, loaded when pressed). */
+function describeButton(nav: HomeNav): HTMLElement {
+  return h(
+    'button',
+    {
+      class: 'lib-describe',
+      type: 'button',
+      title: 'Say what the game should be, and your own AI (Ollama or OpenAI) builds a first level',
+      onclick: () => void import('../../assistant/chat/homeDescribe').then((m) => m.describeGame(nav)),
+    },
+    h('span', { 'aria-hidden': 'true' }, '✦ '),
+    'Describe',
+    h('span', { class: 'lib-describe-more' }, ' a game…'),
+  );
+}
+
 /** New game and importing (homeImport.ts), loaded when first used. */
 const homeImport = () => import('./homeImport');
 
@@ -556,6 +572,18 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       h('li', null, h('b', null, icon('play'), 'Play'), touch ? ' right here, with on-screen controls or a gamepad' : ' right here, with keyboard or gamepad'),
       h('li', null, h('b', null, icon('edit'), 'Look inside'), ' to see how a game was made, then Edit a copy to change it'),
       h('li', null, h('b', null, icon('plus'), 'New game'), ' to start your own'),
+      h(
+        'li',
+        null,
+        h('b', null, h('span', { 'aria-hidden': 'true' }, '✦ '), 'Describe a game'),
+        ' and your own AI builds one (',
+        h(
+          'button',
+          { type: 'button', class: 'link-btn', onclick: () => void import('../../assistant/chat/settingsDialog').then((m) => m.openAiSetup()) },
+          'AI setup',
+        ),
+        ')',
+      ),
     ),
     h(
       'p',
@@ -620,6 +648,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
             { class: 'lib-find' },
             search,
             h('button', { class: 'primary lib-new', type: 'button', onclick: () => void homeImport().then((m) => m.newGame(nav)) }, '+ New game'),
+            describeButton(nav),
           ),
         ),
         h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, removeAllBtn, howBtn),

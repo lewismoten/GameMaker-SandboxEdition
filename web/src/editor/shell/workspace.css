@@ -357,3 +357,14 @@
   min-width: 36px;
   padding-inline: 8px;
 }
+
+/* An empty game's "Describe a game…" (the Assistant chat builds it), on a row of its own under Play. */
+.sidebar .side-top:has(.describe-btn) {
+  flex-wrap: wrap;
+}
+
+.sidebar .describe-btn {
+  flex: 1 0 100%;
+  min-height: 28px;
+  border-color: var(--accent);
+}
