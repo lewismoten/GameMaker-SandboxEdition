@@ -1,17 +1,7 @@
 // The tour's Home chapter: Teddy runs to each part of the game list and the header while his
 // big sister Gwinn says what it does. Every line was checked against what the control does.
 import type { Chapter } from '../steps';
-
-/** A header link, or the ⋯ menu that holds it on a narrow window. */
-const headerLink = (label: string, href: string) => ({ label, css: [`.topbar-nav a[href="${href}"]`, '.topbar-more > summary'] });
-
-/** An item of the ⚙ Settings menu, or of the ⋯ menu on a narrow window, opened to show it. */
-const setting = (text: string) => ({
-  label: `${text} in the Settings menu`,
-  css: ['#settings-menu > *', '.topbar-more .topbar-menu > *'],
-  text,
-  reveal: ['.topbar-settings .topbar-gear', '.topbar-more > summary'],
-});
+import { headerLink, setting } from './targets';
 
 /** One of the buttons under the game at the top. */
 const action = (text: string) => ({ label: `the ${text} button`, css: '.showcase .sc-actions > *', text });
