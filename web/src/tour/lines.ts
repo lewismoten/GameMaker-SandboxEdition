@@ -1,0 +1,43 @@
+// Every line of the tour as plain data, for the narration script that records a voice clip
+// per line (public/tour/voice/<chapter>/<id>.ogg) and lists them in that folder's README. No
+// DOM: it runs under vite-node.
+//
+//   import { tourLines } from '../src/tour/lines';
+import { CHAPTERS } from './chapters/index';
+import { HOSTS, type Action, type Chapter, type TourStep } from './steps';
+
+export interface TourLine {
+  /** The step's id, and the clip's file name without .ogg. */
+  id: string;
+  /** The chapter's id, the clip's folder. */
+  chapter: string;
+  /** Where it is used, in plain words: "Home: points at the New game button". */
+  where: string;
+  /** Who says it. */
+  speaker: string;
+  /** What the bubble says (the words to record). */
+  text: string;
+}
+
+const DOING: Record<Action, string> = {
+  enter: 'comes on',
+  walk: 'walks to',
+  point: 'points at',
+  press: 'presses',
+  say: 'talks',
+  exit: 'says goodbye and walks off',
+};
+
+/** Where a step is used: the page, what the host does, and the control. */
+export function whereOf(chapter: Chapter, step: TourStep): string {
+  const who = HOSTS[step.actor ?? chapter.actor].name;
+  const label = step.target?.label;
+  const aimed = step.action === 'walk' || step.action === 'point' || step.action === 'press';
+  return `${chapter.place}: ${who} ${DOING[step.action]}${label ? (aimed ? ` ${label}` : `, by ${label}`) : ''}`;
+}
+
+export function tourLines(): TourLine[] {
+  return CHAPTERS.flatMap((c) =>
+    c.steps.map((s) => ({ id: s.id, chapter: c.id, where: whereOf(c, s), speaker: HOSTS[s.speaker ?? c.speaker].name, text: s.say })),
+  );
+}
