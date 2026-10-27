@@ -229,6 +229,26 @@ modules are in [`../test`](../test).
   `details.ts`, with where it is earned from `where.ts`) and the desk's
   `ACHIEVE.EXE` (`achieveExe.ts`).
 
+### The assistant: AI tools working on a game
+
+- [`assistant/`](assistant): what lets an AI tool open, check and change a game.
+  - `tools/`: the tool set, defined once for every way in. A tool is a name, a short
+    description, a flat JSON Schema (no `$ref` or unions, so it converts to OpenAI-style function
+    calling as well as MCP) and a handler that works on a `GameContext` (`types.ts`), with no DOM.
+    - `run.ts` checks the arguments, refuses writes while read-only, and has the `dry_run` that
+      every write takes.
+    - `common.ts` has the pieces the tools share.
+    - The tools: `gameTools.ts` (summary, files, scenes, links), `mapTools.ts`, `blockTools.ts`,
+      `actorTools.ts` (monsters and the hero), `screenTools.ts` (palettes, text, slide lists,
+      backdrops), `playerTools.ts` (DOS player patches), `checkTools.ts` (validate, the Level
+      check, the walkthrough bot) and `renderTools.ts` (PNG pictures).
+    - `index.ts` lists them. `memoryContext.ts` is a `GameContext` over files in memory.
+  - `png.ts` writes a palette picture as a PNG with no canvas.
+  - `openai.ts` (`toOpenAITools`) gives the tools as function-calling definitions for OpenAI
+    or Ollama.
+  - The local MCP server that serves them is [`../scripts/mcp`](../scripts/mcp) (see its
+    README).
+
 ### The 1994 desk and its PC
 
 - [`desk/`](desk): the 1994 desk. `desk.ts` lays out the scene (`stage.ts` scales it to the
@@ -790,6 +810,10 @@ saved with `editor/core/ui.ts` `download`.
   other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).
 - Downloads from the command line: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` run the same code as
   the Download button (see Exports).
+- [`mcp/`](../scripts/mcp) (`npm run mcp`): the local MCP server for AI tools. It uses the
+  assistant's tools (`assistant/tools`) on game folders, zips, this project's games and the CD's,
+  writing only in the folders it is given, with its own vite-node settings (`mcp/vite.config.ts`).
+  Its README has the setup for Claude Code, Claude Desktop and other clients.
 - `dosbox.ts` (`npm run dosbox`) lays out `../../dosbox/` (git-ignored) to mount as drive C: in
   DOSBox, with Game-Maker installed and every Sandbox and Bard of Bizarre game's disk beside the
   samples; `npm run dosbox:open` starts DOSBox on it.

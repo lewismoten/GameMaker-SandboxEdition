@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "gamemaker": {
+      "type": "stdio",
+      "command": "npm",
+      "args": ["--prefix", "web", "run", "--silent", "mcp", "--", "--root", "${HOME}/GameMakerWork"]
+    }
+  }
+}
