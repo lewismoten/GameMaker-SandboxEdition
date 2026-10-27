@@ -395,6 +395,13 @@ formats from their published descriptions and from Game-Maker's own source.
   YouTube channel. Their card pictures are copies of YouTube's thumbnails kept on the site, so
   showing the Library asks YouTube for nothing; a video's player is embedded from
   youtube-nocookie.com only when the visitor presses Play.
+- **The Game Crafter's Large Retail Box template** (thegamecrafter.com,
+  `templates/large-retail-box.png`): the Library's retail boxes to print follow its
+  measurements (a 13.25 × 15.75 in sheet at 300 dpi, a 9.375 × 11.875 in face, 1.125 in walls,
+  0.6875 in turn-ins, 1/2 in glue tabs, a 1/8 in bleed and safe line;
+  `web/src/manual/printables/retailBoxTemplate.ts`). None of its art is copied; the box art and
+  die lines are drawn by this project. The disk and CD label sizes are the common sticker-paper
+  sizes (a 2.75 in wrap-around 3.5" diskette label; a 117 mm CD label with a 41 mm hole).
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
   `web/src/audio/opl.ts` was written for this project.
 - **PNG** (RFC 2083): the Assistant's pictures for AI tools (`web/src/assistant/png.ts`) are
