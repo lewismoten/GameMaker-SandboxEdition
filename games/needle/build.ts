@@ -12,7 +12,7 @@ import { serializePalette } from '../../web/src/formats/palette';
 import { serializeSoundSet } from '../../web/src/formats/sound';
 import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
-import { clipEntries, fliClips } from '../kit/fliClips';
+import { clipEntries, clipEveryList, fliClips } from '../kit/fliClips';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { Pixels } from '../kit/pixels';
@@ -181,5 +181,6 @@ disk.put(
     RECORDED_VOCS,
   ),
 );
+clipEveryList(disk.files);
 disk.write();
 console.log(built.map(({ l, kit }) => `${l.file}: ${kit.book.index.size} blocks`).join(', ') + `; ${mb.index.size} monster blocks`);
