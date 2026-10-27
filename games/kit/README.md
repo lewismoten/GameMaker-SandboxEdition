@@ -42,6 +42,8 @@ Making the files:
   ringing harps, stepped glides (no pitch bend), a two-voice choir from vibrato twins, echoes, stutters, rolls and section
   markers (controller 0x66). Loaf #13's `src/sound/song.ts` uses all of them.
 - `sound.ts` — PC speaker sounds for `.SND` sets, and synthesized `.VOC` samples.
+- `teddySounds.ts` — the sound effects the Teddy games share (woof, yelp, pop, boing, whoosh, crunch, chomp, giggle,
+  honk, snore, scratch, slap, chime), synthesized as `.VOC` samples.
 - `synthParts.ts` — small pieces the games' synthesized sounds share: noise through a low-pass, a gate, an
   attack-and-decay envelope and a one-pole low-pass.
 - `disk.ts` — writes the files with DOS 8.3 names and DOS text.
