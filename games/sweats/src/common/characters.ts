@@ -6,11 +6,13 @@
 // up and sideways at once (Game-Maker follows one key at a time). Space declaims: a word balloon
 // flies out to each side along a path of its own (power 160), beating what comes at him (150);
 // it doesn't hurt friends, the dogs or the tough things (200). B says the monologue's line.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
 import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { emptyMonster, type March, type Monster } from '../../../../web/src/formats/monster';
+import { type March, type Monster } from '../../../../web/src/formats/monster';
 import { COFFEE, KEY, MON, PLOT, POWER, SEQ, SND } from '../ids';
 import type { buildCharBlocks, SpriteBook } from './sprites';
+import { set, mon, corner, pace } from '../../../kit/actors';
+export { mon, corner, pace } from '../../../kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // the block flipped left-right
@@ -27,13 +29,6 @@ const SNEAK_STEP = 2;
 const WORD_REACH = 5;
 
 type F = { pic: string; x?: number; y?: number; pause?: number; mirror?: boolean };
-
-function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
-  if (frames.length > 10) throw new Error('Too many frames');
-  frames.forEach((fr, i) => (s.frames[i] = fr));
-  for (let i = frames.length; i < s.frames.length; i++) s.frames[i] = emptyFrame(true);
-  Object.assign(s, { sound: 255, jstkBut: 4, jstkMov: 0, ...o });
-}
 
 /** A frame that gives birth to a monster on his row. */
 const birth = (mon: number): Frame => ({ ...emptyFrame(), x: 0, y: 20, pic1: mon, pic2: MONBL, pause: 0 });
@@ -124,20 +119,6 @@ export function buildPoet(cb: ReturnType<typeof buildCharBlocks>): Character {
   return ch;
 }
 
-export const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
-
-/** A monster from its frames ([block, ticks]...), options and march path. */
-export function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = []): Monster {
-  const m = emptyMonster();
-  m.used = 1;
-  pics.forEach((p, i) => (m.pic[i] = p));
-  Object.assign(m, o);
-  path.forEach((c, i) => (m.march[0][i] = c));
-  return m;
-}
-
-/** Back and forth `run` blocks (to the right first) at `speed`, facing the way it goes. */
-export const pace = (run: number, speed: number, dy = 0): March[] => [corner(0, 0, speed), corner(run, dy, speed, 0), corner(0, 0, speed, 4)];
 /** Up and down `run` blocks. */
 export const bob = (run: number, speed: number): March[] => [corner(0, 0, speed), corner(0, -run, speed, 0), corner(0, 0, speed, 0)];
 export const still: March[] = [corner(0, 0, 1), corner(0, 0, 1)];

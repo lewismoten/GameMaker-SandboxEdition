@@ -9,10 +9,11 @@
 // things (power 150, solid) hurt to bump into and push it back; raindrops and birds (under 100)
 // are done in by a touch, and their picture's effect lands first (a drop of water, points).
 import { CHARBL } from '../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
+import { newMonsterSet, type Monster } from '../../../web/src/formats/monster';
 import { FAITH, KEY, MON, SEQ, SND, WATER } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
+import { set, mon, corner, pace } from '../../kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // bottom block flipped left-right
@@ -34,13 +35,6 @@ const ROOT_STEP = 3;
 export type Form = 'seed' | 'sprout' | 'plant';
 
 type F = { pic: string; top?: string; x?: number; y?: number; pause?: number; mirror?: boolean };
-
-function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
-  if (frames.length > 10) throw new Error('Too many frames');
-  frames.forEach((fr, i) => (s.frames[i] = fr));
-  for (let i = frames.length; i < s.frames.length; i++) s.frames[i] = emptyFrame(true);
-  Object.assign(s, { sound: 255, jstkBut: 4, jstkMov: 0, ...o });
-}
 
 /** The seed's character file for one of its forms (the plant is two blocks tall). */
 export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form, laces: number): Character {
@@ -131,20 +125,6 @@ export function buildSeed(cb: ReturnType<typeof buildCharBlocks>, form: Form, la
   ch.cframe = 0;
   return ch;
 }
-
-const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
-
-function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = []): Monster {
-  const m = emptyMonster();
-  m.used = 1;
-  pics.forEach((p, i) => (m.pic[i] = p));
-  Object.assign(m, o);
-  path.forEach((c, i) => (m.march[0][i] = c));
-  return m;
-}
-
-/** Back and forth `run` blocks (to the right first) at `speed`, facing the way it goes. */
-const pace = (run: number, speed: number, dy = 0): March[] => [corner(0, 0, speed), corner(run, dy, speed, 0), corner(0, 0, speed, 4)];
 
 export interface MonsterOptions {
   /** Blocks the peacock struts before turning round. */

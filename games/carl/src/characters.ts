@@ -6,11 +6,12 @@
 // (Space) throws a whoosh of wind ahead the way he last flew (power 160) that makes the swatting
 // things miss: they turn into a "MISS" for a while, then come back. The buzz (B) flies off the way he last flew (power
 // 110) and wakes what's asleep: an ear buzzed twitches, and flying into a twitching ear counts.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
 import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
 import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
 import { EARS, HOURS, KEY, MON, SEQ, SMILES, SND, SNACKS, SUGAR_START } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
+import { set, corner } from '../../kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // the block flipped left-right (the bottom block's orientation is the high nibble)
@@ -23,13 +24,6 @@ const DIAG = 4;
 const MISS_TIME = 54;
 
 type F = { pic: string; x?: number; y?: number; pause?: number; orient?: number };
-
-function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
-  if (frames.length > 10) throw new Error('Too many frames');
-  frames.forEach((fr, i) => (s.frames[i] = fr));
-  for (let i = frames.length; i < s.frames.length; i++) s.frames[i] = emptyFrame(true);
-  Object.assign(s, { sound: 255, jstkBut: 4, jstkMov: 0, ...o });
-}
 
 /** A frame that gives birth to a monster on Carl's own row. */
 const birth = (mon: number): Frame => ({ ...emptyFrame(), x: 0, y: 20, pic1: mon, pic2: MONBL, pause: 0 });
@@ -117,7 +111,6 @@ export function buildCarl(cb: ReturnType<typeof buildCharBlocks>): Character {
   return ch;
 }
 
-const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
 /** Stays put (animating). */
 const still = (): March[] => [corner(0, 0, 1), corner(0, 0, 1)];
 

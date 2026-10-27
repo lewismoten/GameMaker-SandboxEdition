@@ -13,6 +13,7 @@ import { CHARBL } from '../../../web/src/formats/blocks';
 import { MAXMARCH, emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
 import { BATTERIES, KEY, MON, MONEY, SEQ, SMIRKS, SND, SORRY, HELMET } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
+import { corner } from '../../kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // the block flipped left-right
@@ -141,8 +142,6 @@ export function buildHero(cb: ReturnType<typeof buildCharBlocks>): Character {
   ch.cframe = 0;
   return ch;
 }
-
-const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
 
 function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = []): Monster {
   const m = emptyMonster();

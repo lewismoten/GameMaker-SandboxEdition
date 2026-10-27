@@ -7,11 +7,12 @@
 // rosemary brine (power 220, two of them, at his head and his feet) once he has rosemary: it
 // beats the wild loofahs of the aisle (150) and knocks each half of Scrubbus Maximus (200) a
 // stage cleaner; the top half, cleansed, becomes the pink one.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
 import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
 import { CANDLES, COINS, KEY, MON, PINK, SALT, SEQ, SND } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
+import { set, mon, corner, pace } from '../../kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // the block flipped left-right
@@ -26,13 +27,6 @@ const HOP = 12;
 const SNEAK_STEP = 2;
 
 type F = { pic: string; x?: number; y?: number; pause?: number; mirror?: boolean };
-
-function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
-  if (frames.length > 10) throw new Error('Too many frames');
-  frames.forEach((fr, i) => (s.frames[i] = fr));
-  for (let i = frames.length; i < s.frames.length; i++) s.frames[i] = emptyFrame(true);
-  Object.assign(s, { sound: 255, jstkBut: 4, jstkMov: 0, ...o });
-}
 
 /** A frame that gives birth to a monster: row 0 = his row, -1 the row above. */
 const birth = (mon: number, row = 0): Frame => ({ ...emptyFrame(), x: 0, y: (row + 1) * 20, pic1: mon, pic2: MONBL, pause: 1 });
@@ -116,19 +110,6 @@ export function buildMan(cb: ReturnType<typeof buildCharBlocks>): Character {
   return ch;
 }
 
-const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
-
-function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = []): Monster {
-  const m = emptyMonster();
-  m.used = 1;
-  pics.forEach((p, i) => (m.pic[i] = p));
-  Object.assign(m, o);
-  path.forEach((c, i) => (m.march[0][i] = c));
-  return m;
-}
-
-/** Back and forth `run` blocks (to the right first) at `speed`, facing the way it goes. */
-const pace = (run: number, speed: number, dy = 0): March[] => [corner(0, 0, speed), corner(run, dy, speed, 0), corner(0, 0, speed, 4)];
 const still: March[] = [corner(0, 0, 1), corner(0, 0, 1)];
 
 export interface MonsterOptions {

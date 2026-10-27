@@ -11,6 +11,7 @@ import { emptyFrame, newCharacter, type Character, type Frame } from '../../../w
 import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
 import { BLEATSEQ, CHEWSEQ, MON, SCREAMSEQ, SND, WOOL } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
+import { corner } from '../../kit/actors';
 
 // Keys (scan code << 8 | ASCII): the arrows and W/A/S/D, Q/E and the number pad's lower
 // corners for the diagonals, SPACE to scream, B to bleat and C to chew.
@@ -143,8 +144,6 @@ export function buildGoat(cb: ReturnType<typeof buildCharBlocks>): Character {
   ch.meter[WOOL] = 1; // shown as meter - 1: no wool yet
   return ch;
 }
-
-const corner = (x: number, y: number, speed: number, orient = 0): March => ({ x, y, pic: speed, orient });
 
 function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = [], attack: March[] = []): Monster {
   const m = emptyMonster();
