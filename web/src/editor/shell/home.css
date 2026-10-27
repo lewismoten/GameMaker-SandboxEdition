@@ -22,7 +22,10 @@
 
 .lib-cats {
   display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
   gap: 2px;
+  min-width: 0;
   padding: 3px;
   background: var(--panel);
   border: 1px solid var(--border);
@@ -93,16 +96,18 @@
   white-space: nowrap;
 }
 
+/* never narrower than what it holds, so it moves to the next line instead of over the tabs */
 .lib-find {
   display: flex;
-  flex: 1 1 200px;
+  flex: 1 0 auto;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: 8px;
-  min-width: 0;
 }
 
 .lib-search {
-  flex: 0 1 240px;
+  flex: 1 1 110px;
+  max-width: 240px;
   min-width: 110px;
   padding: 6px 12px;
   border: 1px solid var(--border);
@@ -956,75 +961,33 @@ a.button.with-ico {
 }
 
 @media (max-width: 720px) {
-  .lib-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  /* the tabs two to a row */
-  .lib-cats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .lib-cat {
-    justify-content: flex-start;
-  }
-
-  .lib-cat-count {
-    margin-left: auto;
-  }
-
-  .lib-find {
-    flex: none;
-  }
-
-  .lib-search {
-    flex: 1 1 auto;
-  }
-
   .lib-tiles {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 }
 
-/* When the tabs, search and New game don't fit on one line, the tabs fill the first line
-   and search with New game the second, both the library's full width. */
-@container library (max-width: 960px) {
+/* The tabs and the search with its buttons share one line only when all of them fit (the
+   bar wraps rather than letting them overlap). Six tabs and the three actions are wider than
+   the library gets on most windows, so below this width the tabs fill the first line and
+   the search and buttons the second, both the library's full width. */
+@container library (max-width: 1400px) {
   .lib-bar {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .lib-cats {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
   .lib-cat {
+    flex: 1 1 auto;
     justify-content: center;
   }
 
-  .lib-find {
-    flex: none;
-  }
-
   .lib-search {
-    flex: 1 1 auto;
+    max-width: none;
   }
 }
 
-/* tabs, search and New game only just on one line (a 1440 window): tighter tabs leave
-   the search box room to show what it is for */
-@container library (min-width: 961px) and (max-width: 1100px) {
-  .lib-cat {
-    gap: 5px;
-    padding: 5px 8px;
-  }
-}
-
-/* five tabs in a narrow row: no icons, tighter, so each name and count fits */
-@container library (min-width: 560px) and (max-width: 780px) {
+/* six tabs in a narrower row: no icons, tighter, so each name and count fits */
+@container library (min-width: 481px) and (max-width: 900px) {
   .lib-cat {
     gap: 5px;
     padding: 5px 6px;
@@ -1035,8 +998,15 @@ a.button.with-ico {
   }
 }
 
-/* narrower still: the tabs two to a row */
-@container library (max-width: 559px) {
+/* narrower: the tabs three to a row, then two, in even columns */
+@container library (max-width: 680px) {
+  .lib-cats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container library (max-width: 480px) {
   .lib-cats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
