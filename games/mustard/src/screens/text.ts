@@ -2,13 +2,7 @@
 // a page), the level cards' lines (from the song), and the disk's README.TXT. The lyrics are
 // from "Mustard Seed Hustle" by The Bard of Bizarre.
 import { withCreditPage } from '../../../kit/license';
-
-const page = (lines: string[], pages = 1) => {
-  for (const l of lines) if (l.length > 30) throw new Error(`Text line over 30 columns: "${l}"`);
-  if (lines.length > 16 * pages) throw new Error(`Text over ${pages} page(s): "${lines[0]}"`);
-  while (lines.length % 16) lines.push('');
-  return lines.join('\n');
-};
+import { page } from '../../../kit/screenText';
 
 const TITLE = 'MUSTARD SEED HUSTLE';
 export const AUTHOR = 'The Bard of Bizarre';

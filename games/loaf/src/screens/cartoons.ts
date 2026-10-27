@@ -15,6 +15,7 @@ import { coverRgb } from '../art/cover';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { basketArt, hillBackdrop } from './screens';
 import { AUTHOR, CARDS } from './text';
+import { sprite } from '../../../kit/screenText';
 
 const W = 320;
 const H = 200;
@@ -53,12 +54,6 @@ function caption(p: Pixels, pal: Pal, lines: string[]): void {
 function say(p: Pixels, pal: Pal, x: number, y: number, words: string, ramp = 'crust', k = 5): void {
   outlined(p, Math.round(x - textWidth(words) / 2), y, words, pal.c(ramp, k), pal.c('ink', 0));
 }
-
-const sprite = (set: Map<string, Pixels>, name: string) => {
-  const s = set.get(name);
-  if (!s) throw new Error(`No sprite ${name}`);
-  return s;
-};
 
 // ---- the title: the cover ---------------------------------------------------------------------
 

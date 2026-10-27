@@ -15,6 +15,7 @@ import { coverRgb } from '../art/cover';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { couchArt, remoteArt, roomBackdrop, tvArt, vcrArt } from './screens';
 import { AUTHOR, CARDS } from './text';
+import { sprite } from '../../../kit/screenText';
 
 const W = 320;
 const H = 200;
@@ -55,12 +56,6 @@ function caption(p: Pixels, pal: Pal, lines: string[]): void {
 function say(p: Pixels, pal: Pal, x: number, y: number, words: string, ramp = 'yellow', k = 2): void {
   outlined(p, Math.round(Math.max(2, Math.min(W - 2 - textWidth(words), x - textWidth(words) / 2))), y, words, pal.c(ramp, k), pal.c('ink', 0));
 }
-
-const sprite = (set: Map<string, Pixels>, name: string) => {
-  const s = set.get(name);
-  if (!s) throw new Error(`No sprite ${name}`);
-  return s;
-};
 
 /** A sprite drawn only above row `cut` of the picture (you, sitting down behind the cushion). */
 function blitAbove(p: Pixels, src: Pixels, x: number, y: number, s: number, cut: number): void {

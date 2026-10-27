@@ -13,6 +13,14 @@ Making the files:
 
 - `pixels.ts` — an indexed-color canvas for 20x20 blocks and 320x200 screens, seeded randomness, dithering.
 - `palette.ts` — named color ramps for a 256-color VGA palette.
+- `palRamps.ts` — `Pal`, a built palette with its ramps looked up by name, and `wrap`, which makes one from a
+  `PaletteBuilder`.
+- `coverPaint.ts` — painting covers and title pictures in true color before they are reduced: tileable value noise
+  (`noise2`), `mixc`, `smooth` (smoothstep) and `clamp`.
+- `actors.ts` — filling in character and monster files: a sequence's frames and settings (`set`), a monster (`mon`), a
+  path `corner`, and pacing back and forth (`pace`).
+- `screenText.ts` — a text screen's lines checked to fit PLAYGAME's 30 columns and 16 lines a page (`page`), and a
+  cartoon's named `sprite`.
 - `blit.ts` — sprites with 255 as the clear color (`CLEAR`): `over` another picture, `recolor`ed through a lookup,
   scaled up (`scaleBlit`) or with a one-pixel `outline`.
 - `pcText.ts` — the PC's 8x8 font in a picture at any scale (`text`, `textWidth`), `outlined` with an optional drop

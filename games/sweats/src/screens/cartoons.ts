@@ -17,6 +17,7 @@ import type { Pal } from '../art/pal';
 import { SETS } from '../scenes';
 import type { CardView } from './art';
 import { buildScreenPalette } from './palette';
+import { sprite } from '../../../kit/screenText';
 
 const W = 320;
 const H = 200;
@@ -29,12 +30,6 @@ export interface Cast {
   /** Everybody else's (HIVE.MBL's pictures: the common cast among them). */
   mons: Map<string, Pixels>;
 }
-
-const sprite = (set: Map<string, Pixels>, name: string) => {
-  const s = set.get(name);
-  if (!s) throw new Error(`No sprite ${name}`);
-  return s;
-};
 
 /** The bar along the bottom with one or two lines. */
 function caption(p: Pixels, pal: Pal, lines: string[]): void {

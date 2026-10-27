@@ -4,7 +4,7 @@ import { song, type Voice } from './music';
 
 export const LEN: Record<string, number> = { w: 4, h: 2, q: 1, e: 0.5, s: 0.25, t: 1 / 3 };
 
-export const beatsOf = (notes: string) =>
+const beatsOf = (notes: string) =>
   notes
     .split(',')
     .map((t) => t.trim())

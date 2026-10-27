@@ -19,6 +19,7 @@ import { coverRgb } from '../art/cover';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { cheesecake, kitchenBackdrop } from './screens';
 import { AUTHOR, CARDS } from './text';
+import { sprite } from '../../../kit/screenText';
 
 const W = 320;
 const H = 200;
@@ -72,12 +73,6 @@ function spotlight(p: Pixels, pal: Pal, cx: number, cy: number, r: number, top =
       if (d > r + 6 || (d > r && (x + y) % 2)) p.set(x, y, dark);
     }
 }
-
-const sprite = (set: Map<string, Pixels>, name: string) => {
-  const s = set.get(name);
-  if (!s) throw new Error(`No sprite ${name}`);
-  return s;
-};
 
 /** A bedroom at night: wallpaper, the window and its moon, the bed with her asleep in it, the clock. */
 function bedroomBackdrop(pal: Pal): Pixels {

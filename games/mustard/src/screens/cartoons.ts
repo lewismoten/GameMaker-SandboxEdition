@@ -16,6 +16,7 @@ import { drawHand, HAND_W } from '../art/hand';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { gardenBackdrop, mound } from './screens';
 import { AUTHOR, CARDS } from './text';
+import { sprite } from '../../../kit/screenText';
 
 const W = 320;
 const H = 200;
@@ -60,12 +61,6 @@ function shout(p: Pixels, pal: Pal, x: number, y: number, words: string): void {
   p.line(x, y + 13, x - 3, y + 17, pal.c('ink', 0)).line(x - 3, y + 17, x - 6, y + 13, pal.c('ink', 0));
   outlined(p, bx + 4, y + 3, words, pal.c('red', 1), pal.c('white', 2));
 }
-
-const sprite = (set: Map<string, Pixels>, name: string) => {
-  const s = set.get(name);
-  if (!s) throw new Error(`No sprite ${name}`);
-  return s;
-};
 
 // ---- the title: the song's animated cover ---------------------------------------------------
 
