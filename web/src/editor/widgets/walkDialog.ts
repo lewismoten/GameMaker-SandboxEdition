@@ -173,7 +173,7 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
         'span',
         { class: 'wd-what' },
         h('strong', null, s.name),
-        ` — ${s.strategy ? `${styleName(s.strategy)}, ${secs(s.ticks)} s of play` : `stopped here (tried: ${s.tried.map(styleName).join(', ') || 'nothing'})`}`,
+        ` — ${s.strategy ? `${styleName(s.strategy)}, ${secs(s.ticks)} s of play` : s.tried.length ? `stopped here (tried: ${s.tried.map(styleName).join(', ')})` : 'stopped here'}`,
         s.strategy && s.paths ? `, ${Math.round(s.paths.share * 100)}% on the walking paths${s.paths.kept ? ' (it kept to them)' : ''}` : '',
         s.mine === 'broke'
           ? h(

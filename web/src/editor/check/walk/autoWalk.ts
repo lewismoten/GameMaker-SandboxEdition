@@ -92,6 +92,8 @@ interface AutoWalkOptions {
   progress?: (scene: number, strategy: string, places: number) => boolean | void;
   /** The author's own plays to use, by scene: their keys (encodeKeys), from the scene's entry. */
   mine?: Record<number, string>;
+  /** Told after each scene got through (not the last): what to keep if it is stopped in the next one. */
+  onScene?: (soFar: AutoWalk) => void;
   /** Stop after this many scenes (1: just the first scene). */
   maxScenes?: number;
   /** Walking paths to keep to: block numbers by the .bbl's name in lower case (walkPaths.ts allWalkPaths). */
@@ -213,6 +215,19 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
   let canceled = false;
   let ending: string | undefined;
   let byHand = false;
+  /** The walkthrough of the scenes got through so far. */
+  const walkSoFar = (won: boolean, end?: string): Walkthrough => ({
+    version: 1,
+    game: gameId,
+    rand: { seed, per: 'scene' },
+    bot: true,
+    partial: !won || undefined,
+    ending: won ? undefined : end,
+    byHand: byHand || undefined,
+    segments: segments.slice(),
+    chapters: chapters.slice(),
+    timeline: { fps: WALKTHROUGH_FPS, frames: 0, chapters: [] },
+  });
   for (let guard = 0; guard < 200 && scene !== 1; guard++) {
     const s = game.scenes[scene];
     const name = s.desc.trim() || `Scene ${scene}`;
@@ -370,19 +385,17 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     taken.set(`${scene}>${link.toScene}`, (taken.get(`${scene}>${link.toScene}`) ?? 0) + 1);
     entry = { start: link.to, ci: replay.ci, clock: replay.clock, prev: replay.world };
     scene = link.toScene;
+    // what is kept if it is stopped in the next scene
+    if (opt.onScene) {
+      const nextName = game.scenes[scene]?.desc.trim() || `Scene ${scene}`;
+      opt.onScene({
+        scenes: [...out.scenes.map(({ heat: _h, ...o }) => ({ ...o, tried: o.tried.slice() })), { scene, name: nextName, tried: [] }],
+        won: false,
+        stopped: 'Stopped.',
+        walk: walkSoFar(false, endingOf(nextName, 'stopped')),
+      });
+    }
   }
-  if (segments.length)
-    out.walk = {
-      version: 1,
-      game: gameId,
-      rand: { seed, per: 'scene' },
-      bot: true,
-      partial: !out.won || undefined,
-      ending: out.won ? undefined : ending,
-      byHand: byHand || undefined,
-      segments,
-      chapters,
-      timeline: { fps: WALKTHROUGH_FPS, frames: 0, chapters: [] },
-    };
+  if (segments.length) out.walk = walkSoFar(out.won, ending);
   return out;
 }

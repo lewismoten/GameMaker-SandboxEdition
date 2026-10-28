@@ -2,8 +2,8 @@
 // then plays it on the real engine (verify.ts) to check and time it. Posts progress, then the
 // result; stopping ends the worker (walkClient.ts). It can play the author's own plays of
 // scenes (mine.ts), and can walk one scene alone (the Level check's Watch the bot), the game
-// then started at that scene as the play test starts it. Told to stop, it stops in the scene it
-// is in and still sends the walkthrough of the scenes before it.
+// then started at that scene as the play test starts it. After each scene it gets through it
+// sends the walkthrough so far, which is kept if it is stopped in the next (walkClient.ts).
 import { GameFiles } from '../../../project/files';
 import { parseGame, serializeGame } from '../../../formats/game';
 import { startingAt } from '../../editors/integrator/startAt';
@@ -28,22 +28,15 @@ export interface WalkRequest {
   reuse?: Reused[];
 }
 
-/** Sent while it walks: stop in this scene, keeping the ones before it. */
-export interface WalkStop {
-  stop: true;
-}
-
-export type WalkMessage = { kind: 'progress'; what: string } | { kind: 'done'; result: AutoWalk; verified?: Verified } | { kind: 'error'; message: string };
+export type WalkMessage =
+  | { kind: 'progress'; what: string }
+  | { kind: 'scene'; soFar: AutoWalk }
+  | { kind: 'done'; result: AutoWalk; verified?: Verified }
+  | { kind: 'error'; message: string };
 
 const post = (m: WalkMessage) => (self as unknown as Worker).postMessage(m);
 
-let stopAsked = false;
-
-self.onmessage = async (e: MessageEvent<WalkRequest | WalkStop>) => {
-  if ('stop' in e.data) {
-    stopAsked = true;
-    return;
-  }
+self.onmessage = async (e: MessageEvent<WalkRequest>) => {
   const req = e.data;
   try {
     const files = new GameFiles(req.files);
@@ -61,9 +54,9 @@ self.onmessage = async (e: MessageEvent<WalkRequest | WalkStop>) => {
           mine: req.mine,
           paths: req.paths,
           reuse: req.reuse,
+          onScene: (soFar) => post({ kind: 'scene', soFar }),
           maxScenes: req.only !== undefined ? 1 : undefined,
           progress: (scene, style, places) => {
-            if (stopAsked) return true;
             if (performance.now() - last < 250) return;
             last = performance.now();
             post({ kind: 'progress', what: `${game.scenes[scene]?.desc.trim() || `Scene ${scene}`}: ${style}, ${places} places tried` });
