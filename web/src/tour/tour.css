@@ -383,3 +383,12 @@
     height: var(--tour-bar-h, 0px);
   }
 }
+
+/* what the tour opens to show (the box viewer, a manual in its box, the magazine, the game pad's
+   large controls: steps.ts Opener) stops above the caption bar, so its own buttons show */
+.tour-on :is(.gmb, .box-viewer, .mag-overlay) {
+  bottom: var(--tour-bar-h, 0px);
+}
+.tour-on .gp-panel {
+  bottom: calc(var(--tour-bar-h, 0px) + 16px);
+}

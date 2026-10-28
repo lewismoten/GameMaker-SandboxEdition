@@ -1,7 +1,19 @@
 // The tour's Guide chapter: Inspector Ada Penn, from Final Curtain, works through the Guide.
-// It always starts at its first part (Getting started) and turns one page with Next. Checked
-// against manual/webManual.ts and guideSections.ts.
-import type { Chapter } from '../steps';
+// It always starts at its first part (Getting started), opens the Owner's Guide (a page turned)
+// and The Ultimate Owner's Guide in the Game-Maker box's viewer, shutting each again, and turns
+// one page with Next. Checked against manual/webManual.ts, guideSections.ts, dosManual.ts,
+// ultimate/openUltimate.ts and printables/viewer.ts.
+import type { Chapter, Opener } from '../steps';
+
+/** A manual in the Game-Maker box's viewer, opened by its button on the Guide's first page. */
+const inBox = (label: string, button: string): Opener => ({
+  label,
+  by: `.guide article ${button}`,
+  shown: '.gmb .gmb-stage',
+  close: '.gmb .gmb-bar > button:last-child',
+});
+const owners = inBox('the Owner’s Guide', '.guide-open-owners');
+const ultimate = inBox('The Ultimate Owner’s Guide', '.guide-open-ultimate');
 
 /** A part of the Guide in its contents (on a phone, in the Contents menu opened to show it). */
 const part = (title: string) => ({ label: `${title} in the Guide’s contents`, css: '.guide-toc nav a', text: title, reveal: '.guide-toc > summary' });
@@ -52,16 +64,35 @@ export const guideChapter: Chapter = {
     },
     {
       id: 'guide-owners',
-      action: 'point',
-      target: { label: 'the Open the Owner’s Guide button', css: '.guide article .guide-open-owners' },
+      action: 'press',
+      target: { label: 'the Open the Owner’s Guide button', css: owners.by },
+      opens: owners,
       say: 'The Owner’s Guide explains every part of a game, and how the parts fit together.',
       sound: 'hmm',
     },
     {
+      id: 'guide-owners-page',
+      action: 'press',
+      // the box viewer's page turn (its Pages view; a phone or Scroll has none)
+      target: { label: 'the Owner’s Guide’s next page arrow', css: '.gmb .gmb-nav button[aria-label="Next page"]', in: owners },
+      click: true,
+      say: 'It opens in the Game-Maker box, as it came in 1994. Turn the pages, or print it as a booklet.',
+      sound: 'creak',
+      optional: true,
+    },
+    {
       id: 'guide-ultimate',
-      action: 'point',
-      target: { label: 'the Open The Ultimate Owner’s Guide button', css: '.guide article .guide-open-ultimate' },
+      action: 'press',
+      target: { label: 'the Open The Ultimate Owner’s Guide button', css: ultimate.by },
+      opens: ultimate,
       say: 'The Ultimate Owner’s Guide is about making a game people enjoy. The Level check uses its checklists.',
+    },
+    {
+      id: 'guide-ultimate-read',
+      action: 'point',
+      target: { label: 'The Ultimate Owner’s Guide, open', css: '.gmb .gmb-stage', in: ultimate },
+      say: 'Heroes that feel right, levels that teach, fair enemies, then play-testing. A case file for every game.',
+      sound: 'aha',
     },
     {
       id: 'guide-next',
