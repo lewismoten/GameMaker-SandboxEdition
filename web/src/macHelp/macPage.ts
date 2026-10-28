@@ -129,7 +129,7 @@ export function renderMacHelp(el: HTMLElement): void {
           h(
             'li',
             null,
-            'It is open source: the Mac program is a few hundred lines of Swift in the ',
+            'It is open source: the Mac program is under two hundred lines of Swift in the ',
             h('a', { href: `${REPO_URL}/tree/HEAD/mac`, target: '_blank', rel: 'noopener' }, 'mac folder of the project’s source code'),
             ', and the code that builds each app in your browser is in the same project.',
           ),
