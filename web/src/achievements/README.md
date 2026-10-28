@@ -9,4 +9,5 @@ starts (`start.ts`, whose `gm-achievement` event unlocks an id or tallies an ite
 finished (`playedOn.ts`: the desk, the DOS page or the web player, and a phone held wide or tall), totals counted from the games catalog
 (`goals.ts`), the unlock note (`toast.ts`), the `#/achievements` page (`page.ts`: badges of one size, each opening its details in
 `details.ts`, with where it is earned from `where.ts`) and the desk's
-`ACHIEVE.EXE` (`achieveExe.ts`).
+`ACHIEVE.EXE` (`achieveExe.ts`). While a guided tour plays nothing counts (`store.ts`): what the
+tour presses, calls or reads isn't the visitor's own doing.

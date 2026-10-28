@@ -126,8 +126,16 @@ function announceUnlock(id: string): void {
   void import('./toast').then((m) => m.showUnlock(id));
 }
 
+/**
+ * While a guided tour plays (tour/: the html element's tour-on class) nothing counts: the tour
+ * presses things, calls the BBS and turns the magazine's pages, and none of that is the
+ * visitor's own doing.
+ */
+const touring = () => typeof document !== 'undefined' && document.documentElement.classList.contains('tour-on');
+
 /** Applies a change now, or once the record is read. The change says whether it changed anything. */
 function change(f: (r: AchievementRecord) => boolean): void {
+  if (touring()) return;
   if (!record) {
     held.push(f);
     void loadAchievements();
