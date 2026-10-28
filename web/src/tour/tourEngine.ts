@@ -243,7 +243,7 @@ export class Tour {
     }
     // the control: shown from its menu or overlay if it is in one, others the tour opened closed
     const need = this.handleFor(step);
-    for (const [k, m] of this.opened) if (k !== need?.key) (m.close(), this.opened.delete(k));
+    for (const [k, m] of this.opened) if (k !== need?.key) (this.closeKeepingFocus(m), this.opened.delete(k));
     let target = step.target ? findTarget(step.target) : undefined;
     if (need && step.target && (!target || !need.isOpen())) {
       await this.openKeepingFocus(need);
@@ -303,6 +303,13 @@ export class Tour {
     if (document.querySelector('dialog:modal')) this.raise();
   }
 
+  /** Shuts a menu or overlay; one that hands the keyboard back to what opened it leaves it on the tour's bar. */
+  private closeKeepingFocus(m: Opened): void {
+    const had = document.activeElement as HTMLElement | null;
+    m.close();
+    if (had && this.bar.contains(had) && had.isConnected && document.activeElement !== had) had.focus({ preventScroll: true });
+  }
+
   /** The layer and the bar in the browser's top layer, above a modal dialog just opened. */
   private raise(): void {
     for (const el of [this.layer, this.bar]) {
@@ -332,7 +339,7 @@ export class Tour {
    * act, once it did something there), and what it changed put back.
    */
   private async leaveChapter(): Promise<void> {
-    for (const m of this.opened.values()) m.close();
+    for (const m of this.opened.values()) this.closeKeepingFocus(m);
     this.opened.clear();
     const chapter = this.chapterShown;
     if (chapter?.leave && this.actedIn.delete(chapter)) pageAct({ do: chapter.leave });

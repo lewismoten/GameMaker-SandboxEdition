@@ -40,8 +40,8 @@ export function overlayHandle(o: Opener, click: (el: HTMLElement) => void): Open
     isOpen: () => !!shown(),
     open: async () => {
       if (shown()) return;
-      // a menu's item works hidden: the magazine is opened from the paper stack's menu
-      const by = document.querySelector<HTMLElement>(o.by);
+      // a menu's item works hidden (the paper stack's magazine); a box on a shelf a phone doesn't show isn't taken down
+      const by = o.hiddenBy ? document.querySelector<HTMLElement>(o.by) : findTarget({ label: o.label, css: o.by });
       if (!by) return;
       click(by);
       // a manual or a box can take a few seconds to lay out

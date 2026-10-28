@@ -2,11 +2,35 @@
 // and its PC (#/desk). The room is drawn in HTML (desk/deskScene.ts), so every part is a real
 // element a selector finds. The only real press is Power, and only while the PC is off (it
 // never switches it off); the rest is pointed at, so the disk in drive A:, what the PC runs and
-// what has been found stay as the visitor left them. On a phone the room is a column without the
-// wall (no shelf, poster, clock or phone): those steps are left out there. Checked against
-// desk/deskScene.ts, desk.ts, deskPc.ts, disks/, pc/ (keyboard, gamePad, modem), boxes/shelf.ts,
-// room/ (paperStack, wallClock, phone/calls) and props/propKit.ts.
-import type { Chapter } from '../steps';
+// what has been found stay as the visitor left them. It opens three things to show them and
+// shuts them again: the box standing face out on the shelf (so the shelf stays as it was), in
+// the box viewer with what came in it; TURBO BUTTON, a page or two turned; and the game pad's
+// large controls. On a phone the room is a column without the wall (no shelf, poster, clock or
+// phone): those steps are left out there. Checked against desk/deskScene.ts, desk.ts, deskPc.ts,
+// disks/, pc/ (keyboard, gamePad, gamePadPanel, modem), boxes/ (shelf, boxViewer,
+// gameBoxContents), room/ (paperStack, wallClock, phone/calls), props/propKit.ts and
+// manual/magazine/viewer.ts.
+import type { Chapter, Opener } from '../steps';
+
+/** The box standing face out on the shelf, taken down into the box viewer. */
+const box: Opener = {
+  label: 'the box viewer',
+  by: '.desk-scene .game-shelf .shelf-box.face-out',
+  shown: '.box-viewer .box-stage',
+  close: '.box-viewer .box-viewer-bar button:last-child',
+};
+
+/** TURBO BUTTON, opened from the paper stack's menu. */
+const magazine: Opener = {
+  label: 'the magazine',
+  by: '.desk-scene .ps-choice[data-pick="magazine"]',
+  hiddenBy: true,
+  shown: '.mag-overlay .mag-stage',
+  close: '.mag-overlay .mag-bar > button:last-child',
+};
+
+/** The magazine's next-page arrow. */
+const nextPage = { label: 'the magazine’s next page arrow', css: '.mag-overlay .mag-bar .mag-turn[aria-label="Next page"]', in: magazine };
 
 export const deskChapter: Chapter = {
   id: 'desk',
@@ -84,6 +108,14 @@ export const deskChapter: Chapter = {
       say: 'The GRAVITAS pad is the PC’s joystick. A real gamepad works too, and a click opens big buttons.',
     },
     {
+      id: 'desk-pad-panel',
+      action: 'point',
+      // opened by clicking the pad, and shut by clicking it again
+      target: { label: 'the game pad’s large controls', css: '.gp-panel .gp-panel-pad', reveal: '.desk-scene .game-pad' },
+      say: 'Big buttons for the d-pad’s eight ways and all four buttons. Game-Maker games read the d-pad and the red and yellow buttons.',
+      sound: 'blip',
+    },
+    {
       id: 'desk-shelf',
       action: 'point',
       target: { label: 'the shelf of game boxes', css: '.desk-scene .game-shelf' },
@@ -91,10 +123,78 @@ export const deskChapter: Chapter = {
       optional: true,
     },
     {
+      id: 'desk-box-open',
+      action: 'press',
+      target: { label: 'the box standing face out', css: box.by },
+      opens: box,
+      say: 'Like this one. Down it comes!',
+      sound: 'pop',
+      optional: true,
+    },
+    {
+      id: 'desk-box-turn',
+      action: 'point',
+      target: { label: 'the box, turning', css: '.box-viewer .box-stage .box3d', in: box },
+      say: 'It turns all the way around, so you can read the back. Drag it to turn it yourself, or scroll to zoom.',
+      optional: true,
+    },
+    {
+      id: 'desk-box-disks',
+      action: 'point',
+      target: { label: 'the disks in the box', css: '.box-viewer .bc-disks', in: box },
+      say: 'Inside, the game’s disks. Click them and disk one goes in drive A: to play.',
+      optional: true,
+    },
+    {
+      id: 'desk-box-manual',
+      action: 'point',
+      target: { label: 'the manual in the box', css: '.box-viewer .bc-manual', in: box },
+      say: 'Its manual, with a cover all its own.',
+      optional: true,
+    },
+    {
+      id: 'desk-box-extras',
+      action: 'point',
+      target: { label: 'the list of what else came in the box', css: '.box-viewer .bc-list', in: box },
+      say: 'And everything else that came in the box, each piece ready to read or print.',
+      sound: 'flutter',
+      optional: true,
+    },
+    {
       id: 'desk-papers',
       action: 'point',
       target: { label: 'the catalog and the magazine', css: '.desk-scene .ps-toggle' },
       say: 'The shareware catalog and TURBO BUTTON magazine. Read either one; the catalog can even call the BBS.',
+    },
+    {
+      id: 'desk-mag-open',
+      action: 'press',
+      target: { label: 'the catalog and the magazine', css: '.desk-scene .ps-toggle' },
+      opens: magazine,
+      say: 'Let’s peek inside this month’s TURBO BUTTON.',
+      sound: 'flutter',
+    },
+    {
+      id: 'desk-mag-cover',
+      action: 'point',
+      target: { label: 'the magazine’s pages', css: '.mag-overlay .mag-stage', in: magazine },
+      say: 'The big news on the cover: Game-Maker’s source code, set free!',
+    },
+    {
+      id: 'desk-mag-turn',
+      action: 'press',
+      target: nextPage,
+      click: true,
+      say: 'Turn the pages with the arrows: reviews, hints, readers’ letters, and ads for the things on this desk.',
+      sound: 'flutter',
+    },
+    {
+      id: 'desk-mag-links',
+      action: 'press',
+      target: nextPage,
+      click: true,
+      say: 'Its links work, too: they play games, call the BBS, or point out things in my room.',
+      sound: 'flutter',
     },
     {
       id: 'desk-modem',

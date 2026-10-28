@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CHAPTERS } from './chapters/index';
 import { tourLines } from './lines';
-import { BARKS, HOSTS, MAX_CAPTION, MAX_SAY, MUSIC, PROPS, SOUNDS, captionOf, cssList } from './steps';
+import { BARKS, HOSTS, MAX_CAPTION, MAX_SAY, MUSIC, PROPS, SOUNDS, captionOf, cssList, type Opener } from './steps';
 import { CHAPTER_PAGES } from './tourPages';
 
 const GAMES = join(__dirname, '../../../games');
@@ -23,7 +23,7 @@ const SOURCES: Record<string, string[]> = {
   guide: ['manual/webManual.ts', 'manual/guideSections.ts'],
   credits: ['main.ts', 'settingsMenu.ts', 'theme.ts', 'tour/tourButton.ts', 'credits', 'pageToc.ts'],
   editor: ['editor/shell', 'editor/editors/map/map.ts', 'editor/editors/map/check/checkPanel.ts', 'editor/editors/palette/palette.ts'],
-  desk: ['desk', 'desk/pc', 'desk/disks', 'desk/boxes', 'desk/room', 'desk/props', 'viewSwitch.ts', 'tour/tourButton.ts'],
+  desk: ['desk', 'desk/pc', 'desk/disks', 'desk/boxes', 'desk/room', 'desk/props', 'manual/magazine/viewer.ts', 'viewSwitch.ts', 'tour/tourButton.ts'],
   dos: ['dosPage', 'retro/gmReg', 'viewSwitch.ts', 'tour/tourButton.ts'],
 };
 const sourceText = (paths: string[]) =>
@@ -67,14 +67,17 @@ describe('the tour’s data', () => {
   it('points only at steps that need a target, and moves only to ones it has', () => {
     for (const { s } of steps) {
       if (s.action === 'point' || s.action === 'press') expect(s.target, s.id).toBeDefined();
-      if (s.click) expect(s.action, s.id).toBe('press');
+      if (s.click || s.opens) expect(s.action, s.id).toBe('press');
     }
   });
 
   it('points at controls the page’s code makes', () => {
     for (const c of CHAPTERS) {
       const text = sourceText(SOURCES[c.page] ?? []);
-      const css = c.steps.flatMap((s) => (s.target ? [...cssList(s.target.css), ...cssList(s.target.reveal)] : [])).concat(c.ready);
+      const opener = (o?: Opener) => (o ? [o.by, o.shown, o.close] : []);
+      const css = c.steps
+        .flatMap((s) => [...(s.target ? [...cssList(s.target.css), ...cssList(s.target.reveal), ...opener(s.target.in)] : []), ...opener(s.opens)])
+        .concat(c.ready);
       for (const sel of css) {
         for (const [, name] of sel.matchAll(/[.#]([a-z][\w-]*)/gi)) expect(text.includes(name), `${c.id}: ${sel} (${name})`).toBe(true);
         for (const [, href] of sel.matchAll(/href="([^"]+)"/g)) expect(text.includes(`'${href}'`), `${c.id}: ${sel}`).toBe(true);

@@ -150,8 +150,10 @@ export interface Target {
 export interface Opener {
   /** What it is, in plain words ("the box viewer"). */
   label: string;
-  /** The control that opens it: clicked even when the page keeps it in a closed menu. */
+  /** The control that opens it: clicked only while it shows, unless `hiddenBy`. */
   by: string;
+  /** `by` is clicked even while the page keeps it in a closed menu (the paper stack's magazine). */
+  hiddenBy?: boolean;
   /** On the page while it is open. */
   shown: string;
   /** Its close button. */
