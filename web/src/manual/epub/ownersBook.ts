@@ -11,13 +11,20 @@ import { EpubMedia } from './media';
 import { h } from '../../editor/core/ui';
 
 export async function ownersBook(): Promise<EpubBook> {
-  const [{ dosManualPages }, { TITLE }, { gmCoverSheet }] = await Promise.all([
+  const [{ dosManualPages }, { TITLE }, { gmCover }, { sheet }, { mapShot }] = await Promise.all([
     import('../dosManual'),
     import('../dosManualKit'),
-    import('../../library/covers'),
+    import('../printables/gmCover'),
+    import('../printables/kit'),
+    import('../../gfx/gameShots'),
   ]);
   const pages: BookPage[] = await dosManualPages();
+  // the cover as the guide shows it, peeled back on Teddy's game (drawn here, not with the
+  // Library's covers: the DOS page opens this guide, and must load nothing of the desk)
   const teddy = (await loadCatalog().catch(() => [])).find((e) => e.id === 'teddy');
+  const at = teddy?.original?.box?.shots?.[0];
+  const shot = teddy && at ? await mapShot(teddy, at[0], at[1], at[2], 16, 10).catch(() => undefined) : undefined;
+  const coverSheet = sheet(5.5, 8.5, 'gm-thumb', gmCover(shot?.toDataURL(), shot ? teddy?.title : undefined));
   // runs of pages under one running head: one chapter each
   const runs: { head: string; first: number; pages: BookPage[] }[] = [];
   pages.forEach((p, i) => {
@@ -65,7 +72,7 @@ export async function ownersBook(): Promise<EpubBook> {
     publisher: 'Sandbox Software',
     date: '1995',
     description: 'The Owner’s Guide from the Game-Maker: Sandbox Edition box: the 1994 desk PC, DOS and Game-Maker 3.0’s menus and design tools.',
-    cover: await coverPicture(await gmCoverSheet(teddy), 'Owner’s Guide cover: GAME-MAKER, Sandbox Edition, Version 3.0, on a blueprint'),
+    cover: await coverPicture(coverSheet, 'Owner’s Guide cover: GAME-MAKER, Sandbox Edition, Version 3.0, on a blueprint'),
     chapters,
     files: media.files,
   };
