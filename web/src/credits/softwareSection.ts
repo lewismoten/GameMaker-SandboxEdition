@@ -121,7 +121,7 @@ export function softwareSection(): HTMLElement {
           ext('https://huggingface.co/kyutai/pocket-tts', 'Pocket TTS'),
           ' (CC BY 4.0) in vlapky’s ',
           ext('https://huggingface.co/vlapky/pocket-tts-onnx', 'ONNX conversion'),
-          ' with Microsoft’s ONNX Runtime (MIT), and ffmpeg; Gwinn’s lines use ',
+          ' with Microsoft’s ONNX Runtime (MIT), and ffmpeg; Gwinn’s, Dex Dynamo’s, Inspector Ada Penn’s and Courier Max’s lines use ',
           ext('https://huggingface.co/hexgrad/Kokoro-82M', 'Kokoro-82M'),
           ' (Apache-2.0) through ',
           ext('https://www.npmjs.com/package/kokoro-js', 'kokoro-js'),

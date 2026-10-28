@@ -34,17 +34,30 @@ game, that game's music and its sound effects:
 | `achievements`                         | `#/achievements`                 | Dex Dynamo, In The Year 2000! (Kokoro Puck +3)                                         | In The Year 2000!'s title |
 | `cast`                                 | `#/cast`                         | Doc Leo (Lewis's own voice), Teddy, Gwinn                                              | Teddy's Clown Club        |
 | `guide`                                | `#/help` (always its first part) | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
-| `settings`: the ⚙ menu                 | `#/credits`                      | Courier Max, Maximus (scroobie)                                                        | Maximus's station         |
+| `settings`: the ⚙ menu                 | `#/credits`                      | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
 | `editor`                               | `#/p/look:logic/kitchen.map`     | Watt, Ohm Sweet Ohm (Lewis +7), the BLASTER ship flying by                             | Ohm Sweet Ohm's garage    |
 | `desk`: the 1994 desk                  | `#/desk`                         | teenage Lewie, Snowbound (Lewis +5), THE CHEZ driving by                               | Snowbound's title         |
+| `bbs`: calling the BBS                 | `#/desk`                         | Dex Dynamo (Kokoro Puck +3) calls; teenage Lewie, the board's SysOp                    | In The Year 2000!'s title |
 | `dos`: DOS Game-Maker                  | `dos.html`                       | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
 
-The Settings chapter opens the menu to show each item and shuts it again, and starts nothing
+Home presses each collection's tab in turn (Imported's ratings, notes, Show and Sort by when it
+has games; the import tile when it has none; what shareware was), and puts the visitor's own
+tab, and the collection it remembered, back at the end (the chapter's `keep`). The Guide chapter
+opens the Owner's Guide (a page turned) and The Ultimate Owner's Guide and shuts them again. The
+Settings chapter opens the menu to show each item and shuts it again, and starts nothing
 (no download, no restore). The editor chapter looks inside Ohm Sweet Ohm as released: read-only
 and in memory, so it makes no project and changes none of the visitor's; started from their own
-game, it goes back there when it ends. The desk chapter really presses only Power, and only while
-the PC is off (`click` with a selector); on a phone, where the room is a column with no wall, its
-shelf, phone, clock and poster steps are left out. The DOS chapter types and presses nothing.
+game, it goes back there when it ends. The desk chapter presses Power only while
+the PC is off (`click` with a selector), opens the game pad's large controls, takes the box
+standing face out off the shelf into the box viewer and peeks inside TURBO BUTTON, shutting each
+again; on a phone, where the room is a column with no wall, its shelf (and box), phone, clock and
+poster steps are left out. The BBS chapter has the desk's PC call The Sandbox BBS
+(`desk/deskTour.ts`, asked with page acts): GUEST logs in, the newest files are listed, one is
+viewed and downloaded, and the modem's speed goes to Unlimited partway through; leaving the
+chapter stops the call and puts back the line speed, the board's user file, its door game and
+C:'s downloads as found. A PC busy with the visitor's own program is left alone (the call's steps
+are left out). The DOS chapter types and presses nothing. Nothing counts toward an achievement
+while a tour plays (`achievements/store.ts`).
 
 **Another page.** The DOS page is `dos.html`, not `index.html`, so a chapter there (`file`) is
 reached with a page load: the tour shows its title card, then goes to
@@ -55,6 +68,16 @@ card asks again). Whole tours leave out steps marked `pageOnly` (Home's Play off
 which the Settings chapter shows). While a tour plays the page hears `gm-tour` events: the desk's
 stage leaves room for the caption bar (`desk/stage.ts`), the DOS page stops above it (`--tour-bar-h`
 in `tour.css`), and achievement notes wait until it ends (`achievements/toast.ts`).
+
+**Opening things.** A step's target can be in a menu (`reveal`) or in something a press opens
+(`opens` on the press, `in` on the steps inside: an `Opener` with the control that opens it, what
+shows while open, and its close button). The tour opens it again after Back, keeps it while the
+next step is in it too, and shuts it when it moves on, leaves the chapter or ends; the keyboard
+stays on the tour's bar, the bar and layer stay usable over an overlay that makes the page inert
+(and are raised above a modal dialog), what it opens stops above the caption bar, and the ring
+goes when what a press opened covers the control. A chapter's `keep` puts back settings, the
+selected tab and address settings it changed; a step's `act` asks the page to do something
+(`gm-tour-act`), and the chapter's `leave` act tidies up after.
 
 In a tour: Back, Pause, Next, Sound (the mute switch, remembered as `gm-tour-sound`; a browser
 whose demo sound is None starts muted) and Close tour; Esc ends it from anywhere, and the keyboard
@@ -89,6 +112,7 @@ A 1280×720 or 1920×1080 window records cleanly.
   (with the chapter's hosts), menus and panels opened to show an item in them and shut again,
   another address on the same page for a step (`go`: the editor's palette after its map; Back
   goes back to it), a chapter that always plays at its own address (`always`), and the keys.
+- `tourOpen.ts`: the menus and overlays the tour opens to show what is in them, and shuts again.
 - `findTarget.ts`: a step's control on the page: the first visible match of its selectors (so a
   narrow window's ⋯ menu stands in for a header link; one cut off by a box that hides its overflow,
   like a phone's folded tip, doesn't count), and the menu or panel to open to show it.

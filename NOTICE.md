@@ -242,10 +242,11 @@ game folder opens in the browser unchanged.
   and Lewis's recording stay on his computer and are not in the repository or any download;
   Pocket TTS's built-in voices are never used. Only the generated clips are committed, and they
   play on the site only (exported games don't carry them).
-  The cloned voices speak for Doc Leo (Lewis's own), Joe the night librarian, teenage Lewie, Courier
-  Max, Watt and Professor Fiddlesticks, each shifted in pitch and speed. Gwinn's lines are spoken in **Kokoro**'s stock
-  "Sky" voice (`af_sky`), pitched up, Dex Dynamo's in its "Puck" voice (`am_puck`) and Inspector
-  Ada Penn's in its "Emma" voice (`bf_emma`): **Kokoro-82M**
+  The cloned voices speak for Doc Leo (Lewis's own), Joe the night librarian, teenage Lewie,
+  Watt and Professor Fiddlesticks, each shifted in pitch and speed. Gwinn's lines are spoken in **Kokoro**'s stock
+  "Sky" voice (`af_sky`), pitched up, Dex Dynamo's in its "Puck" voice (`am_puck`), Inspector
+  Ada Penn's in its "Emma" voice (`bf_emma`) and Courier Max's in its "Michael" voice
+  (`am_michael`), a little faster: **Kokoro-82M**
   by hexgrad ([huggingface.co/hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M),
   Apache-2.0) in the ONNX Community's conversion, run by **kokoro-js** (Apache-2.0) with Hugging
   Face's **Transformers.js** (Apache-2.0), the **phonemizer** package (Apache-2.0) and ONNX

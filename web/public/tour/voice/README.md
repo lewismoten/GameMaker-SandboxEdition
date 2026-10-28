@@ -25,6 +25,21 @@ records every clip again.
 | [home-walkthrough.ogg](home/home-walkthrough.ogg) | Stuck? Walkthrough plays the whole game for you, start to finish. | Home: Teddy points at the Walkthrough button | 4.30 |
 | [home-download.ogg](home/home-download.ogg) | Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS. | Home: Teddy points at the Download button | 5.94 |
 | [home-tabs.ogg](home/home-tabs.ogg) | These tabs are the collections: your games, ones you bring in, and shelves of games ready to play. | Home: Teddy points at the collection tabs | 6.42 |
+| [home-tab-mine.ogg](home/home-tab-mine.ogg) | My games: the ones you make here, or copy from a shelf to change. They stay in this browser. | Home: Teddy presses the My games tab | 6.32 |
+| [home-tab-imported.ogg](home/home-tab-imported.ogg) | Imported holds games you bring in: a folder, some files, a .zip, or a one-page export. | Home: Teddy presses the Imported tab | 6.67 |
+| [home-imported-none.ogg](home/home-imported-none.ogg) | Nothing here yet? Drop game files on this tile, or click it to pick them. | Home: Teddy points at the import tile | 5.12 |
+| [home-rate.ogg](home/home-rate.ogg) | Up top is one of them. Give it one to five stars: your rating saves at once. | Home: Teddy points at the rating stars of the imported game up top | 5.72 |
+| [home-note.ogg](home/home-note.ogg) | Add a note keeps a few words about a game, just for you. | Home: Teddy points at the Add a note button | 4.22 |
+| [home-stars.ogg](home/home-stars.ogg) | Rated games wear their stars on their tiles. | Home: Teddy points at a rated tile’s stars | 3.75 |
+| [home-show.ogg](home/home-show.ogg) | Show narrows the list to one rating, or to the games you haven’t rated yet. | Home: Teddy points at the Show rating picker | 5.22 |
+| [home-sort.ogg](home/home-sort.ogg) | Sort by Rating puts your five-star games first, with the unrated ones last. | Home: Teddy points at the Sort by picker | 5.50 |
+| [home-notes-search.ogg](home/home-notes-search.ogg) | And the search box finds the words in your notes, too. | Home: Teddy points at the Find a game box | 3.97 |
+| [home-tab-sandbox.ogg](home/home-tab-sandbox.ogg) | Sandbox: new games made with Game-Maker in its original formats, so they play in real DOS too. | Home: Teddy presses the Sandbox tab | 6.87 |
+| [home-tab-bizarre.ogg](home/home-tab-bizarre.ogg) | Bizarre: big, heartfelt songs about all the wrong things, each one made into a game. | Home: Teddy presses the Bizarre tab | 5.75 |
+| [home-tab-gameware.ogg](home/home-tab-gameware.ogg) | Gameware: the free games that came with Game-Maker. Play one, or edit a copy to see how it works. | Home: Teddy presses the Gameware tab | 6.80 |
+| [home-tab-shareware.ogg](home/home-tab-shareware.ogg) | Shareware: games other people made with Game-Maker, from the CD and the BBSes. | Home: Teddy presses the Shareware tab | 5.97 |
+| [home-shareware-what.ogg](home/home-shareware-what.ogg) | Shareware meant try it free. If you kept playing, you sent the author a fee. Games got around on floppy disks and BBSes. | Home: Teddy points at the shareware games | 8.35 |
+| [home-shareware-notice.ogg](home/home-shareware-notice.ogg) | They’re other people’s games, so most just play here, exactly as released. Each keeps its author’s notice. | Home: Teddy points at the shareware games | 6.97 |
 | [home-search.ogg](home/home-search.ogg) | Looking for one game? Type part of its name here. | Home: Teddy points at the Find a game box | 3.82 |
 | [home-new.ogg](home/home-new.ogg) | New game starts one of your own: ready to play, empty, or described in words for your own AI to build. | Home: Teddy presses the New game button | 7.24 |
 | [home-games.ogg](home/home-games.ogg) | Games, up in the bar, always brings you back here. | Home: Teddy points at Games in the header | 3.97 |
@@ -96,8 +111,10 @@ records every clip again.
 | [guide-tip.ogg](guide/guide-tip.ogg) | New here? Play a game, Look inside it, Edit a copy, then change one small thing and play again. | Guide: Inspector Penn points at the tip for new game makers | 6.43 |
 | [guide-contents.ogg](guide/guide-contents.ogg) | The contents, one part at a time. The editors explains each tool, from maps to music. | Guide: Inspector Penn points at The editors in the Guide’s contents | 6.38 |
 | [guide-sharing.ogg](guide/guide-sharing.ogg) | Sharing your game: a web app for any web host, a copy for real DOS, or just its files. | Guide: Inspector Penn points at Sharing your game in the Guide’s contents | 6.43 |
-| [guide-owners.ogg](guide/guide-owners.ogg) | The Owner’s Guide explains every part of a game, and how the parts fit together. | Guide: Inspector Penn points at the Open the Owner’s Guide button | 5.70 |
-| [guide-ultimate.ogg](guide/guide-ultimate.ogg) | The Ultimate Owner’s Guide is about making a game people enjoy. The Level check uses its checklists. | Guide: Inspector Penn points at the Open The Ultimate Owner’s Guide button | 6.95 |
+| [guide-owners.ogg](guide/guide-owners.ogg) | The Owner’s Guide explains every part of a game, and how the parts fit together. | Guide: Inspector Penn presses the Open the Owner’s Guide button | 5.70 |
+| [guide-owners-page.ogg](guide/guide-owners-page.ogg) | It opens in the Game-Maker box, as it came in 1994. Turn the pages, or print it as a booklet. | Guide: Inspector Penn presses the Owner’s Guide’s next page arrow | 7.25 |
+| [guide-ultimate.ogg](guide/guide-ultimate.ogg) | The Ultimate Owner’s Guide is about making a game people enjoy. The Level check uses its checklists. | Guide: Inspector Penn presses the Open The Ultimate Owner’s Guide button | 6.95 |
+| [guide-ultimate-read.ogg](guide/guide-ultimate-read.ogg) | Heroes that feel right, levels that teach, fair enemies, then play-testing. A case file for every game. | Guide: Inspector Penn points at The Ultimate Owner’s Guide, open | 7.20 |
 | [guide-next.ogg](guide/guide-next.ogg) | At the bottom, the next part’s name takes you on. One clue at a time. | Guide: Inspector Penn presses the next part’s link | 4.95 |
 | [guide-home.ogg](guide/guide-home.ogg) | Here, the home page: making a new game, bringing one in, and every shelf of games. | Guide: Inspector Penn points at The home page heading | 5.75 |
 | [guide-bye.ogg](guide/guide-bye.ogg) | Case closed. When you’re stuck, the answer is usually in here. | Guide: Inspector Penn says goodbye and walks off | 4.38 |
@@ -106,16 +123,16 @@ records every clip again.
 
 | Clip | Says | Where | Seconds |
 | --- | --- | --- | ---: |
-| [settings-hello.ogg](settings/settings-hello.ogg) | Courier Max, with a delivery: the settings. They live behind the gear, top right. | Settings: Max comes on | 7.39 |
-| [settings-offline.ogg](settings/settings-offline.ogg) | Play offline says how big the whole site is, then saves it all, so it works with no connection. | Settings: Max points at Play offline in the Settings menu | 6.03 |
-| [settings-source.ogg](settings/settings-source.ogg) | Source on GitHub: every line of this site’s code, open for anyone to read. | Settings: Max points at Source on GitHub in the Settings menu | 5.39 |
-| [settings-credits.ogg](settings/settings-credits.ogg) | Credits names who and what made everything here. That’s this page. | Settings: Max points at Credits in the Settings menu | 5.07 |
-| [settings-theme.ogg](settings/settings-theme.ogg) | Theme goes dark, light, or whatever your computer uses. Each press picks the next one. | Settings: Max points at Theme in the Settings menu | 6.35 |
-| [settings-tour.ogg](settings/settings-tour.ogg) | Guided tour plays this whole tour again, every page in order. | Settings: Max points at Guided tour in the Settings menu | 4.35 |
-| [settings-ai.ogg](settings/settings-ai.ogg) | AI setup connects your own AI, on your computer or with your own key, for the editor’s Assistant. | Settings: Max points at AI setup in the Settings menu | 6.03 |
-| [settings-backup.ogg](settings/settings-backup.ogg) | Back up saves everything this browser keeps to one file. Restore brings it back, here or on another computer. | Settings: Max points at Back up / restore in the Settings menu | 8.19 |
-| [settings-page.ogg](settings/settings-page.ogg) | This page’s sections: the people who made the original Game-Maker, the game authors, and every tool used, AI too. | Settings: Max points at the Credits page’s sections | 7.79 |
-| [settings-bye.ogg](settings/settings-bye.ogg) | Delivered. Signed, sealed, and on to the next world. | Settings: Max says goodbye and walks off | 4.75 |
+| [settings-hello.ogg](settings/settings-hello.ogg) | Courier Max, with a delivery: the settings. They live behind the gear, top right. | Settings: Max comes on | 6.02 |
+| [settings-offline.ogg](settings/settings-offline.ogg) | Play offline says how big the whole site is, then saves it all, so it works with no connection. | Settings: Max points at Play offline in the Settings menu | 6.79 |
+| [settings-source.ogg](settings/settings-source.ogg) | Source on GitHub: every line of this site’s code, open for anyone to read. | Settings: Max points at Source on GitHub in the Settings menu | 5.91 |
+| [settings-credits.ogg](settings/settings-credits.ogg) | Credits names who and what made everything here. That’s this page. | Settings: Max points at Credits in the Settings menu | 4.75 |
+| [settings-theme.ogg](settings/settings-theme.ogg) | Theme goes dark, light, or whatever your computer uses. Each press picks the next one. | Settings: Max points at Theme in the Settings menu | 6.95 |
+| [settings-tour.ogg](settings/settings-tour.ogg) | Guided tour plays this whole tour again, every page in order. | Settings: Max points at Guided tour in the Settings menu | 4.84 |
+| [settings-ai.ogg](settings/settings-ai.ogg) | AI setup connects your own AI, on your computer or with your own key, for the editor’s Assistant. | Settings: Max points at AI setup in the Settings menu | 7.41 |
+| [settings-backup.ogg](settings/settings-backup.ogg) | Back up saves everything this browser keeps to one file. Restore brings it back, here or on another computer. | Settings: Max points at Back up / restore in the Settings menu | 7.76 |
+| [settings-page.ogg](settings/settings-page.ogg) | This page’s sections: the people who made the original Game-Maker, the game authors, and every tool used, AI too. | Settings: Max points at the Credits page’s sections | 8.11 |
+| [settings-bye.ogg](settings/settings-bye.ogg) | Delivered. Signed, sealed, and on to the next world. | Settings: Max says goodbye and walks off | 3.94 |
 
 ## editor
 
@@ -153,8 +170,18 @@ records every clip again.
 | [desk-gmbox.ogg](desk/desk-gmbox.ogg) | The Game-Maker box: turn it over, read the Owner’s Guide, or put the CD in and start Game-Maker. | Desk: Lewie points at the Game-Maker box | 6.31 |
 | [desk-keyboard.ogg](desk/desk-keyboard.ogg) | Type on your own keyboard, or click the keys here to press them on the PC. | Desk: Lewie points at the keyboard | 5.28 |
 | [desk-pad.ogg](desk/desk-pad.ogg) | The GRAVITAS pad is the PC’s joystick. A real gamepad works too, and a click opens big buttons. | Desk: Lewie points at the game pad | 6.48 |
+| [desk-pad-panel.ogg](desk/desk-pad-panel.ogg) | Big buttons for the d-pad’s eight ways and all four buttons. Game-Maker games read the d-pad and the red and yellow buttons. | Desk: Lewie points at the game pad’s large controls | 8.40 |
 | [desk-shelf.ogg](desk/desk-shelf.ogg) | My shelf has a box for every game. Take one down to turn it over, read its manual, or play it. | Desk: Lewie points at the shelf of game boxes | 7.27 |
+| [desk-box-open.ogg](desk/desk-box-open.ogg) | Like this one. Down it comes! | Desk: Lewie presses the box standing face out | 2.79 |
+| [desk-box-turn.ogg](desk/desk-box-turn.ogg) | It turns all the way around, so you can read the back. Drag it to turn it yourself, or scroll to zoom. | Desk: Lewie points at the box, turning | 6.72 |
+| [desk-box-disks.ogg](desk/desk-box-disks.ogg) | Inside, the game’s disks. Click them and disk one goes in drive A: to play. | Desk: Lewie points at the disks in the box | 5.60 |
+| [desk-box-manual.ogg](desk/desk-box-manual.ogg) | Its manual, with a cover all its own. | Desk: Lewie points at the manual in the box | 3.60 |
+| [desk-box-extras.ogg](desk/desk-box-extras.ogg) | And everything else that came in the box, each piece ready to read or print. | Desk: Lewie points at the list of what else came in the box | 4.88 |
 | [desk-papers.ogg](desk/desk-papers.ogg) | The shareware catalog and TURBO BUTTON magazine. Read either one; the catalog can even call the BBS. | Desk: Lewie points at the catalog and the magazine | 7.91 |
+| [desk-mag-open.ogg](desk/desk-mag-open.ogg) | Let’s peek inside this month’s TURBO BUTTON. | Desk: Lewie presses the catalog and the magazine | 3.28 |
+| [desk-mag-cover.ogg](desk/desk-mag-cover.ogg) | The big news on the cover: Game-Maker’s source code, set free! | Desk: Lewie points at the magazine’s pages | 5.60 |
+| [desk-mag-turn.ogg](desk/desk-mag-turn.ogg) | Turn the pages with the arrows: reviews, hints, readers’ letters, and ads for the things on this desk. | Desk: Lewie presses the magazine’s next page arrow | 8.00 |
+| [desk-mag-links.ogg](desk/desk-mag-links.ogg) | Its links work, too: they play games, call the BBS, or point out things in my room. | Desk: Lewie presses the magazine’s next page arrow | 6.31 |
 | [desk-modem.ogg](desk/desk-modem.ogg) | The modem calls the BBS, where you can download more games. Click its speed to change it. | Desk: Lewie points at the modem | 6.24 |
 | [desk-phone.ogg](desk/desk-phone.ogg) | The phone really dials. Try the numbers on Mom’s notes, or call for the time and the weather. | Desk: Lewie points at the wall phone | 5.76 |
 | [desk-clock.ogg](desk/desk-clock.ogg) | A giant wristwatch makes a fine wall clock. Turn the lights off and its hands glow. | Desk: Lewie points at the wall clock | 6.48 |
@@ -163,6 +190,24 @@ records every clip again.
 | [desk-switch.ogg](desk/desk-switch.ogg) | Desk, DOS and Web switch views. DOS is this same PC, filling the whole window. | Desk: Lewie points at the Desk, DOS and Web switch | 6.31 |
 | [desk-guides.ogg](desk/desk-guides.ogg) | Press the question mark any time to see this tour again. | Desk: Lewie points at the ? Guides button | 3.84 |
 | [desk-bye.ogg](desk/desk-bye.ogg) | That’s my room. Now, who wants to make a game? | Desk: Lewie says goodbye and walks off | 4.00 |
+
+## bbs
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [bbs-hello.ogg](bbs/bbs-hello.ogg) | Dex Dynamo, dialing in from the future! In 1994 you called a BBS: somebody’s own PC, answering the phone. | BBS: Dex comes on | 9.62 |
+| [bbs-sysop.ogg](bbs/bbs-sysop.ogg) | And The Sandbox BBS runs right here, on my PC! I’m its SysOp. Go ahead, Dex, give it a call. | BBS: Lewie comes on | 7.52 |
+| [bbs-dial.ogg](bbs/bbs-dial.ogg) | TERMINAL dials 1-412-555-SAND. Hear that screeching? Two modems, shaking hands. | BBS: Dex points at the modem | 8.00 |
+| [bbs-busy.ogg](bbs/bbs-busy.ogg) | The PC is busy right now. Quit what’s running, then click the modem to call the BBS yourself. | BBS: Dex points at the modem | 7.00 |
+| [bbs-login.ogg](bbs/bbs-login.ogg) | Connected! It asks for a handle. GUEST gets in without a password. | BBS: Dex points at the screen | 4.60 |
+| [bbs-ratio.ogg](bbs/bbs-ratio.ogg) | Last few callers, then my rule: upload one file for every five you take. Leeches get deleted! | BBS: Dex points at the screen | 8.08 |
+| [bbs-menu.ogg](bbs/bbs-menu.ogg) | The main menu. The letter N scans the newest files: the Sandbox games, free to download. | BBS: Dex points at the screen | 6.62 |
+| [bbs-view.ogg](bbs/bbs-view.ogg) | V and a file’s number shows its details: what it is, how big, and its author’s notice. | BBS: Dex points at the screen | 6.25 |
+| [bbs-download.ogg](bbs/bbs-download.ogg) | D and the number downloads it. At 14,400 bits a second, this would take a few minutes. | BBS: Dex points at the screen | 7.07 |
+| [bbs-speed.ogg](bbs/bbs-speed.ogg) | Too slow? Change the modem’s speed, even mid-call. Unlimited is today’s speed: no waiting! | BBS: Dex presses Unlimited in the modem’s speed menu | 6.87 |
+| [bbs-done.ogg](bbs/bbs-done.ogg) | Downloaded and unzipped into C:\DOWNLOAD. When the tour ends, it comes off again, so your drive stays yours. | BBS: Dex points at the screen | 8.16 |
+| [bbs-bye.ogg](bbs/bbs-bye.ogg) | Back to the menu, G says goodbye, and the modem hangs up. NO CARRIER! | BBS: Dex points at the screen | 5.40 |
+| [bbs-logoff.ogg](bbs/bbs-logoff.ogg) | That’s a BBS call. The modem on the desk dials one any time you like. | BBS: Dex says goodbye and walks off | 5.50 |
 
 ## dos
 
