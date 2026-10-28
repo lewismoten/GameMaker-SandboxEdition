@@ -9,7 +9,7 @@
   flex-direction: column;
   gap: 4px;
 }
-.wd-plays h3 {
+.wd-plays h4 {
   margin: 0;
   font-size: 1rem;
 }
@@ -54,4 +54,19 @@
   padding: 6px 10px;
   border-left: 3px solid var(--accent);
   background: var(--panel-2, transparent);
+}
+.wd-part {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.wd-part[hidden] {
+  display: none;
+}
+.wd-part > h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+.wd-part > p {
+  margin: 0;
 }

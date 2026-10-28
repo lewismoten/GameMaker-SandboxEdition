@@ -1,7 +1,8 @@
 // "Make a walkthrough": the walkthrough bot (editor/check/walk) plays the game scene by scene in
 // a Web Worker, with progress and Stop, and says which bot style got through each scene, or
-// where it stopped. It opens from the Integrator and, for any game, from the home page's panel
-// (homeWalk.ts). What it made is kept (check/walk/keptWalk.ts) in the project's companion file,
+// where it stopped. It opens from the Integrator and, for any game, as the home page panel's one
+// Walkthrough dialog (walkthrough/button.ts): there it also watches a game's own walkthrough,
+// and opens on the making part while there is nothing to watch. What it made is kept (check/walk/keptWalk.ts) in the project's companion file,
 // never in the game's files; a look-only game keeps it in this browser apart from the game.
 // A walkthrough the bot made only partway still plays, as far as it got, and ends on a card that
 // says so. Stop keeps the scenes it got through. Any scene it played or stopped in can be played
@@ -31,6 +32,8 @@ export interface WalkDialogOptions {
   keeps?: () => boolean;
   /** Heard when the kept walkthrough changes. */
   onChange?: () => void;
+  /** A game that ships its own walkthrough (a Sandbox game's): watched from here too. */
+  shipped?: CatalogEntry;
 }
 
 const styleName = (id?: string) => (id === MINE.id ? MINE.name : (STRATEGIES.find((s) => s.id === id)?.name ?? 'none got through'));
@@ -64,7 +67,30 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
   const far = h('p', { class: 'wd-far', hidden: true });
   const list = h('ol', { class: 'wd-list', 'aria-label': 'Scenes the bot played' });
   const playsBox = h('div', { class: 'wd-plays' });
-  const watchBtn = h('button', { type: 'button', onclick: () => void watch() }, '▶ Watch');
+  const watchBtn = h(
+    'button',
+    { type: 'button', class: opt.shipped ? undefined : 'primary', onclick: () => void watch() },
+    opt.shipped ? '▶ Watch yours' : '▶ Watch',
+  );
+  const shippedBtn = opt.shipped
+    ? h(
+        'button',
+        {
+          type: 'button',
+          class: 'primary',
+          onclick: () => void import('../../walkthrough/player').then((m) => m.watchWalkthrough(opt.shipped!, () => Promise.resolve(project.files))),
+        },
+        '▶ Watch the game’s walkthrough',
+      )
+    : null;
+  // watching comes first once there is something to watch; until then the dialog is the making part
+  const watchPart = h(
+    'section',
+    { class: 'wd-part', 'aria-labelledby': 'wd-watch-h' },
+    h('h3', { id: 'wd-watch-h' }, 'Watch'),
+    h('p', { class: 'meta' }, 'It opens in the player, with chapters, Download MP4 and Copy for YouTube.'),
+    h('div', { class: 'toolbar' }, shippedBtn, watchBtn),
+  );
   let stoppedMap: string | undefined;
   const mapLink = h('a', { class: 'wd-map', hidden: true }, '🗺 See where the bot got to on the map (Level check 🩺)');
   const runBtn = h('button', { type: 'button', class: 'primary', onclick: () => press() }, '🤖 Make it');
@@ -141,7 +167,7 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
       playsBox,
       ...(plays.length
         ? [
-            h('h3', null, 'Your other plays'),
+            h('h4', null, 'Your other plays'),
             h(
               'p',
               { class: 'meta' },
@@ -188,6 +214,7 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
 
   const render = () => {
     watchBtn.hidden = !saved?.walk?.timeline.frames;
+    watchPart.hidden = watchBtn.hidden && !shippedBtn;
     mapLink.hidden = !stoppedMap;
     if (stoppedMap) mapLink.href = `#/p/${project.id}/${encodeURIComponent(stoppedMap)}`;
     if (!running) runBtn.textContent = saved ? '🤖 Make it again' : '🤖 Make it';
@@ -294,40 +321,46 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
       : null;
 
   renderAll();
-  await modal<void>('Make a walkthrough', (close) => {
+  // from the home page this is the game's one Walkthrough dialog: watching, and making your own
+  await modal<void>(opt.home ? 'Walkthrough' : 'Make a walkthrough', (close) => {
     // going to the map closes this
     mapLink.onclick = () => close(undefined);
     return h(
       'div',
       { class: 'stack wd' },
+      watchPart,
       h(
-        'p',
-        { class: 'hint' },
-        'The bot plays each scene on the real engine. If it gets stuck, the walkthrough still plays as far as it got. You can play any scene yourself and choose Mine or Bot for it; making it again goes on from there.',
-      ),
-      keptNote(),
-      h(
-        'div',
-        { class: 'toolbar' },
-        selectField(
-          'Time for each scene',
-          [
-            [30, '30 s'],
-            [60, '1 minute'],
-            [180, '3 minutes'],
-            [600, '10 minutes'],
-          ],
-          () => budget,
-          (v) => (budget = v),
+        'section',
+        { class: 'wd-part', 'aria-labelledby': 'wd-make-h' },
+        h('h3', { id: 'wd-make-h' }, opt.shipped ? 'Make your own with the bot' : 'Make one with the bot'),
+        h(
+          'p',
+          { class: 'hint' },
+          'The bot plays each scene on the real engine. If it gets stuck, the walkthrough still plays as far as it got. You can play any scene yourself and choose Mine or Bot for it; making it again goes on from there.',
         ),
-        runBtn,
-        watchBtn,
+        keptNote(),
+        h(
+          'div',
+          { class: 'toolbar' },
+          selectField(
+            'Time for each scene',
+            [
+              [30, '30 s'],
+              [60, '1 minute'],
+              [180, '3 minutes'],
+              [600, '10 minutes'],
+            ],
+            () => budget,
+            (v) => (budget = v),
+          ),
+          runBtn,
+        ),
+        status,
+        far,
+        list,
+        playsBox,
+        mapLink,
       ),
-      status,
-      far,
-      list,
-      playsBox,
-      mapLink,
     );
   });
   running?.cancel();
