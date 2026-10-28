@@ -84,7 +84,7 @@ interface Picture {
 const isHidden = (el: Element, o: XhtmlOptions) => el.hasAttribute('hidden') || (!o.keepAriaHidden && el.getAttribute('aria-hidden') === 'true');
 
 /** Its words for a screen reader: its label, else its text and its pictures' descriptions, a space between each piece. */
-function words(el: Element): string {
+export function words(el: Element): string {
   const label = el.getAttribute('aria-label');
   if (label) return label;
   const bits: string[] = [];
@@ -104,13 +104,14 @@ function words(el: Element): string {
 async function gather(nodes: Node[], o: XhtmlOptions): Promise<Map<Element, Picture | null>> {
   const found = new Map<Element, Picture | null>();
   const visit = async (el: Element): Promise<void> => {
-    if (isHidden(el, o) || DROP.has(el.localName)) return;
+    // a picture rule may name something the screen marks as decoration (a printed piece shown small)
     const rule = o.pictures?.find((r) => el.matches(r.selector));
     if (rule) {
       // drawn whole; if it can't be, its contents are written out instead
       const r = await rasterize(el as HTMLElement, rule);
       if (r) return void found.set(el, { path: o.media.add(r.type, r.data), alt: rule.alt?.(el) ?? words(el) });
     }
+    if (isHidden(el, o) || DROP.has(el.localName)) return;
     if (el instanceof HTMLImageElement) {
       const src = el.currentSrc || el.getAttribute('src') || '';
       const path = src ? await o.media.image(src) : undefined;
@@ -137,11 +138,12 @@ export async function toXhtml(nodes: Node[], o: XhtmlOptions): Promise<string> {
   };
   const write = (n: Node) => {
     if (n.nodeType === Node.TEXT_NODE) return void out.push(xmlText(n.textContent ?? ''));
-    if (!(n instanceof Element) || isHidden(n, o)) return;
-    const tag = n.localName.toLowerCase();
-    if (DROP.has(tag)) return;
+    if (!(n instanceof Element)) return;
     const pic = pics.get(n);
     if (pic) return img(pic, n.getAttribute('class') ?? undefined);
+    if (isHidden(n, o)) return;
+    const tag = n.localName.toLowerCase();
+    if (DROP.has(tag)) return;
     if (pic === null && (tag === 'img' || tag === 'canvas' || tag === 'svg')) return;
     if (BLANK.has(tag)) {
       const value = (n as HTMLInputElement).value;
