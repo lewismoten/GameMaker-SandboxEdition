@@ -43,6 +43,7 @@ const SAY: [RegExp, string][] = [
   [/\bTHE CHEZ\b/g, 'the Shay'],
   [/\bPLAYGAME\b/g, 'Play Game'],
   [/\bGame-Maker\b/g, 'Game Maker'],
+  [/\bBBSes\b/g, 'bee bee esses'],
   [/\bBBS\b/g, 'bee bee ess'],
   [/\bDOS\b/g, 'doss'],
   [/\bGM\b/g, 'G M'],

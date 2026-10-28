@@ -23,6 +23,8 @@ const ALIKE: Record<string, string> = {
   finnish: 'finish',
   pallets: 'palettes',
   what: 'watt',
+  // the plural of BBS, as Whisper writes it
+  bbss: 'bbses',
 };
 
 /** Little words a take can drop or swap without changing what the line means. */

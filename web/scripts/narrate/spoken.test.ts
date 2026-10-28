@@ -38,6 +38,7 @@ describe('sayNumber', () => {
 describe('spokenText', () => {
   it('spells out what the voices got wrong', () => {
     expect(spokenText('It’s December 1994, and this PC dials the BBS.')).toBe("It's December nineteen ninety-four, and this PC dials the bee bee ess.");
+    expect(spokenText('Games got around on the BBSes.')).toBe('Games got around on the bee bee esses.');
     expect(spokenText('It boots DOS; type GM to play PLAYGAME.')).toBe('It boots doss; type G M to play Play Game.');
     expect(spokenText('THE CHEZ needs charging. Game-Maker was $89 on an old 286.')).toBe(
       'the Shay needs charging. Game Maker was eighty-nine dollars on an old two-eighty-six.',
