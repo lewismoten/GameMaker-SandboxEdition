@@ -79,7 +79,7 @@ export const homeChapter: Chapter = {
       id: 'home-walkthrough',
       action: 'point',
       target: action('Walkthrough'),
-      say: 'Stuck? Walkthrough plays the whole game for you, start to finish.',
+      say: 'Walkthrough plays the whole game for you, or lets the bot make one, and you can play parts of it yourself.',
       optional: true,
     },
     {

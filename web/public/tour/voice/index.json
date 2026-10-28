@@ -1194,9 +1194,9 @@
   "home-walkthrough": {
     "chapter": "home",
     "where": "Home: Teddy points at the Walkthrough button",
-    "text": "Stuck? Walkthrough plays the whole game for you, start to finish.",
-    "seconds": 4.3,
-    "hash": "31a0ad38dba1",
+    "text": "Walkthrough plays the whole game for you, or lets the bot make one, and you can play parts of it yourself.",
+    "seconds": 6.72,
+    "hash": "8e5d968342d3",
     "voice": "a50c8e805452"
   },
   "library-all": {

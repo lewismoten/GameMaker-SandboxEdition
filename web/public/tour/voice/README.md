@@ -22,7 +22,7 @@ records every clip again.
 | [home-showcase.ogg](home/home-showcase.ogg) | Up top is one game, shown big. Its picture plays a short demo of the game. | Home: Teddy points at the big game picture at the top | 5.64 |
 | [home-play.ogg](home/home-play.ogg) | Play starts it right here in your browser, with the keyboard or a gamepad. | Home: Teddy presses the Play button | 5.02 |
 | [home-look.ogg](home/home-look.ogg) | Look inside opens its files in the editor, just as they shipped. Change something and you get a copy of your own. | Home: Teddy points at the Look inside button | 7.65 |
-| [home-walkthrough.ogg](home/home-walkthrough.ogg) | Stuck? Walkthrough plays the whole game for you, start to finish. | Home: Teddy points at the Walkthrough button | 4.30 |
+| [home-walkthrough.ogg](home/home-walkthrough.ogg) | Walkthrough plays the whole game for you, or lets the bot make one, and you can play parts of it yourself. | Home: Teddy points at the Walkthrough button | 6.72 |
 | [home-download.ogg](home/home-download.ogg) | Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS. | Home: Teddy points at the Download button | 5.94 |
 | [home-tabs.ogg](home/home-tabs.ogg) | These tabs are the collections: your games, ones you bring in, and shelves of games ready to play. | Home: Teddy points at the collection tabs | 6.42 |
 | [home-tab-mine.ogg](home/home-tab-mine.ogg) | My games: the ones you make here, or copy from a shelf to change. They stay in this browser. | Home: Teddy presses the My games tab | 6.32 |
