@@ -118,9 +118,15 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   const length = item.seconds !== undefined ? hms(item.seconds) : undefined;
   const badgeText = item.issue ? `No. ${item.issue.no}` : length;
   const badge = badgeText ? h('span', { class: `lib-badge${length ? ' lib-length' : ''}`, 'aria-hidden': 'true' }, badgeText) : null;
+  // a game's walkthrough video on its game's shelf, with no Videos heading over it, is marked as YouTube's
+  const yt =
+    item.open.via === 'video' && order === 'game' && item.owner !== SITE_OWNER
+      ? h('span', { class: 'lib-badge lib-yt', 'aria-hidden': 'true' }, '▶ YouTube')
+      : null;
   const body = [
     frame,
     badge,
+    yt,
     h(
       'span',
       { class: 'lib-name' },
@@ -129,8 +135,8 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
       // the same in several boxes: listed once, opened from the first
       item.boxes ? h('small', { class: 'lib-boxes' }, `In ${item.boxes} boxes`) : null,
       item.issue ? h('span', { class: 'sr-only' }, `Issue ${item.issue.no}`) : null,
-      // a video plays from YouTube: not in the offline copy
-      item.open.via === 'video' ? h('small', { class: 'lib-boxes' }, 'Needs the internet') : null,
+      // a video plays from YouTube, not in the offline copy: its heading says so (onlineNote); this says it to a screen reader
+      item.open.via === 'video' ? h('span', { class: 'sr-only' }, 'Plays from YouTube: needs the internet') : null,
       // the badge over the picture shows the length; this says it to a screen reader
       length ? h('span', { class: 'sr-only' }, `Length ${length}`) : null,
     ),
@@ -142,13 +148,28 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   return h('li', null, el);
 }
 
+/** A heading's words, and for a shelf of videos alone, once, that they play from the internet. */
+function onlineNote(heading: string, items: readonly ShelfItem[]): (string | HTMLElement)[] {
+  return items.length && items.every((i) => i.open.via === 'video') ? [heading, ' ', h('span', { class: 'lib-net' }, '(needs the internet)')] : [heading];
+}
+
 function groupSection(g: ShelfGroup, shelf: Shelf, order: ShelfOrder): HTMLElement {
   const id = `lib-${g.key}`;
   return h(
     'section',
     { class: 'lib-group', 'aria-labelledby': id },
-    h('h2', { id }, g.heading),
-    ...g.parts.flatMap((p) => [p.heading ? h('h3', null, p.heading) : null, h('ul', { class: 'lib-grid' }, ...p.items.map((it) => card(it, shelf, order)))]),
+    h(
+      'h2',
+      { id },
+      ...onlineNote(
+        g.heading,
+        g.parts.flatMap((p) => p.items),
+      ),
+    ),
+    ...g.parts.flatMap((p) => [
+      p.heading ? h('h3', null, ...onlineNote(p.heading, p.items)) : null,
+      h('ul', { class: 'lib-grid' }, ...p.items.map((it) => card(it, shelf, order))),
+    ]),
   );
 }
 

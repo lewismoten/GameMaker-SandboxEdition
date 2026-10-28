@@ -309,6 +309,18 @@ main.library {
   font-variant-numeric: tabular-nums;
 }
 
+/* a game's walkthrough video on its game's shelf: YouTube's, where an issue's number sits */
+.lib-badge.lib-yt {
+  font-size: 12px;
+}
+
+/* a shelf of videos' heading: once, that they need the internet */
+.lib-net {
+  color: var(--muted);
+  font-size: 0.75em;
+  font-weight: 400;
+}
+
 /* "Showing: <game> · All games": what is picked, and the way back to everything */
 .lib-showing {
   margin: -6px 0 16px;
