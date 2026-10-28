@@ -21,6 +21,8 @@ const ALIKE: Record<string, string> = {
   bazaar: 'bizarre',
   bazaars: 'bizarre',
   finnish: 'finish',
+  pallets: 'palettes',
+  what: 'watt',
 };
 
 /** Little words a take can drop or swap without changing what the line means. */
@@ -52,6 +54,7 @@ export function plainWords(text: string): string[] {
     .replace(/½/g, ' half')
     .replace(/\d[\d,]*/g, (d) => ` ${sayNumber(d.replace(/,/g, ''))} `)
     .replace(/'/g, '')
+    .replace(/\ba (hundred|thousand)\b/g, 'one $1')
     .replace(/\b(im|youre|theyre|youll|dont|cant|thats)\b/g, (w) => LONG[w])
     .replace(/[-–—/]/g, ' ')
     .replace(/[^a-z0-9\s]/g, '');

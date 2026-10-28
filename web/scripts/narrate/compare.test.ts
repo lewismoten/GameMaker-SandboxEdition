@@ -15,6 +15,7 @@ describe('plainWords', () => {
     expect(plainWords('dial a B.B.S. now')).toEqual(['dial', 'a', 'bbs', 'now']);
     expect(plainWords('dial a B B S')).toEqual(['dial', 'a', 'bbs']);
   });
+  it('says "a hundred" as "one hundred"', () => expect(plainWords('a hundred by 100')).toEqual(['one', 'hundred', 'by', 'one', 'hundred']));
   it('spells sound-alikes one way', () => expect(plainWords('Louie put the disc in, too')).toEqual(['lewie', 'put', 'the', 'disk', 'in', 'to']));
 });
 
