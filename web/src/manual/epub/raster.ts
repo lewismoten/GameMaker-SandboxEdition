@@ -47,8 +47,6 @@ export interface RasterOptions {
   width: number;
   /** Its height; measured when not given. */
   height?: number;
-  /** Classes for the box it is laid out in (the styles some pieces need around them). */
-  around?: string;
   /** Pixels drawn per CSS pixel (default 2). */
   scale?: number;
   /** 'image/jpeg' for a busy picture, which comes out much smaller (default PNG). */
@@ -58,7 +56,6 @@ export interface RasterOptions {
 export async function rasterize(el: HTMLElement, o: RasterOptions): Promise<Raster | undefined> {
   const scale = o.scale ?? 2;
   const host = document.createElement('div');
-  host.className = o.around ?? '';
   host.setAttribute('aria-hidden', 'true');
   host.style.cssText = `position:fixed;left:-100000px;top:0;width:${o.width}px;${o.height ? `height:${o.height}px;` : ''}overflow:hidden;background:#fff`;
   const copy = el.cloneNode(true) as HTMLElement;

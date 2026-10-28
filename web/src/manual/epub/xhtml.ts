@@ -83,7 +83,22 @@ interface Picture {
 
 const isHidden = (el: Element, o: XhtmlOptions) => el.hasAttribute('hidden') || (!o.keepAriaHidden && el.getAttribute('aria-hidden') === 'true');
 
-const words = (el: Element) => (el.getAttribute('aria-label') ?? el.textContent ?? '').replace(/\s+/g, ' ').trim();
+/** Its words for a screen reader: its label, else its text and its pictures' descriptions, a space between each piece. */
+function words(el: Element): string {
+  const label = el.getAttribute('aria-label');
+  if (label) return label;
+  const bits: string[] = [];
+  const walk = (n: Node) => {
+    if (n.nodeType === Node.TEXT_NODE) bits.push(n.textContent ?? '');
+    else if (n instanceof Element && n.getAttribute('aria-hidden') !== 'true') {
+      if (n instanceof HTMLImageElement) bits.push(n.alt);
+      else if (n.getAttribute('aria-label')) bits.push(n.getAttribute('aria-label')!);
+      else n.childNodes.forEach(walk);
+    }
+  };
+  el.childNodes.forEach(walk);
+  return bits.join(' ').replace(/\s+/g, ' ').trim();
+}
 
 /** Gathers every picture first (the slow part), so writing the markup after is plain. */
 async function gather(nodes: Node[], o: XhtmlOptions): Promise<Map<Element, Picture | null>> {

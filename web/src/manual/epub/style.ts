@@ -33,6 +33,7 @@ del { text-decoration: line-through; }
 .answer .q { font-style: italic; }
 img.sketch { max-width: 20em; }
 img[class*='logo'], img[class*='mark'] { width: 4em; }
+.chapter { display: block; font-family: sans-serif; font-size: 2em; font-weight: bold; }
 .blank { display: inline-block; min-width: 8em; border-bottom: 1px solid #888; }
 .small, small { font-size: 0.85em; }
 .kicker { font-family: sans-serif; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0; }
