@@ -304,7 +304,7 @@ export class Tour {
     const back = had && this.bar.contains(had) ? had : this.opts.record ? this.bar : undefined;
     // a menu that shuts when the keyboard leaves it (the modem's speeds) keeps it until its item is pressed
     if (later) this.focusLater = back;
-    else back?.focus({ preventScroll: true });
+    else if (back) (back.focus({ preventScroll: true }), this.holdFocus(back));
     if (document.querySelector('dialog:modal')) this.raise();
   }
 
@@ -596,8 +596,29 @@ export class Tour {
   private clickKeepingFocus(el: HTMLElement): void {
     const had = document.activeElement as HTMLElement | null;
     el.click();
-    if (had && this.bar.contains(had)) had.focus();
-    else if (this.opts.record) this.bar.focus();
+    const back = had && this.bar.contains(had) ? had : this.opts.record ? this.bar : undefined;
+    back?.focus();
+    if (back) this.holdFocus(back);
+  }
+
+  /**
+   * For a few seconds after the tour presses something, what it set going (the desk's PC
+   * booting) doesn't take the keyboard from the tour's bar; a click or key of the visitor's own
+   * lets it go at once.
+   */
+  private holdFocus(el: HTMLElement): void {
+    const onIn = (e: FocusEvent) => {
+      if (now.tour !== this || !el.isConnected) return off();
+      if (!this.bar.contains(e.target as Node)) el.focus({ preventScroll: true });
+    };
+    const off = () => {
+      document.removeEventListener('focusin', onIn, true);
+      window.removeEventListener('pointerdown', off, true);
+      clearTimeout(timer);
+    };
+    document.addEventListener('focusin', onIn, true);
+    window.addEventListener('pointerdown', off, true);
+    const timer = window.setTimeout(off, 4000);
   }
 
   private unpress(): void {
