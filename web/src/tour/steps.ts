@@ -15,7 +15,7 @@ export type PageKey = 'home' | 'guide' | 'library' | 'achievements' | 'cast' | '
  * sounds like Lewis himself.
  */
 export interface HostVoice {
-  sample: 'lewis' | 'scroobie' | 'olden-mon' | 'snooty-wiz' | 'kokoro:af_sky' | 'kokoro:af_heart' | 'kokoro:am_puck' | 'kokoro:bf_emma';
+  sample: 'lewis' | 'scroobie' | 'olden-mon' | 'snooty-wiz' | 'kokoro:af_sky' | 'kokoro:af_heart' | 'kokoro:am_puck' | 'kokoro:bf_emma' | 'kokoro:am_michael';
   semitones: number;
   tempo: number;
 }
@@ -32,8 +32,8 @@ export const HOSTS = {
   dex: { name: 'Dex', game: 'year2000', scale: 3, voiced: true, voice: { sample: 'kokoro:am_puck', semitones: 3, tempo: 1 } },
   // the Guide: Final Curtain's Inspector Ada Penn
   ada: { name: 'Inspector Penn', game: 'sleuth', scale: 3, voiced: true, voice: { sample: 'kokoro:bf_emma', semitones: 0, tempo: 1 } },
-  // Settings: Maximus's Courier Max
-  max: { name: 'Max', game: 'maximus', scale: 2, voiced: true, voice: { sample: 'scroobie', semitones: 0, tempo: 1 } },
+  // Settings: Maximus's Courier Max, brisk as a space courier (Scroobie's slow voice waits for a gentle giant)
+  max: { name: 'Max', game: 'maximus', scale: 2, voiced: true, voice: { sample: 'kokoro:am_michael', semitones: 0, tempo: 1.08 } },
   // the editor: Ohm Sweet Ohm's repair robot
   watt: { name: 'Watt', game: 'logic', scale: 3, voiced: true, voice: { sample: 'lewis', semitones: 7, tempo: 1.05 } },
   // DOS: Quest for the Round Tuit's Professor Fiddlesticks, the inventor in Someday Harbor's garage
@@ -138,6 +138,36 @@ export interface Target {
   css: string | string[];
   text?: string;
   reveal?: string | string[];
+  /** Inside something a press opens (an Opener): opened first when it isn't (after Back), and kept open while the next step is in it too. */
+  in?: Opener;
+}
+
+/**
+ * Something a press opens over the page to show what is in it (a box taken off the shelf, the
+ * magazine, a manual), shut again by its own close button once the tour moves on to a step not
+ * `in` it, and when the tour ends. Steps that share one share the same object.
+ */
+export interface Opener {
+  /** What it is, in plain words ("the box viewer"). */
+  label: string;
+  /** The control that opens it: clicked even when the page keeps it in a closed menu. */
+  by: string;
+  /** On the page while it is open. */
+  shown: string;
+  /** Its close button. */
+  close: string;
+}
+
+/**
+ * Something the page itself does for a step, asked for with a 'gm-tour-act' event the page
+ * listens for (the desk's PC typing into the BBS: desk/deskTour.ts): `do` names it, `text` is
+ * what to type, `wait` the words to wait for on the screen first. Done once a tour (Back doesn't
+ * do it again).
+ */
+export interface PageAct {
+  do: string;
+  text?: string;
+  wait?: string;
 }
 
 /**
@@ -195,6 +225,23 @@ export interface TourStep {
    * its map): the tour goes there, waits for `ready`, and Back returns to the step's own address.
    */
   go?: { hash: string; ready: string };
+  /** A press that opens this (clicking its `by`): it stays open while the steps after it are `in` it. */
+  opens?: Opener;
+  /** Asks the page to do something as the action lands (typing on the desk's PC). */
+  act?: PageAct;
+}
+
+/**
+ * What a chapter changes on its page and puts back when it is left (another chapter, or the tour
+ * ending): this browser's settings by their localStorage keys, the control that was selected
+ * (pressed again: the visitor's own collection tab) and settings in the address.
+ */
+export interface Keep {
+  storage?: string[];
+  /** The selected control as the chapter starts (it has an id): pressed again at the end if another is selected. */
+  selected?: string;
+  /** Address settings (#/?tab=…) put back as they were. */
+  params?: string[];
 }
 
 export interface Chapter {
@@ -220,6 +267,10 @@ export interface Chapter {
   actor: HostId;
   speaker: HostId;
   music?: MusicId;
+  /** Put back when the chapter is left. */
+  keep?: Keep;
+  /** A page act (PageAct.do) asked for when the chapter is left, once one of its acts was done: the page tidies up. */
+  leave?: string;
   steps: TourStep[];
 }
 

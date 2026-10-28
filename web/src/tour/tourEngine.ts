@@ -10,9 +10,10 @@
 import './tour.css';
 import { h } from '../editor/core/ui';
 import { Actor, loadSprites } from './actor';
-import { closeMenu, findTarget, menuOpen, revealer, visible, waitFor } from './findTarget';
+import { findTarget, revealer, visible, waitFor } from './findTarget';
+import { menuHandle, overlayHandle, type Opened } from './tourOpen';
 import { offStage, placeBubble, standBy, type Point, type Rect } from './place';
-import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type TourStep } from './steps';
+import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
 import { TourSound } from './tourSound';
 import { TourRecorder } from './tourRecorder';
 import { CHAPTERS } from './chapters/index';
@@ -21,7 +22,7 @@ import { hushDemos } from '../media/demoAudio';
 /** Asks the page's game preview to start or stop (homeShowcase.ts listens). */
 const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent('gm-tour-demo', { detail: what }));
 import { onDosPage, pageHere, pageOf } from './tourPages';
-import { parseHash } from '../urlState';
+import { parseHash, setHashParams } from '../urlState';
 import type { Sprite } from '../cast/castStageDraw';
 
 export interface TourOptions {
@@ -38,6 +39,17 @@ const rectOf = (el: Element): Rect => {
 };
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const announce = (what: 'start' | 'end') => window.dispatchEvent(new CustomEvent('gm-tour', { detail: what }));
+/** Asks the page to do something for a step (steps.ts PageAct; the desk's deskTour.ts listens). */
+const pageAct = (act: PageAct) => window.dispatchEvent(new CustomEvent('gm-tour-act', { detail: act }));
+
+/** A localStorage value, or null (none, or no storage). */
+const stored = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
 
 /** Two addresses show the same thing (their paths match; the editor adds its own settings after them). */
 const samePlace = (a: string, b: string) => parseHash(a).path.join('/') === parseHash(b).path.join('/');
@@ -75,7 +87,17 @@ export class Tour {
   private sprites?: Map<string, Sprite>;
   private hosts = new Map<HostId, Actor>();
   private props: Actor[] = [];
-  private opened = new Set<HTMLElement>();
+  /** Menus and overlays the tour opened, by their handle's key (tourOpen.ts). */
+  private opened = new Map<unknown, Opened>();
+  /** Steps whose page act was asked for (once a tour), and the chapters they were in. */
+  private acted = new Set<string>();
+  private actedIn = new Set<Chapter>();
+  /** What the chapter shown changed and puts back when it is left (steps.ts Keep). */
+  private kept?: { chapter: Chapter; storage: [string, string | null][]; selected?: string; params: Record<string, string | undefined> };
+  /** A page's overlay making the rest of the page inert doesn't take the tour's own bar and layer. */
+  private uninert = new MutationObserver((list) => {
+    for (const m of list) if ((m.target as HTMLElement).inert) (m.target as HTMLElement).inert = false;
+  });
   private pressed?: HTMLElement;
   private chapterShown?: Chapter;
   private navigating = false;
@@ -131,7 +153,9 @@ export class Tour {
     this.barSize.observe(this.bar);
     announce('start');
     this.showSound();
-    document.addEventListener('keydown', this.onKey, true);
+    // on the window, ahead of the overlays the tour opens (they take every key once they are up)
+    window.addEventListener('keydown', this.onKey, true);
+    for (const el of [this.layer, this.bar]) this.uninert.observe(el, { attributes: true, attributeFilter: ['inert'] });
     window.addEventListener('hashchange', this.onHash);
     window.addEventListener('resize', this.onResize);
     this.sprites = await loadSprites();
@@ -177,6 +201,9 @@ export class Tour {
     this.bubble.hidden = true;
     // a new chapter: its page, its music, and (recording, or more than one chapter) its title card
     if (chapter !== this.chapterShown) {
+      // what the last chapter changed goes back while its page is still here
+      await this.leaveChapter();
+      if (!this.live(token)) return;
       this.chapterShown = chapter;
       this.clearHosts();
       if ((chapter.file === 'dos.html') !== onDosPage()) return this.handOff(chapter);
@@ -199,6 +226,7 @@ export class Tour {
       }
       await waitFor(chapter.ready);
       if (!this.live(token)) return;
+      this.keepFor(chapter);
     }
     // the address this step is shown at, on the chapter's page (the editor's palette after its map)
     const at = this.addressOf(this.i);
@@ -213,18 +241,17 @@ export class Tour {
       await waitFor(at.ready);
       if (!this.live(token)) return;
     }
-    // the control: shown from its menu if it is in one, other menus the tour opened closed
-    const need = step.target?.reveal ? revealer(step.target) : undefined;
-    for (const m of this.opened) if (m !== need) (closeMenu(m), this.opened.delete(m));
+    // the control: shown from its menu or overlay if it is in one, others the tour opened closed
+    const need = this.handleFor(step);
+    for (const [k, m] of this.opened) if (k !== need?.key) (m.close(), this.opened.delete(k));
     let target = step.target ? findTarget(step.target) : undefined;
-    if (!target && need && step.target) {
-      if (!menuOpen(need)) this.clickKeepingFocus(need);
-      this.opened.add(need);
+    if (need && step.target && (!target || !need.isOpen())) {
+      await this.openKeepingFocus(need);
+      if (!this.live(token)) return;
       // a menu opens at once; a panel may load first
-      for (let t = 0; t < 3000 && !target; t += 100) {
-        await sleep(t ? 100 : 60);
+      for (let t = 0; t < 3000 && !(target = findTarget(step.target)); t += 100) {
+        await sleep(100);
         if (!this.live(token)) return;
-        target = findTarget(step.target);
       }
     }
     if (step.target && !target) {
@@ -244,6 +271,88 @@ export class Tour {
     if (!this.live(token)) return;
     if (step.action === 'exit') await this.exitAll();
     if (this.live(token)) this.go(this.i + 1);
+  }
+
+  /** What a step's control is in: a menu its target reveals, or an overlay it is `in`. */
+  private handleFor(step: TourStep): Opened | undefined {
+    const t = step.target;
+    if (t?.in) return this.opened.get(t.in) ?? overlayHandle(t.in, (el) => el.click());
+    const button = t?.reveal ? revealer(t) : undefined;
+    return button
+      ? (this.opened.get(button) ??
+          menuHandle(
+            button,
+            (el) => el.click(),
+            () => findTarget(t!),
+          ))
+      : undefined;
+  }
+
+  /**
+   * Opens a menu or overlay and keeps it until the tour moves past it. The keyboard stays on the
+   * tour's bar (an overlay moves it into itself), and a page's modal dialog, which the browser
+   * puts above everything, gets the tour's layer and bar put above it in turn.
+   */
+  private async openKeepingFocus(m: Opened): Promise<void> {
+    this.opened.set(m.key, m);
+    const had = document.activeElement as HTMLElement | null;
+    await m.open();
+    if (now.tour !== this) return m.close();
+    if (had && this.bar.contains(had)) had.focus({ preventScroll: true });
+    else if (this.opts.record) this.bar.focus({ preventScroll: true });
+    if (document.querySelector('dialog:modal')) this.raise();
+  }
+
+  /** The layer and the bar in the browser's top layer, above a modal dialog just opened. */
+  private raise(): void {
+    for (const el of [this.layer, this.bar]) {
+      el.popover = 'manual';
+      if (el.matches(':popover-open')) el.hidePopover();
+      el.showPopover();
+    }
+  }
+
+  // ---- what a chapter changes, put back --------------------------------------------------------
+
+  /** Notes what the chapter will change (steps.ts Keep), as it starts. */
+  private keepFor(chapter: Chapter): void {
+    const k = chapter.keep;
+    if (!k) return void (this.kept = undefined);
+    const { params } = parseHash(location.hash);
+    this.kept = {
+      chapter,
+      storage: (k.storage ?? []).map((key) => [key, stored(key)]),
+      selected: k.selected ? document.querySelector(k.selected)?.id || undefined : undefined,
+      params: Object.fromEntries((k.params ?? []).map((p) => [p, params[p]])),
+    };
+  }
+
+  /**
+   * The chapter shown is left: menus and overlays it opened shut, its page tidied up (its leave
+   * act, once it did something there), and what it changed put back.
+   */
+  private async leaveChapter(): Promise<void> {
+    for (const m of this.opened.values()) m.close();
+    this.opened.clear();
+    const chapter = this.chapterShown;
+    if (chapter?.leave && this.actedIn.delete(chapter)) pageAct({ do: chapter.leave });
+    const kept = this.kept;
+    this.kept = undefined;
+    if (!kept || kept.chapter !== chapter) return;
+    const was = kept.selected ? document.getElementById(kept.selected) : null;
+    if (was && was.getAttribute('aria-selected') !== 'true') {
+      was.click();
+      // the page redraws for it before its settings are put back over what the click remembered
+      await sleep(50);
+    }
+    for (const [key, value] of kept.storage)
+      try {
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
+      } catch {
+        /* no storage: nothing was kept either */
+      }
+    if (Object.keys(kept.params).length && pageOf(location.hash) === chapter.page) setHashParams(kept.params);
   }
 
   /** The address step `i` is shown at: the last `go` up to it in its chapter, else the chapter's own when it insists. */
@@ -335,7 +444,16 @@ export class Tour {
       this.pressed = target;
       target.classList.add('tour-pressed');
       if (step.click === true || (step.click && target.matches(step.click))) this.clickKeepingFocus(target);
+      if (step.opens) {
+        await this.openKeepingFocus(overlayHandle(step.opens, (el) => el.click()));
+        if (!this.live(token)) return;
+      }
     } else this.sound.effect(step.sound);
+    if (step.act && !this.acted.has(step.id)) {
+      this.acted.add(step.id);
+      this.actedIn.add(chapter);
+      pageAct(step.act);
+    }
     if (step.demo) tourDemo(step.demo);
     if (!this.live(token)) return;
     if (step.action === 'enter' && actor) void actor.hop(this.still);
@@ -497,11 +615,11 @@ export class Tour {
   }
 
   private onKey = (e: KeyboardEvent) => {
-    // a dialog of the page's own takes its own keys
-    if (document.querySelector('dialog[open]') || this.card?.querySelector('button')) return;
+    // a dialog of the page's own takes its own keys (not one the tour opened to show it)
+    if (this.card?.querySelector('button') || this.pageDialog()) return;
     if (e.key === 'Escape') {
       e.preventDefault();
-      e.stopPropagation();
+      e.stopImmediatePropagation();
       this.end();
       return;
     }
@@ -515,7 +633,17 @@ export class Tour {
     else if (this.opts.record && e.key.toLowerCase() === 'm') this.toggleSound();
     else return;
     e.preventDefault();
+    // the tour's key, not the overlay's under it too (the box viewer would turn the box)
+    e.stopImmediatePropagation();
   };
+
+  /** A dialog the visitor opened on the page (not one the tour opened to show what is in it). */
+  private pageDialog(): boolean {
+    const ours = [...this.opened.values()].map((m) => m.shows()).filter((x): x is HTMLElement => !!x);
+    return [...document.querySelectorAll<HTMLElement>('dialog[open], [role="dialog"]:not(.tour-card)')].some(
+      (d) => visible(d) && !ours.some((o) => o === d || o.contains(d) || d.contains(o)),
+    );
+  }
 
   /** Leaving the page (a link the visitor followed) ends the tour. */
   private onHash = () => {
@@ -602,8 +730,7 @@ export class Tour {
     this.token++;
     this.cancelHold();
     this.unpress();
-    for (const m of this.opened) closeMenu(m);
-    this.opened.clear();
+    void this.leaveChapter();
     this.clearHosts();
     this.sound.dispose();
     // closed early: what was recorded so far is still saved
@@ -618,7 +745,8 @@ export class Tour {
     document.documentElement.style.removeProperty('--tour-bar-h');
     document.documentElement.classList.remove('tour-recording');
     announce('end');
-    document.removeEventListener('keydown', this.onKey, true);
+    window.removeEventListener('keydown', this.onKey, true);
+    this.uninert.disconnect();
     window.removeEventListener('hashchange', this.onHash);
     window.removeEventListener('resize', this.onResize);
     // a tour of just this page goes back to what the visitor had open on it (their own game, not the one shown)

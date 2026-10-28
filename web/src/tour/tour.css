@@ -9,6 +9,24 @@
   pointer-events: none;
 }
 
+/* raised into the browser's top layer above a page's modal dialog (tourEngine.ts raise): no popover look */
+.tour-layer[popover],
+.tour-bar[popover] {
+  width: auto;
+  height: auto;
+  margin: 0;
+  border: 0;
+}
+.tour-layer[popover] {
+  padding: 0;
+  background: transparent;
+}
+.tour-bar[popover] {
+  top: auto;
+  overflow: visible;
+  border-top: 2px solid var(--focus, #ffd400);
+}
+
 .tour-actor {
   position: absolute;
   /* under the speech bubble, so a host walking past never covers what is said */
