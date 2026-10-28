@@ -23,7 +23,18 @@ const SOURCES: Record<string, string[]> = {
   guide: ['manual/webManual.ts', 'manual/guideSections.ts', 'manual/printables/viewer.ts'],
   credits: ['main.ts', 'settingsMenu.ts', 'theme.ts', 'tour/tourButton.ts', 'credits', 'pageToc.ts'],
   editor: ['editor/shell', 'editor/editors/map/map.ts', 'editor/editors/map/check/checkPanel.ts', 'editor/editors/palette/palette.ts'],
-  desk: ['desk', 'desk/pc', 'desk/disks', 'desk/boxes', 'desk/room', 'desk/props', 'manual/magazine/viewer.ts', 'viewSwitch.ts', 'tour/tourButton.ts'],
+  desk: [
+    'desk',
+    'desk/pc',
+    'desk/disks',
+    'desk/boxes',
+    'desk/room',
+    'desk/props',
+    'manual/magazine/viewer.ts',
+    'retro/bbs/lineSpeedControls.ts',
+    'viewSwitch.ts',
+    'tour/tourButton.ts',
+  ],
   dos: ['dosPage', 'retro/gmReg', 'viewSwitch.ts', 'tour/tourButton.ts'],
 };
 const sourceText = (paths: string[]) =>

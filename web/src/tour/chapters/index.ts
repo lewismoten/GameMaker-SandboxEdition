@@ -4,6 +4,7 @@
 // last: it is a page of its own (dos.html), and the whole tour goes on there with a page load.
 import type { Chapter } from '../steps';
 import { achievementsChapter } from './achievements';
+import { bbsChapter } from './bbs';
 import { castChapter } from './cast';
 import { deskChapter } from './desk';
 import { dosChapter } from './dos';
@@ -22,5 +23,6 @@ export const CHAPTERS: Chapter[] = [
   settingsChapter,
   editorChapter,
   deskChapter,
+  bbsChapter,
   dosChapter,
 ];
