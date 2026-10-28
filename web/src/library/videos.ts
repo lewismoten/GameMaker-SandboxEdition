@@ -3,11 +3,16 @@
 // them. Each card's picture, public/videos/<id>.webp, is that video's thumbnail from YouTube
 // (i.ytimg.com/vi/<id>/maxresdefault.jpg, or hqdefault.jpg with its letterbox cropped off),
 // downloaded once and saved as a 480×270 webp, so showing the Library asks YouTube for nothing.
-// Its transcript, public/videos/<id>.transcript.json, is written from YouTube's automatic captions
-// by scripts/videoTranscript.ts. A video plays only when asked (videoDialog.ts).
+// A tour's transcript, public/videos/<id>.transcript.json, is written from YouTube's automatic
+// captions by scripts/videoTranscript.ts. A video plays only when asked (videoDialog.ts). Each
+// game's walkthrough video is in videosWalk.ts (a secret game's only once it is revealed) and is
+// shelved under its game.
+import type { CatalogEntry } from '../project/files';
+import { idHash, isOldSecret } from '../project/secretGames';
 import { SITE_OWNER, type ShelfItem } from './shelf';
+import { WALK_VIDEOS } from './videosWalk';
 
-interface Video {
+export interface Video {
   /** Its YouTube id. */
   id: string;
   title: string;
@@ -19,6 +24,8 @@ interface Video {
   about: string[];
   /** Its chapters: where each starts (seconds) and its title. */
   chapters?: [number, string][];
+  /** It has a transcript, public/videos/<id>.transcript.json. */
+  transcript?: true;
 }
 
 const PLAY = 'https://lewismoten.github.io/GameMaker-SandboxEdition/';
@@ -32,6 +39,7 @@ const VIDEOS: readonly Video[] = [
     date: '2026-10-22',
     seconds: 1900,
     about: ['A quick demo of a Game Maker port running in your web browser.'],
+    transcript: true,
   },
   {
     id: 'gNEya63wDmo',
@@ -76,12 +84,18 @@ const VIDEOS: readonly Video[] = [
       [3172, 'Walkthrough bots and following paths'],
       [3231, 'Save tools and retro software registration'],
     ],
+    transcript: true,
   },
 ];
 
-/** The video `id` (its YouTube id). */
+const BY = 'Lewis Moten';
+
+/** The games' walkthrough videos shown (not a stale one), and a revealed secret game's once fetched, by YouTube id. */
+const walks = new Map<string, Video>(WALK_VIDEOS.filter((v) => !v.stale).map((v) => [v.id, { ...v, by: BY }]));
+
+/** The video `id` (its YouTube id): a tour, or a game's walkthrough on the shelf. */
 export function videoById(id: string): Video | undefined {
-  return VIDEOS.find((v) => v.id === id);
+  return VIDEOS.find((v) => v.id === id) ?? walks.get(id);
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -106,4 +120,47 @@ export function videoShelf(): ShelfItem[] {
     seconds: v.seconds,
     picture: `./videos/${v.id}.webp`,
   }));
+}
+
+/** A secret game's walkthrough video (public/videos/walk-<idHash>.json), asked for only once the game is listed; undefined offline or when it has none. */
+async function secretVideo(game: string): Promise<Video | undefined> {
+  try {
+    const res = await fetch(`./videos/walk-${idHash(game).toString(16).padStart(8, '0')}.json`);
+    if (!res.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
+    const v = (await res.json()) as Video;
+    if (typeof v.id !== 'string' || typeof v.seconds !== 'number') return undefined;
+    walks.set(v.id, v);
+    return v;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * The listed games' walkthrough videos as the Library's cards, each under its game, in the
+ * order `games` lists them. `games` names a secret game only once it is revealed (listing.ts),
+ * and only then is its video fetched; a stale video (an older version of its game) is never shown.
+ */
+export async function gameVideoShelf(games: readonly CatalogEntry[]): Promise<ShelfItem[]> {
+  const found = await Promise.all(
+    games.map(async (g) => ({ g, v: isOldSecret(g.id) ? await secretVideo(g.id) : WALK_VIDEOS.find((v) => v.game === g.id && !v.stale) })),
+  );
+  return found.flatMap(({ g, v }) =>
+    v
+      ? [
+          {
+            key: `${g.id}:video-${v.id}`,
+            title: 'Walkthrough video',
+            note: `${BY} · ${dateText(v.date)}`,
+            icon: '📺',
+            type: 'video' as const,
+            owner: g.id,
+            ownerTitle: g.title,
+            open: { via: 'video' as const, id: v.id },
+            seconds: v.seconds,
+            picture: `./videos/${v.id}.webp`,
+          },
+        ]
+      : [],
+  );
 }

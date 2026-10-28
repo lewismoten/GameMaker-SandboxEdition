@@ -161,13 +161,14 @@ export const isShelfOrder = (s: unknown): s is ShelfOrder => s === 'game' || s =
 /**
  * One kind's pieces in the order listed, except that the Game-Maker box's Owner's Guides lead the
  * manuals, numbered issues (each box's Sandbox Scoop) lead their kind in issue order, and
- * walkthroughs go shortest first.
+ * walkthroughs go shortest first and the site's own videos lead the games' walkthrough videos.
  */
 function ofType(items: readonly ShelfItem[], type: ShelfType): ShelfItem[] {
   const all = items.filter((i) => i.type === type);
   if (type === 'manual') return [...all.filter((i) => i.owner === GM_OWNER), ...all.filter((i) => i.owner !== GM_OWNER)];
   // numbered issues first, in the order they came out, then the rest as listed
   if (type === 'walkthrough') return all.sort((a, b) => (a.seconds ?? 0) - (b.seconds ?? 0)); // shortest first
+  if (type === 'video') return [...all.filter((i) => i.owner === SITE_OWNER), ...all.filter((i) => i.owner !== SITE_OWNER)];
   const issues = all.filter((i) => i.issue).sort((a, b) => a.issue!.no - b.issue!.no);
   return issues.length ? [...issues, ...all.filter((i) => !i.issue)] : all;
 }

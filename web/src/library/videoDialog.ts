@@ -2,8 +2,8 @@
 // comes from YouTube until the visitor presses it. Play puts YouTube's player in its place,
 // from youtube-nocookie.com; a chapter, or a time in the transcript, does the same from that
 // time (reloading the player if it is showing). Below it, scrolling on their own, are the
-// video's description, its chapters and a Transcript disclosure that fetches the transcript
-// (public/videos/<id>.transcript.json) when first opened; all of these are the site's own files,
+// video's description, its chapters and, for one with a transcript, a Transcript disclosure that
+// fetches it (public/videos/<id>.transcript.json) when first opened; all of these are the site's own files,
 // so they work offline. Closing (the button, or Esc) removes the dialog and the player with it,
 // which stops the video. Without a connection it says the video needs the internet.
 import './videoDialog.css';
@@ -24,6 +24,8 @@ function linked(text: string): HTMLParagraphElement {
 export function openVideo(id: string, title: string, picture: string | undefined): Promise<void> {
   return new Promise((resolve) => {
     const video = videoById(id);
+    // YouTube's title for it (a game's card says just "Walkthrough video")
+    const name = video?.title ?? title;
     const dlg = h('dialog', { class: 'modal lib-video', 'aria-labelledby': 'lib-video-h' });
     const close = () => {
       dlg.close();
@@ -40,7 +42,7 @@ export function openVideo(id: string, title: string, picture: string | undefined
       const player = h('iframe', {
         class: 'lib-video-player',
         src: `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1${start}`,
-        title: `${title} (YouTube video player)`,
+        title: `${name} (YouTube video player)`,
         allow: 'autoplay; encrypted-media; picture-in-picture; fullscreen',
         allowfullscreen: true,
         referrerpolicy: 'strict-origin-when-cross-origin',
@@ -121,13 +123,13 @@ export function openVideo(id: string, title: string, picture: string | undefined
             ),
           )
         : null,
-      transcript,
+      video?.transcript ? transcript : null,
     );
     dlg.append(
       h(
         'header',
         { class: 'modal-head' },
-        h('h2', { id: 'lib-video-h' }, title),
+        h('h2', { id: 'lib-video-h' }, name),
         h('button', { type: 'button', class: 'modal-close', 'aria-label': 'Close', title: 'Close (Esc)', onclick: close }, '×'),
       ),
       screen,
