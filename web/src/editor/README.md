@@ -17,7 +17,7 @@ Part of the [source map](../README.md).
     (`homeDrop.ts`), Getting started (`homeGettingStarted.ts`), `homeIcons.ts`,
     `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game), Make a
     walkthrough and Walkthrough for any game on the panel (`homeWalk.ts`: the editor's dialog over
-    the home page, a CD game loaded look-only),
+    the home page; `homeWalkOpen.ts`, loaded when first used, loads the game, a CD game look-only),
     `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used; an import holding several games
     lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`,
     each row with a small title screen drawn as it scrolls into view: `importThumbs.ts`; removing all

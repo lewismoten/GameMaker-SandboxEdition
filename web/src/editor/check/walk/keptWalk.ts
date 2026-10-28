@@ -62,7 +62,8 @@ interface Kept {
   sections: Record<string, unknown>;
 }
 
-const keyOf = (id: string) => `gm-walk-kept:${id}`;
+/** Backed up with My games (backup/inventory.ts). */
+const keyOf = (id: string) => `gm-walk-kept-${id}`;
 const sigOf = (e: KeptEntry) => [e.pack ?? '', e.gamCrc ?? '', e.bytes ?? ''].join('|');
 
 function storage(): Store | undefined {

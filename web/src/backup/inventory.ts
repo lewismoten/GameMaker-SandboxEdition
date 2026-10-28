@@ -46,10 +46,12 @@ export const HEART_FILE = 'tinheart.dat';
 export const PROJECT_MAPS = ['gm-project-origin', 'gm-project-used', 'gm-file-folds-by-game', 'gm-play-level-by-game'];
 /** "Next steps" hidden on a game's page, one key per project id. */
 export const PROJECT_HIDDEN_PREFIX = 'gm-next-hidden-';
+/** A CD game's walkthrough and the plays of its scenes, made while it was look-only, one key per catalog id (editor/check/walk/keptWalk.ts). */
+const WALK_KEPT_PREFIX = 'gm-walk-kept-';
 
 /** Which localStorage keys each section owns (exact names, and prefixes ending in "-"). */
 export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[] }> = {
-  projects: { keys: PROJECT_MAPS, prefixes: [PROJECT_HIDDEN_PREFIX] },
+  projects: { keys: PROJECT_MAPS, prefixes: [PROJECT_HIDDEN_PREFIX, WALK_KEPT_PREFIX] },
   saves: { keys: [] },
   trophies: { keys: ['gm-score-trophies'] },
   achievements: { keys: [] },

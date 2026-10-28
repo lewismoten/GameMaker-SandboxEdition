@@ -7,49 +7,12 @@
 // (check/walk/keptWalk.ts). Once one is made, "Walkthrough" (or "Your walkthrough", beside a
 // Sandbox game's own) watches it and saves it as an MP4.
 import { h, toast } from '../core/ui';
-import { Project } from '../core/project';
-import { makeReadOnly } from '../core/readOnly';
-import { GameFiles } from '../../project/files';
-import { loadProject } from '../../project/storage';
-import { getSection } from '../../project/companion';
-import { keepLookOnly, keptFor, WALK_SECTION, type SavedWalk } from '../check/walk/keptWalk';
-import type { WalkDialogOptions } from '../widgets/walkDialog';
 import type { HomeGame } from './homeCards';
 import { icon } from './homeIcons';
-import { lookId } from './lookId';
+import type { Walkthrough } from '../../walkthrough/format';
 
-interface Loaded {
-  project: Project;
-  opt: WalkDialogOptions;
-}
-
-/** The game as a project to walk: yours from this browser, a CD game look-only. */
-async function load(game: HomeGame): Promise<Loaded | undefined> {
-  if (game.project) {
-    const stored = await loadProject(game.project.id);
-    if (!stored) return undefined;
-    const project = Project.fromFiles(stored.files, stored.record.name, game.project.id, stored.record.companion);
-    project.gam = stored.record.gam;
-    return { project, opt: { home: true } };
-  }
-  const e = game.entry;
-  if (!e?.gam) return undefined;
-  const [files, { catalogCompanion }] = await Promise.all([game.files(), import('../../dosPlayer/catalogPatches')]);
-  const project = Project.fromFiles(new GameFiles(files.entries().map(([n, b]) => [n, b.slice()])), e.title, lookId(e.id), catalogCompanion(e, e.gam));
-  project.gam = e.gam;
-  makeReadOnly(project, { title: e.title, attempted: (what) => toast(`${e.title} is open to look at only: ${what} was not changed.`) });
-  const kept = keepLookOnly(project, e);
-  return { project, opt: { home: true, entry: e, keeps: kept.keeps } };
-}
-
-/** The walkthrough the bot made of it, if one is kept. */
-function madeWalk(game: HomeGame): SavedWalk | undefined {
-  if (game.project) {
-    const c = game.project.companion;
-    return c ? getSection<SavedWalk | undefined>(c, game.project.gam, WALK_SECTION, undefined) : undefined;
-  }
-  return game.entry ? (keptFor(game.entry)?.[WALK_SECTION] as SavedWalk | undefined) : undefined;
-}
+/** The loader, the first time it is wanted. */
+const opener = () => import('./homeWalkOpen');
 
 /** A button that loads the game first, saying so meanwhile. */
 function loadingButton(label: string, ico: Parameters<typeof icon>[0], o: { title: string; aria: string }, run: () => Promise<void>): HTMLButtonElement {
@@ -85,7 +48,7 @@ function loadingButton(label: string, ico: Parameters<typeof icon>[0], o: { titl
 export function walkButtons(game: HomeGame): HTMLElement[] {
   if (!game.gam || (!game.project && !game.entry?.gam)) return [];
   const label = game.entry?.walkthrough ? 'Your walkthrough' : 'Walkthrough';
-  let made = madeWalk(game);
+  let made: { walk?: { timeline: { frames: number } } } | undefined;
   const watchBtn = loadingButton(
     label,
     'route',
@@ -94,8 +57,9 @@ export function walkButtons(game: HomeGame): HTMLElement[] {
       aria: `${label} of ${game.title} the bot made: watch it or save it as an MP4`,
     },
     async () => {
+      const { load, WALK_SECTION } = await opener();
       const l = await load(game);
-      const walk = l && l.project.extras<SavedWalk | undefined>(l.project.gam, WALK_SECTION, undefined)?.walk;
+      const walk = l && l.project.extras<{ walk?: Walkthrough } | undefined>(l.project.gam, WALK_SECTION, undefined)?.walk;
       if (!l || !walk?.timeline.frames) return void toast(`${game.title} has no walkthrough yet.`);
       const { watchMade } = await import('../widgets/walkDialog');
       await watchMade(l.project, walk, l.opt.entry);
@@ -103,6 +67,8 @@ export function walkButtons(game: HomeGame): HTMLElement[] {
   );
   const showWatch = () => (watchBtn.hidden = !made?.walk?.timeline.frames);
   showWatch();
+  // whether one is made already: the loader comes in once the page is idle
+  setTimeout(() => void opener().then((m) => ((made = m.madeWalk(game)), showWatch())), 0);
   const makeBtn = loadingButton(
     'Make a walkthrough',
     'bot',
@@ -111,11 +77,12 @@ export function walkButtons(game: HomeGame): HTMLElement[] {
       aria: `Make a walkthrough of ${game.title} with the bot`,
     },
     async () => {
+      const { load, WALK_SECTION } = await opener();
       const l = await load(game);
       if (!l) return void toast(`${game.title} could not be loaded.`);
       const { walkDialog } = await import('../widgets/walkDialog');
       const changed = () => {
-        made = l.project.extras<SavedWalk | undefined>(l.project.gam, WALK_SECTION, undefined);
+        made = l.project.extras<typeof made>(l.project.gam, WALK_SECTION, undefined);
         // the panel's summary of a game of yours is read again next time the page lists it
         if (game.project && l.project.companion) game.project.companion = l.project.companion;
         showWatch();
