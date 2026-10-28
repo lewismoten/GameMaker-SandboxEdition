@@ -213,10 +213,13 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     markSelected();
   };
 
-  /** With games of your own, the one played or opened last (to carry on with); otherwise a featured game. */
+  /**
+   * On My games or Imported, your game played or opened last (to carry on with); on another tab
+   * (Sandbox after a reload, say), or with none of your own, a game featured from that tab.
+   */
   const showStart = () => {
     // not the game an import of several saved last (projectUse.ts)
-    const last = lastUsed(lib.projects, (id) => !!batchOf(id));
+    const last = isOwn(current) ? lastUsed(lib.projects, (id) => !!batchOf(id)) : undefined;
     if (!last) return feature();
     top.show(lib.mine(last), { resume: true });
     showPath([]);
