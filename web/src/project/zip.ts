@@ -15,6 +15,8 @@ export interface ZipEntry {
   data: Uint8Array;
   /** Unix file mode (e.g. 0o100755 for a program); stored so unzipping keeps it executable. */
   mode?: number;
+  /** Kept uncompressed (stored), as an ePub's first file, `mimetype`, must be. */
+  store?: boolean;
 }
 
 // CRC-32 (reflected polynomial 0xEDB88320, initial value and final XOR 0xFFFFFFFF),
@@ -63,7 +65,7 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
     let body = e.data;
     // Method 8 is deflate; the zip stores raw deflate data (no zlib header). Tiny files and
     // files that do not shrink are stored (method 0).
-    if (canCompress() && e.data.length > 64) {
+    if (canCompress() && !e.store && e.data.length > 64) {
       const deflated = await transform(e.data, new CompressionStream('deflate-raw'));
       if (deflated.length < e.data.length) {
         method = 8;
