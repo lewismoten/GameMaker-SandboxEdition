@@ -103,6 +103,8 @@ export class Tour {
     h('div', { class: 'tour-controls' }, this.backBtn, this.pauseBtn, this.nextBtn, this.soundBtn, this.closeBtn),
   );
   private card?: HTMLElement;
+  /** Which showing of the ring is current (an older one's watcher stops). */
+  private ringGen = 0;
   /** Recording the tab, a video a chapter (Record the whole tour), when the visitor agreed to share it. */
   private recorder?: TourRecorder;
   private barSize = new ResizeObserver(() => document.documentElement.style.setProperty('--tour-bar-h', `${this.bar.offsetHeight}px`));
@@ -369,6 +371,31 @@ export class Tour {
     }
     this.ring.dataset.side = side;
     this.ring.hidden = false;
+    this.followRing(target);
+  }
+
+  /**
+   * Keeps the ring on its control while it shows: it moves with it (a page that shifts), and
+   * goes when the control does (a pressed Next that turned the page).
+   */
+  private followRing(target: HTMLElement): void {
+    const ring = this.ring;
+    const was = rectOf(target);
+    const gen = ++this.ringGen;
+    const look = () => {
+      if (gen !== this.ringGen || ring.hidden || now.tour !== this) return;
+      if (!target.isConnected || !visible(target)) {
+        ring.hidden = true;
+        return;
+      }
+      const r = rectOf(target);
+      if (Math.abs(r.x - was.x) > 1 || Math.abs(r.y - was.y) > 1 || Math.abs(r.w - was.w) > 1 || Math.abs(r.h - was.h) > 1) {
+        Object.assign(was, r);
+        Object.assign(ring.style, { left: `${r.x - 4}px`, top: `${r.y - 4}px`, width: `${r.w + 8}px`, height: `${r.h + 8}px` });
+      }
+      requestAnimationFrame(look);
+    };
+    requestAnimationFrame(look);
   }
 
   private onResize = () => {
