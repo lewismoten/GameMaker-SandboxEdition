@@ -47,6 +47,9 @@ Making the files:
 - `synthParts.ts` — small pieces the games' synthesized sounds share: noise through a low-pass, a gate, an
   attack-and-decay envelope and a one-pole low-pass.
 - `disk.ts` — writes the files with DOS 8.3 names and DOS text.
+- `menuVersion.ts` — the game's version ("v1.1", from about.json) lettered in the lower right of its menu picture,
+  in the PC font with a dark outline in the picture's own lightest and darkest colors. `Disk.write()` does it for every
+  game; a game whose menu has a line of its own there moves it (`disk.menuVersion = { y: 186 }`).
 - `license.ts` — `LICENSE.TXT` for every disk (what's real, what's story, the MIT License), in 30-column pages.
 - `sandlogo.ts` — the Sandbox Software logo sting every game's `title.lst` opens with (`SANDLOGO.FLI`): a sandbox with a
   sand castle, a red pail and a blue shovel that pats the sand, then -= S A N D B O X =- drops in, a letter at a time, in
