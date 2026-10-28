@@ -37,8 +37,8 @@ export const bbsChapter: Chapter = {
       action: 'enter',
       actor: 'lewie',
       speaker: 'lewie',
-      say: 'And The Sandbox BBS runs on mine! I’m its SysOp. Go ahead, Dex, give it a call.',
-      spoken: 'And The Sandbox bee bee ess runs on mine! I’m its sis-op. Go ahead, Dex, give it a call.',
+      say: 'And The Sandbox BBS runs right here, on my PC! I’m its SysOp. Go ahead, Dex, give it a call.',
+      spoken: 'And The Sandbox bee bee ess runs right here, on my PC! I’m the sis-op. Go ahead, Dex, give it a call.',
       sound: 'blip',
     },
     {
@@ -46,8 +46,8 @@ export const bbsChapter: Chapter = {
       action: 'point',
       target: { label: 'the modem', css: '.desk-scene .modem' },
       act: { do: 'bbs-call' },
-      say: 'TERMINAL dials 1-412-555-SAND. That screech is two modems shaking hands.',
-      spoken: 'Terminal dials one, four one two, five five five, sand. That screech is two modems shaking hands.',
+      say: 'TERMINAL dials 1-412-555-SAND. Hear that screeching? Two modems, shaking hands.',
+      spoken: 'Terminal dials one, four one two, five five five, sand. Hear that screeching? Two modems, shaking hands.',
     },
     {
       // the PC was busy with the visitor's own program: no call
@@ -80,7 +80,7 @@ export const bbsChapter: Chapter = {
       action: 'point',
       target: screen,
       act: { do: 'bbs-type', wait: 'Time left', text: 'N' },
-      say: 'The main menu. N scans the newest files: the Sandbox games, free to download.',
+      say: 'The main menu. The letter N scans the newest files: the Sandbox games, free to download.',
       optional: true,
     },
     {
@@ -136,7 +136,7 @@ export const bbsChapter: Chapter = {
       id: 'bbs-logoff',
       action: 'exit',
       act: { do: 'bbs-logoff', wait: 'Time left' },
-      say: 'Thanks for calling. The modem on the desk dials it any time.',
+      say: 'That’s a BBS call. The modem on the desk dials one any time you like.',
       sound: 'oneup',
     },
   ],
