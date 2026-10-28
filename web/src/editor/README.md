@@ -15,9 +15,9 @@ Part of the [source map](../README.md).
     (each collection's games, no DOM) and `homeLibraryCards.ts` (its tiles and headings), packed by
     `homeTilePack.ts`, walked with the arrow keys by `homeTileKeys.ts`; the import tile and drops
     (`homeDrop.ts`), Getting started (`homeGettingStarted.ts`), `homeIcons.ts`,
-    `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game), Make a
-    walkthrough and Walkthrough for any game on the panel (`homeWalk.ts`: the editor's dialog over
-    the home page; `homeWalkOpen.ts`, loaded when first used, loads the game, a CD game look-only),
+    `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game), the game
+    the panel's Walkthrough (`walkthrough/button.ts`) loads when first used (`homeWalkOpen.ts`: a
+    CD game look-only),
     `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used; an import holding several games
     lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`,
     each row with a small title screen drawn as it scrolls into view: `importThumbs.ts`; removing all

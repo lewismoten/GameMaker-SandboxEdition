@@ -11,7 +11,6 @@ import { icon } from './homeIcons';
 import { isImported } from './homeOrigin';
 import type { HomeNav } from './home';
 import { walkthroughButton } from '../../walkthrough/button';
-import { walkButtons } from './homeWalk';
 import { savesButton } from '../../saves/button';
 import { chooseDownload, downloadButton } from './download';
 import { catalogDownloadable } from '../../export/downloadable';
@@ -210,10 +209,9 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     };
 
     clear(actions, ...gameActions(game, nav, refresh));
-    const walk = walkthroughButton(game.entry, () => game.files());
+    // the game's walkthrough: watch its own or yours, or make one with the bot (walkthrough/button.ts)
+    const walk = walkthroughButton(game);
     if (walk) actions.insertBefore(walk, actions.querySelector('.card-more'));
-    // the walkthrough bot, for any game (homeWalk.ts): make one, and watch the one made
-    for (const b of walkButtons(game)) actions.insertBefore(b, actions.querySelector('.card-more'));
     // saved games and high scores: a hosted game's are kept as game:<id>, yours as project:<id>
     saves = savesButton(
       game.entry || game.project
