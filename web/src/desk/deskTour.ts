@@ -105,9 +105,17 @@ export function deskTour(desk: HTMLElement, pc: DeskPc): () => void {
     };
     desk.dataset.tourBbs = 'on';
     if (lineSpeed() !== CALL_SPEED) setLineSpeed(CALL_SPEED);
+    // the PC takes the keyboard when it is typed on: it stays with the tour
+    const had = document.activeElement as HTMLElement | null;
     await pc.command('C:\nTERMINAL SANDBOX');
+    keepFocus(had);
     // switched on just now: what C: had before the call
     if (!computer) found.downloads = new Set((await pc.load()).downloads.list());
+  };
+
+  /** Gives the keyboard back to what had it, if the PC took it. */
+  const keepFocus = (had: HTMLElement | null) => {
+    if (had?.isConnected && had !== document.body && document.activeElement !== had) had.focus({ preventScroll: true });
   };
 
   /** The first file in the list not on C: already (else the first), viewed. */
@@ -148,19 +156,26 @@ export function deskTour(desk: HTMLElement, pc: DeskPc): () => void {
     delete desk.dataset.tourBbs;
     if (!was) return;
     const computer = pc.computer;
+    const restore = () => {
+      putBack(DOOR_KEY, was.door);
+      restoreAccount(was.account);
+      const speed = was.speed === 'unlimited' ? 'unlimited' : Number(was.speed);
+      if (was.speed !== null && (speed === 'unlimited' || Number.isFinite(speed))) setLineSpeed(speed as Parameters<typeof setLineSpeed>[0]);
+      else {
+        // none chosen before: the default again, and nothing remembered
+        setLineSpeed(CALL_SPEED);
+        putBack(SPEED_KEY, null);
+      }
+      for (const id of computer?.downloads.list() ?? []) if (!was.downloads.has(id)) computer?.downloads.remove(id);
+    };
+    // at once (the tour may be going on to the DOS page), and again once the call has stopped:
+    // the door notes the time a call ends
+    restore();
+    const had = document.activeElement as HTMLElement | null;
     if (computer?.busy) await computer.stopAnyProgram();
-    // the door's "still online" note comes as the call ends: after it, the door as it was
+    keepFocus(had);
     await sleep(200);
-    putBack(DOOR_KEY, was.door);
-    restoreAccount(was.account);
-    const speed = was.speed === 'unlimited' ? 'unlimited' : Number(was.speed);
-    if (was.speed !== null && (speed === 'unlimited' || Number.isFinite(speed))) setLineSpeed(speed as Parameters<typeof setLineSpeed>[0]);
-    else {
-      // none chosen before: the default again, and nothing remembered
-      setLineSpeed(CALL_SPEED);
-      putBack(SPEED_KEY, null);
-    }
-    for (const id of computer?.downloads.list() ?? []) if (!was.downloads.has(id)) computer?.downloads.remove(id);
+    restore();
   };
 
   const onAct = (e: Event) => {
