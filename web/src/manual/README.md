@@ -14,6 +14,29 @@ width, Fit page, Actual size at 96 pixels an inch, or zoomed 10–300%), with th
 Ctrl/Cmd with + and −, and a pinch; also kept per browser. The box viewer, the zine, TURBO BUTTON and the
 Level Maps read both ways.
 
+## `epub/`: every manual, hint book and magazine as an e-book
+
+Each reader's bar has a ⤓ ePub button (`save.ts`: it loads the builder only when pressed and
+saves the file) that makes the piece shown into a self-contained EPUB 3 file to read offline:
+a Sandbox Software game's manual (`manualBook.ts`, from `manualPages.ts` `manualChapters`), its
+hint book (`hintBook.ts`: the answers wait in an Answers section at the back, each question
+linked to its answer and back, a sketch drawn plainly by `redFilm.ts` `plainSketch`), its box's
+Sandbox Scoop (`scoopBook.ts`, the Tip of the month's answer likewise), the Owner's Guide
+(`ownersBook.ts`, a chapter per running head; it draws its own cover, as the DOS page opens it),
+The Ultimate Owner's Guide (`ultimateBook.ts`), TURBO BUTTON (`magazineBook.ts`: full-page ads
+and the back cover as pictures), NO CARRIER #3 (`zineBook.ts`) and the Guide (`guideBook.ts`).
+
+- `book.ts` is what a book is made of; `chapter.ts` makes a chapter of a reader's elements, and
+  `xhtml.ts` writes them as XHTML, taking their pictures along (`media.ts`: canvases as PNG, inline
+  SVG as files, the site's WebP as JPEG). `raster.ts` draws a printed piece as a picture (an SVG
+  foreignObject with the page's styles, on a canvas), for covers (`cover.ts`) and pages that are
+  only a picture; where a browser won't allow it, the piece is written as text instead.
+- `pack.ts` packs it: `mimetype` first and stored, the container, the package, the nav document,
+  an EPUB 2 `toc.ncx` and the styles (`style.ts`, generic font families only), zipped by
+  `project/zip.ts`. Nothing in the file refers to the network.
+- `check.ts` checks a file's structure as a validator would (with `xmlCheck.ts` for
+  well-formedness); `pack.test.ts` runs it.
+
 ## `printables/`: the paper in each game’s box
 
 Each game's box contents, with its own
