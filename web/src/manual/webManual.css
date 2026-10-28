@@ -44,6 +44,14 @@
   font-weight: 700;
 }
 
+.guide-epub {
+  margin: 10px 10px 0;
+}
+
+.guide-epub button {
+  min-height: 28px;
+}
+
 .guide-kicker {
   margin: 0 0 4px;
   color: var(--muted, var(--text));

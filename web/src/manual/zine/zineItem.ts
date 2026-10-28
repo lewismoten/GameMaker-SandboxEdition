@@ -119,6 +119,7 @@ export function zineItem(): BoxItem {
     icon: '📠',
     reader: (o) => Promise.resolve(turner(o)),
     render: () => Promise.resolve(printSheets()),
+    epub: { file: 'no-carrier-3.epub', make: () => import('../epub/zineBook').then((m) => m.zineBook()) },
   };
 }
 

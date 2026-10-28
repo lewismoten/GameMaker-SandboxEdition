@@ -4,6 +4,7 @@ import { h, clear } from '../editor/core/ui';
 import { decorateBbsName } from '../retro/bbs/bbsName';
 import { GUIDE_SECTIONS } from './guideSections';
 import { hashParam } from '../urlState';
+import { epubControl } from './epub/save';
 
 const SECTIONS = GUIDE_SECTIONS;
 
@@ -32,11 +33,15 @@ export function renderWebManual(el: HTMLElement, sectionId?: string): void {
       at < SECTIONS.length - 1 ? link(at + 1, `${SECTIONS[at + 1][1]} →`, 'next') : h('span'),
     ),
   );
+  // the whole Guide as an e-book, to read offline
+  const epub = epubControl();
+  epub.use({ file: 'game-maker-sandbox-edition-guide.epub', make: () => import('./epub/guideBook').then((m) => m.guideBook()) });
   const toc = h(
     'details',
     { class: 'guide-toc', open: matchMedia('(min-width: 761px)').matches },
     h('summary', null, h('span', null, 'Contents: '), title),
     h('nav', { 'aria-label': 'Guide contents' }, h('a', { href: '#/' }, '← Home'), ...SECTIONS.map(([, t], i) => link(i, t))),
+    h('div', { class: 'guide-epub' }, epub.el),
   );
   for (const b of article.querySelectorAll('.guide-open-ultimate'))
     b.addEventListener('click', () => void import('./ultimate/openUltimate').then((m) => m.openUltimateGuide()));
