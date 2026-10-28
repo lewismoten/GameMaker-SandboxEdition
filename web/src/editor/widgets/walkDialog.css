@@ -9,9 +9,6 @@
   flex-direction: column;
   gap: 4px;
 }
-.wd-stop {
-  color: var(--danger);
-}
 .wd-plays h3 {
   margin: 0;
   font-size: 1rem;
@@ -25,4 +22,36 @@
 .wd-broke {
   display: block;
   color: var(--muted);
+}
+.wd-list > li {
+  overflow-wrap: anywhere;
+}
+.wd-row-tools {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-left: 8px;
+}
+.wd-row-tools:empty {
+  display: none;
+}
+.wd-row-tools .field {
+  margin: 0;
+}
+.wd-row-tools button {
+  min-height: 24px;
+}
+.wd-stop .wd-what {
+  color: var(--danger);
+}
+.wd-far {
+  margin: 0;
+  font-weight: 600;
+}
+.wd-kept {
+  margin: 0;
+  padding: 6px 10px;
+  border-left: 3px solid var(--accent);
+  background: var(--panel-2, transparent);
 }
