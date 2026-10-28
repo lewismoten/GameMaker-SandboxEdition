@@ -25,7 +25,7 @@ export function numberWords(n: number): string {
 /**
  * A number the way it is said in the tour: a year in two halves ("nineteen ninety-four",
  * "nineteen oh five", but "two thousand", "two thousand five"), a model number in two halves
- * (286 → "two eighty-six", 486 → "four eighty-six"), anything else plainly.
+ * (286 → "two-eighty-six", 486 → "four-eighty-six"), anything else plainly.
  */
 export function sayNumber(digits: string): string {
   const n = Number(digits);
@@ -33,8 +33,8 @@ export function sayNumber(digits: string): string {
     const [hi, lo] = [Math.floor(n / 100), n % 100];
     return `${numberWords(hi)} ${lo === 0 ? 'hundred' : lo < 10 ? `oh ${ONES[lo]}` : numberWords(lo)}`;
   }
-  // the PC chips: 286, 386, 486
-  if (/^[2-5]86$/.test(digits)) return `${ONES[Number(digits[0])]} eighty-six`;
+  // the PC chips: 286, 386, 486, hyphenated (Whisper heard some unhyphenated takes as 287)
+  if (/^[2-5]86$/.test(digits)) return `${ONES[Number(digits[0])]}-eighty-six`;
   return numberWords(n);
 }
 

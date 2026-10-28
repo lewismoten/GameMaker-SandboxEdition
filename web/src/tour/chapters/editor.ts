@@ -26,6 +26,8 @@ export const editorChapter: Chapter = {
       id: 'editor-hello',
       action: 'enter',
       say: 'Beep! Watt here, from Ohm Sweet Ohm. This is the editor, open on my game just as it shipped.',
+      // a lone "Beep!" at the start of a take is lost in Watt's voice
+      spoken: 'Beep beep! Watt here, from Ohm Sweet Ohm. This is the editor, open on my game just as it shipped.',
       sound: 'clack',
     },
     {
@@ -110,6 +112,8 @@ export const editorChapter: Chapter = {
       // a phone folds the editor's tip to one line: More opens it to show the note, and the tour folds it again
       target: { label: 'the note about color 0', css: '.hint .pal-zero-link', reveal: '.hint.folded .hint-toggle' },
       say: 'In a palette, mind color 0: the game draws its menus and text screens on it. Press backgrounds to see them.',
+      // "mind color" ran together into "mine color"
+      spoken: 'In a palette, mind the color zero: the game draws its menus and text screens on it. Press backgrounds to see them.',
     },
     {
       id: 'editor-assistant',

@@ -20,6 +20,7 @@ const ALIKE: Record<string, string> = {
   bizarres: 'bizarre',
   bazaar: 'bizarre',
   bazaars: 'bizarre',
+  finnish: 'finish',
 };
 
 /** Little words a take can drop or swap without changing what the line means. */

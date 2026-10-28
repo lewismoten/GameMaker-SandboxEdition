@@ -21,6 +21,8 @@ export const settingsChapter: Chapter = {
       id: 'settings-hello',
       action: 'enter',
       say: 'Courier Max, with a delivery: the settings. They live behind the gear, top right.',
+      // Max's voice loses a take's first word: an "It's" goes first
+      spoken: "It's Courier Max, with a delivery: the settings. They live behind the gear, top right.",
       sound: 'jet',
     },
     {
@@ -47,6 +49,8 @@ export const settingsChapter: Chapter = {
       action: 'point',
       target: setting('Theme'),
       say: 'Theme goes dark, light, or whatever your computer uses. Each press picks the next one.',
+      // Max's voice loses a take's first word
+      spoken: 'The Theme button goes dark, light, or whatever your computer uses. Each press picks the next one.',
     },
     {
       id: 'settings-tour',
