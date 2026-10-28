@@ -309,7 +309,7 @@ function glyph(c: CanvasRenderingContext2D, ch: string, x: number, y: number): v
 }
 
 /** A sketch hidden in noise, as a canvas `CELL` pixels to the cell. */
-function hiddenSketch(sketch: HintSketch, seed = fnv1a(sketch.rows.join('/')), ink = CYAN_INK): HTMLCanvasElement {
+function hiddenSketch(sketch: HintSketch, seed = fnv1a(sketch.rows.join('/')), ink = CYAN_INK, plain = false): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   const c0 = canvas.getContext('2d');
   if (!c0) return canvas;
@@ -323,28 +323,30 @@ function hiddenSketch(sketch: HintSketch, seed = fnv1a(sketch.rows.join('/')), i
   canvas.width = w;
   canvas.height = hh;
   const c = canvas.getContext('2d')!;
+  const draw = () => {
+    c.fillStyle = ink;
+    c.strokeStyle = ink;
+    c.lineWidth = PEN;
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    sketch.rows.forEach((row, j) => [...row].forEach((ch, i) => glyph(c, ch, pad + i * CELL, pad + j * CELL)));
+    c.font = LABEL_FONT;
+    c.textBaseline = 'middle';
+    for (const l of sketch.labels ?? []) c.fillText(l.text, pad + l.x * CELL, pad + (l.y + 0.55) * CELL);
+  };
+  if (plain) {
+    c.fillStyle = '#fff';
+    c.fillRect(0, 0, w, hh);
+    draw();
+    return canvas;
+  }
   const rnd = mulberry32(seed);
-  camouflage(
-    c,
-    rnd,
-    w,
-    hh,
-    () => PEN * (0.8 + rnd() * 0.5),
-    () => {
-      c.fillStyle = ink;
-      c.strokeStyle = ink;
-      c.lineWidth = PEN;
-      c.lineCap = 'round';
-      c.lineJoin = 'round';
-      sketch.rows.forEach((row, j) => [...row].forEach((ch, i) => glyph(c, ch, pad + i * CELL, pad + j * CELL)));
-      c.font = LABEL_FONT;
-      c.textBaseline = 'middle';
-      for (const l of sketch.labels ?? []) c.fillText(l.text, pad + l.x * CELL, pad + (l.y + 0.55) * CELL);
-    },
-    16,
-  );
+  camouflage(c, rnd, w, hh, () => PEN * (0.8 + rnd() * 0.5), draw, 16);
   return canvas;
 }
+
+/** A sketch drawn plainly, dark on white, with nothing hiding it (the hint book's ePub shows its answers that way). */
+export const plainSketch = (sketch: HintSketch): HTMLCanvasElement => hiddenSketch(sketch, 0, '#1a1a1a', true);
 
 /** A drawing hidden among red lines, like an answer (a picture for the screen and one for printing). */
 export function redSketch(sketch: HintSketch): HTMLElement {

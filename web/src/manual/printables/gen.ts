@@ -420,6 +420,13 @@ function story(n: { head: string; html: string }): HTMLElement {
   );
 }
 
+/** The newsletter's Tip of the month: one of the hint book's questions, the same for a game every time. */
+export function tipOfTheMonth(ctx: PrintContext): { q: string; a: string } | undefined {
+  const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
+  const tips = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
+  return tips.length ? tips[fnv1a(ctx.entry.id) % tips.length] : undefined;
+}
+
 /** The game's issue: its month's news (the first story leads, under its box shot), a tip from its hint book and the BBS. */
 export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
   const family = ctx.family.length ? ctx.family : [ctx.entry];
@@ -432,9 +439,7 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
     family.filter((g) => (g.original as { secret?: boolean } | undefined)?.secret !== true),
   );
   const date = scoopDateline(ctx.entry.id, ctx.entry.year);
-  const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
-  const tips = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
-  const tip = tips.length ? tips[fnv1a(ctx.entry.id) % tips.length] : undefined;
+  const tip = tipOfTheMonth(ctx);
   const stories = [
     h(
       'article',
