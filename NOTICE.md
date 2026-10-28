@@ -735,7 +735,10 @@ fontTools (MIT). Only their output is committed.
 The tour's narration script (`web/scripts/narrate.ts`, `npm run voice`) runs on the
 developer's computer with ffmpeg, Pocket TTS's ONNX model and ONNX Runtime's WASM build (see
 "The guided tour's voice" in Credits), read from folders outside the repository; only the clips
-it makes are committed.
+it makes are committed. Its check (`web/scripts/narrate/verify.ts`, `npm run voice:check`)
+hears each clip with OpenAI's Whisper (MIT; the large-v3 model, run by whisper.cpp, MIT, or
+openai-whisper's own command), on the developer's computer, to find words the voices said
+wrong; nothing of it ships.
 
 The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
 `tools/analyze.py` and `tools/cutClips.py`) run on the developer's computer with ffmpeg,

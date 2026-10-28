@@ -125,7 +125,11 @@ export function softwareSection(): HTMLElement {
           ext('https://huggingface.co/hexgrad/Kokoro-82M', 'Kokoro-82M'),
           ' (Apache-2.0) through ',
           ext('https://www.npmjs.com/package/kokoro-js', 'kokoro-js'),
-          ' (Apache-2.0), installed outside the app’s packages. Only the clips are committed.',
+          ' (Apache-2.0), installed outside the app’s packages. OpenAI’s ',
+          ext('https://github.com/openai/whisper', 'Whisper'),
+          ' (MIT), run by ',
+          ext('https://github.com/ggml-org/whisper.cpp', 'whisper.cpp'),
+          ' (MIT), hears each clip to check its words came out right. Only the clips are committed.',
         ),
         h(
           'li',

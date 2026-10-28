@@ -45,14 +45,23 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   rewrites `index.json` (id → chapter, where, words, seconds and hashes, so unchanged lines are
   skipped) and the generated `README.md` there. Its parts are in `narrate/`: `pocketTts.ts` (the
   engine, ported from pocket-tts-js, MIT), `audio.ts` (ffmpeg in and out: the voice sample's
-  clearest 10 s, the pitch and speed shift, even loudness, the Opus encoding), `lineIndex.ts` and `voiceReadme.ts`. The
+  clearest 10 s, the pitch and speed shift, even loudness, the Opus encoding), `spoken.ts`, `lineIndex.ts` and `voiceReadme.ts`. The
   model, the engine and the voice samples stay outside the repo (`--model`, `--engine`, or
   `POCKET_TTS_MODEL`, `POCKET_TTS_ENGINE`, and `NARRATE_SAMPLE_<NAME>` for a sample named in
   `SAMPLES`; `--sample <file>` puts every line in one recording, to compare); CI never runs it.
   `npm run voice -- --only <id>` records a retake (each take differs; `--seed <n>` repeats one),
   `--lines <file.json>` reads `[{ id, chapter, where, text, voice? }]` instead of the tour, `--out <dir>`
   writes elsewhere, `--wav` also keeps each take as .wav, and `--dry-run` lists what it would
-  record. Never put Lewis's voice samples in the repo, a download or a test fixture.
+  record. Each line is said in the spoken form `narrate/spoken.ts` gives it (numbers in words,
+  BBS, DOS, PLAYGAME, THE CHEZ and the like spelled for the voice, straight quotes for Pocket TTS),
+  or a step's own `spoken` where even that comes out wrong; the bubbles keep their written words,
+  and the index's hash is of the spoken form. `npm run voice:check` (`narrate/verify.ts`) hears every
+  clip with Whisper, locally (whisper.cpp's `whisper-cli` with `ggml-large-v3.bin` from
+  `~/.cache/whisper-cpp`, or `--model <name>` for openai-whisper's `whisper`, e.g. `medium.en`), and
+  lists the clips whose words came out wrong (`narrate/compare.ts` leaves out sound-alike spellings
+  and little words) with a retake command, in the terminal and `/.narrate/voice-check.md`;
+  transcripts are cached by each clip's bytes in `/.narrate/voice-check.json`. Never put Lewis's
+  voice samples in the repo, a download or a test fixture.
 - Pictures made once by hand: `bbsGifs.ts` made the BBS gallery's pictures in `../public/bbs`;
   `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast` (the sprites
   also walk the guided tour, with a few hosts of its own), from the other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).
