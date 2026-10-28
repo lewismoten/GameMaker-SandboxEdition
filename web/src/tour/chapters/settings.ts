@@ -75,7 +75,7 @@ export const settingsChapter: Chapter = {
       id: 'settings-page',
       action: 'point',
       target: { label: 'the Credits page’s sections', css: ['.credits-page .page-toc', '.credits-page h1'] },
-      say: 'This page’s sections: the original Game-Maker’s makers, the game authors, and every tool used, AI too.',
+      say: 'This page’s sections: the people who made the original Game-Maker, the game authors, and every tool used, AI too.',
     },
     {
       id: 'settings-bye',
