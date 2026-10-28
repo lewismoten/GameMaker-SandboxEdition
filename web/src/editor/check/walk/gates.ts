@@ -25,8 +25,7 @@ interface Source {
 }
 
 /** A block that refuses its touch while its counter is short, and opens (turns into another block) when it takes. */
-export const isGate = (b: Block | undefined, n: number): boolean =>
-  !!b && b.solid !== 0 && (b.effect >= 20 || b.effect === 3) && b.eamt < 0 && b.touchBl !== n;
+export const isGate = (b: Block | undefined, n: number): boolean => !!b && b.solid !== 0 && (b.effect >= 20 || b.effect === 3) && b.eamt < 0 && b.touchBl !== n;
 
 /** The scene's locked doors still shut, from the map as it is (block numbers as drawn: blkmap). */
 export function gatesOf(map: ArrayLike<number>, bg: Block[], shown: (n: number) => number = (n) => n): Gate[] {
@@ -55,7 +54,13 @@ export function gatesOf(map: ArrayLike<number>, bg: Block[], shown: (n: number) 
 }
 
 /** Map cells and monsters that add to one of `counters`. */
-export function sourcesOf(map: ArrayLike<number>, bg: Block[], counters: ReadonlySet<number>, monsters: Source[] = [], shown: (n: number) => number = (n) => n): Source[] {
+export function sourcesOf(
+  map: ArrayLike<number>,
+  bg: Block[],
+  counters: ReadonlySet<number>,
+  monsters: Source[] = [],
+  shown: (n: number) => number = (n) => n,
+): Source[] {
   const out: Source[] = [];
   for (let c = 0; c < MLEN * MWID; c++) {
     const b = bg[shown(map[c])];
