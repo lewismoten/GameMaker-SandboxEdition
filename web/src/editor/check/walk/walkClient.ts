@@ -66,7 +66,7 @@ export function startWalk(files: GameFiles, req: Omit<WalkRequest, 'files'>, pro
       // the scenes it got through, timed on the engine
       check = run(files, { gam: req.gam, id: req.id, budgetMs: 0, only: req.only, walk: kept.walk }, progress);
       bot.end(abort());
-      check.done.then(({ result, verified }) => settle?.resolve({ result: { ...kept, walk: result.walk }, verified }), settle?.reject);
+      void check.done.then(({ result, verified }) => settle?.resolve({ result: { ...kept, walk: result.walk }, verified }), settle?.reject);
     },
     cancel: () => {
       bot.end(abort());
