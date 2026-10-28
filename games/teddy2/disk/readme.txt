@@ -1,5 +1,5 @@
 TEDDY'S LITTLE BIGGER ADVENTURE
-     Version 1.0 - 1996
+     Version 1.1 - 1996
   (c) 1996 Sandbox Software
 
 The morning after the

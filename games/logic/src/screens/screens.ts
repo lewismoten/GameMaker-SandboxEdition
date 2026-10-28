@@ -169,7 +169,8 @@ export function menuScreen(art: Art): Pixels {
   panel(p, 58, 96, 204, 78);
   bigWatt(p, art, 12, 116, 2);
   bigWatt(p, art, 266, 116, 2, 'side0');
-  outlined(p, 52, 184, 'Arrows to choose, Enter to go', c('paper', 3), c('ink', 0));
+  // left of the version (kit/menuVersion.ts) on the same line
+  outlined(p, 40, 184, 'Arrows to choose, Enter to go', c('paper', 3), c('ink', 0));
   return p;
 }
 

@@ -1,6 +1,6 @@
 TEDDY'S LITTLE BIGGER
 ADVENTURE
-Version 1.0, 1996
+Version 1.1, 1996
 
 Design, art, music and
 programming: Claude

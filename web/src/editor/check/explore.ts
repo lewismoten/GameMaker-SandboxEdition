@@ -46,6 +46,8 @@ export interface ExploreOptions {
   paths?: { blocks: ReadonlySet<number>; offCost?: number };
   /** Stop as soon as a link this accepts is taken (a bot after the next scene). */
   stopAt?: (link: number, toScene: number) => boolean;
+  /** Stop at the first place where this holds (a bot after a key: a counter has gone up); `reached` says which. */
+  stopWhen?: (w: World) => boolean;
   /** Start partway through the scene: a snapshot of this scene from the same entry. */
   start?: Snap;
   /** Told the world as the hero enters and after every tick played (what the screen shows: w.mx, w.my, w.scroll). */
@@ -153,6 +155,8 @@ export interface Exploration {
   moves: Move[];
   /** The scene's links, from the .gam file. */
   links: Link[];
+  /** With `stopWhen`: the place where it first held. */
+  reached?: number;
 }
 
 /** Block numbers whose animation changes how they hold, push or hurt the hero (timed doors, lifts). */
@@ -205,6 +209,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const paths = goal && opt.paths?.blocks.size ? opt.paths : undefined;
   const offCost = paths?.offCost ?? 1;
   let reachedStop = false;
+  let reached: number | undefined;
   const timed = timedBlocks(bg);
   // blocks that refuse a touch while a counter is short (locks), and the counters they read
   const gateCounters = [...new Set(bg.filter((b) => (b.effect >= 20 || b.effect === 3) && b.eamt < 0).map((b) => b.effect))];
@@ -311,6 +316,10 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
       ...(paths ? { cost } : {}),
     });
     index.set(key, id);
+    if (id > 0 && reached === undefined && opt.stopWhen?.(w)) {
+      reached = id;
+      reachedStop = true;
+    }
     if (timedHere && !index.has(`${spot}#first`)) index.set(`${spot}#first`, id);
     // (keeping to paths: the way so far and the distance left, and of two as good, the nearer)
     if (goal && paths) heap.push(id, (cost! + distance(cellOf())) * 1000 + distance(cellOf()) * 10 + (w.clock - startClock) / 100);
@@ -520,6 +529,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
     gravity,
     moves,
     links: game.scenes[scene].links,
+    ...(reached !== undefined ? { reached } : {}),
   };
   await confirmStuck(ex, sim, startSnap, baseMap, bg);
   return ex;

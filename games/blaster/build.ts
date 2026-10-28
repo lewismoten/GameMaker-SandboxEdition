@@ -26,6 +26,8 @@ import { serializeSlideList } from '../../web/src/formats/graphicScripts';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
+// the version goes on the same line as the menu's hint, at its right
+disk.menuVersion = { y: 186 };
 
 const cb = shipBlocks(buildPalette('board'));
 disk.put('ship.cbl', serializeBlocks(cb.build(undefined, true)));

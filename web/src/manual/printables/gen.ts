@@ -251,7 +251,17 @@ export async function keycard(ctx: PrintContext): Promise<Sheet[]> {
 }
 
 // ------------------------------------------------------------------ catalog
-export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
+/** The catalog's running head on each page: the logo, GAMES CATALOG, the season and the page. */
+export const catalogHead = (page: string): HTMLElement =>
+  h(
+    'header',
+    { class: 'cat-head' },
+    sandboxLogo('cat-logo'),
+    h('div', null, h('b', null, 'GAMES CATALOG'), h('span', null, `${ISSUE_DATE} · Pittsburgh, PA · ${page}`)),
+  );
+
+/** What the catalog prints, in order, before it is flowed onto pages: each game with its picture, what's coming, the BBS and the order form. */
+export async function catalogBlocks(ctx: PrintContext): Promise<HTMLElement[]> {
   const family = ctx.family.length ? ctx.family : [ctx.entry];
   const entries = await Promise.all(
     family.map(async (g) => {
@@ -295,14 +305,7 @@ export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
     ),
     fictionalNote(),
   );
-  const head = (page: string) =>
-    h(
-      'header',
-      { class: 'cat-head' },
-      sandboxLogo('cat-logo'),
-      h('div', null, h('b', null, 'GAMES CATALOG'), h('span', null, `${ISSUE_DATE} · Pittsburgh, PA · ${page}`)),
-    );
-  const blocks: HTMLElement[] = [
+  return [
     h('p', { class: 'cat-lead' }, 'Every Sandbox Software game is shareware: try it free, share it with friends, and register the ones you love.'),
     ...entries,
     ...(coming.length
@@ -316,6 +319,11 @@ export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
     ),
     order,
   ];
+}
+
+export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
+  const blocks = await catalogBlocks(ctx);
+  const head = catalogHead;
   // as many pages as the games need, measured on a real catalog page
   const host = h('div', { class: 'gmb-measure' });
   document.body.append(host);

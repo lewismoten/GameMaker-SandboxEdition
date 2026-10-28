@@ -28,6 +28,8 @@ import { licenseText } from '../kit/license';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
+// the version goes on the same line as the menu's hint, at its right
+disk.menuVersion = { y: 184 };
 
 const mb = buildMonsterBlocks();
 const cb = buildWattBlocks();

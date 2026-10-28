@@ -81,7 +81,15 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
       redFilm: !!book,
       epub: { file: `${ctx.entry.id}-sandbox-scoop.epub`, make: () => import('../epub/scoopBook').then((m) => m.scoopEpub(ctx)) },
     },
-    { kind: 'catalog', id: 'catalog', title: 'Sandbox Software catalog', note: 'Every Sandbox Software game', icon: '🗂️', render: () => catalog(ctx) },
+    {
+      kind: 'catalog',
+      id: 'catalog',
+      title: 'Sandbox Software catalog',
+      note: 'Every Sandbox Software game',
+      icon: '🗂️',
+      render: () => catalog(ctx),
+      epub: { file: 'sandbox-software-catalog.epub', make: () => import('../epub/sandboxCatalogBook').then((m) => m.sandboxCatalogEpub(ctx)) },
+    },
     { kind: 'bbs', id: 'bbs', title: 'BBS ad', note: 'Call the Sandbox BBS', icon: '📞', render: () => bbsAd() },
     ...(book
       ? [

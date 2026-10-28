@@ -1,5 +1,5 @@
          VIRUS BLASTER
-      Version 2.0 - 1995
+      Version 2.1 - 1995
   (c) 1995 Sandbox Software
 
 Your PC has a virus. Shrink

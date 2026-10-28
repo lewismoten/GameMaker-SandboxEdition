@@ -8,8 +8,12 @@ import type { Character } from '../../formats/character';
 /** One part of a move: hold these keys until `until` says stop (or `max` ticks pass). */
 interface Step {
   keys: number[];
-  /** 'cell': the character's cell changed; 'land': it is on the ground again; 'ticks': after max ticks. */
-  until: 'cell' | 'land' | 'ticks';
+  /**
+   * 'cell': the character's cell changed; 'land': it is on the ground again; 'ticks': after max
+   * ticks; 'over': risen in the air and over safe ground in another column (drive.ts overLanding),
+   * so letting go drops him onto it: a hop onto the next pillar, however far the jump would carry.
+   */
+  until: 'cell' | 'land' | 'ticks' | 'over';
   max: number;
   /** Hold at least this many ticks, whatever `until` says (steady hands). */
   min?: number;
@@ -108,6 +112,21 @@ export function movesFor(roles: KeyRoles, gravity: boolean): Move[] {
               ],
             });
         }
+    }
+  // a jump let go of once it is over the next safe footing (a pillar, a ledge across a pit)
+  if (gravity)
+    for (const j of roles.jump) {
+      if (j.dx !== 0) out.push({ name: `jump ${j.scan} to a ledge`, steps: [{ keys: [j.scan], until: 'over', max: 40 }] });
+      else
+        for (const m of sideways)
+          for (const press of [1, 6])
+            out.push({
+              name: `jump ${j.scan} ${press} running ${m.scan} to a ledge`,
+              steps: [
+                { keys: [m.scan, j.scan], until: 'ticks', max: press },
+                { keys: [m.scan], until: 'over', max: 40 },
+              ],
+            });
     }
   for (const a of roles.act) out.push({ name: `use ${a}`, steps: [{ keys: [a], until: 'ticks', max: 1 }] });
   out.push({ name: 'wait', steps: [{ keys: [], until: 'ticks', max: 18 }], waits: true });

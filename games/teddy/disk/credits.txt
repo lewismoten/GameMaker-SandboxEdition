@@ -1,5 +1,5 @@
 TEDDY'S LITTLE BIG ADVENTURE
-Version 1.0, 1995
+Version 1.1, 1995
 
 Design, art, music and
 programming: Claude
