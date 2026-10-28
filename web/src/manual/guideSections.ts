@@ -147,15 +147,33 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
   [
     'export',
     'Sharing your game',
-    `<h3>Export web app</h3>
-    <p>Makes a <code>.zip</code> with your game and its own player. Unzip it onto any web
-    host that serves static files, such as GitHub Pages or Netlify. Players can install it
-    like an app, and it works offline after the first visit.</p>
-    <h3>Export for DOS</h3>
-    <p>Makes a <code>.zip</code> in the original formats, with the game’s own
-    <code>.EXE</code> named after it. It runs in DOSBox or on a real PC.</p>
-    <h3>Download .zip</h3>
-    <p>Just the game’s files, to back them up or open them in another browser.</p>`,
+    `<p>Choose <b>Download</b> on a game (on the home page, or in the editor) and pick how
+    it will be played. Each one carries the game with its own player, so whoever gets it
+    needs nothing else.</p>
+    <h3>The web</h3>
+    <p><b>Web page</b> is the game and its player in one <code>.html</code> file that opens in
+    any browser, offline; its <code>.zip</code> is a web app to unzip onto any web host that
+    serves static files, such as GitHub Pages or Netlify, which players can install like an
+    app. <b>Web player</b> is for your own site: one page that plays Game-Maker game folders.</p>
+    <h3>DOS</h3>
+    <p>The original files with the game’s own <code>.EXE</code> (the stand-alone player, named
+    after the game), for DOSBox or a real DOS PC.</p>
+    <h3>Game files</h3>
+    <p>Just the game’s files, to back them up or open them in another browser.</p>
+    <h3>Windows</h3>
+    <p>A program to double-click (<code>.exe</code>, or a <code>.zip</code>), for Windows 10
+    and 11. It isn’t code-signed, so the first time choose <b>More info → Run anyway</b>.
+    <a href="#/windows">Playing on Windows</a> explains it.</p>
+    <h3>Mac</h3>
+    <p>An app for macOS 11 or later, on Apple silicon or Intel (<code>.dmg</code>, or a
+    <code>.zip</code>). It isn’t notarized, so the first time open it from <b>System Settings →
+    Privacy &amp; Security</b>. <a href="#/mac">Playing on a Mac</a> explains it.</p>
+    <h3>Linux</h3>
+    <p>A folder (<code>.tar.gz</code>) with <code>play.sh</code>, which plays the game in a
+    window with WebKitGTK, or in your browser. <a href="#/linux">Playing on Linux</a> explains
+    it.</p>
+    <p>Every download but DOS plays on a web engine (a browser, or the one built into Windows,
+    macOS or Linux); the DOS one is the most future-proof.</p>`,
   ],
   [
     'offline',
