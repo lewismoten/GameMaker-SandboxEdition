@@ -415,7 +415,9 @@ export async function copyCatalogGame(
   if (!files) return;
   toast(`Copying ${title}…`);
   // the copy keeps the game's DOS player look (an original game's player.json) in its companion
-  const companion = entry && gam ? (await import('../../dosPlayer/catalogPatches')).catalogCompanion(entry, gam) : undefined;
+  let companion = entry && gam ? (await import('../../dosPlayer/catalogPatches')).catalogCompanion(entry, gam) : undefined;
+  // …and the walkthrough and plays made while it was look-only (check/walk/keptWalk.ts)
+  if (entry && gam) companion = (await import('../check/walk/keptWalk')).withKept(companion, gam, entry);
   const p = Project.fromFiles(files, name, undefined, companion);
   if (gam) p.gam = gam;
   await p.saveNow();
