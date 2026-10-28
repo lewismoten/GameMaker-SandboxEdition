@@ -89,6 +89,8 @@ export class Tour {
   private props: Actor[] = [];
   /** Menus and overlays the tour opened, by their handle's key (tourOpen.ts). */
   private opened = new Map<unknown, Opened>();
+  /** Where the keyboard goes back once a menu that kept it for a press is done with (focusBack). */
+  private focusLater?: HTMLElement;
   /** Steps whose page act was asked for (once a tour), and the chapters they were in. */
   private acted = new Set<string>();
   private actedIn = new Set<Chapter>();
@@ -245,8 +247,9 @@ export class Tour {
     const need = this.handleFor(step);
     for (const [k, m] of this.opened) if (k !== need?.key) (this.closeKeepingFocus(m), this.opened.delete(k));
     let target = step.target ? findTarget(step.target) : undefined;
+    this.focusBack();
     if (need && step.target && (!target || !need.isOpen())) {
-      await this.openKeepingFocus(need);
+      await this.openKeepingFocus(need, step.action === 'press' && !!step.click);
       if (!this.live(token)) return;
       // a menu opens at once; a panel may load first
       for (let t = 0; t < 3000 && !(target = findTarget(step.target)); t += 100) {
@@ -293,14 +296,23 @@ export class Tour {
    * tour's bar (an overlay moves it into itself), and a page's modal dialog, which the browser
    * puts above everything, gets the tour's layer and bar put above it in turn.
    */
-  private async openKeepingFocus(m: Opened): Promise<void> {
+  private async openKeepingFocus(m: Opened, later = false): Promise<void> {
     this.opened.set(m.key, m);
     const had = document.activeElement as HTMLElement | null;
     await m.open();
     if (now.tour !== this) return m.close();
-    if (had && this.bar.contains(had)) had.focus({ preventScroll: true });
-    else if (this.opts.record) this.bar.focus({ preventScroll: true });
+    const back = had && this.bar.contains(had) ? had : this.opts.record ? this.bar : undefined;
+    // a menu that shuts when the keyboard leaves it (the modem's speeds) keeps it until its item is pressed
+    if (later) this.focusLater = back;
+    else back?.focus({ preventScroll: true });
     if (document.querySelector('dialog:modal')) this.raise();
+  }
+
+  /** The keyboard back on the tour's bar, if a menu kept it for a press. */
+  private focusBack(): void {
+    const el = this.focusLater;
+    this.focusLater = undefined;
+    if (el?.isConnected && now.tour === this) el.focus({ preventScroll: true });
   }
 
   /** Shuts a menu or overlay; one that hands the keyboard back to what opened it leaves it on the tour's bar. */
@@ -451,6 +463,8 @@ export class Tour {
       this.pressed = target;
       target.classList.add('tour-pressed');
       if (step.click === true || (step.click && target.matches(step.click))) this.clickKeepingFocus(target);
+      // the pressed item shows a moment in its menu before the keyboard comes back (which may shut it)
+      if (this.focusLater) setTimeout(() => this.live(token) && this.focusBack(), 1500);
       if (step.opens) {
         await this.openKeepingFocus(overlayHandle(step.opens, (el) => el.click()));
         if (!this.live(token)) return;
@@ -509,8 +523,10 @@ export class Tour {
     const gen = ++this.ringGen;
     const look = () => {
       if (gen !== this.ringGen || ring.hidden || now.tour !== this) return;
-      if (!target.isConnected || !visible(target)) {
+      if (!target.isConnected || !visible(target) || this.covered(target)) {
+        // gone, or covered by what its press opened (a manual over its button): ring and press go
         ring.hidden = true;
+        target.classList.remove('tour-pressed');
         return;
       }
       const r = rectOf(target);
@@ -521,6 +537,16 @@ export class Tour {
       requestAnimationFrame(look);
     };
     requestAnimationFrame(look);
+  }
+
+  /** Something of the page's own lies over the middle of the control (an overlay its press opened). */
+  private covered(target: HTMLElement): boolean {
+    const r = target.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return false;
+    const top = document.elementFromPoint(x, y);
+    return !!top && !target.contains(top) && !top.contains(target) && !this.bar.contains(top) && !this.layer.contains(top) && !this.card?.contains(top);
   }
 
   private onResize = () => {

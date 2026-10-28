@@ -392,3 +392,7 @@
 .tour-on .gp-panel {
   bottom: calc(var(--tour-bar-h, 0px) + 16px);
 }
+/* the modem's speeds (the BBS chapter presses one) open under the hosts and their bubble */
+.tour-on :is(.modem-menu, .modem-hint) {
+  z-index: 899;
+}
