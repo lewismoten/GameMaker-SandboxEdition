@@ -113,7 +113,7 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
       {
         type: 'button',
         class: stuck ? 'primary wd-myself' : 'wd-myself',
-        'aria-label': `${mine ? 'Play again' : 'Play'} ${sceneName(scene)} yourself and record it for the walkthrough`,
+        'aria-label': `${mine ? 'Play it again' : 'Play it myself'}: ${sceneName(scene)}, recorded for the walkthrough`,
         title: 'Play this scene on the real engine; reach an exit to keep your play for the walkthrough',
         onclick: () => void playMyself(scene, map),
       },

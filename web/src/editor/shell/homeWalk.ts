@@ -89,7 +89,10 @@ export function walkButtons(game: HomeGame): HTMLElement[] {
   const watchBtn = loadingButton(
     label,
     'route',
-    { title: 'Watch the walkthrough the bot made, as far as it got, or save it as an MP4', aria: `Watch the walkthrough you made of ${game.title}` },
+    {
+      title: 'Watch the walkthrough the bot made, as far as it got, or save it as an MP4',
+      aria: `${label} of ${game.title} the bot made: watch it or save it as an MP4`,
+    },
     async () => {
       const l = await load(game);
       const walk = l && l.project.extras<SavedWalk | undefined>(l.project.gam, WALK_SECTION, undefined)?.walk;
