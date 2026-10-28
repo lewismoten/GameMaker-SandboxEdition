@@ -16,7 +16,7 @@ const secret = gameIds.filter((id) => about(id).secret);
 
 /** Where each page's controls are made: a selector's classes and ids must appear in these. */
 const SOURCES: Record<string, string[]> = {
-  home: ['main.ts', 'settingsMenu.ts', 'theme.ts', 'viewSwitch.ts', 'tour/tourButton.ts', 'walkthrough/button.ts', 'editor/shell'],
+  home: ['main.ts', 'imported/ratingStars.ts', 'settingsMenu.ts', 'theme.ts', 'viewSwitch.ts', 'tour/tourButton.ts', 'walkthrough/button.ts', 'editor/shell'],
   library: ['library'],
   achievements: ['achievements'],
   cast: ['cast'],
