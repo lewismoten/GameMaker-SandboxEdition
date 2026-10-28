@@ -1,11 +1,14 @@
-// Starts the walkthrough bot in its Web Worker (walkWorker.ts); cancel() ends it on the spot.
+// Starts the walkthrough bot in its Web Worker (walkWorker.ts); stop() asks it to stop where it
+// is and keep the scenes it got through, cancel() ends it on the spot.
 import type { GameFiles } from '../../../project/files';
 import type { AutoWalk } from './autoWalk';
 import type { Verified } from './verify';
-import type { WalkMessage, WalkRequest } from './walkWorker';
+import type { WalkMessage, WalkRequest, WalkStop } from './walkWorker';
 
 export interface RunningWalk {
   done: Promise<{ result: AutoWalk; verified?: Verified }>;
+  /** Stops after the scene it is in, keeping the walkthrough of the scenes before it. */
+  stop(): void;
   cancel(): void;
 }
 
@@ -31,6 +34,7 @@ export function startWalk(files: GameFiles, req: Omit<WalkRequest, 'files'>, pro
   worker.postMessage({ ...req, files: files.entries() } satisfies WalkRequest);
   return {
     done,
+    stop: () => worker.postMessage({ stop: true } satisfies WalkStop),
     cancel: () => {
       worker.terminate();
       stop(new DOMException('Stopped', 'AbortError'));
