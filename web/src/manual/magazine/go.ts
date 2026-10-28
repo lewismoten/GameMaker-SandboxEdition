@@ -43,6 +43,7 @@ const ROUTES = ['cast', 'credits', 'achievements', 'mac', 'windows', 'linux'] as
 /** The web Guide's sections (manual/webManual.ts SECTIONS; a test keeps them in step). */
 export const GUIDE_SECTIONS = [
   'start',
+  'site',
   'home',
   'workspace',
   'editors',
@@ -53,6 +54,7 @@ export const GUIDE_SECTIONS = [
   'desk',
   'ultimate',
   'credits',
+  'bard',
   'more-games',
 ] as const;
 const KINDS: readonly GoKind[] = [
