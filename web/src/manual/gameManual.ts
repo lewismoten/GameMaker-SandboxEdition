@@ -27,7 +27,8 @@ export async function openGameManual(listed: CatalogEntry, coverImage?: string, 
     const ctx: PrintContext = { entry, family, printables: entry.original?.printables ?? {}, manual, shot: shotCache(entry) };
     const items = boxItems(ctx);
     onReady?.();
-    await openBox(title, pages, items, { start });
+    const epub = { file: `${entry.id}-manual.epub`, make: () => import('./epub/manualBook').then((m) => m.manualBook(entry)) };
+    await openBox(title, pages, items, { start, epub });
   } finally {
     host.remove();
   }
