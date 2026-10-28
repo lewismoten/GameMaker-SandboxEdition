@@ -5,7 +5,7 @@ import type { Game } from '../../../formats/game';
 import { decodeKeys } from '../../../walkthrough/format';
 import type { Entry } from '../explore';
 import { SceneSim, TICKS_PER_SECOND, type FileSource } from '../sim';
-import type { Replay } from './autoWalk';
+import type { Replay } from './replayPath';
 
 /** How long a take may go on after its last key before it is given up on (the hero walking on to a link). */
 const AFTER_TICKS = Math.round(20 * TICKS_PER_SECOND);
