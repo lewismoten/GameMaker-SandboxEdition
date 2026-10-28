@@ -26,6 +26,8 @@ const NOT_KEYS = new Set([
   'gm-achievement',
   'gm-line-hint',
   'gm-line-warp',
+  'gm-tour', // the guided tour's start and end, as an event
+  'gm-tour-act', // a tour step asking the page to do something, as an event
   'gm-made-with',
   'gm-site', // the offline copy's cache name
   'gm-actions',

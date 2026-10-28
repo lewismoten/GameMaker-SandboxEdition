@@ -86,6 +86,29 @@ export function account(seed: () => BbsAccount = newAccount): BbsAccount {
   return (current ??= loadAccount() ?? seed());
 }
 
+/**
+ * Puts the stored record back as it was (`raw`, as localStorage held it, or null for none) and
+ * forgets this visit's copy: the guided tour's call to the board leaves the caller's file as found.
+ */
+export function restoreAccount(raw: string | null): void {
+  current = undefined;
+  try {
+    if (raw === null) localStorage.removeItem(KEY);
+    else localStorage.setItem(KEY, raw);
+  } catch {
+    // no storage: nothing was kept either
+  }
+}
+
+/** The stored record as it is, for restoreAccount. */
+export function storedAccount(): string | null {
+  try {
+    return localStorage.getItem(KEY);
+  } catch {
+    return null;
+  }
+}
+
 /** Changes the record and stores it. */
 export function updateAccount(change: (a: BbsAccount) => BbsAccount): BbsAccount {
   current = change(account());
