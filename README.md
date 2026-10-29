@@ -86,6 +86,9 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
   `?game=<name>`, and keeps high scores and saved games in the browser, with export and
   import. [Try it with the games here](https://lewismoten.github.io/GameMaker-SandboxEdition/player/)
   or see [The web player](docs/web-player.md).
+- **A reusable browser engine:** build an npm tarball from [`web/packages/engine/`](web/packages/engine/README.md)
+  to run your own Game-Maker DOS files from JavaScript. It includes TypeScript declarations and
+  the audio worklet; the package has not been published to the npm registry.
 
 ## Screenshots
 
