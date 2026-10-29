@@ -1,0 +1,23 @@
+{
+  "name": "gamemaker-sandbox-engine",
+  "version": "0.1.0",
+  "description": "Browser engine for RSD Game-Maker games in their original DOS file formats",
+  "type": "module",
+  "license": "MIT",
+  "files": ["dist", "README.md", "LICENSE", "NOTICE.md"],
+  "exports": {
+    ".": {
+      "types": "./dist/types/engine/package.d.ts",
+      "import": "./dist/engine.js"
+    }
+  },
+  "types": "./dist/types/engine/package.d.ts",
+  "scripts": {
+    "build": "vite build --config vite.config.ts && tsc -p tsconfig.build.json && cp ../../../LICENSE LICENSE && cp ../../../NOTICE.md NOTICE.md",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.0",
+    "vite": "^7.1.0"
+  }
+}
