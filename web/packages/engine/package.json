@@ -1,5 +1,5 @@
 {
-  "name": "gamemaker-sandbox-engine",
+  "name": "@lewismoten/gamemaker-sandbox-engine",
   "version": "0.1.0",
   "description": "Browser engine for RSD Game-Maker games in their original DOS file formats",
   "type": "module",

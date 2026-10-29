@@ -1,13 +1,13 @@
 # Game-Maker: Sandbox Edition browser engine
 
-`gamemaker-sandbox-engine` runs RSD Game-Maker games from their original DOS files in a browser. It is the same TypeScript engine used by the Game-Maker: Sandbox Edition web player. The package includes its audio worklet and TypeScript declarations; it does not include games or the site's editor and catalog.
+`@lewismoten/gamemaker-sandbox-engine` runs RSD Game-Maker games from their original DOS files in a browser. It is the same TypeScript engine used by the Game-Maker: Sandbox Edition web player. The package includes its audio worklet and TypeScript declarations; it does not include games or the site's editor and catalog.
 
-Build a tarball from this repository with `cd web/packages/engine && npm pack`. The package has not been published to the npm registry. Install the tarball with `npm install ./gamemaker-sandbox-engine-0.1.0.tgz`.
+Build a tarball from this repository with `cd web/packages/engine && npm pack`. The package has not been published to the npm registry. Install the tarball with `npm install ./lewismoten-gamemaker-sandbox-engine-0.1.0.tgz`.
 
 Pass the files from one game's DOS directory to `GameFiles`. Names are case insensitive and use DOS 8.3 names. `GameFiles.mainGame()` finds a `.GAM` file. Keep the original file names and bytes; the game refers to its other files by name.
 
 ```ts
-import { GameFiles, Machine, runGame } from 'gamemaker-sandbox-engine';
+import { GameFiles, Machine, runGame } from '@lewismoten/gamemaker-sandbox-engine';
 
 const input = document.querySelector<HTMLInputElement>('#files')!;
 const canvas = document.querySelector<HTMLCanvasElement>('#screen')!;
