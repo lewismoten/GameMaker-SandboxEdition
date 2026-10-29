@@ -2,7 +2,7 @@
 
 Part of the [source map](../README.md).
 
-A game's files (`files.ts`: `GameFiles`, 8.3 names, the CD catalog),
+A game's files (`gameFiles.ts`: `GameFiles` and 8.3 names; `files.ts`: the CD catalog),
 streaming a hosted game (`streamGame.ts`, from its pack, `gamePack.ts`), IndexedDB storage
 (`storage.ts`), zip (`zip.ts`), the health check (`health.ts`), importing an exported page
 (`importPage.ts`), finding the games in what an import was given, in folders and zips (zips

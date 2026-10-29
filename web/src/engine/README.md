@@ -12,3 +12,7 @@ button. `playGain.ts` is the points a play scored itself, leaving out those an F
 positions, times, F-keys) from a project's DOS player patches (`RunOptions.player`), the CD
 player's with none; the menu, high-score, status, drop and load/save screens draw through
 `drawMenu`, `drawHighScores`, `drawStatus`… so the editor's previews use the same code.
+
+`package.ts` is the public entry for the npm package in `web/packages/engine/`. Its build
+uses this source directly, including the audio worklet. `project/gameFiles.ts` contains
+the portable game directory; the site's catalog remains in `project/files.ts`.
