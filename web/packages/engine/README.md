@@ -2,7 +2,7 @@
 
 `@lewismoten/gamemaker-sandbox-engine` runs RSD Game-Maker games from their original DOS files in a browser. It is the same TypeScript engine used by the Game-Maker: Sandbox Edition web player. The package includes its audio worklet and TypeScript declarations; it does not include games or the site's editor and catalog.
 
-Build a tarball from this repository with `cd web/packages/engine && npm pack`. The package has not been published to the npm registry. Install the tarball with `npm install ./lewismoten-gamemaker-sandbox-engine-0.1.0.tgz`.
+Build a tarball from this repository with `cd web/packages/engine && npm pack`. The package has not been published to the npm registry. Install the tarball with `npm install ./lewismoten-gamemaker-sandbox-engine-3.1.0.tgz`.
 
 Pass the files from one game's DOS directory to `GameFiles`. Names are case insensitive and use DOS 8.3 names. `GameFiles.mainGame()` finds a `.GAM` file. Keep the original file names and bytes; the game refers to its other files by name.
 
@@ -58,7 +58,7 @@ The source is MIT licensed; see `LICENSE` and `NOTICE.md` for credits.
 The [release workflow](../../../.github/workflows/publish-engine.yml) publishes this package to
 GitHub Packages when an `engine-v<version>` tag is pushed. The tagged commit must be on
 `master`, and `<version>` must exactly match this package's `package.json` (for example,
-`engine-v0.1.0`). Merge the package changes to `master` before pushing the tag.
+`engine-v3.1.0`). Merge the package changes to `master` before pushing the tag.
 
 The workflow uses GitHub's `GITHUB_TOKEN` with package write permission. It checks the source,
 builds the package, and publishes it to GitHub Packages. No package is published by ordinary
