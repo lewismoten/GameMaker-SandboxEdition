@@ -1,7 +1,7 @@
 
     QUEST FOR THE ROUND TUIT
     A Realm of Procrastia Adventure
-    Version 1.0 - Spring 1996
+    Version 1.1 - Spring 1996
     (c) 1996 Sandbox Software
 
 In the Kingdom of Procrastia

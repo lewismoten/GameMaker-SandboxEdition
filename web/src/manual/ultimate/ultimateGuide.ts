@@ -11,7 +11,8 @@ import { CHAPTERS, chapterStarts, planBook } from './plan';
 import { ULTIMATE_TITLE, ultimateCover } from './ultimateItem';
 import { fillFigures } from './ultimateFigures';
 
-function backCover(): HTMLElement {
+/** The back cover: a line to the reader, the chapters, and the small print. */
+export function backCover(): HTMLElement {
   return h(
     'div',
     { class: 'ug-cover ug-back' },
@@ -26,7 +27,8 @@ function backCover(): HTMLElement {
   );
 }
 
-function contents(starts: number[]): HTMLElement[] {
+/** The contents page: each chapter's page, and who the guide is for. */
+export function contents(starts: number[]): HTMLElement[] {
   return [
     h('h1', null, 'Contents'),
     h(

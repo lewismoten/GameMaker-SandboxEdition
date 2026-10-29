@@ -6,7 +6,7 @@ import { Screen } from '../gfx/screen';
 import { Keyboard, type TypedKey } from '../input/keyboard';
 import { listenDeskMouse, Mickeys } from '../input/deskMouse';
 import { AudioEngine } from '../audio/engine';
-import { GameFiles } from '../project/files';
+import { GameFiles } from '../project/gameFiles';
 import { PALETTE_SIZE } from '../formats/palette';
 
 /** GetKey polls a second on a 1994 PC waiting for a key (~6000; sets how long demo screens stay up). */

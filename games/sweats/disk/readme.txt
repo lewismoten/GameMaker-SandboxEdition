@@ -1,6 +1,6 @@
 
     SHAKESPEARE IN SWEATPANTS
-    Version 1.0 - Dec 1995
+    Version 1.1 - Dec 1995
     by The Bard of Bizarre
 
 "It wasn't just a pen.

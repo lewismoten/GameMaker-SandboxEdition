@@ -12,6 +12,8 @@ const t0 = Date.now();
 const built = buildGame();
 await present(built);
 const disk = new Disk(new URL('./disk', import.meta.url).pathname);
+// the version goes on the same line as the menu's hint, at its right
+disk.menuVersion = { y: 184 };
 for (const [name, bytes] of built.files) disk.put(name, bytes);
 const bytes = [...built.files.values()].reduce((n, f) => n + f.length, 0);
 disk.put('readme.txt', README('$15', built.files.size + 3, (bytes / 1e6).toFixed(1)));

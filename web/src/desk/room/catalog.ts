@@ -5,6 +5,7 @@ import { focusInto } from '../overlayFocus';
 import { creditLine, type CatalogEntry } from '../../project/files';
 import { sizeText, storageLine, zipBytes, zipName } from '../../project/diskFacts';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
+import { epubControl } from '../../manual/epub/save';
 
 const STYLE = `
 .paper-catalog { width: min(760px, 100%); max-height: 86vh; overflow: auto; padding: 28px 34px;
@@ -25,7 +26,7 @@ const STYLE = `
 `;
 
 /** What the game needs for sound: Sound Blaster only if it has .voc samples or .cmf music. */
-function soundLine(g: CatalogEntry): string {
+export function soundLine(g: CatalogEntry): string {
   const voc = g.files.some((f) => f.endsWith('.voc'));
   const cmf = g.files.some((f) => f.endsWith('.cmf'));
   if (voc && cmf) return 'VGA · Sound Blaster sound & music optional';
@@ -55,6 +56,9 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
       if (e.key === 'Escape') close();
     };
     window.addEventListener('keydown', onKey, true);
+    // the catalog as an e-book, with each game's notice in full
+    const epub = epubControl();
+    epub.use({ file: 'shareware-catalog.epub', make: () => import('../../manual/epub/sharewareCatalogBook').then((m) => m.sharewareCatalogEpub(games)) });
     const paper = h(
       'article',
       { class: 'paper-catalog', 'aria-label': 'Shareware catalog' },
@@ -65,6 +69,7 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
         h('h2', null, 'SHAREWARE CATALOG'),
         h('p', null, `Games made with GAME-MAKER  ·  Fall 1994  ·  ${games.length} titles`),
         h('p', null, 'Try them free. If you like one, register it with its author — see each game’s notice.'),
+        epub.el,
       ),
       ...games.map((g, i) => {
         const notice = h('div');

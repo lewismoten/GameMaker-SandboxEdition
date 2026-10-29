@@ -1,0 +1,398 @@
+/* The guided tour (tourEngine.ts): the layer of hosts over the page, the ring on the control
+   being shown, the speech bubble, the caption bar and the title cards. */
+
+.tour-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* raised into the browser's top layer above a page's modal dialog (tourEngine.ts raise): no popover look */
+.tour-layer[popover],
+.tour-bar[popover] {
+  width: auto;
+  height: auto;
+  margin: 0;
+  border: 0;
+}
+.tour-layer[popover] {
+  padding: 0;
+  background: transparent;
+}
+.tour-bar[popover] {
+  top: auto;
+  overflow: visible;
+  border-top: 2px solid var(--focus, #ffd400);
+}
+
+.tour-actor {
+  position: absolute;
+  /* under the speech bubble, so a host walking past never covers what is said */
+  z-index: 1;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.35));
+}
+
+/* the control being shown */
+.tour-ring {
+  position: absolute;
+  border: 3px solid var(--focus, #ffd400);
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.35),
+    0 0 18px 4px color-mix(in srgb, var(--focus, #ffd400) 60%, transparent);
+  animation: tour-pulse 1.1s ease-in-out infinite;
+}
+.tour-ring[hidden] {
+  display: none;
+}
+.tour-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 11px solid transparent;
+}
+.tour-ring[data-side='below'] .tour-arrow {
+  top: calc(100% + 6px);
+  left: calc(50% - 11px);
+  border-bottom-color: var(--focus, #ffd400);
+  border-top-width: 0;
+  animation: tour-bob-y 0.7s ease-in-out infinite alternate;
+}
+.tour-ring[data-side='above'] .tour-arrow {
+  bottom: calc(100% + 6px);
+  left: calc(50% - 11px);
+  border-top-color: var(--focus, #ffd400);
+  border-bottom-width: 0;
+  animation: tour-bob-y 0.7s ease-in-out infinite alternate-reverse;
+}
+.tour-ring[data-side='left'] .tour-arrow {
+  right: calc(100% + 6px);
+  top: calc(50% - 11px);
+  border-left-color: var(--focus, #ffd400);
+  border-right-width: 0;
+  animation: tour-bob-x 0.7s ease-in-out infinite alternate-reverse;
+}
+.tour-ring[data-side='right'] .tour-arrow {
+  left: calc(100% + 6px);
+  top: calc(50% - 11px);
+  border-right-color: var(--focus, #ffd400);
+  border-left-width: 0;
+  animation: tour-bob-x 0.7s ease-in-out infinite alternate;
+}
+@keyframes tour-pulse {
+  50% {
+    border-color: #fff;
+  }
+}
+@keyframes tour-bob-y {
+  to {
+    translate: 0 5px;
+  }
+}
+@keyframes tour-bob-x {
+  to {
+    translate: 5px 0;
+  }
+}
+
+/* a control the host hopped on */
+.tour-pressed {
+  transform: scale(0.94);
+  transition: transform 0.1s;
+}
+
+/* the speech bubble: a game's, white with a thick outline */
+.tour-bubble {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 3px solid #1a1d29;
+  border-radius: 14px;
+  background: #fffdf4;
+  color: #1a1d29;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+  font:
+    600 16px/1.35 system-ui,
+    sans-serif;
+  animation: tour-pop 0.18s ease-out;
+}
+.tour-bubble[hidden] {
+  display: none;
+}
+.tour-bubble::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: solid #1a1d29;
+  border-width: 0 3px 3px 0;
+  background: #fffdf4;
+}
+.tour-bubble[data-side='above']::after {
+  top: calc(100% - 7px);
+  left: calc(var(--tail, 50%) - 8px);
+  rotate: 45deg;
+}
+.tour-bubble[data-side='below']::after {
+  bottom: calc(100% - 7px);
+  left: calc(var(--tail, 50%) - 8px);
+  rotate: 225deg;
+}
+.tour-bubble[data-side='right']::after {
+  right: calc(100% - 7px);
+  top: calc(var(--tail, 50%) - 8px);
+  rotate: 135deg;
+}
+.tour-bubble[data-side='left']::after {
+  left: calc(100% - 7px);
+  top: calc(var(--tail, 50%) - 8px);
+  rotate: -45deg;
+}
+@keyframes tour-pop {
+  from {
+    scale: 0.85;
+    opacity: 0;
+  }
+}
+
+/* the caption and the buttons along the bottom */
+.tour-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 901;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 10px 16px;
+  border-top: 2px solid var(--focus, #ffd400);
+  background: var(--panel, #14161a);
+  color: var(--text, #d8d8d8);
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.25);
+}
+.tour-bar:focus {
+  outline: none;
+}
+.tour-words {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+.tour-count {
+  display: block;
+  color: var(--muted, #a8acb4);
+  font-size: 12px;
+}
+.tour-caption {
+  margin: 2px 0 0;
+  font-size: 16px;
+  line-height: 1.35;
+}
+.tour-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tour-controls button {
+  min-height: 32px;
+  min-width: 32px;
+}
+
+/* recording: no pointer, no buttons, a larger caption; the keys still work */
+.tour-recording,
+.tour-recording * {
+  cursor: none !important;
+}
+
+/* except over the Start card, which waits for a click before anything is recorded */
+.tour-recording .tour-card[role='dialog'],
+.tour-recording .tour-card[role='dialog'] * {
+  cursor: default !important;
+}
+
+.tour-recording .tour-card .tour-start {
+  cursor: pointer !important;
+}
+.tour-recording .tour-controls {
+  display: none;
+}
+.tour-recording .tour-bar {
+  justify-content: center;
+  text-align: center;
+}
+.tour-recording .tour-caption {
+  font-size: 22px;
+}
+
+/* a chapter's title card */
+.tour-card {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: var(--title-bg, #000080);
+  color: #fff;
+  text-align: center;
+  animation: tour-fade 0.3s ease-out;
+}
+.tour-card-hosts {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  min-height: 80px;
+}
+.tour-card-hosts .tour-actor {
+  position: static;
+}
+.tour-card-sub {
+  margin: 8px 0 0;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+.tour-card-title {
+  margin: 0;
+  color: var(--title-text, #ffd400);
+  font-size: clamp(28px, 6vw, 56px);
+}
+.tour-card .tour-start {
+  margin-top: 16px;
+  min-height: 44px;
+  padding: 0 24px;
+  font-size: 18px;
+}
+@keyframes tour-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* the guides waiting on a page the visitor turned them on for (tourDock.ts) */
+.tour-dock {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 800;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.tour-dock-hosts {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+.tour-dock-hosts .tour-actor {
+  position: static;
+}
+.tour-dock-talk {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border: 2px solid #1a1d29;
+  border-radius: 12px;
+  background: #fffdf4;
+  color: #1a1d29;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+.tour-dock-talk button {
+  min-height: 32px;
+}
+.tour-dock-talk .tour-dock-x {
+  min-width: 32px;
+  border: 0;
+  background: none;
+  color: #1a1d29;
+  font-size: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-ring,
+  .tour-ring .tour-arrow,
+  .tour-bubble,
+  .tour-card {
+    animation: none !important;
+  }
+  .tour-pressed {
+    transition: none;
+  }
+}
+
+/* achievement notes already up when a tour starts stay out of its way (new ones wait: achievements/toast.ts) */
+.tour-on .ach-toasts {
+  visibility: hidden;
+}
+
+/* the DOS page (dos.html) has none of today's web's button styles: its own bar's look */
+:root:has(.dos-page) .tour-controls button,
+:root:has(.dos-page) .tour-card .tour-start {
+  padding: 4px 12px;
+  border: 1px solid var(--dos-edge, #555c68);
+  border-radius: 6px;
+  background: var(--dos-btn, #2a2e36);
+  color: var(--dos-text, #d8d8d8);
+  font: inherit;
+  cursor: pointer;
+}
+:root:has(.dos-page) .tour-controls button:hover {
+  background: var(--dos-btn-hi, #3a404b);
+}
+:root:has(.dos-page) .tour-controls button:focus-visible,
+:root:has(.dos-page) .tour-card .tour-start:focus-visible {
+  outline: 3px solid var(--dos-accent, #ffd400);
+  outline-offset: 2px;
+}
+:root:has(.dos-page) .tour-bar {
+  font:
+    14px/1.35 system-ui,
+    sans-serif;
+}
+
+/* the DOS page fills the window: during a tour it stops above the caption bar, so its footer shows */
+.tour-on .dos-page {
+  height: calc(100dvh - var(--tour-bar-h, 72px));
+}
+
+/* on a phone the copy check's guide or card is a sheet along the bottom (retro/gmReg/regSide.css):
+   during a tour it rests on the caption bar instead of under it */
+.tour-on .rs-narrow .rs-panel {
+  bottom: var(--tour-bar-h, 0px);
+  max-height: calc(62dvh - var(--tour-bar-h, 0px));
+}
+.tour-on .rs-narrow .rs-manual {
+  height: calc(62dvh - var(--tour-bar-h, 0px));
+}
+
+/* a narrow window's pages scroll: room under the last control, so it can scroll above the bar */
+@media (max-width: 960px) {
+  .tour-on body::after {
+    content: '';
+    display: block;
+    height: var(--tour-bar-h, 0px);
+  }
+}
+
+/* what the tour opens to show (the box viewer, a manual in its box, the magazine, the game pad's
+   large controls: steps.ts Opener) stops above the caption bar, so its own buttons show */
+.tour-on :is(.gmb, .box-viewer, .mag-overlay) {
+  bottom: var(--tour-bar-h, 0px);
+}
+.tour-on .gp-panel {
+  bottom: calc(var(--tour-bar-h, 0px) + 16px);
+}
+/* the modem's speeds (the BBS chapter presses one) open under the hosts and their bubble */
+.tour-on :is(.modem-menu, .modem-hint) {
+  z-index: 899;
+}

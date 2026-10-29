@@ -2,8 +2,8 @@
 // half-letter flyer of his song-games (every "series": "bizarre" game in the catalog, so new
 // ones turn up by themselves, sorted into his collections below; one he hasn't filed yet goes
 // last, told by its blurb), how to get them from The Sofa BBS, a registration coupon (in the
-// story only) and the honest small print about how the songs and pictures were made (the same
-// words as the site's credits, manual/webManual.ts).
+// story only) and the honest small print about how the songs and pictures were made (the tools
+// the Credits page's Bard table names, credits/bardCredits.ts).
 import './paper.css'; // first: this piece's own styles build on the paper's
 import './bardCatalog.css';
 import { h } from '../../editor/core/ui';
@@ -17,7 +17,7 @@ import { sheet, type Sheet } from './kit';
 
 const ISSUE = 'Winter 1995';
 
-/** The credits page's words for the Bard's songs and pictures (manual/webManual.ts). */
+/** How the Bard's songs and pictures were made, naming the tools the Credits page's Bard table credits. */
 export const BARD_CREDIT =
   'The Bard of Bizarre, his persona and the prompts behind each song are Lewis’s. Each song’s words were shaped by ChatGPT from Lewis’s prompts (Certified Rat Tickler’s after much back and forth), and each recording was made with Riffusion (now Google Flow Music). Certified Rat Tickler came with no recording, so its music was composed for the game by Claude Opus 5.5. The Great Dairy Reckoning of 3:17 A.M. is a spoken piece from Lewis’s own struggle (he is lactose intolerant, and he loves cheesecake): its voice was made with Riffusion, and its music was composed for the game by Claude Opus 5.5. Shakespeare in Sweatpants is seventeen spoken monologues, shaped with ChatGPT from Lewis’s prompts, with audio and vocals made with Riffusion (now Google Flow Music); its code, art and music were made by Claude Opus 5.5, and its coffee house, The Hive, is inspired by Lewis’s memories of the Beehive in Oakland, Pittsburgh (drawn from memory, not an official picture of it). Veni, Vidi, Risi! is Lewis’s group of comic songs in Latin: its lyrics were shaped with ChatGPT from Lewis’s prompts and its music and vocals made with Riffusion (now Google Flow Music); the game Veni, Vidi, Risi! takes its sung clips and FM score from those recordings, and its code, pictures (the title and cover art among them) and FM arrangements were made by Claude Opus 5.5. Third Goat from the Left’s cover art was made by Riffusion, and Thread the Needle, Brother Camel’s animated cover came with its Riffusion song; Mustard Seed Hustle’s animated cover was made with Producer.ai, Riffusion’s later name (Google bought it, and it is now Google Flow Music). The title and cover art of Loaf #13 (Left in the Basket), Where’s the Remote?!, A Fly Named Carl, Cleanse Me, O Loofah, But Leave My Soul and I Screamed, She Smirked, Certified Rat Tickler’s title, cover and certificate art, and The Great Dairy Reckoning’s title art were drawn for the games by Claude Opus 5.5. The Bard’s logo was made with DeepAI, and the photo of Doc Leo is Lewis’s own. Each game’s music and sounds are drawn from its song’s recording (Certified Rat Tickler’s and The Great Dairy Reckoning’s music was made for the game); its code, pictures and levels were made by Claude Opus 5.5, with Lewis directing and playtesting. The recordings were made on Riffusion’s free plan, whose terms allow only personal, non-commercial uses, so the voice clips cut from them are not MIT licensed and are never sold; the rest of each game is MIT.';
 

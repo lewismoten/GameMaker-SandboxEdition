@@ -251,7 +251,17 @@ export async function keycard(ctx: PrintContext): Promise<Sheet[]> {
 }
 
 // ------------------------------------------------------------------ catalog
-export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
+/** The catalog's running head on each page: the logo, GAMES CATALOG, the season and the page. */
+export const catalogHead = (page: string): HTMLElement =>
+  h(
+    'header',
+    { class: 'cat-head' },
+    sandboxLogo('cat-logo'),
+    h('div', null, h('b', null, 'GAMES CATALOG'), h('span', null, `${ISSUE_DATE} · Pittsburgh, PA · ${page}`)),
+  );
+
+/** What the catalog prints, in order, before it is flowed onto pages: each game with its picture, what's coming, the BBS and the order form. */
+export async function catalogBlocks(ctx: PrintContext): Promise<HTMLElement[]> {
   const family = ctx.family.length ? ctx.family : [ctx.entry];
   const entries = await Promise.all(
     family.map(async (g) => {
@@ -295,14 +305,7 @@ export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
     ),
     fictionalNote(),
   );
-  const head = (page: string) =>
-    h(
-      'header',
-      { class: 'cat-head' },
-      sandboxLogo('cat-logo'),
-      h('div', null, h('b', null, 'GAMES CATALOG'), h('span', null, `${ISSUE_DATE} · Pittsburgh, PA · ${page}`)),
-    );
-  const blocks: HTMLElement[] = [
+  return [
     h('p', { class: 'cat-lead' }, 'Every Sandbox Software game is shareware: try it free, share it with friends, and register the ones you love.'),
     ...entries,
     ...(coming.length
@@ -316,6 +319,11 @@ export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
     ),
     order,
   ];
+}
+
+export async function catalog(ctx: PrintContext): Promise<Sheet[]> {
+  const blocks = await catalogBlocks(ctx);
+  const head = catalogHead;
   // as many pages as the games need, measured on a real catalog page
   const host = h('div', { class: 'gmb-measure' });
   document.body.append(host);
@@ -420,6 +428,13 @@ function story(n: { head: string; html: string }): HTMLElement {
   );
 }
 
+/** The newsletter's Tip of the month: one of the hint book's questions, the same for a game every time. */
+export function tipOfTheMonth(ctx: PrintContext): { q: string; a: string } | undefined {
+  const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
+  const tips = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
+  return tips.length ? tips[fnv1a(ctx.entry.id) % tips.length] : undefined;
+}
+
 /** The game's issue: its month's news (the first story leads, under its box shot), a tip from its hint book and the BBS. */
 export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
   const family = ctx.family.length ? ctx.family : [ctx.entry];
@@ -432,9 +447,7 @@ export async function newsletter(ctx: PrintContext): Promise<Sheet[]> {
     family.filter((g) => (g.original as { secret?: boolean } | undefined)?.secret !== true),
   );
   const date = scoopDateline(ctx.entry.id, ctx.entry.year);
-  const book = ctx.printables.items?.find((i) => i.kind === 'hintbook');
-  const tips = book?.kind === 'hintbook' ? book.sections.flatMap((x) => x.hints) : [];
-  const tip = tips.length ? tips[fnv1a(ctx.entry.id) % tips.length] : undefined;
+  const tip = tipOfTheMonth(ctx);
   const stories = [
     h(
       'article',

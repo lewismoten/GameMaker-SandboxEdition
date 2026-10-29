@@ -45,9 +45,19 @@ function load(): DemoAudio {
 let mode = load();
 const listeners = new Set<(m: DemoAudio) => void>();
 
-/** The sound demos play with (Sound Blaster until another is picked). */
+/** While something else is talking (the guided tour), demos are silent; the choice itself is kept. */
+let hushed = false;
+
+/** The sound demos play with (Sound Blaster until another is picked; none while hushed). */
 export function demoAudio(): DemoAudio {
-  return mode;
+  return hushed ? 'none' : mode;
+}
+
+/** Silences every demo for a while, or gives back the visitor's choice; never saved. */
+export function hushDemos(on: boolean): void {
+  if (on === hushed) return;
+  hushed = on;
+  for (const f of [...listeners]) f(demoAudio());
 }
 
 /** Picks the sound; `again` tells the demos even when it is the same (a click on the choice already made). */
@@ -59,7 +69,7 @@ export function setDemoAudio(m: DemoAudio, again = false): void {
   } catch {
     /* storage blocked: the choice holds until the page closes */
   }
-  for (const f of [...listeners]) f(m);
+  for (const f of [...listeners]) f(demoAudio());
 }
 
 /** Calls `f` whenever the choice changes; returns a function that stops it. */

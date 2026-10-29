@@ -23,6 +23,7 @@ import { tally, unlockAchievement } from '../../achievements';
 import { readView, viewToggle } from '../readView';
 import { percentOf, pinchZoom, readSize, sizeControl, widthAt, zoomKey, type ReadSize } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
+import { epubControl } from '../epub/save';
 
 interface Loaded {
   issue: Issue;
@@ -103,6 +104,14 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     h('span', { 'aria-hidden': 'true' }, '🖨'),
     h('span', { class: 'mag-wide-only', 'aria-hidden': 'true' }, ' Print…'),
   );
+  const epub = epubControl({ wide: 'mag-wide-only' });
+  epub.use({
+    file: 'turbo-button.epub',
+    make: async () => {
+      const [l, { magazineBook }] = await Promise.all([loadIssue(), import('../epub/magazineBook')]);
+      return magazineBook(l.issue, l.entries, o.where);
+    },
+  });
   const closeBtn = o.onClose ? h('button', { type: 'button', onclick: () => o.onClose?.() }, 'Close (Esc)') : null;
   const root = h(
     'div',
@@ -119,6 +128,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
       toggle.el,
       sizes.el,
       zoomBtn,
+      epub.el,
       h('div', { class: 'mag-print-wrap' }, printBtn, printMenu),
       closeBtn,
     ),

@@ -1,9 +1,12 @@
 // Writing a game's files into games/<id>/disk/, the way they would be on its floppy.
-import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { stampMenuVersion, type MenuVersionSpot } from './menuVersion';
 
 export class Disk {
   readonly files = new Map<string, Uint8Array>();
+  /** Where write() letters the version on the menu picture (kit/menuVersion.ts): the corner unless a game moves it. */
+  menuVersion: MenuVersionSpot = {};
   constructor(readonly dir: string) {}
 
   /** Adds a file (8.3 name, lower case on disk). */
@@ -15,8 +18,14 @@ export class Disk {
   /**
    * Replaces disk/ with these files and reports their total size. GAME_DISK_OUT, when set,
    * names another folder to write instead (checkGames.ts builds there to compare with disk/).
+   * First it letters the game's version (its about.json, beside disk/) on the menu picture.
    */
   write(): number {
+    const about = join(this.dir, '..', 'about.json');
+    if (existsSync(about)) {
+      const { version } = JSON.parse(readFileSync(about, 'utf8')) as { version?: string };
+      if (version) stampMenuVersion(this.files, version, this.menuVersion);
+    }
     const dir = process.env.GAME_DISK_OUT || this.dir;
     if (existsSync(dir)) rmSync(dir, { recursive: true });
     mkdirSync(dir, { recursive: true });

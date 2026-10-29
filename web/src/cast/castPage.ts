@@ -189,7 +189,15 @@ export function renderCast(el: HTMLElement): void {
         ),
         grid,
       ),
-      h('p', { class: 'cast-foot' }, h('a', { href: '#/' }, '← All games'), ' · ', h('a', { href: '#/help/credits' }, 'Credits and the Bard’s songs')),
+      h(
+        'p',
+        { class: 'cast-foot' },
+        h('a', { href: '#/' }, '← All games'),
+        ' · ',
+        h('a', { href: '#/credits' }, 'Credits'),
+        ' · ',
+        h('a', { href: '#/help/bard' }, 'The Bard’s songs'),
+      ),
     ),
   );
   pageToc(el.querySelector('main')!, { sub: '.cast-card h3[id]' });

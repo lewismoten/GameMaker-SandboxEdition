@@ -1,0 +1,1378 @@
+{
+  "achievements-bye": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex says goodbye and walks off",
+    "text": "They’re kept in this browser, for these pages and the desk alike. Now go earn some!",
+    "seconds": 5.82,
+    "hash": "6dfb1b6381f1",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-card": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex points at the first badge",
+    "text": "Each badge says what to do to earn it. Press one to see more, and where to go for it.",
+    "seconds": 5.52,
+    "hash": "2fbeba0c7710",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-desk": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex points at the The 1994 desk heading",
+    "text": "The 1994 desk: switch on the PC, dial a BBS, run the programs on it.",
+    "seconds": 6.72,
+    "hash": "5f1bb3f869e5",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-hearts": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex points at the Tin heart badge",
+    "text": "Tin hearts are tucked away inside the games. Touch one and it counts here.",
+    "seconds": 5.05,
+    "hash": "464a383753a8",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-hello": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex comes on",
+    "text": "Hi! I’m Dex Dynamo, from the year 2000. This page keeps track of everything you’ve done here.",
+    "seconds": 6.95,
+    "hash": "48685bdbb4ee",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-making": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex points at the Making games heading",
+    "text": "Making games: start one, change a file, run the Level check, download it for DOS or the web.",
+    "seconds": 6.7,
+    "hash": "3f5b8814bfe8",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-playing": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex points at the Playing heading",
+    "text": "Playing: finish games on the web, on the 1994 desk, even on a phone held sideways.",
+    "seconds": 6.55,
+    "hash": "559b6dd2c5c1",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-reset": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex points at the Reset achievements button",
+    "text": "Start over forgets the badges in this browser, after asking. Your games and saves stay.",
+    "seconds": 6.3,
+    "hash": "0b9274fdc38e",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-site": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex points at the Around the site heading",
+    "text": "Around the site: meet the cast, unfold a map, visit the Library. A few badges stay hidden until you find them.",
+    "seconds": 7.9,
+    "hash": "b5ca5e734c2c",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-summary": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex points at the count of achievements unlocked",
+    "text": "Up top: how many you’ve unlocked so far, out of all of them.",
+    "seconds": 4.05,
+    "hash": "ba56fc769f14",
+    "voice": "be82d9d1db7e"
+  },
+  "achievements-watching": {
+    "chapter": "achievements",
+    "where": "Achievements: Dex points at the Watching heading",
+    "text": "Watching: sit back with a walkthrough, or record a video of the screen.",
+    "seconds": 4.75,
+    "hash": "783ef2982c88",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-busy": {
+    "chapter": "bbs",
+    "where": "BBS: Dex points at the modem",
+    "text": "The PC is busy right now. Quit what’s running, then click the modem to call the BBS yourself.",
+    "seconds": 7,
+    "hash": "f1453717b0cf",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-bye": {
+    "chapter": "bbs",
+    "where": "BBS: Dex points at the screen",
+    "text": "Back to the menu, G says goodbye, and the modem hangs up. NO CARRIER!",
+    "seconds": 5.4,
+    "hash": "08495ee3ec5b",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-dial": {
+    "chapter": "bbs",
+    "where": "BBS: Dex points at the modem",
+    "text": "TERMINAL dials 1-412-555-SAND. Hear that screeching? Two modems, shaking hands.",
+    "seconds": 8,
+    "hash": "fb8c25f7a94e",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-done": {
+    "chapter": "bbs",
+    "where": "BBS: Dex points at the screen",
+    "text": "Downloaded and unzipped into C:\\DOWNLOAD. When the tour ends, it comes off again, so your drive stays yours.",
+    "seconds": 8.16,
+    "hash": "ba32ce9813d4",
+    "voice": "9af0a3c00d49"
+  },
+  "bbs-download": {
+    "chapter": "bbs",
+    "where": "BBS: Dex points at the screen",
+    "text": "D and the number downloads it. At 14,400 bits a second, this would take a few minutes.",
+    "seconds": 7.07,
+    "hash": "3bfb55c5a036",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-hello": {
+    "chapter": "bbs",
+    "where": "BBS: Dex comes on",
+    "text": "Dex Dynamo, dialing in from the future! In 1994 you called a BBS: somebody’s own PC, answering the phone.",
+    "seconds": 9.62,
+    "hash": "9128dc82d752",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-login": {
+    "chapter": "bbs",
+    "where": "BBS: Dex points at the screen",
+    "text": "Connected! It asks for a handle. GUEST gets in without a password.",
+    "seconds": 4.6,
+    "hash": "8db7c7a407fc",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-logoff": {
+    "chapter": "bbs",
+    "where": "BBS: Dex says goodbye and walks off",
+    "text": "That’s a BBS call. The modem on the desk dials one any time you like.",
+    "seconds": 5.5,
+    "hash": "a2c284142b59",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-menu": {
+    "chapter": "bbs",
+    "where": "BBS: Dex points at the screen",
+    "text": "The main menu. The letter N scans the newest files: the Sandbox games, free to download.",
+    "seconds": 6.62,
+    "hash": "b7b0e78ca64d",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-ratio": {
+    "chapter": "bbs",
+    "where": "BBS: Dex points at the screen",
+    "text": "Last few callers, then my rule: upload one file for every five you take. Leeches get deleted!",
+    "seconds": 8.08,
+    "hash": "e446f965cc41",
+    "voice": "9af0a3c00d49"
+  },
+  "bbs-speed": {
+    "chapter": "bbs",
+    "where": "BBS: Dex presses Unlimited in the modem’s speed menu",
+    "text": "Too slow? Change the modem’s speed, even mid-call. Unlimited is today’s speed: no waiting!",
+    "seconds": 6.87,
+    "hash": "e3b613ec781a",
+    "voice": "be82d9d1db7e"
+  },
+  "bbs-sysop": {
+    "chapter": "bbs",
+    "where": "BBS: Lewie comes on",
+    "text": "And The Sandbox BBS runs right here, on my PC! I’m its SysOp. Go ahead, Dex, give it a call.",
+    "seconds": 7.52,
+    "hash": "f710f82718eb",
+    "voice": "9af0a3c00d49"
+  },
+  "bbs-view": {
+    "chapter": "bbs",
+    "where": "BBS: Dex points at the screen",
+    "text": "V and a file’s number shows its details: what it is, how big, and its author’s notice.",
+    "seconds": 6.25,
+    "hash": "e112288df61d",
+    "voice": "be82d9d1db7e"
+  },
+  "cast-appears": {
+    "chapter": "cast",
+    "where": "Cast: Teddy points at the games Teddy is seen in",
+    "text": "And the games each one is seen in. Press a picture to go to that game.",
+    "seconds": 4.75,
+    "hash": "7c831ef47d79",
+    "voice": "ec6d8641063d"
+  },
+  "cast-bye": {
+    "chapter": "cast",
+    "where": "Cast: Doc Leo says goodbye and walks off",
+    "text": "Hey, that’s my hat! Thanks for coming to the show, folks.",
+    "seconds": 3.47,
+    "hash": "bd708a47e8e3",
+    "voice": "ec6d8641063d"
+  },
+  "cast-card": {
+    "chapter": "cast",
+    "where": "Cast: Teddy points at Teddy’s card",
+    "text": "Each regular has a card: who they are, and a little about them. Teddy knows left from right!",
+    "seconds": 6.99,
+    "hash": "07869a038119",
+    "voice": "ec6d8641063d"
+  },
+  "cast-families": {
+    "chapter": "cast",
+    "where": "Cast: Teddy points at the three kinds of games",
+    "text": "Three kinds of games: Sandbox Software, the Bard of Bizarre’s songs, and the games from the original CD.",
+    "seconds": 7.23,
+    "hash": "f2d915502c9a",
+    "voice": "ec6d8641063d"
+  },
+  "cast-filters": {
+    "chapter": "cast",
+    "where": "Cast: Teddy points at the Show the cast of buttons",
+    "text": "These show just one kind’s regulars, or everyone.",
+    "seconds": 3.39,
+    "hash": "4531ed078636",
+    "voice": "ec6d8641063d"
+  },
+  "cast-gwinn": {
+    "chapter": "cast",
+    "where": "Cast: Gwinn comes on",
+    "text": "It wasn’t me. (It was me.) Zoomies!",
+    "seconds": 3.12,
+    "hash": "d979d5268002",
+    "voice": "a50c8e805452"
+  },
+  "cast-hello": {
+    "chapter": "cast",
+    "where": "Cast: Doc Leo comes on",
+    "text": "Smile on: showtime! I’m Doc Leo. This is the cast: everyone from the new games.",
+    "seconds": 6.03,
+    "hash": "e755b35a106f",
+    "voice": "ec6d8641063d"
+  },
+  "cast-next": {
+    "chapter": "cast",
+    "where": "Cast: Teddy presses the Next character button",
+    "text": "The arrows bring on the next one, or the one before.",
+    "seconds": 3.95,
+    "hash": "10a3d29ff0c7",
+    "voice": "ec6d8641063d"
+  },
+  "cast-pick": {
+    "chapter": "cast",
+    "where": "Cast: Teddy points at the Pick a character list",
+    "text": "Or call one by name from this list.",
+    "seconds": 2.43,
+    "hash": "1cb87e026130",
+    "voice": "ec6d8641063d"
+  },
+  "cast-sound": {
+    "chapter": "cast",
+    "where": "Cast: Teddy points at the stage’s sound button",
+    "text": "The stage stays quiet until you ask. Then the Teddy games’ theme plays along.",
+    "seconds": 5.95,
+    "hash": "9053a14b53e0",
+    "voice": "ec6d8641063d"
+  },
+  "cast-stage": {
+    "chapter": "cast",
+    "where": "Cast: Teddy points at the stage",
+    "text": "On stage, each regular walks on and says hello, drawn from their own game.",
+    "seconds": 5.63,
+    "hash": "15bc6ecf1439",
+    "voice": "ec6d8641063d"
+  },
+  "desk-box-disks": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the disks in the box",
+    "text": "Inside, the game’s disks. Click them and disk one goes in drive A: to play.",
+    "seconds": 5.6,
+    "hash": "5717116188ab",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-box-extras": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the list of what else came in the box",
+    "text": "And everything else that came in the box, each piece ready to read or print.",
+    "seconds": 4.88,
+    "hash": "f595bcecd3c6",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-box-manual": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the manual in the box",
+    "text": "Its manual, with a cover all its own.",
+    "seconds": 3.6,
+    "hash": "96d7bdc74651",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-box-open": {
+    "chapter": "desk",
+    "where": "Desk: Lewie presses the box standing face out",
+    "text": "Like this one. Down it comes!",
+    "seconds": 2.79,
+    "hash": "58ac3babee0f",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-box-turn": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the box, turning",
+    "text": "It turns all the way around, so you can read the back. Drag it to turn it yourself, or scroll to zoom.",
+    "seconds": 6.72,
+    "hash": "b86f2621b4ce",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-bye": {
+    "chapter": "desk",
+    "where": "Desk: Lewie says goodbye and walks off",
+    "text": "That’s my room. Now, who wants to make a game?",
+    "seconds": 4,
+    "hash": "f8fae102d835",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-clock": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the wall clock",
+    "text": "A giant wristwatch makes a fine wall clock. Turn the lights off and its hands glow.",
+    "seconds": 6.48,
+    "hash": "f438621d51ee",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-diskbox": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the disk box",
+    "text": "The disk box has a floppy for every game. Pick one and it goes in drive A: and starts.",
+    "seconds": 6.88,
+    "hash": "6de82212a193",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-drive": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at drive A:",
+    "text": "That’s drive A:. With a disk in, buttons beside it play it, design it, or open it in today’s web.",
+    "seconds": 8.16,
+    "hash": "178085ad2739",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-enlarge": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Enlarge screen button",
+    "text": "This little button fills the window with the screen. Back to the desk brings the room back.",
+    "seconds": 5.67,
+    "hash": "cbfbe551a43c",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-gmbox": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Game-Maker box",
+    "text": "The Game-Maker box: turn it over, read the Owner’s Guide, or put the CD in and start Game-Maker.",
+    "seconds": 6.31,
+    "hash": "534f26cfccb2",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-guides": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the ? Guides button",
+    "text": "Press the question mark any time to see this tour again.",
+    "seconds": 3.84,
+    "hash": "4b700eebbfe7",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-hello": {
+    "chapter": "desk",
+    "where": "Desk: Lewie comes on",
+    "text": "Hey, I’m Lewie. Welcome to my room! It’s December 1994, and this PC is where the games get made.",
+    "seconds": 7.36,
+    "hash": "a349abcc3374",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-keyboard": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the keyboard",
+    "text": "Type on your own keyboard, or click the keys here to press them on the PC.",
+    "seconds": 5.28,
+    "hash": "3d4dc4a8431f",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-mag-cover": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the magazine’s pages",
+    "text": "The big news on the cover: Game-Maker’s source code, set free!",
+    "seconds": 5.6,
+    "hash": "0e444cda2c7e",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-mag-links": {
+    "chapter": "desk",
+    "where": "Desk: Lewie presses the magazine’s next page arrow",
+    "text": "Its links work, too: they play games, call the BBS, or point out things in my room.",
+    "seconds": 6.31,
+    "hash": "5535168566a5",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-mag-open": {
+    "chapter": "desk",
+    "where": "Desk: Lewie presses the catalog and the magazine",
+    "text": "Let’s peek inside this month’s TURBO BUTTON.",
+    "seconds": 3.28,
+    "hash": "bd499af6b7b2",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-mag-turn": {
+    "chapter": "desk",
+    "where": "Desk: Lewie presses the magazine’s next page arrow",
+    "text": "Turn the pages with the arrows: reviews, hints, readers’ letters, and ads for the things on this desk.",
+    "seconds": 8,
+    "hash": "712b8b3b9714",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-modem": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the modem",
+    "text": "The modem calls the BBS, where you can download more games. Click its speed to change it.",
+    "seconds": 6.24,
+    "hash": "c4a8fcef96bc",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-pad": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the game pad",
+    "text": "The GRAVITAS pad is the PC’s joystick. A real gamepad works too, and a click opens big buttons.",
+    "seconds": 6.48,
+    "hash": "2aeec260977e",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-pad-panel": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the game pad’s large controls",
+    "text": "Big buttons for the d-pad’s eight ways and all four buttons. Game-Maker games read the d-pad and the red and yellow buttons.",
+    "seconds": 8.4,
+    "hash": "9b52dcbeb269",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-papers": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the catalog and the magazine",
+    "text": "The shareware catalog and TURBO BUTTON magazine. Read either one; the catalog can even call the BBS.",
+    "seconds": 7.91,
+    "hash": "dd27d6afc9f0",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-phone": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the wall phone",
+    "text": "The phone really dials. Try the numbers on Mom’s notes, or call for the time and the weather.",
+    "seconds": 5.76,
+    "hash": "f7d564f23061",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-poster": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the poster",
+    "text": "My big plan: shovel snow all winter to buy Game-Maker. Eighty-nine dollars, plus four for shipping!",
+    "seconds": 7.52,
+    "hash": "0d86a4eb3c5d",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-power": {
+    "chapter": "desk",
+    "where": "Desk: Lewie presses the Power button",
+    "text": "Power switches the PC on. It boots DOS, just like a real one.",
+    "seconds": 4.96,
+    "hash": "ddf8e34f921f",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-screen": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the screen",
+    "text": "Everything runs on this screen: the DOS prompt, Game-Maker, the games, even the BBS.",
+    "seconds": 7.52,
+    "hash": "779881037c50",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-shelf": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the shelf of game boxes",
+    "text": "My shelf has a box for every game. Take one down to turn it over, read its manual, or play it.",
+    "seconds": 7.27,
+    "hash": "d37f54a3f52d",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-sticky": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Too retro? sticky note",
+    "text": "Too retro? This note takes you to today’s web, with all the same games.",
+    "seconds": 5.99,
+    "hash": "330a0fab392f",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-switch": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Desk, DOS and Web switch",
+    "text": "Desk, DOS and Web switch views. DOS is this same PC, filling the whole window.",
+    "seconds": 6.31,
+    "hash": "165d20aa7d04",
+    "voice": "9af0a3c00d49"
+  },
+  "desk-turbo": {
+    "chapter": "desk",
+    "where": "Desk: Lewie points at the Turbo button",
+    "text": "Turbo runs it at full speed. Switch it off and games crawl along like on an old 286.",
+    "seconds": 6.31,
+    "hash": "bc6003a21981",
+    "voice": "9af0a3c00d49"
+  },
+  "dos-bbs": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at BBS in the ⋯ menu",
+    "text": "BBS dials the board with the modem. The line speed under it says how fast.",
+    "seconds": 9.07,
+    "hash": "51d83f4f8017",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-blaster": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at Sound Blaster card in the ⋯ menu",
+    "text": "Without the Sound Blaster card, games beep their sounds on the PC speaker.",
+    "seconds": 6.19,
+    "hash": "d94165da063f",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-bye": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks says goodbye and walks off",
+    "text": "That concludes the tour! Now, if you’ll excuse me, THE CHEZ needs charging.",
+    "seconds": 7.23,
+    "hash": "c62af4a7d06a",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-card": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the registration card",
+    "text": "Or mail the registration card. Once the reply comes, Game-Maker stops asking.",
+    "seconds": 8.19,
+    "hash": "a1b8e16e1145",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-check": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the screen",
+    "text": "Game-Maker may ask for a word from its Owner’s Guide. That was copy protection, back in 1994.",
+    "seconds": 11.63,
+    "hash": "3b57c75d74ba",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-disks": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Disks button",
+    "text": "Disks is your disk box: Play, Design, or just Insert any game’s floppy in drive A:.",
+    "seconds": 8.67,
+    "hash": "c15007b2eb34",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-full": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Full screen button",
+    "text": "Full screen hides everything else, the browser too.",
+    "seconds": 4.83,
+    "hash": "afbcc9d9a70e",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-gm": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Game-Maker button",
+    "text": "The Game-Maker button takes you back to it from anywhere, with its CD in drive D:.",
+    "seconds": 6.11,
+    "hash": "ee49c933e6d6",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-guide": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Owner’s Guide beside the screen",
+    "text": "The guide opens beside it, at the right page, the word marked. Type the word and you’re in.",
+    "seconds": 8.99,
+    "hash": "ef3496ca95fa",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-hello": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks comes on",
+    "text": "Professor Fiddlesticks, at your service! This is the very same PC, minus the room, filling the window.",
+    "seconds": 10.11,
+    "hash": "727cc148b732",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-keys": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Keys button",
+    "text": "No keyboard? Keys opens big on-screen keys for the PC.",
+    "seconds": 6.75,
+    "hash": "c060f7421fb8",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-links": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Links button",
+    "text": "Links lists addresses that open this page on a game, at the prompt, or on the BBS.",
+    "seconds": 8.51,
+    "hash": "10460ff58819",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-manuals": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at Owner’s Guide in the ⋯ menu",
+    "text": "The Owner’s Guide is Game-Maker’s manual. The Ultimate Guide has the advanced tips and tricks.",
+    "seconds": 7.63,
+    "hash": "bb190d972ff0",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-menus": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the screen",
+    "text": "Then its menus: Play runs a game in PLAYGAME, Design opens the tools that make one, Quit goes to DOS.",
+    "seconds": 12.43,
+    "hash": "f0a116724b0f",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-power": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Power button",
+    "text": "Power switches it on and off. Off is really off: the next start is a fresh boot.",
+    "seconds": 7.55,
+    "hash": "e987e472ed87",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-prompt": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks talks",
+    "text": "At the DOS prompt, type GM to come back, or a game’s name on its disk to play it.",
+    "seconds": 7.55,
+    "hash": "308409234e32",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-reset": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at Reset in the ⋯ menu",
+    "text": "Reset restarts the PC, like the button on the front of the case.",
+    "seconds": 6.59,
+    "hash": "8fa3b1d6798f",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-sound": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Sound button",
+    "text": "Sound switches the PC’s sound on and off.",
+    "seconds": 4.51,
+    "hash": "acbeab7d0c85",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-switch": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Desk, DOS and Web switch",
+    "text": "Desk takes you back to the room around this PC, and Web to today’s site.",
+    "seconds": 7.39,
+    "hash": "4aa3f3ffec40",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-turbo": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the Turbo button",
+    "text": "Turbo is sixty-six megahertz of pure speed. Off, it plods along like an old 286.",
+    "seconds": 10.59,
+    "hash": "aed78dfafbc2",
+    "voice": "532d1bbf3a1e"
+  },
+  "editor-assistant": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Assistant button",
+    "text": "The Assistant lets your own AI look at a game and change it with you. Set it up in Settings first.",
+    "seconds": 5.94,
+    "hash": "043222d1829c",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-blocks": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Blocks list",
+    "text": "Pick a block from this list…",
+    "seconds": 2.05,
+    "hash": "6e0b295843a3",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-building": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Building tool",
+    "text": "Building drags out a whole house, any size, from its parts.",
+    "seconds": 3.96,
+    "hash": "7d75396ef6e2",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-bye": {
+    "chapter": "editor",
+    "where": "Editor: Watt says goodbye and walks off",
+    "text": "Time to recharge. Happy making! Beep.",
+    "seconds": 3.42,
+    "hash": "f469e4e42006",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-check": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Level check panel",
+    "text": "The Level check lets a bot play the level, then shows where it went and what players might mind.",
+    "seconds": 6.16,
+    "hash": "016838e27635",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-copy": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Edit a copy button",
+    "text": "Ready to make it yours? Edit a copy, and start changing things.",
+    "seconds": 4.64,
+    "hash": "79c59be1df22",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-files": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the list of the game’s files",
+    "text": "Every file in the game, sorted by kind: palettes, blocks, monsters, maps, music and more.",
+    "seconds": 7.08,
+    "hash": "9eeb45b5c868",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-hello": {
+    "chapter": "editor",
+    "where": "Editor: Watt comes on",
+    "text": "Beep! Watt here, from Ohm Sweet Ohm. This is the editor, open on my game just as it shipped.",
+    "seconds": 7.38,
+    "hash": "df3ae21f906c",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-level": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Play Level button",
+    "text": "Play Level jumps straight into a level. The arrow beside it picks which one, and where to start.",
+    "seconds": 6.62,
+    "hash": "85d50a0115dd",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-links": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Links button",
+    "text": "Links shows the doors: gold marks are exits to other scenes, cyan marks are where the hero comes in.",
+    "seconds": 6.09,
+    "hash": "dafaf8c3a0e5",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-map": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the map’s name",
+    "text": "This is a map: one level, laid out in blocks, a hundred by a hundred.",
+    "seconds": 5.78,
+    "hash": "56ff335e94e7",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-monsters": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Monsters tool",
+    "text": "Monsters puts the game’s creatures on the map. A right-click takes one away.",
+    "seconds": 5.1,
+    "hash": "08258a2893b5",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-paint": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Paint tool",
+    "text": "…then paint with it. Line, Rectangle and Fill lay down lots at once.",
+    "seconds": 4.94,
+    "hash": "60f4bd802714",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-palette": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the note about color 0",
+    "text": "In a palette, mind color 0: the game draws its menus and text screens on it. Press backgrounds to see them.",
+    "seconds": 7.38,
+    "hash": "98f2110bf3ee",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-play": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Play Game button",
+    "text": "Play Game plays it from its title screen, right here, without leaving the editor.",
+    "seconds": 5.02,
+    "hash": "437d6d6c13ce",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-readonly": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Read-only bar",
+    "text": "Looking inside changes nothing. Edit a copy makes your own copy of the game to change.",
+    "seconds": 5.48,
+    "hash": "44ec28ae0ce7",
+    "voice": "131d8cb8ad55"
+  },
+  "editor-terrain": {
+    "chapter": "editor",
+    "where": "Editor: Watt points at the Terrain tool",
+    "text": "Terrain paints grass, water or paths, and chooses the edges and corners for you.",
+    "seconds": 5.78,
+    "hash": "49deaa6b78c9",
+    "voice": "131d8cb8ad55"
+  },
+  "guide-bye": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn says goodbye and walks off",
+    "text": "Case closed. When you’re stuck, the answer is usually in here.",
+    "seconds": 4.38,
+    "hash": "00daa4475706",
+    "voice": "f969522e51c0"
+  },
+  "guide-contents": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn points at The editors in the Guide’s contents",
+    "text": "The contents, one part at a time. The editors explains each tool, from maps to music.",
+    "seconds": 6.38,
+    "hash": "def0f0ada415",
+    "voice": "f969522e51c0"
+  },
+  "guide-hello": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn comes on",
+    "text": "Inspector Ada Penn. Every case needs a good guide, and so does making games. This is it.",
+    "seconds": 6.8,
+    "hash": "b40668290da0",
+    "voice": "f969522e51c0"
+  },
+  "guide-home": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn points at The home page heading",
+    "text": "Here, the home page: making a new game, bringing one in, and every shelf of games.",
+    "seconds": 5.75,
+    "hash": "3c4953cb1135",
+    "voice": "f969522e51c0"
+  },
+  "guide-next": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn presses the next part’s link",
+    "text": "At the bottom, the next part’s name takes you on. One clue at a time.",
+    "seconds": 4.95,
+    "hash": "5320267a22e4",
+    "voice": "f969522e51c0"
+  },
+  "guide-owners": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn presses the Open the Owner’s Guide button",
+    "text": "The Owner’s Guide explains every part of a game, and how the parts fit together.",
+    "seconds": 5.7,
+    "hash": "632a9d86555d",
+    "voice": "f969522e51c0"
+  },
+  "guide-owners-page": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn presses the Owner’s Guide’s next page arrow",
+    "text": "It opens in the Game-Maker box, as it came in 1994. Turn the pages, or print it as a booklet.",
+    "seconds": 7.25,
+    "hash": "4922c4f36b8c",
+    "voice": "f969522e51c0"
+  },
+  "guide-sharing": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn points at Sharing your game in the Guide’s contents",
+    "text": "Sharing your game: a web app for any web host, a copy for real DOS, or just its files.",
+    "seconds": 6.43,
+    "hash": "661e3ebb25d3",
+    "voice": "f969522e51c0"
+  },
+  "guide-start": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn points at the Getting started heading",
+    "text": "Getting started: how to design, play and share games in this web version.",
+    "seconds": 5.25,
+    "hash": "fe8bb30db580",
+    "voice": "f969522e51c0"
+  },
+  "guide-tip": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn points at the tip for new game makers",
+    "text": "New here? Play a game, Look inside it, Edit a copy, then change one small thing and play again.",
+    "seconds": 6.43,
+    "hash": "2e45ee7233c3",
+    "voice": "f969522e51c0"
+  },
+  "guide-ultimate": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn presses the Open The Ultimate Owner’s Guide button",
+    "text": "The Ultimate Owner’s Guide is about making a game people enjoy. The Level check uses its checklists.",
+    "seconds": 6.95,
+    "hash": "76bbe2de5558",
+    "voice": "f969522e51c0"
+  },
+  "guide-ultimate-read": {
+    "chapter": "guide",
+    "where": "Guide: Inspector Penn points at The Ultimate Owner’s Guide, open",
+    "text": "Heroes that feel right, levels that teach, fair enemies, then play-testing. A case file for every game.",
+    "seconds": 7.2,
+    "hash": "73c9a7e63e8e",
+    "voice": "f969522e51c0"
+  },
+  "home-achievements": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Achievements in the header",
+    "text": "Achievements keeps track of what you’ve done, here and on the 1994 desk.",
+    "seconds": 5.77,
+    "hash": "67d505f91527",
+    "voice": "a50c8e805452"
+  },
+  "home-another": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Another button",
+    "text": "Another picks a different game at random. Ooh, good one.",
+    "seconds": 4.15,
+    "hash": "f4b26db40628",
+    "voice": "a50c8e805452"
+  },
+  "home-bye": {
+    "chapter": "home",
+    "where": "Home: Gwinn says goodbye and walks off",
+    "text": "That’s the tour! Now go play something.",
+    "seconds": 3.24,
+    "hash": "e21c8b04fe23",
+    "voice": "a50c8e805452"
+  },
+  "home-cast": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Cast in the header",
+    "text": "The Cast page is where you meet Teddy, me, and everyone else from the new games.",
+    "seconds": 5.45,
+    "hash": "69614f35bae9",
+    "voice": "a50c8e805452"
+  },
+  "home-download": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Download button",
+    "text": "Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS.",
+    "seconds": 5.94,
+    "hash": "bdd923b56233",
+    "voice": "a50c8e805452"
+  },
+  "home-games": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Games in the header",
+    "text": "Games, up in the bar, always brings you back here.",
+    "seconds": 3.97,
+    "hash": "56cb7e7e3b77",
+    "voice": "a50c8e805452"
+  },
+  "home-guide": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Guide in the header",
+    "text": "The Guide explains making games, one part at a time.",
+    "seconds": 4.27,
+    "hash": "e8058f7dcc92",
+    "voice": "a50c8e805452"
+  },
+  "home-guides": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the ? Guides button",
+    "text": "Press this button any time to see this tour again, or to have Teddy and me wait on a page for you.",
+    "seconds": 6.27,
+    "hash": "03a922a0924e",
+    "voice": "a50c8e805452"
+  },
+  "home-hello": {
+    "chapter": "home",
+    "where": "Home: Gwinn comes on",
+    "text": "Hi! I’m Gwinn. This little guy is my brother Teddy. He and I will show you around.",
+    "seconds": 5.54,
+    "hash": "d38a3cfe72c1",
+    "voice": "a50c8e805452"
+  },
+  "home-imported-none": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the import tile",
+    "text": "Nothing here yet? Drop game files on this tile, or click it to pick them.",
+    "seconds": 5.12,
+    "hash": "80c6cac79f71",
+    "voice": "a50c8e805452"
+  },
+  "home-library": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Library in the header",
+    "text": "The Library has things to read and print: manuals, maps, sticker sheets and a magazine.",
+    "seconds": 6.2,
+    "hash": "42502ff5eec1",
+    "voice": "a50c8e805452"
+  },
+  "home-look": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Look inside button",
+    "text": "Look inside opens its files in the editor, just as they shipped. Change something and you get a copy of your own.",
+    "seconds": 7.65,
+    "hash": "4edbc90112a5",
+    "voice": "a50c8e805452"
+  },
+  "home-new": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the New game button",
+    "text": "New game starts one of your own: ready to play, empty, or described in words for your own AI to build.",
+    "seconds": 7.24,
+    "hash": "8a310c83140a",
+    "voice": "a50c8e805452"
+  },
+  "home-note": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Add a note button",
+    "text": "Add a note keeps a few words about a game, just for you.",
+    "seconds": 4.22,
+    "hash": "ae58f534934d",
+    "voice": "a50c8e805452"
+  },
+  "home-notes-search": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Find a game box",
+    "text": "And the search box finds the words in your notes, too.",
+    "seconds": 3.97,
+    "hash": "d8fe09a1ea2e",
+    "voice": "a50c8e805452"
+  },
+  "home-offline": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Play offline in the Settings menu",
+    "text": "Settings has Play offline, which saves the whole site so it works with no connection.",
+    "seconds": 5.77,
+    "hash": "ee0a0f1e712d",
+    "voice": "a50c8e805452"
+  },
+  "home-play": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Play button",
+    "text": "Play starts it right here in your browser, with the keyboard or a gamepad.",
+    "seconds": 5.02,
+    "hash": "0a322dcdd323",
+    "voice": "a50c8e805452"
+  },
+  "home-rate": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the rating stars of the imported game up top",
+    "text": "Up top is one of them. Give it one to five stars: your rating saves at once.",
+    "seconds": 5.72,
+    "hash": "9dbb75f505fd",
+    "voice": "a50c8e805452"
+  },
+  "home-search": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Find a game box",
+    "text": "Looking for one game? Type part of its name here.",
+    "seconds": 3.82,
+    "hash": "a53fe624d3fc",
+    "voice": "a50c8e805452"
+  },
+  "home-shareware-notice": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the shareware games",
+    "text": "They’re other people’s games, so most just play here, exactly as released. Each keeps its author’s notice.",
+    "seconds": 6.97,
+    "hash": "3a4e1cf214e7",
+    "voice": "a50c8e805452"
+  },
+  "home-shareware-what": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the shareware games",
+    "text": "Shareware meant try it free. If you kept playing, you sent the author a fee. Games got around on floppy disks and BBSes.",
+    "seconds": 8.35,
+    "hash": "0e0b67381a6b",
+    "voice": "a50c8e805452"
+  },
+  "home-show": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Show rating picker",
+    "text": "Show narrows the list to one rating, or to the games you haven’t rated yet.",
+    "seconds": 5.22,
+    "hash": "987805e4f2bc",
+    "voice": "a50c8e805452"
+  },
+  "home-showcase": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the big game picture at the top",
+    "text": "Up top is one game, shown big. Its picture plays a short demo of the game.",
+    "seconds": 5.64,
+    "hash": "21f5f30fe173",
+    "voice": "a50c8e805452"
+  },
+  "home-sort": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Sort by picker",
+    "text": "Sort by Rating puts your five-star games first, with the unrated ones last.",
+    "seconds": 5.5,
+    "hash": "d699218fb535",
+    "voice": "a50c8e805452"
+  },
+  "home-stars": {
+    "chapter": "home",
+    "where": "Home: Teddy points at a rated tile’s stars",
+    "text": "Rated games wear their stars on their tiles.",
+    "seconds": 3.75,
+    "hash": "86030dab611f",
+    "voice": "a50c8e805452"
+  },
+  "home-tab-bizarre": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Bizarre tab",
+    "text": "Bizarre: big, heartfelt songs about all the wrong things, each one made into a game.",
+    "seconds": 5.75,
+    "hash": "0b27b49a8050",
+    "voice": "a50c8e805452"
+  },
+  "home-tab-gameware": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Gameware tab",
+    "text": "Gameware: the free games that came with Game-Maker. Play one, or edit a copy to see how it works.",
+    "seconds": 6.8,
+    "hash": "8416a3bebdb1",
+    "voice": "a50c8e805452"
+  },
+  "home-tab-imported": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Imported tab",
+    "text": "Imported holds games you bring in: a folder, some files, a .zip, or a one-page export.",
+    "seconds": 6.67,
+    "hash": "bb2de55fe666",
+    "voice": "a50c8e805452"
+  },
+  "home-tab-mine": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the My games tab",
+    "text": "My games: the ones you make here, or copy from a shelf to change. They stay in this browser.",
+    "seconds": 6.32,
+    "hash": "795ea8bdff21",
+    "voice": "a50c8e805452"
+  },
+  "home-tab-sandbox": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Sandbox tab",
+    "text": "Sandbox: new games made with Game-Maker in its original formats, so they play in real DOS too.",
+    "seconds": 6.87,
+    "hash": "b484d5758289",
+    "voice": "a50c8e805452"
+  },
+  "home-tab-shareware": {
+    "chapter": "home",
+    "where": "Home: Teddy presses the Shareware tab",
+    "text": "Shareware: games other people made with Game-Maker, from the CD and the BBSes.",
+    "seconds": 5.97,
+    "hash": "c0d965bf8965",
+    "voice": "a50c8e805452"
+  },
+  "home-tabs": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the collection tabs",
+    "text": "These tabs are the collections: your games, ones you bring in, and shelves of games ready to play.",
+    "seconds": 6.42,
+    "hash": "81f1f15b8722",
+    "voice": "a50c8e805452"
+  },
+  "home-theme": {
+    "chapter": "home",
+    "where": "Home: Teddy points at Theme in the Settings menu",
+    "text": "Theme switches between dark, light, or whatever your computer uses.",
+    "seconds": 5.02,
+    "hash": "4d195c81acb5",
+    "voice": "a50c8e805452"
+  },
+  "home-tiles": {
+    "chapter": "home",
+    "where": "Home: Teddy presses a game tile",
+    "text": "Pick any tile and its game moves up top.",
+    "seconds": 3.57,
+    "hash": "b11205972631",
+    "voice": "a50c8e805452"
+  },
+  "home-views": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Desk, DOS and Web switch",
+    "text": "Desk, DOS and Web: a 1994 desk with its PC, DOS Game-Maker on its own, or this page.",
+    "seconds": 7.57,
+    "hash": "bf5c8b07030a",
+    "voice": "a50c8e805452"
+  },
+  "home-walkthrough": {
+    "chapter": "home",
+    "where": "Home: Teddy points at the Walkthrough button",
+    "text": "Walkthrough plays the whole game for you, or lets the bot make one, and you can play parts of it yourself.",
+    "seconds": 6.72,
+    "hash": "8e5d968342d3",
+    "voice": "a50c8e805452"
+  },
+  "library-all": {
+    "chapter": "library",
+    "where": "Library: Lewie presses the All games button",
+    "text": "Showing just one game? This puts everything back on the shelves.",
+    "seconds": 6.51,
+    "hash": "d8a7d8a47d19",
+    "voice": "0448e8049470"
+  },
+  "library-bye": {
+    "chapter": "library",
+    "where": "Library: Joe says goodbye and walks off",
+    "text": "Please return every word to its book. Exactly one hundred at a time.",
+    "seconds": 7.39,
+    "hash": "9eb76d3fe3fa",
+    "voice": "0448e8049470"
+  },
+  "library-card": {
+    "chapter": "library",
+    "where": "Library: Lewie points at the first manual on the shelves",
+    "text": "Each card opens its piece on screen: a manual, a hint book, a map, a key card. Most can be printed, too.",
+    "seconds": 9.71,
+    "hash": "3c60b577800c",
+    "voice": "0448e8049470"
+  },
+  "library-count": {
+    "chapter": "library",
+    "where": "Library: Joe points at the count of things on the shelves",
+    "text": "This counts everything on the shelves. I counted them too. Twice.",
+    "seconds": 6.35,
+    "hash": "98a5167c3621",
+    "voice": "0448e8049470"
+  },
+  "library-guide": {
+    "chapter": "library",
+    "where": "Library: Lewie points at the Guide card",
+    "text": "The Guide and the help for Mac, Windows and Linux are shelved here as well.",
+    "seconds": 6.99,
+    "hash": "812c0572f364",
+    "voice": "0448e8049470"
+  },
+  "library-hello": {
+    "chapter": "library",
+    "where": "Library: Joe comes on",
+    "text": "Good evening. I’m Joe, the night librarian. Everything on these shelves is to read, print or watch.",
+    "seconds": 11.55,
+    "hash": "48b31afbc447",
+    "voice": "0448e8049470"
+  },
+  "library-lewie": {
+    "chapter": "library",
+    "where": "Library: Lewie comes on",
+    "text": "Hi, I’m Lewie! I shoveled a lot of snow to buy Game-Maker. All the paper from the game boxes is here.",
+    "seconds": 6.95,
+    "hash": "1ce54ab530f1",
+    "voice": "9af0a3c00d49"
+  },
+  "library-magazine": {
+    "chapter": "library",
+    "where": "Library: Lewie points at the TURBO BUTTON card",
+    "text": "TURBO BUTTON is the shareware gamer’s monthly: news, reviews, hints and every game.",
+    "seconds": 8.19,
+    "hash": "16330a8922c5",
+    "voice": "0448e8049470"
+  },
+  "library-pick": {
+    "chapter": "library",
+    "where": "Library: Lewie points at the Game or Kind picker",
+    "text": "Pick one game, or one kind, to see just that shelf.",
+    "seconds": 6.19,
+    "hash": "2821190279f7",
+    "voice": "0448e8049470"
+  },
+  "library-print": {
+    "chapter": "library",
+    "where": "Library: Lewie points at a Disk labels card",
+    "text": "Disk labels and retail boxes open in the print shop, with lines to cut and fold along.",
+    "seconds": 8.59,
+    "hash": "1a8b8190bb08",
+    "voice": "0448e8049470"
+  },
+  "library-sort": {
+    "chapter": "library",
+    "where": "Library: Lewie points at the By game and By type buttons",
+    "text": "Sort the shelves by game, or by type: every manual together, every map together.",
+    "seconds": 8.83,
+    "hash": "dd6cc76d02cd",
+    "voice": "0448e8049470"
+  },
+  "library-walkthrough": {
+    "chapter": "library",
+    "where": "Library: Lewie points at a Walkthrough card",
+    "text": "Every game’s walkthrough is here too, played start to finish. Its length is on the card.",
+    "seconds": 5.95,
+    "hash": "5ffd6f747eb9",
+    "voice": "0448e8049470"
+  },
+  "settings-ai": {
+    "chapter": "settings",
+    "where": "Settings: Max points at AI setup in the Settings menu",
+    "text": "AI setup connects your own AI, on your computer or with your own key, for the editor’s Assistant.",
+    "seconds": 7.41,
+    "hash": "745ee6327a3e",
+    "voice": "3705d98401bd"
+  },
+  "settings-backup": {
+    "chapter": "settings",
+    "where": "Settings: Max points at Back up / restore in the Settings menu",
+    "text": "Back up saves everything this browser keeps to one file. Restore brings it back, here or on another computer.",
+    "seconds": 7.76,
+    "hash": "c75ec58599bf",
+    "voice": "3705d98401bd"
+  },
+  "settings-bye": {
+    "chapter": "settings",
+    "where": "Settings: Max says goodbye and walks off",
+    "text": "Delivered. Signed, sealed, and on to the next world.",
+    "seconds": 3.94,
+    "hash": "ab5ae1664623",
+    "voice": "3705d98401bd"
+  },
+  "settings-credits": {
+    "chapter": "settings",
+    "where": "Settings: Max points at Credits in the Settings menu",
+    "text": "Credits names who and what made everything here. That’s this page.",
+    "seconds": 4.75,
+    "hash": "99da0c763e96",
+    "voice": "3705d98401bd"
+  },
+  "settings-hello": {
+    "chapter": "settings",
+    "where": "Settings: Max comes on",
+    "text": "Courier Max, with a delivery: the settings. They live behind the gear, top right.",
+    "seconds": 6.02,
+    "hash": "c4f4901fa542",
+    "voice": "3705d98401bd"
+  },
+  "settings-offline": {
+    "chapter": "settings",
+    "where": "Settings: Max points at Play offline in the Settings menu",
+    "text": "Play offline says how big the whole site is, then saves it all, so it works with no connection.",
+    "seconds": 6.79,
+    "hash": "cb6d54a0554f",
+    "voice": "3705d98401bd"
+  },
+  "settings-page": {
+    "chapter": "settings",
+    "where": "Settings: Max points at the Credits page’s sections",
+    "text": "This page’s sections: the people who made the original Game-Maker, the game authors, and every tool used, AI too.",
+    "seconds": 8.11,
+    "hash": "aafc649e4c4a",
+    "voice": "3705d98401bd"
+  },
+  "settings-source": {
+    "chapter": "settings",
+    "where": "Settings: Max points at Source on GitHub in the Settings menu",
+    "text": "Source on GitHub: every line of this site’s code, open for anyone to read.",
+    "seconds": 5.91,
+    "hash": "4d2ce20bd933",
+    "voice": "3705d98401bd"
+  },
+  "settings-theme": {
+    "chapter": "settings",
+    "where": "Settings: Max points at Theme in the Settings menu",
+    "text": "Theme goes dark, light, or whatever your computer uses. Each press picks the next one.",
+    "seconds": 6.95,
+    "hash": "572a3937ebd1",
+    "voice": "3705d98401bd"
+  },
+  "settings-tour": {
+    "chapter": "settings",
+    "where": "Settings: Max points at Guided tour in the Settings menu",
+    "text": "Guided tour plays this whole tour again, every page in order.",
+    "seconds": 4.84,
+    "hash": "61a6b6542e0b",
+    "voice": "3705d98401bd"
+  }
+}

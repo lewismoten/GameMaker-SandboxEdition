@@ -1,0 +1,446 @@
+{
+  "pitch": "Mystery Robot Joe left a little tin heart in every world he passed through; now walk the Long Road with him, keep his promises, and help every friend he made, all the way to Watt.",
+  "keys": {
+    "Up": "Walk up a step; from the side, hop (hold to hop higher)",
+    "Down": "Walk down a step; from the side, pick up",
+    "Left": "Walk left a step",
+    "Right": "Walk right a step",
+    "Space": "Pick up; with the winding key, from the side, spring hop",
+    "Enter": "Rise on the heart balloon (once found)",
+    "X": "HELLO, with the Bard's drumstick (once found)",
+    "Q": "From the side, hop up and left",
+    "E": "From the side, hop up and right",
+    "Home": "From the side, hop up and left",
+    "PgUp": "From the side, hop up and right",
+    "F2": "Wind, spare bulbs and keepsakes"
+  },
+  "items": [
+    {
+      "kind": "letter",
+      "title": "A note from Joe",
+      "note": "Typed after closing, on the library's machine",
+      "letterhead": "THE TINY POCKETS LIBRARY",
+      "address": "Behind the little red door, The Dog House",
+      "date": "Closing time",
+      "to": "To whoever found every tin heart,",
+      "body": "<p>You found them. All of them. I counted twice to be sure, and then once more, because that is the kind of robot I am.</p><p>I left those hearts to say thank you, and to promise I would come back. I always meant to. Tonight I am going, and I would be glad of the company. The road is long, and it is nicer to count steps with somebody.</p><p>A few things I have learned on my nights off: talk to everybody first, because they will tell you what is wrong. Things that blink are about to change, so wait for them. Wooden floors are only solid on top. And when a friend gives you something, keep it. You never know.</p><p>I will be back by opening time. If anybody asks for me, tell them I am out counting.</p>",
+      "signature": "Mystery Robot Joe\nNight Librarian",
+      "style": "type"
+    },
+    {
+      "kind": "idcard",
+      "title": "Night librarian's badge",
+      "note": "Clipped to a red bow tie",
+      "org": "THE TINY POCKETS LIBRARY",
+      "name": "MYSTERY ROBOT JOE",
+      "role": "Night Librarian (night off)",
+      "fields": [
+        ["Heart", "One brass tally counter"],
+        ["Wind", "Ten turns"],
+        ["Spare bulbs", "Three"],
+        ["Back by", "Opening time"]
+      ],
+      "color": "#1c1838",
+      "ink": "#fff4dc",
+      "portrait": {
+        "chr": "hero.chr",
+        "cbl": "hero.cbl",
+        "pal": "library.pal"
+      },
+      "back": "If you find this robot on the Long Road, he is on his night off, looking for something. Please be kind to him. He will count it, and he will be kind right back."
+    },
+    {
+      "kind": "map",
+      "title": "The Long Road",
+      "note": "A road map, folded the wrong way",
+      "heading": "THE LONG ROAD",
+      "intro": "From The Dog House east, in three legs, a friend up every lane. Past the snow the last leg runs one stop into the next: the rock garden, the fair, the tall plant, and the Smart Home at the very end.",
+      "panels": [
+        {
+          "map": "road1.map",
+          "x": 2,
+          "y": 3,
+          "w": 36,
+          "h": 13,
+          "caption": "The first leg, at evening. The gate wants three thank-yous.",
+          "marks": [
+            {
+              "x": 5,
+              "y": 14,
+              "label": "The Dog House",
+              "kind": "start"
+            },
+            {
+              "x": 12,
+              "y": 3,
+              "label": "The Clock Tower"
+            },
+            {
+              "x": 21,
+              "y": 3,
+              "label": "Valentines Park"
+            },
+            {
+              "x": 29,
+              "y": 3,
+              "label": "The Parade"
+            },
+            {
+              "x": 35,
+              "y": 14,
+              "label": "The field gate",
+              "kind": "goal"
+            }
+          ]
+        },
+        {
+          "map": "road2.map",
+          "x": 2,
+          "y": 3,
+          "w": 36,
+          "h": 13,
+          "caption": "The Shore Road, at night: three stops, one into the next.",
+          "marks": [
+            {
+              "x": 12,
+              "y": 3,
+              "label": "The Toy Shop"
+            }
+          ]
+        },
+        {
+          "map": "road3.map",
+          "x": 2,
+          "y": 3,
+          "w": 36,
+          "h": 13,
+          "caption": "The Winter Road, over the hill: two stops.",
+          "marks": [
+            {
+              "x": 12,
+              "y": 3,
+              "label": "Lewie's Street"
+            }
+          ]
+        }
+      ],
+      "columns": 2
+    },
+    {
+      "kind": "journal",
+      "title": "Joe's tally book",
+      "note": "From his nights off, before tonight",
+      "heading": "Tally: Nights Off",
+      "entries": [
+        {
+          "date": "First night off",
+          "html": "<p>Went looking for a real heart. Walked 4,410 steps. Found a town with a great deal of snow. A boy with a shovel said I looked cold and lent me his scarf. I am not cold. I kept it on anyway. Left a tin heart.</p>"
+        },
+        {
+          "date": "Another night",
+          "html": "<p>A backyard, and a corgi who showed me the way out of it. Both of his ears stood up at once. Counted his steps: more than mine. Left a tin heart.</p>"
+        },
+        {
+          "date": "A rainy one",
+          "html": "<p>Somebody shared an umbrella. Somebody else shared a song. Somebody else shared a sandwich, which I cannot eat, and which I thanked them for very much. Left three tin hearts. Made more.</p>"
+        },
+        {
+          "date": "A long one",
+          "html": "<p>Visited a great many worlds. In every one, somebody was kind. Still no real heart. Counter still only counts. Click.</p>"
+        },
+        {
+          "date": "Tonight",
+          "html": "<p>Somebody found every heart I left. Every one. I do not know what to count that as.</p><p>Going back to see everybody. Back by opening time.</p>"
+        }
+      ]
+    },
+    {
+      "kind": "hintbook",
+      "title": "The Night Librarian's Hint Book",
+      "note": "Answers hidden: use the red film",
+      "intro": "Find your question, then lay the red film over the answer. Joe wrote these down on the way, and counted them: there are more than he expected.",
+      "sections": [
+        {
+          "head": "Setting Out",
+          "hints": [
+            {
+              "q": "How do I get out of the library?",
+              "a": "Read the storybook on the reading rug, then go to the workbench (step on the stool). Joe writes his note there, and goes out of the little red door."
+            },
+            {
+              "q": "The gate at the end of the road will not open.",
+              "a": "It wants a thank-you heart from every friend up that leg's lanes. Go back up whichever lane you have not finished. F2 shows how many Joe has."
+            },
+            {
+              "q": "My friend's corner is closed.",
+              "a": "It opens when their trouble is over. Walk in past the rope, pick up the keepsake (Space), then walk into your friend for the thank-you. The little gate only swings outward."
+            },
+            {
+              "q": "Something keeps bumping me.",
+              "a": "Parade carts, the plow and grumpy gadgets do not stop, and each bump winds Joe down a little. They keep to their rows and their paths: watch one go by, then cross behind it."
+            }
+          ]
+        },
+        {
+          "head": "The First Leg",
+          "hints": [
+            {
+              "q": "The Clock Tower: where are the three gears?",
+              "a": "Two are inside the tower: one on a floor low on the right, and one at the far west end, past the bridges. The third is up in the belfry, on the floor at the west end."
+            },
+            {
+              "q": "The Clock Tower: the bridges keep dropping me.",
+              "a": "The brass ones and the copper ones take turns, and each blinks red before it lets go. Wait for yours to come back, then walk across without stopping. A fall only takes you down a floor."
+            },
+            {
+              "q": "The Clock Tower: I have all three gears.",
+              "a": "Walk along the belfry floor to the bell rope at the east end. The hammer does the rest."
+            },
+            {
+              "q": "Valentines Park: Gwinn keeps running away.",
+              "a": "She runs from whoever comes near, but walls stop her. Go in through her yard's gate and walk her into a corner of the fence."
+            },
+            {
+              "q": "Valentines Park: where are the other valentines?",
+              "a": "Six are tumbling about the hedged lawn on the west side. The gap in its hedge faces the path. Walk into each one as it goes by."
+            },
+            {
+              "q": "The Parade: where are the drumsticks?",
+              "a": "One is on the middle sidewalk, between the lanes, toward the west end. The other is across the street, on the far sidewalk. Cross one lane at a time, behind a cart."
+            }
+          ]
+        },
+        {
+          "head": "The Shore Road",
+          "hints": [
+            {
+              "q": "The Music Box: how do I get in?",
+              "a": "Talk to the goat, then walk onto the keyhole in the music box. It is just big enough for a small tin robot."
+            },
+            {
+              "q": "The Music Box: the comb's teeth.",
+              "a": "They spring down and up by turns over the pit. Wait at the edge until the next tooth comes up, then step onto it, and on to the next."
+            },
+            {
+              "q": "The Music Box: the floors above are too high.",
+              "a": "At the east end a pin on the turning cylinder works as a lift. Wait for it to come down, step on, and ride it up. Then hop up the pins, and hop the gap along the top. Pick up all seven notes on the way: the crank's socket by the keyhole only turns when they are back."
+            },
+            {
+              "q": "The Charging Run: the gates keep shutting.",
+              "a": "They open and shut on timers, and amber means about to shut. Wait for one to open and go through right away. There is a breaker in each part of the lot, three in all; then walk onto the charger."
+            },
+            {
+              "q": "The Lighthouse: I cannot see a thing.",
+              "a": "Follow Carl. His eyes glow, and he buzzes round and round the way through. Every few seconds the old lamp sputters and the rocks flash: use the moment to look. The lighthouse door is at the top right."
+            },
+            {
+              "q": "The Lighthouse: the stairs.",
+              "a": "There are none. Ride the lift up from the floor at the east end, then hop from landing to landing, west and east by turns, up to the lamp. Walk into it."
+            }
+          ]
+        },
+        {
+          "head": "The Winter Road",
+          "hints": [
+            {
+              "q": "Snow Day: the drifts will not budge.",
+              "a": "Joe needs the spare shovel from Lewie's box, by the south sidewalk. Walk into the box, pick the shovel up (Space), and walk into a drift to shovel it."
+            },
+            {
+              "q": "Snow Day: I cleared a walk and nothing happened.",
+              "a": "Clear it right up to the doormat, and step on the mat. There are five, one at each neighbor's door. Then Lewie's porch steps come clear."
+            },
+            {
+              "q": "Snow Day: snow keeps falling on me.",
+              "a": "It slides off the roofs onto the top of a front walk now and then. A shadow under the eaves warns you first. Wait for it to fall, then go."
+            },
+            {
+              "q": "Snow Day: where is the way on?",
+              "a": "After Lewie's thank-you, through the gate in the hedge of his corner, to his back garden."
+            },
+            {
+              "q": "Open Mic: the pages go round and round.",
+              "a": "Each one circles under its own ceiling fan. Stand in its path and let it come to you. Catch all three and the turret stair door opens."
+            },
+            {
+              "q": "Open Mic: the turret is too tall.",
+              "a": "Walk into the warm air rising from the ovens and it carries you up. From the ledge at the top, hop up into the fan's draft; it blows you across into the second column of warm air. Four pages are up there, and the back stair at the top comes down by the stage."
+            }
+          ]
+        },
+        {
+          "head": "The Last Leg",
+          "hints": [
+            {
+              "q": "The Painted Rocks: the rocks roll away from me.",
+              "a": "That is what they do. Each one rolls along its channel of sand, away from Joe, until a wall stops it. Stand at the far end of its channel, the end away from its circle, and it rolls home. Then give it a pat (walk into it)."
+            },
+            {
+              "q": "The Painted Rocks: one channel turns a corner.",
+              "a": "Stand just above the corner. Then the way that rock rolls away from Joe is round the corner and into its circle."
+            },
+            {
+              "q": "The Fair: how do I get up to Reggie?",
+              "a": "Ride the carousel's horses. The brass ones rise while the white ones fall. Stand on a saddle, ride it up, and step across to the next horse when it is low. The last one takes you to the canopy."
+            },
+            {
+              "q": "The Fair: Reggie floats past me.",
+              "a": "He floats to and fro over the canopy. Stand still and wait; he comes back. Then go down the far side, through the turnstile, and pick up the heart balloon (Down) before you see Doc Leo at the gate."
+            },
+            {
+              "q": "The Tall Plant: the leaves fold up under me.",
+              "a": "Some leaves hold steady and some fold up and open again on their own. Yellow at the tip means about to fold. Hop onto one just as it opens."
+            },
+            {
+              "q": "The Tall Plant: there is nothing to stand on.",
+              "a": "Hold Enter: the heart balloon carries Joe up. Run out of air and a dandelion puff fills it again."
+            }
+          ]
+        },
+        {
+          "head": "The End of the Road",
+          "hints": [
+            {
+              "q": "The Smart Home: the gadgets are grumpy.",
+              "a": "HELLO cheers them up: press X (Joe needs the Bard's drumstick). It goes the way Joe last moved, so take a step toward the gadget first."
+            },
+            {
+              "q": "The Smart Home: the boards are too tall.",
+              "a": "Over the tall chip, rise on the heart balloon (Enter); the air vent at its foot fills it. Over the wall of chips, spring hop with the winding key (Space)."
+            },
+            {
+              "q": "The Smart Home: the Big Grumble.",
+              "a": "The thermostat calms down a little each time a HELLO reaches it, but it lets off steam first, longer every time. Wait for the steam to stop, then HELLO again. Three will do it. Then give it a pat."
+            },
+            {
+              "q": "What will Watt say?",
+              "a": "Go and ask him."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "stickers": [
+    {
+      "text": "HEART OF TIN",
+      "sub": "MYSTERY ROBOT JOE",
+      "shape": "cut",
+      "color": "#1c1838",
+      "ink": "#e8b23a",
+      "hero": {
+        "chr": "hero.chr",
+        "cbl": "hero.cbl",
+        "pal": "library.pal"
+      }
+    },
+    {
+      "text": "DOC LEO",
+      "sub": "AND SIR REGINALD",
+      "shape": "cut",
+      "color": "#7a2bbf",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "town.bbl",
+        "pal": "square.pal",
+        "grid": [[52, 54]],
+        "under": 41
+      }
+    },
+    {
+      "text": "TEDDY",
+      "sub": "BE MINE",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "park.bbl",
+        "pal": "park.pal",
+        "grid": [[10]],
+        "under": 0
+      }
+    },
+    {
+      "text": "GWINN",
+      "sub": "VALENTINE THIEF",
+      "shape": "cut",
+      "color": "#ff8fc8",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "lark.mbl",
+        "pal": "park.pal",
+        "grid": [[6]]
+      }
+    },
+    {
+      "text": "UP, UP!",
+      "sub": "SIR REGINALD CLUCKINGTON III",
+      "shape": "cut",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "lark.mbl",
+        "pal": "fair.pal",
+        "grid": [[49]]
+      }
+    },
+    {
+      "text": "BZZZ!",
+      "sub": "CARL KNOWS THE WAY",
+      "shape": "burst",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "lark.mbl",
+        "pal": "covelit.pal",
+        "grid": [[23]]
+      }
+    },
+    {
+      "text": "THE CHEZ",
+      "sub": "CHARGED UP",
+      "shape": "cut",
+      "color": "#c8241e",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "home.bbl",
+        "pal": "home.pal",
+        "grid": [[28, 29]],
+        "under": 0
+      }
+    },
+    {
+      "text": "BEEP?",
+      "sub": "WATT FIXES THINGS",
+      "shape": "cut",
+      "color": "#fff4dc",
+      "ink": "#1c1838",
+      "sprite": {
+        "blocks": "home.bbl",
+        "pal": "home.pal",
+        "grid": [[17]],
+        "under": 0
+      }
+    },
+    {
+      "text": "TICK. TOCK.",
+      "sub": "THANK YOU",
+      "shape": "heart",
+      "color": "#8a93a3",
+      "ink": "#ffffff"
+    },
+    {
+      "text": "CLICK",
+      "sub": "COUNTING EVERYTHING",
+      "shape": "circle",
+      "color": "#e8b23a",
+      "ink": "#1c1838"
+    }
+  ],
+  "news": [
+    {
+      "head": "A game that was never for sale",
+      "html": "<p>There is no order form for <b>HEART OF TIN</b>, and there never will be. It is a thank-you. If this disk is in your hands, you looked behind a great many things, and found every little tin heart a certain night librarian left behind. Now he would like to walk the Long Road with you. Bring a shovel. Joe will count the steps.</p>"
+    }
+  ]
+}

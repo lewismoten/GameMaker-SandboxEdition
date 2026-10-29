@@ -1,6 +1,6 @@
     D E P T H
     P E R C E P T I O N
-    Version 1.0 - March 1996
+    Version 1.1 - March 1996
     (c) 1996 Sandbox Software
 
 The render of the century was

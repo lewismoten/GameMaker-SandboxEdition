@@ -2,8 +2,9 @@
 // box (manual/printables/items.ts), the Bard of Bizarre's games' maps, the Game-Maker box's
 // Owner's Guide and paper (gmItems.ts), and the site's own reading (siteShelf.ts). Each piece
 // keeps the way to draw its first sheet, for the card's thumbnail (thumbs.ts). Each game's
-// walkthrough is listed too (walkShelf.ts), and the videos about the site (videos.ts). A secret
-// game is on it only once revealed in this browser: the catalog (loadCatalog) lists it then.
+// walkthrough is listed too (walkShelf.ts), its walkthrough video and the videos about the site
+// (videos.ts). A secret game is on it only once revealed in this browser: the catalog
+// (loadCatalog) lists it then.
 import type { CatalogEntry } from '../project/files';
 import { isSandboxGame, loadCatalog } from '../project/files';
 import { isOldSecret } from '../project/secretGames';
@@ -14,9 +15,8 @@ import { siteShelf } from './siteShelf';
 import { mergeShared } from './shared';
 import { walkShelf } from './walkShelf';
 import { cdPrintItems, gamePrintItems } from './printShelf';
-import { videoShelf } from './videos';
+import { gameVideoShelf, videoShelf } from './videos';
 import { scoopIssue } from '../manual/printables/scoopIssue';
-import { scoopDateline } from '../manual/printables/scoopIssues';
 import { gmCoverSheet, hintCoverSheet, magazineCoverSheet, manualCoverSheet } from './covers';
 
 export interface Shelf {
@@ -54,6 +54,9 @@ export async function loadShelf(): Promise<Shelf> {
   const { boxed, maps } = shelfGames(entries, unlocked);
   // the walkthroughs' lengths load while the boxes are listed
   const walks = walkShelf([...boxed, ...maps]);
+  // and the games' walkthrough videos: the shelved games' in their order, then any other listed game's
+  const shelved = new Set([...boxed, ...maps]);
+  const videos = gameVideoShelf([...shelved, ...entries.filter((e) => !shelved.has(e) && (!isOldSecret(e.id) || unlocked.has(e.id)))]);
   // the boxes' family, as the boxes themselves count it (gameManual.ts, dosManual.ts), so the Scoop's numbers match
   const family = entries.filter(isSandboxGame);
   const items: ShelfItem[] = [];
@@ -65,7 +68,7 @@ export async function loadShelf(): Promise<Shelf> {
     const ownItem = /^own\d+$/.test(piece.id) ? own?.[Number(piece.id.slice(3))] : undefined;
     // a box's newsletter, numbered as it prints its own number and date (gen.ts newsletter)
     const no = piece.id === 'newsletter' && ctx ? scoopIssue(ctx.entry.id, family) : undefined;
-    const issue = no && ctx ? { no, line: `Vol. 1, No. ${no} · ${scoopDateline(ctx.entry.id, ctx.entry.year)}` } : undefined;
+    const issue = no ? { no } : undefined;
     items.push({ key, title: piece.title, note: piece.note, icon: piece.icon, type: typeOfPiece(owner, piece.id, ownItem), owner, ownerTitle, open, issue });
     // the Level Maps: the first level's picture, as the printed maps crop it (its pages are mostly key and captions)
     const levels = piece.id === 'levelmaps' && ctx ? levelMaps(ctx) : undefined;
@@ -135,6 +138,7 @@ export async function loadShelf(): Promise<Shelf> {
   const walked = await walks;
   items.push(...walked.items);
   for (const [key, make] of walked.thumbs) thumbs.set(key, make);
+  items.push(...(await videos));
   const site = siteShelf(zine);
   items.push(site[0], turboCd, ...site.slice(1), ...videoShelf());
   thumbs.set(`${SITE_OWNER}:magazine`, () => magazineCoverSheet(entries));

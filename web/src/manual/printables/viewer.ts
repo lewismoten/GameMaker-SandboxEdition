@@ -12,6 +12,7 @@ import { chapterPicker, chapterStops, findStop, linkContents, stopAt, type Chapt
 import { readView, viewToggle, type Reader, type ReaderOptions, type ReadView } from '../readView';
 import { percentOf, pinchZoom, readSize, sizeControl, widthAt, zoomKey, type ReadSize, type Room } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
+import { epubControl, type EpubSource } from '../epub/save';
 
 /** A thing in the box. */
 export interface BoxItem {
@@ -37,6 +38,8 @@ export interface BoxItem {
   pages?(): Promise<BookPage[]>;
   /** The chapter (a BookPage.marks id) to open the booklet at, asked each time it is first shown. */
   openAt?(): string | undefined;
+  /** It can be saved as an ePub (the bar's ⤓ ePub button). */
+  epub?: EpubSource;
 }
 
 type PrintMode = 'item' | 'booklet' | 'all';
@@ -63,6 +66,8 @@ export interface BoxOptions {
   /** The chapter of `start`'s booklet to open at, by its number ('12', 'A') or id. */
   chapter?: string;
   address?: BoxAddress;
+  /** The manual as an ePub. */
+  epub?: EpubSource;
 }
 
 const COMB_HOW = 'two pages a side, printed on both sides (flip on the short edge): fold the stack, or cut it and bind it';
@@ -129,6 +134,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       '🟥 Red film',
     );
     const film = new RedFilm();
+    const epub = epubControl();
     // over a page with hidden answers the pointer carries a circle of red film
     const lens = new RedLens();
     lens.follow(stage, () => !!items.find((i) => i.id === current)?.redFilm);
@@ -360,6 +366,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       sizeShown();
       if (!item?.pages && id !== 'manual') (picker.use([]), tell(undefined));
       filmBtn.hidden = !item?.redFilm;
+      epub.use(id === 'manual' ? options.epub : item?.epub);
       if (!item?.redFilm) (film.hide(), lens.hide());
       bookletBtn.firstChild!.textContent = item?.pages ? 'Print booklet: this one' : 'Print booklet: the manual';
       bookletBtn.lastChild!.textContent = !item?.pages && comb ? COMB_HOW : STAPLE_HOW;
@@ -530,6 +537,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
         sizes.el,
         picker.el,
         filmBtn,
+        epub.el,
         h('div', { class: 'gmb-print-wrap' }, h('button', { onclick: () => (menu.hidden = !menu.hidden), 'aria-haspopup': 'menu' }, '🖨 Print…'), menu),
         h('button', { onclick: close }, 'Close (Esc)'),
       ),

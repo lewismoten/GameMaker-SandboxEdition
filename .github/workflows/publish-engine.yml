@@ -1,0 +1,64 @@
+# Publish the reusable browser engine to GitHub Packages for a version tag on master.
+# Tags have no branch filter in GitHub Actions, so check the tagged commit's ancestry.
+name: Publish browser engine to GitHub Packages
+
+on:
+  push:
+    tags:
+      - 'engine-v*'
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-engine-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check tag and master
+        working-directory: web
+        run: |
+          git fetch --no-tags origin +refs/heads/master:refs/remotes/origin/master
+          if ! git merge-base --is-ancestor HEAD refs/remotes/origin/master; then
+            echo '::error::The tagged commit is not on master.'
+            exit 1
+          fi
+          version=$(node -p "require('./packages/engine/package.json').version")
+          if [[ "$GITHUB_REF_NAME" != "engine-v$version" ]]; then
+            echo "::error::Tag must be engine-v$version."
+            exit 1
+          fi
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+      - name: Check source
+        working-directory: web
+        run: |
+          npm run format:check
+          npm run lint
+          npx tsc --noEmit -p .
+          npx vitest run src/engine src/project/dosNames.test.ts
+      - name: Build package
+        working-directory: web/packages/engine
+        run: npm run build
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://npm.pkg.github.com/'
+          scope: '@lewismoten'
+      - name: Publish package
+        working-directory: web/packages/engine
+        run: npm publish --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}

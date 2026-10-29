@@ -1,5 +1,5 @@
  TEDDY'S LITTLE BIG ADVENTURE
-     Version 1.0 - 1995
+     Version 1.1 - 1995
   (c) 1995 Sandbox Software
 
 Teddy is a Pembroke Welsh Corgi

@@ -2,7 +2,8 @@
 // shareware) opened in the editor as released, without making a copy. Its files load into an
 // in-memory project that editor/core/readOnly.ts makes refuse every change: it is never saved
 // to this browser, never listed in My games and keeps no companion data but its DOS player
-// look (dosPlayer/catalogPatches.ts). Its address is #/p/look:<id>/<file> (lookId.ts), so
+// look (dosPlayer/catalogPatches.ts), and its walkthrough and the plays of its scenes, which
+// stay in this browser apart from the game (check/walk/keptWalk.ts). Its address is #/p/look:<id>/<file> (lookId.ts), so
 // reload and Back work.
 //
 // A change tried on it asks first. A game free to change (gameware, Sandbox, the Bard's):
@@ -67,6 +68,9 @@ export async function openReleased(catalogId: string, host: HTMLElement, file?: 
       setTimeout(() => void ask(project, r).finally(() => (asking = false)));
     },
   });
+  // its walkthrough and your plays of its scenes stay in this browser, apart from its files (keptWalk.ts)
+  const { keepLookOnly } = await import('../check/walk/keptWalk');
+  keepLookOnly(project, entry);
   r.workspace = new Workspace(host, project, file);
   return r.workspace;
 }

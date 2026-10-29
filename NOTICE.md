@@ -75,6 +75,9 @@ game folder opens in the browser unchanged.
   might look, and ways to get more out of a game. Gemini 3 drew the ASCII-art can in
   LUNCHMEAT's flood on The Sofa (`web/src/retro/bbs/sofaSpam.ts`). What they suggested came
   to the project as notes and ideas, through Lewis.
+- **The npm engine package** (`web/packages/engine/`): extracted and documented with
+  **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
+  existing TypeScript web engine.
 - **Added to the site in October 2026**, also written by **Claude Opus 5.5** as Lewis
   directed, from no one else's code, art, data or recordings: the desk modem's line speeds
   and the handshake sounds you hear for each (see "Modem sounds" below); TERMINAL's TTY calls
@@ -227,6 +230,33 @@ game folder opens in the browser unchanged.
   photo. The poster's DOC LEO lettering is set in **Phosphate** (Steve Jackaman and Ashley
   Muir; © International TypeFounders, Inc.), a typeface that comes with macOS: only the
   lettering's pixels are in the poster pictures, and no font file is in the repository.
+- **The guided tour's voices** (`web/public/tour/voice`): Doc Leo's lines (and Teddy's, when he
+  talks) are spoken in voices cloned from **Lewis Moten's own recordings**, made by him, with his
+  consent, by
+  **Pocket TTS** (Kyutai, [huggingface.co/kyutai/pocket-tts](https://huggingface.co/kyutai/pocket-tts),
+  model weights under the Creative Commons Attribution 4.0 International License, CC BY 4.0),
+  in **vlapky**'s ONNX conversion,
+  [pocket-tts-onnx](https://huggingface.co/vlapky/pocket-tts-onnx) (its weights CC BY 4.0, its
+  conversion code Apache-2.0). The clips are made on the developer's computer by
+  `web/scripts/narrate.ts`, whose engine (`web/scripts/narrate/pocketTts.ts`) is ported from
+  vlapky's **pocket-tts-js** (MIT License, Copyright (c) 2026 vlapky; the notice is kept in that
+  file) and runs Microsoft's **ONNX Runtime** (onnxruntime-web's WASM build, MIT License,
+  Copyright (c) Microsoft Corporation), with ffmpeg for the sound files. The model, the engine
+  and Lewis's recording stay on his computer and are not in the repository or any download;
+  Pocket TTS's built-in voices are never used. Only the generated clips are committed, and they
+  play on the site only (exported games don't carry them).
+  The cloned voices speak for Doc Leo (Lewis's own), Joe the night librarian, teenage Lewie,
+  Watt and Professor Fiddlesticks, each shifted in pitch and speed. Gwinn's lines are spoken in **Kokoro**'s stock
+  "Sky" voice (`af_sky`), pitched up, Dex Dynamo's in its "Puck" voice (`am_puck`), Inspector
+  Ada Penn's in its "Emma" voice (`bf_emma`) and Courier Max's in its "Michael" voice
+  (`am_michael`), a little faster: **Kokoro-82M**
+  by hexgrad ([huggingface.co/hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M),
+  Apache-2.0) in the ONNX Community's conversion, run by **kokoro-js** (Apache-2.0) with Hugging
+  Face's **Transformers.js** (Apache-2.0), the **phonemizer** package (Apache-2.0) and ONNX
+  Runtime (MIT). These are installed by `npm run voice:setup` into a git-ignored folder outside
+  the app's own packages, and the model stays on Lewis's computer.
+- **Teddy's and Gwinn's barks** (`web/public/tour/sfx`): Lewis Moten's own recordings of his
+  dogs, cut into short clips for the guided tour. The whole recordings stay on his computer.
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
   this project (there is no recording to credit), but a few pieces quote older tunes whose
   compositions are in the public domain in the US:
@@ -705,6 +735,14 @@ see above for what ends up in them.
 The desk's black-light poster (`games/kit/scans/blacklight.py`) is drawn on the developer's
 computer with Pillow (MIT-CMU License) and NumPy (BSD); the Caveat font was cut down with
 fontTools (MIT). Only their output is committed.
+
+The tour's narration script (`web/scripts/narrate.ts`, `npm run voice`) runs on the
+developer's computer with ffmpeg, Pocket TTS's ONNX model and ONNX Runtime's WASM build (see
+"The guided tour's voice" in Credits), read from folders outside the repository; only the clips
+it makes are committed. Its check (`web/scripts/narrate/verify.ts`, `npm run voice:check`)
+hears each clip with OpenAI's Whisper (MIT; the large-v3 model, run by whisper.cpp, MIT, or
+openai-whisper's own command), on the developer's computer, to find words the voices said
+wrong; nothing of it ships.
 
 The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
 `tools/analyze.py` and `tools/cutClips.py`) run on the developer's computer with ffmpeg,

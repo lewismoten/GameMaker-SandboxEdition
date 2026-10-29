@@ -1,5 +1,5 @@
 // Named blocks and monsters, resolved into Game-Maker block sets (.BBL/.MBL/.CBL) and monster
-// lists (.MON), as Baker's Dozen keeps them: a block's number is the order it was added, so the
+// lists (.MON), as the other Sandbox games keep them: a block's number is the order it was added, so the
 // order of the add() calls is part of the file format.
 import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../../../web/src/formats/blocks';
 import { emptyMonster, newMonsterSet, type Monster } from '../../../../web/src/formats/monster';

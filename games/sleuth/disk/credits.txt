@@ -1,5 +1,5 @@
 FINAL CURTAIN
-Version 1.0, 1995
+Version 1.1, 1995
 
 Story, design, art, music and
 programming: Claude

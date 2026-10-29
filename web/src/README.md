@@ -14,7 +14,7 @@ Game-Maker: Sandbox Edition in the browser. Two pages load this code:
 - `dos.html` → [`dosPage/dosPage.ts`](dosPage/dosPage.ts): DOS Game-Maker, the desk's PC on its
   own (`?game=<id>` opens that game in Game-Maker, `?run=dos` or `?run=bbs`, with `&dial=sandbox`
   or `&dial=sofa` to dial that board; `?project=<id>&run=play|design` a game kept in this
-  browser). It loads no desk code (`dosPage/boundary.test.ts`); `#/dos` and `#/dos/<id>` on the
+  browser; `?tour=dos` its guided tour, [`tour/`](tour/README.md)). It loads no desk code (`dosPage/boundary.test.ts`); `#/dos` and `#/dos/<id>` on the
   site lead to it. [`viewSwitch.ts`](viewSwitch.ts) is the Desk | DOS | Web switch in all three
   headers.
 - `play.html` → [`play.ts`](play.ts): a full-window player for one game
@@ -41,7 +41,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 - [`play.ts`](play.ts): the play page's entry. [`dosPage/`](dosPage) is `dos.html`'s.
 - [`urlState.ts`](urlState.ts): what the address bar keeps. [`viewSwitch.ts`](viewSwitch.ts): the
   Desk | DOS | Web switch.
-- [`settingsMenu.ts`](settingsMenu.ts): today's web header's ⚙ Settings menu (play offline, the source, the theme, AI setup, back up / restore), its items also in the narrow ⋯ menu.
+- [`settingsMenu.ts`](settingsMenu.ts): today's web header's ⚙ Settings menu (play offline, the source, the theme, the guided tour, AI setup, back up / restore), its items also in the narrow ⋯ menu.
 - [`theme.ts`](theme.ts): light or dark for today's web, as the Settings menu's Theme item. [`edition.ts`](edition.ts): the fork's
   name, in one place. [`pageToc.ts`](pageToc.ts): "On this page" beside a reading page (the Mac,
   Windows and Linux pages, the cast, credits and achievements), or a row of its section links
@@ -72,6 +72,8 @@ Each area's own README says what each of its files does; the short ones are desc
   ones it uses (Borland C++ 16-bit layout).
 - [`engine/`](engine/README.md): the game engine, a TypeScript port of `PLAYGAME.C`, and what
   XFERPLAY's own screens show.
+- [`../packages/engine/`](../packages/engine/README.md): the npm package build and usage guide for
+  the reusable browser engine.
 - [`audio/`](audio/README.md): OPL2 music, the CMF player, Web Audio output, PC speaker sounds, and
   making songs and sound effects.
 - [`gfx/`](gfx): the mode 13h screen (`screen.ts`) and 8×8 fonts (`font8x8.ts`; all of CP437 in
@@ -129,6 +131,10 @@ Each area's own README says what each of its files does; the short ones are desc
 - [`achievements/`](achievements/README.md): what the visitor has done: the catalog, the record, the
   page and ACHIEVE.EXE.
 
+- [`tour/`](tour/README.md): the guided tour: characters from the games point at and press the
+  page's controls while another explains them, with captions, a Sandbox game's music and a
+  recording mode; started from the header's ? button, ⚙ Settings or `#/?tour=all`.
+
 ### The assistant: AI tools working on a game
 
 - [`assistant/`](assistant/README.md): the tools an AI uses to open, check and change a game, the
@@ -152,7 +158,7 @@ Each area's own README says what each of its files does; the short ones are desc
 ### The Guides, the paper in the boxes and the magazine
 
 - [`library/`](library/README.md): the Library: a card for everything to read or print, the
-  print shop's disk labels, CD labels and retail boxes, and the site's videos.
+  print shop's disk labels, CD labels and retail boxes, the site's videos and each game's walkthrough video.
 - [`manual/`](manual/README.md): the Owner's Guide, the web Guide, each game's manual and box
   contents, the zine, the Ultimate Owner's Guide and TURBO BUTTON.
 

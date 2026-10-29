@@ -378,16 +378,6 @@ main.credits-page .credits-cards {
   gap: 10px;
 }
 
-main.credits-page .credits-cards-grid {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
-  gap: 12px;
-}
-
-/* the first card (Claude, who made the most) spans the row */
-main.credits-page .credits-cards-grid > .credits-card:first-child {
-  grid-column: 1 / -1;
-}
-
 main.credits-page .credits-card {
   padding: 12px 14px;
   border: 1px solid var(--border);
@@ -599,4 +589,59 @@ main.credits-page .bard-table thead th {
   main.credits-page .credits-jump span {
     display: none;
   }
+}
+
+/* the AI tools: a line each (name, maker, what it made in short), opening to the whole story */
+main.credits-page .credits-tools {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+}
+
+main.credits-page .credits-tools > li {
+  border-bottom: 1px solid var(--border);
+}
+
+main.credits-page .credits-tool summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  min-height: 24px;
+  padding: 8px 4px;
+  cursor: pointer;
+}
+
+/* the row's own arrow (a flex summary loses the browser's) */
+main.credits-page .credits-tool summary::before {
+  content: '▸';
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 0.15s;
+}
+
+main.credits-page .credits-tool[open] summary::before {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main.credits-page .credits-tool summary::before {
+    transition: none;
+  }
+}
+
+main.credits-page .credits-tool summary .card-meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+main.credits-page .credits-tool-short {
+  flex: 1 1 14rem;
+}
+
+main.credits-page .credits-tool > p {
+  margin: 0 4px 10px;
+  max-width: 50rem;
 }

@@ -17,6 +17,7 @@ import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../me
 import { claimMediaFocus } from '../media/mediaFocus';
 import { unlockAchievement, watchedWalkthrough } from '../achievements';
 import { catalogPatches } from '../dosPlayer/catalogPatches';
+import { endCardLines } from './endCard';
 
 const FRAME_MS = 1000 / WALKTHROUGH_FPS;
 /** A skip ahead moves the clock 40 timer ticks a frame: the most the engine's loop takes at once. */
@@ -45,8 +46,8 @@ const slug = (s: string) =>
     .replace(/^-|-$/g, '')
     .toLowerCase() || 'game';
 
-/** The address of the game's page in the web app. */
-const gameUrl = (entry: CatalogEntry) => `${SITE_URL}#/game/cd:${entry.id}`;
+/** The address of the game's page in the web app (a game of yours, kept only in this browser, has none: the site's). */
+const gameUrl = (entry: CatalogEntry) => (entry.id.startsWith('project:') ? SITE_URL : `${SITE_URL}#/game/cd:${entry.id}`);
 
 function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
   return youtubeText({
@@ -55,6 +56,9 @@ function walkthroughText(entry: CatalogEntry, walk: Walkthrough) {
     company: entry.company,
     blurb: entry.blurb,
     bot: walk.bot,
+    partial: walk.partial,
+    ending: walk.ending,
+    byHand: walk.byHand,
     url: gameUrl(entry),
     chapters: walk.timeline.chapters,
     fps: walk.timeline.fps,
@@ -134,7 +138,10 @@ async function watch(
 
   const canvas = h('canvas', { class: 'wt-canvas', width: 320, height: 200, 'aria-hidden': 'true' });
   const busy = h('div', { class: 'wt-busy', hidden: true });
-  const screen = h('div', { class: 'wt-screen', title: 'Play or pause' }, canvas, busy);
+  // a walkthrough the bot made only partway: its closing card (endCard.ts) over the last screen
+  const [cardHead, ...cardRest] = endCardLines(walk);
+  const card = h('div', { class: 'wt-card', hidden: true }, h('strong', null, cardHead), cardRest.filter(Boolean).join(' '));
+  const screen = h('div', { class: 'wt-screen', title: 'Play or pause' }, canvas, busy, card);
   const playBtn = h('button', { class: 'primary wt-play', type: 'button' });
   const timeEl = h('span', { class: 'wt-time', 'aria-live': 'off' });
   const bar = h('div', { class: 'wt-bar-fill' });
@@ -205,6 +212,7 @@ async function watch(
   let current = -1;
 
   const fresh = () => {
+    card.hidden = true;
     run?.stop();
     run = new WalkRun(canvas, files.copy(), gam, walk, audio, player);
     return run;
@@ -272,7 +280,8 @@ async function watch(
       if (ended(r)) {
         playing = false;
         showPlay();
-        const end = r.done ? 'The end. Thanks for watching!' : 'This is as far as the bot got.';
+        const end = r.done ? 'The end. Thanks for watching!' : `This is as far as the bot got.${walk.ending ? ` ${walk.ending}` : ''}`;
+        card.hidden = r.done || !!r.error;
         // eslint-disable-next-line @typescript-eslint/no-base-to-string -- whatever was thrown, as text
         status.textContent = r.error ? `The walkthrough stopped: ${String(r.error)}` : end;
         if (!r.error && r.done) watchedWalkthrough(entry.id);

@@ -7,7 +7,8 @@ boxes, the catalog and what the address asks for (`deskRestore.ts`). `deskScene.
 scene (`stage.ts` scales it to the window); `deskPc.ts` switches the PC on and off and loads its
 insides; `deskShelf.ts` fills the shelf, `deskGmBox.ts` opens the Game-Maker box, `deskLook.ts`
 points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned.
-`overlayFocus.ts` moves the keyboard into an overlay and back.
+`overlayFocus.ts` moves the keyboard into an overlay and back. `deskTour.ts` is the guided tour's BBS chapter on this PC: it
+calls The Sandbox BBS and types for the tour, then puts back what the call changed.
 
 - `pc/`: the case (`caseParts.ts`), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
   the colors of the picture on the tube), the keyboard (`keyboard.ts`) and the keyboard tray

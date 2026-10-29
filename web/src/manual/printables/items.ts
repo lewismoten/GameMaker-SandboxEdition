@@ -36,6 +36,10 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     render: () => renderItem(ctx, it),
     screen: it.kind === 'starchart' ? foldOut : undefined,
     redFilm: it.kind === 'hintbook',
+    epub:
+      it.kind === 'hintbook'
+        ? { file: `${ctx.entry.id}-hint-book.epub`, make: () => import('../epub/hintBook').then((m) => m.hintBookEpub(ctx, it)) }
+        : undefined,
   }));
   const book = own.find((i) => i.kind === 'hintbook');
   const levels = levelMaps(ctx);
@@ -75,8 +79,17 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
       icon: '🗞️',
       render: () => newsletter(ctx),
       redFilm: !!book,
+      epub: { file: `${ctx.entry.id}-sandbox-scoop.epub`, make: () => import('../epub/scoopBook').then((m) => m.scoopEpub(ctx)) },
     },
-    { kind: 'catalog', id: 'catalog', title: 'Sandbox Software catalog', note: 'Every Sandbox Software game', icon: '🗂️', render: () => catalog(ctx) },
+    {
+      kind: 'catalog',
+      id: 'catalog',
+      title: 'Sandbox Software catalog',
+      note: 'Every Sandbox Software game',
+      icon: '🗂️',
+      render: () => catalog(ctx),
+      epub: { file: 'sandbox-software-catalog.epub', make: () => import('../epub/sandboxCatalogBook').then((m) => m.sandboxCatalogEpub(ctx)) },
+    },
     { kind: 'bbs', id: 'bbs', title: 'BBS ad', note: 'Call the Sandbox BBS', icon: '📞', render: () => bbsAd() },
     ...(book
       ? [

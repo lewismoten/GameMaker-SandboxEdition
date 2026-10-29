@@ -428,7 +428,8 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
 
 .dos-menu {
   position: fixed;
-  z-index: 40;
+  /* over the copy check's guide and card (regSide.css, 60), which may lie under it */
+  z-index: 65;
   display: flex;
   flex-direction: column;
   gap: 4px;

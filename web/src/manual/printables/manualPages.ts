@@ -113,7 +113,8 @@ function scoresPage(title: string): HTMLElement[] {
   ];
 }
 
-function backCover(entry: CatalogEntry): HTMLElement[] {
+/** The back cover's printing: the publisher's logo and line, the small print and the bar code. */
+export function backCover(entry: CatalogEntry): HTMLElement[] {
   const n = fnv1a(entry.id);
   const bars = Array.from({ length: 46 }, (_, i) => h('i', { style: `width:${1 + ((n >> (i % 24)) & 1) + (i % 3 === 0 ? 1 : 0)}px` }));
   return [
@@ -135,13 +136,26 @@ function backCover(entry: CatalogEntry): HTMLElement[] {
   ];
 }
 
+/**
+ * The manual's chapters as one element each, before they are flowed onto pages: screenshots
+ * drawn, made-up addresses noted and the BBS's name lettered (the booklet's pages and its ePub).
+ */
+export async function manualChapters(entry: CatalogEntry): Promise<{ head: string; el: HTMLElement }[]> {
+  const chapters = await Promise.all(entry.original!.manual!.pages.map(async (p) => ({ head: p.head, el: await fillShots(entry, p.html) })));
+  await Promise.all(chapters.flatMap((c) => [...c.el.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined))));
+  for (const c of chapters) {
+    markFictionalAddresses(c.el);
+    decorateBbsName(c.el); // before pagination, so pages are measured with it
+  }
+  return chapters;
+}
+
 /** Lays out the whole booklet. `cover` is a picture of the box front. */
 export async function buildBooklet(entry: CatalogEntry, cover: string | undefined, host: HTMLElement): Promise<BookPage[]> {
   const manual = entry.original!.manual!;
   const title = manual.title || `${entry.title} Manual`;
   const shortTitle = title.replace(/\s+-\s+.*$/, '');
-  const chapters = await Promise.all(manual.pages.map(async (p) => ({ head: p.head, el: await fillShots(entry, p.html) })));
-  await Promise.all(chapters.flatMap((c) => [...c.el.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined))));
+  const chapters = await manualChapters(entry);
   // the manual's own cover (manualCover.ts); the box front only if the game has no box colors
   const own = entry.original?.box ? manualCover(entry) : undefined;
   if (own) await own.ready;
@@ -160,8 +174,6 @@ export async function buildBooklet(entry: CatalogEntry, cover: string | undefine
   ];
   const next = measurer(host);
   for (const c of chapters) {
-    markFictionalAddresses(c.el);
-    decorateBbsName(c.el); // before pagination, so pages are measured with it
     for (const body of paginate([...c.el.children] as HTMLElement[], next)) pages.push({ kind: 'text', head: [shortTitle, c.head], body });
   }
   host.replaceChildren();

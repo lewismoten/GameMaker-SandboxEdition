@@ -1,5 +1,5 @@
 OHM SWEET OHM
-Version 1.0 - Shareware
+Version 1.1 - Shareware
 (c) 1995 Sandbox Software
 
 A logic puzzle game for IBM PC

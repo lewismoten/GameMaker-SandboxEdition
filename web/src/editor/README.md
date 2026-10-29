@@ -15,7 +15,9 @@ Part of the [source map](../README.md).
     (each collection's games, no DOM) and `homeLibraryCards.ts` (its tiles and headings), packed by
     `homeTilePack.ts`, walked with the arrow keys by `homeTileKeys.ts`; the import tile and drops
     (`homeDrop.ts`), Getting started (`homeGettingStarted.ts`), `homeIcons.ts`,
-    `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game),
+    `homeTime.ts`, `homeCopies.ts` and `homeOrigin.ts` (copies of a finished game), the game
+    the panel's Walkthrough (`walkthrough/button.ts`) loads when first used (`homeWalkOpen.ts`: a
+    CD game look-only),
     `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used; an import holding several games
     lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`,
     each row with a small title screen drawn as it scrolls into view: `importThumbs.ts`; removing all
@@ -41,7 +43,8 @@ Part of the [source map](../README.md).
   - The level check's parts outside the map: badges in the block, monster and sound editors
     (`checkBadges.ts`), the self-ticking Before You Upload list (`uploadChecklist.ts`), Make a
     walkthrough (`walkDialog.ts`), the findings as a report with a CSV and a printable checklist
-    (`checkReport.ts`, its rows in `checkRows.ts`), Play and record, the one play session of a scene
+    (`checkReport.ts`, its rows in `checkRows.ts`; Play it myself on any scene, Mine or Bot on each,
+    Stop keeping what the bot got through), Play and record, the one play session of a scene
     that adds to the author's heat map and keeps their play for the walkthrough (`playScene.ts`),
     watching the bot's route or the author's play of a scene, and making the bot's route again
     (`watchScene.ts`), and links into the Ultimate guide (`guideLink.ts`).
@@ -112,7 +115,11 @@ Part of the [source map](../README.md).
     `autoWalk.ts` walks, checked on the engine by `verify.ts`; `takes.ts` cuts the author's own play
     of a scene from the player's recorder, `mine.ts` keeps it, and `replayMine.ts` plays it in place
     of the bot's; `botRoutes.ts` keeps the bot's route of one scene with a fingerprint of the scene,
-    to tell when the map changed since. `walkPaths.ts` keeps a block set's walking paths and roads
+    to tell when the map changed since. `keptWalk.ts` is what Make a walkthrough keeps (companion
+    section `walkthrough`): the run as kept, the scenes to play again when it is made again
+    (autoWalk's `reuse`), how far a partial one got, and a look-only game's walkthrough and plays
+    kept in this browser apart from the game (localStorage, forgotten when the game changes,
+    carried into Edit a copy). `walkPaths.ts` keeps a block set's walking paths and roads
     (companion section `walkPaths` of the .bbl, which a look-only game keeps in memory) and guesses
     them from its terrains (the block editor's Walking path box, `editors/blocks/walkPathPanel.ts`,
     marks them); with them the explorer's `paths` option searches along the roads, and

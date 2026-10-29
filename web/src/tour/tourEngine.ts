@@ -1,0 +1,815 @@
+// The tour player: plays chapters of steps (steps.ts) over the real page. A layer over the page
+// (it never takes a click) holds the hosts, a ring and arrow on the control being shown, the
+// speech bubble and anything wandering through; a bar along the bottom holds the caption (read
+// out to screen readers) and Back, Pause, Next, Sound and Close. Steps move on by themselves.
+// Recording mode hides the pointer and the buttons (the keys still work), shows a title card
+// before each chapter, and keeps a steady pace, for screen recordings. A chapter on another
+// page (the DOS page, dos.html) carries the tour on there with a full page load (handOff).
+// While a tour plays, the page hears 'gm-tour' events ('start', 'end'): the desk makes room for
+// the caption bar, and achievement notes wait until it ends.
+import './tour.css';
+import { h } from '../editor/core/ui';
+import { Actor, loadSprites } from './actor';
+import { findTarget, revealer, visible, waitFor } from './findTarget';
+import { menuHandle, overlayHandle, type Opened } from './tourOpen';
+import { offStage, placeBubble, standBy, type Point, type Rect } from './place';
+import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
+import { TourSound } from './tourSound';
+import { TourRecorder } from './tourRecorder';
+import { CHAPTERS } from './chapters/index';
+import { hushDemos } from '../media/demoAudio';
+
+/** Asks the page's game preview to start or stop (homeShowcase.ts listens). */
+const tourDemo = (what: 'play' | 'stop') => window.dispatchEvent(new CustomEvent('gm-tour-demo', { detail: what }));
+import { onDosPage, pageHere, pageOf } from './tourPages';
+import { parseHash, setHashParams } from '../urlState';
+import type { Sprite } from '../cast/castStageDraw';
+
+export interface TourOptions {
+  record?: boolean;
+  /** Carrying on from another page: no Start card when the sound can start without a click. */
+  cont?: boolean;
+  /** Said when the tour ends (finished or closed). */
+  onEnd?: () => void;
+}
+
+const rectOf = (el: Element): Rect => {
+  const r = el.getBoundingClientRect();
+  return { x: r.left, y: r.top, w: r.width, h: r.height };
+};
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+const announce = (what: 'start' | 'end') => window.dispatchEvent(new CustomEvent('gm-tour', { detail: what }));
+/** Asks the page to do something for a step (steps.ts PageAct; the desk's deskTour.ts listens). */
+const pageAct = (act: PageAct) => window.dispatchEvent(new CustomEvent('gm-tour-act', { detail: act }));
+
+/** A localStorage value, or null (none, or no storage). */
+const stored = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+/** Two addresses show the same thing (their paths match; the editor adds its own settings after them). */
+const samePlace = (a: string, b: string) => parseHash(a).path.join('/') === parseHash(b).path.join('/');
+/** The same page and the same settings on it (a step's `go` may only change a filter). */
+const sameAddress = (a: string, b: string) => {
+  const [x, y] = [parseHash(a), parseHash(b)];
+  return samePlace(a, b) && Object.entries(y.params).every(([k, v]) => x.params[k] === v);
+};
+
+/** The one tour playing. */
+const now: { tour?: Tour } = {};
+
+export const tourPlaying = (): boolean => !!now.tour;
+
+/** Waits until `el` stays put on the screen for a few frames (a scroll has finished), at most `max` ms. */
+async function settled(el: HTMLElement, max = 4000): Promise<void> {
+  const end = performance.now() + max;
+  let last = '';
+  for (let still = 0; still < 4 && performance.now() < end;) {
+    await new Promise((r) => requestAnimationFrame(r));
+    const r = el.getBoundingClientRect();
+    const at = `${Math.round(r.x)},${Math.round(r.y)}`;
+    still = at === last ? still + 1 : 0;
+    last = at;
+  }
+}
+
+export class Tour {
+  private flat: { chapter: Chapter; step: TourStep; n: number }[];
+  private i = -1;
+  /** Bumped by every move, so a step still running knows it was left. */
+  private token = 0;
+  private paused = false;
+  private still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  private sprites?: Map<string, Sprite>;
+  private hosts = new Map<HostId, Actor>();
+  private props: Actor[] = [];
+  /** Menus and overlays the tour opened, by their handle's key (tourOpen.ts). */
+  private opened = new Map<unknown, Opened>();
+  /** Where the keyboard goes back once a menu that kept it for a press is done with (focusBack). */
+  private focusLater?: HTMLElement;
+  /** Steps whose page act was asked for (once a tour), and the chapters they were in. */
+  private acted = new Set<string>();
+  private actedIn = new Set<Chapter>();
+  /** What the chapter shown changed and puts back when it is left (steps.ts Keep). */
+  private kept?: { chapter: Chapter; storage: [string, string | null][]; selected?: string; params: Record<string, string | undefined> };
+  /** A page's overlay making the rest of the page inert doesn't take the tour's own bar and layer. */
+  private uninert = new MutationObserver((list) => {
+    for (const m of list) if ((m.target as HTMLElement).inert) (m.target as HTMLElement).inert = false;
+  });
+  private pressed?: HTMLElement;
+  private chapterShown?: Chapter;
+  private navigating = false;
+  /** Where the visitor was, and whether the tour moved them within that page (a tour of it takes them back). */
+  private startHash = location.hash;
+  private moved = false;
+  private returnFocus = document.activeElement as HTMLElement | null;
+  private sound = new TourSound();
+  private hold?: { left: number; t0: number; timer: number; done: () => void };
+
+  private layer = h('div', { class: 'tour-layer', 'aria-hidden': 'true' });
+  private ring = h('div', { class: 'tour-ring', hidden: true }, h('div', { class: 'tour-arrow' }));
+  private bubble = h('div', { class: 'tour-bubble', hidden: true });
+  private caption = h('p', { class: 'tour-caption', 'aria-live': 'polite' });
+  private count = h('span', { class: 'tour-count' });
+  private backBtn = h('button', { type: 'button', class: 'tour-back', onclick: () => this.go(this.i - 1) }, '◀ Back');
+  private pauseBtn = h('button', { type: 'button', class: 'tour-pause', onclick: () => this.setPaused(!this.paused) }, 'Pause');
+  private nextBtn = h('button', { type: 'button', class: 'tour-next', onclick: () => this.go(this.i + 1) }, 'Next ▶');
+  private soundBtn = h('button', { type: 'button', class: 'tour-sound', 'aria-pressed': 'true', onclick: () => this.toggleSound() }, 'Sound');
+  private closeBtn = h('button', { type: 'button', class: 'tour-close', onclick: () => this.end() }, 'Close tour');
+  private bar = h(
+    'section',
+    { class: 'tour-bar', 'aria-label': 'Guided tour', tabindex: '-1' },
+    h('div', { class: 'tour-words' }, this.count, this.caption),
+    h('div', { class: 'tour-controls' }, this.backBtn, this.pauseBtn, this.nextBtn, this.soundBtn, this.closeBtn),
+  );
+  private card?: HTMLElement;
+  /** Which showing of the ring is current (an older one's watcher stops). */
+  private ringGen = 0;
+  /** Recording the tab, a video a chapter (Record the whole tour), when the visitor agreed to share it. */
+  private recorder?: TourRecorder;
+  private barSize = new ResizeObserver(() => document.documentElement.style.setProperty('--tour-bar-h', `${this.bar.offsetHeight}px`));
+
+  constructor(
+    private chapters: Chapter[],
+    private opts: TourOptions = {},
+  ) {
+    this.flat = chapters.flatMap((chapter) => chapter.steps.map((step, n) => ({ chapter, step, n })));
+  }
+
+  /** Starts from a click (the sound may start), or from the address (recording mode asks for a click first). */
+  async start(): Promise<void> {
+    now.tour?.end();
+    now.tour = this;
+    document.documentElement.classList.toggle('tour-recording', !!this.opts.record);
+    // the game previews hold still and quiet: the guides do the talking, and start one when they show it
+    hushDemos(true);
+    document.documentElement.classList.add('tour-on');
+    tourDemo('stop');
+    this.layer.append(this.ring, this.bubble);
+    document.body.append(this.layer, this.bar);
+    // the bar's height for a page that keeps its bottom clear of it (the DOS page's footer: tour.css)
+    this.barSize.observe(this.bar);
+    announce('start');
+    this.showSound();
+    // on the window, ahead of the overlays the tour opens (they take every key once they are up)
+    window.addEventListener('keydown', this.onKey, true);
+    for (const el of [this.layer, this.bar]) this.uninert.observe(el, { attributes: true, attributeFilter: ['inert'] });
+    window.addEventListener('hashchange', this.onHash);
+    window.addEventListener('resize', this.onResize);
+    this.sprites = await loadSprites();
+    // carried on from another page: the browser may let the sound start without a click (a
+    // recording still asks for one, to share the new page)
+    if (this.opts.cont) await this.sound.startNow();
+    if (this.opts.record) {
+      // a click on Start lets the music play and the tab be recorded (asked again on each page,
+      // since a recording can't carry over a page load); the pointer is hidden from then on
+      if (!(await this.titleCard('A guided tour', 'Game-Maker: Sandbox Edition', true))) return;
+      this.recorder = await TourRecorder.ask();
+      if (now.tour !== this) return void this.recorder?.finish();
+    }
+    this.sound.start();
+    (this.opts.record ? this.bar : this.pauseBtn).focus();
+    this.go(0);
+  }
+
+  // ---- moving through the steps ------------------------------------------------------------
+
+  private go(i: number): void {
+    if (now.tour !== this) return;
+    if (i >= this.flat.length) return void this.finale();
+    i = Math.max(0, i);
+    const token = ++this.token;
+    this.cancelHold();
+    this.i = i;
+    void this.run(token).catch((e: unknown) => console.warn('Tour step failed:', e));
+  }
+
+  private live = (token: number) => token === this.token && now.tour === this;
+
+  private async run(token: number): Promise<void> {
+    // out of the click on Next first: its trip up to the document would close a menu opened here
+    await sleep(0);
+    if (!this.live(token)) return;
+    const { chapter, step, n } = this.flat[this.i];
+    this.backBtn.disabled = this.i === 0;
+    this.nextBtn.textContent = this.i === this.flat.length - 1 ? 'Finish' : 'Next ▶';
+    this.count.textContent = `${chapter.title} · ${n + 1} of ${chapter.steps.length}`;
+    this.unpress();
+    this.ring.hidden = true;
+    this.bubble.hidden = true;
+    // a new chapter: its page, its music, and (recording, or more than one chapter) its title card
+    if (chapter !== this.chapterShown) {
+      // what the last chapter changed goes back while its page is still here
+      await this.leaveChapter();
+      if (!this.live(token)) return;
+      this.chapterShown = chapter;
+      this.clearHosts();
+      if ((chapter.file === 'dos.html') !== onDosPage()) return this.handOff(chapter);
+      const elsewhere = pageHere() !== chapter.page;
+      if (elsewhere || (chapter.always && !samePlace(location.hash, chapter.hash))) {
+        this.navigating = true;
+        if (!elsewhere) this.moved = true;
+        location.hash = chapter.hash;
+        await sleep(50);
+        this.navigating = false;
+      }
+      this.sound.music(chapter.music);
+      // each chapter its own video, numbered in the whole tour's order
+      await this.recorder?.chapter(CHAPTERS.indexOf(chapter) + 1, chapter.id);
+      if (!this.live(token)) return;
+      if (this.opts.record || this.chapters.length > 1 || this.opts.cont) {
+        this.bubble.hidden = true;
+        await this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition', false, [...new Set([chapter.speaker, chapter.actor])]);
+        if (!this.live(token)) return;
+      }
+      await waitFor(chapter.ready);
+      if (!this.live(token)) return;
+      this.keepFor(chapter);
+    }
+    // the address this step is shown at, on the chapter's page (the editor's palette after its map)
+    const at = this.addressOf(this.i);
+    if (at && !sameAddress(location.hash, at.hash)) {
+      this.bubble.hidden = true;
+      this.navigating = true;
+      this.moved = true;
+      location.hash = at.hash;
+      // the page redraws for its new address before the old controls can be mistaken for the new
+      await sleep(250);
+      this.navigating = false;
+      await waitFor(at.ready);
+      if (!this.live(token)) return;
+    }
+    // the control: shown from its menu or overlay if it is in one, others the tour opened closed
+    const need = this.handleFor(step);
+    for (const [k, m] of this.opened) if (k !== need?.key) (this.closeKeepingFocus(m), this.opened.delete(k));
+    let target = step.target ? findTarget(step.target) : undefined;
+    this.focusBack();
+    if (need && step.target && (!target || !need.isOpen())) {
+      await this.openKeepingFocus(need, step.action === 'press' && !!step.click);
+      if (!this.live(token)) return;
+      // a menu opens at once; a panel may load first
+      for (let t = 0; t < 3000 && !(target = findTarget(step.target)); t += 100) {
+        await sleep(100);
+        if (!this.live(token)) return;
+      }
+    }
+    if (step.target && !target) {
+      console.warn(`Tour: nothing on the page for ${step.id} (${cssList(step.target.css).join(', ')})`);
+      this.bar.dataset.missing = step.id;
+      if (step.optional) return this.go(this.i + 1);
+    }
+    if (target) await this.bringIntoView(target);
+    if (!this.live(token)) return;
+    this.caption.textContent = captionOf(chapter, step);
+    const voice = this.sound.speak(voiceUrl(chapter, step));
+    await this.act(chapter, step, target, token);
+    if (!this.live(token)) return;
+    const said = await voice;
+    if (!this.live(token)) return;
+    await this.wait(Math.max(stepMs(step), said));
+    if (!this.live(token)) return;
+    if (step.action === 'exit') await this.exitAll();
+    if (this.live(token)) this.go(this.i + 1);
+  }
+
+  /** What a step's control is in: a menu its target reveals, or an overlay it is `in`. */
+  private handleFor(step: TourStep): Opened | undefined {
+    const t = step.target;
+    if (t?.in) return this.opened.get(t.in) ?? overlayHandle(t.in, (el) => el.click());
+    const button = t?.reveal ? revealer(t) : undefined;
+    return button
+      ? (this.opened.get(button) ??
+          menuHandle(
+            button,
+            (el) => el.click(),
+            () => findTarget(t!),
+          ))
+      : undefined;
+  }
+
+  /**
+   * Opens a menu or overlay and keeps it until the tour moves past it. The keyboard stays on the
+   * tour's bar (an overlay moves it into itself), and a page's modal dialog, which the browser
+   * puts above everything, gets the tour's layer and bar put above it in turn.
+   */
+  private async openKeepingFocus(m: Opened, later = false): Promise<void> {
+    this.opened.set(m.key, m);
+    const had = document.activeElement as HTMLElement | null;
+    await m.open();
+    if (now.tour !== this) return m.close();
+    const back = had && this.bar.contains(had) ? had : this.opts.record ? this.bar : undefined;
+    // a menu that shuts when the keyboard leaves it (the modem's speeds) keeps it until its item is pressed
+    if (later) this.focusLater = back;
+    else if (back) (back.focus({ preventScroll: true }), this.holdFocus(back));
+    if (document.querySelector('dialog:modal')) this.raise();
+  }
+
+  /** The keyboard back on the tour's bar, if a menu kept it for a press. */
+  private focusBack(): void {
+    const el = this.focusLater;
+    this.focusLater = undefined;
+    if (el?.isConnected && now.tour === this) el.focus({ preventScroll: true });
+  }
+
+  /** Shuts a menu or overlay; one that hands the keyboard back to what opened it leaves it on the tour's bar. */
+  private closeKeepingFocus(m: Opened): void {
+    const had = document.activeElement as HTMLElement | null;
+    m.close();
+    if (had && this.bar.contains(had) && had.isConnected && document.activeElement !== had) had.focus({ preventScroll: true });
+  }
+
+  /** The layer and the bar in the browser's top layer, above a modal dialog just opened. */
+  private raise(): void {
+    for (const el of [this.layer, this.bar]) {
+      el.popover = 'manual';
+      if (el.matches(':popover-open')) el.hidePopover();
+      el.showPopover();
+    }
+  }
+
+  // ---- what a chapter changes, put back --------------------------------------------------------
+
+  /** Notes what the chapter will change (steps.ts Keep), as it starts. */
+  private keepFor(chapter: Chapter): void {
+    const k = chapter.keep;
+    if (!k) return void (this.kept = undefined);
+    const { params } = parseHash(location.hash);
+    this.kept = {
+      chapter,
+      storage: (k.storage ?? []).map((key) => [key, stored(key)]),
+      selected: k.selected ? document.querySelector(k.selected)?.id || undefined : undefined,
+      params: Object.fromEntries((k.params ?? []).map((p) => [p, params[p]])),
+    };
+  }
+
+  /**
+   * The chapter shown is left: menus and overlays it opened shut, its page tidied up (its leave
+   * act, once it did something there), and what it changed put back.
+   */
+  private async leaveChapter(): Promise<void> {
+    for (const m of this.opened.values()) this.closeKeepingFocus(m);
+    this.opened.clear();
+    const chapter = this.chapterShown;
+    if (chapter?.leave && this.actedIn.delete(chapter)) pageAct({ do: chapter.leave });
+    const kept = this.kept;
+    this.kept = undefined;
+    if (!kept || kept.chapter !== chapter) return;
+    const was = kept.selected ? document.getElementById(kept.selected) : null;
+    if (was && was.getAttribute('aria-selected') !== 'true') {
+      was.click();
+      // the page redraws for it before its settings are put back over what the click remembered
+      await sleep(50);
+    }
+    for (const [key, value] of kept.storage)
+      try {
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
+      } catch {
+        /* no storage: nothing was kept either */
+      }
+    if (Object.keys(kept.params).length && pageOf(location.hash) === chapter.page) setHashParams(kept.params);
+  }
+
+  /** The address step `i` is shown at: the last `go` up to it in its chapter, else the chapter's own when it insists. */
+  private addressOf(i: number): { hash: string; ready: string } | undefined {
+    const { chapter, n } = this.flat[i];
+    for (let k = n; k >= 0; k--) {
+      const go = chapter.steps[k].go;
+      if (go) return go;
+    }
+    return chapter.always ? { hash: chapter.hash, ready: chapter.ready } : undefined;
+  }
+
+  /** Scrolls the control onto the screen, above the bar, when it isn't. */
+  private async bringIntoView(el: HTMLElement): Promise<void> {
+    const r = rectOf(el);
+    const bottom = innerHeight - this.floor();
+    const across = r.x >= 0 && r.x + Math.min(r.w, 200) <= this.view().w;
+    if (across && r.y >= 0 && r.y + Math.min(r.h, 200) <= bottom) return;
+    // centered in what the bar leaves of the window (a phone's bar is tall)
+    const margin = el.style.scrollMarginBottom;
+    el.style.scrollMarginBottom = `${this.floor()}px`;
+    el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: this.still ? 'auto' : 'smooth' });
+    el.style.scrollMarginBottom = margin;
+    // a long smooth scroll outlasts any fixed wait: the hosts aim only once the control stops moving
+    await settled(el);
+  }
+
+  // ---- the hosts ---------------------------------------------------------------------------
+
+  private floor(): number {
+    return this.bar.getBoundingClientRect().height;
+  }
+
+  private view = () => ({ w: document.documentElement.clientWidth, h: innerHeight });
+
+  /** A host, on the layer (off the screen's edge until it walks on). */
+  private host(id: HostId): Actor | undefined {
+    let a = this.hosts.get(id);
+    if (!a) {
+      const sprite = this.sprites?.get(id);
+      if (!sprite) return undefined;
+      a = new Actor(sprite, this.scaleFor(HOSTS[id].scale), false);
+      a.place(offStage(a.size, this.view(), this.floor(), false));
+      this.layer.append(a.el);
+      this.hosts.set(id, a);
+    }
+    return a;
+  }
+
+  /** Smaller sprites on a phone. */
+  private scaleFor(scale: number): number {
+    return this.view().w < 600 ? Math.max(2, scale - 1) : scale;
+  }
+
+  /** Where the one talking waits: the bottom corner away from the control. */
+  private homeSpot(a: Actor, avoid: Rect | undefined, slot: number): Point {
+    const v = this.view();
+    const right = !!avoid && avoid.x + avoid.w / 2 < v.w / 2 && avoid.y + avoid.h > v.h / 2;
+    const x = 16 + slot * (a.size.w + 12);
+    return { x: right ? v.w - x - a.size.w : x, y: v.h - this.floor() - a.size.h - 8 };
+  }
+
+  private async act(chapter: Chapter, step: TourStep, target: HTMLElement | undefined, token: number): Promise<void> {
+    const actorId = step.actor ?? chapter.actor;
+    const speakerId = step.speaker ?? chapter.speaker;
+    const actor = this.host(actorId);
+    const speaker = this.host(speakerId);
+    const v = this.view();
+    const floor = this.floor();
+    const box = target ? rectOf(target) : undefined;
+    this.bubble.hidden = true;
+    const slot = (id: HostId) => (id === chapter.speaker ? 0 : 1);
+    const moves: Promise<void>[] = [];
+    // the one talking waits in the corner away from the control (walking on the first time)
+    if (speaker && speaker !== actor) moves.push(speaker.walk(this.homeSpot(speaker, box, slot(speakerId)), this.still));
+    if (actor) {
+      const at = step.action === 'enter' || step.action === 'say' || step.action === 'exit' || !box;
+      const to = at ? this.homeSpot(actor, box, slot(actorId)) : standBy(box, actor.size, v, floor, step.action === 'press');
+      moves.push(actor.walk(to, this.still));
+    }
+    if (step.prop) void this.runProp(step, box);
+    await Promise.all(moves);
+    if (!this.live(token)) return;
+    if (actor && box) actor.face(box.x + box.w / 2 < actor.pos.x + actor.size.w / 2);
+    if (target && (step.action === 'point' || step.action === 'press' || step.action === 'walk')) this.showRing(target, actor);
+    if (step.action === 'press' && target) {
+      await actor?.hop(this.still);
+      this.sound.effect(step.sound);
+      this.pressed = target;
+      target.classList.add('tour-pressed');
+      if (step.click === true || (step.click && target.matches(step.click))) this.clickKeepingFocus(target);
+      // the pressed item shows a moment in its menu before the keyboard comes back (which may shut it)
+      if (this.focusLater) setTimeout(() => this.live(token) && this.focusBack(), 1500);
+      if (step.opens) {
+        await this.openKeepingFocus(overlayHandle(step.opens, (el) => el.click()));
+        if (!this.live(token)) return;
+      }
+    } else this.sound.effect(step.sound);
+    if (step.act && !this.acted.has(step.id)) {
+      this.acted.add(step.id);
+      this.actedIn.add(chapter);
+      pageAct(step.act);
+    }
+    if (step.demo) tourDemo(step.demo);
+    if (!this.live(token)) return;
+    if (step.action === 'enter' && actor) void actor.hop(this.still);
+    this.say(step, speaker, box);
+  }
+
+  private say(step: TourStep, speaker: Actor | undefined, avoid: Rect | undefined): void {
+    this.bubble.textContent = step.say;
+    this.bubble.hidden = false;
+    const v = this.view();
+    const width = Math.min(320, v.w - 32);
+    this.bubble.style.width = `${width}px`;
+    const size = { w: width, h: this.bubble.getBoundingClientRect().height };
+    const anchor = speaker ? { ...speaker.pos, ...speaker.size } : { x: v.w / 2, y: v.h / 2, w: 0, h: 0 };
+    const p = placeBubble(anchor, size, v, this.floor(), avoid);
+    this.bubble.dataset.side = p.side;
+    this.bubble.style.left = `${Math.round(p.x)}px`;
+    this.bubble.style.top = `${Math.round(p.y)}px`;
+    this.bubble.style.setProperty('--tail', `${Math.round(p.tail)}px`);
+  }
+
+  /** The ring around the control, and the arrow on the side the host stands. */
+  private showRing(target: HTMLElement, by: Actor | undefined): void {
+    const r = rectOf(target);
+    Object.assign(this.ring.style, { left: `${r.x - 4}px`, top: `${r.y - 4}px`, width: `${r.w + 8}px`, height: `${r.h + 8}px` });
+    let side = 'below';
+    if (by) {
+      const cx = by.pos.x + by.size.w / 2;
+      const cy = by.pos.y + by.size.h / 2;
+      if (cy > r.y + r.h) side = 'below';
+      else if (cy < r.y) side = 'above';
+      else side = cx < r.x ? 'left' : 'right';
+    }
+    this.ring.dataset.side = side;
+    this.ring.hidden = false;
+    this.followRing(target);
+  }
+
+  /**
+   * Keeps the ring on its control while it shows: it moves with it (a page that shifts), and
+   * goes when the control does (a pressed Next that turned the page).
+   */
+  private followRing(target: HTMLElement): void {
+    const ring = this.ring;
+    const was = rectOf(target);
+    const gen = ++this.ringGen;
+    const look = () => {
+      if (gen !== this.ringGen || ring.hidden || now.tour !== this) return;
+      if (!target.isConnected || !visible(target) || this.covered(target)) {
+        // gone, or covered by what its press opened (a manual over its button): ring and press go
+        ring.hidden = true;
+        target.classList.remove('tour-pressed');
+        return;
+      }
+      const r = rectOf(target);
+      if (Math.abs(r.x - was.x) > 1 || Math.abs(r.y - was.y) > 1 || Math.abs(r.w - was.w) > 1 || Math.abs(r.h - was.h) > 1) {
+        Object.assign(was, r);
+        Object.assign(ring.style, { left: `${r.x - 4}px`, top: `${r.y - 4}px`, width: `${r.w + 8}px`, height: `${r.h + 8}px` });
+      }
+      requestAnimationFrame(look);
+    };
+    requestAnimationFrame(look);
+  }
+
+  /** Something of the page's own lies over the middle of the control (an overlay its press opened). */
+  private covered(target: HTMLElement): boolean {
+    const r = target.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) return false;
+    const top = document.elementFromPoint(x, y);
+    return !!top && !target.contains(top) && !top.contains(target) && !this.bar.contains(top) && !this.layer.contains(top) && !this.card?.contains(top);
+  }
+
+  private onResize = () => {
+    const { step } = this.flat[this.i] ?? {};
+    const t = step?.target && findTarget(step.target);
+    if (t && !this.ring.hidden) this.showRing(t, this.hosts.get(step.actor ?? this.flat[this.i].chapter.actor));
+  };
+
+  /** Something from the game wanders through: a chicken across the floor, a hat dropped by the control. */
+  private async runProp(step: TourStep, box: Rect | undefined): Promise<void> {
+    const cue = step.prop!;
+    const sprite = this.sprites?.get(cue.id);
+    if (!sprite) return;
+    const a = new Actor(sprite, this.scaleFor(PROPS[cue.id].scale), !sprite.sprite.walk);
+    this.props.push(a);
+    this.layer.append(a.el);
+    const v = this.view();
+    const floor = this.floor();
+    if (cue.run === 'across') {
+      a.place(offStage(a.size, v, floor, false));
+      await a.walk({ x: v.w + 8, y: a.pos.y }, false);
+    } else {
+      const spot = box ? standBy(box, a.size, v, floor) : { x: v.w / 2, y: v.h / 2 };
+      a.place({ x: spot.x, y: -a.size.h });
+      await a.walk(spot, this.still);
+      await sleep(2500);
+    }
+    a.dispose();
+  }
+
+  private clearHosts(): void {
+    for (const a of [...this.hosts.values(), ...this.props]) a.dispose();
+    this.hosts.clear();
+    this.props = [];
+  }
+
+  private async exitAll(): Promise<void> {
+    this.bubble.hidden = true;
+    this.ring.hidden = true;
+    const v = this.view();
+    await Promise.all([...this.hosts.values()].map((a) => a.walk(offStage(a.size, v, this.floor(), a.pos.x > v.w / 2), this.still)));
+  }
+
+  // ---- the page's own controls --------------------------------------------------------------
+
+  /** Clicks a control (a menu button, Another) and keeps the keyboard on the tour's bar. */
+  private clickKeepingFocus(el: HTMLElement): void {
+    const had = document.activeElement as HTMLElement | null;
+    el.click();
+    const back = had && this.bar.contains(had) ? had : this.opts.record ? this.bar : undefined;
+    back?.focus();
+    if (back) this.holdFocus(back);
+  }
+
+  /**
+   * For a few seconds after the tour presses something, what it set going (the desk's PC
+   * booting) doesn't take the keyboard from the tour's bar; a click or key of the visitor's own
+   * lets it go at once.
+   */
+  private holdFocus(el: HTMLElement): void {
+    const onIn = (e: FocusEvent) => {
+      if (now.tour !== this || !el.isConnected) return off();
+      if (!this.bar.contains(e.target as Node)) el.focus({ preventScroll: true });
+    };
+    const off = () => {
+      document.removeEventListener('focusin', onIn, true);
+      window.removeEventListener('pointerdown', off, true);
+      clearTimeout(timer);
+    };
+    document.addEventListener('focusin', onIn, true);
+    window.addEventListener('pointerdown', off, true);
+    const timer = window.setTimeout(off, 4000);
+  }
+
+  private unpress(): void {
+    this.pressed?.classList.remove('tour-pressed');
+    this.pressed = undefined;
+  }
+
+  // ---- timing, pause, sound and keys ---------------------------------------------------------
+
+  private wait(ms: number): Promise<void> {
+    return new Promise((done) => {
+      this.hold = { left: ms, t0: performance.now(), timer: 0, done };
+      if (!this.paused) this.hold.timer = window.setTimeout(done, ms);
+    });
+  }
+
+  private cancelHold(): void {
+    if (this.hold) clearTimeout(this.hold.timer);
+    this.hold = undefined;
+  }
+
+  private setPaused(paused: boolean): void {
+    this.paused = paused;
+    this.pauseBtn.textContent = paused ? 'Play' : 'Pause';
+    this.pauseBtn.setAttribute('aria-label', paused ? 'Play the tour' : 'Pause the tour');
+    this.sound.pause(paused);
+    const hold = this.hold;
+    if (!hold) return;
+    if (paused) {
+      clearTimeout(hold.timer);
+      hold.left -= performance.now() - hold.t0;
+    } else {
+      hold.t0 = performance.now();
+      hold.timer = window.setTimeout(hold.done, Math.max(400, hold.left));
+    }
+  }
+
+  private toggleSound(): void {
+    this.sound.set(!this.sound.on);
+    if (this.sound.on) this.sound.music(this.chapterShown?.music);
+    this.showSound();
+  }
+
+  private showSound(): void {
+    this.soundBtn.setAttribute('aria-pressed', String(this.sound.on));
+    this.soundBtn.textContent = this.sound.on ? '🔊 Sound' : '🔇 Sound';
+    this.soundBtn.setAttribute('aria-label', this.sound.on ? 'Sound on (press to mute)' : 'Sound off (press to turn on)');
+  }
+
+  private onKey = (e: KeyboardEvent) => {
+    // a dialog of the page's own takes its own keys (not one the tour opened to show it)
+    if (this.card?.querySelector('button') || this.pageDialog()) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      this.end();
+      return;
+    }
+    // recording mode has no buttons: the keys drive it
+    if (!this.opts.record && !this.bar.contains(document.activeElement)) return;
+    const typing = (e.target as HTMLElement).closest?.('input, textarea, select');
+    if (typing) return;
+    if (e.key === 'ArrowRight') this.go(this.i + 1);
+    else if (e.key === 'ArrowLeft') this.go(this.i - 1);
+    else if (this.opts.record && e.key === ' ') this.setPaused(!this.paused);
+    else if (this.opts.record && e.key.toLowerCase() === 'm') this.toggleSound();
+    else return;
+    e.preventDefault();
+    // the tour's key, not the overlay's under it too (the box viewer would turn the box)
+    e.stopImmediatePropagation();
+  };
+
+  /** A dialog the visitor opened on the page (not one the tour opened to show what is in it). */
+  private pageDialog(): boolean {
+    const ours = [...this.opened.values()].map((m) => m.shows()).filter((x): x is HTMLElement => !!x);
+    return [...document.querySelectorAll<HTMLElement>('dialog[open], [role="dialog"]:not(.tour-card)')].some(
+      (d) => visible(d) && !ours.some((o) => o === d || o.contains(d) || d.contains(o)),
+    );
+  }
+
+  /** Leaving the page (a link the visitor followed) ends the tour. */
+  private onHash = () => {
+    const chapter = this.flat[this.i]?.chapter;
+    if (!this.navigating && chapter && pageHere() !== chapter.page) this.end();
+  };
+
+  // ---- another page -------------------------------------------------------------------------
+
+  /**
+   * The tour goes on on another page (the DOS page, or back to index.html from it): its title
+   * card comes up here and again there, and the address there names the chapters left, with
+   * &cont so it carries on without a Start card when the browser lets its sound start.
+   */
+  /** After the last step: the whole tour (or a recording) says it is over before it ends. */
+  private async finale(): Promise<void> {
+    const token = ++this.token;
+    if (this.chapters.length > 1 || this.opts.record || this.opts.cont) {
+      this.clearHosts();
+      this.bubble.hidden = this.ring.hidden = true;
+      this.sound.music(undefined);
+      await this.titleCard('That’s the whole tour!', 'Thanks for watching · Game-Maker: Sandbox Edition', false, ['teddy', 'gwinn'], 5000);
+      if (!this.live(token)) return;
+    }
+    await this.recorder?.finish();
+    this.recorder = undefined;
+    this.end();
+  }
+
+  private async handOff(chapter: Chapter): Promise<void> {
+    const rest = this.chapters.slice(this.chapters.indexOf(chapter)).map((c) => c.id);
+    const params = `tour=${rest.join(',')}${this.opts.record ? '&record' : ''}&cont`;
+    const url = chapter.file ? `./${chapter.file}?${params}` : `./${chapter.hash}${chapter.hash.includes('?') ? '&' : '?'}${params}`;
+    this.cancelHold();
+    this.sound.dispose();
+    this.bubble.hidden = this.ring.hidden = true;
+    void this.titleCard(chapter.title, 'Game-Maker: Sandbox Edition', false, [...new Set([chapter.speaker, chapter.actor])]);
+    // this page's last chapter saved (a recording ends with its page), then a moment for the card
+    await this.recorder?.finish();
+    this.recorder = undefined;
+    setTimeout(() => location.assign(url), 300);
+  }
+
+  // ---- title cards and the end ---------------------------------------------------------------
+
+  /** A chapter's title card for a moment; with `ask`, a Start button that waits for a click (false: closed). */
+  private titleCard(title: string, sub: string, ask = false, who: HostId[] = ['teddy', 'gwinn'], ms = 2600): Promise<boolean> {
+    const hosts = who.map((id) => {
+      const s = this.sprites?.get(id);
+      return s ? new Actor(s, HOSTS[id].scale + 1, false) : undefined;
+    });
+    const start = ask ? h('button', { type: 'button', class: 'primary tour-start' }, '▶ Start') : undefined;
+    const card = h(
+      'div',
+      { class: 'tour-card', role: ask ? 'dialog' : undefined, 'aria-label': ask ? title : undefined },
+      h('div', { class: 'tour-card-hosts' }, ...hosts.map((a) => a?.el)),
+      h('p', { class: 'tour-card-sub' }, sub),
+      h('h2', { class: 'tour-card-title' }, title),
+      start,
+    );
+    this.card = card;
+    document.body.append(card);
+    this.caption.textContent = ask ? '' : title;
+    const done = (ok: boolean) => {
+      for (const a of hosts) a?.dispose();
+      card.remove();
+      if (this.card === card) this.card = undefined;
+      return ok;
+    };
+    if (start) {
+      start.focus();
+      return new Promise((resolve) => {
+        start.addEventListener('click', () => resolve(done(now.tour === this)));
+        card.addEventListener('keydown', (e) => e.key === 'Escape' && (this.end(), resolve(done(false))));
+      });
+    }
+    return sleep(ms).then(() => done(now.tour === this));
+  }
+
+  /** Ends the tour: everything taken away, menus it opened shut, the keyboard back where it was. */
+  end(): void {
+    if (now.tour !== this) return;
+    now.tour = undefined;
+    this.token++;
+    this.cancelHold();
+    this.unpress();
+    void this.leaveChapter();
+    this.clearHosts();
+    this.sound.dispose();
+    // closed early: what was recorded so far is still saved
+    void this.recorder?.finish();
+    this.recorder = undefined;
+    hushDemos(false);
+    document.documentElement.classList.remove('tour-on');
+    this.card?.remove();
+    this.layer.remove();
+    this.bar.remove();
+    this.barSize.disconnect();
+    document.documentElement.style.removeProperty('--tour-bar-h');
+    document.documentElement.classList.remove('tour-recording');
+    announce('end');
+    window.removeEventListener('keydown', this.onKey, true);
+    this.uninert.disconnect();
+    window.removeEventListener('hashchange', this.onHash);
+    window.removeEventListener('resize', this.onResize);
+    // a tour of just this page goes back to what the visitor had open on it (their own game, not the one shown)
+    const page = pageOf(this.startHash);
+    if (this.moved && this.chapters.every((c) => c.page === page) && pageOf(location.hash) === page && location.hash !== this.startHash)
+      location.hash = this.startHash;
+    const back = this.returnFocus;
+    if (back && back !== document.body && back.isConnected && visible(back)) back.focus();
+    else document.querySelector<HTMLElement>('.tour-btn')?.focus();
+    this.opts.onEnd?.();
+  }
+}

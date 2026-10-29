@@ -29,6 +29,7 @@ import { showGmBox } from './deskGmBox';
 import { pointOut } from './deskLook';
 import { restoreDesk } from './deskRestore';
 import { wallTrophies } from './wallTrophies';
+import { deskTour } from './deskTour';
 
 // What is opened or read on the desk loads when it first is: the manuals and the catalog (the
 // boxes' insides, deskGmBox.ts and deskShelf.ts).
@@ -335,6 +336,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     void refreshDisks();
   });
   const unWall = wallTrophies(desk);
+  // the guided tour's BBS chapter calls the board on this PC, and puts everything back after
+  const unTour = deskTour(desk, pc);
   drawBoxTiles(boxTiles);
   return () => {
     window.removeEventListener('keydown', onKey);
@@ -345,6 +348,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     shelf.dispose();
     unCatalog();
     unWall();
+    unTour();
     pc.dispose();
   };
 }

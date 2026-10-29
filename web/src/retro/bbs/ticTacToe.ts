@@ -167,7 +167,8 @@ export function rematch(s: DoorState, rand: () => number = Math.random): DoorSta
   return { ...s, news: false, game: newGame(s.game.first === 'X' ? 'O' : 'X', rand) };
 }
 
-const KEY = 'gm-bbs-door-tictactoe';
+/** Where the door game is kept (the guided tour's call puts it back as it found it). */
+export const DOOR_KEY = 'gm-bbs-door-tictactoe';
 
 const count = (v: unknown) => (typeof v === 'number' && Number.isInteger(v) && v >= 0 ? v : 0);
 
@@ -205,7 +206,7 @@ export function parseState(raw: string | null): DoorState | undefined {
 /** The saved game for this visitor (storage blocked or empty: a fresh one). */
 export function loadState(): DoorState {
   try {
-    return parseState(localStorage.getItem(KEY)) ?? newState();
+    return parseState(localStorage.getItem(DOOR_KEY)) ?? newState();
   } catch {
     return newState();
   }
@@ -213,7 +214,7 @@ export function loadState(): DoorState {
 
 export function saveState(s: DoorState): void {
   try {
-    localStorage.setItem(KEY, JSON.stringify(s));
+    localStorage.setItem(DOOR_KEY, JSON.stringify(s));
   } catch {
     // storage blocked: this visit only
   }

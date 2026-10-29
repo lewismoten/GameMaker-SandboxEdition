@@ -188,7 +188,7 @@ describe('sorting the Library', () => {
   });
 
   it('puts the numbered issues first, in issue order, then the rest as listed', () => {
-    const scoop = (owner: string, no: number): ShelfItem => ({ ...item(owner, 'newsletter', 'newsletter'), issue: { no, line: `No. ${no}` } });
+    const scoop = (owner: string, no: number): ShelfItem => ({ ...item(owner, 'newsletter', 'newsletter'), issue: { no } });
     const papers = [scoop('a', 3), item('a', 'own1', 'newsletter'), scoop('b', 1), scoop('c', 2)];
     expect(groupShelf(papers, 'type')[0].parts[0].items.map((i) => i.key)).toEqual(['b:newsletter', 'c:newsletter', 'a:newsletter', 'a:own1']);
   });

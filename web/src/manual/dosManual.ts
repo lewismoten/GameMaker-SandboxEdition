@@ -34,7 +34,8 @@ export async function dosManualPages(): Promise<BookPage[]> {
 export async function openDosManual(start?: string, more: Pick<BoxOptions, 'chapter' | 'address'> = {}): Promise<void> {
   const [shots, { openBox }, { gmBoxItems }] = await Promise.all([galleryShots(), import('./printables/viewer'), import('./printables/gmItems')]);
   const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
-  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb', start, ...more });
+  const epub = { file: 'game-maker-owners-guide.epub', make: () => import('./epub/ownersBook').then((m) => m.ownersBook()) };
+  return openBox('Game-Maker SE 3.0', bookPages(pages(shots)), gmBoxItems(family), { binding: 'comb', start, epub, ...more });
 }
 
 /**

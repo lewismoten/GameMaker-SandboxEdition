@@ -50,5 +50,6 @@ export function ultimateItem(): BoxItem {
     icon: '📒',
     pages: async () => (await import('./ultimateGuide')).ultimatePages(),
     render: async () => [sheet(5.5, 8.5, 'ug-thumb', ultimateCover())],
+    epub: { file: 'ultimate-owners-guide.epub', make: () => import('../epub/ultimateBook').then((m) => m.ultimateBook()) },
   };
 }

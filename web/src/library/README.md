@@ -12,10 +12,13 @@ line. Level Maps cards show the first level's picture (`levelMaps` `preview`); e
 Scoop shows its issue number and date and sorts by it; each game's walkthrough is a card
 (`walkShelf.ts`) with its length (M:SS, or H:MM:SS from an hour up) over its title screen, shortest first by type,
 played in the walkthrough player. Videos about the site (`videos.ts`, plain data: one entry a
-video, with its description and chapters) show their length over a picture kept in `web/public/videos/`,
+video, with its description and chapters) and each game's walkthrough video on YouTube (`videosWalk.ts`,
+shelved under its game; one marked `stale`, of an older version of its game, stays hidden until its
+new id is put in; a secret game's is `web/public/videos/walk-<idHash>.json`, fetched only once the
+game is revealed) show their length over a picture kept in `web/public/videos/`,
 and open in `videoDialog.ts`: nothing comes from YouTube until Play (or a chapter, or a time in the
 transcript, which start it there), which embeds youtube-nocookie.com; closing removes the player.
-Its Transcript disclosure fetches `web/public/videos/<id>.transcript.json` when opened, written from
+A tour's Transcript disclosure fetches `web/public/videos/<id>.transcript.json` when opened, written from
 YouTube's automatic captions by `web/scripts/videoTranscript.ts` (see [`web/scripts/`](../../scripts/README.md)).
 `shelf.ts` is the list as data (the kinds of paper, from manuals, hint books and maps to
 keyboard reference, registration, business and ID, and license and warranty cards and hint

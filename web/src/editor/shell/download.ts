@@ -59,6 +59,29 @@ interface Choice {
 }
 
 const CHOICES: Choice[] = [
+  // what plays anywhere (the web, DOS, the game's own files) first; the systems' programs after
+  {
+    kind: 'web',
+    name: 'Web page',
+    format: '.html',
+    alt: '.zip',
+    line: 'The game and its player in one file that opens in any browser, offline. The .zip is a web app to put on a web host.',
+  },
+  {
+    kind: 'player',
+    name: 'Web player',
+    format: '.zip',
+    alt: '.html',
+    line: 'For your own web site: the web player, one page that plays Game-Maker game folders, with this game’s folder beside it. The .html is the player alone.',
+    details: `${REPO_URL}/blob/master/docs/web-player.md`,
+  },
+  {
+    kind: 'dos',
+    name: 'DOS',
+    format: '.zip',
+    line: 'The original Game-Maker files with the stand-alone player (PLAYGAME, named after the game), for DOSBox or a real DOS PC.',
+  },
+  { kind: 'files', name: 'Game files', format: '.zip', line: 'Your game’s files just as they are here, to keep a copy safe or import it again.' },
   {
     kind: 'windows',
     name: 'Windows',
@@ -82,28 +105,6 @@ const CHOICES: Choice[] = [
     line: 'A folder with play.sh, which plays it in a window with WebKitGTK (or in your browser).',
     details: '#/linux',
   },
-  {
-    kind: 'web',
-    name: 'Web page',
-    format: '.html',
-    alt: '.zip',
-    line: 'The game and its player in one file that opens in any browser, offline. The .zip is a web app to put on a web host.',
-  },
-  {
-    kind: 'player',
-    name: 'Web player',
-    format: '.zip',
-    alt: '.html',
-    line: 'For your own web site: the web player, one page that plays Game-Maker game folders, with this game’s folder beside it. The .html is the player alone.',
-    details: `${REPO_URL}/blob/master/docs/web-player.md`,
-  },
-  {
-    kind: 'dos',
-    name: 'DOS',
-    format: '.zip',
-    line: 'The original Game-Maker files with the stand-alone player (PLAYGAME, named after the game), for DOSBox or a real DOS PC.',
-  },
-  { kind: 'files', name: 'Game files', format: '.zip', line: 'Your game’s files just as they are here, to keep a copy safe or import it again.' },
 ];
 
 /**
@@ -111,18 +112,6 @@ const CHOICES: Choice[] = [
  * system), so it is not frozen in time the way the DOS files are.
  */
 const ENGINE_CAVEAT = 'All but DOS still need a web engine, so a future system or browser update could break them; DOS, in DOSBox, is the most future-proof.';
-
-/** The visitor's own system, to choose first: a phone or tablet gets the web page. */
-export function visitorSystem(
-  nav: Pick<Navigator, 'userAgent' | 'platform' | 'maxTouchPoints'> & { userAgentData?: { platform?: string } } = navigator,
-): DownloadKind {
-  const ua = `${nav.userAgentData?.platform ?? ''} ${nav.platform ?? ''} ${nav.userAgent ?? ''}`;
-  if (/android|iphone|ipad|ipod|cros/i.test(ua)) return 'web';
-  if (/windows|win32|win64/i.test(ua)) return 'windows';
-  if (/linux|x11/i.test(ua)) return 'linux';
-  if (/mac/i.test(ua)) return nav.maxTouchPoints > 1 ? 'web' : 'mac'; // an iPad asks for the desktop site as a Mac
-  return 'web';
-}
 
 /** The Download button: `open` opens the chooser (chooseDownload) for the game. */
 export function downloadButton(title: string, open: () => unknown): HTMLElement {
@@ -144,9 +133,8 @@ export function downloadButton(title: string, open: () => unknown): HTMLElement 
 /** The chooser, then the download. */
 export async function chooseDownload(game: DownloadGame): Promise<void> {
   const choices = CHOICES.filter((c) => c.kind !== 'files' || game.project);
-  const first = visitorSystem();
   const picked = await modal<{ kind: DownloadKind; alt: boolean }>(`Download ${game.title}`, (close) => {
-    let current = choices.find((c) => c.kind === first) ?? choices[0];
+    let current = choices[0];
     const go = h('button', { type: 'submit', class: 'primary' });
     const alt = h('button', { type: 'button', onclick: () => close({ kind: current.kind, alt: true }) });
     const update = () => {

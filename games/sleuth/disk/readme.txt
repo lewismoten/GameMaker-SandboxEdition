@@ -1,6 +1,6 @@
 FINAL CURTAIN
 An Inspector Ada Penn Mystery
-Version 1.0 - 1995
+Version 1.1 - 1995
 (c) 1995 Sandbox Software
 
 Port Ellery, Halloween night,

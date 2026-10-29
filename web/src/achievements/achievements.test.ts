@@ -172,8 +172,10 @@ describe('where they fire', () => {
   const walk = (dir: string) => {
     for (const f of readdirSync(dir, { withFileTypes: true })) {
       const p = join(dir, f.name);
-      if (f.isDirectory()) walk(p);
-      else if (/\.ts$/.test(f.name) && !/\.test\.ts$/.test(f.name)) {
+      // the guided tour fires none (its desk-… are step ids)
+      if (f.isDirectory()) {
+        if (p !== join(src, 'tour')) walk(p);
+      } else if (/\.ts$/.test(f.name) && !/\.test\.ts$/.test(f.name)) {
         const text = readFileSync(p, 'utf8');
         const res = [
           /\b(?:unlockAchievement|achieve|progress|tally)\('([\w-]+)'/g,

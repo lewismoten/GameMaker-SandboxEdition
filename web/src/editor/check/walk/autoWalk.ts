@@ -9,18 +9,20 @@
 // an exit from where the walkthrough has got to; else the bot plays it. In a scene whose block
 // set has walking paths (walkPaths.ts), a style that heads for the exit looks again keeping to
 // them, and that route is played when it walks more of the paths for only modestly more time
-// (pathRoute.ts), as a person would walk along the road rather than cut across.
+// (pathRoute.ts), as a person would walk along the road rather than cut across. Made again,
+// it first replays the keys of the scenes it got through last time (`reuse`), so it goes
+// quickly on to where it stopped. A walkthrough that stops partway keeps the scenes it got
+// through and says on its closing card where it stopped (`ending`).
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
 import type { Game } from '../../../formats/game';
 import { MLEN } from '../../../formats/map';
-import type { CharInfo, World } from '../../../engine/world';
-import { driveMove, type Outcome } from '../drive';
-import { explore, type Entry, type Exploration, type ExploreOptions, type Via } from '../explore';
+import { explore, type Entry, type Exploration, type ExploreOptions } from '../explore';
 import type { Move } from '../inputs';
-import { SceneSim, startCharInfo, type FileSource, type Snap } from '../sim';
+import { SceneSim, startCharInfo, type FileSource } from '../sim';
 import { replayMine } from './replayMine';
-import { footCell, scenePaths } from './walkPaths';
-import { ON_PATH_ENOUGH, pathShare, preferPathRoute, type RouteFit } from './pathRoute';
+import { scenePaths } from './walkPaths';
+import { ON_PATH_ENOUGH, pathShare, preferPathRoute } from './pathRoute';
+import { pathTo, replayPath, type Replay } from './replayPath';
 
 interface Strategy {
   id: 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'mine';
@@ -74,6 +76,13 @@ export interface AutoWalk {
   stopped?: string;
 }
 
+/** What the closing card of a walkthrough that stops partway says, after "The bot got this far." */
+function endingOf(name: string, why: 'stopped' | 'stuck' | 'no-way'): string {
+  if (why === 'stopped') return `It was stopped partway through ${name}.`;
+  if (why === 'stuck') return `It found no way through ${name}.`;
+  return `${name} had no way on it hadn’t taken.`;
+}
+
 interface AutoWalkOptions {
   /** Time for each scene, all styles together (ms). */
   budgetMs?: number;
@@ -82,87 +91,26 @@ interface AutoWalkOptions {
   progress?: (scene: number, strategy: string, places: number) => boolean | void;
   /** The author's own plays to use, by scene: their keys (encodeKeys), from the scene's entry. */
   mine?: Record<number, string>;
+  /** Told after each scene got through (not the last): what to keep if it is stopped in the next one. */
+  onScene?: (soFar: AutoWalk) => void;
   /** Stop after this many scenes (1: just the first scene). */
   maxScenes?: number;
   /** Walking paths to keep to: block numbers by the .bbl's name in lower case (walkPaths.ts allWalkPaths). */
   paths?: Record<string, number[]>;
+  /**
+   * A walkthrough made before (keptWalk.ts reuseFrom), scene by scene in the order it played
+   * them: a scene the bot got through then is played with those keys again when they still
+   * reach a way on from here, so making it again goes quickly to where it stopped.
+   */
+  reuse?: Reused[];
 }
 
-/** The places from the start to `id`, by the moves that reached each. */
-function pathTo(ex: Exploration, via: Via): Via[] {
-  const out: Via[] = [via];
-  for (let p = via.parent; ex.places[p]?.via; p = ex.places[p].via!.parent) out.unshift(ex.places[p].via!);
-  return out;
-}
-
-export interface Replay {
-  /** The link taken (-1: the path ended at a place in the scene, kept in `snap`). */
-  link: number;
-  snap?: Snap;
-  events: { tick: number; key: number }[];
-  ticks: number;
-  ci: CharInfo;
-  clock: number;
-  world: World;
-  /** How much of its walking was on the walking paths (none measured when none were given). */
-  fit?: RouteFit;
-}
-
-/** Plays a found path again from the scene's start (every monster moving, as the engine does), recording its keys. */
-async function replayPath(
-  game: Game,
-  files: FileSource,
-  scene: number,
-  entry: Entry,
-  moves: Move[],
-  path: Via[],
-  seed = 1,
-  /** Go on from partway (a place reached before, `ticks` into the scene) instead of the scene's start. */
-  from?: { snap: Snap; ticks: number },
-  /** Walking paths, to measure how much of the route keeps to them. */
-  paths?: ReadonlySet<number>,
-): Promise<Replay | undefined> {
-  const sim = new SceneSim(game, scene, files, entry.start, entry.ci, entry.clock, entry.prev, seed);
-  if (from) sim.restore(from.snap);
-  const events: { tick: number; key: number }[] = [];
-  let ticks = from?.ticks ?? 0;
-  // a key event is played on the segment's next tick (as the walkthrough runtime plays them)
-  sim.onKey = (key) => events.push({ tick: ticks + 1, key });
-  let moving = 0;
-  let onPath = 0;
-  const tick = async (): Promise<Outcome> => {
-    ticks++;
-    const was = paths && sim.px;
-    const r = await sim.tick();
-    if (was && r === undefined) {
-      const now = sim.px;
-      if (now.x !== was.x || now.y !== was.y) {
-        moving++;
-        if (paths.has(sim.w.map[footCell(sim.w)])) onPath++;
-      }
-    }
-    return r === 'dead' ? 'dead' : r ? r.link : undefined;
-  };
-  const done = (link: number): Replay => {
-    const ci = sim.w.ci;
-    return {
-      link,
-      snap: link < 0 ? sim.snapshot() : undefined,
-      events,
-      ticks,
-      ci: { ...ci, inv: ci.inv.slice(), meter: ci.meter.slice(), seqon: ci.seqon.slice() },
-      clock: sim.w.clock,
-      world: sim.w,
-      fit: { ticks, moving, onPath },
-    };
-  };
-  for (const v of path) {
-    const r = await driveMove(sim, moves[v.move], { tick, limit: v.ticks });
-    if (r.end === 'dead') return undefined;
-    if (typeof r.end === 'number') return done(r.end);
-  }
-  // the path ends at a place, not a link: the state there, to go on from
-  return done(-1);
+/** One scene of an earlier walkthrough the bot played: its keys, from the scene's entry, and how it got through. */
+export interface Reused {
+  scene: number;
+  keys: string;
+  strategy: Strategy['id'];
+  paths?: SceneOutcome['paths'];
 }
 
 export async function autoWalk(game: Game, files: FileSource, gameId: string, opt: AutoWalkOptions = {}): Promise<AutoWalk> {
@@ -187,6 +135,21 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     reached.set(sc, r);
   };
   let canceled = false;
+  let ending: string | undefined;
+  let byHand = false;
+  /** The walkthrough of the scenes got through so far. */
+  const walkSoFar = (won: boolean, end?: string): Walkthrough => ({
+    version: 1,
+    game: gameId,
+    rand: { seed, per: 'scene' },
+    bot: true,
+    partial: !won || undefined,
+    ending: won ? undefined : end,
+    byHand: byHand || undefined,
+    segments: segments.slice(),
+    chapters: chapters.slice(),
+    timeline: { fps: WALKTHROUGH_FPS, frames: 0, chapters: [] },
+  });
   for (let guard = 0; guard < 200 && scene !== 1; guard++) {
     const s = game.scenes[scene];
     const name = s.desc.trim() || `Scene ${scene}`;
@@ -200,6 +163,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     out.scenes.push(outcome);
     if (!ways.length) {
       out.stopped = `${name} has no way on that the bot hasn’t taken already.`;
+      ending = endingOf(name, 'no-way');
       break;
     }
     const goal = ways.map((l) => l.from.y * MLEN + l.from.x);
@@ -246,11 +210,23 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     // the author's own play, if it still gets out from here
     const myKeys = opt.mine?.[scene];
     if (myKeys !== undefined) {
-      opt.progress?.(scene, MINE.name, 0);
+      if (opt.progress?.(scene, MINE.name, 0)) canceled = true;
       const r = await replayMine(game, files, scene, entry, myKeys, seed);
       const l = r && s.links[r.link];
       if (r && l && level(l) && l.toScene !== scene) found = { replay: r, strategy: MINE };
       outcome.mine = found ? 'used' : 'broke';
+    }
+    // the same scene of the walkthrough made before, played by the bot then: its keys again
+    const again = opt.reuse?.[out.scenes.length - 1];
+    if (!found && myKeys === undefined && again && again.scene === scene && again.strategy !== MINE.id) {
+      const st = STRATEGIES.find((x) => x.id === again.strategy);
+      if (opt.progress?.(scene, `${st?.name ?? 'Bot'} (as before)`, 0)) canceled = true;
+      const r = st && !canceled && (await replayMine(game, files, scene, entry, again.keys, seed));
+      if (st && r && wanted.has(r.link)) {
+        found = { replay: r, strategy: st };
+        outcome.tried.push(st.id);
+        if (again.paths) outcome.paths = again.paths;
+      }
     }
     // a side room with no new way on: what it holds is why the hero came
     if (backOnly && !found) await collect();
@@ -303,15 +279,18 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     if (!found && !canceled && !backOnly) await collect();
     if (canceled) {
       out.stopped = 'Stopped.';
+      ending = endingOf(name, 'stopped');
       break;
     }
     if (!found) {
       outcome.heat = biggest?.heat;
       out.stopped = `No bot style got through ${name}: the walkthrough stops there.`;
+      ending = endingOf(name, 'stuck');
       break;
     }
     const { replay, strategy } = found;
     outcome.strategy = strategy.id;
+    if (strategy === MINE) byHand = true;
     outcome.ticks = replay.ticks;
     const link = s.links[replay.link];
     outcome.next = link.toScene;
@@ -328,17 +307,17 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     taken.set(`${scene}>${link.toScene}`, (taken.get(`${scene}>${link.toScene}`) ?? 0) + 1);
     entry = { start: link.to, ci: replay.ci, clock: replay.clock, prev: replay.world };
     scene = link.toScene;
+    // what is kept if it is stopped in the next scene
+    if (opt.onScene) {
+      const nextName = game.scenes[scene]?.desc.trim() || `Scene ${scene}`;
+      opt.onScene({
+        scenes: [...out.scenes.map(({ heat: _h, ...o }) => ({ ...o, tried: o.tried.slice() })), { scene, name: nextName, tried: [] }],
+        won: false,
+        stopped: 'Stopped.',
+        walk: walkSoFar(false, endingOf(nextName, 'stopped')),
+      });
+    }
   }
-  if (segments.length)
-    out.walk = {
-      version: 1,
-      game: gameId,
-      rand: { seed, per: 'scene' },
-      bot: true,
-      partial: !out.won || undefined,
-      segments,
-      chapters,
-      timeline: { fps: WALKTHROUGH_FPS, frames: 0, chapters: [] },
-    };
+  if (segments.length) out.walk = walkSoFar(out.won, ending);
   return out;
 }

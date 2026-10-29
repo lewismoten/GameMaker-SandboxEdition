@@ -47,6 +47,10 @@ export interface Walkthrough {
   bot?: boolean;
   /** The bot got only partway: play stops at timeline.frames, where it got to. */
   partial?: boolean;
+  /** A partial walkthrough's closing card: where the bot stopped and why ("It found no way through Cave."). */
+  ending?: string;
+  /** Some scenes are a person's own play (the editor's Play and record), the rest the bot's. */
+  byHand?: boolean;
   /** Written by the tool from a run through the real engine. */
   timeline: {
     fps: number;
@@ -141,6 +145,11 @@ interface YoutubeInfo {
   frames: number;
   /** Made by the walkthrough bot for a game that isn't a Sandbox game: no Sandbox credits. */
   bot?: boolean;
+  /** The bot got only partway (and where it stopped, the closing card's words). */
+  partial?: boolean;
+  ending?: string;
+  /** Some scenes were played by a person. */
+  byHand?: boolean;
 }
 
 /** YouTube's title limit is 100 characters. */
@@ -148,16 +157,19 @@ const TITLE_MAX = 100;
 
 export function youtubeText(o: YoutubeInfo): YoutubeText {
   const made = [o.year && `${o.year} DOS`, o.company].filter(Boolean).join(', ');
-  const full = `${o.gameTitle}${made ? ` (${made})` : ''} — Full Walkthrough, No Commentary`;
-  const short = `${o.gameTitle} — Full Walkthrough, No Commentary`;
+  const kind = o.partial ? 'Partial Walkthrough' : 'Full Walkthrough';
+  const full = `${o.gameTitle}${made ? ` (${made})` : ''} — ${kind}, No Commentary`;
+  const short = `${o.gameTitle} — ${kind}, No Commentary`;
   const title = full.length <= TITLE_MAX ? full : short.slice(0, TITLE_MAX);
   const chapters = youtubeChapters(o.chapters, o.fps, o.frames);
   const lines = [
-    `${o.gameTitle}, played from power-on to the credits: the opening, the story, every level and the ending, with the game's own music and sound effects. No commentary.`,
+    o.partial
+      ? `${o.gameTitle}, played from power-on as far as the walkthrough bot got, with the game's own music and sound effects. No commentary.${o.ending ? ` ${o.ending}` : ''}`
+      : `${o.gameTitle}, played from power-on to the credits: the opening, the story, every level and the ending, with the game's own music and sound effects. No commentary.`,
     '',
     ...(o.blurb ? [o.blurb, ''] : []),
     o.bot
-      ? `${o.gameTitle} is a game made with Recreational Software Designs' Game-Maker 3.0${o.company ? ` by ${o.company}` : ''}. This walkthrough was played by the walkthrough bot of Game-Maker: Sandbox Edition, which tries every key from every place the hero can stand on the real engine and keeps the way through.`
+      ? `${o.gameTitle} is a game made with Recreational Software Designs' Game-Maker 3.0${o.company ? ` by ${o.company}` : ''}. This walkthrough was played by the walkthrough bot of Game-Maker: Sandbox Edition, which tries every key from every place the hero can stand on the real engine and keeps the way through.${o.byHand ? ' Some scenes were played by a person instead, recorded on the same engine.' : ''}`
       : `${o.gameTitle} is a Sandbox Software game for Game-Maker: Sandbox Edition, a game in the style of a ${o.year ?? 1995} DOS release that runs in Recreational Software Designs' Game-Maker 3.0 (PLAYGAME) and in the web app. It was written and built by Claude Opus 5.5 (Anthropic): the code that builds it, its pictures, music, sounds and words. Much of it is drawn from Lewis "Lewie" Moten III: his blog writing, photos he provided, and conversations about his interests, experiences and hobbies. Lewis directed the game and playtested it as it came together.`,
     '',
     `Play it in your browser: ${o.url}`,

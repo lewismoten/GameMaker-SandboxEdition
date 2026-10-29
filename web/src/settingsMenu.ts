@@ -1,8 +1,9 @@
-// Today's web header: the ⚙ Settings menu (playing offline, the source code, the credits, the theme, AI setup
-// and back up / restore), and the same items for the ⋯ menu on narrow windows (main.ts). The
+// Today's web header: the ⚙ Settings menu (playing offline, the source code, the credits, the theme, the whole
+// guided tour, AI setup and back up / restore), and the same items for the ⋯ menu on narrow windows (main.ts). The
 // Offline dialog, AI setup and back up / restore load when chosen.
 import { h, toast } from './editor/core/ui';
 import { themeItem } from './theme';
+import { wholeTourItem } from './tour/tourButton';
 
 const SOURCE_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition';
 
@@ -37,6 +38,7 @@ export function settingsItems(attrs: Record<string, string> = {}): HTMLElement[]
     h('a', { ...attrs, href: SOURCE_URL, target: '_blank', rel: 'noopener' }, icon('</>'), ' Source on GitHub'),
     h('a', { ...attrs, href: '#/credits', title: 'Who and what made Game-Maker: Sandbox Edition' }, icon('📜'), ' Credits'),
     themeItem(attrs),
+    wholeTourItem(attrs),
     h('button', { ...attrs, type: 'button', onclick: openAi, title: 'Set up your own AI (Ollama or OpenAI) for the Assistant' }, icon('✦'), ' AI setup…'),
     h(
       'button',

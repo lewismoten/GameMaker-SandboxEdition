@@ -2,18 +2,25 @@
 // the cast page's, public/cast/<id>.png); and, lower on the page, "AI tools and models": each
 // AI tool and what it made, as NOTICE.md and the games' own credits say.
 import { h } from '../editor/core/ui';
-import { section, ext, card, thumb } from './section';
+import { section, ext, thumb } from './section';
 import { NOTICE_URL } from '../edition';
 import { CAST, type CastMember } from '../cast/castData';
 
-/** One tool's card: its name, a short subtitle, two or three short lines, and any longer story in a small disclosure. */
-const tool = (name: string, maker: string, made: string, story?: Parameters<typeof h>[2]) =>
-  card(
-    'h3',
-    name,
-    h('p', { class: 'card-meta' }, maker),
-    h('p', null, made),
-    story && h('details', { class: 'credits-mini' }, h('summary', null, 'More', h('span', { class: 'sr-only' }, ` about ${name}`)), h('p', null, story)),
+/**
+ * One AI tool on one line (its name, maker and what it made, in short), opening to the whole
+ * story; the tools take a few rows until someone wants the detail.
+ */
+const tool = (name: string, maker: string, short: string, made: string, story?: Parameters<typeof h>[2]) =>
+  h(
+    'li',
+    null,
+    h(
+      'details',
+      { class: 'credits-tool' },
+      h('summary', null, h('b', null, name), ' ', h('span', { class: 'card-meta' }, maker), h('span', { class: 'credits-tool-short' }, short)),
+      h('p', null, made),
+      story ? h('p', null, story) : null,
+    ),
   );
 
 /** Who appears as themselves, as the cast page shows them (public/cast/<id>.png). */
@@ -29,18 +36,26 @@ export function aiToolsSection(): HTMLElement {
     'AI tools and models',
     'Which tools made what, directed by Lewis.',
     h(
-      'div',
-      { class: 'credits-cards credits-cards-grid' },
+      'ul',
+      { class: 'credits-tools' },
       tool(
         'Claude Opus 5.5',
         'Anthropic',
+        'The web port and every new game.',
         'The web port and every new game: code, levels, art, sounds, FM music and text, directed by Lewis.',
-        'It ported the 1994 desk and today’s editor and player from the original C source; drew the title and cover art of the Bard games that came without any; composed the music of Certified Rat Tickler, The Great Dairy Reckoning of 3:17 A.M. and Shakespeare in Sweatpants; ray traced the “Made with Game-Maker: Sandbox Edition” card new games can open with; made the desk’s Doc Leo black-light poster from two of Lewis’s photos, over many rounds of his corrections; wrote The Ultimate Owner’s Guide; drew the desk’s props in code (the game pad, the speakers and their sound card switch, the mugs and the mouse pads); and wrote and laid out TURBO BUTTON, the site’s 1990s game magazine. It is the only model named in the project’s commits.',
+        'It ported the 1994 desk and today’s editor and player from the original C source; drew the title and cover art of the Bard games that came without any; composed the music of Certified Rat Tickler, The Great Dairy Reckoning of 3:17 A.M. and Shakespeare in Sweatpants; ray traced the “Made with Game-Maker: Sandbox Edition” card new games can open with; made the desk’s Doc Leo black-light poster from two of Lewis’s photos, over many rounds of his corrections; wrote The Ultimate Owner’s Guide; drew the desk’s props in code (the game pad, the speakers and their sound card switch, the mugs and the mouse pads); and wrote and laid out TURBO BUTTON, the site’s 1990s game magazine.',
       ),
-      tool('ChatGPT', 'OpenAI', 'The Bard songs’ lyrics and monologues, shaped from Lewis’s prompts.'),
+      tool(
+        'OpenAI Codex (GPT-6)',
+        'OpenAI · Visual Studio Code',
+        'The reusable browser engine package.',
+        'Lewis uses Codex through Visual Studio Code. It extracted and documented the npm package for the browser engine from this fork’s existing TypeScript source, directed by Lewis.',
+      ),
+      tool('ChatGPT', 'OpenAI', 'The Bard songs’ lyrics.', 'The Bard songs’ lyrics and monologues, shaped from Lewis’s prompts.'),
       tool(
         'Riffusion',
         'now Google Flow Music',
+        'The Bard songs’ recordings and covers.',
         'Song recordings, vocals and covers. Later called Producer.ai (Mustard Seed Hustle’s animated cover). Free-plan audio is non-commercial.',
         [
           'One service under three names: Riffusion renamed itself Producer.ai, and Google bought it and made it Google Flow Music. Lewis pays for it now and made the animated covers on a paid plan, but every recording was made on the free plan, whose terms allow “personal, non-commercial uses” only, so the voice clips are not MIT licensed. ',
@@ -48,14 +63,44 @@ export function aiToolsSection(): HTMLElement {
           ' lists them.',
         ],
       ),
-      tool('DeepAI', 'paid commercial plan', 'The Bard of Bizarre’s rooster logo and the desk’s “Moten Snow-to-Software Operations” poster.'),
-      tool('ChatGPT-6.1 Sol', 'OpenAI', 'Reviews of the fork, TURBO BUTTON and the games’ content, now and then, which Lewis brings back as notes.'),
+      tool(
+        'DeepAI',
+        'paid commercial plan',
+        'A logo and a poster.',
+        'The Bard of Bizarre’s rooster logo and the desk’s “Moten Snow-to-Software Operations” poster.',
+      ),
+      tool(
+        'ChatGPT-6.1 Sol',
+        'OpenAI',
+        'Reviews, now and then.',
+        'Reviews of the fork, TURBO BUTTON and the games’ content, now and then, which Lewis brings back as notes.',
+      ),
       tool(
         'Google Gemini 3',
         'Google',
+        'A sounding board for ideas.',
         'A sounding board for ideas: 1990s nostalgia and Lewis’s memories, home-office supplies of the time, how the CMF music format worked, what came in a 1990s software box, how a save editor might look, and getting more out of a game. It drew the ASCII-art can in LUNCHMEAT’s flood on The Sofa.',
       ),
-      tool('Whisper', 'OpenAI · MIT License', 'Word timings for cutting the voice clips. Runs on the developer’s computer; nothing ships.'),
+      tool(
+        'Pocket TTS',
+        'Kyutai · CC BY 4.0',
+        'Tour voices cloned from Lewis’s recordings.',
+        'The guided tour’s voices cloned from Lewis’s own recordings, with his consent: Doc Leo’s, Joe’s, teenage Lewie’s, Courier Max’s, Watt’s and Professor Fiddlesticks’ (and Teddy’s when he talks). Runs on the developer’s computer.',
+        'Kyutai’s model, in vlapky’s ONNX conversion (pocket-tts-onnx), run by a script ported from vlapky’s pocket-tts-js (MIT) with Microsoft’s ONNX Runtime (MIT). Its built-in voices are never used; only the clips it makes ship.',
+      ),
+      tool(
+        'Kokoro',
+        'hexgrad · Apache-2.0',
+        'Tour voices from its stock ones.',
+        'Voices in the guided tour from Kokoro’s stock ones: Gwinn’s (“Sky”, pitched up), Dex Dynamo’s (“Puck”), Inspector Ada Penn’s (“Emma”) and Courier Max’s (“Michael”). Runs on the developer’s computer.',
+        'Kokoro-82M in the ONNX Community’s conversion, run by kokoro-js (Apache-2.0) with Hugging Face’s Transformers.js (Apache-2.0), the phonemizer package (Apache-2.0) and Microsoft’s ONNX Runtime (MIT). Only the clips it makes ship.',
+      ),
+      tool(
+        'Whisper',
+        'OpenAI · MIT License',
+        'Word timings, and checking the tour’s voices.',
+        'Word timings for cutting the voice clips, and a check that every line of the guided tour’s voices can be understood: Whisper listens to each clip and any whose words come out wrong is spoken again (npm run voice:check). Runs on the developer’s computer; nothing ships.',
+      ),
     ),
     h('p', { class: 'muted' }, 'None of these tools’ code is used in the site or the games.'),
   );

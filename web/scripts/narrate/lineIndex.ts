@@ -1,0 +1,110 @@
+// The narration's index, public/tour/voice/index.json: for each clip id, its chapter, where the
+// tour uses it, the words it says, how long it plays and hashes of the words as spoken and of the
+// voice (its sample, pitch and speed), so scripts/narrate.ts records only lines whose spoken words
+// (or voice) changed. Pure functions, no models, so tests can run them.
+import { createHash } from 'node:crypto';
+import { spokenText, type Engine } from './spoken';
+
+export interface Line {
+  id: string;
+  /** The tour chapter or area; the clip's subfolder. */
+  chapter: string;
+  /** Where the tour uses it, e.g. "Home: points at the New game button". */
+  where?: string;
+  text: string;
+  /** The words as the text-to-speech is handed them, when spokenText(text) won't do (a rewording). */
+  spoken?: string;
+  /** Whose voice: a named sample, shifted in pitch and speed (left out: the default sample, as is). */
+  voice?: { sample: string; semitones?: number; tempo?: number };
+}
+
+export interface IndexEntry {
+  chapter: string;
+  where: string;
+  text: string;
+  /** How long the clip plays, in seconds (two decimals). */
+  seconds: number;
+  /** textHash(spokenOf(line)) when the clip was recorded: the words as spoken. */
+  hash: string;
+  /** textHash of the voice the clip was recorded in: its sample's bytes, pitch and speed. */
+  voice: string;
+}
+
+export type VoiceIndex = Record<string, IndexEntry>;
+
+/** Clip ids and chapters: lowercase letters, digits and hyphens. */
+export const ID = /^[a-z0-9-]+$/;
+
+/** A short, stable hash of text or bytes (12 hex digits of SHA-256). */
+export const textHash = (data: string | Uint8Array): string => createHash('sha256').update(data).digest('hex').slice(0, 12);
+
+/** The engine a line's voice is spoken by: Kokoro for its stock voices ('kokoro:<voice>'), Pocket TTS otherwise. */
+export const engineOf = (line: Pick<Line, 'voice'>): Engine => (line.voice?.sample.startsWith('kokoro:') ? 'kokoro' : 'pocket');
+
+/** The words the text-to-speech says for a line: its text (or its own spoken form) made speakable. */
+export const spokenOf = (line: Pick<Line, 'text' | 'spoken' | 'voice'>): string => spokenText(line.spoken ?? line.text, engineOf(line));
+
+/** A clip's path under the voice folder. */
+export const clipPath = (line: Pick<Line, 'id' | 'chapter'>): string => `${line.chapter}/${line.id}.ogg`;
+
+/** The problems with a list of lines (bad or repeated ids, bad chapters, missing words); empty when fine. */
+export function lineProblems(lines: unknown): string[] {
+  if (!Array.isArray(lines)) return ['the lines must be an array of { id, chapter, where, text }'];
+  const problems: string[] = [];
+  const seen = new Set<string>();
+  lines.forEach((line: Partial<Line>, i) => {
+    const id = line?.id;
+    if (typeof id !== 'string' || !ID.test(id)) problems.push(`line ${i}: id ${JSON.stringify(id)} must be lowercase a-z, 0-9 and -`);
+    else if (seen.has(id)) problems.push(`line ${i}: id ${id} is repeated`);
+    else seen.add(id);
+    if (typeof line?.chapter !== 'string' || !ID.test(line.chapter))
+      problems.push(`line ${i}: ${String(id)}'s chapter ${JSON.stringify(line?.chapter)} must be lowercase a-z, 0-9 and -`);
+    if (line?.where !== undefined && typeof line.where !== 'string') problems.push(`line ${i}: ${String(id)}'s where must be text`);
+    if (typeof line?.text !== 'string' || !line.text.trim()) problems.push(`line ${i}: ${String(id)} has no text`);
+    if (line?.spoken !== undefined && (typeof line.spoken !== 'string' || !line.spoken.trim())) problems.push(`line ${i}: ${String(id)}'s spoken must be text`);
+  });
+  return problems;
+}
+
+export interface PlanOptions {
+  /** Record every line again. */
+  force?: boolean;
+  /** Record only these ids (a retake), whether or not they changed. */
+  only?: string[];
+  /** The hash of a line's voice; a clip in another voice is recorded again. */
+  voice: string | ((line: Line) => string);
+  /** Whether a clip's file (its path under the voice folder) is there. */
+  exists: (path: string) => boolean;
+}
+
+/** The ids to record: changed words, a new voice, a missing file, or asked for. */
+export function planTakes(lines: Line[], index: VoiceIndex, o: PlanOptions): string[] {
+  if (o.only?.length) return lines.filter((l) => o.only!.includes(l.id)).map((l) => l.id);
+  return lines
+    .filter((l) => {
+      const e = index[l.id];
+      const voice = typeof o.voice === 'string' ? o.voice : o.voice(l);
+      return o.force || !e || e.hash !== textHash(spokenOf(l)) || e.voice !== voice || !o.exists(clipPath(l));
+    })
+    .map((l) => l.id);
+}
+
+/** Copies each recorded line's chapter and where into the index (they change without a retake). */
+export function refreshPlaces(lines: Line[], index: VoiceIndex): void {
+  for (const l of lines) if (index[l.id]) Object.assign(index[l.id], { chapter: l.chapter, where: l.where ?? '' });
+}
+
+/** The ids in the index that no line has any more (their clips are stale). */
+export const staleIds = (lines: Line[], index: VoiceIndex): string[] => Object.keys(index).filter((id) => !lines.some((l) => l.id === id));
+
+/** The index as written: ids sorted, so a retake changes one entry's lines. */
+export const indexJson = (index: VoiceIndex): string =>
+  JSON.stringify(
+    Object.fromEntries(
+      Object.keys(index)
+        .sort()
+        .map((id) => [id, index[id]]),
+    ),
+    null,
+    2,
+  ) + '\n';

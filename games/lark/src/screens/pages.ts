@@ -1,4 +1,4 @@
-// Text screens, as Baker's Dozen lays them out: PLAYGAME shows .TXT pages 31 characters wide and
+// Text screens, as the other Sandbox games lay them out: PLAYGAME shows .TXT pages 31 characters wide and
 // 16 lines a page (MORE... between pages). Lines are wrapped to 30: a line of exactly 31 leaves its
 // line break for the next read, which shows as an extra blank line. THE CHEZ never splits.
 const COLS = 30;

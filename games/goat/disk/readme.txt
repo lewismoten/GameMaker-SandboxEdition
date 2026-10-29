@@ -1,5 +1,5 @@
     THIRD GOAT FROM THE LEFT
-    Version 1.0 - December 1995
+    Version 1.1 - December 1995
     by The Bard of Bizarre
 
 "Third goat from the left -

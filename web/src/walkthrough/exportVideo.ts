@@ -2,7 +2,8 @@
 // 320×200 and 60 frames a second, with its soundtrack rendered offline (audioRender.ts):
 // H.264 from WebCodecs' VideoEncoder, AAC (or Opus where the browser has no AAC encoder)
 // from its AudioEncoder, put together by mp4av.ts. The sound is the demos' choice
-// (media/demoAudio.ts): Sound Blaster, the PC speaker only, or none (no sound track).
+// (media/demoAudio.ts): Sound Blaster, the PC speaker only, or none (no sound track). A
+// walkthrough the bot made only partway ends with its closing card (endCard.ts) for a few seconds.
 import { canEncodeMp4 } from '../media/video';
 import type { DemoAudio } from '../media/demoAudio';
 import type { GameFiles } from '../project/files';
@@ -10,12 +11,15 @@ import { AudioRenderer } from './audioRender';
 import { WALKTHROUGH_FPS, type Walkthrough } from './format';
 import { muxAv, type AvSample } from './mp4av';
 import { headlessCanvas, screenRgba, WalkRun } from './runtime';
+import { drawEndCard, endCardLines } from './endCard';
 import type { PlayerPatches } from '../dosPlayer/patchRules';
 
 const W = 320;
 const H = 200;
 const RATE = 48000;
 const PER_FRAME = RATE / WALKTHROUGH_FPS;
+/** How long a partial walkthrough's closing card stays up (frames). */
+const CARD_FRAMES = 4 * WALKTHROUGH_FPS;
 
 export interface ExportOptions {
   files: GameFiles;
@@ -128,38 +132,47 @@ export async function exportWalkthrough(o: ExportOptions): Promise<ExportResult>
         await pause();
       }
     }
-    for (let f = from; f < to; f++) {
-      if (o.signal?.aborted) throw aborted();
-      if (fail) throw fail;
-      if (f > from && !(await run.step(false))) break;
-      const us = Math.round(((f - from) * 1e6) / WALKTHROUGH_FPS);
-      const frame = new VideoFrame(screenRgba(run.m, rgba), {
+    let made = 0;
+    /** Encodes the frame (and its sound) at `n` frames in. */
+    const encode = (n: number, pixels: Uint8ClampedArray, pcm: Float32Array<ArrayBuffer>) => {
+      const us = Math.round((n * 1e6) / WALKTHROUGH_FPS);
+      const frame = new VideoFrame(pixels, {
         format: 'RGBA',
         codedWidth: W,
         codedHeight: H,
         timestamp: us,
         duration: Math.round(1e6 / WALKTHROUGH_FPS),
       });
-      venc.encode(frame, { keyFrame: (f - from) % (WALKTHROUGH_FPS * 2) === 0 });
+      venc.encode(frame, { keyFrame: n % (WALKTHROUGH_FPS * 2) === 0 });
       frame.close();
-      const pcm = sound.render(PER_FRAME);
       if (aenc) {
-        const data = new AudioData({
-          format: 'f32',
-          sampleRate: RATE,
-          numberOfFrames: PER_FRAME,
-          numberOfChannels: 1,
-          timestamp: us,
-          data: pcm,
-        });
+        const data = new AudioData({ format: 'f32', sampleRate: RATE, numberOfFrames: PER_FRAME, numberOfChannels: 1, timestamp: us, data: pcm });
         aenc.encode(data);
         data.close();
       }
+    };
+    for (let f = from; f < to; f++) {
+      if (o.signal?.aborted) throw aborted();
+      if (fail) throw fail;
+      if (f > from && !(await run.step(false))) break;
+      made++;
+      encode(f - from, screenRgba(run.m, rgba), sound.render(PER_FRAME));
       if ((f - from) % 30 === 0) {
         o.onProgress?.(f - from, total);
         // let the page breathe, and the encoders catch up
         await pause();
         while (venc.encodeQueueSize > 24 || (aenc?.encodeQueueSize ?? 0) > 48) await new Promise((r) => setTimeout(r, 2));
+      }
+    }
+    // a walkthrough the bot made only partway: its closing card, over the last screen played
+    if (o.walk.partial && to >= o.walk.timeline.frames) {
+      const card = screenRgba(run.m, rgba).slice();
+      drawEndCard(card, endCardLines(o.walk));
+      const quiet = new Float32Array(PER_FRAME);
+      for (let i = 0; i < CARD_FRAMES; i++) {
+        if (o.signal?.aborted) throw aborted();
+        encode(made + i, card, quiet);
+        if (i % 30 === 0) await pause();
       }
     }
     await venc.flush();

@@ -1,6 +1,6 @@
 KEEP IT BRIEF!
 The Tiny Pockets Library
-Version 1.0
+Version 1.1
 (c) 1995 Sandbox Software
 
 A library game for IBM PC

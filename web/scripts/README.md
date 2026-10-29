@@ -36,9 +36,35 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     `npx vite-node scripts/videoTranscript.ts <id>.en-orig.vtt`): the rolling repeats removed, about
     a minute a paragraph, and the names the captions mishear spelled right; everything Lewis said
     is kept as he said it.
+- The guided tour's voice: `narrate.ts` (`npm run voice`; `npm run voice:all` records every
+  line again) speaks each line of `tour/lines.ts` in its host's voice (cloned from one of Lewis's voice
+  samples with Pocket TTS, or one of Kokoro's stock voices via `kokoro.ts`, which runs Kokoro in
+  a child process from the git-ignored `/.narrate` folder that `npm run voice:setup` fills; then
+  shifted in pitch and speed as `HOSTS` in `tour/steps.ts` says),
+  locally, into `../public/tour/voice/<chapter>/<id>.ogg` (Opus, mono, about 10 kbps), and
+  rewrites `index.json` (id → chapter, where, words, seconds and hashes, so unchanged lines are
+  skipped) and the generated `README.md` there. Its parts are in `narrate/`: `pocketTts.ts` (the
+  engine, ported from pocket-tts-js, MIT), `audio.ts` (ffmpeg in and out: the voice sample's
+  clearest 10 s, the pitch and speed shift, even loudness, the Opus encoding), `spoken.ts`, `lineIndex.ts` and `voiceReadme.ts`. The
+  model, the engine and the voice samples stay outside the repo (`--model`, `--engine`, or
+  `POCKET_TTS_MODEL`, `POCKET_TTS_ENGINE`, and `NARRATE_SAMPLE_<NAME>` for a sample named in
+  `SAMPLES`; `--sample <file>` puts every line in one recording, to compare); CI never runs it.
+  `npm run voice -- --only <id>` records a retake (each take differs; `--seed <n>` repeats one),
+  `--lines <file.json>` reads `[{ id, chapter, where, text, voice? }]` instead of the tour, `--out <dir>`
+  writes elsewhere, `--wav` also keeps each take as .wav, and `--dry-run` lists what it would
+  record. Each line is said in the spoken form `narrate/spoken.ts` gives it (numbers in words,
+  BBS, DOS, PLAYGAME, THE CHEZ and the like spelled for the voice, straight quotes for Pocket TTS),
+  or a step's own `spoken` where even that comes out wrong; the bubbles keep their written words,
+  and the index's hash is of the spoken form. `npm run voice:check` (`narrate/verify.ts`) hears every
+  clip with Whisper, locally (whisper.cpp's `whisper-cli` with `ggml-large-v3.bin` from
+  `~/.cache/whisper-cpp`, or `--model <name>` for openai-whisper's `whisper`, e.g. `medium.en`), and
+  lists the clips whose words came out wrong (`narrate/compare.ts` leaves out sound-alike spellings
+  and little words) with a retake command, in the terminal and `/.narrate/voice-check.md`;
+  transcripts are cached by each clip's bytes in `/.narrate/voice-check.json`. Never put Lewis's
+  voice samples in the repo, a download or a test fixture.
 - Pictures made once by hand: `bbsGifs.ts` made the BBS gallery's pictures in `../public/bbs`;
-  `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast`, from the
-  other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).
+  `castArt.ts` and `castSprites.ts` make the Cast page's pictures in `../public/cast` (the sprites
+  also walk the guided tour, with a few hosts of its own), from the other `cast*.ts` drawings (`castEgg.ts`, `castLeoSide.ts`, `castNeedle.ts`, `castTinHeart.ts`).
 - Downloads from the command line: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` run the same code as
   the Download button (see [`export/`](../src/export/README.md)).
 - [`mcp/`](mcp) (`npm run mcp`): the local MCP server for AI tools. It uses the

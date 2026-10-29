@@ -9,7 +9,8 @@ export const LINE_SPEEDS: readonly LineSpeed[] = [300, 1200, 2400, 4800, 9600, 1
 
 export const DEFAULT_SPEED: LineSpeed = 14400;
 
-const KEY = 'gm-line-speed';
+/** Where the speed is kept (the guided tour puts it back as it found it). */
+export const SPEED_KEY = 'gm-line-speed';
 
 /**
  * Characters a second of ZIPs, GIFs and JPEGs (compressed already, so V.42bis can't help).
@@ -49,7 +50,7 @@ function announce(name: 'gm-line-speed' | 'gm-line-hint' | 'gm-line-warp', speed
 
 function stored(): LineSpeed {
   try {
-    const v = localStorage.getItem(KEY);
+    const v = localStorage.getItem(SPEED_KEY);
     if (v === 'unlimited') return v;
     const n = Number(v) as LineSpeed;
     if (LINE_SPEEDS.includes(n)) return n;
@@ -67,7 +68,7 @@ export function setLineSpeed(speed: LineSpeed): void {
   if (!LINE_SPEEDS.includes(speed)) return;
   current = speed;
   try {
-    localStorage.setItem(KEY, String(speed));
+    localStorage.setItem(SPEED_KEY, String(speed));
   } catch {
     // kept for this visit only
   }
