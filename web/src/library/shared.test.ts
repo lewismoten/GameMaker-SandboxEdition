@@ -29,7 +29,8 @@ describe('pieces the same in every box', () => {
   });
 
   it('the catalog uses its own game only to mark that game’s entry', () => {
-    const uses = body('catalog').text.match(/ctx\.(entry|printables|manual)[^\n]*/g) ?? [];
+    expect(body('catalog').text).toMatch(/catalogBlocks\(ctx\)/);
+    const uses = body('catalogBlocks').text.match(/ctx\.(entry|printables|manual)[^\n]*/g) ?? [];
     // the family, falling back to the game itself (never in a box: the family is the catalog), and the mark
     expect(uses).toHaveLength(2);
     expect(uses[0]).toMatch(/^ctx\.entry\]/);
