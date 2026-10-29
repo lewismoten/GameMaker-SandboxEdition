@@ -52,3 +52,15 @@ play.addEventListener('click', async () => {
 `Machine` owns the screen, keyboard and audio. Call `machine.destroy()` when play finishes or the containing page closes. `runGame` accepts `RunOptions` for callbacks, joystick input, playback and the optional DOS player appearance. The game may write saves or high scores into `GameFiles`; use `files.onChange` to persist those bytes. The package targets modern browsers and ES modules.
 
 The source is MIT licensed; see `LICENSE` and `NOTICE.md` for credits.
+
+## Publishing
+
+The [release workflow](../../../.github/workflows/publish-engine.yml) publishes this package to
+GitHub Packages when an `engine-v<version>` tag is pushed. The tagged commit must be on
+`master`, and `<version>` must exactly match this package's `package.json` (for example,
+`engine-v0.1.0`). Merge the package changes to `master` before pushing the tag.
+
+The workflow uses GitHub's `GITHUB_TOKEN` with package write permission. It checks the source,
+builds the package, and publishes it to GitHub Packages. No package is published by ordinary
+branch pushes. Publishing to npm is a separate, manual decision; this workflow does not use
+an npm token.

@@ -2,6 +2,11 @@
   "name": "@lewismoten/gamemaker-sandbox-engine",
   "version": "0.1.0",
   "description": "Browser engine for RSD Game-Maker games in their original DOS file formats",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lewismoten/GameMaker-SandboxEdition.git",
+    "directory": "web/packages/engine"
+  },
   "type": "module",
   "license": "MIT",
   "files": ["dist", "README.md", "LICENSE", "NOTICE.md"],
