@@ -76,7 +76,8 @@ game folder opens in the browser unchanged.
   LUNCHMEAT's flood on The Sofa (`web/src/retro/bbs/sofaSpam.ts`). What they suggested came
   to the project as notes and ideas, through Lewis.
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
-  **OpenAI Codex (GPT-6)** from this fork's existing TypeScript web engine.
+  **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
+  existing TypeScript web engine.
 - **Added to the site in October 2026**, also written by **Claude Opus 5.5** as Lewis
   directed, from no one else's code, art, data or recordings: the desk modem's line speeds
   and the handshake sounds you hear for each (see "Modem sounds" below); TERMINAL's TTY calls
