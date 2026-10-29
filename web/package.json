@@ -1,7 +1,7 @@
 {
   "name": "gamemaker-web",
   "private": true,
-  "version": "0.1.0",
+  "version": "3.1.0",
   "description": "Web port of Recreational Software Designs' GameMaker 3.0: design, play and export games as offline web apps.",
   "type": "module",
   "scripts": {
