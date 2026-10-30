@@ -325,7 +325,10 @@ are real previews too; a blank idle can fall back to a movement frame.
 
 - **Editor side-panel tabs.** `widgets/panelTabs.ts` shares the tab and panel
   semantics, roving keyboard focus, arrow/Home/End navigation and hidden-panel
-  behavior used to separate block colors from their gameplay properties.
+  behavior used to separate block colors from their gameplay properties. Character
+  sequences use Controls, Animation, Requirements and Sound tabs, remembering the
+  selected settings panel in the address when frames or sequences change. Frame
+  toolbars keep Swap halves alongside move, duplicate and delete.
 
 - **Readable time fields.** `core/duration.ts` formats timer values as hours,
   minutes, seconds and milliseconds using each field's clock. `numberField` can

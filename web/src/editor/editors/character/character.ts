@@ -38,6 +38,7 @@ import { blockLabel } from '../blocks/blockNames';
 import { stageBackdrop } from './characterStage';
 import { COUNTER_NAMES, counterName, readCounterNames, type CounterNames } from './counterNames';
 import { counterNameField } from './counterNameFields';
+import { panelTabs } from '../../widgets/panelTabs';
 
 const JOY_DIRS: [number, string][] = [
   [0, 'No joystick'],
@@ -611,115 +612,141 @@ registerEditor(['chr'], (host, project, file) => {
       h(
         'div',
         { class: 'chr-groups' },
-        current >= 3
-          ? group(
-              'Controls',
-              '⌨',
-              h(
-                'div',
-                { class: 'chr-fields' },
-                keyPicker(frames, seq),
-                selectField(
-                  'Joystick',
-                  JOY_DIRS,
-                  () => seq.jstkMov,
-                  (v) => edit(() => (seq.jstkMov = v)),
-                ),
-                selectField(
-                  'Joystick button',
-                  JOY_BUTTONS,
-                  () => seq.jstkBut,
-                  (v) => edit(() => (seq.jstkBut = v)),
-                ),
-              ),
-              help('Press the key (or push the joystick this way) to run the sequence. F1–F10 are kept for the game’s own menus.'),
-            )
-          : group('Controls', '⌨', help(`The game starts this one by itself. ${BUILT_IN_HELP[current]}`)),
-        group(
-          'Animation',
-          '▶',
-          h(
-            'div',
-            { class: 'stack' },
-            checkField(
-              'Always finish the sequence',
-              () => !!seq.ground,
-              (v) => edit(() => (seq.ground = v ? 1 : 0)),
-              'Other keys can’t interrupt it — good for jumps',
-            ),
-            checkField(
-              'Once per key press',
-              () => !!seq.norepeat,
-              (v) => edit(() => (seq.norepeat = v ? 1 : 0)),
-              'Otherwise it repeats while the key is held',
-            ),
-            checkField(
-              'Moves with momentum',
-              () => !!seq.momentum,
-              (v) => edit(() => ((seq.momentum = v ? 1 : 0), (stageInfo.textContent = describeTravel(seq)))),
-              'Moves push the hero instead of placing it, like gravity',
-            ),
-          ),
-          help('Each frame shows for its ticks, then the hero moves by its x and y.'),
-        ),
-        own
-          ? group(
-              'Requirements',
-              '🔑',
-              h(
-                'div',
-                { class: 'chr-fields' },
+        panelTabs(
+          'Sequence settings',
+          [
+            {
+              id: 'controls',
+              label: 'Controls',
+              panel:
+                current >= 3
+                  ? group(
+                      'Controls',
+                      '⌨',
+                      h(
+                        'div',
+                        { class: 'chr-fields' },
+                        keyPicker(frames, seq),
+                        selectField(
+                          'Joystick',
+                          JOY_DIRS,
+                          () => seq.jstkMov,
+                          (v) => edit(() => (seq.jstkMov = v)),
+                        ),
+                        selectField(
+                          'Joystick button',
+                          JOY_BUTTONS,
+                          () => seq.jstkBut,
+                          (v) => edit(() => (seq.jstkBut = v)),
+                        ),
+                      ),
+                      help('Press the key (or push the joystick this way) to run the sequence. F1–F10 are kept for the game’s own menus.'),
+                    )
+                  : group('Controls', '⌨', help(`The game starts this one by itself. ${BUILT_IN_HELP[current]}`)),
+            },
+            {
+              id: 'animation',
+              label: 'Animation',
+              panel: group(
+                'Animation',
+                '▶',
                 h(
-                  'label',
-                  { class: 'field' },
-                  h('span', null, 'Needs this object'),
-                  blockButton(
-                    () => bbl,
-                    pal,
-                    () => seq.bloc,
-                    (v) => edit(() => (seq.bloc = v)),
-                    {
-                      title: 'The object the hero must carry to do this',
-                      extras: [{ value: BACKBL, label: 'nothing', icon: '∅' }],
-                      transparent: false,
-                      only: (b) => !!b.obj,
-                    },
+                  'div',
+                  { class: 'stack' },
+                  checkField(
+                    'Always finish the sequence',
+                    () => !!seq.ground,
+                    (v) => edit(() => (seq.ground = v ? 1 : 0)),
+                    'Other keys can’t interrupt it — good for jumps',
+                  ),
+                  checkField(
+                    'Once per key press',
+                    () => !!seq.norepeat,
+                    (v) => edit(() => (seq.norepeat = v ? 1 : 0)),
+                    'Otherwise it repeats while the key is held',
+                  ),
+                  checkField(
+                    'Moves with momentum',
+                    () => !!seq.momentum,
+                    (v) => edit(() => ((seq.momentum = v ? 1 : 0), (stageInfo.textContent = describeTravel(seq)))),
+                    'Moves push the hero instead of placing it, like gravity',
                   ),
                 ),
-                selectField(
-                  'Uses',
-                  [
-                    [0, 'Unlimited'],
-                    [1, 'Limited'],
-                  ] as [number, string][],
-                  () => (meter === INF_REPEAT ? 0 : 1),
-                  (v) => edit(() => ((chr.meter[current] = v ? 10 : INF_REPEAT), renderDetail())),
-                ),
-                meter !== INF_REPEAT
-                  ? numberField(
-                      'Uses at start',
-                      () => meter,
-                      (v) => edit(() => (chr.meter[current] = v)),
-                      { min: 0, max: 32766 },
-                    )
-                  : null,
+                help('Each frame shows for its ticks, then the hero moves by its x and y.'),
               ),
-              help(`Limited uses work like ammo: each run uses one, and blocks set to change "Repetition count ${current - 4}" give more.`),
-              counterNameField(project, file, current, 'Repetition counter name (editor only)', setNames),
-            )
-          : null,
-        group(
-          'Sound',
-          '♪',
-          h(
-            'div',
-            { class: 'chr-fields' },
-            selectField('Plays when it starts', soundOptions, soundNo, (v) => edit(() => (seq.sound = v))),
-            h('button', { class: 'chr-play', title: 'Listen', disabled: !sounds, onclick: () => void playSound(soundNo()) }, '▶ Listen'),
-          ),
-          help(
-            sounds ? `Sounds come from ${sndName}: a Sound Blaster .voc where one is set, otherwise the PC speaker tune.` : 'This game has no sound set yet.',
-          ),
+            },
+            {
+              id: 'requirements',
+              label: 'Requirements',
+              panel: own
+                ? group(
+                    'Requirements',
+                    '🔑',
+                    h(
+                      'div',
+                      { class: 'chr-fields' },
+                      h(
+                        'label',
+                        { class: 'field' },
+                        h('span', null, 'Needs this object'),
+                        blockButton(
+                          () => bbl,
+                          pal,
+                          () => seq.bloc,
+                          (v) => edit(() => (seq.bloc = v)),
+                          {
+                            title: 'The object the hero must carry to do this',
+                            extras: [{ value: BACKBL, label: 'nothing', icon: '∅' }],
+                            transparent: false,
+                            only: (b) => !!b.obj,
+                          },
+                        ),
+                      ),
+                      selectField(
+                        'Uses',
+                        [
+                          [0, 'Unlimited'],
+                          [1, 'Limited'],
+                        ] as [number, string][],
+                        () => (meter === INF_REPEAT ? 0 : 1),
+                        (v) => edit(() => ((chr.meter[current] = v ? 10 : INF_REPEAT), renderDetail())),
+                      ),
+                      meter !== INF_REPEAT
+                        ? numberField(
+                            'Uses at start',
+                            () => meter,
+                            (v) => edit(() => (chr.meter[current] = v)),
+                            { min: 0, max: 32766 },
+                          )
+                        : null,
+                    ),
+                    help(`Limited uses work like ammo: each run uses one, and blocks set to change "Repetition count ${current - 4}" give more.`),
+                    counterNameField(project, file, current, 'Repetition counter name (editor only)', setNames),
+                  )
+                : group('Requirements', '🔑', help('Built-in sequences do not need an inventory object or use a repetition counter.')),
+            },
+            {
+              id: 'sound',
+              label: 'Sound',
+              panel: group(
+                'Sound',
+                '♪',
+                h(
+                  'div',
+                  { class: 'chr-fields' },
+                  selectField('Plays when it starts', soundOptions, soundNo, (v) => edit(() => (seq.sound = v))),
+                  h('button', { class: 'chr-play', title: 'Listen', disabled: !sounds, onclick: () => void playSound(soundNo()) }, '▶ Listen'),
+                ),
+                help(
+                  sounds
+                    ? `Sounds come from ${sndName}: a Sound Blaster .voc where one is set, otherwise the PC speaker tune.`
+                    : 'This game has no sound set yet.',
+                ),
+              ),
+            },
+          ],
+          view.get('settings'),
+          (settings) => view.set({ settings }),
         ),
       ),
     );
