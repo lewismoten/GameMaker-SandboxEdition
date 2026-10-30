@@ -1,6 +1,6 @@
 {
   "name": "@lewismoten/gamemaker-sandbox-tools",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Development tools for building and checking games in RSD Game-Maker formats",
   "type": "module",
   "license": "MIT",
