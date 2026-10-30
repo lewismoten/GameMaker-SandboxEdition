@@ -1,0 +1,137 @@
+{
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude Opus 5.5; extraction with OpenAI Codex. See NOTICE.md and docs/achievement-art.md.",
+  "badges": {
+    "make-edit": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
+      "game": "remote",
+      "set": "remote",
+      "block": "pen"
+    },
+    "export-windows": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUQCBRdNBx9VTSidU3HlmXrun1NMBxtSSzny5b5yiAgAAAAc0lEQVR42nVPUQ5DMQhi4Dbvf+Kloq/96EhaG4qIeF+AK/m6AJIUYugAXEKs229I1CNr1u1E41QGMj+ZiWVCVZGGtEMP2qRuJFf7H5IrxExnZbHy29iDOruXMEkbVOzo8JWTsZfckThXHZRuXOlfHF0D/gBn4AU2kEMJlQAAAABJRU5ErkJggg==",
+      "game": "goat",
+      "set": "goat",
+      "block": "window"
+    },
+    "export-mac": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEU4WYKmICjTODz/VVXfw0H/72E4olVh33nHnlX49J1mAAAATElEQVR42sWNMQ6AMAwD3djB+f+LEaFIXWDpgIf45OECvKWWu5N9wy9/a4FvVWqC3UUCmddKwu6VZEApNdk+AAQjAGlSb6gRj3iMu09iDwEBRxDWdgAAAABJRU5ErkJggg==",
+      "game": "teddy",
+      "set": "city",
+      "block": "apples"
+    },
+    "export-files": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEU4NDRhWVWGfXWqppYsGAxNMByOZTgcIeheAAAAV0lEQVR42pWPMQ7AMAgDHWP6/ydXIUvjkKE3GOmEQAZaIoKWNTn2BCgDBKBnQ3W0kUHlhoIgld+LKRIchxzzpsn1qJFxyNnI5Wrkm/zx6NbIqEZz27PhBQJqBNpND4pdAAAAAElFTkSuQmCC",
+      "game": "goat",
+      "set": "goat",
+      "block": "crate"
+    },
+    "first-steps": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEU4NDRhWVWGfXWqppbTy7YsGAxNMBxtSSyOZTgUYKc0AAAAgklEQVR42n1QWw7DMAwikAXf/8ST7aWppm584JcEwsAjJHHznFOAauJozp2GBJAcm0Vlj98Id4ntwxxyq4iIdkyXCHsolxZFIvVfCaiKyrG0bGyV4xM+t08i25YY9qp05dYTHTavRPZa5LC9eBKt1vL6ExDnbze+/lZZukd/7Jsf8AbcWQNu3/flhAAAAABJRU5ErkJggg==",
+      "game": "goat",
+      "set": "goat",
+      "block": "sandal"
+    },
+    "make-cards": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDBD///t1LCSWRTS2WUHXbVGqpqLj29P///fTODySVb7LpjxF64ooAAAAdElEQVR42n3OUQ4EIQgDUASEznD/+25E2dXEbP17qSkkFesVI2aOI6oT25YDAeCLZhbLUsPMSFWjzJFNJRFJJADkrYWILHTkO3F8fhyFNTR6XkO993lS9rJZ69vxzIXvyj+cQxv+hjYcJ12+82194pGBdskHqDwIeJHzZiYAAAAASUVORK5CYII=",
+      "game": "teddy",
+      "set": "city",
+      "block": "poster"
+    },
+    "play-first": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBSKTV2+dYbXmqZdoo4oKDDHx8scZRyaZbrvUHikAAAAdElEQVR42o2RSQ7AIAwDY5Om+f+LqxhRlkNVX5BGgIdgoLItRrIxZgbkASHoEVdPQWgnGHHdlYLQcXCF0J3gBlXkPKG/7UvRlxJelFPJI8LEModSPdPMBEupDaXoLHsR1qLcPZd2/6W0T2nCoaR7Ww22f8gDCZYGKDsqO5MAAAAASUVORK5CYII=",
+      "game": "remote",
+      "set": "remote",
+      "block": "handheld"
+    },
+    "play-sandbox": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEVZljR5tkXTODz/VVWGjpa+OcJjAAAAOklEQVR42s3Muw4AIAhD0Vb6/9/sYnhEBuPEHU8oYBN+UA0qFOmuRVeUhyooXmiykywwFfPlcQLiETe5KAI88HWTCgAAAABJRU5ErkJggg==",
+      "game": "teddy",
+      "set": "park",
+      "block": "bucket"
+    },
+    "play-teddy": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBBxLAi2bTDbjkn7sl3///fjkrYAAAACX8JHAAAACHRSTlP/////////AN6DvVkAAABlSURBVHjarc5LEsAgCANQ0oje/8adgJ/aumyG1RMBa4fYb4ioHVGBig9StSEKFeCNRtIdE8GMu7vtKHp0SpOgmTE6OrNNi6BHoH/ud8K9KOybB5Jz9cKh18QmvSJrZpPmAcPOeANr+QhX2P7D+QAAAABJRU5ErkJggg==",
+      "game": "teddy",
+      "set": "teddy",
+      "block": "stand"
+    },
+    "heart-first": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUQCBQ0TSRVbTh1jkmWsl3///8wMDBlZWWamprPz8884ojrAAAAnklEQVR42kWQCw4EIQhD26IO3P/Cm4KzQ0wwz/KxoKSQwlnsS0BvcN3cMARHxCRJoIRyAJmV6VJcdqoyM09T0HDXMAdCuMUvykoERNT5mJW0eHQ4GHin932fpt4JITbF3huZWLOSFNXUi9Jftvrt0P3YSvbHmj3jBD3IYnxM6+8SnmZuea0LXhhcK7wnx2fc9+hB4/hrfA/qV9dT90g/IJwFub+ElIIAAAAASUVORK5CYII=",
+      "game": "goat",
+      "set": "goat",
+      "block": "tinHeart"
+    },
+    "egg-first": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUQCBSafVG6nnHbw44sQYJFZa6WRVHLeYL/srL/73n////MM3ZrAAAAkklEQVR42lWRCxIDIQhDQ1Dj9v4H7vDRbkVn9BEEESQtLWYMJ8EeAH778LsTe2+BpW9vMgn0oLgsoGBGOpp9kkl1/hMWTOWLFW04JcUaLzj3VNkAaQnnLt2UVlSV8NmP2laFG3GzaBW0eOINHgteb8dJorEGbvGnoJV5Aprh3rjwashlzq4zW5yZz6l/wLvzoeQXxekF6lydsa0AAAAASUVORK5CYII=",
+      "game": "goat",
+      "set": "goat",
+      "block": "easterEgg"
+    },
+    "watch-one": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBQ4LDSSfV26pn3Tw57v374oKDCSkpbHx8uO/46hCg0LAAAAdklEQVR42nVRAQ7EIAjrrq3b/v/hC6DzMr0Go5SCpsKWxtJHkilYFicdrFC7e1q1UDIpVpDZrtHFfib0gGMOoXOB/pBtgcCfDInGUB4dg8z2o3Qvcqd8z/T+drV2XRH3vX/SVGKBUI6FSeFbWQPZjC9gGJes9QWsEAawt4UWWAAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "vcrPlaying"
+    },
+    "desk-bbs": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEWqpqL///dpQSRdXWGWLCjLTUGWjnW6rprb077/9+PXujxZpkXjprS1AAAAaUlEQVR42qWNUQ7AIAhDAZmK3v++S0WdLvswWT8KvJSUyodoPVR1wKst7hOWamZWamN1vuec8xIsJCICiCnaXAgCNBe5mBkwuXDyb9iLUkgB8KCoJw+KtiSK4pPciuL7nYkjjIe5R17hDU0JCBxVl5odAAAAAElFTkSuQmCC",
+      "game": "remote",
+      "set": "remote",
+      "block": "phone"
+    },
+    "desk-copycheck": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUUDBT///eKTV2+dYbXmqZdoo7LTUF5okYnAAAAcElEQVR42o2QgQoAIQhD1Zn//8mHM6OOOE4h8TV0KAbA4VkAVBG+J5uQjTczwtgiFQktQlUjMyLlkj8R2Rc0zjQckIsGAN0CGLX9hGgoMwjtopyWWknYlnblsvSaCbHb9r8+PyzVGX0dmpZGH3pUeQCJ0QPg5AouVgAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "guide"
+    },
+    "desk-clock": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBT///c4dWk8IBBpQSSWYTTbz7L789eqRWUOfOUcAAAAWklEQVR42o3QQQ7AIAgEQNZuaf//YiOkWAmx5bAhcxBEzqKkxKMoUb20pTC8UxiqBaN7kCRILkgAAoAvHGYI7rGt6CuZQVxjJdfB+U1UgzKG8uNHfhv+vtKMDt96Bzigk0UgAAAAAElFTkSuQmCC",
+      "game": "remote",
+      "set": "remote",
+      "block": "clock"
+    },
+    "desk-wastebasket": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEWiaWX77+NlaXmqrrrv8/tfJXNhAAAANElEQVR42mNghAImJiYmBhjAKciCBMgQZEYChASZmMGYiWRBEEAWBCmityAC4BdEDW4cggBgLQK+Lxf68QAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "trash"
+    },
+    "desk-door": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEVdNBx9VTSidU3HlmXrun1NMBxtSSzfvlHua1veAAAAZElEQVR42m2PUQ7AMAhCC8zt/jdetO3irPy0eRHEcTUaLWzFLWC+IgeRseLjELRPPqlpt3vJ6M6AyNDtnq9sd6hq57TrD7UqHZMBS2aefG6DAB49/ZbYjmZ7yWzs0lle3Jm15wsUIgVdCXRLZwAAAABJRU5ErkJggg==",
+      "game": "goat",
+      "set": "goat",
+      "block": "door"
+    },
+    "desk-window": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUYFCw4dWk8IBCWYTS+hlHbz7L789eWLCiqRWXzx3W2qv+Qhs9mAAAAYUlEQVR42oWQUQ7AIAhDuw1W9P4HXnBq1BHXj2KaFxBwBUIYnoGgpB6qdzeSHlIGkTQPBS6ppZE9zABJrWTekJjIoOcyfUMipfTt2cP8R243GklZ/lRI9auZW7mc4X3O9gCNVwX7biQPxQAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "window"
+    },
+    "desk-chicken": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDBA0KCx1LCSWRTS2WUHXbVGqpqKmICjTODy6liD/72H/522of4m1AAAAgUlEQVR42pWPQQ7DIAwE19isifP//7bZQJMDl45kIw2YBfiCfUG0BWPxj+QGaOs5pA4FP09Q30vbABrJMah1Frr1jip0c/e7iLA4TxTCWmt3SUaMnbzmAfykLkdlVhXeQTTUJQtUmMZpjpJM3btkQjBfMt0P98OmnL/ITJJX+wZ9AMz4BgAJ+1z4AAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "city",
+      "block": "chicken"
+    },
+    "desk-mail": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEVZljR5tkVpRSTTODwsUaZFedNhov9y562DAAAASklEQVR42sXOMQ7AIAxDUSepff8jVxSU0IqlLHhgePqRAP5OkkggImYSRV6FUmp2YDe2srC2RG7gM/fF98+gjaehfUJzt2ze551uLxsCCa94dJEAAAAASUVORK5CYII=",
+      "game": "teddy",
+      "set": "street",
+      "block": "mailbox"
+    },
+    "desk-zine": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEU4LDSSfV26pn3Tw57v375lEBSWLCjLTUHXujz/8200VaJVhs8kWUyUAAAAnElEQVR42k1RCQ7DMAxygazJ+v//TuBEHb0ijC9aFMF+EZRIsnziC5BAUYguEXVKKVHm4zoyGQm2EqFZPn8Ourqc/pJmLqFc6f4ekBA7/SUzshuJ8+DpKaKcY4zp67EEKM+71vA91qMsWi68alSF9KDZSPhTWog0CunHdghKo3XQ5jS54Z6xqRL0rtd2BnLNWEcK2w6bvP/DcdWxH2SmBrEE+mIEAAAAAElFTkSuQmCC",
+      "game": "remote",
+      "set": "remote",
+      "block": "mags"
+    },
+    "desk-light": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEWSfV26pn3Tw57v3748IBBpQSSWYTTjqm3zx3X/98f6Ajo9AAAAkklEQVR42mWRUQ7DMAxCDayku/+FJ2g6TR0fTvRC3OIMSJCklNo9hoCoHJ28DOJANZ6XJIEY5ajsnRKP5va9o9Bcb5vNQnlDBB7HUQgGbmNhrRxqrfXjXIsa0vZPT7vXC79ft6VRoL//aTsxC70TZZue8Na518b0Q+BonrDZ/yCHeD3URBm5cI2Qrc2+nyNT6+g/HrEHcobHKVIAAAAASUVORK5CYII=",
+      "game": "remote",
+      "set": "remote",
+      "block": "lamp"
+    }
+  }
+}

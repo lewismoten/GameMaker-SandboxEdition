@@ -90,3 +90,10 @@ prepare missing frame shards with two processes at a time. `GM_SKIP_GAME_BUILD=1
 output generation for these rendering jobs; normal installs and builds generate it.
 SDK-only package checks and publication jobs set `GM_SKIP_GAME_BUILD=1` for all steps,
 since their selected tests use synthetic format data and do not need the game disks.
+
+`achievementArt.ts` extracts the explicitly selected public games’ original 20×20 blocks
+into `src/achievements/blockArt.json`, with per-badge provenance and transparent pixels.
+Run `npx vite-node scripts/achievementArt.ts` after changing those source sprites. It
+rejects unknown achievement IDs, non-block dimensions and duplicate artwork. The browser
+loads these small embedded images without fetching game ZIPs. Art gaps and proposals
+are listed in `docs/achievement-art.md`.
