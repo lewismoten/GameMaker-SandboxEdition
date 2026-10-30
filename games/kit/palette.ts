@@ -14,7 +14,13 @@ export class PaletteBuilder {
   }
 
   /** A ramp of n shades from dark to light (8-bit RGB stops); returns the indexes. */
-  ramp(name: string, n: number, from: [number, number, number], to: [number, number, number], mid?: [number, number, number]): number[] {
+  ramp(
+    name: string,
+    n: number,
+    from: readonly [number, number, number],
+    to: readonly [number, number, number],
+    mid?: readonly [number, number, number],
+  ): number[] {
     const out: number[] = [];
     for (let k = 0; k < n; k++) {
       const t = n === 1 ? 0 : k / (n - 1);
