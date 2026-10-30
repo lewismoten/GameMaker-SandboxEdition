@@ -308,11 +308,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       browse: (to) => void select(to, true).then(() => document.getElementById(`lib-tab-${to}`)?.focus()),
       newGame: () => void homeImport().then((m) => m.newGame(nav)),
     });
-    // your own collections take more games in: the import tile, first while there are none
+    // The import target stays first, including after sorting or filtering the games.
     if (isOwn(c)) {
       dropTile.classList.remove('over');
-      if (cards.some((el) => el.classList.contains('game-tile'))) cards.push(dropTile);
-      else cards.unshift(dropTile);
+      cards.unshift(dropTile);
     }
     // Keep the page from jumping while the tiles are swapped.
     tiles.style.minHeight = `${tiles.offsetHeight}px`;
