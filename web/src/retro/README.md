@@ -58,6 +58,10 @@ directory and calls are `bbs.ts`.
 - `bbs/signupAccounts.ts`: callback-verified handles, separated by board, with fictional
   555-01xx home numbers. The desk backup includes the records; storage failures keep them
   usable for the visit and restored records take effect without reloading.
+- `bbs/signup.ts`: NEW-account callback verification: disconnect, incoming RING,
+  timed ATA answer, confirmation code, and only then account persistence. Busy lines,
+  missed calls, wrong codes, cancellation and PC shutdown leave no verified account.
+  The flow uses the terminal modem on both Desk and DOS; the wall handset stays hung up.
 - Their file areas: listings a screen at a time (`pager.ts`) with FILE_ID.DIZ (`fileId.ts`), the
   GIF Gallery (`gallery.ts`, `gifArea.ts`), the Warez area (`warezArea.ts`), the upload/download
   ratio (`ratio.ts`) and PKUNZIP after a download (`pkunzip.ts`).
