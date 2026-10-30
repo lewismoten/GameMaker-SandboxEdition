@@ -16,8 +16,9 @@ export function monsterBirthField(project: Project, bbl: string, get: () => numb
     set(value);
     refresh();
   };
-  const number = numberField('Gives birth to monster', get, choose, { min: 0, max: LASTMON - 1 });
+  const number = numberField('Gives birth to monster', get, choose, { min: 0, max: LASTMON });
   const name = (index: number) => {
+    if (index === LASTMON) return 'None';
     const friendly = source ? monsterName(project, source.mon, index) : '';
     return `Monster ${index}${friendly ? `: ${friendly}` : ''}`;
   };
@@ -31,6 +32,7 @@ export function monsterBirthField(project: Project, bbl: string, get: () => numb
     }
     const button = blockButton(() => data.pictures, palette, get, choose, {
       title: 'Choose the monster to be born',
+      extras: [{ value: LASTMON, label: 'None', icon: '∅' }],
       only: (_, i) => data.used[i],
       name,
     });
