@@ -483,3 +483,6 @@ seam-continuous gestures, and viewport tile/marker placement without enlarging D
 `editors/map/mapViewport.ts` owns the scroll surface, bounded/repeating canvas presentation,
 visible native cells and marker placement. The repeating canvas is only viewport sized;
 its source artwork and overlays keep their native map dimensions.
+The map toolbar’s **Wrap scrolling** toggle remembers its view preference. Repeating
+views use the same native painting, monster and link data; link markers project into
+the viewport, and zoom, Level check jumps and URL positions keep native coordinates.

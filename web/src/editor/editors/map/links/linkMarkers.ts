@@ -20,6 +20,9 @@ interface MarkersHost {
   canvas: HTMLCanvasElement;
   /** A block's size on screen now. */
   block(): number;
+  /** Optional viewport projection and inverse, including maps repeated across an edge. */
+  point?(at: Point): Point;
+  cell?(event: PointerEvent): Point;
   /** Called just before a link changes: the map editor keeps an Undo step (map and .gam). */
   remember(): void;
   /** The links changed: redraw the map's squares under the markers. */
@@ -72,7 +75,7 @@ export function linkMarkers(host: MarkersHost) {
   };
 
   const place = (el: HTMLElement, at: Point, stack: number) => {
-    const b = markerBox(at, host.block(), stack);
+    const b = markerBox(host.point?.(at) ?? at, host.block(), stack);
     Object.assign(el.style, { left: `${b.left}px`, top: `${b.top}px`, width: `${b.size}px`, height: `${b.size}px` });
   };
 
@@ -122,7 +125,7 @@ export function linkMarkers(host: MarkersHost) {
       let to = from;
       const move = (ev: PointerEvent) => {
         if (locked) return;
-        to = cellAtPoint(ev.clientX, ev.clientY, host.canvas.getBoundingClientRect());
+        to = host.cell?.(ev) ?? cellAtPoint(ev.clientX, ev.clientY, host.canvas.getBoundingClientRect());
         place(el, to, 0);
         el.classList.toggle('lk-dragging', to.x !== from.x || to.y !== from.y);
       };

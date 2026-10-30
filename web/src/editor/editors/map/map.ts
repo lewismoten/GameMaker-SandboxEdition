@@ -1,5 +1,7 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
-import { nextZoom, zoomScroll } from './mapZoom';
+import { nextZoom } from './mapZoom';
+import { mapViewport } from './mapViewport';
+import { continueWrappedCell, nativeCell } from './mapWrap';
 import { panelTabs } from '../../widgets/panelTabs';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
@@ -115,6 +117,7 @@ registerEditor(['map'], (host, project, file) => {
   let bgImgs: HTMLCanvasElement[] = [];
   const overlay: OverlayState = { grid: readPref('gm-map-grid'), found: [] };
   let finding = false;
+  let wrapping = readPref('gm-map-wrap');
   let monImgs: HTMLCanvasElement[] = [];
   // the Level check's "Gray level": the map on screen in the palette's lightness only, so the
   // heat map's colors stand out (made when first asked for; exports always draw in color)
@@ -174,10 +177,12 @@ registerEditor(['map'], (host, project, file) => {
     },
     h('div', { class: 'mt-stack' }, canvas, over),
   );
-  const ctx = canvas.getContext('2d')!;
+  const viewport = mapViewport({ scroller, stack: canvas.parentElement!, canvas, overlay: over, block: () => BLEN * zoom, moved: () => markers.render() });
+  const ctx = viewport.picture.getContext('2d')!;
   const redrawOverlay = () => {
     overlay.found = finding ? findBlock(map.blocks, brush) : [];
     drawOverlay(over, zoom, overlay, bgImgs);
+    viewport.render();
   };
   const status = h('div', { class: 'meta' });
   const picker = rovingGrid(
@@ -269,8 +274,8 @@ registerEditor(['map'], (host, project, file) => {
 
   function draw(): void {
     const s = BLEN * zoom;
-    canvas.width = MLEN * s;
-    canvas.height = MWID * s;
+    viewport.picture.width = MLEN * s;
+    viewport.picture.height = MWID * s;
     ctx.imageSmoothingEnabled = false;
     const { bg: bgI, mon: monI } = onScreen();
     drawnGray = !!overlay.gray;
@@ -300,6 +305,7 @@ registerEditor(['map'], (host, project, file) => {
       ctx.strokeStyle = color;
       ctx.strokeRect(mk.x * s + 1, mk.y * s + 1, s - 2, s - 2);
     }
+    viewport.layout();
     redrawOverlay();
     markers.render();
   }
@@ -563,14 +569,12 @@ registerEditor(['map'], (host, project, file) => {
     players?.cancel();
   }
 
-  const cell = (e: PointerEvent) => {
-    const r = canvas.getBoundingClientRect();
-    const clamp = (v: number, n: number) => Math.max(0, Math.min(n - 1, v));
-    return { x: clamp(Math.floor(((e.clientX - r.left) / r.width) * MLEN), MLEN), y: clamp(Math.floor(((e.clientY - r.top) / r.height) * MWID), MWID) };
-  };
+  const cell = (e: PointerEvent) => viewport.cell(e);
+
   let painting = false;
 
   function paintCell(x: number, y: number, v = brush): void {
+    if (wrapping) ({ x, y } = nativeCell({ x, y }));
     if (x < 0 || y < 0 || x >= MLEN || y >= MWID) return;
     map.blocks[y * MLEN + x] = v;
     const s = BLEN * zoom;
@@ -662,10 +666,11 @@ registerEditor(['map'], (host, project, file) => {
     canvas.setPointerCapture(e.pointerId);
     painting = true;
     paintCell(p.x, p.y);
+    viewport.render();
   });
   let lastPaint: { x: number; y: number } | undefined;
   canvas.addEventListener('pointermove', (e) => {
-    const p = cell(e);
+    let p = cell(e);
     const b = map.blocks[p.y * MLEN + p.x];
     const mon = map.monsters.find((m) => m.monnum < LASTMON && m.curx === p.x && m.cury === p.y);
     const marks = linkMarks().filter((m) => m.x === p.x && m.y === p.y);
@@ -674,10 +679,12 @@ registerEditor(['map'], (host, project, file) => {
     if (!painting || !canvas.hasPointerCapture(e.pointerId)) return;
     // a fast stroke skips cells: fill them in along a line
     const from = lastPaint ?? p;
+    if (wrapping) p = continueWrappedCell(p, from);
     const n = Math.max(Math.abs(p.x - from.x), Math.abs(p.y - from.y));
     for (let k = 1; k <= n; k++) paintCell(Math.round(from.x + ((p.x - from.x) * k) / n), Math.round(from.y + ((p.y - from.y) * k) / n));
     paintCell(p.x, p.y);
     lastPaint = p;
+    viewport.render();
   });
   canvas.addEventListener('pointerdown', (e) => (lastPaint = cell(e)));
   const endStroke = (e: PointerEvent) => {
@@ -753,7 +760,16 @@ registerEditor(['map'], (host, project, file) => {
       return true;
     }
   })();
-  const markers = linkMarkers({ project, scenes: set.scenes, canvas, block: () => BLEN * zoom, remember: rememberLinks, redraw: () => draw() });
+  const markers = linkMarkers({
+    project,
+    scenes: set.scenes,
+    canvas,
+    block: () => BLEN * zoom,
+    point: (p) => viewport.point(p),
+    cell: (e) => viewport.cell(e),
+    remember: rememberLinks,
+    redraw: () => draw(),
+  });
   markers.setShown(showLinks);
   const linksBtn = h(
     'button',
@@ -782,11 +798,8 @@ registerEditor(['map'], (host, project, file) => {
       disabled: !set.scenes.length || !!project.readOnly,
       onclick: () => {
         if (!showLinks) linksBtn.click();
-        const s = BLEN * zoom;
-        markers.addExit({
-          x: Math.floor((scroller.scrollLeft + scroller.clientWidth / 2) / s),
-          y: Math.floor((scroller.scrollTop + scroller.clientHeight / 2) / s),
-        });
+        const at = viewport.at();
+        markers.addExit({ x: Math.min(MLEN - 1, Math.floor(at.x)), y: Math.min(MWID - 1, Math.floor(at.y)) });
       },
     },
     '＋',
@@ -798,6 +811,24 @@ registerEditor(['map'], (host, project, file) => {
     { type: 'button', class: 'mt-tool', 'aria-label': 'Grid', title: 'Show the block grid (G)', onclick: () => toggleGrid() },
     '#',
     h('span', { class: 'mt-label' }, 'Grid'),
+  );
+  const wrapBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'mt-tool',
+      'aria-label': 'Wrap scrolling',
+      title: 'Keep scrolling through the map edges; the opposite side follows',
+      onclick: () => {
+        tools.cancel();
+        wrapping = !wrapping;
+        viewport.setWrapped(wrapping);
+        writePref('gm-map-wrap', wrapping);
+        syncToggles();
+      },
+    },
+    '∞',
+    h('span', { class: 'mt-label' }, 'Wrap'),
   );
   const findBtn = h(
     'button',
@@ -814,6 +845,7 @@ registerEditor(['map'], (host, project, file) => {
   function syncToggles(): void {
     for (const [b, on] of [
       [gridBtn, overlay.grid],
+      [wrapBtn, wrapping],
       [findBtn, finding],
       [linksBtn, showLinks],
     ] as const)
@@ -904,10 +936,9 @@ registerEditor(['map'], (host, project, file) => {
     overlay,
     redraw: () => (!!overlay.gray !== drawnGray ? draw() : redrawOverlay()),
     goTo: (c) => {
-      const s = BLEN * zoom;
       const x = c % MLEN;
       const y = Math.floor(c / MLEN);
-      scroller.scrollTo({ left: x * s - scroller.clientWidth / 2, top: y * s - scroller.clientHeight / 2, behavior: 'smooth' });
+      viewport.goTo({ x, y });
       status.textContent = `(${x}, ${y}) block ${map.blocks[c]}`;
     },
     reload: (names) => {
@@ -971,6 +1002,7 @@ registerEditor(['map'], (host, project, file) => {
       ),
       h('span', { style: 'flex:1' }),
       gridBtn,
+      wrapBtn,
       linksBtn,
       exitBtn,
       findBtn,
@@ -1000,14 +1032,12 @@ registerEditor(['map'], (host, project, file) => {
 
   function setZoom(value: number, pointer = { x: scroller.clientWidth / 2, y: scroller.clientHeight / 2 }): void {
     if (value === zoom) return;
-    const left = zoomScroll(scroller.scrollLeft, pointer.x, zoom, value);
-    const top = zoomScroll(scroller.scrollTop, pointer.y, zoom, value);
+    const anchor = viewport.at(pointer);
     zoom = value;
     view.set({ zoom: value === 1 ? undefined : value });
     draw();
     zoomControl.querySelector('select')!.value = String(value);
-    scroller.scrollLeft = left;
-    scroller.scrollTop = top;
+    viewport.goTo(anchor, pointer);
   }
   const zoomControl = selectField(
     'Zoom',
@@ -1192,22 +1222,22 @@ registerEditor(['map'], (host, project, file) => {
   window.addEventListener('keydown', onKey);
   // Open where the address says, else where the action is: where the character starts, else the first placed monster.
   requestAnimationFrame(() => {
+    if (!host.isConnected) return;
+    viewport.setWrapped(wrapping);
     const urlX = view.num('x');
     const urlY = view.num('y');
     const start = linkMarks().find((m) => m.kind === 'to') ?? map.monsters.find((m) => m.monnum < LASTMON) ?? undefined;
     const at =
       urlX !== undefined && urlY !== undefined ? { x: urlX, y: urlY } : start ? ('curx' in start ? { x: start.curx, y: start.cury } : start) : undefined;
-    if (at) {
-      const s = BLEN * zoom;
-      scroller.scrollTo({ left: at.x * s - scroller.clientWidth / 2, top: at.y * s - scroller.clientHeight / 2 });
-    }
+    if (at) viewport.goTo(at);
     // from now on, scrolling updates the address (once it settles)
     let settle: ReturnType<typeof setTimeout> | undefined;
     scroller.addEventListener('scroll', () => {
       clearTimeout(settle);
       settle = setTimeout(() => {
-        const s = BLEN * zoom;
-        view.set({ x: Math.round((scroller.scrollLeft + scroller.clientWidth / 2) / s), y: Math.round((scroller.scrollTop + scroller.clientHeight / 2) / s) });
+        const at = viewport.at();
+        const center = wrapping ? nativeCell({ x: Math.round(at.x), y: Math.round(at.y) }) : { x: Math.round(at.x), y: Math.round(at.y) };
+        view.set({ x: center.x, y: center.y });
       }, 300);
     });
   });
@@ -1215,6 +1245,7 @@ registerEditor(['map'], (host, project, file) => {
     hideTip();
     tip.remove();
     markers.dispose();
+    viewport.dispose();
     window.removeEventListener('keydown', onKey);
     fitter.disconnect();
     removeEventListener('resize', fit);
