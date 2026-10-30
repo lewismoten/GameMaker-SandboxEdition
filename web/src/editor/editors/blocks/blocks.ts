@@ -1,5 +1,6 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
 import { rovingGrid } from '../../widgets/rovingGrid';
+import { panelTabs } from '../../widgets/panelTabs';
 import { colorChoice } from '../../widgets/colorChoice';
 import './blocks.css';
 import { registerEditor } from '../registry';
@@ -517,6 +518,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
 
   // ---- colors ---------------------------------------------------------------
   const swatches = rovingGrid(h('div', { class: 'swatches' }), 'Drawing color');
+  const swatchCss = (i: number) =>
+    sprites && i === TRANSPARENT ? 'repeating-conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%) 0 0 / 8px 8px' : paletteCss(pal(), i);
   const colorLabel = h('div', { class: 'meta' });
   const colorBox = colorChoice({
     get: () => color,
@@ -524,7 +527,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       color = i;
       renderSwatches();
     },
-    css: (i) => (sprites && i === TRANSPARENT ? 'transparent' : paletteCss(pal(), i)),
+    css: swatchCss,
     name: (i) => (sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}`),
   });
   function renderSwatches(): void {
@@ -533,7 +536,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ...Array.from({ length: 256 }, (_, i) =>
         h('button', {
           class: i === color ? 'selected' : '',
-          style: `background:${sprites && i === TRANSPARENT ? 'transparent' : paletteCss(pal(), i)}`,
+          style: `background:${swatchCss(i)}`,
           title: sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}`,
           onclick: () => {
             color = i;
@@ -548,6 +551,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
 
   // ---- properties -----------------------------------------------------------
   const props = h('div', { class: 'panel stack' });
+  const walkingProps = h('div', { class: 'panel stack' });
+  const touchProps = h('div', { class: 'panel stack' });
+  const timeProps = h('div', { class: 'panel stack' });
   function renderProps(): void {
     const b = blocks[current];
     const edit = (fn: () => void) => {
@@ -605,6 +611,16 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       clear(
         props,
         h('h2', null, `Block ${current}: when a monster showing this picture touches the character`),
+        h(
+          'details',
+          null,
+          h('summary', null, 'How hit points and monster power work'),
+          h(
+            'p',
+            { class: 'hint' },
+            'Hit points here are added to the character on contact; negative values hurt. Monster strength is Power in the monster file. A stronger monster can destroy a weaker one on pixel contact; equal powers survive. A weapon must have greater Power than its target. Touching the character can destroy monsters below Power 100; monsters at 100 or above remain. Indestructible monsters survive, and a destroyed monster can transform according to its monster-file settings. The character’s health still changes by this block’s hit-point effect.',
+          ),
+        ),
         sides(
           'Solid (pushes the character)',
           () => b.solid,
@@ -616,8 +632,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       return;
     }
     clear(
-      props,
-      h('h2', null, `Block ${current}`),
+      walkingProps,
+      h('h2', null, `Block ${current}: walking`),
       sides(
         'Solid sides',
         () => b.solid,
@@ -630,17 +646,17 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
         (v) => (b.grav = v),
         'While on this block the character accelerates in these directions',
       ),
-      h(
-        'div',
-        { class: 'row' },
-        checkField(
-          'Can be picked up (object)',
-          () => !!b.obj,
-          (on) => edit(() => (b.obj = on ? 1 : 0)),
-          'Goes into the inventory with the pick-up sequence',
-        ),
+      walkPaths?.el,
+    );
+    clear(
+      touchProps,
+      h('h2', null, `Block ${current}: touch`),
+      checkField(
+        'Can be picked up (object)',
+        () => !!b.obj,
+        (on) => edit(() => (b.obj = on ? 1 : 0)),
+        'Goes into the inventory with the pick-up sequence',
       ),
-      h('h3', null, 'When touched'),
       h(
         'div',
         { class: 'grid-fields' },
@@ -652,7 +668,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           'Set to this block’s own number to stay the same',
         ),
       ),
-      h('h3', null, 'Over time'),
+    );
+    clear(
+      timeProps,
+      h('h2', null, `Block ${current}: time`),
       h(
         'div',
         { class: 'grid-fields' },
@@ -681,7 +700,6 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           { min: 0, max: 16383 },
         ),
       ),
-      walkPaths?.el,
     );
   }
 
@@ -707,10 +725,26 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     });
 
   // the three columns each end at the window's bottom edge and scroll by themselves (blocks.css)
+  const colorsPanel = h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel);
+  const sideTabs = panelTabs(
+    'Block settings',
+    [
+      { id: 'palette', label: 'Palette', panel: colorsPanel },
+      ...(kind === 'bbl'
+        ? [
+            { id: 'walking', label: 'Walking', panel: walkingProps },
+            { id: 'touch', label: 'Touch', panel: touchProps },
+            { id: 'time', label: 'Time', panel: timeProps },
+          ]
+        : [{ id: 'properties', label: 'Properties', panel: props }]),
+    ],
+    view.get('tab') ?? undefined,
+    (tab) => view.set({ tab }),
+  );
   const columns = [
     h('div', { class: 'blk-picker' }, picker),
     h('div', { class: 'blk-paint stack' }, tools, canvas, actions, mirrorSlot, groups.el, sprites ? null : textures, badges.el, insight.el),
-    h('div', { class: 'blk-side' }, h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel), props),
+    h('div', { class: 'blk-side' }, sideTabs),
   ];
   clear(
     host,

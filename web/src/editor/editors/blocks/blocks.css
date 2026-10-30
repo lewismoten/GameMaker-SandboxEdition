@@ -302,3 +302,8 @@ dialog.modal label.recolor-check {
   font-size: 1em;
   margin-block: 1.33em;
 }
+
+/* The single tab set spans the former colors/properties columns on tablets. */
+.blk-side > .panel-tabs {
+  grid-column: 1 / -1;
+}
