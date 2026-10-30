@@ -11,6 +11,7 @@
 // its camera in boardCamera.ts and its pointer and keys in boardInput.ts; the layout
 // algorithms are in integratorLayout.ts and layoutCells.ts.
 import './integrator.css';
+import { gameProject } from '../../shell/gameProject';
 import { registerEditor } from '../registry';
 import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
 import type { FileKind } from '../../core/project';
@@ -56,7 +57,8 @@ import {
   type Rect,
 } from './board';
 
-registerEditor(['gam'], (host, project, file) => {
+registerEditor(['gam'], (host, owner, file) => {
+  const project = gameProject(owner, file);
   const game = project.game();
   // the address keeps the selected scene and the side panel's tab (…/GAME.GAM?scene=3&side=music)
   const view = viewState(['p', project.id, file]);
