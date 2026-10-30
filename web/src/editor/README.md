@@ -251,3 +251,8 @@ are real previews too; a blank idle can fall back to a movement frame.
   time and calculates the playhead through PlayIt's first pass and repeat lead-in.
   The file picker overlays the playhead while auditioning a song and restores the
   thumbnail when playback stops.
+
+- **Sound-set auditions.** `widgets/soundAuditions.ts` keeps each effect's DOS slot
+  number and its PC speaker/VOC pair. `soundSetPreview.ts` offers individual effects
+  or all effects, either source or both in sequence, and updates the status and
+  thumbnail for the part currently playing. Closing the dialog stops playback.
