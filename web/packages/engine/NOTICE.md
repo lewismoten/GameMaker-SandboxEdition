@@ -22,8 +22,12 @@ site editor, DOS executables, or native player shells.
 
 - **8×8 text font:** `font8x8_basic`, `font8x8_ext_latin`, `font8x8_misc`, and
   `font8x8_greek` by Daniel Hepper are public domain. They supply the ASCII and
-  selected code page 437 glyphs in the engine. The other glyphs were drawn for
-  this project. [Source](https://github.com/dhepper/font8x8).
+  selected code page 437 glyphs in `src/gfx/font8x8.ts` and `src/gfx/cp437Glyphs.ts`.
+  The upstream headers also credit Marcel Sondaar and International Business Machines
+  (public domain VGA fonts) as their basis. [Source](https://github.com/dhepper/font8x8).
+  The remaining CP437 symbols and box-drawing glyphs were drawn for this project with
+  Anthropic Claude Opus 5.5 under Lewis Moten's direction and are distributed under the
+  project's MIT License; they were not copied from IBM's ROM.
 - **GIF:** Graphics Interchange Format is a format and trademark of CompuServe
   Incorporated. The engine implements GIF decoding from the format description.
 - **FLI:** Autodesk Animator's animation format, implemented from its public

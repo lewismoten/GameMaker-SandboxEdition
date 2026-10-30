@@ -1,6 +1,6 @@
 # Notices
 
-This development toolkit is extracted from Game-Maker: Sandbox Edition by Lewis Moten, released under the MIT License. It includes the fork's native format codecs, drawing and audio builders, and headless reference simulation.
+This development toolkit is extracted from Game-Maker: Sandbox Edition by Lewis Moten, released under the MIT License. It owns the drawing and audio builders and headless reference simulation; shared native format codecs, runtime types and CP437 font data come through its declared engine dependency, and archive support through its declared archives dependency.
 
 The reference engine is a TypeScript port of RSD Game-Maker 3.0 by Recreational Software Designs: G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone. Andy Stone released the original source under the MIT License in 2014. The original copyright notice is retained in LICENSE. Peter Savage wrote the original Sound Blaster voice-file and joystick routines.
 
