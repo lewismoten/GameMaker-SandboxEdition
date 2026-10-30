@@ -23,6 +23,7 @@ const KIND_LABEL: Record<GameKind, string> = {
   sandbox: 'Sandbox',
   shareware: 'Shareware',
   bizarre: 'Bizarre',
+  community: 'Community',
 };
 
 /** Movement is welcome, data is not scarce and no guided tour is on: demos may start by themselves. */
@@ -184,7 +185,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     const canvas = h('canvas', { class: 'sc-shot pixel', width: 320, height: 200, 'aria-hidden': 'true' });
     const playBtn = h('button', { class: 'sc-demo-btn', type: 'button', hidden: true });
     clear(screen, canvas, playBtn, game.health && !game.health.released ? healthBadge(game.health, true) : null);
-    if (game.gam || game.kind === 'mine') void game.drawShot(canvas).catch(() => undefined);
+    if (game.gam || game.kind === 'mine' || game.community) void game.drawShot(canvas).catch(() => undefined);
     else screen.append(h('div', { class: 'sc-none', 'aria-hidden': 'true' }, '🎨'));
 
     const setPlaying = (on: boolean) => {

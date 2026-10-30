@@ -347,3 +347,8 @@ Palette file pickers have a separate **Ready-made palettes** tab, selected first
 a palette. It reads the tools package's template registry, previews occupied entries without
 fetching game ZIPs, and creates a fresh file with a free DOS 8.3 name. CD samples retain their
 own tab. Picker tabs support arrow keys and Home/End.
+
+Community games use reviewed metadata alongside native `HomeGame` entries. Their cards
+open the creator's play site, optional permanent ZIP, source/credits, and the existing
+`?open=` import flow for editing a copy. Their previews use creator images or title cards;
+native game files are loaded only when the player chooses an archive action.

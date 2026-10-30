@@ -28,6 +28,7 @@ import { plainError } from '../core/plainError';
 import { isBizarreGame } from '../../project/bizarre';
 import { lookId } from './lookId';
 import { gameVersion } from '../../project/gameVersion';
+import type { CommunityGame } from '../../community/catalog';
 
 // Loaded when first used, so the list of games shows without them: the demo player (and
 // the game engine with it), the keyboard map and the manual with the paper in the box.
@@ -83,7 +84,7 @@ export function playLink(id: string): string {
 /** How much of a game a demo in the panel fetches before it is asked for, in bytes. */
 const PREVIEW_AHEAD = 192 * 1024;
 
-export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre';
+export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre' | 'community';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
 
@@ -102,6 +103,7 @@ export interface HomeGame {
   search: string;
   entry?: CatalogEntry;
   project?: ProjectSummary;
+  community?: Readonly<CommunityGame>;
   health?: HealthTarget;
   /** Draws the game's picture (its first level) into a canvas of any size. */
   drawShot(canvas: HTMLCanvasElement): Promise<unknown>;
@@ -340,7 +342,8 @@ interface TileOptions {
 
 /** A game in the grid: its picture with Keys and Manual over it, and its title. */
 export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
-  const shot = game.gam || game.kind === 'mine' ? gameShot(game) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨');
+  const shot =
+    game.gam || game.kind === 'mine' || game.community ? gameShot(game) : h('div', { class: 'card-shot card-shot-none', 'aria-hidden': 'true' }, '🎨');
   // Keys and Manual at the top left (⚠ takes the top right); choosing the tile plays its demo in the panel
   const tools = h('div', { class: 'shot-icons shot-tools' });
   const picture = h('div', { class: 'tile-shot' }, shot, tools);
@@ -452,6 +455,23 @@ function moreMenu(...items: (HTMLElement | null | false | undefined)[]): HTMLEle
 
 /** Everything that can be done with a game, for the panel at the top. */
 export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise<void>): HTMLElement[] {
+  if (game.community) {
+    const entry = game.community;
+    const link = (href: string, label: string, primary = false) =>
+      h(
+        'a',
+        { class: `button with-ico${primary ? ' primary' : ''}`, href, target: '_blank', rel: 'noopener noreferrer' },
+        svgIcon(primary ? 'play' : 'link'),
+        label,
+      );
+    const actions = [link(entry.url, 'Play on its website', true)];
+    if (entry.archiveUrl) {
+      actions.push(link(entry.archiveUrl, 'Game files (.zip)'));
+      actions.push(h('a', { class: 'button with-ico', href: `./index.html?open=${encodeURIComponent(entry.archiveUrl)}` }, svgIcon('edit'), 'Edit a copy'));
+    }
+    if (entry.sourceUrl) actions.push(link(entry.sourceUrl, 'Source & credits'));
+    return actions;
+  }
   const play = (href: string) => h('a', { class: 'button primary with-ico', href, 'aria-label': `Play ${game.title}` }, svgIcon('play'), 'Play');
   const keys = h('button', { class: 'with-ico', title: 'What each key does in this game', onclick: () => openKeys(game) }, svgIcon('keys'), 'Keys');
   const e = game.entry;
