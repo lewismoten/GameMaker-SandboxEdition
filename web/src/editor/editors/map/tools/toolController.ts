@@ -10,6 +10,7 @@ import { lineCells, rectCells, spanRect, type Cell, type CellRect } from './cell
 import { paintTerrain, pickBlock, type Terrain } from './autotile';
 import { assembleBuilding, placeGrid, type Building } from './building';
 import { captureStamp, mirrors, stampRows, transformStamp, type Mirrors, type Stamp, type Transform } from './stamps';
+import { saveMapGroup } from './mapGroup';
 import { getClip, setClip } from './clipboard';
 import { loadBrushes, saveBrush } from './brushStore';
 import { renderBrushPanel } from './brushPanel';
@@ -307,6 +308,19 @@ export class MapTools {
             'button',
             { type: 'button', disabled: !has, onclick: () => void this.saveStamp(), title: 'Keep these blocks as a stamp to place again' },
             '★ Save as stamp',
+          ),
+          h(
+            'button',
+            {
+              type: 'button',
+              disabled: !has,
+              title: 'Keep this picture as a block group to edit together in the background block editor',
+              onclick: () => {
+                const area = this.selection;
+                if (area) void saveMapGroup(this.host.project, this.host.bbl(), this.host.blocksArr, area, this.host.blocks().length);
+              },
+            },
+            '▦ Save as block group',
           ),
           h('button', { type: 'button', disabled: !has, onclick: () => this.fillSelection(), title: 'Fill with the chosen block (Delete)' }, '▣ Fill'),
         ),
