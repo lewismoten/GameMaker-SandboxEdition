@@ -211,3 +211,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   project's DOS player patches, with the palette entry each word color matched.
 
 Catalog DOS downloads save the same built game ZIP used for browser loading. Downloads of edited projects are still rebuilt from their current files.
+
+Integrator link placement uses `editors/integrator/linkConflicts.ts` alongside
+`linkEdits.ts`: an exit cannot share a block with another exit or an incoming
+entrance, and an entrance cannot land on an exit. These checks guide edits; opening
+an existing DOS game never silently rewrites its links.
