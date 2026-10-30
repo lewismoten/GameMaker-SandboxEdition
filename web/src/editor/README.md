@@ -177,6 +177,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   the sidebar edits. Strokes update native tile thumbnails live; Escape cancels a stroke
   without changing Undo/Redo. A group turn also turns its companion layout; maps retain
   their own tile placement.
+  Replace colors applies to the whole active group unless the whole-set option is selected;
+  both choices are one Undo step, including blocks beyond the currently visible picture.
   `blockProperties.ts` owns the selected block's Walking, Touch, Time and monster behavior
   panels separately from canvas painting, including scene-specific named counters and
   monster-birth choices. Group tools do not spread those behavior fields across the group.

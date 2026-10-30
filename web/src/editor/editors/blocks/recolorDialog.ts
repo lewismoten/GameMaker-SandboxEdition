@@ -17,7 +17,7 @@ export function applyRecolor(px: Uint8Array, r: Recolor): Uint8Array {
   return r.swap ? swapRange(px, r.from, r.to, r.count) : moveRange(px, r.from, r.to, r.count);
 }
 
-export function recolorDialog(pal: Palette, from: number, to: number): Promise<Recolor | undefined> {
+export function recolorDialog(pal: Palette, from: number, to: number, grouped = false): Promise<Recolor | undefined> {
   return modal<Recolor>('Replace colors', (close) => {
     const num = (label: string, value: number, max = 255, min = 0) => {
       const input = h('input', { type: 'number', min, max, value: String(value), required: true });
@@ -52,9 +52,10 @@ export function recolorDialog(pal: Palette, from: number, to: number): Promise<R
         },
       },
       h('p', { class: 'meta' }, 'With more than one color, each shade goes to the matching shade of the other run: a whole ramp recolored at once.'),
+      grouped ? h('p', { class: 'meta' }, 'Applies to every block in the group. Select every block below to recolor the whole set.') : null,
       h('div', { class: 'grid-fields' }, f.el, t.el, n.el),
       h('label', { class: 'check recolor-check' }, swap, h('span', null, 'Swap: the second colors become the first, too')),
-      h('label', { class: 'check recolor-check' }, every, h('span', null, 'In every block of this set (not just this one)')),
+      h('label', { class: 'check recolor-check' }, every, h('span', null, 'In every block of this set')),
       h(
         'div',
         { class: 'buttons' },

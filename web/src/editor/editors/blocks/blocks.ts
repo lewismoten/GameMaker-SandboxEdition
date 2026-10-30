@@ -421,7 +421,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   }
 
   async function replaceColors(): Promise<void> {
-    const r = await recolorDialog(pal(), color, color);
+    const r = await recolorDialog(pal(), color, color, !!group);
     if (!r) return;
     const which = r.everyBlock ? blocks.map((_, i) => i) : surface().ids;
     const parts = new Map<number, Uint8Array>();
