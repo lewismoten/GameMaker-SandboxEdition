@@ -53,6 +53,8 @@ export interface RunOptions {
   onTouched?: Session['onTouched'];
   /** Play ended with this score (never during a demo's playback; see Session.onPlayEnd). */
   onPlayEnd?: Session['onPlayEnd'];
+  /** A player lost a life, including game over; never reported during playback. */
+  onLifeLost?: Session['onLifeLost'];
   /**
    * The editor's Play Level test only (never a saved, exported or DOS game): skip the title, its
    * song and the menu, and start play at once by scene 0's first link (which the test copy points
@@ -93,6 +95,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     onFrame: opts.onFrame,
     speed: opts.speed ?? {},
     onPlayEnd: opts.onPlayEnd,
+    onLifeLost: opts.onLifeLost,
     gmHelp: opts.gmHelp,
     look: playerLook(opts.player),
   };

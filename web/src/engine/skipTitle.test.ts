@@ -46,9 +46,17 @@ async function run(opts: RunOptions, frames = 120) {
   let first: { frame: number; x: number; y: number; hitpts: number; lives: number; inv: number[] } | undefined;
   let frame = 0;
   const onFrame = (w: World) => {
+    opts.onFrame?.(w);
     first ??= { frame, x: w.chr.x[0], y: w.chr.y[0], hitpts: w.ci.hitpts, lives: w.ci.lives, inv: [...w.ci.inv] };
   };
-  const ended = runGame(m, 'test.gam', { ...opts, onFrame, onSession: (s) => (s.onScene = (n) => scenes.push(n)) }).catch(() => undefined);
+  const ended = runGame(m, 'test.gam', {
+    ...opts,
+    onFrame,
+    onSession: (s) => {
+      s.onScene = (n) => scenes.push(n);
+      opts.onSession?.(s);
+    },
+  }).catch(() => undefined);
   for (; frame < frames; frame++) {
     m.time += 1000 / 60;
     m.presentFrame(false);
@@ -70,6 +78,24 @@ describe('skipTitle', () => {
     expect(r.first!.hitpts).toBe(37);
     expect(r.first!.lives).toBe(5);
     expect(r.first!.inv).toEqual([...r.chr.inv]);
+  });
+
+  it('reports a final life lost once, but never during playback', async () => {
+    for (const playback of [false, true]) {
+      const lost = vi.fn();
+      await run({
+        skipTitle: true,
+        onLifeLost: lost,
+        onSession: (s) => {
+          s.ci.lives = 0;
+          if (playback) Object.defineProperty(s.rec, 'playing', { get: () => true });
+        },
+        onFrame: (w) => {
+          w.ci.hitpts = 0;
+        },
+      });
+      expect(lost).toHaveBeenCalledTimes(playback ? 0 : 1);
+    }
   });
 
   it('leaves a normal run on the title and menu', async () => {

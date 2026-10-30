@@ -86,6 +86,8 @@ export interface Session {
    * `gained` is the points the play scored itself, leaving out those F6 loaded (playGain.ts).
    */
   onPlayEnd?: (score: number, how: PlayEnd, gained: number) => void;
+  /** A player death, including the final life. Never called during recorded playback. */
+  onLifeLost?: () => void;
   /** Not PLAYGAME's: the stretches of this play between F6 loads (playGain.ts). */
   gain?: PlayGain;
   /**
@@ -602,6 +604,7 @@ export async function playScene(s: Session, dosc: number, prev: number, linkIn: 
   // +2 means no lives left; anything lower is the link taken.
   if (w.keydn[1]) newlink = MAXSCENELINKS + 1;
   if (done === DEAD) {
+    if (!s.rec.playing) s.onLifeLost?.();
     if (s.ci.lives > 0) {
       s.ci.lives--;
       s.ci.hitpts = -1;
