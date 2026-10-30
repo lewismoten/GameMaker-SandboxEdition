@@ -311,4 +311,5 @@ are real previews too; a blank idle can fall back to a movement frame.
   used by scenes sharing a background block set, then maps monster numbers to
   their first-frame pictures. The Time panel's picture chooser keeps the native
   birth-monster index and numeric field, with a source selector when scenes use
-  different monster files.
+  different monster files. `widgets/monsterBirthField.ts` keeps numeric edits and
+  the picture chooser synchronized, including the designer's monster names.

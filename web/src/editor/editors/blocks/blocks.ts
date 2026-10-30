@@ -8,6 +8,7 @@ import { viewState } from '../../../urlState';
 import { TEXTURES, paintTexture } from '../../tools/textures';
 import { h, clear, numberField, checkField, selectField, debounce, toast } from '../../core/ui';
 import { blockCanvas, paintBlock, lut } from '../../core/draw';
+import { monsterBirthField } from '../../widgets/monsterBirthField';
 import { paletteChooser } from '../../widgets/paletteChooser';
 import {
   BLEN,
@@ -24,7 +25,6 @@ import {
   type BlockKind,
 } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { paletteCss } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { flipH, flipV, rotateCW, rotateCCW, shiftWrap, mirrorPoints, type Mirror } from './pixelOps';
 import { shade } from '../palette/ramps';
 import { blockInsight } from './blockInsight';
@@ -687,11 +687,12 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           (v) => edit(() => (b.ntime = v)),
           { min: 0, max: 32767, time: { rate: 18.2, zero: 'No timed change' } },
         ),
-        numberField(
-          'Gives birth to monster',
+        monsterBirthField(
+          project,
+          file,
           () => b.birthMon,
-          (v) => edit(() => (b.birthMon = v)),
-          { min: 0, max: LASTMON - 1 },
+          (value) => edit(() => (b.birthMon = value)),
+          pal,
         ),
         numberField(
           'every ticks (0 = never)',
