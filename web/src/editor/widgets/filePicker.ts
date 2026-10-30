@@ -163,7 +163,14 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           () => close(n),
           normalize(opts.current ?? '') === n,
         );
-        el.append(previewButton(n, async () => project.files.get(n), thumbCanvas(el)) ?? '');
+        el.append(
+          previewButton(
+            n,
+            async () => project.files.get(n),
+            thumbCanvas(el),
+            async () => ({ files: project.files, palette: project.paletteFor(n).palette }),
+          ) ?? '',
+        );
         return { el, group: grouped ? vocGroup(`mine:${n}`, bytes) : undefined };
       });
       const empty = h(
@@ -219,7 +226,14 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           item?: LibraryItem;
         };
         el.item = item;
-        el.append(previewButton(item.name, () => libraryFile(item), thumbCanvas(el)) ?? '');
+        el.append(
+          previewButton(
+            item.name,
+            () => libraryFile(item),
+            thumbCanvas(el),
+            () => libraryThumbSource(item),
+          ) ?? '',
+        );
         return { el, item, group: grouped ? item.group : undefined };
       });
       const empty = h('p', { class: 'hint' }, 'Nothing of this kind in the library.');

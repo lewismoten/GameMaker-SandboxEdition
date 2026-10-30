@@ -1,6 +1,7 @@
 // Hear or see a file before choosing it: a small play button for sounds (.VOC), PC speaker
 // sound sets (.SND), songs (.CMF) and animations (.FLI). Only one preview plays at a time. The
 // audio engine (mediaShared.ts) loads with the first one played, so the file picker doesn't bring it.
+import type { ThumbSource } from './thumbs';
 import { h, toast } from '../core/ui';
 import { kindOf } from '../core/project';
 import { paintIndexed } from '../core/draw';
@@ -11,7 +12,7 @@ import { isFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { decodeFliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
 
 /** Kinds that have something to play. */
-const PREVIEWABLE = new Set(['voc', 'cmf', 'snd', 'fli']);
+const PREVIEWABLE = new Set(['voc', 'cmf', 'snd', 'fli', 'cbl']);
 
 let active: { stop: () => void } | undefined;
 
@@ -26,10 +27,15 @@ export function stopPreview(): void {
  * A play button for the file. `bytes` loads the file when first played; `screen` finds the
  * canvas an animation plays on (its thumbnail).
  */
-export function previewButton(name: string, bytes: () => Promise<Uint8Array | undefined>, screen?: () => HTMLCanvasElement | null): HTMLButtonElement | null {
+export function previewButton(
+  name: string,
+  bytes: () => Promise<Uint8Array | undefined>,
+  screen?: () => HTMLCanvasElement | null,
+  source?: () => Promise<ThumbSource>,
+): HTMLButtonElement | null {
   const kind = kindOf(name);
   if (!PREVIEWABLE.has(kind)) return null;
-  const label = kind === 'fli' ? 'Play the animation' : 'Listen';
+  const label = kind === 'fli' || kind === 'cbl' ? 'Play the animation' : 'Listen';
   const btn = h(
     'button',
     { type: 'button', class: 'pick-play', title: `${label}: ${name.toUpperCase()}`, 'aria-label': `${label}: ${name}`, 'aria-pressed': 'false' },
@@ -52,6 +58,16 @@ export function previewButton(name: string, bytes: () => Promise<Uint8Array | un
       /* reported below */
     }
     if (!data) return toast(`${name.toUpperCase()} could not be loaded.`, 'error');
+    if (kind === 'cbl') {
+      if (!source) return toast('This block set needs its character files to preview an animation.');
+      try {
+        const [{ previewCharacterBlocks }, files] = await Promise.all([import('../editors/blocks/pickerAnimation'), source()]);
+        await previewCharacterBlocks(name, data, files);
+      } catch {
+        toast(`${name.toUpperCase()} could not be previewed.`, 'error');
+      }
+      return;
+    }
     const [{ audio }, { TICK_RATE }] = await Promise.all([import('./mediaShared'), import('@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer')]);
     await audio.resume();
     let timer: ReturnType<typeof setTimeout> | undefined;
