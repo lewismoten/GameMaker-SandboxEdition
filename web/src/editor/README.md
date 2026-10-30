@@ -205,6 +205,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   a level as seen in grayscale and with color-vision differences (`colorVision.ts`) and lists
   colors that look alike there (`visionWarnings.ts`); `visionDismissed.ts` keeps the ones a
   designer dismissed as meant to look alike, in the companion file on the `.pal`.
+  `visionFallback.ts` supplies block artwork using the selected palette when the map is
+  empty, then all 256 palette swatches when no suitable artwork is available.
 - **Color 0.** The palette editor's note by color 0 opens `editors/palette/colorZeroDialog.ts`:
   each player screen drawn on color 0 (`colorZeroScreens.ts`: the high-score name prompt and
   table, F1, F2, F5, F10), drawn with the engine's own functions in the palette and the
