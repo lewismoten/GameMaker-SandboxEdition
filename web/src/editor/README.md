@@ -455,3 +455,7 @@ native game files are loaded only when the player chooses an archive action.
   canvas on phones and tablets, retaining playback and background choices during resizing. Map
   mode starts on actual scenery; palette mode supplies a plain backdrop. Scene
   preview code loads dynamically when map mode is first requested.
+
+- **Character costumes.** `widgets/characterPicture.ts` accepts an explicit CBL
+  when a thumbnail auditions a particular block set. The same CHR can therefore
+  preview several linked costumes using the actual selected pictures.

@@ -25,10 +25,15 @@ function characterBlocks(files: Source, name: string): Uint8Array | undefined {
   return candidates.length === 1 ? files.get(candidates[0]) : undefined;
 }
 
-export function characterPicture(files: Source, name: string, characterBytes?: Uint8Array): { width: number; height: number; pixels: Uint8Array } | undefined {
+export function characterPicture(
+  files: Source,
+  name: string,
+  characterBytes?: Uint8Array,
+  blockBytes?: Uint8Array,
+): { width: number; height: number; pixels: Uint8Array } | undefined {
   try {
     const bytes = characterBytes ?? files.get(name);
-    const cbl = characterBlocks(files, name);
+    const cbl = blockBytes ?? characterBlocks(files, name);
     if (!bytes || !cbl) return undefined;
     const character = parseCharacter(bytes);
     const blocks = parseBlocks(cbl, CHARBL);

@@ -49,6 +49,13 @@ describe('character pictures', () => {
     expect(picture.pixels.includes(9)).toBe(false);
   });
 
+  it('shows the exact CBL being auditioned when one character has several costumes', () => {
+    const { files } = source();
+    const picture = characterPicture(files, 'hero.chr', undefined, files.get('wrong.cbl'))!;
+    expect(picture.pixels.every((pixel) => pixel === 9)).toBe(true);
+    expect(characterPicture(files, 'hero.chr')!.pixels[0]).toBe(2);
+  });
+
   it('shows a bottom-only character, skipping birth commands rather than drawing a monster index', () => {
     const { files, character } = source();
     character.sequences[0].frames[0].pic2 = MONBL;
