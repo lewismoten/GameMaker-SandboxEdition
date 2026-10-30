@@ -10,6 +10,10 @@ from the games' files by `scripts/castSprites.ts`); the music and effects are a 
 own `.CMF` and `.VOC` files. Never a secret game's characters or files, and never the Bard of
 Bizarre's recordings (they are for non-commercial use, and the tour may be recorded for video).
 
+`place.ts` keeps speech clear of every on-stage host, before considering which control it
+might cover. It checks pockets beside host edges and viewport edges as well as the four
+preferred positions near the speaker, so another guide cannot hide behind the bubble.
+
 ## Starting it
 
 - The **?** button (`tourButton.ts`) in today's web header, on the desk's wall and in the DOS

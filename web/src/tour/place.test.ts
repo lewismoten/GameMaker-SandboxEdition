@@ -43,4 +43,19 @@ describe('placing the tour', () => {
     expect(walkMs({ x: 0, y: 0 }, { x: 1, y: 0 })).toBe(250);
     expect(walkMs({ x: 0, y: 0 }, { x: 5000, y: 0 })).toBe(1800);
   });
+  it('keeps every host clear even when the control spans the page', () => {
+    for (const view of [
+      { w: 390, h: 600 },
+      { w: 1440, h: 900 },
+    ]) {
+      const speaker = { x: 16, y: view.h - FLOOR - 76, w: 80, h: 64 };
+      const other = { x: 110, y: speaker.y - 120, w: 90, h: 80 };
+      const size = { w: 320, h: 90 };
+      const p = placeBubble(speaker, size, view, FLOOR, { x: 0, y: 0, w: view.w, h: view.h }, 8, [other]);
+      const bubble = { ...p, ...size };
+      expect(inView(bubble, view)).toBe(true);
+      expect(overlaps(bubble, speaker)).toBe(false);
+      expect(overlaps(bubble, other)).toBe(false);
+    }
+  });
 });

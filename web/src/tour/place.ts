@@ -54,7 +54,15 @@ export type Side = 'above' | 'below' | 'right' | 'left';
  * always inside the view with a margin. `tail` is where along the bubble's edge its tail
  * points at the speaker.
  */
-export function placeBubble(anchor: Rect, size: Size, view: Size, floor: number, avoid?: Rect, margin = 8): Point & { side: Side; tail: number } {
+export function placeBubble(
+  anchor: Rect,
+  size: Size,
+  view: Size,
+  floor: number,
+  avoid?: Rect,
+  margin = 8,
+  others: readonly Rect[] = [],
+): Point & { side: Side; tail: number } {
   const bottom = view.h - floor - margin;
   const cx = anchor.x + anchor.w / 2;
   const cy = anchor.y + anchor.h / 2;
@@ -65,16 +73,33 @@ export function placeBubble(anchor: Rect, size: Size, view: Size, floor: number,
     { side: 'right', x: anchor.x + anchor.w + gap, y: cy - size.h / 2 },
     { side: 'left', x: anchor.x - gap - size.w, y: cy - size.h / 2 },
   ];
-  const fits = (p: Point) => p.x >= margin && p.y >= margin && p.x + size.w <= view.w - margin && p.y + size.h <= bottom;
+  const hosts = [anchor, ...others].filter((r) => r.x + r.w > 0 && r.x < view.w && r.y + r.h > 0 && r.y < bottom);
+  // Host edges and viewport edges include every free rectangular pocket, even when a
+  // second host blocks all four preferred positions beside the speaker.
+  const xs = [margin, view.w - margin - size.w, cx - size.w / 2, ...hosts.flatMap((r) => [r.x - gap - size.w, r.x + r.w + gap])];
+  const ys = [margin, bottom - size.h, cy - size.h / 2, ...hosts.flatMap((r) => [r.y - gap - size.h, r.y + r.h + gap])];
+  for (const x of xs)
+    for (const y of ys) {
+      const side: Side = y + size.h <= anchor.y ? 'above' : y >= anchor.y + anchor.h ? 'below' : x >= anchor.x + anchor.w ? 'right' : 'left';
+      options.push({ x, y, side });
+    }
   const inView = options.map((o) => ({ ...o, x: clamp(o.x, margin, view.w - margin - size.w), y: clamp(o.y, margin, bottom - size.h) }));
   const cost = (o: Point & { side: Side }, i: number) => {
     const r = { x: o.x, y: o.y, w: size.w, h: size.h };
-    // covering the speaker or the control costs most; moving a bubble from where it wanted to be a little
-    return overlap(r, anchor) * 4 + (avoid ? overlap(r, avoid) * 2 : 0) + (fits(options[i]) ? 0 : 500) + i * 10;
+    // Protect every host before considering control overlap or distance. A large control
+    // must never make covering a character appear cheaper than using a free position.
+    return [
+      hosts.reduce((sum, host) => sum + overlap(r, host), 0),
+      avoid ? overlap(r, avoid) : 0,
+      Math.hypot(o.x + size.w / 2 - cx, o.y + size.h / 2 - cy) + i * 2,
+    ];
   };
   let best = 0;
   inView.forEach((o, i) => {
-    if (cost(o, i) < cost(inView[best], best)) best = i;
+    const next = cost(o, i),
+      previous = cost(inView[best], best);
+    const different = next.findIndex((value, k) => value !== previous[k]);
+    if (different >= 0 && next[different] < previous[different]) best = i;
   });
   const p = inView[best];
   const along = p.side === 'above' || p.side === 'below' ? cx - p.x : cy - p.y;
