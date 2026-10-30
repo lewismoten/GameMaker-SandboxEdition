@@ -132,3 +132,7 @@ text-bounds audit. The default `text`, `outlined`, and `centered` retain their o
 neighbors or use an explicit transparent index; `outlineInPlace` keeps the original
 canvas. `scaleBlitTransparent` selects transparency without changing its mirroring flag.
 `bevel` accepts separate top/left/bottom/right shade offsets, and `pool` paints radial light.
+
+`microWidth` measures visible cells with zero width for an empty string; `microAdvance`
+retains the older cell-advance formula when preserving legacy layout. Default micro
+drawing recognizes direct symbols such as `µ` before trying their uppercase forms.

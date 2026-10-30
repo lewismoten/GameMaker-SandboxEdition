@@ -13,7 +13,7 @@ export interface MicroTextOptions {
   custom?: (character: string) => Pixels | undefined;
 }
 export function createMicroText(options: MicroTextOptions = {}) {
-  const { glyphs = MICRO_GLYPHS, fallback = '?', trailingGap = false, glyphCase = false, custom } = options;
+  const { glyphs = MICRO_GLYPHS, fallback = '?', trailingGap = false, glyphCase = true, custom } = options;
   if (!(fallback in glyphs)) throw new RangeError('Micro font must contain its fallback glyph');
   return (p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number => {
     const ink = textInk(p, s, undefined, (ch) => ch in glyphs || ch.toUpperCase() in glyphs || !!custom?.(ch));
@@ -41,6 +41,8 @@ export function createMicroText(options: MicroTextOptions = {}) {
     return cx - x - (trailingGap ? 0 : scale);
   };
 }
+/** Legacy cell advance with the final spacer omitted (including the historical empty-string value). */
+export const microAdvance = (s: string, scale = 1) => s.length * 4 * scale - scale;
 /** Visible-cell width; empty strings have no ink. */
-export const microWidth = (s: string, scale = 1) => Math.max(0, s.length * 4 * scale - scale);
+export const microWidth = (s: string, scale = 1) => Math.max(0, microAdvance(s, scale));
 export const micro = createMicroText();
