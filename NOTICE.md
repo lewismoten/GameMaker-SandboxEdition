@@ -792,3 +792,14 @@ for median-cut quantization and sphere tracing are recorded in
 public-domain data and this project's additions keep their existing attribution.
 OpenAI Codex consolidated the helpers and consumers, preserved the existing game output,
 and implemented the shared rendering adapters and verification under Lewis Moten's direction.
+
+### Ready-made palette references
+
+The tools package's `palettePresetData.ts` contains Atari NTSC/PAL swatches by Ricardo
+Cancho Niemietz (2008, public-domain dedication with unrestricted-use fallback), NES
+swatches from Persune's Pally (MIT-0, copyright 2024 Persune), and Groepaz's Commodore 64
+NTSC CXA2025 reference swatches (unrestricted free use, attribution appreciated).
+OpenAI Codex extracted and adapted the swatches to this project's VGA palette conventions
+under Lewis Moten's direction. Source links, transformations and Pally's complete license
+are in [the tools package's notices](web/packages/tools/NOTICE.md#ready-made-palette-reference-data).
+No third-party font or image file was added.

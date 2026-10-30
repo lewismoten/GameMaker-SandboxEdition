@@ -68,3 +68,47 @@ Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone). It is distributed unde
 the original project's MIT License; this package retains that license in `LICENSE`.
 [Source palette](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/cd/gameware/library/default.pal).
 OpenAI Codex packaged this data and the fresh-copy API under Lewis Moten's direction.
+
+## Ready-made palette reference data
+
+`src/palettePresetData.ts` contains RGB swatches adapted to six-bit VGA by OpenAI Codex
+under Lewis Moten's direction. Analog console colors are reference approximations, not
+a claim that every television or hardware revision produces identical RGB. No third-party
+font, image, emulator or generator executable is bundled with these swatches.
+
+- Atari 2600 NTSC and PAL: Ricardo Cancho Niemietz, 2008, released by the author into the
+  public domain (with unrestricted-use fallback). Swatches sampled at the centers of the
+  16×8 color charts; NTSC retains 128 hardware slots, including one duplicated RGB value;
+  PAL's repeated gray columns are removed to give 104 slots. Sources and release statements:
+  [NTSC](https://commons.wikimedia.org/wiki/File:Atari2600_NTSC_palette.png),
+  [PAL](https://commons.wikimedia.org/wiki/File:Atari2600_PAL_palette.png).
+- NES: Persune, Pally, MIT No Attribution (MIT-0), copyright 2024 Persune. The first 64 RGB
+  entries (no emphasis) of `docs/NESDev/2C02G_U_wiki.pal` are reduced to 54 distinct swatches.
+  [Source at commit 9635e9b71505f969014c7efa15dca3ba35ade871](https://github.com/Gumball2415/pally/blob/9635e9b71505f969014c7efa15dca3ba35ade871/docs/NESDev/2C02G_U_wiki.pal),
+  [license](https://github.com/Gumball2415/pally/blob/9635e9b71505f969014c7efa15dca3ba35ade871/LICENSE).
+- Commodore 64 NTSC CXA2025 reference: Groepaz, unrestricted free use, including
+  redistribution, commercial use and modification; attribution appreciated. Sixteen
+  color-bar centers sampled from the reference, with color 0 normalized to menu black.
+  [Author's reference](https://hitmen.c02.at/linked/c64_ntsc_cxa2025.bmp.png),
+  [permission and provenance](https://commons.wikimedia.org/wiki/File:C64_ntsc_cxa2025.bmp.png).
+
+Pally's MIT-0 license:
+
+```text
+MIT No Attribution
+
+Copyright 2024 Persune
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
