@@ -37,3 +37,23 @@
     --character-frame-height: max(160px, calc(var(--room, 640px) - 320px));
   }
 }
+
+/* A phone can show both the live result and the frame being painted. */
+@media (max-width: 999px) {
+  .blk-character-workbench:has(> .character-frame-preview:not([hidden])) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+  }
+  .blk-character-workbench > .character-frame-preview {
+    margin: 0;
+    padding: 8px;
+  }
+  .blk-character-workbench .character-frame-preview h2 {
+    font-size: 14px;
+  }
+  .blk-character-workbench .field > span {
+    white-space: normal;
+  }
+}

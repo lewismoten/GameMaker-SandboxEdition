@@ -741,6 +741,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     view.get('tab') ?? undefined,
     (tab) => view.set({ tab }),
   );
+  const pictureArea = characterFrames ? h('div', { class: 'blk-character-workbench' }, canvas) : canvas;
   const columns = [
     h('div', { class: 'blk-picker' }, picker),
     h(
@@ -749,7 +750,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       characterFrames?.controls ?? null,
       groupBar,
       tools,
-      canvas,
+      pictureArea,
       actions,
       mirrorSlot,
       groups.el,
@@ -779,7 +780,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const previewMedia = matchMedia('(max-width: 999px)');
   const placePreview = () => {
     if (!characterFrames) return;
-    if (previewMedia.matches) canvas.before(characterFrames.preview);
+    if (previewMedia.matches) pictureArea.prepend(characterFrames.preview);
     else columns[2].prepend(characterFrames.preview);
   };
   placePreview();
