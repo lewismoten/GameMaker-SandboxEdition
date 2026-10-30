@@ -1,7 +1,7 @@
 // New BBS users are verified by an incoming modem callback, never by an external phone service.
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
-import { readLine } from '../text/textInput';
+import { ProgramAborted, readLine } from '../text/textInput';
 import { modemSignal, phoneLine, sleep, type Term } from './term';
 import { connectLine } from './lineSpeed';
 import { signupAccounts, signupHandle, signupPhone, type SignupBoard } from './signupAccounts';
@@ -82,6 +82,7 @@ export async function signup(t: Term, h: RetroHost, board: SignupBoard): Promise
   try {
     // The board releases its outgoing call before ringing the same home line.
     await sleep(1500);
+    if (h.keys.stopping) throw new ProgramAborted();
     for (let ring = 0; ring < 5; ring++) {
       if (phoneLine.offHook) {
         t.local('|12LINE BUSY - hang up the wall telephone and try NEW again.\n');
@@ -98,6 +99,7 @@ export async function signup(t: Term, h: RetroHost, board: SignupBoard): Promise
       }
       t.local('|07Answering callback...\n');
       await sleep(500);
+      if (h.keys.stopping) throw new ProgramAborted();
       if (phoneLine.offHook) return;
       t.connected = true;
       t.local(`|10${connectLine()}\n`);
@@ -120,8 +122,10 @@ export async function signup(t: Term, h: RetroHost, board: SignupBoard): Promise
   } finally {
     if (!verified && !t.dropping) {
       await t.hangUp();
-      t.local('|12Callback not verified. No new account was saved.\n');
-      modemSignal('hangup');
+      if (!h.keys.stopping) {
+        t.local('|12Callback not verified. No new account was saved.\n');
+        modemSignal('hangup');
+      }
     }
   }
 }

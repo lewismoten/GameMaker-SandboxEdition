@@ -61,6 +61,7 @@ directory and calls are `bbs.ts`.
 - `bbs/signup.ts`: NEW-account callback verification: disconnect, incoming RING,
   timed ATA answer, confirmation code, and only then account persistence. Busy lines,
   missed calls, wrong codes, cancellation and PC shutdown leave no verified account.
+  Canceled callback/answer delays never ring or reconnect a stopped PC.
   The flow uses the terminal modem on both Desk and DOS; the wall handset stays hung up.
   Choose NEW at either board’s login, pick a handle and a fictional 555-01xx number, note
   the four-digit code, then consent to the callback. After NO CARRIER and RING, type ATA

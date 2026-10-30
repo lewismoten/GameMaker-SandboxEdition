@@ -145,6 +145,27 @@ describe('BBS callback signup', () => {
     expect(f.term.connected).toBe(true);
     expect(f.logs.join('')).toContain('corgi switchboard');
   });
+  it('does not ring after shutdown during the callback delay', async () => {
+    const f = fixture();
+    await vi.advanceTimersByTimeAsync(0);
+    f.keys.abort();
+    await vi.advanceTimersByTimeAsync(1500);
+    expect(await f.task).toBeInstanceOf(ProgramAborted);
+    expect(f.logs.join('')).not.toContain('RING');
+    expect(signupAccounts.find('sandbox', 'Teddy')).toBeUndefined();
+  });
+  it('does not connect after shutdown during the answer delay', async () => {
+    const f = fixture();
+    await vi.advanceTimersByTimeAsync(1500);
+    f.keys.type('ATA\n');
+    await vi.advanceTimersByTimeAsync(250);
+    expect(f.logs.join('')).toContain('Answering callback');
+    f.keys.abort();
+    await vi.advanceTimersByTimeAsync(500);
+    expect(await f.task).toBeInstanceOf(ProgramAborted);
+    expect(f.logs.join('')).not.toContain('CONNECT');
+    expect(signupAccounts.find('sandbox', 'Teddy')).toBeUndefined();
+  });
   it('stops on power-off without saving or accepting a later code', async () => {
     const f = fixture();
     await answer(f);
