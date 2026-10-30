@@ -211,3 +211,14 @@ an independent 768-byte copy of the CD Library's `DEFAULT.PAL`, with black at in
 zero. This is the original RSD palette, rather than the engine's generated fallback.
 It works in browsers and Node without fetching the CD or using repository files.
 See `NOTICE.md` for its source and license.
+
+### Palette templates
+
+`PALETTE_PRESETS` from `palettes` lists 20 ready-made templates with names, descriptions,
+occupied entry counts and DOS-safe filename stems. `createPalettePreset(id)` returns a fresh
+768-byte VGA palette with menu black at index 0, transparency reserved at 255, and unused
+entries black. Templates include monochrome, Atari NTSC/PAL, NES, CGA, EGA, EGA with skin/hair
+ramps, LCD greens, Sega Master System, Commodore 64, web-safe colors and grayscale steps.
+128-step grayscale necessarily repeats VGA's 64 distinct gray shades. LCD greens include
+four green shades plus menu black. Console RGB references and their licenses are in NOTICE.md;
+all values are adapted to six-bit VGA and do not impose the original consoles' drawing limits.
