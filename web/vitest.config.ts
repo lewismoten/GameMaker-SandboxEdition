@@ -13,7 +13,8 @@ export default mergeConfig(
     test: {
       // Keep successful runs quiet, but retain a failing test's console diagnostics.
       silent: 'passed-only',
-      ...(fast ? { exclude: [...configDefaults.exclude, ...slow.files], setupFiles: ['./test/fastOnly.ts'] } : {}),
+      // Bound parallel transforms so quick codec/event-loop checks get CPU promptly.
+      ...(fast ? { maxWorkers: 2, exclude: [...configDefaults.exclude, ...slow.files], setupFiles: ['./test/fastOnly.ts'] } : {}),
     },
   }),
 );

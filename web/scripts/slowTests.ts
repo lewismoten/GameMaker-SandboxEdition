@@ -5,7 +5,7 @@
 // It runs the whole suite once with vitest's JSON reporter. A file whose every test is slow is
 // left out whole (vitest.config.ts); the other slow tests are skipped one by one (test/fastOnly.ts).
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 
@@ -18,6 +18,18 @@ interface Result {
 }
 
 const web = join(__dirname, '..');
+// Data-driven names need not become tracked case names; classify their complete file instead.
+const unlistedLabels = readdirSync(join(web, '../games'), { withFileTypes: true }).flatMap((entry) => {
+  if (!entry.isDirectory()) return [];
+  try {
+    const about = JSON.parse(readFileSync(join(web, '../games', entry.name, 'about.json'), 'utf8')) as { secret?: boolean; title?: unknown };
+    return about.secret ? [entry.name, typeof about.title === 'string' ? about.title : ''].filter(Boolean).map((name) => name.toLowerCase()) : [];
+  } catch {
+    return [];
+  }
+});
+const byFile = (names: string[]) => names.some((name) => unlistedLabels.some((label) => name.toLowerCase().includes(label)));
+
 const out = join(mkdtempSync(join(tmpdir(), 'slow-tests-')), 'vitest.json');
 try {
   execFileSync('npx', ['vitest', 'run', '--reporter=json', `--outputFile=${out}`], { cwd: web, stdio: 'ignore' });
@@ -30,7 +42,7 @@ for (const f of (JSON.parse(readFileSync(out, 'utf8')) as { testResults: Result[
   const file = relative(web, f.name).split('\\').join('/');
   const slow = f.assertionResults.filter((a) => (a.duration ?? 0) > LIMIT).map((a) => [...a.ancestorTitles, a.title].join(' '));
   if (!slow.length) continue;
-  if (slow.length === f.assertionResults.length) files.push(file);
+  if (slow.length === f.assertionResults.length || byFile(slow)) files.push(file);
   else tests[file] = slow;
 }
 files.sort();
