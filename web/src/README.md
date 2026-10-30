@@ -86,7 +86,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`input/`](input): Mac keys for keyboards without a keypad (`macKeys.ts`), keys pressed with the mouse or
   a finger (`virtualKeys.ts`), the gamepad (`gamepad.ts`), and the desk's game pad and ball mouse
   as the PC's joystick and mouse (`deskJoystick.ts`; the portable mouse state lives in the engine package).
-- [`player/`](player): the embeddable player (`player.ts`): canvas, start overlay, whole-pixel
+- [`player/`](player): the embeddable player (`player.ts`): canvas, start overlay, remembered per-game hardware choices (`hardwarePrefs.ts`, backed up with preferences), whole-pixel
   scaling (`exactScale.ts`), touch controls (`touch.ts`, with what the d-pad sends for each
   direction and which keys that leaves off the touch strip in `moveKeys.ts`), on-screen keys (`screenKeys.ts`) and a
   pointer that hides itself (`cursorHide.ts`). Used by `play.ts`, the editor's play test, the desk

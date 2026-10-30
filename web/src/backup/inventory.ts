@@ -91,6 +91,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-volume',
       'gm-screen-keys',
       'gm-touch-controls',
+      'gm-hardware-setup',
       'gm-musicbox',
       'gm-sticker-guides',
       'gm-print-shop',
