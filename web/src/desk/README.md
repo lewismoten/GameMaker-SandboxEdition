@@ -44,7 +44,8 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   idempotent checkpoints/hangup and a Desk-backed `gm-hint-phone-bill` balance;
   `hintLine.ts` answers 1-900-555-0144 (Hints speed dial) with Teddy's saving, map,
   enemy and free-help tips. A free prompt asks for 1 before starting pretend charges;
-  0, inactivity, six menu rounds, hangup or page exit stops the meter. The call's abort
+  0, inactivity, six menu rounds, hangup, page exit or leaving the Desk stops the meter.
+  Desk disposal emits `gm-desk-close`, which hangs up an off-hook wall phone. The call's abort
   signal also cancels speech and key waits; menu keys can interrupt the spoken prompt.
   The cumulative fictional bill advances “An itemized bark” at $10; progress is in pretend
   cents and the bill itself continues past that threshold) and its notes

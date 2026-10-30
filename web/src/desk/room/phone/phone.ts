@@ -216,6 +216,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
     sounds ??= PhoneSounds.open();
     call = new AbortController();
     window.addEventListener('pagehide', hangUp, { once: true });
+    window.addEventListener('gm-desk-close', hangUp, { once: true });
     phoneLine.offHook = true;
     el.classList.add('off-hook');
     btn.setAttribute('aria-pressed', 'true');
@@ -241,6 +242,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
 
   function hangUp(): void {
     window.removeEventListener('pagehide', hangUp);
+    window.removeEventListener('gm-desk-close', hangUp);
     call?.abort();
     call = undefined;
     clearTimeout(idle);

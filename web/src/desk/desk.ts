@@ -340,6 +340,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const unTour = deskTour(desk, pc);
   drawBoxTiles(boxTiles);
   return () => {
+    window.dispatchEvent(new Event('gm-desk-close'));
     window.removeEventListener('keydown', onKey);
     reg.dispose();
     unfit();
