@@ -4,8 +4,8 @@
 // and the storm round the tower. Doc Leo's red sneakers and sunburned nose, the rats' pink ears, the
 // Tesla coils' sparks, the glowing flasks and the gold of the certificate keep their own light.
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
-import { type Pal, wrap } from '../../../kit/palRamps';
-export { type Pal } from '../../../kit/palRamps';
+import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+export { type Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 type RGB = [number, number, number];
 export type Light = 'course' | 'lab' | 'sewer' | 'storm' | 'plain';

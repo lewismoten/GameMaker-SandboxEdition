@@ -8,9 +8,9 @@
 // the balcony, MWA-HA-HA, THE END). Each reel opens on black and fades by palette (kit/reel.ts);
 // only what moves is stored.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { medianCutPalette, Quantizer } from '../../../kit/quantize';
+import { medianCutPalette, Quantizer } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
-import { fadeOutLength } from '../../../kit/fadeOut';
+import { fadeOutLength } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { gradient } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, text, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
@@ -18,7 +18,7 @@ import { coverRgb } from '../art/cover';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { labBackdrop } from './screens';
 import { AUTHOR, CARDS } from './text';
-import { sprite } from '../../../kit/screenText';
+import { sprite } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 const W = 320;
 const H = 200;

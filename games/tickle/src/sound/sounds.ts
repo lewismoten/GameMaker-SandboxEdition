@@ -8,7 +8,7 @@ import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
-import { lowNoise, gate, env } from '../../../kit/synthParts';
+import { lowNoise, gate, env } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 
 /** A voice: harmonics of a pitch through two vowel formants, with a breath of noise. */
 function voice(pitch: (t: number) => number, f1: (t: number) => number, f2: (t: number) => number, seed = 3, breath = 0.04): Synth {

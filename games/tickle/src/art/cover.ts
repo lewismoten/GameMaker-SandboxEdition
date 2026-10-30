@@ -6,7 +6,7 @@
 // pixel at a time (the sprites stamped in, three times their size), then reduced to one
 // 256-color palette for the FLI (cartoons.ts). Frame k of n animates it.
 import { rng, type Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { mixc, clamp, noise2 } from '../../../kit/coverPaint';
+import { mixc, clamp, noise2 } from '@lewismoten/gamemaker-sandbox-tools/kit/coverPaint';
 
 const COVER_W = 320;
 const COVER_H = 200;
