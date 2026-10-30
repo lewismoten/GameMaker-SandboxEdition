@@ -3,11 +3,11 @@
 // records every key it presses, so a finished route is also a demo recording. On the way it
 // hops for the treats it can see just ahead, as a player would (playLevel takes back a hop
 // that spoils the route).
-import type { RecordedKey } from '../../../web/src/formats/recording';
-import { SOLTOP } from '../../../web/src/formats/blocks';
-import { mapBlock, type CharInfo } from '../../../web/src/engine/world';
+import type { RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { mapBlock, type CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { KEEPSAKE, SCAN } from '../src/ids';
-import { Sim } from '../../kit/sceneSim';
+import { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 
 export type Order =
   | {

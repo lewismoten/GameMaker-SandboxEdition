@@ -2,7 +2,7 @@
 // four sizes: a dot on the horizon, small, nearly there, and full size beside the car. A
 // monster shows its sizes in turn as it slides down its lane (skyMonsters.ts), so it seems to
 // come closer. Only the two nearest sizes can touch the car, so only they hurt (or help).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, type BlockDef } from '../blocks/book';
 import { T, oval, outline } from '../art/draw';
 import { micro } from '../art/font';

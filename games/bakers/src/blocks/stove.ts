@@ -1,6 +1,6 @@
 // The Sugar Room's way out: the black iron range's skirt and the gap under it, too low for
 // Doc Leo, where the sugar has hidden from the tax man since 1773. Stepping up to it sends in Sir Reginald Cluckington III (game.ts).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { c } from '../art/pal';
 import { on } from '../art/kit';
 import type { BlockSet } from './sets';

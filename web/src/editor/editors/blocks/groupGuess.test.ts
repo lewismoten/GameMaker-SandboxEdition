@@ -1,8 +1,8 @@
 // Tests for groupGuess.ts: block groups guessed from the maps, monsters and character frames.
 import { describe, expect, it } from 'vitest';
-import { MLEN, newMap } from '../../../formats/map';
-import { newMonsterSet } from '../../../formats/monster';
-import { parseCharacter } from '../../../formats/character';
+import { MLEN, newMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { newMonsterSet } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { guessCharacterGroups, guessMapGroups, guessMonsterGroups } from './groupGuess';
 
 describe('guessing groups', () => {

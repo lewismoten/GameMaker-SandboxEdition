@@ -5,9 +5,9 @@
 // picture, a song, a scene's files) it asks for it first and waits if it is still on its
 // way (engine/machine.ts, need), which moves it to the front of the queue.
 import { GameFiles, cdName, fetchSiteFile, normalize, openPack, type CatalogEntry, type FileStream, type PackHandle } from './files';
-import { parseGame } from '../formats/game';
-import { parseSoundSet } from '../formats/sound';
-import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 // Scene file slots (engine/game.ts, engine/scene.ts): scene 0 holds the front end, scene 1
 // "Game Won"; a level's 9 and 10 are the pictures shown before and after it.

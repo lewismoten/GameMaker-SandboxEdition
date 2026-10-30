@@ -11,9 +11,9 @@
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { applyFliFrame, encodeFli, FLI_CHUNK_MAX, newFliCanvas, parseFli } from './fli';
-import { decodeFliFrames, encodeFliFrames } from './fliFrames';
-import { fliFaults } from './fliLimits';
+import { applyFliFrame, encodeFli, FLI_CHUNK_MAX, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { decodeFliFrames, encodeFliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
+import { fliFaults } from '@lewismoten/gamemaker-sandbox-engine/formats/fliLimits';
 
 interface DosPlay {
   /** Why the player went wrong, or undefined when every frame played. */

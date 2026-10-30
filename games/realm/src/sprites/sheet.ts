@@ -1,7 +1,7 @@
 // A sprite block set (.CBL 50 blocks, .MBL 100) built from named paintings, in the fixed sprite
 // colors only (art/pal.ts), with 255 as the clear color. Monster blocks also carry what touching
 // them does (hit points, a counter), which Game-Maker applies when a monster touches Pip.
-import { newBlockSet, type Block } from '../../../../web/src/formats/blocks';
+import { newBlockSet, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { fixedPalette } from '../art/pal';
 import type { Canvas } from '../art/rgb';
 

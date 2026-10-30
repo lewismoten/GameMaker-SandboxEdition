@@ -1,6 +1,6 @@
 // Tools for block sets (.bbl scenery, .mbl monster and .cbl hero pictures): each block's
 // properties (BLOC.H blkstruct) and its 20 x 20 picture as palette numbers.
-import { BLEN, BLOCK_COUNTS, newBlockSet, parseBlocks, serializeBlocks, type Block, type BlockKind } from '../../formats/blocks';
+import { BLEN, BLOCK_COUNTS, newBlockSet, parseBlocks, serializeBlocks, type Block, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { DRY_RUN, commit } from './run';
 import { FILE, fileName, int, intRows, need } from './common';
 import { json, ToolError, type JsonSchema, type ToolDef } from './types';

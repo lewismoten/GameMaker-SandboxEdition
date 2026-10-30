@@ -1,10 +1,10 @@
 // The 320x200 screens: the title (an FLI cartoon, then the poster), the menu, the story,
 // help and credits pages, a card before each level, and the endings. All share one
 // palette (the game's ramps plus a few inks), so Game-Maker's text colors come out the same.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../../../kit/pixels';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, centered, gradient, clubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
 import { saveSlots } from '../../../kit/saveSlots';

@@ -3,8 +3,8 @@
 // turning far behind, the carousel (its pole, its striped canopy you can hop up onto from
 // below), the Clown Club's banner and its clowns juggling (friendly, all of them), the
 // turnstile by the gate (it turns once Reggie is safe) and Doc Leo.
-import { SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, gradient } from '../art/draw';
 import { c, r } from '../art/pal';
 import { CTR } from '../ids';

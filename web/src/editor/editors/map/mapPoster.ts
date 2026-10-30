@@ -10,7 +10,7 @@ import type { Project } from '../../core/project';
 import type { Level } from '../../../manual/printables/levelMapLayout';
 import type { MapUnroll } from '../../check/unrollMap';
 import { fnv1a } from '../../../seededRandom';
-import { ADVTYPE } from '../../../formats/game';
+import { ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { lookedAt } from '../../shell/lookId';
 
 /** How long the explorer plays, all ways in together. */

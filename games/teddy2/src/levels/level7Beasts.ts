@@ -3,8 +3,8 @@
 // under the bleachers hides one more. THE BIG DROP's car rides up its tower steadily and drops
 // fast. The carousel's horses go up and down (stand on one for a lift to the canopy). Bees
 // at the root beer stand.
-import { SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels } from '../../../kit/pixels';
+import { SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { FLIP } from '../characters/mons';

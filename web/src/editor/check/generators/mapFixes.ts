@@ -2,8 +2,8 @@
 // first floor beside its rim, and a one-block gap where a wall or lock shuts the hero in. They
 // work on a map's cells and block set and return the cells to change.
 import { mulberry32 } from '../../../seededRandom';
-import { BACKBL, type Block } from '../../../formats/blocks';
-import { MLEN, MWID } from '../../../formats/map';
+import { BACKBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 const open = (b: Block | undefined) => !!b && b.solid !== 15;
 

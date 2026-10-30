@@ -2,7 +2,7 @@
 // card's with green phosphor): the song as an oscilloscope draws it. The ceiling and the floor
 // are the wave itself, traced in bright phosphor over the dark screen with its dotted
 // graticule, and the equalizer's bars glow dim far behind.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, flipY, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { addTerrain, type SideArt } from './sideTiles';

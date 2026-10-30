@@ -6,7 +6,7 @@ import './sample.css';
 import { registerEditor } from '../registry';
 import { h, clear, download, toast } from '../../core/ui';
 import { encodeWav, toPcm8 } from '../../../media/wav';
-import { decodeVoc, encodeVoc } from '../../../formats/voc';
+import { decodeVoc, encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { audio } from '../../widgets/mediaShared';
 import { drawWave } from '../../widgets/waveform';
 import { startRecording } from '../../tools/vocMaker';

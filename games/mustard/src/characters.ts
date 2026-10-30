@@ -8,9 +8,9 @@
 // The seed has no way to fight and doesn't need one: it don't shout, it don't brag. Big loud
 // things (power 150, solid) hurt to bump into and push it back; raindrops and birds (under 100)
 // are done in by a touch, and their picture's effect lands first (a drop of water, points).
-import { CHARBL } from '../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { newMonsterSet, type Monster } from '../../../web/src/formats/monster';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { FAITH, KEY, MON, SEQ, SND, WATER } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 import { set, mon, corner, pace } from '../../kit/actors';

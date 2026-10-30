@@ -15,7 +15,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { encodeVoc } from '../../../../web/src/formats/voc';
+import { encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 
 export const CLIPS = ['thread', 'squeeze', 'gold', 'dream', 'humpdown'] as const;
 type ClipName = (typeof CLIPS)[number];

@@ -10,7 +10,7 @@
 //      lights flickering, the dogs awake and wanting to play, three rolls of toilet paper.
 //   4. The Reckoning: the lights turn blood red. The Devil in leisure wear, sipping a milkshake.
 //      Almond milk, oat milk and lactase pills; his last straw; the porcelain throne.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 

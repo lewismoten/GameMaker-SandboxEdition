@@ -5,7 +5,7 @@
 import './cards.css';
 import { h, modal, toast } from '../../core/ui';
 import type { Project } from '../../core/project';
-import type { Game, Scene } from '../../../formats/game';
+import type { Game, Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { addCard, INSTRUCTIONS_SLOT, INTRO_SLOT } from './cardWire';
 import { CARD_LINES, instructionLines, keyLines, levelCardLines, pagesOf, playOrder } from './cardText';
 import { tally } from '../../../achievements';

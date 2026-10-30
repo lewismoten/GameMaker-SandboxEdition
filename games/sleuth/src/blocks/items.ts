@@ -2,7 +2,7 @@
 // hold them on the floor (touching one adds to its counter: one piece of evidence, or the
 // lens's and the lantern's charge, and leaves the floor behind). Also the safe's four dial
 // symbols (mask, raven, rose, moon) and the safe door.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, type BlockDef } from './blockset';
 import { micro, microC, pool } from '../art/draw';
 import { c, ink, ramp as r } from '../art/pal';

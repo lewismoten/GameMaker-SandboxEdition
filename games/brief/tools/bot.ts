@@ -3,10 +3,10 @@
 // picks up every word slip (nearest first, by the cheapest walk around the furniture, along
 // the walks when keepTo is set), waiting out shushers and other word-confiscating things,
 // then opens THE END.
-import { MLEN } from '../../../web/src/formats/map';
-import { LASTMON } from '../../../web/src/formats/monster';
-import { newCharInfo, type CharInfo } from '../../../web/src/engine/world';
-import type { Game } from '../../../web/src/formats/game';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { newCharInfo, type CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Area } from '../src/levels/area';
 import { CTR } from '../src/ids';
 import { Sim } from './sim';
@@ -150,8 +150,8 @@ export class Bot {
   constructor(
     readonly game: Game,
     readonly areas: Record<string, { area: Area; names: string[]; hazards: Set<string> }>,
-    readonly chr: import('../../../web/src/formats/character').Character,
-    readonly cbl: import('../../../web/src/formats/blocks').Block[],
+    readonly chr: import('@lewismoten/gamemaker-sandbox-engine/formats/character').Character,
+    readonly cbl: import('@lewismoten/gamemaker-sandbox-engine/formats/blocks').Block[],
   ) {}
 
   /** Enters a scene at `at` (a fresh map, Joe's counters kept). */

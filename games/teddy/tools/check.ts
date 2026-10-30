@@ -6,13 +6,13 @@
 // TEDDY_WALK=<file> also writes the whole run as a .rec recording (for play-testing the
 // real engine: it plays the game from start to finish).
 import { writeFileSync } from 'node:fs';
-import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { buildCharacter, CB } from '../src/characters/character';
-import { newCharInfo } from '../../../web/src/engine/world';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { LEVELS } from '../src/game';
 import { ROUTES } from './route';
 import { Recorder, playLevel } from './bot';
-import { Sim } from '../../kit/sceneSim';
+import { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { CTR } from '../src/ids';
 import { align } from './align';
 

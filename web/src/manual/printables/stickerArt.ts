@@ -2,7 +2,7 @@
 // their cut lines (SVG). One layout makes the sheet on screen and on paper, the picture with
 // bleed for a cutting machine (PNG) and its cut lines, so the three always match. Sizes are in inches.
 
-import { crc32 } from '../../project/zip';
+import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { edgeDistance, inside, MIN_SIZE, outline, type Pt, type StickerGeom } from './stickerGeom';
 
 /** Cricut's Print Then Cut area on letter paper, clear of its sensor marks, on every machine; Silhouette and Brother machines take it too. */

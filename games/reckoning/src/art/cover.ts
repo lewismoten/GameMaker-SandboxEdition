@@ -6,7 +6,7 @@
 // true color, a pixel at a time, then reduced to one 256-color palette for the FLI
 // (cartoons.ts). `t` (0..1) animates it: the door swings wider and the glow grows, the aura
 // turns and pulses, the clock's colon blinks, and lightning flashes once.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { mixc, smooth, noise2 } from '../../../kit/coverPaint';
 
 const COVER_W = 320;

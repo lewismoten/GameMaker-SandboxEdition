@@ -14,7 +14,7 @@
 //                      segment number and count, segment id (16), data checksum, XML offset
 //                      and length, 120 reserved, master checksum, image variant, sector
 //                      count, 12 reserved
-import { crc32 } from '../project/zip';
+import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { concat } from './macIcon';
 
 const SECTOR = 512;

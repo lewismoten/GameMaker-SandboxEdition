@@ -18,7 +18,7 @@
 // is the bookmark behind THE END, so the story shows exactly when it has been put back.
 // The thirty-third book's card is a pass-through scene (Joe starts on its link): it loads
 // dark.pal, all black, so PLAYGAME's fade in and out of its map happens unseen.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { CompiledHub } from './levels/hub';
 import type { CompiledWing } from './levels/wing';
 import { CHAPTERS } from './chapters';

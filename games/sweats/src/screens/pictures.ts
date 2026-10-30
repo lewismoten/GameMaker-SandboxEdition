@@ -3,7 +3,7 @@
 // credits (with Doc Leo and the Bard's logo). The title, story, cards and endings are cartoons
 // (cartoons.ts). PLAYGAME writes its text over the paper and the board (kit/textfit.ts checks it).
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient } from '../../../snowbound/src/art/draw';
 import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/font';
 import { gif, scaleBlit, H, W } from '../../../snowbound/src/screens/scenery';

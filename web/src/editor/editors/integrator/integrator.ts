@@ -17,7 +17,7 @@ import type { FileKind } from '../../core/project';
 import { fileField } from '../../widgets/filePicker';
 import { GameFiles } from '../../../project/files';
 import type { PlayerHandle } from '../../../player/player';
-import type { AudioEngine } from '../../../audio/engine';
+import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import {
   ADVTYPE,
   ENDTYPE,
@@ -32,8 +32,8 @@ import {
   slotExtensions,
   type Point,
   type Scene,
-} from '../../../formats/game';
-import { newMap, parseMap, serializeMap } from '../../../formats/map';
+} from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { newMap, parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { WORLD, CARD_UNITS, clampPos } from './layoutCells';
 import { arrangements, closeGaps, gapSavings, spreadOut, type Arrangement } from './integratorLayout';
 import { graphicShot, levelShot } from './integratorArt';

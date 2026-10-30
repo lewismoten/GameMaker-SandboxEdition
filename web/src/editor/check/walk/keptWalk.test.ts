@@ -13,8 +13,8 @@ vi.mock('../../../project/storage', () => ({
 
 import { GameFiles } from '../../../project/files';
 import { getSection } from '../../../project/companion';
-import { serializeGame } from '../../../formats/game';
-import { MLEN, newMap, serializeMap } from '../../../formats/map';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Project } from '../../core/project';
 import { makeReadOnly } from '../../core/readOnly';
 import { testGame, WALL } from '../testGame';

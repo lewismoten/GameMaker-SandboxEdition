@@ -2,8 +2,8 @@
 // selection, the frame shown, and one way to change the scene (as one undo step). Also the
 // new items it adds, made from the game's own files.
 import type { Project } from '../../../core/project';
-import type { Palette } from '../../../../formats/palette';
-import { parseMonsters } from '../../../../formats/monster';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { newId, textItem, type ActorItem, type BlockItem, type Item, type Scene, type TextItem } from './sceneModel';
 
 export type Selection = { kind: 'item'; id: string } | { kind: 'bg'; index: number } | { kind: 'scene' };

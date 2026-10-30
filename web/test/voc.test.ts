@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { decodeVoc, isVoc } from '../src/formats/voc';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 
 const gameware = resolve(__dirname, '../../cd/gameware');
 const vocs = existsSync(gameware)

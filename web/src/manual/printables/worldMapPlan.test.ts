@@ -4,7 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { parseGame, type Game } from '../../formats/game';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { graphOf } from '../../editor/editors/integrator/layoutCells';
 import { groupScenes, isBlackPalette, placesGame } from './worldMapGroups';
 import { planWorld } from './worldMapPlan';

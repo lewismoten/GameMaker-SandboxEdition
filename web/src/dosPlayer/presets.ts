@@ -1,7 +1,7 @@
 // The DOS player panel's presets, after what 1990s authors did to their players with a hex
 // editor: A-J Games' Builder blanked the menu and high-score words (its menu picture carries its
 // own), and A-J Games' Rōdïp renamed the status words to fit its story.
-import type { PlayerPatches } from './patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 interface PlayerPreset {
   id: string;

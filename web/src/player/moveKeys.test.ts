@@ -1,7 +1,7 @@
 // The touch d-pad's keys and the strip's leftovers, for made-up sequences and real characters.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { emptyFrame, parseCharacter, type Sequence } from '../formats/character';
+import { emptyFrame, parseCharacter, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { padPlan, sectorOf, sequenceSector } from './moveKeys';
 
 const file = (path: string) => readFileSync(new URL(`../../../${path}`, import.meta.url));

@@ -2,8 +2,8 @@
 // she is the hero. A scene names its own character file, so these levels simply load hers.
 // She walks faster and hops higher than Teddy (she is twice his size), and her tricks are
 // her own: BOOF, a big dig, chewing, zoomies and a sit she has not quite learned.
-import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BlockSet } from '../blocks/blockset';
 import { CTR, GSEQ, KEY, MON, SND } from '../ids';
 import { GWINN_HERO } from '../sprites/gwinnHero';

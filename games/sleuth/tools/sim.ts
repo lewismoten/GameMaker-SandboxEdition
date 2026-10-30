@@ -2,12 +2,12 @@
 // scene.ts) that plays the finished disk files, so the build can walk the whole case
 // itself: every act, every question, every accusation. Keys it presses are recorded the
 // way PLAYGAME records them, which makes the demo and the full walkthrough recordings.
-import { moveChars } from '../../../web/src/engine/character';
-import { simKeyPress, resetKeys } from '../../../web/src/engine/keys';
-import { birthMon, blockBirthMonsters, moveAllMonsters, resetMonInfo } from '../../../web/src/engine/monsters';
-import { updateCharDrawState } from '../../../web/src/engine/render';
-import { changeScroll, drawScroll, initScroll } from '../../../web/src/engine/scroll';
-import { getTouchBlocks } from '../../../web/src/engine/touch';
+import { moveChars } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { simKeyPress, resetKeys } from '@lewismoten/gamemaker-sandbox-engine/engine/keys';
+import { birthMon, blockBirthMonsters, moveAllMonsters, resetMonInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { updateCharDrawState } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
+import { changeScroll, drawScroll, initScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
+import { getTouchBlocks } from '@lewismoten/gamemaker-sandbox-engine/engine/touch';
 import {
   BACKBL,
   CHARBL,
@@ -26,14 +26,14 @@ import {
   padBlocks,
   type CharInfo,
   type World,
-} from '../../../web/src/engine/world';
-import { parseBlocks, BACKBL as NBACK, MONBL as NMON, CHARBL as NCHR } from '../../../web/src/formats/blocks';
-import { parseCharacter } from '../../../web/src/formats/character';
-import { parseMonsters } from '../../../web/src/formats/monster';
-import { parseMap } from '../../../web/src/formats/map';
-import { MAXSCENELINKS, NOSCENE, parseGame, type Game } from '../../../web/src/formats/game';
-import type { RecordedKey } from '../../../web/src/formats/recording';
-import { rng } from '../../kit/pixels';
+} from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { parseBlocks, BACKBL as NBACK, MONBL as NMON, CHARBL as NCHR } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { MAXSCENELINKS, NOSCENE, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import type { RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export class GameSim {
   readonly game: Game;

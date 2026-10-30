@@ -7,9 +7,9 @@
 // rosemary brine (power 220, two of them, at his head and his feet) once he has rosemary: it
 // beats the wild loofahs of the aisle (150) and knocks each half of Scrubbus Maximus (200) a
 // stage cleaner; the top half, cleansed, becomes the pink one.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
-import { newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { CANDLES, COINS, KEY, MON, PINK, SALT, SEQ, SND } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 import { set, mon, corner, pace } from '../../kit/actors';

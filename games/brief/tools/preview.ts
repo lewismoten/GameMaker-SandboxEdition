@@ -1,7 +1,7 @@
 // Design aid (not part of the disk): PNG sheets of Joe, every block set and the screens.
 //   PREVIEW_DIR=/tmp/x npx vite-node ../games/brief/tools/preview.ts
 import { join } from 'node:path';
-import { Pixels } from '../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '../../kit/png';
 import { CLEAR } from '../src/art/draw';
 import { PAL, c } from '../src/art/pal';

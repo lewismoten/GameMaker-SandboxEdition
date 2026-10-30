@@ -2,7 +2,7 @@
 // linoleum, the self-checkout's screen, the parking lot's asphalt and the beige minivan, the
 // restaurant's wallpaper and its china, the banquet's uprising), the puff every beaten foe of
 // the set goes up in, and the drawing helpers the four monologues share.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Lighting, Pal, Ramp } from '../../art/pal';
 import type { BlockBook } from '../../common/blocks';
 import { T, outline, type SpriteBook } from '../../common/sprites';

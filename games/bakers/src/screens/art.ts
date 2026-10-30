@@ -1,7 +1,7 @@
 // Big pictures for the screens: the root beer mug, the thirteen-star circle, THE CHEZ pulling
 // the stand, the stand itself, Doc Leo and the dogs scaled up, recipe card paper and the
 // CLASSIFIED stamp. All in the Pantry palette's fixed ramps.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { chezSide, CHEZ_WHEELS } from '../../../kit/chez';
 import { blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { c, r } from '../art/pal';

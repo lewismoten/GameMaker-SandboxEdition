@@ -1,14 +1,14 @@
 // Drawing helpers shared by the blocks, sprites and screens: dithered shading, lumps,
 // textures, ASCII sprites, the PC's 8x8 font and a 3x5 font for tiny signs.
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import { Pixels } from '../../../kit/pixels';
-import { textInk } from '../../../kit/textBounds';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 import { P } from './pal';
-import { CLEAR } from '../../../kit/blit';
-import { textWidth } from '../../../kit/pcText';
-export { textWidth } from '../../../kit/pcText';
-export { CLEAR, over, recolor } from '../../../kit/blit';
-export { shadeAt, gradient, blob, speckle } from '../../../kit/shading';
+import { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+import { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+export { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+export { CLEAR, over, recolor } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+export { shadeAt, gradient, blob, speckle } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 
 /** An ASCII sprite on a clear 20x20 block, bottom aligned and centered unless placed. */
 export function sprite(rows: string[], key: Record<string, number>, dx?: number, dy?: number, w = 20, h = 20): Pixels {

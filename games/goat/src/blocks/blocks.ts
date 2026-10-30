@@ -5,7 +5,7 @@
 // census scroll opens the alley), wool caught on the thorns counts toward your gift, the
 // kneeling camels give birth to spit, the pail costs you points to kick, and the empty
 // place in the line at the manger only opens for five wool.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';

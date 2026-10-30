@@ -3,8 +3,8 @@
 // 310x165 world at 5,29). The game's scenes and links form a graph; each candidate puts the
 // scenes on a grid of card cells: as trees from the start scene (across or down), along a
 // snaking reading order, packed in groups around hubs. integratorLayout.ts judges them.
-import { NOSCENE, STARTTYPE, ENDTYPE, type Game, type Point } from '../../../formats/game';
-import { MLEN, MWID } from '../../../formats/map';
+import { NOSCENE, STARTTYPE, ENDTYPE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 /** Where the hero arrives in a scene: the "to" block of the first scene that links to it. */
 export function arrival(game: Game, i: number): Point {

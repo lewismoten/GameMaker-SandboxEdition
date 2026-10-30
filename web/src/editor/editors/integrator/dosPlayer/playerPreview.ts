@@ -2,19 +2,27 @@
 // drawing code (engine/menus.ts, engine/funcKeys.ts) with the patches applied, over the game's
 // own pictures and palettes, as the player would show it: the menu over the menu picture, the
 // high scores over theirs, F2 and the drop picker in the first level's palette, and so on.
-import { Screen } from '../../../../gfx/screen';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import type { GameFiles } from '../../../../project/files';
-import type { Game } from '../../../../formats/game';
-import { decodeGif, isGif } from '../../../../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../../../formats/fli';
-import { parseBackdrop, parseSlideList, textLines } from '../../../../formats/graphicScripts';
-import { defaultPalette, parsePalette, PALETTE_SIZE } from '../../../../formats/palette';
-import { parseHighScores } from '../../../../formats/highscore';
-import { drawDefaultScreen, drawHighScores, drawMenu, drawNewHighScore, drawNoFile, menuMarker } from '../../../../engine/menus';
-import { drawAbout, drawDropPicker, drawLoadHeading, drawSaveHeading, drawSaveSlots, drawStatus, type InventoryWorld } from '../../../../engine/funcKeys';
-import { BACKBL } from '../../../../engine/world';
-import type { PlayerLook } from '../../../../engine/playerLook';
-import type { PatchScreen } from '../../../../dosPlayer/patchTable';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { defaultPalette, parsePalette, PALETTE_SIZE } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { parseHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
+import { drawDefaultScreen, drawHighScores, drawMenu, drawNewHighScore, drawNoFile, menuMarker } from '@lewismoten/gamemaker-sandbox-engine/engine/menus';
+import {
+  drawAbout,
+  drawDropPicker,
+  drawLoadHeading,
+  drawSaveHeading,
+  drawSaveSlots,
+  drawStatus,
+  type InventoryWorld,
+} from '@lewismoten/gamemaker-sandbox-engine/engine/funcKeys';
+import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import type { PlayerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import type { PatchScreen } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
 import { mulberry32 } from '../../../../seededRandom';
 import type { PreviewDrawn } from './dragItems';
 

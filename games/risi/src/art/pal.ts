@@ -3,7 +3,7 @@
 // Pompeian red and gold), the battlefield at noon (a dusty blue sky), the rooftops of Rome at
 // sunset, the kitchen at night (one oil lamp), the baths (aqua and steam) and the theater in the
 // afternoon sun. The glows (lamp flames, gold, the diva's scales, the spells) keep their own light.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { type Pal, wrap } from '../../../kit/palRamps';
 export { type Pal } from '../../../kit/palRamps';
 

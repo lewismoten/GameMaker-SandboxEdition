@@ -1,8 +1,8 @@
 // "Add a track from another song…": the game's other songs and their tracks; the one picked is
 // added the way Paste track adds one (trackPaste.ts), without touching the clipboard.
 import { h, clear, modal } from '../../core/ui';
-import { channelNotes, channelSounds, startMode, usedChannels } from '../../../formats/cmfEdit';
-import { RHYTHM_CHANNELS, readSong } from '../../../formats/cmfSong';
+import { channelNotes, channelSounds, startMode, usedChannels } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { RHYTHM_CHANNELS, readSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { trackNameOf, type MusicDoc } from './doc';
 import { copyTrack, type TrackClip } from './trackClip';
 import { pasteIntoDoc } from './trackPaste';

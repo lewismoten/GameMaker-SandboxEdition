@@ -2,8 +2,8 @@
 // of every block in the set (plus any special choices, like "none").
 import { h, modal } from '../core/ui';
 import { blockCanvas } from '../core/draw';
-import type { Palette } from '../../formats/palette';
-import type { Block } from '../../formats/blocks';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export interface BlockExtra {
   value: number;

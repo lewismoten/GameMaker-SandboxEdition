@@ -5,7 +5,7 @@
 import { Project } from '../../editor/core/project';
 import { GameFiles, loadHostedGame, type CatalogEntry } from '../../project/files';
 import { deleteProject, listProjects, loadProject } from '../../project/storage';
-import { newGame, serializeGame } from '../../formats/game';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { unlockAchievement } from '../../achievements';
 
 export interface HdGame {

@@ -1,8 +1,8 @@
 // bell.fli, chapter one's turn (before the bell's page): up in the belfry Joe hauls on the bell
 // rope, the hammer swings back and strikes, the big brass bell rocks and rings, and his counter
 // counts the strokes, one to seven. Then it is seven o'clock.
-import { Pixels } from '../../../../kit/pixels';
-import { Reel } from '../../../../kit/reel';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { gradient, outlined, scaleBlit, text } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { joe } from '../../sprites/joe';

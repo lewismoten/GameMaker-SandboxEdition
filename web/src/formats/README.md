@@ -1,6 +1,6 @@
 # `formats/`: Game-Maker's file formats
 
-Part of the [source map](../README.md).
+Integration tests remain here. The implementation now belongs to the [engine workspace](../../packages/engine/README.md), under `src/formats/`. Part of the [source map](../README.md).
 
 Readers and writers for every Game-Maker file
 (`.gam .pal .bbl/.mbl/.cbl .chr .mon .map .snd .his .rec .bkd .lst .txt`) and the standard ones

@@ -5,9 +5,9 @@
 // blocks the hero can get through, walled in all round; rooms that are copies of one room can
 // be drawn once (levelRoomHints.ts), and a room (or a whole map) the hero never walks around
 // in, because every scene there starts him right on its way out, is left out.
-import type { Block } from '../../formats/blocks';
-import { NOSCENE, type Game, type Point } from '../../formats/game';
-import { MLEN, MWID } from '../../formats/map';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { NOSCENE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Rect } from './worldMapLayout';
 
 /** Can the hero get into this cell: not solid on every side, or a block that changes (a door). */

@@ -9,7 +9,7 @@
 //     (counter 21), and the twelfth basket only takes you when the other eleven are full;
 //   - the fish basket gives birth to flying fish, a fire hurts, a jar of water heals, a pot of
 //     honey is an extra life, and the door of home takes one holy crumb to open.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';

@@ -2,13 +2,13 @@
 // umbrella, the curtain, Ada's three theories, the curtain call and the lights going out.
 // Slide shows (.LST) string them together with text pages, which is how a flashback is
 // told in Game-Maker.
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { clipEntries, fliClips } from '../../../kit/fliClips';
 import { SANDLOGO } from '../../../kit/sandlogo';
-import { dimmed } from '../../../kit/reel';
-import { Pixels, rng } from '../../../kit/pixels';
+import { dimmed } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, centered, microC, outlined, pool, scaleBlit, shadeAt } from '../art/draw';
 import { P, c, ramp as r } from '../art/pal';
 import { W, H, actor, dagger, facade, rain, stageView } from './art';

@@ -15,7 +15,7 @@ import {
   withTopOrient,
 } from '../src/editor/editors/character/characterLogic';
 import { mirrorFrames } from '../src/editor/editors/character/characterMirror';
-import { MAXFRAME, emptyFrame, frameCount, newCharacter } from '../src/formats/character';
+import { MAXFRAME, emptyFrame, frameCount, newCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 
 describe('orientation buttons', () => {
   it('rotates a quarter turn clockwise through all four turns', () => {

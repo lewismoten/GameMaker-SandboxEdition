@@ -2,7 +2,7 @@
 // polka dots, always up for a high five), Bubbles (a bubble wand; she loves a good sit),
 // Twirly (a tutu; ask her about spinning), and the Pie-O-Matic backstage (a pie launcher,
 // test-firing for the finale). Plus the things around the ring: bowling pins, pies, bubbles.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, sprite } from '../art/draw';
 import { CK } from './klown';
 import { P } from '../art/pal';

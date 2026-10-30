@@ -1,10 +1,10 @@
 // What every year2000 screen is painted with: GIF/FLI encoding, chrome lettering, the
 // sunset-and-grid scenery of a 1990s idea of the future, the console TV, and Art (the
 // game's own sprites, handed in so the screens show the real characters and items).
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { Pixels, rng } from '../../../kit/pixels';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { T, oval, shadeAt } from '../art/draw';
 import { text, textWidth } from '../art/font';
 import { C, PAL } from '../art/pal';

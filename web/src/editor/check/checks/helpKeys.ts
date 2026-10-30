@@ -3,8 +3,8 @@
 // own function keys). A key the help names that nothing uses sends players mashing a dead key.
 // Only a key written as a key counts: "Press P", "the P key", "P to pick up", "P picks things
 // up", or a legend line ("Z Plasma Lance"), so ordinary words and the letters A and I are left alone.
-import type { Game } from '../../../formats/game';
-import { SCAN } from '../../../input/scancodes';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { SCAN } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { GameFiles } from '../../../project/files';
 import { GLOBAL_KEYS, gameKeyMap } from '../../keymap/keyMap';
 import type { Finding } from '../findings';

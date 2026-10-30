@@ -1,7 +1,7 @@
 // People and things by the river: a fisherman casting from the bank (his hook bobs up and
 // down: a monster), the miller in a floury apron, flour sacks, Doc Leo's rubber chicken
 // bobbing on the water, and a fish that jumps.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { CK, propSprite } from './klown';

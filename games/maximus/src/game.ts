@@ -1,11 +1,11 @@
 // Assembles the hundred scenes of Maximus: block sets, monster files, characters, every
 // map and palette, and the .GAM scene graph that links them.
-import { serializeBlocks, type Block } from '../../../web/src/formats/blocks';
-import { serializeCharacter } from '../../../web/src/formats/character';
-import { serializeMap } from '../../../web/src/formats/map';
-import { serializeMonsters } from '../../../web/src/formats/monster';
-import { serializePalette } from '../../../web/src/formats/palette';
-import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
+import { serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { ADVTYPE, NOSCENE, emptyScene, newGame, serializeGame, type Game, type Link, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { monsterSet, type MonsterSet } from './characters/bestiary';
 import type { SetBuilder } from './blocks/blockset';
 import { courier, vehicle, type CharSet } from './characters/chars';

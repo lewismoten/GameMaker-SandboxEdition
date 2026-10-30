@@ -8,7 +8,7 @@ import { browseFile, type Picked } from './dos/picker';
 import { isModified } from './dos/hardDisk';
 import { templateFor } from '../editor/shell/templates';
 import type { FileKind } from '../editor/core/project';
-import { createZip } from '../project/zip';
+import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { download } from '../editor/core/ui';
 import { prefetchWhenIdle } from '../prefetch';
 import { soundBlaster } from './computer/soundBlaster';

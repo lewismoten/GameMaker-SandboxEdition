@@ -2,8 +2,8 @@
 import { describe, expect, it } from 'vitest';
 import { checkGame, validDosName, worstSeverity } from '../src/project/health';
 import { GameFiles } from '../src/project/files';
-import { ADVTYPE, emptyScene, newGame, serializeGame } from '../src/formats/game';
-import { textBytes } from '../src/formats/binary';
+import { ADVTYPE, emptyScene, newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 
 function game() {
   const g = newGame('Test');

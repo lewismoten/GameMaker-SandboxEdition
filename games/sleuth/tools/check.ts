@@ -5,7 +5,7 @@
 // --walk writes the run as a .rec recording (replayed in the real engine as a demo, it
 // plays the game from start to finish).
 import { writeFileSync } from 'node:fs';
-import { serializeRecording } from '../../../web/src/formats/recording';
+import { serializeRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { loadDisk, playWhole } from './whole';
 const args = process.argv.slice(2);
 const opt = (name: string) => {

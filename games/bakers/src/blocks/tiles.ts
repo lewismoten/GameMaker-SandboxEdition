@@ -15,7 +15,7 @@
 //   openers         a chain that ends open: ice that thaws, a door on a timer
 //   hot floors      a chain whose middle block hurts: burners, steam grates, live wires
 //   spouts          blocks that give birth to monster 10..13 (whatever this room makes of it)
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, blob, micro, outline, shadeAt } from '../art/draw';
 import { blank, cap, chickenItem, eggFaberge, eggRotten, float, ingredient, kazoo, on, pie, spoon, tricorn } from '../art/kit';
 import { c, r } from '../art/pal';

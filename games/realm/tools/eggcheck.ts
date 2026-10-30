@@ -4,7 +4,7 @@
 import { GameSim } from './sim';
 import { Bot, SCAN } from './bot';
 import { BLK } from '../src/ids';
-import { MAXSCENELINKS } from '../../../web/src/formats/game';
+import { MAXSCENELINKS } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 const sim = new GameSim(undefined, 1);
 const bot = new Bot(sim);

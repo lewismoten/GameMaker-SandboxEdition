@@ -2,7 +2,7 @@
 // place. The sprites never change between levels; the .PAL does: a soft gold morning at the
 // city gate, the white-hot noon over the desert, lamplight in the tailor's shop, and night
 // turning to dawn up the needle. The camel's gold, the stars and grace keep their own light.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { type Pal, wrap } from '../../../kit/palRamps';
 export { type Pal } from '../../../kit/palRamps';
 

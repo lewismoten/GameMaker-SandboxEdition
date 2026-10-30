@@ -249,6 +249,9 @@ function playChunks(): Rollup.GetManualChunk {
 
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
+  // Use workspace source consistently; published consumers keep the default dist exports.
+  resolve: { conditions: ['gamemaker-source', 'module', 'browser', 'development|production'] },
+  ssr: { noExternal: [/^@lewismoten\/gamemaker-sandbox-/], resolve: { conditions: ['gamemaker-source', 'module', 'node', 'development|production'] } },
   base: './',
   plugins: [
     cdGames(resolve(__dirname, '../cd')),

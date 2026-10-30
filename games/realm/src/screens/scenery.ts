@@ -1,8 +1,8 @@
 // Painting the big pictures: skies, layered hills going blue with distance, stars, the Round
 // Tuit glowing like a second sun, castles and towns against the light.
 import { Canvas, type RGB, mix, clamp01, tnoise, smooth } from '../art/rgb';
-import { rng } from '../../../kit/pixels';
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 
 export function sky(cv: Canvas, stops: [number, RGB][]): void {
   cv.shade((_x, y) => {

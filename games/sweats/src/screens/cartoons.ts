@@ -7,8 +7,8 @@
 //
 // The stage is painted in the common ramps only, so a title card can draw it in its monologue's
 // own palette (where the common ramps sit at the same entries).
-import { Pixels, rng } from '../../../kit/pixels';
-import { Reel } from '../../../kit/reel';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { fadeOutLength } from '../../../kit/fadeOut';
 import { blob, gradient, shadeAt } from '../../../snowbound/src/art/draw';
 import { centered, micro, outlined, text, textWidth } from '../../../snowbound/src/art/font';

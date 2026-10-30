@@ -1,8 +1,8 @@
 // Small pieces the games' synthesized sound effects share (kit/sound.ts makes the samples):
 // noise through a low-pass, a gate that lets a sound through for a while, an attack-and-decay
 // envelope, and a one-pole low-pass on any sound.
-import { type Synth } from './sound';
-import { rng } from './pixels';
+import { type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 /** White noise through a one-pole low-pass (0..1: how much of the new sample passes). */
 export function lowNoise(seed: number, cutoff: number | ((t: number) => number)): Synth {

@@ -15,7 +15,10 @@ try {
   assert.ok(pack.files.some((f) => f.path === 'NOTICE.md'));
   assert.ok(pack.files.every((f) => !/\.(gam|map|exe|pal|voc|chr|rec)$/i.test(f.path)));
   writeFileSync(resolve(consumer, 'package.json'), '{"type":"module","private":true}');
-  execFileSync('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', resolve(consumer, pack.filename)], { cwd: consumer, stdio: 'pipe' });
+  execFileSync('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', ...process.argv.slice(2), resolve(consumer, pack.filename)], {
+    cwd: consumer,
+    stdio: 'pipe',
+  });
   writeFileSync(
     resolve(consumer, 'smoke.mjs'),
     `

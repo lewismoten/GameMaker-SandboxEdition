@@ -1,7 +1,7 @@
 // The level check's ways back and ways through (wayBack.ts), with slower hands' moves
 // (inputs.ts steadyMoves), on the tiny game in testGame.ts and on runs made up by hand.
 import { describe, expect, it } from 'vitest';
-import { MLEN } from '../../../formats/map';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Exploration, type ExitReach } from '../explore';
 import { steadyMoves, type Move } from '../inputs';
 import { playtestScene, type Playtest, type SceneRun } from '../playtest';

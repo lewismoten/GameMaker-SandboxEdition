@@ -6,7 +6,7 @@
 import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { GameFiles } from '../../src/project/files';
-import { newGame, serializeGame } from '../../src/formats/game';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { backupEntries, emptyCompanion, setSection } from '../../src/project/companion';
 import { PLAYER_SECTION, playerRecord } from '../../src/dosPlayer/playerRecord';
 import { MemoryContext } from '../../src/assistant/tools/memoryContext';

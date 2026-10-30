@@ -21,7 +21,7 @@ import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
 import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
-import type { PlayerPatches } from '../../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { REPO_URL } from '../../seo/site';
 import { companionCredits } from '../../assistant/chat/todo';
 
@@ -309,7 +309,7 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else {
-      const [{ createZip }, { backupEntries }] = await Promise.all([import('../../project/zip'), import('../../project/companion')]);
+      const [{ createZip }, { backupEntries }] = await Promise.all([import('@lewismoten/gamemaker-sandbox-archives/zip'), import('../../project/companion')]);
       const zip = await createZip(backupEntries(files, game.gam, game.companion?.()));
       save(`${game.gam.replace(/\.gam$/i, '')}.zip`, zip, 'application/zip', 'Import it here again whenever you like.');
     }

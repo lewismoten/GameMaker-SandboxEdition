@@ -3,7 +3,7 @@
 // part n+1 beside or under it, every n and n+1 must), the water cooler, the stamp-desk sign,
 // and that their art joins up across the block edges. Run by tools/check.ts.
 import { alignGame, autoParts, diskScenes, pair, shape, type PartRule } from '../../kit/align';
-import { MLEN } from '../../../web/src/formats/map';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { compileAll } from '../src/compile';
 
 /** Joins drawn as edges on purpose (looked at): the water cooler's counter over its panel, the

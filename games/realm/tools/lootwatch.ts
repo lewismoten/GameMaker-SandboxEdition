@@ -4,8 +4,8 @@
 // egg, a shop counter (it takes gold first) or a conversation's reward scene; and a gem, ruby or
 // heart a foe leaves behind. tools/loot.ts reports a run; the bot (tools/bot.ts) grabs what it
 // sees on the way.
-import { onscrn } from '../../../web/src/engine/touch';
-import type { GameSim } from '../../kit/gameSim';
+import { onscrn } from '@lewismoten/gamemaker-sandbox-engine/engine/touch';
+import type { GameSim } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { BLK, MON } from '../src/ids';
 import about from '../about.json';
 

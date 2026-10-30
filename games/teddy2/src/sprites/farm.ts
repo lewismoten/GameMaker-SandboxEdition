@@ -1,7 +1,7 @@
 // Farm animals and things (monster block art, facing right): hens and a rooster (Gwinn
 // thinks they are all Doc Leo's rubber chicken), a pig, a cow chewing, crows, hay bales,
 // and the goat who eats rope as well.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 

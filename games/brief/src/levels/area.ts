@@ -3,8 +3,8 @@
 // Scenes never scroll, so PLAYGAME frames each window around the cell Joe enters on: column
 // 8, row 5 of the window. Every way into a window lands there. PLAYGAME also keeps the
 // character off the screen's top row and left column, so nothing Joe must reach goes there.
-import { MLEN, LASTMM, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
-import { Pixels } from '../../../kit/pixels';
+import { MLEN, LASTMM, newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { c } from '../art/pal';
 import { outline } from '../art/draw';
 import { BlockSet, Bestiary, SOLID, type BlockDef, type MonDef } from '../blocks/sets';

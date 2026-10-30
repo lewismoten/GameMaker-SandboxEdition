@@ -1,7 +1,7 @@
 // The block painter's "Replace colors" dialog: one color (or a run of them, such as a whole
 // ramp) becomes another, in this block or every block of the set; or two runs trade places.
 import { h, modal } from '../../core/ui';
-import { paletteCss, type Palette } from '../../../formats/palette';
+import { paletteCss, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { moveRange, swapRange } from './pixelOps';
 
 interface Recolor {

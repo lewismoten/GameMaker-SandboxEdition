@@ -11,10 +11,10 @@
 // Layout (12 rows: the ceiling on row 0, the floor on row 10): the poet walks row 9; the table
 // top is a ledge on row 7 (he walks along it on row 6, past Kevin and Aunt Marge sitting behind
 // it); a shelf over the end of the table holds the cactus.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, plotThing } from '../../common/blocks';
 import { anim, corner, mon, pace, still } from '../../common/characters';

@@ -6,8 +6,8 @@
 // to each game, in its own colors.
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { decodePartialJpeg } from '../../web/src/formats/jpeg';
-import { Pixels } from './pixels';
+import { decodePartialJpeg } from '@lewismoten/gamemaker-sandbox-engine/formats/jpeg';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 /** True-color pixels, 3 bytes each, square. */
 export interface Scan {

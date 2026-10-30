@@ -4,9 +4,9 @@
 // piece; empty sides trimmed to one block. Checked on small made-up maps and on the real disks.
 import { describe, expect, it } from 'vitest';
 import { join } from 'node:path';
-import { emptyBlock } from '../../formats/blocks';
-import { ADVTYPE, ENDTYPE, STARTTYPE, type Game, type Scene } from '../../formats/game';
-import { MLEN, MWID } from '../../formats/map';
+import { emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { ADVTYPE, ENDTYPE, STARTTYPE, type Game, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { readDisk } from '../../../scripts/levelViewsScan';
 import { cutRooms, passesThrough, separateRooms } from './levelRooms';
 import { levelsOf, trimPadding } from './levelMapLayout';

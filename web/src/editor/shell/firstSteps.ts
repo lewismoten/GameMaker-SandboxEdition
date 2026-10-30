@@ -3,7 +3,7 @@
 // so changing a block, the map, the hero or a monster shows. The state lives in the companion
 // file (editor-only), never in the game's own files. The panel that shows it is firstStepsPanel.ts.
 import type { Project } from '../core/project';
-import { ADVTYPE, ENDTYPE, type Game } from '../../formats/game';
+import { ADVTYPE, ENDTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { kindOf } from '../core/project';
 
 const FIRST_STEPS = 'firstSteps';

@@ -1,10 +1,10 @@
 // Tests: The song maker's composer (editor/tools/songMaker.ts).
 import { describe, expect, it } from 'vitest';
 import { compose } from '../src/editor/tools/songMaker';
-import { INSTRUMENTS, song } from '../src/audio/compose';
-import { parseCmf } from '../src/formats/cmf';
-import { CmfPlayer } from '../src/audio/cmfPlayer';
-import { Opl2 } from '../src/audio/opl';
+import { INSTRUMENTS, song } from '@lewismoten/gamemaker-sandbox-tools/music/compose';
+import { parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { CmfPlayer } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
 
 describe('song maker', () => {
   it('composes songs the CMF player plays to the end', () => {

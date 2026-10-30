@@ -4,10 +4,10 @@
 // missing (loadscene stops the game there), map cells and block changes past a block set's 150
 // blocks (DOS reads stray memory past them), counters past 29, and placed or born monsters from
 // an empty slot of the .mon file (nothing ever shows).
-import { BACKBL, MONBL } from '../../../formats/blocks';
-import type { Game } from '../../../formats/game';
-import { LASTMON, type Monster } from '../../../formats/monster';
-import { SOUND_NAMES } from '../../../formats/sound';
+import { BACKBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { LASTMON, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { SOUND_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { at, type Finding } from '../findings';
 import { blockUse, type SceneData } from '../sceneData';
 import type { FileSource } from '../sim';

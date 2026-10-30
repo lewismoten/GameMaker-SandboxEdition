@@ -3,8 +3,8 @@
 // whose warm air rises in columns and carries a small robot up with it, the ceiling fans' drafts
 // that blow straight across (no falling in them), Will's pages caught here and there, and the
 // stairs: down to the Hive the way Joe came, and the back stair at the top, down to the stage.
-import { SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, shadeAt } from '../art/draw';
 import { c, r } from '../art/pal';
 import { CTR } from '../ids';

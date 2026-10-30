@@ -2,8 +2,8 @@
 // and the ribbon (no title-screen background caught between the letters), on Teddy's own title.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { decodeGif } from '../../formats/gif';
-import { paletteToRGBA } from '../../formats/palette';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { paletteToRGBA } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { BADGE_CX, BADGE_CY, BADGE_H, BADGE_W, composeBadge, cropCenterX, titleMask } from './gameBadge';
 import { GAME_MUGS } from './gameMugArt';
 

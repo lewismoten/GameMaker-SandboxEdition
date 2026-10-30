@@ -5,7 +5,7 @@
 // through the attic hatch (gravity up), a washer that shakes (next/ntime), a toaster that
 // pops toast (a block giving birth to a monster), the laundry basket in the basement, and
 // outside the doggy door, the driveway where THE CHEZ is charging.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, gradient, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { bricks, c, canvas, cloud, copy, cut, dirt, grassTop, hedge, r, sky, tuft, windowOn } from '../blocks/tiles';

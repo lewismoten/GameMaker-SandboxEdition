@@ -1,10 +1,10 @@
 // A map shared by two towns (or a dungeon): its block set, map, monsters and palette, the
 // scenes that play it (each with its own arrival spot), every conversation in it and the
 // pass-through scenes that play them.
-import { serializeBlocks, type Block } from '../../../../web/src/formats/blocks';
-import { serializeMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
-import { serializeMonsters } from '../../../../web/src/formats/monster';
-import { serializePalette } from '../../../../web/src/formats/palette';
+import { serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { BlockBook } from '../blocks/book';
 import type { MonBook } from '../characters/monbook';
 import type { Plan, Pt } from '../levels/plan';

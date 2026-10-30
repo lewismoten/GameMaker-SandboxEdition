@@ -8,7 +8,7 @@
 // Under the boards is the ball pit: soft to land in, with a padded step at its near end to
 // climb back up by. The spinning barrel is a fast belt (air that pushes right) over a long
 // run of red boards: too long to walk across in one beat, quick enough to ride.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, canvas, copy, cut, dirt, r, sky } from '../blocks/tiles';

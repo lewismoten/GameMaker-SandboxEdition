@@ -1,8 +1,8 @@
 // The level check's "characters DOS can't draw" (dosChars.ts) on the tiny game in testGame.ts,
 // and its fix's plain ASCII.
 import { describe, expect, it } from 'vitest';
-import { serializeGame } from '../../../formats/game';
-import { serializeHighScores } from '../../../formats/highscore';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 import { GameFiles } from '../../../project/files';
 import { Project } from '../../core/project';
 import { fixFor } from '../generators/fixes';

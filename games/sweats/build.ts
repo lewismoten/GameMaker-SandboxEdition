@@ -9,14 +9,14 @@
 // curtain up on the stage lets him through with it.
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '../../web/src/formats/blocks';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { MAXSCENELINKS, newGame, emptyScene, serializeGame, ADVTYPE, NOSCENE, type Scene } from '../../web/src/formats/game';
-import { serializeMap, type GameMap } from '../../web/src/formats/map';
-import { newMonsterSet, serializeMonsters, type Monster } from '../../web/src/formats/monster';
-import { serializePalette } from '../../web/src/formats/palette';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
-import { serializeSoundSet } from '../../web/src/formats/sound';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MAXSCENELINKS, newGame, emptyScene, serializeGame, ADVTYPE, NOSCENE, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeMap, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { newMonsterSet, serializeMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { buildPalette, type Lighting, type Pal } from './src/art/pal';

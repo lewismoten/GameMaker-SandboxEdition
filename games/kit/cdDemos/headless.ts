@@ -4,13 +4,13 @@
 // a demo made here is the same .REC the browser (and DOS PLAYGAME) would make.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { Machine } from '../../../web/src/engine/machine';
-import { runGame } from '../../../web/src/engine/game';
-import type { Session } from '../../../web/src/engine/scene';
-import type { World } from '../../../web/src/engine/world';
-import { AudioEngine } from '../../../web/src/audio/engine';
+import { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import { runGame } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { GameFiles } from '../../../web/src/project/files';
-import { rng } from '../pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 const FRAME_MS = 1000 / 60;
 let now = 0;

@@ -10,7 +10,7 @@
 //   - the gift shop's register sells the $12 souvenir sword (money, counter 3) and lets you
 //     through to the last hall; the emergency exit only opens for the cardboard knight's helmet (counter 22);
 //   - dollars, candy corn, glow sticks, juice boxes and bites of caramel apple lie about.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';

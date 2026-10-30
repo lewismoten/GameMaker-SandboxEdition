@@ -4,7 +4,7 @@
 // the haze. Painted in true color, a pixel at a time, then
 // reduced to one 256-color palette for the FLI (cartoons.ts). `t` (0..1) animates it: the light
 // warms and the rays turn, the loaf rises a little and steams, a glint runs over its crust.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { mixc, clamp, smooth, noise2 } from '../../../kit/coverPaint';
 
 const COVER_W = 320;

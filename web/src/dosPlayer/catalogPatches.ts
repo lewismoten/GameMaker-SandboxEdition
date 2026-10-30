@@ -6,7 +6,7 @@
 import { loadGameList, type CatalogEntry } from '../project/files';
 import { emptyCompanion, setSection, type Companion } from '../project/companion';
 import { PLAYER_SECTION, playerRecord, recordPatches } from './playerRecord';
-import type { PlayerPatches } from './patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 /** A catalog entry: with an original game's player.json, when it has one. */
 type WithPlayer = Pick<CatalogEntry, 'id' | 'player'>;

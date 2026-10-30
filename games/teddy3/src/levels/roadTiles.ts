@@ -4,7 +4,7 @@
 // through out of the water, the drawbridges' piers and the keeper's booth, the ferry's docks, and at the end
 // the old mill's lane with its parking spot. The shared road blocks (chargers, hills) are in
 // roadParts.ts; the bridge leaves, the ferry and the geese are monsters.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, cloud, copy, dirt, hedge, r, sky } from '../blocks/tiles';

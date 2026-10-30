@@ -1,5 +1,5 @@
 // The pictures, slide shows and text pages between scenes, by file name.
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { clipEntries, fliClips } from '../../../kit/fliClips';
 import { licenseText } from '../../../kit/license';

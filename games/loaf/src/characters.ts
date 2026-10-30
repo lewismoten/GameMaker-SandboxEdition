@@ -7,9 +7,9 @@
 // follows one key at a time). The weave inside a basket has no gravity, so in it Up and Down climb.
 // The loaf has no way to fight: big hungry things (power 150, solid) take a bite when you bump
 // into them and push you back; a brother loaf or the mustard seed (under 100) is just a hello.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { CHARBL } from '../../../web/src/formats/blocks';
-import { newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BASKETS, CRUMBS, KEY, MON, SEQ, SND } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks, Form } from './sprites/sprites';
 import { set, mon, corner, pace } from '../../kit/actors';

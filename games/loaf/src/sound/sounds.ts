@@ -8,9 +8,9 @@
 // (clips.ts): "I'm still bread!" for Space and B (hushed on the way home), "Don't count me out!"
 // for an extra life, "twelve baskets full" for each basket gathered, "Nothing's ever wasted."
 // as the twelfth basket takes you, and "Mama, look what I've got..." at the door of home.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { rng } from '../../../kit/pixels';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { clipVoc } from './clips';
 import { lowNoise, gate, env } from '../../../kit/synthParts';

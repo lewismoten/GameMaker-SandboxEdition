@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { plain } from '../inline';
 import { BBS_LISTINGS } from './bbsListings';
 import { CORRECTION, MAIL_BAG } from './mailBag';
-import { STOCK_LOOK } from '../../../engine/playerLook';
+import { STOCK_LOOK } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 
 const repo = join(__dirname, '../../../../..');
 const read = (...p: string[]) => readFileSync(join(repo, ...p), 'latin1');
@@ -20,10 +20,10 @@ describe('the Mail Bag', async () => {
   it('corrects the preview issue with the keys PLAYGAME really uses', () => {
     // F4 toggles the sound effects: PLAYGAME.C's playscene, and the port's scene.ts
     expect(read('code/GM/PLAYGAME.C')).toMatch(new RegExp(`case ${CORRECTION.said}: soundon\\^=TRUE`));
-    expect(read('web/src/engine/scene.ts')).toMatch(new RegExp(`f === ${CORRECTION.said}\\) s\\.soundOn = !s\\.soundOn`));
+    expect(read('web/packages/engine/src/engine/scene.ts')).toMatch(new RegExp(`f === ${CORRECTION.said}\\) s\\.soundOn = !s\\.soundOn`));
     // F2 is the status screen, and it shows the score
     expect(read('code/GM/PLAYGAME.C')).toMatch(new RegExp(`case ${CORRECTION.right}: Display_Invent\\(\\)`));
-    const funcKeys = read('web/src/engine/funcKeys.ts');
+    const funcKeys = read('web/packages/engine/src/engine/funcKeys.ts');
     expect(funcKeys).toContain(`/** F${CORRECTION.right}: Display_Invent */`);
     expect(funcKeys).toContain("look.format('str.invent.score', ci.score)");
     expect(STOCK_LOOK.format('str.invent.score', 100)).toMatch(/^Score: +100$/);

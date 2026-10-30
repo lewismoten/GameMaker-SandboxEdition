@@ -5,7 +5,7 @@
 // back and forth along a catwalk, strings of
 // party bulbs not lit yet, the plug of the light string, and the outlet box at the top, which
 // takes the plug.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { speckle } from '../art/draw';
 import { CTR } from '../ids';
 import { Tiles } from './level';

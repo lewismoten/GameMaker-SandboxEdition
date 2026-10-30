@@ -4,9 +4,9 @@
 // colors matched. Loaded when the note by color 0 is first used.
 import { modal, h } from '../../core/ui';
 import type { Project } from '../../core/project';
-import { Screen } from '../../../gfx/screen';
-import { paletteCss } from '../../../formats/palette';
-import { playerLook } from '../../../engine/playerLook';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { paletteCss } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import { companionPatches } from '../../../dosPlayer/playerRecord';
 import { contrastRatio, luminance } from '../../check/sceneData';
 import { blackAtZero } from '../../check/checks/colorZero';

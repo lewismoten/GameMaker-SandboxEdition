@@ -1,7 +1,7 @@
 // The path editor (makepath in MONEDIT.C): draw the corners of a monster's march path (or
 // attack path) on a grid, choosing the picture and speed of each stretch.
 import { BLACK, BLEN, GREEN, GRAY2, GRAY3, GRAY4, RED1, RED2, RED3 } from '../shared/facelift';
-import { type March } from '../../formats/monster';
+import { type March } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { LS, TS, PATHHELPFILE, OX, OY, PHX, PHY, PMX, PMY, TX, TY, TTX, FUNAR, pad, idiv } from './layout';
 import { MonsterMakerDraw } from './draw';
 

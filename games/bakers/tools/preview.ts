@@ -24,7 +24,7 @@ for (const [style, themes] of Object.entries(SETS) as [Style, ThemeName[]][]) {
 
 // every room, drawn from its map with its monsters on it
 import { compileAll } from '../src/compile';
-import { Pixels } from '../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { ORIGIN } from '../src/levels/room';
 const all = compileAll();
 const mbl = all.mb.build();

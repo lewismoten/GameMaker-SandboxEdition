@@ -4,8 +4,8 @@
 // along, like the Tin Man. A few seconds long, skippable; with reduced motion only its last
 // picture. Seen once per browser (SEEN_KEY), then the trophy opens on that last picture with a
 // button to play it again. Losing a heart (EGG.EXE's Clear all) forgets it was seen.
-import { audioContext } from '../audio/context';
-import { output } from '../audio/output';
+import { audioContext } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 import type { JoeFrame } from './joeArt';
 
 const SEEN_KEY = 'gm-heart-reveal';

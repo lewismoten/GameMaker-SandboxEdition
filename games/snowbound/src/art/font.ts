@@ -1,10 +1,10 @@
 // Lettering for screens and signs: the PC's 8x8 font (scaled, outlined) and a 3x5 font
 // small enough to paint "BAKERY" across three 20x20 blocks.
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import type { Pixels } from '../../../kit/pixels';
-import { textInk } from '../../../kit/textBounds';
-import { textWidth } from '../../../kit/pcText';
-export { textWidth } from '../../../kit/pcText';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
+import { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+export { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 
 /** Draws 8x8 text; `scale` makes chunky letters. Returns the width drawn. */
 export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {

@@ -2,7 +2,7 @@
 // text pages, the high scores and the credits (with Doc Leo). Photos and art are dithered
 // into each picture's free palette entries (kit/photo.ts). The cartoons (the story, the
 // level cards, the endings) are in cartoons.ts.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { gradient } from '../../../snowbound/src/art/draw';
 import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/font';

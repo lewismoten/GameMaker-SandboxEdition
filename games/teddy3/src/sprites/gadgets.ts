@@ -2,7 +2,7 @@
 // pushed), the spark of its wire carrying the "go" to what it works, and the things buttons
 // open: a door (shut, and swung open), a cabinet's door, a garage door's bottom panel, a
 // windsock-style blinking light that says a door is about to close.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 

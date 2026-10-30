@@ -2,9 +2,9 @@
 // links never touched, falls the player can't see, hurts that hold, scoring that never stops,
 // how much of each scene the bot covered, long scenes, and the hit points at each exit.
 import { prizeInView, seenFrom } from './inView';
-import { BACKBL } from '../../../formats/blocks';
-import { LASTMON } from '../../../formats/monster';
-import { MLEN } from '../../../formats/map';
+import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import type { Incident } from '../explore';
 import type { SceneRun } from '../playtest';

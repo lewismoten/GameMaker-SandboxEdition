@@ -3,7 +3,7 @@
 // He waddles four ways (the body rocks a pixel), flaps both wings for a glide, squawks with
 // his beak wide open, squashes and stretches when he bounces, and goes flat (pfff) when he
 // plays dead, which he learned from Doc Leo.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, outline, recolor } from '../art/draw';
 import { c, r } from '../art/pal';
 import { BlockSet } from '../blocks/sets';

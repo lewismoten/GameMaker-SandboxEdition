@@ -2,8 +2,8 @@
 // somewhere else, adding an exit and deleting a link. Pure, on a Game, with GRATOR.C's rules:
 // createlink takes a scene's first free link, never from an end scene and never to a start
 // scene; deletelink clears the link (Link.Clear()). The caller saves with project.saveGame.
-import { ADVTYPE, ENDTYPE, MAXSCENELINKS, NOSCENE, STARTTYPE, emptyLink, type Game, type Point } from '../../../formats/game';
-import { MLEN, MWID } from '../../../formats/map';
+import { ADVTYPE, ENDTYPE, MAXSCENELINKS, NOSCENE, STARTTYPE, emptyLink, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 /** A block kept on the map (0..99 each way). */
 export function clampCell(p: Point): Point {

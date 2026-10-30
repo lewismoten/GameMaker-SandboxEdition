@@ -2,10 +2,10 @@
 // picture (its title slide, else its menu screen, as the home page's tiles pick them, else
 // GMTITLE.GIF), drawn small once its row is near the view, two at a time. Only the small
 // canvases are kept; close() stops the rest and frees them when the list closes.
-import { parseGame } from '../../formats/game';
-import { decodeGif, isGif } from '../../formats/gif';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { titlePixels, titleSource } from '../../gfx/titlePicture';
-import type { FoundGame, GameReader } from '../../project/importScan';
+import type { FoundGame, GameReader } from '@lewismoten/gamemaker-sandbox-archives/scan';
 import { paintIndexed } from '../core/draw';
 import { h } from '../core/ui';
 

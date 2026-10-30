@@ -2,7 +2,7 @@
 // PLAYGAME only ever tests their low four bits (PLAYGAME.C 3750-3757 for gravity, 2636/2672 and
 // 3571-3679 for walls, 2754-2765 for solid monsters), so the high bits change nothing.
 import { describe, expect, it } from 'vitest';
-import { BACKBL, parseBlocks, serializeBlocks } from '../formats/blocks';
+import { BACKBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { SceneSim } from '../editor/check/sim';
 import { RIGHT, WALL, testGame } from '../editor/check/testGame';
 

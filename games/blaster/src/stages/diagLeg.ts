@@ -3,8 +3,8 @@
 // way out), parts scattered on the ground between the lanes, the leg's own marks, then the
 // pickups and the virus along the lanes. The ribbon cable (cable.ts) and the diagonal leg of
 // every other stage are built with it, and fly with shipdiag.chr.
-import { MLEN, MWID } from '../../../../web/src/formats/map';
-import type { Pixels } from '../../../kit/pixels';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../art/pal';
 import { BlockSet } from '../art/draw';
 import type { DiagBlocks } from '../blocks/diagBlocks';

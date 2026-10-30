@@ -8,7 +8,7 @@
 //   - hourglasses are two hours each (counter 23); the documentary's big clock only breaks for
 //     twenty-four ("some say flies live 24 hours... Carl has broken time");
 //   - the tall grass at the end of the yard is the way into the wild.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';

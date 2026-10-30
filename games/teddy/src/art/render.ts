@@ -1,10 +1,10 @@
 // Renders part of a level (blocks plus the monsters standing on it) into a picture, for
 // the level cards, the manual and design previews.
-import type { Block } from '../../../../web/src/formats/blocks';
-import type { GameMap } from '../../../../web/src/formats/map';
-import type { Monster } from '../../../../web/src/formats/monster';
-import { orientIndex } from '../../../../web/src/formats/blocks';
-import { Pixels } from '../../../kit/pixels';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export function renderRegion(
   map: GameMap,

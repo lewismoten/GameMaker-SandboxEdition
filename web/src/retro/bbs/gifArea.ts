@@ -6,7 +6,7 @@
 // view-while-download did it; then back to the BBS's text. Pictures go to C:\IMAGES.
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { readLine } from '../text/textInput';
 import { commas } from '../dos/vfs';
 import { modeFor } from '../view/picture';

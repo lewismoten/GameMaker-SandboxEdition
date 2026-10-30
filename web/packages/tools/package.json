@@ -1,6 +1,6 @@
 {
   "name": "@lewismoten/gamemaker-sandbox-tools",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Development tools for building and checking games in RSD Game-Maker formats",
   "type": "module",
   "license": "MIT",
@@ -19,30 +19,49 @@
     "NOTICE.md"
   ],
   "exports": {
-    "./formats/*": {
-      "types": "./dist/types/web/src/formats/*.d.ts",
-      "browser": null,
-      "import": "./dist/formats/*.js"
-    },
     "./drawing": {
-      "types": "./dist/types/web/packages/tools/src/drawing.d.ts",
+      "types": "./dist/types/drawing.d.ts",
       "browser": null,
+      "gamemaker-source": "./src/drawing.ts",
       "import": "./dist/drawing.js"
     },
     "./audio": {
-      "types": "./dist/types/web/packages/tools/src/audio.d.ts",
-      "browser": null,
+      "types": "./dist/types/audio.d.ts",
+      "gamemaker-source": "./src/audio.ts",
       "import": "./dist/audio.js"
     },
     "./images": {
-      "types": "./dist/types/web/packages/tools/src/images.d.ts",
-      "browser": null,
+      "types": "./dist/types/images.d.ts",
+      "gamemaker-source": "./src/images.ts",
       "import": "./dist/images.js"
     },
     "./simulation": {
-      "types": "./dist/types/web/packages/tools/src/simulation.d.ts",
+      "types": "./dist/types/simulation.d.ts",
       "browser": null,
+      "gamemaker-source": "./src/simulation.ts",
       "import": "./dist/simulation.js"
+    },
+    "./formats/*": {
+      "types": "./dist/types/formats/*.d.ts",
+      "browser": null,
+      "gamemaker-source": "./src/formats/*.ts",
+      "import": "./dist/formats/*.js"
+    },
+    "./kit/*": {
+      "types": "./dist/types/kit/*.d.ts",
+      "browser": null,
+      "gamemaker-source": "./src/kit/*.ts",
+      "import": "./dist/kit/*.js"
+    },
+    "./music/*": {
+      "types": "./dist/types/music/*.d.ts",
+      "gamemaker-source": "./src/music/*.ts",
+      "import": "./dist/music/*.js"
+    },
+    "./image/*": {
+      "types": "./dist/types/image/*.d.ts",
+      "gamemaker-source": "./src/image/*.ts",
+      "import": "./dist/image/*.js"
     }
   },
   "scripts": {
@@ -57,5 +76,10 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
-  }
+  },
+  "dependencies": {
+    "@lewismoten/gamemaker-sandbox-engine": "^3.2.0",
+    "@lewismoten/gamemaker-sandbox-archives": "^3.2.0"
+  },
+  "author": "Lewis Moten"
 }

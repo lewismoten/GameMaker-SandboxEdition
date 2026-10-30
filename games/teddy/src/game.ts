@@ -1,6 +1,6 @@
 // teddy.gam: the title scene, the ending, and the levels in order, each one's Clown Car
 // door linked to the start of the next.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Level } from './levels/level';
 import { backyard } from './levels/level1';
 import { street } from './levels/level2';

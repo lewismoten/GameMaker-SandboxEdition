@@ -3,11 +3,11 @@ import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { Project } from './project';
 import { blockUses, colorUses, listRuns, sceneUses } from './uses';
-import { newGame, emptyScene, serializeGame, ADVTYPE } from '../../formats/game';
-import { newBlockSet, serializeBlocks } from '../../formats/blocks';
-import { newMap, serializeMap } from '../../formats/map';
-import { newMonsterSet, serializeMonsters } from '../../formats/monster';
-import { defaultPalette, serializePalette } from '../../formats/palette';
+import { newGame, emptyScene, serializeGame, ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { newBlockSet, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { newMonsterSet, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { defaultPalette, serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 function project(): Project {
   const game = newGame('Test');

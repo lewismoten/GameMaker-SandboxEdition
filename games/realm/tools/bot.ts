@@ -4,7 +4,7 @@
 // by walking into a counter twice, opens gates by walking into them, and drinks a tonic when
 // it's hurt.
 import { GameSim } from './sim';
-import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
+import { MAXSCENELINKS, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { POWER, SEQ } from '../src/ids';
 import { LOOT_MONS, cellOnScreen, isKeepsake, isLootBlock, lootScene, monPos } from './lootwatch';
 

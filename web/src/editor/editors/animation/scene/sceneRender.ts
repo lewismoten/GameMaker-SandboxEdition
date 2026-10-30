@@ -4,8 +4,8 @@
 // background fades in from black and out to black, so a change of pictures (and palettes)
 // happens in the dark. The
 // frames become an .FLI through the shared writer, which stores only what changed.
-import { encodeFli } from '../../../../formats/fli';
-import type { Palette } from '../../../../formats/palette';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { SCENE_H, SCENE_W, actorAt, allItems, type Scene } from './sceneModel';
 import { drawText, textAt } from './sceneText';
 import type { ActorArt, Pic, SceneAssets, Segment } from './sceneAssets';

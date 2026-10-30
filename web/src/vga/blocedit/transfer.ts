@@ -1,7 +1,7 @@
 // The menu's Transfer and Convert commands: copy blocks from another block set (xfer), and
 // convert a block set to a different palette by nearest color (cvtpal).
 import { MENUATTR, SHADATTR, errorBox } from '../../retro/text/textUi';
-import { BACKBL, BLEN, MONBL, type Block } from '../../formats/blocks';
+import { BACKBL, BLEN, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { LEFT, NONE, RIGHT, palFindCol } from '../shared/facelift';
 import { BLK_COUNT, drawblk, drawlist, getblk, getblktype, loadblks, scrollList } from '../shared/blocc';
 import { trunc, newBlock, copyBlock } from './layout';

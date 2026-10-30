@@ -2,8 +2,8 @@
 // palette has: each recipe asks for colors by RGB and gets the nearest palette entries,
 // so a grass block is green even in a palette full of grays. Tiles wrap at the edges, so
 // a field of them shows no seams.
-import { BLEN } from '../../formats/blocks';
-import { matchColor, type Palette } from '../../formats/palette';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { matchColor, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 type RGB = [number, number, number];
 

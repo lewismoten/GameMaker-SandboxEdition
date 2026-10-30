@@ -14,7 +14,7 @@
 // `sandlogo.fli 0` before the game's own intro. The camera holds still and only what moves
 // is traced again each frame, so still areas stay byte-identical and the FLI stores just
 // the changes.
-import { encodeFli } from '../../web/src/formats/fli';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { DistanceGrid, ExtrudedText, Seg, textStrokes } from './sdftext';
 import { medianCutPalette, Quantizer } from './quantize';
 import {

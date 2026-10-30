@@ -1,7 +1,7 @@
 // MOON.BBL: the Moon (stars with the Earth rising, moon rocks, the flag, the base) and the
 // Moon School's Science Fair (lockers, school walls, the projects, the judges' table that
 // counts your pages, the podium and bleachers).
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { blob, gradient, oval } from '../art/draw';
 import { FLOORS } from './floors';

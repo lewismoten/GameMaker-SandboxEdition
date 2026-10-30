@@ -3,9 +3,9 @@
 // notebook-and-close-up page for every card on the evidence board, the act cards, the
 // endings and the high scores. Everything shares the house palette, so PLAYGAME's inks
 // (purple text, red MORE..., blue menu) land on the colors made for them.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../../../kit/pixels';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
@@ -40,9 +40,9 @@ import { PIN_FILES, SUSPECT_LETTER, WRONG_KEYS } from '../game';
 import { SUSPECTS } from '../levels/parlor';
 import type { Who } from '../art/people';
 import { renderRegion } from '../art/render';
-import type { GameMap } from '../../../../web/src/formats/map';
-import type { Block } from '../../../../web/src/formats/blocks';
-import type { Monster } from '../../../../web/src/formats/monster';
+import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 
 function gif(p: Pixels, pal: Uint8Array = P.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });

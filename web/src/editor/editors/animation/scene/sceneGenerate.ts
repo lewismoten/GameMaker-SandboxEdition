@@ -7,11 +7,11 @@
 //          (the .chr's name, the monster's name kept in the companion, else "MONSTER 3").
 //   Story: the game's story text, a page at a time, typed over its levels' pictures.
 // Each gives an ordinary scene, so everything it made can be changed afterwards.
-import { BLEN } from '../../../../formats/blocks';
-import { parseMap } from '../../../../formats/map';
-import { parseMonsters } from '../../../../formats/monster';
-import { textLines } from '../../../../formats/graphicScripts';
-import { matchColor, type Palette } from '../../../../formats/palette';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { matchColor, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { firstLevels } from '../../../../gfx/levelPicture';
 import { splitTitle } from '../../../../project/gameTitle';
 import { SCENE_H, SCENE_W, emptyScene, newId, textItem, type ActorItem, type Background, type Scene, type TextItem } from './sceneModel';

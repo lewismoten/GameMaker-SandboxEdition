@@ -1,6 +1,6 @@
 // The bot's way through bakery.ts (the level's own comment says what happens there).
 import type { Order } from '../bot';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { leap } from './helpers';
 import { CTR } from '../../src/ids';
 import { BAKERY } from '../../src/levels/bakery';

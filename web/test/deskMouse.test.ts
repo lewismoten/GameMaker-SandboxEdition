@@ -1,6 +1,6 @@
 // Tests: The desk mouse (input/deskMouse.ts): slow rolls keep their fractions; listeners hear it until they stop.
 import { describe, expect, it } from 'vitest';
-import { deskMouse, listenDeskMouse, Mickeys } from '../src/input/deskMouse';
+import { deskMouse, listenDeskMouse, Mickeys } from '@lewismoten/gamemaker-sandbox-engine/input/deskMouse';
 
 describe('desk mouse', () => {
   it('keeps the fractions of a slow roll', () => {

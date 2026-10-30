@@ -1,6 +1,6 @@
 // Development aid: contact sheets of every block set, written to OUT (default /tmp).
 //   cd web && OUT=<dir> npx vite-node ../games/year2000/tools/sheet.ts
-import { Pixels } from '../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { BlockSet } from '../src/blocks/book';
 import { citySet, moonSet, suburbSet } from '../src/blocks/blocks';
 import { PAL } from '../src/art/pal';

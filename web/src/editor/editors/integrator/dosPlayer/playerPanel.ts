@@ -7,19 +7,19 @@
 import './playerPanel.css';
 import { h, clear, modal } from '../../../core/ui';
 import type { Project } from '../../../core/project';
-import { Screen } from '../../../../gfx/screen';
-import type { PatchEntry, PatchScreen } from '../../../../dosPlayer/patchTable';
-import { isStock, patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '../../../../dosPlayer/patchRules';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import type { PatchEntry, PatchScreen } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { isStock, patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { companionPatches, playerRecord, PLAYER_SECTION } from '../../../../dosPlayer/playerRecord';
 import { PLAYER_PRESETS } from '../../../../dosPlayer/presets';
 import { SCREEN_NAMES } from '../../../../dosPlayer/describePatches';
-import { playerLook } from '../../../../engine/playerLook';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import { drawPreview, type PreviewScreen } from './playerPreview';
 import { fieldMaker } from './playerFields';
 import { screenFields } from './screenFields';
 import { SCREEN_TABS, type PanelTab } from './screenTabs';
 import { fileFields } from './fileFields';
-import { withoutExtensions } from '../../../../dosPlayer/fileExtensions';
+import { withoutExtensions } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 import { itemFor, screenItems, type DragItem } from './dragItems';
 import { dragStage } from './dragStage';
 

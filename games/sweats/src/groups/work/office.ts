@@ -1,7 +1,7 @@
 // The NINE TO FIVE set's ramps and the office every one of its monologues shares: the beige
 // wall with its baseboard, the gray-blue carpet, the drop ceiling with its fluorescent panels,
 // the window onto the city.
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
 import type { Pal, Ramp } from '../../art/pal';

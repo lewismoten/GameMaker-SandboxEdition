@@ -2,7 +2,7 @@
 // valentine party under an arch of paper hearts) and chapter 3's Main Street (sidewalks, the
 // parade route's lanes and the hidden spots the parade comes out of, the bandstand, and the
 // drumsticks dropped along the way).
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '../art/draw';
 import { c, r } from '../art/pal';
 import { CTR, DRUMSTICKS, VALENTINES } from '../ids';

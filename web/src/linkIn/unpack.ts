@@ -4,10 +4,10 @@
 // with a plain message, never a crash, and the limits (protocol.ts) hold after unpacking too.
 // DOS programs (.EXE, .COM, .BAT…) are left out; nothing received is ever run.
 import { GameFiles, IGNORED_FILE } from '../project/files';
-import { isZip, readZip } from '../project/zip';
-import { decodePack } from '../project/gamePack';
+import { isZip, readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { decodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import { fromBase64, readSinglePage, unpack, type SinglePageGame } from '../export/singlePage';
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { takeCompanion, type Companion } from '../project/companion';
 import { LinkError, MAX_FILES, MAX_TOTAL_BYTES, checkLimits, cleanName } from './protocol';
 

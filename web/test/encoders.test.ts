@@ -1,8 +1,8 @@
 // Tests: Writing VOC, CMF and FLI files that the readers (formats/) read back.
 import { describe, expect, it } from 'vitest';
-import { decodeVoc, encodeVoc } from '../src/formats/voc';
-import { CMF_GAMEMAKER_CLOCK, encodeCmf, parseCmf } from '../src/formats/cmf';
-import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '../src/formats/fli';
+import { decodeVoc, encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
+import { CMF_GAMEMAKER_CLOCK, encodeCmf, parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 
 describe('encoders', () => {
   it('writes VOC files the decoder reads back', () => {

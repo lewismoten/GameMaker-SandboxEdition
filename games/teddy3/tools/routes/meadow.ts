@@ -1,7 +1,7 @@
 // The bot's way through meadow.ts (the level's own comment says what happens there): at each
 // sleepy firefly it faces it, sniffs, and waits for the light to melt the dark ahead.
 import type { Order } from '../bot';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { CTR } from '../../src/ids';
 import { MEADOW } from '../../src/levels/meadow';
 

@@ -9,7 +9,7 @@
 // rear quarter behind the door. An amber marker up front, a red one at the back, white steel
 // wheels with chrome caps on black tires, plain square black bumpers at both ends. Facing right
 // shows the driver's side; facing left shows the passenger side, with the charge port at the rear.
-import { Pixels } from './pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 /** The game's palette indices to draw with. */
 export interface ChezInk {

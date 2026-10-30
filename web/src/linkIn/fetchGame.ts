@@ -3,7 +3,7 @@
 // there). Downloads stop at the limits. A server that does not allow other sites to read its
 // files (no Access-Control-Allow-Origin header) fails with a LinkError saying so, and pointing
 // at the postMessage way in (docs/embed.md).
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { filesNamedBy } from '../project/streamGame';
 import { normalize } from '../project/files';
 import { LinkError, MAX_FILES, MAX_FILE_BYTES, MAX_TOTAL_BYTES } from './protocol';

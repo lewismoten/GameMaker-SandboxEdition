@@ -4,8 +4,8 @@
 // is never changed here.
 import { h, clear } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
-import { BLEN, type Block, type BlockKind } from '../../../formats/blocks';
-import type { Palette } from '../../../formats/palette';
+import { BLEN, type Block, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { Project } from '../../core/project';
 import { blockUses } from '../../core/uses';
 import { blockAnim, describeAnim } from './blockAnim';

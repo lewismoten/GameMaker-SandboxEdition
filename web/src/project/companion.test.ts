@@ -13,7 +13,7 @@ import {
   takeCompanion,
 } from './companion';
 import { withCompanion, type ProjectRecord } from './storage';
-import { readZip, createZip } from './zip';
+import { readZip, createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { exportDos } from '../export/exportDos';
 
 const game = () =>

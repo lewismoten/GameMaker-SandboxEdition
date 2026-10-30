@@ -4,9 +4,9 @@
 // bottom of the first (or, on a way down the map, upright with the start at the top), and over it the wrap's seams (dashed), the laps, the kinks, the
 // shortcuts and the marks. Each panel says where it carries on. Grayscale-safe: every mark has
 // its own shape and words, not only a color.
-import { BLEN } from '../../formats/blocks';
-import { paletteToRGBA } from '../../formats/palette';
-import type { Game } from '../../formats/game';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { paletteToRGBA } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { scenePixels } from '../../gfx/levelPicture';
 import type { GameFiles } from '../../project/files';
 import { courseRaster, panelOf, type CourseLayout, type StripPoint } from './levelCourse';

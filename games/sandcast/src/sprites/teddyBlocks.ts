@@ -2,7 +2,7 @@
 // from ASCII art in front, back and side views with separate leg rows for the walk steps,
 // plus every trick: flinging sand, throwing water, tossing a ball, sit, roll over, hurt
 // and tuckered out.
-import { CHARBL } from '../../../../web/src/formats/blocks';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { PINK, RED, SAND, STEEL, TABBY, WATER, WOOD, YELLOW } from '../art/palette';
 import { BlockSet } from '../rules';
 import { CLEAR, Pixels, art, ball, shade, sprite } from '../art/draw';

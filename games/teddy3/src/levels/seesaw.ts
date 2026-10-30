@@ -4,7 +4,7 @@
 // the same cycle from the scene's first tick, so they never drift apart.
 import { POWER } from '../ids';
 import type { Bestiary } from '../characters/mons';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { c } from '../blocks/tiles';
 
 /** How far a see-saw's end travels, in blocks. */

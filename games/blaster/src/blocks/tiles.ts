@@ -2,8 +2,8 @@
 // turret mounts (which secretly give birth to the bullets), virus hatches, firewall
 // fences, pickups on their pads, data-stream currents (gravity blocks), raised panels,
 // and the gate at the end of the stage.
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, blob, shadeAt } from '../art/draw';
 import { HURT } from '../characters/sharedMonsters';
 import { SEQ } from '../ids';

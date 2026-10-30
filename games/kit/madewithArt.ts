@@ -4,8 +4,8 @@
 // little gold blocks (each dot of the PC's 8x8 font one block), and lines of 8x8 lettering with
 // a dark outline and drop shadow (MADE WITH, SANDBOX EDITION with SANDBOX in THE SANDBOX BBS's
 // colors). Every picture is a whole 320x200 screen of palette indexes.
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
-import { Pixels } from './pixels';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export const W = 320;
 export const H = 200;

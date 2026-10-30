@@ -5,8 +5,8 @@ import { slug } from './exportWebApp';
 import { encodeGame, fillPage } from './singlePage';
 import { gameAbout } from './gameAbout';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
-import { withoutExtensions } from '../dosPlayer/fileExtensions';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import { withoutExtensions } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 
 // Files a game writes while being played; exported pages start fresh.
 const SAVE_DATA = /^(game\d\.sav|savnames\.dat|data\d+\.rec)$/;

@@ -20,7 +20,7 @@ import { GAME_SPOTS, gameSpot } from './index';
 import { SHELF_TYPES } from '../library/shelf';
 import { SECTIONS } from '../manual/magazine/issue';
 import { themeOf } from '../manual/printables/worldMapThemes';
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import {
   FILE,
   SAVE_ID,

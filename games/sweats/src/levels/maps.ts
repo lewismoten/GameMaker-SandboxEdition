@@ -2,7 +2,7 @@
 // legend), placed ORIGIN blocks in from the corner of Game-Maker's 100x100 world; everything
 // outside the scene is the filler block (solid). Links say where they lead by name and the build
 // turns them into scene numbers.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../common/blocks';
 
 /** Where a scene's map sits in the 100x100 world (the rest is solid). */

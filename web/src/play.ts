@@ -6,7 +6,7 @@
 //   &autoplay (or ?autoplay) starts the game without its click-to-play screen (the catalog's
 //   ▶ Play links have it); sound comes on at the first click or key if the browser held it back
 import { mountPlayer } from './player/player';
-import { unlock } from './audio/context';
+import { unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { watchForUpdates } from './devReload';
 import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './project/files';
 import { streamHostedGame } from './project/streamGame';
@@ -16,7 +16,7 @@ import { registerServiceWorker } from './offline';
 import { playAchievements, playWrote } from './achievements';
 import { catalogPatches } from './dosPlayer/catalogPatches';
 import { companionPatches } from './dosPlayer/playerRecord';
-import type { PlayerPatches } from './dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 interface BundleManifest {
   id: string;

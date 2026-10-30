@@ -14,7 +14,7 @@
 //     an extra life.
 import { CLEAR, lewieCameo } from '../../../kit/cameos';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, text } from '../../../snowbound/src/art/font';

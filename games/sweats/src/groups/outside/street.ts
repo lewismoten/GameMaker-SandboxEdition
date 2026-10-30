@@ -3,7 +3,7 @@
 // downpour light the same blocks differently), the town on the skyline, the low hedge along the
 // sidewalk, the street lamp, and the gusts that blow back along the street (next/ntime turns
 // them on and off: gravity down and to the left while they blow).
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import type { Pal, Ramp } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, drawCoin, loot, spotlight } from '../../common/blocks';

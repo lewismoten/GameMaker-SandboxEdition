@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { GameFiles } from '../../web/src/project/files';
 import { headlessCanvas, WalkRun } from '../../web/src/walkthrough/runtime';
 import { encodeKeys, WALKTHROUGH_FPS, type Walkthrough } from '../../web/src/walkthrough/format';
-import { clipCuts, describeCut, type ClipCut, type ClipLog } from './clips';
+import { clipCuts, describeCut, type ClipCut, type ClipLog } from '@lewismoten/gamemaker-sandbox-tools/kit/clips';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 

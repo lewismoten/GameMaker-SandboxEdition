@@ -1,6 +1,6 @@
 // toCp437 and fromCp437 cover the whole code page.
 import { describe, expect, it } from 'vitest';
-import { fromCp437, toCp437 } from './cp437';
+import { fromCp437, toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 const ALL = Array.from({ length: 256 }, (_, c) => String.fromCharCode(c)).join('');
 

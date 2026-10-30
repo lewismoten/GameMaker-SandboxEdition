@@ -4,7 +4,7 @@
 // maker (sfxMaker.ts), offered here too.
 import { h, modal, toast } from '../core/ui';
 import { registerMaker } from './makers';
-import { encodeVoc } from '../../formats/voc';
+import { encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';
 import { applyEffect as effectAt, EFFECTS, tidy as tidyAt, type Effect } from '../../audio/sampleEdit';

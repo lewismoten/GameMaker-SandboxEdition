@@ -3,10 +3,10 @@
 // fly's buzz, a twinkle. They go out through the speakers' volume knob (audio/output.ts),
 // so a knob turned all the way down keeps the room quiet too, and they start only from
 // the click or key press that asked for them.
-import { output } from '../../audio/output';
-import { audioContext, unlock } from '../../audio/context';
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
+import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 
-let gameAudio: import('../../audio/engine').AudioEngine | undefined;
+let gameAudio: import('@lewismoten/gamemaker-sandbox-engine/audio/engine').AudioEngine | undefined;
 
 interface Out {
   ctx: AudioContext;
@@ -268,7 +268,7 @@ export const roomSound = {
   },
   /** One of a Sandbox game's own digitized sounds (goat/scream.voc), through the knob too. */
   gameVoc(game: string, name: string): void {
-    void Promise.all([import('../../audio/engine'), import('../../project/files')])
+    void Promise.all([import('@lewismoten/gamemaker-sandbox-engine/audio/engine'), import('../../project/files')])
       .then(async ([{ AudioEngine }, files]) => {
         gameAudio ??= new AudioEngine();
         const entry = (await files.loadGameList()).find((g) => g.id === game);

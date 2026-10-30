@@ -1,7 +1,7 @@
 // Replays one of the author's kept plays (mine.ts) on the level check's simulator, from wherever
 // the walkthrough has got to: Make a walkthrough (autoWalk.ts) uses the take when it still
 // reaches an exit, and lets the bot play the scene when it doesn't.
-import type { Game } from '../../../formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { decodeKeys } from '../../../walkthrough/format';
 import type { Entry } from '../explore';
 import { SceneSim, TICKS_PER_SECOND, type FileSource } from '../sim';

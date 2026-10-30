@@ -1,7 +1,7 @@
 // The palm of God's hand: one great open hand of light, cupped to hold the seed, the thumb up
 // at the left and the four fingers curling up at the right. Drawn 160x60 for the top of the
 // last level (eight blocks by three) and scaled for the cartoons.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { shadeAt } from '../../../snowbound/src/art/draw';
 import type { Pal } from './pal';
 

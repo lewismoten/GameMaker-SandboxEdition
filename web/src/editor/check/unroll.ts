@@ -7,8 +7,8 @@
 // - walking onto a block first seen a lap away means that way goes round forever: it is folded
 //   to one lap, cut where the least is seen, and its two edges meet.
 // A map the hero never walks off reads as it is, and result() says so (undefined). No DOM.
-import { MLEN, MWID } from '../../formats/map';
-import { SCRNBLEN, SCRNBWID, type World } from '../../engine/world';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { SCRNBLEN, SCRNBWID, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 
 /** More blocks than this between two ticks is a jump, not a walk. */
 const STEP = 4;

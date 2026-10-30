@@ -4,9 +4,9 @@
 // quick rising chirps, dread at 22 kHz a long flat whistle; a pin lands with a squeak and the
 // detector's click. Doc Leo's maniacal laugh ("MWA-HA-HA-HA-HA!") is a little formant voice, its
 // pitch climbing and falling, with its own echo; the rubber chicken honks.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { rng } from '../../../kit/pixels';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { lowNoise, gate, env } from '../../../kit/synthParts';
 

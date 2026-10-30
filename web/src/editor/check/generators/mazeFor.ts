@@ -1,8 +1,8 @@
 // The maze generator set up for a map: its blocks chosen from what the map already uses (the
 // commonest solid block for walls, its plain air for floor, unused-in-the-area harmless blocks as
 // landmarks, a pickup the map has as the prize in dead ends).
-import { BACKBL, parseBlocks } from '../../../formats/blocks';
-import { parseMap } from '../../../formats/map';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Project } from '../../core/project';
 import { blockUse } from '../sceneData';
 import { airBlock, landmarkBlocks, makeMaze } from './mapFixes';

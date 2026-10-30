@@ -3,11 +3,11 @@
 // a ribbon across it, and its hero standing in front (the first frame of the hero's .CHR, drawn
 // from its .CBL blocks in the palette of a level the hero plays in).
 import { fetchGameFile, loadGameList, type CatalogEntry } from '../../project/files';
-import { decodeGif, isGif } from '../../formats/gif';
-import { parseGame } from '../../formats/game';
-import { parseCharacter } from '../../formats/character';
-import { BLEN, CHARBL, TRANSPARENT, parseBlocks } from '../../formats/blocks';
-import { paletteToRGBA, parsePalette } from '../../formats/palette';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { BLEN, CHARBL, TRANSPARENT, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { paletteToRGBA, parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { BADGE_H, BADGE_W, composeBadge, trimSprite, type BadgeLook, type Rgba } from './gameBadge';
 
 /** A game's mug: its hero's character file, and where its title screen's lettering is (and the rest of its look). */

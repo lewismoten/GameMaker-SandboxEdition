@@ -5,8 +5,8 @@
 // parade with the whole band, the park on a celesta for Teddy's party, the toy shop on the bare
 // music box (and dancing once it plays), the car lot on a humming organ, the cove slow and low on
 // strings. (Each stop on the road adds its friend's instrument.)
-import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
-import { v } from '../../../kit/tune';
+import { INSTRUMENTS, sbi, song, type Voice } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { v } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const BAR = 3;
 const A = ['C5 q, F5 q, A5 q', 'G5 h.', 'C5 q, E5 q, G5 q', 'F5 h.', 'A5 q, Bb5 q, C6 q', 'D6 q, C6 q, A5 q', 'G5 q, A5 q, G5 q', 'F5 h.'];

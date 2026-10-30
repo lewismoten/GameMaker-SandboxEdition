@@ -5,7 +5,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { GameFiles } from '../../project/files';
 import { testGame } from '../../editor/check/testGame';
-import { parseMap } from '../../formats/map';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { GAME_TOOL_DEFS } from './index';
 import { MemoryContext } from './memoryContext';
 import { argsProblem, runTool } from './run';

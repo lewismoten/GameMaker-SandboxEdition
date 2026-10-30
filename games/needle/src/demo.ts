@@ -1,7 +1,7 @@
 // DEMO.REC: what plays on the title screen when nobody touches the keyboard: the start of the
 // bot's own run through the city (tools/gendemo.ts writes RECORDED), as pairs of [ticks
 // since the last key, PC scan code; +128 = released], ending with Esc.
-import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 
 const RECORDED: number[] = [
   61, 77, 53, 72, 10, 200, 11, 72, 10, 200, 3, 205, 9, 77, 8, 72, 10, 200, 23, 205, 7, 77, 8, 72, 10, 200, 8, 72, 10, 200, 5, 205, 6, 16, 18, 144, 0, 75, 10,

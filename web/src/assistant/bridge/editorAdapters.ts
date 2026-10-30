@@ -5,13 +5,13 @@ import { normalize } from '../../project/files';
 import { currentRoute } from '../../urlState';
 import { GAME_TOOL_DEFS } from '../tools/index';
 import { runTool } from '../tools/run';
-import { base64 } from '../png';
+import { base64 } from '@lewismoten/gamemaker-sandbox-tools/image/png';
 import { fail, json, text, type ToolResult } from '../tools/types';
 import { EDITOR_TOOL_SPECS } from './editorTools';
 import type { EditorState } from './protocol';
 import type { AssistantHost } from '../hostSlot';
 import type { EditorContext } from './editorContext';
-import type { Session } from '../../engine/scene';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 
 /** What the tab shows now. */
 export function editorState(host: AssistantHost | undefined, readOnly: boolean): EditorState {

@@ -2,7 +2,7 @@
 // place. The block art never changes between levels; the .PAL does, so the same stones are
 // blue under the stars in the field, lamp-lit in town, silver at the caravan and gold in
 // the stable. Lamps, the star and the manger's glow keep their own light everywhere.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { type Pal, wrap } from '../../../kit/palRamps';
 export { type Pal } from '../../../kit/palRamps';
 

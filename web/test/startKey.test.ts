@@ -2,7 +2,7 @@
 // the C indexed the 128 byte keydn array with the whole 16 bit key, so only a key without a
 // scan code touched keydn; a real key wrote past the array and left every keydn entry alone.
 import { describe, expect, it } from 'vitest';
-import { setStartKey } from '../src/engine/scene';
+import { setStartKey } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 
 describe('start key', () => {
   it('key 0 (no key) sets keydn[0], so the idle sequence reads its key as held', () => {

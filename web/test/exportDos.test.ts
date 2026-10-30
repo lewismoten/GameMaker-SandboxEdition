@@ -4,7 +4,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { exportDos, dosNameProblems } from '../src/export/exportDos';
 import { GameFiles } from '../src/project/files';
-import { readZip } from '../src/project/zip';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 const cdgm = resolve(__dirname, '../../cd/gm');
 const sample = resolve(__dirname, '../../cd/gameware/sample');

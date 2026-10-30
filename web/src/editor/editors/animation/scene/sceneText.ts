@@ -2,8 +2,8 @@
 // text used, with every CP437 glyph) at a whole-number scale, with an outline, placed by its motion at each frame.
 // Also the checks that keep it inside the 320x200 frame: what runs off which edge, and a fix
 // that wraps, shrinks and moves a text until it fits.
-import { FONT_CP437 } from '../../../../gfx/cp437Glyphs';
-import { toCp437 } from '../../../../retro/text/cp437';
+import { FONT_CP437 } from '@lewismoten/gamemaker-sandbox-engine/gfx/cp437Glyphs';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { SCENE_H, SCENE_W, type TextItem } from './sceneModel';
 
 const GLYPH = 8;

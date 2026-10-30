@@ -8,7 +8,7 @@
 // catwalk over it, a fan lying face up (an updraft), and the gusts over the roofs, which
 // come and go (air that blows right, then goes calm, then stirs: three pictures in a ring,
 // the windsocks on the vents with them).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, clubArt, micro } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, grassTop, hedge, planks, r, sky, tuft } from '../blocks/tiles';

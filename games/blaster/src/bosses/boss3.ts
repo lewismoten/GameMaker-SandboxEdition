@@ -1,7 +1,7 @@
 // Boss 3: THE FEEDBACK HOWLER. A screaming face jammed into the line-out jack. In front of
 // it a speaker grille of armored bars slides back and forth (every bar the same monster on
 // the same path): shots only get through the gaps, and so does the ship.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, bevel, blob } from '../art/draw';
 import { armor, slicesOf, tint, weakPoint } from './boss';
 import { mite, pics } from '../characters/enemies';

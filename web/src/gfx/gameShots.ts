@@ -2,7 +2,7 @@
 // for the desk's boxes and disk labels, the play page's poster, the home page's cards, the
 // cast and the printed manuals. And a game's title screen, for the home page's tiles.
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../project/files';
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, busiest, firstLevels, levelPixels, scenePixels, type MapView } from './levelPicture';
 import { paintIndexed } from '../editor/core/draw';
 import { builtTitlePath, titlePixels, titleSource } from './titlePicture';

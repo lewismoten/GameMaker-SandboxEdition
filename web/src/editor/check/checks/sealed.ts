@@ -2,9 +2,9 @@
 // every cell joined to it through blocks that aren't solid all round (or can stop being solid:
 // a lock, a block that changes when touched or with time). A pickup outside that is sealed in
 // for certain, whatever the hero can do, so it is reported even when the playtest ran short.
-import { BACKBL, type Block } from '../../../formats/blocks';
-import type { Game } from '../../../formats/game';
-import { MLEN, MWID } from '../../../formats/map';
+import { BACKBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import { linksInto } from '../sceneLinks';
 import type { SceneData } from '../sceneData';

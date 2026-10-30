@@ -21,9 +21,9 @@ import {
   serializeBlocks,
   type Block,
   type BlockKind,
-} from '../../../formats/blocks';
-import { paletteCss } from '../../../formats/palette';
-import { LASTMON } from '../../../formats/monster';
+} from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { paletteCss } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { flipH, flipV, rotateCW, rotateCCW, shiftWrap, mirrorPoints, type Mirror } from './pixelOps';
 import { shade } from '../palette/ramps';
 import { blockInsight } from './blockInsight';

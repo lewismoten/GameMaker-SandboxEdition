@@ -1,7 +1,7 @@
 // The Birthday Egg: lilac felt sprinkled with confetti knots, a pink felt birthday cake
 // appliqued on its side with three yarn candles, and a collar of gold rickrack round its
 // middle with a tiny brass tag that reads "3" (the sequel's egg wore a "2").
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { shadeAt } from '../art/draw';
 import { P } from '../art/pal';
 

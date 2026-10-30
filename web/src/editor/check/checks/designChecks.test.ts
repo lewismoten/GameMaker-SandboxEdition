@@ -2,12 +2,12 @@
 // the tiny game in testGame.ts: shots that destroy prizes, key habits, the front screens' words,
 // doors that lead nowhere, levels with no way out or no music, flashing, and the stakes.
 import { describe, expect, it } from 'vitest';
-import { textBytes } from '../../../formats/binary';
-import { MONBL } from '../../../formats/blocks';
-import { encodeCmf } from '../../../formats/cmf';
-import { serializeGame } from '../../../formats/game';
-import { emptyMonster } from '../../../formats/monster';
-import { parseCharacter, serializeCharacter } from '../../../formats/character';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { encodeCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { emptyMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { GameFiles } from '../../../project/files';
 import { scenesOf, type SceneData } from '../sceneData';
 import { testGame, type TestGame } from '../testGame';

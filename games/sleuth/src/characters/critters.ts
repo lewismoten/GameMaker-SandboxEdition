@@ -2,8 +2,8 @@
 // the lobby, Macbeth the theater cat, sandbags on the fly lines, and at 2 AM the night
 // watchman on his rounds, wisps from the ghost light and rats under the stage, which in the
 // dark are nothing but two red eyes.
-import { emptyMonster, type Monster } from '../../../../web/src/formats/monster';
-import { Pixels } from '../../../kit/pixels';
+import { emptyMonster, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from '../blocks/blockset';
 import { CLEAR, art, blob } from '../art/draw';
 import { c, ramp as r } from '../art/pal';

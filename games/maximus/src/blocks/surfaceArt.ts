@@ -2,7 +2,7 @@
 // soil, rock and grass tops, trees, bushes, boulders, crystals, mushrooms, pillars, beacons,
 // arrows (gravity blocks), spikes, liquids, force fields, timed platforms, doors, nests,
 // shrines, signs, waterfalls, stalactites, bones, clouds and far hills.
-import { Pixels, dither, rng } from '../../../kit/pixels';
+import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, Mask, fbm, fill, outline, pick, shade, sprite, tileNoise } from '../art/draw';
 import { tex } from './blockset';
 import { OUTLINE, WHITE } from '../art/palette';

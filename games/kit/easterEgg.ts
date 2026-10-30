@@ -2,7 +2,7 @@
 // a dyed egg with painted bands, zigzags, dots or stars, drawn into a 20x20 block in any game's
 // palette and over any ground. Its frames move a glint across the shell. Like the tin heart it
 // is just a block: touching it gives a few points (no sound or id of its own in Game-Maker).
-import { Pixels } from './pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 /** The colors it is painted in, as palette indices of the game's own ramps. */
 export interface EggColors {

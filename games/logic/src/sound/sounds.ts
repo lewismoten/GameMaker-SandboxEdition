@@ -1,7 +1,7 @@
 // watt.snd: PC speaker effects, plus digitized .VOC samples for a Sound Blaster made with
 // the kit's little synthesizer: the clack of a knife switch, a zap, a fizzle, a "boing".
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { lowpass } from '../../../kit/synthParts';
 import { chime } from '../../../kit/teddySounds';

@@ -1,6 +1,6 @@
 // Scenery bigger than a block: a picture drawn whole, then cut into 20x20 blocks named
 // `<name>.<col>.<row>`, so a sign or a machine reads as one thing on the map.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { BlockBook } from './blocks';
 import type { MapBuilder } from '../levels/maps';
 

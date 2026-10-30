@@ -6,7 +6,7 @@
 import { boardArt, boardTiles, boardVirus } from '../blocks/board';
 import { HOVER_DROP, S_CURVE, SWEEP, ZIGZAG, diver, heavy, mine, mite, swooper } from '../characters/enemies';
 import { LENGTH, strip, type Grid } from './mapkit';
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { buildPalette } from '../art/pal';
 import { kit, type Stage } from './stage';
 import { bossBIOS } from '../bosses/boss1';

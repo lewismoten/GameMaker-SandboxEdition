@@ -5,8 +5,8 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { GameFiles } from '../src/project/files';
-import { parseBackdrop } from '../src/formats/graphicScripts';
-import { isGif } from '../src/formats/gif';
+import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 
 const CD = resolve(__dirname, '../../cd');
 

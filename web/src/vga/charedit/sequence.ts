@@ -4,8 +4,8 @@
 import { showHelpScreen } from '../../retro/text/textUi';
 import { SIZEX, SIZEY } from '../shared/vga';
 import { BLEN, LEFT, NONE, RED1, RED2, RIGHT } from '../shared/facelift';
-import { CHARBL, MONBL } from '../../formats/blocks';
-import { MAXFRAME, type Frame, type Sequence } from '../../formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXFRAME, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import {
   GL,
   BLLIST,

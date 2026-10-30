@@ -2,7 +2,7 @@
 // check's moves is played from here (the sim is put back afterwards), and one that brings
 // half a second with no hit points lost, or a link, is a way out. PLAYGAME hurts on every tick
 // of a touch, so being hurt for a while is no trap in itself; it is one when nothing gets away.
-import { DIESEQ } from '../../formats/character';
+import { DIESEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { driveMove } from './drive';
 import type { Move } from './inputs';
 import type { SceneSim } from './sim';

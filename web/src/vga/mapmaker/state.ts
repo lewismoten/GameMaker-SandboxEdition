@@ -7,9 +7,9 @@ import type { RetroHost } from '../../retro/host';
 import { WorkArea } from '../../retro/dos/workArea';
 import { type RGBdata, type Vga } from '../shared/vga';
 import { Face, initStartCols } from '../shared/facelift';
-import { BACKBL, MONBL, type Block } from '../../formats/blocks';
-import { LASTMON, LASTSL, emptyMonster, type Monster } from '../../formats/monster';
-import { LASTMM, MLEN, MWID, type GameMap, type PlacedMonster } from '../../formats/map';
+import { BACKBL, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON, LASTSL, emptyMonster, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { LASTMM, MLEN, MWID, type GameMap, type PlacedMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { BACKBLK, BLOCACTIVE, BLANK, zeroBlocks } from './layout';
 
 export abstract class MapMakerState {

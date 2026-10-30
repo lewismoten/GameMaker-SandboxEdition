@@ -6,8 +6,8 @@
 //
 // The case's suspects, cards and rooms are below with the map and the monsters; the blocks
 // are drawn in parlorBlocks.ts.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
-import { emptyMonster, type Monster } from '../../../../web/src/formats/monster';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { emptyMonster, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BlockSet } from '../blocks/blockset';
 import { ITEM, ITEMS } from '../blocks/items';
 import { figure, type Who } from '../art/people';

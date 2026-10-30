@@ -2,17 +2,17 @@
 // (index.html), icons, a web app manifest and an offline service worker, plus a copy of the
 // game's files, zipped up and ready to unpack onto any static web host (GitHub Pages,
 // Netlify, an S3 bucket…). index.html also plays straight from disk.
-import { createZip, type ZipEntry } from '../project/zip';
+import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import type { GameFiles } from '../project/files';
 import { hashText, serviceWorkerSource } from './serviceWorker';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { encodeGame, fillPage, GAME_MARK } from './singlePage';
 import { gameAbout } from './gameAbout';
 import { gameDescription, REPO_URL, SITE_URL } from '../seo/site';
 import { PRODUCT } from '../edition';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 import { PROJECT } from './notices';
-import { withoutExtensions } from '../dosPlayer/fileExtensions';
+import { withoutExtensions } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 
 export interface ExportOptions {
   title: string;

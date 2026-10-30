@@ -2,7 +2,7 @@
 // the screen shows from somewhere the hero can be (PLAYGAME's view is 16 × 10 blocks; with the
 // hero near the middle, a prize up to 7 blocks across and 4 up or down is on screen with him).
 // A prize nobody can see is a quiet mistake; one in plain view that can't be reached is a tease.
-import { MLEN, MWID } from '../../../formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import type { SceneData } from '../sceneData';
 

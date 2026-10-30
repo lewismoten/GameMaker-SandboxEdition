@@ -3,7 +3,7 @@
 // the back fence with soft dirt under it, hint signs and the alley where the Clown Car
 // waits. Also the helpers every level uses: GROUND (the map row the lawn starts on), the
 // sky band for a row (bandOf) and a hint sign on a stake.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro } from '../art/draw';
 import { Tiles } from './level';
 import {

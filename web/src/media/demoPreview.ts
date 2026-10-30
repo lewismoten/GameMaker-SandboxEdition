@@ -10,16 +10,16 @@
 // mode" (attractDemo.ts) that walks its hero back and forth. `kind` tells them apart so the
 // page can say which it is (demoSource.ts picks the recording).
 import { DemoAudioEngine, demoAudio, onDemoAudio, type DemoAudio } from './demoAudio';
-import type { Session } from '../engine/scene';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { mountPlayer, type PlayerHandle } from '../player/player';
 import type { GameFiles } from '../project/files';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { recordingTicks, titleDemo, withoutOpening } from './demo';
 import { attractRecording } from './attractDemo';
 import { extraDemoForGam, loadExtraDemos } from './extraDemos';
 import { demoSource, type DemoSource } from './demoSource';
 import { DEMO_KIND_TAG, type DemoKind } from './demoKind';
-import { onSoundUnlocked, soundUnlocked } from '../audio/context';
+import { onSoundUnlocked, soundUnlocked } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { claimMediaFocus } from './mediaFocus';
 
 // the index is small: fetched early, so a preview can tell at once whether a demo was added

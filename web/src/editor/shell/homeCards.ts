@@ -11,7 +11,7 @@ import { paintIndexed } from '../core/draw';
 import { GameFiles, creditLine, loadHostedGame, withDetails, type CatalogEntry } from '../../project/files';
 import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';
-import { ADVTYPE, NOSCENE, parseGame } from '../../formats/game';
+import { ADVTYPE, NOSCENE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
 import type { DemoPreview } from '../../media/demoPreview';

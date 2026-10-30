@@ -4,10 +4,10 @@
 // picture's own lightest and darkest colors. PLAYGAME draws nothing there: its menu words sit at
 // x 80..240, y 104..168, and "Hit any key" (only over the menu when a game has no high score
 // picture) ends at x 204.
-import { decodeGif, encodeGif, isGif } from '../../web/src/formats/gif';
-import { parseGame } from '../../web/src/formats/game';
-import { Pixels } from './pixels';
-import { outlined, textWidth } from './pcText';
+import { decodeGif, encodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { outlined, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 
 /** Where a game wants its version instead of the corner: the text's top-left, or false for none. */
 export type MenuVersionSpot = { x?: number; y?: number } | false;

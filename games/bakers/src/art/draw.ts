@@ -1,11 +1,11 @@
 // Drawing helpers for blocks, sprites and screens (from KEEP IT BRIEF!): dithered shading,
 // bevelled boxes, ASCII sprites, the PC's 8x8 font at any scale and a 3x5 font for labels.
-import { Pixels } from '../../../kit/pixels';
-import { textInk } from '../../../kit/textBounds';
-import { CLEAR } from '../../../kit/blit';
-export { text, textWidth, outlined, centered } from '../../../kit/pcText';
-export { CLEAR, over, scaleBlit, outline } from '../../../kit/blit';
-export { shadeAt, gradient, blob, bevel } from '../../../kit/shading';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
+import { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+export { text, textWidth, outlined, centered } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+export { CLEAR, over, scaleBlit, outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+export { shadeAt, gradient, blob, bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 
 /** Recolors every pixel through a lookup. */
 export function recolor(src: Pixels, fn: (c: number) => number): Pixels {

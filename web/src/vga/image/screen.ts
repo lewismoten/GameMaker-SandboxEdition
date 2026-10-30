@@ -7,9 +7,9 @@ import { errorBox } from '../../retro/text/textUi';
 import { WorkArea } from '../../retro/dos/workArea';
 import { type RGBdata, type Vga, SIZEX } from '../shared/vga';
 import { BLEN, Face, RED1, RED2, initStartCols } from '../shared/facelift';
-import { BACKBL, type Block } from '../../formats/blocks';
-import { decodeGif, type IndexedImage } from '../../formats/gif';
-import { output } from '../../audio/output';
+import { BACKBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { decodeGif, type IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 import { LOLEN, LOX, LOY, LOY1, MX, MY, HY, blankBlock } from './layout';
 
 export abstract class ImageReaderScreen {

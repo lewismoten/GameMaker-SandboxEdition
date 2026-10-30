@@ -27,7 +27,7 @@ import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, readBounds } from './textBounds';
+import { describe, readBounds } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const webDir = join(gamesDir, '../web');
@@ -50,7 +50,7 @@ const has = (id: string, f: string) => existsSync(join(gamesDir, id, f));
 
 type Status = 'ok' | 'FAIL' | 'skip';
 const hasNice = process.platform !== 'win32' && spawnSync('nice', ['true']).status === 0;
-const viteNode = join(webDir, 'node_modules/.bin/vite-node');
+const viteNode = join(webDir, '../node_modules/.bin/vite-node');
 
 /** Runs one script with vite-node from web/, niced; prints its tail when it fails. */
 function step(label: string, script: string, scriptArgs: string[] = [], env: Record<string, string> = {}): Status {

@@ -3,7 +3,7 @@
 // monsters are handled by trying a stretch again from a snapshot after a wait (each game's
 // tools/route.ts, carefully()). The hopping games' tools/bot.ts extend it with their keys,
 // their map origin and the meter BOT_HURT reports.
-import type { GameSim } from './gameSim';
+import type { GameSim } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 
 export type Dir = 'left' | 'right';
 export type Result = string | undefined;

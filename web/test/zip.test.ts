@@ -1,6 +1,6 @@
 // Tests: Reading and writing zip files (project/zip.ts).
 import { describe, expect, it } from 'vitest';
-import { createZip, readZip, crc32 } from '../src/project/zip';
+import { createZip, readZip, crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 describe('zip', () => {
   it('computes CRC-32', () => {

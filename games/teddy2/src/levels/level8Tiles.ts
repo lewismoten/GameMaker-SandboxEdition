@@ -3,7 +3,7 @@
 // round: he retired from hoops), two popcorn stands (each pops popcorn across the ring
 // now and then: a block giving birth), the judges' table, the Best Behaved ring, and the stage,
 // whose curtain only opens for a blue ribbon.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { Tiles } from './level';
 import { c, canvas, copy, cut, dirt, planks, r } from '../blocks/tiles';

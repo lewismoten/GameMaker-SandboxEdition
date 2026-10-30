@@ -1,5 +1,5 @@
 // Veni, Vidi, Risi!'s FM patches (SBI): the troupe's instruments and drums (song.ts).
-import { INSTRUMENTS, sbi } from '../../../kit/music';
+import { INSTRUMENTS, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 import { REED, VOICE } from '../../../kit/song';
 import { detuned } from '../../../kit/songFx';
 

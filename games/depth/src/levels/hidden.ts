@@ -5,12 +5,12 @@
 // level's own colors (nearest match; the palette is picked without them, so no other block
 // changes). Each keeps a block number of its own, high in the set, so no other number moves.
 // The save sign (kit/saveSign.ts) is laid over two floor cells the same way, in Fractal Peaks.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { drawTinHeart } from '../../../kit/tinHeart';
 import { drawEasterEgg } from '../../../kit/easterEgg';
 import { wattCameo } from '../../../kit/cameos';
 import { saveSignBlocks } from '../../../kit/saveSign';
-import type { Block } from '../../../../web/src/formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Matcher } from '../render/quant';
 import type { TileBook } from '../tiles/book';
 import type { Plane } from '../tiles/cells';

@@ -2,7 +2,7 @@
 // editor's workspace puts itself here while it is open. Tiny and with no imports to run, so the
 // workspace can hold it without loading anything of the Assistant's.
 import type { Project } from '../editor/core/project';
-import type { RunOptions } from '../engine/game';
+import type { RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 
 /** What the workspace offers the Assistant. */
 export interface AssistantHost {

@@ -4,7 +4,7 @@
 // RSVP card held out (walk into the doorway and it is hers), the alley's tall fence with soft
 // dirt at its foot and a tunnel under it, the brick walk-up's fire escape, and the Clown
 // Club's party van, whose back door takes the three RSVPs one at a time.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { NOSE, blob, micro, over } from '../art/draw';
 import { Tiles } from './level';
 import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, r, sky, tuft, windowOn } from '../blocks/tiles';

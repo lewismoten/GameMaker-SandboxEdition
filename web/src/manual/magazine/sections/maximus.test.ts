@@ -4,12 +4,12 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { BACKBL, CHARBL, MONBL, parseBlocks } from '../../../formats/blocks';
-import { frameCount, MAXSEQ, METERS, parseCharacter } from '../../../formats/character';
-import { NOSCENE, parseGame, serializeGame } from '../../../formats/game';
-import { LASTMM, parseMap } from '../../../formats/map';
-import { LASTMON, LASTSL, parseMonsters } from '../../../formats/monster';
-import { parseSoundSet } from '../../../formats/sound';
+import { BACKBL, CHARBL, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { frameCount, MAXSEQ, METERS, parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { NOSCENE, parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { LASTMM, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMON, LASTSL, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { COUNTS, MAXIMUS, SCENE_CAP, SCENE_RECORD, TEXT_READ } from './maximus';
 
 const disk = join(__dirname, '../../../../../games/maximus/disk');

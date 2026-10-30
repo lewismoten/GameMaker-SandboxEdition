@@ -6,14 +6,14 @@
 //   cd web && npx vite-node scripts/castArt.ts
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { applyFliFrame, newFliCanvas, parseFli } from '../src/formats/fli';
-import { decodeGif } from '../src/formats/gif';
-import { BLEN, TRANSPARENT, parseBlocks, BLOCK_COUNTS, type BlockKind } from '../src/formats/blocks';
-import { parsePalette } from '../src/formats/palette';
+import { applyFliFrame, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { BLEN, TRANSPARENT, parseBlocks, BLOCK_COUNTS, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { heroPixels, type LevelPicture } from '../src/gfx/levelPicture';
 import { encodeIndexedPng } from './gameShots';
 import { chezPicture } from '../../games/kit/chez';
-import type { Pixels } from '../../games/kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { EGG_PAL, eggShine } from './castEgg';
 import { TIN_HEART_H, TIN_HEART_PAL, TIN_HEART_W, tinHeartFrames } from './castTinHeart';
 

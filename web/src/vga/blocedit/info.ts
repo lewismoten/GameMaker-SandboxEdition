@@ -2,8 +2,8 @@
 // solid sides, gravity, the block it turns into and when, score, hit points, effects, the
 // object it is, and the monster it gives birth to (birthmon).
 import { errorBox } from '../../retro/text/textUi';
-import { BACKBL, BLEN, CHARBL, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../formats/blocks';
-import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters } from '../../formats/monster';
+import { BACKBL, BLEN, CHARBL, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON, LASTSL, MONSTER_SIZE, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { SIZEX, SIZEY } from '../shared/vga';
 import { GRAY1, GRAY2, GRAY3, GRAY4, LEFT, NONE, RED3, RIGHT } from '../shared/facelift';
 import { drawblk, drawlist, getblk, loadblks, pixelsOf, scrollList, type ListPick } from '../shared/blocc';

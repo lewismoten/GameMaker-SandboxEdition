@@ -2,7 +2,7 @@
 // left (holding a pie, winding up high or low, letting fly), the custard pies (one flying at
 // head height, one skidding along the floor) and the birthday cake Doc Leo fetches from
 // Professor Pratfall's bakery tent.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, over, sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { CK } from './klown';

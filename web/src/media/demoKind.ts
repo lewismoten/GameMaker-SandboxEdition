@@ -1,6 +1,6 @@
 // Which demo a game's preview plays (demoPreview.ts), told from its .gam alone: kept apart
 // from the preview itself, so a page can offer "Watch demo" without loading the player.
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { cdName, fetchGameFile, type CatalogEntry } from '../project/files';
 import { ADDED_DEMO_NOTICE, extraDemoFor, extraDemoForGam, fetchExtraDemo, loadExtraDemos, type ExtraDemo } from './extraDemos';
 

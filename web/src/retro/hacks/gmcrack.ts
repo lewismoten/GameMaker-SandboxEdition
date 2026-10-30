@@ -15,7 +15,7 @@
 import type { RetroHost } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { attr, COLS, ROWS } from '../text/textScreen';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { TOP, clearArea, frame, hint, sleep } from './cracktro';
 import { pcExtras } from './pcExtras';
 import { FACTORY_SERIAL, NAME_MAX, checkRegistration, regFile, registrationNumber } from '../gmReg/registration';

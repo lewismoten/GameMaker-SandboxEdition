@@ -2,8 +2,8 @@
 // the three rising tones before "the number you have reached is not in service", the
 // off-hook howler, answering machine and pager beeps, hold music, a modem screeching on
 // the line, a TTY's Baudot, and (out loud, in the room) the phone's bell and a fire engine's siren.
-import { output } from '../../../audio/output';
-import { audioContext, unlock } from '../../../audio/context';
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
+import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { dataNoise, DTMF, Line } from '../../../retro/bbs/modem';
 import { baudotSeconds, encodeBaudot, playBaudot } from '../../../retro/bbs/baudot';
 

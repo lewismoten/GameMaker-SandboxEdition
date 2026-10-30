@@ -1,7 +1,7 @@
 // FONT_CP437 has a real glyph for every code page 437 character.
 import { describe, expect, it } from 'vitest';
-import { FONT_CP437 } from './cp437Glyphs';
-import { FONT8X8 } from './font8x8';
+import { FONT_CP437 } from '@lewismoten/gamemaker-sandbox-engine/gfx/cp437Glyphs';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 
 const glyph = (c: number) => [...FONT_CP437.subarray(c * 8, c * 8 + 8)];
 const BOX = [0x7e, 0x42, 0x42, 0x42, 0x42, 0x42, 0x7e, 0x00];

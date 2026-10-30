@@ -8,7 +8,7 @@
 //
 // The cable is worn: splits where the colored wires inside show (one in each spits sparks) and
 // nicks (some let Crosstalk crawl out).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { buildPalette, type Pal } from '../art/pal';
 import { CLEAR, blob } from '../art/draw';
 import { boardParts, cableArt, cableBlocks, plugPic, type Mark } from '../blocks/cable';

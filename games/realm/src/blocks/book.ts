@@ -4,7 +4,7 @@
 // every block into it. Some numbers are the same in every block set of the game (the felt egg,
 // the gates), so a carried block means the same thing in every scene: reserve() puts a block at
 // a fixed number.
-import { newBlockSet, type Block } from '../../../../web/src/formats/blocks';
+import { newBlockSet, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pal, scenePalette } from '../art/pal';
 import { Canvas, type RGB } from '../art/rgb';
 

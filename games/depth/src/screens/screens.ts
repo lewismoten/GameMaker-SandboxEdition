@@ -1,8 +1,8 @@
 // Every picture, cartoon, slide list and page of text on the disk, and the scene that shows
 // the felt egg's page.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, type Scene } from '../../../../web/src/formats/game';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { matchColor } from '../../../../web/src/formats/palette';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { matchColor } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { farScene, nearScene, type Extra } from '../game';
 import type { LevelSet } from '../levels/blocks';

@@ -6,9 +6,9 @@
 // (Space) throws a whoosh of wind ahead the way he last flew (power 160) that makes the swatting
 // things miss: they turn into a "MISS" for a while, then come back. The buzz (B) flies off the way he last flew (power
 // 110) and wakes what's asleep: an ear buzzed twitches, and flying into a twitching ear counts.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { emptyMonster, newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { EARS, HOURS, KEY, MON, SEQ, SMILES, SND, SNACKS, SUGAR_START } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 import { set, corner } from '../../kit/actors';

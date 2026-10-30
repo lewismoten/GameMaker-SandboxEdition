@@ -1,8 +1,8 @@
 // Tools for palettes (.pal, 256 colors of 0-63 red, green, blue) and the between-scene screens:
 // text pages (.txt, 31 columns as DOS shows them), slide lists (.lst) and backdrops (.bkd).
-import { defaultPalette, parsePalette, serializePalette } from '../../formats/palette';
-import { parseBackdrop, parseSlideList, serializeBackdrop, serializeSlideList, textLines } from '../../formats/graphicScripts';
-import { latin1Text, textBytes } from '../../formats/binary';
+import { defaultPalette, parsePalette, serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { parseBackdrop, parseSlideList, serializeBackdrop, serializeSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { latin1Text, textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 import { DRY_RUN, commit } from './run';
 import { FILE, clampInt, fileName, int, need } from './common';
 import { json, ToolError, type ToolDef } from './types';

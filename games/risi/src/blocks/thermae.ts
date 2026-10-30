@@ -11,7 +11,7 @@
 //      up to the stage that open for five laughs (counter 24), the stage itself (wood), its
 //      painted front with doors and columns, the box behind Emperor Gravis that gives birth to
 //      his decrees, and the altar on the stage that takes the laurel crown (counter 25).
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../snowbound/src/art/font';
 import { buildPalette, type Pal } from '../art/pal';

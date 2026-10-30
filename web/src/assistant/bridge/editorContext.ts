@@ -5,7 +5,7 @@
 // editor's own buttons run them.
 import { normalize } from '../../project/files';
 import { companionPatches, PLAYER_SECTION, playerRecord } from '../../dosPlayer/playerRecord';
-import type { PlayerPatches } from '../../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import type { Change, GameContext } from '../tools/types';
 import type { AssistantHost } from '../hostSlot';
 import { ToolError } from '../tools/types';

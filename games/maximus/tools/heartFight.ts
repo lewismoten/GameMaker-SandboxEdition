@@ -2,7 +2,7 @@
 // tools/check.ts): stand near the seal, and whenever the eye (not while it reels) comes level
 // within reach, turn to face it and fire the Plasma Lance. A touch cracks it too, for hit
 // points. Done when the Core Light has charged the seal (or after `maxTicks`).
-import type { World } from '../../../web/src/engine/world';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { MonsterSet } from '../src/characters/bestiary';
 import { SCAN, SEAL_COUNTER, SEQ } from '../src/ids';
 

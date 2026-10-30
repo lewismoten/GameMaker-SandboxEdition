@@ -2,8 +2,8 @@
 // both blocks mirrored), the same frames drawn on new mirrored blocks, and the links the
 // editor keeps (in the companion file, never the .chr or .cbl) between a block and its
 // mirror and between a sequence and its mirrored twin.
-import { BLEN, CHARBL, orientIndex, type Block } from '../../../formats/blocks';
-import { frameCount, type Frame, type Sequence } from '../../../formats/character';
+import { BLEN, CHARBL, orientIndex, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { frameCount, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { bottomOrient, composeOrient, firesMonster, normalOrient, topOrient } from './characterLogic';
 
 /** Orientation 4: mirrored left to right. */

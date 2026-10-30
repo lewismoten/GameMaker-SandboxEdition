@@ -1,7 +1,7 @@
 // The level check's file checks and its whole report, on the tiny game in testGame.ts.
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
-import { parseBlocks, serializeBlocks, BACKBL } from '../../formats/blocks';
+import { parseBlocks, serializeBlocks, BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { hazardArt, opposites, everyTickBlocks, waits } from './checks/blockChecks';
 import { mentions } from './checks/gameChecks';
 import { sealed } from './checks/sealed';

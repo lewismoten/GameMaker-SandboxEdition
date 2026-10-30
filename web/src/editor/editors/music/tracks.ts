@@ -1,8 +1,8 @@
 // The track list: one track per MIDI channel, with its instrument, mute and solo, and
 // buttons to add, copy, paste and remove tracks (copy and paste in trackPaste.ts).
 import { h, clear, confirmDialog } from '../../core/ui';
-import { channelNotes, removeChannel, setStartProgram, startProgram } from '../../../formats/cmfEdit';
-import { RHYTHM_CHANNELS, DRUM_NAMES } from '../../../formats/cmfSong';
+import { channelNotes, removeChannel, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { RHYTHM_CHANNELS, DRUM_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { TRACK_COLORS, type MusicDoc } from './doc';
 import { instLabel, instShortLabel } from './instrument';
 import { presetName } from './sbi';

@@ -4,8 +4,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { GameFiles } from '../src/project/files';
 import { attractKeys, attractRecording, firstLevelCharacter } from '../src/media/attractDemo';
-import { parseRecording } from '../src/formats/recording';
-import { newGame, serializeGame } from '../src/formats/game';
+import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 const dir = resolve(__dirname, '../../cd/gameware/sample');
 const files = new GameFiles(readdirSync(dir).map((f) => [f, new Uint8Array(readFileSync(join(dir, f)))] as [string, Uint8Array]));

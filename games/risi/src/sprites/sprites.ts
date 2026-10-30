@@ -9,13 +9,13 @@
 // floating senator, the stone-faced audience and the same faces laughing, cabbages, Emperor
 // Gravis (two blocks tall, four stages from stern to helpless laughter), his decrees, and the
 // laurel crown. Every sprite is drawn from shapes and given a dark outline.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { CHEESE, CROWN, LAUGHS } from '../ids';
 
 export { T, outline };

@@ -2,7 +2,7 @@
 // uses, its scroll settings and description, and moving it on the world map.
 import { MENUATTR, SHADATTR, errorBox, vertMenu } from '../../retro/text/textUi';
 import { browseFile } from '../../retro/dos/picker';
-import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE } from '../../formats/game';
+import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { SIZEX, SIZEY } from '../shared/vga';
 import { BLACK, GREEN } from '../shared/facelift';
 import { NOTUSED, BACKLINK, WORLDTOP, WX, WLEN, WWID, TEXTX, TATTR, TITLECOL, GRAPHIC_EXTS, Folder, sameFolder, isGameFolder, pathText } from './layout';

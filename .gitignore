@@ -2,7 +2,6 @@
 
 # Built npm engine package (npm pack rebuilds it).
 /web/packages/engine/dist/
-/web/packages/engine/LICENSE
 
 # the Borland compiler, copied in from the original repository to build the DOS source
 /tools/
@@ -26,3 +25,9 @@ __pycache__/
 
 # Kokoro for web/scripts/narrate.ts (npm run voice:setup), kept out of the app's own packages
 /.narrate/
+
+# npm workspace dependencies are hoisted at the repository root.
+/node_modules/
+
+# npm tarballs are release artifacts, never source.
+*.tgz

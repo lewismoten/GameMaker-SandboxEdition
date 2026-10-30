@@ -1,7 +1,7 @@
 // REALM.SND: PC speaker effects, each backed by a digitized Sound Blaster .VOC synthesized
 // here: a sword's swish, coins, a kazoo's buzz, a tonic's glug, THE CHEZ's horn.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { lowNoise, env } from '../../../kit/synthParts';
 

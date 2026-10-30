@@ -6,13 +6,13 @@ import { soundVirus } from '../blocks/sound3';
 import { waveArt, waveBlocks, waveRamps } from '../blocks/wave';
 import { HOP, S_CURVE, diver, heavy, mine, swooper } from '../characters/enemies';
 import { buildPalette } from '../art/pal';
-import { MLEN } from '../../../../web/src/formats/map';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { GATE, sideLeg, sideMites, wander } from './sideLeg';
 import type { Side } from './sideLeg';
 import type { Leg } from './stage';
 import type { BlockSet } from '../art/draw';
 import type { Bestiary } from '../characters/mons';
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 const conga = (s: Side, c: number, r: number, n: number, name: string) => {
   for (let i = 0; i < n; i++) s.mon(c + i, r, name);

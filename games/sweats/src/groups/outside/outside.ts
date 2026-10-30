@@ -8,10 +8,10 @@
 // minivan's roof, the gusts, the tree. With all four, the bush gives up the rest.
 //
 // Layout (12 rows: the sky, the skyline on row 8, the walking row 9, the ground on row 10).
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, plotThing } from '../../common/blocks';
 import { anim, corner, mon, pace, still } from '../../common/characters';

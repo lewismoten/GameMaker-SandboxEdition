@@ -2,10 +2,10 @@
 // ShowGraphic would show it (engine/showGraphic.ts): for the home page's tiles, built ahead
 // of time for listed games (scripts/gameShots.ts) and drawn live for your own (homeCards.ts).
 // No canvas, so the build and the page draw it alike.
-import { STARTTYPE, type Game } from '../formats/game';
-import { decodeGif, isGif } from '../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../formats/fli';
-import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
+import { STARTTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { busiest, busyness, type FileSource, type LevelPicture } from './levelPicture';
 
 const W = 320;

@@ -2,9 +2,9 @@
 // block and monster lists, the scroll arrows, compass and tool buttons, and the mapping
 // between screen and map coordinates.
 import { BLACK, BLEN, Face, GREEN, GRAY1, GRAY2, GRAY3, GRAY4, RED1, RED2, RED3 } from '../shared/facelift';
-import { BACKBL, MONBL } from '../../formats/blocks';
-import { LASTMON } from '../../formats/monster';
-import { LASTMM, MLEN, MWID } from '../../formats/map';
+import { BACKBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { LASTMM, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import {
   LMLEN,
   LMX,

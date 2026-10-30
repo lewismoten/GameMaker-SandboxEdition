@@ -8,7 +8,7 @@
 //     that gives points alone, so it plays the score sound, which each scene's .SND fills with
 //     the monologue's opening line. It goes dark once he steps out of it.
 // Name them `<what>@<backdrop>`: coin@carpet, bill@carpet, mug@carpet, spot@stage.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import { micro } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';

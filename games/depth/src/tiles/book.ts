@@ -3,7 +3,7 @@
 // near cube is solid and sharp in one and an out-of-focus ghost you roll through in the other.
 // Blocks are made as the map asks for them: a cell's kind plus what its neighbors do to it
 // (shadows, a pit's inner wall), so only the variants a level uses take up its 150 numbers.
-import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../../../web/src/formats/blocks';
+import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Picture } from '../render/image';
 import { ISO, KINDS, PLANES, renderCell, type CellKey, type Ctx, type Plane } from './cells';
 import { renderIsoCell } from './iso';

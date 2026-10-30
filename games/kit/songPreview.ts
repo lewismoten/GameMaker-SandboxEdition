@@ -9,9 +9,9 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { CmfPlayer, TICK_RATE } from '../../web/src/audio/cmfPlayer';
-import { Opl2 } from '../../web/src/audio/opl';
-import { parseCmf } from '../../web/src/formats/cmf';
+import { CmfPlayer, TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
+import { parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 
 const RATE = 22050;
 

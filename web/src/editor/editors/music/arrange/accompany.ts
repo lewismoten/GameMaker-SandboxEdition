@@ -12,8 +12,16 @@
 // them), and the band takes only the channels left; a part with no room is left out and said
 // so in the take's notes. No DOM.
 import { mulberry32 } from '../../../../seededRandom';
-import { addNote, channelNotes, removeChannel, setStartMode, setStartProgram, startMode, startProgram } from '../../../../formats/cmfEdit';
-import { readSong, writeSong, noteEnd, type CmfSong } from '../../../../formats/cmfSong';
+import {
+  addNote,
+  channelNotes,
+  removeChannel,
+  setStartMode,
+  setStartProgram,
+  startMode,
+  startProgram,
+} from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { readSong, writeSong, noteEnd, type CmfSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { findPreset, presetById } from '../../../../audio/oplPresets';
 import { chordTones, inferChords, inferKey, type ChordSpan, type Key, type MelNote } from './harmony';
 import { styleById, type Comp, type Drum, type Groove, type Style, type StyleId } from './styles';

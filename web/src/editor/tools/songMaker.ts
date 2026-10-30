@@ -3,8 +3,8 @@
 // listen, compose again, or edit the notes by hand, then save.
 import { h, modal, toast } from '../core/ui';
 import { registerMaker } from './makers';
-import { INSTRUMENTS, song, type Voice } from '../../audio/compose';
-import { AudioEngine } from '../../audio/engine';
+import { INSTRUMENTS, song, type Voice } from '@lewismoten/gamemaker-sandbox-tools/music/compose';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';
 

@@ -3,7 +3,7 @@
 // that lights with the PC, and a headphone jack. Under them, the Sound Boaster switch.
 import './speakers.css';
 import { h } from '../../editor/core/ui';
-import { getVolume, setVolume } from '../../audio/output';
+import { getVolume, setVolume } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 import { blasterSwitch, type BlasterPc } from './blasterSwitch';
 
 const TURN = 270; // degrees from silent to full

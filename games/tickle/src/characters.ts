@@ -5,9 +5,9 @@
 // (gravity takes one more away every tick), and Q/E hop up and sideways at once (Game-Maker
 // follows one key at a time). PIN and TICKLE send out a hand to each side (see ids.ts for how a
 // pin, a tickle and the rats' shapes make "pin first, then tickle" the only way a rat laughs).
-import { MONBL } from '../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { CARPET, KEY, MON, POWER, SEQ, SND } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 import { set, mon, corner } from '../../kit/actors';

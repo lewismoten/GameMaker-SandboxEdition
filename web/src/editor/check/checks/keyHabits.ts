@@ -2,9 +2,9 @@
 // one sequence at a time, so no walk runs while a shot does), a weapon with its own ammunition
 // for each direction (one count per sequence), and a key that does a different kind of thing
 // from one level's character to the next.
-import { MONBL } from '../../../formats/blocks';
-import { INF_REPEAT, MAXSEQ, frameCount, type Character } from '../../../formats/character';
-import { scanName } from '../../../input/scancodes';
+import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, MAXSEQ, frameCount, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { GameFiles } from '../../../project/files';
 import { characterActions, gameKeyMap } from '../../keymap/keyMap';
 import type { Finding } from '../findings';

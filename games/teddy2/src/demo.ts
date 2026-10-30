@@ -2,12 +2,12 @@
 // the first part of Doc Leo's house (bark at the dust bunny, over the counter and the
 // fridge, through the kitchen, down the laundry chute, and sniff Gwinn's collar out of the
 // basket), a happy spin, then Esc.
-import { serializeRecording } from '../../../web/src/formats/recording';
-import { newCharInfo } from '../../../web/src/engine/world';
+import { serializeRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { buildCharacter, CB } from './characters/character';
 import { Recorder, runRoute } from '../tools/bot';
 import { ROUTES } from '../tools/route';
-import { Sim } from '../../kit/sceneSim';
+import { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import type { Level } from './levels/level';
 import { SCAN } from './ids';
 

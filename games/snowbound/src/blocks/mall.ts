@@ -1,7 +1,7 @@
 // LaVale Mall: its walls and glass doors, the window with THE  box in it, the store door
 // and register (which only opens with $89 in your pocket), and Bleeps, the arcade, with its
 // chasing marquee and a door that takes a dollar a game.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient, shadeAt, speckle } from '../art/draw';
 import { micro, microWidth } from '../art/font';
 import { Ctx, MONEY, SOLID } from './book';

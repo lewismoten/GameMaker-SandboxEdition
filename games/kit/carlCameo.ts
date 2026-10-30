@@ -1,7 +1,7 @@
 // Carl the fly (A Fly Named Carl) as a guest in another game: his own drawing
 // (games/carl/src/sprites flyArt: big red eyes, a smug grin, wings a blur) in the host game's
 // palette. On a circuit board he is, of course, the bug.
-import type { Pixels } from './pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { flyArt, type FlyPose } from '../carl/src/sprites/sprites';
 
 /** The host palette's indices for Carl's ramps: fly 5 shades, eye 4, wing 3 (dark to light). */

@@ -1,7 +1,7 @@
 // Tests for the backup: a file made and read back, merges, untouched sections, partial and
 // damaged files. On plain in-memory worlds (world.ts), so no browser storage is needed.
 import { describe, expect, it } from 'vitest';
-import { createZip } from '../project/zip';
+import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { parseHighScoreTable, serializeHighScoreTable } from '../project/saveData/highScores';
 import { parseSlotNames, serializeSlotNames } from '../project/saveData/saveGame';
 import { FORMAT, FORMAT_VERSION, makeBackup, readBackup, snapshot } from './file';

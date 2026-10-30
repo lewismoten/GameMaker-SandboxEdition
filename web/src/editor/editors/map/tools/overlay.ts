@@ -1,7 +1,7 @@
 // The map's overlay canvas: grid lines, found blocks, the level check's heat map and marks, the
 // selection and the ghost of what a click will place.
-import { BLEN } from '../../../../formats/blocks';
-import { MLEN, MWID } from '../../../../formats/map';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { CellRect } from './cellOps';
 
 export interface OverlayState {

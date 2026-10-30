@@ -1,7 +1,7 @@
 // The cart return in LaVale Mall's lot, a nod to Shakespeare in Sweatpants' Cart Return Seven:
 // a crooked blue CART RETURN 7 sign on two posts (two blocks wide) beside a pipe corral with
 // two carts nested in it, snow on everything. Plain scenery (walked over like the lot).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { micro } from '../art/font';
 import type { Ctx } from './book';
 

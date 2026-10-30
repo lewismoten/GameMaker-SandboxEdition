@@ -5,8 +5,8 @@
 // unformatted gap between the tracks. Bad sectors spark, lost clusters let mites out, and one
 // gold cluster link (the FAT's pointer to the next fragment) jumps a lane a lap early. The
 // course starts at RECIPES.TXT's directory entry and ends at EOF, the way out.
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import type { StageArt } from './tiles';

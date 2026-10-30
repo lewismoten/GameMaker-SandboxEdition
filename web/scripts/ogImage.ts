@@ -4,12 +4,12 @@
 // Edition" in the PC's 8x8 font. Original games use their box colors.
 import { deflateSync } from 'node:zlib';
 import type { CdCatalogEntry } from './cdGames';
-import { decodeGif, isGif } from '../src/formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../src/formats/fli';
-import { parseGame, sceneKind } from '../src/formats/game';
-import { parseBackdrop, parseSlideList } from '../src/formats/graphicScripts';
-import { vga8 } from '../src/formats/palette';
-import { FONT8X8 } from '../src/gfx/font8x8';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseGame, sceneKind } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { PRODUCT } from '../src/edition';
 
 export const CARD_W = 1200;

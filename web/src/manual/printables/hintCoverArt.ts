@@ -5,9 +5,9 @@
 // else the scene's own). printables.json's hint book can name the hero and the scene
 // instead (HintCover); anything it can't find falls back to the automatic pick.
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
-import { parseGame, type Game } from '../../formats/game';
-import { TRANSPARENT } from '../../formats/blocks';
-import { decodeGif, isGif } from '../../formats/gif';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { TRANSPARENT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { firstLevels, heroOf, heroPixels, type HeroSpec, type LevelPicture } from '../../gfx/levelPicture';
 import { mapShot, renderShot, renderTitle } from '../../gfx/gameShots';
 import { boxShot } from '../../gfx/frameShot';

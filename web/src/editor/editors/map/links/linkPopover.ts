@@ -5,8 +5,8 @@
 // screen; with where it leads, its blocks and Delete. Pictures are the integrator's
 // (integratorArt.ts) and every change goes through the markers' LinkEditor.
 import { h, clear, confirmDialog, numberField, selectField, toast } from '../../../core/ui';
-import { ADVTYPE, STARTTYPE, type Game, type Point } from '../../../../formats/game';
-import { MLEN, MWID } from '../../../../formats/map';
+import { ADVTYPE, STARTTYPE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { graphicShot, levelShot } from '../../integrator/integratorArt';
 import { pickOnMap } from '../../integrator/pickOnMap';
 import { moveSource, removeLink, retarget, setFrom, setTo } from '../../integrator/linkEdits';

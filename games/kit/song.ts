@@ -4,8 +4,8 @@
 // from the analysis of its recording, kit/song/analyze.py) and its songs; this keeps the
 // patches, the drum grooves and the writer that lays a section out as tune, second voice,
 // bass, three comping voices and drums.
-import { encodeCmf, type CmfEvent } from '../../web/src/formats/cmf';
-import { INSTRUMENTS, midi, sbi } from './music';
+import { encodeCmf, type CmfEvent } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { INSTRUMENTS, midi, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 
 // ---- patches ------------------------------------------------------------------------------
 

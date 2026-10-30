@@ -1,8 +1,8 @@
 // What the finale's cartoons (FLIs) are built with: a reel of frames over a background, its
 // captions in the Club's lettering, and the big pictures of the cast drawn from their sprites.
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { centered, clubArt, scaleBlit } from '../art/draw';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';

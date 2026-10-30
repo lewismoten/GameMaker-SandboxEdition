@@ -8,9 +8,9 @@
 // A joke clears Rufus's clouds and the wise man's spells, and a stone face hit by one laughs; it
 // takes four to crack each half of Emperor Gravis (200). Felix's Space and Z are a meow: it
 // scares a mouse (150) into dropping its cheese.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
-import { newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { AIR, CHEESE, CROWN, KEY, LAUGHS, MON, SCALES, SEQ, SND, TITLES } from './ids';
 import type { buildMarcusBlocks, buildMonsterBlocks } from './sprites/sprites';
 import { set, mon, corner } from '../../kit/actors';

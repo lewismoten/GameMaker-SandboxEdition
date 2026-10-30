@@ -1,6 +1,6 @@
 // Play test from a level: finding the level that plays a map, and starting a copy there.
 import { describe, expect, it } from 'vitest';
-import { ADVTYPE, emptyScene, newGame } from '../src/formats/game';
+import { ADVTYPE, emptyScene, newGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelForMap, startingAt } from '../src/editor/editors/integrator/startAt';
 
 describe('play test from a level', () => {

@@ -29,7 +29,7 @@
 //   breakdown "Then she pats me..."            102.1 - 110.2  (41-44; "Bravery Badge" 107.2)
 //   last chorus "She's eight, and I'm ashamed" 110.9 - 131.9  (45-54; "the emergency exit sign" held)
 //   outro "So yeah. The date went well."       139.5 - 169.3  (57-69, slowing), then the band out
-import { sbi } from '../../../kit/music';
+import { sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 import { Writer, type Groove } from '../../../kit/song';
 import { DRUM, Fx, boomPatch, detuned, leveled, sweep } from '../../../kit/songFx';
 

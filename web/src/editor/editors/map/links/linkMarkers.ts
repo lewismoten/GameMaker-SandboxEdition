@@ -7,7 +7,7 @@
 import './linkMarkers.css';
 import { h, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
-import type { Game, Point } from '../../../../formats/game';
+import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { addLink, nextScene, setFrom, setTo } from '../../integrator/linkEdits';
 import { waysInto } from '../../integrator/linkSpots';
 import { cellAtPoint, mapMarkers, markerBox, nudge, stackIndex, type Marker } from './markerMath';

@@ -1,6 +1,6 @@
 // Turning a level drawn in text into its two .MAP files (near and far focus share every block
 // number; only the monsters differ), the scene links and where Ray starts.
-import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { LASTMM, MLEN, MWID, newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { TileBook } from '../tiles/book';
 import { ISO, KINDS, PLANES, type Ctx, type Plane } from '../tiles/cells';
 

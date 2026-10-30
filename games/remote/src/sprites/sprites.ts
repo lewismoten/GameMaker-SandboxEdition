@@ -7,7 +7,7 @@
 // socks, floating pennies, the tiny raccoon, the mustard seed in its red sneakers, lint, the
 // third goat, and the furniture of the living room ride. Every sprite is drawn from shapes and
 // given a dark outline.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';

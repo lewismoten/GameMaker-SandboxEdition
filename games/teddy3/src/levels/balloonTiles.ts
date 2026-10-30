@@ -2,7 +2,7 @@
 // Show was planned): striped wallpaper and show posters, the plank floor, shelves of costume
 // boxes stacked up the wall, the prop cabinet, the high loft under the rafters, Juggles
 // practicing up on a shelf, and the back door.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { speckle } from '../art/draw';
 import { Tiles } from './level';
 import { boxFace, c, copy, r, windowOn } from '../blocks/tiles';

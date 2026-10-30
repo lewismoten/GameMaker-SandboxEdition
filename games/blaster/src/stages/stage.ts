@@ -1,8 +1,8 @@
 // What a stage is made of: a palette, its blocks and virus for the two scrolling legs, its
 // boss arena (with its own block and monster sets), and the maps.
-import type { Block } from '../../../../web/src/formats/blocks';
-import type { GameMap } from '../../../../web/src/formats/map';
-import type { Monster } from '../../../../web/src/formats/monster';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BlockSet } from '../art/draw';
 import { addCommon } from '../characters/sharedMonsters';
 import { ARENA_START, STRIP_START, type Grid } from './mapkit';

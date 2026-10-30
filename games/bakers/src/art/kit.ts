@@ -2,7 +2,7 @@
 // kitchen's vermin and hazards, the toy Redcoats, and the twelve ingredients (and the
 // thirteenth). Drawn on 20x20 transparent blocks in the fixed ramps, so they look the same
 // in every room's light.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, micro, outline, over } from './draw';
 import { c } from './pal';
 

@@ -1,9 +1,9 @@
 // Monster sets: a .MBL of 100 monster blocks and a .MON of 64 monsters, built from a list
 // of creature designs. Slots 44..63 are the same in every set: the courier's shots, the
 // loot creatures drop and the sparks (see ids.ts MON), drawn in shared colors.
-import { Pixels } from '../../../kit/pixels';
-import { MONBL, SOLTOP, emptyBlock, type Block } from '../../../../web/src/formats/blocks';
-import { LASTMON, LASTSL, MAXMARCH, emptyMonster, type Monster } from '../../../../web/src/formats/monster';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { MONBL, SOLTOP, emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON, LASTSL, MAXMARCH, emptyMonster, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { CLEAR, Mask, fill, outline, shade, sprite } from '../art/draw';
 import { MBL_SHARED_BASE, MON, MONEY } from '../ids';
 import { drawCreature, type Archetype, type Paint } from '../sprites/creatures';

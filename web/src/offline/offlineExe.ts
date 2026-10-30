@@ -4,7 +4,7 @@
 // says so, with R to remove it again.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, type Ui } from '../retro/text/textUi';
-import { toCp437 } from '../retro/text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineProgress, type OfflineStatus } from './offlineCopy';
 
 const X = 9;

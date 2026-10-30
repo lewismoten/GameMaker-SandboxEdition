@@ -14,7 +14,7 @@ the original source in [`code/GM`](../code/GM). It can:
   pictures; compose Sound Blaster `.CMF` songs by mood, key and speed; record `.VOC`
   samples with the microphone or synthesize them; generate and transform PC speaker
   effects; and record demo `.REC` files by playing. (`src/editor/tools`, encoders in
-  `src/formats`.)
+  `packages/engine/src/formats`.)
 - **Read original projects**: open a game folder, loose files or a `.zip`, including
   pre-3.00 `.gam` files (they are converted the same way the 3.00 integrator did).
 - **Run the original games**: the sample "gameware" from the CD, the shareware games
@@ -262,6 +262,8 @@ area's own README for more detail. In short:
 | `src/*.ts` | Entries (`main.ts`, `play.ts`), the Desk \| DOS \| Web switch (`viewSwitch.ts`), the address (`urlState.ts`), the service worker (`siteWorker.ts`, `offline.ts`), `prefetch.ts`, `theme.ts`, `edition.ts`, `pageToc.ts`, `keepTogether.ts` (THE CHEZ on one line), `seededRandom.ts`, `modernUi.ts` (today's web, loaded only when shown), `devReload.ts` (development only: a reload button instead of a reload), and `firstLoad.test.ts` with `importWalk.ts` (what each page must not load up front). |
 | `scripts` | Vite plugins: serving the CD's games, the build's game pictures, the one-page player, SEO pages. Run by hand: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` (native downloads of catalog games, into `../dist`), `castArt.ts` and `castSprites.ts` (the Cast page's pictures, with the other `cast*.ts` drawings they use), `credits.ts` (the Credits page's package list), `levelSecrets.ts` and `levelViews.ts` (what the Level Maps hide and show), `castHidden.ts` (where the cast's Easter eggs and tin hearts are), `gameMakerArchive.ts` (the magazine's Shareware Shelf), `bbsGifs.ts` (the BBS's pictures) and `dosbox.ts` (`npm run dosbox`). |
 | `test` | Vitest tests, one file per subject, each starting with a line saying what it covers (many newer `*.test.ts` sit beside their source in `src/`). |
+
+The app is an npm workspace; reusable implementation belongs to [`packages/`](../docs/monorepo.md), not `src/`. Run `npm ci` at the repository root to install and build all SDKs.
 
 ## How the site works
 

@@ -3,8 +3,8 @@
 // (where the hero can get to them, and not goals: a link on the cell ends the scene),
 // counters that can run out before the gate that reads them, timed blocks in the way that make
 // the hero wait, and birth blocks that never rest.
-import { BACKBL, BLEN, type Block } from '../../../formats/blocks';
-import { MLEN, MWID } from '../../../formats/map';
+import { BACKBL, BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import { blockUse, topColors, type SceneData } from '../sceneData';
 import { mazes } from './mazeCheck';

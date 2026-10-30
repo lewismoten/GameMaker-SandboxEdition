@@ -1,14 +1,14 @@
 // Drawing helpers for blocks, sprites and screens, and a named block-set builder.
-import { emptyBlock, type Block } from '../../../../web/src/formats/blocks';
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import { Pixels } from '../../../kit/pixels';
-import { textInk } from '../../../kit/textBounds';
-import { shadeAt } from '../../../kit/shading';
-import { CLEAR } from '../../../kit/blit';
-import { textWidth } from '../../../kit/pcText';
-export { textWidth } from '../../../kit/pcText';
-export { CLEAR } from '../../../kit/blit';
-export { shadeAt } from '../../../kit/shading';
+import { emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
+import { shadeAt } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
+import { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+import { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+export { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+export { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+export { shadeAt } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 
 /** A lit ellipsoid (light from the upper left). */
 export function blob(p: Pixels, cx: number, cy: number, rx: number, ry: number, ramp: number[], lo = 0, hi = ramp.length - 1, light = 1): Pixels {

@@ -1,7 +1,7 @@
 // What cast.fli is drawn with (after the sequel's cast.ts): the screens' palette plus the
 // portraits' extra ramps, a polygon fill, a twisted rope leash, a reel whose frames may each
 // bring their own palette (palette cycling), and captions.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { centered, clubArt } from '../art/draw';
 import { buildScreenPalette, type Pal } from '../art/pal';
 

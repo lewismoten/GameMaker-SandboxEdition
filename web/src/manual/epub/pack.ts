@@ -3,7 +3,7 @@
 // spine), the nav document, an EPUB 2 table of contents (toc.ncx) for older readers, the styles,
 // a cover page and the chapters, with every picture inside. Nothing refers outside the file.
 // Written from the EPUB 3.3 specification (W3C); the zip is project/zip.ts.
-import { createZip, type ZipEntry } from '../../project/zip';
+import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import type { EpubBook, EpubChapter } from './book';
 import { EPUB_CSS } from './style';
 import { xmlAttr, xmlText } from './xml';

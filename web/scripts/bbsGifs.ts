@@ -17,7 +17,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readdirSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { encodeGif89 } from '../src/formats/gifProgressive';
+import { encodeGif89 } from '@lewismoten/gamemaker-sandbox-engine/formats/gifProgressive';
 
 const PHOTOS = resolve(__dirname, '../../.for-lewis/images');
 const OUT = resolve(__dirname, '../public/bbs');

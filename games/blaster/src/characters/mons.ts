@@ -1,6 +1,6 @@
 // Monsters by name: their pictures (in the stage's .mbl), powers, paths and what they turn
 // into, built into a 64-monster .mon file.
-import { LASTMON, MAXMARCH, emptyMonster, type March, type Monster } from '../../../../web/src/formats/monster';
+import { LASTMON, MAXMARCH, emptyMonster, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BlockSet, turn90 } from '../art/draw';
 
 /** One leg of a path: move (x, y) blocks at `speed` pixels a tick. */

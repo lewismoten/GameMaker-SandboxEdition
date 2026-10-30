@@ -1,9 +1,9 @@
 // What an import finds: a game folder, a folder of them, zips of games (folders inside,
 // several games, zips in zips), any mix of those, and zips or folders with no game.
 import { describe, expect, it } from 'vitest';
-import { GameReader, groupGames, scanImport, scanSummary, type ScanFile } from './importScan';
-import { createZip } from './zip';
-import { newGame, serializeGame } from '../formats/game';
+import { GameReader, groupGames, scanImport, scanSummary, type ScanFile } from '@lewismoten/gamemaker-sandbox-archives/scan';
+import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 const enc = new TextEncoder();
 const gam = (title: string) => serializeGame(newGame(title));

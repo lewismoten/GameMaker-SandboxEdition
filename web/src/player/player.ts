@@ -1,16 +1,16 @@
 // A self-contained game player: canvas, input and audio around runGame().
 import './player.css';
-import { Machine, GameAborted } from '../engine/machine';
-import type { AudioEngine } from '../audio/engine';
-import { Keyboard } from '../input/keyboard';
-import { runGame, type RunOptions } from '../engine/game';
+import { Machine, GameAborted } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
+import { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
+import { runGame, type RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
 import { TouchControls, wantsTouchControls } from './touch';
 import { screenKeys } from './screenKeys';
 import { exactScale } from './exactScale';
 import { hideIdleCursor } from './cursorHide';
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { icon } from '../editor/shell/homeIcons';
 import { heartHook } from '../tinHearts/tinHearts';
 import { scoreHook } from '../scoreTrophies/hook';

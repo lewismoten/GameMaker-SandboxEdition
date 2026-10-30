@@ -1,6 +1,6 @@
 // Background block art shared by the levels: skies, ground, wood, brick, fences, and the
 // Clown Car that waits at the end of every level.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, gradient, over, shadeAt, speckle } from '../art/draw';
 import { P } from '../art/pal';
 

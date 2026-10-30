@@ -2,8 +2,8 @@
 // star caught in its leaves shakes out its points, pulls free and sails up across the sky to its
 // place, and the whole plant glows (its greens brightened by palette alone) while the mustard
 // seed beams.
-import { Pixels } from '../../../../kit/pixels';
-import { Reel } from '../../../../kit/reel';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { blob, gradient, scaleBlit } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { seed } from '../../sprites/guests';

@@ -8,9 +8,9 @@
 // the reckoning, where a splash of almond milk (power 220, two of them, at his head and his feet)
 // beats the Devil's milkshakes (200) and knocks the Devil (200, both halves) a stage further
 // each time; the Devil's top half, beaten, drops his last straw.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
-import { newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { KEY, MILK_START, MON, ROLLS, SEQ, SND, STRAW, WILL } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 import { set, mon, corner, pace } from '../../kit/actors';

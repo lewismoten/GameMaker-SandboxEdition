@@ -7,7 +7,7 @@ import { Bot, SCAN } from './bot';
 import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
 import { bowdenDrive, galeStreet, jamieStreet, lavaleMall } from './route';
 import { GameSim } from './sim';
-import { TICKS_PER_SECOND } from '../../kit/gameSim';
+import { TICKS_PER_SECOND } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 
 if (align()) throw new Error('snowbound: a multi-block object is out of line (above)');
 

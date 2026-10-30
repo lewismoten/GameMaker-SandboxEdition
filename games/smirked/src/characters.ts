@@ -8,9 +8,9 @@
 // (power 160), which knocks the cardboard helmet off the 11-year-old knight (150). A monster under power 100
 // dies when it touches you (after its picture's effect lands: a sorry to a flattened witch, the
 // helmet, a dollar); 100 and up stays and its picture's effect lands every touch (a sting, Lily's pat).
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { CHARBL } from '../../../web/src/formats/blocks';
-import { MAXMARCH, emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXMARCH, emptyMonster, newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BATTERIES, KEY, MON, MONEY, SEQ, SMIRKS, SND, SORRY, HELMET } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 import { corner } from '../../kit/actors';

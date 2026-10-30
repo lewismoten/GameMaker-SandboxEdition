@@ -6,16 +6,16 @@ import './demo.css';
 import { download, h, modal, toast } from '../editor/core/ui';
 import { GameFiles } from '../project/files';
 import { mountPlayer, type PlayerHandle } from '../player/player';
-import { parseGame, serializeGame } from '../formats/game';
-import { parseRecording } from '../formats/recording';
-import type { Session } from '../engine/scene';
+import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { LiveRecorder, recorderFormat } from './video';
 import { AudioMix } from './audioTap';
 import { DemoAudioEngine, demoAudio, demoAudioPicker, onDemoAudio } from './demoAudio';
 import { attractRecording } from './attractDemo';
 import { ADDED_DEMO_NOTICE, extraDemoForGam, fetchExtraDemo, loadExtraDemos } from './extraDemos';
 import { claimMediaFocus } from './mediaFocus';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 const SKIP_KEY = 'gm-demo-skip-intro';
 

@@ -16,7 +16,7 @@ import { History } from '../../core/history';
 import { drawBlockTo } from '../../core/draw';
 import { paletteChooser } from '../../widgets/paletteChooser';
 import { audio } from '../../widgets/mediaShared';
-import { BACKBL, BLEN, CHARBL, newBlockSet, parseBlocks, serializeBlocks, type Block } from '../../../formats/blocks';
+import { BACKBL, BLEN, CHARBL, newBlockSet, parseBlocks, serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import {
   INF_REPEAT,
   MAXFRAME,
@@ -27,9 +27,9 @@ import {
   serializeCharacter,
   type Frame,
   type Sequence,
-} from '../../../formats/character';
-import { LASTSND, parseSoundSet, SOUND_NAMES } from '../../../formats/sound';
-import { scanName } from '../../../input/scancodes';
+} from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { LASTSND, parseSoundSet, SOUND_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import { viewState } from '../../../urlState';
 import { bottomOrient, firesMonster, insertFrame, normalOrient, topOrient, travel } from './characterLogic';
 import { blockLinks, mirrorPanel, seqLinks, type MirrorContext } from './characterMirrorPanel';

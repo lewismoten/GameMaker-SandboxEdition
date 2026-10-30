@@ -5,8 +5,8 @@
 // animation (two monsters, three sequences) a menu chooses which.
 import { h, clear } from '../../core/ui';
 import { drawBlockTo } from '../../core/draw';
-import { BLEN } from '../../../formats/blocks';
-import type { Palette } from '../../../formats/palette';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { TICK_HZ } from './blockAnim';
 import { clipTicks, isStill, nextChange, stepAt, tickOf, type Clip } from './animClip';
 import './animPlayer.css';

@@ -6,9 +6,9 @@
 import { h } from '../../editor/core/ui';
 import { paintIndexed } from '../../editor/core/draw';
 import { fetchGameFile, loadCatalog, withDetails, type CatalogEntry } from '../../project/files';
-import { BACKBL, BLEN, parseBlocks } from '../../formats/blocks';
-import { MLEN, parseMap } from '../../formats/map';
-import { parsePalette, vga8, type Palette } from '../../formats/palette';
+import { BACKBL, BLEN, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parsePalette, vga8, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 /** A run of palette entries with a name, e.g. [11, 17, 'snow']. */
 type Range = [from: number, to: number, name: string];

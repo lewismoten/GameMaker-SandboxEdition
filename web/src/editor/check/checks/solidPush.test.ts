@@ -3,10 +3,10 @@
 // lift that rises flush with the ceiling, two pacers closing in (and two moving together), and
 // solid monsters that hurt.
 import { describe, expect, it } from 'vitest';
-import { SOLBOT, SOLTOP, newBlockSet, serializeBlocks } from '../../../formats/blocks';
-import { serializeGame } from '../../../formats/game';
-import { parseMap, serializeMap } from '../../../formats/map';
-import { emptyMonster, serializeMonsters } from '../../../formats/monster';
+import { SOLBOT, SOLTOP, newBlockSet, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { emptyMonster, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { scenesOf } from '../sceneData';
 import { testGame } from '../testGame';
 import { edgeRows, solidHurts, squeezes, wallGaps } from './solidPush';

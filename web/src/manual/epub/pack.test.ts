@@ -2,7 +2,7 @@
 // the check catches what a validator would (a compressed mimetype, a missing file, a remote link,
 // XML that isn't well-formed).
 import { describe, expect, it } from 'vitest';
-import { createZip, readZip, type ZipEntry } from '../../project/zip';
+import { createZip, readZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import type { EpubBook } from './book';
 import { checkEpub } from './check';
 import { packEpub } from './pack';

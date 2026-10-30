@@ -12,7 +12,7 @@
 //      chimney that shoots spells (sagax sapiens sagitat sagas), and Titus's tavern on the roof,
 //      whose door takes seven titles.
 import { chezSide } from '../../../kit/chez';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';

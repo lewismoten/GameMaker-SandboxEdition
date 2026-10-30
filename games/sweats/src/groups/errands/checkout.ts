@@ -11,10 +11,10 @@
 // Layout (13 rows: the ceiling on row 0, the store's band on row 2, the linoleum on row 11):
 // the shelves are ledges on rows 8 and 5 (hop up through them), the dairy cooler's top a ledge
 // on row 4.
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, loot, plotThing, spotlight } from '../../common/blocks';
 import { anim, corner, mon, pace, still } from '../../common/characters';

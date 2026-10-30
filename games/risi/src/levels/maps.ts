@@ -14,7 +14,7 @@
 //        golden basin.
 //   VI.  Silentium Ridentium: the theater. Everyone watches, no one laughs: jokes for five stone
 //        faces, then Emperor Gravis himself, and his laurel crown on the altar.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 

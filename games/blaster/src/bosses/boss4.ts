@@ -1,7 +1,7 @@
 // Boss 4: THE HEAD CRASH. The read/write head has gone rogue and dug into the platter right
 // over the way out. Two rings of platter shards orbit in front of it (two snakes on small
 // loops), turrets on its arm sweep the arena and the platter's spin shoves the ship.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, bevel, blob, micro } from '../art/draw';
 import { slicesOf, snake, tint, weakPoint } from './boss';
 import { mite, pics } from '../characters/enemies';

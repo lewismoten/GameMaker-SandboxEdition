@@ -12,7 +12,7 @@
 //      the big clock breaks.
 //   6. The Aux Cord: back in the living room at dusk, in gloom: sage, oils, the mop, the clap,
 //      to the stereo.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/common';
 import { MON } from '../ids';
 

@@ -1,5 +1,5 @@
 // The Dawdle Flats' files and scene: FLATS.BBL, FLATS.MAP, FLATS.MBL, FLATS.MON, driven in CHEZ.CHR.
-import { serializeBlocks } from '../../../../web/src/formats/blocks';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { SpriteSheet } from '../sprites/sheet';
 import { addFx } from '../sprites/fx';
 import { foePics } from '../sprites/foes';

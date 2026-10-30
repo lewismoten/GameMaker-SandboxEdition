@@ -2,7 +2,7 @@
 // folder named by PREVIEW_DIR, 3x size.
 //   PREVIEW_DIR=/tmp/x npx vite-node ../games/logic/tools/preview.ts
 import { join } from 'node:path';
-import { Pixels } from '../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '../../kit/png';
 import { PAL } from '../src/art/pal';
 import { STYLES, buildTiles } from '../src/blocks/tiles';

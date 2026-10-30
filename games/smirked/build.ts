@@ -3,19 +3,19 @@
 //   cd web && npx vite-node ../games/smirked/build.ts
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '../../web/src/formats/blocks';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { MAXSCENELINKS, newGame, emptyScene, serializeGame, ADVTYPE, NOSCENE } from '../../web/src/formats/game';
-import { serializeMap } from '../../web/src/formats/map';
-import { serializeMonsters } from '../../web/src/formats/monster';
-import { serializePalette } from '../../web/src/formats/palette';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
-import { serializeSoundSet } from '../../web/src/formats/sound';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MAXSCENELINKS, newGame, emptyScene, serializeGame, ADVTYPE, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
 import { clipEntries, clipEveryList, fliClips } from '../kit/fliClips';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
-import { Pixels } from '../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gif } from '../snowbound/src/screens/scenery';
 import { renderRegion } from '../snowbound/src/art/render';
 import { buildPalette } from './src/art/pal';

@@ -10,7 +10,7 @@ import { bplist, dsStore } from './dsStore';
 import { codeDirectories, hash } from './macSign';
 import { appName, bundleId, infoPlist, macAppDmg, macAppFiles, macAppZip } from './macApp';
 import { encodeRgbaPng, icns } from './macIcon';
-import { readZip } from '../project/zip';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { udzo } from './udif';
 
 const player = new Uint8Array(readFileSync(resolve(__dirname, '../../public/mac/GameMakerPlayer')));

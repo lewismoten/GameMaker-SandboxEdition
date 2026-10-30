@@ -3,7 +3,7 @@
 // out behind a sliding grille, and its leak slugs hunt the ship around the arena. When the
 // brain bursts, its top half is left as two bare cores still plugging the way out, and its
 // bottom half flickers and becomes two fast shards that hunt the ship.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, bevel, blob, micro, shadeAt } from '../art/draw';
 import { armor, opaque, slicesOf, tint, weakPoint } from './boss';
 import { mite, pics, stalker } from '../characters/enemies';
@@ -15,7 +15,7 @@ import { kit, type Leg } from '../stages/stage';
 import type { BlockSet } from '../art/draw';
 import type { StageArt } from '../blocks/tiles';
 import { POWER } from '../ids';
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 

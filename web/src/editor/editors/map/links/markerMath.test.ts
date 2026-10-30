@@ -1,7 +1,7 @@
 // The map's link markers in numbers (markerMath.ts): which links become markers, where they sit,
 // and the block a drag or an arrow key moves one to.
 import { describe, expect, it } from 'vitest';
-import { ADVTYPE, emptyScene, newGame, type Game } from '../../../../formats/game';
+import { ADVTYPE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { cellAtPoint, mapMarkers, markerBox, MIN_MARK, nudge, stackIndex } from './markerMath';
 
 function game(): Game {

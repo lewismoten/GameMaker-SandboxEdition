@@ -3,7 +3,7 @@
 // character editors, apart from the block editor so the others don't load it.
 import type { Project } from '../core/project';
 import { fileField } from './filePicker';
-import { parsePalette, type Palette } from '../../formats/palette';
+import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 export function paletteChooser(project: Project, file: string, onChange: (p: Palette) => void): { el: HTMLElement; palette: Palette } {
   const found = project.paletteFor(file);

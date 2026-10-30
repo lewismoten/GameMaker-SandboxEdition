@@ -1,7 +1,7 @@
 // The bot's game on a built disk, level after level (each game's tools/play.ts): runs each
 // level's route, prints the bot's log when BOT_LOG is set, and fails unless a whole run wins
 // without losing a life. check.ts, walkthrough.ts and gendemo.ts all play through it.
-import type { GameSim } from './gameSim';
+import type { GameSim } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 
 /** What a run needs of a game's bot: its sim, its log and a way to note a level done. */
 interface LevelBot {

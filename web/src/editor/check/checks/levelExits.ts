@@ -2,9 +2,9 @@
 // links that leads nowhere (the same block where a link is, elsewhere with none), a level with
 // no link out at all, and a level that plays in silence (no song, or a song PLAYGAME refuses
 // because it isn't at the 146 ticks a second it needs, audio/cmfLoad.ts).
-import { parseCmf } from '../../../formats/cmf';
-import { MLEN } from '../../../formats/map';
-import { NOSCENE, type Game } from '../../../formats/game';
+import { parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { NOSCENE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { at, type Finding } from '../findings';
 import { blockUse, type SceneData } from '../sceneData';
 import type { FileSource } from '../sim';

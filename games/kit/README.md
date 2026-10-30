@@ -2,12 +2,14 @@
 
 Helpers for building the original games in `games/<id>/` in code. Each game has a
 `build.ts` that draws its blocks, lays out its maps, composes its music and writes every
-file through the same format code the web app reads (`web/src/formats`), into
+file through the same format code the web app reads (`@lewismoten/gamemaker-sandbox-engine/formats/*`), into
 `games/<id>/disk/`. Run one with:
 
 ```sh
 cd web && npx vite-node ../games/<id>/build.ts
 ```
+
+Generic builders now belong to `web/packages/tools/src/kit/`: `pixels`, `palette`, `pcText`, `blit`, `shading`, `textBounds`, `reel`, `tune`, `sound`, `music`, `sceneSim`, `gameSim` and `clips`. Import them through `@lewismoten/gamemaker-sandbox-tools/kit/<module>` (or the documented aggregate APIs), not relative paths. The descriptions below include those package-owned helpers; game-specific drawing, characters and checks stay here.
 
 Making the files:
 

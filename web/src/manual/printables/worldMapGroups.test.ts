@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ADVTYPE, ENDTYPE, STARTTYPE, emptyLink, emptyScene, newGame, parseGame, type Game } from '../../formats/game';
+import { ADVTYPE, ENDTYPE, STARTTYPE, emptyLink, emptyScene, newGame, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { graphOf } from '../../editor/editors/integrator/layoutCells';
 import { groupScenes, hintProblems, isBlackPalette, placeLabels, placesGame, sceneRefs, sceneLabel } from './worldMapGroups';
 import type { PrintablesFile } from './types';

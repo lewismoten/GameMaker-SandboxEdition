@@ -3,7 +3,7 @@
 // and rest (a next/ntime chain; the spray is a gravity block that blasts Teddy back), street
 // furniture, a maple tree, the kids on the porches (their raised hands are monsters placed
 // on the map beside them) and the mail carrier.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { kid, mailCarrier } from '../sprites/folks';

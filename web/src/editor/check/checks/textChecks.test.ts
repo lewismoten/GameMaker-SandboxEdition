@@ -1,9 +1,9 @@
 // The level check's text-screen checks (helpKeys.ts, textContrast.ts, textScreens.ts) on the tiny
 // game in testGame.ts, given instructions, a menu picture and slide lists.
 import { describe, expect, it } from 'vitest';
-import { textBytes } from '../../../formats/binary';
-import { serializeGame } from '../../../formats/game';
-import { encodeGif } from '../../../formats/gif';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { GameFiles } from '../../../project/files';
 import { testGame, type TestGame } from '../testGame';
 import { textPages } from '../textScreens';

@@ -6,7 +6,7 @@ import type { Project } from '../../core/project';
 import { sceneName } from '../../core/uses';
 import type { Walkthrough } from '../../../walkthrough/format';
 import { playDemo } from '../../../media/demo';
-import { parseRecording } from '../../../formats/recording';
+import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { watchTimeline } from './recTimeline';
 import { toEvents } from './recTimelineModel';
 import { startBotDemo, type RunningDemo } from './botDemoClient';

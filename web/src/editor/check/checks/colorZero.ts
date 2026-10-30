@@ -5,12 +5,12 @@
 // and blue (RGBdata::Match, code/GM/PALC.C). The first level's card, when it is a bare .TXT, is
 // written on a screen cleared with the menu picture's palette up. A color 0 that isn't black
 // becomes all of those screens' background, and the matched red and blue may clash with it.
-import type { Game } from '../../../formats/game';
-import { decodeGif, isGif } from '../../../formats/gif';
-import { parsePalette } from '../../../formats/palette';
-import { sceneFile } from '../../../engine/scene';
-import { playerLook } from '../../../engine/playerLook';
-import type { PlayerPatches } from '../../../dosPlayer/patchRules';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { sceneFile } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import type { Finding } from '../findings';
 import { contrastRatio, luminance } from '../sceneData';
 import type { FileSource } from '../sim';

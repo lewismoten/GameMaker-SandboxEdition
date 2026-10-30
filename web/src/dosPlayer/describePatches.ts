@@ -1,8 +1,8 @@
 // A project's DOS player patches in words, one line each, in plain ASCII: for the DOS export's
 // README ("the .EXE was customized: only these changed", then the files it renamed).
-import { PATCHES, type ColorName, type PatchEntry, type PatchScreen } from './patchTable';
-import { cleanPatches, type PatchValue, type PlayerPatches } from './patchRules';
-import { EXT_KINDS, extensionMap } from './fileExtensions';
+import { PATCHES, type ColorName, type PatchEntry, type PatchScreen } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { cleanPatches, type PatchValue, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import { EXT_KINDS, extensionMap } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 
 export const SCREEN_NAMES: Record<PatchScreen, string> = {
   menu: 'Main menu',

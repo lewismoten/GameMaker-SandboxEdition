@@ -3,8 +3,8 @@
 // bottom block, the function buttons and the placement grid.
 import { type Vga, SIZEX, SIZEY } from '../shared/vga';
 import { BLACK, BLEN, Face, GREEN, GRAY1, GRAY3, GRAY4, RED1, RED2, RED3 } from '../shared/facelift';
-import { CHARBL } from '../../formats/blocks';
-import { type Frame } from '../../formats/character';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { GL, BLLIST, BLX, BLY, BLY1, GT, GRIDLEN, GRIDWID, BX, TX, T1, MX, MY, HX, SX, ENDFR, FUNAR, SHOOTAR, ZERO } from './layout';
 import { CharacterMakerState } from './state';
 

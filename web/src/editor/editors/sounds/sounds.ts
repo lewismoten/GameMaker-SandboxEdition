@@ -4,15 +4,15 @@ import './sounds.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
 import { h, clear, numberField, debounce, toast } from '../../core/ui';
-import { AudioEngine } from '../../../audio/engine';
-import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '../../../formats/sound';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
+import { LASTSND, NUMFREQ, SOUND_NAMES, parseSoundSet, serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { RECIPES, SLOT_RECIPE, TRANSFORMS } from '../../tools/speakerFx';
 import { fileField } from '../../widgets/filePicker';
 import { History } from '../../core/history';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
 import { fitToPane } from '../../core/fitPane';
-import { decodeVoc } from '../../../formats/voc';
+import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { vocToSpeaker } from '../../../audio/vocToSpeaker';
 import { fitChoice, setSlotFit, slotFit } from './speakerFit';
 

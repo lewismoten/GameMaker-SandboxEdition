@@ -1,6 +1,6 @@
 // The bot's way through rigging.ts (the level's own comment says what happens there).
 import type { Order } from '../bot';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { CTR, SCAN } from '../../src/ids';
 import { RIGGING } from '../../src/levels/rigging';
 import { ROWS } from '../../src/levels/riggingTiles';

@@ -5,9 +5,9 @@
 // the tagline types itself out on the boards, and it all fades to black. About four seconds,
 // drawn in code as an Autodesk Animator FLI that carries its own palette.
 import { loadScan, medianCut, resample, ditherTo, type Scan } from './photo';
-import { PaletteBuilder } from './palette';
-import { Pixels } from './pixels';
-import { Reel } from './reel';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { outlined, textWidth } from '../snowbound/src/art/font';
 
 /** The sting's file name on every disk. */

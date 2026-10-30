@@ -2,9 +2,9 @@
 // (solid blocks, pits and the void are out; a gate it holds the lens for is in), rolls it one
 // straight run at a time, and fires at whatever wireframe, jaggy or double gets in its way.
 import { GameSim } from './sim';
-import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
+import { MAXSCENELINKS, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { COUNT_FAR, COUNT_NEAR, MON } from '../src/ids';
-import { INF_REPEAT } from '../../../web/src/formats/character';
+import { INF_REPEAT } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 
 type Pt = { x: number; y: number };
 type Dir = 'up' | 'down' | 'left' | 'right';

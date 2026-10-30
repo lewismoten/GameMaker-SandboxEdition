@@ -2,12 +2,12 @@
 // the first part of Doc Leo's garage (bark the mouse out of the laundry room, high-five the
 // door open, up on the workbench, open the key cabinet and fetch the keys), a happy spin,
 // then Esc.
-import { serializeRecording } from '../../../web/src/formats/recording';
-import { newCharInfo } from '../../../web/src/engine/world';
+import { serializeRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { HEROES } from './heroes';
 import { Recorder, runRoute } from '../tools/bot';
 import { ROUTES } from '../tools/route';
-import { Sim } from '../../kit/sceneSim';
+import { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import type { Level } from './levels/level';
 import { SCAN } from './ids';
 

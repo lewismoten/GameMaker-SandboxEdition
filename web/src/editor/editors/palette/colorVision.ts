@@ -3,7 +3,7 @@
 // severity-1.0 matrices of Machado, Oliveira and Fernandes, "A Physiologically-based Model for
 // Simulation of Color Vision Deficiency", IEEE TVCG 15(6), 2009 (NOTICE.md), applied in linear
 // RGB. Also each view's CIELAB colors, to measure how far apart two colors look (CIE76 ΔE).
-import type { Palette } from '../../../formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { luminance } from '../../check/sceneData';
 
 export type View = 'normal' | 'gray' | 'protan' | 'deutan' | 'tritan';

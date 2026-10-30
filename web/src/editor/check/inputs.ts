@@ -2,8 +2,8 @@
 // run and jump, use a trick, wait) made from what each of the character's keys does
 // (keymap/keyMap.ts characterActions), so the explorer plays any game with the keys it has.
 import { characterActions } from '../keymap/keyMap';
-import { CHARBL, MONBL } from '../../formats/blocks';
-import type { Character } from '../../formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 
 /** One part of a move: hold these keys until `until` says stop (or `max` ticks pass). */
 interface Step {

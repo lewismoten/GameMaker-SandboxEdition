@@ -11,7 +11,7 @@
 // trees, so a sled coming down the side is carried round into the gap. A
 // bank is drawn from the slant's true line, so each of its three phases (a row's place in the
 // three-row step) is its own block, and the shadow and lip run on unbroken from row to row.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../art/pal';
 import { blob, shadeAt } from '../art/draw';
 import { text } from '../art/font';

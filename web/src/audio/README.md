@@ -1,6 +1,6 @@
 # `audio/`: music and sound
 
-Part of the [source map](../README.md).
+Part of the [source map](../README.md). Playback modules (`opl`, `cmfPlayer`, `cmfLoad`, `music.worklet`, `engine`, `context`, `output`) now live in the [engine workspace](../../packages/engine/README.md), under `src/audio/`. CMF composition belongs to the [tools workspace](../../packages/tools/README.md), `src/music/compose.ts`. This folder retains editor-specific tools, presets and integration tests.
 
 `opl.ts` (OPL2 FM emulation), `cmfPlayer.ts` (port of `PlayIt` and the SBFMDRV
 calls; `cmfLoad.ts` reads a song's header as its `load_file` did, CMF 1.0 included, and refuses

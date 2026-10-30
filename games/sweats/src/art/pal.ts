@@ -3,7 +3,7 @@
 // monster sets are drawn in its own), lit for the scene. A scene loads one group's blocks, so
 // two groups can put different ramps at the same palette entries; the common ramps always sit
 // at the same entries, which is what lets every scene share the poet's POET.CBL.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 
 type RGB = [number, number, number];
 /** [name, shades, dark, light, mid?, glows? (keeps its light in every scene)] */

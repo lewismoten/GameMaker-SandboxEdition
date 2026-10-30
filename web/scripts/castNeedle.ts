@@ -4,7 +4,7 @@
 //    trailing out of the eye down to the boards;
 //  - Brother Camel from the front, in Thread the Needle's own colors (needle/disk/city.pal, the
 //    same indexes his side view uses), for when he stops and faces you.
-import { Pixels } from '../../games/kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 const CLEAR = 255;
 

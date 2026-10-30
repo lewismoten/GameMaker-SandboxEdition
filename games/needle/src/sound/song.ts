@@ -17,7 +17,7 @@
 // The tune is the sung line's pitch per word (harmonic salience on the center channel, per
 // eighth note), evened out to the syllables. Each bar below is written as eighth-note onsets
 // ("0:G4 2:E4 ..."): a note lasts until the next one or the bar line.
-import { INSTRUMENTS } from '../../../kit/music';
+import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 import { CELESTA, EPIANO, FLUTE, ORGAN, OUD, REED, VOICE, Writer, ending, slice, vamp, type Part, type Section } from '../../../kit/song';
 
 const BPM = 112;

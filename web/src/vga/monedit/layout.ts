@@ -1,8 +1,8 @@
 // MONEDIT.EXE's screen layout, tables and small helpers (the #defines and arrays at the top
 // of code/GM/MONEDIT.C), shared by the Monster Maker's layers.
 import { BLEN } from '../shared/facelift';
-import { LASTMON, LASTSL, emptyMonster, type Monster } from '../../formats/monster';
-import { MONBL } from '../../formats/blocks';
+import { LASTMON, LASTSL, emptyMonster, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export const BLLEN = 14; // information on location of the graphical list of blocks
 export const BLX = 20;

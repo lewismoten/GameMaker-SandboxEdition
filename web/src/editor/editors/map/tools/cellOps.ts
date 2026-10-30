@@ -1,5 +1,5 @@
 // Map cell helpers for the everyday tools: lines, rectangles, flood fill areas, find and replace.
-import { MLEN, MWID } from '../../../../formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 export interface Cell {
   x: number;

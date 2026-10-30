@@ -16,8 +16,8 @@
 import type { RetroHost } from '../host';
 import { attr, ROWS } from '../text/textScreen';
 import { wrapWords } from '../bbs/fileId';
-import { BACKBL, type Block } from '../../formats/blocks';
-import type { Palette } from '../../formats/palette';
+import { BACKBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import {
   GROUP_LABELS,
   HIGH_SCORE_NAME_MAX,

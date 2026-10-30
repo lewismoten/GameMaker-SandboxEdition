@@ -1,7 +1,7 @@
 // Which file slots of a start or end scene hold its between-scene screens and songs
 // (GAMECLAS.H: a start scene's title, menu, storyline... screens; an end scene's won and
 // lost screens), named for the integrator's side panel and its cards.
-import { sceneKind, type Game } from '../../../formats/game';
+import { sceneKind, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 /** Between-scene screens, by scene kind and slot. */
 const START_SCREENS: [number, string][] = [

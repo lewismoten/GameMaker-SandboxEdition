@@ -2,8 +2,8 @@
 // fundamental, the bright clamped-bar overtone that dies at once, the click of the pin), in a
 // small wooden box (a short echo). It plays "Yankee Doodle" round and round, through the desk
 // speakers' volume knob (audio/output.ts).
-import { output } from '../audio/output';
-import { audioContext, unlock } from '../audio/context';
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
+import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 
 /** Eighth notes as MIDI numbers; 0 holds the note before. In G, up where music boxes sing. */
 const TUNE = [

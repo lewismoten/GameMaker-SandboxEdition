@@ -3,7 +3,7 @@
 // a 1995 evening, the kitchen under its buzzing fluorescent tube, the void between the cushions
 // (everything in it a lost thing, lit purple), and the living room ride's carnival glow. The
 // TV's blue, the VCR's 12:00, the lamps and the pennies keep their own light everywhere.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { type Pal, wrap } from '../../../kit/palRamps';
 export { type Pal } from '../../../kit/palRamps';
 

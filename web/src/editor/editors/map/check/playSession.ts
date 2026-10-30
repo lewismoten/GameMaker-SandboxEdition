@@ -4,8 +4,8 @@
 // grows across sessions in the map's companion section "myHeat"; a take the author keeps is
 // their play of the scene for Make a walkthrough ("myPlays", check/walk/mine.ts).
 import type { Project } from '../../../core/project';
-import type { Game } from '../../../../formats/game';
-import type { World } from '../../../../engine/world';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { SceneTakes, type Take, type TakeRecorder } from '../../../check/walk/takes';
 import { HeatRecorder, MY_HEAT, mergeMine, type MyHeat, type MyHeatSaved } from './myHeat';
 

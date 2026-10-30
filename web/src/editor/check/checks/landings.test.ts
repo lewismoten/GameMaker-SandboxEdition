@@ -2,10 +2,10 @@
 // right up against a wall shoves a hero standing in the gap inside it; a block short, it doesn't.
 // And the sink's fix, which leaves out SOLTOP on a hazard's pictures.
 import { describe, expect, it } from 'vitest';
-import { MONBL, newBlockSet, parseBlocks, serializeBlocks } from '../../../formats/blocks';
-import { serializeGame } from '../../../formats/game';
-import { parseMap, serializeMap } from '../../../formats/map';
-import { emptyMonster, serializeMonsters } from '../../../formats/monster';
+import { MONBL, newBlockSet, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { emptyMonster, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { GameFiles } from '../../../project/files';
 import { Project } from '../../core/project';
 import { fixFor } from '../generators/fixes';

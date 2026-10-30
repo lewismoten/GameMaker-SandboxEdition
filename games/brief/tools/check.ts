@@ -7,7 +7,7 @@
 import { compileAll } from '../src/compile';
 import { sceneIds } from '../src/game';
 import { EGG_BLOCK, SCAN, wingCounter } from '../src/ids';
-import { BACKBL } from '../../../web/src/formats/blocks';
+import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Bot, hazardsOf, windowBox } from './bot';
 import { playThrough } from './play';
 import { CHAPTERS, chapterOf } from '../src/chapters';

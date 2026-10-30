@@ -8,7 +8,7 @@
 // segment's scene is entered. A bot that plays each level on its own writes one segment a
 // level, so scenes it never sees (a dark scene only passed through) cannot put it out of
 // step; a bot that plays the whole game in one go writes a single segment.
-import type { RecordedKey } from '../formats/recording';
+import type { RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 
 export const WALKTHROUGH_FPS = 60;
 

@@ -9,8 +9,8 @@
 // A change applies at once to a demo playing: DemoAudioEngine remembers the song the game
 // asked for, so switching back to the card starts it again.
 import './demoAudio.css';
-import { AudioEngine } from '../audio/engine';
-import type { Session } from '../engine/scene';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 
 export type DemoAudio = 'none' | 'blaster' | 'speaker';
 

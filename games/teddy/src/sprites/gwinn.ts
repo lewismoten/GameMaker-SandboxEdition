@@ -1,7 +1,7 @@
 // Gwinn, Teddy's (younger) big sister: a chocolate-brown pit-lab mix, all muscle, floppy
 // ears, a pink collar, a whip of a tail and a tongue that never goes back in. She is
 // taller than Teddy and fills her whole block. Drawn facing right; she is mirrored when running left.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 

@@ -2,8 +2,8 @@
 // of thirteen bars, one more than anybody can march to; every room plays it its own way
 // (a music box in the Pantry, a hot band in the Bakehouse, a minuet in the Tea Room, a polka
 // in the Brewery, a ticking clock at midnight...), and the title and ending dress it up.
-import { INSTRUMENTS, sbi } from '../../../kit/music';
-import { tune, v, times } from '../../../kit/tune';
+import { INSTRUMENTS, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { tune, v, times } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   G: ['D4', 'G4', 'B4'],

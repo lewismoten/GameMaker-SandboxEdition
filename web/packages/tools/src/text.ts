@@ -1,7 +1,7 @@
 // Indexed text images for native blocks and pictures; CP437 credits are in NOTICE.md.
-import { FONT_CP437 } from '../../../src/gfx/cp437Glyphs';
-import { toCp437, fromCp437 } from '../../../src/retro/text/cp437';
-import { Pixels } from '../../../../games/kit/pixels';
+import { FONT_CP437 } from '@lewismoten/gamemaker-sandbox-engine/gfx/cp437Glyphs';
+import { toCp437, fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
+import { Pixels } from './kit/pixels';
 import { MICRO_GLYPHS } from './microFont';
 
 export { FONT_CP437, toCp437, fromCp437, MICRO_GLYPHS };

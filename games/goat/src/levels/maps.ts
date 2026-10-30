@@ -2,7 +2,7 @@
 // streets (and the census), the wise men's caravan, and the stable, where the line of
 // animals at the manger has an empty place, third from the left.
 // Each map is laid out with fills and ASCII patches; everything outside it is solid.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 

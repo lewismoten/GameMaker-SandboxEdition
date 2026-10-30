@@ -30,7 +30,7 @@
 //     ramps of velocity (ramp()); dramatic pauses are just bars with nothing in them.
 //   - Markers (controller 0x66) at each section: PLAYGAME skips them, and the preview tools
 //     find the sections by them (markers()).
-import { midi } from './music';
+import { midi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 import type { Writer } from './song';
 
 /** Rhythm mode drum channels: bass drum (its own voice, FM channel 6), snare, tom-tom, cymbal, hi-hat. */

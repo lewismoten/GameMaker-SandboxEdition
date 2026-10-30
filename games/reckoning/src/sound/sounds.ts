@@ -6,9 +6,9 @@
 // are cut from the recording (clips.ts), one set a level: what he says on Space and B, what
 // the Devil says when a milkshake hits, and so on. Two VOCs join a noise and a line: the door
 // slam then "IT'S NOT WORTH IT!", and the flush then "...Is there Lactaid in hell?".
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { rng } from '../../../kit/pixels';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { clipSamples, clipVoc, vocOf, CLIPS } from './clips';
 import { lowNoise, gate, env } from '../../../kit/synthParts';

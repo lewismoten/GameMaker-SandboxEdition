@@ -3,7 +3,7 @@
 // clouds; and PARKING.FLI, the CitiCar sets Dex down on the Skyway's deck and flies itself home.
 // The car is THE CHEZ's side view (games/kit/chez.ts through citicarBig), facing left: the
 // passenger side, its door window, the stripes and the charge port at the rear.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { T, oval, shadeAt } from '../art/draw';
 import { C } from '../art/pal';
 import { FLOORS } from '../blocks/floors';

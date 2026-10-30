@@ -1,7 +1,7 @@
 // Which scenes are levels and which links lead into a scene: plain lookups on the parsed game,
 // apart from the playtest (playtest.ts) so the editors' check badges can use them without
 // bringing in the explorer, the simulator and the engine.
-import { ADVTYPE, type Game } from '../../formats/game';
+import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 /** Level scenes: the ones with a map that play can enter. */
 export function levelScenes(game: Game): number[] {

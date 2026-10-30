@@ -13,7 +13,7 @@ import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
 import type { PlayerHandle } from '../../player/player';
-import { ADVTYPE, parseGame, serializeGame, type Game } from '../../formats/game';
+import { ADVTYPE, parseGame, serializeGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelForMap } from '../editors/integrator/startAt';
 import { sceneName, sourceName } from '../editors/integrator/linkSpots';
 import { playButtons } from './playButtons';
@@ -30,7 +30,7 @@ import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
-import type { RunOptions } from '../../engine/game';
+import type { RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 
 const ORDER: FileKind[] = [
   'gam',

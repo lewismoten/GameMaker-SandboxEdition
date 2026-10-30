@@ -5,7 +5,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { GameFiles } from '../../src/project/files';
-import type { PlayerPatches } from '../../src/dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { ToolError } from '../../src/assistant/tools/types';
 import { REPO } from './roots';
 

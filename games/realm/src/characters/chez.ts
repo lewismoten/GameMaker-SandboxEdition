@@ -1,7 +1,7 @@
 // CHEZ.CHR: driving THE CHEZ across the Dawdle Flats. The arrows (or W/A/S/D) drive at a
 // brisk five pixels a tick; Space squeezes the horn, and its "ah-OOO-gah" flies ahead like a
 // kazoo note and clears crabs and gulls out of the road. Hit points are the charge.
-import { DIESEQ, HURTSEQ, newCharacter, type Character } from '../../../../web/src/formats/character';
+import { DIESEQ, HURTSEQ, newCharacter, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MON, SND } from '../ids';
 import type { SpriteSheet } from '../sprites/sheet';
 import { KEY, frames } from './pip';

@@ -1,7 +1,7 @@
 // The points a play scored itself (playGain.ts): F6's loaded points never count again, however
 // many loads, from wherever the save came, and whether it held more points or fewer.
 import { describe, expect, it } from 'vitest';
-import { gainAtEnd, gainAtLoad, newPlayGain } from './playGain';
+import { gainAtEnd, gainAtLoad, newPlayGain } from '@lewismoten/gamemaker-sandbox-engine/engine/playGain';
 
 describe('a play’s own points', () => {
   it('are the whole score when nothing was loaded', () => {

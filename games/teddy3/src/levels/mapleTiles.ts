@@ -3,7 +3,7 @@
 // fences, the sidewalk, the road with its chargers, speed bump, pothole and two hills, and
 // at the top of the second hill, the gate of Puddlewick Park; and the low road, a lane a step
 // down beside the street with a charger in it.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, speckle } from '../art/draw';
 import { Tiles } from './level';
 import { c, cloud, copy, dirt, grassTop, hedge, picket, r, sky } from '../blocks/tiles';

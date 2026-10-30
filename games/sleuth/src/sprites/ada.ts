@@ -1,6 +1,6 @@
 // Inspector Ada Penn, seen from above at a slant: cloche hat, auburn bob, a belted trench
 // coat. One block tall, so she fits every doorway and the gap between two rows of seats.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, art } from '../art/draw';
 import { c, ink } from '../art/pal';
 

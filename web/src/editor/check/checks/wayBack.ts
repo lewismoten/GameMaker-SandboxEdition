@@ -4,10 +4,10 @@
 // least it can into each scene can no longer finish one the ordinary run finished), and steady
 // hands (a run with one key at a time and unhurried changes can't get through a scene the
 // ordinary run got through, and where it stops).
-import { BACKBL } from '../../../formats/blocks';
-import { scanName } from '../../../input/scancodes';
-import { MLEN } from '../../../formats/map';
-import type { CharInfo } from '../../../engine/world';
+import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { at, type Finding } from '../findings';
 import type { Exploration, ExitReach } from '../explore';
 import type { Move } from '../inputs';

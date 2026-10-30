@@ -4,8 +4,8 @@
 // run from a post in the ceiling to one in the floor, hatches open in the terrain's face,
 // drafts shove the ship up or down, and the gate is a glowing wall at the end. Pickups keep
 // their letters upright.
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels } from '../../../kit/pixels';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, micro, text, turn90 } from '../art/draw';
 import { HURT } from '../characters/sharedMonsters';
 import { SEQ } from '../ids';

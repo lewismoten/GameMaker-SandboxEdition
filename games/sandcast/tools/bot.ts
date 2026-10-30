@@ -4,7 +4,7 @@
 // up what lies in sight a few steps off its path, as a player would (never the felt egg; the
 // path keeps off links it was not sent to). What it presses is recorded by the simulator, a
 // key segment for every scene it enters.
-import { SCRNBLEN, SCRNBWID, bgBlock } from '../../../web/src/engine/world';
+import { SCRNBLEN, SCRNBWID, bgBlock } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { BG } from '../src/blocks/bblocks';
 import { MON } from '../src/rules';
 import { GameSim } from './sim';

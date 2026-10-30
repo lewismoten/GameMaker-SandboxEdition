@@ -2,7 +2,7 @@
 // gravel paths and grass, channels of raked sand between low stone walls (where the painted
 // rocks roll), flower beds, the stone cubby Loaf #13 rolled into out of the rain (its door
 // unlatches when every rock is back in its circle), Loaf himself, and the garden gate on.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, shadeAt } from '../art/draw';
 import { c, r } from '../art/pal';
 import { CTR, ROCKS } from '../ids';

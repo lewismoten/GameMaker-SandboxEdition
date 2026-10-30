@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { headlessCanvas, WalkRun } from '../../../web/src/walkthrough/runtime';
 import { WALKTHROUGH_FPS, type Walkthrough } from '../../../web/src/walkthrough/format';
 import { diskFiles } from '../../kit/walkthrough';
-import { Pixels } from '../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '../../kit/png';
 
 const out = process.argv[2] ?? '/tmp/realm-frames';

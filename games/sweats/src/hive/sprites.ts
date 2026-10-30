@@ -1,10 +1,10 @@
 // HIVE.MBL's own sprites (after the common ones): a moviegoer's "SHHH!" rising out of the seats.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { micro } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';
 import { outline, T, type SpriteBook } from '../common/sprites';
 import { anim, corner, mon } from '../common/characters';
-import type { Monster } from '../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { POWER } from '../ids';
 import { HIVE_MON } from './ids';
 

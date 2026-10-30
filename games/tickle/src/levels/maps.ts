@@ -7,7 +7,7 @@
 //   3. The Sewers: "No rats yet, but I will answer when fate makes its demand": the city's wild
 //      rats along the walkways, steam to ride, an alligator in the channel, bats.
 //   4. The Empire: up the storm-struck tower to the balcony, where the laughing carpet will bow.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 

@@ -3,7 +3,7 @@
 // cheeks sunburned pink, painted gray stubble, a purple shirt with a green tie and blue
 // suspenders, a navy corduroy jacket, red sneakers, and a rubber chicken on a dog leash.
 // `wearing` says which costume pieces he has on.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, over, sprite } from '../art/draw';
 import { CK } from './klown';
 import { P } from '../art/pal';

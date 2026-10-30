@@ -6,7 +6,7 @@
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { FLI_CHUNK_MAX } from '../../../formats/fli';
+import { FLI_CHUNK_MAX } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { DESIGN, DOS_BUGS, designLine } from './dosBugs';
 
 const repo = join(__dirname, '../../../../..');

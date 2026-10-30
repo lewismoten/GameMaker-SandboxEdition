@@ -1,17 +1,17 @@
 // The screens between the playfields, drawn as a dial-up BBS session: the title is an
 // ANSI logon screen, the stories are messages in a message base, and the intro FLI dials
 // THE -= S A N D B O X =- BBS and lets the logo arrive line by line, like it did at 2400 baud.
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { Pixels, dither, rng } from '../../../kit/pixels';
+import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { loadScan, pastePhoto, resample } from '../../../kit/photo';
 import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, WATER, WOOD, YELLOW } from '../art/palette';
 import { CLEAR, shade } from '../art/draw';
 import { CB, MB } from '../sprites/sprites';
 import { wattCameo } from '../../../kit/cameos';
-import { textInk } from '../../../kit/textBounds';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 
 const W = 320;
 const H = 200;

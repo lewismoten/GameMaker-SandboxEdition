@@ -13,8 +13,8 @@ import { MENUATTR, SHADATTR, errorBox, vertMenu } from '../retro/text/textUi';
 import { BLACK, BLEN, GREEN, GRAY2, LEFT, NONE, RIGHT } from './shared/facelift';
 import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
 import type { OpenDesigner } from '../retro/host';
-import { LASTMON, LASTSL, serializeMonsters } from '../formats/monster';
-import { MONBL } from '../formats/blocks';
+import { LASTMON, LASTSL, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import {
   BLLEN,
   BLX,

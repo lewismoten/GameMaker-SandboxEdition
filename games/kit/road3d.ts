@@ -5,7 +5,7 @@
 // it comes. The game draws its own pictures; this file has the geometry, the spawner chains,
 // the monsters' paths and the shrinking of a full-size picture into its far-off sizes.
 // The Owner's Guide tells it ("A road that comes at you", "An end to a road that never ends").
-import { Pixels } from './pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 /** The road in perspective: half its width on each screen row, and where its lanes and lines run. */
 export interface RoadView {

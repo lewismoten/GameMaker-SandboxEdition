@@ -3,9 +3,9 @@
 // angels and the shepherds, the goat nobody painted), the level cards, how to get past a
 // fainting cousin, fainting yourself, and the endings. Each reel opens on black and fades
 // in and out by palette (kit/reel.ts), and only what moves is stored in each frame.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
-import { Reel } from '../../../kit/reel';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { blob } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';

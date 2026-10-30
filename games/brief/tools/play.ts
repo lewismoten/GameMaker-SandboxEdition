@@ -11,7 +11,7 @@ import { sceneIds } from '../src/game';
 import { CHAPTERS } from '../src/chapters';
 import { Bot, hazardsOf, windowBox, wordCells } from './bot';
 import { keepToPaths, readWalkPaths } from '../../kit/walkPaths';
-import { MLEN } from '../../../web/src/formats/map';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 export async function playThrough(only?: string, verbose = true) {
   const { game, hub, wings, chr, cb } = compileAll();

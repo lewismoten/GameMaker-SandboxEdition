@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { decodePartialJpeg, isJpeg } from '../src/formats/jpeg';
+import { decodePartialJpeg, isJpeg } from '@lewismoten/gamemaker-sandbox-engine/formats/jpeg';
 
 const sample = (name: string) => new Uint8Array(readFileSync(resolve(__dirname, '../public/bbs', name)));
 const count = (a: Uint8Array) => a.reduce((n, v) => n + v, 0);

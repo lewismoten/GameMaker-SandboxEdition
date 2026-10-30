@@ -3,7 +3,7 @@
 // underfoot, the upper one's overhead, the spindle motor's housing beyond them. The air the
 // platters drag round streaks past in a ring of pictures, faster than the screen scrolls, so
 // the gap looks as fast as it is. Read/write arms seek in and out across the gap.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, flipX, flipY, micro, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { HURT } from '../characters/sharedMonsters';

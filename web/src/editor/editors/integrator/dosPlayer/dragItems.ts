@@ -2,8 +2,8 @@
 // frames as boxes in the player's 320 x 200 pixels, the patches each one's x and y come from,
 // and the math of a drag: canvas pixels to screen pixels, which item a press lands on, and a
 // move clamped so every patch it touches stays in its own range (patchTable.ts, patchRules.ts).
-import { patchEntry, frameLimit, type PatchValue } from '../../../../dosPlayer/patchRules';
-import type { PlayerLook } from '../../../../engine/playerLook';
+import { patchEntry, frameLimit, type PatchValue } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import type { PlayerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import type { PreviewScreen } from './playerPreview';
 
 /** x, y, width, height in screen pixels. */

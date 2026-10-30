@@ -1,9 +1,9 @@
 // The soundtrack: ten short FM songs for the Sound Blaster. "Teddy's Theme" runs through
 // most of them (bouncy on the title, sleepy for the story, a full circus march at the
 // Clown Club). Each voice is its own OPL2 channel; chords spread across three channels.
-import { INSTRUMENTS, sbi } from '../../../kit/music';
+import { INSTRUMENTS, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 import { THEME_A, THEME_B } from '../../../kit/teddyTheme';
-import { tune, v, join, times } from '../../../kit/tune';
+import { tune, v, join, times } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   C: ['E4', 'G4', 'C5'],

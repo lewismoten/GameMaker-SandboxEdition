@@ -5,7 +5,7 @@ import { mountPlayer } from '../player/player';
 import { GameFiles } from '../project/files';
 import { decodeGame, fromBase64, GAME_ELEMENT_ID, toBase64, type SinglePageGame } from './singlePage';
 import { CREDIT } from './pageSeo';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import './credit.css';
 
 const root = document.querySelector<HTMLElement>('#player')!;

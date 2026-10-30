@@ -11,9 +11,9 @@
 // sign (a flying shooter) may use the board alone. about.json "saveSign" records where it is:
 // { "map": "s2b.map", "at": [x, y], "after": <the egg's map> } (the board's left block);
 // saveSignCheck.ts checks it. A game whose block set is full uses putSaveSign.
-import { Pixels } from './pixels';
-import { emptyBlock, type Block } from '../../web/src/formats/blocks';
-import { MLEN, type GameMap } from '../../web/src/formats/map';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 /** The sign's colors, 8-bit RGB. */
 const RGB = {

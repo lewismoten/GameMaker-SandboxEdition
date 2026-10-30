@@ -1,8 +1,8 @@
 // A path-finding bot for play-testing the levels in the simulator: it walks to targets
 // along the cheapest paths (keeping to the sidewalks when given them), opens doors when it has
 // the counters for them, zaps robots in its way, and reports what it could not reach.
-import { MLEN } from '../../../web/src/formats/map';
-import { INF_REPEAT } from '../../../web/src/formats/character';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { INF_REPEAT } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import type { Sim } from './sim';
 import { MON, SEQ } from '../src/ids';
 import { OFF_PATH_COST } from '../../kit/walkPaths';

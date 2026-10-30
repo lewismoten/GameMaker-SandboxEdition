@@ -1,6 +1,6 @@
 // blaster.gam: the title scene, the ending, and every leg of every stage in order, each
 // one's gate linked to the launch pad of the next.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { legLetter, startOf, type Leg, type Stage } from './stages/stage';
 
 const TITLE = 'VIRUS BLASTER';

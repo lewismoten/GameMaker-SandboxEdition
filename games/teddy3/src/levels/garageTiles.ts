@@ -3,7 +3,7 @@
 // a pegboard of tools, the workbench with the key cabinet, shelves up to a loft, the mower and
 // a bicycle, boxes), the roll-up garage door with its warning light, and outside on the
 // driveway, THE CHEZ at its charger with Doc Leo.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, speckle } from '../art/draw';
 import { Tiles } from './level';
 import { boxFace, c, cloud, copy, dirt, grassTop, hedge, r, sky, tuft, windowOn } from '../blocks/tiles';

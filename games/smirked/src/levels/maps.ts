@@ -11,7 +11,7 @@
 //      Lily pats you. Twelve dollars buy the souvenir sword at the gift shop's register.
 //   4. The Emergency Exit Sign: the last hall. An 11-year-old in a cardboard knight costume; your
 //      $12 foam sword knocks his helmet off, and the emergency exit opens for it.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 

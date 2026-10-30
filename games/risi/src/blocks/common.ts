@@ -1,7 +1,7 @@
 // What every block set of VENI, VIDI, RISI! shares: the block book (a block's number is the order
 // it was added), the attributes' names, and the little things drawn in every set (the pickups:
 // grapes, a cup of wine and water, a silver denarius, a laurel wreath; marble, a column).
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import type { Pal } from '../art/pal';

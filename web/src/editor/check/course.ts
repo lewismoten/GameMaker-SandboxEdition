@@ -8,7 +8,7 @@
 // sled run three down the map and two across. A lap racer or a planet comes back to its own
 // blocks; a ship that only cuts across one corner of a wrapping starfield crosses each edge once.
 // No DOM.
-import { MLEN, MWID } from '../../formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 /** The course as the hero rode it: unwrapped blocks, start to end, straightened to within a block (Douglas-Peucker). */
 export type CoursePath = [number, number][];

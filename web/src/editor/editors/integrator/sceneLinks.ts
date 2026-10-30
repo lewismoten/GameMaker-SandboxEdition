@@ -4,8 +4,8 @@
 // picked on the map. integrator.ts shows it under the scene's files.
 import { h, numberField, selectField } from '../../core/ui';
 import type { Project } from '../../core/project';
-import { MAXSCENELINKS, NOSCENE, type Game, type Point, type Scene } from '../../../formats/game';
-import { MLEN, MWID } from '../../../formats/map';
+import { MAXSCENELINKS, NOSCENE, type Game, type Point, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { pickOnMap } from './pickOnMap';
 
 /** What the links panel needs from the integrator. */

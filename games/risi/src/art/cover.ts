@@ -5,7 +5,7 @@
 // marble from value noise), then reduced to one 256-color palette for the FLI (cartoons.ts).
 // `t` (0..1) animates it: a sunbeam sweeps the floor, laurel leaves drift down, doves cross the
 // sky, and the bust, stone-faced at first, cracks up: its eyes close and its mouth falls open.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { smooth, noise2 } from '../../../kit/coverPaint';
 
 const COVER_W = 320;

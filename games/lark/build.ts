@@ -2,14 +2,14 @@
 //   cd web && npx vite-node ../games/lark/build.ts
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '../../web/src/formats/blocks';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { parseSlideList } from '../../web/src/formats/graphicScripts';
-import { serializeGame } from '../../web/src/formats/game';
-import { serializeMap } from '../../web/src/formats/map';
-import { serializeMonsters } from '../../web/src/formats/monster';
-import { serializePalette } from '../../web/src/formats/palette';
-import { serializeSoundSet } from '../../web/src/formats/sound';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { Disk } from '../kit/disk';
 import { clipEveryList } from '../kit/fliClips';
 import { licenseText } from '../kit/license';

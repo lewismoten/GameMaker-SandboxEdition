@@ -5,7 +5,7 @@ import { h, modal } from '../../core/ui';
 import { OPL_PRESETS, PRESET_GROUPS, findPreset } from '../../../audio/oplPresets';
 import { DRUM_SLOTS, slotOfChannel } from '../../../audio/oplDrumPresets';
 import type { OplPreset } from '../../../audio/oplPatch';
-import { programChanges, setStartProgram, startProgram } from '../../../formats/cmfEdit';
+import { programChanges, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import type { MusicDoc } from './doc';
 
 interface PickFor {

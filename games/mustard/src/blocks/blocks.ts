@@ -7,7 +7,7 @@
 //   - raindrops and groundwater are water, glimmers are faith; boulders take a faith each to
 //     move, and the sidewalk's crack only opens for five drops of water;
 //   - clouds give birth to raindrops, loose scree to rolling pebbles.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';

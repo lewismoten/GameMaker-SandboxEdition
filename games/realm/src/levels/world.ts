@@ -5,7 +5,7 @@
 // on block corners (art/corners.ts) with straight, 45-degree and curved edges only.
 import { CornerMap, N } from '../art/corners';
 import { cellHash } from './ground';
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 type Pt = [number, number];
 

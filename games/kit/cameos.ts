@@ -11,7 +11,7 @@
 // `use` limits the colors a cameo may take (say, a game's sprite colors only). Every picture
 // is 20x20 on CLEAR (255). Carl the fly has his own helper (carlCameo.ts), the tin heart and
 // the Easter egg theirs (tinHeart.ts, easterEgg.ts), drawn straight in the host's ramps.
-import { Pixels } from './pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { joe } from '../brief/src/sprites/joe';
 import { PAL as BRIEF } from '../brief/src/art/pal';
 import { watt, type View } from '../logic/src/sprites/sprites';

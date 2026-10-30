@@ -5,7 +5,7 @@
 // then started at that scene as the play test starts it. After each scene it gets through it
 // sends the walkthrough so far, which is kept if it is stopped in the next (walkClient.ts).
 import { GameFiles } from '../../../project/files';
-import { parseGame, serializeGame } from '../../../formats/game';
+import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { startingAt } from '../../editors/integrator/startAt';
 import { autoWalk, type AutoWalk, type Reused } from './autoWalk';
 import { verifyWalk, type Verified } from './verify';

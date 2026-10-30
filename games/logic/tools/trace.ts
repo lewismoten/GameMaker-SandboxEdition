@@ -1,6 +1,6 @@
 // Design aid: plays a few moves (M=UUL...) on board B (its file name) and prints what the parts are doing.
 //   cd web && B=<board file> M=<moves> npx vite-node ../games/logic/tools/trace.ts
-import { newCharInfo } from '../../../web/src/engine/world';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { BOARDS } from '../src/levels/boards';
 import { compileHouse } from '../src/levels/board';
 import { isWire } from '../src/characters/mons';

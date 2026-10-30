@@ -2,7 +2,7 @@
 // intermission (out on the avenue, in through the castle door, a coffee, up to the stage), the
 // first set's monologues, the next intermission, and so on; the last intermission's curtain is
 // the bow.
-import type { Monster } from '../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Lighting, Ramp } from './art/pal';
 import type { BlockBook } from './common/blocks';
 import type { MapBuilder } from './levels/maps';

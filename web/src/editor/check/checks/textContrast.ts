@@ -3,9 +3,9 @@
 // against the picture under each letter; and the menu's words (blue, or the project's DOS player
 // patches' color, words and places, engine/playerLook.ts) against the menu picture.
 // It measures with the WCAG contrast ratio (sceneData.ts), letter by letter.
-import type { Game } from '../../../formats/game';
-import { playerLook, type PlayerLook } from '../../../engine/playerLook';
-import type { PlayerPatches } from '../../../dosPlayer/patchRules';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { playerLook, type PlayerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import type { Finding } from '../findings';
 import { contrastRatio, luminance } from '../sceneData';
 import type { FileSource } from '../sim';

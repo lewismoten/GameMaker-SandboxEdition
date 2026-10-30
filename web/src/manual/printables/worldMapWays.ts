@@ -3,7 +3,7 @@
 // lane between worlds, a copper trace on a circuit board, a pen line on a draftsman's grid.
 // A way both ways is dotted (or plain), one way is dashed with an arrowhead. Lines come from
 // worldMapRoute.ts as straight runs; their corners are rounded (cut square on a board).
-import type { Point } from '../../formats/game';
+import type { Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { el } from './worldMapArt';
 import { INK } from './worldMapTerrain';
 import type { ThemeId } from './worldMapThemes';

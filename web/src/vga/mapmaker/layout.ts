@@ -2,7 +2,7 @@
 // of code/GM/MAPMAKER.C), shared by the Map Maker's layers.
 import { type RGBdata } from '../shared/vga';
 import { BLEN } from '../shared/facelift';
-import { emptyBlock, type Block } from '../../formats/blocks';
+import { emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export const BACKBLK = 0; // Background block number
 export const LMLEN = 8;

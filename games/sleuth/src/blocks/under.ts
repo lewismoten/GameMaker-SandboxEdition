@@ -1,5 +1,5 @@
 // Under the stage: black until the lantern has been there.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { pool } from '../art/draw';
 import { c, ramp as r } from '../art/pal';
 import { CTR } from '../ids';

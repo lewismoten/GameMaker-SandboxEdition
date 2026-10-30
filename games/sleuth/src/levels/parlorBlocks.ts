@@ -4,7 +4,7 @@
 // Ada's pocket), the stage at dawn, and the blocks that keep score of the accusation: a
 // wrong answer passes over a block that owes a strike and costs 500, the Commissioner's
 // block collects it (and the right answer passes over one worth 5000).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from '../blocks/blockset';
 import { CLEAR, blob, microC, microWidth, pool, speckle } from '../art/draw';
 import { P, c, ramp as r } from '../art/pal';

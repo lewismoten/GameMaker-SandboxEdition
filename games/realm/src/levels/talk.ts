@@ -4,10 +4,10 @@
 // talk just ends and the town comes back. The block Pip starts on in PASS.MAP is touched on
 // that one tick, so a conversation can also give something: the King's writ, a found dog, a
 // reward, kazoo lessons. (Final Curtain's answers and Snowbound's pines work the same way.)
-import { newMap, serializeMap } from '../../../../web/src/formats/map';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { serializeBlocks } from '../../../../web/src/formats/blocks';
-import { serializePalette } from '../../../../web/src/formats/palette';
+import { newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { BlockBook, type Attrs } from '../blocks/book';
 import { Canvas } from '../art/rgb';
 import { C, SEQ } from '../ids';

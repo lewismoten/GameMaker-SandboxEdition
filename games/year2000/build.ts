@@ -2,15 +2,15 @@
 //   cd web && npx vite-node ../games/year2000/build.ts
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '../../web/src/formats/blocks';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Link } from '../../web/src/formats/game';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
-import { serializeMap } from '../../web/src/formats/map';
-import { serializeMonsters } from '../../web/src/formats/monster';
-import { serializePalette } from '../../web/src/formats/palette';
-import { serializeSoundSet } from '../../web/src/formats/sound';
-import { serializeGame } from '../../web/src/formats/game';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { Disk } from '../kit/disk';
 import { clipLists } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';

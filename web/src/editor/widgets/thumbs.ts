@@ -5,18 +5,18 @@
 import { kindOf, type FileKind } from '../core/project';
 import { paintIndexed } from '../core/draw';
 import { drawWave } from './waveform';
-import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks, type Block } from '../../formats/blocks';
-import { parsePalette, defaultPalette, type Palette } from '../../formats/palette';
-import { parseMap, MLEN, MWID } from '../../formats/map';
-import { parseMonsters } from '../../formats/monster';
-import { parseCharacter } from '../../formats/character';
-import { decodeGif, isGif } from '../../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../formats/fli';
-import { parseSoundSet } from '../../formats/sound';
-import { decodeVoc, isVoc } from '../../formats/voc';
-import { isCmf, parseCmf } from '../../formats/cmf';
-import { parseGame } from '../../formats/game';
-import { parseBackdrop } from '../../formats/graphicScripts';
+import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parsePalette, defaultPalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
+import { isCmf, parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../project/files';
 
 /** Everything a thumbnail may need: the file and its neighbors (for palettes and blocks). */

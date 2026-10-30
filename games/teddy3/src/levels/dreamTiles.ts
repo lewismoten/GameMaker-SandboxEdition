@@ -12,7 +12,7 @@
 // hole into the end of the dream (the scene's link). The two cells off the right edge that
 // give birth to what comes along the path are chains of look-alikes, one block for each thing
 // (dream.ts lays out the map and the timetable).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, cloud, copy, picket, r, sky } from '../blocks/tiles';

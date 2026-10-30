@@ -2,13 +2,13 @@
 // site) and the "<name> PRESENTS" card, drawn here with the Scene maker's renderer
 // in the sting's colors: the name in gold over a navy sky with the icon's faint block grid,
 // fitted inside 320x200 the Scene maker's way (wrapped, then smaller).
-import { encodeGif } from '../../../formats/gif';
-import type { Palette } from '../../../formats/palette';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { SCENE_H, SCENE_W, emptyScene, textItem, type Scene, type TextItem } from '../../editors/animation/scene/sceneModel';
 import { fitText, textSize } from '../../editors/animation/scene/sceneText';
 import { renderFrame, renderScene, sceneFli } from '../../editors/animation/scene/sceneRender';
 import type { SceneAssets } from '../../editors/animation/scene/sceneAssets';
-import type { Scene as GameScene } from '../../../formats/game';
+import type { Scene as GameScene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { PRESENTS_STEM, STILL_SECONDS, addOpening, removeOpening, type OpeningCard, type OpeningProject } from './openingWire';
 import { fetchIntro, introOf, type OpeningStyle } from './openingIntros';
 

@@ -2,7 +2,7 @@
 // blaze, his two big ears up and matching), Gwinn (chocolate brown, amber eyes, a pink collar),
 // the Bard of Bizarre (a feathered hat, a lute, and his rooster in spectacles on his shoulder) and
 // the third goat from the left (gray and white, curled horns, a beard, ears out).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
 

@@ -3,7 +3,7 @@
 // curved arrows for the links between scenes (one per pair, with a count). Used for the
 // live board and for Export PNG.
 import type { Project } from '../../core/project';
-import { NOSCENE, sceneKind, type Game, type Point } from '../../../formats/game';
+import { NOSCENE, sceneKind, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { WORLD, CARD_UNITS, arrival } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
 

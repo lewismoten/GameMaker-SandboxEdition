@@ -2,10 +2,10 @@
 // striped wallpaper, the baseboard row the poet walks along, the oak floorboards, the plaster
 // ceiling with its crown molding, the window (the moon and the snow at night), and the pick-ups
 // over them. Each monologue adds its own rooms and set pieces.
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../../snowbound/src/art/draw';
 import type { Pal, Ramp } from '../../art/pal';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, loot, spotlight } from '../../common/blocks';
 import { addPicture } from '../../common/picture';
 import { anim, mon } from '../../common/characters';

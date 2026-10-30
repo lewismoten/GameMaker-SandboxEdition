@@ -2,9 +2,9 @@
 // through it (cropped to what the player sees, and unrolled past an edge it wraps over: see
 // editor/check/unroll.ts), the Level Maps' marks for where you arrive and the ways out, its caption
 // and a key. The map editor's "As players see it" picture (editor/editors/map/mapPoster.ts).
-import type { Game } from '../../formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { GameFiles } from '../../project/files';
-import { BLEN } from '../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { el, SERIF } from './worldMapArt';
 import type { Level } from './levelMapLayout';
 import { captionSvg, COLORS, labelRoom, levelCanvas, levelSvg } from './levelMaps';

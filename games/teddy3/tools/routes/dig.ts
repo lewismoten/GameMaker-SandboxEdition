@@ -1,7 +1,7 @@
 // The bot's way through dig.ts (the level's own comment says what happens there): down the
 // left way (soft dirt and roots). Its landing in the first tunnel is clear of the mole.
 import type { Order } from '../bot';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { at } from './helpers';
 import { CTR } from '../../src/ids';
 import { DIG, ROW } from '../../src/levels/dig';

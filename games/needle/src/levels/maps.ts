@@ -8,7 +8,7 @@
 //      to climb, pins, scissors, the sewing machine, needles to crawl through.
 //   4. The Eye of the Needle: up the great golden needle in the night, past a rolling thimble,
 //      and through its eye while it is open (it blinks).
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/common';
 import { MON } from '../ids';
 

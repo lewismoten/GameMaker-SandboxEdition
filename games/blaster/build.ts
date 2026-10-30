@@ -3,13 +3,13 @@
 // BLASTER_START=<leg file, e.g. s1c> starts a play-test build on that leg.
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '../../web/src/formats/blocks';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { serializeMap } from '../../web/src/formats/map';
-import { serializeMonsters } from '../../web/src/formats/monster';
-import { serializePalette } from '../../web/src/formats/palette';
-import { serializeSoundSet } from '../../web/src/formats/sound';
-import { serializeGame } from '../../web/src/formats/game';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { Disk } from '../kit/disk';
 import { buildPalette } from './src/art/pal';
 import { buildBusShip, buildDiagShip, buildDownShip, buildLeftShip, buildShip, buildSideShip, shipBlocks } from './src/characters/ship';
@@ -22,7 +22,7 @@ import { buildScreens } from './src/screens/screens';
 import { demoRecording } from './src/demo';
 import { licenseText } from '../kit/license';
 import { clipEveryList } from '../kit/fliClips';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));

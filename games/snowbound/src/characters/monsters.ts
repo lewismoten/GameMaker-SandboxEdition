@@ -7,7 +7,7 @@
 // dies it is reborn as its newmon, which chains effects: a snowball dies into a poof, Biscuit
 // into a running-away dog. 'end' is a lifetime in ticks (or -1: die at the end of the march
 // path), and 'towards' makes a monster chase (1..63), flee (negative) or wander (64+).
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../../web/src/formats/monster';
+import { emptyMonster, newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { MON } from '../ids';
 import { buildMonsterBlocks } from '../sprites/monsterBlocks';
 import { corner } from '../../../kit/actors';

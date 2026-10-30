@@ -3,9 +3,9 @@
 import { errorBox } from '../../retro/text/textUi';
 import { SIZEX, SIZEY } from '../shared/vga';
 import { BLEN, GRAY2, GRAY3, GRAY4, LEFT, NONE, RED1, RIGHT } from '../shared/facelift';
-import { BACKBL, CHARBL, MONBL, emptyBlock } from '../../formats/blocks';
-import { type Frame } from '../../formats/character';
-import { LASTMON, parseMonsters } from '../../formats/monster';
+import { BACKBL, CHARBL, MONBL, emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { LASTMON, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { INVX, INVY, INVX1, INVY1, SELX, SELY, MOLEN, MOX, MOY2, TBOX, TBOXY, MX3, MY3, MX4, MY4, ENDFR } from './layout';
 import { SequenceEditor } from './sequence';
 

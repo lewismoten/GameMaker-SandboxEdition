@@ -1,10 +1,10 @@
 // Catalog and site loading for game files; the portable file container lives in gameFiles.ts.
-import { GameFiles, cdName, IGNORED_FILE } from './gameFiles';
-export { GameFiles, cdName, normalize, IGNORED_FILE, type FileStream } from './gameFiles';
+import { GameFiles, cdName, IGNORED_FILE } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
+export { GameFiles, cdName, normalize, IGNORED_FILE, type FileStream } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 
 import type { OriginalExtras } from '../../scripts/cdGames';
 import { withSecretGames } from './secretGames';
-import { PackReader } from './gamePack';
+import { PackReader } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import type { Issue } from './health';
 import type { BoxGame } from '../desk/boxes/boxFacts';
 

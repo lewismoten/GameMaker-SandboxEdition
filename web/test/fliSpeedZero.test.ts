@@ -1,9 +1,9 @@
 // Tests: FLI playback between scenes (engine/showGraphic.ts playFli) waits the header's speed in
 // retraces after each frame, and none for speed 0, as FLI::View did (code/Image/FLI/FLI.CPP).
 import { describe, expect, it } from 'vitest';
-import { playFli } from '../src/engine/showGraphic';
-import { encodeFli } from '../src/formats/fli';
-import type { Machine } from '../src/engine/machine';
+import { playFli } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import type { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
 
 function fakeMachine(bytes: Uint8Array) {
   let frames = 0;

@@ -2,7 +2,7 @@
 // reading glasses he does not need, a red bow tie, and a brass tally counter where a heart would
 // go. Seen from above for the library and the road (down, up, side), and from the side for the
 // clock tower (standing, a step, a hop with his arms up).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
 

@@ -2,9 +2,9 @@
 // of the 100 x 100 map a level really uses and the part of it the player sees (levelViews.ts), the ground drawn over the blocks that must stay
 // hidden (levelSecrets.ts), the marks for where you arrive and the ways out, and how the maps
 // pack onto printed pages. No DOM, so it is tested on the real disks.
-import { BACKBL, parseBlocks, type Block } from '../../formats/blocks';
-import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '../../formats/game';
-import { MLEN, MWID, parseMap } from '../../formats/map';
+import { BACKBL, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Rect } from './worldMapLayout';
 import type { SeenRect, StoodColumns, UnrolledMap } from './levelViews';
 import { layOutCourse, type CourseFit, type CourseLayout } from './levelCourse';

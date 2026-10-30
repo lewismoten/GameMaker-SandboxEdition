@@ -1,6 +1,6 @@
 # `engine/`: the game engine
 
-Part of the [source map](../README.md).
+Integration tests remain here. The implementation now belongs to the [engine workspace](../../packages/engine/README.md), under `src/engine/`. Part of the [source map](../README.md).
 
 The game engine, a TypeScript port of `PLAYGAME.C`: `game.ts` (`DoGame`),
 `scene.ts` (`playscene`), `character.ts`, `monsters.ts`, `scroll.ts`, `world.ts`, `touch.ts`,
@@ -13,6 +13,4 @@ positions, times, F-keys) from a project's DOS player patches (`RunOptions.playe
 player's with none; the menu, high-score, status, drop and load/save screens draw through
 `drawMenu`, `drawHighScores`, `drawStatus`… so the editor's previews use the same code.
 
-`package.ts` is the public entry for the npm package in `web/packages/engine/`. Its build
-uses this source directly, including the audio worklet. `project/gameFiles.ts` contains
-the portable game directory; the site's catalog remains in `project/files.ts`.
+The package's `src/index.ts` is the public entry. Its `src/core/gameFiles.ts` owns the portable game directory; the site's catalog remains in `web/src/project/files.ts`.

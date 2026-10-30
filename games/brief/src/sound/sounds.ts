@@ -1,8 +1,8 @@
 // joe.snd: PC speaker effects, with digitized .VOC samples for a Sound Blaster from the
 // kit's little synthesizer: a page flutter for a word, a librarian's "shhh", a bubble pop,
 // the Word Counter's bell when a story is shelved, and the clunk of a stamp gate.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 
 function band(v: Synth, lo: number, hi: number): Synth {

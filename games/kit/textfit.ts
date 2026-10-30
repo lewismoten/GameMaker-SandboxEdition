@@ -13,12 +13,12 @@
 // save screens list ten names at x 80, y 40 + 14i, with the marker at x 60 and messages at y 185.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { decodeGif, isGif } from '../../web/src/formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../web/src/formats/fli';
-import { parseBackdrop, parseSlideList, textLines } from '../../web/src/formats/graphicScripts';
-import { parseGame, type Game } from '../../web/src/formats/game';
-import { matchColor, parsePalette } from '../../web/src/formats/palette';
-import { FONT8X8 } from '../../web/src/gfx/font8x8';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { matchColor, parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 
 export const W = 320;
 export const H = 200;

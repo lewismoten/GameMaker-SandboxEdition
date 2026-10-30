@@ -2,7 +2,7 @@
 // folders on any web host (web-player.html, built by scripts/hostedPlayerBuild.ts), alone or
 // in a zip ready to unpack onto a host: the page as index.html, a games.json listing this
 // game, and the game's folder with its files under their DOS names (as exportDos.ts writes them).
-import { createZip, type ZipEntry } from '../project/zip';
+import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import type { GameFiles } from '../project/files';
 import { REPO_URL } from '../seo/site';
 import { dosNames, WEB_ONLY } from './exportDos';

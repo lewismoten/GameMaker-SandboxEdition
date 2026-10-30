@@ -3,8 +3,8 @@
 // (solid on top only); the comb's teeth, which spring down and up by turns (each warns first); the
 // notes knocked off the cylinder, to put back; and the crank's socket, which turns once all of
 // them are back.
-import { SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, shadeAt } from '../art/draw';
 import { c, r } from '../art/pal';
 import { CTR, NOTES } from '../ids';

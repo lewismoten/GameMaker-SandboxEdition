@@ -1,6 +1,6 @@
 // Drawing the Integrator's world: scenes as small boxes colored by kind, the links between
 // them (drawn and erased with XOR, as GRATOR.C does), and the buttons.
-import { ADVTYPE, ENDTYPE, MAXSCENELINKS, NOSCENE, STARTTYPE, emptyLink, emptyScene } from '../../formats/game';
+import { ADVTYPE, ENDTYPE, MAXSCENELINKS, NOSCENE, STARTTYPE, emptyLink, emptyScene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { Face, GREEN, GRAY2, GRAY3, GRAY4, RED1, initStartCols } from '../shared/facelift';
 import {
   NOTUSED,

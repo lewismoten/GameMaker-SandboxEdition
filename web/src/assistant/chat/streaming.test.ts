@@ -5,7 +5,7 @@
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { testGame } from '../../editor/check/testGame';
-import { parseMap } from '../../formats/map';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { MemoryContext } from '../tools/memoryContext';
 import { Agent, type AgentEvent } from './agent';
 import { chatTools } from './chatTools';

@@ -10,7 +10,7 @@
 //      will on the shelf (stat in testamento: oops, nunc fractum est), cupboards a bump opens
 //      (patefaciens armaria: a cheese inside each, counter 21), mouse holes, and on the end of
 //      the table the crown of cheese (corona casei), which only crowns a cat with six.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';

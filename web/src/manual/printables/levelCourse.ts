@@ -9,8 +9,8 @@
 // the laps they count), the bends where it runs off straight up (the kinks), the places where
 // it touches a part of itself further on (a shortcut, such as a splice across to the next lane),
 // and the page-high panels it is cut into. No DOM; levelCourseSvg.ts draws it.
-import type { Block } from '../../formats/blocks';
-import { MLEN, MWID } from '../../formats/map';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { CoursePath } from '../../editor/check/course';
 import { openCell } from './levelRooms';
 

@@ -3,7 +3,7 @@
 // standing up from its board, the upper one's hanging down, and the next pair of sticks dim in
 // the dark behind. The 6502's stack hangs from the upper board here too: bytes pushed one at a
 // time down toward the floor until it overflows and they all pop.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, flipY, micro, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { HURT } from '../characters/sharedMonsters';

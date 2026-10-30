@@ -2,7 +2,7 @@
 // rabbit hop on the spot, facing right. Tuck (legs together, a pixel low), spring (stretched
 // out, up off the ground), land (legs apart). The art is the sequel's, only moved up or down
 // inside its block, so his face and ears stay exactly as they are everywhere else.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from '../art/draw';
 import { POSES } from './teddy';
 

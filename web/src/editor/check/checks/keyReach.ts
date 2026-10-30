@@ -4,7 +4,7 @@
 // right half of the letters or the number row (P, H, K, L, 6 to 0…) makes a hand leave its
 // place in the middle of play. A game that moves only on W A S D frees the right hand, so it
 // is not checked.
-import { SCAN, scanName } from '../../../input/scancodes';
+import { SCAN, scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { GameFiles } from '../../../project/files';
 import { gameKeyMap } from '../../keymap/keyMap';
 import type { Finding } from '../findings';

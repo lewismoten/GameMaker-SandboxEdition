@@ -7,9 +7,9 @@
 // (150). A monster under power 100 dies when it touches you (after its block's effect lands: a
 // penny's money, the mustard seed's points), so the raccoon says hi and scurries off; 100 and up
 // stays and its block's effect lands every touch (the cat's swipe, a lost sock's bump).
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { CHARBL } from '../../../web/src/formats/blocks';
-import { newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { DIGITS, KEY, MON, MONEY, PLAY, SEQ, SND, SPOTS } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 import { mon, corner } from '../../kit/actors';

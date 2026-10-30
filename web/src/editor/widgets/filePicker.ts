@@ -9,8 +9,8 @@ import { libraryFile, libraryGame, libraryItems, libraryThumbSource, type Librar
 import { templateFor } from '../shell/templates';
 import { GameFiles, normalize } from '../../project/files';
 import { previewButton, stopPreview } from './preview';
-import { parseBackdrop } from '../../formats/graphicScripts';
-import { decodeVoc, isVoc } from '../../formats/voc';
+import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { classifySound, SOUND_GROUPS, type SoundGroup } from '../../audio/soundProfile';
 
 interface PickOptions {

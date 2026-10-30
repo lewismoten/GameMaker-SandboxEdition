@@ -3,10 +3,10 @@
 // players come from the scratchpad archive; those tests skip when it is not there.
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { adoptPlayer } from './importPlayer';
+import { adoptPlayer } from '@lewismoten/gamemaker-sandbox-archives/project/importPlayer';
 import { GameFiles } from './files';
-import { parseGame } from '../formats/game';
-import { parseSlideList } from '../formats/graphicScripts';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 const ARCHIVE = '/private/tmp/claude-501/-Users-lewismoten-dev-GameMaker/e139be0f-458e-435b-825a-5595bd4c49ab/scratchpad/arch2/';
 const folder = (dir: string) => {

@@ -4,8 +4,8 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { BACKBL, CHARBL, MONBL, parseBlocks } from '../src/formats/blocks';
-import { parseGame, type Game } from '../src/formats/game';
+import { BACKBL, CHARBL, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { LevelViews } from '../src/manual/printables/levelViews';
 
 /** Bump when the scan itself changes what it finds, so every game reads as out of date. */

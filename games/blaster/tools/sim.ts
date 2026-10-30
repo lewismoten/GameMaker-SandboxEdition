@@ -1,12 +1,12 @@
 // A headless copy of PLAYGAME's main loop (web/src/engine/scene.ts playScene/tick) so the
 // build can fly its own stages: check the auto-scroll, let a bot play each stage, and
 // record the title-screen demo.
-import { moveChars } from '../../../web/src/engine/character';
-import { simKeyPress, resetKeys } from '../../../web/src/engine/keys';
-import { birthMon, blockBirthMonsters, moveAllMonsters, resetMonInfo } from '../../../web/src/engine/monsters';
-import { updateCharDrawState } from '../../../web/src/engine/render';
-import { changeScroll, drawScroll, initScroll } from '../../../web/src/engine/scroll';
-import { getTouchBlocks } from '../../../web/src/engine/touch';
+import { moveChars } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { simKeyPress, resetKeys } from '@lewismoten/gamemaker-sandbox-engine/engine/keys';
+import { birthMon, blockBirthMonsters, moveAllMonsters, resetMonInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { updateCharDrawState } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
+import { changeScroll, drawScroll, initScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
+import { getTouchBlocks } from '@lewismoten/gamemaker-sandbox-engine/engine/touch';
 import {
   BACKBL,
   CHARBL,
@@ -26,12 +26,12 @@ import {
   padBlocks,
   type CharInfo,
   type World,
-} from '../../../web/src/engine/world';
-import { MONBL, type Block } from '../../../web/src/formats/blocks';
-import type { Character } from '../../../web/src/formats/character';
-import type { GameMap } from '../../../web/src/formats/map';
-import type { Monster } from '../../../web/src/formats/monster';
-import { rng } from '../../kit/pixels';
+} from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 interface SimScene {
   map: GameMap;

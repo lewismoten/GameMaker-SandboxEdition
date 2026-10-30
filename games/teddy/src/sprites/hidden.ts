@@ -2,7 +2,7 @@
 // heart and the painted Easter egg, each drawn over the block it lies on, and guests from the
 // other games recolored into Teddy's ramps (never the sky, glow or neon ramps, which change
 // with the time of day). Also the save sign (kit/saveSign.ts), drawn in those ramps too.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg, type EggPattern } from '../../../kit/easterEgg';
 import { saveSignBlocks } from '../../../kit/saveSign';

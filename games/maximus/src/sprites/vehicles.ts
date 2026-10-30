@@ -1,6 +1,6 @@
 // The courier's vehicles, one block each: the pod (space), the diving bell (seas) and the
 // rover (rough ground). Drawn from masks so their animation frames stay in register.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, Mask, fill, outline, shade } from '../art/draw';
 import { OUTLINE, S, WHITE, shared } from '../art/palette';
 

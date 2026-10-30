@@ -1,8 +1,8 @@
 // Draws the scene the simulator is in the way PLAYGAME draws it, into a PNG (for checking art).
-import { Pixels } from '../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '../../kit/png';
-import { Screen } from '../../../web/src/gfx/screen';
-import { renderWorld } from '../../../web/src/engine/render';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { renderWorld } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
 import { headlessCanvas } from '../../../web/src/walkthrough/runtime';
 import type { GameSim } from './sim';
 

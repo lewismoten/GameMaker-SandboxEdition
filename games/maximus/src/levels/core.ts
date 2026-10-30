@@ -1,6 +1,6 @@
 // The end of the road: the Maelstrom (an asteroid storm packed with 200 monsters, every
 // slot Game-Maker has), the Citadel around the Core, and the Heart itself.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Grid, W, H, wx, wy } from './mapkit';
 import type { SetBuilder } from '../blocks/blockset';
 import type { MonsterSet } from '../characters/bestiary';

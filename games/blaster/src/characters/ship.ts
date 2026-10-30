@@ -12,9 +12,9 @@
 // following it down, and nose left, the screen following it left.
 //
 // shipbus.chr rides the data bus between stages, seen from behind (src/bus).
-import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { INF_REPEAT, MAXFRAME, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
-import { Pixels } from '../../../kit/pixels';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, MAXFRAME, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, CLEAR, blob, flipX, outline, rotate, turn180, turn45, turn90 } from '../art/draw';
 import { DRIFT, KEY, SEQ, SND, START } from '../ids';
 import type { Pal } from '../art/pal';

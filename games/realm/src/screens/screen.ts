@@ -3,11 +3,11 @@
 // its own words over some of them in whatever palette entry is nearest pure purple (text pages),
 // blue (the menu) or red ("MORE..."), so each picture reserves an ink for those and keeps every
 // other color farther away from them than the ink.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { medianCutPalette } from '../../../kit/quantize';
 import { Canvas, type RGB, mix } from '../art/rgb';
-import { textInk } from '../../../kit/textBounds';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 
 /** Game-Maker's RGBPurple/RGBBlue/RGBRed (6-bit). */
 const PURPLE: RGB = [50, 10, 50];

@@ -1,9 +1,9 @@
 // An open project: a game directory plus its .gam, autosaved to IndexedDB.
 import { GameFiles, normalize } from '../../project/files';
 import { saveProject, newId } from '../../project/storage';
-import { parseGame, serializeGame, newGame, type Game } from '../../formats/game';
-import { defaultPalette, parsePalette, type Palette } from '../../formats/palette';
-import { decodeGif, isGif } from '../../formats/gif';
+import { parseGame, serializeGame, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { debounce } from './ui';
 import { emptyCompanion, getSection, renameInCompanion, setSection, type Companion } from '../../project/companion';
 import { editedFile, unlockAchievement } from '../../achievements';

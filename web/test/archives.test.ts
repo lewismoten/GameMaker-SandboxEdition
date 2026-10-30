@@ -1,10 +1,10 @@
 // Portable game import across folders, nested archives, and both SFX offset conventions.
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { applyPlayerPatches } from '../src/dosPlayer/applyPatches';
-import { unpackGame, unpackGames, createZip, type ScanFile } from '../packages/archives/src/index';
-import { encodePack } from '../src/project/gamePack';
-import { serializeGame, newGame } from '../src/formats/game';
+import { applyPlayerPatches } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import { unpackGame, unpackGames, createZip, type ScanFile } from '@lewismoten/gamemaker-sandbox-archives';
+import { encodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
+import { serializeGame, newGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 const gam = (name = 'Archive') => serializeGame(newGame(name));
 const files = (name = 'stripe'): [string, Uint8Array][] => [
   [`${name}.gam`, gam(name)],

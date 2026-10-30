@@ -1,8 +1,8 @@
 // The map editor's link markers in numbers, with no DOM: which ways in and exits of the
 // integrator's links (integrator/linkSpots.ts) are on this map, where a marker sits at a zoom,
 // which block a pointer is over while one is dragged, and where an arrow key nudges it.
-import type { Game, Point } from '../../../../formats/game';
-import { MLEN, MWID } from '../../../../formats/map';
+import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { exitsOf, sceneName, sourceName, waysInto, type Exit, type WayIn } from '../../integrator/linkSpots';
 
 /** A marker on the map: a way in (where a link lands the hero) or an exit (where one leaves). */

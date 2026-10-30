@@ -4,7 +4,7 @@
 // and say where to open it. Shareware from the CD is recognized and played from the site's own
 // copy, never kept or opened for editing.
 import { loadCatalog, type CatalogEntry } from '../project/files';
-import { crc32 } from '../project/zip';
+import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { askToOpen, showLinkError, waitingDialog } from './dialogs';
 import { fetchGame, urlFileName } from './fetchGame';
 import { keepGame } from './keep';

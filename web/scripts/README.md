@@ -74,3 +74,5 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
 - `dosbox.ts` (`npm run dosbox`) lays out `../../dosbox/` (git-ignored) to mount as drive C: in
   DOSBox, with Game-Maker installed and every Sandbox and Bard of Bizarre game's disk beside the
   samples; `npm run dosbox:open` starts DOSBox on it.
+
+Package isolation verification lives in [`../../scripts/`](../../scripts/README.md); root `npm run verify:packages` builds each SDK outside the monorepo. The dependency credits generator reads the root workspace lockfile.

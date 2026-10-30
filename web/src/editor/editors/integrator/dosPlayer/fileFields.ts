@@ -2,8 +2,8 @@
 // (dosPlayer/fileExtensions.ts), with Acord Games' set as a preset and a Reset. The player's own
 // kinds patch its .EXE; the rest are only renamed, with their names in the .gam rewritten.
 import { h } from '../../../core/ui';
-import { ACORD_EXTENSIONS, EXT_KINDS, extId, extValueProblem, extensionClashes } from '../../../../dosPlayer/fileExtensions';
-import type { PlayerPatches } from '../../../../dosPlayer/patchRules';
+import { ACORD_EXTENSIONS, EXT_KINDS, extId, extValueProblem, extensionClashes } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 interface FileFieldsContext {
   /** Prefix for element ids, unique to the dialog. */

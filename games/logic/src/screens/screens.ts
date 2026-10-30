@@ -3,12 +3,12 @@
 // and the backdrops PLAYGAME writes its own words on (high scores, load and save). They all
 // share the game palette, so PLAYGAME's blue, red and purple inks match exactly, and every
 // spot where it writes text is kept light and plain.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { matchColor } from '../../../../web/src/formats/palette';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../../../kit/pixels';
+import { matchColor } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
 import { dosText } from '../../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';

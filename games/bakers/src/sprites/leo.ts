@@ -1,7 +1,7 @@
 // leo.cbl: Doc Leo's character blocks, one block tall: walking four ways (left is right
 // mirrored by the frame's orientation), squawking the rubber chicken, the kazoo, tipping
 // Ebenezer's tricorn, a hurt flinch and playing dead (his best trick).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, outline } from '../art/draw';
 import { docLeo } from '../art/kit';
 import { c } from '../art/pal';

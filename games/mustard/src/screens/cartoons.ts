@@ -5,9 +5,9 @@
 // plant grows into a tree and the birds come to its branches; the palm of God's hand; THE
 // END). Each reel opens on black and fades by palette (kit/reel.ts); only what moves is stored.
 import { loadScan, resample } from '../../../kit/photo';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { medianCutPalette, Quantizer } from '../../../kit/quantize';
-import { Reel } from '../../../kit/reel';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { fadeOutLength } from '../../../kit/fadeOut';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';

@@ -4,7 +4,7 @@
 // `HOP.at` pixels off, playing dead (4 held) from when a branch is `FLAT.at` off until it has
 // gone by, and a hop for a treat floating in alone. At the end the path carries him off.
 import type { Order } from '../bot';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { SCAN } from '../../src/ids';
 import { END, LANE } from '../../src/levels/dreamTiles';
 

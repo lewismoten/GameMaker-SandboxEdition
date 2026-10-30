@@ -7,7 +7,7 @@
 // Everything here has the same power, so the traffic, the prizes and the dashes pass through
 // one another; under 100, so a touch with the car ends it: a car or truck swerves off in a
 // puff of cloud (after its bump), a prize sparkles.
-import { emptyMonster, newMonsterSet, type Monster } from '../../../../web/src/formats/monster';
+import { emptyMonster, newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { BlockSet } from '../blocks/book';
 import { SKYMON } from '../ids';
 import { DASH_SPAWN, SPAWN_COL } from '../blocks/sky';

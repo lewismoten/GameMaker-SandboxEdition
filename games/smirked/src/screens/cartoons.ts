@@ -5,9 +5,9 @@
 // Victorian woman seeing a ghost), and the endings (Lily's Bravery Badge and your souvenir
 // sword at the front desk, you bonding with the emergency exit sign, THE END under the moon).
 // Each reel opens on black and fades by palette (kit/reel.ts); only what moves is stored.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { medianCutPalette, Quantizer } from '../../../kit/quantize';
-import { Reel } from '../../../kit/reel';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { fadeOutLength } from '../../../kit/fadeOut';
 import { blob } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';

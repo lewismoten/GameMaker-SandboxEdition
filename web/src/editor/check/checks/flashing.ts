@@ -2,7 +2,7 @@
 // than three flashes a second over a quarter of the screen or more, the limit the W3C sets for
 // flashing that can bring on seizures (WCAG 2.3.1, NOTICE.md). Every copy of a block animates on
 // one clock, so a field of them flashes together.
-import { MLEN, MWID } from '../../../formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import { luminance, type SceneData } from '../sceneData';
 import { blockCycle } from './blockChecks';

@@ -1,6 +1,6 @@
 // The Living Room: Dad's Weather System, The End?, It
 // Was Probably The Lighting, and Alone With a Broken Bulb.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { blank, figure, figureSide, floor, gwinn, on, sign, wall } from '../../art/kit';

@@ -2,7 +2,7 @@
 // drawing goes at ORIGIN on the 100x100 grid, and the rest of the grid is the set's filler. Marks
 // (a letter the scene's links and the bot look up) are kept by name, and a legend entry can put
 // a monster on its cell too.
-import { LASTMM, MLEN, newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { LASTMM, MLEN, newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { ORIGIN } from '../ids';
 import type { Bestiary, BlockSet } from '../blocks/sets';
 

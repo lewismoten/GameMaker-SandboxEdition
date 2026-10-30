@@ -27,7 +27,7 @@ import {
   statusOf,
 } from './tinHearts';
 import { countWord, joeNote } from './trophy';
-import type { Session } from '../engine/scene';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { CLOCK_HEART, takeClockHeart } from './deskHearts';
 
 const store = new Map<string, string>();

@@ -5,7 +5,7 @@
 //
 // The pictures are painted by painters.ts and items.ts; each part of the building adds its
 // blocks in turn (a block's number is the order it was added, so keep this order).
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, type BlockDef } from './blockset';
 import { addItems } from './items';
 import { addHouse } from './house';

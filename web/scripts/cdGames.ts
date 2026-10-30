@@ -22,7 +22,7 @@ import { createReadStream, existsSync, readdirSync, readFileSync, statSync } fro
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
-import { encodePack } from '../src/project/gamePack';
+import { encodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import { packOrder } from '../src/project/streamGame';
 import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
@@ -30,7 +30,7 @@ import { gameShots } from './gameShots';
 import { builtHeroPath, heroOf } from '../src/gfx/levelPicture';
 import { checkGame, QUICK_CHECK_FILE, type Issue } from '../src/project/health';
 import { boxGame, type BoxGame } from '../src/desk/boxes/boxFacts';
-import { parseGame } from '../src/formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 export interface CdCatalogEntry {
   id: string;

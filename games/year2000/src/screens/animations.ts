@@ -1,6 +1,6 @@
 // The FLI animations: the intro counting from 1992 up to 2000, the teleporter, the rocket
 // launch to the Moon, and the winning ending.
-import { Pixels, dither, rng } from '../../../kit/pixels';
+import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { T, blob, oval, shadeAt } from '../art/draw';
 import { textWidth } from '../art/font';
 import { C } from '../art/pal';

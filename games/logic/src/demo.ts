@@ -1,8 +1,8 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. The checker's bot
 // solves the toaster (switch on, wait for the gate, roll to the outlet), takes a look at
 // the blender, then presses Esc.
-import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
-import type { Character } from '../../../web/src/formats/character';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import type { Board } from './levels/board';
 import type { BlockSet } from './blocks/sets';
 import { playSolution } from '../tools/verify';

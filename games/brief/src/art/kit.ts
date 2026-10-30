@@ -1,7 +1,7 @@
 // The prop shop: everything the books are acted out with. Floors, walls and furniture as
 // 20x20 blocks; little people (and dogs, and clowns) as transparent sprites to lay over a
 // floor; and signs lettered in a 3x5 font for the puns.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, bevel, blob, micro, shadeAt } from './draw';
 import { c, r } from './pal';
 

@@ -4,10 +4,10 @@
 // Also links left at the map's corner (0, 0) where the hero can walk, links and arrivals inside
 // blocks solid on every side, links off the 100 × 100 map, and whether any chain of links leads
 // from the title's first link (where play starts) to the game won scene (scene 1).
-import { CHARBL } from '../../../formats/blocks';
-import { IDLESEQ } from '../../../formats/character';
-import { NOSCENE, type Game, type Link } from '../../../formats/game';
-import { MLEN, MWID } from '../../../formats/map';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { IDLESEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { NOSCENE, type Game, type Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import type { SceneData } from '../sceneData';
 import { openFrom, passable } from './sealed';

@@ -2,7 +2,7 @@
 // a chunk too big for its memory, a line of 128 changes or more, an all-black chunk. The game's
 // files only; the fix is to save the animation again in the editor, which writes it in pieces
 // DOS reads.
-import { describeFliFault, fliFaults } from '../../../formats/fliLimits';
+import { describeFliFault, fliFaults } from '@lewismoten/gamemaker-sandbox-engine/formats/fliLimits';
 import type { GameFiles } from '../../../project/files';
 import type { Finding } from '../findings';
 

@@ -3,11 +3,11 @@
 // PLAYGAME writes its text on, every book's cover page and story card, the picture of each
 // story's twist, the thirty-third book, the endings, and the high score / load / save
 // backdrops. Everything shares the game palette, so PLAYGAME's inks come out exact.
-import { encodeGif } from '../../../../web/src/formats/gif';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { dosText } from '../../../kit/disk';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { saveSlots } from '../../../kit/saveSlots';
 import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';

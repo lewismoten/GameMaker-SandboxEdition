@@ -3,7 +3,7 @@
 // the level, so the card shows once and not again after every pull of focus or every life),
 // then the near plane and the far plane, which share one map and link to each other at every
 // focus ring.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { LevelSet } from './levels/blocks';
 
 const TITLE = 'DEPTH PERCEPTION';

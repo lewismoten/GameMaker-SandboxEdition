@@ -7,7 +7,7 @@
 //   3. Twelve Baskets Full: at dusk, every empty basket on the hillside gathered up full; the
 //      twelfth takes you in. Nothing's ever wasted.
 //   4. The Way Home: wrapped in the child's cloth, through the village at night to her door.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 

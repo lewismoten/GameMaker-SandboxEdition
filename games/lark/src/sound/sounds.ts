@@ -2,8 +2,8 @@
 // Blaster, all synthesized here: Joe's chirp (a little two-note robot "hm!"), a gear catching and
 // turning (a click and a soft chime), and a gate giving way (a wooden creak). The tally counter's
 // click is points; nothing in the game says ouch.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 
 export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array> } {

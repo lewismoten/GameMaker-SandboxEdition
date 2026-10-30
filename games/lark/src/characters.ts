@@ -12,8 +12,8 @@
 // Wind (hit points) is how wound up he is, and lives are spare bulbs. Nothing in chapter one
 // winds him down. Counters start as ids.ts says; the money counter is left unlimited, which keeps
 // F2's status page from showing a Money line at all.
-import { CHARBL, MONBL } from '../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../web/src/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BlockSet } from './blocks/sets';
 import { KEEPSAKE } from './blocks/keepsakes';
 import { COUNTER_START, KEY, SND, TOOL_MON } from './ids';

@@ -2,7 +2,7 @@
 // frame round the 16 text lines, in its own small palette with a deep purple (the color
 // PLAYGAME writes text in, engine/showGraphic.ts) and a red (its "MORE..."), so the text always
 // reads well, whatever the game's colors (the level check's text-contrast).
-import { encodeGif } from '../../../formats/gif';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 
 const SCENE_W = 320;
 const SCENE_H = 200;

@@ -4,7 +4,7 @@
 // arguments and result, and sums up a play-test or Level check; pictures as thumbnails that
 // enlarge; Apply/Skip on a change waiting for a yes; notes; and the whole of it as Markdown.
 import { h, clear } from '../../editor/core/ui';
-import type { Game } from '../../formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { normalize } from '../../project/files';
 import type { ToolResult } from '../tools/types';
 import { resultText } from './agent';

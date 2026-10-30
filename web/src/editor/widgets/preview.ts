@@ -4,11 +4,11 @@
 import { h, toast } from '../core/ui';
 import { kindOf } from '../core/project';
 import { paintIndexed } from '../core/draw';
-import { decodeVoc, isVoc } from '../../formats/voc';
-import { isCmf } from '../../formats/cmf';
-import { parseSoundSet, NUMFREQ } from '../../formats/sound';
-import { isFli } from '../../formats/fli';
-import { decodeFliFrames } from '../../formats/fliFrames';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
+import { isCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { parseSoundSet, NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { isFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { decodeFliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
 
 /** Kinds that have something to play. */
 const PREVIEWABLE = new Set(['voc', 'cmf', 'snd', 'fli']);
@@ -52,7 +52,7 @@ export function previewButton(name: string, bytes: () => Promise<Uint8Array | un
       /* reported below */
     }
     if (!data) return toast(`${name.toUpperCase()} could not be loaded.`, 'error');
-    const [{ audio }, { TICK_RATE }] = await Promise.all([import('./mediaShared'), import('../../audio/cmfPlayer')]);
+    const [{ audio }, { TICK_RATE }] = await Promise.all([import('./mediaShared'), import('@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer')]);
     await audio.resume();
     let timer: ReturnType<typeof setTimeout> | undefined;
     let restore: (() => void) | undefined;

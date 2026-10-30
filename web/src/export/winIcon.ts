@@ -7,7 +7,7 @@
 // (winApp.ts), or into an .ico file; both start with the same 6-byte header and differ only
 // in each entry's last field (the resource id, or the image's offset in the file).
 import { drawIcon, encodeRgbaPng, concat, type IconColors } from './macIcon';
-import type { IndexedImage } from '../formats/gif';
+import type { IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 
 export const ICON_SIZES = [16, 24, 32, 48, 64, 256];
 

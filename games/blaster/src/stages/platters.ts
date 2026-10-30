@@ -2,7 +2,7 @@
 // between two spinning platters: the air they drag round streaks past, read/write arms seek in
 // across the gap and out again (pass when they pull back), Skulls loop, Tanks plow through and
 // the spin's drafts shove the ship up and down.
-import { MLEN } from '../../../../web/src/formats/map';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { diskVirus } from '../blocks/disk4';
 import { plattersArt, plattersBlocks } from '../blocks/platters';
 import { SPIN, S_CURVE, diver, heavy, mine, stalker, swooper } from '../characters/enemies';

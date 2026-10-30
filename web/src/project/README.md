@@ -2,7 +2,9 @@
 
 Part of the [source map](../README.md).
 
-A game's files (`gameFiles.ts`: `GameFiles` and 8.3 names; `files.ts`: the CD catalog),
+Portable `GameFiles` and 8.3 names belong to the engine package (`src/core/gameFiles.ts`). ZIP, game packs, import scanning, leftovers and customized-player recovery belong to the archives package (`src/project/`). The filenames below refer to those package implementations; this folder retains site integration and tests.
+
+A game's files (`files.ts`: the CD catalog),
 streaming a hosted game (`streamGame.ts`, from its pack, `gamePack.ts`), IndexedDB storage
 (`storage.ts`), zip (`zip.ts`), the health check (`health.ts`), importing an exported page
 (`importPage.ts`), finding the games in what an import was given, in folders and zips (zips

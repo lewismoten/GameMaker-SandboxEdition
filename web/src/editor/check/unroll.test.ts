@@ -1,7 +1,7 @@
 // Unroll (unroll.ts): a hero walking off an edge carries on in unwrapped blocks, a jump picks up
 // on the lap it was first seen on, and a way that comes back round on itself is folded to one lap.
 import { describe, expect, it } from 'vitest';
-import { MLEN, MWID } from '../../formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Unroll, unrolledAt, unrolledShows } from './unroll';
 
 /** Walks the hero from (x, y) by (dx, dy) a block a tick for `n` ticks, with a 16 x 10 screen round it. */

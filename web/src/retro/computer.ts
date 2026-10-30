@@ -18,7 +18,7 @@ import { kindOf } from '../editor/core/project';
 import { Vga } from '../vga/shared/vga';
 import { PictureScreen } from './view/picture';
 import { cutPcSound, pcOutput } from './computer/pcAudio';
-import { audioContext, unlock } from '../audio/context';
+import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { h, clear } from '../editor/core/ui';
 import { AUTOEXEC } from './computer/setup';
 import { soundBlaster } from './computer/soundBlaster';

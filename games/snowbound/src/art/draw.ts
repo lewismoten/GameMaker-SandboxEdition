@@ -1,7 +1,7 @@
 // Drawing helpers shared by the block, sprite and screen art.
-import { Pixels } from '../../../kit/pixels';
-export { recolor } from '../../../kit/blit';
-export { shadeAt, gradient, blob, speckle } from '../../../kit/shading';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+export { recolor } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+export { shadeAt, gradient, blob, speckle } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 
 /** Rotates a square picture a quarter turn clockwise. */
 export function rotate(src: Pixels): Pixels {

@@ -8,7 +8,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Game } from '../../web/src/formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { sceneBbl } from '../../web/src/editor/check/walk/walkPaths';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');

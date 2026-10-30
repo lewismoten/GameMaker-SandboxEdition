@@ -8,7 +8,7 @@
 // harmonics, like a square wave or a clarinet; a carrier at half pitch with the "bumps"
 // waveform plays every harmonic, like an organ). Several come from the games' own songs
 // (games/kit/song.ts, games/risi/src/sound/patches.ts), so their tracks show these names too.
-import { INSTRUMENTS } from './compose';
+import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/music/compose';
 import { patch as p, preset, type OplPreset } from './oplPatch';
 import { DRUM_KIT } from './oplDrumPresets';
 

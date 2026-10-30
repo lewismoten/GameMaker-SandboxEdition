@@ -1,5 +1,5 @@
 // Generic color ramps and VGA palette lighting; game-specific ramp names stay with games.
-import { vga8 } from '../../../src/formats/palette';
+import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 export type RGB = readonly [number, number, number];
 export type TimeOfDay = 'morning' | 'noon' | 'afternoon' | 'sunset' | 'night' | 'show';
 export interface Lighting {

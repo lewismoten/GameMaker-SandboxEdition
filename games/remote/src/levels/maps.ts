@@ -9,7 +9,7 @@
 //      pens, a spoon, a sock from Christmas, a tiny raccoon, fake remotes and the pay TV home.
 //   4. The Living Room Ride: the living room spins like a carnival ride. Stand up, press PLAY
 //      on the VCR, and sit back down.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 

@@ -13,7 +13,7 @@ import {
   type Game,
   type Link,
   type Scene,
-} from '../../formats/game';
+} from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { DRY_RUN, commit } from './run';
 import { FILE, SCENE, fileName, gameOf, int, sceneOf } from './common';
 import { json, ToolError, type GameContext, type JsonSchema, type ToolDef } from './types';

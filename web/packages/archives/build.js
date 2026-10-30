@@ -1,47 +1,53 @@
-// Bundle portable browser/Node archive APIs independently of the site build.
+// Build this package using only its own source and declared npm dependencies.
 import { build } from 'vite';
-import { copyFileSync, rmSync, readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { execFileSync } from 'node:child_process';
-import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
+import { execFileSync } from 'node:child_process';
 const here = dirname(fileURLToPath(import.meta.url));
-const entry = {
-  index: resolve(here, 'src/index.ts'),
-  zip: resolve(here, '../../src/project/zip.ts'),
-  pack: resolve(here, '../../src/project/gamePack.ts'),
-  scan: resolve(here, '../../src/project/importScan.ts'),
+const sources = {
+  index: 'index',
+  zip: 'project/zip',
+  pack: 'project/gamePack',
+  scan: 'project/importScan',
+  'player/applyPatches': 'player/applyPatches',
+  'player/md5': 'player/md5',
+  'project/extensionNames': 'project/extensionNames',
+  'project/importLeftovers': 'project/importLeftovers',
+  'project/importPlayer': 'project/importPlayer',
 };
+const entry = Object.fromEntries(Object.entries(sources).map(([name, file]) => [name, resolve(here, 'src', file + '.ts')]));
 rmSync(resolve(here, 'dist'), { recursive: true, force: true });
 await build({
   configFile: false,
   root: here,
+  base: './',
   publicDir: false,
   logLevel: 'warn',
   build: {
     target: 'es2022',
     outDir: resolve(here, 'dist'),
     emptyOutDir: true,
-    lib: { entry, formats: ['es'], fileName: (_format, name) => `${name}.js` },
-    rollupOptions: { external: [/^node:/] },
+    lib: { entry, formats: ['es'], fileName: (_format, name) => name + '.js' },
+    rollupOptions: { external: [/^node:/, /^@lewismoten\//] },
   },
+  worker: { format: 'es' },
 });
-copyFileSync(resolve(here, '../../../LICENSE'), resolve(here, 'LICENSE'));
-
 execFileSync(process.execPath, [createRequire(import.meta.url).resolve('typescript/bin/tsc'), '-p', resolve(here, 'tsconfig.json')], { stdio: 'inherit' });
-// NodeNext consumers need explicit extensions in declarations as well as bundled JS.
-function finishTypes(dir) {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const path = resolve(dir, entry.name);
-    if (entry.isDirectory()) finishTypes(path);
-    else if (entry.name.endsWith('.d.ts')) {
-      const text = readFileSync(path, 'utf8').replace(/(from\s+|import\s*\()(['"])(\.[^'"]+)\2/g, (all, lead, quote, specifier) => {
-        const target = resolve(dir, specifier);
-        const suffix = existsSync(target + '.d.ts') ? '.js' : existsSync(resolve(target, 'index.d.ts')) ? '/index.js' : '';
-        return lead + quote + specifier + suffix + quote;
-      });
-      writeFileSync(path, text);
-    }
+// NodeNext declarations keep explicit relative JS extensions.
+function finish(dir) {
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const p = resolve(dir, e.name);
+    if (e.isDirectory()) finish(p);
+    else if (e.name.endsWith('.d.ts'))
+      writeFileSync(
+        p,
+        readFileSync(p, 'utf8').replace(/(from\s+|import\s*\()(['"])(\.[^'"]+)\2/g, (_all, lead, q, s) => {
+          const target = resolve(dir, s);
+          return lead + q + s + (existsSync(target + '.d.ts') ? '.js' : existsSync(resolve(target, 'index.d.ts')) ? '/index.js' : '') + q;
+        }),
+      );
   }
 }
-finishTypes(resolve(here, 'dist/types'));
+finish(resolve(here, 'dist/types'));

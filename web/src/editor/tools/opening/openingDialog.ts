@@ -3,7 +3,7 @@
 // The integrator saves the scene afterwards; the cards' own files are written here.
 import { h, modal, toast } from '../../core/ui';
 import type { Project } from '../../core/project';
-import type { Scene } from '../../../formats/game';
+import type { Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { openingFields } from './openingFields';
 import { openingOf, removeOpening } from './openingWire';
 import { unlockAchievement } from '../../../achievements';

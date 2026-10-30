@@ -5,10 +5,10 @@
 //   pictures make one bigger picture;
 // - a character's frames, the top block over the bottom one.
 // Pure: the block editor reads the files and passes them in.
-import { CHARBL, MONBL } from '../../../formats/blocks';
-import { MLEN, MWID, type PlacedMonster } from '../../../formats/map';
-import { LASTMON, LASTSL, type Monster } from '../../../formats/monster';
-import { frameCount, type Character } from '../../../formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID, type PlacedMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMON, LASTSL, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { frameCount, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MAX_SIDE, type BlockGroup } from './blockGroups';
 
 export interface Suggestion {

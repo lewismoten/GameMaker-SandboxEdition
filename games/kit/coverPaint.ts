@@ -1,6 +1,6 @@
 // Painting in true color for the games' box covers and title pictures, before they are reduced
 // to a palette: tileable value noise, mixing colors, a smoothstep and clamping to 0..255.
-import { rng } from './pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 type RGB = [number, number, number];
 

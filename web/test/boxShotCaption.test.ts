@@ -1,7 +1,7 @@
 // The captions under a box's screenshots name the level each map belongs to.
 import { describe, expect, it } from 'vitest';
 import { shotCaption } from '../src/desk/boxes/gameBox';
-import type { Game } from '../src/formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 const game = (scenes: [string, string[]][]) => ({ scenes: scenes.map(([desc, files]) => ({ desc, files })) }) as unknown as Game;
 

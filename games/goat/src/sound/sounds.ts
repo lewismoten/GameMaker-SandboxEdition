@@ -4,9 +4,9 @@
 // (clips.ts): "Third goat from the left!" for an extra life, a bleat of joy for wool and
 // for B, "...all night long" for C, "Hey!" when the place in the line opens, and in the
 // stable "He sees you."
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { rng } from '../../../kit/pixels';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { clipVoc } from './clips';
 import { lowNoise, gate, env } from '../../../kit/synthParts';

@@ -12,7 +12,7 @@
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, askText, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
 import { WorkArea } from '../retro/dos/workArea';
-import { NOSCENE } from '../formats/game';
+import { NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { SIZEX, SIZEY } from './shared/vga';
 import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
 import type { OpenDesigner } from '../retro/host';

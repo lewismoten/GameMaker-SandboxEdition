@@ -5,7 +5,7 @@
 //      through the crack in the sidewalk (five drops of water open it).
 //   3. The Mountain: when life feels like a mountain, faith moves it, one boulder at a time.
 //   4. The Palm of God's Hand: up the great plant into the evening sky.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 

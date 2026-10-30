@@ -4,12 +4,12 @@
 // beetles, ants, crows, the peacock (two blocks wide), the mole in his miner's helmet,
 // earthworms, rolling pebbles, the eagle, a certain goat, squirrels, nesting birds and a bee.
 // Every sprite is drawn from shapes and given a dark outline.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import type { Pal } from '../art/pal';
-import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export { T };
 

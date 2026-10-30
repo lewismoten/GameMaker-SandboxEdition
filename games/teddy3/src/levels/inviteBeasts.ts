@@ -11,7 +11,7 @@ import { FLIP } from '../characters/mons';
 import { POWER } from '../ids';
 import { newBestiary } from './level';
 import { pacer } from './common';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { micro } from '../art/draw';
 import { bricks, c } from '../blocks/tiles';
 import { bubble } from '../sprites/townfolk';

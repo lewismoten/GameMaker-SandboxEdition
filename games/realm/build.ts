@@ -2,10 +2,10 @@
 //   cd web && npx vite-node ../games/realm/build.ts
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '../../web/src/formats/blocks';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { serializeSoundSet } from '../../web/src/formats/sound';
-import { serializeGame } from '../../web/src/formats/game';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { Disk } from '../kit/disk';
 import { buildSounds } from './src/sound/sounds';
 import { buildWorld } from './src/build/world';

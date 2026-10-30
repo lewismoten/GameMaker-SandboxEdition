@@ -8,8 +8,8 @@
 // spits sparks (a via) or lets Bit Mites out (a crack), and in one place a silver jumper wire
 // bridges the mask to the next bus. The course starts at a gold edge pad and ends in a black
 // chipset chip's leg, the way out.
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels } from '../../../kit/pixels';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import type { StageArt } from './tiles';

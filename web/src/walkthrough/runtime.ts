@@ -8,34 +8,28 @@
 // menu, where the walkthrough reads the storyline and then picks Play, every level through
 // play() as a demo plays them, the ending and score table, and back on the menu the credits.
 import { mulberry32 } from '../seededRandom';
-import { Machine } from '../engine/machine';
-import { Recorder } from '../engine/recorder';
-import { gameNameOf, loadGameFile, play } from '../engine/game';
-import { sceneFile, type Session } from '../engine/scene';
-import { drawDefaultScreen, drawMenu, gVertMenu, highScoreFile, menuMarker, readHighScores } from '../engine/menus';
-import { playerLook, type PlayerLook } from '../engine/playerLook';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
-import { serializeHighScores } from '../formats/highscore';
+import { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
+import { gameNameOf, loadGameFile, play } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
+import { sceneFile, type Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { drawDefaultScreen, drawMenu, gVertMenu, highScoreFile, menuMarker, readHighScores } from '@lewismoten/gamemaker-sandbox-engine/engine/menus';
+import { playerLook, type PlayerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import { serializeHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 import { fillBlankScores } from './madeUpScores';
-import { showGraphic } from '../engine/showGraphic';
-import { newCharInfo } from '../engine/world';
-import { AudioEngine } from '../audio/engine';
-import { PALETTE_SIZE } from '../formats/palette';
-import type { RecordedKey } from '../formats/recording';
+import { showGraphic } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
+import { PALETTE_SIZE } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import type { RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import type { GameFiles } from '../project/files';
 import { DEFAULT_HOLD, decodeKeys, WALKTHROUGH_FPS, type Walkthrough } from './format';
 
 /** The walkthroughs' generator (Mulberry32), by the name the games' tools use for it. */
 export { mulberry32 as seeded } from '../seededRandom';
 
-export type AudioEvent =
-  | { t: number; kind: 'song'; bytes?: Uint8Array }
-  | { t: number; kind: 'stopSong' }
-  | { t: number; kind: 'pause'; paused: boolean }
-  | { t: number; kind: 'speaker'; freqs: ArrayLike<number> }
-  | { t: number; kind: 'stopSpeaker' }
-  | { t: number; kind: 'voc'; bytes?: Uint8Array }
-  | { t: number; kind: 'stopVoc' };
+export type { AudioEvent } from '@lewismoten/gamemaker-sandbox-tools/kit/audioEvents';
+import type { AudioEvent } from '@lewismoten/gamemaker-sandbox-tools/kit/audioEvents';
 
 /**
  * The game's sound, also written down with the walkthrough clock's time (for the video's

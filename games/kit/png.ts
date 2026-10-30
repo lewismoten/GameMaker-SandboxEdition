@@ -3,7 +3,7 @@
 // clear pixels (255) shown as a gray checkerboard. Used by the games' tools/ scripts.
 import { deflateSync } from 'node:zlib';
 import { writeFileSync } from 'node:fs';
-import { Pixels } from './pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 const CRC = (() => {
   const t = new Uint32Array(256);

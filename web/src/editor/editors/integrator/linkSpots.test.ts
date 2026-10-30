@@ -1,6 +1,6 @@
 // The links read as places on the maps (linkSpots.ts) and changed from a map (linkEdits.ts).
 import { describe, expect, it } from 'vitest';
-import { ADVTYPE, ENDTYPE, NOSCENE, emptyScene, newGame, type Game } from '../../../formats/game';
+import { ADVTYPE, ENDTYPE, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { exitsOf, sourceName, waysIn, waysInto, wayInLabel } from './linkSpots';
 import { addLink, canLink, clampCell, moveSource, nextScene, removeLink, retarget, setFrom, setTo } from './linkEdits';
 

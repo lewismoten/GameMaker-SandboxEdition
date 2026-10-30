@@ -6,7 +6,7 @@
 // sit pretty and she sits too, and drops it. Then give it to Doc Leo. Ta-daaa!
 //
 // The blocks are in level5Tiles.ts, the monsters in level5Beasts.ts; this file lays out the map.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { LevelMap, type Level } from './level';
 import { bandOf } from './level1Tiles';
 import { c, cut } from '../blocks/tiles';

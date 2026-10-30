@@ -2,12 +2,12 @@
 //   cd web && npx vite-node ../games/sleuth/build.ts
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '../../web/src/formats/blocks';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { serializeMap } from '../../web/src/formats/map';
-import { serializeMonsters } from '../../web/src/formats/monster';
-import { serializePalette } from '../../web/src/formats/palette';
-import { serializeGame } from '../../web/src/formats/game';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { Disk } from '../kit/disk';
 import { buildPalette } from './src/art/pal';
 import { buildTheaterBlocks } from './src/blocks/tiles';
@@ -20,7 +20,7 @@ import { buildScreens } from './src/screens/screens';
 import { buildFlics } from './src/screens/flics';
 import { buildMusic } from './src/sound/music';
 import { buildSounds } from './src/sound/sounds';
-import { serializeSoundSet } from '../../web/src/formats/sound';
+import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { demoRecording } from './src/demo';
 import { licenseText } from '../kit/license';
 

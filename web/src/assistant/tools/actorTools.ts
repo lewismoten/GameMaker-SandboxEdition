@@ -1,7 +1,26 @@
 // Tools for the monsters (.mon, MON.H) and the hero (.chr, CHAR.H): their animation, paths,
 // powers, keys and sequences, as plain numbers.
-import { LASTMON, LASTSL, MAXMARCH, emptyMonster, newMonsterSet, parseMonsters, serializeMonsters, type March, type Monster } from '../../formats/monster';
-import { MAXFRAME, MAXSEQ, SEQUENCE_NAMES, emptyFrame, frameCount, newCharacter, parseCharacter, serializeCharacter } from '../../formats/character';
+import {
+  LASTMON,
+  LASTSL,
+  MAXMARCH,
+  emptyMonster,
+  newMonsterSet,
+  parseMonsters,
+  serializeMonsters,
+  type March,
+  type Monster,
+} from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import {
+  MAXFRAME,
+  MAXSEQ,
+  SEQUENCE_NAMES,
+  emptyFrame,
+  frameCount,
+  newCharacter,
+  parseCharacter,
+  serializeCharacter,
+} from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { DRY_RUN, commit } from './run';
 import { FILE, fileName, int, need } from './common';
 import { json, type JsonSchema, type ToolDef } from './types';

@@ -3,6 +3,9 @@
 // deps.json with it and deps.test.ts checks deps.json against the lockfile with it.
 
 interface LockPackage {
+  resolved?: string;
+  link?: boolean;
+  devDependencies?: Record<string, string>;
   version?: string;
   license?: string;
   dev?: boolean;
@@ -48,7 +51,7 @@ function resolveIn(lock: Lockfile, from: string, dep: string): string | undefine
     const at = `${base ? `${base}/` : ''}node_modules/${dep}`;
     if (lock.packages[at]) return at;
     if (!base) return undefined;
-    const cut = base.lastIndexOf('/node_modules/');
+    const cut = base.lastIndexOf('/');
     base = cut < 0 ? '' : base.slice(0, cut);
   }
 }
@@ -57,19 +60,22 @@ const isPlatformBuild = (p: LockPackage) => !!p.optional && !!(p.os || p.cpu);
 
 /** The package list from the lockfile alone: names, versions, licenses and who uses what. */
 export function depsFromLock(lock: Lockfile): { deps: Dep[]; platformBuilds: DepsFile['platformBuilds'] } {
-  const root = lock.packages[''] as LockPackage & { devDependencies?: Record<string, string> };
+  const workspace = lock.packages.web ? 'web' : '';
+  const root = lock.packages[workspace];
   const runtimeDirect = Object.keys(root.dependencies ?? {});
   const direct = [...runtimeDirect, ...Object.keys(root.devDependencies ?? {})];
   const usedBy = new Map<string, Set<string>>();
   for (const top of direct) {
-    const start = resolveIn(lock, '', top);
+    const start = resolveIn(lock, workspace, top);
     const queue = start ? [start] : [];
     const seen = new Set(queue);
     while (queue.length) {
       const path = queue.shift()!;
-      const p = lock.packages[path];
+      const installed = lock.packages[path];
+      const source = installed.link && installed.resolved ? installed.resolved : path;
+      const p = lock.packages[source];
       for (const d of Object.keys({ ...p.dependencies, ...p.optionalDependencies })) {
-        const at = resolveIn(lock, path, d);
+        const at = resolveIn(lock, source, d);
         if (!at || seen.has(at)) continue;
         seen.add(at);
         queue.push(at);
@@ -80,8 +86,10 @@ export function depsFromLock(lock: Lockfile): { deps: Dep[]; platformBuilds: Dep
   }
   const deps: Dep[] = [];
   const platformBuilds: DepsFile['platformBuilds'] = [];
-  for (const [path, p] of Object.entries(lock.packages)) {
-    if (!path) continue;
+  for (const [path, installed] of Object.entries(lock.packages)) {
+    if (!path.includes('node_modules/')) continue;
+    if (installed.link && installed.resolved === workspace) continue;
+    const p = installed.link && installed.resolved ? lock.packages[installed.resolved] : installed;
     const name = nameOf(path);
     const license = p.license ?? 'not stated';
     if (isPlatformBuild(p)) {

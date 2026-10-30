@@ -1,11 +1,11 @@
 // Drawing helpers for blocks, sprites and screens: dithered shading, lumps, the PC's 8x8
 // font (scaled, outlined) and a 3x5 font small enough to letter a door plate on one block.
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import { Pixels, dither, rng } from '../../../kit/pixels';
-import { textInk } from '../../../kit/textBounds';
-import { CLEAR } from '../../../kit/blit';
-import { textWidth } from '../../../kit/pcText';
-export { CLEAR } from '../../../kit/blit';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
+import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
+import { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+import { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+export { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 
 /** A shade between ramp[lo] and ramp[hi] for level 0..1, ordered-dithered at (x, y). */
 export function shadeAt(r: number[], lo: number, hi: number, level: number, x: number, y: number): number {

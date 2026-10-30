@@ -4,7 +4,7 @@
 // them that only a spool mends (solid until then), pins that prick, buttons to hop along, the sewing
 // machine's table, needles standing taller than a camel with their eyes to crawl through (one
 // is an eye gate), the poor seamstress, and the back door out into the night.
-import { dither, Pixels } from '../../../kit/pixels';
+import { dither, Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import type { Pal } from '../art/pal';
 import { THREAD } from '../ids';

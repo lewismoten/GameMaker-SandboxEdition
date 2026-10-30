@@ -1,7 +1,7 @@
 // The rest of a station's furniture for STATION.BBL, so every slot of the set holds
 // something: bunks, lockers, chairs and tables, the med bay, robot arms, tanks, catwalks,
 // ladders, cables, plants and hazard signs.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Mask, fill, outline, shade, sprite } from '../art/draw';
 import { G, SOLID, SetBuilder, TOP, over, tex } from './blockset';
 import { OUTLINE, S, WHITE } from '../art/palette';

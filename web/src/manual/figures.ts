@@ -1,6 +1,6 @@
 // Screen shots for the printed manual, drawn by the same text-mode screen the desk PC uses.
 import { TextScreen, attr } from '../retro/text/textScreen';
-import { toCp437 } from '../retro/text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { paintMenuScreen } from '../retro/gm';
 import { sandboxLogin } from '../retro/bbs/ansiArt';
 import { MENUATTR, SHADATTR, ERRORATTR, CURATTR } from '../retro/text/textUi';

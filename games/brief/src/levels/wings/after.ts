@@ -1,6 +1,6 @@
 // After Hours: the quiet ones. Where the Mountain
 // Speaks, The Ledger of the Woods, Silence Has Teeth and The Incomplete Idiot.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { blank, docLeoSide, figure, floor, on, sign, wall } from '../../art/kit';

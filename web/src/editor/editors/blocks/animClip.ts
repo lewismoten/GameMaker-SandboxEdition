@@ -3,9 +3,9 @@
 // one clock. Background blocks follow their "changes into" chains (blockAnim.ts); a monster
 // steps through its pic list and starts over (engine/monsters.ts); a character sequence shows
 // its frames' top and bottom blocks, turned as each frame says. Pure: nothing here draws.
-import { CHARBL, MONBL, type Block } from '../../../formats/blocks';
-import { frameCount, type Character } from '../../../formats/character';
-import { LASTSL, type Monster } from '../../../formats/monster';
+import { CHARBL, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { frameCount, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { LASTSL, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { blockAnim } from './blockAnim';
 import type { BlockGroup } from './blockGroups';
 

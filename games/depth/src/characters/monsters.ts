@@ -8,8 +8,8 @@
 // a wireframe your ray hits becomes a crystal worth points, and Count Polygon loses faces.
 // 'end' is a lifetime in ticks (-1: die at the end of the march, -2: never); 'towards' chases
 // (1..63), flees (negative) or wanders (64 and up).
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../../web/src/formats/monster';
-import type { Block } from '../../../../web/src/formats/blocks';
+import { emptyMonster, newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { COUNT_RUNS, CROWN, MON, lensCounters } from '../ids';
 import type { SpriteSet } from '../sprites/sprites';
 import { corner } from '../../../kit/actors';

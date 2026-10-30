@@ -1,7 +1,7 @@
 // The endings' pictures. Won: the party in the Big Top, Teddy in a party hat in the middle of
 // it, Gwinn sitting (on purpose) by her best bone, and a real snapshot of Teddy taped up on the
 // tent wall. Lost: the whole team asleep in THE CHEZ, plugged in at a charger under the stars.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
 import { blob, centered, gradient, micro, microWidth, outlined, recolor, scaleBlit } from '../art/draw';
 import { errandSprite } from '../sprites/errands';

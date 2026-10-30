@@ -2,7 +2,7 @@
 // and the credits (with Doc Leo). The title is the song's animated cover (cartoons.ts,
 // cover.fli), then the name on it (title.gif); the story, the level cards and the endings are
 // cartoons too.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
 import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/font';

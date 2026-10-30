@@ -7,12 +7,12 @@
 // dogs, pigeons, rolling melons, the city guard, scorpions, vultures, a white goat, tumbleweeds,
 // a tiny mustard seed in red sneakers, snipping scissors, moths, the sewing machine's needle,
 // rolling thimbles, falling stars and a dove. Every sprite is drawn from shapes and outlined.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import type { Pal } from '../art/pal';
-import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export { T };
 

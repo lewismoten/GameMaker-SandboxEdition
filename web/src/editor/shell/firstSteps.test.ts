@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { Project } from '../core/project';
-import { newGame, emptyScene, serializeGame, ADVTYPE, parseGame } from '../../formats/game';
+import { newGame, emptyScene, serializeGame, ADVTYPE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { STEPS, beginFirstSteps, firstStepsState, fingerprint, notePlayed, stepsDone } from './firstSteps';
 import { CHAPTERS } from '../../manual/ultimate/plan';
 

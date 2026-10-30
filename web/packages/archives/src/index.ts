@@ -1,7 +1,7 @@
 // Portable game import, using the same discovery and player recovery as the site's importer.
-import { scanImport, GameReader, scanFile, type ScanFile } from '../../../src/project/importScan';
-import { adoptPlayer, type ImportedPlayer } from '../../../src/project/importPlayer';
-import { decodePack } from '../../../src/project/gamePack';
+import { scanImport, GameReader, scanFile, type ScanFile } from './project/importScan';
+import { adoptPlayer, type ImportedPlayer } from './project/importPlayer';
+import { decodePack } from './project/gamePack';
 export {
   scanImport,
   GameReader,
@@ -16,8 +16,8 @@ export {
   type ScanReport,
   type FoundGame,
   type ReadGame,
-} from '../../../src/project/importScan';
-export { createZip, readZip, listZip, isZip, crc32, type ZipEntry, type ZipListing, type ZipLimits } from '../../../src/project/zip';
+} from './project/importScan';
+export { createZip, readZip, listZip, isZip, crc32, type ZipEntry, type ZipListing, type ZipLimits } from './project/zip';
 
 export interface UnpackOptions {
   /** Optional source name, used for messages and archive detection. */

@@ -1,7 +1,7 @@
 // drive.fli, between Teddy's stops: THE CHEZ hums on to the next errand (it is electric: no
 // exhaust, just a whirr), Doc Leo at the wheel behind the door window and Teddy's head out of
 // the front of it, ears flapping. Also THE CHEZ with whoever is inside it, for the other screens.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CHEZ_WINDOW, chezSide } from '../../../kit/chez';
 import { CLEAR, outlined, scaleBlit } from '../art/draw';
 import { CHEZ_INK } from '../sprites/chezHero';

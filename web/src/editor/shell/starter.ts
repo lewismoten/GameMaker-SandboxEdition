@@ -4,12 +4,12 @@
 import { Project } from '../core/project';
 import { libraryGame } from '../core/library';
 import { loadCatalog, type GameFiles } from '../../project/files';
-import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, serializeGame } from '../../formats/game';
+import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { beginFirstSteps } from './firstSteps';
 import { closeGaps } from '../editors/integrator/integratorLayout';
-import { BACKBL, parseBlocks } from '../../formats/blocks';
-import { parseSoundSet } from '../../formats/sound';
-import { MLEN, MWID, newMap, parseMap, reindexMonsters, serializeMap } from '../../formats/map';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { MLEN, MWID, newMap, parseMap, reindexMonsters, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 const KINDS = ['pal', 'map', 'bbl', 'mon', 'mbl', 'chr', 'cbl', 'snd'] as const;
 

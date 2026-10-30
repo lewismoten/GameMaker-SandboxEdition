@@ -1,8 +1,8 @@
 // ADA.CHR and ADA.CBL: Inspector Penn walks in eight directions on the arrows, on WASD,
 // on Q/E (up and to the side) and on the number pad's corners; Space picks things up;
 // Z raises the prop magnifying glass, but only while she carries it.
-import { CHARBL } from '../../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BlockSet } from '../blocks/blockset';
 import { ADA, strikeFrames } from '../sprites/ada';
 import { CTR, KEY, SEQ, SND } from '../ids';

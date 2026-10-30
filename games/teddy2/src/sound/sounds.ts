@@ -1,8 +1,8 @@
 // teddy.snd: thirty PC speaker effects, and digitized .VOC samples for a Sound Blaster
 // (a woof and Gwinn's boof, a sniff, a yip, a bell, a car horn honk, the wobble ball's
 // giggle...) made with the kit's little synthesizer. Both dogs share the one set.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { lowpass } from '../../../kit/synthParts';
 import { noiseBurst, woof, yelp, pop, boing, whoosh, crunch, chomp, giggle, honk, snore, scratch, slap, chime } from '../../../kit/teddySounds';

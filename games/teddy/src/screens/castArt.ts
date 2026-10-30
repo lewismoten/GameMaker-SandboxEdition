@@ -2,7 +2,7 @@
 // per pixel, each character a shade of one of the palette's named ramps ('.' is clear). They
 // were drawn over the family's photos (the silhouettes and the light traced from them), then
 // cleaned up by hand in the screens' palette: flat bands of shade, inked eyes and mouths.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export interface Art {
   /** Where the top-left of `rows` goes on the 320x200 screen. */

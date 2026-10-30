@@ -1,10 +1,10 @@
 // Drawing a region of a map with its blocks and monsters (for the level cards, the box
 // screenshots and previews).
 import { CLEAR as TRANSPARENT } from './draw';
-import type { Block } from '../../../../web/src/formats/blocks';
-import { LASTMON, type Monster } from '../../../../web/src/formats/monster';
-import { MLEN, MWID, type GameMap } from '../../../../web/src/formats/map';
-import { Pixels } from '../../../kit/pixels';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MLEN, MWID, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export function renderRegion(map: GameMap, bbl: Block[], mbl: Block[], mon: Monster[], x0: number, y0: number, w: number, h: number): Pixels {
   const p = new Pixels(w * 20, h * 20);

@@ -1,9 +1,9 @@
 // The sound effects the Teddy games share, synthesized as .VOC samples: Teddy's woof and yelp,
 // pops, boings, whooshes, crunches and chomps, a giggle, a honk, a snore, a scratch, a slap and a
 // chime (Ohm Sweet Ohm rings it too).
-import { mix, osc, sample, type Synth } from './sound';
+import { mix, osc, sample, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { lowpass } from './synthParts';
-import { rng } from './pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export function noiseBurst(seconds: number, k: number, seed: number, env?: (u: number) => number): Uint8Array {
   return sample(seconds, lowpass(osc.noise(seed), k), { envelope: env, gain: 1 });

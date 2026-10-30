@@ -2,7 +2,7 @@
 // castLeo.ts, drawn over Lewis's photo as a hobo clown) made up the way this game draws him:
 // white greasepaint patches round both eyes, his own nose sunburned pink (a hobo wears no
 // clown nose, so the sequel's red nose is never drawn), and a lavender shirt.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { drawArt } from './castArt';
 import { LEO, LEO_BLINK } from '../../../teddy2/src/screens/castLeo';
 import { c } from './castKit';

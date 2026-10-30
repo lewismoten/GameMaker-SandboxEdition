@@ -3,8 +3,8 @@
 // dragged block into a frame or a monster into a list slot.
 import { showHelpScreen } from '../../retro/text/textUi';
 import { BLACK, BLEN, Face, GRAY1, GRAY2, GRAY3, GRAY4, NONE, RED1, RED2, RED3 } from '../shared/facelift';
-import { LASTMON, LASTSL } from '../../formats/monster';
-import { MONBL, orientIndex } from '../../formats/blocks';
+import { LASTMON, LASTSL } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MONBL, orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import {
   BLLEN,
   BLX,

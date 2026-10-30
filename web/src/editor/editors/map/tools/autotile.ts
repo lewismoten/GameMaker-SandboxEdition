@@ -9,7 +9,7 @@
 // - blob47: one block for each of the 47 ways neighbors can meet (corners count only when both sides do);
 // - bits16: one per 4-bit mask of the four sides, 16 blocks (N 1, E 2, S 4, W 8);
 // - path: a road or path one block wide, straights and corners (T and cross optional).
-import { MLEN, MWID } from '../../../../formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 export const N = 1;
 export const NE = 2;

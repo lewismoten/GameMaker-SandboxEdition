@@ -1,11 +1,11 @@
 // The level check's whole-game checks: keys never taught on a text screen, keys that wait
 // before they answer, the hero's walking speed, loud or long sounds on frequent events, the
 // title, instructions, credits, won and lost screens, and how much changes from level to level.
-import { CHARBL, MONBL } from '../../../formats/blocks';
-import { MAXSEQ, type Character } from '../../../formats/character';
-import { decodeVoc, isVoc } from '../../../formats/voc';
-import type { Game } from '../../../formats/game';
-import { scanName } from '../../../input/scancodes';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXSEQ, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { GameFiles } from '../../../project/files';
 import { characterActions, gameKeyMap } from '../../keymap/keyMap';
 import type { Finding } from '../findings';

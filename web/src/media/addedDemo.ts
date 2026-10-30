@@ -3,7 +3,7 @@
 // text file beside it says it was not part of the original game, so the notice travels
 // with the game wherever it is exported.
 import { h, modal } from '../editor/core/ui';
-import { parseGame, serializeGame } from '../formats/game';
+import { parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { GameFiles, type CatalogEntry } from '../project/files';
 import { titleDemo } from './demo';
 import { ADDED_DEMO_FILE, extraDemoForGam, fetchExtraDemo, loadExtraDemos, type ExtraDemo } from './extraDemos';

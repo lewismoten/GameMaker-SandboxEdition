@@ -1,6 +1,6 @@
 // People and things in the downtown bakery: the baker (a tall white hat, a floury apron and a
 // rolling pin), and a tray of cookies riding the belts out of the oven (catch it for a treat).
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { CK } from './klown';

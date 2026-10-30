@@ -1,6 +1,6 @@
 // A level's two block sets and its palette: lay the level out (which makes the blocks it
 // needs), render every block in both planes, pick the level's colors and dither them in.
-import type { Block } from '../../../../web/src/formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { levelPalette } from '../art/palette';
 import { toBytes } from '../render/image';
 import type { Col } from '../render/quant';

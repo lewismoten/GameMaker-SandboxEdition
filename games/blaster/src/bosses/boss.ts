@@ -5,7 +5,7 @@
 //
 // The arena's way out sits right behind the boss's weak points: the parts burn the ship
 // badly enough that the only way through is to shoot them away first.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from '../art/draw';
 import { HURT } from '../characters/sharedMonsters';
 import { POWER } from '../ids';

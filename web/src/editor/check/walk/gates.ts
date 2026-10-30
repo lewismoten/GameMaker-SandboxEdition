@@ -5,9 +5,9 @@
 // block on the map, a monster whose picture's block does) is its key. The walkthrough bot reads
 // a scene's live map for them (fetchKeys.ts: fetch what the doors still shut need, then go on),
 // and says plainly which door it couldn't open and why.
-import type { Block } from '../../../formats/blocks';
-import { MLEN, MWID } from '../../../formats/map';
-import { INF_REPEAT, LASTMM, LASTMON, type World } from '../../../engine/world';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { INF_REPEAT, LASTMM, LASTMON, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 
 /** A locked door: its cells (touching blocks of one kind side by side are one door), the counter it reads and what it takes. */
 export interface Gate {

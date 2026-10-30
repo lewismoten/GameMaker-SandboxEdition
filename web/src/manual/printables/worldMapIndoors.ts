@@ -2,7 +2,7 @@
 // room with walls inside the house's outer walls, furniture in the free space and a door where
 // a hall leaves a room (a library's plan has shelves); a circuit board with each part outlined
 // in white and little parts between; a draftsman's blue grid with spheres and polygons.
-import type { Point } from '../../formats/game';
+import type { Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Rect } from './worldMapLayout';
 import { el } from './worldMapArt';
 import { INK, PAPER, mix } from './worldMapTerrain';

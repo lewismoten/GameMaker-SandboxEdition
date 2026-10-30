@@ -8,7 +8,15 @@ import { Project } from '../core/project';
 import { starterProject } from './starter';
 import { beginFirstSteps } from './firstSteps';
 import { loadCatalog, type CatalogEntry, type GameFiles } from '../../project/files';
-import { GameReader, gameFromFiles, scanFile, type FoundGame, type ReadGame, type ScanFile, type ScanReport } from '../../project/importScan';
+import {
+  GameReader,
+  gameFromFiles,
+  scanFile,
+  type FoundGame,
+  type ReadGame,
+  type ScanFile,
+  type ScanReport,
+} from '@lewismoten/gamemaker-sandbox-archives/scan';
 import * as chooser from './importChooser';
 import { markBatch, newBatch } from './importBatch';
 import type { HomeNav } from './home';
@@ -107,7 +115,7 @@ type Imported = ReadGame;
 async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
   const shareware = await sharewareByCrc();
   if (!shareware.size) return undefined;
-  const { crc32 } = await import('../../project/zip');
+  const { crc32 } = await import('@lewismoten/gamemaker-sandbox-archives/zip');
   return files
     .byExtension('gam')
     .map((n) => shareware.get(crc32(files.get(n)!)))
@@ -123,7 +131,7 @@ async function sharewareByCrc(): Promise<Map<number, CatalogEntry>> {
 /** Saves imported files as a project listed under Imported; what its player's patches said, if anything. */
 async function saveImported({ files, name, gam, players }: Imported): Promise<{ project: Project; note?: string; madeGam: boolean }> {
   // a hand-edited player (or one that renamed the files' extensions): read before the .gam is looked for
-  const player = players.length ? (await import('../../project/importPlayer')).adoptPlayer(files, players) : undefined;
+  const player = players.length ? (await import('@lewismoten/gamemaker-sandbox-archives/project/importPlayer')).adoptPlayer(files, players) : undefined;
   // a backup's editor-only extras (<game>.GMX) go back beside the files, not among them
   const companion = takeCompanion(files);
   const madeGam = !files.mainGame();

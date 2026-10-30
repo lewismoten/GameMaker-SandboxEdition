@@ -3,8 +3,8 @@
 // lettering lifted off the screen onto a ribbon across it, a SANDBOX SOFTWARE scroll over the
 // bottom, and the hero standing large in front, breaking out of the ring. Outside the badge
 // the picture is see-through, so the mug's white shows.
-import { paletteToRGBA, type Palette } from '../../formats/palette';
-import { FONT8X8 } from '../../gfx/font8x8';
+import { paletteToRGBA, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 
 /** Packed 0xAABBGGRR pixels, as ImageData's buffer reads them; 0 is see-through. */
 export interface Rgba {

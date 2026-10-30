@@ -4,8 +4,8 @@
 // Its own Undo and Redo work while it is open.
 import { h, modal } from '../../core/ui';
 import { lut } from '../../core/draw';
-import { BLEN, TRANSPARENT } from '../../../formats/blocks';
-import { paletteCss, type Palette } from '../../../formats/palette';
+import { BLEN, TRANSPARENT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { paletteCss, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { colorChoice } from '../../widgets/colorChoice';
 import { joinGroup, type BlockGroup } from './blockGroups';
 import type { Mirror } from './pixelOps';

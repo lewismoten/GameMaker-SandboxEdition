@@ -5,7 +5,7 @@
 // picture is see-through, so the mug's white shows.
 import { TextScreen, attr, COLS, ROWS } from '../../retro/text/textScreen';
 import { SANDBOX_ANSI, bigText, bigTextWidth, centered, sandboxLogin } from '../../retro/bbs/ansiArt';
-import { toCp437 } from '../../retro/text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { OUTLINE, blank, medallion, rgb, ribbon, stamp, trimSprite, type Rgba } from './gameBadge';
 
 export type BbsDesignId = 'logo' | 'scene' | 'banner' | 'gm';

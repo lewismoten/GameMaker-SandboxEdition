@@ -5,7 +5,7 @@
 // changed later. Opened from the sound set editor, it can also draw the PC speaker steps.
 import './sfxMaker.css';
 import { h, modal, toast } from '../core/ui';
-import { encodeVoc } from '../../formats/voc';
+import { encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';
 import { drawWave } from '../widgets/waveform';

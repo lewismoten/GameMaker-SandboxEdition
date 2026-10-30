@@ -2,9 +2,9 @@
 // reach (inView.ts, sealed.ts), floors and walls that look alike (blockChecks.ts footing),
 // starting values PLAYGAME ignores and a blank Idle (heroStart.ts), and the front screens' colors.
 import { describe, expect, it } from 'vitest';
-import { BACKBL, parseBlocks, serializeBlocks } from '../../../formats/blocks';
-import { IDLESEQ, parseCharacter, serializeCharacter } from '../../../formats/character';
-import { serializeGame } from '../../../formats/game';
+import { BACKBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { IDLESEQ, parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { scenesOf } from '../sceneData';
 import { testGame, WALL, type TestGame } from '../testGame';
 import { blockChecks } from './blockChecks';

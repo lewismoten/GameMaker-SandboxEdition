@@ -22,7 +22,7 @@ interface Feature {
 }
 
 export const CHECKLIST: Feature[] = [
-  { name: 'Plays the original game files, byte for byte', then: 'yes', module: 'web/src/engine/game.ts' },
+  { name: 'Plays the original game files, byte for byte', then: 'yes', module: 'web/packages/engine/src/engine/game.ts' },
   { name: 'Design tools in DOS (the desk’s PC runs them)', then: 'yes', module: 'web/src/vga/blocedit.ts' },
   { name: 'Point-and-click editors in a browser window', then: 'no', module: 'web/src/editor/editors/registry.ts' },
   { name: 'Undo and Redo', then: 'no', module: 'web/src/editor/core/history.ts' },

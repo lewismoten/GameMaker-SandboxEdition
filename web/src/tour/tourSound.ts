@@ -4,7 +4,7 @@
 // step's recorded voice line when there is one (public/tour/voice/<id>.ogg). Nothing plays
 // until a tour starts from a click; the mute switch is remembered in this browser, and a
 // browser whose demo sound is "None" starts muted.
-import { AudioEngine } from '../audio/engine';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { fetchGameFile, loadGameList } from '../project/files';
 import { BARKS, MUSIC, SOUNDS, barkUrl, type MusicId, type SoundId } from './steps';
 

@@ -4,11 +4,11 @@
 // The routes never go near the felt egg.
 //   cd web && npx vite-node ../games/teddy3/tools/walkthrough.ts
 import { HEROES } from '../src/heroes';
-import { newCharInfo, type CharInfo } from '../../../web/src/engine/world';
+import { newCharInfo, type CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { LEVELS } from '../src/game';
 import { ROUTES } from './route';
 import { Recorder, playLevel } from './bot';
-import { Sim } from '../../kit/sceneSim';
+import { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { encodeKeys, type WalkChapterMark, type WalkSegment } from '../../../web/src/walkthrough/format';
 import { writeWalkthrough } from '../../kit/walkthrough';
 

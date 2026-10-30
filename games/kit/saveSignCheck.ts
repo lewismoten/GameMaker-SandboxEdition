@@ -10,8 +10,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gameDisk, gamesDir } from './tinHeartDisk';
 import { looksLikeSaveSignHalf } from './saveSign';
-import { BACKBL, parseBlocks } from '../../web/src/formats/blocks';
-import { MLEN, MWID, parseMap } from '../../web/src/formats/map';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 interface About {
   secret?: boolean;

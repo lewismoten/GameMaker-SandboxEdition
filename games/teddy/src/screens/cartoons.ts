@@ -2,9 +2,9 @@
 // story pages: Doc Leo at home practicing his clown act (balloon animals, a magic trick, a
 // parade strut), then off to the Clown Club in his red CitiCar; then intro.fli (Gwinn and
 // the suitcase). And at the end, the Clown Club parade with Teddy riding up front.
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, centered, clubArt, outlined, scaleBlit } from '../art/draw';
 import { FX } from '../sprites/fx';
 import { GWINN } from '../sprites/gwinn';

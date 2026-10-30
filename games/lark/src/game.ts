@@ -5,7 +5,7 @@
 // point, and they link straight on. PLAYGAME shows a scene's intro on every way in, so no place
 // Joe comes back to (from a talk) has an intro of its own: each chapter's card is a pass scene on
 // the way in from the road instead.
-import type { Game } from '../../../web/src/formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { boxSet } from './blocks/box';
 import { nightSet } from './blocks/night';
 import { parkSet } from './blocks/park';

@@ -29,7 +29,7 @@ import { companionPatches } from '../../../../dosPlayer/playerRecord';
 import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
 import { acceptedFindings, findingKey, setAccepted, splitAccepted } from '../../../check/accepted';
 import type { LiveProgress } from '../../../check/live';
-import { MLEN, MWID } from '../../../../formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { MARKS, describeCell, heatWords, type HeatView } from './markInfo';
 import { COMPARE_COLORS, combineSteps, compareSteps } from './myHeat';
 import { myHeatControls } from './myHeatControls';

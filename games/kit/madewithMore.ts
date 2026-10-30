@@ -39,9 +39,9 @@ import {
   sky,
   type Dot,
 } from './madewithArt';
-import { Pixels } from './pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from './png';
-import { Reel } from './reel';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 
 const SPEED = 5; // 1/70 s a frame: 14 frames a second
 const FADE = 7;

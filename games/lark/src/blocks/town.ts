@@ -1,7 +1,7 @@
 // town.bbl: the top-down blocks of the library, the Long Road and the town square, seen from
 // above as Joe walks them a block a step. Floors and grass, walls and shelves, the friends who
 // talk (walk onto them), the gates that count, and the cells of the pass map the talks use.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel } from '../art/draw';
 import { c, r } from '../art/pal';
 import { CTR, LEG1_THANKS } from '../ids';

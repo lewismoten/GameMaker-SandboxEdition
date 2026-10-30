@@ -2,7 +2,7 @@
 // Download… item open the chooser (download.ts) for the stored project.
 import { h, toast } from '../core/ui';
 import { loadProject } from '../../project/storage';
-import { parseGame } from '../../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { chooseDownload, downloadButton, type DownloadGame } from './download';
 
 /** The project as the chooser takes it, or undefined when it is gone from this browser. */

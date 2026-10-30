@@ -2,8 +2,8 @@
 // Positions pair each x with its y; the menu's words and marker also move together, with each
 // word's own position folded away below; a screen's two frames share one field.
 import { h } from '../../../core/ui';
-import type { FramePatch, NumberPatch, PatchEntry, PatchScreen, TextPatch } from '../../../../dosPlayer/patchTable';
-import { patchEntry } from '../../../../dosPlayer/patchRules';
+import type { FramePatch, NumberPatch, PatchEntry, PatchScreen, TextPatch } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { patchEntry } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import type { FieldMaker } from './playerFields';
 import { screenSections, type ScreenSection } from './screenTabs';
 

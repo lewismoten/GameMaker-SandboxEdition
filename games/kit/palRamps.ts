@@ -1,6 +1,6 @@
 // A built palette with its ramps looked up by name (kit/palette.ts builds it): the colors, a
 // ramp, and a shade of a ramp, clamped to its ends.
-import { PaletteBuilder } from './palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 
 export interface Pal {
   pal: Uint8Array;

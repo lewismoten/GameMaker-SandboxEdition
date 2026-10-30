@@ -2,12 +2,12 @@
 //   cd web && npx vite-node ../games/sandcast/build.ts
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { serializeBlocks } from '../../web/src/formats/blocks';
-import { serializeMonsters } from '../../web/src/formats/monster';
-import { serializeMap } from '../../web/src/formats/map';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { serializeGame } from '../../web/src/formats/game';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { Disk } from '../kit/disk';
 import { clipEveryList } from '../kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';

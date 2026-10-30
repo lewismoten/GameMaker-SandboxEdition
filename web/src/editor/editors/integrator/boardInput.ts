@@ -2,7 +2,7 @@
 // background to pan, pinch or scroll to zoom, click a card's song button to hear it,
 // double-click a level to play it, and + − 0 and the arrow keys (stepping to the nearest
 // scene that way). integrator.ts owns the game, the selection and the panels.
-import { ADVTYPE, type Game } from '../../../formats/game';
+import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { S, inRect, type CardButton, type Rect } from './board';
 import { clampPos } from './layoutCells';
 import type { BoardCamera } from './boardCamera';

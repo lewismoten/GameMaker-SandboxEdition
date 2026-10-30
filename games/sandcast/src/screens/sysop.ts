@@ -3,9 +3,9 @@
 // (Lewis in his red polo and violet sunglasses, a sly half-smile; Teddy all ears, grinning,
 // on his blue leash). Painted in code in a palette of its own, and shown by sysopFli()
 // arriving over the modem as an interlaced GIF.
-import { Pixels, dither, rng } from '../../../kit/pixels';
-import { PaletteBuilder } from '../../../kit/palette';
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { text } from './screens';
 
 const SP = new PaletteBuilder();

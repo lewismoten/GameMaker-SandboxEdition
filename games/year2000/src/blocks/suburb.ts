@@ -2,7 +2,7 @@
 // chrome fences, hedge cubes, chrome trees, mailboxes, dishes, doghouses, pools, parked
 // cars, the CitiCar and its charger, mower docks, newspaper cannons, Skyway rails, clouds, tunnels, toll bots and the
 // pill drive-thru.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { blob, gradient, oval, shadeAt, speckle } from '../art/draw';
 import { FLOORS } from './floors';

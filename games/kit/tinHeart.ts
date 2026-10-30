@@ -4,8 +4,8 @@
 // glint across the tin (a gentle shine). Touching one gives a small bonus. Its sound is a soft,
 // steady tick-tock on the PC speaker (`TICK_TOCK`, never a .VOC, so it never cuts a voice clip),
 // where a game has a sound slot to spare for it.
-import { Pixels } from './pixels';
-import { speaker } from './sound';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 
 /** The colors it is drawn in, as palette indices of the game's own ramps. */
 interface TinColors {

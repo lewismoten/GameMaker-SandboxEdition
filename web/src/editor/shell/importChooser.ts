@@ -3,7 +3,7 @@
 // (importThumbs.ts), to tick the ones to import; importing them one at a time, again with
 // Cancel; and what was found when no game was.
 import { h, modal } from '../core/ui';
-import { scanImport, scanSummary, type FoundGame, type GameReader, type ScanFile, type ScanReport } from '../../project/importScan';
+import { scanImport, scanSummary, type FoundGame, type GameReader, type ScanFile, type ScanReport } from '@lewismoten/gamemaker-sandbox-archives/scan';
 import { importThumbs } from './importThumbs';
 import './importChooser.css';
 

@@ -31,7 +31,7 @@
 //   bridge "Scrubbus maximus, demon sponge divine"     124.2 - 143.1  (bars 46-52)
 //   chorus 2 "Loofah of Lucifer, why must you judge?"  148.5 - 167.4  (bars 55-61)
 //   outro "I'm sleeping alone with a washcloth..."     167.4 - 192.4  (bars 62-70)
-import { INSTRUMENTS, sbi } from '../../../kit/music';
+import { INSTRUMENTS, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 import { ORGAN, Writer, type Groove } from '../../../kit/song';
 import { DRUM, Fx, detuned, sweep } from '../../../kit/songFx';
 

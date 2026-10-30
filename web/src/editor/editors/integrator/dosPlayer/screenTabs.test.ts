@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PATCHES } from '../../../../dosPlayer/patchTable';
+import { PATCHES } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
 import { SCREEN_TABS, screenSections } from './screenTabs';
 
 describe('the DOS player dialog by screen', () => {

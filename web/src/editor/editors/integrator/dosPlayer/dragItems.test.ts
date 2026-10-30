@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { playerLook } from '../../../../engine/playerLook';
-import { patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '../../../../dosPlayer/patchRules';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { describeItem, dragBy, grab, hitItem, itemFor, screenItems, toScreen } from './dragItems';
 
 const drawn = { title: 'My Game', heading: true };

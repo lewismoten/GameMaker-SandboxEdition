@@ -4,8 +4,8 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ADVTYPE, parseGame, type Game, type Scene } from '../../formats/game';
-import { MLEN, MWID } from '../../formats/map';
+import { ADVTYPE, parseGame, type Game, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { levelsOf, type Level } from './levelMapLayout';
 import { mergeStates, samePlace } from './levelStates';
 import VIEWS from './levelViews.json';

@@ -3,7 +3,7 @@
 // cover.fli, then title.gif with the name); the story, the level cards and the endings are
 // cartoons (cartoons.ts).
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
 import { centered, outlined, text, textWidth } from '../../../snowbound/src/art/font';
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';

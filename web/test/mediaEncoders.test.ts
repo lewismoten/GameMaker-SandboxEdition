@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { encodeWav, parseWav, toPcm8 } from '../src/media/wav';
 import { changedRect, encodeAnimatedGif, lzw } from '../src/media/gifEncode';
-import { decodeGif } from '../src/formats/gif';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 
 /** A tiny GIF LZW decoder, independent of the encoder, for round trips. */
 function unlzw(data: Uint8Array, count: number): Uint8Array {
@@ -126,7 +126,7 @@ describe('mp4 mux', () => {
 describe('720x400 text capture', () => {
   it('draws 9-dot cells, repeating the eighth column only for line drawing characters', async () => {
     const { textPixels, TEXT_W, TEXT_H } = await import('../src/media/screenCapture');
-    const { FONT_CP437 } = await import('../src/gfx/cp437Glyphs');
+    const { FONT_CP437 } = await import('@lewismoten/gamemaker-sandbox-engine/gfx/cp437Glyphs');
     expect([TEXT_W, TEXT_H]).toEqual([720, 400]);
     const chars = new Uint8Array(80 * 25).fill(0xdb); // full block everywhere
     chars[0] = 0xc4; // ─ joins its neighbor

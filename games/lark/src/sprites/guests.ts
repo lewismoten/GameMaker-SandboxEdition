@@ -2,7 +2,7 @@
 // game's palette (as kit/cameos.ts does for the Sandbox regulars): Loaf #13, the loaf nobody
 // picked, and the mustard seed with the greatest feet.
 import { recolor } from '../../../kit/cameos';
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { buildPalette as loafPalette } from '../../../loaf/src/art/pal';
 import { loafArt, type LoafPose } from '../../../loaf/src/sprites/sprites';
 import { buildPalette as seedPalette } from '../../../mustard/src/art/pal';

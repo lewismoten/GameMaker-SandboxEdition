@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { testGame } from '../../editor/check/testGame';
-import { parseMap } from '../../formats/map';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { GAME_TOOL_DEFS } from '../tools/index';
 import { runTool } from '../tools/run';
 import { EditorContext } from './editorContext';

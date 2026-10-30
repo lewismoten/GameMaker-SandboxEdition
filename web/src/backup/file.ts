@@ -3,7 +3,7 @@
 // each section with its item count) and sections/<id>.json for each section in it, written with
 // codec.ts so binary data comes back byte for byte. Reading checks everything before anything
 // is written. No DOM.
-import { createZip, isZip, listZip } from '../project/zip';
+import { createZip, isZip, listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { PRODUCT } from '../edition';
 import { version as SITE_VERSION } from '../../package.json';
 import { decode, encode } from './codec';

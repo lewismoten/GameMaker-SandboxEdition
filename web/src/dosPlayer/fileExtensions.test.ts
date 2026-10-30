@@ -2,11 +2,19 @@
 // Acord Games' set matching their NEVER.EXE (from the scratchpad archive, when it is there).
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { applyPlayerPatches, readPlayerPatches } from './applyPatches';
-import { ACORD_EXTENSIONS, EXT_KINDS, extId, extValueProblem, extensionClashes, renamedExtensions, withoutExtensions } from './fileExtensions';
-import { cleanPatches } from './patchRules';
+import { applyPlayerPatches, readPlayerPatches } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import {
+  ACORD_EXTENSIONS,
+  EXT_KINDS,
+  extId,
+  extValueProblem,
+  extensionClashes,
+  renamedExtensions,
+  withoutExtensions,
+} from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
+import { cleanPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { playerChanges, renamedFiles } from './describePatches';
-import { md5Hex } from './md5';
+import { md5Hex } from '@lewismoten/gamemaker-sandbox-archives/player/md5';
 
 const exe = new Uint8Array(readFileSync(new URL('../../../cd/gm/xferplay.exe', import.meta.url)));
 const NEVER =

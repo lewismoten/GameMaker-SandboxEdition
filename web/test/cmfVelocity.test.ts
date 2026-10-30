@@ -1,7 +1,7 @@
 // Tests: Note velocity in the CMF player (audio/cmfPlayer.ts), following SBFMDRV's loudness formula.
 import { describe, expect, it } from 'vitest';
-import { CmfPlayer } from '../src/audio/cmfPlayer';
-import { Opl2 } from '../src/audio/opl';
+import { CmfPlayer } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
 
 /** Plays one note on channel 0 with an instrument whose carrier level byte is `level`; returns the carrier's 0x40 register. */
 function carrierAfterNote(velocity: number, level: number): number {

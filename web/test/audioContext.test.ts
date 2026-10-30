@@ -41,14 +41,14 @@ afterEach(() => vi.unstubAllGlobals());
 
 describe('the page AudioContext', () => {
   it('is made once and shared', async () => {
-    const { audioContext } = await import('../src/audio/context');
+    const { audioContext } = await import('@lewismoten/gamemaker-sandbox-engine/audio/context');
     expect(audioContext()).toBe(audioContext());
     expect(FakeContext.made).toBe(1);
     expect(audioContext()!.state).toBe('suspended');
   });
 
   it('starts on the first real tap, with a silent sample and the playback audio session', async () => {
-    const { audioContext, soundUnlocked, onSoundUnlocked } = await import('../src/audio/context');
+    const { audioContext, soundUnlocked, onSoundUnlocked } = await import('@lewismoten/gamemaker-sandbox-engine/audio/context');
     const ctx = audioContext() as unknown as FakeContext;
     const heard = vi.fn();
     onSoundUnlocked(heard);
@@ -66,7 +66,7 @@ describe('the page AudioContext', () => {
   });
 
   it('makes the context in the first tap when nothing asked for one yet', async () => {
-    const { soundUnlocked } = await import('../src/audio/context');
+    const { soundUnlocked } = await import('@lewismoten/gamemaker-sandbox-engine/audio/context');
     expect(FakeContext.made).toBe(0);
     listeners.get('keydown')!({ type: 'keydown', key: 'a', isTrusted: true } as unknown as Event);
     expect(FakeContext.made).toBe(1);
@@ -74,7 +74,7 @@ describe('the page AudioContext', () => {
   });
 
   it('comes back after an interruption when the page is shown again', async () => {
-    const { audioContext, unlock } = await import('../src/audio/context');
+    const { audioContext, unlock } = await import('@lewismoten/gamemaker-sandbox-engine/audio/context');
     const ctx = audioContext() as unknown as FakeContext;
     unlock();
     ctx.state = 'interrupted';

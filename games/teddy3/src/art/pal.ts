@@ -3,7 +3,7 @@
 // same town goes from a pink morning in the garage to the Big Top's lights at night. The
 // sequel's ramps come first, in its order, so its sprites (imported as they are) keep their
 // colors; the finale's new ramps follow.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { P as SEQUEL } from '../../../teddy2/src/art/pal';
 
 type RGB = [number, number, number];

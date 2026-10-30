@@ -11,8 +11,8 @@ import {
   showLength,
   thenOf,
 } from '../src/editor/editors/slideShow/slideTimeline';
-import { parseSlideList, serializeSlideList } from '../src/formats/graphicScripts';
-import { textBytes } from '../src/formats/binary';
+import { parseSlideList, serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 
 describe('slide show timing', () => {
   it('reads the three ways a slide can end', () => {

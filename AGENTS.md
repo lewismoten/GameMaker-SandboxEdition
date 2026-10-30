@@ -18,7 +18,7 @@ The original DOS source is in `code/` and the CD in `cd/`. The rest is new.
 
 | Path | What it holds |
 | --- | --- |
-| `web/` | The Vite + TypeScript app: engine (`src/engine`), editor (`src/editor`), desk (`src/desk`, `src/retro`), exports (`src/export`), manuals and printables (`src/manual`). `web/src/README.md` maps it. |
+| `web/` | The Vite + TypeScript app: SDK workspaces (`packages/`), editor (`src/editor`), desk (`src/desk`, `src/retro`), exports (`src/export`), manuals and printables (`src/manual`). `web/src/README.md` maps it. |
 | `web/src/editor/check/` | The editor's Level check and walkthrough bot, with no DOM (they run in Web Workers). Its panel is `editors/map/check/`; its badges, Before You Upload list and Make a walkthrough are in `editor/widgets/`. |
 | `web/src/linkIn/` | Opening a game another site links to or sends by postMessage. Its protocol and limits are in `protocol.ts`; `docs/embed.md` is the site owners' side. |
 | `docs/` | `embed.md` (opening games from other sites, with `examples/`), `web-player.md` (the web player), `editor.md` (a tour of the web editor, with its screenshots in `screenshots/editor/`), `history.md`, and the README's screenshots. |
@@ -27,10 +27,14 @@ The original DOS source is in `code/` and the CD in `cd/`. The rest is new.
 | `mac/`, `win/`, `linux/` | Native player shells for the downloads. |
 | `code/` | Original C/C++ source. It is the reference for engine behavior. |
 
+Install from the repository root with `npm ci`. It links the app and the SDK workspaces and
+builds their distributions. The only lockfile is root `package-lock.json`; package-owned source
+lives under `web/packages/*/src/`. See `docs/monorepo.md`.
+
 ## Commands (run from `web/`)
 
 ```sh
-npm install
+npm ci                                            # uses the root workspace lockfile
 npm run format                                     # Prettier: web/, games/*.ts, code/README.md
 npm run format:check                               # what CI runs
 npm run lint                                       # ESLint (type-aware) on web/; lint:fix fixes

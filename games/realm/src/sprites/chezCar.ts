@@ -4,7 +4,7 @@
 // (left is the same picture mirrored), up and down, two frames each (a bounce).
 import { Canvas, mix, clamp01, type RGB } from '../art/rgb';
 import { C } from '../art/pal';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { chezSide, type ChezInk } from '../../../kit/chez';
 
 /** THE CHEZ's side (the shared side view, games/kit/chez.ts) in this game's colors. */

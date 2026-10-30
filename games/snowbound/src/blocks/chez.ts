@@ -2,7 +2,7 @@
 // rear then front, as solid as theirs): the snow on its roof and hood, drifts round its wheels.
 // Added last, so no other block's number moves.
 import { chezSide } from '../../../kit/chez';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../art/draw';
 import { Ctx, SOLID } from './book';
 import type { addGround } from './ground';

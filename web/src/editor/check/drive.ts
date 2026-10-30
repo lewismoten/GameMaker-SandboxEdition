@@ -2,9 +2,9 @@
 // until each step's end, then let go and wait for the hero to come to rest. The explorer plays
 // moves through it, and a walkthrough replays a found path through it tick for tick, so both
 // press the same keys at the same ticks.
-import { BLEN, SOLTOP } from '../../formats/blocks';
-import { MLEN, MWID } from '../../formats/map';
-import type { World } from '../../engine/world';
+import { BLEN, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { Move } from './inputs';
 import type { SceneSim } from './sim';
 

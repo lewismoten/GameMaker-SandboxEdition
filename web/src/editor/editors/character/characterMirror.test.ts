@@ -1,8 +1,8 @@
 // Mirroring a hero: orientation composition checked pixel by pixel, both blocks flipped, x
 // negated, linked mirror blocks, and the key and joystick swaps.
 import { describe, expect, it } from 'vitest';
-import { BLEN, CHARBL, MONBL, TRANSPARENT, newBlockSet } from '../../../formats/blocks';
-import { MAXFRAME, emptyFrame, type Frame, type Sequence } from '../../../formats/character';
+import { BLEN, CHARBL, MONBL, TRANSPARENT, newBlockSet } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXFRAME, emptyFrame, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { composeOrient, flipHOrient } from './characterLogic';
 import {
   MIRROR,

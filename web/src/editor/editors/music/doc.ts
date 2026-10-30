@@ -2,10 +2,10 @@
 // playback through the app's own OPL2 emulation (the same PlayIt code the games use).
 import type { Project } from '../../core/project';
 import { audio } from '../../widgets/mediaShared';
-import { TICK_RATE } from '../../../audio/cmfPlayer';
-import { auditionSong, buildPreview, type Preview } from '../../../formats/cmfPreview';
-import { channelSounds, DEFAULT_VELOCITY, extendEnd, startMode, startProgram, usedChannels } from '../../../formats/cmfEdit';
-import { readSong, RHYTHM_CHANNELS, writeSong, type CmfSong, type Note, DRUM_NAMES } from '../../../formats/cmfSong';
+import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { auditionSong, buildPreview, type Preview } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfPreview';
+import { channelSounds, DEFAULT_VELOCITY, extendEnd, startMode, startProgram, usedChannels } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { readSong, RHYTHM_CHANNELS, writeSong, type CmfSong, type Note, DRUM_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { presetName } from './sbi';
 import { presetPreview } from '../../../audio/oplPresetPreview';
 import type { OplPreset } from '../../../audio/oplPatch';

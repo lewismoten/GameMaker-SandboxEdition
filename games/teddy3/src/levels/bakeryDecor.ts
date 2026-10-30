@@ -2,7 +2,7 @@
 // floors, and up above, shelves of loaves, a clock, framed cakes, copper pans, a menu
 // chalkboard, cake boxes, flour on a shelf and round windows. All scenery (air): none of it
 // is in Teddy's way.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Tiles } from './level';
 import type { LevelMap } from './levelmap';
 import { c, copy } from '../blocks/tiles';

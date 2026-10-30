@@ -4,7 +4,7 @@
 // stubble all round the jaw, his own nose and cheeks sunburned pink (a hobo wears no clown
 // nose), a lavender shirt with a green tie and blue suspenders under a navy jacket, patched
 // trousers, red sneakers, and his rubber chicken on its short leash. He is always smiling.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, over, sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { CK } from './klown';

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { rampOf, shade, spread, shadeRamp, luma } from './ramps';
 import { VARIANTS, relight, range } from './variants';
-import { defaultPalette } from '../../../formats/palette';
+import { defaultPalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 /** A palette with a 5-shade green ramp at 10..14 and a lone red at 40. */
 function planned(): Uint8Array {

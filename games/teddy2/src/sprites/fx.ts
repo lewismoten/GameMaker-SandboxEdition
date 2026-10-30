@@ -1,7 +1,7 @@
 // The little things Teddy's and Gwinn's tricks send out (a bark, a spray of dirt, a paw,
 // whirls, a sniff, a heart; a BOOF, a chomp, a big dig, a dust devil) and the goodies they
 // collect, as monster block art.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, sprite } from '../art/draw';
 import { P } from '../art/pal';
 

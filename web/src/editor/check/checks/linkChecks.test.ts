@@ -3,10 +3,10 @@
 // to the won scene, missing .VOC files and level files, numbers past a set, moves over the cap,
 // and the fixes, opposites and key-name repairs the archive's games asked for.
 import { describe, expect, it } from 'vitest';
-import { BACKBL, parseBlocks, serializeBlocks } from '../../../formats/blocks';
-import { NOSCENE, serializeGame } from '../../../formats/game';
-import { emptyMonster } from '../../../formats/monster';
-import { newSoundSet } from '../../../formats/sound';
+import { BACKBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { NOSCENE, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { emptyMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { newSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { GameFiles } from '../../../project/files';
 import { runChecks } from '../report';
 import { scenesOf } from '../sceneData';

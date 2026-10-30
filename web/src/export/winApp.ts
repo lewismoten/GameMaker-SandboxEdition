@@ -13,12 +13,12 @@
 // It comes as the .exe itself, or in a .zip. It is not code-signed (that needs a paid
 // certificate and the author's private key), so Windows SmartScreen asks to confirm the
 // first time (the Download chooser, editor/shell/download.ts, and the #/windows page say how).
-import { createZip } from '../project/zip';
+import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { SITE_URL } from '../seo/site';
 import { readResources, writeResources, RT, type PeResource } from './peResources';
 import { groupIcon, winIconImages } from './winIcon';
 import { thirdPartyNotices } from './notices';
-import type { IndexedImage } from '../formats/gif';
+import type { IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import type { IconColors } from './macIcon';
 
 export type WinArch = 'x64' | 'arm64';

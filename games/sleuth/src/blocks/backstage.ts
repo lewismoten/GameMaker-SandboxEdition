@@ -7,7 +7,7 @@
 // to the dials counter and turning it off again takes 1 away, so the counter is 3 only
 // when all three are right; the safe door's touch costs 3 from that counter, and
 // Game-Maker refuses a touch that a counter can't pay for (it would leave it at nothing).
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { micro, microWidth } from '../art/draw';
 import { c } from '../art/pal';
 import { CTR } from '../ids';

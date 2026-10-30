@@ -2,7 +2,7 @@
 // Bicentennial, drawn from the shared side view of THE CHEZ (games/kit/chez.ts). Parked in
 // Hover Heights on a plug-in charger (one mile of range for every hour on the cord), and, with
 // stubby wings bolted on, puttering along the Skyway's slow lane.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { chezSide, CHEZ_LAMP, type ChezInk } from '../../../kit/chez';
 import { T, oval, outline } from './draw';
 import { micro } from './font';

@@ -3,8 +3,8 @@
 // a lit frame snaps off. These add a short fade: the last picture held while its palette
 // dims, frames that store only a COLOR chunk (the pixels do not change), so it costs little.
 // Reel cartoons have Reel.fadeOut; these are for intros built as plain frame lists.
-import { encodeFli } from '../../web/src/formats/fli';
-import { dimmed } from './reel';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { dimmed } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 
 /** Frames in a fade at `speed` (1/70 s per frame): about `seconds` long, and at least 4. */
 export function fadeOutLength(speed: number, seconds = 0.5): number {

@@ -1,7 +1,7 @@
 // Tests: putting a demo added for this edition into a copy of a game (media/addedDemo.ts).
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../src/project/files';
-import { newGame, parseGame, serializeGame } from '../src/formats/game';
+import { newGame, parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { ADDED_DEMO_NOTE, includeAddedDemo } from '../src/media/addedDemo';
 import { titleDemo } from '../src/media/demo';
 

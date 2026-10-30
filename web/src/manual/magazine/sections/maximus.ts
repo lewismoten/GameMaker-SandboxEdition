@@ -4,12 +4,12 @@
 // are Maximus's own (maximus.test.ts reads them back from games/maximus/disk) and the limits
 // are the file formats' (web/src/formats), which follow code/GM; the findings are the ones its
 // build, LIMITS.TXT and commits record, checked against PLAYGAME.C.
-import { BACKBL, CHARBL, MONBL } from '../../../formats/blocks';
-import { MAXFRAME, MAXINV, MAXSEQ } from '../../../formats/character';
-import { MAXSCENELINKS, SCENEFILES } from '../../../formats/game';
-import { LASTMM, MLEN, MWID } from '../../../formats/map';
-import { LASTMON, LASTSL, MAXMARCH } from '../../../formats/monster';
-import { LASTSND } from '../../../formats/sound';
+import { BACKBL, CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXFRAME, MAXINV, MAXSEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MAXSCENELINKS, SCENEFILES } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { LASTMM, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMON, LASTSL, MAXMARCH } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { LASTSND } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { button, cols, grid, head, note, p, pull, rows, shot, side } from '../blocks';
 import type { Block, ListingRow, MagSection, Tone } from '../types';
 

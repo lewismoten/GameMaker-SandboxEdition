@@ -1,7 +1,7 @@
 // What the World Map's grounds (worldMapGround.ts, worldMapIndoors.ts) share: the places and
 // regions they draw round, a mask of what's taken so little drawings land only in free space,
 // outlines of a region as one piece, and a ruled grid.
-import type { Point } from '../../formats/game';
+import type { Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Rect } from './worldMapLayout';
 import { el } from './worldMapArt';
 import { xorshift32 } from '../../seededRandom';

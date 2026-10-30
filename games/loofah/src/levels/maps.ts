@@ -14,7 +14,7 @@
 //   4. Scrubbus Maximus: the shower at midnight. The demon sponge, smug on its tiles, spitting
 //      cursed citrus suds; rosemary brine cleanses it, top and bottom, back into the pink one,
 //      and her silver rack takes it back.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 

@@ -7,8 +7,8 @@
 // with its palette (encodeFli sets it in frame 0, after the bands when a frame is split), and
 // cuts fall where the palette holds and the least of the picture changes, so the joins don't
 // show. The fade to black stays at the end of the last clip.
-import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '../../web/src/formats/fli';
-import { parseSlideList, serializeSlideList, type SlideEntry } from '../../web/src/formats/graphicScripts';
+import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseSlideList, serializeSlideList, type SlideEntry } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 /** How long an FLI plays, in seconds (FLI::View waits `speed` 1/70 s after each frame). */
 export function fliSeconds(fli: Uint8Array): number {

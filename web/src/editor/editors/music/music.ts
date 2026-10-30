@@ -11,7 +11,7 @@ import { TrackList } from './tracks';
 import { InstrumentPanel } from './instrument';
 import { SongPanel } from './songPanel';
 import { VelocityField } from './velocity';
-import { startProgram } from '../../../formats/cmfEdit';
+import { startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import { MUS_TABS, loadTab, saveTab, stepTab, type MusTab } from './tabs';
 import './music.css';
 import { fitToPane } from '../../core/fitPane';

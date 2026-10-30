@@ -2,7 +2,7 @@
 // tricks of her own. Her side views come from sprites/gwinn.ts; her tricks face the player,
 // like Teddy's, so she never seems to turn around by herself. Amber eyes, a liver nose, a
 // pink collar, a white chest patch and a tongue that never goes back in.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { GWINN } from './gwinn';

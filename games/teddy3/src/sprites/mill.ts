@@ -1,7 +1,7 @@
 // The water wheels' paddles: the one coming up the near side, flat and wet (stand on it and
 // ride it up), and the ones going round the rest of the wheel, seen edge-on and darker (they
 // only pass by). Both on clear backgrounds, for monster blocks.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { P } from '../art/pal';
 
 const c = (n: string, k: number) => P.c(n, k);

@@ -7,8 +7,8 @@ import type { RetroHost } from '../../retro/host';
 import { WorkArea } from '../../retro/dos/workArea';
 import { type RGBdata, type Vga } from '../shared/vga';
 import { BLEN, Face, initStartCols } from '../shared/facelift';
-import { LASTMON, MONSTER_SIZE, parseMonsters, type Monster } from '../../formats/monster';
-import { BLOCK_SIZE, MONBL, parseBlocks } from '../../formats/blocks';
+import { LASTMON, MONSTER_SIZE, parseMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { BLOCK_SIZE, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Ref, padTo, blankMonster } from './layout';
 
 export abstract class MonsterMakerState {

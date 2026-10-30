@@ -2,12 +2,12 @@
 // the card, the cellar door opens), the title and menu, the text page backdrops, a card for
 // each room (in that room's own light, with a strip of its blocks), a page of the recipe card
 // for each ingredient, the endings and the high score / load / save backdrops.
-import { encodeGif } from '../../../../web/src/formats/gif';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { dosText } from '../../../kit/disk';
 import { loadScan, pastePhoto, polaroid, resample, sepia } from '../../../kit/photo';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { corgi, docLeo, eggFaberge, eggRotten, gwinn, ingredient, mouse, redcoat } from '../art/kit';
 import { arrivedWith, introName, outroName } from '../game';

@@ -1,7 +1,7 @@
 // The soundtrack: FM songs for the Sound Blaster in the manner of a 1996 RPG — a heraldic
 // fanfare, a lute's village jig, a marching overworld theme, an ostinato for each dungeon,
 // Deadline Keep's ticking, a jaunty drive across the Flats, and the Round Tuit made whole.
-import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
+import { INSTRUMENTS, sbi, song, type Voice } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 
 const LUTE = sbi({ modChar: 0x03, carChar: 0x01, modLevel: 0x16, carLevel: 0x00, modAD: 0xf7, carAD: 0xf5, modSR: 0x34, carSR: 0x45, feedback: 0x0a });
 const RECORDER = sbi({ modChar: 0x61, carChar: 0x21, modLevel: 0x2a, carLevel: 0x00, modAD: 0x75, carAD: 0x65, modSR: 0x15, carSR: 0x16, feedback: 0x02 });

@@ -3,7 +3,7 @@
 // the rooms are drawn in (floor, wall, wood, metal...) are recolored per room, so one block
 // set serves three rooms: the Pantry's tiles are the Bakehouse's tiles, red hot, and the
 // Sugar Room's, pink. Screens use the Pantry's light.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 
 type RGB = [number, number, number];
 type Ramp = [RGB, RGB, RGB?];

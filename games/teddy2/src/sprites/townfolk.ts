@@ -1,7 +1,7 @@
 // People and things on Main Street and the Town Commons: the Town Crier in his tricorn and
 // linen hunting shirt with a hand bell (it is Founders' Day), bells to ring, the electric
 // company's bucket, a "HEAR YE!" bubble, and pigeons' cousins.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { CK } from './klown';

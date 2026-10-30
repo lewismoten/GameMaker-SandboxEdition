@@ -4,9 +4,9 @@
 // buzz), the splat, and the endings (Carl takes the aux cord; the man mops in gloom while Carl
 // DJs; THE END with a parade of the Bard's other songs). Each reel opens on black and fades by
 // palette (kit/reel.ts); only what moves is stored.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { medianCutPalette, Quantizer } from '../../../kit/quantize';
-import { Reel } from '../../../kit/reel';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { fadeOutLength } from '../../../kit/fadeOut';
 import { gradient } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';

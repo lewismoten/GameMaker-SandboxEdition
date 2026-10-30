@@ -2,12 +2,12 @@
 // the block the hero arrives on, with its placed monsters and the hero. No canvas, so the
 // build draws the home page's game pictures with it too (scripts/gameShots.ts), exactly as
 // the page would (integratorArt.ts levelShot, gameShots.ts renderShot).
-import { NOSCENE, type Game, type Point, type Scene } from '../formats/game';
-import { parseMap, MLEN, MWID } from '../formats/map';
-import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '../formats/blocks';
-import { parseMonsters } from '../formats/monster';
-import { parseCharacter } from '../formats/character';
-import { defaultPalette, paletteToRGBA, parsePalette, type Palette } from '../formats/palette';
+import { NOSCENE, type Game, type Point, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { defaultPalette, paletteToRGBA, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 export interface LevelPicture {
   width: number;

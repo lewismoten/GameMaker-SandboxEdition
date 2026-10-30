@@ -1,10 +1,10 @@
 // The pictures between the play: title, menu, the story slide show, instruction and
 // credit pages, high scores, load/save, the planet cards (every card of a sector lives
 // in one tall GIF; each planet's .BKD shows its own 320x200 window of it), and the end.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { serializeBackdrop, serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { rng } from '../../../kit/pixels';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { serializeBackdrop, serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
 import { tileNoise } from '../art/draw';
 import { Canvas } from '../art/canvas';

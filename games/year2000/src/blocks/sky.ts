@@ -13,7 +13,7 @@
 //  - off the right edge of the screen, where no one sees them, each lane has a chain of spawner
 //    blocks, one per entry in cloudWaves.ts, each giving birth once; and two give birth to the
 //    dashes between the lanes every few ticks, forever.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { C, PAL } from '../art/pal';
 import { text } from '../art/font';

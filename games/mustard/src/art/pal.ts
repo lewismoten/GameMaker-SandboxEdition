@@ -3,7 +3,7 @@
 // rose at dawn in the garden, the dark of the dirt underground, a clear blue over the
 // mountain and gold in the evening up the tree. The mustard seed, the sun and the faith
 // glimmers keep their own light everywhere.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { type Pal, wrap } from '../../../kit/palRamps';
 export { type Pal } from '../../../kit/palRamps';
 

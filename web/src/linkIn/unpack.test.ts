@@ -3,8 +3,8 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { createZip } from '../project/zip';
-import { encodePack } from '../project/gamePack';
+import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { encodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import { encodeGame, scriptJson } from '../export/singlePage';
 import { LinkError } from './protocol';
 import { unpackGame } from './unpack';

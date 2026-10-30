@@ -2,7 +2,7 @@
 // map cell is drawn from the track value t, so the slanted lanes join up across block edges.
 // A block on the slant shows t from its corner value c to c + 2, one on the kink c to c + 1
 // down the block. Blocks that look and act the same are one block.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { BlockSet } from '../art/draw';
 import type { DiagTrack } from '../stages/diagTrack';
 

@@ -3,13 +3,13 @@
 // Sprites come in their level's palette (the .pal of the scene that uses their block set),
 // so their colors are matched into the background's: the same color when it is there, else
 // a palette entry the background never uses is given the color, else the nearest color.
-import { decodeGif, isGif } from '../../../../formats/gif';
-import { parseBackdrop } from '../../../../formats/graphicScripts';
-import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, orientIndex, parseBlocks, type Block } from '../../../../formats/blocks';
-import { MAXFRAME, parseCharacter, type Sequence } from '../../../../formats/character';
-import { parseMonsters } from '../../../../formats/monster';
-import { defaultPalette, matchColor, parsePalette, type Palette } from '../../../../formats/palette';
-import type { Game } from '../../../../formats/game';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, orientIndex, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXFRAME, parseCharacter, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { defaultPalette, matchColor, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { mapPixels } from '../../../../gfx/levelPicture';
 import { SCENE_H, SCENE_W, allItems, backgroundEnd, type ActorItem, type Background, type BlockItem, type Scene } from './sceneModel';
 

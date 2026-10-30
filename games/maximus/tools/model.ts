@@ -4,14 +4,14 @@
 // closest to the goal without getting hurt. Only the copy is ever changed; the keys the
 // bot then presses on the real engine are what the walkthrough records. The copy's monsters
 // draw their own random numbers, so it is a forecast, not a replay.
-import { moveChars } from '../../../web/src/engine/character';
-import { simKeyPress } from '../../../web/src/engine/keys';
-import { blockBirthMonsters, moveAllMonsters } from '../../../web/src/engine/monsters';
-import { updateCharDrawState } from '../../../web/src/engine/render';
-import { changeScroll, drawScroll } from '../../../web/src/engine/scroll';
-import { getTouchBlocks } from '../../../web/src/engine/touch';
-import { BACKBL, LASTMM, bgBlock, type World } from '../../../web/src/engine/world';
-import { rng } from '../../kit/pixels';
+import { moveChars } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { simKeyPress } from '@lewismoten/gamemaker-sandbox-engine/engine/keys';
+import { blockBirthMonsters, moveAllMonsters } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { updateCharDrawState } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
+import { changeScroll, drawScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
+import { getTouchBlocks } from '@lewismoten/gamemaker-sandbox-engine/engine/touch';
+import { BACKBL, LASTMM, bgBlock, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 /** Fields the engine never changes while playing: shared, not copied. */
 const SHARED = new Set(['palette', 'bg', 'mblk', 'cblk', 'mon']);

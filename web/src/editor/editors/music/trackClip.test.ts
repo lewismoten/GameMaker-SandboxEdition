@@ -2,9 +2,17 @@
 // changes arrive as they were, on the same beats when the songs count beats differently; a full
 // song is refused unchanged; drums stay drums when they can; the result is a CMF PLAYGAME plays.
 import { describe, expect, it } from 'vitest';
-import { song as composeSong, INSTRUMENTS } from '../../../audio/compose';
-import { channelNotes, programChanges, setProgramAt, setStartMode, startMode, startProgram, usedChannels } from '../../../formats/cmfEdit';
-import { noteEnd, readSong, traceMusic, writeSong, musicOf, type CmfSong } from '../../../formats/cmfSong';
+import { song as composeSong, INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/music/compose';
+import {
+  channelNotes,
+  programChanges,
+  setProgramAt,
+  setStartMode,
+  startMode,
+  startProgram,
+  usedChannels,
+} from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { noteEnd, readSong, traceMusic, writeSong, musicOf, type CmfSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { copyTrack, isTrackClip, pasteTrack, type Pasted, type TrackClip } from './trackClip';
 
 const make = (bpm: number, voices: { channel: number; instrument?: Uint8Array; notes: string }[]): CmfSong =>

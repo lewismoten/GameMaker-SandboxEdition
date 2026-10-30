@@ -2,11 +2,21 @@
 // (.chr) of every level scene (sequence keys, joystick bindings, frames that move or fire
 // monsters, objects a sequence needs, limited uses) plus PLAYGAME's own function keys.
 // Games often describe their keys in their instructions but leave some out; this does not.
-import { BACKBL, MONBL, parseBlocks } from '../../formats/blocks';
-import { DROPSEQ, INF_REPEAT, MAXSEQ, PICKUPSEQ, SEQUENCE_NAMES, frameCount, parseCharacter, type Character, type Sequence } from '../../formats/character';
-import { ADVTYPE, parseGame } from '../../formats/game';
-import { parseBackdrop, parseSlideList } from '../../formats/graphicScripts';
-import { scanName } from '../../input/scancodes';
+import { BACKBL, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import {
+  DROPSEQ,
+  INF_REPEAT,
+  MAXSEQ,
+  PICKUPSEQ,
+  SEQUENCE_NAMES,
+  frameCount,
+  parseCharacter,
+  type Character,
+  type Sequence,
+} from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { ADVTYPE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { GameFiles } from '../../project/files';
 
 export type ActionKind = 'move' | 'jump' | 'fire' | 'pickup' | 'drop' | 'action' | 'builtin' | 'nothing';

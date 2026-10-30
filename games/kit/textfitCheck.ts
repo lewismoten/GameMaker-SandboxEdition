@@ -10,7 +10,7 @@ import { deflateSync } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkTextScreen, H, readDisk, renderRgb, textScreens, W, type TextFitIssue } from './textfit';
-import { parseGame } from '../../web/src/formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { asciiFor, gwriteLines, highChars } from '../../web/src/editor/check/checks/dosChars';
 
 /** A plain 24-bit PNG, scaled up `s` times. */

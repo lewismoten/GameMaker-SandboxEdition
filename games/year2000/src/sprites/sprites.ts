@@ -1,6 +1,6 @@
 // Y2K.CBL (Dex, in sneakers and in a fishbowl space helmet) and Y2K.MBL (everything else
 // that moves). Drawn as 20x20 sprites on transparent squares.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, type BlockDef } from '../blocks/book';
 import { T, blob, oval, outline, recolor, rotate, sprite } from '../art/draw';
 import { micro } from '../art/font';

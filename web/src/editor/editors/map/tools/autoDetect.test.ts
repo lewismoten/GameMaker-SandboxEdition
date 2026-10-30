@@ -1,6 +1,6 @@
 // Guessing a terrain's edges and corners from the block art.
 import { describe, expect, it } from 'vitest';
-import { BLEN, emptyBlock, type Block } from '../../../../formats/blocks';
+import { BLEN, emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { autoDetect } from './autoDetect';
 import { BLOB47 } from './autotile';
 

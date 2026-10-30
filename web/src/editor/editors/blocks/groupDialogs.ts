@@ -3,7 +3,7 @@
 // ticked and confirmed).
 import { h, modal } from '../../core/ui';
 import { blockCanvas } from '../../core/draw';
-import type { Palette } from '../../../formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { MAX_SIDE, type BlockGroup } from './blockGroups';
 import type { Suggestion } from './groupGuess';
 

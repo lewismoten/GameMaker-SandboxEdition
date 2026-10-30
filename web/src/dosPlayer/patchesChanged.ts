@@ -1,7 +1,7 @@
 // Tells an open editor that a project's DOS player patches were saved from outside it (the
 // desk's PLAYHACK.EXE, projectPatches.ts), in this tab or another, so the editor takes them in
 // and its next autosave keeps them instead of writing its older copy back.
-import type { PlayerPatches } from './patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 const CHANNEL = 'gm-player-patches';
 

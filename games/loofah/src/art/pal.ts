@@ -4,7 +4,7 @@
 // buzzing far away), home at night (moonlight blue) and the shower of Scrubbus Maximus (steam
 // over blood-dark tile). The glows (candle flames, the demon's eyes, the mirror's writing, the
 // moon) keep their own light everywhere.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { type Pal, wrap } from '../../../kit/palRamps';
 export { type Pal } from '../../../kit/palRamps';
 

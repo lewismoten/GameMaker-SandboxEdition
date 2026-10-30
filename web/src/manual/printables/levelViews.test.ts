@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import VIEWS from './levelViews.json';
 import SECRETS from './levelSecrets.json';
 import { levelViewsHash } from '../../../scripts/levelViewsScan';
-import { parseGame } from '../../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelsOf } from './levelMapLayout';
 import type { LevelViews } from './levelViews';
 

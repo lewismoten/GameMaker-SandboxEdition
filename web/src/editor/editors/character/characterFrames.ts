@@ -5,10 +5,10 @@
 import { h, numberField } from '../../core/ui';
 import { paintBlock } from '../../core/draw';
 import { chooseBlock, type BlockExtra } from '../../widgets/blockChooser';
-import { BLEN, CHARBL, MONBL, type Block } from '../../../formats/blocks';
-import { MAXFRAME, type Frame, type Sequence } from '../../../formats/character';
-import type { Palette } from '../../../formats/palette';
-import { scanName, SCAN } from '../../../input/scancodes';
+import { BLEN, CHARBL, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXFRAME, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { scanName, SCAN } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import {
   ORIENT_NAMES,
   bottomOrient,

@@ -140,11 +140,10 @@ npm install @lewismoten/gamemaker-sandbox-archives
 
 ## Run it yourself
 
-You need [Node.js](https://nodejs.org/) 22 or later.
+You need [Node.js](https://nodejs.org/) 22.12 or later.
 
 ```sh
-cd web
-npm install
+npm ci             # from the repository root; builds the workspace packages
 npm run dev        # http://localhost:5173
 npm test           # the test suite (vitest)
 npm run typecheck  # tsc --noEmit
@@ -152,6 +151,10 @@ npm run build      # typecheck, then the static site in web/dist
 npm run format     # Prettier (config at the repo root)
 npm run lint       # ESLint
 ```
+
+This is an npm workspace monorepo with one root lockfile. The app is in `web/`;
+self-contained engine, archives and tools packages own their source in `web/packages/`.
+See [workspace development](docs/monorepo.md) for package ownership, isolated builds and release checks.
 
 The repository was reformatted with Prettier in a few big commits. They are listed in
 [`.git-blame-ignore-revs`](.git-blame-ignore-revs), which GitHub's blame view already skips.

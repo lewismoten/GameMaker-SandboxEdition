@@ -1,7 +1,7 @@
 // The errands on Doc Leo's list, one for each of Teddy's stops (Teddy has no idea they are
 // all for his own party), the things the MEANWHILE... heroes carry, and Doc Leo's thought
 // bubble showing the one he is waiting for.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, over, sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { CK } from './klown';

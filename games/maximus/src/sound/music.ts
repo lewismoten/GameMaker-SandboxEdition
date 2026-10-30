@@ -1,9 +1,9 @@
 // The soundtrack: Sound Blaster FM songs as .CMF files. A tiny arranger turns a chord
 // chart and a melody into a band: lead and harmony, a bass line, arpeggios, a pad, and
 // OPL2 rhythm-mode drums (bass drum, snare, tom, cymbal, hi-hat on channels 11..15).
-import { encodeCmf, type CmfEvent } from '../../../../web/src/formats/cmf';
-import { INSTRUMENTS, midi, sbi } from '../../../kit/music';
-import { LEN } from '../../../kit/tune';
+import { encodeCmf, type CmfEvent } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { INSTRUMENTS, midi, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { LEN } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const I = {
   ...INSTRUMENTS,

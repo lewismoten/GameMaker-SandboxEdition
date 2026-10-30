@@ -1,5 +1,5 @@
 // sandcast.gam: the title scene, the ending, and the seven playfields, linked.
-import { ADVTYPE, emptyScene, newGame, type Game, type Link, type Point } from '../../../web/src/formats/game';
+import { ADVTYPE, emptyScene, newGame, type Game, type Link, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { LevelMap } from './levels/levelmap';
 
 interface Level {

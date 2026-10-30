@@ -10,7 +10,7 @@ import { SAW_DOWN, SAW_UP, seesawPlank } from './seesaw';
 import { CRITTERS } from '../sprites/critters';
 import { seesawEnd } from '../sprites/gadgets';
 import { flyingDisc, kid } from '../sprites/folks';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { over } from '../art/draw';
 
 /** The super see-saw: up this many blocks, fast. */

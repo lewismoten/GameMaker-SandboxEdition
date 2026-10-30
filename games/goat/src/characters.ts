@@ -7,8 +7,8 @@
 // its block's effect lands: a lamb's wool, a pigeon's peck); 100 and up stays, and a solid
 // block keeps you out. A monster that dies is reborn as its newmon, so a cousin keels over
 // stiff, lies there a few seconds (end: a lifetime in ticks) and gets back up.
-import { emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../web/src/formats/monster';
+import { emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { emptyMonster, newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BLEATSEQ, CHEWSEQ, MON, SCREAMSEQ, SND, WOOL } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
 import { corner } from '../../kit/actors';

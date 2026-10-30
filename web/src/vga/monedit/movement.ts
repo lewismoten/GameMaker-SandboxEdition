@@ -3,7 +3,7 @@
 import { attr } from '../../retro/text/textScreen';
 import { MENUATTR, SHADATTR, askText, errorBox, vertMenu } from '../../retro/text/textUi';
 import { BLACK, BLEN, GRAY2, LEFT, NONE, RIGHT } from '../shared/facelift';
-import { LASTMON } from '../../formats/monster';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { MOLEN, MOX, MOX1, PATHHELPFILE, SELX, SELY, MOY2, TBOXX, TBOXY, MX3, MY3, pad, idiv } from './layout';
 import { MonsterPathEditor } from './path';
 

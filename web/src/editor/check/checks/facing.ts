@@ -7,9 +7,9 @@
 // monsters, one per leg, each becoming the next). Things meant to look the same from every
 // side (a ball, a ship that always flies nose first) are marked so by the designer: the
 // project's "same every side" list (sameKey), which the check leaves alone.
-import { BLEN, CHARBL, TRANSPARENT, orientIndex, type Block } from '../../../formats/blocks';
-import { MAXSEQ, frameCount, type Frame } from '../../../formats/character';
-import { MAXMARCH, type March, type Monster } from '../../../formats/monster';
+import { BLEN, CHARBL, TRANSPARENT, orientIndex, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXSEQ, frameCount, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MAXMARCH, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Finding } from '../findings';
 import type { SceneData } from '../sceneData';
 import { pictures } from './monsterChecks';

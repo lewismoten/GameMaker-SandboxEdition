@@ -2,7 +2,7 @@
 // level (integrator/linkSpots.ts), the pick the main part of the button plays (the last one
 // chosen, else a way into the level whose map is open, else the first), and the copy of the
 // game that starts there. The buttons are playButtons.ts.
-import type { Game, Point } from '../../formats/game';
+import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { waysIn, wayInLabel, type WayIn } from '../editors/integrator/linkSpots';
 import { startingAtSpot } from '../editors/integrator/startAt';
 

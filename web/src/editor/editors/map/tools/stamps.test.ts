@@ -1,6 +1,6 @@
 // Stamps: capture, and flips and turns only where the blocks have mirror images.
 import { describe, expect, it } from 'vitest';
-import { BLEN, emptyBlock, type Block } from '../../../../formats/blocks';
+import { BLEN, emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { captureStamp, mirrors, stampRows, transformStamp } from './stamps';
 
 /** A block with one pixel set at (x, y). */

@@ -3,7 +3,7 @@
 // line and the keys at the bottom, red boxes for warnings. Arrow keys, Enter and Esc.
 import { attr, COLS, ROWS } from '../text/textScreen';
 import type { Ui } from '../text/textUi';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 export const BG = attr(15, 1);
 export const TEXT = attr(7, 1);

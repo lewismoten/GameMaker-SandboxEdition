@@ -2,7 +2,7 @@
 // covers on the sheet (its round picture, ribbon, ways on and the names it lists), how many
 // times two paths cross, and how many paths run under a place they don't go to. Pure
 // arithmetic in map units (tenths of an inch), so tests and scripts can measure every game.
-import type { Point } from '../../formats/game';
+import type { Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Rect } from './worldMapLayout';
 
 /** A place's round picture, and the room between it and its ribbon. */

@@ -1,6 +1,6 @@
 // Pickups, courier modules and star-shards: transparent 20x20 sprites in shared colors,
 // pasted over each block set's own backgrounds (and used as monster loot).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, Mask, fill, outline, shade, sprite } from '../art/draw';
 import { OUTLINE, S, SHARD_RAMPS, WHITE, shared } from '../art/palette';
 import { MODULES } from '../ids';

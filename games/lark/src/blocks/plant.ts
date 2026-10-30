@@ -4,8 +4,8 @@
 // little yellow at the tip before they fold), dandelion puffs drifting (a puff fills the heart
 // balloon's air), the curled top leaf where the seed waits (it uncurls once the star is free),
 // the star caught in the leaves, and the garden soil at the foot.
-import { SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient } from '../art/draw';
 import { c, r } from '../art/pal';
 import { CTR } from '../ids';

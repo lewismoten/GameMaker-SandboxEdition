@@ -1,6 +1,6 @@
 // The night over Bethlehem, shared by the pictures and the cartoons: a starry sky, the star
 // itself, and the town asleep on its hill.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../art/pal';
 
 export const W = 320;

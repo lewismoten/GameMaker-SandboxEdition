@@ -1,7 +1,7 @@
 // The progress line the GIF Gallery writes along the picture's bottom while it downloads.
 import { describe, expect, it } from 'vitest';
 import { progressLine } from './gifArea';
-import { fromCp437 } from '../text/cp437';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 describe('progressLine', () => {
   it('fits the 40 columns of a 320-wide picture screen, from nothing to the whole file', () => {

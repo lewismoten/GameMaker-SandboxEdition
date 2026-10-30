@@ -5,9 +5,9 @@
 // handle slides the tray in under the desk and out again.
 import './tray.css';
 import { h } from '../../editor/core/ui';
-import { output } from '../../audio/output';
-import { audioContext, unlock } from '../../audio/context';
-import { deskMouse } from '../../input/deskMouse';
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
+import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
+import { deskMouse } from '@lewismoten/gamemaker-sandbox-engine/input/deskMouse';
 import { deskGamePad } from './gamePad';
 import { PAD_CHANGED, loadPad, padName, type PadPrint } from './padChoice';
 import { padSvg } from './padPrints';

@@ -2,7 +2,7 @@
 // backyard in the dark (Teddy asleep in his doghouse), the back gate, the alley, the park
 // by lamplight with its pond, a tall playground fence with hard clay at its foot, and the
 // park's east gate where the Clown Club's hay wagon is hitched up for the Fair.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, clubArt, micro, microWidth, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { boxFace, c, canvas, copy, cut, dirt, grassTop, hedge, leaves, plankFence, r, siding, sky, trunk, tuft, windowOn } from '../blocks/tiles';

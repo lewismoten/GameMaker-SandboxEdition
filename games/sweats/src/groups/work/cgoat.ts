@@ -12,10 +12,10 @@
 //
 // Layout (12 rows: the ceiling on row 0, the floor on row 10, the poet walks row 9): the counter
 // is solid on row 9 (he walks along its top on row 8), the upper cabinets are ledges on row 6.
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, plotThing } from '../../common/blocks';
 import { anim, corner, mon, pace } from '../../common/characters';

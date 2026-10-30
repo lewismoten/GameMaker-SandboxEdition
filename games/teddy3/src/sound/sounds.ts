@@ -2,8 +2,8 @@
 // (a woof and Gwinn's boof, a sniff, a yip, a bell, a car horn honk, the wobble ball's
 // giggle...) made with the kit's little synthesizer. All four heroes share the one set; the
 // finale adds a charger's zap, a balloon being twisted, the rubber chicken and a rumble.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { lowpass } from '../../../kit/synthParts';
 import { noiseBurst, woof, yelp, pop, boing, whoosh, crunch, chomp, giggle, honk, snore, scratch, slap, chime } from '../../../kit/teddySounds';

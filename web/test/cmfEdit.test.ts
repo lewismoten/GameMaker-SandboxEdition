@@ -17,13 +17,13 @@ import {
   startMode,
   startProgram,
   stripIgnored,
-} from '../src/formats/cmfEdit';
-import { buildPreview } from '../src/formats/cmfPreview';
-import { musicOf, readSong, traceMusic, writeSong } from '../src/formats/cmfSong';
+} from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { buildPreview } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfPreview';
+import { musicOf, readSong, traceMusic, writeSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { ENVELOPE, FLAGS, getOp, setOp, setFeedback, getFeedback, presetName, MULT } from '../src/editor/editors/music/sbi';
-import { INSTRUMENTS, song as composeSong } from '../src/audio/compose';
-import { CmfPlayer, TICK_RATE } from '../src/audio/cmfPlayer';
-import { Opl2 } from '../src/audio/opl';
+import { INSTRUMENTS, song as composeSong } from '@lewismoten/gamemaker-sandbox-tools/music/compose';
+import { CmfPlayer, TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
 
 /** Root-mean-square level of a song played through the app's PlayIt port for `ticks` ticks. */
 function rms(bytes: Uint8Array, ticks: number): number {

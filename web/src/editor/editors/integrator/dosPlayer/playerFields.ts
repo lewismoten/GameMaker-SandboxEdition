@@ -3,8 +3,15 @@
 // two frames, and the menu's words and marker moved together. Each saves through the dialog's
 // `set` (which keeps patchRules.ts) and can be brought back in step after a drag on the preview.
 import { h } from '../../../core/ui';
-import { COLOR_TARGETS, type ColorName, type FramePatch, type NumberPatch, type PatchEntry, type TextPatch } from '../../../../dosPlayer/patchTable';
-import { formatCodes, frameLimit, patchEntry, type PatchValue } from '../../../../dosPlayer/patchRules';
+import {
+  COLOR_TARGETS,
+  type ColorName,
+  type FramePatch,
+  type NumberPatch,
+  type PatchEntry,
+  type TextPatch,
+} from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { formatCodes, frameLimit, patchEntry, type PatchValue } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { COLOR_LABELS } from '../../../../dosPlayer/describePatches';
 
 export interface FieldContext {

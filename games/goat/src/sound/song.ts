@@ -15,7 +15,7 @@
 //   outro "He sees you..."               145.4 - 172    G | G | G | C | G | Em | D7 | C | G, then "Hey..."
 // The melody is the sung line's pitch per word (harmonic salience on the center channel),
 // written an octave up for the FM lead and evened out to eighth notes.
-import { INSTRUMENTS } from '../../../kit/music';
+import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
 import { CELESTA, EPIANO, FLUTE, ORGAN, OUD, REED, VOICE, Writer, chordTable, ending, slice, vamp, type Section } from '../../../kit/song';
 
 // ---- the song's material ------------------------------------------------------------------

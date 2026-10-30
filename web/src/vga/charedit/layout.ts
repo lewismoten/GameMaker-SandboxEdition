@@ -3,7 +3,7 @@
 import type { Key } from '../../retro/text/textInput';
 import { type RGBdata, SIZEX, SIZEY } from '../shared/vga';
 import { BLEN } from '../shared/facelift';
-import { BACKBL, CHARBL } from '../../formats/blocks';
+import { BACKBL, CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import {
   CHR_RECORD_SIZE,
   INF_REPEAT,
@@ -15,9 +15,9 @@ import {
   type Character,
   type Frame,
   type Sequence,
-} from '../../formats/character';
-import { LASTSND } from '../../formats/sound';
-import { SCAN } from '../../input/scancodes';
+} from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { LASTSND } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { SCAN } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 
 export const GL = 6; // L-Left, T-Top, G-Grid
 export const BLLIST = 14; // BL-Area to show blocks

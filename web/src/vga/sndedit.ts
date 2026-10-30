@@ -11,9 +11,9 @@ import { type Vga } from './shared/vga';
 import { BLACK, Face, GREEN, GRAY1, GRAY2, GRAY3, GRAY4, RED2, initStartCols } from './shared/facelift';
 import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
 import type { OpenDesigner } from '../retro/host';
-import { LASTSND, NUMFREQ, newSoundSet, parseSoundSet, serializeSoundSet, type SoundSet } from '../formats/sound';
-import { decodeVoc, isVoc } from '../formats/voc';
-import { output } from '../audio/output';
+import { LASTSND, NUMFREQ, newSoundSet, parseSoundSet, serializeSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 import { soundBlaster } from '../retro/computer/soundBlaster';
 
 const ROOTN = 25;

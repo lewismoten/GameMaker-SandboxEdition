@@ -1,7 +1,7 @@
 // KID.CHR and SLED.CHR: the kid (a sequence per key: walk in eight directions, throw a
 // snowball, the starting meters: health, lives, money and snowballs) and the sled, whose
 // steering, braking and pushing all add momentum so it drifts and keeps its speed.
-import { PICKUPSEQ, emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
+import { PICKUPSEQ, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { PAPERS, SND, THROWSEQ } from '../ids';
 import { buildCharBlocks } from '../sprites/charBlocks';
 

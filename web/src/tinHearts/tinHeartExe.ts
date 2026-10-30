@@ -5,7 +5,7 @@
 // count but hide no heart yet. Game-Maker's text UI style.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
-import { toCp437 } from '../retro/text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { countedOf, huntComplete, huntStates, pendingOf, resetAllOverrides, setAllOverrides, setOverride, type HeartState } from './tinHearts';
 
 const STATE_TEXT: Record<HeartState['status'], string> = {

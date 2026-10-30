@@ -3,7 +3,7 @@
 // a tap to select or add, and the arrow, Delete and Enter keys on the timeline. slideShow.ts
 // owns the list and the drawing; this reads and changes them through a TimelineInput.
 import { h, toast } from '../../core/ui';
-import type { SlideEntry } from '../../../formats/graphicScripts';
+import type { SlideEntry } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { clipWidth, moveEntry, secondsForWidth, type ClipFacts, type ClipTiming } from './slideTimeline';
 
 /** What the timeline's pointer and keys need from the slide show editor. */

@@ -1,7 +1,7 @@
 // games/kit/photo: loading scans, resampling to VGA pixels and fitting a photo into the free
 // palette entries.
 import { describe, expect, it } from 'vitest';
-import { Pixels } from '../../games/kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { freeColors, loadScan, medianCut, pastePhoto, resample, sepia } from '../../games/kit/photo';
 
 describe('games/kit/photo', () => {

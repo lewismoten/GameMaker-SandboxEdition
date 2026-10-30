@@ -3,7 +3,7 @@
 // DOS integrator. The candidate layouts come from layoutCells.ts; this file scores them
 // (crossing arrows, arrows under cards, long arrows), turns grid cells into Pos values, and
 // nudges overlapping cards apart.
-import { NOSCENE, type Game, type Point } from '../../../formats/game';
+import { NOSCENE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import {
   POS_MIN,
   POS_MAX,

@@ -2,12 +2,12 @@
 // window drawbkd draws, text screens as Display_File's pages, slide shows by their first
 // slide. Used by the backdrop, text screen and slide show editors and their media bins.
 import type { GameFiles } from '../../project/files';
-import { decodeGif, isGif, type IndexedImage } from '../../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../formats/fli';
-import { parseBackdrop, parseSlideList, textLines } from '../../formats/graphicScripts';
-import { defaultPalette, matchColor, type Palette } from '../../formats/palette';
-import { Screen, SIZEX, SIZEY } from '../../gfx/screen';
-import { match, RGB_PURPLE, RGB_RED } from '../../engine/showGraphic';
+import { decodeGif, isGif, type IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { defaultPalette, matchColor, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { Screen, SIZEX, SIZEY } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { match, RGB_PURPLE, RGB_RED } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
 import { paintIndexed } from '../core/draw';
 import { fileThumb } from './thumbs';
 import { kindOf } from '../core/project';

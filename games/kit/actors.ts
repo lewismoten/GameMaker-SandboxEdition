@@ -1,7 +1,7 @@
 // Filling in the games' character and monster files: a character sequence's frames and settings,
 // a monster with its picture sequence, a path corner, and pacing back and forth.
-import { emptyFrame, type Frame, type Sequence } from '../../web/src/formats/character';
-import { emptyMonster, type March, type Monster } from '../../web/src/formats/monster';
+import { emptyFrame, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { emptyMonster, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 
 export function set(s: Sequence, frames: Frame[], o: Partial<Omit<Sequence, 'frames'>> = {}): void {
   if (frames.length > 10) throw new Error('Too many frames');

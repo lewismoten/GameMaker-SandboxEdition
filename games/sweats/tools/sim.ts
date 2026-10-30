@@ -2,7 +2,7 @@
 // SHAKESPEARE IN SWEATPANTS's disk/, so the bot can play the scenes in a row and write the
 // walkthrough. jumpTo() enters a scene the way the scene before it links in (for trying one
 // monologue without playing the evening up to it).
-import { diskSim } from '../../kit/gameSim';
+import { diskSim } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 
 export class GameSim extends diskSim(new URL('../disk', import.meta.url)) {
   /** Enters scene `n` through the first link that leads to it. */

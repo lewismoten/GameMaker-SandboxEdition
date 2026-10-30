@@ -2,7 +2,7 @@
 // polka dots, always up for a high five), Bubbles (a bubble wand; she loves a good sit),
 // Twirly (a tutu; ask her about spinning), and Professor Pratfall (practicing pie throws,
 // for science). Plus the things around the ring: bowling pins, pies, bubbles.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, sprite } from '../art/draw';
 import { CK } from './klown';
 import { P } from '../art/pal';

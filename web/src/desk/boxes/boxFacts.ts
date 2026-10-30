@@ -4,7 +4,7 @@
 // how the back cover's copy, reviews, features and screenshots fit the space they have.
 import type { CatalogEntry } from '../../project/files';
 import { gameDisks } from '../../project/diskFacts';
-import { ADVTYPE, type Game } from '../../formats/game';
+import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { fnv1a, mulberry32 } from '../../seededRandom';
 
 /** Optional extras an about.json "box" may carry, beside the art and copy. */

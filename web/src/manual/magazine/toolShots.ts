@@ -2,13 +2,13 @@
 // VGA screen from a game's first level (its palette, blocks, monsters and map): the palette
 // grid, the block editor, monster animation strips and a whole-map overview. They show what
 // the tools work on, with the game's own pixels; loaded only when a page with one is drawn.
-import { Screen } from '../../gfx/screen';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { firstLevels } from '../../gfx/levelPicture';
-import { parseGame } from '../../formats/game';
-import { BACKBL, BLEN, MONBL, TRANSPARENT, parseBlocks, type Block } from '../../formats/blocks';
-import { MLEN, MWID, parseMap } from '../../formats/map';
-import { parseMonsters } from '../../formats/monster';
-import { defaultPalette, matchColor, parsePalette, type Palette } from '../../formats/palette';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { BACKBL, BLEN, MONBL, TRANSPARENT, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { defaultPalette, matchColor, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 
 export type Tool = 'palette' | 'blocks' | 'monsters' | 'map';

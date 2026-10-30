@@ -3,18 +3,18 @@
 // Blaster voice driver, a CONFIG.BAT and instructions. A player customized to ask for other
 // file extensions (dosPlayer/fileExtensions.ts) gets the game's files renamed to match, with
 // the names inside its .gam, slide lists and backdrops rewritten (project/extensionNames.ts).
-import { createZip, type ZipEntry } from '../project/zip';
+import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { cdName, normalize, type GameFiles } from '../project/files';
-import { textBytes } from '../formats/binary';
-import { parseGame } from '../formats/game';
-import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
-import { parseSoundSet } from '../formats/sound';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
-import { applyPlayerPatches } from '../dosPlayer/applyPatches';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
+import { applyPlayerPatches } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { playerChanges, renamedFiles } from '../dosPlayer/describePatches';
-import { extensionClashes, extensionMap } from '../dosPlayer/fileExtensions';
-import { rewriteNames, swapExtension } from '../project/extensionNames';
+import { extensionClashes, extensionMap } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
+import { rewriteNames, swapExtension } from '@lewismoten/gamemaker-sandbox-archives/project/extensionNames';
 
 interface DosExportOptions {
   title: string;

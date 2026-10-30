@@ -8,9 +8,9 @@
 // Carl." when a life is lost, "I've opened the window" as the window opens, "Carl has broken time"
 // as the clock breaks, "Carl has seen things" for a life in the wild, and "Carl's got the aux cord
 // now" at the very end.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { rng } from '../../../kit/pixels';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { clipVoc, CLIPS } from './clips';
 import { lowNoise, gate, env } from '../../../kit/synthParts';

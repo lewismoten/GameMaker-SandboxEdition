@@ -2,7 +2,7 @@
 // share GREEN.MAP and differ only in where Ada starts, which links they carry and which
 // intro they show. A question is a link to a scene whose intro is the answer; the answer
 // scene looks exactly like the room she asked it in, so the talk simply goes on.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Theater } from './levels/theater';
 import { LINEUP, ROOM, SOLVED, SUSPECTS, ZCELL, center, type ParlorLinks } from './levels/parlor';
 

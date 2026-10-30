@@ -4,7 +4,7 @@
 // press and release with its game tick, Game-Maker style. The pilot flies like a person:
 // one thrust key held down for a while (one press, one release, as a keyboard with the
 // typematic repeat off sends them), never a drumroll of taps.
-import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { SCAN } from './ids';
 import type { Built } from './game';
 import { simFor } from '../tools/verify';

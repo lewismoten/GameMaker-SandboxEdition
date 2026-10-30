@@ -4,8 +4,8 @@
 // view, games/kit/chez.ts) plugged in at a charging station, the current running down its cable
 // by palette cycling. The portraits are the first two games' pixel art (castArt.ts), drawn over
 // the family's photos.
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { Pixels } from '../../../kit/pixels';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, gradient, outline, outlined, speckle } from '../art/draw';
 import { drawArt } from './castArt';
 import { chezSide } from '../../../kit/chez';

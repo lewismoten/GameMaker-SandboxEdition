@@ -3,7 +3,7 @@
 // moment from which the whole next stretch, up to the next '$', works at that pace; if none
 // comes within 150 ticks, or Watt is zapped anyway, the board fails at that lag.
 //   cd web && npx vite-node ../games/logic/tools/lag.ts        (or as part of check.ts)
-import { newCharInfo } from '../../../web/src/engine/world';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { BOARDS } from '../src/levels/boards';
 import { compileHouse } from '../src/levels/board';
 import { buildMonsterBlocks, buildWattBlocks } from '../src/sprites/sprites';

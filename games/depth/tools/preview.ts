@@ -1,10 +1,10 @@
 // A whole level as one picture, both focus planes one above the other, drawn from the built
 // disk's blocks (monsters marked by their first picture), for checking a level's layout.
 //   cd web && npx vite-node ../games/depth/tools/preview.ts <level 1-6> <out.png>
-import { parseBlocks } from '../../../web/src/formats/blocks';
-import { parseMap } from '../../../web/src/formats/map';
-import { parseMonsters } from '../../../web/src/formats/monster';
-import { Pixels } from '../../kit/pixels';
+import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '../../kit/png';
 import { LEVELS } from '../src/levels/levels';
 import { buildLevel } from '../src/levels/map';

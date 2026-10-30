@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { buildResourceSection, MACHINE_ARM64, MACHINE_X64, peChecksum, peLayout, readResources, RT, writeResources, type PeResource } from './peResources';
 import { exeName, infoText, parseInfo, versionInfo, winExe, winExeZip, winId } from './winApp';
 import { groupIcon, icoFile, ICON_SIZES, winIconImages } from './winIcon';
-import { readZip } from '../project/zip';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 const players = {
   x64: new Uint8Array(readFileSync(resolve(__dirname, '../../public/win/GameMakerPlayer-x64.exe'))),

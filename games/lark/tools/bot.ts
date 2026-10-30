@@ -4,8 +4,8 @@
 // into, and a talk or a door is a link it walks onto. From the side (the clock tower) it is kit/hopBot.ts: walk to a column, hop, steer, land,
 // and wait for a bridge.
 import { HopBot, type Result } from '../../kit/hopBot';
-import { NOSCENE } from '../../../web/src/formats/game';
-import { MLEN } from '../../../web/src/formats/map';
+import { NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { ORIGIN, SCAN } from '../src/ids';
 import type { GameSim } from './sim';
 

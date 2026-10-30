@@ -14,8 +14,8 @@
 // quickly on to where it stopped. A walkthrough that stops partway keeps the scenes it got
 // through and says on its closing card where it stopped (`ending`).
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
-import type { Game } from '../../../formats/game';
-import { MLEN } from '../../../formats/map';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Entry, type Exploration, type ExploreOptions } from '../explore';
 import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource } from '../sim';

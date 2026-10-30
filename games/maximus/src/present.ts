@@ -1,9 +1,9 @@
 // Everything around the play: pictures, films, music and sound, wired into the scene
 // file slots (title, menu, story, instructions, credits, high scores, load/save, the
 // planet cards before each landing, the films between places, won and lost).
-import { serializeSlideList } from '../../../web/src/formats/graphicScripts';
-import { serializeGame } from '../../../web/src/formats/game';
-import { serializeHighScores } from '../../../web/src/formats/highscore';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 import { dosText } from '../../kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../kit/sandlogo';
 import type { Built } from './game';

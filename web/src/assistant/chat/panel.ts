@@ -7,7 +7,7 @@
 // Reset (session.ts, agent.ts). It also holds the game's to-do list and "What should I do next?"
 // (coach.ts), and the Describe a game box (makeGame.ts). Loaded when ✦ is first pressed.
 import { h } from '../../editor/core/ui';
-import type { Game } from '../../formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { setHashParams } from '../../urlState';
 import { assistantHost, onAssistantHost, type AssistantHost } from '../hostSlot';
 import { EditorContext } from '../bridge/editorContext';

@@ -3,7 +3,7 @@
 // snow, their front walks and doormats, the plowed street and the plow's start, lamp posts and a
 // snowman); Teenage Lewie with his shovel, his porch steps (they want every walk cleared) and his
 // corner by the window where the hearth glows.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { lewieCameo } from '../../../kit/cameos';
 import { bevel, shadeAt } from '../art/draw';
 import { PAL, c, r } from '../art/pal';

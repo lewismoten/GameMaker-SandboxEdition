@@ -1,9 +1,9 @@
 // The cartoons (FLIs): the morning after the Big Show (before the title poster and the story
 // pages), Gwinn's rides between her MEANWHILE... levels (the hay wagon, the Fair's ride truck),
 // the gust that takes her dog show entry card, and at the end, fireworks and the Fair parade with THE CHEZ in front.
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, centered, clubArt, micro, outlined, scaleBlit } from '../art/draw';
 import { GWINN } from '../sprites/gwinn';
 import { CHEZ } from '../sprites/klown';

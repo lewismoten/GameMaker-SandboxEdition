@@ -3,8 +3,8 @@
 // shuts it behind him and sets off down the road, counting: step one. home.fli (before opening
 // time's page): at sunrise he comes back up the same road, the count running up to 12,816, stops
 // at the door with the gold ticking in his chest, goes in, and the OPEN card goes up.
-import { Pixels } from '../../../../kit/pixels';
-import { Reel } from '../../../../kit/reel';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { gradient, micro, scaleBlit } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { joe, type Dir, type Look } from '../../sprites/joe';

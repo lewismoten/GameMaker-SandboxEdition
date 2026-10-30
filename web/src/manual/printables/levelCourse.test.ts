@@ -2,7 +2,7 @@
 // (as Virus Blaster's ribbon cable is built), unrolled into one strip that runs up the page; and
 // a shallow slant down the map (as Snowbound's sled run is), kept upright and running down it.
 import { describe, expect, it } from 'vitest';
-import type { Block } from '../../formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { findCourse } from '../../editor/check/course';
 import { courseRaster, layOutCourse, panelOf } from './levelCourse';
 

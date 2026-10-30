@@ -18,12 +18,12 @@
 // - Across the wrap the same holds: mx=99 with the character at x 0 is one column in (20 pixels),
 //   and a push from a monster at x 0 gives x[0]=-1, which chkmapbounds wraps to 99 = mx.
 import { describe, expect, it } from 'vitest';
-import { newMap } from '../src/formats/map';
-import { newCharacter } from '../src/formats/character';
-import { createWorld } from '../src/engine/world';
-import { moveChars, updateCharScreenPos } from '../src/engine/character';
-import { changeScroll } from '../src/engine/scroll';
-import { SOLRIG, SOLBOT } from '../src/formats/blocks';
+import { newMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { newCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { createWorld } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { moveChars, updateCharScreenPos } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { changeScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
+import { SOLRIG, SOLBOT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 function world(mx: number, my: number, cx: number, cy: number, step = 0) {
   const w = createWorld(newMap(), { play: () => false }, () => 0.5);

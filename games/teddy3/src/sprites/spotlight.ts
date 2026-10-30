@@ -3,9 +3,9 @@
 // a standing dog's head height (the top four rows of the block under the lamp, so a dog
 // flopped flat on the floor is under it). When a sweep ends, or the light finds Gwinn, the
 // lamp goes dark for a moment.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { P } from '../art/pal';
-import { CLEAR } from '../../../kit/blit';
+import { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 
 const glow = (k: number) => P.c('glow', k);
 

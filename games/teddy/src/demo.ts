@@ -2,12 +2,12 @@
 // the first part of Doc Leo's backyard (hop the garden boxes, walk the clothesline, bark
 // at the squirrel, dig up a bone, bark the wobble ball out of Gwinn's mouth, climb the old
 // oak and fetch the fedora), then Esc.
-import { serializeRecording } from '../../../web/src/formats/recording';
-import { newCharInfo } from '../../../web/src/engine/world';
+import { serializeRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { buildCharacter, CB } from './characters/character';
 import { Recorder, runRoute } from '../tools/bot';
 import { ROUTES } from '../tools/route';
-import { Sim } from '../../kit/sceneSim';
+import { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import type { Level } from './levels/level';
 
 export async function demoRecording(l: Level): Promise<Uint8Array> {

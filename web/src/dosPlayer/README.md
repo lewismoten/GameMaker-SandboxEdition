@@ -2,6 +2,8 @@
 
 Part of the [source map](../README.md).
 
+Portable `patchTable.ts`, `patchRules.ts` and `fileExtensions.ts` now live in the engine package under `src/player/`; `applyPatches.ts` and `md5.ts` live in the archives package under `src/player/`. This folder retains site customization and integration tests.
+
 The DOS player customizer's core, with no DOM. `patchTable.ts` is
 what it offers of XFERPLAY.EXE (words, colors, frames, positions, times, F-keys: the safe and
 caution entries of the patch map, with offsets and rules); `patchRules.ts` checks and writes

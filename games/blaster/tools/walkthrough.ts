@@ -4,9 +4,9 @@
 // the whole run on the real engine (title, story, every leg, the ending, the credits).
 // It never takes a side room's way in.
 //   cd web && npx vite-node ../games/blaster/tools/walkthrough.ts
-import { newCharInfo } from '../../../web/src/engine/world';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { encodeKeys, type WalkChapterMark, type WalkSegment } from '../../../web/src/walkthrough/format';
-import type { RecordedKey } from '../../../web/src/formats/recording';
+import type { RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { writeWalkthrough } from '../../kit/walkthrough';
 import { STAGES } from '../src/stages/stages';
 import { fly } from './bot';

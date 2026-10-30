@@ -4,7 +4,7 @@
 //
 // The pictures are painted in stationArt.ts; this file lists the blocks of the set in order
 // (stationExtras.ts fills the last slots).
-import { dither } from '../../../kit/pixels';
+import { dither } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Mask, outline, shade, sprite } from '../art/draw';
 import { G, SOLID, SetBuilder, TOP, over, tex } from './blockset';
 import { EGG_BLOCK, ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';

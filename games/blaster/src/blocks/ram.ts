@@ -1,7 +1,7 @@
 // Stage 2: MEMORY LANE. Deep blue SIMM boards gridded with memory cells (the lit ones are
 // data), rows of DRAM chips, gold contact fingers, and the address bus whose data streams
 // shove the ship sideways.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, CLEAR, bevel, blob, micro, outline, shadeAt } from '../art/draw';
 import { pics } from '../characters/enemies';
 import type { Bestiary } from '../characters/mons';

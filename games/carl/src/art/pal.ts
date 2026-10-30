@@ -4,7 +4,7 @@
 // the bedroom by moonlight, the backyard at noon, the nature documentary's golden hour, and the
 // living room at dusk in gloom. Carl's red eyes, the lamps, the clock and the stereo's lights
 // keep their own light everywhere.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { type Pal, wrap } from '../../../kit/palRamps';
 export { type Pal } from '../../../kit/palRamps';
 

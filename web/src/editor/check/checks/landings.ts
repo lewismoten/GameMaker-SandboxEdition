@@ -12,11 +12,11 @@
 //   picture keeps him still while it walks with him, or stands on him).
 // The hero is put down as a scene start does (SceneSim.place), so no stale screen position
 // pushes him, and nothing is dropped from above the map's top row (the map wraps there).
-import { BLEN, MONBL, SOLLEF, SOLRIG, SOLTOP } from '../../../formats/blocks';
-import { DIESEQ } from '../../../formats/character';
-import type { Game } from '../../../formats/game';
-import { MLEN, MWID } from '../../../formats/map';
-import { LASTMM, LASTMON, bgBlock } from '../../../engine/world';
+import { BLEN, MONBL, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { DIESEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMM, LASTMON, bgBlock } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { at, type Finding } from '../findings';
 import { getsAway } from '../escape';
 import { keyRoles, movesFor } from '../inputs';

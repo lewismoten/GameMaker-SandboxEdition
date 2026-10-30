@@ -4,13 +4,13 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readDisk } from './gameSim';
+import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { looksLikeTinHeart } from './tinHeart';
-import { loadScene } from '../../web/src/engine/scene';
-import { checkTouch } from '../../web/src/engine/touch';
-import { BACKBL, parseBlocks } from '../../web/src/formats/blocks';
-import { parseGame, type Game } from '../../web/src/formats/game';
-import { MLEN, parseMap } from '../../web/src/formats/map';
+import { loadScene } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { checkTouch } from '@lewismoten/gamemaker-sandbox-engine/engine/touch';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { isHeartAt, type AboutForHearts, type HeartPlace } from '../../web/src/tinHearts/manifest';
 
 const here = dirname(fileURLToPath(import.meta.url));

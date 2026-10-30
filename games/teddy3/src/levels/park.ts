@@ -10,7 +10,7 @@
 //
 // The blocks are in parkTiles.ts, the monsters in parkBeasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
-import type { GameMap } from '../../../../web/src/formats/map';
+import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { G, parkTiles } from './parkTiles';
 import { parkBeasts } from './parkBeasts';
 import { bandAt } from './common';

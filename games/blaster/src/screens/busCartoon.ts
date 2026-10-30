@@ -4,8 +4,8 @@
 // the ride). <ride>.fli plays when the ride ends: the next stage's chip swells to fill the
 // screen and the BLASTER flies into it, NEXT STOP and the stage's name, then a fade to black
 // before the stage's first card.
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { Pixels } from '../../../kit/pixels';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { encodeFliFadeOut } from '../../../kit/fadeOut';
 import { CLEAR, centered, shadeAt } from '../art/draw';
 import { shipBlocks } from '../characters/ship';

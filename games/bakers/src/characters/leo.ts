@@ -4,8 +4,8 @@
 // number pad all steer. He starts with the rubber chicken in his pocket (inventory slot 1),
 // and the squawk is tied to it: Game-Maker turns a sequence on only while its block is
 // carried. The kazoo and Ebenezer's tricorn work the same way once picked up (Enter).
-import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { FIXED_BLOCK, KEY, MON, SEQ, SND } from '../ids';
 import type { BlockSet } from '../blocks/sets';
 

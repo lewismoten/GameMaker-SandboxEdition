@@ -1,6 +1,6 @@
 {
   "name": "@lewismoten/gamemaker-sandbox-engine",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Browser engine for RSD Game-Maker games in their original DOS file formats",
   "repository": {
     "type": "git",
@@ -9,20 +9,317 @@
   },
   "type": "module",
   "license": "MIT",
-  "files": ["dist", "README.md", "LICENSE", "NOTICE.md"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md"
+  ],
   "exports": {
     ".": {
-      "types": "./dist/types/engine/package.d.ts",
-      "import": "./dist/engine.js"
+      "types": "./dist/types/index.d.ts",
+      "gamemaker-source": "./src/index.ts",
+      "import": "./dist/index.js"
+    },
+    "./audio/cmfLoad": {
+      "types": "./dist/types/audio/cmfLoad.d.ts",
+      "gamemaker-source": "./src/audio/cmfLoad.ts",
+      "import": "./dist/audio/cmfLoad.js"
+    },
+    "./audio/cmfPlayer": {
+      "types": "./dist/types/audio/cmfPlayer.d.ts",
+      "gamemaker-source": "./src/audio/cmfPlayer.ts",
+      "import": "./dist/audio/cmfPlayer.js"
+    },
+    "./audio/context": {
+      "types": "./dist/types/audio/context.d.ts",
+      "gamemaker-source": "./src/audio/context.ts",
+      "import": "./dist/audio/context.js"
+    },
+    "./audio/engine": {
+      "types": "./dist/types/audio/engine.d.ts",
+      "gamemaker-source": "./src/audio/engine.ts",
+      "import": "./dist/audio/engine.js"
+    },
+    "./audio/opl": {
+      "types": "./dist/types/audio/opl.d.ts",
+      "gamemaker-source": "./src/audio/opl.ts",
+      "import": "./dist/audio/opl.js"
+    },
+    "./audio/output": {
+      "types": "./dist/types/audio/output.d.ts",
+      "gamemaker-source": "./src/audio/output.ts",
+      "import": "./dist/audio/output.js"
+    },
+    "./core/gameFiles": {
+      "types": "./dist/types/core/gameFiles.d.ts",
+      "gamemaker-source": "./src/core/gameFiles.ts",
+      "import": "./dist/core/gameFiles.js"
+    },
+    "./engine/character": {
+      "types": "./dist/types/engine/character.d.ts",
+      "gamemaker-source": "./src/engine/character.ts",
+      "import": "./dist/engine/character.js"
+    },
+    "./engine/funcKeys": {
+      "types": "./dist/types/engine/funcKeys.d.ts",
+      "gamemaker-source": "./src/engine/funcKeys.ts",
+      "import": "./dist/engine/funcKeys.js"
+    },
+    "./engine/game": {
+      "types": "./dist/types/engine/game.d.ts",
+      "gamemaker-source": "./src/engine/game.ts",
+      "import": "./dist/engine/game.js"
+    },
+    "./engine/keys": {
+      "types": "./dist/types/engine/keys.d.ts",
+      "gamemaker-source": "./src/engine/keys.ts",
+      "import": "./dist/engine/keys.js"
+    },
+    "./engine/machine": {
+      "types": "./dist/types/engine/machine.d.ts",
+      "gamemaker-source": "./src/engine/machine.ts",
+      "import": "./dist/engine/machine.js"
+    },
+    "./engine/menus": {
+      "types": "./dist/types/engine/menus.d.ts",
+      "gamemaker-source": "./src/engine/menus.ts",
+      "import": "./dist/engine/menus.js"
+    },
+    "./engine/monsters": {
+      "types": "./dist/types/engine/monsters.d.ts",
+      "gamemaker-source": "./src/engine/monsters.ts",
+      "import": "./dist/engine/monsters.js"
+    },
+    "./engine/playGain": {
+      "types": "./dist/types/engine/playGain.d.ts",
+      "gamemaker-source": "./src/engine/playGain.ts",
+      "import": "./dist/engine/playGain.js"
+    },
+    "./engine/playerLook": {
+      "types": "./dist/types/engine/playerLook.d.ts",
+      "gamemaker-source": "./src/engine/playerLook.ts",
+      "import": "./dist/engine/playerLook.js"
+    },
+    "./engine/recorder": {
+      "types": "./dist/types/engine/recorder.d.ts",
+      "gamemaker-source": "./src/engine/recorder.ts",
+      "import": "./dist/engine/recorder.js"
+    },
+    "./engine/render": {
+      "types": "./dist/types/engine/render.d.ts",
+      "gamemaker-source": "./src/engine/render.ts",
+      "import": "./dist/engine/render.js"
+    },
+    "./engine/scene": {
+      "types": "./dist/types/engine/scene.d.ts",
+      "gamemaker-source": "./src/engine/scene.ts",
+      "import": "./dist/engine/scene.js"
+    },
+    "./engine/scroll": {
+      "types": "./dist/types/engine/scroll.d.ts",
+      "gamemaker-source": "./src/engine/scroll.ts",
+      "import": "./dist/engine/scroll.js"
+    },
+    "./engine/showGraphic": {
+      "types": "./dist/types/engine/showGraphic.d.ts",
+      "gamemaker-source": "./src/engine/showGraphic.ts",
+      "import": "./dist/engine/showGraphic.js"
+    },
+    "./engine/slowPc": {
+      "types": "./dist/types/engine/slowPc.d.ts",
+      "gamemaker-source": "./src/engine/slowPc.ts",
+      "import": "./dist/engine/slowPc.js"
+    },
+    "./engine/touch": {
+      "types": "./dist/types/engine/touch.d.ts",
+      "gamemaker-source": "./src/engine/touch.ts",
+      "import": "./dist/engine/touch.js"
+    },
+    "./engine/world": {
+      "types": "./dist/types/engine/world.d.ts",
+      "gamemaker-source": "./src/engine/world.ts",
+      "import": "./dist/engine/world.js"
+    },
+    "./formats/binary": {
+      "types": "./dist/types/formats/binary.d.ts",
+      "gamemaker-source": "./src/formats/binary.ts",
+      "import": "./dist/formats/binary.js"
+    },
+    "./formats/blocks": {
+      "types": "./dist/types/formats/blocks.d.ts",
+      "gamemaker-source": "./src/formats/blocks.ts",
+      "import": "./dist/formats/blocks.js"
+    },
+    "./formats/character": {
+      "types": "./dist/types/formats/character.d.ts",
+      "gamemaker-source": "./src/formats/character.ts",
+      "import": "./dist/formats/character.js"
+    },
+    "./formats/cmf": {
+      "types": "./dist/types/formats/cmf.d.ts",
+      "gamemaker-source": "./src/formats/cmf.ts",
+      "import": "./dist/formats/cmf.js"
+    },
+    "./formats/cmfEdit": {
+      "types": "./dist/types/formats/cmfEdit.d.ts",
+      "gamemaker-source": "./src/formats/cmfEdit.ts",
+      "import": "./dist/formats/cmfEdit.js"
+    },
+    "./formats/cmfPreview": {
+      "types": "./dist/types/formats/cmfPreview.d.ts",
+      "gamemaker-source": "./src/formats/cmfPreview.ts",
+      "import": "./dist/formats/cmfPreview.js"
+    },
+    "./formats/cmfSong": {
+      "types": "./dist/types/formats/cmfSong.d.ts",
+      "gamemaker-source": "./src/formats/cmfSong.ts",
+      "import": "./dist/formats/cmfSong.js"
+    },
+    "./formats/fli": {
+      "types": "./dist/types/formats/fli.d.ts",
+      "gamemaker-source": "./src/formats/fli.ts",
+      "import": "./dist/formats/fli.js"
+    },
+    "./formats/fliFrames": {
+      "types": "./dist/types/formats/fliFrames.d.ts",
+      "gamemaker-source": "./src/formats/fliFrames.ts",
+      "import": "./dist/formats/fliFrames.js"
+    },
+    "./formats/fliLimits": {
+      "types": "./dist/types/formats/fliLimits.d.ts",
+      "gamemaker-source": "./src/formats/fliLimits.ts",
+      "import": "./dist/formats/fliLimits.js"
+    },
+    "./formats/game": {
+      "types": "./dist/types/formats/game.d.ts",
+      "gamemaker-source": "./src/formats/game.ts",
+      "import": "./dist/formats/game.js"
+    },
+    "./formats/gif": {
+      "types": "./dist/types/formats/gif.d.ts",
+      "gamemaker-source": "./src/formats/gif.ts",
+      "import": "./dist/formats/gif.js"
+    },
+    "./formats/gifProgressive": {
+      "types": "./dist/types/formats/gifProgressive.d.ts",
+      "gamemaker-source": "./src/formats/gifProgressive.ts",
+      "import": "./dist/formats/gifProgressive.js"
+    },
+    "./formats/graphicScripts": {
+      "types": "./dist/types/formats/graphicScripts.d.ts",
+      "gamemaker-source": "./src/formats/graphicScripts.ts",
+      "import": "./dist/formats/graphicScripts.js"
+    },
+    "./formats/highscore": {
+      "types": "./dist/types/formats/highscore.d.ts",
+      "gamemaker-source": "./src/formats/highscore.ts",
+      "import": "./dist/formats/highscore.js"
+    },
+    "./formats/jpeg": {
+      "types": "./dist/types/formats/jpeg.d.ts",
+      "gamemaker-source": "./src/formats/jpeg.ts",
+      "import": "./dist/formats/jpeg.js"
+    },
+    "./formats/map": {
+      "types": "./dist/types/formats/map.d.ts",
+      "gamemaker-source": "./src/formats/map.ts",
+      "import": "./dist/formats/map.js"
+    },
+    "./formats/monster": {
+      "types": "./dist/types/formats/monster.d.ts",
+      "gamemaker-source": "./src/formats/monster.ts",
+      "import": "./dist/formats/monster.js"
+    },
+    "./formats/palette": {
+      "types": "./dist/types/formats/palette.d.ts",
+      "gamemaker-source": "./src/formats/palette.ts",
+      "import": "./dist/formats/palette.js"
+    },
+    "./formats/recording": {
+      "types": "./dist/types/formats/recording.d.ts",
+      "gamemaker-source": "./src/formats/recording.ts",
+      "import": "./dist/formats/recording.js"
+    },
+    "./formats/sound": {
+      "types": "./dist/types/formats/sound.d.ts",
+      "gamemaker-source": "./src/formats/sound.ts",
+      "import": "./dist/formats/sound.js"
+    },
+    "./formats/voc": {
+      "types": "./dist/types/formats/voc.d.ts",
+      "gamemaker-source": "./src/formats/voc.ts",
+      "import": "./dist/formats/voc.js"
+    },
+    "./gfx/cp437Glyphs": {
+      "types": "./dist/types/gfx/cp437Glyphs.d.ts",
+      "gamemaker-source": "./src/gfx/cp437Glyphs.ts",
+      "import": "./dist/gfx/cp437Glyphs.js"
+    },
+    "./gfx/font8x8": {
+      "types": "./dist/types/gfx/font8x8.d.ts",
+      "gamemaker-source": "./src/gfx/font8x8.ts",
+      "import": "./dist/gfx/font8x8.js"
+    },
+    "./gfx/screen": {
+      "types": "./dist/types/gfx/screen.d.ts",
+      "gamemaker-source": "./src/gfx/screen.ts",
+      "import": "./dist/gfx/screen.js"
+    },
+    "./input/chords": {
+      "types": "./dist/types/input/chords.d.ts",
+      "gamemaker-source": "./src/input/chords.ts",
+      "import": "./dist/input/chords.js"
+    },
+    "./input/deskMouse": {
+      "types": "./dist/types/input/deskMouse.d.ts",
+      "gamemaker-source": "./src/input/deskMouse.ts",
+      "import": "./dist/input/deskMouse.js"
+    },
+    "./input/keyboard": {
+      "types": "./dist/types/input/keyboard.d.ts",
+      "gamemaker-source": "./src/input/keyboard.ts",
+      "import": "./dist/input/keyboard.js"
+    },
+    "./input/scancodes": {
+      "types": "./dist/types/input/scancodes.d.ts",
+      "gamemaker-source": "./src/input/scancodes.ts",
+      "import": "./dist/input/scancodes.js"
+    },
+    "./player/fileExtensions": {
+      "types": "./dist/types/player/fileExtensions.d.ts",
+      "gamemaker-source": "./src/player/fileExtensions.ts",
+      "import": "./dist/player/fileExtensions.js"
+    },
+    "./player/patchRules": {
+      "types": "./dist/types/player/patchRules.d.ts",
+      "gamemaker-source": "./src/player/patchRules.ts",
+      "import": "./dist/player/patchRules.js"
+    },
+    "./player/patchTable": {
+      "types": "./dist/types/player/patchTable.d.ts",
+      "gamemaker-source": "./src/player/patchTable.ts",
+      "import": "./dist/player/patchTable.js"
+    },
+    "./text/cp437": {
+      "types": "./dist/types/text/cp437.d.ts",
+      "gamemaker-source": "./src/text/cp437.ts",
+      "import": "./dist/text/cp437.js"
     }
   },
-  "types": "./dist/types/engine/package.d.ts",
+  "types": "./dist/types/index.d.ts",
   "scripts": {
-    "build": "vite build --config vite.config.ts && tsc -p tsconfig.build.json && cp ../../../LICENSE LICENSE",
-    "prepack": "npm run build"
+    "build": "node build.js",
+    "prepack": "npm run build",
+    "verify": "npm run build && node verify.js"
   },
   "devDependencies": {
     "typescript": "~5.9.0",
-    "vite": "^7.1.0"
-  }
+    "vite": "^7.1.0",
+    "@types/node": "^22.20.5"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "author": "Lewis Moten"
 }

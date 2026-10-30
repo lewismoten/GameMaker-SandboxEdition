@@ -1,6 +1,6 @@
 // Design previews: renders sprite sheets to PNG in a scratch folder.
 //   cd web && npx vite-node ../games/teddy/tools/preview.ts <outdir>
-import { Pixels } from '../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '../../kit/png';
 import { P } from '../src/art/pal';
 import { POSES } from '../src/sprites/teddy';

@@ -1,13 +1,13 @@
 // The level check's view of a game's scenes: each level scene's map, blocks, monsters,
 // character, palette and sounds, parsed once. A slot left blank keeps the scene before's file,
 // as loadscene's globals do (taken here in scene order, which is play order for most games).
-import { BACKBL, CHARBL, MONBL, emptyBlock, newBlockSet, parseBlocks, type Block } from '../../formats/blocks';
-import { newCharacter, parseCharacter, type Character } from '../../formats/character';
-import { NOSCENE, type Game } from '../../formats/game';
-import { MLEN, newMap, parseMap, type GameMap } from '../../formats/map';
-import { parseMonsters, type Monster } from '../../formats/monster';
-import { defaultPalette, parsePalette } from '../../formats/palette';
-import { parseSoundSet, type SoundSet } from '../../formats/sound';
+import { BACKBL, CHARBL, MONBL, emptyBlock, newBlockSet, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newCharacter, parseCharacter, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { NOSCENE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, newMap, parseMap, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { defaultPalette, parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { parseSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { levelScenes, linksInto } from './sceneLinks';
 import type { FileSource } from './sim';
 

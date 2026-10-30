@@ -9,7 +9,7 @@ import type { RetroHost } from '../host';
 import type { ProgramRef } from '../dos/vfs';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { expectText, progress } from './transfer';
 import { commas } from '../dos/vfs';
 import { boxBottom, boxRow, boxTop, sleep, type Term } from './term';

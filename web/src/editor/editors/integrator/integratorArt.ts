@@ -3,11 +3,11 @@
 // graphics (.gif, .bkd, .fli, .lst, .txt) as a 320x200 screen.
 import { paintIndexed } from '../../core/draw';
 import type { GameFiles } from '../../../project/files';
-import type { Point, Scene } from '../../../formats/game';
+import type { Point, Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelPixels } from '../../../gfx/levelPicture';
-import { decodeGif, isGif } from '../../../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../../formats/fli';
-import { parseBackdrop, parseSlideList, textLines } from '../../../formats/graphicScripts';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 /**
  * `cols` x `rows` blocks of a level's map centered on `at`, drawn the way the game draws

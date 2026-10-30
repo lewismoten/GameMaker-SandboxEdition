@@ -4,8 +4,8 @@
 // and the blocks that paint with the chosen color.
 import { h, clear, toast } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
-import { serializePalette, parsePalette, type Palette } from '../../../formats/palette';
-import { ADVTYPE } from '../../../formats/game';
+import { serializePalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelPixels, type LevelPicture } from '../../../gfx/levelPicture';
 import { arrival } from '../integrator/board';
 import { normalize } from '../../../project/files';

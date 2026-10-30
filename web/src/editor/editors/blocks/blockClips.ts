@@ -4,12 +4,12 @@
 // partner files are those of the scenes that use this block set, as "Used in" finds them.
 import type { Project } from '../../core/project';
 import { partners } from '../../core/uses';
-import { parseMap } from '../../../formats/map';
-import { parseMonsters, type Monster } from '../../../formats/monster';
-import { parseCharacter, SEQUENCE_NAMES, type Character } from '../../../formats/character';
-import type { Block, BlockKind } from '../../../formats/blocks';
-import { scanName } from '../../../input/scancodes';
-import { ADVTYPE } from '../../../formats/game';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseCharacter, SEQUENCE_NAMES, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import type { Block, BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
+import { ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { normalize } from '../../../project/files';
 import { bblClip, bblGroupClip, characterClips, monsterClips, monsterGroupClip, type Clip } from './animClip';
 import type { BlockGroup } from './blockGroups';

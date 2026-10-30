@@ -1,7 +1,7 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. The play-testing bot
 // plays the start of the library on the disk being built: a look at the storybook, a walk past
 // the shelves toward the workbench, and then Esc back to the menu.
-import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { Bot } from '../tools/bot';
 import { GameSim } from '../tools/sim';
 import { SCENE } from './ids';

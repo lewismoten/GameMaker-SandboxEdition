@@ -2,7 +2,7 @@
 // the start of Act One (the key and the seating chart in the box office, through the
 // house to the wings, the lens from the props room, the ticket stub it reveals under the
 // prop table and Felix's checklist), then presses Esc.
-import { serializeRecording } from '../../../web/src/formats/recording';
+import { serializeRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { GameSim } from '../tools/sim';
 import { Bot } from '../tools/bot';
 import { act1 } from '../tools/route';

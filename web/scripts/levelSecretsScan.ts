@@ -3,7 +3,7 @@
 // (src/manual/printables/levelSecrets.ts). Secret games are left out altogether.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { parseGame } from '../src/formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { mayShowLevelMaps, secretBlocksOf, type AboutForSecrets, type SecretBlocks } from '../src/manual/printables/levelSecrets';
 
 export function scanLevelSecrets(gamesDir: string): Record<string, SecretBlocks> {

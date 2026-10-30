@@ -1,7 +1,7 @@
 // Houses in 3/4 view: two rows of snowy roof over one row of wall (red brick, blue siding or
 // butter yellow) with windows, doors and garages. The eaves and chimneys animate by next/ntime
 // chains: each block names its second frame as "next", and that frame names the first.
-import { rng, type Pixels } from '../../../kit/pixels';
+import { rng, type Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, gradient, shadeAt } from '../art/draw';
 import { Ctx, SOLID } from './book';
 import { cartReturn } from './cartReturn';

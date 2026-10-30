@@ -6,7 +6,7 @@
 // carrying the lens and the lens spends a charge to read it right (the same paid touch
 // that finds the ticket stub), so the misprint corrects itself, one character at a time:
 // PIKE'S PLAY: RAVEN BRIDE. The plaque pays 1776 points to whoever reads it.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { microC } from '../art/draw';
 import { c } from '../art/pal';
 import { CTR } from '../ids';

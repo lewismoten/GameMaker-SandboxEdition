@@ -15,7 +15,7 @@
 //   D a hatch down to the room's egg cupboard   O the hatch back up (in a cupboard)
 //   z the kazoo   t the tricorn   q the rotten egg   f the pastry egg   T Teddy   Y Teddy (facing left)   G Gwinn
 // Digits and other letters are the room's own (monsters on patrol, signs).
-import { MLEN, newMap, reindexMonsters, LASTMM, type GameMap } from '../../../../web/src/formats/map';
+import { MLEN, newMap, reindexMonsters, LASTMM, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { ThemeName } from '../art/pal';
 import type { Bestiary } from '../blocks/sets';
 import type { Style, TileSet } from '../blocks/tiles';

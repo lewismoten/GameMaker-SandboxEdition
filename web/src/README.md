@@ -68,9 +68,11 @@ Each area's own README says what each of its files does; the short ones are desc
 
 ### Game files, engine and player
 
-- [`formats/`](formats/README.md): readers and writers for every Game-Maker file and the standard
+SDK implementation lives in the packages below; the app imports their declared exports. Runtime screen/fonts/keyboard/CP437 data belong to the engine package, archive and scan modules to archives, and generic drawing/music/PNG/simulation builders to tools. See [workspace development](../../docs/monorepo.md).
+
+- [`formats/`](formats/README.md): integration tests for the engine package's readers and writers for every Game-Maker file and the standard
   ones it uses (Borland C++ 16-bit layout).
-- [`engine/`](engine/README.md): the game engine, a TypeScript port of `PLAYGAME.C`, and what
+- [`engine/`](engine/README.md): engine integration tests; the engine package owns the TypeScript port of `PLAYGAME.C`, and what
   XFERPLAY's own screens show.
 - [`../packages/engine/`](../packages/engine/README.md): the npm package build and usage guide for
   the reusable browser engine.
@@ -78,14 +80,12 @@ Each area's own README says what each of its files does; the short ones are desc
 - [`../packages/tools/`](../packages/tools/README.md): the development-only npm toolkit for native formats, drawing, audio generation and headless checks.
 - [`audio/`](audio/README.md): OPL2 music, the CMF player, Web Audio output, PC speaker sounds, and
   making songs and sound effects.
-- [`gfx/`](gfx): the mode 13h screen (`screen.ts`) and 8×8 fonts (`font8x8.ts`; all of CP437 in
-  `cp437Glyphs.ts`), and pictures drawn from a game's own maps: `levelPicture.ts`,
+- [`gfx/`](gfx): pictures drawn from a game's own maps: `levelPicture.ts`,
   `titlePicture.ts`, `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's), and
   screenshots that are a moment of play (`shotFrame.ts`, shown by `frameShot.ts`).
-- [`input/`](input): keyboard scan codes (`scancodes.ts`, `keyboard.ts`), arrow chords and Mac
-  keys for keyboards without a keypad (`chords.ts`, `macKeys.ts`), keys pressed with the mouse or
+- [`input/`](input): Mac keys for keyboards without a keypad (`macKeys.ts`), keys pressed with the mouse or
   a finger (`virtualKeys.ts`), the gamepad (`gamepad.ts`), and the desk's game pad and ball mouse
-  as the PC's joystick and mouse (`deskJoystick.ts`, `deskMouse.ts`).
+  as the PC's joystick and mouse (`deskJoystick.ts`; the portable mouse state lives in the engine package).
 - [`player/`](player): the embeddable player (`player.ts`): canvas, start overlay, whole-pixel
   scaling (`exactScale.ts`), touch controls (`touch.ts`, with what the d-pad sends for each
   direction and which keys that leaves off the touch strip in `moveKeys.ts`), on-screen keys (`screenKeys.ts`) and a

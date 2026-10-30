@@ -3,7 +3,7 @@
 // fainting cousins, pigeons, camels (two blocks each), spit, the crowd in Bethlehem, the
 // wise men, the donkey and the ox, the line at the manger, and a scream you can see.
 // Every sprite is drawn from shapes and given a dark outline, a 3/4 view like the blocks.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';

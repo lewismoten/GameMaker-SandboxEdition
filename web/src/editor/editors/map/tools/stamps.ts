@@ -2,8 +2,8 @@
 //
 // Game-Maker blocks can't be drawn mirrored, so a stamp flips only when every block in it
 // has a mirror image in the same set (block 7's picture flipped is block 8's, or itself).
-import type { Block } from '../../../../formats/blocks';
-import { BLEN } from '../../../../formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export interface Stamp {
   id: string;

@@ -2,8 +2,8 @@
 // Doc Leo finds the sugar has been hiding under the Sugar Room's iron range since the tax man
 // came, does not fit, and posts Sir Reginald Cluckington III in after it (SQUEEEZE); on the
 // way out, the sugar slides out of the dark, the chicken pops out after it and bounces into Doc Leo's hand.
-import { Pixels } from '../../../kit/pixels';
-import { Reel } from '../../../kit/reel';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { ingredient } from '../art/kit';
 import { PAL, c } from '../art/pal';
 import { reggie, reggieBounce } from '../sprites/chicken';

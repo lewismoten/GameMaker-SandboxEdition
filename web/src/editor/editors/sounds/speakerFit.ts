@@ -3,7 +3,7 @@
 // Each slot's choice is remembered in the project's companion file (the sound set's
 // "speakerFit" section), which no DOS, native or web-page export carries.
 import { h } from '../../core/ui';
-import { NUMFREQ } from '../../../formats/sound';
+import { NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { SPEAKER_STEP, type SpeakerFit } from '../../../audio/vocToSpeaker';
 
 /** The companion section: slot number -> its fit, only for slots the author changed. */

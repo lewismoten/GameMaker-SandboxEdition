@@ -1,6 +1,6 @@
 // Floors and grounds: each a function that paints a fresh 20x20 square, so items and
 // decorations can be laid on top of the right ground.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { shadeAt, speckle } from '../art/draw';
 import { C, PAL } from '../art/pal';
 

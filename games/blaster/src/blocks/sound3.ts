@@ -1,7 +1,7 @@
 // Stage 3: THE SOUND CARD. A red sound card: the FM chip (its maker a parody, YO MAMA!), audio jacks, volume
 // knobs, VU meters dancing, and big speaker cones that thump the ship forward when they
 // push out (a gravity block that is only there on the beat).
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
 import { pics } from '../characters/enemies';
 import type { Bestiary } from '../characters/mons';

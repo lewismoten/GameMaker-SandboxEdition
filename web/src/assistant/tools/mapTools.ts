@@ -1,7 +1,7 @@
 // Tools for a level's map (.map): its 100 x 100 cells as rows of background block numbers, and
 // the monsters placed on it (up to 200), read and written a region at a time.
-import { LASTMM, MLEN, MWID, newMap, parseMap, reindexMonsters, serializeMap } from '../../formats/map';
-import { LASTMON } from '../../formats/monster';
+import { LASTMM, MLEN, MWID, newMap, parseMap, reindexMonsters, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { DRY_RUN, commit } from './run';
 import { FILE, clampInt, fileName, int, intRows, need } from './common';
 import { json, ToolError, type ToolDef } from './types';

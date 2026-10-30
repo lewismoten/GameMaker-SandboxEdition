@@ -3,7 +3,7 @@
 // chapter 5's car lot (painted bays, parked cars, gates on timers that warn in amber, breakers,
 // the charger, THE CHEZ at the curb and Doc Leo), and chapter 6's cove (sand, sea, the rocks that
 // show only when the old lamp sputters, the lighthouse).
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { chezPicture } from '../../../kit/chez';
 import { bevel } from '../art/draw';
 import { c, r } from '../art/pal';

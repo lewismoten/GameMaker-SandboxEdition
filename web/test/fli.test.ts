@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { applyFliFrame, newFliCanvas, parseFli } from '../src/formats/fli';
+import { applyFliFrame, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 
 const gameware = resolve(__dirname, '../../cd/gameware');
 const flis = existsSync(gameware)

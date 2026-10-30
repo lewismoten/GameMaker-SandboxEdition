@@ -11,10 +11,10 @@
 //
 // Layout (12 rows): the living room (x 0..13) and then the feed (x 14..), its floor on row 10;
 // the posts are ledges.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, loot, plotThing } from '../../common/blocks';
 import { anim, corner, mon, pace } from '../../common/characters';

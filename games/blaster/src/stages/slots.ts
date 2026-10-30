@@ -7,7 +7,7 @@ import { boardVirus } from '../blocks/board';
 import { slotsArt, slotsBlocks, slotsRamps } from '../blocks/slots';
 import { S_CURVE, ZIGZAG, diver, heavy, mine, swooper } from '../characters/enemies';
 import { buildPalette } from '../art/pal';
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sideLeg, sideMites, wander, type Side } from './sideLeg';
 import type { Leg } from './stage';
 import type { BlockSet } from '../art/draw';

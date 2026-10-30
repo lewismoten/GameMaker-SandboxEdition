@@ -1,7 +1,7 @@
 // NEAR.CHR and FAR.CHR: Ray rolling (a sequence per key, the frames turning his bands the way he
 // rolls), firing a ray of light, hurt, and de-rendering when he falls or runs out of light.
 // The two files are the same Ray; only his bands' color says which plane is in focus.
-import { emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
+import { emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MON, SEQ, SND } from '../ids';
 import type { SpriteSet } from '../sprites/sprites';
 

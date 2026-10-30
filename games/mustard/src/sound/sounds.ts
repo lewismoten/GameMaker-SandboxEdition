@@ -5,9 +5,9 @@
 // feet!" for an extra life, "Hallelujah!" for Space (up in the sky, "keep the mustard
 // seed hustle alive!"), "Keep on hustlin'" as the sidewalk cracks open, and "Tiny faith can
 // move mountains" each time a boulder moves.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { rng } from '../../../kit/pixels';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { clipVoc } from './clips';
 import { lowNoise, gate, env } from '../../../kit/synthParts';

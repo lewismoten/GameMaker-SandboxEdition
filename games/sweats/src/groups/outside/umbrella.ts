@@ -10,10 +10,10 @@
 //
 // Layout (12 rows: the rain above, the store's ceiling on row 2 from x 16 to 44, the walking row
 // 9). The shelves' planks (rows 7 and 4) are ledges; the checkout counter is solid.
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, loot, plotThing } from '../../common/blocks';
 import { anim, corner, mon, pace } from '../../common/characters';

@@ -6,7 +6,7 @@ import { ramVirus } from '../blocks/ram';
 import { BANK_STACK, bankArt, bankBlocks, bankRamps } from '../blocks/bank';
 import { S_CURVE, ZIGZAG, diver, heavy, mine, stalker, swooper } from '../characters/enemies';
 import { buildPalette } from '../art/pal';
-import { MLEN } from '../../../../web/src/formats/map';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { GATE, sideLeg, sideMites, type Side } from './sideLeg';
 import type { Leg } from './stage';
 import type { BlockSet } from '../art/draw';

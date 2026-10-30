@@ -79,7 +79,7 @@ game folder opens in the browser unchanged.
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
 - **The npm archive utilities** (`web/packages/archives/`): the fork's ZIP codec and portable game import discovery, consolidated and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten's direction. The underlying code was written with **Anthropic Claude Opus 5.5**. Compression uses platform streams; no third-party archive library is included. The package carries its own license and notices.
-- **The npm development toolkit** (`web/packages/tools/`): extracted, packaged and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten’s direction, using this fork’s format codecs, drawing and audio builders, and reference simulation. Game-specific assets stay in the consuming projects.
+- **The npm development toolkit** (`web/packages/tools/`): extracted, packaged and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten’s direction, using this fork’s format codecs, drawing and audio builders, and reference simulation. Game-specific assets stay in the consuming projects. The self-contained npm workspace migration was implemented and verified with OpenAI Codex (GPT-6.1).
 - **Added to the site in October 2026**, also written by **Claude Opus 5.5** as Lewis
   directed, from no one else's code, art, data or recordings: the desk modem's line speeds
   and the handshake sounds you hear for each (see "Modem sounds" below); TERMINAL's TTY calls
@@ -133,7 +133,7 @@ game folder opens in the browser unchanged.
   into the panel; Acord Games' shared player, whose renamed file extensions it recognizes and maps
   back, is only read, never copied. The patch offsets were found in this project's own reading of
   `cd/gm/xferplay.exe` against `code/GM/PLAYGAME.C` and `HISCOREL.C`.
-- **MD5** (`web/src/dosPlayer/md5.ts`) is written from the algorithm's description in RFC 1321
+- **MD5** (`web/packages/archives/src/player/md5.ts`) is written from the algorithm's description in RFC 1321
   (R. Rivest, MIT Laboratory for Computer Science and RSA Data Security, Inc., 1992), only to tell
   the CD's `XFERPLAY.EXE` from other files before patching it; no RSA reference code is used.
 - **Research: the whole Game-Maker Archive, ideas only.** A second survey read every Game-Maker
@@ -436,8 +436,8 @@ formats from their published descriptions and from Game-Maker's own source.
   die lines are drawn by this project. The disk and CD label sizes are the common sticker-paper
   sizes (a 2.75 in wrap-around 3.5" diskette label; a 117 mm CD label with a 41 mm hole).
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
-  `web/src/audio/opl.ts` was written for this project.
-- **PNG** (RFC 2083): the Assistant's pictures for AI tools (`web/src/assistant/png.ts`) are
+  `web/packages/engine/src/audio/opl.ts` was written for this project.
+- **PNG** (RFC 2083): the Assistant's pictures for AI tools (`web/packages/tools/src/image/png.ts`) are
   written from the specification; compression is the browser's or Node's own.
 - **Model Context Protocol** and **WebMCP**: the local server for AI tools (`web/scripts/mcp`)
   speaks the Model Context Protocol with its MIT-licensed TypeScript SDK (see Tools used to
@@ -459,7 +459,7 @@ formats from their published descriptions and from Game-Maker's own source.
   AdLib's BRASS1 settings; they are kept as RSD released them.
 - **8×8 text font**: Daniel Hepper's `font8x8_basic`, plus accented letters and symbols
   from his `font8x8_ext_latin` and `font8x8_misc` and Greek letters from his `font8x8_greek`
-  (`web/src/gfx/cp437Glyphs.ts`), all in the public domain. The
+  (`web/packages/engine/src/gfx/cp437Glyphs.ts`), all in the public domain. The
   [upstream font8x8 headers](https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h)
   also credit Marcel Sondaar and International Business Machines (public domain VGA fonts)
   as their basis. The other code page 437 glyphs (card suits, notes, arrows, math signs)
@@ -720,11 +720,11 @@ Game-Maker's makefiles don't build.
 - The sample pictures in `code/Image/PNG/PICS` are of unknown origin. One of them says so
   itself ("Peppers").
 
-**What the web port uses**: none of this code. `web/src/project/zip.ts` writes its own
+**What the web port uses**: none of this code. `web/packages/archives/src/project/zip.ts` writes its own
 table-driven CRC-32 (the standard ZIP polynomial that APPNOTE credits to Schwaderer) and
-follows APPNOTE's layout. The FLI reader `web/src/formats/fli.ts` follows Andy Stone's
+follows APPNOTE's layout. The FLI reader `web/packages/engine/src/formats/fli.ts` follows Andy Stone's
 `FLI.CPP` and the format in Kent's `FLIDOC.TXT`. The GIF LZW coder in
-`web/src/formats/gif.ts` is new, not GIFSAVE. `web/src/formats/voc.ts` reproduces Peter
+`web/packages/engine/src/formats/gif.ts` is new, not GIFSAVE. `web/packages/engine/src/formats/voc.ts` reproduces Peter
 Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
 
 ## Tools used to build and test
@@ -739,9 +739,9 @@ the [Model Context Protocol TypeScript SDK](https://github.com/modelcontextproto
 (`@modelcontextprotocol/sdk`, MIT, Anthropic, PBC) and [ws](https://github.com/websockets/ws)
 (MIT, Einar Otto Stangvik, Arnout Kazemier, Luigi Pinca and contributors) with `@types/ws`
 (MIT, DefinitelyTyped); they run only on the developer's own computer, in Node. These are the
-only packages in `web/package.json`, all used only to build, test and run local tools; none of
+third-party development dependencies in the workspace manifests, used to build, test and run local tools; none of
 their code ships in the app except Vite's small module runtime and preload helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
-they use, with versions and licenses, from `web/package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
+they use, with versions and licenses, from root `package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
 see above for what ends up in them.
 
 The desk's black-light poster (`games/kit/scans/blacklight.py`) is drawn on the developer's

@@ -4,9 +4,9 @@
 // "alas"); the lines of the monologues are cut from the recordings (clips.ts), four to a
 // monologue: its opening line (the spotlight: the score sound), the line B says, the punch line
 // (the last gate: the spend sound) and the word Space declaims.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { rng } from '../../../kit/pixels';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { MONOLOGUES, type SoundPlan } from '../scenes';
 import { clipVoc, hasClip } from './clips';

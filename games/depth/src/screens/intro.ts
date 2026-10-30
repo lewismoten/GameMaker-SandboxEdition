@@ -2,7 +2,7 @@
 // Count Polygon swoops through it turning spheres into polyhedra, Ray's bands light up, and
 // the last shot closes in on Ray before the fade (the logo is the title's). The camera never
 // moves within a shot, so an FLI frame only stores what changed.
-import { encodeFli } from '../../../../web/src/formats/fli';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import type { Picture } from '../render/image';
 import { MAT } from '../render/look';
 import { Matcher, medianCut, putColors } from '../render/quant';

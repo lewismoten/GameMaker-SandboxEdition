@@ -17,7 +17,7 @@ import { execFileSync } from 'node:child_process';
 import { basename, join, resolve } from 'node:path';
 import { GameFiles } from '../src/project/files';
 import { exportDos } from '../src/export/exportDos';
-import { readZip } from '../src/project/zip';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 const ROOT = resolve(__dirname, '../..');
 const args = process.argv.slice(2);

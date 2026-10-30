@@ -1,7 +1,7 @@
 // A .voc's samples as PC speaker steps: synthetic tones come out at their pitch, silence as 0,
 // a slide keeps its direction, noise is not mistaken for a clean tone, and timing fits.
 import { describe, expect, it } from 'vitest';
-import { NUMFREQ } from '../formats/sound';
+import { NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { SPEAKER_STEP, findPitch, vocToSpeaker, zeroCrossingPitch } from './vocToSpeaker';
 
 const RATE = 11025;

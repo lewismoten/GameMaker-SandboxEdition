@@ -5,12 +5,12 @@ import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../project/files';
 import { testGame } from '../editor/check/testGame';
 import { startingAtSpot } from '../editor/editors/integrator/startAt';
-import { parseCharacter, serializeCharacter } from '../formats/character';
-import { serializeGame } from '../formats/game';
+import { parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { headlessCanvas, WalkAudio } from '../walkthrough/runtime';
-import { Machine } from './machine';
-import { runGame, type RunOptions } from './game';
-import type { World } from './world';
+import { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import { runGame, type RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 
 // prettier-ignore
 const ROWS = [

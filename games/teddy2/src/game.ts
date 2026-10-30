@@ -1,7 +1,7 @@
 // teddy2.gam: the title scene, the ending, and the levels in order, each one's way out
 // (THE CHEZ's door, or Gwinn's ride) linked to the start of the next. Each level scene names
 // its own character file: Teddy's, or Gwinn's for the "Meanwhile..." levels.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Level } from './levels/level';
 import { house } from './levels/level1';
 import { main } from './levels/level2';

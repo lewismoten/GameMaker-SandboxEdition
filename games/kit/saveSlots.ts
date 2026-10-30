@@ -5,7 +5,7 @@
 // x 112). Yellow only reads on a dark ground and blue only on a light one, so a picture needs
 // a dark strip under each name and a light strip under the message. The boxes below leave
 // the textfit check's 2 pixel margin (kit/textfit.ts) clear of any edge.
-import type { Pixels } from './pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 /** The dark strip under name i (0..9): the marker and the 20 letters with their margin. */
 export const SLOT = { x: 54, w: 196, h: 14, y: (i: number) => 37 + i * 14 } as const;

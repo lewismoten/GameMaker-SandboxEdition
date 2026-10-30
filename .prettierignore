@@ -7,6 +7,9 @@
 !/web/
 !/games/
 !/code/
+!/scripts/
+!/package.json
+/scripts/**/*.md
 
 # The original release (code/, cd/, runtime/) is preserved as is and never formatted.
 # The one exception is code/README.md, a doc this fork added.
@@ -35,8 +38,13 @@ coverage/
 /web/**/*.json
 !/web/package.json
 !/web/tsconfig.json
+!/web/packages/*/package.json
+!/web/packages/*/tsconfig.json
 
 # hand-written pages and docs: index.html and play.html are Vite entries (editing them
 # reloads open dev pages), and the READMEs are prose with hand-made tables
 /web/**/*.html
 /web/**/*.md
+
+# Workspace manifests and the generated npm lock are managed by npm.
+/package-lock.json

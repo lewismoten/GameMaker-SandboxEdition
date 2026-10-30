@@ -4,8 +4,8 @@
 // ends on a fade to black, since PLAYGAME cuts an FLI's last frame straight to black before the
 // page picture that follows it fades in.
 import { fadeOutLength } from '../../../../kit/fadeOut';
-import { Pixels, rng } from '../../../../kit/pixels';
-import type { Reel } from '../../../../kit/reel';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import type { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { centered } from '../../art/draw';
 import { buildPalette, c, type Light } from '../../art/pal';
 

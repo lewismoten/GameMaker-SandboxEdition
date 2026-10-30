@@ -8,7 +8,7 @@
 // - the Pie-O-Matic's pies are projectiles (play dead to let them pass);
 // - Gwinn holds the nose at 124: the heart beats her too, and she becomes Gwinn sitting
 //   with the nose at her feet, then (touched, at power 2) a happy Gwinn.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { CTR, POWER } from '../ids';
 import { newBestiary } from './level';

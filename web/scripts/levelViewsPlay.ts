@@ -21,11 +21,11 @@
 // levelSecrets.json lists are scanned, so a secret game never is.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { BACKBL, parseBlocks } from '../src/formats/blocks';
-import { ADVTYPE, type Game } from '../src/formats/game';
-import { MLEN, MWID, parseMap } from '../src/formats/map';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { usedArea } from '../src/manual/printables/levelMapLayout';
-import { SCRNBLEN, SCRNBWID, type World } from '../src/engine/world';
+import { SCRNBLEN, SCRNBWID, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { explore, type Entry } from '../src/editor/check/explore';
 import { Unroll } from '../src/editor/check/unroll';
 import { findCourse, type CoursePath } from '../src/editor/check/course';

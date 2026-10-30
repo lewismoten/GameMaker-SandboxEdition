@@ -4,11 +4,11 @@
 // an air vent (it fills the heart balloon), Watt's workshop door
 // (it opens once the house's Big Grumble is cheered up), the charging socket and Watt. Then the
 // friends who come when the tally counter goes gold (the same map, in gold), and the front door.
-import { SOLTOP } from '../../../../web/src/formats/blocks';
+import { SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { chezPicture } from '../../../kit/chez';
 import { carlPic } from '../../../kit/carlCameo';
 import { lewieCameo, wattCameo, willCameo } from '../../../kit/cameos';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, over } from '../art/draw';
 import { PAL, c, r } from '../art/pal';
 import { AIR_SEQ, PUFF } from '../characters';

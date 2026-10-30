@@ -3,7 +3,7 @@
 // front and a gold curtain-tie stitched round its middle. Touching the sofa with the lens
 // costs a charge and shows the egg; touching the egg adds to CTR.egg and leaves the seat
 // open (the scene link there shows who left it).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { shadeAt } from '../art/draw';
 import { clone } from './painters';
 import { c, ramp as r } from '../art/pal';

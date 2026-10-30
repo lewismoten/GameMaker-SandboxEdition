@@ -5,7 +5,7 @@
 // Used by the block editor and the character editor.
 import { h, clear } from '../../core/ui';
 import { blockCanvas } from '../../core/draw';
-import type { Palette } from '../../../formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { BlockGroup } from './blockGroups';
 import './groupView.css';
 

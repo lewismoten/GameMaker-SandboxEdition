@@ -2,10 +2,10 @@
 // (runtime.ts WalkAudio): the same OPL2 emulator and CMF sequencer the music worklet runs,
 // the PC speaker's square wave one frequency per timer tick, and .voc samples, mixed as
 // audio/engine.ts mixes them (everything through a 0.8 master gain).
-import { Opl2 } from '../audio/opl';
-import { CmfPlayer, TICK_RATE } from '../audio/cmfPlayer';
-import { loadSong } from '../audio/cmfLoad';
-import { decodeVoc, isVoc } from '../formats/voc';
+import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
+import { CmfPlayer, TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { loadSong } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfLoad';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import type { AudioEvent } from './runtime';
 
 const MASTER = 0.8;

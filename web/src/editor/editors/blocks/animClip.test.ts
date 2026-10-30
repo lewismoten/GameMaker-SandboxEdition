@@ -1,9 +1,9 @@
 // Tests for animClip.ts: clips built from block chains, monsters and character sequences.
 import { describe, expect, it } from 'vitest';
-import { newMonsterSet } from '../../../formats/monster';
+import { newMonsterSet } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { bblClip, bblGroupClip, characterClips, clipTicks, monsterClips, monsterGroupClip, nextChange, stepAt, type Track } from './animClip';
 import { groupOf } from './blockGroups';
-import { parseCharacter } from '../../../formats/character';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 
 const blk = (nextBl: number, ntime: number) => ({ nextBl, ntime });
 

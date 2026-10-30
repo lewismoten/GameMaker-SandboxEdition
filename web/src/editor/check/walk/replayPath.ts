@@ -1,8 +1,8 @@
 // Plays a path the level check's explorer found again from the scene's start (or from a place
 // reached before), every monster moving as the engine does, keeping the keys it pressed tick by
 // tick: what autoWalk and its key fetcher (fetchKeys.ts) put in the walkthrough.
-import type { CharInfo, World } from '../../../engine/world';
-import type { Game } from '../../../formats/game';
+import type { CharInfo, World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { driveMove, type Outcome } from '../drive';
 import type { Entry, Exploration, Via } from '../explore';
 import type { Move } from '../inputs';

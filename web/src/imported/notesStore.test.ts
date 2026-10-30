@@ -5,7 +5,7 @@ import { fingerprintOf, fingerprintOfFiles, fingerprintText, sameGame } from './
 import { allNotes, noteOf, ratingOf, setNote } from './gameNotes';
 import { forgetRemoved, removedGames, removedMatch } from './removedGames';
 import { noteImport, noteRemoval, undoRemoval } from './noteMoves';
-import { crc32 } from '../project/zip';
+import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 const store = new Map<string, string>();
 beforeEach(() => {

@@ -9,11 +9,11 @@
 //   writeArea(...)   a PNG of a map's rectangle, for before/after pictures of an object
 import { mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { parseGame, ADVTYPE, ADV_EXTS } from '../../web/src/formats/game';
-import { parseMap, MLEN, MWID } from '../../web/src/formats/map';
-import { parseBlocks, BACKBL, type Block } from '../../web/src/formats/blocks';
-import { parsePalette } from '../../web/src/formats/palette';
-import { Pixels } from './pixels';
+import { parseGame, ADVTYPE, ADV_EXTS } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseBlocks, BACKBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from './png';
 
 /** What a map cell holds, by block name ('' or undefined for unnamed). */

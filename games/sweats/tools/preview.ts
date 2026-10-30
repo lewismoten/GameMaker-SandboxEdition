@@ -4,7 +4,7 @@
 import { mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { newMonsterSet } from '../../../web/src/formats/monster';
+import { newMonsterSet } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { blockSheet, writePng } from '../../kit/png';
 import { renderRegion } from '../../snowbound/src/art/render';
 import { buildPalette } from '../src/art/pal';

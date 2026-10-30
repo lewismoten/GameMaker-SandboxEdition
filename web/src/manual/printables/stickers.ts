@@ -7,7 +7,7 @@
 import './paper.css'; // first: this piece's own styles build on the paper's
 import './stickers.css';
 import { download, h } from '../../editor/core/ui';
-import { createZip } from '../../project/zip';
+import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { portrait, sheet, spriteArt, splitTitle, type PrintContext, type Sheet } from './kit';
 import { BLEED, CUT_H, CUT_W, cutSvg, layoutStickers, pngWithDpi, sheetBounds, type Placed } from './stickerArt';
 import { CUT_OFFSET, MIN_SIZE, outline, type Pt } from './stickerGeom';

@@ -5,9 +5,9 @@
 //
 // .icns: "icns", the file's length, then entries of a 4-byte type, the entry's length
 // (8 + data) and its data; types ic07..ic10 hold PNGs of 128, 256, 512 and 1024 pixels.
-import { crc32 } from '../project/zip';
-import { vga8 } from '../formats/palette';
-import type { IndexedImage } from '../formats/gif';
+import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import type { IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 
 export interface IconColors {
   /** Tile gradient, top and bottom (CSS hex, #rgb or #rrggbb). */

@@ -1,9 +1,9 @@
 // The printed Level Maps' arithmetic: shared maps, the part in use and the part seen, hidden cells, marks and page
 // packing.
 import { describe, expect, it } from 'vitest';
-import { emptyBlock } from '../../formats/blocks';
-import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Scene } from '../../formats/game';
-import { MLEN, MWID } from '../../formats/map';
+import { emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { ADVTYPE, ENDTYPE, NOSCENE, STARTTYPE, type Game, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { fillerBlock, hideSecrets, levelMarks, mapGroups, markLabel, packPages, seenArea, usedArea } from './levelMapLayout';
 
 const scene = (gametype: number, files: string[], links: [number, number, number, number, number][] = []): Scene =>

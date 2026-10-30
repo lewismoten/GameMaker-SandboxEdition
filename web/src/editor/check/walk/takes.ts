@@ -4,7 +4,7 @@
 // key on the tick it takes effect, as PLAYGAME's demos do; this one also keeps every key (a
 // demo stops at 1000) and where each entry into a scene began. A death plays the scene again
 // from its start, so a take is the last try, from its entry to the link it left by.
-import { RECORD, Recorder } from '../../../engine/recorder';
+import { RECORD, Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
 import { encodeKeys, keysAt } from '../../../walkthrough/format';
 
 export interface Take {

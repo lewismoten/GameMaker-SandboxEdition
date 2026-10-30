@@ -2,7 +2,7 @@
 // repeats, Game-Maker's clock, loudness (scaling note velocities), and clearing out events
 // the game ignores.
 import { h, clear, toast } from '../../core/ui';
-import { CMF_GAMEMAKER_CLOCK } from '../../../formats/cmf';
+import { CMF_GAMEMAKER_CLOCK } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import {
   channelNotes,
   clampVelocity,
@@ -15,9 +15,9 @@ import {
   setStartMode,
   setVelocity,
   stripIgnored,
-} from '../../../formats/cmfEdit';
-import { writeSong, type Note } from '../../../formats/cmfSong';
-import { TICK_RATE } from '../../../audio/cmfPlayer';
+} from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { writeSong, type Note } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
 import type { MusicDoc } from './doc';
 
 export class SongPanel {

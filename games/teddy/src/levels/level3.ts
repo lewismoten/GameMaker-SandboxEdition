@@ -4,7 +4,7 @@
 // duck pond, flying discs, and Gwinn rolling in the mud by the picnic tables.
 //
 // The blocks are in level3Tiles.ts, the monsters in level3Beasts.ts; this file lays out the map.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { LevelMap, type Level } from './level';
 import { bandOf } from './level1Tiles';
 import { G, parkTiles } from './level3Tiles';

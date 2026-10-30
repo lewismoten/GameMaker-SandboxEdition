@@ -9,7 +9,7 @@
 // Game-Maker's text UI style.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
-import { toCp437 } from '../retro/text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { eggStates, resetAllOverrides, setOverride, type EggState } from './eggState';
 import { hasTeddyEgg } from './teddyEgg';
 import { tally } from '../achievements';

@@ -3,7 +3,7 @@
 // turnstile, backstage (mirrors, costume rack, trunks, the stage door), the trapdoor shaft
 // with the stage lift, the stage with its curtains and footlights, a spotlight cone cut into
 // 3 x 6 blocks, the Club members over the tent canvas, and Doc Leo waiting for his nose.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, over, speckle } from '../art/draw';
 import { CTR } from '../ids';
 import { GRAV, Tiles } from './level';

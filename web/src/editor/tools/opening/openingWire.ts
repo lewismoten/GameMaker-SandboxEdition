@@ -4,8 +4,8 @@
 // A title slot holding one picture is wrapped in a new list; a list gets them at its top.
 // Which files are the opening is kept in the companion (editor-only), so it can be taken
 // out again exactly: the files go, and a list made for it gives the slot back its picture.
-import type { Scene } from '../../../formats/game';
-import { parseSlideList, serializeSlideList, type SlideEntry } from '../../../formats/graphicScripts';
+import type { Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseSlideList, serializeSlideList, type SlideEntry } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../../project/files';
 import type { OpeningStyle } from './openingIntros';
 

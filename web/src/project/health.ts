@@ -3,20 +3,20 @@
 // use, empty files, and (deep check) files that can't be read and animations RSD's player
 // can't play (formats/fliLimits.ts). Used by the home page's
 // ⚠ badges and report; pure, so it is tested in test/health.test.ts.
-import { fileSlotsFor, GRAPHIC_EXTS, NOSCENE, parseGame, sceneKind, slotExtensions, type Game } from '../formats/game';
-import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
-import { parsePalette } from '../formats/palette';
-import { parseBlocks } from '../formats/blocks';
-import { parseMonsters } from '../formats/monster';
-import { parseCharacter } from '../formats/character';
-import { parseMap } from '../formats/map';
-import { parseSoundSet } from '../formats/sound';
-import { decodeGif } from '../formats/gif';
-import { parseFli } from '../formats/fli';
-import { describeFliFault, fliFaults } from '../formats/fliLimits';
-import { parseCmf } from '../formats/cmf';
-import { decodeVoc } from '../formats/voc';
-import { parseRecording } from '../formats/recording';
+import { fileSlotsFor, GRAPHIC_EXTS, NOSCENE, parseGame, sceneKind, slotExtensions, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { describeFliFault, fliFaults } from '@lewismoten/gamemaker-sandbox-engine/formats/fliLimits';
+import { parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
+import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { cdName, normalize } from './files';
 
 type Severity = 'error' | 'warning';

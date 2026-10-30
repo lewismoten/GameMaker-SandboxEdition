@@ -10,9 +10,9 @@
 // edit changes only the values edited. The limits below are the C types' (cinfo in PLAYGAME.C:
 // long score; int hitpts, lives, meter[MAXSEQ+10]; uchar inv[MAXINV]) and the engine's own caps
 // (engine/touch.ts doBlockTouchChar: INF_REPEAT - 1 at the top, -(INF_REPEAT - 128) at the bottom).
-import { BACKBL, type Block } from '../../formats/blocks';
-import { INF_REPEAT, MAXINV, MAXSEQ, METERS, SEQUENCE_NAMES, type Character } from '../../formats/character';
-import { cString } from '../../formats/binary';
+import { BACKBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, MAXINV, MAXSEQ, METERS, SEQUENCE_NAMES, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { cString } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 
 export const SAVE_SLOTS = 10;
 /** savnames.dat: 10 names of 21 bytes (20 characters and a NUL). */

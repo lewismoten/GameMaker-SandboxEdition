@@ -1,7 +1,7 @@
 // The Clown Club's people and things that turn up in every level: Doc Leo's red CitiCar
 // waiting at each level's end (it only opens for the piece of Doc Leo's costume Teddy
 // fetched), Pockets who drives it for him today, and the costume pieces themselves.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { chezSide, type ChezInk } from '../../../kit/chez';
 import { CLEAR, blob, over, sprite } from '../art/draw';
 import { P } from '../art/pal';

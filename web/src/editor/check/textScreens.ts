@@ -2,12 +2,12 @@
 // page of 16 lines, its role (instructions, story, a level card…), the color its text is drawn in
 // (the palette's nearest deep purple) and, where it can be known, the picture under it: a page
 // that follows a picture or animation in a slide list, or a title-screen page over the menu.
-import { decodeGif, isGif } from '../../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../formats/fli';
-import { ADVTYPE, type Game } from '../../formats/game';
-import { parseBackdrop, parseSlideList, textLines } from '../../formats/graphicScripts';
-import { PALETTE_SIZE } from '../../formats/palette';
-import { match, RGB_PURPLE } from '../../engine/showGraphic';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { PALETTE_SIZE } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { match, RGB_PURPLE } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
 import type { FileSource } from './sim';
 
 export type TextRole = 'title' | 'menu' | 'story' | 'instructions' | 'credits' | 'scores' | 'won' | 'lost' | 'intro' | 'exit';

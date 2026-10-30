@@ -2,9 +2,9 @@
 // and repeat songs the way PlayIt() in code/GM/SBMUSIC.C did, and read delta times the way
 // getpaws() did (no limit on their length).
 import { describe, expect, it } from 'vitest';
-import { CmfPlayer } from '../src/audio/cmfPlayer';
-import { Opl2 } from '../src/audio/opl';
-import { traceMusic } from '../src/formats/cmfSong';
+import { CmfPlayer } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
+import { traceMusic } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 
 /** Ticks the player and lists the ticks where channel 0's key turns on. */
 function keyOns(music: number[], ticks: number): number[] {

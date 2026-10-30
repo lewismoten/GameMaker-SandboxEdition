@@ -2,7 +2,7 @@
 // vertical menus, error boxes, the file picker and .HLP help screens.
 import { attr, type TextScreen } from './textScreen';
 import type { TextKeys } from './textInput';
-import { toCp437 } from './cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 export const MENUATTR = attr(14, 1); // yellow on navy
 export const SHADATTR = attr(0, 7); // shadow: dark gray background

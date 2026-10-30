@@ -4,8 +4,8 @@
 // of the half a dozen game files a page would fetch to draw it (src/gfx/gameShots.ts renderShot).
 import { readFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
-import { parseGame } from '../src/formats/game';
-import { vga8 } from '../src/formats/palette';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import {
   BUILT_SHOTS,
   builtHeroPath,
@@ -18,7 +18,7 @@ import {
   type HeroSpec,
   type LevelPicture,
 } from '../src/gfx/levelPicture';
-import { TRANSPARENT } from '../src/formats/blocks';
+import { TRANSPARENT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { builtTitlePath, titlePixels } from '../src/gfx/titlePicture';
 import { pngChunk } from './ogImage';
 import { cdName } from '../src/project/files';

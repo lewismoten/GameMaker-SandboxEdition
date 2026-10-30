@@ -4,7 +4,7 @@
 // before the wooden one's (14, unlimited): buying the sword fills its counter with 30,000
 // swings and Space swings steel from then on. The kazoo and the tonic are counters too, filled
 // by shops and by Doc Leo, and empty means the key does nothing.
-import { PICKUPSEQ, DIESEQ, HURTSEQ, emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
+import { PICKUPSEQ, DIESEQ, HURTSEQ, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MON, SEQ, SND } from '../ids';
 import type { SpriteSheet } from '../sprites/sheet';
 

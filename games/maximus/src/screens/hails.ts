@@ -4,8 +4,8 @@
 //   Galileo       an old Earth probe whose brain is an RCA 1802 (the chip that flew to Jupiter)
 //   Liberty       a cracked bell under a ring of thirteen stars
 //   Boxcar Flats  Doc Leo, PhD (Comedic Science), a hobo clown with a rubber chicken on a leash
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { serializeBackdrop } from '../../../../web/src/formats/graphicScripts';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { serializeBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { Canvas } from '../art/canvas';
 import { WHITE, shared } from '../art/palette';
 import { SCREEN, spaceBg } from './screens';

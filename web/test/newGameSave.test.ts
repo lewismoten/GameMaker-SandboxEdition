@@ -5,13 +5,13 @@ import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { newGameSave, parseSave, serializeSave, NEW_SAVE_NAME, SaveFormatError } from '../src/project/saveData';
-import { changeBlocks, restoreSaved, type Saved } from '../src/engine/scene';
-import { moveChars } from '../src/engine/character';
-import { blockBirthMonsters, moveAllMonsters } from '../src/engine/monsters';
-import { newCharInfo } from '../src/engine/world';
-import { Recorder } from '../src/engine/recorder';
-import { parseGame } from '../src/formats/game';
-import { parseCharacter } from '../src/formats/character';
+import { changeBlocks, restoreSaved, type Saved } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { moveChars } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { blockBirthMonsters, moveAllMonsters } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 
 const games = join(__dirname, '..', '..', 'games');
 

@@ -2,7 +2,7 @@
 // the lights each scene sees them by (evening, lamplight, inside the clock, the black of a pass
 // scene). A light tints every ramp but the ones that glow (Joe's bulb, gold, lit windows), so
 // one block set can be used in any scene, and a dark scene is the same art by a dimmer light.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 
 type RGB = [number, number, number];
 

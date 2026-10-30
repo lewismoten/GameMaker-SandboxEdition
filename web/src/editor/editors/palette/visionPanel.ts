@@ -6,9 +6,9 @@
 // A warning meant to be can be dismissed (visionDismissed.ts): it leaves the list and the count,
 // and the "dismissed" toggle shows it again.
 import { h, clear, toast } from '../../core/ui';
-import { BLEN, TRANSPARENT } from '../../../formats/blocks';
-import { MLEN, MWID } from '../../../formats/map';
-import { paletteCss, paletteToRGBA, type Palette } from '../../../formats/palette';
+import { BLEN, TRANSPARENT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { paletteCss, paletteToRGBA, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { normalize } from '../../../project/files';
 import type { Project } from '../../core/project';
 import { scenesOf, type SceneData } from '../../check/sceneData';

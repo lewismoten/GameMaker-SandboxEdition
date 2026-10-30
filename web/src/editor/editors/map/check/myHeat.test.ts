@@ -1,6 +1,6 @@
 // The author's own heat map (myHeat.ts): recording ticks and deaths, keeping and adding sessions, and comparing with the bot's.
 import { describe, expect, it } from 'vitest';
-import { DIESEQ } from '../../../../formats/character';
+import { DIESEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { HeatRecorder, combineSteps, compareSteps, coverage, coverageText, mergeMine, unpackMine } from './myHeat';
 import { heatWords } from './markInfo';
 

@@ -1,7 +1,7 @@
 // Stage 5: THE CPU. The 486's silicon die itself: transistor fields, metal layers, the ALU,
 // the on-chip cache, registers flickering and the clock pulsing, the bond pads around the
 // edge, and patches of glitch where the virus has eaten in.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, micro, shadeAt } from '../art/draw';
 import { pics } from '../characters/enemies';
 import type { Bestiary } from '../characters/mons';
