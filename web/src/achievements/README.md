@@ -26,3 +26,9 @@ into repeat-event counts.
 existing listener. The life-loss callback and end-of-play callback record repeated
 real-play events; demos, walkthrough playback, bundle exports and editor projects
 do not add repeat counts. Quitting does not count as losing.
+
+`badgeArt.ts` / `badgeArt.css` render exact 20×20 game blocks in cards, details and
+unlock notices. `blockArt.json` carries embedded PNGs with provenance. Hidden and
+unassigned badges use a neutral question block drawn with the tools package’s micro
+font; no emoji artwork is used by the renderer. Source selections and missing-art
+proposals are in [the artwork inventory](../../../docs/achievement-art.md).
