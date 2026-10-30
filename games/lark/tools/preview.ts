@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { blockSheet, writePng } from '../../kit/png';
+import { blockSheet, writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { buildPalette } from '../src/art/pal';
 import { compile } from '../src/game';
 

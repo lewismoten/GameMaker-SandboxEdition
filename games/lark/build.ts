@@ -11,7 +11,7 @@ import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/
 import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { Disk } from '../kit/disk';
-import { clipEveryList } from '../kit/fliClips';
+import { clipEveryList } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { licenseText } from '../kit/license';
 import { buildPalette } from './src/art/pal';
 import { demoRecording } from './src/demo';

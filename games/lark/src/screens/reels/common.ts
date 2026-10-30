@@ -3,7 +3,7 @@
 // a blend between two palettes, the starry sky, the caption bar, and the close: every cartoon
 // ends on a fade to black, since PLAYGAME cuts an FLI's last frame straight to black before the
 // page picture that follows it fades in.
-import { fadeOutLength } from '../../../../kit/fadeOut';
+import { fadeOutLength } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { centered } from '../../art/draw';

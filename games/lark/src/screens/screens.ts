@@ -5,10 +5,10 @@
 // and the story cartoons in reels/.
 import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
-import { dosText } from '../../../kit/disk';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
-import { saveSlots } from '../../../kit/saveSlots';
+import { saveSlots } from '@lewismoten/gamemaker-sandbox-tools/kit/saveSlots';
 import { gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { PAL, c, r } from '../art/pal';
 import { bard, goat, gwinnSit, teddy } from '../sprites/friends';
