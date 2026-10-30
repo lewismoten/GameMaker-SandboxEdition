@@ -2,3 +2,4 @@
 export * from './music/compose';
 export * from './kit/tune';
 export * from './kit/sound';
+export * from './kit/synthParts';

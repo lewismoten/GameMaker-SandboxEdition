@@ -165,3 +165,10 @@ quantization, dithering and indexed photo composition. No photographs are includ
 `kit/png` writes synchronous RGB preview PNGs with a checkerboard for transparent pixels
 and builds block sheets. `kit/levelPicture` renders a level region with its placed monsters.
 These Node build helpers complement the browser-safe `images` API.
+
+### Sound and arrangement helpers
+
+`audio` / `kit/synthParts` expose low-pass noise, envelopes, gates and filtering.
+`kit/song` builds CMF arrangements from caller-supplied sections; `kit/songFx` adds native
+CMF swells, arpeggios, glides, echoes and rhythm effects. Instrument presets are original
+project data under the MIT License; recordings and complete songs are not included.
