@@ -48,7 +48,7 @@ export function floodFill(
 ): void {
   if (!Number.isSafeInteger(w) || !Number.isSafeInteger(h) || w < 1 || h < 1 || px.length !== w * h)
     throw new RangeError('Expected width × height indexed pixels');
-  if (x < 0 || y < 0 || x >= w || y >= h || !allowed(x, y)) return;
+  if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || y < 0 || x >= w || y >= h || !allowed(x, y)) return;
   const source = px.slice();
   const target = source[y * w + x];
   if (target === v) return;
@@ -66,6 +66,7 @@ export function floodFill(
 
 /** Move indexed pixels with wrapping at each edge; the input is unchanged. */
 export function shiftPixels(src: Pixels, dx: number, dy: number): Pixels {
+  if (!Number.isInteger(dx) || !Number.isInteger(dy)) throw new RangeError('Pixel shifts must use whole numbers');
   const wrap = (value: number, length: number) => ((value % length) + length) % length;
   return new Pixels(src.w, src.h).map((x, y) => src.get(wrap(x - dx, src.w), wrap(y - dy, src.h)));
 }
