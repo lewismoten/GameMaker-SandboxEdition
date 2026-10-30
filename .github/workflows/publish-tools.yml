@@ -17,7 +17,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: web
@@ -41,6 +41,7 @@ jobs:
             exit 1
           fi
       - name: Install dependencies
+        working-directory: .
         run: npm ci
       - name: Check source
         run: |
@@ -48,9 +49,9 @@ jobs:
           npm run lint
           npx tsc --noEmit -p .
           npx vitest run src/formats src/engine src/audio src/gfx src/project/zip.test.ts test/toolsDrawing.test.ts
-      - name: Verify packed package
-        working-directory: web/packages/tools
-        run: npm run verify
+      - name: Verify independent packages
+        working-directory: .
+        run: npm run verify:packages
       - uses: actions/setup-node@v4
         with:
           node-version: '22'

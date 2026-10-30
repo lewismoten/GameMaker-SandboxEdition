@@ -10,7 +10,7 @@ The browser engine, development tools, and archive utilities have separate tagge
 
 The tag must point to a commit on `master`, and its version must exactly match that package's `package.json`. For example, `tools-v3.1.0` releases tools version `3.1.0`. Merge the package changes before pushing its tag. Ordinary branch pushes do not publish packages.
 
-Each workflow checks the source and builds its package before publishing. The tools and archives workflows also verify the packed distribution in an isolated consumer. Package files carry their own license and notices. Tarballs are build artifacts and must not be committed.
+Each workflow checks the source and builds its package before publishing. Every workflow runs root `npm run verify:packages`: each package builds from a source copy outside the repository, then its tarball is tested in an isolated consumer. Packed sibling dependencies let this run before new dependency versions are published. Publish dependencies first (engine, then archives, then tools), so registry installs can resolve their declared versions. Package files carry their own license and notices. Tarballs are build artifacts and must not be committed.
 
 Publishing uses the GitHub registry configured by the workflow and package manifest. GitHub manages package visibility and installation permissions; a new package is private by default. A publication to another registry is a separate release operation. Published versions are immutable, so changed package documentation ships with a new version.
 
