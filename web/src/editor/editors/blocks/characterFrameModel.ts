@@ -12,7 +12,7 @@ export interface CharacterAnimation {
   file: string;
   sequence: number;
   label: string;
-  frames: { index: number; frame: Frame }[];
+  frames: { index: number; frame: Frame; tick: number }[];
   blocks: number[];
   clip: Clip;
 }
@@ -42,9 +42,13 @@ export function characterAnimations(project: Pick<Project, 'game' | 'files'>, cb
     try {
       const chr = parseCharacter(project.files.get(file)!);
       chr.sequences.forEach((sequence, index) => {
-        const frames = sequence.frames
-          .slice(0, frameCount(sequence))
-          .flatMap((frame, i) => (frame.pic2 !== MONBL && (frame.pic1 < CHARBL || frame.pic2 < CHARBL) ? [{ index: i, frame }] : []));
+        let tick = 0;
+        const frames: CharacterAnimation['frames'] = [];
+        sequence.frames.slice(0, frameCount(sequence)).forEach((frame, index) => {
+          if (frame.pic2 === MONBL) return;
+          if (frame.pic1 < CHARBL || frame.pic2 < CHARBL) frames.push({ index, frame, tick });
+          tick += Math.max(1, frame.pause);
+        });
         if (!frames.length) return;
         const label = `${file.toUpperCase()} · ${SEQUENCE_NAMES[index] ?? (sequence.key ? `Key ${scanName(sequence.key >> 8)}` : `Sequence ${index}`)}`;
         const clip = characterClips({ ...chr, sequences: [sequence] }, undefined, () => label)[0];

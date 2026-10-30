@@ -35,6 +35,7 @@ describe('character painter frames', () => {
     ]);
     const sequence = animations[1];
     expect(sequence.frames.map((frame) => frame.index)).toEqual([0, 2]);
+    expect(sequence.frames.map((frame) => frame.tick)).toEqual([0, 2]);
     expect(sequence.blocks).toEqual([2, 3, 5]);
     expect(sequence.clip.tracks[1].steps.map((step) => step.block)).toEqual([3, 5]);
     const pair = characterFrameView(sequence, 0, 2, 0);

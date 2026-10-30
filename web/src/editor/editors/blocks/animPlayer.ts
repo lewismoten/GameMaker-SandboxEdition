@@ -14,7 +14,7 @@ import './animPlayer.css';
 interface AnimPlayer {
   el: HTMLElement;
   /** Shows these clips (the first chosen), paused on the frame that shows `focus` if paused. */
-  show(clips: Clip[], focus?: number): void;
+  show(clips: Clip[], focus?: number, startTick?: number): void;
   /** Draws again with the blocks as they are now (after a paint, when paused). */
   redraw(): void;
   dispose(): void;
@@ -48,6 +48,7 @@ export function animPlayer(o: {
   let clips: Clip[] = [];
   let current: Clip | undefined;
   let focus: number | undefined;
+  let startTick: number | undefined;
   let playing = !reducedMotion();
   /** The clip's tick when paused, or the tick it started at when playing. */
   let tick = 0;
@@ -131,8 +132,8 @@ export function animPlayer(o: {
   /** Paused: the first frame that shows the block being edited; playing: from the start. */
   function restart(): void {
     const c = current;
-    tick = 0;
-    if (c && focus !== undefined) {
+    tick = startTick ?? 0;
+    if (startTick === undefined && c && focus !== undefined) {
       const tr = c.tracks.find((t) => t.steps.some((s) => s.block === focus));
       if (tr)
         tick = tickOf(
@@ -149,10 +150,11 @@ export function animPlayer(o: {
 
   return {
     el,
-    show(next, f) {
+    show(next, f, at) {
       const label = current?.label;
       clips = next;
       focus = f;
+      startTick = at;
       choiceLabel.hidden = clips.length < 2;
       clear(choice, ...clips.map((c, i) => h('option', { value: String(i) }, c.label)));
       const keep = clips.findIndex((c) => c.label === label);
