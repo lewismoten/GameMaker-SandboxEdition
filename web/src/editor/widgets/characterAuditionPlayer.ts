@@ -4,7 +4,7 @@ import { paintIndexed } from '../core/draw';
 import { defaultPalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { ThumbSource } from './thumbs';
 import { characterBlockPicture } from './characterSets';
-import { characterAuditions, auditionEvents, auditionFrame } from './characterAuditions';
+import { characterAuditions, auditionEvents, auditionFrame, auditionTourTicks, AUDITION_HZ } from './characterAuditions';
 import { characterAuditionStage } from './characterAuditionStage';
 
 const HELLOS = [
@@ -123,7 +123,7 @@ export function startCharacterAudition(o: {
   }
   function paint(): void {
     const sequence = set.sequences[current],
-      tick = Math.floor(elapsed * 18.2);
+      tick = Math.floor(elapsed * AUDITION_HZ);
     if (tick === painted) return;
     stage.advance(pending, auditionEvents(sequence, lastTick, tick), sequence);
     pending = 0;
@@ -142,7 +142,7 @@ export function startCharacterAudition(o: {
     previous = now;
     elapsed += delta;
     pending += delta;
-    const duration = Math.max(36, Math.min(180, set.sequences[current].ticks * 2)) / 18.2;
+    const duration = auditionTourTicks(set.sequences[current]) / AUDITION_HZ;
     if (manual < 0 && elapsed >= duration) begin((current + 1) % set.sequences.length);
     paint();
     raf = requestAnimationFrame(loop);

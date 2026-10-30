@@ -5,7 +5,7 @@ import { BLEN, CHARBL, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-e
 import { LASTSL } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import type { AuditionEvent, CharacterAudition } from './characterAuditions';
+import { AUDITION_HZ, type AuditionEvent, type CharacterAudition } from './characterAuditions';
 import './characterAudition.css';
 
 const VECTORS = [
@@ -191,7 +191,7 @@ export function characterAuditionStage(o: {
         frames = monster.pic.slice(0, Math.min(LASTSL, end < 0 ? LASTSL : end));
       const duration = frames.reduce((sum, [, ticks]) => sum + Math.max(1, ticks), 0);
       if (!duration) continue;
-      let tick = (shot.age * 18.2) % duration;
+      let tick = (shot.age * AUDITION_HZ) % duration;
       const pic = frames.find(([, ticks]) => {
         if (tick < Math.max(1, ticks)) return true;
         tick -= Math.max(1, ticks);
