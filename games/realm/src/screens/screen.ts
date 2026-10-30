@@ -5,7 +5,7 @@
 // other color farther away from them than the ink.
 import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
-import { medianCutPalette } from '../../../kit/quantize';
+import { medianCutPalette } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
 import { Canvas, type RGB, mix } from '../art/rgb';
 import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 

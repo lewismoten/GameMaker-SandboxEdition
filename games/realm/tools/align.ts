@@ -2,7 +2,8 @@
 // cut into parts named <object>:<col>,<row> (castles, towers, houses, ships, the throne...)
 // stands whole on the world, the town, the port, the flats and the dungeons, and its art joins
 // up across the block edges. Run by tools/check.ts.
-import { alignGame, gridParts, namesOf, sizesOf } from '../../kit/align';
+import { gridParts, namesOf, sizesOf } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { buildWorld } from '../src/build/world';
 import { peopleSheet } from '../src/build/people';
 import { dungeonBook } from '../src/blocks/dungeonSet';

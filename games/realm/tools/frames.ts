@@ -8,7 +8,7 @@ import { headlessCanvas, WalkRun } from '../../../web/src/walkthrough/runtime';
 import { WALKTHROUGH_FPS, type Walkthrough } from '../../../web/src/walkthrough/format';
 import { diskFiles } from '../../kit/walkthrough';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { writePng } from '../../kit/png';
+import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 
 const out = process.argv[2] ?? '/tmp/realm-frames';
 const every = Number(process.argv[3] ?? 10);

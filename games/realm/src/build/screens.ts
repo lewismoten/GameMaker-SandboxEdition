@@ -1,9 +1,9 @@
 // The pictures, slide shows and text pages between scenes, by file name.
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
-import { clipEntries, fliClips } from '../../../kit/fliClips';
+import { clipEntries, fliClips } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { licenseText } from '../../../kit/license';
-import { dosText } from '../../../kit/disk';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import * as S from '../screens/screens';
 import { introFli } from '../screens/intro';
 import { INSTRUCTIONS, CREDITS, readme } from '../screens/text';
