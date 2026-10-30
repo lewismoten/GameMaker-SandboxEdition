@@ -4,7 +4,7 @@
 // waveforms, music as a little score.
 import { kindOf, type FileKind } from '../core/project';
 import { paintIndexed } from '../core/draw';
-import { drawWave } from './waveform';
+import { drawSpeakerPitch, drawWave } from './waveform';
 import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parsePalette, defaultPalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -83,19 +83,6 @@ function sprite(top: Block | undefined, bottom: Block | undefined, pal: Palette)
   if (bottom) px.set(bottom.pixels, BLEN * BLEN);
   const [c] = canvas();
   paintIndexed(c, px, BLEN, bottom ? BLEN * 2 : BLEN, pal, true);
-  return c;
-}
-
-function bars(values: ArrayLike<number>, max: number, color: string): HTMLCanvasElement {
-  const [c, ctx] = canvas(SIZE, SIZE * 0.6);
-  ctx.fillStyle = '#0d1a10';
-  ctx.fillRect(0, 0, c.width, c.height);
-  ctx.fillStyle = color;
-  const w = c.width / values.length;
-  for (let i = 0; i < values.length; i++) {
-    const v = Math.min(1, values[i] / max);
-    ctx.fillRect(i * w, c.height * (1 - v), Math.max(1, w - 1), c.height * v);
-  }
   return c;
 }
 
@@ -199,7 +186,9 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       case 'snd': {
         const s = parseSoundSet(bytes);
         const f = s.freqs.find((x) => x.some(Boolean)) ?? s.freqs[0];
-        return bars(f, 4000, '#6cf28a');
+        const [c] = canvas(SIZE, SIZE * 0.6);
+        drawSpeakerPitch(c, f);
+        return c;
       }
       case 'voc': {
         if (!isVoc(bytes)) return iconFor(kind);

@@ -7,7 +7,6 @@ import { kindOf } from '../core/project';
 import { paintIndexed } from '../core/draw';
 import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { isCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
-import { parseSoundSet, NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { isFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { readSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { musicPreviewTick } from './musicTimeline';
@@ -70,6 +69,16 @@ export function previewButton(
       }
       return;
     }
+    if (kind === 'snd') {
+      if (!source) return toast('This sound set needs its neighboring VOC files to compare the sound pairs.');
+      try {
+        const [{ previewSoundSet }, files] = await Promise.all([import('./soundSetPreview'), source()]);
+        if (btn.isConnected) await previewSoundSet(name, data, files, screen?.());
+      } catch {
+        toast(`${name.toUpperCase()} could not be previewed.`, 'error');
+      }
+      return;
+    }
     const [{ audio }, { TICK_RATE }] = await Promise.all([import('./mediaShared'), import('@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer')]);
     await audio.resume();
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -124,16 +133,6 @@ export function previewButton(
           };
           animationFrame = requestAnimationFrame(draw);
         }
-      } else if (kind === 'snd') {
-        const sounds = parseSoundSet(data).freqs.filter((f) => f.some((v) => v >= 20));
-        if (!sounds.length) return toast('This sound set has no PC speaker sounds.');
-        let i = 0;
-        const next = () => {
-          if (i >= sounds.length || active !== me) return done();
-          audio.playSpeaker(sounds[i++]);
-          timer = setTimeout(next, (NUMFREQ / TICK_RATE) * 1000 + 120);
-        };
-        timer = setTimeout(next, 0);
       } else if (kind === 'fli') {
         const c = screen?.();
         if (!c || !isFli(data)) throw new Error();
