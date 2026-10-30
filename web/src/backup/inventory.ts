@@ -124,6 +124,7 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-library-context': 'the Library’s start, noted as pages are viewed',
   'gm-library-context-used': 'the Library’s start, noted as pages are viewed',
   'gm-mus-track-clip': 'the music editor’s clipboard',
+  'gm-file-clip': 'the asset browser’s copied native file and editor extras (this tab only)',
   'gm-map-clip': 'the map editor’s clipboard (this visit only)',
   'gm-overhead': 'the desk’s room light (this visit only)',
   'gm-blacklight': 'the desk’s black light (this visit only)',
