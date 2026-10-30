@@ -42,7 +42,7 @@ interface DeskActions {
   openGmBox(): void;
   setZoom(zoom: 'manual' | false): void;
   gamePlaying(): boolean;
-  restartGame(): boolean;
+  setSoundCard(on: boolean): void;
   /** The disk in drive A:, for the view switch. */
   diskInA(): string | undefined;
   toModern(): void;
@@ -80,7 +80,7 @@ export function deskScene(on: DeskActions) {
   const keyCard = keyCardSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
   const spk = speakers({
     gamePlaying: () => on.gamePlaying(),
-    restartGame: () => on.restartGame(),
+    setSoundCard: (enabled) => on.setSoundCard(enabled),
   });
   const lamp = deskLamp();
   const modem = deskModem(() => on.command('C:\nTERMINAL'));
