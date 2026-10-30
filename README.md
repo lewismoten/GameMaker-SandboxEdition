@@ -86,9 +86,9 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
   `?game=<name>`, and keeps high scores and saved games in the browser, with export and
   import. [Try it with the games here](https://lewismoten.github.io/GameMaker-SandboxEdition/player/)
   or see [The web player](docs/web-player.md).
-- **A reusable browser engine:** build an npm tarball from [`web/packages/engine/`](web/packages/engine/README.md)
-  to run your own Game-Maker DOS files from JavaScript. It includes TypeScript declarations and
-  the audio worklet; the package has not been published to the npm registry.
+- **Reusable npm packages:** run Game-Maker DOS files in your own web application with the
+  browser engine, and build or check game data with the development tools. See
+  [npm packages](#npm-packages) for installation and API documentation.
 
 ## Screenshots
 
@@ -103,6 +103,30 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
 
 [A tour of the web editor](docs/editor.md) has a picture of each of its editors: maps, blocks,
 monsters, the hero, palettes, music, sounds, animations, the Integrator, the Level check and more.
+
+## npm packages
+
+Use these packages in a separate JavaScript or TypeScript project, installed from your
+configured npm registry. Both include TypeScript declarations.
+
+**[@lewismoten/gamemaker-sandbox-engine](web/packages/engine/README.md)** runs games from
+their original DOS files in a browser and includes the audio worklet. Its README provides
+the API, a complete player example, and instructions for supplying game files.
+
+```sh
+npm install @lewismoten/gamemaker-sandbox-engine
+```
+
+**[@lewismoten/gamemaker-sandbox-tools](web/packages/tools/README.md)** provides development
+APIs for reading and writing game formats, drawing indexed artwork and text, building
+palettes and audio, and running headless checks. Its README documents the APIs and examples.
+Use Node.js 22.12 or newer for these tools.
+
+```sh
+npm install --save-dev @lewismoten/gamemaker-sandbox-tools
+```
+
+The tools run during development; browser playback uses the engine and generated game data.
 
 ## Run it yourself
 
