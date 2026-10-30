@@ -67,6 +67,14 @@ registerEditor(['pal'], (host, project, file) => {
     );
   const swatches = rovingGrid(h('div', { class: 'swatches pal-swatches' }), 'Palette colors (Shift+arrow keys select a range)', { multiselect: true });
   const preview = h('div', { style: 'width:64px;height:64px;border:1px solid var(--border);border-radius:6px' });
+  const saveCanvas = h('canvas', { class: 'pal-zero-shot', role: 'img', 'aria-label': 'Save game with this palette on color 0' });
+  let refreshSave: (() => void) | undefined;
+  let disposed = false;
+  void import('./colorZeroDialog').then(({ drawSavePreview }) => {
+    if (disposed) return;
+    refreshSave = () => drawSavePreview(saveCanvas, project, pal);
+    refreshSave();
+  });
   const label = h('div', { class: 'meta' });
   const sliders = ['Red', 'Green', 'Blue'].map((name, c) => {
     const range = h('input', { type: 'range', min: 0, max: 63, step: 1, 'aria-label': name, style: 'flex:1;min-width:0' });
@@ -126,6 +134,7 @@ registerEditor(['pal'], (host, project, file) => {
       b.classList.toggle('selected', i === selected || inRange);
     });
     preview.style.background = paletteCss(pal, selected);
+    refreshSave?.();
     colorBox.refresh();
     view.set({ color: selected });
     const hex =
@@ -182,6 +191,21 @@ registerEditor(['pal'], (host, project, file) => {
     'div',
     { class: 'stack', id: 'pal-pane-edit', role: 'tabpanel', 'aria-labelledby': 'pal-tab-edit' },
     h('div', { class: 'row', style: 'align-items:center' }, preview, label),
+    h(
+      'figure',
+      { style: 'margin:0;width:160px;max-width:100%' },
+      h('figcaption', { class: 'meta' }, 'Save game on color 0'),
+      h(
+        'button',
+        {
+          type: 'button',
+          style: 'display:block;padding:0;width:100%',
+          'aria-label': 'Preview player screens on color 0',
+          onclick: () => void import('./colorZeroDialog').then(({ colorZeroDialog }) => colorZeroDialog(project, file, pal)),
+        },
+        saveCanvas,
+      ),
+    ),
     colorBox.el,
     ...sliders.map((s) => s.row),
     h(
@@ -319,6 +343,7 @@ registerEditor(['pal'], (host, project, file) => {
   };
   window.addEventListener('keydown', onKey);
   return () => {
+    disposed = true;
     window.removeEventListener('keydown', onKey);
     tools.dispose();
     vision?.dispose();

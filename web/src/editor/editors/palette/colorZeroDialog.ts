@@ -23,6 +23,15 @@ const TARGET_WORDS: Record<string, string> = {
   hsGreen: 'high-score green',
 };
 
+/** The inline save-screen preview shares the native renderer and current DOS player patches. */
+export function drawSavePreview(canvas: HTMLCanvasElement, project: Project, pal: Uint8Array): void {
+  const screen = new Screen(canvas);
+  screen.setPalette(pal);
+  screen.clear(0);
+  ZERO_SCREENS.find((s) => s.id === 'save')!.draw(screen, pal, playerLook(companionPatches(project.companion, project.gam)));
+  screen.present();
+}
+
 export function colorZeroDialog(project: Project, file: string, pal: Uint8Array): Promise<void> {
   const patches = companionPatches(project.companion, project.gam);
   const look = playerLook(patches);
