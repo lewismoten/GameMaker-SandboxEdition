@@ -262,3 +262,7 @@ are real previews too; a blank idle can fall back to a movement frame.
   the tools package's credited font data. Slide-show thumbnails follow readable
   slides; damaged images and missing backdrop dependencies report why no preview
   can be drawn.
+
+- **Editor side-panel tabs.** `widgets/panelTabs.ts` shares the tab and panel
+  semantics, roving keyboard focus, arrow/Home/End navigation and hidden-panel
+  behavior used to separate block colors from their gameplay properties.
