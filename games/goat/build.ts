@@ -13,7 +13,7 @@ import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats
 import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
 import { Disk } from '../kit/disk';
-import { clipLists } from '../kit/fliClips';
+import { clipLists } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { licenseText } from '../kit/license';
 import { renderRegion } from '../snowbound/src/art/render';

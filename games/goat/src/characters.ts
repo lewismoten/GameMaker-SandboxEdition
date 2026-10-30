@@ -11,7 +11,7 @@ import { emptyFrame, newCharacter, type Character, type Frame } from '@lewismote
 import { emptyMonster, newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BLEATSEQ, CHEWSEQ, MON, SCREAMSEQ, SND, WOOL } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
-import { corner } from '../../kit/actors';
+import { corner } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 
 // Keys (scan code << 8 | ASCII): the arrows and W/A/S/D, Q/E and the number pad's lower
 // corners for the diagonals, SPACE to scream, B to bleat and C to chew.

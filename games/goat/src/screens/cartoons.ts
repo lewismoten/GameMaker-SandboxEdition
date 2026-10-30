@@ -4,7 +4,8 @@
 // fainting cousin, fainting yourself, and the endings. Each reel opens on black and fades
 // in and out by palette (kit/reel.ts), and only what moves is stored in each frame.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
+import { pastePhoto, polaroid, resample } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { blob } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';

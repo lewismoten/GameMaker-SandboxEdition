@@ -3,7 +3,7 @@
 // The lyrics are from "Third Goat from the Left" by The Bard of Bizarre.
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 const TITLE = 'THIRD GOAT FROM THE LEFT';
 export const AUTHOR = 'The Bard of Bizarre';

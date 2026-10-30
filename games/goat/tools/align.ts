@@ -1,7 +1,8 @@
 // Checks the multi-block objects on the built disk's maps (games/kit/align.ts): the manger, the
 // inn's NO ROOM sign, the caravan's tents (upper halves over their lower halves, doorways over
 // doorways), and that their art joins up across the block edges. Run by tools/check.ts.
-import { alignGame, namesOf, pair, type PartRule } from '../../kit/align';
+import { namesOf, pair, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';
 
