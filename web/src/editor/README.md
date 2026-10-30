@@ -430,3 +430,8 @@ native game files are loaded only when the player chooses an archive action.
   pictures through each character half’s PLAYGAME orientation. Reads, writes,
   staged Undo snapshots and shared pixel addresses refer back to the original
   CBL, so editing a turned or mirrored frame also updates its other occurrences.
+
+- **Character painter frame model.** `blocks/characterFrameModel.ts` finds
+  animations through each CBL’s scene bindings and retains original CHR frame
+  indices, including gaps left by birth commands. Its 1×1 and 1×2 views keep
+  per-half orientations, empty halves and shared block references intact.
