@@ -18,10 +18,10 @@ import { join } from 'node:path';
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
-import { DistanceGrid, ExtrudedText, textStrokes } from './sdftext';
-import { medianCutPalette, Quantizer } from './quantize';
+import { DistanceGrid, ExtrudedText, textStrokes } from '@lewismoten/gamemaker-sandbox-tools/kit/sdftext';
+import { medianCutPalette, Quantizer } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { writePng } from './png';
+import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import {
   add,
   apply,
@@ -45,7 +45,7 @@ import {
   sub,
   Surface,
   V,
-} from './raytrace';
+} from '@lewismoten/gamemaker-sandbox-tools/kit/raytrace';
 
 const W = 320;
 const H = 200;
