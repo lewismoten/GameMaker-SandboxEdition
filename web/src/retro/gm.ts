@@ -11,7 +11,6 @@ import type { FileKind } from '../editor/core/project';
 import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { download } from '../editor/core/ui';
 import { prefetchWhenIdle } from '../prefetch';
-import { soundBlaster } from './computer/soundBlaster';
 import type { Program } from '../vga/shared/designer';
 import { chk, offerCardAtMenu, registeredBox } from './gmReg/chk';
 
@@ -263,8 +262,8 @@ export async function playgame(h: RetroHost): Promise<void> {
     s.write(31, 11, MENUATTR, ' Quit');
     choice = await vertMenu(h, 30, 9, 20, 3, choice);
     s.restore(saved);
-    if (choice === 1) {
-      const pick = await pickGame(h, 'Enter game to play: ');
+    if (choice === 1 || choice === 2) {
+      const pick = await pickGame(h, choice === 2 ? 'Enter game to configure: ' : 'Enter game to play: ');
       if (!pick) continue;
       const game = await h.gameIn(pick.drive, pick.parts);
       if (!game) {
@@ -272,10 +271,7 @@ export async function playgame(h: RetroHost): Promise<void> {
         continue;
       }
       // PLAYGAME's F1 reads GMHELP.TXT from where it runs, Game-Maker's own directory
-      await h.playGame(game.files, pick.name.toLowerCase(), game.title, game.notice, undefined, await h.gmFile('gmhelp.txt'));
-    } else if (choice === 2) {
-      if (soundBlaster()) await errorBox(h, 'Sound Blaster at 220h, IRQ 7, and Auto-Detect VGA', 'are already set up for this PC.  (C)ontinue');
-      else await errorBox(h, 'No Sound Blaster answers at 220h: sounds play on', 'the PC speaker, with no music.  (C)ontinue');
+      await h.playGame(game.files, pick.name.toLowerCase(), game.title, game.notice, undefined, await h.gmFile('gmhelp.txt'), undefined, choice === 2);
     } else return;
   }
 }

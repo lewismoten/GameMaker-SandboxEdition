@@ -184,7 +184,7 @@ export class Computer extends ComputerFolders {
                 if (e instanceof ProgramAborted) throw e;
                 console.warn('cracktro', e);
               });
-          await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId, undefined, ref.projectId);
+          await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId, undefined, ref.projectId, /^config/i.test(_args[0] ?? ''));
           break;
         }
         case 'gmcrack':
@@ -307,7 +307,16 @@ export class Computer extends ComputerFolders {
     this.player?.machine.audio.setSoundCard(on);
   }
 
-  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array, projectId?: string): Promise<void> {
+  playGame(
+    files: GameFiles,
+    gam: string,
+    title: string,
+    notice?: string,
+    saveId?: string,
+    gmHelp?: Uint8Array,
+    projectId?: string,
+    configure?: boolean,
+  ): Promise<void> {
     this.unlockAudio();
     this.keys.enabled = false;
     this.setMode('game');
@@ -334,6 +343,8 @@ export class Computer extends ComputerFolders {
             this.player = mountPlayer(host, files, gam, {
               title,
               notice,
+              configure,
+              hardwareId: projectId ? `project:${projectId}` : saveId,
               player,
               autoStart: true,
               noKeysButton: true,
