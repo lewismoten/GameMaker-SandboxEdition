@@ -1,110 +1,29 @@
 // Drawing helpers for blocks, sprites and screens, and a named block-set builder.
 import { emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
-import { shadeAt } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
-import { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+
 export { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 export { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 export { shadeAt } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
+export { blob } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
+import { bevel as bevelBox } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
+export const bevel = (p: Pixels, x: number, y: number, w: number, h: number, ramp: number[], face: number, b = 1) =>
+  bevelBox(p, x, y, w, h, ramp, face, b, [2, 1, -2, -1]);
+export { outlineInPlace as outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 
-/** A lit ellipsoid (light from the upper left). */
-export function blob(p: Pixels, cx: number, cy: number, rx: number, ry: number, ramp: number[], lo = 0, hi = ramp.length - 1, light = 1): Pixels {
-  for (let y = Math.floor(cy - ry); y <= cy + ry; y++)
-    for (let x = Math.floor(cx - rx); x <= cx + rx; x++) {
-      const nx = (x + 0.5 - cx) / rx;
-      const ny = (y + 0.5 - cy) / ry;
-      const d = nx * nx + ny * ny;
-      if (d > 1) continue;
-      const z = Math.sqrt(1 - d);
-      const l = (0.62 * z - 0.42 * nx - 0.52 * ny) * light;
-      p.set(x, y, shadeAt(ramp, lo, hi, (l + 0.35) / 1.2, x, y));
-    }
-  return p;
-}
-
-/** A beveled box: light top/left edge, dark bottom/right, face in between. */
-export function bevel(p: Pixels, x: number, y: number, w: number, h: number, ramp: number[], face: number, b = 1): Pixels {
-  p.rect(x, y, w, h, ramp[face]);
-  for (let k = 0; k < b; k++) {
-    p.rect(x + k, y + k, w - k * 2, 1, ramp[Math.min(ramp.length - 1, face + 2)]);
-    p.rect(x + k, y + k, 1, h - k * 2, ramp[Math.min(ramp.length - 1, face + 1)]);
-    p.rect(x + k, y + h - 1 - k, w - k * 2, 1, ramp[Math.max(0, face - 2)]);
-    p.rect(x + w - 1 - k, y + k, 1, h - k * 2, ramp[Math.max(0, face - 1)]);
-  }
-  return p;
-}
-
-/** Outlines every opaque pixel of a sprite with color c (on transparent neighbors). */
-export function outline(p: Pixels, c: number, transparent = CLEAR): Pixels {
-  const src = Uint8Array.from(p.px);
-  const at = (x: number, y: number) => (x < 0 || y < 0 || x >= p.w || y >= p.h ? transparent : src[y * p.w + x]);
-  for (let y = 0; y < p.h; y++)
-    for (let x = 0; x < p.w; x++) {
-      if (at(x, y) !== transparent) continue;
-      if (at(x - 1, y) !== transparent || at(x + 1, y) !== transparent || at(x, y - 1) !== transparent || at(x, y + 1) !== transparent) p.set(x, y, c);
-    }
-  return p;
-}
-
-/** Copies src scaled up by s (nearest), skipping CLEAR. */
-export function scaleBlit(dst: Pixels, src: Pixels, x: number, y: number, s: number, flip = false): Pixels {
-  for (let yy = 0; yy < src.h * s; yy++)
-    for (let xx = 0; xx < src.w * s; xx++) {
-      const sx = Math.floor(xx / s);
-      const c = src.get(flip ? src.w - 1 - sx : sx, Math.floor(yy / s));
-      if (c !== CLEAR && c >= 0) dst.set(x + xx, y + yy, c);
-    }
-  return dst;
-}
-
-/** The PC's 8x8 font, optionally scaled. */
 export function text(p: Pixels, x: number, y: number, s: string, c: number, scale = 1): Pixels {
-  const ink = textInk(p, s);
-  const dot = (dx: number, dy: number, dw: number, dh: number) => {
-    p.rect(dx, dy, dw, dh, c);
-    ink?.add(dx, dy, dw, dh);
-  };
-  [...s].forEach((ch, i) => {
-    const code = ch.charCodeAt(0) & 255;
-    for (let row = 0; row < 8; row++) {
-      const bits = FONT8X8[code * 8 + row];
-      for (let col = 0; col < 8; col++) if (bits & (1 << col)) dot(x + (i * 8 + col) * scale, y + row * scale, scale, scale);
-    }
-  });
-  ink?.end();
+  pc.text(p, x, y, s, c, scale);
   return p;
 }
-
-/** Text with a 1-pixel (scaled) outline / drop shadow. */
 export function outlined(p: Pixels, x: number, y: number, s: string, fill: number, edge: number, scale = 1, shadow = 0): Pixels {
-  if (shadow) text(p, x + scale * 2, y + scale * 2, s, shadow, scale);
-  for (const [dx, dy] of [
-    [-1, 0],
-    [1, 0],
-    [0, -1],
-    [0, 1],
-    [-1, -1],
-    [1, 1],
-    [-1, 1],
-    [1, -1],
-  ])
-    text(p, x + dx * Math.max(1, scale >> 1), y + dy * Math.max(1, scale >> 1), s, edge, scale);
-  return text(p, x, y, s, fill, scale);
-}
-
-export function centered(p: Pixels, y: number, s: string, fill: number, scale = 1, edge?: number, shadow = 0): Pixels {
-  const x = Math.round((p.w - textWidth(s, scale)) / 2);
-  return edge === undefined ? text(p, x, y, s, fill, scale) : outlined(p, x, y, s, fill, edge, scale, shadow);
-}
-
-/** Vertical gradient across ramp shades lo..hi. */
-export function gradient(p: Pixels, x: number, y: number, w: number, h: number, ramp: number[], lo: number, hi: number): Pixels {
-  for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) p.set(x + xx, y + yy, shadeAt(ramp, lo, hi, yy / Math.max(1, h - 1), x + xx, y + yy));
+  pc.outlined(p, x, y, s, fill, edge, scale, shadow);
   return p;
 }
+export function centered(p: Pixels, y: number, s: string, fill: number, scale = 1, edge?: number, shadow = 0): Pixels {
+  pc.centered(p, y, s, fill, scale, edge, p.w / 2, shadow);
+  return p;
+}
+export { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 
 // ------------------------------------------------------------------ block sets
 
@@ -211,144 +130,20 @@ export class BlockSet {
     return out;
   }
 }
-
-/** A 3x5 font for tiny signs and chip markings. */
-const MICRO: Record<string, string> = {
-  A: '010101111101101',
-  B: '110101110101110',
-  C: '011100100100011',
-  D: '110101101101110',
-  E: '111100110100111',
-  F: '111100110100100',
-  G: '011100101101011',
-  H: '101101111101101',
-  I: '111010010010111',
-  J: '001001001101010',
-  K: '101101110101101',
-  L: '100100100100111',
-  M: '101111111101101',
-  N: '110101101101101',
-  O: '010101101101010',
-  P: '110101110100100',
-  Q: '010101101110011',
-  R: '110101110101101',
-  S: '011100010001110',
-  T: '111010010010010',
-  U: '101101101101111',
-  V: '101101101101010',
-  W: '101101111111101',
-  X: '101101010101101',
-  Y: '101101010010010',
-  Z: '111001010100111',
-  '0': '111101101101111',
-  '1': '010110010010111',
-  '2': '110001010100111',
-  '3': '110001010001110',
-  '4': '101101111001001',
-  '5': '111100110001110',
-  '6': '011100111101111',
-  '7': '111001010010010',
-  '8': '111101111101111',
-  '9': '111101111001110',
-  '-': '000000111000000',
-  '.': '000000000000010',
-  ':': '000010000010000',
-  '!': '010010010000010',
-  '/': '001001010100100',
-  '+': '000010111010000',
-  '(': '010100100100010',
-  ')': '010001001001010',
-  ' ': '000000000000000',
-  "'": '010010000000000',
-  ',': '000000000010100',
-  '?': '110001010000010',
-  $: '011110010011110',
-  '&': '010101010101011',
-  '#': '101111101111101',
-  '\u00b5': '000101101111100',
-  '=': '000111000111000',
-  '>': '100010001010100',
-  '<': '001010100010001',
-  _: '000000000000111',
-  '\\': '100100010001001',
-};
-
 export function micro(p: Pixels, x: number, y: number, s: string, c: number): Pixels {
-  const ink = textInk(p, s, undefined, (ch) => ch in MICRO || ch.toUpperCase() in MICRO);
-  const dot = (dx: number, dy: number, dw: number, dh: number) => {
-    p.rect(dx, dy, dw, dh, c);
-    ink?.add(dx, dy, dw, dh);
-  };
-  [...s].forEach((ch, i) => {
-    const g = MICRO[ch] ?? MICRO[ch.toUpperCase()] ?? MICRO['?'];
-    for (let k = 0; k < 15; k++) if (g[k] === '1') dot(x + i * 4 + (k % 3), y + Math.floor(k / 3), 1, 1);
-  });
-  ink?.end();
+  drawMicro(p, x, y, s, c);
   return p;
 }
 
-/**
- * A sprite turned 45 degrees clockwise (nose up becomes nose up-right), shrunk by `scale`
- * so its corners stay in the block. Nearest pixel, so the palette stays exact.
- */
-export function turn45(src: Pixels, scale = 0.86): Pixels {
-  const out = new Pixels(src.w, src.h, CLEAR);
-  const cx = (src.w - 1) / 2;
-  const cy = (src.h - 1) / 2;
-  const c = Math.SQRT1_2 / scale;
-  for (let y = 0; y < out.h; y++)
-    for (let x = 0; x < out.w; x++) {
-      const dx = x - cx;
-      const dy = y - cy;
-      // back by -45 degrees
-      const sx = Math.round(cx + (dx + dy) * c);
-      const sy = Math.round(cy + (dy - dx) * c);
-      if (sx < 0 || sy < 0 || sx >= src.w || sy >= src.h) continue;
-      out.set(x, y, src.get(sx, sy));
-    }
-  return out;
-}
+import { createMicroText } from '@lewismoten/gamemaker-sandbox-tools/kit/microText';
+import { microGlyphs } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { createPcText } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+const pc = createPcText({ shadowOffsets: [[2, 2]], outlineDistance: (scale) => Math.max(1, scale >> 1), shadowZero: false });
+const drawMicro = createMicroText({
+  glyphs: microGlyphs("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-.:!/+() ',?$&#µ=><_\\", false),
+  fallback: '?',
+  trailingGap: true,
+  glyphCase: true,
+});
 
-/** A sprite turned 90 degrees clockwise (nose up becomes nose right), pixel for pixel. */
-export function turn90(src: Pixels): Pixels {
-  const out = new Pixels(src.h, src.w, CLEAR);
-  for (let y = 0; y < out.h; y++) for (let x = 0; x < out.w; x++) out.set(x, y, src.get(y, src.h - 1 - x));
-  return out;
-}
-
-/** A sprite turned half a turn (nose up becomes nose down), pixel for pixel. */
-export function turn180(src: Pixels): Pixels {
-  const out = new Pixels(src.w, src.h, CLEAR);
-  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(src.w - 1 - x, src.h - 1 - y));
-  return out;
-}
-
-/** A picture flipped left to right (nose right becomes nose left). */
-export function flipX(src: Pixels): Pixels {
-  const out = new Pixels(src.w, src.h, CLEAR);
-  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(src.w - 1 - x, y));
-  return out;
-}
-
-/** A picture flipped top to bottom. */
-export function flipY(src: Pixels): Pixels {
-  const out = new Pixels(src.w, src.h);
-  for (let y = 0; y < src.h; y++) for (let x = 0; x < src.w; x++) out.set(x, y, src.get(x, src.h - 1 - y));
-  return out;
-}
-
-/** A sprite turned `deg` degrees clockwise about its middle, nearest pixel (the palette stays exact). */
-export function rotate(src: Pixels, deg: number): Pixels {
-  const out = new Pixels(src.w, src.h, CLEAR);
-  const a = (-deg * Math.PI) / 180;
-  const cx = (src.w - 1) / 2;
-  const cy = (src.h - 1) / 2;
-  for (let y = 0; y < out.h; y++)
-    for (let x = 0; x < out.w; x++) {
-      const sx = Math.round(cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a));
-      const sy = Math.round(cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a));
-      if (sx < 0 || sy < 0 || sx >= src.w || sy >= src.h) continue;
-      out.set(x, y, src.get(sx, sy));
-    }
-  return out;
-}
+export { resampleBlit as scaleBlit, turn45, turn90, turn180, flipX, flipY, rotate } from '@lewismoten/gamemaker-sandbox-tools/kit/transforms';
