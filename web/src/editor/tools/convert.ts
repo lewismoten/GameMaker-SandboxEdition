@@ -2,6 +2,7 @@
 // palette (median cut, or an existing game palette), with optional Floyd–Steinberg
 // dithering. Used for importing pictures as GIFs and frames into FLI animations.
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { medianCutRgba } from '@lewismoten/gamemaker-sandbox-tools/images';
 
 export type Fit = 'fit' | 'fill' | 'stretch';
 
@@ -33,57 +34,6 @@ export function rgbaOf(src: CanvasImageSource & { width: number; height: number 
   ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(src, (w - dw) / 2, (h - dh) / 2, dw, dh);
   return ctx.getImageData(0, 0, w, h);
-}
-
-/** Median cut over the given RGBA images: up to `colors` 8-bit colors. */
-function medianCut(images: ImageData[], colors = 256): [number, number, number][] {
-  // sample at most ~120k pixels
-  const total = images.reduce((n, im) => n + im.width * im.height, 0);
-  const step = Math.max(1, Math.floor(total / 120_000));
-  const pts: number[] = [];
-  for (const im of images) for (let i = 0; i < im.data.length; i += 4 * step) pts.push((im.data[i] << 16) | (im.data[i + 1] << 8) | im.data[i + 2]);
-  type Box = number[];
-  const boxes: Box[] = [pts];
-  const ch = (v: number, c: number) => (v >> (16 - c * 8)) & 255;
-  while (boxes.length < colors) {
-    // split the box with the widest channel range
-    let best = -1;
-    let bestRange = -1;
-    let bestCh = 0;
-    boxes.forEach((b, i) => {
-      if (b.length < 2) return;
-      for (let c = 0; c < 3; c++) {
-        let lo = 255;
-        let hi = 0;
-        for (const p of b) {
-          const v = ch(p, c);
-          if (v < lo) lo = v;
-          if (v > hi) hi = v;
-        }
-        if (hi - lo > bestRange) {
-          bestRange = hi - lo;
-          best = i;
-          bestCh = c;
-        }
-      }
-    });
-    if (best < 0 || bestRange === 0) break;
-    const b = boxes[best].sort((x, y) => ch(x, bestCh) - ch(y, bestCh));
-    const mid = b.length >> 1;
-    boxes.splice(best, 1, b.slice(0, mid), b.slice(mid));
-  }
-  return boxes.map((b) => {
-    let r = 0;
-    let g = 0;
-    let bl = 0;
-    for (const p of b) {
-      r += (p >> 16) & 255;
-      g += (p >> 8) & 255;
-      bl += p & 255;
-    }
-    const n = Math.max(1, b.length);
-    return [Math.round(r / n), Math.round(g / n), Math.round(bl / n)];
-  });
 }
 
 /** A 6-bit VGA palette from 8-bit colors (missing entries black). */
@@ -163,7 +113,7 @@ export function remap(im: ImageData, palette: Palette, opts: { dither?: boolean;
 
 /** Converts images to indexed 320x200 pictures sharing one palette (a new one, or `palette`). */
 export function toIndexed(images: ImageData[], opts: { palette?: Palette; dither?: boolean; colors?: number } = {}): Indexed[] {
-  const palette = opts.palette ?? vgaPalette(medianCut(images, opts.colors ?? 256));
+  const palette = opts.palette ?? vgaPalette(medianCutRgba(images, opts.colors ?? 256));
   return images.map((im) => ({ width: im.width, height: im.height, palette, pixels: remap(im, palette, { dither: opts.dither }) }));
 }
 

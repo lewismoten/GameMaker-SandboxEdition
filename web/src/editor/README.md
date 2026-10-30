@@ -326,3 +326,6 @@ are real previews too; a blank idle can fall back to a movement frame.
   birth-monster index and numeric field, with a source selector when scenes use
   different monster files. `widgets/monsterBirthField.ts` keeps numeric edits and
   the picture chooser synchronized, including the designer's monster names.
+
+Image import (`tools/convert.ts`) and palette picture-color selection share the tools
+package’s portable `medianCutRgba` reducer; the browser keeps canvas loading and fitting.
