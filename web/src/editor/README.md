@@ -185,6 +185,9 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `blockNames.ts` stores designer labels under each BBL, CBL or MBL's `blockNames`
   companion section. Labels are independent of monster-definition names; selectors retain
   the native block number alongside the label. Naming never writes into a native block set.
+  The shared painter's `blockNameField.ts` edits the selected picture's label, supports
+  clearing it, and updates the picker without adding a pixel Undo step. Pixel Undo leaves
+  names intact; both are saved through their respective native/companion paths.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its

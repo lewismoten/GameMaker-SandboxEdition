@@ -28,6 +28,8 @@ import { groupsPanel } from './groupsPanel';
 import { walkPathPanel } from './walkPathPanel';
 import { readWalkPaths } from '../../check/walk/walkPaths';
 import { blockProperties } from './blockProperties';
+import { blockLabel } from './blockNames';
+import { blockNameField } from './blockNameField';
 
 type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect';
 
@@ -103,6 +105,16 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       if (group) select(current);
     },
   });
+  const names = blockNameField(
+    project,
+    file,
+    () => current,
+    blocks.length,
+    () => {
+      renderPicker();
+      groups.refresh(true);
+    },
+  );
   // background blocks: which are walking paths the walkthrough bot keeps to (companion file)
   const walkPaths = sprites ? undefined : walkPathPanel({ project, file, picked: () => picked, changed: () => markPicker() });
   const badges = checkBadges(project, file, (f) => f.where.block?.n === current && normalize(f.where.block.file) === normalize(file));
@@ -133,7 +145,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       b.classList.toggle('current', j === current);
       if (!paths) return;
       b.classList.toggle('walk-path', paths.has(j));
-      b.setAttribute('aria-label', paths.has(j) ? `Block ${j}, walking path` : `Block ${j}`);
+      b.setAttribute('aria-label', `${blockLabel(project, file, j)}${paths.has(j) ? ', walking path' : ''}`);
     });
     walkPaths?.refresh();
   }
@@ -144,7 +156,12 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ...blocks.map((b, i) => {
         const c = blockCanvas(b.pixels, pal(), { transparent: sprites, className: sprites ? 'checker' : '' });
         pickerCanvases.push(c);
-        return h('button', { title: `Block ${i}`, 'aria-label': `Block ${i}`, onclick: (e: MouseEvent) => pick(i, e) }, c, h('small', null, i));
+        return h(
+          'button',
+          { title: blockLabel(project, file, i), 'aria-label': blockLabel(project, file, i), onclick: (e: MouseEvent) => pick(i, e) },
+          c,
+          h('small', null, i),
+        );
       }),
     );
     markPicker();
@@ -155,6 +172,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     saveGroup = undefined;
     groupKey = '';
     current = i;
+    names.refresh();
     if (!picked.includes(i)) picked = [i];
     view.set({ block: i });
     markPicker();
@@ -686,6 +704,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
         sprites ? 'Color 255 is transparent. ' : '',
         'Pick a block, paint it, then set how it behaves. Shift- or Ctrl-click blocks to group them.',
       ),
+      names.el,
       chooser.el,
     ),
     h('div', { class: 'blk' }, columns[0], columns[1], columns[2]),
