@@ -488,3 +488,6 @@ views use the same native painting, monster and link data; link markers project 
 the viewport, and zoom, Level check jumps and URL positions keep native coordinates.
 Pointer gestures retain their physical direction through a seam or scroll recenter,
 including fast drags spanning more than half the map at a small zoom.
+Wrapped gestures also apply to line/rectangle/polygon tools, fill, terrain, stamps,
+buildings, and selection copy/cut/paste and block groups. A gesture spans at most
+one map per axis; native files and Undo continue to store only the original map.

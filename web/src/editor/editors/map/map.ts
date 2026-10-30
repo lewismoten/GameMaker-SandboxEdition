@@ -1,7 +1,7 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
 import { nextZoom } from './mapZoom';
 import { mapViewport } from './mapViewport';
-import { continueWrappedCell, nativeCell } from './mapWrap';
+import { nativeCell } from './mapWrap';
 import { panelTabs } from '../../widgets/panelTabs';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
@@ -118,6 +118,7 @@ registerEditor(['map'], (host, project, file) => {
   const overlay: OverlayState = { grid: readPref('gm-map-grid'), found: [] };
   let finding = false;
   let wrapping = readPref('gm-map-wrap');
+
   let monImgs: HTMLCanvasElement[] = [];
   // the Level check's "Gray level": the map on screen in the palette's lightness only, so the
   // heat map's colors stand out (made when first asked for; exports always draw in color)
@@ -604,6 +605,7 @@ registerEditor(['map'], (host, project, file) => {
       palette: () => chooser.palette,
       imgs: () => bgImgs,
       brush: () => brush,
+      wrap: () => wrapping,
       remember,
       changed: changedCells,
       overlay,
@@ -634,7 +636,7 @@ registerEditor(['map'], (host, project, file) => {
 
   function floodFill(x: number, y: number): void {
     if (map.blocks[y * MLEN + x] === brush) return;
-    const cells = floodCells(map.blocks, { x, y }).map((c) => c.y * MLEN + c.x);
+    const cells = floodCells(map.blocks, { x, y }, MLEN, MWID, wrapping).map((c) => c.y * MLEN + c.x);
     for (const i of cells) map.blocks[i] = brush;
     changedCells(cells);
   }
@@ -644,7 +646,7 @@ registerEditor(['map'], (host, project, file) => {
     const p = cell(e);
     if (isTool(mode)) {
       canvas.setPointerCapture(e.pointerId);
-      tools.pointerDown(p, e.button);
+      tools.pointerDown(viewport.gestureCell(e), e.button);
       return;
     }
     if (mode !== 'pick') remember();
@@ -665,7 +667,8 @@ registerEditor(['map'], (host, project, file) => {
     }
     canvas.setPointerCapture(e.pointerId);
     painting = true;
-    paintCell(p.x, p.y);
+    const at = viewport.gestureCell(e);
+    paintCell(at.x, at.y);
     viewport.render();
   });
   let lastPaint: { x: number; y: number } | undefined;
@@ -675,21 +678,21 @@ registerEditor(['map'], (host, project, file) => {
     const mon = map.monsters.find((m) => m.monnum < LASTMON && m.curx === p.x && m.cury === p.y);
     const marks = linkMarks().filter((m) => m.x === p.x && m.y === p.y);
     status.textContent = `(${p.x}, ${p.y}) block ${b}${mon ? ` · monster ${mon.monnum}` : ''}${marks.map((m) => ` · link ${m.label}`).join('')}${finding ? ` · block ${brush} is used ${overlay.found.length} times` : ''}`;
-    if (isTool(mode)) return tools.pointerMove(p, e.buttons);
+    if (isTool(mode)) return tools.pointerMove(viewport.gestureCell(e), e.buttons);
     if (!painting || !canvas.hasPointerCapture(e.pointerId)) return;
     // a fast stroke skips cells: fill them in along a line
+    p = viewport.gestureCell(e);
     const from = lastPaint ?? p;
-    if (wrapping) p = continueWrappedCell(p, from);
     const n = Math.max(Math.abs(p.x - from.x), Math.abs(p.y - from.y));
     for (let k = 1; k <= n; k++) paintCell(Math.round(from.x + ((p.x - from.x) * k) / n), Math.round(from.y + ((p.y - from.y) * k) / n));
     paintCell(p.x, p.y);
     lastPaint = p;
     viewport.render();
   });
-  canvas.addEventListener('pointerdown', (e) => (lastPaint = cell(e)));
+  canvas.addEventListener('pointerdown', (e) => (lastPaint = viewport.gestureCell(e)));
   const endStroke = (e: PointerEvent) => {
     if (isTool(mode)) {
-      tools.pointerUp(cell(e));
+      tools.pointerUp(viewport.gestureCell(e));
       if (mode === 'select') revealTool(mode);
       return;
     }
@@ -1032,6 +1035,10 @@ registerEditor(['map'], (host, project, file) => {
 
   function setZoom(value: number, pointer = { x: scroller.clientWidth / 2, y: scroller.clientHeight / 2 }): void {
     if (value === zoom) return;
+    tools.cancel();
+    if (painting) save();
+    painting = false;
+    lastPaint = undefined;
     const anchor = viewport.at(pointer);
     zoom = value;
     view.set({ zoom: value === 1 ? undefined : value });

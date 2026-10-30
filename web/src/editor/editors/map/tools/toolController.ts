@@ -3,7 +3,8 @@ import { h, clear, promptText, toast, selectField } from '../../../core/ui';
 import { blockCanvas } from '../../../core/draw';
 import type { Project } from '../../../core/project';
 import { newId } from '../../../../project/storage';
-import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { nativeCell } from '../mapWrap';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { lineCells, rectCells, spanRect, type Cell } from './cellOps';
@@ -32,6 +33,7 @@ interface MapHost {
   palette: () => Palette;
   imgs: () => HTMLCanvasElement[];
   brush: () => number;
+  wrap?: () => boolean;
   /** Call before a change, for undo. */
   remember: () => void;
   /** Cells changed (indexes): draw them and save. */
@@ -47,6 +49,7 @@ type Shape = Pick<Stamp, 'w' | 'h' | 'cells'>;
 export class MapTools {
   mode: ToolMode | undefined;
   private start?: Cell;
+  private gestureBase?: Cell;
   private last?: Cell;
   private down = false;
   private erase = false;
@@ -87,7 +90,7 @@ export class MapTools {
   /** Called when the editor switches tools (undefined: a tool of its own). */
   enter(mode: ToolMode | undefined): void {
     this.mode = mode;
-    this.start = this.last = undefined;
+    this.start = this.last = this.gestureBase = undefined;
     this.down = false;
     if (mode === 'stamp') this.held = this.stamps().find((s) => s.id === this.stampId);
     if (mode === 'paste') this.held = getClip();
@@ -102,11 +105,30 @@ export class MapTools {
     this.renderPanel();
   }
 
+  private get wrapped(): boolean {
+    return !!this.host.wrap?.();
+  }
+
+  /** Keep the physical drag direction, while bounding a gesture to one native map per axis. */
+  private pointer(p: Cell, begin = false): Cell {
+    if (!this.wrapped) return p;
+    const polygon = this.mode === 'select' && this.selectionShape === 'polygon' && this.polygon.length > 0;
+    if (begin && !polygon) this.gestureBase = { x: Math.floor(p.x / MLEN) * MLEN, y: Math.floor(p.y / MWID) * MWID };
+    if (!begin && !this.down && !polygon) return nativeCell(p);
+    const base = this.gestureBase ?? { x: 0, y: 0 };
+    const at = { x: p.x - base.x, y: p.y - base.y };
+    const first = this.start ?? this.polygon[0];
+    return first
+      ? { x: Math.max(first.x - MLEN + 1, Math.min(first.x + MLEN - 1, at.x)), y: Math.max(first.y - MWID + 1, Math.min(first.y + MWID - 1, at.y)) }
+      : at;
+  }
+
   // ---- pointer -------------------------------------------------------------------------
 
   pointerDown(p: Cell, button: number): void {
     const m = this.mode;
     if (!m) return;
+    p = this.pointer(p, true);
     if (m === 'select' && this.selectionShape === 'polygon') {
       if (button !== 0) return;
       const first = this.polygon[0],
@@ -128,7 +150,7 @@ export class MapTools {
       const t = this.terrain();
       if (!t) return this.noBrush();
       this.host.remember();
-      this.host.changed(paintTerrain(this.host.blocksArr, t, [p], this.erase || button === 2));
+      this.host.changed(paintTerrain(this.host.blocksArr, t, [p], this.erase || button === 2, MLEN, MWID, this.wrapped));
     } else if (m === 'stamp' || m === 'paste') {
       if (!this.held) return this.noBrush();
       this.ghostAt(p);
@@ -138,6 +160,7 @@ export class MapTools {
   pointerMove(p: Cell, buttons: number): void {
     const m = this.mode;
     if (!m) return;
+    p = this.pointer(p);
     if (m === 'select' && this.selectionShape === 'polygon' && this.polygon.length) {
       this.previewPolygon(p);
       return;
@@ -148,7 +171,8 @@ export class MapTools {
     }
     if (m === 'terrain') {
       const t = this.terrain();
-      if (t && this.last) this.host.changed(paintTerrain(this.host.blocksArr, t, lineCells(this.last, p).slice(1), this.erase || (buttons & 2) !== 0));
+      if (t && this.last)
+        this.host.changed(paintTerrain(this.host.blocksArr, t, lineCells(this.last, p).slice(1), this.erase || (buttons & 2) !== 0, MLEN, MWID, this.wrapped));
     } else if (m === 'stamp' || m === 'paste') this.ghostAt(p);
     else this.preview(p);
     this.last = p;
@@ -157,6 +181,7 @@ export class MapTools {
   pointerUp(p: Cell): void {
     const m = this.mode;
     if (!m || !this.down) return;
+    p = this.pointer(p);
     this.down = false;
     const a = this.start ?? p;
     const r = spanRect(a, p);
@@ -166,7 +191,8 @@ export class MapTools {
       const cells = m === 'line' ? lineCells(a, p) : rectCells(r, this.outline);
       const changed: number[] = [];
       for (const c of cells) {
-        const i = c.y * MLEN + c.x;
+        const at = this.wrapped ? nativeCell(c) : c;
+        const i = at.y * MLEN + at.x;
         if (blocks[i] !== this.host.brush()) ((blocks[i] = this.host.brush()), changed.push(i));
       }
       this.host.overlay.outline = undefined;
@@ -174,18 +200,18 @@ export class MapTools {
       this.host.changed(changed);
     } else if (m === 'select') {
       this.host.overlay.outline = undefined;
-      this.host.overlay.selection = r;
+      this.host.overlay.selection = this.wrapped ? { ...r, wrap: true } : r;
       this.renderPanel();
     } else if (m === 'building') {
       const b = this.building();
       this.host.overlay.ghost = undefined;
       if (!b) return this.noBrush();
       this.host.remember();
-      this.host.changed(placeGrid(blocks, assembleBuilding(b, r.w, r.h), r.x, r.y));
+      this.host.changed(placeGrid(blocks, assembleBuilding(b, r.w, r.h), r.x, r.y, MLEN, MWID, this.wrapped));
     } else if ((m === 'stamp' || m === 'paste') && this.held) {
       const at = this.anchor(p, this.held);
       this.host.remember();
-      this.host.changed(placeGrid(blocks, stampRows(this.held), at.x, at.y));
+      this.host.changed(placeGrid(blocks, stampRows(this.held), at.x, at.y, MLEN, MWID, this.wrapped));
       this.ghostAt(p);
       return;
     }
@@ -231,7 +257,17 @@ export class MapTools {
   /** Returns whether Enter/double-click belongs to a pending polygon gesture. */
   finishPolygon(): boolean {
     if (this.mode !== 'select' || this.selectionShape !== 'polygon' || !this.polygon.length) return false;
-    const selected = polygonSelection(this.polygon);
+    const origin = this.wrapped ? { x: Math.min(...this.polygon.map((p) => p.x)), y: Math.min(...this.polygon.map((p) => p.y)) } : { x: 0, y: 0 };
+    const points = this.polygon.map((p) => ({ x: p.x - origin.x, y: p.y - origin.y }));
+    const selected = this.wrapped
+      ? polygonSelection(points, Math.max(...points.map((p) => p.x)) + 1, Math.max(...points.map((p) => p.y)) + 1)
+      : polygonSelection(points);
+    if (selected && this.wrapped) {
+      selected.x += origin.x;
+      selected.y += origin.y;
+      selected.cells = selected.cells?.map((p) => ({ x: p.x + origin.x, y: p.y + origin.y }));
+      selected.wrap = true;
+    }
     if (!selected) {
       toast('Choose at least three corners that enclose an area.', 'error');
       return true;
@@ -298,7 +334,8 @@ export class MapTools {
     this.host.remember();
     const changed: number[] = [];
     for (const { x, y } of selectionCells(r)) {
-      const index = y * MLEN + x;
+      const at = r.wrap ? nativeCell({ x, y }) : { x, y };
+      const index = at.y * MLEN + at.x;
       if (this.host.blocksArr[index] !== this.host.brush()) {
         this.host.blocksArr[index] = this.host.brush();
         changed.push(index);
