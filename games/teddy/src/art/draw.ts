@@ -1,35 +1,15 @@
 // Drawing helpers shared by the blocks, sprites and screens: dithered shading, lumps,
 // textures, ASCII sprites, the PC's 8x8 font and a 3x5 font for tiny signs.
-import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 import { P } from './pal';
 import { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
-import { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+
 export { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 export { CLEAR, over, recolor } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 export { shadeAt, gradient, blob, speckle } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-
-/** An ASCII sprite on a clear 20x20 block, bottom aligned and centered unless placed. */
-export function sprite(rows: string[], key: Record<string, number>, dx?: number, dy?: number, w = 20, h = 20): Pixels {
-  const p = new Pixels(w, h, CLEAR);
-  const width = Math.max(...rows.map((r) => r.length));
-  p.draw(dx ?? Math.floor((w - width) / 2), dy ?? h - rows.length, rows, key);
-  return p;
-}
-
-/** Draws a dark outline around every non-clear pixel (onto clear neighbors). */
-export function outline(src: Pixels, ink: number): Pixels {
-  const p = new Pixels(src.w, src.h);
-  p.px.set(src.px);
-  for (let y = 0; y < src.h; y++)
-    for (let x = 0; x < src.w; x++) {
-      if (src.get(x, y) !== CLEAR) continue;
-      const near = [src.get(x - 1, y), src.get(x + 1, y), src.get(x, y - 1), src.get(x, y + 1)].some((c) => c !== CLEAR && c !== -1 && c !== ink);
-      if (near) p.set(x, y, ink);
-    }
-  return p;
-}
+export { asciiSprite as sprite } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+import { outline as outlineSprite } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+export const outline = (src: Pixels, ink: number) => outlineSprite(src, ink, { ignoreInk: true });
 
 /**
  * The Clown Club letters the O of CLOWN as a round red rubber nose. In art (signs, titles,
@@ -54,149 +34,31 @@ export function clubArt(s: string): string {
   return s.replace(/(cl)(o)(wn\s+club)/gi, (_, a: string, o: string, b: string) => a + (o === 'O' ? NOSE : NOSE_SMALL) + b);
 }
 
-/**
- * Draws 8x8 text; `scale` makes chunky letters. Returns the width drawn. A nose is painted
- * red, or drawn flat in `col` with `flat` (an outline's or a shadow's pass).
- */
-export function text(p: Pixels, x: number, y: number, s: string, col: number, scale = 1, flat = false): number {
-  const ink = textInk(p, s);
-  const dot = (dx: number, dy: number, dw: number, dh: number, k = col) => {
-    p.rect(dx, dy, dw, dh, k);
-    ink?.add(dx, dy, dw, dh);
-  };
-  let cx = x;
-  for (const ch of s) {
-    const base = (ch.charCodeAt(0) & 0xff) * 8;
-    for (let row = 0; row < 8; row++) {
-      const nose = NOSE_GLYPHS[ch];
-      if (nose) {
-        for (let b = 0; b < 8; b++) {
-          const k = nose[row][b];
-          if (k === '.') continue;
-          dot(cx + b * scale, y + row * scale, scale, scale, flat ? col : NOSE_INK[k]);
-        }
-        continue;
-      }
-      const bits = FONT8X8[base + row];
-      for (let b = 0; b < 8; b++) if (bits & (1 << b)) dot(cx + b * scale, y + row * scale, scale, scale);
-    }
-    cx += 8 * scale;
-  }
-  ink?.end();
-  return cx - x;
-}
-
-/** Text with a 1px outline (and an optional drop shadow). */
-export function outlined(p: Pixels, x: number, y: number, s: string, col: number, edge: number, scale = 1, shadow?: number): void {
-  if (shadow !== undefined) text(p, x + scale, y + scale * 2, s, shadow, scale, true);
-  for (const [dx, dy] of [
-    [-1, 0],
-    [1, 0],
-    [0, -1],
-    [0, 1],
-    [-1, -1],
-    [1, 1],
-    [-1, 1],
-    [1, -1],
-  ])
-    text(p, x + dx, y + dy, s, edge, scale, true);
-  text(p, x, y, s, col, scale);
-}
-
-export function centered(p: Pixels, y: number, s: string, col: number, scale = 1, edge?: number, cx = p.w / 2): void {
-  const x = Math.round(cx - textWidth(s, scale) / 2);
-  if (edge !== undefined) outlined(p, x, y, s, col, edge, scale);
-  else text(p, x, y, s, col, scale);
-}
-
-const MICRO: Record<string, string> = {
-  A: '010101111101101',
-  B: '110101110101110',
-  C: '011100100100011',
-  D: '110101101101110',
-  E: '111100110100111',
-  F: '111100110100100',
-  G: '011100101101011',
-  H: '101101111101101',
-  I: '111010010010111',
-  J: '001001001101010',
-  K: '101101110101101',
-  L: '100100100100111',
-  M: '101111111101101',
-  N: '110101101101101',
-  O: '010101101101010',
-  P: '110101110100100',
-  Q: '010101101110011',
-  R: '110101110101101',
-  S: '011100010001110',
-  T: '111010010010010',
-  U: '101101101101111',
-  V: '101101101101010',
-  W: '101101111111101',
-  X: '101101010101101',
-  Y: '101101010010010',
-  Z: '111001010100111',
-  '0': '111101101101111',
-  '1': '010110010010111',
-  '2': '110001010100111',
-  '3': '110001010001110',
-  '4': '101101111001001',
-  '5': '111100110001110',
-  '6': '011100111101111',
-  '7': '111001010010010',
-  '8': '111101111101111',
-  '9': '111101111001110',
-  $: '011110010011110',
-  '&': '010101010101011',
-  '-': '000000111000000',
-  '!': '010010010000010',
-  '.': '000000000000010',
-  "'": '010010000000000',
-  ' ': '000000000000000',
-  ':': '000010000010000',
-  '/': '001001010100100',
-  ',': '000000000010100',
-  '?': '110001010000010',
-  '+': '000010111010000',
-  '>': '100010001010100',
-  '<': '001010100010001',
-  '(': '010100100100010',
-  ')': '010001001001010',
-};
-
 /** The nose in the 3x5 letters: as tall as they are and a little wider, to read round. */
 const MICRO_NOSE = ['.###.', '#w###', '#####', '####d', '.ddd.'];
 const isNose = (ch: string) => ch === NOSE || ch === NOSE_SMALL;
 
-/** 3x5 letters, 1px apart (a nose is 5x5). Returns the width drawn. */
-export function micro(p: Pixels, x: number, y: number, s: string, col: number, scale = 1): number {
-  const ink = textInk(p, s, undefined, (ch) => ch in MICRO || ch.toUpperCase() in MICRO || isNose(ch));
-  const dot = (dx: number, dy: number, dw: number, dh: number, k = col) => {
-    p.rect(dx, dy, dw, dh, k);
-    ink?.add(dx, dy, dw, dh);
-  };
-  let cx = x;
-  for (const ch of s.toUpperCase()) {
-    if (isNose(ch)) {
-      MICRO_NOSE.forEach((row, dy) => [...row].forEach((k, dx) => k !== '.' && dot(cx + dx * scale, y + dy * scale, scale, scale, NOSE_INK[k])));
-      cx += 6 * scale;
-      continue;
-    }
-    const g = MICRO[ch] ?? MICRO[' '];
-    for (let i = 0; i < 15; i++) if (g[i] === '1') dot(cx + (i % 3) * scale, y + Math.floor(i / 3) * scale, scale, scale);
-    cx += 4 * scale;
-  }
-  ink?.end();
-  return cx - x - scale;
-}
+import { microAdvance } from '@lewismoten/gamemaker-sandbox-tools/kit/microText';
+export const microWidth = (s: string, scale = 1) => ([...s].filter(isNose).length * 2 + microAdvance(s)) * scale;
+export { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 
-export const microWidth = (s: string, scale = 1) => ([...s].filter(isNose).length * 2 + s.length * 4 - 1) * scale;
-
-/** Scales a picture up by an integer factor into dst (clear pixels skipped). */
-export function scaleBlit(dst: Pixels, src: Pixels, x: number, y: number, s: number, flip = false): void {
-  for (let yy = 0; yy < src.h; yy++)
-    for (let xx = 0; xx < src.w; xx++) {
-      const c = src.get(flip ? src.w - 1 - xx : xx, yy);
-      if (c !== CLEAR && c >= 0) dst.rect(x + xx * s, y + yy * s, s, s, c);
-    }
-}
+import { createMicroText } from '@lewismoten/gamemaker-sandbox-tools/kit/microText';
+import { microGlyphs } from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import { createPcText } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+const pc = createPcText({
+  codePointWidth: true,
+  shadowOffsets: [[1, 2]],
+  custom: (ch, col, flat) => {
+    const rows = NOSE_GLYPHS[ch];
+    return rows ? new Pixels(8, 8, CLEAR).draw(0, 0, rows, flat ? { '#': col, d: col, w: col } : NOSE_INK) : undefined;
+  },
+});
+export const { text, outlined, centered } = pc;
+const microNose = new Pixels(5, 5, CLEAR).draw(0, 0, MICRO_NOSE, NOSE_INK);
+export const micro = createMicroText({
+  glyphs: microGlyphs("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$&-!.' :/,?+><()", false),
+  fallback: ' ',
+  trailingGap: false,
+  glyphCase: false,
+  custom: (ch) => (isNose(ch) ? microNose : undefined),
+});
