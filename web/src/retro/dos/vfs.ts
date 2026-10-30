@@ -39,6 +39,7 @@ export type ProgramRef =
   | { kind: 'gmcrack' }
   | { kind: 'savehack' }
   | { kind: 'playhack' }
+  | { kind: 'fastplay' }
   | { kind: 'backup' }
   | { kind: 'hexedit' }
   | { kind: 'achieve' }

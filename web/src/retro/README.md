@@ -31,6 +31,10 @@ picture; `host.ts` is what programs on it can use.
   (`structure.ts` the map and its Builder; `structureGm.ts` Game-Maker's formats,
   `structureMedia.ts` the media files). `view/`: VPIC.EXE (`vpic.ts`) and the VGA/SVGA picture
   screen (`picture.ts`).
+- `hacks/fastPlay.ts`: FASTPLAY ON bypasses first-run hardware setup; OFF restores it for
+  unconfigured games and STATUS reports the choice. CONFIG.BAT and PLAYGAME’s Configure
+  menu force a game’s setup. Hardware choices live in browser preferences, outside DOS files.
+  The shared player supplies the same controls on its start screen; previews and recordings skip them.
 - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, PLAYHACK, the GM30 installer and the
   rest (`saveHack.ts`, `backupExe.ts`, `playHack.ts`, which edits a game of yours' DOS player
   patches as the editor's panel does, picking a kind of game first in `playHackGroups.ts` or the game on the disk in A: in `playHackDisk.ts`, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,

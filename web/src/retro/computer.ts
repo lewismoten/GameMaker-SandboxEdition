@@ -196,6 +196,9 @@ export class Computer extends ComputerFolders {
         case 'playhack':
           await (await import('./hacks/playHack')).runPlayHack(this);
           break;
+        case 'fastplay':
+          await (await import('./hacks/fastPlay')).runFastPlay(this, _args);
+          break;
         case 'backup':
           await (await import('./hacks/backupExe')).runBackup(this, _args);
           break;
