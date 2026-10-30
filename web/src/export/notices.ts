@@ -34,7 +34,21 @@ MIT License
 Copyright (c) 2014 gandrewstone
 Copyright (c) 2026 Lewis Moten
 
-${MIT}`;
+${MIT}
+
+Palette-template reference data (when used in the game's colors):
+Atari 2600 NTSC/PAL: Ricardo Cancho Niemietz, 2008, public-domain dedication
+with unrestricted-use fallback. Sources and release statements:
+https://commons.wikimedia.org/wiki/File:Atari2600_NTSC_palette.png
+https://commons.wikimedia.org/wiki/File:Atari2600_PAL_palette.png
+NES: Persune, Pally, copyright 2024 Persune; MIT No Attribution (MIT-0).
+https://github.com/Gumball2415/pally/tree/9635e9b71505f969014c7efa15dca3ba35ade871
+Commodore 64 NTSC CXA2025 reference: Groepaz, unrestricted free use,
+including redistribution, commercial use and modification; attribution appreciated.
+https://hitmen.c02.at/linked/c64_ntsc_cxa2025.bmp.png
+Swatches adapted to six-bit VGA; menu black is normalized and sprite
+transparency is reserved. Project-designed ramps and adapters: Lewis Moten
+using OpenAI Codex, under the project's MIT License.`;
 
 const WEBVIEW2 = `Microsoft Edge WebView2 SDK: the interface definitions the player uses
 (win/Player/webview2.h is generated from the SDK's WebView2.h; no SDK file and no

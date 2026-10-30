@@ -35,7 +35,7 @@ import {rgbToHsv,hsvToRgb} from '@lewismoten/gamemaker-sandbox-tools/colors';
 import { Sim, GameSim } from '@lewismoten/gamemaker-sandbox-tools/simulation';
 import { audioFileToVoc, decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
 import {MICRO_GLYPHS,MICRO_SQUARE_GLYPHS} from '@lewismoten/gamemaker-sandbox-tools/microFont';
-import {libraryDefaultPalette} from '@lewismoten/gamemaker-sandbox-tools/palettes';
+import {libraryDefaultPalette,PALETTE_PRESETS,createPalettePreset} from '@lewismoten/gamemaker-sandbox-tools/palettes';
 import {buildRampPalette} from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 import {recordedDemo} from '@lewismoten/gamemaker-sandbox-tools/kit/recordedDemo';
 import {parseRecording} from '@lewismoten/gamemaker-sandbox-tools/formats/recording';
@@ -43,6 +43,7 @@ import {Disk} from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 for(const name of ['actors','align','coverPaint','disk','fadeOut','fliClips','hopBot','levelPicture','menuVersion','microText','palRamps','photo','png','quantize','raytrace','recordedDemo','road3d','routeChecks','saveSlots','sceneInit','screenText','sdftext','song','songFx','synthParts','textfit','transforms'])
   await import('@lewismoten/gamemaker-sandbox-tools/kit/'+name);
 assert.equal(libraryDefaultPalette().length,768);assert.deepEqual(libraryDefaultPalette().slice(0,3),Uint8Array.of(0,0,0));const changed=libraryDefaultPalette();changed[0]=63;assert.equal(libraryDefaultPalette()[0],0);
+assert.equal(PALETTE_PRESETS.length,20);assert.equal(createPalettePreset('atari-pal').length,768);assert.deepEqual(createPalettePreset('nes').slice(765),Uint8Array.of(0,0,0));
 assert.equal(MICRO_GLYPHS['µ'],'000101101111100');assert.notEqual(MICRO_GLYPHS.C,MICRO_SQUARE_GLYPHS.C);
 const built=buildRampPalette([['ink',2,[0,0,0],[252,252,252]]]);assert.equal(built.c('ink',99),built.r('ink')[1]);
 assert.deepEqual(parseRecording(recordedDemo([1,77],3,2)).slice(-2),[{delta:3,key:1},{delta:2,key:129}]);
