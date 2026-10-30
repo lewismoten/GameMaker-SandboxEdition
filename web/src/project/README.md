@@ -29,3 +29,5 @@ archive consumers can reuse them without loading the site's catalog or UI.
   catalog carries; the home page's byline, the manual cover and the box back's small print show it.
 - `saveData/` reads and writes a game's saves, high scores and save backups, shared by the web's
   Saves & scores and the desk's SAVEHACK and BACKUP.
+
+Built catalogs use one DOS distribution ZIP per game. `files.ts` shares that download between readers; lazy `hostedZip.ts` uses the archives SDK to recover native filenames and customized-player extensions. The editor and player read the same archive. ZIP failures never fan out into requests for missing loose files. Legacy GMPK catalogs and development loose files remain readable.

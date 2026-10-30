@@ -4,7 +4,7 @@
 // reads its files synchronously (GameFiles); where the engine is about to read one (a
 // picture, a song, a scene's files) it asks for it first and waits if it is still on its
 // way (engine/machine.ts, need), which moves it to the front of the queue.
-import { GameFiles, cdName, fetchSiteFile, normalize, openPack, type CatalogEntry, type FileStream, type PackHandle } from './files';
+import { GameFiles, cdName, fetchSiteFile, normalize, openPack, loadHostedGame, type CatalogEntry, type FileStream, type PackHandle } from './files';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
@@ -142,6 +142,14 @@ interface StreamedGame {
  */
 export function streamHostedGame(entry: CatalogEntry, base = './', concurrency = 4, aheadBytes = Infinity): StreamedGame {
   const files = new GameFiles();
+  if (entry.pack?.endsWith('.zip')) {
+    const ready = loadHostedGame(entry, base).then((loaded) => {
+      for (const [name, bytes] of loaded.entries()) files.put(name, bytes);
+      files.stream = undefined;
+    });
+    files.stream = { need: () => ready, want: () => undefined };
+    return { files, started: ready, done: ready };
+  }
   const names = entry.files;
   const waiting = new Map<string, { promise: Promise<void>; resolve: () => void }>();
   for (const n of names) {
