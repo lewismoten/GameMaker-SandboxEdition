@@ -15,8 +15,8 @@
 // is traced again each frame, so still areas stay byte-identical and the FLI stores just
 // the changes.
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
-import { DistanceGrid, ExtrudedText, Seg, textStrokes } from './sdftext';
-import { medianCutPalette, Quantizer } from './quantize';
+import { DistanceGrid, ExtrudedText, Seg, textStrokes } from '@lewismoten/gamemaker-sandbox-tools/kit/sdftext';
+import { medianCutPalette, Quantizer } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
 import {
   add,
   apply,
@@ -51,7 +51,7 @@ import {
   Surface,
   Tri,
   V,
-} from './raytrace';
+} from '@lewismoten/gamemaker-sandbox-tools/kit/raytrace';
 
 /** The logo's file name on every disk. */
 export const SANDLOGO = 'sandlogo.fli';
