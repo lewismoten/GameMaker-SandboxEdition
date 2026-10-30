@@ -4,7 +4,7 @@
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { serializeHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
-import { dosText } from '../../kit/disk';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../kit/sandlogo';
 import type { Built } from './game';
 import { buildSongs } from './sound/music';

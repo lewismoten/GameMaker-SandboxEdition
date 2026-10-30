@@ -1,7 +1,7 @@
 // Autodesk Animator .FLI films: the opening, the warp jump out of the galaxy chart, the
 // launch back to orbit, and the Core lighting up at the end.
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Canvas } from '../art/canvas';
 import { drawPod } from '../sprites/vehicles';
