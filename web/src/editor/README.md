@@ -331,3 +331,7 @@ Image import (`tools/convert.ts`) and palette picture-color selection share the 
 package’s portable `medianCutRgba` reducer; the browser keeps canvas loading and fitting.
 `editors/palette/pictureColors.ts` previews a bounded color budget from the selected GIF's
 actual pixels, applies it inside the selected palette range, and leaves other entries alone.
+
+The character starting sheet's `editors/character/characterStatus.ts` renders its inventory
+with the native F2 renderer, palette color 0, and the project's DOS player text, colors and
+frames. The editor loads that renderer dynamically and keeps item selection controls separate.
