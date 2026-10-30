@@ -118,6 +118,7 @@ registerEditor(['map'], (host, project, file) => {
   const overlay: OverlayState = { grid: readPref('gm-map-grid'), found: [] };
   let finding = false;
   let wrapping = readPref('gm-map-wrap');
+  overlay.wrap = wrapping;
 
   let monImgs: HTMLCanvasElement[] = [];
   // the Level check's "Gray level": the map on screen in the palette's lightness only, so the
@@ -824,7 +825,12 @@ registerEditor(['map'], (host, project, file) => {
       title: 'Keep scrolling through the map edges; the opposite side follows',
       onclick: () => {
         tools.cancel();
+        if (painting) save();
+        painting = false;
+        lastPaint = undefined;
         wrapping = !wrapping;
+        overlay.wrap = wrapping;
+        redrawOverlay();
         viewport.setWrapped(wrapping);
         writePref('gm-map-wrap', wrapping);
         syncToggles();

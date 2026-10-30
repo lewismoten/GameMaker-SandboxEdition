@@ -491,3 +491,5 @@ including fast drags spanning more than half the map at a small zoom.
 Wrapped gestures also apply to line/rectangle/polygon tools, fill, terrain, stamps,
 buildings, and selection copy/cut/paste and block groups. A gesture spans at most
 one map per axis; native files and Undo continue to store only the original map.
+The overlay repeats drag previews, polygon edges and selections through the same
+seams; Find, grid, link and Level check overlays keep their native positions.
