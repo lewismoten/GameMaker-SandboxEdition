@@ -87,7 +87,7 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
   import. [Try it with the games here](https://lewismoten.github.io/GameMaker-SandboxEdition/player/)
   or see [The web player](docs/web-player.md).
 - **Reusable npm packages:** run Game-Maker DOS files in your own web application with the
-  browser engine, and build or check game data with the development tools. See
+  browser engine, build or check game data with the development tools, and load game archives. See
   [npm packages](#npm-packages) for installation and API documentation.
 
 ## Screenshots
@@ -127,6 +127,16 @@ npm install --save-dev @lewismoten/gamemaker-sandbox-tools
 ```
 
 The tools run during development; browser playback uses the engine and generated game data.
+
+**[@lewismoten/gamemaker-sandbox-archives](web/packages/archives/README.md)** discovers games
+in folders, ZIPs, nested archives, and ZIP-based self-extracting executables. It can also
+create ZIPs for single-file downloads. Its README covers extraction, game selection, and
+passing the unpacked file entries to the browser engine.
+
+```sh
+npm install @lewismoten/gamemaker-sandbox-archives
+```
+
 
 ## Run it yourself
 

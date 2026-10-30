@@ -74,6 +74,7 @@ Each area's own README says what each of its files does; the short ones are desc
   XFERPLAY's own screens show.
 - [`../packages/engine/`](../packages/engine/README.md): the npm package build and usage guide for
   the reusable browser engine.
+- [`../packages/archives/`](../packages/archives/README.md): portable browser/Node game discovery, ZIP/SFX unpacking, and ZIP creation.
 - [`../packages/tools/`](../packages/tools/README.md): the development-only npm toolkit for native formats, drawing, audio generation and headless checks.
 - [`audio/`](audio/README.md): OPL2 music, the CMF player, Web Audio output, PC speaker sounds, and
   making songs and sound effects.
