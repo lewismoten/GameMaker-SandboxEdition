@@ -464,3 +464,8 @@ native game files are loaded only when the player chooses an archive action.
   set’s scene-linked characters and MON/MBL resources. Its thumbnail shows one
   representative native pose; unbound sets without a CHR show one visible block.
   `widgets/thumbs.ts` uses these poses for CBL cards instead of a picture grid.
+
+- **Audition clock.** `widgets/characterAuditions.ts` reads each CBL’s native
+  sequences and monster companions without creating or saving a project. Its
+  deterministic clock keeps blank pictures, emits birth/movement events once
+  at native frame boundaries, and bounds catch-up after a delayed browser frame.
