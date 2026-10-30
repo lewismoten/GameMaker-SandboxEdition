@@ -6,8 +6,9 @@
 import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
-import { dosText } from '../../../kit/disk';
+import { pastePhoto, resample, sepia } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, centered, gradient, micro, microC, outlined, scaleBlit, text } from '../art/draw';
 import { P, c, ramp as r } from '../art/pal';

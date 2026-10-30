@@ -4,8 +4,8 @@
 // told in Game-Maker.
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { clipEntries, fliClips } from '../../../kit/fliClips';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
+import { clipEntries, fliClips } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { SANDLOGO } from '../../../kit/sandlogo';
 import { dimmed } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
