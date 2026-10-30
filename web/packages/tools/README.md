@@ -153,3 +153,7 @@ The stroke glyphs, implementation provenance and method references are in NOTICE
 
 `kit/actors` builds character sequences and monster paths. `kit/screenText` validates
 30-column, 16-line DOS text pages and looks up caller-supplied named sprites.
+
+`kit/road3d` provides three-lane perspective geometry, timed spawner chains and sprite
+shrinking. `kit/saveSlots` provides PLAYGAME's save-slot rectangles and their backgrounds.
+These helpers take the consuming game's data and palette.

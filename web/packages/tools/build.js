@@ -36,6 +36,8 @@ const sources = {
   'kit/raytrace': 'kit/raytrace',
   'kit/actors': 'kit/actors',
   'kit/screenText': 'kit/screenText',
+  'kit/road3d': 'kit/road3d',
+  'kit/saveSlots': 'kit/saveSlots',
   microFont: 'microFont',
   'music/compose': 'music/compose',
   simulation: 'simulation',
