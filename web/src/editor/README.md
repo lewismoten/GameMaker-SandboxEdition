@@ -453,4 +453,5 @@ native game files are loaded only when the player chooses an archive action.
   blocks and ordinary groups retain their existing transforms. The live preview
   sits beside the painter on desktop and shares a compact workbench with its
   canvas on phones and tablets, retaining playback and background choices during resizing. Map
-  mode starts on actual scenery; palette mode supplies a plain backdrop.
+  mode starts on actual scenery; palette mode supplies a plain backdrop. Scene
+  preview code loads dynamically when map mode is first requested.

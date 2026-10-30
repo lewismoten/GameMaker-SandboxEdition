@@ -6,7 +6,6 @@ import { paletteCss, type Palette } from '@lewismoten/gamemaker-sandbox-engine/f
 import { ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { viewState } from '../../../urlState';
 import { animPlayer } from './animPlayer';
-import { stageBackdrop } from '../character/characterStage';
 import { characterAnimations, characterFrameView, type CharacterFrameView } from './characterFrameModel';
 import './characterFramesPanel.css';
 
@@ -43,8 +42,9 @@ export function characterFramesPanel(o: {
   const hasMaps = o.project.game().scenes.some((scene) => scene.gametype === ADVTYPE && o.project.files.has(scene.files[1]));
   if (!hasMaps) background = 'color';
   const backdropSlot = h('div');
-  let backdrop: ReturnType<typeof stageBackdrop> | undefined;
+  let backdrop: ReturnType<(typeof import('../character/characterStage'))['stageBackdrop']> | undefined;
   let backdropFile = '';
+  let disposed = false;
   const player = animPlayer({
     blocks: () => o.blocks,
     pal: () => o.palette(),
@@ -133,6 +133,27 @@ export function characterFramesPanel(o: {
   function refreshBackground(): void {
     backgroundColor.hidden = background !== 'color';
     backdropSlot.hidden = background !== 'map';
+    const animation = animations[selected];
+    if (background === 'map' && animation && backdropFile !== animation.file) {
+      const file = animation.file;
+      backdropFile = file;
+      backdrop = undefined;
+      clear(backdropSlot, h('small', { class: 'meta' }, 'Loading map scenes…'));
+      void import('../character/characterStage')
+        .then(({ stageBackdrop }) => {
+          if (disposed || backdropFile !== file) return;
+          backdrop = stageBackdrop(o.project, file, 120, 80, () => player.redraw());
+          const grid = backdrop.el.querySelector<HTMLOptionElement>('option[value="-1"]');
+          if (grid) grid.disabled = grid.hidden = true;
+          clear(backdropSlot, backdrop.el);
+          refreshBackground();
+          player.redraw();
+        })
+        .catch(() => {
+          if (!disposed && backdropFile === file)
+            clear(backdropSlot, h('small', { class: 'meta' }, 'Map preview could not be loaded. Choose Palette color to keep previewing.'));
+        });
+    }
     // Map mode starts on actual scenery; palette mode already supplies a plain backdrop.
     const select = backdropSlot.querySelector('select');
     if (background === 'map' && select?.value === '-1' && select.options.length > 1) {
@@ -161,15 +182,8 @@ export function characterFramesPanel(o: {
     hint.textContent = active
       ? 'The dashed outlines mark blocks used in this animation.'
       : 'Choose a frame or paint size to edit the character as it appears in the game.';
-    if (backdropFile !== animation.file) {
-      backdropFile = animation.file;
-      backdrop = stageBackdrop(o.project, animation.file, 120, 80, () => player.redraw());
-      const grid = backdrop.el.querySelector<HTMLOptionElement>('option[value="-1"]');
-      if (grid) grid.disabled = grid.hidden = true;
-      clear(backdropSlot, backdrop.el);
-    }
-    player.show([animation.clip], record.frame.pic1 < CHARBL ? record.frame.pic1 : record.frame.pic2, record.tick);
     refreshBackground();
+    player.show([animation.clip], record.frame.pic1 < CHARBL ? record.frame.pic1 : record.frame.pic2, record.tick);
   }
   function activate(): void {
     const animation = animations[selected];
@@ -256,6 +270,9 @@ export function characterFramesPanel(o: {
       o.relatedChanged();
     },
     redraw: () => player.redraw(),
-    dispose: () => player.dispose(),
+    dispose: () => {
+      disposed = true;
+      player.dispose();
+    },
   };
 }
