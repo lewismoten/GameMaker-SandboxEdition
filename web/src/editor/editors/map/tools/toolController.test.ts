@@ -59,4 +59,23 @@ describe('rectangle previews', () => {
     expect(host.overlay.ghost).toBeUndefined();
     expect(host.overlay.outline).toBeUndefined();
   });
+  it('fills polygon cells without overwriting the excluded corner', () => {
+    const { tools, host } = editor();
+    tools.mode = 'select';
+    host.overlay.selection = {
+      x: 2,
+      y: 3,
+      w: 2,
+      h: 2,
+      cells: [
+        { x: 2, y: 3 },
+        { x: 3, y: 3 },
+        { x: 2, y: 4 },
+      ],
+    };
+    tools.fillSelection();
+    expect([host.blocksArr[302], host.blocksArr[303], host.blocksArr[402], host.blocksArr[403]]).toEqual([7, 7, 7, 0]);
+    expect(host.changed).toHaveBeenCalledWith([302, 303, 402]);
+    expect(host.remember).toHaveBeenCalledOnce();
+  });
 });

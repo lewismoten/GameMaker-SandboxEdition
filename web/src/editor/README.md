@@ -301,3 +301,8 @@ are real previews too; a blank idle can fall back to a movement frame.
   closed corner paths using the existing line and outside-flood helpers. Captured
   selections preserve unselected cells as holes, so fill, cut, paste, stamps and
   block groups can respect the shape instead of its bounding rectangle.
+
+  In the Select tool's options, choose Polygon, click its corners, and finish with
+  Enter, a double-click or a click on its first corner. Backspace removes the last
+  corner; Escape cancels. Fill, copy/cut, paste, stamps and block groups keep its
+  shape. The maze generator asks for a rectangular selection.
