@@ -57,6 +57,26 @@ play.addEventListener('click', async () => {
 
 `Machine` owns the screen, keyboard and audio. Call `machine.destroy()` when play finishes or the containing page closes. `runGame` accepts `RunOptions` for callbacks, joystick input, playback and the optional DOS player appearance. The game may write saves or high scores into `GameFiles`; use `files.onChange` to persist those bytes. The package targets modern browsers and ES modules.
 
+## Native player screens
+
+The package includes the complete DOS player front end. The example above shows
+its title images or animation and menu before play. The menu offers instructions,
+storyline, credits, top scores and quitting; during play the native function keys
+open help, inventory, load and save screens. Include the files named by the game's
+`.GAM` file, along with any saved games or high scores you want to keep.
+
+`runGame` uses these screens by default. For a direct play test, pass
+`{ skipTitle: true }` to start a new game at its initial scene link; its normal
+ending screens and menu still follow when play ends. `RunOptions.player` accepts
+DOS player customizations for words, colors, frames, positions, timing and function
+keys. `gmHelp` optionally supplies Game-Maker's own help text before the game's
+instructions. See the exported `RunOptions` type for these settings and callbacks.
+
+Observe actual life loss with `onLifeLost`, including the last life, or the final
+result and score with `onPlayEnd`. Recorded demo playback does not emit either
+callback. Persist `GameFiles.onChange` to retain save files and high scores between
+visits.
+
 The source is MIT licensed; see `LICENSE` and `NOTICE.md` for credits.
 
 ## Build from source
