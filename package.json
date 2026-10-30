@@ -8,14 +8,15 @@
   ],
   "scripts": {
     "build:packages": "npm run build -w @lewismoten/gamemaker-sandbox-engine && npm run build -w @lewismoten/gamemaker-sandbox-archives && npm run build -w @lewismoten/gamemaker-sandbox-tools",
-    "prepare": "npm run build:packages",
+    "prepare": "npm run build:packages && npm run build:games",
     "verify:packages": "node scripts/verify-packages.mjs",
     "dev": "npm run dev -w gamemaker-web",
     "build": "npm run build:packages && npm run build -w gamemaker-web",
     "test": "npm run test -w gamemaker-web",
     "typecheck": "npm run typecheck -w gamemaker-web",
     "format": "npm run format -w gamemaker-web",
-    "lint": "npm run lint -w gamemaker-web"
+    "lint": "npm run lint -w gamemaker-web",
+    "build:games": "node scripts/build-games.mjs"
   },
   "engines": {
     "node": ">=22.12.0"

@@ -23,7 +23,12 @@
     "format": "cd .. && prettier --write .",
     "format:check": "cd .. && prettier --check .",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "predev": "node ../scripts/build-games.mjs",
+    "prebuild": "node ../scripts/build-games.mjs",
+    "pretest": "node ../scripts/build-games.mjs",
+    "pretest:fast": "node ../scripts/build-games.mjs",
+    "precheck:games": "node ../scripts/build-games.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
