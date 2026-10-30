@@ -20,7 +20,10 @@ defaults:
     working-directory: web
 
 jobs:
+  frames:
+    uses: ./.github/workflows/game-frames.yml
   build:
+    needs: frames
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -30,6 +33,11 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: package-lock.json
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: game-frames-*
+          path: games/.render-cache
+          merge-multiple: true
       - run: npm ci
       - run: npm run format:check
       - run: npm run lint

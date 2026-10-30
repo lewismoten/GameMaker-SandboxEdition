@@ -22,7 +22,10 @@ defaults:
     working-directory: web
 
 jobs:
+  frames:
+    uses: ./.github/workflows/game-frames.yml
   try:
+    needs: frames
     runs-on: windows-latest
     timeout-minutes: 5
     steps:
@@ -32,6 +35,11 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: package-lock.json
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: game-frames-*
+          path: games/.render-cache
+          merge-multiple: true
       - run: npm ci
       - run: npx vite-node scripts/winExe.ts teddy --out ../dist/win
       - name: Play it twice
@@ -56,7 +64,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: try
+    needs: [frames, try]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -64,6 +72,11 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: package-lock.json
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: game-frames-*
+          path: games/.render-cache
+          merge-multiple: true
       - run: npm ci
       - run: npx vite-node scripts/winExe.ts --all --zip --out ../dist/win
       - uses: actions/upload-artifact@v4

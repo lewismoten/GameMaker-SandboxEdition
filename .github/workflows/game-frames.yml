@@ -1,0 +1,30 @@
+name: Render game animation frames
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  frames:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: true
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+        env:
+          GM_SKIP_GAME_BUILD: '1'
+      - run: node scripts/render-game-frames.mjs ${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: game-frames-${{ matrix.shard }}
+          path: games/.render-cache/
+          include-hidden-files: true
+          retention-days: 1
