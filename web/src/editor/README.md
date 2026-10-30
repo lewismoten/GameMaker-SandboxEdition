@@ -425,3 +425,8 @@ native game files are loaded only when the player chooses an archive action.
   In the CBL Groups panel, **Group character frames…** opens the inferred pairs
   for review; **All of them** adds the complete set in one step. Existing groups
   are retained and omitted from subsequent suggestions.
+
+- **Oriented painting surfaces.** `blocks/blockSurface.ts` can project native
+  pictures through each character half’s PLAYGAME orientation. Reads, writes,
+  staged Undo snapshots and shared pixel addresses refer back to the original
+  CBL, so editing a turned or mirrored frame also updates its other occurrences.
