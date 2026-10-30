@@ -3,11 +3,10 @@
 // same town goes from a pink morning in the garage to the Big Top's lights at night. The
 // sequel's ramps come first, in its order, so its sprites (imported as they are) keep their
 // colors; the finale's new ramps follow.
-import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { P as SEQUEL } from '../../../teddy2/src/art/pal';
 
 type RGB = [number, number, number];
-export type TimeOfDay = 'morning' | 'noon' | 'afternoon' | 'sunset' | 'night' | 'show';
+export type { TimeOfDay } from '@lewismoten/gamemaker-sandbox-tools/colors';
 
 /** [name, shades, dark, light, mid?, glows at night?] */
 const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
@@ -51,112 +50,28 @@ const RAMPS: [string, number, RGB, RGB, RGB?, boolean?][] = [
   ['orange', 4, [150, 60, 10], [255, 190, 90]],
 ];
 
-const LIGHT: Record<TimeOfDay, { mul: RGB; add: RGB }> = {
-  morning: { mul: [1.0, 0.94, 0.94], add: [14, 4, 10] },
-  noon: { mul: [1, 1, 1], add: [0, 0, 0] },
-  afternoon: { mul: [1.02, 0.96, 0.86], add: [8, 4, 0] },
-  sunset: { mul: [0.9, 0.7, 0.74], add: [30, 10, 16] },
-  night: { mul: [0.46, 0.5, 0.78], add: [8, 8, 30] },
-  // Under the big top at night: warm show lights on everything.
-  show: { mul: [1.0, 0.9, 0.86], add: [12, 4, 6] },
-};
-
 /** Ramps dimmed less at night, and the night light they get instead. */
 const MOONLIT = new Set(['fur']);
 const MOON: RGB = [0.78, 0.82, 0.94];
-
-/** Sky gradients per time of day (top to bottom of the 8 shades are dark to light). */
-const SKY: Record<TimeOfDay, [RGB, RGB, RGB?]> = {
-  morning: [
-    [120, 150, 230],
-    [255, 214, 200],
-    [200, 190, 240],
-  ],
-  noon: [
-    [70, 130, 230],
-    [200, 232, 255],
-  ],
-  afternoon: [
-    [90, 140, 220],
-    [250, 236, 200],
-    [170, 200, 240],
-  ],
-  sunset: [
-    [60, 40, 120],
-    [255, 170, 90],
-    [210, 90, 120],
-  ],
-  night: [
-    [8, 8, 30],
-    [40, 40, 96],
-  ],
-  show: [
-    [6, 6, 28],
-    [60, 40, 110],
-  ],
-};
-
-export interface Pal {
-  pal: Uint8Array;
-  r: (name: string) => number[];
-  /** Shade k of a ramp, clamped. */
-  c: (name: string, k: number) => number;
-  b: PaletteBuilder;
-}
-
+export type { PalWithBuilder as Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 export function buildPalette(time: TimeOfDay): Pal {
-  const b = new PaletteBuilder();
-  b.designerColors();
-  const t = LIGHT[time];
-  for (const [name, n, from, to, mid, glows] of RAMPS) {
-    if (name === 'sky') {
-      const [a, z, m] = SKY[time];
-      b.ramp(name, n, a, z, m);
-      continue;
-    }
-    const lit = (c: RGB): RGB =>
-      glows && (time === 'night' || time === 'sunset' || time === 'show')
-        ? c
-        : (c.map((v, i) => Math.max(0, Math.min(255, Math.round(v * t.mul[i] + t.add[i])))) as RGB);
-    // White fur and bones keep some moonlight at night, so a bone reads on the navy park.
-    const moon = time === 'night' && MOONLIT.has(name);
-    const lift = (c: RGB): RGB => (moon ? (c.map((v, i) => Math.min(255, Math.round(v * MOON[i] + 12))) as RGB) : lit(c));
-    b.ramp(name, n, lift(from), lift(to), mid ? lift(mid) : undefined);
-  }
-  return wrap(b);
-}
-
-/** The noon ramps plus extra inks and gradients for the 320x200 screens. */
-export function buildScreenPalette(): Pal {
-  const b = new PaletteBuilder();
-  b.designerColors();
-  for (const [name, n, from, to, mid] of RAMPS) b.ramp(name, n, from, to, mid);
-  b.ramp('dusk', 12, [30, 20, 70], [255, 180, 110], [200, 80, 120]);
-  b.ramp('tent', 4, [120, 10, 30], [255, 90, 90]);
-  b.ramp('cream', 4, [200, 180, 140], [255, 248, 230]);
-  // Display_File writes text in the color nearest (50,10,50)*4 and "MORE..." in the red
-  // nearest (63,10,10)*4: give it a deep plum ink and a clown red.
-  b.ramp('plum', 1, [170, 24, 140], [170, 24, 140]);
-  b.ramp('menublue', 2, [24, 24, 150], [44, 44, 252]);
-  b.ramp('menured', 1, [252, 40, 40], [252, 40, 40]);
-  return wrap(b);
-}
-
-function wrap(b: PaletteBuilder): Pal {
-  const r = (name: string) => b.get(name);
-  return {
-    pal: b.pal,
-    r,
-    c: (name, k) => {
-      const ramp = r(name);
-      return ramp[Math.max(0, Math.min(ramp.length - 1, k))];
+  return buildRampPalette(RAMPS, {
+    overrides: { sky: SKY[time] },
+    transform: (name, c, glows) => {
+      if (time === 'night' && MOONLIT.has(name)) return lightColor(c, { mul: MOON, add: [12, 12, 12] });
+      return glows && (time === 'night' || time === 'sunset' || time === 'show') ? c : lightColor(c, time);
     },
-    b,
-  };
+  });
 }
+/** Screen colors remain family art data; the builder is shared. */
+export const buildScreenPalette = (): Pal => buildRampPalette([...RAMPS, ...SCREEN_RAMPS]);
 
 /** Index of a ramp shade in every palette (the builders add ramps in the same order). */
 export const P = buildPalette('noon');
 
 // The sequel's sprites use its own palette's numbers: they must be the same here.
 for (const name of SEQUEL.b.ramps.keys()) if (SEQUEL.r(name).join() !== P.r(name).join()) throw new Error(`teddy3 palette: ramp ${name} moved`);
+
+import { buildRampPalette, type PalWithBuilder as Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+import { lightColor, TIME_OF_DAY_SKY as SKY, type TimeOfDay } from '@lewismoten/gamemaker-sandbox-tools/colors';
+import { SCREEN_RAMPS } from '../../../teddy/src/art/screenRamps';

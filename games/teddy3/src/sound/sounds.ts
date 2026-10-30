@@ -5,7 +5,7 @@
 import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
-import { lowpass } from '../../../kit/synthParts';
+import { lowpass } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 import { noiseBurst, woof, yelp, pop, boing, whoosh, crunch, chomp, giggle, honk, snore, scratch, slap, chime } from '../../../kit/teddySounds';
 
 /** Zoomies: a whoosh that runs away up the scale and comes back down. */
