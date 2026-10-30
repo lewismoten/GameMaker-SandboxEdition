@@ -2,7 +2,7 @@
 // pages), Gwinn's rides between her MEANWHILE... levels (the hay wagon, the Fair's ride truck),
 // the gust that takes her dog show entry card, and at the end, fireworks and the Fair parade with THE CHEZ in front.
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, centered, clubArt, micro, outlined, scaleBlit } from '../art/draw';
 import { GWINN } from '../sprites/gwinn';

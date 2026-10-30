@@ -6,8 +6,9 @@ import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, centered, gradient, clubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
-import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
-import { saveSlots } from '../../../kit/saveSlots';
+import { pastePhoto, polaroid, resample, tone } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
+import { saveSlots } from '@lewismoten/gamemaker-sandbox-tools/kit/saveSlots';
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
@@ -36,7 +37,7 @@ import {
 import { CREDITS, EGG, HELP, LOST, README, STORY, WON, CARDS } from './text';
 import { drawEgg } from '../sprites/egg';
 import { gwinnSits } from '../sprites/klubfolk';
-import { dosText } from '../../../kit/disk';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 
 export const SP: Pal = buildScreenPalette();
