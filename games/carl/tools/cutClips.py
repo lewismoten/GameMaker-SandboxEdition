@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Cuts the digitized sound clips for "A Fly Named Carl" out of the recording, which is NOT
-# committed (.for-lewis/songs/fly/A fly named Carl.mp3), into games/carl/src/sound/clips/<name>.pcm
+# committed (.for-lewis/songs/fly/A fly named Carl.mp3), into games/carl/src/sound/clips/<name>.wav
 # (games/kit/song/cutclips.py does the cutting; see it for the filters), which
 # games/carl/src/sound/clips.ts wraps as Creative Voice Files.
 #
