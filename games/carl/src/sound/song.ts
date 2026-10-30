@@ -29,8 +29,8 @@
 //   last chorus "...losing the war"        113.3 - 136.1
 //   outro "Carl's got the aux cord now"    142.9 - 144.9
 import { sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { CELESTA, Writer, type Groove } from '../../../kit/song';
-import { DRUM, Fx, boomPatch, detuned, sweep } from '../../../kit/songFx';
+import { CELESTA, Writer, type Groove } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { DRUM, Fx, boomPatch, detuned, sweep } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 
 const BPM = 133;
 

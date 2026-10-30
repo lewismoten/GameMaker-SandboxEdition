@@ -5,7 +5,7 @@
 import { mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { blockSheet, writePng } from '../../kit/png';
+import { blockSheet, writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { renderRegion } from '../../snowbound/src/art/render';
 import { buildPalette } from '../src/art/pal';
 import { buildHouse } from '../src/blocks/house';

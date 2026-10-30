@@ -13,7 +13,7 @@ import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { clipVoc, CLIPS } from './clips';
-import { lowNoise, gate, env } from '../../../kit/synthParts';
+import { lowNoise, gate, env } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 
 /** A fly's buzz: a buzzy sawtooth at `pitch(t)` with the wingbeat's flutter on it. */
 function buzzer(pitch: (t: number) => number, seed = 1): Synth {

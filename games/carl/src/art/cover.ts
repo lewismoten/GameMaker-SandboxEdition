@@ -5,7 +5,7 @@
 // 256-color palette for the FLI (cartoons.ts). `t` (0..1) animates it: the towel swings in from
 // the right and misses, Carl's wings blur, the lamp warms up.
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { mixc, clamp, smooth, noise2 } from '../../../kit/coverPaint';
+import { mixc, clamp, smooth, noise2 } from '@lewismoten/gamemaker-sandbox-tools/kit/coverPaint';
 
 const COVER_W = 320;
 const COVER_H = 200;
