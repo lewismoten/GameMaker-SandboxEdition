@@ -51,7 +51,7 @@ npx vite-node ../games/kit/tinHearts.ts check      # every heart is found when t
 npx vite-node ../games/kit/playtime.ts             # the only writer of box play hours
 npx vite-node ../games/kit/versionCheck.ts         # a game changed since the last push to master has a higher version
 npm run check:games                                # all of the game checks above, every game, a table
-npm run check:games -- --game <id> --quick         # one game, without the rebuild compare
+npm run check:games -- --game <id> --quick         # one game, without the reproducibility rebuild
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox
 npm run voice                                      # tour voice clips for new or changed lines (local Pocket TTS; -- --only <id> retakes one)
 npm run voice:all                                  # every tour voice clip again
@@ -60,11 +60,16 @@ npm run voice:setup                                # once: Kokoro (Gwinn's voice
 ```
 
 After changing a game, rebuild it and run its checks (`npm run check:games -- --game <id>` runs
-them all and also confirms the committed `disk/` matches a fresh build). Commit the source and the rebuilt
-`disk/` together. A refactor must not change any `disk/`, `walkthrough.json` or demo bytes.
-If a game's `disk/` has changed since the last push to master, bump its `"version"` in `about.json` once
-(the game's text reads it from there): major (1.1 → 2.0) for new, removed or reordered levels or a big
-gameplay change, minor (1.0 → 1.1) otherwise. `versionCheck.ts` (part of `check:games`) reports a game that needs one.
+all checks and verifies two independent builds match byte for byte). `disk/`, `walkPaths.json`
+and `games/.build-cache.json` are ignored build output: never commit them. Root `npm ci`
+generates them; development, build and test commands refresh them when inputs change.
+Use `npm run build:games -- --force` from the root for a clean rebuild of all games.
+Recorded walkthroughs and demos remain source inputs and regression fixtures. A refactor
+must not change the generated disk bytes, walkthroughs or demos.
+If a game's built content changes since the last push to master, bump its `"version"` in
+`about.json` once: major (1.1 → 2.0) for new, removed or reordered levels or a big gameplay
+change, minor (1.0 → 1.1) otherwise. `versionCheck.ts` compares built content with that Git
+revision, rebuilding historical source when that revision has no tracked disk output.
 
 ## The original repository's files
 

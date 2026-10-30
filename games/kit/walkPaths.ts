@@ -22,6 +22,8 @@ export const OFF_PATH_COST = 0.5;
 
 /** Writes games/<id>/walkPaths.json (block sets in name order, each list sorted). */
 export function writeWalkPaths(id: string, paths: WalkPaths): void {
+  // Temporary disk audits must not overwrite the working build’s metadata.
+  if (process.env.GAME_DISK_OUT) return;
   const out: WalkPaths = {};
   for (const k of Object.keys(paths).sort()) if (paths[k].length) out[k.toLowerCase()] = [...new Set(paths[k])].sort((a, b) => a - b);
   writeFileSync(pathOf(id), `${JSON.stringify(out)}\n`);

@@ -1,6 +1,6 @@
 // Checks every game for regressions, one game at a time (each step its own niced process), and
 // prints a table; exits 1 when anything fails. `npm run check:games` in web/ runs it.
-//   build   rebuilds into a temp folder: the result must match the committed disk/ byte for byte,
+//   build   rebuilds twice into temp folders: the results must match byte for byte,
 //           and the build must not change the game's other committed files
 //   check   tools/check.ts (the bot wins without losing a life)
 //   walk    kit/walkCheck.ts (walkthrough.json replays to the ending, frames and chapters as
@@ -23,7 +23,7 @@
 //     --verbose   print every step's output, not only a failing step's last lines
 // Games are those with an about.json; a game marked secret is left out unless named with --game.
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, cpSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -87,6 +87,7 @@ const boundsOf = new Map<string, Status>();
 function rebuild(id: string): Status {
   const out = mkdtempSync(join(tmpdir(), 'gm-check-'));
   const report = `${out}-bounds.json`;
+  const again = mkdtempSync(join(tmpdir(), 'gm-repeat-'));
   try {
     const before = dirtyFiles(id);
     if (step('build', `../games/${id}/build.ts`, [], { GAME_DISK_OUT: out, TEXT_BOUNDS: report }) === 'FAIL') return 'FAIL';
@@ -96,17 +97,25 @@ function rebuild(id: string): Status {
       for (const o of cut.slice(0, 20)) console.log(`    ${describe(o)}`);
     }
     boundsOf.set(id, cut.length ? 'FAIL' : 'ok');
-    const problems = diskDiff(out, join(gamesDir, id, 'disk')).map((n) => `disk/${n} differs from a fresh build`);
+    if (step('repeat build', `../games/${id}/build.ts`, [], { GAME_DISK_OUT: again }) === 'FAIL') return 'FAIL';
+    const problems = diskDiff(out, again).map((n) => `disk/${n} differs between identical builds`);
     const after = dirtyFiles(id);
     if (after !== before) problems.push(`the build changed committed files:\n${after}`);
     if (problems.length) {
-      console.log(`  build: stale (rebuild with npx vite-node ../games/${id}/build.ts and commit disk/):`);
+      console.log('  build: not reproducible:');
       for (const p of problems.slice(0, 20)) console.log(`    ${p}`);
       if (problems.length > 20) console.log(`    and ${problems.length - 20} more`);
+    }
+    if (!problems.length) {
+      const disk = join(gamesDir, id, 'disk');
+      rmSync(disk, { recursive: true, force: true });
+      mkdirSync(disk, { recursive: true });
+      cpSync(out, disk, { recursive: true });
     }
     return problems.length ? 'FAIL' : 'ok';
   } finally {
     rmSync(out, { recursive: true, force: true });
+    rmSync(again, { recursive: true, force: true });
     rmSync(report, { force: true });
   }
 }
