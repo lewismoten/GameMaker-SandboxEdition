@@ -28,23 +28,8 @@ interface PickOptions {
   actions?: { label: string; run: () => Promise<string | undefined> }[];
 }
 
-/** Kinds whose library files can be fetched alone: their thumbnails need no neighbors. */
+/** Independent formats whose thumbnails need no neighboring files. */
 const ALONE = new Set<FileKind>(['voc', 'cmf', 'snd', 'fli', 'gif', 'pal']);
-const fetched = new Map<string, Promise<Uint8Array>>();
-
-/** One library file, fetched by itself (cheaper than its whole game). */
-function libraryFileAlone(item: LibraryItem): Promise<Uint8Array> {
-  const key = `${item.game.id}/${item.name}`;
-  let p = fetched.get(key);
-  if (!p) {
-    p = fetch(`./${item.game.path}${item.name}`)
-      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.statusText))))
-      .then((b) => new Uint8Array(b))
-      .catch(() => libraryFile(item));
-    fetched.set(key, p);
-  }
-  return p;
-}
 
 /** The sound group of a .VOC (remembered: library sounds are measured once). */
 const groups = new Map<string, SoundGroup | undefined>();
@@ -184,7 +169,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           const item = (e.target as HTMLElement & { item?: LibraryItem }).item!;
           const k = kindOf(item.name);
           const src = ALONE.has(k) ? Promise.resolve({ files: new GameFiles() }) : libraryThumbSource(item);
-          void Promise.all([ALONE.has(k) ? libraryFileAlone(item) : libraryFile(item), src])
+          void Promise.all([libraryFile(item), src])
             .then(([bytes, s]) => e.target.querySelector('.thumb')?.replaceWith(fileThumb(item.name, bytes, s)))
             .catch(() => undefined);
         }
@@ -199,7 +184,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           item?: LibraryItem;
         };
         el.item = item;
-        el.append(previewButton(item.name, () => libraryFileAlone(item), thumbCanvas(el)) ?? '');
+        el.append(previewButton(item.name, () => libraryFile(item), thumbCanvas(el)) ?? '');
         return { el, item, group: undefined as SoundGroup | undefined };
       });
       const empty = h('p', { class: 'hint' }, 'Nothing of this kind in the library.');
@@ -211,7 +196,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         await Promise.all(
           cells.map(async (c) => {
             const key = `${c.item.game.id}/${c.item.name}`;
-            const bytes = groups.has(key) ? undefined : await libraryFileAlone(c.item).catch(() => undefined);
+            const bytes = groups.has(key) ? undefined : await libraryFile(c.item).catch(() => undefined);
             if (bytes) await new Promise((r) => setTimeout(r, 0)); // let the dialog breathe
             c.group = vocGroup(key, bytes);
             progress.textContent = `Listening to ${cells.length} sounds to sort them… ${++done}`;

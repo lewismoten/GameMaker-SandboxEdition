@@ -221,3 +221,7 @@ New projects (`Project.create`) include `default.pal`, an independent byte-for-b
 copy of the RSD CD Library default palette supplied by the tools package. This
 also makes an Empty game useful immediately without a network fetch. Importing
 an existing game preserves its files and palettes. Source/license: tools `NOTICE.md`.
+
+The visual asset picker (`widgets/filePicker.ts`) reads library assets through
+`core/library.ts` and the cached game ZIP loader. Previewing visible files does not
+try obsolete loose-file URLs before downloading their game archive.
