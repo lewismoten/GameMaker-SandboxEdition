@@ -107,7 +107,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
   function fileCard(file: string, k: FileKind): HTMLElement {
     const open = h(
       'button',
-      { type: 'button', class: 'asset-open', 'aria-label': `Edit ${file.toUpperCase()}`, onclick: () => host.open(file) },
+      { type: 'button', class: 'asset-open', title: `Edit ${file.toUpperCase()}`, onclick: () => host.open(file) },
       preview(file, k),
       h('strong', null, file.toUpperCase()),
       h('small', null, `${(project.files.get(file)?.byteLength ?? 0).toLocaleString()} bytes`),
