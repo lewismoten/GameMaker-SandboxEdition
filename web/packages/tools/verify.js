@@ -23,6 +23,7 @@ try {
     resolve(consumer, 'smoke.mjs'),
     `
 import assert from 'node:assert/strict';
+import {writeFileSync} from 'node:fs';
 import { emptyBlock, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-tools/formats/blocks';
 import { emptyFrame, newCharacter } from '@lewismoten/gamemaker-sandbox-tools/formats/character';
 import { newMap } from '@lewismoten/gamemaker-sandbox-tools/formats/map';
@@ -33,6 +34,12 @@ import { encodePng, crc32 } from '@lewismoten/gamemaker-sandbox-tools/images';
 import { Sim, GameSim } from '@lewismoten/gamemaker-sandbox-tools/simulation';
 import { audioFileToVoc, decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
 assert.equal(typeof audioFileToVoc, 'function');
+const wav=Buffer.alloc(48); wav.write('RIFF');wav.writeUInt32LE(40,4);wav.write('WAVEfmt ',8);
+wav.writeUInt32LE(16,16);wav.writeUInt16LE(1,20);wav.writeUInt16LE(1,22);
+wav.writeUInt32LE(8000,24);wav.writeUInt32LE(8000,28);wav.writeUInt16LE(1,32);wav.writeUInt16LE(8,34);
+wav.write('data',36);wav.writeUInt32LE(3,40);wav.set([0,128,255],44);
+writeFileSync('voice.wav',wav);
+assert.deepEqual(audioFileToVoc('voice.wav',{sampleRate:8000,ffmpegPath:'/not-installed'}).subarray(32,-1),Uint8Array.of(0,128,255));
 assert.throws(() => decodeAudioFile('unused.flac', {sampleRate:0}), RangeError);
 const picture = new Pixels(20,20,1); text(picture,0,0,'HI',2);
 assert.ok(picture.px.includes(2)); assert.equal(new PaletteBuilder().color(255,0,0),0);

@@ -27,3 +27,8 @@ LGPL-2.1-or-later, or GPL-2.0-or-later when its GPL components are enabled; see 
 maintained by Xiph.Org; its [FAQ](https://xiph.org/flac/faq.html) describes sample-exact
 compression. The process wrapper and VOC conversion APIs were implemented with OpenAI
 Codex under Lewis Moten's direction, using this project's existing native VOC encoder.
+
+The native mono 8-bit PCM WAV reader uses RIFF/WAVE chunk layout and PCM format fields
+from [Microsoft's WAVEFORMATEX documentation](https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/ns-mmeapi-waveformatex).
+No Microsoft implementation code is included. The reader was implemented with OpenAI
+Codex under Lewis Moten's direction and is distributed under this project's MIT License.

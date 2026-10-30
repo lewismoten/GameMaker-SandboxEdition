@@ -78,15 +78,17 @@ Tarballs are local build artifacts and must not be committed to a consuming proj
 
 ## Source audio files to VOC (Node.js)
 
-Install [FFmpeg](https://ffmpeg.org/download.html) separately and make `ffmpeg` available on
-PATH, or pass its executable path as `ffmpegPath`. This optional build-time integration
-ships no decoder binary and adds nothing to browser playback.
+Mono unsigned 8-bit PCM WAV files at the requested rate decode directly in Node.js, with
+no additional software. For Ogg, FLAC, other WAV variants or resampling, install
+[FFmpeg](https://ffmpeg.org/download.html) separately and make `ffmpeg` available on PATH,
+or pass its executable path as `ffmpegPath`. No decoder binary is bundled, and browser
+playback gains no dependency.
 
 ```ts
 import { audioFileToVoc, decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
 import { writeFileSync } from 'node:fs';
 
-writeFileSync('VOICE.VOC', audioFileToVoc(new URL('./voice.flac', import.meta.url), {
+writeFileSync('VOICE.VOC', audioFileToVoc(new URL('./voice.wav', import.meta.url), {
   sampleRate: 11025, maxBytes: 39999,
 }));
 const samples = decodeAudioFile('voice.ogg', { sampleRate: 8000 });
@@ -98,8 +100,9 @@ mono at the requested sample rate (11025 Hz by default). VOC conversion defaults
 returns samples for mixing or other authoring operations, bounded by `maxSamples`
 (default 16 MiB). Both functions accept `timeoutMs` (default 30000).
 
-Use lossless FLAC to preserve existing unsigned 8-bit PCM bytes at the same sample rate.
+Use PCM WAV sources for inline GitHub audio previews and sample-exact native game builds.
+Lossless FLAC input is also supported at its original sample rate.
 The converter disables dithering and uses the inverse of the native VOC encoder's byte
 mapping. Lossy sources such as Ogg Vorbis are supported for new audio, but cannot recreate
-a previous recording's exact samples. Source `.flac` names are authoring assets; only
+a previous recording's exact samples. Source `.wav`/`.ogg`/`.flac` files are authoring assets; only
 8.3-named `.VOC` files belong on the generated DOS disk.
