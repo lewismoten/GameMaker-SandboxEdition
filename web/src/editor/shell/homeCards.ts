@@ -337,7 +337,7 @@ interface TileOptions {
   /** Shows the game in the panel at the top. */
   onSelect(game: HomeGame): void;
   /** A game of yours: its ⋯ button (rename, duplicate, download, delete…). */
-  onMore?(game: HomeGame): void;
+  onMore?(game: HomeGame, anchor: HTMLElement): void;
 }
 
 /** A game in the grid: its picture with Keys and Manual over it, and its title. */
@@ -360,7 +360,15 @@ export function gameTile(game: HomeGame, o: TileOptions): HTMLElement {
     tile.append(
       h(
         'button',
-        { class: 'tile-more', type: 'button', title: tip, 'aria-label': `More: ${tip.toLowerCase()} ${game.title}`, onclick: () => o.onMore!(game) },
+        {
+          class: 'tile-more',
+          type: 'button',
+          title: tip,
+          'aria-label': `More: ${tip.toLowerCase()} ${game.title}`,
+          'aria-haspopup': 'dialog',
+          'aria-expanded': 'false',
+          onclick: (event: Event) => o.onMore!(game, event.currentTarget as HTMLElement),
+        },
         '⋯',
       ),
     );

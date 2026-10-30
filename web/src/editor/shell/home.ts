@@ -304,7 +304,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     communityBtn.hidden = c !== 'community';
     const cards = libraryCards(lib, c, ratingFilter, {
       choose,
-      more: (game) => (choose(game), top.openMore()),
+      more: (game, anchor) => void import('./homeTileMenu').then((m) => m.homeTileMenu(anchor, game, refreshProjects)),
       browse: (to) => void select(to, true).then(() => document.getElementById(`lib-tab-${to}`)?.focus()),
       newGame: () => void homeImport().then((m) => m.newGame(nav)),
     });

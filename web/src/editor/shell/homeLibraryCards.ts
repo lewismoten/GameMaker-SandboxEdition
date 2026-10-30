@@ -14,8 +14,8 @@ import { isByMaker, isOwn, type HomeLibrary } from './homeLibrary';
 interface CardActions {
   /** Shows a game at the top. */
   choose: (game: HomeGame) => void;
-  /** Shows a game at the top with its ⋯ More open. */
-  more: (game: HomeGame) => void;
+  /** Opens this thumbnail's actions beside its own button. */
+  more: (game: HomeGame, anchor: HTMLElement) => void;
   /** Goes to another collection (the empty My games' Browse buttons). */
   browse(c: Category): void;
   newGame(): void;
