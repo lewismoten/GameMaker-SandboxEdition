@@ -107,6 +107,37 @@ describe('editing links from a map', () => {
     expect(g.scenes[3].links[1]).toEqual({ toScene: 3, from: { x: 40, y: 12 }, to: { x: 1, y: 2 } });
   });
 
+  it('does not let a start link point to itself or the ending', () => {
+    const g = game();
+    expect(canLink(g, 0, 0)).toBe(false);
+    expect(canLink(g, 0, 1)).toBe(false);
+    expect(retarget(g, 0, 0, 1)).toBe(false);
+    expect(g.scenes[0].links[0].toScene).toBe(2);
+  });
+
+  it('rejects duplicate exits and arrivals on exits without changing the link', () => {
+    const g = game();
+    const before = structuredClone(g);
+    expect(setFrom(g, 2, 0, { x: 90, y: 90 })).toBe(false);
+    expect(setFrom(g, 2, 0, { x: 5, y: 6 })).toBe(false);
+    expect(setTo(g, 0, 0, { x: 40, y: 12 })).toBe(false);
+    expect(addLink(g, 2, 1, { x: 40, y: 12 }, { x: 0, y: 0 })).toBe(-1);
+    expect(addLink(g, 3, 2, { x: 6, y: 6 }, { x: 90, y: 90 })).toBe(-1);
+    expect(g).toEqual(before);
+  });
+
+  it('rejects self-loop overlaps and restores a failed source move', () => {
+    const g = game();
+    const before = structuredClone(g);
+    expect(addLink(g, 2, 2, { x: 30, y: 30 }, { x: 30, y: 30 })).toBe(-1);
+    g.scenes[2].links[0].from = { x: 50, y: 50 };
+    const original = structuredClone(g);
+    expect(moveSource(g, 2, 0, 3)).toBe(-1);
+    expect(g).toEqual(original);
+    g.scenes[2].links[0].from = before.scenes[2].links[0].from;
+    expect(g).toEqual(before);
+  });
+
   it('a new exit leads to the next level, else to Game won', () => {
     const g = game();
     expect(nextScene(g, 2)).toBe(3);
