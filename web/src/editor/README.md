@@ -287,3 +287,7 @@ are real previews too; a blank idle can fall back to a movement frame.
   as a named block group, preserving its tile layout in the background block set's
   companion metadata. Groups fit up to 8×8 blocks; larger selections can remain
   stamps. Creating a group leaves the native map and block files unchanged.
+
+- **Small map pictures.** Download map picture includes 1, 5 and 10 pixels per
+  block, alongside the original and enlarged sizes. These sizes apply to the
+  downloaded PNG; editing and native game files keep their original dimensions.

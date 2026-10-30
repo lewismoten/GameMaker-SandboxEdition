@@ -375,6 +375,9 @@ registerEditor(['map'], (host, project, file) => {
       const scaleSel = selectField(
         'Picture size',
         [
+          [0.05, '0.05× (a block is 1 pixel)'],
+          [0.25, '0.25× (a block is 5 pixels)'],
+          [0.5, '0.5× (a block is 10 pixels)'],
           [1, '1× (a block is 20 pixels)'],
           [2, '2×'],
           [3, '3×'],
