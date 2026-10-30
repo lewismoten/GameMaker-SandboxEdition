@@ -12,7 +12,7 @@
 // - DOS: the original Game-Maker files with the stand-alone player (.zip), exportDos.ts;
 // - a game of yours also: its files as they are here (.zip), to keep safe or import again.
 //
-// Everything is built here in the browser when the visitor presses Download. Which games
+// Catalog DOS downloads use the built ZIP; other downloads are built in the browser when the visitor presses Download. Which games
 // have the button is the caller's choice (export/downloadable.ts for the catalog's).
 import './download.css';
 import { download, h, modal, toast } from '../core/ui';
@@ -257,6 +257,18 @@ const NAMES: Record<DownloadKind, string> = {
 
 async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Promise<void> {
   try {
+    if (kind === 'dos' && !game.project && game.entry?.pack?.endsWith('.zip')) {
+      const response = await fetch(`./${game.entry.path}${game.entry.pack}`);
+      if (!response.ok) throw new Error('Could not download the game archive. Please try again.');
+      const stem = game.gam.replace(/\.gam$/i, '');
+      save(
+        `${stem}-dos.zip`,
+        new Uint8Array(await response.arrayBuffer()),
+        'application/zip',
+        `In DOSBox, run ${stem.toUpperCase()}.EXE from the unzipped folder.`,
+      );
+      return downloaded('dos');
+    }
     if (kind === 'player' && alt) {
       const { fetchWebPlayer } = await import('../../export/exportWebPlayer');
       save('web-player.html', await fetchWebPlayer(), 'text/html', 'Put it beside Game-Maker game folders on a web host.');

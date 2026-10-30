@@ -209,3 +209,5 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   each player screen drawn on color 0 (`colorZeroScreens.ts`: the high-score name prompt and
   table, F1, F2, F5, F10), drawn with the engine's own functions in the palette and the
   project's DOS player patches, with the palette entry each word color matched.
+
+Catalog DOS downloads save the same built game ZIP used for browser loading. Downloads of edited projects are still rebuilt from their current files.
