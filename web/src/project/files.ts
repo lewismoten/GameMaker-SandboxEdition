@@ -3,6 +3,7 @@ import { GameFiles, cdName, IGNORED_FILE } from '@lewismoten/gamemaker-sandbox-e
 export { GameFiles, cdName, normalize, IGNORED_FILE, type FileStream } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 
 import type { OriginalExtras } from '../../scripts/cdGames';
+import type { LibraryFileFact } from '../../scripts/libraryFacts';
 import { withSecretGames } from './secretGames';
 import { PackReader } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import type { Issue } from './health';
@@ -35,6 +36,8 @@ export interface CatalogEntry {
   files: string[];
   /** Size of each file in `files`, in bytes (missing from older catalogs). */
   sizes?: number[];
+  /** Palette identities and precomputed sound groups for lazy asset pickers. */
+  fileFacts?: Record<string, LibraryFileFact>;
   /** Original games made for this project: label, box art, manual, sound card. */
   original?: OriginalExtras;
   /** Original games: a series of their own ("bizarre": The Bard of Bizarre's, see bizarre.ts). */

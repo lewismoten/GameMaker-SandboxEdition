@@ -22,6 +22,7 @@ import { createReadStream, existsSync, readdirSync, readFileSync, statSync } fro
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { gameArchive, gameZipName } from './gameArchive';
+import { libraryFacts, type LibraryFileFact } from './libraryFacts';
 import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
 import { gameShots } from './gameShots';
@@ -40,6 +41,8 @@ export interface CdCatalogEntry {
   files: string[];
   /** Size of each file in `files`, in bytes. */
   sizes: number[];
+  /** Palette identities and sound groups, for library browsing without fetching every game. */
+  fileFacts?: Record<string, LibraryFileFact>;
   /** Shareware: the author's notice (readme / order form), as text. */
   notice?: string;
   /** Shareware: CRC-32 of the .gam file, to recognize the game when imported. */
@@ -269,6 +272,7 @@ function scan(cdRoot: string): Scan {
         gam,
         files: names,
         sizes: names.map((n) => statSync(disk.get(n)!).size),
+        fileFacts: libraryFacts(disk),
         bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
         blurb: blurbFor(names, disk),
         pack: gameZipName(id),
@@ -362,6 +366,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       gam,
       files: names,
       sizes: names.map((n) => statSync(disk.get(n)!).size),
+      fileFacts: libraryFacts(disk),
       bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
       blurb: about.blurb ?? blurbFor(names, disk),
       exe: about.exe ?? `${id.slice(0, 8).toUpperCase()}.EXE`,
