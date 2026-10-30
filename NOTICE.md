@@ -78,6 +78,11 @@ game folder opens in the browser unchanged.
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
+- **Editor extensions and character auditions** (`web/src/editor/`): native frame
+  painting, live scenery previews, resource selection improvements, audition code
+  and its short playful UI lines were implemented with **OpenAI Codex (GPT-6)**,
+  directed by Lewis Moten. Auditions read artwork from the selected source game;
+  that artwork remains the work of its credited authors.
 - **Website game ZIP distributions** (`web/scripts/gameArchive.ts`, `web/src/project/hostedZip.ts`): the reproducible DOS distribution builder, shared browser ZIP loading, permanent links and Vite serving were implemented and verified with **OpenAI Codex**, directed by Lewis Moten. Original game data stays intact; DOS runtime and game notices travel in each archive.
 - **The npm archive utilities** (`web/packages/archives/`): the fork's ZIP codec and portable game import discovery, consolidated and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten's direction. The underlying code was written with **Anthropic Claude Opus 5.5**. Compression uses platform streams; no third-party archive library is included. The package carries its own license and notices.
 - **The npm development toolkit** (`web/packages/tools/`): extracted, packaged and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten’s direction, using this fork’s format codecs, drawing and audio builders, and reference simulation. Game-specific assets stay in the consuming projects. The self-contained npm workspace migration was implemented and verified with OpenAI Codex (GPT-6.1).

@@ -5,11 +5,12 @@
 import { kindOf, type FileKind } from '../core/project';
 import { paintIndexed } from '../core/draw';
 import { drawSpeakerPitch, drawWave } from './waveform';
-import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { BACKBL, BLEN, MONBL, TRANSPARENT, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { parsePalette, defaultPalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { characterPicture } from './characterPicture';
+import { characterBlockPicture } from './characterSets';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
@@ -118,8 +119,14 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         return blocksMosaic(parseBlocks(bytes, BACKBL), pal, 16, 4);
       case 'mbl':
         return blocksMosaic(parseBlocks(bytes, MONBL), pal, 9, 3, true);
-      case 'cbl':
-        return blocksMosaic(parseBlocks(bytes, CHARBL), pal, 9, 3, true);
+      case 'cbl': {
+        const picture = characterBlockPicture(src.files, name, bytes);
+        const [c] = canvas();
+        paintIndexed(c, picture.pixels, picture.width, picture.height, pal, true);
+        c.setAttribute('role', 'img');
+        c.setAttribute('aria-label', `Representative character pose from ${name.toUpperCase()}`);
+        return c;
+      }
       case 'map': {
         const m = parseMap(bytes);
         // the block set of the scene that uses this map, else the first one

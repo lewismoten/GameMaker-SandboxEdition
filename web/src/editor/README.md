@@ -463,3 +463,4 @@ native game files are loaded only when the player chooses an archive action.
 - **CBL poses and companions.** `widgets/characterSets.ts` resolves each block
   set’s scene-linked characters and MON/MBL resources. Its thumbnail shows one
   representative native pose; unbound sets without a CHR show one visible block.
+  `widgets/thumbs.ts` uses these poses for CBL cards instead of a picture grid.
