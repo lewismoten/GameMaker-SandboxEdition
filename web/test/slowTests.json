@@ -21,7 +21,8 @@
     "test/music.test.ts",
     "test/newGameSave.test.ts",
     "test/textfitMore.test.ts",
-    "test/versionDisks.integration.test.ts"
+    "test/versionDisks.integration.test.ts",
+    "test/voc.test.ts"
   ],
   "tests": {
     "scripts/gameArchive.test.ts": [
@@ -36,12 +37,12 @@
     "scripts/mcp/server.test.ts": [
       "the MCP server builds the DOS download into a writable folder",
       "the MCP server edits a copy of a CD game and saves only to its working folder",
-      "the MCP server lists the CD’s and this project’s games, never a secret one",
+      "the MCP server lists the CD\u2019s and this project\u2019s games, never a secret one",
       "the MCP server makes a tiny game from nothing, plays it with the bot and opens it again",
       "the MCP server runs over stdio as npm run mcp starts it"
     ],
     "src/assistant/chat/agent.test.ts": [
-      "the chat loop pictures go to a model that sees, and are described to one that doesn’t"
+      "the chat loop pictures go to a model that sees, and are described to one that doesn\u2019t"
     ],
     "src/assistant/chat/streaming.test.ts": [
       "tool calls as they stream in run as each completes, in order, while the reply streams on; the words leave the calls out"
@@ -55,11 +56,11 @@
     ],
     "src/backup/backup.test.ts": [
       "backup file round-trips everything but imported games into an empty browser, bytes exact",
-      "damaged files says why a file can’t be used",
-      "merge rules notes keep the newer edit; settings keep this browser’s and fill the rest"
+      "damaged files says why a file can\u2019t be used",
+      "merge rules notes keep the newer edit; settings keep this browser\u2019s and fill the rest"
     ],
     "src/cast/castData.test.ts": [
-      "the cast page lists the hidden things where the games’ about.json put them (else rerun scripts/castHidden.ts), never in a secret game"
+      "the cast page lists the hidden things where the games\u2019 about.json put them (else rerun scripts/castHidden.ts), never in a secret game"
     ],
     "src/desk/mug/gameBadge.test.ts": [
       "composeBadge Teddy's title ribbon has no sky or cloud between the letters"
@@ -73,16 +74,16 @@
       "applyPlayerPatches refuses any other file, and every patch that breaks the rules"
     ],
     "src/dosPlayer/fileExtensions.test.ts": [
-      "the player’s extensions patches every copy of each kind, and only those bytes"
+      "the player\u2019s extensions patches every copy of each kind, and only those bytes"
     ],
     "src/dosPlayer/gamePlayers.test.ts": [
       "games/<id>/player.json each keeps the rules"
     ],
     "src/editor/check/checks.test.ts": [
-      "the level check’s file checks reports a whole game, play included"
+      "the level check\u2019s file checks reports a whole game, play included"
     ],
     "src/editor/check/checks/wayBack.test.ts": [
-      "one-way spots finds the drop off a ledge the hero can’t climb back",
+      "one-way spots finds the drop off a ledge the hero can\u2019t climb back",
       "slower hands gets through the test level with slower hands, so says nothing"
     ],
     "src/editor/check/explore.test.ts": [
@@ -90,13 +91,13 @@
       "the level check explorer plays a whole game from the title link to the won scene"
     ],
     "src/editor/check/walk/keptWalk.test.ts": [
-      "a look-only game’s walkthrough is kept in this browser apart from the game, and forgotten when the game changes",
+      "a look-only game\u2019s walkthrough is kept in this browser apart from the game, and forgotten when the game changes",
       "a walkthrough the bot makes only partway keeps the scenes it got through, says where it stopped, and plays to there",
       "a walkthrough the bot makes only partway stopped, still keeps the scenes before"
     ],
     "src/editor/check/walk/mine.test.ts": [
       "my play in the walkthrough lets the bot play a scene my play no longer gets through",
-      "my play in the walkthrough plays my keys in place of the bot’s, and the engine agrees"
+      "my play in the walkthrough plays my keys in place of the bot\u2019s, and the engine agrees"
     ],
     "src/editor/check/walk/pathRoute.test.ts": [
       "the bot keeps to the road cuts across when the road is a long way round",
@@ -104,7 +105,7 @@
       "the bot keeps to the road walks the bend in the road instead of cutting across the field"
     ],
     "src/editor/editors/animation/scene/scene.test.ts": [
-      "render writes a 320x200 .FLI whose frames are the scene, sprites in the picture’s colors"
+      "render writes a 320x200 .FLI whose frames are the scene, sprites in the picture\u2019s colors"
     ],
     "src/editor/editors/palette/colorVision.test.ts": [
       "fixes offers no fix that would make another level worse",
@@ -141,7 +142,7 @@
       "the card in the game writes a backdrop, a list and the page into the instructions slot, and reads well"
     ],
     "src/editor/tools/opening/opening.test.ts": [
-      "the classic RSD intro is the CD’s RSDTBOX.FLI, written into the game byte for byte",
+      "the classic RSD intro is the CD\u2019s RSDTBOX.FLI, written into the game byte for byte",
       "the classic RSD intro shows the same pictures as TEXTBOX3.FLI (they differ only in a color no pixel of theirs uses)",
       "the opening in a new game animation with a name: madewith.fli 0, presents.fli 0 in a new TITLE.LST",
       "the opening in a new game animation: madewith.fli 0 in a new TITLE.LST",
@@ -153,18 +154,18 @@
       "the opening in a new game wipe with a name: madewith.fli 0, presents.fli 0 in a new TITLE.LST"
     ],
     "src/export/downloadable.test.ts": [
-      "which catalog games may be downloaded leaves out every other author’s game on the CD, as the release scripts’ --all does"
+      "which catalog games may be downloaded leaves out every other author\u2019s game on the CD, as the release scripts\u2019 --all does"
     ],
     "src/export/exportDos.test.ts": [
       "exportDos and the DOS player builds reproducibly from supplied runtime bytes without network requests",
       "exportDos and the DOS player patches it and lists the changes, keeping the notices",
-      "exportDos and the DOS player ships the CD’s player as it came when nothing is customized",
+      "exportDos and the DOS player ships the CD\u2019s player as it came when nothing is customized",
       "exportDos with renamed extensions changes nothing when every kind keeps its own extension",
       "exportDos with renamed extensions comes back as the same files and choices through the import",
       "exportDos with renamed extensions renames the files, the names inside them and the player, as Acord did"
     ],
     "src/export/exportWebPlayer.test.ts": [
-      "the web player download zips the page as index.html beside the game’s folder, without its saves or editor notes"
+      "the web player download zips the page as index.html beside the game\u2019s folder, without its saves or editor notes"
     ],
     "src/export/linuxApp.test.ts": [
       "linuxApp makes a .tar.gz of the game folder, programs and scripts executable",
@@ -172,7 +173,7 @@
     ],
     "src/export/macApp.test.ts": [
       "macApp makes an app codesign verifies",
-      "macApp re-seals the player for the app’s Info.plist and resources",
+      "macApp re-seals the player for the app\u2019s Info.plist and resources",
       "macApp zips the app with the program executable",
       "udif compresses a disk into chunks and ends with the koly trailer"
     ],
@@ -186,7 +187,7 @@
       "winIcon makes an .ico file with bitmaps and PNGs"
     ],
     "src/firstLoad.test.ts": [
-      "what loads up front desk/desk.ts doesn't bring in the felt eggs’ art",
+      "what loads up front desk/desk.ts doesn't bring in the felt eggs\u2019 art",
       "what loads up front desk/desk.ts doesn't bring in the magazine or the level check"
     ],
     "src/formats/fliPlaygame.test.ts": [
@@ -199,12 +200,12 @@
       "encodeFli chunk limit splits big frames into bands that each fit (runs: true), drawing the same pictures"
     ],
     "src/hostedPlayer/load.test.ts": [
-      "loadListedGame adds the list’s extra files, and says what to do when no .gam is found",
-      "loadListedGame finds the .gam by the folder’s name and every file it names, whatever their case"
+      "loadListedGame adds the list\u2019s extra files, and says what to do when no .gam is found",
+      "loadListedGame finds the .gam by the folder\u2019s name and every file it names, whatever their case"
     ],
     "src/linkIn/unpack.test.ts": [
       "unpackGame reads a .zip, a pack and a gzipped pack the same, and drops DOS programs",
-      "unpackGame reads a page made by “Export as one web page”",
+      "unpackGame reads a page made by \u201cExport as one web page\u201d",
       "unpackGame stops a zip that unpacks past the limit"
     ],
     "src/manual/epub/pack.test.ts": [
@@ -231,16 +232,16 @@
       "World Map plans keeps every path off the places in the every-scene view too",
       "World Map plans lays a game of hubs out region by region",
       "World Map plans places every place once, none over another",
-      "World Map plans runs no path under a place it doesn’t join, and crosses paths at most once"
+      "World Map plans runs no path under a place it doesn\u2019t join, and crosses paths at most once"
     ],
     "src/manual/ultimate/plan.test.ts": [
-      "The Ultimate Owner’s Guide shares no run of six words with the original manual, the reviews or the video"
+      "The Ultimate Owner\u2019s Guide shares no run of six words with the original manual, the reviews or the video"
     ],
     "src/media/demoSource.test.ts": [
-      "demo preview source waits for a streamed game’s own recording"
+      "demo preview source waits for a streamed game\u2019s own recording"
     ],
     "src/project/importPlayer.test.ts": [
-      "adoptPlayer renames Acord Games’ files back"
+      "adoptPlayer renames Acord Games\u2019 files back"
     ],
     "src/project/importScan.test.ts": [
       "scanImport finds several games in one zip, and games in a zip inside a zip",
@@ -271,7 +272,7 @@
       "tin hearts finds teddy3's heart on its disk, and the engine reports touching it"
     ],
     "src/tour/tourData.test.ts": [
-      "the tour’s data points at controls the page’s code makes"
+      "the tour\u2019s data points at controls the page\u2019s code makes"
     ],
     "src/walkthrough/shotFrames.test.ts": [
       "shot frames blaster: each frame is the screen its walkthrough's replay shows then",
@@ -299,7 +300,7 @@
       "walkthrough sound without a card writes no song into the video, and starts it again when the card goes back in"
     ],
     "test/exportDos.test.ts": [
-      "DOS export keeps a game’s own README.TXT and puts the player’s beside it",
+      "DOS export keeps a game\u2019s own README.TXT and puts the player\u2019s beside it",
       "DOS export names the stand-alone player after the game and keeps its files intact"
     ],
     "test/fliFrames.test.ts": [
@@ -330,7 +331,7 @@
       "the build's game pictures draws a game its tile and screen pictures"
     ],
     "test/gmRegistration.test.ts": [
-      "GMCRACK’s answer table lists every question, fitting 80 columns and the screen"
+      "GMCRACK\u2019s answer table lists every question, fitting 80 columns and the screen"
     ],
     "test/hexStructure.test.ts": [
       "HEXEDIT structure maps .bbl values match the parser",
@@ -366,13 +367,13 @@
       "sound groups sorts some CD sounds as a person would"
     ],
     "test/saveLevel.test.ts": [
-      "changing a saved game’s level draws the whole level, the F6 screen the same, and where the hero fits",
-      "changing a saved game’s level goat: every level loads at its start, keeping what the hero has",
-      "changing a saved game’s level sandcast: every level loads at its start, keeping what the hero has",
-      "changing a saved game’s level snowbound: every level loads at its start, keeping what the hero has",
-      "changing a saved game’s level teddy2: every level loads at its start, keeping what the hero has",
-      "changing a saved game’s level teddy: every level loads at its start, keeping what the hero has",
-      "changing a saved game’s level year2000: every level loads at its start, keeping what the hero has"
+      "changing a saved game\u2019s level draws the whole level, the F6 screen the same, and where the hero fits",
+      "changing a saved game\u2019s level goat: every level loads at its start, keeping what the hero has",
+      "changing a saved game\u2019s level sandcast: every level loads at its start, keeping what the hero has",
+      "changing a saved game\u2019s level snowbound: every level loads at its start, keeping what the hero has",
+      "changing a saved game\u2019s level teddy2: every level loads at its start, keeping what the hero has",
+      "changing a saved game\u2019s level teddy: every level loads at its start, keeping what the hero has",
+      "changing a saved game\u2019s level year2000: every level loads at its start, keeping what the hero has"
     ],
     "test/secretGames.test.ts": [
       "the build and secret games lists them only in the secret catalog"
