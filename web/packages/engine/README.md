@@ -79,6 +79,13 @@ visits.
 
 The source is MIT licensed; see `LICENSE` and `NOTICE.md` for credits.
 
+Hosts can call `machine.audio.setSoundCard(enabled)` to change the optional sound-card
+output during play. Removing it pauses FM and cuts digital effects without stopping the
+PC speaker. Restoring it resumes the loaded song, or starts the latest song requested
+while absent. `soundCardEnabled` reports the current card state; returning the card
+preserves a disabled music preference. An explicit song stop remains stopped. Normal DOS-compatible startup
+behavior is unchanged unless the host opts into live card control.
+
 ## Build from source
 
 This folder owns all its source in `src/`, plus its build configuration, license and notices. It can be copied outside the repository: run `npm install` and `npm run verify` here to build and test a packed consumer. Within the monorepo, run `npm ci` at the repository root, then `npm run build -w @lewismoten/gamemaker-sandbox-engine`. Run `npm pack` here to inspect a local distribution. Tarballs are build artifacts and should not be committed.

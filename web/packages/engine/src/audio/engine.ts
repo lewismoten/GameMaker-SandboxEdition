@@ -28,6 +28,26 @@ export class AudioEngine {
   private vocCache = new WeakMap<Uint8Array, AudioBuffer>();
   musicEnabled = true;
   soundEnabled = true;
+  private cardEnabled = true;
+  private requestedSong?: Uint8Array;
+  private loadedSong?: Uint8Array;
+
+  get soundCardEnabled(): boolean {
+    return this.cardEnabled;
+  }
+
+  /** Optional live host control: card removal pauses FM and stops digital effects, leaving the PC speaker alone. */
+  setSoundCard(enabled: boolean): void {
+    if (this.cardEnabled === enabled) return;
+    this.cardEnabled = enabled;
+    if (!enabled) {
+      this.stopVoc();
+      this.pauseMusic(true);
+    } else if (this.musicEnabled && this.requestedSong) {
+      if (this.requestedSong === this.loadedSong) this.pauseMusic(false);
+      else void this.playSong(this.requestedSong);
+    }
+  }
 
   /**
    * Starts the sound. The first time, call it from a user gesture's handler (iOS: inside
@@ -93,11 +113,17 @@ export class AudioEngine {
   async playSong(bytes: Uint8Array | undefined): Promise<boolean> {
     this.stopSong();
     if (!this.musicEnabled) return false;
+    this.requestedSong = bytes;
+    if (!this.cardEnabled) return false;
     // Playgame refused songs not converted to its 146 Hz clock (and a few others, see cmfLoad).
     const cmf = loadSong(bytes);
     if (!cmf) return false;
     const song = ++this.songs;
-    const load = () => song === this.songs && this.post({ type: 'load', music: cmf.music.slice(), instruments: cmf.instruments.map((i) => i.slice()) });
+    const load = () => {
+      if (song !== this.songs || !this.cardEnabled) return;
+      this.loadedSong = bytes;
+      this.post({ type: 'load', music: cmf.music.slice(), instruments: cmf.instruments.map((i) => i.slice()) });
+    };
     // the music worklet loads with the first sound; a game waits a moment for it, never
     // for good (a phone still loading it, or never: its screen would stay black)
     const ready = this.musicReady;
@@ -112,6 +138,7 @@ export class AudioEngine {
 
   stopSong(): void {
     this.songs++;
+    this.requestedSong = this.loadedSong = undefined;
     this.post({ type: 'stop' });
   }
 
@@ -162,7 +189,7 @@ export class AudioEngine {
 
   /** PlaySbVocFile: a new digital sound cuts off the previous one. */
   playVoc(bytes: Uint8Array | undefined): boolean {
-    if (!this.ctx || !this.master || !bytes || !this.soundEnabled || !isVoc(bytes)) return false;
+    if (!this.cardEnabled || !this.ctx || !this.master || !bytes || !this.soundEnabled || !isVoc(bytes)) return false;
     this.stopVoc();
     let buffer = this.vocCache.get(bytes);
     if (!buffer) {
