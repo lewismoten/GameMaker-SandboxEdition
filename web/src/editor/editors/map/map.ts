@@ -1,4 +1,5 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
+import { panelTabs } from '../../widgets/panelTabs';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
 import { registerEditor } from '../registry';
@@ -180,14 +181,12 @@ registerEditor(['map'], (host, project, file) => {
   const picker = rovingGrid(
     h('div', {
       class: 'block-picker',
-      style: 'max-height:max(120px, calc(var(--side-room, 360px) * 0.56))',
     }),
     'Blocks to paint with',
   );
   const monPicker = rovingGrid(
     h('div', {
       class: 'block-picker',
-      style: 'max-height:max(100px, calc(var(--side-room, 360px) * 0.44))',
     }),
     'Monsters to place',
   );
@@ -599,7 +598,10 @@ registerEditor(['map'], (host, project, file) => {
       changed: changedCells,
       overlay,
       drawOverlay: redrawOverlay,
-      setMode: (m) => setMode(m),
+      setMode: (m) => {
+        setMode(m);
+        revealTool(m);
+      },
     },
     h('div', { class: 'stack mt-panel', role: 'region', 'aria-label': 'Tool options' }),
   );
@@ -673,7 +675,11 @@ registerEditor(['map'], (host, project, file) => {
   });
   canvas.addEventListener('pointerdown', (e) => (lastPaint = cell(e)));
   const endStroke = (e: PointerEvent) => {
-    if (isTool(mode)) return tools.pointerUp(cell(e));
+    if (isTool(mode)) {
+      tools.pointerUp(cell(e));
+      if (mode === 'select') revealTool(mode);
+      return;
+    }
     if (painting) {
       painting = false;
       lastPaint = undefined;
@@ -944,7 +950,7 @@ registerEditor(['map'], (host, project, file) => {
               'aria-pressed': String(k === mode),
               'aria-label': label,
               title: `${label}${key ? ` (${key})` : ''}: ${what}`,
-              onclick: () => (setMode(k), rebuildMonsters()),
+              onclick: () => (setMode(k), revealTool(k), rebuildMonsters()),
             },
             icon,
             h('span', { class: 'mt-label' }, label),
@@ -980,6 +986,30 @@ registerEditor(['map'], (host, project, file) => {
       { allowNone: false, title: `Which ${label.toLowerCase()} to paint this map with` },
     );
 
+  const blockPanel = h('div', { class: 'stack' }, picker);
+  const monsterPanel = h('div', { class: 'stack' }, monPicker, monCount);
+  const optionsPanel = h(
+    'div',
+    { class: 'stack' },
+    h('p', { class: 'meta' }, 'Choose a tool in the toolbar to see its settings. Select an area to fill, copy, cut or save it as a stamp.'),
+    tools.panel,
+  );
+  const panels = { blocks: blockPanel, monsters: monsterPanel, options: optionsPanel };
+  const sideTabs = panelTabs(
+    'Map panels',
+    [
+      { id: 'blocks', label: 'Blocks', panel: blockPanel },
+      { id: 'monsters', label: 'Monsters', panel: monsterPanel },
+      { id: 'options', label: 'Tool options', panel: optionsPanel },
+    ],
+    view.get('panel') ?? undefined,
+    (panel) => view.set({ panel: panel === 'blocks' ? undefined : panel }),
+  );
+  function revealTool(tool: Mode): void {
+    const panel = tool === 'monster' ? 'monsters' : isTool(tool) && tool !== 'line' ? 'options' : 'blocks';
+    sideTabs.querySelector<HTMLButtonElement>(`[aria-controls="${panels[panel].id}"]`)?.click();
+  }
+  const sideCol = h('div', { class: 'stack mt-side-col', style: 'flex:0 1 260px;min-width:0' }, checkSlot, sideTabs);
   clear(
     host,
     h(
@@ -1054,28 +1084,12 @@ registerEditor(['map'], (host, project, file) => {
       ),
       h('button', { onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' }, '🖼 Download map picture'),
     ),
-    h(
-      'div',
-      { class: 'row' },
-      h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, scroller, status),
-      h(
-        'div',
-        { class: 'stack mt-side-col', style: 'flex:0 1 260px' },
-        checkSlot,
-        tools.panel,
-        h('strong', null, 'Blocks'),
-        picker,
-        h('strong', null, 'Monsters'),
-        monPicker,
-        monCount,
-      ),
-    ),
+    h('div', { class: 'row' }, h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, scroller, status), sideCol),
   );
   rebuild();
   // One screen: the map, and the blocks and monsters lists, end at the editor's bottom edge,
   // measured from where they start (below the tip, file toolbar and tool panel, whatever
   // their height), so the editor pane itself needn't scroll.
-  const sideCol = picker.parentElement!;
   const fit = () => {
     const main = host.closest('main');
     if (!main) return;
@@ -1083,10 +1097,7 @@ registerEditor(['map'], (host, project, file) => {
     const top = (el: Element) => el.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop;
     const bottom = main.clientHeight - pad - 4;
     const room = Math.round(bottom - top(scroller) - status.offsetHeight - 10);
-    const fixed = sideCol.scrollHeight - picker.offsetHeight - monPicker.offsetHeight;
-    const side = Math.round(bottom - top(sideCol) - fixed);
     if (host.style.getPropertyValue('--map-room') !== `${room}px`) host.style.setProperty('--map-room', `${room}px`);
-    if (host.style.getPropertyValue('--side-room') !== `${side}px`) host.style.setProperty('--side-room', `${side}px`);
     // a long Level check report scrolls the side column by itself (mapTools.css)
     host.style.setProperty('--side-col-room', `${Math.round(bottom - top(sideCol))}px`);
   };
@@ -1120,6 +1131,7 @@ registerEditor(['map'], (host, project, file) => {
     const tool = TOOLS.find(([, , , key]) => key && key.toLowerCase() === k);
     if (tool && !e.shiftKey) {
       setMode(tool[0]);
+      revealTool(tool[0]);
       rebuildMonsters();
     }
   };

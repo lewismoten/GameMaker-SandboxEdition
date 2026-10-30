@@ -214,3 +214,23 @@
 .mt-tip[hidden] {
   display: none;
 }
+
+/* Each map panel gets the available height; options no longer share a tiny leftover strip. */
+.mt-side-col > .panel-tabs {
+  min-height: 0;
+}
+.mt-side-col .block-picker:not(.mt-brushes) {
+  max-height: max(160px, calc(var(--side-col-room, 440px) - 80px));
+}
+.mt-side-col .mt-panel {
+  max-height: none;
+  overflow: visible;
+}
+@media (min-width: 901px) {
+  .mt-side-col .panel-tabs-list {
+    position: sticky;
+    top: 0;
+    background: var(--panel);
+    z-index: 1;
+  }
+}

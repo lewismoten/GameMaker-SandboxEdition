@@ -271,3 +271,9 @@ are real previews too; a blank idle can fall back to a movement frame.
   minutes, seconds and milliseconds using each field's clock. `numberField` can
   show a live duration with its `time` option, including disabled-zero timers or
   minimum frame lengths. The stored DOS tick counts stay unchanged.
+
+- **Map panels.** Blocks, Monsters and Tool options share the accessible panel-tab
+  widget. Picking a toolbar tool opens its relevant panel. Selection exposes the
+  existing fill, copy/cut, paste and stamp actions; the clipboard survives changing
+  maps in the same browser tab. The side column scrolls as a whole, leaving tool
+  settings readable instead of dividing the remaining height between three lists.
