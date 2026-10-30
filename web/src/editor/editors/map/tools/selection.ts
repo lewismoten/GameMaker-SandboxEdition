@@ -1,9 +1,12 @@
 // Polygon selections reuse map line/flood helpers: closed pixel edges keep the outside flood out.
+import { wrapValue } from '../mapWrap';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { floodCells, lineCells, rectCells, type Cell, type CellRect } from './cellOps';
 import { captureStamp } from './stamps';
 
 export interface MapSelection extends CellRect {
+  /** Coordinates may continue through the map seam; captured pixels still read native cells. */
+  wrap?: boolean;
   /** Polygon cells in map coordinates; absent for a rectangular selection. */
   cells?: Cell[];
 }
@@ -14,6 +17,13 @@ export function selectionCells(area: MapSelection): Cell[] {
 
 /** Captured masks leave unselected cells at -1, which existing stamps/paste skip. */
 export function captureSelection(blocks: Uint8Array, area: MapSelection, mapWidth = MLEN): { w: number; h: number; cells: number[] } {
+  if (area.wrap) {
+    const cells = Array<number>(area.w * area.h).fill(-1);
+    const mapHeight = blocks.length / mapWidth;
+    for (const cell of selectionCells(area))
+      cells[(cell.y - area.y) * area.w + cell.x - area.x] = blocks[wrapValue(cell.y, mapHeight) * mapWidth + wrapValue(cell.x, mapWidth)];
+    return { w: area.w, h: area.h, cells };
+  }
   if (!area.cells) return captureStamp(blocks, area, mapWidth);
   const cells = Array<number>(area.w * area.h).fill(-1);
   for (const cell of area.cells) cells[(cell.y - area.y) * area.w + cell.x - area.x] = blocks[cell.y * mapWidth + cell.x];

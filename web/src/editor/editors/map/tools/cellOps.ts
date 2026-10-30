@@ -1,4 +1,5 @@
 // Map cell helpers for the everyday tools: lines, rectangles, flood fill areas, find and replace.
+import { wrapValue } from '../mapWrap';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 export interface Cell {
@@ -45,7 +46,7 @@ export function lineCells(a: Cell, b: Cell): Cell[] {
 }
 
 /** The connected cells (4 ways) of the same block as the one at `at`. */
-export function floodCells(blocks: Uint8Array, at: Cell, w = MLEN, h = MWID): Cell[] {
+export function floodCells(blocks: Uint8Array, at: Cell, w = MLEN, h = MWID, wrap = false): Cell[] {
   const target = blocks[at.y * w + at.x];
   const seen = new Uint8Array(w * h);
   const out: Cell[] = [];
@@ -57,10 +58,14 @@ export function floodCells(blocks: Uint8Array, at: Cell, w = MLEN, h = MWID): Ce
     const x = i % w,
       y = (i / w) | 0;
     out.push({ x, y });
-    if (x > 0) stack.push(i - 1);
-    if (x < w - 1) stack.push(i + 1);
-    if (y > 0) stack.push(i - w);
-    if (y < h - 1) stack.push(i + w);
+    if (wrap) {
+      stack.push(y * w + wrapValue(x - 1, w), y * w + wrapValue(x + 1, w), wrapValue(y - 1, h) * w + x, wrapValue(y + 1, h) * w + x);
+    } else {
+      if (x > 0) stack.push(i - 1);
+      if (x < w - 1) stack.push(i + 1);
+      if (y > 0) stack.push(i - w);
+      if (y < h - 1) stack.push(i + w);
+    }
   }
   return out;
 }
