@@ -141,3 +141,10 @@ drawing recognizes direct symbols such as `µ` before trying their uppercase for
 
 `drawing` and `kit/coverPaint` expose seeded tileable value noise, RGB mixing, smoothstep,
 and clamping. `kit/palRamps` exports `Pal` and `wrap` for named palette ramps.
+
+### Software rendering
+
+`kit/quantize` chooses shared VGA palettes and ordered dithering for RGB frames.
+`kit/sdftext` provides rounded stroke lettering, distance grids and extrusion; `kit/raytrace`
+provides shapes, transforms, cameras and lighting. Consumers supply their own scenes.
+The stroke glyphs, implementation provenance and method references are in NOTICE.md.

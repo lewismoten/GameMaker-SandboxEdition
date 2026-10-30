@@ -43,3 +43,19 @@ and the cent sign in `games/year2000/src/art/font.ts`). The square face originat
 [the original Ohm Sweet Ohm drawing helpers](https://github.com/lewismoten/GameMaker-SandboxEdition/commit/1a746bffa).
 OpenAI Codex consolidated the data and APIs under Lewis Moten's direction.
 These fonts are distinct from the separately credited public-domain CP437 glyphs above.
+
+## Shared rendering methods and stroke lettering
+
+The rounded stroke lettering in `kit/sdftext` is project font data by Lewis Moten using
+Anthropic Claude Opus 5.5, introduced with the original software-rendered logo helpers
+([source commit](https://github.com/lewismoten/GameMaker-SandboxEdition/commit/7bb0e7b7c)).
+It is distributed under the project's MIT License, alongside the project-owned rendering,
+quantization, synthesis and object-building code extracted from `games/kit`. OpenAI Codex
+consolidated these modules and their consumers under Lewis Moten's direction.
+
+Method references: Paul S. Heckbert, *Color Image Quantization for Frame Buffer Display*
+([author's publication list](https://www.cs.cmu.edu/~ph/)), for median-cut quantization;
+John C. Hart, *Sphere Tracing: A Geometric Method for the Antialiased Ray Tracing of
+Implicit Surfaces* ([paper](https://graphics.stanford.edu/courses/cs348b-20-spring-content/uploads/hart.pdf)),
+for distance-based sphere tracing. The implementations and project font data here use
+the project's MIT License.
