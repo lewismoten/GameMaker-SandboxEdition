@@ -302,10 +302,11 @@ and renders top/bottom orientation nibbles as PLAYGAME does. Bottom-only sprites
 are real previews too; a blank idle can fall back to a movement frame.
 
 - **Character-block auditions.** The file picker's animation button loads
-  `editors/blocks/pickerAnimation.ts` on demand. It previews the associated character
-  sequences using the block editor's existing animation player, including pause,
-  next frame, orientations, DOS timing and reduced-motion preferences. Source files
-  stay unchanged.
+  `widgets/characterAuditionPlayer.ts` on demand. It cycles native sequences in
+  the card, temporarily names the current animation in its caption, and restores
+  the representative pose and source/size caption on Stop. Explicit wandering
+  and speech controls allow a character to leave the thumbnail and roam in eight
+  directions; the native source files remain read-only.
 
 - **Music thumbnails.** `widgets/musicTimeline.ts` draws decoded CMF notes against
   time and calculates the playhead through PlayIt's first pass and repeat lead-in.
