@@ -329,3 +329,5 @@ are real previews too; a blank idle can fall back to a movement frame.
 
 Image import (`tools/convert.ts`) and palette picture-color selection share the tools
 package’s portable `medianCutRgba` reducer; the browser keeps canvas loading and fitting.
+`editors/palette/pictureColors.ts` previews a bounded color budget from the selected GIF's
+actual pixels, applies it inside the selected palette range, and leaves other entries alone.

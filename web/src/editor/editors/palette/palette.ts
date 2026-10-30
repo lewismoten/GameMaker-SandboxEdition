@@ -5,9 +5,9 @@ import { History } from '../../core/history';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
 import { fileField } from '../../widgets/filePicker';
-import { h, clear } from '../../core/ui';
+import { h, clear, toast } from '../../core/ui';
 import { parsePalette, paletteCss, serializePalette, defaultPalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { spread as spreadRange } from './ramps';
 import { paletteTools } from './paletteTools';
 import { fitToPane } from '../../core/fitPane';
@@ -287,11 +287,22 @@ registerEditor(['pal'], (host, project, file) => {
           h(
             'button',
             {
-              onclick: () => {
-                remember();
-                pal.set(decodeGif(project.files.get(gifChoice)!).palette);
-                save();
-                refresh();
+              onclick: async () => {
+                const name = gifChoice;
+                const first = Math.min(selected, rangeEnd ?? selected);
+                const last = Math.max(selected, rangeEnd ?? selected);
+                const { pictureColors } = await import('./pictureColors');
+                if (disposed) return;
+                try {
+                  const result = await pictureColors(project.files.get(name)!, name, pal, first, last);
+                  if (!result || disposed) return;
+                  remember();
+                  pal.set(result);
+                  save();
+                  refresh();
+                } catch {
+                  toast(`Could not read the colors in ${name.toUpperCase()}.`, 'error');
+                }
               },
             },
             'Copy',
