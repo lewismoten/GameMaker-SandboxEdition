@@ -5,18 +5,19 @@
 // to play, the camel kneeling in the dusk (lost), and the endings (through the eye of the
 // needle; stitched whole with Heaven's seam; THE END). Each reel opens on black and fades by
 // palette (kit/reel.ts); only what moves is stored.
-import { loadScan, resample } from '../../../kit/photo';
+import { resample } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { medianCutPalette, Quantizer } from '../../../kit/quantize';
+import { medianCutPalette, Quantizer } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
-import { fadeOutLength } from '../../../kit/fadeOut';
+import { fadeOutLength } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { desertBackdrop, palm } from './screens';
 import { AUTHOR, CARDS } from './text';
-import { sprite } from '../../../kit/screenText';
+import { sprite } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 const W = 320;
 const H = 200;

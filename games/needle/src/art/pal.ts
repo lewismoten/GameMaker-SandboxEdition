@@ -3,8 +3,8 @@
 // city gate, the white-hot noon over the desert, lamplight in the tailor's shop, and night
 // turning to dawn up the needle. The camel's gold, the stars and grace keep their own light.
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
-import { type Pal, wrap } from '../../../kit/palRamps';
-export { type Pal } from '../../../kit/palRamps';
+import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+export { type Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 type RGB = [number, number, number];
 export type Light = 'morning' | 'noon' | 'lamp' | 'night' | 'plain';

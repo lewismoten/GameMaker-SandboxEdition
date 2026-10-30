@@ -2,7 +2,8 @@
 // palms, the tailor's tent, the robes and cloaks, the back door, the sewing machine, the great
 // golden needle (point, shaft, head and eye), and that their art joins up across the block edges.
 // Run by tools/check.ts.
-import { alignGame, namesOf, pair, shape, type PartRule } from '../../kit/align';
+import { namesOf, pair, shape, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
 import { LEVELS } from '../src/levels/levels';
 
