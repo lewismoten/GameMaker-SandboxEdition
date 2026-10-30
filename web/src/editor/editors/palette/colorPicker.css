@@ -1,0 +1,68 @@
+/* A touch-sized hue bar and keyboard-operable two-dimensional shade square. */
+.pal-hsv {
+  width: 320px;
+  max-width: 100%;
+}
+.pal-hsv p {
+  margin: 0;
+}
+.pal-hsv-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 256px) 32px;
+  gap: 16px;
+  padding: 8px;
+}
+.pal-hsv-square {
+  position: relative;
+  display: block;
+  padding: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 0;
+  touch-action: none;
+}
+.pal-hsv-marker {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 2px solid white;
+  outline: 1px solid black;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.pal-hsv-hue {
+  writing-mode: vertical-lr;
+  direction: ltr;
+  width: 32px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  border-radius: 4px;
+  background: linear-gradient(to bottom, red, yellow, lime, cyan, blue, magenta, red);
+  touch-action: none;
+}
+.pal-hsv-hue::-webkit-slider-thumb {
+  appearance: none;
+  width: 32px;
+  height: 12px;
+  background: transparent;
+  border: 2px solid white;
+  outline: 1px solid black;
+  border-radius: 2px;
+}
+.pal-hsv-hue::-moz-range-thumb {
+  width: 28px;
+  height: 8px;
+  background: transparent;
+  border: 2px solid white;
+  outline: 1px solid black;
+  border-radius: 2px;
+}
+.pal-hsv-chip {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}

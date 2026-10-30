@@ -213,6 +213,9 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   project's DOS player patches, with the palette entry each word color matched.
   Its save renderer also supplies the palette editor's live miniature, loaded dynamically
   so the native player remains outside the editor's initial bundle.
+- **Color picker.** `editors/palette/colorPicker.ts` stages hue, saturation and brightness
+  with a draggable square and vertical hue bar, keyboard controls and explicit confirmation.
+  It uses the tools package's RGB/HSV helpers and rounds the result to VGA's six-bit channels.
 
 Catalog DOS downloads save the same built game ZIP used for browser loading. Downloads of edited projects are still rebuilt from their current files.
 
