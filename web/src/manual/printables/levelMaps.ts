@@ -5,7 +5,7 @@
 // sit on and never marked (levelSecrets.ts). Small maps share a printed page; a big one gets a
 // page of its own and, if wanted, full-size pages to tape together (A1, B1... as the World Map
 // does). A course through the wrap (levelCourse.ts) prints as the strip the way runs, turned to
-// run up the page, in panels side by side (levelCourseSvg.ts). Nothing is drawn until the piece
+// run up the page as one continuous map (levelCourseSvg.ts). Nothing is drawn until the piece
 // is opened or printed, and on screen only the map shown (or, scrolled, the maps near the view).
 import './paper.css'; // first: this piece's own styles build on the paper's
 import './levelMaps.css';
@@ -20,7 +20,7 @@ import { el, SERIF } from './worldMapArt';
 import { fillerBlock, levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
 import { listedSecrets } from './levelSecrets';
 import { listedCourses, listedUnrolled, listedViews } from './levelViews';
-import { GUTTER, PANEL_GAP, PANEL_HEAD, wholeCourseSize, wholeCourseSvg, coursePages, coursePanelUrls, courseSvg, placedSize } from './levelCourseSvg';
+import { GUTTER, PANEL_GAP, PANEL_HEAD, wholeCourseSize, wholeCourseSvg, coursePanelUrls } from './levelCourseSvg';
 import { listedRoomHints } from './levelRoomHints';
 import { mergeStates } from './levelStates';
 import { unrolledShows } from '../../editor/check/unroll';
@@ -418,10 +418,8 @@ function pageCounts(game: Game, levels: Level[]): { overviews: number; full: num
     AREA,
     GAP,
   );
-  // a course takes a page for each set of its panels
-  const courses = levels.reduce((n, l) => n + (l.course ? coursePages(l.course, COURSE_AREA).length - 1 : 0), 0);
-  const overviews = (placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0) + courses;
-  const extra = levels.filter(tiled).reduce((n, l) => n + levelTiles(l).length, 0);
+  const overviews = placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0;
+  const extra = levels.reduce((n, l) => n + (l.course ? courseTiles(l).length : tiled(l) ? levelTiles(l).length : 0), 0);
   return { overviews, full: overviews + extra };
 }
 
@@ -510,7 +508,7 @@ async function printSheets(
   for (let k = 0; k < pageCount; k++) {
     const course = levels.find((l, i) => placed[i].page === k && l.course);
     if (course) {
-      out.push(...(await courseSheets(entry, game, course, paintCourse, () => ++sheetNo)));
+      out.push(...(await courseSheets(entry, game, course, paintCourse, () => ++sheetNo, full)));
       continue;
     }
     const body: SVGElement[] = [];
@@ -595,24 +593,72 @@ const courseNote = (c: { down: boolean }) =>
     ? ' · the way as you ride it, unrolled through the wrap: start at the top and go down'
     : ' · the way as you fly it, unrolled through the wrap: start at the foot and go up';
 
-/** A course's printed pages: its panels side by side, in order, under its caption. */
-async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: CoursePainter, next: () => number): Promise<Sheet[]> {
-  const c = l.course!;
+/** Atlas sheets use one coordinate system, so adjacent pages can be taped into a giant map. */
+function courseTiles(l: Level) {
+  const size = wholeCourseSize({ ...l.course!, scale: FULL });
+  return Math.min(COURSE_AREA.w / size.w, COURSE_AREA.h / size.h) < 0.8 ? tiles(size.w, size.h, COURSE_AREA.w, COURSE_AREA.h, OVERLAP) : [];
+}
+
+/** One continuous overview, optionally followed by full-size atlas pages. */
+async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: CoursePainter, next: () => number, full: boolean): Promise<Sheet[]> {
+  const c = { ...l.course!, scale: FULL };
+  const level = { ...l, course: c };
   const urls = await paint(l);
-  const pages = coursePages(c, COURSE_AREA);
-  return pages.map((which, n) => {
-    const { w: width, h: height } = placedSize(c, which);
-    const y = HEAD + CAPTION + Math.max(0, (COURSE_AREA.h - height) / 2);
-    return pageSheet(entry, `page ${next()} · ${l.name}, ${n + 1} of ${pages.length}`, [
+  const size = wholeCourseSize(c);
+  const ts = full ? courseTiles(l) : [];
+  const art = () => wholeCourseSvg(game, level, urls, 0, 0, COLORS, (m) => markText(game, m));
+  const picture = (viewBox: string, ...body: SVGElement[]) =>
+    el(
+      'svg',
+      {
+        x: MARGIN,
+        y: HEAD + CAPTION,
+        width: COURSE_AREA.w,
+        height: COURSE_AREA.h,
+        viewBox,
+        overflow: 'hidden',
+      },
+      ...body,
+    );
+  const overview = picture(`0 0 ${size.w} ${size.h}`, art());
+  for (const t of ts)
+    overview.append(
+      el('rect', {
+        x: t.x,
+        y: t.y,
+        width: Math.min(t.w, size.w - t.x),
+        height: Math.min(t.h, size.h - t.y),
+        fill: 'none',
+        stroke: '#1565c0',
+        'stroke-width': 0.25,
+        'stroke-dasharray': '2 1',
+      }),
+      el('text', { x: t.x + 0.8, y: t.y + 2.6, 'font-size': 2.2, 'font-weight': 900, fill: '#1565c0' }, t.name),
+    );
+  const out = [
+    pageSheet(entry, `page ${next()} · ${l.name}, whole course`, [
       captionSvg(game, { ...l, note: `${courseNote(c).slice(3)}${l.note ? ` · ${l.note}` : ''}` }, MARGIN, HEAD, AREA.w),
-      courseSvg(game, l, urls, which, MARGIN + Math.max(0, (AREA.w - width) / 2), y, COLORS, (m) => markText(game, m)),
+      overview,
       el(
         'text',
-        { x: PAGE.w - MARGIN, y: PAGE.h - FOOT + 1, 'font-family': 'Arial, Helvetica, sans-serif', 'font-size': 1.2, fill: COLORS.join, 'text-anchor': 'end' },
-        'Dashed: an edge of the map, where the way runs on round it and comes in at the opposite edge',
+        { x: MARGIN, y: PAGE.h - FOOT + 1, 'font-family': 'Arial, Helvetica, sans-serif', 'font-size': 1.2, fill: COLORS.join },
+        'Dashed purple: map wrap. Blue grid: full-size sheets to trim and tape together.',
       ),
-    ]);
-  });
+    ]),
+  ];
+  for (const t of ts) {
+    const joins = [
+      t.col > 0 ? `${String.fromCharCode(64 + t.col)}${t.row + 1} to the left` : '',
+      t.row > 0 ? `${String.fromCharCode(65 + t.col)}${t.row} above` : '',
+    ].filter(Boolean);
+    out.push(
+      pageSheet(entry, `page ${next()} · ${t.name}${joins.length ? ` · tape over ${joins.join(' and ')}` : ''}`, [
+        captionSvg(game, l, MARGIN, HEAD, AREA.w),
+        picture(`${t.x} ${t.y} ${t.w} ${t.h}`, art()),
+      ]),
+    );
+  }
+  return out;
 }
 
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
