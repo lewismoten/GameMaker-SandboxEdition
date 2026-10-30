@@ -143,7 +143,7 @@ export function linkPopover(ed: LinkEditor, startKey: string, hooks: PopoverHook
                 return render();
               // the link's key changes with its scene: known before the change redraws the panel
               const at = moveSource(structuredClone(g), w.from, w.link, to);
-              if (at < 0) return toast(`${sceneName(g, to)} has no free link left.`, 'error');
+              if (at < 0) return toast(`${sceneName(g, to)} needs a free link slot and exit block, separate from its entrances.`, 'error');
               key = `in:${to}:${at}`;
               ed.edit(`src:${key}`, (game) => moveSource(game, w.from, w.link, to));
             },
@@ -157,8 +157,8 @@ export function linkPopover(ed: LinkEditor, startKey: string, hooks: PopoverHook
             levels(g),
             () => w.to,
             (to) => {
-              ed.edit(`dst:${key}`, (game) => retarget(game, w.from, w.link, to));
-              if (!ed.scenes.includes(to)) toast(`That link now lands in ${sceneName(project.game(), to)}, off this map.`);
+              const changed = ed.edit(`dst:${key}`, (game) => retarget(game, w.from, w.link, to));
+              if (changed && !ed.scenes.includes(to)) toast(`That link now lands in ${sceneName(project.game(), to)}, off this map.`);
             },
           ),
         ),
@@ -198,7 +198,9 @@ export function linkPopover(ed: LinkEditor, startKey: string, hooks: PopoverHook
         ),
         blockFields('Leaves from', link.from, e.scene, (at) => ed.edit(`from:${key}`, (game) => setFrom(game, e.scene, e.link, at)), 'from'),
         won ? null : blockFields('Arrives at', link.to, e.to, (at) => ed.edit(`to:${key}`, (game) => setTo(game, e.scene, e.link, at)), 'to'),
-        actions('Delete this exit', () => ed.edit(`rm:${key}`, (game) => removeLink(game, e.scene, e.link))),
+        actions('Delete this exit', () => {
+          ed.edit(`rm:${key}`, (game) => removeLink(game, e.scene, e.link));
+        }),
       );
     }
     if (ed.locked) for (const c of body.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLButtonElement>('input, select, button')) c.disabled = true;

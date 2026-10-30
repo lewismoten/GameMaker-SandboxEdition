@@ -31,7 +31,7 @@ export interface LinkEditor {
   project: Project;
   scenes: readonly number[];
   /** Changes the .gam as one Undo step (steps with the same key in quick succession join). */
-  edit(key: string, fn: (game: Game) => void): void;
+  edit(key: string, fn: (game: Game) => void | boolean | number): boolean;
   readonly locked: boolean;
 }
 
@@ -54,13 +54,20 @@ export function linkMarkers(host: MarkersHost) {
     scenes: host.scenes,
     locked,
     edit(key, fn) {
-      if (locked) return;
+      if (locked) return false;
       const game = structuredClone(project.game());
-      fn(game);
+      const result = fn(game);
+      if (result === false || (typeof result === 'number' && result < 0)) {
+        toast('Choose a free block or another scene: entrances and exits cannot overlap, and each exit needs its own block.', 'error');
+        render();
+        popover?.refresh();
+        return false;
+      }
       const now = Date.now();
       if (key !== last.key || now - last.at > JOIN_MS) host.remember();
       last = { key, at: now };
       project.saveGame(game);
+      return true;
     },
   };
 
@@ -190,7 +197,7 @@ export function linkMarkers(host: MarkersHost) {
       const near = (p: Point) =>
         mapMarkers(project.game(), host.scenes).some((m) => m.kind === 'in' && Math.abs(m.at.x - p.x) <= 2 && Math.abs(m.at.y - p.y) <= 2);
       for (let i = 0; i < 4 && near(at); i++) at = { x: at.x < 90 ? at.x + 4 : at.x - 4, y: at.y };
-      if (add(structuredClone(project.game())) < 0) return toast('This level already has 20 exits, the most a scene can have.', 'error');
+      if (add(structuredClone(project.game())) < 0) return toast('Choose a free exit block and arrival block. A scene can have at most 20 exits.', 'error');
       let link = -1;
       editor.edit(`add:${Date.now()}`, (g) => (link = add(g)));
       const el = els.get(`out:${scene}:${link}`);
