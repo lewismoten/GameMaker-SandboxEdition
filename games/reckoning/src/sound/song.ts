@@ -19,8 +19,8 @@
 //   - dramatic pauses, and a marker at every section (PLAYGAME skips them; tools/songPreview.ts
 //     reads them).
 import { sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { CELESTA, REED, Writer, type Groove } from '../../../kit/song';
-import { DRUM, Fx, boomPatch, detuned, leveled, sweep, waved } from '../../../kit/songFx';
+import { CELESTA, REED, Writer, type Groove } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { DRUM, Fx, boomPatch, detuned, leveled, sweep, waved } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 
 const BPM = 100;
 

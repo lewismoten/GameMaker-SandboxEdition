@@ -7,7 +7,7 @@
 // (cartoons.ts). `t` (0..1) animates it: the door swings wider and the glow grows, the aura
 // turns and pulses, the clock's colon blinks, and lightning flashes once.
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { mixc, smooth, noise2 } from '../../../kit/coverPaint';
+import { mixc, smooth, noise2 } from '@lewismoten/gamemaker-sandbox-tools/kit/coverPaint';
 
 const COVER_W = 320;
 const COVER_H = 200;
