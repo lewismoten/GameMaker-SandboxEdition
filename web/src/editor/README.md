@@ -256,3 +256,9 @@ are real previews too; a blank idle can fall back to a movement frame.
   number and its PC speaker/VOC pair. `soundSetPreview.ts` offers individual effects
   or all effects, either source or both in sequence, and updates the status and
   thumbnail for the part currently playing. Closing the dialog stops playback.
+
+- **Text-screen thumbnails.** `widgets/textPicture.ts` draws the first native text
+  page with Display_File's wrapping, position and stock color selection, reusing
+  the tools package's credited font data. Slide-show thumbnails follow readable
+  slides; damaged images and missing backdrop dependencies report why no preview
+  can be drawn.
