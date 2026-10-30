@@ -22,7 +22,9 @@ describe('text screen thumbnails', () => {
   });
   it('stops at the first page and follows the engine when an extended character cannot be drawn', () => {
     const palette = defaultPalette();
-    expect(textPicture(bytes('A\r\n'.repeat(16) + 'B'), palette)).toEqual(textPicture(bytes('A\r\n'.repeat(16)), palette));
+    const firstPage = textPicture(bytes('A\r\n'.repeat(16)), palette);
+    const withSecondPage = textPicture(bytes('A\r\n'.repeat(16) + 'B'), palette);
+    expect(Buffer.from(firstPage).equals(Buffer.from(withSecondPage))).toBe(true);
     expect(textPicture(bytes('\x80'), palette).some(Boolean)).toBe(false);
   });
 });
