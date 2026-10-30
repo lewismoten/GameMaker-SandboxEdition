@@ -685,7 +685,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           'after ticks (1/18 s)',
           () => b.ntime,
           (v) => edit(() => (b.ntime = v)),
-          { min: 0, max: 32767 },
+          { min: 0, max: 32767, time: { rate: 18.2, zero: 'No timed change' } },
         ),
         numberField(
           'Gives birth to monster',
@@ -697,7 +697,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           'every ticks (0 = never)',
           () => b.birthTime,
           (v) => edit(() => (b.birthTime = v)),
-          { min: 0, max: 16383 },
+          { min: 0, max: 16383, time: { rate: 18.2, zero: 'No births' } },
         ),
       ),
     );

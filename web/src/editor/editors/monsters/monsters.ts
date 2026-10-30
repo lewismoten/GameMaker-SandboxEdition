@@ -239,7 +239,7 @@ registerEditor(['mon'], (host, project, file) => {
                       f[1] = v;
                       updateTiming();
                     }),
-                  { min: 1, max: 32767, title: `Frame ${i + 1}: ticks to show it (1/18 s each)` },
+                  { min: 1, max: 32767, title: `Frame ${i + 1}: ticks to show it (1/18 s each)`, time: { rate: 18.2, minimum: 1 } },
                 ),
               ),
             ),
@@ -293,7 +293,7 @@ registerEditor(['mon'], (host, project, file) => {
               'Lifetime (ticks)',
               () => m.end,
               (v) => edit(() => (m.end = v)),
-              { min: 1, max: 32767 },
+              { min: 1, max: 32767, time: { rate: 18.2 } },
             )
           : null,
         checkField(

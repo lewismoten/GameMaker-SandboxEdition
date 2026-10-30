@@ -208,7 +208,7 @@ export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number,
         '⏱ ticks',
         () => f.pause,
         (v) => ctx.edit(() => ((f.pause = v), ctx.travelChanged(seq))),
-        { min: 0, max: 999, title: 'How long the frame shows, in 1/18 s ticks' },
+        { min: 0, max: 999, title: 'How long the frame shows, in 1/18 s ticks', time: { rate: 18.2, minimum: 1 } },
       ),
     ),
   );
