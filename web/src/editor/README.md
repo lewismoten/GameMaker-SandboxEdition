@@ -225,3 +225,8 @@ an existing game preserves its files and palettes. Source/license: tools `NOTICE
 The visual asset picker (`widgets/filePicker.ts`) reads library assets through
 `core/library.ts` and the cached game ZIP loader. Previewing visible files does not
 try obsolete loose-file URLs before downloading their game archive.
+
+`core/libraryCatalog.ts` chooses CD or public original-game assets, orders Library
+first (DEFAULT.PAL first), then Sample, RSD, Gameware and Shareware, and consolidates
+identical palettes using catalog hashes. Palette source labels prefer Library, then
+the first Gameware source. Precomputed VOC groups keep sound lists lazy.
