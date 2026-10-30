@@ -1,6 +1,6 @@
 # @lewismoten/gamemaker-sandbox-tools
 
-Tools for creating and checking native RSD Game-Maker data. Browser playback belongs to `@lewismoten/gamemaker-sandbox-engine`; this package has no game artwork, recordings, characters, or palettes.
+Tools for creating and checking native RSD Game-Maker data. Browser playback belongs to `@lewismoten/gamemaker-sandbox-engine`; this package has no game artwork, recordings, characters, or game-specific palettes.
 
 Requires Node.js 22.12 or newer. Install as a development dependency from your configured npm registry:
 
@@ -15,7 +15,7 @@ If your registry requires authentication or a scope mapping, configure npm using
 - `formats/blocks`, `character`, `game`, `map`, `monster`, `palette`, `gif`, `graphicScripts`, `sound`, `fli`, `fliLimits`, `voc`, `recording`, and `cmf`: native readers, writers, types, and limits. Each is a separate `formats/<name>` subpath.
 - `drawing`: indexed pixels, VGA palette builders, font drawing, shading, compositing, and cartoon reels.
 - `audio`: original FM instrument presets, CMF composition, PC speaker effects, and VOC synthesis.
-- `images`: indexed PNG encoding and CRC-32.
+- `images`: indexed PNG encoding, CRC-32, color reduction, indexed drawing and picture transforms.
 - `simulation`: headless `Sim`, `GameSim`, `readDisk`, `diskSim`, and `newCharInfo` for fixture checks. This includes the reference simulation; it does not replace testing the browser engine package.
 
 The browser-safe `images` entry also exports `Pixels`, `flipX`, `flipY`, `turn90`,
@@ -24,6 +24,8 @@ picture with exchanged dimensions. `mirrorAll`, `line`, `box`, and `floodFill` s
 painting across tile boundaries. Fill accepts optional mask and writer callbacks for
 missing cells or repeated references to the same tile; traversal uses the original
 pixels so writes to shared cells do not break the fill.
+Shift offsets use whole pixels. Fill ignores seeds outside the image, inside a masked
+cell, or at non-integer coordinates; mismatched buffer dimensions throw a `RangeError`.
 
 ```ts
 import { emptyBlock, serializeBlocks } from '@lewismoten/gamemaker-sandbox-tools/formats/blocks';
