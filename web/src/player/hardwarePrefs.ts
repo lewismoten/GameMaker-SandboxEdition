@@ -17,11 +17,17 @@ const valid = (v: unknown): v is GameHardware => {
 /** Reads storage each time so restoring a backup takes effect without reloading. */
 export class HardwarePrefs {
   private memory = defaults();
+  private failedWrite = false;
+  private stored: string | null = null;
   constructor(private readonly storage: () => Pick<Storage, 'getItem' | 'setItem'> = () => localStorage) {}
 
   private read(): SetupState {
     try {
-      const raw = JSON.parse(this.storage().getItem(KEY) ?? '{}') as Partial<SetupState> | null;
+      const text = this.storage().getItem(KEY);
+      if (this.failedWrite && text === this.stored) return this.memory;
+      this.stored = text;
+      this.failedWrite = false;
+      const raw = JSON.parse(text ?? '{}') as Partial<SetupState> | null;
       this.memory = {
         show: raw?.show !== false,
         games: Object.fromEntries(Object.entries(raw?.games ?? {}).filter(([, value]) => valid(value))),
@@ -34,8 +40,12 @@ export class HardwarePrefs {
   private write(state: SetupState): void {
     this.memory = state;
     try {
-      this.storage().setItem(KEY, JSON.stringify(state));
+      const text = JSON.stringify(state);
+      this.storage().setItem(KEY, text);
+      this.stored = text;
+      this.failedWrite = false;
     } catch {
+      this.failedWrite = true;
       // Quota or private mode: the in-memory choices remain usable.
     }
   }
