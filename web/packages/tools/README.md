@@ -172,3 +172,9 @@ These Node build helpers complement the browser-safe `images` API.
 `kit/song` builds CMF arrangements from caller-supplied sections; `kit/songFx` adds native
 CMF swells, arpeggios, glides, echoes and rhythm effects. Instrument presets are original
 project data under the MIT License; recordings and complete songs are not included.
+
+### Native animations and demos
+
+`kit/fadeOut` adds palette-only FLI fades. `kit/fliClips` splits long animations at stable
+palette boundaries and builds their slide-list entries. `kit/recordedDemo` turns delta/key
+pairs into a native title demo with configurable Escape press and release delays.
