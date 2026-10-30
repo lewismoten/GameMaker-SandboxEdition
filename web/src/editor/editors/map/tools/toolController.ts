@@ -137,6 +137,7 @@ export class MapTools {
         if (blocks[i] !== this.host.brush()) ((blocks[i] = this.host.brush()), changed.push(i));
       }
       this.host.overlay.outline = undefined;
+      this.host.overlay.ghost = undefined;
       this.host.changed(changed);
     } else if (m === 'select') {
       this.host.overlay.outline = undefined;
@@ -170,7 +171,12 @@ export class MapTools {
     const r = spanRect(a, p);
     const o = this.host.overlay;
     if (this.mode === 'line') o.outline = { cells: lineCells(a, p) };
-    else if (this.mode === 'rect' || this.mode === 'select') o.outline = { rect: r };
+    else if (this.mode === 'rect') {
+      const rows = Array.from({ length: r.h }, () => Array<number>(r.w).fill(-1));
+      for (const cell of rectCells(r, this.outline)) rows[cell.y - r.y][cell.x - r.x] = this.host.brush();
+      o.ghost = { x: r.x, y: r.y, rows, ok: true };
+      o.outline = { rect: r };
+    } else if (this.mode === 'select') o.outline = { rect: r };
     else if (this.mode === 'building') {
       const b = this.building();
       o.ghost = b ? { x: r.x, y: r.y, rows: assembleBuilding(b, r.w, r.h), ok: true } : undefined;
@@ -245,10 +251,12 @@ export class MapTools {
       this.host.setMode('select');
       return true;
     }
-    if (this.host.overlay.selection || this.host.overlay.ghost) {
-      this.host.overlay.selection = this.host.overlay.ghost = undefined;
+    if (this.down || this.host.overlay.selection || this.host.overlay.ghost || this.host.overlay.outline) {
+      this.down = false;
+      this.start = this.last = undefined;
+      this.host.overlay.selection = this.host.overlay.ghost = this.host.overlay.outline = undefined;
       this.host.drawOverlay();
-      this.renderPanel();
+      if (this.mode === 'select') this.renderPanel();
       return true;
     }
     return false;

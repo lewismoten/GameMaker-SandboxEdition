@@ -277,3 +277,8 @@ are real previews too; a blank idle can fall back to a movement frame.
   existing fill, copy/cut, paste and stamp actions; the clipboard survives changing
   maps in the same browser tab. The side column scrolls as a whole, leaving tool
   settings readable instead of dividing the remaining height between three lists.
+
+- **Pending map rectangles.** The map tool controller draws the chosen blocks as
+  a ghost while a rectangle changes size, preserving the map and undo history
+  until pointer release. Escape discards a pending shape, including its later
+  pointer release.
