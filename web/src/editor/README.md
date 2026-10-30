@@ -306,3 +306,9 @@ are real previews too; a blank idle can fall back to a movement frame.
   Enter, a double-click or a click on its first corner. Backspace removes the last
   corner; Escape cancels. Fill, copy/cut, paste, stamps and block groups keep its
   shape. The maze generator asks for a rectangular selection.
+
+- **Monster births.** `widgets/monsterBirthSource.ts` resolves the MON/MBL pair
+  used by scenes sharing a background block set, then maps monster numbers to
+  their first-frame pictures. The Time panel's picture chooser keeps the native
+  birth-monster index and numeric field, with a source selector when scenes use
+  different monster files.
