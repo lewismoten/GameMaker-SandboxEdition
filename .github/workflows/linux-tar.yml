@@ -32,7 +32,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npx vite-node scripts/linuxTar.ts teddy --out ../dist/linux
       - name: Without WebKitGTK, play.sh opens the browser
@@ -67,7 +67,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npx vite-node scripts/linuxTar.ts --all --out ../dist/linux
       - uses: actions/upload-artifact@v4

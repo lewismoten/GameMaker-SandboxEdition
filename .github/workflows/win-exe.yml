@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npx vite-node scripts/winExe.ts teddy --out ../dist/win
       - name: Play it twice
@@ -63,7 +63,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npx vite-node scripts/winExe.ts --all --zip --out ../dist/win
       - uses: actions/upload-artifact@v4
