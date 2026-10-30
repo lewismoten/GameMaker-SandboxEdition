@@ -216,3 +216,8 @@ Integrator link placement uses `editors/integrator/linkConflicts.ts` alongside
 `linkEdits.ts`: an exit cannot share a block with another exit or an incoming
 entrance, and an entrance cannot land on an exit. These checks guide edits; opening
 an existing DOS game never silently rewrites its links.
+
+New projects (`Project.create`) include `default.pal`, an independent byte-for-byte
+copy of the RSD CD Library default palette supplied by the tools package. This
+also makes an Empty game useful immediately without a network fetch. Importing
+an existing game preserves its files and palettes. Source/license: tools `NOTICE.md`.

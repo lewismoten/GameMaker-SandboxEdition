@@ -1,6 +1,7 @@
 // An open project: a game directory plus its .gam, autosaved to IndexedDB.
 import { GameFiles, normalize } from '../../project/files';
 import { saveProject, newId } from '../../project/storage';
+import { libraryDefaultPalette } from '@lewismoten/gamemaker-sandbox-tools/palettes';
 import { parseGame, serializeGame, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
@@ -78,6 +79,7 @@ export class Project {
         .slice(0, 8) || 'game'
     }.gam`;
     files.set(gam, serializeGame(newGame(name)));
+    files.set('default.pal', libraryDefaultPalette());
     return new Project(newId(), name, gam, files);
   }
 
