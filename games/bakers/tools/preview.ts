@@ -3,7 +3,7 @@
 //   cd web && npx vite-node ../games/bakers/tools/preview.ts [out dir]
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { blockSheet, writePng } from '../../kit/png';
+import { blockSheet, writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { buildPalette, type ThemeName } from '../src/art/pal';
 import { buildTileSet, type Style } from '../src/blocks/tiles';
 
