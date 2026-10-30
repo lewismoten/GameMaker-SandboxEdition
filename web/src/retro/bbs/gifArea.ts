@@ -7,7 +7,7 @@
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
 import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
-import { readLine } from '../text/textInput';
+import { ProgramAborted, readLine } from '../text/textInput';
 import { commas } from '../dos/vfs';
 import { modeFor } from '../view/picture';
 import { boxBottom, boxRow, boxTop, modemSignal, sleep, type Term } from './term';
@@ -85,6 +85,7 @@ export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promis
   await t.drain(); // the words above, before the screen turns to the picture
   await sleep(900);
   t.print(''); // a dropped call ends it here
+  if (h.keys.stopping) throw new ProgramAborted();
   const [sw, sh] = modeFor(f.width, f.height);
   const scr = h.pictureMode(sw, sh);
   slowWait(bytes.length / cps('file'));
@@ -96,6 +97,7 @@ export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promis
   const warp = warpCount();
   try {
     for (;;) {
+      if (h.keys.stopping) throw new ProgramAborted();
       // ZMODEM rejects damaged subpackets. Never paint invented damage over verified
       // pixels; hold the last prefix while the modem loses carrier (Forsberg's ZMODEM
       // specification, https://techheap.packetizer.com/communications/modems/zmodem8.html).

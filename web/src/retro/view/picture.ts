@@ -101,7 +101,7 @@ export class PictureScreen {
 
   /** A key pressed since the last call, if any. */
   poll(): string | undefined {
-    return this.keys.shift();
+    return this.destroyed ? 'Escape' : this.keys.shift();
   }
 
   /** Waits for a key. */

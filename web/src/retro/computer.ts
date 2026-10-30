@@ -90,6 +90,7 @@ export class Computer extends ComputerFolders {
     this.player = undefined;
     this.keys.abort();
     this.vgaScreen?.abort();
+    this.picture?.destroy();
     this.closeEditor?.();
     this.shell.stop();
   }
@@ -475,6 +476,7 @@ export class Computer extends ComputerFolders {
 
   /** Back to text mode from a picture, the text screen as it was left. */
   leavePictureMode(): void {
+    this.picture?.destroy();
     this.picture = undefined;
     clear(this.layer);
     this.keys.enabled = true;
