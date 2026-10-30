@@ -165,6 +165,10 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate
   (`animClip.ts` builds them from block chains, monsters and character sequences; `animPlayer.ts`
   plays them).
+  The painter's `blockSurface.ts` joins native tiles, masks absent cells, keeps repeated
+  references synchronized, and writes pixels without touching behavior fields. A quarter
+  turn rearranges the companion's group layout along with its picture, including holes and
+  repeats; it does not rearrange cells in a map.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its
