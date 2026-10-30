@@ -14,7 +14,7 @@
 //    blocks, one per entry in the ride's timetable, each giving birth once (kit/road3d.ts); and
 //    two give birth to the pulses on the lines between the lanes every few ticks, forever.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { spawnChains } from '../../../kit/road3d';
+import { spawnChains } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 import { BlockSet } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { EGG_BLOCK, eggPic } from '../blocks/egg';

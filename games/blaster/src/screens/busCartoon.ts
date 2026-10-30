@@ -6,7 +6,7 @@
 // before the stage's first card.
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { CLEAR, centered, shadeAt } from '../art/draw';
 import { shipBlocks } from '../characters/ship';
 import { chipArt, chipAt } from '../bus/busChip';

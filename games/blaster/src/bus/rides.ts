@@ -7,7 +7,7 @@
 // The sign counts the bus cycles left down to 1, a cycle every CYCLE ticks, then flashes 0,
 // when the way into the chip opens over the middle lane. A hazard born at tick T is on the
 // ship's row from about T + 22 to T + 36, so a lane it is in is no place to be then.
-import type { RoadEntry } from '../../../kit/road3d';
+import type { RoadEntry } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 
 /** Hazards: an interrupt, a stray bit, and the next stage's own virus. Prizes: good data, a repair. */
 export type Kind = 'irq' | 'bits' | 'foe' | 'byte' | 'fix';

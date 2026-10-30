@@ -21,7 +21,7 @@ import { buildLeg } from './src/stages/stage';
 import { buildScreens } from './src/screens/screens';
 import { demoRecording } from './src/demo';
 import { licenseText } from '../kit/license';
-import { clipEveryList } from '../kit/fliClips';
+import { clipEveryList } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 const here = dirname(fileURLToPath(import.meta.url));

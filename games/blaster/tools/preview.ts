@@ -5,7 +5,7 @@
 import { STAGES } from '../src/stages/stages';
 import { buildLeg, startOf } from '../src/stages/stage';
 import { renderRegion } from '../src/art/render';
-import { writePng } from '../../kit/png';
+import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { ARENA_TOP, EXIT_ROW, X0 } from '../src/stages/mapkit';
 import { ROWS, TOP } from '../src/stages/sideLeg';
 

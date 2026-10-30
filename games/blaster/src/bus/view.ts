@@ -3,7 +3,7 @@
 // destination chip on the horizon down to the bottom of the screen, widening as it comes;
 // three lanes, the ship's three places. The blocks (busBlocks.ts), the oncoming traffic
 // (busSprites.ts) and its paths (busMonsters.ts) all measure from here.
-import { roadView } from '../../../kit/road3d';
+import { roadView } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 
 /** The horizon's height on the screen, in pixels (the top of block row 3). */
 export const HORIZON = 60;

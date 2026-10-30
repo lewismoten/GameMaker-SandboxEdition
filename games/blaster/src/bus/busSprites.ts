@@ -4,7 +4,7 @@
 // nearest sizes can touch the ship, so only they hurt (or help). Interrupts and stray bits
 // ride every bus; the next stage's own virus rides the bus that leads to it.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { ROAD_SIZES, shrinkSprite } from '../../../kit/road3d';
+import { ROAD_SIZES, shrinkSprite } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 import { CLEAR, bevel, blob, micro, outline, text } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { HURT } from '../characters/sharedMonsters';
