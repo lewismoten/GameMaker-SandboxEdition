@@ -4,7 +4,8 @@
 // it, Doc Leo's photo pops in at stage left, a lute at stage right strums notes into the air,
 // the tagline types itself out on the boards, and it all fades to black. About four seconds,
 // drawn in code as an Autodesk Animator FLI that carries its own palette.
-import { loadScan, medianCut, resample, ditherTo, type Scan } from './photo';
+import { medianCut, resample, ditherTo, type Scan } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from './photo';
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
