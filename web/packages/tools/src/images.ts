@@ -1,6 +1,9 @@
 // Indexed image export for build scripts.
 export { encodePng, type IndexedPicture } from './image/png';
 export { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
+export { Pixels } from './kit/pixels';
+export { flipX, flipY, turn90, turn180 } from './kit/transforms';
+export { mirrorAll, line, box, floodFill, shiftPixels, type SurfaceMirror } from './image/surface';
 
 // Project median-cut implementation; method by Paul S. Heckbert, credited in ../NOTICE.md.
 /** Portable RGBA pixels; accepts ImageData without requiring canvas or a DOM. RGB is treated as opaque. */

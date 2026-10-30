@@ -18,6 +18,13 @@ If your registry requires authentication or a scope mapping, configure npm using
 - `images`: indexed PNG encoding and CRC-32.
 - `simulation`: headless `Sim`, `GameSim`, `readDisk`, `diskSim`, and `newCharInfo` for fixture checks. This includes the reference simulation; it does not replace testing the browser engine package.
 
+The browser-safe `images` entry also exports `Pixels`, `flipX`, `flipY`, `turn90`,
+`turn180`, and `shiftPixels` for indexed pictures of any size. Quarter turns return a
+picture with exchanged dimensions. `mirrorAll`, `line`, `box`, and `floodFill` support
+painting across tile boundaries. Fill accepts optional mask and writer callbacks for
+missing cells or repeated references to the same tile; traversal uses the original
+pixels so writes to shared cells do not break the fill.
+
 ```ts
 import { emptyBlock, serializeBlocks } from '@lewismoten/gamemaker-sandbox-tools/formats/blocks';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/drawing';
