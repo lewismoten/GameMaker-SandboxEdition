@@ -1,7 +1,7 @@
 // RunOptions.skipTitle, the editor's Play Level test: play starts at once in the level the test
 // copy's start link leads to, at its spot, with a new game's character; without it the title and
 // menu come first, as in PLAYGAME.
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GameFiles } from '../project/files';
 import { testGame } from '../editor/check/testGame';
 import { startingAtSpot } from '../editor/editors/integrator/startAt';
@@ -19,6 +19,9 @@ const ROWS = [
   '#S...........................#',
   '##############################',
 ];
+
+beforeEach(() => vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] }));
+afterEach(() => vi.useRealTimers());
 
 /** A machine on a clock of the test's own, stepped a frame at a time. */
 class TestMachine extends Machine {
@@ -49,7 +52,8 @@ async function run(opts: RunOptions, frames = 120) {
   for (; frame < frames; frame++) {
     m.time += 1000 / 60;
     m.presentFrame(false);
-    await new Promise((r) => setTimeout(r, 0));
+    // Flush asynchronous game work without waiting for a real timer on every frame.
+    await vi.advanceTimersByTimeAsync(0);
   }
   m.destroy();
   await ended;
