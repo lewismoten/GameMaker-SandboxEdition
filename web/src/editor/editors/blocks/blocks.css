@@ -291,3 +291,8 @@ dialog.modal label.recolor-check {
 .blk-side > .panel-tabs {
   grid-column: 1 / -1;
 }
+
+/* Hidden group tools must not inherit the toolbar’s flex layout. */
+.blk-edit-group[hidden] {
+  display: none;
+}

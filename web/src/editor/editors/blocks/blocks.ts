@@ -250,7 +250,12 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       canvas.height = h * scale;
     }
     canvas.style.aspectRatio = `${w} / ${h}`;
-    canvas.style.maxWidth = group ? `min(100%, 520px, max(${w * 2}px, calc((var(--ws-vh, 100dvh) - 350px) * ${w / h})))` : '';
+    canvas.classList.toggle('character-frame-canvas', !!orientations);
+    canvas.style.maxWidth = orientations
+      ? `min(100%,320px,max(120px,calc(var(--character-frame-height,320px) * ${w / h})))`
+      : group
+        ? `min(100%, 520px, max(${w * 2}px, calc((var(--ws-vh, 100dvh) - 350px) * ${w / h})))`
+        : '';
     canvas.classList.toggle('checker', sprites || !!group?.cells.includes(-1));
     canvas.setAttribute('aria-label', `${group ? 'Group' : 'Block'} painting area, ${w} by ${h} pixels: drag to paint, right-drag to erase`);
     groupBar.hidden = !group || !!orientations;

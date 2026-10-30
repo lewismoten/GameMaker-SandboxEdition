@@ -30,3 +30,10 @@
   outline: 2px dashed var(--accent);
   outline-offset: -3px;
 }
+
+/* On desktop, leave the frame controls above the picture in view while painting. */
+@media (min-width: 1000px) {
+  .character-frame-canvas {
+    --character-frame-height: max(160px, calc(var(--room, 640px) - 320px));
+  }
+}
