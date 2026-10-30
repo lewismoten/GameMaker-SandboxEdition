@@ -2,7 +2,13 @@
 
 `@lewismoten/gamemaker-sandbox-engine` runs RSD Game-Maker games from their original DOS files in a browser. It is the same TypeScript engine used by the Game-Maker: Sandbox Edition web player. The package includes its audio worklet and TypeScript declarations; it does not include games or the site's editor and catalog.
 
-Build a tarball from this repository with `cd web/packages/engine && npm pack`. The package has not been published to the npm registry. Install the tarball with `npm install ./lewismoten-gamemaker-sandbox-engine-3.1.0.tgz`.
+Install from your configured npm registry:
+
+```sh
+npm install @lewismoten/gamemaker-sandbox-engine
+```
+
+If your registry requires authentication or a scope mapping, configure npm using that registry's instructions.
 
 Pass the files from one game's DOS directory to `GameFiles`. Names are case insensitive and use DOS 8.3 names. `GameFiles.mainGame()` finds a `.GAM` file. Keep the original file names and bytes; the game refers to its other files by name.
 
@@ -53,14 +59,8 @@ play.addEventListener('click', async () => {
 
 The source is MIT licensed; see `LICENSE` and `NOTICE.md` for credits.
 
-## Publishing
+## Build from source
 
-The [release workflow](../../../.github/workflows/publish-engine.yml) publishes this package to
-GitHub Packages when an `engine-v<version>` tag is pushed. The tagged commit must be on
-`master`, and `<version>` must exactly match this package's `package.json` (for example,
-`engine-v3.1.0`). Merge the package changes to `master` before pushing the tag.
+From the repository's `web/` directory, install dependencies with `npm ci`, then run `npm run build --prefix packages/engine`. Run `npm pack` from `web/packages/engine/` to inspect a local distribution. Tarballs are build artifacts and should not be committed.
 
-The workflow uses GitHub's `GITHUB_TOKEN` with package write permission. It checks the source,
-builds the package, and publishes it to GitHub Packages. No package is published by ordinary
-branch pushes. Publishing to npm is a separate, manual decision; this workflow does not use
-an npm token.
+Repository automation is documented in the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md).
