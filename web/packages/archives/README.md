@@ -29,6 +29,42 @@ Executables are inspected as data and never run. Ordinary executables are not ar
 
 `UnpackedGame.entries` is a portable tuple array, avoiding a dependency on the engine's class identity. ZIPs are searched up to the importer's existing three archive levels. `maxEntries` (8192) and `maxBytes` (128 MiB) bound each archive and the returned game; `signal` supports cancellation between reads. ZIP64, encrypted ZIPs, and compression methods other than stored/deflate are not supported. HTML game exports are not archive inputs.
 
+## Scan and choose games before reading their files
+
+The full import scanner is included, both at the package root and through `/scan`. It
+finds games in folder selections and nested ZIP/SFX archives, reports damaged or empty
+archives, identifies incomplete leftovers, and recognizes customized DOS player files.
+Scanning reads game headers and archive directories; `GameReader` then reads the chosen
+game's files. This lets an application offer a choice when an archive contains several games.
+
+```ts
+import { scanFile, scanImport, scanSummary, GameReader, type FoundGame }
+  from '@lewismoten/gamemaker-sandbox-archives/scan';
+import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine';
+
+const given = Array.from(input.files ?? [], (file) => scanFile(file));
+const report = await scanImport(given, {
+  signal: controller.signal,
+  zipLimits: { maxEntries: 8192, maxBytes: 128 << 20 },
+  onProgress: (done, total, path) => showProgress(done, total, path),
+});
+showGames(report.games); // Let the user choose a FoundGame.
+showSummary(scanSummary(report));
+
+const reader = new GameReader(given, { maxEntries: 8192, maxBytes: 128 << 20 });
+async function openChosenGame(choice: FoundGame) {
+  const game = await reader.read(choice);
+  return new GameFiles(game.files.entries());
+}
+```
+
+`report.games` holds the choices; `badZips`, `emptyZips`, and `loose` explain the rest.
+`GameReader.file` reads just one chosen resource and `mainGam` identifies a game's entry
+point. `scanFile` adapts browser files, while `ScanFile` records work with any asynchronous
+file source. `/scan` also exports `groupGames`, `playedBy`, `PLAYER_EXE`, `gameFromFiles`,
+and their report types. The higher-level `unpackGame` and `unpackGames` APIs use this same
+scanner and also perform customized-player recovery.
+
 ## ZIP reading and writing
 
 ```ts

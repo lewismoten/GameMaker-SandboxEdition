@@ -22,15 +22,27 @@ try {
 import assert from 'node:assert/strict';
 import {unpackGame,createZip,readZip} from '@lewismoten/gamemaker-sandbox-archives';
 import {encodePack} from '@lewismoten/gamemaker-sandbox-archives/pack';
+import {scanImport,scanSummary,GameReader,scanFile,groupGames} from '@lewismoten/gamemaker-sandbox-archives/scan';
+import {scanImport as rootScan} from '@lewismoten/gamemaker-sandbox-archives';
 const data=Uint8Array.of(1,2,3), zip=await createZip([{name:'sample.bin',data}]);
 assert.deepEqual((await readZip(zip))[0].data,data);
 assert.equal(typeof unpackGame,'function');assert.ok(encodePack([['a',data]]).length>3);
+assert.equal(rootScan,scanImport);
+const archive=await createZip([{name:'GAME/DEMO.GAM',data},{name:'GAME/HELP.TXT',data}]);
+const given=[{path:'demo.zip',size:archive.length,read:async()=>archive}];
+const report=await scanImport(given);
+assert.equal(report.games.length,1);assert.equal(report.badZips.length,0);
+assert.equal(typeof scanSummary(report),'string');
+const reader=new GameReader(given);assert.equal(reader.mainGam(report.games[0]),'demo.gam');
+assert.deepEqual(await reader.file(report.games[0],'demo.gam'),data);
+assert.deepEqual((await reader.read(report.games[0])).files.get('help.txt'),data);
+assert.equal(groupGames([scanFile(new File([data],'loose.gam'))]).games.length,1);
 `,
   );
   execFileSync(process.execPath, ['smoke.mjs'], { cwd: consumer, stdio: 'inherit' });
   writeFileSync(
     resolve(consumer, 'consumer.ts'),
-    `import {unpackGame,createZip,type GameInput} from '@lewismoten/gamemaker-sandbox-archives';\nexport const input: GameInput = new Uint8Array();\nexport const result = () => unpackGame(input);\nexport const zip = () => createZip([]);\n`,
+    `import {unpackGame,createZip,type GameInput} from '@lewismoten/gamemaker-sandbox-archives';\nimport {scanImport,GameReader,type ScanFile,type FoundGame} from '@lewismoten/gamemaker-sandbox-archives/scan';\nexport const given: ScanFile[]=[];\nexport const report=()=>scanImport(given,{zipLimits:{maxEntries:100,maxBytes:10000}});\nexport const reader=(g:FoundGame)=>new GameReader(given).read(g);\nexport const input: GameInput = new Uint8Array();\nexport const result = () => unpackGame(input);\nexport const zip = () => createZip([]);\n`,
   );
   execFileSync(
     process.execPath,
