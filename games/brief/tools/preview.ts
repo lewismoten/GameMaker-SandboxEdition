@@ -2,7 +2,7 @@
 //   PREVIEW_DIR=/tmp/x npx vite-node ../games/brief/tools/preview.ts
 import { join } from 'node:path';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { writePng } from '../../kit/png';
+import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { CLEAR } from '../src/art/draw';
 import { PAL, c } from '../src/art/pal';
 import type { BlockSet } from '../src/blocks/sets';
