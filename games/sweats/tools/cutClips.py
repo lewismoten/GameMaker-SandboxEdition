@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Cuts the digitized lines of "Shakespeare in Sweatpants" (The Bard of Bizarre: seventeen spoken
 # monologues over music beds, made with Riffusion) out of the recordings, which are NOT committed
-# (.for-lewis/songs/shakespeare/*.mp3), into games/sweats/src/sound/clips/<name>.pcm, plus
+# (.for-lewis/songs/shakespeare/*.mp3), into games/sweats/src/sound/clips/<name>.wav, plus
 # clips/rates.json (the rate each was kept at); games/sweats/src/sound/clips.ts wraps them as
 # Creative Voice Files. games/kit/song/cutclips.py does the cutting (see it for the filters).
 #
@@ -154,7 +154,7 @@ def main():
                 y = sg.resample_poly(y, rate, cutclips.RATE)
                 y *= 0.97 / np.abs(y).max()
             data = np.clip(np.round(y * 127 + 128), 0, 255).astype(np.uint8)
-            cutclips.write_pcm(out, name, data)
+            cutclips.write_wav(out, name, data, rate)
             rates[name] = rate
             print('%-8s %7.2f - %7.2f s  %.2f s  %5d Hz  VOC %6d bytes  "%s"' % (name, start, end, end - start, rate, len(data) + 33, said))
     with open(os.path.join(out, 'rates.json'), 'w') as f:

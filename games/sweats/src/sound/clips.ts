@@ -1,8 +1,9 @@
 // Digitized lines of the seventeen monologues of "Shakespeare in Sweatpants" (The Bard of
-// Bizarre), as Sound Blaster .VOC files. The samples (clips/<name>.pcm: 8-bit unsigned mono) are
+// Bizarre), as Sound Blaster .VOC files. The samples (clips/<name>.wav: lossless 8-bit unsigned mono WAV) are
 // cut from the recordings by games/sweats/tools/cutClips.py, which reads the MP3s (not in the
 // repo) and regenerates them exactly; its cue table says what each one says. Game-Maker reads a
 // VOC's size as 16 bits, so each stays under 40,000 bytes.
+import { decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,16 +18,12 @@ function clipRate(name: string): number {
 }
 
 export function hasClip(name: string): boolean {
-  return existsSync(join(here, 'clips', `${name}.pcm`));
+  return existsSync(join(here, 'clips', `${name}.wav`));
 }
 
 /** A clip's samples (-1..1) at its own rate. */
 function clipSamples(name: string): Float32Array {
-  const pcm = readFileSync(join(here, 'clips', `${name}.pcm`));
-  const samples = new Float32Array(pcm.length);
-  // encodeVoc writes round(v * 127 + 128), so this gives back the very bytes cutClips.py wrote.
-  for (let i = 0; i < pcm.length; i++) samples[i] = (pcm[i] - 128) / 127;
-  return samples;
+  return decodeAudioFile(join(here, 'clips', `${name}.wav`), { sampleRate: clipRate(name) });
 }
 
 /** Samples as a Creative Voice File (checked against Game-Maker's 16-bit size). */
