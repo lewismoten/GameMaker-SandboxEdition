@@ -59,3 +59,7 @@ source alias or root TypeScript configuration is available to those builds.
 Package READMEs are registry agnostic. [Tagged workflows](package-releases.md) publish to
 GitHub Packages; publish engine before archives and tools when their dependency versions
 change. npm tarballs, package distributions and dependencies stay out of Git.
+
+The [package check workflow](../.github/workflows/packages.yml) runs isolated builds on
+pull requests and master pushes that change SDK source, workspace dependencies or the
+verification script. It does not publish anything.

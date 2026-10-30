@@ -1,0 +1,37 @@
+# A package must build from its own folder, without access to workspace source aliases.
+name: Check independent npm packages
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'web/packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/verify-packages.mjs'
+      - '.github/workflows/packages.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'web/packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/verify-packages.mjs'
+      - '.github/workflows/packages.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  packages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run verify:packages
