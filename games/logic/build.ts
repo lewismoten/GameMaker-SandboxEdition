@@ -11,7 +11,7 @@ import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/p
 import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { Disk } from '../kit/disk';
-import { clipLists } from '../kit/fliClips';
+import { clipLists } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { PAL } from './src/art/pal';
 import { buildMonsterBlocks, buildWattBlocks } from './src/sprites/sprites';
 import { buildWatt } from './src/characters/watt';

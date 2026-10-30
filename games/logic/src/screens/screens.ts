@@ -5,12 +5,13 @@
 // spot where it writes text is kept light and plain.
 import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { matchColor } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
-import { dosText } from '../../../kit/disk';
+import { pastePhoto, polaroid, resample, tone } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
 import { PAL, c, r } from '../art/pal';

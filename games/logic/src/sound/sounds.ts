@@ -3,7 +3,7 @@
 import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
-import { lowpass } from '../../../kit/synthParts';
+import { lowpass } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 import { chime } from '../../../kit/teddySounds';
 
 /** A knife switch: a sharp metal clack with a little ring. */
