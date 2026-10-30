@@ -111,8 +111,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     () => current,
     blocks.length,
     () => {
-      renderPicker();
-      groups.refresh(true);
+      markPicker();
+      groups.refreshNames();
     },
   );
   // background blocks: which are walking paths the walkthrough bot keeps to (companion file)
@@ -143,9 +143,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     [...picker.children].forEach((b, j) => {
       b.classList.toggle('selected', picked.includes(j) || j === current);
       b.classList.toggle('current', j === current);
-      if (!paths) return;
-      b.classList.toggle('walk-path', paths.has(j));
-      b.setAttribute('aria-label', `${blockLabel(project, file, j)}${paths.has(j) ? ', walking path' : ''}`);
+      b.setAttribute('title', blockLabel(project, file, j));
+      b.classList.toggle('walk-path', !!paths?.has(j));
+      b.setAttribute('aria-label', `${blockLabel(project, file, j)}${paths?.has(j) ? ', walking path' : ''}`);
     });
     walkPaths?.refresh();
   }

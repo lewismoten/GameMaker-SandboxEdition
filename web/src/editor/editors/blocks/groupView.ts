@@ -15,6 +15,7 @@ interface GroupView {
   show(g: BlockGroup | undefined, current: number): void;
   /** Paints the cells again (after a paint). */
   redraw(): void;
+  refreshNames(): void;
 }
 
 export function groupView(o: {
@@ -66,6 +67,7 @@ export function groupView(o: {
           {
             type: 'button',
             class: isCurrent ? 'current' : '',
+            dataset: { block: String(b), cell: String(i) },
             'aria-current': isCurrent ? 'true' : undefined,
             title: isCurrent
               ? o.onReplace
@@ -94,6 +96,19 @@ export function groupView(o: {
     );
   }
 
+  function refreshNames(): void {
+    if (!group) return;
+    for (const button of grid.querySelectorAll<HTMLButtonElement>('button[data-block]')) {
+      const b = Number(button.dataset.block),
+        i = Number(button.dataset.cell);
+      const where = `column ${(i % group.cols) + 1}, row ${Math.floor(i / group.cols) + 1}`;
+      const name = o.name?.(b) ?? `Block ${b}`;
+      const selected = b === current;
+      button.title = selected ? `${name}: editing it (${where})${o.onReplace ? '. Click to put a different block here' : ''}` : `Edit ${name} (${where})`;
+      button.setAttribute('aria-label', selected && o.onReplace ? `${name}, ${where}: choose a different block for this spot` : `${name}, ${where}`);
+    }
+  }
+
   return {
     el: grid,
     show(g, c) {
@@ -102,5 +117,6 @@ export function groupView(o: {
       redraw();
     },
     redraw,
+    refreshNames,
   };
 }

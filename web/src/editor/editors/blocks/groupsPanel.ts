@@ -23,6 +23,7 @@ interface GroupsPanel {
   el: HTMLElement;
   /** Draws the group again after a paint; `all` also follows a change of block or of the picked blocks. */
   refresh(all?: boolean): void;
+  refreshNames(): void;
   dispose(): void;
 }
 
@@ -298,6 +299,7 @@ export function groupsPanel(o: {
       view.redraw();
       player.redraw();
     },
+    refreshNames: () => view.refreshNames(),
     dispose() {
       player.dispose();
       offExtras();
