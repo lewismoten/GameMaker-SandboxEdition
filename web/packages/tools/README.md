@@ -157,3 +157,11 @@ The stroke glyphs, implementation provenance and method references are in NOTICE
 `kit/road3d` provides three-lane perspective geometry, timed spawner chains and sprite
 shrinking. `kit/saveSlots` provides PLAYGAME's save-slot rectangles and their backgrounds.
 These helpers take the consuming game's data and palette.
+
+### Image preparation and previews
+
+`kit/photo` reads a caller-supplied JPEG (`readScan`) and provides resampling, toning,
+quantization, dithering and indexed photo composition. No photographs are included.
+`kit/png` writes synchronous RGB preview PNGs with a checkerboard for transparent pixels
+and builds block sheets. `kit/levelPicture` renders a level region with its placed monsters.
+These Node build helpers complement the browser-safe `images` API.
