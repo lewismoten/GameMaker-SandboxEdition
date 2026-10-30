@@ -22,6 +22,7 @@ describe('DOS export', () => {
 
   it('flags names DOS cannot store', () => {
     expect(dosNameProblems(['sample.gam', 'toolongname.map', 'two.dots.pal', 'ok_1.cmf'])).toEqual(['toolongname.map', 'two.dots.pal']);
+    expect(dosNameProblems(["can't.gif"])).toEqual([]); // The CD's CAN_T.GIF is named this by its game.
   });
 
   it.skipIf(!existsSync(sample) || !existsSync(join(cdgm, 'xferplay.exe')))(
