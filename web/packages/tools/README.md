@@ -4,6 +4,14 @@ Development-only tools for creating and checking native RSD Game-Maker data. Bro
 
 Requires Node.js 22.12 or newer. Install with `npm install --save-dev @lewismoten/gamemaker-sandbox-tools` once published. Until publication, `npm pack` produces a self-contained installation candidate.
 
+Published packages are hosted on **GitHub Packages**. Add this scope mapping to the consuming project's `.npmrc`:
+
+```ini
+@lewismoten:registry=https://npm.pkg.github.com/
+```
+
+Authenticate using `npm login --scope=@lewismoten --auth-type=legacy --registry=https://npm.pkg.github.com/` with a GitHub personal access token (classic) that has `read:packages` and access to the package. Keep credentials in your user configuration, outside the repository. See GitHub's [npm registry documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry).
+
 ## APIs
 
 - `formats/blocks`, `character`, `game`, `map`, `monster`, `palette`, `gif`, `graphicScripts`, `sound`, `fli`, `fliLimits`, `voc`, `recording`, and `cmf`: native readers, writers, types, and limits. Each is a separate `formats/<name>` subpath.
@@ -66,12 +74,12 @@ npm pack
 
 The build bundles source from the format, drawing, audio, and simulation modules. It does not use or restart the site's Vite configuration. The tarball contains JavaScript, declarations, this guide, the MIT license, and notices. Validate a packed installation in a separate project before publishing.
 
-`verify` installs the tarball in a temporary npm consumer and checks codecs, drawing, sound generation, headless simulation, NodeNext declarations, absence of game content, and rejected browser imports. After reviewing the candidate, publish with `npm publish --access public`; publishing is a separate action.
+`verify` installs the tarball in a temporary npm consumer and checks codecs, drawing, sound generation, headless simulation, NodeNext declarations, absence of game content, and rejected browser imports. Publishing is handled separately by the tagged release workflow.
 
 ## Tagged releases
 
-The [release workflow](../../../.github/workflows/publish-tools.yml) publishes to the public npm registry when a `tools-v<version>` tag is pushed. The tag must match this package's version and point to a commit on `master`. For this release, use `tools-v3.1.0` after merging the package changes.
+The [release workflow](../../../.github/workflows/publish-tools.yml) publishes to GitHub Packages when a `tools-v<version>` tag is pushed, following the engine package's release process. The tag must match this package's version and point to a commit on `master`. For this release, use `tools-v3.1.0` after merging the package changes.
 
-Configure the repository's `NPM_TOKEN` Actions secret with an npm publishing token authorized for `@lewismoten/gamemaker-sandbox-tools` (including automated publishing with 2FA). The workflow checks source, builds and verifies the packed package, then publishes with provenance. Ordinary branch pushes do not publish anything. See npm's [publishing documentation](https://docs.npmjs.com/creating-and-publishing-scoped-public-packages/).
+The workflow checks source, builds and verifies the packed package, then publishes using the repository's `GITHUB_TOKEN` with `packages: write`. It does not require an `NPM_TOKEN` secret. Ordinary branch pushes do not publish anything. The package's visibility and installation permissions are managed in GitHub Packages; a first publication is private by default.
 
 Tarballs are local build artifacts and must not be committed to a consuming project. Consumers should use `npm install --save-dev @lewismoten/gamemaker-sandbox-tools@^3.1.0` after the tagged release is published.

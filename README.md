@@ -142,8 +142,10 @@ by its bot, its walkthrough replayed, its text, hidden items and levels checked)
 `npm run check:games` from `web/`. It prints a table and fails on any regression; add
 `--game teddy` for one game or `--quick` to skip the rebuild compare.
 
-Pushes to `master` are published to GitHub Pages by
-[`.github/workflows/pages.yml`](.github/workflows/pages.yml). The `mac-dmg`, `win-exe` and
+Pushing a `pages-v*` version tag (for example, `pages-v3.1.0`) publishes the tagged commit
+to GitHub Pages through [`.github/workflows/pages.yml`](.github/workflows/pages.yml).
+Pull requests to `master` run validation without deploying; branch pushes do not publish the site.
+The `mac-dmg`, `win-exe` and
 `linux-tar` workflows build every game for each system and attach them to a GitHub release.
 Every check job stops after 5 minutes; only the deployments and release builds may run longer.
 Checking every game takes far longer than that, so run `npm run check:games` (with the rebuild
