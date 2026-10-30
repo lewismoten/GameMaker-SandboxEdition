@@ -1,0 +1,32 @@
+/* Character frame controls stay compact beside the native pixel painter and its palette. */
+.character-frame-controls,
+.character-frame-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.character-frame-controls h2,
+.character-frame-preview h2,
+.character-frame-controls p {
+  margin: 0;
+}
+.character-frame-controls .field,
+.character-frame-preview .field {
+  max-width: 100%;
+  min-width: 0;
+}
+.character-frame-controls select,
+.character-frame-preview select {
+  max-width: 100%;
+}
+.character-frame-controls[hidden],
+.character-frame-preview[hidden],
+.character-frame-controls [hidden],
+.character-frame-preview [hidden] {
+  display: none;
+}
+.blk-picker .block-picker button.character-animation:not(.current) {
+  outline: 2px dashed var(--accent);
+  outline-offset: -3px;
+}

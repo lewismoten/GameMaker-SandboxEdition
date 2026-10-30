@@ -439,3 +439,10 @@ native game files are loaded only when the player chooses an archive action.
 - **Animation stages.** `blocks/animPlayer.ts` optionally centers a live native
   animation on a fixed-size stage, with a caller-drawn palette or scene backdrop.
   Existing block and group previews retain their picture-sized canvases.
+
+- **Character frame painter controls.** `blocks/characterFramesPanel.ts` selects
+  a linked CHR animation and native frame, steps backward/forward, and chooses
+  one half or a full 1×2 frame. Playback reads live CBL pixels over a saved
+  palette color or a map scene. View choices stay in the address; only backdrop
+  preferences use companion metadata. Related-block highlights are exposed to
+  the main picker without changing character definitions.
