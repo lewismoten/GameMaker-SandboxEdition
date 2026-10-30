@@ -143,11 +143,11 @@ npm install @lewismoten/gamemaker-sandbox-archives
 You need [Node.js](https://nodejs.org/) 22.12 or later.
 
 ```sh
-npm ci             # from the repository root; builds the workspace packages
+npm ci             # from the repository root; builds workspace packages and game output
 npm run dev        # http://localhost:5173
 npm test           # the test suite (vitest)
 npm run typecheck  # tsc --noEmit
-npm run build      # typecheck, then the static site in web/dist
+npm run build      # refresh game output, typecheck, then the static site in web/dist
 npm run format     # Prettier (config at the repo root)
 npm run lint       # ESLint
 ```

@@ -31,3 +31,8 @@ __pycache__/
 
 # npm tarballs are release artifacts, never source.
 *.tgz
+
+# Games are built from source; DOS disks and derived path metadata never ship in Git.
+/games/*/disk/
+/games/*/walkPaths.json
+/games/.build-cache.json
