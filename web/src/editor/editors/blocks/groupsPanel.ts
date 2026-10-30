@@ -10,13 +10,12 @@ import { listRuns } from '../../core/uses';
 import { normalize } from '../../../project/files';
 import type { Block, BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { groupOf, groupsWith, layoutFor, neighborGroup, readGroups, sameGroup, splitGroup, writeGroups, type BlockGroup } from './blockGroups';
+import { groupOf, groupsWith, layoutFor, neighborGroup, readGroups, sameGroup, writeGroups, type BlockGroup } from './blockGroups';
 import { groupView } from './groupView';
 import { animPlayer } from './animPlayer';
 import { groupClipFor, suggestionsFor } from './blockClips';
 import { isStill } from './animClip';
 import { newGroupDialog, suggestDialog } from './groupDialogs';
-import { groupPaintDialog } from './groupPaintDialog';
 import { chooseBlock } from '../../widgets/blockChooser';
 
 interface GroupsPanel {
@@ -37,16 +36,14 @@ export function groupsPanel(o: {
   select: (block: number) => void;
   /** The blocks picked in the block list, in order (one when only the current block is). */
   picked: () => number[];
-  color: () => number;
-  setColor: (c: number) => void;
-  /** Puts these pictures into their blocks (each keeping an undo step) and saves. */
-  apply: (parts: Map<number, Uint8Array>) => void;
+  /** Edit in the main painter, saving any turn of the companion's group layout here. */
+  edit(group: BlockGroup, update: (group: BlockGroup) => void): void;
+  /** Manual layout/name changes invalidate the painter's old group scope. */
+  layoutChanged(): void;
 }): GroupsPanel {
   const count = o.blocks.length;
   let groups = readGroups(o.project, o.file, count);
   let which = 0;
-  /** The pictures before the last "Edit as one picture", for its Undo. */
-  let lastPaint: { name: string; before: Map<number, Uint8Array> } | undefined;
   /** The group the view shows, for the view's fill, swap and remove. */
   let shown: BlockGroup | undefined;
   const spot = (g: BlockGroup, i: number) => `column ${(i % g.cols) + 1}, row ${Math.floor(i / g.cols) + 1}`;
@@ -95,7 +92,10 @@ export function groupsPanel(o: {
   const animFigure = h('figure', { class: 'blk-group-anim' }, player.el, animCaption);
   const summary = h('summary', null, 'Groups');
   const body = h('div', { class: 'stack blk-groups-body' });
-  const save = () => writeGroups(o.project, o.file, groups);
+  const save = () => {
+    writeGroups(o.project, o.file, groups);
+    o.layoutChanged();
+  };
   const blocksText = (cells: number[]) => {
     const ns = cells.filter((c) => c >= 0);
     return ns.length ? `block${ns.length === 1 ? '' : 's'} ${listRuns([...ns].sort((a, b) => a - b))}` : 'no blocks';
@@ -152,21 +152,12 @@ export function groupsPanel(o: {
     toast(`Added ${chosen.length} group${chosen.length === 1 ? '' : 's'}.`);
   }
 
-  async function paintAsOne(g: BlockGroup): Promise<void> {
-    const r = await groupPaintDialog({ group: g, blocks: o.blocks, pal: o.pal(), sprites: o.sprites, color: o.color() });
-    if (!r) return;
-    o.setColor(r.color);
-    const parts = splitGroup(g, r.pixels);
-    const before = new Map<number, Uint8Array>();
-    for (const [b, px] of parts) {
-      if (px.every((v, i) => v === o.blocks[b].pixels[i])) parts.delete(b);
-      else before.set(b, o.blocks[b].pixels.slice());
-    }
-    if (!parts.size) return toast('Nothing changed.');
-    o.apply(parts);
-    lastPaint = { name: g.name, before };
-    render();
-    toast(`Painted ${blocksText([...parts.keys()])}.`);
+  function paintAsOne(g: BlockGroup): void {
+    o.edit(g, (next) => {
+      Object.assign(g, { ...next, cells: [...next.cells] });
+      writeGroups(o.project, o.file, groups);
+      render();
+    });
   }
 
   function render(): void {
@@ -213,24 +204,9 @@ export function groupsPanel(o: {
               { class: 'toolbar' },
               h(
                 'button',
-                { class: 'primary', title: 'Paint the whole group at once, across the block edges', onclick: () => void paintAsOne(g) },
+                { class: 'primary', title: 'Paint the whole group at once, across the block edges', onclick: () => paintAsOne(g) },
                 'Edit as one picture…',
               ),
-              lastPaint
-                ? h(
-                    'button',
-                    {
-                      title: `Put back the blocks as they were before “${lastPaint.name}” was edited as one picture`,
-                      onclick: () => {
-                        if (!lastPaint) return;
-                        o.apply(lastPaint.before);
-                        lastPaint = undefined;
-                        render();
-                      },
-                    },
-                    '↶ Undo the group paint',
-                  )
-                : null,
               h(
                 'button',
                 {
@@ -306,6 +282,7 @@ export function groupsPanel(o: {
     const now = readGroups(o.project, o.file, count);
     if (JSON.stringify(now) === JSON.stringify(groups)) return;
     groups = now;
+    o.layoutChanged();
     render();
   });
 

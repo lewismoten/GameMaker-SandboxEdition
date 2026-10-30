@@ -21,11 +21,14 @@ import {
   TRANSPARENT,
   parseBlocks,
   serializeBlocks,
-  type Block,
   type BlockKind,
 } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { paletteCss } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { flipH, flipV, rotateCW, rotateCCW, shiftWrap, mirrorPoints, type Mirror } from './pixelOps';
+import type { Mirror } from './pixelOps';
+import { Pixels, flipX, flipY, turn90, turn180, shiftPixels, mirrorAll, floodFill, line, box } from '@lewismoten/gamemaker-sandbox-tools/images';
+import { BlockSurface } from './blockSurface';
+import { BlockPaintHistory } from './blockPaintHistory';
+import { splitGroup, type BlockGroup } from './blockGroups';
 import { shade } from '../palette/ramps';
 import { blockInsight } from './blockInsight';
 import { openInEditor } from '../../core/uses';
@@ -86,10 +89,15 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   let picked: number[] = [current];
   let anchor = current;
   let tool: Tool = 'draw';
-  // each block keeps its own undo and redo (its pixels), so switching blocks never undoes another's paint
-  const undo: Uint8Array[][] = blocks.map(() => []);
-  const redo: Uint8Array[][] = blocks.map(() => []);
-  let clipboard: Block | undefined;
+  const history = new BlockPaintHistory(blocks);
+  let group: BlockGroup | undefined;
+  let saveGroup: ((group: BlockGroup) => void) | undefined;
+  let groupKeys = new WeakMap<BlockGroup, string>();
+  let nextGroup = 0,
+    groupKey = '';
+  const scope = () => (group ? groupKey : `block:${current}`);
+  const surface = () => new BlockSurface(blocks, current, group, sprites ? TRANSPARENT : 0);
+  let clipboard: Pixels | undefined;
   const save = debounce(() => project.files.set(file, serializeBlocks(blocks)), 250);
   let mirror: Mirror = project.extras<PainterExtras>(file, 'painter', {}).mirror ?? 'none';
   /** Pixels already shaded in this stroke (each is lightened or darkened once a drag). */
@@ -117,21 +125,21 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       select(i);
     },
     picked: () => picked,
-    color: () => color,
-    setColor: (c) => {
-      color = c;
-      renderSwatches();
+    edit: (value, update) => {
+      finishStroke(false);
+      group = value;
+      saveGroup = update;
+      if (!groupKeys.has(value)) groupKeys.set(value, `group:${nextGroup++}`);
+      groupKey = groupKeys.get(value)!;
+      picked = surface().ids;
+      markPicker();
+      renderBlock();
+      refreshUndo();
+      canvas.scrollIntoView({ block: 'nearest' });
     },
-    apply: (parts) => {
-      for (const [i, px] of parts) {
-        undo[i].push(blocks[i].pixels.slice());
-        if (undo[i].length > 50) undo[i].shift();
-        redo[i].length = 0;
-        blocks[i].pixels.set(px);
-        if (pickerCanvases[i]) paintBlock(pickerCanvases[i], px, pal(), { transparent: sprites });
-      }
-      changed();
-      insight.refresh(true);
+    layoutChanged: () => {
+      groupKeys = new WeakMap();
+      if (group) select(current);
     },
   });
   // background blocks: which are walking paths the walkthrough bot keeps to (companion file)
@@ -181,6 +189,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     markPicker();
   }
   function select(i: number): void {
+    finishStroke(false);
+    group = undefined;
+    saveGroup = undefined;
+    groupKey = '';
     current = i;
     if (!picked.includes(i)) picked = [i];
     view.set({ block: i });
@@ -195,140 +207,197 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   }
 
   // ---- pixel canvas -------------------------------------------------------
-  const SCALE = 16;
+  let scale = 16;
   const canvas = h('canvas', {
     class: `pixel blk-canvas ${sprites ? 'checker' : ''}`,
-    width: BLEN * SCALE,
-    height: BLEN * SCALE,
+    width: BLEN * scale,
+    height: BLEN * scale,
     role: 'img',
     'aria-label': 'Block painting area, 20 by 20 pixels: drag to paint, right-drag to erase',
   });
   const ctx = canvas.getContext('2d')!;
   let lineStart: { x: number; y: number } | undefined;
   let before: Uint8Array | undefined;
-
-  function renderBlock(preview?: Uint8Array): void {
-    const px = preview ?? blocks[current].pixels;
-    const l = lut(pal());
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let y = 0; y < BLEN; y++)
-      for (let x = 0; x < BLEN; x++) {
-        const v = px[y * BLEN + x];
-        if (sprites && v === TRANSPARENT) continue;
-        const c = l[v];
-        ctx.fillStyle = `rgb(${c & 255},${(c >> 8) & 255},${(c >> 16) & 255})`;
-        ctx.fillRect(x * SCALE, y * SCALE, SCALE, SCALE);
-      }
-    ctx.strokeStyle = 'rgba(128,128,128,0.25)';
-    for (let i = 1; i < BLEN; i++) {
-      ctx.beginPath();
-      ctx.moveTo(i * SCALE + 0.5, 0);
-      ctx.lineTo(i * SCALE + 0.5, canvas.height);
-      ctx.moveTo(0, i * SCALE + 0.5);
-      ctx.lineTo(canvas.width, i * SCALE + 0.5);
-      ctx.stroke();
-    }
-    if (!preview && pickerCanvases[current]) paintBlock(pickerCanvases[current], blocks[current].pixels, pal(), { transparent: sprites });
-    if (!preview) insight?.refresh();
-    if (!preview) groups?.refresh();
-    if (!preview) mirrorBar?.refresh();
-  }
-
-  /** Sets a pixel and its mirror images. */
-  function plot(px: Uint8Array, x: number, y: number, v: number): void {
-    for (const [mx, my] of mirrorPoints(x, y, mirror)) px[my * BLEN + mx] = v;
-  }
-
-  /** Lightens (dir 1) or darkens (-1) a pixel and its mirror images one step along their palette ramps, once a stroke. */
-  function shadeAt(x: number, y: number, dir: 1 | -1): void {
-    const px = blocks[current].pixels;
-    for (const [mx, my] of mirrorPoints(x, y, mirror)) {
-      const i = my * BLEN + mx;
-      if (shaded.has(i) || (sprites && px[i] === TRANSPARENT)) continue;
-      shaded.add(i);
-      px[i] = shade(pal(), px[i], dir);
-    }
-  }
-
-  const cell = (e: PointerEvent) => {
-    const r = canvas.getBoundingClientRect();
-    return {
-      x: Math.max(0, Math.min(BLEN - 1, Math.floor(((e.clientX - r.left) / r.width) * BLEN))),
-      y: Math.max(0, Math.min(BLEN - 1, Math.floor(((e.clientY - r.top) / r.height) * BLEN))),
-    };
+  let stroke: Uint8Array | undefined;
+  const groupCaption = h('span', { class: 'meta' });
+  const groupBar = h(
+    'div',
+    { class: 'toolbar blk-edit-group', hidden: true },
+    groupCaption,
+    h(
+      'button',
+      {
+        type: 'button',
+        onclick: () => {
+          picked = [current];
+          anchor = current;
+          select(current);
+        },
+      },
+      'Edit one block',
+    ),
+  );
+  const write = (pixels: Uint8Array) => surface().write(pixels);
+  const picture = () => {
+    const s = surface(),
+      p = new Pixels(s.width, s.height);
+    p.px.set(s.read());
+    return p;
+  };
+  const updateGroup = (next: BlockGroup) => {
+    saveGroup?.(next);
+    group = next;
   };
 
+  function renderBlock(preview?: Uint8Array): void {
+    const s = surface(),
+      px = preview ?? s.read(),
+      w = s.width,
+      h = s.height;
+    scale = Math.max(2, Math.min(16, Math.floor(320 / Math.max(w, h))));
+    if (canvas.width !== w * scale || canvas.height !== h * scale) {
+      canvas.width = w * scale;
+      canvas.height = h * scale;
+    }
+    canvas.style.aspectRatio = `${w} / ${h}`;
+    canvas.classList.toggle('checker', sprites || !!group?.cells.includes(-1));
+    canvas.setAttribute('aria-label', `${group ? 'Group' : 'Block'} painting area, ${w} by ${h} pixels: drag to paint, right-drag to erase`);
+    groupBar.hidden = !group;
+    groupCaption.textContent = group ? `Editing “${group.name}” as one picture, ${w} × ${h} pixels. Properties apply to block ${current}.` : '';
+    const colors = lut(pal());
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) {
+        if (s.address(x, y) === undefined) continue;
+        const value = px[y * w + x];
+        if (sprites && value === TRANSPARENT) continue;
+        const c = colors[value];
+        ctx.fillStyle = `rgb(${c & 255},${(c >> 8) & 255},${(c >> 16) & 255})`;
+        ctx.fillRect(x * scale, y * scale, scale, scale);
+      }
+    for (let x = 1; x < w; x++) {
+      ctx.strokeStyle = x % BLEN ? 'rgba(128,128,128,0.25)' : 'rgba(128,128,128,0.8)';
+      ctx.beginPath();
+      ctx.moveTo(x * scale + 0.5, 0);
+      ctx.lineTo(x * scale + 0.5, canvas.height);
+      ctx.stroke();
+    }
+    for (let y = 1; y < h; y++) {
+      ctx.strokeStyle = y % BLEN ? 'rgba(128,128,128,0.25)' : 'rgba(128,128,128,0.8)';
+      ctx.beginPath();
+      ctx.moveTo(0, y * scale + 0.5);
+      ctx.lineTo(canvas.width, y * scale + 0.5);
+      ctx.stroke();
+    }
+    if (!preview) {
+      for (const id of s.ids) if (pickerCanvases[id]) paintBlock(pickerCanvases[id], blocks[id].pixels, pal(), { transparent: sprites });
+      insight?.refresh();
+      groups?.refresh();
+      mirrorBar?.refresh();
+    }
+  }
+
+  function plot(px: Uint8Array, x: number, y: number, value: number): void {
+    const s = surface();
+    for (const [mx, my] of mirrorAll(x, y, s.width, s.height, mirror)) s.plot(px, mx, my, value);
+  }
+  function shadeAt(x: number, y: number, dir: 1 | -1): void {
+    if (!stroke) return;
+    const s = surface();
+    for (const [mx, my] of mirrorAll(x, y, s.width, s.height, mirror)) {
+      const address = s.address(mx, my),
+        i = my * s.width + mx;
+      if (address === undefined || shaded.has(address) || (sprites && stroke[i] === TRANSPARENT)) continue;
+      shaded.add(address);
+      s.plot(stroke, mx, my, shade(pal(), stroke[i], dir));
+    }
+    write(stroke);
+  }
+  const cell = (e: PointerEvent) => {
+    const r = canvas.getBoundingClientRect(),
+      s = surface();
+    return {
+      x: Math.max(0, Math.min(s.width - 1, Math.floor(((e.clientX - r.left) / r.width) * s.width))),
+      y: Math.max(0, Math.min(s.height - 1, Math.floor(((e.clientY - r.top) / r.height) * s.height))),
+    };
+  };
   function shapePixels(a: { x: number; y: number }, b: { x: number; y: number }, src: Uint8Array): Uint8Array {
     const out = src.slice();
-    if (tool === 'rect') {
-      for (let x = Math.min(a.x, b.x); x <= Math.max(a.x, b.x); x++) {
-        plot(out, x, a.y, color);
-        plot(out, x, b.y, color);
-      }
-      for (let y = Math.min(a.y, b.y); y <= Math.max(a.y, b.y); y++) {
-        plot(out, a.x, y, color);
-        plot(out, b.x, y, color);
-      }
-      return out;
-    }
-    const n = Math.max(Math.abs(b.x - a.x), Math.abs(b.y - a.y), 1);
-    for (let i = 0; i <= n; i++) plot(out, Math.round(a.x + ((b.x - a.x) * i) / n), Math.round(a.y + ((b.y - a.y) * i) / n), color);
+    (tool === 'rect' ? box : line)(a, b, (x, y) => plot(out, x, y, color));
     return out;
   }
-
   function fill(x: number, y: number): void {
-    for (const [mx, my] of mirrorPoints(x, y, mirror)) fillOne(mx, my);
+    if (!stroke) return;
+    const s = surface(),
+      pixels = stroke;
+    for (const [mx, my] of mirrorAll(x, y, s.width, s.height, mirror))
+      floodFill(
+        pixels,
+        s.width,
+        s.height,
+        mx,
+        my,
+        color,
+        (x, y) => s.address(x, y) !== undefined,
+        (x, y, v) => s.plot(pixels, x, y, v),
+      );
+    write(pixels);
   }
-  function fillOne(x: number, y: number): void {
-    const px = blocks[current].pixels;
-    const target = px[y * BLEN + x];
-    if (target === color) return;
-    const stack = [[x, y]];
-    while (stack.length) {
-      const [cx, cy] = stack.pop()!;
-      if (cx < 0 || cy < 0 || cx >= BLEN || cy >= BLEN || px[cy * BLEN + cx] !== target) continue;
-      px[cy * BLEN + cx] = color;
-      stack.push([cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]);
-    }
+  function pushUndo(ids = surface().ids): void {
+    history.record(scope(), ids, group);
   }
-
-  function pushUndo(): void {
-    undo[current].push(blocks[current].pixels.slice());
-    if (undo[current].length > 50) undo[current].shift();
-    redo[current].length = 0;
+  /** Cancelled strokes preserve both pixels and the existing Undo/Redo stacks. */
+  function finishStroke(commit: boolean): void {
+    if (!before) return;
+    const s = surface(),
+      original = before;
+    if (commit && stroke) {
+      write(stroke);
+      if (stroke.some((value, i) => value !== original[i])) {
+        const parts = group ? splitGroup(group, original) : new Map([[current, original]]);
+        history.record(scope(), s.ids, group, parts);
+        save();
+      }
+    } else write(original);
+    lineStart = before = stroke = undefined;
+    renderBlock();
+    refreshUndo();
   }
-
   function changed(): void {
     renderBlock();
     save();
     refreshUndo();
   }
 
-  /** Undo (back) or redo (forward) the last paint on this block. */
   function step(back: boolean): void {
-    const [from, to] = back ? [undo[current], redo[current]] : [redo[current], undo[current]];
-    const snap = from.pop();
+    finishStroke(false);
+    const snap = history.step(scope(), back, group);
     if (!snap) return;
-    to.push(blocks[current].pixels.slice());
-    blocks[current].pixels.set(snap);
+    if (snap.group) updateGroup(snap.group);
+    // A multi-block operation may include pictures outside the visible group.
+    for (const [id, px] of snap.pixels) if (pickerCanvases[id]) paintBlock(pickerCanvases[id], px, pal(), { transparent: sprites });
     changed();
+    markPicker();
   }
-  const undoBtn = h('button', { title: 'Undo the last paint on this block (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const undoBtn = h('button', { title: 'Undo the last paint (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
   const redoBtn = h('button', { title: 'Redo (Ctrl+Shift+Z or Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
   function refreshUndo(): void {
-    undoBtn.disabled = !undo[current]?.length;
-    redoBtn.disabled = !redo[current]?.length;
+    const available = history.available(scope());
+    undoBtn.disabled = !available.undo;
+    redoBtn.disabled = !available.redo;
   }
-
   canvas.addEventListener('pointerdown', (e) => {
-    canvas.setPointerCapture(e.pointerId);
-    const p = cell(e);
+    const p = cell(e),
+      s = surface();
+    if (s.address(p.x, p.y) === undefined) return;
     if (tool === 'pick' || e.altKey) {
-      color = blocks[current].pixels[p.y * BLEN + p.x];
+      color = s.read()[p.y * s.width + p.x];
       renderSwatches();
       return;
     }
-    pushUndo();
+    canvas.setPointerCapture(e.pointerId);
+    before = s.read();
+    stroke = before.slice();
     if (tool === 'shade') {
       shaded = new Set();
       shadeAt(p.x, p.y, e.button === 2 ? -1 : 1);
@@ -337,26 +406,27 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     }
     if (tool === 'fill') {
       fill(p.x, p.y);
-      changed();
+      finishStroke(true);
       return;
     }
     if (tool === 'line' || tool === 'rect') {
       lineStart = p;
-      before = blocks[current].pixels.slice();
       return;
     }
-    plot(blocks[current].pixels, p.x, p.y, e.button === 2 ? (sprites ? TRANSPARENT : 0) : color);
+    plot(stroke, p.x, p.y, e.button === 2 ? (sprites ? TRANSPARENT : 0) : color);
+    write(stroke);
     renderBlock();
   });
   canvas.addEventListener('pointermove', (e) => {
-    if (!canvas.hasPointerCapture(e.pointerId)) return;
+    if (!canvas.hasPointerCapture(e.pointerId) || !stroke) return;
     const p = cell(e);
     if (lineStart && before) {
       renderBlock(shapePixels(lineStart, p, before));
       return;
     }
     if (tool === 'draw' && !e.altKey) {
-      plot(blocks[current].pixels, p.x, p.y, e.buttons === 2 ? (sprites ? TRANSPARENT : 0) : color);
+      plot(stroke, p.x, p.y, e.buttons === 2 ? (sprites ? TRANSPARENT : 0) : color);
+      write(stroke);
       renderBlock();
     }
     if (tool === 'shade') {
@@ -365,41 +435,55 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     }
   });
   canvas.addEventListener('pointerup', (e) => {
-    if (lineStart && before) blocks[current].pixels.set(shapePixels(lineStart, cell(e), before));
-    lineStart = before = undefined;
-    changed();
+    if (lineStart && before) stroke = shapePixels(lineStart, cell(e), before);
+    finishStroke(true);
   });
+  canvas.addEventListener('pointercancel', () => finishStroke(false));
+  canvas.addEventListener('lostpointercapture', () => finishStroke(false));
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
-  function transform(fn: (src: Uint8Array) => Uint8Array): void {
+  function transform(fn: (src: Pixels) => Pixels): void {
     pushUndo();
-    blocks[current].pixels.set(fn(blocks[current].pixels));
+    write(fn(picture()).px);
     changed();
   }
+  function turn(clockwise: boolean): void {
+    const source = picture(),
+      next = clockwise ? turn90(source) : turn180(turn90(source)),
+      layout = surface().turned(clockwise);
+    pushUndo();
+    if (layout) updateGroup(layout);
+    write(next.px);
+    changed();
+    markPicker();
+  }
+
   async function replaceColors(): Promise<void> {
     const r = await recolorDialog(pal(), color, color);
     if (!r) return;
-    const which = r.everyBlock ? blocks.map((_, i) => i) : [current];
-    let n = 0;
-    for (const i of which) {
-      const next = applyRecolor(blocks[i].pixels, r);
-      if (next.every((v, k) => v === blocks[i].pixels[k])) continue;
-      undo[i].push(blocks[i].pixels.slice());
-      redo[i].length = 0;
-      blocks[i].pixels.set(next);
-      if (pickerCanvases[i]) paintBlock(pickerCanvases[i], blocks[i].pixels, pal(), { transparent: sprites });
-      n++;
+    const which = r.everyBlock ? blocks.map((_, i) => i) : surface().ids;
+    const parts = new Map<number, Uint8Array>();
+    for (const id of which) {
+      const next = applyRecolor(blocks[id].pixels, r);
+      if (next.some((v, i) => v !== blocks[id].pixels[i])) parts.set(id, next);
     }
-    if (n) changed();
-    toast(n ? `Recolored ${n} block${n === 1 ? '' : 's'}.` : 'No block used those colors.');
+    if (parts.size) {
+      pushUndo([...parts.keys()]);
+      for (const [id, px] of parts) {
+        blocks[id].pixels.set(px);
+        if (pickerCanvases[id]) paintBlock(pickerCanvases[id], px, pal(), { transparent: sprites });
+      }
+      changed();
+    }
+    toast(parts.size ? `Recolored ${parts.size} block${parts.size === 1 ? '' : 's'}.` : 'No block used those colors.');
   }
+
   async function makeEdges(): Promise<void> {
     const r = await edgeSetDialog(blocks, current, pal());
     if (!r) return;
+    pushUndo(r.pictures.map((_, k) => r.at + k));
     r.pictures.forEach((px, k) => {
       const i = r.at + k;
-      undo[i].push(blocks[i].pixels.slice());
-      redo[i].length = 0;
       blocks[i].pixels.set(px);
       if (pickerCanvases[i]) paintBlock(pickerCanvases[i], px, pal(), { transparent: sprites });
     });
@@ -445,10 +529,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const actions = h(
     'div',
     { class: 'toolbar' },
-    h('button', { title: 'Flip left to right', onclick: () => transform(flipH) }, 'Flip ↔'),
-    h('button', { title: 'Flip top to bottom', onclick: () => transform(flipV) }, 'Flip ↕'),
-    h('button', { title: 'Turn a quarter clockwise', onclick: () => transform(rotateCW) }, 'Rotate ↻'),
-    h('button', { title: 'Turn a quarter counterclockwise', onclick: () => transform(rotateCCW) }, 'Rotate ↺'),
+    h('button', { title: 'Flip left to right', onclick: () => transform(flipX) }, 'Flip ↔'),
+    h('button', { title: 'Flip top to bottom', onclick: () => transform(flipY) }, 'Flip ↕'),
+    h('button', { title: 'Turn a quarter clockwise', onclick: () => turn(true) }, 'Rotate ↻'),
+    h('button', { title: 'Turn a quarter counterclockwise', onclick: () => turn(false) }, 'Rotate ↺'),
     h(
       'span',
       { class: 'blk-shift', role: 'group', 'aria-label': 'Shift a pixel, wrapping round' },
@@ -466,7 +550,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           {
             title: `Shift a pixel ${word}; what leaves one edge comes back on the other`,
             'aria-label': `Shift ${word}`,
-            onclick: () => transform((s) => shiftWrap(s, dx, dy)),
+            onclick: () => transform((s) => shiftPixels(s, dx, dy)),
           },
           icon,
         ),
@@ -483,20 +567,22 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
           },
           'Make an edge set…',
         ),
-    h('button', { onclick: () => (clipboard = structuredClone(blocks[current])) }, 'Copy'),
+    h('button', { onclick: () => (clipboard = picture()) }, 'Copy'),
     h(
       'button',
       {
         onclick: () => {
           if (!clipboard) return;
+          const s = surface();
+          if (clipboard.w !== s.width || clipboard.h !== s.height) return toast(`Copy a picture with the same dimensions (${s.width} × ${s.height}).`);
           pushUndo();
-          blocks[current].pixels.set(clipboard.pixels);
+          write(clipboard.px);
           changed();
         },
       },
       'Paste picture',
     ),
-    h('button', { onclick: () => transform((s) => s.fill(sprites ? TRANSPARENT : color)) }, 'Clear'),
+    h('button', { onclick: () => transform((s) => s.map(() => (sprites ? TRANSPARENT : color))) }, 'Clear'),
     undoBtn,
     redoBtn,
   );
@@ -517,7 +603,10 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
             title: `Fill this block with ${t.name.toLowerCase()} (click again for another)`,
             onclick: () => {
               pushUndo();
-              blocks[current].pixels.set(paintTexture(t, textureSeed++ * 7919, pal()));
+              const texture = paintTexture(t, textureSeed++ * 7919, pal()),
+                p = picture();
+              p.map((x, y) => texture[(y % BLEN) * BLEN + (x % BLEN)]);
+              write(p.px);
               changed();
             },
           },
@@ -727,8 +816,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
         blocks,
         current: () => current,
         setPixels: (i, px) => {
-          undo[i].push(blocks[i].pixels.slice());
-          redo[i].length = 0;
+          pushUndo([i]);
           blocks[i].pixels.set(px);
           if (pickerCanvases[i]) paintBlock(pickerCanvases[i], px, pal(), { transparent: sprites });
           changed();
@@ -756,7 +844,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   );
   const columns = [
     h('div', { class: 'blk-picker' }, picker),
-    h('div', { class: 'blk-paint stack' }, tools, canvas, actions, mirrorSlot, groups.el, sprites ? null : textures, badges.el, insight.el),
+    h('div', { class: 'blk-paint stack' }, groupBar, tools, canvas, actions, mirrorSlot, groups.el, sprites ? null : textures, badges.el, insight.el),
     h('div', { class: 'blk-side' }, sideTabs),
   ];
   clear(
@@ -782,6 +870,11 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   insight.refresh(true);
 
   const onKey = (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && before) {
+      e.preventDefault();
+      finishStroke(false);
+      return;
+    }
     if (!(e.ctrlKey || e.metaKey) || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
     const k = e.key.toLowerCase();
     if (k === 'z' || k === 'y') {
@@ -791,6 +884,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   };
   window.addEventListener('keydown', onKey);
   return () => {
+    finishStroke(false);
     window.removeEventListener('keydown', onKey);
     insight.dispose();
     groups.dispose();

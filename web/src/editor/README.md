@@ -172,6 +172,11 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `blockPaintHistory.ts` records all affected tile pictures in one Undo step, including
   the group layout for a turn. Independent block histories survive; overlapping histories
   are invalidated when an edit would otherwise let them restore stale pixels.
+  Edit as one picture opens the group in the main canvas, sharing every paint tool and
+  palette control. The banner returns to one block and identifies whose behavior fields
+  the sidebar edits. Strokes update native tile thumbnails live; Escape cancels a stroke
+  without changing Undo/Redo. A group turn also turns its companion layout; maps retain
+  their own tile placement.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its
