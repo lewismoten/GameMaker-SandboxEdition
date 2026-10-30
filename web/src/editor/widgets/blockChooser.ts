@@ -20,6 +20,7 @@ export function chooseBlock(
   extras: BlockExtra[] = [],
   transparent = true,
   only?: (b: Block, i: number) => boolean,
+  name: (index: number) => string = (index) => `Block ${index}`,
 ): Promise<number | undefined> {
   return modal<number>(title, (close) =>
     h(
@@ -38,7 +39,7 @@ export function chooseBlock(
           ? null
           : h(
               'button',
-              { class: i === current ? 'selected' : '', title: `Block ${i}`, onclick: () => close(i) },
+              { class: i === current ? 'selected' : '', title: name(i), 'aria-label': name(i), onclick: () => close(i) },
               blockCanvas(b.pixels, pal, { transparent, className: 'checker' }),
               h('small', null, i),
             ),
@@ -53,7 +54,7 @@ export function blockButton(
   pal: () => Palette,
   get: () => number,
   set: (n: number) => void,
-  opts: { title?: string; extras?: BlockExtra[]; transparent?: boolean; only?: (b: Block, i: number) => boolean } = {},
+  opts: { title?: string; extras?: BlockExtra[]; transparent?: boolean; only?: (b: Block, i: number) => boolean; name?: (index: number) => string } = {},
 ): HTMLButtonElement {
   const btn = h('button', { class: 'block-button', title: opts.title ?? 'Choose a block' });
   const render = () => {
@@ -70,7 +71,7 @@ export function blockButton(
     );
   };
   btn.addEventListener('click', async () => {
-    const n = await chooseBlock(opts.title ?? 'Choose a block', blocks(), pal(), get(), opts.extras, opts.transparent ?? true, opts.only);
+    const n = await chooseBlock(opts.title ?? 'Choose a block', blocks(), pal(), get(), opts.extras, opts.transparent ?? true, opts.only, opts.name);
     if (n === undefined) return;
     set(n);
     render();
