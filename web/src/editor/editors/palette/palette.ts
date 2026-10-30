@@ -66,7 +66,26 @@ registerEditor(['pal'], (host, project, file) => {
       'backgrounds',
     );
   const swatches = rovingGrid(h('div', { class: 'swatches pal-swatches' }), 'Palette colors (Shift+arrow keys select a range)', { multiselect: true });
-  const preview = h('div', { style: 'width:64px;height:64px;border:1px solid var(--border);border-radius:6px' });
+  const preview = h('button', {
+    type: 'button',
+    style: 'width:64px;height:64px;border:1px solid var(--border);border-radius:6px',
+    'aria-label': 'Choose color',
+    title: 'Choose hue, saturation and brightness',
+    onclick: async () => {
+      const index = selected;
+      const { pickColor } = await import('./colorPicker');
+      if (disposed) return;
+      const color = await pickColor([0, 1, 2].map((c) => (pal[index * 3 + c] * 255) / 63) as [number, number, number]);
+      if (!color || disposed) return;
+      remember();
+      pal.set(
+        color.map((c) => Math.round((c * 63) / 255)),
+        index * 3,
+      );
+      save();
+      refresh();
+    },
+  });
   const saveCanvas = h('canvas', { class: 'pal-zero-shot', role: 'img', 'aria-label': 'Save game with this palette on color 0' });
   let refreshSave: (() => void) | undefined;
   let disposed = false;

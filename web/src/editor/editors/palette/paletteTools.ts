@@ -161,7 +161,7 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; uses: HTMLEl
   );
 
   // ---- blocks that use the chosen color ------------------------------------------
-  const usesHead = h('h3', null);
+  const usesHead = h('h2', null);
   const usesList = h('ul', { class: 'pal-uses' });
   let usesTimer: ReturnType<typeof setTimeout> | undefined;
   const listUses = () => {
