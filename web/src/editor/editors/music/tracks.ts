@@ -1,6 +1,6 @@
 // The track list: one track per MIDI channel, with its instrument, mute and solo, and
 // buttons to add, copy, paste and remove tracks (copy and paste in trackPaste.ts).
-import { h, clear, confirmDialog } from '../../core/ui';
+import { h, clear } from '../../core/ui';
 import { channelNotes, removeChannel, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import { RHYTHM_CHANNELS, DRUM_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { TRACK_COLORS, type MusicDoc } from './doc';
@@ -60,10 +60,8 @@ export class TrackList {
     this.render();
   }
 
-  private async remove(ch: number): Promise<void> {
+  private remove(ch: number): void {
     const doc = this.doc;
-    const n = channelNotes(doc.song, ch).length;
-    if (n && !(await confirmDialog('Remove track', `Remove ${doc.trackName(ch)} and its ${n} notes?`, 'Remove'))) return;
     doc.edit(() => {
       removeChannel(doc.song, ch);
       doc.extra.delete(ch);
