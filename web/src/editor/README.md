@@ -470,6 +470,8 @@ native game files are loaded only when the player chooses an archive action.
   sequences and monster companions without creating or saving a project. Its
   deterministic clock keeps blank pictures, emits birth/movement events once
   at native frame boundaries, and bounds catch-up after a delayed browser frame.
+  Automatic tours hold brief poses for two seconds and always finish the full
+  native period of longer animations before advancing.
 
 - **Character audition stage.** `widgets/characterAuditionStage.ts` paints
   native body/monster frames and bounded projectiles. Its optional manual

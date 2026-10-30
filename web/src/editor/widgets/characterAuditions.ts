@@ -6,6 +6,8 @@ import { parseMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engin
 import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import { charactersForBlocks } from './characterSets';
 
+export const AUDITION_HZ = 18.2;
+
 export interface AuditionEvent {
   tick: number;
   frame: Frame;
@@ -75,6 +77,11 @@ export function auditionFrame(sequence: CharacterAudition, tick: number, fallbac
   const phase = Math.max(0, tick) % sequence.ticks;
   for (let i = sequence.steps.length - 1; i >= 0; i--) if (sequence.steps[i].tick <= phase) return sequence.steps[i].frame;
   return fallback;
+}
+
+/** Keep brief poses readable, and let every native frame finish before the automatic tour advances. */
+export function auditionTourTicks(sequence: CharacterAudition): number {
+  return Math.max(Math.ceil(AUDITION_HZ * 2), sequence.ticks);
 }
 
 /** Commands at a loop boundary precede the next loop's first picture, just as PLAYGAME scans them. */

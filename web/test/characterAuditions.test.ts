@@ -5,7 +5,7 @@ import { newCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-
 import { newBlockSet, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { newMonsterSet, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
-import { characterAuditions, auditionFrame, auditionEvents } from '../src/editor/widgets/characterAuditions';
+import { characterAuditions, auditionFrame, auditionEvents, auditionTourTicks } from '../src/editor/widgets/characterAuditions';
 
 function fixture() {
   const chr = newCharacter(),
@@ -75,6 +75,12 @@ describe('character audition clock', () => {
     expect(auditionFrame(blank, 0, set.pose)!.pic1).toBe(50);
     expect(blank.ticks).toBe(1);
     expect(auditionEvents(commands, 0, Infinity)).toEqual([]);
+  });
+  it('holds brief poses but never cuts a long native animation short', () => {
+    const { files, bytes } = fixture(),
+      sequence = characterAuditions(files, 'hero.cbl', bytes).sequences[0];
+    expect(auditionTourTicks(sequence)).toBe(37);
+    expect(auditionTourTicks({ ...sequence, ticks: 534 })).toBe(534);
   });
   it('still previews character pictures when the monster companion is damaged', () => {
     const { files, bytes } = fixture();
