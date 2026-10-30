@@ -14,3 +14,8 @@ keep their own game files, licenses and notices.
 THE CHEZ links to the standalone Vite integration project at its maintainer-confirmed
 GitHub Pages address. Its Teddy preview and ZIP paths match that project's build output;
 no artwork or game files are copied into this catalog.
+
+`homeGame.ts` adapts an entry to the home library's model. It draws a title card immediately
+and loads the optional creator image anonymously in the background, shared between the
+tile and featured preview. Missing images leave the title card usable. Native files and
+demo playback are not part of listing or previewing a Community entry.

@@ -7,6 +7,8 @@ import type { listProjects } from '../../project/storage';
 import { catalogGame, projectGame, type GameKind, type HomeGame } from './homeCards';
 import { CATEGORIES, type Category } from './homeCategories';
 import { findOriginal, isImported } from './homeOrigin';
+import { COMMUNITY_GAMES } from '../../community/catalog';
+import { communityGame } from '../../community/homeGame';
 
 export const SORT_KEY = 'gm-home-sort';
 /** 'rating' groups Imported by stars (My games keep the edited order). */
@@ -52,11 +54,13 @@ export function homeLibrary() {
     /** Your games made here (My games) or imported. */
     own: (c: Category) => (isOwn(c) ? lib.projects.filter((p) => isImported(p.id) === (c === 'imported')) : []),
     gamesOf: (c: Category): HomeGame[] =>
-      isOwn(c)
-        ? sorted()
-            .filter((p) => isImported(p.id) === (c === 'imported'))
-            .map(lib.mine)
-        : lib.entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind))),
+      c === 'community'
+        ? [...COMMUNITY_GAMES].sort((a, b) => a.title.localeCompare(b.title)).map((game) => remember(communityGame(game)))
+        : isOwn(c)
+          ? sorted()
+              .filter((p) => isImported(p.id) === (c === 'imported'))
+              .map(lib.mine)
+          : lib.entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind))),
     findGame: (key: string): HomeGame | undefined => {
       for (const c of CATEGORIES) {
         const g = lib.gamesOf(c.id).find((x) => x.key === key);
