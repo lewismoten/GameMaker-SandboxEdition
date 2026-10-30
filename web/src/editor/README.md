@@ -417,3 +417,8 @@ native game files are loaded only when the player chooses an archive action.
   `character/characterBirthPreview.ts`; the selected preview source is saved in
   the CHR companion section `monsterBirthPreview`. Scene file bindings and
   native birth command numbers remain unchanged by preview choices.
+
+- **Character frame groups.** `blocks/blockClips.ts` infers top/bottom pairs from
+  every CHR linked to the CBL through an adventure scene. Repeated pairs across
+  frames, scenes and characters appear once. Birth commands and oriented frames
+  are excluded because a plain block group cannot represent their appearance.

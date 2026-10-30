@@ -83,7 +83,17 @@ export function groupClipFor(project: Project, file: string, kind: BlockKind, bl
 
 /** Groups the files suggest for this set. */
 export function suggestionsFor(project: Project, file: string, kind: BlockKind, count: number): Suggestion[] {
-  if (kind === 'cbl') return charactersFor(project, file).flatMap((c) => guessCharacterGroups(c, (i) => seqName(c, i)));
+  if (kind === 'cbl') {
+    const seen = new Set<string>();
+    return charactersFor(project, file)
+      .flatMap((c) => guessCharacterGroups(c, (i) => seqName(c, i)))
+      .filter((suggestion) => {
+        const key = suggestion.group.cells.join(',');
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+  }
   if (kind === 'bbl') {
     const maps = filesFor(project, file, kind, 'map').flatMap((f) => some(tryParse(() => parseMap(project.files.get(f)!).blocks)));
     return guessMapGroups(maps, count);
