@@ -80,3 +80,13 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
 Package isolation verification lives in [`../../scripts/`](../../scripts/README.md); root `npm run verify:packages` builds each SDK outside the monorepo. The dependency credits generator reads the root workspace lockfile.
 
 `gameArchive.ts` builds the catalog ZIPs with the archives SDK through `exportDos`, including the game files, customized XFERPLAY, sound driver, setup help and notices. A fixed timestamp makes them reproducible. ZIP filenames and native contents follow DOS 8.3 naming. URLs such as `games/originals/teddy/teddy.zip` remain stable across releases and serve the current version; service-worker group hashes handle cache updates. Vite serves the same permanent ZIPs and cached preview images, invalidating them when source files change. Resource-only CD folders receive data ZIPs. Walkthrough JSON and prebuilt catalog pictures remain separate browser metadata.
+
+`../../scripts/game-build-inputs.mjs` fingerprints build inputs and ignores generated output.
+`../../scripts/render-game-frames.mjs <0..7>` renders an independent eighth of Depth
+Perception's animation frames. The reusable `game-frames.yml` workflow runs these in parallel,
+with each job capped at five minutes, and passes the lossless frame artifacts to the Pages
+and native-download builds. All disks and render caches remain untracked. Local builds
+prepare missing frame shards with two processes at a time. `GM_SKIP_GAME_BUILD=1` defers game
+output generation for these rendering jobs; normal installs and builds generate it.
+SDK-only package checks and publication jobs set `GM_SKIP_GAME_BUILD=1` for all steps,
+since their selected tests use synthetic format data and do not need the game disks.
