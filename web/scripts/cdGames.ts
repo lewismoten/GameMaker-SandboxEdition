@@ -11,7 +11,7 @@
 //   games/shareware/<id>/<file>  shareware games (play only, with the author's notice)
 //   games/originals/<id>/<file>  new games made for this project (../games/<id>/disk),
 //                                published as shareware, with box, label and manual data
-//   games/<kind>/<id>/<id>.<hash>.zip    each game's DOS distribution, what the built site
+//   games/<kind>/<id>/<hash>/<game>.zip    each game's DOS distribution, what the built site
 //                                fetches to play or open a game (src/project/gamePack.ts)
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
 //   dos/config.hlp                       its setup screen's help, which a Transfer put beside it
@@ -503,7 +503,9 @@ export function cdGames(cdRoot: string): Plugin {
       const archives = new Map<string, string>();
       for (const e of [...get().catalog, ...get().secret]) {
         const zip = await gameArchive(e, files);
-        const name = `${e.id}.${createHash('sha256').update(zip).digest('hex').slice(0, 10)}.zip`;
+        const hash = createHash('sha256').update(zip).digest('hex').slice(0, 8);
+        const stem = (e.gam?.replace(/\.gam$/i, '') ?? e.id).slice(0, 8);
+        const name = `${hash}/${stem}.zip`;
         archives.set(e.path, name);
         packs.set(`${e.path}${name}`, zip);
       }

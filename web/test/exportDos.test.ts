@@ -32,7 +32,8 @@ describe('DOS export', () => {
       const files = new GameFiles(readdirSync(sample).map((n) => [n, new Uint8Array(readFileSync(join(sample, n)))]));
       files.set('game0.sav', new TextEncoder().encode('{}')); // web-only save, must be left out
       const { name, zip, exe } = await exportDos(files, { title: 'SAMPLE GAME', gam: 'sample.gam', appBase: 'http://x/' });
-      expect(name).toBe('sample-dos.zip');
+      expect(name).toBe('sample.zip');
+      expect(dosNameProblems([name])).toEqual([]);
       expect(exe).toBe('SAMPLE.EXE');
       const entries = new Map((await readZip(zip)).map((e) => [e.name, e.data]));
       expect(Buffer.compare(entries.get('SAMPLE.EXE')!, readFileSync(join(cdgm, 'xferplay.exe')))).toBe(0);

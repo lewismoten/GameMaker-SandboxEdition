@@ -145,7 +145,7 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
       ),
     },
   ];
-  return { name: `${stem.toLowerCase()}-dos.zip`, zip: await createZip(entries, opts.date), exe };
+  return { name: `${stem.toLowerCase()}.zip`, zip: await createZip(entries, opts.date), exe };
 }
 
 /** Runtime files from the site's CD copy; catalog builds supply these bytes themselves. */
