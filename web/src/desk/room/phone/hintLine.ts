@@ -1,10 +1,15 @@
 // Teddy's fictional 900-number hint service. Only confirmed listening time is metered.
 import type { CallLine } from './calls';
+import { progress } from '../../../achievements/store';
 import { VOICES } from '../../../audio/voices';
 import { HintBill, HINT_CENTS_PER_MINUTE } from './hintBill';
 
 const bill = new HintBill(() => localStorage);
 const teddy = { ...VOICES.recording, who: 'Teddy', pitch: 1.05, rate: 1.05 };
+const recordBill = (cents: number) => {
+  if (cents > 0) progress('hint-phone-bill', Math.min(cents, 1000), 1000);
+  return cents;
+};
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
 const HINTS: Record<string, string> = {
   '1': 'Save with F5 before trying a tricky stretch. Use different save slots so one unfortunate landing does not become family history. Teddy saves before jumping. Gwinn saves after saying, watch this.',
@@ -32,7 +37,7 @@ export async function hintLine(line: CallLine): Promise<void> {
   line.sounds.stop();
   const choice = await ask(
     line,
-    `Teddy's Hint Kennel! Your parents' pretend phone bill is ${dollars(bill.cents)}. This game charges a fictional ${dollars(HINT_CENTS_PER_MINUTE)} per minute, never real money. Press 1 to start the meter, or 0 to leave free. Teddy accepts neither credit cards nor stolen sandwiches.`,
+    `Teddy's Hint Kennel! Your parents' pretend phone bill is ${dollars(recordBill(bill.cents))}. This game charges a fictional ${dollars(HINT_CENTS_PER_MINUTE)} per minute, never real money. Press 1 to start the meter, or 0 to leave free. Teddy accepts neither credit cards nor stolen sandwiches.`,
   );
   if (choice !== '1' || line.signal.aborted) {
     line.ended('No charge. Teddy waves one very small paw.');
@@ -44,11 +49,11 @@ export async function hintLine(line: CallLine): Promise<void> {
     if (stopped) return;
     stopped = true;
     clearInterval(timer);
-    meter.finish();
+    recordBill(meter.finish());
   };
   line.signal.addEventListener('abort', finish, { once: true });
   const timer = setInterval(() => {
-    if (!stopped) line.status(`Pretend phone bill: ${dollars(meter.checkpoint())}`);
+    if (!stopped) line.status(`Pretend phone bill: ${dollars(recordBill(meter.checkpoint()))}`);
   }, 1000);
   try {
     for (let round = 0; round < 6 && !line.signal.aborted; round++) {
@@ -57,12 +62,12 @@ export async function hintLine(line: CallLine): Promise<void> {
       if (key === '5')
         await line.say(
           teddy,
-          `Your parents' pretend phone bill is ${dollars(meter.checkpoint())}. Gwinn has offered to pay in lint. The telephone company is considering it.`,
+          `Your parents' pretend phone bill is ${dollars(recordBill(meter.checkpoint()))}. Gwinn has offered to pay in lint. The telephone company is considering it.`,
         );
       else await line.say(teddy, HINTS[key] ?? 'That key leads to the biscuit cupboard. The cupboard has declined to comment. Try 1 through 5, or 0 to leave.');
     }
     finish();
-    if (!line.signal.aborted) line.ended(`Teddy's biscuit break. Pretend phone bill: ${dollars(bill.cents)}.`);
+    if (!line.signal.aborted) line.ended(`Teddy's biscuit break. Pretend phone bill: ${dollars(recordBill(bill.cents))}.`);
   } finally {
     finish();
     line.signal.removeEventListener('abort', finish);

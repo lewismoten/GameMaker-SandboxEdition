@@ -45,7 +45,9 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   `hintLine.ts` answers 1-900-555-0144 (Hints speed dial) with Teddy's saving, map,
   enemy and free-help tips. A free prompt asks for 1 before starting pretend charges;
   0, inactivity, six menu rounds, hangup or page exit stops the meter. The call's abort
-  signal also cancels speech and key waits; menu keys can interrupt the spoken prompt) and its notes
+  signal also cancels speech and key waits; menu keys can interrupt the spoken prompt.
+  The cumulative fictional bill advances “An itemized bark” at $10; progress is in pretend
+  cents and the bill itself continues past that threshold) and its notes
   (`phoneNotes.ts`), the shareware catalog (`catalog.ts`) and the magazine lying on the desk
   (`paperStack.ts`), and the mug, phone and lamp (`deskProps.ts`).
 - `props/`: makes the room's little things pressable (`index.ts`, `propKit.ts`, whose `cover`
