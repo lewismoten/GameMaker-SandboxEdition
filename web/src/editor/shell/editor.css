@@ -1425,3 +1425,14 @@ main:focus,
     color: var(--muted);
   }
 }
+
+/* Damaged legacy graphics explain their missing preview without implying replacement art. */
+.thumb.icon.problem {
+  padding: 4px;
+  box-sizing: border-box;
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: normal;
+  text-align: center;
+  color: var(--muted);
+}

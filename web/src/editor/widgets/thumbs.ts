@@ -18,7 +18,8 @@ import { readSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { paintMusicTimeline } from './musicTimeline';
 import { isCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { textPicture } from './textPicture';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../project/files';
 
 /** Everything a thumbnail may need: the file and its neighbors (for palettes and blocks). */
@@ -28,7 +29,7 @@ export interface ThumbSource {
   palette?: Palette;
 }
 
-/** An emoji-free icon for each kind, drawn when there's nothing to show. */
+/** A fallback icon for each kind, drawn when there is no picture to show. */
 export const KIND_ICON: Record<FileKind, string> = {
   gam: '🎮',
   pal: '🎨',
@@ -88,15 +89,20 @@ function sprite(top: Block | undefined, bottom: Block | undefined, pal: Palette)
 
 function iconFor(kind: FileKind, label?: string): HTMLElement {
   const span = document.createElement('span');
-  span.className = 'thumb icon';
-  span.textContent = KIND_ICON[kind];
-  if (label) span.title = label;
+  span.className = label ? 'thumb icon problem' : 'thumb icon';
+  span.textContent = label ? 'Preview unavailable' : KIND_ICON[kind];
+  if (label) {
+    span.title = label;
+    span.setAttribute('role', 'img');
+    span.setAttribute('aria-label', label);
+  }
   return span;
 }
 
 /** A thumbnail for the file, or a kind icon when it can't be drawn. */
-export function fileThumb(name: string, bytes: Uint8Array | undefined, src: ThumbSource): HTMLElement {
+export function fileThumb(name: string, bytes: Uint8Array | undefined, src: ThumbSource, depth = 0): HTMLElement {
   const kind = kindOf(name);
+  if (depth > 4) return iconFor(kind, 'This slideshow links too deeply or loops back to itself.');
   if (!bytes) return iconFor(kind);
   const pal = src.palette ?? defaultPalette();
   try {
@@ -152,7 +158,7 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         return c;
       }
       case 'gif': {
-        if (!isGif(bytes)) return iconFor(kind);
+        if (!isGif(bytes)) return iconFor(kind, `${name.toUpperCase()} is not a GIF image.`);
         const g = decodeGif(bytes);
         const [c] = canvas(g.width, g.height);
         paintIndexed(c, g.pixels, g.width, g.height, g.palette);
@@ -162,7 +168,8 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         // the 320x200 window of its GIF that the game shows
         const b = parseBackdrop(bytes);
         const gif = src.files.get(b.gif);
-        if (!gif || !isGif(gif)) return iconFor(kind, `${b.gif} is missing`);
+        if (!gif) return iconFor(kind, `${b.gif.toUpperCase()} is missing.`);
+        if (!isGif(gif)) return iconFor(kind, `${b.gif.toUpperCase()} is not a GIF image.`);
         const g = decodeGif(gif);
         const w = Math.min(320, g.width);
         const hgt = Math.min(200, g.height);
@@ -173,6 +180,21 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         const [c] = canvas(w, hgt);
         paintIndexed(c, px, w, hgt, g.palette);
         return c;
+      }
+      case 'txt': {
+        const [c] = canvas(320, 200);
+        paintIndexed(c, textPicture(bytes, pal), 320, 200, pal);
+        c.title = 'First text page, on a blank background';
+        return c;
+      }
+      case 'lst': {
+        for (const slide of parseSlideList(bytes)) {
+          const data = src.files.get(slide.name);
+          if (!data) continue;
+          const picture = fileThumb(slide.name, data, src, depth + 1);
+          if (picture instanceof HTMLCanvasElement) return picture;
+        }
+        return iconFor(kind, 'This slideshow has no readable slides.');
       }
       case 'fli': {
         if (!isFli(bytes)) return iconFor(kind);
@@ -232,7 +254,7 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       }
     }
   } catch {
-    /* fall through to the icon */
+    if (['gif', 'bkd', 'txt', 'lst'].includes(kind)) return iconFor(kind, `${name.toUpperCase()} could not be decoded.`);
   }
   return iconFor(kind);
 }
