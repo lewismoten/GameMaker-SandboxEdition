@@ -145,6 +145,11 @@ Part of the [source map](../README.md).
 
 ## How the editors work
 
+The home library's thumbnail action menu (`shell/homeTileMenu.ts`) opens beside its own
+ellipsis button in the browser's top layer. It reuses the project actions, keeps the
+featured game unchanged, and shows a scrolling cue when the available space is short.
+Arrow keys, Home/End and Escape work inside it; action dialogs return to the invoking tile.
+
 Each `editor/editors/<kind>/<kind>.ts` calls `registerEditor([...kinds], fn)`
 (`editors/registry.ts`). The workspace (`shell/workspace.ts`) lists the project's files by kind
 and renders `editors[kind]` for the one chosen; edits go through `core/project.ts`, which
