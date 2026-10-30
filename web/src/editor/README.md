@@ -228,6 +228,9 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   and monster ranges under the game's `paletteReservations` companion section, shared by
   all project palettes. Reassignment splits and merges ranges; color 0 (menus) and 255
   (sprite transparency) retain their fixed roles. No reservation data enters DOS files.
+  `copyReservedRanges` merges selected areas from another game's companion, optionally
+  copying their palette colors at the same indices. The receiving palette editor owns
+  the single Undo step for both colors and metadata; other native files remain unchanged.
 
 Catalog DOS downloads save the same built game ZIP used for browser loading. Downloads of edited projects are still rebuilt from their current files.
 

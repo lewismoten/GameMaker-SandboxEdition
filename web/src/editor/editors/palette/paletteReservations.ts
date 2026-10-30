@@ -53,3 +53,22 @@ export function reservationAt(ranges: readonly PaletteReservation[], color: numb
   if (color === 255) return 'transparent';
   return ranges.find((range) => range.first <= color && color <= range.last)?.role;
 }
+
+/** Copy selected source areas at the same indices, optionally including their native colors. */
+export function copyReservedRanges(
+  targetPalette: Uint8Array,
+  targetRanges: unknown,
+  sourcePalette: Uint8Array | undefined,
+  sourceRanges: unknown,
+  selected: readonly PaletteRole[],
+): { pal: Uint8Array; roles: PaletteReservation[] } {
+  if (targetPalette.length !== 768 || (sourcePalette && sourcePalette.length !== 768)) throw new RangeError('A palette must contain 256 RGB colors.');
+  const pal = targetPalette.slice();
+  let ranges = readReservations(targetRanges);
+  for (const range of readReservations(sourceRanges)) {
+    if (!selected.includes(range.role)) continue;
+    ranges = reserveColors(ranges, range.first, range.last, range.role);
+    if (sourcePalette) pal.set(sourcePalette.subarray(range.first * 3, (range.last + 1) * 3), range.first * 3);
+  }
+  return { pal, roles: ranges };
+}
