@@ -1,5 +1,5 @@
 // Digitized clips of "I Screamed, She Smirked" (The Bard of Bizarre), as Sound Blaster .VOC files.
-// The samples (clips/<name>.pcm: 8-bit unsigned mono at 11025 Hz) are cut from the recording by
+// The samples (clips/<name>.wav: 8-bit unsigned mono at 11025 Hz) are cut from the recording by
 // games/smirked/tools/cutClips.py, which reads the MP3 (not in the repo) and regenerates them
 // exactly. Game-Maker reads a VOC's size as 16 bits, so each stays under 40,000 bytes.
 //
@@ -24,10 +24,9 @@
 //   ashamed    110.78  114.28   3.50 s    38621    the last chorus: "She's eight, and I'm ashamed"
 //   datewell   139.38  141.31   1.93 s    21312    the outro: "So yeah. The date went well."
 // (A speech recognizer hears each clip's words back.)
-import { readFileSync } from 'node:fs';
+import { audioFileToVoc } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 
 export const CLIPS = [
   'mild',
@@ -56,11 +55,5 @@ const here = dirname(fileURLToPath(import.meta.url));
 
 /** The clip as a Creative Voice File. */
 export function clipVoc(name: ClipName): Uint8Array {
-  const pcm = readFileSync(join(here, 'clips', `${name}.pcm`));
-  const samples = new Float32Array(pcm.length);
-  // encodeVoc writes round(v * 127 + 128), so this gives back the very bytes cutClips.py wrote.
-  for (let i = 0; i < pcm.length; i++) samples[i] = (pcm[i] - 128) / 127;
-  const voc = encodeVoc(samples, RATE);
-  if (voc.length >= 40000) throw new Error(`${name}.voc is ${voc.length} bytes; Game-Maker reads 16 bits of size`);
-  return voc;
+  return audioFileToVoc(join(here, 'clips', `${name}.wav`), { sampleRate: RATE, maxBytes: 39999 });
 }

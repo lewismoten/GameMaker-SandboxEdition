@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Cuts the digitized sound clips for "I Screamed, She Smirked" out of the recording, which is NOT
 # committed (.for-lewis/songs/smirked/I Screamed, She Smirked.mp3), into
-# games/smirked/src/sound/clips/<name>.pcm (games/kit/song/cutclips.py does the cutting; see it
+# games/smirked/src/sound/clips/<name>.wav (games/kit/song/cutclips.py does the cutting; see it
 # for the filters), which games/smirked/src/sound/clips.ts wraps as Creative Voice Files.
 #
 #   python3 -I games/smirked/tools/cutClips.py [path/to/song.mp3] [--out DIR]
