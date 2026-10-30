@@ -37,8 +37,9 @@ import { fitToPane } from '../../core/fitPane';
 import { groupsPanel } from './groupsPanel';
 import { walkPathPanel } from './walkPathPanel';
 import { readWalkPaths } from '../../check/walk/walkPaths';
+import { COUNTER_NAMES, namedCounterOptions } from '../character/counterNames';
 
-export const EFFECTS: [number, string][] = [
+const EFFECTS: [number, string][] = [
   [0, 'Nothing'],
   [1, 'Character lives'],
   [3, 'Character money'],
@@ -61,6 +62,17 @@ interface PainterExtras {
 }
 
 registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
+  const counterOptions = () => {
+    const game = project.game();
+    const uses = project.usesOf(file);
+    const linked = [...new Set(uses.map((use) => game.scenes[use.scene]?.files[5]).filter((name) => name && project.files.has(name)))];
+    const candidates = uses.length ? linked : project.files.byExtension('chr');
+    const characters = uses.length || candidates.length === 1 ? candidates : [];
+    return namedCounterOptions(
+      EFFECTS,
+      characters.map((name) => ({ file: name, names: project.extras<unknown>(name, COUNTER_NAMES, undefined) })),
+    );
+  };
   const kind = file.split('.').pop() as BlockKind;
   const raw = project.files.get(file)!;
   const blocks = parseBlocks(raw, Math.max(BLOCK_COUNTS[kind], Math.ceil(raw.length / BLOCK_SIZE)));
@@ -591,7 +603,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ),
       selectField(
         'Changes counter',
-        EFFECTS,
+        counterOptions(),
         () => b.effect,
         (v) => edit(() => (b.effect = v)),
         'Which counter is changed when touched',
