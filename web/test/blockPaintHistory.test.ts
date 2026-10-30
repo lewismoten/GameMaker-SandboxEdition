@@ -4,6 +4,18 @@ import { emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks'
 import { BlockPaintHistory } from '../src/editor/editors/blocks/blockPaintHistory';
 
 describe('block painting history', () => {
+  it('can commit a live stroke using its original pixels after the thumbnails have updated', () => {
+    const blocks = [emptyBlock(0)];
+    const history = new BlockPaintHistory(blocks);
+    const before = new Map([[0, blocks[0].pixels.slice()]]);
+    blocks[0].pixels.fill(6);
+    history.record('block', [0], undefined, before);
+    before.get(0)!.fill(9);
+    history.step('block', true);
+    expect(blocks[0].pixels.some(Boolean)).toBe(false);
+    history.step('block', false);
+    expect(blocks[0].pixels.every((value) => value === 6)).toBe(true);
+  });
   it('undoes and redoes a group stroke as one action, leaving behavior fields alone', () => {
     const blocks = [emptyBlock(0), emptyBlock(1), emptyBlock(2)];
     const history = new BlockPaintHistory(blocks);

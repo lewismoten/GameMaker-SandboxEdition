@@ -21,12 +21,14 @@ export class BlockPaintHistory {
     return { pixels: new Map([...ids].map((id) => [id, this.blocks[id].pixels.slice()])), group: group ? { ...group, cells: [...group.cells] } : undefined };
   }
   /** An edit invalidates other histories that could restore stale pixels over it. */
-  record(key: string, ids: readonly number[], group?: BlockGroup): void {
+  record(key: string, ids: readonly number[], group?: BlockGroup, before?: ReadonlyMap<number, Uint8Array>): void {
     for (const [scope, steps] of this.scopes) {
       if (scope !== key && [...steps.past, ...steps.future].some((snap) => ids.some((id) => snap.pixels.has(id)))) this.scopes.delete(scope);
     }
     const steps = this.scopes.get(key) ?? { past: [], future: [] };
-    steps.past.push(this.capture(ids, group));
+    const snapshot = this.capture(ids, group);
+    if (before) for (const [id, pixels] of before) snapshot.pixels.set(id, pixels.slice());
+    steps.past.push(snapshot);
     if (steps.past.length > this.limit) steps.past.shift();
     steps.future.length = 0;
     this.scopes.set(key, steps);
