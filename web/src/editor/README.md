@@ -335,3 +335,6 @@ actual pixels, applies it inside the selected palette range, and leaves other en
 The character starting sheet's `editors/character/characterStatus.ts` renders its inventory
 with the native F2 renderer, palette color 0, and the project's DOS player text, colors and
 frames. The editor loads that renderer dynamically and keeps item selection controls separate.
+`editors/character/counterNames.ts` stores optional repetition-meter and hidden-tally names in
+the character's `counterNames` companion section, indexed by the native meter number. Fixed
+engine counters and the character's native bytes retain their original meanings.
