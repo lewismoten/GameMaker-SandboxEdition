@@ -169,6 +169,9 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   references synchronized, and writes pixels without touching behavior fields. A quarter
   turn rearranges the companion's group layout along with its picture, including holes and
   repeats; it does not rearrange cells in a map.
+  `blockPaintHistory.ts` records all affected tile pictures in one Undo step, including
+  the group layout for a turn. Independent block histories survive; overlapping histories
+  are invalidated when an edit would otherwise let them restore stale pixels.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its
