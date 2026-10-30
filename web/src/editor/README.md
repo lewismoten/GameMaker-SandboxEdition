@@ -459,3 +459,7 @@ native game files are loaded only when the player chooses an archive action.
 - **Character costumes.** `widgets/characterPicture.ts` accepts an explicit CBL
   when a thumbnail auditions a particular block set. The same CHR can therefore
   preview several linked costumes using the actual selected pictures.
+
+- **CBL poses and companions.** `widgets/characterSets.ts` resolves each block
+  set’s scene-linked characters and MON/MBL resources. Its thumbnail shows one
+  representative native pose; unbound sets without a CHR show one visible block.
