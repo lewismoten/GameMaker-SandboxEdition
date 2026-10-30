@@ -193,3 +193,8 @@ the snapshot type; compatibility initialization preserves older block-birth book
 directory, plus the legacy `dosText` byte conversion. Destination and metadata are
 caller-supplied. `kit/menuVersion` can stamp a supplied version on a native menu GIF;
 this package does not read repository metadata or impose game version policy.
+
+`kit/palRamps` also exports `wrapWithBuilder` and `buildRampPalette`: supply ramp
+descriptors, optional named endpoint replacements, and a color transform. The game
+keeps its actual colors and lighting choices. `colors` and `text` are direct browser-safe
+entries for the existing lighting, ramp, glyph-row, and rendered-text APIs.

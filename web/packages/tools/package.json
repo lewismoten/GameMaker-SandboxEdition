@@ -73,6 +73,16 @@
       "types": "./dist/types/microFont.d.ts",
       "gamemaker-source": "./src/microFont.ts",
       "import": "./dist/microFont.js"
+    },
+    "./colors": {
+      "types": "./dist/types/colors.d.ts",
+      "gamemaker-source": "./src/colors.ts",
+      "import": "./dist/colors.js"
+    },
+    "./text": {
+      "types": "./dist/types/text.d.ts",
+      "gamemaker-source": "./src/text.ts",
+      "import": "./dist/text.js"
     }
   },
   "scripts": {
