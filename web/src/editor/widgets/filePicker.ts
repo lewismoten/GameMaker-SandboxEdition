@@ -191,6 +191,18 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           io!.unobserve(e.target);
           const item = (e.target as HTMLElement & { item?: LibraryItem }).item!;
           const k = kindOf(item.name);
+          const paletteData = k === 'pal' && item.game.fileFacts?.[item.name]?.paletteData;
+          if (paletteData) {
+            try {
+              const palette = Uint8Array.from(atob(paletteData), (byte) => byte.charCodeAt(0));
+              if (palette.length === 768) {
+                e.target.querySelector('.thumb')?.replaceWith(fileThumb(item.name, palette, { files: new GameFiles() }));
+                continue;
+              }
+            } catch {
+              /* Older or damaged metadata falls back to its source archive. */
+            }
+          }
           const src = ALONE.has(k) ? Promise.resolve({ files: new GameFiles() }) : libraryThumbSource(item);
           void Promise.all([libraryFile(item), src])
             .then(([bytes, s]) => e.target.querySelector('.thumb')?.replaceWith(fileThumb(item.name, bytes, s)))

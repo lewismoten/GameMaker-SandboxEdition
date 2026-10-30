@@ -225,6 +225,16 @@ function boxGameOf(e: Pick<CdCatalogEntry, 'gam' | 'path' | 'original'>, files: 
   }
 }
 
+/** Native source paths for one game, shared by previews and library metadata. */
+function entryFiles(entry: Pick<CdCatalogEntry, 'files' | 'path'>, files: ReadonlyMap<string, string>): Map<string, string> {
+  return new Map(
+    entry.files.flatMap((name) => {
+      const path = files.get(`${entry.path}${name}`);
+      return path ? [[name, path] as [string, string]] : [];
+    }),
+  );
+}
+
 interface Scan {
   gm: GmInstallEntry[];
   catalog: CdCatalogEntry[];
@@ -272,7 +282,6 @@ function scan(cdRoot: string): Scan {
         gam,
         files: names,
         sizes: names.map((n) => statSync(disk.get(n)!).size),
-        fileFacts: libraryFacts(disk),
         bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
         blurb: blurbFor(names, disk),
         pack: gameZipName(id),
@@ -366,7 +375,6 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       gam,
       files: names,
       sizes: names.map((n) => statSync(disk.get(n)!).size),
-      fileFacts: libraryFacts(disk),
       bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
       blurb: about.blurb ?? blurbFor(names, disk),
       exe: about.exe ?? `${id.slice(0, 8).toUpperCase()}.EXE`,
@@ -388,7 +396,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
  * page needs only this (and, for shareware, its game's details); games/index.json has it all.
  */
 export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
-  return catalog.map(({ notice: _notice, original, ...e }, i) => ({
+  return catalog.map(({ notice: _notice, fileFacts: _fileFacts, original, ...e }, i) => ({
     ...e,
     ...(original ? { original: slimOriginal(original) } : {}),
     ...(catalogDetails(catalog[i]) ? { details: true } : {}),
@@ -451,11 +459,11 @@ export function cdGames(cdRoot: string): Plugin {
         const shots = new Map<string, Uint8Array>();
         const known = (e: CdCatalogEntry): CdCatalogEntry => {
           const box = boxGameOf(e, files);
-          return { ...e, health: quickHealth(e, files), ...(box ? { boxGame: box } : {}) };
+          return { ...e, fileFacts: libraryFacts(entryFiles(e, files)), health: quickHealth(e, files), ...(box ? { boxGame: box } : {}) };
         };
         preview = {
           catalog: catalog.map((e) => {
-            const disk = new Map(e.files.map((n) => [n, files.get(`${e.path}${n}`)!]));
+            const disk = entryFiles(e, files);
             const pictures = gameShots(e.id, e.gam, disk, e.original?.box?.shots, heroOf(e.original));
             for (const [name, data] of pictures) shots.set(name, data);
             return { ...known(e), ...(pictures.size ? { shots: true } : {}), ...(pictures.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) };
@@ -554,11 +562,18 @@ export function cdGames(cdRoot: string): Plugin {
         const box = boxGameOf(e, files);
         const pack = archives.get(e.path)!;
         const packBytes = packs.get(`${e.path}${pack}`)!.length;
-        return { ...e, pack, health: quickHealth(e, files), ...(box ? { boxGame: box } : {}), ...(packBytes ? { packBytes } : {}) };
+        return {
+          ...e,
+          pack,
+          fileFacts: libraryFacts(entryFiles(e, files)),
+          health: quickHealth(e, files),
+          ...(box ? { boxGame: box } : {}),
+          ...(packBytes ? { packBytes } : {}),
+        };
       };
       // each listed game's pictures, drawn now (scripts/gameShots.ts); the secret games' are drawn by the page
       const catalog = get().catalog.map((e) => {
-        const disk = new Map(e.files.flatMap((n) => (files.has(`${e.path}${n}`) ? [[n, files.get(`${e.path}${n}`)!] as [string, string]] : [])));
+        const disk = entryFiles(e, files);
         const shots = gameShots(e.id, e.gam, disk, e.original?.box?.shots, heroOf(e.original));
         for (const [fileName, source] of shots) this.emitFile({ type: 'asset', fileName, source });
         return shots.size ? { ...known(e), shots: true, ...(shots.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) } : known(e);
