@@ -3,6 +3,8 @@
 // (block row by block row); a progressive one is all there from its first scan, blurry,
 // and sharpens with each scan that arrives.
 //
+// Incremental MCU commits and visibility corrected with OpenAI Codex (GPT-6).
+// Reference: ITU-T T.81 (1992), https://www.w3.org/Graphics/JPEG/itu-t81.pdf.
 // File layout (ITU T.81): markers 0xFF xx. SOI (D8); APPn (E0-EF) and COM (FE) skipped;
 // DQT (DB) quantization tables in zigzag order; SOF0/1 (baseline/extended) or SOF2
 // (progressive): precision, height, width, components (id, h/v sampling, table); DHT (C4)
@@ -51,6 +53,8 @@ interface Component {
   /** Blocks per line including the MCU padding. */
   stride: number;
   coeffs: Int16Array;
+  /** First DC/baseline data received in complete MCUs, one flag per block. */
+  ready: Uint8Array;
   pred: number;
   dc?: Huffman;
   ac?: Huffman;
@@ -99,9 +103,6 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
   let aspect = 1;
   let scans = 0;
   let complete = false;
-  /** Baseline: MCUs decoded in the (first) scan, for showing only what has arrived. */
-  let mcusDone = 0;
-  let firstScanSingle = false;
   let p = 2;
   const u16 = (at: number) => (data[at] << 8) | data[at + 1];
 
@@ -169,6 +170,7 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
             blocksPerColumn: 0,
             stride: 0,
             coeffs: new Int16Array(0),
+            ready: new Uint8Array(0),
             pred: 0,
           });
         }
@@ -181,6 +183,7 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
           c.blocksPerColumn = Math.ceil(Math.ceil((height * c.v) / maxV) / 8);
           c.stride = mcusPerLine * c.h;
           c.coeffs = new Int16Array(mcusPerColumn * c.v * c.stride * 64);
+          c.ready = new Uint8Array(c.coeffs.length / 64);
         }
         break;
       }
@@ -213,9 +216,7 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
         const se = data[o + 1];
         const ah = data[o + 2] >> 4;
         const al = data[o + 2] & 15;
-        if (scans === 0) firstScanSingle = n === 1 && comps.length > 1;
         const r = decodeScan(data, end, scanComps, { progressive, ss, se, ah, al, restart, mcusPerLine, mcusPerColumn });
-        if (scans === 0) mcusDone = r.mcus;
         if (!r.done) break outer;
         scans++;
         p = r.pos;
@@ -226,17 +227,16 @@ export function decodePartialJpeg(data: Uint8Array): PartialJpeg | undefined {
   }
   if (!comps.length || !width || !height) return undefined;
 
-  // what has arrived: a progressive file (or one whose first scan is done) is shown whole
+  // A partial first progressive scan has not delivered the whole image. Track the
+  // luminance blocks actually committed, also for noninterleaved/component scans.
   const shown = new Uint8Array(width * height);
-  if (progressive ? scans > 0 || mcusDone > 0 : scans > 0 && !firstScanSingle) shown.fill(1);
-  else if (progressive || mcusDone > 0) {
-    // baseline, first scan still arriving: the MCUs (or single-component blocks) decoded
-    const single = comps.length === 1 || firstScanSingle;
-    const mw = single ? 8 * (maxH / comps[0].h) : 8 * maxH;
-    const mh = single ? 8 * (maxV / comps[0].v) : 8 * maxV;
-    const perLine = single ? comps[0].blocksPerLine : mcusPerLine;
-    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) if (Math.floor(y / mh) * perLine + Math.floor(x / mw) < mcusDone) shown[y * width + x] = 1;
-  }
+  const luma = comps[0];
+  for (let y = 0; y < height; y++)
+    for (let x = 0; x < width; x++) {
+      const bx = Math.floor((x * luma.h) / maxH / 8);
+      const by = Math.floor((y * luma.v) / maxV / 8);
+      shown[y * width + x] = luma.ready[by * luma.stride + bx];
+    }
   return {
     width,
     height,
@@ -262,7 +262,7 @@ interface ScanInfo {
 }
 
 /** Decodes one scan's entropy-coded data from `start`; how far it got. */
-function decodeScan(data: Uint8Array, start: number, comps: Component[], s: ScanInfo): { done: boolean; pos: number; mcus: number } {
+function decodeScan(data: Uint8Array, start: number, comps: Component[], s: ScanInfo): { done: boolean; pos: number } {
   let pos = start;
   let bitBuf = 0;
   let bitCnt = 0;
@@ -395,6 +395,13 @@ function decodeScan(data: Uint8Array, start: number, comps: Component[], s: Scan
   const c0 = comps[0];
   const total = single ? c0.blocksPerLine * c0.blocksPerColumn : s.mcusPerLine * s.mcusPerColumn;
   let mcus = 0;
+  const changed: { c: Component; o: number }[] = [];
+  const undo = new Int16Array(64 * (single ? 1 : comps.reduce((n, c) => n + c.h * c.v, 0)));
+  const block = (c: Component, o: number) => {
+    undo.set(c.coeffs.subarray(o, o + 64), changed.length * 64);
+    changed.push({ c, o });
+    decode(c, o);
+  };
   try {
     while (mcus < total) {
       const n = s.restart ? Math.min(s.restart, total - mcus) : total - mcus;
@@ -402,12 +409,14 @@ function decodeScan(data: Uint8Array, start: number, comps: Component[], s: Scan
         if (single) {
           const row = Math.floor(mcus / c0.blocksPerLine);
           const col = mcus % c0.blocksPerLine;
-          decode(c0, (row * c0.stride + col) * 64);
+          block(c0, (row * c0.stride + col) * 64);
         } else {
           const mr = Math.floor(mcus / s.mcusPerLine);
           const mc = mcus % s.mcusPerLine;
-          for (const c of comps) for (let y = 0; y < c.v; y++) for (let x = 0; x < c.h; x++) decode(c, ((mr * c.v + y) * c.stride + mc * c.h + x) * 64);
+          for (const c of comps) for (let y = 0; y < c.v; y++) for (let x = 0; x < c.h; x++) block(c, ((mr * c.v + y) * c.stride + mc * c.h + x) * 64);
         }
+        if (!s.progressive || (s.ss === 0 && s.ah === 0)) for (const { c, o } of changed) c.ready[o / 64] = 1;
+        changed.length = 0; // this MCU is committed, including at a restart boundary
       }
       if (mcus >= total) break;
       // a restart marker: realign to a byte, reset predictions
@@ -419,11 +428,13 @@ function decodeScan(data: Uint8Array, start: number, comps: Component[], s: Scan
     }
   } catch (e) {
     if (!(e instanceof EndOfData)) throw e;
-    return { done: false, pos, mcus };
+    // Never render half a block/MCU from an incomplete Huffman code or refinement.
+    changed.forEach(({ c, o }, i) => c.coeffs.set(undo.subarray(i * 64, (i + 1) * 64), o));
+    return { done: false, pos };
   }
   // on to the next marker (not a stuffed byte or restart)
   while (pos + 1 < data.length && !(data[pos] === 0xff && data[pos + 1] !== 0 && (data[pos + 1] < 0xd0 || data[pos + 1] > 0xd7))) pos++;
-  return { done: pos + 1 < data.length, pos, mcus };
+  return { done: pos + 1 < data.length, pos };
 }
 
 // 1-D IDCT basis: COS[x * 8 + u] = C(u) / 2 * cos((2x + 1) u pi / 16)

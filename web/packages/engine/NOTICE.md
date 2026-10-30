@@ -43,3 +43,16 @@ site editor, DOS executables, or native player shells.
   documentation.
 
 The package does not bundle DOSBox, Creative software, or Autodesk software.
+
+## Incremental JPEG decoding
+
+The JPEG decoder follows ITU-T Recommendation T.81 (1992), by CCITT/ITU and the
+Joint Photographic Experts Group: [specification](https://www.w3.org/Graphics/JPEG/itu-t81.pdf).
+This is a format reference; the recommendation's text and diagrams are not bundled.
+The existing AC-refinement procedure identifies libjpeg's `decode_mcu_AC_refine` as its
+algorithm reference (Independent JPEG Group, Thomas G. Lane and contributors;
+[IJG License](https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/README.ijg)).
+This software is based in part on the work of the Independent JPEG Group.
+No libjpeg C source or binaries are bundled. Incremental block visibility and atomic
+MCU updates were corrected with OpenAI Codex (GPT-6), directed by Lewis Moten, under
+this project's MIT License.
