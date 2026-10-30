@@ -307,21 +307,6 @@ export class Computer extends ComputerFolders {
     this.player?.machine.audio.setSoundCard(on);
   }
 
-  /** Set while restartGame stops the game, so it starts again instead of going back to DOS. */
-  private restarting = false;
-
-  /**
-   * Starts the game playing over from the beginning, as if you'd quit it and run it again:
-   * it looks for the Sound Blaster card again as it starts. False if no game is playing.
-   */
-  restartGame(): boolean {
-    const p = this.player;
-    if (!p || this.restarting) return false;
-    this.restarting = true;
-    p.stop();
-    return true;
-  }
-
   playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array, projectId?: string): Promise<void> {
     this.unlockAudio();
     this.keys.enabled = false;
@@ -365,13 +350,6 @@ export class Computer extends ComputerFolders {
               ...playAchievements(saveId, this.opts.view ?? 'desk'),
               onExit: () => {
                 this.player = undefined;
-                if (this.restarting) {
-                  // restartGame: the same game, from the start
-                  this.restarting = false;
-                  clear(host);
-                  mount();
-                  return;
-                }
                 this.opts.onGame?.(undefined);
                 clear(this.layer);
                 this.keys.enabled = true;

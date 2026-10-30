@@ -17,7 +17,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   (`gamePad.ts`; its drawing `gamePadArt.ts`, its SVG parts `gamePadSvg.ts`, its large controls
   `gamePadPanel.ts`, what is held `gamePadHolds.ts`), the modem (`modem.ts`; click its speed to
   pick the line speed), the speakers (`speakers.ts`) with the SOUND BOASTER switch
-  (`blasterSwitch.ts`), the key card taped to the monitor (`keyCard.ts`, `keyCardRows.ts`) and
+  (`blasterSwitch.ts`, applied immediately to the active game without restarting), the key card taped to the monitor (`keyCard.ts`, `keyCardRows.ts`) and
   the capture card (`capture.ts`, loaded by `captureStub.ts` on the first press).
 - `boxes/`: the retail boxes and their shelf (`shelf.ts`, `shelfLayout.ts`), turned in the box
   viewer (`boxViewer.ts`). A game's box (`gameBox.ts`) is drawn from the game itself

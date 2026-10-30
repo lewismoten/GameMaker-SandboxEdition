@@ -122,19 +122,6 @@
   cursor: pointer;
 }
 
-.sb-note-restart {
-  padding: 5px 10px;
-  border: 1px solid #ffd400;
-  background: #ffd400;
-  color: #1a1611;
-  font-weight: 600 !important;
-  white-space: nowrap;
-}
-
-.sb-note-restart:hover {
-  background: #ffe45c;
-}
-
 .sb-note-close {
   width: 28px;
   height: 28px;
@@ -154,10 +141,6 @@
 .sb-note button:focus-visible {
   outline: 2px solid #ffd400;
   outline-offset: 2px;
-}
-
-.sb-note-restart:focus-visible {
-  outline-color: #fff;
 }
 
 .sb-note-live {
