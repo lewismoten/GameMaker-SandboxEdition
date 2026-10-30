@@ -23,6 +23,37 @@ const data = serializeBlocks(blocks);
 
 Keep these imports in build scripts and tests. The package explicitly rejects browser imports. Generated game data and your own copied assets belong in the consuming project.
 
+## Fonts, text images, and lighting
+
+`drawing` exports the complete `FONT_CP437` (256 × 8 rows, bit 0 leftmost), including DOS symbols, accents, block shading, and box drawing. NUL, space, and nonbreaking space are intentionally blank. The legacy `FONT8X8` and `text` helpers retain their ASCII behavior. `glyphRows(code)` returns a copy; `encodeText`, `toCp437`, and `fromCp437` convert Unicode DOS symbols and CP437 codes. This is the DOS glyph set, not an ANSI escape-sequence parser.
+
+`MICRO_GLYPHS` exposes the project's original 3×5 uppercase font and punctuation. `glyphRows(code, 'micro')` accepts lowercase as uppercase and uses `?` for unsupported glyphs. It does not include game-specific lettering.
+
+```ts
+import { renderText, encodeText, PaletteBuilder, lightColor, TIME_OF_DAY_SKY } from '@lewismoten/gamemaker-sandbox-tools/drawing';
+
+const caption = renderText('╔═╗\n║é║\n╚═╝', {
+  color: 12, outline: 0, shadow: { color: 8 },
+});
+// caption.width, caption.height, caption.pixels suit indexed GIF/picture builders.
+// Copy small images into a native block's 20×20 pixel array before serializing it.
+const sign = renderText('GO!', { font: 'micro', color: 15, scale: 2 });
+const rawGlyphs = renderText(Uint8Array.of(1, 3, 10, 219), { color: 15 });
+const dosTextBytes = encodeText('Café ♥');
+
+const palette = new PaletteBuilder();
+palette.designerColors();
+const [dark, light, middle] = TIME_OF_DAY_SKY.sunset;
+palette.ramp('sky', 8, dark, light, middle);
+const lit = lightColor([100, 180, 80], 'night');
+```
+
+`renderText` returns row-major indexed pixels with transparent index 255 and an origin for the first text cell. It pads the output for a one-pixel outline and shadow, even at larger scales or negative shadow offsets. Strings support LF/CRLF lines; raw byte arrays draw every byte as a glyph on one line. Empty text returns a 0×0 image. Unsupported Unicode throws rather than selecting an unrelated glyph. Ink indexes are 0–254.
+
+`outline` and `dropShadow` also decorate `Pixels` sprites within their existing bounds; edges clip. The existing sprite outline uses four neighbors, while text outlines include all eight neighbors.
+
+`colorRamp` returns eight-bit RGB stops without allocating palette entries. `PaletteBuilder.ramp` allocates named ramps in a six-bit VGA palette. `TIME_OF_DAY_LIGHT`, `TIME_OF_DAY_SKY`, and `lightColor` provide morning, noon, afternoon, sunset, night, and stage-light presets. `adjustPalette` returns an adjusted native VGA palette without mutating its input. By default it preserves indexes 0 and 255; pass a custom index list to protect glowing colors or designer inks. Game-specific ramp names and cast colors belong in the consumer.
+
 ## Build and inspect
 
 From this directory, with the repository's web development dependencies installed:
