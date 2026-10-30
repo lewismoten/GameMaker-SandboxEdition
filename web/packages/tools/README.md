@@ -27,7 +27,7 @@ blocks[0].pixels.set(new Pixels(20, 20, 1).px);
 const data = serializeBlocks(blocks);
 ```
 
-Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `music/compose` and `image/png` entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
+Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `text`, `colors`, `microFont`, `music/compose` and `image/png` entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
 
 ## Fonts, text images, and lighting
 
@@ -198,3 +198,6 @@ this package does not read repository metadata or impose game version policy.
 descriptors, optional named endpoint replacements, and a color transform. The game
 keeps its actual colors and lighting choices. `colors` and `text` are direct browser-safe
 entries for the existing lighting, ramp, glyph-row, and rendered-text APIs.
+
+`kit/textfit` audits caller-supplied native files for menu, save-slot, score-table and
+text-page layout and contrast. The repository's game-selection CLI remains in `games/kit`.

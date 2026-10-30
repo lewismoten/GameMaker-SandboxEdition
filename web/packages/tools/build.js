@@ -53,6 +53,7 @@ const sources = {
   'kit/routeChecks': 'kit/routeChecks',
   'kit/disk': 'kit/disk',
   'kit/menuVersion': 'kit/menuVersion',
+  'kit/textfit': 'kit/textfit',
   microFont: 'microFont',
   'music/compose': 'music/compose',
   simulation: 'simulation',
