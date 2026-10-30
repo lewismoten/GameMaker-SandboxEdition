@@ -342,3 +342,8 @@ engine counters and the character's native bytes retain their original meanings.
 share character Undo/Redo while leaving native files untouched.
 Counter choices retain their DOS numbers and qualify labels by character filename when
 the same block set serves several characters with different counter meanings.
+
+Palette file pickers have a separate **Ready-made palettes** tab, selected first when adding
+a palette. It reads the tools package's template registry, previews occupied entries without
+fetching game ZIPs, and creates a fresh file with a free DOS 8.3 name. CD samples retain their
+own tab. Picker tabs support arrow keys and Home/End.

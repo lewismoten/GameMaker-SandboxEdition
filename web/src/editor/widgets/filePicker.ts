@@ -12,6 +12,7 @@ import { previewButton, stopPreview } from './preview';
 import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { classifySound, SOUND_GROUPS, type SoundGroup } from '../../audio/soundProfile';
+import { paintIndexed } from '../core/draw';
 
 interface PickOptions {
   title?: string;
@@ -288,6 +289,39 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       close(name);
     };
 
+    const showPresets = async () => {
+      const me = ++shown;
+      search.disabled = true;
+      io?.disconnect();
+      layout([], h('p', { class: 'hint' }, 'Loading palette templates…'));
+      const { PALETTE_PRESETS, createPalettePreset } = await import('@lewismoten/gamemaker-sandbox-tools/palettes');
+      if (me !== shown || !grid.isConnected) return;
+      search.disabled = false;
+      layout(
+        PALETTE_PRESETS.map((preset) => {
+          const palette = createPalettePreset(preset.id);
+          const cols = Math.ceil(Math.sqrt(preset.entries));
+          const rows = Math.ceil(preset.entries / cols);
+          const thumb = h('canvas', { class: 'thumb pixel', 'aria-hidden': 'true' });
+          paintIndexed(
+            thumb,
+            Uint8Array.from({ length: cols * rows }, (_, i) => (i < preset.entries ? i : 0)),
+            cols,
+            rows,
+            palette,
+          );
+          return {
+            el: card(preset.name, thumb, `${preset.stem.toUpperCase()}.PAL · ${preset.description}`, () => {
+              const name = project.freeName(preset.stem, 'pal');
+              project.files.set(name, createPalettePreset(preset.id));
+              close(name);
+            }),
+          };
+        }),
+        null,
+      );
+    };
+
     const upload = async () => {
       const list = await pickFiles({ multiple: false, accept: kinds.map((k) => `.${k}`).join(',') });
       const f = list[0];
@@ -297,16 +331,42 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       close(name);
     };
 
-    const setTab = (t: 'mine' | 'library' | 'originals') => {
+    const setTab = (t: 'mine' | 'library' | 'originals' | 'presets') => {
       stopPreview();
-      [...tabs.children].forEach((b) => b.setAttribute('aria-selected', String((b as HTMLElement).dataset.source === t)));
+      [...tabs.children].forEach((b) => {
+        const selected = (b as HTMLElement).dataset.source === t;
+        b.setAttribute('aria-selected', String(selected));
+        (b as HTMLElement).tabIndex = selected ? 0 : -1;
+      });
       if (t === 'mine') showMine();
+      else if (t === 'presets') void showPresets();
       else void showLibrary(t === 'originals' ? 'originals' : 'cd');
     };
     if (!opts.adding) tabs.append(h('button', { role: 'tab', 'data-source': 'mine', onclick: () => setTab('mine') }, 'This game'));
+    const presets = kind === 'pal' && kinds.length === 1;
+    if (presets) tabs.append(h('button', { role: 'tab', 'data-source': 'presets', onclick: () => setTab('presets') }, 'Ready-made palettes'));
     tabs.append(h('button', { role: 'tab', 'data-source': 'library', onclick: () => setTab('library') }, '📀 Library (CD samples)'));
     tabs.append(h('button', { role: 'tab', 'data-source': 'originals', onclick: () => setTab('originals') }, 'Sandbox & Bizarre'));
-    setTab(opts.adding ? 'library' : 'mine');
+    tabs.addEventListener('keydown', (event) => {
+      const buttons = [...tabs.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+      const current = buttons.findIndex((button) => button === document.activeElement);
+      const next =
+        event.key === 'ArrowRight'
+          ? current + 1
+          : event.key === 'ArrowLeft'
+            ? current - 1
+            : event.key === 'Home'
+              ? 0
+              : event.key === 'End'
+                ? buttons.length - 1
+                : undefined;
+      if (current < 0 || next === undefined) return;
+      event.preventDefault();
+      const button = buttons[(next + buttons.length) % buttons.length];
+      button.click();
+      button.focus();
+    });
+    setTab(opts.adding ? (presets ? 'presets' : 'library') : 'mine');
     return h(
       'div',
       { class: 'file-picker' },
