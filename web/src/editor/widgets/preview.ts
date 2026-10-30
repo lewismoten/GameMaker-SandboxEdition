@@ -16,9 +16,11 @@ import { decodeFliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fl
 const PREVIEWABLE = new Set(['voc', 'cmf', 'snd', 'fli', 'cbl']);
 
 let active: { stop: () => void } | undefined;
+let generation = 0;
 
 /** Stops whatever preview is playing. */
 export function stopPreview(): void {
+  generation++;
   const a = active;
   active = undefined;
   a?.stop();
@@ -33,6 +35,7 @@ export function previewButton(
   bytes: () => Promise<Uint8Array | undefined>,
   screen?: () => HTMLCanvasElement | null,
   source?: () => Promise<ThumbSource>,
+  caption?: () => HTMLElement | null,
 ): HTMLButtonElement | null {
   const kind = kindOf(name);
   if (!PREVIEWABLE.has(kind)) return null;
@@ -46,26 +49,81 @@ export function previewButton(
     btn.textContent = on ? '■' : '▶';
     btn.setAttribute('aria-pressed', String(on));
     btn.classList.toggle('playing', on);
+    if (!on) btn.removeAttribute('aria-busy');
   };
   btn.addEventListener('click', async (e) => {
     e.stopPropagation();
     e.preventDefault();
     if (btn.classList.contains('playing')) return stopPreview();
     stopPreview();
+    const requested = generation;
+    const loading = kind === 'cbl' ? { stop: () => set(false) } : undefined;
+    if (loading) {
+      active = loading;
+      set(true);
+      btn.setAttribute('aria-busy', 'true');
+    }
     let data: Uint8Array | undefined;
     try {
       data = await bytes();
     } catch {
       /* reported below */
     }
-    if (!data) return toast(`${name.toUpperCase()} could not be loaded.`, 'error');
+    if (requested !== generation || !btn.isConnected) {
+      if (loading && active === loading) stopPreview();
+      return;
+    }
+    if (!data) {
+      if (loading && active === loading) stopPreview();
+      return toast(`${name.toUpperCase()} could not be loaded.`, 'error');
+    }
     if (kind === 'cbl') {
-      if (!source) return toast('This block set needs its character files to preview an animation.');
+      if (!source) {
+        stopPreview();
+        return toast('This block set needs its character files to preview an animation.');
+      }
       try {
-        const [{ previewCharacterBlocks }, files] = await Promise.all([import('../editors/blocks/pickerAnimation'), source()]);
-        if (btn.isConnected) await previewCharacterBlocks(name, data, files);
-      } catch {
-        toast(`${name.toUpperCase()} could not be previewed.`, 'error');
+        const [{ startCharacterAudition }, files] = await Promise.all([import('./characterAuditionPlayer'), source()]);
+        if (requested !== generation || !btn.isConnected) {
+          if (loading && active === loading) stopPreview();
+          return;
+        }
+        const host = btn.parentElement;
+        if (!host) return;
+        let canvas = screen?.();
+        if (!canvas) {
+          const placeholder = host.querySelector('.thumb');
+          if (!placeholder) throw new Error('A character thumbnail is needed to play this audition.');
+          canvas = h('canvas', { class: 'thumb pixel', role: 'img', 'aria-label': `Representative character pose from ${name.toUpperCase()}` });
+          placeholder.replaceWith(canvas);
+        }
+        const me = {
+          stop: () => {
+            audition.stop();
+            set(false);
+          },
+        };
+        const audition = startCharacterAudition({
+          name,
+          bytes: data,
+          source: files,
+          canvas,
+          host,
+          caption: caption?.(),
+          finished: () => {
+            if (active === me) stopPreview();
+          },
+        });
+        active = me;
+        btn.removeAttribute('aria-busy');
+        set(true);
+      } catch (error) {
+        if (requested !== generation || !btn.isConnected) {
+          if (loading && active === loading) stopPreview();
+          return;
+        }
+        if (loading && active === loading) stopPreview();
+        toast(error instanceof Error ? error.message : `${name.toUpperCase()} could not be previewed.`, 'error');
       }
       return;
     }
@@ -73,7 +131,7 @@ export function previewButton(
       if (!source) return toast('This sound set needs its neighboring VOC files to compare the sound pairs.');
       try {
         const [{ previewSoundSet }, files] = await Promise.all([import('./soundSetPreview'), source()]);
-        if (btn.isConnected) await previewSoundSet(name, data, files, screen?.());
+        if (requested === generation && btn.isConnected) await previewSoundSet(name, data, files, screen?.());
       } catch {
         toast(`${name.toUpperCase()} could not be previewed.`, 'error');
       }
@@ -81,6 +139,7 @@ export function previewButton(
     }
     const [{ audio }, { TICK_RATE }] = await Promise.all([import('./mediaShared'), import('@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer')]);
     await audio.resume();
+    if (requested !== generation || !btn.isConnected) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let restore: (() => void) | undefined;
     let animationFrame = 0;

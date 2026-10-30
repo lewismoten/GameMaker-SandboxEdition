@@ -82,7 +82,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     const card = (label: string, thumb: HTMLElement, meta: string, onPick: () => void, selected = false, preview?: HTMLElement | null) => {
       const cell = h(
         'div',
-        { class: 'pick-cell' },
+        { class: 'pick-cell', dataset: { search: `${label} ${meta}` } },
         h(
           'button',
           { class: `pick-card ${selected ? 'selected' : ''}`, onclick: onPick, title: label },
@@ -100,7 +100,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     const layout = (cells: Cell[], empty: HTMLElement | null) => {
       listed = cells;
       emptyMessage = empty;
-      const visible = cells.filter((cell) => cell.none || !query || cell.el.textContent?.toLocaleLowerCase().includes(query));
+      const visible = cells.filter((cell) => cell.none || !query || (cell.el.dataset.search ?? cell.el.textContent)?.toLocaleLowerCase().includes(query));
       const message = query ? h('p', { class: 'hint' }, 'No matching files. Try another file name or game title.') : empty;
       if (!grouped) {
         clear(grid, ...visible.map((c) => c.el), visible.length ? null : message);
@@ -170,6 +170,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
             async () => project.files.get(n),
             thumbCanvas(el),
             async () => ({ files: project.files, palette: project.paletteFor(n).palette }),
+            () => el.querySelector<HTMLElement>('.pick-card small'),
           ) ?? '',
         );
         return { el, group: grouped ? vocGroup(`mine:${n}`, bytes) : undefined };
@@ -213,7 +214,11 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           }
           const src = ALONE.has(k) ? Promise.resolve({ files: new GameFiles() }) : libraryThumbSource(item);
           void Promise.all([libraryFile(item), src])
-            .then(([bytes, s]) => e.target.querySelector('.thumb')?.replaceWith(fileThumb(item.name, bytes, s)))
+            .then(([bytes, s]) => {
+              const current = e.target.querySelector('.thumb');
+              if (k === 'cbl' && current instanceof HTMLCanvasElement && e.target.querySelector('.pick-play.playing')) return;
+              current?.replaceWith(fileThumb(item.name, bytes, s));
+            })
             .catch(() => undefined);
         }
       });
@@ -233,6 +238,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
             () => libraryFile(item),
             thumbCanvas(el),
             () => libraryThumbSource(item),
+            () => el.querySelector<HTMLElement>('.pick-card small'),
           ) ?? '',
         );
         return { el, item, group: grouped ? item.group : undefined };
