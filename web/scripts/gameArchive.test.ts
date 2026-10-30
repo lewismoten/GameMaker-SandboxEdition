@@ -1,6 +1,6 @@
 // Catalog ZIPs carry an intact DOS runtime and reversible player customizations.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -10,7 +10,7 @@ import { dosNameProblems } from '../src/export/exportDos';
 import { playerRecord } from '../src/dosPlayer/playerRecord';
 import { readHostedZip } from '../src/project/hostedZip';
 import { gameArchive } from './gameArchive';
-import type { CdCatalogEntry } from './cdGames';
+import { cdGames, type CdCatalogEntry } from './cdGames';
 
 const bytes = serializeGame(newGame('Fixture'));
 const ownReadme = new TextEncoder().encode('The game author’s own README.');
@@ -68,5 +68,48 @@ describe('catalog DOS distribution', () => {
   it('packages resource-only CD folders without pretending they are playable games', async () => {
     const files = await readZip(await gameArchive({ ...entry, gam: null }, paths));
     expect(files.map((e) => e.name)).toEqual(['FIXTURE.GAM', 'README.TXT']);
+  });
+  it('Vite serves permanent ZIPs, rejects loose game files and refreshes changed sources', async () => {
+    const { createServer } = await import('vite');
+    const source = join(temp, 'cd');
+    const disk = join(source, 'gameware/fixture');
+    mkdirSync(disk, { recursive: true });
+    mkdirSync(join(source, 'gm'), { recursive: true });
+    writeFileSync(join(disk, 'fixture.gam'), bytes);
+    for (const name of ['xferplay.exe', 'sndblast.drv', 'config.hlp']) copyFileSync(join(cd, name), join(source, 'gm', name));
+    const server = await createServer({
+      configFile: false,
+      root: temp,
+      publicDir: false,
+      logLevel: 'silent',
+      plugins: [cdGames(source)],
+      optimizeDeps: { noDiscovery: true },
+      server: { host: '127.0.0.1', port: 0, hmr: false, watch: null },
+    });
+    try {
+      await server.listen();
+      const address = server.httpServer!.address();
+      if (!address || typeof address === 'string') throw new Error('No test server port');
+      const base = `http://127.0.0.1:${address.port}/`;
+      const catalog = (await (await fetch(base + 'games/catalog.json')).json()) as CdCatalogEntry[];
+      const game = catalog.find((e) => e.id === 'fixture')!;
+      expect(game.pack).toBe('fixture.zip');
+      expect(game.health).toBeDefined();
+      const url = base + game.path + game.pack;
+      const response = await fetch(url);
+      expect(response.headers.get('content-type')).toBe('application/zip');
+      const first = new Uint8Array(await response.arrayBuffer());
+      expect((await readHostedZip(first)).get('fixture.gam')).toEqual(bytes);
+      expect(new Uint8Array(await (await fetch(url)).arrayBuffer())).toEqual(first);
+      expect((await fetch(base + game.path + 'fixture.gam')).status).toBe(404);
+      const revised = serializeGame(newGame('Revised fixture'));
+      writeFileSync(join(disk, 'fixture.gam'), revised);
+      server.watcher.emit('change', join(disk, 'fixture.gam'));
+      const next = await fetch(url);
+      expect(next.status).toBe(200);
+      expect((await readHostedZip(new Uint8Array(await next.arrayBuffer()))).get('fixture.gam')).toEqual(revised);
+    } finally {
+      await server.close();
+    }
   });
 });

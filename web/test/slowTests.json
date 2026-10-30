@@ -22,6 +22,7 @@
   ],
   "tests": {
     "scripts/gameArchive.test.ts": [
+      "catalog DOS distribution Vite serves permanent ZIPs, rejects loose game files and refreshes changed sources",
       "catalog DOS distribution is reproducible, uses 8.3 names and includes game files, runtime, setup and notices"
     ],
     "scripts/mcp/bridge.test.ts": [
@@ -141,6 +142,7 @@
       "which catalog games may be downloaded leaves out every other author’s game on the CD, as the release scripts’ --all does"
     ],
     "src/export/exportDos.test.ts": [
+      "exportDos and the DOS player builds reproducibly from supplied runtime bytes without network requests",
       "exportDos and the DOS player patches it and lists the changes, keeping the notices",
       "exportDos and the DOS player ships the CD’s player as it came when nothing is customized",
       "exportDos with renamed extensions changes nothing when every kind keeps its own extension",
