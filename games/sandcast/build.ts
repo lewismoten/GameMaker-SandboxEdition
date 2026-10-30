@@ -9,7 +9,7 @@ import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { Disk } from '../kit/disk';
-import { clipEveryList } from '../kit/fliClips';
+import { clipEveryList } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { BG } from './src/blocks/bblocks';
 import { MB, CB } from './src/sprites/sprites';

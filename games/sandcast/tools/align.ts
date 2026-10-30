@@ -1,7 +1,8 @@
 // Checks the multi-block objects on the built disk's maps (games/kit/align.ts): the toy truck and
 // Gwinn asleep on the patio (six blocks by four, her blinking eye block standing in for cat12),
 // and that their art joins up across the block edges. Run by tools/check.ts.
-import { alignGame, gridParts, pair, type PartRule } from '../../kit/align';
+import { gridParts, pair, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { BG } from '../src/blocks/bblocks';
 
 const RULES: PartRule[] = [

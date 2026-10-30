@@ -4,9 +4,10 @@
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { loadScan, pastePhoto, resample } from '../../../kit/photo';
+import { pastePhoto, resample } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
 import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, WATER, WOOD, YELLOW } from '../art/palette';
 import { CLEAR, shade } from '../art/draw';
 import { CB, MB } from '../sprites/sprites';
