@@ -185,6 +185,8 @@ Pull requests to `master` run validation without deploying; branch pushes do not
 The `mac-dmg`, `win-exe` and
 `linux-tar` workflows build every game for each system and attach them to a GitHub release.
 Engine, tool, and archive releases are described in [Package releases](docs/package-releases.md).
+Games are deployed as standalone DOS ZIPs with [permanent download links](docs/game-distributions.md),
+shared by the browser player, editor and DOS downloads.
 Every GitHub job stops after five minutes, including deployments and release builds.
 Checking every game takes far longer than that, so run `npm run check:games` (with the rebuild
 compare, about 20 minutes) yourself before committing a game.
