@@ -803,3 +803,9 @@ OpenAI Codex extracted and adapted the swatches to this project's VGA palette co
 under Lewis Moten's direction. Source links, transformations and Pally's complete license
 are in [the tools package's notices](web/packages/tools/NOTICE.md#ready-made-palette-reference-data).
 No third-party font or image file was added.
+
+RGBI and SMS hardware mappings use project-owned MIT code referring to IBM's 1984
+*Technical Reference: Options and Adapters* and Maxim / SMS Power's palette documentation,
+linked in the tools notices. The monochrome ramps, added skin/hair ramps and four LCD-green
+shades are project designs made by Lewis Moten using OpenAI Codex, under the project's MIT License.
+Exported player-page and native-download notices carry the reference palette credits.

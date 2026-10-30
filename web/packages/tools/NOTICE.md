@@ -92,6 +92,13 @@ font, image, emulator or generator executable is bundled with these swatches.
   [Author's reference](https://hitmen.c02.at/linked/c64_ntsc_cxa2025.bmp.png),
   [permission and provenance](https://commons.wikimedia.org/wiki/File:C64_ntsc_cxa2025.bmp.png).
 
+The RGBI and SMS bit mappings are project-owned MIT implementations of hardware facts,
+referencing IBM's *Technical Reference: Options and Adapters*, volume 2, April 1984
+([manufacturer's manual](https://bitsavers.org/pdf/ibm/pc/cards/Technical_Reference_Options_and_Adapters_Volume_2_Apr84.pdf)),
+and Maxim / SMS Power contributors' [palette documentation](https://www.smspower.org/Development/Palette).
+Monochrome ramps, the EGA skin/hair additions and LCD-green approximations were designed
+for this project by Lewis Moten using OpenAI Codex, under the project's MIT License.
+
 Pally's MIT-0 license:
 
 ```text

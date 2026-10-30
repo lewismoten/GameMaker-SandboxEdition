@@ -1,4 +1,5 @@
 // Fresh native palette templates; reference swatches and licenses are documented in ../NOTICE.md.
+// RGBI/SMS bit mappings follow IBM and SMS Power hardware references listed there.
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { colorRamp, type RGB } from './colors';
 import { ATARI_NTSC_RGB, ATARI_PAL_RGB, NES_RGB, C64_RGB } from './palettePresetData';
