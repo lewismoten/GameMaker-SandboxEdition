@@ -1,16 +1,13 @@
-// Drawing a course through the wrap (levelCourse.ts lays it out) for the Level Maps: each panel
-// of the strip as a picture turned so the way on points up the page (sampled nearest-neighbor,
-// so the blocks stay crisp and in the palette), side by side in order with the start at the
-// bottom of the first (or, on a way down the map, upright with the start at the top), and over it the wrap's seams (dashed), the laps, the kinks, the
-// shortcuts and the marks. Each panel says where it carries on. Grayscale-safe: every mark has
-// its own shape and words, not only a color.
+// A continuous course through the map wrap, assembled from bounded raster pieces.
+// One annotation layer keeps starts, exits, laps and shortcuts readable across image seams.
+// No canvas needs to span the whole route. Marks use shapes and words as well as colors.
 import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { paletteToRGBA } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { scenePixels } from '../../gfx/levelPicture';
 import type { GameFiles } from '../../project/files';
 import { courseRaster, panelOf, type CourseLayout, type StripPoint } from './levelCourse';
-import { packPages, type Level } from './levelMapLayout';
+import type { Level } from './levelMapLayout';
 import { el, SERIF } from './worldMapArt';
 
 /** Pixels a block in a panel's picture: twice the map's, so a block turned 45 degrees keeps its pixels. */
@@ -44,38 +41,6 @@ export async function coursePanelUrls(game: Game, files: GameFiles, l: Level): P
     urls.push(await new Promise<string>((resolve) => canvas.toBlob((b) => resolve(b ? URL.createObjectURL(b) : canvas.toDataURL()))));
   }
   return urls;
-}
-
-/** A panel's room across the page, with its gutters (paper units at `s` a block). */
-const panelWidth = (c: Course, i: number, s: number): number => (c.panels[i].c1 - c.panels[i].c0) * s + 2 * GUTTER;
-/** A panel's room down the page, with its labels over and under. */
-const panelHeight = (c: Course, i: number, s: number): number => (c.panels[i].a1 - c.panels[i].a0) * s + 2 * PANEL_HEAD;
-
-/** A panel placed on a page: its number and its box's top-left (labels and all). */
-export interface PlacedPanel {
-  i: number;
-  x: number;
-  y: number;
-}
-
-/** The panels on each page, in order: side by side, and in rows when they are short, within `area`. */
-export function coursePages(c: Course, area: { w: number; h: number }): PlacedPanel[][] {
-  const placed = packPages(
-    c.panels.map((_, i) => ({ w: panelWidth(c, i, c.scale), h: panelHeight(c, i, c.scale) })),
-    area,
-    PANEL_GAP,
-  );
-  const pages: PlacedPanel[][] = [];
-  placed.forEach((p, i) => (pages[p.page] ??= []).push({ i, x: p.x, y: p.y }));
-  return pages.filter(Boolean);
-}
-
-/** The size of a page's panels, as placed. */
-export function placedSize(c: Course, which: PlacedPanel[]): { w: number; h: number } {
-  return {
-    w: Math.max(...which.map((p) => p.x + panelWidth(c, p.i, c.scale))),
-    h: Math.max(...which.map((p) => p.y + panelHeight(c, p.i, c.scale))),
-  };
 }
 
 const text = (x: number, y: number, size: number, body: string, attrs: Record<string, string | number> = {}) =>
@@ -235,24 +200,6 @@ function panelSvg(
 
 /** Clip paths are named across the whole document. */
 let clips = 0;
-
-/** The panels `which` where they are placed, from (`x`, `y`), at the course's own size. */
-export function courseSvg(
-  game: Game,
-  l: Level,
-  urls: string[],
-  which: PlacedPanel[],
-  x: number,
-  y: number,
-  colors: Colors,
-  label: (m: Level['marks'][number]) => string,
-): SVGElement {
-  const c = l.course!;
-  const g = el('g', { class: 'lm-course' });
-  const id = `lmc${++clips}`;
-  for (const p of which) g.append(panelSvg(game, c, p.i, urls[p.i], x + p.x + GUTTER, y + p.y + PANEL_HEAD, c.scale, colors, label, id));
-  return g;
-}
 
 /** One continuous map, assembled from bounded raster pieces at their shared course coordinates.
  * Artwork stays below one set of annotations, including at the old page cuts. */
