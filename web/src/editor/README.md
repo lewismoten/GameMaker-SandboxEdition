@@ -340,3 +340,5 @@ the character's `counterNames` companion section, indexed by the native meter nu
 engine counters and the character's native bytes retain their original meanings.
 `counterNameFields.ts` supplies the hidden-tally and sequence-use name inputs. Label edits
 share character Undo/Redo while leaving native files untouched.
+Counter choices retain their DOS numbers and qualify labels by character filename when
+the same block set serves several characters with different counter meanings.

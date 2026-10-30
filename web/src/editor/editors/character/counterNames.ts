@@ -26,3 +26,14 @@ export function withCounterName(value: unknown, meter: number, name: string): Co
 export function counterName(project: Pick<Project, 'extras'>, file: string, meter: number): string {
   return readCounterNames(project.extras<unknown>(file, COUNTER_NAMES, undefined))[meter] ?? '';
 }
+
+/** Keep native option numbers, distinguishing labels when a shared block set serves several heroes. */
+export function namedCounterOptions(options: readonly [number, string][], sources: readonly { file: string; names: unknown }[]): [number, string][] {
+  const names = sources.map((source) => ({ file: source.file, names: readCounterNames(source.names) }));
+  return options.map(([meter, label]) => {
+    const labels = names
+      .filter((source) => source.names[meter])
+      .map((source) => `${source.names[meter]}${names.length > 1 ? ` (${source.file.toUpperCase()})` : ''}`);
+    return [meter, `${label}${labels.length ? `: ${labels.join(', ')}` : ''}`];
+  });
+}
