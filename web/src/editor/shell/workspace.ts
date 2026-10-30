@@ -790,7 +790,13 @@ export class Workspace implements AssistantHost {
     void Promise.all([import('../../player/player'), import('../../dosPlayer/playerRecord')]).then(([{ mountPlayer }, { companionPatches }]) => {
       const player = companionPatches(this.project.companion, this.project.gam);
       if (!this.disposed && host.isConnected)
-        this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name, player, skipTitle: !!level, ...watch });
+        this.player = mountPlayer(host, copy, this.project.gam, {
+          title: this.project.name,
+          hardwareId: `project:${this.project.id}`,
+          player,
+          skipTitle: !!level,
+          ...watch,
+        });
     });
   }
 

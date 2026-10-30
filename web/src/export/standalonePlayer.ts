@@ -63,6 +63,7 @@ async function main(): Promise<void> {
   const start = () =>
     mountPlayer(root, files, game.gam, {
       title: game.title,
+      hardwareId: `export:${game.id}`,
       notice: game.notice,
       player: game.player as PlayerPatches | undefined,
       onFileWrite: (name, bytes) => writeSave(game.id, name, bytes),

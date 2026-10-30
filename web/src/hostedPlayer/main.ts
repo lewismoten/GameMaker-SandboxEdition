@@ -86,6 +86,7 @@ async function play(game: ListedGame): Promise<void> {
     first = false;
     mountPlayer(root, files, gam, {
       title: game.title,
+      hardwareId: `hosted:${game.id}`,
       notice,
       back: { href: listHref(listParam), label: '← All games' },
       onFileWrite: (name, bytes) => void writeSave(game.id, name, bytes),
