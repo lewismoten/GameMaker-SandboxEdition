@@ -199,7 +199,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   };
 
   /** The games a collection can feature: its finished ones (all of yours). */
-  const featurable = (c: Category) => lib.gamesOf(c).filter((g) => g.gam || isOwn(c));
+  const featurable = (c: Category) => lib.gamesOf(c).filter((g) => g.gam || g.community || isOwn(c));
   /**
    * Shows a game of collection `c` picked at random (homeCategories.ts pickFeatured), or of
    * Sandbox while `c` has none; its Another button picks again from the same collection.
@@ -228,7 +228,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   // The collections are tabs: arrow keys move between them, Tab goes on to the games.
   const renderCats = () => {
-    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, isOwn(c.id) ? lib.own(c.id).length : lib.entriesOf(c.id).length]));
+    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, lib.gamesOf(c.id).length]));
     clear(
       catNav,
       ...lib.shownCats().map((c) =>

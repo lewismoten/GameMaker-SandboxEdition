@@ -21,7 +21,7 @@ afterEach(() => vi.unstubAllGlobals());
 
 describe('the collections', () => {
   it('put your own games first, then Sandbox and Bizarre before Gameware and Shareware', () => {
-    expect(CATEGORIES.map((c) => c.id)).toEqual(['mine', 'imported', 'sandbox', 'bizarre', 'gameware', 'shareware']);
+    expect(CATEGORIES.map((c) => c.id)).toEqual(['mine', 'imported', 'sandbox', 'bizarre', 'community', 'gameware', 'shareware']);
   });
 
   it('open on Sandbox when nothing was picked, and on the one picked otherwise', () => {
@@ -30,6 +30,8 @@ describe('the collections', () => {
     expect(savedCategory()).toBeUndefined();
     storage('gameware');
     expect(savedCategory()).toBe('gameware');
+    storage('community');
+    expect(savedCategory()).toBe('community');
     storage('nonsense');
     expect(savedCategory()).toBeUndefined();
   });
