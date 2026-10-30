@@ -291,3 +291,8 @@ are real previews too; a blank idle can fall back to a movement frame.
 - **Small map pictures.** Download map picture includes 1, 5 and 10 pixels per
   block, alongside the original and enlarged sizes. These sizes apply to the
   downloaded PNG; editing and native game files keep their original dimensions.
+
+- **Map wheel zoom.** `editors/map/mapZoom.ts` keeps the map coordinate under the
+  pointer fixed while stepping through the zoom choices. Wheel events over the
+  map zoom; Shift+wheel keeps scrolling. Choosing a zoom in the toolbar uses the
+  viewport center as its anchor. These view changes never edit native map data.
