@@ -13,6 +13,7 @@ theme. Some are cropped to the part that matters.
 
 - [The home page and your games](#the-home-page-and-your-games)
 - [Opening a copy of a Sandbox game](#opening-a-copy-of-a-sandbox-game)
+- [Game assets and file galleries](#game-assets-and-file-galleries)
 - [The map editor](#the-map-editor)
 - [Play Game and Play Level](#play-game-and-play-level)
 - [Blocks](#blocks)
@@ -64,6 +65,26 @@ _Look inside_ opens a game exactly as it was released, read-only, so you can see
 together without changing it. _Edit a copy_ makes your own copy under My games, which every
 editor can then change. The file list on the left is grouped the way Game-Maker's menus were:
 palettes, block sets, monsters, characters, maps, sound sets, pictures and so on.
+
+## Game assets and file galleries
+
+Open a project to browse **Game assets**. Each file type has a preview and a file count;
+_None yet_ marks an empty category. Choose a category to see its files, then click a thumbnail
+to open its editor. **Assets** returns to that file's category, and **All assets** opens the
+overview. Back and Forward keep these views too.
+
+The first card adds files. **Add a file…** offers new files, the Library, uploads and the
+available converters. **From this game…** makes a copy of an existing file. Copy a file, open
+another project in this browser tab, then use **Paste** in the matching category. Block groups
+and other settings belonging to the copied file follow it.
+
+Right-click a file or choose its **⋯** button for Edit, Duplicate, Copy, Paste to replace,
+Delete and Download. The menu also opens with Shift+F10; use the arrow keys and Escape.
+Replacing a file keeps its name and asks for confirmation. **Download** saves the file's current
+native bytes.
+
+Drop matching native files on the first card to add several at once. Existing names get new
+DOS names, so a dropped file is added alongside the one already there.
 
 ## The map editor
 
