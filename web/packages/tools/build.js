@@ -29,6 +29,8 @@ const sources = {
   'kit/tune': 'kit/tune',
   'kit/microText': 'kit/microText',
   'kit/transforms': 'kit/transforms',
+  'kit/coverPaint': 'kit/coverPaint',
+  'kit/palRamps': 'kit/palRamps',
   microFont: 'microFont',
   'music/compose': 'music/compose',
   simulation: 'simulation',

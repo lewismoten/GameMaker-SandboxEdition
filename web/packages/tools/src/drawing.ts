@@ -12,3 +12,5 @@ export * from './colors';
 export * from './kit/microText';
 export { microGlyphs, type MicroGlyphs } from './microFont';
 export * from './kit/transforms';
+export * from './kit/coverPaint';
+export * from './kit/palRamps';

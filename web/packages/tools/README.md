@@ -136,3 +136,8 @@ canvas. `scaleBlitTransparent` selects transparency without changing its mirrori
 `microWidth` measures visible cells with zero width for an empty string; `microAdvance`
 retains the older cell-advance formula when preserving legacy layout. Default micro
 drawing recognizes direct symbols such as `µ` before trying their uppercase forms.
+
+### Palette and texture helpers
+
+`drawing` and `kit/coverPaint` expose seeded tileable value noise, RGB mixing, smoothstep,
+and clamping. `kit/palRamps` exports `Pal` and `wrap` for named palette ramps.
