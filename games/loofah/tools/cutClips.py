@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Cuts the digitized sound clips for "Cleanse Me, O Loofah, But Leave My Soul" (The Bard of
 # Bizarre) out of the recording, which is NOT committed (.for-lewis/songs/loofah/Cleanse Me, O
-# Loofah, But Leave My Soul.mp3), into games/loofah/src/sound/clips/<name>.pcm
+# Loofah, But Leave My Soul.mp3), into games/loofah/src/sound/clips/<name>.wav
 # (games/kit/song/cutclips.py does the cutting; see it for the filters), which
 # games/loofah/src/sound/clips.ts wraps as Creative Voice Files.
 #
