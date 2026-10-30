@@ -1,4 +1,5 @@
-// A hosted game that starts before all its files are in: the .gam first, then the files in
+// ZIP distributions load as one shared archive before play. Legacy hosted games can start
+// before all their files are in: the .gam first, then the files in
 // the order play needs them (the title and menu, the first level, the scenes reachable
 // from it, the rest), with the next ones fetched while the current scene plays. The game
 // reads its files synchronously (GameFiles); where the engine is about to read one (a

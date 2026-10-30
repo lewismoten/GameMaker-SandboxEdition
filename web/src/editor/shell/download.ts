@@ -169,7 +169,7 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
           { class: 'dl-line', id: `${id}-line` },
           c.line,
           c.kind === 'dos' && zipUrl
-            ? [' ', h('a', { href: zipUrl, download: game.entry!.pack, 'aria-label': `Permanent DOS ZIP link for ${game.title}` }, 'Permanent ZIP link')]
+            ? [' ', h('a', { href: zipUrl, download: game.entry!.pack, 'aria-label': `Permanent ZIP link for ${game.title}` }, 'Permanent ZIP link')]
             : null,
           c.details
             ? [

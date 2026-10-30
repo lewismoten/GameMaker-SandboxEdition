@@ -39,7 +39,7 @@ export interface CatalogEntry {
   original?: OriginalExtras;
   /** Original games: a series of their own ("bizarre": The Bard of Bizarre's, see bizarre.ts). */
   series?: string;
-  /** Built sites: every file but the .gif pictures has a gzip copy beside it (<file>.gz, see packedUrl). */
+  /** Legacy loose-file gzip copies; also used for separate walkthrough JSON metadata. */
   gz?: boolean;
   /** Built sites: a downloadable DOS ZIP; older catalogs use gzipped GMPK. Named with a hash of its content. */
   pack?: string;
@@ -240,7 +240,7 @@ function trimPacks(): void {
   }
 }
 
-/** Where a hosted game's pack is, or undefined when it has none (or this browser cannot unpack it). */
+/** A hosted game's ZIP or legacy GMPK URL, when its required decompressor is available. */
 function packUrl(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './'): string | undefined {
   return entry.pack && (/\.zip$/i.test(entry.pack) || typeof DecompressionStream !== 'undefined') ? `${base}${entry.path}${entry.pack}` : undefined;
 }
@@ -298,7 +298,7 @@ function startPack(url: string): Pack {
 /** A game's pack being read: its files so far, and each one as it comes (see openPack). */
 export interface PackHandle {
   files: ReadonlyMap<string, Uint8Array>;
-  /** true once every file is in; false when the pack failed (or was stopped): fetch what is missing on its own. */
+  /** true once every file is in; false on failure. Only legacy catalogs have loose-file fallbacks. */
   done: Promise<boolean>;
   /** No longer needed: stops the download when nobody else is reading it. */
   stop(): void;
@@ -373,7 +373,7 @@ async function packAtHand(entry: Pick<CatalogEntry, 'path' | 'pack'>, base: stri
 /**
  * One file of a hosted game, by the name a game uses for it (A-J.BKD finds the CD's
  * a_j.bkd); undefined when the game has no such file or it could not be fetched. From the
- * game's pack when that is here already (played, opened, or kept offline), else on its own.
+ * ZIP-only sites always share the archive request. Legacy catalogs can fetch loose files.
  */
 export async function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz' | 'pack'>, name: string, base = './'): Promise<Uint8Array | undefined> {
   const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
@@ -388,7 +388,7 @@ export async function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' |
 
 /**
  * Every file of a hosted game (copies, to change freely): its pack, in one request, when it
- * has one; files the pack did not bring (an older site, a failed download) one by one.
+ * has one. ZIP failures are reported; only legacy catalogs fall back to loose files.
  */
 export async function loadHostedGame(entry: CatalogEntry, base = './', onProgress?: (done: number, total: number) => void): Promise<GameFiles> {
   const files = new GameFiles();
