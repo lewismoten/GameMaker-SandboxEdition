@@ -186,3 +186,10 @@ pairs into a native title demo with configurable Escape press and release delays
 lookup and CLI reporting belong to the consumer. `simulation` also exposes route scene
 assertions and scene initialization that delegates to the engine. `GameSimState` names
 the snapshot type; compatibility initialization preserves older block-birth bookkeeping.
+
+### DOS disk output
+
+`kit/disk` exports `Disk` for collecting 8.3-named files and writing a clean output
+directory, plus the legacy `dosText` byte conversion. Destination and metadata are
+caller-supplied. `kit/menuVersion` can stamp a supplied version on a native menu GIF;
+this package does not read repository metadata or impose game version policy.

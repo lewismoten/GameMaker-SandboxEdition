@@ -51,6 +51,8 @@ const sources = {
   'kit/align': 'kit/align',
   'kit/sceneInit': 'kit/sceneInit',
   'kit/routeChecks': 'kit/routeChecks',
+  'kit/disk': 'kit/disk',
+  'kit/menuVersion': 'kit/menuVersion',
   microFont: 'microFont',
   'music/compose': 'music/compose',
   simulation: 'simulation',
