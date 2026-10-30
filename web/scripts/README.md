@@ -102,3 +102,7 @@ are listed in `docs/achievement-art.md`.
 metadata, cached by source path, size and modification time. Pickers can deduplicate
 colors and show sound groups without downloading every source game to inspect it.
 Invalid assets retain no invented metadata.
+
+Palette facts include the canonical 768 VGA bytes in base64 for previews, so browsing
+a palette list needs no game archive download. These library-only facts are omitted
+from the slim home-page catalog. Copying a selected file still reads its original ZIP.

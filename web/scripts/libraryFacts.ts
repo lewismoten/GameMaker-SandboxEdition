@@ -7,6 +7,8 @@ import { classifySound, type SoundGroup } from '../src/audio/soundProfile';
 
 export interface LibraryFileFact {
   paletteHash?: string;
+  /** Canonical VGA bytes for previews that need no archive download. */
+  paletteData?: string;
   soundGroup?: SoundGroup;
 }
 const cache = new Map<string, { size: number; modified: number; fact: LibraryFileFact }>();
@@ -22,10 +24,11 @@ export function libraryFacts(files: ReadonlyMap<string, string>): Record<string,
       try {
         const bytes = new Uint8Array(readFileSync(path));
         if (/\.pal$/i.test(name)) {
-          if (bytes.length >= 768)
-            fact.paletteHash = createHash('sha256')
-              .update(parsePalette(bytes).map((component) => component & 63))
-              .digest('hex');
+          if (bytes.length >= 768) {
+            const palette = parsePalette(bytes).map((component) => component & 63);
+            fact.paletteHash = createHash('sha256').update(palette).digest('hex');
+            fact.paletteData = Buffer.from(palette).toString('base64');
+          }
         } else {
           const voice = decodeVoc(bytes);
           if (voice.samples.length) fact.soundGroup = classifySound(voice.samples, voice.sampleRate);

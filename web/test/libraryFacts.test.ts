@@ -29,6 +29,7 @@ describe('library asset facts', () => {
     const before = libraryFacts(files);
     expect(before['a.pal'].paletteHash).toBe(before['b.pal'].paletteHash);
     expect(before['a.pal'].paletteHash).toHaveLength(64);
+    expect(Buffer.from(before['a.pal'].paletteData!, 'base64')).toEqual(Buffer.alloc(768));
     writeFileSync(b, new Uint8Array(768).fill(1));
     utimesSync(b, 1_000, 1_000);
     const after = libraryFacts(files);
