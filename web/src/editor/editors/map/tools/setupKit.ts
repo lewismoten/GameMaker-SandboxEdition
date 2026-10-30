@@ -10,6 +10,7 @@ export interface SetupCtx {
   blocks: Block[];
   palette: Palette;
   imgs: HTMLCanvasElement[];
+  name?: (index: number) => string;
 }
 
 const EMPTY = { value: -1, label: 'Empty', icon: '∅' };
@@ -33,12 +34,13 @@ export function slotButton(ctx: SetupCtx, label: string, mask: number | undefine
     const v = get();
     const b = ctx.blocks[v];
     btn.classList.toggle('empty', !b);
-    btn.setAttribute('aria-label', `${label}: ${b ? `block ${v}` : 'empty'}`);
-    btn.title = `${label} (${b ? `block ${v}` : 'empty'}): click to choose`;
+    const picture = b ? (ctx.name?.(v) ?? `block ${v}`) : 'empty';
+    btn.setAttribute('aria-label', `${label}: ${picture}`);
+    btn.title = `${label} (${picture}): click to choose`;
     btn.replaceChildren(b ? blockCanvas(b.pixels, ctx.palette) : mask !== undefined ? maskDiagram(mask) : h('span', { class: 'mt-none' }, '∅'));
   };
   btn.addEventListener('click', async () => {
-    const v = await chooseBlock(label, ctx.blocks, ctx.palette, get(), [EMPTY], false);
+    const v = await chooseBlock(label, ctx.blocks, ctx.palette, get(), [EMPTY], false, undefined, ctx.name);
     if (v === undefined) return;
     set(v);
     render();

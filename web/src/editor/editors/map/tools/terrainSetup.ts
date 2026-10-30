@@ -149,9 +149,9 @@ export function editTerrain(ctx: SetupCtx, start?: Terrain, guessOutside = 0): P
       () => ctx.palette,
       () => t.outside,
       (v) => ((t.outside = v), refresh()),
-      { title: 'Ground: the block erasing leaves', transparent: false },
+      { title: 'Ground: the block erasing leaves', transparent: false, name: ctx.name },
     );
-    ground.setAttribute('aria-label', 'Ground block (what erasing leaves)');
+    ground.setAttribute('aria-label', `Ground block (what erasing leaves): ${ctx.name?.(t.outside) ?? `Block ${t.outside}`}`);
     buildTemplate();
     return h(
       'form',

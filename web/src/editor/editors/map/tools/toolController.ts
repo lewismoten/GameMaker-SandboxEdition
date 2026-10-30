@@ -19,6 +19,7 @@ import { editTerrain } from './terrainSetup';
 import { editBuilding } from './buildingSetup';
 import { drawPreview, type SetupCtx } from './setupKit';
 import type { OverlayState } from './overlay';
+import { blockLabel } from '../../blocks/blockNames';
 
 export type ToolMode = 'line' | 'rect' | 'select' | 'terrain' | 'stamp' | 'building' | 'paste';
 
@@ -65,7 +66,12 @@ export class MapTools {
   ) {}
 
   private get ctx(): SetupCtx {
-    return { blocks: this.host.blocks(), palette: this.host.palette(), imgs: this.host.imgs() };
+    return {
+      blocks: this.host.blocks(),
+      palette: this.host.palette(),
+      imgs: this.host.imgs(),
+      name: (index) => blockLabel(this.host.project, this.host.bbl(), index),
+    };
   }
 
   private get mirrors(): Mirrors {
