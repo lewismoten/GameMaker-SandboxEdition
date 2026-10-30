@@ -197,3 +197,10 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
 `cdDemos/` is apart from the Sandbox games: a curious bot (`bot.ts`, `probe.ts`) that plays any Game-Maker
 game on the real engine run headless (`headless.ts`), used by `make.ts` to record title demos for the CD
 games that shipped without one (`cd web && npx vite-node ../games/kit/cdDemos/make.ts [ids…]`).
+
+Recorded source clips use lossless PCM WAV for inline GitHub audio previews. The cutters in `song/cutclips.py` write that
+format with the nominal sample rate; game builders use
+`@lewismoten/gamemaker-sandbox-tools/audio-files` to decode samples or create native VOCs.
+The native WAV conversion needs no external decoder; FFmpeg is only needed for cutting
+recordings or converting compressed sources such as Ogg. Keep `.wav` authoring sources outside
+`disk/`; native 8.3 `.VOC` output must remain byte-identical in this format migration.

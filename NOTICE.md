@@ -764,3 +764,14 @@ They read recordings that are not in the repository, and nothing of theirs is
 committed except the note data and clips they produce. Browser checks during development
 (Playwright, Apache-2.0, and any accessibility checker run with it) are run from outside the
 repository and are not dependencies of it.
+
+### Previewable source audio conversion
+
+Recorded authoring clips are stored as lossless mono 8-bit PCM WAV files, with RIFF/WAVE
+PCM fields documented by [Microsoft](https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/ns-mmeapi-waveformatex). Native WAV conversion uses this project’s own reader. The tools package's Node-only `audio-files` entry invokes an external FFmpeg
+executable to decode compressed sources such as FLAC and Ogg, or resample audio to native VOCs; no FFmpeg code
+or executable is bundled. FFmpeg is by the FFmpeg developers under LGPL-2.1-or-later, or
+GPL-2.0-or-later when GPL components are enabled ([license](https://ffmpeg.org/legal.html)).
+The converter, source-format migration and verification were implemented with OpenAI
+Codex under Lewis Moten's direction. Existing audio, voices, source recordings and their
+credits are unchanged; the native DOS audio bytes are preserved.
