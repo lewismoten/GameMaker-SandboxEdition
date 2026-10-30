@@ -11,6 +11,7 @@
     "src/formats/fliClips.test.ts",
     "src/manual/printables/levelSecrets.test.ts",
     "src/manual/printables/levelViews.test.ts",
+    "test/audioFiles.integration.test.ts",
     "test/cdBackdrops.test.ts",
     "test/fliRuns.test.ts",
     "test/gif.test.ts",

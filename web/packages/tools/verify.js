@@ -10,7 +10,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 const consumer = mkdtempSync(resolve(tmpdir(), 'gamemaker-tools-consumer-'));
 try {
   const [pack] = JSON.parse(execFileSync('npm', ['pack', '--ignore-scripts', '--json', '--pack-destination', consumer], { cwd: here, encoding: 'utf8' }));
-  for (const file of pack.files) assert.ok(!/\.(?:pal|bbl|cbl|mbl|map|mon|chr|voc|gam|rec|cmf)$/i.test(file.path), `game content in toolkit: ${file.path}`);
+  for (const file of pack.files)
+    assert.ok(!/\.(?:pal|bbl|cbl|mbl|map|mon|chr|voc|gam|rec|cmf|pcm|flac|ogg|wav)$/i.test(file.path), `game content in toolkit: ${file.path}`);
   assert.ok(pack.files.some((file) => file.path === 'LICENSE'));
   assert.ok(pack.files.some((file) => file.path === 'NOTICE.md'));
   writeFileSync(resolve(consumer, 'package.json'), '{"type":"module","private":true}');
@@ -30,6 +31,9 @@ import { sample, osc, tune, v, INSTRUMENTS } from '@lewismoten/gamemaker-sandbox
 import { decodeVoc } from '@lewismoten/gamemaker-sandbox-tools/formats/voc';
 import { encodePng, crc32 } from '@lewismoten/gamemaker-sandbox-tools/images';
 import { Sim, GameSim } from '@lewismoten/gamemaker-sandbox-tools/simulation';
+import { audioFileToVoc, decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
+assert.equal(typeof audioFileToVoc, 'function');
+assert.throws(() => decodeAudioFile('unused.flac', {sampleRate:0}), RangeError);
 const picture = new Pixels(20,20,1); text(picture,0,0,'HI',2);
 assert.ok(picture.px.includes(2)); assert.equal(new PaletteBuilder().color(255,0,0),0);
 assert.equal(FONT_CP437.length,2048); assert.equal(glyphRows(219)[0],255);
@@ -57,7 +61,7 @@ sim.press(77);await sim.run(4);assert.ok(sim.pos.x>160);assert.equal(typeof Game
   execFileSync(process.execPath, ['smoke.mjs'], { cwd: consumer, stdio: 'inherit' });
   writeFileSync(
     resolve(consumer, 'consumer.ts'),
-    `import { Pixels, renderText, TIME_OF_DAY_SKY, PaletteBuilder, type TextImage } from '@lewismoten/gamemaker-sandbox-tools/drawing';\nimport { Sim } from '@lewismoten/gamemaker-sandbox-tools/simulation';\nexport const p: Pixels = new Pixels(20,20);\nexport const label: TextImage = renderText('Hi', {font:'micro',outline:0});\nnew PaletteBuilder().ramp('sky',8,...TIME_OF_DAY_SKY.sunset);\nexport type Scene = ConstructorParameters<typeof Sim>[0];\n`,
+    `import { Pixels, renderText, TIME_OF_DAY_SKY, PaletteBuilder, type TextImage } from '@lewismoten/gamemaker-sandbox-tools/drawing';\nimport { Sim } from '@lewismoten/gamemaker-sandbox-tools/simulation';\nimport {audioFileToVoc, type VocFileOptions} from '@lewismoten/gamemaker-sandbox-tools/audio-files';\nexport const convert: (file: string | URL, options?: VocFileOptions) => Uint8Array = audioFileToVoc;\nexport const p: Pixels = new Pixels(20,20);\nexport const label: TextImage = renderText('Hi', {font:'micro',outline:0});\nnew PaletteBuilder().ramp('sky',8,...TIME_OF_DAY_SKY.sunset);\nexport type Scene = ConstructorParameters<typeof Sim>[0];\n`,
   );
   execFileSync(
     process.execPath,
