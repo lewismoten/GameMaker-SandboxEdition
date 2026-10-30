@@ -25,6 +25,7 @@ import {
   FILE,
   SAVE_ID,
   achievementsWritten,
+  countOccurrence,
   forgetForTests,
   loadAchievements,
   mergeRecords,
@@ -45,6 +46,25 @@ beforeEach(() => {
 });
 
 describe('achievements store', () => {
+  it('keeps independent repeated events across merges, with a bounded count', async () => {
+    await loadAchievements();
+    await countOccurrence('win:test', 3);
+    await achievementsWritten();
+    const earlier = parseRecord(saves[SAVE_ID][FILE]);
+    const separate = parseRecord(undefined);
+    separate.sets['win:test'] = ['an-independent-win'];
+    await countOccurrence('win:test', 3);
+    await countOccurrence('win:test', 3);
+    await achievementsWritten();
+    const count = writes.length;
+    await countOccurrence('win:test', 3);
+    await achievementsWritten();
+    expect(writes).toHaveLength(count);
+    expect(stored().sets['win:test']).toHaveLength(3);
+    expect(mergeRecords(earlier, stored()).sets['win:test']).toHaveLength(3);
+    expect(mergeRecords(separate, stored()).sets['win:test']).toHaveLength(4);
+  });
+
   it('unlocks once, keeps the first date and writes quietly', async () => {
     unlockAchievement('play-first');
     await loadAchievements();

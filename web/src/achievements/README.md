@@ -11,3 +11,7 @@ finished (`playedOn.ts`: the desk, the DOS page or the web player, and a phone h
 `details.ts`, with where it is earned from `where.ts`) and the desk's
 `ACHIEVE.EXE` (`achieveExe.ts`). While a guided tour plays nothing counts (`store.ts`): what the
 tour presses, calls or reads isn't the visitor's own doing.
+
+Repeated events use `countOccurrence` in `store.ts`: bounded sets of unique event tokens
+retain independent plays when records from tabs or backups merge. Old achievement
+records need no schema migration, and Reset clears these counts too.

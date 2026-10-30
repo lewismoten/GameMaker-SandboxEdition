@@ -223,6 +223,25 @@ export function remember(key: string, item: string): Promise<string[]> {
   });
 }
 
+/** Counts repeat events with unique tokens, so backup/tab merges retain independent events.
+ * Kept bounded: achievements only need to distinguish up to `limit` events per game.
+ */
+export function countOccurrence(key: string, limit: number): Promise<void> {
+  if (touring() || !Number.isSafeInteger(limit) || limit < 1) return Promise.resolve();
+  return new Promise((resolve) => {
+    change((r) => {
+      const events = (r.sets[key] ??= []);
+      if (events.length >= limit) {
+        resolve();
+        return false;
+      }
+      events.push(crypto.randomUUID());
+      resolve();
+      return true;
+    });
+  });
+}
+
 /** Forgets everything (the achievements page's Reset). */
 export async function resetAchievements(): Promise<void> {
   await loadAchievements();
