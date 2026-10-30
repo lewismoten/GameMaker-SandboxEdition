@@ -35,6 +35,8 @@ import { bottomOrient, firesMonster, insertFrame, normalOrient, topOrient, trave
 import { blockLinks, mirrorPanel, seqLinks, type MirrorContext } from './characterMirrorPanel';
 import { frameCard, keyPicker, type FrameContext } from './characterFrames';
 import { stageBackdrop } from './characterStage';
+import { COUNTER_NAMES, counterName, readCounterNames, type CounterNames } from './counterNames';
+import { counterNameField } from './counterNameFields';
 
 const JOY_DIRS: [number, string][] = [
   [0, 'No joystick'],
@@ -93,11 +95,13 @@ registerEditor(['chr'], (host, project, file) => {
     chr: Uint8Array;
     cbl?: Uint8Array;
     links: string;
+    names: CounterNames;
   }
   const snapshot = (): Snap => ({
     chr: serializeCharacter(chr),
     cbl: cblName ? project.files.get(cblName) : undefined,
     links: JSON.stringify([seqLinks({ project, file }), blockLinks(project, cblName)]),
+    names: readCounterNames(project.extras<unknown>(file, COUNTER_NAMES, undefined)),
   });
   const history = new History<Snap>();
   let base = snapshot();
@@ -108,18 +112,19 @@ registerEditor(['chr'], (host, project, file) => {
     undoBtn.disabled = !history.canUndo;
     redoBtn.disabled = !history.canRedo;
   };
-  const edit = (fn: () => void) => {
+  const edit = (fn: () => void, native = true) => {
     fn();
     const now = Date.now();
     if (now - lastChange > 500) history.record(base);
     lastChange = now;
     base = snapshot();
     syncHistory();
-    save();
+    if (native) save();
   };
   function step(back: boolean): void {
     const to = back ? history.undo(base) : history.redo(base);
     if (!to) return;
+    const nativeChanged = !sameBytes(to.chr, base.chr);
     Object.assign(chr, parseCharacter(to.chr));
     if (to.cbl && cblName && !sameBytes(to.cbl, project.files.get(cblName))) {
       project.files.set(cblName, to.cbl);
@@ -130,10 +135,11 @@ registerEditor(['chr'], (host, project, file) => {
       project.setExtras(file, 'mirrors', seqs.length ? seqs : undefined);
       if (cblName) project.setExtras(cblName, 'mirrors', blocks.length ? blocks : undefined);
     }
+    if (JSON.stringify(to.names) !== JSON.stringify(base.names)) project.setExtras(file, COUNTER_NAMES, Object.keys(to.names).length ? to.names : undefined);
     base = to;
     lastChange = 0;
     syncHistory();
-    save();
+    if (nativeChanged) save();
     render();
   }
   const onKey = (e: KeyboardEvent) => {
@@ -152,6 +158,14 @@ registerEditor(['chr'], (host, project, file) => {
   const help = (text: string) => h('p', { class: 'chr-help' }, text);
   const group = (title: string, icon: string, ...body: (Node | null)[]) =>
     h('section', { class: 'chr-group' }, h('h2', null, h('span', { class: 'chr-icon' }, icon), title), ...body);
+  const setNames = (names: CounterNames) => {
+    edit(() => project.setExtras(file, COUNTER_NAMES, Object.keys(names).length ? names : undefined), false);
+    host.querySelectorAll<HTMLElement>('[data-counter-meter]').forEach((label) => {
+      const name = counterName(project, file, Number(label.dataset.counterMeter));
+      label.textContent = name;
+      label.hidden = !name;
+    });
+  };
 
   // ---------------------------------------------------------------- sounds
   const vocFor = (n: number) => {
@@ -210,6 +224,11 @@ registerEditor(['chr'], (host, project, file) => {
               { min: -32000, max: 32765, title: `Special counter ${i + 1} at the start` },
             )
           : h('span', { class: 'chr-muted' }, '∞'),
+        h(
+          'small',
+          { class: 'meta', style: 'grid-column:1/-1;overflow-wrap:anywhere', 'data-counter-meter': String(m), hidden: !counterName(project, file, m) },
+          counterName(project, file, m),
+        ),
       );
     });
 
@@ -289,6 +308,12 @@ registerEditor(['chr'], (host, project, file) => {
         'Special counters',
         '#',
         h('div', { class: 'chr-counters' }, ...counters),
+        h(
+          'details',
+          null,
+          h('summary', null, 'Counter names (editor only)'),
+          ...Array.from({ length: 5 }, (_, i) => counterNameField(project, file, 20 + i, `Special counter ${i + 1} name`, setNames)),
+        ),
         help(
           'Five hidden tallies blocks can add to or take from ("Changes counter" in the block editor). A block that would take one below zero blocks the way — use them for keys, ammo or collectables.',
         ),
@@ -678,6 +703,7 @@ registerEditor(['chr'], (host, project, file) => {
                   : null,
               ),
               help(`Limited uses work like ammo: each run uses one, and blocks set to change "Repetition count ${current - 4}" give more.`),
+              counterNameField(project, file, current, 'Repetition counter name (editor only)', setNames),
             )
           : null,
         group(

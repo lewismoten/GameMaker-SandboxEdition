@@ -338,3 +338,5 @@ frames. The editor loads that renderer dynamically and keeps item selection cont
 `editors/character/counterNames.ts` stores optional repetition-meter and hidden-tally names in
 the character's `counterNames` companion section, indexed by the native meter number. Fixed
 engine counters and the character's native bytes retain their original meanings.
+`counterNameFields.ts` supplies the hidden-tally and sequence-use name inputs. Label edits
+share character Undo/Redo while leaving native files untouched.
