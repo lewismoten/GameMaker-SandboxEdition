@@ -85,6 +85,9 @@ PC speaker. Restoring it resumes the loaded song, or starts the latest song requ
 while absent. `soundCardEnabled` reports the current card state; returning the card
 preserves a disabled music preference. An explicit song stop remains stopped. Normal DOS-compatible startup
 behavior is unchanged unless the host opts into live card control.
+Set the audio card state before `runGame` and call the same method for later switches;
+effects then use the PC speaker while the card is absent. `RunOptions.noSoundCard` retains
+the original startup-only detection, including its fixed speaker-only choice for that run.
 
 ## Build from source
 

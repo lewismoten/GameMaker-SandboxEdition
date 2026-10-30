@@ -198,7 +198,7 @@ function attachSound(s: Session, w: World, sounds: SoundSet | undefined): void {
     play: (n) => {
       if (!sounds || !s.soundOn || n < 0 || n >= LASTSND) return false;
       const digital = sounds.digital[n];
-      if (!s.speakerOnly && digital && digital[0] !== ' ') s.m.audio.playVoc(s.m.files.get(`${digital}.voc`));
+      if (!s.speakerOnly && s.m.audio.soundCardEnabled !== false && digital && digital[0] !== ' ') s.m.audio.playVoc(s.m.files.get(`${digital}.voc`));
       else s.m.audio.playSpeaker(sounds.freqs[n]);
       return true;
     },

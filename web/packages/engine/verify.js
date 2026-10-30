@@ -16,12 +16,12 @@ try {
   execFileSync('npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund', resolve(consumer, pack.filename)], { cwd: consumer, stdio: 'pipe' });
   writeFileSync(
     resolve(consumer, 'smoke.mjs'),
-    `import assert from 'node:assert/strict';\nimport {GameFiles,Machine} from '@lewismoten/gamemaker-sandbox-engine';\nimport {parseGame,newGame,serializeGame} from '@lewismoten/gamemaker-sandbox-engine/formats/game';\nconst b=serializeGame(newGame('Engine'));const files=new GameFiles([['TEST.GAM',b]]);assert.equal(files.mainGame(),'test.gam');assert.equal(typeof Machine,'function');assert.ok(parseGame(b).scenes.length>0);`,
+    `import assert from 'node:assert/strict';\nimport {GameFiles,Machine} from '@lewismoten/gamemaker-sandbox-engine';\nimport {parseGame,newGame,serializeGame} from '@lewismoten/gamemaker-sandbox-engine/formats/game';\nimport {AudioEngine} from '@lewismoten/gamemaker-sandbox-engine/audio/engine';\nconst audio=new AudioEngine();audio.setSoundCard(false);assert.equal(audio.soundCardEnabled,false);audio.setSoundCard(true);assert.equal(audio.soundCardEnabled,true);\nconst b=serializeGame(newGame('Engine'));const files=new GameFiles([['TEST.GAM',b]]);assert.equal(files.mainGame(),'test.gam');assert.equal(typeof Machine,'function');assert.ok(parseGame(b).scenes.length>0);`,
   );
   execFileSync(process.execPath, ['smoke.mjs'], { cwd: consumer, stdio: 'inherit' });
   writeFileSync(
     resolve(consumer, 'consumer.ts'),
-    `import {GameFiles,Machine} from '@lewismoten/gamemaker-sandbox-engine';\nimport type {World} from '@lewismoten/gamemaker-sandbox-engine/engine/world';\nexport const files=new GameFiles();export type Runtime=Machine;export type State=World;\n`,
+    `import {GameFiles,Machine} from '@lewismoten/gamemaker-sandbox-engine';\nimport type {World} from '@lewismoten/gamemaker-sandbox-engine/engine/world';\nexport const files=new GameFiles();export type Runtime=Machine;export type State=World;export function setCard(machine:Machine,on:boolean):boolean{machine.audio.setSoundCard(on);return machine.audio.soundCardEnabled;}\n`,
   );
   execFileSync(
     process.execPath,
