@@ -6,6 +6,7 @@
 // so an open dialog (Saves & scores) doesn't hide it. While a guided tour plays (tour/: the
 // html element's tour-on class, and its 'gm-tour' events) the notes wait, and come when it ends:
 // they would cover its title cards and bubbles. The achievement itself is kept at once.
+import { badgeIcon } from './badgeArt';
 import './toast.css';
 import { achievementById } from './catalog';
 
@@ -97,7 +98,7 @@ export function showUnlock(id: string): void {
   const icon = document.createElement('span');
   icon.className = 'ach-toast-icon';
   icon.setAttribute('aria-hidden', 'true');
-  icon.textContent = a.icon;
+  icon.append(badgeIcon(a, true));
   const text = document.createElement('div');
   text.className = 'ach-toast-text';
   const kicker = document.createElement('span');

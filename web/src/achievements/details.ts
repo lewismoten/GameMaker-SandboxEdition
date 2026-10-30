@@ -4,6 +4,7 @@
 // only its hint. A modal <dialog>: Esc or Close shuts it, ← and → (or Previous and Next) step
 // through the badges in page order, and focus goes back to the badge last shown.
 import './details.css';
+import { badgeIcon } from './badgeArt';
 import { h, clear } from '../editor/core/ui';
 import { CATEGORIES, progressOf, shownText, type Achievement } from './catalog';
 import type { AchievementRecord } from './store';
@@ -24,7 +25,7 @@ function body(a: Achievement, r: AchievementRecord, close: () => void): (HTMLEle
     h(
       'div',
       { class: 'ach-dlg-top' },
-      h('span', { class: `ach-dlg-icon${when ? '' : ' is-locked'}`, 'aria-hidden': 'true' }, shown.icon),
+      h('span', { class: `ach-dlg-icon${when ? '' : ' is-locked'}`, 'aria-hidden': 'true' }, badgeIcon(a, !!when)),
       h(
         'div',
         null,

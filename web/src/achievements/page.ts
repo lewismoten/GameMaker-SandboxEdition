@@ -3,6 +3,7 @@
 // "???" and a vague hint until they are. A badge opens its details (details.ts). The same record the desk's ACHIEVE.EXE shows (store.ts). A Reset at the
 // bottom forgets them all, after asking.
 import './page.css';
+import { badgeIcon } from './badgeArt';
 import { h, clear, confirmDialog } from '../editor/core/ui';
 import { pageToc } from '../pageToc';
 import { ACHIEVEMENTS, CATEGORIES, progressOf, shownText, type Achievement } from './catalog';
@@ -48,7 +49,7 @@ function card(a: Achievement, r: AchievementRecord, open: () => void): HTMLEleme
         title: secret ? 'Hidden achievement: show its hint' : `${shown.title}: show the details`,
         onclick: open,
       },
-      h('span', { class: 'ach-icon', 'aria-hidden': 'true' }, shown.icon),
+      h('span', { class: 'ach-icon', 'aria-hidden': 'true' }, badgeIcon(a, !!when)),
       h(
         'span',
         { class: 'ach-body' },
