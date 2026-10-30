@@ -46,6 +46,13 @@ export const bottomOrient = (f: Frame): number => (f.orient >> 4) & 15;
 export const withTopOrient = (f: Frame, o: number): number => (f.orient & ~15) | (o & 15);
 export const withBottomOrient = (f: Frame, o: number): number => (f.orient & ~0xf0) | ((o & 15) << 4);
 
+/** Swaps the visible halves together with their orientations; birth commands stay commands. */
+export function swapHalves(f: Frame): void {
+  if (firesMonster(f)) return;
+  [f.pic1, f.pic2] = [f.pic2, f.pic1];
+  f.orient = (f.orient & ~0xff) | (topOrient(f) << 4) | bottomOrient(f);
+}
+
 /** Replaces the sequence's frames with `list` and an end marker; slots past the marker keep their bytes. */
 export function setFrames(seq: Sequence, list: Frame[]): void {
   const n = Math.min(list.length, MAXFRAME);

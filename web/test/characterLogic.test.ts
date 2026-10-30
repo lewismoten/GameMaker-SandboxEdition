@@ -10,6 +10,7 @@ import {
   normalOrient,
   rotateOrient,
   setFrames,
+  swapHalves,
   travel,
   withBottomOrient,
   withTopOrient,
@@ -48,6 +49,23 @@ describe('orientation buttons', () => {
     const f = { ...emptyFrame(), orient: 0x35 };
     expect(withTopOrient(f, 2)).toBe(0x32);
     expect(withBottomOrient(f, 6)).toBe(0x65);
+  });
+});
+
+describe('swapping character halves', () => {
+  it('moves each orientation with its picture and is reversible', () => {
+    const f = { ...emptyFrame(), pic1: 7, pic2: 50, orient: 0x46, x: 3, pause: 8 };
+    const before = { ...f };
+    swapHalves(f);
+    expect(f).toEqual({ ...before, pic1: 50, pic2: 7, orient: 0x64 });
+    swapHalves(f);
+    expect(f).toEqual(before);
+  });
+  it('leaves monster-birth commands unchanged', () => {
+    const f = { ...emptyFrame(), pic1: 7, pic2: 100, orient: 0x46 };
+    const before = { ...f };
+    swapHalves(f);
+    expect(f).toEqual(before);
   });
 });
 
