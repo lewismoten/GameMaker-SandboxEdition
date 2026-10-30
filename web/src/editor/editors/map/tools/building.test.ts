@@ -63,3 +63,37 @@ describe('smart buildings', () => {
     expect(changed).toEqual([11, 15]);
   });
 });
+
+it('wraps pasted/building grids across both seams and still skips transparent cells', () => {
+  const blocks = new Uint8Array(12);
+  expect(
+    placeGrid(
+      blocks,
+      [
+        [2, 3],
+        [4, -1],
+      ],
+      3,
+      2,
+      4,
+      3,
+      true,
+    ),
+  ).toEqual([11, 8, 3]);
+  expect([...blocks]).toEqual([0, 0, 0, 4, 0, 0, 0, 0, 3, 0, 0, 2]);
+  blocks.fill(0);
+  expect(
+    placeGrid(
+      blocks,
+      [
+        [2, 3],
+        [4, -1],
+      ],
+      -1,
+      -1,
+      4,
+      3,
+      true,
+    ),
+  ).toEqual([11, 8, 3]);
+});

@@ -68,3 +68,27 @@ describe('polygon selections', () => {
     ).toHaveLength(9);
   });
 });
+
+it('captures wrapped rectangles and masks in visual order without changing native cells', () => {
+  const blocks = Uint8Array.from({ length: 12 }, (_, i) => i),
+    before = blocks.slice();
+  expect(captureSelection(blocks, { x: 3, y: 2, w: 2, h: 2, wrap: true }, 4)).toEqual({ w: 2, h: 2, cells: [11, 8, 3, 0] });
+  expect(
+    captureSelection(
+      blocks,
+      {
+        x: -1,
+        y: -1,
+        w: 2,
+        h: 2,
+        wrap: true,
+        cells: [
+          { x: -1, y: -1 },
+          { x: 0, y: 0 },
+        ],
+      },
+      4,
+    ),
+  ).toEqual({ w: 2, h: 2, cells: [11, -1, -1, 0] });
+  expect(blocks).toEqual(before);
+});

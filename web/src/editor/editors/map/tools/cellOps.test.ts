@@ -22,3 +22,15 @@ describe('map cell helpers', () => {
     expect([...b]).toEqual([1, 1, 7, 1, 7, 7, 1, 1, 1]);
   });
 });
+
+it('floods across both seams only when wrapping is enabled', () => {
+  const blocks = new Uint8Array(12);
+  blocks[0] = blocks[3] = blocks[8] = 1;
+  expect(floodCells(blocks, { x: 0, y: 0 }, 4, 3)).toEqual([{ x: 0, y: 0 }]);
+  expect(
+    floodCells(blocks, { x: 0, y: 0 }, 4, 3, true)
+      .map((c) => c.y * 4 + c.x)
+      .sort((a, b) => a - b),
+  ).toEqual([0, 3, 8]);
+  expect(floodCells(new Uint8Array(12), { x: 0, y: 0 }, 4, 3, true)).toHaveLength(12);
+});
