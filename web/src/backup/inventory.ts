@@ -101,6 +101,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-grator-side-collapsed',
       'gm-grator-side-w',
       'gm-map-grid',
+      'gm-map-wrap',
       'gm-map-links',
       'gm-map-gray',
       'gm-slides-zoom',

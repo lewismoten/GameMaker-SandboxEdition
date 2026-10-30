@@ -75,6 +75,11 @@ other scenes and cyan ones are where the hero arrives; drag one to move it. Any 
 shown over the map to see it by night or at dusk, and _Download map picture_ saves the whole map
 as a PNG.
 
+**Wrap** (∞) keeps scrolling through any edge to the opposite side. All the visible copies
+edit the same map, including selections, pasted blocks and terrain brushes. Use Shift+wheel
+or the focused map's arrow keys to scroll; on a touch screen, choose **Scroll** before dragging.
+The Wrap preference is remembered and included in preference backups.
+
 ## Play Game and Play Level
 
 ![Play Level running LaVale Mall: the game's own level screen and briefing, "4. LaVale Mall, 8:00 PM. One hour to closing."](screenshots/editor/04-play-level.webp)

@@ -284,3 +284,11 @@ describe('damaged files', () => {
     expect(b.unknown).toEqual(['Future things']);
   });
 });
+
+it('restores the repeating map view preference from a preferences-only backup', async () => {
+  const original = emptyWorld();
+  original.local['gm-map-wrap'] = '1';
+  const backup = await backupOf(original, ['prefs']);
+  const { next } = await planImport(emptyWorld(), backup, all('replace'));
+  expect(next.local['gm-map-wrap']).toBe('1');
+});
