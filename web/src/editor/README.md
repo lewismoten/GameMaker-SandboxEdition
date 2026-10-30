@@ -480,3 +480,6 @@ native game files are loaded only when the player chooses an archive action.
 
 Map wrapping geometry lives in `editors/map/mapWrap.ts`: native cell normalization,
 seam-continuous gestures, and viewport tile/marker placement without enlarging DOS maps.
+`editors/map/mapViewport.ts` owns the scroll surface, bounded/repeating canvas presentation,
+visible native cells and marker placement. The repeating canvas is only viewport sized;
+its source artwork and overlays keep their native map dimensions.
