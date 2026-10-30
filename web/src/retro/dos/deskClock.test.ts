@@ -1,4 +1,4 @@
-// TIME and DATE: printed and read as DOS 6.22 did.
+// DOS-style TIME and DATE, plus the room’s named time shortcuts.
 import { describe, expect, it } from 'vitest';
 import { dosDate, dosTime, parseDosDate, parseDosTime } from './deskClock';
 
@@ -13,6 +13,8 @@ describe('TIME', () => {
   });
   it('reads 24-hour times', () => {
     expect(hm(parseDosTime('23:30', base))).toEqual([23, 30, 0, 0]);
+    expect(hm(parseDosTime('00', base))).toEqual([0, 0, 0, 0]);
+    expect(hm(parseDosTime('23', base))).toEqual([23, 0, 0, 0]);
     expect(hm(parseDosTime('7', base))).toEqual([7, 0, 0, 0]);
     expect(hm(parseDosTime('3:17:20.5', base))).toEqual([3, 17, 20, 500]);
     expect(hm(parseDosTime('7.05.09', base))).toEqual([7, 5, 9, 0]);
@@ -23,14 +25,39 @@ describe('TIME', () => {
     expect(hm(parseDosTime('11:30 PM', base))).toEqual([23, 30, 0, 0]);
     expect(hm(parseDosTime('12:00a', base))).toEqual([0, 0, 0, 0]);
     expect(hm(parseDosTime('12:15p', base))).toEqual([12, 15, 0, 0]);
+    expect(hm(parseDosTime('1pm', base))).toEqual([13, 0, 0, 0]);
+    expect(hm(parseDosTime('2PM', base))).toEqual([14, 0, 0, 0]);
+    expect(hm(parseDosTime('12am', base))).toEqual([0, 0, 0, 0]);
     expect(hm(parseDosTime('9a', base))).toEqual([9, 0, 0, 0]);
+  });
+  it('sets named room times on the same day without changing the input date', () => {
+    const before = base.getTime();
+    for (const [name, h, m] of [
+      ['midnight', 0, 0],
+      ['dawn', 7, 15],
+      ['sunrise', 7, 15],
+      ['morning', 9, 0],
+      ['day', 12, 0],
+      ['noon', 12, 0],
+      ['afternoon', 14, 0],
+      ['dusk', 16, 54],
+      ['sunset', 16, 54],
+      ['evening', 18, 0],
+      ['night', 22, 0],
+    ] as const) {
+      const d = parseDosTime(` ${name.toUpperCase()} `, base)!;
+      expect(hm(d)).toEqual([h, m, 0, 0]);
+      expect([d.getFullYear(), d.getMonth(), d.getDate()]).toEqual([1994, 9, 23]);
+    }
+    expect(base.getTime()).toBe(before);
   });
   it('keeps the day it was typed on', () => {
     const d = parseDosTime('1:00', base)!;
     expect([d.getFullYear(), d.getMonth(), d.getDate()]).toEqual([1994, 9, 23]);
   });
   it('turns down what DOS calls an invalid time', () => {
-    for (const bad of ['24:00', '12:60', '1:2:60', '13:00p', '0:30a', 'noon', '', '1:30x', '-1', '1::2']) expect(parseDosTime(bad, base)).toBeUndefined();
+    for (const bad of ['24:00', '12:60', '1:2:60', '13:00p', '0:30a', 'noontime', 'constructor', '__proto__', '1m', '1:30m', '', '1:30x', '-1', '1::2'])
+      expect(parseDosTime(bad, base)).toBeUndefined();
   });
 });
 

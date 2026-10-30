@@ -73,12 +73,34 @@ export function dosDate(d: Date): string {
   return `${DAYS[d.getDay()]} ${two(d.getMonth() + 1)}-${two(d.getDate())}-${d.getFullYear()}`;
 }
 
+// Friendly shortcuts for this PC's winter room, alongside DOS's numeric times.
+// Dawn and dusk sit inside daylight.ts's twilight ramps; all shortcuts keep today's date.
+const NAMED_TIMES: Readonly<Record<string, readonly [number, number]>> = {
+  midnight: [0, 0],
+  dawn: [7, 15],
+  sunrise: [7, 15],
+  morning: [9, 0],
+  day: [12, 0],
+  noon: [12, 0],
+  afternoon: [14, 0],
+  dusk: [16, 54],
+  sunset: [16, 54],
+  evening: [18, 0],
+  night: [22, 0],
+};
+
 /**
  * A time typed at TIME: hours[:minutes[:seconds[.hundredths]]] with an optional a or p
- * (11:30p, 9a, 23:30, 7.05.00), on `base`'s day. Undefined when DOS would say "Invalid time".
+ * (11:30p, 9a, 23:30, 7.05.00), or a named room time, on `base`'s day.
  */
 export function parseDosTime(text: string, base: Date): Date | undefined {
-  const m = /^(\d{1,2})(?:[:.](\d{1,2})(?:[:.](\d{1,2})(?:[.,](\d{1,2}))?)?)?\s*([ap])?m?$/i.exec(text.trim());
+  const named = Object.hasOwn(NAMED_TIMES, text.trim().toLowerCase()) ? NAMED_TIMES[text.trim().toLowerCase()] : undefined;
+  if (named) {
+    const d = new Date(base);
+    d.setHours(named[0], named[1], 0, 0);
+    return d;
+  }
+  const m = /^(\d{1,2})(?:[:.](\d{1,2})(?:[:.](\d{1,2})(?:[.,](\d{1,2}))?)?)?\s*(?:([ap])m?)?$/i.exec(text.trim());
   if (!m) return undefined;
   let h = Number(m[1]);
   const min = Number(m[2] ?? 0);

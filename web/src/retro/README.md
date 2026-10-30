@@ -16,6 +16,10 @@ picture; `host.ts` is what programs on it can use.
 - `dos/`: COMMAND.COM (`shell.ts`), the file system (`vfs.ts`, `hardDisk.ts`, what C: gained in
   `cDriveStore.ts`), the floppies (`disks.ts`), the room's one clock (`deskClock.ts`), the
   designers' file handling (`workArea.ts`) and file picker (`picker.ts`).
+  `TIME` accepts numeric hours (`TIME 1pm`, `TIME 23`) and room shortcuts:
+  midnight (00:00), dawn/sunrise (07:15), morning (09:00), day/noon (12:00),
+  afternoon (14:00), dusk/sunset (16:54), evening (18:00), and night (22:00).
+  These keep the current date and update the room immediately; `TIME RESET` restores local time.
 - `text/`: 80×25 text mode (`textScreen.ts`, `textInput.ts`, `cp437.ts`) and Game-Maker's text UI
   (`textUi.ts`).
 - `gm.ts`: GM.EXE's menus. `gmReg/`: Game-Maker's registration and copy check (`chk.ts`,
