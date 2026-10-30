@@ -10,6 +10,7 @@ import { sofaPictures } from './sofaPictures';
 import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
 import { signup } from './signup';
+import { signupAccounts } from './signupAccounts';
 import { unlockAchievement } from '../../achievements';
 
 /** All eight lines are often in use: about one call in three gets a busy signal. */
@@ -75,7 +76,7 @@ export async function runSofa(t: Term, h: RetroHost): Promise<void> {
     const joined = await signup(t, h, 'sofa');
     if (!joined) return;
     name = joined;
-  } else {
+  } else if (name !== 'GUEST' && !signupAccounts.find('sofa', name)) {
     t.print('|07Enter your password: |15');
     await readLine(s, h.keys, [], 16, attr(0, 0));
     t.line();

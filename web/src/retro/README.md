@@ -62,6 +62,11 @@ directory and calls are `bbs.ts`.
   timed ATA answer, confirmation code, and only then account persistence. Busy lines,
   missed calls, wrong codes, cancellation and PC shutdown leave no verified account.
   The flow uses the terminal modem on both Desk and DOS; the wall handset stays hung up.
+  Choose NEW at either board’s login, pick a handle and a fictional 555-01xx number, note
+  the four-digit code, then consent to the callback. After NO CARRIER and RING, type ATA
+  and Enter, followed by the code. Up to five rings and three code attempts are allowed.
+  A verified local handle can log in again without repeating the callback or the legacy
+  pretend-password prompt. Guest visits still work without an account.
 - Their file areas: listings a screen at a time (`pager.ts`) with FILE_ID.DIZ (`fileId.ts`), the
   GIF Gallery (`gallery.ts`, `gifArea.ts`), the Warez area (`warezArea.ts`), the upload/download
   ratio (`ratio.ts`) and PKUNZIP after a download (`pkunzip.ts`).
