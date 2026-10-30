@@ -1,6 +1,6 @@
 # @lewismoten/gamemaker-sandbox-tools
 
-Development-only tools for creating and checking native RSD Game-Maker data. Browser playback belongs to `@lewismoten/gamemaker-sandbox-engine`; this package has no game artwork, recordings, characters, or palettes.
+Tools for creating and checking native RSD Game-Maker data. Browser playback belongs to `@lewismoten/gamemaker-sandbox-engine`; this package has no game artwork, recordings, characters, or palettes.
 
 Requires Node.js 22.12 or newer. Install as a development dependency from your configured npm registry:
 
@@ -27,7 +27,7 @@ blocks[0].pixels.set(new Pixels(20, 20, 1).px);
 const data = serializeBlocks(blocks);
 ```
 
-Keep these imports in build scripts and tests. The package explicitly rejects browser imports. Generated game data and your own copied assets belong in the consuming project.
+Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `music/compose` and `image/png` entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
 
 ## Fonts, text images, and lighting
 
@@ -62,7 +62,7 @@ const lit = lightColor([100, 180, 80], 'night');
 
 ## Build and inspect
 
-From this directory, with the repository's web development dependencies installed:
+This folder owns its builders in `src/`, build configuration, license and notices. Shared codecs and runtime types come through declared engine and archives dependencies. It never reads source from another repository folder. After `npm install` in a standalone copy, or root `npm ci` in the monorepo:
 
 ```sh
 npm run build
@@ -70,7 +70,7 @@ npm run verify
 npm pack
 ```
 
-The build bundles source from the format, drawing, audio, and simulation modules. It does not use or restart the site's Vite configuration. The tarball contains JavaScript, declarations, this guide, the MIT license, and notices. Validate a packed installation in a separate project before publishing.
+The build bundles source from the format, drawing, audio, and simulation modules. It does not use or restart the site's Vite configuration. The tarball contains JavaScript, declarations, this guide, the MIT license, and notices. Root `npm run verify:packages` copies each package outside the repository, builds it with packed declared dependencies, and tests its npm distribution. This also supports unpublished sibling versions.
 
 `verify` installs the tarball in a temporary npm consumer and checks codecs, drawing, sound generation, headless simulation, NodeNext declarations, absence of game content, and rejected browser imports. Repository automation is documented in the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md).
 

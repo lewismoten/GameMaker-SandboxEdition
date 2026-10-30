@@ -61,6 +61,6 @@ The source is MIT licensed; see `LICENSE` and `NOTICE.md` for credits.
 
 ## Build from source
 
-From the repository's `web/` directory, install dependencies with `npm ci`, then run `npm run build --prefix packages/engine`. Run `npm pack` from `web/packages/engine/` to inspect a local distribution. Tarballs are build artifacts and should not be committed.
+This folder owns all its source in `src/`, plus its build configuration, license and notices. It can be copied outside the repository: run `npm install` and `npm run verify` here to build and test a packed consumer. Within the monorepo, run `npm ci` at the repository root, then `npm run build -w @lewismoten/gamemaker-sandbox-engine`. Run `npm pack` here to inspect a local distribution. Tarballs are build artifacts and should not be committed.
 
 Repository automation is documented in the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md).
