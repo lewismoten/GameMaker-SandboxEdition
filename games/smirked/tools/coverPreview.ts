@@ -5,8 +5,8 @@ import { mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { writePng } from '../../kit/png';
-import { medianCutPalette, Quantizer } from '../../kit/quantize';
+import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
+import { medianCutPalette, Quantizer } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
 import { coverRgb } from '../src/art/cover';
 
 const out = process.argv[2] ?? join(tmpdir(), 'smirked-cover');

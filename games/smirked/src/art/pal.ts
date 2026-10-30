@@ -4,8 +4,8 @@
 // and the last hall by the red glow of the emergency exit sign. The jack-o'-lanterns, the
 // candles, the glow sticks and the EXIT sign keep their own light everywhere.
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
-import { type Pal, wrap } from '../../../kit/palRamps';
-export { type Pal } from '../../../kit/palRamps';
+import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+export { type Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 type RGB = [number, number, number];
 export type Light = 'fog' | 'crypt' | 'moon' | 'exit' | 'plain';

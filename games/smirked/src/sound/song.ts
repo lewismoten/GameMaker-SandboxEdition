@@ -30,8 +30,8 @@
 //   last chorus "She's eight, and I'm ashamed" 110.9 - 131.9  (45-54; "the emergency exit sign" held)
 //   outro "So yeah. The date went well."       139.5 - 169.3  (57-69, slowing), then the band out
 import { sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { Writer, type Groove } from '../../../kit/song';
-import { DRUM, Fx, boomPatch, detuned, leveled, sweep } from '../../../kit/songFx';
+import { Writer, type Groove } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { DRUM, Fx, boomPatch, detuned, leveled, sweep } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 
 const BPM = 100;
 

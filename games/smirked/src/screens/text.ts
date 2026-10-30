@@ -6,7 +6,7 @@
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
 import { BATTERIES_NEEDED, SORRY_NEEDED, SWORD_PRICE } from '../ids';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 export const AUTHOR = 'The Bard of Bizarre';
 
