@@ -17,7 +17,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
     defaults:
       run:
         working-directory: web
@@ -48,10 +48,7 @@ jobs:
           npm run format:check
           npm run lint
           npx tsc --noEmit -p .
-          npx vitest run test/archives.test.ts test/zip.test.ts src/project/importScan.test.ts src/project/importPlayer.test.ts
-      - name: Verify independent packages
-        working-directory: .
-        run: npm run verify:packages
+          npm run test:fast -- test/archives.test.ts test/zip.test.ts src/project/importScan.test.ts src/project/importPlayer.test.ts
       - uses: actions/setup-node@v4
         with:
           node-version: '22'

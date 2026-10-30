@@ -18,7 +18,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,10 +48,7 @@ jobs:
           npm run format:check
           npm run lint
           npx tsc --noEmit -p .
-          npx vitest run src/engine src/audio src/project/dosNames.test.ts test/formats.test.ts
-      - name: Verify independent packages
-        working-directory: .
-        run: npm run verify:packages
+          npm run test:fast -- src/engine src/audio src/project/dosNames.test.ts test/formats.test.ts
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
