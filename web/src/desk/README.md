@@ -19,6 +19,8 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   pick the line speed), the speakers (`speakers.ts`) with the SOUND BOASTER switch
   (`blasterSwitch.ts`, applied immediately to the active game without restarting), the key card taped to the monitor (`keyCard.ts`, `keyCardRows.ts`) and
   the capture card (`capture.ts`, loaded by `captureStub.ts` on the first press).
+  Narrow layouts hide the physical speakers and expose a 32px Sound Boaster switch beneath
+  the key strip. Both controls share the remembered state and apply it to the current player.
 - `boxes/`: the retail boxes and their shelf (`shelf.ts`, `shelfLayout.ts`), turned in the box
   viewer (`boxViewer.ts`). A game's box (`gameBox.ts`) is drawn from the game itself
   (`boxFacts.ts`, its play hours from its walkthrough in `playtime.ts`) with `boxPaint.ts`,

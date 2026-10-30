@@ -6,6 +6,7 @@ import { sevenSegment, floppyDrive, cdDrive } from './pc/caseParts';
 import { keyboard } from './pc/keyboard';
 import { keyboardTray } from './pc/tray';
 import { speakers } from './pc/speakers';
+import { blasterSwitch } from './pc/blasterSwitch';
 import { mug, wallPhone, deskLamp } from './room/deskProps';
 import { deskModem } from './pc/modem';
 import { snowyWindow } from './room/snowWindow';
@@ -78,10 +79,11 @@ export function deskScene(on: DeskActions) {
   // the PC's keyboard, and (on a phone) the strip of large keys under the PC
   const keys = keyboard(() => on.power(true));
   const keyCard = keyCardSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
-  const spk = speakers({
+  const soundCardControls = {
     gamePlaying: () => on.gamePlaying(),
-    setSoundCard: (enabled) => on.setSoundCard(enabled),
-  });
+    setSoundCard: (enabled: boolean) => on.setSoundCard(enabled),
+  };
+  const spk = speakers(soundCardControls);
   const lamp = deskLamp();
   const modem = deskModem(() => on.command('C:\nTERMINAL'));
   // The same Sandbox games as the box's 3D front (gfx/sandboxShots.ts), each with what it shows off.
@@ -184,6 +186,7 @@ export function deskScene(on: DeskActions) {
         ),
         keyboardTray(keys.board),
         keys.strip,
+        blasterSwitch(soundCardControls, true),
         // the screen takes every key (Tab too), so it comes last when tabbing: the case,
         // tray and monitor buttons come first and CSS puts them back in their places
         h(
