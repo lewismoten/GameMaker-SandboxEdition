@@ -477,3 +477,6 @@ native game files are loaded only when the player chooses an archive action.
   native body/monster frames and bounded projectiles. Its optional manual
   popover lets the character roam outside an open file picker without taking
   pointer events or adding page scroll. Stopping removes the layer and speech.
+
+Map wrapping geometry lives in `editors/map/mapWrap.ts`: native cell normalization,
+seam-continuous gestures, and viewport tile/marker placement without enlarging DOS maps.
