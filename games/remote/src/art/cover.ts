@@ -7,7 +7,7 @@
 // true color, a pixel at a time, then reduced to one 256-color palette for the FLI
 // (cartoons.ts). `t` (0..1) animates it: the swirl turns, the remote tumbles in, the VCR blinks.
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { mixc, clamp, noise2 } from '../../../kit/coverPaint';
+import { mixc, clamp, noise2 } from '@lewismoten/gamemaker-sandbox-tools/kit/coverPaint';
 
 const COVER_W = 320;
 const COVER_H = 200;

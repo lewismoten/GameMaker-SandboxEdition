@@ -12,7 +12,7 @@ import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { DIGITS, KEY, MON, MONEY, PLAY, SEQ, SND, SPOTS } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
-import { mon, corner } from '../../kit/actors';
+import { mon, corner } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // the block flipped left-right
