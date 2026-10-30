@@ -1,0 +1,32 @@
+/* The local Community proposal form fits a phone and scrolls inside its dialog. */
+dialog.modal:has(.community-submit) {
+  box-sizing: border-box;
+  width: min(620px, calc(100vw - 24px));
+  min-width: 0;
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+}
+.community-submit {
+  min-width: 0;
+}
+.community-submit p {
+  margin: 0;
+}
+.community-submit input,
+.community-submit textarea {
+  box-sizing: border-box;
+  width: 100%;
+}
+.community-submit textarea {
+  resize: vertical;
+}
+.community-submit summary {
+  cursor: pointer;
+}
+.community-submit ol {
+  margin: 0;
+  padding-left: 24px;
+}
+.community-submit li + li {
+  margin-top: 8px;
+}

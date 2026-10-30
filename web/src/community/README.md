@@ -19,3 +19,8 @@ no artwork or game files are copied into this catalog.
 and loads the optional creator image anonymously in the background, shared between the
 tile and featured preview. Missing images leave the title card usable. Native files and
 demo playback are not part of listing or previewing a Community entry.
+
+`submit.ts`, loaded only by Add your game, generates and validates a local metadata entry.
+Its copy button and GitHub links guide the creator through forking, editing the JSON list,
+and proposing a pull request. It never submits a draft or changes the catalog itself.
+See [the contribution guide](../../../docs/community-games.md) for the JSON fields.
