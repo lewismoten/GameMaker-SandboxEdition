@@ -9,7 +9,7 @@ import globals from 'globals';
 
 export default defineConfig(
   // lints web/ only; the original release (../code, ../cd, ../runtime) is never linted
-  { ignores: ['dist/', 'packages/engine/dist/', 'node_modules/', 'public/', 'coverage/'] },
+  { ignores: ['dist/', 'packages/engine/dist/', 'packages/tools/dist/', 'node_modules/', 'public/', 'coverage/'] },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {

@@ -366,7 +366,7 @@ function copy<T>(v: T): T {
  * A GameSim for one game's built disk: `diskSim(new URL('../disk', import.meta.url))` in the
  * game's tools/sim.ts. It reads the disk when made without files; the seed defaults to 1.
  */
-export function diskSim(disk: URL) {
+export function diskSim(disk: URL): new (files?: Map<string, Uint8Array>, seed?: number) => GameSim {
   const dir = fileURLToPath(disk);
   return class extends GameSim {
     constructor(files = readDisk(dir), seed = 1) {

@@ -1,0 +1,59 @@
+# Publish development tools when a matching version tag points to a commit on master.
+name: Publish development tools to npm
+
+on:
+  push:
+    tags:
+      - 'tools-v*'
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-tools-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
+      - name: Check tag and master
+        run: |
+          git fetch --no-tags origin +refs/heads/master:refs/remotes/origin/master
+          if ! git merge-base --is-ancestor HEAD refs/remotes/origin/master; then
+            echo '::error::The tagged commit is not on master.'
+            exit 1
+          fi
+          version=$(node -p "require('./packages/tools/package.json').version")
+          if [[ "$GITHUB_REF_NAME" != "tools-v$version" ]]; then
+            echo "::error::Tag must be tools-v$version."
+            exit 1
+          fi
+      - name: Install dependencies
+        run: npm ci
+      - name: Check source
+        run: |
+          npm run format:check
+          npm run lint
+          npx tsc --noEmit -p .
+          npx vitest run src/formats src/engine src/audio src/gfx src/project/zip.test.ts test/toolsDrawing.test.ts
+      - name: Verify packed package
+        working-directory: web/packages/tools
+        run: npm run verify
+      - name: Publish package
+        working-directory: web/packages/tools
+        run: npm publish --ignore-scripts --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

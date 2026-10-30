@@ -126,6 +126,9 @@ const saveWrites = new Map<string, Promise<void>>();
 
 // quiet: no SAVES_CHANGED (the achievements' record is no game's save; an open Saves & scores need not reload)
 async function storeSaveFile(gameId: string, name: string, bytes: Uint8Array, quiet = false): Promise<void> {
+  // Node tests have neither a browser window nor a disk to persist to. Browser failures
+  // (including a browser without IndexedDB) still reach the warning below.
+  if (typeof window === 'undefined' && typeof indexedDB === 'undefined') return;
   try {
     const current = await loadSaveData(gameId);
     current[name] = bytes;

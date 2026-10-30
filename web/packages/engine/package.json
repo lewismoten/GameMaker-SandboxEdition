@@ -18,7 +18,7 @@
   },
   "types": "./dist/types/engine/package.d.ts",
   "scripts": {
-    "build": "vite build --config vite.config.ts && tsc -p tsconfig.build.json && cp ../../../LICENSE LICENSE && cp ../../../NOTICE.md NOTICE.md",
+    "build": "vite build --config vite.config.ts && tsc -p tsconfig.build.json && cp ../../../LICENSE LICENSE",
     "prepack": "npm run build"
   },
   "devDependencies": {
