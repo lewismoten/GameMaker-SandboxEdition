@@ -2,6 +2,7 @@
 // Count Polygon swoops through it turning spheres into polyhedra, Ray's bands light up, and
 // the last shot closes in on Ray before the fade (the logo is the title's). The camera never
 // moves within a shot, so an FLI frame only stores what changed.
+import { cachedFrame } from '../render/frameCache';
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import type { Picture } from '../render/image';
 import { MAT } from '../render/look';
@@ -42,7 +43,7 @@ export function introFrames(): { frames: Picture[]; speed: number } {
     });
 
   // A: the render comes in line by line, as it did overnight
-  const full = still(world([], 0), camera, 4, 20, 21);
+  const full = cachedFrame('intro-full', () => still(world([], 0), camera, 4, 20, 21));
   const LINES = 14;
   for (let f = 1; f <= LINES; f++) {
     const rows = Math.round((H * f) / LINES);
@@ -63,14 +64,14 @@ export function introFrames(): { frames: Picture[]; speed: number } {
     const y = -1.2 + Math.sin(t * Math.PI) * -0.8;
     const z = 2.6 - Math.sin(t * Math.PI) * 1.4;
     const count = place(C.count(0, f % 2), x, y, 3.2, Math.PI, z);
-    const pic = still(world(count, 0, x > goldAt[0] + 0.5), camera, 4, 20, 21);
+    const pic = cachedFrame(`intro-swoop-${f}`, () => still(world(count, 0, x > goldAt[0] + 0.5), camera, 4, 20, 21));
     if (f > SWOOP / 2) centered(pic, 12, 'COUNT POLYGON', rgb(255, 120, 200), 2, { outline: rgb(30, 0, 40) });
     frames.push(pic);
   }
   // C: Ray wakes up: his bands light, and he rolls a little toward us
   for (let f = 0; f < 6; f++) {
     const k = (f + 1) / 6;
-    const pic = still(world([], k, false, 0.5 + f * 0.25), camera, 4, 20, 21);
+    const pic = cachedFrame(`intro-wake-${f}`, () => still(world([], k, false, 0.5 + f * 0.25), camera, 4, 20, 21));
     if (f >= 2) centered(pic, 12, 'RAY', rgb(255, 210, 120), 2, { outline: rgb(40, 20, 0) });
     frames.push(pic);
   }
@@ -79,7 +80,7 @@ export function introFrames(): { frames: Picture[]; speed: number } {
   const close = cam([0.9, -5.6, 1.4], rayAt, 0.7);
   const CLOSE = 12;
   for (let f = 0; f < CLOSE; f++) {
-    const pic = still(world([], 1, false, 2 + f * 0.25), close, 4, 20, 21);
+    const pic = cachedFrame(`intro-close-${f}`, () => still(world([], 1, false, 2 + f * 0.25), close, 4, 20, 21));
     if (f >= 4) centered(pic, 184, 'NO GLASSES REQUIRED.', rgb(255, 255, 255), 1, { outline: rgb(20, 16, 50) });
     frames.push(pic);
   }

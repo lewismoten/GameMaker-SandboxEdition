@@ -17,7 +17,7 @@ games/<id>/
   manual.json       the printed manual
   printables.json   the paper extras in the box (see web/src/manual/printables)
   walkthrough.json  the whole game played from power-on to the credits (tools/walkthrough.ts)
-  disk/             the built game, exactly as it would be on its floppy (committed)
+  disk/             the built game, exactly as it would be on its floppy (generated, git-ignored)
   src/              the game itself
     ids.ts          the numbers every file agrees on (counters, sequences, monster slots, sounds)
     game.ts         the .GAM scene graph: which files each scene loads and how scenes link
@@ -55,14 +55,20 @@ npx vite-node ../games/kit/tinHearts.ts check     # every tin heart is found whe
 npx vite-node ../games/kit/levelCheck.ts <id>     # the editor's Level check finds nothing new
 npx vite-node scripts/levelSecrets.ts             # after moving a hidden thing: what the Level Maps hide
 npm run check:games                               # all of these for every game, one at a time, as a table
-npm run check:games -- --game <id> --quick        # one game, without the rebuild compare
+npm run check:games -- --game <id> --quick        # one game, without the reproducibility rebuild
 npx tsc --noEmit                                  # typechecks web/ and games/
 npx vitest run                                    # the web tests, some of which read games/
 ```
 
-A rebuild is deterministic: rebuilding an unchanged game leaves `git status` clean under its
-`disk/`, and rerunning `tools/walkthrough.ts` or a `gendemo.ts` leaves `walkthrough.json`
-and `src/demo.ts` unchanged. That is the test for any refactor here.
+`npm ci` from the repository root generates the disks after building the workspace packages.
+Development, build and test commands refresh missing or stale output automatically;
+`npm run build:games -- --force` rebuilds everything. `disk/` and `walkPaths.json` are build
+output, never committed. Source audio, demos and recorded walkthroughs remain build inputs
+and regression fixtures.
+
+A rebuild is deterministic: `check:games` builds twice in separate temporary folders and
+compares every output byte, then uses the fresh disk for the game checks. Refactors must
+preserve the generated DOS bytes and recorded walkthrough/demo inputs.
 
 Every game has `tools/walkthrough.ts`. Run it after changing a level: the bot plays the whole
 game, then `kit/walkthrough.ts` replays its keys on the web app's real engine, checks that
@@ -456,3 +462,9 @@ Emperor is two monsters in four stages. Hurting monsters sting on one picture a 
 step before the way on, so its sung line plays out. The FM score is arranged from the recordings'
 analysis (`tools/analyze.py`: an opera, a march, a patter song, an aria, an ironic bounce), seventeen
 Latin clips are cut from them (`tools/cutClips.py`), and the cover is painted in code (`src/art/cover.ts`).
+
+Depth Perception's independent animation frames use temporary, lossless caches in
+`games/.render-cache/`. `src/render/frameCache.ts` stores raw floating samples before text,
+flares and palette conversion; `tools/renderFrames.ts` generates a selected shard. The
+normal build assembles every full frame, preserving the original rendering and DOS bytes.
+These caches are generated locally or as short parallel CI jobs, never committed.

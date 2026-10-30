@@ -775,3 +775,7 @@ GPL-2.0-or-later when GPL components are enabled ([license](https://ffmpeg.org/l
 The converter, source-format migration and verification were implemented with OpenAI
 Codex under Lewis Moten's direction. Existing audio, voices, source recordings and their
 credits are unchanged; the native DOS audio bytes are preserved.
+
+The source-only game build runner, reproducibility and historical-version checks, and
+parallel Depth Perception animation rendering were implemented with OpenAI Codex under
+Lewis Moten's direction. No third-party rendering code or data was added.
