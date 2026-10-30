@@ -205,6 +205,7 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   joins up across block edges. Each game's `tools/align.ts` names its objects; its `tools/check.ts` runs it.
 - `playtime.ts` — sets each box's "Over N hours of gameplay!" (`about.json` `box.hours`) from the walkthroughs:
   `cd web && npx vite-node ../games/kit/playtime.ts` after any walkthrough changes.
+- `scoreAudit.ts` — replays committed walkthroughs without rebuilding disks and prints each completed game's final score plus its score at every scene entrance. Use it to compare score curves before changing a game's point values: `cd web && npx vite-node ../games/kit/scoreAudit.ts [id...]`.
 - `png.ts` — a PNG writer and block sheets for design previews (used by the games' `tools/`, never on a disk).
 
 `cdDemos/` is apart from the Sandbox games: a curious bot (`bot.ts`, `probe.ts`) that plays any Game-Maker
