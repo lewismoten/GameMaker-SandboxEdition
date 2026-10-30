@@ -41,6 +41,7 @@ import { counterNameField } from './counterNameFields';
 import { panelTabs } from '../../widgets/panelTabs';
 import { JOYSTICK_BUTTONS, readJoystickButtons, type JoystickButtons } from '../../core/joystickButtons';
 import { joystickControls } from './joystickControls';
+import { characterBirthPreview } from './characterBirthPreview';
 
 const JOY_DIRS: [number, string][] = [
   [0, 'No joystick'],
@@ -153,6 +154,7 @@ registerEditor(['chr'], (host, project, file) => {
   window.addEventListener('keydown', onKey);
   const chooser = paletteChooser(project, cblName || file, () => render());
   const pal = () => chooser.palette;
+  const births = characterBirthPreview(project, file, pal, () => renderDetail());
 
   const seqName = (i: number) => SEQUENCE_NAMES[i] ?? (chr.sequences[i].key ? `Key ${scanName(chr.sequences[i].key >> 8)}` : 'No key yet');
   const help = (text: string) => h('p', { class: 'chr-help' }, text);
@@ -483,6 +485,7 @@ registerEditor(['chr'], (host, project, file) => {
   const frames: FrameContext = {
     blocks: () => cbl,
     blockLabel: (index) => blockLabel(project, cblName, index),
+    monsterField: births.frameField,
     palette: pal,
     // an edit to a frame shows at once in the big figure (and on the stage while paused)
     edit: (fn) => {
@@ -604,6 +607,7 @@ registerEditor(['chr'], (host, project, file) => {
           'Frames ',
           h('span', { class: 'chr-muted' }, `${n} of ${MAXFRAME} · use the buttons to turn or flip a block, click its picture to change it`),
         ),
+        births.sourceField(),
         h('div', { class: 'chr-frames' }, ...frameCards, addFrame),
         mirrorSlot,
       ),

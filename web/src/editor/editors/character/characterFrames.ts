@@ -2,7 +2,7 @@
 // choose, use buttons to turn or flip), or the monster it fires; its move and pause; and the
 // buttons that move, copy or delete it. Also the key a sequence runs on. character.ts
 // builds them, passing what they need to read and change (FrameContext).
-import { h, numberField } from '../../core/ui';
+import { h, numberField, selectField } from '../../core/ui';
 import { paintBlock } from '../../core/draw';
 import { chooseBlock, type BlockExtra } from '../../widgets/blockChooser';
 import { BLEN, CHARBL, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -32,6 +32,7 @@ export interface FrameContext {
   blocks(): Block[];
   blockLabel?: (index: number) => string;
   palette(): Palette;
+  monsterField?: (get: () => number, set: (value: number) => void) => HTMLElement;
   /** Makes a change as one undo step, and saves. */
   edit(fn: () => void): void;
   /** A frame's picture or a key changed: redraw the sequence list. */
@@ -145,24 +146,37 @@ export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number,
   const fires = firesMonster(f);
   const tool = (label: string, icon: string, fn: () => void, disabled = false) =>
     h('button', { type: 'button', class: 'chr-tool', title: label, 'aria-label': label, disabled, onclick: () => (ctx.edit(fn), ctx.redraw()) }, icon);
+  const monster = () => {
+    const get = () => f.pic1;
+    const set = (value: number) => {
+      ctx.edit(() => (f.pic1 = value));
+      ctx.listChanged();
+      ctx.redraw();
+    };
+    return ctx.monsterField?.(get, set) ?? numberField('Monster #', get, set, { min: 0, max: 63 });
+  };
   const sprite = fires
-    ? h(
-        'div',
-        { class: 'chr-sprite fires' },
-        h(
-          'div',
-          { class: 'chr-fire' },
-          h('span', { class: 'chr-fire-icon' }, '🔥'),
-          numberField(
-            'Monster #',
-            () => f.pic1,
-            (v) => ctx.edit(() => (f.pic1 = v)),
-            { min: 0, max: 63, title: 'Which monster (from the monster file) is born beside the hero' },
-          ),
-        ),
-        frameCell(ctx, f, false),
-      )
+    ? h('div', { class: 'stack', style: 'min-width:0;max-width:100%' }, monster())
     : h('div', { class: 'chr-sprite' }, frameCell(ctx, f, true), frameCell(ctx, f, false));
+  const action = selectField(
+    'Frame action',
+    [
+      [0, 'Show character'],
+      [1, 'Give birth to monster'],
+    ],
+    () => (fires ? 1 : 0),
+    (value) => {
+      if (Boolean(value) === fires) return;
+      ctx.edit(() => {
+        f.pic1 = value ? 0 : CHARBL;
+        f.pic2 = value ? MONBL : CHARBL;
+      });
+      ctx.listChanged();
+      ctx.redraw();
+    },
+  );
+  action.style.maxWidth = '100%';
+  action.querySelector('select')!.style.maxWidth = '100%';
   return h(
     'div',
     { class: 'chr-frame' },
@@ -176,6 +190,7 @@ export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number,
       tool('Duplicate', '⧉', () => insertFrame(seq, i), n >= MAXFRAME),
       tool('Delete', '✕', () => deleteFrame(seq, i)),
     ),
+    action,
     sprite,
     h(
       'div',

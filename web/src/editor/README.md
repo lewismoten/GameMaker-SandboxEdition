@@ -412,4 +412,8 @@ native game files are loaded only when the player chooses an archive action.
 
 - **Monster birth sources.** `widgets/monsterBirthSource.ts` resolves the native
   MON/MBL pairs of every adventure scene using a background set or character,
-  deduplicating shared pairs and avoiding unrelated first-file previews.
+  deduplicating shared pairs and avoiding unrelated first-file previews. Character
+  frame cards expose an explicit birth action and picture chooser through
+  `character/characterBirthPreview.ts`; the selected preview source is saved in
+  the CHR companion section `monsterBirthPreview`. Scene file bindings and
+  native birth command numbers remain unchanged by preview choices.
