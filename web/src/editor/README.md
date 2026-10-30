@@ -296,3 +296,8 @@ are real previews too; a blank idle can fall back to a movement frame.
   pointer fixed while stepping through the zoom choices. Wheel events over the
   map zoom; Shift+wheel keeps scrolling. Choosing a zoom in the toolbar uses the
   viewport center as its anchor. These view changes never edit native map data.
+
+- **Polygon selections.** `editors/map/tools/selection.ts` builds cell masks from
+  closed corner paths using the existing line and outside-flood helpers. Captured
+  selections preserve unselected cells as holes, so fill, cut, paste, stamps and
+  block groups can respect the shape instead of its bounding rectangle.
