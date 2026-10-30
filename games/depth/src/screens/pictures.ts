@@ -9,7 +9,7 @@ import { RAY_R, rayDeath, rayModel } from '../models/ray';
 import { FAR_COL, KINDS, NEAR_COL, cube, eggShape } from '../tiles/cells';
 import { THEMES, type ThemeId } from '../tiles/themes';
 import { centered, panel, text } from './draw';
-import { STATUS } from '../../../kit/saveSlots';
+import { STATUS } from '@lewismoten/gamemaker-sandbox-tools/kit/saveSlots';
 import { logoShapes, SKY } from './title';
 import { H, W, cam, floor, glowMat, props, stage, still } from './stage';
 

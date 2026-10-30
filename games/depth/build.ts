@@ -12,7 +12,7 @@ import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/
 import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { Disk } from '../kit/disk';
-import { clipLists } from '../kit/fliClips';
+import { clipLists } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { buildSprites } from './src/sprites/sprites';
 import { buildMonsters, monsterTouches } from './src/characters/monsters';
 import { buildRay } from './src/characters/ray';

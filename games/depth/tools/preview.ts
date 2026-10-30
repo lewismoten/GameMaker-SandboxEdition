@@ -5,7 +5,7 @@ import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { writePng } from '../../kit/png';
+import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { LEVELS } from '../src/levels/levels';
 import { buildLevel } from '../src/levels/map';
 import { TileBook } from '../src/tiles/book';

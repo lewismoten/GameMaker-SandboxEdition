@@ -1,6 +1,6 @@
 // The DEPTH PERCEPTION logo: extruded, beveled chrome letters, the 1996 kind, traced with the
 // kit's distance-field lettering (games/kit/sdftext.ts) from this game's own glyphs.
-import { DistanceGrid, ExtrudedText, type Seg } from '../../../kit/sdftext';
+import { DistanceGrid, ExtrudedText, type Seg } from '@lewismoten/gamemaker-sandbox-tools/kit/sdftext';
 import { Moved, rotation, type Material, type Shape, type V } from '../render/tracer';
 
 type Pt = [number, number];

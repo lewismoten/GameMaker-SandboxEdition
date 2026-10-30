@@ -120,9 +120,7 @@ async function follow(bot: Bot, level: Level, steps: Step[]): Promise<void> {
   }
 }
 
-const expectScene = (bot: Bot, scene: number, what: string) => {
-  if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
-};
+import { expectScene as expectScene } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
 
 /**
  * Count Polygon swoops round Ray and dives at him, so the bot duels the way a player would:
