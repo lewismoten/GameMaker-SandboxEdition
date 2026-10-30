@@ -30,7 +30,8 @@ Part of the [source map](../README.md).
     into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,
     the last pick per game in `playPickStore.ts`), the open file's actions
     (`fileActions.ts`), native asset categories (`fileKinds.ts`),
-    the cross-project native file clipboard (`assetClipboard.ts`, bytes plus file-local companion extras), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
+    the cross-project native file clipboard (`assetClipboard.ts`, bytes plus file-local companion extras),
+    exact file snapshot/replacement helpers (`assetFiles.ts`, including unknown extensions and extensionless DOS files), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
     (`quickOpen.ts`), folding hints (`hintFold.ts`) and the Download chooser (`download.ts`).
   - New games (`starter.ts`, with the "First steps" checklist, `firstSteps.ts` and
     `firstStepsPanel.ts`), new-file templates (`templates.ts`; + New music's empty song is

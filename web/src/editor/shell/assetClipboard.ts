@@ -1,23 +1,19 @@
 // A native file and its editor-only extras, copied between projects in this browser tab.
 import { decode, encode } from '../../backup/codec';
 import type { Project } from '../core/project';
-import { kindOf, validDosName, type FileKind } from '../core/project';
+import { kindOf, type FileKind } from '../core/project';
+import { validDosName } from '../../project/health';
+import { readAsset, type AssetFile } from './assetFiles';
 import { normalize } from '../../project/files';
-
-interface CopiedAsset {
-  name: string;
-  bytes: Uint8Array;
-  extras: Record<string, unknown>;
-}
 
 const KEY = 'gm-file-clip';
 const CHANGED = 'gamemaker-file-clipboard';
-let cached: CopiedAsset | undefined;
+let cached: AssetFile | undefined;
 
 export function copyAsset(project: Project, name: string): void {
-  const bytes = project.files.get(name);
-  if (!bytes) return;
-  cached = { name: normalize(name), bytes: bytes.slice(), extras: structuredClone(project.companion?.files[normalize(name)] ?? {}) };
+  const asset = readAsset(project, name);
+  if (!asset) return;
+  cached = asset;
   try {
     sessionStorage.setItem(KEY, encode(cached));
   } catch {
@@ -32,10 +28,10 @@ export function copyAsset(project: Project, name: string): void {
 }
 
 /** Independent snapshots keep paste or an editor from modifying what was copied. */
-export function copiedAsset(kind?: FileKind): CopiedAsset | undefined {
+export function copiedAsset(kind?: FileKind): AssetFile | undefined {
   if (!cached) {
     try {
-      const value = decode(sessionStorage.getItem(KEY) ?? 'null') as Partial<CopiedAsset> | null;
+      const value = decode(sessionStorage.getItem(KEY) ?? 'null') as Partial<AssetFile> | null;
       if (
         value &&
         typeof value.name === 'string' &&
