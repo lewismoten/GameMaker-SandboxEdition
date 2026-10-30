@@ -201,17 +201,18 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   puts them first in the title `.LST` as the game's own files (what was added is kept in the
   companion, so it comes out again exactly, or is swapped for another). The Sandbox, CD and
   imported games never get one.
-- **Color vision.** The palette editor's Color vision tab (`editors/palette/visionPanel.ts`) shows
+- **Color vision.** The palette editor's Vision tab (`editors/palette/visionPanel.ts`) shows
   a level as seen in grayscale and with color-vision differences (`colorVision.ts`) and lists
   colors that look alike there (`visionWarnings.ts`); `visionDismissed.ts` keeps the ones a
   designer dismissed as meant to look alike, in the companion file on the `.pal`.
   `visionFallback.ts` supplies block artwork using the selected palette when the map is
   empty, then all 256 palette swatches when no suitable artwork is available.
-- **Color 0.** The palette editor's note by color 0 opens `editors/palette/colorZeroDialog.ts`:
+- **Color 0.** The palette editor's Backgrounds tab and its color-0 links show live miniatures;
+  choosing one opens `editors/palette/colorZeroDialog.ts`:
   each player screen drawn on color 0 (`colorZeroScreens.ts`: the high-score name prompt and
   table, F1, F2, F5, F10), drawn with the engine's own functions in the palette and the
   project's DOS player patches, with the palette entry each word color matched.
-  Its save renderer also supplies the palette editor's live miniature, loaded dynamically
+  Its native renderers also supply the palette editor's live Backgrounds tab, loaded dynamically
   so the native player remains outside the editor's initial bundle.
 - **Color picker.** `editors/palette/colorPicker.ts` stages hue, saturation and brightness
   with a draggable square and vertical hue bar, keyboard controls and explicit confirmation.

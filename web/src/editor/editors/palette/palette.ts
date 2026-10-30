@@ -67,7 +67,7 @@ registerEditor(['pal'], (host, project, file) => {
         type: 'button',
         class: 'pal-zero-link',
         title: 'Preview the screens the player draws on color 0',
-        onclick: () => void import('./colorZeroDialog').then(({ colorZeroDialog }) => colorZeroDialog(project, file, pal)),
+        onclick: () => pick('backgrounds', true),
       },
       'backgrounds',
     );
@@ -92,14 +92,8 @@ registerEditor(['pal'], (host, project, file) => {
       refresh();
     },
   });
-  const saveCanvas = h('canvas', { class: 'pal-zero-shot', role: 'img', 'aria-label': 'Save game with this palette on color 0' });
-  let refreshSave: (() => void) | undefined;
+  let backgrounds: { el: HTMLElement; refresh(): void } | undefined;
   let disposed = false;
-  void import('./colorZeroDialog').then(({ drawSavePreview }) => {
-    if (disposed) return;
-    refreshSave = () => drawSavePreview(saveCanvas, project, pal);
-    refreshSave();
-  });
   const label = h('div', { class: 'meta' });
   const sliders = ['Red', 'Green', 'Blue'].map((name, c) => {
     const range = h('input', { type: 'range', min: 0, max: 63, step: 1, 'aria-label': name, style: 'flex:1;min-width:0' });
@@ -166,7 +160,7 @@ registerEditor(['pal'], (host, project, file) => {
       b.title = name;
     });
     preview.style.background = paletteCss(pal, selected);
-    refreshSave?.();
+    if (!backgroundPane.hidden) backgrounds?.refresh();
     colorBox.refresh();
     view.set({ color: selected });
     const hex =
@@ -230,21 +224,6 @@ registerEditor(['pal'], (host, project, file) => {
     'div',
     { class: 'stack', id: 'pal-pane-edit', role: 'tabpanel', 'aria-labelledby': 'pal-tab-edit' },
     h('div', { class: 'row', style: 'align-items:center' }, preview, label),
-    h(
-      'figure',
-      { style: 'margin:0;width:160px;max-width:100%' },
-      h('figcaption', { class: 'meta' }, 'Save game on color 0'),
-      h(
-        'button',
-        {
-          type: 'button',
-          style: 'display:block;padding:0;width:100%',
-          'aria-label': 'Preview player screens on color 0',
-          onclick: () => void import('./colorZeroDialog').then(({ colorZeroDialog }) => colorZeroDialog(project, file, pal)),
-        },
-        saveCanvas,
-      ),
-    ),
     colorBox.el,
     ...sliders.map((s) => s.row),
     h(
@@ -331,9 +310,21 @@ registerEditor(['pal'], (host, project, file) => {
     { class: 'stack', id: 'pal-pane-vision', role: 'tabpanel', 'aria-labelledby': 'pal-tab-vision', hidden: true },
     h('p', { class: 'meta' }, 'Loading…'),
   );
+  const backgroundPane = h(
+    'div',
+    {
+      class: 'stack',
+      id: 'pal-pane-backgrounds',
+      role: 'tabpanel',
+      'aria-labelledby': 'pal-tab-backgrounds',
+      hidden: true,
+    },
+    h('p', { class: 'meta' }, 'Loading…'),
+  );
   const tabs = [
     { id: 'edit', label: 'Color', pane: editPane },
-    { id: 'vision', label: 'Color vision', pane: visionPane },
+    { id: 'vision', label: 'Vision', pane: visionPane },
+    { id: 'backgrounds', label: 'Backgrounds', pane: backgroundPane },
   ].map((t) => ({
     ...t,
     btn: h(
@@ -351,6 +342,15 @@ registerEditor(['pal'], (host, project, file) => {
       if (on && focus) t.btn.focus();
     }
     view.set({ tab: id === 'edit' ? undefined : id });
+    if (id === 'backgrounds') {
+      backgrounds?.refresh();
+      if (!backgrounds)
+        void import('./colorZeroDialog').then(({ colorZeroPreviews }) => {
+          if (backgrounds || disposed) return;
+          backgrounds = colorZeroPreviews(project, file, pal);
+          clear(backgroundPane, backgrounds.el);
+        });
+    }
     if (id === 'vision') vision?.refresh();
     if (id === 'vision' && !vision)
       void import('./visionPanel').then(({ visionPanel }) => {
@@ -382,8 +382,8 @@ registerEditor(['pal'], (host, project, file) => {
     e.preventDefault();
     pick(tabs[(to + tabs.length) % tabs.length].id, true);
   });
-  const side = h('div', { class: 'panel stack pal-side', style: 'flex:1 1 260px;max-width:420px' }, tabList, editPane, visionPane);
-  pick(view.get('tab') === 'vision' ? 'vision' : 'edit');
+  const side = h('div', { class: 'panel stack pal-side', style: 'flex:1 1 260px;max-width:420px' }, tabList, editPane, visionPane, backgroundPane);
+  pick(['vision', 'backgrounds'].includes(view.get('tab') ?? '') ? view.get('tab')! : 'edit');
   const row = h('div', { class: 'row pal-row' }, h('div', { class: 'panel', style: 'flex:0 1 auto' }, swatches), side);
   clear(
     host,
