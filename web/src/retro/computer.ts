@@ -301,6 +301,12 @@ export class Computer extends ComputerFolders {
     return !!this.player;
   }
 
+  /** Changes the running game's sound card without replacing its player or session. */
+  setSoundCard(on: boolean): void {
+    this.unlockAudio();
+    this.player?.machine.audio.setSoundCard(on);
+  }
+
   /** Set while restartGame stops the game, so it starts again instead of going back to DOS. */
   private restarting = false;
 
@@ -336,9 +342,11 @@ export class Computer extends ComputerFolders {
             ? import('../dosPlayer/catalogPatches').then((m) => m.catalogPatchesById(catalogId))
             : Promise.resolve(undefined);
       const mount = () =>
-        void Promise.all([import('../player/player'), patches]).then(
-          ([{ mountPlayer }, player]) =>
-            (this.player = mountPlayer(host, files, gam, {
+        void Promise.all([import('../player/player'), patches, import('@lewismoten/gamemaker-sandbox-engine/audio/engine')]).then(
+          ([{ mountPlayer }, player, { AudioEngine }]) => {
+            const audio = new AudioEngine();
+            audio.setSoundCard(soundBlaster());
+            this.player = mountPlayer(host, files, gam, {
               title,
               notice,
               player,
@@ -349,8 +357,8 @@ export class Computer extends ComputerFolders {
               gmHelp,
               // the game port: the desk's game pad (when the desk has one) and any real gamepad
               joystick: deskJoystick,
-              // the card is looked for as the game starts, as PLAYGAME did (switching it mid-game waits for the next)
-              noSoundCard: !soundBlaster(),
+              // The desk opts into live card control; DOS-compatible startup-only detection stays available to other hosts.
+              audio,
               onQuit: () => false, // back to DOS
               onFileWrite: saveId ? (name, bytes) => (playWrote(saveId, name), void writeSaveFile(saveId, name, bytes)) : undefined,
               saveId,
@@ -370,7 +378,8 @@ export class Computer extends ComputerFolders {
                 this.keys.clear();
                 resolve();
               },
-            })),
+            });
+          },
         );
       mount();
     });

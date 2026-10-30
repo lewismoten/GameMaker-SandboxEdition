@@ -10,6 +10,9 @@ picture; `host.ts` is what programs on it can use.
   `folders.ts`, its sound line `pcAudio.ts`, the Sound Blaster card `soundBlaster.ts`).
   `leaveProgram.ts` and `saveFirst.ts` get it back to the DOS prompt for a disk; `diskSwap.ts` says
   which utilities keep running while the disk in A: is swapped instead.
+  Its game player receives an audio engine configured from the remembered sound-card switch.
+  `Computer.setSoundCard` changes FM/digital output and PC-speaker routing in the active
+  session, preserving the player, progress and keyboard state.
 - `dos/`: COMMAND.COM (`shell.ts`), the file system (`vfs.ts`, `hardDisk.ts`, what C: gained in
   `cDriveStore.ts`), the floppies (`disks.ts`), the room's one clock (`deskClock.ts`), the
   designers' file handling (`workArea.ts`) and file picker (`picker.ts`).
