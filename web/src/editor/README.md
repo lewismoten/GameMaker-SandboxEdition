@@ -266,3 +266,8 @@ are real previews too; a blank idle can fall back to a movement frame.
 - **Editor side-panel tabs.** `widgets/panelTabs.ts` shares the tab and panel
   semantics, roving keyboard focus, arrow/Home/End navigation and hidden-panel
   behavior used to separate block colors from their gameplay properties.
+
+- **Readable time fields.** `core/duration.ts` formats timer values as hours,
+  minutes, seconds and milliseconds using each field's clock. `numberField` can
+  show a live duration with its `time` option, including disabled-zero timers or
+  minimum frame lengths. The stored DOS tick counts stay unchanged.
