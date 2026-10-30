@@ -144,7 +144,7 @@ function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
 export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number, n: number): HTMLElement {
   const fires = firesMonster(f);
   const tool = (label: string, icon: string, fn: () => void, disabled = false) =>
-    h('button', { class: 'chr-tool', title: label, 'aria-label': label, disabled, onclick: () => (ctx.edit(fn), ctx.redraw()) }, icon);
+    h('button', { type: 'button', class: 'chr-tool', title: label, 'aria-label': label, disabled, onclick: () => (ctx.edit(fn), ctx.redraw()) }, icon);
   const sprite = fires
     ? h(
         'div',
@@ -170,26 +170,13 @@ export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number,
       'div',
       { class: 'chr-frame-head' },
       h('b', null, i + 1),
+      fires ? null : tool('Swap halves', '⇅', () => (swapHalves(f), ctx.listChanged())),
       tool('Move earlier', '◀', () => moveFrame(seq, i, -1), i === 0),
       tool('Move later', '▶', () => moveFrame(seq, i, 1), i >= n - 1),
       tool('Duplicate', '⧉', () => insertFrame(seq, i), n >= MAXFRAME),
       tool('Delete', '✕', () => deleteFrame(seq, i)),
     ),
     sprite,
-    fires
-      ? null
-      : h(
-          'button',
-          {
-            type: 'button',
-            onclick: () => {
-              ctx.edit(() => swapHalves(f));
-              ctx.listChanged();
-              ctx.redraw();
-            },
-          },
-          '⇅ Swap halves',
-        ),
     h(
       'div',
       { class: 'chr-frame-fields' },
