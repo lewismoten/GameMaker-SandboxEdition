@@ -571,7 +571,12 @@ registerEditor(['chr'], (host, project, file) => {
       h(
         'section',
         { class: 'chr-frames-wrap' },
-        h('h3', null, 'Frames ', h('span', { class: 'chr-muted' }, `${n} of ${MAXFRAME} · hover a block to turn or flip it, click it to change it`)),
+        h(
+          'h3',
+          null,
+          'Frames ',
+          h('span', { class: 'chr-muted' }, `${n} of ${MAXFRAME} · use the buttons to turn or flip a block, click its picture to change it`),
+        ),
         h('div', { class: 'chr-frames' }, ...frameCards, addFrame),
         mirrorSlot,
       ),
