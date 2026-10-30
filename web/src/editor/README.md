@@ -182,6 +182,9 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `blockProperties.ts` owns the selected block's Walking, Touch, Time and monster behavior
   panels separately from canvas painting, including scene-specific named counters and
   monster-birth choices. Group tools do not spread those behavior fields across the group.
+  `blockNames.ts` stores designer labels under each BBL, CBL or MBL's `blockNames`
+  companion section. Labels are independent of monster-definition names; selectors retain
+  the native block number alongside the label. Naming never writes into a native block set.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its
