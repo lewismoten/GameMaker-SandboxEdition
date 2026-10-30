@@ -11,7 +11,7 @@
 //   games/shareware/<id>/<file>  shareware games (play only, with the author's notice)
 //   games/originals/<id>/<file>  new games made for this project (../games/<id>/disk),
 //                                published as shareware, with box, label and manual data
-//   games/<kind>/<id>/<id>.<hash>.gmpak  each game's files in one gzipped file, what the site
+//   games/<kind>/<id>/<id>.<hash>.zip    each game's DOS distribution, what the built site
 //                                fetches to play or open a game (src/project/gamePack.ts)
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
 //   dos/config.hlp                       its setup screen's help, which a Transfer put beside it
@@ -21,6 +21,7 @@ import type { Plugin } from 'vite';
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
+import { gameArchive } from './gameArchive';
 import { createHash } from 'node:crypto';
 import { encodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import { packOrder } from '../src/project/streamGame';
@@ -70,7 +71,7 @@ export interface CdCatalogEntry {
   shots?: boolean;
   /** …and its hero (games/shots/<id>-hero.png). */
   heroShot?: boolean;
-  /** All its files in one gzipped file in its folder, named by a hash of them (packName, src/project/gamePack.ts). */
+  /** Production: standalone DOS ZIP, named by its content hash. Development: legacy GMPK stream. */
   pack?: string;
   /** Built sites: what the home page's quick check finds in it (src/editor/shell/gameHealth.ts), so the page need not fetch files to know. */
   health?: Issue[];
@@ -495,16 +496,23 @@ export function cdGames(cdRoot: string): Plugin {
         createReadStream(file).pipe(res);
       });
     },
-    generateBundle() {
+    async generateBundle() {
       const { gm, files } = get();
-      // each game's pack, made first so the catalog can say how big it is
-      const packs = new Map<string, Buffer>();
-      for (const e of [...get().catalog, ...get().secret]) if (e.pack) packs.set(`${e.path}${e.pack}`, gamePack(e, files));
+      // A standard ZIP replaces both custom GMPK and duplicate loose/gzip game payloads.
+      const packs = new Map<string, Uint8Array>();
+      const archives = new Map<string, string>();
+      for (const e of [...get().catalog, ...get().secret]) {
+        const zip = await gameArchive(e, files);
+        const name = `${e.id}.${createHash('sha256').update(zip).digest('hex').slice(0, 10)}.zip`;
+        archives.set(e.path, name);
+        packs.set(`${e.path}${name}`, zip);
+      }
       // what the pages would otherwise fetch game files to work out: the quick check, the box's facts, the pack's size
       const known = (e: CdCatalogEntry): CdCatalogEntry => {
         const box = boxGameOf(e, files);
-        const packBytes = packs.get(`${e.path}${e.pack}`)?.length;
-        return { ...e, health: quickHealth(e, files), ...(box ? { boxGame: box } : {}), ...(packBytes ? { packBytes } : {}) };
+        const pack = archives.get(e.path)!;
+        const packBytes = packs.get(`${e.path}${pack}`)!.length;
+        return { ...e, pack, health: quickHealth(e, files), ...(box ? { boxGame: box } : {}), ...(packBytes ? { packBytes } : {}) };
       };
       // each listed game's pictures, drawn now (scripts/gameShots.ts); the secret games' are drawn by the page
       const catalog = get().catalog.map((e) => {
@@ -514,11 +522,7 @@ export function cdGames(cdRoot: string): Plugin {
         return shots.size ? { ...known(e), shots: true, ...(shots.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) } : known(e);
       });
       const secret = (gate: number) => behind(get(), gate).map(known);
-      // GitHub Pages sends files it doesn't know (.bbl, .map, .fli…) uncompressed, and game
-      // files shrink 3-20x: a whole game comes as its pack (below), and each game file but a
-      // GIF also gets a gzip copy, <file>.gz, which the site fetches instead when it needs
-      // one file alone (src/project/files.ts, fetchSiteFile). The files themselves stay too,
-      // for exports and links.
+      // Catalogs keep precomputed previews and health; game data lives only in each ZIP.
       this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(catalog.map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(slimCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
       for (const e of catalog) {
@@ -532,6 +536,8 @@ export function cdGames(cdRoot: string): Plugin {
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
       for (const [fileName, source] of packs) this.emitFile({ type: 'asset', fileName, source });
       for (const [site, disk] of files) {
+        // Walkthroughs are browser metadata, not native DOS resources.
+        if (site.startsWith('games/') && !site.endsWith('/walkthrough.json')) continue;
         const bytes = readFileSync(disk);
         this.emitFile({ type: 'asset', fileName: site, source: bytes });
         if (site.startsWith('games/') && !/\.gif$/i.test(site)) this.emitFile({ type: 'asset', fileName: `${site}.gz`, source: gzipSync(bytes, { level: 9 }) });
