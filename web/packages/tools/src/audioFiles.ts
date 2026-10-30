@@ -1,5 +1,7 @@
-// Node-only source audio conversion through an external FFmpeg process; see NOTICE.md.
+// Node-only source audio conversion: native PCM WAVs and optional external FFmpeg; see NOTICE.md.
 import { execFileSync } from 'node:child_process';
+import { readFileSync, statSync } from 'node:fs';
+import { pcm8Wav } from './audioWav';
 import { fileURLToPath } from 'node:url';
 import { encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 
@@ -38,9 +40,14 @@ export function decodeAudioFile(file: string | URL, options: AudioFileOptions = 
   if (sampleRate < 3906 || sampleRate > 1_000_000) throw new RangeError('sampleRate is outside the VOC time-constant range (3906–1000000 Hz)');
   const input = file instanceof URL ? fileURLToPath(file) : file;
   if (!input) throw new TypeError('An audio file path is required');
-  let pcm: Uint8Array;
+  let pcm: Uint8Array | undefined;
+  // Native authoring WAVs decode without external programs. Large/other WAV variants use FFmpeg.
+  if (/\.wav$/i.test(input) && statSync(input).size <= maxSamples + 65536) {
+    const wav = pcm8Wav(readFileSync(input));
+    if (wav?.sampleRate === sampleRate) pcm = wav.samples;
+  }
   try {
-    pcm = execFileSync(
+    pcm ??= execFileSync(
       options.ffmpegPath ?? 'ffmpeg',
       [
         '-nostdin',
