@@ -109,6 +109,8 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`hostedPlayer/`](hostedPlayer/README.md): the web player, one file that plays Game-Maker game
   folders on any web host.
 - [`linkIn/`](linkIn/README.md): opening a game another site links to or sends by postMessage.
+- [`community/`](community/README.md): reviewed links to independently hosted games and
+  the Community submission form; [contribution guide](../../docs/community-games.md).
 - [`offline/`](offline): "Make available offline": the whole site in the service worker's cache at
   once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
   the desk (`offlineExe.ts`).
