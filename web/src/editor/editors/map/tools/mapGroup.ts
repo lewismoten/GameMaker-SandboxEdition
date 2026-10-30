@@ -2,17 +2,16 @@
 import { promptText, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import { groupOf, MAX_SIDE, readGroups, sameGroup, writeGroups, type BlockGroup } from '../../blocks/blockGroups';
-import { captureStamp } from './stamps';
-import type { CellRect } from './cellOps';
+import { captureSelection, type MapSelection } from './selection';
 
 /** Reject oversized layouts explicitly instead of letting groupOf clamp and truncate them. */
-export function selectionGroup(name: string, blocks: Uint8Array, area: CellRect, blockCount: number): BlockGroup | undefined {
+export function selectionGroup(name: string, blocks: Uint8Array, area: MapSelection, blockCount: number): BlockGroup | undefined {
   if (area.w < 1 || area.h < 1 || area.w > MAX_SIDE || area.h > MAX_SIDE) return undefined;
-  const selected = captureStamp(blocks, area);
+  const selected = captureSelection(blocks, area);
   return groupOf(name, selected.cells, selected.w, selected.h, blockCount);
 }
 
-export async function saveMapGroup(project: Project, bbl: string, blocks: Uint8Array, area: CellRect, blockCount: number): Promise<void> {
+export async function saveMapGroup(project: Project, bbl: string, blocks: Uint8Array, area: MapSelection, blockCount: number): Promise<void> {
   if (!bbl) return toast('Choose a background block set first.', 'error');
   if (area.w > MAX_SIDE || area.h > MAX_SIDE)
     return toast(`Block groups fit up to ${MAX_SIDE}×${MAX_SIDE} blocks. Select a smaller picture, or save this selection as a stamp.`, 'error');

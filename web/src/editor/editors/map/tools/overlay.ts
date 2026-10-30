@@ -3,12 +3,13 @@
 import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { CellRect } from './cellOps';
+import type { MapSelection } from './selection';
 
 export interface OverlayState {
   grid: boolean;
   /** Cell indexes to highlight (Find). */
   found: number[];
-  selection?: CellRect;
+  selection?: MapSelection;
   /** What a click places: blocks per cell (-1 leaves it), at (x, y). */
   ghost?: { x: number; y: number; rows: number[][]; ok: boolean };
   /** A rectangle or line being dragged out. */
@@ -131,7 +132,30 @@ export function drawOverlay(c: HTMLCanvasElement, zoom: number, st: OverlayState
   }
   if (st.selection) {
     const r = st.selection;
-    dashed(g, r.x * s, r.y * s, r.w * s, r.h * s, '#00e0ff');
+    if (!r.cells) dashed(g, r.x * s, r.y * s, r.w * s, r.h * s, '#00e0ff');
+    else {
+      const selected = new Set(r.cells.map((cell) => cell.y * MLEN + cell.x));
+      const has = (x: number, y: number) => x >= 0 && y >= 0 && x < MLEN && y < MWID && selected.has(y * MLEN + x);
+      g.fillStyle = 'rgba(0,224,255,0.14)';
+      for (const cell of r.cells) g.fillRect(cell.x * s, cell.y * s, s, s);
+      g.beginPath();
+      const edge = (x1: number, y1: number, x2: number, y2: number) => {
+        g.moveTo(x1 * s, y1 * s);
+        g.lineTo(x2 * s, y2 * s);
+      };
+      for (const { x, y } of r.cells) {
+        if (!has(x, y - 1)) edge(x, y, x + 1, y);
+        if (!has(x + 1, y)) edge(x + 1, y, x + 1, y + 1);
+        if (!has(x, y + 1)) edge(x, y + 1, x + 1, y + 1);
+        if (!has(x - 1, y)) edge(x, y, x, y + 1);
+      }
+      g.lineWidth = 4;
+      g.strokeStyle = '#000';
+      g.stroke();
+      g.lineWidth = 2;
+      g.strokeStyle = '#00e0ff';
+      g.stroke();
+    }
   }
 }
 

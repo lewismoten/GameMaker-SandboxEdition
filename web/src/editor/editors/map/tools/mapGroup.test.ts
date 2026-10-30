@@ -12,6 +12,31 @@ describe('map selection groups', () => {
     expect(blocks[302]).toBe(7);
     expect(blocks[402]).toBe(7);
   });
+  it('keeps polygon holes empty in the saved block-group layout', () => {
+    const blocks = new Uint8Array(10000);
+    blocks[101] = 7;
+    blocks[102] = 8;
+    blocks[201] = 9;
+    expect(
+      selectionGroup(
+        'Corner',
+        blocks,
+        {
+          x: 1,
+          y: 1,
+          w: 2,
+          h: 2,
+          cells: [
+            { x: 1, y: 1 },
+            { x: 2, y: 1 },
+            { x: 1, y: 2 },
+          ],
+        },
+        256,
+      )?.cells,
+    ).toEqual([7, 8, 9, -1]);
+  });
+
   it('rejects oversized selections instead of silently truncating their picture', () => {
     expect(selectionGroup('Large', new Uint8Array(10000), { x: 0, y: 0, w: 9, h: 2 }, 256)).toBeUndefined();
     expect(selectionGroup('Tall', new Uint8Array(10000), { x: 0, y: 0, w: 2, h: 9 }, 256)).toBeUndefined();
