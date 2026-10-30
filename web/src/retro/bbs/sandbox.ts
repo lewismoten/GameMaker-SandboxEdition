@@ -40,6 +40,7 @@ import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { doorGames } from './ticTacToeDoor';
 import { words } from '../../keepTogether';
 import { rsdLine } from './rsdLine';
+import { signup } from './signup';
 
 export const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 export const PHONE = '1-412-555-SAND';
@@ -55,10 +56,14 @@ export async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     s.cursorX = 0;
     s.cursorY = sandboxLogin(s);
   });
-  t.print('|14Enter your handle, or |15GUEST|14: |15');
-  const name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase() || 'GUEST';
+  t.print('|14Enter your handle, |15NEW|14 to join, or |15GUEST|14: |15');
+  let name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase() || 'GUEST';
   t.line();
-  if (name !== 'GUEST') {
+  if (name === 'NEW') {
+    const joined = await signup(t, h, 'sandbox');
+    if (!joined) return;
+    name = joined;
+  } else if (name !== 'GUEST') {
     t.print('|14Password: |15');
     await readLine(s, h.keys, [], 16, attr(0, 0)); // typed in black: nobody sees it
     t.line();

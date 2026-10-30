@@ -29,9 +29,11 @@ async function input(t: Term, h: RetroHost, prompt: string, length: number, ms: 
       }
       if (k?.key === 'Backspace') value = value.slice(0, -1);
       else if (k?.key.length === 1 && !k.ctrl && !k.alt && value.length < length) value += k.key.toUpperCase();
-      s.write(x, y, attr(15, 0), value.padEnd(length));
-      s.cursorX = x + value.length;
-      s.cursorY = y;
+      if (k) {
+        s.write(x, y, attr(15, 0), value.padEnd(length));
+        s.cursorX = x + value.length;
+        s.cursorY = y;
+      }
       await sleep(50);
     }
     t.local('\n');

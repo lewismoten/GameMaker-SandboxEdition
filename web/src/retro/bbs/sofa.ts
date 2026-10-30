@@ -9,6 +9,7 @@ import { sofaFiles } from './sofaFiles';
 import { sofaPictures } from './sofaPictures';
 import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
+import { signup } from './signup';
 import { unlockAchievement } from '../../achievements';
 
 /** All eight lines are often in use: about one call in three gets a busy signal. */
@@ -71,9 +72,9 @@ export async function runSofa(t: Term, h: RetroHost): Promise<void> {
   let name = ((await readLine(s, h.keys, [], 20, attr(15, 0))) ?? '').trim().toUpperCase();
   t.line();
   if (!name || name === 'NEW') {
-    t.print('|07Pick a User-ID to go by: |15');
-    name = ((await readLine(s, h.keys, [], 20, attr(15, 0))) ?? '').trim().toUpperCase() || 'NEWBIE';
-    t.line();
+    const joined = await signup(t, h, 'sofa');
+    if (!joined) return;
+    name = joined;
   } else {
     t.print('|07Enter your password: |15');
     await readLine(s, h.keys, [], 16, attr(0, 0));
