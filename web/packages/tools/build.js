@@ -34,6 +34,8 @@ const sources = {
   'kit/quantize': 'kit/quantize',
   'kit/sdftext': 'kit/sdftext',
   'kit/raytrace': 'kit/raytrace',
+  'kit/actors': 'kit/actors',
+  'kit/screenText': 'kit/screenText',
   microFont: 'microFont',
   'music/compose': 'music/compose',
   simulation: 'simulation',

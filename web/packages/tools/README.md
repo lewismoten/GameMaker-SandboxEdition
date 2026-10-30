@@ -148,3 +148,8 @@ and clamping. `kit/palRamps` exports `Pal` and `wrap` for named palette ramps.
 `kit/sdftext` provides rounded stroke lettering, distance grids and extrusion; `kit/raytrace`
 provides shapes, transforms, cameras and lighting. Consumers supply their own scenes.
 The stroke glyphs, implementation provenance and method references are in NOTICE.md.
+
+### Native object builders
+
+`kit/actors` builds character sequences and monster paths. `kit/screenText` validates
+30-column, 16-line DOS text pages and looks up caller-supplied named sprites.
