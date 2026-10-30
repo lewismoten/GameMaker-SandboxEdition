@@ -14,7 +14,9 @@ import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/g
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
-import { isCmf, parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { readSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import { paintMusicTimeline } from './musicTimeline';
+import { isCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../project/files';
@@ -208,16 +210,9 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       }
       case 'cmf': {
         if (!isCmf(bytes)) return iconFor(kind);
-        const music = parseCmf(bytes).music;
-        const notes: number[] = [];
-        for (let i = 0; i < music.length - 2 && notes.length < 40; i++) if ((music[i] & 0xf0) === 0x90 && music[i + 2] > 0) notes.push(music[i + 1]);
-        return notes.length
-          ? bars(
-              notes.map((n) => n - 30),
-              70,
-              '#8fb4ff',
-            )
-          : iconFor(kind);
+        const [c] = canvas(SIZE, SIZE * 0.6);
+        paintMusicTimeline(c, readSong(bytes));
+        return c;
       }
       case 'gam': {
         const g = parseGame(bytes);

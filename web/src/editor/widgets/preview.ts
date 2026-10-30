@@ -9,6 +9,8 @@ import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/v
 import { isCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { parseSoundSet, NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { isFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { readSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import { musicPreviewTick } from './musicTimeline';
 import { decodeFliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
 
 /** Kinds that have something to play. */
@@ -62,7 +64,7 @@ export function previewButton(
       if (!source) return toast('This block set needs its character files to preview an animation.');
       try {
         const [{ previewCharacterBlocks }, files] = await Promise.all([import('../editors/blocks/pickerAnimation'), source()]);
-        await previewCharacterBlocks(name, data, files);
+        if (btn.isConnected) await previewCharacterBlocks(name, data, files);
       } catch {
         toast(`${name.toUpperCase()} could not be previewed.`, 'error');
       }
@@ -72,9 +74,11 @@ export function previewButton(
     await audio.resume();
     let timer: ReturnType<typeof setTimeout> | undefined;
     let restore: (() => void) | undefined;
+    let animationFrame = 0;
     const me = {
       stop: () => {
         clearTimeout(timer);
+        cancelAnimationFrame(animationFrame);
         audio.stopVoc();
         audio.stopSpeaker();
         audio.stopSong();
@@ -101,6 +105,24 @@ export function previewButton(
         if (!isCmf(data) || !(await audio.playSong(data))) {
           toast('That song cannot be played: Game-Maker only plays songs converted to its clock.', 'error');
           return;
+        }
+        const c = screen?.();
+        if (c) {
+          const song = readSong(data);
+          const ctx = c.getContext('2d')!;
+          const snapshot = ctx.getImageData(0, 0, c.width, c.height);
+          restore = () => ctx.putImageData(snapshot, 0, 0);
+          const clock = () => audio.context?.currentTime ?? performance.now() / 1000;
+          const started = clock();
+          const draw = () => {
+            if (active !== me) return;
+            ctx.putImageData(snapshot, 0, 0);
+            const tick = musicPreviewTick(song, (clock() - started) * TICK_RATE);
+            ctx.fillStyle = '#ffd400';
+            ctx.fillRect(Math.min(c.width - 2, (tick / Math.max(1, song.end.tick)) * c.width), 0, 2, c.height);
+            animationFrame = requestAnimationFrame(draw);
+          };
+          animationFrame = requestAnimationFrame(draw);
         }
       } else if (kind === 'snd') {
         const sounds = parseSoundSet(data).freqs.filter((f) => f.some((v) => v >= 20));
