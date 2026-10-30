@@ -642,7 +642,7 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
       el(
         'text',
         { x: MARGIN, y: PAGE.h - FOOT + 1, 'font-family': 'Arial, Helvetica, sans-serif', 'font-size': 1.2, fill: COLORS.join },
-        'Dashed purple: map wrap. Blue grid: full-size sheets to trim and tape together.',
+        `Dashed purple: map wrap.${ts.length ? ' Blue grid: full-size sheets to trim and tape together.' : ''}`,
       ),
     ]),
   ];
@@ -715,7 +715,25 @@ export function levelMaps(
       const x = await load();
       const l = x?.seen[0];
       if (!x || !l) return undefined;
-      if (l.course) return sheet(4, 4, 'lm-preview', h('img', { src: (await x.paintCourse(l))[0], alt: '' }));
+      if (l.course) {
+        const size = wholeCourseSize(l.course);
+        return sheet(
+          4,
+          4,
+          'lm-preview',
+          el(
+            'svg',
+            {
+              viewBox: `0 0 ${size.w} ${size.h}`,
+              width: '100%',
+              height: '100%',
+              role: 'img',
+              'aria-label': `${l.name}, whole course`,
+            },
+            wholeCourseSvg(x.game, l, await x.paintCourse(l), 0, 0, COLORS, (m) => markText(x.game, m)),
+          ),
+        );
+      }
       const url = await x.paint(l);
       // a long strip shows its start; a tall one its top
       const aspect = Math.min(2, Math.max(0.75, l.area.w / l.area.h));

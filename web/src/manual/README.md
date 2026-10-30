@@ -61,7 +61,7 @@ their contents rows buttons that turn to the page; `gen.ts` makes what every San
   `web/scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
   through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round; a
   course through the wrap, `editor/check/course.ts`, prints as the strip the way runs, turned
-  to run up the page as one continuous overview, `levelCourse.ts` and `levelCourseSvg.ts`. For the screen, printed overviews and posters,
+  to run up the page as one continuous overview, `levelCourse.ts` and `levelCourseSvg.ts`. For the screen, preview cards, printed overviews and posters,
   `wholeCourseSvg` assembles those bounded raster pieces into one continuous map, with a single
   annotation layer and no column breaks; it never allocates a course-sized canvas. Optional
   full-size printing tiles that same map into overlapping atlas sheets, with a grid on the
