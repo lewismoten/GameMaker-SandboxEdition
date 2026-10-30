@@ -124,3 +124,11 @@ without copying drawing loops. Micro text accepts a glyph repertoire, fallback, 
 and optional consumer-owned multicolor glyphs. PC text accepts custom glyph artwork,
 scaled or absolute shadow offsets, and outline spacing. Both report ink to the existing
 text-bounds audit. The default `text`, `outlined`, and `centered` retain their old behavior.
+
+### Sprite composition
+
+`drawing` also exports ASCII sprites, nearest-pixel rotations and reflections, and
+`resampleBlit` for fractional scaling. `outline` can ignore existing outline-colored
+neighbors or use an explicit transparent index; `outlineInPlace` keeps the original
+canvas. `scaleBlitTransparent` selects transparency without changing its mirroring flag.
+`bevel` accepts separate top/left/bottom/right shade offsets, and `pool` paints radial light.

@@ -17,7 +17,7 @@ export function gradient(p: Pixels, x0: number, y0: number, w: number, h: number
 }
 
 /** A lit ellipsoid lump, light from the upper left. */
-export function blob(p: Pixels, cx: number, cy: number, rx: number, ry: number, ramp: number[], lo: number, hi: number, light = 1): Pixels {
+export function blob(p: Pixels, cx: number, cy: number, rx: number, ry: number, ramp: number[], lo = 0, hi = ramp.length - 1, light = 1): Pixels {
   for (let y = Math.floor(cy - ry); y <= cy + ry; y++)
     for (let x = Math.floor(cx - rx); x <= cx + rx; x++) {
       const nx = (x + 0.5 - cx) / rx;
@@ -32,13 +32,23 @@ export function blob(p: Pixels, cx: number, cy: number, rx: number, ry: number, 
 }
 
 /** A raised box: light top/left edge, dark bottom/right edge. */
-export function bevel(p: Pixels, x: number, y: number, w: number, h: number, ramp: number[], face: number, depth = 1): Pixels {
+export function bevel(
+  p: Pixels,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  ramp: number[],
+  face: number,
+  depth = 1,
+  edges: readonly [number, number, number, number] = [1, 1, -2, -2],
+): Pixels {
   p.rect(x, y, w, h, ramp[face]);
-  const hi = ramp[Math.min(ramp.length - 1, face + 1)];
-  const lo = ramp[Math.max(0, face - 2)];
+  const color = (offset: number) => ramp[offset >= 0 ? Math.min(ramp.length - 1, face + offset) : Math.max(0, face + offset)];
+  const [top, left, bottom, right] = edges.map(color);
   for (let d = 0; d < depth; d++) {
-    p.rect(x + d, y + d, w - 2 * d, 1, hi).rect(x + d, y + d, 1, h - 2 * d, hi);
-    p.rect(x + d, y + h - 1 - d, w - 2 * d, 1, lo).rect(x + w - 1 - d, y + d, 1, h - 2 * d, lo);
+    p.rect(x + d, y + d, w - 2 * d, 1, top).rect(x + d, y + d, 1, h - 2 * d, left);
+    p.rect(x + d, y + h - 1 - d, w - 2 * d, 1, bottom).rect(x + w - 1 - d, y + d, 1, h - 2 * d, right);
   }
   return p;
 }
@@ -62,6 +72,16 @@ export function speckle(
       let k = base;
       if (r() < density) k += r() < 0.5 ? -spread : spread;
       p.set(x, y, ramp[Math.max(0, Math.min(ramp.length - 1, k))]);
+    }
+  return p;
+}
+
+export function pool(p: Pixels, cx: number, cy: number, rx: number, ry: number, r: number[], lo: number, hi: number): Pixels {
+  for (let y = Math.floor(cy - ry); y <= cy + ry; y++)
+    for (let x = Math.floor(cx - rx); x <= cx + rx; x++) {
+      const d = Math.hypot((x - cx) / rx, (y - cy) / ry);
+      if (d > 1) continue;
+      p.set(x, y, shadeAt(r, lo, hi, 1 - d, x, y));
     }
   return p;
 }
