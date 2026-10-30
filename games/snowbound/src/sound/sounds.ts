@@ -3,7 +3,7 @@
 import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
-import { lowNoise, env } from '../../../kit/synthParts';
+import { lowNoise, env } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 
 /** A synth that is silent outside [from, to). */
 const gate =

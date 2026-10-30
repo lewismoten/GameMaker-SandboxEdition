@@ -10,7 +10,7 @@
 import { emptyMonster, newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { MON } from '../ids';
 import { buildMonsterBlocks } from '../sprites/monsterBlocks';
-import { corner } from '../../../kit/actors';
+import { corner } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 
 function mon(pics: [number, number][], o: Partial<Monster>, path: March[] = [], attack: March[] = []): Monster {
   const m = emptyMonster();

@@ -6,9 +6,7 @@
 import { Bot } from './bot';
 import { sledRun } from './sled';
 
-const expect = (bot: Bot, scene: number, what: string) => {
-  if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
-};
+import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
 
 /** Shovels a list of cells in order (each a deep-snow block, or just a place to step). */
 async function cells(bot: Bot, list: [number, number][], label: string): Promise<void> {

@@ -1,9 +1,10 @@
 // The 320x200 pictures: title, menu, the newspaper storyline, level cards, the notepad
 // behind text pages, and the endings. All drawn in code with the same ramps as the blocks.
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { matchColor } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
+import { pastePhoto, resample, sepia } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
 import { blob, gradient, shadeAt } from '../art/draw';
 import { centered, micro, microWidth, outlined, text, textWidth } from '../art/font';
 import { buildScreenPalette, type Pal } from '../art/pal';

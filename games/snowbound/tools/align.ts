@@ -3,7 +3,8 @@
 // the parked cars (and THE CHEZ), the fair's strongman bell, the lot's cart return, and that
 // their art joins up across the block edges (Jamie Street and LaVale Mall by their own sets' names).
 // Run by tools/check.ts.
-import { alignGame, namesOf, type Need, type PartRule } from '../../kit/align';
+import { namesOf, type Need, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';
 import { hillBook } from '../src/blocks/hill';

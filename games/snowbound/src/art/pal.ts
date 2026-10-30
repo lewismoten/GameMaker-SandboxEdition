@@ -2,8 +2,8 @@
 // time of day. The block art never changes between scenes; the .PAL does, so the same
 // street goes from a pink winter morning to a blue night with glowing windows.
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
-import { type Pal, wrap } from '../../../kit/palRamps';
-export { type Pal } from '../../../kit/palRamps';
+import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+export { type Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 type RGB = [number, number, number];
 export type TimeOfDay = 'morning' | 'noon' | 'dusk' | 'night';
