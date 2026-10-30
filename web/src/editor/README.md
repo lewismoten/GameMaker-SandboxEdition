@@ -282,3 +282,8 @@ are real previews too; a blank idle can fall back to a movement frame.
   a ghost while a rectangle changes size, preserving the map and undo history
   until pointer release. Escape discards a pending shape, including its later
   pointer release.
+
+- **Groups from maps.** `editors/map/tools/mapGroup.ts` captures a selected picture
+  as a named block group, preserving its tile layout in the background block set's
+  companion metadata. Groups fit up to 8×8 blocks; larger selections can remain
+  stamps. Creating a group leaves the native map and block files unchanged.
