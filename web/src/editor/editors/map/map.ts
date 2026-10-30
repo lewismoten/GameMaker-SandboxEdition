@@ -1,4 +1,5 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
+import { nextZoom, zoomScroll } from './mapZoom';
 import { panelTabs } from '../../widgets/panelTabs';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { History } from '../../core/history';
@@ -989,6 +990,47 @@ registerEditor(['map'], (host, project, file) => {
       { allowNone: false, title: `Which ${label.toLowerCase()} to paint this map with` },
     );
 
+  function setZoom(value: number, pointer = { x: scroller.clientWidth / 2, y: scroller.clientHeight / 2 }): void {
+    if (value === zoom) return;
+    const left = zoomScroll(scroller.scrollLeft, pointer.x, zoom, value);
+    const top = zoomScroll(scroller.scrollTop, pointer.y, zoom, value);
+    zoom = value;
+    view.set({ zoom: value === 1 ? undefined : value });
+    draw();
+    zoomControl.querySelector('select')!.value = String(value);
+    scroller.scrollLeft = left;
+    scroller.scrollTop = top;
+  }
+  const zoomControl = selectField(
+    'Zoom',
+    ZOOMS,
+    () => zoom,
+    (value) => setZoom(value),
+  );
+  scroller.title = 'Mouse wheel zooms around the pointer; Shift+wheel scrolls.';
+  let wheelAmount = 0;
+  let wheelAt = 0;
+  scroller.addEventListener(
+    'wheel',
+    (event) => {
+      if (event.shiftKey || !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      event.preventDefault();
+      const now = performance.now();
+      if (now - wheelAt > 250 || Math.sign(wheelAmount) !== Math.sign(event.deltaY)) wheelAmount = 0;
+      wheelAt = now;
+      wheelAmount += event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? scroller.clientHeight : 1);
+      if (Math.abs(wheelAmount) < 40) return;
+      const next = nextZoom(
+        ZOOMS.map(([value]) => value),
+        zoom,
+        wheelAmount,
+      );
+      wheelAmount = 0;
+      const bounds = scroller.getBoundingClientRect();
+      setZoom(next, { x: event.clientX - bounds.left - scroller.clientLeft, y: event.clientY - bounds.top - scroller.clientTop });
+    },
+    { passive: false },
+  );
   const blockPanel = h('div', { class: 'stack' }, picker);
   const monsterPanel = h('div', { class: 'stack' }, monPicker, monCount);
   const optionsPanel = h(
@@ -1079,12 +1121,7 @@ registerEditor(['map'], (host, project, file) => {
         (v) => ((mblName = v), (mblk = loadBlocks(v, 'mbl'))),
       ),
       chooser.el,
-      selectField(
-        'Zoom',
-        ZOOMS,
-        () => zoom,
-        (v) => ((zoom = v), view.set({ zoom: v === 1 ? undefined : v }), draw()),
-      ),
+      zoomControl,
       h('button', { onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' }, '🖼 Download map picture'),
     ),
     h('div', { class: 'row' }, h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, scroller, status), sideCol),
