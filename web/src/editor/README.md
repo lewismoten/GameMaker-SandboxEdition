@@ -195,6 +195,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   native block set, keeping duplicate picture references and file-specific names distinct.
   Character frame tooltips and top/bottom picture selectors read labels from the selected
   CBL, while orientation bits, frame indices and the character's native bytes remain numeric.
+  Map brushes and replacement choices use the current BBL's picture names. Monster
+  animation frames use the current MBL's names, independently of the MON's monster names.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its

@@ -17,6 +17,7 @@ import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
 import { fitToPane } from '../../core/fitPane';
 import { monsterName, setMonsterName } from './monsterNames';
+import { blockLabel } from '../blocks/blockNames';
 
 type Motion = 'path' | 'toward' | 'away' | 'random';
 
@@ -229,7 +230,7 @@ registerEditor(['mon'], (host, project, file) => {
                   () => chooser.palette,
                   () => f[0],
                   (v) => edit(() => ((f[0] = v), renderDetail(), renderList())),
-                  { title: `Frame ${i + 1}: a monster block` },
+                  { title: `Frame ${i + 1}: a monster block`, name: (index) => blockLabel(project, mblName, index) },
                 ),
                 numberField(
                   '',

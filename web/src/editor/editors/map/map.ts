@@ -24,6 +24,7 @@ import { simulate } from '../palette/colorVision';
 import { findPlayersView, posterPng, posterScene } from './mapPoster';
 import type { Level } from '../../../manual/printables/levelMapLayout';
 import { monsterName } from '../monsters/monsterNames';
+import { blockLabel } from '../blocks/blockNames';
 import { linkMarkers } from './links/linkMarkers';
 import './mapExport.css';
 import './tools/mapTools.css';
@@ -219,7 +220,8 @@ registerEditor(['map'], (host, project, file) => {
           'button',
           {
             class: i === brush ? 'selected' : '',
-            title: `Block ${i}`,
+            title: blockLabel(project, bblName, i),
+            'aria-label': blockLabel(project, bblName, i),
             onclick: () => (
               (brush = i),
               setMode(['paint', 'line', 'rect', 'fill', 'select'].includes(mode) ? mode : 'paint'),
@@ -841,9 +843,9 @@ registerEditor(['map'], (host, project, file) => {
           () => chooser.palette,
           get,
           (v) => (set(v), sync()),
-          { title: label, transparent: false },
+          { title: label, transparent: false, name: (index) => blockLabel(project, bblName, index) },
         );
-        b.setAttribute('aria-label', label);
+        b.setAttribute('aria-label', `${label}: ${blockLabel(project, bblName, get())}`);
         return h('div', { class: 'field' }, h('span', null, label), b);
       };
       sync();
