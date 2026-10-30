@@ -9,3 +9,5 @@ export * from './kit/reel';
 export { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 export * from './text';
 export * from './colors';
+export * from './kit/microText';
+export { microGlyphs, type MicroGlyphs } from './microFont';

@@ -27,6 +27,7 @@ const sources = {
   'kit/sound': 'kit/sound',
   'kit/textBounds': 'kit/textBounds',
   'kit/tune': 'kit/tune',
+  'kit/microText': 'kit/microText',
   microFont: 'microFont',
   'music/compose': 'music/compose',
   simulation: 'simulation',

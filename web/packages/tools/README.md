@@ -116,3 +116,11 @@ are preserved. `renderText(text, {font: 'micro-square'})` selects the square sty
 `glyphRows(code, 'micro-square')` returns its five rows. `microGlyphs` can select an exact
 legacy repertoire when an existing game's unsupported-character behavior must stay the same.
 See NOTICE.md for the source and license of both project fonts.
+
+### Shared text renderers
+
+`drawing` exports `createMicroText` and `createPcText` for adapting existing lettering
+without copying drawing loops. Micro text accepts a glyph repertoire, fallback, spacing,
+and optional consumer-owned multicolor glyphs. PC text accepts custom glyph artwork,
+scaled or absolute shadow offsets, and outline spacing. Both report ink to the existing
+text-bounds audit. The default `text`, `outlined`, and `centered` retain their old behavior.
