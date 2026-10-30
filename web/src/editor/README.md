@@ -230,3 +230,8 @@ try obsolete loose-file URLs before downloading their game archive.
 first (DEFAULT.PAL first), then Sample, RSD, Gameware and Shareware, and consolidates
 identical palettes using catalog hashes. Palette source labels prefer Library, then
 the first Gameware source. Precomputed VOC groups keep sound lists lazy.
+
+The file picker offers This game, Library (CD samples), and Sandbox & Bizarre
+source tabs, with search by filename or source-game title in every list. Source
+sounds use catalog groups and fetch their game ZIP only for visible previews or
+a chosen file; opening a list does not listen to every game first.

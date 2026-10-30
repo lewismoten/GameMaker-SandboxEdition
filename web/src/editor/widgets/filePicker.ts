@@ -1,11 +1,11 @@
 // Choosing a file visually instead of from a drop-down: a dialog of thumbnails of this
-// game's files of one kind, a tab with the CD library's, and buttons to make a new one or
+// game's files, the CD library or public original games, plus search and ways to make or
 // add one from your computer. Library files are copied into the game when chosen.
 import './filePicker.css';
 import { h, clear, modal, pickFiles, toast } from '../core/ui';
 import { KIND_LABELS, Project, kindOf, type FileKind } from '../core/project';
 import { fileThumb, KIND_ICON } from './thumbs';
-import { libraryFile, libraryGame, libraryItems, libraryThumbSource, type LibraryItem } from '../core/library';
+import { libraryFile, libraryGame, libraryItems, libraryThumbSource, type LibraryItem, type LibrarySource } from '../core/library';
 import { templateFor } from '../shell/templates';
 import { GameFiles, normalize } from '../../project/files';
 import { previewButton, stopPreview } from './preview';
@@ -64,6 +64,19 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     let filter: SoundGroup | 'all' = 'all';
     let io: IntersectionObserver | undefined;
     let shown = 0; // which listing is current, so a slow library load doesn't land on another tab
+    let query = '';
+    type Cell = { el: HTMLElement; group?: SoundGroup; none?: boolean };
+    let listed: Cell[] = [];
+    let emptyMessage: HTMLElement | null = null;
+    const search = h('input', {
+      type: 'search',
+      placeholder: 'File name or source game',
+      'aria-label': 'Search files and source games',
+      oninput: (event: Event) => {
+        query = (event.target as HTMLInputElement).value.trim().toLocaleLowerCase();
+        layout(listed, emptyMessage);
+      },
+    });
 
     const card = (label: string, thumb: HTMLElement, meta: string, onPick: () => void, selected = false, preview?: HTMLElement | null) => {
       const cell = h(
@@ -82,13 +95,17 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     };
     const thumbCanvas = (cell: HTMLElement) => () => cell.querySelector<HTMLCanvasElement>('canvas.thumb');
 
-    /** Lays the cards out under a heading per sound group, with chips to show one group. */
-    const layout = (cells: { el: HTMLElement; group?: SoundGroup; none?: boolean }[], empty: HTMLElement | null) => {
+    /** Sound-group chips filter cards while preserving their source priority. */
+    const layout = (cells: Cell[], empty: HTMLElement | null) => {
+      listed = cells;
+      emptyMessage = empty;
+      const visible = cells.filter((cell) => cell.none || !query || cell.el.textContent?.toLocaleLowerCase().includes(query));
+      const message = query ? h('p', { class: 'hint' }, 'No matching files. Try another file name or game title.') : empty;
       if (!grouped) {
-        clear(grid, ...cells.map((c) => c.el), cells.length ? null : empty);
+        clear(grid, ...visible.map((c) => c.el), visible.length ? null : message);
         return;
       }
-      const count = (g: SoundGroup) => cells.filter((c) => c.group === g).length;
+      const count = (g: SoundGroup) => visible.filter((c) => c.group === g).length;
       const chip = (id: SoundGroup | 'all', text: string, n: number, hint = '') =>
         h(
           'button',
@@ -107,22 +124,25 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         );
       clear(
         filters,
-        chip('all', 'All', cells.filter((c) => !c.none).length),
+        chip('all', 'All', visible.filter((c) => !c.none).length),
         ...SOUND_GROUPS.filter((g) => count(g.id)).map((g) => chip(g.id, `${g.icon} ${g.label}`, count(g.id), `Sounds like: ${g.hint}`)),
       );
-      const none = cells.filter((c) => !c.group);
-      const parts: (HTMLElement | null)[] = filter === 'all' ? none.map((c) => c.el) : [];
-      for (const g of SOUND_GROUPS) {
-        if (filter !== 'all' && filter !== g.id) continue;
-        const list = cells.filter((c) => c.group === g.id);
-        if (!list.length) continue;
-        parts.push(h('h3', { class: 'pick-group' }, `${g.icon} ${g.label}`, h('small', null, ` · ${g.hint}`)), ...list.map((c) => c.el));
-      }
-      clear(grid, ...parts, cells.length ? null : empty);
+      const matching = filter === 'all' ? visible : visible.filter((cell) => cell.group === filter);
+      const group = SOUND_GROUPS.find((item) => item.id === filter);
+      const parts: (HTMLElement | null)[] =
+        group && matching.length
+          ? [h('h3', { class: 'pick-group' }, `${group.icon} ${group.label}`, h('small', null, ` · ${group.hint}`)), ...matching.map((cell) => cell.el)]
+          : matching.map((cell) => cell.el);
+      clear(
+        grid,
+        ...parts,
+        parts.length ? null : filter === 'all' ? message : h('p', { class: 'hint' }, 'No matching files in this sound group. Choose All or another group.'),
+      );
     };
 
     const showMine = () => {
       shown++;
+      search.disabled = false;
       io?.disconnect();
       const names = kinds.flatMap((k) => project.files.byExtension(k));
       const none = opts.allowNone
@@ -154,13 +174,16 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       layout(none ? [{ el: none, none: true }, ...cells] : cells, empty);
     };
 
-    const showLibrary = async () => {
+    const showLibrary = async (source: LibrarySource = 'cd') => {
       const me = ++shown;
+      search.disabled = true;
+      listed = [];
       io?.disconnect();
       clear(filters);
-      clear(grid, h('p', { class: 'hint' }, 'Loading the library…'));
-      const items = (await Promise.all(kinds.map((k) => libraryItems(k)))).flat();
+      clear(grid, h('p', { class: 'hint' }, source === 'originals' ? 'Loading Sandbox & Bizarre assets…' : 'Loading the CD library…'));
+      const items = (await Promise.all(kinds.map((k) => libraryItems(k, source)))).flat();
       if (me !== shown) return;
+      search.disabled = false;
       // Draw each thumbnail when it scrolls into view: library games load on demand.
       io = new IntersectionObserver((entries) => {
         for (const e of entries) {
@@ -185,25 +208,9 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         };
         el.item = item;
         el.append(previewButton(item.name, () => libraryFile(item), thumbCanvas(el)) ?? '');
-        return { el, item, group: undefined as SoundGroup | undefined };
+        return { el, item, group: grouped ? item.group : undefined };
       });
       const empty = h('p', { class: 'hint' }, 'Nothing of this kind in the library.');
-      if (grouped && cells.length) {
-        // listen to every sound once to sort them into groups
-        const progress = h('p', { class: 'hint' }, `Listening to ${cells.length} sounds to sort them…`);
-        clear(grid, progress);
-        let done = 0;
-        await Promise.all(
-          cells.map(async (c) => {
-            const key = `${c.item.game.id}/${c.item.name}`;
-            const bytes = groups.has(key) ? undefined : await libraryFile(c.item).catch(() => undefined);
-            if (bytes) await new Promise((r) => setTimeout(r, 0)); // let the dialog breathe
-            c.group = vocGroup(key, bytes);
-            progress.textContent = `Listening to ${cells.length} sounds to sort them… ${++done}`;
-          }),
-        );
-        if (me !== shown) return;
-      }
       layout(cells, empty);
       for (const c of cells) io.observe(c.el);
     };
@@ -264,14 +271,15 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       close(name);
     };
 
-    const setTab = (t: 'mine' | 'library') => {
+    const setTab = (t: 'mine' | 'library' | 'originals') => {
       stopPreview();
-      [...tabs.children].forEach((b) => b.setAttribute('aria-selected', String(b.textContent === 'This game' ? t === 'mine' : t === 'library')));
+      [...tabs.children].forEach((b) => b.setAttribute('aria-selected', String((b as HTMLElement).dataset.source === t)));
       if (t === 'mine') showMine();
-      else void showLibrary();
+      else void showLibrary(t === 'originals' ? 'originals' : 'cd');
     };
-    if (!opts.adding) tabs.append(h('button', { role: 'tab', onclick: () => setTab('mine') }, 'This game'));
-    tabs.append(h('button', { role: 'tab', onclick: () => setTab('library') }, '📀 Library (CD samples)'));
+    if (!opts.adding) tabs.append(h('button', { role: 'tab', 'data-source': 'mine', onclick: () => setTab('mine') }, 'This game'));
+    tabs.append(h('button', { role: 'tab', 'data-source': 'library', onclick: () => setTab('library') }, '📀 Library (CD samples)'));
+    tabs.append(h('button', { role: 'tab', 'data-source': 'originals', onclick: () => setTab('originals') }, 'Sandbox & Bizarre'));
     setTab(opts.adding ? 'library' : 'mine');
     return h(
       'div',
@@ -297,6 +305,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           ),
         ),
       ),
+      h('label', { class: 'field pick-search' }, h('span', null, 'Find a file or game'), search),
       grouped ? filters : null,
       grid,
     );
