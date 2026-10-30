@@ -35,7 +35,7 @@ function fixture(down = false): Level {
       { c0: -10, c1: 18, a0: -30, a1: 23 },
       { c0: -8, c1: 20, a0: 20, a1: 70 },
     ],
-    marks: [{ at: { c: 5, a: 21 }, mark: { kind: 'start', w: 1, h: 1, text: 'START', scenes: [] } as Level['marks'][number] }],
+    marks: [{ at: { c: 5, a: 21 }, mark: { kind: 'start', x: 5, y: 21, w: 1, h: 1, text: 'START', scenes: [] } }],
     seams: [
       {
         axis: 'y',
