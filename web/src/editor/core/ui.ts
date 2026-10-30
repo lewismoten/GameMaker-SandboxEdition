@@ -1,4 +1,5 @@
 // Small DOM helpers for the editor.
+import { tickDuration, type TickDuration } from './duration';
 
 type Child = Node | string | number | false | null | undefined | Child[];
 type Attrs = Record<string, unknown> & { class?: string; style?: string; dataset?: Record<string, string> };
@@ -146,12 +147,14 @@ export async function confirmDialog(title: string, message: string, ok = 'OK'): 
   return !!r;
 }
 
-/** Labeled number input bound to get/set. */
+let durationFieldId = 0;
+
+/** Labeled number input bound to get/set, with optional live timer conversion. */
 export function numberField(
   label: string,
   get: () => number,
   set: (v: number) => void,
-  opts: { min?: number; max?: number; step?: number; title?: string } = {},
+  opts: { min?: number; max?: number; step?: number; title?: string; time?: TickDuration } = {},
 ): HTMLLabelElement {
   const input = h('input', {
     type: 'number',
@@ -159,16 +162,30 @@ export function numberField(
     min: opts.min,
     max: opts.max,
     step: opts.step ?? 1,
-    'aria-label': label ? undefined : opts.title,
+    'aria-label': opts.time ? label || opts.title : label ? undefined : opts.title,
   });
+  const hint = opts.time ? h('small', { class: 'field-duration', id: `field-duration-${++durationFieldId}` }) : undefined;
+  const updateDuration = () => {
+    if (!hint || !opts.time) return;
+    const value = Number(input.value);
+    hint.textContent = tickDuration(value, opts.time);
+    hint.title = tickDuration(value, opts.time, true);
+    input.title = [opts.title, hint.title].filter(Boolean).join('\n');
+  };
+  if (hint) {
+    input.setAttribute('aria-describedby', hint.id);
+    input.addEventListener('input', updateDuration);
+    updateDuration();
+  }
   input.addEventListener('change', () => {
     let v = Math.round(Number(input.value) || 0);
     if (opts.min !== undefined) v = Math.max(opts.min, v);
     if (opts.max !== undefined) v = Math.min(opts.max, v);
     input.value = String(v);
     set(v);
+    updateDuration();
   });
-  return h('label', { class: 'field', title: opts.title }, h('span', null, label), input);
+  return h('label', { class: 'field', title: opts.title }, h('span', null, label), input, hint);
 }
 
 export function checkField(label: string, get: () => boolean, set: (v: boolean) => void, title?: string): HTMLLabelElement {

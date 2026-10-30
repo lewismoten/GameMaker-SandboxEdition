@@ -1436,3 +1436,12 @@ main:focus,
   text-align: center;
   color: var(--muted);
 }
+
+/* Tick fields show a live clock conversion without changing their stored numeric units. */
+.field-duration {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
