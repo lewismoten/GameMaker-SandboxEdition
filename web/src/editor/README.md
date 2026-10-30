@@ -422,3 +422,6 @@ native game files are loaded only when the player chooses an archive action.
   every CHR linked to the CBL through an adventure scene. Repeated pairs across
   frames, scenes and characters appear once. Birth commands and oriented frames
   are excluded because a plain block group cannot represent their appearance.
+  In the CBL Groups panel, **Group character frames…** opens the inferred pairs
+  for review; **All of them** adds the complete set in one step. Existing groups
+  are retained and omitted from subsequent suggestions.

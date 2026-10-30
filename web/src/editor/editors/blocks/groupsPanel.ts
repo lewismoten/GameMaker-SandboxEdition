@@ -141,7 +141,11 @@ export function groupsPanel(o: {
   }
 
   async function suggest(): Promise<void> {
-    const from = { bbl: 'the maps of the scenes that use this set', mbl: 'the monsters placed on the maps', cbl: 'the character’s sequences' }[o.kind];
+    const from = {
+      bbl: 'the maps of the scenes that use this set',
+      mbl: 'the monsters placed on the maps',
+      cbl: 'the linked characters’ upright top/bottom frame pairs',
+    }[o.kind];
     const all = suggestionsFor(o.project, o.file, o.kind, count).filter((s) => !groups.some((g) => sameGroup(g, s.group)));
     const chosen = await suggestDialog({
       suggestions: all,
@@ -257,7 +261,17 @@ export function groupsPanel(o: {
           },
           picked.length < 2 ? 'Group picked blocks…' : `Group ${picked.length} picked blocks…`,
         ),
-        h('button', { title: 'Look through the game’s files for blocks drawn as one picture', onclick: () => void suggest() }, 'Suggest groups…'),
+        h(
+          'button',
+          {
+            title:
+              o.kind === 'cbl'
+                ? 'Infer top/bottom groups from characters linked to this block set, then choose which to add'
+                : 'Look through the game’s files for blocks drawn as one picture',
+            onclick: () => void suggest(),
+          },
+          o.kind === 'cbl' ? 'Group character frames…' : 'Suggest groups…',
+        ),
       ),
       groups.length
         ? h(
