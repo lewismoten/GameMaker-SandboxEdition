@@ -1,0 +1,148 @@
+/* Asset galleries scroll inside the editor frame, with three compact columns on a phone. */
+.editor.asset-editor {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.asset-browser {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  min-width: 0;
+}
+.asset-heading {
+  flex: none;
+}
+.asset-heading h1 {
+  margin: 0;
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+.asset-heading p {
+  margin: 4px 0 0;
+}
+.asset-project {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.asset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  align-content: start;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 2px;
+}
+.asset-card {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: inherit;
+}
+.asset-category,
+.asset-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 8px;
+  text-align: center;
+  white-space: normal;
+}
+.asset-card strong,
+.asset-card small {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.asset-card small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.asset-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 72px;
+  overflow: hidden;
+  font-size: 30px;
+}
+.asset-preview .thumb {
+  max-width: 100%;
+  max-height: 72px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.asset-preview .thumb.icon {
+  font-size: 28px;
+}
+.asset-preview .thumb.problem {
+  font-size: 11px;
+}
+.asset-open {
+  width: 100%;
+  height: 100%;
+  min-height: 140px;
+  border: 0;
+  background: transparent;
+}
+.asset-more {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  background: var(--panel);
+  font-size: 18px;
+}
+.asset-add {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 10px;
+}
+.asset-add h2 {
+  margin: 0;
+  font-size: 14px;
+}
+.asset-add button {
+  min-height: 28px;
+  padding: 4px 6px;
+  font-size: 12px;
+  white-space: normal;
+}
+.asset-add.drop-ready {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+@media (max-width: 640px) {
+  .asset-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+  .asset-category,
+  .asset-open {
+    padding: 8px 5px;
+    font-size: 12px;
+  }
+  .asset-category .asset-preview {
+    height: 48px;
+  }
+  .asset-category .asset-preview .thumb {
+    max-height: 48px;
+  }
+  .asset-add {
+    padding: 7px;
+  }
+}
