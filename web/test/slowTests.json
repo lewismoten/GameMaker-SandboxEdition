@@ -21,6 +21,9 @@
     "test/textfitMore.test.ts"
   ],
   "tests": {
+    "scripts/gameArchive.test.ts": [
+      "catalog DOS distribution is reproducible, uses 8.3 names and includes game files, runtime, setup and notices"
+    ],
     "scripts/mcp/bridge.test.ts": [
       "the editor bridge stops taking codes after ten wrong ones, until a new code is made"
     ],
