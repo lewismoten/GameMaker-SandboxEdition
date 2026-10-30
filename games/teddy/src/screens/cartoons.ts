@@ -3,7 +3,7 @@
 // parade strut), then off to the Clown Club in his red CitiCar; then intro.fli (Gwinn and
 // the suitcase). And at the end, the Clown Club parade with Teddy riding up front.
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, centered, clubArt, outlined, scaleBlit } from '../art/draw';
 import { FX } from '../sprites/fx';
