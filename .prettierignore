@@ -53,3 +53,4 @@ coverage/
 /games/*/disk/
 /games/*/walkPaths.json
 /games/.build-cache.json
+/games/.render-cache/

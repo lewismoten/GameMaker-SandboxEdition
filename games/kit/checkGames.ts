@@ -36,6 +36,8 @@ const flag = (f: string) => args.includes(f);
 const named = args.flatMap((a, i) => (args[i - 1] === '--game' ? [a] : []));
 const quick = flag('--quick');
 const verbose = flag('--verbose');
+const cacheFile = join(gamesDir, '.build-cache.json');
+const frameCache = existsSync(cacheFile) ? (JSON.parse(readFileSync(cacheFile, 'utf8')) as { frames?: string }).frames : undefined;
 
 function listed(): string[] {
   return readdirSync(gamesDir)
@@ -56,7 +58,13 @@ const viteNode = join(webDir, '../node_modules/.bin/vite-node');
 function step(label: string, script: string, scriptArgs: string[] = [], env: Record<string, string> = {}): Status {
   const cmd = hasNice ? 'nice' : viteNode;
   const cmdArgs = [...(hasNice ? ['-n', '10', viteNode] : []), script, ...scriptArgs];
-  const r = spawnSync(cmd, cmdArgs, { cwd: webDir, env: { ...process.env, ...env }, encoding: 'utf8', maxBuffer: 256 << 20, timeout: 30 * 60_000 });
+  const r = spawnSync(cmd, cmdArgs, {
+    cwd: webDir,
+    env: { ...process.env, DEPTH_FRAME_CACHE: frameCache ?? '', ...env },
+    encoding: 'utf8',
+    maxBuffer: 256 << 20,
+    timeout: 30 * 60_000,
+  });
   const out = `${r.stdout ?? ''}${r.stderr ?? ''}`.split('\n').filter((l) => l && !/ExperimentalWarning|--trace-warnings/.test(l));
   const ok = r.status === 0;
   if (verbose || !ok) {
