@@ -4,7 +4,7 @@
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BARDLOGO, bardIntroFli } from '../../../kit/bard';
-import { clipEntries, fliClips } from '../../../kit/fliClips';
+import { clipEntries, fliClips } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { centered } from '../../../snowbound/src/art/font';
 import { gif, H, W } from '../../../snowbound/src/screens/scenery';
 import type { Pal } from '../art/pal';

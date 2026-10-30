@@ -1,7 +1,7 @@
 // The Shakespeare in Sweatpants score's FM patches (SBI): the band's instruments and the rhythm-mode drums (song.ts).
 import { INSTRUMENTS, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { EPIANO } from '../../../kit/song';
-import { sweep } from '../../../kit/songFx';
+import { EPIANO } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { sweep } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 
 // ---- the patches --------------------------------------------------------------------------
 

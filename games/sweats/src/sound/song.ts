@@ -25,8 +25,8 @@
 // The rest is composed: the Sweatpants Stroll (the main theme: title, menu, story, The Hive,
 // the curtain call), the self-checkout bossa nova, the swing for going outside, the bebop
 // chase, the torch blues, the bee's buzz, the beatnik snap and the last-call waltz.
-import { CELESTA, FLUTE } from '../../../kit/song';
-import { DRUM } from '../../../kit/songFx';
+import { CELESTA, FLUTE } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { DRUM } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 import { Arranger, BASSCH, type Style, TWIN } from './band';
 import { BLUES, BRIDGE, BUZZ, CHASE, EPIC, fold, HOME, OFFICE, OUTSIDE, PC, type Sec, SHOP, slice, SNAP, STROLL, TRIUMPH, WALTZ } from './material';
 import { BRASS, CLARINET, GUITAR, MUTE, PIANO, PIPE, RHODES, STRINGS, TENOR, VIBES } from './patches';

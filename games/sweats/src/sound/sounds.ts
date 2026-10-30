@@ -10,7 +10,7 @@ import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/game
 import { SND } from '../ids';
 import { MONOLOGUES, type SoundPlan } from '../scenes';
 import { clipVoc, hasClip } from './clips';
-import { lowNoise, gate, env } from '../../../kit/synthParts';
+import { lowNoise, gate, env } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 
 /** Claps or snaps: short noise bursts at random times. */
 function bursts(seed: number, n: number, seconds: number, cutoff: number, len: number): Synth {

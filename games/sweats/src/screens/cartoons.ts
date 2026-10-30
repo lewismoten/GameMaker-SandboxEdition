@@ -9,7 +9,7 @@
 // own palette (where the common ramps sit at the same entries).
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
-import { fadeOutLength } from '../../../kit/fadeOut';
+import { fadeOutLength } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { blob, gradient, shadeAt } from '../../../snowbound/src/art/draw';
 import { centered, micro, outlined, text, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
@@ -17,7 +17,7 @@ import type { Pal } from '../art/pal';
 import { SETS } from '../scenes';
 import type { CardView } from './art';
 import { buildScreenPalette } from './palette';
-import { sprite } from '../../../kit/screenText';
+import { sprite } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 const W = 320;
 const H = 200;

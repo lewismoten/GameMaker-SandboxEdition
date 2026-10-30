@@ -3,7 +3,7 @@
 // of Bizarre.
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 /**
  * Who made the monologues and the pictures. Used by LICENSE.TXT (the credits page and the

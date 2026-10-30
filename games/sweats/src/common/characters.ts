@@ -11,8 +11,8 @@ import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/bloc
 import { type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { COFFEE, KEY, MON, PLOT, POWER, SEQ, SND } from '../ids';
 import type { buildCharBlocks, SpriteBook } from './sprites';
-import { set, mon, corner, pace } from '../../../kit/actors';
-export { mon, corner, pace } from '../../../kit/actors';
+import { set, mon, corner, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
+export { mon, corner, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // the block flipped left-right
