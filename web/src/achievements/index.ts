@@ -4,7 +4,7 @@
 // See catalog.ts for the ids, store.ts for how they are kept, start.ts for the gm-achievement event.
 import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { EDIT_KINDS } from './editKinds';
-import { noteFinished, notePlayed, noteWatched } from './goals';
+import { noteFinished, notePlayed, noteWatched, noteOutcome } from './goals';
 import { tally, unlockAchievement } from './store';
 import { finishedIn, watchRun, type PlayView } from './playedOn';
 
@@ -68,16 +68,33 @@ export function gameSpot(game: string | undefined, desc: string | undefined, won
  * the view it was played in (`view`) and, on a phone, for the way it was held (playedOn.ts),
  * from the first level of the run: a game loaded with F6 partway still counts.
  */
-export function playAchievements(saveId: string | undefined, view: PlayView): { onSession?: (s: Session) => void; onScene?: (scene: number) => void } {
+export function playAchievements(
+  saveId: string | undefined,
+  view: PlayView,
+): { onSession?: (s: Session) => void; onScene?: Session['onScene']; onLifeLost?: Session['onLifeLost']; onPlayEnd?: Session['onPlayEnd'] } {
   if (saveId?.startsWith('bundle:')) return {};
   let session: Session | undefined;
   let counted = false;
   let run: ReturnType<typeof watchRun> | undefined;
-  return {
+  const hooks: ReturnType<typeof playAchievements> = {
     onSession: (s) => {
       session = s;
+      const previous = s.onScene;
+      s.onScene = (scene) => {
+        previous?.(scene);
+        hooks.onScene?.(scene);
+      };
       run?.stop();
       run = undefined;
+    },
+    onLifeLost: () => {
+      if (session && !session.rec.playing) void noteOutcome(saveId, 'life');
+    },
+    onPlayEnd: (_score, how) => {
+      if (!session || session.rec.playing) return;
+      run?.stop();
+      run = undefined;
+      if (how !== 'quit') void noteOutcome(saveId, how);
     },
     onScene: (scene) => {
       if (!session || session.rec.playing) return;
@@ -100,6 +117,7 @@ export function playAchievements(saveId: string | undefined, view: PlayView): { 
       gameSpot(catalogGame, session.game.scenes[scene]?.desc);
     },
   };
+  return hooks;
 }
 
 /** A game being played wrote a file: a saved game counts. */

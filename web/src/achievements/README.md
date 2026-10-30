@@ -21,3 +21,8 @@ Progress is the number of currently listed playable games that have reached the 
 non-playable catalog entries do not raise the target. `goals.ts` refreshes these totals
 from the persisted event sets. Existing one-time completion records are not inflated
 into repeat-event counts.
+
+`playAchievements` attaches its scene listener to the live Session, preserving any
+existing listener. The life-loss callback and end-of-play callback record repeated
+real-play events; demos, walkthrough playback, bundle exports and editor projects
+do not add repeat counts. Quitting does not count as losing.
