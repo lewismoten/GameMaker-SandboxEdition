@@ -26,8 +26,8 @@
 //   last chorus "We're still bread!"     149.4 - 180.0
 //   outro "So here I rise..."            180.0 - 210.3  ("I'm still bread." hushed, low, 195.9)
 import { sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { EPIANO, Writer, type Groove } from '../../../kit/song';
-import { DRUM, Fx, boomPatch, detuned, leveled, sweep, waved } from '../../../kit/songFx';
+import { EPIANO, Writer, type Groove } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { DRUM, Fx, boomPatch, detuned, leveled, sweep, waved } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 
 const BPM = 62;
 

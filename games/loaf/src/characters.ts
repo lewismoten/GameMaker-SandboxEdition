@@ -12,7 +12,7 @@ import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BASKETS, CRUMBS, KEY, MON, SEQ, SND } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks, Form } from './sprites/sprites';
-import { set, mon, corner, pace } from '../../kit/actors';
+import { set, mon, corner, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 
 export type { Form };
 

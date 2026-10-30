@@ -5,7 +5,7 @@
 // reduced to one 256-color palette for the FLI (cartoons.ts). `t` (0..1) animates it: the light
 // warms and the rays turn, the loaf rises a little and steams, a glint runs over its crust.
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { mixc, clamp, smooth, noise2 } from '../../../kit/coverPaint';
+import { mixc, clamp, smooth, noise2 } from '@lewismoten/gamemaker-sandbox-tools/kit/coverPaint';
 
 const COVER_W = 320;
 const COVER_H = 200;
