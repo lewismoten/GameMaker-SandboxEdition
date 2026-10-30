@@ -81,7 +81,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`audio/`](audio/README.md): OPL2 music, the CMF player, Web Audio output, PC speaker sounds, and
   making songs and sound effects.
 - [`gfx/`](gfx): pictures drawn from a game's own maps: `levelPicture.ts`,
-  `titlePicture.ts`, `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's), and
+  `titlePicture.ts`, `titlePoster.ts` (the click-to-play title for projects and bundles), `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's), and
   screenshots that are a moment of play (`shotFrame.ts`, shown by `frameShot.ts`).
 - [`input/`](input): Mac keys for keyboards without a keypad (`macKeys.ts`), keys pressed with the mouse or
   a finger (`virtualKeys.ts`), the gamepad (`gamepad.ts`), and the desk's game pad and ball mouse
