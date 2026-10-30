@@ -4,7 +4,7 @@ import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks'
 import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Pixels } from './pixels';
 
 export function renderRegion(
   map: GameMap,
