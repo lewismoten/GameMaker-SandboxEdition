@@ -2,7 +2,7 @@
 // (games/kit/textfit.ts): text pages, the menu, the high scores, load and save.
 import { describe, expect, it } from 'vitest';
 import { join } from 'node:path';
-import { checkTextScreen, readDisk, textScreens, W, H, type TextScreen } from '../../games/kit/textfit';
+import { checkTextScreen, readDisk, textScreens, W, H, type TextScreen } from '@lewismoten/gamemaker-sandbox-tools/kit/textfit';
 
 const GAMES = ['blaster', 'logic', 'maximus', 'sandcast', 'sleuth', 'snowbound', 'teddy'];
 

@@ -9,7 +9,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkTextScreen, H, readDisk, renderRgb, textScreens, W, type TextFitIssue } from './textfit';
+import { checkTextScreen, H, readDisk, renderRgb, textScreens, W, type TextFitIssue } from '@lewismoten/gamemaker-sandbox-tools/kit/textfit';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { asciiFor, gwriteLines, highChars } from '../../web/src/editor/check/checks/dosChars';
 

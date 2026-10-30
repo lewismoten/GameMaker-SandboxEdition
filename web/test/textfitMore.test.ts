@@ -2,7 +2,7 @@
 // (games/kit/textfit.ts), as in textfit.test.ts for the others.
 import { describe, expect, it } from 'vitest';
 import { join } from 'node:path';
-import { checkTextScreen, readDisk, textScreens } from '../../games/kit/textfit';
+import { checkTextScreen, readDisk, textScreens } from '@lewismoten/gamemaker-sandbox-tools/kit/textfit';
 
 const GAMES = ['year2000', 'brief', 'teddy2', 'depth', 'realm'];
 
