@@ -78,6 +78,7 @@ game folder opens in the browser unchanged.
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
+- **The npm development toolkit** (`web/packages/tools/`): extracted, packaged and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten’s direction, using this fork’s format codecs, drawing and audio builders, and reference simulation. Game-specific assets stay in the consuming projects.
 - **Added to the site in October 2026**, also written by **Claude Opus 5.5** as Lewis
   directed, from no one else's code, art, data or recordings: the desk modem's line speeds
   and the handshake sounds you hear for each (see "Modem sounds" below); TERMINAL's TTY calls

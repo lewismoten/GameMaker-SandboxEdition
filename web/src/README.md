@@ -74,6 +74,7 @@ Each area's own README says what each of its files does; the short ones are desc
   XFERPLAY's own screens show.
 - [`../packages/engine/`](../packages/engine/README.md): the npm package build and usage guide for
   the reusable browser engine.
+- [`../packages/tools/`](../packages/tools/README.md): the development-only npm toolkit for native formats, drawing, audio generation and headless checks.
 - [`audio/`](audio/README.md): OPL2 music, the CMF player, Web Audio output, PC speaker sounds, and
   making songs and sound effects.
 - [`gfx/`](gfx): the mode 13h screen (`screen.ts`) and 8×8 fonts (`font8x8.ts`; all of CP437 in
