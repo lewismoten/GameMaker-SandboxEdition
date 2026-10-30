@@ -5,9 +5,11 @@
 import { isSandboxGame, loadGameList, type CatalogEntry } from '../project/files';
 import { isBizarreGame } from '../project/bizarre';
 import type { Goal } from './catalog';
-import { currentAchievements, loadAchievements, progress, remember } from './store';
+import { currentAchievements, loadAchievements, progress, remember, countOccurrence } from './store';
 
-type Listed = Pick<CatalogEntry, 'id' | 'original' | 'company' | 'series' | 'walkthrough'>;
+import { REPEAT_TIERS, REPEAT_SETS, repeatProgress, type PlayOutcome, type RepeatGoal } from './repeatGoals';
+
+type Listed = Pick<CatalogEntry, 'id' | 'original' | 'company' | 'series' | 'walkthrough'> & Partial<Pick<CatalogEntry, 'gam'>>;
 
 /** Which set of the record each catalog goal counts. */
 const GOAL_SET: Partial<Record<Goal, string>> = {
@@ -17,6 +19,7 @@ const GOAL_SET: Partial<Record<Goal, string>> = {
   bizarreDone: 'finished',
   teddy: 'finished',
   walkthroughs: 'watched',
+  ...REPEAT_SETS,
 };
 
 /** A Teddy game: Sandbox Software's teddy, teddy2, teddy3… (a new one counts once the catalog lists it). */
@@ -24,6 +27,7 @@ const isTeddyGame = (g: Listed) => isSandboxGame(g) && /^teddy\d*$/.test(g.id);
 
 /** The catalog games a goal counts. */
 export function goalTargets(catalog: readonly Listed[], goal: Goal): string[] {
+  if (goal in REPEAT_SETS) return catalog.filter((g) => !!g.gam).map((g) => g.id);
   const pick =
     goal === 'sandbox' || goal === 'sandboxDone'
       ? isSandboxGame
@@ -51,7 +55,8 @@ export async function refreshGoals(catalog?: readonly Listed[]): Promise<void> {
   for (const a of ACHIEVEMENTS) {
     const set = a.from && GOAL_SET[a.from];
     if (!set) continue;
-    const p = goalProgress(goalTargets(list, a.from!), r.sets[set] ?? []);
+    const targets = goalTargets(list, a.from!);
+    const p = a.times ? repeatProgress(targets, r.sets, REPEAT_SETS[a.from as RepeatGoal], a.times) : goalProgress(targets, r.sets[set] ?? []);
     if (p.of) progress(a.id, p.n, p.of);
   }
 }
@@ -77,4 +82,14 @@ export async function noteWatched(gameId: string | undefined): Promise<void> {
   if (!gameId) return;
   await remember('watched', gameId.replace(/^game:/, ''));
   await refreshGoals();
+}
+
+/** A real play event in a currently listed game; projects, bundles and unknown ids do not count. */
+export async function noteOutcome(gameId: string | undefined, outcome: PlayOutcome): Promise<void> {
+  if (!gameId || /^(?:project|bundle):/.test(gameId)) return;
+  const id = gameId.replace(/^game:/, '');
+  const list = await loadGameList().catch(() => []);
+  if (!list.some((g) => g.id === id && !!g.gam)) return;
+  await countOccurrence(`${outcome}:${id}`, Math.max(...REPEAT_TIERS));
+  await refreshGoals(list);
 }

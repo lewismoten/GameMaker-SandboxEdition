@@ -8,6 +8,7 @@
 
 import type { AchievementRecord } from './store';
 import { EDIT_KINDS } from './editKinds';
+import { REPEAT_TIERS, type RepeatGoal } from './repeatGoals';
 
 export type Category = 'making' | 'playing' | 'watching' | 'desk' | 'fun' | 'found';
 
@@ -21,7 +22,7 @@ export const CATEGORIES: { id: Category; title: string; blurb: string }[] = [
 ];
 
 /** What a derived total counts (goals.ts). */
-export type Goal = 'sandbox' | 'bizarre' | 'sandboxDone' | 'bizarreDone' | 'teddy' | 'walkthroughs' | 'hearts' | 'eggs';
+export type Goal = 'sandbox' | 'bizarre' | 'sandboxDone' | 'bizarreDone' | 'teddy' | 'walkthroughs' | 'hearts' | 'eggs' | RepeatGoal;
 
 export interface Achievement {
   id: string;
@@ -42,6 +43,8 @@ export interface Achievement {
   items?: readonly string[];
   /** A total counted from the catalog. */
   from?: Goal;
+  /** Repeat events required in each game for a catalog-wide goal. */
+  times?: number;
   /** The noun after the count: "3 of 8 editors". */
   unit?: string;
 }
@@ -166,6 +169,38 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'palette-vision', title: 'Seen by everyone', desc: 'Applied a ✨ fix from the palette’s Color vision check.', icon: '👓', category: 'making' },
 
   // playing
+  ...REPEAT_TIERS.flatMap((times): Achievement[] => [
+    {
+      id: `every-life-${times}`,
+      title: times === 1 ? 'Gravity inspector' : `Gravity inspector ${times}`,
+      desc: `Lost a life in every listed game at least ${times === 1 ? 'once' : `${times} times`}.`,
+      icon: '🪂',
+      category: 'playing',
+      from: 'everyLife',
+      times,
+      unit: 'games',
+    },
+    {
+      id: `every-loss-${times}`,
+      title: times === 1 ? 'Professional retryer' : `Professional retryer ${times}`,
+      desc: `Reached Game Over in every listed game at least ${times === 1 ? 'once' : `${times} times`}.`,
+      icon: '🔁',
+      category: 'playing',
+      from: 'everyLoss',
+      times,
+      unit: 'games',
+    },
+    {
+      id: `every-win-${times}`,
+      title: times === 1 ? 'Shelf champion' : `Shelf champion ${times}`,
+      desc: `Won every listed game at least ${times === 1 ? 'once' : `${times} times`}.`,
+      icon: '🏆',
+      category: 'playing',
+      from: 'everyWin',
+      times,
+      unit: 'games',
+    },
+  ]),
   { id: 'play-first', title: 'Player one', desc: 'Played a game.', icon: '🎮', category: 'playing' },
   { id: 'play-finish', title: 'The end', desc: 'Played a game all the way to its ending.', icon: '🏁', category: 'playing' },
   {
