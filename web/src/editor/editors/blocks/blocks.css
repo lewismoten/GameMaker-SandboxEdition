@@ -253,23 +253,7 @@ dialog.modal label.recolor-check {
 .group-suggest-list li {
   margin: 4px 0;
 }
-.group-paint-area {
-  max-width: min(100%, 86vw);
-  overflow: auto;
-}
-.group-paint-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid var(--border);
-  cursor: crosshair;
-  touch-action: none;
-}
-.group-paint-color {
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+
 .blk-group-anim {
   margin: 0;
 }
