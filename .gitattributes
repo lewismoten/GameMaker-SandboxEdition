@@ -1,0 +1,4 @@
+# Audio samples are binary even when their bytes contain no NUL characters.
+*.pcm binary
+*.flac binary
+*.ogg binary
