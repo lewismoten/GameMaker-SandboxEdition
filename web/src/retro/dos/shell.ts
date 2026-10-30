@@ -338,6 +338,11 @@ export class Shell {
       this.out(time ? 'TIME [time | RESET]' : 'DATE [date | RESET]');
       this.out();
       this.out(time ? '  time    hours:minutes[:seconds[.hundredths]][a|p]' : '  date    month-day-year');
+      if (time) {
+        this.out('          An hour also works: 1pm, 2pm, 00, 23');
+        this.out('          Or: dawn, sunrise, morning, day, noon, afternoon,');
+        this.out('              dusk, sunset, evening, night, midnight');
+      }
       this.out('  RESET   Go back to the real local time (/LOCAL works too)');
       this.out();
       this.out(
@@ -384,7 +389,7 @@ export class Shell {
       'A:  C:  D:             Change drive         TYPE file   Show a text file',
       'DEL file (*.GIF)       Delete files        RD [path]   Remove an empty folder',
       'CLS  VER  VOL  MEM  DATE  TIME  PATH',
-      'TIME [11:30p]  DATE [12-25-94]  Set the clock    TIME RESET  Real time again',
+      'TIME [11:30p | dusk]  DATE [12-25-94]  Set the clock    TIME RESET  Real time again',
       '',
       'GM          Start Game-Maker SE',
       'PLAYGAME    Play a Game-Maker game',
