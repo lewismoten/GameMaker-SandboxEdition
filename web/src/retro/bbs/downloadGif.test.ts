@@ -122,7 +122,7 @@ describe('picture transfer', () => {
       calls = vi.mocked(decodePicture).mock.calls.length;
     f.drop();
     await vi.advanceTimersByTimeAsync(1000);
-    expect(f.screen.mem).toEqual(pixels);
+    expect(Buffer.from(f.screen.mem).equals(Buffer.from(pixels))).toBe(true);
     expect(decodePicture).toHaveBeenCalledTimes(calls);
     expect(caption).toHaveBeenLastCalledWith(f.screen, 'CRC error - waiting for carrier');
     expect(f.downloads.add).not.toHaveBeenCalled();
