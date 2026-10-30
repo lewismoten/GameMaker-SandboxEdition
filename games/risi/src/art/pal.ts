@@ -4,8 +4,8 @@
 // sunset, the kitchen at night (one oil lamp), the baths (aqua and steam) and the theater in the
 // afternoon sun. The glows (lamp flames, gold, the diva's scales, the spells) keep their own light.
 import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
-import { type Pal, wrap } from '../../../kit/palRamps';
-export { type Pal } from '../../../kit/palRamps';
+import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+export { type Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 type RGB = [number, number, number];
 export type Light = 'banquet' | 'battle' | 'roofs' | 'kitchen' | 'baths' | 'theater' | 'plain';

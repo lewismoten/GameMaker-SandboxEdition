@@ -6,7 +6,7 @@
 // `t` (0..1) animates it: a sunbeam sweeps the floor, laurel leaves drift down, doves cross the
 // sky, and the bust, stone-faced at first, cracks up: its eyes close and its mouth falls open.
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { smooth, noise2 } from '../../../kit/coverPaint';
+import { smooth, noise2 } from '@lewismoten/gamemaker-sandbox-tools/kit/coverPaint';
 
 const COVER_W = 320;
 const COVER_H = 200;

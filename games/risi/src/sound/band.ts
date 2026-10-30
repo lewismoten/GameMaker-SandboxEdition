@@ -1,6 +1,6 @@
 // Veni, Vidi, Risi!'s arranger: the band playing a section's bars as CMF (song.ts).
-import { CELESTA, FLUTE, type Groove, OUD, Writer } from '../../../kit/song';
-import { detuned, DRUM, Fx } from '../../../kit/songFx';
+import { CELESTA, FLUTE, type Groove, OUD, Writer } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { detuned, DRUM, Fx } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 import { chord, root, type Section } from './material';
 import { BASSP, BRASS, HARP, KAZOO, PIZZ, SOPRANO, STRINGS, TENOR, TIMPANI, TROMBONE, TRUMPET, TWIN } from './patches';
 import type { SongName } from './song';
