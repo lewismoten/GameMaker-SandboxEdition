@@ -65,7 +65,7 @@ interface SceneKeys {
   keys: RecordedKey[];
 }
 
-interface State {
+export interface State {
   w: World;
   rand: number;
   scene: number;

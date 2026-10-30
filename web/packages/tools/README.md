@@ -178,3 +178,11 @@ project data under the MIT License; recordings and complete songs are not includ
 `kit/fadeOut` adds palette-only FLI fades. `kit/fliClips` splits long animations at stable
 palette boundaries and builds their slide-list entries. `kit/recordedDemo` turns delta/key
 pairs into a native title demo with configurable Escape press and release delays.
+
+### Headless checking
+
+`kit/hopBot` provides configurable hopping, steering and retry support for `GameSim`.
+`kit/align` audits caller-supplied disks, multi-block layouts and pixel seams; repository
+lookup and CLI reporting belong to the consumer. `simulation` also exposes route scene
+assertions and scene initialization that delegates to the engine. `GameSimState` names
+the snapshot type; compatibility initialization preserves older block-birth bookkeeping.
