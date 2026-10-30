@@ -156,6 +156,12 @@ registerEditor(['mon'], (host, project, file) => {
     const frames = m.pic.slice(0, LASTSL);
     const count = frames.findIndex(([p]) => p >= MONBL || p < 0);
     const shown = count < 0 ? LASTSL : count;
+    const timing = h('p', { class: 'meta mon-animation-total' });
+    const updateTiming = () => {
+      const ticks = frames.slice(0, shown).reduce((sum, frame) => sum + Math.max(1, frame[1]), 0);
+      timing.textContent = shown ? `${shown} frame${shown === 1 ? '' : 's'} · ${(ticks / 18.2).toFixed(2)} s per loop` : '0 frames · no pictures';
+    };
+    updateTiming();
     const endKind = m.end === -2 ? -2 : m.end === -1 ? -1 : m.end === 0 ? 0 : 1;
 
     clear(
@@ -210,6 +216,7 @@ registerEditor(['mon'], (host, project, file) => {
                 ),
             ),
           ),
+          timing,
           h(
             'ol',
             { class: 'mon-frames', 'aria-labelledby': 'mon-anim-head' },
@@ -227,7 +234,11 @@ registerEditor(['mon'], (host, project, file) => {
                 numberField(
                   '',
                   () => f[1],
-                  (v) => edit(() => (f[1] = v)),
+                  (v) =>
+                    edit(() => {
+                      f[1] = v;
+                      updateTiming();
+                    }),
                   { min: 1, max: 32767, title: `Frame ${i + 1}: ticks to show it (1/18 s each)` },
                 ),
               ),
