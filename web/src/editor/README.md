@@ -216,6 +216,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
 - **Color picker.** `editors/palette/colorPicker.ts` stages hue, saturation and brightness
   with a draggable square and vertical hue bar, keyboard controls and explicit confirmation.
   It uses the tools package's RGB/HSV helpers and rounds the result to VGA's six-bit channels.
+  `paletteCopy.ts` copies inclusive ranges from another project palette (or within the same
+  palette), validates destination bounds, and returns one staged, undoable change.
 
 Catalog DOS downloads save the same built game ZIP used for browser loading. Downloads of edited projects are still rebuilt from their current files.
 

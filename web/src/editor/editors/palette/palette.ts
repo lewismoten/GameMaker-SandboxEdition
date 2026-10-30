@@ -232,6 +232,23 @@ registerEditor(['pal'], (host, project, file) => {
       { class: 'toolbar' },
       h('button', { onclick: spread, title: 'Blend the colors between the two ends of the range' }, 'Spread range'),
       tools.rampBtn,
+      h(
+        'button',
+        {
+          type: 'button',
+          onclick: async () => {
+            const { paletteCopy } = await import('./paletteCopy');
+            if (disposed) return;
+            const result = await paletteCopy(project, file, pal, selected, rangeEnd);
+            if (!result || disposed) return;
+            remember();
+            pal.set(result);
+            save();
+            refresh();
+          },
+        },
+        'Copy range from palette',
+      ),
       // together, so they wrap as a pair
       h('span', { class: 'pal-undo' }, undoBtn, redoBtn),
     ),
