@@ -30,7 +30,7 @@ import { newMap } from '@lewismoten/gamemaker-sandbox-tools/formats/map';
 import { Pixels, text, PaletteBuilder, FONT_CP437, glyphRows, encodeText, renderText, colorRamp, adjustPalette, lightColor } from '@lewismoten/gamemaker-sandbox-tools/drawing';
 import { sample, osc, tune, v, INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/audio';
 import { decodeVoc } from '@lewismoten/gamemaker-sandbox-tools/formats/voc';
-import { encodePng, crc32, medianCutRgba } from '@lewismoten/gamemaker-sandbox-tools/images';
+import { encodePng, crc32, medianCutRgba, Pixels as ImagePixels, turn90, shiftPixels, floodFill } from '@lewismoten/gamemaker-sandbox-tools/images';
 import {rgbToHsv,hsvToRgb} from '@lewismoten/gamemaker-sandbox-tools/colors';
 import { Sim, GameSim } from '@lewismoten/gamemaker-sandbox-tools/simulation';
 import { audioFileToVoc, decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
@@ -69,6 +69,10 @@ assert.equal(colorRamp(3,[0,0,0],[255,255,255])[1][0],128);
 assert.deepEqual(adjustPalette(new Uint8Array(768),'noon'),new Uint8Array(768));
 assert.deepEqual(hsvToRgb(rgbToHsv([12,34,56])),[12,34,56]);
 assert.deepEqual(medianCutRgba([{width:1,height:1,data:Uint8Array.of(100,20,30,255)}],1),[[100,20,30]]);
+const tile=new ImagePixels(2,3);tile.px.set([1,2,3,4,5,6]);
+assert.deepEqual([...turn90(tile).px],[5,3,1,6,4,2]);
+assert.deepEqual([...shiftPixels(tile,1,0).px],[2,1,4,3,6,5]);
+const filled=new Uint8Array(6);floodFill(filled,3,2,0,0,7,(x)=>x!==1);assert.deepEqual([...filled],[7,0,0,7,0,0]);
 const blocks=Array.from({length:150},(_,i)=>emptyBlock(i)); blocks[0].pixels.set(picture.px);
 assert.deepEqual(parseBlocks(serializeBlocks(blocks),150)[0].pixels,picture.px);
 const png=await encodePng({width:20,height:20,pixels:picture.px,palette:new Uint8Array(768)});
@@ -86,7 +90,7 @@ sim.press(77);await sim.run(4);assert.ok(sim.pos.x>160);assert.equal(typeof Game
   execFileSync(process.execPath, ['smoke.mjs'], { cwd: consumer, stdio: 'inherit' });
   writeFileSync(
     resolve(consumer, 'consumer.ts'),
-    `import { Pixels, renderText, TIME_OF_DAY_SKY, PaletteBuilder, type TextImage } from '@lewismoten/gamemaker-sandbox-tools/drawing';\nimport { Sim } from '@lewismoten/gamemaker-sandbox-tools/simulation';\nimport {audioFileToVoc, type VocFileOptions} from '@lewismoten/gamemaker-sandbox-tools/audio-files';\nexport const convert: (file: string | URL, options?: VocFileOptions) => Uint8Array = audioFileToVoc;\nimport {libraryDefaultPalette} from '@lewismoten/gamemaker-sandbox-tools/palettes';\nexport const palette: Uint8Array = libraryDefaultPalette();\nexport const p: Pixels = new Pixels(20,20);\nexport const label: TextImage = renderText('Hi', {font:'micro',outline:0});\nnew PaletteBuilder().ramp('sky',8,...TIME_OF_DAY_SKY.sunset);\nexport type Scene = ConstructorParameters<typeof Sim>[0];\nimport {HopBot} from '@lewismoten/gamemaker-sandbox-tools/kit/hopBot';\nimport {buildRampPalette} from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';\nexport type SavedBot = ReturnType<HopBot['snapshot']>;\nexport const built=buildRampPalette([['ink',2,[0,0,0],[252,252,252]]]);\n`,
+    `import {Pixels as ImagePixels,shiftPixels,type SurfaceMirror} from '@lewismoten/gamemaker-sandbox-tools/images';\nexport const mode: SurfaceMirror = 'both';\nexport const moved: ImagePixels = shiftPixels(new ImagePixels(2,3),1,0);\nimport { Pixels, renderText, TIME_OF_DAY_SKY, PaletteBuilder, type TextImage } from '@lewismoten/gamemaker-sandbox-tools/drawing';\nimport { Sim } from '@lewismoten/gamemaker-sandbox-tools/simulation';\nimport {audioFileToVoc, type VocFileOptions} from '@lewismoten/gamemaker-sandbox-tools/audio-files';\nexport const convert: (file: string | URL, options?: VocFileOptions) => Uint8Array = audioFileToVoc;\nimport {libraryDefaultPalette} from '@lewismoten/gamemaker-sandbox-tools/palettes';\nexport const palette: Uint8Array = libraryDefaultPalette();\nexport const p: Pixels = new Pixels(20,20);\nexport const label: TextImage = renderText('Hi', {font:'micro',outline:0});\nnew PaletteBuilder().ramp('sky',8,...TIME_OF_DAY_SKY.sunset);\nexport type Scene = ConstructorParameters<typeof Sim>[0];\nimport {HopBot} from '@lewismoten/gamemaker-sandbox-tools/kit/hopBot';\nimport {buildRampPalette} from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';\nexport type SavedBot = ReturnType<HopBot['snapshot']>;\nexport const built=buildRampPalette([['ink',2,[0,0,0],[252,252,252]]]);\n`,
   );
   execFileSync(
     process.execPath,
