@@ -446,3 +446,8 @@ native game files are loaded only when the player chooses an archive action.
   palette color or a map scene. View choices stay in the address; only backdrop
   preferences use companion metadata. Related-block highlights are exposed to
   the main picker without changing character definitions.
+
+  The main CBL painter uses these oriented surfaces and scoped Undo histories.
+  Its block picker marks the selected animation’s pictures; quarter turns of a
+  full frame are disabled to retain the native 20×40 shape. Individual 20×20
+  blocks and ordinary groups retain their existing transforms.

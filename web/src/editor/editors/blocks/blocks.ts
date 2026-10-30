@@ -15,7 +15,8 @@ import type { Mirror } from './pixelOps';
 import { Pixels, flipX, flipY, turn90, turn180, shiftPixels, mirrorAll, floodFill, line, box } from '@lewismoten/gamemaker-sandbox-tools/images';
 import { BlockSurface } from './blockSurface';
 import { BlockPaintHistory } from './blockPaintHistory';
-import { splitGroup, type BlockGroup } from './blockGroups';
+import type { BlockGroup } from './blockGroups';
+import { characterFramesPanel, type CharacterFramesPanel } from './characterFramesPanel';
 import { shade } from '../palette/ramps';
 import { blockInsight } from './blockInsight';
 import { openInEditor } from '../../core/uses';
@@ -59,7 +60,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   let nextGroup = 0,
     groupKey = '';
   const scope = () => (group ? groupKey : `block:${current}`);
-  const surface = () => new BlockSurface(blocks, current, group, sprites ? TRANSPARENT : 0);
+  let characterFrames: CharacterFramesPanel | undefined;
+  let orientations: readonly number[] | undefined;
+  const surface = () => new BlockSurface(blocks, current, group, sprites ? TRANSPARENT : 0, orientations);
   let clipboard: Pixels | undefined;
   const save = debounce(() => project.files.set(file, serializeBlocks(blocks)), 250);
   let mirror: Mirror = project.extras<PainterExtras>(file, 'painter', {}).mirror ?? 'none';
@@ -90,6 +93,8 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     picked: () => picked,
     edit: (value, update) => {
       finishStroke(false);
+      orientations = undefined;
+      characterFrames?.leave();
       group = value;
       saveGroup = update;
       if (!groupKeys.has(value)) groupKeys.set(value, `group:${nextGroup++}`);
@@ -140,9 +145,13 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   }
   function markPicker(): void {
     const paths = sprites ? undefined : new Set(readWalkPaths(project, file));
+    const related = new Set(characterFrames?.animationBlocks() ?? []);
     [...picker.children].forEach((b, j) => {
       b.classList.toggle('selected', picked.includes(j) || j === current);
       b.classList.toggle('current', j === current);
+      b.classList.toggle('character-animation', related.has(j));
+      if (related.has(j)) b.setAttribute('aria-description', 'Used in the selected character animation');
+      else b.removeAttribute('aria-description');
       b.setAttribute('title', blockLabel(project, file, j));
       b.classList.toggle('walk-path', !!paths?.has(j));
       b.setAttribute('aria-label', `${blockLabel(project, file, j)}${paths?.has(j) ? ', walking path' : ''}`);
@@ -169,6 +178,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   function select(i: number): void {
     finishStroke(false);
     group = undefined;
+    orientations = undefined;
     saveGroup = undefined;
     groupKey = '';
     current = i;
@@ -183,6 +193,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     groups.refresh(true);
     badges.refresh();
     mirrorBar?.refresh();
+    characterFrames?.followBlock(i);
   }
 
   // ---- pixel canvas -------------------------------------------------------
@@ -242,7 +253,11 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     canvas.style.maxWidth = group ? `min(100%, 520px, max(${w * 2}px, calc((var(--ws-vh, 100dvh) - 350px) * ${w / h})))` : '';
     canvas.classList.toggle('checker', sprites || !!group?.cells.includes(-1));
     canvas.setAttribute('aria-label', `${group ? 'Group' : 'Block'} painting area, ${w} by ${h} pixels: drag to paint, right-drag to erase`);
-    groupBar.hidden = !group;
+    groupBar.hidden = !group || !!orientations;
+    for (const button of actions.querySelectorAll<HTMLButtonElement>('[data-quarter-turn]')) {
+      button.disabled = !!orientations && w !== h;
+      button.title = button.disabled ? 'Choose 1 × 1 block to make a quarter turn; a character frame stays 1 × 2.' : button.dataset.quarterTurn!;
+    }
     groupCaption.textContent = group ? `Editing “${group.name}” as one picture, ${w} × ${h} pixels. Properties apply to block ${current}.` : '';
     const colors = lut(pal());
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -273,6 +288,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       for (const id of s.ids) if (pickerCanvases[id]) paintBlock(pickerCanvases[id], blocks[id].pixels, pal(), { transparent: sprites });
       insight?.refresh();
       groups?.refresh();
+      characterFrames?.redraw();
       mirrorBar?.refresh();
     }
   }
@@ -334,7 +350,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     if (commit && stroke) {
       write(stroke);
       if (stroke.some((value, i) => value !== original[i])) {
-        const parts = group ? splitGroup(group, original) : new Map([[current, original]]);
+        const parts = s.parts(original);
         history.record(scope(), s.ids, group, parts);
         save();
       }
@@ -428,6 +444,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     changed();
   }
   function turn(clockwise: boolean): void {
+    if (orientations && surface().width !== surface().height) return;
     const source = picture(),
       next = clockwise ? turn90(source) : turn180(turn90(source)),
       layout = surface().turned(clockwise);
@@ -511,8 +528,12 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     { class: 'toolbar' },
     h('button', { title: 'Flip left to right', onclick: () => transform(flipX) }, 'Flip ↔'),
     h('button', { title: 'Flip top to bottom', onclick: () => transform(flipY) }, 'Flip ↕'),
-    h('button', { title: 'Turn a quarter clockwise', onclick: () => turn(true) }, 'Rotate ↻'),
-    h('button', { title: 'Turn a quarter counterclockwise', onclick: () => turn(false) }, 'Rotate ↺'),
+    h('button', { title: 'Turn a quarter clockwise', dataset: { quarterTurn: 'Turn a quarter clockwise' }, onclick: () => turn(true) }, 'Rotate ↻'),
+    h(
+      'button',
+      { title: 'Turn a quarter counterclockwise', dataset: { quarterTurn: 'Turn a quarter counterclockwise' }, onclick: () => turn(false) },
+      'Rotate ↺',
+    ),
     h(
       'span',
       { class: 'blk-shift', role: 'group', 'aria-label': 'Shift a pixel, wrapping round' },
@@ -671,6 +692,33 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       mirrorSlot.append(mirrorBar.el);
     });
 
+  if (kind === 'cbl')
+    characterFrames = characterFramesPanel({
+      project,
+      file,
+      blocks,
+      palette: pal,
+      relatedChanged: markPicker,
+      edit: (frame) => {
+        finishStroke(false);
+        current = frame.current;
+        group = frame.group;
+        orientations = frame.orientations;
+        saveGroup = undefined;
+        groupKey = frame.key;
+        picked = surface().ids;
+        view.set({ block: current });
+        names.refresh();
+        markPicker();
+        renderBlock();
+        renderProps();
+        refreshUndo();
+        groups.refresh(true);
+        badges.refresh();
+        mirrorBar?.refresh();
+      },
+    });
+
   // the three columns each end at the window's bottom edge and scroll by themselves (blocks.css)
   const colorsPanel = h('div', { class: 'blk-colors stack' }, swatches, colorBox.el, colorLabel);
   const sideTabs = panelTabs(
@@ -690,8 +738,21 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   );
   const columns = [
     h('div', { class: 'blk-picker' }, picker),
-    h('div', { class: 'blk-paint stack' }, groupBar, tools, canvas, actions, mirrorSlot, groups.el, sprites ? null : textures, badges.el, insight.el),
-    h('div', { class: 'blk-side' }, sideTabs),
+    h(
+      'div',
+      { class: 'blk-paint stack' },
+      characterFrames?.controls ?? null,
+      groupBar,
+      tools,
+      canvas,
+      actions,
+      mirrorSlot,
+      groups.el,
+      sprites ? null : textures,
+      badges.el,
+      insight.el,
+    ),
+    h('div', { class: 'blk-side' }, characterFrames?.preview ?? null, sideTabs),
   ];
   clear(
     host,
@@ -715,6 +776,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   renderBlock();
   renderProps();
   insight.refresh(true);
+  characterFrames?.start(current);
 
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'Escape' && before) {
@@ -735,5 +797,6 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     window.removeEventListener('keydown', onKey);
     insight.dispose();
     groups.dispose();
+    characterFrames?.dispose();
   };
 });

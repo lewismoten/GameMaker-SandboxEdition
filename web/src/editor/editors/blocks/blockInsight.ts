@@ -85,14 +85,16 @@ export function blockInsight(o: {
   const el = h(
     'details',
     { class: 'panel blk-insight', open: true },
-    h('summary', null, 'Preview & uses'),
-    h(
-      'div',
-      { class: 'blk-insight-row' },
-      h('figure', null, tile, h('figcaption', { class: 'meta' }, 'Tiled 3 × 3')),
-      h('figure', { class: 'blk-anim-figure' }, player.el, h('figcaption', { class: 'meta' }, 'In the game')),
-    ),
-    animText,
+    h('summary', null, kind === 'cbl' ? 'Uses' : 'Preview & uses'),
+    kind === 'cbl'
+      ? null
+      : h(
+          'div',
+          { class: 'blk-insight-row' },
+          h('figure', null, tile, h('figcaption', { class: 'meta' }, 'Tiled 3 × 3')),
+          h('figure', { class: 'blk-anim-figure' }, player.el, h('figcaption', { class: 'meta' }, 'In the game')),
+        ),
+    kind === 'cbl' ? null : animText,
     usesHead,
     usesList,
   );
@@ -100,9 +102,9 @@ export function blockInsight(o: {
   return {
     el,
     refresh(all = false) {
-      drawTile();
+      if (kind !== 'cbl') drawTile();
       if (!all) return player.redraw();
-      playAnim();
+      if (kind !== 'cbl') playAnim();
       // map and monster files are read again, so only once a burst of changes settles
       clearTimeout(refreshUses);
       refreshUses = setTimeout(listUses, 300);
