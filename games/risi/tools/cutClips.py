@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Cuts the sung Latin clips of Veni, Vidi, Risi! out of the six recordings, which are NOT
 # committed (.for-lewis/songs/veni-vidi-risi/<title>.mp3), into games/risi/src/sound/clips/
-# <name>.pcm (games/kit/song/cutclips.py does the cutting; see it for the filters), which
+# <name>.wav (games/kit/song/cutclips.py does the cutting; see it for the filters), which
 # games/risi/src/sound/clips.ts wraps as Creative Voice Files.
 #
 #   python3 -I games/risi/tools/cutClips.py [--out DIR]
@@ -68,7 +68,7 @@ def main():
             start, end, p = cutclips.cut(x, env, s, e, fi, fo)
             rate = SLOW_RATE if slow else cutclips.RATE
             data = cutclips.slow_down(p, SLOW_RATE) if slow else p
-            cutclips.write_pcm(out, name, data)
+            cutclips.write_wav(out, name, data, rate)
             print('%-10s %7.2f - %7.2f s  %.2f s  %6d samples at %5d Hz  VOC %6d bytes' % (name, start, end, end - start, len(data), rate, len(data) + 33))
 
 

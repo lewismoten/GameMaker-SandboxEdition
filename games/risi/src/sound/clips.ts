@@ -1,5 +1,5 @@
 // Digitized clips of the six songs of Veni, Vidi, Risi! (Lewis Moten's group), sung in Latin, as
-// Sound Blaster .VOC files. The samples (clips/<name>.pcm: 8-bit unsigned mono) are cut from the
+// Sound Blaster .VOC files. The samples (clips/<name>.wav: lossless 8-bit unsigned mono WAV) are cut from the
 // recordings by games/risi/tools/cutClips.py, which reads the MP3s (not in the repo) and
 // regenerates them exactly. Game-Maker reads a VOC's size as 16 bits, so each stays under
 // 40,000 bytes; the longer lines are kept at 8000 Hz.
@@ -23,7 +23,7 @@
 //   nemo       Silentium Ridentium        55.51   58.49  11025 Hz   "...nemo ridet."
 //   quis       Silentium Ridentium        75.47   77.68  11025 Hz   "...sed quis ridet?"
 //   ridetis    Silentium Ridentium       160.18  164.72   8000 Hz   "Ridetisne? Nonne ridetis?"
-import { readFileSync } from 'node:fs';
+import { decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
@@ -53,11 +53,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 
 /** A clip's samples (-1..1) at its own rate. */
 function clipSamples(name: ClipName): Float32Array {
-  const pcm = readFileSync(join(here, 'clips', `${name}.pcm`));
-  const samples = new Float32Array(pcm.length);
-  // encodeVoc writes round(v * 127 + 128), so this gives back the very bytes cutClips.py wrote.
-  for (let i = 0; i < pcm.length; i++) samples[i] = (pcm[i] - 128) / 127;
-  return samples;
+  return decodeAudioFile(join(here, 'clips', `${name}.wav`), { sampleRate: CLIPS[name] });
 }
 
 /** Samples as a Creative Voice File (checked against Game-Maker's 16-bit size). */
