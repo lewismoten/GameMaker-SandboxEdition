@@ -39,7 +39,9 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   (`wallPoster.ts`, under black light `posterUv.ts` and `motenUv.ts`), the clipping
   (`newsClipping.ts`), the clock (`wallClock.ts`; its glow-in-the-dark paint charges and fades in
   `lumeCharge.ts`), the door (`roomDoor.ts`), the waste basket (`wasteBasket.ts`), the wall phone
-  (`room/phone/`: `phone.ts`, who answers in `calls.ts`, `dialPad.ts`, `sounds.ts`) and its notes
+  (`room/phone/`: `phone.ts`, who answers in `calls.ts`, `dialPad.ts`, `sounds.ts`;
+  `hintBill.ts` meters fictional hint-line listening time at 199 cents per minute, with
+  idempotent checkpoints/hangup and a Desk-backed `gm-hint-phone-bill` balance) and its notes
   (`phoneNotes.ts`), the shareware catalog (`catalog.ts`) and the magazine lying on the desk
   (`paperStack.ts`), and the mug, phone and lamp (`deskProps.ts`).
 - `props/`: makes the room's little things pressable (`index.ts`, `propKit.ts`, whose `cover`

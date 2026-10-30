@@ -65,6 +65,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-bbs-door-tictactoe',
       'gm-bbs-sandbox-user',
       'gm-bbs-signups',
+      'gm-hint-phone-bill',
       'gm-line-speed',
       'gm-bbs-downloads',
       'gm-bbs-deleted',
