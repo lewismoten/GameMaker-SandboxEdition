@@ -33,6 +33,18 @@ import { decodeVoc } from '@lewismoten/gamemaker-sandbox-tools/formats/voc';
 import { encodePng, crc32 } from '@lewismoten/gamemaker-sandbox-tools/images';
 import { Sim, GameSim } from '@lewismoten/gamemaker-sandbox-tools/simulation';
 import { audioFileToVoc, decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
+import {MICRO_GLYPHS,MICRO_SQUARE_GLYPHS} from '@lewismoten/gamemaker-sandbox-tools/microFont';
+import {buildRampPalette} from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+import {recordedDemo} from '@lewismoten/gamemaker-sandbox-tools/kit/recordedDemo';
+import {parseRecording} from '@lewismoten/gamemaker-sandbox-tools/formats/recording';
+import {Disk} from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
+for(const name of ['actors','align','coverPaint','disk','fadeOut','fliClips','hopBot','levelPicture','menuVersion','microText','palRamps','photo','png','quantize','raytrace','recordedDemo','road3d','routeChecks','saveSlots','sceneInit','screenText','sdftext','song','songFx','synthParts','textfit','transforms'])
+  await import('@lewismoten/gamemaker-sandbox-tools/kit/'+name);
+assert.equal(MICRO_GLYPHS['µ'],'000101101111100');assert.notEqual(MICRO_GLYPHS.C,MICRO_SQUARE_GLYPHS.C);
+const built=buildRampPalette([['ink',2,[0,0,0],[252,252,252]]]);assert.equal(built.c('ink',99),built.r('ink')[1]);
+assert.deepEqual(parseRecording(recordedDemo([1,77],3,2)).slice(-2),[{delta:3,key:1},{delta:2,key:129}]);
+const disk=new Disk('native');disk.put('TEST.GAM',Uint8Array.of(1,2,3));assert.equal(disk.write(),3);
+
 assert.equal(typeof audioFileToVoc, 'function');
 const wav=Buffer.alloc(48); wav.write('RIFF');wav.writeUInt32LE(40,4);wav.write('WAVEfmt ',8);
 wav.writeUInt32LE(16,16);wav.writeUInt16LE(1,20);wav.writeUInt16LE(1,22);
@@ -68,7 +80,7 @@ sim.press(77);await sim.run(4);assert.ok(sim.pos.x>160);assert.equal(typeof Game
   execFileSync(process.execPath, ['smoke.mjs'], { cwd: consumer, stdio: 'inherit' });
   writeFileSync(
     resolve(consumer, 'consumer.ts'),
-    `import { Pixels, renderText, TIME_OF_DAY_SKY, PaletteBuilder, type TextImage } from '@lewismoten/gamemaker-sandbox-tools/drawing';\nimport { Sim } from '@lewismoten/gamemaker-sandbox-tools/simulation';\nimport {audioFileToVoc, type VocFileOptions} from '@lewismoten/gamemaker-sandbox-tools/audio-files';\nexport const convert: (file: string | URL, options?: VocFileOptions) => Uint8Array = audioFileToVoc;\nexport const p: Pixels = new Pixels(20,20);\nexport const label: TextImage = renderText('Hi', {font:'micro',outline:0});\nnew PaletteBuilder().ramp('sky',8,...TIME_OF_DAY_SKY.sunset);\nexport type Scene = ConstructorParameters<typeof Sim>[0];\n`,
+    `import { Pixels, renderText, TIME_OF_DAY_SKY, PaletteBuilder, type TextImage } from '@lewismoten/gamemaker-sandbox-tools/drawing';\nimport { Sim } from '@lewismoten/gamemaker-sandbox-tools/simulation';\nimport {audioFileToVoc, type VocFileOptions} from '@lewismoten/gamemaker-sandbox-tools/audio-files';\nexport const convert: (file: string | URL, options?: VocFileOptions) => Uint8Array = audioFileToVoc;\nexport const p: Pixels = new Pixels(20,20);\nexport const label: TextImage = renderText('Hi', {font:'micro',outline:0});\nnew PaletteBuilder().ramp('sky',8,...TIME_OF_DAY_SKY.sunset);\nexport type Scene = ConstructorParameters<typeof Sim>[0];\nimport {HopBot} from '@lewismoten/gamemaker-sandbox-tools/kit/hopBot';\nimport {buildRampPalette} from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';\nexport type SavedBot = ReturnType<HopBot['snapshot']>;\nexport const built=buildRampPalette([['ink',2,[0,0,0],[252,252,252]]]);\n`,
   );
   execFileSync(
     process.execPath,
@@ -96,6 +108,16 @@ sim.press(77);await sim.run(4);assert.ok(sim.pos.x>160);assert.equal(typeof Game
     rejected = true;
   }
   assert.ok(rejected, 'development tools must reject browser resolution');
+  execFileSync(
+    process.execPath,
+    [
+      '--conditions=browser',
+      '--input-type=module',
+      '-e',
+      "import {renderText} from '@lewismoten/gamemaker-sandbox-tools/text';import {lightColor} from '@lewismoten/gamemaker-sandbox-tools/colors';import {MICRO_GLYPHS} from '@lewismoten/gamemaker-sandbox-tools/microFont';if(renderText('µ',{font:'micro'}).width!==3||lightColor([100,100,100],'night')[0]!==54||!MICRO_GLYPHS['¢'])throw new Error('portable text/color entry failed');",
+    ],
+    { cwd: consumer, stdio: 'inherit' },
+  );
   process.stdout.write(`Packed toolkit runtime, NodeNext declarations, content boundary, and browser rejection passed (${pack.files.length} files).\n`);
 } finally {
   rmSync(consumer, { recursive: true, force: true });
