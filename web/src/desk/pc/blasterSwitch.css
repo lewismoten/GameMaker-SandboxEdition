@@ -23,6 +23,27 @@
   text-align: left;
 }
 
+.sb-mobile-switch {
+  display: none;
+}
+@media (max-width: 960px) {
+  .sb-mobile-switch {
+    display: flex;
+    order: 2;
+    width: max-content;
+    max-width: 100%;
+    min-height: 32px;
+    margin: 10px auto;
+    padding: 6px 12px;
+    gap: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+  }
+}
+
 .sb-track {
   position: relative;
   flex: none;

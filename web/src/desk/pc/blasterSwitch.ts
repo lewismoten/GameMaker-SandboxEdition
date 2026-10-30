@@ -2,7 +2,7 @@
 // player's FM/digital output immediately. PC-speaker effects and game progress continue.
 import './blasterSwitch.css';
 import { h } from '../../editor/core/ui';
-import { setSoundBlaster, soundBlaster } from '../../retro/computer/soundBlaster';
+import { setSoundBlaster, soundBlaster, SOUND_CARD_CHANGED } from '../../retro/computer/soundBlaster';
 import { unlockAchievement } from '../../achievements';
 
 /** What the switch needs from the desk PC. */
@@ -16,25 +16,28 @@ export interface BlasterPc {
 /** How long the note stays up (ms) unless the pointer or focus is on it. */
 const NOTE_MS = 6000;
 
-export function blasterSwitch(pc?: BlasterPc): HTMLElement {
+function showSwitch(el: HTMLElement): void {
+  const on = soundBlaster();
+  el.setAttribute('aria-checked', String(on));
+  el.dataset.on = String(on);
+  el.title = on ? 'Sound Boaster on: music and digital sound. Click to switch it off.' : 'Sound Boaster off: PC speaker only. Click to switch it on.';
+}
+// One listener for all present controls; no detached switch is retained between desk visits.
+if (typeof window !== 'undefined') window.addEventListener(SOUND_CARD_CHANGED, () => document.querySelectorAll<HTMLElement>('.sb-switch').forEach(showSwitch));
+
+export function blasterSwitch(pc?: BlasterPc, compact = false): HTMLElement {
   const el = h(
     'button',
-    { class: 'sb-switch', type: 'button', role: 'switch', 'aria-label': 'Sound Boaster card' },
-    h('span', { class: 'sb-print', 'aria-hidden': 'true' }, 'SOUND', h('br'), 'BOASTER'),
+    { class: `sb-switch${compact ? ' sb-mobile-switch' : ''}`, type: 'button', role: 'switch', 'aria-label': 'Sound Boaster card' },
+    compact ? h('span', null, 'Sound Boaster') : h('span', { class: 'sb-print', 'aria-hidden': 'true' }, 'SOUND', h('br'), 'BOASTER'),
     h('span', { class: 'sb-track', 'aria-hidden': 'true' }, h('span', { class: 'sb-knob' })),
   );
-  const show = () => {
-    const on = soundBlaster();
-    el.setAttribute('aria-checked', String(on));
-    el.dataset.on = String(on);
-    el.title = on ? 'Sound Boaster on: music and digital sound. Click to switch it off.' : 'Sound Boaster off: PC speaker only. Click to switch it on.';
-  };
   const note = blasterNote(el);
   el.addEventListener('click', () => {
     const on = !soundBlaster();
     setSoundBlaster(on);
     if (!on) unlockAchievement('desk-soundcard');
-    show();
+    showSwitch(el);
     pc?.setSoundCard(on);
     const playing = pc?.gamePlaying() ?? false;
     note.open(
@@ -45,7 +48,7 @@ export function blasterSwitch(pc?: BlasterPc): HTMLElement {
   el.addEventListener('keydown', (e) => {
     if (e.key === 'Tab' && !e.shiftKey && !e.altKey && !e.metaKey && !e.ctrlKey && note.focusFirst()) e.preventDefault();
   });
-  show();
+  showSwitch(el);
   return el;
 }
 
