@@ -79,7 +79,7 @@ const CHOICES: Choice[] = [
     kind: 'dos',
     name: 'DOS',
     format: '.zip',
-    line: 'The original Game-Maker files with the stand-alone player (PLAYGAME, named after the game), for DOSBox or a real DOS PC.',
+    line: 'The original Game-Maker files with the stand-alone player, for DOSBox or a real DOS PC. Import the ZIP here to edit a copy.',
   },
   { kind: 'files', name: 'Game files', format: '.zip', line: 'Your game’s files just as they are here, to keep a copy safe or import it again.' },
   {
@@ -132,6 +132,7 @@ export function downloadButton(title: string, open: () => unknown): HTMLElement 
 
 /** The chooser, then the download. */
 export async function chooseDownload(game: DownloadGame): Promise<void> {
+  const zipUrl = !game.project && game.entry?.pack?.endsWith('.zip') ? `./${game.entry.path}${game.entry.pack}` : undefined;
   const choices = CHOICES.filter((c) => c.kind !== 'files' || game.project);
   const picked = await modal<{ kind: DownloadKind; alt: boolean }>(`Download ${game.title}`, (close) => {
     let current = choices[0];
@@ -167,6 +168,9 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
           'p',
           { class: 'dl-line', id: `${id}-line` },
           c.line,
+          c.kind === 'dos' && zipUrl
+            ? [' ', h('a', { href: zipUrl, download: game.entry!.pack, 'aria-label': `Permanent DOS ZIP link for ${game.title}` }, 'Permanent ZIP link')]
+            : null,
           c.details
             ? [
                 ' ',
@@ -203,7 +207,7 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
         },
       },
       h('fieldset', null, h('legend', null, 'Download it for'), ...rows),
-      h('p', { class: 'meta' }, `Built right here in your browser, it plays offline and saves on that computer. ${ENGINE_CAVEAT}`),
+      h('p', { class: 'meta' }, `Downloads play offline and save on that computer. ${ENGINE_CAVEAT}`),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), alt, go),
     );
   });
