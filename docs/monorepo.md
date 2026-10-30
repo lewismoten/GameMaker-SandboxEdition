@@ -60,6 +60,11 @@ Package READMEs are registry agnostic. [Tagged workflows](package-releases.md) p
 GitHub Packages; publish engine before archives and tools when their dependency versions
 change. npm tarballs, package distributions and dependencies stay out of Git.
 
-The [package check workflow](../.github/workflows/packages.yml) runs isolated builds on
+The [package check workflow](../.github/workflows/packages.yml) builds the SDKs and runs fast API tests on
 pull requests and master pushes that change SDK source, workspace dependencies or the
 verification script. It does not publish anything.
+
+All GitHub jobs have a five-minute timeout. CI uses `npm run test:fast` to exclude the
+tests measured over 50 ms in `web/test/slowTests.json`. Run the full suite and
+`npm run verify:packages` locally before releasing; isolated source builds and
+packed-consumer checks stay local. See `web/scripts/slowTests.ts` to refresh the timing list.

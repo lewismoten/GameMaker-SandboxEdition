@@ -22,7 +22,7 @@ defaults:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,9 +34,7 @@ jobs:
       - run: npm run format:check
       - run: npm run lint
       # only the quick tests (each under 50 ms here); the slow ones run locally (test/slowTests.json)
-      - run: npx vitest run
-        env:
-          GM_FAST_TESTS: '1'
+      - run: npm run test:fast
       # type-checks, then builds
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
@@ -48,7 +46,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/pages-v')
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
