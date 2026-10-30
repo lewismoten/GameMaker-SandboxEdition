@@ -486,3 +486,5 @@ its source artwork and overlays keep their native map dimensions.
 The map toolbar’s **Wrap scrolling** toggle remembers its view preference. Repeating
 views use the same native painting, monster and link data; link markers project into
 the viewport, and zoom, Level check jumps and URL positions keep native coordinates.
+Pointer gestures retain their physical direction through a seam or scroll recenter,
+including fast drags spanning more than half the map at a small zoom.

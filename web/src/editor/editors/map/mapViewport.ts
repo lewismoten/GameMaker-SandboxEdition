@@ -20,6 +20,7 @@ export function mapViewport(host: ViewportHost) {
   stack.replaceChildren(surface);
   let wrapped = false;
   let pending = 0;
+  let gestureOffset = { x: 0, y: 0 };
   const periods = () => ({ w: MLEN * host.block(), h: MWID * host.block() });
   const phase = () => {
     const { w, h } = periods();
@@ -67,8 +68,14 @@ export function mapViewport(host: ViewportHost) {
       if (wrapped) {
         const { w, h } = periods(),
           { x, y } = phase();
-        if (scroller.scrollLeft < w || scroller.scrollLeft >= 2 * w) scroller.scrollLeft = w + x;
-        if (scroller.scrollTop < h || scroller.scrollTop >= 2 * h) scroller.scrollTop = h + y;
+        if (scroller.scrollLeft < w || scroller.scrollLeft >= 2 * w) {
+          gestureOffset.x += scroller.scrollLeft - w - x;
+          scroller.scrollLeft = w + x;
+        }
+        if (scroller.scrollTop < h || scroller.scrollTop >= 2 * h) {
+          gestureOffset.y += scroller.scrollTop - h - y;
+          scroller.scrollTop = h + y;
+        }
         render();
         host.moved();
       }
@@ -93,6 +100,7 @@ export function mapViewport(host: ViewportHost) {
       { w, h } = periods();
     const left = cell.x * s - pointer.x,
       top = cell.y * s - pointer.y;
+    gestureOffset = { x: 0, y: 0 };
     scroller.scrollTo({ left: wrapped ? w + wrapValue(left, w) : left, top: wrapped ? h + wrapValue(top, h) : top });
     render();
     host.moved();
@@ -125,6 +133,16 @@ export function mapViewport(host: ViewportHost) {
       const r = canvas.getBoundingClientRect();
       const p = at({ x: e.clientX - r.left, y: e.clientY - r.top });
       return { x: Math.floor(p.x), y: Math.floor(p.y) };
+    },
+    /** Physical gesture coordinates retain direction through seams and scroll recentering. */
+    gestureCell(e: { clientX: number; clientY: number }): Cell {
+      if (!wrapped) return this.cell(e);
+      const r = canvas.getBoundingClientRect(),
+        s = host.block();
+      return {
+        x: Math.floor((scroller.scrollLeft + gestureOffset.x + e.clientX - r.left) / s),
+        y: Math.floor((scroller.scrollTop + gestureOffset.y + e.clientY - r.top) / s),
+      };
     },
     point(cell: Cell): Cell {
       if (!wrapped) return cell;
