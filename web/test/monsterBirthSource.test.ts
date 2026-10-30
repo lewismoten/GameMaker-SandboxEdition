@@ -25,6 +25,30 @@ describe('monster birth previews', () => {
     scene.files[3] = 'missing.mon';
     expect(monsterBirthSources({ files, game: () => game }, 'garden.bbl')).toEqual([]);
   });
+  it('follows every scene using a character and deduplicates shared monster sets', () => {
+    const game = newGame(),
+      files = new GameFiles([
+        ['first.mon', new Uint8Array()],
+        ['first.mbl', new Uint8Array()],
+        ['second.mon', new Uint8Array()],
+        ['second.mbl', new Uint8Array()],
+      ]);
+    for (const [chr, mon] of [
+      ['hero.chr', 'first'],
+      ['hero.chr', 'second'],
+      ['hero.chr', 'first'],
+      ['other.chr', 'first'],
+    ]) {
+      const scene = emptyScene(ADVTYPE);
+      scene.files[5] = chr;
+      scene.files[3] = `${mon}.mon`;
+      scene.files[4] = `${mon}.mbl`;
+      game.scenes.push(scene);
+    }
+    expect(monsterBirthSources({ files, game: () => game }, 'HERO.CHR', 5).map((item) => item.id)).toEqual(['first.mon|first.mbl', 'second.mon|second.mbl']);
+    game.scenes[2].files[3] = 'missing.mon';
+    expect(monsterBirthSources({ files, game: () => game }, 'hero.chr', 5)).toHaveLength(2);
+  });
   it('uses a paired unbound set, but declines ambiguous unrelated pictures', () => {
     const files = new GameFiles([
       ['hero.mon', new Uint8Array()],

@@ -409,3 +409,7 @@ native game files are loaded only when the player chooses an archive action.
   character Controls tab exposes these shared settings through
   `character/joystickControls.ts`; label edits participate in character Undo/Redo
   without rewriting native files.
+
+- **Monster birth sources.** `widgets/monsterBirthSource.ts` resolves the native
+  MON/MBL pairs of every adventure scene using a background set or character,
+  deduplicating shared pairs and avoiding unrelated first-file previews.
