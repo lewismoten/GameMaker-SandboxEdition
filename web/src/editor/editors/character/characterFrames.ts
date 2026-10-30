@@ -1,5 +1,5 @@
 // The character editor's frame cards: a sequence frame's top and bottom blocks (click to
-// choose, hover to turn or flip), or the monster it fires; its move and pause; and the
+// choose, use buttons to turn or flip), or the monster it fires; its move and pause; and the
 // buttons that move, copy or delete it. Also the key a sequence runs on. character.ts
 // builds them, passing what they need to read and change (FrameContext).
 import { h, numberField } from '../../core/ui';
@@ -20,6 +20,7 @@ import {
   moveFrame,
   normalOrient,
   rotateOrient,
+  swapHalves,
   topOrient,
   withBottomOrient,
   withTopOrient,
@@ -76,7 +77,7 @@ export function keyPicker(ctx: FrameContext, seq: Sequence): HTMLElement {
   );
 }
 
-/** One block of a frame: click to choose, hover for rotate / flip buttons. */
+/** One block of a frame: click to choose, with persistent rotate / flip buttons. */
 function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
   const get = () => (top ? f.pic1 : f.pic2);
   const orient = () => (top ? topOrient(f) : bottomOrient(f));
@@ -174,6 +175,20 @@ export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number,
       tool('Delete', '✕', () => deleteFrame(seq, i)),
     ),
     sprite,
+    fires
+      ? null
+      : h(
+          'button',
+          {
+            type: 'button',
+            onclick: () => {
+              ctx.edit(() => swapHalves(f));
+              ctx.listChanged();
+              ctx.redraw();
+            },
+          },
+          '⇅ Swap halves',
+        ),
     h(
       'div',
       { class: 'chr-frame-fields' },
