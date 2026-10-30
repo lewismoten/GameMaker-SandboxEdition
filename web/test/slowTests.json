@@ -9,6 +9,7 @@
     "src/engine/playEnd.test.ts",
     "src/engine/skipTitle.test.ts",
     "src/formats/fliClips.test.ts",
+    "src/formats/fliPlaygame.test.ts",
     "src/manual/printables/levelSecrets.test.ts",
     "src/manual/printables/levelViews.test.ts",
     "test/audioFiles.integration.test.ts",

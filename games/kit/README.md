@@ -111,7 +111,7 @@ Checking the games:
 
 - `checkGames.ts` — `cd web && npm run check:games`: every game's checks, one game at a time, and a table; exits 1 on
   any failure. Per game: two builds into temporary folders (`GAME_DISK_OUT`) that must match each other byte for
-  byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
+  byte and cut off no text (`textBounds.ts`); unchanged working output is kept in place, `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
   `playerCheck.ts` (when the game has a player.json); then `tinHearts.ts check`,
   `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no reproducibility rebuild), `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left

@@ -114,8 +114,8 @@ function rebuild(id: string): Status {
       for (const p of problems.slice(0, 20)) console.log(`    ${p}`);
       if (problems.length > 20) console.log(`    and ${problems.length - 20} more`);
     }
-    if (!problems.length) {
-      const disk = join(gamesDir, id, 'disk');
+    const disk = join(gamesDir, id, 'disk');
+    if (!problems.length && diskDiff(out, disk).length) {
       rmSync(disk, { recursive: true, force: true });
       mkdirSync(disk, { recursive: true });
       cpSync(out, disk, { recursive: true });
