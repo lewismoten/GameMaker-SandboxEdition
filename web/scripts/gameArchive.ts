@@ -6,6 +6,9 @@ import { exportDos } from '../src/export/exportDos';
 import { catalogPatches } from '../src/dosPlayer/catalogPatches';
 import type { CdCatalogEntry } from './cdGames';
 
+/** Permanent DOS-compatible ZIP basename, independent of game contents and release version. */
+export const gameZipName = (id: string): string => `${id.slice(0, 8)}.zip`;
+
 export async function gameArchive(entry: CdCatalogEntry, paths: ReadonlyMap<string, string>): Promise<Uint8Array> {
   const read = (path: string) => {
     const file = paths.get(path);
