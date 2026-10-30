@@ -402,3 +402,7 @@ Community games use reviewed metadata alongside native `HomeGame` entries. Their
 open the creator's play site, optional permanent ZIP, source/credits, and the existing
 `?open=` import flow for editing a copy. Their previews use creator images or title cards;
 native game files are loaded only when the player chooses an archive action.
+
+- **Joystick descriptions.** `core/joystickButtons.ts` validates optional short
+  and long descriptions for buttons 1 and 2 in the main GAM companion section
+  `joystickButtons`. Choice labels retain the original DOS button numbers.
