@@ -21,6 +21,8 @@ function fixture() {
 describe('callback account records', () => {
   it('normalizes handles and only accepts fictional local home numbers', () => {
     expect(signupHandle(' teddy _- ')).toBe('TEDDY _-');
+    expect(signupHandle('TEDDY THE CALLBACK CORGI')).toBe('TEDDY THE CALLBACK CORGI');
+    expect(signupHandle('TEDDY THE CALLBACK CORGIX')).toBeUndefined();
     for (const handle of ['NEW', 'guest', '|12RED', '<script>', 'x'.repeat(25)]) expect(signupHandle(handle)).toBeUndefined();
     for (const phone of ['5550101', '(412) 555-0101', '+1-412-555-0101']) expect(signupPhone(phone)).toBe('555-0101');
     for (const phone of ['555-0000', '555-0200', '867-5309', '202-555-0101', '555-0101x']) expect(signupPhone(phone)).toBeUndefined();

@@ -66,6 +66,7 @@ directory and calls are `bbs.ts`.
   Choose NEW at either board’s login, pick a handle and a fictional 555-01xx number, note
   the four-digit code, then consent to the callback. After NO CARRIER and RING, type ATA
   and Enter, followed by the code. Up to five rings and three code attempts are allowed.
+  Signup and returning login both accept handles up to 24 characters on either board.
   A verified local handle can log in again without repeating the callback or the legacy
   pretend-password prompt. Guest visits still work without an account.
 - Their file areas: listings a screen at a time (`pager.ts`) with FILE_ID.DIZ (`fileId.ts`), the

@@ -70,7 +70,7 @@ export async function runSofa(t: Term, h: RetroHost): Promise<void> {
   });
   t.line('|07If you already have a User-ID on this system, type it in and press ENTER.');
   t.print('|07Otherwise type |15"new"|07: |15');
-  let name = ((await readLine(s, h.keys, [], 20, attr(15, 0))) ?? '').trim().toUpperCase();
+  let name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase();
   t.line();
   if (!name || name === 'NEW') {
     const joined = await signup(t, h, 'sofa');
