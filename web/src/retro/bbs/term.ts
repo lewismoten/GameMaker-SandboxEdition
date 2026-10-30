@@ -221,6 +221,13 @@ export class Term {
     return !!this.lost;
   }
 
+  /** Holds a graphic transfer on its last verified data until carrier loss is reported. */
+  async checkCarrier(): Promise<void> {
+    if (!this.lost) return;
+    await this.lost;
+    throw new NoCarrier();
+  }
+
   /** Waits out the line noise after a dropped call. */
   async dropped(): Promise<void> {
     await this.lost;

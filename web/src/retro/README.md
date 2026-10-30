@@ -62,6 +62,11 @@ directory and calls are `bbs.ts`.
   `pacedQueue.ts` sends the boards' text and `transfer.ts` their files at it, and
   `lineSpeedControls.ts` picks it on the desk's modem and in `dos.html`'s ⋯ menu; `pickup.ts` is
   someone picking up the kitchen extension.
+  Picture transfers decode CRC-verified 128-byte prefixes; `Term.checkCarrier` holds the last
+  verified picture while the line drops, and then reports NoCarrier. It never paints random
+  pixels over the image. Completed pictures are kept even if carrier drops before a viewer key.
+  Baseline JPEGs reveal complete MCU blocks; progressive DC/refinement scans update only
+  completed MCUs. Space and the room’s time warp finish a transfer; Escape cancels it.
 - `tdd.ts` calls a TTY from TERMINAL, in Baudot (`baudot.ts`), to Mrs. Novak's script
   (`ttyTalk.ts`), with `ttyInfo.ts` on TTYs in 1994.
 - The Sandbox BBS's door game, TIC-TAC-TOE BY MODEM, is `ticTacToe.ts` (rules, the other caller,

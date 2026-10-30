@@ -15,7 +15,7 @@ import { Pager, pageLabel } from './pager';
 import { caption, decodePicture, formatLabel, GALLERY, galleryBytes, paintPicture, type GalleryFile } from './gallery';
 import { recordDownload, updateAccount } from './ratio';
 import { downloadLine } from '../../project/diskFacts';
-import { cps, slowWait } from './lineSpeed';
+import { cps, slowWait, warpCount } from './lineSpeed';
 import { cpsText, expectText } from './transfer';
 import { words } from '../../keepTogether';
 
@@ -64,30 +64,6 @@ export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
   }
 }
 
-/** Downloads a picture (from the Sandbox BBS's GIF Gallery or The Sofa's GIF area) into C:\IMAGES, painting it as it arrives. */
-/**
- * Line noise in a picture coming in: what arrives is garbage, so the viewer paints streaks of
- * random colors from where the picture had got to downward, for as long as the noise lasts on
- * a text screen (Term.interrupt), about two and a half seconds.
- */
-async function lineNoise(scr: ReturnType<RetroHost['pictureMode']>, done: number): Promise<void> {
-  const from = Math.min(scr.height - 1, Math.floor(done * scr.height));
-  for (let i = 0; i < 40; i++) {
-    for (let n = 1 + Math.floor(Math.random() * 4); n > 0; n--) {
-      const y = from + Math.floor(Math.random() * (scr.height - from));
-      const x = Math.floor(Math.random() * scr.width);
-      const run = Math.min(scr.width * (scr.height - y) - x, 8 + Math.floor(Math.random() * 400));
-      const color = Math.floor(Math.random() * 256);
-      // a run of one color, or of noise, wrapping onto the next row as a decoder's output would
-      if (Math.random() < 0.5) scr.mem.fill(color, y * scr.width + x, y * scr.width + x + run);
-      else for (let k = 0; k < run; k++) scr.mem[y * scr.width + x + k] = Math.floor(Math.random() * 256);
-    }
-    scr.invalidate();
-    modemSignal('receive');
-    await sleep(60);
-  }
-}
-
 /** The bottom line while a picture comes in: a bar, the percent and the bytes so far (40 columns at most). */
 export function progressLine(got: number, total: number): string {
   const f = total ? Math.min(1, got / total) : 1;
@@ -114,36 +90,54 @@ export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promis
   slowWait(bytes.length / cps('file'));
   let got = 0;
   let aborted = false;
+  let complete = false;
+  let decoded = -1;
   let last = performance.now();
+  const warp = warpCount();
   try {
     for (;;) {
-      // someone picked up the phone: the noise lands in the picture, then the call is gone
-      if (t.dropping) await lineNoise(scr, got / bytes.length);
-      t.print(''); // a dropped call ends the transfer
-      const now = performance.now();
-      // at the line speed of the moment (Unlimited: all at once)
-      got = Number.isFinite(cps('file')) ? Math.min(bytes.length, got + ((now - last) / 1000) * cps('file')) : bytes.length;
-      last = now;
-      const pic = decodePicture(bytes.subarray(0, Math.floor(got)));
-      if (pic) paintPicture(scr, pic);
-      // until the first of the picture arrives the palette is all black: one white to write in
-      else scr.dac.set([63, 63, 63], 15 * 3);
-      // how far along, on the bottom line, as a terminal's status line showed it
-      caption(scr, progressLine(got, bytes.length));
-      scr.invalidate();
-      modemSignal('receive');
+      // ZMODEM rejects damaged subpackets. Never paint invented damage over verified
+      // pixels; hold the last prefix while the modem loses carrier (Forsberg's ZMODEM
+      // specification, https://techheap.packetizer.com/communications/modems/zmodem8.html).
+      if (t.dropping) {
+        caption(scr, complete ? 'Carrier lost - picture received' : 'CRC error - waiting for carrier');
+        scr.invalidate();
+      }
+      await t.checkCarrier();
       const k = scr.poll();
+      if (complete) {
+        if (k) break;
+        await sleep(80);
+        continue;
+      }
       if (k === 'Escape') {
         aborted = true;
         break;
       }
-      if (k === ' ') got = bytes.length; // skip to the end (painted on the next round)
-      if (got >= bytes.length && k !== ' ') break;
+      const now = performance.now();
+      got =
+        k === ' ' || warpCount() !== warp || !Number.isFinite(cps('file')) ? bytes.length : Math.min(bytes.length, got + ((now - last) / 1000) * cps('file'));
+      last = now;
+      // Model CRC-verified 128-byte subpackets, plus the final short subpacket.
+      const verified = got >= bytes.length ? bytes.length : Math.floor(got / 128) * 128;
+      if (verified !== decoded) {
+        const pic = decodePicture(bytes.subarray(0, verified));
+        if (pic) paintPicture(scr, pic);
+        else scr.dac.set([63, 63, 63], 15 * 3);
+        decoded = verified;
+      }
+      caption(scr, progressLine(verified, bytes.length));
+      scr.invalidate();
+      modemSignal('receive');
+      if (got >= bytes.length) {
+        complete = true;
+        // Receipt is finished now, even if the call drops while viewing the picture.
+        h.downloads.setDir('IMAGES', true);
+        h.downloads.add(f.name);
+        if (!f.board) updateAccount((a) => recordDownload(a, bytes.length, true));
+        caption(scr, 'Download complete - press a key');
+      }
       await sleep(80);
-    }
-    if (!aborted) {
-      caption(scr, 'Download complete - press a key');
-      await scr.key();
     }
   } finally {
     h.leavePictureMode();
@@ -155,9 +149,6 @@ export async function downloadGif(t: Term, h: RetroHost, f: GalleryFile): Promis
     return;
   }
   t.line(`|10Transfer complete. |07${f.name} saved in C:\\IMAGES.`);
-  h.downloads.setDir('IMAGES', true); // made with the first picture
-  h.downloads.add(f.name);
-  if (!f.board) updateAccount((a) => recordDownload(a, bytes.length, true)); // the SysOp's snapshots: FREE (The Sofa keeps no ratio)
   t.line(`|07After you log off, type |15VPIC \\IMAGES\\${f.name}|07 to look at it again.`);
   t.line();
 }
