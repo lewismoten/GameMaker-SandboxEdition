@@ -191,6 +191,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `widgets/blockChooser.ts` shows supplied picture labels in its grid and button captions,
   with wrapping/clamping for long names and full accessible labels. Numbered choices remain
   compact when no designer label was supplied.
+  Picture buttons explicitly use the non-submitting button type, so opening their chooser
+  inside a terrain or other staged form never saves that form as a side effect.
   The assembled group view and its replacement chooser use labels from that group's
   native block set, keeping duplicate picture references and file-specific names distinct.
   Character frame tooltips and top/bottom picture selectors read labels from the selected

@@ -60,7 +60,7 @@ export function blockButton(
   set: (n: number) => void,
   opts: { title?: string; extras?: BlockExtra[]; transparent?: boolean; only?: (b: Block, i: number) => boolean; name?: (index: number) => string } = {},
 ): HTMLButtonElement {
-  const btn = h('button', { class: 'block-button', title: opts.title ?? 'Choose a block' });
+  const btn = h('button', { type: 'button', class: 'block-button', title: opts.title ?? 'Choose a block' });
   const render = () => {
     const n = get();
     const extra = opts.extras?.find((x) => x.value === n);
