@@ -1,6 +1,6 @@
 # Package releases
 
-The browser engine, development tools, and archive utilities have separate tagged release workflows. Both publish to GitHub Packages from this repository using the automatic `GITHUB_TOKEN` with `packages: write`.
+The browser engine, development tools, and archive utilities have separate tagged release workflows. All publish to GitHub Packages from this repository using the automatic `GITHUB_TOKEN` with `packages: write`.
 
 | Package | Workflow | Tag prefix |
 | --- | --- | --- |
