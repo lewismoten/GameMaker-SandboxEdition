@@ -245,3 +245,21 @@ dialog.modal:has(.pal-zero) {
   height: 12px;
   border: 1px solid var(--border);
 }
+
+/* Reservations stay visible alongside the existing selection outline. */
+.pal-swatches [data-reservation='character'] {
+  box-shadow: inset 0 0 0 2px #388cfc;
+}
+.pal-swatches [data-reservation='background'] {
+  box-shadow: inset 0 0 0 2px #bf7900;
+}
+.pal-swatches [data-reservation='monster'] {
+  box-shadow: inset 0 0 0 2px #ce40c6;
+}
+.pal-swatches [data-reservation='menu'],
+.pal-swatches [data-reservation='transparent'] {
+  box-shadow: inset 0 0 0 2px #808080;
+}
+.pal-reservations p {
+  margin: 8px 0;
+}

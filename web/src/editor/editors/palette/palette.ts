@@ -11,6 +11,8 @@ import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/g
 import { spread as spreadRange } from './ramps';
 import { paletteTools } from './paletteTools';
 import { fitToPane } from '../../core/fitPane';
+import { PALETTE_RESERVATIONS, paletteReservations, reservationAt, type PaletteReservation } from './paletteReservations';
+import { paletteReservationFields, ROLE_LABELS } from './paletteReservationFields';
 import './palette.css';
 
 registerEditor(['pal'], (host, project, file) => {
@@ -21,7 +23,8 @@ registerEditor(['pal'], (host, project, file) => {
   let selected = urlColor !== undefined && urlColor >= 0 && urlColor <= 255 ? urlColor : 1;
   let rangeEnd: number | undefined;
   const save = () => project.files.set(file, serializePalette(pal));
-  const history = new History<Uint8Array>();
+  const history = new History<{ pal: Uint8Array; roles: PaletteReservation[] }>();
+  const snapshot = () => ({ pal: pal.slice(), roles: paletteReservations(project) });
   // icons, so the tools stay one row in a short window
   const undoBtn = h(
     'button',
@@ -37,19 +40,22 @@ registerEditor(['pal'], (host, project, file) => {
   /** Call before a change; a slider drag (changes less than a second apart) is one step. */
   const remember = (coalesce = false) => {
     const now = Date.now();
-    if (!coalesce || now - lastRecord > 1000) history.record(pal.slice());
+    if (!coalesce || now - lastRecord > 1000) history.record(snapshot());
     lastRecord = now;
     undoBtn.disabled = !history.canUndo;
     redoBtn.disabled = !history.canRedo;
   };
   function step(back: boolean): void {
-    const to = back ? history.undo(pal.slice()) : history.redo(pal.slice());
+    const to = back ? history.undo(snapshot()) : history.redo(snapshot());
     if (!to) return;
-    pal.set(to);
+    const nativeChanged = pal.some((value, i) => value !== to.pal[i]);
+    pal.set(to.pal);
+    if (JSON.stringify(paletteReservations(project)) !== JSON.stringify(to.roles))
+      project.setExtras(project.gam, PALETTE_RESERVATIONS, to.roles.length ? to.roles : undefined);
     lastRecord = 0;
     undoBtn.disabled = !history.canUndo;
     redoBtn.disabled = !history.canRedo;
-    save();
+    if (nativeChanged) save();
     refresh();
   }
 
@@ -147,10 +153,17 @@ registerEditor(['pal'], (host, project, file) => {
   }
 
   function refresh(): void {
+    const roles = paletteReservations(project);
     buttons.forEach((b, i) => {
       b.style.background = paletteCss(pal, i);
       const inRange = rangeEnd !== undefined && i >= Math.min(selected, rangeEnd) && i <= Math.max(selected, rangeEnd);
       b.classList.toggle('selected', i === selected || inRange);
+      const role = reservationAt(roles, i);
+      if (role) b.dataset.reservation = role;
+      else delete b.dataset.reservation;
+      const name = `Color ${i}${role ? `: reserved for ${ROLE_LABELS[role].toLowerCase()}` : ''}`;
+      b.setAttribute('aria-label', name);
+      b.title = name;
     });
     preview.style.background = paletteCss(pal, selected);
     refreshSave?.();
@@ -178,6 +191,7 @@ registerEditor(['pal'], (host, project, file) => {
       s.num.value = String(pal[selected * 3 + c]);
     });
     tools.refresh();
+    reservations.refresh();
     // the check only while it is shown (opening its tab catches up)
     if (!visionPane.hidden) vision?.refresh();
   }
@@ -205,6 +219,12 @@ registerEditor(['pal'], (host, project, file) => {
   });
 
   const gifs = project.files.byExtension('gif').filter((g) => isGif(project.files.get(g)!));
+  const reservations = paletteReservationFields(
+    project,
+    () => [Math.min(selected, rangeEnd ?? selected), Math.max(selected, rangeEnd ?? selected)],
+    () => remember(),
+    refresh,
+  );
   let gifChoice = gifs[0] ?? '';
   const editPane = h(
     'div',
@@ -291,6 +311,7 @@ registerEditor(['pal'], (host, project, file) => {
       'Reset to default colors',
     ),
     tools.uses,
+    reservations.el,
   );
   // the column's second tab, the color vision check, loads the first time it is opened
   let vision: { el: HTMLElement; refresh: () => void; dispose: () => void } | undefined;
