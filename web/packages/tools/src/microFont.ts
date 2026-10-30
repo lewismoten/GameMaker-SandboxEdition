@@ -1,4 +1,6 @@
-// The project’s original 3×5 sign font: row-major bits, uppercase ASCII and punctuation.
+// 3×5 sign font by Lewis Moten using Anthropic Claude Opus 5.5, project MIT License.
+// From games/teddy/src/art/draw.ts (introduced in 7241036f49cab9dea52f58541e30ce6c9ce86052).
+// Extracted by OpenAI Codex; see ../NOTICE.md. Row-major bits, uppercase ASCII and punctuation.
 export const MICRO_GLYPHS: Readonly<Record<string, string>> = Object.freeze({
   A: '010101111101101',
   B: '110101110101110',

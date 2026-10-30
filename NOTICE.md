@@ -458,9 +458,19 @@ formats from their published descriptions and from Game-Maker's own source.
   AdLib's BRASS1 settings; they are kept as RSD released them.
 - **8×8 text font**: Daniel Hepper's `font8x8_basic`, plus accented letters and symbols
   from his `font8x8_ext_latin` and `font8x8_misc` and Greek letters from his `font8x8_greek`
-  (`web/src/gfx/cp437Glyphs.ts`), all in the public domain, derived from the IBM PC BIOS
-  font. The other code page 437 glyphs (card suits, notes, arrows, math signs) were drawn for
-  this project.
+  (`web/src/gfx/cp437Glyphs.ts`), all in the public domain. The
+  [upstream font8x8 headers](https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h)
+  also credit Marcel Sondaar and International Business Machines (public domain VGA fonts)
+  as their basis. The other code page 437 glyphs (card suits, notes, arrows, math signs)
+  were drawn for this project using Claude Opus 5.5 under Lewis Moten's direction and are
+  distributed under this project's MIT License.
+- **3×5 micro font** (`games/teddy/src/art/draw.ts`, extracted into
+  `web/packages/tools/src/microFont.ts`): the small sign font introduced by Lewis Moten
+  using Anthropic Claude Opus 5.5 in
+  [commit 7241036f49cab9dea52f58541e30ce6c9ce86052](https://github.com/lewismoten/GameMaker-SandboxEdition/commit/7241036f49cab9dea52f58541e30ce6c9ce86052).
+  It is distributed under this project's MIT License. OpenAI Codex (GPT-6/6.1) extracted
+  its bitmap table and added the toolkit's reusable rendering APIs. This font has its own
+  project provenance, separate from Daniel Hepper's public-domain 8×8 fonts.
 - **Caveat** (the handwriting in the Owner's Guide's registration record,
   `web/src/manual/regRecord.ts`), a font by Impallari Type ("Copyright 2014 The Caveat
   Project Authors"), under the SIL Open Font License 1.1. Its 600 weight, cut to Latin-1
