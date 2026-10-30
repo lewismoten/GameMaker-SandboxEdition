@@ -18,6 +18,7 @@ import { unlockAchievement } from '../../../achievements';
 import { VIEWS, simulate, type View } from './colorVision';
 import { analyze, fixFor, warnings, whereTouch, type Analysis, type Warning } from './visionWarnings';
 import { dismissKey, dismissed, setDismissed, splitDismissed } from './visionDismissed';
+import { includesColors, visiblePicture, visionFallback } from './visionFallback';
 
 export interface VisionContext {
   project: Project;
@@ -64,8 +65,7 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
   const { project, file, pal } = c;
   const game = project.game();
   const all = scenesOf(game, project.files);
-  const mine = all.filter((d) => normalize(d.names.pal ?? '') === file);
-  const scenes = mine.length ? mine : all;
+  const scenes = all.filter((d) => normalize(d.names.pal ?? '') === normalize(file));
   // levels that share a map, blocks and monsters are one check
   const same = (d: SceneData) => [d.names.map, d.names.bbl, d.names.mon, d.names.mbl].join('|');
   const unique = [...new Map(scenes.map((d) => [same(d), d])).values()];
@@ -125,9 +125,7 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
   const items = h('ul', { class: 'pal-warns' });
   const gone = h('div', { class: 'pal-dismissed' });
   const done = h('p', { class: 'meta pal-vision-done', hidden: true });
-  const shot = scene
-    ? h('figure', { class: 'pal-vision-fig' }, canvas, caption)
-    : h('p', { class: 'meta' }, 'No level uses this palette, so only its ramps are checked.');
+  const shot = h('figure', { class: 'pal-vision-fig' }, canvas, caption);
 
   const el = h(
     'div',
@@ -156,10 +154,12 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
   const current = () => (scene ? analysisOf(scene) : noLevel);
 
   function draw(): void {
-    if (!scene) return;
-    const px = mapPixels(scene, center);
-    const W = COLS * BLEN;
-    const H = ROWS * BLEN;
+    const map = scene && mapPixels(scene, center);
+    const picture =
+      map && visiblePicture(map, pal) && includesColors(map, marked)
+        ? { pixels: map, width: COLS * BLEN, height: ROWS * BLEN, label: scene.name }
+        : visionFallback(project, file, pal, marked);
+    const { pixels: px, width: W, height: H } = picture;
     if (canvas.width !== W) canvas.width = W;
     if (canvas.height !== H) canvas.height = H;
     const ctx = canvas.getContext('2d')!;
@@ -180,8 +180,8 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
     ctx.putImageData(img, 0, 0);
     const v = VIEWS.find((x) => x.id === view)!;
     const where = marked ? ` Showing colors ${marked.join(', ')}; the rest is washed out.` : '';
-    canvas.setAttribute('aria-label', `${scene.name} as seen ${view === 'normal' ? 'normally' : `with ${v.name.toLowerCase()}`}.${where}`);
-    caption.textContent = `${v.name}: ${v.about}.${where}`;
+    canvas.setAttribute('aria-label', `${picture.label} as seen ${view === 'normal' ? 'normally' : `with ${v.name.toLowerCase()}`}.${where}`);
+    caption.textContent = `${picture.label}. ${v.name}: ${v.about}.${where}`;
   }
 
   const swatch = (i: number) => h('span', { class: 'pal-chip', style: `background:${paletteCss(pal, i)}`, 'aria-hidden': 'true' });
@@ -207,7 +207,7 @@ export function visionPanel(c: VisionContext): { el: HTMLElement; refresh: () =>
       c.select(w.step[0]);
     }
     update();
-    (scene ? canvas : items).scrollIntoView({ block: 'nearest' });
+    canvas.scrollIntoView({ block: 'nearest' });
   }
 
   function apply(fix: { label: string; pal: Palette }): void {
