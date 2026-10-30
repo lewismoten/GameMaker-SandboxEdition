@@ -39,7 +39,7 @@ const TOOLS: [Mode, string, string, string, string][] = [
   ['rect', '▭', 'Rectangle', 'R', 'Drag out a rectangle of the chosen block'],
   ['fill', '▣', 'Fill', 'F', 'Fill the area of one block with the chosen block'],
   ['pick', '⌖', 'Pick', 'I', 'Click a block on the map to paint with it (eyedropper)'],
-  ['select', '⬚', 'Select', 'S', 'Drag over blocks to copy, cut, paste or save them as a stamp'],
+  ['select', '⬚', 'Select', 'S', 'Select a rectangle or polygon to fill, copy, cut, paste or save'],
   ['terrain', '⛰', 'Terrain', 'T', 'Paint grass, water or paths: edges and corners are chosen for you'],
   ['stamp', '★', 'Stamp', 'P', 'Place a saved stamp (a house, a tree…)'],
   ['building', '⌂', 'Building', 'H', 'Drag out a rectangle to build a house of that size from its parts'],
@@ -693,6 +693,12 @@ registerEditor(['map'], (host, project, file) => {
   };
   canvas.addEventListener('pointerup', endStroke);
   canvas.addEventListener('pointercancel', endStroke);
+  canvas.addEventListener('dblclick', (event) => {
+    if (tools.finishPolygon()) {
+      event.preventDefault();
+      revealTool('select');
+    }
+  });
   canvas.addEventListener('pointerleave', () => tools.leave());
 
   // the Level check's marks and links, told in words when the pointer rests on them; it never
@@ -1163,6 +1169,12 @@ registerEditor(['map'], (host, project, file) => {
     }
     if (e.altKey) return;
     if (e.key === 'Escape' && tools.cancel()) return e.preventDefault();
+    if (e.key === 'Enter' && tools.finishPolygon()) {
+      e.preventDefault();
+      revealTool('select');
+      return;
+    }
+    if (e.key === 'Backspace' && tools.removePolygonCorner()) return e.preventDefault();
     if ((e.key === 'Delete' || e.key === 'Backspace') && tools.selection && mode === 'select') {
       e.preventDefault();
       return tools.fillSelection();

@@ -16,6 +16,7 @@
 import './checkPanel.css';
 import { h, clear, checkField, numberField, selectField, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
+import type { MapSelection } from '../tools/selection';
 import type { OverlayState } from '../tools/overlay';
 import { HEAT_COLORS } from '../tools/overlay';
 import { startCheck, type RunningCheck } from '../../../check/client';
@@ -48,7 +49,7 @@ export interface CheckHost {
   /** A fix changed these files: read them again. */
   reload(files: string[]): void;
   /** The cells selected with the Select tool, if any. */
-  selection(): { x: number; y: number; w: number; h: number } | undefined;
+  selection(): MapSelection | undefined;
   /** Paints [cell, block] pairs as one step of the map's own Undo. */
   paint(cells: [number, number][]): void;
 }
@@ -341,6 +342,7 @@ export function checkPanel(host: CheckHost): {
           type: 'button',
           onclick: () => {
             const r = host.selection();
+            if (r?.cells) return toast('Choose a rectangular selection for the maze generator.', 'error');
             if (!r || r.w < 7 || r.h < 7) return toast('Select an area at least 7 blocks each way first.', 'error');
             const cells = mazeFor(project, file, r);
             if (!cells) return toast('This map needs a wall block and a floor block to build a maze from.', 'error');
