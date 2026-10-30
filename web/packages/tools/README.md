@@ -201,3 +201,11 @@ entries for the existing lighting, ramp, glyph-row, and rendered-text APIs.
 
 `kit/textfit` audits caller-supplied native files for menu, save-slot, score-table and
 text-page layout and contrast. The repository's game-selection CLI remains in `games/kit`.
+
+## Original Library palette
+
+`libraryDefaultPalette()` from `@lewismoten/gamemaker-sandbox-tools/palettes` returns
+an independent 768-byte copy of the CD Library's `DEFAULT.PAL`, with black at index
+zero. This is the original RSD palette, rather than the engine's generated fallback.
+It works in browsers and Node without fetching the CD or using repository files.
+See `NOTICE.md` for its source and license.

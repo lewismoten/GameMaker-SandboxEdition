@@ -59,3 +59,12 @@ John C. Hart, *Sphere Tracing: A Geometric Method for the Antialiased Ray Tracin
 Implicit Surfaces* ([paper](https://graphics.stanford.edu/courses/cs348b-20-spring-content/uploads/hart.pdf)),
 for distance-based sphere tracing. The implementations and project font data here use
 the project's MIT License.
+
+## Original CD Library palette
+
+`src/palettes.ts` embeds a byte-for-byte copy of `cd/gameware/library/default.pal`
+from the original RSD Game-Maker CD, by Recreational Software Designs (G. Andrew
+Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone). It is distributed under
+the original project's MIT License; this package retains that license in `LICENSE`.
+[Source palette](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/cd/gameware/library/default.pal).
+OpenAI Codex packaged this data and the fresh-copy API under Lewis Moten's direction.
