@@ -131,7 +131,10 @@ export class Tour {
   private ringGen = 0;
   /** Recording the tab, a video a chapter (Record the whole tour), when the visitor agreed to share it. */
   private recorder?: TourRecorder;
-  private barSize = new ResizeObserver(() => document.documentElement.style.setProperty('--tour-bar-h', `${this.bar.offsetHeight}px`));
+  private barSize = new ResizeObserver(() => {
+    document.documentElement.style.setProperty('--tour-bar-h', `${this.bar.offsetHeight}px`);
+    this.onResize();
+  });
 
   constructor(
     private chapters: Chapter[],
@@ -477,7 +480,8 @@ export class Tour {
     }
     if (step.demo) tourDemo(step.demo);
     if (!this.live(token)) return;
-    if (step.action === 'enter' && actor) void actor.hop(this.still);
+    if (step.action === 'enter' && actor) await actor.hop(this.still);
+    if (!this.live(token)) return;
     this.say(step, speaker, box);
   }
 
@@ -487,9 +491,11 @@ export class Tour {
     const v = this.view();
     const width = Math.min(320, v.w - 32);
     this.bubble.style.width = `${width}px`;
-    const size = { w: width, h: this.bubble.getBoundingClientRect().height };
+    // The pop-in animation scales its painted bounds; layout must use its full final height.
+    const size = { w: width, h: this.bubble.offsetHeight };
     const anchor = speaker ? { ...speaker.pos, ...speaker.size } : { x: v.w / 2, y: v.h / 2, w: 0, h: 0 };
-    const p = placeBubble(anchor, size, v, this.floor(), avoid);
+    const others = [...this.hosts.values()].filter((host) => host !== speaker).map((host) => ({ ...host.pos, ...host.size }));
+    const p = placeBubble(anchor, size, v, this.floor(), avoid, 8, others);
     this.bubble.dataset.side = p.side;
     this.bubble.style.left = `${Math.round(p.x)}px`;
     this.bubble.style.top = `${Math.round(p.y)}px`;
@@ -550,9 +556,32 @@ export class Tour {
   }
 
   private onResize = () => {
-    const { step } = this.flat[this.i] ?? {};
+    const current = this.flat[this.i];
+    if (!current) return;
+    const { step, chapter } = current;
     const t = step?.target && findTarget(step.target);
-    if (t && !this.ring.hidden) this.showRing(t, this.hosts.get(step.actor ?? this.flat[this.i].chapter.actor));
+    const actorId = step.actor ?? chapter.actor,
+      speakerId = step.speaker ?? chapter.speaker;
+    const actor = this.hosts.get(actorId),
+      speaker = this.hosts.get(speakerId);
+    if (!this.bubble.hidden) {
+      const view = this.view(),
+        floor = this.floor(),
+        box = t ? rectOf(t) : undefined;
+      for (const host of this.hosts.values())
+        host.place({
+          x: Math.max(0, Math.min(view.w - host.size.w, host.pos.x)),
+          y: Math.max(0, Math.min(view.h - floor - host.size.h, host.pos.y)),
+        });
+      const slot = (id: HostId) => (id === chapter.speaker ? 0 : 1);
+      if (speaker && speaker !== actor) speaker.place(this.homeSpot(speaker, box, slot(speakerId)));
+      if (actor) {
+        const at = step.action === 'enter' || step.action === 'say' || step.action === 'exit' || !box;
+        actor.place(at ? this.homeSpot(actor, box, slot(actorId)) : standBy(box, actor.size, view, floor, step.action === 'press'));
+      }
+      this.say(step, speaker, box);
+    }
+    if (t && !this.ring.hidden) this.showRing(t, actor);
   };
 
   /** Something from the game wanders through: a chicken across the floor, a hat dropped by the control. */

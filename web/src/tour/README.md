@@ -13,6 +13,8 @@ Bizarre's recordings (they are for non-commercial use, and the tour may be recor
 `place.ts` keeps speech clear of every on-stage host, before considering which control it
 might cover. It checks pockets beside host edges and viewport edges as well as the four
 preferred positions near the speaker, so another guide cannot hide behind the bubble.
+Entrance hops finish before speech is placed. Viewport and caption-bar resizing reposition
+the hosts and bubble together, using the current control and the space above the controls.
 
 ## Starting it
 
