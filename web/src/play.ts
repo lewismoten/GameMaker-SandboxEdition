@@ -44,7 +44,7 @@ function unlockOnFirstTouch(): void {
   addEventListener('keydown', go, true);
 }
 
-async function loadBundle(): Promise<{ id: string; title: string; gam: string; files: GameFiles } | undefined> {
+async function loadBundle(): Promise<{ id: string; title: string; gam: string; files: GameFiles; poster?: Promise<string | undefined> } | undefined> {
   const res = await fetch('./game/manifest.json').catch(() => undefined);
   // A dev server answers a missing file with index.html (status 200): only JSON is a bundle.
   if (!res?.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
@@ -56,16 +56,22 @@ async function loadBundle(): Promise<{ id: string; title: string; gam: string; f
       if (r.ok) files.set(name, new Uint8Array(await r.arrayBuffer()));
     }),
   );
-  return { id: `bundle:${m.id}`, title: m.title, gam: m.gam, files };
+  return { id: `bundle:${m.id}`, title: m.title, gam: m.gam, files, poster: posterFromFiles(files, m.gam) };
 }
 
-/** A shot of the game's first level, for the start screen (drawn while you read it). */
+/** A project's or bundle's title, loaded only when its play page needs the picture. */
+async function posterFromFiles(files: GameFiles, gam: string): Promise<string | undefined> {
+  const { titlePoster } = await import('./gfx/titlePoster');
+  return titlePoster(files, gam);
+}
+
+/** The game's title screen, drawn while the visitor reads its Play button. */
 async function posterOf(entry: CatalogEntry): Promise<string | undefined> {
-  const { renderShot } = await import('./gfx/gameShots');
+  const { renderTitle } = await import('./gfx/gameShots');
   const c = document.createElement('canvas');
   c.width = 320;
   c.height = 200;
-  return (await renderShot(entry, c, 16, 10)) ? c.toDataURL() : undefined;
+  return (await renderTitle(entry, c)) ? c.toDataURL() : undefined;
 }
 
 async function choose(): Promise<
@@ -95,6 +101,7 @@ async function choose(): Promise<
         title: p.record.name,
         gam: p.record.gam,
         files: p.files,
+        poster: posterFromFiles(p.files, p.record.gam).catch(() => undefined),
         back: './',
         player: companionPatches(p.record.companion, p.record.gam),
       };
