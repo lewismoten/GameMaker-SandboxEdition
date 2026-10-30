@@ -1,6 +1,44 @@
 // Generic color ramps and VGA palette lighting; game-specific ramp names stay with games.
 import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 export type RGB = readonly [number, number, number];
+/** Hue in degrees, saturation and value in 0..1. */
+export type HSV = readonly [number, number, number];
+
+/** Convert eight-bit RGB to hue, saturation and value without changing the input. */
+export function rgbToHsv(color: RGB): [number, number, number] {
+  rgb(color);
+  if (color.some((v) => v < 0 || v > 255)) throw new RangeError('RGB components must be 0..255');
+  const [r, g, b] = color.map((v) => v / 255);
+  const high = Math.max(r, g, b),
+    low = Math.min(r, g, b),
+    delta = high - low;
+  const sector = delta === 0 ? 0 : high === r ? (g - b) / delta : high === g ? (b - r) / delta + 2 : (r - g) / delta + 4;
+  return [(sector * 60 + 360) % 360, high === 0 ? 0 : delta / high, high];
+}
+
+/** Convert HSV to rounded eight-bit RGB; hue wraps around at 360 degrees. */
+export function hsvToRgb(color: HSV): [number, number, number] {
+  if (color.length !== 3 || color.some((v) => !Number.isFinite(v)) || color[1] < 0 || color[1] > 1 || color[2] < 0 || color[2] > 1)
+    throw new RangeError('HSV needs a finite hue and saturation/value in 0..1');
+  const [h, s, v] = color;
+  const sector = (((h % 360) + 360) % 360) / 60;
+  const chroma = v * s,
+    x = chroma * (1 - Math.abs((sector % 2) - 1)),
+    base = v - chroma;
+  const channels =
+    sector < 1
+      ? [chroma, x, 0]
+      : sector < 2
+        ? [x, chroma, 0]
+        : sector < 3
+          ? [0, chroma, x]
+          : sector < 4
+            ? [0, x, chroma]
+            : sector < 5
+              ? [x, 0, chroma]
+              : [chroma, 0, x];
+  return channels.map((c) => Math.round((c + base) * 255)) as [number, number, number];
+}
 export type TimeOfDay = 'morning' | 'noon' | 'afternoon' | 'sunset' | 'night' | 'show';
 export interface Lighting {
   readonly mul: RGB;
