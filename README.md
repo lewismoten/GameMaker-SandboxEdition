@@ -147,6 +147,7 @@ to GitHub Pages through [`.github/workflows/pages.yml`](.github/workflows/pages.
 Pull requests to `master` run validation without deploying; branch pushes do not publish the site.
 The `mac-dmg`, `win-exe` and
 `linux-tar` workflows build every game for each system and attach them to a GitHub release.
+Engine and development-tool releases are described in [Package releases](docs/package-releases.md).
 Every check job stops after 5 minutes; only the deployments and release builds may run longer.
 Checking every game takes far longer than that, so run `npm run check:games` (with the rebuild
 compare, about 20 minutes) yourself before committing a game.
