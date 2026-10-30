@@ -219,6 +219,33 @@ registerEditor(['pal'], (host, project, file) => {
     () => remember(),
     refresh,
   );
+  reservations.el.append(
+    h(
+      'button',
+      {
+        type: 'button',
+        onclick: async () => {
+          try {
+            const { paletteRoleCopy } = await import('./paletteRoleCopy');
+            if (disposed) return;
+            const result = await paletteRoleCopy(project, pal);
+            if (!result || disposed) return;
+            const colorsChanged = pal.some((value, i) => value !== result.pal[i]);
+            const rolesChanged = JSON.stringify(paletteReservations(project)) !== JSON.stringify(result.roles);
+            if (!colorsChanged && !rolesChanged) return;
+            remember();
+            pal.set(result.pal);
+            if (rolesChanged) project.setExtras(project.gam, PALETTE_RESERVATIONS, result.roles.length ? result.roles : undefined);
+            if (colorsChanged) save();
+            refresh();
+          } catch {
+            if (!disposed) toast('Could not read the saved games for copying reserved areas.', 'error');
+          }
+        },
+      },
+      'Copy reserved areas from game',
+    ),
+  );
   let gifChoice = gifs[0] ?? '';
   const editPane = h(
     'div',

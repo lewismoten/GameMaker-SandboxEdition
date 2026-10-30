@@ -231,6 +231,10 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `copyReservedRanges` merges selected areas from another game's companion, optionally
   copying their palette colors at the same indices. The receiving palette editor owns
   the single Undo step for both colors and metadata; other native files remain unchanged.
+  `paletteRoleCopy.ts`, opened from Reserved color ranges, lists other saved games with
+  reservations, lets you select roles and a source palette, and previews the ranges before
+  copying. Cancel leaves both projects untouched. Uncheck Also copy palette colors for
+  a companion-only layout transfer.
 
 Catalog DOS downloads save the same built game ZIP used for browser loading. Downloads of edited projects are still rebuilt from their current files.
 
