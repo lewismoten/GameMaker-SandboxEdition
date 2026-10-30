@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Cuts the digitized sound clips for "Mustard Seed Hustle" out of the recording, which is NOT
 # committed (.for-lewis/songs/mustard/Mustard Seed Hustle.mp3), into
-# games/mustard/src/sound/clips/<name>.pcm (games/kit/song/cutclips.py does the cutting; see it
+# games/mustard/src/sound/clips/<name>.wav (games/kit/song/cutclips.py does the cutting; see it
 # for the filters), which games/mustard/src/sound/clips.ts wraps as Creative Voice Files.
 #
 #   python3 -I games/mustard/tools/cutClips.py [path/to/song.mp3] [--out DIR]
