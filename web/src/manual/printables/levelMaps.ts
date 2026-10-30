@@ -20,7 +20,7 @@ import { el, SERIF } from './worldMapArt';
 import { fillerBlock, levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
 import { listedSecrets } from './levelSecrets';
 import { listedCourses, listedUnrolled, listedViews } from './levelViews';
-import { GUTTER, PANEL_GAP, PANEL_HEAD, coursePanelBox, coursePages, coursePanelUrls, courseSvg, placedSize } from './levelCourseSvg';
+import { GUTTER, PANEL_GAP, PANEL_HEAD, wholeCourseSize, wholeCourseSvg, coursePages, coursePanelUrls, courseSvg, placedSize } from './levelCourseSvg';
 import { listedRoomHints } from './levelRoomHints';
 import { mergeStates } from './levelStates';
 import { unrolledShows } from '../../editor/check/unroll';
@@ -592,8 +592,8 @@ async function printSheets(
 /** What a course's caption adds: how to read its strip (one that runs down the page reads from the top). */
 const courseNote = (c: { down: boolean }) =>
   c.down
-    ? ' · the way as you ride it, unrolled through the wrap: start at the top of 1 and go down'
-    : ' · the way as you fly it, unrolled through the wrap: start at the foot of 1 and go up';
+    ? ' · the way as you ride it, unrolled through the wrap: start at the top and go down'
+    : ' · the way as you fly it, unrolled through the wrap: start at the foot and go up';
 
 /** A course's printed pages: its panels side by side, in order, under its caption. */
 async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: CoursePainter, next: () => number): Promise<Sheet[]> {
@@ -742,18 +742,12 @@ function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
       )
     : null;
   const pad = 3;
-  /** A map's size in blocks as drawn on screen, and (a course) its panels side by side in one row. */
+  /** A map's size on screen, keeping a wrapped course connected in one coordinate system. */
   const sizeOf = (l: Level) => {
     if (l.course) {
       const c = l.course;
-      let across = 0;
-      const which = c.panels.map((_, k) => {
-        const p = { i: k, x: across, y: 0 };
-        across += coursePanelBox(c, k).w + 1.2;
-        return p;
-      });
-      const size = placedSize(c, which);
-      return { w: size.w + pad * 2, ht: size.h + pad * 2, which };
+      const size = wholeCourseSize(c);
+      return { w: size.w + pad * 2, ht: size.h + pad * 2 };
     }
     const room = labelRoom(game, l);
     return { w: levelWidth(l) + pad * 2, ht: Math.max(l.area.h + room.above + room.below, castHeight(l)) + pad * 2 + 1, room };
@@ -764,7 +758,7 @@ function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
       : `${sceneWord(l)} ${sceneList(game, l)} · ${l.name}${l.note ? ` · ${l.note}` : ''} · ${l.area.w} × ${l.area.h} blocks`;
   /** The map's drawing, or undefined once another is wanted. */
   const drawMap = async (l: Level, still: () => boolean): Promise<SVGElement | undefined> => {
-    const { w, ht, which, room } = sizeOf(l);
+    const { w, ht, room } = sizeOf(l);
     const svg = (label: string, ...art: SVGElement[]) =>
       el(
         'svg',
@@ -777,7 +771,7 @@ function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
       if (!still()) return undefined;
       return svg(
         `Map of scene ${sceneList(game, l)}, ${l.name}, as you ${l.course.down ? 'ride' : 'fly'} it`,
-        courseSvg(game, l, urls, which!, pad, pad, COLORS, (m) => markText(game, m)),
+        wholeCourseSvg(game, l, urls, pad, pad, COLORS, (m) => markText(game, m)),
       );
     }
     const url = await paint(l);

@@ -70,9 +70,6 @@ export function coursePages(c: Course, area: { w: number; h: number }): PlacedPa
   return pages.filter(Boolean);
 }
 
-/** A panel's box on paper, its labels and all, at the course's own size. */
-export const coursePanelBox = (c: Course, i: number): { w: number; h: number } => ({ w: panelWidth(c, i, c.scale), h: panelHeight(c, i, c.scale) });
-
 /** The size of a page's panels, as placed. */
 export function placedSize(c: Course, which: PlacedPanel[]): { w: number; h: number } {
   return {
@@ -110,6 +107,7 @@ function panelSvg(
   colors: Colors,
   label: (m: Level['marks'][number]) => string,
   id: string,
+  whole = false,
 ): SVGElement {
   const p = c.panels[i];
   const w = (p.c1 - p.c0) * s;
@@ -123,7 +121,7 @@ function panelSvg(
   g.append(
     el('defs', {}, el('clipPath', { id: clip }, el('rect', { x: ox, y: oy, width: w, height: ht }))),
     el('rect', { x: ox - 0.15, y: oy - 0.15, width: w + 0.3, height: ht + 0.3, fill: 'none', stroke: '#222', 'stroke-width': 0.3 }),
-    el('image', { href: url, x: ox, y: oy, width: w, height: ht, preserveAspectRatio: 'none', style: 'image-rendering:pixelated' }),
+    ...(url ? [el('image', { href: url, x: ox, y: oy, width: w, height: ht, preserveAspectRatio: 'none', style: 'image-rendering:pixelated' })] : []),
   );
   const over = el('g', { 'clip-path': `url(#${clip})` });
   g.append(over);
@@ -161,8 +159,8 @@ function panelSvg(
   c.shortcuts.forEach((sc, n) => {
     const name = String.fromCharCode(65 + n);
     for (const [q, words] of [
-      [sc.from, `shortcut ${name} ⇒ panel ${panelOf(c, sc.to.a) + 1}`],
-      [sc.to, `⇐ shortcut ${name} from panel ${panelOf(c, sc.from.a) + 1}`],
+      [sc.from, whole ? `shortcut ${name} ⇒` : `shortcut ${name} ⇒ panel ${panelOf(c, sc.to.a) + 1}`],
+      [sc.to, whole ? `⇐ shortcut ${name}` : `⇐ shortcut ${name} from panel ${panelOf(c, sc.from.a) + 1}`],
     ] as const) {
       if (!inside(q) || !mine(q)) continue;
       const x = X(q);
@@ -225,7 +223,9 @@ function panelSvg(
     ? [last ? 'the end of the way' : `▼ continues at the top of ${i + 2}`, i === 0 ? '▼ start here and ride down' : `▼ from the foot of ${i}`]
     : [last ? 'the end of the way' : `▲ continues at the foot of ${i + 2}`, i === 0 ? '▲ start here and fly up' : `▲ from the top of ${i}`];
   g.append(
-    el('text', { x: ox - GUTTER + 0.4, y: oy - 0.7, 'font-family': SERIF, 'font-size': 2, 'font-weight': 700, fill: '#2b241c' }, String(i + 1)),
+    ...(whole
+      ? []
+      : [el('text', { x: ox - GUTTER + 0.4, y: oy - 0.7, 'font-family': SERIF, 'font-size': 2, 'font-weight': 700, fill: '#2b241c' }, String(i + 1))]),
     text(ox + w / 2, c.down ? oy + ht + 1.6 : oy - 0.7, 1.1, ahead, { 'text-anchor': 'middle', 'font-style': 'italic' }),
     text(ox + w / 2, c.down ? oy - 0.7 : oy + ht + 1.6, 1.1, behind, { 'text-anchor': 'middle', 'font-style': 'italic' }),
   );
@@ -252,4 +252,43 @@ export function courseSvg(
   const id = `lmc${++clips}`;
   for (const p of which) g.append(panelSvg(game, c, p.i, urls[p.i], x + p.x + GUTTER, y + p.y + PANEL_HEAD, c.scale, colors, label, id));
   return g;
+}
+
+/** One continuous map, assembled from bounded raster pieces at their shared course coordinates.
+ * Artwork stays below one set of annotations, including at the old page cuts. */
+export function wholeCourseSvg(
+  game: Game,
+  l: Level,
+  urls: string[],
+  x: number,
+  y: number,
+  colors: Colors,
+  label: (m: Level['marks'][number]) => string,
+): SVGElement {
+  const c = l.course!;
+  const s = c.scale;
+  const ox = x + GUTTER;
+  const oy = y + PANEL_HEAD;
+  const g = el('g', { class: 'lm-course lm-course-whole' });
+  for (const [i, p] of c.panels.entries()) {
+    if (!urls[i]) continue;
+    g.append(
+      el('image', {
+        href: urls[i],
+        x: ox + (p.c0 - c.box.c0) * s,
+        y: oy + (c.box.a1 - p.a1) * s,
+        width: (p.c1 - p.c0) * s,
+        height: (p.a1 - p.a0) * s,
+        preserveAspectRatio: 'none',
+        style: 'image-rendering:pixelated',
+      }),
+    );
+  }
+  g.append(panelSvg(game, { ...c, panels: [c.box] }, 0, '', ox, oy, s, colors, label, `lmc${++clips}`, true));
+  return g;
+}
+
+/** Continuous picture and its outer label gutters, in paper units. */
+export function wholeCourseSize(c: Course): { w: number; h: number } {
+  return { w: (c.box.c1 - c.box.c0) * c.scale + 2 * GUTTER, h: (c.box.a1 - c.box.a0) * c.scale + 2 * PANEL_HEAD };
 }

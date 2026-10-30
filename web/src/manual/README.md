@@ -61,7 +61,9 @@ their contents rows buttons that turn to the page; `gen.ts` makes what every San
   `web/scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
   through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round; a
   course through the wrap, `editor/check/course.ts`, prints as the strip the way runs, turned
-  to run up the page in stitched panels, `levelCourse.ts` and `levelCourseSvg.ts`, and a map
+  to run up the page in printed panels, `levelCourse.ts` and `levelCourseSvg.ts`. On screen,
+  `wholeCourseSvg` assembles those bounded raster pieces into one continuous map, with a single
+  annotation layer and no column breaks; it never allocates a course-sized canvas. A map
   printable's panel can draw it as a poster, `levelCoursePoster.ts`),
   both looked round with `panZoom.ts`. A map of separate rooms prints each room apart
   (`levelRooms.ts`; `levelRoomHints.ts` names rooms, draws copies once and adds a cast panel),
