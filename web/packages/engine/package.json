@@ -1,6 +1,6 @@
 {
   "name": "@lewismoten/gamemaker-sandbox-engine",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Browser engine for RSD Game-Maker games in their original DOS file formats",
   "repository": {
     "type": "git",
