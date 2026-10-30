@@ -1,7 +1,7 @@
 // games/kit/fliClips.ts: a long FLI cut into clips plays the same frames, in the same
 // colors, as the whole one did when the clips play one after another as a slide list does.
 import { describe, expect, it } from 'vitest';
-import { clipEntries, clipLists, fliClips, fliSeconds } from '../../../games/kit/fliClips';
+import { clipEntries, clipLists, fliClips, fliSeconds } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { fliFaults } from '@lewismoten/gamemaker-sandbox-engine/formats/fliLimits';
 import { parseSlideList, serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';

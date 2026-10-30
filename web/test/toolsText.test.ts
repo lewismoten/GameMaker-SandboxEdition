@@ -3,7 +3,8 @@ import { expect, it } from 'vitest';
 import { microGlyphs } from '@lewismoten/gamemaker-sandbox-tools/microFont';
 import { Pixels, createPcText, createMicroText, microAdvance, microWidth } from '@lewismoten/gamemaker-sandbox-tools/drawing';
 it('retains exact font coverage and spacing when adapting older lettering', () => {
-  expect(microAdvance('',2)).toBe(-2); expect(microWidth('',2)).toBe(0);
+  expect(microAdvance('', 2)).toBe(-2);
+  expect(microWidth('', 2)).toBe(0);
   const glyphs = microGlyphs(' A?');
   expect(glyphs['¢']).toBeUndefined();
   const space = createMicroText({ glyphs, fallback: ' ' });

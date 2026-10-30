@@ -2,7 +2,8 @@
 // palette entries.
 import { describe, expect, it } from 'vitest';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { freeColors, loadScan, medianCut, pastePhoto, resample, sepia } from '../../games/kit/photo';
+import { freeColors, medianCut, pastePhoto, resample, sepia } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../games/kit/photo';
 
 describe('games/kit/photo', () => {
   it('loads every scan the games use', () => {
