@@ -22,6 +22,7 @@ export function groupView(o: {
   pal: () => Palette;
   transparent: boolean;
   onPick: (block: number) => void;
+  name?: (block: number) => string;
   /** Choose a block for the empty cell at this index. */
   onFill?: (cell: number) => void;
   /** Choose another block for the current block's cell. */
@@ -59,6 +60,7 @@ export function groupView(o: {
             : h('span', { class: 'group-view-empty', title: `Empty (${where})` });
         const px = o.blocks()[b]?.pixels;
         const isCurrent = b === current;
+        const name = o.name?.(b) ?? `Block ${b}`;
         const cell = h(
           'button',
           {
@@ -67,10 +69,10 @@ export function groupView(o: {
             'aria-current': isCurrent ? 'true' : undefined,
             title: isCurrent
               ? o.onReplace
-                ? `Block ${b}: editing it (${where}). Click to put a different block here`
-                : `Block ${b}: editing it (${where})`
-              : `Edit block ${b} (${where})`,
-            'aria-label': isCurrent && o.onReplace ? `Block ${b}, ${where}: choose a different block for this spot` : `Block ${b}, ${where}`,
+                ? `${name}: editing it (${where}). Click to put a different block here`
+                : `${name}: editing it (${where})`
+              : `Edit ${name} (${where})`,
+            'aria-label': isCurrent && o.onReplace ? `${name}, ${where}: choose a different block for this spot` : `${name}, ${where}`,
             onclick: () => (isCurrent ? o.onReplace?.(i) : o.onPick(b)),
           },
           px ? blockCanvas(px, o.pal(), { transparent: o.transparent, className: o.transparent ? 'checker' : '' }) : null,

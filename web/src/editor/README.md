@@ -191,6 +191,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `widgets/blockChooser.ts` shows supplied picture labels in its grid and button captions,
   with wrapping/clamping for long names and full accessible labels. Numbered choices remain
   compact when no designer label was supplied.
+  The assembled group view and its replacement chooser use labels from that group's
+  native block set, keeping duplicate picture references and file-specific names distinct.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its

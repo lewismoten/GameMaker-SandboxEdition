@@ -17,6 +17,7 @@ import { groupClipFor, suggestionsFor } from './blockClips';
 import { isStill } from './animClip';
 import { newGroupDialog, suggestDialog } from './groupDialogs';
 import { chooseBlock } from '../../widgets/blockChooser';
+import { blockLabel } from './blockNames';
 
 interface GroupsPanel {
   el: HTMLElement;
@@ -52,7 +53,9 @@ export function groupsPanel(o: {
     const g = shown;
     if (!g) return;
     const was = g.cells[i];
-    const b = await chooseBlock(`A block for “${g.name}”, ${spot(g, i)}`, o.blocks, o.pal(), was, [], o.sprites);
+    const b = await chooseBlock(`A block for “${g.name}”, ${spot(g, i)}`, o.blocks, o.pal(), was, [], o.sprites, undefined, (index) =>
+      blockLabel(o.project, o.file, index),
+    );
     if (b === undefined || b === was) return;
     g.cells[i] = b;
     save();
@@ -65,6 +68,7 @@ export function groupsPanel(o: {
     pal: o.pal,
     transparent: o.sprites,
     onPick: (b) => o.select(b),
+    name: (index) => blockLabel(o.project, o.file, index),
     onFill: (i) => void chooseFor(i),
     onReplace: (i) => void chooseFor(i),
     onRemove: (i) => void removeAt(i),
