@@ -4,6 +4,7 @@ import { Project, type FileKind } from './project';
 import { selectLibraryItems, type LibraryItem, type LibrarySource } from './libraryCatalog';
 export type { LibraryItem, LibrarySource } from './libraryCatalog';
 import type { ThumbSource } from '../widgets/thumbs';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 let catalog: Promise<CatalogEntry[]> | undefined;
 const games = new Map<string, Promise<GameFiles>>();
@@ -38,5 +39,6 @@ export async function libraryFile(item: LibraryItem): Promise<Uint8Array> {
 export async function libraryThumbSource(item: LibraryItem): Promise<ThumbSource> {
   const files = await libraryGame(item.game);
   const p = Project.fromFiles(files, item.game.title, `lib-${item.game.id}`);
-  return { files, palette: p.paletteFor(item.name).palette };
+  const libraryDefault = item.game.id === 'library' ? files.get('default.pal') : undefined;
+  return { files, palette: libraryDefault ? parsePalette(libraryDefault) : p.paletteFor(item.name).palette };
 }

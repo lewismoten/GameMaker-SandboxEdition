@@ -9,7 +9,7 @@ import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks, type Block } fro
 import { parsePalette, defaultPalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
-import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { characterPicture } from './characterPicture';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
@@ -156,11 +156,11 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         return first ? sprite(blocks[first.pic[0][0]], undefined, pal) : iconFor(kind);
       }
       case 'chr': {
-        const chr = parseCharacter(bytes);
-        const cbl = src.files.byExtension('cbl')[0];
-        const blocks = cbl ? parseBlocks(src.files.get(cbl)!, CHARBL) : [];
-        const f = chr.sequences[0]?.frames[0];
-        return f && blocks[f.pic1] ? sprite(blocks[f.pic1], blocks[f.pic2], pal) : iconFor(kind);
+        const picture = characterPicture(src.files, name, bytes);
+        if (!picture) return iconFor(kind);
+        const [c] = canvas();
+        paintIndexed(c, picture.pixels, picture.width, picture.height, pal, true);
+        return c;
       }
       case 'gif': {
         if (!isGif(bytes)) return iconFor(kind);
