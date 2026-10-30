@@ -22,13 +22,21 @@ import assert from 'node:assert/strict';
 import { emptyBlock, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-tools/formats/blocks';
 import { emptyFrame, newCharacter } from '@lewismoten/gamemaker-sandbox-tools/formats/character';
 import { newMap } from '@lewismoten/gamemaker-sandbox-tools/formats/map';
-import { Pixels, text, PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/drawing';
+import { Pixels, text, PaletteBuilder, FONT_CP437, glyphRows, encodeText, renderText, colorRamp, adjustPalette, lightColor } from '@lewismoten/gamemaker-sandbox-tools/drawing';
 import { sample, osc, tune, v, INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/audio';
 import { decodeVoc } from '@lewismoten/gamemaker-sandbox-tools/formats/voc';
 import { encodePng, crc32 } from '@lewismoten/gamemaker-sandbox-tools/images';
 import { Sim, GameSim } from '@lewismoten/gamemaker-sandbox-tools/simulation';
 const picture = new Pixels(20,20,1); text(picture,0,0,'HI',2);
 assert.ok(picture.px.includes(2)); assert.equal(new PaletteBuilder().color(255,0,0),0);
+assert.equal(FONT_CP437.length,2048); assert.equal(glyphRows(219)[0],255);
+assert.deepEqual(encodeText('é♥'),Uint8Array.of(130,3));
+const caption=renderText('╔═╗',{color:4,outline:0,shadow:{color:8}});
+assert.equal(caption.width,26); assert.ok(caption.pixels.includes(4));
+assert.equal(renderText('GO!',{font:'micro'}).width,11);
+assert.deepEqual(lightColor([100,100,100],'night'),[54,58,108]);
+assert.equal(colorRamp(3,[0,0,0],[255,255,255])[1][0],128);
+assert.deepEqual(adjustPalette(new Uint8Array(768),'noon'),new Uint8Array(768));
 const blocks=Array.from({length:150},(_,i)=>emptyBlock(i)); blocks[0].pixels.set(picture.px);
 assert.deepEqual(parseBlocks(serializeBlocks(blocks),150)[0].pixels,picture.px);
 const png=await encodePng({width:20,height:20,pixels:picture.px,palette:new Uint8Array(768)});
@@ -46,7 +54,7 @@ sim.press(77);await sim.run(4);assert.ok(sim.pos.x>160);assert.equal(typeof Game
   execFileSync(process.execPath, ['smoke.mjs'], { cwd: consumer, stdio: 'inherit' });
   writeFileSync(
     resolve(consumer, 'consumer.ts'),
-    `import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/drawing';\nimport { Sim } from '@lewismoten/gamemaker-sandbox-tools/simulation';\nexport const p: Pixels = new Pixels(20,20);\nexport type Scene = ConstructorParameters<typeof Sim>[0];\n`,
+    `import { Pixels, renderText, TIME_OF_DAY_SKY, PaletteBuilder, type TextImage } from '@lewismoten/gamemaker-sandbox-tools/drawing';\nimport { Sim } from '@lewismoten/gamemaker-sandbox-tools/simulation';\nexport const p: Pixels = new Pixels(20,20);\nexport const label: TextImage = renderText('Hi', {font:'micro',outline:0});\nnew PaletteBuilder().ramp('sky',8,...TIME_OF_DAY_SKY.sunset);\nexport type Scene = ConstructorParameters<typeof Sim>[0];\n`,
   );
   execFileSync(
     process.execPath,

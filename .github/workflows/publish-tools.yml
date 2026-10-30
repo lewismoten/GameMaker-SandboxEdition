@@ -48,7 +48,7 @@ jobs:
           npm run format:check
           npm run lint
           npx tsc --noEmit -p .
-          npx vitest run src/formats src/engine src/audio src/gfx src/project/zip.test.ts
+          npx vitest run src/formats src/engine src/audio src/gfx src/project/zip.test.ts test/toolsDrawing.test.ts
       - name: Verify packed package
         working-directory: web/packages/tools
         run: npm run verify
