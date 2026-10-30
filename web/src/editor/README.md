@@ -218,6 +218,10 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   It uses the tools package's RGB/HSV helpers and rounds the result to VGA's six-bit channels.
   `paletteCopy.ts` copies inclusive ranges from another project palette (or within the same
   palette), validates destination bounds, and returns one staged, undoable change.
+- **Palette roles.** `editors/palette/paletteReservations.ts` keeps character, background
+  and monster ranges under the game's `paletteReservations` companion section, shared by
+  all project palettes. Reassignment splits and merges ranges; color 0 (menus) and 255
+  (sprite transparency) retain their fixed roles. No reservation data enters DOS files.
 
 Catalog DOS downloads save the same built game ZIP used for browser loading. Downloads of edited projects are still rebuilt from their current files.
 
