@@ -30,6 +30,7 @@ import {
 export interface FrameContext {
   /** The character's block set (.cbl), as it is now. */
   blocks(): Block[];
+  blockLabel?: (index: number) => string;
   palette(): Palette;
   /** Makes a change as one undo step, and saves. */
   edit(fn: () => void): void;
@@ -88,7 +89,7 @@ function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
     cell.classList.toggle('none', n >= CHARBL);
     cell.title =
       n < CHARBL
-        ? `${top ? 'Top' : 'Bottom'}: block ${n}, ${ORIENT_NAMES[normalOrient(orient())].toLowerCase()} — click to change`
+        ? `${top ? 'Top' : 'Bottom'}: ${ctx.blockLabel?.(n) ?? `block ${n}`}, ${ORIENT_NAMES[normalOrient(orient())].toLowerCase()} — click to change`
         : `No ${top ? 'top' : 'bottom'} block — click to choose one`;
     if (n < CHARBL) paintBlock(canvas, ctx.blocks()[n].pixels, ctx.palette(), { transparent: true, orient: normalOrient(orient()) });
     else canvas.getContext('2d')!.clearRect(0, 0, BLEN, BLEN);
@@ -112,7 +113,7 @@ function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
   const extras: BlockExtra[] = [{ value: CHARBL, label: 'none', icon: '∅' }];
   if (!top) extras.push({ value: MONBL, label: 'Fire a monster', icon: '🔥' });
   cell.addEventListener('click', async () => {
-    const n = await chooseBlock(`${top ? 'Top' : 'Bottom'} block`, ctx.blocks(), ctx.palette(), get(), extras, true);
+    const n = await chooseBlock(`${top ? 'Top' : 'Bottom'} block`, ctx.blocks(), ctx.palette(), get(), extras, true, undefined, ctx.blockLabel);
     if (n === undefined) return;
     const wasFiring = firesMonster(f);
     ctx.edit(() => {

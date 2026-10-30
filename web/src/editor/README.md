@@ -193,6 +193,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   compact when no designer label was supplied.
   The assembled group view and its replacement chooser use labels from that group's
   native block set, keeping duplicate picture references and file-specific names distinct.
+  Character frame tooltips and top/bottom picture selectors read labels from the selected
+  CBL, while orientation bits, frame indices and the character's native bytes remain numeric.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its

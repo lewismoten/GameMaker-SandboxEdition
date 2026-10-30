@@ -34,6 +34,7 @@ import { viewState } from '../../../urlState';
 import { bottomOrient, firesMonster, insertFrame, normalOrient, topOrient, travel } from './characterLogic';
 import { blockLinks, mirrorPanel, seqLinks, type MirrorContext } from './characterMirrorPanel';
 import { frameCard, keyPicker, type FrameContext } from './characterFrames';
+import { blockLabel } from '../blocks/blockNames';
 import { stageBackdrop } from './characterStage';
 import { COUNTER_NAMES, counterName, readCounterNames, type CounterNames } from './counterNames';
 import { counterNameField } from './counterNameFields';
@@ -482,6 +483,7 @@ registerEditor(['chr'], (host, project, file) => {
   // ---------------------------------------------------------------- frames (characterFrames.ts)
   const frames: FrameContext = {
     blocks: () => cbl,
+    blockLabel: (index) => blockLabel(project, cblName, index),
     palette: pal,
     // an edit to a frame shows at once in the big figure (and on the stage while paused)
     edit: (fn) => {
