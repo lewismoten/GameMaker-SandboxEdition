@@ -9,6 +9,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { versionProblems, type VersionSource } from './versions';
+import { VersionDisks } from './versionDisks';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const root = join(gamesDir, '..');
@@ -39,17 +40,21 @@ if (!base) {
   process.exit(0);
 }
 
+const changed = new Map<string, boolean>();
+const disks = new VersionDisks(root, base);
+try {
+  for (const id of ids) changed.set(id, await disks.changed(id));
+} finally {
+  disks.dispose();
+}
+
 const src: VersionSource = {
   version: (id) => (JSON.parse(readFileSync(join(gamesDir, id, 'about.json'), 'utf8')) as { version?: string }).version,
   baseAbout: (id) => {
     const r = git('show', `${base}:games/${id}/about.json`);
     return r.ok ? (JSON.parse(r.out) as { version?: string }) : undefined;
   },
-  changed: (id) => {
-    const disk = `games/${id}/disk`;
-    const tracked = spawnSync('git', ['diff', '--quiet', base, '--', disk], { cwd: root }).status !== 0;
-    return tracked || !!git('ls-files', '--others', '--exclude-standard', '--', disk).out;
-  },
+  changed: (id) => changed.get(id) ?? false,
 };
 
 const problems = versionProblems(ids, src);
