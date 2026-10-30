@@ -177,6 +177,9 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   the sidebar edits. Strokes update native tile thumbnails live; Escape cancels a stroke
   without changing Undo/Redo. A group turn also turns its companion layout; maps retain
   their own tile placement.
+  `blockProperties.ts` owns the selected block's Walking, Touch, Time and monster behavior
+  panels separately from canvas painting, including scene-specific named counters and
+  monster-birth choices. Group tools do not spread those behavior fields across the group.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its
