@@ -97,3 +97,8 @@ Run `npx vite-node scripts/achievementArt.ts` after changing those source sprite
 rejects unknown achievement IDs, non-block dimensions and duplicate artwork. The browser
 loads these small embedded images without fetching game ZIPs. Art gaps and proposals
 are listed in `docs/achievement-art.md`.
+
+`libraryFacts.ts` supplies palette SHA-256 identities and VOC sound groups for catalog
+metadata, cached by source path, size and modification time. Pickers can deduplicate
+colors and show sound groups without downloading every source game to inspect it.
+Invalid assets retain no invented metadata.
