@@ -2,10 +2,10 @@
 import { FONT_CP437 } from '@lewismoten/gamemaker-sandbox-engine/gfx/cp437Glyphs';
 import { toCp437, fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { Pixels } from './kit/pixels';
-import { MICRO_GLYPHS } from './microFont';
+import { MICRO_GLYPHS, MICRO_SQUARE_GLYPHS } from './microFont';
 
-export { FONT_CP437, toCp437, fromCp437, MICRO_GLYPHS };
-export type TextFont = 'cp437' | 'micro';
+export { FONT_CP437, toCp437, fromCp437, MICRO_GLYPHS, MICRO_SQUARE_GLYPHS };
+export type TextFont = 'cp437' | 'micro' | 'micro-square';
 
 /** Encode Unicode DOS symbols, including box drawing. Unsupported characters throw. */
 export function encodeText(s: string): Uint8Array {
@@ -26,7 +26,9 @@ export function encodeText(s: string): Uint8Array {
 export function glyphRows(code: number, font: TextFont = 'cp437'): Uint8Array {
   if (!Number.isInteger(code) || code < 0 || code > 255) throw new RangeError('Glyph code must be 0..255');
   if (font === 'cp437') return FONT_CP437.slice(code * 8, code * 8 + 8);
-  const glyph = MICRO_GLYPHS[fromCp437(String.fromCharCode(code)).toUpperCase()] ?? MICRO_GLYPHS['?'];
+  const glyphs = font === 'micro-square' ? MICRO_SQUARE_GLYPHS : MICRO_GLYPHS;
+  const ch = fromCp437(String.fromCharCode(code));
+  const glyph = glyphs[ch] ?? glyphs[ch.toUpperCase()] ?? glyphs['?'];
   return Uint8Array.from({ length: 5 }, (_, y) => {
     let row = 0;
     for (let x = 0; x < 3; x++) if (glyph[y * 3 + x] === '1') row |= 1 << x;

@@ -68,6 +68,11 @@
       "browser": null,
       "gamemaker-source": "./src/audioFiles.ts",
       "import": "./dist/audio-files.js"
+    },
+    "./microFont": {
+      "types": "./dist/types/microFont.d.ts",
+      "gamemaker-source": "./src/microFont.ts",
+      "import": "./dist/microFont.js"
     }
   },
   "scripts": {

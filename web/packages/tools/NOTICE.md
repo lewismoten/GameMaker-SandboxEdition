@@ -32,3 +32,14 @@ The native mono 8-bit PCM WAV reader uses RIFF/WAVE chunk layout and PCM format 
 from [Microsoft's WAVEFORMATEX documentation](https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/ns-mmeapi-waveformatex).
 No Microsoft implementation code is included. The reader was implemented with OpenAI
 Codex under Lewis Moten's direction and is distributed under this project's MIT License.
+
+## Additional micro-font glyphs and variants
+
+The extended rounded repertoire and square technical-label variant are project-owned
+font data by Lewis Moten using Anthropic Claude Opus 5.5, under this project's MIT License.
+They consolidate the existing tables in the public games' art helpers (including the
+expanded punctuation in `games/brief/src/art/draw.ts` and `games/blaster/src/art/draw.ts`,
+and the cent sign in `games/year2000/src/art/font.ts`). The square face originated in
+[the original Ohm Sweet Ohm drawing helpers](https://github.com/lewismoten/GameMaker-SandboxEdition/commit/1a746bffa).
+OpenAI Codex consolidated the data and APIs under Lewis Moten's direction.
+These fonts are distinct from the separately credited public-domain CP437 glyphs above.

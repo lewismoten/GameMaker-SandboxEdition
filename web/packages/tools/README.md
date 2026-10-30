@@ -106,3 +106,13 @@ The converter disables dithering and uses the inverse of the native VOC encoder'
 mapping. Lossy sources such as Ogg Vorbis are supported for new audio, but cannot recreate
 a previous recording's exact samples. Source `.wav`/`.ogg`/`.flac` files are authoring assets; only
 8.3-named `.VOC` files belong on the generated DOS disk.
+
+### Extended micro fonts
+
+`microFont` exports `MICRO_GLYPHS`, `MICRO_SQUARE_GLYPHS`, and `microGlyphs(characters, square?)`.
+The shared repertoire includes the sign and technical-label additions such as `µ`, `¢`,
+`#`, `%`, `@`, `~`, quotes, underscore, and backslash. Both rounded and square letterforms
+are preserved. `renderText(text, {font: 'micro-square'})` selects the square style;
+`glyphRows(code, 'micro-square')` returns its five rows. `microGlyphs` can select an exact
+legacy repertoire when an existing game's unsupported-character behavior must stay the same.
+See NOTICE.md for the source and license of both project fonts.
