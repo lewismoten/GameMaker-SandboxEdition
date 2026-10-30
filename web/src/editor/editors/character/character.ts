@@ -171,18 +171,16 @@ registerEditor(['chr'], (host, project, file) => {
 
   // ---------------------------------------------------------------- the hero sheet
   const sheet = h('div', { class: 'chr-sheet' });
-  const status = h('div', { class: 'chr-f2-lines' });
-
+  const status = h('canvas', { class: 'pixel chr-status-preview', role: 'img', 'aria-label': 'Starting inventory on the DOS status screen' });
+  let drawStatusPreview: (() => void) | undefined;
+  let disposed = false;
+  void import('./characterStatus').then(({ drawCharacterStatus }) => {
+    if (disposed) return;
+    drawStatusPreview = () => drawCharacterStatus(status, project, chr, bbl, pal());
+    updateStatus();
+  });
   function updateStatus(): void {
-    const line = (k: string, v: string | number) => h('div', null, h('span', null, k.padEnd(11, ' ')), String(v));
-    clear(
-      status,
-      line('Score:', 0),
-      chr.meter[3] !== INF_REPEAT ? line('Money:', chr.meter[3] - 1) : null,
-      h('div', { class: 'gap' }),
-      line('Hitpoints:', chr.meter[0]),
-      line('Lives:', chr.meter[1]),
-    );
+    drawStatusPreview?.();
   }
 
   function renderSheet(): void {
@@ -223,7 +221,7 @@ registerEditor(['chr'], (host, project, file) => {
           () => bbl,
           pal,
           () => chr.inv[i],
-          (v) => edit(() => (chr.inv[i] = v)),
+          (v) => edit(() => ((chr.inv[i] = v), updateStatus())),
           {
             title: `Inventory slot ${i + 1}: an object the hero carries at the start`,
             extras: [{ value: BACKBL, label: 'empty', icon: '·' }],
@@ -299,8 +297,11 @@ registerEditor(['chr'], (host, project, file) => {
         'section',
         { class: 'chr-group chr-f2-card' },
         h('h2', null, h('span', { class: 'chr-icon' }, '▦'), 'Starting inventory'),
-        h('div', { class: 'chr-f2' }, inv, status),
-        help('What the hero carries at the start, laid out as the F2 status screen shows it. Only blocks marked "can be picked up" fit here.'),
+        inv,
+        h('figure', { class: 'chr-status-figure' }, h('figcaption', { class: 'meta' }, 'F2 status screen with your DOS player settings'), status),
+        help(
+          'Choose what the hero carries at the start. The preview below uses the game’s palette and DOS player settings. Only blocks marked "can be picked up" fit here.',
+        ),
       ),
     );
     updateStatus();
@@ -804,6 +805,7 @@ registerEditor(['chr'], (host, project, file) => {
   showTab(tab);
   render();
   return () => {
+    disposed = true;
     window.removeEventListener('keydown', onKey);
     clearTimeout(timer);
     audio.stopSpeaker();
