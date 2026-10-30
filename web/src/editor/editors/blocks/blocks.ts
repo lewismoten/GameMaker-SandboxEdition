@@ -775,6 +775,15 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     ),
     h('div', { class: 'blk' }, columns[0], columns[1], columns[2]),
   );
+  // Keep the running preview near the painter on phones, beside it on desktop.
+  const previewMedia = matchMedia('(max-width: 999px)');
+  const placePreview = () => {
+    if (!characterFrames) return;
+    if (previewMedia.matches) canvas.before(characterFrames.preview);
+    else columns[2].prepend(characterFrames.preview);
+  };
+  placePreview();
+  previewMedia.addEventListener('change', placePreview);
   fitToPane(...columns);
   renderPicker();
   renderSwatches();
@@ -803,5 +812,6 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     insight.dispose();
     groups.dispose();
     characterFrames?.dispose();
+    previewMedia.removeEventListener('change', placePreview);
   };
 });

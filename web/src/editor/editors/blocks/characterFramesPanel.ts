@@ -3,6 +3,7 @@ import { h, clear, selectField, numberField } from '../../core/ui';
 import type { Project } from '../../core/project';
 import { CHARBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { paletteCss, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { viewState } from '../../../urlState';
 import { animPlayer } from './animPlayer';
 import { stageBackdrop } from '../character/characterStage';
@@ -39,6 +40,8 @@ export function characterFramesPanel(o: {
   const prefs = o.project.extras<{ color?: unknown; background?: unknown } | null>(o.file, 'characterPainter', {});
   let color = typeof prefs?.color === 'number' && Number.isInteger(prefs.color) && prefs.color >= 0 && prefs.color <= 255 ? prefs.color : 0;
   let background = prefs?.background === 'map' ? 'map' : 'color';
+  const hasMaps = o.project.game().scenes.some((scene) => scene.gametype === ADVTYPE && o.project.files.has(scene.files[1]));
+  if (!hasMaps) background = 'color';
   const backdropSlot = h('div');
   let backdrop: ReturnType<typeof stageBackdrop> | undefined;
   let backdropFile = '';
@@ -126,9 +129,16 @@ export function characterFramesPanel(o: {
     },
     { min: 0, max: 255 },
   );
+  backgroundChoice.querySelector<HTMLOptionElement>('option[value="map"]')!.disabled = !hasMaps;
   function refreshBackground(): void {
     backgroundColor.hidden = background !== 'color';
     backdropSlot.hidden = background !== 'map';
+    // Map mode starts on actual scenery; palette mode already supplies a plain backdrop.
+    const select = backdropSlot.querySelector('select');
+    if (background === 'map' && select?.value === '-1' && select.options.length > 1) {
+      select.value = select.options[1].value;
+      select.dispatchEvent(new Event('change'));
+    }
   }
   function refresh(): void {
     const animation = animations[selected];
@@ -154,6 +164,8 @@ export function characterFramesPanel(o: {
     if (backdropFile !== animation.file) {
       backdropFile = animation.file;
       backdrop = stageBackdrop(o.project, animation.file, 120, 80, () => player.redraw());
+      const grid = backdrop.el.querySelector<HTMLOptionElement>('option[value="-1"]');
+      if (grid) grid.disabled = grid.hidden = true;
       clear(backdropSlot, backdrop.el);
     }
     player.show([animation.clip], record.frame.pic1 < CHARBL ? record.frame.pic1 : record.frame.pic2, record.tick);
