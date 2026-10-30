@@ -23,7 +23,7 @@ import { T, shadeAt } from '../art/draw';
 import { EXIT_COL, HORIZON, HORIZON_ROW, VX, WALL_ROW, CAR_ROW, LANE_COLS, halfWidth } from '../art/skyView';
 import { MILE, MILES, OPEN_AT, WAVES, type Lane } from '../levels/cloudWaves';
 import { CTR, EGG_BLOCK, SKYMON } from '../ids';
-import { spawnChains } from '../../../kit/road3d';
+import { spawnChains } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 
 const R = PAL.r;
 const W = 320;

@@ -12,7 +12,7 @@ import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/p
 import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { Disk } from '../kit/disk';
-import { clipLists } from '../kit/fliClips';
+import { clipLists } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildCarCharacter, buildCharacter } from './src/characters/character';
 import { demoRecording } from './src/demo';

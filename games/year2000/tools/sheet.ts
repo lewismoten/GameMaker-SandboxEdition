@@ -4,7 +4,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { BlockSet } from '../src/blocks/book';
 import { citySet, moonSet, suburbSet } from '../src/blocks/blocks';
 import { PAL } from '../src/art/pal';
-import { writePng } from '../../kit/png';
+import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 
 const out = process.env.OUT ?? '/tmp';
 

@@ -3,7 +3,7 @@
 // the bottom of the screen, widening as it comes; three lanes, the car's three places. The
 // blocks (sky.ts), the oncoming traffic (skySprites.ts) and its paths (skyMonsters.ts) all
 // measure from here, so the picture and the things moving over it line up.
-import { roadView } from '../../../kit/road3d';
+import { roadView } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 
 /** The horizon's height on the screen, in pixels (the top of block row 3). */
 export const HORIZON = 60;

@@ -12,7 +12,7 @@ import type { BlockSet } from '../blocks/book';
 import { SKYMON } from '../ids';
 import { DASH_SPAWN, SPAWN_COL } from '../blocks/sky';
 import { HORIZON_COLS, HORIZON_ROW } from '../art/skyView';
-import { growPics, laneSlide, leapTo, roadCorners, type RoadCorner } from '../../../kit/road3d';
+import { growPics, laneSlide, leapTo, roadCorners, type RoadCorner } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 
 const POWER = 95;
 /** The vanishing point's cell, where everything starts down its lane. */

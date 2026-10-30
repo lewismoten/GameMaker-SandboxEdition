@@ -6,8 +6,9 @@ import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pix
 import { blob, gradient, oval, shadeAt } from '../art/draw';
 import { micro, microWidth, outlined, text, textWidth } from '../art/font';
 import { C, PAL } from '../art/pal';
-import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
-import { saveSlots } from '../../../kit/saveSlots';
+import { pastePhoto, polaroid, resample } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
+import { saveSlots } from '@lewismoten/gamemaker-sandbox-tools/kit/saveSlots';
 import { H, R, W, centeredText, chrome, chromeCentered, consoleTv, grid, scaleBlit, skyline, speedLines, stripedSun, sunsetSky, type Art } from './paint';
 
 // ------------------------------------------------------------------ title

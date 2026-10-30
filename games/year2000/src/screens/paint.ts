@@ -2,7 +2,7 @@
 // sunset-and-grid scenery of a 1990s idea of the future, the console TV, and Art (the
 // game's own sprites, handed in so the screens show the real characters and items).
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { T, oval, shadeAt } from '../art/draw';

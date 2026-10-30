@@ -9,7 +9,7 @@ import { micro } from '../art/font';
 import { C } from '../art/pal';
 import { ITEM_PICS } from '../blocks/items';
 import { CTR } from '../ids';
-import { ROAD_SIZES, shrinkSprite } from '../../../kit/road3d';
+import { ROAD_SIZES, shrinkSprite } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 
 const K = () => C('gray', 0);
 

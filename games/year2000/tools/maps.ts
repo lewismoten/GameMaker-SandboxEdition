@@ -3,7 +3,7 @@
 import { LEVELS, SETS } from '../src/levels/levels';
 import { renderMap } from '../src/art/render';
 import { PAL } from '../src/art/pal';
-import { writePng } from '../../kit/png';
+import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { buildMonsterBlocks } from '../src/sprites/sprites';
 import { buildMonsters } from '../src/characters/monsters';
 import { buildSkyMonsterBlocks } from '../src/sprites/skySprites';
