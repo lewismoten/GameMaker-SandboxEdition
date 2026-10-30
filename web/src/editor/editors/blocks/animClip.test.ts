@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { newMonsterSet } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { bblClip, bblGroupClip, characterClips, clipTicks, monsterClips, monsterGroupClip, nextChange, stepAt, type Track } from './animClip';
 import { groupOf } from './blockGroups';
-import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { newCharacter, parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 
 const blk = (nextBl: number, ntime: number) => ({ nextBl, ntime });
 
@@ -60,6 +60,19 @@ describe('animation clips', () => {
     expect(clips[0].tracks[0].steps.map((s) => s.ticks)).toEqual([3, 1]);
     const g = monsterGroupClip([a, b], groupOf('Bus', [11, 13], 2, 1, 100)!, 11);
     expect(g.tracks[1].steps.map((s) => s.block)).toEqual([12, 13]);
+  });
+
+  it('lists every visible sequence for a whole-set audition, skipping empty and birth-only sequences', () => {
+    const chr = newCharacter();
+    for (const sequence of chr.sequences) sequence.frames[0].pic2 = 51;
+    chr.sequences[0].frames[0] = { ...chr.sequences[0].frames[0], pic1: 7, pic2: 50, pause: 2 };
+    chr.sequences[0].frames[1].pic2 = 51;
+    chr.sequences[5].frames[0].pic2 = 100;
+    chr.sequences[5].frames[1].pic2 = 51;
+    const clips = characterClips(chr, undefined);
+    expect(clips.map((clip) => clip.label)).toEqual(['Sequence 0']);
+    expect(clips[0].tracks[1].steps[0].block).toBe(-1);
+    expect(characterClips(chr, 8)).toEqual([]);
   });
 
   it('shows a character sequence top and bottom', () => {
