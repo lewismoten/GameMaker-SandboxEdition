@@ -36,3 +36,11 @@ npm pack
 The build bundles source from the format, drawing, audio, and simulation modules. It does not use or restart the site's Vite configuration. The tarball contains JavaScript, declarations, this guide, the MIT license, and notices. Validate a packed installation in a separate project before publishing.
 
 `verify` installs the tarball in a temporary npm consumer and checks codecs, drawing, sound generation, headless simulation, NodeNext declarations, absence of game content, and rejected browser imports. After reviewing the candidate, publish with `npm publish --access public`; publishing is a separate action.
+
+## Tagged releases
+
+The [release workflow](../../../.github/workflows/publish-tools.yml) publishes to the public npm registry when a `tools-v<version>` tag is pushed. The tag must match this package's version and point to a commit on `master`. For this release, use `tools-v3.1.0` after merging the package changes.
+
+Configure the repository's `NPM_TOKEN` Actions secret with an npm publishing token authorized for `@lewismoten/gamemaker-sandbox-tools` (including automated publishing with 2FA). The workflow checks source, builds and verifies the packed package, then publishes with provenance. Ordinary branch pushes do not publish anything. See npm's [publishing documentation](https://docs.npmjs.com/creating-and-publishing-scoped-public-packages/).
+
+Tarballs are local build artifacts and must not be committed to a consuming project. Consumers should use `npm install --save-dev @lewismoten/gamemaker-sandbox-tools@^3.1.0` after the tagged release is published.
