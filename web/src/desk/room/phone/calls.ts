@@ -3,6 +3,7 @@
 // the game boxes, time & temperature, the weather line, the movie line, 911, and anyone
 // else (not in service, no answer, busy, or somebody's answering machine). Pittsburgh,
 // December 1994: local calls are seven digits; 1 + area code + number works too.
+import { hintLine } from './hintLine';
 import { fnv1a } from '../../../seededRandom';
 import type { PhoneSounds } from './sounds';
 import { deskMs } from '../../../retro/dos/deskClock';
@@ -12,6 +13,8 @@ import { achieve } from '../../props/propKit';
 
 /** What a call can do on the line; the dial pad provides it (phone.ts). */
 export interface CallLine {
+  /** Aborted on hangup or page exit, including while a prompt is speaking. */
+  signal: AbortSignal;
   sounds: PhoneSounds;
   /** The LCD's status line: "Ringing…". */
   status(text: string): void;
@@ -207,6 +210,7 @@ const DIRECTORY: Record<string, Call> = {
     line.ended('Jenny hung up (back to her other call)');
   },
   // time & temperature, the weather line and the movie line (made-up 555-01xx numbers)
+  '19005550144': hintLine,
   '5550111': async (line) => timeAndTemperature(line),
   '5550112': async (line) => weather(line),
   '5550113': async (line) => movieLine(line),
@@ -321,4 +325,5 @@ export const SPEED_DIAL: [string, string][] = [
   ['Time', '5550111'],
   ['Weather', '5550112'],
   ['Movies', '5550113'],
+  ['Hints', '19005550144'],
 ];

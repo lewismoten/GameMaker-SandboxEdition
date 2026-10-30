@@ -41,7 +41,11 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   `lumeCharge.ts`), the door (`roomDoor.ts`), the waste basket (`wasteBasket.ts`), the wall phone
   (`room/phone/`: `phone.ts`, who answers in `calls.ts`, `dialPad.ts`, `sounds.ts`;
   `hintBill.ts` meters fictional hint-line listening time at 199 cents per minute, with
-  idempotent checkpoints/hangup and a Desk-backed `gm-hint-phone-bill` balance) and its notes
+  idempotent checkpoints/hangup and a Desk-backed `gm-hint-phone-bill` balance;
+  `hintLine.ts` answers 1-900-555-0144 (Hints speed dial) with Teddy's saving, map,
+  enemy and free-help tips. A free prompt asks for 1 before starting pretend charges;
+  0, inactivity, six menu rounds, hangup or page exit stops the meter. The call's abort
+  signal also cancels speech and key waits; menu keys can interrupt the spoken prompt) and its notes
   (`phoneNotes.ts`), the shareware catalog (`catalog.ts`) and the magazine lying on the desk
   (`paperStack.ts`), and the mug, phone and lamp (`deskProps.ts`).
 - `props/`: makes the room's little things pressable (`index.ts`, `propKit.ts`, whose `cover`
