@@ -83,6 +83,11 @@
       "types": "./dist/types/text.d.ts",
       "gamemaker-source": "./src/text.ts",
       "import": "./dist/text.js"
+    },
+    "./palettes": {
+      "types": "./dist/types/palettes.d.ts",
+      "gamemaker-source": "./src/palettes.ts",
+      "import": "./dist/palettes.js"
     }
   },
   "scripts": {

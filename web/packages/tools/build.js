@@ -10,6 +10,7 @@ const sources = {
   audio: 'audio',
   'audio-files': 'audioFiles',
   colors: 'colors',
+  palettes: 'palettes',
   drawing: 'drawing',
   'image/png': 'image/png',
   images: 'images',
