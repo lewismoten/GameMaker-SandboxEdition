@@ -26,7 +26,8 @@ Exports of your edited projects continue to use their current files.
 Loose native payloads, their gzip duplicates and production GMPK files are not deployed.
 Catalog JSON, prebuilt preview images and walkthrough metadata remain separate, so listing
 available games does not require extracting every game. Legacy GMPK and loose-file sites
-remain readable; the development server retains its source-file workflow.
+remain readable; Vite serves the same permanent ZIP URLs, caches them and their preview images, and
+refreshes them when source files change. Loose native HTTP URLs are not served.
 
 ZIP timestamps are fixed for reproducible builds. The site's service worker versions ZIPs
 by their folder's content hash, refreshing a changed distribution through its existing
