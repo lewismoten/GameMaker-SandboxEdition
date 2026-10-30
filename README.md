@@ -188,8 +188,9 @@ Engine, tool, and archive releases are described in [Package releases](docs/pack
 Every check job stops after 5 minutes; only the deployments and release builds may run longer.
 Checking every game takes far longer than that, so run `npm run check:games` (with the rebuild
 compare, about 20 minutes) yourself before committing a game.
-[`.github/workflows/games.yml`](.github/workflows/games.yml) checks one or two named games by hand
-(Actions → Check the games → Run workflow).
+Run whole-game checks locally with `npm run check:games` from `web/` (or add
+`-- --game <id>` for one game). GitHub jobs are capped at five minutes; tests over
+50 ms and isolated package-consumer checks run locally.
 
 ## Where things are
 

@@ -95,6 +95,10 @@ preserve what was there.
   `.prettierignore` at the root, and `web/eslint.config.js`. Writing
   `web/vite.config.ts` or a file it imports restarts the dev server and reloads every open
   page, so change those only when the maintainer has it stopped.
+- **GitHub Actions:** cap every job at five minutes. Use `npm run test:fast` so tests
+  measured over 50 ms in `web/test/slowTests.json` run only locally. Full game checks and
+  `npm run verify:packages` also stay local. Prefer fake timers over real waits in tests
+  when the assertions still exercise the same behavior.
 - **Formatting-only commits:** a commit that only reformats goes in `.git-blame-ignore-revs`
   (its full hash, with a comment line). For local `git blame` to honor it, run
   `git config blame.ignoreRevsFile .git-blame-ignore-revs` once in the clone.
