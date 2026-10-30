@@ -20,6 +20,7 @@ import { playButtons } from './playButtons';
 import { currentPick, gameFor, parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
 import { keepPick, lastPick } from './playPickStore';
 import './workspace.css';
+import { FILE_ORDER as ORDER, ADD_KINDS as SECTIONS, FILE_KIND_HELP as KIND_HELP } from './fileKinds';
 import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
@@ -31,48 +32,6 @@ import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
 import type { RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
-
-const ORDER: FileKind[] = [
-  'gam',
-  'pal',
-  'bbl',
-  'mbl',
-  'cbl',
-  'mon',
-  'chr',
-  'map',
-  'snd',
-  'gif',
-  'fli',
-  'bkd',
-  'txt',
-  'lst',
-  'cmf',
-  'voc',
-  'rec',
-  'his',
-  'other',
-];
-/** The kinds always listed and offered in "Add a file" (4 x 4). */
-const SECTIONS: FileKind[] = ['pal', 'bbl', 'mbl', 'cbl', 'mon', 'chr', 'map', 'snd', 'gif', 'fli', 'cmf', 'voc', 'txt', 'lst', 'bkd', 'rec'];
-const KIND_HELP: Partial<Record<FileKind, string>> = {
-  pal: '256 colors to paint with',
-  bbl: 'the scenery, 150 blocks',
-  mbl: 'monster pictures, 100 blocks',
-  cbl: 'hero pictures, 50 blocks',
-  mon: '64 monsters and how they move',
-  chr: 'the hero: moves, keys, items',
-  map: 'a 100x100 level',
-  snd: '30 sound effects',
-  gif: 'a 320x200 picture',
-  fli: 'an animation',
-  cmf: 'Sound Blaster music',
-  voc: 'a Sound Blaster sound',
-  txt: 'words on screen',
-  lst: 'pictures one after another',
-  bkd: 'part of a big picture',
-  rec: 'a recorded demo',
-};
 
 /** Sections with more files than this can be folded away; in a game this big, every section can. */
 const FOLD_AT = 8;

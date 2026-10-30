@@ -29,7 +29,7 @@ Part of the [source map](../README.md).
     button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
     into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,
     the last pick per game in `playPickStore.ts`), the open file's actions
-    (`fileActions.ts`), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
+    (`fileActions.ts`), native asset categories (`fileKinds.ts`), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
     (`quickOpen.ts`), folding hints (`hintFold.ts`) and the Download chooser (`download.ts`).
   - New games (`starter.ts`, with the "First steps" checklist, `firstSteps.ts` and
     `firstStepsPanel.ts`), new-file templates (`templates.ts`; + New music's empty song is
