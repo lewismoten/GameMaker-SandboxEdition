@@ -240,3 +240,9 @@ a chosen file; opening a list does not listen to every game first.
 filename/single unambiguous set), skips sequence-end and monster-birth commands,
 and renders top/bottom orientation nibbles as PLAYGAME does. Bottom-only sprites
 are real previews too; a blank idle can fall back to a movement frame.
+
+- **Character-block auditions.** The file picker's animation button loads
+  `editors/blocks/pickerAnimation.ts` on demand. It previews the associated character
+  sequences using the block editor's existing animation player, including pause,
+  next frame, orientations, DOS timing and reduced-motion preferences. Source files
+  stay unchanged.

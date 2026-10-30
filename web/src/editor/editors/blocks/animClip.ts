@@ -142,11 +142,11 @@ export function monsterGroupClip(mons: Monster[], g: BlockGroup, block: number):
   return { label: g.name, cols: g.cols, rows: g.rows, tracks };
 }
 
-/** The character's sequences that show `block` (top or bottom), each as a 1 x 2 clip, looping. */
-export function characterClips(chr: Character, block: number, names: (i: number) => string = (i) => `Sequence ${i}`): Clip[] {
+/** Character sequences as looping 1 x 2 clips, optionally restricted to those showing `block`. */
+export function characterClips(chr: Character, block: number | undefined, names: (i: number) => string = (i) => `Sequence ${i}`): Clip[] {
   return chr.sequences.flatMap((s, i) => {
     const frames = s.frames.slice(0, frameCount(s)).filter((f) => f.pic2 !== MONBL);
-    if (!frames.some((f) => f.pic1 === block || f.pic2 === block)) return [];
+    if (!frames.some((f) => (block === undefined ? f.pic1 < CHARBL || f.pic2 < CHARBL : f.pic1 === block || f.pic2 === block))) return [];
     const part = (pic: (f: (typeof frames)[0]) => number, orient: (o: number) => number): ClipStep[] =>
       frames.map((f) => ({ block: pic(f) < CHARBL ? pic(f) : -1, ticks: Math.max(1, f.pause), orient: orient(f.orient) }));
     const loop = frames.length > 1 ? 0 : -1;
