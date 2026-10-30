@@ -34,6 +34,10 @@ picture; `host.ts` is what programs on it can use.
 - `hacks/fastPlay.ts`: FASTPLAY ON bypasses first-run hardware setup; OFF restores it for
   unconfigured games and STATUS reports the choice. CONFIG.BAT and PLAYGAME’s Configure
   menu force a game’s setup. Hardware choices live in browser preferences, outside DOS files.
+  Download FASTPLAY.ZIP from the Sandbox BBS W)arez area (the access code is in its bulletins).
+  PKUNZIP installs FASTPLAY.EXE and FASTPLAY.DOC under C:\DOWNLOAD\FASTPLAY;
+  run `C:\DOWNLOAD\FASTPLAY\FASTPLAY ON`, `OFF` or `STATUS`. These are the retro PC's
+  simulated programs, like the other BBS tools; the downloaded EXE is not a native DOS binary.
   The shared player supplies the same controls on its start screen; previews and recordings skip them.
 - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, PLAYHACK, the GM30 installer and the
   rest (`saveHack.ts`, `backupExe.ts`, `playHack.ts`, which edits a game of yours' DOS player

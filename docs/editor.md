@@ -46,6 +46,15 @@ has your own AI build one from a few lines of description (see
 Games you make or copy are kept in this browser under _My games_, newest first, and the side
 panel offers to pick up where you left off. Nothing is uploaded anywhere.
 
+The Play screen offers **Show setup on first run**. With it checked, a game without saved
+hardware choices opens video/audio setup before playing. Choose Sound Blaster for music and
+digital sound, or PC speaker only for effects without music, and save the choices for that
+game. **Bypass setup** (or Escape) skips the panel for this launch; unticking its checkbox
+bypasses setup for other unconfigured games too. **Video & audio…** on the Play screen opens
+it again whenever needed. Both VGA choices use the browser's 320 × 200 renderer. Previews,
+walkthrough playback and recording do not stop for setup. Preferences backups include these
+choices; play testing keeps native project files unchanged.
+
 To keep it safe or take it to another browser, _⚙ Settings › Back up / restore…_ saves
 everything this browser keeps to one `.gmbackup` file: your games, saves and high scores,
 achievements, score trophies, eggs and tin hearts, the 1994 desk, imported games' notes and
