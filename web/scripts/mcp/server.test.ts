@@ -137,7 +137,7 @@ describe('the MCP server', () => {
     const call = (name: string, args: Record<string, unknown> = {}) => client.callTool({ name, arguments: args });
     jsonOf(await call('open_game', { source: 'cd:nebula' }));
     const r = jsonOf(await call('export_game', { format: 'dos', out_dir: join(work, 'exports') }));
-    expect(r.written).toMatch(/nebula-dos\.zip$/);
+    expect(r.written).toMatch(/[/\\]nebula\.zip$/);
     expect(textOf(await call('export_game', { format: 'dos', out_dir: tmpdir() }))).toMatch(/outside the writable folders/);
   });
 
