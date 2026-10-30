@@ -107,6 +107,10 @@ preserve what was there.
 - **Formatting-only commits:** a commit that only reformats goes in `.git-blame-ignore-revs`
   (its full hash, with a comment line). For local `git blame` to honor it, run
   `git config blame.ignoreRevsFile .git-blame-ignore-revs` once in the clone.
+- **Shared helpers:** generic game builders, fonts, image processing, synthesis and headless algorithms
+  belong in `web/packages/tools/src`. Check its APIs before adding helpers under `games/`.
+  Keep game artwork, palettes, routes and repository metadata policy in `games/`; packages must
+  build from their own folders and declared dependencies.
 - **Files:** keep them small, one purpose each, with a short header comment. Export only
   what another file imports.
 - **Loading:** each editor, the desk, today's web and the Guide are separate chunks loaded

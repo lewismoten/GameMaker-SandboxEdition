@@ -9,7 +9,20 @@ file through the same format code the web app reads (`@lewismoten/gamemaker-sand
 cd web && npx vite-node ../games/<id>/build.ts
 ```
 
-Generic builders now belong to `web/packages/tools/src/kit/`: `pixels`, `palette`, `pcText`, `blit`, `shading`, `textBounds`, `reel`, `tune`, `sound`, `music`, `sceneSim`, `gameSim` and `clips`. Import them through `@lewismoten/gamemaker-sandbox-tools/kit/<module>` (or the documented aggregate APIs), not relative paths. The descriptions below include those package-owned helpers; game-specific drawing, characters and checks stay here.
+Reusable builders, drawing, synthesis, native animation, layout audits and headless helpers
+belong to [`web/packages/tools`](../../web/packages/tools/README.md). Its `kit/*` APIs include
+`pixels`, `palette`, `palRamps`, `pcText`, `microText`, `blit`, `shading`, `transforms`,
+`coverPaint`, `quantize`, `sdftext`, `raytrace`, `png`, `photo`, `levelPicture`, `actors`,
+`screenText`, `saveSlots`, `road3d`, `disk`, `menuVersion`, `fadeOut`, `fliClips`,
+`recordedDemo`, `synthParts`, `song`, `songFx`, `hopBot`, `align`, `sceneInit`, `routeChecks`,
+and `textfit`, alongside the earlier music, sound, simulation and clip APIs.
+Import them through the package rather than copying implementations here.
+
+This folder keeps game artwork and repository policy: `disk.ts` reads `about.json`, honors
+`GAME_DISK_OUT` and reports build totals; `photo.ts` locates this repository's scans;
+`align.ts` selects a repository disk and prints its audit. The portable work is in the package.
+The descriptions below cover both package-owned helpers and the remaining repository tools.
+
 
 Making the files:
 

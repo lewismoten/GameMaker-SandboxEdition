@@ -779,3 +779,16 @@ credits are unchanged; the native DOS audio bytes are preserved.
 The source-only game build runner, reproducibility and historical-version checks, and
 parallel Depth Perception animation rendering were implemented with OpenAI Codex under
 Lewis Moten's direction. No third-party rendering code or data was added.
+
+### Consolidated game-building helpers and fonts
+
+Reusable builders, drawing and image processing, synthesis, native animation and checking
+helpers are owned by `web/packages/tools`. The extended rounded and square 3×5 glyphs
+were consolidated from the public games' existing font tables. They and the rounded
+stroke-lettering data were made for this project by Lewis Moten using Anthropic Claude
+Opus 5.5, under the project's MIT License. Their provenance, source commits and references
+for median-cut quantization and sphere tracing are recorded in
+[the tools package's notices](web/packages/tools/NOTICE.md). CP437's separately credited
+public-domain data and this project's additions keep their existing attribution.
+OpenAI Codex consolidated the helpers and consumers, preserved the existing game output,
+and implemented the shared rendering adapters and verification under Lewis Moten's direction.

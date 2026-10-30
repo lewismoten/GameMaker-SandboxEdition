@@ -2,7 +2,7 @@
 
 The original games made for Game-Maker: Sandbox Edition. Each one is built entirely in code:
 a `build.ts` draws every block, lays out every map, composes the music and writes each file
-through the same format code the web app reads (`web/src/formats`), so the result is a real
+through the shared engine formats and `@lewismoten/gamemaker-sandbox-tools`, so the result is a real
 DOS Game-Maker / PLAYGAME disk in `games/<id>/disk/`. The web app's CD (`web/scripts/cdGames.ts`)
 picks up every folder here that has an `about.json` and a `disk/`.
 
@@ -468,3 +468,8 @@ Depth Perception's independent animation frames use temporary, lossless caches i
 flares and palette conversion; `tools/renderFrames.ts` generates a selected shard. The
 normal build assembles every full frame, preserving the original rendering and DOS bytes.
 These caches are generated locally or as short parallel CI jobs, never committed.
+
+Reusable drawing, fonts, palette processing, synthesis, native builders and checking algorithms
+live in the [tools package](../web/packages/tools/README.md). Game folders contain their
+art, colors, recorded inputs, routes and thin compatibility adapters. Rounded and square
+micro-font profiles retain their original glyph coverage, fallback and spacing.
