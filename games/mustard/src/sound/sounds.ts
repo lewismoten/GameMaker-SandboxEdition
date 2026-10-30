@@ -10,7 +10,7 @@ import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { clipVoc } from './clips';
-import { lowNoise, gate, env } from '../../../kit/synthParts';
+import { lowNoise, gate, env } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 
 /** A tiny voice: harmonics of a pitch through two vowel formants (the seed's "eep!" and "aww"). */
 function voice(pitch: (t: number) => number, f1: number, f2: number, seed = 3): Synth {

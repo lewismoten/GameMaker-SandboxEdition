@@ -13,7 +13,7 @@ import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from
 import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { FAITH, KEY, MON, SEQ, SND, WATER } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
-import { set, mon, corner, pace } from '../../kit/actors';
+import { set, mon, corner, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // bottom block flipped left-right
