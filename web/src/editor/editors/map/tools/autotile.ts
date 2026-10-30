@@ -9,6 +9,7 @@
 // - blob47: one block for each of the 47 ways neighbors can meet (corners count only when both sides do);
 // - bits16: one per 4-bit mask of the four sides, 16 blocks (N 1, E 2, S 4, W 8);
 // - path: a road or path one block wide, straights and corners (T and cross optional).
+import { wrapValue } from '../mapWrap';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 export const N = 1;
@@ -192,11 +193,11 @@ export function pickBlock(t: Terrain, mask: number): number {
 }
 
 /** The 8-bit neighbor mask of a cell: which neighbors are in (off the map counts as in). */
-function neighborMask(isIn: (x: number, y: number) => boolean, x: number, y: number, w = MLEN, h = MWID): number {
+function neighborMask(isIn: (x: number, y: number) => boolean, x: number, y: number, w = MLEN, h = MWID, wrap = false): number {
   const at = (dx: number, dy: number) => {
     const nx = x + dx,
       ny = y + dy;
-    return nx < 0 || ny < 0 || nx >= w || ny >= h || isIn(nx, ny);
+    return wrap ? isIn(wrapValue(nx, w), wrapValue(ny, h)) : nx < 0 || ny < 0 || nx >= w || ny >= h || isIn(nx, ny);
   };
   return (
     (at(0, -1) ? N : 0) |
@@ -215,7 +216,7 @@ function neighborMask(isIn: (x: number, y: number) => boolean, x: number, y: num
  * terrain cell round them the block that fits. Paths do not count off-map cells as in
  * (a road at the edge ends there). Returns the indexes of the cells that changed.
  */
-export function paintTerrain(blocks: Uint8Array, t: Terrain, cells: { x: number; y: number }[], erase = false, w = MLEN, h = MWID): number[] {
+export function paintTerrain(blocks: Uint8Array, t: Terrain, cells: { x: number; y: number }[], erase = false, w = MLEN, h = MWID, wrap = false): number[] {
   const set = terrainBlocks(t);
   if (!set.size) return [];
   const before = new Map<number, number>();
@@ -225,13 +226,15 @@ export function paintTerrain(blocks: Uint8Array, t: Terrain, cells: { x: number;
   };
   const marker = pickBlock(t, 0xff); // any block of the terrain marks a cell as in
   const fix = new Set<number>();
-  for (const { x, y } of cells) {
+  for (const cell of cells) {
+    const x = wrap ? wrapValue(cell.x, w) : cell.x,
+      y = wrap ? wrapValue(cell.y, h) : cell.y;
     if (x < 0 || y < 0 || x >= w || y >= h) continue;
     touch(y * w + x, erase ? t.outside : marker);
     for (let dy = -1; dy <= 1; dy++)
       for (let dx = -1; dx <= 1; dx++) {
-        const nx = x + dx,
-          ny = y + dy;
+        const nx = wrap ? wrapValue(x + dx, w) : x + dx,
+          ny = wrap ? wrapValue(y + dy, h) : y + dy;
         if (nx >= 0 && ny >= 0 && nx < w && ny < h) fix.add(ny * w + nx);
       }
   }
@@ -241,8 +244,8 @@ export function paintTerrain(blocks: Uint8Array, t: Terrain, cells: { x: number;
     if (!set.has(blocks[i])) continue;
     const x = i % w,
       y = (i / w) | 0;
-    const m = neighborMask(isIn, x, y, w, h);
-    const v = pickBlock(t, edgeIn ? m : maskInMap(m, x, y, w, h));
+    const m = neighborMask(isIn, x, y, w, h, wrap);
+    const v = pickBlock(t, edgeIn || wrap ? m : maskInMap(m, x, y, w, h));
     if (blocks[i] !== v) touch(i, v);
   }
   return [...before].filter(([i, v]) => blocks[i] !== v).map(([i]) => i);

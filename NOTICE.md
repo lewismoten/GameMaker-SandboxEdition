@@ -79,7 +79,8 @@ game folder opens in the browser unchanged.
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
 - **Editor extensions and character auditions** (`web/src/editor/`): native frame
-  painting, live scenery previews, resource selection improvements, audition code
+  painting, live scenery previews, resource selection improvements, repeating map
+  viewports and seam-aware editing tools, audition code
   and its short playful UI lines were implemented with **OpenAI Codex (GPT-6)**,
   directed by Lewis Moten. Auditions read artwork from the selected source game;
   that artwork remains the work of its credited authors.

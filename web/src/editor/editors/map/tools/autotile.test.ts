@@ -107,3 +107,28 @@ describe('auto-tiling', () => {
     expect(pickBlock(t, 0)).toBe(40);
   });
 });
+
+it('joins and repairs terrain neighbors across both wrapped map seams', () => {
+  const terrain: Terrain = { ...newTerrain('bits', 'Tiles', 'bits16', 0), tiles: Array.from({ length: 16 }, (_, i) => 40 + i) };
+  const blocks = new Uint8Array(16);
+  paintTerrain(
+    blocks,
+    terrain,
+    [
+      { x: 3, y: 3 },
+      { x: 4, y: 3 },
+      { x: 3, y: 4 },
+    ],
+    false,
+    4,
+    4,
+    true,
+  );
+  expect(blocks[15]).toBe(40 + 2 + 4);
+  expect(blocks[12]).toBe(40 + 8);
+  expect(blocks[3]).toBe(40 + 1);
+  paintTerrain(blocks, terrain, [{ x: 4, y: 3 }], true, 4, 4, true);
+  expect(blocks[12]).toBe(0);
+  expect(blocks[15]).toBe(40 + 4);
+  expect(blocks[3]).toBe(40 + 1);
+});
