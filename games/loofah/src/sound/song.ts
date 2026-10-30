@@ -32,8 +32,8 @@
 //   chorus 2 "Loofah of Lucifer, why must you judge?"  148.5 - 167.4  (bars 55-61)
 //   outro "I'm sleeping alone with a washcloth..."     167.4 - 192.4  (bars 62-70)
 import { INSTRUMENTS, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
-import { ORGAN, Writer, type Groove } from '../../../kit/song';
-import { DRUM, Fx, detuned, sweep } from '../../../kit/songFx';
+import { ORGAN, Writer, type Groove } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { DRUM, Fx, detuned, sweep } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 
 const BPM = 89;
 
