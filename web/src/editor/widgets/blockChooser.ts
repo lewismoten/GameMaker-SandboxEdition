@@ -4,6 +4,10 @@ import { h, modal } from '../core/ui';
 import { blockCanvas } from '../core/draw';
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import './blockChooser.css';
+
+const caption = (index: number, name: string) =>
+  h('small', { class: name === `Block ${index}` ? undefined : 'block-choice-label' }, name === `Block ${index}` ? index : name);
 
 export interface BlockExtra {
   value: number;
@@ -41,7 +45,7 @@ export function chooseBlock(
               'button',
               { class: i === current ? 'selected' : '', title: name(i), 'aria-label': name(i), onclick: () => close(i) },
               blockCanvas(b.pixels, pal, { transparent, className: 'checker' }),
-              h('small', null, i),
+              caption(i, name(i)),
             ),
       ),
     ),
@@ -61,13 +65,18 @@ export function blockButton(
     const n = get();
     const extra = opts.extras?.find((x) => x.value === n);
     const b = blocks()[n];
+    const name = opts.name?.(n) ?? `Block ${n}`;
+    if (opts.name) {
+      btn.title = `${opts.title ?? 'Choose a block'}: ${extra?.label ?? name}`;
+      btn.setAttribute('aria-label', btn.title);
+    }
     btn.replaceChildren(
       extra
         ? h('span', { class: 'extra' }, extra.icon)
         : b
           ? blockCanvas(b.pixels, pal(), { transparent: true, className: 'checker' })
           : h('span', { class: 'extra' }, '∅'),
-      h('small', null, extra ? extra.label : b ? n : 'none'),
+      extra ? h('small', null, extra.label) : b ? caption(n, name) : h('small', null, 'none'),
     );
   };
   btn.addEventListener('click', async () => {

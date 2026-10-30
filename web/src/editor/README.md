@@ -188,6 +188,9 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   The shared painter's `blockNameField.ts` edits the selected picture's label, supports
   clearing it, and updates the picker without adding a pixel Undo step. Pixel Undo leaves
   names intact; both are saved through their respective native/companion paths.
+  `widgets/blockChooser.ts` shows supplied picture labels in its grid and button captions,
+  with wrapping/clamping for long names and full accessible labels. Numbered choices remain
+  compact when no designer label was supplied.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its
