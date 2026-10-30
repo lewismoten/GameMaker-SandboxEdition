@@ -89,6 +89,15 @@ Set the audio card state before `runGame` and call the same method for later swi
 effects then use the PC speaker while the card is absent. `RunOptions.noSoundCard` retains
 the original startup-only detection, including its fixed speaker-only choice for that run.
 
+## Incremental picture decoding
+
+`formats/jpeg` exports `decodePartialJpeg(bytes)` for baseline and progressive Huffman JPEGs.
+Pass only the bytes received so far. `shown` marks pixels with completed luminance/DC blocks;
+`pixels` holds grayscale or RGB data. A partial first progressive scan reveals only its
+completed blocks; later scans retain the previous coefficients until each MCU is complete.
+Restart markers preserve already decoded MCUs. `scans` counts fully delimited scans and
+`complete` reports an end-of-image marker. The decoder does not invent data for unread blocks.
+
 ## Build from source
 
 This folder owns all its source in `src/`, plus its build configuration, license and notices. It can be copied outside the repository: run `npm install` and `npm run verify` here to build and test a packed consumer. Within the monorepo, run `npm ci` at the repository root, then `npm run build -w @lewismoten/gamemaker-sandbox-engine`. Run `npm pack` here to inspect a local distribution. Tarballs are build artifacts and should not be committed.

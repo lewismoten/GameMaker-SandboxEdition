@@ -9,4 +9,4 @@ it uses (`.gif .fli .cmf .voc`, and `.jpg` for the BBS's pictures). Borland C++ 
 
 - `cmfSong.ts`, `cmfEdit.ts` and `cmfPreview.ts` are the music editor's model of a CMF song;
   `fliFrames.ts` an `.FLI` as whole frames for editing; `fliLimits.ts` what DOS can play.
-- `gifProgressive.ts` and `jpeg.ts` decode a picture as its bytes arrive (the BBS's downloads).
+- `gifProgressive.ts` and `jpeg.ts` decode a picture as its bytes arrive (the BBS's downloads). JPEG visibility follows completed MCU blocks; partial refinement blocks keep the prior scan's coefficients. The package README documents the incremental result.

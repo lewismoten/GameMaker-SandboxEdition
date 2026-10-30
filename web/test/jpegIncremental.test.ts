@@ -15,6 +15,12 @@ const progressive = Uint8Array.from(
     'base64',
   ),
 );
+const restarted = Uint8Array.from(
+  Buffer.from(
+    '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/2wBDAQoLCw4NDhwQEBw7KCIoOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozv/wAARCAAQACADAREAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/90ABAAB/9oADAMBAAIRAxEAPwDz+Kw9q8mVYqlXP//Q5CKw9qzlWPRpVz//0cGKw9q7pVT6GlXP/9KjFYe1e/KsfYUq5//TxIrD2r5SVU8alXP/1KsVh7V40qxy0q5//9WeKw9q55VjalXP/9bYisPauqVU9WlXP//Z',
+    'base64',
+  ),
+);
 const decode = (bytes: Uint8Array, end = bytes.length) => decodePartialJpeg(bytes.subarray(0, end))!;
 const shown = (bytes: Uint8Array) => bytes.reduce((n, v) => n + v, 0);
 
@@ -37,6 +43,15 @@ describe('incremental JPEG MCUs', () => {
     const before = decode(progressive, 291);
     expect(decode(progressive, 292).pixels).toEqual(before.pixels);
     expect(decode(progressive, 293).pixels).not.toEqual(before.pixels);
+  });
+  it('retains a committed MCU while a restart marker is still arriving', () => {
+    const marker = restarted.findIndex((b, i) => b === 255 && restarted[i + 1] === 0xd0);
+    expect(marker).toBeGreaterThan(0);
+    const before = decode(restarted, marker);
+    expect(shown(before.shown)).toBe(64);
+    expect(decode(restarted, marker + 1).pixels).toEqual(before.pixels);
+    expect(decode(restarted, marker + 2).pixels).toEqual(before.pixels);
+    expect(decode(restarted).pixels).toEqual(decode(baseline).pixels);
   });
   it('finishes baseline and progressive encodings as the same full picture', () => {
     const a = decode(baseline),
