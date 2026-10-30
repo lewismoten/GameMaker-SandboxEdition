@@ -15,6 +15,9 @@ extensions mapped back (`importPlayer.ts`; the names inside its files are rewrit
 `extensionNames.ts`, which the DOS export uses the other way), and the editor-only companion file (`companion.ts`,
 never exported).
 
+`importScan.ts` and `importPlayer.ts` use the portable `gameFiles.ts` container directly;
+archive consumers can reuse them without loading the site's catalog or UI.
+
 - The secret games (`secretGames.ts`; `catalogWatch.ts` keeps the listings live when one is
   revealed or hidden).
 - The Bard of Bizarre's collections (`bizarre.ts`), a game's title as boxes print it

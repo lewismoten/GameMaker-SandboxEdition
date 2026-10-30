@@ -5,7 +5,7 @@
 // the extensions the .EXE names, then the rest by the slot each fills in the .gam, rewriting the
 // names inside the .gam, slide lists and backdrops in place (same length, extensionNames.ts).
 // The extensions become the project's DOS player patches too, so its DOS export renames them again.
-import { normalize, type GameFiles } from './files';
+import { normalize, type GameFiles } from './gameFiles';
 import { parseGame, ADV_EXTS } from '../formats/game';
 import { md5Hex } from '../dosPlayer/md5';
 import { readPlayerPatches, STOCK_PLAYER_MD5 } from '../dosPlayer/applyPatches';

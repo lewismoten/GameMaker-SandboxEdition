@@ -5,7 +5,7 @@
 // files are read while looking, so a folder of hundreds of zips holds one zip at a time; the
 // games picked are read again by GameReader. No DOM: the home page's import (editor/shell/
 // homeImport.ts, importChooser.ts) shows it.
-import { cdName, GameFiles, IGNORED_FILE, normalize } from './files';
+import { cdName, GameFiles, IGNORED_FILE, normalize } from './gameFiles';
 import { crc32, isZip, listZip } from './zip';
 import { parseGame } from '../formats/game';
 import { markZipLeftovers } from './importLeftovers';
