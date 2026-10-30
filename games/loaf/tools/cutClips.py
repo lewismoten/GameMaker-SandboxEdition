@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Cuts the digitized sound clips for "Loaf #13 (Left in the Basket)" out of the recording, which
 # is NOT committed (.for-lewis/songs/loaf/Loaf #13 (Left in the Basket).mp3), into
-# games/loaf/src/sound/clips/<name>.pcm (games/kit/song/cutclips.py does the cutting; see it for
+# games/loaf/src/sound/clips/<name>.wav (games/kit/song/cutclips.py does the cutting; see it for
 # the filters), which games/loaf/src/sound/clips.ts wraps as Creative Voice Files.
 #
 #   python3 -I games/loaf/tools/cutClips.py [path/to/song.mp3] [--out DIR]

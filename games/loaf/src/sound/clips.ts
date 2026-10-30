@@ -1,5 +1,5 @@
 // Digitized clips of "Loaf #13 (Left in the Basket)" (The Bard of Bizarre), as Sound Blaster
-// .VOC files. The samples (clips/<name>.pcm: 8-bit unsigned mono) are cut from the recording by
+// .VOC files. The previewable source samples (clips/<name>.wav: lossless 8-bit unsigned mono WAV) are cut from the recording by
 // games/loaf/tools/cutClips.py, which reads the MP3 (not in the repo) and regenerates them
 // exactly. Game-Maker reads a VOC's size as 16 bits, so each stays under 40,000 bytes.
 //
@@ -13,10 +13,9 @@
 //   mama     135.84  140.51   4.67 s   8000 Hz    37394    verse 3: "Mama, look what I've got..."
 //                                                          (spliced round a breath)
 // (A speech recognizer given the lyrics as a prompt hears each clip's words back.)
-import { readFileSync } from 'node:fs';
+import { audioFileToVoc } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 
 const CLIPS = { bread: 11025, countme: 11025, twelve: 11025, wasted: 11025, still: 11025, mama: 8000 } as const;
 type ClipName = keyof typeof CLIPS;
@@ -25,11 +24,5 @@ const here = dirname(fileURLToPath(import.meta.url));
 
 /** The clip as a Creative Voice File at its own rate. */
 export function clipVoc(name: ClipName): Uint8Array {
-  const pcm = readFileSync(join(here, 'clips', `${name}.pcm`));
-  const samples = new Float32Array(pcm.length);
-  // encodeVoc writes round(v * 127 + 128), so this gives back the very bytes cutClips.py wrote.
-  for (let i = 0; i < pcm.length; i++) samples[i] = (pcm[i] - 128) / 127;
-  const voc = encodeVoc(samples, CLIPS[name]);
-  if (voc.length >= 40000) throw new Error(`${name}.voc is ${voc.length} bytes; Game-Maker reads 16 bits of size`);
-  return voc;
+  return audioFileToVoc(join(here, 'clips', `${name}.wav`), { sampleRate: CLIPS[name], maxBytes: 39999 });
 }
