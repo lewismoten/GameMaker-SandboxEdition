@@ -246,3 +246,8 @@ are real previews too; a blank idle can fall back to a movement frame.
   sequences using the block editor's existing animation player, including pause,
   next frame, orientations, DOS timing and reduced-motion preferences. Source files
   stay unchanged.
+
+- **Music thumbnails.** `widgets/musicTimeline.ts` draws decoded CMF notes against
+  time and calculates the playhead through PlayIt's first pass and repeat lead-in.
+  The file picker overlays the playhead while auditioning a song and restores the
+  thumbnail when playback stops.
