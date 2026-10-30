@@ -6,7 +6,7 @@
 // games picked are read again by GameReader. No DOM: the home page's import (editor/shell/
 // homeImport.ts, importChooser.ts) shows it.
 import { cdName, GameFiles, IGNORED_FILE, normalize } from './gameFiles';
-import { crc32, isZip, listZip } from './zip';
+import { crc32, isZip, listZip, type ZipLimits } from './zip';
 import { parseGame } from '../formats/game';
 import { markZipLeftovers } from './importLeftovers';
 
@@ -189,8 +189,10 @@ function titleOf(bytes: Uint8Array | undefined, gamName: string): string {
 /** Where a game is, for people: the zips it is in, then its folder. */
 const fromLabel = (zips: string[], dir: string) => [...zips, dir ? `${dir}/` : ''].filter(Boolean).join(' › ');
 
-interface ScanOptions {
+export interface ScanOptions {
   signal?: AbortSignal;
+  /** Optional bounds for every archive opened, including nested archives. */
+  zipLimits?: ZipLimits;
   /** Told before each zip given (not those inside them) is read, and once at the end. */
   onProgress?: (done: number, total: number, path?: string) => void;
 }
@@ -199,7 +201,7 @@ interface ScanOptions {
 const breathe = () => new Promise<void>((r) => setTimeout(r, 0));
 
 /** Looks through what was given for its games. Throws an AbortError when canceled. */
-export async function scanImport(given: ScanFile[], { signal, onProgress }: ScanOptions = {}): Promise<ScanReport> {
+export async function scanImport(given: ScanFile[], { signal, onProgress, zipLimits }: ScanOptions = {}): Promise<ScanReport> {
   const report: ScanReport = { games: [], zips: 0, emptyZips: [], badZips: [], loose: [] };
   const topZips = given.filter((f) => isZipName(f.path));
   let done = 0;
@@ -297,13 +299,13 @@ export async function scanImport(given: ScanFile[], { signal, onProgress }: Scan
         // an MS-DOS program (MZ) with a zip's end record in it
         if (!bytes || bytes[0] !== 0x4d || bytes[1] !== 0x5a) return undefined;
         try {
-          entries = listZip(bytes).map((e) => ({ path: e.name, size: e.size, read: e.read }));
+          entries = listZip(bytes, zipLimits).map((e) => ({ path: e.name, size: e.size, read: e.read }));
         } catch {
           return undefined;
         }
       } else {
         if (!bytes || !isZip(bytes)) throw new Error('It is not a zip file.');
-        entries = listZip(bytes).map((e) => ({ path: e.name, size: e.size, read: e.read }));
+        entries = listZip(bytes, zipLimits).map((e) => ({ path: e.name, size: e.size, read: e.read }));
       }
     } catch (e) {
       report.zips++;
@@ -406,7 +408,10 @@ export class GameReader {
   private loose: Map<string, ScanFile>;
   private last?: { key: string; entries: Map<string, ScanFile> };
 
-  constructor(given: ScanFile[]) {
+  constructor(
+    given: ScanFile[],
+    private readonly zipLimits?: ZipLimits,
+  ) {
     this.loose = new Map(given.map((f) => [f.path, f]));
   }
 
@@ -436,11 +441,11 @@ export class GameReader {
     this.last = undefined;
     let bytes = await game.zips[0].read();
     for (const name of game.inner) {
-      const inside = bytes && listZip(bytes).find((e) => e.name === name);
+      const inside = bytes && listZip(bytes, this.zipLimits).find((e) => e.name === name);
       bytes = inside ? await inside.read() : undefined;
     }
     if (!bytes) throw new Error(`${fromLabel([game.zips[0].path, ...game.inner].map(clean), '')} could not be read again.`);
-    const entries = new Map(listZip(bytes).map((e) => [e.name, { path: e.name, size: e.size, read: e.read }]));
+    const entries = new Map(listZip(bytes, this.zipLimits).map((e) => [e.name, { path: e.name, size: e.size, read: e.read }]));
     this.last = { key, entries };
     return entries;
   }

@@ -1,0 +1,26 @@
+{
+  "name": "@lewismoten/gamemaker-sandbox-archives",
+  "version": "3.1.0",
+  "description": "Portable game discovery, ZIP/SFX extraction, and ZIP creation for Game-Maker files",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lewismoten/GameMaker-SandboxEdition.git",
+    "directory": "web/packages/archives"
+  },
+  "engines": { "node": ">=22.12.0" },
+  "files": ["dist", "README.md", "LICENSE", "NOTICE.md"],
+  "exports": {
+    ".": { "types": "./dist/types/web/packages/archives/src/index.d.ts", "import": "./dist/index.js" },
+    "./zip": { "types": "./dist/types/web/src/project/zip.d.ts", "import": "./dist/zip.js" },
+    "./pack": { "types": "./dist/types/web/src/project/gamePack.d.ts", "import": "./dist/pack.js" }
+  },
+  "scripts": {
+    "build": "node build.js",
+    "prepack": "npm run build",
+    "verify": "npm run build && node verify.js"
+  },
+  "devDependencies": { "typescript": "~5.9.0", "vite": "^7.1.0", "@types/node": "^22.20.5" },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+}
