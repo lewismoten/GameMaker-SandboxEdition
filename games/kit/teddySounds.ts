@@ -2,7 +2,7 @@
 // pops, boings, whooshes, crunches and chomps, a giggle, a honk, a snore, a scratch, a slap and a
 // chime (Ohm Sweet Ohm rings it too).
 import { mix, osc, sample, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
-import { lowpass } from './synthParts';
+import { lowpass } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export function noiseBurst(seconds: number, k: number, seed: number, env?: (u: number) => number): Uint8Array {
