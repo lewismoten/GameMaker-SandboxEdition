@@ -30,6 +30,8 @@ export function animPlayer(o: {
   label: string;
   /** Screen pixels per block pixel. */
   scale?: number;
+  /** Optional scene in native pixels; the animated picture is centered over it. */
+  stage?: { width: number; height: number; draw(ctx: CanvasRenderingContext2D): void };
 }): AnimPlayer {
   const scale = o.scale ?? 3;
   const canvas = h('canvas', { class: `pixel anim-player-canvas${o.transparent ? ' checker' : ''}`, role: 'img', 'aria-label': o.label });
@@ -57,11 +59,19 @@ export function animPlayer(o: {
   function draw(): void {
     const c = current;
     if (!c) return;
-    const w = c.cols * BLEN * scale;
-    const hgt = c.rows * BLEN * scale;
+    const w = (o.stage?.width ?? c.cols * BLEN) * scale;
+    const hgt = (o.stage?.height ?? c.rows * BLEN) * scale;
     if (canvas.width !== w) canvas.width = w;
     if (canvas.height !== hgt) canvas.height = hgt;
     ctx.clearRect(0, 0, w, hgt);
+    if (o.stage) {
+      ctx.save();
+      ctx.scale(scale, scale);
+      o.stage.draw(ctx);
+      ctx.restore();
+    }
+    const left = Math.floor((w - c.cols * BLEN * scale) / 2),
+      top = Math.floor((hgt - c.rows * BLEN * scale) / 2);
     const t = nowTick();
     const blocks = o.blocks();
     const shown: number[] = [];
@@ -69,11 +79,11 @@ export function animPlayer(o: {
       const s = tr.steps[stepAt(tr, t)];
       shown.push(s.block);
       const px = blocks[s.block]?.pixels;
-      if (px) drawBlockTo(ctx, px, o.pal(), tr.col * BLEN * scale, tr.row * BLEN * scale, scale, o.transparent, s.orient ?? 0);
+      if (px) drawBlockTo(ctx, px, o.pal(), left + tr.col * BLEN * scale, top + tr.row * BLEN * scale, scale, o.transparent, s.orient ?? 0);
       if (s.block === focus && c.tracks.length > 1) {
         ctx.strokeStyle = '#ff0';
         ctx.lineWidth = 2;
-        ctx.strokeRect(tr.col * BLEN * scale + 1, tr.row * BLEN * scale + 1, BLEN * scale - 2, BLEN * scale - 2);
+        ctx.strokeRect(left + tr.col * BLEN * scale + 1, top + tr.row * BLEN * scale + 1, BLEN * scale - 2, BLEN * scale - 2);
       }
     }
     const around = clipTicks(c);

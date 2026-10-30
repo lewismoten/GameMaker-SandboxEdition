@@ -435,3 +435,7 @@ native game files are loaded only when the player chooses an archive action.
   animations through each CBL’s scene bindings and retains original CHR frame
   indices, including gaps left by birth commands. Its 1×1 and 1×2 views keep
   per-half orientations, empty halves and shared block references intact.
+
+- **Animation stages.** `blocks/animPlayer.ts` optionally centers a live native
+  animation on a fixed-size stage, with a caller-drawn palette or scene backdrop.
+  Existing block and group previews retain their picture-sized canvases.
