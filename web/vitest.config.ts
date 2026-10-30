@@ -10,6 +10,10 @@ const fast = !!process.env.GM_FAST_TESTS;
 export default mergeConfig(
   viteConfig,
   defineConfig({
-    test: fast ? { exclude: [...configDefaults.exclude, ...slow.files], setupFiles: ['./test/fastOnly.ts'] } : {},
+    test: {
+      // Keep successful runs quiet, but retain a failing test's console diagnostics.
+      silent: 'passed-only',
+      ...(fast ? { exclude: [...configDefaults.exclude, ...slow.files], setupFiles: ['./test/fastOnly.ts'] } : {}),
+    },
   }),
 );

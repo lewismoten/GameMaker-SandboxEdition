@@ -316,6 +316,7 @@ The app is an npm workspace; reusable implementation belongs to [`packages/`](..
   that already shows it. Walkthroughs and the videos about the site are listed too.
 - **Tests** (`test/`, and many beside their source in `src/`): one Vitest file per subject,
   each starting with a line saying what it covers; they run in Node (`npm test`). Many check formats against the CD's own files.
+  Console output from passing tests is hidden; a failing test keeps its console diagnostics. Use `npm test -- --silent=false` when debugging passing tests.
 
 ## File formats
 
