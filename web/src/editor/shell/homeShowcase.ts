@@ -101,8 +101,6 @@ interface Showcase {
   el: HTMLElement;
   /** Shows a game; `featured` when nobody chose it, `resume` for the game of yours edited last. */
   show(game: HomeGame, how: { featured?: boolean; resume?: boolean; onAnother?: () => void }): void;
-  /** Opens the ⋯ More menu of the game shown and puts the keyboard on its first item. */
-  openMore(): void;
   /** Opens the game's Saves & scores (at a part named in the address: a slot, 'scores', 'backups'). */
   openSaves(initial?: string): void;
   readonly game: HomeGame | undefined;
@@ -255,18 +253,9 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     });
   };
 
-  const openMore = () => {
-    const more = actions.querySelector<HTMLDetailsElement>('.card-more');
-    if (!more) return;
-    more.open = true;
-    more.querySelector<HTMLElement>('.card-more-menu button')?.focus({ preventScroll: true });
-    more.scrollIntoView({ block: 'nearest' });
-  };
-
   return {
     el,
     show,
-    openMore,
     openSaves: (initial) => void saves?.open(initial),
     get game() {
       return current;
