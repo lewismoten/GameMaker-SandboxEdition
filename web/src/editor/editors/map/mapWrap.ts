@@ -11,15 +11,6 @@ export function nativeCell(cell: Cell): Cell {
   return { x: wrapValue(cell.x, MLEN), y: wrapValue(cell.y, MWID) };
 }
 
-/** The nearest copy of a cell to the previous gesture point, bounded to one map per axis. */
-export function continueWrappedCell(cell: Cell, previous: Cell, start = previous): Cell {
-  const near = (v: number, last: number, first: number, size: number) => {
-    const next = last + wrapValue(v - last + size / 2, size) - size / 2;
-    return Math.max(first - size + 1, Math.min(first + size - 1, next));
-  };
-  return { x: near(cell.x, previous.x, start.x, MLEN), y: near(cell.y, previous.y, start.y, MWID) };
-}
-
 /** A native point's visible copy nearest the viewport's center (in pixels). */
 export function visibleCopy(value: number, scroll: number, period: number, viewport: number): number {
   return viewport / 2 + wrapValue(value - scroll - viewport / 2 + period / 2, period) - period / 2;
