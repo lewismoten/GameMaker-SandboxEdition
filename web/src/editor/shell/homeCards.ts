@@ -467,7 +467,9 @@ export function gameActions(game: HomeGame, nav: HomeNav, refresh: () => Promise
     const actions = [link(entry.url, 'Play on its website', true)];
     if (entry.archiveUrl) {
       actions.push(link(entry.archiveUrl, 'Game files (.zip)'));
-      actions.push(h('a', { class: 'button with-ico', href: `./index.html?open=${encodeURIComponent(entry.archiveUrl)}` }, svgIcon('edit'), 'Edit a copy'));
+      actions.push(
+        h('a', { class: 'button with-ico', href: `./index.html?open=${encodeURIComponent(entry.archiveUrl)}&mode=edit` }, svgIcon('edit'), 'Edit a copy'),
+      );
     }
     if (entry.sourceUrl) actions.push(link(entry.sourceUrl, 'Source & credits'));
     return actions;

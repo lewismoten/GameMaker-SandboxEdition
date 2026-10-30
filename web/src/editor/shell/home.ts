@@ -98,6 +98,17 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   // where games come in, as one more tile: drop them on it (or anywhere in the library), or pick them
   const dropTile = importTile(nav, () => void refreshProjects());
   const lib = homeLibrary();
+  const newGameBtn = h('button', { class: 'primary lib-new', type: 'button', onclick: () => void homeImport().then((m) => m.newGame(nav)) }, '+ New game');
+  const communityBtn = h(
+    'button',
+    {
+      class: 'primary',
+      type: 'button',
+      hidden: true,
+      onclick: () => void import('../../community/submit').then((m) => m.submitCommunityGame()),
+    },
+    'Add your game',
+  );
   // an import can bring in hundreds: all of them go at once (importRemove.ts, loaded when used)
   const removeAllBtn = h(
     'button',
@@ -289,6 +300,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     sortBox.hidden = !isOwn(c) || lib.own(c).length < 2;
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
+    newGameBtn.hidden = c === 'community';
+    communityBtn.hidden = c !== 'community';
     const cards = libraryCards(lib, c, ratingFilter, {
       choose,
       more: (game) => (choose(game), top.openMore()),
@@ -334,17 +347,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       h(
         'section',
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
-        h(
-          'div',
-          { class: 'lib-bar' },
-          catNav,
-          h(
-            'div',
-            { class: 'lib-find' },
-            search,
-            h('button', { class: 'primary lib-new', type: 'button', onclick: () => void homeImport().then((m) => m.newGame(nav)) }, '+ New game'),
-          ),
-        ),
+        h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
         h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, removeAllBtn, start.howBtn),
         tiles,
       ),

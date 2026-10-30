@@ -24,7 +24,7 @@ interface CardActions {
 export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: ReturnType<typeof savedRatingFilter>, on: CardActions): HTMLElement[] {
   const notes = allNotes();
   let cards: HTMLElement[];
-  if (!isOwn(c) && lib.catalogError) cards = [h('p', { class: 'meta' }, lib.catalogError)];
+  if (!isOwn(c) && c !== 'community' && lib.catalogError) cards = [h('p', { class: 'meta' }, lib.catalogError)];
   else {
     const tile = (g: HomeGame) => {
       const t = gameTile(g, { onSelect: on.choose, onMore: on.more });
