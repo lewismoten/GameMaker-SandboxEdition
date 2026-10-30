@@ -44,6 +44,6 @@
   "dependencies": {
     "@lewismoten/gamemaker-sandbox-engine": "3.2.0",
     "@lewismoten/gamemaker-sandbox-archives": "3.2.0",
-    "@lewismoten/gamemaker-sandbox-tools": "3.2.0"
+    "@lewismoten/gamemaker-sandbox-tools": "3.3.0"
   }
 }
