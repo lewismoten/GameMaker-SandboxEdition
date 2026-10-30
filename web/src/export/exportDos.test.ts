@@ -32,6 +32,27 @@ async function exported(player?: Record<string, unknown>) {
 describe('exportDos and the DOS player', () => {
   afterEach(() => vi.unstubAllGlobals());
 
+  it('builds reproducibly from supplied runtime bytes without network requests', async () => {
+    const fetch = vi.fn(() => {
+      throw new Error('No network during a catalog build');
+    });
+    vi.stubGlobal('fetch', fetch);
+    const files = new GameFiles([['nebula.gam', gam]]);
+    const options = {
+      title: 'Nebula',
+      gam: 'nebula.gam',
+      date: new Date(2000, 0, 1),
+      runtime: { player: exe, driver: Uint8Array.of(1), help: Uint8Array.of(2) },
+    };
+    const first = await exportDos(files, options);
+    expect((await exportDos(files, options)).zip).toEqual(first.zip);
+    const entries = await readZip(first.zip);
+    expect(entries.find((e) => e.name === 'NEBULA.EXE')!.data).toEqual(exe);
+    expect(entries.find((e) => e.name === 'CONFIG.HLP')!.data).toEqual(Uint8Array.of(2));
+    expect(entries.find((e) => e.name === 'NEBULA.GAM')!.data).toEqual(gam);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
   it('ships the CD’s player as it came when nothing is customized', async () => {
     const r = await exported();
     expect(md5Hex(r.exe)).toBe(STOCK_PLAYER_MD5);

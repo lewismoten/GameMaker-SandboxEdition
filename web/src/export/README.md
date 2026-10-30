@@ -21,3 +21,5 @@ player panel's Files tab gives them), and the Mac, Windows and Linux downloads
 `export/downloadable.ts` says which catalog games may be downloaded, for the button and for
 `web/scripts/macDmg.ts`, `winExe.ts` and `linuxTar.ts`, which run the same code from the command
 line.
+
+`exportDos` also accepts supplied CD runtime bytes and a fixed ZIP date for reproducible website distributions without browser globals or network requests.

@@ -23,6 +23,10 @@ interface DosExportOptions {
   appBase?: string;
   /** The project's DOS player customizations (dosPlayer/playerRecord.ts), written into its copy of XFERPLAY.EXE. */
   player?: PlayerPatches;
+  /** Build-time callers supply the CD runtime directly, without HTTP or browser globals. */
+  runtime?: { player: Uint8Array; driver: Uint8Array; help?: Uint8Array };
+  /** A fixed timestamp makes catalog distributions reproducible. */
+  date?: Date;
 }
 
 /** DOS 8.3 names that FAT and Game-Maker accept. */
@@ -119,25 +123,12 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     throw new Error(`The game already has a file named ${exe}, SNDBLAST.DRV or CONFIG.BAT; remove it first.`);
   }
 
-  const base = opts.appBase ?? new URL('./', location.href).href;
-  let player: Uint8Array;
-  let driver: Uint8Array;
-  try {
-    player = await fetchBytes(new URL('dos/xferplay.exe', base).href);
-    driver = await fetchBytes(new URL('dos/sndblast.drv', base).href);
-  } catch {
-    throw new Error('The DOS player is not part of this build (it is copied from cd/gm by "npm run games").');
-  }
+  const runtime = opts.runtime ?? (await loadRuntime(opts.appBase));
+  let player = runtime.player;
+  const driver = runtime.driver;
   const changes = playerChanges(opts.player ?? {});
   if (changes.length) player = applyPlayerPatches(player, opts.player!);
-  // the setup screen's Help (CONFIG.BAT) reads CONFIG.HLP, which RSD's Transfer copied beside
-  // the player; a build made before it was copied simply goes without. (XFERPLAY's F1 shows the
-  // game's instructions and never reads GMHELP.TXT: only PLAYGAME.EXE, in Game-Maker, does.)
-  const help: ZipEntry[] = [];
-  if (!names.some((n) => n.toUpperCase() === 'CONFIG.HLP')) {
-    const data = await fetchBytes(new URL('dos/config.hlp', base).href).catch(() => undefined);
-    if (data) help.push({ name: 'CONFIG.HLP', data });
-  }
+  const help: ZipEntry[] = runtime.help && !names.some((n) => n.toUpperCase() === 'CONFIG.HLP') ? [{ name: 'CONFIG.HLP', data: runtime.help }] : [];
 
   const entries: ZipEntry[] = [
     { name: exe, data: player },
@@ -154,7 +145,22 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
       ),
     },
   ];
-  return { name: `${stem.toLowerCase()}-dos.zip`, zip: await createZip(entries), exe };
+  return { name: `${stem.toLowerCase()}-dos.zip`, zip: await createZip(entries, opts.date), exe };
+}
+
+/** Runtime files from the site's CD copy; catalog builds supply these bytes themselves. */
+async function loadRuntime(appBase?: string): Promise<NonNullable<DosExportOptions['runtime']>> {
+  const base = appBase ?? new URL('./', location.href).href;
+  let player: Uint8Array;
+  let driver: Uint8Array;
+  try {
+    player = await fetchBytes(new URL('dos/xferplay.exe', base).href);
+    driver = await fetchBytes(new URL('dos/sndblast.drv', base).href);
+  } catch {
+    throw new Error('The DOS player is not part of this build (it is copied from cd/gm by the website build).');
+  }
+  const help = await fetchBytes(new URL('dos/config.hlp', base).href).catch(() => undefined);
+  return { player, driver, help };
 }
 
 function readme(title: string, stem: string, audio: string | undefined, changes: string[], exts: string[], gamExt: string): string {
