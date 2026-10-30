@@ -1,5 +1,5 @@
 // Digitized lines of "The Great Dairy Reckoning of 3:17 a.m." (The Bard of Bizarre, spoken), as
-// Sound Blaster .VOC files. The samples (clips/<name>.pcm: 8-bit unsigned mono) are cut from the
+// Sound Blaster .VOC files. The samples (clips/<name>.wav: lossless 8-bit unsigned mono WAV) are cut from the
 // recording by games/reckoning/tools/cutClips.py, which reads the MP3 (not in the repo) and
 // regenerates them exactly. Game-Maker reads a VOC's size as 16 bits, so each stays under
 // 40,000 bytes.
@@ -22,7 +22,7 @@
 //   shins    155.98  158.97   2.99 s  11025 Hz    32998    "I'm sweating from my shins!"
 //   lactaid  175.94  179.22   3.28 s  11025 Hz    36195    "...Is there Lactaid in hell?"
 // (A speech recognizer hears each clip's words back.)
-import { readFileSync } from 'node:fs';
+import { decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
@@ -50,11 +50,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 
 /** A clip's samples (-1..1) at its own rate. */
 export function clipSamples(name: ClipName): Float32Array {
-  const pcm = readFileSync(join(here, 'clips', `${name}.pcm`));
-  const samples = new Float32Array(pcm.length);
-  // encodeVoc writes round(v * 127 + 128), so this gives back the very bytes cutClips.py wrote.
-  for (let i = 0; i < pcm.length; i++) samples[i] = (pcm[i] - 128) / 127;
-  return samples;
+  return decodeAudioFile(join(here, 'clips', `${name}.wav`), { sampleRate: CLIPS[name] });
 }
 
 /** Samples as a Creative Voice File (checked against Game-Maker's 16-bit size). */

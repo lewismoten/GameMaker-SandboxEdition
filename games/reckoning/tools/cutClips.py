@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Cuts the digitized speech for "The Great Dairy Reckoning of 3:17 a.m." (The Bard of Bizarre, a
 # spoken monologue) out of the recording, which is NOT committed (.for-lewis/songs/reckoning/
-# The Great Dairy Reckoning of 3_17 a.m..mp3), into games/reckoning/src/sound/clips/<name>.pcm
+# The Great Dairy Reckoning of 3_17 a.m..mp3), into games/reckoning/src/sound/clips/<name>.wav
 # (games/kit/song/cutclips.py does the cutting; see it for the filters), which
 # games/reckoning/src/sound/clips.ts wraps as Creative Voice Files.
 #
