@@ -88,9 +88,13 @@ describe('the editor bridge', () => {
     expect(t(await callTool(state, 'editor_screenshot', {}))).toBe('ran editor_screenshot');
     expect(calls).toEqual(['editor_state {}', 'set_map {"file":"a.map","rows":[[1]]}', 'editor_screenshot {}']);
     expect(t(await callTool(state, 'save', {}))).toMatch(/saves its project by itself/);
+    const unpaired = new Promise<void>((resolve) => {
+      bridge.onChange = (paired) => {
+        if (!paired) resolve();
+      };
+    });
     editor.ws.close();
-    await editor.closed;
-    await new Promise((r) => setTimeout(r, 20));
+    await Promise.all([editor.closed, unpaired]);
     expect(t(await callTool(state, 'get_map', { file: 'a.map' }))).toMatch(/No editor tab is paired/);
   });
 });
