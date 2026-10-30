@@ -106,6 +106,8 @@ export class Workspace implements AssistantHost {
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
   private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
   private current?: string;
+  private assetView?: { kind?: FileKind };
+  private assetReturn?: { kind?: FileKind };
   private cleanup?: () => void;
   private player?: PlayerHandle;
   private unlisten: () => void;
@@ -130,7 +132,7 @@ export class Workspace implements AssistantHost {
     this.renderSidebar();
     // a reload while play testing (…?play) starts the play test again
     const playing = currentRoute().params.play;
-    this.open(file && project.files.has(file) ? file : project.gam);
+    this.navigate(file);
     if (playing !== undefined) this.play(playing === 'title' ? 'title' : parsePick(playing));
     // Phones: the dropped-down file list closes on Escape or a tap outside it.
     const close = () => {
@@ -200,6 +202,7 @@ export class Workspace implements AssistantHost {
   }
 
   stopPlay(): void {
+    if (this.assetReturn) return this.openAssets(this.assetReturn.kind);
     const back = this.playBack;
     if (back !== undefined) this.open(this.project.files.has(back) ? back : this.project.gam);
   }
@@ -329,6 +332,16 @@ export class Workspace implements AssistantHost {
           downloadButton(this.project.name, () => this.chooseDownload()),
         ),
         this.saved?.el,
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'asset-home',
+            onclick: () => this.openAssets(),
+            'aria-current': this.assetView && !this.assetView.kind ? 'page' : undefined,
+          },
+          '▦ Game assets',
+        ),
         this.search,
         ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
       ),
@@ -462,7 +475,65 @@ export class Workspace implements AssistantHost {
     return (MAKERS[kind] ?? []).map((m) => ({ label: m.label, run: () => m.run(this.project) }));
   }
 
+  /** Follow a project URL without resetting a file editor for its own view parameters. */
+  navigate(file?: string): void {
+    if (file && this.project.files.has(file)) {
+      if (this.current !== file) this.open(file);
+      return;
+    }
+    const raw = currentRoute().params.assets;
+    const kind = ORDER.includes(raw as FileKind) ? (raw as FileKind) : undefined;
+    if (!this.assetView || this.assetView.kind !== kind) this.openAssets(kind);
+  }
+
+  private openAssets(kind?: FileKind): void {
+    this.cleanup?.();
+    this.cleanup = undefined;
+    this.player?.stop();
+    this.player = undefined;
+    this.playBack = undefined;
+    this.assetReturn = undefined;
+    this.current = undefined;
+    this.assetView = { kind };
+    this.sidebar.classList.remove('open');
+    this.main.classList.add('asset-editor');
+    this.main.scrollTop = 0;
+    window.scrollTo(0, 0);
+    const at = currentRoute();
+    const path = formatHash(['p', this.project.id], { assets: kind });
+    const same = at.path[0] === 'p' && at.path[1] === this.project.id && !at.path[2] && at.params.assets === kind;
+    if (location.hash !== path) {
+      const href = `${location.pathname}${location.search}${path}`;
+      if (!same && at.path[0] === 'p' && at.path[1] === this.project.id) history.pushState(null, '', href);
+      else history.replaceState(null, '', href);
+    }
+    document.title = `${kind ? `${KIND_LABELS[kind]} · ` : ''}${this.project.name} · ${SHORT}`;
+    this.renderSidebar();
+    const slot = h('div', { role: 'status' }, 'Opening game assets…');
+    clear(this.main, this.bar, slot);
+    void import('./assetBrowser')
+      .then(({ assetBrowser }) => {
+        if (this.disposed || !slot.isConnected || !this.assetView) return;
+        const browser = assetBrowser({
+          project: this.project,
+          kind,
+          all: () => this.openAssets(),
+          category: (k) => this.openAssets(k),
+          open: (file) => this.open(file),
+          add: (k) => void this.addOfKind(k),
+        });
+        slot.replaceWith(browser.el);
+        this.cleanup = () => browser.dispose();
+      })
+      .catch((error: unknown) => {
+        if (slot.isConnected) clear(slot, h('p', { class: 'hint' }, `Game assets could not open: ${(error as Error).message}`));
+      });
+  }
+
   open(file: string): void {
+    const fromAssets = !!this.assetView;
+    this.assetView = this.assetReturn = undefined;
+    this.main.classList.remove('asset-editor');
     this.cleanup?.();
     this.cleanup = undefined;
     this.player?.stop();
@@ -479,7 +550,7 @@ export class Workspace implements AssistantHost {
     const at = currentRoute();
     if (at.path[0] !== 'p' || at.path[1] !== this.project.id || at.path[2] !== file) {
       const next = `${location.pathname}${location.search}${formatHash(['p', this.project.id, file])}`;
-      if (at.path[0] === 'p' && at.path[1] === this.project.id && at.path[2]) history.pushState(null, '', next);
+      if (at.path[0] === 'p' && at.path[1] === this.project.id && (at.path[2] || fromAssets)) history.pushState(null, '', next);
       else history.replaceState(null, '', next);
     }
     setHashParams({ play: undefined });
@@ -499,6 +570,7 @@ export class Workspace implements AssistantHost {
         h(
           'div',
           { class: 'toolbar' },
+          h('button', { type: 'button', title: 'Browse this file category', onclick: () => this.openAssets(kindOf(file)) }, 'Assets'),
           h(
             'button',
             {
@@ -666,6 +738,10 @@ export class Workspace implements AssistantHost {
    * skipTitle, on the test copy only) and its menu comes after play ends. Stop goes back to that file.
    */
   private play(how?: 'title' | PlayPick, back = this.current, watch?: Pick<RunOptions, 'onSession' | 'onPlayEnd'>): void {
+    if (this.assetView) this.assetReturn = this.assetView;
+    this.assetView = undefined;
+    this.main.classList.remove('asset-editor');
+    document.title = `Playing ${this.project.name} · ${SHORT}`;
     const level = how === 'title' ? undefined : (how ?? this.defaultPick(back));
     notePlayed(this.project);
     setHashParams({ play: level ? pickParam(level) : 'title' });
@@ -692,7 +768,7 @@ export class Workspace implements AssistantHost {
           level && h('button', { onclick: () => this.play('title', back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
           h(
             'button',
-            { onclick: () => this.open(back && this.project.files.has(back) ? back : this.project.gam), title: back ? `Stop and go back to ${back}` : 'Stop' },
+            { onclick: () => this.stopPlay(), title: this.assetReturn ? 'Stop and return to game assets' : back ? `Stop and go back to ${back}` : 'Stop' },
             'Stop',
           ),
         ),
@@ -801,11 +877,8 @@ export class Workspace implements AssistantHost {
   }
 
   private async duplicate(file: string): Promise<void> {
-    const ext = file.split('.').pop()!;
-    const name = await this.askName(`Duplicate ${file}`, this.project.freeName(file.replace(/\.[^.]+$/, ''), ext), ext);
-    if (!name) return;
-    this.project.files.set(name, this.project.files.get(file)!.slice());
-    this.open(name);
+    const { assetCommands } = await import('./assetCommands');
+    await assetCommands(this.project, (name) => this.open(name)).duplicate(file);
   }
 
   private async remove(file: string): Promise<void> {

@@ -25,7 +25,7 @@ Part of the [source map](../README.md).
     `projectExport.ts`; the health badge (`gameHealth.ts`). Imported games' ratings on the home
     page (`homeRatings.ts`: a tile's stars, the Show picker, grouping by rating, and the stars and
     note in the panel at the top); "Remove all imported…" can take only some ratings.
-  - The workspace (`workspace.ts`: file list + editor), with Play Game and the Play Level split
+  - The workspace (`workspace.ts`: asset overview, file galleries, file list + editor), with Play Game and the Play Level split
     button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
     into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,
     the last pick per game in `playPickStore.ts`), the open file's actions
@@ -496,3 +496,7 @@ buildings, and selection copy/cut/paste and block groups. A gesture spans at mos
 one map per axis; native files and Undo continue to store only the original map.
 The overlay repeats drag previews, polygon edges and selections through the same
 seams; Find, grid, link and Level check overlays keep their native positions.
+
+Project URLs without a file open the asset overview; `?assets=map` opens a category.
+Direct file links keep their editor and view parameters. Browser Back and Forward,
+the Assets button in a file editor, and stopping a play test return to the appropriate view.

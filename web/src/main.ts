@@ -198,7 +198,7 @@ async function route(): Promise<void> {
   if (ui !== 'modern') return;
   if (kind === 'p' && id) {
     if (workspace?.project.id === id) {
-      if (file && file !== workspace.currentFile) workspace.open(file);
+      workspace.navigate(file);
       return;
     }
     workspace?.dispose();
@@ -210,7 +210,6 @@ async function route(): Promise<void> {
     }
     workspace = opened;
     clear(titleSlot, ` · ${opened.project.name}`);
-    document.title = `${opened.currentFile ? `${opened.currentFile} · ` : ''}${opened.project.name} · ${SHORT}`;
     return;
   }
   workspace?.dispose();
