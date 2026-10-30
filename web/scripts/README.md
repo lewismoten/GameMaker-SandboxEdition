@@ -9,7 +9,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
 - Vite plugins, imported by `../vite.config.ts` (which also emits the service worker and
   `player-files.json`):
   - `cdGames.ts` serves the CD's games and `../games` (and writes them into the build, with the
-    catalogs and one DOS ZIP per game in a content-hashed directory; loose game payloads and GMPK copies are not emitted);
+    catalogs and one DOS ZIP per game at a permanent URL; loose game payloads and GMPK copies are not emitted);
   - `gameShots.ts` draws each listed game's pictures into `games/shots/`;
   - `singlePageBuild.ts` builds `standalone.html`, and `hostedPlayerBuild.ts` the web player
     (`web-player.html`, `player/index.html` and `player/games.json`);
@@ -77,4 +77,4 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
 
 Package isolation verification lives in [`../../scripts/`](../../scripts/README.md); root `npm run verify:packages` builds each SDK outside the monorepo. The dependency credits generator reads the root workspace lockfile.
 
-`gameArchive.ts` builds the catalog ZIPs with the archives SDK through `exportDos`, including the game files, customized XFERPLAY, sound driver, setup help and notices. A fixed timestamp and content hash make them reproducible. Both ZIP filenames and their native contents follow DOS 8.3 naming; the eight-character hash directory versions the website URL. Resource-only CD folders receive data ZIPs. Walkthrough JSON and prebuilt catalog pictures remain separate browser metadata.
+`gameArchive.ts` builds the catalog ZIPs with the archives SDK through `exportDos`, including the game files, customized XFERPLAY, sound driver, setup help and notices. A fixed timestamp makes them reproducible. ZIP filenames and native contents follow DOS 8.3 naming. URLs such as `games/originals/teddy/teddy.zip` remain stable across releases and serve the current version; service-worker group hashes handle cache updates. Resource-only CD folders receive data ZIPs. Walkthrough JSON and prebuilt catalog pictures remain separate browser metadata.
