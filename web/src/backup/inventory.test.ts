@@ -12,6 +12,7 @@ const SRC = join(__dirname, '..');
 /** gm-* names in storage-using files that are events, CSS classes or ids, not stored keys. */
 const NOT_KEYS = new Set([
   'gm-theme-changed',
+  'gm-sound-card-changed', // a live hardware-change event; the stored preference already has its own section
   'gm-pad-change',
   'gm-mug-change',
   'gm-score-trophies-changed',
