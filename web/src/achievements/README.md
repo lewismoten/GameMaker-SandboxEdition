@@ -15,3 +15,9 @@ tour presses, calls or reads isn't the visitor's own doing.
 Repeated events use `countOccurrence` in `store.ts`: bounded sets of unique event tokens
 retain independent plays when records from tabs or backups merge. Old achievement
 records need no schema migration, and Reset clears these counts too.
+
+`repeatGoals.ts` defines tiers of 1, 3 and 10 for life losses, Game Over, and wins.
+Progress is the number of currently listed playable games that have reached the tier;
+non-playable catalog entries do not raise the target. `goals.ts` refreshes these totals
+from the persisted event sets. Existing one-time completion records are not inflated
+into repeat-event counts.
