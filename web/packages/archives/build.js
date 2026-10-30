@@ -10,6 +10,7 @@ const entry = {
   index: resolve(here, 'src/index.ts'),
   zip: resolve(here, '../../src/project/zip.ts'),
   pack: resolve(here, '../../src/project/gamePack.ts'),
+  scan: resolve(here, '../../src/project/importScan.ts'),
 };
 rmSync(resolve(here, 'dist'), { recursive: true, force: true });
 await build({

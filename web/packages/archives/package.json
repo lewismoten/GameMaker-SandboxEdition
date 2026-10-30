@@ -14,7 +14,8 @@
   "exports": {
     ".": { "types": "./dist/types/web/packages/archives/src/index.d.ts", "import": "./dist/index.js" },
     "./zip": { "types": "./dist/types/web/src/project/zip.d.ts", "import": "./dist/zip.js" },
-    "./pack": { "types": "./dist/types/web/src/project/gamePack.d.ts", "import": "./dist/pack.js" }
+    "./pack": { "types": "./dist/types/web/src/project/gamePack.d.ts", "import": "./dist/pack.js" },
+    "./scan": { "types": "./dist/types/web/src/project/importScan.d.ts", "import": "./dist/scan.js" }
   },
   "scripts": {
     "build": "node build.js",
