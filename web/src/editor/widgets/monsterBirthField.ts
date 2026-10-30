@@ -36,7 +36,7 @@ export function monsterBirthField(project: Project, bbl: string, get: () => numb
       only: (_, i) => data.used[i],
       name,
     });
-    button.setAttribute('aria-label', `Choose monster to be born (currently ${name(get())})`);
+    button.setAttribute('aria-label', `${get()} — Choose monster to be born: ${name(get())}`);
     clear(picture, button, h('small', { class: 'meta' }, name(get())));
     caption.textContent = source.label;
   }
