@@ -405,4 +405,7 @@ native game files are loaded only when the player chooses an archive action.
 
 - **Joystick descriptions.** `core/joystickButtons.ts` validates optional short
   and long descriptions for buttons 1 and 2 in the main GAM companion section
-  `joystickButtons`. Choice labels retain the original DOS button numbers.
+  `joystickButtons`. Choice labels retain the original DOS button numbers. The
+  character Controls tab exposes these shared settings through
+  `character/joystickControls.ts`; label edits participate in character Undo/Redo
+  without rewriting native files.

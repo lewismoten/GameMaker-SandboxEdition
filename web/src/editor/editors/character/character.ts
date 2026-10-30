@@ -39,6 +39,8 @@ import { stageBackdrop } from './characterStage';
 import { COUNTER_NAMES, counterName, readCounterNames, type CounterNames } from './counterNames';
 import { counterNameField } from './counterNameFields';
 import { panelTabs } from '../../widgets/panelTabs';
+import { JOYSTICK_BUTTONS, readJoystickButtons, type JoystickButtons } from '../../core/joystickButtons';
+import { joystickControls } from './joystickControls';
 
 const JOY_DIRS: [number, string][] = [
   [0, 'No joystick'],
@@ -52,14 +54,6 @@ const JOY_DIRS: [number, string][] = [
   [8, '↖ Up-left'],
   [9, '✣ Any direction'],
 ];
-const JOY_BUTTONS: [number, string][] = [
-  [0, 'Any (doesn’t matter)'],
-  [1, 'Button 1'],
-  [2, 'Button 2'],
-  [3, 'Both buttons'],
-  [4, 'No buttons pressed'],
-];
-
 /** When the built-in sequences run, in plain words. */
 const BUILT_IN_HELP = [
   'Plays whenever no other sequence is running — the hero standing still.',
@@ -98,12 +92,14 @@ registerEditor(['chr'], (host, project, file) => {
     cbl?: Uint8Array;
     links: string;
     names: CounterNames;
+    joystick: JoystickButtons;
   }
   const snapshot = (): Snap => ({
     chr: serializeCharacter(chr),
     cbl: cblName ? project.files.get(cblName) : undefined,
     links: JSON.stringify([seqLinks({ project, file }), blockLinks(project, cblName)]),
     names: readCounterNames(project.extras<unknown>(file, COUNTER_NAMES, undefined)),
+    joystick: readJoystickButtons(project.extras<unknown>(project.gam, JOYSTICK_BUTTONS, undefined)),
   });
   const history = new History<Snap>();
   let base = snapshot();
@@ -138,6 +134,8 @@ registerEditor(['chr'], (host, project, file) => {
       if (cblName) project.setExtras(cblName, 'mirrors', blocks.length ? blocks : undefined);
     }
     if (JSON.stringify(to.names) !== JSON.stringify(base.names)) project.setExtras(file, COUNTER_NAMES, Object.keys(to.names).length ? to.names : undefined);
+    if (JSON.stringify(to.joystick) !== JSON.stringify(base.joystick))
+      project.setExtras(project.gam, JOYSTICK_BUTTONS, Object.keys(to.joystick).length ? to.joystick : undefined);
     base = to;
     lastChange = 0;
     syncHistory();
@@ -633,11 +631,11 @@ registerEditor(['chr'], (host, project, file) => {
                           () => seq.jstkMov,
                           (v) => edit(() => (seq.jstkMov = v)),
                         ),
-                        selectField(
-                          'Joystick button',
-                          JOY_BUTTONS,
+                        joystickControls(
+                          project,
                           () => seq.jstkBut,
-                          (v) => edit(() => (seq.jstkBut = v)),
+                          (value) => edit(() => (seq.jstkBut = value)),
+                          (buttons) => edit(() => project.setExtras(project.gam, JOYSTICK_BUTTONS, Object.keys(buttons).length ? buttons : undefined), false),
                         ),
                       ),
                       help('Press the key (or push the joystick this way) to run the sequence. F1–F10 are kept for the game’s own menus.'),
