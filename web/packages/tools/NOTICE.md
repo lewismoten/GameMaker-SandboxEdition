@@ -17,3 +17,13 @@ The lighting presets were written for this project. GIF, FLI, Creative Voice Fil
 The underlying web port and game-building tools were written with Anthropic Claude Opus 5.5 under Lewis Moten's direction. OpenAI Codex (GPT-6/6.1) prepared the toolkit packaging, consumer migration, documentation, and verification under his direction.
 
 No game-specific artwork, palettes, characters, recordings, or complete games are included. Consumers supply and credit their own content.
+
+## Optional source audio conversion
+
+`audio-files` invokes an independently installed [FFmpeg](https://ffmpeg.org/) executable
+by the FFmpeg developers; no FFmpeg code or binary is included in this package. FFmpeg is
+LGPL-2.1-or-later, or GPL-2.0-or-later when its GPL components are enabled; see its
+[licensing information](https://ffmpeg.org/legal.html). FLAC is the lossless audio format
+maintained by Xiph.Org; its [FAQ](https://xiph.org/flac/faq.html) describes sample-exact
+compression. The process wrapper and VOC conversion APIs were implemented with OpenAI
+Codex under Lewis Moten's direction, using this project's existing native VOC encoder.

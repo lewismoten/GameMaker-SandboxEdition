@@ -8,6 +8,7 @@ import { execFileSync } from 'node:child_process';
 const here = dirname(fileURLToPath(import.meta.url));
 const sources = {
   audio: 'audio',
+  'audio-files': 'audioFiles',
   colors: 'colors',
   drawing: 'drawing',
   'image/png': 'image/png',

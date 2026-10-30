@@ -75,3 +75,31 @@ The build bundles source from the format, drawing, audio, and simulation modules
 `verify` installs the tarball in a temporary npm consumer and checks codecs, drawing, sound generation, headless simulation, NodeNext declarations, absence of game content, and rejected browser imports. Repository automation is documented in the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md).
 
 Tarballs are local build artifacts and must not be committed to a consuming project.
+
+## Source audio files to VOC (Node.js)
+
+Install [FFmpeg](https://ffmpeg.org/download.html) separately and make `ffmpeg` available on
+PATH, or pass its executable path as `ffmpegPath`. This optional build-time integration
+ships no decoder binary and adds nothing to browser playback.
+
+```ts
+import { audioFileToVoc, decodeAudioFile } from '@lewismoten/gamemaker-sandbox-tools/audio-files';
+import { writeFileSync } from 'node:fs';
+
+writeFileSync('VOICE.VOC', audioFileToVoc(new URL('./voice.flac', import.meta.url), {
+  sampleRate: 11025, maxBytes: 39999,
+}));
+const samples = decodeAudioFile('voice.ogg', { sampleRate: 8000 });
+```
+
+FLAC, Ogg, WAV and other formats supported by your FFmpeg build are accepted. Output is
+mono at the requested sample rate (11025 Hz by default). VOC conversion defaults to a
+65535-byte DOS limit; oversized clips fail instead of being shortened. `decodeAudioFile`
+returns samples for mixing or other authoring operations, bounded by `maxSamples`
+(default 16 MiB). Both functions accept `timeoutMs` (default 30000).
+
+Use lossless FLAC to preserve existing unsigned 8-bit PCM bytes at the same sample rate.
+The converter disables dithering and uses the inverse of the native VOC encoder's byte
+mapping. Lossy sources such as Ogg Vorbis are supported for new audio, but cannot recreate
+a previous recording's exact samples. Source `.flac` names are authoring assets; only
+8.3-named `.VOC` files belong on the generated DOS disk.

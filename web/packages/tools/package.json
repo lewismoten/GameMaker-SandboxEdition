@@ -62,6 +62,12 @@
       "types": "./dist/types/image/*.d.ts",
       "gamemaker-source": "./src/image/*.ts",
       "import": "./dist/image/*.js"
+    },
+    "./audio-files": {
+      "types": "./dist/types/audioFiles.d.ts",
+      "browser": null,
+      "gamemaker-source": "./src/audioFiles.ts",
+      "import": "./dist/audio-files.js"
     }
   },
   "scripts": {
