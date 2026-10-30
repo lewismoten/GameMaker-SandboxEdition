@@ -235,3 +235,8 @@ The file picker offers This game, Library (CD samples), and Sandbox & Bizarre
 source tabs, with search by filename or source-game title in every list. Source
 sounds use catalog groups and fetch their game ZIP only for visible previews or
 a chosen file; opening a list does not listen to every game first.
+
+`widgets/characterPicture.ts` resolves a CHR’s actual scene CBL (or a paired
+filename/single unambiguous set), skips sequence-end and monster-birth commands,
+and renders top/bottom orientation nibbles as PLAYGAME does. Bottom-only sprites
+are real previews too; a blank idle can fall back to a movement frame.
