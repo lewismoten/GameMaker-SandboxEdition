@@ -40,6 +40,7 @@ import {buildRampPalette} from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps
 import {recordedDemo} from '@lewismoten/gamemaker-sandbox-tools/kit/recordedDemo';
 import {parseRecording} from '@lewismoten/gamemaker-sandbox-tools/formats/recording';
 import {Disk} from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
+import {diffDisks,formatDiff} from '@lewismoten/gamemaker-sandbox-tools/disk-diff';
 for(const name of ['actors','align','coverPaint','disk','fadeOut','fliClips','hopBot','levelPicture','menuVersion','microText','palRamps','photo','png','quantize','raytrace','recordedDemo','road3d','routeChecks','saveSlots','sceneInit','screenText','sdftext','song','songFx','synthParts','textfit','transforms'])
   await import('@lewismoten/gamemaker-sandbox-tools/kit/'+name);
 assert.equal(libraryDefaultPalette().length,768);assert.deepEqual(libraryDefaultPalette().slice(0,3),Uint8Array.of(0,0,0));const changed=libraryDefaultPalette();changed[0]=63;assert.equal(libraryDefaultPalette()[0],0);
@@ -47,6 +48,7 @@ assert.equal(PALETTE_PRESETS.length,20);assert.equal(createPalettePreset('atari-
 assert.equal(MICRO_GLYPHS['µ'],'000101101111100');assert.notEqual(MICRO_GLYPHS.C,MICRO_SQUARE_GLYPHS.C);
 const built=buildRampPalette([['ink',2,[0,0,0],[252,252,252]]]);assert.equal(built.c('ink',99),built.r('ink')[1]);
 assert.deepEqual(parseRecording(recordedDemo([1,77],3,2)).slice(-2),[{delta:3,key:1},{delta:2,key:129}]);
+{const dd=diffDisks(new Map([['A.TXT',Uint8Array.of(97)]]),new Map([['A.TXT',Uint8Array.of(98)],['B.TXT',Uint8Array.of(99)]]));assert.ok(formatDiff(dd).includes('B.TXT'));}
 const disk=new Disk('native');disk.put('TEST.GAM',Uint8Array.of(1,2,3));assert.equal(disk.write(),3);
 
 assert.equal(typeof audioFileToVoc, 'function');
