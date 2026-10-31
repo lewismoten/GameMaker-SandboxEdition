@@ -2,12 +2,12 @@
 //   cd web && npx vite-node ../games/year2000/build.ts
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializeMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -39,20 +39,24 @@ import { licenseText } from '../kit/license';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
+/** Eight trips through the future earn a full-sized score without eclipsing much longer games. */
+const SCORE_SCALE = 0.7;
+const scoreBlocks = (blocks: Block[]) => blocks.map((block) => ({ ...block, scorePts: Math.round(block.scorePts * SCORE_SCALE) }));
+const scoreMonsters = (mons: Monster[]) => mons.map((monster) => ({ ...monster, upscore: Math.round(monster.upscore * SCORE_SCALE) }));
 const lst = (name: string, entries: [string, number?][]) => disk.put(name, serializeSlideList(entries.map(([n, pause]) => ({ name: n, pause }))));
 
 // Shared data.
 const sets = { suburb: SETS.suburb(), city: SETS.city(), moon: SETS.moon(), sky: SETS.sky() };
 const built = { suburb: sets.suburb.build(), city: sets.city.build(), moon: sets.moon.build(), sky: sets.sky.build() };
-for (const k of Object.keys(sets) as (keyof typeof sets)[]) disk.put(`${k}.bbl`, serializeBlocks(built[k]));
+for (const k of Object.keys(sets) as (keyof typeof sets)[]) disk.put(`${k}.bbl`, serializeBlocks(scoreBlocks(built[k])));
 const mb = buildMonsterBlocks();
 const mbl = mb.build();
 const mons = buildMonsters(mb);
 const cb = buildCharBlocks();
 disk.put('y2k.pal', serializePalette(PAL.pal));
 disk.put('y2k.mbl', serializeBlocks(mbl));
-disk.put('y2k.mon', serializeMonsters(mons));
-disk.put('dex.cbl', serializeBlocks(cb.build()));
+disk.put('y2k.mon', serializeMonsters(scoreMonsters(mons)));
+disk.put('dex.cbl', serializeBlocks(scoreBlocks(cb.build())));
 disk.put('dex.chr', serializeCharacter(buildCharacter(cb, false)));
 disk.put('moon.chr', serializeCharacter(buildCharacter(cb, true)));
 disk.put('car.chr', serializeCharacter(buildCarCharacter(cb)));
@@ -61,7 +65,7 @@ const skyMb = buildSkyMonsterBlocks();
 const skyMbl = skyMb.build();
 const skyMons = buildSkyMonsters(skyMb);
 disk.put('sky.mbl', serializeBlocks(skyMbl));
-disk.put('sky.mon', serializeMonsters(skyMons));
+disk.put('sky.mon', serializeMonsters(scoreMonsters(skyMons)));
 const sounds = buildSounds();
 disk.put('y2k.snd', serializeSoundSet(sounds.set));
 for (const [name, voc] of Object.entries(sounds.vocs)) disk.put(`${name}.voc`, voc);
