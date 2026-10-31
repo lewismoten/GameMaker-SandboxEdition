@@ -119,6 +119,8 @@ export interface SaveLabels {
   blocks?(scene: number): Block[] | undefined;
   /** How many blocks in the whole game change each counter (meter index → count). */
   counterUse?: Map<number, number>;
+  /** The author's names for the counters (meter index → name), from Overview › Controls. */
+  counterNames?: Record<string, string>;
 }
 
 export type FieldGroup = 'player' | 'money' | 'uses' | 'counters' | 'inventory' | 'where';
@@ -287,7 +289,9 @@ export function saveFields(save: SavedGame, labels: SaveLabels = {}): SaveField[
     fields.push({
       id: `counter:${n + 1}`,
       group: 'counters',
-      label: labels.counterUse ? `Counter ${n + 1}${used ? ` (${used} block${used === 1 ? '' : 's'})` : ' (unused)'}` : `Counter ${n + 1}`,
+      label: labels.counterUse
+        ? `Counter ${n + 1}${labels.counterNames?.[i] ? ` · ${labels.counterNames[i]}` : ''}${used ? ` (${used} block${used === 1 ? '' : 's'})` : ' (unused)'}`
+        : `Counter ${n + 1}`,
       type: 'int',
       min: METER_BOTTOM - 1,
       max: METER_TOP - 1,

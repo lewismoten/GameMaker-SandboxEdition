@@ -29,7 +29,7 @@ export interface GameLabels extends SaveLabels {
 }
 
 /** Reads the labels from a game's files; undefined when its .gam is missing or damaged. */
-export function gameLabels(files: FileSource, gam: string): GameLabels | undefined {
+export function gameLabels(files: FileSource, gam: string, counterNames?: Record<string, string>): GameLabels | undefined {
   const bytes = files.get(gam);
   if (!bytes) return undefined;
   let game: Game;
@@ -72,6 +72,7 @@ export function gameLabels(files: FileSource, gam: string): GameLabels | undefin
   return {
     game,
     counterUse,
+    counterNames,
     sceneName: (scene) => game.scenes[scene]?.desc?.trim() || undefined,
     character: (scene) => read(scene, CHR, parseCharacter),
     blocks: (scene) => read(scene, BBL, (x) => parseBlocks(x, BACKBL)),
