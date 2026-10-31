@@ -20,12 +20,14 @@ import { explore, type Entry, type Exploration, type ExploreOptions } from '../e
 import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource } from '../sim';
 import { replayMine } from './replayMine';
+import { fetchKeys, locksAtEntry } from './fetchKeys';
+import { lockedWhy } from './gates';
 import { scenePaths } from './walkPaths';
 import { ON_PATH_ENOUGH, pathShare, preferPathRoute } from './pathRoute';
 import { pathTo, replayPath, type Replay } from './replayPath';
 
 interface Strategy {
-  id: 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'mine';
+  id: 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'keys' | 'mine';
   name: string;
   /** Only for scenes with gravity (true) or without (false). */
   gravity?: boolean;
@@ -43,6 +45,8 @@ export const STRATEGIES: Strategy[] = [
   { id: 'patient', name: 'Every move, waiting out hazards', share: 0.5, options: () => ({ waitEverywhere: true }) },
   // played apart from the others (collect()): gathers what the scene holds first, then goes on
   { id: 'collector', name: 'Collect everything, then go on', share: 0.8, options: () => ({}) },
+  // played apart too (fetchKeys.ts): the keys of the doors still shut, then the way on
+  { id: 'keys', name: 'Fetch the keys, then go on', share: 0.8, options: () => ({}) },
 ];
 
 /** The author's own play of a scene (not one of the bot's styles). */
@@ -174,6 +178,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     }
     const wanted = new Set(ways.map((l) => s.links.indexOf(l)));
     let biggest: Exploration | undefined;
+    let lockWhy: string | undefined;
     let found: { replay: Replay; strategy: Strategy } | undefined;
     /**
      * The collector: explore the whole scene, go to the place where the hero has gathered the
@@ -260,7 +265,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       return undefined;
     };
     for (const st of found ? [] : STRATEGIES) {
-      if (st.id === 'collector' || (st.gravity !== undefined && st.gravity !== gravity)) continue;
+      if (st.id === 'collector' || st.id === 'keys' || (st.gravity !== undefined && st.gravity !== gravity)) continue;
       outcome.tried.push(st.id);
       const replay = await tryStyle(st);
       if (replay) {
@@ -276,6 +281,26 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       }
       if (found || canceled) break;
     }
+    // doors that shut until the hero has a key from off the route: fetch it, then go on
+    if (!found && !canceled) {
+      const locks = locksAtEntry(game, files, scene, entry);
+      if (locks.wanted.size) {
+        outcome.tried.push('keys');
+        if (opt.progress?.(scene, 'Fetch the keys, then go on', 0)) canceled = true;
+        const replay =
+          !canceled &&
+          (await fetchKeys(game, files, scene, entry, locks, {
+            goal,
+            wanted,
+            budgetMs: budget * 0.8,
+            seed,
+            paths,
+            progress: (places) => (opt.progress?.(scene, 'Fetch the keys, then go on', places) ? (canceled = true) : canceled),
+          }));
+        if (replay) found = { replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
+      }
+      lockWhy = lockedWhy(locks);
+    }
     if (!found && !canceled && !backOnly) await collect();
     if (canceled) {
       out.stopped = 'Stopped.';
@@ -284,7 +309,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     }
     if (!found) {
       outcome.heat = biggest?.heat;
-      out.stopped = `No bot style got through ${name}: the walkthrough stops there.`;
+      out.stopped = `No bot style got through ${name}: the walkthrough stops there.${lockWhy ? ` ${lockWhy}` : ''}`;
       ending = endingOf(name, 'stuck');
       break;
     }

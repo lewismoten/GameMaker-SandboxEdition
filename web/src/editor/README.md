@@ -115,7 +115,8 @@ Part of the [source map](../README.md).
     `mapFixes.ts`) and the maze maker (`mazeFor.ts`); `accepted.ts` keeps the findings a designer
     marked as meant to be (by a stable key; `sameEverySide.ts` is the facing check's own list).
   - `walk/`: the walkthrough bot. `pace.ts` measures how tight a walkthrough's key changes are;
-    `autoWalk.ts` walks, checked on the engine by `verify.ts`; `takes.ts` cuts the author's own play
+    `autoWalk.ts` walks, checked on the engine by `verify.ts`; `gates.ts` finds the locked doors and
+    what adds to their counters, and `fetchKeys.ts` fetches those keys first, then goes on; `takes.ts` cuts the author's own play
     of a scene from the player's recorder, `mine.ts` keeps it, and `replayMine.ts` plays it in place
     of the bot's; `botRoutes.ts` keeps the bot's route of one scene with a fingerprint of the scene,
     to tell when the map changed since. `keptWalk.ts` is what Make a walkthrough keeps (companion
