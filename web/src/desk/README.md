@@ -53,7 +53,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   signal also cancels speech and key waits; menu keys can interrupt the spoken prompt.
   The cumulative fictional bill advances “An itemized bark” at $10; progress is in pretend
   cents and the bill itself continues past that threshold) and its notes
-  (`phoneNotes.ts`), the shareware catalog (`catalog.ts`) and the magazine lying on the desk
+  (`phoneNotes.ts`), the shareware catalog (`catalog.ts`: a three-column paper catalog in the style of 1990s shareware disk lists, with a disk number per game, Freeware and Shareware sections, a price per disk and an order form) and the magazine lying on the desk
   (`paperStack.ts`), and the mug, phone and lamp (`deskProps.ts`).
 - `props/`: makes the room's little things pressable (`index.ts`, `propKit.ts`, whose `cover`
   lays an empty, named button over a drawing with words on it; their sounds in
