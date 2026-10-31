@@ -10,6 +10,7 @@ import type { Pal } from '../art/pal';
 import { THREAD } from '../ids';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { wattCameo } from '../../../kit/cameos';
+import { tailorBadges } from './badges';
 import { addGate, addGoodThings, addSoul, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 export function tailorBlocks(pal: Pal): Kit {
@@ -249,5 +250,7 @@ export function tailorBlocks(pal: Pal): Kit {
   };
   book.add('watt', watt(false), { ...air, next: 'wattBlink', ntime: 70 });
   book.add('wattBlink', watt(true), { ...air, next: 'watt', ntime: 3 });
+  // (last) scenery for the site's achievement badges
+  tailorBadges(book, pal, () => panel(1), air);
   return k;
 }

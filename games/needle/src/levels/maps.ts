@@ -385,6 +385,8 @@ export function tailor(book: BlockBook): Level {
   // the last needle: crawl through its eye at the floor to the back door
   m.col(59, 1, 13, 'N').set(59, 14, 'A').set(59, 15, 'e').set(61, 14, 'n').set(61, 15, 'd');
   m.mon(MON.moth, 15, 5).mon(MON.scissors, 12, 15).mon(MON.needle, 31, 5).mon(MON.thimble, 38, 15).mon(MON.moth, 54, 10).mon(MON.seed, 56, 3);
+  // scenery for the site's achievement badges: on the paneling, off the way between the spools
+  m.set(10, 3, 'compass').set(17, 3, 'foldMap').set(41, 3, 'rulerTriangle').set(56, 12, 'seenGlasses');
   m.link(61, 15, 'next');
   return { m, start: at(2, 15), size: [W, H] };
 }
