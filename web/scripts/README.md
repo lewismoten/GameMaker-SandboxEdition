@@ -20,6 +20,12 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     `og/<id>.png` (drawn by `ogImage.ts`), each Guide section's page `help-<id>.html` (its text from
     `manual/guideSections.ts`, which `webManual.ts` shows), and The Sandbox Scoop's RSS feed `scoop.xml`
     (`scoopFeed.ts`: every game's `printables.json` news story, dated from `scoopDates.json`).
+- `tourCheck.ts` (`npm run tour:check -- <chapter>[,<chapter>]`, or `all`): starts its own vite on a
+  free port from 5190 (never 5173) with a scratch cache, plays the tour chapters in headless Chrome
+  (playwright-core) at 1440 and 390 wide, light and dark, stepping through paused, and prints a table
+  of each step (`ok`, `skipped` for an optional step with no control, `MISSING`) plus the axe
+  violations seen on every step (so on what a chapter opens too) and any horizontal scroll. It exits
+  non-zero on a missing non-optional step and stops its server.
 - Data files the site reads, written by hand-run scripts (their tests fail until they are rerun):
   - `credits.ts` writes the Credits page's `deps.json`;
   - `scoopDates.ts` the day each Sandbox Scoop story was first committed, `scoopDates.json` (the

@@ -601,6 +601,16 @@
       "repo": "https://github.com/chaijs/assertion-error"
     },
     {
+      "name": "axe-core",
+      "version": "4.14.0",
+      "license": "MPL-2.0",
+      "runtime": false,
+      "direct": true,
+      "usedBy": [],
+      "author": "David Sturley",
+      "repo": "https://github.com/dequelabs/axe-core"
+    },
+    {
       "name": "balanced-match",
       "version": "4.0.4",
       "license": "MIT",
@@ -2069,6 +2079,16 @@
       ],
       "author": "crouchcd",
       "repo": "https://github.com/crouchcd/pkce-challenge"
+    },
+    {
+      "name": "playwright-core",
+      "version": "1.64.1",
+      "license": "Apache-2.0",
+      "runtime": false,
+      "direct": true,
+      "usedBy": [],
+      "author": "Microsoft Corporation",
+      "repo": "https://github.com/microsoft/playwright"
     },
     {
       "name": "postcss",
