@@ -4,7 +4,7 @@ Badges reuse the original 20×20 indexed blocks below, at integer-friendly displ
 The selected public games are by Lewis Moten using Anthropic Claude (MIT).
 The nine every-life, every-loss and every-win tier badges are composed from Teddy's poses
 (hop, hurt, bark) with a bronze, silver or gold plate and a 1, 3 or 10 mark, by Claude Sonnet 5.5,
-which also extracted the later picks and drew the thirteen new Certified Rat Tickler blocks (a toolbox, clipboard,
+which also extracted the later picks (some from games' sprite books, drawn over a plain backdrop) and drew the thirteen new Certified Rat Tickler blocks (a toolbox, clipboard,
 mixing panel, UV bulb, blacklight, CRT, sound card, hex keypad, screwdriver and disk, pirate hat, surfer, fax and
 waving hand) as scenery in that game, and the eighteen new Final Curtain blocks (a rotary dial, number card, two masks,
 ribbon book, leaflet, registration form, badge clipboard, blank sheet, film strip, clapperboard, magnifier, peeking face,
@@ -135,6 +135,11 @@ duplicate image bytes.
 | bbs-got-time | loaf | loaf / snail |
 | desk-star | goat | goat / shootingStar |
 | desk-goat | goat | goat / surprisedGoat |
+| desk-plow | snowbound | snowSprites / plowFront0 |
+| desk-sleds | snowbound | snowSprites / sledder0 |
+| bbs-download-every-speed | sweats | sweatsHomeSprites / turtle0 |
+| desk-dogs | teddy | gwinnSprites / gwinnRun1 |
+| zine-read | teddy | teddyToys / book |
 | play-bizarre | smirked | smirked / violin |
 | library-visit | risi | risiCampus / libraryFront |
 | every-life-1 | teddy | tiers / every-life-1 |
@@ -160,14 +165,9 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | egg-teddy | Lay an egg! | 20×20 block: a mischievous corgi beside a suspiciously lumpy felt egg, with a dark outline and one clear focal shape. |
 | watch-bot | Robot rerun | 20×20 block: a little robot turning a film projector crank, with a dark outline and one clear focal shape. |
 | download-mp4 | Director’s cut | 20×20 block: a curled strip of film with three distinct frames, with a dark outline and one clear focal shape. |
-| bbs-download-every-speed | The long way round | 20×20 block: a determined turtle carrying a modem, with a dark outline and one clear focal shape. |
 | bbs-cant-wait | I can’t wait | 20×20 block: a tiny rocket trailing a telephone cable, with a dark outline and one clear focal shape. |
 | hint-phone-bill | An itemized bark | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
 | desk-egg-pages | Turn the page | 20×20 block: an open card file with colorful page tabs, with a dark outline and one clear focal shape. |
 | desk-chez | Honk honk | 20×20 block: THE CHEZ seen from the front, with Teddy in the passenger seat, with a dark outline and one clear focal shape. |
-| desk-plow | Plowed in | 20×20 block: a friendly snowplow pushing a little white drift, with a dark outline and one clear focal shape. |
-| desk-sleds | Snow day | 20×20 block: a wooden sled leaving two tracks, with a dark outline and one clear focal shape. |
-| desk-dogs | Loose again | 20×20 block: Teddy and Gwinn in a playful chase, with a dark outline and one clear focal shape. |
 | desk-mailtruck | In the mail | 20×20 block: a small mail truck with a raised envelope emblem, with a dark outline and one clear focal shape. |
 | desk-egg-uv | Secret ink | 20×20 block: a flashlight revealing a felt egg, with a dark outline and one clear focal shape. |
-| zine-read | Read all about it | 20×20 block: a little notebook with a ribbon marker, with a dark outline and one clear focal shape. |

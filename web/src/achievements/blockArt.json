@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi, Loaf, Goat and Smirked badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi, Loaf, Goat and Smirked badge blocks, the sprite frames (snowplow, sled, turtle, Gwinn, book) and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -630,6 +630,36 @@
       "game": "goat",
       "set": "goat",
       "block": "surprisedGoat"
+    },
+    "desk-plow": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEUMDBwoKEHL2/Pn6/f///+61+vj+/+KsuOyiiD/62GCMADXfRj/piiampq3tjVuAAAAf0lEQVR42m3R4Q7DIAgEYNixAbK+/+suoO2w6fnvCxcxkuoYY+gWUslAgNcUgRJBMG0hEr9n6F9P/FQ6RsS7kkjuKnJHMxV0zLjv9YjoeIXIrPbc0R1P6E91S6wwM6/bXWQ+gytzeReceBxcy2v2G9ak5k0LKc8NddlWbx+Rkz8wnQnRQ2VInwAAAABJRU5ErkJggg==",
+      "game": "snowbound",
+      "set": "snowSprites",
+      "block": "plowFront0"
+    },
+    "desk-sleds": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUMDBzn6/f///+KsuMsGAyWaUEsXThBeUn/z6b/62FJabJBNz1DAAAAS0lEQVR42o3Qyw7AIAhE0aEIPv7/g41Wm1TQeJcnzAZwL7d4hgOmloNIt5cG49s1qqoe8CEzF9CKImNeZgPJRTEx2NoOw9r3kH8uVsvCBvutogHwAAAAAElFTkSuQmCC",
+      "game": "snowbound",
+      "set": "snowSprites",
+      "block": "sledder0"
+    },
+    "bbs-download-every-speed": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEUQDBAYQRRJdSx5rkmq52XL7/+cS+0bAAAAZElEQVR42s3PUQ7AIAgD0ELx/ldeimWbyQ6w/kieBBHrI/gDonMgUAqHdWwqksSgraJVU7BAQbE701OmsVUF2J10XyR7tlCmgclM3WoJMC2R4Ye2jt0rkQhJwIsanQfX69O7ugBw1gXYZxcq7wAAAABJRU5ErkJggg==",
+      "game": "sweats",
+      "set": "sweatsHomeSprites",
+      "block": "turtle0"
+    },
+    "desk-dogs": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUUDBCW11X///csFAxNKBhpPCSKVTCqaTz/72Hjkrb/gpZAVoA6AAAAcklEQVR42rWQUQ6AMAhD67oyt/sf2DCG08Rf+wUvlBJwfAi/QrpuGBWtNbPAPukFK22KaWdAJN0wR4EV5NRZKXtyRssMIw4IO3vvpySOMTJdsc0c553JTCqFCR9akFJd0vKDqtyviA4Unw+aLcj327y/ALAOA9DIAi73AAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "gwinnSprites",
+      "block": "gwinnRun1"
+    },
+    "zine-read": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEUUDBC+z+f///emICj/VVX/72Fn/92bAAAAP0lEQVR42mNgxAIYBqsgAxwgBBmYWaCAiQFFkBWMUAVZWVhZWVgxVLKyYqoEA2JUYrWdCQyIUAkDSIJI3gTzAcKRAnZXiIMSAAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "teddyToys",
+      "block": "book"
     },
     "play-bizarre": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUQDBTv16L///f/96qKYUGqfVVlOH3LTUFMjPLkAAAAeUlEQVR42m2PUQ7DMAhDnwch97/xBCFt2s0fUfSEbSBSlGJr/cwMv3FDcD8n02hvO2Zm4eCN1JADirbfUGIX9U6EKplmXv3iWAkfCUX8QHFCPK26DlhvxWVAPGCNvaAq4QnFJ+VHkcTwpasoK8ay78k5Z8R/yDI3/AL/DQY3m/1rUwAAAABJRU5ErkJggg==",

@@ -43,8 +43,13 @@ import { LEVELS as teddy2Levels } from '../../games/teddy2/src/game';
 import { buildPalette as teddy2Palette } from '../../games/teddy2/src/art/pal';
 import { buildBlocks as tickleBlocks } from '../../games/tickle/src/blocks/blocks';
 import { buildPalette as ticklePalette } from '../../games/tickle/src/art/pal';
+import { buildMonsterBlocks as snowMonsterBlocks } from '../../games/snowbound/src/sprites/monsterBlocks';
+import { GROUPS as sweatsAllGroups } from '../../games/sweats/src/scenes';
+import { commonSprites as sweatsCommonSprites, makeBook as sweatsMakeBook } from '../../games/sweats/src/common/sprites';
+import { GWINN } from '../../games/teddy/src/sprites/gwinn';
+import { TOYS } from '../../games/teddy/src/sprites/toys';
 import { tierBlocks, tierPalette } from './achievementTiers';
-import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export interface Source {
   game: string;
@@ -59,6 +64,35 @@ const named = (h: Holder): Map<string, Pixels> => {
   const out = new Map<string, Pixels>();
   h.names!.forEach((n, i) => out.set(n, (h.pics as Pixels[])[i]));
   return out;
+};
+
+/**
+ * A game's character or monster block set (sprites), with its transparent color drawn over a plain backdrop
+ * (the palette entry nearest `bg`) so a badge reads on its own: the sprite books are 20x20 like the background sets.
+ */
+const spriteSet = (game: string, pics: Map<string, Pixels>, palette: Uint8Array, bg: [number, number, number]): Source => {
+  const k = Math.max(...palette) > 63 ? 1 : 4;
+  let best = 0;
+  let dist = Infinity;
+  for (let i = 0; i < 255; i++) {
+    const d = [0, 1, 2].reduce((a, c) => a + (palette[i * 3 + c] * k - bg[c]) ** 2, 0);
+    if (d < dist) [best, dist] = [i, d];
+  }
+  const out = new Map<string, Pixels>();
+  for (const [n, p] of pics) {
+    const q = new Pixels(p.w, p.h, 0);
+    q.px.set(p.px.map((v) => (v === 255 ? best : v)));
+    out.set(n, q);
+  }
+  return { game, blocks: out, palette };
+};
+const sweatsSprites = (id: string): Source => {
+  const g = sweatsAllGroups.find((x) => x.id === id)!;
+  const pal = sweatsPalette(g.ramps);
+  const book = sweatsMakeBook('mbl');
+  sweatsCommonSprites(book, pal);
+  g.sprites(book, pal);
+  return spriteSet('sweats', book.pics, pal.pal, [196, 220, 236]);
 };
 
 const goat = goatPalette('day');
@@ -111,6 +145,10 @@ export const sets: Record<string, Source> = {
   sweatsHive: sweatsGroup('hive'),
   sweatsWork: sweatsGroup('work'),
   sweatsOutside: sweatsGroup('outside'),
+  snowSprites: spriteSet('snowbound', snowMonsterBlocks(snow).pics, snow.pal, [150, 190, 224]),
+  sweatsHomeSprites: sweatsSprites('home'),
+  gwinnSprites: spriteSet('teddy', new Map(Object.entries(GWINN)), P.pal, [150, 200, 120]),
+  teddyToys: spriteSet('teddy', new Map(Object.entries(TOYS)), P.pal, [170, 200, 230]),
   teddy2Main: teddy2Level('main'),
   teddy2House: teddy2Level('house'),
 };
@@ -222,6 +260,11 @@ export const picks: Record<string, [string, string]> = {
   'bbs-got-time': ['loaf', 'snail'],
   'desk-star': ['goat', 'shootingStar'],
   'desk-goat': ['goat', 'surprisedGoat'],
+  'desk-plow': ['snowSprites', 'plowFront0'],
+  'desk-sleds': ['snowSprites', 'sledder0'],
+  'bbs-download-every-speed': ['sweatsHomeSprites', 'turtle0'],
+  'desk-dogs': ['gwinnSprites', 'gwinnRun1'],
+  'zine-read': ['teddyToys', 'book'],
   'play-bizarre': ['smirked', 'violin'],
   'library-visit': ['risiCampus', 'libraryFront'],
   'every-life-1': ['tiers', 'every-life-1'],
