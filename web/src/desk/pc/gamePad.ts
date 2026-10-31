@@ -10,6 +10,7 @@ import { readGamepad } from '../../input/gamepad';
 import { plugDeskPad } from '../../input/deskJoystick';
 import { gamePadArt } from './gamePadArt';
 import { PadHolds, pressWithPointer } from './gamePadHolds';
+import { throwDrawnSwitch } from './gamePadSwitch';
 import { gamePadPanel } from './gamePadPanel';
 
 /** Shows a real gamepad's presses on the desk's pad while one is plugged in (the browser says so on its first press). */
@@ -48,7 +49,7 @@ export function deskGamePad(): HTMLElement {
       class: 'game-pad',
       'aria-label': "GRAVITAS PC GamePad, the PC's joystick: open its large controls",
       'aria-haspopup': 'dialog',
-      title: 'The joystick: press its d-pad and red or yellow button, or click the pad for large controls',
+      title: 'The joystick: press its d-pad and red or yellow button, slide its TURBO switch, or click the pad for large controls',
     },
     art,
   );
@@ -57,7 +58,7 @@ export function deskGamePad(): HTMLElement {
   // the PC keeps the keyboard: pressing the pad doesn't take the focus from the game
   pad.addEventListener('mousedown', (e) => e.preventDefault());
   pad.addEventListener('pointerdown', (e) => {
-    pressed = pressWithPointer(holds, e, art);
+    pressed = throwDrawnSwitch(e) || pressWithPointer(holds, e, art);
   });
   pad.addEventListener('click', (e) => {
     if (pressed && e.detail !== 0) {
@@ -77,6 +78,7 @@ export function deskGamePad(): HTMLElement {
     if (!seen || spot.isConnected) return;
     watch.disconnect();
     unfollow();
+    holds.stop();
     unplug();
     panel.close();
   });

@@ -191,3 +191,60 @@
   outline: 3px solid #ffd400;
   outline-offset: 1px;
 }
+
+/* the large labeled TURBO switch under the large pad: 4 BUTTON, a slide, TURBO */
+.gp-sw-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 8px;
+  color: #d9d1bb;
+  font:
+    700 14px/1 Arial,
+    sans-serif;
+}
+
+.gp-sw-word {
+  cursor: pointer;
+  padding: 6px 2px;
+}
+
+.gp-sw-row[data-turbo='0'] .gp-sw-word:first-child,
+.gp-sw-row[data-turbo='1'] .gp-sw-word:last-child {
+  color: #ffd400;
+}
+
+.gp-sw-big {
+  min-width: 56px;
+  min-height: 28px;
+  padding: 3px;
+  border: 0;
+  border-radius: 16px;
+  background: #1f1d19;
+  cursor: pointer;
+}
+
+.gp-sw-big:focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 2px;
+}
+
+.gp-sw-big .gp-sw-slot {
+  width: 50px;
+  height: 22px;
+  margin: 0;
+  border-radius: 11px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.gp-sw-big .gp-sw-knob {
+  top: 2px;
+  left: 2px;
+  height: 18px;
+  border-radius: 9px;
+}
+
+.gp-sw-row[data-turbo='1'] .gp-sw-knob {
+  left: calc(48% - 2px);
+}

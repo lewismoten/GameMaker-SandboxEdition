@@ -3,8 +3,10 @@
 // positions (GetJoyPos in code/GM/JSTICKC.C: 0 centered, 1..8 clockwise from up) and its four
 // buttons are bits 0-3. PLAYGAME reads only the game port's first two button lines
 // (ReadJoyStick in JSTICKA.ASM keeps bits 4 and 5 of port 201h), so buttons 3 and 4, wired to
-// the second joystick's lines, never reach a game.
+// the second joystick's lines, never reach a game: unless the pad's TURBO switch is on
+// (padTurbo.ts), when holding 3 or 4 presses 1 or 2 over and over.
 import { readGamepad } from './gamepad';
+import { TurboFire, turboOn } from './padTurbo';
 
 export interface Joy {
   pos: number;
@@ -26,6 +28,8 @@ export function padPosition(dx: number, dy: number, dead = 0.25): number {
 export function joinJoy(desk: Joy, pad: Joy | null): Joy {
   return { pos: desk.pos || pad?.pos || 0, buttons: (desk.buttons | (pad?.buttons ?? 0)) & PLAYGAME_BUTTONS };
 }
+
+const fire = new TurboFire();
 
 let held: Joy = { pos: 0, buttons: 0 };
 let plugged = 0;
@@ -49,6 +53,10 @@ export function holdDeskPad(joy: Joy): void {
  * on the page it is just the gamepad, as everywhere else (null when there is none).
  */
 export function deskJoystick(): Joy | null {
-  const pad = readGamepad();
-  return plugged ? joinJoy(held, pad) : pad;
+  const pad = readGamepad(true);
+  if (!plugged && !pad) return null;
+  // all four buttons held, with the TURBO switch deciding what 3 and 4 do (they never reach a game as themselves)
+  const raw = (plugged ? held.buttons : 0) | (pad?.buttons ?? 0);
+  const buttons = fire.step(raw, performance.now(), turboOn());
+  return { pos: (plugged && held.pos) || pad?.pos || 0, buttons };
 }

@@ -15,7 +15,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   (`tray.ts`) with its mouse pad (its print, `padPrints.ts`, chosen in `padChooser.ts` from the
   magazine's mouse pad ad and remembered by `padChoice.ts`), the GRAVITAS game pad
   (`gamePad.ts`; its drawing `gamePadArt.ts`, its SVG parts `gamePadSvg.ts`, its large controls
-  `gamePadPanel.ts`, what is held `gamePadHolds.ts`), the modem (`modem.ts`; click its speed to
+  `gamePadPanel.ts`, what is held `gamePadHolds.ts`, its TURBO switch `gamePadSwitch.ts`), the modem (`modem.ts`; click its speed to
   pick the line speed), the speakers (`speakers.ts`) with the SOUND BOASTER switch
   (`blasterSwitch.ts`, applied immediately to the active game without restarting), the key card taped to the monitor (`keyCard.ts`, `keyCardRows.ts`) and
   the capture card (`capture.ts`, loaded by `captureStub.ts` on the first press).

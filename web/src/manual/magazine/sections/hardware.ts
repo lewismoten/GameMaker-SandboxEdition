@@ -206,12 +206,15 @@ const gamePadAd = () =>
             [
               list([
                 '**Four buttons:** red, yellow, green and blue',
+                'A **TURBO slide switch**: hold green or blue and the pad mashes red or yellow for you, ten times a second',
                 'A **joystick shaft that screws in** for flight games',
                 'A purple **8-way d-pad**, diagonals and all',
                 'Plugs into your **game port**. Nothing to install',
                 'Ergonomically shaped like **your favorite snack**',
               ]),
-              p('Four buttons on one plug: the pad borrows the second joystick’s button lines. Game-Maker games read the d-pad, red and yellow.'),
+              p(
+                'Four buttons on one plug: the pad borrows the second joystick’s button lines. Game-Maker games read the d-pad, red and yellow; slide the switch to TURBO and green and blue fire them over and over.',
+              ),
               p('**GRAVITAS**'),
               p('*serious about fun.*'),
             ],
