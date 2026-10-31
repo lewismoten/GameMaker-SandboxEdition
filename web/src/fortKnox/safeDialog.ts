@@ -13,15 +13,16 @@ import { loadMoney } from './money';
 import { balance, buy, loadSafe, saveSafe, type SafeRecord } from './store';
 import { safeSvg } from './safeArt';
 import { teddySvg } from './teddyArt';
+import { gwinnSvg } from './gwinnArt';
 import { TREATS, treatById } from './treats';
 
 const TICK_DEG = 360 / TICKS;
 const fmt = (n: number) => n.toLocaleString('en-US');
 const coins = (n: number) => `${fmt(n)} pretend coin${n === 1 ? '' : 's'}`;
 
-function teddy(): HTMLElement {
-  const el = h('div', { class: 'kn-teddy', 'aria-hidden': 'true' });
-  el.innerHTML = teddySvg();
+function dogHead(who: 'teddy' | 'gwinn'): HTMLElement {
+  const el = h('div', { class: `kn-teddy kn-${who}`, 'aria-hidden': 'true' });
+  el.innerHTML = who === 'teddy' ? teddySvg() : gwinnSvg();
   return el;
 }
 
@@ -246,7 +247,7 @@ export async function openSafe(): Promise<void> {
     if (line) line.textContent = t.line;
     live.textContent = '';
     setTimeout(() => (live.textContent = `Bought ${t.name}. ${t.line}`), 50);
-    reaction = side.querySelector('.kn-teddy') as HTMLElement;
+    reaction = side.querySelector(id === 'jerky' ? '.kn-gwinn' : '.kn-teddy') as HTMLElement;
     if (!stillMotion()) {
       reaction?.classList.remove('kn-munch');
       void reaction?.offsetWidth;
@@ -286,7 +287,7 @@ export async function openSafe(): Promise<void> {
           ),
         ),
       ),
-      h('div', { class: 'kn-eat' }, teddy(), h('p', { class: 'kn-line' }, 'Teddy sits at the safe and waits. His ears are perfectly even.')),
+      h('div', { class: 'kn-eat' }, dogHead('teddy'), dogHead('gwinn'), h('p', { class: 'kn-line' }, 'Teddy and Gwinn sit at the safe and wait. Teddy’s ears are perfectly even. Gwinn’s are not trying.')),
       h('h3', null, 'Treat list'),
       list.length
         ? h('ul', { class: 'kn-list' }, ...list.map((t) => h('li', null, `${t.name} × ${rec.treats[t.id]}`)))
