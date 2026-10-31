@@ -121,7 +121,7 @@ describe('slower hands', () => {
     const steady = { ...main, ex: { ...main.ex, exits: [], heat, complete: true } };
     const f = steadyFindings(main, steady, undefined, 6);
     expect(f).toHaveLength(1);
-    expect(f[0].title).toMatch(/^With slower hands the bot can’t get past \(4, 2\)$/);
+    expect(f[0].title).toMatch(/^In the bot’s runs with slower hands, it did not get past \(4, 2\)$/);
     expect(f[0].detail).toContain('at least 330 ms between changes');
   });
 });
