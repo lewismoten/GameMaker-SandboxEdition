@@ -122,15 +122,19 @@ export class TourSound {
     a.preload = 'auto';
     this.voice = a;
     return new Promise<number>((resolve) => {
+      let given = false;
       const give = (ms: number) => {
         clearTimeout(timer);
+        given = true;
         resolve(ms);
       };
-      const timer = setTimeout(() => give(0), 1500);
+      const timer = setTimeout(() => give(0), 3000);
       a.addEventListener('error', () => give(0), { once: true });
       a.addEventListener(
         'canplaythrough',
         () => {
+          // ready after the step stopped waiting for it: playing now would be cut off mid-word
+          if (given) return;
           if (this.voice !== a || !isFinite(a.duration)) return give(0);
           void a.play().catch(() => undefined);
           give(Math.ceil(a.duration * 1000) + 300);
