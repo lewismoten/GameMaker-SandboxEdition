@@ -380,7 +380,7 @@ export function theWindow(book: BlockBook): Level {
     [54, 10],
   ]);
   // scenery for the site's achievement badges: a parcel on the porch, the mail jeep at the curb
-  m.set(11, 11, 'parcelWings').set(17, 11, 'mailJeep');
+  m.set(11, 11, 'parcelWings').set(17, 11, 'mailJeep').set(36, 11, 'mailTruck');
   m.link(71, 9, 'next');
   return { m, start: at(6, 5), size: [W, H] };
 }

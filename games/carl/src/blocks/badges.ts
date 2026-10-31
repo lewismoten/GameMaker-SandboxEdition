@@ -159,4 +159,17 @@ export function yardBadges(book: BlockBook, pal: Pal, bg: { sky: () => Pixels })
   jeep.disc(5, 16, 3, K).disc(5, 16, 1, c('steel', 2)).disc(15, 16, 3, K).disc(15, 16, 1, c('steel', 2));
   jeep.rect(0, 14, 2, 2, c('steel', 1));
   book.add('mailJeep', jeep, AIR);
+
+  // a small mail truck: a blue cargo box with a big raised envelope on its side, a stubby white cab
+  const truck = bg.sky();
+  truck.rect(0, 17, 20, 3, c('gray', 2)).rect(0, 17, 20, 1, c('gray', 3));
+  truck.rect(7, 2, 13, 14, K).rect(8, 3, 11, 12, c('shirt', 2)).rect(8, 3, 11, 1, c('shirt', 3)).rect(8, 14, 11, 1, c('shirt', 1));
+  truck.rect(0, 8, 8, 8, K).rect(1, 9, 6, 6, c('white', 3)).rect(1, 9, 6, 1, c('white', 3)).rect(0, 7, 4, 2, K).rect(1, 8, 3, 1, c('white', 2));
+  truck.rect(1, 9, 4, 3, K).rect(2, 10, 2, 1, c('screen', 3)).rect(1, 13, 6, 1, c('red', 2));
+  // the envelope: a white rectangle, a dark shadow below it, its flap folded down to a point
+  truck.rect(10, 5, 9, 8, c('shirt', 0)).rect(9, 4, 9, 8, K).rect(10, 5, 7, 6, c('white', 3));
+  truck.line(10, 5, 13, 8, c('gray', 2)).line(16, 5, 13, 8, c('gray', 2)).rect(15, 9, 1, 1, c('red', 2)).rect(11, 9, 3, 1, c('gray', 3));
+  truck.rect(11, 13, 2, 1, c('gold', 2));
+  truck.disc(5, 16, 3, K).disc(5, 16, 1, c('steel', 2)).disc(15, 16, 3, K).disc(15, 16, 1, c('steel', 2));
+  book.add('mailTruck', truck, AIR);
 }
