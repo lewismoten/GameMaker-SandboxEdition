@@ -265,7 +265,8 @@ registerEditor(['lst'], (host, project, file) => {
       {
         class: `sl-then then-${t.then} ${t.ignored ? 'ignored' : ''}`,
         title: `${thenLabel(e, t)}. Click to change.`,
-        'aria-label': `After ${e.name}: ${thenLabel(e, t)}`,
+        // a name holds the words on the button (WCAG 2.5.3): the seconds it shows
+        'aria-label': `After ${e.name}: ${thenLabel(e, t)}${t.then === 'seconds' && !t.ignored ? `, ${e.pause}s` : ''}`,
         onclick: (ev: Event) => thenMenu(i, ev.currentTarget as HTMLElement),
       },
       t.ignored ? '·' : THEN_ICON[t.then],
