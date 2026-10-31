@@ -343,6 +343,24 @@ records every clip again.
 | [edit-check-upload.ogg](edit-check/edit-check-upload.ogg) | Before you upload ticks off the guide’s checklist wherever the checks can tell. The other editors show these findings as small notes beside an item. | Editor: Inspector Penn points at the Before you upload button | 9.10 |
 | [edit-check-bye.ogg](edit-check/edit-check-bye.ogg) | Case closed, for now. Run it again after every change, and you’ll find the snags before your players do. | Editor: Inspector Penn says goodbye and walks off | 6.90 |
 
+## edit-export
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-export-hello.ogg](edit-export/edit-export-hello.ogg) | Special delivery! Every game I fly needs a way to reach its players. Let’s see how yours leaves the editor. | Editor: Max comes on | 7.74 |
+| [edit-export-save.ogg](edit-export/edit-export-save.ogg) | In a game of yours, a note under the Download button says changes save in this browser as you go. Download a zip now and then to keep a copy safe. | Editor: Max talks | 10.12 |
+| [edit-export-open.ogg](edit-export/edit-export-open.ogg) | The Download button opens the chooser. Pressing it only opens the list: nothing is made until you choose one. | Editor: Max presses the Download button | 7.87 |
+| [edit-export-list.ogg](edit-export/edit-export-list.ogg) | Pick a row, then press Download. Each one is built right here in your browser, so nothing leaves it until you save the file. | Editor: Max points at the list of downloads | 8.31 |
+| [edit-export-web.ogg](edit-export/edit-export-web.ogg) | Web page is the game and its player in one file that opens in any browser, offline. The second button makes a web app zip for a web host. | Editor: Max points at the Web page choice | 9.82 |
+| [edit-export-player.ogg](edit-export/edit-export-player.ogg) | Web player is for your own site: one page that plays game folders, with this game’s folder beside it. More details explains how. | Editor: Max points at the Web player choice | 9.61 |
+| [edit-export-dos.ogg](edit-export/edit-export-dos.ogg) | DOS gives the original Game-Maker files with the stand-alone player, for DOSBox or a real DOS PC. Import that zip here to edit a copy. | Editor: Max points at the DOS choice | 11.32 |
+| [edit-export-files.ogg](edit-export/edit-export-files.ogg) | Game files is your project just as it is here, a zip to keep safe or import again. | Editor: Max points at the Game files choice | 6.30 |
+| [edit-export-windows.ogg](edit-export/edit-export-windows.ogg) | Windows makes a program to double-click, or a zip of it. It is not code-signed, so the first time you choose More info, then Run anyway. | Editor: Max points at the Windows choice | 9.56 |
+| [edit-export-mac.ogg](edit-export/edit-export-mac.ogg) | Mac makes an app on a disk image, or a zip, not notarized: open it first from Privacy and Security. Linux makes a folder with play.sh. | Editor: Max points at the Mac choice | 10.61 |
+| [edit-export-caveat.ogg](edit-export/edit-export-caveat.ogg) | All but DOS still need a web engine, so a future update could break them. DOS, in DOSBox, is the most future-proof. | Editor: Max points at the note under the list | 8.85 |
+| [edit-export-buttons.ogg](edit-export/edit-export-buttons.ogg) | Download builds the chosen file, and the button beside it picks the second format. Cancel shuts this with nothing made. I’ll leave them be. | Editor: Max points at the chooser’s buttons | 9.33 |
+| [edit-export-file.ogg](edit-export/edit-export-file.ogg) | The three dots on any file have Download file, which saves just that one file to your computer. | Editor: Max points at the file’s more actions menu | 6.60 |
+| [edit-export-bye.ogg](edit-export/edit-export-bye.ogg) | Pictures and papers go out too: the map picture saves a PNG, a Level check report a CSV, and a walkthrough an MP4. Happy trails! | Editor: Max says goodbye and walks off | 11.81 |
 
 
 

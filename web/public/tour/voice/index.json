@@ -1303,6 +1303,118 @@
     "hash": "60b41c112e31",
     "voice": "f969522e51c0"
   },
+  "edit-export-buttons": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the chooser’s buttons",
+    "text": "Download builds the chosen file, and the button beside it picks the second format. Cancel shuts this with nothing made. I’ll leave them be.",
+    "seconds": 9.33,
+    "hash": "084f444ce18d",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-bye": {
+    "chapter": "edit-export",
+    "where": "Editor: Max says goodbye and walks off",
+    "text": "Pictures and papers go out too: the map picture saves a PNG, a Level check report a CSV, and a walkthrough an MP4. Happy trails!",
+    "seconds": 11.81,
+    "hash": "524be000f68f",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-caveat": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the note under the list",
+    "text": "All but DOS still need a web engine, so a future update could break them. DOS, in DOSBox, is the most future-proof.",
+    "seconds": 8.85,
+    "hash": "778a00d8b476",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-dos": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the DOS choice",
+    "text": "DOS gives the original Game-Maker files with the stand-alone player, for DOSBox or a real DOS PC. Import that zip here to edit a copy.",
+    "seconds": 11.32,
+    "hash": "2a42e00687df",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-file": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the file’s more actions menu",
+    "text": "The three dots on any file have Download file, which saves just that one file to your computer.",
+    "seconds": 6.6,
+    "hash": "da7261c15d68",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-files": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the Game files choice",
+    "text": "Game files is your project just as it is here, a zip to keep safe or import again.",
+    "seconds": 6.3,
+    "hash": "742ba2873dad",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-hello": {
+    "chapter": "edit-export",
+    "where": "Editor: Max comes on",
+    "text": "Special delivery! Every game I fly needs a way to reach its players. Let’s see how yours leaves the editor.",
+    "seconds": 7.74,
+    "hash": "722e2b37cac6",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-list": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the list of downloads",
+    "text": "Pick a row, then press Download. Each one is built right here in your browser, so nothing leaves it until you save the file.",
+    "seconds": 8.31,
+    "hash": "2c6f8bd3558c",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-mac": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the Mac choice",
+    "text": "Mac makes an app on a disk image, or a zip, not notarized: open it first from Privacy and Security. Linux makes a folder with play.sh.",
+    "seconds": 10.61,
+    "hash": "a3c128e5a0d0",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-open": {
+    "chapter": "edit-export",
+    "where": "Editor: Max presses the Download button",
+    "text": "The Download button opens the chooser. Pressing it only opens the list: nothing is made until you choose one.",
+    "seconds": 7.87,
+    "hash": "01d5df6d726e",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-player": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the Web player choice",
+    "text": "Web player is for your own site: one page that plays game folders, with this game’s folder beside it. More details explains how.",
+    "seconds": 9.61,
+    "hash": "b605eb9eb4c9",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-save": {
+    "chapter": "edit-export",
+    "where": "Editor: Max talks",
+    "text": "In a game of yours, a note under the Download button says changes save in this browser as you go. Download a zip now and then to keep a copy safe.",
+    "seconds": 10.12,
+    "hash": "b4596adab06c",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-web": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the Web page choice",
+    "text": "Web page is the game and its player in one file that opens in any browser, offline. The second button makes a web app zip for a web host.",
+    "seconds": 9.82,
+    "hash": "a5fc3694456a",
+    "voice": "3705d98401bd"
+  },
+  "edit-export-windows": {
+    "chapter": "edit-export",
+    "where": "Editor: Max points at the Windows choice",
+    "text": "Windows makes a program to double-click, or a zip of it. It is not code-signed, so the first time you choose More info, then Run anyway.",
+    "seconds": 9.56,
+    "hash": "67f6052418c4",
+    "voice": "3705d98401bd"
+  },
   "edit-integrator-board": {
     "chapter": "edit-integrator",
     "where": "Editor: Inspector Penn points at the board of scene cards",
