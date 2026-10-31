@@ -3,6 +3,8 @@
 // pages in it. Every site, host and URL is fictional; the browser has no real browser's name or
 // logo, and the telephone dial and finger are drawn fresh for this page. Written for this repo.
 
+import { mockSite, mockUrl } from '../src/manual/magazine/mockSites';
+
 /** One page of the fake web: where it lives, its title, its body style and its body. */
 export interface OldPage {
   file: string;
@@ -61,21 +63,25 @@ const inputBox = (w: number, value = ''): string =>
 const grayBtn = (t: string): string =>
   `<span style="display:inline-block;padding:2px 10px;${BEVEL_OUT}background:#c0c0c0;font:13px/16px Helvetica,Arial,sans-serif;vertical-align:middle">${t}</span>`;
 
+const dict = mockSite('dict');
+const yellow = mockSite('yellow');
+const gopher = mockSite('gopher');
+
 export const DICT: OldPage = {
   file: 'oldweb-dict',
-  url: 'http://dict.sandbox-u.edu:8080/~wordsmith/cgi-bin/define.pl',
-  title: 'Sandbox-U Word Lookup',
+  url: mockUrl('dict'),
+  title: dict.title,
   status: 'Document: Done.',
   bodyCss: 'background:#c0c0c0;',
-  body: `<div style="padding:10px 14px">${banner(468, 56, '#1e3f8a', '#ffd23f', 'WORD LOOKUP', 'Sandbox University Department of Letters')}
-<p style="text-align:center;margin:10px 0 2px"><b>A plain English dictionary, 38,000 words.</b></p>
+  body: `<div style="padding:10px 14px">${banner(468, 56, '#1e3f8a', '#ffd23f', dict.bannerText ?? '', `${dict.org} ${dict.dept}`)}
+<p style="text-align:center;margin:10px 0 2px"><b>${dict.description}</b></p>
 <p style="text-align:center;font-size:13px;margin:2px 0">Questions? Sign the <u style="color:#00e">guestbook</u> or return to the <u style="color:#00e">department home page</u>.</p>
 <hr style="border:0;border-top:2px solid #808080;border-bottom:2px solid #fff;margin:8px 0">
 <p style="margin:6px 0"><b>Enter a word:</b></p>
 <p style="margin:6px 0">${inputBox(380, 'diskette|')}</p>
 <p style="margin:6px 0">${grayBtn('Exact Match')} ${grayBtn('Begins With')} ${grayBtn('Submit Query')}</p>
 <hr style="border:0;border-top:2px solid #808080;border-bottom:2px solid #fff;margin:8px 0">
-<address style="font-size:12px">Maintained by wordsmith@dict.sandbox-u.edu. Last updated 9 Jan 1996. You are visitor number 004,127.</address></div>`,
+<address style="font-size:12px">Maintained by ${dict.contact}. Last updated 9 Jan 1996. You are visitor number 004,127.</address></div>`,
 };
 
 const dandelionTile = `url('data:image/svg+xml,${encodeURIComponent(
@@ -98,14 +104,14 @@ const dialArt = `<svg width="96" height="110" viewBox="0 0 96 110"><circle cx="4
 
 export const YELLOW: OldPage = {
   file: 'oldweb-yellow',
-  url: 'http://www.dandelionpages.co.nz:8080/cgi-bin/finder/~dp/search.cgi?cat=PIZZA&amp;area=412',
-  title: 'Dandelion Pages - The Yellow Pages of the Net',
-  status: 'Transferring data from www.dandelionpages.co.nz...',
+  url: mockUrl('yellow'),
+  title: yellow.title,
+  status: `Transferring data from ${yellow.host}...`,
   bodyCss: `background:${dandelionTile};`,
   body: `<div style="padding:8px 12px">
 <div style="display:flex;align-items:center;gap:12px"><div>${dialArt}</div>
 <div style="flex:1;border:5px ridge #c00;background:#c00;color:#ffe14a;text-align:center;font:bold 38px/1 Impact,'Arial Black',Helvetica,sans-serif;padding:8px 0;text-shadow:3px 3px #000">DANDELION<br>PAGES</div></div>
-<div style="margin:8px 0 0;background:#fff;border:2px solid #000;padding:6px 10px;font-size:15px"><b>Let your fingers do the clicking!</b> Over 1,000 businesses listed. Type what you need and where.</div>
+<div style="margin:8px 0 0;background:#fff;border:2px solid #000;padding:6px 10px;font-size:15px"><b>Let your fingers do the clicking!</b> ${yellow.description}</div>
 <div style="margin-top:8px;background:#fff7b0;border:2px solid #000;padding:6px 10px;font-size:15px">Business type: ${inputBox(150, 'pizza')} Area code: ${inputBox(42, '412')}</div>
 <div style="margin-top:4px">${tex('FIND IT!')}${tex('BROWSE CATEGORIES')}${tex('ADD YOUR BUSINESS')}${tex('HELP')}</div></div>`,
 };
@@ -115,12 +121,12 @@ const row = (icon: string, name: string, kind: string): string =>
 
 export const GOPHER: OldPage = {
   file: 'oldweb-gopher',
-  url: 'gopher://gopher.marmot-college.edu:70/11/library/catalog',
-  title: 'Marmot College Library',
+  url: mockUrl('gopher'),
+  title: gopher.title,
   status: 'Document: Done.',
   bodyCss: 'background:#c0c0c0;',
-  body: `<div style="padding:8px 16px"><h1 style="font-size:30px;margin:2px 0">Marmot College Library Catalog</h1>
-<div style="font:13px Courier,monospace;margin-bottom:6px">gopher.marmot-college.edu, port 70</div>
+  body: `<div style="padding:8px 16px"><h1 style="font-size:30px;margin:2px 0">${gopher.description}</h1>
+<div style="font:13px Courier,monospace;margin-bottom:6px">${gopher.host}, port ${gopher.port}</div>
 <hr style="border:0;border-top:2px solid #808080;border-bottom:2px solid #fff;margin:4px 0 8px">
 ${row('&#128193;', 'Search the catalog by title', '&lt;DIR&gt;')}
 ${row('&#128269;', 'Search the catalog by author', '&lt;?&gt;')}
