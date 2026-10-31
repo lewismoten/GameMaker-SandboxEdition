@@ -33,19 +33,24 @@ the hosts and bubble together, using the current control and the space above the
 The whole tour plays them in this order, each on its own page with hosts from a fitting Sandbox
 game, that game's music and its sound effects:
 
-| Chapter                                | Page                             | Hosts (voice)                                                                          | Music                     |
-| -------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------- | ------------------------- |
-| `home`: the game list (the Games page) | `#/`                             | Teddy (barks), Gwinn (Kokoro Sky +4)                                                   | Teddy's title             |
-| `library`                              | `#/library`                      | Joe, KEEP IT BRIEF!'s night librarian (olden-mon); teenage Lewie, Snowbound (Lewis +5) | KEEP IT BRIEF!'s library  |
-| `achievements`                         | `#/achievements`                 | Dex Dynamo, In The Year 2000! (Kokoro Puck +3)                                         | In The Year 2000!'s title |
-| `cast`                                 | `#/cast`                         | Doc Leo (Lewis's own voice), Teddy, Gwinn                                              | Teddy's Clown Club        |
-| `guide`                                | `#/help` (always its first part) | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
-| `settings`: the ⚙ menu                 | `#/credits`                      | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
-| `editor`                               | `#/p/look:logic/kitchen.map`     | Watt, Ohm Sweet Ohm (Lewis +7), the BLASTER ship flying by                             | Ohm Sweet Ohm's garage    |
-| `desk`: the 1994 desk                  | `#/desk`                         | teenage Lewie, Snowbound (Lewis +5), THE CHEZ driving by                               | Snowbound's title         |
-| `box`: What's in the box               | `#/desk`                         | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
-| `bbs`: calling the BBS                 | `#/desk`                         | Dex Dynamo (Kokoro Puck +3) calls; teenage Lewie, the board's SysOp                    | In The Year 2000!'s title |
-| `dos`: DOS Game-Maker                  | `dos.html`                       | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
+| Chapter                                        | Page                                          | Hosts (voice)                                                                          | Music                     |
+| ---------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------- |
+| `home`: the game list (the Games page)         | `#/`                                          | Teddy (barks), Gwinn (Kokoro Sky +4)                                                   | Teddy's title             |
+| `library`                                      | `#/library`                                   | Joe, KEEP IT BRIEF!'s night librarian (olden-mon); teenage Lewie, Snowbound (Lewis +5) | KEEP IT BRIEF!'s library  |
+| `achievements`                                 | `#/achievements`                              | Dex Dynamo, In The Year 2000! (Kokoro Puck +3)                                         | In The Year 2000!'s title |
+| `cast`                                         | `#/cast`                                      | Doc Leo (Lewis's own voice), Teddy, Gwinn                                              | Teddy's Clown Club        |
+| `guide`                                        | `#/help` (always its first part)              | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
+| `settings`: the ⚙ menu                         | `#/credits`                                   | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
+| `editor`                                       | `#/p/look:logic/kitchen.map`                  | Watt, Ohm Sweet Ohm (Lewis +7), the BLASTER ship flying by                             | Ohm Sweet Ohm's garage    |
+| `edit-around`: getting around the editor       | `#/p/look:logic/kitchen.map`                  | Watt, Ohm Sweet Ohm (Lewis +7)                                                         | Ohm Sweet Ohm's garage    |
+| `edit-map`: the map editor, in depth           | `#/p/look:logic/kitchen.map`                  | Dex Dynamo, In The Year 2000! (Kokoro Puck +3)                                         | In The Year 2000!'s title |
+| `edit-blocks`: background and character blocks | `#/p/look:logic/kitchen.bbl`, then `watt.cbl` | Joe, KEEP IT BRIEF!'s night librarian (olden-mon)                                      | KEEP IT BRIEF!'s library  |
+| `edit-monsters`: monsters and the hero         | `#/p/look:logic/garage.mon`, then `watt.chr`  | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
+| `edit-palette`: the palette editor             | `#/p/look:logic/watt.pal`                     | Watt, Ohm Sweet Ohm (Lewis +7), the BLASTER ship flying by                             | Ohm Sweet Ohm's garage    |
+| `desk`: the 1994 desk                          | `#/desk`                                      | teenage Lewie, Snowbound (Lewis +5), THE CHEZ driving by                               | Snowbound's title         |
+| `box`: What's in the box                       | `#/desk`                                      | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
+| `bbs`: calling the BBS                         | `#/desk`                                      | Dex Dynamo (Kokoro Puck +3) calls; teenage Lewie, the board's SysOp                    | In The Year 2000!'s title |
+| `dos`: DOS Game-Maker                          | `dos.html`                                    | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
 
 Home presses each collection's tab in turn (Imported's ratings, notes, Show and Sort by when it
 has games; the import tile when it has none; what shareware was), and puts the visitor's own
@@ -71,6 +76,20 @@ chapter stops the call and puts back the line speed, the board's user file, its 
 C:'s downloads as found. A PC busy with the visitor's own program is left alone (the call's steps
 are left out). The DOS chapter types and presses nothing. Nothing counts toward an achievement
 while a tour plays (`achievements/store.ts`).
+
+The editor's five sub-chapters follow the overview and look inside Ohm Sweet Ohm the same way (read-only,
+in memory, each `always` at its own address, with `go` to its next file): getting around (the
+file list and its filter, Game assets, Used by, Undo, the map's zoom, the Play Level menu, the
+shortcuts and where help is), the map editor (side tabs, the paint, Select, Terrain and Stamp
+tools, grid, wrap, exit and way-in markers, Find and Replace), the block editors (picker, name,
+paint tools, mirror, palette and its preview, behavior tabs, groups, then the character
+frames and live character), monsters and the hero (animation, power, lives, movement, a path on
+a map, then the character editor's tabs, sequences, audition stage and frames that give birth to
+monsters) and the palette (swatches, the HSV picker and the Colors from picture box, both opened
+and shut with nothing confirmed, ramps, reserved ranges, Vision, Backgrounds, variants). They only
+press what changes nothing in the game: the Select tool, a monster in the list, the hero's
+Sequences tab (a remembered choice, put back through `keep`) and the palette's tabs. A tour
+of the editor page (the ? button there) plays all of them after the overview.
 
 **Another page.** The DOS page is `dos.html`, not `index.html`, so a chapter there (`file`) is
 reached with a page load: the tour shows its title card, then goes to
