@@ -1,0 +1,95 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Fly up in the pod; on foot, fire your jets (tap again in the air to climb higher)."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Fly down in the pod; on foot, curl into a ball."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Fly or walk left."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Fly or walk right."
+    },
+    "16": {
+      "short": "Dash left",
+      "long": "With the Dash Boots, dash left. With the Hydro Jets, burst left in the diving bell."
+    },
+    "18": {
+      "short": "Dash right",
+      "long": "With the Dash Boots, dash right. With the Hydro Jets, burst right in the diving bell."
+    },
+    "17": {
+      "short": "Flak Cannon",
+      "long": "Fire the Flak Cannon."
+    },
+    "19": {
+      "short": "Med Kit",
+      "long": "Use the Med Kit to mend hit points."
+    },
+    "20": {
+      "short": "Hail",
+      "long": "Say hello."
+    },
+    "33": {
+      "short": "Hover Pack",
+      "long": "Fire the Hover Pack to rise while you hold the key."
+    },
+    "34": {
+      "short": "Pick up",
+      "long": "Pick up what you are standing on."
+    },
+    "44": {
+      "short": "Plasma Lance",
+      "long": "Fire the Plasma Lance. It kills armor."
+    },
+    "45": {
+      "short": "Nova Core",
+      "long": "Fire the Nova Core: an eight-way burst."
+    },
+    "46": {
+      "short": "Shield Emitter",
+      "long": "Send out a guard orb."
+    },
+    "47": {
+      "short": "Mine Layer",
+      "long": "Lay a mine."
+    },
+    "48": {
+      "short": "Drop",
+      "long": "Drop what you are carrying."
+    },
+    "57": {
+      "short": "Blaster",
+      "long": "Fire your blaster the way you last moved."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Blaster",
+      "long": "Fire your blaster the way you last moved."
+    },
+    "2": {
+      "short": "Pick up or Plasma",
+      "long": "Pick up what you are standing on, or fire the Plasma Lance once you have it."
+    }
+  },
+  "counters": {
+    "10": "Plasma Lance charges",
+    "11": "Nova Core charges",
+    "14": "Shield Emitter charges",
+    "16": "Mines",
+    "17": "Med Kits",
+    "18": "Flak shells",
+    "20": "Ruby shard",
+    "21": "Amber shard",
+    "22": "Citrine shard",
+    "23": "Emerald shard",
+    "24": "Jade shard"
+  }
+}
