@@ -762,6 +762,18 @@ follows APPNOTE's layout. The FLI reader `web/packages/engine/src/formats/fli.ts
 `web/packages/engine/src/formats/gif.ts` is new, not GIFSAVE. `web/packages/engine/src/formats/voc.ts` reproduces Peter
 Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
 
+## DOS reference tables and the scroll overflow: chiguire
+
+Pull request 4 to gandrewstone/GameMaker (https://github.com/gandrewstone/GameMaker/pull/4,
+by chiguire, MIT License like the upstream repository) ran the original PLAYGAME in DOS with a
+frame-dump hook and kept the results. This fork uses two things from it:
+
+- The tables in `games/kit/dosStates/` (one line per 20 ticks of a DOS replay of eight games'
+  `demo.rec`: tick, score, scene, character position), copied unchanged from
+  `port/baseline/<game>/states.txt`. `games/kit/dosStates.ts` compares our engine against them.
+- The finding that ChangeScroll's speed arithmetic overflows a 16-bit `int` in DOS. Our
+  `web/packages/engine/src/engine/scroll.ts` wraps the same way.
+
 ## Tools used to build and test
 
 Built with [TypeScript](https://www.typescriptlang.org/) (Apache-2.0),
