@@ -68,7 +68,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   model, the engine and the voice samples stay outside the repo (`--model`, `--engine`, or
   `POCKET_TTS_MODEL`, `POCKET_TTS_ENGINE`, and `NARRATE_SAMPLE_<NAME>` for a sample named in
   `SAMPLES`; `--sample <file>` puts every line in one recording, to compare); CI never runs it.
-  `npm run voice -- --only <id>` records a retake (each take differs; `--seed <n>` repeats one),
+  `npm run voice -- --split sentences|clauses` (default `none`) voices each sentence, or each clause, alone and joins the trimmed pieces with fixed silences (`narrate/split.ts`: 0.45 s after a sentence end, 0.25 s after a comma), to give the cloned voices real pauses; `npm run voice -- --only <id>` records a retake (each take differs; `--seed <n>` repeats one),
   `--lines <file.json>` reads `[{ id, chapter, where, text, voice? }]` instead of the tour, `--out <dir>`
   writes elsewhere, `--wav` also keeps each take as .wav, and `--dry-run` lists what it would
   record. Each line is said in the spoken form `narrate/spoken.ts` gives it (numbers in words,
