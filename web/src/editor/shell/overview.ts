@@ -30,6 +30,7 @@ export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void
   const disposers: (() => void)[] = [];
   const panel = (id: string) => h('div', { class: `overview-panel overview-${id}` });
   const panels = { files: panel('files'), controls: panel('controls'), player: panel('player'), tools: panel('tools') };
+  const openTab = (tab: OverviewTab) => el.querySelectorAll<HTMLElement>('[role="tab"]')[TABS.indexOf(tab)]?.click();
   const browser = assetBrowser({
     project: host.project,
     kind: host.kind,
@@ -37,6 +38,12 @@ export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void
     category: (k) => host.category(k),
     open: (f) => host.open(f),
     add: (k) => host.add(k),
+    openControls: () => openTab('controls'),
+    openPlayerField: (patch) => {
+      openTab('player');
+      // the tab may still be loading: the request waits for its panel
+      void import('../editors/integrator/dosPlayer/playerTarget').then((t) => t.requestPlayerField(patch));
+    },
   });
   panels.files.append(browser.el);
   disposers.push(() => browser.dispose());

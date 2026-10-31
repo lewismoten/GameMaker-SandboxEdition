@@ -85,6 +85,17 @@ _None yet_ marks an empty category. Choose a category to see its files, then cli
 to open its editor. **Assets** returns to that file's category, and **All assets** opens the
 overview. Back and Forward keep these views too.
 
+The **Search this game** box above the thumbnails looks through everything at once, ignoring
+case, and shows what it finds as cards grouped by kind, with a count for each: **File names**;
+**Words inside files** (text screens, slide lists, the game file's scene names, high-score
+names, digital sound names and backdrops), with the matching words marked under the thumbnail;
+**Companion notes and names** (the key, joystick, counter and sound names from Controls, and any
+other note the editor keeps for the game); and **DOS player fields**, each a small card with the
+field's name and value that matches its name, its stock text or what it is set to now. A card
+opens that file, the Controls tab, or the DOS player tab on that field. Arrow keys move between
+cards, Enter opens one, and Escape clears the box. It also works on look-only games. The sidebar's
+**Find a file** box still filters file names only.
+
 **Controls** is where you say what the game's controls mean, once for every character: a short
 and a long description for each key the game uses (the editor works out what each key does and
 shows it beside your words), for joystick buttons 1 and 2, and a name for each of the 15

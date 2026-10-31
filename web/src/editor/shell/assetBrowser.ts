@@ -9,6 +9,7 @@ import { copiedAsset, onAssetCopy } from './assetClipboard';
 import { assetMenu } from './assetMenu';
 import { fileThumb, KIND_ICON } from '../widgets/thumbs';
 import { PLAYABLE, playButton, stopThumbPlayback } from '../widgets/thumbPlayButton';
+import { assetSearch } from './assetSearch';
 import { companionPatches } from '../../dosPlayer/playerRecord';
 
 interface BrowserHost {
@@ -18,6 +19,9 @@ interface BrowserHost {
   category: (kind: FileKind) => void;
   open: (file: string) => void;
   add: (kind: FileKind) => void;
+  /** Search results that live in Overview's other tabs. */
+  openControls?: () => void;
+  openPlayerField?: (patch: string) => void;
 }
 
 export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): void } {
@@ -26,6 +30,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
   const title = kind ? KIND_LABELS[kind] : 'Game assets';
   const count = h('p', { class: 'meta', role: 'status', 'aria-live': 'polite' });
   const grid = h('div', { class: 'asset-grid', role: 'region', tabindex: 0, 'aria-label': kind ? `${title} files` : 'Asset categories' });
+  const searchSlot = h('div', { class: 'asset-search-slot' });
   const el = h(
     'section',
     { class: 'asset-browser', 'aria-label': title },
@@ -36,6 +41,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
       h('p', { class: 'asset-project' }, project.name),
       count,
     ),
+    searchSlot,
     grid,
   );
   let frame = 0;
@@ -193,11 +199,34 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
       (next ?? grid.querySelector<HTMLElement>('button:not(:disabled)'))?.focus({ preventScroll: true });
     }
   }
+  let searching = false;
+  const search = assetSearch({
+    project,
+    grid,
+    preview,
+    open: (file) => host.open(file),
+    openControls: () => host.openControls?.(),
+    openPlayerField: (patch) => host.openPlayerField?.(patch),
+    active: (on) => {
+      if (on === searching) return;
+      searching = on;
+      count.hidden = on;
+      if (on) {
+        closeMenu?.();
+        stopThumbPlayback();
+        observer.disconnect();
+        clear(grid);
+      } else render();
+    },
+  });
+  searchSlot.append(search.el);
   const off = project.onChange(() => {
     if (frame) return;
     frame = requestAnimationFrame(() => {
       frame = 0;
-      if (el.isConnected) render();
+      if (!el.isConnected) return;
+      if (searching) search.refresh();
+      else render();
     });
   });
   const offCopy = onAssetCopy(updatePaste);
@@ -222,6 +251,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     el,
     dispose() {
       cancelAnimationFrame(frame);
+      search.dispose();
       off();
       offCopy();
       observer.disconnect();

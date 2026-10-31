@@ -122,7 +122,8 @@ async function companionEntries(project: Project): Promise<SearchEntry[]> {
       { label: 'Long', text: b?.long ?? '' },
     ]);
   }
-  for (const [n, name] of Object.entries(c.counters)) add(`ctr${n}`, `Counter ${n}`, [{ label: 'Name', text: name }]);
+  for (const [n, name] of Object.entries(c.counters))
+    add(`ctr${n}`, Number(n) < 20 ? `Repetition counter ${Number(n) - 4}` : `Hidden counter ${Number(n) - 19}`, [{ label: 'Name', text: name }]);
   for (const [n, name] of Object.entries(c.sounds)) add(`snd${n}`, `Sound slot ${n}`, [{ label: 'Name', text: name }]);
   for (const [file, extras] of Object.entries(project.companion?.files ?? {})) {
     for (const [section, value] of Object.entries(extras)) {
