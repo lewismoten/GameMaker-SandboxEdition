@@ -4,7 +4,9 @@ Badges reuse the original 20×20 indexed blocks below, at integer-friendly displ
 The selected public games are by Lewis Moten using Anthropic Claude (MIT).
 The nine every-life, every-loss and every-win tier badges are composed from Teddy's poses
 (hop, hurt, bark) with a bronze, silver or gold plate and a 1, 3 or 10 mark, by Claude Sonnet 5.5,
-which also extracted the later picks. OpenAI Codex extracted the first images and wrote the
+which also extracted the later picks and drew the thirteen new Certified Rat Tickler blocks (a toolbox, clipboard,
+mixing panel, UV bulb, blacklight, CRT, sound card, hex keypad, screwdriver and disk, pirate hat, surfer, fax and
+waving hand) as scenery in that game. OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
 Run `npx vite-node scripts/achievementArt.ts` from `web/` to regenerate
@@ -62,6 +64,19 @@ duplicate image bytes.
 | desk-egg | year2000 | y2kSuburb / egg |
 | play-finish | snowbound | snowbound / finish |
 | egg-all | teddy2 | teddy2House / basket |
+| make-every-kind | tickle | tickle / toolbox |
+| check-upload | tickle | tickle / clipboardOk |
+| sfx-maker | tickle | tickle / mixer |
+| desk-uv | tickle | tickle / uvBulb |
+| desk-blacklight | tickle | tickle / blacklight |
+| desk-degauss | tickle | tickle / crtRings |
+| desk-soundcard | tickle | tickle / soundCard |
+| desk-hexedit | tickle | tickle / hexPad |
+| desk-savehack | tickle | tickle / screwdriverDisk |
+| desk-gmcrack | tickle | tickle / pirateDos |
+| finish-web | tickle | tickle / surfer |
+| tty-call | tickle | tickle / fax |
+| tty-sk | tickle | tickle / helloTerm |
 | every-life-1 | teddy | tiers / every-life-1 |
 | every-life-3 | teddy | tiers / every-life-3 |
 | every-life-10 | teddy | tiers / every-life-10 |
@@ -82,19 +97,15 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | Achievement | Title | Proposed art |
 | --- | --- | --- |
 | make-new | Blank slate | 20×20 block: a blank sheet of paper with one folded corner, with a dark outline and one clear focal shape. |
-| make-every-kind | Jack of all tools | 20×20 block: an open toolbox with a pencil and wrench, with a dark outline and one clear focal shape. |
 | export-linux | Penguin power | 20×20 block: a cheerful penguin with a disk tucked under one wing, with a dark outline and one clear focal shape. |
 | export-all | Ships everywhere | 20×20 block: a taped shipping box with little wings, with a dark outline and one clear focal shape. |
 | check-run | Check-up | 20×20 block: a magnifying glass over a tidy map grid, with a dark outline and one clear focal shape. |
-| check-upload | Ready to upload | 20×20 block: a clipboard with a large green check, with a dark outline and one clear focal shape. |
-| sfx-maker | Bleeps and bloops | 20×20 block: a mixing panel with three chunky knobs, with a dark outline and one clear focal shape. |
 | make-opening | Presenting… | 20×20 block: a clapperboard with a bright opening star, with a dark outline and one clear focal shape. |
 | make-heat | Feeling the heat | 20×20 block: a tiny glowing map with warm footprints, with a dark outline and one clear focal shape. |
 | make-take | Take one | 20×20 block: a tape recorder with a bright red record button, with a dark outline and one clear focal shape. |
 | palette-vision | Seen by everyone | 20×20 block: a pair of glasses over three clearly distinct color swatches, with a dark outline and one clear focal shape. |
 | finish-desk | After school special | 20×20 block: a school backpack with a game controller sticking out, with a dark outline and one clear focal shape. |
 | finish-dos | Real mode | 20×20 block: a labeled DOS disk in a sleeve, with a dark outline and one clear focal shape. |
-| finish-web | Surfin’ the Web | 20×20 block: a tiny surfer riding a curling cable, with a dark outline and one clear focal shape. |
 | finish-phone-wide | Sideways scroller | 20×20 block: a landscape phone with left and right arrows, with a dark outline and one clear focal shape. |
 | finish-phone-tall | Tall order | 20×20 block: a portrait phone with up and down arrows, with a dark outline and one clear focal shape. |
 | play-save | Save point | 20×20 block: a cassette marked SAVE, with a dark outline and one clear focal shape. |
@@ -119,18 +130,12 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | bbs-door-win | Three in a row | 20×20 block: a telephone number card crossed out in red, with a dark outline and one clear focal shape. |
 | bbs-door-three | Best of three | 20×20 block: a small trophy inspired by “Best of three”, with a dark outline and one clear focal shape. |
 | sofa-busy | All lines are busy | 20×20 block: a disconnected handset beside a sleeping modem, with a dark outline and one clear focal shape. |
-| tty-call | Typed hello | 20×20 block: a fax machine unrolling a tiny welcome banner, with a dark outline and one clear focal shape. |
-| tty-sk | SK SK | 20×20 block: a waving hand beside a terminal, with a dark outline and one clear focal shape. |
 | hint-phone-bill | An itemized bark | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
 | tty-wallphone | Wrong kind of phone | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
-| desk-hexedit | Byte by byte | 20×20 block: a hex keypad with A and F keys, with a dark outline and one clear focal shape. |
-| desk-savehack | Save scummer | 20×20 block: a screwdriver beside a saved-game disk, with a dark outline and one clear focal shape. |
-| desk-gmcrack | Party like it’s 1994 | 20×20 block: a playful pirate hat above a DOS prompt, with a dark outline and one clear focal shape. |
 | desk-register | Registered user | 20×20 block: a registration form and a sharpened pencil, with a dark outline and one clear focal shape. |
 | desk-egg-pages | Turn the page | 20×20 block: an open card file with colorful page tabs, with a dark outline and one clear focal shape. |
 | desk-gamepad | Press start | 20×20 block: a chunky directional game pad, with a dark outline and one clear focal shape. |
 | desk-mousepad | Square deal | 20×20 block: a square patterned mouse pad and a beige mouse, with a dark outline and one clear focal shape. |
-| desk-soundcard | Beep mode | 20×20 block: a PC speaker beside a silent sound card, with a dark outline and one clear focal shape. |
 | desk-achieve | Taking stock | 20×20 block: a clipboard full of tiny earned badges, with a dark outline and one clear focal shape. |
 | cast-visit | Meet the cast | 20×20 block: two friendly theater masks, with a dark outline and one clear focal shape. |
 | help-all | Read the fine print | 20×20 block: a folded instruction leaflet, with a dark outline and one clear focal shape. |
@@ -141,10 +146,7 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | mag-back | Cover to cover | 20×20 block: a rolled magazine tied with a ribbon, with a dark outline and one clear focal shape. |
 | mag-disc | Free CD-ROM inside! | 20×20 block: a shiny disc in a paper magazine sleeve, with a dark outline and one clear focal shape. |
 | desk-speaker | Bass boost | 20×20 block: a small vibrating desk speaker, with a dark outline and one clear focal shape. |
-| desk-degauss | Degaussed | 20×20 block: a CRT with expanding degauss color rings, with a dark outline and one clear focal shape. |
 | desk-chez | Honk honk | 20×20 block: THE CHEZ seen from the front, with Teddy in the passenger seat, with a dark outline and one clear focal shape. |
-| desk-blacklight | Glow up | 20×20 block: a purple blacklight tube above a glowing star, with a dark outline and one clear focal shape. |
-| desk-uv | Lights out, lights on | 20×20 block: a glowing ultraviolet bulb, with a dark outline and one clear focal shape. |
 | desk-plow | Plowed in | 20×20 block: a friendly snowplow pushing a little white drift, with a dark outline and one clear focal shape. |
 | desk-sleds | Snow day | 20×20 block: a wooden sled leaving two tracks, with a dark outline and one clear focal shape. |
 | desk-dogs | Loose again | 20×20 block: Teddy and Gwinn in a playful chase, with a dark outline and one clear focal shape. |

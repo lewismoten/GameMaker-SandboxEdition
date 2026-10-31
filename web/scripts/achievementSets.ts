@@ -34,6 +34,8 @@ import { BlockBook as SweatsBook } from '../../games/sweats/src/common/blocks';
 import { buildPalette as sweatsPalette } from '../../games/sweats/src/art/pal';
 import { LEVELS as teddy2Levels } from '../../games/teddy2/src/game';
 import { buildPalette as teddy2Palette } from '../../games/teddy2/src/art/pal';
+import { buildBlocks as tickleBlocks } from '../../games/tickle/src/blocks/blocks';
+import { buildPalette as ticklePalette } from '../../games/tickle/src/art/pal';
 import { tierBlocks, tierPalette } from './achievementTiers';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
@@ -60,8 +62,7 @@ const park = parkTiles();
 const city = cityTiles();
 const brief = briefAll();
 const briefBlocks = new Map<string, Pixels>();
-for (const area of [brief.hub.area, ...brief.wings.map((w) => w.area)])
-  for (const [k, v] of named(area.tiles)) briefBlocks.set(`${area.file}/${k}`, v);
+for (const area of [brief.hub.area, ...brief.wings.map((w) => w.area)]) for (const [k, v] of named(area.tiles)) briefBlocks.set(`${area.file}/${k}`, v);
 const sweatsGroup = (id: string): Source => {
   const g = sweatsGroups.find((x) => x.id === id)!;
   const pal = sweatsPalette(g.ramps);
@@ -80,6 +81,7 @@ export const sets: Record<string, Source> = {
   city: { game: 'teddy', blocks: named({ pics: city.pics, names: city.names }), palette: P.pal },
   teddy: { game: 'teddy', blocks: new Map(Object.entries(POSES)), palette: P.pal },
   tiers: { game: 'teddy', blocks: tierBlocks(), palette: tierPalette },
+  tickle: { game: 'tickle', blocks: tickleBlocks(ticklePalette('plain')).pics, palette: ticklePalette('plain').pal },
   goat: { game: 'goat', blocks: goatBlocks(goat).pics, palette: goat.pal },
   remote: { game: 'remote', blocks: remoteBlocks(remote).pics, palette: remote.pal },
   snowbound: { game: 'snowbound', blocks: snowBlocks(snow).pics, palette: snow.pal },
@@ -149,6 +151,19 @@ export const picks: Record<string, [string, string]> = {
   'desk-egg': ['y2kSuburb', 'egg'],
   'play-finish': ['snowbound', 'finish'],
   'egg-all': ['teddy2House', 'basket'],
+  'make-every-kind': ['tickle', 'toolbox'],
+  'check-upload': ['tickle', 'clipboardOk'],
+  'sfx-maker': ['tickle', 'mixer'],
+  'desk-uv': ['tickle', 'uvBulb'],
+  'desk-blacklight': ['tickle', 'blacklight'],
+  'desk-degauss': ['tickle', 'crtRings'],
+  'desk-soundcard': ['tickle', 'soundCard'],
+  'desk-hexedit': ['tickle', 'hexPad'],
+  'desk-savehack': ['tickle', 'screwdriverDisk'],
+  'desk-gmcrack': ['tickle', 'pirateDos'],
+  'finish-web': ['tickle', 'surfer'],
+  'tty-call': ['tickle', 'fax'],
+  'tty-sk': ['tickle', 'helloTerm'],
   'every-life-1': ['tiers', 'every-life-1'],
   'every-life-3': ['tiers', 'every-life-3'],
   'every-life-10': ['tiers', 'every-life-10'],

@@ -26,7 +26,7 @@ writeFileSync(
   JSON.stringify(
     {
       notice:
-        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
+        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
       badges,
     },
     null,
@@ -157,7 +157,9 @@ Badges reuse the original 20×20 indexed blocks below, at integer-friendly displ
 The selected public games are by Lewis Moten using Anthropic Claude (MIT).
 The nine every-life, every-loss and every-win tier badges are composed from Teddy's poses
 (hop, hurt, bark) with a bronze, silver or gold plate and a 1, 3 or 10 mark, by Claude Sonnet 5.5,
-which also extracted the later picks. OpenAI Codex extracted the first images and wrote the
+which also extracted the later picks and drew the thirteen new Certified Rat Tickler blocks (a toolbox, clipboard,
+mixing panel, UV bulb, blacklight, CRT, sound card, hex keypad, screwdriver and disk, pirate hat, surfer, fax and
+waving hand) as scenery in that game. OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
 Run \`npx vite-node scripts/achievementArt.ts\` from \`web/\` to regenerate

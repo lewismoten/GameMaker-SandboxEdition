@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -276,6 +276,84 @@
       "game": "teddy2",
       "set": "teddy2House",
       "block": "basket"
+    },
+    "make-every-kind": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAMFBMVEUQDBT3z6rfjp6yusfj6/M8IBBpRSSaaTjLjlHfx3nrw0X/73llEBSSKCjDQTzzWVG8Io5vAAAAlUlEQVR42m2PUQ7DMAhDWclskjBy/9tOJG2ndn0fVvTkIBB7QFa+rvKdtJ5ZknwIyDFaH2MMVVEdIIXGiNYjIjQJpgQOGVoiAqAYeJVENhnn/6OJu7TVdPfW3d21uDuAnEmydZDQQhCzmSuuRRdTfkRk2+Tgs+QN4JS11rrLXGmXIj/50DQx/s00ofkNQkgjkTGZp3wBV0YOcf4gXb8AAAAASUVORK5CYII=",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "toolbox"
+    },
+    "check-upload": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEVpVVmKdXGynooQDBSyusfj6/M8IBCaaTjLjlE4ZTR5vmW+tpb//++qPHxuAAAAg0lEQVR42m3QURLDIAgEUJZg1S33P28H1Nja7Edk3ohMEIgCAiulFENGJQ+B2XWZRYXxaa21gVFNrLVWy0R1o9+pVfQBIQfS/9vpfEB6P5HsPW7KRDKbu3+jk3R6X4NkYdgxPR70jToGpU2UbH9nJoadv7m3tKNjIa+fyNw0FAqsnUM/dMIJWpW0duQAAAAASUVORK5CYII=",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "clipboardOk"
+    },
+    "sfx-maker": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQDBT///9VXW2Cjp6yusfj6/N5hoKeqqbDz8vr8+++/47DQTzzWVGrOasZAAAAeUlEQVR42n2QWw7DIAwEN3bWLKX3P29lnFR5KfsxwMgYZEhST4TUNBOotU+pk+zaZNa2gNZbAjJcYpv85uGD2tlbpeOAkoOkO0eCHBYIA9NySS4cnJXOLPqDPq/znOrp1XPHy+vAigMs0J8/f0ugJqzLPEu2dpTxkB+sjAa1AcXGRQAAAABJRU5ErkJggg==",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "mixer"
+    },
+    "desk-uv": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEV5PJayZdN5hoKeqqbDz8vr8+95qr6m2//z+/8sLDRdXWWSkpoHdl1AAAAAiElEQVR42m2QCw7DIAxDTeIA3e5/3ykOqLSaJUTysMgHJBnkR6JkqDu+0gPGdjpJFwySl+S3U2Hv6IoiErZkABoAz7ScTrQSjkJiY9MbjjHHSBg0WCrhnDOh0qyzWFFvq8/D+f/PgvGqHnshrz6j5l0TPVbnO/SCUcPT6rktKIcvKKcmsnYcsx8zOAWlAfhg+gAAAABJRU5ErkJggg==",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "uvBulb"
+    },
+    "desk-blacklight": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEX///95PJayZdO+WW3fjp7/x895hoKeqqbDz8vr8+/z+/9dXWWSkppStMqbAAAAi0lEQVR42nWQ2w4DIQhEqdyGsv//vY2o69a084DJcQgMBADRiwGOktF4oyAWvK5pLdi9mZT5OlTwfahgO/S/fc2Ej90ya6XWp9pALWBkQ81MqnZR/TcwTACupkoUvZtNg2cMusMpKXb2AERElVRFBIinU7cz5r3YFBxfp/M13QeM1ST7nhO6P6H90AehxQqPx2WSzgAAAABJRU5ErkJggg==",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "blacklight"
+    },
+    "desk-degauss": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUQDBR5hoKeqqbDz8vr8+++/47/96rDQTx5qvO+tpbf28P//++KrUbXAAAAdUlEQVR42n3Q2w7EIAgEUMYBL93//98GaV22azoPGk4IEoUk1Q+QhTOQuHUiv/h5pDgevxkMlJRj6MIecVydvXcz+0OrtbpmtNqaayBwo7RAQKibzreZu9c3y+eYd2oZj6yvK5xlfKmvFHwhF+aZEwEgT/T6BLPcCGVL9RhOAAAAAElFTkSuQmCC",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "crtRings"
+    },
+    "desk-soundcard": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAMFBMVEUQDBT///8ogmlFvpayusd5hoKeqqbDz8vr8+/fx3nDQTwsLDRdXWW+tpbf28P//+/S79KpAAAAi0lEQVR42m2OWw7EIAwDnW7BbcjS+9925aA+WHUi8TEyieFObiRZyMqkgO5m0oUnBaQ7LZPrZyBJ1wrJZSBppvA2STPLFZJjMlmrrCQAKHlcPGS/+Jf5lklGRKD3el+XAxDQ9+w+JNCA6I+eHYHWGgKcvr8kFT133rJD59VzT6aeXHdoloLvxUOWF372DgnyfGPigwAAAABJRU5ErkJggg==",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "soundCard"
+    },
+    "desk-hexedit": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUQDBRVXW2yusfj6/N5hoKeqqbDz8vr8+++/47rw0X/73nnUMeHAAAAYklEQVR42oWPAQrAIAwDU+1i9f8PHi1DNqssEgtHIhUk2fxS8mJIwZKkoGCRTGiAmX2hxVmSnnqCf8kVJil0Bym1Vum9x3QHLKXIGCOm+/QmZy3V3xZF+6/7FqnuWxx/tNENDagDvqxWBi0AAAAASUVORK5CYII=",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "hexPad"
+    },
+    "desk-savehack": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAMFBMVEUQDBSCjp6yusfj6/N5hoKeqqbDz8vr8++SKCjDQTzzWVFVfcMsLDRdXWW+tpb//+91yATkAAAAiUlEQVR42nXPWQ7DMAgEUFxgSNJJff/bRoY4XZTOh4WeQGABgBiPAQ5g27ZFgJOtKqzriYETfZjJnE5MQ6Jns8Hh0CVioGN2BrSNSrDvu2ZG0VBIUlVFlCz7Rm3MtSZ2oTbSMrNT9SEk85bCd+obv3gt6jOFcYcwCbI/K/3fuF/4Gvkcv91uNzkA8JoMCoGo3BYAAAAASUVORK5CYII=",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "screwdriverDisk"
+    },
+    "desk-gmcrack": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVpVVmKdXGynooQDBQ0KDj///++/47fx3m+tpbf28P//+9bl8KxAAAAcklEQVR42m2RAQ7DIAwD7XhJ1/7/wROBlFF6SASdAkYAwkiQxhtDFhCSlKuaSEnuLv1JJa7RPaXnaL3W5OdBDzgWJI2gLEaroGuD4LmBJrVwywjFlLm9i3iTZR+dESUxzyyJLtf013sS/G6MR7b6jf4GP5SVBoQzlr3mAAAAAElFTkSuQmCC",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "pirateDos"
+    },
+    "finish-web": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEX3z6oYFBhtovem2//z+/8oJDBJSVVtaX26lkXfx3mSKCjDQTwfIp3XAAAApUlEQVR42m1PWxIDMQiiKpjd3P++HXUf/SgzcYRECcg/QCpTSUofScoqmK40fFpRCtNQCeB6SJQgkmxxRkcEpfM8peeCatJirU+hSs1ni2yn12iLO9uK4I19HQZxp9hPyYTmT9q9Zh/HuAeliH0U1lrixLzoWivcQ0JILOpR1m7mIRQJSxVRGNM8YB7htWMa1jUU7laTNHfrSAbJSqskZlfON9EPvpEBCPOnw1viAAAAAElFTkSuQmCC",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "surfer"
+    },
+    "tty-call": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVpVVmKdXGynooQDBQsMDy+/46SKCjHx8++tpbf28P//++zrYXRAAAAeklEQVR42m2QAQ7DIAwDfenGIP9/8OSyNqWdg5A4nBAiFP0QUyEgDwE+71t+plZ4cbI6DV1N8c8pVKjuxHjoBjfrAd+GMtxWTXh+s19q1rvj5UD0ns3RWmabcxHEDr2yjdm+xM91QjPKyaiBVM0BcRtIgvvZYfWJnB9fXScJIYf5Iu4AAAAASUVORK5CYII=",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "fax"
+    },
+    "tty-sk": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUQDBSSmqbj4+d5RSzPooL3z6qyusd5hoKeqqbDz8vr8+++/46+tpbf28P//+8frtLBAAAAgUlEQVR42nXQ0QrDIAyF4WwmS05S9/6PWzRaFbb/wsKHWDgEAN4OBQw9pfx6RxzoGGgiMCV8nz4wMPeblWaJIh1jooswM+fNoRXMhcvAoScGRcSOut6sIlKk9B+tOPuHAK6WAhv6g1h4zRa6zW3aMK/WnM7GSu+WUi6Mn2i2ox4l3huICvQOuePyAAAAAElFTkSuQmCC",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "helloTerm"
     },
     "every-life-1": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkra7cWECAAAAcklEQVR42pWRWw7AIAgEgZWu9z9xgxRta386IcZMeBgU0Q0RtQIjzExFTSRdBzo26REPicMD4C3F3UlMCU9IUms6phqZ0SXdMNkzLivvmk4eQdp6J+k+p5RE2dZWOUi2dhnEkYNqI7dyW2AuZOOP/PqOE+GkBKXkH8SIAAAAAElFTkSuQmCC",
