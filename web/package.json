@@ -16,6 +16,7 @@
     "check:games": "vite-node ../games/kit/checkGames.ts",
     "disk:diff": "vite-node scripts/diskDiff.ts --",
     "dosbox": "vite-node scripts/dosbox.ts",
+    "domains:check": "vite-node scripts/domainsCheck.ts",
     "tour:check": "vite-node scripts/tourCheck.ts --",
     "tour:audit": "vite-node scripts/tourAudit.ts --",
     "badges:similar": "vite-node scripts/badgeSimilar.ts --",

@@ -20,6 +20,11 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     `og/<id>.png` (drawn by `ogImage.ts`), `downloads.html` (a plain page linking every listed Sandbox and Bizarre game's ZIP, for crawlers and the Internet Archive), each Guide section's page `help-<id>.html` (its text from
     `manual/guideSections.ts`, which `webManual.ts` shows), and The Sandbox Scoop's RSS feed `scoop.xml`
     (`scoopFeed.ts`: every game's `printables.json` news story, dated from `scoopDates.json`).
+- `domainsCheck.ts` (`npm run domains:check`): asks each registry's whois (and DNS) whether every
+  made-up domain in `../src/manual/magazine/mockSites.json` is still unregistered, with a
+  nonsense-name control per TLD; prints a table, exits 1 if one is taken, 2 if a lookup couldn't run.
+  Needs the network, so it isn't in CI or vitest. `oldWebShots.ts` re-renders the article's pictures
+  from the same JSON.
 - `tourCheck.ts` (`npm run tour:check -- <chapter>[,<chapter>]`, or `all`): starts its own vite on a
   free port from 5190 (never 5173) with a scratch cache, plays the tour chapters in headless Chrome
   (playwright-core) at 1440 and 390 wide, light and dark, stepping through paused, and prints a table

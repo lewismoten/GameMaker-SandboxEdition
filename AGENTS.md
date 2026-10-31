@@ -54,6 +54,7 @@ npm run check:games                                # all of the game checks abov
 npm run check:games -- --game <id> --quick         # one game, without the reproducibility rebuild
 npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/
+npm run domains:check                              # every made-up domain is still unregistered (whois + DNS; needs network)
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox
 npm run voice                                      # tour voice clips for new or changed lines (local Pocket TTS; -- --only <id> retakes one)
 npm run voice:all                                  # every tour voice clip again
@@ -167,6 +168,7 @@ preserve what was there.
   - No membership or lineage organizations.
   - No health, grief or money material. The exceptions are the lactose-intolerance game and the
     tin hearts' nod to the maintainer's pacemaker (on the cast page and in TURBO BUTTON).
+- **Made-up domains** must be listed in `web/src/manual/magazine/mockSites.json` and pass `npm run domains:check`; a test fails on any unlisted domain.
 - **Clowns are always friendly.** Never scary, villains or jump scares. The maintainer, Doc Leo,
   is in a clown club that entertains children.
 - **Trademarks:** use generic words instead of casual trademarks ("building blocks", not a
