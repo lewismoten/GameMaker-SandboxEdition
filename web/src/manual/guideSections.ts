@@ -56,7 +56,11 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
       backups</a>).</li>
     </ul>
     <p>On a phone or tablet, the pages the bar has no room for and the settings are in its
-    <b>⋯</b> menu.</p>`,
+    <b>⋯</b> menu.</p>
+    <h3>ePub downloads</h3>
+    <p>Every manual, hint book and magazine in the Library has a <b>⤓ ePub</b> button beside Print.
+    It saves the piece as an e-book that reads offline in any e-book app. A hint book’s answers
+    wait at the back, each one a link away from its question.</p>`,
   ],
   [
     'home',
@@ -165,6 +169,15 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     the picture. On the start scene of the <code>.GAM</code>, <b>☑ Before you upload…</b> is a
     checklist that ticks itself where the check can tell, and <b>🤖 Make a walkthrough…</b> has
     the bot play the whole game, to watch or save as an MP4.</p>
+    <h3>Walkthrough</h3>
+    <p>Every game’s panel on the Games page has a <b>Walkthrough</b> button. If the game comes with
+    a walkthrough, watch it there. You can also make your own: the bot plays each scene on the real
+    engine, and if it gets stuck the walkthrough still plays as far as it got, ending with a card
+    that says where it stopped. Press <b>🎮 Play it myself</b> on any scene to play it and keep
+    your play, choose <b>Mine</b> or <b>Bot</b> for that scene, and press <b>🤖 Make it again</b>
+    to go on from there. Watch it to save it as an MP4. For a game from the CD, what you make is
+    kept in this browser, never in the game’s files; <b>Edit a copy</b> to keep it with a game of
+    yours.</p>
     <h3>The DOS player and cards</h3>
     <p>The <code>.GAM</code> also has <b>▤ DOS player</b>, to change the stand-alone DOS player’s
     own words, colors, frames and timings screen by screen (drag them on its preview to move them)
