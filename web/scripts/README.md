@@ -3,7 +3,7 @@
 Part of the [source map](../src/README.md). A name with no folder is a file here, `../` is `web/`, and
 the other folders named (`manual/`, `gfx/`…) are under `web/src/`.
 
-`../../scripts/build-games.mjs` generates ignored `games/<id>/disk/` and `walkPaths.json` outputs. Root `npm ci` builds them after the workspace packages; the web development, build and test commands refresh them automatically. `npm run build:games -- --force` forces a clean rebuild. Source and output hashes in ignored `games/.build-cache.json` skip unchanged builds. Each game runs in its own process, with two builds at a time.
+`../../scripts/build-games.mjs` generates ignored `games/<id>/disk/` and `walkPaths.json` outputs. Root `npm ci` builds them after the workspace packages; the web development, build and test commands refresh them automatically. `npm run build:games -- --force` forces a clean rebuild. A per-game key (the files its `build.ts` imports, see `scripts/game-import-keys.mjs`) and an output hash in ignored `games/.build-cache.json` skip unchanged builds. Each game runs in its own process, with two builds at a time (`GM_BUILD_JOBS`; every core on CI), slowest first; `--timing` prints per-game seconds and `--game <id>` limits the run.
 
 This folder holds the build's Vite plugins and the scripts run by hand (from
 `web/`, `npx vite-node scripts/<name>.ts`).

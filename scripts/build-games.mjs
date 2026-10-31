@@ -3,7 +3,9 @@ import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { availableParallelism } from 'node:os';
 import { gameSourceHash, root } from './game-build-inputs.mjs';
+import { gameKeys } from './game-import-keys.mjs';
 import { promisify } from 'node:util';
 const games = join(root, 'games');
 const cacheFile = join(games, '.build-cache.json');
@@ -12,7 +14,6 @@ if (process.env.GM_SKIP_GAME_BUILD === '1') {
   console.log('Game output generation deferred to the build job.');
   process.exit(0);
 }
-const source = gameSourceHash();
 const frames = join(games, '.render-cache', gameSourceHash(true));
 let cached;
 try {
@@ -39,12 +40,30 @@ function outputs(id) {
 const ids = readdirSync(games)
   .filter((id) => existsSync(join(games, id, 'build.ts')))
   .sort();
-const pending = ids.filter((id) => process.argv.includes('--force') || cached?.source !== source || !cached?.outputs[id] || cached.outputs[id] !== outputs(id));
+// each game is keyed by the files its build really imports (game-import-keys.mjs), so a game rebuilds only when its own inputs change
+const keys = await gameKeys(ids);
+// --game <id> (repeatable) builds only those games
+const only = process.argv.flatMap((arg, i) => (process.argv[i - 1] === '--game' ? [arg] : []));
+const stale = ids.filter(
+  (id) =>
+    (!only.length || only.includes(id)) &&
+    (process.argv.includes('--force') || cached?.keys?.[id] !== keys[id] || !cached?.outputs?.[id] || cached.outputs[id] !== outputs(id)),
+);
+// slowest first keeps the last workers busy; GM_BUILD_JOBS sets the worker count (CI uses every core, a desk keeps two)
+const slowFirst = ['depth', 'realm', 'blaster', 'maximus'];
+const pending = [
+  ...stale.filter((id) => slowFirst.includes(id)).sort((a, b) => slowFirst.indexOf(a) - slowFirst.indexOf(b)),
+  ...stale.filter((id) => !slowFirst.includes(id)),
+];
+const jobs = Math.max(1, Math.floor(Number(process.env.GM_BUILD_JOBS)) || (process.env.CI ? availableParallelism() : 2));
+const timing = process.argv.includes('--timing') || process.env.GM_BUILD_TIMING === '1';
+const times = [];
 async function worker() {
   for (;;) {
     const id = pending.shift();
     if (!id) return;
     const secret = JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')).secret;
+    const started = Date.now();
     try {
       if (id === 'depth') {
         const shards = Array.from({ length: 8 }, (_, i) => i).filter((i) => !existsSync(join(frames, `shard-${i}.json`)));
@@ -63,19 +82,45 @@ async function worker() {
         }
         await Promise.all([renderWorker(), renderWorker()]);
       }
-      await run(process.execPath, [join(root, 'node_modules/vite-node/vite-node.mjs'), `../games/${id}/build.ts`], {
-        cwd: join(root, 'web'),
-        maxBuffer: 64 << 20,
-        timeout: 240_000,
-        killSignal: 'SIGKILL',
-        env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames },
-      });
+      // a build killed from outside well before its timeout (memory pressure, a stray pkill) is tried once more
+      for (let attempt = 1; ; attempt++) {
+        const began = Date.now();
+        try {
+          await run(process.execPath, [join(root, 'node_modules/vite-node/vite-node.mjs'), '../scripts/game-build-entry.mjs', id], {
+            cwd: join(root, 'web'),
+            maxBuffer: 64 << 20,
+            timeout: 240_000,
+            killSignal: 'SIGKILL',
+            env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames },
+          });
+          break;
+        } catch (error) {
+          if (attempt > 1 || !error.signal || Date.now() - began > 230_000) throw error;
+        }
+      }
     } catch (error) {
-      throw new Error(secret ? 'A game build failed.' : `${id}: game build failed\n${error.stderr ?? error.message}`);
+      throw new Error(
+        secret
+          ? 'A game build failed.'
+          : `${id}: game build failed (code ${error.code}, signal ${error.signal}, killed ${error.killed}, after ${((Date.now() - started) / 1000).toFixed(0)} s)\n${error.stderr || error.stdout?.slice(-2000) || error.message}`,
+      );
     }
-    if (!secret) console.log(`Built ${id}`);
+    times.push([secret ? 'a game' : id, (Date.now() - started) / 1000]);
+    if (!secret) console.log(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
   }
 }
-await Promise.all([worker(), worker()]);
-writeFileSync(cacheFile, JSON.stringify({ source, frames, outputs: Object.fromEntries(ids.map((id) => [id, outputs(id)])) }) + '\n');
+const began = Date.now();
+await Promise.all(Array.from({ length: Math.min(jobs, pending.length) }, worker));
+if (timing)
+  console.log(
+    `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,
+  );
+writeFileSync(
+  cacheFile,
+  JSON.stringify({
+    keys: Object.fromEntries(ids.map((id) => [id, only.length && !only.includes(id) ? cached?.keys?.[id] : keys[id]])),
+    frames,
+    outputs: Object.fromEntries(ids.map((id) => [id, outputs(id)])),
+  }) + '\n',
+);
 console.log('Game build outputs are ready.');
