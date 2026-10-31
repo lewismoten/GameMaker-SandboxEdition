@@ -47,7 +47,7 @@ export function deskGamePad(): HTMLElement {
     {
       type: 'button',
       class: 'game-pad',
-      'aria-label': "GRAVITAS PC GamePad, the PC's joystick: open its large controls",
+      'aria-label': "GRAVITAS PC GamePad 4 BUTTON TURBO, the PC's joystick: open its large controls",
       'aria-haspopup': 'dialog',
       title: 'The joystick: press its d-pad and red or yellow button, slide its TURBO switch, or click the pad for large controls',
     },

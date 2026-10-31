@@ -41,7 +41,7 @@ export function gamePadArt(opts: { shaft?: boolean; alt?: string } = {}): HTMLEl
     h(
       'span',
       { class: 'gp-switch' },
-      h('span', { class: 'gp-sw-names' }, h('span', null, '4 BUTTON'), h('span', null, 'TURBO')),
+      h('span', { class: 'gp-sw-names' }, h('span', null, '4 BUTTON'), ' ', h('span', null, 'TURBO')),
       h('span', { class: 'gp-sw-slot' }, h('span', { class: 'gp-sw-knob' })),
     ),
     opts.shaft ? h('span', { class: 'gp-shaft' }) : null,
