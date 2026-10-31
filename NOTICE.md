@@ -145,6 +145,18 @@ game folder opens in the browser unchanged.
   and _TURBO BUTTON_'s feature "Bugs Only DOS Could Find" (`web/public/magazine/dos-carl.webp`,
   cropped to the game screen at the size DOSBox drew it). It is source material from Lewis,
   shared under the same terms as the rest of this fork.
+- **Pictures and recordings made by scripts in this repository** (`web/public`), all under the
+  MIT License like the games they show: the Cast page's pictures (`cast/`, drawn from the games'
+  built files by `web/scripts/castArt.ts` and `castSprites.ts`); the gameplay frames behind box
+  shots and manual pages (`frames/`, `web/scripts/shotFrames.ts`); the 1200 × 630 social preview
+  `og-image.png` (`web/scripts/ogImage.ts`); the app icons (`icon.svg` and the PNGs made from
+  it, drawn for this project as a block grid); the magazine's screenshots of the site, its
+  editors and the desk (`magazine/`, `web-*.webp` and `desk-1994.webp`); and the demo recordings
+  for CD games that shipped without one (`extras/demos`, recorded and replayed by
+  `games/kit/cdDemos/make.ts`; they are not part of the original games). The Credits page's
+  small title-screen pictures (`credits/`) are frames of RSD's own Game-Maker title screen and
+  of the CD games it names, shown to credit their authors, and of this fork's own games; the
+  BBS picture thumbnails there (`credits/bbs`) are the pictures credited under "BBS pictures".
 - **Tricks From the Shareware Authors** (chapter 17 of The Ultimate Owner's Guide,
   `web/src/manual/ultimate/chaptersShareware.ts`) and the archive counts in its "Where Game-Maker
   Runs Out" describe techniques found by surveying community Game-Maker games in the
