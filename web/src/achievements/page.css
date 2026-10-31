@@ -187,13 +187,20 @@ main.ach-page .ach-back {
 
 .ach-progress {
   display: grid;
-  /* the bar keeps at least half the row; a long count ("0 of 1000 pretend cents") wraps instead */
-  grid-template-columns: minmax(50%, 1fr) minmax(0, max-content);
+  /* the count stays on one line (the card is a fixed height, so a wrapped count pushed "Not yet" out
+     of it); a very long one ("0 of 1000 pretend cents") is cut short, and the details have it all */
+  grid-template-columns: minmax(30%, 1fr) minmax(0, max-content);
   align-self: end;
   align-items: center;
   gap: 8px;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ach-progress > :not(.ach-bar) {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ach-when {
