@@ -49,7 +49,7 @@ export const boxChapter: Chapter = {
     {
       id: 'box-hello',
       action: 'enter',
-      say: 'Inspector Penn, on a new case: what a 1994 software box held. Far more than a disk, as you’ll see.',
+      say: 'Inspector Ada Penn, on a new case: what a 1994 software box held. Far more than a disk, as you’ll see.',
       sound: 'creak',
     },
     {
@@ -73,6 +73,7 @@ export const boxChapter: Chapter = {
       action: 'point',
       target: { label: 'the disks in the box', css: '.box-viewer .bc-disks', in: box },
       say: 'The disks, fanned out as a set. Click them and disk one goes in drive A: to play.',
+      spoken: 'The disks, fanned out as a set. Click them and disk one goes in the A drive to play.',
       optional: true,
     },
     {
@@ -142,7 +143,7 @@ export const boxChapter: Chapter = {
     {
       id: 'box-bye',
       action: 'exit',
-      say: 'Case closed. Disks, a manual, maps, cards, a catalog, stickers. That’s a box from 1994!',
+      say: 'Case closed. In 1994 a box held disks, a manual, maps, cards, a catalog and stickers!',
       sound: 'chime',
     },
   ],

@@ -191,6 +191,166 @@
     "hash": "e112288df61d",
     "voice": "be82d9d1db7e"
   },
+  "box-back": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn talks",
+    "text": "Put the hint book down, and the box comes right back to you.",
+    "seconds": 4.1,
+    "hash": "4c771899c255",
+    "voice": "f969522e51c0"
+  },
+  "box-bbs": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the BBS ad in the list",
+    "text": "An ad for the BBS. Call in and download more.",
+    "seconds": 4.3,
+    "hash": "b9c0f2d6effe",
+    "voice": "f969522e51c0"
+  },
+  "box-buttons": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the box viewer’s buttons",
+    "text": "Below, buttons: put the disk in drive A:, read the manual, or close. The arrows pick the next box.",
+    "seconds": 6.88,
+    "hash": "763d4fe9d05b",
+    "voice": "f969522e51c0"
+  },
+  "box-bye": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn says goodbye and walks off",
+    "text": "Case closed. In 1994 a box held disks, a manual, maps, cards, a catalog and stickers!",
+    "seconds": 7.3,
+    "hash": "82054e035287",
+    "voice": "f969522e51c0"
+  },
+  "box-catalog": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the Sandbox Software catalog in the list",
+    "text": "And the Sandbox Software catalog, with every game in the family.",
+    "seconds": 4.75,
+    "hash": "386e29a40266",
+    "voice": "f969522e51c0"
+  },
+  "box-close": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn presses the box viewer’s Close button",
+    "text": "Close, and the box goes back on the shelf, ready for the next curious player.",
+    "seconds": 5.15,
+    "hash": "527077262e37",
+    "voice": "f969522e51c0"
+  },
+  "box-disks": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the disks in the box",
+    "text": "The disks, fanned out as a set. Click them and disk one goes in drive A: to play.",
+    "seconds": 5.98,
+    "hash": "599a3a59ef4f",
+    "voice": "f969522e51c0"
+  },
+  "box-hello": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn comes on",
+    "text": "Inspector Ada Penn, on a new case: what a 1994 software box held. Far more than a disk, as you’ll see.",
+    "seconds": 7.93,
+    "hash": "2fd163cc18a6",
+    "voice": "f969522e51c0"
+  },
+  "box-hint-film": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the Red film button",
+    "text": "Hint book answers hide in a tangle of lines. Red film lays a red sheet over them, and they show.",
+    "seconds": 6.65,
+    "hash": "7a1286292edd",
+    "voice": "f969522e51c0"
+  },
+  "box-hint-open": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn presses the hint book postcard in the list",
+    "text": "Stuck? This postcard is about the hint book. Let’s have a look.",
+    "seconds": 4.45,
+    "hash": "8cbb7ea79f9c",
+    "voice": "f969522e51c0"
+  },
+  "box-keycard": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the Key card in the list",
+    "text": "A key card, a quick reminder of your keyboard.",
+    "seconds": 3.65,
+    "hash": "d85fc66de161",
+    "voice": "f969522e51c0"
+  },
+  "box-levelmaps": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the Level Maps in the list",
+    "text": "Level Maps show each level’s real map, with the start and the ways out marked.",
+    "seconds": 5.63,
+    "hash": "447752aaf266",
+    "voice": "f969522e51c0"
+  },
+  "box-list": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the list of what else came in the box",
+    "text": "Then the paper. Each piece has a little picture; click one to look closer. So much, and on purpose!",
+    "seconds": 6.93,
+    "hash": "80869b330cf7",
+    "voice": "f969522e51c0"
+  },
+  "box-manual": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the manual in the box",
+    "text": "The manual, stapled, with a cover of its own. Click it to read.",
+    "seconds": 4.63,
+    "hash": "cc7655a9fede",
+    "voice": "f969522e51c0"
+  },
+  "box-newsletter": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at The Sandbox Scoop in the list",
+    "text": "The Sandbox Scoop, a newsletter about the next games.",
+    "seconds": 4.18,
+    "hash": "94a7c966a060",
+    "voice": "f969522e51c0"
+  },
+  "box-outside": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the box, turning",
+    "text": "Outside, art up front. The back sells the game with its features, reviews and pictures.",
+    "seconds": 6,
+    "hash": "39a69800b884",
+    "voice": "f969522e51c0"
+  },
+  "box-postcard": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the Registration card in the list",
+    "text": "A registration card: a postcard, already marked paid. Handy!",
+    "seconds": 5.18,
+    "hash": "82d2bfd9a3ad",
+    "voice": "f969522e51c0"
+  },
+  "box-shelf": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn presses the box standing face out",
+    "text": "Take a box down off the shelf, and the whole thing turns up in your hands.",
+    "seconds": 5.15,
+    "hash": "20a957148df2",
+    "voice": "f969522e51c0"
+  },
+  "box-stickers": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the Sticker sheet in the list",
+    "text": "A sheet of stickers. Cut them out, if you dare.",
+    "seconds": 3.65,
+    "hash": "d051be1d5a6b",
+    "voice": "f969522e51c0"
+  },
+  "box-worldmap": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the World Map in the list",
+    "text": "A fold-out World Map: every scene, and the ways between them.",
+    "seconds": 4.72,
+    "hash": "4bac826d2880",
+    "voice": "f969522e51c0"
+  },
   "cast-appears": {
     "chapter": "cast",
     "where": "Cast: Teddy points at the games Teddy is seen in",

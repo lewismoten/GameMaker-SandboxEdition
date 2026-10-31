@@ -191,6 +191,31 @@ records every clip again.
 | [desk-guides.ogg](desk/desk-guides.ogg) | Press the question mark any time to see this tour again. | Desk: Lewie points at the ? Guides button | 3.84 |
 | [desk-bye.ogg](desk/desk-bye.ogg) | That’s my room. Now, who wants to make a game? | Desk: Lewie says goodbye and walks off | 4.00 |
 
+## box
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [box-hello.ogg](box/box-hello.ogg) | Inspector Ada Penn, on a new case: what a 1994 software box held. Far more than a disk, as you’ll see. | Box: Inspector Penn comes on | 7.93 |
+| [box-shelf.ogg](box/box-shelf.ogg) | Take a box down off the shelf, and the whole thing turns up in your hands. | Box: Inspector Penn presses the box standing face out | 5.15 |
+| [box-outside.ogg](box/box-outside.ogg) | Outside, art up front. The back sells the game with its features, reviews and pictures. | Box: Inspector Penn points at the box, turning | 6.00 |
+| [box-disks.ogg](box/box-disks.ogg) | The disks, fanned out as a set. Click them and disk one goes in drive A: to play. | Box: Inspector Penn points at the disks in the box | 5.98 |
+| [box-manual.ogg](box/box-manual.ogg) | The manual, stapled, with a cover of its own. Click it to read. | Box: Inspector Penn points at the manual in the box | 4.63 |
+| [box-list.ogg](box/box-list.ogg) | Then the paper. Each piece has a little picture; click one to look closer. So much, and on purpose! | Box: Inspector Penn points at the list of what else came in the box | 6.93 |
+| [box-worldmap.ogg](box/box-worldmap.ogg) | A fold-out World Map: every scene, and the ways between them. | Box: Inspector Penn points at the World Map in the list | 4.72 |
+| [box-levelmaps.ogg](box/box-levelmaps.ogg) | Level Maps show each level’s real map, with the start and the ways out marked. | Box: Inspector Penn points at the Level Maps in the list | 5.63 |
+| [box-keycard.ogg](box/box-keycard.ogg) | A key card, a quick reminder of your keyboard. | Box: Inspector Penn points at the Key card in the list | 3.65 |
+| [box-postcard.ogg](box/box-postcard.ogg) | A registration card: a postcard, already marked paid. Handy! | Box: Inspector Penn points at the Registration card in the list | 5.18 |
+| [box-newsletter.ogg](box/box-newsletter.ogg) | The Sandbox Scoop, a newsletter about the next games. | Box: Inspector Penn points at The Sandbox Scoop in the list | 4.18 |
+| [box-catalog.ogg](box/box-catalog.ogg) | And the Sandbox Software catalog, with every game in the family. | Box: Inspector Penn points at the Sandbox Software catalog in the list | 4.75 |
+| [box-bbs.ogg](box/box-bbs.ogg) | An ad for the BBS. Call in and download more. | Box: Inspector Penn points at the BBS ad in the list | 4.30 |
+| [box-stickers.ogg](box/box-stickers.ogg) | A sheet of stickers. Cut them out, if you dare. | Box: Inspector Penn points at the Sticker sheet in the list | 3.65 |
+| [box-buttons.ogg](box/box-buttons.ogg) | Below, buttons: put the disk in drive A:, read the manual, or close. The arrows pick the next box. | Box: Inspector Penn points at the box viewer’s buttons | 6.88 |
+| [box-hint-open.ogg](box/box-hint-open.ogg) | Stuck? This postcard is about the hint book. Let’s have a look. | Box: Inspector Penn presses the hint book postcard in the list | 4.45 |
+| [box-hint-film.ogg](box/box-hint-film.ogg) | Hint book answers hide in a tangle of lines. Red film lays a red sheet over them, and they show. | Box: Inspector Penn points at the Red film button | 6.65 |
+| [box-back.ogg](box/box-back.ogg) | Put the hint book down, and the box comes right back to you. | Box: Inspector Penn talks | 4.10 |
+| [box-close.ogg](box/box-close.ogg) | Close, and the box goes back on the shelf, ready for the next curious player. | Box: Inspector Penn presses the box viewer’s Close button | 5.15 |
+| [box-bye.ogg](box/box-bye.ogg) | Case closed. In 1994 a box held disks, a manual, maps, cards, a catalog and stickers! | Box: Inspector Penn says goodbye and walks off | 7.30 |
+
 ## bbs
 
 | Clip | Says | Where | Seconds |
