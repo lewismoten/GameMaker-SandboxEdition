@@ -23,7 +23,7 @@ import { newCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/chara
 import { createWorld } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { moveChars, updateCharScreenPos } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
 import { changeScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
-import { SOLRIG, SOLBOT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { SOLLEF, SOLRIG, SOLBOT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 function world(mx: number, my: number, cx: number, cy: number, step = 0) {
   const w = createWorld(newMap(), { play: () => false }, () => 0.5);
@@ -95,10 +95,13 @@ describe('moveChars near column mx', () => {
       await moveChars(w, async () => 0);
       expect(w.chr.x).toEqual([mx, 6]);
       expect(w.ci.nextx).toBe(2000 + 6);
-      // ChangeScroll sees it far right of center and starts scrolling the map left (mx++).
+      // ChangeScroll sees it far right of center and starts scrolling the map left (mx++). It is
+      // so far (about 1850 px past the stop line) that DOS's 16-bit (dist*40) overflows, so the
+      // speed is the wrapped value, not the 28 cap (PLAYGAME.C 3935; found by chiguire, PR #4).
       w.scroll.left = 0xff;
       changeScroll(w);
-      expect(w.scroll.totalx).toBe(28);
+      expect(w.scroll.inMotion & SOLLEF).toBeTruthy();
+      expect(w.scroll.totalx).toBe(0);
     });
   }
 
