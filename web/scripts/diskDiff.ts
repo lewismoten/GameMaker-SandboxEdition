@@ -1,10 +1,11 @@
-// `npm run disk:diff -- <a> <b> [--json]`: compare two Game-Maker disks, each a folder (such as
+// `npm run disk:diff -- <a> <b> [--json|--notes]`: compare two Game-Maker disks, each a folder (such as
 // games/<id>/disk) or a .zip. Lists changed, added and removed files with a plain-text summary of
 // what changed in each, by file type. The same inputs print the same text. Exit 0 either way.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { readZip } from '@lewismoten/gamemaker-sandbox-archives/project/zip';
 import { diffDisks, formatDiff, type DiskFiles } from '@lewismoten/gamemaker-sandbox-tools/disk-diff';
+import { releaseNotes } from '@lewismoten/gamemaker-sandbox-tools/release-notes';
 
 async function load(source: string): Promise<DiskFiles> {
   const files = new Map<string, Uint8Array>();
@@ -19,10 +20,12 @@ async function load(source: string): Promise<DiskFiles> {
 
 const args = process.argv.slice(2).filter((a) => a !== '--');
 const json = args.includes('--json');
-const [a, b] = args.filter((x) => x !== '--json');
+const notes = args.includes('--notes');
+const [a, b] = args.filter((x) => !x.startsWith('--'));
 if (!a || !b) {
-  console.error('Usage: npm run disk:diff -- <folder|.zip> <folder|.zip> [--json]');
+  console.error('Usage: npm run disk:diff -- <folder|.zip> <folder|.zip> [--json|--notes]');
   process.exit(2);
 }
 const diff = diffDisks(await load(a), await load(b));
-process.stdout.write(json ? JSON.stringify(diff, null, 2) + '\n' : formatDiff(diff));
+if (notes) process.stdout.write(releaseNotes(diff) + '\n');
+else process.stdout.write(json ? JSON.stringify(diff, null, 2) + '\n' : formatDiff(diff));

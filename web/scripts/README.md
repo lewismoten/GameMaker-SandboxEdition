@@ -105,12 +105,12 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   style, tries, play time and outcome, and why it stopped (a door that stayed shut). `--out` writes the walkthrough; it
   exits 1 when the bot doesn't win. Arguments, `.gam` picking and the table line are in `walkAutoArgs.ts`. It skips the
   author's own plays and walking paths, which live in a project's companion file.
-- `diskDiff.ts` (`npm run disk:diff -- <a> <b> [--json]`) compares two disks, each a folder (such as `games/<id>/disk`) or a
+- `diskDiff.ts` (`npm run disk:diff -- <a> <b> [--json|--notes]`) compares two disks, each a folder (such as `games/<id>/disk`) or a
   `.zip`: how many files changed, were added or removed, then for each changed file a plain-text summary by type, picked from
   the file's contents where it can (GIF, FLI, VOC) and else its extension: `.gam` scenes, `.pal` colors, `.bbl/.mbl/.cbl`
   block numbers, `.map` changed cells in clusters, `.chr` sequences, `.mon` monsters, text line counts, picture pixels,
   animation frames, sound length, and a byte count for anything else. Output is sorted with no dates, so the same inputs
-  print the same text. The logic is `packages/tools/src/diskDiff.ts` (`@lewismoten/gamemaker-sandbox-tools/disk-diff`).
+  print the same text. `--notes` prints release-note text instead (`packages/tools/src/releaseNotes.ts`). The logic is `packages/tools/src/diskDiff.ts` (`@lewismoten/gamemaker-sandbox-tools/disk-diff`).
   To compare with an older commit, rebuild that revision's disk first (`games/kit/versionDisks.ts` rebuilds a game's
   source at a revision into a scratch folder).
 - `dosbox.ts` (`npm run dosbox`) lays out `../../dosbox/` (git-ignored) to mount as drive C: in
