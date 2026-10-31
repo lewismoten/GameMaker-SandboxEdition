@@ -3,13 +3,13 @@ import type { Project } from '../core/project';
 import { h } from '../core/ui';
 import { formatHash } from '../../urlState';
 
-export type OverviewTab = 'files' | 'controls' | 'player';
+export type OverviewTab = 'files' | 'controls' | 'player' | 'tools';
 
-export const TAB_TITLES: Record<OverviewTab, string> = { files: 'Files', controls: 'Controls', player: 'DOS player' };
+export const TAB_TITLES: Record<OverviewTab, string> = { files: 'Files', controls: 'Controls', player: 'DOS player', tools: 'Tools' };
 
 /** The tab an address names (?tab=controls); Files when it names none. */
 export function overviewTabFrom(value: string | undefined): OverviewTab {
-  return value === 'controls' || value === 'player' ? value : 'files';
+  return value === 'controls' || value === 'player' || value === 'tools' ? value : 'files';
 }
 
 /** The address of an Overview tab (Files is the page without a tab). */

@@ -140,6 +140,21 @@ function savedFindings(project: Project, all = false): { findings: Finding[]; ma
   return { findings, maps: maps.length, checked };
 }
 
+/** For the Overview's Tools tab: how many lines are ticked, and how many maps have a saved Level check. Only reads. */
+export function uploadSummary(project: Project): { ticked: number; total: number; maps: number; checked: number; problems: number } {
+  const ticks = new Set(project.extras<number[]>(project.gam, SECTION, []));
+  const saved = savedFindings(project);
+  const played = saved.maps > 0 && saved.checked === saved.maps;
+  let ticked = 0;
+  let problems = 0;
+  APPENDIX_B.forEach((item, i) => {
+    const st = itemState(item, saved.findings, played);
+    if (st.kind === 'problems') problems++;
+    if (ticks.has(i) || (st.kind === 'clear' && item.full)) ticked++;
+  });
+  return { ticked, total: APPENDIX_B.length, maps: saved.maps, checked: saved.checked, problems };
+}
+
 export async function uploadChecklist(project: Project): Promise<void> {
   const ticks = new Set(project.extras<number[]>(project.gam, SECTION, []));
   let fileFindings: Finding[] = [];

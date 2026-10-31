@@ -77,7 +77,7 @@ palettes, block sets, monsters, characters, maps, sound sets, pictures and so on
 
 ## Overview and file galleries
 
-A game opens on its **Overview**, with three tabs: **Files**, **Controls** and **DOS player**.
+A game opens on its **Overview**, with four tabs: **Files**, **Controls**, **DOS player** and **Tools**.
 The address keeps the tab (`?tab=controls`), so Back, Forward and a reload return to it.
 
 **Files** is the asset browser. Each file type has a preview and a file count;
@@ -95,6 +95,14 @@ editor: the DOS files never change. **Undo** and **Redo** work here too.
 **DOS player** is the stand-alone player's panel, described under
 [The Integrator and the DOS player](#the-integrator-and-the-dos-player). The Integrator's
 **DOS player** button opens this tab.
+
+**Tools** gathers the tools that work on the whole game, one card each, with a picture or what is
+known now and a button that opens it: **Level check** (a picture of the first level, how many levels have
+a saved check and what it found), **Before You Upload** (lines ticked), **Make a walkthrough**
+(whether one was made and how far it got), **Health check** (reads every file and lists the
+broken ones), **First steps** (in games started from the starter), **Color vision check** (the
+palette, drawn) and **Play Game** and **Download**. The status comes from what is already saved;
+opening the tab never runs a check. Each tool also opens from where it always did.
 
 The first card adds files. **Add a file…** offers new files, the Library, uploads and the
 available converters. **From this game…** makes a copy of an existing file. Copy a file, open

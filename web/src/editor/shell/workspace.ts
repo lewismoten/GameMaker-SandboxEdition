@@ -530,6 +530,9 @@ export class Workspace implements AssistantHost {
           category: (k) => this.openAssets(k),
           open: (file) => this.open(file),
           add: (k) => void this.addOfKind(k),
+          play: () => this.play('title'),
+          download: () => void this.chooseDownload(),
+          firstSteps: () => (this.firstSteps ? () => this.firstSteps?.toggle(true) : undefined),
           tabChanged: (next) => {
             if (!this.assetView || this.assetView.tab === next) return;
             this.assetView = { kind: undefined, tab: next };

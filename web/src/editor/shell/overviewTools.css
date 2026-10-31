@@ -1,0 +1,58 @@
+/* Overview › Tools: a grid of cards, a picture or none, the live status, the line and the button. */
+.overview-tools {
+  padding: 0 4px 16px;
+}
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.tool-pic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 96px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--panel-2);
+}
+.tool-pic > * {
+  max-width: 100%;
+  max-height: 96px;
+}
+.tool-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.tool-body h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.tool-body p {
+  margin: 0;
+}
+.tool-status {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.tool-body button {
+  margin-top: auto;
+  min-height: 28px;
+  max-width: 100%;
+}

@@ -1,6 +1,6 @@
 // The Overview page every game opens on: tabs for Files (the asset grid and its categories),
-// Controls (what keys, buttons and counters mean) and DOS player (the stand-alone player's
-// screens). The Controls and DOS player tabs load when first opened.
+// Controls (what keys, buttons and counters mean), DOS player (the stand-alone player's
+// screens) and Tools (the game-wide tools, overviewTools.ts). The other tabs load when first opened.
 import './overview.css';
 import { h, clear } from '../core/ui';
 import type { FileKind, Project } from '../core/project';
@@ -16,16 +16,20 @@ interface OverviewHost {
   category: (kind: FileKind) => void;
   open: (file: string) => void;
   add: (kind: FileKind) => void;
+  /** Play Game, Download and the First steps panel (when this game has it), for the Tools tab. */
+  play: () => void;
+  download: () => void;
+  firstSteps: () => (() => void) | undefined;
   /** A tab was chosen: the address follows. */
   tabChanged: (tab: OverviewTab) => void;
 }
 
-const TABS: OverviewTab[] = ['files', 'controls', 'player'];
+const TABS: OverviewTab[] = ['files', 'controls', 'player', 'tools'];
 
 export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void } {
   const disposers: (() => void)[] = [];
   const panel = (id: string) => h('div', { class: `overview-panel overview-${id}` });
-  const panels = { files: panel('files'), controls: panel('controls'), player: panel('player') };
+  const panels = { files: panel('files'), controls: panel('controls'), player: panel('player'), tools: panel('tools') };
   const browser = assetBrowser({
     project: host.project,
     kind: host.kind,
@@ -37,7 +41,7 @@ export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void
   panels.files.append(browser.el);
   disposers.push(() => browser.dispose());
   const filled = new Set<OverviewTab>(['files']);
-  const lazy = async (tab: 'controls' | 'player') => {
+  const lazy = async (tab: 'controls' | 'player' | 'tools') => {
     if (filled.has(tab)) return;
     filled.add(tab);
     const slot = panels[tab];
@@ -46,6 +50,11 @@ export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void
       if (tab === 'controls') {
         const { overviewControls } = await import('./overviewControls');
         const page = overviewControls(host.project);
+        clear(slot, page.el);
+        disposers.push(() => page.dispose());
+      } else if (tab === 'tools') {
+        const { overviewTools } = await import('./overviewTools');
+        const page = overviewTools(host.project, host);
         clear(slot, page.el);
         disposers.push(() => page.dispose());
       } else {
@@ -66,6 +75,7 @@ export function overview(host: OverviewHost): { el: HTMLElement; dispose(): void
         { id: 'files', label: 'Files', panel: panels.files },
         { id: 'controls', label: 'Controls', panel: panels.controls },
         { id: 'player', label: 'DOS player', panel: panels.player },
+        { id: 'tools', label: 'Tools', panel: panels.tools },
       ],
       host.tab,
       (id) => {
