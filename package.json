@@ -11,6 +11,7 @@
     "prepare": "npm run build:packages && npm run build:games",
     "verify:packages": "node scripts/verify-packages.mjs",
     "dev": "npm run dev -w gamemaker-web",
+    "start": "npm run dev -w gamemaker-web",
     "build": "npm run build:packages && npm run build -w gamemaker-web",
     "test": "npm run test -w gamemaker-web",
     "typecheck": "npm run typecheck -w gamemaker-web",

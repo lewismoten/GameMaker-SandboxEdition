@@ -152,7 +152,9 @@ npm run format     # Prettier (config at the repo root)
 npm run lint       # ESLint
 ```
 
-This is an npm workspace monorepo with one root lockfile. The app is in `web/`;
+This is an npm workspace monorepo with one root lockfile. The root `package.json` exists to declare
+the workspaces (`web` and `web/packages/*`) so a single `npm ci` links them and one
+`package-lock.json` pins everything; `npm start` there runs the web dev server. The app is in `web/`;
 self-contained engine, archives and tools packages own their source in `web/packages/`.
 See [workspace development](docs/monorepo.md) for package ownership, isolated builds and release checks.
 
