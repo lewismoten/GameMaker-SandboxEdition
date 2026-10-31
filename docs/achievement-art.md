@@ -16,6 +16,7 @@ It also drew four new Needle blocks (a brass compass over a winding route, a fol
 three color swatches) as scenery in the tailor's shop.
 It also drew a new Risi block (a small library front with columns, steps and a scroll) as scenery in the rooftops.
 It also drew two new Loaf blocks (northern lights in green and violet over snowy hills, and a snail with a half-finished progress bar on its shell) as scenery in the way home and the hillside.
+It also drew two new Goat blocks (a shooting star with a stepped trail, and a startled goat with a musical note) as scenery in the field and the stable.
 OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
