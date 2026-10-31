@@ -6,7 +6,10 @@ The nine every-life, every-loss and every-win tier badges are composed from Tedd
 (hop, hurt, bark) with a bronze, silver or gold plate and a 1, 3 or 10 mark, by Claude Sonnet 5.5,
 which also extracted the later picks and drew the thirteen new Certified Rat Tickler blocks (a toolbox, clipboard,
 mixing panel, UV bulb, blacklight, CRT, sound card, hex keypad, screwdriver and disk, pirate hat, surfer, fax and
-waving hand) as scenery in that game. OpenAI Codex extracted the first images and wrote the
+waving hand) as scenery in that game, and the eighteen new Final Curtain blocks (a rotary dial, number card, two masks,
+ribbon book, leaflet, registration form, badge clipboard, blank sheet, film strip, clapperboard, magnifier, peeking face,
+phone, busy line, heat map, speaker, medal and tin-heart wreath) as scenery in the green room, the stage and the curtain.
+OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
 Run `npx vite-node scripts/achievementArt.ts` from `web/` to regenerate
@@ -87,6 +90,24 @@ duplicate image bytes.
 | finish-web | tickle | tickle / surfer |
 | tty-call | tickle | tickle / fax |
 | tty-sk | tickle | tickle / helloTerm |
+| bbs-door | sleuth | sleuthParlor / rotaryDial |
+| bbs-door-win | sleuth | sleuthParlor / numberCard |
+| cast-visit | sleuth | sleuthParlor / maskPair |
+| brief-chapters | sleuth | sleuthParlor / ribbonBook |
+| help-all | sleuth | sleuthParlor / leaflet |
+| desk-register | sleuth | sleuthParlor / regForm |
+| desk-achieve | sleuth | sleuthParlor / badgeClip |
+| make-new | sleuth | sleuthParlor / blankSheet |
+| watch-seek | sleuth | sleuthParlor / filmJump |
+| make-opening | sleuth | sleuthParlor / clapper |
+| check-run | sleuth | sleuthParlor / loupeGrid |
+| desk-glance | sleuth | sleuthParlor / peekCurtain |
+| tty-wallphone | sleuth | sleuthParlor / deskPhone |
+| sofa-busy | sleuth | sleuthParlor / busyLine |
+| make-heat | sleuth | sleuthParlor / heatMap |
+| desk-speaker | sleuth | sleuthParlor / deskSpeaker |
+| trophy-first | sleuth | sleuthParlor / meritMedal |
+| heart-all | sleuth | sleuthParlor / heartWreath |
 | every-life-1 | teddy | tiers / every-life-1 |
 | every-life-3 | teddy | tiers / every-life-3 |
 | every-life-10 | teddy | tiers / every-life-10 |
@@ -106,46 +127,29 @@ Hidden achievements keep their question block until unlocked, even when art is a
 
 | Achievement | Title | Proposed art |
 | --- | --- | --- |
-| make-new | Blank slate | 20×20 block: a blank sheet of paper with one folded corner, with a dark outline and one clear focal shape. |
 | export-linux | Penguin power | 20×20 block: a cheerful penguin with a disk tucked under one wing, with a dark outline and one clear focal shape. |
 | export-all | Ships everywhere | 20×20 block: a taped shipping box with little wings, with a dark outline and one clear focal shape. |
-| check-run | Check-up | 20×20 block: a magnifying glass over a tidy map grid, with a dark outline and one clear focal shape. |
-| make-opening | Presenting… | 20×20 block: a clapperboard with a bright opening star, with a dark outline and one clear focal shape. |
-| make-heat | Feeling the heat | 20×20 block: a tiny glowing map with warm footprints, with a dark outline and one clear focal shape. |
 | palette-vision | Seen by everyone | 20×20 block: a pair of glasses over three clearly distinct color swatches, with a dark outline and one clear focal shape. |
 | finish-desk | After school special | 20×20 block: a school backpack with a game controller sticking out, with a dark outline and one clear focal shape. |
 | finish-dos | Real mode | 20×20 block: a labeled DOS disk in a sleeve, with a dark outline and one clear focal shape. |
 | finish-phone-wide | Sideways scroller | 20×20 block: a landscape phone with left and right arrows, with a dark outline and one clear focal shape. |
 | finish-phone-tall | Tall order | 20×20 block: a portrait phone with up and down arrows, with a dark outline and one clear focal shape. |
 | play-bizarre | Bizarre fan | 20×20 block: a violin with one jaunty musical note, with a dark outline and one clear focal shape. |
-| brief-chapters | Chapter and verse | 20×20 block: a ribbon bookmark in an open book, with a dark outline and one clear focal shape. |
-| trophy-first | Participation trophy | 20×20 block: a star-shaped merit medal, with a dark outline and one clear focal shape. |
 | saves-panel | Keeping score | 20×20 block: a small trophy inspired by “Keeping score”, with a dark outline and one clear focal shape. |
-| heart-all | Heart collector | 20×20 block: a wreath of tiny shining tin hearts, with a dark outline and one clear focal shape. |
 | egg-teddy | Lay an egg! | 20×20 block: a mischievous corgi beside a suspiciously lumpy felt egg, with a dark outline and one clear focal shape. |
-| watch-seek | Skip ahead | 20×20 block: a film strip jumping over a small gap, with a dark outline and one clear focal shape. |
 | watch-bot | Robot rerun | 20×20 block: a little robot turning a film projector crank, with a dark outline and one clear focal shape. |
 | download-mp4 | Director’s cut | 20×20 block: a curled strip of film with three distinct frames, with a dark outline and one clear focal shape. |
 | bbs-download-every-speed | The long way round | 20×20 block: a determined turtle carrying a modem, with a dark outline and one clear focal shape. |
 | bbs-cant-wait | I can’t wait | 20×20 block: a tiny rocket trailing a telephone cable, with a dark outline and one clear focal shape. |
 | bbs-got-time | I’ve got time | 20×20 block: a snail carrying a half-finished progress bar, with a dark outline and one clear focal shape. |
-| bbs-door | Play by modem | 20×20 block: a rotary dial with its last hole highlighted, with a dark outline and one clear focal shape. |
-| bbs-door-win | Three in a row | 20×20 block: a telephone number card crossed out in red, with a dark outline and one clear focal shape. |
 | bbs-door-three | Best of three | 20×20 block: a small trophy inspired by “Best of three”, with a dark outline and one clear focal shape. |
-| sofa-busy | All lines are busy | 20×20 block: a disconnected handset beside a sleeping modem, with a dark outline and one clear focal shape. |
 | hint-phone-bill | An itemized bark | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
-| tty-wallphone | Wrong kind of phone | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
-| desk-register | Registered user | 20×20 block: a registration form and a sharpened pencil, with a dark outline and one clear focal shape. |
 | desk-egg-pages | Turn the page | 20×20 block: an open card file with colorful page tabs, with a dark outline and one clear focal shape. |
-| desk-achieve | Taking stock | 20×20 block: a clipboard full of tiny earned badges, with a dark outline and one clear focal shape. |
-| cast-visit | Meet the cast | 20×20 block: two friendly theater masks, with a dark outline and one clear focal shape. |
-| help-all | Read the fine print | 20×20 block: a folded instruction leaflet, with a dark outline and one clear focal shape. |
 | print-level-maps | Map reader | 20×20 block: a compass over a winding route, with a dark outline and one clear focal shape. |
 | print-world-map | Fold-out | 20×20 block: a folded map with a clearly marked route, with a dark outline and one clear focal shape. |
 | print-world-styles | Cartographer | 20×20 block: a ruler and a triangular map outline, with a dark outline and one clear focal shape. |
 | library-visit | Quiet, please | 20×20 block: a miniature library facade, with a dark outline and one clear focal shape. |
 | mag-back | Cover to cover | 20×20 block: a rolled magazine tied with a ribbon, with a dark outline and one clear focal shape. |
-| desk-speaker | Bass boost | 20×20 block: a small vibrating desk speaker, with a dark outline and one clear focal shape. |
 | desk-chez | Honk honk | 20×20 block: THE CHEZ seen from the front, with Teddy in the passenger seat, with a dark outline and one clear focal shape. |
 | desk-plow | Plowed in | 20×20 block: a friendly snowplow pushing a little white drift, with a dark outline and one clear focal shape. |
 | desk-sleds | Snow day | 20×20 block: a wooden sled leaving two tracks, with a dark outline and one clear focal shape. |
@@ -155,7 +159,6 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | desk-aurora | Northern lights | 20×20 block: a curtain of green and violet northern lights, with a dark outline and one clear focal shape. |
 | desk-mailtruck | In the mail | 20×20 block: a small mail truck with a raised envelope emblem, with a dark outline and one clear focal shape. |
 | desk-mailjeep | Mail call | 20×20 block: a boxy mail jeep with a letter in its window, with a dark outline and one clear focal shape. |
-| desk-glance | Caught looking | 20×20 block: a friendly face peeking around a curtain, with a dark outline and one clear focal shape. |
 | desk-lume | Glow in the dark | 20×20 block: a clock dial with glowing green hands, with a dark outline and one clear focal shape. |
 | desk-egg-uv | Secret ink | 20×20 block: a flashlight revealing a felt egg, with a dark outline and one clear focal shape. |
 | zine-read | Read all about it | 20×20 block: a little notebook with a ribbon marker, with a dark outline and one clear focal shape. |

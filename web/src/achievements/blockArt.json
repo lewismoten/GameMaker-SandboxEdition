@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler and Final Curtain badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -414,6 +414,114 @@
       "game": "tickle",
       "set": "tickle",
       "block": "helloTerm"
+    },
+    "bbs-door": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEVpaW26usPX19//63n/++sMDBAIKBgcUTA0eU3fjixTs84lAAAAn0lEQVR42lWQURJDIQgDJRjA+1+4E9B2yrwP2beiZlVlZUaqIrSKWpWvKFLqV0pMYordrpEAM6MByGuGEI2kcMNIYMBQtsnLeoCJDuzuYkBQZ5iReyYYasWDe2/qn8kkLtMnFfxtH9PG/Jup0waKunt72v2u5Hbc+1l9z2jq5xy3+6JQIAW0KW8tvpSAmQmQzFodZ5LfPLPGFA8lP8v8AMRPBtn0FOp4AAAAAElFTkSuQmCC",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "rotaryDial"
+    },
+    "bbs-door-win": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWiEBy6HCjXy7L/++sMDBAgICQIKBgcUTA0eU29JA1KAAAAbklEQVR42o2RQQ7EIAwDnQ2x8/8Xr1JC2W0v+JSMwEIDMpUSVSFrYiL1Eyprh/SHrxXSeGTCzw6AC3L4DACYWZ/0iAYW7g0XCI8Nzcx3xVCCOuvkcee8fvZOvjvZnS8ht8vlOfHUWULRXusb1qgvtaIG8pYA3WcAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "numberCard"
+    },
+    "cast-visit": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEWSaTyqeUm+jlXXomGiEBzfx2H/63nXy7L/++sMDBDgBLC4AAAAhklEQVR42m2Q2w7DMAxCDXXW8P8/vPnWddWQ8pAjbEjM/opwwAQANKQMcEhakjDI4HiNmsaA1khhI2BmN6jJCZZH0pZE0g7lfekckZdTe6SG6wEjp43XqUqRsTsoYc0/ndn+uzJg0poqkrDUS2ulkeRB8rdnohuV0xqB7EoezxwdJET650PexesH1E9YeWEAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "maskPair"
+    },
+    "brief-chapters": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVpaW1hQSRpCBCiEBy6HCjr48//++sMDBAIKBgcUTA0eU3KBzN8AAAAaElEQVR42qWQUQrDMAxDtTlbJN//wENJHFoKZWPvSxY2hodMpUQZ0omJ1AEqPUM61WOE+qJFJZfvSYvX5KaEcTnCL5sJfrnJv78/Fi0qCbyWxPBiUS1KktUtZmnPia0z+haKOmE8K+oD3dwJTkPetwYAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "ribbonBook"
+    },
+    "help-all": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEVpaW3Xy7Lr48//++sMDBAgKEkIKBgcUTA0eU0C1pmAAAAAcUlEQVR42oVRWw7AIAzCbS29/4kX6iPqlo0fW4SmIiIYpFNwV+WB4ARnqAcl5NXAbNG6U+hXuA6hkSUxSDOzXxIA0m5WVJdlptlDmfZd+Zg5VpJwUuaQbaXd/kUuz3wLpAY5olPOAS4pMwNFPfIbeskb2dsF4NY+pxwAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "leaflet"
+    },
+    "desk-register": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEVpaW2iEBy6HCi+pknfx2H/++sMDBCehlkwPGkIKBgcUTA0eU2BsqI9AAAAf0lEQVR42m2RWxKFIAxD66O9t8n+9+ukiIKar3ImoUMwEgQSUqampBGDEtTZgBgF5QT9VlSg4L/Lgw3mBEGsn/HlDfetOa3LA/sWYTlDseedxXKOFwNeUDVM8dN4OUeGtj3sZAWvRV5L6pnDncU81DMNbEX+ep+gnNWrvqGPOADengpmCIJNAgAAAABJRU5ErkJggg==",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "regForm"
+    },
+    "desk-achieve": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAOVBMVEVpaW2ioqbX1995VTCGDBi6HCi+pkn/63n/++sMDBAIKBgcUTA0eU1Nomlly4KqWaJZtrb/34b/+8t7uJ/PAAAAlElEQVR42nWRgQ7CIAxEmUW89oqA//+xBth0mPkSEvpytAkN7nTS2DHrN/Pgo+RtYPReB9JVVbdtHlUfkioi20BE9EjKiSmNKvhwJLt8JNwjal1kSinGWGs9SyQgAjPpwfi35zOjFLzakLbLnHMppbW29MxAAXrSvvKq54+c08POMujq+fohHujUBfpI9n30NRxXvgHdxg1jJrRs6gAAAABJRU5ErkJggg==",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "badgeClip"
+    },
+    "make-new": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEVpaW3Xy7L/++sMDBAIKBgcUTA0eU0pLPVSAAAAaklEQVR42n2RUQ7AIAhD2Wh7/yMvoFtAt/VLX9qgxSSKBENAnCATi0DF3Uh5kxLSzyK/nTsE/TxS1fkan84NdqcMn/EO8TOoQnQ4vrk43cyCsU73ydCd8cg17qNnGcWnytG00pkRjJXkIi5rDgVdcrIJSwAAAABJRU5ErkJggg==",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "blankSheet"
+    },
+    "watch-seek": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVNTVWSaTyqeUm+jlXXomG+pknfx2H/63n/++sMDBAwPGnl8wTuAAAAkklEQVR42m2QgQ7EIAhDabuxw///4AuIZJccMRqfAi2GP2EQSSI3ah+02pE38dmXhgRFuG8q26mgu+fPfKV1bcf9aiRdkuS3hOiwRJSr4CdyhUn98RLCKsLEYpmAsLXWsrC3k4GneOqa9FM8VU+j85qqR9Kp857LwJ/RnfS0IGx706g8oFRrJCmHgO2vbRYSG34BPbAF3oIE60IAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "filmJump"
+    },
+    "make-opening": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEWSaTyqeUm+jlXXomH/63n/++sMDBAgICQumHAIAAAAfElEQVR42nWPiw5CMQhD226D//9jw2vqjTaBwQkMAD5lZpaBSBLhLDUZgUKVEFPwFhXwZOx+Thn79wvCAOnZLmFJolJIzwx+VIrmX7KlGFTJHojc+gFjfQXcpQur8rKE6PZhHmf2oL19KpEXzZiG/5ZfmuO0+tB5EomdvQAv0wabL3FJJwAAAABJRU5ErkJggg==",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "clapper"
+    },
+    "check-run": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEVpaW15VTCSaTzfx2H/++sMDBAIKBgcUTA0eU0gWV08hor7//8djWPJAAAAi0lEQVR42m2QUQ7DIAxD3QbHCb3/fafAWNsJiw94sgkYEQrJVXKvnQdCD7mizhBfUuUgttYwFlvDCPwgSSMZT0gzSzPj904AoFlmzzTj7aTldfXe8x/2BQPOkc4+NejtvJnv4Ga6b965+xHPgmP6FAEePGtQ9RJalaooHl3Ong+e0Kvl6R3Omfa11QdYGQjotQR3zwAAAABJRU5ErkJggg==",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "loupeGrid"
+    },
+    "desk-glance": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVJBAxpCBCGDBi6HCjTKDC+pkn/++vfup4MDBAgICSSOBj3uGIzAAAAdUlEQVR42mWQAQoDIQwEbS8xo/9/cInVy147IOigZN12Ldzd8UOzRW6NsWlXUfJdMJOUr+Ir5xytOG7KcyASkEHbRTB2JDM7LgK5Gb33tZBIQI+1JBL1XDPdUn/EX6QcxUIiWZ5TP1rKkvhp6S5OW1JZgUp+AIbbCArdhjk8AAAAAElFTkSuQmCC",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "peekCurtain"
+    },
+    "tty-wallphone": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEWGhoqioqaGDBi6HCjfx2H/63nr488MDBA4NDwIKBgcUTA0eU19s/+IAAAAhklEQVR42m1QARLDIAzKNlMW+P9/d8SudV258xIRiBoSRRaNKnelEBcU5X2Q4jjpYV9kt7udfZ7BVMnnDuTQTn5FDvJKZ+ICD0o8foD0IADvA1ZmFBGrOdr+n1lBEq8FmC8ino1ZUAvZTtdViW3bDrImiSbRZN0rbzIV1OWiVCv7d+r8KH4AIcsLn9wAILsAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "deskPhone"
+    },
+    "sofa-busy": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEVNTVWGhopJBAwMDBA4NDyehlnfx44IKBgcUTA0eU2iutfP2+tHOv9kAAAAjElEQVR42lWQURLDIAgFsZiyyP3v28FCYp5/OwsC4o6DkTEDW2uJc8RwhyVw4ojwhaA7JUIsEs45p/puCEH2LHMTJ3azNNWt+npENPyD57sb6hMXa/jtaJmG69VRk7uu0OfSnnPOw+QwpV5CYDi8zFxlvEcy2WMP+qS15q4f551dar2RvF3pEsPuC/wAqNwKIS7vxW4AAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "busyLine"
+    },
+    "make-heat": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEVpaW3r488MDBAIKBgcUTA0eU2+WRT/34b/03khyf3WAAAAgElEQVR42mWRCwrAMAhDbdTo/U88rN3mWCjUPoK/iru5mVpJtSJ1cRtS83qL4aeC6+gOJsQCJxQRIcEkyddJEkBmFn8gEkA0PbAZIiKKim5IZGzW8DjbNiFWV5k5N9ulZ/U61eLsEzhTPRPpgGde/TjHQn5ysc+WS27S1/6GO7QLbToFXUalo5UAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "heatMap"
+    },
+    "desk-speaker": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEVpaW26usO+pkn/63kMDBAgICQIKBgcUTA0eU0eusa/AAAAj0lEQVR42mWRURLEIAhDU00J9z/xTqBqO8uHlczTGIpMpRRyRXgXidSrQukeMshd1aII3k+xWmhkZIlemNKwqGmSBHlTc4kmiQstasCgaO26YKPZYuhFxjzkvrPIZfS4953/Yrv34wnWO2OcRARslJ1IH7Jjxs7OlT1M5nsgeY7v8pwT+kxZdRD9qd+wtvoB6p4IiEtfTVUAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "deskSpeaker"
+    },
+    "trophy-first": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWSaTyqeUm+jlXXomGiEBy+pkn/63kMDBBFVYpdMf3GAAAAiklEQVR42mWPWQ7EMAxCgSzk/iceeUlbafiw4xckGyDkkw3T1SGS9Imq6WhE1YBiMTRMioYUypzWYKBIXPm8ayANhXymWU8hOpPaSSih/gKti4W2rVLQod4SYCfNOe/6wDpfBLyvjBvTazUrKypP02Lvor1Xwk4kDSeI4rozYz538on5n+hqWOzpB0yFBI99yaQ6AAAAAElFTkSuQmCC",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "meritMedal"
+    },
+    "heart-all": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEWioqbX19+CYRwMDBAIKBgcUTA0eU24DLoPAAAAjklEQVR42lWQWQ4DMQxC6eDn+x+58pJmGuUDI2QMyiQhwDiiUKSSeZblIGsWZImsjyQbZ5MjcnOFmjwiHTkiaFE55SKtybjlIPUtheaMskLs8qwfM+ks56G5mrQ2ST6zXrJeNifZHN85orOl/Up0C/hLxE0Uu/wWQGhz3ALYmJhfAeUnXi1vAaMsPvCBfAFktgVoBR4gJAAAAABJRU5ErkJggg==",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "heartWreath"
     },
     "every-life-1": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkra7cWECAAAAcklEQVR42pWRWw7AIAgEgZWu9z9xgxRta386IcZMeBgU0Q0RtQIjzExFTSRdBzo26REPicMD4C3F3UlMCU9IUms6phqZ0SXdMNkzLivvmk4eQdp6J+k+p5RE2dZWOUi2dhnEkYNqI7dyW2AuZOOP/PqOE+GkBKXkH8SIAAAAAElFTkSuQmCC",
