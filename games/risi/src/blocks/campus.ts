@@ -17,6 +17,7 @@ import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';
 import { MON, TITLES, TITLES_NEEDED } from '../ids';
+import { libraryBadge } from './badges';
 import { BlockBook, GRAV, LEDGE, LIFE, SOLID, context, copy, cup, denarius, grapes, outside, sparkle, wreath } from './common';
 
 /** Ticks between arrows from the archers' tower. */
@@ -360,5 +361,7 @@ export function buildCampus(pal: Pal): BlockBook {
   book.add('tavernSign', tavern('sign'), air);
   book.add('tavern', tavern('door'), { solid: SOLID, effect: TITLES, eamt: -TITLES_NEEDED, score: 1000, touch: 'tavernOpen' });
   book.add('tavernOpen', tavern('open'), { grav: GRAV.none });
+  // (last) scenery for the site's achievement badge: a library front
+  libraryBadge(book, pal, sky(60, 2, false), air);
   return book;
 }
