@@ -156,7 +156,7 @@ game folder opens in the browser unchanged.
   `games/kit/cdDemos/make.ts`; they are not part of the original games). The Credits page's
   small title-screen pictures (`credits/`) are frames of RSD's own Game-Maker title screen and
   of the CD games it names, shown to credit their authors, and of this fork's own games; the
-  BBS picture thumbnails there (`credits/bbs`) are the pictures credited under "BBS pictures".
+  BBS picture thumbnails there (`credits/bbs`) are the pictures credited in the paragraph on the BBS pictures.
 - **Tricks From the Shareware Authors** (chapter 17 of The Ultimate Owner's Guide,
   `web/src/manual/ultimate/chaptersShareware.ts`) and the archive counts in its "Where Game-Maker
   Runs Out" describe techniques found by surveying community Game-Maker games in the
