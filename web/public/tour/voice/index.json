@@ -363,7 +363,7 @@
     "chapter": "cast",
     "where": "Cast: Doc Leo says goodbye and walks off",
     "text": "Hey, that’s my hat! Thanks for coming to the show, folks.",
-    "seconds": 3.47,
+    "seconds": 2.75,
     "hash": "bd708a47e8e3",
     "voice": "ec6d8641063d"
   },
@@ -387,7 +387,7 @@
     "chapter": "cast",
     "where": "Cast: Teddy points at the Show the cast of buttons",
     "text": "These show just one kind’s regulars, or everyone.",
-    "seconds": 3.39,
+    "seconds": 3.31,
     "hash": "4531ed078636",
     "voice": "ec6d8641063d"
   },
@@ -411,7 +411,7 @@
     "chapter": "cast",
     "where": "Cast: Teddy presses the Next character button",
     "text": "The arrows bring on the next one, or the one before.",
-    "seconds": 3.95,
+    "seconds": 3.07,
     "hash": "10a3d29ff0c7",
     "voice": "ec6d8641063d"
   },
@@ -475,7 +475,7 @@
     "chapter": "desk",
     "where": "Desk: Lewie points at the box, turning",
     "text": "It turns all the way around, so you can read the back. Drag it to turn it yourself, or scroll to zoom.",
-    "seconds": 6.72,
+    "seconds": 6.56,
     "hash": "b86f2621b4ce",
     "voice": "9af0a3c00d49"
   },
@@ -731,7 +731,7 @@
     "chapter": "dos",
     "where": "DOS: Professor Fiddlesticks points at the Full screen button",
     "text": "Full screen hides everything else, the browser too.",
-    "seconds": 4.83,
+    "seconds": 3.55,
     "hash": "afbcc9d9a70e",
     "voice": "532d1bbf3a1e"
   },
@@ -859,7 +859,7 @@
     "chapter": "edit-animation",
     "where": "Editor: Lewie says goodbye and walks off",
     "text": "Pictures that move, shows that play. That is my kind of making. Bye now!",
-    "seconds": 5.44,
+    "seconds": 5.92,
     "hash": "52eb3777ad8b",
     "voice": "9af0a3c00d49"
   },
@@ -947,7 +947,7 @@
     "chapter": "edit-animation",
     "where": "Editor: Lewie points at the slide’s settings",
     "text": "Then says what happens after a slide: wait for a key, go straight on, or wait some seconds. From here plays the show from this slide.",
-    "seconds": 8.16,
+    "seconds": 10.32,
     "hash": "77155db28707",
     "voice": "9af0a3c00d49"
   },
@@ -1003,7 +1003,7 @@
     "chapter": "edit-around",
     "where": "Editor: Watt points at the Guide link",
     "text": "And the Guide up here holds the whole manual, whenever you are stuck.",
-    "seconds": 4.03,
+    "seconds": 4.34,
     "hash": "3637d79c7720",
     "voice": "131d8cb8ad55"
   },
@@ -1051,7 +1051,7 @@
     "chapter": "edit-around",
     "where": "Editor: Watt points at the Undo button",
     "text": "Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here.",
-    "seconds": 8.83,
+    "seconds": 9.29,
     "hash": "ffa0f2c57a00",
     "voice": "131d8cb8ad55"
   },
@@ -1171,7 +1171,7 @@
     "chapter": "edit-blocks",
     "where": "Editor: Joe points at the Walking tab",
     "text": "Walking, Touch and Time set how a block acts: which sides are solid, what touching does, and what it changes into.",
-    "seconds": 9.39,
+    "seconds": 8.51,
     "hash": "f3e4e4d6257f",
     "voice": "0448e8049470"
   },
@@ -1211,7 +1211,7 @@
     "chapter": "edit-blocks",
     "where": "Editor: Joe points at the Groups section",
     "text": "Shift-click or Ctrl-click blocks to pick several. Groups lets you paint them as one big picture.",
-    "seconds": 6.83,
+    "seconds": 7.39,
     "hash": "cc2aa923d2cf",
     "voice": "0448e8049470"
   },
@@ -1467,8 +1467,8 @@
     "chapter": "edit-export",
     "where": "Editor: Max points at the Mac choice",
     "text": "Mac makes an app on a disk image, or a zip, not notarized: open it first from Privacy and Security. Linux makes a folder with play.sh.",
-    "seconds": 10.7,
-    "hash": "888585d165b8",
+    "seconds": 10.56,
+    "hash": "5fa6b3a5deff",
     "voice": "3705d98401bd"
   },
   "edit-export-open": {
@@ -1867,7 +1867,7 @@
     "chapter": "edit-palette",
     "where": "Editor: Watt presses the Copy button for colors from a picture",
     "text": "Copy brings colors in from a picture, shrunk to fit. Pick a range first, and it reduces the picture to that many.",
-    "seconds": 6.7,
+    "seconds": 7.84,
     "hash": "4d25b6f66e4b",
     "voice": "131d8cb8ad55"
   },
@@ -1963,7 +1963,7 @@
     "chapter": "edit-player",
     "where": "Editor: Professor Fiddlesticks comes on",
     "text": "Ah, my favorite invention yet: the player itself! Its words, colors and frames may be tinkered with, though not to bursting.",
-    "seconds": 8.11,
+    "seconds": 9.23,
     "hash": "dca57584a335",
     "voice": "532d1bbf3a1e"
   },
@@ -2163,7 +2163,7 @@
     "chapter": "edit-walkthrough",
     "where": "Editor: Doc Leo comes on",
     "text": "Stuck on a level, kids? A walkthrough is the whole game played start to finish, and the editor can make one for you.",
-    "seconds": 7.15,
+    "seconds": 6.51,
     "hash": "263f22091c3f",
     "voice": "ec6d8641063d"
   },
@@ -2171,7 +2171,7 @@
     "chapter": "edit-walkthrough",
     "where": "Editor: Doc Leo points at the Watch part",
     "text": "This game is open to look at only, so a walkthrough made here is kept apart from its files. They are never changed.",
-    "seconds": 7.23,
+    "seconds": 6.99,
     "hash": "bdc9692227d2",
     "voice": "ec6d8641063d"
   },
@@ -2211,7 +2211,7 @@
     "chapter": "edit-walkthrough",
     "where": "Editor: Doc Leo points at the Watch part",
     "text": "Watch plays what the bot made in the player, with chapters. There you can Download MP4 or Copy for YouTube.",
-    "seconds": 7.07,
+    "seconds": 7.55,
     "hash": "c7b3ba062309",
     "voice": "ec6d8641063d"
   },
@@ -2235,7 +2235,7 @@
     "chapter": "editor",
     "where": "Editor: Watt points at the Building tool",
     "text": "Building drags out a whole house, any size, from its parts.",
-    "seconds": 3.96,
+    "seconds": 5.02,
     "hash": "7d75396ef6e2",
     "voice": "131d8cb8ad55"
   },
@@ -2323,7 +2323,7 @@
     "chapter": "editor",
     "where": "Editor: Watt points at the note about color 0",
     "text": "In a palette, mind color 0: the game draws its menus and text screens on it. Press backgrounds to see them.",
-    "seconds": 7.31,
+    "seconds": 7.91,
     "hash": "0ac85880dacf",
     "voice": "131d8cb8ad55"
   },
@@ -2331,7 +2331,7 @@
     "chapter": "editor",
     "where": "Editor: Watt points at the Play Game button",
     "text": "Play Game plays it from its title screen, right here, without leaving the editor.",
-    "seconds": 5.02,
+    "seconds": 5.17,
     "hash": "437d6d6c13ce",
     "voice": "131d8cb8ad55"
   },
@@ -2483,8 +2483,8 @@
     "chapter": "home",
     "where": "Home: Teddy points at the Download button",
     "text": "Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS.",
-    "seconds": 5.94,
-    "hash": "bdd923b56233",
+    "seconds": 5.99,
+    "hash": "523d795daf1a",
     "voice": "a50c8e805452"
   },
   "home-games": {
@@ -2771,8 +2771,8 @@
     "chapter": "library",
     "where": "Library: Lewie points at the Guide card",
     "text": "The Guide and the help for Mac, Windows and Linux are shelved here as well.",
-    "seconds": 6.99,
-    "hash": "812c0572f364",
+    "seconds": 7.15,
+    "hash": "e3a3a4499cd5",
     "voice": "0448e8049470"
   },
   "library-hello": {
@@ -2787,7 +2787,7 @@
     "chapter": "library",
     "where": "Library: Lewie comes on",
     "text": "Hi, I’m Lewie! I shoveled a lot of snow to buy Game-Maker. All the paper from the game boxes is here.",
-    "seconds": 6.95,
+    "seconds": 6.08,
     "hash": "1ce54ab530f1",
     "voice": "9af0a3c00d49"
   },
@@ -2803,7 +2803,7 @@
     "chapter": "library",
     "where": "Library: Lewie points at the Game or Kind picker",
     "text": "Pick one game, or one kind, to see just that shelf.",
-    "seconds": 6.19,
+    "seconds": 5.55,
     "hash": "2821190279f7",
     "voice": "0448e8049470"
   },

@@ -23,7 +23,7 @@ records every clip again.
 | [home-play.ogg](home/home-play.ogg) | Play starts it right here in your browser, with the keyboard or a gamepad. | Home: Teddy presses the Play button | 5.02 |
 | [home-look.ogg](home/home-look.ogg) | Look inside opens its files in the editor, just as they shipped. Change something and you get a copy of your own. | Home: Teddy points at the Look inside button | 7.65 |
 | [home-walkthrough.ogg](home/home-walkthrough.ogg) | Walkthrough plays the whole game for you, or lets the bot make one, and you can play parts of it yourself. | Home: Teddy points at the Walkthrough button | 6.72 |
-| [home-download.ogg](home/home-download.ogg) | Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS. | Home: Teddy points at the Download button | 5.94 |
+| [home-download.ogg](home/home-download.ogg) | Download makes a copy to play on Windows, a Mac, Linux, the web, or real DOS. | Home: Teddy points at the Download button | 5.99 |
 | [home-tabs.ogg](home/home-tabs.ogg) | These tabs are the collections: your games, ones you bring in, and shelves of games ready to play. | Home: Teddy points at the collection tabs | 6.50 |
 | [home-tab-mine.ogg](home/home-tab-mine.ogg) | My games: the ones you make here, or copy from a shelf to change. They stay in this browser. | Home: Teddy presses the My games tab | 6.27 |
 | [home-tab-imported.ogg](home/home-tab-imported.ogg) | Imported holds games you bring in: a folder, some files, a .zip, or a one-page export. | Home: Teddy presses the Imported tab | 6.77 |
@@ -58,16 +58,16 @@ records every clip again.
 | Clip | Says | Where | Seconds |
 | --- | --- | --- | ---: |
 | [library-hello.ogg](library/library-hello.ogg) | Good evening. I’m Joe, the night librarian. Everything on these shelves is to read, print or watch. | Library: Joe comes on | 11.55 |
-| [library-lewie.ogg](library/library-lewie.ogg) | Hi, I’m Lewie! I shoveled a lot of snow to buy Game-Maker. All the paper from the game boxes is here. | Library: Lewie comes on | 6.95 |
+| [library-lewie.ogg](library/library-lewie.ogg) | Hi, I’m Lewie! I shoveled a lot of snow to buy Game-Maker. All the paper from the game boxes is here. | Library: Lewie comes on | 6.08 |
 | [library-sort.ogg](library/library-sort.ogg) | Sort the shelves by game, or by type: every manual together, every map together. | Library: Lewie points at the By game and By type buttons | 9.23 |
-| [library-pick.ogg](library/library-pick.ogg) | Pick one game, or one kind, to see just that shelf. | Library: Lewie points at the Game or Kind picker | 6.19 |
+| [library-pick.ogg](library/library-pick.ogg) | Pick one game, or one kind, to see just that shelf. | Library: Lewie points at the Game or Kind picker | 5.55 |
 | [library-all.ogg](library/library-all.ogg) | Showing just one game? This puts everything back on the shelves. | Library: Lewie presses the All games button | 6.51 |
 | [library-count.ogg](library/library-count.ogg) | This counts everything on the shelves. I counted them too. Twice. | Library: Joe points at the count of things on the shelves | 6.35 |
 | [library-card.ogg](library/library-card.ogg) | Each card opens its piece on screen: a manual, a hint book, a map, a key card. Most can be printed, too. | Library: Lewie points at the first manual on the shelves | 14.83 |
 | [library-print.ogg](library/library-print.ogg) | Disk labels and retail boxes open in the print shop, with lines to cut and fold along. | Library: Lewie points at a Disk labels card | 8.59 |
 | [library-walkthrough.ogg](library/library-walkthrough.ogg) | Every game’s walkthrough is here too, played start to finish. Its length is on the card. | Library: Lewie points at a Walkthrough card | 5.95 |
 | [library-magazine.ogg](library/library-magazine.ogg) | TURBO BUTTON is the shareware gamer’s monthly: news, reviews, hints and every game. | Library: Lewie points at the TURBO BUTTON card | 9.87 |
-| [library-guide.ogg](library/library-guide.ogg) | The Guide and the help for Mac, Windows and Linux are shelved here as well. | Library: Lewie points at the Guide card | 6.99 |
+| [library-guide.ogg](library/library-guide.ogg) | The Guide and the help for Mac, Windows and Linux are shelved here as well. | Library: Lewie points at the Guide card | 7.15 |
 | [library-bye.ogg](library/library-bye.ogg) | Please return every word to its book. Exactly one hundred at a time. | Library: Joe says goodbye and walks off | 7.39 |
 
 ## achievements
@@ -92,15 +92,15 @@ records every clip again.
 | --- | --- | --- | ---: |
 | [cast-hello.ogg](cast/cast-hello.ogg) | Smile on: showtime! I’m Doc Leo. This is the cast: everyone from the new games. | Cast: Doc Leo comes on | 5.39 |
 | [cast-stage.ogg](cast/cast-stage.ogg) | On stage, each regular walks on and says hello, drawn from their own game. | Cast: Teddy points at the stage | 5.63 |
-| [cast-next.ogg](cast/cast-next.ogg) | The arrows bring on the next one, or the one before. | Cast: Teddy presses the Next character button | 3.95 |
+| [cast-next.ogg](cast/cast-next.ogg) | The arrows bring on the next one, or the one before. | Cast: Teddy presses the Next character button | 3.07 |
 | [cast-pick.ogg](cast/cast-pick.ogg) | Or call one by name from this list. | Cast: Teddy points at the Pick a character list | 2.43 |
 | [cast-sound.ogg](cast/cast-sound.ogg) | The stage stays quiet until you ask. Then the Teddy games’ theme plays along. | Cast: Teddy points at the stage’s sound button | 5.95 |
 | [cast-families.ogg](cast/cast-families.ogg) | Three kinds of games: Sandbox Software, the Bard of Bizarre’s songs, and the games from the original CD. | Cast: Teddy points at the three kinds of games | 7.39 |
-| [cast-filters.ogg](cast/cast-filters.ogg) | These show just one kind’s regulars, or everyone. | Cast: Teddy points at the Show the cast of buttons | 3.39 |
+| [cast-filters.ogg](cast/cast-filters.ogg) | These show just one kind’s regulars, or everyone. | Cast: Teddy points at the Show the cast of buttons | 3.31 |
 | [cast-card.ogg](cast/cast-card.ogg) | Each regular has a card: who they are, and a little about them. Teddy knows left from right! | Cast: Teddy points at Teddy’s card | 6.59 |
 | [cast-appears.ogg](cast/cast-appears.ogg) | And the games each one is seen in. Press a picture to go to that game. | Cast: Teddy points at the games Teddy is seen in | 4.75 |
 | [cast-gwinn.ogg](cast/cast-gwinn.ogg) | It wasn’t me. (It was me.) Zoomies! | Cast: Gwinn comes on | 3.12 |
-| [cast-bye.ogg](cast/cast-bye.ogg) | Hey, that’s my hat! Thanks for coming to the show, folks. | Cast: Doc Leo says goodbye and walks off | 3.47 |
+| [cast-bye.ogg](cast/cast-bye.ogg) | Hey, that’s my hat! Thanks for coming to the show, folks. | Cast: Doc Leo says goodbye and walks off | 2.75 |
 
 ## guide
 
@@ -141,17 +141,17 @@ records every clip again.
 | [editor-hello.ogg](editor/editor-hello.ogg) | Beep! Watt here, from Ohm Sweet Ohm. This is the editor, open on my game just as it shipped. | Editor: Watt comes on | 7.38 |
 | [editor-readonly.ogg](editor/editor-readonly.ogg) | Looking inside changes nothing. Edit a copy makes your own copy of the game to change. | Editor: Watt points at the Read-only bar | 5.48 |
 | [editor-files.ogg](editor/editor-files.ogg) | Every file in the game, sorted by kind: palettes, blocks, monsters, maps, music and more. | Editor: Watt points at the list of the game’s files | 7.76 |
-| [editor-play.ogg](editor/editor-play.ogg) | Play Game plays it from its title screen, right here, without leaving the editor. | Editor: Watt points at the Play Game button | 5.02 |
+| [editor-play.ogg](editor/editor-play.ogg) | Play Game plays it from its title screen, right here, without leaving the editor. | Editor: Watt points at the Play Game button | 5.17 |
 | [editor-level.ogg](editor/editor-level.ogg) | Play Level jumps straight into a level. The arrow beside it picks which one, and where to start. | Editor: Watt points at the Play Level button | 6.62 |
 | [editor-map.ogg](editor/editor-map.ogg) | This is a map: one level, laid out in blocks, a hundred by a hundred. | Editor: Watt points at the map’s name | 5.02 |
 | [editor-blocks.ogg](editor/editor-blocks.ogg) | Pick a block from this list… | Editor: Watt points at the Blocks list | 2.05 |
 | [editor-paint.ogg](editor/editor-paint.ogg) | …then paint with it. Line, Rectangle and Fill lay down lots at once. | Editor: Watt points at the Paint tool | 4.94 |
 | [editor-terrain.ogg](editor/editor-terrain.ogg) | Terrain paints grass, water or paths, and chooses the edges and corners for you. | Editor: Watt points at the Terrain tool | 5.78 |
-| [editor-building.ogg](editor/editor-building.ogg) | Building drags out a whole house, any size, from its parts. | Editor: Watt points at the Building tool | 3.96 |
+| [editor-building.ogg](editor/editor-building.ogg) | Building drags out a whole house, any size, from its parts. | Editor: Watt points at the Building tool | 5.02 |
 | [editor-monsters.ogg](editor/editor-monsters.ogg) | Monsters puts the game’s creatures on the map. A right-click takes one away. | Editor: Watt points at the Monsters tool | 5.10 |
 | [editor-links.ogg](editor/editor-links.ogg) | Links shows the doors: gold marks are exits to other scenes, cyan marks are where the hero comes in. | Editor: Watt points at the Links button | 6.93 |
 | [editor-check.ogg](editor/editor-check.ogg) | The Level check lets a bot play the level, then shows where it went and what players might mind. | Editor: Watt points at the Level check panel | 6.16 |
-| [editor-palette.ogg](editor/editor-palette.ogg) | In a palette, mind color 0: the game draws its menus and text screens on it. Press backgrounds to see them. | Editor: Watt points at the note about color 0 | 7.31 |
+| [editor-palette.ogg](editor/editor-palette.ogg) | In a palette, mind color 0: the game draws its menus and text screens on it. Press backgrounds to see them. | Editor: Watt points at the note about color 0 | 7.91 |
 | [editor-assistant.ogg](editor/editor-assistant.ogg) | The Assistant lets your own AI look at a game and change it with you. Set it up in Settings first. | Editor: Watt points at the Assistant button | 5.94 |
 | [editor-copy.ogg](editor/editor-copy.ogg) | Ready to make it yours? Edit a copy, and start changing things. | Editor: Watt points at the Edit a copy button | 4.64 |
 | [editor-bye.ogg](editor/editor-bye.ogg) | Time to recharge. Happy making! Beep. | Editor: Watt says goodbye and walks off | 3.42 |
@@ -167,12 +167,12 @@ records every clip again.
 | [edit-around-assets.ogg](edit-around/edit-around-assets.ogg) | In the file list, Game assets shows the whole game at once: a card for each kind of file. Press a card to browse those files as pictures. | Editor: Watt points at the Game assets button | 9.29 |
 | [edit-around-assets-back.ogg](edit-around/edit-around-assets-back.ogg) | Back in a file, Assets jumps to that kind’s gallery, so you can try another map or block set. | Editor: Watt points at the Assets button | 6.24 |
 | [edit-around-used.ogg](edit-around/edit-around-used.ogg) | Here is every scene that uses this file. Press one to open it in the game’s own scene list. | Editor: Watt points at the Used by links | 6.39 |
-| [edit-around-undo.ogg](edit-around/edit-around-undo.ogg) | Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here. | Editor: Watt points at the Undo button | 8.83 |
+| [edit-around-undo.ogg](edit-around/edit-around-undo.ogg) | Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here. | Editor: Watt points at the Undo button | 9.29 |
 | [edit-around-zoom.ogg](edit-around/edit-around-zoom.ogg) | Zoom sets how big the map looks, from 10% to 200%. The mouse wheel zooms around the pointer; Shift and wheel scrolls. | Editor: Watt points at the Zoom list | 8.68 |
 | [edit-around-playmenu.ogg](edit-around/edit-around-playmenu.ogg) | Play-test a level without the title screen. This arrow opens every way the game’s links bring the hero in; pick one to start there. | Editor: Watt presses the arrow beside Play Level | 7.46 |
 | [edit-around-keys.ogg](edit-around/edit-around-keys.ogg) | The keyboard button lists every shortcut: B, L, R and F choose map tools, G shows the grid. The question mark key shows it anywhere. | Editor: Watt presses the Keyboard shortcuts button | 10.89 |
 | [edit-around-hint.ogg](edit-around/edit-around-hint.ogg) | Every editor opens with a short note on what it does. On a phone it folds to a line; More opens it. | Editor: Watt points at the note about this editor | 7.00 |
-| [edit-around-guide.ogg](edit-around/edit-around-guide.ogg) | And the Guide up here holds the whole manual, whenever you are stuck. | Editor: Watt points at the Guide link | 4.03 |
+| [edit-around-guide.ogg](edit-around/edit-around-guide.ogg) | And the Guide up here holds the whole manual, whenever you are stuck. | Editor: Watt points at the Guide link | 4.34 |
 | [edit-around-bye.ogg](edit-around/edit-around-bye.ogg) | Next, the map editor’s tools. Beep! | Editor: Watt says goodbye and walks off | 3.73 |
 
 ## edit-map
@@ -205,8 +205,8 @@ records every clip again.
 | [edit-blocks-colors.ogg](edit-blocks/edit-blocks-colors.ogg) | Click a color to paint with it. Bigger colors, below, shows larger swatches. | Editor: Joe points at the palette colors | 7.55 |
 | [edit-blocks-preview.ogg](edit-blocks/edit-blocks-preview.ogg) | Show with palette previews the blocks in another palette, such as the night one, before you commit. | Editor: Joe points at the Show with palette button | 8.51 |
 | [edit-blocks-flip.ogg](edit-blocks/edit-blocks-flip.ogg) | Flip and Rotate turn the whole picture. The arrows nudge it a pixel, and Replace colors swaps one color, here or in every block. | Editor: Joe points at the Flip button | 11.71 |
-| [edit-blocks-behave.ogg](edit-blocks/edit-blocks-behave.ogg) | Walking, Touch and Time set how a block acts: which sides are solid, what touching does, and what it changes into. | Editor: Joe points at the Walking tab | 9.39 |
-| [edit-blocks-groups.ogg](edit-blocks/edit-blocks-groups.ogg) | Shift-click or Ctrl-click blocks to pick several. Groups lets you paint them as one big picture. | Editor: Joe points at the Groups section | 6.83 |
+| [edit-blocks-behave.ogg](edit-blocks/edit-blocks-behave.ogg) | Walking, Touch and Time set how a block acts: which sides are solid, what touching does, and what it changes into. | Editor: Joe points at the Walking tab | 8.51 |
+| [edit-blocks-groups.ogg](edit-blocks/edit-blocks-groups.ogg) | Shift-click or Ctrl-click blocks to pick several. Groups lets you paint them as one big picture. | Editor: Joe points at the Groups section | 7.39 |
 | [edit-blocks-frames.ogg](edit-blocks/edit-blocks-frames.ogg) | Character blocks are the hero’s frames. This panel picks an animation and steps through its frames; dashed outlines mark the blocks it uses. | Editor: Joe points at the Character frames panel | 15.23 |
 | [edit-blocks-live.ogg](edit-blocks/edit-blocks-live.ogg) | Live character plays the animation as you paint, on any background you like, so you see each touch-up in motion. | Editor: Joe points at the Live character panel | 8.75 |
 | [edit-blocks-bye.ogg](edit-blocks/edit-blocks-bye.ogg) | Quiet, now. Next the monsters, and the hero who meets them. | Editor: Joe says goodbye and walks off | 7.55 |
@@ -241,7 +241,7 @@ records every clip again.
 | [edit-palette-picker.ogg](edit-palette/edit-palette-picker.ogg) | The big swatch opens a picker with hue, saturation and brightness, a friendlier way to find a color. | Editor: Watt presses the big color swatch | 6.24 |
 | [edit-palette-square.ogg](edit-palette/edit-palette-square.ogg) | Drag in the square, or use the arrow keys. Nothing changes until you press Confirm color; Cancel keeps things as they were. | Editor: Watt points at the color picker | 7.61 |
 | [edit-palette-ramp.ogg](edit-palette/edit-palette-ramp.ogg) | Spread range blends the colors between your two ends. Make a shade ramp turns a range into shades of the first color. | Editor: Watt points at the Spread range button | 6.62 |
-| [edit-palette-reduce.ogg](edit-palette/edit-palette-reduce.ogg) | Copy brings colors in from a picture, shrunk to fit. Pick a range first, and it reduces the picture to that many. | Editor: Watt presses the Copy button for colors from a picture | 6.70 |
+| [edit-palette-reduce.ogg](edit-palette/edit-palette-reduce.ogg) | Copy brings colors in from a picture, shrunk to fit. Pick a range first, and it reduces the picture to that many. | Editor: Watt presses the Copy button for colors from a picture | 7.84 |
 | [edit-palette-reduced.ogg](edit-palette/edit-palette-reduced.ogg) | Colors are chosen from the pixels the picture really uses, the common ones first. Nothing lands until you press the Apply colors button. | Editor: Watt points at the Colors from picture box | 8.07 |
 | [edit-palette-reserved.ogg](edit-palette/edit-palette-reserved.ogg) | Reserve ranges for characters, monsters or backgrounds, so one kind never takes another’s colors. Only the editor keeps this. | Editor: Watt points at the Reserved color ranges section | 8.76 |
 | [edit-palette-vision.ogg](edit-palette/edit-palette-vision.ogg) | Vision shows a level as players who see color differently would, and lists colors that look alike. | Editor: Watt presses the Vision tab | 5.25 |
@@ -284,9 +284,9 @@ records every clip again.
 | [edit-animation-picture.ogg](edit-animation/edit-animation-picture.ogg) | A picture. You do not paint it here. Click to choose a twenty by twenty area, and Shift-click snaps to the block grid. | Editor: Lewie points at the picture | 8.55 |
 | [edit-animation-copy.ogg](edit-animation/edit-animation-copy.ogg) | The area becomes a block. Pick the block set, see before and after, and press Copy into block. This is how pictures turn into game art. | Editor: Lewie points at the Copy the area into a block panel | 8.72 |
 | [edit-animation-show.ogg](edit-animation/edit-animation-show.ogg) | A slide show is a timeline of pictures, animations and text screens. Drag the edges of a clip to show it longer or shorter. | Editor: Lewie points at the slide show’s timeline | 8.72 |
-| [edit-animation-then.ogg](edit-animation/edit-animation-then.ogg) | Then says what happens after a slide: wait for a key, go straight on, or wait some seconds. From here plays the show from this slide. | Editor: Lewie points at the slide’s settings | 8.16 |
+| [edit-animation-then.ogg](edit-animation/edit-animation-then.ogg) | Then says what happens after a slide: wait for a key, go straight on, or wait some seconds. From here plays the show from this slide. | Editor: Lewie points at the slide’s settings | 10.32 |
 | [edit-animation-bin.ogg](edit-animation/edit-animation-bin.ogg) | Everything the game has that fits in a show is in the bin. Drag it onto the timeline, or tap it to add it after the chosen slide. | Editor: Lewie points at the media bin | 8.55 |
-| [edit-animation-bye.ogg](edit-animation/edit-animation-bye.ogg) | Pictures that move, shows that play. That is my kind of making. Bye now! | Editor: Lewie says goodbye and walks off | 5.44 |
+| [edit-animation-bye.ogg](edit-animation/edit-animation-bye.ogg) | Pictures that move, shows that play. That is my kind of making. Bye now! | Editor: Lewie says goodbye and walks off | 5.92 |
 
 ## edit-integrator
 
@@ -309,7 +309,7 @@ records every clip again.
 
 | Clip | Says | Where | Seconds |
 | --- | --- | --- | ---: |
-| [edit-player-hello.ogg](edit-player/edit-player-hello.ogg) | Ah, my favorite invention yet: the player itself! Its words, colors and frames may be tinkered with, though not to bursting. | Editor: Professor Fiddlesticks comes on | 8.11 |
+| [edit-player-hello.ogg](edit-player/edit-player-hello.ogg) | Ah, my favorite invention yet: the player itself! Its words, colors and frames may be tinkered with, though not to bursting. | Editor: Professor Fiddlesticks comes on | 9.23 |
 | [edit-player-open.ogg](edit-player/edit-player-open.ogg) | This button opens the DOS player. That is the program the DOS download uses to run a game outside the editor. | Editor: Professor Fiddlesticks presses the DOS player button | 11.07 |
 | [edit-player-intro.ogg](edit-player/edit-player-intro.ogg) | The player’s own words, colors, frames and timings can change, screen by screen. This game is look-only, so every box is locked. | Editor: Professor Fiddlesticks points at the box’s introduction | 12.75 |
 | [edit-player-presets.ogg](edit-player/edit-player-presets.ogg) | Presets are two classic tricks: blank the menu words, or rename the status words. Reset all puts everything back. | Editor: Professor Fiddlesticks points at the presets | 15.23 |
@@ -356,7 +356,7 @@ records every clip again.
 | [edit-export-dos.ogg](edit-export/edit-export-dos.ogg) | DOS gives the original Game-Maker files with the stand-alone player, for DOSBox or a real DOS PC. Import that zip here to edit a copy. | Editor: Max points at the DOS choice | 11.32 |
 | [edit-export-files.ogg](edit-export/edit-export-files.ogg) | Game files is your project just as it is here, a zip to keep safe or import again. | Editor: Max points at the Game files choice | 6.30 |
 | [edit-export-windows.ogg](edit-export/edit-export-windows.ogg) | Windows makes a program to double-click, or a zip of it. It is not code-signed, so the first time you choose More info, then Run anyway. | Editor: Max points at the Windows choice | 9.56 |
-| [edit-export-mac.ogg](edit-export/edit-export-mac.ogg) | Mac makes an app on a disk image, or a zip, not notarized: open it first from Privacy and Security. Linux makes a folder with play.sh. | Editor: Max points at the Mac choice | 10.70 |
+| [edit-export-mac.ogg](edit-export/edit-export-mac.ogg) | Mac makes an app on a disk image, or a zip, not notarized: open it first from Privacy and Security. Linux makes a folder with play.sh. | Editor: Max points at the Mac choice | 10.56 |
 | [edit-export-caveat.ogg](edit-export/edit-export-caveat.ogg) | All but DOS still need a web engine, so a future update could break them. DOS, in DOSBox, is the most future-proof. | Editor: Max points at the note under the list | 8.85 |
 | [edit-export-buttons.ogg](edit-export/edit-export-buttons.ogg) | Download builds the chosen file, and the button beside it picks the second format. Cancel shuts this with nothing made. I’ll leave them be. | Editor: Max points at the chooser’s buttons | 9.33 |
 | [edit-export-file.ogg](edit-export/edit-export-file.ogg) | The three dots on any file have Download file, which saves just that one file to your computer. | Editor: Max points at the file’s more actions menu | 6.60 |
@@ -383,14 +383,14 @@ records every clip again.
 
 | Clip | Says | Where | Seconds |
 | --- | --- | --- | ---: |
-| [edit-walkthrough-hello.ogg](edit-walkthrough/edit-walkthrough-hello.ogg) | Stuck on a level, kids? A walkthrough is the whole game played start to finish, and the editor can make one for you. | Editor: Doc Leo comes on | 7.15 |
+| [edit-walkthrough-hello.ogg](edit-walkthrough/edit-walkthrough-hello.ogg) | Stuck on a level, kids? A walkthrough is the whole game played start to finish, and the editor can make one for you. | Editor: Doc Leo comes on | 6.51 |
 | [edit-walkthrough-open.ogg](edit-walkthrough/edit-walkthrough-open.ogg) | On the start scene, this button opens the walkthrough box. The home page’s Walkthrough button opens the same one. | Editor: Doc Leo presses the Make a walkthrough button | 7.63 |
-| [edit-walkthrough-watch.ogg](edit-walkthrough/edit-walkthrough-watch.ogg) | Watch plays what the bot made in the player, with chapters. There you can Download MP4 or Copy for YouTube. | Editor: Doc Leo points at the Watch part | 7.07 |
+| [edit-walkthrough-watch.ogg](edit-walkthrough/edit-walkthrough-watch.ogg) | Watch plays what the bot made in the player, with chapters. There you can Download MP4 or Copy for YouTube. | Editor: Doc Leo points at the Watch part | 7.55 |
 | [edit-walkthrough-make.ogg](edit-walkthrough/edit-walkthrough-make.ogg) | The walkthrough bot plays each scene on the real engine. If it gets stuck, what it made still plays as far as it got. | Editor: Doc Leo points at the Make one part | 7.63 |
 | [edit-walkthrough-time.ogg](edit-walkthrough/edit-walkthrough-time.ogg) | Time for each scene is how long the bot tries one scene: from 30 seconds to 10 minutes. I won’t start it today. | Editor: Doc Leo points at the Time for each scene choice | 8.75 |
 | [edit-walkthrough-go.ogg](edit-walkthrough/edit-walkthrough-go.ogg) | Make it starts the bot. It tries styles from quickest to most thorough until one gets through, and Stop keeps the scenes it finished. | Editor: Doc Leo points at the Make it button | 8.91 |
 | [edit-walkthrough-mine.ogg](edit-walkthrough/edit-walkthrough-mine.ogg) | Once the bot has played, any scene gets Play it myself: reach an exit and your play is kept. Mine or Bot chooses who plays it next time. | Editor: Doc Leo points at the Make one part | 9.07 |
-| [edit-walkthrough-look.ogg](edit-walkthrough/edit-walkthrough-look.ogg) | This game is open to look at only, so a walkthrough made here is kept apart from its files. They are never changed. | Editor: Doc Leo points at the Watch part | 7.23 |
+| [edit-walkthrough-look.ogg](edit-walkthrough/edit-walkthrough-look.ogg) | This game is open to look at only, so a walkthrough made here is kept apart from its files. They are never changed. | Editor: Doc Leo points at the Watch part | 6.99 |
 | [edit-walkthrough-bye.ogg](edit-walkthrough/edit-walkthrough-bye.ogg) | Now go on, play it yourself, or let the bot show you the way. Honk honk! | Editor: Doc Leo says goodbye and walks off | 5.07 |
 
 ## desk
@@ -410,7 +410,7 @@ records every clip again.
 | [desk-pad-panel.ogg](desk/desk-pad-panel.ogg) | Big buttons for the d-pad’s eight ways and all four buttons. Game-Maker games read the d-pad and the red and yellow buttons. | Desk: Lewie points at the game pad’s large controls | 8.40 |
 | [desk-shelf.ogg](desk/desk-shelf.ogg) | My shelf has a box for every game. Take one down to turn it over, read its manual, or play it. | Desk: Lewie points at the shelf of game boxes | 7.27 |
 | [desk-box-open.ogg](desk/desk-box-open.ogg) | Like this one. Down it comes! | Desk: Lewie presses the box standing face out | 2.79 |
-| [desk-box-turn.ogg](desk/desk-box-turn.ogg) | It turns all the way around, so you can read the back. Drag it to turn it yourself, or scroll to zoom. | Desk: Lewie points at the box, turning | 6.72 |
+| [desk-box-turn.ogg](desk/desk-box-turn.ogg) | It turns all the way around, so you can read the back. Drag it to turn it yourself, or scroll to zoom. | Desk: Lewie points at the box, turning | 6.56 |
 | [desk-box-disks.ogg](desk/desk-box-disks.ogg) | Inside, the game’s disks. Click them and disk one goes in drive A: to play. | Desk: Lewie points at the disks in the box | 5.60 |
 | [desk-box-manual.ogg](desk/desk-box-manual.ogg) | Its manual, with a cover all its own. | Desk: Lewie points at the manual in the box | 3.60 |
 | [desk-box-extras.ogg](desk/desk-box-extras.ogg) | And everything else that came in the box, each piece ready to read or print. | Desk: Lewie points at the list of what else came in the box | 4.88 |
@@ -486,7 +486,7 @@ records every clip again.
 | [dos-disks.ogg](dos/dos-disks.ogg) | Disks is your disk box: Play, Design, or just Insert any game’s floppy in drive A:. | DOS: Professor Fiddlesticks points at the Disks button | 6.51 |
 | [dos-turbo.ogg](dos/dos-turbo.ogg) | Turbo is sixty-six megahertz of pure speed. Off, it plods along like an old 286. | DOS: Professor Fiddlesticks points at the Turbo button | 10.59 |
 | [dos-sound.ogg](dos/dos-sound.ogg) | Sound switches the PC’s sound on and off. | DOS: Professor Fiddlesticks points at the Sound button | 4.51 |
-| [dos-full.ogg](dos/dos-full.ogg) | Full screen hides everything else, the browser too. | DOS: Professor Fiddlesticks points at the Full screen button | 4.83 |
+| [dos-full.ogg](dos/dos-full.ogg) | Full screen hides everything else, the browser too. | DOS: Professor Fiddlesticks points at the Full screen button | 3.55 |
 | [dos-reset.ogg](dos/dos-reset.ogg) | Reset restarts the PC, like the button on the front of the case. | DOS: Professor Fiddlesticks points at Reset in the ⋯ menu | 6.59 |
 | [dos-blaster.ogg](dos/dos-blaster.ogg) | Without the Sound Blaster card, games beep their sounds on the PC speaker. | DOS: Professor Fiddlesticks points at Sound Blaster card in the ⋯ menu | 6.19 |
 | [dos-bbs.ogg](dos/dos-bbs.ogg) | BBS dials the board with the modem. The line speed under it says how fast. | DOS: Professor Fiddlesticks points at BBS in the ⋯ menu | 9.07 |
