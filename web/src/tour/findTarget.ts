@@ -8,12 +8,18 @@ export function visible(el: Element): boolean {
   const details = el.closest('details');
   if (details && !details.open && !el.closest('summary')) return false;
   if (el.checkVisibility && !el.checkVisibility({ visibilityProperty: true })) return false;
-  const r = el.getBoundingClientRect();
+  let r = el.getBoundingClientRect();
   if (r.width <= 0 || r.height <= 0) return false;
   // cut off by a box that hides what overflows it (a phone's tip folded to one line)
   for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
     const { overflowX, overflowY } = getComputedStyle(p);
-    if (!/hidden|clip/.test(overflowX + overflowY)) continue;
+    const box = overflowX + overflowY;
+    // inside a scrolling box, what lies further down is reached by scrolling: the box itself must be in view
+    if (/auto|scroll/.test(box) && !/hidden|clip/.test(box)) {
+      r = p.getBoundingClientRect();
+      continue;
+    }
+    if (!/hidden|clip/.test(box)) continue;
     const b = p.getBoundingClientRect();
     if (r.left >= b.right || r.right <= b.left || r.top >= b.bottom || r.bottom <= b.top) return false;
   }
