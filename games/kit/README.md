@@ -121,11 +121,11 @@ Making the files:
 
 Checking the games:
 
-- `checkGames.ts` — `cd web && npm run check:games`: every game's checks, one game at a time, and a table; exits 1 on
+- `checkGames.ts` — `cd web && npm run check:games`: every game's checks and a table (builds one at a time, then `--jobs N` games checked at once, default half the CPUs; a lock in the temp folder makes a second run wait); exits 1 on
   any failure. Per game: two builds into temporary folders (`GAME_DISK_OUT`) that must match each other byte for
   byte and cut off no text (`textBounds.ts`); unchanged working output is kept in place, `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
   `playerCheck.ts` (when the game has a player.json); then `tinHearts.ts check`,
-  `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no reproducibility rebuild), `--no-level`, `--verbose`, and `--play`
+  `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no reproducibility rebuild), `--jobs N`, `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
 - `saveSignCheck.ts` — `npx vite-node ../games/kit/saveSignCheck.ts [<id>...]`: every felt-egg game has exactly one save
