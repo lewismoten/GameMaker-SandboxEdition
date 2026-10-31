@@ -1,21 +1,14 @@
 // The cast page (#/cast): who keeps turning up in the new games, and the kinds of games on
-// the home page. The address keeps the family shown and the member last pointed at
-// (#/cast?family=bizarre&who=carl), so a link opens on that card.
+// the home page. The address keeps the tab shown and the member last pointed at
+// (#/cast?tab=bard&who=carl), so a link opens on that card.
 import './cast.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
-import { CAST, CAST_GAMES, familiesOf, type CastMember, type Family } from './castData';
+import { CAST, CAST_GAMES, familiesOf, type CastMember } from './castData';
 import { castStage } from './castStage';
 import { seenIn } from './castThumbs';
-import { pageToc } from '../pageToc';
 import { heartProgress, joeAllAlong } from '../tinHearts/progress';
 import { unlockAchievement } from '../achievements';
-
-const FILTERS: [Family | 'all', string][] = [
-  ['all', 'Everyone'],
-  ['sandbox', 'Sandbox Software'],
-  ['bizarre', 'The Bard of Bizarre'],
-];
 
 const gameHref = (id: string) => `#/game/cd:${id}`;
 const tabHref = (tab: string) => `#/?tab=${tab}`;
@@ -77,47 +70,69 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
   );
 }
 
+type Tab = 'people' | 'things' | 'bard' | 'games';
+
+/** The tabs: who is on each, and what the page says above them. */
+const TABS: { id: Tab; label: string; blurb: string; ids: string[] }[] = [
+  {
+    id: 'people',
+    label: 'Characters',
+    blurb: 'The faces that keep turning up: the dog, the clown, the maker and a couple of robots.',
+    ids: ['teddy', 'gwinn', 'leo', 'lewis', 'lewie', 'joe', 'watt'],
+  },
+  {
+    id: 'things',
+    label: 'Things and places',
+    blurb: 'A car, a library, a drink, a rubber chicken and the little things hidden in the games.',
+    ids: ['chez', 'chicken', 'doghouse', 'rootbeer', 'tinHeart', 'easterEgg'],
+  },
+  {
+    id: 'bard',
+    label: 'The Bard of Bizarre',
+    blurb: 'The songwriter and the odd stars of his songs, turned into games.',
+    ids: ['bard', 'carl', 'goat', 'seed', 'loaf', 'camel', 'will'],
+  },
+  { id: 'games', label: 'Kinds of games', blurb: '', ids: [] },
+];
+
+const tabOf = (id: string): Tab => TABS.find((t) => t.ids.includes(id))?.id ?? 'things';
+
 const families = () =>
   h(
-    'section',
-    { class: 'cast-families', 'aria-labelledby': 'cast-families-h' },
-    h('h2', { id: 'cast-families-h' }, 'Three kinds of games'),
+    'div',
+    { class: 'cast-fam-grid' },
     h(
-      'div',
-      { class: 'cast-fam-grid' },
+      'section',
+      { class: 'cast-fam fam-sandbox', 'aria-labelledby': 'fam-sandbox-h' },
+      h('h3', { id: 'fam-sandbox-h' }, 'Sandbox Software'),
       h(
-        'section',
-        { class: 'cast-fam fam-sandbox', 'aria-labelledby': 'fam-sandbox-h' },
-        h('h3', { id: 'fam-sandbox-h' }, 'Sandbox Software'),
-        h(
-          'p',
-          null,
-          'Thirteen new games made for this edition in the style of 1995 retail and shareware: each comes in a box with a printed manual, a disk label and paper extras to print, and plays in real DOS too. Sandbox Software is made up; it is where Teddy, Gwinn and THE\u00a0CHEZ live. Look closely and most of them also hide a little felt egg.',
-        ),
-        h('a', { href: tabHref('sandbox') }, 'Browse Sandbox →'),
+        'p',
+        null,
+        'Thirteen new games made for this edition in the style of 1995 retail and shareware: each comes in a box with a printed manual, a disk label and paper extras to print, and plays in real DOS too. Sandbox Software is made up; it is where Teddy, Gwinn and THE\u00a0CHEZ live. Look closely and most of them also hide a little felt egg.',
       ),
+      h('a', { href: tabHref('sandbox') }, 'Browse Sandbox →'),
+    ),
+    h(
+      'section',
+      { class: 'cast-fam fam-bizarre', 'aria-labelledby': 'fam-bizarre-h' },
+      h('h3', { id: 'fam-bizarre-h' }, 'The Bard of Bizarre'),
       h(
-        'section',
-        { class: 'cast-fam fam-bizarre', 'aria-labelledby': 'fam-bizarre-h' },
-        h('h3', { id: 'fam-bizarre-h' }, 'The Bard of Bizarre'),
-        h(
-          'p',
-          null,
-          'Lewis’s songs turned into games: bizarre gospels, mundane epics, Shakespeare in Sweatpants and the Latin Veni, Vidi, Risi!. In the story they are shareware uploaded to The Sofa BBS, so there is no box, just a notice telling the song behind each one, and they are this project’s own and free to change: edit a copy and see how it was made.',
-        ),
-        h('a', { href: tabHref('bizarre') }, 'Browse Bizarre →'),
+        'p',
+        null,
+        'Lewis’s songs turned into games: bizarre gospels, mundane epics, Shakespeare in Sweatpants and the Latin Veni, Vidi, Risi!. In the story they are shareware uploaded to The Sofa BBS, so there is no box, just a notice telling the song behind each one, and they are this project’s own and free to change: edit a copy and see how it was made.',
       ),
+      h('a', { href: tabHref('bizarre') }, 'Browse Bizarre →'),
+    ),
+    h(
+      'section',
+      { class: 'cast-fam fam-cd', 'aria-labelledby': 'fam-cd-h' },
+      h('h3', { id: 'fam-cd-h' }, 'Gameware and Shareware'),
       h(
-        'section',
-        { class: 'cast-fam fam-cd', 'aria-labelledby': 'fam-cd-h' },
-        h('h3', { id: 'fam-cd-h' }, 'Gameware and Shareware'),
-        h(
-          'p',
-          null,
-          'The games from the original Game-Maker CD and the BBSes of the 90s. Gameware are the free samples that came with Game-Maker, yours to open and borrow from; shareware are other people’s games, played exactly as they released them. None of this cast is in them: they were here first.',
-        ),
-        h('span', { class: 'cast-fam-links' }, h('a', { href: tabHref('gameware') }, 'Gameware →'), ' ', h('a', { href: tabHref('shareware') }, 'Shareware →')),
+        'p',
+        null,
+        'The games from the original Game-Maker CD and the BBSes of the 90s. Gameware are the free samples that came with Game-Maker, yours to open and borrow from; shareware are other people’s games, played exactly as they released them. None of this cast is in them: they were here first.',
       ),
+      h('span', { class: 'cast-fam-links' }, h('a', { href: tabHref('gameware') }, 'Gameware →'), ' ', h('a', { href: tabHref('shareware') }, 'Shareware →')),
     ),
   );
 
@@ -125,8 +140,8 @@ const families = () =>
 export function renderCast(el: HTMLElement): void {
   unlockAchievement('cast-visit');
   const state = viewState(['cast']);
-  const want = state.get('family');
-  let family: Family | 'all' = FILTERS.some(([f]) => f === want) ? (want as Family) : 'all';
+  const want = state.get('tab');
+  let tab: Tab = TABS.some((t) => t.id === want) ? (want as Tab) : 'people';
   // a name is a link to its card; here it marks the card without leaving the page
   const pick = (m: CastMember, e: Event) => {
     e.preventDefault();
@@ -135,33 +150,50 @@ export function renderCast(el: HTMLElement): void {
   };
   const cards = CAST.map((m) => card(m, pick));
   const grid = h('div', { class: 'cast-grid', id: 'cast-grid' }, cards);
-  const count = h('p', { class: 'cast-count', role: 'status' });
-  const buttons = FILTERS.map(([f, label]) =>
+  const blurb = h('p', { class: 'cast-blurb' });
+  const tabs = TABS.map((t) =>
     h(
       'button',
       {
         type: 'button',
-        class: `cast-filter fam-${f}`,
-        'aria-controls': 'cast-grid',
-        onclick: () => {
-          family = f;
-          state.set({ family: f === 'all' ? undefined : f });
-          apply();
+        role: 'tab',
+        id: `cast-tab-${t.id}`,
+        class: 'cast-tab',
+        'aria-controls': 'cast-panel',
+        onclick: () => select(t.id),
+        onkeydown: (e: KeyboardEvent) => {
+          const i = TABS.findIndex((x) => x.id === tab);
+          const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: TABS.length - 1 }[e.key];
+          if (to === undefined) return;
+          e.preventDefault();
+          select(TABS[(to + TABS.length) % TABS.length].id, true);
         },
       },
-      label,
+      t.label,
     ),
   );
+  const kinds = families();
   const apply = () => {
-    let shown = 0;
-    CAST.forEach((m, i) => {
-      const on = family === 'all' || familiesOf(m).includes(family);
-      cards[i].hidden = !on;
-      if (on) shown++;
+    const t = TABS.find((x) => x.id === tab)!;
+    CAST.forEach((m, i) => (cards[i].hidden = !t.ids.includes(m.id)));
+    tabs.forEach((b, i) => {
+      const on = TABS[i].id === tab;
+      b.setAttribute('aria-selected', String(on));
+      b.tabIndex = on ? 0 : -1;
     });
-    buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(FILTERS[i][0] === family)));
-    count.textContent = `${shown} of ${CAST.length}`;
+    panel.setAttribute('aria-labelledby', `cast-tab-${tab}`);
+    blurb.textContent = t.blurb;
+    blurb.hidden = tab === 'games';
+    grid.hidden = tab === 'games';
+    kinds.hidden = tab !== 'games';
   };
+  const select = (t: Tab, focus = false) => {
+    tab = t;
+    state.set({ tab: t === 'people' ? undefined : t });
+    apply();
+    if (focus) tabs[TABS.findIndex((x) => x.id === t)].focus();
+  };
+  const panel = h('div', { class: 'cast-panel', id: 'cast-panel', role: 'tabpanel' }, blurb, grid, kinds);
   apply();
   clear(
     el,
@@ -176,18 +208,12 @@ export function renderCast(el: HTMLElement): void {
         'The same faces keep turning up in this edition’s new games: a red-gold corgi with a big grin, his sister-in-mischief, a friendly hobo clown, a tomato-red electric car that is always charging, and a goat nobody painted. Here is who they are, and where to find them.',
       ),
       castStage(CAST, state),
-      families(),
       h(
         'section',
         { class: 'cast-members', 'aria-labelledby': 'cast-members-h' },
-        h(
-          'div',
-          { class: 'cast-bar' },
-          h('h2', { id: 'cast-members-h' }, 'The regulars'),
-          h('div', { class: 'cast-filters', role: 'group', 'aria-label': 'Show the cast of' }, buttons),
-          count,
-        ),
-        grid,
+        h('h2', { id: 'cast-members-h' }, 'The regulars'),
+        h('div', { class: 'cast-tabs', role: 'tablist', 'aria-label': 'Parts of the cast' }, tabs),
+        panel,
       ),
       h(
         'p',
@@ -200,15 +226,13 @@ export function renderCast(el: HTMLElement): void {
       ),
     ),
   );
-  pageToc(el.querySelector('main')!, { sub: '.cast-card h3[id]' });
   // a link to one member: its card in view, marked for a moment
   const who = state.get('who');
   const target = who && el.querySelector<HTMLElement>(`#cast-${CSS.escape(who)}`);
   if (target) {
+    const m0 = who;
     if (target.hidden) {
-      family = 'all';
-      state.set({ family: undefined });
-      apply();
+      select(tabOf(m0));
     }
     target.classList.add('cast-picked');
     requestAnimationFrame(() =>
