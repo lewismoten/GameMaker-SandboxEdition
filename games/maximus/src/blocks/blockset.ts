@@ -14,6 +14,8 @@ interface BlockProps extends Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl'
 
 export const SOLID = 15;
 export const TOP = 1;
+/** Maximus crosses many worlds; fifth-sized rewards keep a whole voyage comparable with the other adventures. */
+export const SCORE_SCALE = 0.2;
 /** Gravity bits */
 export const G = { none: 0, up: 1, right: 2, down: 4, left: 8 } as const;
 
@@ -46,11 +48,11 @@ export class SetBuilder {
     if (this.used.has(i)) throw new Error(`${this.name}: slot ${i} taken (${name})`);
     this.used.add(i);
     this.names.set(name, i);
-    const { next, touch, ...rest } = props;
+    const { next, touch, scorePts, ...rest } = props;
     const b = this.blocks[i];
     // Background blocks are opaque: clear pixels become black.
     b.pixels.set(p.px.map((c) => (c === CLEAR ? 0 : c)));
-    Object.assign(b, { grav: this.defaultGrav }, rest);
+    Object.assign(b, { grav: this.defaultGrav, ...(scorePts === undefined ? {} : { scorePts: Math.round(scorePts * SCORE_SCALE) }) }, rest);
     this.pics[i] = p;
     this.links.push({ i, next, touch });
     return i;

@@ -10,6 +10,7 @@ import { drawCreature, type Archetype, type Paint } from '../sprites/creatures';
 import { drawPickup } from '../blocks/items';
 import { OUTLINE, S, WHITE, shared } from '../art/palette';
 import { R } from '../blocks/common';
+import { SCORE_SCALE } from '../blocks/blockset';
 
 type Corner = [dx: number, dy: number, speed: number, orient?: number];
 
@@ -130,7 +131,7 @@ function makeMonster(c: Creature, pics: number[], becomes: number | undefined): 
   m.used = 1;
   m.power = c.power;
   m.thru = c.walls === false ? 0 : 1;
-  m.upscore = c.score;
+  m.upscore = Math.round(c.score * SCORE_SCALE);
   m.newmon = becomes ?? LASTMON;
   m.end = c.end ?? 0;
   const anim = c.anim ?? 6;
