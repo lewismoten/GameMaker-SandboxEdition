@@ -69,6 +69,11 @@
       "gamemaker-source": "./src/audioFiles.ts",
       "import": "./dist/audio-files.js"
     },
+    "./disk-diff": {
+      "types": "./dist/types/diskDiff.d.ts",
+      "gamemaker-source": "./src/diskDiff.ts",
+      "import": "./dist/disk-diff.js"
+    },
     "./microFont": {
       "types": "./dist/types/microFont.d.ts",
       "gamemaker-source": "./src/microFont.ts",

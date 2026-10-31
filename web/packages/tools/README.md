@@ -174,6 +174,13 @@ project data under the MIT License; recordings and complete songs are not includ
 palette boundaries and builds their slide-list entries. `kit/recordedDemo` turns delta/key
 pairs into a native title demo with configurable Escape press and release delays.
 
+### Disk comparison
+
+`diffDisks(a, b)` takes two `Map<name, bytes>` disks and returns the added, removed and changed files, with a plain-text
+summary per changed file by type (`.gam`, `.pal`, blocks, `.map`, `.chr`, `.mon`, text, GIF, FLI, VOC, else bytes).
+`formatDiff` prints it, sorted and the same every time. Import from
+`@lewismoten/gamemaker-sandbox-tools/disk-diff`; `npm run disk:diff` in `web/` is the command line.
+
 ### Headless checking
 
 `kit/hopBot` provides configurable hopping, steering and retry support for `GameSim`.
