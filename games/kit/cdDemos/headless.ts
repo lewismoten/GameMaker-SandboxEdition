@@ -74,6 +74,8 @@ interface RunHooks {
   onTick?: (w: World, s: Session, m: Machine) => boolean | void | Promise<unknown>;
   /** Called every rendered frame (after the screen was drawn). */
   onFrame?: (w: World, s: Session, m: Machine) => void;
+  /** Called with the scene number each time play enters a scene. */
+  onScene?: (scene: number) => void;
 }
 
 interface RunResult {
@@ -109,7 +111,10 @@ export async function runHeadless(
   const finished = runGame(m, gam, {
     record: o.record,
     playback: o.playback,
-    onSession: (s) => (session = s),
+    onSession: (s) => {
+      session = s;
+      if (o.onScene) s.onScene = o.onScene;
+    },
     onFrame: (w) => {
       if (stop || !session) return;
       if (w.clock !== lastClock) {
