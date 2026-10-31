@@ -13,6 +13,9 @@ const SUB_CHAPTER: Record<string, string> = {
   pal: 'edit-palette',
   snd: 'edit-sounds',
   cmf: 'edit-sounds',
+  fli: 'edit-animation',
+  gif: 'edit-animation',
+  lst: 'edit-animation',
 };
 
 /** The ids of the chapters to play for the editor page at `hash`, in order. */

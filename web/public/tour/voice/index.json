@@ -839,6 +839,126 @@
     "hash": "aed78dfafbc2",
     "voice": "532d1bbf3a1e"
   },
+  "edit-animation-actions": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the frame buttons",
+    "text": "Duplicate a frame to hold it longer. Move or delete it. Plus Picture adds a GIF after it, from this game or your computer.",
+    "seconds": 8,
+    "hash": "ef5cf7de6acc",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-bin": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the media bin",
+    "text": "Everything the game has that fits in a show is in the bin. Drag it onto the timeline, or tap it to add it after the chosen slide.",
+    "seconds": 8.55,
+    "hash": "b5bd3a6dad1e",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-bye": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie says goodbye and walks off",
+    "text": "Pictures that move, shows that play. That is my kind of making. Bye now!",
+    "seconds": 5.44,
+    "hash": "52eb3777ad8b",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-copy": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the Copy the area into a block panel",
+    "text": "The area becomes a block. Pick the block set, see before and after, and press Copy into block. This is how pictures turn into game art.",
+    "seconds": 8.72,
+    "hash": "87e5aaec414b",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-generate": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the Generate button",
+    "text": "Generate makes an intro, a cast list or a story from the game’s own pictures, characters and text. You can change all of it after.",
+    "seconds": 8.32,
+    "hash": "2d4955404628",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-hello": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie comes on",
+    "text": "Lewie here. Let me show you how I make things move: animations first, then pictures and slide shows.",
+    "seconds": 7.91,
+    "hash": "d8726c271f01",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-picture": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the picture",
+    "text": "A picture. You do not paint it here. Click to choose a twenty by twenty area, and Shift-click snaps to the block grid.",
+    "seconds": 8.55,
+    "hash": "010775469cfc",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-scene": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie presses the Scene maker tab",
+    "text": "The Scene maker. An animation made here keeps its scene, so it opens again just as you left it.",
+    "seconds": 6.88,
+    "hash": "56e9aa5e8a38",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-show": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the slide show’s timeline",
+    "text": "A slide show is a timeline of pictures, animations and text screens. Drag the edges of a clip to show it longer or shorter.",
+    "seconds": 8.72,
+    "hash": "7da9ceb932cb",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-speed": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the speed controls",
+    "text": "Speed is how long each frame stays, counted in 70ths of a second. Every frame gets the same time. Presets run up to one second.",
+    "seconds": 8.72,
+    "hash": "052d6c91d162",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-stage": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the animation screen",
+    "text": "It plays as soon as you open it. The game plays an animation once; Loop here lets you watch it again and again.",
+    "seconds": 6.88,
+    "hash": "bdc5b7297141",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-strip": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the film strip",
+    "text": "The film strip shows every frame. Click one to see it, or drag it to a new place.",
+    "seconds": 6.16,
+    "hash": "d1191eab7f97",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-tabs": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the Frames and Scene maker tabs",
+    "text": "Two ways to work. Frames steps through the pictures one by one. The Scene maker builds the animation from a timeline.",
+    "seconds": 7.52,
+    "hash": "28b0cba08a90",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-then": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the slide’s settings",
+    "text": "Then says what happens after a slide: wait for a key, go straight on, or wait some seconds. From here plays the show from this slide.",
+    "seconds": 8.55,
+    "hash": "b33f9ea1bd37",
+    "voice": "9af0a3c00d49"
+  },
+  "edit-animation-timeline": {
+    "chapter": "edit-animation",
+    "where": "Editor: Lewie points at the scene’s timeline",
+    "text": "Each track holds items on a timeline: moving text, a walking character, a monster or a block. Drag on the picture to move them.",
+    "seconds": 9.19,
+    "hash": "7e0b1b5f58ab",
+    "voice": "9af0a3c00d49"
+  },
   "edit-around-assets": {
     "chapter": "edit-around",
     "where": "Editor: Watt points at the Game assets button",
