@@ -53,12 +53,20 @@ const TOOLS: [Mode, string, string, string, string][] = [
 /** The map picture's choices for the whole map, the level and a game screen. */
 const OPT_LABELS = { monsters: 'Monsters where they start', grid: 'Block grid (yellow lines every 10 blocks)', links: 'Scene links and start points' };
 
-/** The map's zoom choices: down to 10% (a block 2 pixels across) to see a whole map at once. */
+/** Fine-grained map zoom: 10% sees the whole map; 200% supports pixel-level painting. */
 const ZOOMS: [number, string][] = [
   [0.1, '10%'],
+  [0.15, '15%'],
+  [0.2, '20%'],
   [0.25, '25%'],
+  [1 / 3, '33%'],
   [0.5, '50%'],
+  [2 / 3, '67%'],
+  [0.75, '75%'],
   [1, '100%'],
+  [1.25, '125%'],
+  [1.5, '150%'],
+  [1.75, '175%'],
   [2, '200%'],
 ];
 
