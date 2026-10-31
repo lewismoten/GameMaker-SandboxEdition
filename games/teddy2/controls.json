@@ -78,5 +78,21 @@
   "counters": {
     "20": "Clues",
     "21": "Fair tickets"
+  },
+  "sounds": {
+    "9": "Woof",
+    "10": "Dig",
+    "11": "Slap",
+    "12": "Sit",
+    "13": "Spin",
+    "14": "Sniff",
+    "15": "Flop",
+    "16": "Hop",
+    "17": "Yelp",
+    "18": "Sleep",
+    "19": "Fetch",
+    "20": "Boof",
+    "21": "Chomp",
+    "22": "Zoom"
   }
 }

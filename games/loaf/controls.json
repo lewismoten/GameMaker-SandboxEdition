@@ -66,5 +66,12 @@
   "counters": {
     "20": "Holy crumbs",
     "21": "Baskets gathered"
+  },
+  "sounds": {
+    "9": "Dough rising",
+    "10": "Roll",
+    "11": "Hurt",
+    "12": "Crumble",
+    "13": "Bread"
   }
 }

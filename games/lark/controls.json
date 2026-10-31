@@ -69,5 +69,11 @@
     "22": "Shovelfuls",
     "23": "Corner pass (chapter 2)",
     "24": "Corner pass (chapter 3)"
+  },
+  "sounds": {
+    "9": "Hop",
+    "11": "Chirp",
+    "12": "Soft whump",
+    "13": "Nothing to use"
   }
 }

@@ -63,5 +63,12 @@
     "21": "Smiles",
     "22": "Ears buzzed",
     "23": "Hours lived"
+  },
+  "sounds": {
+    "9": "Flying",
+    "10": "Roll",
+    "11": "Hurt",
+    "12": "Splat",
+    "13": "Buzz"
   }
 }

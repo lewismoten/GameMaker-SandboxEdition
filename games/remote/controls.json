@@ -71,5 +71,12 @@
     "20": "Searched spots",
     "21": "Mom's number digits",
     "22": "VCR PLAY"
+  },
+  "sounds": {
+    "9": "Shout",
+    "10": "Hurt",
+    "11": "Death",
+    "12": "Click",
+    "13": "Hand"
   }
 }

@@ -75,5 +75,12 @@
     "9": "Snowballs",
     "20": "Newspapers",
     "21": "Thaw"
+  },
+  "sounds": {
+    "9": "Throw",
+    "10": "Hurt",
+    "11": "Death",
+    "12": "Brake",
+    "13": "Push"
   }
 }

@@ -72,5 +72,12 @@
     "21": "Sorries",
     "22": "Helmet knocked off",
     "23": "Lily's smirks"
+  },
+  "sounds": {
+    "9": "Tackle",
+    "10": "Hurt",
+    "11": "Death",
+    "12": "Scream",
+    "13": "Ask"
   }
 }

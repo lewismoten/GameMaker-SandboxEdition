@@ -73,5 +73,10 @@
   },
   "counters": {
     "5": "Nova Bomb charges"
+  },
+  "sounds": {
+    "9": "Hurt",
+    "10": "Ship destroyed",
+    "11": "Nova blast"
   }
 }

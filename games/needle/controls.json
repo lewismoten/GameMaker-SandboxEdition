@@ -70,5 +70,12 @@
   "counters": {
     "20": "Grace",
     "21": "Thread spools"
+  },
+  "sounds": {
+    "9": "Hop",
+    "10": "Kneel",
+    "11": "Hurt",
+    "12": "Faint",
+    "13": "Dream"
   }
 }

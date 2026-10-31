@@ -91,5 +91,26 @@
     "22": "Citrine shard",
     "23": "Emerald shard",
     "24": "Jade shard"
+  },
+  "sounds": {
+    "9": "Jump",
+    "10": "Fire",
+    "11": "Plasma shot",
+    "12": "Nova blast",
+    "13": "Dash",
+    "14": "Shield",
+    "15": "Hover",
+    "16": "Mine",
+    "17": "Hurt",
+    "18": "Death",
+    "19": "Pickup",
+    "20": "Drop",
+    "21": "Hail",
+    "22": "Thrust",
+    "23": "Swim",
+    "24": "Rover",
+    "25": "Medkit",
+    "26": "Flak",
+    "29": "Crouch"
   }
 }

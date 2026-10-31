@@ -73,5 +73,14 @@
   },
   "counters": {
     "20": "Laughing carpet"
+  },
+  "sounds": {
+    "9": "Hop",
+    "10": "Step",
+    "11": "Dread",
+    "12": "Death",
+    "13": "Pin",
+    "14": "Tickle",
+    "15": "Laugh"
   }
 }

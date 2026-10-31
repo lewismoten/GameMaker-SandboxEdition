@@ -57,5 +57,15 @@
   "counters": {
     "20": "Skeleton keys",
     "21": "Lazy Susan turns"
+  },
+  "sounds": {
+    "9": "Rubber chicken squawk",
+    "10": "Hurt",
+    "11": "Doc Leo plays dead",
+    "12": "Kazoo",
+    "13": "Fife tune",
+    "14": "Pickup chime",
+    "15": "Rubber squeak",
+    "16": "Boing"
   }
 }

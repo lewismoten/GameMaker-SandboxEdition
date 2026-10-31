@@ -42,5 +42,10 @@
     }
   },
   "joystick": {},
-  "counters": {}
+  "counters": {},
+  "sounds": {
+    "9": "Zap",
+    "10": "Fizzle",
+    "11": "Boing"
+  }
 }

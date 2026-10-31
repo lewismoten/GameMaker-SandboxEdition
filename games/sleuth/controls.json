@@ -77,5 +77,10 @@
     "22": "Keys",
     "23": "Safe dials right",
     "24": "Wrong accusations"
+  },
+  "sounds": {
+    "9": "Pickup",
+    "10": "Strike",
+    "12": "Magnifying lens"
   }
 }

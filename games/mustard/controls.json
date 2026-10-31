@@ -58,5 +58,13 @@
   "counters": {
     "20": "Water drops",
     "21": "Faith"
+  },
+  "sounds": {
+    "9": "Hop",
+    "10": "Root",
+    "11": "Hurt",
+    "12": "Wilt",
+    "13": "Joy",
+    "14": "Laces picked up"
   }
 }

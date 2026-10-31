@@ -70,5 +70,12 @@
   "counters": {
     "9": "Breath",
     "20": "Wool"
+  },
+  "sounds": {
+    "9": "Scream",
+    "10": "Hurt",
+    "11": "Faint",
+    "12": "Bleat",
+    "13": "Chewing"
   }
 }

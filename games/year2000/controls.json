@@ -78,5 +78,10 @@
     "22": "Keycard",
     "23": "Cover page",
     "24": "Moon Pass"
+  },
+  "sounds": {
+    "9": "Zap",
+    "10": "Hurt",
+    "11": "Death"
   }
 }

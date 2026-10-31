@@ -64,5 +64,14 @@
     "22": "Round Tuit piece 2",
     "23": "Round Tuit piece 3",
     "24": "Foghorn"
+  },
+  "sounds": {
+    "9": "Slash",
+    "10": "Hurt",
+    "11": "Death",
+    "12": "Kazoo",
+    "13": "Tonic",
+    "14": "Pickup",
+    "15": "Honk"
   }
 }
