@@ -38,7 +38,7 @@ export function notes(): HTMLElement {
       h('br'),
       'Keep it locked.',
       // Teddy's Fort Locks toy safe: the combination, in pencil, small, at the sticky note's foot
-      h('span', { class: 'pn-scribble' }, COMBINATION.join('-')),
+      h('span', { class: 'pn-scribble' }, `Pi ${COMBINATION.join('-')}`),
     ),
   );
 }
