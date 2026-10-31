@@ -803,6 +803,11 @@ hears each clip with OpenAI's Whisper (MIT; the large-v3 model, run by whisper.c
 openai-whisper's own command), on the developer's computer, to find words the voices said
 wrong; nothing of it ships.
 
+`npm run video:transcript` (`web/scripts/videoTranscribe.ts`) runs on the developer's computer
+with yt-dlp (Unlicense), ffmpeg, and whisper.cpp (MIT) with OpenAI's Whisper large-v3 model
+(MIT), on the maintainer's own YouTube videos. Only the transcripts it writes are committed;
+the Library marks each one made this way as made with Whisper speech recognition.
+
 The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
 `tools/analyze.py` and `tools/cutClips.py`) run on the developer's computer with ffmpeg,
 NumPy and SciPy (BSD), and OpenAI's Whisper (MIT) for word timings when it is installed.

@@ -4,7 +4,7 @@
 // (i.ytimg.com/vi/<id>/maxresdefault.jpg, or hqdefault.jpg with its letterbox cropped off),
 // downloaded once and saved as a 480×270 webp, so showing the Library asks YouTube for nothing.
 // A tour's transcript, public/videos/<id>.transcript.json, is written from YouTube's automatic
-// captions by scripts/videoTranscript.ts. A video plays only when asked (videoDialog.ts). Each
+// captions by scripts/videoTranscript.ts, or from its audio by `npm run video:transcript`. A video plays only when asked (videoDialog.ts). Each
 // game's walkthrough video is in videosWalk.ts (a secret game's only once it is revealed) and is
 // shelved under its game.
 import type { CatalogEntry } from '../project/files';
@@ -24,8 +24,9 @@ export interface Video {
   about: string[];
   /** Its chapters: where each starts (seconds) and its title. */
   chapters?: [number, string][];
-  /** It has a transcript, public/videos/<id>.transcript.json. */
-  transcript?: true;
+  /** It has a transcript, public/videos/<id>.transcript.json, made from YouTube's automatic
+   * captions (scripts/videoTranscript.ts) or from its audio by Whisper (npm run video:transcript). */
+  transcript?: 'captions' | 'audio';
 }
 
 const PLAY = 'https://lewismoten.github.io/GameMaker-SandboxEdition/';
@@ -39,7 +40,7 @@ const VIDEOS: readonly Video[] = [
     date: '2026-10-22',
     seconds: 1900,
     about: ['A quick demo of a Game Maker port running in your web browser.'],
-    transcript: true,
+    transcript: 'captions',
   },
   {
     id: 'gNEya63wDmo',
@@ -84,7 +85,7 @@ const VIDEOS: readonly Video[] = [
       [3172, 'Walkthrough bots and following paths'],
       [3231, 'Save tools and retro software registration'],
     ],
-    transcript: true,
+    transcript: 'captions',
   },
 ];
 

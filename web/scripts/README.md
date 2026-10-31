@@ -48,7 +48,8 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     own audio when its captions are poor: yt-dlp (audio only), ffmpeg (16 kHz mono wav), `whisper-cli`
     with the large-v3 model in `~/.cache/whisper-cpp` (`-mc 0` stops its repeat loops), then
     `videoTranscript.ts` on the .srt. Work files go in the git-ignored `web/.video-work/<id>/`.
-    `videoTools.ts` holds the id and tool checks; a missing tool or model is named before anything runs.
+    Its Library entry (`src/library/videos.ts`) says `transcript: 'audio'`, so the video's page
+    says where its words came from. `videoTools.ts` holds the id and tool checks; a missing tool or model is named before anything runs.
     A long video takes hours. It is only for the maintainer's own YouTube videos (the Library's), to
     make their captions (.srt) and transcripts. It runs by hand: no build, test or GitHub Action runs
     it, and none of them needs yt-dlp, ffmpeg or whisper-cli (`test/videoTools.test.ts` uses a fake
