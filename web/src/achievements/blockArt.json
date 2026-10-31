@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl and Great Dairy Reckoning badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning and Needle badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -582,6 +582,30 @@
       "game": "reckoning",
       "set": "reckoning",
       "block": "lumeDial"
+    },
+    "print-level-maps": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEWCotemut/Hy9cUDAh9WTTDRTRRdbr///vvsij3123/+7aB+UWoAAAAlklEQVR42lWQAQ7EIAgEgVUr/v/Bl0FtrrRS3E5Q1ixOZJKdZRbOI2VKqjqsSGnukFCLRBPBxx0xnM3z8M6pQx6tX9XNPIS2xUdTkJ65wVVoJqdfca21RZ2e7MYa1VRF3p7jv+c9fbx3gvzeM4Ix3T8TRd/kZ/beO2T7c6m1IhsR0ZpIFWi3rr9eIl4HrJHK++s8fr/VDxOeBfhjrL0dAAAAAElFTkSuQmCC",
+      "game": "needle",
+      "set": "needleTailor",
+      "block": "compass"
+    },
+    "print-world-map": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEWCotemut/Hy9cUDAhhijySKCTDRTQwTYppVTy+rpLr27r88p2fAAAAeUlEQVR42m3QCwoEIQwD0FrH2PT+B17ifNDViFCfDgwx8zdjKtpmXp41TeO+KuZDNJnOmZFZ72QKqUQqwcbGCa9LyMYdG5aX9+cEVwRC9ocJHDDG/CJCtiIIHDASK3ZMv/Rg731Hdu6YKihUj7rKrzr/Sq21uB+b/wFJRQlgnGyoWQAAAABJRU5ErkJggg==",
+      "game": "needle",
+      "set": "needleTailor",
+      "block": "foldMap"
+    },
+    "print-world-styles": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEWCotemut/Hy9cUDAjLkll9gpLv8/vKu44kAAAAbklEQVR42n2QCw7AIAhDW1Dvf+SlIM65bDVE8vKCH8Aq0VEFmBtjYe40QQ+RsKKCw8skVQmTgg8zKdIzmfSR7m4KihKcsYRd9JjpPWjNnKYy77BmVtbbQN8SbzfAXxFsx/qFba+ER/zroPu/V3cB1PMD1a9/oVAAAAAASUVORK5CYII=",
+      "game": "needle",
+      "set": "needleTailor",
+      "block": "rulerTriangle"
+    },
+    "palette-vision": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWCotemut/Hy9cUDAiq5/PDRTRRdbr///v31229k48UAAAAcklEQVR42o3PUQpDIQxE0WTuPHX/Ky6KjX60tArhEKJMIiSJWUoZCDCgeIsIsLsNlwL3bttcmvQipcD7UHJUl0tfmuzXl+LkzFKkUiiVl2KuQK66tluTPM+DaK01xBijmvmpuSfz78kff54sJ9JMu+7RCy9HBTTpHTaeAAAAAElFTkSuQmCC",
+      "game": "needle",
+      "set": "needleTailor",
+      "block": "seenGlasses"
     },
     "every-life-1": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkra7cWECAAAAcklEQVR42pWRWw7AIAgEgZWu9z9xgxRta386IcZMeBgU0Q0RtQIjzExFTSRdBzo26REPicMD4C3F3UlMCU9IUms6phqZ0SXdMNkzLivvmk4eQdp6J+k+p5RE2dZWOUi2dhnEkYNqI7dyW2AuZOOP/PqOE+GkBKXkH8SIAAAAAElFTkSuQmCC",

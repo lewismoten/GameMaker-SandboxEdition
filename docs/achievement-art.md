@@ -12,6 +12,8 @@ phone, busy line, heat map, speaker, medal and tin-heart wreath) as scenery in t
 It also drew the six new A Fly Named Carl blocks (a backpack with a game controller, a DOS disk in its sleeve, a wide and a
 tall phone, a winged parcel and a mail jeep) as scenery in the living room and the yard, and four new Great Dairy Reckoning blocks
 (a gold cup, a silver cup marked 3, a rolled magazine and a glow-in-the-dark clock) as scenery in the kitchen and bedroom.
+It also drew four new Needle blocks (a brass compass over a winding route, a folded map, a ruler and a triangle, and glasses over
+three color swatches) as scenery in the tailor's shop.
 OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
@@ -121,6 +123,10 @@ duplicate image bytes.
 | bbs-door-three | reckoning | reckoning / trophySilver |
 | mag-back | reckoning | reckoning / magRoll |
 | desk-lume | reckoning | reckoning / lumeDial |
+| print-level-maps | needle | needleTailor / compass |
+| print-world-map | needle | needleTailor / foldMap |
+| print-world-styles | needle | needleTailor / rulerTriangle |
+| palette-vision | needle | needleTailor / seenGlasses |
 | every-life-1 | teddy | tiers / every-life-1 |
 | every-life-3 | teddy | tiers / every-life-3 |
 | every-life-10 | teddy | tiers / every-life-10 |
@@ -141,7 +147,6 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | Achievement | Title | Proposed art |
 | --- | --- | --- |
 | export-linux | Penguin power | 20×20 block: a cheerful penguin with a disk tucked under one wing, with a dark outline and one clear focal shape. |
-| palette-vision | Seen by everyone | 20×20 block: a pair of glasses over three clearly distinct color swatches, with a dark outline and one clear focal shape. |
 | play-bizarre | Bizarre fan | 20×20 block: a violin with one jaunty musical note, with a dark outline and one clear focal shape. |
 | egg-teddy | Lay an egg! | 20×20 block: a mischievous corgi beside a suspiciously lumpy felt egg, with a dark outline and one clear focal shape. |
 | watch-bot | Robot rerun | 20×20 block: a little robot turning a film projector crank, with a dark outline and one clear focal shape. |
@@ -151,9 +156,6 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | bbs-got-time | I’ve got time | 20×20 block: a snail carrying a half-finished progress bar, with a dark outline and one clear focal shape. |
 | hint-phone-bill | An itemized bark | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
 | desk-egg-pages | Turn the page | 20×20 block: an open card file with colorful page tabs, with a dark outline and one clear focal shape. |
-| print-level-maps | Map reader | 20×20 block: a compass over a winding route, with a dark outline and one clear focal shape. |
-| print-world-map | Fold-out | 20×20 block: a folded map with a clearly marked route, with a dark outline and one clear focal shape. |
-| print-world-styles | Cartographer | 20×20 block: a ruler and a triangular map outline, with a dark outline and one clear focal shape. |
 | library-visit | Quiet, please | 20×20 block: a miniature library facade, with a dark outline and one clear focal shape. |
 | desk-chez | Honk honk | 20×20 block: THE CHEZ seen from the front, with Teddy in the passenger seat, with a dark outline and one clear focal shape. |
 | desk-plow | Plowed in | 20×20 block: a friendly snowplow pushing a little white drift, with a dark outline and one clear focal shape. |

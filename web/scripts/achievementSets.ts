@@ -20,6 +20,7 @@ import { buildPalette as carlPalette } from '../../games/carl/src/art/pal';
 import { buildVilla } from '../../games/risi/src/blocks/villa';
 import { buildPalette as risiPalette } from '../../games/risi/src/art/pal';
 import { eyeBlocks } from '../../games/needle/src/blocks/eye';
+import { tailorBlocks } from '../../games/needle/src/blocks/tailor';
 import { buildPalette as needlePalette } from '../../games/needle/src/art/pal';
 import { buildParlorBlocks } from '../../games/sleuth/src/levels/parlorBlocks';
 import { buildTheaterBlocks } from '../../games/sleuth/src/blocks/tiles';
@@ -91,6 +92,7 @@ export const sets: Record<string, Source> = {
   carlYard: { game: 'carl', blocks: buildCarlYard(carlPalette('plain')).pics, palette: carlPalette('plain').pal },
   risi: { game: 'risi', blocks: buildVilla(risiPalette('plain')).pics, palette: risiPalette('plain').pal },
   needle: { game: 'needle', blocks: eyeBlocks(needlePalette('plain')).book.pics, palette: needlePalette('plain').pal },
+  needleTailor: { game: 'needle', blocks: tailorBlocks(needlePalette('plain')).book.pics, palette: needlePalette('plain').pal },
   sleuthParlor: { game: 'sleuth', blocks: named(buildParlorBlocks()), palette: sleuthPalette('house').pal },
   sleuthTheater: { game: 'sleuth', blocks: named(buildTheaterBlocks()), palette: sleuthPalette('house').pal },
   sandcast: { game: 'sandcast', blocks: named(sandcastBlocks as unknown as Holder), palette: sandcastPalette },
@@ -204,6 +206,10 @@ export const picks: Record<string, [string, string]> = {
   'bbs-door-three': ['reckoning', 'trophySilver'],
   'mag-back': ['reckoning', 'magRoll'],
   'desk-lume': ['reckoning', 'lumeDial'],
+  'print-level-maps': ['needleTailor', 'compass'],
+  'print-world-map': ['needleTailor', 'foldMap'],
+  'print-world-styles': ['needleTailor', 'rulerTriangle'],
+  'palette-vision': ['needleTailor', 'seenGlasses'],
   'every-life-1': ['tiers', 'every-life-1'],
   'every-life-3': ['tiers', 'every-life-3'],
   'every-life-10': ['tiers', 'every-life-10'],
