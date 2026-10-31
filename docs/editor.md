@@ -13,7 +13,7 @@ theme. Some are cropped to the part that matters.
 
 - [The home page and your games](#the-home-page-and-your-games)
 - [Opening a copy of a Sandbox game](#opening-a-copy-of-a-sandbox-game)
-- [Game assets and file galleries](#game-assets-and-file-galleries)
+- [Overview and file galleries](#overview-and-file-galleries)
 - [The map editor](#the-map-editor)
 - [Play Game and Play Level](#play-game-and-play-level)
 - [Blocks](#blocks)
@@ -75,12 +75,26 @@ together without changing it. _Edit a copy_ makes your own copy under My games, 
 editor can then change. The file list on the left is grouped the way Game-Maker's menus were:
 palettes, block sets, monsters, characters, maps, sound sets, pictures and so on.
 
-## Game assets and file galleries
+## Overview and file galleries
 
-Open a project to browse **Game assets**. Each file type has a preview and a file count;
+A game opens on its **Overview**, with three tabs: **Files**, **Controls** and **DOS player**.
+The address keeps the tab (`?tab=controls`), so Back, Forward and a reload return to it.
+
+**Files** is the asset browser. Each file type has a preview and a file count;
 _None yet_ marks an empty category. Choose a category to see its files, then click a thumbnail
 to open its editor. **Assets** returns to that file's category, and **All assets** opens the
 overview. Back and Forward keep these views too.
+
+**Controls** is where you say what the game's controls mean, once for every character: a short
+and a long description for each key the game uses (the editor works out what each key does and
+shows it beside your words), for joystick buttons 1 and 2, and a name for each of the 15
+repetition counters and 5 hidden counters, with where each is used. The character editor, the
+block editor, the **Keys** dialog and the Saves panel show these words. They are only for the
+editor: the DOS files never change. **Undo** and **Redo** work here too.
+
+**DOS player** is the stand-alone player's panel, described under
+[The Integrator and the DOS player](#the-integrator-and-the-dos-player). The Integrator's
+**DOS player** button opens this tab.
 
 The first card adds files. **Add a file…** offers new files, the Library, uploads and the
 available converters. **From this game…** makes a copy of an existing file. Copy a file, open
@@ -211,7 +225,7 @@ pictures, songs and maps, or every screen and song at once.
 ![The DOS player panel: tabs for the main menu, text pages, high scores, status, save, load, help and about screens, with the menu words listed on the left and a preview of Snowbound's menu as the DOS player draws it](screenshots/editor/16-dos-player.webp)
 
 Authors in the 1990s changed the DOS player's words, colors and screens with a hex editor. The
-DOS player panel does it safely, a tab for each screen: rename or hide menu words, move or
+DOS player tab of the Overview does it safely, a tab for each screen: rename or hide menu words, move or
 resize a frame by dragging it on the preview, and pick colors, timings, F-keys and file
 extensions. The DOS export writes the changes into its `XFERPLAY.EXE`, and Play and the web
 exports show them too.

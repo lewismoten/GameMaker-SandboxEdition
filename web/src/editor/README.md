@@ -29,7 +29,7 @@ Part of the [source map](../README.md).
     button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
     into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,
     the last pick per game in `playPickStore.ts`), the open file's actions
-    (`fileActions.ts`), accessible file-card context menus (`assetMenu.ts` and `assetMenu.css`), native asset categories (`fileKinds.ts`), the selected GAM’s Integrator context (`gameProject.ts`, preserving the owner’s primary game and autosaves), lazy category/file galleries (`assetBrowser.ts` and `assetBrowser.css`),
+    (`fileActions.ts`), accessible file-card context menus (`assetMenu.ts` and `assetMenu.css`), native asset categories (`fileKinds.ts`), the selected GAM’s Integrator context (`gameProject.ts`, preserving the owner’s primary game and autosaves), the Overview page every game opens on (`overview.ts`, with tabs Files = the lazy category/file galleries in `assetBrowser.ts` and `assetBrowser.css`, Controls = `overviewControls.ts`, and DOS player = `integrator/dosPlayer/playerPanel.ts`; its tab is the address's `?tab=controls|player`, `overviewLink.ts` builds those links, `counterUse.ts` finds where each counter is used),
     the cross-project native file clipboard (`assetClipboard.ts`, bytes plus file-local companion extras),
     exact file snapshot/replacement helpers (`assetFiles.ts`, including unknown extensions and extensionless DOS files),
     gallery commands (`assetCommands.ts`: duplicate, copy/paste, matching-type replacement, delete and non-overwriting file drops), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
@@ -62,7 +62,7 @@ Part of the [source map](../README.md).
   integrator's links as markers to drag, nudge and open in `map/links/`: `markerMath.ts` with no
   DOM, `linkMarkers.ts` on the map and `linkPopover.ts` for one link's details and pictures),
   `integrator/` (its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
-  changed from a map with GRATOR's rules in `linkEdits.ts`; its toolbar's DOS player dialog in `integrator/dosPlayer/`: `playerPanel.ts`, a
+  changed from a map with GRATOR's rules in `linkEdits.ts`; its toolbar's DOS player button opens Overview › DOS player, built in `integrator/dosPlayer/`: `playerPanel.ts`, a
   tab per screen (`screenTabs.ts` groups the patches, `screenFields.ts` lays out a tab,
   `playerFields.ts` makes each field) and a Files tab for the DOS download's extensions (`fileFields.ts`), `playerPreview.ts`, which draws XFERPLAY's screens with the
   engine's own `draw*` functions, and dragging words and frames on that preview: `dragItems.ts`
@@ -393,13 +393,13 @@ actual pixels, applies it inside the selected palette range, and leaves other en
 The character starting sheet's `editors/character/characterStatus.ts` renders its inventory
 with the native F2 renderer, palette color 0, and the project's DOS player text, colors and
 frames. The editor loads that renderer dynamically and keeps item selection controls separate.
-`editors/character/counterNames.ts` stores optional repetition-meter and hidden-tally names in
-the character's `counterNames` companion section, indexed by the native meter number. Fixed
-engine counters and the character's native bytes retain their original meanings.
-`counterNameFields.ts` supplies the hidden-tally and sequence-use name inputs. Label edits
-share character Undo/Redo while leaving native files untouched.
-Counter choices retain their DOS numbers and qualify labels by character filename when
-the same block set serves several characters with different counter meanings.
+Counter names are game-wide (see Game controls below): `editors/character/counterNames.ts`
+reads and validates them by native meter number (5-19 repetition counters, 20-24 hidden tallies)
+and still names the older per-character `counterNames` section, which `core/gameControls.ts`
+moves to the game-wide names when a project opens. The character editor only shows a counter's
+name, with a link to Overview › Controls. Fixed engine counters and the character's native bytes
+retain their original meanings.
+The block editor's counter choices keep their DOS numbers and add the game-wide name.
 
 Palette file pickers have a separate **Ready-made palettes** tab, selected first when adding
 a palette. It reads the tools package's template registry, previews occupied entries without
@@ -411,12 +411,19 @@ open the creator's play site, optional permanent ZIP, source/credits, and the ex
 `?open=` import flow for editing a copy. Their previews use creator images or title cards;
 native game files are loaded only when the player chooses an archive action.
 
-- **Joystick descriptions.** `core/joystickButtons.ts` validates optional short
-  and long descriptions for buttons 1 and 2 in the main GAM companion section
-  `joystickButtons`. Choice labels retain the original DOS button numbers. The
-  character Controls tab exposes these shared settings through
-  `character/joystickControls.ts`; label edits participate in character Undo/Redo
-  without rewriting native files.
+- **Game controls.** `core/gameControls.ts` holds what the player's keys, the two joystick
+  buttons and the 20 nameable counters mean, written once for every character in the .gam's
+  companion (editor-only; DOS, native and web-page exports never carry it). Its type,
+  `GameControls`, is plain JSON that a game's own `controls.json` can hold as it is:
+  `{ "keys": { "57": { "short": "Jump", "long": "…" } }` (DOS scan code to text),
+  `"joystick": { "1": { "short": "…", "long": "…" } }` (buttons 1 and 2, kept in the older
+  `joystickButtons` section) and `"counters": { "20": "Gold keys" } }` (meter 5-24 to name).
+  Every part is optional. It is edited in Overview › Controls (`shell/overviewControls.ts`),
+  which has its own Undo and Redo; the character editor's Controls tab keeps the joystick
+  button picker (`character/joystickControls.ts`) and shows the shared words. The ⌨ Keys dialog
+  (`keymap/keyMapView.ts`) and Saves & scores counter labels use them when a game of yours has
+  them. `migrateCounterNames` runs when the workspace opens: the first name found for a counter
+  wins, and the old per-character entries are removed.
 
 - **Monster birth sources.** `widgets/monsterBirthSource.ts` resolves the native
   MON/MBL pairs of every adventure scene using a background set or character,
