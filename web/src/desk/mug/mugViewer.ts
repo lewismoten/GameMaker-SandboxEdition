@@ -163,6 +163,8 @@ export function openMugViewer(): Promise<void> {
           h('div', { class: 'mugv-designs' }, ...designPicks.filter((b) => b.dataset.group === 'bbs')),
           h('p', { class: 'mugv-note' }, 'Or a Sandbox Software game: a badge of its title and its hero, from the game’s own files:'),
           h('div', { class: 'mugv-designs' }, ...designPicks.filter((b) => b.dataset.group === 'game')),
+          h('p', { class: 'mugv-note' }, 'Or one of The Bard of Bizarre’s: a badge of its title and its hero, and his logo (made with DeepAI):'),
+          h('div', { class: 'mugv-designs' }, ...designPicks.filter((b) => b.dataset.group === 'bizarre')),
           h('h3', null, 'Mug'),
           h('div', { class: 'mugv-chips' }, ...sizePicks),
           h('h3', null, 'Inside and handle'),

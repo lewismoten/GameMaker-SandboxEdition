@@ -31,8 +31,10 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   the disk in drive A: (`driveActions.ts`) and the disks' labels (`diskLabel.ts`, RSD's own in
   `rsdLabel.ts`).
 - `mug/`: the BBS mug (`mug.ts`, drawn in 3D by `mug3d.ts`, turned in `mugViewer.ts`). Its
-  pictures (`mugArt.ts`) are badges: each Sandbox game's cut from its title screen
-  (`gameBadge.ts`, `gameMugArt.ts`), the BBS's from its ANSI art (`bbsBadge.ts`). "Make your
+  pictures (`mugArt.ts`) are badges: one for every public game (a Sandbox game's, and The Bard
+  of Bizarre's in a group of their own) cut from its title screen (`gameBadge.ts`,
+  `gameMugArt.ts`), the BBS's from its ANSI art (`bbsBadge.ts`), and the Bard's logo (made with
+  DeepAI) as it is (`bardLogoArt.ts`). "Make your
   own" prints a sublimation page (`mugPrint.ts`, `mugSheet.ts`, `mugLayout.ts`, `mugSizes.ts`,
   remembered by `mugPageStore.ts`).
 - `room/`: the window (`snowWindow.ts`, as light as it is outside by `daylight.ts`), the poster

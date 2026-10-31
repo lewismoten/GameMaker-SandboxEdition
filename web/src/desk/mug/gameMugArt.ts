@@ -10,10 +10,12 @@ import { BLEN, CHARBL, TRANSPARENT, parseBlocks } from '@lewismoten/gamemaker-sa
 import { paletteToRGBA, parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { BADGE_H, BADGE_W, composeBadge, trimSprite, type BadgeLook, type Rgba } from './gameBadge';
 
-/** A game's mug: its hero's character file, and where its title screen's lettering is (and the rest of its look). */
+/** A game's mug: its hero's character file ('' for none: the hero would hide the title, or can't be drawn), and where its title screen's lettering is (and the rest of its look). */
 export interface GameMug extends BadgeLook {
   game: string;
   hero: string;
+  /** One of The Bard of Bizarre's (his own group, without a Sandbox box's colors). */
+  bizarre?: boolean;
 }
 
 /** The games, in the box's order. */
@@ -36,6 +38,33 @@ export const GAME_MUGS: GameMug[] = [
       [244, 96, 320, 120],
     ],
   },
+  { game: 'brief', hero: 'joe', title: [104, 4, 312, 66], centerX: 190, side: 'left', hide: [[0, 0, 104, 14]] },
+  { game: 'depth', hero: 'far', title: [56, 40, 264, 112], centerX: 160, hide: [[60, 176, 260, 200]] },
+  { game: 'realm', hero: 'pip', title: [8, 0, 308, 62], centerX: 160, strip: true, hide: [[0, 182, 320, 200]] },
+  { game: 'teddy2', hero: 'teddy', title: [6, 0, 314, 80], centerX: 170, strip: true, hide: [[40, 182, 290, 200]] },
+  { game: 'teddy3', hero: 'teddy', title: [6, 0, 314, 80], centerX: 170, strip: true, hide: [[40, 182, 290, 200]] },
+  // The Bard of Bizarre's, in his collections' order (project/bizarre.ts); every title screen ends in a small-print line
+  { game: 'goat', hero: 'goat', title: [28, 0, 292, 52], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'mustard', hero: '', title: [4, 4, 316, 30], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'needle', hero: '', title: [10, 134, 310, 180], centerX: 160, strip: true, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'loaf', hero: 'loaf', title: [48, 4, 272, 50], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'carl', hero: 'carl', title: [30, 4, 290, 60], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  {
+    game: 'remote',
+    hero: 'remote',
+    title: [10, 4, 310, 60],
+    centerX: 160,
+    strip: true,
+    hide: [[0, 183, 320, 200]],
+    maker: 'THE BARD OF BIZARRE',
+    bizarre: true,
+  },
+  { game: 'reckoning', hero: 'leo', title: [16, 0, 304, 60], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'loofah', hero: 'loofah', title: [56, 0, 264, 52], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'smirked', hero: 'smirked', title: [56, 4, 264, 46], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'tickle', hero: 'leo', title: [24, 4, 296, 60], centerX: 160, strip: true, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'sweats', hero: 'poet', title: [16, 2, 296, 56], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'risi', hero: 'felix', title: [10, 2, 310, 36], centerX: 160, strip: true, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
 ];
 
 export const GAME_ART_W = BADGE_W;
