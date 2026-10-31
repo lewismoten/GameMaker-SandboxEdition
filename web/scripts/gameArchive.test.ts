@@ -39,6 +39,16 @@ beforeAll(() => {
 });
 afterAll(() => rmSync(temp, { recursive: true, force: true }));
 
+/** Asks again until the dev server's worker has built the archive (a 202 means not yet). */
+async function archive(url: string): Promise<Response> {
+  for (let i = 0; i < 200; i++) {
+    const res = await fetch(url);
+    if (res.status !== 202) return res;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  throw new Error('Archive never became ready');
+}
+
 describe('catalog DOS distribution', () => {
   it('is reproducible, uses 8.3 names and includes game files, runtime, setup and notices', async () => {
     const zip = await gameArchive(entry, paths);
@@ -96,16 +106,19 @@ describe('catalog DOS distribution', () => {
       expect(game.pack).toBe('fixture.zip');
       expect(game.health).toBeDefined();
       const url = base + game.path + game.pack;
-      const response = await fetch(url);
+      // the archive is built in a worker process: 202 (also for HEAD) until it is ready
+      expect((await fetch(url)).status).toBe(202);
+      expect((await fetch(url, { method: 'HEAD' })).headers.get('retry-after')).toBe('2');
+      const response = await archive(url);
       expect(response.headers.get('content-type')).toBe('application/zip');
       const first = new Uint8Array(await response.arrayBuffer());
       expect((await readHostedZip(first)).get('fixture.gam')).toEqual(bytes);
-      expect(new Uint8Array(await (await fetch(url)).arrayBuffer())).toEqual(first);
+      expect(new Uint8Array(await (await archive(url)).arrayBuffer())).toEqual(first);
       expect((await fetch(base + game.path + 'fixture.gam')).status).toBe(404);
       const revised = serializeGame(newGame('Revised fixture'));
       writeFileSync(join(disk, 'fixture.gam'), revised);
       server.watcher.emit('change', join(disk, 'fixture.gam'));
-      const next = await fetch(url);
+      const next = await archive(url);
       expect(next.status).toBe(200);
       expect((await readHostedZip(new Uint8Array(await next.arrayBuffer()))).get('fixture.gam')).toEqual(revised);
     } finally {

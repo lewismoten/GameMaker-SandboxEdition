@@ -22,6 +22,8 @@ import { createReadStream, existsSync, readdirSync, readFileSync, statSync } fro
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { gameArchive, gameZipName } from './gameArchive';
+import { createArchiveQueue } from './archiveQueue';
+import { archiveWorker } from './archiveWorker';
 import { libraryFacts, type LibraryFileFact } from './libraryFacts';
 import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
@@ -457,7 +459,11 @@ export function cdGames(cdRoot: string): Plugin {
       const gamesRoot = join(cdRoot, '../games');
       server.watcher.add([cdRoot, gamesRoot]);
       let preview: { catalog: CdCatalogEntry[]; secret: CdCatalogEntry[]; shots: Map<string, Uint8Array> } | undefined;
-      const zips = new Map<string, Promise<Uint8Array>>();
+      const worker = archiveWorker(cdRoot);
+      const archives = createArchiveQueue(worker);
+      const listed = () => [...get().catalog, ...get().secret].map((e) => `${e.path}${e.pack}`);
+      // build every archive in the background so most are ready before they are asked for
+      server.httpServer?.once('listening', () => setTimeout(() => archives.enqueue(listed()), 500));
       const served = () => {
         if (preview) return preview;
         const { catalog, secret, files } = get();
@@ -482,7 +488,9 @@ export function cdGames(cdRoot: string): Plugin {
         if (!f.startsWith(cdRoot) && !f.startsWith(gamesRoot)) return;
         cache = undefined;
         preview = undefined;
-        zips.clear();
+        archives.clear();
+        worker.restart();
+        setTimeout(() => archives.enqueue(listed()), 500);
       };
       server.watcher.on('change', forget);
       server.watcher.on('add', forget);
@@ -521,22 +529,19 @@ export function cdGames(cdRoot: string): Plugin {
         const packed = /^(games\/[a-z]+\/[a-z0-9_-]+\/)([^/]+\.zip)$/.exec(url);
         const owner = packed && [...get().catalog, ...get().secret].find((e) => e.path === packed[1] && e.pack === packed[2]);
         if (owner) {
-          let zip = zips.get(url);
-          if (!zip) {
-            zip = gameArchive(owner, get().files);
-            zips.set(url, zip);
+          // built in a worker process: until it is ready, 202 and ask again (the client retries, client/archiveWait.ts)
+          const bytes = archives.request(url);
+          res.setHeader('Cache-Control', 'no-store');
+          if (!bytes) {
+            res.statusCode = 202;
+            res.setHeader('Retry-After', '2');
+            res.setHeader('Content-Type', 'text/plain');
+            res.end(req.method === 'HEAD' ? undefined : 'This game archive is being prepared.');
+            return;
           }
-          void zip.then(
-            (bytes) => {
-              res.setHeader('Content-Type', 'application/zip');
-              res.setHeader('Content-Length', bytes.length);
-              res.end(bytes);
-            },
-            (error) => {
-              zips.delete(url);
-              next(error);
-            },
-          );
+          res.setHeader('Content-Type', 'application/zip');
+          res.setHeader('Content-Length', bytes.length);
+          res.end(req.method === 'HEAD' ? undefined : bytes);
           return;
         }
         if (/^games\/(gameware|shareware|originals)\//.test(url) && !url.endsWith('/walkthrough.json')) {
