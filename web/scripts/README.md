@@ -136,7 +136,9 @@ into `src/achievements/blockArt.json`, with per-badge provenance and transparent
 Run `npx vite-node scripts/achievementArt.ts` after changing those source sprites. It
 rejects unknown achievement IDs, non-block dimensions and duplicate artwork. The browser
 loads these small embedded images without fetching game ZIPs. Art gaps and proposals
-are listed in `docs/achievement-art.md`.
+are listed in `docs/achievement-art.md`. `achievementSets.ts` builds the games' block sets and the
+picks that name a block by achievement id; `achievementTiers.ts` draws the nine every-game tier
+badges from Teddy's poses.
 
 `libraryFacts.ts` supplies palette SHA-256 identities and VOC sound groups for catalog
 metadata, cached by source path, size and modification time. Pickers can deduplicate
