@@ -1,0 +1,77 @@
+{
+  "keys": {
+    "72": {
+      "short": "Hop",
+      "long": "Hop. Hold to hop higher; on a ladder, climb."
+    },
+    "80": {
+      "short": "Sneak",
+      "long": "Sneak."
+    },
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "17": {
+      "short": "Hop",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Sneak",
+      "long": "Same as the Down arrow."
+    },
+    "16": {
+      "short": "Hop left",
+      "long": "Hop up and to the left; steer as you come down."
+    },
+    "18": {
+      "short": "Hop right",
+      "long": "Hop up and to the right; steer as you come down."
+    },
+    "71": {
+      "short": "Hop left",
+      "long": "Number pad 7: hop up and to the left."
+    },
+    "73": {
+      "short": "Hop right",
+      "long": "Number pad 9: hop up and to the right."
+    },
+    "48": {
+      "short": "Sing",
+      "long": "Sing a line of the song."
+    },
+    "57": {
+      "short": "Joke right",
+      "long": "Tell a joke to the right: HA! (Felix: MIAU!) Jokes never run out."
+    },
+    "44": {
+      "short": "Joke left",
+      "long": "Tell a joke to the left: HA! (Felix: MIAU!) Jokes never run out."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Joke right",
+      "long": "Tell a joke to the right."
+    }
+  },
+  "counters": {
+    "20": "Shutters opened",
+    "21": "Cheese",
+    "22": "Tituli touched",
+    "23": "Golden scales",
+    "24": "Laughs"
+  }
+}
