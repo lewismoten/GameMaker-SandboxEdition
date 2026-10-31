@@ -19,7 +19,10 @@ import { readSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { paintMusicTimeline } from './musicTimeline';
 import { isCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { textPicture } from './textPicture';
+import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { parseHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
+import { glyphRows } from '@lewismoten/gamemaker-sandbox-tools/text';
+import { textInk, textPicture } from './textPicture';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../project/files';
 
@@ -232,6 +235,45 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         paintMusicTimeline(c, readSong(bytes));
         return c;
       }
+      case 'his': {
+        // the ten names and scores, as the game's high-score screen lists them
+        const list = parseHighScores(bytes);
+        const px = new Uint8Array(320 * 200);
+        const ink = textInk(pal);
+        list.forEach((e, row) => {
+          const line = `${String(row + 1).padStart(2)} ${e.name.slice(0, 20).padEnd(20)} ${String(e.score).padStart(7)}`;
+          for (let col = 0; col < line.length; col++) {
+            const glyph = glyphRows(line.charCodeAt(col) & 127);
+            for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) if (glyph[y] & (1 << x)) px[(24 + row * 14 + y) * 320 + 16 + col * 9 + x] = ink;
+          }
+        });
+        const [c] = canvas(320, 200);
+        paintIndexed(c, px, 320, 200, pal);
+        c.setAttribute('role', 'img');
+        c.setAttribute('aria-label', `High scores: ${list.filter((e) => e.score).length} of ${list.length} places filled`);
+        return c;
+      }
+      case 'rec': {
+        // a recording holds key presses, not pictures: draw them as ticks along its length
+        const keys = parseRecording(bytes);
+        const [c, ctx] = canvas(SIZE, SIZE * 0.6);
+        ctx.fillStyle = '#10142a';
+        ctx.fillRect(0, 0, c.width, c.height);
+        const total = keys.reduce((t, k) => t + k.delta, 0) || 1;
+        let at = 0;
+        ctx.fillStyle = '#6cf28a';
+        for (const k of keys) {
+          at += k.delta;
+          const x = Math.min(c.width - 2, Math.round((at / total) * (c.width - 4)) + 1);
+          if (k.key & 0x80) ctx.fillRect(x, 28, 1, 6);
+          else ctx.fillRect(x, 8, 1, 20);
+        }
+        ctx.fillStyle = '#c8d0ff';
+        ctx.fillRect(1, 40, c.width - 2, 1);
+        c.setAttribute('role', 'img');
+        c.setAttribute('aria-label', `Recording of ${keys.length} key events, about ${Math.round(total / 18.2)} seconds`);
+        return c;
+      }
       case 'gam': {
         const g = parseGame(bytes);
         const [c, ctx] = canvas();
@@ -261,7 +303,7 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       }
     }
   } catch {
-    if (['gif', 'bkd', 'txt', 'lst'].includes(kind)) return iconFor(kind, `${name.toUpperCase()} could not be decoded.`);
+    if (['gif', 'bkd', 'txt', 'lst', 'his', 'rec'].includes(kind)) return iconFor(kind, `${name.toUpperCase()} could not be decoded.`);
   }
   return iconFor(kind);
 }
