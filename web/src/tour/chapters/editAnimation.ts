@@ -59,7 +59,7 @@ export const editAnimationChapter: Chapter = {
     {
       id: 'edit-animation-scene',
       action: 'press',
-      target: { label: 'the Scene maker tab', css: '.fli-tabs [role="tab"]', text: '🎬' },
+      target: { label: 'the Scene maker tab', css: '.fli-tabs [title^="Build the animation"]' },
       click: true,
       say: 'The Scene maker. An animation made here keeps its scene, so it opens again just as you left it.',
     },
