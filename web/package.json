@@ -12,6 +12,7 @@
     "test:slow-list": "vite-node scripts/slowTests.ts",
     "preview": "vite preview",
     "test": "vitest run",
+    "walk:auto": "vite-node scripts/walkAuto.ts",
     "check:games": "vite-node ../games/kit/checkGames.ts",
     "dosbox": "vite-node scripts/dosbox.ts",
     "tour:check": "vite-node scripts/tourCheck.ts --",

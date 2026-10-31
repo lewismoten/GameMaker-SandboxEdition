@@ -90,6 +90,11 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   assistant's tools (`assistant/tools`) on game folders, zips, this project's games and the CD's,
   writing only in the folders it is given, with its own vite-node settings (`mcp/vite.config.ts`).
   Its README has the setup for Claude Code, Claude Desktop and other clients.
+- `walkAuto.ts` (`npm run walk:auto -- <folder | .zip> [--budget ms] [--game NAME.GAM] [--out walkthrough.json]`) runs the
+  editor's "Make a walkthrough…" bot (`autoWalk`, 60 s a scene by default) on a game folder or zip and prints each scene's
+  style, tries, play time and outcome, and why it stopped (a door that stayed shut). `--out` writes the walkthrough; it
+  exits 1 when the bot doesn't win. Arguments, `.gam` picking and the table line are in `walkAutoArgs.ts`. It skips the
+  author's own plays and walking paths, which live in a project's companion file.
 - `dosbox.ts` (`npm run dosbox`) lays out `../../dosbox/` (git-ignored) to mount as drive C: in
   DOSBox, with Game-Maker installed and every Sandbox and Bard of Bizarre game's disk beside the
   samples; `npm run dosbox:open` starts DOSBox on it.

@@ -52,6 +52,7 @@ npx vite-node ../games/kit/playtime.ts             # the only writer of box play
 npx vite-node ../games/kit/versionCheck.ts         # a game changed since the last push to master has a higher version
 npm run check:games                                # all of the game checks above, every game, a table
 npm run check:games -- --game <id> --quick         # one game, without the reproducibility rebuild
+npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox
 npm run voice                                      # tour voice clips for new or changed lines (local Pocket TTS; -- --only <id> retakes one)
 npm run voice:all                                  # every tour voice clip again
