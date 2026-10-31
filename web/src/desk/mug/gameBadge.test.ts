@@ -4,7 +4,8 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { paletteToRGBA } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { BADGE_CX, BADGE_CY, BADGE_H, BADGE_W, composeBadge, cropCenterX, titleMask } from './gameBadge';
+import { BADGE_CX, BADGE_CY, BADGE_H, BADGE_W, OUTLINE, composeBadge, cropCenterX, rgb, titleMask } from './gameBadge';
+import { inkMask } from './badgeInk';
 import { letteringImage } from './badgeLettering';
 import { GAME_MUGS } from './gameMugArt';
 
@@ -112,5 +113,37 @@ describe('mend', () => {
     const a = composeBadge(flat, undefined, {}, base);
     const b = composeBadge(flat, undefined, {}, { ...base, mend: [{ box: [90, 150, 130, 160], from: [0, 10] }] });
     expect(a.data.some((v, i) => v !== b.data[i])).toBe(true);
+  });
+});
+
+describe('ink: a solid ribbon behind the lettering', () => {
+  it('takes only the named colors, less specks', () => {
+    const px = new Uint8Array(20 * 10).fill(7);
+    for (let y = 2; y < 6; y++) for (let x = 3; x < 9; x++) px[y * 20 + x] = 1;
+    px[8 * 20 + 15] = 1; // a speck
+    const m = inkMask({ width: 20, height: 10, pixels: px }, [0, 0, 20, 10], [1])!;
+    expect([m.x, m.y, m.w, m.h]).toEqual([3, 2, 6, 4]);
+    expect(m.mask.every((v) => v === 1)).toBe(true);
+  });
+
+  it('shows no picture between or inside the letters of any badge that names its ink', () => {
+    for (const mug of GAME_MUGS.filter((m) => m.ink)) {
+      const scr = decodeGif(new Uint8Array(readFileSync(new URL('disk/title.gif', game(mug.game)))));
+      const about = JSON.parse(readFileSync(new URL('about.json', game(mug.game)), 'utf8')).box ?? {};
+      const lut = paletteToRGBA(scr.palette);
+      const b = composeBadge(scr, undefined, about, mug);
+      const m = inkMask(scr, mug.title, mug.ink!)!;
+      const ok = new Set<number>([
+        ...mug.ink!.map((i) => lut[i] >>> 0),
+        OUTLINE >>> 0,
+        rgb(about.background ?? '#000000') >>> 0,
+        rgb(about.accent ?? '#ffd23f') >>> 0,
+      ]);
+      const sy = Math.round(scr.height / 2);
+      const top = BADGE_CY - (sy - m.y) - 1;
+      const left = Math.round(BADGE_CX - (m.w + 2) / 2);
+      for (let y = top; y < top + m.h + 2; y++)
+        for (let x = left; x < left + m.w + 2; x++) expect(ok.has(b.data[y * BADGE_W + x] >>> 0), `${mug.game} ${x},${y}`).toBe(true);
+    }
   });
 });

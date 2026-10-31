@@ -4,6 +4,7 @@
 // bottom, and the hero standing large in front, breaking out of the ring. Outside the badge
 // the picture is see-through, so the mug's white shows.
 import { paletteToRGBA, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { inkMask } from './badgeInk';
 import { letteringImage, type Lettering } from './badgeLettering';
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 
@@ -40,6 +41,8 @@ export interface BadgeLook {
   mend?: { box: Box; from: [number, number] }[];
   /** Who made it, on the scroll below the medallion; SANDBOX SOFTWARE if left out. */
   maker?: string;
+  /** Palette indexes of the title's own colors: only these pixels of the title box are lettering, on a solid ribbon, so no picture shows between or inside the letters (the way for titles over a picture). Any other title is found by its edges (titleMask) and, with `strip`, taken whole. */
+  ink?: number[];
   /** The title box as it is, scene and all, on the ribbon: for lettering over a picture that can't be told from what's behind it (at most 300 wide). */
   strip?: boolean;
   /** The screen's top `rows` rows painted out of the picture (not the title) with a mirror of the rows beneath, so a title shifted down by centerY leaves no ghost; columns `from` to `to` (a seed, say) take their left neighbor's color instead. */
@@ -353,7 +356,13 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   ribbon(out, sMid - sw / 2, sMid + sw / 2, sTop, sTop + 16, fill, accent, shade);
   text(out, maker, sMid - maker.length * 4, sTop + 4, ink);
   // the title's lettering, across the middle on a ribbon, as high as the screen has it
-  const t = look.lettering ? undefined : look.strip ? wholeBox(screen, look.title) : titleMask({ ...screen, pixels }, look.title);
+  const t = look.lettering
+    ? undefined
+    : look.ink
+      ? inkMask({ ...screen, pixels }, look.title, look.ink)
+      : look.strip
+        ? wholeBox(screen, look.title)
+        : titleMask({ ...screen, pixels }, look.title);
   if (look.lettering) {
     // fresh lettering over the picture and the ring, no ribbon
     const img = letteringImage(look.lettering, OUTLINE, rgb);
