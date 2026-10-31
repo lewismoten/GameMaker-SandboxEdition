@@ -35,6 +35,8 @@ export interface BadgeLook {
   side?: 'left' | 'right';
   /** Bits of the screen to paint out in the color round them, such as small print the medallion would cut through. */
   hide?: Box[];
+  /** Bits of the screen to paint over by tiling (mirrored) the columns `from` to `to` of the same rows across them, such as a character that would echo the hero; unlike `hide`, no flat box shows in a starry sky. */
+  mend?: { box: Box; from: [number, number] }[];
   /** Who made it, on the scroll below the medallion; SANDBOX SOFTWARE if left out. */
   maker?: string;
   /** The title box as it is, scene and all, on the ribbon: for lettering over a picture that can't be told from what's behind it (at most 300 wide). */
@@ -89,6 +91,15 @@ export function scaledBy(src: Rgba, k: number): Rgba {
     for (let x = 0; x < out.width; x++)
       out.data[y * out.width + x] = src.data[Math.min(src.height - 1, Math.floor(y / k)) * src.width + Math.min(src.width - 1, Math.floor(x / k))];
   return out;
+}
+
+/** A lettering pixel with its dark ones lifted toward gold, so it reads on a dark background; `row` is how far down the title it is (0 to 1), the lower line being lifted most. */
+export function lifted(c: number, row: number): number {
+  const [r, g, b] = [c & 255, (c >> 8) & 255, (c >> 16) & 255];
+  const lum = 0.3 * r + 0.59 * g + 0.11 * b;
+  const k = Math.max(0, Math.min(1, (150 - lum) / 150)) * (row > 0.6 ? 0.75 : 0.35);
+  const mix = (v: number, to: number) => Math.round(v + (to - v) * k);
+  return (0xff << 24) | (mix(b, 40) << 16) | (mix(g, 190) << 8) | mix(r, 245);
 }
 
 /** `solid` (1 where there is lettering, `w` wide) with small gaps closed (a closing by `r` pixels) and every pocket the outside can't reach filled. */
@@ -369,7 +380,7 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   const fill = rgb(bg);
   const shade = rgb(bg, 0.6);
   const ink = rgb(colors.ink ?? '#ffffff');
-  const pixels = paintOut(screen, look.hide ?? []);
+  const pixels = mended(paintOut(screen, look.hide ?? []), screen.width, look.mend ?? []);
   const pic = look.clearTop ? mirroredTop(pixels, screen.width, ...look.clearTop) : pixels;
   const sx = cropCenterX(screen.width, look.centerX);
   const sy = Math.round(screen.height / 2);
@@ -398,15 +409,22 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   // the title's lettering, across the middle on a ribbon, as high as the screen has it
   const t = look.strip ? wholeBox(screen, look.title) : titleMask({ ...screen, pixels }, look.title);
   if (t && look.overlay) {
-    // no ribbon: the lettering with its gaps and counters filled from the screen, bigger, in a dark, a white and a dark outline, over the ring
+    // no ribbon: the lettering with its gaps and counters filled from the screen, bigger, in a dark then a white outline following each letter, over the ring
+    // lettering is what's blue or dark; the pale sky caught inside it is not
+    const inked = (i: number) => {
+      const c = lut[pixels[(t.y + Math.floor(i / t.w)) * screen.width + t.x + (i % t.w)]];
+      const [r, g, b] = [c & 255, (c >> 8) & 255, (c >> 16) & 255];
+      return b > r + 12 || 0.3 * r + 0.59 * g + 0.11 * b < 110;
+    };
     const solid = closedMask(
-      Uint8Array.from(t.mask, (m) => +(m === 1)),
+      Uint8Array.from(t.mask, (m, i) => +(m === 1 && inked(i))),
       t.w,
-      3,
+      1,
     );
     const letters = blank(t.w, t.h);
-    for (let i = 0; i < solid.length; i++) if (solid[i]) letters.data[i] = lut[pixels[(t.y + Math.floor(i / t.w)) * screen.width + t.x + (i % t.w)]];
-    const big = outlined(scaledBy(letters, look.overlay), [OUTLINE, WHITE, OUTLINE]);
+    for (let i = 0; i < solid.length; i++)
+      if (solid[i]) letters.data[i] = lifted(lut[pixels[(t.y + Math.floor(i / t.w)) * screen.width + t.x + (i % t.w)]], Math.floor(i / t.w) / t.h);
+    const big = outlined(scaledBy(letters, look.overlay), [OUTLINE, WHITE]);
     const cy = BADGE_CY - (sy - t.y) - 1 + t.h / 2;
     stamp(out, big, Math.round(BADGE_CX - big.width / 2), Math.round(cy - big.height / 2));
   } else if (t) {
@@ -432,6 +450,21 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
     const fig = outlined(big, [OUTLINE, OUTLINE, WHITE, WHITE]);
     const fx = left ? 0 : BADGE_W - fig.width;
     stamp(out, fig, fx, BADGE_CY + RING + FEET + 4 - fig.height);
+  }
+  return out;
+}
+
+/** `px` (a screen `w` wide) with each box's rows tiled across it from the columns `from`, back and forth. */
+function mended(px: Uint8Array, w: number, mends: NonNullable<BadgeLook['mend']>): Uint8Array {
+  if (!mends.length) return px;
+  const out = px.slice();
+  for (const { box, from } of mends) {
+    const n = Math.max(1, from[1] - from[0]);
+    for (let y = box[1]; y < box[3]; y++)
+      for (let x = box[0]; x < box[2]; x++) {
+        const m = (x - box[0]) % (2 * n);
+        out[y * w + x] = px[y * w + from[0] + (m < n ? m : 2 * n - 1 - m)];
+      }
   }
   return out;
 }

@@ -34,10 +34,11 @@ export const GAME_MUGS: GameMug[] = [
     side: 'left',
     hide: [
       [0, 0, 112, 10],
+      // a stray bit of lightning right of the title's M
+      [216, 52, 232, 76],
       // Ohm beside his own speech bubble would echo the hero in front
-      [40, 102, 97, 170],
-      [97, 150, 108, 170],
     ],
+    mend: [{ box: [40, 102, 104, 170], from: [0, 40] }],
   },
   { game: 'sleuth', hero: 'ada', title: [36, 0, 286, 73], centerX: 160, hide: [[94, 64, 226, 73]] },
   { game: 'snowbound', hero: 'kid', title: [6, 10, 314, 82], centerX: 160 },
@@ -60,7 +61,7 @@ export const GAME_MUGS: GameMug[] = [
   {
     game: 'mustard',
     hero: '',
-    title: [4, 4, 316, 30],
+    title: [4, 4, 316, 23],
     centerX: 160,
     centerY: 90,
     clearTop: [28, 124, 170],

@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { paletteToRGBA } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { BADGE_CX, BADGE_CY, BADGE_H, BADGE_W, closedMask, composeBadge, cropCenterX, scaledBy, titleMask } from './gameBadge';
+import { BADGE_CX, BADGE_CY, BADGE_H, BADGE_W, closedMask, composeBadge, cropCenterX, lifted, scaledBy, titleMask } from './gameBadge';
 import { GAME_MUGS } from './gameMugArt';
 
 const game = (id: string) => new URL(`../../../../games/${id}/`, import.meta.url);
@@ -112,5 +112,26 @@ describe('scaledBy', () => {
   it('scales a picture by any factor', () => {
     const src = { width: 2, height: 1, data: Uint32Array.of(1, 2) };
     expect(Array.from(scaledBy(src, 1.5).data)).toEqual([1, 1, 2, 1, 1, 2]);
+  });
+});
+
+describe('lifted', () => {
+  it('brightens dark lettering, most on the lower line, and leaves light lettering', () => {
+    const lum = (c: number) => 0.3 * (c & 255) + 0.59 * ((c >> 8) & 255) + 0.11 * ((c >> 16) & 255);
+    const dark = 0xff203040;
+    expect(lum(lifted(dark, 0.1))).toBeGreaterThan(lum(dark));
+    expect(lum(lifted(dark, 0.9))).toBeGreaterThan(lum(lifted(dark, 0.1)));
+    expect(lifted(0xffffffff, 0.9) >>> 0).toBe(0xffffffff);
+  });
+});
+
+describe('mend', () => {
+  it('tiles the columns beside a box over it, row by row', () => {
+    const base = { title: [6, 10, 312, 86] as [number, number, number, number], centerX: 160 };
+    const flat = { width: 320, height: 200, pixels: new Uint8Array(320 * 200), palette: screen.palette };
+    for (let y = 0; y < 200; y++) flat.pixels[y * 320 + 100] = 5;
+    const a = composeBadge(flat, undefined, {}, base);
+    const b = composeBadge(flat, undefined, {}, { ...base, mend: [{ box: [90, 150, 130, 160], from: [0, 10] }] });
+    expect(a.data.some((v, i) => v !== b.data[i])).toBe(true);
   });
 });
