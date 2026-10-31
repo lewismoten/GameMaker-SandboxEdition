@@ -51,6 +51,10 @@ game, that game's music and its sound effects:
 | `edit-animation`: animations and slide shows   | `intro.fli`, then `blender.gif`, `blender.lst` | teenage Lewie, Snowbound (Lewis +5)                                                    | Snowbound's title         |
 | `edit-integrator`: the Integrator              | `#/p/look:logic/ohmsweet.gam?scene=2`          | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
 | `edit-player`: the DOS player                  | `#/p/look:logic/ohmsweet.gam`                  | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
+| `edit-check`: the Level check                  | `#/p/look:sleuth/act1.map`                     | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
+| `edit-export`: downloads                       | `#/p/look:logic/kitchen.map`                   | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
+| `edit-assistant`: the Assistant                | `#/p/look:logic/kitchen.map`                   | Dex Dynamo, In The Year 2000! (Kokoro Puck +3)                                         | In The Year 2000!'s title |
+| `edit-walkthrough`: Make a walkthrough         | `#/p/look:logic/ohmsweet.gam?scene=0`          | Doc Leo (Lewis's own voice)                                                            | Teddy's Clown Club        |
 | `desk`: the 1994 desk                          | `#/desk`                                       | teenage Lewie, Snowbound (Lewis +5), THE CHEZ driving by                               | Snowbound's title         |
 | `box`: What's in the box                       | `#/desk`                                       | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
 | `bbs`: calling the BBS                         | `#/desk`                                       | Dex Dynamo (Kokoro Puck +3) calls; teenage Lewie, the board's SysOp                    | In The Year 2000!'s title |
@@ -81,7 +85,7 @@ C:'s downloads as found. A PC busy with the visitor's own program is left alone 
 are left out). The DOS chapter types and presses nothing. Nothing counts toward an achievement
 while a tour plays (`achievements/store.ts`).
 
-The editor's nine sub-chapters follow the overview and look inside Ohm Sweet Ohm the same way (read-only,
+The editor's thirteen sub-chapters follow the overview and look inside Ohm Sweet Ohm the same way (read-only,
 in memory, each `always` at its own address, with `go` to its next file): getting around (the
 file list and its filter, Game assets, Used by, Undo, the map's zoom, the Play Level menu, the
 shortcuts and where help is), the map editor (side tabs, the paint, Select, Terrain and Stamp
@@ -97,10 +101,15 @@ and slide shows (frames, speed and film strip, the scene maker's timeline, the p
 into a block, a slide show's timeline, Then choices and media bin), the Integrator (the board of
 scene cards, tools, key, zoom, a scene's files and links, the Screens and Music tabs) and the DOS
 player (its dialog opened and shut: presets, a tab per screen, words, the draggable preview, High
-scores, Colors and Files tabs, all look-only on this game). They only
+scores, Colors and Files tabs, all look-only on this game), the Level check (the panel opened and
+Run check pressed: the bot really plays a Sandbox game's first act for its Quick 15 seconds while the
+heat map fills in live, then the colors, marks, findings, report and the Watch and Play buttons), the
+Download chooser (opened and shut with Cancel, nothing built), the Assistant (its chat panel opened:
+no message sent, the AI setup box stays shut) and Make a walkthrough (the dialog opened from the
+Integrator's start scene and shut; the bot is never started). They only
 press what changes nothing in the game: the Select tool, a monster in the list, the hero's
 Sequences tab, the palette's tabs, the music editor's tabs, the Integrator's Screens and Music
-tabs and the DOS player's tabs (remembered choices are put back through `keep`). The whole tour plays all of them after the overview. Show me around on the editor page plays the
+tabs (remembered choices are put back through `keep`) and Run check (its result is kept only in the open game's companion, in memory; the marks, counts and findings steps are `optional`, so `tour:check`, which steps quickly, skips them while the run is still going). The whole tour plays all of them after the overview. Show me around on the editor page plays the
 overview and then only the sub-chapter for the editor open (`editorChoice.ts`: a map, block,
 character, monster, palette, sound, music, animation, picture, slide show or game file; any other file, or none, plays the overview alone).
 
