@@ -289,7 +289,13 @@ export async function openSafe(): Promise<void> {
           ),
         ),
       ),
-      h('div', { class: 'kn-eat' }, dogHead('teddy'), dogHead('gwinn'), h('p', { class: 'kn-line' }, 'Teddy and Gwinn sit at the safe and wait. Teddy’s ears are perfectly even. Gwinn’s are not trying.')),
+      h(
+        'div',
+        { class: 'kn-eat' },
+        dogHead('teddy'),
+        dogHead('gwinn'),
+        h('p', { class: 'kn-line' }, 'Teddy and Gwinn sit at the safe and wait. Teddy’s ears are perfectly even. Gwinn’s are not trying.'),
+      ),
       h('h3', null, 'Treat list'),
       list.length
         ? h('ul', { class: 'kn-list' }, ...list.map((t) => h('li', null, `${t.name} × ${rec.treats[t.id]}`)))
@@ -347,7 +353,11 @@ export async function openSafe(): Promise<void> {
     showNext();
     side.append(
       h('h2', null, 'Forte Locks'),
-      h('p', { id: 'kn-dir-hint' }, 'Teddy’s toy safe has a real lock inside. Right, at least three full laps, and stop on the first number. Left, past that number once, and stop on the second the second time round. Right, straight to the third. Then try the door. Turning back the other way takes nearly a lap before the wheels follow. Type a number and Turn (it does the laps for you), or drag the dial, scroll over it or use the arrow keys.'),
+      h(
+        'p',
+        { id: 'kn-dir-hint' },
+        'Teddy’s toy safe has a real lock inside. Right, at least three full laps, and stop on the first number. Left, past that number once, and stop on the second the second time round. Right, straight to the third. Then try the door. Turning back the other way takes nearly a lap before the wheels follow. Type a number and Turn (it does the laps for you), or drag the dial, scroll over it or use the arrow keys.',
+      ),
       h('div', { class: 'kn-entry' }, dirLabel, numBox, h('button', { type: 'button', class: 'kn-turn primary', onclick: goTo }, 'Turn')),
       h(
         'div',
