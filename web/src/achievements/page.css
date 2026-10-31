@@ -340,3 +340,57 @@ main.ach-page h1 {
 .ach-tab[aria-selected='false'] .ach-tab-count {
   color: var(--muted);
 }
+
+/* the genuinely hard ones, once earned: a gold frame and a slow sheen (still, with no sheen moving, when motion is reduced) */
+.ach-card.is-gold {
+  --gold: #b8860b;
+  --gold-hi: rgb(255 214 90 / 0.3);
+  border-color: var(--gold);
+  box-shadow:
+    inset 4px 0 0 var(--gold),
+    0 0 0 1px var(--gold);
+  background-image: linear-gradient(105deg, transparent 38%, var(--gold-hi) 50%, transparent 62%);
+  background-size: 260% 100%;
+  background-position: 100% 0;
+}
+
+:root[data-theme='dark'] .ach-card.is-gold {
+  --gold: #e6b422;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .ach-card.is-gold {
+    --gold: #e6b422;
+  }
+}
+
+.ach-card.is-gold::after {
+  background-color: var(--gold);
+}
+
+.ach-card.is-gold .ach-icon {
+  box-shadow: inset 0 0 0 2px var(--gold);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ach-card.is-gold {
+    animation: ach-sheen 6s ease-in-out infinite;
+  }
+}
+
+@keyframes ach-sheen {
+  0%,
+  55% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.ach-level {
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0.8;
+  white-space: nowrap;
+}

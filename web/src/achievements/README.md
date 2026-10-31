@@ -33,6 +33,24 @@ unassigned badges use a neutral question block drawn with the tools package’s 
 font; no emoji artwork is used by the renderer. Source selections and missing-art
 proposals are in [the artwork inventory](../../../docs/achievement-art.md).
 
+## Levels and the hard ones
+
+A counter can level up (`levels.ts`): each level is an achievement of its own (`level: { family, n, of }`),
+so every level counts in the totals, the tab counts and "n of m". The every-life, every-loss and every-win
+badges (1, 3, 10 in every listed game) are levels 1 to 3 of three families and keep their stored ids;
+games played, games finished and walkthroughs watched are count families (`count`: 3, 10, 20 different
+listed games, read in `goals.ts` from the record's `played`, `finished` and `watched` sets; a game the lists
+keep out of sight never counts). A level's art changes in shape (pips, the number, a sign for life, loss and
+win) and lightness as well as color; the last level is gold. The details dialog says "Level n of m", the level
+the family is at and the next goal (`levelStanding`). Nothing in a saved record changes, so older records,
+`mergeRecords`, backups and Reset need no migration. Tests: `levels.test.ts`.
+
+`hard: true` marks the genuinely difficult ones (every game finished, every tin heart, every walkthrough, the top
+trophy, every felt egg and the three Teddy eggs, every modem speed, every export, every kind of file, a hidden
+find or two, and the last level of each family). Once earned a card or dialog icon gets a gold frame and a slow
+sheen (`.is-gold` in `page.css` and `details.css`); with reduced motion the sheen holds still. A hidden one
+stays hidden until earned, so the gold never gives it away.
+
 ## The page's header and views
 
 `page.ts` keeps a sticky header (title, an ℹ️ button that opens the lead paragraph in a dialog,

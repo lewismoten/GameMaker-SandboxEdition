@@ -94,3 +94,42 @@ dialog.ach-dlg h2 {
 .ach-dlg-nav button {
   min-height: 32px;
 }
+
+.ach-dlg-level {
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+}
+
+.ach-dlg-icon.is-gold {
+  --gold: #b8860b;
+  box-shadow: inset 0 0 0 3px var(--gold);
+  background-image: linear-gradient(105deg, transparent 38%, rgb(255 214 90 / 0.35) 50%, transparent 62%);
+  background-size: 260% 100%;
+  background-position: 100% 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .ach-dlg-icon.is-gold {
+    --gold: #e6b422;
+  }
+}
+
+:root[data-theme='dark'] .ach-dlg-icon.is-gold {
+  --gold: #e6b422;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ach-dlg-icon.is-gold {
+    animation: ach-dlg-sheen 6s ease-in-out infinite;
+  }
+}
+
+@keyframes ach-dlg-sheen {
+  0%,
+  55% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}

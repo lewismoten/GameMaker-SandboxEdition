@@ -83,7 +83,7 @@ function card(a: Achievement, r: AchievementRecord, open: () => void, dates: boo
       'button',
       {
         type: 'button',
-        class: `ach-card${when ? ' is-done' : ''}${secret ? ' is-hidden' : ''}`,
+        class: `ach-card${when ? ' is-done' : ''}${secret ? ' is-hidden' : ''}${when && a.hard ? ' is-gold' : ''}`,
         'data-id': a.id,
         'aria-haspopup': 'dialog',
         title: secret ? 'Hidden achievement: show its hint' : `${shown.title}: show the details`,
@@ -98,7 +98,18 @@ function card(a: Achievement, r: AchievementRecord, open: () => void, dates: boo
         h(
           'span',
           { class: 'ach-title' },
-          secret ? [h('span', { 'aria-hidden': 'true' }, shown.title), h('span', { class: 'sr-only' }, 'Hidden achievement')] : shown.title,
+          secret
+            ? [h('span', { 'aria-hidden': 'true' }, shown.title), h('span', { class: 'sr-only' }, 'Hidden achievement')]
+            : [
+                shown.title,
+                a.level
+                  ? [
+                      ' ',
+                      h('span', { class: 'ach-level', 'aria-hidden': 'true' }, `Lv ${a.level.n}/${a.level.of}`),
+                      h('span', { class: 'sr-only' }, `, level ${a.level.n} of ${a.level.of}`),
+                    ]
+                  : null,
+              ],
         ),
         h('span', { class: 'ach-desc' }, shown.desc),
         progress
