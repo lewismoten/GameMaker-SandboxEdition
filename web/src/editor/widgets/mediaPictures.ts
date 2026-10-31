@@ -10,6 +10,7 @@ import { Screen, SIZEX, SIZEY } from '@lewismoten/gamemaker-sandbox-engine/gfx/s
 import { match, RGB_PURPLE, RGB_RED } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
 import { paintIndexed } from '../core/draw';
 import { fileThumb } from './thumbs';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { kindOf } from '../core/project';
 
 /** A 320x200 screen of palette indices and the palette it is shown with. */
@@ -126,7 +127,7 @@ export function textPages(lines: string[], over: ScreenPicture, gamePalette: Pal
  * A thumbnail of a slide show item as the game shows it: backdrops as their window, text
  * screens as their first page, slide shows as their first slide; others as fileThumb.
  */
-export function mediaThumb(files: GameFiles, name: string, palette?: Palette, depth = 0): HTMLElement {
+export function mediaThumb(files: GameFiles, name: string, palette?: Palette, depth = 0, patches?: PlayerPatches): HTMLElement {
   const kind = kindOf(name);
   const bytes = files.get(name);
   const thumb = (pic: ScreenPicture) => screenCanvas(pic, 'thumb pixel');
@@ -137,7 +138,7 @@ export function mediaThumb(files: GameFiles, name: string, palette?: Palette, de
   if (bytes && kind === 'txt') return thumb(textPages(textLines(bytes), blankScreen(palette ?? defaultPalette()))[0]);
   if (bytes && kind === 'lst' && depth < 3) {
     const first = parseSlideList(bytes).find((e) => files.has(e.name) && kindOf(e.name) !== 'txt');
-    if (first) return mediaThumb(files, first.name, palette, depth + 1);
+    if (first) return mediaThumb(files, first.name, palette, depth + 1, patches);
   }
-  return fileThumb(name, bytes, { files, palette });
+  return fileThumb(name, bytes, { files, palette, patches });
 }

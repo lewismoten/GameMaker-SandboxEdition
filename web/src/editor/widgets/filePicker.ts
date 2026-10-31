@@ -2,6 +2,7 @@
 // game's files, the CD library or public original games, plus search and ways to make or
 // add one from your computer. Library files are copied into the game when chosen.
 import './filePicker.css';
+import { companionPatches } from '../../dosPlayer/playerRecord';
 import { h, clear, modal, pickFiles, toast } from '../core/ui';
 import { KIND_LABELS, Project, kindOf, type FileKind } from '../core/project';
 import { fileThumb, KIND_ICON } from './thumbs';
@@ -159,7 +160,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         const bytes = project.files.get(n);
         const el = card(
           n.toUpperCase(),
-          fileThumb(n, bytes, { files: project.files, palette: project.paletteFor(n).palette }),
+          fileThumb(n, bytes, { files: project.files, palette: project.paletteFor(n).palette, patches: companionPatches(project.companion, project.gam) }),
           `${(bytes?.length ?? 0).toLocaleString()} bytes · used ${project.usesOf(n).length}×`,
           () => close(n),
           normalize(opts.current ?? '') === n,
@@ -169,7 +170,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
             n,
             async () => project.files.get(n),
             thumbCanvas(el),
-            async () => ({ files: project.files, palette: project.paletteFor(n).palette }),
+            async () => ({ files: project.files, palette: project.paletteFor(n).palette, patches: companionPatches(project.companion, project.gam) }),
             () => el.querySelector<HTMLElement>('.pick-card small'),
           ) ?? '',
         );
@@ -441,7 +442,7 @@ export function fileField(
           },
         },
         exists
-          ? fileThumb(name, project.files.get(name), { files: project.files, palette: project.paletteFor(name).palette })
+          ? fileThumb(name, project.files.get(name), { files: project.files, palette: project.paletteFor(name).palette, patches: companionPatches(project.companion, project.gam) })
           : h('span', { class: 'thumb icon' }, name ? '⚠' : '＋'),
         h(
           'span',

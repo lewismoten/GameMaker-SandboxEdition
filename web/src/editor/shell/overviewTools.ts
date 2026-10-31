@@ -2,6 +2,7 @@
 // status (read from what is already saved, never a check run to draw the tab), one plain line and
 // a button that opens it. Every tool keeps its own entry point; this is an additional home.
 import './overviewTools.css';
+import { companionPatches } from '../../dosPlayer/playerRecord';
 import { h } from '../core/ui';
 import type { Project } from '../core/project';
 import { checkGame, worstSeverity } from '../../project/health';
@@ -68,7 +69,7 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
       card(
         'check',
         'Level check',
-        fileThumb(maps[0], files.get(maps[0]), { files, palette: project.paletteFor(maps[0]).palette }),
+        fileThumb(maps[0], files.get(maps[0]), { files, palette: project.paletteFor(maps[0]).palette, patches: companionPatches(project.companion, project.gam) }),
         status,
         'A bot looks for places a player gets stuck or can’t reach, and draws a heat map of where it went. It runs inside each level’s map editor.',
         firstUnchecked ? `Check ${firstUnchecked}…` : `Open ${target}…`,
@@ -154,7 +155,7 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
       card(
         'vision',
         'Color vision check',
-        fileThumb(pal, files.get(pal), { files }),
+        fileThumb(pal, files.get(pal), { files, patches: companionPatches(project.companion, project.gam) }),
         pal,
         'Shows the palette in grayscale and with color-vision differences, and which colors become hard to tell apart. It is the Vision tab of the palette editor.',
         `Open ${pal}…`,

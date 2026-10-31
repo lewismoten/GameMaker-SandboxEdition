@@ -2,6 +2,7 @@
 // to open it. With nothing typed it lists the files opened most recently, kept in the
 // project's companion file (never among the game's files), saved with the next edit.
 import { h, modal } from '../core/ui';
+import { companionPatches } from '../../dosPlayer/playerRecord';
 import { kindOf, KIND_LABELS, type Project } from '../core/project';
 import { fileThumb } from '../widgets/thumbs';
 import { sceneUses } from '../core/uses';
@@ -83,7 +84,7 @@ export function quickOpen(project: Project): Promise<string | undefined> {
           if (!file || !entry.target.isConnected) continue;
           let thumb: HTMLElement;
           try {
-            thumb = fileThumb(file, project.files.get(file), { files: project.files, palette: project.paletteFor(file).palette });
+            thumb = fileThumb(file, project.files.get(file), { files: project.files, palette: project.paletteFor(file).palette, patches: companionPatches(project.companion, project.gam) });
           } catch {
             thumb = fileThumb(file, project.files.get(file), { files: project.files });
           }

@@ -9,6 +9,7 @@
 // the media bin, and the page. Dragging and the timeline's keys are in timelineInput.ts;
 // timing as PLAYGAME plays it is in slideTimeline.ts.
 import { History } from '../../core/history';
+import { companionPatches } from '../../../dosPlayer/playerRecord';
 import './slideShow.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
@@ -109,7 +110,7 @@ registerEditor(['lst'], (host, project, file) => {
     const bytes = project.files.get(name);
     const hit = thumbCache.get(name);
     if (hit && hit.bytes === bytes) return hit;
-    const el = mediaThumb(project.files, name, project.paletteFor(file).palette);
+    const el = mediaThumb(project.files, name, project.paletteFor(file).palette, 0, companionPatches(project.companion, project.gam));
     const url = el instanceof HTMLCanvasElement ? el.toDataURL() : undefined;
     const t = { bytes, el, url };
     thumbCache.set(name, t);
