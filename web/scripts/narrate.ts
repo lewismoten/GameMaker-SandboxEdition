@@ -10,15 +10,15 @@
 // Options: --out <dir>, --only <id>[,<id>] (a retake; each take differs), --force, --seed <n>
 // (the same take again), --sample <file> (.webm, .wav, .m4a, .mp3…; its clearest 10 s is used),
 // --engine <dir>, --model <dir>, --kbps <n> and --rate <hz> (the Opus encoding),
-// --split none|sentences|clauses (voice each sentence, or each clause, alone and join them with fixed
-// silences; none, the default, voices the line whole), --wav (also keep each take as .wav, for comparing encodings), --dry-run (list what would be recorded).
+// --split none|sentences|clauses|stretch (voice each sentence, or each clause, alone and join them with fixed
+// silences, or stretch the whole take's own pauses with room tone; none, the default, voices the line whole), --wav (also keep each take as .wav, for comparing encodings), --dry-run (list what would be recorded).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CLIP_OGG, clearestWindow, normalize, readMono, shiftVoice, writeOgg } from './narrate/audio';
 import { clipPath, indexJson, spokenOf, lineProblems, planTakes, refreshPlaces, staleIds, textHash, type Line, type VoiceIndex } from './narrate/lineIndex';
-import { joinPieces, splitMode, splitStops } from './narrate/split';
+import { joinPieces, splitMode, splitStops, stopGaps, stretchPauses } from './narrate/split';
 import { PocketTts, randomSource } from './narrate/pocketTts';
 import { voiceReadme } from './narrate/voiceReadme';
 import { loadKokoro, type Kokoro } from './narrate/kokoro';
@@ -148,6 +148,10 @@ async function main() {
   const split = splitMode(o.split);
   // --split voices each piece alone, trims it, and joins the pieces with fixed silences
   const speak = async (text: string, v: ReturnType<typeof voiceOf>) => {
+    if (split === 'stretch') {
+      const t = await speakPiece(text, v);
+      return { ...t, audio: stretchPauses(t.audio, t.rate, stopGaps(text)) };
+    }
     const pieces = splitStops(text, split);
     if (pieces.length === 1) return speakPiece(text, v);
     const takes = [];
