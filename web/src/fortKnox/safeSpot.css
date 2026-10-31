@@ -19,7 +19,7 @@
 @media (min-width: 961px) {
   .desk-scene > .kn-safe {
     position: absolute;
-    left: 1090px;
+    left: 1108px; /* just clear of the right speaker's edge (1026 + 78) */
     top: 401px; /* the base stays on the same line as before (452 + 51 = 401 + 102) */
     z-index: 2;
   }
