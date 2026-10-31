@@ -13,8 +13,8 @@ export interface Dial {
   runs: Run[];
 }
 
-/** The combination, hidden in the room on the sticky note by the phone (desk/room/phoneNotes.ts). */
-export const COMBINATION: readonly [number, number, number] = [35, 10, 50];
+/** The combination (pi: 3.14159), hidden in the room on the sticky note by the phone (desk/room/phoneNotes.ts). */
+export const COMBINATION: readonly [number, number, number] = [31, 41, 59];
 
 export const newDial = (): Dial => ({ pos: 0, runs: [] });
 const wrap = (n: number) => ((n % TICKS) + TICKS) % TICKS;
