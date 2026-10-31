@@ -1,26 +1,31 @@
 // Importing a game folder with its own player: a hand-edited XFERPLAY.EXE becomes DOS player
 // patches, and a player with renamed extensions has the game's files renamed back. The 1990s
-// players come from the scratchpad archive; those tests skip when it is not there.
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+// players come from the archive of zips (see GM_ARCHIVE_DIR below); those tests skip when it is not there.
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { adoptPlayer } from '@lewismoten/gamemaker-sandbox-archives/project/importPlayer';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/project/zip';
 import { GameFiles } from './files';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
-const ARCHIVE = '/private/tmp/claude-501/-Users-lewismoten-dev-GameMaker/e139be0f-458e-435b-825a-5595bd4c49ab/scratchpad/arch2/';
-const folder = (dir: string) => {
+// GM_ARCHIVE_DIR, else the git-ignored .for-lewis/archive2/ at the repo root, holds the games as game-maker_<name>.zip
+const ARCHIVE = process.env.GM_ARCHIVE_DIR ?? fileURLToPath(new URL('../../../.for-lewis/archive2/', import.meta.url));
+const zipPath = (dir: string) => join(ARCHIVE, dir + '.zip');
+const folder = async (dir: string) => {
   const files = new GameFiles();
   const players: { name: string; bytes: Uint8Array }[] = [];
-  for (const f of readdirSync(ARCHIVE + dir)) {
-    const bytes = new Uint8Array(readFileSync(ARCHIVE + dir + '/' + f));
+  for (const { name: f, data: bytes } of await readZip(new Uint8Array(readFileSync(zipPath(dir))))) {
+    if (f.endsWith('/')) continue;
     if (/\.exe$/i.test(f)) players.push({ name: f, bytes });
     else if (!/\.(com|bat|drv|pif|lzh)$/i.test(f)) files.set(f, bytes);
   }
   return { files, players };
 };
-// a folder emptied by the system's temporary-file cleanup counts as missing
-const has = (dir: string) => existsSync(ARCHIVE + dir) && readdirSync(ARCHIVE + dir).length > 0;
+// a missing zip (a fresh clone, CI) skips its test
+const has = (dir: string) => existsSync(zipPath(dir));
 
 describe('adoptPlayer', () => {
   it('says nothing for the CD’s own player, or none', () => {
@@ -29,8 +34,8 @@ describe('adoptPlayer', () => {
     expect(adoptPlayer(new GameFiles(), [])).toBeUndefined();
   });
 
-  it.skipIf(!has('game-maker_builder'))('reads Builder’s blanked words', () => {
-    const { files, players } = folder('game-maker_builder');
+  it.skipIf(!has('game-maker_builder'))('reads Builder’s blanked words', async () => {
+    const { files, players } = await folder('game-maker_builder');
     const r = adoptPlayer(files, players)!;
     expect(r.exe).toBe('BUILDER.EXE');
     expect(Object.keys(r.patches)).toHaveLength(8);
@@ -38,14 +43,14 @@ describe('adoptPlayer', () => {
     expect(r.message).not.toMatch(/aren’t carried over/);
   });
 
-  it.skipIf(!has('game-maker_rodip-river-of-the-deep'))('reads Rōdïp’s status words', () => {
-    const { files, players } = folder('game-maker_rodip-river-of-the-deep');
+  it.skipIf(!has('game-maker_rodip-river-of-the-deep'))('reads Rōdïp’s status words', async () => {
+    const { files, players } = await folder('game-maker_rodip-river-of-the-deep');
     const r = adoptPlayer(files, players)!;
     expect(r.patches['str.invent.lives']).toBe('Failsafes: %d');
   });
 
-  it.skipIf(!has('game-maker_anyworld'))('renames Acord Games’ files back', () => {
-    const { files, players } = folder('game-maker_anyworld');
+  it.skipIf(!has('game-maker_anyworld'))('renames Acord Games’ files back', async () => {
+    const { files, players } = await folder('game-maker_anyworld');
     const r = adoptPlayer(files, players)!;
     expect(r.message).toMatch(/under other extensions/);
     expect(files.has('anyworld.gam')).toBe(true);
