@@ -122,6 +122,13 @@ export function wallClock(): HTMLElement {
     }
   };
   tick();
+  // ROOMFIX /LUME at the DOS prompt starts the paint over, as if the room had just loaded
+  const recharge = () => {
+    if (!el.isConnected) return removeEventListener('gm-lume-reset', recharge);
+    charge = -1;
+    lume();
+  };
+  addEventListener('gm-lume-reset', recharge);
   // quartz: the second hand jumps once a second
   const timer = setInterval(() => (el.isConnected ? tick() : clearInterval(timer)), 1000);
   return el;

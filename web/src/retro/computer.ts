@@ -226,6 +226,9 @@ export class Computer extends ComputerFolders {
         case 'offline':
           await (await import('../offline/offlineExe')).runOfflineExe(this);
           break;
+        case 'roomfix':
+          await (await import('./hacks/roomFix')).runRoomFix(this, _args);
+          break;
         case 'batch':
           for (const l of ref.lines) await this.shell.execute(l);
           break;

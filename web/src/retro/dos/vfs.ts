@@ -44,6 +44,7 @@ export type ProgramRef =
   | { kind: 'hexedit' }
   | { kind: 'achieve' }
   | { kind: 'offline' }
+  | { kind: 'roomfix' }
   | { kind: 'batch'; lines: string[] };
 
 interface Drive {

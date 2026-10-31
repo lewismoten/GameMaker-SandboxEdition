@@ -204,6 +204,7 @@ export abstract class ComputerDrives {
                 file('HEXEDIT.EXE', 41_216, { run: { kind: 'hexedit' } }),
                 file('ACHIEVE.EXE', 22_418, { run: { kind: 'achieve' } }),
                 file('OFFLINE.EXE', 18_944, { run: { kind: 'offline' } }),
+                file('ROOMFIX.EXE', 16_208, { run: { kind: 'roomfix' } }),
               ),
           ),
           folder('CDROM', () => [file('CDROM.SYS', 18_432)]),

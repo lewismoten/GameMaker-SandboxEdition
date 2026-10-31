@@ -47,6 +47,11 @@ picture; `host.ts` is what programs on it can use.
   add to C: in `deskFiles.ts` and `pcExtras.ts`, which also keeps the serial in PLAYGAME.EXE):
   debugging tools for registration modes, saved games and backups, dressed as 1990s scene
   programs.
+- `hacks/roomFix.ts` and `roomFixItems.ts`: ROOMFIX.EXE in C:\DOS (`/SAFE`, `/FULL`, `/ROOM`,
+  `/ALL`, names like `LIGHTS MUG`, `/?`) puts the desk room's small remembered states back: the toy
+  safe's door (coins and treats kept unless `/FULL`), lights, wall-clock lume paint, mug, mouse pad,
+  mouse spot and shelf front. The DOS page may not load the desk, so it names the storage keys itself
+  and a test checks each is still its owner's. It never touches saves, achievements, eggs or hearts.
 
 ## `bbs/`: the terminal and the BBSes
 
