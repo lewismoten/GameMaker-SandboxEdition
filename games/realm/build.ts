@@ -2,7 +2,7 @@
 //   cd web && npx vite-node ../games/realm/build.ts
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { BLOCK_COUNTS, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -25,6 +25,14 @@ import { writeWalkPaths } from '../kit/walkPaths';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
+/** Gold, prices and the starting purse share this scale, keeping the quest's buying order intact. */
+const MONEY_SCALE = 0.25;
+const scaledMoney = (amount: number) => (amount ? Math.sign(amount) * Math.max(1, Math.round(Math.abs(amount) * MONEY_SCALE)) : 0);
+const moneyFile = (name: string, bytes: Uint8Array) => {
+  const kind = name.match(/\.(bbl|mbl|cbl)$/i)?.[1]?.toLowerCase() as keyof typeof BLOCK_COUNTS | undefined;
+  if (!kind) return bytes;
+  return serializeBlocks(parseBlocks(bytes, BLOCK_COUNTS[kind]).map((block) => (block.effect === 3 ? { ...block, eamt: scaledMoney(block.eamt) } : block)));
+};
 
 const cast = buildCast();
 disk.put('pip.cbl', serializeBlocks(cast.cb.blocks));
@@ -48,7 +56,7 @@ const dungeons = buildDungeons({
 });
 const flats = buildFlats({ west: { to: 'harbor', at: HARBOR_ARRIVE.flats }, east: { to: 'world', at: WORLD_ARRIVE.post } });
 const towns = buildTowns(spot, { flats: flats.west, vaults: dungeons.starts.vaults });
-for (const f of [...world.files, ...towns.files, ...dungeons.files, ...flats.files]) disk.put(f.name, f.bytes);
+for (const f of [...world.files, ...towns.files, ...dungeons.files, ...flats.files]) disk.put(f.name, moneyFile(f.name, f.bytes));
 
 const specs: SceneSpec[] = [world.scene, ...towns.scenes, ...dungeons.scenes, ...flats.scenes, ...world.talkScenes];
 // the world's doors into the towns, the dungeons and onto the Flats

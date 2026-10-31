@@ -133,7 +133,7 @@ export function buildPip(cb: SpriteSheet): Character {
   );
   ch.meter[0] = 100; // hit points
   ch.meter[1] = 3; // lives
-  ch.meter[3] = 1 + 10; // money: shown as meter - 1, so 10 gold
+  ch.meter[3] = 1 + 3; // money: shown as meter - 1, so 3 gold
   ch.meter[SEQ.steel] = 0; // no steel sword yet
   ch.meter[SEQ.kazoo] = 0; // no kazoo yet
   ch.meter[SEQ.tonic] = 1; // one tonic in the satchel
