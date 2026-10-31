@@ -52,7 +52,7 @@ export const PASS_THROUGH: MagSection = {
           0.4,
         ),
         p(
-          '*Quest for the Round Tuit* talks to everyone this way, some three dozen scenes of it. Every townsperson, signpost and found note is its own little scene, and none of them lasts longer than a single tick of the game.',
+          '*Quest for the Round Tuit* talks to everyone this way, thirty-one scenes of it. Every townsperson, signpost and found treasure is its own little scene, none lasts longer than a single tick of the game, and they all share one tiny map of their own, PASS.MAP, instead of the town’s.',
         ),
         pull('“To the player, the friend simply spoke.”'),
         side(
