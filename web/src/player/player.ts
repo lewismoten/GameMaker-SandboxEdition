@@ -15,6 +15,7 @@ import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { icon } from '../editor/shell/homeIcons';
 import { heartHook } from '../tinHearts/tinHearts';
 import { scoreHook } from '../scoreTrophies/hook';
+import { piggyBankHook } from '../piggyBank/hook';
 
 interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -68,6 +69,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   canvas.setAttribute('role', 'application');
   container.append(canvas);
   const machine = new Machine(canvas, files, opts.audio);
+  const piggy = piggyBankHook(opts.saveId);
   if (opts.preview) {
     container.classList.add('gm-preview');
     canvas.setAttribute('role', 'img');
@@ -220,11 +222,11 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
           onFrame: touch ? (w) => touch.setSequences(w.chr.sequences) : undefined,
           ...opts,
           noSoundCard: opts.noSoundCard || hardware?.sound === 'speaker',
-          ...(hearts && {
-            onSession: (s) => (hearts.onSession(s), opts.onSession?.(s)),
-            onTouched: (...a) => (hearts.onTouched(...a), opts.onTouched?.(...a)),
+          ...((hearts || piggy) && {
+            onSession: (s) => (hearts?.onSession(s), piggy?.onSession?.(s), opts.onSession?.(s)),
+            ...(hearts && { onTouched: (...a) => (hearts.onTouched(...a), opts.onTouched?.(...a)) }),
           }),
-          ...(scores && { onPlayEnd: (...a) => (scores(...a), opts.onPlayEnd?.(...a)) }),
+          ...((scores || piggy) && { onPlayEnd: (...a) => (scores?.(...a), piggy?.onPlayEnd?.(...a), opts.onPlayEnd?.(...a)) }),
         });
       } catch (e) {
         if (!(e instanceof GameAborted)) {
