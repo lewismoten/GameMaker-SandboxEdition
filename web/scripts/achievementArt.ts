@@ -4,59 +4,15 @@ import { writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { ACHIEVEMENTS } from '../src/achievements/catalog';
 import { encodeIndexedPng } from './gameShots';
-import { streetTiles } from '../../games/teddy/src/levels/level2Tiles';
-import { parkTiles } from '../../games/teddy/src/levels/level3Tiles';
-import { cityTiles } from '../../games/teddy/src/levels/level4Tiles';
-import { POSES } from '../../games/teddy/src/sprites/teddy';
-import { P } from '../../games/teddy/src/art/pal';
-import { buildBlocks as goatBlocks } from '../../games/goat/src/blocks/blocks';
-import { buildPalette as goatPalette } from '../../games/goat/src/art/pal';
-import { buildBlocks as remoteBlocks } from '../../games/remote/src/blocks/blocks';
-import { buildPalette as remotePalette } from '../../games/remote/src/art/pal';
+import { picks as selections, sets } from './achievementSets';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
-const goat = goatPalette('day');
-const remote = remotePalette('plain');
-const street = streetTiles();
-const park = parkTiles();
-const city = cityTiles();
-const sets = {
-  street: { game: 'teddy', blocks: new Map(street.names.map((name, i) => [name, street.pics[i]])), palette: P.pal },
-  park: { game: 'teddy', blocks: new Map(park.names.map((name, i) => [name, park.pics[i]])), palette: P.pal },
-  city: { game: 'teddy', blocks: new Map(city.names.map((name, i) => [name, city.pics[i]])), palette: P.pal },
-  teddy: { game: 'teddy', blocks: new Map(Object.entries(POSES)), palette: P.pal },
-  goat: { game: 'goat', blocks: goatBlocks(goat).pics, palette: goat.pal },
-  remote: { game: 'remote', blocks: remoteBlocks(remote).pics, palette: remote.pal },
-};
-const selections: Record<string, [keyof typeof sets, string]> = {
-  'make-edit': ['remote', 'pen'],
-  'export-windows': ['goat', 'window'],
-  'export-mac': ['city', 'apples'],
-  'export-files': ['goat', 'crate'],
-  'first-steps': ['goat', 'sandal'],
-  'make-cards': ['city', 'poster'],
-  'play-first': ['remote', 'handheld'],
-  'play-sandbox': ['park', 'bucket'],
-  'play-teddy': ['teddy', 'stand'],
-  'heart-first': ['goat', 'tinHeart'],
-  'egg-first': ['goat', 'easterEgg'],
-  'watch-one': ['remote', 'vcrPlaying'],
-  'desk-bbs': ['remote', 'phone'],
-  'desk-copycheck': ['remote', 'guide'],
-  'desk-clock': ['remote', 'clock'],
-  'desk-wastebasket': ['remote', 'trash'],
-  'desk-door': ['goat', 'door'],
-  'desk-window': ['remote', 'window'],
-  'desk-chicken': ['city', 'chicken'],
-  'desk-mail': ['street', 'mailbox'],
-  'desk-zine': ['remote', 'mags'],
-  'desk-light': ['remote', 'lamp'],
-};
 const badges: Record<string, { image: string; game: string; set: string; block: string }> = {};
 const seen = new Set<string>();
 for (const [id, [set, name]] of Object.entries(selections)) {
   if (!ACHIEVEMENTS.some((a) => a.id === id)) throw new Error(`Unknown achievement ${id}`);
   const source = sets[set];
+  if (!source) throw new Error(`Unknown set ${set} for ${id}`);
   const pic: Pixels | undefined = source.blocks.get(name);
   if (!pic || pic.w !== 20 || pic.h !== 20) throw new Error(`Not a 20x20 block: ${set}/${name}`);
   const png = encodeIndexedPng({ width: 20, height: 20, pixels: pic.px, palette: source.palette }, 255);
@@ -69,7 +25,8 @@ writeFileSync(
   new URL('../src/achievements/blockArt.json', import.meta.url),
   JSON.stringify(
     {
-      notice: 'Project-owned game art by Lewis Moten using Anthropic Claude Opus 5.5; extraction with OpenAI Codex. See NOTICE.md and docs/achievement-art.md.',
+      notice:
+        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
       badges,
     },
     null,
@@ -197,13 +154,16 @@ writeFileSync(
   `# Achievement block art
 
 Badges reuse the original 20×20 indexed blocks below, at integer-friendly display sizes.
-The selected public games are by Lewis Moten using Anthropic Claude Opus 5.5 (MIT).
-OpenAI Codex extracted the images and wrote the badge integration under Lewis's direction.
-No third-party emoji artwork is copied into the badge images.
+The selected public games are by Lewis Moten using Anthropic Claude (MIT).
+The nine every-life, every-loss and every-win tier badges are composed from Teddy's poses
+(hop, hurt, bark) with a bronze, silver or gold plate and a 1, 3 or 10 mark, by Claude Sonnet 5.5,
+which also extracted the later picks. OpenAI Codex extracted the first images and wrote the
+badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
 Run \`npx vite-node scripts/achievementArt.ts\` from \`web/\` to regenerate
-\`src/achievements/blockArt.json\` and this inventory. The generator contains the
-explicit source imports and selections, and rejects duplicate image bytes.
+\`src/achievements/blockArt.json\` and this inventory. The sources and selections are in
+\`scripts/achievementSets.ts\` and the tier badges in \`scripts/achievementTiers.ts\`; the generator rejects
+duplicate image bytes.
 
 ## Selected blocks
 
