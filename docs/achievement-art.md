@@ -13,7 +13,7 @@ It also drew the six new A Fly Named Carl blocks (a backpack with a game control
 tall phone, a winged parcel and a mail jeep) as scenery in the living room and the yard, and four new Great Dairy Reckoning blocks
 (a gold cup, a silver cup marked 3, a rolled magazine and a glow-in-the-dark clock) as scenery in the kitchen and bedroom.
 It also drew four new Needle blocks (a brass compass over a winding route, a folded map, a ruler and a triangle, and glasses over
-three color swatches) as scenery in the tailor's shop.
+three color swatches) as scenery in the tailor's shop, and four more Certified Rat Tickler blocks (Teddy and a felt egg in a frame, a rocket trailing a phone cord, a card-file box with page tabs and a UV flashlight lighting an egg) as scenery on the lab's walls. Later it drew a robot cranking a film projector and a ringing phone with a bill slip (the tailor's shop), a film strip (Loaf's hillside) and a mail truck (Carl's yard).
 It also drew a new Risi block (a small library front with columns, steps and a scroll) as scenery in the rooftops.
 It also drew two new Loaf blocks (northern lights in green and violet over snowy hills, and a snail with a half-finished progress bar on its shell) as scenery in the way home and the hillside.
 It also drew two new Goat blocks (a shooting star with a stepped trail, and a startled goat with a musical note) as scenery in the field and the stable.
@@ -91,6 +91,10 @@ duplicate image bytes.
 | sfx-maker | tickle | tickle / mixer |
 | desk-uv | tickle | tickle / uvBulb |
 | desk-blacklight | tickle | tickle / blacklight |
+| egg-teddy | tickle | tickle / eggTeddy |
+| bbs-cant-wait | tickle | tickle / rocketCord |
+| desk-egg-pages | tickle | tickle / cardFile |
+| desk-egg-uv | tickle | tickle / uvEgg |
 | desk-degauss | tickle | tickle / crtRings |
 | desk-soundcard | tickle | tickle / soundCard |
 | desk-hexedit | tickle | tickle / hexPad |
@@ -119,6 +123,7 @@ duplicate image bytes.
 | heart-all | sleuth | sleuthParlor / heartWreath |
 | export-all | carl | carlYard / parcelWings |
 | desk-mailjeep | carl | carlYard / mailJeep |
+| desk-mailtruck | carl | carlYard / mailTruck |
 | finish-desk | carl | carl / packPad |
 | finish-dos | carl | carl / dosDisk |
 | finish-phone-wide | carl | carl / phoneWide |
@@ -131,8 +136,11 @@ duplicate image bytes.
 | print-world-map | needle | needleTailor / foldMap |
 | print-world-styles | needle | needleTailor / rulerTriangle |
 | palette-vision | needle | needleTailor / seenGlasses |
+| watch-bot | needle | needleTailor / robotCrank |
+| hint-phone-bill | needle | needleTailor / phoneBill |
 | desk-aurora | loaf | loaf / aurora |
 | bbs-got-time | loaf | loaf / snail |
+| download-mp4 | loaf | loaf / filmStrip |
 | desk-star | goat | goat / shootingStar |
 | desk-goat | goat | goat / surprisedGoat |
 | desk-plow | snowbound | snowSprites / plowFront0 |
@@ -162,12 +170,4 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | Achievement | Title | Proposed art |
 | --- | --- | --- |
 | export-linux | Penguin power | 20×20 block: a cheerful penguin with a disk tucked under one wing, with a dark outline and one clear focal shape. |
-| egg-teddy | Lay an egg! | 20×20 block: a mischievous corgi beside a suspiciously lumpy felt egg, with a dark outline and one clear focal shape. |
-| watch-bot | Robot rerun | 20×20 block: a little robot turning a film projector crank, with a dark outline and one clear focal shape. |
-| download-mp4 | Director’s cut | 20×20 block: a curled strip of film with three distinct frames, with a dark outline and one clear focal shape. |
-| bbs-cant-wait | I can’t wait | 20×20 block: a tiny rocket trailing a telephone cable, with a dark outline and one clear focal shape. |
-| hint-phone-bill | An itemized bark | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
-| desk-egg-pages | Turn the page | 20×20 block: an open card file with colorful page tabs, with a dark outline and one clear focal shape. |
 | desk-chez | Honk honk | 20×20 block: THE CHEZ seen from the front, with Teddy in the passenger seat, with a dark outline and one clear focal shape. |
-| desk-mailtruck | In the mail | 20×20 block: a small mail truck with a raised envelope emblem, with a dark outline and one clear focal shape. |
-| desk-egg-uv | Secret ink | 20×20 block: a flashlight revealing a felt egg, with a dark outline and one clear focal shape. |

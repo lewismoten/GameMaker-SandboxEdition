@@ -26,7 +26,7 @@ writeFileSync(
   JSON.stringify(
     {
       notice:
-        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi, Loaf, Goat and Smirked badge blocks, the sprite frames (snowplow, sled, turtle, Gwinn, book) and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
+        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi, Loaf, Goat and Smirked badge blocks (and later blocks for the lab, the tailor shop, the hillside and the yard), the sprite frames (snowplow, sled, turtle, Gwinn, book) and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
       badges,
     },
     null,
@@ -166,7 +166,7 @@ It also drew the six new A Fly Named Carl blocks (a backpack with a game control
 tall phone, a winged parcel and a mail jeep) as scenery in the living room and the yard, and four new Great Dairy Reckoning blocks
 (a gold cup, a silver cup marked 3, a rolled magazine and a glow-in-the-dark clock) as scenery in the kitchen and bedroom.
 It also drew four new Needle blocks (a brass compass over a winding route, a folded map, a ruler and a triangle, and glasses over
-three color swatches) as scenery in the tailor's shop.
+three color swatches) as scenery in the tailor's shop, and four more Certified Rat Tickler blocks (Teddy and a felt egg in a frame, a rocket trailing a phone cord, a card-file box with page tabs and a UV flashlight lighting an egg) as scenery on the lab's walls. Later it drew a robot cranking a film projector and a ringing phone with a bill slip (the tailor's shop), a film strip (Loaf's hillside) and a mail truck (Carl's yard).
 It also drew a new Risi block (a small library front with columns, steps and a scroll) as scenery in the rooftops.
 It also drew two new Loaf blocks (northern lights in green and violet over snowy hills, and a snail with a half-finished progress bar on its shell) as scenery in the way home and the hillside.
 It also drew two new Goat blocks (a shooting star with a stepped trail, and a startled goat with a musical note) as scenery in the field and the stable.

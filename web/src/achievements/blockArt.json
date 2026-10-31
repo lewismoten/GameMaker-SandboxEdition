@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi, Loaf, Goat and Smirked badge blocks, the sprite frames (snowplow, sled, turtle, Gwinn, book) and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi, Loaf, Goat and Smirked badge blocks (and later blocks for the lab, the tailor shop, the hillside and the yard), the sprite frames (snowplow, sled, turtle, Gwinn, book) and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -367,6 +367,30 @@
       "set": "tickle",
       "block": "blacklight"
     },
+    "egg-teddy": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQDBQ0KDj///f/x895hoKeqqbDz8vr8++aaTj/96p5qvP//+/LmlkO9aN6AAAAc0lEQVR42n2QgQ7DIAgFD3R2Lf7/9y5Al0Zre4kYL8+I0FprmxcR+bSgkruIVK9/yQ2X34mUNvAqiROT7MSapIMZELJmske6lMKVVNWQ+yBJWY5LoqpgHMP1rj2T+00aJV/fXCqg3ufZ0tM3V1NazLMu+AFYoAidl3cVNAAAAABJRU5ErkJggg==",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "eggTeddy"
+    },
+    "bbs-cant-wait": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUQDBTHy9P///d5hoKeqqbDz8vr8+/rsmH/96rDQTx5qvPHx88BlxQ2AAAAiUlEQVR42l2QUQ4DIQhEp8Cwtb3/fRtGXN3yQczLG1BBklnNySB0Uhd2khjYMKeJMQYYgkoLmhnaDMnOgH0MmQWDh/m6zagRf3CZGLDav2BMyIuC/qi3OvpCpAdRFex7hmYmiHwukkY27HwBwVzm1Fp2ZNyE8+foa9LSYsJvw71zQwV4xKvOd/0AKGIFsTfPQ4EAAAAASUVORK5CYII=",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "rocketCord"
+    },
+    "desk-egg-pages": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEUQDBSyZdN5hoKeqqbDz8vr8+9pRSSaaTjLjlFZkk3/96rDQTxVfcP//++ZL7xQAAAAbklEQVR42o3OgQrEIAwD0JjF29bN///dIypjqAcXRNtHFSFJ2RulTTVEO7MRAF7olsJ5ut0qZiGio4eNLhqWgpSQK16XW6CjXnjf3kvp2OolPksEOSKJdY4pAPYpD7ZbI0ZE4J/J4c3PlB/f5CJf7pQHIyEzMEoAAAAASUVORK5CYII=",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "cardFile"
+    },
+    "desk-egg-uv": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUQDBR5PJayZdP/x8+Cjp6yusfj6/N5hoKeqqbDz8vr8+++/46m2//z+///96q5yRxHAAAAjklEQVR42mWPWQ4DMQhDTWkKpsv9jzsCkkmk+iOgJ2MISDLyMdJZMnQNYHYbBjGqS68blsaDa96AV6qgF4ww4JlqZ7T1hCKyFu1Mae2THANJgCywFgATgeoHIujvZJIT+lNVCLiWGgOqN5xOlvPdMG5I6Fcr83CSc3v4AYN16rpzOukN4xwneUD3E9qfRC7PUgmw0rsbTAAAAABJRU5ErkJggg==",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "uvEgg"
+    },
     "desk-degauss": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUQDBR5hoKeqqbDz8vr8+++/47/96rDQTx5qvO+tpbf28P//++KrUbXAAAAdUlEQVR42n3Q2w7EIAgEUMYBL93//98GaV22azoPGk4IEoUk1Q+QhTOQuHUiv/h5pDgevxkMlJRj6MIecVydvXcz+0OrtbpmtNqaayBwo7RAQKibzreZu9c3y+eYd2oZj6yvK5xlfKmvFHwhF+aZEwEgT/T6BLPcCGVL9RhOAAAAAElFTkSuQmCC",
       "game": "tickle",
@@ -535,6 +559,12 @@
       "set": "carlYard",
       "block": "mailJeep"
     },
+    "desk-mailtruck": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEWez/O23/cQDBQYLGE4VY5dgrqCqufLSUHf39v///uSkprHx8/n7/eW0//rz4plfuXzAAAAhUlEQVR42m2QWQ7DMAgFCSnFgJP7H7di8ZKo8+PnYZFsODbgdR7/irgz5XexJM0+2qWKo3juUtyquPSBkqLuQ7bWclP0yexEEZdmJlzyukomz86By6oTnQMEZGZGRiK6byI/ozOGPk6m2tnnwl4fgth7zxdUAjOLutlKoKoxp7oS5EUHkX5/xgbXeIOQ8gAAAABJRU5ErkJggg==",
+      "game": "carl",
+      "set": "carlYard",
+      "block": "mailTruck"
+    },
     "finish-desk": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUQDBRdOByCTSiibTw4VY5dgrqWLCjLSUG6urrf39v///tdYWXrz4r/+8co53kNsn9tAAAAd0lEQVR42nWPWQ6AIAwFnwUtz4X7H9dQEKjG+SAwGTYs+CBYsL8wSZI2GJlN2iYepDLn7MqDqjrKjlpQZEopPRfb/E+G8HplKFKwTiBILW11XVXWEr6EVOlpZZzoZRxZHCW0gbncTmPrpRTZQOzvdGc+P/LfFLkBiZgFqLfliV4AAAAASUVORK5CYII=",
       "game": "carl",
@@ -607,6 +637,18 @@
       "set": "needleTailor",
       "block": "seenGlasses"
     },
+    "watch-bot": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEWCotemut/Hy9cUDAiq5/PDRTSmpqrT09e2usfv8/vLojz/73ncWKQ+AAAAl0lEQVR42lWQgQ6EMAhDS3vjtuP///dC3YzW2CzPMhCAHGOQJNqiX4AxxggGwdgP+rucAQ8FZDEoKcIGaK21FNScU7aGv7V+Mpu2qTupRjZDK97JM8f7zivp7nR3AsrMVOiW58wxUtR3aycbqqrSknTKq/EFP0+YT2iV8iRd3v8tVtXp3o08nbcU+9TVHntv3rvHY9/36Q/BdQXUPWzvBgAAAABJRU5ErkJggg==",
+      "game": "needle",
+      "set": "needleTailor",
+      "block": "robotCrank"
+    },
+    "hint-phone-bill": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWCotemut/Hy9cUDAjDRTT3YUn///t5eYL/73mLIBmTAAAAgUlEQVR42m1QAQ4DIQijLXP8/8ULILrLVmNsSgsRMw6KIa8Zg6hjAapgFtsIY0BrrSULItqZbItZr17IeobfGcf0RHCcoyHZdkoiCpJmkL5xnK8LTc+H+DdOubv/iDeeVN2z/y73Kq8k2PtqUS3O3x5OXmep9R7nY3rv3oxnS4d9APDRBOTpudv/AAAAAElFTkSuQmCC",
+      "game": "needle",
+      "set": "needleTailor",
+      "block": "phoneBill"
+    },
     "desk-aurora": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDAg4JBySrk2202E8bTBdlkWCvlk8GEV5QYa2bcvb08v///cCURfKAAAAcklEQVR42m3MCw7EIAhF0TcoH2X/+50IVNPGS9KSE1roJah6bm7DxsZqLLQ4wYvqFjqsPj2MfcPCwvmLB4OEpTAW4TOmAMt3cJC+SC0msQGgxo1eE0h37KsHe+J6AcU99zTAs9g2zcwd6xHNE+Yl/C79AfowCPO4gl12AAAAAElFTkSuQmCC",
       "game": "loaf",
@@ -618,6 +660,12 @@
       "game": "loaf",
       "set": "loaf",
       "block": "snail"
+    },
+    "download-mp4": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEV9uu+ez/fD3/sUDAjPhjz7145dlkWWWTh5quf///fn8/dBdZ5dXWHLy8/325oT8yfGAAAAbUlEQVR42q2QSQ4CMQwEYyrEWWj+/9xRhjBrDhxoWbJUbi9ysIPCJdus+AN83WQWKOUYHydnGSvMOUNrDdxdkujwvUMJEMNZaoP4FN2pAWutEBErDqSURnuMm3OH7nxnntXX349ndvw/XjdhjwWP8gZ3x4qgsgAAAABJRU5ErkJggg==",
+      "game": "loaf",
+      "set": "loaf",
+      "block": "filmStrip"
     },
     "desk-star": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUQCBQUHFXLmlnny5b/+9Pn377///82lfydAAAAaUlEQVR42n2PAQ7AIAgDCxX+/+QF1ClkWU0MnqUoIH/LTo1y429lx+FozpDlfuW4u5m5+82xYJ2SNNnhRLi6c57vTBLAeN8zf8IxxkmXEBlQtha80YSq+gFJihSoWqElDGTNKb15T296AKGiAh9Rw2+/AAAAAElFTkSuQmCC",
