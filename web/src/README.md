@@ -159,7 +159,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   EGG.EXE.
 - [`tinHearts/`](tinHearts/README.md): the tin heart hunt and its trophy.
 - [`scoreTrophies/`](scoreTrophies/README.md): the desk's two score trophies.
-- [`piggyBank/`](piggyBank/README.md): money left when a catalog game is won.
+- [`fortKnox/`](fortKnox/README.md): money left when a catalog game is won, and Teddy's toy safe with its treat store.
 
 ### The Guides, the paper in the boxes and the magazine
 
