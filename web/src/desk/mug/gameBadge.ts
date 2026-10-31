@@ -29,6 +29,8 @@ export interface BadgeLook {
   title: Box;
   /** The middle of the medallion across the screen (it is the screen's full height); the screen's middle if left out. */
   centerX?: number;
+  /** The middle of the medallion down the screen; the screen's middle if left out. Less than the middle moves the picture down (the screen's top row fills what's above it). The title keeps its place. */
+  centerY?: number;
   /** Which side the hero stands on; right if left out. */
   side?: 'left' | 'right';
   /** Bits of the screen to paint out in the color round them, such as small print the medallion would cut through. */
@@ -37,6 +39,10 @@ export interface BadgeLook {
   maker?: string;
   /** The title box as it is, scene and all, on the ribbon: for lettering over a picture that can't be told from what's behind it (at most 300 wide). */
   strip?: boolean;
+  /** The screen's top `rows` rows painted out of the picture (not the title) with a mirror of the rows beneath, so a title shifted down by centerY leaves no ghost; columns `from` to `to` (a seed, say) take their left neighbor's color instead. */
+  clearTop?: [rows: number, from: number, to: number];
+  /** No ribbon: the title's lettering this many times its size (1.2 to 1.6), outlined so it reads on any background, over the picture and the ring. Gaps inside the lettering are filled in. */
+  overlay?: number;
 }
 
 interface BoxColors {
@@ -74,6 +80,52 @@ export function rgb(hex: string, k = 1): number {
 export function cropCenterX(screenW: number, centerX?: number): number {
   const r = Math.min(PIC_R, Math.floor(screenW / 2));
   return Math.max(r, Math.min(screenW - r, Math.round(centerX ?? screenW / 2)));
+}
+
+/** `src` (see-through is 0) `k` times its size by nearest pixel, k any positive number. */
+export function scaledBy(src: Rgba, k: number): Rgba {
+  const out = blank(Math.round(src.width * k), Math.round(src.height * k));
+  for (let y = 0; y < out.height; y++)
+    for (let x = 0; x < out.width; x++)
+      out.data[y * out.width + x] = src.data[Math.min(src.height - 1, Math.floor(y / k)) * src.width + Math.min(src.width - 1, Math.floor(x / k))];
+  return out;
+}
+
+/** `solid` (1 where there is lettering, `w` wide) with small gaps closed (a closing by `r` pixels) and every pocket the outside can't reach filled. */
+export function closedMask(solid: Uint8Array, w: number, r: number): Uint8Array {
+  const h = solid.length / w;
+  const swell = (d: Uint8Array, want: number) => {
+    const out = new Uint8Array(w * h);
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) {
+        let hit = false;
+        for (let dy = -r; dy <= r && !hit; dy++)
+          for (let dx = -r; dx <= r && !hit; dx++) {
+            const [nx, ny] = [x + dx, y + dy];
+            if (nx >= 0 && ny >= 0 && nx < w && ny < h) hit = d[ny * w + nx] === want;
+          }
+        out[y * w + x] = want ? +hit : +!hit;
+      }
+    return out;
+  };
+  const out = swell(swell(solid, 1), 0);
+  // what the outside reaches through the gaps stays open; the rest is filled
+  const open = new Uint8Array(w * h);
+  const queue: number[] = [];
+  const visit = (i: number) => {
+    if (!open[i] && !out[i]) [(open[i] = 1), queue.push(i)];
+  };
+  for (let x = 0; x < w; x++) [visit(x), visit((h - 1) * w + x)];
+  for (let y = 0; y < h; y++) [visit(y * w), visit(y * w + w - 1)];
+  for (let k = 0; k < queue.length; k++) {
+    const i = queue[k];
+    const [x, y] = [i % w, Math.floor(i / w)];
+    if (x > 0) visit(i - 1);
+    if (x < w - 1) visit(i + 1);
+    if (y > 0) visit(i - w);
+    if (y < h - 1) visit(i + w);
+  }
+  return out.map((v, i) => +(v === 1 || !open[i]));
 }
 
 /**
@@ -318,8 +370,10 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   const shade = rgb(bg, 0.6);
   const ink = rgb(colors.ink ?? '#ffffff');
   const pixels = paintOut(screen, look.hide ?? []);
+  const pic = look.clearTop ? mirroredTop(pixels, screen.width, ...look.clearTop) : pixels;
   const sx = cropCenterX(screen.width, look.centerX);
   const sy = Math.round(screen.height / 2);
+  const py = Math.round(look.centerY ?? sy);
   // the medallion: the screen inside, then a thin ring of the box's background, its ink, the accent and an outline
   const rings: [r: number, color: number][] = [
     [PIC_R + 2, fill],
@@ -329,8 +383,9 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   ];
   medallion(out, BADGE_CX, BADGE_CY, PIC_R, rings, (dx, dy) => {
     const ix = sx + dx;
-    const iy = sy + dy;
-    return ix >= 0 && iy >= 0 && ix < screen.width && iy < screen.height ? lut[pixels[iy * screen.width + ix]] : fill;
+    // above or below the screen, its nearest row goes on
+    const iy = Math.max(0, Math.min(screen.height - 1, py + dy));
+    return ix >= 0 && ix < screen.width ? lut[pic[iy * screen.width + ix]] : fill;
   });
   const left = look.side === 'left';
   // the bottom scroll, over the screen's own copyright line, a little away from the hero
@@ -342,7 +397,19 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   text(out, maker, sMid - maker.length * 4, sTop + 4, ink);
   // the title's lettering, across the middle on a ribbon, as high as the screen has it
   const t = look.strip ? wholeBox(screen, look.title) : titleMask({ ...screen, pixels }, look.title);
-  if (t) {
+  if (t && look.overlay) {
+    // no ribbon: the lettering with its gaps and counters filled from the screen, bigger, in a dark, a white and a dark outline, over the ring
+    const solid = closedMask(
+      Uint8Array.from(t.mask, (m) => +(m === 1)),
+      t.w,
+      3,
+    );
+    const letters = blank(t.w, t.h);
+    for (let i = 0; i < solid.length; i++) if (solid[i]) letters.data[i] = lut[pixels[(t.y + Math.floor(i / t.w)) * screen.width + t.x + (i % t.w)]];
+    const big = outlined(scaledBy(letters, look.overlay), [OUTLINE, WHITE, OUTLINE]);
+    const cy = BADGE_CY - (sy - t.y) - 1 + t.h / 2;
+    stamp(out, big, Math.round(BADGE_CX - big.width / 2), Math.round(cy - big.height / 2));
+  } else if (t) {
     const letters = blank(t.w, t.h);
     for (let y = 0; y < t.h; y++)
       for (let x = 0; x < t.w; x++) {
@@ -353,7 +420,8 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
     const width = Math.min(BADGE_W - 2 * TAIL - 4, Math.max(lined.width + 10, 2 * RING + 16));
     const lx = Math.round(BADGE_CX - lined.width / 2);
     const ly = BADGE_CY - (sy - t.y) - 1;
-    ribbon(out, Math.round(BADGE_CX - width / 2), Math.round(BADGE_CX + width / 2), Math.max(1, ly - 3), ly + lined.height + 3, fill, accent, shade);
+    if (!look.overlay)
+      ribbon(out, Math.round(BADGE_CX - width / 2), Math.round(BADGE_CX + width / 2), Math.max(1, ly - 3), ly + lined.height + 3, fill, accent, shade);
     stamp(out, lined, lx, ly);
   }
   // the hero, as big as fits and facing in, outlined dark then white, feet below the ring
@@ -364,6 +432,16 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
     const fig = outlined(big, [OUTLINE, OUTLINE, WHITE, WHITE]);
     const fx = left ? 0 : BADGE_W - fig.width;
     stamp(out, fig, fx, BADGE_CY + RING + FEET + 4 - fig.height);
+  }
+  return out;
+}
+
+/** `px` (a screen `w` wide) with its top `rows` rows mirrored from the rows beneath; columns `from` to `to` copy the column before them. */
+function mirroredTop(px: Uint8Array, w: number, rows: number, from: number, to: number): Uint8Array {
+  const out = px.slice();
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < w; x++) out[y * w + x] = px[(2 * rows - 1 - y) * w + x];
+    for (let x = from; x < to; x++) out[y * w + x] = out[y * w + from - 1];
   }
   return out;
 }

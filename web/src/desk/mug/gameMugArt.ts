@@ -18,13 +18,27 @@ export interface GameMug extends BadgeLook {
   bizarre?: boolean;
 }
 
-/** The games, in the box's order. */
+/** The games, in the box's order, except that the three "Teddy's Little ... Adventure" games (teddy, teddy2, teddy3) sit together; the viewer lists them in this order within their group. */
 export const GAME_MUGS: GameMug[] = [
   { game: 'maximus', hero: 'courier', title: [0, 16, 320, 94], centerX: 205 },
   { game: 'teddy', hero: 'teddy', title: [16, 0, 304, 82], centerX: 200, side: 'left' },
+  { game: 'teddy2', hero: 'teddy', title: [6, 0, 314, 80], centerX: 212, strip: true, hide: [[40, 182, 290, 200]] },
+  { game: 'teddy3', hero: 'teddy', title: [6, 0, 314, 80], centerX: 170, strip: true, hide: [[40, 182, 290, 200]] },
   { game: 'year2000', hero: 'dex', title: [8, 2, 312, 90], centerX: 160 },
   { game: 'blaster', hero: 'ship', title: [4, 6, 316, 90], centerX: 160 },
-  { game: 'logic', hero: 'watt', title: [6, 10, 312, 86], centerX: 170, side: 'left', hide: [[0, 0, 112, 10]] },
+  {
+    game: 'logic',
+    hero: 'watt',
+    title: [6, 10, 312, 86],
+    centerX: 170,
+    side: 'left',
+    hide: [
+      [0, 0, 112, 10],
+      // Ohm beside his own speech bubble would echo the hero in front
+      [40, 102, 97, 170],
+      [97, 150, 108, 170],
+    ],
+  },
   { game: 'sleuth', hero: 'ada', title: [36, 0, 286, 73], centerX: 160, hide: [[94, 64, 226, 73]] },
   { game: 'snowbound', hero: 'kid', title: [6, 10, 314, 82], centerX: 160 },
   {
@@ -38,14 +52,22 @@ export const GAME_MUGS: GameMug[] = [
       [244, 96, 320, 120],
     ],
   },
-  { game: 'brief', hero: 'joe', title: [104, 4, 312, 66], centerX: 190, side: 'left', hide: [[0, 0, 104, 14]] },
-  { game: 'depth', hero: 'far', title: [56, 40, 264, 112], centerX: 160, hide: [[60, 176, 260, 200]] },
+  { game: 'brief', hero: 'joe', title: [104, 4, 312, 66], centerX: 212, side: 'left', hide: [[0, 0, 104, 14]] },
+  { game: 'depth', hero: 'far', title: [56, 40, 264, 112], centerX: 160, overlay: 1.4, hide: [[60, 176, 260, 200]] },
   { game: 'realm', hero: 'pip', title: [8, 0, 308, 62], centerX: 160, strip: true, hide: [[0, 182, 320, 200]] },
-  { game: 'teddy2', hero: 'teddy', title: [6, 0, 314, 80], centerX: 170, strip: true, hide: [[40, 182, 290, 200]] },
-  { game: 'teddy3', hero: 'teddy', title: [6, 0, 314, 80], centerX: 170, strip: true, hide: [[40, 182, 290, 200]] },
   // The Bard of Bizarre's, in his collections' order (project/bizarre.ts); every title screen ends in a small-print line
   { game: 'goat', hero: 'goat', title: [28, 0, 292, 52], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
-  { game: 'mustard', hero: '', title: [4, 4, 316, 30], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  {
+    game: 'mustard',
+    hero: '',
+    title: [4, 4, 316, 30],
+    centerX: 160,
+    centerY: 90,
+    clearTop: [28, 124, 170],
+    hide: [[0, 183, 320, 200]],
+    maker: 'THE BARD OF BIZARRE',
+    bizarre: true,
+  },
   { game: 'needle', hero: '', title: [10, 134, 310, 180], centerX: 160, strip: true, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
   { game: 'loaf', hero: 'loaf', title: [48, 4, 272, 50], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
   { game: 'carl', hero: 'carl', title: [30, 4, 290, 60], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
