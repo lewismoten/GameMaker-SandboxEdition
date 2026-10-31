@@ -442,7 +442,11 @@ export function fileField(
           },
         },
         exists
-          ? fileThumb(name, project.files.get(name), { files: project.files, palette: project.paletteFor(name).palette, patches: companionPatches(project.companion, project.gam) })
+          ? fileThumb(name, project.files.get(name), {
+              files: project.files,
+              palette: project.paletteFor(name).palette,
+              patches: companionPatches(project.companion, project.gam),
+            })
           : h('span', { class: 'thumb icon' }, name ? '⚠' : '＋'),
         h(
           'span',

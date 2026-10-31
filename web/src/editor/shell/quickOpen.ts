@@ -84,7 +84,11 @@ export function quickOpen(project: Project): Promise<string | undefined> {
           if (!file || !entry.target.isConnected) continue;
           let thumb: HTMLElement;
           try {
-            thumb = fileThumb(file, project.files.get(file), { files: project.files, palette: project.paletteFor(file).palette, patches: companionPatches(project.companion, project.gam) });
+            thumb = fileThumb(file, project.files.get(file), {
+              files: project.files,
+              palette: project.paletteFor(file).palette,
+              patches: companionPatches(project.companion, project.gam),
+            });
           } catch {
             thumb = fileThumb(file, project.files.get(file), { files: project.files });
           }

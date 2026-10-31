@@ -69,7 +69,11 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
       card(
         'check',
         'Level check',
-        fileThumb(maps[0], files.get(maps[0]), { files, palette: project.paletteFor(maps[0]).palette, patches: companionPatches(project.companion, project.gam) }),
+        fileThumb(maps[0], files.get(maps[0]), {
+          files,
+          palette: project.paletteFor(maps[0]).palette,
+          patches: companionPatches(project.companion, project.gam),
+        }),
         status,
         'A bot looks for places a player gets stuck or can’t reach, and draws a heat map of where it went. It runs inside each level’s map editor.',
         firstUnchecked ? `Check ${firstUnchecked}…` : `Open ${target}…`,
