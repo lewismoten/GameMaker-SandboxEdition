@@ -2,7 +2,7 @@
 // web/src/editor/core/gameControls.ts) against its built disk/: the keys each level's character uses
 // (the editor's gameKeyMap), the joystick buttons bound, and the counters in use (counterUses: the
 // repetition counters 5-19 a sequence is limited by or a block changes, and the hidden counters 20-24
-// that a block changes). Reports what is used but not described, described but not used, and text over the limits.
+// that a block changes) and the custom sound slots a character plays (soundUses). Reports what is used but not described, described but not used, and text over the limits.
 // Exits 1 on any. A game without controls.json is reported (named) or skipped (none named).
 //   npx vite-node ../games/kit/controlsCheck.ts [<id>...]   (every game with an about.json when none)
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
@@ -12,13 +12,16 @@ import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { GameFiles } from '../../web/src/project/files';
 import { gameKeyMap } from '../../web/src/editor/keymap/keyMap';
 import { counterUses } from '../../web/src/editor/shell/counterUse';
+import { soundUses } from '../../web/src/editor/shell/soundUse';
+import { SOUND_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
-const LIMITS = { short: 32, long: 240, counter: 80 };
+const LIMITS = { short: 32, long: 240, counter: 80, sound: 40 };
 type Raw = {
   keys?: Record<string, { short?: string; long?: string }>;
   joystick?: Record<string, { short?: string; long?: string }>;
   counters?: Record<string, string>;
+  sounds?: Record<string, string>;
 };
 
 /** Every problem with a game's controls.json, as lines. */
@@ -65,6 +68,12 @@ function problems(id: string): string[] {
   compare('counter', new Map([...usedCounters].map((c) => [c, c])), new Set(Object.keys(counters)));
   for (const [k, n] of Object.entries(counters))
     if (typeof n !== 'string' || !n.trim() || n.length > LIMITS.counter) out.push(`counter ${k}: name empty or over ${LIMITS.counter} characters`);
+  // A custom sound slot (past PLAYGAME's named ones) that a character plays must be named; a name for any other slot is stray.
+  const usedSounds = new Set([...soundUses({ files })].filter(([slot, u]) => slot >= SOUND_NAMES.length && u.characters.length).map(([slot]) => String(slot)));
+  const sounds = raw.sounds ?? {};
+  compare('sound', new Map([...usedSounds].map((c) => [c, c])), new Set(Object.keys(sounds)));
+  for (const [k, n] of Object.entries(sounds))
+    if (typeof n !== 'string' || !n.trim() || n.length > LIMITS.sound) out.push(`sound ${k}: name empty or over ${LIMITS.sound} characters`);
   return out;
 }
 

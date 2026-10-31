@@ -129,8 +129,8 @@ Checking the games:
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
 - `controlsCheck.ts` — `npx vite-node ../games/kit/controlsCheck.ts [<id>...]`: a game's `controls.json` (keys by scan code, joystick
-  buttons, counters by meter; the shape of `editor/core/gameControls.ts`) describes exactly what its built disk uses, by the
-  editor's `gameKeyMap` and `counterUses`: lists used-but-not-described, described-but-not-used and text over the limits (32/240/80).
+  buttons, counters by meter, sound names by slot; the shape of `editor/core/gameControls.ts`) describes exactly what its built disk uses, by the
+  editor's `gameKeyMap`, `counterUses` and `soundUses` (a custom slot past the engine's nine that a character plays must be named): lists used-but-not-described, described-but-not-used and text over the limits (32/240/80, sound names 40).
 - `saveSignCheck.ts` — `npx vite-node ../games/kit/saveSignCheck.ts [<id>...]`: every felt-egg game has exactly one save
   sign, where its about.json says, on the egg's map or one it links to; no other game has one.
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
