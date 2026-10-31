@@ -10,6 +10,8 @@ import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/
 import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BARDLOGO, bardIntroFli } from '../kit/bard';
 import { clipEntries, clipEveryList, fliClips } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { Disk } from '../kit/disk';
@@ -31,18 +33,22 @@ import { buildFelixBlocks, buildMarcusBlocks, buildMonsterBlocks } from './src/s
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
+/** Six songs have many small rewards; this keeps the complete Roman tour comparable with its peers. */
+const SCORE_SCALE = 0.55;
+const scoreBlocks = (blocks: Block[]) => blocks.map((b) => ({ ...b, scorePts: Math.round(b.scorePts * SCORE_SCALE) }));
+const scoreMonsters = (monsters: Monster[]) => monsters.map((m) => ({ ...m, upscore: Math.round(m.upscore * SCORE_SCALE) }));
 
 /** The registration fee the 1995 README asks (Game-Maker's 1994 license: shareware asks at least $5). */
 const PRICE = '$5';
 
 const base = buildPalette('plain');
 const books = Object.fromEntries(SETS.map((s) => [s, buildBlocks(s, base)])) as Record<(typeof SETS)[number], ReturnType<typeof buildBlocks>>;
-for (const s of SETS) disk.put(`${s}.bbl`, serializeBlocks(books[s].finish()));
+for (const s of SETS) disk.put(`${s}.bbl`, serializeBlocks(scoreBlocks(books[s].finish())));
 const mb = buildMonsterBlocks(base);
 const heroes = { marcus: buildMarcusBlocks(base), felix: buildFelixBlocks(base) };
-disk.put('risi.mbl', serializeBlocks(mb.blocks));
+disk.put('risi.mbl', serializeBlocks(scoreBlocks(mb.blocks)));
 for (const [who, cb] of Object.entries(heroes)) {
-  disk.put(`${who}.cbl`, serializeBlocks(cb.blocks));
+  disk.put(`${who}.cbl`, serializeBlocks(scoreBlocks(cb.blocks)));
   disk.put(`${who}.chr`, serializeCharacter(buildHero(cb, who as keyof typeof heroes)));
 }
 for (const l of LEVELS) disk.put(`${l.snd}.snd`, serializeSoundSet(buildSoundSet(l.snd)));
@@ -59,7 +65,7 @@ built.forEach(({ l, m }, i) => {
   const song = songFile(l.song);
   disk.put(`${l.file}.pal`, serializePalette(pal.pal));
   disk.put(`${l.file}.map`, serializeMap(map));
-  disk.put(`${l.file}.mon`, serializeMonsters(buildMonsters(mb, l.mons)));
+  disk.put(`${l.file}.mon`, serializeMonsters(scoreMonsters(buildMonsters(mb, l.mons))));
   disk.put(`${song}.cmf`, songs[song]);
   disk.put(`act${i + 1}.lst`, serializeSlideList([{ name: `card${i + 1}.fli`, pause: 3 }]));
   const [vx, vy] = l.view;
