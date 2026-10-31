@@ -187,7 +187,8 @@ main.ach-page .ach-back {
 
 .ach-progress {
   display: grid;
-  grid-template-columns: 1fr auto;
+  /* the bar keeps at least half the row; a long count ("0 of 1000 pretend cents") wraps instead */
+  grid-template-columns: minmax(50%, 1fr) minmax(0, max-content);
   align-self: end;
   align-items: center;
   gap: 8px;
