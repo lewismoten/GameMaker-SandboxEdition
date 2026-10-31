@@ -9,9 +9,12 @@ import { PALETTE_SIZE } from '@lewismoten/gamemaker-sandbox-engine/formats/palet
 
 const pal = (rgb: [number, number, number]): Uint8Array => {
   const p = new Uint8Array(PALETTE_SIZE);
-  for (let i = 0; i < 256; i++) p.set(rgb, i * 3);
+  for (let i = 0; i < 255; i++) p.set(rgb, i * 3);
+  p.set([63, 0, 63], 255 * 3); // the see-through color, so the palette is not one solid color
   return p;
 };
+const dim = pal([1, 1, 1]);
+dim.set([3, 3, 3], 3);
 const used = new Uint8Array([1, 2, 3, 3, 0, 255]);
 
 describe('readable palette', () => {
@@ -29,11 +32,24 @@ describe('readable palette', () => {
     expect(mostReadable([pal([0, 0, 0]), half], new Uint8Array([1, 2]))).toBe(1);
     expect(mostReadable([], used)).toBe(0);
   });
+  it('paletteFor skips a solid-color .pal and prefers the palette scenes use most', () => {
+    const game = newGame('T');
+    game.scenes[0].files[0] = 'c.pal';
+    const files = new GameFiles([
+      ['t.gam', serializeGame(game)],
+      ['a.pal', new Uint8Array(PALETTE_SIZE)],
+      ['b.pal', dim],
+      ['c.pal', pal([40, 30, 20])],
+    ]);
+    expect(Project.fromFiles(files).paletteFor('x.cbl').source).toBe('c.pal');
+    files.delete('c.pal');
+    expect(Project.fromFiles(files).paletteFor('x.cbl').source).toBe('b.pal');
+  });
   it('paletteFor skips a dark .pal when the sprite colors are known', () => {
     const game = newGame('T');
     const files = new GameFiles([
       ['t.gam', serializeGame(game)],
-      ['a.pal', pal([0, 0, 0])],
+      ['a.pal', dim],
       ['b.pal', pal([40, 30, 20])],
     ]);
     const p = Project.fromFiles(files);

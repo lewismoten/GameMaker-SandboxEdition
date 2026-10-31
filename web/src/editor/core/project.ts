@@ -6,7 +6,7 @@ import { parseGame, serializeGame, newGame, type Game } from '@lewismoten/gamema
 import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { debounce } from './ui';
-import { mostReadable } from './readablePalette';
+import { isSolidPalette, mostReadable } from './readablePalette';
 import { emptyCompanion, getSection, renameInCompanion, setSection, type Companion } from '../../project/companion';
 import { editedFile, unlockAchievement } from '../../achievements';
 import { MEMORY_SECTIONS, refuse, type ReadOnlyGuard } from './readOnly';
@@ -199,8 +199,17 @@ export class Project {
         return { palette: parsePalette(this.files.get(scene.files[0])!), source: scene.files[0] };
     }
     // A map: the scene that uses its block set.
-    const pals = this.files.byExtension('pal');
+    let pals = this.files.byExtension('pal');
     if (pals.length) {
+      // a palette that is one solid color stands for nothing: use the others, the one the scenes use most first
+      const usable = pals.filter((p) => !isSolidPalette(this.files.get(p)!));
+      if (usable.length) {
+        const uses = (p: string) => game.scenes.filter((sc) => normalize(sc.files[0] ?? '') === normalize(p)).length;
+        pals = usable
+          .map((p, i) => ({ p, i }))
+          .sort((a, b) => uses(b.p) - uses(a.p) || a.i - b.i)
+          .map((x) => x.p);
+      }
       // with the sprite's colors known, skip a palette that would show it dark on dark
       const i = used
         ? mostReadable(

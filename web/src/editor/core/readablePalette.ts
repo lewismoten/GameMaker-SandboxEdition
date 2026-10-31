@@ -31,3 +31,9 @@ export function mostReadable(candidates: Uint8Array[], used: ArrayLike<number>):
   }
   return best;
 }
+
+/** True when every one of the 256 colors is the same, so the palette shows as one solid block. */
+export function isSolidPalette(bytes: Uint8Array): boolean {
+  for (let i = 3; i < Math.min(bytes.length, 768); i++) if (bytes[i] !== bytes[i % 3]) return false;
+  return true;
+}
