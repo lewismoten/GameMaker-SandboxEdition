@@ -90,7 +90,8 @@ describe('each game’s badge', () => {
       expect(cropCenterX(img.width, m.centerX)).toBe(m.centerX ?? img.width / 2);
       const t = titleMask(img, m.title)!;
       expect(t.w).toBeGreaterThan(150);
-      expect(t.h).toBeGreaterThan(20);
+      // at least one line of lettering (mustard's single line is about 14 px, its box kept clear of the seed)
+      expect(t.h).toBeGreaterThan(10);
       // the lettering fits across the badge between the ribbon's tails
       expect(t.w + 2).toBeLessThanOrEqual(BADGE_W - 32);
     });
