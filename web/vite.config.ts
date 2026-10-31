@@ -307,8 +307,10 @@ export default defineConfig({
   server: {
     // Editing this config or the build-time plugins in scripts/ would restart the dev
     // server, and Vite's client then reloads every open page (switching off the desk PC
-    // mid-session). Don't watch them: restart the dev server by hand to pick them up.
-    watch: { ignored: ['**/vite.config.ts', '**/scripts/**'] },
+    // mid-session). Don't watch them: restart the dev server by hand to pick them up. Nor the
+    // game builds' half-written disk files (.NAME.pid.part), which come and go while games
+    // rebuild in the background and would otherwise stop the watcher.
+    watch: { ignored: ['**/vite.config.ts', '**/scripts/**', '**/*.part'] },
   },
   test: {
     environment: 'node',
