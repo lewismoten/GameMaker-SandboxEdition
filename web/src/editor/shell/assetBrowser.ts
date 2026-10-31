@@ -8,6 +8,7 @@ import { assetCommands } from './assetCommands';
 import { copiedAsset, onAssetCopy } from './assetClipboard';
 import { assetMenu } from './assetMenu';
 import { fileThumb, KIND_ICON } from '../widgets/thumbs';
+import { companionPatches } from '../../dosPlayer/playerRecord';
 
 interface BrowserHost {
   project: Project;
@@ -48,7 +49,9 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
         const file = pictures.get(entry.target);
         if (!file || !entry.target.isConnected) continue;
         try {
-          clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files, palette: project.paletteFor(file).palette }));
+          const patches = companionPatches(project.companion, project.gam);
+          clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files, palette: project.paletteFor(file).palette, patches }));
+          fillPreview(entry.target as HTMLElement);
         } catch {
           clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files }));
         }
@@ -56,6 +59,24 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     },
     { root: grid, rootMargin: '100px' },
   );
+  /** Scales a small picture up by whole pixels to fill the preview box (larger ones stay shrunk to fit by CSS). */
+  function fillPreview(box: HTMLElement): void {
+    const c = box.querySelector('canvas');
+    const [bw, bh] = [box.clientWidth, box.clientHeight];
+    if (!c || !bw || !bh) return;
+    const k = Math.floor(Math.min(bw / c.width, bh / c.height));
+    if (k >= 2) {
+      c.style.width = `${c.width * k}px`;
+      c.style.height = `${c.height * k}px`;
+      c.style.maxHeight = 'none';
+    }
+  }
+  /** The file a category card shows: for palettes, the one the game's pictures use, never a solid-color one. */
+  function representative(files: string[], k: FileKind): string | undefined {
+    if (k !== 'pal') return files[0];
+    const chosen = project.paletteFor('').source;
+    return files.find((f) => f.toLowerCase() === chosen.toLowerCase()) ?? files[0];
+  }
   function preview(file: string | undefined, k: FileKind): HTMLElement {
     const box = h('span', { class: 'asset-preview', 'aria-hidden': 'true' }, KIND_ICON[k]);
     if (file) {
@@ -150,7 +171,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
           return h(
             'button',
             { type: 'button', class: 'asset-card asset-category', 'data-category': k, onclick: () => host.category(k) },
-            preview(files[0], k),
+            preview(representative(files, k), k),
             h('strong', null, KIND_LABELS[k]),
             h('small', null, files.length ? `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'}` : 'None yet'),
           );

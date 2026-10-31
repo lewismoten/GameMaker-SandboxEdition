@@ -20,9 +20,11 @@ import { paintMusicTimeline } from './musicTimeline';
 import { isCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { parseHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
-import { glyphRows } from '@lewismoten/gamemaker-sandbox-tools/text';
-import { textInk, textPicture } from './textPicture';
+import { textColors, textPicture } from './textPicture';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../project/files';
 
@@ -31,6 +33,8 @@ export interface ThumbSource {
   files: GameFiles;
   /** The palette the file is shown with. */
   palette?: Palette;
+  /** The DOS player's patches (companion), for the text color and the high-score screen. */
+  patches?: PlayerPatches;
 }
 
 /** A fallback icon for each kind, drawn when there is no picture to show. */
@@ -121,7 +125,7 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       case 'bbl':
         return blocksMosaic(parseBlocks(bytes, BACKBL), pal, 16, 4);
       case 'mbl':
-        return blocksMosaic(parseBlocks(bytes, MONBL), pal, 9, 3, true);
+        return blocksMosaic(parseBlocks(bytes, MONBL), pal, 1, 1, true);
       case 'cbl': {
         const picture = characterBlockPicture(src.files, name, bytes);
         const [c] = canvas();
@@ -193,7 +197,17 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       }
       case 'txt': {
         const [c] = canvas(320, 200);
-        paintIndexed(c, textPicture(bytes, pal), 320, 200, pal);
+        // the player's text-pages color if it reads on this palette, else the nearest that does
+        const preferred = src.patches
+          ? Array.from(
+              pal.subarray(
+                playerLook(src.patches).color(pal, 'color.select.textPages') * 3,
+                3 + playerLook(src.patches).color(pal, 'color.select.textPages') * 3,
+              ),
+            )
+          : undefined;
+        const text = textColors(pal, preferred);
+        paintIndexed(c, textPicture(bytes, text.ink), 320, 200, text.palette);
         c.title = 'First text page, on a blank background';
         return c;
       }
@@ -236,21 +250,19 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         return c;
       }
       case 'his': {
-        // the ten names and scores, as the game's high-score screen lists them
+        // the game's own high-score screen, drawn by the DOS player preview over its picture
         const list = parseHighScores(bytes);
-        const px = new Uint8Array(320 * 200);
-        const ink = textInk(pal);
-        list.forEach((e, row) => {
-          const line = `${String(row + 1).padStart(2)} ${e.name.slice(0, 20).padEnd(20)} ${String(e.score).padStart(7)}`;
-          for (let col = 0; col < line.length; col++) {
-            const glyph = glyphRows(line.charCodeAt(col) & 127);
-            for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) if (glyph[y] & (1 << x)) px[(24 + row * 14 + y) * 320 + 16 + col * 9 + x] = ink;
-          }
-        });
         const [c] = canvas(320, 200);
-        paintIndexed(c, px, 320, 200, pal);
         c.setAttribute('role', 'img');
         c.setAttribute('aria-label', `High scores: ${list.filter((e) => e.score).length} of ${list.length} places filled`);
+        const gam = src.files.byExtension('gam')[0];
+        void import('../editors/integrator/dosPlayer/playerPreview')
+          .then(({ drawPreview }) => {
+            const game = parseGame(src.files.get(gam)!);
+            const stem = name.replace(/\.[^.]*$/, '');
+            drawPreview(new Screen(c), src.files, game, stem, playerLook(src.patches), 'hiscores');
+          })
+          .catch(() => undefined);
         return c;
       }
       case 'rec': {
