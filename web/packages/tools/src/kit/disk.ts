@@ -1,5 +1,5 @@
 // Portable DOS disk output: callers own destination, metadata, and version-stamping policy.
-import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdirSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 export class Disk {
   readonly files = new Map<string, Uint8Array>();
@@ -10,15 +10,21 @@ export class Disk {
     this.files.set(name.toLowerCase(), typeof bytes === 'string' ? dosText(bytes) : bytes);
   }
 
-  /** Replace the selected output directory with the collected native files. */
+  /**
+   * Replace the selected output directory's contents with the collected native files. Each file
+   * is written beside its place and renamed over it, and leftovers go last, so a server reading
+   * the folder during a rebuild never finds a file missing or half written.
+   */
   write(dir = this.dir): number {
-    if (existsSync(dir)) rmSync(dir, { recursive: true });
     mkdirSync(dir, { recursive: true });
     let total = 0;
     for (const [name, bytes] of this.files) {
-      writeFileSync(join(dir, name), bytes);
+      const part = join(dir, `.${name}.${process.pid}.part`);
+      writeFileSync(part, bytes);
+      renameSync(part, join(dir, name));
       total += bytes.length;
     }
+    for (const name of readdirSync(dir)) if (!this.files.has(name)) rmSync(join(dir, name), { recursive: true, force: true });
     return total;
   }
 }

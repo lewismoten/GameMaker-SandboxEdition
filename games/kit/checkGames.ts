@@ -29,7 +29,7 @@
 //     --verbose   print every step's output, not only a failing step's last lines
 // Games are those with an about.json; a game marked secret is left out unless named with --game.
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, writeFileSync, readdirSync, readFileSync, rmSync, cpSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdtempSync, writeFileSync, readdirSync, readFileSync, rmSync, cpSync, mkdirSync, renameSync } from 'node:fs';
 import { cpus, tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -130,9 +130,15 @@ async function rebuild(id: string, log: string[]): Promise<Status> {
     }
     const disk = join(gamesDir, id, 'disk');
     if (!problems.length && diskDiff(out, disk).length) {
-      rmSync(disk, { recursive: true, force: true });
+      // file by file, renamed into place, so the dev server never finds disk/ empty
       mkdirSync(disk, { recursive: true });
-      cpSync(out, disk, { recursive: true });
+      const fresh = new Set(readdirSync(out));
+      for (const name of fresh) {
+        const part = join(disk, `.${name}.${process.pid}.part`);
+        cpSync(join(out, name), part, { recursive: true });
+        renameSync(part, join(disk, name));
+      }
+      for (const name of readdirSync(disk)) if (!fresh.has(name)) rmSync(join(disk, name), { recursive: true, force: true });
     }
     return problems.length ? 'FAIL' : 'ok';
   } finally {
