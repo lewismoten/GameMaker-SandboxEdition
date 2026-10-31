@@ -16,6 +16,7 @@ const SUB_CHAPTER: Record<string, string> = {
   fli: 'edit-animation',
   gif: 'edit-animation',
   lst: 'edit-animation',
+  gam: 'edit-integrator',
 };
 
 /** The ids of the chapters to play for the editor page at `hash`, in order. */

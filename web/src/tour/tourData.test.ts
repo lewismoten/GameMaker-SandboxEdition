@@ -39,6 +39,7 @@ const SOURCES: Record<string, string[]> = {
     'editor/editors/animation/scene',
     'editor/editors/picture',
     'editor/editors/slideShow',
+    'editor/editors/integrator',
     'editor/widgets/colorChoice.ts',
     'editor/widgets/filePicker.ts',
     'editor/widgets/panelTabs.ts',

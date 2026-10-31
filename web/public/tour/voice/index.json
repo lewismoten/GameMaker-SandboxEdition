@@ -1175,6 +1175,102 @@
     "hash": "7233bfefbb96",
     "voice": "0448e8049470"
   },
+  "edit-integrator-board": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn points at the board of scene cards",
+    "text": "Each card is a scene, as the player first sees it: the start with its title and menu, every level, and the ending. Drag a card to move it.",
+    "seconds": 8.9,
+    "hash": "af27d6a41774",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-bye": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn says goodbye and walks off",
+    "text": "Case closed. Every scene is where it should be.",
+    "seconds": 3.73,
+    "hash": "d183d8fb8441",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-files": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn points at the scene’s files",
+    "text": "A level’s files: palette, map, block sets, monsters, hero, sounds, music, and the pictures shown before and after it.",
+    "seconds": 7.85,
+    "hash": "c21d9aa418d0",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-hello": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn comes on",
+    "text": "A game is a case with many scenes. The Integrator is the board where I pin them all up and see how they connect.",
+    "seconds": 7.1,
+    "hash": "3840bb7883ff",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-key": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn points at the question mark key",
+    "text": "The question mark explains the board. The arrows are links: gold ones leave the chosen scene, green ones lead into it.",
+    "seconds": 8.05,
+    "hash": "caf1402efb1f",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-links": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn points at the links table",
+    "text": "Links are the exits. Each goes to another scene, from a block on this map to a block on the next. Point one at the winning ending and the game is won.",
+    "seconds": 9.28,
+    "hash": "a2dfe9adcc1a",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-music": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn presses the Music tab",
+    "text": "Music lists each scene’s song, with a play button when its file is in the game.",
+    "seconds": 5.4,
+    "hash": "e7e21c30d8ca",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-player": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn points at the DOS player button",
+    "text": "And this button opens the DOS player, the program that runs the game on a real computer. That is the last stop.",
+    "seconds": 7.55,
+    "hash": "4e58cc36a0e1",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-scene": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn points at the chosen scene’s panel",
+    "text": "Click a card to work on that scene. Rename it here, play from it, make its level card, or delete it.",
+    "seconds": 6.65,
+    "hash": "3a695dc2a3eb",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-screens": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn presses the Screens tab",
+    "text": "Screens lists every title, menu and between-level picture. Click one to jump to the scene that uses it.",
+    "seconds": 7.25,
+    "hash": "cfd4d162b9c6",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-tools": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn points at the board’s tools",
+    "text": "Add level scene starts a new level beside the last. Auto-arrange tidies the cards. PNG saves a picture of the whole board.",
+    "seconds": 8.8,
+    "hash": "8c5643b2069b",
+    "voice": "f969522e51c0"
+  },
+  "edit-integrator-zoom": {
+    "chapter": "edit-integrator",
+    "where": "Editor: Inspector Penn points at the zoom buttons",
+    "text": "Zoom in and out, or Fit to see every scene. Scroll or pinch works too, and the arrow keys step from one scene to the next.",
+    "seconds": 8.28,
+    "hash": "152b765ceb89",
+    "voice": "f969522e51c0"
+  },
   "edit-map-blocks": {
     "chapter": "edit-map",
     "where": "Editor: Dex points at the Blocks tab",

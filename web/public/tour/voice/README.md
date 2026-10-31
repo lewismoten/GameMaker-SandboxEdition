@@ -288,6 +288,23 @@ records every clip again.
 | [edit-animation-bin.ogg](edit-animation/edit-animation-bin.ogg) | Everything the game has that fits in a show is in the bin. Drag it onto the timeline, or tap it to add it after the chosen slide. | Editor: Lewie points at the media bin | 8.55 |
 | [edit-animation-bye.ogg](edit-animation/edit-animation-bye.ogg) | Pictures that move, shows that play. That is my kind of making. Bye now! | Editor: Lewie says goodbye and walks off | 5.44 |
 
+## edit-integrator
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-integrator-hello.ogg](edit-integrator/edit-integrator-hello.ogg) | A game is a case with many scenes. The Integrator is the board where I pin them all up and see how they connect. | Editor: Inspector Penn comes on | 7.10 |
+| [edit-integrator-board.ogg](edit-integrator/edit-integrator-board.ogg) | Each card is a scene, as the player first sees it: the start with its title and menu, every level, and the ending. Drag a card to move it. | Editor: Inspector Penn points at the board of scene cards | 8.90 |
+| [edit-integrator-tools.ogg](edit-integrator/edit-integrator-tools.ogg) | Add level scene starts a new level beside the last. Auto-arrange tidies the cards. PNG saves a picture of the whole board. | Editor: Inspector Penn points at the board’s tools | 8.80 |
+| [edit-integrator-key.ogg](edit-integrator/edit-integrator-key.ogg) | The question mark explains the board. The arrows are links: gold ones leave the chosen scene, green ones lead into it. | Editor: Inspector Penn points at the question mark key | 8.05 |
+| [edit-integrator-zoom.ogg](edit-integrator/edit-integrator-zoom.ogg) | Zoom in and out, or Fit to see every scene. Scroll or pinch works too, and the arrow keys step from one scene to the next. | Editor: Inspector Penn points at the zoom buttons | 8.28 |
+| [edit-integrator-scene.ogg](edit-integrator/edit-integrator-scene.ogg) | Click a card to work on that scene. Rename it here, play from it, make its level card, or delete it. | Editor: Inspector Penn points at the chosen scene’s panel | 6.65 |
+| [edit-integrator-files.ogg](edit-integrator/edit-integrator-files.ogg) | A level’s files: palette, map, block sets, monsters, hero, sounds, music, and the pictures shown before and after it. | Editor: Inspector Penn points at the scene’s files | 7.85 |
+| [edit-integrator-links.ogg](edit-integrator/edit-integrator-links.ogg) | Links are the exits. Each goes to another scene, from a block on this map to a block on the next. Point one at the winning ending and the game is won. | Editor: Inspector Penn points at the links table | 9.28 |
+| [edit-integrator-screens.ogg](edit-integrator/edit-integrator-screens.ogg) | Screens lists every title, menu and between-level picture. Click one to jump to the scene that uses it. | Editor: Inspector Penn presses the Screens tab | 7.25 |
+| [edit-integrator-music.ogg](edit-integrator/edit-integrator-music.ogg) | Music lists each scene’s song, with a play button when its file is in the game. | Editor: Inspector Penn presses the Music tab | 5.40 |
+| [edit-integrator-player.ogg](edit-integrator/edit-integrator-player.ogg) | And this button opens the DOS player, the program that runs the game on a real computer. That is the last stop. | Editor: Inspector Penn points at the DOS player button | 7.55 |
+| [edit-integrator-bye.ogg](edit-integrator/edit-integrator-bye.ogg) | Case closed. Every scene is where it should be. | Editor: Inspector Penn says goodbye and walks off | 3.73 |
+
 ## desk
 
 | Clip | Says | Where | Seconds |
