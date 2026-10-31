@@ -491,12 +491,19 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       window.removeEventListener('resize', onResize);
       unpinch();
       window.removeEventListener('afterprint', afterPrint);
+      window.removeEventListener('gm-tour-act', onTourAct);
       afterPrint();
       film.hide();
       overlay.remove();
       printRoot.remove();
       resolve();
     };
+    // the guided tour lays the red film over the first hidden answer on the page (tour/chapters/box.ts)
+    const onTourAct = (e: Event) => {
+      const answer = stage.querySelector('.rf-code');
+      if ((e as CustomEvent<{ do: string }>).detail.do === 'film-over' && answer) film.over(answer);
+    };
+    window.addEventListener('gm-tour-act', onTourAct);
     const onKey = (e: KeyboardEvent) => {
       if (zoomOpen()) return; // an enlarged screen shot takes the keys
       e.stopImmediatePropagation(); // not for the PC underneath
