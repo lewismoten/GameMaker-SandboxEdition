@@ -12,7 +12,7 @@ import { h } from '../../editor/core/ui';
 import { drawChez } from '../../desk/props/chezArt';
 import { sandboxMarkEl } from '../printables/sandboxMark';
 import { fnv1a } from '../../seededRandom';
-import type { ArtId, WebShot } from './types';
+import type { ArtId, OldWebShot, WebShot } from './types';
 import { deskShotImg } from './deskShot';
 import { dosShotImg } from './dosShot';
 import { blankDiskArt } from './blankDisk';
@@ -51,10 +51,12 @@ function barcode(alt: string): Element {
 const DISK =
   '<path d="M8 4H92a4 4 0 0 1 4 4V92a4 4 0 0 1-4 4H12L4 88V8a4 4 0 0 1 4-4Z" fill="#1d4f9c"/><rect x="26" y="66" width="48" height="30" fill="#c9ccd2"/><rect x="32" y="71" width="12" height="20" fill="#1d4f9c"/><rect x="16" y="8" width="68" height="42" fill="#fff6e0"/><rect x="16" y="14" width="68" height="4" fill="#d9381e"/><rect x="7" y="7" width="6" height="6" fill="#0b1a33"/><rect x="87" y="7" width="6" height="6" fill="#0b1a33"/>';
 const isBnb = (id: ArtId): id is BnbArt => id.startsWith('bnb-');
+const isOldWeb = (id: ArtId): id is `oldweb-${OldWebShot}` => id.startsWith('oldweb-');
 const isWebShot = (id: ArtId): id is `web-${WebShot}` => id.startsWith('web-');
 
 /** A picture for the page; THE CHEZ is drawn on a canvas and handed over as an image (it prints). */
 export function artElement(id: ArtId, alt: string): Element {
+  if (isOldWeb(id)) return h('img', { src: `./magazine/${id}.webp`, alt, width: 640, height: 480, class: 'mag-old-web' });
   if (isWebShot(id)) return webShotImg(id.slice(4) as WebShot, alt);
   if (isBnb(id)) return bnbElement(id, alt);
   switch (id) {

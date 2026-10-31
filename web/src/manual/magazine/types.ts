@@ -160,6 +160,10 @@ export type ShotView = 'title' | 'level' | 'palette' | 'blocks' | 'monsters' | '
 export const WEB_SHOTS = ['games', 'map', 'blocks', 'character', 'monster', 'music', 'scene'] as const;
 export type WebShot = (typeof WEB_SHOTS)[number];
 
+/** Made-up 1996 web pages in a made-up browser (scripts/oldWebShots.ts): public/magazine/oldweb-<name>.webp, 640 x 480. */
+export const OLD_WEB_SHOTS = ['dict', 'yellow', 'gopher'] as const;
+export type OldWebShot = (typeof OLD_WEB_SHOTS)[number];
+
 /**
  * Pictures drawn for the magazine (art.ts), and the photos of the desk and of today's web.
  * The boaster ones are the Sound Boaster ad's (soundCardArt.ts): its card, and a face before and after.
@@ -199,6 +203,7 @@ export type ArtId =
   | 'bnb-tab-right'
   | 'bnb-logo'
   | 'bnb-bitsy'
+  | `oldweb-${OldWebShot}`
   | `web-${WebShot}`;
 
 export interface MagPage {

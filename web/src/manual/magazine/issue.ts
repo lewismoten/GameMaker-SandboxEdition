@@ -22,6 +22,7 @@ import { REVIEWS } from './sections/reviews';
 import { READERS_PICKS } from './sections/readersPicks';
 import { MAXIMUS } from './sections/maximus';
 import { SPOTLIGHT } from './sections/spotlight';
+import { LOG_OFF } from './sections/logOff';
 import { BBS_LISTINGS } from './sections/bbsListings';
 import { MASTERS } from './sections/masters';
 import { GRIPES } from './sections/gripes';
@@ -61,6 +62,7 @@ export const SECTIONS: MagSection[] = [
   MAXIMUS,
   SPOTLIGHT,
   BBS_LISTINGS,
+  LOG_OFF,
   SHAREWARE_SHELF,
   MASTERS,
   GRIPES,

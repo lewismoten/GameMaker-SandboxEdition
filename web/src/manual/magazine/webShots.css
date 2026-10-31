@@ -13,3 +13,18 @@
   border-color: #fff #555 #555 #fff;
   box-shadow: 0.25em 0.25em 0 rgba(0, 0, 0, 0.45);
 }
+
+/* the made-up 1996 browser's 640 x 480 pages (scripts/oldWebShots.ts): each at its own 640 x 480 */
+.mag-art[class*='art-oldweb-'] {
+  --tilt: 0deg;
+}
+
+.mag-art img.mag-old-web {
+  aspect-ratio: 640 / 480;
+  box-sizing: border-box;
+  padding: 0.25em;
+  background: #c3c3c3;
+  border: 0.18em solid;
+  border-color: #fff #555 #555 #fff;
+  box-shadow: 0.25em 0.25em 0 rgba(0, 0, 0, 0.45);
+}

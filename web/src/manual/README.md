@@ -170,7 +170,9 @@ lying on the desk's left, `#/desk?open=magazine`).
   - `deskShot.ts`, its snapshot of the 1994 desk, `web/public/magazine/desk-1994.webp`, with how to
     take it again; `webShots.ts`, its screenshots of today's web, `web/public/magazine/web-*.webp`,
     likewise; and `dosShot.ts`, Lewis's DOSBox screenshot of Carl's garbled cover,
-    `web/public/magazine/dos-carl.webp`, for `sections/dosBugs.ts`.
+    `web/public/magazine/dos-carl.webp`, for `sections/dosBugs.ts`; and the `oldweb-*` pictures,
+    made-up 1996 web pages in a made-up browser (`scripts/oldWebShots.ts`), for `sections/logOff.ts`
+    (Log Off the Games).
 - `viewer.ts` lays every page out at one size (a letter sheet at 96 CSS pixels to the inch, as
   printed) and scales it whole to fit the window, so no page runs over at any window size, and
   turns, zooms and prints them on letter paper.
