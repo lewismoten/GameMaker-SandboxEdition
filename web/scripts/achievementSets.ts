@@ -15,6 +15,7 @@ import { buildPalette as snowPalette } from '../../games/snowbound/src/art/pal';
 import { buildBlocks as reckonBlocks } from '../../games/reckoning/src/blocks/blocks';
 import { buildPalette as reckonPalette } from '../../games/reckoning/src/art/pal';
 import { buildHouse } from '../../games/carl/src/blocks/house';
+import { buildYard as buildCarlYard } from '../../games/carl/src/blocks/yard';
 import { buildPalette as carlPalette } from '../../games/carl/src/art/pal';
 import { buildVilla } from '../../games/risi/src/blocks/villa';
 import { buildPalette as risiPalette } from '../../games/risi/src/art/pal';
@@ -87,6 +88,7 @@ export const sets: Record<string, Source> = {
   snowbound: { game: 'snowbound', blocks: snowBlocks(snow).pics, palette: snow.pal },
   reckoning: { game: 'reckoning', blocks: reckonBlocks(reckonPalette('plain')).pics, palette: reckonPalette('plain').pal },
   carl: { game: 'carl', blocks: buildHouse(carlPalette('plain')).pics, palette: carlPalette('plain').pal },
+  carlYard: { game: 'carl', blocks: buildCarlYard(carlPalette('plain')).pics, palette: carlPalette('plain').pal },
   risi: { game: 'risi', blocks: buildVilla(risiPalette('plain')).pics, palette: risiPalette('plain').pal },
   needle: { game: 'needle', blocks: eyeBlocks(needlePalette('plain')).book.pics, palette: needlePalette('plain').pal },
   sleuthParlor: { game: 'sleuth', blocks: named(buildParlorBlocks()), palette: sleuthPalette('house').pal },
@@ -192,6 +194,12 @@ export const picks: Record<string, [string, string]> = {
   'desk-speaker': ['sleuthParlor', 'deskSpeaker'],
   'trophy-first': ['sleuthParlor', 'meritMedal'],
   'heart-all': ['sleuthParlor', 'heartWreath'],
+  'export-all': ['carlYard', 'parcelWings'],
+  'desk-mailjeep': ['carlYard', 'mailJeep'],
+  'finish-desk': ['carl', 'packPad'],
+  'finish-dos': ['carl', 'dosDisk'],
+  'finish-phone-wide': ['carl', 'phoneWide'],
+  'finish-phone-tall': ['carl', 'phoneTall'],
   'every-life-1': ['tiers', 'every-life-1'],
   'every-life-3': ['tiers', 'every-life-3'],
   'every-life-10': ['tiers', 'every-life-10'],

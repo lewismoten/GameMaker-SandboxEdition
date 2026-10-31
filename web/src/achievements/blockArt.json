@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler and Final Curtain badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain and A Fly Named Carl badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -522,6 +522,42 @@
       "game": "sleuth",
       "set": "sleuthParlor",
       "block": "heartWreath"
+    },
+    "export-all": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEWez/O23/fT6/sQDBRpQSC6hlH///uSkprHx8/336q6kkHiDlpCAAAAZklEQVR42n3OURKAIAgEUHBrxe5/4EahJqXaH+DJOIg+IkvVt8cZkQ2itppBFDYt91F0VhgdafcX1q1jAenLMDJQQdfLyrgTPkQZm4i0qI7HCJo3gfsImje/SDJjrTXhNgXfJ6WUExI2BHEboqIhAAAAAElFTkSuQmCC",
+      "game": "carl",
+      "set": "carlYard",
+      "block": "parcelWings"
+    },
+    "desk-mailjeep": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAMFBMVEWez/O23/fT6/sQDBQ4VY5dgrqWLCjf39v///uSkprHx8+aoqrn7/dlkraW0//rz4qYP+elAAAAeElEQVR42o2PwRICMQhDqVkRWOz+/986wlQq48Fcmr6ktKWxido6foX/QHxpwcemDGhAtqIUnEnmhOBZkEWEOxRmziaAW58pItlsCnhvuq6EFSDgeR4x7XgrXEAA/rnJ8/EDcPf49XJkZpGblSNVjXOq5Sg3uhTuBYWkByT1Zc1RAAAAAElFTkSuQmCC",
+      "game": "carl",
+      "set": "carlYard",
+      "block": "mailJeep"
+    },
+    "finish-desk": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUQDBRdOByCTSiibTw4VY5dgrqWLCjLSUG6urrf39v///tdYWXrz4r/+8co53kNsn9tAAAAd0lEQVR42nWPWQ6AIAwFnwUtz4X7H9dQEKjG+SAwGTYs+CBYsL8wSZI2GJlN2iYepDLn7MqDqjrKjlpQZEopPRfb/E+G8HplKFKwTiBILW11XVXWEr6EVOlpZZzoZRxZHCW0gbncTmPrpRTZQOzvdGc+P/LfFLkBiZgFqLfliV4AAAAASUVORK5CYII=",
+      "game": "carl",
+      "set": "carl",
+      "block": "packPad"
+    },
+    "finish-dos": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUQDBSy177L59PXqjz/++e6hlHfqm0YLGHLSUG6urrf39v///ssLDTHx8+aoqq9nAk5AAAAcElEQVR42m2OgQ4CIQxDi06ntuz/P9cMOeDkHhCal46AWzmYCS1iskh9EklDWoGYrLIYJEXEIs3ukEJIe24GgPh7c2viTJcku8g05PtgytfKaLqTbMfnuI/FXebeJZ2wn6zutVav7cb28c7zAjwu+AKlOwd38ZNiHQAAAABJRU5ErkJggg==",
+      "game": "carl",
+      "set": "carl",
+      "block": "dosDisk"
+    },
+    "finish-phone-wide": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUQDBSy177L59PXqjz/++f///tdYWWSkprHx88IFCgo53nBywrnAAAAYElEQVR42n2QCw6AIAxDq67Tcf8DGyfynyUB9lKyUezbp3pDDGWG4quFa52TAKj2Jq9VYWa0vDWQL2SBF4ykpeTHU7uTFbJAt/hz2n+j1Uijgl/20ckhU545rzFkCZO/AcyQBJ3IUM4OAAAAAElFTkSuQmCC",
+      "game": "carl",
+      "set": "carl",
+      "block": "phoneWide"
+    },
+    "finish-phone-tall": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUQDBSy177L59PXqjz/++f///tdYWWSkprHx88IFCjr2TRGAAAAZ0lEQVR42o2RSQ7AIAwDk9YJ+P8frgCVJVCpvjFyNiOXqsokLe8Kk7vn7O4eYFOHkPQWL04haeSAQIVmxui0Ill7WtPWk6T8gOfyOEg/V+rLY8B+Jk6B3MAMW3QIeeYaHXR3junhOx61AQSbZVnztAAAAABJRU5ErkJggg==",
+      "game": "carl",
+      "set": "carl",
+      "block": "phoneTall"
     },
     "every-life-1": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkra7cWECAAAAcklEQVR42pWRWw7AIAgEgZWu9z9xgxRta386IcZMeBgU0Q0RtQIjzExFTSRdBzo26REPicMD4C3F3UlMCU9IUms6phqZ0SXdMNkzLivvmk4eQdp6J+k+p5RE2dZWOUi2dhnEkYNqI7dyW2AuZOOP/PqOE+GkBKXkH8SIAAAAAElFTkSuQmCC",

@@ -26,7 +26,7 @@ writeFileSync(
   JSON.stringify(
     {
       notice:
-        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler and Final Curtain badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
+        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain and A Fly Named Carl badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
       badges,
     },
     null,
@@ -162,6 +162,8 @@ mixing panel, UV bulb, blacklight, CRT, sound card, hex keypad, screwdriver and 
 waving hand) as scenery in that game, and the eighteen new Final Curtain blocks (a rotary dial, number card, two masks,
 ribbon book, leaflet, registration form, badge clipboard, blank sheet, film strip, clapperboard, magnifier, peeking face,
 phone, busy line, heat map, speaker, medal and tin-heart wreath) as scenery in the green room, the stage and the curtain.
+It also drew the six new A Fly Named Carl blocks (a backpack with a game controller, a DOS disk in its sleeve, a wide and a
+tall phone, a winged parcel and a mail jeep) as scenery in the living room and the yard.
 OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 

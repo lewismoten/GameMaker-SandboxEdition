@@ -9,6 +9,8 @@ mixing panel, UV bulb, blacklight, CRT, sound card, hex keypad, screwdriver and 
 waving hand) as scenery in that game, and the eighteen new Final Curtain blocks (a rotary dial, number card, two masks,
 ribbon book, leaflet, registration form, badge clipboard, blank sheet, film strip, clapperboard, magnifier, peeking face,
 phone, busy line, heat map, speaker, medal and tin-heart wreath) as scenery in the green room, the stage and the curtain.
+It also drew the six new A Fly Named Carl blocks (a backpack with a game controller, a DOS disk in its sleeve, a wide and a
+tall phone, a winged parcel and a mail jeep) as scenery in the living room and the yard.
 OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
@@ -108,6 +110,12 @@ duplicate image bytes.
 | desk-speaker | sleuth | sleuthParlor / deskSpeaker |
 | trophy-first | sleuth | sleuthParlor / meritMedal |
 | heart-all | sleuth | sleuthParlor / heartWreath |
+| export-all | carl | carlYard / parcelWings |
+| desk-mailjeep | carl | carlYard / mailJeep |
+| finish-desk | carl | carl / packPad |
+| finish-dos | carl | carl / dosDisk |
+| finish-phone-wide | carl | carl / phoneWide |
+| finish-phone-tall | carl | carl / phoneTall |
 | every-life-1 | teddy | tiers / every-life-1 |
 | every-life-3 | teddy | tiers / every-life-3 |
 | every-life-10 | teddy | tiers / every-life-10 |
@@ -128,12 +136,7 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | Achievement | Title | Proposed art |
 | --- | --- | --- |
 | export-linux | Penguin power | 20×20 block: a cheerful penguin with a disk tucked under one wing, with a dark outline and one clear focal shape. |
-| export-all | Ships everywhere | 20×20 block: a taped shipping box with little wings, with a dark outline and one clear focal shape. |
 | palette-vision | Seen by everyone | 20×20 block: a pair of glasses over three clearly distinct color swatches, with a dark outline and one clear focal shape. |
-| finish-desk | After school special | 20×20 block: a school backpack with a game controller sticking out, with a dark outline and one clear focal shape. |
-| finish-dos | Real mode | 20×20 block: a labeled DOS disk in a sleeve, with a dark outline and one clear focal shape. |
-| finish-phone-wide | Sideways scroller | 20×20 block: a landscape phone with left and right arrows, with a dark outline and one clear focal shape. |
-| finish-phone-tall | Tall order | 20×20 block: a portrait phone with up and down arrows, with a dark outline and one clear focal shape. |
 | play-bizarre | Bizarre fan | 20×20 block: a violin with one jaunty musical note, with a dark outline and one clear focal shape. |
 | saves-panel | Keeping score | 20×20 block: a small trophy inspired by “Keeping score”, with a dark outline and one clear focal shape. |
 | egg-teddy | Lay an egg! | 20×20 block: a mischievous corgi beside a suspiciously lumpy felt egg, with a dark outline and one clear focal shape. |
@@ -158,7 +161,6 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | desk-star | Make a wish | 20×20 block: a shooting star with a short stepped trail, with a dark outline and one clear focal shape. |
 | desk-aurora | Northern lights | 20×20 block: a curtain of green and violet northern lights, with a dark outline and one clear focal shape. |
 | desk-mailtruck | In the mail | 20×20 block: a small mail truck with a raised envelope emblem, with a dark outline and one clear focal shape. |
-| desk-mailjeep | Mail call | 20×20 block: a boxy mail jeep with a letter in its window, with a dark outline and one clear focal shape. |
 | desk-lume | Glow in the dark | 20×20 block: a clock dial with glowing green hands, with a dark outline and one clear focal shape. |
 | desk-egg-uv | Secret ink | 20×20 block: a flashlight revealing a felt egg, with a dark outline and one clear focal shape. |
 | zine-read | Read all about it | 20×20 block: a little notebook with a ribbon marker, with a dark outline and one clear focal shape. |
