@@ -18,6 +18,7 @@ import { History } from '../../../core/history';
 import { drawPreview, type PreviewScreen } from './playerPreview';
 import { fieldMaker } from './playerFields';
 import { screenFields } from './screenFields';
+import { PLAYER_FIELD_EVENT, takePlayerField } from './playerTarget';
 import { SCREEN_TABS, type PanelTab } from './screenTabs';
 import { fileFields } from './fileFields';
 import { withoutExtensions } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
@@ -218,6 +219,25 @@ export function playerPanel(project: Project): HTMLElement {
     // the F-keys and the shared colors have no screen of their own: they pick one to preview
     pickRow.hidden = isPreview(tab);
   }
+
+  /** Shows the screen a patch belongs to and focuses its field (Overview search opens fields this way). */
+  const goTo = (pid: string) => {
+    const entry = patchEntry(pid);
+    if (!entry) return;
+    pending = undefined;
+    if (tab !== entry.screen) choose(entry.screen);
+    const field = Array.from(body.querySelectorAll<HTMLElement>('[data-patch]')).find((f) => f.dataset.patch === pid);
+    if (!field) return;
+    field.scrollIntoView({ block: 'center' });
+    field.classList.add('dp-found');
+    setTimeout(() => field.classList.remove('dp-found'), 2500);
+    const control = field.querySelector<HTMLElement>('input:not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled)');
+    if (!control) field.tabIndex = -1;
+    (control ?? field).focus({ preventScroll: true });
+  };
+  window.addEventListener(PLAYER_FIELD_EVENT, (ev) => body.isConnected && goTo((ev as CustomEvent<string>).detail));
+  let pending = takePlayerField();
+  if (pending) requestAnimationFrame(() => pending && goTo(pending));
 
   const presets = h(
     'div',
