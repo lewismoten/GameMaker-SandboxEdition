@@ -156,6 +156,99 @@ records every clip again.
 | [editor-copy.ogg](editor/editor-copy.ogg) | Ready to make it yours? Edit a copy, and start changing things. | Editor: Watt points at the Edit a copy button | 4.64 |
 | [editor-bye.ogg](editor/editor-bye.ogg) | Time to recharge. Happy making! Beep. | Editor: Watt says goodbye and walks off | 3.42 |
 
+## edit-around
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-around-hello.ogg](edit-around/edit-around-hello.ogg) | Beep beep! Watt here again. Let’s find our way around: files, undo, play-testing and help. | Editor: Watt comes on | 6.31 |
+| [edit-around-files.ogg](edit-around/edit-around-files.ogg) | Files sit in this list by kind, with how many of each. Press a kind’s heading to fold it away or open it again. | Editor: Watt points at the list of the game’s files | 7.08 |
+| [edit-around-find.ogg](edit-around/edit-around-find.ogg) | Type part of a name here and the list narrows to match. Handy in a game with a hundred files. | Editor: Watt points at the Find a file box | 5.78 |
+| [edit-around-quick.ogg](edit-around/edit-around-quick.ogg) | The magnifier opens any file by its name. Ctrl+P does the same, from anywhere in the editor. | Editor: Watt points at the Open a file by name button | 6.39 |
+| [edit-around-assets.ogg](edit-around/edit-around-assets.ogg) | In the file list, Game assets shows the whole game at once: a card for each kind of file. Press a card to browse those files as pictures. | Editor: Watt points at the Game assets button | 8.30 |
+| [edit-around-assets-back.ogg](edit-around/edit-around-assets-back.ogg) | Back in a file, Assets jumps to that kind’s gallery, so you can try another map or block set. | Editor: Watt points at the Assets button | 6.24 |
+| [edit-around-used.ogg](edit-around/edit-around-used.ogg) | Here is every scene that uses this file. Press one to open it in the game’s own scene list. | Editor: Watt points at the Used by links | 6.39 |
+| [edit-around-undo.ogg](edit-around/edit-around-undo.ogg) | Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here. | Editor: Watt points at the Undo button | 9.36 |
+| [edit-around-zoom.ogg](edit-around/edit-around-zoom.ogg) | Zoom sets how big the map looks, from 10% to 200%. The mouse wheel zooms around the pointer; Shift and wheel scrolls. | Editor: Watt points at the Zoom list | 8.68 |
+| [edit-around-playmenu.ogg](edit-around/edit-around-playmenu.ogg) | Play-test a level without the title screen. This arrow opens every way the game’s links bring the hero in; pick one to start there. | Editor: Watt presses the arrow beside Play Level | 7.46 |
+| [edit-around-keys.ogg](edit-around/edit-around-keys.ogg) | The keyboard button lists every shortcut: B, L, R and F choose map tools, G shows the grid. The question mark key shows it anywhere. | Editor: Watt presses the Keyboard shortcuts button | 9.67 |
+| [edit-around-hint.ogg](edit-around/edit-around-hint.ogg) | Every editor opens with a short note on what it does. On a phone it folds to a line; More opens it. | Editor: Watt points at the note about this editor | 7.00 |
+| [edit-around-guide.ogg](edit-around/edit-around-guide.ogg) | And the Guide up here holds the whole manual, whenever you are stuck. | Editor: Watt points at the Guide link | 4.03 |
+| [edit-around-bye.ogg](edit-around/edit-around-bye.ogg) | Next, the map editor’s tools. Beep! | Editor: Watt says goodbye and walks off | 3.73 |
+
+## edit-map
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-map-hello.ogg](edit-map/edit-map-hello.ogg) | Dex Dynamo here! Let’s get into the map editor and work through its tools, one by one. | Editor: Dex comes on | 6.05 |
+| [edit-map-blocks.ogg](edit-map/edit-map-blocks.ogg) | The side column has tabs. Blocks is the list of background blocks to paint with; Monsters lists the creatures to place. | Editor: Dex points at the Blocks tab | 8.05 |
+| [edit-map-options.ogg](edit-map/edit-map-options.ogg) | Tool options shows the settings of whichever tool you chose: shapes, terrains, stamps and buildings. | Editor: Dex points at the Tool options tab | 7.17 |
+| [edit-map-paint.ogg](edit-map/edit-map-paint.ogg) | Paint, Line, Rectangle and Fill lay down the chosen block; keys B, L, R and F pick them. Pick is an eyedropper: it takes a block from the map. | Editor: Dex points at the Paint tool | 10.45 |
+| [edit-map-select.ogg](edit-map/edit-map-select.ogg) | Select drags out a rectangle or a polygon. Then fill it, copy, cut and paste it, or save it as a stamp or a block group. | Editor: Dex presses the Select tool | 9.17 |
+| [edit-map-terrain.ogg](edit-map/edit-map-terrain.ogg) | Terrain is for grass, water or paths. Make one from blocks you have: a fill, edges and corners. Then dragging picks the right piece for you. | Editor: Dex points at the Terrain tool | 9.90 |
+| [edit-map-stamp.ogg](edit-map/edit-map-stamp.ogg) | A stamp is a saved patch of blocks, a house or a tree. Place it where you like, flipped or turned. Select makes new ones. | Editor: Dex points at the Stamp tool | 8.57 |
+| [edit-map-grid.ogg](edit-map/edit-map-grid.ogg) | Grid draws lines between the blocks, so you can count them. The G key switches it on and off. | Editor: Dex points at the Grid button | 6.42 |
+| [edit-map-wrap.ogg](edit-map/edit-map-wrap.ogg) | Wrap shows the map repeated all around. Scroll through an edge and the opposite side follows. | Editor: Dex points at the Wrap button | 6.55 |
+| [edit-map-exits.ogg](edit-map/edit-map-exits.ogg) | With Links on, gold arrows are exits to other scenes. Drag one to move it, or click it to see where it leads. | Editor: Dex points at an exit marker | 7.70 |
+| [edit-map-ways-in.ogg](edit-map/edit-map-ways-in.ogg) | Cyan marks are ways in: where the hero arrives. A number means several arrive at one spot; press it for the list. | Editor: Dex points at a way-in marker | 7.97 |
+| [edit-map-find.ogg](edit-map/edit-map-find.ogg) | Find lights up every use of the chosen block on the map. Replace, beside it, swaps one block for another everywhere. | Editor: Dex points at the Find button | 8.12 |
+| [edit-map-bye.ogg](edit-map/edit-map-bye.ogg) | Now go make something big. Next up, the block editors! | Editor: Dex says goodbye and walks off | 4.15 |
+
+## edit-blocks
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-blocks-hello.ogg](edit-blocks/edit-blocks-hello.ogg) | Joe, the night librarian, speaking softly. Blocks are the little pictures every level is built from. Let’s browse a shelf. | Editor: Joe comes on | 12.75 |
+| [edit-blocks-picker.ogg](edit-blocks/edit-blocks-picker.ogg) | Each file is a set of blocks. Pick one here to edit it. The arrow keys move along the shelf. | Editor: Joe points at the list of blocks | 8.11 |
+| [edit-blocks-name.ogg](edit-blocks/edit-blocks-name.ogg) | A name is only for you, so you can tell block 40 is the door. The game never sees it. | Editor: Joe points at the block’s name box | 7.47 |
+| [edit-blocks-tools.ogg](edit-blocks/edit-blocks-tools.ogg) | Pencil, Shade, Fill, Pick color, Line and Box paint the picture. Right-drag erases, and Shade lightens along the palette. | Editor: Joe points at the Pencil tool | 17.15 |
+| [edit-blocks-mirror.ogg](edit-blocks/edit-blocks-mirror.ogg) | Mirror repeats each stroke on the other side of the picture, left to right or top to bottom, for tidy symmetry. | Editor: Joe points at the Mirror list | 8.99 |
+| [edit-blocks-colors.ogg](edit-blocks/edit-blocks-colors.ogg) | Click a color to paint with it. Bigger colors, below, shows larger swatches. | Editor: Joe points at the palette colors | 7.55 |
+| [edit-blocks-preview.ogg](edit-blocks/edit-blocks-preview.ogg) | Show with palette previews the blocks in another palette, such as the night one, before you commit. | Editor: Joe points at the Show with palette button | 8.51 |
+| [edit-blocks-flip.ogg](edit-blocks/edit-blocks-flip.ogg) | Flip and Rotate turn the whole picture. The arrows nudge it a pixel, and Replace colors swaps one color, here or in every block. | Editor: Joe points at the Flip button | 11.71 |
+| [edit-blocks-behave.ogg](edit-blocks/edit-blocks-behave.ogg) | Walking, Touch and Time set how a block acts: which sides are solid, what touching does, and what it changes into. | Editor: Joe points at the Walking tab | 10.03 |
+| [edit-blocks-groups.ogg](edit-blocks/edit-blocks-groups.ogg) | Shift-click or Ctrl-click blocks to pick several. Groups lets you paint them as one big picture. | Editor: Joe points at the Groups section | 7.95 |
+| [edit-blocks-frames.ogg](edit-blocks/edit-blocks-frames.ogg) | Character blocks are the hero’s frames. This panel picks an animation and steps through its frames; dashed outlines mark the blocks it uses. | Editor: Joe points at the Character frames panel | 15.23 |
+| [edit-blocks-live.ogg](edit-blocks/edit-blocks-live.ogg) | Live character plays the animation as you paint, on any background you like, so you see each touch-up in motion. | Editor: Joe points at the Live character panel | 8.75 |
+| [edit-blocks-bye.ogg](edit-blocks/edit-blocks-bye.ogg) | Quiet, now. Next the monsters, and the hero who meets them. | Editor: Joe says goodbye and walks off | 7.55 |
+
+## edit-monsters
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-monsters-hello.ogg](edit-monsters/edit-monsters-hello.ogg) | Courier Max here, with a special delivery: the monsters first, then the hero who meets them. | Editor: Max comes on | 6.44 |
+| [edit-monsters-list.ogg](edit-monsters/edit-monsters-list.ogg) | Every monster in the set, numbered. Pick one, and the rest of the page shows how it looks and acts. | Editor: Max points at the list of monsters | 6.69 |
+| [edit-monsters-anim.ogg](edit-monsters/edit-monsters-anim.ogg) | A monster is a few frames, each a picture and a time in ticks, a tick being an eighteenth of a second. Add or remove frames here. | Editor: Max points at the Animation panel | 9.15 |
+| [edit-monsters-power.ogg](edit-monsters/edit-monsters-power.ogg) | Power is how tough it is: 100 or more can’t be killed by touching the hero. The Lives box says how long it lasts, forever or until destroyed. | Editor: Max points at the Power box | 10.84 |
+| [edit-monsters-move.ogg](edit-monsters/edit-monsters-move.ogg) | Movement: it follows its path, chases the hero, runs away from it, or wanders at random. | Editor: Max points at the Movement list | 6.86 |
+| [edit-monsters-pick.ogg](edit-monsters/edit-monsters-pick.ogg) | This one, number 52, follows a path of seven corners. Let’s see where it walks. | Editor: Max presses monster 52 in the list | 6.35 |
+| [edit-monsters-path.ogg](edit-monsters/edit-monsters-path.ogg) | The path is drawn on a real map: Map picks the scene, Starts at the monster’s spot. Click blocks to lay corners; it walks to each in turn. | Editor: Max points at the path map | 9.94 |
+| [edit-monsters-hero.ogg](edit-monsters/edit-monsters-hero.ogg) | Now the hero. The first tab is how the game starts: hit points, lives, money, five counters and the starting inventory. | Editor: Max points at the At the start tab | 8.89 |
+| [edit-monsters-seqs.ogg](edit-monsters/edit-monsters-seqs.ogg) | Sequences are the hero’s moves. The built-in ones come first: Idle, Die, Hurt, Pick up and Drop. | Editor: Max presses the Sequences tab | 7.25 |
+| [edit-monsters-moves.ogg](edit-monsters/edit-monsters-moves.ogg) | Your own moves follow, each started by a key or a joystick direction. The function keys stay with the game’s own menus. | Editor: Max points at the list of sequences | 8.64 |
+| [edit-monsters-tabs.ogg](edit-monsters/edit-monsters-tabs.ogg) | Four tabs per move: Controls says what starts it, Animation how it moves, Requirements what it needs, Sound what plays. | Editor: Max points at the sequence’s tabs | 8.66 |
+| [edit-monsters-stage.ogg](edit-monsters/edit-monsters-stage.ogg) | The stage auditions the move. Pause, Restart and Sound off are under it, and Behind picks which scene it plays in. | Editor: Max points at the audition stage | 8.27 |
+| [edit-monsters-birth.ogg](edit-monsters/edit-monsters-birth.ogg) | A frame can show the hero, or give birth to a monster. Preview monsters from picks which set shows up here. | Editor: Max points at the frames of the move | 7.71 |
+| [edit-monsters-bye.ogg](edit-monsters/edit-monsters-bye.ogg) | Delivery complete. Next stop: the colors! | Editor: Max says goodbye and walks off | 3.62 |
+
+## edit-palette
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-palette-hello.ogg](edit-palette/edit-palette-hello.ogg) | Beep beep! This is the palette: all 256 colors a DOS game can show at once. | Editor: Watt comes on | 6.62 |
+| [edit-palette-swatches.ogg](edit-palette/edit-palette-swatches.ogg) | Click a color to edit it. Shift-click a second one to pick a whole range. | Editor: Watt points at the palette’s colors | 5.02 |
+| [edit-palette-tabs.ogg](edit-palette/edit-palette-tabs.ogg) | Three tabs. Color edits the one you chose. Vision and Backgrounds check how the palette looks in play. | Editor: Watt points at the Color tab | 6.70 |
+| [edit-palette-rgb.ogg](edit-palette/edit-palette-rgb.ogg) | Red, green and blue each run from 0 to 63, like a real VGA card. Slide them or type a number. | Editor: Watt points at the red box | 8.30 |
+| [edit-palette-picker.ogg](edit-palette/edit-palette-picker.ogg) | The big swatch opens a picker with hue, saturation and brightness, a friendlier way to find a color. | Editor: Watt presses the big color swatch | 6.24 |
+| [edit-palette-square.ogg](edit-palette/edit-palette-square.ogg) | Drag in the square, or use the arrow keys. Nothing changes until you press Confirm color; Cancel keeps things as they were. | Editor: Watt points at the color picker | 7.61 |
+| [edit-palette-ramp.ogg](edit-palette/edit-palette-ramp.ogg) | Spread range blends the colors between your two ends. Make a shade ramp turns a range into shades of the first color. | Editor: Watt points at the Spread range button | 6.62 |
+| [edit-palette-reduce.ogg](edit-palette/edit-palette-reduce.ogg) | Copy brings colors in from a picture, shrunk to fit. Pick a range first, and it reduces the picture to that many. | Editor: Watt presses the Copy button for colors from a picture | 6.70 |
+| [edit-palette-reduced.ogg](edit-palette/edit-palette-reduced.ogg) | Colors are chosen from the pixels the picture really uses, the common ones first. Nothing lands until you press the Apply colors button. | Editor: Watt points at the Colors from picture box | 8.07 |
+| [edit-palette-reserved.ogg](edit-palette/edit-palette-reserved.ogg) | Reserve ranges for characters, monsters or backgrounds, so one kind never takes another’s colors. Only the editor keeps this. | Editor: Watt points at the Reserved color ranges section | 8.76 |
+| [edit-palette-vision.ogg](edit-palette/edit-palette-vision.ogg) | Vision shows a level as players who see color differently would, and lists colors that look alike. | Editor: Watt presses the Vision tab | 5.25 |
+| [edit-palette-backgrounds.ogg](edit-palette/edit-palette-backgrounds.ogg) | Backgrounds previews the game’s own screens, drawn on color 0: high scores, status, help and about. | Editor: Watt presses the Backgrounds tab | 6.93 |
+| [edit-palette-variants.ogg](edit-palette/edit-palette-variants.ogg) | Night, dusk, underwater: versions of this palette for other times of day. Glowing colors keep lamps and stars bright. | Editor: Watt points at the Night, dusk, underwater section | 8.14 |
+| [edit-palette-bye.ogg](edit-palette/edit-palette-bye.ogg) | That is the editor, top to bottom. Happy making! Beep. | Editor: Watt says goodbye and walks off | 4.71 |
+
 ## desk
 
 | Clip | Says | Where | Seconds |

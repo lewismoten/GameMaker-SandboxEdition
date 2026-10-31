@@ -839,6 +839,550 @@
     "hash": "aed78dfafbc2",
     "voice": "532d1bbf3a1e"
   },
+  "edit-around-assets": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the Game assets button",
+    "text": "In the file list, Game assets shows the whole game at once: a card for each kind of file. Press a card to browse those files as pictures.",
+    "seconds": 8.3,
+    "hash": "80c66116fb13",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-assets-back": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the Assets button",
+    "text": "Back in a file, Assets jumps to that kind’s gallery, so you can try another map or block set.",
+    "seconds": 6.24,
+    "hash": "7cd3fabe065e",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-bye": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt says goodbye and walks off",
+    "text": "Next, the map editor’s tools. Beep!",
+    "seconds": 3.73,
+    "hash": "e27b0c1d77ed",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-files": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the list of the game’s files",
+    "text": "Files sit in this list by kind, with how many of each. Press a kind’s heading to fold it away or open it again.",
+    "seconds": 7.08,
+    "hash": "3fdcdcffee4c",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-find": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the Find a file box",
+    "text": "Type part of a name here and the list narrows to match. Handy in a game with a hundred files.",
+    "seconds": 5.78,
+    "hash": "792b3d4328ab",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-guide": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the Guide link",
+    "text": "And the Guide up here holds the whole manual, whenever you are stuck.",
+    "seconds": 4.03,
+    "hash": "3637d79c7720",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-hello": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt comes on",
+    "text": "Beep beep! Watt here again. Let’s find our way around: files, undo, play-testing and help.",
+    "seconds": 6.31,
+    "hash": "02278529d402",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-hint": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the note about this editor",
+    "text": "Every editor opens with a short note on what it does. On a phone it folds to a line; More opens it.",
+    "seconds": 7,
+    "hash": "bd176e69676c",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-keys": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt presses the Keyboard shortcuts button",
+    "text": "The keyboard button lists every shortcut: B, L, R and F choose map tools, G shows the grid. The question mark key shows it anywhere.",
+    "seconds": 9.67,
+    "hash": "24f353035efc",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-playmenu": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt presses the arrow beside Play Level",
+    "text": "Play-test a level without the title screen. This arrow opens every way the game’s links bring the hero in; pick one to start there.",
+    "seconds": 7.46,
+    "hash": "f7593e083a82",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-quick": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the Open a file by name button",
+    "text": "The magnifier opens any file by its name. Ctrl+P does the same, from anywhere in the editor.",
+    "seconds": 6.39,
+    "hash": "1de1a8fa5e3b",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-undo": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the Undo button",
+    "text": "Undo and Redo step back and forward through your edits in this file. Ctrl+Z and Ctrl+Y work too. Nothing to undo here.",
+    "seconds": 9.36,
+    "hash": "ffa0f2c57a00",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-used": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the Used by links",
+    "text": "Here is every scene that uses this file. Press one to open it in the game’s own scene list.",
+    "seconds": 6.39,
+    "hash": "ecbde2661a57",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-around-zoom": {
+    "chapter": "edit-around",
+    "where": "Editor: Watt points at the Zoom list",
+    "text": "Zoom sets how big the map looks, from 10% to 200%. The mouse wheel zooms around the pointer; Shift and wheel scrolls.",
+    "seconds": 8.68,
+    "hash": "dfcac79d1073",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-blocks-behave": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the Walking tab",
+    "text": "Walking, Touch and Time set how a block acts: which sides are solid, what touching does, and what it changes into.",
+    "seconds": 10.03,
+    "hash": "5ea17d5eb287",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-bye": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe says goodbye and walks off",
+    "text": "Quiet, now. Next the monsters, and the hero who meets them.",
+    "seconds": 7.55,
+    "hash": "2b80b5a62e84",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-colors": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the palette colors",
+    "text": "Click a color to paint with it. Bigger colors, below, shows larger swatches.",
+    "seconds": 7.55,
+    "hash": "fb037887b9f5",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-flip": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the Flip button",
+    "text": "Flip and Rotate turn the whole picture. The arrows nudge it a pixel, and Replace colors swaps one color, here or in every block.",
+    "seconds": 11.71,
+    "hash": "0076efd677f6",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-frames": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the Character frames panel",
+    "text": "Character blocks are the hero’s frames. This panel picks an animation and steps through its frames; dashed outlines mark the blocks it uses.",
+    "seconds": 15.23,
+    "hash": "936f006461cf",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-groups": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the Groups section",
+    "text": "Shift-click or Ctrl-click blocks to pick several. Groups lets you paint them as one big picture.",
+    "seconds": 7.95,
+    "hash": "cc2aa923d2cf",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-hello": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe comes on",
+    "text": "Joe, the night librarian, speaking softly. Blocks are the little pictures every level is built from. Let’s browse a shelf.",
+    "seconds": 12.75,
+    "hash": "f2c58c94830d",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-live": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the Live character panel",
+    "text": "Live character plays the animation as you paint, on any background you like, so you see each touch-up in motion.",
+    "seconds": 8.75,
+    "hash": "d265ca57b1f3",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-mirror": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the Mirror list",
+    "text": "Mirror repeats each stroke on the other side of the picture, left to right or top to bottom, for tidy symmetry.",
+    "seconds": 8.99,
+    "hash": "2addf2ae4f7b",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-name": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the block’s name box",
+    "text": "A name is only for you, so you can tell block 40 is the door. The game never sees it.",
+    "seconds": 7.47,
+    "hash": "a49e9113003d",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-picker": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the list of blocks",
+    "text": "Each file is a set of blocks. Pick one here to edit it. The arrow keys move along the shelf.",
+    "seconds": 8.11,
+    "hash": "39b3a7842196",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-preview": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the Show with palette button",
+    "text": "Show with palette previews the blocks in another palette, such as the night one, before you commit.",
+    "seconds": 8.51,
+    "hash": "d25e38a37be9",
+    "voice": "0448e8049470"
+  },
+  "edit-blocks-tools": {
+    "chapter": "edit-blocks",
+    "where": "Editor: Joe points at the Pencil tool",
+    "text": "Pencil, Shade, Fill, Pick color, Line and Box paint the picture. Right-drag erases, and Shade lightens along the palette.",
+    "seconds": 17.15,
+    "hash": "7233bfefbb96",
+    "voice": "0448e8049470"
+  },
+  "edit-map-blocks": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at the Blocks tab",
+    "text": "The side column has tabs. Blocks is the list of background blocks to paint with; Monsters lists the creatures to place.",
+    "seconds": 8.05,
+    "hash": "fab60a42a450",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-bye": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex says goodbye and walks off",
+    "text": "Now go make something big. Next up, the block editors!",
+    "seconds": 4.15,
+    "hash": "f546a98a8010",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-exits": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at an exit marker",
+    "text": "With Links on, gold arrows are exits to other scenes. Drag one to move it, or click it to see where it leads.",
+    "seconds": 7.7,
+    "hash": "e0946a528bc4",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-find": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at the Find button",
+    "text": "Find lights up every use of the chosen block on the map. Replace, beside it, swaps one block for another everywhere.",
+    "seconds": 8.12,
+    "hash": "b54812eb179c",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-grid": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at the Grid button",
+    "text": "Grid draws lines between the blocks, so you can count them. The G key switches it on and off.",
+    "seconds": 6.42,
+    "hash": "d506ad77bd41",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-hello": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex comes on",
+    "text": "Dex Dynamo here! Let’s get into the map editor and work through its tools, one by one.",
+    "seconds": 6.05,
+    "hash": "63038234f340",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-options": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at the Tool options tab",
+    "text": "Tool options shows the settings of whichever tool you chose: shapes, terrains, stamps and buildings.",
+    "seconds": 7.17,
+    "hash": "b343505514d3",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-paint": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at the Paint tool",
+    "text": "Paint, Line, Rectangle and Fill lay down the chosen block; keys B, L, R and F pick them. Pick is an eyedropper: it takes a block from the map.",
+    "seconds": 10.45,
+    "hash": "07d9a07cdedd",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-select": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex presses the Select tool",
+    "text": "Select drags out a rectangle or a polygon. Then fill it, copy, cut and paste it, or save it as a stamp or a block group.",
+    "seconds": 9.17,
+    "hash": "260ebbcb6e93",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-stamp": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at the Stamp tool",
+    "text": "A stamp is a saved patch of blocks, a house or a tree. Place it where you like, flipped or turned. Select makes new ones.",
+    "seconds": 8.57,
+    "hash": "306ffb086b68",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-terrain": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at the Terrain tool",
+    "text": "Terrain is for grass, water or paths. Make one from blocks you have: a fill, edges and corners. Then dragging picks the right piece for you.",
+    "seconds": 9.9,
+    "hash": "595d5e10c694",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-ways-in": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at a way-in marker",
+    "text": "Cyan marks are ways in: where the hero arrives. A number means several arrive at one spot; press it for the list.",
+    "seconds": 7.97,
+    "hash": "f9136b23cb7a",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-map-wrap": {
+    "chapter": "edit-map",
+    "where": "Editor: Dex points at the Wrap button",
+    "text": "Wrap shows the map repeated all around. Scroll through an edge and the opposite side follows.",
+    "seconds": 6.55,
+    "hash": "1ca4edd46c2d",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-monsters-anim": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the Animation panel",
+    "text": "A monster is a few frames, each a picture and a time in ticks, a tick being an eighteenth of a second. Add or remove frames here.",
+    "seconds": 9.15,
+    "hash": "12675ea86dcd",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-birth": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the frames of the move",
+    "text": "A frame can show the hero, or give birth to a monster. Preview monsters from picks which set shows up here.",
+    "seconds": 7.71,
+    "hash": "bcbadaf2d80d",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-bye": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max says goodbye and walks off",
+    "text": "Delivery complete. Next stop: the colors!",
+    "seconds": 3.62,
+    "hash": "6ef083edae21",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-hello": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max comes on",
+    "text": "Courier Max here, with a special delivery: the monsters first, then the hero who meets them.",
+    "seconds": 6.44,
+    "hash": "b61f3a384b09",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-hero": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the At the start tab",
+    "text": "Now the hero. The first tab is how the game starts: hit points, lives, money, five counters and the starting inventory.",
+    "seconds": 8.89,
+    "hash": "9d8826935972",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-list": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the list of monsters",
+    "text": "Every monster in the set, numbered. Pick one, and the rest of the page shows how it looks and acts.",
+    "seconds": 6.69,
+    "hash": "cc129b3e7211",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-move": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the Movement list",
+    "text": "Movement: it follows its path, chases the hero, runs away from it, or wanders at random.",
+    "seconds": 6.86,
+    "hash": "bc9c480e1aa3",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-moves": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the list of sequences",
+    "text": "Your own moves follow, each started by a key or a joystick direction. The function keys stay with the game’s own menus.",
+    "seconds": 8.64,
+    "hash": "a9554c1a9c78",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-path": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the path map",
+    "text": "The path is drawn on a real map: Map picks the scene, Starts at the monster’s spot. Click blocks to lay corners; it walks to each in turn.",
+    "seconds": 9.94,
+    "hash": "8b8e185c8245",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-pick": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max presses monster 52 in the list",
+    "text": "This one, number 52, follows a path of seven corners. Let’s see where it walks.",
+    "seconds": 6.35,
+    "hash": "27eab98ae249",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-power": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the Power box",
+    "text": "Power is how tough it is: 100 or more can’t be killed by touching the hero. The Lives box says how long it lasts, forever or until destroyed.",
+    "seconds": 10.84,
+    "hash": "d6bcd9fed85b",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-seqs": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max presses the Sequences tab",
+    "text": "Sequences are the hero’s moves. The built-in ones come first: Idle, Die, Hurt, Pick up and Drop.",
+    "seconds": 7.25,
+    "hash": "805b82f4da87",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-stage": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the audition stage",
+    "text": "The stage auditions the move. Pause, Restart and Sound off are under it, and Behind picks which scene it plays in.",
+    "seconds": 8.27,
+    "hash": "b8cce2fe619d",
+    "voice": "3705d98401bd"
+  },
+  "edit-monsters-tabs": {
+    "chapter": "edit-monsters",
+    "where": "Editor: Max points at the sequence’s tabs",
+    "text": "Four tabs per move: Controls says what starts it, Animation how it moves, Requirements what it needs, Sound what plays.",
+    "seconds": 8.66,
+    "hash": "dd37ca10f2c2",
+    "voice": "3705d98401bd"
+  },
+  "edit-palette-backgrounds": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt presses the Backgrounds tab",
+    "text": "Backgrounds previews the game’s own screens, drawn on color 0: high scores, status, help and about.",
+    "seconds": 6.93,
+    "hash": "d13ca147d77a",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-bye": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt says goodbye and walks off",
+    "text": "That is the editor, top to bottom. Happy making! Beep.",
+    "seconds": 4.71,
+    "hash": "3d75fb63167a",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-hello": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt comes on",
+    "text": "Beep beep! This is the palette: all 256 colors a DOS game can show at once.",
+    "seconds": 6.62,
+    "hash": "eb276a31baa1",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-picker": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt presses the big color swatch",
+    "text": "The big swatch opens a picker with hue, saturation and brightness, a friendlier way to find a color.",
+    "seconds": 6.24,
+    "hash": "71d15794622f",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-ramp": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt points at the Spread range button",
+    "text": "Spread range blends the colors between your two ends. Make a shade ramp turns a range into shades of the first color.",
+    "seconds": 6.62,
+    "hash": "821701ea75ba",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-reduce": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt presses the Copy button for colors from a picture",
+    "text": "Copy brings colors in from a picture, shrunk to fit. Pick a range first, and it reduces the picture to that many.",
+    "seconds": 6.7,
+    "hash": "4d25b6f66e4b",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-reduced": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt points at the Colors from picture box",
+    "text": "Colors are chosen from the pixels the picture really uses, the common ones first. Nothing lands until you press the Apply colors button.",
+    "seconds": 8.07,
+    "hash": "425846c20f92",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-reserved": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt points at the Reserved color ranges section",
+    "text": "Reserve ranges for characters, monsters or backgrounds, so one kind never takes another’s colors. Only the editor keeps this.",
+    "seconds": 8.76,
+    "hash": "fbab39f67398",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-rgb": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt points at the red box",
+    "text": "Red, green and blue each run from 0 to 63, like a real VGA card. Slide them or type a number.",
+    "seconds": 8.3,
+    "hash": "440e232b0261",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-square": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt points at the color picker",
+    "text": "Drag in the square, or use the arrow keys. Nothing changes until you press Confirm color; Cancel keeps things as they were.",
+    "seconds": 7.61,
+    "hash": "3eefd8dd617a",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-swatches": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt points at the palette’s colors",
+    "text": "Click a color to edit it. Shift-click a second one to pick a whole range.",
+    "seconds": 5.02,
+    "hash": "52fba019834d",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-tabs": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt points at the Color tab",
+    "text": "Three tabs. Color edits the one you chose. Vision and Backgrounds check how the palette looks in play.",
+    "seconds": 6.7,
+    "hash": "a69c5a554993",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-variants": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt points at the Night, dusk, underwater section",
+    "text": "Night, dusk, underwater: versions of this palette for other times of day. Glowing colors keep lamps and stars bright.",
+    "seconds": 8.14,
+    "hash": "0df126490bf0",
+    "voice": "131d8cb8ad55"
+  },
+  "edit-palette-vision": {
+    "chapter": "edit-palette",
+    "where": "Editor: Watt presses the Vision tab",
+    "text": "Vision shows a level as players who see color differently would, and lists colors that look alike.",
+    "seconds": 5.25,
+    "hash": "22ac143b9c0b",
+    "voice": "131d8cb8ad55"
+  },
   "editor-assistant": {
     "chapter": "editor",
     "where": "Editor: Watt points at the Assistant button",

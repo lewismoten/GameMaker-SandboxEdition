@@ -13,6 +13,7 @@ import { editAroundChapter } from './editAround';
 import { editBlocksChapter } from './editBlocks';
 import { editMapChapter } from './editMap';
 import { editMonstersChapter } from './editMonsters';
+import { editPaletteChapter } from './editPalette';
 import { editorChapter } from './editor';
 import { guideChapter } from './guide';
 import { homeChapter } from './home';
@@ -31,6 +32,7 @@ export const CHAPTERS: Chapter[] = [
   editMapChapter,
   editBlocksChapter,
   editMonstersChapter,
+  editPaletteChapter,
   deskChapter,
   boxChapter,
   bbsChapter,
