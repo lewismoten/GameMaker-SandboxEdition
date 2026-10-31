@@ -53,16 +53,26 @@ export const GAME_MUGS: GameMug[] = [
       [244, 96, 320, 120],
     ],
   },
-  { game: 'brief', hero: 'joe', title: [104, 4, 312, 66], centerX: 212, side: 'left', hide: [[0, 0, 104, 14]] },
+  { game: 'brief', hero: 'joe', title: [96, 2, 312, 78], centerX: 212, side: 'left', hide: [[0, 0, 104, 14]] },
   {
     game: 'depth',
     hero: 'far',
     title: [56, 40, 264, 112],
     centerX: 160,
     hide: [[60, 176, 260, 200]],
-    // the screen's own lettering mended out of the sky and the far floor; fresh lettering goes over
-    mend: [{ box: [60, 46, 270, 114], from: [2, 26] }],
-    lettering: { lines: ['DEPTH', 'PERCEPTION'], scales: [6, 3], fill: ['#ffffff', '#8fd0ff'], centerY: 80 },
+    // the screen's own lettering mended out of the sky and the far floor; fresh lettering goes on a ribbon
+    mend: [
+      { box: [60, 46, 270, 114], from: [2, 26] },
+      { box: [80, 148, 212, 168], from: [4, 28] },
+    ],
+    lettering: {
+      lines: ['DEPTH', 'PERCEPTION'],
+      scales: [5, 3],
+      // blue chrome: bright sky, a dark horizon, a lighter reflection under it
+      fill: ['#a8dcff', '#3d96f0', '#1a56c0', '#08246c', '#2a78d8', '#74bcff'],
+      extrude: '#0a1c5a',
+      centerY: 62,
+    },
   },
   {
     game: 'realm',
@@ -89,8 +99,8 @@ export const GAME_MUGS: GameMug[] = [
     hero: '',
     title: [4, 4, 316, 23],
     centerX: 160,
-    centerY: 90,
-    clearTop: [28, 124, 170],
+    centerY: 80,
+    clearTop: [28, 124, 182],
     hide: [[0, 183, 320, 200]],
     maker: 'THE BARD OF BIZARRE',
     bizarre: true,
@@ -148,7 +158,7 @@ export const GAME_MUGS: GameMug[] = [
     bizarre: true,
   },
   { game: 'loofah', hero: 'loofah', title: [56, 0, 264, 52], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
-  { game: 'smirked', hero: 'smirked', title: [56, 4, 264, 46], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
+  { game: 'smirked', hero: 'smirked', title: [56, 4, 264, 46], centerX: 100, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
   {
     game: 'tickle',
     hero: 'leo',

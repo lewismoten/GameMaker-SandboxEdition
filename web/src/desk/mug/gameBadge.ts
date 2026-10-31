@@ -47,7 +47,7 @@ export interface BadgeLook {
   strip?: boolean;
   /** The screen's top `rows` rows painted out of the picture (not the title) with a mirror of the rows beneath, so a title shifted down by centerY leaves no ghost; columns `from` to `to` (a seed, say) take their left neighbor's color instead. */
   clearTop?: [rows: number, from: number, to: number];
-  /** No ribbon and none of the screen's own lettering: the title set fresh in bold pixel lettering, outlined and shadowed, over the picture and across the ring. Paint the screen's lettering out with hide or mend. */
+  /** None of the screen's own lettering: the title set fresh in bold pixel lettering (a metallic fill, an extruded edge, an outline) on a ribbon. Paint the screen's lettering out with hide or mend. */
   lettering?: Lettering;
 }
 
@@ -364,9 +364,12 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
         ? wholeBox(screen, look.title)
         : titleMask({ ...screen, pixels }, look.title);
   if (look.lettering) {
-    // fresh lettering over the picture and the ring, no ribbon
+    // fresh lettering on a ribbon of its own
     const img = letteringImage(look.lettering, OUTLINE, rgb);
-    stamp(out, img, Math.round(BADGE_CX - img.width / 2), Math.round(look.lettering.centerY - img.height / 2));
+    const iy = Math.round(look.lettering.centerY - img.height / 2);
+    const width = Math.min(BADGE_W - 2 * TAIL - 4, Math.max(img.width + 10, 2 * RING + 16));
+    ribbon(out, Math.round(BADGE_CX - width / 2), Math.round(BADGE_CX + width / 2), Math.max(1, iy + 1), iy + img.height - 1, fill, accent, shade);
+    stamp(out, img, Math.round(BADGE_CX - img.width / 2), iy);
   } else if (t) {
     const letters = blank(t.w, t.h);
     for (let y = 0; y < t.h; y++)

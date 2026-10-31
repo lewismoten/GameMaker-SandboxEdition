@@ -82,20 +82,15 @@ describe('centerY', () => {
 describe('lettering', () => {
   const base = { title: [56, 40, 264, 112] as [number, number, number, number], centerX: 160 };
   const depth = decodeGif(new Uint8Array(readFileSync(new URL('disk/title.gif', game('depth')))));
-  const lettering = { lines: ['DEPTH', 'PERCEPTION'], scales: [6, 3], fill: ['#ffffff', '#7fc4ff'] as [string, string], centerY: 80 };
-  const ribbon = composeBadge(depth, undefined, {}, base);
+  const lettering = { lines: ['DEPTH', 'PERCEPTION'], scales: [6, 3], fill: ['#ffffff', '#7fc4ff'], extrude: '#0a1c5a', centerY: 80 };
   const fresh = composeBadge(depth, undefined, {}, { ...base, lettering });
 
-  it('sets fresh light lettering with a dark outline, and no ribbon', () => {
-    const white = (b: typeof ribbon) => b.data.filter((v) => v === 0xffffffff).length;
-    expect(white(fresh)).toBeGreaterThan(white(ribbon) + 100);
+  it('sets fresh lettering with a dark outline and an extruded edge, on a ribbon', () => {
+    expect(fresh.data.filter((v) => v === 0xffffffff).length).toBeGreaterThan(100);
     expect(fresh.data.filter((v) => v === 0xff1a0f12).length).toBeGreaterThan(300);
-  });
-
-  it('reaches over the ring: lettering wider than the medallion', () => {
-    const row = 80 + 24;
-    const xs = Array.from({ length: BADGE_W }, (_, x) => x).filter((x) => fresh.data[row * BADGE_W + x] >>> 24);
-    expect(xs[xs.length - 1] - xs[0]).toBeGreaterThan(2 * 109);
+    expect(fresh.data.filter((v) => v === 0xff5a1c0a).length).toBeGreaterThan(100);
+    // a solid ribbon edge across the middle of the block, past the lettering's width
+    expect(fresh.data[80 * BADGE_W + 60] >>> 24).toBe(255);
   });
 
   it('makes the first line bigger than the second', () => {
