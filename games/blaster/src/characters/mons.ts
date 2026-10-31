@@ -61,6 +61,9 @@ export class Bestiary {
    * `side`: for a side-scrolling leg, every path and picture is turned a quarter turn
    * clockwise, so the virus built for the scrolling strips comes at the ship from the right.
    */
+  /** Virus Blaster has many short legs; 1/10 keeps a full play near the other adventure scores. */
+  private static readonly SCORE_SCALE = 0.1;
+
   constructor(readonly side = false) {
     this.mb = new BlockSet(100, 'mbl', side ? turn90 : undefined);
   }
@@ -98,7 +101,7 @@ export class Bestiary {
       m.thru = d.thru ? 1 : 0;
       d.pics.forEach(([pic, t], i) => (m.pic[i] = [this.mb.id(pic), t]));
       m.newmon = d.becomes ? this.id(d.becomes) : LASTMON;
-      m.upscore = d.score ?? 0;
+      m.upscore = Math.round((d.score ?? 0) * Bestiary.SCORE_SCALE);
       m.end = d.end ?? 0;
       m.towards = d.towards ?? 0;
       m.march[0] = marches(d.path, true);
