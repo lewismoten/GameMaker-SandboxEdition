@@ -52,9 +52,9 @@ export function safeSvg(open: boolean, pos = 0): string {
     <defs>
       <linearGradient id="kn-chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdfdfe"/><stop offset=".45" stop-color="#aab0b8"/><stop offset=".7" stop-color="#eef0f3"/><stop offset="1" stop-color="#7d838b"/></linearGradient>
     </defs>
-    <path d="M36 30h128q8 0 10 7l4 25H22l4-25q2-7 10-7z" fill="#3c9a4e" stroke="#0c3515" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M30 30h140q10 0 14 10l8 22H8l8-22q4-10 14-10z" fill="#3c9a4e" stroke="#0c3515" stroke-width="2.5" stroke-linejoin="round"/>
     <rect x="124" y="42" width="34" height="6" rx="3" fill="#0e2a14"/>
-    <rect x="8" y="62" width="184" height="142" rx="14" fill="#216b30" stroke="#0c3515" stroke-width="2.5"/>
+    <path d="M8 65q0-3 3-3h178q3 0 3 3v125q0 14-14 14H22q-14 0-14-14z" fill="#216b30" stroke="#0c3515" stroke-width="2.5"/>
     ${hinges}${door}
     <rect x="48" y="179" width="104" height="19" rx="2" fill="#c4161c" stroke="url(#kn-chrome)" stroke-width="2.6"/>
     <text x="100" y="193" text-anchor="middle" font-size="12.5" font-weight="900" letter-spacing="1.1" font-family="Arial Black,Arial,Helvetica,sans-serif" fill="url(#kn-chrome)" stroke="#5c6168" stroke-width=".35">FORT LOCKS</text>

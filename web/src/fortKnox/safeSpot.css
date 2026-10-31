@@ -6,8 +6,8 @@
 }
 .kn-safe-art {
   display: block;
-  width: 52px;
-  height: 55px;
+  width: 48px;
+  height: 51px;
   filter: drop-shadow(2px 3px 2px rgb(0 0 0 / 50%));
 }
 .kn-safe-art svg {
@@ -19,8 +19,8 @@
 @media (min-width: 961px) {
   .desk-scene > .kn-safe {
     position: absolute;
-    left: 1112px;
-    top: 478px;
+    left: 1116px;
+    top: 452px;
     z-index: 2;
   }
   .desk-scene > .kn-safe:hover,
