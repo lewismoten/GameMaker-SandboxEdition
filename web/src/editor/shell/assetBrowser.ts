@@ -204,6 +204,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     project,
     grid,
     preview,
+    play: (box, file, kind) => (PLAYABLE.has(kind) ? playButton(box, file, kind, project) : null),
     open: (file) => host.open(file),
     openControls: () => host.openControls?.(),
     openPlayerField: (patch) => host.openPlayerField?.(patch),

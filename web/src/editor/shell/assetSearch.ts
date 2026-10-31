@@ -15,6 +15,8 @@ export interface SearchHost {
   /** Where results go (the file grid, so thumbnails draw as they scroll into view). */
   grid: HTMLElement;
   preview: (file: string | undefined, kind: FileKind) => HTMLElement;
+  /** A play button for a playable file's preview box (sound, music, animation), if it has one. */
+  play?: (box: HTMLElement, file: string, kind: FileKind) => HTMLElement | null;
   open: (file: string) => void;
   openControls: () => void;
   openPlayerField: (patch: string) => void;
@@ -108,7 +110,7 @@ export function assetSearch(host: SearchHost): { el: HTMLElement; refresh(): voi
           `${GROUP_TITLES[g]} `,
           h('span', { class: 'sr-count' }, `(${list.length.toLocaleString()}${shown.length < list.length ? `, first ${shown.length} shown` : ''})`),
         ),
-        ...shown.map(({ entry, hits }) => resultCard(entry, hits, words, host.preview, () => open(entry))),
+        ...shown.map(({ entry, hits }) => resultCard(entry, hits, words, host.preview, () => open(entry), host.play)),
       );
     }
     clear(host.grid, ...nodes);

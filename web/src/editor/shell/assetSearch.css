@@ -79,3 +79,12 @@
   background: #ffe27a;
   color: #000;
 }
+/* A playable file's result: the card and its play button (assetBrowser.css .asset-play) share one grid cell. */
+.sr-item {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+.sr-item > .sr-card {
+  flex: 1;
+}

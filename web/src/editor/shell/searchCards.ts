@@ -22,7 +22,8 @@ export function resultCard(
   words: string[],
   preview: (file: string | undefined, kind: FileKind) => HTMLElement,
   open: () => void,
-): HTMLButtonElement {
+  play?: (box: HTMLElement, file: string, kind: FileKind) => HTMLElement | null,
+): HTMLElement {
   let picture: HTMLElement;
   if (entry.group === 'player') {
     const value = entry.parts.find((p) => p.label === 'Value')?.text ?? '';
@@ -46,11 +47,14 @@ export function resultCard(
     if (!picture.textContent) picture.textContent = KIND_ICON[kind];
   }
   const detail = entry.group === 'player' ? hits.filter((p) => p.label === 'Default') : hits;
-  return h(
+  const card = h(
     'button',
     { type: 'button', class: 'asset-card asset-open sr-card', 'data-result': entry.id, title: `Open ${entry.title}`, onclick: open },
     picture,
     h('strong', null, entry.group === 'player' ? entry.title : entry.group === 'files' ? highlighted(entry.title, words, 30) : entry.title),
     ...(entry.group === 'files' ? [] : detail.slice(0, 2).map((p) => hitLine(p, words))),
   );
+  const playable = entry.group === 'files' && entry.file && entry.kind ? play?.(picture, entry.file, entry.kind) : null;
+  // a button can't hold a button: a playable file's card sits beside its play button in a shared box
+  return playable ? h('div', { class: 'sr-item' }, card, playable) : card;
 }
