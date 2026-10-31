@@ -15,6 +15,7 @@ import { fitToPane } from '../../core/fitPane';
 import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { vocToSpeaker } from '../../../audio/vocToSpeaker';
 import { fitChoice, setSlotFit, slotFit } from './speakerFit';
+import { gameControls, soundLabel } from '../../core/gameControls';
 
 const MAXF = 8192;
 const MINF = 64;
@@ -26,6 +27,7 @@ const fromY = (y: number, hgt: number) => (y >= hgt - 2 ? 0 : Math.round(MINF * 
 
 registerEditor(['snd'], (host, project, file) => {
   const snd = parseSoundSet(project.files.get(file)!);
+  const names = gameControls(project).sounds;
   // the address keeps the sound shown (…/NEBULA.SND?sound=7)
   const view = viewState(['p', project.id, file]);
   const urlSound = view.num('sound');
@@ -135,7 +137,7 @@ registerEditor(['snd'], (host, project, file) => {
               title: snd.digital[i] ? `Uses ${snd.digital[i].trim()}.VOC on a Sound Blaster` : undefined,
               onclick: () => ((current = i), render()),
             },
-            `${i}. ${SOUND_NAMES[i] ?? 'Effect'}${snd.digital[i] ? ' 🔊' : ''}`,
+            `${soundLabel(i, SOUND_NAMES, names)}${snd.digital[i] ? ' 🔊' : ''}`,
           ),
           // two columns: what a PC speaker plays, and what a Sound Blaster plays
           h(
@@ -364,7 +366,7 @@ registerEditor(['snd'], (host, project, file) => {
         h(
           'div',
           { class: 'snd-title' },
-          h('h2', null, `${current}. ${SOUND_NAMES[current] ?? 'Effect'}`),
+          h('h2', null, soundLabel(current, SOUND_NAMES, names)),
           h('p', { class: 'hint' }, current < SOUND_NAMES.length ? 'Played automatically by the game.' : 'Use it from a character sequence.'),
           playBtn,
         ),

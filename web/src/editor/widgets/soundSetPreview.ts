@@ -1,13 +1,20 @@
 // Sound-set auditions name the current effect and compare its PC speaker and digital recordings.
 import { h, modal, toast } from '../core/ui';
+import type { SoundNames } from '../core/gameControls';
 import type { ThumbSource } from './thumbs';
 import { audio } from './mediaShared';
 import { soundAuditions, type SoundAudition } from './soundAuditions';
 import { drawSpeakerPitch, drawWave } from './waveform';
 
 /** Sequential PC/VOC pairs, with an effect picker, source picker and an explicit stop button. */
-export async function previewSoundSet(name: string, bytes: Uint8Array, source: ThumbSource, thumbnail?: HTMLCanvasElement | null): Promise<void> {
-  const parts = soundAuditions(bytes, source.files);
+export async function previewSoundSet(
+  name: string,
+  bytes: Uint8Array,
+  source: ThumbSource,
+  thumbnail?: HTMLCanvasElement | null,
+  names?: SoundNames,
+): Promise<void> {
+  const parts = soundAuditions(bytes, source.files, names);
   const canvas = h('canvas', { width: 480, height: 120, class: 'pixel', role: 'img', 'aria-label': 'Sound preview', style: 'max-width:100%;height:auto' });
   const status = h('p', { class: 'hint' }, parts.length ? 'Choose an effect and sound source.' : 'No playable sounds accompany this set.');
   const effects = h(

@@ -2,6 +2,7 @@
 import { parseSoundSet, SOUND_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { soundLabel, type SoundNames } from '../core/gameControls';
 import type { GameFiles } from '../../project/files';
 
 export interface SoundAudition {
@@ -16,10 +17,10 @@ export interface SoundAudition {
 }
 
 /** Each slot's PC speaker sound followed by its VOC, when those parts are actually playable. */
-export function soundAuditions(bytes: Uint8Array, files: Pick<GameFiles, 'get'>): SoundAudition[] {
+export function soundAuditions(bytes: Uint8Array, files: Pick<GameFiles, 'get'>, names?: SoundNames): SoundAudition[] {
   const set = parseSoundSet(bytes);
   return set.freqs.flatMap((freqs, slot) => {
-    const label = `${slot}. ${SOUND_NAMES[slot] ?? 'Effect'}`;
+    const label = soundLabel(slot, SOUND_NAMES, names);
     const parts: SoundAudition[] = [];
     if (freqs.some((frequency) => frequency >= 20)) parts.push({ slot, label, kind: 'speaker', freqs, seconds: freqs.length / TICK_RATE });
     const stem = set.digital[slot].trim();

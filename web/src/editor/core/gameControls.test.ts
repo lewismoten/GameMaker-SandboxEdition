@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { Project } from './project';
-import { gameControls, migrateCounterNames, readControls, setGameControls } from './gameControls';
+import { gameControls, migrateCounterNames, readControls, setGameControls, soundLabel } from './gameControls';
 import { COUNTER_NAMES } from '../editors/character/counterNames';
 
 function project(): Project {
@@ -26,11 +26,28 @@ describe('game controls', () => {
 
   it('round-trips through the companion and stores nothing when empty', () => {
     const p = project();
-    setGameControls(p, { keys: { '57': { short: 'Jump', long: '' } }, joystick: { 2: { short: 'Bomb', long: '' } }, counters: { 7: 'Arrows' } });
-    expect(gameControls(p)).toEqual({ keys: { '57': { short: 'Jump', long: '' } }, joystick: { 2: { short: 'Bomb', long: '' } }, counters: { '7': 'Arrows' } });
-    setGameControls(p, { keys: {}, joystick: {}, counters: {} });
-    expect(gameControls(p)).toEqual({ keys: {}, joystick: {}, counters: {} });
+    setGameControls(p, {
+      keys: { '57': { short: 'Jump', long: '' } },
+      joystick: { 2: { short: 'Bomb', long: '' } },
+      counters: { 7: 'Arrows' },
+      sounds: { 9: ' Zap ' },
+    });
+    expect(gameControls(p)).toEqual({
+      keys: { '57': { short: 'Jump', long: '' } },
+      joystick: { 2: { short: 'Bomb', long: '' } },
+      counters: { '7': 'Arrows' },
+      sounds: { '9': 'Zap' },
+    });
+    setGameControls(p, { keys: {}, joystick: {}, counters: {}, sounds: {} });
+    expect(gameControls(p)).toEqual({ keys: {}, joystick: {}, counters: {}, sounds: {} });
     expect(p.extras('g.gam', 'controls', null)).toBeNull();
+  });
+
+  it('keeps sound names for slots 0-29 only, cut to 40 characters', () => {
+    expect(readControls({ sounds: { '9': 'x'.repeat(50), '30': 'No', '-1': 'No', '12': '  ', a: 'No' } }).sounds).toEqual({ '9': 'x'.repeat(40) });
+    expect(soundLabel(9, ['a'], { '9': 'Zap' })).toBe('9. Zap');
+    expect(soundLabel(0, ['Help'], { '0': 'Zap' })).toBe('0. Help');
+    expect(soundLabel(9, ['a'], {})).toBe('9. Effect');
   });
 
   it('moves per-character counter names: first wins, game-wide kept, old entries removed', () => {

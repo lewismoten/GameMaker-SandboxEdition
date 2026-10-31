@@ -5,7 +5,8 @@
 //   {
 //     "keys":     { "57": { "short": "Jump", "long": "Hold to jump higher" } },  // DOS scan code -> text
 //     "joystick": { "1": { "short": "Fire", "long": "…" }, "2": { … } },        // button 1 and 2
-//     "counters": { "20": "Gold keys", "7": "Arrows" }                          // meter 5-24 -> name
+//     "counters": { "20": "Gold keys", "7": "Arrows" },                         // meter 5-24 -> name
+//     "sounds":   { "9": "Zap", "12": "Door creak" }                            // sound slot past the named ones -> name
 //   }
 // Every part is optional. Nothing here is written into the DOS files.
 import type { Project } from './project';
@@ -27,6 +28,23 @@ export interface GameControls {
   joystick: JoystickButtons;
   /** Counter names by meter number: 5-19 repetition counters, 20-24 hidden counters. */
   counters: CounterNames;
+  /** Names of the sound slots past PLAYGAME's named ones, by slot number (a decimal string). */
+  sounds: SoundNames;
+}
+
+export type SoundNames = Record<string, string>;
+export const SOUND_NAME_LIMIT = 40;
+const SOUND_SLOTS = 30;
+
+/** Clean sound names: slots 0-29 only, trimmed and cut to the limit. */
+export function readSoundNames(value: unknown): SoundNames {
+  const out: SoundNames = {};
+  if (!isObject(value)) return out;
+  for (const [slot, name] of Object.entries(value)) {
+    const n = text(name, SOUND_NAME_LIMIT);
+    if (/^(?:0|[1-9]\d?)$/.test(slot) && Number(slot) < SOUND_SLOTS && n) out[slot] = n;
+  }
+  return out;
 }
 
 const text = (value: unknown, limit: number) => (typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, limit) : '');
@@ -47,7 +65,12 @@ export function readKeyDescriptions(value: unknown): GameControls['keys'] {
 /** Any value (a stored section, a controls.json) as clean controls; unknown or empty parts are dropped. */
 export function readControls(value: unknown): GameControls {
   const v = isObject(value) ? value : {};
-  return { keys: readKeyDescriptions(v.keys), joystick: readJoystickButtons(v.joystick), counters: readCounterNames(v.counters) };
+  return {
+    keys: readKeyDescriptions(v.keys),
+    joystick: readJoystickButtons(v.joystick),
+    counters: readCounterNames(v.counters),
+    sounds: readSoundNames(v.sounds),
+  };
 }
 
 type Store = Pick<Project, 'extras' | 'setExtras' | 'gam'>;
@@ -65,14 +88,18 @@ export function gameControls(project: Pick<Project, 'companion' | 'gam'>): GameC
 /** Stores the controls (nothing is stored for an empty part), leaving the game's files alone. */
 export function setGameControls(project: Store, next: GameControls): void {
   const controls = readControls(next);
-  const own = { keys: controls.keys, counters: controls.counters };
+  const own = { keys: controls.keys, counters: controls.counters, sounds: controls.sounds };
   const empty = (o: object) => Object.keys(o).length === 0;
   project.setExtras(
     project.gam,
     CONTROLS_SECTION,
-    empty(own.keys) && empty(own.counters)
+    empty(own.keys) && empty(own.counters) && empty(own.sounds)
       ? undefined
-      : { ...(empty(own.keys) ? {} : { keys: own.keys }), ...(empty(own.counters) ? {} : { counters: own.counters }) },
+      : {
+          ...(empty(own.keys) ? {} : { keys: own.keys }),
+          ...(empty(own.counters) ? {} : { counters: own.counters }),
+          ...(empty(own.sounds) ? {} : { sounds: own.sounds }),
+        },
   );
   project.setExtras(project.gam, JOYSTICK_BUTTONS, empty(controls.joystick) ? undefined : controls.joystick);
 }
@@ -101,4 +128,9 @@ export function migrateCounterNames(project: Store & Pick<Project, 'files'>): bo
   const now = gameControls(project);
   setGameControls(project, { ...now, counters: { ...found, ...now.counters } });
   return true;
+}
+
+/** A sound slot as listed: "7. Name", using PLAYGAME's name, else the game's own, else "Effect". */
+export function soundLabel(slot: number, defaults: readonly string[], names: SoundNames | undefined): string {
+  return `${slot}. ${defaults[slot] ?? names?.[slot] ?? 'Effect'}`;
 }
