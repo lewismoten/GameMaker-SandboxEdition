@@ -20,6 +20,7 @@ import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, text } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import { buildPalette, type Pal } from '../art/pal';
+import { addBadgeBlocks } from './badges';
 import { MILK_CARTON, MON, ROLLS, ROLLS_NEEDED, SEQ, STRAW, WILL, WILL_NEEDED } from '../ids';
 
 export { BlockBook, SOLID };
@@ -707,5 +708,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     photo(43, (p) => p.blit(lewie.crop(4, 0, 12, 9), 4, 5, CLEAR)),
     air,
   );
+  // scenery for the site's achievement badges, after everything else so no block moves
+  addBadgeBlocks(book, c, { cold: inside(7), tiles: tileWall(74), wall: wall(81) });
   return book;
 }
