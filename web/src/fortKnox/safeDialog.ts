@@ -8,7 +8,7 @@ import { h } from '../editor/core/ui';
 import { focusInto } from '../desk/overlayFocus';
 import { roomSound } from '../desk/props/propSound';
 import { stillMotion } from '../desk/props/propKit';
-import { newDial, opens, spin, turnDial, TICKS, type Dial, type Turn } from './dial';
+import { newDial, opens, turnDial, TICKS, type Dial, type Turn } from './dial';
 import { loadMoney } from './money';
 import { balance, buy, loadSafe, saveSafe, type SafeRecord } from './store';
 import { safeSvg } from './safeArt';
@@ -85,6 +85,7 @@ export async function openSafe(): Promise<void> {
     for (let i = 0; i < Math.abs(ticks); i++) {
       dial = turnDial(dial, dir);
       if (dial.pos % 5 === 0) roomSound.dialClick();
+      if (dial.picks) roomSound.wheelTap();
     }
     paint();
   };
@@ -107,17 +108,20 @@ export async function openSafe(): Promise<void> {
     const start = -dial.pos * TICK_DEG; // the angle now; turning right raises it (clockwise)
     const before = dial;
     let clicked = 0;
+    let sim = before;
     const clicksTo = (n: number) => {
       for (; clicked < n;) {
         clicked++;
-        if (((((before.pos - sign * clicked) % TICKS) + TICKS) % TICKS) % 5 === 0) roomSound.dialClick();
+        sim = turnDial(sim, sign);
+        if (sim.pos % 5 === 0) roomSound.dialClick();
+        if (sim.picks) roomSound.wheelTap();
       }
     };
     const land = () => {
       raf = 0;
       finishAnim = undefined;
       clicksTo(steps);
-      dial = turnDial(before, sign * steps);
+      dial = sim;
       paint();
       done();
     };
@@ -146,21 +150,22 @@ export async function openSafe(): Promise<void> {
     const n = Number(raw);
     if (!raw || !Number.isInteger(n) || n < 0 || n >= TICKS) return say(`Type a whole number from 0 to ${TICKS - 1}.`);
     const dir = ENTRY_DIRS[entry % 3];
-    const steps = stepsFor(n, dir);
+    const short = stepsFor(n, dir);
+    // the number box does the extra turns of the real routine: three laps for the first number,
+    // and once past the first number on the way to the second
+    const steps = short + (entry % 3 === 0 ? 3 * TICKS : entry % 3 === 1 ? TICKS : 0);
     if (!steps) return say(`The dial is already at ${n}. Pick another number.`);
     entry++;
     showNext();
     say(`Turning ${dir} to ${n}.`);
     animateTurn(steps, dir, () => say(`Turned ${dir} to ${n}.`));
   }
+  /** Three laps right collect every wheel, then on round to 0, where all the wheels stand. */
   function reset() {
-    const right = dial.pos <= TICKS / 2;
-    animateTurn(right ? dial.pos : TICKS - dial.pos, right ? 'right' : 'left', () => {
-      dial = newDial();
+    animateTurn(3 * TICKS + dial.pos, 'right', () => {
       entry = 0;
       showNext();
-      paint();
-      say('The dial is back at 0 and the numbers are forgotten.');
+      say('The dial is back at 0 and every wheel is collected. Start again.');
     });
   }
 
@@ -222,13 +227,10 @@ export async function openSafe(): Promise<void> {
       render();
       say('Click-clunk! The door swings open.');
     } else {
-      dial = spin(dial);
       entry = 0;
       showNext();
       say(
-        dial.pos === 0 && !dial.runs.length
-          ? 'The door does not budge.'
-          : 'The door does not budge. Hint: right, left, right, and stop on each number. Somebody wrote it down near the phone.',
+        'The door does not budge. Hint: three or more laps right to the first number, then left past it once to the second, then right to the third. Somebody wrote the numbers down near the phone. Reset spins the wheels back to the start.',
       );
     }
   }
@@ -345,7 +347,7 @@ export async function openSafe(): Promise<void> {
     showNext();
     side.append(
       h('h2', null, 'Forte Locks'),
-      h('p', { id: 'kn-dir-hint' }, 'Teddy’s toy safe. Type a number and Turn, or drag the dial, scroll over it or use the arrow keys. Then try the door.'),
+      h('p', { id: 'kn-dir-hint' }, 'Teddy’s toy safe has a real lock inside. Right, at least three full laps, and stop on the first number. Left, past that number once, and stop on the second the second time round. Right, straight to the third. Then try the door. Turning back the other way takes nearly a lap before the wheels follow. Type a number and Turn (it does the laps for you), or drag the dial, scroll over it or use the arrow keys.'),
       h('div', { class: 'kn-entry' }, dirLabel, numBox, h('button', { type: 'button', class: 'kn-turn primary', onclick: goTo }, 'Turn')),
       h(
         'div',
