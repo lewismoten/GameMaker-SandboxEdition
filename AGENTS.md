@@ -130,10 +130,27 @@ preserve what was there.
   - Editor features must not change how games save or export to DOS.
   - Editor-only data goes in the project's companion file (`web/src/project/companion.ts`),
     which DOS, native and web-page exports never include.
+  - Match DOS bugs and all: a fix that changes what PLAYGAME did is only a note.
 - **Accessibility and layout:** keyboard reachable, labeled, 24px targets, and no
   horizontal scroll at 390px. Editor and home views should fit one screen. Check new UI with
   axe at 1440 and 390, in light and dark.
 - **Permissions:** if a command is blocked, stop and report it. Don't work around it.
+- **Scope:** do what was asked. Don't add games, features or settings nobody asked for, and
+  don't turn off a setting you weren't asked to touch. When told to wrap up, finish what you
+  have and pick up nothing new.
+- **Pull requests:** open one only when asked. GitHub defaults to the upstream repository
+  (gandrewstone/GameMaker), and a pull request opened there can't be deleted, so always pass
+  `--repo lewismoten/GameMaker-SandboxEdition` and check the base before creating it.
+- **Claims:** search before saying something exists or doesn't, and point to the file and
+  line. Mark an inference as one ("appears to be"); don't state it as fact.
+- **Bots and checks:**
+  - A bot win isn't playability. Bots take visible treasure and power-ups, finish fights and
+    bosses, never idle on menus, and play with human timing (no frame-perfect key changes).
+  - Check findings are suggestions an author can dismiss. Word them that way and say what the
+    tool can't see.
+- **Previews and labels:** a preview is a real render, never an emoji or a black stand-in.
+  Name a thing for what it does, and give every flow a clear start and end.
+- **Imports:** look at a file's contents before trusting its extension.
 
 ## Content rules for anything that ships (games, text, art, pages, commit messages)
 
@@ -171,6 +188,13 @@ preserve what was there.
   NOTICE.md. Riffusion, Producer.ai and Google Flow Music are one service under successive
   names (Riffusion renamed itself Producer.ai; Google bought it); never present them as
   different companies.
+- **Facts and jokes:**
+  - Use the maintainer's personal facts as given. Don't invent family or history details.
+  - Background you were given isn't game text: leave out anything that explains itself to
+    the player.
+  - When revising, keep deliberate jokes and numbers as they are.
+- **Where it's read:** text must hold wherever it's read. A README is read on GitHub and on
+  npm, and a DOS export's credits shouldn't mention the web.
 - **Originality:**
   - Write manuals and text fresh. Don't copy RSD's printed manual.
   - The maintainer's reference photos are reference only, unless they're asked for.
@@ -197,5 +221,8 @@ in your report what credits you added.
 
 ## Before you finish
 
-Run format, lint, tsc and vitest. Run the game checks above for any game you touched. Then report what
-changed, the commits, how you verified it, and anything left undone.
+Run format, lint, tsc and vitest. Run the game checks above for any game you touched. Look at
+art, printables and screens, and listen to voices, before calling them done. Then report what
+changed, the commits, how you verified it, and anything left undone, keeping checks that
+passed apart from what still needs a live test. Give times in a timeline with the weekday and
+time.
