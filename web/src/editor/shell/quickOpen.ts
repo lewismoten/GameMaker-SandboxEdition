@@ -3,7 +3,7 @@
 // project's companion file (never among the game's files), saved with the next edit.
 import { h, modal } from '../core/ui';
 import { kindOf, KIND_LABELS, type Project } from '../core/project';
-import { KIND_ICON } from '../widgets/thumbs';
+import { fileThumb } from '../widgets/thumbs';
 import { sceneUses } from '../core/uses';
 import { emptyCompanion, setSection } from '../../project/companion';
 import './quickOpen.css';
@@ -72,12 +72,33 @@ export function quickOpen(project: Project): Promise<string | undefined> {
       autocomplete: 'off',
     });
     const status = h('p', { class: 'meta qo-status', 'aria-live': 'polite' });
+    // Small real thumbnails, drawn only for rows that scroll into view.
+    const pictures = new WeakMap<Element, string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          observer.unobserve(entry.target);
+          const file = pictures.get(entry.target);
+          if (!file || !entry.target.isConnected) continue;
+          let thumb: HTMLElement;
+          try {
+            thumb = fileThumb(file, project.files.get(file), { files: project.files, palette: project.paletteFor(file).palette });
+          } catch {
+            thumb = fileThumb(file, project.files.get(file), { files: project.files });
+          }
+          entry.target.replaceChildren(thumb);
+        }
+      },
+      { root: list, rootMargin: '60px' },
+    );
     let hits: Hit[] = [];
     let at = 0;
     const show = () => {
       const all = quickHits(project, input.value);
       hits = all.slice(0, 60);
       at = Math.min(at, Math.max(0, hits.length - 1));
+      observer.disconnect();
       list.replaceChildren(
         ...hits.map((hit, i) => {
           const uses = sceneUses(project, hit.file).length;
@@ -91,7 +112,7 @@ export function quickOpen(project: Project): Promise<string | undefined> {
               onclick: () => close(hit.file),
               onpointermove: () => i !== at && ((at = i), mark()),
             },
-            h('span', { class: 'qo-icon', 'aria-hidden': 'true' }, KIND_ICON[kindOf(hit.file)] ?? '📄'),
+            preview(hit.file),
             h('span', { class: 'qo-name' }, hit.file),
             h(
               'span',
@@ -106,6 +127,12 @@ export function quickOpen(project: Project): Promise<string | undefined> {
         : 'No file or scene has that name.';
       mark();
     };
+    function preview(file: string): HTMLElement {
+      const box = h('span', { class: 'qo-icon', 'aria-hidden': 'true' });
+      pictures.set(box, file);
+      observer.observe(box);
+      return box;
+    }
     const mark = () => {
       list.querySelectorAll('.qo-item').forEach((el, i) => {
         el.classList.toggle('active', i === at);
