@@ -40,6 +40,7 @@ const SOURCES: Record<string, string[]> = {
     'editor/editors/picture',
     'editor/editors/slideShow',
     'editor/editors/integrator',
+    'editor/editors/integrator/dosPlayer',
     'editor/widgets/colorChoice.ts',
     'editor/widgets/filePicker.ts',
     'editor/widgets/panelTabs.ts',

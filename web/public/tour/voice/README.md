@@ -305,6 +305,23 @@ records every clip again.
 | [edit-integrator-player.ogg](edit-integrator/edit-integrator-player.ogg) | And this button opens the DOS player, the program that runs the game on a real computer. That is the last stop. | Editor: Inspector Penn points at the DOS player button | 7.55 |
 | [edit-integrator-bye.ogg](edit-integrator/edit-integrator-bye.ogg) | Case closed. Every scene is where it should be. | Editor: Inspector Penn says goodbye and walks off | 3.73 |
 
+## edit-player
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-player-hello.ogg](edit-player/edit-player-hello.ogg) | Ah, my favorite invention yet: the player itself! Its words, colors and frames may be tinkered with, though not to bursting. | Editor: Professor Fiddlesticks comes on | 10.67 |
+| [edit-player-open.ogg](edit-player/edit-player-open.ogg) | This button opens the DOS player. That is the program the DOS download uses to run a game outside the editor. | Editor: Professor Fiddlesticks presses the DOS player button | 11.07 |
+| [edit-player-intro.ogg](edit-player/edit-player-intro.ogg) | The player’s own words, colors, frames and timings can change, screen by screen. This game is look-only, so every box is locked. | Editor: Professor Fiddlesticks points at the box’s introduction | 12.75 |
+| [edit-player-presets.ogg](edit-player/edit-player-presets.ogg) | Presets are two classic tricks: blank the menu words, or rename the status words. Reset all puts everything back. | Editor: Professor Fiddlesticks points at the presets | 12.11 |
+| [edit-player-tabs.ogg](edit-player/edit-player-tabs.ogg) | One tab for each screen, in the order a player meets them: menu, text pages, high scores, status, save, load, help. Then keys, colors and files. | Editor: Professor Fiddlesticks points at the screen tabs | 15.15 |
+| [edit-player-words.ogg](edit-player/edit-player-words.ogg) | Words come first. Each line has to fit the room it has in the program, and takes plain letters, digits and punctuation. | Editor: Professor Fiddlesticks points at the first section of words | 12.03 |
+| [edit-player-preview.ogg](edit-player/edit-player-preview.ogg) | The preview is drawn with your changes. Drag a word or a frame to move it, or a frame’s corner to resize it. | Editor: Professor Fiddlesticks points at the preview screen | 8.59 |
+| [edit-player-nudge.ogg](edit-player/edit-player-nudge.ogg) | Prefer keys? Choose a word under Move, then press the arrows to nudge it a pixel. Hold Shift to move eight. | Editor: Professor Fiddlesticks points at the Move controls | 8.91 |
+| [edit-player-hiscores.ogg](edit-player/edit-player-hiscores.ogg) | Every tab lists its screen’s changes by kind. High scores has words, positions, colors and how long it waits. | Editor: Professor Fiddlesticks presses the High scores tab | 10.27 |
+| [edit-player-colors.ogg](edit-player/edit-player-colors.ogg) | Colors are shared by every screen. Each is a color picker, and the number beside it is the VGA level, out of 63. | Editor: Professor Fiddlesticks presses the Colors tab | 11.63 |
+| [edit-player-files.ogg](edit-player/edit-player-files.ogg) | Files changes the three-letter endings of the files in the DOS download, and the program is patched to look for them. | Editor: Professor Fiddlesticks presses the Files tab | 9.47 |
+| [edit-player-bye.ogg](edit-player/edit-player-bye.ogg) | Splendid! A player of your own design. Now go and make something wonderful! | Editor: Professor Fiddlesticks says goodbye and walks off | 7.79 |
+
 ## desk
 
 | Clip | Says | Where | Seconds |

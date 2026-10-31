@@ -1599,6 +1599,102 @@
     "hash": "22ac143b9c0b",
     "voice": "131d8cb8ad55"
   },
+  "edit-player-bye": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks says goodbye and walks off",
+    "text": "Splendid! A player of your own design. Now go and make something wonderful!",
+    "seconds": 7.79,
+    "hash": "184ef575b1c6",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-colors": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks presses the Colors tab",
+    "text": "Colors are shared by every screen. Each is a color picker, and the number beside it is the VGA level, out of 63.",
+    "seconds": 11.63,
+    "hash": "cfe2bed049a0",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-files": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks presses the Files tab",
+    "text": "Files changes the three-letter endings of the files in the DOS download, and the program is patched to look for them.",
+    "seconds": 9.47,
+    "hash": "cf4d81276370",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-hello": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks comes on",
+    "text": "Ah, my favorite invention yet: the player itself! Its words, colors and frames may be tinkered with, though not to bursting.",
+    "seconds": 10.67,
+    "hash": "468639c2995e",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-hiscores": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks presses the High scores tab",
+    "text": "Every tab lists its screen’s changes by kind. High scores has words, positions, colors and how long it waits.",
+    "seconds": 10.27,
+    "hash": "4996881b0319",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-intro": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks points at the box’s introduction",
+    "text": "The player’s own words, colors, frames and timings can change, screen by screen. This game is look-only, so every box is locked.",
+    "seconds": 12.75,
+    "hash": "45446875ff78",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-nudge": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks points at the Move controls",
+    "text": "Prefer keys? Choose a word under Move, then press the arrows to nudge it a pixel. Hold Shift to move eight.",
+    "seconds": 8.91,
+    "hash": "4b044a6f5266",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-open": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks presses the DOS player button",
+    "text": "This button opens the DOS player. That is the program the DOS download uses to run a game outside the editor.",
+    "seconds": 11.07,
+    "hash": "a204f7db2d79",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-presets": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks points at the presets",
+    "text": "Presets are two classic tricks: blank the menu words, or rename the status words. Reset all puts everything back.",
+    "seconds": 12.11,
+    "hash": "4f2d0827fae9",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-preview": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks points at the preview screen",
+    "text": "The preview is drawn with your changes. Drag a word or a frame to move it, or a frame’s corner to resize it.",
+    "seconds": 8.59,
+    "hash": "43e4331682f2",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-tabs": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks points at the screen tabs",
+    "text": "One tab for each screen, in the order a player meets them: menu, text pages, high scores, status, save, load, help. Then keys, colors and files.",
+    "seconds": 15.15,
+    "hash": "cacf20b21bea",
+    "voice": "532d1bbf3a1e"
+  },
+  "edit-player-words": {
+    "chapter": "edit-player",
+    "where": "Editor: Professor Fiddlesticks points at the first section of words",
+    "text": "Words come first. Each line has to fit the room it has in the program, and takes plain letters, digits and punctuation.",
+    "seconds": 12.03,
+    "hash": "468d970f369e",
+    "voice": "532d1bbf3a1e"
+  },
   "edit-sounds-accompany": {
     "chapter": "edit-sounds",
     "where": "Editor: Gwinn points at the Accompany button",
