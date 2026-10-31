@@ -68,10 +68,10 @@
       "block": "easterEgg"
     },
     "watch-one": {
-      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBQ4LDSSfV26pn3Tw57v374oKDCSkpbHx8uO/46hCg0LAAAAdklEQVR42nVRAQ7EIAjrrq3b/v/hC6DzMr0Go5SCpsKWxtJHkilYFicdrFC7e1q1UDIpVpDZrtHFfib0gGMOoXOB/pBtgcCfDInGUB4dg8z2o3Qvcqd8z/T+drV2XRH3vX/SVGKBUI6FSeFbWQPZjC9gGJes9QWsEAawt4UWWAAAAABJRU5ErkJggg==",
-      "game": "remote",
-      "set": "remote",
-      "block": "vcrPlaying"
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQDBT3z6rX08/r5+P///v/UVlVXW2Cjp48IBBpRSSaaTjLjlFVfcNnGd+RAAAAgUlEQVR42m2OQRLDIAwDTUxJJPH/93Zspkmg6ORZrwWmTUyyJZJdl/UpQcCA5QVJoyxYKRNEmuWW41YYnY+Jn9l7r/5ADFhrre6f2XSv7scwcXf249h0Lg8tCXj+BTsYX2JroEACZGvMTrQGIDjGLFNuSRDkMGVUDkkGJIxUdr4gv6HnDPbVf0ysAAAAAElFTkSuQmCC",
+      "game": "tickle",
+      "set": "tickle",
+      "block": "tv1"
     },
     "desk-bbs": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEWqpqL///dpQSRdXWGWLCjLTUGWjnW6rprb077/9+PXujxZpkXjprS1AAAAaUlEQVR42qWNUQ7AIAhDAZmK3v++S0WdLvswWT8KvJSUyodoPVR1wKst7hOWamZWamN1vuec8xIsJCICiCnaXAgCNBe5mBkwuXDyb9iLUkgB8KCoJw+KtiSK4pPciuL7nYkjjIe5R17hDU0JCBxVl5odAAAAAElFTkSuQmCC",
@@ -140,10 +140,10 @@
       "block": "vcr"
     },
     "offline-copy": {
-      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBQ4LDSSfV26pn3Tw57v374oKDCSkpbHx8uP+qxCAAAAc0lEQVR42nVRARKAIAyiAOv/L+62aXVp3DwdY9ND2NJY2iWZgmXxoYMVandPqxZKJsUKMts1utjPhG5wzCF0TNAP2SYIfGVINIZy6xhktm+l+5Ar5Xem17ertfPssXzSo8QEoRwLk8K3sgayGV/AMC5Z6wKrUwau5eh8UwAAAABJRU5ErkJggg==",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEWKTV2+dYbXmqZdoo77bVkBi6NJAAAAZklEQVR42n2QUQ7AIAhDW9r7n3kRZcuUTT8aHwVJAeZ5Scf6UqqKaQq6XmwscHs3O0TaJKyhsK2smIZZd9lNRwKvroR4XK5vrGEhzDHX50r8Xim6KFQPFdNPShuLJqWYK60YGZqlC5R5Aeu6o23wAAAAAElFTkSuQmCC",
       "game": "remote",
       "set": "remote",
-      "block": "vcrOff"
+      "block": "nope"
     },
     "mag-features": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEU4LDTX08v///eSfV26pn3Tw57v375lEBSWLCjLTUHXujz/8200VaJVhs8OOLAeAAAAjElEQVR42m2RCw7DIAxDDbPNOsb9rzsFSFtNffwiY1AIkEWtSZQtSYhIF5RIyJw+65sIfic3Uac4EkFHMhCMMQwfMw4xIXg5H48/iTNPR6qI6JM4nkTCcoolAS31RWmtlWjhZJ9Z9Vpb9FYRt2xnRQOWqPP4zfknxsCsXFT05ZpgF10yvVci/2GuXns/cJgKpSXWg10AAAAASUVORK5CYII=",
@@ -350,10 +350,10 @@
       "block": "clipboardOk"
     },
     "sfx-maker": {
-      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQDBT///9VXW2Cjp6yusfj6/N5hoKeqqbDz8vr8+++/47DQTzzWVGrOasZAAAAeUlEQVR42n2QWw7DIAwEN3bWLKX3P29lnFR5KfsxwMgYZEhST4TUNBOotU+pk+zaZNa2gNZbAjJcYpv85uGD2tlbpeOAkoOkO0eCHBYIA9NySS4cnJXOLPqDPq/znOrp1XPHy+vAigMs0J8/f0ugJqzLPEu2dpTxkB+sjAa1AcXGRQAAAABJRU5ErkJggg==",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUQDBRVXW15hoKeqqbDz8vr8+/DQTzzWVFVfcP//+8+S1eOAAAAdElEQVR42n3QgQrEIAwD0Kamue7/f/iwunEdcoEqPKKCRpIxFycHK25rj0I2DG6c3TERLR9UE1cL4oT8i3ZsWkP3dfxRuBtj32nHh6zhKwszUSNpTuxm1giAILrFuA3SjfP47hYtDGZmjURKG+sjx+8n+yFfaQ0HWeE2pzQAAAAASUVORK5CYII=",
       "game": "tickle",
       "set": "tickle",
-      "block": "mixer"
+      "block": "detector0"
     },
     "desk-uv": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEV5PJayZdN5hoKeqqbDz8vr8+95qr6m2//z+/8sLDRdXWWSkpoHdl1AAAAAiElEQVR42m2QCw7DIAxDTeIA3e5/3ykOqLSaJUTysMgHJBnkR6JkqDu+0gPGdjpJFwySl+S3U2Hv6IoiErZkABoAz7ScTrQSjkJiY9MbjjHHSBg0WCrhnDOh0qyzWFFvq8/D+f/PgvGqHnshrz6j5l0TPVbnO/SCUcPT6rktKIcvKKcmsnYcsx8zOAWlAfhg+gAAAABJRU5ErkJggg==",
@@ -374,10 +374,10 @@
       "block": "eggTeddy"
     },
     "bbs-cant-wait": {
-      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUQDBTHy9P///d5hoKeqqbDz8vr8+/rsmH/96rDQTx5qvPHx88BlxQ2AAAAiUlEQVR42l2QUQ4DIQhEp8Cwtb3/fRtGXN3yQczLG1BBklnNySB0Uhd2khjYMKeJMQYYgkoLmhnaDMnOgH0MmQWDh/m6zagRf3CZGLDav2BMyIuC/qi3OvpCpAdRFex7hmYmiHwukkY27HwBwVzm1Fp2ZNyE8+foa9LSYsJvw71zQwV4xKvOd/0AKGIFsTfPQ4EAAAAASUVORK5CYII=",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEU8IBxhODAcMBTTlhTrw0X/73nsMAM9AAAAZ0lEQVR42nWQQRLAIAwCAe3/v9wxNJpay3iIK4YohCECEEh6Y4iAtWQYIS7Il5OxdJCPatpfD1v0rTIjr3MFXSkpM9inSvCCnO16ceYMY9MKDBVj1zPWBM3OhK323FI80vZiV6evuwF0SAJn+nM7MQAAAABJRU5ErkJggg==",
       "game": "tickle",
       "set": "tickle",
-      "block": "rocketCord"
+      "block": "cheese"
     },
     "desk-egg-pages": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEUQDBSyZdN5hoKeqqbDz8vr8+9pRSSaaTjLjlFZkk3/96rDQTxVfcP//++ZL7xQAAAAbklEQVR42o3OgQrEIAwD0JjF29bN///dIypjqAcXRNtHFSFJ2RulTTVEO7MRAF7olsJ5ut0qZiGio4eNLhqWgpSQK16XW6CjXnjf3kvp2OolPksEOSKJdY4pAPYpD7ZbI0ZE4J/J4c3PlB/f5CJf7pQHIyEzMEoAAAAASUVORK5CYII=",
@@ -410,10 +410,10 @@
       "block": "hexPad"
     },
     "desk-savehack": {
-      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAMFBMVEUQDBSCjp6yusfj6/N5hoKeqqbDz8vr8++SKCjDQTzzWVFVfcMsLDRdXWW+tpb//+91yATkAAAAiUlEQVR42nXPWQ7DMAgEUFxgSNJJff/bRoY4XZTOh4WeQGABgBiPAQ5g27ZFgJOtKqzriYETfZjJnE5MQ6Jns8Hh0CVioGN2BrSNSrDvu2ZG0VBIUlVFlCz7Rm3MtSZ2oTbSMrNT9SEk85bCd+obv3gt6jOFcYcwCbI/K/3fuF/4Gvkcv91uNzkA8JoMCoGo3BYAAAAASUVORK5CYII=",
-      "game": "tickle",
-      "set": "tickle",
-      "block": "screwdriverDisk"
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBSKTV2+dYbXmqZdoo4oKDBdXWHHx8v/z47v8/sUbq1/AAAAXklEQVR42o2QgQrAIAhEz8u5+v8fHrpFayXsAqXHQymQpJBTA88lBG1JwGMkYIHMsLWNCSSwQH+Y6fYESmJuX2TVrNYoAcVh3ON0Ux9zgkygz3vPJL6/7oEX7UzvdgFXuwewjkMlXgAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "payTv"
     },
     "desk-gmcrack": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVpVVmKdXGynooQDBQ0KDj///++/47fx3m+tpbf28P//+9bl8KxAAAAcklEQVR42m2RAQ7DIAwD7XhJ1/7/wROBlFF6SASdAkYAwkiQxhtDFhCSlKuaSEnuLv1JJa7RPaXnaL3W5OdBDzgWJI2gLEaroGuD4LmBJrVwywjFlLm9i3iTZR+dESUxzyyJLtf013sS/G6MR7b6jf4GP5SVBoQzlr3mAAAAAElFTkSuQmCC",
