@@ -1,3 +1,4 @@
+.claude/
 .for-lewis/
 
 # Built npm engine package (npm pack rebuilds it).
