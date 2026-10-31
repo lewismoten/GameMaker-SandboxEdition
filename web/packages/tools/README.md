@@ -71,22 +71,6 @@ const lit = lightColor([100, 180, 80], 'night');
 
 `colorRamp` returns eight-bit RGB stops without allocating palette entries. `rgbToHsv` and `hsvToRgb` convert eight-bit RGB and hue in degrees with saturation/value in 0..1, without changing inputs. `PaletteBuilder.ramp` allocates named ramps in a six-bit VGA palette. `TIME_OF_DAY_LIGHT`, `TIME_OF_DAY_SKY`, and `lightColor` provide morning, noon, afternoon, sunset, night, and stage-light presets. `adjustPalette` returns an adjusted native VGA palette without mutating its input. By default it preserves indexes 0 and 255; pass a custom index list to protect glowing colors or designer inks. Game-specific ramp names and cast colors belong in the consumer.
 
-## Build and inspect
-
-This folder owns its builders in `src/`, build configuration, license and notices. Shared codecs and runtime types come through declared engine and archives dependencies. It never reads source from another repository folder. After `npm install` in a standalone copy, or root `npm ci` in the monorepo:
-
-```sh
-npm run build
-npm run verify
-npm pack
-```
-
-The build bundles source from the format, drawing, audio, and simulation modules. It does not use or restart the site's Vite configuration. The tarball contains JavaScript, declarations, this guide, the MIT license, and notices. Root `npm run verify:packages` copies each package outside the repository, builds it with packed declared dependencies, and tests its npm distribution. This also supports unpublished sibling versions.
-
-`verify` installs the tarball in a temporary npm consumer and checks codecs, drawing, sound generation, headless simulation, NodeNext declarations, absence of game content, and rejected browser imports. Repository automation is documented in the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md).
-
-Tarballs are local build artifacts and must not be committed to a consuming project.
-
 ## Source audio files to VOC (Node.js)
 
 Mono unsigned 8-bit PCM WAV files at the requested rate decode directly in Node.js, with
@@ -193,8 +177,8 @@ pairs into a native title demo with configurable Escape press and release delays
 ### Headless checking
 
 `kit/hopBot` provides configurable hopping, steering and retry support for `GameSim`.
-`kit/align` audits caller-supplied disks, multi-block layouts and pixel seams; repository
-lookup and CLI reporting belong to the consumer. `simulation` also exposes route scene
+`kit/align` audits caller-supplied disks, multi-block layouts and pixel seams; finding the
+games to audit and reporting the results belong to the consumer. `simulation` also exposes route scene
 assertions and scene initialization that delegates to the engine. `GameSimState` names
 the snapshot type; compatibility initialization preserves older block-birth bookkeeping.
 
@@ -203,7 +187,7 @@ the snapshot type; compatibility initialization preserves older block-birth book
 `kit/disk` exports `Disk` for collecting 8.3-named files and writing a clean output
 directory, plus the legacy `dosText` byte conversion. Destination and metadata are
 caller-supplied. `kit/menuVersion` can stamp a supplied version on a native menu GIF;
-this package does not read repository metadata or impose game version policy.
+this package reads no game metadata files and imposes no version policy.
 
 `kit/palRamps` also exports `wrapWithBuilder` and `buildRampPalette`: supply ramp
 descriptors, optional named endpoint replacements, and a color transform. The game
@@ -211,7 +195,7 @@ keeps its actual colors and lighting choices. `colors` and `text` are direct bro
 entries for the existing lighting, ramp, glyph-row, and rendered-text APIs.
 
 `kit/textfit` audits caller-supplied native files for menu, save-slot, score-table and
-text-page layout and contrast. The repository's game-selection CLI remains in `games/kit`.
+text-page layout and contrast. Choosing which games to check, and printing the results, are left to the consumer.
 
 ## Original Library palette
 
@@ -231,3 +215,17 @@ ramps, LCD greens, Sega Master System, Commodore 64, web-safe colors and graysca
 128-step grayscale necessarily repeats VGA's 64 distinct gray shades. LCD greens include
 four green shades plus menu black. Console RGB references and their licenses are in NOTICE.md;
 all values are adapted to six-bit VGA and do not impose the original consoles' drawing limits.
+
+## Developing
+
+This package's source lives in [the project's repository](https://github.com/lewismoten/GameMaker-SandboxEdition), in `web/packages/tools`. The folder holds its builders in `src/`, build configuration, license and notices. Shared codecs and runtime types come through declared engine and archives dependencies, and it never reads source from another repository folder. After `npm install` in a standalone copy, or `npm ci` at the repository root:
+
+```sh
+npm run build
+npm run verify
+npm pack
+```
+
+The build bundles source from the format, drawing, audio, and simulation modules. It does not use or restart the site's Vite configuration. The tarball contains JavaScript, declarations, this guide, the MIT license, and notices. From the repository root, `npm run verify:packages` copies each package outside the repository, builds it with packed declared dependencies, and tests its npm distribution, which also supports unpublished sibling versions.
+
+`verify` installs the tarball in a temporary npm consumer and checks codecs, drawing, sound generation, headless simulation, NodeNext declarations, absence of game content, and rejected browser imports. Tarballs are local build artifacts and must not be committed to a consuming project. The [monorepo guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/monorepo.md) covers the workspace layout, and the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md) covers publishing.

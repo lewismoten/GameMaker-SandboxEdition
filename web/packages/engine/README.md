@@ -98,13 +98,11 @@ completed blocks; later scans retain the previous coefficients until each MCU is
 Restart markers preserve already decoded MCUs. `scans` counts fully delimited scans and
 `complete` reports an end-of-image marker. The decoder does not invent data for unread blocks.
 
-## Build from source
-
-This folder owns all its source in `src/`, plus its build configuration, license and notices. It can be copied outside the repository: run `npm install` and `npm run verify` here to build and test a packed consumer. Within the monorepo, run `npm ci` at the repository root, then `npm run build -w @lewismoten/gamemaker-sandbox-engine`. Run `npm pack` here to inspect a local distribution. Tarballs are build artifacts and should not be committed.
-
-Repository automation is documented in the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md).
-
 `RunOptions.onLifeLost` observes each player death, including the final life.
 `onPlayEnd(score, how, gained)` reports `won`, `lost`, or `quit` once a play ends.
 Neither callback runs during demo or walkthrough playback. These callbacks do not
 change DOS gameplay or the game files.
+
+## Developing
+
+This package's source lives in [the project's repository](https://github.com/lewismoten/GameMaker-SandboxEdition), in `web/packages/engine`. The folder holds all its source in `src/`, plus its build configuration, license and notices. It can be copied outside the repository: run `npm install` and `npm run verify` there to build and test a packed consumer. Inside the repository, run `npm ci` at the root, then `npm run build -w @lewismoten/gamemaker-sandbox-engine`. Run `npm pack` in the package folder to inspect a local distribution. Tarballs are build artifacts and should not be committed. The [monorepo guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/monorepo.md) covers the workspace layout, and the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md) covers publishing.
