@@ -49,4 +49,16 @@ export function loafBadges(book: BlockBook, pal: Pal, sky: Pixels, air: { grav: 
   for (let t = 0; t < 9.6; t += 0.08) snail.set(Math.round(12 + Math.cos(t) * (0.6 + t * 0.5)), Math.round(9 + Math.sin(t) * (0.6 + t * 0.5)), c('ochre', 0));
   snail.rect(7, 0, 12, 4, K).rect(8, 1, 10, 2, c('white', 2)).rect(8, 1, 5, 2, c('leaf', 3));
   book.add('snail', snail, air);
+
+  // a film strip with three different frames, curling up into a roll at its right end
+  const film = sky.crop(0, 0, 20, 20);
+  film.rect(0, 4, 15, 12, K).rect(0, 4, 15, 1, c('gray', 1));
+  for (let x = 1; x < 14; x += 3) film.rect(x, 5, 2, 1, c('white', 2)).rect(x, 14, 2, 1, c('white', 2));
+  // frame 1: a sun over a green hill; frame 2: a white fish in blue water; frame 3: a round loaf on the earth
+  film.rect(1, 7, 3, 6, c('blue', 3)).set(2, 8, c('sun', 2)).rect(1, 11, 3, 2, c('leaf', 2));
+  film.rect(6, 7, 3, 6, c('water', 1)).rect(6, 9, 2, 2, c('fish', 3)).set(8, 10, c('fish', 3)).set(6, 9, c('white', 2));
+  film.rect(11, 7, 3, 6, c('earth', 2)).rect(11, 9, 3, 3, c('crust', 3)).rect(12, 9, 1, 1, c('crust', 5));
+  // the curl: the strip rolls up over itself into a ring with a hollow core
+  film.disc(16, 10, 4, K).ring(16, 10, 3, c('gray', 3)).ring(16, 10, 1.5, c('gray', 3)).rect(15, 4, 3, 1, c('gray', 1));
+  book.add('filmStrip', film, air);
 }

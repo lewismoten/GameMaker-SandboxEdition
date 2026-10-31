@@ -211,6 +211,8 @@ export function hillside(book: BlockBook): Level {
   m.set(62, 9, 'g').set(60, 5, '$');
   // scenery for the site's achievement badge: a snail in the grass, off the way
   m.set(57, 9, 'snail');
+  // and a film strip up in the sky above the crowd's end
+  m.set(65, 2, 'filmStrip');
   // the stack of empty baskets the disciples left: roll in at the bottom
   m.fill(64, 3, 4, 7, 'W').row(2, 64, 67, 'n').set(64, 9, 'i').set(65, 9, 'i');
   m.link(65, 9, 'next');
