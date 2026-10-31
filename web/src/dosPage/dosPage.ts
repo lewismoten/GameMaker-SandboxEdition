@@ -14,6 +14,7 @@
 //   dos.html?game=<id>&run=play, dos.html?project=<id>&run=play|design
 //                        plays (or designs) a catalog game, or a game kept in this browser (a
 //                        game sent by another site lands here, with &linked=1: see linkIn/)
+import { setPretendUnregistered } from '../retro/gmReg/tourPretend';
 import './dosPage.css';
 import { h, clear } from '../editor/core/ui';
 import { Computer } from '../retro/computer';
@@ -361,6 +362,20 @@ void powerOn().then(async () => {
   return startGameMaker();
 });
 void disks.refresh();
+
+// the guided tour: the PC pretends it is not registered while it plays (so the copy check shows),
+// and 'copy-check' starts Game-Maker over to ask it (tour/chapters/dos.ts)
+let tourAsked = false;
+window.addEventListener('gm-tour', (e) => {
+  const start = (e as CustomEvent<string>).detail === 'start';
+  setPretendUnregistered(start);
+  // registered again as it ends: Game-Maker starts over without the question
+  if (!start && tourAsked) void reset().then(startGameMaker);
+  if (!start) tourAsked = false;
+});
+window.addEventListener('gm-tour-act', (e) => {
+  if ((e as CustomEvent<{ do: string }>).detail.do === 'copy-check') ((tourAsked = true), void reset().then(startGameMaker));
+});
 
 registerServiceWorker();
 void import('../achievements/start').then((m) => m.startAchievements());

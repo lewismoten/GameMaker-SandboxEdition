@@ -2,6 +2,7 @@
 // beside C:'s download lists (retro/dos/cDriveStore.ts): C:\GM\PLAYGAME.REG (or that it was
 // deleted), the copy-protection question PLAYGAME.EXE remembers for the next start, the serial
 // number in PLAYGAME.EXE (GMCRACK's RESERIAL stamps a new one there), and the shareware games GMCRACK "cracked" in C:\DOWNLOAD (with when, for DIR's date).
+import { pretendUnregistered } from '../gmReg/tourPretend';
 import { idbRecord } from '../dos/cDriveStore';
 import { FACTORY_SERIAL, checkRegistration, defaultReg, validSerial } from '../gmReg/registration';
 import { unlockAchievement } from '../../achievements';
@@ -47,6 +48,7 @@ export class PcExtras {
 
   /** C:\GM\PLAYGAME.REG, or null when there is none. */
   get reg(): string | null {
+    if (pretendUnregistered()) return defaultReg(this.serial); // the tour only: nothing is saved
     return this.s.reg === undefined ? defaultReg(FACTORY_SERIAL) : this.s.reg;
   }
 
