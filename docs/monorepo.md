@@ -3,12 +3,12 @@
 Install with Node.js 22.12+ and `npm ci` at the repository root. A single root
 `package-lock.json` pins the app, SDKs and build dependencies. npm links these workspaces:
 
-| Workspace | Owns | Runtime SDK dependencies |
-| --- | --- | --- |
-| `web` | Vite app, editor, desk, catalog and integration tests | All three SDKs |
-| `web/packages/engine` | Browser player, native file codecs, audio worklet, screen, input and fonts | None |
-| `web/packages/archives` | ZIP/SFX and game-pack reading/writing, import scan, DOS player recovery | Engine |
-| `web/packages/tools` | Drawing, text, palettes, music, PNG and headless simulation | Engine and archives |
+| Workspace               | Owns                                                                       | Runtime SDK dependencies |
+| ----------------------- | -------------------------------------------------------------------------- | ------------------------ |
+| `web`                   | Vite app, editor, desk, catalog and integration tests                      | All three SDKs           |
+| `web/packages/engine`   | Browser player, native file codecs, audio worklet, screen, input and fonts | None                     |
+| `web/packages/archives` | ZIP/SFX and game-pack reading/writing, import scan, DOS player recovery    | Engine                   |
+| `web/packages/tools`    | Drawing, text, palettes, music, PNG and headless simulation                | Engine and archives      |
 
 Every SDK owns its implementation in `src/`, its build configuration, LICENSE and
 NOTICE.md. Package builds never read source or configuration outside their folder.
@@ -23,7 +23,7 @@ existing `formats/*` API by re-exporting its declared engine dependency.
 npm ci                       # links workspaces and builds SDKs through prepare
 npm run build:packages       # engine, archives, tools in dependency order
 npm run verify:packages      # builds isolated source copies and tests packed consumers
-npm run dev                  # app, http://localhost:5173
+npm run dev                  # app, http://localhost:5173 (serves at once; game disks and ZIPs refresh in the background)
 npm run typecheck
 npm test
 npm run lint

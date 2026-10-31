@@ -30,7 +30,7 @@
     "format:check": "cd .. && prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "predev": "node ../scripts/build-games.mjs",
+    "predev": "node ../scripts/dev-games.mjs",
     "prebuild": "node ../scripts/build-games.mjs",
     "pretest": "node ../scripts/build-games.mjs",
     "pretest:fast": "node ../scripts/build-games.mjs",
