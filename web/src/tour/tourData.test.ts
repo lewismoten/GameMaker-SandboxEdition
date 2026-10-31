@@ -31,6 +31,8 @@ const SOURCES: Record<string, string[]> = {
     'desk/room',
     'desk/props',
     'manual/magazine/viewer.ts',
+    'manual/printables/items.ts',
+    'manual/printables/viewer.ts',
     'retro/bbs/lineSpeedControls.ts',
     'viewSwitch.ts',
     'tour/tourButton.ts',

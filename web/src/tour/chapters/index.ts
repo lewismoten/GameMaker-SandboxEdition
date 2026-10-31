@@ -5,6 +5,7 @@
 import type { Chapter } from '../steps';
 import { achievementsChapter } from './achievements';
 import { bbsChapter } from './bbs';
+import { boxChapter } from './box';
 import { castChapter } from './cast';
 import { deskChapter } from './desk';
 import { dosChapter } from './dos';
@@ -23,6 +24,7 @@ export const CHAPTERS: Chapter[] = [
   settingsChapter,
   editorChapter,
   deskChapter,
+  boxChapter,
   bbsChapter,
   dosChapter,
 ];
