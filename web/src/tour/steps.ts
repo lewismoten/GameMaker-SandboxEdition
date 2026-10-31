@@ -140,6 +140,8 @@ export interface Target {
   reveal?: string | string[];
   /** Inside something a press opens (an Opener): opened first when it isn't (after Back), and kept open while the next step is in it too. */
   in?: Opener;
+  /** The control changes size as it moves (a box turning): its ring is the square of its longest side, centered, which holds it at any angle. */
+  steady?: boolean;
 }
 
 /**

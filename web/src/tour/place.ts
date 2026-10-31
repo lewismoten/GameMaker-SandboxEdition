@@ -123,3 +123,15 @@ export const barBlocks = (control: Rect, bar: Rect): boolean => {
   const h = Math.min(control.y + control.h, bar.y + bar.h) - Math.max(control.y, bar.y);
   return w > 0 && h > 0 && (w * h) / Math.max(1, control.w * control.h) > 0.2;
 };
+
+/**
+ * A ring that holds a turning thing at any angle: a square of `side` (its untransformed length
+ * with room for the turn) on the center of what it is centered in (`within`), not on its own
+ * moving bounds.
+ */
+export const steadyRect = (within: Rect, side: number): Rect => ({
+  x: within.x + within.w / 2 - side / 2,
+  y: within.y + within.h / 2 - side / 2,
+  w: side,
+  h: side,
+});

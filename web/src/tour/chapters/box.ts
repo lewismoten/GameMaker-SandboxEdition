@@ -64,7 +64,8 @@ export const boxChapter: Chapter = {
     {
       id: 'box-outside',
       action: 'point',
-      target: { label: 'the box, turning', css: '.box-viewer .box-stage .box3d', in: box },
+      // the stage holds the box at any angle; the box itself changes size as it turns
+      target: { label: 'the box, turning', css: '.box-viewer .box-stage .box3d', steady: true, in: box },
       say: 'Outside, art up front. The back sells the game with its features, reviews and pictures.',
       optional: true,
     },

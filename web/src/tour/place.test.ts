@@ -1,6 +1,6 @@
 // Where the tour puts its hosts and bubbles: on screen, above the caption bar, and off the control.
 import { describe, expect, it } from 'vitest';
-import { barBlocks, placeBubble, standBy, walkMs, type Rect } from './place';
+import { barBlocks, steadyRect, placeBubble, standBy, walkMs, type Rect } from './place';
 
 const VIEWS = [
   { w: 1440, h: 900 },
@@ -84,5 +84,12 @@ describe('barBlocks', () => {
   });
   it('ignores a control that only grazes it', () => {
     expect(barBlocks({ x: 100, y: 790, w: 200, h: 3000 }, bar)).toBe(false);
+  });
+});
+
+describe('steadyRect', () => {
+  it('is the same square wherever the turning thing is at the moment', () => {
+    const stage = { x: 0, y: 100, w: 1440, h: 600 };
+    expect(steadyRect(stage, 576)).toEqual({ x: 432, y: 112, w: 576, h: 576 });
   });
 });

@@ -12,7 +12,7 @@ import { h } from '../editor/core/ui';
 import { Actor, loadSprites } from './actor';
 import { findTarget, revealer, visible, waitFor } from './findTarget';
 import { menuHandle, overlayHandle, type Opened } from './tourOpen';
-import { barBlocks, offStage, placeBubble, standBy, type Point, type Rect } from './place';
+import { barBlocks, steadyRect, offStage, placeBubble, standBy, type Point, type Rect } from './place';
 import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
 import { TourSound } from './tourSound';
 import { TourRecorder } from './tourRecorder';
@@ -485,7 +485,7 @@ export class Tour {
     await Promise.all(moves);
     if (!this.live(token)) return;
     if (actor && box) actor.face(box.x + box.w / 2 < actor.pos.x + actor.size.w / 2);
-    if (target && (step.action === 'point' || step.action === 'press' || step.action === 'walk')) this.showRing(target, actor);
+    if (target && (step.action === 'point' || step.action === 'press' || step.action === 'walk')) this.showRing(target, actor, !!step.target?.steady);
     if (step.action === 'press' && target) {
       await actor?.hop(this.still);
       this.sound.effect(step.sound);
@@ -529,8 +529,10 @@ export class Tour {
   }
 
   /** The ring around the control, and the arrow on the side the host stands. */
-  private showRing(target: HTMLElement, by: Actor | undefined): void {
-    const r = rectOf(target);
+  private showRing(target: HTMLElement, by: Actor | undefined, steady = false): void {
+    const measure = () =>
+      steady ? steadyRect(rectOf(target.parentElement ?? target), 1.2 * Math.max(target.offsetWidth, target.offsetHeight)) : rectOf(target);
+    const r = measure();
     Object.assign(this.ring.style, { left: `${r.x - 4}px`, top: `${r.y - 4}px`, width: `${r.w + 8}px`, height: `${r.h + 8}px` });
     let side = 'below';
     if (by) {
@@ -542,16 +544,16 @@ export class Tour {
     }
     this.ring.dataset.side = side;
     this.ring.hidden = false;
-    this.followRing(target);
+    this.followRing(target, measure);
   }
 
   /**
    * Keeps the ring on its control while it shows: it moves with it (a page that shifts), and
    * goes when the control does (a pressed Next that turned the page).
    */
-  private followRing(target: HTMLElement): void {
+  private followRing(target: HTMLElement, measure: () => Rect): void {
     const ring = this.ring;
-    const was = rectOf(target);
+    const was = measure();
     const gen = ++this.ringGen;
     const look = () => {
       if (gen !== this.ringGen || ring.hidden || now.tour !== this) return;
@@ -561,7 +563,7 @@ export class Tour {
         target.classList.remove('tour-pressed');
         return;
       }
-      const r = rectOf(target);
+      const r = measure();
       if (Math.abs(r.x - was.x) > 1 || Math.abs(r.y - was.y) > 1 || Math.abs(r.w - was.w) > 1 || Math.abs(r.h - was.h) > 1) {
         Object.assign(was, r);
         Object.assign(ring.style, { left: `${r.x - 4}px`, top: `${r.y - 4}px`, width: `${r.w + 8}px`, height: `${r.h + 8}px` });
