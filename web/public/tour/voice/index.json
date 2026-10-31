@@ -255,12 +255,28 @@
     "hash": "8c3c86633ef5",
     "voice": "f969522e51c0"
   },
+  "box-hint-answer": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the hidden answer on the postcard",
+    "text": "A hint book answer, and all I see is a tangle of lines. I can’t read a word of it.",
+    "seconds": 5.98,
+    "hash": "a1d3fef3b68b",
+    "voice": "f969522e51c0"
+  },
   "box-hint-film": {
     "chapter": "box",
-    "where": "Box: Inspector Penn points at the Red film button",
-    "text": "Hint book answers hide in a tangle of lines. Red film lays a red sheet over them, and they show.",
-    "seconds": 6.65,
-    "hash": "7a1286292edd",
+    "where": "Box: Inspector Penn presses the Red film button",
+    "text": "So I press Red film. It lays a red sheet over the page.",
+    "seconds": 4.72,
+    "hash": "08669b762b3d",
+    "voice": "f969522e51c0"
+  },
+  "box-hint-film-off": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn presses the Red film button",
+    "text": "Press it again and the film comes off.",
+    "seconds": 3.25,
+    "hash": "95fcc2bdfcb1",
     "voice": "f969522e51c0"
   },
   "box-hint-open": {
@@ -269,6 +285,14 @@
     "text": "Stuck? This postcard is about the hint book. Let’s have a look.",
     "seconds": 4.45,
     "hash": "8cbb7ea79f9c",
+    "voice": "f969522e51c0"
+  },
+  "box-hint-read": {
+    "chapter": "box",
+    "where": "Box: Inspector Penn points at the answer, readable through the film",
+    "text": "And there it is, as plain as print. The lines vanish and the answer shows.",
+    "seconds": 5.33,
+    "hash": "c494984e184e",
     "voice": "f969522e51c0"
   },
   "box-keycard": {
@@ -705,18 +729,18 @@
   },
   "dos-card": {
     "chapter": "dos",
-    "where": "DOS: Professor Fiddlesticks points at the registration card",
-    "text": "Or mail the registration card. Once the reply comes, Game-Maker stops asking.",
-    "seconds": 8.19,
-    "hash": "a1b8e16e1145",
+    "where": "DOS: Professor Fiddlesticks points at the registration postcard",
+    "text": "Or mail this registration postcard away. Once the reply comes, Game-Maker stops asking.",
+    "seconds": 8.91,
+    "hash": "5c6649feae51",
     "voice": "532d1bbf3a1e"
   },
   "dos-check": {
     "chapter": "dos",
     "where": "DOS: Professor Fiddlesticks points at the screen",
-    "text": "Game-Maker may ask for a word from its Owner’s Guide. That was copy protection, back in 1994.",
-    "seconds": 11.63,
-    "hash": "3b57c75d74ba",
+    "text": "Game-Maker asks for a word from its Owner’s Guide before it starts. That was copy protection, back in 1994.",
+    "seconds": 10.43,
+    "hash": "0f4b68d0fdcc",
     "voice": "532d1bbf3a1e"
   },
   "dos-disks": {
@@ -746,9 +770,9 @@
   "dos-guide": {
     "chapter": "dos",
     "where": "DOS: Professor Fiddlesticks points at the Owner’s Guide beside the screen",
-    "text": "The guide opens beside it, at the right page, the word marked. Type the word and you’re in.",
-    "seconds": 8.99,
-    "hash": "ef3496ca95fa",
+    "text": "The guide opens beside it, at the page the question names.",
+    "seconds": 6.43,
+    "hash": "9a1ebfc0df80",
     "voice": "532d1bbf3a1e"
   },
   "dos-hello": {
@@ -837,6 +861,14 @@
     "text": "Turbo is sixty-six megahertz of pure speed. Off, it plods along like an old 286.",
     "seconds": 10.59,
     "hash": "aed78dfafbc2",
+    "voice": "532d1bbf3a1e"
+  },
+  "dos-word": {
+    "chapter": "dos",
+    "where": "DOS: Professor Fiddlesticks points at the marked word in the guide",
+    "text": "The paragraph and the word are marked here. Type that word on the screen and you’re in.",
+    "seconds": 6.75,
+    "hash": "37efd663d258",
     "voice": "532d1bbf3a1e"
   },
   "edit-animation-actions": {

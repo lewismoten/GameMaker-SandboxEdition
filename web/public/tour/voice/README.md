@@ -448,7 +448,10 @@ records every clip again.
 | [box-stickers.ogg](box/box-stickers.ogg) | A sheet of stickers. Cut them out, if you dare. | Box: Inspector Penn points at the Sticker sheet in the list | 3.65 |
 | [box-buttons.ogg](box/box-buttons.ogg) | Below, buttons: put the disk in drive A:, read the manual, or close. The arrows pick the next box. | Box: Inspector Penn points at the box viewer’s buttons | 6.88 |
 | [box-hint-open.ogg](box/box-hint-open.ogg) | Stuck? This postcard is about the hint book. Let’s have a look. | Box: Inspector Penn presses the hint book postcard in the list | 4.45 |
-| [box-hint-film.ogg](box/box-hint-film.ogg) | Hint book answers hide in a tangle of lines. Red film lays a red sheet over them, and they show. | Box: Inspector Penn points at the Red film button | 6.65 |
+| [box-hint-answer.ogg](box/box-hint-answer.ogg) | A hint book answer, and all I see is a tangle of lines. I can’t read a word of it. | Box: Inspector Penn points at the hidden answer on the postcard | 5.98 |
+| [box-hint-film.ogg](box/box-hint-film.ogg) | So I press Red film. It lays a red sheet over the page. | Box: Inspector Penn presses the Red film button | 4.72 |
+| [box-hint-read.ogg](box/box-hint-read.ogg) | And there it is, as plain as print. The lines vanish and the answer shows. | Box: Inspector Penn points at the answer, readable through the film | 5.33 |
+| [box-hint-film-off.ogg](box/box-hint-film-off.ogg) | Press it again and the film comes off. | Box: Inspector Penn presses the Red film button | 3.25 |
 | [box-back.ogg](box/box-back.ogg) | Put the hint book down, and the box comes right back to you. | Box: Inspector Penn talks | 4.10 |
 | [box-close.ogg](box/box-close.ogg) | Close, and the box goes back on the shelf, ready for the next curious player. | Box: Inspector Penn presses the box viewer’s Close button | 5.15 |
 | [box-bye.ogg](box/box-bye.ogg) | Case closed. In 1994 a box held disks, a manual, maps, cards, a catalog and stickers! | Box: Inspector Penn says goodbye and walks off | 7.30 |
@@ -476,9 +479,10 @@ records every clip again.
 | Clip | Says | Where | Seconds |
 | --- | --- | --- | ---: |
 | [dos-hello.ogg](dos/dos-hello.ogg) | Professor Fiddlesticks, at your service! This is the very same PC, minus the room, filling the window. | DOS: Professor Fiddlesticks comes on | 10.11 |
-| [dos-check.ogg](dos/dos-check.ogg) | Game-Maker may ask for a word from its Owner’s Guide. That was copy protection, back in 1994. | DOS: Professor Fiddlesticks points at the screen | 11.63 |
-| [dos-guide.ogg](dos/dos-guide.ogg) | The guide opens beside it, at the right page, the word marked. Type the word and you’re in. | DOS: Professor Fiddlesticks points at the Owner’s Guide beside the screen | 8.99 |
-| [dos-card.ogg](dos/dos-card.ogg) | Or mail the registration card. Once the reply comes, Game-Maker stops asking. | DOS: Professor Fiddlesticks points at the registration card | 8.19 |
+| [dos-check.ogg](dos/dos-check.ogg) | Game-Maker asks for a word from its Owner’s Guide before it starts. That was copy protection, back in 1994. | DOS: Professor Fiddlesticks points at the screen | 10.43 |
+| [dos-guide.ogg](dos/dos-guide.ogg) | The guide opens beside it, at the page the question names. | DOS: Professor Fiddlesticks points at the Owner’s Guide beside the screen | 6.43 |
+| [dos-word.ogg](dos/dos-word.ogg) | The paragraph and the word are marked here. Type that word on the screen and you’re in. | DOS: Professor Fiddlesticks points at the marked word in the guide | 6.75 |
+| [dos-card.ogg](dos/dos-card.ogg) | Or mail this registration postcard away. Once the reply comes, Game-Maker stops asking. | DOS: Professor Fiddlesticks points at the registration postcard | 8.91 |
 | [dos-menus.ogg](dos/dos-menus.ogg) | Then its menus: Play runs a game in PLAYGAME, Design opens the tools that make one, Quit goes to DOS. | DOS: Professor Fiddlesticks points at the screen | 13.23 |
 | [dos-prompt.ogg](dos/dos-prompt.ogg) | At the DOS prompt, type GM to come back, or a game’s name on its disk to play it. | DOS: Professor Fiddlesticks talks | 7.55 |
 | [dos-power.ogg](dos/dos-power.ogg) | Power switches it on and off. Off is really off: the next start is a fresh boot. | DOS: Professor Fiddlesticks points at the Power button | 8.27 |
