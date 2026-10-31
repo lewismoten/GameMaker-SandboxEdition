@@ -1,0 +1,73 @@
+{
+  "keys": {
+    "72": {
+      "short": "Hop",
+      "long": "Hop. Hold to hop higher; on the luffa vines, climb."
+    },
+    "80": {
+      "short": "Sneak",
+      "long": "Sneak. Hold to keep going."
+    },
+    "75": {
+      "short": "Tiptoe left",
+      "long": "Tiptoe left."
+    },
+    "77": {
+      "short": "Tiptoe right",
+      "long": "Tiptoe right."
+    },
+    "17": {
+      "short": "Hop",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Tiptoe left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Tiptoe right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Sneak",
+      "long": "Same as the Down arrow."
+    },
+    "16": {
+      "short": "Hop left",
+      "long": "Hop up and to the left; steer as you come down."
+    },
+    "18": {
+      "short": "Hop right",
+      "long": "Hop up and to the right; steer as you come down."
+    },
+    "71": {
+      "short": "Hop left",
+      "long": "Number pad 7: hop up and to the left."
+    },
+    "73": {
+      "short": "Hop right",
+      "long": "Number pad 9: hop up and to the right."
+    },
+    "57": {
+      "short": "Splash",
+      "long": "Throw a splash of brine to the right. It tames wild loofahs and cleanses Scrubbus Maximus."
+    },
+    "48": {
+      "short": "Sing",
+      "long": "Sing a line of the song."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Splash",
+      "long": "Throw a splash of brine to the right."
+    }
+  },
+  "counters": {
+    "19": "Rosemary splashes",
+    "20": "Bath salt",
+    "21": "Silver coins",
+    "22": "Candles lit",
+    "23": "Pink loofah cleansed"
+  }
+}
