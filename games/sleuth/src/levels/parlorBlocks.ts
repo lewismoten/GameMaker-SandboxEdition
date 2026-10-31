@@ -13,6 +13,7 @@ import { addItems, symbol } from '../blocks/items';
 import { portrait } from '../art/people';
 import { CTR } from '../ids';
 import { addEggBlocks } from '../blocks/egg';
+import { addBadgeBlocks } from '../blocks/badges';
 import { saveSignBlocks } from '../../../kit/saveSign';
 import { CARDS, HOW, SUSPECTS, WHY } from './parlor';
 
@@ -376,5 +377,7 @@ export function buildParlorBlocks(): BlockSet {
   // last so no block before it moves
   const sign = saveSignBlocks(P.pal, { board: [RUG, RUG], posts: [RUG, RUG] });
   [...sign.board, ...sign.posts!].forEach((p, k) => add(`saveSign${k}`, p));
+  // scenery for the site's achievement badges, after everything else so no block moves
+  addBadgeBlocks(add, { rug: RUG, stage: ST, curtain: velvetCurtain });
   return bs;
 }

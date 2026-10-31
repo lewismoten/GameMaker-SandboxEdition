@@ -326,6 +326,32 @@ export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks
   for (let y = 0; y < 10; y++) for (let x = 0; x < 16; x++) put(ROOM.curtain.x + x, ROOM.curtain.y + y, (x + y) % 2 ? 'curtain0' : 'curtain1');
   put(ROOM.curtain.x + 8, ROOM.curtain.y + 5, 'zcell');
   put(ROOM.curtain.x + 4, ROOM.curtain.y + 5, 'solved');
+  // scenery for the site's achievement badges (plain floor decoration: nothing on the way to a card, door or chair)
+  const deco = (o: { x: number; y: number }, list: [number, number, string][]) => list.forEach(([x, y, n]) => put(o.x + x, o.y + y, n));
+  deco(ROOM.gr1, [
+    [5, 3, 'blankSheet'],
+    [10, 3, 'regForm'],
+    [11, 5, 'leaflet'],
+    [5, 5, 'ribbonBook'],
+    [6, 7, 'badgeClip'],
+  ]);
+  deco(ROOM.gr2, [
+    [5, 3, 'deskPhone'],
+    [10, 3, 'numberCard'],
+    [11, 5, 'busyLine'],
+    [5, 5, 'rotaryDial'],
+    [12, 7, 'heatMap'],
+  ]);
+  deco(ROOM.r1(0), [[3, 2, 'loupeGrid']]);
+  deco(ROOM.r1(1), [[12, 2, 'deskSpeaker']]);
+  deco(ROOM.r1(2), [[3, 6, 'heartWreath']]);
+  deco(ROOM.who, [
+    [4, 5, 'maskPair'],
+    [10, 5, 'clapper'],
+  ]);
+  deco(ROOM.how, [[3, 6, 'filmJump']]);
+  deco(ROOM.why, [[3, 6, 'meritMedal']]);
+  deco(ROOM.curtain, [[12, 3, 'peekCurtain']]);
   reindexMonsters(map);
   return { map, links };
 }
