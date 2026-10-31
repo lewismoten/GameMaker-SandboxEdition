@@ -44,6 +44,9 @@
     "src/assistant/chat/agent.test.ts": [
       "the chat loop pictures go to a model that sees, and are described to one that doesn’t"
     ],
+    "src/assistant/chat/streaming.test.ts": [
+      "tool calls as they stream in run as each completes, in order, while the reply streams on; the words leave the calls out"
+    ],
     "src/assistant/tools/tools.test.ts": [
       "assistant tools check, play and draw the tiny game",
       "assistant tools read, check and draw a copy of a CD game"
@@ -86,6 +89,9 @@
     "src/editor/check/explore.test.ts": [
       "the level check explorer finds the exit, the floor it walked, the pit it falls into, and leaves the sealed coin",
       "the level check explorer plays a whole game from the title link to the won scene"
+    ],
+    "src/editor/check/walk/fetchKeys.test.ts": [
+      "fetching keys still finishes the level, and the engine agrees"
     ],
     "src/editor/check/walk/keptWalk.test.ts": [
       "a look-only game’s walkthrough is kept in this browser apart from the game, and forgotten when the game changes",
