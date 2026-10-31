@@ -152,7 +152,12 @@ registerEditor(['chr'], (host, project, file) => {
     }
   };
   window.addEventListener('keydown', onKey);
-  const chooser = paletteChooser(project, cblName || file, () => render());
+  const chooser = paletteChooser(
+    project,
+    cblName || file,
+    () => render(),
+    () => cbl.flatMap((b) => Array.from(b.pixels)),
+  );
   const pal = () => chooser.palette;
   const births = characterBirthPreview(project, file, pal, () => renderDetail());
 

@@ -6,6 +6,7 @@ import { parseGame, serializeGame, newGame, type Game } from '@lewismoten/gamema
 import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { debounce } from './ui';
+import { mostReadable } from './readablePalette';
 import { emptyCompanion, getSection, renameInCompanion, setSection, type Companion } from '../../project/companion';
 import { editedFile, unlockAchievement } from '../../achievements';
 import { MEMORY_SECTIONS, refuse, type ReadOnlyGuard } from './readOnly';
@@ -190,7 +191,7 @@ export class Project {
   }
 
   /** The palette a block set/map/picture is shown with: the scene that uses it, else the first .pal. */
-  paletteFor(file: string): { palette: Palette; source: string } {
+  paletteFor(file: string, used?: ArrayLike<number>): { palette: Palette; source: string } {
     const game = this.game();
     for (const u of this.usesOf(file)) {
       const scene = game.scenes[u.scene];
@@ -199,7 +200,16 @@ export class Project {
     }
     // A map: the scene that uses its block set.
     const pals = this.files.byExtension('pal');
-    if (pals.length) return { palette: parsePalette(this.files.get(pals[0])!), source: pals[0] };
+    if (pals.length) {
+      // with the sprite's colors known, skip a palette that would show it dark on dark
+      const i = used
+        ? mostReadable(
+            pals.map((p) => this.files.get(p)!),
+            used,
+          )
+        : 0;
+      return { palette: parsePalette(this.files.get(pals[i])!), source: pals[i] };
+    }
     for (const g of this.files.byExtension('gif')) {
       const b = this.files.get(g)!;
       if (isGif(b)) {
