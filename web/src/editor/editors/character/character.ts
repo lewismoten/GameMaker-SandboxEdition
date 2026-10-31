@@ -36,10 +36,9 @@ import { blockLinks, mirrorPanel, seqLinks, type MirrorContext } from './charact
 import { frameCard, keyPicker, type FrameContext } from './characterFrames';
 import { blockLabel } from '../blocks/blockNames';
 import { stageBackdrop } from './characterStage';
-import { COUNTER_NAMES, counterName, readCounterNames, type CounterNames } from './counterNames';
-import { counterNameField } from './counterNameFields';
+import { counterName } from '../../core/gameControls';
+import { overviewLink } from '../../shell/overviewLink';
 import { panelTabs } from '../../widgets/panelTabs';
-import { JOYSTICK_BUTTONS, readJoystickButtons, type JoystickButtons } from '../../core/joystickButtons';
 import { joystickControls } from './joystickControls';
 import { characterBirthPreview } from './characterBirthPreview';
 
@@ -92,15 +91,11 @@ registerEditor(['chr'], (host, project, file) => {
     chr: Uint8Array;
     cbl?: Uint8Array;
     links: string;
-    names: CounterNames;
-    joystick: JoystickButtons;
   }
   const snapshot = (): Snap => ({
     chr: serializeCharacter(chr),
     cbl: cblName ? project.files.get(cblName) : undefined,
     links: JSON.stringify([seqLinks({ project, file }), blockLinks(project, cblName)]),
-    names: readCounterNames(project.extras<unknown>(file, COUNTER_NAMES, undefined)),
-    joystick: readJoystickButtons(project.extras<unknown>(project.gam, JOYSTICK_BUTTONS, undefined)),
   });
   const history = new History<Snap>();
   let base = snapshot();
@@ -134,9 +129,6 @@ registerEditor(['chr'], (host, project, file) => {
       project.setExtras(file, 'mirrors', seqs.length ? seqs : undefined);
       if (cblName) project.setExtras(cblName, 'mirrors', blocks.length ? blocks : undefined);
     }
-    if (JSON.stringify(to.names) !== JSON.stringify(base.names)) project.setExtras(file, COUNTER_NAMES, Object.keys(to.names).length ? to.names : undefined);
-    if (JSON.stringify(to.joystick) !== JSON.stringify(base.joystick))
-      project.setExtras(project.gam, JOYSTICK_BUTTONS, Object.keys(to.joystick).length ? to.joystick : undefined);
     base = to;
     lastChange = 0;
     syncHistory();
@@ -165,15 +157,6 @@ registerEditor(['chr'], (host, project, file) => {
   const help = (text: string) => h('p', { class: 'chr-help' }, text);
   const group = (title: string, icon: string, ...body: (Node | null)[]) =>
     h('section', { class: 'chr-group' }, h('h2', null, h('span', { class: 'chr-icon' }, icon), title), ...body);
-  const setNames = (names: CounterNames) => {
-    edit(() => project.setExtras(file, COUNTER_NAMES, Object.keys(names).length ? names : undefined), false);
-    host.querySelectorAll<HTMLElement>('[data-counter-meter]').forEach((label) => {
-      const name = counterName(project, file, Number(label.dataset.counterMeter));
-      label.textContent = name;
-      label.hidden = !name;
-    });
-  };
-
   // ---------------------------------------------------------------- sounds
   const vocFor = (n: number) => {
     const name = sounds?.digital[n];
@@ -231,11 +214,7 @@ registerEditor(['chr'], (host, project, file) => {
               { min: -32000, max: 32765, title: `Special counter ${i + 1} at the start` },
             )
           : h('span', { class: 'chr-muted' }, '∞'),
-        h(
-          'small',
-          { class: 'meta', style: 'grid-column:1/-1;overflow-wrap:anywhere', 'data-counter-meter': String(m), hidden: !counterName(project, file, m) },
-          counterName(project, file, m),
-        ),
+        h('small', { class: 'meta', style: 'grid-column:1/-1;overflow-wrap:anywhere', hidden: !counterName(project, m) }, counterName(project, m)),
       );
     });
 
@@ -315,12 +294,7 @@ registerEditor(['chr'], (host, project, file) => {
         'Special counters',
         '#',
         h('div', { class: 'chr-counters' }, ...counters),
-        h(
-          'details',
-          null,
-          h('summary', null, 'Counter names (editor only)'),
-          ...Array.from({ length: 5 }, (_, i) => counterNameField(project, file, 20 + i, `Special counter ${i + 1} name`, setNames)),
-        ),
+        overviewLink(project, 'controls', 'Name the counters in Overview › Controls'),
         help(
           'Five hidden tallies blocks can add to or take from ("Changes counter" in the block editor). A block that would take one below zero blocks the way — use them for keys, ammo or collectables.',
         ),
@@ -644,7 +618,6 @@ registerEditor(['chr'], (host, project, file) => {
                           project,
                           () => seq.jstkBut,
                           (value) => edit(() => (seq.jstkBut = value)),
-                          (buttons) => edit(() => project.setExtras(project.gam, JOYSTICK_BUTTONS, Object.keys(buttons).length ? buttons : undefined), false),
                         ),
                       ),
                       help('Press the key (or push the joystick this way) to run the sequence. F1–F10 are kept for the game’s own menus.'),
@@ -728,7 +701,8 @@ registerEditor(['chr'], (host, project, file) => {
                         : null,
                     ),
                     help(`Limited uses work like ammo: each run uses one, and blocks set to change "Repetition count ${current - 4}" give more.`),
-                    counterNameField(project, file, current, 'Repetition counter name (editor only)', setNames),
+                    counterName(project, current) ? h('p', { class: 'meta' }, `Counter name: ${counterName(project, current)}`) : null,
+                    overviewLink(project, 'controls', 'Name the counters in Overview › Controls'),
                   )
                 : group('Requirements', '🔑', help('Built-in sequences do not need an inventory object or use a repetition counter.')),
             },

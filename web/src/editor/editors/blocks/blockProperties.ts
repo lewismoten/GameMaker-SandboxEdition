@@ -4,7 +4,8 @@ import type { Project } from '../../core/project';
 import { monsterBirthField } from '../../widgets/monsterBirthField';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { COUNTER_NAMES, namedCounterOptions } from '../character/counterNames';
+import { namedCounterOptions } from '../character/counterNames';
+import { gameControls } from '../../core/gameControls';
 
 const EFFECTS: [number, string][] = [
   [0, 'Nothing'],
@@ -32,17 +33,7 @@ export function blockProperties(o: {
   walkPaths?: { el: HTMLElement };
 }) {
   const { project, file, kind, blocks, current, pal, changed, walkPaths } = o;
-  const counterOptions = () => {
-    const game = project.game();
-    const uses = project.usesOf(file);
-    const linked = [...new Set(uses.map((use) => game.scenes[use.scene]?.files[5]).filter((name) => name && project.files.has(name)))];
-    const candidates = uses.length ? linked : project.files.byExtension('chr');
-    const characters = uses.length || candidates.length === 1 ? candidates : [];
-    return namedCounterOptions(
-      EFFECTS,
-      characters.map((name) => ({ file: name, names: project.extras<unknown>(name, COUNTER_NAMES, undefined) })),
-    );
-  };
+  const counterOptions = () => namedCounterOptions(EFFECTS, gameControls(project).counters);
   const props = h('div', { class: 'panel stack' });
   const walkingProps = h('div', { class: 'panel stack' });
   const touchProps = h('div', { class: 'panel stack' });

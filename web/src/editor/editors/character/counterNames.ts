@@ -1,6 +1,6 @@
-// Names explain native meter numbers in the editor; only the companion file stores them.
-import type { Project } from '../../core/project';
+// Names explain native meter numbers in the editor; only the companion file stores them (game-wide: core/gameControls.ts).
 
+/** The older per-character section, only read to move its names to the game-wide ones. */
 export const COUNTER_NAMES = 'counterNames';
 export type CounterNames = Record<string, string>;
 
@@ -13,27 +13,7 @@ export function readCounterNames(value: unknown): CounterNames {
   return names;
 }
 
-/** Returns a fresh metadata object; a blank name clears the label. */
-export function withCounterName(value: unknown, meter: number, name: string): CounterNames {
-  if (!Number.isInteger(meter) || meter < 5 || meter > 24) throw new RangeError('Only repetition and hidden-tally counters can be named');
-  const names = readCounterNames(value);
-  const clean = name.trim().slice(0, 80);
-  if (clean) names[meter] = clean;
-  else delete names[meter];
-  return names;
-}
-
-export function counterName(project: Pick<Project, 'extras'>, file: string, meter: number): string {
-  return readCounterNames(project.extras<unknown>(file, COUNTER_NAMES, undefined))[meter] ?? '';
-}
-
-/** Keep native option numbers, distinguishing labels when a shared block set serves several heroes. */
-export function namedCounterOptions(options: readonly [number, string][], sources: readonly { file: string; names: unknown }[]): [number, string][] {
-  const names = sources.map((source) => ({ file: source.file, names: readCounterNames(source.names) }));
-  return options.map(([meter, label]) => {
-    const labels = names
-      .filter((source) => source.names[meter])
-      .map((source) => `${source.names[meter]}${names.length > 1 ? ` (${source.file.toUpperCase()})` : ''}`);
-    return [meter, `${label}${labels.length ? `: ${labels.join(', ')}` : ''}`];
-  });
+/** Keep native option numbers, adding the game-wide name of each counter that has one. */
+export function namedCounterOptions(options: readonly [number, string][], names: CounterNames): [number, string][] {
+  return options.map(([meter, label]) => [meter, names[meter] ? `${label}: ${names[meter]}` : label]);
 }
