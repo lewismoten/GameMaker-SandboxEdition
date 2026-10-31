@@ -280,6 +280,8 @@ export class Tour {
     this.clearBar(target);
     this.caption.textContent = captionOf(chapter, step);
     const voice = this.sound.speak(voiceUrl(chapter, step));
+    // the next steps' clips load while this one plays (a clip that is late stays silent)
+    for (const up of this.flat.slice(this.i + 1, this.i + 3)) this.sound.prefetch(voiceUrl(up.chapter, up.step));
     await this.act(chapter, step, target, token);
     if (!this.live(token)) return;
     const said = await voice;

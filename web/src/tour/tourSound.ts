@@ -27,6 +27,8 @@ export class TourSound {
   private song?: MusicId;
   private started = false;
   private voice?: HTMLAudioElement;
+  /** Clips loading ahead of their step (prefetch), by address. */
+  private warm = new Map<string, HTMLAudioElement>();
   on = savedOn();
 
   private file(path: string): Promise<Uint8Array | undefined> {
@@ -111,6 +113,21 @@ export class TourSound {
     }
   }
 
+  /** Starts loading a coming step's clip while the current one plays, so it is ready to start at once. */
+  prefetch(url: string): void {
+    if (!this.on || this.warm.has(url)) return;
+    const a = new Audio();
+    a.preload = 'auto';
+    a.src = url;
+    this.warm.set(url, a);
+    // a few at most: the oldest goes
+    if (this.warm.size > 4) {
+      const [old] = this.warm.keys();
+      this.warm.get(old)?.removeAttribute('src');
+      this.warm.delete(old);
+    }
+  }
+
   /**
    * A step's recorded line, if there is one: resolves with its length in ms once it is ready
    * to play (and plays it), or 0 when there is none (the bubble's own timing is used).
@@ -118,7 +135,9 @@ export class TourSound {
   speak(url: string): Promise<number> {
     this.stopVoice();
     if (!this.on) return Promise.resolve(0);
-    const a = new Audio();
+    const early = this.warm.get(url);
+    this.warm.delete(url);
+    const a = early ?? new Audio();
     a.preload = 'auto';
     this.voice = a;
     return new Promise<number>((resolve) => {
@@ -141,7 +160,10 @@ export class TourSound {
         },
         { once: true },
       );
-      a.src = url;
+      if (!early) a.src = url;
+      // loaded ahead already: no event is left to wait for
+      else if (a.error) queueMicrotask(() => give(0));
+      else if (a.readyState >= 4) queueMicrotask(() => a.dispatchEvent(new Event('canplaythrough')));
     });
   }
 
