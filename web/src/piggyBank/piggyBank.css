@@ -1,0 +1,43 @@
+/* Teddy's little pink bank, tucked beside the desk trophies after a game is won. */
+.piggy-bank {
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.piggy-art {
+  display: block;
+  width: 74px;
+  height: 57px;
+  filter: drop-shadow(1px 3px 2px rgb(0 0 0 / 45%));
+}
+.piggy-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.piggy-bank:focus-visible {
+  outline: 3px solid #ffd23f;
+  outline-offset: 2px;
+}
+.prop-bubble .piggy-art {
+  width: 130px;
+  height: auto;
+  margin: 0 auto 6px;
+}
+
+@media (min-width: 961px) {
+  .desk-scene > .piggy-bank {
+    position: absolute;
+    left: 202px;
+    bottom: calc(880px - 538px);
+    z-index: 1;
+  }
+  .desk-scene > .piggy-bank:hover,
+  .desk-scene > .piggy-bank:focus-visible {
+    transform: scale(1.08);
+  }
+}

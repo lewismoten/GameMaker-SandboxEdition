@@ -34,9 +34,20 @@ export function wallTrophies(desk: HTMLElement): () => void {
       else desk.querySelector('.desk-scene')?.append(el);
     });
   });
+  // Teddy's bank only appears after somebody wins a catalog game with money left.
+  let unPiggy: (() => void) | undefined;
+  void import('../piggyBank/piggySpot').then(({ piggyBank }) => {
+    if (!desk.isConnected) return;
+    unPiggy = piggyBank((el) => {
+      const after = desk.querySelector('.score-trophies') ?? desk.querySelector('.heart-trophy') ?? desk.querySelector('.news-clipping');
+      if (after) after.after(el);
+      else desk.querySelector('.desk-scene')?.append(el);
+    });
+  });
   return () => {
     unEggs?.();
     unTrophy?.();
     unScores?.();
+    unPiggy?.();
   };
 }
