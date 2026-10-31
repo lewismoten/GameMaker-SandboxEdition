@@ -54,7 +54,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   [`seededRandom.ts`](seededRandom.ts): the seeded random numbers (Mulberry32, xorshift32) and
   string hash (FNV-1a) that pictures, songs, maps and walkthroughs use to come out the same every
   time.
-- [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page
+- [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page; the dev server keeps serving the old code until it is pressed (`manualReload` in `vite.config.ts` holds back Vite's invalidation)
   (which would switch off the desk's PC) whenever a source file changes.
 - [`firstLoad.test.ts`](firstLoad.test.ts) and [`importWalk.ts`](importWalk.ts): the up-front
   download checks (above).
