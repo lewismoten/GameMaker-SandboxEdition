@@ -34,7 +34,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   pictures (`mugArt.ts`) are badges: one for every public game (a Sandbox game's, and The Bard
   of Bizarre's in a group of their own) cut from its title screen (`gameBadge.ts`,
   `gameMugArt.ts`; a game's look has options: `centerX`/`centerY` move the picture, `hide` and `mend` paint out
-  small print or a second hero, `strip`, `clearTop`, and `overlay` for a ribbonless, outlined title),
+  small print or a second hero, `strip`, `clearTop`, and `lettering` for a ribbonless title set fresh in bold pixel lettering, `badgeLettering.ts`),
   the BBS's from its ANSI art (`bbsBadge.ts`), and the Bard's logo (made with
   DeepAI) as it is (`bardLogoArt.ts`). "Make your
   own" prints a sublimation page (`mugPrint.ts`, `mugSheet.ts`, `mugLayout.ts`, `mugSizes.ts`,

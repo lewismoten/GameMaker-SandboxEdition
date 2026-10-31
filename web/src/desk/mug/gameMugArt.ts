@@ -54,7 +54,16 @@ export const GAME_MUGS: GameMug[] = [
     ],
   },
   { game: 'brief', hero: 'joe', title: [104, 4, 312, 66], centerX: 212, side: 'left', hide: [[0, 0, 104, 14]] },
-  { game: 'depth', hero: 'far', title: [56, 40, 264, 112], centerX: 160, overlay: 1.4, hide: [[60, 176, 260, 200]] },
+  {
+    game: 'depth',
+    hero: 'far',
+    title: [56, 40, 264, 112],
+    centerX: 160,
+    hide: [[60, 176, 260, 200]],
+    // the screen's own lettering mended out of the sky and the far floor; fresh lettering goes over
+    mend: [{ box: [60, 46, 270, 114], from: [2, 26] }],
+    lettering: { lines: ['DEPTH', 'PERCEPTION'], scales: [6, 3], fill: ['#ffffff', '#8fd0ff'], centerY: 80 },
+  },
   { game: 'realm', hero: 'pip', title: [8, 0, 308, 62], centerX: 160, strip: true, hide: [[0, 182, 320, 200]] },
   // The Bard of Bizarre's, in his collections' order (project/bizarre.ts); every title screen ends in a small-print line
   { game: 'goat', hero: 'goat', title: [28, 0, 292, 52], centerX: 160, hide: [[0, 183, 320, 200]], maker: 'THE BARD OF BIZARRE', bizarre: true },
