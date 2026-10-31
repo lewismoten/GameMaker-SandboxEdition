@@ -75,15 +75,23 @@ game folder opens in the browser unchanged.
   might look, and ways to get more out of a game. Gemini 3 drew the ASCII-art can in
   LUNCHMEAT's flood on The Sofa (`web/src/retro/bbs/sofaSpam.ts`). What they suggested came
   to the project as notes and ideas, through Lewis.
-- **OpenAI Codex** (through Visual Studio Code, directed by Lewis): from October 28 to 30,
-  2026, while Claude was out of its weekly tokens, Codex worked on the fork with the models
-  **GPT-6.0**, **GPT-6.1 Sol**, **GPT-5.6 Terra** and **GPT-6 Astra**. Which model made which
-  change was not recorded. That work covers the editor, map, palette and Integrator features,
-  achievements, the piggy bank, per-game ZIPs and the npm packages listed below. It also
-  rebalanced the score values (and, in one game, the gold) of seven Sandbox and Bard games.
-  It made no new levels, art, music or story text for the games. Commits from that time carry
-  a "Co-authored-by: Codex" line. The entries below that say "OpenAI Codex (GPT-6)" are
-  from the same work.
+- **OpenAI Codex** (through Visual Studio Code, directed by Lewis): from October 27 to 30,
+  2026, while Claude was out of its weekly tokens, Codex worked on the fork with four OpenAI
+  models, by Lewis's account of when he switched between them (the commits carry only a
+  "Co-authored-by: Codex" line, so the hand-over times are approximate):
+  - **GPT-6.0** and **GPT-6.1 Sol**, until about 6:30 p.m. on October 30, did most of it: the
+    editor, map, palette and Integrator features, achievements, the BBS callback signup,
+    FASTPLAY, per-game ZIPs and the npm packages listed below. Which of the two made which
+    change was not recorded.
+  - **GPT-6 Astra**, from about 6:30 to 7:15 p.m.: the continuous course maps and the
+    fictional hint line.
+  - **GPT-5.6 Terra**, from about 7:15 p.m.: rebalanced the score values of seven Sandbox and
+    Bard games (and one game's gold), Teddy's piggy bank, detecting dedicated palette color
+    areas, finer map zoom, and grouped duplicate map arrivals.
+
+  Codex made no new levels, art, music or story text for the games. The entries below that say
+  "OpenAI Codex (GPT-6)" are part of the same work.
+
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.

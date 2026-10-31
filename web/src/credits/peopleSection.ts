@@ -49,8 +49,8 @@ export function aiToolsSection(): HTMLElement {
         'OpenAI Codex',
         'OpenAI · GPT-6.0, GPT-6.1 Sol, GPT-5.6 Terra, GPT-6 Astra',
         'Editor features and the npm packages.',
-        'Lewis uses Codex through Visual Studio Code. From October 28 to 30, 2026, it added editor, map, palette and Integrator features, achievements, the piggy bank, the hint line, the BBS callback signup and per-game ZIPs, rebalanced the scores of seven games, and extracted the npm engine, archive and tools packages from this fork’s TypeScript source, directed by Lewis.',
-        'It worked with four OpenAI models: GPT-6.0, GPT-6.1 Sol, GPT-5.6 Terra and GPT-6 Astra. Which model made which change was not recorded. It made no new levels, art, music or story text for the games.',
+        'Lewis uses Codex through Visual Studio Code. From October 27 to 30, 2026, it added editor, map, palette and Integrator features, achievements, the piggy bank, the hint line, the BBS callback signup and per-game ZIPs, rebalanced the scores of seven games, and extracted the npm engine, archive and tools packages from this fork’s TypeScript source, directed by Lewis.',
+        'GPT-6.0 and GPT-6.1 Sol made most of it; GPT-6 Astra then made the continuous course maps and the hint line, and GPT-5.6 Terra the score balancing, the piggy bank and the last map and palette touches. It made no new levels, art, music or story text for the games.',
       ),
       tool('ChatGPT', 'OpenAI', 'The Bard songs’ lyrics.', 'The Bard songs’ lyrics and monologues, shaped from Lewis’s prompts.'),
       tool(
