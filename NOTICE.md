@@ -789,7 +789,7 @@ the [Model Context Protocol TypeScript SDK](https://github.com/modelcontextproto
 (MIT, Einar Otto Stangvik, Arnout Kazemier, Luigi Pinca and contributors) with `@types/ws`
 (MIT, DefinitelyTyped); they run only on the developer's own computer, in Node. These are the
 third-party development dependencies in the workspace manifests, used to build, test and run local tools; none of
-their code ships in the app except Vite's small module runtime and preload helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
+their code ships in the app except Vite's small module runtime and preload helper (MIT, Copyright (c) 2019-present, VoidZero Inc. and Vite contributors; the downloads' notices carry that line). The site's Credits page (`#/credits`) lists every one of them and the packages
 they use, with versions and licenses, from root `package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
 see above for what ends up in them.
 

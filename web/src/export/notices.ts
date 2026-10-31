@@ -36,6 +36,10 @@ Copyright (c) 2026 Lewis Moten
 
 ${MIT}
 
+The pages also contain Vite's small module preload helper (https://vite.dev),
+MIT License, Copyright (c) 2019-present, VoidZero Inc. and Vite contributors,
+under the same permission notice.
+
 Palette-template reference data (when used in the game's colors):
 Atari 2600 NTSC/PAL: Ricardo Cancho Niemietz, 2008, public-domain dedication
 with unrestricted-use fallback. Sources and release statements:
