@@ -326,7 +326,10 @@ are real previews too; a blank idle can fall back to a movement frame.
   page with Display_File's wrapping, position and stock color selection, reusing
   the tools package's credited font data. Slide-show thumbnails follow readable
   slides; damaged images and missing backdrop dependencies report why no preview
-  can be drawn.
+  can be drawn. In the thumbnail only, the ink falls back to the palette's lightest
+  or darkest color when the stock purple would vanish against color 0. High-score
+  files draw as their names and scores, recordings as ticks for their key presses.
+  Quick open (Ctrl+P) draws the same thumbnails, only for rows in view.
 
 - **Editor side-panel tabs.** `widgets/panelTabs.ts` shares the tab and panel
   semantics, roving keyboard focus, arrow/Home/End navigation and hidden-panel
