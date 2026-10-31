@@ -362,6 +362,22 @@ records every clip again.
 | [edit-export-file.ogg](edit-export/edit-export-file.ogg) | The three dots on any file have Download file, which saves just that one file to your computer. | Editor: Max points at the file’s more actions menu | 6.60 |
 | [edit-export-bye.ogg](edit-export/edit-export-bye.ogg) | Pictures and papers go out too: the map picture saves a PNG, a Level check report a CSV, and a walkthrough an MP4. Happy trails! | Editor: Max says goodbye and walks off | 11.81 |
 
+## edit-assistant
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-assistant-hello.ogg](edit-assistant/edit-assistant-hello.ogg) | Behold, the future! An AI helper that looks at your game, tests it and changes it with you. Well, your own AI, that is. | Editor: Dex comes on | 8.67 |
+| [edit-assistant-button.ogg](edit-assistant/edit-assistant-button.ogg) | The star button opens the chat beside the editor, or over the whole screen on a phone. Press it again, or Escape, to put it away. | Editor: Dex points at the Assistant button | 8.85 |
+| [edit-assistant-panel.ogg](edit-assistant/edit-assistant-panel.ogg) | There is no AI built in. You bring your own, and while it works it is sent what its tools read of this game, and pictures of it. | Editor: Dex points at the Assistant panel | 8.45 |
+| [edit-assistant-setup.ogg](edit-assistant/edit-assistant-setup.ogg) | AI setup picks the provider: Ollama on this computer or another, or any OpenAI-compatible server. It needs an address and a model of your own. | Editor: Dex points at the AI setup button | 10.65 |
+| [edit-assistant-model.ogg](edit-assistant/edit-assistant-model.ogg) | This line names your model once it is set up. Until then it says No AI set up, and the chat can’t answer yet. The settings stay in your browser. | Editor: Dex points at the model line | 10.12 |
+| [edit-assistant-mode.ogg](edit-assistant/edit-assistant-mode.ogg) | Ask before changing waits for you to Apply or Skip each change. Change freely does them at once, and Undo still takes them back. | Editor: Dex points at the changes choice | 9.12 |
+| [edit-assistant-readonly.ogg](edit-assistant/edit-assistant-readonly.ogg) | Read-only keeps the AI to looking. Check the box when you want advice but no changes at all. | Editor: Dex points at the Read-only box | 6.97 |
+| [edit-assistant-next.ogg](edit-assistant/edit-assistant-next.ogg) | What should I do next? runs the Level check, a bot play-test and a validate, then makes a to-do list. With no AI set up, the findings become the list. | Editor: Dex points at the What should I do next button | 10.12 |
+| [edit-assistant-gauge.ogg](edit-assistant/edit-assistant-gauge.ogg) | The gauge shows how full the model’s memory is. Compact now sums up older turns, and Reset starts fresh; the old talk stays in the archive. | Editor: Dex points at the context gauge | 10.17 |
+| [edit-assistant-compose.ogg](edit-assistant/edit-assistant-compose.ogg) | You would type here, to ask a question or say what to change. It stays locked until your AI is set up, so I won’t send anything. | Editor: Dex points at the message box | 9.00 |
+| [edit-assistant-mcp.ogg](edit-assistant/edit-assistant-mcp.ogg) | Already have an AI tool on your computer? This link shows how to connect it to the editor through MCP instead. | Editor: Dex points at the link to the other way | 7.90 |
+| [edit-assistant-bye.ogg](edit-assistant/edit-assistant-bye.ogg) | Set up your own AI whenever you like, and the Assistant is yours. The future awaits! | Editor: Dex says goodbye and walks off | 6.25 |
 
 
 ## desk

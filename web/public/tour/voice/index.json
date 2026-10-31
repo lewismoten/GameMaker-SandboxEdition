@@ -1071,6 +1071,102 @@
     "hash": "dfcac79d1073",
     "voice": "131d8cb8ad55"
   },
+  "edit-assistant-button": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the Assistant button",
+    "text": "The star button opens the chat beside the editor, or over the whole screen on a phone. Press it again, or Escape, to put it away.",
+    "seconds": 8.85,
+    "hash": "d4d8d22381e6",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-bye": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex says goodbye and walks off",
+    "text": "Set up your own AI whenever you like, and the Assistant is yours. The future awaits!",
+    "seconds": 6.25,
+    "hash": "2e87165be5c5",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-compose": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the message box",
+    "text": "You would type here, to ask a question or say what to change. It stays locked until your AI is set up, so I won’t send anything.",
+    "seconds": 9,
+    "hash": "02760d751b1c",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-gauge": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the context gauge",
+    "text": "The gauge shows how full the model’s memory is. Compact now sums up older turns, and Reset starts fresh; the old talk stays in the archive.",
+    "seconds": 10.17,
+    "hash": "15379ffcfc52",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-hello": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex comes on",
+    "text": "Behold, the future! An AI helper that looks at your game, tests it and changes it with you. Well, your own AI, that is.",
+    "seconds": 8.67,
+    "hash": "d33ee7015c1f",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-mcp": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the link to the other way",
+    "text": "Already have an AI tool on your computer? This link shows how to connect it to the editor through MCP instead.",
+    "seconds": 7.9,
+    "hash": "afe9ae069b8a",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-mode": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the changes choice",
+    "text": "Ask before changing waits for you to Apply or Skip each change. Change freely does them at once, and Undo still takes them back.",
+    "seconds": 9.12,
+    "hash": "4ed3d6941e82",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-model": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the model line",
+    "text": "This line names your model once it is set up. Until then it says No AI set up, and the chat can’t answer yet. The settings stay in your browser.",
+    "seconds": 10.12,
+    "hash": "6a70236db795",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-next": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the What should I do next button",
+    "text": "What should I do next? runs the Level check, a bot play-test and a validate, then makes a to-do list. With no AI set up, the findings become the list.",
+    "seconds": 10.12,
+    "hash": "ec1437ecf481",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-panel": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the Assistant panel",
+    "text": "There is no AI built in. You bring your own, and while it works it is sent what its tools read of this game, and pictures of it.",
+    "seconds": 8.45,
+    "hash": "ce533a8af3ac",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-readonly": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the Read-only box",
+    "text": "Read-only keeps the AI to looking. Check the box when you want advice but no changes at all.",
+    "seconds": 6.97,
+    "hash": "94c3b2b3c3b6",
+    "voice": "be82d9d1db7e"
+  },
+  "edit-assistant-setup": {
+    "chapter": "edit-assistant",
+    "where": "Editor: Dex points at the AI setup button",
+    "text": "AI setup picks the provider: Ollama on this computer or another, or any OpenAI-compatible server. It needs an address and a model of your own.",
+    "seconds": 10.65,
+    "hash": "604acfb3ff89",
+    "voice": "be82d9d1db7e"
+  },
   "edit-blocks-behave": {
     "chapter": "edit-blocks",
     "where": "Editor: Joe points at the Walking tab",
