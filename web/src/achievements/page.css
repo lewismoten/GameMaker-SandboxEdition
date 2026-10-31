@@ -217,3 +217,42 @@ main.ach-page .ach-back {
 .ach-progress .ach-bar {
   display: block;
 }
+
+/* the parts of the site as tabs: they wrap inside their own row, never widening the page */
+.ach-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 18px;
+}
+
+.ach-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 24px;
+  min-height: 44px;
+  padding: 4px 12px;
+  line-height: 1.25;
+  text-align: left;
+  border-radius: 8px;
+}
+
+.ach-tab[aria-selected='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.ach-tab-title {
+  font-weight: 600;
+}
+
+.ach-tab-count {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ach-tab[aria-selected='false'] .ach-tab-count {
+  color: var(--muted);
+}

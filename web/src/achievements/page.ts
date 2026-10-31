@@ -5,11 +5,29 @@
 import './page.css';
 import { badgeIcon } from './badgeArt';
 import { h, clear, confirmDialog } from '../editor/core/ui';
-import { pageToc } from '../pageToc';
-import { ACHIEVEMENTS, CATEGORIES, progressOf, shownText, type Achievement } from './catalog';
+import { ACHIEVEMENTS, CATEGORIES, achievementById, progressOf, shownText, type Achievement } from './catalog';
 import { openDetails } from './details';
 import { refreshGoals } from './goals';
 import { ACHIEVEMENTS_CHANGED, loadAchievements, resetAchievements, type AchievementRecord } from './store';
+
+const TAB_KEY = 'gm-ach-tab';
+/** The category last shown, kept for this tab so a redraw or a return to the page finds it again. */
+function savedTab(): string {
+  let id: string | null = null;
+  try {
+    id = sessionStorage.getItem(TAB_KEY);
+  } catch {
+    /* no storage */
+  }
+  return CATEGORIES.some((c) => c.id === id) ? id! : CATEGORIES[0].id;
+}
+function saveTab(id: string): void {
+  try {
+    sessionStorage.setItem(TAB_KEY, id);
+  } catch {
+    /* no storage */
+  }
+}
 
 const dateOf = (t: number) => new Date(t);
 const longDate = (t: number) => dateOf(t).toLocaleDateString('en-US', { dateStyle: 'medium' } as Intl.DateTimeFormatOptions);
@@ -87,28 +105,83 @@ export function renderAchievements(el: HTMLElement): void {
   // every badge in page order, for the details' Previous and Next
   const ordered = CATEGORIES.flatMap((c) => ACHIEVEMENTS.filter((a) => a.category === c.id));
   let record: AchievementRecord | undefined;
-  const badge = (id: string) => main.querySelector<HTMLElement>(`.ach-card[data-id="${id}"]`);
+  let tab = savedTab();
+  // a badge may be in a tab that isn't shown (Previous and Next walk them all): show that tab first
+  const badge = (id: string) => {
+    const cat = achievementById(id)?.category;
+    if (cat && cat !== tab && record) {
+      tab = cat;
+      saveTab(cat);
+      draw(record);
+    }
+    return main.querySelector<HTMLElement>(`.ach-card[data-id="${id}"]`);
+  };
   const open = (a: Achievement) => {
     const first = record;
     if (first) openDetails(ordered, ordered.indexOf(a), () => record ?? first, badge);
   };
-  const draw = (r: AchievementRecord) => {
+  function draw(r: AchievementRecord): void {
     record = r;
     const total = ACHIEVEMENTS.length;
     const done = ACHIEVEMENTS.filter((a) => r.unlocked[a.id]).length;
-    const sections = CATEGORIES.map((c) => {
-      const list = ACHIEVEMENTS.filter((a) => a.category === c.id);
-      const got = list.filter((a) => r.unlocked[a.id]).length;
-      const id = `ach-${c.id}`;
-      return h(
-        'section',
-        { 'aria-labelledby': id, class: 'ach-section' },
-        h('div', { class: 'ach-section-head' }, h('h2', { id }, c.title), h('span', { class: 'ach-count' }, `${got} of ${list.length}`)),
-        h('p', { class: 'ach-blurb' }, c.blurb),
-        bar(got, list.length, `${c.title}: unlocked`),
-        h('ul', { class: 'ach-grid' }, ...list.map((a) => card(a, r, () => open(a)))),
-      );
-    });
+    const cat = CATEGORIES.find((c) => c.id === tab) ?? CATEGORIES[0];
+    const list = ACHIEVEMENTS.filter((a) => a.category === cat.id);
+    const got = list.filter((a) => r.unlocked[a.id]).length;
+    const tabId = (id: string) => `ach-tab-${id}`;
+    const focused = main.querySelector('[role="tablist"]')?.contains(document.activeElement);
+    const choose = (id: string, focus: boolean) => {
+      tab = id;
+      saveTab(id);
+      draw(r);
+      if (focus) main.querySelector<HTMLElement>(`#${tabId(id)}`)?.focus();
+    };
+    const tabs = h(
+      'div',
+      { class: 'ach-tabs', role: 'tablist', 'aria-label': 'Parts of the site' },
+      ...CATEGORIES.map((c, i) => {
+        const n = ACHIEVEMENTS.filter((a) => a.category === c.id);
+        const selected = c.id === cat.id;
+        return h(
+          'button',
+          {
+            type: 'button',
+            role: 'tab',
+            id: tabId(c.id),
+            class: 'ach-tab',
+            'aria-selected': String(selected),
+            'aria-controls': 'ach-panel',
+            tabindex: selected ? '0' : '-1',
+            onclick: () => choose(c.id, false),
+            onkeydown: (e: KeyboardEvent) => {
+              const last = CATEGORIES.length - 1;
+              const to =
+                e.key === 'ArrowRight' || e.key === 'ArrowDown'
+                  ? (i + 1) % CATEGORIES.length
+                  : e.key === 'ArrowLeft' || e.key === 'ArrowUp'
+                    ? (i + last) % CATEGORIES.length
+                    : e.key === 'Home'
+                      ? 0
+                      : e.key === 'End'
+                        ? last
+                        : -1;
+              if (to < 0) return;
+              e.preventDefault();
+              choose(CATEGORIES[to].id, true);
+            },
+          },
+          h('span', { class: 'ach-tab-title' }, c.title),
+          h('span', { class: 'ach-tab-count' }, `${n.filter((a) => r.unlocked[a.id]).length} of ${n.length}`),
+        );
+      }),
+    );
+    const panel = h(
+      'section',
+      { id: 'ach-panel', role: 'tabpanel', 'aria-labelledby': tabId(cat.id), class: 'ach-section' },
+      h('div', { class: 'ach-section-head' }, h('h2', null, cat.title), h('span', { class: 'ach-count' }, `${got} of ${list.length}`)),
+      h('p', { class: 'ach-blurb' }, cat.blurb),
+      bar(got, list.length, `${cat.title}: unlocked`),
+      h('ul', { class: 'ach-grid' }, ...list.map((a) => card(a, r, () => open(a)))),
+    );
     clear(
       main,
       h('p', { class: 'ach-back' }, h('a', { href: '#/' }, '← All games')),
@@ -125,7 +198,8 @@ export function renderAchievements(el: HTMLElement): void {
         h('span', null, ' unlocked'),
         bar(done, total, 'All achievements: unlocked'),
       ),
-      ...sections,
+      tabs,
+      panel,
       h(
         'section',
         { 'aria-labelledby': 'ach-reset', class: 'ach-section ach-reset' },
@@ -152,8 +226,8 @@ export function renderAchievements(el: HTMLElement): void {
         ),
       ),
     );
-    pageToc(main);
-  };
+    if (focused) main.querySelector<HTMLElement>(`#${tabId(cat.id)}`)?.focus({ preventScroll: true });
+  }
   const update = () => {
     if (!main.isConnected) return window.removeEventListener(ACHIEVEMENTS_CHANGED, update);
     const y = scrollY;

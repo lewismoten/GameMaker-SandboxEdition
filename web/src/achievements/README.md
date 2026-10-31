@@ -7,7 +7,7 @@ record (`store.ts`, in the save store), the calls the rest of the site makes (`i
 `editKinds.ts`, and its `GAME_SPOTS`: scenes of a game that count by name), what each page
 starts (`start.ts`, whose `gm-achievement` event unlocks an id or tallies an item), where a game was
 finished (`playedOn.ts`: the desk, the DOS page or the web player, and a phone held wide or tall), totals counted from the games catalog
-(`goals.ts`), the unlock note (`toast.ts`, with `notesPlacer.ts` apart so the DOS page can place notes without loading it), the `#/achievements` page (`page.ts`: badges of one size, each opening its details in
+(`goals.ts`), the unlock note (`toast.ts`, with `notesPlacer.ts` apart so the DOS page can place notes without loading it), the `#/achievements` page (`page.ts`: a row of tabs, one per part of the site with its "n of m" (ARIA tabs: arrow keys, Home and End, the chosen one kept in sessionStorage across redraws; Previous and Next in the details still walk every badge, switching tab as they go), then that part's badges of one size, each opening its details in
 `details.ts`, with where it is earned from `where.ts`) and the desk's
 `ACHIEVE.EXE` (`achieveExe.ts`). While a guided tour plays nothing counts (`store.ts`): what the
 tour presses, calls or reads isn't the visitor's own doing.
