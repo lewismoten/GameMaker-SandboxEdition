@@ -1,2 +1,5 @@
 node_modules/
 dist/
+
+# Work files of npm run video:transcript (audio, wav, srt)
+/.video-work/

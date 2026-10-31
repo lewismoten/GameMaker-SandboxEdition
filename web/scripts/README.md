@@ -44,6 +44,12 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     `npx vite-node scripts/videoTranscript.ts <id>.en-orig.vtt`): the rolling repeats removed, about
     a minute a paragraph, and the names the captions mishear spelled right; everything Lewis said
     is kept as he said it.
+  - `videoTranscribe.ts` (`npm run video:transcript -- <youtube-id>`) the same file from the video's
+    own audio when its captions are poor: yt-dlp (audio only), ffmpeg (16 kHz mono wav), `whisper-cli`
+    with the large-v3 model in `~/.cache/whisper-cpp` (`-mc 0` stops its repeat loops), then
+    `videoTranscript.ts` on the .srt. Work files go in the git-ignored `web/.video-work/<id>/`.
+    `videoTools.ts` holds the id and tool checks; a missing tool or model is named before anything runs.
+    A long video takes hours.
 - The guided tour's voice: `narrate.ts` (`npm run voice`; `npm run voice:all` records every
   line again) speaks each line of `tour/lines.ts` in its host's voice (cloned from one of Lewis's voice
   samples with Pocket TTS, or one of Kokoro's stock voices via `kokoro.ts`, which runs Kokoro in

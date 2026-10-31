@@ -57,6 +57,7 @@ npm run voice                                      # tour voice clips for new or
 npm run voice:all                                  # every tour voice clip again
 npm run voice:check                                # Whisper hears every tour clip and lists words said wrong (retake those)
 npm run voice:setup                                # once: Kokoro (Gwinn's voice) into the git-ignored .narrate/
+npm run video:transcript -- <youtube-id>      # a Library video's transcript from its audio (yt-dlp, ffmpeg, whisper-cli); needs the large-v3 model
 ```
 
 After changing a game, rebuild it and run its checks (`npm run check:games -- --game <id>` runs

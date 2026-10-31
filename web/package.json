@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "video:transcript": "vite-node scripts/videoTranscribe.ts",
     "build": "tsc --noEmit && vite build",
     "test:fast": "GM_FAST_TESTS=1 vitest run",
     "test:slow-list": "vite-node scripts/slowTests.ts",
