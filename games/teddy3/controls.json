@@ -1,0 +1,84 @@
+{
+  "keys": {
+    "72": {
+      "short": "Hop",
+      "long": "Hop. Tap for a little hop, hold to hop higher; let go to steer."
+    },
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left. Teddy turns to face the way he is walking."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right. Teddy turns to face the way he is walking."
+    },
+    "80": {
+      "short": "Dig",
+      "long": "Dig up the block under Teddy's feet: bones, or soft dirt that gives way to a tunnel."
+    },
+    "16": {
+      "short": "Hop up-left",
+      "long": "Hop up and to the left in one go."
+    },
+    "17": {
+      "short": "Hop",
+      "long": "Hop. Same as Up: tap for a little hop, hold to hop higher."
+    },
+    "18": {
+      "short": "Hop up-right",
+      "long": "Hop up and to the right in one go."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Walk left (same as the Left arrow)."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Walk right (same as the Right arrow)."
+    },
+    "33": {
+      "short": "Fetch",
+      "long": "Pick up what is at your feet. Doc Leo fetches too."
+    },
+    "57": {
+      "short": "Woof",
+      "long": "Bark. WOOF! scares off squirrels, cats, pigeons and geese."
+    },
+    "2": {
+      "short": "High five",
+      "long": "Stand up and slap whatever is just above and ahead: balloons, a held-out hand."
+    },
+    "3": {
+      "short": "Sit pretty",
+      "long": "Send up a heart that floats two blocks. Anybody asking SIT! is won over."
+    },
+    "4": {
+      "short": "Spin",
+      "long": "Twirl a whirlwind to each side. Turns revolving doors and turnstiles."
+    },
+    "5": {
+      "short": "Play dead",
+      "long": "Hold to flop flat as a rug, so things fly over Teddy."
+    },
+    "31": {
+      "short": "Sniff",
+      "long": "Sniff out what is hidden where you see a faint wisp."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Woof",
+      "long": "Bark. WOOF! scares off squirrels, cats, pigeons and geese."
+    },
+    "2": {
+      "short": "High five",
+      "long": "Stand up and slap whatever is just above and ahead."
+    }
+  },
+  "counters": {
+    "20": "Clues",
+    "21": "Fair tickets",
+    "22": "Charge",
+    "23": "RSVPs"
+  }
+}
