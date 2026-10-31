@@ -34,11 +34,11 @@ export function wallTrophies(desk: HTMLElement): () => void {
       else desk.querySelector('.desk-scene')?.append(el);
     });
   });
-  // Teddy's bank only appears after somebody wins a catalog game.
-  let unPiggy: (() => void) | undefined;
-  void import('../piggyBank/piggySpot').then(({ piggyBank }) => {
+  // Teddy's Fort Knox toy safe only appears after somebody wins a catalog game.
+  let unSafe: (() => void) | undefined;
+  void import('../fortKnox/safeSpot').then(({ fortKnoxSafe }) => {
     if (!desk.isConnected) return;
-    unPiggy = piggyBank((el) => {
+    unSafe = fortKnoxSafe((el) => {
       const after = desk.querySelector('.score-trophies') ?? desk.querySelector('.heart-trophy') ?? desk.querySelector('.news-clipping');
       if (after) after.after(el);
       else desk.querySelector('.desk-scene')?.append(el);
@@ -48,6 +48,6 @@ export function wallTrophies(desk: HTMLElement): () => void {
     unEggs?.();
     unTrophy?.();
     unScores?.();
-    unPiggy?.();
+    unSafe?.();
   };
 }

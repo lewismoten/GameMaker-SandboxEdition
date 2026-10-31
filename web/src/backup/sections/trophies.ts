@@ -3,7 +3,8 @@
 // overrides. Merge keeps the higher of each score and count; an override set here stays.
 import { localOf, SITE_SAVE_IDS } from '../inventory';
 import { FILE, parseScores, type ScoreRecord } from '../../scoreTrophies/scores';
-import { FILE as MONEY_FILE, parseMoney } from '../../piggyBank/money';
+import { FILE as MONEY_FILE, parseMoney } from '../../fortKnox/money';
+import { mergeSafe, parseSafe, SAFE_FILE } from '../../fortKnox/store';
 import { describeKeys, fileMap, fillGaps, injectLocal, isRecord, need, plural, stringMap, type Section } from './types';
 
 export interface TrophiesPayload {
@@ -30,7 +31,7 @@ export const trophies: Section<TrophiesPayload> = {
   id: 'trophies',
   title: 'Score trophies',
   short: 'Score trophies',
-  description: 'Your best scores, all points and Teddy’s saved leftover game money, for the desk’s trophies and piggy bank.',
+  description: 'Your best scores, all points and Teddy’s saved leftover game money, for the desk’s trophies and Teddy’s Fort Knox toy safe.',
   unit: ['best score', 'best scores'],
   extract: (w) => ({
     files: { ...((w.stores.saves[SITE_SAVE_IDS.scores] as Record<string, Uint8Array> | undefined) ?? {}) },
@@ -47,6 +48,8 @@ export const trophies: Section<TrophiesPayload> = {
     if (theirs.files[FILE]) files[FILE] = new TextEncoder().encode(JSON.stringify(higher(parseScores(mine.files[FILE]), parseScores(theirs.files[FILE]))));
     const money = moneyOf(mine.files, theirs.files, ctx.prefer);
     if (money) files[MONEY_FILE] = money;
+    if (mine.files[SAFE_FILE] && theirs.files[SAFE_FILE])
+      files[SAFE_FILE] = new TextEncoder().encode(JSON.stringify(mergeSafe(parseSafe(mine.files[SAFE_FILE]), parseSafe(theirs.files[SAFE_FILE]))));
     return { files, local };
   },
   inject(w, mine, next) {

@@ -15,7 +15,7 @@ import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { icon } from '../editor/shell/homeIcons';
 import { heartHook } from '../tinHearts/tinHearts';
 import { scoreHook } from '../scoreTrophies/hook';
-import { piggyBankHook } from '../piggyBank/hook';
+import { piggyBankHook } from '../fortKnox/hook';
 
 interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */

@@ -96,6 +96,19 @@ function noise(o: Out, at: number, len: number, freq: number, level = 0.12, q = 
 }
 
 export const roomSound = {
+  /** One click of a combination dial passing a number. */
+  dialClick(): void {
+    const o = open();
+    if (!o) return;
+    noise(o, 0, 0.012, 3800, 0.14, 5);
+    tone(o, 0, 0.02, 2600, 1900, 0.025, 'square');
+  },
+  /** A crunchy treat. */
+  treatCrunch(): void {
+    const o = open();
+    if (!o) return;
+    for (let i = 0; i < 4; i++) noise(o, i * 0.09, 0.05, 900 + Math.random() * 900, 0.2, 1.5);
+  },
   /** The quartz tick and the hourly beep-beep of a sport watch. */
   watch(): void {
     const o = open();

@@ -1,4 +1,4 @@
-// The Desk piggy bank's record: the last amount of a catalog game's in-game money left on a win.
+// The Desk safe's record (it was a piggy bank, so its file is still piggy-bank.json): the last amount of a catalog game's in-game money left on a win.
 // It is a small companion file in the score save, so ordinary save backups carry it too.
 import { loadSaveData, writeSaveFile } from '../project/storage';
 

@@ -5,6 +5,7 @@ import './phoneNotes.css';
 import { focusInto } from '../overlayFocus';
 import { cover } from '../props/propKit';
 import { h } from '../../editor/core/ui';
+import { COMBINATION } from '../../fortKnox/dial';
 
 const NUMBERS: [string, string][] = [
   ['Mom at work', '555-0148 x210'],
@@ -30,7 +31,15 @@ export function notes(): HTMLElement {
       h('p', { class: 'pn-911' }, 'Real emergency → 911'),
       h('p', { class: 'pn-sign' }, '♥ Mom'),
     ),
-    h('div', { class: 'pn-sticky' }, 'DON’T answer the door for anyone you don’t know!', h('br'), 'Keep it locked.'),
+    h(
+      'div',
+      { class: 'pn-sticky' },
+      'DON’T answer the door for anyone you don’t know!',
+      h('br'),
+      'Keep it locked.',
+      // Teddy's Fort Knox toy safe: the combination, in pencil, small, at the sticky note's foot
+      h('span', { class: 'pn-scribble' }, `safe: R ${COMBINATION[0]}, L ${COMBINATION[1]}, R ${COMBINATION[2]}`),
+    ),
   );
 }
 
