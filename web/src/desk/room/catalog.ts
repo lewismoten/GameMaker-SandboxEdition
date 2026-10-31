@@ -168,7 +168,7 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
           h('div', null, 'Send with payment to:'),
           h('div', null, 'Sandbox Disk Library'),
           h('div', null, 'P.O. Box 000'),
-          h('div', null, 'Questions: 1-412-555-0142'),
+          h('div', null, 'Questions: 1-412-555-0155'),
         ),
       ),
     );
