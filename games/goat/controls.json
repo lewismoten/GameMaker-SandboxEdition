@@ -1,0 +1,74 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Walk up."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Walk down."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Walk right."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Walk up."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Walk down."
+    },
+    "30": {
+      "short": "Left",
+      "long": "Walk left."
+    },
+    "32": {
+      "short": "Right",
+      "long": "Walk right."
+    },
+    "16": {
+      "short": "Up-left",
+      "long": "Walk up and to the left."
+    },
+    "18": {
+      "short": "Up-right",
+      "long": "Walk up and to the right."
+    },
+    "79": {
+      "short": "Down-left",
+      "long": "Walk down and to the left."
+    },
+    "81": {
+      "short": "Down-right",
+      "long": "Walk down and to the right."
+    },
+    "57": {
+      "short": "Scream",
+      "long": "Scream the way you last walked. It costs one breath. Fainting cousins keel over and pigeons flee."
+    },
+    "48": {
+      "short": "Bleat",
+      "long": "Bleat for joy."
+    },
+    "46": {
+      "short": "Chew",
+      "long": "Chew quietly."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Scream",
+      "long": "Scream the way you last walked. It costs one breath."
+    }
+  },
+  "counters": {
+    "9": "Breath",
+    "20": "Wool"
+  }
+}
