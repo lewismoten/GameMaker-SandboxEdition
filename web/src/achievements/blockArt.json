@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude Opus 5.5; extraction with OpenAI Codex. See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -132,6 +132,204 @@
       "game": "remote",
       "set": "remote",
       "block": "lamp"
+    },
+    "watch-all": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBQ4LDSSfV26pn3Tw57v374oKDCSkpbHx8uO/46hCg0LAAAAgElEQVR42nVRARLDIAyig2Tl/x/eJeq6nh0XT0UwHiJCWkMvSUEhFOJFFyuMOeZ2nJWSTXEU2XYtF+ea0Bdc9xB6b9AfMjcI/NnBgJ0s5TGRNgC47cfQHa2EUzdl25H3RrZhO567K/M8Zz0+6VJigzASq5AqtxENFMH6AlZwzYY+AZkHMvziVvQAAAAASUVORK5CYII=",
+      "game": "remote",
+      "set": "remote",
+      "block": "vcr"
+    },
+    "offline-copy": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBQ4LDSSfV26pn3Tw57v374oKDCSkpbHx8uP+qxCAAAAc0lEQVR42nVRARKAIAyiAOv/L+62aXVp3DwdY9ND2NJY2iWZgmXxoYMVandPqxZKJsUKMts1utjPhG5wzCF0TNAP2SYIfGVINIZy6xhktm+l+5Ar5Xem17ertfPssXzSo8QEoRwLk8K3sgayGV/AMC5Z6wKrUwau5eh8UwAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "vcrOff"
+    },
+    "mag-features": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEU4LDTX08v///eSfV26pn3Tw57v375lEBSWLCjLTUHXujz/8200VaJVhs8OOLAeAAAAjElEQVR42m2RCw7DIAxDDbPNOsb9rzsFSFtNffwiY1AIkEWtSZQtSYhIF5RIyJw+65sIfic3Uac4EkFHMhCMMQwfMw4xIXg5H48/iTNPR6qI6JM4nkTCcoolAS31RWmtlWjhZJ9Z9Vpb9FYRt2xnRQOWqPP4zfknxsCsXFT05ZpgF10yvVci/2GuXns/cJgKpSXWg10AAAAASUVORK5CYII=",
+      "game": "remote",
+      "set": "remote",
+      "block": "magsSpread"
+    },
+    "desk-backup": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEU8IBBpQSSWYTSWLChFZW15mqKq09fnllX/821Vhs9+k2gLAAAAP0lEQVR42sXOQQ4AEBBD0TIY7n9hQSSDsvWWP10UiUAkPsdAwBPw7tAiDFXFiLnZI10OpQNmFBGzfsWVu/0kKi8sBNqZcqeYAAAAAElFTkSuQmCC",
+      "game": "remote",
+      "set": "remote",
+      "block": "drawerOpen"
+    },
+    "blaster-big-name": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAADFBMVEUQDBQ8IBBpQSBdYWWEA1bmAAAAQklEQVR42o3PSQ4AIAgDwEL//2cPxAhSlx4nrDARmLdkRENECgJJM1IgyYphU2+Vx5l9u7xTf+Sr8IF65nf7tl1kAMGnAiLM6nEEAAAAAElFTkSuQmCC",
+      "game": "carl",
+      "set": "carl",
+      "block": "speaker"
+    },
+    "desk-curtains": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEVJBAxpCBCGDBi6HCjTKDDBWu1GAAAAF0lEQVR42mNgYGJmYWZiRKEYRgUHkyAA0f4DcTS3IasAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "curtain0"
+    },
+    "cast-parade": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEWSaTyqeUm+jlUgICS+WRTfjiz/vkX/34b/+8ujfeB7AAAAgElEQVR42o2PQQ7EMAwCSY0d///FK3A2px5KpXY0ICUF3rKApTx+mx8MjDotLI+6rSQW74pqAJBMkkM0ycxjShGG8jpZ6FNZOcaUOOyFXaWWlVWVnLZktezuPVaUXnabeUnL3XtX6XTR3kzd0853OoSI8x9hUhcIhfGPCfGS7/IH3U0Fk42UVKAAAAAASUVORK5CYII=",
+      "game": "sleuth",
+      "set": "sleuthParlor",
+      "block": "footlights"
+    },
+    "desk-time-reset": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEU0LDjrTTxdOByCTSiibTySkpoxLMjcAAAAU0lEQVR42q2OUQ7AIAxCS2H3v/JSxRjN4vaxalqFFzRSolIU5ylSJKtNp8QT6Ua+kr9mXls1MrbSk9hJoN9QCxgkvMuFMweJ5qyk55pp8fD6t3/ealwDMbfDxZ8AAAAASUVORK5CYII=",
+      "game": "carl",
+      "set": "carl",
+      "block": "alarm"
+    },
+    "bbs-time-travel": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUQDBQwKDhFUW1tdZKWnrKqlqbLFAj/WTxTaCBwAAAAU0lEQVR42rXPUQ7AIAgD0CqD3v/GCwuijm1/6xc+G4kQz+HpOWGi/I2aqIkqGpjTS7OVOOKWDyTjSIDkaDLguglcmiBaX5sDtzdJTnzcbmYF649OuR8DwSsDgYQAAAAASUVORK5CYII=",
+      "game": "reckoning",
+      "set": "reckoning",
+      "block": "clock0"
+    },
+    "library-kinds": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEVZebp5ouc8IBC2gk3XommSYbK+gt/LQTT7WUU4aRxZliiOw0XHmiz/73m9njXtAAAAQklEQVR42tXIWQ4AEAwFwKpd2/tfV0JExHMA8zkUAPIATgauFEnpylpjfKaIDUe2pgOzmc0sZaeqzsx5pXMgiT7LDtU/ClBKNAQmAAAAAElFTkSuQmCC",
+      "game": "reckoning",
+      "set": "reckoning",
+      "block": "books"
+    },
+    "desk-moon": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEVhjtOCotemut/b18vLqlHKNPMtAAAAR0lEQVR42q3QUQoAIAhEQet1/zNHFGVqUJCfgyyrkoKRPwgeNxtIgBwwXW3CS6bvidHZszuIvgi1vm5XEQ3zcJOZ/euK/WcFnj4CF5I3+s0AAAAASUVORK5CYII=",
+      "game": "needle",
+      "set": "needle",
+      "block": "moon"
+    },
+    "make-save": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAElBMVEUAAACytsf7//8AAKpVVVX/VVVl8DcxAAAAP0lEQVR42pWLQQoAIAzD6qb//7Igm1TdRHMqIQVuaLCCSiZ0kGaY1Lz0tci8ZKlJSbAsg1MCr3K7/+Cvir9/BzDGAUvsMOh0AAAAAElFTkSuQmCC",
+      "game": "sandcast",
+      "set": "sandcast",
+      "block": "floppy"
+    },
+    "sofa-chat": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUAAABNTVFxcXWWlpq6ur7f3+MAAKpV/1X///9WL27rAAAATElEQVR42oWPWwoAIAgEzSy7/4mjB5W21HzJMCxI9CKbS5KDm4yOIe1Ok1ki6WZIWJIt9V9eEpalHOmrhB8BGTzcV9gwp1kOlkTlRQV9fALYuiaj7wAAAABJRU5ErkJggg==",
+      "game": "sandcast",
+      "set": "sandcast",
+      "block": "terminal"
+    },
+    "trophy-top": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEVBhs/nUUWCWQD3yxj/93n7//8oKCxNTVFxcXWWlpphb9nRAAAAkklEQVR42m2R0Q6DMAwDizmc9v9/eEqylj3MEagcRxFm+E+G14k9O8Mzvkvs6Iy8qzw0bb1Ql9DzyLoUbIimQDmvmYA6bTOiSEe0acQNY8CNTJDQZSZM06S50H0iY1wv+gn9mZOcnWNG0rpi5azXDKhVMId3GwROGtXSDJpFmV1dbjrde54+z9PRXsKusP/Dt+QPF84IvybO+gUAAAAASUVORK5CYII=",
+      "game": "sandcast",
+      "set": "sandcast",
+      "block": "crown"
+    },
+    "export-web": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEVVLBR5RSCeYTAYUSAoeSxNokEULH0gTbZBcdt1ou/ry12T/RjtAAAAkklEQVR42n3QSw7DMAgEUCB8hrn/gSviJE5VqSy8eBpjeUT2mJmtQ6/hzDeS3Q0jXzjUaMD4ILsjlsro+QI7wn2sFt7B8AaAmgUnon2SYxu7w/3oiKp8JeEHZm8uFDPa3MSkS4TX51iFQvmRqVTVhTJaWakbZ09Wpi67UEgTmQr0hWZnSz8tytPindSv+YdzbPwATcEFrHqFwroAAAAASUVORK5CYII=",
+      "game": "brief",
+      "set": "brief",
+      "block": "library/globe"
+    },
+    "finish-sandbox": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEVVLBR5RSAYUSAoeSxNokFJUWHHz9uucd+moRFtAAAAlElEQVR42k2RAQ4EIQgDoS36/x9fgLo5ErNmbBG7QbAL89HsGWyqXoSWK7gKKFN9DoEhteyKmRLuSFfZNHPOMD0xdsNuBIV8483kJa18g9y8u0Hbd5aqqicIO6rOOQUNjbWo2Tk1Iy8EaWjldsGnbNtTjr+EF4jrXS8i4GTYL8JGGEboQOzRwvjKL5rO//CF7PKf0Q85aAT2Ju87sQAAAABJRU5ErkJggg==",
+      "game": "brief",
+      "set": "brief",
+      "block": "yard/medal"
+    },
+    "export-dos": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEU0KDTrso7b29////9lRSxlPCjfw0FlZW1FUWVpcYZZgraOrte+3/ewMi6DAAAAcElEQVR42mWQURLAEAxEV1FR7n/eNplg1X5keOON2aCKhw44iIjB4zGqCLa4jkaB62gtJQX37bAaDEGhTtIZut4pU++9FAU5K6zjZQgKdZL+g6o/lKnvjbi7FVzdLwuwrY5gjPHUHQ4yf1mbp2V+txdIIQqTWrPN8wAAAABJRU5ErkJggg==",
+      "game": "sweats",
+      "set": "sweatsWork",
+      "block": "monitor"
+    },
+    "check-fix": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAD1BMVEWaoqrn7/NlPCCWYTS2gk0MaR72AAAAW0lEQVR42m2RAQoAIQgEx9P/v/k4i1o9F6IYtkGKyHhoiCFEPHGX5V6bZnrdN7NsU4uZ6hTYq20kY1kpbJjT2GeGosDLLhR2nMenTi0uCB/zAgF+77lhc0L9lBduLAVNR+AJRQAAAABJRU5ErkJggg==",
+      "game": "sweats",
+      "set": "sweatsOutside",
+      "block": "wrench"
+    },
+    "finish-bizarre": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUwDChlGE2aLHH/////stdlPCAULBzeO3mXAAAAaklEQVR42pWQCQrAIAwEd43u/59ccjSlrRSaGIVxTEAMEgQ5MkgAyN0pmyFPstwy1yuAsfSI5aZkkkWZn2lap99bmgFOO2CbupvRU9XzNLfTp+ecUlRNTxCrIHdw5POGXz03H/LjP9u82AGHTAWDVAaBRQAAAABJRU5ErkJggg==",
+      "game": "sweats",
+      "set": "sweatsHive",
+      "block": "openMic"
+    },
+    "make-walk": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEVpfaaKnseuutvT2+v/gnXX/2WOXTC6fUW6uqb///dp9kejAAAAV0lEQVR42qXNyw6AIAxE0Q4yoP//w6YPiI115WVDD02QUSRjWs3y+9zYW+svLDbhiIUWovhIH0QWihiUeFigHtKnJ4IIvCzdUvRpIz6QZMYoYe4vnkUl3qbACWFSxqEUAAAAAElFTkSuQmCC",
+      "game": "year2000",
+      "set": "y2kMoon",
+      "block": "robotproj"
+    },
+    "link-in": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUkJCRpfabvTUn/gnUUWRwggixBqkFxz13///c0Ua5hkv8klAyUAAAAoElEQVR42lVQAQ7EIAiDra14/3/wpWC2DI2ptUUgJEp0AAIBEkFqkfRdhO77JoOjRJ/ikOZ+b1x+DLs+ZOcUud+4nCqcfVfV3r1LMinRdxNeRNuB3cJRg1S4kI+SZHSBNlUWS+Xu+ncDZBp0HyG4RZKZB1DROo8h83ja7qIAmVwjjXmG2i5ilD2BiMj0OcplaTyBxw7YJsw3M88DncdY/AO0LQiqkLZUCQAAAABJRU5ErkJggg==",
+      "game": "year2000",
+      "set": "y2kSuburb",
+      "block": "mailbox"
+    },
+    "desk-egg": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAARVBMVEUkJCRpfaaKnsfT2+v3+/8ANEEAZW0AmpYcw7ZZ39OW/+//523zcRD7ljCSDBDfGBzvTUn/gnWGhpKmpq7Hx8/n5+vP//+EJL63AAAAtElEQVR42kWQW5LDMAgEtWGH1yaRY1Duf9QtYVuGH6qrC6Fp+6pYU9szMkcmAGTVyLYXSji5IqeRBScjczJCsSg4QO7+MZtuxmHC3N03v2jtRLHezQzXzhJt+3YzFRwwpmhlqjJu0/y99f5WOcyIaZr56++looKIeghqamZPVWVeOx+/d2OcP8IPXb1OSoiSiggR33BgEmFmjFiBBFiZhM+Y2l7JVZwz0LjNtqqUM88TH3P+A+foFKQNOyuIAAAAAElFTkSuQmCC",
+      "game": "year2000",
+      "set": "y2kSuburb",
+      "block": "egg"
+    },
+    "play-finish": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAACVBMVEXn6/f////3STzsrb+tAAAAUElEQVR42qWQ3QpAIQiD9/n+D304/cBMbyLEZWM5mlAqfpQmak1eMoSpKErbsu9bkzsiAsDPnjwJhskbeeHeZKHy75TNsHSdyluadD2nte0DFTwBTNbMpIEAAAAASUVORK5CYII=",
+      "game": "snowbound",
+      "set": "snowbound",
+      "block": "finish"
+    },
+    "egg-all": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEXj19//9/d1ZW2Wgoq2nqI4TaZVddNtmvuGURyufTzXqmFy/DeLAAAAbElEQVR42o2NSQoEMQwDZSmxY///wUOWS9M9EIEuhQqBHwElkpJkZgaTRLCJEeGLzSxIxQzWDgZMuJmfHWxDDw93PzssPcdinptmDoI1qnvvVaNON6xnl5757J+l3lDQW9eXrmudaJfv7fqdP6p6CjcbTfPWAAAAAElFTkSuQmCC",
+      "game": "teddy2",
+      "set": "teddy2House",
+      "block": "basket"
+    },
+    "every-life-1": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkra7cWECAAAAcklEQVR42pWRWw7AIAgEgZWu9z9xgxRta386IcZMeBgU0Q0RtQIjzExFTSRdBzo26REPicMD4C3F3UlMCU9IUms6phqZ0SXdMNkzLivvmk4eQdp6J+k+p5RE2dZWOUi2dhnEkYNqI7dyW2AuZOOP/PqOE+GkBKXkH8SIAAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "tiers",
+      "block": "every-life-1"
+    },
+    "every-life-3": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBBxLAi2bTDbjkn7sl3///fjkrZdYW2yur6hqyMxAAAAb0lEQVR42pWRWw7AIAgEWe0K9z9xg4g0tT+dEGMmPAyK6IGIWoIZZqaiJhIxgIFDdoyOl+wO8JbuSWyJlUmSmtOx1cz0LuGmiZ5+qbw1nbycsPlOsiclkba1KgfJ1paBHzEoN/IotwJ7IQd/5Nd33Eh8CGHp0NA5AAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "tiers",
+      "block": "every-life-3"
+    },
+    "every-life-10": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBBxLAi2bTDbjkn7sl3///fjkraWZQj/521LcdJTAAAAeElEQVR42pWRUQ7AIAhDW1mV+594QYYu237WIDEvBQwC4yVgeIkz3H0EhDsAdrKzIAI62C3i7nQcFiKfEGYmMcsRZxpNkkZN50LTGV2STZI947J913TpCCWtd0pW2pBFW9vllNTaRRgpB9VGbuW+xbWQl/7Ar+84AZYxCJ3TWEJbAAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "tiers",
+      "block": "every-life-10"
+    },
+    "every-loss-1": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUUDBB1TSyyeUlxLAjbjkn///fjkrbTloYMAAAAWklEQVR42pXRyw7AIAhE0cHb+v+f3CDY+No4YXVEMSrZFsnKFpMV6RZpFahEKlSWTurjlZib3xZYUeE/ZqNHB2Q/0w81GUwW032R0QKH3CMn9MH9Av2VTt/xARh+BD5AgiHHAAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "tiers",
+      "block": "every-loss-1"
+    },
+    "every-loss-3": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUUDBBxLAjbjkn///fjkrZdYW2yur7Tzv3TAAAAXElEQVR42pXRQQ7AIAhE0fkteP8jNxRprLpoJ66eBIhKvkTytsTlTernM9IahSo0MOZKO7CDjhnOOzCj0h/shRFtkLVnNHU5vCynxyWjJQ75j+wwBtcC9Uq777gAJg0GKg7wlmgAAAAASUVORK5CYII=",
+      "game": "teddy",
+      "set": "tiers",
+      "block": "every-loss-3"
+    },
+    "every-loss-10": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUUDBBxLAjbjkn///fjkraWZQj/5205FAyxAAAAY0lEQVR42pWRSRKAIAwEe5Tk/0+2BkRBuNgVDjRZKIBYgMiFsCQTmKX3JJvMJJWOJrmlilT0luOlcjh6eUVnRfpKmn/knWjYSK093TQIaXJtug81uiYH/kvtpAf3C/RX2n3HBWkuBlxiaXTiAAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "tiers",
+      "block": "every-loss-10"
+    },
+    "every-win-1": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkrb/gpYJYO7eAAAAb0lEQVR42pXRQQ6AIAxE0cK3jt7/wqYFRGXlhATyQgsBs7LErNQlxUo1+4vkeCMHHCzoMTr24t0j8EVzd4kb8RZJ+qAkeJY3Os/sCWOnUhOjAkZxv6e0R5pOdL+Pnjh0m4ikLfPoWenrMdd4+vU7Ll8PBLN5fztFAAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "tiers",
+      "block": "every-win-1"
+    },
+    "every-win-3": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBBxLAi2bTDbjkn7sl3///fjkrZdYW2yur7/gpaLBKNAAAAAcElEQVR42o3RWw6AIAxE0V7rQN3/hg0vMfbHCQnkhBYCZjXFrEZKtRpmc/xGIkhYoJDQKc7EEU5vgS+au0s8iI9I0gclwbt80HX1nrB2qmvHVgGreN5TOluGbnR/jt649NiIpKPn1TOY6zVHe/r8HTf0rwhNWhUhwwAAAABJRU5ErkJggg==",
+      "game": "teddy",
+      "set": "tiers",
+      "block": "every-win-3"
+    },
+    "every-win-10": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBBxLAi2bTDbjkn7sl3///fjkrb/gpaWZQj/5223FE8TAAAAeElEQVR42m2RAQ6AIAwDW2eR/f/DZsOJis0IcGkHAaAvArov6gHhDuANYw/Hj9Ph9Kg3ZCMbZxwx2CyqnCnuFiK/EGYm8Ya0IUn6QEnkMz7QcWRPspxKmjASZIWve0p7aNAJze6jJyy6TUhJW+rR03mta/Z4+vU7ThSvCWSlnye+AAAAAElFTkSuQmCC",
+      "game": "teddy",
+      "set": "tiers",
+      "block": "every-win-10"
     }
   }
 }
