@@ -33,6 +33,10 @@ export interface BadgeLook {
   side?: 'left' | 'right';
   /** Bits of the screen to paint out in the color round them, such as small print the medallion would cut through. */
   hide?: Box[];
+  /** Who made it, on the scroll below the medallion; SANDBOX SOFTWARE if left out. */
+  maker?: string;
+  /** The title box as it is, scene and all, on the ribbon: for lettering over a picture that can't be told from what's behind it (at most 300 wide). */
+  strip?: boolean;
 }
 
 interface BoxColors {
@@ -170,6 +174,13 @@ export function titleMask(
       mask[y * w + x] = kind[i] !== 2 ? 0 : isHole(i) ? 2 : 1;
     }
   return { x: x0 + lx0, y: y0 + ly0, w, h, mask };
+}
+
+/** The box's every pixel as lettering, in the shape titleMask() gives. */
+function wholeBox(img: Pick<Indexed, 'width' | 'height'>, box: Box): ReturnType<typeof titleMask> {
+  const [x, y] = [Math.max(0, box[0]), Math.max(0, box[1])];
+  const [w, h] = [Math.min(img.width, box[2]) - x, Math.min(img.height, box[3]) - y];
+  return w > 0 && h > 0 ? { x, y, w, h, mask: new Uint8Array(w * h).fill(1) } : undefined;
 }
 
 /** The part of a sprite that isn't see-through, or undefined if it's empty. */
@@ -323,14 +334,14 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   });
   const left = look.side === 'left';
   // the bottom scroll, over the screen's own copyright line, a little away from the hero
-  const maker = 'SANDBOX SOFTWARE';
+  const maker = look.maker ?? 'SANDBOX SOFTWARE';
   const sw = maker.length * 8 + 16;
   const sTop = BADGE_CY + RING - 26;
   const sMid = BADGE_CX + (left ? 12 : -12);
   ribbon(out, sMid - sw / 2, sMid + sw / 2, sTop, sTop + 16, fill, accent, shade);
   text(out, maker, sMid - maker.length * 4, sTop + 4, ink);
   // the title's lettering, across the middle on a ribbon, as high as the screen has it
-  const t = titleMask({ ...screen, pixels }, look.title);
+  const t = look.strip ? wholeBox(screen, look.title) : titleMask({ ...screen, pixels }, look.title);
   if (t) {
     const letters = blank(t.w, t.h);
     for (let y = 0; y < t.h; y++)
