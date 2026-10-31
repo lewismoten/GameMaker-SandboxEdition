@@ -28,6 +28,7 @@ const SOURCES: Record<string, string[]> = {
     'editor/core/ui.ts',
     'editor/editors/map/map.ts',
     'editor/editors/map/check/checkPanel.ts',
+    'editor/editors/map/check/checkExtras.ts',
     'editor/editors/map/links/linkMarkers.ts',
     'editor/editors/blocks',
     'editor/editors/monsters',

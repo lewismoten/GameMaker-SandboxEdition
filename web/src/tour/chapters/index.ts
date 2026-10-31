@@ -18,6 +18,7 @@ import { editPaletteChapter } from './editPalette';
 import { editSoundsChapter } from './editSounds';
 import { editIntegratorChapter } from './editIntegrator';
 import { editPlayerChapter } from './editPlayer';
+import { editCheckChapter } from './editCheck';
 import { editorChapter } from './editor';
 import { guideChapter } from './guide';
 import { homeChapter } from './home';
@@ -41,6 +42,7 @@ export const CHAPTERS: Chapter[] = [
   editAnimationChapter,
   editIntegratorChapter,
   editPlayerChapter,
+  editCheckChapter,
   deskChapter,
   boxChapter,
   bbsChapter,

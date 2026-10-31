@@ -322,6 +322,30 @@ records every clip again.
 | [edit-player-files.ogg](edit-player/edit-player-files.ogg) | Files changes the three-letter endings of the files in the DOS download, and the program is patched to look for them. | Editor: Professor Fiddlesticks presses the Files tab | 9.47 |
 | [edit-player-bye.ogg](edit-player/edit-player-bye.ogg) | Splendid! A player of your own design. Now go and make something wonderful! | Editor: Professor Fiddlesticks says goodbye and walks off | 7.79 |
 
+## edit-check
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-check-hello.ogg](edit-check/edit-check-hello.ogg) | A level can look fine and still hide a snag. The Level check sends a bot in to play it, then hands me a report. Shall we? | Editor: Inspector Penn comes on | 7.78 |
+| [edit-check-panel.ogg](edit-check/edit-check-panel.ogg) | The Check button in the map’s toolbar opens this panel. It plays the level on the real engine, trying every move from every place the hero can stand. | Editor: Inspector Penn points at the Level check panel | 9.57 |
+| [edit-check-time.ogg](edit-check/edit-check-time.ogg) | Time is how long the bot may play: Quick is 15 seconds, Thorough a minute, Exhaustive four. Longer finds more. | Editor: Inspector Penn points at the Time choice | 7.60 |
+| [edit-check-slow.ogg](edit-check/edit-check-slow.ogg) | Slower hands plays it again one key at a time, with a pause between changes, as a person might. It says where that can’t get through. | Editor: Inspector Penn points at the Slower hands box | 8.50 |
+| [edit-check-run.ogg](edit-check/edit-check-run.ogg) | Run check! Now watch the map. | Editor: Inspector Penn presses the Run check button | 2.90 |
+| [edit-check-live.ogg](edit-check/edit-check-live.ogg) | The bot is really playing. The bar counts down the time left, and the map colors in wherever it has been, as it goes. | Editor: Inspector Penn points at the progress bar | 7.48 |
+| [edit-check-colors.ogg](edit-check/edit-check-colors.ogg) | That is the heat map. Dark purple is a moment spent there, then blue, green and, brightest yellow, a lot. Places with no color, the bot never reached. | Editor: Inspector Penn points at the heat map key | 9.38 |
+| [edit-check-soon.ogg](edit-check/edit-check-soon.ogg) | Color by can show how soon the bot got there instead: bright for early, dark for late. The switches hide the heat map or the marks. | Editor: Inspector Penn points at the Color by choice | 8.50 |
+| [edit-check-marks.ogg](edit-check/edit-check-marks.ogg) | Marks show a death, a stuck spot where the bot found no way out, or a finding. Rest the pointer on one for words. | Editor: Inspector Penn points at the marks key | 7.45 |
+| [edit-check-counts.ogg](edit-check/edit-check-counts.ogg) | Findings are counted as problems, warnings, suggestions and notes. Press one to list just those. | Editor: Inspector Penn points at the finding counts | 6.55 |
+| [edit-check-finding.ogg](edit-check/edit-check-finding.ogg) | Each finding says what and where. Press it and the map shows the place. Beneath is why players mind, with a link to the guide. | Editor: Inspector Penn points at a finding | 8.18 |
+| [edit-check-accept.ogg](edit-check/edit-check-accept.ogg) | If a finding is how you want it, mark it checked. It leaves the list, the counts and the badges. Some also offer a fix button. | Editor: Inspector Penn points at the Mark as checked button | 8.18 |
+| [edit-check-report.ogg](edit-check/edit-check-report.ogg) | Open as a report shows every finding in a big window, with a CSV file and a printable checklist to work from. | Editor: Inspector Penn points at the report button | 7.90 |
+| [edit-check-watch.ogg](edit-check/edit-check-watch.ogg) | Watch the bot replays its route. Play and record lets you play the level; where you go makes your own heat map to compare with the bot’s. | Editor: Inspector Penn points at the watch and play buttons | 8.48 |
+| [edit-check-upload.ogg](edit-check/edit-check-upload.ogg) | Before you upload ticks off the guide’s checklist wherever the checks can tell. The other editors show these findings as small notes beside an item. | Editor: Inspector Penn points at the Before you upload button | 9.10 |
+| [edit-check-bye.ogg](edit-check/edit-check-bye.ogg) | Case closed, for now. Run it again after every change, and you’ll find the snags before your players do. | Editor: Inspector Penn says goodbye and walks off | 6.90 |
+
+
+
+
 ## desk
 
 | Clip | Says | Where | Seconds |

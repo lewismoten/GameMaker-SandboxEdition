@@ -1175,6 +1175,134 @@
     "hash": "7233bfefbb96",
     "voice": "0448e8049470"
   },
+  "edit-check-accept": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the Mark as checked button",
+    "text": "If a finding is how you want it, mark it checked. It leaves the list, the counts and the badges. Some also offer a fix button.",
+    "seconds": 8.18,
+    "hash": "38d260013f06",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-bye": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn says goodbye and walks off",
+    "text": "Case closed, for now. Run it again after every change, and you’ll find the snags before your players do.",
+    "seconds": 6.9,
+    "hash": "90ea3bd37780",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-colors": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the heat map key",
+    "text": "That is the heat map. Dark purple is a moment spent there, then blue, green and, brightest yellow, a lot. Places with no color, the bot never reached.",
+    "seconds": 9.38,
+    "hash": "b050c159d0a8",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-counts": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the finding counts",
+    "text": "Findings are counted as problems, warnings, suggestions and notes. Press one to list just those.",
+    "seconds": 6.55,
+    "hash": "616b460721ac",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-finding": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at a finding",
+    "text": "Each finding says what and where. Press it and the map shows the place. Beneath is why players mind, with a link to the guide.",
+    "seconds": 8.18,
+    "hash": "3f1c1a656250",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-hello": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn comes on",
+    "text": "A level can look fine and still hide a snag. The Level check sends a bot in to play it, then hands me a report. Shall we?",
+    "seconds": 7.78,
+    "hash": "cbe52faa91da",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-live": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the progress bar",
+    "text": "The bot is really playing. The bar counts down the time left, and the map colors in wherever it has been, as it goes.",
+    "seconds": 7.48,
+    "hash": "5aab348d54be",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-marks": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the marks key",
+    "text": "Marks show a death, a stuck spot where the bot found no way out, or a finding. Rest the pointer on one for words.",
+    "seconds": 7.45,
+    "hash": "7df96511ce72",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-panel": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the Level check panel",
+    "text": "The Check button in the map’s toolbar opens this panel. It plays the level on the real engine, trying every move from every place the hero can stand.",
+    "seconds": 9.57,
+    "hash": "ea64b46e5cb9",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-report": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the report button",
+    "text": "Open as a report shows every finding in a big window, with a CSV file and a printable checklist to work from.",
+    "seconds": 7.9,
+    "hash": "b34d12045405",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-run": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn presses the Run check button",
+    "text": "Run check! Now watch the map.",
+    "seconds": 2.9,
+    "hash": "20c1abb9d0f5",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-slow": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the Slower hands box",
+    "text": "Slower hands plays it again one key at a time, with a pause between changes, as a person might. It says where that can’t get through.",
+    "seconds": 8.5,
+    "hash": "59c348d3ddb9",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-soon": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the Color by choice",
+    "text": "Color by can show how soon the bot got there instead: bright for early, dark for late. The switches hide the heat map or the marks.",
+    "seconds": 8.5,
+    "hash": "006654ab30c7",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-time": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the Time choice",
+    "text": "Time is how long the bot may play: Quick is 15 seconds, Thorough a minute, Exhaustive four. Longer finds more.",
+    "seconds": 7.6,
+    "hash": "488e3ab95996",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-upload": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the Before you upload button",
+    "text": "Before you upload ticks off the guide’s checklist wherever the checks can tell. The other editors show these findings as small notes beside an item.",
+    "seconds": 9.1,
+    "hash": "935db55ff94f",
+    "voice": "f969522e51c0"
+  },
+  "edit-check-watch": {
+    "chapter": "edit-check",
+    "where": "Editor: Inspector Penn points at the watch and play buttons",
+    "text": "Watch the bot replays its route. Play and record lets you play the level; where you go makes your own heat map to compare with the bot’s.",
+    "seconds": 8.48,
+    "hash": "60b41c112e31",
+    "voice": "f969522e51c0"
+  },
   "edit-integrator-board": {
     "chapter": "edit-integrator",
     "where": "Editor: Inspector Penn points at the board of scene cards",
