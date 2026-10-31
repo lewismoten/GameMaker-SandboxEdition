@@ -8,22 +8,16 @@ import { ITEMS, type FixItem } from './roomFixItems';
 const TITLE = 'ROOMFIX 1.0  Puts the desk room back the way it started';
 
 export const ROOMFIX_HELP = [
-  'ROOMFIX [what...] [/FULL]',
-  'ROOMFIX /?',
-  '',
-  '  (nothing)  Shows each thing and what it is set to now.',
-  "  /SAFE      Locks Teddy's toy safe again, as if it was never opened.",
-  '             Coins spent and treats bought are kept.',
-  '  /FULL      With /SAFE: gives the coins back and clears the treats too.',
-  '  /ROOM      Puts back the lights, lume paint, mug, mouse pad, mouse and shelf.',
-  '  /ALL       Does /SAFE and /ROOM.',
-  '  /?         This help.',
-  '',
-  'Or name just what you want: ROOMFIX LIGHTS MUG',
-  `  Names: ${ITEMS.map((i) => i.id).join(' ')}`,
-  '',
+  'ROOMFIX [what...] [/FULL]      ROOMFIX alone only shows the list.',
+  "  /SAFE  Locks Teddy's toy safe again, as if never opened.",
+  '         Coins spent and treats bought are kept.',
+  '  /FULL  With /SAFE: gives the coins back, clears the treats.',
+  '  /ROOM  Puts back lights, lume, mug, pad, mouse and shelf.',
+  '  /ALL   Does /SAFE and /ROOM.',
+  'Or name only what you want, such as: ROOMFIX LIGHTS MUG',
+  `Names: ${ITEMS.map((i) => i.id).join(' ')}`,
   'Saved games, scores, trophies, eggs and hearts are never touched.',
-  'The curtains and the window keep nothing, so there is nothing to fix.',
+  'Curtains and the window keep nothing, so there is nothing to fix.',
 ];
 
 type Cmd = { kind: 'list' } | { kind: 'help' } | { kind: 'reset'; ids: string[]; full: boolean } | { kind: 'error'; message: string };
@@ -53,16 +47,17 @@ const pad = (s: string, n: number) => s.padEnd(n);
 export async function runRoomFix(h: RetroHost, args: string[]): Promise<void> {
   const out = (text = '') => h.screen.print(`${toCp437(text)}\n`);
   const cmd = parseRoomFix(args);
-  out(TITLE);
-  out('Copyright (C) 1995 Sandbox Software.  Freeware.');
-  out();
+  if (cmd.kind !== 'help') {
+    out(TITLE);
+    out();
+  }
   const list = async (items: readonly FixItem[]) => {
-    for (const i of items) out(`${pad(i.id, 7)}${pad(i.label, 34)}${await i.show()}`);
+    for (const i of items) out(`  ${pad(i.id, 7)}${await i.show()}`);
   };
   if (cmd.kind === 'error') return out(`${cmd.message}. Type ROOMFIX /? for help.`);
   if (cmd.kind === 'help') {
+    out('ROOMFIX 1.0  Puts the desk room back the way it started');
     ROOMFIX_HELP.forEach((l) => out(l));
-    out();
     out('Right now:');
     return list(ITEMS);
   }
@@ -72,7 +67,7 @@ export async function runRoomFix(h: RetroHost, args: string[]): Promise<void> {
     out('Nothing was changed. ROOMFIX /? tells how to put things back.');
     return;
   }
-  for (const i of ITEMS.filter((x) => cmd.ids.includes(x.id))) out(`${pad(i.id, 7)}${await i.reset(cmd.full)}`);
+  for (const i of ITEMS.filter((x) => cmd.ids.includes(x.id))) out(`  ${pad(i.id, 7)}${await i.reset(cmd.full)}`);
   out();
   out('Done. Game saves, scores, eggs and hearts were not touched.');
 }

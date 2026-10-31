@@ -79,7 +79,7 @@ export const ITEMS: readonly FixItem[] = [
     label: 'Wall clock lume paint',
     group: 'room',
     async show() {
-      return 'charge is kept only while the room is open';
+      return 'paint charge lasts only while the room is open';
     },
     async reset() {
       tell('gm-lume-reset');
