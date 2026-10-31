@@ -1,0 +1,74 @@
+{
+  "keys": {
+    "72": {
+      "short": "Hop",
+      "long": "Hop. Hold to go higher; on a thread, climb."
+    },
+    "80": {
+      "short": "Kneel",
+      "long": "Hump down on your knees; on a thread, let yourself down."
+    },
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "17": {
+      "short": "Hop",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Kneel",
+      "long": "Same as the Down arrow."
+    },
+    "16": {
+      "short": "Hop left",
+      "long": "Hop up and to the left; steer as you fall."
+    },
+    "18": {
+      "short": "Hop right",
+      "long": "Hop up and to the right; steer as you fall."
+    },
+    "44": {
+      "short": "Crawl left",
+      "long": "Crawl left on your knees. Kneeling, you are one block high."
+    },
+    "79": {
+      "short": "Crawl left",
+      "long": "Number pad 1: crawl left on your knees."
+    },
+    "46": {
+      "short": "Crawl right",
+      "long": "Crawl right on your knees. Kneeling, you are one block high."
+    },
+    "81": {
+      "short": "Crawl right",
+      "long": "Number pad 3: crawl right on your knees."
+    },
+    "57": {
+      "short": "Dream",
+      "long": "Even a camel can dream."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Dream",
+      "long": "Even a camel can dream."
+    }
+  },
+  "counters": {
+    "20": "Grace",
+    "21": "Thread spools"
+  }
+}
