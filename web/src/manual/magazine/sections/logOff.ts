@@ -46,7 +46,7 @@ export const LOG_OFF: MagSection = {
       blocks: [
         head('2. Your town, by ZIP code', { level: 3 }),
         p(
-          'The Postal Annex, a federal office that exists nowhere but a gopher hole, runs a ZIP code lookup at *http://zip.postal-annex.gov/cgi-bin/zipfind/lookup?state=PA*. Give it five digits and it gives you a town. Give it a town and it gives you the digits. Anyone who has ever stood at the post office window with a half-addressed birthday card will see why this made our list.',
+          'The Postal Annex, a federal office that exists nowhere but a gopher hole, runs a ZIP code lookup at *http://zip.pigeonpost.gov/cgi-bin/zipfind/lookup?state=PA*. Give it five digits and it gives you a town. Give it a town and it gives you the digits. Anyone who has ever stood at the post office window with a half-addressed birthday card will see why this made our list.',
         ),
         head('3. Recipes, with no pictures', { level: 3 }),
         p(
@@ -114,7 +114,7 @@ export const LOG_OFF: MagSection = {
           [
             list([
               '*http://dict.sandbox-u.edu:8080/~wordsmith/cgi-bin/define.pl*',
-              '*http://zip.postal-annex.gov/cgi-bin/zipfind/lookup?state=PA*',
+              '*http://zip.pigeonpost.gov/cgi-bin/zipfind/lookup?state=PA*',
               '*http://www.casserole.wombat-state.edu/~mmcgill/recipes/index.html*',
               '*http://forecast.nimbus-bureau.gov/wx/maps/us/current.html*',
               '*http://www.dandelionpages.co.nz:8080/cgi-bin/finder/~dp/search.cgi*',
