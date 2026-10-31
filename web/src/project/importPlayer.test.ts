@@ -19,7 +19,8 @@ const folder = (dir: string) => {
   }
   return { files, players };
 };
-const has = (dir: string) => existsSync(ARCHIVE + dir);
+// a folder emptied by the system's temporary-file cleanup counts as missing
+const has = (dir: string) => existsSync(ARCHIVE + dir) && readdirSync(ARCHIVE + dir).length > 0;
 
 describe('adoptPlayer', () => {
   it('says nothing for the CD’s own player, or none', () => {
