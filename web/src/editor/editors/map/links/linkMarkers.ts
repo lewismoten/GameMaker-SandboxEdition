@@ -5,12 +5,12 @@
 // the .gam through Project.saveGame, the integrator's own way, and the map editor's Undo takes
 // it back (map.ts keeps the .gam's bytes in that step).
 import './linkMarkers.css';
-import { h, toast } from '../../../core/ui';
+import { h, modal, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { addLink, nextScene, setFrom, setTo } from '../../integrator/linkEdits';
 import { waysInto } from '../../integrator/linkSpots';
-import { cellAtPoint, mapMarkers, markerBox, nudge, stackIndex, type Marker } from './markerMath';
+import { cellAtPoint, mapMarkers, markerBox, markerGroups, nudge, stackIndex, type Marker, type MarkerGroup } from './markerMath';
 
 interface MarkersHost {
   project: Project;
@@ -85,13 +85,19 @@ export function linkMarkers(host: MarkersHost) {
 
   function render(): void {
     marks = shown ? mapMarkers(project.game(), host.scenes) : [];
-    const keep = new Set(marks.map((m) => m.key));
+    const groups = markerGroups(marks);
+    const grouped = new Set(groups.filter((group) => group.markers.length > 1).flatMap((group) => group.markers.map((marker) => marker.key)));
+    const keep = new Set([
+      ...marks.filter((m) => !grouped.has(m.key)).map((m) => m.key),
+      ...groups.filter((group) => group.markers.length > 1).map((group) => group.key),
+    ]);
     for (const [k, el] of els)
       if (!keep.has(k)) {
         el.remove();
         els.delete(k);
       }
     marks.forEach((m, i) => {
+      if (grouped.has(m.key)) return;
       let el = els.get(m.key);
       if (!el) {
         el = button(m.key);
@@ -107,6 +113,21 @@ export function linkMarkers(host: MarkersHost) {
       el.title = `${m.label}${locked ? '' : '. Drag or use the arrow keys to move it'}; click or Enter for details`;
       place(el, m.at, stackIndex(marks, i));
     });
+    for (const group of groups) {
+      if (group.markers.length < 2) continue;
+      let el = els.get(group.key);
+      if (!el) {
+        el = groupButton(group);
+        els.set(group.key, el);
+        layer.append(el);
+      }
+      el.className = `lk-mark lk-in lk-group${group.markers.some((marker) => marker.start) ? ' lk-start' : ''}`;
+      el.textContent = `↘${group.markers.length}`;
+      const names = group.markers.map((marker) => marker.label.replace(/, at .*/, '')).join('; ');
+      el.setAttribute('aria-label', `${group.markers.length} ways in at ${group.at.x},${group.at.y}: ${names}. Press for the list.`);
+      el.title = `${group.markers.length} ways in at ${group.at.x},${group.at.y}; click to choose one`;
+      place(el, group.at, 0);
+    }
     popover?.refresh();
   }
 
@@ -156,6 +177,39 @@ export function linkMarkers(host: MarkersHost) {
       e.preventDefault();
       e.stopPropagation();
       if (at && !locked) moveTo(m, at);
+    });
+    return el;
+  }
+
+  /** A shared arrival marker names every link and lets the player choose the one to edit. */
+  function groupButton(group: MarkerGroup): HTMLButtonElement {
+    const el = h('button', { type: 'button', class: 'lk-mark lk-in lk-group' });
+    el.addEventListener('click', () => {
+      void modal('Ways in at this block', (close) =>
+        h(
+          'div',
+          { class: 'stack' },
+          h(
+            'p',
+            { class: 'meta' },
+            `${group.markers.length} links arrive at ${group.at.x}, ${group.at.y}. Choose one to see or move its source and destination.`,
+          ),
+          ...group.markers.map((marker) =>
+            h(
+              'button',
+              {
+                type: 'button',
+                onclick: () => {
+                  close(undefined);
+                  void open(marker.key, el);
+                },
+              },
+              marker.start ? '★ Start: ' : '',
+              marker.label.replace(/, at .*/, ''),
+            ),
+          ),
+        ),
+      );
     });
     return el;
   }

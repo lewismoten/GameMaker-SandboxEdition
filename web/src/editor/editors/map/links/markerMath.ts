@@ -9,6 +9,13 @@ import { exitsOf, sceneName, sourceName, waysInto, type Exit, type WayIn } from 
 export type Marker =
   { kind: 'in'; key: string; at: Point; label: string; start: boolean; way: WayIn } | { kind: 'out'; key: string; at: Point; label: string; exit: Exit };
 
+/** Several arrivals on one block share one marker; exits remain individual because their order matters. */
+export interface MarkerGroup {
+  key: string;
+  at: Point;
+  markers: Extract<Marker, { kind: 'in' }>[];
+}
+
 /** The smallest a marker gets on screen (a 24-pixel target), whatever the zoom. */
 export const MIN_MARK = 24;
 
@@ -65,4 +72,17 @@ export function nudge(at: Point, key: string, shift = false): Point | undefined 
 export function stackIndex(markers: readonly Marker[], i: number): number {
   const { x, y } = markers[i].at;
   return markers.slice(0, i).filter((m) => m.at.x === x && m.at.y === y).length;
+}
+
+/** Inbound markers sharing a destination cell, in map order. Singletons stay single-marker groups. */
+export function markerGroups(markers: readonly Marker[]): MarkerGroup[] {
+  const groups = new Map<string, MarkerGroup>();
+  for (const marker of markers) {
+    if (marker.kind !== 'in') continue;
+    const key = `${marker.at.x},${marker.at.y}`;
+    const group = groups.get(key) ?? { key: `in-group:${key}`, at: marker.at, markers: [] };
+    group.markers.push(marker);
+    groups.set(key, group);
+  }
+  return [...groups.values()];
 }

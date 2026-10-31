@@ -2,7 +2,7 @@
 // and the block a drag or an arrow key moves one to.
 import { describe, expect, it } from 'vitest';
 import { ADVTYPE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { cellAtPoint, mapMarkers, markerBox, MIN_MARK, nudge, stackIndex } from './markerMath';
+import { cellAtPoint, mapMarkers, markerBox, markerGroups, MIN_MARK, nudge, stackIndex } from './markerMath';
 
 function game(): Game {
   const g = newGame('Test');
@@ -39,6 +39,11 @@ describe('link markers on a map', () => {
   it('fans out markers on one block', () => {
     const m = mapMarkers(game(), [2]);
     expect([0, 1, 2].map((i) => stackIndex(m, i))).toEqual([0, 1, 0]);
+  });
+
+  it('groups ways in that land on one block while exits remain separate', () => {
+    const m = mapMarkers(game(), [2]);
+    expect(markerGroups(m)).toEqual([expect.objectContaining({ key: 'in-group:5,6', at: { x: 5, y: 6 }, markers: [m[0], m[1]] })]);
   });
 
   it('puts a marker round its block, never smaller than a 24-pixel target', () => {
