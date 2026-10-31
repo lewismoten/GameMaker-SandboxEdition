@@ -12,6 +12,7 @@
 // read with the record, so a page that unlocks nothing early doesn't load it up front.
 import { loadSaveData, writeSaveFile } from '../project/storage';
 import type { Achievement } from './catalog';
+import { laterMark, parseMark, snapshotSaves, type ResetMark } from './resetMark';
 
 export const SAVE_ID = 'site:achievements';
 export const FILE = 'achievements.json';
@@ -26,6 +27,8 @@ export interface AchievementRecord {
   progress: Record<string, { n: number; of: number }>;
   /** id -> the things counted toward it (games played, editors used), for counts derived later. */
   sets: Record<string, string[]>;
+  /** The last Reset: what the saves held then, so finds and scores from before it don't count again (resetMark.ts). */
+  reset?: ResetMark;
 }
 
 const emptyRecord = (): AchievementRecord => ({ unlocked: {}, progress: {}, sets: {} });
@@ -40,6 +43,7 @@ export function parseRecord(bytes: Uint8Array | undefined): AchievementRecord {
     for (const [k, v] of Object.entries<{ n?: unknown; of?: unknown }>(o?.progress ?? {}))
       if (typeof v?.n === 'number' && typeof v?.of === 'number') r.progress[k] = { n: v.n, of: v.of };
     for (const [k, v] of Object.entries(o?.sets ?? {})) if (Array.isArray(v)) r.sets[k] = v.filter((x): x is string => typeof x === 'string');
+    r.reset = parseMark(o?.reset);
   } catch {
     /* a broken file starts afresh */
   }
@@ -57,6 +61,8 @@ export function mergeRecords(a: AchievementRecord, b: AchievementRecord): Achiev
     }
     for (const [k, s] of Object.entries(src.sets)) r.sets[k] = [...new Set([...(r.sets[k] ?? []), ...s])];
   }
+  // the later reset stands: a restored older backup brings back what it holds, but does not lift the cutoff
+  r.reset = laterMark(a.reset, b.reset);
   return r;
 }
 
@@ -250,8 +256,11 @@ export function countOccurrence(key: string, limit: number): Promise<void> {
 export async function resetAchievements(): Promise<void> {
   await loadAchievements();
   held = [];
+  // what the saves hold now is "before": hearts, eggs and scores read from them must not unlock again
+  const reset = await snapshotSaves().catch(() => undefined);
   epoch++;
   record = emptyRecord();
+  if (reset) record.reset = reset;
   if (typeof window !== 'undefined') window.dispatchEvent(new Event(ACHIEVEMENTS_CHANGED));
   writing = writing
     .then(() => writeSaveFile(SAVE_ID, FILE, new TextEncoder().encode(JSON.stringify(record)), { quiet: true }))
@@ -271,7 +280,8 @@ export function listenToOtherTabs(): void {
       void loadSaveData(SAVE_ID).then((files) => {
         const stored = parseRecord(files[FILE]);
         // a reset elsewhere empties the store: follow it rather than merging back
-        record = Object.keys(stored.unlocked).length || !record ? mergeRecords(stored, record ?? emptyRecord()) : stored;
+        const newerReset = (stored.reset?.at ?? 0) > (record?.reset?.at ?? 0);
+        record = !record || (!newerReset && Object.keys(stored.unlocked).length) ? mergeRecords(stored, record ?? emptyRecord()) : stored;
         window.dispatchEvent(new Event(ACHIEVEMENTS_CHANGED));
       });
     };

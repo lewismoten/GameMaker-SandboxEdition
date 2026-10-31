@@ -32,3 +32,14 @@ unlock notices. `blockArt.json` carries embedded PNGs with provenance. Hidden an
 unassigned badges use a neutral question block drawn with the tools package’s micro
 font; no emoji artwork is used by the renderer. Source selections and missing-art
 proposals are in [the artwork inventory](../../../docs/achievement-art.md).
+
+## Reset sticks
+
+Tin hearts, felt eggs and score trophies are read from saves that Reset leaves alone.
+`resetMark.ts` is what stops them returning: when Reset is confirmed, the record stores
+a `reset` mark (the time, the hearts and eggs the saves held, and the best-score and total-score
+sums). `start.ts` counts only hearts and eggs not in the mark (a heart whose find date is after the
+reset counts again; eggs have no date, so an egg already held stays ignored), and `scoreTrophies/scores.ts`
+counts only score growth beyond the sums. `mergeRecords` keeps the later mark, so a restored older
+backup or a stale tab brings back the unlocks it holds but doesn't lift the cutoff. Tests:
+`resetSticks.test.ts`.

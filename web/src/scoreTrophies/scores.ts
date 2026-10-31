@@ -96,9 +96,12 @@ export function recordEnd(game: string, score: number, gained = score): Promise<
 
 /** The achievements for the tiers earned (never ones EGG.EXE only shows). */
 async function earned(r: ScoreRecord): Promise<void> {
-  const tiers = [tierOf('best', bestSum(r)), tierOf('total', r.total)];
+  const { unlockAchievement, loadAchievements } = await import('../achievements/store');
+  // only points scored since the last Reset of the achievements count
+  const { scoresAfter } = await import('../achievements/resetMark');
+  const fresh = scoresAfter({ best: bestSum(r), total: r.total }, (await loadAchievements()).reset);
+  const tiers = [tierOf('best', fresh.best), tierOf('total', fresh.total)];
   if (!tiers.some((t) => t > 0)) return;
-  const { unlockAchievement } = await import('../achievements/store');
   unlockAchievement('trophy-first');
   if (tiers.some((t) => t >= TOP_TIER)) unlockAchievement('trophy-top');
 }

@@ -4,7 +4,8 @@
 // tabs, and keeps the counted achievements (tin hearts, felt eggs, every game played) in step
 // with the saves and the catalog as they change.
 import { refreshGoals } from './goals';
-import { listenToOtherTabs, loadAchievements, progress, tally, unlockAchievement } from './store';
+import { eggsAfter, heartsAfter } from './resetMark';
+import { currentAchievements, listenToOtherTabs, loadAchievements, progress, tally, unlockAchievement } from './store';
 
 /** The event other code fires to unlock one: new CustomEvent(ACHIEVEMENT_EVENT, { detail: { id } }), or { id, item } to tally an item. */
 const ACHIEVEMENT_EVENT = 'gm-achievement';
@@ -48,15 +49,17 @@ async function watchCounts(): Promise<void> {
   // only finds made in a game count, not ones EGG.EXE adds by hand
   const hearts = async () => {
     const s = await huntStates().catch(() => []);
-    const n = s.filter((x) => x.inSave).length;
+    // finds from before the last Reset don't count again (resetMark.ts)
+    const n = heartsAfter(s, currentAchievements()?.reset).length;
     if (n) unlockAchievement('heart-first');
     if (s.length) progress('heart-all', n, s.length);
   };
   const eggs = async () => {
     const s = await eggStates().catch(() => []);
-    const n = s.filter((x) => x.inSave).length;
+    const fresh = eggsAfter(s, currentAchievements()?.reset);
+    const n = fresh.length;
     if (n) unlockAchievement('egg-first');
-    if (laidFromSaves(s)) unlockAchievement('egg-teddy');
+    if (laidFromSaves(fresh)) unlockAchievement('egg-teddy');
     if (s.length && n) progress('egg-all', n, s.length);
   };
   const onHearts = settle(() => void hearts());
