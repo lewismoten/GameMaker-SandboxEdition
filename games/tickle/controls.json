@@ -1,0 +1,77 @@
+{
+  "keys": {
+    "72": {
+      "short": "Hop",
+      "long": "Hop. Hold to go higher."
+    },
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "80": {
+      "short": "Pin",
+      "long": "Pin: both hands press down beside you."
+    },
+    "17": {
+      "short": "Hop",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "16": {
+      "short": "Hop left",
+      "long": "Hop up and to the left."
+    },
+    "18": {
+      "short": "Hop right",
+      "long": "Hop up and to the right."
+    },
+    "71": {
+      "short": "Hop left",
+      "long": "Number pad 7: hop up and to the left."
+    },
+    "73": {
+      "short": "Hop right",
+      "long": "Number pad 9: hop up and to the right."
+    },
+    "44": {
+      "short": "Pin",
+      "long": "Pin: both hands press down beside you. A rat close by rolls onto its back."
+    },
+    "45": {
+      "short": "Tickle",
+      "long": "Tickle: fingers wiggle out to both sides. Pin first."
+    },
+    "57": {
+      "short": "Tickle",
+      "long": "Tickle: fingers wiggle out to both sides. Pin first."
+    },
+    "46": {
+      "short": "Laugh",
+      "long": "Laugh maniacally."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Pin",
+      "long": "Pin: both hands press down beside you."
+    },
+    "2": {
+      "short": "Tickle",
+      "long": "Tickle: fingers wiggle out to both sides."
+    }
+  },
+  "counters": {
+    "20": "Laughing carpet"
+  }
+}
