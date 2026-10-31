@@ -13,6 +13,7 @@ import { paletteTools } from './paletteTools';
 import { fitToPane } from '../../core/fitPane';
 import { PALETTE_RESERVATIONS, paletteReservations, reservationAt, type PaletteReservation } from './paletteReservations';
 import { paletteReservationFields, ROLE_LABELS } from './paletteReservationFields';
+import { detectPaletteRoles } from './paletteRoleDetect';
 import './palette.css';
 
 registerEditor(['pal'], (host, project, file) => {
@@ -218,6 +219,7 @@ registerEditor(['pal'], (host, project, file) => {
     () => [Math.min(selected, rangeEnd ?? selected), Math.max(selected, rangeEnd ?? selected)],
     () => remember(),
     refresh,
+    () => detectPaletteRoles(project, file),
   );
   reservations.el.append(
     h(

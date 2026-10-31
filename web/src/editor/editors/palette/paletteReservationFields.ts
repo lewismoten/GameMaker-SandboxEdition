@@ -1,7 +1,7 @@
 // Shared palette reservations are changed here; the palette editor records them in its undo stack.
 import type { Project } from '../../core/project';
 import { h, selectField, toast } from '../../core/ui';
-import { PALETTE_RESERVATIONS, paletteReservations, reserveColors, type PaletteRole } from './paletteReservations';
+import { PALETTE_RESERVATIONS, paletteReservations, reserveColors, type PaletteReservation, type PaletteRole } from './paletteReservations';
 
 export const ROLE_LABELS = { character: 'Characters', background: 'Backgrounds', monster: 'Monsters', menu: 'Menu backgrounds', transparent: 'Transparency' };
 
@@ -10,6 +10,7 @@ export function paletteReservationFields(
   span: () => [number, number],
   remember: () => void,
   changed: () => void,
+  detect?: () => PaletteReservation[],
 ): { el: HTMLElement; refresh: () => void } {
   let role: PaletteRole = 'character';
   const list = h('p', { class: 'meta', role: 'status' });
@@ -52,6 +53,23 @@ export function paletteReservationFields(
       { class: 'toolbar' },
       h('button', { type: 'button', onclick: () => apply(role) }, 'Reserve selected colors'),
       h('button', { type: 'button', onclick: () => apply() }, 'Clear selected reservation'),
+      detect
+        ? h(
+            'button',
+            {
+              type: 'button',
+              title: 'Find colors used only by character, monster or background block sets drawn with this palette',
+              onclick: () => {
+                const next = detect();
+                if (JSON.stringify(next) === JSON.stringify(paletteReservations(project))) return;
+                remember();
+                project.setExtras(project.gam, PALETTE_RESERVATIONS, next.length ? next : undefined);
+                changed();
+              },
+            },
+            'Detect dedicated areas',
+          )
+        : null,
     ),
     list,
   );
