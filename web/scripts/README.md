@@ -26,6 +26,13 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   of each step (`ok`, `skipped` for an optional step with no control, `MISSING`) plus the axe
   violations seen on every step (so on what a chapter opens too) and any horizontal scroll. It exits
   non-zero on a missing non-optional step and stops its server.
+- `tourAudit.ts` (`npm run tour:audit -- [--chapter <id>[,<id>]] [--url <url>] [--sizes 1440x900,390x844] [--max 240]`):
+  plays chapters in real time in headless Chrome (own vite when no `--url`, never 5173; run it alone,
+  two Chromes at once give false voice cuts) and flags, per step, a bubble far from its speaker or over
+  another host, a voice clip that did not play to the end (clips are matched to steps by file name; a
+  clip still mid-play when the next starts or the tour ends is a cut; the pause `stopVoice` causes is
+  ignored; a step with no clip file is not flagged), and a target under the caption bar. Local only,
+  not in CI; exits 1 on any flag.
 - Data files the site reads, written by hand-run scripts (their tests fail until they are rerun):
   - `credits.ts` writes the Credits page's `deps.json`;
   - `scoopDates.ts` the day each Sandbox Scoop story was first committed, `scoopDates.json` (the
@@ -98,6 +105,14 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   style, tries, play time and outcome, and why it stopped (a door that stayed shut). `--out` writes the walkthrough; it
   exits 1 when the bot doesn't win. Arguments, `.gam` picking and the table line are in `walkAutoArgs.ts`. It skips the
   author's own plays and walking paths, which live in a project's companion file.
+- `diskDiff.ts` (`npm run disk:diff -- <a> <b> [--json]`) compares two disks, each a folder (such as `games/<id>/disk`) or a
+  `.zip`: how many files changed, were added or removed, then for each changed file a plain-text summary by type, picked from
+  the file's contents where it can (GIF, FLI, VOC) and else its extension: `.gam` scenes, `.pal` colors, `.bbl/.mbl/.cbl`
+  block numbers, `.map` changed cells in clusters, `.chr` sequences, `.mon` monsters, text line counts, picture pixels,
+  animation frames, sound length, and a byte count for anything else. Output is sorted with no dates, so the same inputs
+  print the same text. The logic is `packages/tools/src/diskDiff.ts` (`@lewismoten/gamemaker-sandbox-tools/disk-diff`).
+  To compare with an older commit, rebuild that revision's disk first (`games/kit/versionDisks.ts` rebuilds a game's
+  source at a revision into a scratch folder).
 - `dosbox.ts` (`npm run dosbox`) lays out `../../dosbox/` (git-ignored) to mount as drive C: in
   DOSBox, with Game-Maker installed and every Sandbox and Bard of Bizarre game's disk beside the
   samples; `npm run dosbox:open` starts DOSBox on it.
