@@ -13,6 +13,7 @@ import type { Pal } from '../art/pal';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { lewieCameo } from '../../../kit/cameos';
+import { goatBadges } from './badges';
 import { goatArt } from '../sprites/sprites';
 import { MON, SCREAMSEQ, WOOL, WOOL_NEEDED } from '../ids';
 
@@ -719,5 +720,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   micro(screamSign, 1, 5, 'SPACE', c('red', 1));
   book.add('signScream', screamSign, { solid: SOLID });
   book.add('troughFieldSip', stoneTrough(true), { ...sip, next: 'troughField', touch: 'troughField' });
+  // (last) scenery for the site's achievement badges: a shooting star and a startled goat
+  goatBadges(book, pal, book.pics.get('floor')!);
   return book;
 }
