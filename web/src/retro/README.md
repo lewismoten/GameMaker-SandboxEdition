@@ -24,7 +24,7 @@ picture; `host.ts` is what programs on it can use.
 - `text/`: 80×25 text mode (`textScreen.ts`, `textInput.ts`, `cp437.ts`) and Game-Maker's text UI
   (`textUi.ts`).
 - `gm.ts`: GM.EXE's menus. `gmReg/`: Game-Maker's registration and copy check (`chk.ts`,
-  `registration.ts`, `copyCheck.ts`); `regSide.ts` (loaded by `regSideLater.ts`, asked for by
+  `registration.ts`, `copyCheck.ts`; `tourPretend.ts` makes the PC pretend to be unregistered while the guided tour plays); `regSide.ts` (loaded by `regSideLater.ts`, asked for by
   `regDesk.ts`) puts the Owner's Guide (`regGuidePanel.ts`) and registration card (`regCardPanel.ts`,
   `mailCard.ts`) beside the monitor;
   `replyMail.ts` remembers RSD's reply.
