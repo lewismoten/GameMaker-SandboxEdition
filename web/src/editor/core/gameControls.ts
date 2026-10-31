@@ -10,7 +10,7 @@
 //   }
 // Every part is optional. Nothing here is written into the DOS files.
 import type { Project } from './project';
-import { getSection, type Companion } from '../../project/companion';
+import { getSection, setSection, type Companion } from '../../project/companion';
 import { JOYSTICK_BUTTONS, readJoystickButtons, type JoystickButtons } from './joystickButtons';
 import { COUNTER_NAMES, readCounterNames, type CounterNames } from '../editors/character/counterNames';
 
@@ -83,6 +83,23 @@ export function controlsFromCompanion(companion: Companion | undefined, gam: str
 
 export function gameControls(project: Pick<Project, 'companion' | 'gam'>): GameControls {
   return controlsFromCompanion(project.companion, project.gam);
+}
+
+/** Puts controls into a companion, for a catalog game's shipped controls.json; nothing is put for an empty part, and a section already there is kept. */
+export function putControls(c: Companion, gam: string, value: unknown): void {
+  const controls = readControls(value);
+  const own = { keys: controls.keys, counters: controls.counters, sounds: controls.sounds };
+  const has = (o: object) => Object.keys(o).length > 0;
+  if (has(own.keys) || has(own.counters) || has(own.sounds)) {
+    if (getSection<unknown>(c, gam, CONTROLS_SECTION, undefined) === undefined) {
+      setSection(c, gam, CONTROLS_SECTION, {
+        ...(has(own.keys) ? { keys: own.keys } : {}),
+        ...(has(own.counters) ? { counters: own.counters } : {}),
+        ...(has(own.sounds) ? { sounds: own.sounds } : {}),
+      });
+    }
+  }
+  if (has(controls.joystick) && getSection<unknown>(c, gam, JOYSTICK_BUTTONS, undefined) === undefined) setSection(c, gam, JOYSTICK_BUTTONS, controls.joystick);
 }
 
 /** Stores the controls (nothing is stored for an empty part), leaving the game's files alone. */

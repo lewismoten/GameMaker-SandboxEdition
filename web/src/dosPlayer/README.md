@@ -28,3 +28,5 @@ walkthrough, downloads, the desk's copies and Transfer, and Look inside / Edit a
   `recordedAudio.ts` (a Bard of Bizarre game's non-commercial voice clips), `fiction.ts` (the note
   that this project's games were made in 2026), `pageSeo.ts` (an exported page's search and share
   tags) and `gameAbout.ts` (a few lines of the game's own story, for descriptions).
+
+`catalogPatches.ts` also carries a catalog game's `controls.json` (`controls` on its catalog entry, from `scripts/cdGames.ts`) into the companion `catalogCompanion` builds, through `putControls` in `editor/core/gameControls.ts`, so a catalog game opened in the editor (or copied) shows its Overview › Controls. It is editor-only: exports never include it, and controls the author already saved win.

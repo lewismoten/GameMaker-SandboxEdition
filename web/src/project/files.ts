@@ -57,6 +57,8 @@ export interface CatalogEntry {
   walkthrough?: string;
   /** Original games: its DOS player look (games/<id>/player.json, dosPlayer/catalogPatches.ts). */
   player?: unknown;
+  /** Original games: what its controls mean (games/<id>/controls.json, editor/core/gameControls.ts). */
+  controls?: unknown;
   /** Built sites: its pictures are drawn already (games/shots/, gfx/levelPicture.ts builtShotPath). */
   shots?: boolean;
   /** …and its hero (games/shots/<id>-hero.png, gfx/levelPicture.ts builtHeroPath). */

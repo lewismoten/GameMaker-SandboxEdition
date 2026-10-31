@@ -67,6 +67,8 @@ export interface CdCatalogEntry {
   walkthrough?: string;
   /** Original games: its DOS player look, ../games/<id>/player.json ({ base, patches }: src/dosPlayer/catalogPatches.ts). */
   player?: unknown;
+  /** Original games: what its keys, joystick buttons, counters and sounds mean, ../games/<id>/controls.json (src/editor/core/gameControls.ts). */
+  controls?: unknown;
   /** The build drew its pictures (games/shots/<id>-<cols>x<rows>.png, scripts/gameShots.ts). */
   shots?: boolean;
   /** …and its hero (games/shots/<id>-hero.png). */
@@ -345,6 +347,8 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     // its DOS player look (games/kit/player.ts): the catalog carries it, never the game's files
     const player = existsSync(join(base, 'player.json')) ? (JSON.parse(readFileSync(join(base, 'player.json'), 'utf8')) as unknown) : undefined;
+    // what its controls mean (the editor's Overview > Controls); editor-only, never in a download
+    const controls = existsSync(join(base, 'controls.json')) ? (JSON.parse(readFileSync(join(base, 'controls.json'), 'utf8')) as unknown) : undefined;
     const id = dir.toLowerCase();
     const path = `games/originals/${id}/`;
     const names: string[] = [];
@@ -384,6 +388,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       ...(about.series ? { series: about.series } : {}),
       ...(walkthrough ? { walkthrough } : {}),
       ...(player ? { player } : {}),
+      ...(controls ? { controls } : {}),
       pack: gameZipName(id),
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);
