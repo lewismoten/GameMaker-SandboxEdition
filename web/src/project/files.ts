@@ -262,6 +262,22 @@ function startPack(url: string): Pack {
   };
   pack.done = (async () => {
     try {
+      const peeked = peekedZips.get(url);
+      peekedZips.delete(url);
+      if (peeked && /\.zip$/i.test(url)) {
+        // the bytes a peek at the .gam (peekGameFile) already fetched
+        const raw = await peeked;
+        if (!raw) return false;
+        const { readHostedZip } = await import('./hostedZip');
+        const entries = await readHostedZip(raw);
+        for (const [name, bytes] of entries) {
+          pack.files.set(name, bytes);
+          pack.size += bytes.length;
+          for (const l of pack.listeners) l(name, bytes);
+        }
+        pack.complete = true;
+        return true;
+      }
       const res = await fetch(url, { signal: pack.abort.signal });
       if (!res.ok || !res.body) return false;
       if (/\.zip$/i.test(url)) {
@@ -389,6 +405,36 @@ export async function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' |
     if (bytes) return bytes;
   }
   return fetchSiteFile(`${base}${entry.path}${n}`, entry.gz);
+}
+
+/** Zips fetched for a peek, kept for the pack that reads the same zip next (one request). */
+const peekedZips = new Map<string, Promise<Uint8Array | undefined>>();
+
+/**
+ * A file of a hosted game's zip as it is stored, without reading the zip's player .exe (which
+ * fetches the play page's 118 kB chunk when it is not the CD's own, hostedZip.ts): enough for
+ * the home page to tell from the .gam whether a game has a demo. Falls back to fetchGameFile
+ * when the zip has no such file (a game that renames its extensions, found only after reading
+ * its player) or is not a zip.
+ */
+export async function peekGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz' | 'pack'>, name: string, base = './'): Promise<Uint8Array | undefined> {
+  const url = packUrl(entry, base);
+  if (!url || !/\.zip$/i.test(url) || packs.has(url)) return fetchGameFile(entry, name, base);
+  let zip = peekedZips.get(url);
+  if (!zip) {
+    zip = fetch(url).then(
+      async (res) => (res.ok ? new Uint8Array(await res.arrayBuffer()) : undefined),
+      () => undefined,
+    );
+    peekedZips.set(url, zip);
+  }
+  const bytes = await zip;
+  if (bytes) {
+    const { findZipFile } = await import('./hostedZip');
+    const found = await findZipFile(bytes, [name.toLowerCase(), cdName(name)]);
+    if (found) return found;
+  }
+  return fetchGameFile(entry, name, base);
 }
 
 /**

@@ -1,7 +1,7 @@
 // Which demo a game's preview plays (demoPreview.ts), told from its .gam alone: kept apart
 // from the preview itself, so a page can offer "Watch demo" without loading the player.
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { cdName, fetchGameFile, type CatalogEntry } from '../project/files';
+import { cdName, peekGameFile, type CatalogEntry } from '../project/files';
 import { ADDED_DEMO_NOTICE, extraDemoFor, extraDemoForGam, fetchExtraDemo, loadExtraDemos, type ExtraDemo } from './extraDemos';
 
 /** The game's own title demo, one added for this edition, or a made-up walk about. */
@@ -44,7 +44,7 @@ export function catalogDemoKind(g: CatalogEntry, base = './'): Promise<DemoKind 
   if (!g.gam) return Promise.resolve(undefined);
   let known = catalogDemos.get(g.id);
   if (!known) {
-    known = fetchGameFile(g, g.gam, base)
+    known = peekGameFile(g, g.gam, base)
       .then(async (gam): Promise<DemoKind | undefined> => {
         if (!gam) return undefined;
         if (demoFileName(gam, g.files)) return 'recorded';

@@ -36,3 +36,9 @@ export async function readHostedZip(bytes: Uint8Array): Promise<Map<string, Uint
   }
   return out;
 }
+
+/** One file of a zip by any of `names` (compared in lower case), as stored: no player is read. */
+export async function findZipFile(bytes: Uint8Array, names: string[]): Promise<Uint8Array | undefined> {
+  const entries = await readZip(bytes);
+  return entries.find((e) => names.includes(e.name.toLowerCase()))?.data;
+}
