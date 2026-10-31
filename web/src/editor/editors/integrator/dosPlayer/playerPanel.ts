@@ -14,6 +14,7 @@ import { companionPatches, playerRecord, PLAYER_SECTION } from '../../../../dosP
 import { PLAYER_PRESETS } from '../../../../dosPlayer/presets';
 import { SCREEN_NAMES } from '../../../../dosPlayer/describePatches';
 import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { History } from '../../../core/history';
 import { drawPreview, type PreviewScreen } from './playerPreview';
 import { fieldMaker } from './playerFields';
 import { screenFields } from './screenFields';
@@ -91,18 +92,65 @@ export function playerPanel(project: Project): HTMLElement {
     pick.value = s;
     redraw();
   };
+  // Undo and redo step through snapshots of the patches; a run of typing in one field is one step,
+  // and a Reset button or any other field starts a new one.
+  const history = new History<PlayerPatches>();
+  let base: PlayerPatches = { ...patches };
+  let lastChange = 0;
+  let lastBy: Element | null = null;
+  const undoBtn = h('button', { type: 'button', title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const redoBtn = h('button', { type: 'button', title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  const syncHistory = () => {
+    undoBtn.disabled = locked || !history.canUndo;
+    redoBtn.disabled = locked || !history.canRedo;
+  };
+  const replacePatches = (to: PlayerPatches) => {
+    for (const k of Object.keys(patches)) delete patches[k];
+    Object.assign(patches, to);
+  };
   function save() {
+    if (JSON.stringify(patches) !== JSON.stringify(base)) {
+      const now = Date.now();
+      const by = document.activeElement;
+      if (now - lastChange > 500 || by !== lastBy || by instanceof HTMLButtonElement) history.record(base);
+      lastChange = now;
+      lastBy = by;
+      base = { ...patches };
+      syncHistory();
+    }
     project.setExtras(project.gam, PLAYER_SECTION, playerRecord(patches));
     redraw();
   }
+  function step(back: boolean) {
+    const to = back ? history.undo(base) : history.redo(base);
+    if (!to) return;
+    replacePatches(to);
+    base = { ...patches };
+    lastChange = 0;
+    project.setExtras(project.gam, PLAYER_SECTION, playerRecord(patches));
+    syncHistory();
+    render();
+    redraw();
+  }
+  const onKey = (ev: KeyboardEvent) => {
+    if (!body.isConnected) return window.removeEventListener('keydown', onKey);
+    if (locked || !(ev.ctrlKey || ev.metaKey) || ev.target instanceof HTMLInputElement || ev.target instanceof HTMLSelectElement) return;
+    const k = ev.key.toLowerCase();
+    if (k !== 'z' && k !== 'y') return;
+    // only while the DOS player tab is the one showing
+    if (!body.offsetParent) return;
+    ev.preventDefault();
+    step(k === 'z' && !ev.shiftKey);
+  };
+  window.addEventListener('keydown', onKey);
   // patches saved from outside (the desk's PLAYHACK, editor/shell/workspace.ts) replace the ones shown
   const offExtras = project.onExtrasChange((file, section) => {
     if (!body.isConnected) return offExtras();
     if (file !== project.gam || section !== PLAYER_SECTION) return;
     const now = companionPatches(project.companion, project.gam);
     if (JSON.stringify(now) === JSON.stringify(patches)) return;
-    for (const k of Object.keys(patches)) delete patches[k];
-    Object.assign(patches, now);
+    replacePatches(now);
+    base = { ...patches };
     render();
     redraw();
   });
@@ -120,6 +168,7 @@ export function playerPanel(project: Project): HTMLElement {
       return undefined;
     },
     onSync: (f) => refreshers.push(f),
+    locked,
   });
 
   const tabs = h('div', { class: 'dp-tabs', role: 'tablist', 'aria-label': 'Screens' });
@@ -164,7 +213,7 @@ export function playerPanel(project: Project): HTMLElement {
     renderTabs();
     refreshers = [];
     body.setAttribute('aria-labelledby', `${id}-tab-${tab}`);
-    clear(body, ...(tab === 'files' ? fileFields({ id, patches, save: (again) => (save(), again && render()) }) : screenFields(tab, make)));
+    clear(body, ...(tab === 'files' ? fileFields({ id, patches, locked, save: (again) => (save(), again && render()) }) : screenFields(tab, make)));
     body.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLButtonElement>('input, select, button').forEach((el) => (el.disabled = locked));
     // the F-keys and the shared colors have no screen of their own: they pick one to preview
     pickRow.hidden = isPreview(tab);
@@ -189,6 +238,8 @@ export function playerPanel(project: Project): HTMLElement {
         p.label,
       ),
     ),
+    undoBtn,
+    redoBtn,
   );
 
   // the preview follows the field being edited, and picks what that field moves

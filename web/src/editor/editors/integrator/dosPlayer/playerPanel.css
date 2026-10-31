@@ -29,7 +29,6 @@ dialog.modal:has(.dp) {
 
 .dp-presets button,
 .dp-tab,
-.dp-hide,
 .dp-arrow,
 .dp-move select {
   min-height: 28px;
@@ -291,4 +290,41 @@ dialog.modal .dp-preview [hidden] {
 
 .dp-ext .dp-note {
   flex: 1 1 20ch;
+}
+
+/* Hide and Reset, one segmented group beside a field */
+.dp-tools {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.dp-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0 4px;
+  border-radius: 0;
+}
+
+.dp-tool:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.dp-tool:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.dp-tool:only-child {
+  border-radius: 4px;
+}
+
+.dp-tool + .dp-tool {
+  margin-left: -1px;
+}
+
+.dp-tool[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-text);
 }
