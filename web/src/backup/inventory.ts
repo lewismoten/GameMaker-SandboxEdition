@@ -101,6 +101,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-hint-open',
       'gm-mus-tab',
       'gm-chr-tab',
+      'gm-files-folded',
       'gm-grator-tab',
       'gm-grator-side-collapsed',
       'gm-grator-side-w',
