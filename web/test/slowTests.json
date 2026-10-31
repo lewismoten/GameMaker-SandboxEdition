@@ -44,9 +44,6 @@
     "src/assistant/chat/agent.test.ts": [
       "the chat loop pictures go to a model that sees, and are described to one that doesn’t"
     ],
-    "src/assistant/chat/streaming.test.ts": [
-      "tool calls as they stream in run as each completes, in order, while the reply streams on; the words leave the calls out"
-    ],
     "src/assistant/tools/tools.test.ts": [
       "assistant tools check, play and draw the tiny game",
       "assistant tools read, check and draw a copy of a CD game"

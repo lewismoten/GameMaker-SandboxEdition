@@ -12,7 +12,8 @@ import { chatTools } from './chatTools';
 import type { ChatReply, ChatRequest } from './providers';
 
 const game = () => new MemoryContext(new GameFiles(testGame(['########', '#S....E#', '########']).files), 'test.gam');
-const tick = () => new Promise((r) => setTimeout(r, 1));
+// One macrotask turn, without a timer's 1 ms floor: the pieces still stream one turn at a time.
+const tick = () => new Promise((r) => setImmediate(r));
 
 const REPLY = [
   'I will wall it in first.\n',
