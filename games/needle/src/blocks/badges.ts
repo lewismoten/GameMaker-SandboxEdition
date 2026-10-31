@@ -136,4 +136,32 @@ export function tailorBadges(book: BlockBook, pal: Pal, panel: () => Pixels, air
   seen.rect(9, 4, 2, 2, K).line(1, 3, 0, 1, K).line(19, 3, 19, 1, K);
   seen.line(3, 3, 5, 2, c('white', 2)).set(3, 4, c('white', 2)).line(13, 3, 15, 2, c('white', 2)).set(13, 4, c('white', 2));
   book.add('seenGlasses', seen, air);
+
+  // a little wind-up robot turning the crank of a film projector
+  const robot = panel();
+  robot.rect(8, 10, 10, 7, K).rect(9, 11, 8, 5, c('gray', 3)).rect(9, 11, 8, 1, c('gray', 4)).rect(18, 12, 2, 4, K).rect(18, 13, 1, 2, c('water', 3));
+  robot.disc(11, 6, 3.4, K).disc(11, 6, 2.4, c('steel', 2)).disc(11, 6, 0.8, K).disc(16, 6, 3.4, K).disc(16, 6, 2.4, c('steel', 2)).disc(16, 6, 0.8, K);
+  robot.rect(10, 16, 2, 2, K).rect(15, 16, 2, 2, K);
+  robot
+    .rect(1, 3, 6, 5, K)
+    .rect(2, 4, 4, 3, c('steel', 3))
+    .rect(2, 5, 1, 1, c('seed', 1))
+    .rect(5, 5, 1, 1, c('seed', 1))
+    .line(4, 3, 4, 2, K)
+    .rect(3, 0, 3, 2, c('red', 2));
+  robot.rect(1, 9, 6, 7, K).rect(2, 10, 4, 5, c('gray', 3)).rect(3, 11, 2, 2, c('red', 2));
+  robot.rect(1, 16, 2, 3, K).rect(5, 16, 2, 3, K).rect(0, 18, 3, 1, K).rect(4, 18, 3, 1, K);
+  robot.line(7, 12, 9, 13, K).line(7, 13, 9, 14, K).ring(9, 14, 2, c('seed', 2)).set(9, 12, c('seed', 2));
+  book.add('robotCrank', robot, air);
+
+  // a ringing rotary phone with a short itemized bill slip beside it
+  const bill = panel();
+  bill.rect(0, 12, 13, 7, K).rect(1, 13, 11, 5, c('red', 2)).rect(1, 13, 11, 1, c('red', 3));
+  bill.rect(0, 8, 13, 4, K).rect(1, 9, 11, 2, c('red', 3)).rect(0, 7, 3, 2, K).rect(10, 7, 3, 2, K);
+  bill.disc(6, 15, 3.4, K).disc(6, 15, 2.5, c('white', 2)).disc(6, 15, 0.7, K);
+  bill.line(1, 5, 3, 3, c('seed', 2)).line(0, 3, 2, 1, c('seed', 2)).line(12, 5, 10, 3, c('seed', 2)).line(13, 3, 11, 1, c('seed', 2));
+  bill.rect(14, 1, 6, 13, K).rect(15, 2, 4, 11, c('white', 2));
+  for (const y of [4, 6, 8]) bill.rect(15, y, 3, 1, K).set(18, y, c('gray', 2));
+  bill.rect(15, 11, 4, 1, c('red', 2)).set(15, 13, K).set(17, 13, K).set(19, 13, K);
+  book.add('phoneBill', bill, air);
 }
