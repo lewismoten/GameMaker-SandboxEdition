@@ -1,0 +1,73 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Walk up one step; in the clock tower, hop (hold to hop higher)."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Walk down one step; hold to keep walking."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Walk left one step; hold to keep walking."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Walk right one step; hold to keep walking."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Same as the Down arrow."
+    },
+    "16": {
+      "short": "Hop up-left",
+      "long": "In the clock tower, hop up and to the left."
+    },
+    "18": {
+      "short": "Hop up-right",
+      "long": "In the clock tower, hop up and to the right."
+    },
+    "71": {
+      "short": "Hop up-left",
+      "long": "Number pad 7: in the clock tower, hop up and to the left."
+    },
+    "73": {
+      "short": "Hop up-right",
+      "long": "Number pad 9: in the clock tower, hop up and to the right."
+    },
+    "57": {
+      "short": "Pick up",
+      "long": "Pick up what you are standing on. With the winding key, one big spring hop each press."
+    },
+    "28": {
+      "short": "Balloon",
+      "long": "With the heart balloon, rise as long as you hold it and it has air. A puff of breeze fills it again."
+    },
+    "45": {
+      "short": "Hello",
+      "long": "With the Bard's drumstick, throw a friendly BOOM the way Joe last moved. It cheers up anything grumpy."
+    }
+  },
+  "joystick": {},
+  "counters": {
+    "16": "Balloon air",
+    "20": "Thank-yous",
+    "21": "Chapter task",
+    "22": "Shovelfuls",
+    "23": "Corner pass (chapter 2)",
+    "24": "Corner pass (chapter 3)"
+  }
+}
