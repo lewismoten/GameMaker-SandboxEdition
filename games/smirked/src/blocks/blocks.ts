@@ -14,6 +14,7 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
+import { smirkedBadges } from './badges';
 import { buildPalette, type Pal } from '../art/pal';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
@@ -722,5 +723,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     p.rect(9, 16, 2, 3, c('board', 1)).rect(49, 16, 2, 3, c('board', 1));
     cut(p, [['getDown0', 'getDown1', 'getDown2']], () => ({}));
   }
+  // (last) scenery for the site's achievement badge: a violin on the last hall's carpet
+  smirkedBadges(book, pal, book.pics.get('carpet')!);
   return book;
 }
