@@ -1,11 +1,11 @@
-// The integrator's "DOS player" dialog: customize XFERPLAY.EXE, the stand-alone player the DOS
+// Overview's "DOS player" tab (the integrator's DOS player button opens it): customize XFERPLAY.EXE, the stand-alone player the DOS
 // export ships, within the rules a 1990s hex editor had to keep (dosPlayer/). A tab per screen
 // (screenTabs.ts) holds all of that screen's words, positions, frames, colors and times, beside
 // a live preview drawn by the web engine with the patches applied, where words and frames can be
 // dragged (dragStage.ts). Choices go in the .gam's companion section, so the DOS export, Play and
 // the web-page exports all show them.
 import './playerPanel.css';
-import { h, clear, modal } from '../../../core/ui';
+import { h, clear } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import type { PatchEntry, PatchScreen } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
@@ -28,12 +28,8 @@ const isPreview = (s: PanelTab): s is PreviewScreen => (PREVIEWS as string[]).in
 
 let uid = 0;
 
-/** Opens the DOS player dialog for a project. */
-export function openPlayerPanel(project: Project): void {
-  void modal<void>('DOS player', () => playerPanel(project));
-}
-
-function playerPanel(project: Project): HTMLElement {
+/** The panel itself: Overview's DOS player tab shows it. */
+export function playerPanel(project: Project): HTMLElement {
   const patches: PlayerPatches = { ...companionPatches(project.companion, project.gam) };
   const game = project.game();
   const gameName = project.gam.replace(/\.[^.]*$/, '').toLowerCase();

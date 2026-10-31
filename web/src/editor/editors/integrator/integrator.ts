@@ -10,6 +10,7 @@
 // selected scene's panel (its links table: sceneLinks.ts). Drawing the board is in board.ts,
 // its camera in boardCamera.ts and its pointer and keys in boardInput.ts; the layout
 // algorithms are in integratorLayout.ts and layoutCells.ts.
+import { overviewHash } from '../../shell/overviewLink';
 import './integrator.css';
 import { gameProject } from '../../shell/gameProject';
 import { registerEditor } from '../registry';
@@ -351,7 +352,7 @@ registerEditor(['gam'], (host, owner, file) => {
         {
           title: 'Customize the DOS player’s own words, colors, frames and timings (the DOS export’s XFERPLAY.EXE)',
           'aria-label': 'DOS player',
-          onclick: () => void import('./dosPlayer/playerPanel').then(({ openPlayerPanel }) => openPlayerPanel(project)),
+          onclick: () => (location.hash = overviewHash(project, 'player')),
         },
         ...toolFace('▤', 'DOS player'),
       ),

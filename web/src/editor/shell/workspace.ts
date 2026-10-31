@@ -1,6 +1,8 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
 import { onPatchesChanged } from '../../dosPlayer/patchesChanged';
 import { currentRoute, formatHash, setHashParams } from '../../urlState';
+import { overviewTabFrom, TAB_TITLES, type OverviewTab } from './overviewLink';
+import { migrateCounterNames } from '../core/gameControls';
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
 import { pickFile } from '../widgets/filePicker';
@@ -106,8 +108,8 @@ export class Workspace implements AssistantHost {
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
   private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
   private current?: string;
-  private assetView?: { kind?: FileKind };
-  private assetReturn?: { kind?: FileKind };
+  private assetView?: { kind?: FileKind; tab: OverviewTab };
+  private assetReturn?: { kind?: FileKind; tab: OverviewTab };
   private cleanup?: () => void;
   private player?: PlayerHandle;
   private unlisten: () => void;
@@ -129,6 +131,8 @@ export class Workspace implements AssistantHost {
       // links changed (the map's markers, the integrator): Play Level's menu follows
       else if (name === project.gam) this.playEl?.replaceWith((this.playEl = this.playButton()));
     });
+    // per-character counter names from an older version become the game-wide ones (core/gameControls.ts)
+    if (!project.readOnly) migrateCounterNames(project);
     this.renderSidebar();
     // a reload while play testing (…?play) starts the play test again
     const playing = currentRoute().params.play;
@@ -202,7 +206,7 @@ export class Workspace implements AssistantHost {
   }
 
   stopPlay(): void {
-    if (this.assetReturn) return this.openAssets(this.assetReturn.kind);
+    if (this.assetReturn) return this.openAssets(this.assetReturn.kind, this.assetReturn.tab);
     const back = this.playBack;
     if (back !== undefined) this.open(this.project.files.has(back) ? back : this.project.gam);
   }
@@ -340,7 +344,7 @@ export class Workspace implements AssistantHost {
             onclick: () => this.openAssets(),
             'aria-current': this.assetView && !this.assetView.kind ? 'page' : undefined,
           },
-          '▦ Game assets',
+          '▦ Overview',
         ),
         this.search,
         ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
@@ -483,10 +487,13 @@ export class Workspace implements AssistantHost {
     }
     const raw = currentRoute().params.assets;
     const kind = ORDER.includes(raw as FileKind) ? (raw as FileKind) : undefined;
-    if (!this.assetView || this.assetView.kind !== kind) this.openAssets(kind);
+    const tab = overviewTabFrom(currentRoute().params.tab);
+    if (!this.assetView || this.assetView.kind !== (tab === 'files' ? kind : undefined) || this.assetView.tab !== tab) this.openAssets(kind, tab);
   }
 
-  private openAssets(kind?: FileKind): void {
+  /** Opens the Overview page on a tab (Files, optionally in one category; Controls; DOS player). */
+  private openAssets(kind?: FileKind, tab: OverviewTab = 'files'): void {
+    if (tab !== 'files') kind = undefined;
     this.cleanup?.();
     this.cleanup = undefined;
     this.player?.stop();
@@ -494,39 +501,47 @@ export class Workspace implements AssistantHost {
     this.playBack = undefined;
     this.assetReturn = undefined;
     this.current = undefined;
-    this.assetView = { kind };
+    this.assetView = { kind, tab };
     this.sidebar.classList.remove('open');
     this.main.classList.add('asset-editor');
     this.main.scrollTop = 0;
     window.scrollTo(0, 0);
     const at = currentRoute();
-    const path = formatHash(['p', this.project.id], { assets: kind });
-    const same = at.path[0] === 'p' && at.path[1] === this.project.id && !at.path[2] && at.params.assets === kind;
+    const path = formatHash(['p', this.project.id], { assets: kind, tab: tab === 'files' ? undefined : tab });
+    const same =
+      at.path[0] === 'p' && at.path[1] === this.project.id && !at.path[2] && at.params.assets === kind && at.params.tab === (tab === 'files' ? undefined : tab);
     if (location.hash !== path) {
       const href = `${location.pathname}${location.search}${path}`;
       if (!same && at.path[0] === 'p' && at.path[1] === this.project.id) history.pushState(null, '', href);
       else history.replaceState(null, '', href);
     }
-    document.title = `${kind ? `${KIND_LABELS[kind]} · ` : ''}${this.project.name} · ${SHORT}`;
+    document.title = `${kind ? `${KIND_LABELS[kind]} · ` : tab !== 'files' ? `${TAB_TITLES[tab]} · ` : ''}${this.project.name} · ${SHORT}`;
     this.renderSidebar();
-    const slot = h('div', { role: 'status' }, 'Opening game assets…');
+    const slot = h('div', { role: 'status' }, 'Opening the overview…');
     clear(this.main, this.bar, slot);
-    void import('./assetBrowser')
-      .then(({ assetBrowser }) => {
+    void import('./overview')
+      .then(({ overview }) => {
         if (this.disposed || !slot.isConnected || !this.assetView) return;
-        const browser = assetBrowser({
+        const page = overview({
           project: this.project,
+          tab,
           kind,
           all: () => this.openAssets(),
           category: (k) => this.openAssets(k),
           open: (file) => this.open(file),
           add: (k) => void this.addOfKind(k),
+          tabChanged: (next) => {
+            if (!this.assetView || this.assetView.tab === next) return;
+            this.assetView = { kind: undefined, tab: next };
+            setHashParams({ tab: next === 'files' ? undefined : next, assets: undefined }, ['p', this.project.id]);
+            document.title = `${next !== 'files' ? `${TAB_TITLES[next]} · ` : ''}${this.project.name} · ${SHORT}`;
+          },
         });
-        slot.replaceWith(browser.el);
-        this.cleanup = () => browser.dispose();
+        slot.replaceWith(page.el);
+        this.cleanup = () => page.dispose();
       })
       .catch((error: unknown) => {
-        if (slot.isConnected) clear(slot, h('p', { class: 'hint' }, `Game assets could not open: ${(error as Error).message}`));
+        if (slot.isConnected) clear(slot, h('p', { class: 'hint' }, `The overview could not open: ${(error as Error).message}`));
       });
   }
 
@@ -768,7 +783,7 @@ export class Workspace implements AssistantHost {
           level && h('button', { onclick: () => this.play('title', back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
           h(
             'button',
-            { onclick: () => this.stopPlay(), title: this.assetReturn ? 'Stop and return to game assets' : back ? `Stop and go back to ${back}` : 'Stop' },
+            { onclick: () => this.stopPlay(), title: this.assetReturn ? 'Stop and return to the overview' : back ? `Stop and go back to ${back}` : 'Stop' },
             'Stop',
           ),
         ),
