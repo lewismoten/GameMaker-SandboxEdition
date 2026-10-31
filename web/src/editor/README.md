@@ -9,7 +9,7 @@ Part of the [source map](../README.md).
   messages (`plainError.ts`), and `fitPane.ts`, which keeps an editor's columns inside the window
   (each scrolls by itself, the pane never does).
 - `shell/`: the pages.
-  - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top), `homeCategories.ts`
+  - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top: its title picture first, its demo after the page is idle and a quiet 2.5 s, or at once when pointed at, touched or focused; reduced motion and data saver keep it still), `homeCategories.ts`
     (the tabs in order, the first one opened, and the random game featured when one is chosen), `homeCards.ts`,
     `homeBlurb.ts`, `homeAuthors.ts` and `homePack.ts` (the tabs' collections), `homeLibrary.ts`
     (each collection's games, no DOM) and `homeLibraryCards.ts` (its tiles and headings), packed by

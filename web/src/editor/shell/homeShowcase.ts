@@ -53,14 +53,34 @@ const setDemosStopped = (on: boolean): void => {
 /** A featured game plays by itself only when its files are this small (a demo needs them all). */
 const AUTOPLAY_BYTES = 1.2e6;
 
-/** Runs `f` once the page is idle after loading and `el` is on screen (so a demo waits for the page). */
-function whenIdleAndSeen(el: Element, f: () => void): void {
-  const idle = (cb: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(cb, { timeout: 3000 }) : setTimeout(cb, 1500));
+/** After the page is idle, the demo waits this long more: the player (about 118 kB) is not what the page needs first. */
+const AUTOPLAY_QUIET_MS = 2500;
+
+/**
+ * Runs `f` once, when `el` is on screen and the page has loaded, `ready` (the title picture) is
+ * done, and a quiet moment has passed; or at once when the visitor points at, touches or
+ * focuses `el` (so the player is fetched when someone shows interest, else late).
+ */
+function whenIdleAndSeen(el: Element, ready: Promise<unknown>, f: () => void): void {
+  let done = false;
+  const go = () => {
+    if (done) return;
+    done = true;
+    io.disconnect();
+    for (const t of ['pointerenter', 'pointerdown', 'focusin']) el.removeEventListener(t, go);
+    f();
+  };
+  const idle = () => {
+    const after = () => setTimeout(go, AUTOPLAY_QUIET_MS);
+    if ('requestIdleCallback' in window) requestIdleCallback(after, { timeout: 3000 });
+    else after();
+  };
   const io = new IntersectionObserver((entries) => {
     if (!entries.some((e) => e.isIntersecting)) return;
     io.disconnect();
-    idle(f);
+    void ready.then(idle);
   });
+  for (const t of ['pointerenter', 'pointerdown', 'focusin']) el.addEventListener(t, go, { once: true });
   const start = () => io.observe(el);
   if (document.readyState === 'complete') start();
   else addEventListener('load', start, { once: true });
@@ -183,7 +203,14 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     const canvas = h('canvas', { class: 'sc-shot pixel', width: 320, height: 200, 'aria-hidden': 'true' });
     const playBtn = h('button', { class: 'sc-demo-btn', type: 'button', hidden: true });
     clear(screen, canvas, playBtn, game.health && !game.health.released ? healthBadge(game.health, true) : null);
-    if (game.gam || game.kind === 'mine' || game.community) void game.drawShot(canvas).catch(() => undefined);
+    // the still comes first: the game's title picture (else its first level); the player is fetched later
+    let shown: Promise<unknown> = Promise.resolve();
+    if (game.gam || game.kind === 'mine' || game.community)
+      shown = game
+        .drawTitle(canvas)
+        .catch(() => false)
+        .then((title) => title || game.drawShot(canvas))
+        .catch(() => undefined);
     else screen.append(h('div', { class: 'sc-none', 'aria-hidden': 'true' }, '🎨'));
 
     const setPlaying = (on: boolean) => {
@@ -249,7 +276,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       if (!mayAutoplay() || demosStopped()) return;
       // a game the visitor chose plays straight away; one shown by itself waits for the page, and only when small
       if (!how.featured && !how.resume) play();
-      else if ((game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES) whenIdleAndSeen(screen, () => gen === generation && !demo && play());
+      else if ((game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES) whenIdleAndSeen(screen, shown, () => gen === generation && !demo && play());
     });
   };
 
