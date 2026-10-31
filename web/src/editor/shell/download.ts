@@ -144,6 +144,29 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
       alt.textContent =
         current.kind === 'web' ? 'Web app (.zip)' : current.kind === 'player' ? 'Player only (.html)' : current.alt ? `Zip (${current.alt})` : '';
     };
+    // each choice's description, shown once under the grid for the chosen one
+    const detail = h('p', { class: 'dl-line', id: 'dl-detail', 'aria-live': 'polite' });
+    const describe = (c: Choice): (Node | string)[] => [
+      c.line,
+      ...(c.kind === 'dos' && zipUrl
+        ? [' ', h('a', { href: zipUrl, download: game.entry!.pack, 'aria-label': `Permanent ZIP link for ${game.title}` }, 'Permanent ZIP link')]
+        : []),
+      ...(c.details
+        ? [
+            ' ',
+            h(
+              'a',
+              {
+                href: c.details,
+                ...(c.details.startsWith('http') ? { target: '_blank', rel: 'noopener' } : { onclick: () => close(undefined) }),
+                'aria-label': `More details about the ${c.name} download`,
+              },
+              'More details →',
+            ),
+          ]
+        : []),
+    ];
+    const show = () => detail.replaceChildren(...describe(current));
     const rows = choices.map((c) => {
       const id = `dl-${c.kind}`;
       const radio = h('input', {
@@ -153,10 +176,11 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
         value: c.kind,
         checked: c === current,
         autofocus: c === current,
-        'aria-describedby': `${id}-line`,
+        'aria-describedby': 'dl-detail',
         onchange: () => {
           current = c;
           update();
+          show();
         },
       });
       const row = h(
@@ -164,30 +188,8 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
         { class: 'dl-choice' },
         radio,
         h('label', { for: id }, h('span', { class: 'dl-name' }, c.name), ' ', h('span', { class: 'dl-format' }, c.alt ? `${c.format} or ${c.alt}` : c.format)),
-        h(
-          'p',
-          { class: 'dl-line', id: `${id}-line` },
-          c.line,
-          c.kind === 'dos' && zipUrl
-            ? [' ', h('a', { href: zipUrl, download: game.entry!.pack, 'aria-label': `Permanent ZIP link for ${game.title}` }, 'Permanent ZIP link')]
-            : null,
-          c.details
-            ? [
-                ' ',
-                h(
-                  'a',
-                  {
-                    href: c.details,
-                    ...(c.details.startsWith('http') ? { target: '_blank', rel: 'noopener' } : { onclick: () => close(undefined) }),
-                    'aria-label': `More details about the ${c.name} download`,
-                  },
-                  'More details →',
-                ),
-              ]
-            : null,
-        ),
       );
-      // the whole row chooses (its link still goes to its page)
+      // the whole card chooses
       row.addEventListener('click', (e) => {
         if ((e.target as HTMLElement).closest('a, input')) return;
         radio.checked = true;
@@ -196,6 +198,7 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
       return row;
     });
     update();
+    show();
     return h(
       'form',
       {
@@ -206,7 +209,8 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
           close({ kind: current.kind, alt: false });
         },
       },
-      h('fieldset', null, h('legend', null, 'Download it for'), ...rows),
+      h('fieldset', null, h('legend', null, 'Download it for'), h('div', { class: 'dl-grid' }, ...rows)),
+      detail,
       h('p', { class: 'meta' }, `Downloads play offline and save on that computer. ${ENGINE_CAVEAT}`),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), alt, go),
     );
