@@ -9,6 +9,7 @@ import { h, modal, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
 import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { addLink, nextScene, setFrom, setTo } from '../../integrator/linkEdits';
+import { levelShot } from '../../integrator/integratorArt';
 import { waysInto } from '../../integrator/linkSpots';
 import { cellAtPoint, mapMarkers, markerBox, markerGroups, nudge, stackIndex, type Marker, type MarkerGroup } from './markerMath';
 
@@ -185,6 +186,7 @@ export function linkMarkers(host: MarkersHost) {
   function groupButton(group: MarkerGroup): HTMLButtonElement {
     const el = h('button', { type: 'button', class: 'lk-mark lk-in lk-group' });
     el.addEventListener('click', () => {
+      const game = project.game();
       void modal('Ways in at this block', (close) =>
         h(
           'div',
@@ -195,18 +197,27 @@ export function linkMarkers(host: MarkersHost) {
             `${group.markers.length} links arrive at ${group.at.x}, ${group.at.y}. Choose one to see or move its source and destination.`,
           ),
           ...group.markers.map((marker) =>
-            h(
-              'button',
-              {
-                type: 'button',
-                onclick: () => {
-                  close(undefined);
-                  void open(marker.key, el);
+            (() => {
+              const link = game.scenes[marker.way.from].links[marker.way.link];
+              const preview = levelShot(project.files, game.scenes[marker.way.from], link.from, 5, 3);
+              if (preview) {
+                preview.className = 'pixel';
+                preview.setAttribute('aria-hidden', 'true');
+                preview.style.cssText = 'width:100px;height:60px;object-fit:contain';
+              }
+              return h(
+                'button',
+                {
+                  type: 'button',
+                  onclick: () => {
+                    close(undefined);
+                    void open(marker.key, el);
+                  },
                 },
-              },
-              marker.start ? '★ Start: ' : '',
-              marker.label.replace(/, at .*/, ''),
-            ),
+                preview ?? null,
+                h('span', null, marker.start ? '★ Start: ' : '', marker.label.replace(/, at .*/, '')),
+              );
+            })(),
           ),
         ),
       );
