@@ -114,6 +114,13 @@ async function onFoot(b: Bot): Promise<void> {
   const runner = () => runnerSlot(b);
   b.say('Lord Deadline, on foot');
   for (let k = 0; k < 600 && runner() >= 0; k++) {
+    // he dances out of reach: close in on him, the way a player would
+    const near = b.foeList().find((f) => f[2] === runner());
+    if (near && Math.hypot(near[0], near[1]) > b.reach - 0.4) {
+      const dir = Math.abs(near[0]) > Math.abs(near[1]) ? (near[0] > 0 ? 'right' : 'left') : near[1] > 0 ? 'down' : 'up';
+      const m = b.stepTouchesLink(dir) ? undefined : await b.push(dir, 1);
+      if (m) throw new Error(`Lord Deadline on foot: ${m}`);
+    }
     const r = (await b.fight(4)) ?? (await b.wait(1));
     if (r) throw new Error(`Lord Deadline on foot: ${r}`);
   }
