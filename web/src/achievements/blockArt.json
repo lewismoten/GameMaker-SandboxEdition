@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle and Risi badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi and Loaf badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -606,6 +606,18 @@
       "game": "needle",
       "set": "needleTailor",
       "block": "seenGlasses"
+    },
+    "desk-aurora": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDAg4JBySrk2202E8bTBdlkWCvlk8GEV5QYa2bcvb08v///cCURfKAAAAcklEQVR42m3MCw7EIAhF0TcoH2X/+50IVNPGS9KSE1roJah6bm7DxsZqLLQ4wYvqFjqsPj2MfcPCwvmLB4OEpTAW4TOmAMt3cJC+SC0msQGgxo1eE0h37KsHe+J6AcU99zTAs9g2zcwd6xHNE+Yl/C79AfowCPO4gl12AAAAAElFTkSuQmCC",
+      "game": "loaf",
+      "set": "loaf",
+      "block": "aurora"
+    },
+    "bbs-got-time": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEV9uu+ez/fD3/sUDAhFZSiSrk1dlkWCvlnXvpKacSjHmkH///eqI4lMAAAAdklEQVR42m2P2xaDIAwEE8cChv//356NUim6LyGzuWE+yZbobyYPCASgR2aCxCEFTlfa7WQRMvhV8qecJlhKKV2CXJiw1loniBsxwcgR21JJaw1fFw0YOkg6AhoJBz2vvyqnH20D8pSbPNl3uGGb4Oetfbf9RV/hBgbgRXni0AAAAABJRU5ErkJggg==",
+      "game": "loaf",
+      "set": "loaf",
+      "block": "snail"
     },
     "library-visit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEV9kraersMMCAi2tq77+/PTvprv37r7021ZNByCUSz/96L9G4oVAAAAZUlEQVR42n2PgQ6AIAhE4boS+v8PboqpTe3ADY4nG6Iyh7QHyNBHgEQny8xR5AMHejIzSx60iIIMMyUnidhF4v0enWChIL/akAoeOQFDLfMl1bRmaidtSd6/pK534pq0u+ictCYfIPAEYIXuigkAAAAASUVORK5CYII=",

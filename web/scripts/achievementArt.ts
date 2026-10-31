@@ -26,7 +26,7 @@ writeFileSync(
   JSON.stringify(
     {
       notice:
-        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle and Risi badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
+        'Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle, Risi and Loaf badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.',
       badges,
     },
     null,
@@ -168,6 +168,7 @@ tall phone, a winged parcel and a mail jeep) as scenery in the living room and t
 It also drew four new Needle blocks (a brass compass over a winding route, a folded map, a ruler and a triangle, and glasses over
 three color swatches) as scenery in the tailor's shop.
 It also drew a new Risi block (a small library front with columns, steps and a scroll) as scenery in the rooftops.
+It also drew two new Loaf blocks (northern lights in green and violet over snowy hills, and a snail with a half-finished progress bar on its shell) as scenery in the way home and the hillside.
 OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
