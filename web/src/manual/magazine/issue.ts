@@ -28,6 +28,7 @@ import { GRIPES } from './sections/gripes';
 import { SHAREWARE_SHELF } from './sections/shelf';
 import { STORE } from './sections/store';
 import { MUG_AD } from './sections/mugAd';
+import { BITS_BYTES_AD } from './sections/bitsBytesAd';
 import { HARDWARE } from './sections/hardware';
 import { SOUND_CARD_AD } from './sections/soundCardAd';
 import { NOTCHER_AD } from './sections/notcherAd';
@@ -68,6 +69,7 @@ export const SECTIONS: MagSection[] = [
   CLAUDE_JUMP,
   WEB_EDITION_JUMP,
   STORE,
+  BITS_BYTES_AD,
   MUG_AD,
   HARDWARE,
   SOUND_CARD_AD,

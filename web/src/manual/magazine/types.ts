@@ -167,6 +167,7 @@ export type WebShot = (typeof WEB_SHOTS)[number];
  * joey is a reader's crayon drawing in the Mail Bag (joeyDrawing.ts).
  * blankdisk is a stack of bulk disks with no labels, for the Floppy Barn ad (blankDisk.ts).
  * bosschain is the Design Workshop's diagram of a boss with hit points (bossChain.ts).
+ * The bnb ones are the Bits & Bytes Software spread's (bnbArt.ts): three turned boxes, its logo, prices, tabs and Bitsy.
  * dos-carl is Lewis's DOSBox screenshot of A Fly Named Carl's garbled cover (dosShot.ts).
  */
 export type ArtId =
@@ -189,6 +190,15 @@ export type ArtId =
   | 'joey'
   | 'dos-carl'
   | 'bosschain'
+  | 'bnb-teddy3'
+  | 'bnb-pair'
+  | 'bnb-title'
+  | 'bnb-price-teddy'
+  | 'bnb-price-gm'
+  | 'bnb-tab-left'
+  | 'bnb-tab-right'
+  | 'bnb-logo'
+  | 'bnb-bitsy'
   | `web-${WebShot}`;
 
 export interface MagPage {

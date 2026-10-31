@@ -157,6 +157,10 @@ lying on the desk's left, `#/desk?open=magazine`).
   - `soundCardArt.ts`, the Sound Boaster card and a kid's face before and after it, for the sound
     card's ad, `sections/soundCardAd.ts` (its deep blue page and burst of sound waves
     `soundCardAd.css`);
+  - `bnbArt.ts` and `bnbAd.css`, the Bits & Bytes Software two-page spread
+    (`sections/bitsBytesAd.ts`, `sections/bitsBytes.test.ts` checks it faces itself): three turned
+    boxes rendered from the desk's box art (`public/magazine/box-*.webp`, how to retake them is in the
+    file's header), the store's logo, raised-cents prices, vertical tabs and Bitsy the floppy disk;
   - `blankDisk.ts`, a stack of bulk disks without labels, for the Floppy Barn ad;
   - `notcherArt.ts`, the HOLE-Y MOLEY disk notcher and a disk before and after it, for its ad,
     `sections/notcherAd.ts` (its charcoal page `notcherAd.css`);
