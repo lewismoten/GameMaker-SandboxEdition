@@ -40,10 +40,13 @@ export function loafBadges(book: BlockBook, pal: Pal, sky: Pixels, air: { grav: 
   // a snail carrying a half-finished progress bar on its shell
   const snail = sky.crop(0, 0, 20, 20);
   snail.rect(0, 17, 20, 3, c('grass', 1)).rect(0, 17, 20, 1, c('grass', 3));
-  snail.rect(0, 15, 17, 4, K).rect(1, 16, 15, 2, c('sand', 2)).rect(14, 9, 5, 10, K).rect(15, 10, 3, 8, c('sand', 2));
-  snail.line(15, 9, 14, 5, K).line(18, 9, 19, 5, K).rect(13, 3, 2, 3, K).rect(18, 3, 2, 3, K);
-  snail.set(14, 4, c('white', 2)).set(19, 4, c('white', 2)).rect(16, 12, 1, 1, K).line(15, 15, 17, 15, K);
-  snail.disc(7, 9, 7, K).disc(7, 9, 6, c('ochre', 2)).ring(7, 9, 5, c('ochre', 1)).rect(1, 15, 13, 1, K);
-  snail.rect(2, 6, 11, 6, K).rect(3, 7, 9, 4, c('white', 2)).rect(3, 7, 4, 4, c('leaf', 3)).rect(3, 7, 4, 1, c('leaf', 2));
+  // a long soft body along the bottom, its head up at the left with two eye stalks
+  snail.rect(1, 13, 18, 5, K).rect(2, 14, 16, 3, c('sand', 2)).rect(1, 8, 5, 6, K).rect(2, 9, 3, 5, c('sand', 2)).rect(2, 14, 3, 1, c('sand', 2));
+  snail.line(2, 8, 1, 3, K).line(4, 8, 5, 3, K).rect(0, 1, 3, 3, K).rect(4, 1, 3, 3, K);
+  snail.set(1, 2, c('white', 2)).set(5, 2, c('white', 2)).set(2, 11, K).set(3, 12, K);
+  // the round shell with its spiral, then a small progress bar riding on top, half full
+  snail.disc(12, 9, 6, K).disc(12, 9, 5, c('ochre', 2));
+  for (let t = 0; t < 9.6; t += 0.08) snail.set(Math.round(12 + Math.cos(t) * (0.6 + t * 0.5)), Math.round(9 + Math.sin(t) * (0.6 + t * 0.5)), c('ochre', 0));
+  snail.rect(7, 0, 12, 4, K).rect(8, 1, 10, 2, c('white', 2)).rect(8, 1, 5, 2, c('leaf', 3));
   book.add('snail', snail, air);
 }
