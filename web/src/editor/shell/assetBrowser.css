@@ -146,3 +146,43 @@
     padding: 7px;
   }
 }
+
+/* playable previews: the play button, the live screen and the ANY key */
+.asset-file .asset-preview {
+  position: relative;
+}
+.asset-play {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0 6px;
+  border-radius: 50%;
+  line-height: 1;
+}
+.asset-preview .asset-live {
+  background: #000;
+}
+.asset-key {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  min-width: 30px;
+  padding: 2px 5px 4px;
+  border: 1px solid #555;
+  border-radius: 5px;
+  background: #e8e8e8;
+  color: #111;
+  font:
+    bold 11px/1 system-ui,
+    sans-serif;
+  box-shadow: 0 3px 0 #777;
+  transition:
+    transform 0.12s,
+    box-shadow 0.12s;
+}
+.asset-key.down {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 #777;
+}

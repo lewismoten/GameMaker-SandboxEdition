@@ -8,6 +8,7 @@ import { assetCommands } from './assetCommands';
 import { copiedAsset, onAssetCopy } from './assetClipboard';
 import { assetMenu } from './assetMenu';
 import { fileThumb, KIND_ICON } from '../widgets/thumbs';
+import { PLAYABLE, playButton, stopThumbPlayback } from '../widgets/thumbPlayButton';
 import { companionPatches } from '../../dosPlayer/playerRecord';
 
 interface BrowserHost {
@@ -126,10 +127,11 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     return card;
   }
   function fileCard(file: string, k: FileKind): HTMLElement {
+    const box = preview(file, k);
     const open = h(
       'button',
       { type: 'button', class: 'asset-open', title: `Edit ${file.toUpperCase()}`, onclick: () => host.open(file) },
-      preview(file, k),
+      box,
       h('strong', null, file.toUpperCase()),
       h('small', null, `${(project.files.get(file)?.byteLength ?? 0).toLocaleString()} bytes`),
     );
@@ -138,7 +140,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
       { type: 'button', class: 'asset-more', 'aria-label': `Actions for ${file.toUpperCase()}`, 'aria-haspopup': 'menu', 'aria-expanded': 'false' },
       '⋯',
     );
-    const card = h('article', { class: 'asset-card asset-file', 'data-file': file }, open, more);
+    const card = h('article', { class: 'asset-card asset-file', 'data-file': file }, open, more, PLAYABLE.has(k) ? playButton(box, file, k, project) : null);
     const menu = (point?: { x: number; y: number }) => {
       closeMenu?.();
       closeMenu = assetMenu(more, commands.actions(file), point);
@@ -159,6 +161,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
   }
   function render(): void {
     closeMenu?.();
+    stopThumbPlayback();
     observer.disconnect();
     const focused = document.activeElement instanceof HTMLElement ? document.activeElement.closest<HTMLElement>('[data-file]')?.dataset.file : undefined;
     pasteButton = undefined;
@@ -222,6 +225,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
       off();
       offCopy();
       observer.disconnect();
+      stopThumbPlayback();
       closeMenu?.();
       window.removeEventListener('keydown', onKey);
     },

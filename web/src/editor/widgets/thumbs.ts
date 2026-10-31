@@ -85,6 +85,21 @@ function blocksMosaic(blocks: Block[], pal: Palette, count: number, cols: number
   return c;
 }
 
+/** The block a monster set is shown by: the first frame of the first monster a .mon uses, else the fullest block. */
+function monsterBlockChoice(blocks: Block[], files: GameFiles): Block[] {
+  const opaque = (b: Block) => b.pixels.reduce((n, p) => n + (p === TRANSPARENT ? 0 : 1), 0);
+  for (const monFile of files.byExtension('mon')) {
+    try {
+      const first = parseMonsters(files.get(monFile)!).find((m) => m.used && blocks[m.pic[0][0]] && opaque(blocks[m.pic[0][0]]));
+      if (first) return [blocks[first.pic[0][0]]];
+    } catch {
+      // an unreadable monster file: fall back to the fullest block
+    }
+  }
+  const best = blocks.reduce<Block | undefined>((a, b) => (!a || opaque(b) > opaque(a) ? b : a), undefined);
+  return best ? [best] : blocks;
+}
+
 /** The first frame of a 20x20 or 20x40 sprite, centered. */
 function sprite(top: Block | undefined, bottom: Block | undefined, pal: Palette): HTMLCanvasElement {
   const px = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
@@ -125,7 +140,7 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       case 'bbl':
         return blocksMosaic(parseBlocks(bytes, BACKBL), pal, 16, 4);
       case 'mbl':
-        return blocksMosaic(parseBlocks(bytes, MONBL), pal, 1, 1, true);
+        return blocksMosaic(monsterBlockChoice(parseBlocks(bytes, MONBL), src.files), pal, 1, 1, true);
       case 'cbl': {
         const picture = characterBlockPicture(src.files, name, bytes);
         const [c] = canvas();
