@@ -1,0 +1,77 @@
+{
+  "keys": {
+    "72": {
+      "short": "Steer",
+      "long": "Steer the BLASTER (Up). The arrow the way you fly speeds ahead and the one behind brakes; it never stops."
+    },
+    "80": {
+      "short": "Steer",
+      "long": "Steer the BLASTER (Down). The arrow the way you fly speeds ahead and the one behind brakes; it never stops."
+    },
+    "75": {
+      "short": "Steer",
+      "long": "Steer the BLASTER (Left). The arrow the way you fly speeds ahead and the one behind brakes; it never stops."
+    },
+    "77": {
+      "short": "Steer",
+      "long": "Steer the BLASTER (Right). The arrow the way you fly speeds ahead and the one behind brakes; it never stops."
+    },
+    "17": {
+      "short": "Steer",
+      "long": "Steer the BLASTER (W). The arrow the way you fly speeds ahead and the one behind brakes; it never stops."
+    },
+    "31": {
+      "short": "Steer",
+      "long": "Steer the BLASTER (S). The arrow the way you fly speeds ahead and the one behind brakes; it never stops."
+    },
+    "30": {
+      "short": "Steer",
+      "long": "Steer the BLASTER (A). The arrow the way you fly speeds ahead and the one behind brakes; it never stops."
+    },
+    "32": {
+      "short": "Steer",
+      "long": "Steer the BLASTER (D). The arrow the way you fly speeds ahead and the one behind brakes; it never stops."
+    },
+    "16": {
+      "short": "Up-left",
+      "long": "Steer up and to the left."
+    },
+    "18": {
+      "short": "Up-right",
+      "long": "Steer up and to the right."
+    },
+    "71": {
+      "short": "Up-left",
+      "long": "Number pad 7: steer up and to the left."
+    },
+    "73": {
+      "short": "Up-right",
+      "long": "Number pad 9: steer up and to the right."
+    },
+    "79": {
+      "short": "Down-left",
+      "long": "Number pad 1: steer down and to the left."
+    },
+    "81": {
+      "short": "Down-right",
+      "long": "Number pad 3: steer down and to the right."
+    },
+    "57": {
+      "short": "Nova Bomb",
+      "long": "Fire a Nova Bomb: five big plasma bolts in a fan, one charge."
+    },
+    "28": {
+      "short": "Pick up",
+      "long": "Pick up what the BLASTER is over."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Nova Bomb",
+      "long": "Fire a Nova Bomb: five big plasma bolts in a fan, one charge."
+    }
+  },
+  "counters": {
+    "5": "Nova Bomb charges"
+  }
+}
