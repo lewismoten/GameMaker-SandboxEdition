@@ -1,5 +1,6 @@
 // Hears the tour's voice clips with Whisper, locally, and lists the ones that don't say their
-// words: a word dropped, misread or cut short (compare.ts decides what counts). Run after
+// words: a word dropped, misread or cut short (compare.ts decides what counts), and the ones that
+// run straight through commas and sentence ends (pauses.ts, from the audio alone). Run after
 // npm run voice, from web/:
 //   npm run voice:check                    every clip (transcripts are cached by the clip's bytes)
 //   npm run voice:check -- --only <id>[,<id>]
@@ -13,8 +14,10 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { homedir, tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readMono } from './audio';
 import { compareSpeech, type Hunk } from './compare';
 import { clipPath, spokenOf, textHash, type Line } from './lineIndex';
+import { innerSilences, MIN_PAUSE, pausesCalledFor, tooFewPauses } from './pauses';
 
 const TOOLS = fileURLToPath(new URL('../../../.narrate', import.meta.url));
 const CACHE = join(TOOLS, 'voice-check.json');
@@ -96,8 +99,10 @@ async function main() {
   }
 
   const missed: string[] = [];
+  const rushed: string[] = [];
   const report = ['# Voice check', '', `${new Date().toISOString().slice(0, 16)}, ${basename(model)}, ${clips.length} clips.`, ''];
   const small: string[] = [];
+  const rushedNotes: string[] = [];
   for (const { line, file } of clips) {
     const heard = cache[keyOf(file)];
     const spoken = spokenOf(line);
@@ -108,12 +113,21 @@ async function main() {
       if (spoken !== line.text) report.push(`- Spoken: ${spoken}`);
       report.push(`- Heard: ${heard || '(nothing)'}`, `- Differs: ${r.misses.map(words).join('; ')}`, '');
     } else if (r.small.length) small.push(`- ${line.id}: ${r.small.map(words).join('; ')}`);
+    const called = pausesCalledFor(spoken);
+    const silences = called ? innerSilences(readMono(file, 16000), 16000) : [];
+    if (tooFewPauses(called, silences)) {
+      rushed.push(line.id);
+      const long = silences.filter((s) => s >= MIN_PAUSE).length;
+      rushedNotes.push(`- ${line.id}: ${called} stops in “${spoken}”, ${long} pauses heard`);
+    }
   }
+  if (rushedNotes.length) report.push('## Runs through its commas', '', ...rushedNotes, '');
   if (small.length) report.push('## Little words only', '', ...small, '');
+  const retake = [...new Set([...missed, ...rushed])];
   report.push(
-    missed.length
-      ? `${missed.length} of ${clips.length} clips differ. Retake them: \`npm run voice -- --only ${missed.join(',')}\`, then check again.`
-      : `All ${clips.length} clips say their words.`,
+    retake.length
+      ? `${missed.length} of ${clips.length} clips differ, ${rushed.length} run through their pauses. Retake them: \`npm run voice -- --only ${retake.join(',')}\`, then check again.`
+      : `All ${clips.length} clips say their words and pause where the text does.`,
   );
   const text = report.join('\n') + '\n';
   mkdirSync(TOOLS, { recursive: true });

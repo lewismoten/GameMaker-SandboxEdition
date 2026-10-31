@@ -78,7 +78,10 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   clip with Whisper, locally (whisper.cpp's `whisper-cli` with `ggml-large-v3.bin` from
   `~/.cache/whisper-cpp`, or `--model <name>` for openai-whisper's `whisper`, e.g. `medium.en`), and
   lists the clips whose words came out wrong (`narrate/compare.ts` leaves out sound-alike spellings
-  and little words) with a retake command, in the terminal and `/.narrate/voice-check.md`;
+  and little words) with a retake command, in the terminal and `/.narrate/voice-check.md`. It also
+  lists clips that run straight through their commas and sentence ends (`narrate/pauses.ts`: the
+  stops in the spoken text against the quiet stretches of 0.2 s or more inside the audio; one may be
+  missing only in a line with four or more stops) and merges them into the same retake line;
   transcripts are cached by each clip's bytes in `/.narrate/voice-check.json`. Never put Lewis's
   voice samples in the repo, a download or a test fixture.
 - Pictures made once by hand: `bbsGifs.ts` made the BBS gallery's pictures in `../public/bbs`;
