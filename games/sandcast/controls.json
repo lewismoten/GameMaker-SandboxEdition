@@ -1,0 +1,87 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Walk up."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Walk down."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Walk right."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Same as the Down arrow."
+    },
+    "34": {
+      "short": "Pick up",
+      "long": "Pick up what you are standing on."
+    },
+    "57": {
+      "short": "Fling sand",
+      "long": "Fling sand with the shovel."
+    },
+    "48": {
+      "short": "Throw water",
+      "long": "Throw water with the bucket."
+    },
+    "33": {
+      "short": "Toss ball",
+      "long": "Toss a tennis ball. Walk toward Gwinn first: things fly the way you last walked."
+    },
+    "3": {
+      "short": "Sit",
+      "long": "Sit."
+    },
+    "4": {
+      "short": "Spin",
+      "long": "Spin, kicking up a whirl of sand that bowls over ants and beetles."
+    },
+    "5": {
+      "short": "Play dead",
+      "long": "Play dead."
+    },
+    "6": {
+      "short": "Roll over",
+      "long": "Roll over."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Fling sand",
+      "long": "Fling sand with the shovel."
+    },
+    "2": {
+      "short": "Throw water",
+      "long": "Throw water with the bucket."
+    }
+  },
+  "counters": {
+    "14": "Water",
+    "15": "Tennis balls",
+    "20": "Bucket walls",
+    "21": "Shovel digs",
+    "22": "Tower flags",
+    "23": "Golden shells",
+    "24": "Acorn keys"
+  }
+}
