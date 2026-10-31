@@ -251,9 +251,6 @@
     "src/scoreTrophies/scoreTrophies.test.ts": [
       "only real play of a catalog game counts hooks catalog games only, never a game of your own or a download"
     ],
-    "src/seo/scoopFeed.test.ts": [
-      "The Sandbox Scoop feed leaves out the secret games"
-    ],
     "src/seo/seoPages.test.ts": [
       "seoBuild makes each Guide section a page of its own that opens it in the app"
     ],
