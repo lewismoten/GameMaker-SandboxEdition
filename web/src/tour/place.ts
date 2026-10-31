@@ -62,6 +62,7 @@ export function placeBubble(
   avoid?: Rect,
   margin = 8,
   others: readonly Rect[] = [],
+  top = margin,
 ): Point & { side: Side; tail: number } {
   const bottom = view.h - floor - margin;
   const cx = anchor.x + anchor.w / 2;
@@ -77,13 +78,13 @@ export function placeBubble(
   // Host edges and viewport edges include every free rectangular pocket, even when a
   // second host blocks all four preferred positions beside the speaker.
   const xs = [margin, view.w - margin - size.w, cx - size.w / 2, ...hosts.flatMap((r) => [r.x - gap - size.w, r.x + r.w + gap])];
-  const ys = [margin, bottom - size.h, cy - size.h / 2, ...hosts.flatMap((r) => [r.y - gap - size.h, r.y + r.h + gap])];
+  const ys = [top, bottom - size.h, cy - size.h / 2, ...hosts.flatMap((r) => [r.y - gap - size.h, r.y + r.h + gap])];
   for (const x of xs)
     for (const y of ys) {
       const side: Side = y + size.h <= anchor.y ? 'above' : y >= anchor.y + anchor.h ? 'below' : x >= anchor.x + anchor.w ? 'right' : 'left';
       options.push({ x, y, side });
     }
-  const inView = options.map((o) => ({ ...o, x: clamp(o.x, margin, view.w - margin - size.w), y: clamp(o.y, margin, bottom - size.h) }));
+  const inView = options.map((o) => ({ ...o, x: clamp(o.x, margin, view.w - margin - size.w), y: clamp(o.y, top, bottom - size.h) }));
   // a bubble beside the speaker, a corner's width off at most: past that it reads as nobody's
   const reach = 1.25 * Math.hypot((size.w + anchor.w) / 2 + gap, (size.h + anchor.h) / 2 + gap);
   const cost = (o: Point & { side: Side }, i: number) => {
@@ -115,3 +116,10 @@ export const offStage = (size: Size, view: Size, floor: number, right: boolean):
 
 /** How long a walk from `a` to `b` takes: a steady pace, never a crawl or a jump. */
 export const walkMs = (a: Point, b: Point): number => clamp(Math.hypot(b.x - a.x, b.y - a.y) / 0.6, 250, 1800);
+
+/** A control that sits under the bar's place (a fixed footer the page can't scroll up): at least a fifth of it is covered. */
+export const barBlocks = (control: Rect, bar: Rect): boolean => {
+  const w = Math.min(control.x + control.w, bar.x + bar.w) - Math.max(control.x, bar.x);
+  const h = Math.min(control.y + control.h, bar.y + bar.h) - Math.max(control.y, bar.y);
+  return w > 0 && h > 0 && (w * h) / Math.max(1, control.w * control.h) > 0.2;
+};

@@ -221,6 +221,13 @@
 .tour-recording .tour-controls {
   display: none;
 }
+.tour-bar.tour-bar-top {
+  top: 0;
+  bottom: auto;
+  border-top: 0;
+  border-bottom: 2px solid var(--focus, #ffd400);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
 .tour-recording .tour-bar {
   justify-content: center;
   text-align: center;

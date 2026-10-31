@@ -12,7 +12,7 @@ import { h } from '../editor/core/ui';
 import { Actor, loadSprites } from './actor';
 import { findTarget, revealer, visible, waitFor } from './findTarget';
 import { menuHandle, overlayHandle, type Opened } from './tourOpen';
-import { offStage, placeBubble, standBy, type Point, type Rect } from './place';
+import { barBlocks, offStage, placeBubble, standBy, type Point, type Rect } from './place';
 import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
 import { TourSound } from './tourSound';
 import { TourRecorder } from './tourRecorder';
@@ -277,6 +277,7 @@ export class Tour {
     }
     if (target) await this.bringIntoView(target);
     if (!this.live(token)) return;
+    this.clearBar(target);
     this.caption.textContent = captionOf(chapter, step);
     const voice = this.sound.speak(voiceUrl(chapter, step));
     await this.act(chapter, step, target, token);
@@ -414,8 +415,22 @@ export class Tour {
 
   // ---- the hosts ---------------------------------------------------------------------------
 
+  /** The room the bar takes at the bottom: none while it sits at the top for a control under it. */
   private floor(): number {
-    return this.bar.getBoundingClientRect().height;
+    return this.barTop ? 0 : this.bar.getBoundingClientRect().height;
+  }
+
+  /** The bar is at the top edge, out of the way of a control in a fixed footer. */
+  private barTop = false;
+
+  /** Puts the bar at the top while the control would be under it at the bottom, back at the bottom when it isn't. */
+  private clearBar(target: HTMLElement | undefined): void {
+    const h = this.bar.getBoundingClientRect().height;
+    const r = target && rectOf(target);
+    const under = !!r && barBlocks(r, { x: 0, y: innerHeight - h, w: this.view().w, h });
+    if (under === this.barTop) return;
+    this.barTop = under;
+    this.bar.classList.toggle('tour-bar-top', under);
   }
 
   private view = () => ({ w: document.documentElement.clientWidth, h: innerHeight });
@@ -428,6 +443,7 @@ export class Tour {
       if (!sprite) return undefined;
       a = new Actor(sprite, this.scaleFor(HOSTS[id].scale), false);
       a.place(offStage(a.size, this.view(), this.floor(), false));
+      a.el.dataset.host = id;
       this.layer.append(a.el);
       this.hosts.set(id, a);
     }
@@ -505,7 +521,7 @@ export class Tour {
     const size = { w: width, h: this.bubble.offsetHeight };
     const anchor = speaker ? { ...speaker.pos, ...speaker.size } : { x: v.w / 2, y: v.h / 2, w: 0, h: 0 };
     const others = [...this.hosts.values()].filter((host) => host !== speaker).map((host) => ({ ...host.pos, ...host.size }));
-    const p = placeBubble(anchor, size, v, this.floor(), avoid, 8, others);
+    const p = placeBubble(anchor, size, v, this.floor(), avoid, 8, others, this.barTop ? this.bar.getBoundingClientRect().height + 8 : 8);
     this.bubble.dataset.side = p.side;
     this.bubble.style.left = `${Math.round(p.x)}px`;
     this.bubble.style.top = `${Math.round(p.y)}px`;

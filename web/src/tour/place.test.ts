@@ -1,6 +1,6 @@
 // Where the tour puts its hosts and bubbles: on screen, above the caption bar, and off the control.
 import { describe, expect, it } from 'vitest';
-import { placeBubble, standBy, walkMs, type Rect } from './place';
+import { barBlocks, placeBubble, standBy, walkMs, type Rect } from './place';
 
 const VIEWS = [
   { w: 1440, h: 900 },
@@ -67,5 +67,22 @@ describe('placing the tour', () => {
     const far = Math.hypot(p.x + size.w / 2 - (speaker.x + speaker.w / 2), p.y + size.h / 2 - (speaker.y + speaker.h / 2));
     expect(far).toBeLessThan(400);
     expect(overlaps({ ...p, ...size }, speaker)).toBe(false);
+  });
+  it('keeps below a top bar when told how much room it takes', () => {
+    const view = { w: 1440, h: 900 };
+    const speaker = { x: 700, y: 60, w: 80, h: 100 };
+    const p = placeBubble(speaker, { w: 320, h: 90 }, view, 0, undefined, 8, [], 80);
+    expect(p.y).toBeGreaterThanOrEqual(80);
+  });
+});
+
+describe('barBlocks', () => {
+  const bar = { x: 0, y: 800, w: 1440, h: 100 };
+  it('is true for a link in a fixed footer under the bar, false for one above it', () => {
+    expect(barBlocks({ x: 1200, y: 840, w: 60, h: 20 }, bar)).toBe(true);
+    expect(barBlocks({ x: 1200, y: 700, w: 60, h: 20 }, bar)).toBe(false);
+  });
+  it('ignores a control that only grazes it', () => {
+    expect(barBlocks({ x: 100, y: 790, w: 200, h: 3000 }, bar)).toBe(false);
   });
 });
