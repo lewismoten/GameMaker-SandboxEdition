@@ -9,11 +9,14 @@ import { exitsOf, sceneName, sourceName, waysInto, type Exit, type WayIn } from 
 export type Marker =
   { kind: 'in'; key: string; at: Point; label: string; start: boolean; way: WayIn } | { kind: 'out'; key: string; at: Point; label: string; exit: Exit };
 
-/** Several arrivals on one block share one marker; exits remain individual because their order matters. */
+/** Several arrivals, or several exits, on one block share one marker with a count badge. */
 export interface MarkerGroup {
   key: string;
+  kind: Marker['kind'];
   at: Point;
-  markers: Extract<Marker, { kind: 'in' }>[];
+  markers: Marker[];
+  /** How many differ: exact duplicates (same scene, destination scene and entrance) count once. */
+  distinct: number;
 }
 
 /** The smallest a marker gets on screen (a 24-pixel target), whatever the zoom. */
@@ -34,7 +37,7 @@ export function mapMarkers(game: Game, scenes: readonly number[]): Marker[] {
     kind: 'out',
     key: `out:${e.scene}:${e.link}`,
     at: e.at,
-    label: `${several ? `${sceneName(game, e.scene)} ` : ''}Exit ${e.link + 1} to ${sceneName(game, e.to)}, at ${e.at.x},${e.at.y}${
+    label: `${several ? `${sceneName(game, e.scene)} ` : ''}Exit ${e.link + 1} to ${e.to === e.scene ? '↻ this scene' : sceneName(game, e.to)}, at ${e.at.x},${e.at.y}${
       e.shadowedBy !== undefined ? ` (never taken: exit ${e.shadowedBy + 1} is on the same block)` : ''
     }`,
     exit: e,
@@ -74,15 +77,20 @@ export function stackIndex(markers: readonly Marker[], i: number): number {
   return markers.slice(0, i).filter((m) => m.at.x === x && m.at.y === y).length;
 }
 
-/** Inbound markers sharing a destination cell, in map order. Singletons stay single-marker groups. */
+/** Markers of one kind sharing a block, in map order. Singletons stay single-marker groups. */
 export function markerGroups(markers: readonly Marker[]): MarkerGroup[] {
   const groups = new Map<string, MarkerGroup>();
   for (const marker of markers) {
-    if (marker.kind !== 'in') continue;
-    const key = `${marker.at.x},${marker.at.y}`;
-    const group = groups.get(key) ?? { key: `in-group:${key}`, at: marker.at, markers: [] };
+    const key = `${marker.kind}:${marker.at.x},${marker.at.y}`;
+    const group = groups.get(key) ?? { key: `${marker.kind}-group:${marker.at.x},${marker.at.y}`, kind: marker.kind, at: marker.at, markers: [], distinct: 0 };
     group.markers.push(marker);
+    group.distinct = new Set(group.markers.map(sameness)).size;
     groups.set(key, group);
   }
   return [...groups.values()];
+}
+
+/** What makes two markers on a block the same thing to the author. */
+function sameness(m: Marker): string {
+  return m.kind === 'out' ? `out:${m.exit.scene}:${m.exit.to}:${m.exit.toAt.x},${m.exit.toAt.y}` : m.key;
 }

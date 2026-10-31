@@ -84,6 +84,8 @@ export function linkMarkers(host: MarkersHost) {
   const moveTo = (m: Marker, at: Point) =>
     editor.edit(`move:${m.key}`, (g) => (m.kind === 'in' ? setTo(g, m.way.from, m.way.link, at) : setFrom(g, m.exit.scene, m.exit.link, at)));
 
+  const groupNow = new Map<string, MarkerGroup>();
+
   function render(): void {
     marks = shown ? mapMarkers(project.game(), host.scenes) : [];
     const groups = markerGroups(marks);
@@ -122,11 +124,15 @@ export function linkMarkers(host: MarkersHost) {
         els.set(group.key, el);
         layer.append(el);
       }
-      el.className = `lk-mark lk-in lk-group${group.markers.some((marker) => marker.start) ? ' lk-start' : ''}`;
-      el.textContent = `↘${group.markers.length}`;
+      groupNow.set(group.key, group);
+      const ins = group.kind === 'in';
+      const count = group.distinct;
+      el.className = `lk-mark lk-${group.kind} lk-group${group.markers.some((marker) => marker.kind === 'in' && marker.start) ? ' lk-start' : ''}`;
+      el.textContent = `${ins ? '↘' : '↗'}${count}`;
       const names = group.markers.map((marker) => marker.label.replace(/, at .*/, '')).join('; ');
-      el.setAttribute('aria-label', `${group.markers.length} ways in at ${group.at.x},${group.at.y}: ${names}. Press for the list.`);
-      el.title = `${group.markers.length} ways in at ${group.at.x},${group.at.y}; click to choose one`;
+      const what = ins ? 'ways in' : 'exits';
+      el.setAttribute('aria-label', `${count} ${what} at ${group.at.x},${group.at.y}: ${names}. Press for the list.`);
+      el.title = `${count} ${what} at ${group.at.x},${group.at.y}: ${names}; click to choose one`;
       place(el, group.at, 0);
     }
     popover?.refresh();
@@ -183,23 +189,27 @@ export function linkMarkers(host: MarkersHost) {
   }
 
   /** A shared arrival marker names every link and lets the player choose the one to edit. */
-  function groupButton(group: MarkerGroup): HTMLButtonElement {
-    const el = h('button', { type: 'button', class: 'lk-mark lk-in lk-group' });
+  function groupButton(first: MarkerGroup): HTMLButtonElement {
+    const el = h('button', { type: 'button', class: `lk-mark lk-${first.kind} lk-group` });
     el.addEventListener('click', () => {
+      const group = groupNow.get(first.key) ?? first;
       const game = project.game();
-      void modal('Ways in at this block', (close) =>
+      void modal(group.kind === 'in' ? 'Ways in at this block' : 'Exits on this block', (close) =>
         h(
           'div',
           { class: 'stack' },
           h(
             'p',
             { class: 'meta' },
-            `${group.markers.length} links arrive at ${group.at.x}, ${group.at.y}. Choose one to see or move its source and destination.`,
+            group.kind === 'in'
+              ? `${group.markers.length} links arrive at ${group.at.x}, ${group.at.y}. Choose one to see or move its source and destination.`
+              : `${group.markers.length} exits leave from ${group.at.x}, ${group.at.y}. Choose one to see or move it.`,
           ),
           ...group.markers.map((marker) =>
             (() => {
-              const link = game.scenes[marker.way.from].links[marker.way.link];
-              const preview = levelShot(project.files, game.scenes[marker.way.from], link.from, 5, 3);
+              const [scene, index] = marker.kind === 'in' ? [marker.way.from, marker.way.link] : [marker.exit.scene, marker.exit.link];
+              const link = game.scenes[scene].links[index];
+              const preview = levelShot(project.files, game.scenes[scene], link.from, 5, 3);
               if (preview) {
                 preview.className = 'pixel';
                 preview.setAttribute('aria-hidden', 'true');
@@ -215,7 +225,7 @@ export function linkMarkers(host: MarkersHost) {
                   },
                 },
                 preview ?? null,
-                h('span', null, marker.start ? '★ Start: ' : '', marker.label.replace(/, at .*/, '')),
+                h('span', null, marker.kind === 'in' && marker.start ? '★ Start: ' : '', marker.label.replace(/, at .*/, '')),
               );
             })(),
           ),
