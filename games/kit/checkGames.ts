@@ -9,6 +9,7 @@
 //   text    kit/textfitCheck.ts      hidden  kit/hiddenView.ts      level  kit/levelCheck.ts
 //           (the Level check's static findings, new ones only, against levelCheck.baseline.json)
 //   player  kit/playerCheck.ts (games/<id>/player.json, its DOS player look, keeps the rules)
+//   controls kit/controlsCheck.ts (games/<id>/controls.json describes exactly the keys, joystick buttons and counters the game uses)
 // then once: kit/tinHearts.ts check, kit/saveSignCheck.ts (one save sign per felt-egg game, none
 // elsewhere), kit/syncCheck.ts (levelSecrets.json and box hours) and kit/versionCheck.ts (a game
 // whose disk/ changed since the last push to master has a higher about.json version than it had there).
@@ -141,7 +142,7 @@ async function rebuild(id: string, log: string[]): Promise<Status> {
   }
 }
 
-const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level', 'player'] as const;
+const COLS = ['build', 'bounds', 'check', 'walk', 'text', 'hidden', 'level', 'player', 'controls'] as const;
 type Row = Record<(typeof COLS)[number], Status> & { sec: number };
 const rows = new Map<string, Row>();
 const t0 = Date.now();
@@ -211,6 +212,7 @@ async function checkGame(id: string): Promise<void> {
     hidden: has(id, 'about.json') ? await step(log, 'hidden', '../games/kit/hiddenView.ts', [id]) : 'skip',
     level: flag('--no-level') ? 'skip' : await step(log, 'level', '../games/kit/levelCheck.ts', [id]),
     player: has(id, 'player.json') ? await step(log, 'player', '../games/kit/playerCheck.ts', [id]) : 'skip',
+    controls: has(id, 'controls.json') ? await step(log, 'controls', '../games/kit/controlsCheck.ts', [id]) : 'skip',
     sec: 0,
   };
   row.sec = Math.round((Date.now() - t) / 1000) + (buildSec.get(id) ?? 0);
