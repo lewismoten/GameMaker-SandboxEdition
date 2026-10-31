@@ -88,8 +88,9 @@ a map, then the character editor's tabs, sequences, audition stage and frames th
 monsters) and the palette (swatches, the HSV picker and the Colors from picture box, both opened
 and shut with nothing confirmed, ramps, reserved ranges, Vision, Backgrounds, variants). They only
 press what changes nothing in the game: the Select tool, a monster in the list, the hero's
-Sequences tab (a remembered choice, put back through `keep`) and the palette's tabs. A tour
-of the editor page (the ? button there) plays all of them after the overview.
+Sequences tab (a remembered choice, put back through `keep`) and the palette's tabs. The whole tour plays all of them after the overview. Show me around on the editor page plays the
+overview and then only the sub-chapter for the editor open (`editorChoice.ts`: a map, block,
+character, monster or palette file; any other file, or none, plays the overview alone).
 
 **Another page.** The DOS page is `dos.html`, not `index.html`, so a chapter there (`file`) is
 reached with a page load: the tour shows its title card, then goes to
@@ -138,6 +139,7 @@ A 1280×720 or 1920×1080 window records cleanly.
 - `tourButton.ts` (`tourButton.css`): the ? button and its menu, and the Settings item. The rest
   of the folder is its own download, loaded only when a tour starts or the guides wait on a page
   (`firstLoad.test.ts`).
+- `editorChoice.ts`: which editor sub-chapter goes with the open file on the editor page.
 - `tourStart.ts`: starting a chapter or the whole tour, and the guides waiting in a page's corner.
 - `tourEngine.ts` (`tour.css`): the player: the layer over the page (it never takes a click),
   the ring and arrow on the control, the bubble, the caption bar and its buttons, title cards
