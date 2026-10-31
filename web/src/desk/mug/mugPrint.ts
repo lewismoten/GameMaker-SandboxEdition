@@ -8,6 +8,7 @@ import { MUG_DESIGNS, designCanvas, loadDesigns, type MugDesign, type MugDesignI
 import { pageLayout, type PageLayout, type StripInput } from './mugLayout';
 import { MUG_SIZES, PAPERS, type MugSize } from './mugSizes';
 import { MUG_COLORS, drawMug, stripTexture, wrapAngle } from './mug3d';
+import { wrapTab } from './mugFocus';
 import { MAX_MUGS, loadSetup, newMug, saveSetup, type PageMug, type PageSetup } from './mugPageStore';
 import { PRINT_DPI, preparePrint, sheetPng, sheetSvg, type SideDesigns } from './mugSheet';
 
@@ -301,6 +302,7 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
       resolve();
     };
     const onKey = (e: KeyboardEvent) => {
+      wrapTab(overlay, e);
       if (e.key === 'Escape') (e.preventDefault(), close());
       e.stopImmediatePropagation(); // not for the PC underneath
     };
@@ -310,7 +312,7 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
       'div',
       { class: 'mugv subl', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'subl-title' },
       h(
-        'header',
+        'div',
         { class: 'mugv-bar' },
         h('h2', { id: 'subl-title' }, 'Make your own mugs: one sublimation page'),
         h('span', { class: 'mugv-spacer' }),

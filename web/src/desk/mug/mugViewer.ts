@@ -7,6 +7,7 @@ import { MUG_SIZES, printPlacement } from './mugSizes';
 import { MUG_COLORS, drawMug, wrapAngle, wrapCanvas } from './mug3d';
 import { colorsOf, loadMug, saveMug, sizeOf, type MugChoice } from './mug';
 import { openSublimation } from './mugPrint';
+import { wrapTab } from './mugFocus';
 
 export function openMugViewer(): Promise<void> {
   return new Promise((resolve) => {
@@ -131,6 +132,7 @@ export function openMugViewer(): Promise<void> {
     };
     const onKey = (e: KeyboardEvent) => {
       if (!document.body.contains(overlay) || document.querySelector('.subl')) return;
+      wrapTab(overlay, e);
       if (e.key === 'Escape') (e.preventDefault(), close());
       else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         spin = 0;
@@ -143,11 +145,11 @@ export function openMugViewer(): Promise<void> {
 
     const overlay = h(
       'div',
-      { class: 'mugv', role: 'dialog', 'aria-label': 'The Sandbox mug' },
+      { class: 'mugv', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'The Sandbox mug' },
       h(
-        'header',
+        'div',
         { class: 'mugv-bar' },
-        h('strong', null, 'The Sandbox mug'),
+        h('h2', null, 'The Sandbox mug'),
         h('span', { class: 'mugv-spacer' }),
         h('button', { type: 'button', onclick: close }, 'Close (Esc)'),
       ),

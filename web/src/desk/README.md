@@ -36,7 +36,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   `gameMugArt.ts`), the BBS's from its ANSI art (`bbsBadge.ts`), and the Bard's logo (made with
   DeepAI) as it is (`bardLogoArt.ts`). "Make your
   own" prints a sublimation page (`mugPrint.ts`, `mugSheet.ts`, `mugLayout.ts`, `mugSizes.ts`,
-  remembered by `mugPageStore.ts`).
+  remembered by `mugPageStore.ts`); `mugFocus.ts` keeps Tab inside the viewer and the print page.
 - `room/`: the window (`snowWindow.ts`, as light as it is outside by `daylight.ts`), the poster
   (`wallPoster.ts`, under black light `posterUv.ts` and `motenUv.ts`), the clipping
   (`newsClipping.ts`), the clock (`wallClock.ts`; its glow-in-the-dark paint charges and fades in
