@@ -180,6 +180,8 @@ pairs into a native title demo with configurable Escape press and release delays
 summary per changed file by type (`.gam`, `.pal`, blocks, `.map`, `.chr`, `.mon`, text, GIF, FLI, VOC, else bytes).
 `formatDiff` prints it, sorted and the same every time. Import from
 `@lewismoten/gamemaker-sandbox-tools/disk-diff`; `npm run disk:diff` in `web/` is the command line.
+`releaseNotes(diff)` (`.../release-notes`) turns a diff into short paste-ready text grouped by kind of file, such as
+"Changed 2 maps (A.MAP, B.MAP) and 1 palette (X.PAL). Added 1 sound (SONG3.VOC)."; `disk:diff -- --notes` prints it.
 
 ### Headless checking
 

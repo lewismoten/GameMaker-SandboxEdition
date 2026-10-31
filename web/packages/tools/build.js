@@ -11,6 +11,7 @@ const sources = {
   'audio-files': 'audioFiles',
   colors: 'colors',
   'disk-diff': 'diskDiff',
+  'release-notes': 'releaseNotes',
   palettes: 'palettes',
   drawing: 'drawing',
   'image/png': 'image/png',
