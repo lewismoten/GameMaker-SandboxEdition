@@ -5,12 +5,33 @@ import './overviewControls.css';
 import { h, clear } from '../core/ui';
 import { History } from '../core/history';
 import type { Project } from '../core/project';
-import { gameControls, setGameControls, type GameControls } from '../core/gameControls';
+import { gameControls, setGameControls, SOUND_NAME_LIMIT, type GameControls } from '../core/gameControls';
 import { gameKeyMap } from '../keymap/keyMap';
 import { counterUses } from './counterUse';
+import { soundUses } from './soundUse';
+import { SOUND_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 
 const SHORT_LIMIT = 32;
 const LONG_LIMIT = 240;
+
+/** Plays a slot as the sound editor does: the Sound Blaster .voc when there is one, else the PC speaker sound. */
+async function audition(project: Project, slot: number): Promise<boolean> {
+  const [{ soundAuditions }, { audio }] = await Promise.all([import('../widgets/soundAuditions'), import('../widgets/mediaShared')]);
+  for (const file of project.files.byExtension('snd')) {
+    const bytes = project.files.get(file);
+    if (!bytes) continue;
+    const parts = soundAuditions(bytes, project.files).filter((p) => p.slot === slot);
+    const part = parts.find((p) => p.kind === 'voc') ?? parts[0];
+    if (!part) continue;
+    await audio.resume();
+    audio.stopSpeaker();
+    audio.stopVoc();
+    if (part.kind === 'voc') audio.playVoc(part.bytes);
+    else audio.playSpeaker(part.freqs!);
+    return true;
+  }
+  return false;
+}
 
 export function overviewControls(project: Project): { el: HTMLElement; dispose(): void } {
   const locked = !!project.readOnly;
@@ -130,6 +151,50 @@ export function overviewControls(project: Project): { el: HTMLElement; dispose()
         ),
       );
     });
+    const soundUse = soundUses(project);
+    const sounds = [...soundUse.keys()]
+      .filter((slot) => slot < 30)
+      .sort((a, b) => a - b)
+      .map((slot) => {
+        const u = soundUse.get(slot)!;
+        const builtIn = SOUND_NAMES[slot];
+        const label = `Sound ${slot}`;
+        const where = u.characters.length ? `Played by ${u.characters.join('; ')}` : builtIn ? 'Played by the game itself' : 'No character plays it yet';
+        const play = h(
+          'button',
+          {
+            type: 'button',
+            class: 'ovc-play',
+            title: `Hear ${label}`,
+            'aria-label': `Hear ${label}`,
+            onclick: () => void audition(project, slot).then((ok) => (play.title = ok ? `Hear ${label}` : `${label} has no sound to play`)),
+          },
+          '▶',
+        );
+        return h(
+          'li',
+          { class: 'ovc-row ovc-counter' },
+          h('div', { class: 'ovc-what' }, h('b', null, `${slot}. ${builtIn ?? (c.sounds[slot] || 'Effect')}`), h('small', { class: 'meta' }, where)),
+          builtIn
+            ? h('div', { class: 'ovc-sound-end' }, h('small', { class: 'meta' }, 'Named by the game engine'), play)
+            : h(
+                'div',
+                { class: 'ovc-sound-end' },
+                h(
+                  'label',
+                  { class: 'ovc-field' },
+                  h('span', null, 'Name'),
+                  input(`${label} name`, c.sounds[slot] ?? '', SOUND_NAME_LIMIT, 'For example: Door creak', (v) => {
+                    const names = { ...base.sounds };
+                    if (v.trim()) names[slot] = v;
+                    else delete names[slot];
+                    commit({ ...base, sounds: names });
+                  }),
+                ),
+                play,
+              ),
+        );
+      });
     clear(
       body,
       h(
@@ -160,6 +225,17 @@ export function overviewControls(project: Project): { el: HTMLElement; dispose()
           'Names for the 15 repetition counters (the uses of a sequence) and the 5 hidden counters blocks can change. One name serves every character.',
         ),
         h('ul', { class: 'ovc-list' }, ...counters),
+      ),
+      h(
+        'section',
+        { class: 'ovc-group', 'aria-labelledby': 'ovc-sounds' },
+        h('h2', { id: 'ovc-sounds' }, 'Sounds'),
+        h(
+          'p',
+          { class: 'meta' },
+          'Every sound slot in the game’s sound sets. The game plays the first nine itself; name the rest for what they sound like. The name shows wherever the sound editor lists them.',
+        ),
+        sounds.length ? h('ul', { class: 'ovc-list' }, ...sounds) : h('p', { class: 'meta' }, 'This game has no sound set.'),
       ),
     );
   }

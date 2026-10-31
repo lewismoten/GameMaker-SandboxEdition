@@ -66,3 +66,17 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.ovc-sound-end {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ovc-sound-end .ovc-field {
+  flex: 1;
+}
+.ovc-play {
+  min-width: 32px;
+  min-height: 32px;
+}

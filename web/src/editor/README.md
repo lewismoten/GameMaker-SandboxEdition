@@ -417,7 +417,7 @@ native game files are loaded only when the player chooses an archive action.
   `GameControls`, is plain JSON that a game's own `controls.json` can hold as it is:
   `{ "keys": { "57": { "short": "Jump", "long": "…" } }` (DOS scan code to text),
   `"joystick": { "1": { "short": "…", "long": "…" } }` (buttons 1 and 2, kept in the older
-  `joystickButtons` section) and `"counters": { "20": "Gold keys" } }` (meter 5-24 to name).
+  `joystickButtons` section) and `"counters": { "20": "Gold keys" }` (meter 5-24 to name) and `"sounds": { "9": "Zap" } }` (a sound slot past PLAYGAME's nine named ones to a name of up to 40 characters; `shell/soundUse.ts` lists the slots and which characters play them, and the sound editor and auditions show the name instead of "Effect").
   Every part is optional. It is edited in Overview › Controls (`shell/overviewControls.ts`),
   which has its own Undo and Redo; the character editor's Controls tab keeps the joystick
   button picker (`character/joystickControls.ts`) and shows the shared words. The ⌨ Keys dialog
