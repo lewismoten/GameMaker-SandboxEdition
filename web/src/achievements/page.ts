@@ -36,6 +36,7 @@ function card(a: Achievement, r: AchievementRecord, open: () => void): HTMLEleme
   const shown = shownText(a, !!when);
   const p = progressOf(a, r);
   const secret = a.hidden && !when;
+  const count = p ? `${p.n} of ${p.of}${a.unit ? ` ${a.unit}` : ''}` : '';
   return h(
     'li',
     null,
@@ -65,7 +66,8 @@ function card(a: Achievement, r: AchievementRecord, open: () => void): HTMLEleme
           p
             ? [
                 h('span', { class: 'ach-bar', 'aria-hidden': 'true' }, h('span', { style: `width:${p.of ? Math.round((p.n / p.of) * 100) : 0}%` })),
-                h('span', null, `${p.n} of ${p.of}${a.unit ? ` ${a.unit}` : ''}`),
+                // the unit ("kinds of file") is in the description; beside a bar of a useful width it is said, not shown
+                h('span', { title: count }, `${p.n} of ${p.of}`, a.unit ? h('span', { class: 'sr-only' }, ` ${a.unit}`) : null),
               ]
             : null,
         ),

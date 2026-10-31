@@ -187,9 +187,9 @@ main.ach-page .ach-back {
 
 .ach-progress {
   display: grid;
-  /* the count stays on one line (the card is a fixed height, so a wrapped count pushed "Not yet" out
-     of it); a very long one ("0 of 1000 pretend cents") is cut short, and the details have it all */
-  grid-template-columns: minmax(30%, 1fr) minmax(0, max-content);
+  /* the bar keeps at least half the row; the count stays on one line (the card is a fixed height,
+     so a wrapped count pushed "Not yet" out of it), cut short only if it can't fit */
+  grid-template-columns: minmax(50%, 1fr) minmax(0, max-content);
   align-self: end;
   align-items: center;
   gap: 8px;
