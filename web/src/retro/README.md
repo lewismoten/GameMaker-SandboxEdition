@@ -6,6 +6,7 @@ The PC, shared by the desk and `dos.html`, importing nothing from `desk/`. The
 page around it supplies `computer/setup.ts` `ComputerOptions`; `computer/monitor.css` styles its
 picture; `host.ts` is what programs on it can use.
 
+- `energySnore.ts`: the parody power-saving logo (a sleepy star, ENERGY SNORE) in the BIOS boot screen's top-right corner, drawn in half-block characters.
 - `computer.ts`: power and programs, with `computer/` (`drives.ts`, game folders in
   `folders.ts`, its sound line `pcAudio.ts`, the Sound Blaster card `soundBlaster.ts`).
   `leaveProgram.ts` and `saveFirst.ts` get it back to the DOS prompt for a disk; `diskSwap.ts` says

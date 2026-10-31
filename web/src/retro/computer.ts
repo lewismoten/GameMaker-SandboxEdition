@@ -23,6 +23,7 @@ import { h, clear } from '../editor/core/ui';
 import { AUTOEXEC } from './computer/setup';
 import { soundBlaster } from './computer/soundBlaster';
 import { ComputerFolders } from './computer/folders';
+import { clearEnergySnore, drawEnergySnore } from './energySnore';
 import { deskProgram, playAchievements, playWrote, unlockAchievement } from '../achievements';
 
 export class Computer extends ComputerFolders {
@@ -40,6 +41,7 @@ export class Computer extends ComputerFolders {
     // a quick boot (the DOS page, on its way to Game-Maker) says the same in a quarter of the time
     const pause = (ms: number) => sleep(this.opts.quickBoot ? ms / 4 : ms);
     s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
+    drawEnergySnore(s);
     for (let k = 0; k <= 4096; k += 256) {
       s.cursorX = 0;
       s.print(`Memory Test: ${String(k).padStart(5)}K${k === 4096 ? ' OK' : ''}`);
@@ -50,6 +52,7 @@ export class Computer extends ComputerFolders {
     s.print('\n\nStarting MS-DOS...\n\n');
     await pause(500);
     if (!this.powered) return;
+    clearEnergySnore(s);
     // CONFIG.SYS
     s.print('HIMEM is testing extended memory...');
     await pause(turbo ? 350 : 1100);
