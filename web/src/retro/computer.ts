@@ -21,6 +21,7 @@ import { cutPcSound, pcOutput } from './computer/pcAudio';
 import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { h, clear } from '../editor/core/ui';
 import { AUTOEXEC } from './computer/setup';
+import { mouseDriverLine } from './computer/mouseDriver';
 import { soundBlaster } from './computer/soundBlaster';
 import { ComputerFolders } from './computer/folders';
 import { clearEnergySnore, drawEnergySnore } from './energySnore';
@@ -73,7 +74,7 @@ export class Computer extends ComputerFolders {
         await pause(300);
         if (!this.powered) return;
       } else if (l.includes('DOSKEY')) s.print('DOSKEY installed.\n');
-      else if (l.includes('MOUSE')) s.print('Mouse driver installed\n');
+      else if (l.includes('MOUSE')) s.print(document.documentElement.classList.contains('tour-on') ? 'Mouse driver installed\n' : mouseDriverLine());
     }
     s.print('\nType HELP for commands, GM to start Game-Maker, TERMINAL to call the BBS.\n\n');
     s.cursorVisible = true;

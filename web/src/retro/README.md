@@ -8,7 +8,7 @@ picture; `host.ts` is what programs on it can use.
 
 - `energySnore.ts`: the parody power-saving logo (a sleepy star, ENERGY SNORE) in the BIOS boot screen's top-right corner, drawn in half-block characters.
 - `computer.ts`: power and programs, with `computer/` (`drives.ts`, game folders in
-  `folders.ts`, its sound line `pcAudio.ts`, the Sound Blaster card `soundBlaster.ts`).
+  `folders.ts`, its sound line `pcAudio.ts`, the Sound Blaster card `soundBlaster.ts`, and the boot's mouse line `mouseDriver.ts`, which now and then has a day of its own).
   `leaveProgram.ts` and `saveFirst.ts` get it back to the DOS prompt for a disk; `diskSwap.ts` says
   which utilities keep running while the disk in A: is swapped instead.
   Its game player receives an audio engine configured from the remembered sound-card switch.
