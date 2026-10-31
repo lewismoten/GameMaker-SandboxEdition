@@ -10,6 +10,8 @@ export const DEP_NOTES: Record<string, string> = {
   vitest: 'Runs the tests (npm test).',
   typescript: 'The TypeScript compiler, used to type-check the code (npx tsc).',
   '@types/node': 'Type descriptions of Node.js, for the build scripts and tests.',
+  'playwright-core': 'Drives a headless Chrome for the tour check (npm run tour:check).',
+  'axe-core': 'Finds accessibility problems on the pages the tour check plays (npm run tour:check).',
   prettier: 'Lays out the code the same way everywhere (npm run format).',
   eslint: 'Checks the code for likely mistakes (npm run lint).',
   '@eslint/js': 'ESLint’s recommended JavaScript rules.',

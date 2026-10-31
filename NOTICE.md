@@ -796,8 +796,8 @@ The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
 NumPy and SciPy (BSD), and OpenAI's Whisper (MIT) for word timings when it is installed.
 They read recordings that are not in the repository, and nothing of theirs is
 committed except the note data and clips they produce. Browser checks during development
-(Playwright, Apache-2.0, and any accessibility checker run with it) are run from outside the
-repository and are not dependencies of it.
+(playwright-core, Apache-2.0, and axe-core, MPL-2.0, which `npm run tour:check` uses) are
+development dependencies of `web/` and ship in nothing.
 
 ### Previewable source audio conversion
 
