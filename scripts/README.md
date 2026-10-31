@@ -7,4 +7,8 @@ A final consumer exercises engine, archives and tools together. Run this longer 
 and tarballs are removed afterwards. This catches hidden repository source dependencies
 that testing a package inside the workspace would miss.
 
+`build-games.mjs` rebuilds the ignored game outputs (root `npm run build:games`), caching source and
+output hashes; `game-build-inputs.mjs` is the fingerprint it shares with `render-game-frames.mjs`,
+which renders one animation shard for the game-frames workflow.
+
 Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
