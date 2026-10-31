@@ -22,6 +22,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import { buildPalette, type Pal } from '../art/pal';
 import { LIVES, MONEY, PLAY, SPOTS, SPOTS_NEEDED } from '../ids';
+import { addBadgeBlocks } from './badges';
 import { kitchenBlocks } from './kitchen';
 import { rideBlocks } from './ride';
 import { voidBlocks } from './void';
@@ -526,5 +527,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   shot.blit(will.crop(4, 0, 12, 14), 4, 4, CLEAR).rect(4, 17, 12, 1, c('wall', 3));
   shot.line(5, 16, 9, 15, ink);
   book.add('willShot', shot, solid);
+  // scenery for the site's achievement badges (added last: the blocks above keep their numbers)
+  addBadgeBlocks(book, pal);
   return book;
 }
