@@ -858,6 +858,13 @@ public-domain data and this project's additions keep their existing attribution.
 OpenAI Codex consolidated the helpers and consumers, preserved the existing game output,
 and implemented the shared rendering adapters and verification under Lewis Moten's direction.
 
+### Tiny Shelf Classification
+
+The Library's call numbers (such as 614-MAH) use the **Tiny Shelf Classification**, dedicated to
+the public domain (CC0 1.0) by Lewis Moten, github.com/lewismoten/Tiny-Pockets-Press. Only the
+few codes the Library uses are copied, in `web/src/library/tinyShelf.ts`. The cabinet and
+shelves styling and markup were written by Claude Sonnet 5.5 under Lewis Moten's direction.
+
 ### Ready-made palette references
 
 The tools package's `palettePresetData.ts` contains Atari NTSC/PAL swatches by Ricardo
