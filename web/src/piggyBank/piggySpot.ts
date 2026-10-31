@@ -20,7 +20,7 @@ const art = () => {
   return el;
 };
 
-/** Shows nothing before the first win, then refreshes in this or another tab. */
+/** Shows nothing before the first catalog win, then refreshes in this or another tab. */
 export function piggyBank(place: (el: HTMLElement) => void): () => void {
   const bank = h('button', { type: 'button', class: 'piggy-bank', hidden: true });
   bank.append(art());

@@ -34,7 +34,7 @@ export function wallTrophies(desk: HTMLElement): () => void {
       else desk.querySelector('.desk-scene')?.append(el);
     });
   });
-  // Teddy's bank only appears after somebody wins a catalog game with money left.
+  // Teddy's bank only appears after somebody wins a catalog game.
   let unPiggy: (() => void) | undefined;
   void import('../piggyBank/piggySpot').then(({ piggyBank }) => {
     if (!desk.isConnected) return;
