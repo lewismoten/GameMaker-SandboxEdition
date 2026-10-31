@@ -322,6 +322,12 @@ are real previews too; a blank idle can fall back to a movement frame.
   or all effects, either source or both in sequence, and updates the status and
   thumbnail for the part currently playing. Closing the dialog stops playback.
 
+- **Playable thumbnails.** In the Files grids, `widgets/thumbPlayButton.ts` puts a Play/Stop
+  button on animation, slide show, demo, sound set, digital sound and music cards, and
+  `widgets/thumbRunners.ts` plays them in place (loaded on the first press, one at a time,
+  stopped when the card scrolls away). A slide or title that waits for a key shows a drawn
+  "ANY" keycap being pressed.
+
 - **Text-screen thumbnails.** `widgets/textPicture.ts` draws the first native text
   page with Display_File's wrapping, position and stock color selection, reusing
   the tools package's credited font data. Slide-show thumbnails follow readable
