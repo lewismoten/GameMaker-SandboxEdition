@@ -23,6 +23,8 @@ import { openFromLibrary, readerOpen } from './readerAddress';
 import { onCatalogChanged } from '../project/catalogWatch';
 import { originId } from '../editor/shell/homeOrigin';
 import { libraryStartGame } from '../libraryStart';
+import { drawerId, makeCabinet } from './cabinet';
+import { callNumber } from './tinyShelf';
 
 /** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
 let unwatchShelf: (() => void) | undefined;
@@ -130,6 +132,7 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
     h(
       'span',
       { class: 'lib-name' },
+      h('span', { class: 'lib-spine', title: 'Tiny Shelf call number' }, callNumber(item)),
       h('strong', null, item.title),
       sub ? h('small', null, sub) : null,
       // the same in several boxes: listed once, opened from the first
@@ -191,34 +194,13 @@ export function renderLibrary(el: HTMLElement): void {
   // within a kind, one game's pieces (By type only)
   let game = isShelfOrder(asked) ? state.get('game') : savedGame();
   let shelf: Shelf | undefined;
-  const list = h('div', { class: 'lib-shelf', id: 'lib-shelf' }, h('p', { class: 'lib-loading' }, 'Taking everything off the shelves…'));
+  const list = h('div', { class: 'lib-shelf', id: 'lib-shelf', role: 'tabpanel' }, h('p', { class: 'lib-loading' }, 'Taking everything off the shelves…'));
   const count = h('p', { class: 'lib-count', role: 'status' });
-  // what is picked, said plainly, with the way back to everything beside it
-  const showingName = h('strong');
-  const showAll = h('button', {
-    type: 'button',
-    class: 'lib-show-all',
-    'aria-controls': 'lib-shelf',
-    onclick: () => {
-      only = undefined;
-      rememberOnly(order, only);
-      keepAddress();
-      show();
-      picker.focus();
-    },
-  });
-  const showing = h('p', { class: 'lib-showing', hidden: true }, 'Showing: ', showingName, h('span', { 'aria-hidden': 'true' }, ' · '), showAll);
-  const pickLabel = h('label', { for: 'lib-only', class: 'lib-only-label' });
-  const picker = h('select', {
-    id: 'lib-only',
-    class: 'lib-only',
-    'aria-controls': 'lib-shelf',
-    onchange: () => {
-      only = picker.value || undefined;
-      rememberOnly(order, only);
-      keepAddress();
-      show();
-    },
+  const cabinet = makeCabinet((key) => {
+    only = key.replace(/^(game|type)-/, '');
+    rememberOnly(order, only);
+    keepAddress();
+    show();
   });
   const gamePicker = h('select', {
     id: 'lib-game',
@@ -257,22 +239,16 @@ export function renderLibrary(el: HTMLElement): void {
   );
   const show = () => {
     buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(ORDERS[i][0] === order)));
-    pickLabel.textContent = order === 'game' ? 'Game' : 'Kind';
     if (!shelf) return;
     const groups = groupShelf(shelf.items, order);
-    // a pick this shelf doesn't have (a game gone, an old link) shows everything
+    // a pick this shelf doesn't have (a game gone, an old link), or none, opens the first drawer
     if (only && !groups.some((g) => pickOf(g) === only)) only = undefined;
-    picker.replaceChildren(
-      h('option', { value: '' }, order === 'game' ? 'All games' : 'All kinds'),
-      ...groups.map((g) => h('option', { value: pickOf(g) }, g.heading)),
-    );
-    picker.value = only ?? '';
-    showing.hidden = !only;
-    showingName.textContent = groups.find((g) => pickOf(g) === only)?.heading ?? '';
-    showAll.textContent = order === 'game' ? 'All games' : 'All kinds';
-    let shown = only ? groups.filter((g) => pickOf(g) === only) : groups;
+    const open = groups.find((g) => pickOf(g) === only) ?? groups[0];
+    cabinet.update(groups, open?.key ?? '', order);
+    if (open) list.setAttribute('aria-labelledby', drawerId(open.key));
+    let shown = open ? [open] : [];
     // one kind (By type) from several games: a second picker for the game
-    const owners = order === 'type' && only && shown[0] ? ownersOf(shown[0].parts[0].items) : [];
+    const owners = order === 'type' && shown[0] ? ownersOf(shown[0].parts[0].items) : [];
     gamePick.hidden = owners.length < 2;
     const pickedGame = !gamePick.hidden && owners.some((o) => o.owner === game) ? game : undefined;
     gamePicker.replaceChildren(h('option', { value: '' }, 'All games'), ...owners.map((o) => h('option', { value: o.owner }, o.title)));
@@ -281,9 +257,7 @@ export function renderLibrary(el: HTMLElement): void {
     forgetThumbs(list.querySelectorAll('.lib-thumb')); // the old cards' pictures are no longer wanted
     list.replaceChildren(...shown.map((g) => groupSection(g, shelf!, order)));
     const n = shown.reduce((sum, g) => sum + g.parts.reduce((k, p) => k + p.items.length, 0), 0);
-    count.textContent = only
-      ? `${n} of ${shelf.items.length} things to read and print`
-      : `${shelf.items.length} things to read and print, in ${groups.length} ${order === 'game' ? 'groups' : 'kinds'}`;
+    count.textContent = `${n} of ${shelf.items.length} things to read and print, in ${groups.length} ${order === 'game' ? 'drawers' : 'kinds'}`;
   };
   show();
   clear(
@@ -294,15 +268,8 @@ export function renderLibrary(el: HTMLElement): void {
       h('p', { class: 'lib-kicker' }, 'Everything to read and print'),
       h('h1', { id: 'lib-h' }, 'Library'),
       h('p', { class: 'lead' }, 'Every paper from the game boxes, plus magazines, guides and videos.'),
-      h(
-        'div',
-        { class: 'lib-bar' },
-        h('div', { class: 'lib-orders', role: 'group', 'aria-label': 'Sort the library' }, buttons),
-        h('span', { class: 'lib-pick' }, pickLabel, picker),
-        gamePick,
-        count,
-      ),
-      showing,
+      h('div', { class: 'lib-bar' }, h('div', { class: 'lib-orders', role: 'group', 'aria-label': 'Sort the library' }, buttons), gamePick, count),
+      cabinet.el,
       list,
     ),
   );

@@ -34,6 +34,14 @@ the page; a card opens its piece in the box viewer (`openBox`'s `start`), the ma
 box, the Game-Maker box flat and its CD's label with the Game-Maker box's paper, and TURBO BUTTON's cover disc with the site's
 reading, under the kinds Disk and CD labels and Retail boxes; they open in the print shop
 (`../manual/printables/printShop.ts`, loaded when one is opened or drawn).
+The page is a card catalog over stacks. `cabinet.ts` is the cabinet: a drawer (an ARIA tab: arrow keys, Home and End,
+one tab stop) for each group of the sort, with a brass label holder showing its call number, name and count; the open
+drawer is the address's `only` (the first drawer when none is named, and the game a start-on-this-game
+opens). Below it the open group's cards stand on wooden shelves (CSS and markup only; each card's
+thumbnail and click are unchanged), each with a spine label. `tinyShelf.ts` holds the few call numbers used, in the
+Tiny Shelf Classification (public domain, Lewis Moten, github.com/lewismoten/Tiny-Pockets-Press) `code-short-author`
+form, e.g. 614-MAH TED. Stage 2 would add a photocopier and the Tiny Pockets Press logo on the cabinet
+(see the note at the end of `library.css`).
 `readerAddress.ts` keeps the Game-Maker box's open piece and chapter in the address
 (`&gm=ultimate&ch=12`): a link opens it there, each chapter chosen is a history entry, and Back
 past the opening closes it.

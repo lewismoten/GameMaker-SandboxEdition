@@ -40,18 +40,8 @@ export const libraryChapter: Chapter = {
     {
       id: 'library-pick',
       action: 'point',
-      target: { label: 'the Game or Kind picker', css: '#lib-only' },
-      say: 'Pick one game, or one kind, to see just that shelf.',
-    },
-    {
-      // the Library opens on a game's own shelf just after that game was shown
-      id: 'library-all',
-      action: 'press',
-      target: { label: 'the All games button', css: '.lib-showing .lib-show-all' },
-      click: true,
-      say: 'Showing just one game? This puts everything back on the shelves.',
-      sound: 'flutter',
-      optional: true,
+      target: { label: 'the card catalog drawers', css: '.lib-cabinet' },
+      say: 'Each drawer in the card catalog is one game, or one kind. Pull one open to see just that shelf.',
     },
     {
       id: 'library-count',

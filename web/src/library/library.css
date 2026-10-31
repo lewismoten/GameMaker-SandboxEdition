@@ -5,6 +5,16 @@ main.library {
   --lib-thumb-h: 132px;
   --lib-shelf: #e7dcc4;
   --lib-shelf-edge: #b9a57f;
+  --wood-hi: #c99a62;
+  --wood: #a9743f;
+  --wood-lo: #7d4f27;
+  --wood-dark: #4d2f16;
+  --wood-back: #5e3b1d;
+  --brass-hi: #f1d98a;
+  --brass: #c9a24a;
+  --brass-lo: #8a6a22;
+  --paper: #f6edd2;
+  --paper-ink: #2d2416;
   max-width: 1180px;
   margin: 0 auto;
   padding: 24px 16px 64px;
@@ -13,12 +23,32 @@ main.library {
 :root[data-theme='dark'] main.library {
   --lib-shelf: #2a2a33;
   --lib-shelf-edge: #4a4a58;
+  --wood-hi: #7a5530;
+  --wood: #5c3e22;
+  --wood-lo: #3f2a16;
+  --wood-dark: #24160b;
+  --wood-back: #1c130c;
+  --brass-hi: #d9bf6c;
+  --brass: #a8832f;
+  --brass-lo: #6c5219;
+  --paper: #d9cfb2;
+  --paper-ink: #231c10;
 }
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme='auto'] main.library {
     --lib-shelf: #2a2a33;
     --lib-shelf-edge: #4a4a58;
+    --wood-hi: #7a5530;
+    --wood: #5c3e22;
+    --wood-lo: #3f2a16;
+    --wood-dark: #24160b;
+    --wood-back: #1c130c;
+    --brass-hi: #d9bf6c;
+    --brass: #a8832f;
+    --brass-lo: #6c5219;
+    --paper: #d9cfb2;
+    --paper-ink: #231c10;
   }
 }
 
@@ -98,9 +128,9 @@ main.library {
 .lib-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--lib-card-w)), 1fr));
-  gap: 14px;
+  gap: 22px 14px;
   margin: 0;
-  padding: 0;
+  padding: 18px 16px 8px;
   list-style: none;
 }
 
@@ -340,4 +370,252 @@ main.library {
   font: inherit;
   text-decoration: underline;
   cursor: pointer;
+}
+
+/* Stage 2 would fit here: a photocopier beside the cabinet (copies a card's paper) and the Tiny
+   Pockets Press logo on the cabinet's cornice. */
+
+/* the card catalog: a cabinet of small drawers, one a group (cabinet.ts) */
+.lib-cabinet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 6px;
+  margin: 0 0 18px;
+  padding: 12px;
+  border: 2px solid var(--wood-dark);
+  border-radius: 6px 6px 3px 3px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 7px), linear-gradient(var(--wood-hi), var(--wood) 30%, var(--wood-lo));
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.3),
+    0 8px 0 var(--wood-dark),
+    0 12px 18px rgba(0, 0, 0, 0.3);
+}
+
+.lib-drawer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 92px;
+  min-width: 0;
+  margin: 0;
+  padding: 6px 6px 8px;
+  border: 2px solid var(--wood-dark);
+  border-radius: 3px;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 5px), linear-gradient(var(--wood-hi), var(--wood));
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.35),
+    0 2px 0 rgba(0, 0, 0, 0.35);
+  color: var(--paper-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.lib-drawer:hover {
+  filter: brightness(1.12);
+}
+
+.lib-drawer:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* the drawer that is pulled out: a dark gap above, the front pushed down and its label lit */
+.lib-drawer[aria-selected='true'] {
+  background: linear-gradient(var(--wood), var(--wood-lo));
+  box-shadow:
+    inset 0 5px 8px rgba(0, 0, 0, 0.55),
+    0 0 0 2px var(--brass-hi),
+    0 4px 0 var(--wood-dark);
+  transform: translateY(3px);
+}
+
+/* the brass label holder with its paper card */
+.lib-holder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding: 3px 5px 4px;
+  border: 1px solid var(--brass-lo);
+  border-radius: 2px;
+  background: linear-gradient(var(--brass-hi), var(--brass) 45%, var(--brass-lo));
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.lib-holder > * {
+  width: 100%;
+  min-width: 0;
+  padding: 0 3px;
+  background: var(--paper);
+  color: var(--paper-ink);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lib-call {
+  padding-top: 2px !important;
+  font:
+    700 10px/1.2 ui-monospace,
+    'Courier New',
+    monospace;
+  letter-spacing: 0.02em;
+}
+
+.lib-dname {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: 2.5em;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  font:
+    700 13px/1.25 system-ui,
+    sans-serif;
+}
+
+.lib-dcount {
+  padding-bottom: 2px !important;
+  font:
+    11px/1.2 ui-monospace,
+    'Courier New',
+    monospace;
+}
+
+.lib-dcount::before {
+  content: '× ';
+}
+
+/* the drawer's pull */
+.lib-pull {
+  width: 26px;
+  height: 7px;
+  border-radius: 4px;
+  background: linear-gradient(var(--brass-hi), var(--brass-lo));
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* the stacks: the open drawer's cards on a bookcase's shelves */
+.lib-shelf {
+  padding: 0;
+}
+
+.lib-shelf .lib-group {
+  margin-bottom: 28px;
+  border: 10px solid var(--wood);
+  border-top-width: 14px;
+  border-image: none;
+  border-radius: 6px;
+  background: var(--wood-back);
+  box-shadow:
+    inset 0 10px 22px rgba(0, 0, 0, 0.55),
+    inset 8px 0 14px rgba(0, 0, 0, 0.3),
+    inset -8px 0 14px rgba(0, 0, 0, 0.3),
+    0 0 0 2px var(--wood-dark),
+    0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* the group's name on a brass plate on the case's top rail */
+.lib-shelf .lib-group h2 {
+  display: block;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: -2px 12px 0;
+  padding: 3px 14px;
+  border: 1px solid var(--brass-lo);
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(var(--brass-hi), var(--brass) 50%, var(--brass-lo));
+  color: var(--paper-ink);
+  font:
+    700 15px/1.3 Georgia,
+    'Times New Roman',
+    serif;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.lib-shelf .lib-group h2 .lib-net {
+  color: var(--paper-ink);
+}
+
+.lib-shelf .lib-group h3 {
+  margin: 14px 16px 0;
+  color: var(--brass-hi);
+  font:
+    italic 600 14px/1.3 Georgia,
+    serif;
+}
+
+/* each card stands on its own length of plank; side by side they make a shelf */
+.lib-grid > li {
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.lib-grid > li::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  bottom: 0;
+  left: -8px;
+  z-index: 0;
+  height: 14px;
+  background: linear-gradient(var(--wood-hi), var(--wood) 40%, var(--wood-lo));
+  box-shadow:
+    0 3px 0 var(--wood-dark),
+    0 7px 8px rgba(0, 0, 0, 0.45);
+}
+
+.lib-grid > li > .lib-card {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+}
+
+/* the spine label: a small paper label with the Tiny Shelf call number */
+.lib-spine {
+  align-self: flex-start;
+  margin-bottom: 3px;
+  padding: 1px 5px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  background: var(--paper);
+  color: var(--paper-ink);
+  font:
+    700 10px/1.3 ui-monospace,
+    'Courier New',
+    monospace;
+  letter-spacing: 0.02em;
+}
+
+/* small windows: the drawers stay two rows high and slide sideways inside the cabinet */
+@media (max-width: 700px) {
+  .lib-cabinet {
+    grid-template-columns: none;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-columns: 138px;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .lib-shelf .lib-group {
+    border-width: 8px;
+    border-top-width: 12px;
+  }
+
+  .lib-grid {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
 }
