@@ -19,6 +19,9 @@ const GOAL_SET: Partial<Record<Goal, string>> = {
   bizarreDone: 'finished',
   teddy: 'finished',
   walkthroughs: 'watched',
+  playedCount: 'played',
+  finishedCount: 'finished',
+  watchedCount: 'watched',
   ...REPEAT_SETS,
 };
 
@@ -55,6 +58,12 @@ export async function refreshGoals(catalog?: readonly Listed[]): Promise<void> {
   for (const a of ACHIEVEMENTS) {
     const set = a.from && GOAL_SET[a.from];
     if (!set) continue;
+    if (a.count) {
+      // a count level: distinct listed games in the record (a game the lists keep out of sight never counts)
+      const listed = new Set(list.map((g) => g.id));
+      progress(a.id, Math.min(new Set((r.sets[set] ?? []).filter((id) => listed.has(id))).size, a.count), a.count);
+      continue;
+    }
     const targets = goalTargets(list, a.from!);
     const p = a.times ? repeatProgress(targets, r.sets, REPEAT_SETS[a.from as RepeatGoal], a.times) : goalProgress(targets, r.sets[set] ?? []);
     if (p.of) progress(a.id, p.n, p.of);

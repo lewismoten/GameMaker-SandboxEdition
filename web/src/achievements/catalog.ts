@@ -9,6 +9,7 @@
 import type { AchievementRecord } from './store';
 import { EDIT_KINDS } from './editKinds';
 import { REPEAT_TIERS, type RepeatGoal } from './repeatGoals';
+import { COUNT_LEVELS, type Level } from './levels';
 
 export type Category = 'making' | 'playing' | 'watching' | 'desk' | 'fun' | 'found';
 
@@ -22,7 +23,19 @@ export const CATEGORIES: { id: Category; title: string; blurb: string }[] = [
 ];
 
 /** What a derived total counts (goals.ts). */
-export type Goal = 'sandbox' | 'bizarre' | 'sandboxDone' | 'bizarreDone' | 'teddy' | 'walkthroughs' | 'hearts' | 'eggs' | RepeatGoal;
+export type Goal =
+  | 'sandbox'
+  | 'bizarre'
+  | 'sandboxDone'
+  | 'bizarreDone'
+  | 'teddy'
+  | 'walkthroughs'
+  | 'hearts'
+  | 'eggs'
+  | 'playedCount'
+  | 'finishedCount'
+  | 'watchedCount'
+  | RepeatGoal;
 
 export interface Achievement {
   id: string;
@@ -45,6 +58,12 @@ export interface Achievement {
   from?: Goal;
   /** Repeat events required in each game for a catalog-wide goal. */
   times?: number;
+  /** Where this sits in a leveled family (levels.ts); each level is an achievement of its own. */
+  level?: Level;
+  /** For a count goal (playedCount…): how many distinct games the record must hold. */
+  count?: number;
+  /** One of the genuinely difficult ones: once earned it gets a gold frame with a sheen. */
+  hard?: boolean;
   /** The noun after the count: "3 of 8 editors". */
   unit?: string;
 }
@@ -122,6 +141,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'make-edit', title: 'First stroke', desc: 'Changed a file in one of your games.', icon: '✏️', category: 'making' },
   {
     id: 'make-every-kind',
+    hard: true,
     title: 'Jack of all tools',
     desc: 'Changed a game, palette, blocks, monsters, characters, a map, sounds and a text screen.',
     icon: '🧰',
@@ -139,6 +159,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'export-files', title: 'Keep a copy', desc: 'Downloaded the files of a game you made.', icon: '🗂️', category: 'making' },
   {
     id: 'export-all',
+    hard: true,
     title: 'Ships everywhere',
     desc: 'Downloaded games for the web, DOS, Windows, Mac and Linux.',
     icon: '📦',
@@ -178,6 +199,8 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
       category: 'playing',
       from: 'everyLife',
       times,
+      level: { family: 'every-life', n: REPEAT_TIERS.indexOf(times) + 1, of: REPEAT_TIERS.length },
+      hard: times === 10,
       unit: 'games',
     },
     {
@@ -188,6 +211,8 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
       category: 'playing',
       from: 'everyLoss',
       times,
+      level: { family: 'every-loss', n: REPEAT_TIERS.indexOf(times) + 1, of: REPEAT_TIERS.length },
+      hard: times === 10,
       unit: 'games',
     },
     {
@@ -198,9 +223,32 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
       category: 'playing',
       from: 'everyWin',
       times,
+      level: { family: 'every-win', n: REPEAT_TIERS.indexOf(times) + 1, of: REPEAT_TIERS.length },
+      hard: times === 10,
       unit: 'games',
     },
-  ]),
+  ])
+    // a family's levels sit together: every-life 1, 3, 10, then every-loss, then every-win
+    .sort((a, b) => a.from!.localeCompare(b.from!)),
+  ...(
+    [
+      ['games-played', 'playedCount', '🎲', ['Shelf browser', 'Game hopper', 'Arcade regular'], 'Played'],
+      ['games-finished', 'finishedCount', '🏅', ['Seen the ending', 'Ending collector', 'Credits connoisseur'], 'Played to the ending'],
+    ] as const
+  ).flatMap(([family, from, icon, titles, verb]) =>
+    COUNT_LEVELS[family].goals.map((count, i): Achievement => ({
+      id: `${family}-${count}`,
+      title: titles[i],
+      desc: `${verb} ${count} different games.`,
+      icon,
+      category: 'playing',
+      from,
+      count,
+      level: { family, n: i + 1, of: COUNT_LEVELS[family].goals.length },
+      hard: i === COUNT_LEVELS[family].goals.length - 1,
+      unit: 'games',
+    })),
+  ),
   { id: 'play-first', title: 'Player one', desc: 'Played a game.', icon: '🎮', category: 'playing' },
   { id: 'play-finish', title: 'The end', desc: 'Played a game all the way to its ending.', icon: '🏁', category: 'playing' },
   {
@@ -247,6 +295,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'finish-sandbox',
+    hard: true,
     title: 'Sandbox champion',
     desc: 'Played every Sandbox Software game all the way to its ending.',
     icon: '🥇',
@@ -256,6 +305,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'finish-bizarre',
+    hard: true,
     title: 'Encore!',
     desc: 'Played every game by The Bard of Bizarre all the way to its ending.',
     icon: '🎤',
@@ -265,6 +315,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'play-teddy',
+    hard: true,
     title: 'Good dog!',
     desc: 'Played every Teddy game all the way to its ending.',
     icon: '🐶',
@@ -298,6 +349,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'trophy-top',
+    hard: true,
     title: 'Over the top',
     desc: 'Grew a score trophy on the 1994 desk into the gaudy tower at the top.',
     icon: '👑',
@@ -307,6 +359,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'heart-first', title: 'Tin heart', desc: 'Found a tin heart hidden in a game.', icon: '🩶', category: 'playing' },
   {
     id: 'heart-all',
+    hard: true,
     title: 'Heart collector',
     desc: 'Found every tin heart.',
     doneDesc: 'Found every tin heart, and Joe found something too.',
@@ -326,6 +379,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'egg-teddy',
+    hard: true,
     title: 'Lay an egg!',
     desc: 'Found the felt eggs in all three Teddy adventures, so Teddy laid a special one of his own for the shadow box.',
     icon: '💩',
@@ -333,12 +387,22 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     hidden: true,
     hint: 'A corgi with three adventures, and something soft in each.',
   },
-  { id: 'egg-all', title: 'A full basket', desc: 'Found every felt egg.', icon: '🧺', category: 'playing', hidden: true, hint: 'There is more than one.' },
+  {
+    id: 'egg-all',
+    hard: true,
+    title: 'A full basket',
+    desc: 'Found every felt egg.',
+    icon: '🧺',
+    category: 'playing',
+    hidden: true,
+    hint: 'There is more than one.',
+  },
 
   // watching
   { id: 'watch-one', title: 'Sit back', desc: 'Watched a walkthrough to the end.', icon: '🍿', category: 'watching' },
   {
     id: 'watch-all',
+    hard: true,
     title: 'Binge watcher',
     desc: 'Watched every walkthrough to the end.',
     icon: '📺',
@@ -346,6 +410,18 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     from: 'walkthroughs',
     unit: 'walkthroughs',
   },
+  ...COUNT_LEVELS['walks-watched'].goals.map((count, i, all): Achievement => ({
+    id: `walks-watched-${count}`,
+    title: ['Couch time', 'Matinee regular', 'Marathon viewer'][i],
+    desc: `Watched ${count} different walkthroughs to the end.`,
+    icon: '🛋️',
+    category: 'watching',
+    from: 'watchedCount',
+    count,
+    level: { family: 'walks-watched', n: i + 1, of: all.length },
+    hard: i === all.length - 1,
+    unit: 'walkthroughs',
+  })),
   { id: 'watch-seek', title: 'Skip ahead', desc: 'Jumped around a walkthrough with its seek bar.', icon: '⏭️', category: 'watching' },
   { id: 'watch-bot', title: 'Robot rerun', desc: 'Watched a walkthrough the 🤖 walkthrough bot made, as far as it got.', icon: '📽️', category: 'watching' },
   { id: 'record-video', title: 'Rolling', desc: 'Recorded a video of the screen.', icon: '🎥', category: 'watching' },
@@ -358,6 +434,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   { id: 'desk-bbs-file', title: 'Downloading…', desc: 'Downloaded a file from the BBS.', icon: '📥', category: 'desk' },
   {
     id: 'bbs-every-speed',
+    hard: true,
     title: 'Every speed on the dial',
     desc: 'Connected to a BBS at every modem speed, from 300 baud to 56 kbps.',
     icon: '📶',
@@ -368,6 +445,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'bbs-download-every-speed',
+    hard: true,
     title: 'The long way round',
     desc: 'Downloaded a whole file from a BBS at every modem speed, start to finish, without skipping.',
     icon: '🐢',
@@ -578,6 +656,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'desk-chez',
+    hard: true,
     title: 'Honk honk',
     desc: 'Caught THE\u00a0CHEZ driving past the window and got a honk from Doc Leo.',
     icon: '🚗',
@@ -650,6 +729,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'desk-star',
+    hard: true,
     title: 'Make a wish',
     desc: 'Caught a shooting star from the window.',
     icon: '🌠',
@@ -731,6 +811,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   },
   {
     id: 'desk-egg-uv',
+    hard: true,
     title: 'Secret ink',
     desc: 'Saw hidden ink glow on the felt eggs under the black light.',
     icon: '🔦',
