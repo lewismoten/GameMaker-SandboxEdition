@@ -33,5 +33,5 @@ export async function loadMoney(): Promise<MoneyRecord> {
 export async function recordMoney(game: string, money: number): Promise<void> {
   const next = { ...(await loadMoney()), [game]: Math.max(0, Math.floor(money)) };
   await writeSaveFile(SAVE_ID, FILE, new TextEncoder().encode(JSON.stringify(next)), { quiet: true });
-  window.dispatchEvent(new Event(MONEY_CHANGED));
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(MONEY_CHANGED));
 }

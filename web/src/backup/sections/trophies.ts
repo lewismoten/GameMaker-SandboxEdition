@@ -3,6 +3,7 @@
 // overrides. Merge keeps the higher of each score and count; an override set here stays.
 import { localOf, SITE_SAVE_IDS } from '../inventory';
 import { FILE, parseScores, type ScoreRecord } from '../../scoreTrophies/scores';
+import { FILE as MONEY_FILE, parseMoney } from '../../piggyBank/money';
 import { describeKeys, fileMap, fillGaps, injectLocal, isRecord, need, plural, stringMap, type Section } from './types';
 
 export interface TrophiesPayload {
@@ -16,28 +17,37 @@ function higher(a: ScoreRecord, b: ScoreRecord): ScoreRecord {
   return { best, total: Math.max(a.total, b.total), plays: Math.max(a.plays, b.plays) };
 }
 
+/** The newest cash amount is unknowable after an offline merge; retain both sets by the user's choice. */
+function moneyOf(mine: Record<string, Uint8Array>, theirs: Record<string, Uint8Array>, prefer: 'mine' | 'theirs' | undefined): Uint8Array | undefined {
+  const a = parseMoney(mine[MONEY_FILE]);
+  const b = parseMoney(theirs[MONEY_FILE]);
+  if (!Object.keys(a).length && !Object.keys(b).length) return undefined;
+  const merged = prefer === 'theirs' ? { ...a, ...b } : { ...b, ...a };
+  return new TextEncoder().encode(JSON.stringify(merged));
+}
+
 export const trophies: Section<TrophiesPayload> = {
   id: 'trophies',
   title: 'Score trophies',
   short: 'Score trophies',
-  description: 'Your best score in each game and the total of all your points, for the desk’s two trophies.',
+  description: 'Your best scores, all points and Teddy’s saved leftover game money, for the desk’s trophies and piggy bank.',
   unit: ['best score', 'best scores'],
   extract: (w) => ({
     files: { ...((w.stores.saves[SITE_SAVE_IDS.scores] as Record<string, Uint8Array> | undefined) ?? {}) },
     local: localOf('trophies', w.local),
   }),
-  count: (p) => Object.keys(parseScores(p.files[FILE]).best).length,
+  count: (p) => Math.max(Object.keys(parseScores(p.files[FILE]).best).length, Object.keys(parseMoney(p.files[MONEY_FILE])).length),
   validate(raw) {
     need(isRecord(raw), 'score trophies');
     return { files: fileMap(raw.files, 'score trophies'), local: stringMap(raw.local ?? {}, 'score trophies') };
   },
   merge(mine, theirs, ctx) {
     const local = fillGaps(mine.local, theirs.local, ctx.prefer);
-    if (!theirs.files[FILE]) return { files: mine.files, local };
-    const a = parseScores(mine.files[FILE]);
-    const r = higher(a, parseScores(theirs.files[FILE]));
-    const changed = JSON.stringify(r) !== JSON.stringify(a) || !mine.files[FILE];
-    return { files: changed ? { ...mine.files, [FILE]: new TextEncoder().encode(JSON.stringify(r)) } : mine.files, local };
+    const files = { ...mine.files, ...theirs.files };
+    if (theirs.files[FILE]) files[FILE] = new TextEncoder().encode(JSON.stringify(higher(parseScores(mine.files[FILE]), parseScores(theirs.files[FILE]))));
+    const money = moneyOf(mine.files, theirs.files, ctx.prefer);
+    if (money) files[MONEY_FILE] = money;
+    return { files, local };
   },
   inject(w, mine, next) {
     if (Object.keys(next.files).length) w.stores.saves[SITE_SAVE_IDS.scores] = { ...next.files };
@@ -53,6 +63,8 @@ export const trophies: Section<TrophiesPayload> = {
     if (raised) out.push(`Sets ${plural(raised, this.unit)}`);
     if (dropped) out.push(`Removes ${plural(dropped, this.unit)}`);
     if (b.total !== a.total) out.push(`Total points ${a.total.toLocaleString('en-US')} → ${b.total.toLocaleString('en-US')}`);
+    const money = Object.keys(parseMoney(next.files[MONEY_FILE])).length;
+    if (money) out.push(`Keeps money left from ${plural(money, ['winning game', 'winning games'])}`);
     return [...out, ...describeKeys(mine.local, next.local, ['trophy override', 'trophy overrides'])];
   },
 };
