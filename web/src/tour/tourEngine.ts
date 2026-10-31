@@ -16,6 +16,7 @@ import { offStage, placeBubble, standBy, type Point, type Rect } from './place';
 import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
 import { TourSound } from './tourSound';
 import { TourRecorder } from './tourRecorder';
+import { recordNoticeText, showRecordNotice } from './recordNotice';
 import { CHAPTERS } from './chapters/index';
 import { hushDemos } from '../media/demoAudio';
 
@@ -116,6 +117,7 @@ export class Tour {
   private caption = h('p', { class: 'tour-caption', 'aria-live': 'polite' });
   private count = h('span', { class: 'tour-count' });
   private backBtn = h('button', { type: 'button', class: 'tour-back', onclick: () => this.go(this.i - 1) }, '◀ Back');
+  private notice?: HTMLElement;
   private pauseBtn = h('button', { type: 'button', class: 'tour-pause', onclick: () => this.setPaused(!this.paused) }, 'Pause');
   private nextBtn = h('button', { type: 'button', class: 'tour-next', onclick: () => this.go(this.i + 1) }, 'Next ▶');
   private soundBtn = h('button', { type: 'button', class: 'tour-sound', 'aria-pressed': 'true', onclick: () => this.toggleSound() }, 'Sound');
@@ -171,8 +173,16 @@ export class Tour {
       // a click on Start lets the music play and the tab be recorded (asked again on each page,
       // since a recording can't carry over a page load); the pointer is hidden from then on
       if (!(await this.titleCard('A guided tour', 'Game-Maker: Sandbox Edition', true))) return;
-      this.recorder = await TourRecorder.ask();
+      const asked = await TourRecorder.ask();
+      this.recorder = asked.recorder;
       if (now.tour !== this) return void this.recorder?.finish();
+      const text = recordNoticeText(asked);
+      if (text) {
+        // nothing is being recorded: say so, and play as a plain tour (pointer and buttons back)
+        this.opts = { ...this.opts, record: false };
+        document.documentElement.classList.remove('tour-recording');
+        this.notice = showRecordNotice(text);
+      }
     }
     this.sound.start();
     (this.opts.record ? this.bar : this.pauseBtn).focus();
@@ -821,6 +831,7 @@ export class Tour {
     this.recorder = undefined;
     hushDemos(false);
     document.documentElement.classList.remove('tour-on');
+    this.notice?.remove();
     this.card?.remove();
     this.layer.remove();
     this.bar.remove();

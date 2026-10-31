@@ -141,7 +141,9 @@ they are going instead of walking, and nothing bobs or pulses.
 **Recording mode** (`&record`, or Record the whole tour): a Start card first (its click lets the
 music play), then no pointer and no buttons, a title card before each chapter, the caption larger,
 and the same pace every time. The keys still work: Space pauses, ← and → step, M mutes, Esc ends.
-A 1280×720 or 1920×1080 window records cleanly.
+A 1280×720 or 1920×1080 window records cleanly. If the browser can't share the tab, or the viewer
+declines, a dismissable notice (`recordNotice.ts`) says recording didn't start, and the tour plays on
+as a plain tour (pointer and buttons back).
 
 ## Files
 
