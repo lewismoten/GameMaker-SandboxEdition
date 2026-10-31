@@ -157,6 +157,66 @@
       "set": "remote",
       "block": "drawerOpen"
     },
+    "make-take": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEX///c8IBBpQSSWYTS+hlHjqm2WLCjLTUHXujw0VaJVhs+W523ObH6UAAAAUElEQVR42r2Q0QqAMAgAT11zm///v7FYT1nUSwciHPjgsSUgRc1sjqythly5le69Q2sSUesYDxKnA00IKuPr+W8ye/MoM9uInb0oCWjCe7kDGN4F8SP33q4AAAAASUVORK5CYII=",
+      "game": "remote",
+      "set": "remote",
+      "block": "tapes"
+    },
+    "desk-gm": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAKlBMVEWqpqLX08v///eSfV26pn3Tw57v376Whmm2qo7789dlEBSWLCjLTUH7bVnhEQgWAAAAgUlEQVR42o2QUQrDMAxD1VVSk6y5/3WHnXQbDYMJg41kf/hBVMqUHI0SdpER2FHKBCOXOE7CJ8wcYn5n0GMRUeoiodRt+1TvvVffzPM8n7lZvipN/tr87/y+2Vpri5na4xyX5iMEj0WGLqByQEwyiS55RZs5JsSRODIZTISefMf4AmW6CRKdFdQ2AAAAAElFTkSuQmCC",
+      "game": "remote",
+      "set": "remote",
+      "block": "keyboard"
+    },
+    "bbs-every-speed": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEUUDBQoKDBdXWHHx8sUjiiO/477bVmiaWXPqqL77+N17ZcdAAAAS0lEQVR42qXQSQ6AMAxDUZdi0tz/wghIEzUqg8RfPnllqCcefmNNZdwqLyyzZVlShuiRuEfpSBqqPqDBB1y9wLEDBakTrRZ/BcoL7mSKB2tMJhJzAAAAAElFTkSuQmCC",
+      "game": "remote",
+      "set": "remote",
+      "block": "modem"
+    },
+    "desk-power": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUUDBQ4LDSqpqLX08v///eSfV26pn3Tw57v376qrrrv8/vzx3X/98ezrQO8AAAAp0lEQVR42lWQWRLDMAxC5bTlkdj3P29HZJmWD9uDhEEqRGBN3JegPkg04Wkz6UrlNFNrLdKMymLOyb4aMGfLcar7sdY6iIPKtkKyjiZlUXLM9wM3iS2XW/J+gGwqMV83NiF0k1vw2mJ15vwhY+R/eaJUvLcHRqZ69MSvcaXjU9hGmBrXwqzqXBmkBleni3uh3Xk+lUjnvoafevo5/yTeuDJX1j0i7ecXxwMKHQ/7S6UAAAAASUVORK5CYII=",
+      "game": "remote",
+      "set": "remote",
+      "block": "plug"
+    },
+    "desk-gamepad": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUUDBSSfV26pn3Tw57v375dXWGSkpbHx8vLTUH7bVnXujxh12qrAAAAi0lEQVR42m2QgQrEIAxDY5JNz///4KOt7oZcEFpeWtFAVMqUHIUSmsgw7DhKB+VLrJXghJlN9I8HecFWUzXpfogCfR2ikey+31RgFGCDOefFgEj9oKANe7/GZxT0a32MUXfqL+T5JDXIOGSCmQ3p578ytAOVI8RMJqPL2SjLxwqxHIcngxmhV77VfgHnewXPXGwnbAAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "gamepad"
+    },
+    "desk-mousepad": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUUDBSSfV26pn3Tw57v3762qo7bz7L789cUKHk0VaJVhs92po1yAAAAi0lEQVR42mWQgQrEMAhDc0mm2/7/gw+tV8YuFJQX20ogqmVKrkIJH5Fl2HXUDpav4LpSnDC7Camb9iDfpbi3atJXKeIanRS44PWAhvWGFvgHxYERkZkDa88FsSE1bz7hnszMI4/9kTgwf1AfyG9ozvJHayYN6XxJ7Og6ryoTOCbE5bg8GewIPfmu9gtSiQj/tF1PYwAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "mousepad"
+    },
+    "record-video": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEUUDBT///eSfV26pn3Tw57v375dXWHHx8v7bVnv8/s0VaJUg5cyAAAAjElEQVR42mVQCw7DIBSiBVz1/gdeeLqkTmKlgfcxQFTBlByihFtkDDtH5SD3BSBOWBJh6uq9d4iT0y6jF/DjVEbE+6PAUzSs/3ar5s5RN9YigvpsUG1XewN5Kqz511p7ntZwDczKJVblKJGHeEPeZ44Bgj4WGRI2VEqJLjkytALHynU6jidXuFxKGkJf07oG6YD9OnwAAAAASUVORK5CYII=",
+      "game": "remote",
+      "set": "remote",
+      "block": "camcorder"
+    },
+    "desk-bbs-file": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAALVBMVEUUDBT///eWhmnbz7L789eO/46WLCiiaWXPqqL77+Pbtl3v8/sUKHk0VaJVhs8De0+ZAAAAYUlEQVR42oXQyw6AIAxE0fqA2o71/z/XWKRgguEuD8wCSEoqwhFVVO1RoxnGfK81lC0KlC9eHgBcDc0DCEbeH3JFwN65ENviPSdTzDnnwJQGN4dY5mdrLQnF1xzx4A55gjd8FwtKrBVp9gAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "diskDrive"
+    },
+    "mag-disc": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDBT///eSfV26pn3Tw57v376Whmm2qo7789eqrrrv8/tVhs+fF1T9AAAAkUlEQVR42m2QUQ6EQAhDi21XwfvfdwPqJqv2h0l5wKQQNTIld6GERWQ3bJWnK+HoS3WofcJsa7yIqOopyMPFHpGZWTWkTVXteaqKAmd4vBOlYanJ9hCZ0bfAuTIeEBmNgoqb5p/bv1YKfpivpAVx29ZLB7lAfpAEfZG/nX7ZKUL63DTXz0Q9j47C6Nh5Oh1wly9TJAkSdqwUsQAAAABJRU5ErkJggg==",
+      "game": "remote",
+      "set": "remote",
+      "block": "discSleeve"
+    },
+    "play-save": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUUDBT///eSfV26pn3Tw57v376WLCjLTUGyXSwUKHk0VaJ5tvvj8NTKAAAAj0lEQVR42m1QCQ7DMAgzxdCE/f+/E4eqtZ0TBWQbIhlUFkxJy6IkDqqmYJaXpaB1UnskeYVpNdlfGvh5QWERckNsQiPEXaSui7tvS6fLEHUup6RjnLE1yfOGdDLCZ99MbObOB9oZAATo94cUWWstEUny+Oes3587DdwvaEVXeWWZwDEhtmKp0aAVoU2+3X4BokUIVnSJ+jsAAAAASUVORK5CYII=",
+      "game": "remote",
+      "set": "remote",
+      "block": "saveTape"
+    },
     "blaster-big-name": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAADFBMVEUQDBQ8IBBpQSBdYWWEA1bmAAAAQklEQVR42o3PSQ4AIAgDwEL//2cPxAhSlx4nrDARmLdkRENECgJJM1IgyYphU2+Vx5l9u7xTf+Sr8IF65nf7tl1kAMGnAiLM6nEEAAAAAElFTkSuQmCC",
       "game": "carl",

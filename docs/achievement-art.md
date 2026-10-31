@@ -44,6 +44,16 @@ duplicate image bytes.
 | offline-copy | remote | remote / vcrOff |
 | mag-features | remote | remote / magsSpread |
 | desk-backup | remote | remote / drawerOpen |
+| make-take | remote | remote / tapes |
+| desk-gm | remote | remote / keyboard |
+| bbs-every-speed | remote | remote / modem |
+| desk-power | remote | remote / plug |
+| desk-gamepad | remote | remote / gamepad |
+| desk-mousepad | remote | remote / mousepad |
+| record-video | remote | remote / camcorder |
+| desk-bbs-file | remote | remote / diskDrive |
+| mag-disc | remote | remote / discSleeve |
+| play-save | remote | remote / saveTape |
 | blaster-big-name | carl | carl / speaker |
 | desk-curtains | sleuth | sleuthParlor / curtain0 |
 | cast-parade | sleuth | sleuthParlor / footlights |
@@ -102,13 +112,11 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | check-run | Check-up | 20×20 block: a magnifying glass over a tidy map grid, with a dark outline and one clear focal shape. |
 | make-opening | Presenting… | 20×20 block: a clapperboard with a bright opening star, with a dark outline and one clear focal shape. |
 | make-heat | Feeling the heat | 20×20 block: a tiny glowing map with warm footprints, with a dark outline and one clear focal shape. |
-| make-take | Take one | 20×20 block: a tape recorder with a bright red record button, with a dark outline and one clear focal shape. |
 | palette-vision | Seen by everyone | 20×20 block: a pair of glasses over three clearly distinct color swatches, with a dark outline and one clear focal shape. |
 | finish-desk | After school special | 20×20 block: a school backpack with a game controller sticking out, with a dark outline and one clear focal shape. |
 | finish-dos | Real mode | 20×20 block: a labeled DOS disk in a sleeve, with a dark outline and one clear focal shape. |
 | finish-phone-wide | Sideways scroller | 20×20 block: a landscape phone with left and right arrows, with a dark outline and one clear focal shape. |
 | finish-phone-tall | Tall order | 20×20 block: a portrait phone with up and down arrows, with a dark outline and one clear focal shape. |
-| play-save | Save point | 20×20 block: a cassette marked SAVE, with a dark outline and one clear focal shape. |
 | play-bizarre | Bizarre fan | 20×20 block: a violin with one jaunty musical note, with a dark outline and one clear focal shape. |
 | brief-chapters | Chapter and verse | 20×20 block: a ribbon bookmark in an open book, with a dark outline and one clear focal shape. |
 | trophy-first | Participation trophy | 20×20 block: a star-shaped merit medal, with a dark outline and one clear focal shape. |
@@ -117,12 +125,7 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | egg-teddy | Lay an egg! | 20×20 block: a mischievous corgi beside a suspiciously lumpy felt egg, with a dark outline and one clear focal shape. |
 | watch-seek | Skip ahead | 20×20 block: a film strip jumping over a small gap, with a dark outline and one clear focal shape. |
 | watch-bot | Robot rerun | 20×20 block: a little robot turning a film projector crank, with a dark outline and one clear focal shape. |
-| record-video | Rolling | 20×20 block: a movie camera with two round reels, with a dark outline and one clear focal shape. |
 | download-mp4 | Director’s cut | 20×20 block: a curled strip of film with three distinct frames, with a dark outline and one clear focal shape. |
-| desk-power | Power on | 20×20 block: a chunky power plug with a bright indicator, with a dark outline and one clear focal shape. |
-| desk-gm | C:\GM> | 20×20 block: a beige keyboard with an oversized Enter key, with a dark outline and one clear focal shape. |
-| desk-bbs-file | Downloading… | 20×20 block: an arrow landing in a floppy disk tray, with a dark outline and one clear focal shape. |
-| bbs-every-speed | Every speed on the dial | 20×20 block: a modem with three rising signal bars, with a dark outline and one clear focal shape. |
 | bbs-download-every-speed | The long way round | 20×20 block: a determined turtle carrying a modem, with a dark outline and one clear focal shape. |
 | bbs-cant-wait | I can’t wait | 20×20 block: a tiny rocket trailing a telephone cable, with a dark outline and one clear focal shape. |
 | bbs-got-time | I’ve got time | 20×20 block: a snail carrying a half-finished progress bar, with a dark outline and one clear focal shape. |
@@ -134,8 +137,6 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | tty-wallphone | Wrong kind of phone | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
 | desk-register | Registered user | 20×20 block: a registration form and a sharpened pencil, with a dark outline and one clear focal shape. |
 | desk-egg-pages | Turn the page | 20×20 block: an open card file with colorful page tabs, with a dark outline and one clear focal shape. |
-| desk-gamepad | Press start | 20×20 block: a chunky directional game pad, with a dark outline and one clear focal shape. |
-| desk-mousepad | Square deal | 20×20 block: a square patterned mouse pad and a beige mouse, with a dark outline and one clear focal shape. |
 | desk-achieve | Taking stock | 20×20 block: a clipboard full of tiny earned badges, with a dark outline and one clear focal shape. |
 | cast-visit | Meet the cast | 20×20 block: two friendly theater masks, with a dark outline and one clear focal shape. |
 | help-all | Read the fine print | 20×20 block: a folded instruction leaflet, with a dark outline and one clear focal shape. |
@@ -144,7 +145,6 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | print-world-styles | Cartographer | 20×20 block: a ruler and a triangular map outline, with a dark outline and one clear focal shape. |
 | library-visit | Quiet, please | 20×20 block: a miniature library facade, with a dark outline and one clear focal shape. |
 | mag-back | Cover to cover | 20×20 block: a rolled magazine tied with a ribbon, with a dark outline and one clear focal shape. |
-| mag-disc | Free CD-ROM inside! | 20×20 block: a shiny disc in a paper magazine sleeve, with a dark outline and one clear focal shape. |
 | desk-speaker | Bass boost | 20×20 block: a small vibrating desk speaker, with a dark outline and one clear focal shape. |
 | desk-chez | Honk honk | 20×20 block: THE CHEZ seen from the front, with Teddy in the passenger seat, with a dark outline and one clear focal shape. |
 | desk-plow | Plowed in | 20×20 block: a friendly snowplow pushing a little white drift, with a dark outline and one clear focal shape. |
