@@ -58,4 +58,14 @@ describe('placing the tour', () => {
       expect(overlaps(bubble, other)).toBe(false);
     }
   });
+  it('stays by its speaker when the control fills the page but for a far corner', () => {
+    const view = { w: 1440, h: 900 };
+    const speaker = { x: 1200, y: view.h - FLOOR - 120, w: 80, h: 100 };
+    const size = { w: 320, h: 90 };
+    // a guide open over everything but the top-left corner
+    const p = placeBubble(speaker, size, view, FLOOR, { x: 360, y: 0, w: 1080, h: 900 });
+    const far = Math.hypot(p.x + size.w / 2 - (speaker.x + speaker.w / 2), p.y + size.h / 2 - (speaker.y + speaker.h / 2));
+    expect(far).toBeLessThan(400);
+    expect(overlaps({ ...p, ...size }, speaker)).toBe(false);
+  });
 });

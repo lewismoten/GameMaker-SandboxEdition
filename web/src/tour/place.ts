@@ -84,15 +84,15 @@ export function placeBubble(
       options.push({ x, y, side });
     }
   const inView = options.map((o) => ({ ...o, x: clamp(o.x, margin, view.w - margin - size.w), y: clamp(o.y, margin, bottom - size.h) }));
+  // a bubble beside the speaker, a corner's width off at most: past that it reads as nobody's
+  const reach = 1.25 * Math.hypot((size.w + anchor.w) / 2 + gap, (size.h + anchor.h) / 2 + gap);
   const cost = (o: Point & { side: Side }, i: number) => {
     const r = { x: o.x, y: o.y, w: size.w, h: size.h };
+    const distance = Math.hypot(o.x + size.w / 2 - cx, o.y + size.h / 2 - cy);
     // Protect every host before considering control overlap or distance. A large control
-    // must never make covering a character appear cheaper than using a free position.
-    return [
-      hosts.reduce((sum, host) => sum + overlap(r, host), 0),
-      avoid ? overlap(r, avoid) : 0,
-      Math.hypot(o.x + size.w / 2 - cx, o.y + size.h / 2 - cy) + i * 2,
-    ];
+    // must never make covering a character appear cheaper than using a free position, nor
+    // send the bubble across the screen from its speaker to find a free pocket.
+    return [hosts.reduce((sum, host) => sum + overlap(r, host), 0), distance > reach ? 1 : 0, avoid ? overlap(r, avoid) : 0, distance + i * 2];
   };
   let best = 0;
   inView.forEach((o, i) => {
