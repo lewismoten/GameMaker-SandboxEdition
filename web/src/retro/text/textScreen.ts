@@ -54,6 +54,8 @@ export class TextScreen {
   private shrinkTo?: [number, number];
   private full?: CanvasRenderingContext2D;
   private dirty = true;
+  /** Custom 8x16 glyphs (char code to 16 rows, high bit leftmost), like a BIOS that redefines characters. */
+  private glyphs = new Map<number, Uint8Array>();
   private raf = 0;
   cursorX = 0;
   cursorY = 0;
@@ -258,6 +260,23 @@ export class TextScreen {
     }
   }
 
+  /** Redefines characters: char code to 16 bytes, one VGA line each, the high bit the leftmost pixel. */
+  defineGlyphs(map: Map<number, ArrayLike<number>>): void {
+    for (const [code, rows] of map)
+      this.glyphs.set(
+        code,
+        Uint8Array.from({ length: 16 }, (_, i) => rows[i] ?? 0),
+      );
+    this.markDirty();
+  }
+
+  /** Back to the stock font for every character. */
+  resetGlyphs(): void {
+    if (!this.glyphs.size) return;
+    this.glyphs.clear();
+    this.markDirty();
+  }
+
   /** Draws immediately (for capturing the screen as a picture). */
   renderNow(): void {
     this.render();
@@ -274,6 +293,18 @@ export class TextScreen {
         const bg = colors[(a >> 4) & 15];
         const glyph = this.chars[i] * 8;
         const cursorHere = this.cursorVisible && this.blinkOn && cx === this.cursorX && cy === this.cursorY;
+        const custom = this.glyphs.get(this.chars[i]);
+        if (custom) {
+          for (let line = 0; line < 16; line++) {
+            const bits = cursorHere && line >= 12 ? 0xff : custom[line];
+            const o0 = (cy * CH + line) * k * W + cx * CW * k;
+            for (let b = 0; b < 8; b++) {
+              const c = bits & (0x80 >> b) ? fg : bg;
+              for (let l = 0; l < k; l++) px.fill(c, o0 + l * W + b * k, o0 + l * W + b * k + k);
+            }
+          }
+          continue;
+        }
         for (let row = 0; row < 8; row++) {
           let bits = FONT_CP437[glyph + row];
           if (cursorHere && row >= 6) bits = 0xff;
