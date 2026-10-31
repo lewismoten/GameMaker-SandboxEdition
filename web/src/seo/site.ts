@@ -250,7 +250,8 @@ export function gameJsonLd(game: GameSeo, url?: string, image?: string): Record<
     image,
     author: people.length === 1 ? people[0] : people.length ? people : undefined,
     publisher: game.company ? { '@type': 'Organization', name: game.company } : undefined,
-    datePublished: game.year ? String(game.year) : undefined,
+    // the 1990s year of a game made for this project is in-story, so only the CD's games state one
+    datePublished: game.year && !game.original ? String(game.year) : undefined,
     gamePlatform: ['Web browser', 'MS-DOS'],
     playMode: 'SinglePlayer',
     applicationCategory: 'Game',
