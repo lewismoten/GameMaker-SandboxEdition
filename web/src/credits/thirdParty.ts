@@ -55,6 +55,13 @@ export const PIECE_GROUPS: PieceGroup[] = [
         url: 'https://www.thegamecrafter.com',
       },
       {
+        name: 'Tiny Pockets Press logo',
+        license: 'ISC License',
+        by: 'Lewis Moten (© 2026)',
+        what: 'The small logo on the brass plaque of the Library’s card catalog (web/public/library/tiny-pockets-press.webp), converted from the repository’s logo-256.png without changes to the picture.',
+        url: 'https://github.com/lewismoten/Tiny-Pockets-Press',
+      },
+      {
         name: 'FLI format',
         license: 'Format description',
         by: 'Jim Kent and Heidi Brumbaugh (Dancing Flame), via Andy Stone’s FLI.CPP',

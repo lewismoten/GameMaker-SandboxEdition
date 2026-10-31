@@ -865,6 +865,16 @@ the public domain (CC0 1.0) by Lewis Moten, github.com/lewismoten/Tiny-Pockets-P
 few codes the Library uses are copied, in `web/src/library/tinyShelf.ts`. The cabinet and
 shelves styling and markup were written by Claude Sonnet 5.5 under Lewis Moten's direction.
 
+### Tiny Pockets Press logo
+
+The small logo on the brass plaque at the top of the Library's card catalog is the Tiny Pockets
+Press logo (`logo-256.png`, github.com/lewismoten/Tiny-Pockets-Press), © 2026 Lewis Moten,
+under the ISC License ("Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above copyright notice and this
+permission notice appear in all copies."). It ships as `web/public/library/tiny-pockets-press.webp`
+(a lossless conversion). The photocopier beside the cabinet and the plaque were drawn in CSS by
+Claude Sonnet 5.5 under Lewis Moten's direction.
+
 ### Ready-made palette references
 
 The tools package's `palettePresetData.ts` contains Atari NTSC/PAL swatches by Ricardo
