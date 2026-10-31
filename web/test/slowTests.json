@@ -1,6 +1,7 @@
 {
   "limitMs": 50,
   "files": [
+    "scripts/versionDisksFiles.test.ts",
     "src/assistant/chat/makeGame.test.ts",
     "src/dosPage/boundary.test.ts",
     "src/editor/check/fastBirth.test.ts",

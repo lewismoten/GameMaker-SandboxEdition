@@ -9,7 +9,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { versionProblems, type VersionSource } from './versions';
-import { VersionDisks } from './versionDisks';
+import { lastPushToMaster, VersionDisks } from './versionDisks';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const root = join(gamesDir, '..');
@@ -19,22 +19,13 @@ function git(...args: string[]): { ok: boolean; out: string } {
   return { ok: r.status === 0, out: (r.stdout ?? '').trim() };
 }
 
-/** The commit of the last push to master, or undefined when there is none to compare with. */
-function lastPush(): string | undefined {
-  for (const ref of ['origin/master', 'master']) {
-    const r = git('merge-base', 'HEAD', ref);
-    if (r.ok && r.out) return r.out;
-  }
-  return undefined;
-}
-
 const ids = process.argv.slice(2).length
   ? process.argv.slice(2)
   : readdirSync(gamesDir)
       .filter((id) => existsSync(join(gamesDir, id, 'about.json')))
       .sort();
 
-const base = lastPush();
+const base = lastPushToMaster(root);
 if (!base) {
   console.log('versions: skipped (no master to compare with: no git history here)');
   process.exit(0);

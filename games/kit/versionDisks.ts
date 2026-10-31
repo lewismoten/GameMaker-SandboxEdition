@@ -1,11 +1,21 @@
 // Compare generated disks with a Git revision, rebuilding historical sources when outputs are untracked.
-import { execFileSync, execFile } from 'node:child_process';
+import { execFileSync, execFile, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { promisify } from 'node:util';
 import { readZip } from '@lewismoten/gamemaker-sandbox-archives';
+
+/** The commit of the last push to master (merge-base with origin/master, else master), or undefined without one. */
+export function lastPushToMaster(root: string): string | undefined {
+  for (const ref of ['origin/master', 'master']) {
+    const r = spawnSync('git', ['merge-base', 'HEAD', ref], { cwd: root, encoding: 'utf8' });
+    const out = (r.stdout ?? '').trim();
+    if (r.status === 0 && out) return out;
+  }
+  return undefined;
+}
 
 export class VersionDisks {
   private snapshot?: string;
@@ -43,23 +53,8 @@ export class VersionDisks {
     return this.snapshot;
   }
 
-  async changed(id: string): Promise<boolean> {
-    const prefix = `games/${id}/disk/`;
-    const stored = this.git('ls-tree', '-r', '--format=%(objectname) %(path)', this.base, '--', prefix).toString().trim();
-    const current = join(this.root, prefix);
-    if (!existsSync(current)) throw new Error('Build game outputs before checking versions.');
-    if (stored) {
-      const blobs = new Map(stored.split('\n').map((line) => [line.slice(41 + prefix.length), line.slice(0, 40)]));
-      const names = readdirSync(current);
-      return (
-        names.length !== blobs.size ||
-        names.some((name) => {
-          const data = readFileSync(join(current, name));
-          const blob = createHash('sha1').update(`blob ${data.length}\0`).update(data).digest('hex');
-          return blob !== blobs.get(name);
-        })
-      );
-    }
+  /** Builds the game from this revision's sources into the snapshot and returns the folder. */
+  private async build(id: string): Promise<string> {
     const snapshot = await this.sources();
     const out = join(snapshot, 'comparison-disk');
     let frames = '';
@@ -95,6 +90,41 @@ export class VersionDisks {
       maxBuffer: 64 << 20,
       timeout: 240_000,
     });
+    return out;
+  }
+
+  /** The game's disk at this revision, name to bytes: tracked blobs if there are any, else a historical build. */
+  async files(id: string): Promise<Map<string, Uint8Array>> {
+    const prefix = `games/${id}/disk/`;
+    const names = this.git('ls-tree', '-r', '--name-only', this.base, '--', prefix).toString().split('\n').filter(Boolean);
+    const out = new Map<string, Uint8Array>();
+    if (names.length) {
+      for (const n of names) out.set(n.slice(prefix.length), new Uint8Array(this.git('show', `${this.base}:${n}`)));
+      return out;
+    }
+    const dir = await this.build(id);
+    for (const n of readdirSync(dir)) out.set(n, new Uint8Array(readFileSync(join(dir, n))));
+    return out;
+  }
+
+  async changed(id: string): Promise<boolean> {
+    const prefix = `games/${id}/disk/`;
+    const stored = this.git('ls-tree', '-r', '--format=%(objectname) %(path)', this.base, '--', prefix).toString().trim();
+    const current = join(this.root, prefix);
+    if (!existsSync(current)) throw new Error('Build game outputs before checking versions.');
+    if (stored) {
+      const blobs = new Map(stored.split('\n').map((line) => [line.slice(41 + prefix.length), line.slice(0, 40)]));
+      const names = readdirSync(current);
+      return (
+        names.length !== blobs.size ||
+        names.some((name) => {
+          const data = readFileSync(join(current, name));
+          const blob = createHash('sha1').update(`blob ${data.length}\0`).update(data).digest('hex');
+          return blob !== blobs.get(name);
+        })
+      );
+    }
+    const out = await this.build(id);
     const names = readdirSync(current);
     return (
       names.length !== readdirSync(out).length ||
