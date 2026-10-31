@@ -271,4 +271,92 @@ export function addBadgeBlocks(book: BlockBook, pal: Pal, bg: Backdrops): void {
     p.line(11, 5, 11, 3, c('steel', 3));
     add('helloTerm', p);
   }
+
+  // a framed picture on the lab wall: Teddy the corgi (both ears up, same size) beside a lumpy felt egg
+  {
+    const p = bg.lab();
+    p.line(10, 0, 4, 2, c('ink', 1)).line(10, 0, 15, 2, c('ink', 1));
+    p.rect(1, 2, 18, 17, c('ink', 0)).rect(2, 3, 16, 15, c('wood', 2)).rect(3, 4, 14, 13, c('paper', 2));
+    p.draw(
+      3,
+      4,
+      [
+        '..............',
+        '..............',
+        '.K.....K......',
+        '.KTK.KTK......',
+        '.KTTTTTK..KKK.',
+        '.KTKTKTK.KPPPK',
+        '.KTWWWTK.KPGPK',
+        '.KTWNWTK.KPPBK',
+        '.KKWWWKK.KBPPK',
+        '.KTTWTTK.KPPGK',
+        '.KTTWTTK..KPK.',
+        '.KWKKKWK...KK.',
+        '..............',
+      ],
+      {
+        K: c('ink', 0),
+        T: c('crust', 2),
+        W: c('coat', 4),
+        N: c('ink', 0),
+        P: c('pink', 2),
+        G: c('gold', 3),
+        B: c('blue', 3),
+      },
+    );
+    add('eggTeddy', p);
+  }
+
+  // a tiny rocket trailing a coiled phone cord down to its plug
+  {
+    const p = bg.lab();
+    const K = c('ink', 0);
+    p.draw(11, 0, ['...K...', '..KRK..', '.KRRRK.', '.KWWWK.', '.KWBWK.', '.KWWSK.', '.KWWSK.', 'KRKWKRK', 'KR.F.RK', '...Y...'], {
+      K,
+      R: c('red', 2),
+      W: c('coat', 4),
+      S: c('coat', 2),
+      B: c('blue', 3),
+      F: c('flame', 2),
+      Y: c('gold', 3),
+    });
+    for (const [x, y] of [
+      [14, 12],
+      [11, 14],
+      [8, 16],
+      [5, 17],
+    ])
+      p.ring(x, y, 2.4, K);
+    p.line(14, 10, 14, 11, K).line(14, 11, 14, 11, K).line(3, 18, 2, 18, K).rect(0, 16, 3, 4, K).rect(1, 17, 1, 2, c('gray', 3));
+    add('rocketCord', p);
+  }
+
+  // an open card-file box, page tabs standing up in a row
+  {
+    const p = bg.lab();
+    const K = c('ink', 0);
+    const tabs = [c('red', 2), c('gold', 3), c('blue', 2), c('green', 2), c('purple', 2)];
+    [2, 5, 8, 11, 14].forEach((x, i) => {
+      const top = [4, 2, 5, 1, 3][i];
+      p.rect(x, top, 4, 11 - top, K)
+        .rect(x + 1, top + 1, 2, 10 - top, c('paper', 2))
+        .rect(x + 1, top + 1, 2, 2, tabs[i]);
+    });
+    p.rect(0, 10, 20, 9, K).rect(1, 11, 18, 7, c('wood', 2)).rect(1, 11, 18, 1, c('wood', 3)).rect(1, 17, 18, 1, c('wood', 1));
+    p.rect(7, 13, 6, 3, K).rect(8, 14, 4, 1, c('gold', 3));
+    add('cardFile', p);
+  }
+
+  // a flashlight whose violet beam shows a felt egg
+  {
+    const p = bg.lab();
+    const K = c('ink', 0);
+    for (let x = 9; x < 20; x++) p.rect(x, Math.round(5 + (x - 8) * 0.3), 1, Math.round((x - 8) * 1.1) + 1, c('purple', 1));
+    p.disc(15, 11, 3.6, K).disc(15, 11, 2.8, c('pink', 2)).set(14, 8, K).set(16, 14, K);
+    p.set(14, 10, c('gold', 3)).set(16, 12, c('potion', 3)).set(15, 13, c('spark', 3)).set(16, 9, c('spark', 2)).set(14, 12, c('gold', 3));
+    p.rect(0, 3, 7, 5, K).rect(1, 4, 5, 3, c('steel', 2)).rect(1, 4, 5, 1, c('steel', 4));
+    p.rect(7, 1, 3, 9, K).rect(8, 2, 1, 7, c('steel', 3)).rect(9, 3, 1, 5, c('purple', 2));
+    add('uvEgg', p);
+  }
 }

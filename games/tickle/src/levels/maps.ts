@@ -237,7 +237,11 @@ export function lab(book: BlockBook): Level {
     .set(58, 9, 'crtRings')
     .set(29, 9, 'soundCard')
     .set(15, 9, 'screwdriverDisk')
-    .set(38, 5, 'helloTerm');
+    .set(38, 5, 'helloTerm')
+    .set(3, 2, 'eggTeddy')
+    .set(24, 2, 'rocketCord')
+    .set(69, 3, 'cardFile')
+    .set(50, 2, 'uvEgg');
   m.set(4, 5, 'p').set(8, 4, 'd').set(30, 4, 'd').set(47, 3, 'p').set(64, 4, 'd');
   // the first bench, flasks bubbling, a rat on the floor (its walk a block short of the bench, so
   // coming back it never pushes the rat tickler's head into the bench top) and one on the bench
