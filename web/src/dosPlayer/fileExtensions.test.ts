@@ -31,7 +31,8 @@ describe('the player’s extensions', () => {
   it('patches every copy of each kind, and only those bytes', () => {
     for (const k of EXT_KINDS) {
       const out = applyPlayerPatches(exe, { [extId(k.ext)]: 'q1_' });
-      const changed = [...out.keys()].filter((i) => out[i] !== exe[i]);
+      const changed: number[] = [];
+      for (let i = 0; i < out.length; i++) if (out[i] !== exe[i]) changed.push(i);
       expect(changed, k.ext).toEqual(k.offsets.flatMap((o) => [o + 1, o + 2, o + 3]).sort((a, b) => a - b));
       for (const o of k.offsets) expect(text(out, o, 5)).toBe('.q1_\0');
       if (k.offsets.length) expect(readPlayerPatches(out)).toEqual({ patches: { [extId(k.ext)]: 'q1_' }, explained: true, unreadable: [] });
