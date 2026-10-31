@@ -150,9 +150,11 @@ export interface MiniCover {
 /**
  * What a `shot` shows of a game: its title screen, its first level, or one of Game-Maker's design
  * tools at work on that level's files (toolShots.ts): the palette, the block editor, the
- * monsters' animation frames, or the whole map.
+ * monsters' animation frames, or the whole map. Or, for the pass-through feature, a walk-in or a page.
  */
-export type ShotView = 'title' | 'level' | 'palette' | 'blocks' | 'monsters' | 'map';
+export type ShotView = 'title' | 'level' | 'palette' | 'blocks' | 'monsters' | 'map' | `walk:${string}` | `page:${string}`;
+// `walk:<scene>` is the level where the hero stands on the link into a pass-through scene of that
+// name, `page:<scene>` the picture and page that scene shows (passShots.ts).
 
 /** Screenshots of today's web (webShots.ts): public/magazine/web-<name>.webp. */
 export const WEB_SHOTS = ['games', 'map', 'blocks', 'character', 'monster', 'music', 'scene'] as const;

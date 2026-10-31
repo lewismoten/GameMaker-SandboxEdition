@@ -15,6 +15,7 @@ import { MAG } from './masthead';
 import { mugShelf } from './mugShelf';
 import { shelfList } from './shelf';
 import { replyMail } from './replyMail';
+import type { Tool } from './toolShots';
 import type { Block, HalfAd, Inline, PlacedPage, ShotView } from './types';
 
 export interface RenderEnv {
@@ -56,8 +57,12 @@ const shots = new Map<string, Promise<string | undefined>>();
 function shotUrl(entry: CatalogEntry, view: ShotView): Promise<string | undefined> {
   const key = `${entry.id}:${view}`;
   let p = shots.get(key);
+  if (!p && (view.startsWith('walk:') || view.startsWith('page:'))) {
+    p = import('./passShots').then(({ passShot }) => passShot(entry, view));
+    shots.set(key, p);
+  }
   if (!p && view !== 'title' && view !== 'level') {
-    p = import('./toolShots').then(({ toolShot }) => toolShot(entry, view));
+    p = import('./toolShots').then(({ toolShot }) => toolShot(entry, view as Tool));
     shots.set(key, p);
   }
   if (!p) {
