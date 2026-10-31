@@ -71,7 +71,7 @@ game folder opens in the browser unchanged.
 - **Helpers from October 30, 2026**: **Claude Sonnet 5.5** (Anthropic) runs as Claude Opus
   5.5's helper agents. Opus plans the work and briefs each helper, Sonnet does it, and Lewis
   directs both. Its first jobs were the guided tour's "What's in the box" chapter and fixes to
-  the game builds. It also drew Teddy's Fort Knox toy safe on the desk (`web/src/fortKnox/`: the
+  the game builds. It also drew Teddy's Fort Locks toy safe on the desk (`web/src/fortKnox/`: the
   safe, its dial and the dog treat store inside), from Lewis's description of his childhood
   bank. Notes kept for Lewis stay out of the repository.
 - **Reviews and a sounding board**: Lewis has also had **ChatGPT-6.1 Sol** (OpenAI) review

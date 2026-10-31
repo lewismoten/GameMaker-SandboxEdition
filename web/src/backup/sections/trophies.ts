@@ -31,7 +31,7 @@ export const trophies: Section<TrophiesPayload> = {
   id: 'trophies',
   title: 'Score trophies',
   short: 'Score trophies',
-  description: 'Your best scores, all points and Teddy’s saved leftover game money, for the desk’s trophies and Teddy’s Fort Knox toy safe.',
+  description: 'Your best scores, all points and Teddy’s saved leftover game money, for the desk’s trophies and Teddy’s Fort Locks toy safe.',
   unit: ['best score', 'best scores'],
   extract: (w) => ({
     files: { ...((w.stores.saves[SITE_SAVE_IDS.scores] as Record<string, Uint8Array> | undefined) ?? {}) },
