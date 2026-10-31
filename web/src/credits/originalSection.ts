@@ -52,6 +52,11 @@ export function originalSection(): HTMLElement {
           ext('https://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html', 'building it as a teenager with his family'),
           '.',
         ),
+        h(
+          'blockquote',
+          { class: 'credits-quote', cite: 'https://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html' },
+          h('p', null, '“I am proud to have been an enabler of this culture in the 90’s.”'),
+        ),
       ),
     ),
     h(

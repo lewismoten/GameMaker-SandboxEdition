@@ -395,6 +395,14 @@ main.credits-page .credits-card p {
   margin: 0;
 }
 
+/* a line quoted from the page the card links to */
+main.credits-page .credits-card .credits-quote {
+  margin: 8px 0 0;
+  padding-left: 10px;
+  border-left: 3px solid var(--accent);
+  font-style: italic;
+}
+
 main.credits-page .credits-card .card-meta {
   margin: 0 0 6px;
   color: var(--muted);
