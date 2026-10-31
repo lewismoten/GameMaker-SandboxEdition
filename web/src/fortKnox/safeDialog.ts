@@ -65,9 +65,12 @@ export async function openSafe(): Promise<void> {
     status.textContent = text;
   };
   const dialEl = (): HTMLElement | null => stage.querySelector('.kn-dial');
+  let shownAngle = 0; // the angle the dial is drawn at now (it can run past 360: a key turn eases from here)
+  let keyRaf = 0;
   const setAngle = (deg: number) => {
-    const g = stage.querySelector<SVGGElement>('.kn-dial-turn');
-    if (g) g.style.transform = `rotate(${deg}deg)`;
+    shownAngle = deg;
+    // the face and the knob's grooves turn; the knob's light and shadow stay put
+    for (const g of stage.querySelectorAll<SVGGElement>('.kn-dial-turn')) g.style.transform = `rotate(${deg}deg)`;
   };
   const paint = () => {
     const d = dialEl();
@@ -79,15 +82,30 @@ export async function openSafe(): Promise<void> {
     clearTimeout(announce);
     announce = window.setTimeout(() => (live.textContent = `${dial.pos}`), 250);
   };
-  const turn = (ticks: number) => {
+  /** Turns `ticks` (right is positive); `smooth` eases the dial there from where it is drawn (the arrow keys) instead of stepping. */
+  const turn = (ticks: number, smooth = false) => {
     stopAnim();
+    cancelAnimationFrame(keyRaf);
     const dir = Math.sign(ticks);
     for (let i = 0; i < Math.abs(ticks); i++) {
       dial = turnDial(dial, dir);
       if (dial.pos % 5 === 0) roomSound.dialClick();
       if (dial.picks) roomSound.wheelTap();
     }
+    const from = shownAngle;
+    // the nearest way round to the new number from where the dial is drawn (turning right is clockwise)
+    const to = from + ((((-dial.pos * TICK_DEG - from) % 360) + 540) % 360) - 180;
     paint();
+    if (!smooth || stillMotion()) return;
+    setAngle(from);
+    const t0 = performance.now();
+    const ms = 140;
+    const frame = (now: number) => {
+      const k = Math.min(1, (now - t0) / ms);
+      setAngle(from + (to - from) * (1 - (1 - k) * (1 - k)));
+      keyRaf = k < 1 ? requestAnimationFrame(frame) : 0;
+    };
+    keyRaf = requestAnimationFrame(frame);
   };
 
   // ---- the number box: the dial turns to a typed number --------------------------------
@@ -172,8 +190,8 @@ export async function openSafe(): Promise<void> {
   function wireDial(el: HTMLElement) {
     el.addEventListener('keydown', (e) => {
       const step = e.shiftKey ? 5 : 1;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') turn(step);
-      else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') turn(-step);
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') turn(step, true);
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') turn(-step, true);
       else if (e.key === 'Enter') return tryDoor();
       else return;
       e.preventDefault();
