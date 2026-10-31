@@ -4,6 +4,7 @@
 import { newBlockSet, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { fixedPalette } from '../art/pal';
 import type { Canvas } from '../art/rgb';
+import { SCORE_SCALE } from '../score';
 
 const FIXED = fixedPalette();
 
@@ -37,7 +38,7 @@ export class SpriteSheet {
     b.chHitPt = a.hp ?? 0;
     b.effect = a.effect ?? 0;
     b.eamt = a.eamt ?? 0;
-    b.scorePts = a.score ?? 0;
+    b.scorePts = Math.round((a.score ?? 0) * SCORE_SCALE);
     b.solid = a.solid ?? 0;
     return i;
   }

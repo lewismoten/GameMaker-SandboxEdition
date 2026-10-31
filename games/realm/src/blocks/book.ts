@@ -7,6 +7,7 @@
 import { newBlockSet, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Pal, scenePalette } from '../art/pal';
 import { Canvas, type RGB } from '../art/rgb';
+import { SCORE_SCALE } from '../score';
 
 export interface Attrs {
   solid?: number;
@@ -91,7 +92,7 @@ export class BlockBook {
       const b = this.blocks[i];
       b.pixels = this.pal.index(cv, { amount: a.dither ?? 6, spritesOnly: a.spritesOnly });
       b.solid = a.solid ?? 0;
-      b.scorePts = a.score ?? 0;
+      b.scorePts = Math.round((a.score ?? 0) * SCORE_SCALE);
       b.chHitPt = a.hp ?? 0;
       b.grav = a.grav ?? 0;
       b.effect = a.effect ?? 0;
