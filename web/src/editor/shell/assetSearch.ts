@@ -6,7 +6,7 @@
 import './assetSearch.css';
 import { h, clear } from '../core/ui';
 import type { FileKind, Project } from '../core/project';
-import { gridMove } from '../widgets/rovingGrid';
+import { searchMove } from './searchNav';
 import { queryWords } from './searchMatch';
 import { GROUP_TITLES, type SearchEntry, type SearchGroup } from './searchIndex';
 
@@ -115,19 +115,15 @@ export function assetSearch(host: SearchHost): { el: HTMLElement; refresh(): voi
   }
 
   const cards = () => [...host.grid.querySelectorAll<HTMLElement>('button.sr-card')];
-  /** The heading a card sits under. */
-  const sectionOf = (c: Element): string => {
-    let n: Element | null = c;
-    while (n && !n.classList.contains('sr-group')) n = n.previousElementSibling;
-    return n?.id ?? '';
-  };
   const onGridKey = (e: KeyboardEvent) => {
     if (!(e.target instanceof HTMLElement) || !e.target.matches('button.sr-card')) return;
     const all = cards();
     const i = all.indexOf(e.target);
-    const group = all.filter((c) => sectionOf(c) === sectionOf(all[i]));
-    const wrap = group.findIndex((c) => c.offsetTop !== group[0].offsetTop);
-    const to = gridMove(e.key, i, all.length, wrap < 0 ? group.length : wrap);
+    const to = searchMove(
+      e.key,
+      all.map((c) => c.getBoundingClientRect()),
+      i,
+    );
     if (to < 0) return;
     e.preventDefault();
     all[to].focus();
