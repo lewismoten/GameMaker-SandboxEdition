@@ -103,6 +103,13 @@ export const roomSound = {
     noise(o, 0, 0.012, 3800, 0.14, 5);
     tone(o, 0, 0.02, 2600, 1900, 0.025, 'square');
   },
+  /** A faint tick inside the safe's lock: a pin picking up a wheel. About a quarter as loud as dialClick. */
+  wheelTap(): void {
+    const o = open();
+    if (!o) return;
+    noise(o, 0, 0.008, 5200, 0.035, 6);
+    tone(o, 0, 0.012, 3200, 2400, 0.005, 'square');
+  },
   /** A crunchy treat. */
   treatCrunch(): void {
     const o = open();
