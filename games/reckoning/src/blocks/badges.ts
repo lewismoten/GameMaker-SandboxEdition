@@ -67,12 +67,17 @@ export function addBadgeBlocks(book: BlockBook, c: Pal['c'], bg: Backdrops): voi
   book.add(
     'magRoll',
     on(bg.tiles, (p) => {
-      p.rect(2, 10, 17, 10, K).rect(3, 11, 15, 8, c('berry', 2)).rect(3, 11, 15, 1, c('berry', 3)).rect(3, 18, 15, 1, c('berry', 0));
-      p.rect(9, 13, 3, 3, c('cream', 3)).rect(9, 13, 3, 1, c('cream', 1));
-      p.disc(4, 15, 4, K).disc(4, 15, 3, c('cream', 3)).ring(4, 15, 2, c('cream', 1)).set(4, 15, c('cream', 0));
-      p.rect(14, 10, 4, 10, K).rect(15, 10, 2, 10, c('cheese', 2)).rect(15, 10, 1, 10, c('cheese', 3));
-      p.rect(8, 4, 6, 6, K).rect(9, 5, 4, 4, c('cheese', 2)).rect(17, 4, 3, 6, K).rect(17, 5, 2, 4, c('cheese', 2));
-      p.rect(13, 7, 4, 4, K).rect(14, 8, 2, 2, c('cheese', 3));
+      const along = (r: number, col: number): void => {
+        for (let i = 0; i <= 24; i++) p.disc(Math.round(3 + (i * 12) / 24 + 1), Math.round(16 - (i * 12) / 24), r, col);
+      };
+      along(4, K);
+      along(3, c('berry', 2));
+      for (let i = 0; i <= 12; i++) p.set(2 + i, 14 - i, c('berry', 3)).set(3 + i, 14 - i, c('berry', 3));
+      p.disc(4, 16, 3, c('berry', 1));
+      p.disc(16, 4, 4, K).disc(16, 4, 3, c('cream', 3)).ring(16, 4, 2, c('cream', 1)).set(16, 4, c('cream', 0)).set(17, 4, c('cream', 1));
+      for (let i = -3; i <= 3; i++) p.disc(10 + i, 10 + i, 1, K);
+      for (let i = -2; i <= 2; i++) p.set(10 + i, 10 + i, c('suit', 3)).set(11 + i, 10 + i, c('suit', 2));
+      p.disc(9, 11, 2, K).disc(9, 11, 1, c('suit', 3)).disc(12, 8, 1, K).set(12, 8, c('suit', 3));
     }),
     air,
   );
