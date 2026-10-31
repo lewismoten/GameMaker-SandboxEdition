@@ -18,7 +18,7 @@ export const TREATS: readonly Treat[] = [
     price: 8,
     line: 'Gwinn snaps the whole strip out of the air, shakes it twice and looks around for witnesses. Teddy does the victory hop for her.',
   },
-  { id: 'cake', name: 'Birthday cupcake', price: 12, line: 'Teddy eats the cupcake in one gulp and asks whose birthday it is. Gwinn says it is his.' },
+  { id: 'cake', name: 'Birthday cupcake', price: 12, line: 'Teddy eats the cupcake in one gulp and asks whose birthday it is. Gwinn says it is hers.' },
 ];
 
 export const treatById = (id: string): Treat | undefined => TREATS.find((t) => t.id === id);
