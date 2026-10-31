@@ -40,8 +40,14 @@ drawer is the address's `only` (the first drawer when none is named, and the gam
 opens). Below it the open group's cards stand on wooden shelves (CSS and markup only; each card's
 thumbnail and click are unchanged), each with a spine label. `tinyShelf.ts` holds the few call numbers used, in the
 Tiny Shelf Classification (public domain, Lewis Moten, github.com/lewismoten/Tiny-Pockets-Press) `code-short-author`
-form, e.g. 614-MAH TED. Stage 2 would add a photocopier and the Tiny Pockets Press logo on the cabinet
-(see the note at the end of `library.css`).
+form, e.g. 614-MAH TED. Games whose titles share a mark are told apart by number in the order of their ids
+(TED, TED2, TED3; `setAuthorMarks`, set when `listing.ts` builds the shelf). `cabinet.ts` also draws the
+brass plaque on the cabinet's top rail with the Tiny Pockets Press logo (`web/public/library/tiny-pockets-press.webp`,
+ISC, Lewis Moten; see NOTICE.md and the Credits page).
+`copier.ts` is the photocopier beside the cabinet (below it on small windows): "Copies: choose a paper" lists the
+print shop's pieces in the open drawer and COPY sweeps a green scan light (a still glow with reduced motion), then
+opens that piece in the print shop through `libraryPage.ts`'s `openPiece`. With nothing to print its display reads
+NO ORIGINAL.
 `readerAddress.ts` keeps the Game-Maker box's open piece and chapter in the address
 (`&gm=ultimate&ch=12`): a link opens it there, each chapter chosen is a history entry, and Back
 past the opening closes it.

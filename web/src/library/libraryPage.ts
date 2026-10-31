@@ -23,7 +23,8 @@ import { openFromLibrary, readerOpen } from './readerAddress';
 import { onCatalogChanged } from '../project/catalogWatch';
 import { originId } from '../editor/shell/homeOrigin';
 import { libraryStartGame } from '../libraryStart';
-import { drawerId, makeCabinet } from './cabinet';
+import { drawerId, makeCabinet, plaque } from './cabinet';
+import { makeCopier } from './copier';
 import { callNumber } from './tinyShelf';
 
 /** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
@@ -202,6 +203,7 @@ export function renderLibrary(el: HTMLElement): void {
     keepAddress();
     show();
   });
+  const copier = makeCopier((item, from) => openPiece(item, shelf?.games ?? new Map(), from));
   const gamePicker = h('select', {
     id: 'lib-game',
     class: 'lib-only',
@@ -245,6 +247,7 @@ export function renderLibrary(el: HTMLElement): void {
     if (only && !groups.some((g) => pickOf(g) === only)) only = undefined;
     const open = groups.find((g) => pickOf(g) === only) ?? groups[0];
     cabinet.update(groups, open?.key ?? '', order);
+    copier.update(open ? open.parts.flatMap((p) => p.items) : []);
     if (open) list.setAttribute('aria-labelledby', drawerId(open.key));
     let shown = open ? [open] : [];
     // one kind (By type) from several games: a second picker for the game
@@ -269,7 +272,7 @@ export function renderLibrary(el: HTMLElement): void {
       h('h1', { id: 'lib-h' }, 'Library'),
       h('p', { class: 'lead' }, 'Every paper from the game boxes, plus magazines, guides and videos.'),
       h('div', { class: 'lib-bar' }, h('div', { class: 'lib-orders', role: 'group', 'aria-label': 'Sort the library' }, buttons), gamePick, count),
-      cabinet.el,
+      h('div', { class: 'lib-office' }, h('div', { class: 'lib-case' }, plaque(), cabinet.el), copier.el),
       list,
     ),
   );

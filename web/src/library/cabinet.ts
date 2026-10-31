@@ -71,3 +71,17 @@ export function makeCabinet(onPick: (key: string) => void): Cabinet {
     },
   };
 }
+
+/** The brass plaque on the cabinet's top rail: the Tiny Pockets Press logo (public/library/, ISC, Lewis Moten). */
+export function plaque(): HTMLElement {
+  return h(
+    'div',
+    { class: 'lib-rail' },
+    h(
+      'span',
+      { class: 'lib-plaque' },
+      h('img', { src: './library/tiny-pockets-press.webp', alt: '', width: 20, height: 20 }),
+      h('span', null, 'Tiny Pockets Library'),
+    ),
+  );
+}
