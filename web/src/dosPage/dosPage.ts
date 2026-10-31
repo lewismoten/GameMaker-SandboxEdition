@@ -30,7 +30,7 @@ import { diskMenu } from './diskMenu';
 import { keypad } from './keypad';
 import { viewSwitch } from '../viewSwitch';
 import { tourButton } from '../tour/tourButton';
-import { placeNotes } from '../achievements/toast';
+import { placeNotes } from '../achievements/notesPlacer';
 import { footer } from './footer';
 import { moreMenu } from './moreMenu';
 import { speedHint, speedItem } from './lineSpeed';
