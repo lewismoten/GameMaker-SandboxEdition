@@ -61,8 +61,26 @@ export function houseBadges(book: BlockBook, pal: Pal, bg: { paper: () => Pixels
   wide.rect(0, 4, 20, 12, K).rect(1, 5, 18, 10, c('gray', 1)).rect(1, 5, 18, 1, c('gray', 2));
   wide.rect(3, 6, 14, 8, K).rect(4, 7, 12, 6, c('screen', 0));
   wide.set(2, 9, c('gray', 3)).rect(18, 9, 1, 2, c('gray', 3));
-  poly(wide, [[4, 10], [7, 7], [7, 12]], c('white', 3), c('white', 3));
-  poly(wide, [[15, 10], [12, 7], [12, 12]], c('white', 3), c('white', 3));
+  poly(
+    wide,
+    [
+      [4, 10],
+      [7, 7],
+      [7, 12],
+    ],
+    c('white', 3),
+    c('white', 3),
+  );
+  poly(
+    wide,
+    [
+      [15, 10],
+      [12, 7],
+      [12, 12],
+    ],
+    c('white', 3),
+    c('white', 3),
+  );
   wide.rect(9, 9, 2, 2, c('led', 0));
   book.add('phoneWide', wide, AIR);
 
@@ -71,8 +89,26 @@ export function houseBadges(book: BlockBook, pal: Pal, bg: { paper: () => Pixels
   tall.rect(4, 0, 12, 20, K).rect(5, 1, 10, 18, c('gray', 1)).rect(5, 1, 1, 18, c('gray', 2));
   tall.rect(6, 3, 8, 12, K).rect(7, 4, 6, 10, c('screen', 0));
   tall.rect(9, 1, 2, 1, c('gray', 3)).disc(10, 17, 1, c('gray', 3));
-  poly(tall, [[10, 4], [7, 7], [13, 7]], c('white', 3), c('white', 3));
-  poly(tall, [[10, 13], [7, 10], [13, 10]], c('white', 3), c('white', 3));
+  poly(
+    tall,
+    [
+      [10, 4],
+      [7, 7],
+      [13, 7],
+    ],
+    c('white', 3),
+    c('white', 3),
+  );
+  poly(
+    tall,
+    [
+      [10, 13],
+      [7, 10],
+      [13, 10],
+    ],
+    c('white', 3),
+    c('white', 3),
+  );
   book.add('phoneTall', tall, AIR);
 }
 
@@ -83,8 +119,28 @@ export function yardBadges(book: BlockBook, pal: Pal, bg: { sky: () => Pixels })
 
   // a taped shipping box with little paper-plane wings
   const box = bg.sky();
-  poly(box, [[0, 3], [8, 9], [8, 13], [3, 9]], c('white', 3), K);
-  poly(box, [[19, 3], [11, 9], [11, 13], [16, 9]], c('white', 3), K);
+  poly(
+    box,
+    [
+      [0, 3],
+      [8, 9],
+      [8, 13],
+      [3, 9],
+    ],
+    c('white', 3),
+    K,
+  );
+  poly(
+    box,
+    [
+      [19, 3],
+      [11, 9],
+      [11, 13],
+      [16, 9],
+    ],
+    c('white', 3),
+    K,
+  );
   box.line(1, 4, 7, 9, c('gray', 3)).line(18, 4, 12, 9, c('gray', 3));
   box.rect(2, 11, 16, 8, K).rect(3, 12, 14, 6, c('wood', 3)).rect(3, 12, 14, 1, c('wood', 4));
   box.rect(2, 11, 16, 2, K).rect(3, 12, 14, 1, c('ochre', 1)).rect(9, 11, 3, 8, K).rect(10, 11, 1, 8, c('sand', 2));
