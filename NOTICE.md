@@ -68,6 +68,10 @@ game folder opens in the browser unchanged.
   _modern web_ editor and player. AI assistance did most of the porting and code
   generation: reading the original C source, writing the TypeScript, building the Sandbox
   Software games in code, and testing them, directed and reviewed by Lewis.
+- **Helpers from October 30, 2026**: **Claude Sonnet 5.5** (Anthropic) runs as Claude Opus
+  5.5's helper agents. Opus plans the work and briefs each helper, Sonnet does it, and Lewis
+  directs both. Its first jobs were the guided tour's "What's in the box" chapter and fixes to
+  the game builds. Notes kept for Lewis stay out of the repository.
 - **Reviews and a sounding board**: Lewis has also had **ChatGPT-6.1 Sol** (OpenAI) review
   the fork, TURBO BUTTON and the games' content, and talked ideas through with **Google
   Gemini 3** (Google): 1990s nostalgia and his own memories, the home-office supplies of the

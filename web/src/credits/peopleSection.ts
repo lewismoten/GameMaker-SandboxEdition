@@ -46,6 +46,12 @@ export function aiToolsSection(): HTMLElement {
         'It ported the 1994 desk and today’s editor and player from the original C source; drew the title and cover art of the Bard games that came without any; composed the music of Certified Rat Tickler, The Great Dairy Reckoning of 3:17 A.M. and Shakespeare in Sweatpants; ray traced the “Made with Game-Maker: Sandbox Edition” card new games can open with; made the desk’s Doc Leo black-light poster from two of Lewis’s photos, over many rounds of his corrections; wrote The Ultimate Owner’s Guide; drew the desk’s props in code (the game pad, the speakers and their sound card switch, the mugs and the mouse pads); and wrote and laid out TURBO BUTTON, the site’s 1990s game magazine.',
       ),
       tool(
+        'Claude Sonnet 5.5',
+        'Anthropic',
+        'Claude Opus 5.5’s helpers.',
+        'From October 30, 2026, Claude Opus 5.5 hands focused jobs to helper agents running Claude Sonnet 5.5, starting with the guided tour’s “What’s in the box” chapter and fixes to the game builds, directed by Lewis.',
+      ),
+      tool(
         'OpenAI Codex',
         'OpenAI · GPT-6.0, GPT-6.1 Sol, GPT-5.6 Terra, GPT-6 Astra',
         'Editor features and the npm packages.',
