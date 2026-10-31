@@ -15,6 +15,7 @@ const NOT_KEYS = new Set([
   'gm-sound-card-changed', // a live hardware-change event; the stored preference already has its own section
   'gm-pad-change',
   'gm-mug-change',
+  'gm-lume-reset', // ROOMFIX.EXE tells the wall clock to start its lume paint over
   'gm-score-trophies-changed',
   'gm-imported-notes-changed',
   'gm-tin-hearts-changed',
