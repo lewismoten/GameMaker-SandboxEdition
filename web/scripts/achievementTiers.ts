@@ -33,7 +33,7 @@ function markCorner(pose: Pixels, w: number): [number, number] {
 }
 
 function tierBadge(kind: keyof typeof POSE, tier: (typeof TIERS)[number]): Pixels {
-  const pose = (POSES)[POSE[kind]];
+  const pose = POSES[POSE[kind]];
   const p = new Pixels(20, 20, tier.plate);
   const w = tier.times === 10 ? 7 : tier.times === 3 ? 8 : 2;
   const [mx, my] = markCorner(pose, w);
