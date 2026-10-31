@@ -284,6 +284,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     // doors that shut until the hero has a key from off the route: fetch it, then go on
     if (!found && !canceled) {
       const locks = locksAtEntry(game, files, scene, entry);
+      const unreached = new Set<number>();
       if (locks.wanted.size) {
         outcome.tried.push('keys');
         if (opt.progress?.(scene, 'Fetch the keys, then go on', 0)) canceled = true;
@@ -295,11 +296,12 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
             budgetMs: budget * 0.8,
             seed,
             paths,
+            unreached,
             progress: (places) => (opt.progress?.(scene, 'Fetch the keys, then go on', places) ? (canceled = true) : canceled),
           }));
         if (replay) found = { replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
       }
-      lockWhy = lockedWhy(locks);
+      lockWhy = lockedWhy(locks, unreached);
     }
     if (!found && !canceled && !backOnly) await collect();
     if (canceled) {

@@ -132,7 +132,8 @@ export function lockedWhy(l: Locks, unreached: ReadonlySet<number> = new Set()):
   for (const c of unreached) {
     const g = l.gates.find((x) => x.counter === c);
     const s = l.sources.find((x) => x.counter === c);
-    if (g && s) return `The door at ${at(g.cells[0])} needs ${counterName(c)}: the bot couldn’t reach what adds to it (first at ${at(s.cell)}).`;
+    if (g && s)
+      return `The door at ${at(g.cells[0])} needs ${counterName(c)}: a key for it is on the map (first at ${at(s.cell)}), but the bot never got to enough of it in its time. That is only what the bot saw: it cannot judge a jump or a trick a player could make, so if you can reach it, dismiss this.`;
   }
   return undefined;
 }
