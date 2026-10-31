@@ -1383,6 +1383,118 @@
     "hash": "22ac143b9c0b",
     "voice": "131d8cb8ad55"
   },
+  "edit-sounds-accompany": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the Accompany button",
+    "text": "The Accompany button writes bass, chords and drums around a track’s tune. Copy tune makes a faster, slower or higher copy as a new song.",
+    "seconds": 9.37,
+    "hash": "eee8c0dc55bf",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-change": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the Change it buttons",
+    "text": "Change it reshapes what you have: higher, lower, faster, reversed, echo, vibrato. Silence clears every step. Undo is at the top.",
+    "seconds": 9.27,
+    "hash": "0c5f184112b0",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-columns": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the PC and SB columns",
+    "text": "Two columns of play buttons. PC is the little speaker in the case. SB is a Sound Blaster, which plays a recording when there is one.",
+    "seconds": 8.97,
+    "hash": "5286dc95c01a",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-hello": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn comes on",
+    "text": "Woof! My favorite editor: sounds first, then music. Everything a game can make you hear.",
+    "seconds": 6.05,
+    "hash": "fe7e2ad49c61",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-inst": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn presses the Instruments tab",
+    "text": "Instruments are the FM sounds of the Sound Blaster’s chip. Shape one with sliders and waves, then press Try it to hear a note.",
+    "seconds": 8.42,
+    "hash": "4928f809eb53",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-list": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the list of sound effects",
+    "text": "Thirty effects, numbered. The game plays the first nine by itself. The rest wait for a character’s move to ask for them.",
+    "seconds": 7.74,
+    "hash": "e9a6466326cc",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-make": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the Make one buttons",
+    "text": "Make one composes a new effect: coin, jump, laser, explosion. Each press is a different one, and it plays at once.",
+    "seconds": 8.07,
+    "hash": "b2d1eaa00c21",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-music": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the list of tracks",
+    "text": "Now music. A song is a handful of tracks, one line of notes each. Every track has its own instrument, and you can mute or solo it.",
+    "seconds": 8.82,
+    "hash": "1cb336d55250",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-pitch": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the pitch bars",
+    "text": "The speaker sound is drawn: thirty-six bars of pitch, each a bit over a hundredth of a second. Drag across to draw, to the bottom for silence.",
+    "seconds": 9.47,
+    "hash": "c5b20e7289cc",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-play": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn presses the Play as the game would button",
+    "text": "Play as the game would: the recording on a Sound Blaster if it comes with one, the speaker sound if not.",
+    "seconds": 6.69,
+    "hash": "1349272d7b7e",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-play-song": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the Play button",
+    "text": "Play starts from the cursor, and Space does the same. Click the ruler to choose a start, or drag along it to mark a loop.",
+    "seconds": 7.67,
+    "hash": "8cc8f1cb27d0",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-roll": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the music tools",
+    "text": "Notes go on the piano roll. The pencil draws, the box selects, the eraser rubs out and the hand moves you around.",
+    "seconds": 7.77,
+    "hash": "d6f4ee527d17",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-settings": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn presses the Settings tab",
+    "text": "Settings: the drum kit, the song’s speed, where it repeats, and how loud it is. Then you are done. Woof!",
+    "seconds": 6.8,
+    "hash": "5ad339259f88",
+    "voice": "a50c8e805452"
+  },
+  "edit-sounds-voc": {
+    "chapter": "edit-sounds",
+    "where": "Editor: Gwinn points at the Sound Blaster sample chooser",
+    "text": "Pick a recording for this effect here, a voc file. Leave it on PC speaker only and every computer plays the speaker sound.",
+    "seconds": 8.44,
+    "hash": "ba6b37cd0127",
+    "voice": "a50c8e805452"
+  },
   "editor-assistant": {
     "chapter": "editor",
     "where": "Editor: Watt points at the Assistant button",

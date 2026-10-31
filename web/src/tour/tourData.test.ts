@@ -33,6 +33,8 @@ const SOURCES: Record<string, string[]> = {
     'editor/editors/monsters',
     'editor/editors/character',
     'editor/editors/palette',
+    'editor/editors/sounds',
+    'editor/editors/music',
     'editor/widgets/colorChoice.ts',
     'editor/widgets/filePicker.ts',
     'editor/widgets/panelTabs.ts',

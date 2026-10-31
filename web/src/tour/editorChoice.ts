@@ -11,6 +11,8 @@ const SUB_CHAPTER: Record<string, string> = {
   mon: 'edit-monsters',
   chr: 'edit-monsters',
   pal: 'edit-palette',
+  snd: 'edit-sounds',
+  cmf: 'edit-sounds',
 };
 
 /** The ids of the chapters to play for the editor page at `hash`, in order. */
