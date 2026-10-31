@@ -118,6 +118,54 @@
   font-weight: 600;
 }
 
+/* Wide screens: "Hide files" folds the list into a thin bar (the guided tour opens it again while it runs). */
+.sidebar .rail-toggle,
+.sidebar .rail-home {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .sidebar .rail-toggle {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    min-width: 24px;
+    min-height: 24px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sidebar .side-top {
+    flex-wrap: wrap;
+  }
+  html:not(.tour-on) .workspace.rail-folded {
+    grid-template-columns: 40px 1fr;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar {
+    padding: 6px 4px;
+    overflow-x: hidden;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar .side-top {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar .side-top > :not(.rail-toggle):not(.rail-home) {
+    display: none;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar .rail-label {
+    display: none;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar .rail-toggle,
+  html:not(.tour-on) .workspace.rail-folded .sidebar .rail-home {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    padding-inline: 0;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar > .side-files {
+    display: none;
+  }
+}
+
 /* Phones: the file list folds into one "Files" button, kept at the top of the screen. */
 .sidebar .files-toggle {
   display: none;

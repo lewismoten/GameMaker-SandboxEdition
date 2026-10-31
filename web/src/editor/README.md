@@ -156,7 +156,7 @@ Arrow keys, Home/End and Escape work inside it; action dialogs return to the inv
 
 Each `editor/editors/<kind>/<kind>.ts` calls `registerEditor([...kinds], fn)`
 (`editors/registry.ts`). The workspace (`shell/workspace.ts`) lists the project's files by kind
-and renders `editors[kind]` for the one chosen; edits go through `core/project.ts`, which
+and renders `editors[kind]` for the one chosen. On screens 1200px and wider, "Hide files" folds the list into a thin 40px bar (toggle and Overview stay; remembered in `gm-files-folded`; the guided tour opens it while it runs); edits go through `core/project.ts`, which
 autosaves to IndexedDB (`shell/saveNote.ts` says so under Download, says why if a save fails, and
 makes Ctrl+S save at once). Files are always written in the original binary formats.
 

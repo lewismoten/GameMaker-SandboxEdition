@@ -103,6 +103,16 @@ function matchesFile(name: string, query: string): boolean {
     .every((w) => n.includes(w));
 }
 
+const RAIL_KEY = 'gm-files-folded';
+
+function storedFolded(): boolean {
+  try {
+    return localStorage.getItem(RAIL_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 export class Workspace implements AssistantHost {
   readonly project: Project;
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
@@ -126,6 +136,7 @@ export class Workspace implements AssistantHost {
     this.bar = readOnlyBar(project);
     this.saved = project.readOnly ? undefined : saveNote(project);
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
+    if (storedFolded()) root.querySelector('.workspace')?.classList.add('rail-folded');
     this.unlisten = project.onChange((name) => {
       if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
       // links changed (the map's markers, the integrator): Play Level's menu follows
@@ -300,6 +311,8 @@ export class Workspace implements AssistantHost {
       h(
         'div',
         { class: 'side-top' },
+        this.railToggle(),
+        this.railHome(),
         h(
           'button',
           {
@@ -351,6 +364,52 @@ export class Workspace implements AssistantHost {
       ),
     );
     this.filter();
+  }
+
+  /** Wide screens: the button that folds the file list into a thin bar and back (remembered per browser). */
+  private railToggle(): HTMLElement {
+    const folded = this.railFolded();
+    const b = h(
+      'button',
+      {
+        type: 'button',
+        class: 'rail-toggle',
+        'aria-expanded': String(!folded),
+        'aria-controls': 'side-files',
+        'aria-label': folded ? 'Show files' : 'Hide files',
+        title: folded ? 'Show files' : 'Hide files',
+        onclick: () => {
+          const now = !this.railFolded();
+          this.sidebar.parentElement?.classList.toggle('rail-folded', now);
+          try {
+            localStorage.setItem(RAIL_KEY, now ? '1' : '0');
+          } catch {
+            /* storage may be blocked: the bar still works for this visit */
+          }
+          const label = now ? 'Show files' : 'Hide files';
+          b.setAttribute('aria-expanded', String(!now));
+          b.setAttribute('aria-label', label);
+          b.title = label;
+          b.firstElementChild!.textContent = now ? '»' : '«';
+        },
+      },
+      h('span', { 'aria-hidden': 'true' }, folded ? '»' : '«'),
+      h('span', { class: 'rail-label' }, ' Hide files'),
+    );
+    return b;
+  }
+
+  /** In the folded bar, a button to the game's Overview (the same as ▦ Overview in the list). */
+  private railHome(): HTMLElement {
+    return h(
+      'button',
+      { type: 'button', class: 'rail-home', 'aria-label': 'Overview', title: 'Overview', onclick: () => this.openAssets() },
+      h('span', { 'aria-hidden': 'true' }, '▦'),
+    );
+  }
+
+  private railFolded(): boolean {
+    return this.sidebar.parentElement?.classList.contains('rail-folded') ?? storedFolded();
   }
 
   /** The file search box (kept across sidebar redraws so typing is never interrupted). */
