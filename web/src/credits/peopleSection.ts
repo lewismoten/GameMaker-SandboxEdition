@@ -46,10 +46,11 @@ export function aiToolsSection(): HTMLElement {
         'It ported the 1994 desk and today’s editor and player from the original C source; drew the title and cover art of the Bard games that came without any; composed the music of Certified Rat Tickler, The Great Dairy Reckoning of 3:17 A.M. and Shakespeare in Sweatpants; ray traced the “Made with Game-Maker: Sandbox Edition” card new games can open with; made the desk’s Doc Leo black-light poster from two of Lewis’s photos, over many rounds of his corrections; wrote The Ultimate Owner’s Guide; drew the desk’s props in code (the game pad, the speakers and their sound card switch, the mugs and the mouse pads); and wrote and laid out TURBO BUTTON, the site’s 1990s game magazine.',
       ),
       tool(
-        'OpenAI Codex (GPT-6)',
-        'OpenAI · Visual Studio Code',
-        'The reusable browser engine package.',
-        'Lewis uses Codex through Visual Studio Code. It extracted and documented the npm package for the browser engine from this fork’s existing TypeScript source, directed by Lewis.',
+        'OpenAI Codex',
+        'OpenAI · GPT-6.0, GPT-6.1 Sol, GPT-5.6 Terra, GPT-6 Astra',
+        'Editor features and the npm packages.',
+        'Lewis uses Codex through Visual Studio Code. From October 28 to 30, 2026, it added editor, map, palette and Integrator features, achievements, the piggy bank, the hint line, the BBS callback signup and per-game ZIPs, rebalanced the scores of seven games, and extracted the npm engine, archive and tools packages from this fork’s TypeScript source, directed by Lewis.',
+        'It worked with four OpenAI models: GPT-6.0, GPT-6.1 Sol, GPT-5.6 Terra and GPT-6 Astra. Which model made which change was not recorded. It made no new levels, art, music or story text for the games.',
       ),
       tool('ChatGPT', 'OpenAI', 'The Bard songs’ lyrics.', 'The Bard songs’ lyrics and monologues, shaped from Lewis’s prompts.'),
       tool(

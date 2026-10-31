@@ -75,6 +75,15 @@ game folder opens in the browser unchanged.
   might look, and ways to get more out of a game. Gemini 3 drew the ASCII-art can in
   LUNCHMEAT's flood on The Sofa (`web/src/retro/bbs/sofaSpam.ts`). What they suggested came
   to the project as notes and ideas, through Lewis.
+- **OpenAI Codex** (through Visual Studio Code, directed by Lewis): from October 28 to 30,
+  2026, while Claude was out of its weekly tokens, Codex worked on the fork with the models
+  **GPT-6.0**, **GPT-6.1 Sol**, **GPT-5.6 Terra** and **GPT-6 Astra**. Which model made which
+  change was not recorded. That work covers the editor, map, palette and Integrator features,
+  achievements, the piggy bank, per-game ZIPs and the npm packages listed below. It also
+  rebalanced the score values (and, in one game, the gold) of seven Sandbox and Bard games.
+  It made no new levels, art, music or story text for the games. Commits from that time carry
+  a "Co-authored-by: Codex" line. The entries below that say "OpenAI Codex (GPT-6)" are
+  from the same work.
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
@@ -818,7 +827,7 @@ are in [the tools package's notices](web/packages/tools/NOTICE.md#ready-made-pal
 No third-party font or image file was added.
 
 RGBI and SMS hardware mappings use project-owned MIT code referring to IBM's 1984
-*Technical Reference: Options and Adapters* and Maxim / SMS Power's palette documentation,
+_Technical Reference: Options and Adapters_ and Maxim / SMS Power's palette documentation,
 linked in the tools notices. The monochrome ramps, added skin/hair ramps and four LCD-green
 shades are project designs made by Lewis Moten using OpenAI Codex, under the project's MIT License.
 Exported player-page and native-download notices carry the reference palette credits.
