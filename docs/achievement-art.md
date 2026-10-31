@@ -3,8 +3,9 @@
 Badges reuse the original 20×20 indexed blocks below, at integer-friendly display sizes.
 The selected public games are by Lewis Moten using Anthropic Claude (MIT).
 The nine every-life, every-loss and every-win tier badges are composed from Teddy's poses
-(hop, hurt, bark) with a bronze, silver or gold plate and a 1, 3 or 10 mark, by Claude Sonnet 5.5,
-which also extracted the later picks (some from games' sprite books, drawn over a plain backdrop) and drew the thirteen new Certified Rat Tickler blocks (a toolbox, clipboard,
+(hop, hurt, bark) with a bronze, silver or gold plate, a 1, 3 or 10 mark and a small sign (a down arrow, an X or a star) so a loss and a win differ in shape, by Claude Sonnet 5.5.
+The nine level badges for games played, games finished and walkthroughs watched are a block (a toy block, a banner, a VCR) under a bronze, silver or gold plate with one, two or three pips, composed by `scripts/achievementLevels.ts` (Claude Sonnet 5.5).
+It also extracted the later picks (some from games' sprite books, drawn over a plain backdrop) and drew the thirteen new Certified Rat Tickler blocks (a toolbox, clipboard,
 mixing panel, UV bulb, blacklight, CRT, sound card, hex keypad, screwdriver and disk, pirate hat, surfer, fax and
 waving hand) as scenery in that game, and the eighteen new Final Curtain blocks (a rotary dial, number card, two masks,
 ribbon book, leaflet, registration form, badge clipboard, blank sheet, film strip, clapperboard, magnifier, peeking face,
@@ -159,6 +160,15 @@ duplicate image bytes.
 | every-win-1 | teddy | tiers / every-win-1 |
 | every-win-3 | teddy | tiers / every-win-3 |
 | every-win-10 | teddy | tiers / every-win-10 |
+| games-played-3 | remote and tickle | levels / games-played-3 |
+| games-played-10 | remote and tickle | levels / games-played-10 |
+| games-played-20 | remote and tickle | levels / games-played-20 |
+| games-finished-3 | remote and tickle | levels / games-finished-3 |
+| games-finished-10 | remote and tickle | levels / games-finished-10 |
+| games-finished-20 | remote and tickle | levels / games-finished-20 |
+| walks-watched-3 | remote and tickle | levels / walks-watched-3 |
+| walks-watched-10 | remote and tickle | levels / walks-watched-10 |
+| walks-watched-20 | remote and tickle | levels / walks-watched-20 |
 
 ## Art still needed
 

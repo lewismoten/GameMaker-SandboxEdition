@@ -49,6 +49,8 @@ import { commonSprites as sweatsCommonSprites, makeBook as sweatsMakeBook } from
 import { GWINN } from '../../games/teddy/src/sprites/gwinn';
 import { TOYS } from '../../games/teddy/src/sprites/toys';
 import { tierBlocks, tierPalette } from './achievementTiers';
+import { levelSource } from './achievementLevels';
+import { COUNT_LEVELS } from '../src/achievements/levels';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export interface Source {
@@ -116,12 +118,26 @@ const teddy2Level = (file: string): Source => {
   return { game: 'teddy2', blocks: named(l.bs), palette: teddy2Palette(l.time).pal };
 };
 
+/** The count-leveled badges: a block of the remote or tickle set under each level's plate (achievementLevels.ts). */
+function levelBases() {
+  const tickle = ticklePalette('plain');
+  const rb = remoteBlocks(remote).pics;
+  const tb = tickleBlocks(tickle).pics;
+  const pick = (m: Map<string, Pixels>, n: string) => m.get(n)!;
+  return levelSource([
+    { family: 'games-played', goals: COUNT_LEVELS['games-played'].goals, pic: pick(rb, 'toyBlock'), palette: remote.pal },
+    { family: 'games-finished', goals: COUNT_LEVELS['games-finished'].goals, pic: pick(tb, 'banner'), palette: tickle.pal },
+    { family: 'walks-watched', goals: COUNT_LEVELS['walks-watched'].goals, pic: pick(rb, 'vcrPlay'), palette: remote.pal },
+  ]);
+}
+
 export const sets: Record<string, Source> = {
   street: { game: 'teddy', blocks: named({ pics: street.pics, names: street.names }), palette: P.pal },
   park: { game: 'teddy', blocks: named({ pics: park.pics, names: park.names }), palette: P.pal },
   city: { game: 'teddy', blocks: named({ pics: city.pics, names: city.names }), palette: P.pal },
   teddy: { game: 'teddy', blocks: new Map(Object.entries(POSES)), palette: P.pal },
   tiers: { game: 'teddy', blocks: tierBlocks(), palette: tierPalette },
+  levels: { game: 'remote and tickle', ...levelBases() },
   tickle: { game: 'tickle', blocks: tickleBlocks(ticklePalette('plain')).pics, palette: ticklePalette('plain').pal },
   goat: { game: 'goat', blocks: goatBlocks(goat).pics, palette: goat.pal },
   remote: { game: 'remote', blocks: remoteBlocks(remote).pics, palette: remote.pal },
@@ -284,4 +300,13 @@ export const picks: Record<string, [string, string]> = {
   'every-win-1': ['tiers', 'every-win-1'],
   'every-win-3': ['tiers', 'every-win-3'],
   'every-win-10': ['tiers', 'every-win-10'],
+  'games-played-3': ['levels', 'games-played-3'],
+  'games-played-10': ['levels', 'games-played-10'],
+  'games-played-20': ['levels', 'games-played-20'],
+  'games-finished-3': ['levels', 'games-finished-3'],
+  'games-finished-10': ['levels', 'games-finished-10'],
+  'games-finished-20': ['levels', 'games-finished-20'],
+  'walks-watched-3': ['levels', 'walks-watched-3'],
+  'walks-watched-10': ['levels', 'walks-watched-10'],
+  'walks-watched-20': ['levels', 'walks-watched-20'],
 };

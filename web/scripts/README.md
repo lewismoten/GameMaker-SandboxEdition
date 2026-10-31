@@ -149,7 +149,9 @@ rejects unknown achievement IDs, non-block dimensions and duplicate artwork. The
 loads these small embedded images without fetching game ZIPs. Art gaps and proposals
 are listed in `docs/achievement-art.md`. `achievementSets.ts` builds the games' block sets and the
 picks that name a block by achievement id; `achievementTiers.ts` draws the nine every-game tier
-badges from Teddy's poses.
+badges from Teddy's poses (each with a sign: a down arrow, an X or a star); `achievementLevels.ts` puts a bronze,
+silver or gold plate and one to three pips under a game block for the count-leveled badges (games played,
+games finished, walkthroughs watched).
 
 `libraryFacts.ts` supplies palette SHA-256 identities and VOC sound groups for catalog
 metadata, cached by source path, size and modification time. Pickers can deduplicate

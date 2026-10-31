@@ -16,9 +16,9 @@ const TIERS: { times: number; plate: number; edge: number }[] = [
 ];
 const INK = P.c('ink', 0);
 
-/** The mark's box (w x 5) goes in whichever corner has the fewest Teddy pixels under it. */
-function markCorner(pose: Pixels, w: number): [number, number] {
-  const corners: [number, number][] = [
+/** The corners a w x 5 box can sit in, least covered by Teddy first. */
+function corners(pose: Pixels, w: number): [number, number][] {
+  const all: [number, number][] = [
     [2, 2],
     [18 - w, 2],
     [2, 13],
@@ -29,14 +29,23 @@ function markCorner(pose: Pixels, w: number): [number, number] {
     for (let yy = y - 1; yy < y + 6; yy++) for (let xx = x - 1; xx < x + w + 1; xx++) if (pose.get(xx, yy) !== CLEAR) n++;
     return n;
   };
-  return corners.reduce((best, c) => (busy(c) < busy(best) ? c : best));
+  return all.sort((p, q) => busy(p) - busy(q));
 }
+
+/** A 5x5 sign for what the badge counts, so a loss and a win differ in shape and not only in Teddy's pose. */
+const GLYPH = {
+  life: ['..#..', '..#..', '#.#.#', '.###.', '..#..'],
+  loss: ['#...#', '.#.#.', '..#..', '.#.#.', '#...#'],
+  win: ['..#..', '.###.', '#####', '.###.', '.#.#.'],
+} as const;
 
 function tierBadge(kind: keyof typeof POSE, tier: (typeof TIERS)[number]): Pixels {
   const pose = POSES[POSE[kind]];
   const p = new Pixels(20, 20, tier.plate);
   const w = tier.times === 10 ? 7 : tier.times === 3 ? 8 : 2;
-  const [mx, my] = markCorner(pose, w);
+  const [mx, my] = corners(pose, w)[0];
+  // the sign takes the next corner that is not in the mark's row and column band
+  const [gx, gy] = corners(pose, 5).find(([x, y]) => y !== my || x + 5 < mx || x > mx + w) ?? [2, 2];
   p.blit(pose, 0, 0, CLEAR);
   p.frame(0, 0, 20, 20, tier.edge);
   for (const [x, y] of [
@@ -51,6 +60,7 @@ function tierBadge(kind: keyof typeof POSE, tier: (typeof TIERS)[number]): Pixel
   } else {
     for (let i = 0; i < tier.times; i++) p.rect(mx + i * 3, my, 2, 5, INK);
   }
+  GLYPH[kind].forEach((row, dy) => [...row].forEach((c, dx) => c === '#' && p.set(gx + dx, gy + dy, INK)));
   return p;
 }
 
