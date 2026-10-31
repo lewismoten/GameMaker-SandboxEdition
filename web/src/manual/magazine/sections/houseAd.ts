@@ -304,7 +304,7 @@ const prosAd = (): MagPage =>
         ],
         {
           burst: 'TIPS!',
-          sub: 'The Ultimate Owner’s Guide: sixteen chapters from the people who made the Sandbox games.',
+          sub: 'The Ultimate Owner’s Guide: seventeen chapters from the people who made the Sandbox games.',
           tone: 'pink',
         },
       ),
