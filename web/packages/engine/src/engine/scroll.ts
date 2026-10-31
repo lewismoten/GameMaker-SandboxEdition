@@ -24,6 +24,7 @@ import {
   type BresScroll,
   type Coord,
   type World,
+  i16,
 } from './world';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../formats/blocks';
 
@@ -67,6 +68,19 @@ export function initScroll(w: World, s: { up: number; down: number; left: number
 }
 
 /** ChangeScroll: decide scrolling speed from how far the character is from center. */
+/**
+ * PLAYGAME.C ChangeScroll's `((dist)*SPD)/span` (negated first for the right and down scrolls).
+ * Everything there is a Borland 16-bit `int`, so the product wraps once the character is more
+ * than 819 pixels past the stop line (SPD is 40), and the speed flips sign or shrinks. We wrap
+ * the same way, then divide as a signed 16-bit division truncating toward zero.
+ * Credit: chiguire (upstream gandrewstone/GameMaker PR #4) found this overflow in a DOS run.
+ */
+export function dosSpeed(dist: number, spd: number, span: number, negate = false): number {
+  let p = i16(i16(dist) * spd);
+  if (negate) p = i16(-p);
+  return i16(Math.trunc(p / i16(span)));
+}
+
 export function changeScroll(w: World): number {
   const sc = w.scroll;
   sc.totalx = sc.totaly = 0;
@@ -84,19 +98,19 @@ export function changeScroll(w: World): number {
   // "really (X*MAXSPEED)/MAXX"), then is capped at 28 below.
   if (sc.inMotion & SOLLEF) {
     if (tmx < sc.leftStop) sc.inMotion &= ~SOLLEF;
-    else sc.totalx = Math.trunc(((tmx - sc.leftStop) * SCRSPDX) / (sc.maxX - sc.leftStop));
+    else sc.totalx = dosSpeed(tmx - sc.leftStop, SCRSPDX, sc.maxX - sc.leftStop);
   }
   if (sc.inMotion & SOLRIG) {
     if (tmx > sc.rightStop) sc.inMotion &= ~SOLRIG;
-    else sc.totalx = -Math.trunc(((-tmx + sc.rightStop) * SCRSPDX) / (sc.rightStop - sc.minX));
+    else sc.totalx = dosSpeed(-tmx + sc.rightStop, SCRSPDX, sc.rightStop - sc.minX, true);
   }
   if (sc.inMotion & SOLTOP) {
     if (tmy < sc.upStop) sc.inMotion &= ~SOLTOP;
-    else sc.totaly = Math.trunc(((tmy - sc.upStop) * SCRSPDY) / (sc.maxY - sc.upStop));
+    else sc.totaly = dosSpeed(tmy - sc.upStop, SCRSPDY, sc.maxY - sc.upStop);
   }
   if (sc.inMotion & SOLBOT) {
     if (tmy > sc.downStop) sc.inMotion &= ~SOLBOT;
-    else sc.totaly = -Math.trunc(((-tmy + sc.downStop) * SCRSPDY) / (sc.downStop - sc.minY));
+    else sc.totaly = dosSpeed(-tmy + sc.downStop, SCRSPDY, sc.downStop - sc.minY, true);
   }
   sc.totalx = Math.max(-28, Math.min(28, sc.totalx));
   sc.totaly = Math.max(-28, Math.min(28, sc.totaly));
