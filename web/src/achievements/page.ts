@@ -4,7 +4,7 @@
 // bottom forgets them all, after asking.
 import './page.css';
 import { badgeIcon } from './badgeArt';
-import { h, clear, confirmDialog } from '../editor/core/ui';
+import { h, clear, confirmDialog, modal } from '../editor/core/ui';
 import { ACHIEVEMENTS, CATEGORIES, achievementById, progressOf, shownText, type Achievement } from './catalog';
 import { openDetails } from './details';
 import { refreshGoals } from './goals';
@@ -29,6 +29,27 @@ function saveTab(id: string): void {
   }
 }
 
+/** The three view switches, kept in localStorage (a browser without it keeps them until the page closes). */
+const PREFS = { dates: 'gm-ach-dates', progress: 'gm-ach-progress', hideEarned: 'gm-ach-hide-unearned' } as const;
+type Pref = keyof typeof PREFS;
+const loadPref = (k: Pref): boolean => {
+  try {
+    return localStorage.getItem(PREFS[k]) === '1';
+  } catch {
+    return false;
+  }
+};
+const savePref = (k: Pref, on: boolean): void => {
+  try {
+    localStorage.setItem(PREFS[k], on ? '1' : '0');
+  } catch {
+    /* no storage */
+  }
+};
+
+const LEAD =
+  'Making games, playing them, watching walkthroughs and poking around the 1994 desk all count. They are kept in this browser, for the web pages and the desk alike. A few are hidden until you find them.';
+
 const dateOf = (t: number) => new Date(t);
 const longDate = (t: number) => dateOf(t).toLocaleDateString('en-US', { dateStyle: 'medium' } as Intl.DateTimeFormatOptions);
 
@@ -49,7 +70,7 @@ function bar(n: number, of: number, label: string): HTMLElement {
   );
 }
 
-function card(a: Achievement, r: AchievementRecord, open: () => void): HTMLElement {
+function card(a: Achievement, r: AchievementRecord, open: () => void, dates: boolean, progress: boolean): HTMLElement {
   const when = r.unlocked[a.id];
   const shown = shownText(a, !!when);
   const p = progressOf(a, r);
@@ -69,6 +90,8 @@ function card(a: Achievement, r: AchievementRecord, open: () => void): HTMLEleme
         onclick: open,
       },
       h('span', { class: 'ach-icon', 'aria-hidden': 'true' }, badgeIcon(a, !!when)),
+      // the state in words too, for a screen reader (the frame and the lock or check are for the eye)
+      h('span', { class: 'sr-only' }, when ? 'Unlocked. ' : 'Locked. '),
       h(
         'span',
         { class: 'ach-body' },
@@ -78,22 +101,26 @@ function card(a: Achievement, r: AchievementRecord, open: () => void): HTMLEleme
           secret ? [h('span', { 'aria-hidden': 'true' }, shown.title), h('span', { class: 'sr-only' }, 'Hidden achievement')] : shown.title,
         ),
         h('span', { class: 'ach-desc' }, shown.desc),
-        h(
-          'span',
-          { class: 'ach-progress' },
-          p
-            ? [
-                h('span', { class: 'ach-bar', 'aria-hidden': 'true' }, h('span', { style: `width:${p.of ? Math.round((p.n / p.of) * 100) : 0}%` })),
-                // the unit ("kinds of file") is in the description; beside a bar of a useful width it is said, not shown
-                h('span', { title: count }, `${p.n} of ${p.of}`, a.unit ? h('span', { class: 'sr-only' }, ` ${a.unit}`) : null),
-              ]
-            : null,
-        ),
-        h(
-          'span',
-          { class: 'ach-when' },
-          when ? ['Unlocked ', h('time', { datetime: dateOf(when).toISOString() }, longDate(when))] : secret ? 'Hidden' : 'Not yet',
-        ),
+        progress
+          ? h(
+              'span',
+              { class: 'ach-progress' },
+              p
+                ? [
+                    h('span', { class: 'ach-bar', 'aria-hidden': 'true' }, h('span', { style: `width:${p.of ? Math.round((p.n / p.of) * 100) : 0}%` })),
+                    // the unit ("kinds of file") is in the description; beside a bar of a useful width it is said, not shown
+                    h('span', { title: count }, `${p.n} of ${p.of}`, a.unit ? h('span', { class: 'sr-only' }, ` ${a.unit}`) : null),
+                  ]
+                : null,
+            )
+          : null,
+        dates
+          ? h(
+              'span',
+              { class: 'ach-when' },
+              when ? ['Unlocked ', h('time', { datetime: dateOf(when).toISOString() }, longDate(when))] : secret ? 'Hidden' : 'Not yet',
+            )
+          : null,
       ),
     ),
   );
@@ -106,6 +133,7 @@ export function renderAchievements(el: HTMLElement): void {
   const ordered = CATEGORIES.flatMap((c) => ACHIEVEMENTS.filter((a) => a.category === c.id));
   let record: AchievementRecord | undefined;
   let tab = savedTab();
+  const prefs: Record<Pref, boolean> = { dates: loadPref('dates'), progress: loadPref('progress'), hideEarned: loadPref('hideEarned') };
   // a badge may be in a tab that isn't shown (Previous and Next walk them all): show that tab first
   const badge = (id: string) => {
     const cat = achievementById(id)?.category;
@@ -125,8 +153,10 @@ export function renderAchievements(el: HTMLElement): void {
     const total = ACHIEVEMENTS.length;
     const done = ACHIEVEMENTS.filter((a) => r.unlocked[a.id]).length;
     const cat = CATEGORIES.find((c) => c.id === tab) ?? CATEGORIES[0];
-    const list = ACHIEVEMENTS.filter((a) => a.category === cat.id);
-    const got = list.filter((a) => r.unlocked[a.id]).length;
+    const all = ACHIEVEMENTS.filter((a) => a.category === cat.id);
+    const got = all.filter((a) => r.unlocked[a.id]).length;
+    const list = prefs.hideEarned ? all.filter((a) => r.unlocked[a.id]) : all;
+    const unearned = all.length - got;
     const tabId = (id: string) => `ach-tab-${id}`;
     const focused = main.querySelector('[role="tablist"]')?.contains(document.activeElement);
     const choose = (id: string, focus: boolean) => {
@@ -174,31 +204,79 @@ export function renderAchievements(el: HTMLElement): void {
         );
       }),
     );
+    const toggle = (k: Pref, icon: string, label: string) =>
+      h(
+        'button',
+        {
+          type: 'button',
+          class: 'ach-tool',
+          'aria-pressed': String(prefs[k]),
+          title: label,
+          'aria-label': label,
+          onclick: () => {
+            prefs[k] = !prefs[k];
+            savePref(k, prefs[k]);
+            draw(r);
+            main.querySelector<HTMLElement>(`.ach-tool[data-k="${k}"]`)?.focus({ preventScroll: true });
+          },
+          'data-k': k,
+        },
+        icon,
+      );
+    const toggles = [toggle('dates', '📅', 'Show dates'), toggle('progress', '📊', 'Show progress'), toggle('hideEarned', '🙈', 'Hide unearned')];
     const panel = h(
       'section',
       { id: 'ach-panel', role: 'tabpanel', 'aria-labelledby': tabId(cat.id), class: 'ach-section' },
-      h('div', { class: 'ach-section-head' }, h('h2', null, cat.title), h('span', { class: 'ach-count' }, `${got} of ${list.length}`)),
+      h('div', { class: 'ach-section-head' }, h('h2', null, cat.title), h('span', { class: 'ach-count' }, `${got} of ${all.length}`)),
       h('p', { class: 'ach-blurb' }, cat.blurb),
-      bar(got, list.length, `${cat.title}: unlocked`),
-      h('ul', { class: 'ach-grid' }, ...list.map((a) => card(a, r, () => open(a)))),
+      bar(got, all.length, `${cat.title}: unlocked`),
+      prefs.hideEarned ? h('p', { class: 'ach-hidden-note', role: 'status' }, `${unearned} not yet earned ${unearned === 1 ? 'is' : 'are'} hidden.`) : null,
+      h(
+        'ul',
+        { class: `ach-grid${prefs.dates ? ' with-dates' : ''}${prefs.progress ? ' with-progress' : ''}` },
+        ...list.map((a) => card(a, r, () => open(a), prefs.dates, prefs.progress)),
+      ),
     );
     clear(
       main,
-      h('p', { class: 'ach-back' }, h('a', { href: '#/' }, '← All games')),
-      h('h1', null, 'What you’ve done'),
       h(
-        'p',
-        { class: 'lead' },
-        'Making games, playing them, watching walkthroughs and poking around the 1994 desk all count. They are kept in this browser, for the web pages and the desk alike. A few are hidden until you find them.',
+        'header',
+        { class: 'ach-head' },
+        h(
+          'div',
+          { class: 'ach-head-row' },
+          h('h1', null, 'What you’ve done'),
+          h(
+            'button',
+            {
+              type: 'button',
+              class: 'ach-tool ach-info',
+              'aria-haspopup': 'dialog',
+              'aria-label': 'About this page',
+              title: 'About this page',
+              onclick: () =>
+                void modal<void>('What you’ve done', (close) =>
+                  h(
+                    'div',
+                    null,
+                    h('p', null, LEAD),
+                    h('div', { class: 'buttons' }, h('button', { type: 'button', class: 'primary', onclick: () => close(undefined) }, 'Close')),
+                  ),
+                ),
+            },
+            'ℹ️',
+          ),
+          h(
+            'div',
+            { class: 'ach-summary' },
+            h('strong', null, `${done} of ${total}`),
+            h('span', null, ' unlocked'),
+            bar(done, total, 'All achievements: unlocked'),
+          ),
+          h('div', { class: 'ach-tools', role: 'group', 'aria-label': 'What each badge shows' }, ...toggles),
+        ),
+        tabs,
       ),
-      h(
-        'div',
-        { class: 'ach-summary' },
-        h('strong', null, `${done} of ${total}`),
-        h('span', null, ' unlocked'),
-        bar(done, total, 'All achievements: unlocked'),
-      ),
-      tabs,
       panel,
       h(
         'section',

@@ -1,45 +1,80 @@
 /* "What you've done" (#/achievements, achievements/page.ts) */
 
 main.ach-page {
-  max-width: 60rem;
+  max-width: none;
   margin: 0 auto;
-  padding: 24px 16px 64px;
+  padding: 0 clamp(16px, 3vw, 48px) 64px;
   line-height: 1.5;
 }
 
 /* beside "On this page": wide enough for four cards a row at 1440px */
 main.ach-page.with-toc {
-  max-width: 100rem;
+  max-width: none;
+}
+
+/* stuck under the top of the page while the badges scroll: the title, the total and the switches, then the tabs */
+.ach-head {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin: 0 calc(-1 * clamp(16px, 3vw, 48px)) 16px;
+  padding: 8px clamp(16px, 3vw, 48px) 8px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.ach-head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin-bottom: 6px;
 }
 
 main.ach-page h1 {
-  margin: 0 0 8px;
-  font-size: clamp(26px, 4vw, 34px);
-}
-
-main.ach-page .lead {
-  margin: 0 0 18px;
-  font-size: 17px;
-  max-width: 46rem;
-}
-
-main.ach-page .ach-back {
-  margin: 0 0 12px;
+  margin: 0;
+  font-size: clamp(20px, 3.2vw, 28px);
 }
 
 .ach-summary {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
+  flex: 1 1 14rem;
+  align-items: center;
   gap: 4px 6px;
-  margin: 0 0 28px;
-  font-size: 18px;
+  min-width: 0;
+  margin: 0;
+  font-size: 15px;
+  white-space: nowrap;
 }
 
 .ach-summary .ach-bar {
-  flex: 1 0 100%;
-  height: 12px;
-  margin-top: 6px;
+  flex: 1 1 4rem;
+  height: 10px;
+}
+
+.ach-tools {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.ach-tool {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0 6px;
+  border-radius: 8px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.ach-tool[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.ach-hidden-note {
+  margin: 6px 0 0;
+  color: var(--muted);
 }
 
 .ach-section {
@@ -85,9 +120,10 @@ main.ach-page .ach-back {
 
 .ach-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  --card-h: 6.5rem;
   gap: 10px;
-  margin: 14px 0 0;
+  margin: 12px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -104,7 +140,8 @@ main.ach-page .ach-back {
   align-items: start;
   gap: 12px;
   width: 100%;
-  height: 9.75rem;
+  position: relative;
+  height: var(--card-h);
   margin: 0;
   padding: 12px;
   overflow: hidden;
@@ -118,6 +155,18 @@ main.ach-page .ach-back {
   cursor: pointer;
 }
 
+.ach-grid.with-dates {
+  --card-h: 8.25rem;
+}
+
+.ach-grid.with-progress {
+  --card-h: 8.5rem;
+}
+
+.ach-grid.with-dates.with-progress {
+  --card-h: 10rem;
+}
+
 .ach-card:hover {
   border-color: var(--accent);
 }
@@ -128,8 +177,41 @@ main.ach-page .ach-back {
 }
 
 .ach-card.is-done {
-  border-color: var(--accent);
+  border: 2px solid var(--accent);
+  padding: 11px;
   box-shadow: inset 4px 0 0 var(--accent);
+}
+
+/* earned and not yet differ by more than color: a solid or a dashed frame, and a check or a lock on the icon's corner */
+.ach-card:not(.is-done) {
+  border-style: dashed;
+  border-width: 2px;
+  padding: 11px;
+}
+
+.ach-card::after {
+  content: '';
+  position: absolute;
+  left: 40px;
+  top: 38px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--text);
+  -webkit-mask: var(--mark) center / 15px no-repeat;
+  mask: var(--mark) center / 15px no-repeat;
+  /* a ring in the card's own color so the mark reads over the icon */
+  box-shadow: 0 0 0 2px var(--panel);
+}
+
+.ach-card.is-done::after {
+  --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1 6.5l3.2 3L11 2.5' fill='none' stroke='black' stroke-width='2.4'/%3E%3C/svg%3E");
+  background-color: var(--accent);
+  border-radius: 0;
+}
+
+.ach-card:not(.is-done)::after {
+  --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 5.5V4a3 3 0 016 0v1.5' fill='none' stroke='black' stroke-width='1.6'/%3E%3Crect x='1.5' y='5.5' width='9' height='6' rx='1'/%3E%3C/svg%3E");
 }
 
 /* a fixed box: emoji differ in width from font to font */
@@ -221,18 +303,20 @@ main.ach-page .ach-back {
 /* the parts of the site as tabs: they wrap inside their own row, never widening the page */
 .ach-tabs {
   display: flex;
-  flex-wrap: wrap;
   gap: 6px;
-  margin: 0 0 18px;
+  flex-wrap: nowrap;
+  margin: 0;
+  overflow-x: auto;
 }
 
 .ach-tab {
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   min-width: 24px;
-  min-height: 44px;
-  padding: 4px 12px;
+  min-height: 40px;
+  padding: 2px 12px;
   line-height: 1.25;
   text-align: left;
   border-radius: 8px;

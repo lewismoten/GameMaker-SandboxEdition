@@ -33,6 +33,16 @@ unassigned badges use a neutral question block drawn with the tools package’s 
 font; no emoji artwork is used by the renderer. Source selections and missing-art
 proposals are in [the artwork inventory](../../../docs/achievement-art.md).
 
+## The page's header and views
+
+`page.ts` keeps a sticky header (title, an ℹ️ button that opens the lead paragraph in a dialog,
+"n of m unlocked", three toggle buttons with `aria-pressed`, and the tab row, which scrolls sideways
+at phone width). The toggles are 📅 dates, 📊 progress and 🙈 hide unearned, kept in localStorage
+(`gm-ach-dates`, `gm-ach-progress`, `gm-ach-hide-unearned`, listed in `backup/inventory.ts`). Dates
+and progress are off by default and cards are one height per mode (`--card-h` in `page.css`). With
+unearned hidden a "n not yet earned are hidden" line remains. Earned badges have a solid accent frame
+and a check; unearned ones a dashed frame and a lock, so they differ without color.
+
 ## Reset sticks
 
 Tin hearts, felt eggs and score trophies are read from saves that Reset leaves alone.
