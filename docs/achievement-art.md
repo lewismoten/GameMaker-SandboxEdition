@@ -14,6 +14,7 @@ tall phone, a winged parcel and a mail jeep) as scenery in the living room and t
 (a gold cup, a silver cup marked 3, a rolled magazine and a glow-in-the-dark clock) as scenery in the kitchen and bedroom.
 It also drew four new Needle blocks (a brass compass over a winding route, a folded map, a ruler and a triangle, and glasses over
 three color swatches) as scenery in the tailor's shop.
+It also drew a new Risi block (a small library front with columns, steps and a scroll) as scenery in the rooftops.
 OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
@@ -127,6 +128,7 @@ duplicate image bytes.
 | print-world-map | needle | needleTailor / foldMap |
 | print-world-styles | needle | needleTailor / rulerTriangle |
 | palette-vision | needle | needleTailor / seenGlasses |
+| library-visit | risi | risiCampus / libraryFront |
 | every-life-1 | teddy | tiers / every-life-1 |
 | every-life-3 | teddy | tiers / every-life-3 |
 | every-life-10 | teddy | tiers / every-life-10 |
@@ -156,7 +158,6 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | bbs-got-time | I’ve got time | 20×20 block: a snail carrying a half-finished progress bar, with a dark outline and one clear focal shape. |
 | hint-phone-bill | An itemized bark | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
 | desk-egg-pages | Turn the page | 20×20 block: an open card file with colorful page tabs, with a dark outline and one clear focal shape. |
-| library-visit | Quiet, please | 20×20 block: a miniature library facade, with a dark outline and one clear focal shape. |
 | desk-chez | Honk honk | 20×20 block: THE CHEZ seen from the front, with Teddy in the passenger seat, with a dark outline and one clear focal shape. |
 | desk-plow | Plowed in | 20×20 block: a friendly snowplow pushing a little white drift, with a dark outline and one clear focal shape. |
 | desk-sleds | Snow day | 20×20 block: a wooden sled leaving two tracks, with a dark outline and one clear focal shape. |

@@ -17,6 +17,7 @@ import { buildPalette as reckonPalette } from '../../games/reckoning/src/art/pal
 import { buildHouse } from '../../games/carl/src/blocks/house';
 import { buildYard as buildCarlYard } from '../../games/carl/src/blocks/yard';
 import { buildPalette as carlPalette } from '../../games/carl/src/art/pal';
+import { buildCampus } from '../../games/risi/src/blocks/campus';
 import { buildVilla } from '../../games/risi/src/blocks/villa';
 import { buildPalette as risiPalette } from '../../games/risi/src/art/pal';
 import { eyeBlocks } from '../../games/needle/src/blocks/eye';
@@ -91,6 +92,7 @@ export const sets: Record<string, Source> = {
   carl: { game: 'carl', blocks: buildHouse(carlPalette('plain')).pics, palette: carlPalette('plain').pal },
   carlYard: { game: 'carl', blocks: buildCarlYard(carlPalette('plain')).pics, palette: carlPalette('plain').pal },
   risi: { game: 'risi', blocks: buildVilla(risiPalette('plain')).pics, palette: risiPalette('plain').pal },
+  risiCampus: { game: 'risi', blocks: buildCampus(risiPalette('plain')).pics, palette: risiPalette('plain').pal },
   needle: { game: 'needle', blocks: eyeBlocks(needlePalette('plain')).book.pics, palette: needlePalette('plain').pal },
   needleTailor: { game: 'needle', blocks: tailorBlocks(needlePalette('plain')).book.pics, palette: needlePalette('plain').pal },
   sleuthParlor: { game: 'sleuth', blocks: named(buildParlorBlocks()), palette: sleuthPalette('house').pal },
@@ -210,6 +212,7 @@ export const picks: Record<string, [string, string]> = {
   'print-world-map': ['needleTailor', 'foldMap'],
   'print-world-styles': ['needleTailor', 'rulerTriangle'],
   'palette-vision': ['needleTailor', 'seenGlasses'],
+  'library-visit': ['risiCampus', 'libraryFront'],
   'every-life-1': ['tiers', 'every-life-1'],
   'every-life-3': ['tiers', 'every-life-3'],
   'every-life-10': ['tiers', 'every-life-10'],

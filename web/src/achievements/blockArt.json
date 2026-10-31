@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning and Needle badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl, Great Dairy Reckoning, Needle and Risi badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -606,6 +606,12 @@
       "game": "needle",
       "set": "needleTailor",
       "block": "seenGlasses"
+    },
+    "library-visit": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEV9kraersMMCAi2tq77+/PTvprv37r7021ZNByCUSz/96L9G4oVAAAAZUlEQVR42n2PgQ6AIAhE4boS+v8PboqpTe3ADY4nG6Iyh7QHyNBHgEQny8xR5AMHejIzSx60iIIMMyUnidhF4v0enWChIL/akAoeOQFDLfMl1bRmaidtSd6/pK534pq0u+ictCYfIPAEYIXuigkAAAAASUVORK5CYII=",
+      "game": "risi",
+      "set": "risiCampus",
+      "block": "libraryFront"
     },
     "every-life-1": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkra7cWECAAAAcklEQVR42pWRWw7AIAgEgZWu9z9xgxRta386IcZMeBgU0Q0RtQIjzExFTSRdBzo26REPicMD4C3F3UlMCU9IUms6phqZ0SXdMNkzLivvmk4eQdp6J+k+p5RE2dZWOUi2dhnEkYNqI7dyW2AuZOOP/PqOE+GkBKXkH8SIAAAAAElFTkSuQmCC",
