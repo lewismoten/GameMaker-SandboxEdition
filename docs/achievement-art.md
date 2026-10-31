@@ -10,7 +10,8 @@ waving hand) as scenery in that game, and the eighteen new Final Curtain blocks 
 ribbon book, leaflet, registration form, badge clipboard, blank sheet, film strip, clapperboard, magnifier, peeking face,
 phone, busy line, heat map, speaker, medal and tin-heart wreath) as scenery in the green room, the stage and the curtain.
 It also drew the six new A Fly Named Carl blocks (a backpack with a game controller, a DOS disk in its sleeve, a wide and a
-tall phone, a winged parcel and a mail jeep) as scenery in the living room and the yard.
+tall phone, a winged parcel and a mail jeep) as scenery in the living room and the yard, and four new Great Dairy Reckoning blocks
+(a gold cup, a silver cup marked 3, a rolled magazine and a glow-in-the-dark clock) as scenery in the kitchen and bedroom.
 OpenAI Codex extracted the first images and wrote the
 badge integration under Lewis's direction. No third-party emoji artwork is copied into the badge images.
 
@@ -116,6 +117,10 @@ duplicate image bytes.
 | finish-dos | carl | carl / dosDisk |
 | finish-phone-wide | carl | carl / phoneWide |
 | finish-phone-tall | carl | carl / phoneTall |
+| saves-panel | reckoning | reckoning / trophyGold |
+| bbs-door-three | reckoning | reckoning / trophySilver |
+| mag-back | reckoning | reckoning / magRoll |
+| desk-lume | reckoning | reckoning / lumeDial |
 | every-life-1 | teddy | tiers / every-life-1 |
 | every-life-3 | teddy | tiers / every-life-3 |
 | every-life-10 | teddy | tiers / every-life-10 |
@@ -138,21 +143,18 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | export-linux | Penguin power | 20×20 block: a cheerful penguin with a disk tucked under one wing, with a dark outline and one clear focal shape. |
 | palette-vision | Seen by everyone | 20×20 block: a pair of glasses over three clearly distinct color swatches, with a dark outline and one clear focal shape. |
 | play-bizarre | Bizarre fan | 20×20 block: a violin with one jaunty musical note, with a dark outline and one clear focal shape. |
-| saves-panel | Keeping score | 20×20 block: a small trophy inspired by “Keeping score”, with a dark outline and one clear focal shape. |
 | egg-teddy | Lay an egg! | 20×20 block: a mischievous corgi beside a suspiciously lumpy felt egg, with a dark outline and one clear focal shape. |
 | watch-bot | Robot rerun | 20×20 block: a little robot turning a film projector crank, with a dark outline and one clear focal shape. |
 | download-mp4 | Director’s cut | 20×20 block: a curled strip of film with three distinct frames, with a dark outline and one clear focal shape. |
 | bbs-download-every-speed | The long way round | 20×20 block: a determined turtle carrying a modem, with a dark outline and one clear focal shape. |
 | bbs-cant-wait | I can’t wait | 20×20 block: a tiny rocket trailing a telephone cable, with a dark outline and one clear focal shape. |
 | bbs-got-time | I’ve got time | 20×20 block: a snail carrying a half-finished progress bar, with a dark outline and one clear focal shape. |
-| bbs-door-three | Best of three | 20×20 block: a small trophy inspired by “Best of three”, with a dark outline and one clear focal shape. |
 | hint-phone-bill | An itemized bark | 20×20 block: a ringing rotary telephone, with a dark outline and one clear focal shape. |
 | desk-egg-pages | Turn the page | 20×20 block: an open card file with colorful page tabs, with a dark outline and one clear focal shape. |
 | print-level-maps | Map reader | 20×20 block: a compass over a winding route, with a dark outline and one clear focal shape. |
 | print-world-map | Fold-out | 20×20 block: a folded map with a clearly marked route, with a dark outline and one clear focal shape. |
 | print-world-styles | Cartographer | 20×20 block: a ruler and a triangular map outline, with a dark outline and one clear focal shape. |
 | library-visit | Quiet, please | 20×20 block: a miniature library facade, with a dark outline and one clear focal shape. |
-| mag-back | Cover to cover | 20×20 block: a rolled magazine tied with a ribbon, with a dark outline and one clear focal shape. |
 | desk-chez | Honk honk | 20×20 block: THE CHEZ seen from the front, with Teddy in the passenger seat, with a dark outline and one clear focal shape. |
 | desk-plow | Plowed in | 20×20 block: a friendly snowplow pushing a little white drift, with a dark outline and one clear focal shape. |
 | desk-sleds | Snow day | 20×20 block: a wooden sled leaving two tracks, with a dark outline and one clear focal shape. |
@@ -161,6 +163,5 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | desk-star | Make a wish | 20×20 block: a shooting star with a short stepped trail, with a dark outline and one clear focal shape. |
 | desk-aurora | Northern lights | 20×20 block: a curtain of green and violet northern lights, with a dark outline and one clear focal shape. |
 | desk-mailtruck | In the mail | 20×20 block: a small mail truck with a raised envelope emblem, with a dark outline and one clear focal shape. |
-| desk-lume | Glow in the dark | 20×20 block: a clock dial with glowing green hands, with a dark outline and one clear focal shape. |
 | desk-egg-uv | Secret ink | 20×20 block: a flashlight revealing a felt egg, with a dark outline and one clear focal shape. |
 | zine-read | Read all about it | 20×20 block: a little notebook with a ribbon marker, with a dark outline and one clear focal shape. |

@@ -1,5 +1,5 @@
 {
-  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain and A Fly Named Carl badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
+  "notice": "Project-owned game art by Lewis Moten using Anthropic Claude; the Teddy tier badges, the Certified Rat Tickler, Final Curtain, A Fly Named Carl and Great Dairy Reckoning badge blocks and the extraction by Claude Sonnet 5.5 (earlier extraction with OpenAI Codex). See NOTICE.md and docs/achievement-art.md.",
   "badges": {
     "make-edit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUUDBT///eKTV2+dYbXmqZdoo40VaJVhs8gUzanAAAAZUlEQVR42m3QUQrAIAwD0Mw08/43HjMqtPpj4ZlKECTZyDliDCSbAxcj/lP0IuUrlNzTRzLZ27kxW4OGxXjPplRp5lKlba5UzJW0TE7gzO1KyRouRtT3GHIl3H6pGBGneVPL5PEBAI4E5jItzVAAAAAASUVORK5CYII=",
@@ -558,6 +558,30 @@
       "game": "carl",
       "set": "carl",
       "block": "phoneTall"
+    },
+    "saves-panel": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUQDBT///+WZQi6ljzfx23/96KWy+e62+/f7/ejPuriAAAAaklEQVR42nWQWw4AIQgDWV/l/ifeCFLFxPLlpE5EUZzjEZ6CYEAUKinWBKTvOJzN3punlNVUXHCw+eWmOS/4cpI6c2fQ1XOnupZsNedWtQbbu0947m6zIZ3QBK2VP4nv5C/RKS1ShM77+g9ahgeNPlBfggAAAABJRU5ErkJggg==",
+      "game": "reckoning",
+      "set": "reckoning",
+      "block": "trophyGold"
+    },
+    "bbs-door-three": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUQDBR5ho6yur7n7/OWy+e62+/f7/cx6QCbAAAAcElEQVR42mWQAQ7AIAgDT5H9/8mLVRA3TEy4lIbC4/WtIrsgPpy/biqdT/lUYrUEHcx6VGswNCsIAaeuh5INOwemUtAPFevwzN9MnpvlnmZCajJR7H1npzV+2Q9U9nWjCxbHdF2eeROKJ3EPiudn/AXhqgSlL5jI2gAAAABJRU5ErkJggg==",
+      "game": "reckoning",
+      "set": "reckoning",
+      "block": "trophySilver"
+    },
+    "mag-back": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEUQDBSWnqrLy9f7+//Hqnnbx57/++eeLE3PUXH/eZZ9x7aq89+OFosmAAAAhUlEQVR42mXQgQ7DIAhF0Vs26FP//38X6Kx1IzExRwSR4yeoZTNyBwG2I+HuwYbgEe4bQni8M3Uhrf1kkqa9JpSpuq/M0cVAeTCfRIMuJAkzrjFaY9DLjtc1Udkope4dZcqCjI59kXbWPQkmcmaoHPtD7tkuS2UNfGc+f2Ei9sSsUC0WfgDO5wUeZQqADAAAAABJRU5ErkJggg==",
+      "game": "reckoning",
+      "set": "reckoning",
+      "block": "magRoll"
+    },
+    "desk-lume": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUQDBRFUW1tdZKWnrKqlqZ5ho5ZliiOw0W+72V68R5jAAAAdUlEQVR42m2QgQ6AIAhEXxnK/39xOzAyF5vufDtA4FQ0xavY5AoBTFfCQxDMLA7lRC9cx5hQrCsXlwwY1caE0o3zInwjWccIZ7RlRFE26AvE0uIJXZ5yzuxv+hMFe6Hq/rHmP9eJek20zm41+76l43+ff5u/AZ2yAxMhzaBjAAAAAElFTkSuQmCC",
+      "game": "reckoning",
+      "set": "reckoning",
+      "block": "lumeDial"
     },
     "every-life-1": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUUDBB1TSyyeUlxLAi2bTDbjkn7sl3///fjkra7cWECAAAAcklEQVR42pWRWw7AIAgEgZWu9z9xgxRta386IcZMeBgU0Q0RtQIjzExFTSRdBzo26REPicMD4C3F3UlMCU9IUms6phqZ0SXdMNkzLivvmk4eQdp6J+k+p5RE2dZWOUi2dhnEkYNqI7dyW2AuZOOP/PqOE+GkBKXkH8SIAAAAAElFTkSuQmCC",
