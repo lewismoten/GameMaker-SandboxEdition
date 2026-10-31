@@ -131,7 +131,11 @@ stays on the tour's bar, the bar and layer stay usable over an overlay that make
 (and are raised above a modal dialog), what it opens stops above the caption bar, and the ring
 goes when what a press opened covers the control. A chapter's `keep` puts back settings, the
 selected tab and address settings it changed; a step's `act` asks the page to do something
-(`gm-tour-act`), and the chapter's `leave` act tidies up after.
+(`gm-tour-act`: `film-over` lays the box viewer's red film over a hidden answer, `copy-check`
+starts the DOS page's Game-Maker over), and the chapter's `leave` act tidies up after. While a
+tour plays on the DOS page its PC pretends it is not registered (`retro/gmReg/tourPretend.ts`, in
+memory only), so the copy check, the Owner's Guide and the card always show; it is registered
+again when the tour ends.
 
 In a tour: Back, Pause, Next, Sound (the mute switch, remembered as `gm-tour-sound`; a browser
 whose demo sound is None starts muted) and Close tour; Esc ends it from anywhere, and the keyboard
@@ -157,6 +161,8 @@ as a plain tour (pointer and buttons back).
 - `lines.ts`: every line as `{ id, chapter, where, speaker, text }` (`tourLines()`, no DOM) for the
   narration script, which records `public/tour/voice/<chapter>/<id>.ogg` per line. A step plays
   its clip when there is one and lasts at least as long; without one the bubble's timing is used.
+  The next two steps' clips load while one plays (`tourSound.ts` `prefetch`); a clip still late when
+  its step starts stays silent.
 - `tourPages.ts`: what the ? button needs up front: the page an address shows, the pages with a
   chapter, the per-page switch and a tour asked for in the address.
 - `tourButton.ts` (`tourButton.css`): the ? button and its menu, and the Settings item. The rest
