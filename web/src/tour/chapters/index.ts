@@ -10,6 +10,7 @@ import { castChapter } from './cast';
 import { deskChapter } from './desk';
 import { dosChapter } from './dos';
 import { editAroundChapter } from './editAround';
+import { editBlocksChapter } from './editBlocks';
 import { editMapChapter } from './editMap';
 import { editorChapter } from './editor';
 import { guideChapter } from './guide';
@@ -27,6 +28,7 @@ export const CHAPTERS: Chapter[] = [
   editorChapter,
   editAroundChapter,
   editMapChapter,
+  editBlocksChapter,
   deskChapter,
   boxChapter,
   bbsChapter,
