@@ -2143,6 +2143,78 @@
     "hash": "ba6b37cd0127",
     "voice": "a50c8e805452"
   },
+  "edit-walkthrough-bye": {
+    "chapter": "edit-walkthrough",
+    "where": "Editor: Doc Leo says goodbye and walks off",
+    "text": "Now go on, play it yourself, or let the bot show you the way. Honk honk!",
+    "seconds": 5.07,
+    "hash": "4ed00be88798",
+    "voice": "ec6d8641063d"
+  },
+  "edit-walkthrough-go": {
+    "chapter": "edit-walkthrough",
+    "where": "Editor: Doc Leo points at the Make it button",
+    "text": "Make it starts the bot. It tries styles from quickest to most thorough until one gets through, and Stop keeps the scenes it finished.",
+    "seconds": 8.91,
+    "hash": "a97f98654290",
+    "voice": "ec6d8641063d"
+  },
+  "edit-walkthrough-hello": {
+    "chapter": "edit-walkthrough",
+    "where": "Editor: Doc Leo comes on",
+    "text": "Stuck on a level, kids? A walkthrough is the whole game played start to finish, and the editor can make one for you.",
+    "seconds": 7.15,
+    "hash": "263f22091c3f",
+    "voice": "ec6d8641063d"
+  },
+  "edit-walkthrough-look": {
+    "chapter": "edit-walkthrough",
+    "where": "Editor: Doc Leo points at the Watch part",
+    "text": "This game is open to look at only, so a walkthrough made here is kept apart from its files. They are never changed.",
+    "seconds": 7.23,
+    "hash": "bdc9692227d2",
+    "voice": "ec6d8641063d"
+  },
+  "edit-walkthrough-make": {
+    "chapter": "edit-walkthrough",
+    "where": "Editor: Doc Leo points at the Make one part",
+    "text": "The walkthrough bot plays each scene on the real engine. If it gets stuck, what it made still plays as far as it got.",
+    "seconds": 7.63,
+    "hash": "1c4e5ec943cc",
+    "voice": "ec6d8641063d"
+  },
+  "edit-walkthrough-mine": {
+    "chapter": "edit-walkthrough",
+    "where": "Editor: Doc Leo points at the Make one part",
+    "text": "Once the bot has played, any scene gets Play it myself: reach an exit and your play is kept. Mine or Bot chooses who plays it next time.",
+    "seconds": 9.23,
+    "hash": "3552a6ddd98a",
+    "voice": "ec6d8641063d"
+  },
+  "edit-walkthrough-open": {
+    "chapter": "edit-walkthrough",
+    "where": "Editor: Doc Leo presses the Make a walkthrough button",
+    "text": "On the start scene, this button opens the walkthrough box. The home page’s Walkthrough button opens the same one.",
+    "seconds": 7.63,
+    "hash": "e695d8e2ab9d",
+    "voice": "ec6d8641063d"
+  },
+  "edit-walkthrough-time": {
+    "chapter": "edit-walkthrough",
+    "where": "Editor: Doc Leo points at the Time for each scene choice",
+    "text": "Time for each scene is how long the bot tries one scene: from 30 seconds to 10 minutes. I won’t start it today.",
+    "seconds": 9.31,
+    "hash": "cbb11e8d5a8b",
+    "voice": "ec6d8641063d"
+  },
+  "edit-walkthrough-watch": {
+    "chapter": "edit-walkthrough",
+    "where": "Editor: Doc Leo points at the Watch part",
+    "text": "Watch plays what the bot made in the player, with chapters. There you can Download MP4 or Copy for YouTube.",
+    "seconds": 7.07,
+    "hash": "c7b3ba062309",
+    "voice": "ec6d8641063d"
+  },
   "editor-assistant": {
     "chapter": "editor",
     "where": "Editor: Watt points at the Assistant button",

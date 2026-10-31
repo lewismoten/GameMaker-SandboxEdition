@@ -379,6 +379,19 @@ records every clip again.
 | [edit-assistant-mcp.ogg](edit-assistant/edit-assistant-mcp.ogg) | Already have an AI tool on your computer? This link shows how to connect it to the editor through MCP instead. | Editor: Dex points at the link to the other way | 7.90 |
 | [edit-assistant-bye.ogg](edit-assistant/edit-assistant-bye.ogg) | Set up your own AI whenever you like, and the Assistant is yours. The future awaits! | Editor: Dex says goodbye and walks off | 6.25 |
 
+## edit-walkthrough
+
+| Clip | Says | Where | Seconds |
+| --- | --- | --- | ---: |
+| [edit-walkthrough-hello.ogg](edit-walkthrough/edit-walkthrough-hello.ogg) | Stuck on a level, kids? A walkthrough is the whole game played start to finish, and the editor can make one for you. | Editor: Doc Leo comes on | 7.15 |
+| [edit-walkthrough-open.ogg](edit-walkthrough/edit-walkthrough-open.ogg) | On the start scene, this button opens the walkthrough box. The home page’s Walkthrough button opens the same one. | Editor: Doc Leo presses the Make a walkthrough button | 7.63 |
+| [edit-walkthrough-watch.ogg](edit-walkthrough/edit-walkthrough-watch.ogg) | Watch plays what the bot made in the player, with chapters. There you can Download MP4 or Copy for YouTube. | Editor: Doc Leo points at the Watch part | 7.07 |
+| [edit-walkthrough-make.ogg](edit-walkthrough/edit-walkthrough-make.ogg) | The walkthrough bot plays each scene on the real engine. If it gets stuck, what it made still plays as far as it got. | Editor: Doc Leo points at the Make one part | 7.63 |
+| [edit-walkthrough-time.ogg](edit-walkthrough/edit-walkthrough-time.ogg) | Time for each scene is how long the bot tries one scene: from 30 seconds to 10 minutes. I won’t start it today. | Editor: Doc Leo points at the Time for each scene choice | 9.31 |
+| [edit-walkthrough-go.ogg](edit-walkthrough/edit-walkthrough-go.ogg) | Make it starts the bot. It tries styles from quickest to most thorough until one gets through, and Stop keeps the scenes it finished. | Editor: Doc Leo points at the Make it button | 8.91 |
+| [edit-walkthrough-mine.ogg](edit-walkthrough/edit-walkthrough-mine.ogg) | Once the bot has played, any scene gets Play it myself: reach an exit and your play is kept. Mine or Bot chooses who plays it next time. | Editor: Doc Leo points at the Make one part | 9.23 |
+| [edit-walkthrough-look.ogg](edit-walkthrough/edit-walkthrough-look.ogg) | This game is open to look at only, so a walkthrough made here is kept apart from its files. They are never changed. | Editor: Doc Leo points at the Watch part | 7.23 |
+| [edit-walkthrough-bye.ogg](edit-walkthrough/edit-walkthrough-bye.ogg) | Now go on, play it yourself, or let the bot show you the way. Honk honk! | Editor: Doc Leo says goodbye and walks off | 5.07 |
 
 ## desk
 

@@ -43,6 +43,7 @@ const SOURCES: Record<string, string[]> = {
     'editor/editors/integrator',
     'editor/editors/integrator/dosPlayer',
     'editor/widgets/colorChoice.ts',
+    'editor/widgets/walkDialog.ts',
     'assistant/chat/panel.ts',
     'editor/widgets/filePicker.ts',
     'editor/widgets/panelTabs.ts',
