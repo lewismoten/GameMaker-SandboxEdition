@@ -103,15 +103,18 @@ export function loadAchievements(): Promise<AchievementRecord> {
 export const currentAchievements = (): AchievementRecord | undefined => record;
 
 let writing: Promise<void> = Promise.resolve();
+/** Bumped by a reset, so a write queued before it doesn't merge the forgotten file back in. */
+let epoch = 0;
 
 /** Stores the record (merged with whatever another tab stored meanwhile) and says what changed. */
 function commit(before: Set<string>): void {
+  const mine = epoch;
   for (const id of Object.keys(record!.unlocked)) if (!before.has(id)) announceUnlock(id);
   if (typeof window !== 'undefined') window.dispatchEvent(new Event(ACHIEVEMENTS_CHANGED));
   writing = writing
     .then(async () => {
       const stored = parseRecord((await loadSaveData(SAVE_ID))[FILE]);
-      if (!record) return;
+      if (!record || mine !== epoch) return;
       record = mergeRecords(stored, record);
       await writeSaveFile(SAVE_ID, FILE, new TextEncoder().encode(JSON.stringify(record)), { quiet: true });
       tellOthers();
@@ -213,6 +216,7 @@ export function tally(id: string, item: string): void {
 /** Keeps an item in a set without unlocking anything (games played, walkthroughs watched). */
 export function remember(key: string, item: string): Promise<string[]> {
   return new Promise((resolve) => {
+    if (touring()) return resolve([...(record?.sets[key] ?? [])]); // not the visitor's doing, but never leave a caller waiting
     change((r) => {
       const s = (r.sets[key] ??= []);
       const added = !s.includes(item);
@@ -246,6 +250,7 @@ export function countOccurrence(key: string, limit: number): Promise<void> {
 export async function resetAchievements(): Promise<void> {
   await loadAchievements();
   held = [];
+  epoch++;
   record = emptyRecord();
   if (typeof window !== 'undefined') window.dispatchEvent(new Event(ACHIEVEMENTS_CHANGED));
   writing = writing
