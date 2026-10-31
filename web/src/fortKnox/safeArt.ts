@@ -1,6 +1,6 @@
 // The Forte Locks toy safe, drawn in SVG: a green metal cube with rounded corners, a door on two
-// hinges of the same green at its right, a red combination dial (numbers 0 to 55 by fives, 60 ticks, a chrome
-// ring), a coin slot on top at the right and a red plate with chrome letters under the door.
+// hinges of the same green at its right, a red combination dial (numbers 0 to 55 by fives going up clockwise, 60 ticks, a chrome
+// ring, a raised red grooved knob), a coin slot on top at the right and a red plate with chrome letters under the door.
 // Drawn by Claude Sonnet 5.5 from Lewis's description of his childhood bank.
 import { TICKS } from './dial';
 
@@ -9,7 +9,7 @@ const CY = 120;
 
 function dialFace(): string {
   const polar = (r: number, tick: number) => {
-    const a = (-tick * 2 * Math.PI) / TICKS; // numbers go up counterclockwise, so turning right raises them
+    const a = (tick * 2 * Math.PI) / TICKS; // numbers go up clockwise round the face, so turning right lowers the one under the pointer
     return [CX + r * Math.sin(a), CY - r * Math.cos(a)] as const;
   };
   let s = `<circle r="33" cx="${CX}" cy="${CY}" fill="#c4161c"/>`;
@@ -21,10 +21,18 @@ function dialFace(): string {
   }
   for (let n = 0; n < 60; n += 5) {
     const [x, y] = polar(21.5, n);
-    const a = (-n * 360) / TICKS;
+    const a = (n * 360) / TICKS;
     s += `<text x="${x.toFixed(2)}" y="${(y + 2.3).toFixed(2)}" transform="rotate(${a} ${x.toFixed(2)} ${y.toFixed(2)})" text-anchor="middle" font-size="6.2" font-weight="700" font-family="Arial,Helvetica,sans-serif" fill="#fff3e0">${n}</text>`;
   }
-  return `${s}<circle r="7.5" cx="${CX}" cy="${CY}" fill="url(#kn-chrome)" stroke="#6b7078" stroke-width="0.8"/>`;
+  // the centre is red plastic: an inset ring, then a raised knob with grip grooves round its rim
+  s += `<circle r="10.5" cx="${CX}" cy="${CY}" fill="#6e0d11" stroke="#a31318" stroke-width="0.8"/><circle r="9.2" cx="${CX}" cy="${CY}" fill="#8e1317"/>`;
+  s += `<circle r="7.6" cx="${CX}" cy="${CY}" fill="url(#kn-red)" stroke="#5a0a0d" stroke-width="0.5"/>`;
+  for (let i = 0; i < 24; i++) {
+    const [x1, y1] = polar(6.1, i * 2.5);
+    const [x2, y2] = polar(7.5, i * 2.5);
+    s += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="#5a0a0d" stroke-width="0.7"/>`;
+  }
+  return `${s}<circle r="5.2" cx="${CX}" cy="${CY}" fill="url(#kn-red)" stroke="#e24a4f" stroke-width="0.3"/>`;
 }
 
 /** The safe; `open` swings the door aside and shows the dark inside, `pos` is the dial's tick. */
@@ -40,7 +48,7 @@ export function safeSvg(open: boolean, pos = 0): string {
        <rect x="29" y="77" width="142" height="90" rx="4" fill="none" stroke="#1d5f2b" stroke-width="2"/>
        <circle cx="${CX}" cy="${CY}" r="40" fill="url(#kn-chrome)" stroke="#5c6168" stroke-width="1.2"/>
        <circle cx="${CX}" cy="${CY}" r="35" fill="#8e1317"/>
-       <g class="kn-dial-turn" style="transform-origin:${CX}px ${CY}px;transform:rotate(${(pos * 360) / TICKS}deg)">${dialFace()}</g>
+       <g class="kn-dial-turn" style="transform-origin:${CX}px ${CY}px;transform:rotate(${(-pos * 360) / TICKS}deg)">${dialFace()}</g>
        <path d="M${CX - 4} ${CY - 44} h8 l-4 7 z" fill="#c4161c" stroke="#5c6168" stroke-width="0.8"/>`;
   const hinges = [84, 148]
     .map(
@@ -51,6 +59,7 @@ export function safeSvg(open: boolean, pos = 0): string {
   return `<svg viewBox="0 0 200 212" xmlns="http://www.w3.org/2000/svg" class="kn-svg">
     <defs>
       <linearGradient id="kn-chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdfdfe"/><stop offset=".45" stop-color="#aab0b8"/><stop offset=".7" stop-color="#eef0f3"/><stop offset="1" stop-color="#7d838b"/></linearGradient>
+      <radialGradient id="kn-red" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#f0585d"/><stop offset=".55" stop-color="#c4161c"/><stop offset="1" stop-color="#7d0e12"/></radialGradient>
     </defs>
     <path d="M30 30h140q10 0 14 10l8 22H8l8-22q4-10 14-10z" fill="#3c9a4e" stroke="#0c3515" stroke-width="2.5" stroke-linejoin="round"/>
     <rect x="124" y="42" width="34" height="6" rx="3" fill="#0e2a14"/>

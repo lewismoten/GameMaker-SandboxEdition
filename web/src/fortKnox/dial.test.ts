@@ -6,14 +6,15 @@ import { parseMoney } from './money';
 
 const turn = (d: Dial, ...moves: number[]) => moves.reduce(turnDial, d);
 const to = (d: Dial, target: number, dir: 1 | -1) => {
-  const steps = dir === 1 ? (target - d.pos + 60) % 60 : -((d.pos - target + 60) % 60);
+  const steps = dir === 1 ? (d.pos - target + 60) % 60 : -((target - d.pos + 60) % 60);
   return Array.from({ length: Math.abs(steps) }).reduce<Dial>((x) => turnDial(x, dir), d);
 };
 
 describe('combination dial', () => {
-  it('wraps around 60 ticks', () => {
-    expect(turn(newDial(), -1).pos).toBe(59);
-    expect(turn(newDial(), ...Array(61).fill(1)).pos).toBe(1);
+  it('wraps around 60 ticks; turning right lowers the number under the pointer', () => {
+    expect(turn(newDial(), 1).pos).toBe(59);
+    expect(turn(newDial(), -1).pos).toBe(1);
+    expect(turn(newDial(), ...Array(61).fill(-1)).pos).toBe(1);
   });
   it('opens on right, left, right to the three numbers', () => {
     let d = to(newDial(), COMBINATION[0], 1);

@@ -52,6 +52,19 @@
 .kn-side h3 {
   margin: 0 0 8px;
 }
+.kn-entry,
+.kn-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 10px;
+}
+.kn-num {
+  width: 5em;
+  min-height: 28px;
+  font: inherit;
+}
 .kn-status {
   min-height: 3em;
 }

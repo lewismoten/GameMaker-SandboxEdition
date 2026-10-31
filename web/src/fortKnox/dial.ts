@@ -1,5 +1,6 @@
-// The toy safe's combination dial, with no DOM: 60 ticks (numbers 0 to 55 printed every fifth),
-// turned right (clockwise, numbers going up) or left. A "run" is one stretch of turning in one
+// The toy safe's combination dial, with no DOM: 60 ticks (numbers 0 to 55 printed every fifth,
+// going up clockwise round the face). `pos` is the number under the pointer at the top, so
+// turning the dial right (clockwise) brings lower numbers under it, and left brings higher ones. A "run" is one stretch of turning in one
 // direction; the door opens when the last three runs went right, left, right and stopped on
 // the three numbers of the combination.
 export const TICKS = 60;
@@ -19,11 +20,11 @@ export const COMBINATION: readonly [number, number, number] = [31, 41, 59];
 export const newDial = (): Dial => ({ pos: 0, runs: [] });
 const wrap = (n: number) => ((n % TICKS) + TICKS) % TICKS;
 
-/** Turns the dial by `ticks` (positive right, negative left), one tick at a time. */
+/** Turns the dial by `ticks` (positive right = clockwise, so the number falls; negative left, so it rises). */
 export function turnDial(d: Dial, ticks: number): Dial {
   if (!ticks) return d;
   const dir: Turn = ticks > 0 ? 'right' : 'left';
-  const pos = wrap(d.pos + ticks);
+  const pos = wrap(d.pos - ticks);
   const runs = d.runs.slice();
   const last = runs[runs.length - 1];
   if (last?.dir === dir) runs[runs.length - 1] = { dir, end: pos };

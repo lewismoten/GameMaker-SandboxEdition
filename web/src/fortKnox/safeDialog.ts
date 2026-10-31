@@ -1,5 +1,6 @@
 // The close-up of Teddy's Forte Locks toy safe: the dial turns by drag, scroll wheel or the arrow
-// keys (Left and Right a tick, Shift five); a right, left, right combination opens the door on a
+// keys (Left and Right a tick, Shift five) or by typing a number in the box, which turns the dial
+// there smoothly (right, left, right for the three entries); a right, left, right combination opens the door on a
 // little dog treat store paid for in the games' leftover pretend coins. Esc closes it and puts
 // the keyboard back on the safe.
 import './safeDialog.css';
@@ -7,7 +8,7 @@ import { h } from '../editor/core/ui';
 import { focusInto } from '../desk/overlayFocus';
 import { roomSound } from '../desk/props/propSound';
 import { stillMotion } from '../desk/props/propKit';
-import { newDial, opens, spin, turnDial, TICKS, type Dial } from './dial';
+import { newDial, opens, spin, turnDial, TICKS, type Dial, type Turn } from './dial';
 import { loadMoney } from './money';
 import { balance, buy, loadSafe, saveSafe, type SafeRecord } from './store';
 import { safeSvg } from './safeArt';
@@ -63,10 +64,13 @@ export async function openSafe(): Promise<void> {
     status.textContent = text;
   };
   const dialEl = (): HTMLElement | null => stage.querySelector('.kn-dial');
+  const setAngle = (deg: number) => {
+    const g = stage.querySelector<SVGGElement>('.kn-dial-turn');
+    if (g) g.style.transform = `rotate(${deg}deg)`;
+  };
   const paint = () => {
     const d = dialEl();
-    const g = stage.querySelector<SVGGElement>('.kn-dial-turn');
-    if (g) g.style.transform = `rotate(${dial.pos * TICK_DEG}deg)`;
+    setAngle(-dial.pos * TICK_DEG);
     if (d) {
       d.setAttribute('aria-valuenow', String(dial.pos));
       d.setAttribute('aria-valuetext', `${dial.pos}`);
@@ -75,6 +79,7 @@ export async function openSafe(): Promise<void> {
     announce = window.setTimeout(() => (live.textContent = `${dial.pos}`), 250);
   };
   const turn = (ticks: number) => {
+    stopAnim();
     const dir = Math.sign(ticks);
     for (let i = 0; i < Math.abs(ticks); i++) {
       dial = turnDial(dial, dir);
@@ -82,6 +87,81 @@ export async function openSafe(): Promise<void> {
     }
     paint();
   };
+
+  // ---- the number box: the dial turns to a typed number --------------------------------
+  const ENTRY_DIRS: Turn[] = ['right', 'left', 'right'];
+  let entry = 0; // which of the three numbers is next
+  let raf = 0;
+  let finishAnim: (() => void) | undefined;
+  function stopAnim() {
+    if (!raf) return;
+    cancelAnimationFrame(raf);
+    raf = 0;
+    finishAnim?.();
+  }
+  /** Turns `steps` ticks in `dir`, animated (instant with reduced motion), clicking at each 5. */
+  function animateTurn(steps: number, dir: Turn, done: () => void) {
+    stopAnim();
+    const sign = dir === 'right' ? 1 : -1;
+    const start = -dial.pos * TICK_DEG; // the angle now; turning right raises it (clockwise)
+    const before = dial;
+    let clicked = 0;
+    const clicksTo = (n: number) => {
+      for (; clicked < n;) {
+        clicked++;
+        if (((((before.pos - sign * clicked) % TICKS) + TICKS) % TICKS) % 5 === 0) roomSound.dialClick();
+      }
+    };
+    const land = () => {
+      raf = 0;
+      finishAnim = undefined;
+      clicksTo(steps);
+      dial = turnDial(before, sign * steps);
+      paint();
+      done();
+    };
+    if (stillMotion() || steps === 0) return land();
+    const t0 = performance.now();
+    const ms = Math.min(1000, 450 + steps * 9);
+    finishAnim = land;
+    const frame = (now: number) => {
+      const k = Math.min(1, (now - t0) / ms);
+      const eased = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      setAngle(start + sign * steps * TICK_DEG * eased);
+      clicksTo(Math.floor(steps * eased));
+      if (k < 1) raf = requestAnimationFrame(frame);
+      else land();
+    };
+    raf = requestAnimationFrame(frame);
+  }
+  const stepsFor = (target: number, dir: Turn) => (dir === 'right' ? (dial.pos - target + TICKS) % TICKS : (target - dial.pos + TICKS) % TICKS);
+  let dirLabel: HTMLElement | undefined;
+  let numBox: HTMLInputElement | undefined;
+  const showNext = () => {
+    if (dirLabel) dirLabel.textContent = `Turn ${ENTRY_DIRS[entry % 3]} to`;
+  };
+  function goTo() {
+    const raw = numBox?.value.trim() ?? '';
+    const n = Number(raw);
+    if (!raw || !Number.isInteger(n) || n < 0 || n >= TICKS) return say(`Type a whole number from 0 to ${TICKS - 1}.`);
+    const dir = ENTRY_DIRS[entry % 3];
+    const steps = stepsFor(n, dir);
+    if (!steps) return say(`The dial is already at ${n}. Pick another number.`);
+    entry++;
+    showNext();
+    say(`Turning ${dir} to ${n}.`);
+    animateTurn(steps, dir, () => say(`Turned ${dir} to ${n}.`));
+  }
+  function reset() {
+    const right = dial.pos <= TICKS / 2;
+    animateTurn(right ? dial.pos : TICKS - dial.pos, right ? 'right' : 'left', () => {
+      dial = newDial();
+      entry = 0;
+      showNext();
+      paint();
+      say('The dial is back at 0 and the numbers are forgotten.');
+    });
+  }
 
   function wireDial(el: HTMLElement) {
     el.addEventListener('keydown', (e) => {
@@ -132,6 +212,7 @@ export async function openSafe(): Promise<void> {
   }
 
   function tryDoor() {
+    stopAnim();
     if (opens(dial)) {
       roomSound.dialClick();
       rec = { ...rec, opened: true };
@@ -141,6 +222,8 @@ export async function openSafe(): Promise<void> {
       say('Click-clunk! The door swings open.');
     } else {
       dial = spin(dial);
+      entry = 0;
+      showNext();
       say(
         dial.pos === 0 && !dial.runs.length
           ? 'The door does not budge.'
@@ -241,10 +324,34 @@ export async function openSafe(): Promise<void> {
     wireDial(knob);
     art.append(knob);
     stage.append(art);
+    dirLabel = h('label', { class: 'kn-dir', for: 'kn-num' });
+    numBox = h('input', {
+      id: 'kn-num',
+      class: 'kn-num',
+      type: 'number',
+      min: '0',
+      max: String(TICKS - 1),
+      step: '1',
+      inputmode: 'numeric',
+      'aria-describedby': 'kn-dir-hint',
+      onkeydown: (e: KeyboardEvent) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        e.stopPropagation();
+        goTo();
+      },
+    });
+    showNext();
     side.append(
       h('h2', null, 'Forte Locks'),
-      h('p', null, 'Teddy’s toy safe. Drag the dial, scroll over it or use the arrow keys, then try the door.'),
-      h('button', { type: 'button', class: 'kn-try primary', onclick: tryDoor }, 'Try the door'),
+      h('p', { id: 'kn-dir-hint' }, 'Teddy’s toy safe. Type a number and Turn, or drag the dial, scroll over it or use the arrow keys. Then try the door.'),
+      h('div', { class: 'kn-entry' }, dirLabel, numBox, h('button', { type: 'button', class: 'kn-turn primary', onclick: goTo }, 'Turn')),
+      h(
+        'div',
+        { class: 'kn-btns' },
+        h('button', { type: 'button', class: 'kn-try primary', onclick: tryDoor }, 'Try the door'),
+        h('button', { type: 'button', class: 'kn-reset', onclick: reset }, 'Reset'),
+      ),
       status,
     );
     if (rec.opened)
