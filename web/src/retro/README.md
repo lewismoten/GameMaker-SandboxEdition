@@ -6,7 +6,7 @@ The PC, shared by the desk and `dos.html`, importing nothing from `desk/`. The
 page around it supplies `computer/setup.ts` `ComputerOptions`; `computer/monitor.css` styles its
 picture; `host.ts` is what programs on it can use.
 
-- `energySnore.ts`: the parody power-saving logo (a sleepy star, ENERGY SNORE) in the BIOS boot screen's top-right corner, drawn in half-block characters.
+- `energySnore.ts`: the parody power-saving logo (a sleepy star, ENERGY SNORE) in the BIOS boot screen's top-right corner, drawn as 136x80 pixel art (`energySnoreArt.ts`, readable ASCII rows in white and cyan) cut into redefined 8x16 character glyphs, as the 1990s BIOSes did (`TextScreen.defineGlyphs` / `resetGlyphs`). The POST screen with the logo stays up about 2.5 s, also on a quick boot.
 - `computer.ts`: power and programs, with `computer/` (`drives.ts`, game folders in
   `folders.ts`, its sound line `pcAudio.ts`, the Sound Blaster card `soundBlaster.ts`, and the boot's mouse line `mouseDriver.ts`, which now and then has a day of its own).
   `leaveProgram.ts` and `saveFirst.ts` get it back to the DOS prompt for a disk; `diskSwap.ts` says

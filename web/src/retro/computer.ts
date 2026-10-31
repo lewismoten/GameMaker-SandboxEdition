@@ -27,6 +27,9 @@ import { ComputerFolders } from './computer/folders';
 import { clearEnergySnore, drawEnergySnore } from './energySnore';
 import { deskProgram, playAchievements, playWrote, unlockAchievement } from '../achievements';
 
+/** How long the BIOS screen with its logo stays up, in a quick boot too. */
+const POST_HOLD_MS = 2500;
+
 export class Computer extends ComputerFolders {
   async powerOn(): Promise<void> {
     if (this.powered) return;
@@ -42,6 +45,7 @@ export class Computer extends ComputerFolders {
     // a quick boot (the DOS page, on its way to Game-Maker) says the same in a quarter of the time
     const pause = (ms: number) => sleep(this.opts.quickBoot ? ms / 4 : ms);
     s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
+    const postStart = Date.now();
     drawEnergySnore(s);
     for (let k = 0; k <= 4096; k += 256) {
       s.cursorX = 0;
@@ -52,6 +56,9 @@ export class Computer extends ComputerFolders {
     this.postBeep(); // one short beep: the power-on self test passed
     s.print('\n\nStarting MS-DOS...\n\n');
     await pause(500);
+    if (!this.powered) return;
+    // the logo needs time to be seen: the POST screen stays up about 2.5 s even on a quick boot
+    await sleep(Math.max(0, POST_HOLD_MS - (Date.now() - postStart)));
     if (!this.powered) return;
     clearEnergySnore(s);
     // CONFIG.SYS
