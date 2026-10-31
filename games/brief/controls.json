@@ -1,0 +1,48 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Walk up one step; hold to keep walking."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Walk down one step; hold to keep walking."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Walk left one step; hold to keep walking."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Walk right one step; hold to keep walking."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Same as the Down arrow."
+    },
+    "57": {
+      "short": "Pocket",
+      "long": "Pocket a small thing."
+    }
+  },
+  "joystick": {},
+  "counters": {
+    "20": "Wing 1 stories",
+    "21": "Wing 2 stories",
+    "22": "Wing 3 stories",
+    "23": "Wing 4 stories",
+    "24": "Wing 5 stories"
+  }
+}
