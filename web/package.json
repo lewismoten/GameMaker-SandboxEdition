@@ -18,6 +18,7 @@
     "dosbox": "vite-node scripts/dosbox.ts",
     "tour:check": "vite-node scripts/tourCheck.ts --",
     "tour:audit": "vite-node scripts/tourAudit.ts --",
+    "badges:similar": "vite-node scripts/badgeSimilar.ts --",
     "voice": "vite-node scripts/narrate.ts --",
     "voice:all": "vite-node scripts/narrate.ts -- --force",
     "voice:check": "vite-node scripts/narrate/verify.ts --",

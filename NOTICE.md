@@ -627,6 +627,9 @@ formats from their published descriptions and from Game-Maker's own source.
   CIE's **CIELAB** color space and 1976 color difference (ΔE), using the sRGB standard's
   (IEC 61966-2-1) transfer curve. All are published formulas and numbers; no code of theirs
   is included.
+- **The badge look-alike check** (`web/scripts/badgeSimilarMetrics.ts`, `npm run badges:similar`) uses
+  the same Machado, Oliveira and Fernandes (2009) severity-1.0 matrices in linear RGB, with
+  Rec. 601 luma for grayscale and achromatopsia. Published numbers only; no code of theirs is included.
 - **The sound effect makers** (`web/src/audio/sfxSynth.ts`, `sfxPresets.ts` and
   `web/src/editor/tools/speakerFx.ts`) follow the idea of **sfxr**, Tomas Pettersson's
   ("DrPetter") 2007 sound effect generator: a few sliders for pitch, slide, vibrato and an
