@@ -14,6 +14,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';
 import { HOURS, HOURS_NEEDED, MON, SNACKS } from '../ids';
 import { AIR, BlockBook, GRAV, LEDGE, LICK_EVERY, SOLID, SUGAR, SUGAR_CUBE, fresh, sugarCube } from './common';
+import { yardBadges } from './badges';
 import { cut } from './house';
 
 /** Ticks between wasps from the nest. */
@@ -356,5 +357,7 @@ export function buildYard(pal: Pal): BlockBook {
   book.add('skyHiFlown', sky(2, 2), AIR);
   book.add('grassLicked', grass(12), { solid: SOLID, next: 'grass', ntime: LICK_EVERY });
   book.add('sugarS', sugarCube(sky(1), pal), { effect: SUGAR, eamt: SUGAR_CUBE, touch: 'skyFlown' });
+  // (last too) scenery for the site's achievement badges
+  yardBadges(book, pal, { sky: () => sky(1) });
   return book;
 }
