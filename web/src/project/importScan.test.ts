@@ -260,3 +260,13 @@ describe('scanImport', () => {
     await expect(scanImport([await zip('a.zip', game('', 'A'))], { signal: ctl.signal })).rejects.toThrow();
   });
 });
+
+describe('files that are not what their extension says', () => {
+  it('lists a text file named .fli and leaves a real-looking one alone', async () => {
+    const fli = new Uint8Array(16);
+    fli.set([0x11, 0xaf], 4);
+    const r = await scanImport([...game('g/', 'Zed').map(([n, d]) => file(n, d)), file('g/fake.fli', enc.encode('just some words')), file('g/real.fli', fli)]);
+    expect(r.misnamed?.map((m) => m.path)).toEqual(['g/fake.fli']);
+    expect(scanSummary(r)).toContain('1 file not what its extension says');
+  });
+});

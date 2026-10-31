@@ -12,7 +12,7 @@ import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/cha
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
-import { parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { isFli, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { describeFliFault, fliFaults } from '@lewismoten/gamemaker-sandbox-engine/formats/fliLimits';
 import { parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { decodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
@@ -204,6 +204,16 @@ export function checkGame(src: FileSource, gam: string | undefined, opts: { deep
         continue;
       }
       if (!parse || !bytes.length || n === gamFile) continue;
+      if (ext(n) === 'fli' && !isFli(bytes)) {
+        // Not FLI at all (a renamed file): say so plainly, at the same level as a broken one.
+        issues.push({
+          severity: used.has(n) ? 'error' : 'warning',
+          kind: 'unreadable',
+          file: n,
+          message: `${n} doesn’t look like a Game-Maker animation (FLI); it may be another kind of file with a .FLI name.${used.has(n) ? '' : ' The game doesn’t use it.'}`,
+        });
+        continue;
+      }
       try {
         parse(bytes);
         const faults = ext(n) === 'fli' ? fliFaults(bytes) : [];

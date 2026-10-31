@@ -8,6 +8,9 @@
 import { cdName, GameFiles, IGNORED_FILE, normalize } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { crc32, isZip, listZip, type ZipLimits } from './zip';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { isFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { markZipLeftovers } from './importLeftovers';
 
 /** A file to look at: picked, dropped or in a zip. Its path is from the top of what was given. */
@@ -54,6 +57,26 @@ export interface ScanReport {
   badZips: { path: string; error: string }[];
   /** Files in no game, zips aside (none of them is imported, unless no game was found at all). */
   loose: ScanFile[];
+  /** Files whose contents aren't what their extension says (a renamed text file named .FLI). */
+  misnamed?: { path: string; says: string }[];
+}
+
+const SNIFF: Record<string, [label: string, is: (b: Uint8Array) => boolean]> = {
+  fli: ['an animation (FLI)', isFli],
+  gif: ['a picture (GIF)', isGif],
+  voc: ['a sound (VOC)', isVoc],
+};
+
+/** Files whose extension names a format their first bytes don't match. */
+async function misnamedIn(files: ScanFile[]): Promise<{ path: string; says: string }[]> {
+  const out: { path: string; says: string }[] = [];
+  for (const f of files) {
+    const sniff = SNIFF[/\.([^./\\]+)$/.exec(f.path)?.[1].toLowerCase() ?? ''];
+    if (!sniff || !f.size) continue;
+    const bytes = await f.read().catch(() => undefined);
+    if (bytes && !sniff[1](bytes)) out.push({ path: f.path, says: sniff[0] });
+  }
+  return out;
 }
 
 /** A game's own player is an .EXE of XFERPLAY 3.00's size; the import reads those and leaves out the rest. */
@@ -210,6 +233,7 @@ export async function scanImport(given: ScanFile[], { signal, onProgress, zipLim
   const look = async (files: ScanFile[], zips: ScanFile[], inner: string[], depth: number): Promise<number> => {
     const { players, games: played, crcs: exeCrcs } = await playedBy(files);
     const { games, loose } = groupGames(files, played);
+    (report.misnamed ??= []).push(...(await misnamedIn(files.filter((f) => !isZipName(f.path)))));
     if (!zips.length) report.loose.push(...loose);
     let found = 0;
     /** Adds a game; how many files its .gam names that it lacks. */
@@ -362,11 +386,12 @@ function sameGamesOnce(games: FoundGame[], sfxPaths: Set<string>): FoundGame[] {
 }
 
 /** "212 games found, 3 zips had no game" */
-export function scanSummary(r: Pick<ScanReport, 'games' | 'emptyZips' | 'badZips' | 'zips'>): string {
+export function scanSummary(r: Pick<ScanReport, 'games' | 'emptyZips' | 'badZips' | 'zips'> & { misnamed?: ScanReport['misnamed'] }): string {
   const n = (count: number, one: string, many = `${one}s`) => `${count} ${count === 1 ? one : many}`;
   const parts = [`${n(r.games.length, 'game')} found`];
   if (r.emptyZips.length) parts.push(`${n(r.emptyZips.length, 'zip')} had no game`);
   if (r.badZips.length) parts.push(`${n(r.badZips.length, 'zip')} could not be read`);
+  if (r.misnamed?.length) parts.push(`${n(r.misnamed.length, 'file')} not what ${r.misnamed.length === 1 ? 'its' : 'their'} extension says`);
   const copies = r.games.reduce((sum, g) => sum + (g.alsoIn?.length ?? 0), 0);
   if (copies) parts.push(`${n(copies, 'copy', 'copies')} of the same ${copies === 1 ? 'game' : 'games'} left out`);
   if (!r.games.length && r.zips && !r.emptyZips.length && !r.badZips.length) parts.push(`in ${n(r.zips, 'zip')}`);

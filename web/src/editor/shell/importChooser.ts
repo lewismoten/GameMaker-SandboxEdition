@@ -56,12 +56,20 @@ function zipNotes(r: ScanReport): HTMLElement | undefined {
   return h('details', { class: 'ic-notes' }, h('summary', null, `Zips with no game (${rows.length})`), h('ul', null, ...rows));
 }
 
+/** Files whose contents aren't what their extension says, folded away under the summary. */
+function misnamedNotes(r: ScanReport): HTMLElement | undefined {
+  const rows = (r.misnamed ?? []).map((m) => h('li', null, m.path, h('small', null, ` · doesn’t look like ${m.says}; it may be another kind of file renamed`)));
+  if (!rows.length) return undefined;
+  return h('details', { class: 'ic-notes' }, h('summary', null, `Files not what their extension says (${rows.length})`), h('ul', null, ...rows));
+}
+
 /** Says what was found when no game was; nothing is imported. */
 export function showNothingFound(r: ScanReport): Promise<void> {
   const what = 'A game is a folder or zip with a .GAM file in it, so nothing was imported.';
   return modal<void>('No game found', (close) => [
     h('p', null, `${scanSummary(r)}. ${what}`),
     zipNotes(r),
+    misnamedNotes(r),
     h('div', { class: 'buttons' }, h('button', { type: 'button', class: 'primary', onclick: () => close(undefined) }, 'OK')),
   ]).then(() => undefined);
 }
@@ -152,6 +160,7 @@ export async function chooseGames(
           : '',
       ),
       zipNotes(r),
+      misnamedNotes(r),
       h(
         'div',
         { class: 'ic-all', role: 'group', 'aria-label': 'Select' },
