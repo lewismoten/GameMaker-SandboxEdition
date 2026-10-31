@@ -28,12 +28,32 @@ const BY_TYPE: Record<string, string> = {
   video: VIDEO,
 };
 
-/** The three-letter author mark for who an item is from. */
+const baseMark = (title: string) => {
+  const letters = title.replace(/^(the|a|an)\s+/i, '').replace(/[^A-Za-z]/g, '');
+  return letters.slice(0, 3).toUpperCase().padEnd(3, 'X');
+};
+
+/** Marks told apart by number, by game id (see setAuthorMarks). */
+let numbered = new Map<string, string>();
+
+/**
+ * Games whose titles give the same mark get a number, the usual library way, in the order of
+ * their ids (teddy, teddy2, teddy3 are in release order): TED, TED2, TED3. A mark used once stays plain.
+ */
+export function setAuthorMarks(games: readonly { id: string; title: string }[]): void {
+  const by = new Map<string, string[]>();
+  for (const g of [...games].sort((a, b) => a.id.localeCompare(b.id, 'en', { numeric: true }))) {
+    const m = baseMark(g.title);
+    by.set(m, [...(by.get(m) ?? []), g.id]);
+  }
+  numbered = new Map([...by].flatMap(([m, ids]) => ids.map((id, i): [string, string] => [id, i ? `${m}${i + 1}` : m])));
+}
+
+/** The author mark for who an item is from: three letters, with a number when titles share them. */
 export function authorMark(owner: string, title: string): string {
   if (owner === GM_OWNER) return 'RSD';
   if (owner === SITE_OWNER || owner === SHARED_OWNER) return 'GMS';
-  const letters = title.replace(/^(the|a|an)\s+/i, '').replace(/[^A-Za-z]/g, '');
-  return letters.slice(0, 3).toUpperCase().padEnd(3, 'X');
+  return numbered.get(owner) ?? baseMark(title);
 }
 
 /** A card's call number, e.g. "614-MAH TED". */
