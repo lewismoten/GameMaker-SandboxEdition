@@ -298,7 +298,11 @@ function guideHead([id, title, html]: GuideSection): string {
   const meta = metaTags({
     title: `${title} · Guide · ${PRODUCT}`,
     // its first paragraph says what the section is (a table or list would read as noise)
-    description: clip((/<p>([\s\S]*?)<\/p>/.exec(html)?.[1] ?? html).replace(/<[^>]+>/g, ' '), 155),
+    // the first paragraphs until there are about 90 characters (a page may open with a short lead-in ending in a colon)
+    description: clip(
+      ([...html.matchAll(/<p>([\s\S]*?)<\/p>/g)].reduce((s, m) => (s.length >= 90 ? s : `${s} ${m[1]}`), '') || html).replace(/<[^>]+>/g, ' '),
+      155,
+    ),
     url: `${SITE_URL}${guideFile(id)}`,
     image: OG_IMAGE,
     imageAlt: OG_IMAGE_ALT,
