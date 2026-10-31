@@ -64,7 +64,7 @@ Part of the [source map](../README.md).
   `integrator/` (its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
   changed from a map with GRATOR's rules in `linkEdits.ts`; its toolbar's DOS player button opens Overview › DOS player, built in `integrator/dosPlayer/`: `playerPanel.ts`, a
   tab per screen (`screenTabs.ts` groups the patches, `screenFields.ts` lays out a tab,
-  `playerFields.ts` makes each field) and a Files tab for the DOS download's extensions (`fileFields.ts`), `playerPreview.ts`, which draws XFERPLAY's screens with the
+  `playerFields.ts` makes each field, `fieldTools.ts` adds the Hide and Reset buttons beside it) and a Files tab for the DOS download's extensions (`fileFields.ts`), `playerPreview.ts`, which draws XFERPLAY's screens with the
   engine's own `draw*` functions, and dragging words and frames on that preview: `dragItems.ts`
   (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, accompaniment in
   `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
@@ -344,6 +344,7 @@ are real previews too; a blank idle can fall back to a movement frame.
   selected settings panel in the address when frames or sequences change. Frame
   toolbars keep Swap halves alongside move, duplicate and delete.
 
+- **Readable palettes.** `core/readablePalette.ts` picks which palette shows a sprite readably: one that does not paint most of its colors near black.
 - **Readable time fields.** `core/duration.ts` formats timer values as hours,
   minutes, seconds and milliseconds using each field's clock. `numberField` can
   show a live duration with its `time` option, including disabled-zero timers or
