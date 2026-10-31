@@ -28,10 +28,10 @@
   height: auto;
   filter: drop-shadow(3px 6px 6px rgb(0 0 0 / 55%));
 }
-/* the dial's hit area: the ring's circle (centre 100,120, radius 40 of a 200x212 drawing) */
+/* the dial's hit area: the ring's circle (centre 70,120, radius 40 of a 200x212 drawing) */
 .kn-dial {
   position: absolute;
-  left: 30%;
+  left: 15%;
   top: calc(80 / 212 * 100%);
   width: 40%;
   aspect-ratio: 1;

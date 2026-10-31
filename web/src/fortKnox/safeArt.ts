@@ -4,7 +4,7 @@
 // Drawn by Claude Sonnet 5.5 from Lewis's description of his childhood bank.
 import { TICKS } from './dial';
 
-const CX = 100;
+const CX = 70; // the dial sits on the left side of the door, hinges beside it
 const CY = 120;
 
 function dialFace(): string {
@@ -33,11 +33,11 @@ export function safeSvg(open: boolean, pos = 0): string {
     ? `<rect x="24" y="72" width="152" height="100" rx="6" fill="#1b1410"/>
        <rect x="28" y="76" width="144" height="92" rx="4" fill="#2b2118"/>
        <path d="M30 150h140" stroke="#5a4632" stroke-width="3"/><path d="M30 120h140" stroke="#5a4632" stroke-width="3"/>
-       <path d="M24 72 L54 80 L54 164 L24 172 Z" fill="#37a24a" stroke="#14501f" stroke-width="2" stroke-linejoin="round"/>
+       <path d="M24 72 L54 80 L54 164 L24 172 Z" fill="#2a7f3a" stroke="#0c3515" stroke-width="2" stroke-linejoin="round"/>
        <g stroke="#6b3a0e" stroke-width="1.2" fill="#e8c27a"><rect x="70" y="134" width="26" height="9" rx="4.5"/><circle cx="70" cy="136" r="4"/><circle cx="70" cy="141" r="4"/><circle cx="96" cy="136" r="4"/><circle cx="96" cy="141" r="4"/><circle cx="130" cy="138" r="8" fill="#f6e6a8"/><circle cx="130" cy="138" r="3" fill="#2b2118"/><circle cx="150" cy="138" r="8" fill="#f6e6a8"/><circle cx="150" cy="138" r="3" fill="#2b2118"/><path d="M80 106l22-4 3 10-22 4z" fill="#a8602a"/><path d="M120 108h40l-4 12h-32z" fill="#f4eed6"/></g>
        <circle cx="38" cy="122" r="9" fill="#c4161c" stroke="#d8dde2" stroke-width="2"/>`
-    : `<rect x="24" y="72" width="152" height="100" rx="7" fill="#3aa84e" stroke="#14501f" stroke-width="2"/>
-       <rect x="29" y="77" width="142" height="90" rx="4" fill="none" stroke="#2a8a3c" stroke-width="2"/>
+    : `<rect x="24" y="72" width="152" height="100" rx="7" fill="#2a7f3a" stroke="#0c3515" stroke-width="2"/>
+       <rect x="29" y="77" width="142" height="90" rx="4" fill="none" stroke="#1d5f2b" stroke-width="2"/>
        <circle cx="${CX}" cy="${CY}" r="40" fill="url(#kn-chrome)" stroke="#5c6168" stroke-width="1.2"/>
        <circle cx="${CX}" cy="${CY}" r="35" fill="#8e1317"/>
        <g class="kn-dial-turn" style="transform-origin:${CX}px ${CY}px;transform:rotate(${(pos * 360) / TICKS}deg)">${dialFace()}</g>
@@ -45,16 +45,16 @@ export function safeSvg(open: boolean, pos = 0): string {
   const hinges = [84, 148]
     .map(
       (y) =>
-        `<rect x="14" y="${y}" width="18" height="14" rx="3" fill="#3aa84e" stroke="#14501f" stroke-width="2"/><circle cx="19" cy="${y + 7}" r="1.8" fill="#14501f"/>`,
+        `<rect x="14" y="${y}" width="18" height="14" rx="3" fill="#2a7f3a" stroke="#0c3515" stroke-width="2"/><circle cx="19" cy="${y + 7}" r="1.8" fill="#0c3515"/>`,
     )
     .join('');
   return `<svg viewBox="0 0 200 212" xmlns="http://www.w3.org/2000/svg" class="kn-svg">
     <defs>
       <linearGradient id="kn-chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fdfdfe"/><stop offset=".45" stop-color="#aab0b8"/><stop offset=".7" stop-color="#eef0f3"/><stop offset="1" stop-color="#7d838b"/></linearGradient>
     </defs>
-    <path d="M30 30h140q10 0 14 10l8 22H8l8-22q4-10 14-10z" fill="#58c26b" stroke="#14501f" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M30 30h140q10 0 14 10l8 22H8l8-22q4-10 14-10z" fill="#3c9a4e" stroke="#0c3515" stroke-width="2.5" stroke-linejoin="round"/>
     <rect x="124" y="42" width="34" height="6" rx="3" fill="#0e2a14"/>
-    <rect x="8" y="62" width="184" height="142" rx="14" fill="#2f9a45" stroke="#14501f" stroke-width="2.5"/>
+    <rect x="8" y="62" width="184" height="142" rx="14" fill="#216b30" stroke="#0c3515" stroke-width="2.5"/>
     ${hinges}${door}
     <rect x="48" y="179" width="104" height="19" rx="2" fill="#c4161c" stroke="url(#kn-chrome)" stroke-width="2.6"/>
     <text x="100" y="193" text-anchor="middle" font-size="12.5" font-weight="900" letter-spacing="1.6" font-family="Arial Black,Arial,Helvetica,sans-serif" fill="url(#kn-chrome)" stroke="#5c6168" stroke-width=".35">FORT KNOX</text>

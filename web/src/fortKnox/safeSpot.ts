@@ -1,4 +1,4 @@
-// Teddy's Fort Knox toy safe on the desk's right end: it appears only once a catalog game has
+// Teddy's Fort Knox toy safe on the desk top beside the right speaker: it appears only once a catalog game has
 // been won, and pressing it opens the close-up (safeDialog.ts).
 import './safeSpot.css';
 import { h } from '../editor/core/ui';

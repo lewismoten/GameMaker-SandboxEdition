@@ -1,4 +1,4 @@
-/* Teddy's Fort Knox toy safe, at the right end of the desk top once a game is won. */
+/* Teddy's Fort Knox toy safe, on the desk top against the wall beside the right speaker, under the window sill, once a game is won. */
 .kn-safe {
   position: relative;
   min-width: 24px;
@@ -6,8 +6,8 @@
 }
 .kn-safe-art {
   display: block;
-  width: 64px;
-  height: 68px;
+  width: 52px;
+  height: 55px;
   filter: drop-shadow(2px 3px 2px rgb(0 0 0 / 50%));
 }
 .kn-safe-art svg {
@@ -19,8 +19,8 @@
 @media (min-width: 961px) {
   .desk-scene > .kn-safe {
     position: absolute;
-    left: 1336px;
-    top: 626px;
+    left: 1112px;
+    top: 478px;
     z-index: 2;
   }
   .desk-scene > .kn-safe:hover,
