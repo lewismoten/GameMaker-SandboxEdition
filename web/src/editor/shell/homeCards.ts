@@ -11,6 +11,7 @@ import { paintIndexed } from '../core/draw';
 import { GameFiles, creditLine, loadHostedGame, withDetails, type CatalogEntry } from '../../project/files';
 import { demoNeeds, streamHostedGame } from '../../project/streamGame';
 import { listProjects, loadProject } from '../../project/storage';
+import { controlsFromCompanion } from '../core/gameControls';
 import { ADVTYPE, NOSCENE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelShot } from '../editors/integrator/integratorArt';
 import { catalogTarget, healthBadge, projectTarget, type HealthTarget } from './gameHealth';
@@ -266,7 +267,9 @@ function gameShot(game: HomeGame, className = 'card-shot pixel'): HTMLCanvasElem
 
 /** ⌨ Keys: a keyboard map of what each key does in the game, worked out from its files. */
 function openKeys(game: HomeGame): void {
-  void import('../keymap/keyMapView').then(({ showKeyMap }) => showKeyMap(game.files(), game.gam ?? undefined, game.title));
+  // a game of yours shows the key meanings its author wrote (Overview › Controls)
+  const controls = game.project && game.gam ? loadProject(game.project.id).then((p) => controlsFromCompanion(p?.record.companion, game.gam!)) : undefined;
+  void import('../keymap/keyMapView').then(({ showKeyMap }) => showKeyMap(game.files(), game.gam ?? undefined, game.title, undefined, controls));
 }
 
 /** The manual, for games that have one printed. */
