@@ -34,7 +34,7 @@ export function wallTrophies(desk: HTMLElement): () => void {
       else desk.querySelector('.desk-scene')?.append(el);
     });
   });
-  // Teddy's Fort Locks toy safe only appears after somebody wins a catalog game.
+  // Teddy's Forte Locks toy safe only appears after somebody wins a catalog game.
   let unSafe: (() => void) | undefined;
   void import('../fortKnox/safeSpot').then(({ fortKnoxSafe }) => {
     if (!desk.isConnected) return;

@@ -1,4 +1,4 @@
-// The close-up of Teddy's Fort Locks toy safe: the dial turns by drag, scroll wheel or the arrow
+// The close-up of Teddy's Forte Locks toy safe: the dial turns by drag, scroll wheel or the arrow
 // keys (Left and Right a tick, Shift five); a right, left, right combination opens the door on a
 // little dog treat store paid for in the games' leftover pretend coins. Esc closes it and puts
 // the keyboard back on the safe.
@@ -38,7 +38,7 @@ export async function openSafe(): Promise<void> {
   const panel = h('div', { class: 'kn-panel' }, stage, side);
   const overlay = h(
     'div',
-    { class: 'desk-overlay kn-overlay', role: 'dialog', 'aria-label': 'Teddy’s Fort Locks toy safe, close-up' },
+    { class: 'desk-overlay kn-overlay', role: 'dialog', 'aria-label': 'Teddy’s Forte Locks toy safe, close-up' },
     h('button', { class: 'close', type: 'button', onclick: () => close() }, 'Close (Esc)'),
     panel,
     live,
@@ -242,7 +242,7 @@ export async function openSafe(): Promise<void> {
     art.append(knob);
     stage.append(art);
     side.append(
-      h('h2', null, 'Fort Locks'),
+      h('h2', null, 'Forte Locks'),
       h('p', null, 'Teddy’s toy safe. Drag the dial, scroll over it or use the arrow keys, then try the door.'),
       h('button', { type: 'button', class: 'kn-try primary', onclick: tryDoor }, 'Try the door'),
       status,

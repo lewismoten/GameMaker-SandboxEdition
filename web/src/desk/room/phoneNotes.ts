@@ -37,7 +37,7 @@ export function notes(): HTMLElement {
       'DON’T answer the door for anyone you don’t know!',
       h('br'),
       'Keep it locked.',
-      // Teddy's Fort Locks toy safe: the combination, in pencil, small, at the sticky note's foot
+      // Teddy's Forte Locks toy safe: the combination, in pencil, small, at the sticky note's foot
       h('span', { class: 'pn-scribble' }, `Pi ${COMBINATION.join('-')}`),
     ),
   );

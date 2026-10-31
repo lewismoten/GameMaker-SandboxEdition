@@ -1,4 +1,4 @@
-// The Fort Locks toy safe, drawn in SVG: a green metal cube with rounded corners, a door on two
+// The Forte Locks toy safe, drawn in SVG: a green metal cube with rounded corners, a door on two
 // hinges of the same green at its right, a red combination dial (numbers 0 to 55 by fives, 60 ticks, a chrome
 // ring), a coin slot on top at the right and a red plate with chrome letters under the door.
 // Drawn by Claude Sonnet 5.5 from Lewis's description of his childhood bank.
@@ -57,6 +57,6 @@ export function safeSvg(open: boolean, pos = 0): string {
     <path d="M8 65q0-3 3-3h178q3 0 3 3v125q0 14-14 14H22q-14 0-14-14z" fill="#216b30" stroke="#0c3515" stroke-width="2.5"/>
     ${hinges}${door}
     <rect x="48" y="179" width="104" height="19" rx="2" fill="#c4161c" stroke="url(#kn-chrome)" stroke-width="2.6"/>
-    <text x="100" y="193" text-anchor="middle" font-size="12.5" font-weight="900" letter-spacing="1.1" font-family="Arial Black,Arial,Helvetica,sans-serif" fill="url(#kn-chrome)" stroke="#5c6168" stroke-width=".35">FORT LOCKS</text>
+    <text x="100" y="193" text-anchor="middle" font-size="11.5" font-weight="900" letter-spacing="0.7" font-family="Arial Black,Arial,Helvetica,sans-serif" fill="url(#kn-chrome)" stroke="#5c6168" stroke-width=".35">FORTE LOCKS</text>
   </svg>`;
 }

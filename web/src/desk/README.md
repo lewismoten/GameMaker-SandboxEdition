@@ -7,7 +7,7 @@ boxes, the catalog and what the address asks for (`deskRestore.ts`). `deskScene.
 scene (`stage.ts` scales it to the window); `deskPc.ts` switches the PC on and off and loads its
 insides; `deskShelf.ts` fills the shelf, `deskGmBox.ts` opens the Game-Maker box, `deskLook.ts`
 points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned.
-`overlayFocus.ts` moves the keyboard into an overlay and back. `wallTrophies.ts` also puts Teddy's Fort Locks toy safe ([`fortKnox/`](../fortKnox/README.md)) at the desk's right end after a catalog win, including the zero left by games with no money counter. Its combination is scribbled in pencil on the sticky note under the phone (`room/phoneNotes.ts`). `deskTour.ts` is the guided tour's BBS chapter on this PC: it
+`overlayFocus.ts` moves the keyboard into an overlay and back. `wallTrophies.ts` also puts Teddy's Forte Locks toy safe ([`fortKnox/`](../fortKnox/README.md)) at the desk's right end after a catalog win, including the zero left by games with no money counter. Its combination is scribbled in pencil on the sticky note under the phone (`room/phoneNotes.ts`). `deskTour.ts` is the guided tour's BBS chapter on this PC: it
 calls The Sandbox BBS and types for the tour, then puts back what the call changed.
 
 - `pc/`: the case (`caseParts.ts`), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
