@@ -1,0 +1,61 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Walk up one step; hold to keep walking."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Walk down one step; hold to keep walking."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Walk left one step; hold to keep walking."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Walk right one step; hold to keep walking."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Same as the Down arrow."
+    },
+    "57": {
+      "short": "Squawk",
+      "long": "Squawk the rubber chicken. Mice run, and toy Redcoats run faster."
+    },
+    "28": {
+      "short": "Pick up",
+      "long": "Pick up what you are standing on."
+    },
+    "44": {
+      "short": "Kazoo",
+      "long": "Play the kazoo, once you have found it."
+    },
+    "20": {
+      "short": "Tip tricorn",
+      "long": "Tip the tricorn, once you have found it. It does nothing. Ebenezer insisted."
+    },
+    "48": {
+      "short": "Bounce",
+      "long": "Sir Reginald, the rubber chicken, bounces."
+    }
+  },
+  "joystick": {},
+  "counters": {
+    "20": "Skeleton keys",
+    "21": "Lazy Susan turns"
+  }
+}
