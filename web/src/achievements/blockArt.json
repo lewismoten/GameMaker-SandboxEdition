@@ -614,7 +614,7 @@
       "block": "aurora"
     },
     "bbs-got-time": {
-      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJFBMVEV9uu+ez/fD3/sUDAhFZSiSrk1dlkWCvlnXvpKacSjHmkH///eqI4lMAAAAdklEQVR42m2P2xaDIAwEE8cChv//356NUim6LyGzuWE+yZbobyYPCASgR2aCxCEFTlfa7WQRMvhV8qecJlhKKV2CXJiw1loniBsxwcgR21JJaw1fFw0YOkg6AhoJBz2vvyqnH20D8pSbPNl3uGGb4Oetfbf9RV/hBgbgRXni0AAAAABJRU5ErkJggg==",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAHlBMVEWez/fD3/sUDAhFZSiSrk2CvlnXvpJtRRTHmkH///fDfL+xAAAAcUlEQVR42m3OgQ6AIAgEULqKs///4QaHmtVN3XwD1EzBI3lLOSNXJPBC7BdW5dJuYwNNMhFNGVpGkl07hpBCzQ5oWS10d0CYC1thVubIqkRhW9rhMFDcH8qZADP1/0DXY4RmTQzXuaJ3PPDJYftPfvEGkukF2ktKNaoAAAAASUVORK5CYII=",
       "game": "loaf",
       "set": "loaf",
       "block": "snail"
@@ -632,7 +632,7 @@
       "block": "surprisedGoat"
     },
     "play-bizarre": {
-      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUQDBS2eRT/96ooGBRJMCBpRSyKYUFpFCCaJDSNhVdKAAAAlUlEQVR42l2QWQ7EMAhDjVuW+594ZCBtNfmIoodtCKisKgCo6qcO+iaJBaqgq4NWKJesDW2FCBRIUizto5xAG23WfdXYUSaf6H1N92wNEICJ7UhiodMsIaEpJcIjOqGVkDPCfajCE+38U4p5sDNh+812MtjddyHDXGymP3Y6T169mZy83RTmK2LPRt858VkpTi0fXeUPBUEIoeCIKyIAAAAASUVORK5CYII=",
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGFBMVEUQDBTv16L///f/96qKYUGqfVVlOH3LTUFMjPLkAAAAeUlEQVR42m2PUQ7DMAhDnwch97/xBCFt2s0fUfSEbSBSlGJr/cwMv3FDcD8n02hvO2Zm4eCN1JADirbfUGIX9U6EKplmXv3iWAkfCUX8QHFCPK26DlhvxWVAPGCNvaAq4QnFJ+VHkcTwpasoK8ay78k5Z8R/yDI3/AL/DQY3m/1rUwAAAABJRU5ErkJggg==",
       "game": "smirked",
       "set": "smirked",
       "block": "violin"
