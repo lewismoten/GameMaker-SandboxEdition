@@ -14,9 +14,9 @@ const svg = (cls: string, viewBox: string, body: string): HTMLElement => {
   return el;
 };
 
-export function mug(): HTMLElement {
-  // the mug lives in mug.ts: printed with the picture chosen in its viewer
-  return deskMug(() => void import('../mug/mugViewer').then((m) => m.openMugViewer()));
+export function mug(open: () => void): HTMLElement {
+  // the mug lives in mug.ts: printed with the picture chosen in its viewer (desk.ts opens it, keeping open=mug in the address)
+  return deskMug(open);
 }
 
 /** A coiled cord down a vertical run, as SVG path commands: little loops side to side. */

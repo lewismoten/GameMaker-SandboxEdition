@@ -76,6 +76,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     command: (cmd) => void pc.command(cmd),
     catalog: () => void catalog(),
     magazine: () => void magazine(),
+    mug: () => void mugViewer(),
     flip: () => void flip(),
     openGmBox: () => void openGmBox(),
     setZoom: (zoom) => pc.setZoom(zoom),
@@ -288,12 +289,15 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       }),
     );
 
+  /** The mug's closer look, kept in the address (open=mug) so a reload comes back to it. */
+  const mugViewer = () => opened('mug', async () => (await import('./mug/mugViewer')).openMugViewer());
+
   /** Turns to a prop on the desk (look=modem…, from the magazine's ads): opens what opens, points out the rest. */
   function look(prop: string): void {
     if (prop === 'catalog') return void catalog();
     if (prop === 'gmbox') return void openGmBox();
     if (prop === 'diskbox') return void flip();
-    if (prop === 'mug') return void import('./mug/mugViewer').then((m) => m.openMugViewer());
+    if (prop === 'mug') return void mugViewer();
     pointOut(desk, prop, { modem: modem.el, speaker: spk.right });
   }
 
@@ -309,6 +313,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       look,
       catalog,
       magazine,
+      mug: mugViewer,
       openGmBox,
       dosManual,
       gameManual: (g) => gameManual(g),
