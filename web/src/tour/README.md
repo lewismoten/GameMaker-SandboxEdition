@@ -43,6 +43,7 @@ game, that game's music and its sound effects:
 | `settings`: the ⚙ menu                 | `#/credits`                      | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
 | `editor`                               | `#/p/look:logic/kitchen.map`     | Watt, Ohm Sweet Ohm (Lewis +7), the BLASTER ship flying by                             | Ohm Sweet Ohm's garage    |
 | `desk`: the 1994 desk                  | `#/desk`                         | teenage Lewie, Snowbound (Lewis +5), THE CHEZ driving by                               | Snowbound's title         |
+| `box`: What's in the box               | `#/desk`                         | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
 | `bbs`: calling the BBS                 | `#/desk`                         | Dex Dynamo (Kokoro Puck +3) calls; teenage Lewie, the board's SysOp                    | In The Year 2000!'s title |
 | `dos`: DOS Game-Maker                  | `dos.html`                       | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
 
@@ -57,7 +58,13 @@ game, it goes back there when it ends. The desk chapter presses Power only while
 the PC is off (`click` with a selector), opens the game pad's large controls, takes the box
 standing face out off the shelf into the box viewer and peeks inside TURBO BUTTON, shutting each
 again; on a phone, where the room is a column with no wall, its shelf (and box), phone, clock and
-poster steps are left out. The BBS chapter has the desk's PC call The Sandbox BBS
+poster steps are left out. The box chapter has Inspector Penn take the shelf's box down again and go through what came
+in it as the box viewer lays it out: the disks, the manual and the list of printed pieces (World
+Map, Level Maps, key card, registration card, The Sandbox Scoop, catalog, BBS ad, stickers, each
+only when that game's box has it), then opens the hint book's postcard in the contents viewer
+to show the Red film button, and presses the box viewer's Close. It pauses a step ("box-back") after the postcard so
+the box viewer, which comes back by itself, is there before the next step looks for it; on a
+phone, with no shelf, only its hello and goodbye play. The BBS chapter has the desk's PC call The Sandbox BBS
 (`desk/deskTour.ts`, asked with page acts): GUEST logs in, the newest files are listed, one is
 viewed and downloaded, and the modem's speed goes to Unlimited partway through; leaving the
 chapter stops the call and puts back the line speed, the board's user file, its door game and
