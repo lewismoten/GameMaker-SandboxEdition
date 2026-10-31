@@ -12,7 +12,7 @@ import { h } from '../editor/core/ui';
 import { Actor, loadSprites } from './actor';
 import { findTarget, revealer, visible, waitFor } from './findTarget';
 import { menuHandle, overlayHandle, type Opened } from './tourOpen';
-import { barBlocks, steadyRect, offStage, placeBubble, standBy, type Point, type Rect } from './place';
+import { barOnTop, steadyRect, offStage, placeBubble, standBy, type Point, type Rect } from './place';
 import { HOSTS, PROPS, captionOf, cssList, stepMs, voiceUrl, type Chapter, type HostId, type PageAct, type TourStep } from './steps';
 import { TourSound } from './tourSound';
 import { TourRecorder } from './tourRecorder';
@@ -279,10 +279,12 @@ export class Tour {
     if (!this.live(token)) return;
     this.clearBar(target);
     this.caption.textContent = captionOf(chapter, step);
-    const voice = this.sound.speak(voiceUrl(chapter, step));
+    // the clip starts with the bubble (after the hosts have walked), never before it
+    let voice: Promise<number> = Promise.resolve(0);
+    const speak = () => (voice = this.sound.speak(voiceUrl(chapter, step)));
     // the next steps' clips load while this one plays (a clip that is late stays silent)
     for (const up of this.flat.slice(this.i + 1, this.i + 3)) this.sound.prefetch(voiceUrl(up.chapter, up.step));
-    await this.act(chapter, step, target, token);
+    await this.act(chapter, step, target, token, speak);
     if (!this.live(token)) return;
     const said = await voice;
     if (!this.live(token)) return;
@@ -426,13 +428,15 @@ export class Tour {
   private barTop = false;
 
   /** Puts the bar at the top while the control would be under it at the bottom, back at the bottom when it isn't. */
-  private clearBar(target: HTMLElement | undefined): void {
+  private clearBar(target: HTMLElement | undefined): boolean {
     const h = this.bar.getBoundingClientRect().height;
     const r = target && rectOf(target);
-    const under = !!r && barBlocks(r, { x: 0, y: innerHeight - h, w: this.view().w, h });
-    if (under === this.barTop) return;
+    const w = this.view().w;
+    const under = !!r && barOnTop(r, { x: 0, y: innerHeight - h, w, h }, { x: 0, y: 0, w, h });
+    if (under === this.barTop) return false;
     this.barTop = under;
     this.bar.classList.toggle('tour-bar-top', under);
+    return true;
   }
 
   private view = () => ({ w: document.documentElement.clientWidth, h: innerHeight });
@@ -465,7 +469,7 @@ export class Tour {
     return { x: right ? v.w - x - a.size.w : x, y: v.h - this.floor() - a.size.h - 8 };
   }
 
-  private async act(chapter: Chapter, step: TourStep, target: HTMLElement | undefined, token: number): Promise<void> {
+  private async act(chapter: Chapter, step: TourStep, target: HTMLElement | undefined, token: number, speak: () => void): Promise<void> {
     const actorId = step.actor ?? chapter.actor;
     const speakerId = step.speaker ?? chapter.speaker;
     const actor = this.host(actorId);
@@ -511,6 +515,7 @@ export class Tour {
     if (step.action === 'enter' && actor) await actor.hop(this.still);
     if (!this.live(token)) return;
     this.say(step, speaker, box);
+    speak();
   }
 
   private say(step: TourStep, speaker: Actor | undefined, avoid: Rect | undefined): void {
@@ -534,6 +539,8 @@ export class Tour {
   private showRing(target: HTMLElement, by: Actor | undefined, steady = false): void {
     const measure = () =>
       steady ? steadyRect(rectOf(target.parentElement ?? target), 1.2 * Math.max(target.offsetWidth, target.offsetHeight)) : rectOf(target);
+    // the page may have settled or shifted since the step began: the bar moves for where the control is now
+    this.clearBar(target);
     const r = measure();
     Object.assign(this.ring.style, { left: `${r.x - 4}px`, top: `${r.y - 4}px`, width: `${r.w + 8}px`, height: `${r.h + 8}px` });
     let side = 'below';
@@ -568,6 +575,7 @@ export class Tour {
       const r = measure();
       if (Math.abs(r.x - was.x) > 1 || Math.abs(r.y - was.y) > 1 || Math.abs(r.w - was.w) > 1 || Math.abs(r.h - was.h) > 1) {
         Object.assign(was, r);
+        if (this.clearBar(target)) this.onResize();
         Object.assign(ring.style, { left: `${r.x - 4}px`, top: `${r.y - 4}px`, width: `${r.w + 8}px`, height: `${r.h + 8}px` });
       }
       requestAnimationFrame(look);

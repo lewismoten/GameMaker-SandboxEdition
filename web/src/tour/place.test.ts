@@ -1,6 +1,6 @@
 // Where the tour puts its hosts and bubbles: on screen, above the caption bar, and off the control.
 import { describe, expect, it } from 'vitest';
-import { barBlocks, steadyRect, placeBubble, standBy, walkMs, type Rect } from './place';
+import { barOnTop, steadyRect, placeBubble, standBy, walkMs, type Rect } from './place';
 
 const VIEWS = [
   { w: 1440, h: 900 },
@@ -76,14 +76,19 @@ describe('placing the tour', () => {
   });
 });
 
-describe('barBlocks', () => {
-  const bar = { x: 0, y: 800, w: 1440, h: 100 };
+describe('barOnTop', () => {
+  const bottom = { x: 0, y: 800, w: 1440, h: 100 };
+  const top = { x: 0, y: 0, w: 1440, h: 100 };
   it('is true for a link in a fixed footer under the bar, false for one above it', () => {
-    expect(barBlocks({ x: 1200, y: 840, w: 60, h: 20 }, bar)).toBe(true);
-    expect(barBlocks({ x: 1200, y: 700, w: 60, h: 20 }, bar)).toBe(false);
+    expect(barOnTop({ x: 1200, y: 840, w: 60, h: 20 }, bottom, top)).toBe(true);
+    expect(barOnTop({ x: 1200, y: 700, w: 60, h: 20 }, bottom, top)).toBe(false);
   });
   it('ignores a control that only grazes it', () => {
-    expect(barBlocks({ x: 100, y: 790, w: 200, h: 3000 }, bar)).toBe(false);
+    expect(barOnTop({ x: 100, y: 790, w: 200, h: 3000 }, bottom, top)).toBe(false);
+  });
+  it('moves for a tall panel a quarter under the bar, unless the top would hide more', () => {
+    expect(barOnTop({ x: 0, y: 200, w: 400, h: 700 }, bottom, top)).toBe(true);
+    expect(barOnTop({ x: 0, y: 10, w: 400, h: 880 }, bottom, top)).toBe(false);
   });
 });
 
