@@ -9,7 +9,7 @@ export function piggyBankHook(saveId: string | undefined): Pick<RunOptions, 'onS
   return {
     onSession: (s) => (session = s),
     onPlayEnd: (_score, how) => {
-      if (how !== 'won' || !session) return;
+      if (how !== 'won' || !session || session.ci.meter[3] <= 0 || session.ci.meter[3] >= 32767) return;
       // PLAYGAME stores visible money one higher so zero can still be a real amount.
       void import('./money').then(({ recordMoney }) => recordMoney(game, session!.ci.meter[3] - 1));
     },

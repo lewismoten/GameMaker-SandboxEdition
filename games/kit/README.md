@@ -23,7 +23,6 @@ This folder keeps game artwork and repository policy: `disk.ts` reads `about.jso
 `align.ts` selects a repository disk and prints its audit. The portable work is in the package.
 The descriptions below cover both package-owned helpers and the remaining repository tools.
 
-
 Making the files:
 
 - `pixels.ts` — an indexed-color canvas for 20x20 blocks and 320x200 screens, seeded randomness, dithering.
@@ -220,3 +219,4 @@ recordings or converting compressed sources such as Ogg. Keep `.wav` authoring s
 `disk/`; native 8.3 `.VOC` output must remain byte-identical in this format migration.
 
 `versionDisks.ts` compares current build output to a Git revision. It reads legacy tracked disk blobs directly; for source-only revisions it extracts a temporary source snapshot, reuses installed third-party dependencies, resolves workspace packages from that snapshot, and builds the historical disk. This stays local, outside CI.
+`moneyAudit.ts` replays the committed walkthroughs without rebuilding disks and reports each game's visible money counter at scene starts and its win.
