@@ -5,6 +5,7 @@ export { GameFiles, cdName, normalize, IGNORED_FILE, type FileStream } from '@le
 import type { OriginalExtras } from '../../scripts/cdGames';
 import type { LibraryFileFact } from '../../scripts/libraryFacts';
 import { withSecretGames } from './secretGames';
+import { fetchArchive } from './archiveWait';
 import { PackReader } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import type { Issue } from './health';
 import type { BoxGame } from '../desk/boxes/boxFacts';
@@ -278,7 +279,7 @@ function startPack(url: string): Pack {
         pack.complete = true;
         return true;
       }
-      const res = await fetch(url, { signal: pack.abort.signal });
+      const res = await fetchArchive(url, { signal: pack.abort.signal });
       if (!res.ok || !res.body) return false;
       if (/\.zip$/i.test(url)) {
         const { readHostedZip } = await import('./hostedZip');
@@ -422,7 +423,7 @@ export async function peekGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 
   if (!url || !/\.zip$/i.test(url) || packs.has(url)) return fetchGameFile(entry, name, base);
   let zip = peekedZips.get(url);
   if (!zip) {
-    zip = fetch(url).then(
+    zip = fetchArchive(url).then(
       async (res) => (res.ok ? new Uint8Array(await res.arrayBuffer()) : undefined),
       () => undefined,
     );

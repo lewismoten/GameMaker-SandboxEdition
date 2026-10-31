@@ -23,6 +23,7 @@ import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { REPO_URL } from '../../seo/site';
+import { fetchArchive } from '../../project/archiveWait';
 import { companionCredits } from '../../assistant/chat/todo';
 
 export interface DownloadGame {
@@ -266,7 +267,7 @@ const NAMES: Record<DownloadKind, string> = {
 async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Promise<void> {
   try {
     if (kind === 'dos' && !game.project && game.entry?.pack?.endsWith('.zip')) {
-      const response = await fetch(`./${game.entry.path}${game.entry.pack}`);
+      const response = await fetchArchive(`./${game.entry.path}${game.entry.pack}`);
       if (!response.ok) throw new Error('Could not download the game archive. Please try again.');
       const stem = game.gam.replace(/\.gam$/i, '');
       save(
