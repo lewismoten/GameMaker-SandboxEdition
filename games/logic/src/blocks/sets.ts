@@ -23,6 +23,8 @@ export interface BlockDef {
 }
 
 export class BlockSet {
+  /** Ohm Sweet Ohm awards a point for every circuit part; halve those values to match the catalog's full-play range. */
+  private static readonly SCORE_SCALE = 0.5;
   readonly names: string[] = [];
   readonly pics: Pixels[] = [];
   readonly defs: BlockDef[] = [];
@@ -76,7 +78,7 @@ export class BlockSet {
       if (!p || !d) return b;
       b.pixels = Uint8Array.from(p.px);
       b.solid = d.solid ?? 0;
-      b.scorePts = d.score ?? 0;
+      b.scorePts = Math.round((d.score ?? 0) * BlockSet.SCORE_SCALE);
       b.chHitPt = d.hp ?? 0;
       b.nextBl = d.next ? this.id(d.next) : i;
       b.ntime = d.ntime ?? 0;
