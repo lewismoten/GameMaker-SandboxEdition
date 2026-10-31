@@ -23,7 +23,6 @@ import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/rec
 import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { parseHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 import { textColors, textPicture } from './textPicture';
-import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../project/files';
@@ -212,17 +211,21 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       }
       case 'txt': {
         const [c] = canvas(320, 200);
-        // the player's text-pages color if it reads on this palette, else the nearest that does
-        const preferred = src.patches
-          ? Array.from(
-              pal.subarray(
-                playerLook(src.patches).color(pal, 'color.select.textPages') * 3,
-                3 + playerLook(src.patches).color(pal, 'color.select.textPages') * 3,
-              ),
-            )
-          : undefined;
-        const text = textColors(pal, preferred);
-        paintIndexed(c, textPicture(bytes, text.ink), 320, 200, text.palette);
+        const paint = (preferred?: number[]) => {
+          const text = textColors(pal, preferred);
+          paintIndexed(c, textPicture(bytes, text.ink), 320, 200, text.palette);
+        };
+        paint();
+        // then the player's text-pages color if it reads on this palette, else the nearest that does
+        // (the player's look is in the engine chunk, so it loads after the first paint)
+        const patches = src.patches;
+        if (patches)
+          void import('@lewismoten/gamemaker-sandbox-engine/engine/playerLook')
+            .then(({ playerLook }) => {
+              const i = playerLook(patches).color(pal, 'color.select.textPages');
+              paint(Array.from(pal.subarray(i * 3, i * 3 + 3)));
+            })
+            .catch(() => undefined);
         c.title = 'First text page, on a blank background';
         return c;
       }
@@ -271,8 +274,8 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         c.setAttribute('role', 'img');
         c.setAttribute('aria-label', `High scores: ${list.filter((e) => e.score).length} of ${list.length} places filled`);
         const gam = src.files.byExtension('gam')[0];
-        void import('../editors/integrator/dosPlayer/playerPreview')
-          .then(({ drawPreview }) => {
+        void Promise.all([import('../editors/integrator/dosPlayer/playerPreview'), import('@lewismoten/gamemaker-sandbox-engine/engine/playerLook')])
+          .then(([{ drawPreview }, { playerLook }]) => {
             const game = parseGame(src.files.get(gam)!);
             const stem = name.replace(/\.[^.]*$/, '');
             drawPreview(new Screen(c), src.files, game, stem, playerLook(src.patches), 'hiscores');
