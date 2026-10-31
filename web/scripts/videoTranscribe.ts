@@ -1,5 +1,8 @@
 // `npm run video:transcript -- <youtube-id>`: a Library video's public/videos/<id>.transcript.json
-// from its own audio, for a video with no captions worth keeping. yt-dlp downloads the audio, ffmpeg
+// from its own audio, for a video with no captions worth keeping. It is for the maintainer's own
+// YouTube videos only (the Library's): the .srt it makes is the captions, and the transcript
+// is shown beside the video. A maintainer's tool, run by hand: no build, test or GitHub Action
+// runs it or needs its tools. yt-dlp downloads the audio, ffmpeg
 // makes it 16 kHz mono wav, whisper-cli (large-v3; -mc 0 stops its repeat loops) writes an .srt, and
 // videoTranscript.ts turns that into the transcript. Work files go in the git-ignored
 // web/.video-work/<id>/. Needs yt-dlp, ffmpeg and whisper-cli on PATH and the model in
@@ -24,6 +27,7 @@ function main(): void {
   const problems = missing();
   if (problems.length) {
     for (const p of problems) console.error(p);
+    console.error('npm run video:transcript needs these installed; nothing was downloaded.');
     process.exit(1);
   }
   const dir = join(__dirname, '..', '.video-work', id);

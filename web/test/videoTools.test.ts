@@ -21,6 +21,7 @@ describe('missing', () => {
     const out = missing(empty, join(empty, 'no.bin'));
     expect(out).toHaveLength(4);
     expect(out.join('\n')).toMatch(/yt-dlp[\s\S]*ffmpeg[\s\S]*whisper-cli[\s\S]*model/);
+    for (const line of out) expect(line).toMatch(/Install: |Download /);
   });
   it('is quiet when everything is there', () => {
     const d = mkdtempSync(join(tmpdir(), 'vt-'));

@@ -49,7 +49,11 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     with the large-v3 model in `~/.cache/whisper-cpp` (`-mc 0` stops its repeat loops), then
     `videoTranscript.ts` on the .srt. Work files go in the git-ignored `web/.video-work/<id>/`.
     `videoTools.ts` holds the id and tool checks; a missing tool or model is named before anything runs.
-    A long video takes hours.
+    A long video takes hours. It is only for the maintainer's own YouTube videos (the Library's), to
+    make their captions (.srt) and transcripts. It runs by hand: no build, test or GitHub Action runs
+    it, and none of them needs yt-dlp, ffmpeg or whisper-cli (`test/videoTools.test.ts` uses a fake
+    PATH). A missing tool is named along with how to install it (Homebrew lines, and the model's
+    download URL).
 - The guided tour's voice: `narrate.ts` (`npm run voice`; `npm run voice:all` records every
   line again) speaks each line of `tour/lines.ts` in its host's voice (cloned from one of Lewis's voice
   samples with Pocket TTS, or one of Kokoro's stock voices via `kokoro.ts`, which runs Kokoro in
