@@ -209,6 +209,8 @@ export function hillside(book: BlockBook): Level {
   m.text(54, 6, '*.*.*');
   m.mon(MON.man, 54, 9);
   m.set(62, 9, 'g').set(60, 5, '$');
+  // scenery for the site's achievement badge: a snail in the grass, off the way
+  m.set(57, 9, 'snail');
   // the stack of empty baskets the disciples left: roll in at the bottom
   m.fill(64, 3, 4, 7, 'W').row(2, 64, 67, 'n').set(64, 9, 'i').set(65, 9, 'i');
   m.link(65, 9, 'next');
@@ -309,6 +311,8 @@ export function home(book: BlockBook): Level {
     .fill(0, 11, W, 2, 's')
     .col(0, 0, 12, '#')
     .col(W - 1, 0, 12, '#');
+  // scenery for the site's achievement badge: the northern lights in the night sky, out of reach
+  m.set(28, 0, 'aurora');
   // the first houses: their roofs to stand on, lamplight in the windows
   m.fill(4, 7, 8, 3, 'A').row(6, 3, 12, 'p').set(6, 8, 'q').set(9, 8, 'd').set(7, 5, '@').set(10, 5, '*');
   m.set(14, 9, 'k').set(16, 9, 'P').set(16, 8, 'Q');
