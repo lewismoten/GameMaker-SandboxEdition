@@ -133,6 +133,9 @@ duplicate image bytes.
 | palette-vision | needle | needleTailor / seenGlasses |
 | desk-aurora | loaf | loaf / aurora |
 | bbs-got-time | loaf | loaf / snail |
+| desk-star | goat | goat / shootingStar |
+| desk-goat | goat | goat / surprisedGoat |
+| play-bizarre | smirked | smirked / violin |
 | library-visit | risi | risiCampus / libraryFront |
 | every-life-1 | teddy | tiers / every-life-1 |
 | every-life-3 | teddy | tiers / every-life-3 |
@@ -154,7 +157,6 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | Achievement | Title | Proposed art |
 | --- | --- | --- |
 | export-linux | Penguin power | 20×20 block: a cheerful penguin with a disk tucked under one wing, with a dark outline and one clear focal shape. |
-| play-bizarre | Bizarre fan | 20×20 block: a violin with one jaunty musical note, with a dark outline and one clear focal shape. |
 | egg-teddy | Lay an egg! | 20×20 block: a mischievous corgi beside a suspiciously lumpy felt egg, with a dark outline and one clear focal shape. |
 | watch-bot | Robot rerun | 20×20 block: a little robot turning a film projector crank, with a dark outline and one clear focal shape. |
 | download-mp4 | Director’s cut | 20×20 block: a curled strip of film with three distinct frames, with a dark outline and one clear focal shape. |
@@ -166,8 +168,6 @@ Hidden achievements keep their question block until unlocked, even when art is a
 | desk-plow | Plowed in | 20×20 block: a friendly snowplow pushing a little white drift, with a dark outline and one clear focal shape. |
 | desk-sleds | Snow day | 20×20 block: a wooden sled leaving two tracks, with a dark outline and one clear focal shape. |
 | desk-dogs | Loose again | 20×20 block: Teddy and Gwinn in a playful chase, with a dark outline and one clear focal shape. |
-| desk-goat | Third goat from the left | 20×20 block: a surprised goat with a tiny musical note, with a dark outline and one clear focal shape. |
-| desk-star | Make a wish | 20×20 block: a shooting star with a short stepped trail, with a dark outline and one clear focal shape. |
 | desk-mailtruck | In the mail | 20×20 block: a small mail truck with a raised envelope emblem, with a dark outline and one clear focal shape. |
 | desk-egg-uv | Secret ink | 20×20 block: a flashlight revealing a felt egg, with a dark outline and one clear focal shape. |
 | zine-read | Read all about it | 20×20 block: a little notebook with a ribbon marker, with a dark outline and one clear focal shape. |

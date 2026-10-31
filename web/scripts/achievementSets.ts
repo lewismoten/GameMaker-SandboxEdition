@@ -19,6 +19,8 @@ import { buildYard as buildCarlYard } from '../../games/carl/src/blocks/yard';
 import { buildPalette as carlPalette } from '../../games/carl/src/art/pal';
 import { buildBlocks as loafBlocks } from '../../games/loaf/src/blocks/blocks';
 import { buildPalette as loafPalette } from '../../games/loaf/src/art/pal';
+import { buildBlocks as smirkedBlocks } from '../../games/smirked/src/blocks/blocks';
+import { buildPalette as smirkedPalette } from '../../games/smirked/src/art/pal';
 import { buildCampus } from '../../games/risi/src/blocks/campus';
 import { buildVilla } from '../../games/risi/src/blocks/villa';
 import { buildPalette as risiPalette } from '../../games/risi/src/art/pal';
@@ -96,6 +98,7 @@ export const sets: Record<string, Source> = {
   risi: { game: 'risi', blocks: buildVilla(risiPalette('plain')).pics, palette: risiPalette('plain').pal },
   risiCampus: { game: 'risi', blocks: buildCampus(risiPalette('plain')).pics, palette: risiPalette('plain').pal },
   loaf: { game: 'loaf', blocks: loafBlocks(loafPalette('plain')).pics, palette: loafPalette('plain').pal },
+  smirked: { game: 'smirked', blocks: smirkedBlocks(smirkedPalette('plain')).pics, palette: smirkedPalette('plain').pal },
   needle: { game: 'needle', blocks: eyeBlocks(needlePalette('plain')).book.pics, palette: needlePalette('plain').pal },
   needleTailor: { game: 'needle', blocks: tailorBlocks(needlePalette('plain')).book.pics, palette: needlePalette('plain').pal },
   sleuthParlor: { game: 'sleuth', blocks: named(buildParlorBlocks()), palette: sleuthPalette('house').pal },
@@ -217,6 +220,9 @@ export const picks: Record<string, [string, string]> = {
   'palette-vision': ['needleTailor', 'seenGlasses'],
   'desk-aurora': ['loaf', 'aurora'],
   'bbs-got-time': ['loaf', 'snail'],
+  'desk-star': ['goat', 'shootingStar'],
+  'desk-goat': ['goat', 'surprisedGoat'],
+  'play-bizarre': ['smirked', 'violin'],
   'library-visit': ['risiCampus', 'libraryFront'],
   'every-life-1': ['tiers', 'every-life-1'],
   'every-life-3': ['tiers', 'every-life-3'],

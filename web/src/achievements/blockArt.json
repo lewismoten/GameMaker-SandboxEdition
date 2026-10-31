@@ -619,6 +619,24 @@
       "set": "loaf",
       "block": "snail"
     },
+    "desk-star": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAFVBMVEUQCBQUHFXLmlnny5b/+9Pn377///82lfydAAAAaUlEQVR42n2PAQ7AIAgDCxX+/+QF1ClkWU0MnqUoIH/LTo1y429lx+FozpDlfuW4u5m5+82xYJ2SNNnhRLi6c57vTBLAeN8zf8IxxkmXEBlQtha80YSq+gFJihSoWqElDGTNKb15T296AKGiAh9Rw2+/AAAAAElFTkSuQmCC",
+      "game": "goat",
+      "set": "goat",
+      "block": "shootingStar"
+    },
+    "desk-goat": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAJ1BMVEUQCBQ8KBhhSTCCZUVhYWGSjoq6trLb29f/+/eeimXfy57LeYL///+QS4I8AAAAsElEQVR42j2QQXIEMQgDG4Ex2fX/35uAZ8KBwl3CCJDMDZBk0s1MwQH5xe52FZyDZPZou5a1cggXejfQQrnxGYroOJ2Mz88LzzkNa/MIX0h9qvYwlz/tVVW7dtKufDJEUcXOALfxQMRu3c4kAgkTAfuyBQRXKSfz+811X+/uVbXWDLqW+gB1Y7fWpV5TD5xJs+1Yqnf6/Gp4b7AnMte6ojksmU1iXP5Pj1jN2uTfJX8B5AwFNb7tZdAAAAAASUVORK5CYII=",
+      "game": "goat",
+      "set": "goat",
+      "block": "surprisedGoat"
+    },
+    "play-bizarre": {
+      "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAG1BMVEUQDBS2eRT/96ooGBRJMCBpRSyKYUFpFCCaJDSNhVdKAAAAlUlEQVR42l2QWQ7EMAhDjVuW+594ZCBtNfmIoodtCKisKgCo6qcO+iaJBaqgq4NWKJesDW2FCBRIUizto5xAG23WfdXYUSaf6H1N92wNEICJ7UhiodMsIaEpJcIjOqGVkDPCfajCE+38U4p5sDNh+812MtjddyHDXGymP3Y6T169mZy83RTmK2LPRt858VkpTi0fXeUPBUEIoeCIKyIAAAAASUVORK5CYII=",
+      "game": "smirked",
+      "set": "smirked",
+      "block": "violin"
+    },
     "library-visit": {
       "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAIVBMVEV9kraersMMCAi2tq77+/PTvprv37r7021ZNByCUSz/96L9G4oVAAAAZUlEQVR42n2PgQ6AIAhE4boS+v8PboqpTe3ADY4nG6Iyh7QHyNBHgEQny8xR5AMHejIzSx60iIIMMyUnidhF4v0enWChIL/akAoeOQFDLfMl1bRmaidtSd6/pK534pq0u+ictCYfIPAEYIXuigkAAAAASUVORK5CYII=",
       "game": "risi",
