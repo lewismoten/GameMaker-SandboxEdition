@@ -36,6 +36,10 @@ describe('sayNumber', () => {
 });
 
 describe('spokenText', () => {
+  it('pauses at a colon, but not inside a time or a path', () => {
+    expect(spokenText('My games: the ones you make here.')).toBe('My games. The ones you make here.');
+    expect(spokenText('At 3:45 it reads C:\\GM.')).toBe('At three:forty-five it reads C:\\G M.');
+  });
   it('spells out what the voices got wrong', () => {
     expect(spokenText('It’s December 1994, and this PC dials the BBS.')).toBe("It's December nineteen ninety-four, and this PC dials the bee bee ess.");
     expect(spokenText('Games got around on the BBSes.')).toBe('Games got around on the bee bee esses.');
