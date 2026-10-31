@@ -138,6 +138,8 @@ lying on the desk's left, `#/desk?open=magazine`).
   - `piece.ts`, a box's printed piece small, such as a hint book's or The Ultimate Owner's
     Guide's cover;
   - `toolShots.ts`, Game-Maker's design tools drawn at work on a game's own files;
+  - `passShots.ts`, the `walk:` and `page:` shots of Walk-Through Talk (`sections/passThrough.ts`): a
+    level with the hero on a link, and the picture and text page a pass-through scene shows;
   - `callouts.ts`, a picture with numbered spots and their key;
   - `coverFan.ts`, the issue's covers fanned out small;
   - `replyMail.ts`, a reply card's business reply mail side, with `postnet.ts`, the post office's
