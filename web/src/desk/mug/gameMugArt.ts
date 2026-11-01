@@ -24,6 +24,7 @@ export const GAME_MUGS: GameMug[] = [
   { game: 'teddy', hero: 'teddy', title: [16, 0, 304, 82], centerX: 200, side: 'left' },
   { game: 'teddy2', hero: 'teddy', title: [6, 0, 314, 80], ink: [87, 83, 81, 70, 9], centerX: 212, strip: true, hide: [[40, 182, 290, 200]] },
   { game: 'teddy3', hero: 'teddy', title: [6, 0, 314, 80], ink: [87, 83, 81, 70, 9], centerX: 170, strip: true, hide: [[40, 182, 290, 200]] },
+  { game: 'tuneup', hero: 'teddy', title: [44, 34, 276, 80], centerX: 160 },
   { game: 'year2000', hero: 'dex', title: [8, 2, 312, 90], centerX: 160 },
   { game: 'blaster', hero: 'ship', title: [4, 6, 316, 90], centerX: 160 },
   {

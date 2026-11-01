@@ -26,5 +26,5 @@
     "tickle": { "map": "tower.map", "at": [43, 23] },
     "year2000": { "map": "mall.map", "at": [42, 1] }
   },
-  "pending": []
+  "pending": ["tuneup"]
 }
