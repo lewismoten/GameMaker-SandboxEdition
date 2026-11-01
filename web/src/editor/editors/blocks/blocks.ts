@@ -40,7 +40,7 @@ interface PainterExtras {
 }
 
 registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
-  const kind = file.split('.').pop() as BlockKind;
+  const kind = file.split('.').pop()!.toLowerCase() as BlockKind;
   const raw = project.files.get(file)!;
   const blocks = parseBlocks(raw, Math.max(BLOCK_COUNTS[kind], Math.ceil(raw.length / BLOCK_SIZE)));
   const sprites = kind !== 'bbl';
