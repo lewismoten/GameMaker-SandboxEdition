@@ -15,6 +15,8 @@ export const SEQ = {
   boop: 11,
   /** Oil's Well: Z X C V B squirt the oil can into the staff's five lines, bottom to top. */
   oil0: 12,
+  /** Teddy's tricks (Brake Dance): Z turn, X roll over, C play dead, V dance. */
+  trick0: 12,
 } as const;
 
 /** Keys (scan code << 8 | ASCII). */
@@ -56,6 +58,16 @@ export const CTR = {
   oiled: 25,
   hits2: 26,
   hits3: 27,
+  // The real tune-up reuses counters a door before it spent to nothing (a door takes all it
+  // waits for, and each of these gives exactly that many):
+  /** The Fan Band: fans switched on, in each verse (the red clamp's counter). */
+  fans: 20,
+  /** Brake Dance: brake lamps lit; Muffled: the tapes fetched (the black clamp's). */
+  lamps: 21,
+  tapes: 21,
+  /** Hubcaps and Balls: the ball found, each round; Pump Up the Volume: the tire full (the crank's). */
+  ball: 22,
+  psi: 22,
 } as const;
 /** Money: the Tips line on F2. */
 export const MONEY = 3;
@@ -71,6 +83,19 @@ export const MON = {
   squeakFast: 3,
   note: 4,
   drop0: 5,
+  /** The dream's end: Sir Reginald swimming through the oil pipe. */
+  swim: 10,
+  /** Brake Dance: a trick's sparkle (one per trick), the stiff lamp each one frees, the lamp lit, and done. */
+  trick0: 11,
+  lock0: 15,
+  lamp: 19,
+  lampDone: 20,
+  /** Hubcaps and Balls: the three caps shuffling, then resting, then lifted. */
+  cap0: 21,
+  capRest: 24,
+  capRestBall: 25,
+  capLifted: 26,
+  capLiftedBall: 27,
 } as const;
 
 /** Sound slots (0..8 are the ones PLAYGAME plays by itself, by the kind of change). */
@@ -97,4 +122,6 @@ export const SND = {
   boop: 12,
   /** Oil's Well: the oil can's squirt on each line, a note of the scale each. */
   oil0: 13,
+  /** Brake Dance: each trick's own sound. */
+  trick0: 13,
 } as const;

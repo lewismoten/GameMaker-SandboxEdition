@@ -2,7 +2,8 @@
 // made of him (games/tickle), in this game's colors: there his coat is a lab coat; here the
 // same coat is a mechanic's blue shop coat. The monster blocks: the rubber chicken (Sir
 // Reginald III, then Lady Regina III), the friendly noise critters that live in the engine (the
-// Squeaks), the oil can's drop and the calm note head an oiled Squeak becomes.
+// Squeaks), the oil can's drop and the calm note head an oiled Squeak becomes; then the dream's
+// end and the real tune-up's (realCast.ts).
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
@@ -11,6 +12,7 @@ import { buildCharBlocks as tickleLeo } from '../../../tickle/src/sprites/sprite
 import { chicken } from '../art/chicken';
 import { P, type Pal } from '../art/palette';
 import { CTR } from '../ids';
+import { addRealCast } from './realCast';
 
 const c = P.c;
 const ink = c('ink', 0);
@@ -95,6 +97,7 @@ export function buildMonsterBlocks() {
   book.add('note0', noteHead(0), home);
   book.add('note1', noteHead(1), home);
   book.add('calm0', squeak(0, true));
+  addRealCast(book.add);
   return book;
 }
 export type MonsterBlocks = ReturnType<typeof buildMonsterBlocks>;
