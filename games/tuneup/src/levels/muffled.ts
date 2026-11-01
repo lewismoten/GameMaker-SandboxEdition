@@ -94,11 +94,12 @@ export function muffledBlocks(pal: Pal): Kit {
     scaleBlit(big, src.crop(b.x, b.y, b.w, b.h), Math.round((big.w - b.w * s) / 2), 38 - b.h * s, s, false, 255);
     return big;
   };
-  // touching Gwinn herself wakes her a lot (each block of her stirs on its own touch)
+  // touching Gwinn herself wakes her a lot (each block of her stirs on its own touch; only her body
+  // wakes her, not the air round her ears in the row above)
   const [sleeping, stirred] = [gwinn(false), gwinn(true)];
   for (let y = 0; y < 2; y++)
     for (let x = 0; x < GWINN_W; x++) {
-      book.add(`gwinn${x}.${y}`, sleeping.crop(x * 20, y * 20, 20, 20), { ...AIR, hp: -8, touch: `gwinn${x}.${y}.stir` });
+      book.add(`gwinn${x}.${y}`, sleeping.crop(x * 20, y * 20, 20, 20), { ...AIR, ...(y ? { hp: -8 } : {}), touch: `gwinn${x}.${y}.stir` });
       book.add(`gwinn${x}.${y}.stir`, stirred.crop(x * 20, y * 20, 20, 20), AIR);
     }
   // her Zzz, twice size, drifting up and to the right across two blocks
