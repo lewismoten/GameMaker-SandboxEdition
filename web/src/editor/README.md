@@ -61,7 +61,7 @@ Part of the [source map](../README.md).
   `map/` (its newer tools in `map/tools/`, its Level check panel in `map/check/`, the
   integrator's links as markers to drag, nudge and open in `map/links/`: `markerMath.ts` with no
   DOM, `linkMarkers.ts` on the map and `linkPopover.ts` for one link's details and pictures),
-  `integrator/` (its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
+  `integrator/` (its boards and groups for big games, editor-only in the companion's `integratorBoards` section: data and helpers `boardLayout.ts`, suggestions `boardSuggest.ts`, painting `boardPaint.ts`, tabs/popover `boardsController.ts`, a released game's shipped arrangement `shippedBoards.ts`; its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
   changed from a map with GRATOR's rules in `linkEdits.ts`; its toolbar's DOS player button opens Overview › DOS player, built in `integrator/dosPlayer/`: `playerPanel.ts`, a
   tab per screen (`screenTabs.ts` groups the patches, `screenFields.ts` lays out a tab,
   `playerFields.ts` makes each field, `fieldTools.ts` adds the Hide and Reset buttons beside it) and a Files tab for the DOS download's extensions (`fileFields.ts`), `playerPreview.ts`, which draws XFERPLAY's screens with the

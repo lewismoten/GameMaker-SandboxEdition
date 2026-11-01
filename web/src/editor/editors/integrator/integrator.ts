@@ -42,6 +42,9 @@ import { graphicShot, levelShot } from './integratorArt';
 import { linksPanel } from './sceneLinks';
 import { BoardCamera } from './boardCamera';
 import { boardInput } from './boardInput';
+import { boardsController } from './boardsController';
+import { BOARD_WORLD } from './boardLayout';
+import type { Stub } from './boardPaint';
 import { viewState } from '../../../urlState';
 import { startingAt } from './startAt';
 import { fileUndo } from '../../core/fileUndo';
@@ -163,10 +166,36 @@ registerEditor(['gam'], (host, owner, file) => {
   const zoomLabel = h('span', { class: 'grator-zoom' }, '100%');
   const cam = new BoardCamera(board, () => draw());
   const used = () => usedScenes(game);
-  const cardRect = (i: number): Rect => cardRectOf(game, i);
+  // the editor's own boards (boardsController.ts) beside the DOS layout
+  const boards = boardsController({
+    project,
+    game,
+    board,
+    selected: () => selected,
+    select: (i) => {
+      selected = i;
+      centerOn(i);
+      renderPanel();
+      draw();
+    },
+    draw,
+    fit,
+    modeChanged: () => {
+      renderTools();
+      renderPanel();
+    },
+  });
+  boards.setScreen((p) => ({ x: (p.x - cam.x) * cam.z, y: (p.y - cam.y) * cam.z }));
+  boards.setBoardView(() => ({ project, game, selected, playing, screenOf, levelOf }));
+  boards.reveal(selected);
+  const cardRect = (i: number): Rect => (boards.on() ? boards.rectOf(i) : undefined) ?? cardRectOf(game, i);
+  /** The scenes with a card on the board now (a group shows as its first member, or the selected one). */
+  const shown = () => (boards.on() ? boards.shown() : used());
   const boardBounds = (): Rect => {
-    const rs = used().map(cardRect);
-    const world = { x: WORLD.x * S, y: WORLD.y * S, w: WORLD.w * S, h: WORLD.h * S };
+    const rs = shown().map(cardRect);
+    const world = boards.on()
+      ? { x: BOARD_WORLD.x * S, y: BOARD_WORLD.y * S, w: BOARD_WORLD.w * S, h: BOARD_WORLD.h * S }
+      : { x: WORLD.x * S, y: WORLD.y * S, w: WORLD.w * S, h: WORLD.h * S };
     const x0 = Math.min(world.x, ...rs.map((r) => r.x));
     const y0 = Math.min(world.y, ...rs.map((r) => r.y));
     const x1 = Math.max(world.x + world.w, ...rs.map((r) => r.x + r.w));
@@ -176,7 +205,7 @@ registerEditor(['gam'], (host, owner, file) => {
 
   const cardButtons = (i: number, r: Rect) => cardButtonsOf(project, game, i, r);
   const paintBoard = (ctx: CanvasRenderingContext2D, view: Rect, forExport: boolean) =>
-    paintBoardOf(ctx, view, forExport, { project, game, selected, playing, screenOf, levelOf });
+    paintBoardOf(ctx, view, forExport, { project, game, selected, playing, screenOf, levelOf, boards: boards.view() });
 
   let raf = 0;
   function draw(): void {
@@ -200,7 +229,7 @@ registerEditor(['gam'], (host, owner, file) => {
 
   const zoomAt = (z: number, clientX?: number, clientY?: number) => cam.zoomAt(z, clientX, clientY);
   function fit(): void {
-    const rs = used().map(cardRect);
+    const rs = shown().map(cardRect);
     const b = rs.length
       ? (() => {
           const x0 = Math.min(...rs.map((r) => r.x));
@@ -213,6 +242,7 @@ registerEditor(['gam'], (host, owner, file) => {
   const centerOn = (i: number) => cam.centerOn(cardRect(i));
 
   function sceneAt(x: number, y: number): number {
+    if (boards.on()) return boards.sceneAt(x, y);
     const order = used().sort((a, b) => Number(b === selected) - Number(a === selected));
     return order.find((i) => inRect(cardRect(i), x, y)) ?? -1;
   }
@@ -222,10 +252,14 @@ registerEditor(['gam'], (host, owner, file) => {
     board,
     cam,
     game,
-    used,
+    used: shown,
     selected: () => selected,
     sceneAt,
     cardRect,
+    posOf: (i) => (boards.on() ? boards.posOf(i) : undefined) ?? game.scenes[i].pos,
+    moveTo: (i, p) => (boards.on() ? boards.moveTo(i, p) : (game.scenes[i].pos = clampPos(p))),
+    stubAt: (x, y) => boards.stubAt(x, y),
+    openStub: (s) => boards.openStub(s as Stub),
     cardButtons,
     toggleSong: (f) => void toggleSong(f),
     press: (i) => {
@@ -233,6 +267,7 @@ registerEditor(['gam'], (host, owner, file) => {
         selected = i;
         renderPanel();
       }
+      boards.pressed(i);
       if (panelInSide() && sideTab !== 'scene') {
         sideTab = 'scene';
         view.set({ side: 'scene' });
@@ -242,11 +277,13 @@ registerEditor(['gam'], (host, owner, file) => {
     },
     step: (i) => {
       selected = i;
+      boards.pressed(i);
       centerOn(i);
       renderPanel();
       draw();
     },
     cardMoved: () => {
+      if (boards.on()) return boards.saved();
       arranged = undefined;
       renderTools();
       save();
@@ -362,6 +399,8 @@ registerEditor(['gam'], (host, owner, file) => {
         ...toolFace('⬇', 'PNG'),
       ),
     );
+    // the DOS layout's tools move the cards' DOS positions, so a board offers only adding a scene
+    if (boards.on()) while (tools.children.length > 1) tools.lastElementChild?.remove();
   }
   /** Zoom controls float over the board's corner, like a map's. */
   const zoomBar = h(
@@ -473,7 +512,9 @@ registerEditor(['gam'], (host, owner, file) => {
     const { screens, songs } = screensAndSongs(game);
     const pick = (scene: number) => {
       selected = scene;
+      boards.reveal(scene);
       centerOn(scene);
+      boards.refresh();
       renderPanel();
       draw();
     };
@@ -830,14 +871,20 @@ registerEditor(['gam'], (host, owner, file) => {
   clear(
     host,
     missing ? h('p', { class: 'hint grator-missing' }, 'This game is missing its start or end scene.') : null,
-    (grator.append(h('div', { class: 'grator-main' }, tools, h('div', { class: 'grator-board-wrap' }, board, zoomBar, tips)), handle, side), grator),
+    (grator.append(
+      h('div', { class: 'grator-main' }, boards.el, tools, h('div', { class: 'grator-board-wrap' }, board, zoomBar, tips, boards.pop)),
+      handle,
+      side,
+    ),
+    grator),
   );
   renderTools();
   renderSide();
   renderPanel();
   // the board gives up the height of a toolbar that wraps onto a second row
-  const toolsSize = new ResizeObserver(() => grator.style.setProperty('--grator-tools-h', `${tools.offsetHeight}px`));
+  const toolsSize = new ResizeObserver(() => grator.style.setProperty('--grator-tools-h', `${tools.offsetHeight + boards.el.offsetHeight}px`));
   toolsSize.observe(tools);
+  toolsSize.observe(boards.el);
   requestAnimationFrame(fit);
   return () => {
     stopKeys();

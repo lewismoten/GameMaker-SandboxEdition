@@ -4,7 +4,6 @@
 // scene that way). integrator.ts owns the game, the selection and the panels.
 import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { S, inRect, type CardButton, type Rect } from './board';
-import { clampPos } from './layoutCells';
 import type { BoardCamera } from './boardCamera';
 
 /** What the board's input needs from the integrator. */
@@ -18,6 +17,12 @@ interface BoardInput {
   /** The scene whose card is at a board point, or -1. */
   sceneAt(x: number, y: number): number;
   cardRect(i: number): Rect;
+  /** Where scene i's card is, in integrator units (the DOS position, or its board's), and moving it there. */
+  posOf(i: number): { x: number; y: number };
+  moveTo(i: number, p: { x: number; y: number }): void;
+  /** A link stub to another board at a board point, and following it. */
+  stubAt(x: number, y: number): unknown;
+  openStub(stub: unknown): void;
   cardButtons(i: number, r: Rect): CardButton[];
   toggleSong(file: string): void;
   /** A card was pressed: select it. */
@@ -52,6 +57,12 @@ export function boardInput(ctx: BoardInput): void {
     }
     const p = ctx.cam.toBoard(e.clientX, e.clientY);
     const i = ctx.sceneAt(p.x, p.y);
+    const stub = i < 0 ? ctx.stubAt(p.x, p.y) : undefined;
+    if (stub) {
+      ctx.openStub(stub);
+      gesture = undefined;
+      return;
+    }
     if (i >= 0) {
       const btn = ctx.cardButtons(i, ctx.cardRect(i)).find((b) => inRect(b, p.x, p.y));
       if (btn) {
@@ -59,7 +70,7 @@ export function boardInput(ctx: BoardInput): void {
         gesture = undefined;
         return;
       }
-      const pos = ctx.game.scenes[i].pos;
+      const pos = ctx.posOf(i);
       gesture = { type: 'card', i, dx: p.x - (pos.x + 2) * S, dy: p.y - (pos.y + 2) * S, sx: e.clientX, sy: e.clientY, moved: false };
       ctx.press(i);
     } else gesture = { type: 'pan', sx: e.clientX, sy: e.clientY, cx: ctx.cam.x, cy: ctx.cam.y };
@@ -69,7 +80,8 @@ export function boardInput(ctx: BoardInput): void {
     if (!gesture) {
       const p = ctx.cam.toBoard(e.clientX, e.clientY);
       const i = ctx.sceneAt(p.x, p.y);
-      ctx.board.style.cursor = i < 0 ? 'grab' : ctx.cardButtons(i, ctx.cardRect(i)).some((b) => inRect(b, p.x, p.y)) ? 'pointer' : 'move';
+      ctx.board.style.cursor =
+        i < 0 ? (ctx.stubAt(p.x, p.y) ? 'pointer' : 'grab') : ctx.cardButtons(i, ctx.cardRect(i)).some((b) => inRect(b, p.x, p.y)) ? 'pointer' : 'move';
       return;
     }
     if (gesture.type === 'pinch') {
@@ -82,7 +94,7 @@ export function boardInput(ctx: BoardInput): void {
       if (!gesture.moved && Math.hypot(e.clientX - gesture.sx, e.clientY - gesture.sy) < 4) return;
       gesture.moved = true;
       const p = ctx.cam.toBoard(e.clientX, e.clientY);
-      ctx.game.scenes[gesture.i].pos = clampPos({ x: (p.x - gesture.dx) / S - 2, y: (p.y - gesture.dy) / S - 2 });
+      ctx.moveTo(gesture.i, { x: (p.x - gesture.dx) / S - 2, y: (p.y - gesture.dy) / S - 2 });
       ctx.draw();
     }
   });
@@ -120,12 +132,12 @@ export function boardInput(ctx: BoardInput): void {
     else if (e.key === 'Tab') return;
     else if (e.key.startsWith('Arrow')) {
       // step the selection to the nearest scene in that direction
-      const here = ctx.game.scenes[ctx.selected()]?.pos ?? { x: 0, y: 0 };
+      const here = ctx.posOf(ctx.selected());
       const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key] ?? [0, 0];
       let best = -1;
       let bestD = Infinity;
       for (const i of ctx.used()) {
-        const p = ctx.game.scenes[i].pos;
+        const p = ctx.posOf(i);
         const dx = p.x - here.x;
         const dy = p.y - here.y;
         const along = dx * dir[0] + dy * dir[1];

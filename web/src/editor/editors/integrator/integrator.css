@@ -498,3 +498,79 @@ button.grator-play.playing {
     animation: none;
   }
 }
+
+/* boards: tabs, group popover, suggestions (boardsController.ts) */
+.grator-boards {
+  align-items: center;
+  flex-wrap: wrap;
+}
+.grator-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.grator-boards button,
+.grator-boards select,
+.grator-boards input {
+  min-height: 24px;
+}
+.grator-board-name {
+  width: 11ch;
+}
+.grator-suggest ul {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.grator-suggest li {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 2px 0;
+}
+.grator-pop {
+  position: absolute;
+  z-index: 5;
+  width: 240px;
+  max-height: 70%;
+  overflow: auto;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #2b3bb0;
+  background: #12152b;
+  color: #cfd6ff;
+  box-shadow: 0 6px 24px rgba(0, 0, 40, 0.5);
+}
+.grator-pop[hidden] {
+  display: none;
+}
+.grator-pop-head {
+  display: flex;
+  gap: 4px;
+}
+.grator-pop-head input {
+  flex: 1;
+  min-width: 0;
+}
+.grator-pop-list {
+  list-style: none;
+  margin: 6px 0;
+  padding: 0;
+  display: grid;
+  gap: 3px;
+}
+.grator-pop-list button {
+  width: 100%;
+  text-align: left;
+  min-height: 24px;
+}
+.grator-pop-foot {
+  display: flex;
+  justify-content: flex-end;
+}
+.grator-boards > *,
+.grator-tabs button {
+  flex: none;
+  white-space: nowrap;
+}
