@@ -12,7 +12,7 @@
   ],
   "reservedDomains": ["example.com", "example.org", "example.net", "evil.com", "tail1234.ts.net"],
   "realDomains": [
-    "w3.org", "github.com", "github.io", "lewismoten.com", "archive.org", "schema.org", "huggingface.co",
+    "w3.org", "paint.net", "vogons.org", "lewisman.com", "github.com", "github.io", "lewismoten.com", "archive.org", "schema.org", "huggingface.co",
     "youtube.com", "youtube-nocookie.com", "ytimg.com", "wikipedia.org", "wikimedia.org", "openai.com",
     "ziglang.org", "apple.com", "thegamecrafter.com", "npmjs.com", "idpf.org", "dosbox.com", "sitemaps.org",
     "rfc-editor.org", "inkscape.org", "daisy.org", "purl.org", "sil.org", "vite.dev", "ollama.com",
