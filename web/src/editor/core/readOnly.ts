@@ -19,7 +19,8 @@ export class ReadOnlyError extends Error {
  * Companion sections (project/companion.ts) a look-only game may still keep, in memory only:
  * what the Level check, its heat maps, play sessions and Make a walkthrough find, and the sound
  * editor's Fit choice (which only steers its PC speaker preview), and the walking paths the
- * walkthrough bot keeps to (check/walk/walkPaths.ts). They describe the game or how it is looked
+ * walkthrough bot keeps to (check/walk/walkPaths.ts), and the integrator's boards and groups
+ * (editors/integrator/boardLayout.ts), which only arrange how its scenes are shown. They describe the game or how it is looked
  * at or walked rather than change it, and are gone when the page closes, except the
  * walkthrough and the plays of its scenes ("walkthrough", "myPlays"), which stay in this browser
  * apart from the game's files (check/walk/keptWalk.ts).
@@ -35,6 +36,7 @@ export const MEMORY_SECTIONS: readonly string[] = [
   'uploadChecklist',
   'speakerFit',
   'walkPaths',
+  'integratorBoards',
 ];
 
 export interface ReadOnlyGuard {
