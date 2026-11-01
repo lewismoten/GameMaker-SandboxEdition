@@ -1,6 +1,7 @@
 // The scenes in order: each one's files, its look (a theme over its base block set), Doc Leo's
 // character file, its sound set, its song, its monsters' options and how its view scrolls. A
-// level of more than one scene (The Timing Beat's three verses) names its level once.
+// level of more than one scene (The Timing Beat's three verses) names its level once. Levels 1-4
+// are Sir Reginald's dream, ended by the swim (a scene nobody steers); 5 on are the real car.
 import type { ThemeName, Pal } from '../art/palette';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
@@ -11,6 +12,13 @@ import { jump, jumpBlocks } from './jump';
 import type { Level } from './maps';
 import { oil, oilBlocks } from './oil';
 import { spark, sparkBlocks } from './spark';
+import { brakeSong, cupsSong, fanSong, muffledSong, pumpSong, swimSong } from '../sound/realSongs';
+import { brake, brakeBlocks } from './brake';
+import { capGame, cups, cupsBlocks, ROUNDS } from './cups';
+import { fan, fanBlocks, FAN_VERSES } from './fan';
+import { muffled, muffledBlocks } from './muffled';
+import { pump, pumpBlocks } from './pump';
+import { swim, swimBlocks } from './swim';
 
 export interface LevelDef {
   /** The scene's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
@@ -23,12 +31,14 @@ export interface LevelDef {
   theme: ThemeName;
   blocks: (pal: Pal) => Kit;
   build: (b: Kit['book']) => Level;
-  chr: 'leo' | 'piano' | 'oil';
+  chr: 'leo' | 'piano' | 'oil' | 'teddy' | 'nobody';
   snd: Place;
   song: () => Uint8Array;
   mons: MonsterOptions;
   /** Scrolls side to side (else the level is one screen and the view stays put). */
   wide: boolean;
+  /** Cards shown before the level's cartoon (waking from the dream). */
+  before?: string[];
 }
 
 export const LEVELS: LevelDef[] = [
@@ -72,6 +82,89 @@ export const LEVELS: LevelDef[] = [
     song: oilSong,
     mons: { squeak: 6, reach: 13 },
     wide: false,
+  },
+  // the dream ends: Sir Reginald swims the oil pipe (nobody steers), then Doc Leo wakes him
+  {
+    file: 'swim',
+    level: 4,
+    desc: "Oil's Well",
+    part: 'the swim',
+    theme: 'amber',
+    blocks: swimBlocks,
+    build: swim,
+    chr: 'nobody',
+    snd: 'oil',
+    song: swimSong,
+    mons: {},
+    wide: false,
+  },
+  ...FAN_VERSES.map((v, i): LevelDef => ({
+    file: v.file,
+    level: 5,
+    desc: 'The Fan Band',
+    part: ['the cool verse', 'the hot verse'][i],
+    theme: i ? 'amber' : 'electric',
+    blocks: fanBlocks(v),
+    build: fan(v),
+    chr: 'leo',
+    snd: 'fan',
+    song: () => fanSong(i),
+    mons: {},
+    wide: true,
+    before: i ? undefined : ['wake1.gif', 'wake2.gif', 'wake3.gif', 'wake4.gif'],
+  })),
+  {
+    file: 'brake',
+    level: 6,
+    desc: 'Brake Dance',
+    theme: 'disco',
+    blocks: brakeBlocks,
+    build: brake,
+    chr: 'teddy',
+    snd: 'brake',
+    song: brakeSong,
+    mons: {},
+    wide: true,
+  },
+  ...ROUNDS.map((r, i): LevelDef => ({
+    file: r.file,
+    level: 7,
+    desc: 'Hubcaps and Balls',
+    part: `round ${i + 1}`,
+    theme: 'spot',
+    blocks: cupsBlocks,
+    build: cups,
+    chr: 'leo',
+    snd: 'cups',
+    song: () => cupsSong(r.speed === 4),
+    mons: { caps: capGame(r) },
+    wide: false,
+  })),
+  {
+    file: 'pump',
+    level: 8,
+    desc: 'Pump Up the Volume',
+    theme: 'noon',
+    blocks: pumpBlocks,
+    build: pump,
+    chr: 'leo',
+    snd: 'pump',
+    song: pumpSong,
+    mons: {},
+    wide: true,
+  },
+  {
+    file: 'hush',
+    level: 9,
+    desc: 'Muffled',
+    theme: 'night',
+    blocks: muffledBlocks,
+    build: muffled,
+    chr: 'teddy',
+    snd: 'muffled',
+    song: muffledSong,
+    mons: {},
+    wide: true,
   },
 ];
 

@@ -9,7 +9,7 @@ import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound'
 import { SND } from '../ids';
 import { hz, noteVoc, phraseVoc } from './notes';
 
-export type Place = 'jump' | 'spark' | 'beat' | 'oil';
+export type Place = 'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled';
 
 /** "Charge!": the bugle call on a trumpet (the last note held). */
 const CHARGE: [string, string[], number] = ['trumpet', ['G4', 'C5', 'E5', 'G5', 'E5', 'G5'], 0.11];
@@ -46,6 +46,12 @@ export function buildVocs(): Record<string, Uint8Array> {
   for (const [, n] of LANE_NOTES) v[vocName('pn', n)] = noteVoc('piano-bright', n, 0.35, 0.22);
   OIL_NOTES.forEach((n) => (v[vocName('oil', n)] = noteVoc('pizzicato', n, 0.3, 0.15)));
   v.home = phraseVoc('celesta', ['E6', 'G6', 'C7'], 0.06, 0.3);
+  // the real tune-up: a fan joining the band, a brake lamp lit, the magician's "ta-da", a full tire, the tapes
+  v.fanon = phraseVoc('kazoo', ['C5', 'E5', 'G5'], 0.08, 0.3);
+  v.lamp = phraseVoc('glockenspiel', ['G5', 'C6', 'E6'], 0.06, 0.3);
+  v.tada = phraseVoc('trumpet', ['G4', 'C5'], 0.14, 0.5);
+  v.psi = phraseVoc('combo-organ', ['C5', 'E5', 'G5', 'C6'], 0.07, 0.4);
+  v.tapes = phraseVoc('music-box', ['E5', 'G5', 'C6'], 0.1, 0.4);
   return v;
 }
 
@@ -93,6 +99,40 @@ export function buildSoundSet(place: Place): SoundSet {
   } else if (place === 'oil') {
     OIL_NOTES.forEach((n, i) => add(SND.oil0 + i, vocName('oil', n), tone(n, 10)));
     add(SND.gain, 'home', SPEAKER.arpeggio([1319, 1568, 2093]));
+  } else if (place === 'fan') {
+    add(SND.gain, 'fanon', SPEAKER.arpeggio([523, 659, 784]));
+  } else if (place === 'brake') {
+    // each trick's whoosh on the speaker, a step higher up the ladder; a lamp lit
+    for (let k = 0; k < 4; k++)
+      add(
+        SND.trick0 + k,
+        '',
+        speaker((i) => (i < 6 ? 300 + k * 120 + i * 60 : 0)),
+      );
+    add(SND.gain, 'lamp', SPEAKER.arpeggio([784, 1047, 1319]));
+  } else if (place === 'cups') {
+    add(SND.gain, 'tada', SPEAKER.arpeggio([392, 523]));
+  } else if (place === 'pump') {
+    // a stroke of the pump (and a balloon puffed): a rising squeak
+    add(
+      SND.score,
+      '',
+      speaker((i) => (i < 4 ? 900 + i * 250 : 0)),
+    );
+    add(SND.gain, 'psi', SPEAKER.arpeggio([523, 659, 784, 1047]));
+  } else if (place === 'muffled') {
+    // a squeaky toy (energy down: Teddy's hurt sound), a blanket tucked (energy up), the tapes
+    add(
+      SND.hurt,
+      '',
+      speaker((i) => (i < 5 ? 1600 + (i % 2) * 500 : 0)),
+    );
+    add(
+      SND.help,
+      '',
+      speaker((i) => (i < 4 ? 200 - i * 20 : 0)),
+    );
+    add(SND.gain, 'tapes', SPEAKER.arpeggio([659, 784, 1047]));
   }
   return set;
 }
