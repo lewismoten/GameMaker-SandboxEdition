@@ -5,6 +5,7 @@
 import { ROWS } from '../text/textScreen';
 import type { Term } from './term';
 import { SCOOP_MONTHS } from '../../manual/printables/scoopIssues';
+import { BARD_MONTHS } from './bardMonths';
 
 /** Rows the terminal shows above its status bar. */
 const SCREEN_ROWS = ROWS - 1;
@@ -136,14 +137,14 @@ export const readNumber = (answer: string) => (/^[VR]?\d+$/.test(answer) ? Numbe
 
 /**
  * The day a file went up, made up but always the same for it: MM-DD-YY. A Sandbox game goes up in
- * its release month (SCOOP_MONTHS); any other game gets a month by its key, and nothing is
+ * its release month (SCOOP_MONTHS), a Bard game in its own (BARD_MONTHS); any other game gets a month by its key, and nothing is
  * dated after December 1994, the desk's month.
  */
 export function uploadDate(key: string, year = 1994): string {
   let x = 2166136261;
   for (const c of key) x = Math.imul(x ^ c.charCodeAt(0), 16777619) >>> 0;
   const two = (n: number) => String(n).padStart(2, '0');
-  const set = /^(\d{4})-(\d\d)$/.exec(SCOOP_MONTHS[key] ?? '');
+  const set = /^(\d{4})-(\d\d)$/.exec(SCOOP_MONTHS[key] ?? BARD_MONTHS[key] ?? '');
   let y = set ? Number(set[1]) : Math.min(year, 1994);
   // no month on record: before the 3.0 box's autumn there is no rule, from 1994 on, September to December
   const month = set ? Number(set[2]) : y >= 1994 ? 9 + (x % 4) : 1 + (x % 12);
