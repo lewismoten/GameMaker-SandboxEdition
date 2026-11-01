@@ -76,9 +76,15 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
   const kept = lookOnlyKept(project);
   const opt: WalkDialogOptions = { keeps: kept?.keeps, ...given };
   let redoing: Redoing | undefined;
+  // dev server only: a walkthrough file in the maintainer's .for-lewis folder (devLocalWalk.ts), for a game with none
+  let local: Walkthrough | undefined;
+  if (import.meta.env.DEV && !opt.shipped && !project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined)?.walk) {
+    local = await (await import('./devLocalWalk')).localWalk(project.gam, project.game().scenes.length, project.name);
+  }
   for (;;) {
     const saved = project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined);
-    const source = walkSource(saved, opt.shipped);
+    const own = walkSource(saved, opt.shipped);
+    const source = own ?? (local ? ('local' as const) : undefined);
     if (source && !redoing) {
       let chose: { choice: RedoChoice; walk: Walkthrough } | undefined;
       const note = project.readOnly
@@ -86,8 +92,13 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
           ? `${project.readOnly.title} is open to look at only: a redone walkthrough lasts until this page closes, and the game’s own is not changed.`
           : `${project.readOnly.title} is open to look at only: a redone walkthrough is kept in this browser, and the game’s own is not changed.`
         : undefined;
-      const redo: RedoOptions = { note, onChoose: (choice, walk) => void (chose = { choice, walk }) };
+      const fromDisk =
+        source === 'local'
+          ? 'This walkthrough is a local file from your .for-lewis folder (the dev server only); it is not saved with the game. Redo keeps a new one in the usual place.'
+          : undefined;
+      const redo: RedoOptions = { note: [fromDisk, note].filter(Boolean).join(' ') || undefined, onChoose: (choice, walk) => void (chose = { choice, walk }) };
       if (source === 'kept') await watchMade(project, saved!.walk!, opt.entry, redo);
+      else if (source === 'local') await watchMade(project, local!, opt.entry, redo);
       else
         await (
           await import('../../walkthrough/player')
