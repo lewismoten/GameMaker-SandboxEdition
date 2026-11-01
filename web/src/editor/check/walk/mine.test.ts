@@ -76,7 +76,7 @@ describe('my play in the walkthrough', () => {
     // standing still: no exit is reached
     const r = await autoWalk(t.game, t, 'test', { mine: { 2: '' } });
     expect(r.scenes[0].mine).toBe('broke');
-    expect(r.scenes[0].strategy).toBe('runner');
+    expect(r.scenes[0].strategy).toBe('human');
     expect(r.won).toBe(true);
   }, 30_000);
 });

@@ -117,7 +117,8 @@ Part of the [source map](../README.md).
     `mapFixes.ts`) and the maze maker (`mazeFor.ts`); `accepted.ts` keeps the findings a designer
     marked as meant to be (by a stable key; `sameEverySide.ts` is the facing check's own list).
   - `walk/`: the walkthrough bot. `pace.ts` measures how tight a walkthrough's key changes are;
-    `autoWalk.ts` walks, checked on the engine by `verify.ts`; `gates.ts` finds the locked doors and
+    `autoWalk.ts` walks, checked on the engine by `verify.ts`, trying `humanRoute.ts` first (treasure and
+    foes in sight, steady hands, only for walkthroughs, never the Level check's search); `gates.ts` finds the locked doors and
     what adds to their counters (map blocks, monsters and what they turn into when they die, blocks
     that turn into a key, with a key's price in another counter owed too), and `fetchKeys.ts`
     fetches those keys first, then goes on; when nothing in the scene adds to a door's counter,
