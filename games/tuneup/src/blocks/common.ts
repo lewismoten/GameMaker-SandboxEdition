@@ -73,7 +73,7 @@ const RING: { hp?: number; effect?: number; eamt?: number; score?: number }[] = 
   { effect: 3, eamt: 1 }, // slot 2: money up
   { score: 10 }, // slot 5: score up
   { score: -1 }, // slot 6: score down
-  { effect: CTR.stairs, eamt: 1 }, // slot 7: a counter up
+  { effect: 3, eamt: -1 }, // slot 3: money down (slot 7, a counter up, is the finds' phrase)
   { effect: CTR.down, eamt: -1 }, // slot 8: a counter down (it starts at DOWN_START)
 ];
 

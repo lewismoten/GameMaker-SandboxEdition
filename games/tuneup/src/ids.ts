@@ -39,8 +39,6 @@ export const CTR = {
   hits: 20,
   /** Instruments found in this neighborhood (its way out takes them all). */
   found: 22,
-  /** The piano stairs' notes (a harmless count, so the touch rings slot 7). */
-  stairs: 23,
   /** A count that only goes down, from high (so the touch rings slot 8). */
   down: 24,
   /** Instruments set on their stands at the bandstand. */
@@ -69,12 +67,14 @@ export const SND = {
   kill: 1,
   /** Money up: a stair note. */
   money: 2,
+  /** Money down: a floating note's fifth step (so slot 7 is the finds' own). */
+  tip: 3,
   life: 4,
   /** Score up: a stair note, or a cheer. */
   score: 5,
   /** Score down: a stair note. */
   lose: 6,
-  /** A counter up: an instrument found, the low lane's note, a stair note. */
+  /** A counter up: an instrument found (its family's phrase), the low lane's note, a hollow note. */
   gain: 7,
   /** A counter down: a boop on an unlit key, a stair note, a door opening. */
   spend: 8,

@@ -79,7 +79,8 @@ export async function thePianoShop(bot: Bot): Promise<void> {
   });
   // up the piano stairs, ringing a note on every step
   await must(bot, bot.walk(29, 'up the piano stairs'), 'stairs');
-  if (bot.sim.meter(CTR.stairs) - 1 < 1 || bot.sim.meter(CTR.down) - 1 >= 99) throw new Error('the stairs did not ring');
+  // the top step's A counts down (the D and the G ring tips up and down, so they even out)
+  if (bot.sim.meter(CTR.down) - 1 >= 99) throw new Error('the stairs did not ring');
   await must(bot, bot.walk(32, 'along the high shelf'), 'high shelf');
   picked(bot, 32, 2, 'the round electric piano');
   await carefully(bot, "down to Gwinn's shelf", 8, async () => {

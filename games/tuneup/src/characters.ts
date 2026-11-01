@@ -85,8 +85,10 @@ function teddy(cb: ReturnType<typeof buildCharBlocks>, rail: boolean, rink = fal
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // health
   ch.meter[1] = 3; // lives
-  ch.meter[3] = 1; // money (the stairs' D rings it up)
-  for (const n of [CTR.hits, CTR.found, CTR.stairs, CTR.band, CTR.beats, CTR.staff]) ch.meter[n] = 1;
+  // money: the notes' D rings it up and their G down, so it starts with a tip for each G in the
+  // game (7) and none is ever refused
+  ch.meter[3] = 8;
+  for (const n of [CTR.hits, CTR.found, CTR.band, CTR.beats, CTR.staff]) ch.meter[n] = 1;
   ch.meter[CTR.down] = DOWN_START;
   ch.cseq = 0;
   ch.cframe = 0;

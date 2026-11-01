@@ -71,3 +71,11 @@ export function hz(name: string): number {
   const semis = { C: -9, D: -7, E: -5, F: -4, G: -2, A: 0, B: 2 }[m[1]]! + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0) + (Number(m[3]) - 4) * 12;
   return 440 * 2 ** (semis / 12);
 }
+
+/** A short phrase: `notes` one after another, `step` seconds each, the last held to the end, as a VOC. */
+export function phraseVoc(id: string, notes: string[], step: number, ring = 0.4): Uint8Array {
+  // an eighth as long as a step; the last note a whole, so the VOC ends before the song does (it would loop)
+  const bpm = 60 / (2 * step);
+  const line = notes.map((n, i) => `${n} ${i === notes.length - 1 ? 'w' : 'e'}`).join(', ');
+  return level(render(song(bpm, [{ channel: 0, instrument: patchOf(id), notes: line }]), step * (notes.length - 1) + ring));
+}

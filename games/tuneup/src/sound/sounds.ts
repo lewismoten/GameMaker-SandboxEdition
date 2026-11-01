@@ -9,9 +9,30 @@ import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound'
 import { boing, honk, pop, woof, yelp } from '../../../kit/teddySounds';
 import { SND } from '../ids';
 import { TICK_TOCK } from '../../../kit/tinHeart';
-import { arpVoc, hz, noteVoc } from './notes';
+import { arpVoc, hz, noteVoc, phraseVoc } from './notes';
 
 export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade' | 'rink' | 'field' | 'woods' | 'choir' | 'basement' | 'clock' | 'farm' | 'attic' | 'card';
+
+/**
+ * What an instrument found plays (slot 7, a counter up): a short phrase on its family's own
+ * preset, most of them a turn of the parade tune, and the same notes on the PC speaker.
+ * [preset, notes, seconds a note]. The floating notes' fifth step rings slot 3 instead.
+ */
+export const FOUND: Partial<Record<Place, [string, string[], number]>> = {
+  shop: ['piano-bright', ['C5', 'E5', 'G5', 'C6'], 0.09],
+  strings: ['harp', ['D5', 'F#5', 'A5', 'D6'], 0.07],
+  choir: ['aah', ['E5', 'G5', 'C6'], 0.14],
+  basement: ['slap-bass', ['C3', 'G3', 'C4'], 0.1],
+  arcade: ['lead-square', ['E5', 'G5', 'C6', 'E6'], 0.07],
+  rink: ['tonewheel', ['F5', 'A5', 'G5'], 0.11],
+  clock: ['glockenspiel', ['E6', 'D6', 'C6'], 0.11],
+  // the low hollow note's C, answered (the staff doors' low note rings it too)
+  woods: ['flute', ['C5', 'E5', 'G5'], 0.11],
+  farm: ['cowbell', ['G5', 'G5', 'G5'], 0.1],
+};
+
+/** A found phrase's VOC name (8.3). */
+const foundVoc = (place: string) => `fd${place.slice(0, 6)}`;
 
 /** A held PC speaker tone at a pitch, short (about a sixth of a second) and then quiet. */
 const tone = (name: string, steps = 24) => speaker((i) => (i < steps ? hz(name) : 0));
@@ -22,7 +43,7 @@ export const STAIR_NOTES: [number, string][] = [
   [SND.money, 'D5'],
   [SND.score, 'E5'],
   [SND.lose, 'F5'],
-  [SND.gain, 'G5'],
+  [SND.tip, 'G5'],
   [SND.spend, 'A5'],
 ];
 /** The strings' scale for the plucked springs and the instruments: a harp's. */
@@ -31,7 +52,7 @@ export const HARP_NOTES: [number, string][] = [
   [SND.money, 'E5'],
   [SND.score, 'F#5'],
   [SND.lose, 'A5'],
-  [SND.gain, 'B5'],
+  [SND.tip, 'B5'],
   [SND.spend, 'D6'],
 ];
 /** The arcade's notes: a chord each, broken upward on a square lead (the speaker plays it too). */
@@ -40,7 +61,7 @@ export const ARCADE_CHORDS: [number, string[]][] = [
   [SND.money, ['D5', 'F5', 'A5', 'D6']],
   [SND.score, ['E5', 'G5', 'B5', 'E6']],
   [SND.lose, ['F5', 'A5', 'C6', 'F6']],
-  [SND.gain, ['G5', 'B5', 'D6', 'G6']],
+  [SND.tip, ['G5', 'B5', 'D6', 'G6']],
   [SND.spend, ['A5', 'C6', 'E6', 'A6']],
 ];
 /** The Player Piano's two lanes: the low key rings slot 7 (a hit), the high one slot 0 (hit points and a hit). */
@@ -48,8 +69,7 @@ export const RAIL_LOW = 'C5';
 /** The marching field's lines: the low three ring a horn (a hit), the high two a trumpet (hit points and a hit). */
 export const FIELD_LOW = 'G4';
 export const FIELD_HIGH = 'C5';
-/** The woods' staff doors: a low hollow note (and a wind found) rings a flute's C, a high one its G. */
-export const WOODS_LOW = 'C5';
+/** The woods' staff doors: a low hollow note (and a wind found) rings the flute phrase from C (FOUND), a high one its G. */
 export const WOODS_HIGH = 'G5';
 export const RAIL_HIGH = 'G5';
 /** The choir loft's hymn notes, sung "aah" (a voice found sings F, the door G); the rail blooms a chord. */
@@ -57,7 +77,7 @@ export const CHOIR_NOTES: [number, string][] = [
   [SND.help, 'C5'],
   [SND.money, 'D5'],
   [SND.lose, 'E5'],
-  [SND.gain, 'F5'],
+  [SND.tip, 'F5'],
   [SND.spend, 'G5'],
 ];
 export const CHOIR_BLOOM = '[C4 E4 G4 C5]';
@@ -66,7 +86,7 @@ export const CHOIR_BLOOM = '[C4 E4 G4 C5]';
 export const GLOCK_NOTES: [number, string][] = [
   [SND.help, 'C6'],
   [SND.money, 'E6'],
-  [SND.gain, 'G6'],
+  [SND.tip, 'G6'],
   [SND.spend, 'C7'],
 ];
 /** The attic's chord keys on the song maker's piano: C (slot 0), F (slot 7, and an instrument found), and G, the trunk's latch (slot 8, and the door). */
@@ -85,7 +105,7 @@ export const CARD_CHORDS: [number, number[]][] = [
 export const BASS_NOTES: [number, string][] = [
   [SND.help, 'C3'],
   [SND.money, 'E3'],
-  [SND.gain, 'G3'],
+  [SND.tip, 'G3'],
   [SND.spend, 'C4'],
 ];
 
@@ -100,11 +120,9 @@ export function buildVocs(): Record<string, Uint8Array> {
   v.bloom = noteVoc('choir', CHOIR_BLOOM, 1.6, 1.1);
   for (const [, n] of BASS_NOTES) v[vocName('sb', n)] = noteVoc('slap-bass', n, 0.5, 0.3);
   for (const [, n] of GLOCK_NOTES) v[vocName('gl', n)] = noteVoc('glockenspiel', n, 0.6, 0.3);
-  v.cowbell = noteVoc('cowbell', 'G5', 0.35, 0.2);
   v.timp = noteVoc('timpani', 'C3', 0.7, 0.4);
   for (const [, name, ch] of ATTIC_CHORDS) v[name] = noteVoc('piano', ch, 0.8, 0.5);
   v.kitaah = noteVoc('choir', '[C4 E4 G4]', 0.7, 0.45);
-  v.woodslo = noteVoc('flute', WOODS_LOW, 0.6, 0.35);
   v.woodshi = noteVoc('flute', WOODS_HIGH, 0.6, 0.35);
   v.fieldlo = noteVoc('horn', FIELD_LOW, 0.35, 0.22);
   v.fieldhi = noteVoc('trumpet', FIELD_HIGH, 0.35, 0.22);
@@ -113,6 +131,7 @@ export function buildVocs(): Record<string, Uint8Array> {
   v.clunk = noteVoc('melodic-kick', 'C3', 0.18, 0.08);
   v.tada = noteVoc('glockenspiel', '[C6 E6 G6]', 0.8, 0.4);
   v.fanfare = noteVoc('trumpet', '[G4 C5 E5]', 0.7, 0.4);
+  for (const [place, [id, ns, step]] of Object.entries(FOUND)) v[foundVoc(place)] = phraseVoc(id, ns, step);
   v.woof = woof(330, 0.2);
   v.yelp = yelp();
   v.pop = pop();
@@ -158,8 +177,7 @@ export function buildSoundSet(place: Place): SoundSet {
     // the tin heart's tick-tock: score up, on the speaker only (never a .VOC)
     add(SND.score, '', TICK_TOCK());
   } else if (place === 'farm') {
-    // an instrument found clonks the cowbell; the barn door rolls the timpani
-    add(SND.gain, 'cowbell', tone('G5', 6));
+    // the barn door rolls the timpani (an instrument found clonks the cowbell: FOUND)
     add(SND.spend, 'timp', tone('C3', 12));
   } else if (place === 'attic') {
     for (const [slot, name, ch] of ATTIC_CHORDS) add(slot, name, SPEAKER.arpeggio(ch.replace(/[[\]]/g, '').split(' ').map(hz)));
@@ -169,7 +187,6 @@ export function buildSoundSet(place: Place): SoundSet {
     add(SND.gain, 'kitaah', SPEAKER.arpeggio([262, 330, 392]));
     add(SND.spend, 'bloom', SPEAKER.arpeggio([262, 330, 392, 523]));
   } else if (place === 'woods') {
-    add(SND.gain, 'woodslo', tone(WOODS_LOW));
     add(SND.help, 'woodshi', tone(WOODS_HIGH));
     add(
       SND.spend,
@@ -201,5 +218,7 @@ export function buildSoundSet(place: Place): SoundSet {
     add(SND.spend, 'fanfare', SPEAKER.arpeggio([392, 523, 659]));
     add(SND.score, 'honk', SPEAKER.chirp());
   }
+  const found = FOUND[place];
+  if (found) add(SND.gain, foundVoc(place), SPEAKER.arpeggio(found[1].map(hz)));
   return set;
 }
