@@ -119,7 +119,7 @@ const CREDITS_TEXT = page(
   [
     'THREAD THE NEEDLE,',
     'BROTHER CAMEL',
-    'by The Bard of Bizarre, 1995',
+    'by The Bard of Bizarre, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Based on the song "Thread the',
@@ -160,7 +160,7 @@ export function readme(price: string): string {
   return `
     THREAD THE NEEDLE,
     BROTHER CAMEL
-    Version ${about.version} - May 1995
+    Version ${about.version} - October 1994
     by The Bard of Bizarre
 
 "Thread the needle, Brother
