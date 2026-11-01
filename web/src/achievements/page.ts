@@ -1,10 +1,10 @@
 // "What you've done" (#/achievements): every achievement by part of the site, with how far
 // along the counted ones are and when each was unlocked, as badges of one size. Hidden ones show
 // "???" and a vague hint until they are. A badge opens its details (details.ts). The same record the desk's ACHIEVE.EXE shows (store.ts). A Reset at the
-// bottom forgets them all, after asking.
+// bottom (behind a closed "Start over…") forgets them all, after asking for the word RESET.
 import './page.css';
 import { badgeIcon } from './badgeArt';
-import { h, clear, confirmDialog, modal } from '../editor/core/ui';
+import { h, clear, modal } from '../editor/core/ui';
 import { ACHIEVEMENTS, CATEGORIES, achievementById, progressOf, shownText, type Achievement } from './catalog';
 import { openDetails } from './details';
 import { refreshGoals } from './goals';
@@ -83,7 +83,7 @@ function card(a: Achievement, r: AchievementRecord, open: () => void, dates: boo
       'button',
       {
         type: 'button',
-        class: `ach-card${when ? ' is-done' : ''}${secret ? ' is-hidden' : ''}${when && a.hard ? ' is-gold' : ''}`,
+        class: `ach-card${when ? ' is-done' : ''}${dates && when ? ' has-when' : ''}${secret ? ' is-hidden' : ''}${when && a.hard ? ' is-gold' : ''}`,
         'data-id': a.id,
         'aria-haspopup': 'dialog',
         title: secret ? 'Hidden achievement: show its hint' : `${shown.title}: show the details`,
@@ -111,7 +111,6 @@ function card(a: Achievement, r: AchievementRecord, open: () => void, dates: boo
                   : null,
               ],
         ),
-        h('span', { class: 'ach-desc' }, shown.desc),
         progress
           ? h(
               'span',
@@ -125,16 +124,65 @@ function card(a: Achievement, r: AchievementRecord, open: () => void, dates: boo
                 : null,
             )
           : null,
-        dates
-          ? h(
-              'span',
-              { class: 'ach-when' },
-              when ? ['Unlocked ', h('time', { datetime: dateOf(when).toISOString() }, longDate(when))] : secret ? 'Hidden' : 'Not yet',
-            )
-          : null,
       ),
+      // earned only, and only the date, along the card's right edge; a screen reader still hears "Unlocked <date>"
+      dates && when
+        ? h('span', { class: 'ach-when' }, h('time', { datetime: dateOf(when).toISOString() }, h('span', { class: 'sr-only' }, 'Unlocked '), longDate(when)))
+        : null,
     ),
   );
+}
+
+/** Start over: closed by default and last on the page, so it takes two deliberate steps and a typed word. */
+function startOver(r: AchievementRecord, isOpen: () => boolean, setOpen: (v: boolean) => void): HTMLElement {
+  const trigger = h(
+    'button',
+    {
+      type: 'button',
+      class: 'danger',
+      onclick: async () => {
+        if (!(await confirmReset())) return trigger.focus();
+        await resetAchievements();
+        void refreshGoals();
+      },
+    },
+    'Reset achievements…',
+  );
+  const det = h(
+    'details',
+    { class: 'ach-start-over', open: isOpen() || undefined, ontoggle: () => setOpen(det.open) },
+    h('summary', null, 'Start over…'),
+    h(
+      'p',
+      null,
+      `Forget every achievement in this browser (${Object.keys(r.unlocked).length} earned so far). Your games, saves, tin hearts and felt eggs stay as they are.`,
+    ),
+    trigger,
+  );
+  return det;
+}
+
+/** Asks for the word RESET; the Reset button stays off until it is typed. */
+function confirmReset(): Promise<boolean> {
+  return modal<boolean>('Reset achievements?', (close) => {
+    const input = h('input', { type: 'text', id: 'ach-reset-word', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', autofocus: true });
+    const go = h('button', { type: 'button', class: 'danger-solid', disabled: true, onclick: () => close(true) }, 'Reset');
+    const ok = () => input.value.trim().toUpperCase() === 'RESET';
+    input.addEventListener('input', () => (go.disabled = !ok()));
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (ok()) close(true);
+      }
+    });
+    return [
+      h('p', null, 'Every achievement and its date will be forgotten in this browser.'),
+      h('p', { class: 'ach-reset-warn' }, 'This cannot be undone.'),
+      h('p', null, 'Your games, saves, tin hearts and felt eggs stay as they are.'),
+      h('p', null, h('label', { for: 'ach-reset-word' }, 'Type RESET to go ahead: '), input),
+      h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(false) }, 'Cancel'), go),
+    ];
+  }).then((v) => !!v);
 }
 
 export function renderAchievements(el: HTMLElement): void {
@@ -144,6 +192,7 @@ export function renderAchievements(el: HTMLElement): void {
   const ordered = CATEGORIES.flatMap((c) => ACHIEVEMENTS.filter((a) => a.category === c.id));
   let record: AchievementRecord | undefined;
   let tab = savedTab();
+  let startOpen = false;
   const prefs: Record<Pref, boolean> = { dates: loadPref('dates'), progress: loadPref('progress'), hideEarned: loadPref('hideEarned') };
   // a badge may be in a tab that isn't shown (Previous and Next walk them all): show that tab first
   const badge = (id: string) => {
@@ -157,7 +206,9 @@ export function renderAchievements(el: HTMLElement): void {
   };
   const open = (a: Achievement) => {
     const first = record;
-    if (first) openDetails(ordered, ordered.indexOf(a), () => record ?? first, badge);
+    // with unearned badges hidden, Previous and Next walk only the badges on screen
+    const walk = prefs.hideEarned && first ? ordered.filter((b) => first.unlocked[b.id]) : ordered;
+    if (first) openDetails(walk, walk.indexOf(a), () => record ?? first, badge);
   };
   function draw(r: AchievementRecord): void {
     record = r;
@@ -289,30 +340,10 @@ export function renderAchievements(el: HTMLElement): void {
         tabs,
       ),
       panel,
-      h(
-        'section',
-        { 'aria-labelledby': 'ach-reset', class: 'ach-section ach-reset' },
-        h('h2', { id: 'ach-reset' }, 'Start over'),
-        h('p', null, 'Forget every achievement in this browser. Your games, saves, tin hearts and felt eggs stay as they are.'),
-        h(
-          'button',
-          {
-            class: 'danger',
-            onclick: async () => {
-              if (
-                !(await confirmDialog(
-                  'Reset achievements?',
-                  'Every achievement and its date will be forgotten in this browser. This cannot be undone.',
-                  'Reset',
-                ))
-              )
-                return;
-              await resetAchievements();
-              void refreshGoals();
-            },
-          },
-          'Reset achievements…',
-        ),
+      startOver(
+        r,
+        () => startOpen,
+        (v) => (startOpen = v),
       ),
     );
     if (focused) main.querySelector<HTMLElement>(`#${tabId(cat.id)}`)?.focus({ preventScroll: true });

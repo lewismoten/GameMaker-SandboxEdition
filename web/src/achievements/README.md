@@ -7,10 +7,10 @@ record (`store.ts`, in the save store), the calls the rest of the site makes (`i
 `editKinds.ts`, and its `GAME_SPOTS`: scenes of a game that count by name), what each page
 starts (`start.ts`, whose `gm-achievement` event unlocks an id or tallies an item), where a game was
 finished (`playedOn.ts`: the desk, the DOS page or the web player, and a phone held wide or tall), totals counted from the games catalog
-(`goals.ts`), the unlock note (`toast.ts`, with `notesPlacer.ts` apart so the DOS page can place notes without loading it), the `#/achievements` page (`page.ts`: a row of tabs, one per part of the site with its "n of m" (ARIA tabs: arrow keys, Home and End, the chosen one kept in sessionStorage across redraws; Previous and Next in the details still walk every badge, switching tab as they go), then that part's badges of one size, each opening its details in
+(`goals.ts`), the unlock note (`toast.ts`, with `notesPlacer.ts` apart so the DOS page can place notes without loading it), the `#/achievements` page (`page.ts`: a row of tabs, one per part of the site with its "n of m" (ARIA tabs: arrow keys, Home and End, the chosen one kept in sessionStorage across redraws; Previous and Next in the details still walk every badge, switching tab as they go), then that part's badges (the icon, title, level, and a lock or check; the description is only in the details, and a card is as tall as its own content, so a row grows only if one of its cards shows a progress bar; with 📅 on, an earned badge carries its date turned along its right edge, said as "Unlocked <date>" to a screen reader, and an unearned one shows none; with 🙈 on, Previous and Next in the details skip the hidden unearned badges), each opening its details in
 `details.ts`, with where it is earned from `where.ts`) and the desk's
 `ACHIEVE.EXE` (`achieveExe.ts`). While a guided tour plays nothing counts (`store.ts`): what the
-tour presses, calls or reads isn't the visitor's own doing.
+tour presses, calls or reads isn't the visitor's own doing. Reset lives last on the page behind a closed "Start over…" and asks the visitor to type RESET before its red Reset button works; cancelling returns focus to the button that asked.
 
 Repeated events use `countOccurrence` in `store.ts`: bounded sets of unique event tokens
 retain independent plays when records from tabs or backups merge. Old achievement

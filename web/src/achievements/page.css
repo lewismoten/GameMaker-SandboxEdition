@@ -121,7 +121,6 @@ main.ach-page h1 {
 .ach-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-  --card-h: 6.5rem;
   gap: 10px;
   margin: 12px 0 0;
   padding: 0;
@@ -141,7 +140,7 @@ main.ach-page h1 {
   gap: 12px;
   width: 100%;
   position: relative;
-  height: var(--card-h);
+  min-height: 4.5rem;
   margin: 0;
   padding: 12px;
   overflow: hidden;
@@ -153,18 +152,6 @@ main.ach-page h1 {
   line-height: 1.5;
   text-align: left;
   cursor: pointer;
-}
-
-.ach-grid.with-dates {
-  --card-h: 8.25rem;
-}
-
-.ach-grid.with-progress {
-  --card-h: 8.5rem;
-}
-
-.ach-grid.with-dates.with-progress {
-  --card-h: 10rem;
 }
 
 .ach-card:hover {
@@ -235,8 +222,8 @@ main.ach-page h1 {
 
 .ach-body {
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  height: 100%;
+  align-content: center;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -250,21 +237,6 @@ main.ach-page h1 {
 
 .ach-card.is-hidden .ach-title {
   letter-spacing: 0.15em;
-}
-
-.ach-desc {
-  display: -webkit-box;
-  margin: 2px 0 0;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow-wrap: anywhere;
-}
-
-.ach-card:not(.is-done) .ach-desc,
-.ach-when {
-  color: var(--muted);
 }
 
 .ach-progress {
@@ -285,15 +257,55 @@ main.ach-page h1 {
   text-overflow: ellipsis;
 }
 
-.ach-when {
-  overflow: hidden;
-  font-size: 13px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+/* the date of an earned badge, turned along its right edge on a darker strip */
+.ach-card.has-when {
+  min-height: 6.5rem;
+  padding-right: 40px;
 }
 
-.ach-reset p {
-  margin: 4px 0 10px;
+.ach-when {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  background: color-mix(in srgb, var(--panel-2) 78%, var(--text));
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+}
+
+.ach-start-over {
+  margin: 40px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.ach-start-over summary {
+  display: inline-block;
+  min-height: 24px;
+  cursor: pointer;
+}
+
+.ach-start-over[open] summary {
+  margin-bottom: 4px;
+}
+
+button.danger-solid:not(:disabled) {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.ach-reset-warn {
+  color: var(--danger);
+  font-weight: 700;
 }
 
 .ach-progress .ach-bar {
