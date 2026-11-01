@@ -44,6 +44,12 @@ form, e.g. 614-MAH TED. Games whose titles share a mark are told apart by number
 (TED, TED2, TED3; `setAuthorMarks`, set when `listing.ts` builds the shelf). `cabinet.ts` also draws the
 brass plaque on the cabinet's top rail with the Tiny Pockets Press logo (`web/public/library/tiny-pockets-press.webp`,
 ISC, Lewis Moten; see NOTICE.md and the Credits page).
+`libraryRoom.ts` is the room at the top of the page (`roomArt.ts` draws it in SVG: an aisle of stacks in perspective to the
+circulation desk; `libraryRoom.css`). Each object is a labeled button with a visible name: the stacks (focus the shelves), the card
+catalog (focus the open drawer), the copier (focus its paper list), Mystery Robot Joe (a help dialog; his art is
+`../tinHearts/joeArt.ts`, from Keep It Brief!), the composition notebook (`../imported/notesShelf.ts('here')`: ratings and notes of
+imported games) and the trash can (`notesShelf('removed')`: removed games' records, with Forget; it shows crumpled reviews when
+there are any). The data is read through those modules and stored as before. Under 700px the room is a row of labeled buttons.
 `callOrder.ts` puts the drawers, and the cards in each, in call-number order (the three-digit class, then the
 author mark with numbers as numbers: 614-MAH TED, 660-GAM TED, 660-GAM TED2, 660-GAM TED10); cards with the same
 call number keep the order `shelf.ts` gave them. The drawers no longer show a count (the line under the sort does).

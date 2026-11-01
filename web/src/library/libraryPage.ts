@@ -26,6 +26,7 @@ import { libraryStartGame } from '../libraryStart';
 import { drawerId, makeCabinet, plaque } from './cabinet';
 import { inCallOrder } from './callOrder';
 import { makeCopier } from './copier';
+import { makeRoom } from './libraryRoom';
 import { callNumber } from './tinyShelf';
 
 /** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
@@ -216,6 +217,23 @@ export function renderLibrary(el: HTMLElement): void {
       list.scrollIntoView({ block: 'start' });
     },
   );
+  list.tabIndex = -1;
+  const room = makeRoom({
+    status: () => count.textContent ?? '',
+    go: (where) => {
+      if (where === 'stacks') {
+        list.scrollIntoView({ block: 'start' });
+        list.focus({ preventScroll: true });
+      } else if (where === 'catalog') {
+        const drawer = cabinet.el.querySelector<HTMLElement>('[role=tab][aria-selected=true]') ?? cabinet.el.querySelector<HTMLElement>('[role=tab]');
+        cabinet.el.scrollIntoView({ block: 'center' });
+        drawer?.focus({ preventScroll: true });
+      } else {
+        copier.el.scrollIntoView({ block: 'center' });
+        copier.el.querySelector<HTMLElement>('#lib-copies')?.focus({ preventScroll: true });
+      }
+    },
+  });
   const gamePicker = h('select', {
     id: 'lib-game',
     class: 'lib-only',
@@ -283,6 +301,7 @@ export function renderLibrary(el: HTMLElement): void {
       h('p', { class: 'lib-kicker' }, 'Everything to read and print'),
       h('h1', { id: 'lib-h' }, 'Library'),
       h('p', { class: 'lead' }, 'Every paper from the game boxes, plus magazines, guides and videos.'),
+      room.el,
       h('div', { class: 'lib-bar' }, h('div', { class: 'lib-orders', role: 'group', 'aria-label': 'Sort the library' }, buttons), gamePick, count),
       h('div', { class: 'lib-office' }, h('div', { class: 'lib-case' }, plaque(), cabinet.el), copier.el),
       list,
