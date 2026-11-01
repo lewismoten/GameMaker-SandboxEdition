@@ -29,6 +29,7 @@ import {
   type BoardsData,
 } from './boardLayout';
 import { buildModel, nodeRect, paintModel, type BoardsModel, type Stub } from './boardPaint';
+import { ACTIVE_BOARD_SECTION, activeBoardId } from './activeBoard';
 import { suggestGroups } from './boardSuggest';
 
 interface Host {
@@ -55,7 +56,7 @@ export function boardsController(c: Host) {
   const redoStack: string[] = [];
   let animating = false;
   /** The board showing. */
-  let mode = data.boards[0].id;
+  let mode = activeBoardId(data, c.project.extras(file, ACTIVE_BOARD_SECTION, undefined)) ?? data.boards[0].id;
   let model: BoardsModel | undefined;
   let openGroup: string | undefined;
   /** Set by integrator.ts: the BoardView the canvas paints with. */
@@ -120,6 +121,8 @@ export function boardsController(c: Host) {
   }
   function switchTo(id: string, scene?: number): void {
     mode = id;
+    // remembered for next time (a look-only game keeps nothing; the same board again changes nothing)
+    if (!c.project.readOnly && c.project.extras(file, ACTIVE_BOARD_SECTION, undefined) !== id) c.project.setExtras(file, ACTIVE_BOARD_SECTION, id);
     closePop();
     rebuild();
     render();
