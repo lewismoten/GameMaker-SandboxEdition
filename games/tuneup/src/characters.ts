@@ -4,6 +4,9 @@
 // upward push each tick Up is held; Q and E hop up and sideways (Game-Maker follows one key at a
 // time, so nobody has to press two). Down sits, and Space boops (paws up, a nose to whatever is
 // above him: Teddy's button-pressing trick).
+// RINK.CHR, for the Roller Rink (seen from above): left alone he skates right on his own, a block
+// a beat; a tap of Up or Down glides him one lane over (the whole glide, however short the tap),
+// and Left holds him back or skates him back the way he came.
 // RAIL.CHR, for the Player Piano: no hopping, only walking the rail under the keys and the boop,
 // which lifts him half a block for exactly one tick so it touches the key above once.
 import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -28,7 +31,12 @@ export const BOOP = 10;
 
 type F = { pic: string; x?: number; y?: number; pause?: number; mirror?: boolean };
 
-function teddy(cb: ReturnType<typeof buildCharBlocks>, rail: boolean): Character {
+/** The rink: pixels a frame skating, ticks a frame (a block every 8 ticks), and a lane glide's frames. */
+const SKATE = 5;
+const SKATE_PAUSE = 2;
+const GLIDE = 4;
+
+function teddy(cb: ReturnType<typeof buildCharBlocks>, rail: boolean, rink = false): Character {
   const ch = newCharacter();
   const S = ch.sequences;
   const f = (o: F): Frame => {
@@ -56,7 +64,14 @@ function teddy(cb: ReturnType<typeof buildCharBlocks>, rail: boolean): Character
     jstkMov: JOY.any,
     jstkBut: 1,
   });
-  if (!rail) {
+  if (rink) {
+    // skating on his own: the idle sequence moves him
+    set(S[SEQ.idle], [f({ pic: 'walk1', x: SKATE, pause: SKATE_PAUSE }), f({ pic: 'walk2', x: SKATE, pause: SKATE_PAUSE })]);
+    const glide = (dy: number) => Array.from({ length: GLIDE }, () => f({ pic: 'hop', y: dy }));
+    const once = { norepeat: 1, ground: 1 };
+    set(S[SEQ.hop], glide(-20 / GLIDE), { key: KEY.up, jstkMov: JOY.up, sound: SND.hop, ...once });
+    set(S[SEQ.sit], glide(20 / GLIDE), { key: KEY.down, jstkMov: JOY.down, sound: SND.hop, ...once });
+  } else if (!rail) {
     set(S[SEQ.hop], [f({ pic: 'hop', y: -HOP })], { key: KEY.up, jstkMov: JOY.up, sound: SND.hop });
     const side = (dx: number, mirror: boolean) => [f({ pic: 'hop', x: dx, y: -HOP, mirror }), f({ pic: 'hop', x: dx, y: -HOP, mirror })];
     set(S[SEQ.hopLeft], side(-HOP_STEP, true), { key: KEY.q, jstkMov: JOY.upLeft, sound: SND.hop });
@@ -78,6 +93,7 @@ function teddy(cb: ReturnType<typeof buildCharBlocks>, rail: boolean): Character
 
 export const buildTeddy = (cb: ReturnType<typeof buildCharBlocks>) => teddy(cb, false);
 export const buildRailTeddy = (cb: ReturnType<typeof buildCharBlocks>) => teddy(cb, true);
+export const buildRinkTeddy = (cb: ReturnType<typeof buildCharBlocks>) => teddy(cb, false, true);
 
 export interface MonsterOptions {
   /** Blocks the toy drummer marches before turning round. */

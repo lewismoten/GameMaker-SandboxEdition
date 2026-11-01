@@ -6,6 +6,7 @@ import { buildPalette } from '../src/art/pal';
 import { CTR, HITS_NEEDED } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import { HARPS } from '../src/levels/strings';
+import { GATE, LANE_ROWS, MELODY_LANES, ORGAN_AT } from '../src/levels/rink';
 import { LANES, KEY_ROW, SONG_TICKS, STEPS, railBlocks } from '../src/levels/rail';
 import { Bot } from './bot';
 
@@ -169,6 +170,7 @@ function theBandstand(scene: number, stands: number) {
 export const theBandstand1 = theBandstand(4, 7);
 export const theBandstand2 = theBandstand(6, 8);
 export const theBandstand3 = theBandstand(8, 7);
+export const theBandstand4 = theBandstand(10, 6);
 
 /** Climbs a harp's strings (nothing pulls Teddy down there) to level row `row`. */
 async function climb(bot: Bot, row: number, what: string): Promise<void> {
@@ -240,4 +242,52 @@ export async function theArcade(bot: Bot): Promise<void> {
   picked(bot, 29, 4, 'the wobble pad');
   if (found(bot) < 7) throw new Error(`found ${found(bot)} synths, not 7`);
   await leave(bot, bot.walk(32, 'out the door'), 'the door');
+}
+
+/** The rink lane Teddy is in (0 the bottom), from his row. */
+const laneOf = (bot: Bot) => LANE_ROWS.indexOf(Math.round(bot.px.y / 20));
+
+/** Taps Up or Down (a tick each, three ticks apart, as a person taps) until Teddy is in `lane`. */
+async function toLane(bot: Bot, lane: number): Promise<void> {
+  for (let n = 0; laneOf(bot) !== lane; n++) {
+    if (n > 6) throw new Error(`the rink: stuck out of lane ${lane}`);
+    await must(bot, bot.hold(laneOf(bot) < lane ? 'up' : 'down', 1), 'a tap');
+    await must(bot, bot.wait(GLIDE_WAIT + Math.floor(bot.hand() * 2)), 'gliding');
+  }
+}
+/** Ticks for a lane glide to finish and the hand to come off the key. */
+const GLIDE_WAIT = 5;
+
+/** Lets Teddy skate on until his left edge is at or past level column `x` minus `ahead` blocks. */
+async function skateTo(bot: Bot, x: number, ahead: number): Promise<void> {
+  await must(
+    bot,
+    bot.until(undefined, () => bot.px.x >= (x - ahead) * 20, `skating to ${x}`, 400),
+    'skating',
+  );
+}
+
+/** 7. The Roller Rink: skate the staff, a lane at a time, through the tune and its six organs. */
+export async function theRollerRink(bot: Bot): Promise<void> {
+  expect(bot, 9, 'the roller rink');
+  // each target in order along the rink: the notes of the tune, and the organs after them
+  const stops = [...MELODY_LANES.map((lane, i) => ({ x: 4 + i * 4, lane, organ: false })), ...ORGAN_AT.map(([x, lane]) => ({ x, lane, organ: true }))].sort(
+    (a, b) => a.x - b.x,
+  );
+  for (const s of stops) {
+    // change lanes a block or two before it comes up, the way a skater looks ahead
+    await skateTo(bot, s.x, 2);
+    await toLane(bot, s.lane);
+    if (bot.px.x > s.x * 20) throw new Error(`the rink: past ${s.x} before reaching lane ${s.lane}`);
+    await skateTo(bot, s.x, -1);
+    if (s.organ) picked(bot, s.x, LANE_ROWS[s.lane], 'an organ');
+  }
+  if (found(bot) < 6) throw new Error(`found ${found(bot)} organs, not 6`);
+  await skateTo(bot, GATE[0], 3);
+  await toLane(bot, GATE[1]);
+  await leave(
+    bot,
+    bot.until(undefined, () => false, 'through the gate', 200),
+    'the gate',
+  );
 }

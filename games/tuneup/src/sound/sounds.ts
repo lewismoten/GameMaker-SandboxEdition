@@ -10,7 +10,7 @@ import { boing, honk, pop, woof, yelp } from '../../../kit/teddySounds';
 import { SND } from '../ids';
 import { arpVoc, hz, noteVoc } from './notes';
 
-export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade';
+export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade' | 'rink';
 
 /** A held PC speaker tone at a pitch, short (about a sixth of a second) and then quiet. */
 const tone = (name: string, steps = 24) => speaker((i) => (i < steps ? hz(name) : 0));
@@ -52,6 +52,7 @@ export function buildVocs(): Record<string, Uint8Array> {
   for (const [, n] of STAIR_NOTES) v[`pn${n.toLowerCase().replace('#', 's')}`] = noteVoc('piano-bright', n, 0.6, 0.35);
   for (const [, n] of HARP_NOTES) v[`hp${n.toLowerCase().replace('#', 's')}`] = noteVoc('harp', n, 0.6, 0.35);
   ARCADE_CHORDS.forEach(([, ch], i) => (v[`arp${i}`] = arpVoc('lead-square', ch, 0.5)));
+  for (const [, n] of STAIR_NOTES) v[vocName('tw', n)] = noteVoc('tonewheel', n, 0.6, 0.35);
   v.railhi = noteVoc('piano-bright', RAIL_HIGH, 0.35, 0.22);
   v.raillo = noteVoc('piano-bright', RAIL_LOW, 0.35, 0.22);
   v.clunk = noteVoc('melodic-kick', 'C3', 0.18, 0.08);
@@ -88,8 +89,8 @@ export function buildSoundSet(place: Place): SoundSet {
     'woof',
     speaker((i) => (i < 4 ? 300 : 0)),
   );
-  if (place === 'shop' || place === 'strings') {
-    const [prefix, scale] = place === 'shop' ? ['pn', STAIR_NOTES] : ['hp', HARP_NOTES];
+  if (place === 'shop' || place === 'strings' || place === 'rink') {
+    const [prefix, scale] = place === 'shop' ? ['pn', STAIR_NOTES] : place === 'rink' ? ['tw', STAIR_NOTES] : ['hp', HARP_NOTES];
     for (const [slot, n] of scale) add(slot, vocName(prefix, n), tone(n));
   } else if (place === 'arcade') {
     ARCADE_CHORDS.forEach(([slot, ch], i) => add(slot, `arp${i}`, SPEAKER.arpeggio(ch.map(hz))));

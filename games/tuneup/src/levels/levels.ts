@@ -3,12 +3,13 @@
 import type { Pal, TimeOfDay } from '../art/pal';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
-import { arcadeSong, bandSong, railSong, shopSong, stringsSong } from '../sound/song';
+import { arcadeSong, bandSong, railSong, rinkSong, shopSong, stringsSong } from '../sound/song';
 import { arcade, arcadeBlocks } from './arcade';
 import type { Place } from '../sound/sounds';
 import { band, bandBlocks } from './band';
 import type { Level } from './maps';
 import { rail, railBlocks } from './rail';
+import { rink, rinkBlocks } from './rink';
 import { shop, shopBlocks } from './shop';
 import { strings, stringsBlocks } from './strings';
 
@@ -19,7 +20,7 @@ export interface LevelDef {
   light: TimeOfDay;
   blocks: (pal: Pal) => Kit;
   build: (b: Kit['book']) => Level;
-  chr: 'teddy' | 'rail';
+  chr: 'teddy' | 'rail' | 'rink';
   snd: Place;
   song: () => Uint8Array;
   mons: MonsterOptions;
@@ -90,6 +91,8 @@ export const LEVELS: LevelDef[] = [
     wide: true,
   },
   bandstand(3),
+  { file: 'rink', desc: 'The Roller Rink', light: 'show', blocks: rinkBlocks, build: rink, chr: 'rink', snd: 'rink', song: rinkSong, mons: {}, wide: true },
+  bandstand(4),
 ];
 
 /** The bandstand after the `n`th family comes home (from the third on). */
