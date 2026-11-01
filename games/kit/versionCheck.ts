@@ -34,7 +34,8 @@ if (!base) {
 const changed = new Map<string, boolean>();
 const disks = new VersionDisks(root, base);
 try {
-  for (const id of ids) changed.set(id, await disks.changed(id));
+  // a game new since the last push has no disk there to build: it starts at any version
+  for (const id of ids) if (git('show', `${base}:games/${id}/about.json`).ok) changed.set(id, await disks.changed(id));
 } finally {
   disks.dispose();
 }
