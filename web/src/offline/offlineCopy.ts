@@ -163,6 +163,11 @@ export interface OfflineProgress {
 
 type OfflineResult = { ok: true } | { ok: false; reason: 'canceled' | 'quota' | 'network' | 'space'; message: string };
 
+/** How many games the copy holds: each is one pack (.zip; .gmpak for older builds) under games/. */
+export function gameCount(status: Pick<OfflineStatus, 'files'>): number {
+  return status.files.filter((f) => /^games\/.*\.(zip|gmpak)$/.test(f.path)).length;
+}
+
 /** Room for this many more bytes, as far as the browser tells (true when it does not say). */
 export function hasRoom(status: Pick<OfflineStatus, 'usage' | 'quota'>, bytes: number): boolean {
   return status.quota === undefined || status.usage === undefined || status.quota - status.usage > bytes * 1.1;

@@ -3,9 +3,7 @@
 // says it is ready, with a way to remove it again (offlineCopy.ts does the work).
 import './offline.css';
 import { h, clear, modal } from '../editor/core/ui';
-import { hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineStatus } from './offlineCopy';
-
-const games = (s: OfflineStatus) => s.files.filter((f) => f.path.endsWith('.gmpak')).length;
+import { gameCount, hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineStatus } from './offlineCopy';
 
 function storageLine(s: OfflineStatus): string | null {
   if (s.quota === undefined || s.usage === undefined) return null;
@@ -29,7 +27,7 @@ export async function openOfflineDialog(): Promise<void> {
         clear(body, status, buttons(closeButton()));
         return;
       }
-      const n = games(s);
+      const n = gameCount(s);
       if (s.ready) {
         status.textContent = `✓ Ready offline. All ${n} games, the 1994 desk, the editors, the manuals and the boxes are kept in this browser (${sizeText(s.wireTotal)}), so the whole site works with no connection.`;
         const remove = h(

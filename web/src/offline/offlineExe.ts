@@ -5,7 +5,7 @@
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, type Ui } from '../retro/text/textUi';
 import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
-import { hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineProgress, type OfflineStatus } from './offlineCopy';
+import { gameCount, hasRoom, makeOffline, offlineStatus, removeOffline, sizeText, type OfflineProgress, type OfflineStatus } from './offlineCopy';
 
 const X = 9;
 const W = 62;
@@ -44,7 +44,7 @@ export async function runOfflineExe(ui: Ui): Promise<void> {
     for (const [text, a] of rows)
       for (const l of text ? wrap(text, W - 4) : ['']) if (y < TOP + H - 1) s.write(X + 2, y++, a ?? TEXT, toCp437(l.padEnd(W - 4)));
   };
-  const games = (st: OfflineStatus) => st.files.filter((f) => f.path.endsWith('.gmpak')).length;
+  const games = gameCount;
   const space = (st: OfflineStatus) =>
     st.quota !== undefined && st.usage !== undefined ? `Room for the site here: about ${sizeText(Math.max(0, st.quota - st.usage))} free.` : '';
 

@@ -1,6 +1,6 @@
 // The offline copy: sizes in words, and checking there is room.
 import { describe, expect, it } from 'vitest';
-import { hasRoom, sizeText } from '../src/offline/offlineCopy';
+import { gameCount, hasRoom, sizeText } from '../src/offline/offlineCopy';
 
 describe('offline copy', () => {
   it('says sizes the way people read them', () => {
@@ -14,5 +14,17 @@ describe('offline copy', () => {
     expect(hasRoom({}, 1e9)).toBe(true);
     expect(hasRoom({ usage: 0, quota: 100e6 }, 50e6)).toBe(true);
     expect(hasRoom({ usage: 60e6, quota: 100e6 }, 40e6)).toBe(false);
+  });
+
+  it('counts a game by its pack, not by what else sits in its folder', () => {
+    const f = (path: string) => ({ path, wire: 1, stored: 1 });
+    const files = [
+      f('games/originals/realm/realm.zip'),
+      f('games/originals/realm/walkthrough.json.gz'),
+      f('games/catalog.json'),
+      f('assets/a.js'),
+      f('games/gameware/glub/glub.zip'),
+    ];
+    expect(gameCount({ files })).toBe(2);
   });
 });
