@@ -9,6 +9,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { versionProblems, type VersionSource } from './versions';
+import { hardCodedVersions } from './hardCodedVersion';
 import { lastPushToMaster, VersionDisks } from './versionDisks';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -24,6 +25,10 @@ const ids = process.argv.slice(2).length
   : readdirSync(gamesDir)
       .filter((id) => existsSync(join(gamesDir, id, 'about.json')))
       .sort();
+
+const typed = hardCodedVersions(gamesDir, ids);
+for (const t of typed) console.log(t);
+if (typed.length) process.exitCode = 1;
 
 const base = lastPushToMaster(root);
 if (!base) {
@@ -52,4 +57,4 @@ const src: VersionSource = {
 const problems = versionProblems(ids, src);
 for (const p of problems) console.log(p);
 console.log(`versions: ${problems.length ? `${problems.length} to bump` : 'ok'} (against ${base.slice(0, 9)}, the last push to master)`);
-process.exit(problems.length ? 1 : 0);
+process.exit(problems.length || typed.length ? 1 : 0);

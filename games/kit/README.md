@@ -172,6 +172,10 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   reordered levels or a big gameplay change, the **minor** (1.0 → 1.1) for anything else (art, text, sounds, a level's
   layout). One bump covers every change until the next push. `npx vite-node ../games/kit/versionCheck.ts [<id>...]`
   names each game to bump; with no master to compare with (no git history) it skips with a note.
+  `hardCodedVersion.ts` (run by `versionCheck.ts`) also fails a game whose `src/` types its own version by hand
+  (`v1.2`, `Version 1.2`, `VER 1.2`) instead of reading `about.version`; a line naming another program's version
+  goes in its `ALLOWED` list (now: the software box in Snowbound's scene art). Engine and format versions
+  ("Game-Maker 3.0", "MS-DOS 5.0", CMF, VOC) don't match the pattern.
 - `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
   (no disk). The bots of teddy, teddy2, teddy3, logic and brief play on it.
 - `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),
