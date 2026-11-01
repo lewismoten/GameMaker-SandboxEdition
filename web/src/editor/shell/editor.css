@@ -577,6 +577,18 @@ canvas.pixel {
   z-index: 1;
 }
 
+/* a finger: 24px cells (WCAG 2.5.8). The 16 columns keep their rows; a box narrower than 16
+   cells scrolls sideways inside itself, never the page. */
+@media (pointer: coarse) {
+  .swatches,
+  .swatches.pal-swatches {
+    grid-template-columns: repeat(16, minmax(24px, 1fr));
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
 .block-picker {
   display: grid;
   grid-template-columns: repeat(auto-fill, 44px);
