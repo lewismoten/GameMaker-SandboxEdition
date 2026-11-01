@@ -59,10 +59,9 @@ records every clip again.
 | --- | --- | --- | ---: |
 | [library-hello.ogg](library/library-hello.ogg) | Good evening. I’m Joe, the night librarian. Everything on these shelves is to read, print or watch. | Library: Joe comes on | 11.55 |
 | [library-lewie.ogg](library/library-lewie.ogg) | Hi, I’m Lewie! I shoveled a lot of snow to buy Game-Maker. All the paper from the game boxes is here. | Library: Lewie comes on | 6.08 |
-| [library-sort.ogg](library/library-sort.ogg) | Sort the shelves by game, or by type: every manual together, every map together. | Library: Lewie points at the By game and By type buttons | 9.23 |
-| [library-pick.ogg](library/library-pick.ogg) | Pick one game, or one kind, to see just that shelf. | Library: Lewie points at the Game or Kind picker | 5.55 |
-| [library-all.ogg](library/library-all.ogg) | Showing just one game? This puts everything back on the shelves. | Library: Lewie presses the All games button | 6.51 |
-| [library-count.ogg](library/library-count.ogg) | This counts everything on the shelves. I counted them too. Twice. | Library: Joe points at the count of things on the shelves | 6.35 |
+| [library-sort.ogg](library/library-sort.ogg) | Open the card catalog to sort the shelves by game, or by type: every manual together, every map together. | Library: Lewie points at the card catalog | 10.51 |
+| [library-pick.ogg](library/library-pick.ogg) | Each drawer in the card catalog is one game, or one kind. Pull one open to see just that shelf. | Library: Lewie points at the card catalog | 9.39 |
+| [library-count.ogg](library/library-count.ogg) | The stacks hold everything on these shelves. I counted them too. Twice. | Library: Joe points at the stacks | 6.99 |
 | [library-card.ogg](library/library-card.ogg) | Each card opens its piece on screen: a manual, a hint book, a map, a key card. Most can be printed, too. | Library: Lewie points at the first manual on the shelves | 14.83 |
 | [library-print.ogg](library/library-print.ogg) | Disk labels and retail boxes open in the print shop, with lines to cut and fold along. | Library: Lewie points at a Disk labels card | 8.59 |
 | [library-walkthrough.ogg](library/library-walkthrough.ogg) | Every game’s walkthrough is here too, played start to finish. Its length is on the card. | Library: Lewie points at a Walkthrough card | 5.95 |
@@ -95,8 +94,7 @@ records every clip again.
 | [cast-next.ogg](cast/cast-next.ogg) | The arrows bring on the next one, or the one before. | Cast: Teddy presses the Next character button | 3.07 |
 | [cast-pick.ogg](cast/cast-pick.ogg) | Or call one by name from this list. | Cast: Teddy points at the Pick a character list | 2.43 |
 | [cast-sound.ogg](cast/cast-sound.ogg) | The stage stays quiet until you ask. Then the Teddy games’ theme plays along. | Cast: Teddy points at the stage’s sound button | 5.95 |
-| [cast-families.ogg](cast/cast-families.ogg) | Three kinds of games: Sandbox Software, the Bard of Bizarre’s songs, and the games from the original CD. | Cast: Teddy points at the three kinds of games | 7.39 |
-| [cast-filters.ogg](cast/cast-filters.ogg) | These show just one kind’s regulars, or everyone. | Cast: Teddy points at the Show the cast of buttons | 3.31 |
+| [cast-families.ogg](cast/cast-families.ogg) | Tabs sort the regulars. The last one tells the three kinds of games: Sandbox, the Bard’s songs, and the original CD. | Cast: Teddy points at the cast tabs | 7.39 |
 | [cast-card.ogg](cast/cast-card.ogg) | Each regular has a card: who they are, and a little about them. Teddy knows left from right! | Cast: Teddy points at Teddy’s card | 6.59 |
 | [cast-appears.ogg](cast/cast-appears.ogg) | And the games each one is seen in. Press a picture to go to that game. | Cast: Teddy points at the games Teddy is seen in | 4.75 |
 | [cast-gwinn.ogg](cast/cast-gwinn.ogg) | It wasn’t me. (It was me.) Zoomies! | Cast: Gwinn comes on | 3.12 |

@@ -35,7 +35,7 @@ export const libraryChapter: Chapter = {
       id: 'library-sort',
       action: 'point',
       target: { label: 'the card catalog', css: '.lib-o-catalog' },
-      say: 'Sort the shelves by game, or by type: every manual together, every map together.',
+      say: 'Open the card catalog to sort the shelves by game, or by type: every manual together, every map together.',
     },
     {
       id: 'library-pick',
@@ -48,7 +48,7 @@ export const libraryChapter: Chapter = {
       action: 'point',
       actor: 'joe',
       target: { label: 'the stacks', css: '.lib-o-stacks' },
-      say: 'This counts everything on the shelves. I counted them too. Twice.',
+      say: 'The stacks hold everything on these shelves. I counted them too. Twice.',
     },
     {
       id: 'library-card',

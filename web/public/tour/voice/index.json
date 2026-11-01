@@ -401,7 +401,7 @@
   },
   "cast-families": {
     "chapter": "cast",
-    "where": "Cast: Teddy points at the three kinds of games",
+    "where": "Cast: Teddy points at the cast tabs",
     "text": "Three kinds of games: Sandbox Software, the Bard of Bizarre’s songs, and the games from the original CD.",
     "seconds": 7.39,
     "hash": "324b8fa69ed7",
@@ -2793,10 +2793,10 @@
   },
   "library-count": {
     "chapter": "library",
-    "where": "Library: Joe points at the count of things on the shelves",
-    "text": "This counts everything on the shelves. I counted them too. Twice.",
-    "seconds": 6.35,
-    "hash": "98a5167c3621",
+    "where": "Library: Joe points at the stacks",
+    "text": "The stacks hold everything on these shelves. I counted them too. Twice.",
+    "seconds": 6.99,
+    "hash": "4eba5284df02",
     "voice": "0448e8049470"
   },
   "library-guide": {
@@ -2833,10 +2833,10 @@
   },
   "library-pick": {
     "chapter": "library",
-    "where": "Library: Lewie points at the Game or Kind picker",
-    "text": "Pick one game, or one kind, to see just that shelf.",
-    "seconds": 5.55,
-    "hash": "2821190279f7",
+    "where": "Library: Lewie points at the card catalog",
+    "text": "Each drawer in the card catalog is one game, or one kind. Pull one open to see just that shelf.",
+    "seconds": 9.39,
+    "hash": "83a2e7e87249",
     "voice": "0448e8049470"
   },
   "library-print": {
@@ -2849,10 +2849,10 @@
   },
   "library-sort": {
     "chapter": "library",
-    "where": "Library: Lewie points at the By game and By type buttons",
-    "text": "Sort the shelves by game, or by type: every manual together, every map together.",
-    "seconds": 9.23,
-    "hash": "d3531b928fcb",
+    "where": "Library: Lewie points at the card catalog",
+    "text": "Open the card catalog to sort the shelves by game, or by type: every manual together, every map together.",
+    "seconds": 10.51,
+    "hash": "708f8f8ea75c",
     "voice": "0448e8049470"
   },
   "library-walkthrough": {
