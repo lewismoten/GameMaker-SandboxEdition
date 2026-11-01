@@ -44,12 +44,19 @@ form, e.g. 614-MAH TED. Games whose titles share a mark are told apart by number
 (TED, TED2, TED3; `setAuthorMarks`, set when `listing.ts` builds the shelf). `cabinet.ts` also draws the
 brass plaque on the cabinet's top rail with the Tiny Pockets Press logo (`web/public/library/tiny-pockets-press.webp`,
 ISC, Lewis Moten; see NOTICE.md and the Credits page).
-`libraryRoom.ts` is the room at the top of the page (`roomArt.ts` draws it in SVG: an aisle of stacks in perspective to the
-circulation desk; `libraryRoom.css`). Each object is a labeled button with a visible name: the stacks (focus the shelves), the card
-catalog (focus the open drawer), the copier (focus its paper list), Mystery Robot Joe (a help dialog; his art is
-`../tinHearts/joeArt.ts`, from Keep It Brief!), the composition notebook (`../imported/notesShelf.ts('here')`: ratings and notes of
-imported games) and the trash can (`notesShelf('removed')`: removed games' records, with Forget; it shows crumpled reviews when
-there are any). The data is read through those modules and stored as before. Under 700px the room is a row of labeled buttons.
+`libraryRoom.ts` is the room, the page's main view under the "Library" heading (`roomArt.ts` draws it in SVG: a small, dim, octagonal
+library seen from just inside the door, five walls of stacks, a beamed ceiling, a lamp's glow and a high window; `libraryRoom.css`).
+Each object is a labeled button and opens a dialog from `libraryPage.ts`, which keeps the open one in the address (`open=stacks|catalog|copier|
+notebook|trash|joe`, so a reload reopens it; `by`, `only` and `game` work as before): the stacks (the open drawer's whole list, with
+the game picker), the card catalog (By game / By type and the drawers; picking one closes it), the copier, Mystery Robot Joe behind
+the desk (help; his art is `../tinHearts/joeArt.ts`, from Keep It Brief!; he steps out while the guided tour runs, with a
+"Back in a moment" sign), the composition notebook lying on the desk (`../imported/notesShelf.ts('here')`) and the trash can on the floor
+(`notesShelf('removed')`, crumpled reviews when there are any). `spines.ts` stands the open drawer's items on the far wall as spines (as
+many as fit; the last, "...", opens the stacks dialog). `lSpace.ts` is L-Space, the dim gap between two stacks (a nod to Terry
+Pratchett's Discworld): it picks a random game's shelf, the magazine or the Guide. `ambience.ts` sends cast visitors (Teddy, Gwinn,
+Doc Leo, Teenage Lewie) wandering through now and then (still with reduced motion) and, after the first click or key, makes a very
+quiet cough, page turn or chair creak (Web Audio, silent when the demo sound is None, stopped on leaving). Under 700px the room is a
+row of labeled buttons.
 `callOrder.ts` puts the drawers, and the cards in each, in call-number order (the three-digit class, then the
 author mark with numbers as numbers: 614-MAH TED, 660-GAM TED, 660-GAM TED2, 660-GAM TED10); cards with the same
 call number keep the order `shelf.ts` gave them. The drawers no longer show a count (the line under the sort does).

@@ -465,6 +465,7 @@ and the free, open license here are the version of Game-Maker he wishes he'd had
 Game-Maker: Sandbox Edition contains no third-party code except as listed. It reimplements file
 formats from their published descriptions and from Game-Maker's own source.
 
+- **L-Space (the Library's gap between two stacks)**: a nod to Terry Pratchett's Discworld, where the librarian travels between libraries through the stacks. Only the idea of a shelf-gap that leads elsewhere is borrowed; no text or characters from the books. The Library's ambient cough, page turn and chair creak are synthesized in `web/src/library/ambience.ts`.
 - **GIF**: "The Graphics Interchange Format© is the Copyright property of CompuServe
   Incorporated. GIF℠ is a Service Mark property of CompuServe Incorporated." GIF images
   are encoded and decoded with LZW compression, which was patented by Unisys; those
