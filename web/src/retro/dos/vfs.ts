@@ -61,15 +61,13 @@ interface Drive {
 export const DOS_DATE = new Date(1994, 9, 20, 11, 42);
 
 /**
- * The PC's clock (deskClock.ts: TIME and DATE can set it). The desk lives in 1994-95: today's
- * month, day and time (as the wall clock shows them), in the year after DOS_DATE, so nothing
- * new is ever older than the install.
+ * The PC's clock (deskClock.ts: TIME and DATE can set it). The desk is pinned to December 1994
+ * (the tour's month, after the August 1994 install): today's day of the month (December has
+ * 31, so none is lost) and time of day as the wall clock shows them.
  */
 export function deskDate(now: Date | number = deskNow()): Date {
   const d = new Date(now);
-  d.setFullYear(1994);
-  if (d < DOS_DATE) d.setFullYear(1995);
-  return d;
+  return new Date(1994, 11, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
 }
 
 export function file(name: string, size: number, extra: Partial<DosNode> = {}): DosNode {
