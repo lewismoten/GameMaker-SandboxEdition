@@ -6,6 +6,7 @@ import type { Project } from '../../core/project';
 import { NOSCENE, sceneKind, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { WORLD, CARD_UNITS, arrival } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
+import { isSolidPalette } from '../../core/readablePalette';
 
 /** Board pixels per integrator unit, and the card size on the board. */
 export const S = 8;
@@ -144,6 +145,8 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
   const title = kind === 'start' ? `★ ${s.desc || 'Untitled'}` : kind === 'end' ? `⚑ ${s.desc || 'Game over'}` : `${i}  ${s.desc || '(untitled)'}`;
   ctx.fillText(title, r.x + 6, r.y + 13, r.w - 12);
   // picture
+  const pal = s.files[0] ? v.project.files.get(s.files[0]) : undefined;
+  const talk = kind === 'adventure' && !!s.files[9] && !!pal && isSolidPalette(pal) && !!v.screenOf(s.files[9]);
   const box = { x: r.x + THUMB.x, y: r.y + THUMB.y, w: THUMB.w, h: THUMB.h };
   if (kind === 'start') drawThumb(ctx, v.screenOf(s.files[0]) ?? v.screenOf(s.files[2]), box, s.files[0] ? 'Title' : 'Menu');
   else if (kind === 'end') {
@@ -154,6 +157,9 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
       drawThumb(ctx, won, { ...box, w: half }, 'Won');
       drawThumb(ctx, lost, { ...box, x: box.x + half + 4, w: half }, 'Lost');
     } else drawThumb(ctx, won ?? lost, box, won ? 'Won' : lost ? 'Lost' : 'graphic');
+  } else if (talk) {
+    // a pass-through scene (an all-black palette): its picture is the message, so show that, not a black map
+    drawThumb(ctx, v.screenOf(s.files[9]), box, 'Talk');
   } else {
     drawThumb(ctx, v.levelOf(i), box);
     if (s.files[1]) {
@@ -174,7 +180,7 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
     kind === 'adventure'
       ? (() => {
           const a = arrival(v.game, i);
-          return `in at ${a.x},${a.y}`;
+          return `${talk ? 'talk · ' : ''}in at ${a.x},${a.y}`;
         })()
       : kind === 'start'
         ? 'start'
