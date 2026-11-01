@@ -40,11 +40,12 @@ describe('finding an egg in a save', () => {
       'teddy',
       'teddy2',
       'teddy3',
+      'tuneup',
       'year2000',
     ]);
   });
-  it('is thirteen, never naming the game kept out of sight', () => {
-    expect(EGGS).toHaveLength(13);
+  it('is fourteen, never naming the game kept out of sight', () => {
+    expect(EGGS).toHaveLength(14);
     expect(JSON.stringify(EGGS)).not.toMatch(/bakers/i);
   });
 });

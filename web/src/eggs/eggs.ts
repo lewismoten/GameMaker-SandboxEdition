@@ -202,17 +202,6 @@ export const EGGS: readonly Egg[] = [
     detect: { block: 149 },
   },
   {
-    game: 'year2000',
-    gameTitle: 'In The Year 2000!',
-    name: 'The Tomorrow Egg',
-    description:
-      'Shiny teal felt with silver wave stitching, a red felt rocket with a flame of orange yarn, and a band of chrome sequins around the middle like a 1950s idea of the future.',
-    credits: ['Sent from the future by Lewis "Lewie" Moten III', 'and Claude Opus 5.5'],
-    lore: 'A postcard from the future: "The grandkids still argue over the family root beer. The recipe calls for thirteen of something. Thirteen eggs, it turns out, are not it."',
-    look: { felt: '#1f9a9a', band: '#c8d4dc', patch: '#e2412f', thread: '#eaf6f6', pattern: 'waves', motif: 'rocket' },
-    detect: { block: 149 },
-  },
-  {
     game: 'tuneup',
     gameTitle: 'Tune-Up',
     name: 'The Reed Egg',
@@ -221,6 +210,17 @@ export const EGGS: readonly Egg[] = [
     credits: ['Arranged by Claude Opus 5.5', 'for Lewis "Lewie" Moten III, Teddy, Gwinn and Doc Leo'],
     lore: 'Rolled up inside it, a page of the parade tune in Doc Leo\'s hand, with a verse nobody ever sings: "Twelve good things in the family mug, and one more nobody names. Pour it for whoever comes in late." The last bar is marked "repeat until everyone has a glass."',
     look: { felt: '#5f9a3c', band: '#ffffff', patch: '#1c1414', thread: '#e8c14a', pattern: 'staff', motif: 'note' },
+    detect: { block: 149 },
+  },
+  {
+    game: 'year2000',
+    gameTitle: 'In The Year 2000!',
+    name: 'The Tomorrow Egg',
+    description:
+      'Shiny teal felt with silver wave stitching, a red felt rocket with a flame of orange yarn, and a band of chrome sequins around the middle like a 1950s idea of the future.',
+    credits: ['Sent from the future by Lewis "Lewie" Moten III', 'and Claude Opus 5.5'],
+    lore: 'A postcard from the future: "The grandkids still argue over the family root beer. The recipe calls for thirteen of something. Thirteen eggs, it turns out, are not it."',
+    look: { felt: '#1f9a9a', band: '#c8d4dc', patch: '#e2412f', thread: '#eaf6f6', pattern: 'waves', motif: 'rocket' },
     detect: { block: 149 },
   },
 ];
