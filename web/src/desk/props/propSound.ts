@@ -291,6 +291,7 @@ export const roomSound = {
     void Promise.all([import('@lewismoten/gamemaker-sandbox-engine/audio/engine'), import('../../project/files')])
       .then(async ([{ AudioEngine }, files]) => {
         gameAudio ??= new AudioEngine();
+        gameAudio.setGame(true);
         const entry = (await files.loadGameList()).find((g) => g.id === game);
         const bytes = entry && (await files.fetchGameFile(entry, name));
         await gameAudio.resume();

@@ -1,4 +1,4 @@
-// The ⚙ menu's "Sound and tour…" dialog: Music, Voice and Sound effects, each with an on/off
+// The ⚙ menu's "Sound and tour…" dialog: Music, Voice, Sound effects and Games, each with an on/off
 // switch and a 0-100 volume, plus the Tour switch (guides wait on every page that has a tour).
 // Changes apply at once and are remembered (audio/mix.ts in the engine package; the tour's own
 // 'gm-tour-on'). Escape or Done closes it and focus goes back to where it was opened from.
@@ -8,9 +8,10 @@ import { h, modal } from '../editor/core/ui';
 import { allGuidesOn, setAllGuides } from '../tour/tourPages';
 
 const TEXT: Record<Channel, [string, string]> = {
-  music: ['Music', 'Songs in the games, the tour and the pages'],
-  voice: ['Voice', 'The guides speaking in the tour'],
-  sfx: ['Sound effects', 'Bumps, barks, pickups and the rest'],
+  music: ['Music', 'Songs on the pages, in the tour and in games'],
+  voice: ['Voice', 'The guides in the tour, callers on the phone'],
+  sfx: ['Sound effects', 'Bumps, barks, pickups and the rest, in games too'],
+  games: ['Games', 'Everything a game plays (music, voices, effects), on top of Music and Sound effects'],
 };
 
 let n = 0;

@@ -69,6 +69,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   canvas.setAttribute('role', 'application');
   container.append(canvas);
   const machine = new Machine(canvas, files, opts.audio);
+  machine.audio.setGame(true); // a game's sound follows the Games setting too
   const piggy = piggyBankHook(opts.saveId);
   if (opts.preview) {
     container.classList.add('gm-preview');

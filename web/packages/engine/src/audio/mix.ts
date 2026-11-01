@@ -1,11 +1,12 @@
-// The visitor's sound settings: Music, Voice (the tour's spoken lines) and Sound effects, each
+// The visitor's sound settings: Music, Voice (spoken lines), Sound effects and Games, each
 // on or off with a volume from 0 to 100. One choice for the whole page, remembered in this
 // browser ('gm-sound-mix') and applied live: AudioEngine puts its music and its effects
-// through their own gains (engine.ts), and the tour plays its voice clips at the Voice volume.
+// through their own gains (engine.ts), spoken clips play at the Voice volume, and an engine
+// that plays a game (AudioEngine.setGame) also runs through the Games gain, on top of those two.
 // The settings dialog is web/src/soundSettings/. It changes nothing in a game or an export.
 const KEY = 'gm-sound-mix';
 
-export type Channel = 'music' | 'voice' | 'sfx';
+export type Channel = 'music' | 'voice' | 'sfx' | 'games';
 export interface ChannelMix {
   on: boolean;
   /** 0 to 100. */
@@ -13,9 +14,14 @@ export interface ChannelMix {
 }
 export type Mix = Record<Channel, ChannelMix>;
 
-export const CHANNELS: readonly Channel[] = ['music', 'voice', 'sfx'];
+export const CHANNELS: readonly Channel[] = ['music', 'voice', 'sfx', 'games'];
 
-const fresh = (): Mix => ({ music: { on: true, volume: 100 }, voice: { on: true, volume: 100 }, sfx: { on: true, volume: 100 } });
+const fresh = (): Mix => ({
+  music: { on: true, volume: 100 },
+  voice: { on: true, volume: 100 },
+  sfx: { on: true, volume: 100 },
+  games: { on: true, volume: 100 },
+});
 
 function load(): Mix {
   const mix = fresh();

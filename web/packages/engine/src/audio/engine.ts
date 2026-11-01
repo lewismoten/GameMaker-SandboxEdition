@@ -25,6 +25,9 @@ export class AudioEngine {
   /** Music and effects each go through their own gain, set by the visitor's sound settings (mix.ts). */
   private musicGain?: GainNode;
   private sfxGain?: GainNode;
+  /** Music and effects of a game being played also pass the Games setting (setGame). */
+  private gameGain?: GainNode;
+  private game = false;
   private unmix?: () => void;
   private music?: AudioWorkletNode;
   private musicReady?: Promise<void>;
@@ -69,11 +72,14 @@ export class AudioEngine {
       this.master.connect(output(ctx));
       this.musicGain = ctx.createGain();
       this.sfxGain = ctx.createGain();
-      this.musicGain.connect(this.master);
-      this.sfxGain.connect(this.master);
+      this.gameGain = ctx.createGain();
+      this.gameGain.connect(this.master);
+      this.musicGain.connect(this.gameGain);
+      this.sfxGain.connect(this.gameGain);
       const mixed = () => {
         if (this.musicGain) this.musicGain.gain.value = channelGain('music');
         if (this.sfxGain) this.sfxGain.gain.value = channelGain('sfx');
+        if (this.gameGain) this.gameGain.gain.value = this.game ? channelGain('games') : 1;
       };
       mixed();
       this.unmix = onMix(mixed);
@@ -99,6 +105,12 @@ export class AudioEngine {
     }
   }
 
+  /** Marks this engine as a game's: its sound also follows the Games setting (live). */
+  setGame(game: boolean): void {
+    this.game = game;
+    if (this.gameGain) this.gameGain.gain.value = game ? channelGain('games') : 1;
+  }
+
   /** Where this engine's sound leaves it (for recording just this game's sound). */
   get node(): AudioNode | undefined {
     return this.master;
@@ -115,8 +127,9 @@ export class AudioEngine {
     this.music?.disconnect();
     this.musicGain?.disconnect();
     this.sfxGain?.disconnect();
+    this.gameGain?.disconnect();
     this.master?.disconnect();
-    this.unmix = this.music = this.musicGain = this.sfxGain = this.master = this.ctx = undefined;
+    this.unmix = this.music = this.musicGain = this.sfxGain = this.gameGain = this.master = this.ctx = undefined;
     this.musicReady = undefined;
   }
 
