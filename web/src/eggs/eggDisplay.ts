@@ -1,13 +1,14 @@
 // The felt eggs on the desk's wall: a small shadow box standing on the top game shelf that
-// holds each egg found so far (two rows, seven and six, when all thirteen are in), and, once
+// holds each egg found so far (rows of seven), and, once
 // all three Teddy eggs are, the one he laid himself at the end (teddyEgg.ts, eggPile.ts). Until the first
 // one, there is nothing at all; the box only ever shows the eggs that are in it (never how
-// many could be). Clicking it opens the viewer (eggViewer.ts). Once every felt egg is in, a
+// many could be). Clicking it opens the viewer (eggViewer.ts). Once 13 felt eggs are in (eggGate.ts), a
 // little cake stand beside it holds the eggs kept apart from them, if any are found (bonus.ts,
 // loaded only then; bonusViewer.ts). The egg art (eggArt.ts, eggPile.ts) loads with the first egg.
 import './eggs.css';
 import { h, clear } from '../editor/core/ui';
 import { EGGS_CHANGED, eggStates, type EggState } from './eggState';
+import { eggsOpenFor } from './eggGate';
 import { TEDDY_EGG, hasTeddyEgg } from './teddyEgg';
 
 const CELL_W = 30;
@@ -18,7 +19,7 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
   const row = h('span', { class: 'egg-row', 'aria-hidden': 'true' });
   box.append(row);
   place(box);
-  // once every felt egg is in, a little cake stand beside it for any eggs kept apart (bonus.ts)
+  // once 13 felt eggs are in, a little cake stand beside it for any eggs kept apart (bonus.ts)
   const stand = h('button', { type: 'button', class: 'egg-stand', hidden: true });
   box.after(stand);
   let found: EggState[] = [];
@@ -60,7 +61,7 @@ export function eggDisplay(place: (el: HTMLElement) => void): () => void {
   const refresh = async () => {
     const all = await eggStates();
     found = all.filter((e) => e.found);
-    void refreshStand(all.length > 0 && found.length === all.length).catch(() => undefined);
+    void refreshStand(eggsOpenFor(all)).catch(() => undefined);
     const key = found.map((e) => e.egg.game).join(',');
     if (key === shown) return;
     shown = key;

@@ -347,7 +347,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     () => fetch('./gm/index.json'), // C:\GM's listing, so GM starts offline too
   ]);
   void loadGameList().then((cat) => shelf.fill(cat.filter((g) => g.original?.box)));
-  // a secret game revealed or hidden again (every felt egg found, or EGG.EXE): the shelf
+  // a secret game revealed or hidden again (13 felt eggs found, or EGG.EXE): the shelf
   // and the disk box follow, and the box of a game no longer listed is put back
   const unCatalog = onCatalogChanged(async () => {
     const cat = await loadGameList().catch(() => [] as CatalogEntry[]);

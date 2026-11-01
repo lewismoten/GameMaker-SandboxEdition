@@ -1,5 +1,5 @@
 // EGG.EXE: an unlisted program on the desk PC (not in HELP, not in any folder) for testing the
-// felt eggs. Lists all thirteen (and, once all of them are in, the two kept apart in bonus.ts),
+// felt eggs. Lists every one (and, once 13 are in (eggGate.ts), the two kept apart in bonus.ts),
 // where each stands, and adds or breaks them (Enter, A and B: keys its bar never shows, told only in
 // SAVEHACK.DOC in the BBS's Warez area, retro/hacks/saveHackText.ts); a line under the list says when Teddy's special
 // egg is in the shadow box (all three Teddy eggs found, teddyEgg.ts; never a row of its own). On the rotten egg's row, ← → (or - +) crack it a
@@ -11,6 +11,7 @@ import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, TITLEATTR, BARATTR, CURATTR, type Ui } from '../retro/text/textUi';
 import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { eggStates, resetAllOverrides, setOverride, type EggState } from './eggState';
+import { eggsOpenFor } from './eggGate';
 import { hasTeddyEgg } from './teddyEgg';
 import { tally } from '../achievements';
 
@@ -27,7 +28,7 @@ const STATE_ATTR: Record<EggState['status'], number> = {
   none: attr(7, 1),
 };
 
-/** One line of the ledger: a felt egg, or (once they are all in) one kept apart (bonus.ts). */
+/** One line of the ledger: a felt egg, or (once 13 are in) one kept apart (bonus.ts). */
 interface Row {
   key: string;
   gameTitle: string;
@@ -54,7 +55,7 @@ async function ledger(): Promise<Row[]> {
     found: e.found,
     hidden: !!e.egg.detect,
   }));
-  if (!list.length || !list.every((e) => e.found)) return rows;
+  if (!eggsOpenFor(list)) return rows;
   bonus ??= await import('./bonus');
   const { bonusStates, bonusKey, eggTaps } = bonus;
   for (const e of await bonusStates())

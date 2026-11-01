@@ -1,7 +1,7 @@
 // Secret games: an original game (games/<id>) whose about.json says "secret": true stays out
 // of every listing that goes through loadCatalog / loadCatalogList (the desk shelf, the home
 // page, the retro PC's drives, the catalog printables, the play page) until what reveals it is
-// found: every felt egg (eggs/eggState.ts: held in a game's save, or added with EGG.EXE), or,
+// found: 13 felt eggs (eggs/eggGate.ts; eggs/eggState.ts: held in a game's save, or added with EGG.EXE), or,
 // for one whose about.json also says "unlock": "hearts", every tin heart (tinHearts/tinHearts.ts).
 //
 // Nothing the site serves up front names them: the build (web/scripts/cdGames.ts) leaves
@@ -10,19 +10,21 @@
 // only once its gate is open, so finding one never downloads another's entry.
 // No id is written here either: SECRETS knows each by its idHash.
 
+import { eggsOpenFor } from '../eggs/eggGate';
+
 /** What reveals a secret game. */
 type Gate = 'eggs' | 'hearts';
 
 /** Which gates are open: a bit each (1 the felt eggs, 2 the tin hearts). */
 const GATE_BIT: Record<Gate, number> = { eggs: 1, hearts: 2 };
 
-/** True once every egg counts as found. Never throws (no IndexedDB, no eggs: still hidden). */
+/** True once 13 felt eggs count as found (eggGate.ts). Never throws (no IndexedDB, no eggs: still hidden). */
 async function eggsFound(): Promise<boolean> {
   try {
     // A dynamic import: eggState reads saves through project/storage, which imports files.ts.
     const { eggStates } = await import('../eggs/eggState');
     const states = await eggStates();
-    return states.length > 0 && states.every((s) => s.found);
+    return eggsOpenFor(states);
   } catch {
     return false;
   }

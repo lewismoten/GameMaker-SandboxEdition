@@ -6,6 +6,7 @@
 // Secret games are never named: the bonus rows speak of "bonus game 1/2" and only show once open.
 import { achievementById, ACHIEVEMENTS } from '../../achievements/catalog';
 import { loadAchievements, replaceAchievements, resetAchievements } from '../../achievements/store';
+import { EGGS_NEEDED } from '../../eggs/eggGate';
 import { eggStates, OVERRIDES_KEY as EGG_KEY, resetAllOverrides as resetEggs, type Override } from '../../eggs/eggState';
 import { huntStates, OVERRIDES_KEY as HEART_KEY, resetAllOverrides as resetHearts } from '../../tinHearts/tinHearts';
 import { TIER_NAMES, TOP_TIER, readTrophyOverrides, resetTrophyOverrides, setTrophyOverride, tierOf, type TrophyKind } from '../../scoreTrophies/tiers';
@@ -162,7 +163,7 @@ export const ITEMS: readonly FlagItem[] = [
   {
     id: 'EGGS',
     label: 'Felt eggs found',
-    show: async () => foundOf(await eggStates()),
+    show: async () => `${foundOf(await eggStates())}, ${EGGS_NEEDED} needed`,
     async set(words) {
       const states = (await eggStates()).map((s) => ({ id: s.egg.game, inSave: s.inSave }));
       const n = parseCount(words, states.length, 'Eggs');
@@ -325,7 +326,7 @@ export const ITEMS: readonly FlagItem[] = [
       if (!bits) return undefined; // hidden until something is open
       return `1: ${bits & 1 ? 'revealed' : 'hidden'}; 2: ${bits & 2 ? 'revealed' : 'hidden'}`;
     },
-    elsewhere: 'They open when the eggs or hearts are all found: SET EGGS ALL or SET HEARTS ALL.',
+    elsewhere: 'They open at 13 felt eggs or every tin heart: SET EGGS 13 or SET HEARTS ALL.',
   },
   { id: 'ROOM', label: 'Safe, lights, lume, mug...', show: async () => undefined, elsewhere: 'ROOMFIX does the room and the safe.' },
   { id: 'SAVES', label: 'Saved games', show: async () => undefined, elsewhere: 'SAVEHACK edits saves; BACKUP keeps copies.' },

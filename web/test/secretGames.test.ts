@@ -1,13 +1,14 @@
-// Tests: secret games stay out of the catalog until what reveals each is found, every felt egg or
+// Tests: secret games stay out of the catalog until what reveals each is found, 13 felt eggs or
 // every tin heart (project/secretGames.ts), and the build lists them only in games/extra.json
 // (scripts/cdGames.ts). The hearts' game is never named here: its id is read from its about.json.
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const found = { all: false, hearts: false };
+// 14 felt eggs, `eggs` of them found (13 open the gate)
+const found = { eggs: 12, hearts: false };
 vi.mock('../src/eggs/eggState', () => ({
-  eggStates: async () => Array.from({ length: 12 }, (_, i) => ({ found: found.all || i < 11 })),
+  eggStates: async () => Array.from({ length: 14 }, (_, i) => ({ found: i < found.eggs })),
 }));
 vi.mock('../src/tinHearts/tinHearts', () => ({
   MANIFEST: { hearts: { teddy: {}, logic: {}, brief: {} }, pending: [] },
@@ -26,7 +27,7 @@ describe('secret games', () => {
   const fetches: string[] = [];
   let extra: Response | undefined;
   beforeEach(() => {
-    found.all = false;
+    found.eggs = 12;
     found.hearts = false;
     fetches.length = 0;
     extra = json([{ id: 'bakers' }]);
@@ -37,14 +38,20 @@ describe('secret games', () => {
   });
   afterEach(() => vi.unstubAllGlobals());
 
-  it('leaves them out, and fetches nothing, while any egg is missing', async () => {
+  it('leaves them out, and fetches nothing, with 12 eggs found', async () => {
     expect(await withSecretGames(list)).toBe(list);
     expect(fetches).toEqual([]);
     expect(secretsListed()).toBe(0);
   });
 
+  it('opens the felt eggs’ gate at 13 of 14 found', async () => {
+    found.eggs = 13;
+    expect((await withSecretGames(list)).length).toBe(list.length + 1);
+    expect(fetches).toEqual(['./games/extra-1.json']);
+  });
+
   it('adds the felt eggs’ file once every felt egg is found, and fetches no other', async () => {
-    found.all = true;
+    found.eggs = 14;
     expect((await withSecretGames(list)).map((g) => g.id)).toEqual(['teddy', 'logic', 'bakers']);
     expect(fetches).toEqual(['./games/extra-1.json']);
     expect(secretsListed()).toBe(1);
@@ -57,12 +64,12 @@ describe('secret games', () => {
     expect(isOldSecret('brief')).toBe(false);
     expect(isOldSecret('teddy')).toBe(false);
     expect((await withSecretGames(old)).map((g) => g.id)).toEqual(['teddy', 'logic']);
-    found.all = true;
+    found.eggs = 14;
     expect(await withSecretGames(old)).toBe(old);
   });
 
   it('does not list one twice', async () => {
-    found.all = true;
+    found.eggs = 14;
     expect((await withSecretGames([...list, { id: 'bakers' }])).map((g) => g.id)).toEqual(['teddy', 'logic', 'bakers']);
   });
 });
@@ -83,7 +90,7 @@ const byEggs = secrets.filter((s) => s.gate === 'eggs').map((s) => s.id);
 describe('secret games revealed by the tin hearts', () => {
   const fetches: string[] = [];
   beforeEach(() => {
-    found.all = false;
+    found.eggs = 12;
     found.hearts = false;
     fetches.length = 0;
     vi.stubGlobal('fetch', async (url: string) => {
@@ -106,7 +113,7 @@ describe('secret games revealed by the tin hearts', () => {
     for (const id of byEggs) expect(hearts).not.toContain(id);
     expect(secretsListed()).toBe(2);
     found.hearts = false;
-    found.all = true;
+    found.eggs = 14;
     const eggs = (await withSecretGames(list)).map((g) => g.id);
     for (const id of byEggs) expect(eggs).toContain(id);
     for (const id of byHearts) expect(eggs).not.toContain(id);
@@ -117,7 +124,7 @@ describe('secret games revealed by the tin hearts', () => {
   });
 
   it.skipIf(!byHearts.length)('drops one an older dev server lists while its hearts are missing', async () => {
-    found.all = true;
+    found.eggs = 14;
     const old = [...list, ...byHearts.map((id) => ({ id }))];
     vi.stubGlobal('fetch', async () => new Response('<!doctype html>', { headers: { 'content-type': 'text/html' } }));
     expect((await withSecretGames(old)).map((g) => g.id)).toEqual(['teddy', 'logic']);
