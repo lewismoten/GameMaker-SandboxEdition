@@ -23,13 +23,6 @@ export function originalSection(): HTMLElement {
           null,
           'Recreational Software Designs of Amherst, New Hampshire, 1991–1995: G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone.',
         ),
-        h(
-          'p',
-          null,
-          'KD Software sold it by direct mail in the US, and RSD also made a distribution deal with GameLynk. Screen Entertainment sold it in the UK as Captain GameMaker, and Microforum repackaged the 3.0 CD-ROM for a worldwide release (',
-          h('a', { href: 'https://en.wikipedia.org/wiki/Game-Maker' }, 'Wikipedia'),
-          ').',
-        ),
       ),
       card(
         'h3',
@@ -57,6 +50,21 @@ export function originalSection(): HTMLElement {
           { class: 'credits-quote', cite: 'https://effluviaofascatteredmind.blogspot.com/2011/06/rsd-gamemaker.html' },
           h('p', null, '“I am proud to have been an enabler of this culture in the 90’s.”'),
         ),
+      ),
+    ),
+    h('h3', { id: 'credits-distributors' }, 'Distributors'),
+    h('p', null, 'Who else put Game-Maker in people’s hands (', h('a', { href: 'https://en.wikipedia.org/wiki/Game-Maker' }, 'Wikipedia'), ').'),
+    h(
+      'div',
+      { class: 'credits-cards credits-cards-small' },
+      card('h4', 'KD Software', h('p', null, 'Sold it by direct mail in the US.')),
+      card('h4', 'GameLynk', h('p', null, 'RSD made a distribution deal with it.')),
+      card('h4', 'Screen Entertainment', h('p', null, 'Sold it in the UK as Captain GameMaker.')),
+      card('h4', 'Microforum', h('p', null, 'Repackaged the 3.0 CD-ROM for a worldwide release.')),
+      card(
+        'h4',
+        'GitHub',
+        h('p', null, 'Since 12 July 2014, the source code repository: ', ext('https://github.com/gandrewstone/GameMaker', 'gandrewstone/GameMaker'), '.'),
       ),
     ),
     h(
