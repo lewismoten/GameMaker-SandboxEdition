@@ -4,7 +4,8 @@ import type { Pal, TimeOfDay } from '../art/pal';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
 import { arcadeSong, bandSong, fieldSong, railSong, rinkSong, shopSong, stringsSong, woodsSong } from '../sound/song';
-import { basementSong, choirSong } from '../sound/laterSongs';
+import { basementSong, choirSong, clockSong } from '../sound/laterSongs';
+import { clock, clockBlocks } from './clock';
 import { basement, basementBlocks } from './basement';
 import { choir, choirBlocks } from './choir';
 import { woods, woodsBlocks } from './woods';
@@ -151,6 +152,19 @@ export const LEVELS: LevelDef[] = [
   },
   // the save sign is here, in the level after the felt egg's
   bandstand(8, true),
+  {
+    file: 'clock',
+    desc: 'The Clock Tower',
+    light: 'morning',
+    blocks: clockBlocks,
+    build: clock,
+    chr: 'teddy',
+    snd: 'clock',
+    song: clockSong,
+    mons: {},
+    wide: true,
+  },
+  bandstand(9),
 ];
 
 /** The bandstand after the `n`th family comes home (from the third on). */

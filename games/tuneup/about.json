@@ -9,6 +9,7 @@
   "exe": "TUNEUP.EXE",
   "sound": "sb",
   "egg": { "block": 149 },
+  "tinHeart": { "map": "clock.map", "at": [39, 5] },
   "saveSign": { "map": "band8.map", "at": [2, 9], "after": "woods.map" },
   "acceptedFindings": [
     "counters s3 Block 20 drains counter 20 on every tick",

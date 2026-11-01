@@ -49,6 +49,8 @@ export const CTR = {
   beats: 26,
   /** Hollow notes played on the staff doors in the woods. */
   staff: 27,
+  /** Chords played on the attic's toy piano (the trunk's latch takes two). */
+  chords: 28,
 } as const;
 export const HITS_NEEDED = 12;
 export const DOWN_START = 100;

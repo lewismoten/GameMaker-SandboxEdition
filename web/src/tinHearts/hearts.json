@@ -24,7 +24,8 @@
     "teddy2": { "map": "house.map", "at": [8, 25] },
     "teddy3": { "map": "meadow.map", "at": [45, 31] },
     "tickle": { "map": "tower.map", "at": [43, 23] },
+    "tuneup": { "map": "clock.map", "at": [39, 5] },
     "year2000": { "map": "mall.map", "at": [42, 1] }
   },
-  "pending": ["tuneup"]
+  "pending": []
 }

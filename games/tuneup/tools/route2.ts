@@ -3,6 +3,7 @@
 import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
 import { BASSES_AT, DUCT_ROW, LIFTS } from '../src/levels/basement';
 import { LOFT_ROW, RAIL_X, ROPE_X, VOICES_AT } from '../src/levels/choir';
+import { BELL_DOORS, MALLETS_AT } from '../src/levels/clock';
 import type { Bot } from './bot';
 import { climb, found, leave, must, picked } from './route';
 
@@ -60,3 +61,41 @@ export async function theBasement(bot: Bot): Promise<void> {
   await leave(bot, bot.walk(32, 'out the door'), 'the door');
 }
 
+/**
+ * Waits by a door that opens and shuts by itself (a curtain of bells, a drum channel's gate) at
+ * level column `x` for it to open (if it is open already, for the next time, as a person waits
+ * rather than dash through as it shuts), a person's reaction, then walks through to `to`.
+ */
+async function throughBells(bot: Bot, x: number, to: number): Promise<void> {
+  const open = () => !bot.shown(x, 8).solid;
+  let waited = 0;
+  while (open()) if ((await bot.tick()) || ++waited > 100) throw new Error(`the bells at ${x} never closed`);
+  while (!open()) if ((await bot.tick()) || ++waited > 200) throw new Error(`the bells at ${x} never opened`);
+  await must(bot, bot.wait(1 + Math.floor(bot.hand() * 2)), 'reacting');
+  await must(bot, bot.walk(to, `through the door at ${x}`), 'door');
+}
+
+/** 10. The Clock Tower: ten mallets and bells, three bell curtains that open on the clock, out the top door. */
+export async function theClockTower(bot: Bot): Promise<void> {
+  expect(bot, 19, 'the clock tower');
+  await must(bot, bot.land(), 'on the floor');
+  const get = (id: string) => take(bot, MALLETS_AT, id);
+  await get('glockenspiel');
+  await get('celesta');
+  await must(bot, bot.walk(BELL_DOORS[0] - 1, 'to the first bells'), 'door');
+  await throughBells(bot, BELL_DOORS[0], 12);
+  await get('music-box');
+  await get('vibraphone');
+  await get('marimba');
+  await must(bot, bot.walk(BELL_DOORS[1] - 1, 'to the second bells'), 'door');
+  await throughBells(bot, BELL_DOORS[1], 22);
+  await get('xylophone');
+  await get('chimes');
+  await get('steel-drum');
+  await must(bot, bot.walk(BELL_DOORS[2] - 1, 'to the third bells'), 'door');
+  await throughBells(bot, BELL_DOORS[2], 31);
+  await get('tubular-bells');
+  await get('vibes-wobbly');
+  if (found(bot) < 10) throw new Error(`found ${found(bot)} mallets, not 10`);
+  await leave(bot, bot.walk(40, 'out the tower door'), 'the tower door');
+}

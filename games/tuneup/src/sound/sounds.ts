@@ -11,7 +11,7 @@ import { SND } from '../ids';
 import { TICK_TOCK } from '../../../kit/tinHeart';
 import { arpVoc, hz, noteVoc } from './notes';
 
-export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade' | 'rink' | 'field' | 'woods' | 'choir' | 'basement' | 'clock';
+export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade' | 'rink' | 'field' | 'woods' | 'choir' | 'basement' | 'clock' | 'farm' | 'attic' | 'card';
 
 /** A held PC speaker tone at a pitch, short (about a sixth of a second) and then quiet. */
 const tone = (name: string, steps = 24) => speaker((i) => (i < steps ? hz(name) : 0));
@@ -69,6 +69,19 @@ export const GLOCK_NOTES: [number, string][] = [
   [SND.gain, 'G6'],
   [SND.spend, 'C7'],
 ];
+/** The attic's chord keys on the song maker's piano: C (slot 0), F (slot 7, and an instrument found), and G, the trunk's latch (slot 8, and the door). */
+export const ATTIC_CHORDS: [number, string, string][] = [
+  [SND.help, 'ac', '[C4 E4 G4 C5]'],
+  [SND.gain, 'af', '[C4 F4 A4 C5]'],
+  [SND.spend, 'ag', '[B3 D4 G4 B4]'],
+];
+/** Sound Check's chord chips: speaker chords only (no .VOC, so they play on the PC speaker over the band). */
+export const CARD_CHORDS: [number, number[]][] = [
+  [SND.score, [262, 330, 392, 523]],
+  [SND.lose, [349, 440, 523, 698]],
+  [SND.help, [392, 494, 587, 784]],
+  [SND.money, [440, 523, 659, 880]],
+];
 export const BASS_NOTES: [number, string][] = [
   [SND.help, 'C3'],
   [SND.money, 'E3'],
@@ -87,6 +100,10 @@ export function buildVocs(): Record<string, Uint8Array> {
   v.bloom = noteVoc('choir', CHOIR_BLOOM, 1.6, 1.1);
   for (const [, n] of BASS_NOTES) v[vocName('sb', n)] = noteVoc('slap-bass', n, 0.5, 0.3);
   for (const [, n] of GLOCK_NOTES) v[vocName('gl', n)] = noteVoc('glockenspiel', n, 0.6, 0.3);
+  v.cowbell = noteVoc('cowbell', 'G5', 0.35, 0.2);
+  v.timp = noteVoc('timpani', 'C3', 0.7, 0.4);
+  for (const [, name, ch] of ATTIC_CHORDS) v[name] = noteVoc('piano', ch, 0.8, 0.5);
+  v.kitaah = noteVoc('choir', '[C4 E4 G4]', 0.7, 0.45);
   v.woodslo = noteVoc('flute', WOODS_LOW, 0.6, 0.35);
   v.woodshi = noteVoc('flute', WOODS_HIGH, 0.6, 0.35);
   v.fieldlo = noteVoc('horn', FIELD_LOW, 0.35, 0.22);
@@ -140,6 +157,17 @@ export function buildSoundSet(place: Place): SoundSet {
     for (const [slot, n] of GLOCK_NOTES) add(slot, vocName('gl', n), tone(n));
     // the tin heart's tick-tock: score up, on the speaker only (never a .VOC)
     add(SND.score, '', TICK_TOCK());
+  } else if (place === 'farm') {
+    // an instrument found clonks the cowbell; the barn door rolls the timpani
+    add(SND.gain, 'cowbell', tone('G5', 6));
+    add(SND.spend, 'timp', tone('C3', 12));
+  } else if (place === 'attic') {
+    for (const [slot, name, ch] of ATTIC_CHORDS) add(slot, name, SPEAKER.arpeggio(ch.replace(/[[\]]/g, '').split(' ').map(hz)));
+  } else if (place === 'card') {
+    // three layers: the band on the FM chip, the chord chips on the speaker, a choir .VOC for each drum found
+    for (const [slot, ch] of CARD_CHORDS) add(slot, '', SPEAKER.arpeggio(ch));
+    add(SND.gain, 'kitaah', SPEAKER.arpeggio([262, 330, 392]));
+    add(SND.spend, 'bloom', SPEAKER.arpeggio([262, 330, 392, 523]));
   } else if (place === 'woods') {
     add(SND.gain, 'woodslo', tone(WOODS_LOW));
     add(SND.help, 'woodshi', tone(WOODS_HIGH));
