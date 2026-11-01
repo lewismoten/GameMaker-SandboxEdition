@@ -53,7 +53,8 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   - `gameMakerArchive.ts` the Shareware Shelf's `gameMakerArchive.json`;
   - `oldWebShots.ts` (with `oldWebPages.ts`) TURBO BUTTON's three made-up 1996 web pages in a made-up
     browser, `public/magazine/oldweb-*.webp`, 640 x 480, rendered with headless Chrome and `cwebp`
-    (`npx vite-node scripts/oldWebShots.ts [dir for PNG copies]`);
+    (`npx vite-node scripts/oldWebShots.ts [dir for PNG copies]`). The pages are period HTML 3.2 (no CSS;
+    the browser frame adds the bevels), and `oldWebArt.ts` draws their pixel-art banner, tile and buttons;
   - `videoTranscript.ts` a Library video's `public/videos/<id>.transcript.json`, from its YouTube
     automatic captions (`yt-dlp --skip-download --write-auto-subs --sub-langs en-orig <url>`, then
     `npx vite-node scripts/videoTranscript.ts <id>.en-orig.vtt`): the rolling repeats removed, about

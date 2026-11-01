@@ -4,15 +4,15 @@
 // logo, and the telephone dial and finger are drawn fresh for this page. Written for this repo.
 
 import { mockSite, mockUrl } from '../src/manual/magazine/mockSites';
+import { dandelionBanner, dandelionTile, textBanner, textureButton } from './oldWebArt';
 
-/** One page of the fake web: where it lives, its title, its body style and its body. */
+/** One page of the fake web: where it lives, its title and its HTML 3.2 document. */
 export interface OldPage {
   file: string;
   url: string;
   title: string;
   status: string;
-  bodyCss: string;
-  body: string;
+  html: string;
 }
 
 const UI = "font: 11px/1.2 'Helvetica Neue', Helvetica, Arial, sans-serif;";
@@ -21,6 +21,19 @@ const BEVEL_IN = 'border: 2px solid; border-color: #404040 #fff #fff #404040;';
 
 const btn = (label: string, glyph: string): string =>
   `<div style="width:46px;height:38px;${BEVEL_OUT}background:#c0c0c0;box-sizing:border-box;text-align:center;padding-top:3px"><div style="font-size:15px;line-height:16px">${glyph}</div><div style="font-size:10px">${label}</div></div>`;
+
+/**
+ * What a 1996 browser drew by itself, since the page has no CSS: beveled table borders, gray form
+ * controls with 3D edges. It belongs to the browser, so it is added here and never to the page.
+ */
+const BROWSER_DEFAULTS = `body{font-family:'Times New Roman',Times,serif;font-size:16px}
+table[border]{border-style:outset;border-color:#fff #404040 #404040 #fff}
+table[border]>tbody>tr>td{border:1px inset;border-color:#404040 #fff #fff #404040}
+table[border="0"]>tbody>tr>td{border:0}
+input[type=text]{appearance:none;box-sizing:border-box;border:2px inset;border-color:#404040 #fff #fff #404040;background:#fff;font:13px Courier,monospace;padding:1px 3px;border-radius:0}
+input[type=submit]{appearance:none;border:2px outset;border-color:#fff #404040 #404040 #fff;background:#c0c0c0;color:#000;font:13px Helvetica,Arial,sans-serif;padding:2px 8px;border-radius:0}`;
+
+const srcdoc = (html: string): string => html.replace('</head>', `<style>${BROWSER_DEFAULTS}</style></head>`).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
 /** The browser: menu bar, buttons, throbber, Location: field, the page in its window, and the status bar. */
 export function frame(p: OldPage): string {
@@ -48,86 +61,71 @@ body{width:640px;height:480px;background:#c0c0c0;${UI}position:relative}
 <div class="abs" style="left:4px;top:80px;width:632px;height:20px;line-height:20px"><b style="padding-right:6px">Location:</b><span class="abs" style="left:62px;top:0;width:566px;height:20px;box-sizing:border-box;background:#fff;${BEVEL_IN}font:11px/16px Courier,monospace;white-space:nowrap;overflow:hidden;padding-left:3px">${p.url}</span></div>
 <div class="abs" style="left:4px;top:103px;display:flex;gap:4px">${['What&#39;s New?', 'What&#39;s Cool?', 'Handbook', 'Net Search', 'Net Directory', 'Newsgroups'].map((t) => `<span style="padding:1px 6px;${BEVEL_OUT}background:#c0c0c0">${t}</span>`).join('')}</div>
 <div class="abs" style="left:2px;top:128px;width:636px;height:330px;box-sizing:border-box;${BEVEL_IN}overflow:hidden">
-<div class="abs" style="left:0;top:0;width:616px;height:326px;overflow:hidden;font:16px/1.25 'Times New Roman',Times,serif;color:#000;${p.bodyCss}">${p.body}</div>
+<iframe class="abs" style="left:0;top:0;width:616px;height:326px;border:0" scrolling="no" srcdoc="${srcdoc(p.html)}"></iframe>
 <div class="abs" style="right:0;top:0;width:16px;height:326px;background:#d8d8d8;border-left:1px solid #808080"><div style="margin:1px;height:14px;${BEVEL_OUT}background:#c0c0c0;box-sizing:border-box"></div><div class="abs" style="left:1px;top:16px;width:14px;height:150px;${BEVEL_OUT}background:#c0c0c0;box-sizing:border-box"></div><div class="abs" style="left:1px;bottom:1px;width:14px;height:14px;${BEVEL_OUT}background:#c0c0c0;box-sizing:border-box"></div></div></div>
 <div class="abs" style="left:2px;top:461px;width:636px;height:17px;box-sizing:border-box;${BEVEL_IN}line-height:13px;padding-left:4px;white-space:nowrap;overflow:hidden">${p.status}</div>
 </body></html>`;
 }
 
-/** A 468 x 60 banner of big letters on a color, as an inline image. */
-const banner = (w: number, h: number, bg: string, fg: string, text: string, sub: string): string =>
-  `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block;margin:0 auto"><rect width="${w}" height="${h}" fill="${bg}"/><rect x="3" y="3" width="${w - 6}" height="${h - 6}" fill="none" stroke="${fg}" stroke-width="2"/><text x="${w / 2}" y="${h * 0.58}" text-anchor="middle" font-family="Times New Roman,serif" font-weight="bold" font-size="${h * 0.5}" fill="${fg}">${text}</text><text x="${w / 2}" y="${h * 0.86}" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="${h * 0.16}" fill="${fg}">${sub}</text></svg>`;
-
-const inputBox = (w: number, value = ''): string =>
-  `<span style="display:inline-block;width:${w}px;height:20px;box-sizing:border-box;${BEVEL_IN}background:#fff;font:13px/16px Courier,monospace;padding-left:3px;vertical-align:middle">${value}</span>`;
-const grayBtn = (t: string): string =>
-  `<span style="display:inline-block;padding:2px 10px;${BEVEL_OUT}background:#c0c0c0;font:13px/16px Helvetica,Arial,sans-serif;vertical-align:middle">${t}</span>`;
-
 const dict = mockSite('dict');
 const yellow = mockSite('yellow');
 const gopher = mockSite('gopher');
+
+/** A period page: HTML 3.2 only, with no style, no CSS and no scripts. oldWebPages.test.ts checks. */
+const doc = (title: string, bodyAttrs: string, body: string): string => `<html><head><title>${title}</title></head><body ${bodyAttrs}>${body}</body></html>`;
 
 export const DICT: OldPage = {
   file: 'oldweb-dict',
   url: mockUrl('dict'),
   title: dict.title,
   status: 'Document: Done.',
-  bodyCss: 'background:#c0c0c0;',
-  body: `<div style="padding:10px 14px">${banner(468, 56, '#1e3f8a', '#ffd23f', dict.bannerText ?? '', `${dict.org} ${dict.dept}`)}
-<p style="text-align:center;margin:10px 0 2px"><b>${dict.description}</b></p>
-<p style="text-align:center;font-size:13px;margin:2px 0">Questions? Sign the <u style="color:#00e">guestbook</u> or return to the <u style="color:#00e">department home page</u>.</p>
-<hr style="border:0;border-top:2px solid #808080;border-bottom:2px solid #fff;margin:8px 0">
-<p style="margin:6px 0"><b>Enter a word:</b></p>
-<p style="margin:6px 0">${inputBox(380, 'diskette|')}</p>
-<p style="margin:6px 0">${grayBtn('Exact Match')} ${grayBtn('Begins With')} ${grayBtn('Submit Query')}</p>
-<hr style="border:0;border-top:2px solid #808080;border-bottom:2px solid #fff;margin:8px 0">
-<address style="font-size:12px">Maintained by ${dict.contact}. Last updated 9 Jan 1996. You are visitor number 004,127.</address></div>`,
+  html: doc(
+    dict.title,
+    'bgcolor="#C0C0C0" text="#000000" link="#0000EE" vlink="#551A8B"',
+    `<center><img src="${textBanner([30, 63, 138], [255, 210, 63], (dict.bannerText ?? '').toUpperCase(), `${dict.org} - ${dict.dept}`.toUpperCase())}" width="468" height="56" border="0" alt="${dict.bannerText}">
+<p><b>${dict.description}</b><br>
+<font size="2">Questions? Sign the <a href="#">guestbook</a> or return to the <a href="#">department home page</a>.</font></p></center>
+<hr size="2">
+<form><b>Enter a word:</b><br>
+<input type="text" size="40" value="diskette"><br>
+<input type="submit" value="Exact Match"> <input type="submit" value="Begins With"> <input type="submit" value="Submit Query"></form>
+<hr size="2">
+<address>Maintained by ${dict.contact}. Last updated 9 Jan 1996. You are visitor number 004,127.</address>`,
+  ),
 };
 
-const dandelionTile = `url('data:image/svg+xml,${encodeURIComponent(
-  `<svg xmlns='http://www.w3.org/2000/svg' width='150' height='34'><rect width='150' height='34' fill='#ffe14a'/><text x='2' y='13' font-family='Helvetica,Arial' font-weight='bold' font-size='12' fill='#f0b400'>DANDELION PAGES</text><text x='77' y='30' font-family='Helvetica,Arial' font-weight='bold' font-size='12' fill='#f6c93a'>DANDELION PAGES</text></svg>`,
-).replace(/'/g, '%27')}')`;
-
-const tex = (t: string): string =>
-  `<span style="display:inline-block;margin:3px 4px 3px 0;padding:6px 14px;border:4px outset #d98a00;background:repeating-linear-gradient(45deg,#e8a21a 0 2px,#d48a08 2px 4px),#e8a21a;font:bold 14px/16px Helvetica,Arial,sans-serif;color:#2a1500;text-shadow:1px 1px #f7d27a">${t}</span>`;
-
-/** A rotary dial with a finger poking a hole, as I drew it: not the trademarked walking-fingers mark. */
-const dialArt = `<svg width="96" height="110" viewBox="0 0 96 110"><circle cx="48" cy="44" r="40" fill="#222" stroke="#000" stroke-width="2"/><circle cx="48" cy="44" r="14" fill="#f3d9a0" stroke="#000"/>${Array.from(
-  { length: 10 },
-  (_, i) => {
-    const a = Math.PI * (0.6 + i * 0.16) + 0.1;
-    return `<circle cx="${(48 + Math.cos(a) * 27).toFixed(1)}" cy="${(44 + Math.sin(a) * 27).toFixed(1)}" r="6" fill="#ffe14a" stroke="#000"/>`;
-  },
-).join(
-  '',
-)}<path d="M62 58 q16 6 22 30 q4 14 -8 18 l-26 0 q-6 -14 -2 -30 z" fill="#f2b98c" stroke="#000" stroke-width="1.5"/><rect x="52" y="52" width="9" height="30" rx="4.5" fill="#f2b98c" stroke="#000" stroke-width="1.5" transform="rotate(-24 56 66)"/></svg>`;
+const btns = ['FIND IT!', 'CATEGORIES', 'ADD A LISTING', 'HELP'].map(textureButton);
 
 export const YELLOW: OldPage = {
   file: 'oldweb-yellow',
   url: mockUrl('yellow'),
   title: yellow.title,
   status: `Transferring data from ${yellow.host}...`,
-  bodyCss: `background:${dandelionTile};`,
-  body: `<div style="padding:8px 12px">
-<div style="display:flex;align-items:center;gap:12px"><div>${dialArt}</div>
-<div style="flex:1;border:5px ridge #c00;background:#c00;color:#ffe14a;text-align:center;font:bold 38px/1 Impact,'Arial Black',Helvetica,sans-serif;padding:8px 0;text-shadow:3px 3px #000">DANDELION<br>PAGES</div></div>
-<div style="margin:8px 0 0;background:#fff;border:2px solid #000;padding:6px 10px;font-size:15px"><b>Let your fingers do the clicking!</b> ${yellow.description}</div>
-<div style="margin-top:8px;background:#fff7b0;border:2px solid #000;padding:6px 10px;font-size:15px">Business type: ${inputBox(150, 'pizza')} Area code: ${inputBox(42, '412')}</div>
-<div style="margin-top:4px">${tex('FIND IT!')}${tex('BROWSE CATEGORIES')}${tex('ADD YOUR BUSINESS')}${tex('HELP')}</div></div>`,
+  html: doc(
+    yellow.title,
+    `background="${dandelionTile()}" bgcolor="#FFE14A" text="#000000" link="#0000CC" vlink="#660099"`,
+    `<center><a href="#"><img src="${dandelionBanner()}" width="468" height="60" border="0" alt="${yellow.bannerText}"></a><br>
+<table border="3" cellpadding="5" cellspacing="2" bgcolor="#FFFFFF" width="468"><tr><td><font face="Helvetica,Arial" size="2"><b>Let your fingers do the clicking!</b> ${yellow.description}</font></td></tr></table>
+<table border="3" cellpadding="5" cellspacing="2" bgcolor="#FFF7B0" width="468"><tr><td align="center"><form><font face="Helvetica,Arial" size="2"><b>Business type:</b> <input type="text" size="14" value="pizza"> <b>Area code:</b> <input type="text" size="3" value="412"></font></form></td></tr></table>
+<p>${btns.map((b, i) => `<a href="#"><img src="${b.src}" width="${b.w}" height="${b.h}" border="0" alt="${['Find it', 'Categories', 'Add a listing', 'Help'][i]}"></a>`).join(' ')}</p></center>`,
+  ),
 };
 
 const row = (icon: string, name: string, kind: string): string =>
-  `<div style="display:flex;gap:8px;align-items:center;margin:3px 0;font-size:16px"><span style="width:22px;text-align:center">${icon}</span><u style="color:#00e;width:330px">${name}</u><span style="font:13px Courier,monospace;color:#333">${kind}</span></div>`;
+  `<tr><td align="center">${icon}</td><td><a href="#">${name}</a></td><td><tt><font size="2">${kind}</font></tt></td></tr>`;
 
 export const GOPHER: OldPage = {
   file: 'oldweb-gopher',
   url: mockUrl('gopher'),
   title: gopher.title,
   status: 'Document: Done.',
-  bodyCss: 'background:#c0c0c0;',
-  body: `<div style="padding:8px 16px"><h1 style="font-size:30px;margin:2px 0">${gopher.description}</h1>
-<div style="font:13px Courier,monospace;margin-bottom:6px">${gopher.host}, port ${gopher.port}</div>
-<hr style="border:0;border-top:2px solid #808080;border-bottom:2px solid #fff;margin:4px 0 8px">
+  html: doc(
+    gopher.title,
+    'bgcolor="#C0C0C0" text="#000000" link="#0000EE" vlink="#551A8B"',
+    `<h2>${gopher.description}</h2>
+<tt>${gopher.host}, port ${gopher.port}</tt>
+<hr size="2">
+<table border="0" cellpadding="2" cellspacing="0">
 ${row('&#128193;', 'Search the catalog by title', '&lt;DIR&gt;')}
 ${row('&#128269;', 'Search the catalog by author', '&lt;?&gt;')}
 ${row('&#128193;', 'Periodicals held (A-Z)', '&lt;DIR&gt;')}
@@ -135,7 +133,9 @@ ${row('&#128196;', 'Hours, fines and the late-book amnesty', '&lt;TXT&gt;')}
 ${row('&#128196;', 'How to renew by mail (we still take stamps)', '&lt;TXT&gt;')}
 ${row('&#128193;', 'Other gopher servers in the valley', '&lt;DIR&gt;')}
 ${row('&#128222;', 'Telnet to the old terminal, no passwords', '&lt;TEL&gt;')}
-<hr style="border:0;border-top:2px solid #808080;border-bottom:2px solid #fff;margin:8px 0 4px"><i style="font-size:13px">Gopher menu. 7 items.</i></div>`,
+</table>
+<hr size="2"><i><font size="2">Gopher menu. 7 items.</font></i>`,
+  ),
 };
 
 export const OLD_PAGES: OldPage[] = [DICT, YELLOW, GOPHER];
