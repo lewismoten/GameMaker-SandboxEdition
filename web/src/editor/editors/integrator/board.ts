@@ -13,7 +13,7 @@ export const S = 8;
 const CARD = { w: CARD_UNITS.w * S - 8, h: CARD_UNITS.h * S - 6 };
 const THUMB = { x: 8, y: 22, w: CARD.w - 16, h: 100 };
 const COLORS = { start: '#ffd400', end: '#ff6b61', adventure: '#6cf28a', unused: '#888' } as const;
-/** A pass-through (talk) scene's frame: not a map to play, so not the playable green. */
+/** A pass-through scene's frame (a talk page or a fade): not a map to play, so not the playable green. */
 const TALK = '#d58cff';
 const FONT = 'ui-monospace, Menlo, Consolas, monospace';
 
@@ -123,9 +123,13 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
   const kind = sceneKind(s);
   const r = cardRect(v.game, i);
   const sel = i === v.selected && !forExport;
+  // a pass-through scene: the hero arrives on one of its own links out, so it leaves at once (a talk page
+  // between scenes, or just a fade)
+  const at = kind === 'adventure' ? arrival(v.game, i) : undefined;
+  const pass = !!at && s.links.some((l) => l.toScene !== NOSCENE && !!v.game.scenes[l.toScene] && l.from.x === at.x && l.from.y === at.y);
   const pal = s.files[0] ? v.project.files.get(s.files[0]) : undefined;
-  const talk = kind === 'adventure' && !!s.files[9] && !!pal && isSolidPalette(pal) && !!v.screenOf(s.files[9]);
-  const color = talk ? TALK : COLORS[kind];
+  const page = pass ? (v.screenOf(s.files[9]) ?? v.screenOf(s.files[10])) : undefined;
+  const color = pass ? TALK : COLORS[kind];
   ctx.save();
   ctx.shadowColor = sel ? color : 'rgba(0,0,0,.6)';
   ctx.shadowBlur = sel ? 18 : 8;
@@ -159,9 +163,18 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
       drawThumb(ctx, won, { ...box, w: half }, 'Won');
       drawThumb(ctx, lost, { ...box, x: box.x + half + 4, w: half }, 'Lost');
     } else drawThumb(ctx, won ?? lost, box, won ? 'Won' : lost ? 'Lost' : 'graphic');
-  } else if (talk) {
-    // a pass-through scene (an all-black palette): its picture is the message, so show that, not a black map
-    drawThumb(ctx, v.screenOf(s.files[9]), box, 'Talk');
+  } else if (page) {
+    // a pass-through scene's picture (its intro, else its exit) is the message, so show that, not its map
+    drawThumb(ctx, page, box, 'Talk');
+  } else if (pass && pal && isSolidPalette(pal)) {
+    // no picture and a one-color palette: the player only sees a fade
+    ctx.fillStyle = '#000';
+    ctx.fillRect(box.x, box.y, box.w, box.h);
+    ctx.fillStyle = '#9aa2b8';
+    ctx.font = `10px ${FONT}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('fade, passes through', box.x + box.w / 2, box.y + box.h / 2 + 3);
+    ctx.textAlign = 'left';
   } else {
     drawThumb(ctx, v.levelOf(i), box);
     if (s.files[1]) {
@@ -181,8 +194,8 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
   const foot =
     kind === 'adventure'
       ? (() => {
-          const a = arrival(v.game, i);
-          return `${talk ? 'talk · ' : ''}in at ${a.x},${a.y}`;
+          const a = at!;
+          return `${pass ? (page ? 'talk · ' : 'pass · ') : ''}in at ${a.x},${a.y}`;
         })()
       : kind === 'start'
         ? 'start'

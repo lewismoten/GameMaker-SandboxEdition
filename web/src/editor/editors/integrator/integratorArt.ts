@@ -1,7 +1,8 @@
 // Pictures for the Game Integrator: a level as the player first sees it (the map around
 // the block the hero arrives on, with its monsters and the hero), and the between-scene
 // graphics (.gif, .bkd, .fli, .lst, .txt) as a 320x200 screen.
-import { paintIndexed } from '../../core/draw';
+import { lut, paintIndexed } from '../../core/draw';
+import { STOCK_LOOK } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import type { GameFiles } from '../../../project/files';
 import type { Point, Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelPixels } from '../../../gfx/levelPicture';
@@ -64,9 +65,15 @@ export function graphicShot(files: GameFiles, name: string, depth = 0): HTMLCanv
         return c;
       }
       case 'lst': {
-        for (const e of parseSlideList(bytes)) {
-          const c = graphicShot(files, e.name, depth + 1);
-          if (c) return c;
+        // the first picture; a text page right after it is drawn over it, as Display_File does
+        const list = parseSlideList(bytes);
+        for (let n = 0; n < list.length; n++) {
+          const c = graphicShot(files, list[n].name, depth + 1);
+          if (!c) continue;
+          const next = list[n + 1]?.name;
+          const text = next?.toLowerCase().endsWith('.txt') && !list[n].name.toLowerCase().endsWith('.txt') ? files.get(next) : undefined;
+          if (text) overText(c, text, textColor(files, list[n].name));
+          return c;
         }
         return undefined;
       }
@@ -89,4 +96,25 @@ export function graphicShot(files: GameFiles, name: string, depth = 0): HTMLCanv
     /* unreadable: no picture */
   }
   return undefined;
+}
+
+/** The text-page color ShowGraphic picks from a picture's own palette (a .gif, or a .bkd's), or undefined. */
+function textColor(files: GameFiles, name: string): string | undefined {
+  const gif = name.toLowerCase().endsWith('.bkd') ? parseBackdrop(files.get(name)!).gif : name;
+  const bytes = files.get(gif);
+  if (!bytes || !isGif(bytes)) return undefined;
+  const pal = decodeGif(bytes).palette;
+  const v = lut(pal)[STOCK_LOOK.color(pal, 'color.select.textPages')];
+  return `rgb(${v & 255},${(v >> 8) & 255},${(v >> 16) & 255})`;
+}
+
+/** Display_File's first page over a picture: up to 16 lines from row 5, 40 pixels in (code/GM/PLAYGAME.C). */
+function overText(c: HTMLCanvasElement, bytes: Uint8Array, color = '#f0f0f0'): void {
+  const ctx = c.getContext('2d')!;
+  ctx.font = '8px ui-monospace, Menlo, monospace';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = color;
+  textLines(bytes)
+    .slice(0, 16)
+    .forEach((line, i) => ctx.fillText(line, 40, 40 + i * 8, 248));
 }
