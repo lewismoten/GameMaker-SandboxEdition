@@ -271,6 +271,11 @@
   min-width: 0;
 }
 
+.mus-track.drop {
+  outline: 2px dashed var(--mus-gold);
+  outline-offset: -2px;
+}
+
 .mus-track-tools {
   display: flex;
   gap: 3px;

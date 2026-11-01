@@ -12,6 +12,7 @@ import { DRUM_KIT, slotOfChannel } from '../../../audio/oplDrumPresets';
 import { applyToTrack, pickPreset } from './presetPicker';
 import { clipLabel, copyToClipboard, pasteIntoDoc } from './trackPaste';
 import { currentTrackClip } from './trackClipboard';
+import { moveTrackTo, sortByGroup } from './trackOrder';
 
 export class TrackList {
   readonly el = h('div', { class: 'mus-tracks', role: 'list', 'aria-label': 'Tracks' });
@@ -76,10 +77,58 @@ export class TrackList {
     }
   }
 
+  /** Lists track ch at index `to` (one undo step; the song's channels do not change). */
+  private moveTo(ch: number, to: number): void {
+    this.doc.setOrder(moveTrackTo(this.doc.tracks(), ch, to));
+  }
+
+  private moveButton(ch: number, dir: -1 | 1, i: number, count: number): HTMLElement {
+    const name = this.doc.trackName(ch);
+    const word = dir < 0 ? 'up' : 'down';
+    return h(
+      'button',
+      {
+        class: 'mus-ms',
+        title: `Move this track ${word} the list (only how it is listed here; the song file is not changed)`,
+        'aria-label': `Move ${name} ${word}`,
+        'data-move': `${ch}:${word}`,
+        disabled: dir < 0 ? i === 0 : i === count - 1,
+        onclick: () => this.moveTo(ch, i + dir),
+      },
+      dir < 0 ? '▲' : '▼',
+    );
+  }
+
+  /** Drag a track onto another to put it in that place. */
+  private dragging: number | null = null;
+  private wireDrag(row: HTMLElement, ch: number, i: number): void {
+    row.draggable = true;
+    row.addEventListener('dragstart', (e) => {
+      this.dragging = ch;
+      e.dataTransfer?.setData('text/plain', this.doc.trackName(ch));
+      if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragover', (e) => {
+      if (this.dragging === null) return;
+      e.preventDefault();
+      row.classList.add('drop');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drop'));
+    row.addEventListener('dragend', () => (this.dragging = null));
+    row.addEventListener('drop', (e) => {
+      e.preventDefault();
+      row.classList.remove('drop');
+      const from = this.dragging;
+      this.dragging = null;
+      if (from !== null && from !== ch) this.moveTo(from, i);
+    });
+  }
+
   render(): void {
     const doc = this.doc;
     const song = doc.song;
-    const rows = doc.tracks().map((ch) => {
+    const order = doc.tracks();
+    const rows = order.map((ch, i) => {
       const notes = channelNotes(song, ch).length;
       const silent = !doc.sounds(ch);
       const drum = doc.rhythm && RHYTHM_CHANNELS.includes(ch);
@@ -98,7 +147,7 @@ export class TrackList {
         doc.edit(() => setStartProgram(song, ch, Number(bank.value)));
         void doc.audition(ch, 60);
       });
-      return h(
+      const row = h(
         'div',
         { class: `mus-track${ch === doc.track ? ' active' : ''}${silent ? ' silent' : ''}`, role: 'listitem', style: `--track:${doc.trackColor(ch)}` },
         h(
@@ -136,6 +185,8 @@ export class TrackList {
             },
             '⧉',
           ),
+          this.moveButton(ch, -1, i, order.length),
+          this.moveButton(ch, 1, i, order.length),
         ),
         h(
           'div',
@@ -195,6 +246,8 @@ export class TrackList {
           h('button', { class: 'mus-ms', title: 'Remove this track', 'aria-label': `Remove ${doc.trackName(ch)}`, onclick: () => void this.remove(ch) }, '×'),
         ),
       );
+      this.wireDrag(row, ch, i);
+      return row;
     });
     const free = doc.freeChannels();
     const clip = currentTrackClip();
@@ -225,6 +278,16 @@ export class TrackList {
             },
             '＋ Add track',
           ),
+          h(
+            'button',
+            {
+              class: 'mus-add-btn',
+              disabled: order.length < 2,
+              title: 'List the tracks by instrument group (strings, keys, drums…); only the list changes, not the song file',
+              onclick: () => doc.setOrder(sortByGroup(doc.tracks(), (ch) => instrumentLook(song.instruments[startProgram(song, ch)]).preset?.group)),
+            },
+            '⇅ Sort by group',
+          ),
           clip
             ? h(
                 'button',
@@ -250,7 +313,9 @@ export class TrackList {
           ),
         );
     // keep the keyboard on a track's preset button when the list is drawn again (after undo)
-    const had = this.el.contains(document.activeElement) ? document.activeElement?.getAttribute('data-presets') : null;
+    const active = this.el.contains(document.activeElement) ? document.activeElement : null;
+    const had = active?.getAttribute('data-presets');
+    const moved = active?.getAttribute('data-move');
     const why = h(
       'p',
       { class: 'hint mus-track-why', role: 'listitem' },
@@ -258,6 +323,13 @@ export class TrackList {
     );
     clear(this.el, ...rows, h('div', { role: 'listitem', style: 'display:contents' }, add), why);
     if (had) this.el.querySelector<HTMLElement>(`[data-presets="${had}"]`)?.focus();
+    if (moved) {
+      // the same button on the moved track; at an end it is disabled, so the other arrow gets the focus
+      const [ch, way] = moved.split(':');
+      const other = way === 'up' ? 'down' : 'up';
+      const pick = (w: string) => this.el.querySelector<HTMLButtonElement>(`[data-move="${ch}:${w}"]:not(:disabled)`);
+      (pick(way) ?? pick(other))?.focus();
+    }
     if (this.adding) add.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 }
