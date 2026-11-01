@@ -310,6 +310,8 @@ game folder opens in the browser unchanged.
   the app's own packages, and the model stays on Lewis's computer.
 - **Teddy's and Gwinn's barks** (`web/public/tour/sfx`): Lewis Moten's own recordings of his
   dogs, cut into short clips for the guided tour. The whole recordings stay on his computer.
+- **Tune-Up's slide whistle** (`games/tuneup/src/sound/notes.ts` `slideWhistleVoc`): synthesized
+  in code for the game (a gliding tone with a breath of noise), not a recording.
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
   this project (there is no recording to credit), but a few pieces quote older tunes whose
   compositions are in the public domain in the US:

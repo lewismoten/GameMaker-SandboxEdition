@@ -162,7 +162,10 @@ export async function pumpUp(bot: Bot): Promise<void> {
     'pumping',
   );
   await must(bot, bot.wait(6), 'hands down');
-  await leave(bot, bot.walk(PUMP.exit, 'off the tire and through the gate'), 'out');
+  await must(bot, bot.walk(PUMP.tire[1] + 1, "down the tire's far side"), 'sliding down');
+  if (bot.sim.clip?.name !== 'slide') throw new Error(`no slide whistle down the tire (${bot.sim.clip?.name})`);
+  await must(bot, bot.sim.waitForClip(), 'the slide whistle');
+  await leave(bot, bot.walk(PUMP.exit, 'through the gate'), 'out');
 }
 
 /** Hops a toy at level column `x` from a block back (clear of its cell), landing past it. */

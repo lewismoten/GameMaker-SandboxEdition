@@ -7,7 +7,7 @@
 import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
-import { hz, noteVoc, phraseVoc } from './notes';
+import { hz, noteVoc, phraseVoc, slideWhistleVoc } from './notes';
 
 export type Place = 'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled';
 
@@ -52,6 +52,8 @@ export function buildVocs(): Record<string, Uint8Array> {
   v.tada = phraseVoc('trumpet', ['G4', 'C5'], 0.14, 0.5);
   v.psi = phraseVoc('combo-organ', ['C5', 'E5', 'G5', 'C6'], 0.07, 0.4);
   v.tapes = phraseVoc('music-box', ['E5', 'G5', 'C6'], 0.1, 0.4);
+  // sliding down the full tire: a slide whistle, falling (synthesized)
+  v.slide = slideWhistleVoc(1600, 520, 0.7);
   return v;
 }
 
@@ -120,6 +122,8 @@ export function buildSoundSet(place: Place): SoundSet {
       speaker((i) => (i < 4 ? 900 + i * 250 : 0)),
     );
     add(SND.gain, 'psi', SPEAKER.arpeggio([523, 659, 784, 1047]));
+    // off the full tire and down its side: the slide whistle
+    add(SND.help, 'slide', SPEAKER.fall(1600, 520));
   } else if (place === 'muffled') {
     // a squeaky toy (energy down: Teddy's hurt sound), a blanket tucked (energy up), the tapes
     add(

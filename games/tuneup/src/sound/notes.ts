@@ -79,3 +79,26 @@ export function phraseVoc(id: string, notes: string[], step: number, ring = 0.4)
   const line = notes.map((n, i) => `${n} ${i === notes.length - 1 ? 'w' : 'e'}`).join(', ');
   return level(render(song(bpm, [{ channel: 0, instrument: patchOf(id), notes: line }]), step * (notes.length - 1) + ring));
 }
+
+/**
+ * A slide whistle, synthesized: a breathy, near-pure tone gliding from `from` to `to` Hz over
+ * `seconds` (a plunger pulled or pushed), with a little wobble of the hand.
+ */
+export function slideWhistleVoc(from: number, to: number, seconds: number): Uint8Array {
+  const n = Math.round(seconds * RATE);
+  const x = new Float32Array(n);
+  let phase = 0;
+  let seed = 7;
+  for (let i = 0; i < n; i++) {
+    const t = i / n;
+    // the glide eases in and out, as a hand does
+    const ease = t * t * (3 - 2 * t);
+    const f = from * Math.pow(to / from, ease) * (1 + 0.012 * Math.sin((2 * Math.PI * 5.5 * i) / RATE));
+    phase += (2 * Math.PI * f) / RATE;
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    const breath = (seed / 0x7fffffff - 0.5) * 0.08;
+    const env = Math.min(1, i / (0.02 * RATE));
+    x[i] = env * (Math.sin(phase) + 0.12 * Math.sin(2 * phase) + breath);
+  }
+  return level(x);
+}

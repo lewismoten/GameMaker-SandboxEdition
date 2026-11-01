@@ -7,7 +7,8 @@
 // once, from the scene's start (PLAYGAME has no timer per map cell), so each balloon is its own
 // ring of blocks, started at its own point so the towers breathe out of step. Up two balloons to
 // each awning, then the tire; on top, he works the pump's handle (Space held) while its gauge
-// fills eight notches, and the gate at the far side opens for a full tire.
+// fills eight notches, and the gate at the far side opens for a full tire. Down its far side, a
+// slide whistle.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { AIR, countedDoor, kit, LEDGE, SOLID, type Kit } from '../blocks/common';
@@ -145,6 +146,8 @@ export function pumpBlocks(pal: Pal): Kit {
   const barrel = sky();
   barrel.rect(6, 0, 8, 20, c('blue', 2)).rect(6, 0, 2, 20, c('blue', 3)).rect(9, 0, 2, 4, c('mach', 4));
   book.add('barrel', barrel, AIR);
+  // down the full tire's far side, once: the slide whistle (a little energy, for its sound slot)
+  book.add('slide', sky(), { ...AIR, hp: 1, touch: 'sky' });
   countedDoor(k, 'gate', 'sky', CTR.psi, 1, (p: Pixels) => {
     p.disc(10, 12, 4, c('paint', 3)).rect(10, 9, 1, 4, ink);
   });
@@ -166,6 +169,7 @@ export function pump(book: Kit['book']): Level {
   m.set(PUMP.handle, PUMP.tireTop - 3, 'handle0')
     .set(PUMP.handle + 1, PUMP.tireTop - 2, 'barrel')
     .set(PUMP.handle + 1, PUMP.tireTop - 1, 'barrel');
+  m.set(t1 + 1, floor - 3, 'slide').set(t1 + 2, floor - 3, 'slide');
   m.set(PUMP.door, floor - 2, 'gate.top').set(PUMP.door, floor - 1, 'gate');
   m.fill(w - 1, 0, 1, floor, '=');
   m.link(PUMP.exit, floor - 1);
