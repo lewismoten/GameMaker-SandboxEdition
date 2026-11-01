@@ -15,6 +15,10 @@ A game that already has a walkthrough (one kept in this browser or in its compan
 made, or a catalog game's shipped one: `editor/widgets/walkRoute.ts`) opens in the player; its
 Redo… (`redoMenu.ts`) redoes the whole walkthrough (the making dialog), one level (the bot
 replays the game with the other levels' old keys tried first, `editor/check/walk/redoLevel.ts`),
-or opens a walkthrough file. A look-only game's redone walkthrough is kept in this browser.
+or opens a walkthrough file. A scene the bot could not get through is kept as an incomplete
+segment (its furthest try, `editor/check/walk/bestAttempt.ts`; the chapter reads "(didn’t finish)"),
+so the player shows how far it got. On the dev server only, a game with no walkthrough plays one
+from the maintainer's git-ignored `.for-lewis/research/archive-walks/` folder
+(`editor/widgets/devLocalWalk.ts`; the production build drops it). A look-only game's redone walkthrough is kept in this browser.
 
 The bot itself and the dialog are the editor's (`editor/check/walk/`, `editor/widgets/walkDialog.ts`).
