@@ -103,7 +103,7 @@ export const LEVELS: LevelDef[] = [
     level: 5,
     desc: 'The Fan Band',
     part: ['the cool verse', 'the hot verse'][i],
-    theme: i ? 'amber' : 'electric',
+    theme: i ? 'hot' : 'cool',
     blocks: fanBlocks(v),
     build: fan(v),
     chr: 'leo',

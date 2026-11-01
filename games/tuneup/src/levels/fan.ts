@@ -4,8 +4,9 @@
 // on (Space, reaching up under it) to join the band. Warm air rises up the columns in pulses on
 // the beat (half a beat pushing up, half a beat still, so he rises a step at a time and can step
 // off at the top). Two verses, a scene each; the second is hotter, its columns out of step with
-// each other. When every fan in a verse plays, the flap opens.
-import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+// each other. When every fan in a verse plays, the flap opens. A thermometer on the wall shows the
+// motor warming the air, a notch at a time: cool blue in the first verse, up into the red in the hot one.
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, countedDoor, GRAV, kit, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
@@ -16,6 +17,8 @@ import { MapBuilder, at, type Level } from './maps';
 export const FAN_BEAT = 10;
 /** The rows: the ceiling, the ledges, the floor (Doc Leo stands two blocks over a floor). */
 export const FAN_ROW = { ceiling: 0, cap: 1, high: 2, ledge: 5, low: 6, floor: 9 } as const;
+/** The temperature gauge: its notches, and the ticks the warming motor takes for each. */
+export const GAUGE = { notches: 12, ticks: 90 } as const;
 
 export interface FanVerse {
   file: string;
@@ -29,6 +32,9 @@ export interface FanVerse {
   /** Tool chests on the floor to hop (x). */
   chests: number[];
   exit: number;
+  /** The temperature gauges on the wall (x, rows 2-3), and the notches the motor warms them through, from and to. */
+  gauges: number[];
+  heat: [number, number];
 }
 
 export const FAN_VERSES: FanVerse[] = [
@@ -53,6 +59,8 @@ export const FAN_VERSES: FanVerse[] = [
     ],
     chests: [15],
     exit: 27,
+    gauges: [1, 15],
+    heat: [2, 7],
   },
   {
     file: 'fan2',
@@ -78,6 +86,8 @@ export const FAN_VERSES: FanVerse[] = [
     ],
     chests: [23],
     exit: 33,
+    gauges: [1, 23],
+    heat: [7, GAUGE.notches],
   },
 ];
 
@@ -108,20 +118,44 @@ export function fanBlocks(v: FanVerse) {
     // a fan: off (still, a kazoo hanging silent), on (spinning, the kazoo buzzing)
     const fan = (on: boolean, f: number) => {
       const p = k.pic('vent');
-      p.disc(10, 9, 8, c('mach', 1)).disc(10, 9, 7, c('mach', 3));
+      // (the fan and its kazoo in the fixed colors, so they stand out in either verse)
+      p.disc(10, 9, 8, c('blue', 0)).disc(10, 9, 7, on ? c('blue', 2) : c('metal', 1));
       const a = f * 0.8 + (on ? 0 : 0.3);
       for (let b = 0; b < 3; b++) {
         const ang = a + (b * Math.PI * 2) / 3;
-        p.line(10, 9, 10 + Math.round(Math.cos(ang) * 6), 9 + Math.round(Math.sin(ang) * 6), on ? c('lamp', 4) : c('mach', 5));
+        const tip = [10 + Math.round(Math.cos(ang) * 6), 9 + Math.round(Math.sin(ang) * 6)] as const;
+        p.line(10, 9, ...tip, on ? c('yellow', 3) : c('metal', 3));
+        p.line(10, 9, tip[0] + 1, tip[1], on ? c('yellow', 2) : c('metal', 2));
       }
-      p.disc(10, 9, 1.5, c('mach', 0));
-      // its kazoo
-      p.rect(13, 16, 6, 3, on ? c('accent', 3) : c('accent', 1)).rect(15, 15, 2, 1, c('mach', 4));
-      if (on && f % 2) p.set(19, 14, c('lamp', 4)).set(18, 12, c('lamp', 4));
+      p.disc(10, 9, 1.5, c('red', 1));
+      // its kazoo, red with a steel buzzer
+      p.rect(12, 16, 7, 3, on ? c('red', 3) : c('red', 1))
+        .rect(12, 16, 7, 1, on ? c('pink', 3) : c('red', 2))
+        .rect(15, 15, 2, 1, c('metal', 4));
+      if (on && f % 2) p.set(19, 14, c('yellow', 3)).set(18, 12, c('yellow', 3)).set(16, 12, c('yellow', 2));
       return p;
     };
     book.add('fan', fan(false, 0), { ...AIR, effect: CTR.fans, eamt: 1, score: 50, touch: 'fan.on0' });
     for (let f = 0; f < 3; f++) book.add(`fan.on${f}`, fan(true, f), { ...AIR, ntime: 2, next: `fan.on${(f + 1) % 3}` });
+    // the temperature gauge: a thermometer two blocks tall whose red climbs a notch at a time as the
+    // motor warms (a chain of blocks on a timer, top and bottom in step), from cool blue to hot red
+    const thermo = (n: number): [Pixels, Pixels] => {
+      const big = new Pixels(20, 40, 255);
+      big.rect(6, 1, 8, 31, c('ink', 0)).rect(7, 2, 6, 29, c('paint', 3));
+      big.disc(10, 33, 5.5, c('ink', 0)).disc(10, 33, 4.5, c('red', 2));
+      for (let i = 0; i < GAUGE.notches; i++) big.rect(14, Math.round(29 - i * 2.25), 3, 1, i >= GAUGE.notches - 3 ? c('red', 3) : c('ink', 1));
+      const top = Math.round(30 - (n * 27) / GAUGE.notches);
+      const merc = n >= GAUGE.notches - 2 ? 'red' : n >= GAUGE.notches / 2 ? 'orange' : 'blue';
+      big.rect(9, top, 2, 31 - top, c(merc, 2)).rect(9, top, 1, 31 - top, c(merc, 3));
+      return [k.pic('vent').blit(big.crop(0, 0, 20, 20), 0, 0, 255), k.pic('vent').blit(big.crop(0, 20, 20, 20), 0, 0, 255)];
+    };
+    const [from, to] = v.heat;
+    for (let n = from; n <= to; n++) {
+      const [hi, lo] = thermo(n);
+      const more = n < to ? { ntime: GAUGE.ticks } : {};
+      book.add(`thermo${n}`, hi, { ...AIR, ...more, ...(n < to ? { next: `thermo${n + 1}` } : {}) });
+      book.add(`thermo${n}.b`, lo, { ...AIR, ...more, ...(n < to ? { next: `thermo${n + 1}.b` } : {}) });
+    }
     // the ledges' metal brackets come from the base set; the floor's top
     book.add('chest', k.pic('casting.top'), { solid: SOLID });
     // the flap at the end: shut until every fan plays
@@ -145,6 +179,7 @@ export function fan(v: FanVerse) {
     for (const [a, b] of v.ledges) m.fill(a, R.ledge, b - a + 1, 1, 'l');
     for (const [x, y] of v.fans) m.set(x, y, 'fan');
     for (const x of v.chests) m.set(x, R.floor - 1, 'chest');
+    for (const x of v.gauges) m.set(x, 2, `thermo${v.heat[0]}`).set(x, 3, `thermo${v.heat[0]}.b`);
     m.set(v.exit, R.floor - 2, 'flap.top').set(v.exit, R.floor - 1, 'flap');
     m.fill(w - 1, 0, 1, R.floor, '#');
     m.link(v.exit + 1, R.floor - 1);
