@@ -158,6 +158,14 @@ describe('another scene adds to it', () => {
     expect(otherScenesAdding(t.game, t, 2, [21]).size).toBe(0);
   });
 
+  it('a scene with no character file keeps the one before it', () => {
+    const t = twoScenes();
+    t.game.scenes[3].files[5] = '';
+    expect(otherScenesAdding(t.game, t, 2, [20])).toEqual(new Map([[20, ['Cave (scene 3)']]]));
+    t.game.scenes[2].files[5] = '';
+    expect(otherScenesAdding(t.game, t, 2, [20]).size).toBe(0);
+  });
+
   it('words it as a suggestion', () => {
     const why = lockedWhy(locksOf(doorWorld()), new Set(), new Map([[20, ['Cave', 'Pit', 'Lake', 'Top']]]))!;
     expect(why).toContain('needs counter 20: another scene adds to it: Cave, Pit, Lake (and 1 more).');

@@ -3,7 +3,7 @@
 // in another scene; the bot plays one scene at a time, and lockedWhy (gates.ts) names these
 // scenes instead of saying nothing adds to the counter.
 import { loadScene } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
-import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { LASTMON, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { sceneKind, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { FileSource } from '../sim';
 import { monsterAdds, sourcesOf } from './gates';
@@ -13,11 +13,21 @@ export function otherScenesAdding(game: Game, files: FileSource, scene: number, 
   const want = new Set(counters);
   const out = new Map<number, string[]>();
   if (!want.size) return out;
+  // a scene can leave out a file and keep the one played before it (loadScene's prev): the scene
+  // before it in the list stands in for that; one that still can't load is skipped
+  let prev: World | undefined;
   game.scenes.forEach((s, i) => {
-    if (i === scene || sceneKind(s) !== 'adventure') return;
-    const loaded = loadScene({ game, m: { files } }, i);
+    if (sceneKind(s) !== 'adventure') return;
+    let loaded: ReturnType<typeof loadScene>;
+    try {
+      loaded = loadScene({ game, m: { files } }, i, prev);
+    } catch {
+      return;
+    }
     if (Array.isArray(loaded)) return;
     const w = loaded.world;
+    prev = w;
+    if (i === scene) return;
     const found = new Set(sourcesOf(w.map, w.bg, want, [], undefined, w).map((x) => x.counter));
     for (const mm of w.mm) if (mm.monnum < LASTMON) for (const c of monsterAdds(w, mm.monnum)) if (want.has(c)) found.add(c);
     // with its number: many games leave every scene "UnTitled"
