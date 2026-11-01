@@ -12,7 +12,7 @@ import { Term, boxBottom, boxRow, boxRule, boxTop, modemSignal, sleep, statusLin
 import { gifGallery } from './gifArea';
 import { gameDiz, isSofaFile } from './fileId';
 import { WAREZ, warezArea, zipsOf } from './warezArea';
-import { dizSummary, Pager, pageLabel, readNumber, uploadDate } from './pager';
+import { dizSummary, Pager, pageLabel, readNumber, releaseKey, uploadDate } from './pager';
 import { GALLERY } from './gallery';
 import {
   account,
@@ -275,11 +275,11 @@ const NEWEST_SHOWN = 6;
 
 /** The bulletins: news from the SysOp, picked by number. */
 async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
-  // the newest few (by year, latest first), so the bulletin fits a screen; N lists them all
+  // the newest few (by release month, latest first), so the bulletin fits a screen; N lists them all
   const fresh = catalog.filter((g) => g.original);
   const newest = fresh
     .map((g, i) => ({ g, i }))
-    .sort((x, y) => (y.g.year ?? 0) - (x.g.year ?? 0) || y.i - x.i)
+    .sort((x, y) => releaseKey(y.g) - releaseKey(x.g) || y.i - x.i)
     .slice(0, NEWEST_SHOWN)
     .map((x) => x.g);
   const items: [string, string[]][] = [

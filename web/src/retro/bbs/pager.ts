@@ -4,6 +4,7 @@
 // before the caller has seen it, however many files the area grows to.
 import { ROWS } from '../text/textScreen';
 import type { Term } from './term';
+import { SCOOP_MONTHS } from '../../manual/printables/scoopIssues';
 
 /** Rows the terminal shows above its status bar. */
 const SCREEN_ROWS = ROWS - 1;
@@ -133,12 +134,27 @@ export class Pager {
 /** The file a "#", "V#" or "R#" answer asks to read about (1-based), or NaN. */
 export const readNumber = (answer: string) => (/^[VR]?\d+$/.test(answer) ? Number(answer.replace(/^[VR]/, '')) : NaN);
 
-/** The day a file went up, made up but always the same for it: MM-DD-YY in its year. */
-export function uploadDate(key: string, year = 1995): string {
+/**
+ * The day a file went up, made up but always the same for it: MM-DD-YY. A Sandbox game goes up in
+ * its release month (SCOOP_MONTHS); any other game gets a month by its key, and nothing is
+ * dated after December 1994, the desk's month.
+ */
+export function uploadDate(key: string, year = 1994): string {
   let x = 2166136261;
   for (const c of key) x = Math.imul(x ^ c.charCodeAt(0), 16777619) >>> 0;
   const two = (n: number) => String(n).padStart(2, '0');
-  return `${two(1 + (x % 12))}-${two(1 + ((x >>> 8) % 28))}-${two(year % 100)}`;
+  const set = /^(\d{4})-(\d\d)$/.exec(SCOOP_MONTHS[key] ?? '');
+  let y = set ? Number(set[1]) : Math.min(year, 1994);
+  // no month on record: before the 3.0 box's autumn there is no rule, from 1994 on, September to December
+  const month = set ? Number(set[2]) : y >= 1994 ? 9 + (x % 4) : 1 + (x % 12);
+  if (y > 1994) y = 1994;
+  return `${two(month)}-${two(1 + ((x >>> 8) % 28))}-${two(y % 100)}`;
+}
+
+/** A game's month as a sortable number (year * 12 + month), the same month its upload date shows. */
+export function releaseKey(g: { id: string; year?: number }): number {
+  const [mm, , yy] = uploadDate(g.id, g.year).split('-').map(Number);
+  return yy * 12 + mm;
 }
 
 /** A FILE_ID.DIZ's first line as a one-line summary: its title, without the [1/1] disk count. */
