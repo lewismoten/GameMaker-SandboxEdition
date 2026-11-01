@@ -1,5 +1,6 @@
-// The preset picker: a searchable list of instrument presets in families, as radio buttons
-// (arrow keys move through them, and each one chosen plays a short phrase), for one track.
+// The preset picker: a searchable grid of instrument presets, one picture and name each, in
+// families that flow like words (a turned family name, then its buttons on a tinted ground). They
+// are radio buttons (arrow keys move through all of them; each one chosen plays a short phrase).
 // On a drum track in rhythm mode it lists that drum's presets and says what the drum shares.
 import { h, modal } from '../../core/ui';
 import { OPL_PRESETS, PRESET_GROUPS, findPreset } from '../../../audio/oplPresets';
@@ -7,6 +8,7 @@ import { DRUM_SLOTS, slotOfChannel } from '../../../audio/oplDrumPresets';
 import type { OplPreset } from '../../../audio/oplPatch';
 import { programChanges, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import type { MusicDoc } from './doc';
+import { presetIcon } from './presetIcons';
 
 interface PickFor {
   /** The MIDI channel (track) the sound is for. */
@@ -48,32 +50,40 @@ export function pickPreset(doc: MusicDoc, at: PickFor): Promise<OplPreset | unde
       use.disabled = again.disabled = !chosen;
     };
     const rows = new Map<OplPreset, HTMLElement>();
-    const groups = PRESET_GROUPS.map((g) => {
+    const about = h('p', { class: 'hint mus-preset-about', 'aria-live': 'polite' });
+    const tell = (p?: OplPreset) => {
+      about.textContent = p ? `${p.name}: ${p.about}` : 'Choose a sound to hear it.';
+    };
+    const groups = PRESET_GROUPS.map((g, gi) => {
       const items = list.filter((p) => p.group === g.id);
       if (!items.length) return null;
+      const full = slot ? `${g.name}: ${DRUM_SLOTS[slot].name.toLowerCase()}` : g.name;
       const set = h(
-        'fieldset',
-        { class: 'mus-preset-group' },
-        h('legend', null, slot ? `${g.name}: ${DRUM_SLOTS[slot].name.toLowerCase()}` : g.name),
-        ...items.map((p) => {
-          const radio = h('input', { type: 'radio', name: 'preset', value: p.id, checked: p === chosen });
-          // a click, Space or an arrow key choosing it: hear it
-          radio.addEventListener('click', () => {
-            chosen = p;
-            label();
-            void doc.previewPreset(p);
-          });
-          const row = h(
-            'label',
-            { class: 'mus-preset', title: p.about },
-            radio,
-            h('span', { class: 'mus-preset-text' }, h('b', null, p.name), h('small', null, p.about)),
-          );
-          // double-click: use it at once
-          row.addEventListener('dblclick', () => close(p));
-          rows.set(p, row);
-          return row;
-        }),
+        'div',
+        { class: 'mus-preset-group', role: 'group', 'aria-label': full, style: `--h:${(gi * 47 + 20) % 360}`, dataset: { name: full } },
+        h('span', { class: 'mus-preset-gname', 'aria-hidden': 'true' }, slot ? DRUM_SLOTS[slot].name : g.name),
+        h(
+          'div',
+          { class: 'mus-preset-tiles' },
+          ...items.map((p) => {
+            const radio = h('input', { type: 'radio', name: 'preset', value: p.id, checked: p === chosen, 'aria-label': `${p.name}: ${p.about}` });
+            // a click, Space or an arrow key choosing it: hear it
+            radio.addEventListener('click', () => {
+              chosen = p;
+              label();
+              tell(p);
+              void doc.previewPreset(p);
+            });
+            radio.addEventListener('focus', () => tell(p));
+            const icon = h('span', { class: 'mus-preset-icon' });
+            icon.innerHTML = presetIcon(p.id, p.group);
+            const row = h('label', { class: 'mus-preset', title: `${p.name}: ${p.about}` }, radio, icon, h('span', { class: 'mus-preset-name' }, p.name));
+            // double-click: use it at once
+            row.addEventListener('dblclick', () => close(p));
+            rows.set(p, row);
+            return row;
+          }),
+        ),
       );
       return { set, items };
     });
@@ -82,7 +92,7 @@ export function pickPreset(doc: MusicDoc, at: PickFor): Promise<OplPreset | unde
       let shown = 0;
       for (const g of groups) {
         if (!g) continue;
-        const groupName = words(g.set.querySelector('legend')!.textContent ?? '');
+        const groupName = words(g.set.dataset.name ?? '');
         let any = false;
         for (const p of g.items) {
           const text = `${words(p.name)} ${words(p.about)} ${groupName}`;
@@ -127,6 +137,7 @@ export function pickPreset(doc: MusicDoc, at: PickFor): Promise<OplPreset | unde
       ),
       count,
       h('div', { class: 'mus-preset-list' }, ...groups.map((g) => g?.set ?? null)),
+      about,
       h(
         'div',
         { class: 'buttons' },
@@ -137,6 +148,7 @@ export function pickPreset(doc: MusicDoc, at: PickFor): Promise<OplPreset | unde
       ),
     );
     label();
+    tell(chosen);
     filter();
     requestAnimationFrame(() => {
       search.focus();
