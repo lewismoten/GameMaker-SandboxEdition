@@ -10,9 +10,19 @@ import { presetName } from './sbi';
 import { presetPreview } from '../../../audio/oplPresetPreview';
 import type { OplPreset } from '../../../audio/oplPatch';
 import { instrumentLook } from './instrumentLook';
+import { orderTracks } from './trackOrder';
+import { isReadOnlyError } from '../../core/readOnly';
 
 /** What changed: the song itself, the view (scroll, zoom, selection), the selected track, or playback. */
 type Change = 'song' | 'view' | 'track' | 'play';
+
+/** One undo step: the song's bytes and the track order from before a change. */
+interface Step {
+  song: Uint8Array;
+  order: number[];
+}
+
+const ORDER_SECTION = 'trackOrder';
 
 /** One color per MIDI channel, from the EGA palette. */
 export const TRACK_COLORS = [
@@ -64,6 +74,8 @@ export class MusicDoc {
   selection = new Set<Note>();
   muted = new Set<number>();
   solo = new Set<number>();
+  /** The order the tracks are listed in (editor-only, saved in the companion file; trackOrder.ts). */
+  order: number[] = [];
   /** Tracks added but still empty. */
   extra = new Set<number>();
   cursor = 0;
@@ -79,8 +91,8 @@ export class MusicDoc {
   ghosts = true;
   clipboard: { dt: number; len: number; key: number; vel: number }[] = [];
 
-  private undoStack: Uint8Array[] = [];
-  private redoStack: Uint8Array[] = [];
+  private undoStack: Step[] = [];
+  private redoStack: Step[] = [];
   private listeners = new Set<(c: Change) => void>();
   private saveTimer?: ReturnType<typeof setTimeout>;
   private preview?: { p: Preview; t0: number };
@@ -93,6 +105,7 @@ export class MusicDoc {
     readonly file: string,
   ) {
     this.song = readSong(project.files.get(file)!);
+    this.order = project.extras<number[]>(file, ORDER_SECTION, []);
     this.noteLen = this.beat;
     this.track = this.tracks()[0] ?? 0;
   }
@@ -129,7 +142,7 @@ export class MusicDoc {
 
   tracks(): number[] {
     const set = new Set([...usedChannels(this.song), ...this.extra]);
-    return [...set].sort((a, b) => a - b);
+    return orderTracks([...set], this.order);
   }
 
   trackColor(ch: number): string {
@@ -170,7 +183,7 @@ export class MusicDoc {
 
   /** Call before changing the song (once per gesture). */
   begin(): void {
-    this.undoStack.push(writeSong(this.song));
+    this.undoStack.push(this.step());
     if (this.undoStack.length > 200) this.undoStack.shift();
     this.redoStack = [];
   }
@@ -208,19 +221,43 @@ export class MusicDoc {
   undo(): void {
     const prev = this.undoStack.pop();
     if (!prev) return;
-    this.redoStack.push(writeSong(this.song));
+    this.redoStack.push(this.step());
     this.restore(prev);
   }
 
   redo(): void {
     const next = this.redoStack.pop();
     if (!next) return;
-    this.undoStack.push(writeSong(this.song));
+    this.undoStack.push(this.step());
     this.restore(next);
   }
 
-  private restore(bytes: Uint8Array): void {
-    this.song = readSong(bytes);
+  private step(): Step {
+    return { song: writeSong(this.song), order: [...this.tracks()] };
+  }
+
+  /** Lists the tracks in this order (one undo step; the song file is not touched). */
+  setOrder(order: number[]): void {
+    const now = this.tracks();
+    if (order.length === now.length && order.every((c, i) => c === now[i])) return;
+    this.undoStack.push(this.step());
+    this.redoStack = [];
+    this.storeOrder(order);
+    this.emit('song');
+  }
+
+  private storeOrder(order: number[]): void {
+    this.order = order;
+    try {
+      this.project.setExtras(this.file, ORDER_SECTION, order.length ? order : undefined);
+    } catch (e) {
+      if (!isReadOnlyError(e)) throw e;
+    }
+  }
+
+  private restore(step: Step): void {
+    if (step.order.join() !== this.tracks().join()) this.storeOrder(step.order);
+    this.song = readSong(step.song);
     this.selection.clear();
     this.commit();
     this.emit('track');
