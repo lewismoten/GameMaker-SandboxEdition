@@ -134,6 +134,7 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-mus-track-clip': 'the music editor’s clipboard',
   'gm-file-clip': 'the asset browser’s copied native file and editor extras (this tab only)',
   'gm-map-clip': 'the map editor’s clipboard (this visit only)',
+  'gm-mus-preset-tab': 'the music editor’s preset picker tab (this tab only)',
   'gm-ach-tab': 'the achievements page’s chosen tab (this tab only)',
   'gm-overhead': 'the desk’s room light (this visit only)',
   'gm-blacklight': 'the desk’s black light (this visit only)',
