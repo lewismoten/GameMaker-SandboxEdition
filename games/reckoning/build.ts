@@ -188,7 +188,7 @@ disk.put(
   'license.txt',
   licenseText(
     'The Great Dairy Reckoning of 3:17 a.m.',
-    `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The piece is The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}.`,
+    `The Bard of Bizarre's 1994 shareware notice, its fee and its address are part of the story: there is nothing to pay. The piece is The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}.`,
     RECORDED_VOCS,
   ),
 );
