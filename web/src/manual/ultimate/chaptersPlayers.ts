@@ -12,8 +12,9 @@
 // axis the two are farther apart on, and which solid bit pushes which way) and movechars (the
 // hero put beside MMsolid with no wall check, that axis's move canceled, chkmapbounds wrapping
 // him), as engine/monsters.ts chkMonChr and engine/character.ts port them. The DOSBox screenshot
-// is Lewis's (NOTICE.md).
+// is Lewis's (NOTICE.md). The clock and the ceilings are limitsClock.ts.
 import { opening, tip, type Chapter } from './chapter';
+import { CLOCK_LIMITS } from './limitsClock';
 
 export const PLAYERS: Chapter = {
   id: 'players',
@@ -162,6 +163,7 @@ export const LIMITS: Chapter = {
     <li><b>Keep intros short.</b> <kbd>Esc</kbd> is read only between animations, so a long one
     can’t be skipped until it ends. A few short clips in a slide list answer sooner.</li>
   </ul>
+  ${CLOCK_LIMITS}
   <h2>Limits that aren’t, and one that is</h2>
   <ul>
     <li><b>More than 20 scenes.</b> The Integrator starts with 20, but that is no ceiling: community
