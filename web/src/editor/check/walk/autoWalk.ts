@@ -83,10 +83,15 @@ export interface AutoWalk {
 }
 
 /** What the closing card of a walkthrough that stops partway says, after "The bot got this far." */
-function endingOf(name: string, why: 'stopped' | 'stuck' | 'no-way'): string {
-  if (why === 'stopped') return `It was stopped partway through ${name}.`;
-  if (why === 'stuck') return `It found no way through ${name}.`;
-  return `${name} had no way on it hadn’t taken.`;
+export function endingOf(name: string, why: 'stopped' | 'stuck' | 'no-way', scene = -1, cannot = false): string {
+  // a scene named only by a number ("2") would read as a scene number: say which one it is
+  const label = /^\d+$/.test(name) && scene >= 0 ? `${name} (scene ${scene})` : name;
+  if (why === 'stopped') return `It was stopped partway through ${label}.`;
+  if (why === 'stuck') {
+    const base = `It found no way through ${label}.`;
+    return cannot ? `${base} The hero could not move from where it starts: every key it tried left it in place.` : base;
+  }
+  return `${label} had no way on it hadn’t taken.`;
 }
 
 interface AutoWalkOptions {
@@ -169,7 +174,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     out.scenes.push(outcome);
     if (!ways.length) {
       out.stopped = `${name} has no way on that the bot hasn’t taken already.`;
-      ending = endingOf(name, 'no-way');
+      ending = endingOf(name, 'no-way', scene);
       break;
     }
     const goal = ways.map((l) => l.from.y * MLEN + l.from.x);
@@ -308,13 +313,15 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     if (!found && !canceled && !backOnly) await collect();
     if (canceled) {
       out.stopped = 'Stopped.';
-      ending = endingOf(name, 'stopped');
+      ending = endingOf(name, 'stopped', scene);
       break;
     }
     if (!found) {
       outcome.heat = biggest?.heat;
-      out.stopped = `No bot style got through ${name}: the walkthrough stops there.${lockWhy ? ` ${lockWhy}` : ''}`;
-      ending = endingOf(name, 'stuck');
+      out.stopped = `No bot style got through ${/^\d+$/.test(name) ? `${name} (scene ${scene})` : name}: the walkthrough stops there.${lockWhy ? ` ${lockWhy}` : ''}`;
+      // did the hero ever leave the start? (the card says so when it never moved)
+      const places = biggest?.places.length ?? 0;
+      ending = endingOf(name, 'stuck', scene, !!biggest && places <= 1);
       // the bot's furthest try, so the person can watch how far it got in this scene
       const part = await bestAttempt(game, files, scene, entry, biggest, goal, MLEN, ending, seed);
       if (part) {
@@ -349,7 +356,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
         scenes: [...out.scenes.map(({ heat: _h, ...o }) => ({ ...o, tried: o.tried.slice() })), { scene, name: nextName, tried: [] }],
         won: false,
         stopped: 'Stopped.',
-        walk: walkSoFar(false, endingOf(nextName, 'stopped')),
+        walk: walkSoFar(false, endingOf(nextName, 'stopped', scene)),
       });
     }
   }
