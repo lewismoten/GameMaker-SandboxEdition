@@ -1,12 +1,11 @@
 // DEMO.REC: what plays on the title screen when nobody touches the keyboard: the start of the
-// bot's own run in the Piano Shop (tools/gendemo.ts writes RECORDED), as pairs of [ticks since
+// bot's own run in Jump Start (tools/gendemo.ts writes RECORDED), as pairs of [ticks since
 // the last key, PC scan code; +128 = released], ending with Esc.
 import { recordedDemo } from '@lewismoten/gamemaker-sandbox-tools/kit/recordedDemo';
 
 const RECORDED: number[] = [
-  4, 77, 16, 205, 6, 75, 27, 203, 17, 77, 8, 205, 6, 77, 31, 72, 10, 200, 8, 205, 6, 18, 12, 146, 0, 77, 15, 205, 3, 77, 4, 205, 6, 77, 3, 72, 10, 200, 7, 72,
-  10, 200, 7, 72, 10, 200, 7, 72, 10, 200, 7, 72, 10, 200, 7, 72, 10, 200, 4, 205, 6, 77, 12, 205, 6, 77, 11, 205, 18, 18, 12, 146, 0, 77, 3, 205, 3, 77, 4,
-  205, 6, 77, 6, 205, 17, 77, 3, 72, 10, 200, 8, 205, 6, 77,
+  13, 77, 8, 72, 10, 200, 8, 72, 10, 200, 8, 72, 10, 200, 10, 205, 6, 77, 20, 205, 6, 77, 5, 205, 6, 18, 12, 146, 0, 77, 3, 205, 3, 77, 10, 205, 6, 77, 8, 205,
+  16, 75, 45, 203, 6, 77, 80, 205, 6, 57, 29, 185, 6, 77, 8, 72, 10, 200,
 ];
 
 export function demoRecording(): Uint8Array {

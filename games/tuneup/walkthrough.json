@@ -1,334 +1,106 @@
 {
- "version": 1,
- "game": "tuneup",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "BE0QzQZLG8sRTQjNBk0fSArICM0GEgySAE0PzQNNBM0GTQNICsgHSArIB0gKyAdICsgHSArIB0gKyATNBk0MzQZNC80SEgySAE0DzQNNBM0GTQbNEU0DSArICM0GTQpICsgPSArICkgKyA=="
+  "version": 1,
+  "game": "tuneup",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 3,
-   "keys": "D0sEywQ5AbkCTQjNBDkBuQJLCMsEOQG5Ak0IzQQ5AbkSOQG5A0sIywQ5AbkCTQjNBDkBuQJLCMsEOQG5Ak0IzQQ5AbkSOQG5A0sIywQ5AbkCTQjNAzkBuQNLCMsDOQG5A00IzQM5AbkTOQG5A0sIywM5AbkDTQjNBDkBuQJLCMsDOQG5A00IzQM5AbkTOQG5A00="
-  },
-  {
-   "scene": 4,
-   "keys": "BEsYywZNGM0GTRZICsg="
-  },
-  {
-   "scene": 5,
-   "keys": "BEsIywZLC8sNTSDNBk0MzQZIDcgATRDNBk0LzRRNA0gKyAdICsgHSArIB0gKyAdICsgHSArIBM0GTQzNBk0LzRJNDM0GSA3IAE0EzRdN"
-  },
-  {
-   "scene": 6,
-   "keys": "BEsYywZNHM0GTRJICsg="
-  },
-  {
-   "scene": 7,
-   "keys": "D0sPSArIC8sITQdICsgfzQZNA0gKyAdICsgMzQZLBMsGSAbIAEsUywZLEMsGSw=="
-  },
-  {
-   "scene": 8,
-   "keys": "BEsYywZNDM0GTSJICsg="
-  },
-  {
-   "scene": 9,
-   "keys": "D00IzQZNDM1CTQzNBk0LzRZLCMsGTRNICsgEzQdNB80+TRDNBk0PzRJNC0gKyATNB00GSArI"
-  },
-  {
-   "scene": 10,
-   "keys": "BEsYywZNGM0GTRZICsg="
-  },
-  {
-   "scene": 11,
-   "keys": "D00IzQZNC0gKyAdICsgEzQcSDJIATQPNB00EzQZNB80TTQdICsgHSArIBM0HEgySAE0DzQZNBM0GTQbNE00HSArIB0gKyATNBxIMkgBNAM0JTQPNBk0FSArI"
-  },
-  {
-   "scene": 12,
-   "keys": "BEsYywZNGM0GTRZICsg="
-  },
-  {
-   "scene": 13,
-   "keys": "CFAB0CJIAcgFSAHIKEgByAVIAcggUAHQBVAB0BhIAcgqUAHQBVAB0CBIAcgiUAHQBlAB0E5IAcgFSAHI"
-  },
-  {
-   "scene": 14,
-   "keys": "BEsYywZNFM0GTRpICsg="
-  },
-  {
-   "scene": 15,
-   "keys": "AUgByBk5AbkDSAHIEzkBuQNQAdAFUAHQDDkBuQRQAdASOQG5BEgByAZIAcgLOQG5BEgByBM5AbkDUAHQBlAB0As5AbkEUAHQEzkBuQNIAcgGSAHICzkBuQRIAcgTOQG5A1AB0AZQAdAMOQG5A1AB0BM5AbkDSAHIBkgByAw5AbkDSAHIEjkBuQRQAdAGUAHQCzkBuQRQAdATOQG5A1AB0AZNEM0GTQjNBk0IzQZNCM0GTQTNBk0="
-  },
-  {
-   "scene": 16,
-   "keys": "BEsYywZNEM0GTR5ICsg="
-  },
-  {
-   "scene": 17,
-   "keys": "D00IzQZNB0gKyATNB00HzQZICsgAUBzQADkBuQJQBtAATQrNBk0IzQZNB0gKyATNB00LzQZICMgAOQG5AlAK0ABNCs0GTQzNBk0MzQZIC8gAOQG5AlAN0ABNCs0GTQ=="
-  },
-  {
-   "scene": 18,
-   "keys": "BEsYywZNFM0GTRpICsg="
-  },
-  {
-   "scene": 19,
-   "keys": "D00IzQZNB0gKyAdICsgEzQdNC80jTQzNBk0EzQZNA0gKyAdICsgEzQdNC80HTQTNNU0MzQZNBM0GTQNICsgHSArIB0gKyATNB00HzQ1NBM0iTQjNBk0EzQZNDM0GTQ=="
-  },
-  {
-   "scene": 20,
-   "keys": "BEsYywZNJM0GTQpICsg="
-  },
-  {
-   "scene": 21,
-   "keys": "D00QzQZNC0gKyApICsgHSArIBM0ITRJICsgMzQ85AbkCTQzNCjkBuQJNDM0JOQG5Ak0SSArIBM0HTQ=="
-  },
-  {
-   "scene": 22,
-   "keys": "BEsYywZNFM0GTRpICsg="
-  },
-  {
-   "scene": 23,
-   "keys": "D00IzQZNC0gKyATNB00XzQZNEM0GTQTNBk0EzQZNEM0GTQdICsgEzQdNB80ITQNICsgHSArIBM0HTQZICsg="
-  },
-  {
-   "scene": 24,
-   "keys": "BEsYywZNIM0GTQ5ICsg="
-  },
-  {
-   "scene": 25,
-   "keys": "D00IzQZND0gKyATNB00HzTpNCM0GTQTNBk0DSArIB0gKyATNB00LzQdNB0gKyATNB00DzS5NCM0GTQTNBk0DSArIB0gKyATNB00LzQdNBM0JTQjNBk0EzQZNA0gKyAdICsgEzQdNA0gKyATNB00HzQ1NBM0wTQjNBk0IzQZNB0gKyATNB00GSArI"
-  },
-  {
-   "scene": 26,
-   "keys": "BEsYywZNEM0GTR5ICsg="
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: The Piano Shop"
-  },
-  {
-   "scene": 3,
-   "title": "Level 2: The Player Piano"
-  },
-  {
-   "scene": 4,
-   "title": "The Bandstand"
-  },
-  {
-   "scene": 5,
-   "title": "Level 3: The Music Store's Back Room"
-  },
-  {
-   "scene": 6,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 7,
-   "title": "Level 4: The Choir Loft"
-  },
-  {
-   "scene": 8,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 9,
-   "title": "Level 5: The Basement"
-  },
-  {
-   "scene": 10,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 11,
-   "title": "Level 6: The Arcade"
-  },
-  {
-   "scene": 12,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 13,
-   "title": "Level 7: The Roller Rink"
-  },
-  {
-   "scene": 14,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 15,
-   "title": "Level 8: The Marching Field"
-  },
-  {
-   "scene": 16,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 17,
-   "title": "Level 9: The Woods by the River"
-  },
-  {
-   "scene": 18,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 19,
-   "title": "Level 10: The Clock Tower"
-  },
-  {
-   "scene": 20,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 21,
-   "title": "Level 11: The Farm"
-  },
-  {
-   "scene": 22,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 23,
-   "title": "Level 12: The Attic"
-  },
-  {
-   "scene": 24,
-   "title": "The Bandstand Again"
-  },
-  {
-   "scene": 25,
-   "title": "Level 13: Sound Check"
-  },
-  {
-   "scene": 26,
-   "title": "The Bandstand Again"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 28807,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "DU0ISArICEgKyAhICsgKzQZNFM0GTQXNBhIMkgBNA80DTQrNBk0IzRBLLcsGTVDNBjkduQZNCEgKyA=="
+    },
+    {
+      "scene": 3,
+      "keys": "DUsUyxRNBc0GSArIAE0KzQZNCM0TTQjNJk0FzQZICsgATQrNBk0IzRVNFM0TTQXNBkgKyABNCs0GTQjNEU0IzRRNBc0GSArIAE0KzQZNCM0VTQ=="
+    },
+    {
+      "scene": 4,
+      "keys": "D0sKywE5AbkETQXNDzkBuQNNBs0OOQG5A00GzQ45AbkDSxDLBDkBuQNNBs0NOQG5BE0FzQ85AbkDTQbNDTkBuQRLD8sEOQG5BE0FzQ45AbkETQXNDjkBuQRNBc0OOQG5BE0="
+    },
+    {
+      "scene": 5,
+      "keys": "D0sKyyw5AbkDTRDNAzkBuQRLD8sEOQG5BE0FzQ45AbkESwXLDzkBuQNNEM0DOQG5BEsPywU5AbkDTQbNDTkBuQRLBcsPOQG5A00QzQM5AbkETQ=="
+    },
+    {
+      "scene": 6,
+      "keys": "GjkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNATkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNAjkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00GzQE5AbkETQXNAzkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00="
+    },
+    {
+      "scene": 7,
+      "keys": "D00ZzQksAawLLAGsCi0BrQstAa0LLgGuCy8BrwkuAa4JLwGvCzABsA8wAbBsLAGsCy0BrQsuAa4LLwGvCjABsIQBLAGsCi0BrQsuAa4JLwGvCjABsDpL"
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0
-   },
-   {
-    "title": "Story",
-    "frame": 1028
-   },
-   {
-    "title": "Level 1: The Piano Shop",
-    "frame": 2257
-   },
-   {
-    "title": "Level 2: The Player Piano",
-    "frame": 3954
-   },
-   {
-    "title": "The Bandstand",
-    "frame": 5223
-   },
-   {
-    "title": "Level 3: The Music Store's Back Room",
-    "frame": 5695
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 7063
-   },
-   {
-    "title": "Level 4: The Choir Loft",
-    "frame": 7535
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 8428
-   },
-   {
-    "title": "Level 5: The Basement",
-    "frame": 8900
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 10307
-   },
-   {
-    "title": "Level 6: The Arcade",
-    "frame": 10779
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 12015
-   },
-   {
-    "title": "Level 7: The Roller Rink",
-    "frame": 12487
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 13901
-   },
-   {
-    "title": "Level 8: The Marching Field",
-    "frame": 14373
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 16054
-   },
-   {
-    "title": "Level 9: The Woods by the River",
-    "frame": 16526
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 17772
-   },
-   {
-    "title": "Level 10: The Clock Tower",
-    "frame": 18244
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 19879
-   },
-   {
-    "title": "Level 11: The Farm",
-    "frame": 20351
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 21360
-   },
-   {
-    "title": "Level 12: The Attic",
-    "frame": 21832
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 22818
-   },
-   {
-    "title": "Level 13: Sound Check",
-    "frame": 23290
-   },
-   {
-    "title": "The Bandstand Again",
-    "frame": 25472
-   },
-   {
-    "title": "Ending",
-    "frame": 25944
-   },
-   {
-    "title": "Credits",
-    "frame": 27255
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: Jump Start"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Spark Plucks"
+    },
+    {
+      "scene": 4,
+      "title": "Level 3: The Timing Beat, the straight verse"
+    },
+    {
+      "scene": 5,
+      "title": "Level 3: The Timing Beat, the syncopated verse"
+    },
+    {
+      "scene": 6,
+      "title": "Level 3: The Timing Beat, the double-time verse"
+    },
+    {
+      "scene": 7,
+      "title": "Level 4: Oil's Well"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 20164,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0
+      },
+      {
+        "title": "Story",
+        "frame": 1028
+      },
+      {
+        "title": "Level 1: Jump Start",
+        "frame": 2257
+      },
+      {
+        "title": "Level 2: Spark Plucks",
+        "frame": 5238
+      },
+      {
+        "title": "Level 3: The Timing Beat, the straight verse",
+        "frame": 8106
+      },
+      {
+        "title": "Level 3: The Timing Beat, the syncopated verse",
+        "frame": 10682
+      },
+      {
+        "title": "Level 3: The Timing Beat, the double-time verse",
+        "frame": 12465
+      },
+      {
+        "title": "Level 4: Oil's Well",
+        "frame": 14321
+      },
+      {
+        "title": "Ending",
+        "frame": 17193
+      },
+      {
+        "title": "Credits",
+        "frame": 18612
+      }
+    ]
+  }
 }
