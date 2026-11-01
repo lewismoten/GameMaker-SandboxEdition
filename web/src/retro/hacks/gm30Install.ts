@@ -1,4 +1,4 @@
-// INSTALL.EXE in C:\DOWNLOAD\GM30, the Warez area's "rip" of Game-Maker 3.00: a 1995-style
+// INSTALL.EXE in C:\DOWNLOAD\GM30, the Warez area's "rip" of Game-Maker 3.00: a 1994-style
 // text-mode installer that checks the PC, asks where to install, and then finds Game-Maker in
 // C:\GM already (with its registration, read as CHK.EXE reads PLAYGAME.REG) and stops, since
 // plain 3.00 would undo the Sandbox Edition. Anywhere else, disk 3 of the download turns out

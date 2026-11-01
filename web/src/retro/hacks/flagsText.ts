@@ -24,7 +24,7 @@ export const FLAGS_HELP = [
 
 export const FLAGS_DIZ = [
   'FLAGS 1.0 - REMEMBERED-STATE DEBUGGER [1/1]',
-  'by vesuvian, 1995                   Freeware',
+  'by vesuvian, 1994                   Freeware',
   '---------------------------------------------',
   'List, set, clear and reset what the PC',
   'remembers: badges, eggs, hearts, trophies,',
@@ -48,5 +48,5 @@ export const FLAGS_NFO = [
   'FLAGS lets you test them in minutes without losing your own progress.',
   "It changes this browser's pretend PC only. Saved games are SAVEHACK's.",
   '',
-  'Freeware. Sandbox Software, 1995. Teddy checked it twice and ate the manual.',
+  'Freeware. Sandbox Software, 1994. Teddy checked it twice and ate the manual.',
 ];

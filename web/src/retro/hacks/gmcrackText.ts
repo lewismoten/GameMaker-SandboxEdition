@@ -9,7 +9,7 @@ export const GROUP = 'DiGiTAL DUNE';
 /** Where cracking keeps the original: GAME.EXE -> GAME.BAK. */
 export const bakName = (exe: string): string => exe.replace(/\.EXE$/i, '.BAK').toUpperCase();
 export const VERSION = '1.0';
-const RELEASED = '07/04/95';
+const RELEASED = '09/04/94';
 /** Who the scroller and the .NFO greet. */
 export const GREETS = ['PIXEL WIZARD', 'THE BLOCKSMITH', 'SCROLLMASTER', 'MONSTER MASH', 'SAND CASTLE'];
 
@@ -38,7 +38,7 @@ export const GMCRACK_NFO: string[] = [
   '                 ██   ██  ██   ██  ██▀█▄ ██  ██▄▄▄',
   '                 ██   ██  ██   ██  ██ ▀█▄██  ██▀▀▀',
   '                 ██████▀  ▀█████▀  ██   ▀██  ███████',
-  '                ░▒▓ cracking the sand since 1995 ▓▒░',
+  '                ░▒▓ cracking the sand since 1994 ▓▒░',
   '',
   '  ╔══════════════════════════════════════════════════════════════════════════╗',
   `  ║  PRODUCT ...: Game-Maker SE 3.00 Registration Utility (GMCRACK v${VERSION})     ║`,

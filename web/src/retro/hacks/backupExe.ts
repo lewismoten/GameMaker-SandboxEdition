@@ -36,7 +36,7 @@ import {
 } from './dosUi';
 
 const TITLE = 'BACKUP 2.1  Saved-game backup for Game-Maker games';
-const COPYRIGHT = 'Copyright (C) 1995 Sandbox Software.  Freeware.';
+const COPYRIGHT = 'Copyright (C) 1994 Sandbox Software.  Freeware.';
 /** What BACKUP labels its backups (the date is kept beside the label). */
 const BACKUP_LABEL = 'BACKUP.EXE';
 

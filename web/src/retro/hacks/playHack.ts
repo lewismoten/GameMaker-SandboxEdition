@@ -26,7 +26,7 @@ const RULE = '='.repeat(79);
 const HEADER = [
   RULE,
   `                PLAYHACK v${PLAYHACK_VERSION} - XFERPLAY.EXE Patcher for Game-Maker 3.00`,
-  '                      DiGiTAL DUNE * code: vesuvian * 1995',
+  '                      DiGiTAL DUNE * code: vesuvian * 1994',
   '              Your words, your colors, your player. (Your games only.)',
   RULE,
 ];
@@ -241,7 +241,7 @@ async function editGame(h: RetroHost, projectId: string, dos: string, chrome: (k
       rowEntry.push(e);
     }
     statusLine(h, dirty ? 'Changed: F2 saves them for the DOS export and Play.' : `${Object.keys(patches).length} change(s) saved for ${dos}.`);
-    // the chosen color's nearest text color, as a 1995 tool would show it
+    // the chosen color's nearest text color, as a 1994 tool would show it
     const swatch = (i: number) => {
       const e = rowEntry[i];
       if (!e || (e.kind !== 'rgb' && e.kind !== 'select')) return;

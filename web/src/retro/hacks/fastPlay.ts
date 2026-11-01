@@ -17,7 +17,7 @@ export const FASTPLAY_DOC = [
   'No game files, saved games or DOS executables are patched.',
   '',
   'Teddy tested it. He is now configuring a very fast nap.',
-  'Freeware. Sandbox Software, 1995.',
+  'Freeware. Sandbox Software, 1994.',
 ];
 export const FASTPLAY_DIZ = [
   'FASTPLAY 1.0 - less setup, more game',

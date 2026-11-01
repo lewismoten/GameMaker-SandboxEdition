@@ -1,4 +1,4 @@
-// The look of a 1995 shareware DOS utility in 80x25 text mode, shared by SAVEHACK.EXE and
+// The look of a 1994 shareware DOS utility in 80x25 text mode, shared by SAVEHACK.EXE and
 // BACKUP.EXE on the desk PC: white on blue, cyan frames, a black-on-cyan bar for the chosen
 // line and the keys at the bottom, red boxes for warnings. Arrow keys, Enter and Esc.
 import { attr, COLS, ROWS } from '../text/textScreen';
@@ -177,7 +177,7 @@ export async function confirm(ui: Ui, lines: string[], a = WARN): Promise<boolea
 /** 1234567 → "1,234,567". */
 export const num = (n: number): string => n.toLocaleString('en-US');
 
-/** A date as a 1995 DOS program printed it: 10-22-95  3:04p. */
+/** A date as a 1994 DOS program printed it: 10-22-94  3:04p. */
 export function dosStamp(d: Date): string {
   const two = (n: number) => String(n).padStart(2, '0');
   const h = d.getHours() % 12 || 12;
