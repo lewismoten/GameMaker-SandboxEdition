@@ -22,7 +22,7 @@ export const ONE_LINE: Record<string, string> = {
   realm: 'Lord Deadline stole the round tuit. A full adventure across Procrastia, jester and all.',
   teddy2: 'Gwinn’s bed is empty! Sniff out her trail to the Tri-County Fair, and play as Gwinn herself.',
   teddy3: 'It’s Teddy’s birthday and nobody says so. Run Doc Leo’s errands, and drive THE CHEZ.',
-  tuneup: 'Gwinn tipped over the band’s trunk. Fetch every instrument home before the parade, and boop the player piano in time.',
+  tuneup: 'Parade morning, and THE\u00a0CHEZ honks like a kazoo. Shrink down with Doc Leo and his rubber chicken and tune it up by ear.',
   // The Bard of Bizarre
   carl: 'You are Carl, the fly in the room, and you’re winning.',
   goat: 'The goat nobody painted eats its way to its place at the manger, third from the left.',

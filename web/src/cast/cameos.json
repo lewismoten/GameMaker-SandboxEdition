@@ -1,5 +1,6 @@
 {
   "tinHeart": [
+    { "game": "tuneup", "as": "ticking up in the distributor’s works" },
     { "game": "blaster", "as": "tucked against the edge of the Address Bus" },
     { "game": "sleuth", "as": "glinting in the dark under the stage" },
     { "game": "realm", "as": "in the grass by Someday Harbor’s lighthouse" },
@@ -64,5 +65,8 @@
     { "game": "sweats", "as": "in the audience at The Hive’s open mic" }
   ],
   "leo": [{ "game": "sleuth", "as": "a playbill in the lobby" }],
-  "chicken": [{ "game": "sleuth", "as": "on the leash in Doc Leo’s playbill" }]
+  "chicken": [
+    { "game": "sleuth", "as": "on the leash in Doc Leo’s playbill" },
+    { "game": "tuneup", "as": "Sir Reginald III, doing the fiddly repairs" }
+  ]
 }

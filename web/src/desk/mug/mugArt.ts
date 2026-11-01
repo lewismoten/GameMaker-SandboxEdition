@@ -30,7 +30,7 @@ const GAME_NAMES: Record<string, [name: string, hero: string]> = {
   realm: ['Quest for the Round Tuit', 'Pip in her red cap'],
   teddy2: ['Teddy’s Little Bigger Adventure', 'Teddy the corgi'],
   teddy3: ['Teddy’s Little Biggest Adventure', 'Teddy the corgi'],
-  tuneup: ['Tune-Up', 'Teddy the corgi'],
+  tuneup: ['Tune-Up', 'Doc Leo'],
   goat: ['Third Goat from the Left', 'the goat'],
   mustard: ['Mustard Seed Hustle', 'no hero, just the sprout'],
   needle: ['Thread the Needle, Brother Camel', 'no hero, its title across the bottom'],
