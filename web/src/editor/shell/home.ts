@@ -135,6 +135,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       h('option', { value: 'edited', selected: lib.sort === 'edited' }, 'Last edited'),
       h('option', { value: 'name', selected: lib.sort === 'name' }, 'Name'),
       h('option', { value: 'rating', selected: lib.sort === 'rating' }, 'Rating (Imported)'),
+      h('option', { value: 'walk', selected: lib.sort === 'walk' }, 'Walkthrough % (Imported)'),
     ),
   );
   // Imported narrowed to one rating, or Unrated (homeRatings.ts)
@@ -324,6 +325,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   const refreshProjects = async () => {
     lib.projects = await listProjects().catch(() => []);
+    await lib.loadWalkBadges();
     // renamed or saved since: made afresh
     lib.forgetOwn();
     const key = top.game?.key;
@@ -367,6 +369,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   );
 
   lib.projects = await listProjects().catch(() => []);
+  await lib.loadWalkBadges();
   if (!savedCategory() && lib.projects.length) current = lib.own('mine').length ? 'mine' : 'imported';
   renderCats();
   try {

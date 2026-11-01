@@ -1,6 +1,7 @@
 // The tiles of one collection on the home page: its games (the Bard's under his collections,
 // Gameware and Shareware under who made them, Imported by stars when sorted so), each group
 // with a heading, or a few words when the collection is empty.
+import { walkTile } from './homeWalkBadge';
 import { h } from '../core/ui';
 import { byCollection } from '../../project/bizarre';
 import { allNotes, ratingOf } from '../../imported/gameNotes';
@@ -28,7 +29,10 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
   else {
     const tile = (g: HomeGame) => {
       const t = gameTile(g, { onSelect: on.choose, onMore: on.more });
-      if (c === 'imported' && g.project) rateTile(t, notes[g.project.id]);
+      if (c === 'imported' && g.project) {
+        rateTile(t, notes[g.project.id]);
+        walkTile(t, lib.walkBadges.get(g.project.id));
+      }
       return t;
     };
     // Imported: only the rating picked, and grouped by stars when sorted by them

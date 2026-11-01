@@ -55,3 +55,25 @@ export async function localWalk(gam: string, sceneCount: number, name = ''): Pro
   }
   return undefined;
 }
+
+let rowsCache: Promise<string[][]> | undefined;
+
+/** Dev only: how far the local walkthrough for this .gam got, from index.tsv alone (fetched once, no walkthrough files). */
+export async function localSummary(gam: string, name = ''): Promise<{ won: number; total: number; complete: boolean } | undefined> {
+  rowsCache ??= (async () => {
+    const root = await repoRoot();
+    if (!root) return [];
+    const r = await fetch(`/@fs${root}/${FOLDER}/index.tsv`);
+    return r.ok
+      ? (await r.text())
+          .split('\n')
+          .slice(1)
+          .map((l) => l.split('\t'))
+      : [];
+  })().catch(() => []);
+  const rows = (await rowsCache).filter((c) => c[1]?.toLowerCase() === gam.toLowerCase() && c[4] !== 'no-gam' && Number(c[3]) > 0);
+  const mine = slug(name);
+  rows.sort((a, b) => Number(mine.includes(slug(b[0].replace(/^game-maker_/, '')))) - Number(mine.includes(slug(a[0].replace(/^game-maker_/, '')))));
+  const row = rows[0];
+  return row ? { won: Number(row[3]), total: Number(row[2]), complete: row[4] === 'won' } : undefined;
+}

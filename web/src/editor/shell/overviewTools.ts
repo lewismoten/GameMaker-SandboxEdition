@@ -101,19 +101,29 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
   // Make a walkthrough
   const walk = project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined);
   const through = walk ? howFar(walk).through : 0;
-  cards.push(
-    card(
-      'walk',
-      'Make a walkthrough',
-      null,
-      walk
-        ? `${walk.won ? 'Won the whole game' : `Got through ${plural(through, 'scene')}`} · made ${new Date(walk.when).toLocaleDateString()}`
-        : 'None made yet',
-      'A bot plays the whole game scene by scene and keeps it, to watch or save as a video.',
-      walk ? 'Open the walkthrough…' : 'Make one…',
-      () => void import('../widgets/walkDialog').then((m) => m.walkDialog(project)),
-    ),
+  const walkCard = card(
+    'walk',
+    'Make a walkthrough',
+    null,
+    walk
+      ? `${walk.won ? 'Won the whole game' : `Got through ${plural(through, 'scene')}`} · made ${new Date(walk.when).toLocaleDateString()}`
+      : 'None made yet',
+    'A bot plays the whole game scene by scene and keeps it, to watch or save as a video.',
+    walk ? 'Open the walkthrough…' : 'Make one…',
+    () => void import('../widgets/walkDialog').then((m) => m.walkDialog(project)),
   );
+  cards.push(walkCard);
+  // dev server only: a walkthrough file kept outside the game (widgets/devLocalWalk.ts) counts as one
+  if (import.meta.env.DEV && !walk) {
+    void import('../widgets/devLocalWalk')
+      .then((m) => m.localSummary(project.gam, project.name))
+      .then((s) => {
+        if (!s) return;
+        walkCard.querySelector('.tool-status')!.textContent =
+          `${s.complete ? 'Won the whole game' : `Got through ${plural(s.won, 'scene')}`} · a local file (not saved with the game)`;
+        walkCard.querySelector('.tool-body button')!.textContent = 'Open the walkthrough…';
+      });
+  }
 
   // Game health: the quick check reads files already in memory
   let health = 'Every file the game names is there';
