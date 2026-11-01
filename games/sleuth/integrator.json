@@ -1,0 +1,274 @@
+{
+  "boards": [
+    {
+      "id": "act-one",
+      "name": "Act One"
+    },
+    {
+      "id": "act-two",
+      "name": "Act Two"
+    },
+    {
+      "id": "dawn",
+      "name": "Dawn"
+    }
+  ],
+  "place": {
+    "0": {
+      "board": "act-one",
+      "x": 8,
+      "y": 8
+    },
+    "2": {
+      "board": "act-one",
+      "x": 34,
+      "y": 8
+    },
+    "4": {
+      "board": "act-one",
+      "x": 60,
+      "y": 8
+    },
+    "5": {
+      "board": "act-one",
+      "x": 86,
+      "y": 8
+    },
+    "3": {
+      "board": "act-two",
+      "x": 8,
+      "y": 8
+    },
+    "11": {
+      "board": "act-two",
+      "x": 34,
+      "y": 8
+    },
+    "12": {
+      "board": "act-two",
+      "x": 60,
+      "y": 8
+    },
+    "76": {
+      "board": "act-two",
+      "x": 86,
+      "y": 8
+    },
+    "62": {
+      "board": "dawn",
+      "x": 8,
+      "y": 8
+    },
+    "63": {
+      "board": "dawn",
+      "x": 34,
+      "y": 8
+    },
+    "64": {
+      "board": "dawn",
+      "x": 60,
+      "y": 8
+    },
+    "65": {
+      "board": "dawn",
+      "x": 86,
+      "y": 8
+    },
+    "67": {
+      "board": "dawn",
+      "x": 112,
+      "y": 8
+    },
+    "1": {
+      "board": "dawn",
+      "x": 138,
+      "y": 8
+    },
+    "66": {
+      "board": "dawn",
+      "x": 34,
+      "y": 40
+    }
+  },
+  "groups": [
+    {
+      "id": "boards-act-one",
+      "name": "Evidence boards",
+      "board": "act-one",
+      "x": 112,
+      "y": 8,
+      "members": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": "lila-act-one",
+      "name": "Interviews: Lila",
+      "board": "act-one",
+      "x": 8,
+      "y": 40,
+      "members": [
+        22,
+        23,
+        24,
+        25
+      ]
+    },
+    {
+      "id": "edgar-act-one",
+      "name": "Interviews: Edgar",
+      "board": "act-one",
+      "x": 34,
+      "y": 40,
+      "members": [
+        26,
+        27,
+        28,
+        29
+      ]
+    },
+    {
+      "id": "agatha-act-one",
+      "name": "Interviews: Agatha",
+      "board": "act-one",
+      "x": 60,
+      "y": 40,
+      "members": [
+        30,
+        31,
+        32,
+        33
+      ]
+    },
+    {
+      "id": "felix-act-one",
+      "name": "Interviews: Felix",
+      "board": "act-one",
+      "x": 86,
+      "y": 40,
+      "members": [
+        34,
+        35,
+        36,
+        37
+      ]
+    },
+    {
+      "id": "pike-act-one",
+      "name": "Interviews: Pike",
+      "board": "act-one",
+      "x": 112,
+      "y": 40,
+      "members": [
+        38,
+        39,
+        40,
+        41
+      ]
+    },
+    {
+      "id": "boards-act-two",
+      "name": "Evidence boards",
+      "board": "act-two",
+      "x": 112,
+      "y": 8,
+      "members": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ]
+    },
+    {
+      "id": "lila-act-two",
+      "name": "Interviews: Lila",
+      "board": "act-two",
+      "x": 8,
+      "y": 40,
+      "members": [
+        42,
+        43,
+        44,
+        45
+      ]
+    },
+    {
+      "id": "edgar-act-two",
+      "name": "Interviews: Edgar",
+      "board": "act-two",
+      "x": 34,
+      "y": 40,
+      "members": [
+        46,
+        47,
+        48,
+        49
+      ]
+    },
+    {
+      "id": "agatha-act-two",
+      "name": "Interviews: Agatha",
+      "board": "act-two",
+      "x": 60,
+      "y": 40,
+      "members": [
+        50,
+        51,
+        52,
+        53
+      ]
+    },
+    {
+      "id": "felix-act-two",
+      "name": "Interviews: Felix",
+      "board": "act-two",
+      "x": 86,
+      "y": 40,
+      "members": [
+        54,
+        55,
+        56,
+        57
+      ]
+    },
+    {
+      "id": "pike-act-two",
+      "name": "Interviews: Pike",
+      "board": "act-two",
+      "x": 112,
+      "y": 40,
+      "members": [
+        58,
+        59,
+        60,
+        61
+      ]
+    },
+    {
+      "id": "wrong",
+      "name": "Wrong verdicts",
+      "board": "dawn",
+      "x": 8,
+      "y": 40,
+      "members": [
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75
+      ]
+    }
+  ]
+}

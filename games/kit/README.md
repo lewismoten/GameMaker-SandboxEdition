@@ -135,6 +135,9 @@ Checking the games:
   sign, where its about.json says, on the egg's map or one it links to; no other game has one.
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
   chapter marks it was recorded with, and cut off no clip.
+- `integrator.json` (optional, per game) — how the web editor's Game Integrator arranges a big game's scenes into named boards
+  and stacked groups (`web/src/editor/editors/integrator/boardLayout.ts`: `{ boards, place, groups }`, scenes by index). "Look inside"
+  opens with it (`shippedBoards.ts`, found with `import.meta.glob`). Editor-only: never in `disk/`, a download or the DOS export.
 - `player.ts` / `playerCheck.ts` — a game's DOS player look, `games/<id>/player.json`: the `{ "base": "xferplay-3.00",
 "patches": { … } }` record a project keeps in its companion (`web/src/dosPlayer/playerRecord.ts`; ids and limits in
   `web/src/dosPlayer/patchTable.ts`). The site shows it wherever the game plays or ships (`web/src/dosPlayer/
