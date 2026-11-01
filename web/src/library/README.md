@@ -47,7 +47,7 @@ ISC, Lewis Moten; see NOTICE.md and the Credits page).
 `libraryRoom.ts` is the room, the page's main view under the "Library" heading, a fixed 2:1 picture. `roomGeo.ts` is its one perspective (a camera
 just inside the door; `proj` puts a point of the floor plan, in meters, on the picture), `roomArt.ts` draws the dim octagonal
 library with it in SVG (the far wall and the two beside it, shelves and books placed by world position, a beamed ceiling, a lamp's glow,
-a high window and the doorway to L-Space), `roomObjects.ts` draws the card catalog, copier, circulation desk and a reading table (a plain prop, no button) as boxes in that
+a high window and the doorway to L-Space), `roomObjects.ts` draws the card catalog, copier, circulation desk, a reading table, two stools, a floor lamp and a book cart (plain props, no button, hidden from screen readers) as boxes in that
 perspective (front, top and side faces) and stands the flat pictures (Joe, the trash can, the notebook, visitors) on the floor at their
 depth, and `libraryRoom.css` styles it.
 Each object is a labeled button and opens a dialog from `libraryPage.ts`, which keeps the open one in the address (`open=stacks|catalog|copier|

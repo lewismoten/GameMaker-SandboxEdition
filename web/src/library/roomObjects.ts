@@ -141,6 +141,72 @@ export function tableArt(): Spot {
   );
 }
 
+/** Two stools left of the reading table, a floor lamp beside them and a book cart on the right: plain props, clear of the desk and the lane in front of it. */
+export const STOOLS: [number, number][] = [
+  [-1.85, -0.72],
+  [-1.4, -0.72],
+];
+export const LAMP = { x: 1.8, z: 0.25 };
+export const CART = { x0: 2.5, x1: 3.15, z0: -0.8, z1: -0.52 };
+
+export function stoolsArt(): Spot {
+  const body = STOOLS.map(([cx, cz]) => {
+    const r = 0.13;
+    const legs = [
+      [cx - r + 0.02, cz - r + 0.02],
+      [cx + r - 0.06, cz - r + 0.02],
+      [cx - r + 0.02, cz + r - 0.06],
+      [cx + r - 0.06, cz + r - 0.06],
+    ].map(([lx, lz]) => faces(box(lx, lx + 0.04, lz, lz + 0.04, 0, 0.38), 'var(--wood-lo)', 'var(--wood)'));
+    const seat = box(cx - r, cx + r, cz - r, cz + r, 0.38, 0.44);
+    return { svg: legs.join('') + faces(seat, '#a33d5f', '#c4577a', '#7e2c47'), seat, cx, cz, r };
+  });
+  return spot(
+    body.map((b) => b.svg).join(''),
+    body.flatMap((b) => [...b.seat.front, ...(b.seat.top ?? [])]),
+    body.flatMap((b) => footprint(b.cx - b.r, b.cx + b.r, b.cz - b.r, b.cz + b.r)),
+  );
+}
+
+export function lampArt(): Spot {
+  const { x, z } = LAMP;
+  const base = box(x - 0.14, x + 0.14, z - 0.14, z + 0.14, 0, 0.05);
+  const pole = box(x - 0.025, x + 0.025, z - 0.025, z + 0.025, 0.05, 1.45);
+  const shade = box(x - 0.2, x + 0.2, z - 0.2, z + 0.2, 1.4, 1.7);
+  const glow = rect(onFront(shade, 0.1, 0.1, 0.9, 0.9), 'fill="#ffe7a8" opacity=".75"');
+  return spot(
+    faces(base, 'var(--wood-lo)', 'var(--wood)') + faces(pole, 'var(--brass)', 'var(--brass)') + faces(shade, '#e9c46a', '#fff1c4') + glow,
+    [...base.front, ...pole.front, ...shade.front, ...(shade.top ?? [])],
+    footprint(x - 0.14, x + 0.14, z - 0.14, z + 0.14),
+  );
+}
+
+export function cartArt(): Spot {
+  const { x0, x1, z0, z1 } = CART;
+  const w = x1 - x0;
+  const post = (px: number, pz: number) => faces(box(px, px + 0.04, pz, pz + 0.04, 0.08, 0.36), 'var(--wood-lo)', 'var(--wood)');
+  const posts = post(x0 + 0.02, z1 - 0.06) + post(x1 - 0.06, z1 - 0.06) + post(x0 + 0.02, z0 + 0.02) + post(x1 - 0.06, z0 + 0.02);
+  const wheel = (px: number) => faces(box(px, px + 0.08, z0 + 0.1, z0 + 0.2, 0, 0.08), '#2b2b2b', '#444');
+  const shelf = (y: number) => box(x0, x1, z0, z1, y, y + 0.04);
+  const shelves = [0.14, 0.36].map(shelf);
+  const colors = ['#a33d5f', '#3d6fa3', '#d9a441', '#4f8a5b', '#8b5a9e'];
+  const books = (y: number, n: number) =>
+    Array.from({ length: n }, (_, i) => {
+      const bx = x0 + 0.06 + (i * (w - 0.14)) / n;
+      return faces(box(bx, bx + (w - 0.14) / n - 0.015, z0 + 0.08, z1 - 0.08, y + 0.04, y + 0.04 + 0.1 + (i % 2) * 0.03), colors[i % colors.length], '#f4f1e6');
+    }).join('');
+  return spot(
+    wheel(x0 + 0.03) +
+      wheel(x1 - 0.11) +
+      posts +
+      faces(shelves[0], 'var(--wood)', 'var(--wood-hi)') +
+      books(0.14, 5) +
+      faces(shelves[1], 'var(--wood)', 'var(--wood-hi)'),
+    [...shelves[1].front, ...(shelves[1].top ?? []), ...shelves[0].front],
+    footprint(x0, x1, z0, z1),
+  );
+}
+
 /** Stands a flat picture `widthM` meters wide with its feet on the floor (or on a surface `y` high) at plan point (x, z). */
 export function place(el: HTMLElement, x: number, z: number, widthM: number, y = 0): void {
   const [sx, sy] = proj(x, y, z);

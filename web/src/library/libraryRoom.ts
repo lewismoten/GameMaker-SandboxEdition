@@ -12,7 +12,7 @@ import { drawJoe } from '../tinHearts/joeArt';
 import { removedGames } from '../imported/removedGames';
 import { aisle, ICONS, lspaceBox, svgOf, trashIcon } from './roomArt';
 import { pctX, pctY, proj } from './roomGeo';
-import { catalogArt, copierArt, deskArt, DESK, place, spineBox, tableArt, type Spot } from './roomObjects';
+import { catalogArt, copierArt, deskArt, DESK, place, spineBox, tableArt, stoolsArt, lampArt, cartArt, type Spot } from './roomObjects';
 
 export interface RoomActions {
   /** Takes the visitor to the shelves, the card catalog or the copier. */
@@ -168,6 +168,11 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   box(desk, deskSpot);
   const table = h('div', { class: 'lib-table', 'aria-hidden': 'true' }, tableSpot.svg);
   box(table, tableSpot);
+  const props = [stoolsArt(), lampArt(), cartArt()].map((p) => {
+    const d = h('div', { class: 'lib-table', 'aria-hidden': 'true' }, p.svg);
+    box(d, p);
+    return d;
+  });
   const gap = lspaceBox();
   box(lspace, gap);
   // flat pictures stand on the floor (or the desk) at their depth: Joe behind the desk, the trash can beside it
@@ -186,6 +191,7 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
     lspace,
     joe,
     table,
+    ...props,
     desk,
     notebook,
     trashBtn,
