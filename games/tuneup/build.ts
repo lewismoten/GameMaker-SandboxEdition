@@ -16,11 +16,12 @@ import { licenseText } from '../kit/license';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildPalette } from './src/art/palette';
 import { buildLeo, buildMonsters, buildOilLeo, buildPianoLeo } from './src/characters';
+import { TEDDY_BLOCKS, buildNobody, buildTeddy, nobodyBlocks } from './src/heroes';
 import { LEVELS, firstOfLevel } from './src/levels/levels';
 import { buildScreens } from './src/screens/screens';
 import { OUTRO } from './src/screens/banter';
 import { endingReel, openingReel, SPEED, stingReel } from './src/screens/reels';
-import type { Tool } from './src/screens/art';
+import { REAL_PARTS, type Tool } from './src/screens/art';
 import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
 import { lostSong, menuSong, wonSong } from './src/sound/song';
 import { buildSoundSet, buildVocs } from './src/sound/sounds';
@@ -35,13 +36,19 @@ disk.put('leo.cbl', serializeBlocks(cb.blocks));
 disk.put('leo.chr', serializeCharacter(buildLeo(cb)));
 disk.put('piano.chr', serializeCharacter(buildPianoLeo(cb)));
 disk.put('oil.chr', serializeCharacter(buildOilLeo(cb)));
+disk.put('teddy.cbl', serializeBlocks(TEDDY_BLOCKS.build()));
+disk.put('teddy.chr', serializeCharacter(buildTeddy()));
+disk.put('nobody.cbl', serializeBlocks(nobodyBlocks().blocks));
+disk.put('nobody.chr', serializeCharacter(buildNobody()));
+/** Each hero's character blocks. */
+const CBL: Record<string, string> = { teddy: 'teddy.cbl', nobody: 'nobody.cbl' };
 const mb = buildMonsterBlocks();
 disk.put('cast.mbl', serializeBlocks(mb.blocks));
 for (const place of new Set(LEVELS.map((l) => l.snd))) disk.put(`${place}.snd`, serializeSoundSet(buildSoundSet(place)));
 for (const [name, voc] of Object.entries(buildVocs())) disk.put(`${name}.voc`, voc);
 
 /** The tool each level's Hat Sting pulls out. */
-const TOOLS: Record<number, Tool> = { 1: 'cables', 2: 'plug', 3: 'roll', 4: 'oilcan' };
+const TOOLS: Record<number, Tool> = { 1: 'cables', 2: 'plug', 3: 'roll', 4: 'oilcan', 5: 'kazoo', 6: 'bone', 7: 'hubcap', 8: 'pump', 9: 'tape' };
 /** A cartoon cut into clips (Esc skips within a few seconds), its files on the disk, its entries for a list. */
 const reel = (name: string, fli: Uint8Array) => {
   const clips = fliClips(name, fli);
@@ -75,7 +82,8 @@ built.forEach(({ l, m, pal, bbl }, i) => {
   if (firstOfLevel(i)) {
     intro = `lvl${l.level}.lst`;
     const sting = reel(`sting${l.level}.fli`, stingReel(l.level, TOOLS[l.level], l.desc.toUpperCase()).fli(SPEED));
-    disk.put(intro, serializeSlideList([...(l.level === 1 ? opening : []), ...sting, { name: `intro${l.level}.gif`, pause: 8 }]));
+    const before = (l.before ?? []).map((name) => ({ name, pause: 8 }));
+    disk.put(intro, serializeSlideList([...(l.level === 1 ? opening : []), ...before, ...sting, { name: `intro${l.level}.gif`, pause: 8 }]));
   }
   // after it (or a verse): their card, is it fixed?
   const exit = OUTRO[l.file] ? `${l.file}out.gif` : '';
@@ -86,7 +94,7 @@ built.forEach(({ l, m, pal, bbl }, i) => {
     `${l.file}.mon`,
     'cast.mbl',
     `${l.chr}.chr`,
-    'leo.cbl',
+    CBL[l.chr] ?? 'leo.cbl',
     `${l.snd}.snd`,
     `${l.file}.cmf`,
     intro,
@@ -135,7 +143,7 @@ disk.put('story.lst', serializeSlideList([{ name: 'storybg.gif', pause: 0 }, { n
 disk.put('howto.lst', serializeSlideList([{ name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
 disk.put('demo.rec', demoRecording());
-disk.put('won.lst', serializeSlideList([...reel('ending.fli', endingReel(4).fli(SPEED)), { name: 'won.gif', pause: 10 }]));
+disk.put('won.lst', serializeSlideList([...reel('ending.fli', endingReel(REAL_PARTS.length).fli(SPEED)), { name: 'won.gif', pause: 10 }]));
 disk.put('lost.lst', serializeSlideList([{ name: 'lost.gif', pause: 6 }]));
 disk.put('story.txt', STORY);
 disk.put('howto.txt', INSTRUCTIONS);

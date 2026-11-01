@@ -1,106 +1,214 @@
 {
-  "version": 1,
-  "game": "tuneup",
-  "rand": {
-    "seed": 1,
-    "per": "scene"
+ "version": 1,
+ "game": "tuneup",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "DU0ISArICEgKyAhICsgKzQZNFM0GTQXNBhIMkgBNA80DTQrNBk0IzRBLLcsGTVDNBjkduQZNCEgKyA=="
   },
-  "segments": [
-    {
-      "scene": 2,
-      "keys": "DU0ISArICEgKyAhICsgKzQZNFM0GTQXNBhIMkgBNA80DTQrNBk0IzRBLLcsGTVDNBjkduQZNCEgKyA=="
-    },
-    {
-      "scene": 3,
-      "keys": "DUsUyxRNBc0GSArIAE0KzQZNCM0TTQjNJk0FzQZICsgATQrNBk0IzRVNFM0TTQXNBkgKyABNCs0GTQjNEU0IzRRNBc0GSArIAE0KzQZNCM0VTQ=="
-    },
-    {
-      "scene": 4,
-      "keys": "D0sKywE5AbkETQXNDzkBuQNNBs0OOQG5A00GzQ45AbkDSxDLBDkBuQNNBs0NOQG5BE0FzQ85AbkDTQbNDTkBuQRLD8sEOQG5BE0FzQ45AbkETQXNDjkBuQRNBc0OOQG5BE0="
-    },
-    {
-      "scene": 5,
-      "keys": "D0sKyyw5AbkDTRDNAzkBuQRLD8sEOQG5BE0FzQ45AbkESwXLDzkBuQNNEM0DOQG5BEsPywU5AbkDTQbNDTkBuQRLBcsPOQG5A00QzQM5AbkETQ=="
-    },
-    {
-      "scene": 6,
-      "keys": "GjkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNATkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNAjkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00GzQE5AbkETQXNAzkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00="
-    },
-    {
-      "scene": 7,
-      "keys": "D00ZzQksAawLLAGsCi0BrQstAa0LLgGuCy8BrwkuAa4JLwGvCzABsA8wAbBsLAGsCy0BrQsuAa4LLwGvCjABsIQBLAGsCi0BrQsuAa4JLwGvCjABsDpL"
-    }
-  ],
-  "chapters": [
-    {
-      "scene": 2,
-      "title": "Level 1: Jump Start"
-    },
-    {
-      "scene": 3,
-      "title": "Level 2: Spark Plucks"
-    },
-    {
-      "scene": 4,
-      "title": "Level 3: The Timing Beat, the straight verse"
-    },
-    {
-      "scene": 5,
-      "title": "Level 3: The Timing Beat, the syncopated verse"
-    },
-    {
-      "scene": 6,
-      "title": "Level 3: The Timing Beat, the double-time verse"
-    },
-    {
-      "scene": 7,
-      "title": "Level 4: Oil's Well"
-    }
-  ],
-  "timeline": {
-    "fps": 60,
-    "frames": 20164,
-    "chapters": [
-      {
-        "title": "Opening",
-        "frame": 0
-      },
-      {
-        "title": "Story",
-        "frame": 1028
-      },
-      {
-        "title": "Level 1: Jump Start",
-        "frame": 2257
-      },
-      {
-        "title": "Level 2: Spark Plucks",
-        "frame": 5238
-      },
-      {
-        "title": "Level 3: The Timing Beat, the straight verse",
-        "frame": 8106
-      },
-      {
-        "title": "Level 3: The Timing Beat, the syncopated verse",
-        "frame": 10682
-      },
-      {
-        "title": "Level 3: The Timing Beat, the double-time verse",
-        "frame": 12465
-      },
-      {
-        "title": "Level 4: Oil's Well",
-        "frame": 14321
-      },
-      {
-        "title": "Ending",
-        "frame": 17193
-      },
-      {
-        "title": "Credits",
-        "frame": 18612
-      }
-    ]
+  {
+   "scene": 3,
+   "keys": "DUsUyxRNBc0GSArIAE0KzQZNCM0TTQjNJk0FzQZICsgATQrNBk0IzRVNFM0TTQXNBkgKyABNCs0GTQjNEU0IzRRNBc0GSArIAE0KzQZNCM0VTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "D0sKywE5AbkETQXNDzkBuQNNBs0OOQG5A00GzQ45AbkDSxDLBDkBuQNNBs0NOQG5BE0FzQ85AbkDTQbNDTkBuQRLD8sEOQG5BE0FzQ45AbkETQXNDjkBuQRNBc0OOQG5BE0="
+  },
+  {
+   "scene": 5,
+   "keys": "D0sKyyw5AbkDTRDNAzkBuQRLD8sEOQG5BE0FzQ45AbkESwXLDzkBuQNNEM0DOQG5BEsPywU5AbkDTQbNDTkBuQRLBcsPOQG5A00QzQM5AbkETQ=="
+  },
+  {
+   "scene": 6,
+   "keys": "GjkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNATkBuQRNBc0COQG5BEsFywI5AbkESwXLAzkBuQNLBssCOQG5A00GzQI5AbkDTQbNAjkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00GzQE5AbkETQXNAzkBuQNNBs0BOQG5BEsFywI5AbkESwXLAjkBuQRLBcsDOQG5A00="
+  },
+  {
+   "scene": 7,
+   "keys": "D00ZzQksAawLLAGsCi0BrQstAa0LLgGuCy8BrwkuAa4JLwGvCzABsA8wAbBsLAGsCy0BrQsuAa4LLwGvCjABsIQBLAGsCi0BrQsuAa4JLwGvCjABsDpL"
+  },
+  {
+   "scene": 8,
+   "keys": ""
+  },
+  {
+   "scene": 9,
+   "keys": "D0sZywk5AbkETQ/NNE0NzQg5AbkETQ/NCTkBuQRNA80TTQXNCDkBuQRNA0gKyA3NK00PzQk5AbkETRTNCTkBuQRNA80TTQ=="
+  },
+  {
+   "scene": 10,
+   "keys": "D0seywk5AbkETQ/NLk0NzQg5AbkETQ/NCTkBuQRNCM0TTQXNMk0SzQc5AbkETQ3NE00FzQc5AbkETQNICsgNzSpND80JOQG5BE0PzQk5AbkETQPNE00="
+  },
+  {
+   "scene": 11,
+   "keys": "D00MzQgsAaweTQNICsgHzQxNC0gKyAvNCS0BrR5NA0gKyAfNDE0LSArIC80JLgGuHk0DSArIB80MTQtICsgLzQsvAa8eTQNICsgHzQxN"
+  },
+  {
+   "scene": 12,
+   "keys": "qQFNFM0JOQG5BEs="
+  },
+  {
+   "scene": 13,
+   "keys": "qQFNHs0IOQG5BEs="
+  },
+  {
+   "scene": 14,
+   "keys": "bU0KzQk5AbkESw=="
+  },
+  {
+   "scene": 15,
+   "keys": "D00KzQ9IDMgQSAzIBE0KzQZNGkgKyA9ICsgFSArIBc0eSAzIEkgMyARNCs0GTQtICsgFSArIBUgKyAVICsgFSArIBUgKyAnNIkgMyBJIDMgETQjNDE0UzQY5HbkGTRzN"
+  },
+  {
+   "scene": 16,
+   "keys": "D00EzQZNAs0DEgiSAE0EzQRNAs0BEgiSAE0EzQRNBM0DSwHLA00BzQNLAcsDEgaSAE0EzQNNBM0GEgiSAE0BzQRNEM0GTQPNE00AzQMSCJIATQXNA00EzQYSCJIATQDNB00DzQxNAs0DEgiSAE0EzQNNAM0DEgiSAE0CzQZN"
   }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Jump Start"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Spark Plucks"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Timing Beat, the straight verse"
+  },
+  {
+   "scene": 5,
+   "title": "Level 3: The Timing Beat, the syncopated verse"
+  },
+  {
+   "scene": 6,
+   "title": "Level 3: The Timing Beat, the double-time verse"
+  },
+  {
+   "scene": 7,
+   "title": "Level 4: Oil's Well"
+  },
+  {
+   "scene": 8,
+   "title": "Level 4: Oil's Well, the swim"
+  },
+  {
+   "scene": 9,
+   "title": "Level 5: The Fan Band, the cool verse"
+  },
+  {
+   "scene": 10,
+   "title": "Level 5: The Fan Band, the hot verse"
+  },
+  {
+   "scene": 11,
+   "title": "Level 6: Brake Dance"
+  },
+  {
+   "scene": 12,
+   "title": "Level 7: Hubcaps and Balls, round 1"
+  },
+  {
+   "scene": 13,
+   "title": "Level 7: Hubcaps and Balls, round 2"
+  },
+  {
+   "scene": 14,
+   "title": "Level 7: Hubcaps and Balls, round 3"
+  },
+  {
+   "scene": 15,
+   "title": "Level 8: Pump Up the Volume"
+  },
+  {
+   "scene": 16,
+   "title": "Level 9: Muffled"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 42021,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1028
+   },
+   {
+    "title": "Level 1: Jump Start",
+    "frame": 2257
+   },
+   {
+    "title": "Level 2: Spark Plucks",
+    "frame": 5238
+   },
+   {
+    "title": "Level 3: The Timing Beat, the straight verse",
+    "frame": 8106
+   },
+   {
+    "title": "Level 3: The Timing Beat, the syncopated verse",
+    "frame": 10682
+   },
+   {
+    "title": "Level 3: The Timing Beat, the double-time verse",
+    "frame": 12465
+   },
+   {
+    "title": "Level 4: Oil's Well",
+    "frame": 14321
+   },
+   {
+    "title": "Level 4: Oil's Well, the swim",
+    "frame": 17729
+   },
+   {
+    "title": "Level 5: The Fan Band, the cool verse",
+    "frame": 19033
+   },
+   {
+    "title": "Level 5: The Fan Band, the hot verse",
+    "frame": 23314
+   },
+   {
+    "title": "Level 6: Brake Dance",
+    "frame": 25574
+   },
+   {
+    "title": "Level 7: Hubcaps and Balls, round 1",
+    "frame": 28392
+   },
+   {
+    "title": "Level 7: Hubcaps and Balls, round 2",
+    "frame": 30646
+   },
+   {
+    "title": "Level 7: Hubcaps and Balls, round 3",
+    "frame": 32192
+   },
+   {
+    "title": "Level 8: Pump Up the Volume",
+    "frame": 33412
+   },
+   {
+    "title": "Level 9: Muffled",
+    "frame": 36709
+   },
+   {
+    "title": "Ending",
+    "frame": 39044
+   },
+   {
+    "title": "Credits",
+    "frame": 40466
+   }
+  ]
+ }
 }
