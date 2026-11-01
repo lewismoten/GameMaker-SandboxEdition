@@ -56,6 +56,8 @@ export interface MagazineOptions {
   desk?: DeskHooks;
   /** Opened over the page: a Close button and Esc call this. */
   onClose?: () => void;
+  /** Hears the folios in view each time they change (the desk keeps them in its address). */
+  onPages?: (folios: number[]) => void;
 }
 
 /** The size every page is laid out at: 8.5 x 11 inches at 96 CSS pixels to the inch (as printed). */
@@ -143,7 +145,9 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   const pageAt = (key?: string) => {
     if (!issue || !key) return -1;
     const byId = issue.pages.findIndex((pg) => pg.id === key);
-    return byId >= 0 ? byId : /^\d+$/.test(key) ? Math.min(issue.pages.length - 1, Math.max(0, Number(key) - 1)) : -1;
+    // a number, or a spread's two ("6-7"): the first of them
+    const n = /^(\d+)(?:-\d+)?$/.exec(key)?.[1];
+    return byId >= 0 ? byId : n ? Math.min(issue.pages.length - 1, Math.max(0, Number(n) - 1)) : -1;
   };
 
   // ---- Scroll: every page in one column
@@ -179,6 +183,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
       li.querySelector('button')?.setAttribute('aria-current', String(shown.some((i) => issue!.pages[i].section === li.dataset.section)));
     const first = issue!.pages[shown[0]];
     if (o.where === 'web') setHashParams({ page: first.folio === 1 ? undefined : first.folio }, ['magazine']);
+    o.onPages?.(shown.map((i) => issue!.pages[i].folio));
   };
   const scrollWidth = () =>
     widthAt(size, { viewW: stage.clientWidth - (narrow() ? 0 : 24), viewH: stage.clientHeight - 48, natural: PAGE_W, ratio: 11 / 8.5, most: SCROLL_MOST });

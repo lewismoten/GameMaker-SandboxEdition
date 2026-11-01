@@ -275,11 +275,21 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     );
   }
 
-  /** The magazine lying on the desk with the catalog (open=magazine); its links play disks, call the BBS and look at the props. */
-  const magazine = () =>
-    opened('magazine', async () =>
-      (await import('../manual/magazine/viewer')).openMagazine({
+  /** The magazine lying on the desk with the catalog: open=turbobutton&vol=1&num=1&page=6-7 keeps the issue and the pages in view, so a reload comes back to them. Its links play disks, call the BBS and look at the props. */
+  const magazine = async () => {
+    const [{ openMagazine }, { MAG }] = await Promise.all([import('../manual/magazine/viewer'), import('../manual/magazine/masthead')]);
+    // another issue's address (one not on this desk) starts at the cover
+    const sameIssue = deskView.num('vol') === MAG.vol && deskView.num('num') === MAG.num;
+    const start = sameIssue ? deskView.get('page') : undefined;
+    await opened('turbobutton', () =>
+      openMagazine({
         where: 'desk',
+        start,
+        onPages: (folios) => {
+          if (deskView.get('open') !== 'turbobutton') return;
+          const page = folios.length > 1 ? `${folios[0]}-${folios.at(-1)}` : String(folios[0]);
+          deskView.set({ vol: String(MAG.vol), num: String(MAG.num), page: folios[0] === 1 && folios.length === 1 ? undefined : page });
+        },
         desk: {
           play: (id) => void insertOriginal(id),
           bbs: (board) => void command(`C:\nTERMINAL${board ? ` ${board.toUpperCase()}` : ''}`),
@@ -288,6 +298,8 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         },
       }),
     );
+    if (deskView.get('open') !== 'turbobutton') deskView.set({ vol: undefined, num: undefined, page: undefined });
+  };
 
   /** The mug's closer look, kept in the address (open=mug) so a reload comes back to it. */
   const mugViewer = () => opened('mug', async () => (await import('./mug/mugViewer')).openMugViewer());

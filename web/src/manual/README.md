@@ -111,7 +111,7 @@ The Ultimate Owner's Guide in the Game-Maker box.
 ## `magazine/`: TURBO BUTTON
 
 TURBO BUTTON, a mid-90s game magazine (`#/magazine`, and
-lying on the desk's left, `#/desk?open=magazine`).
+lying on the desk's left, `#/desk?open=turbobutton&vol=1&num=1&page=6-7`, which keeps the issue and the pages in view across a reload; `open=magazine` still opens it).
 
 - Putting it together: `issue.ts` holds the running order (page numbers, the contents page, the
   advertiser index, and house ads from `sections/houseAd.ts` to fill whole folded sheets);
