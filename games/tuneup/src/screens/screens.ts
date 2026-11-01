@@ -70,8 +70,8 @@ export function buildScreens(): Record<string, Uint8Array> {
   {
     const p = cutaway(4);
     centered(p, 10, 'THE ENGINE BAY IS TUNED!', c('paint', 3), 1, INK);
-    centered(p, 164, 'CHARGE, PLUCK, BEAT AND OIL.', c('yellow', 3), 1, INK);
-    centered(p, 178, 'THE PARADE CAN WAIT A LITTLE.', c('paint', 3), 1, INK);
+    centered(p, 24, 'CHARGE, PLUCK, BEAT AND OIL.', c('yellow', 3), 1, INK);
+    centered(p, 164, 'THE PARADE CAN WAIT A LITTLE.', c('paint', 3), 1, INK);
     save('won.gif', p);
   }
   {

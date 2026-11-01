@@ -19,8 +19,8 @@ import { baseSet, SET_NAMES } from '../src/blocks/sets';
 import { LEVELS } from '../src/levels/levels';
 import { ORIGIN } from '../src/levels/maps';
 import { SP } from '../src/screens/art';
-import { card } from '../src/screens/cards';
-import { INTRO, OUTRO } from '../src/screens/banter';
+import { buildScreens } from '../src/screens/screens';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { endingReel, openingReel, stingReel } from '../src/screens/reels';
 
 const out = process.argv[2] ?? join(tmpdir(), 'tuneup-preview');
@@ -50,14 +50,13 @@ for (const theme of Object.keys(THEMES) as ThemeName[]) {
   writePng(join(out, `sets-${theme}.png`), sheet, pal.pal, 3);
   wrote(`sets-${theme}.png`);
 }
-// the cards and the cartoons' contact sheets
-for (const [n, k] of Object.entries(INTRO)) {
-  writePng(join(out, `intro${n}.png`), card(k), SP.pal, 2);
-  wrote(`intro${n}.png`);
-}
-for (const [f, k] of Object.entries(OUTRO)) {
-  writePng(join(out, `${f}out.png`), card(k), SP.pal, 2);
-  wrote(`${f}out.png`);
+// every picture on the disk (the title, the menu, the cards, the ending...) and the cartoons' contact sheets
+for (const [name, bytes] of Object.entries(buildScreens())) {
+  const g = decodeGif(bytes);
+  const p = new Pixels(g.width, g.height);
+  p.px.set(g.pixels);
+  writePng(join(out, name.replace('.gif', '.png')), p, SP.pal, 2);
+  wrote(name.replace('.gif', '.png'));
 }
 const sheet = (name: string, r: Reel, every = 4) => {
   const frames = r.frames.filter((_, i) => i && i % every === 0);

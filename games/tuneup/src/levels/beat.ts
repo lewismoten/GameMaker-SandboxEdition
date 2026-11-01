@@ -196,10 +196,10 @@ export function beatBlocks(v: Verse) {
     book.add('inside', inside(), AIR);
     // the rail Doc Leo walks: green felt over brass
     book.add('rail', P(c('floor', 2)).rect(0, 0, 20, 5, c('green', 1)).rect(0, 0, 20, 1, c('green', 2)).rect(0, 17, 20, 3, c('floor', 0)), { solid: SOLID });
-    // an ivory note head, tipped like a written note
+    // a black note head, tipped like a written note, with its shine
     const head = (p: Pixels, cx: number, cy: number) => {
-      blob(p, cx, cy, 5.6, 4, [c('ink', 0), c('accent', 1), c('accent', 1)], 0, 2);
-      p.rect(cx - 3, cy - 2, 2, 1, c('paint', 3));
+      blob(p, cx, cy, 6, 4.4, [c('ink', 0), c('ink', 1), c('ink', 1)], 0, 2);
+      p.rect(cx - 3, cy - 2, 3, 1, c('paint', 3)).set(cx - 4, cy - 1, c('paint', 3));
       return p;
     };
     // the glass: shaded dark at the edges to a bright streak; an elbow is a brass box with a window
