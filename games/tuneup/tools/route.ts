@@ -1,15 +1,14 @@
-// The way through the game, as orders for the bot: every instrument picked up, every note on
-// the stairs rung, the player piano played by ear and eye (a boop a tick or two after its key
-// lights), and out of each level by its door.
+// The way through the game, as orders for the bot: both clamps and the crank in the garage, every
+// plug plucked between sparks, every note of the Timing Beat played by eye (a boop a tick or two
+// after its key lights), every Squeak oiled, and out of each level by its door.
 import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
-import { buildPalette } from '../src/art/pal';
-import { CTR, HITS_NEEDED } from '../src/ids';
+import { buildPalette } from '../src/art/palette';
+import { CTR, MON, OIL_KEYS } from '../src/ids';
+import { JUMP, NOTCHES } from '../src/levels/jump';
+import { SPARK, WIRES, WIRE_TOP } from '../src/levels/spark';
+import { EXIT_X, ROW, VERSES, VERSE_TICKS, beatBlocks, hitCounter, pathOf } from '../src/levels/beat';
+import { LINES, OIL, SQUEAKS } from '../src/levels/oil';
 import { ORIGIN } from '../src/levels/maps';
-import { HARPS } from '../src/levels/strings';
-import { EXIT_X, STAFF_DOORS, WINDS_AT } from '../src/levels/woods';
-import { BATON_ROW, BATON_X, BRASS_AT, FIELD_TICKS, LINES, fieldBlocks, fieldNoteShown } from '../src/levels/field';
-import { GATE, LANE_ROWS, MELODY_LANES, ORGAN_AT } from '../src/levels/rink';
-import { LANES, KEY_ROW, SONG_TICKS, STEPS, railBlocks } from '../src/levels/rail';
 import { Bot } from './bot';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
@@ -18,390 +17,156 @@ export async function must(bot: Bot, r: Promise<string | undefined>, what: strin
   if (out) throw new Error(`${what}: ${out}\n${bot.log.slice(-8).join('\n')}`);
 }
 
-/** Runs the last order of a level: it must take Teddy into the next scene (or the ending). */
+/** Runs the last order of a level: it must take Doc Leo into the next scene (or the ending). */
 export async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {
   const out = await r;
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
 
-/**
- * Plays a stretch where a toy drummer can catch Teddy out: if it costs a life or more than
- * `maxLoss` hit points, it is taken back and played again after a short wait, so Teddy sets
- * out at a better moment (as a person waits for the drummer to march away).
- */
-export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
-  const start = bot.snapshot();
-  const hp = bot.sim.ci.hitpts;
-  const deaths = bot.sim.deaths;
-  let why = '';
-  for (let wait = 0; wait <= 120; wait += 4) {
-    bot.restore(start);
-    try {
-      if (wait && (await bot.wait(wait))) throw new Error('a scene change while waiting');
-      await stretch();
-    } catch (e) {
-      why = String(e).split('\n').slice(0, 3).join(' / ');
-      continue;
-    }
-    const loss = hp - bot.sim.ci.hitpts;
-    if (bot.sim.deaths === deaths && loss <= maxLoss) {
-      bot.say(`${label}: waited ${wait} ticks, lost ${loss} hit points`);
-      return;
-    }
-    why = `lost ${loss} hit points, ${bot.sim.deaths - deaths} lives`;
-  }
-  throw new Error(`${label}: no safe moment (${why})\n${bot.log.slice(-10).join('\n')}`);
+/** 1. Jump Start: the red clamp on the shelf, the black one under the bench, the terminals, the crank. */
+export async function jumpStart(bot: Bot): Promise<void> {
+  expect(bot, 2, 'jump start');
+  await must(bot, bot.land(), 'standing in the garage');
+  await must(bot, bot.walk(13, 'up the stacks of tires'), 'tires');
+  await must(bot, bot.walk(17, 'along the workbench'), 'bench');
+  await must(bot, bot.walk(18, 'to the end of the bench'), 'bench end');
+  await must(bot, bot.hop('right', 12, 'right', 21), 'up to the shelf');
+  await must(bot, bot.walk(JUMP.red[0], 'to the red clamp'), 'red clamp');
+  if (bot.count(CTR.red) !== 1) throw new Error('missed the red clamp');
+  await must(bot, bot.walk(25, 'off the shelf'), 'down');
+  await must(bot, bot.walk(JUMP.black[0], 'under the bench'), 'black clamp');
+  if (bot.count(CTR.black) !== 1) throw new Error('missed the black clamp');
+  await must(bot, bot.walk(JUMP.crank, 'through both terminals to the crank'), 'terminals');
+  await must(
+    bot,
+    bot.until('space', () => bot.count(CTR.charge) === 1, 'cranked the battery full', NOTCHES * 12),
+    'crank',
+  );
+  // hands down (the reach finishes) before stepping off
+  await must(bot, bot.wait(6), 'hands down');
+  await leave(bot, bot.walk(JUMP.exit + 1, 'past Sir Reginald, out by the headlight'), 'headlight');
 }
 
-/** An instrument picked up at level (x, y): it must be gone, not still lying there. */
-export function picked(bot: Bot, x: number, y: number, what: string): void {
-  if (bot.shown(x, y).effect === CTR.found) throw new Error(`missed ${what} at ${x},${y}`);
-}
-
-export const found = (bot: Bot) => bot.sim.meter(CTR.found) - 1;
-
-/** 1. The Piano Shop: six keyboards, the piano stairs, and out the back door. */
-export async function thePianoShop(bot: Bot): Promise<void> {
-  expect(bot, 2, 'the piano shop');
-  await must(bot, bot.land(), 'standing on the counter');
-  await must(bot, bot.walk(12, 'along the counter'), 'counter');
-  picked(bot, 12, 5, 'the mellow piano on the counter');
-  // off the left end of the counter, and back under it for the keyboard on the floor
-  await must(bot, bot.walk(5, 'off the counter'), 'down');
-  await must(bot, bot.walk(7, 'under the counter'), 'under');
-  picked(bot, 7, 8, 'the bright piano under the counter');
-  await carefully(bot, 'over the black keys and past the drummer', 8, async () => {
-    // up onto the black keys, then a hop right over the drummer while he marches away
-    await must(bot, bot.walk(16, 'onto the black keys'), 'black keys');
-    await must(bot, bot.hop('right', 12, 'right', 22), 'over the toy drummer');
-    await must(bot, bot.walk(23, 'past the toy drummer'), 'drummer');
-    picked(bot, 22, 8, 'the electric piano');
-  });
-  // up the piano stairs, ringing a note on every step
-  await must(bot, bot.walk(29, 'up the piano stairs'), 'stairs');
-  // the top step's A counts down (the D and the G ring tips up and down, so they even out)
-  if (bot.sim.meter(CTR.down) - 1 >= 99) throw new Error('the stairs did not ring');
-  await must(bot, bot.walk(32, 'along the high shelf'), 'high shelf');
-  picked(bot, 32, 2, 'the round electric piano');
-  await carefully(bot, "down to Gwinn's shelf", 8, async () => {
-    await must(bot, bot.walk(35, 'off the high shelf'), 'off the shelf');
-    await must(bot, bot.hop('right', 12, 'right', 38), "onto Gwinn's shelf");
-    await must(bot, bot.walk(39, "along Gwinn's shelf"), "Gwinn's shelf");
-    picked(bot, 39, 5, 'the harpsichord');
-  });
-  await carefully(bot, 'onto the black keys', 8, async () => {
-    await must(bot, bot.walk(41, "off Gwinn's shelf"), 'down');
-    await must(bot, bot.walk(43, 'up onto the black keys'), 'black keys');
-    picked(bot, 43, 7, 'the clavinet');
-  });
-  if (found(bot) !== 6) throw new Error(`found ${found(bot)} keyboards, not 6`);
-  await leave(bot, bot.walk(48, 'out the back door'), 'the back door');
-}
-
-/** The art ring members that show a note head, by lane: the bot watches the tubes as a person does. */
-const NOTE_HEADS = (() => {
-  const book = railBlocks(buildPalette('noon')).book;
-  return LANES.map((lane) => {
-    const set = new Set<number>();
-    for (let j = 0; j < STEPS; j++) if ((lane.notes as readonly number[]).includes((j + 6) % STEPS)) set.add(book.n(`${lane.id}.t${j}`));
-    return set;
-  });
-})();
-
-/** How far down its tube a lane's lowest note is (0 none, 6 the row above the key). */
-function lowestNote(bot: Bot, lane: number): number {
-  for (let r = 6; r >= 1; r--) if (NOTE_HEADS[lane].has(bot.sim.w.blkmap[bot.sim.blockAt(LANES[lane].x + ORIGIN, r + ORIGIN)])) return r;
-  return 0;
-}
-
-/** 2. The Player Piano: play the notes as they land until the lid opens, then out. */
-export async function thePlayerPiano(bot: Bot): Promise<void> {
-  expect(bot, 3, 'the player piano');
-  await must(bot, bot.land(), 'onto the rail');
-  const hits = () => bot.sim.meter(CTR.hits) - 1;
-  let played = 0;
-  let whiffs = 0;
-  while (bot.sim.ticks < SONG_TICKS || hits() < HITS_NEEDED) {
-    if (bot.sim.ticks > SONG_TICKS * 3) throw new Error(`still in the piano with ${hits()} hits`);
-    // the next note to land is the lowest one in either tube
-    const next = [0, 1].sort((a, b) => lowestNote(bot, b) - lowestNote(bot, a))[0];
-    const lane = LANES[next];
-    if (process.env.BOT_NOTES) bot.say(`next ${lane.id}: lowest lo ${lowestNote(bot, 0)} hi ${lowestNote(bot, 1)} lit ${bot.shown(lane.x, KEY_ROW).scorePts}`);
-    // step along the rail to the key (no settling: the rail is flat)
-    const goal = lane.x * 20;
-    if (bot.px.x !== goal)
-      await must(
-        bot,
-        bot.until(bot.px.x > goal ? 'left' : 'right', () => bot.px.x === goal, `to the ${lane.id} key`, 30),
-        'along the rail',
-      );
-    // wait for the key to light, then a person's reaction before the boop
+/** 2. Spark Plucks: each wire climbed as its spark passes, each plug plucked, the terminals. */
+export async function sparkPlucks(bot: Bot): Promise<void> {
+  expect(bot, 3, 'spark plucks');
+  await must(bot, bot.land(), 'standing in the engine bay');
+  for (const [i, w] of WIRES.entries()) {
+    await must(bot, bot.walk(w.x - 1, `beside wire ${i + 1}`), 'to the wire');
+    // watch the wire: wait for its spark to come, then pass, then go
+    const sparking = () => bot.shown(w.x, 5).chHitPt < 0;
     let waited = 0;
-    while (!(bot.shown(lane.x, KEY_ROW).scorePts > 0)) {
-      const r = await bot.tick();
-      if (r) throw new Error(`the piano: ${r}`);
-      if (++waited > 60) throw new Error(`the ${lane.id} key never lit`);
+    while (!sparking()) {
+      await must(bot, bot.wait(1), 'watching');
+      if (++waited > 80) throw new Error(`wire ${i + 1} never sparked`);
     }
-    await must(bot, bot.wait(1 + Math.floor(bot.hand() * 2)), 'reacting');
-    const before = hits();
-    await must(bot, bot.boop(), 'boop');
-    if (hits() > before) played++;
-    else whiffs++;
-    if (process.env.BOT_NOTES) bot.say(`boop ${lane.id} ${hits() > before ? 'hit' : 'MISS'}`);
-    // let the key go dark before looking for the next note
-    while (bot.shown(lane.x, KEY_ROW).scorePts > 0) await must(bot, bot.wait(1), 'waiting');
+    while (sparking()) await must(bot, bot.wait(1), 'waiting out the spark');
+    await must(bot, bot.react(), 'reacting');
+    const hp = bot.sim.ci.hitpts;
+    await must(bot, bot.walk(w.x, `onto wire ${i + 1}`), 'onto the wire');
+    await must(
+      bot,
+      bot.until('up', () => bot.px.y <= WIRE_TOP * 20, `climbed wire ${i + 1}`, 40),
+      'climbing',
+    );
+    if (bot.sim.ci.hitpts < hp) throw new Error(`wire ${i + 1}: frizzed`);
+    await must(bot, bot.walk(w.x + 2, 'onto the ledge'), 'ledge');
+    await must(bot, bot.walk(w.x + 4, 'off the ledge'), 'off the ledge');
   }
-  bot.say(`played ${played} notes on the beat, ${whiffs} missed; ${hits()} hits`);
-  if (whiffs) throw new Error(`the bot missed ${whiffs} notes`);
-  await leave(bot, bot.walk(16, 'through the lid and out'), 'out of the piano');
+  const plucked = bot.count(CTR.plucked) + 2;
+  if (plucked !== 3 || bot.sim.money !== 1) throw new Error(`plucked ${plucked} and ${bot.sim.money} tips`);
+  await leave(bot, bot.walk(SPARK.exit + 1, 'through the last terminals'), 'out');
 }
 
-/** The bandstand: every stand along the stage gets its instrument, then out by the gate. */
-export function theBandstand(scene: number, stands: number) {
+/** The ring blocks that show a note head, by verse: the bot reads the pipes as a person does. */
+function noteHeads(v: (typeof VERSES)[number]): Set<number> {
+  const book = beatBlocks(v)(buildPalette('brass')).book;
+  const heads = new Set<number>();
+  for (const [name, i] of book.index) {
+    const m = /^(v|h|elbow)([\d.]+)\.(\d+)$/.exec(name);
+    if (m && m[2].split('.').map(Number).includes(Number(m[3]))) heads.add(i);
+  }
+  return heads;
+}
+
+/** 3. The Timing Beat, one verse: every note booped as its key lights, then out through the gate. */
+export function timingBeat(verse: number) {
+  const v = VERSES[verse];
+  const heads = noteHeads(v);
   const run = async (bot: Bot): Promise<void> => {
-    expect(bot, scene, 'the bandstand');
-    await must(bot, bot.land(), 'on the stage');
-    await must(bot, bot.walk(2, 'to the first stand'), 'stands');
-    await must(bot, bot.walk(2 + stands - 1, 'along the stands'), 'stands');
-    const set = bot.sim.meter(CTR.band) - 1;
-    if (set !== stands) throw new Error(`set ${set} of ${stands} instruments on their stands`);
-    await leave(bot, bot.walk(16, 'off the stage and out the gate'), 'the gate');
+    expect(bot, 4 + verse, `the timing beat, verse ${verse + 1}`);
+    const t0 = bot.sim.ticks;
+    await must(bot, bot.land(), 'onto the rail');
+    const hits = () => bot.count(hitCounter(v));
+    let played = 0;
+    let whiffs = 0;
+    // the steps until each lane's next note lands, as its pipe shows it
+    const soonest = () => {
+      let best: { lane: (typeof v.lanes)[number]; d: number } | undefined;
+      for (const lane of v.lanes) {
+        const d = pathOf(lane).findIndex((c) => heads.has(bot.shownNum(c.x, c.y))) + 1;
+        if (d > 0 && (!best || d < best.d)) best = { lane, d };
+      }
+      return best;
+    };
+    while (bot.sim.ticks - t0 < VERSE_TICKS || hits() < v.need) {
+      if (bot.sim.ticks - t0 > VERSE_TICKS * 3) throw new Error(`still in verse ${verse + 1} with ${hits()} hits`);
+      const next = soonest();
+      if (!next) {
+        await must(bot, bot.wait(1), 'watching the pipes');
+        continue;
+      }
+      const lane = next.lane;
+      const goal = lane.x * 20;
+      if (bot.px.x !== goal)
+        await must(
+          bot,
+          bot.until(bot.px.x > goal ? 'left' : 'right', () => bot.px.x === goal, `to key ${lane.id}`, 30),
+          'along the rail',
+        );
+      let waited = 0;
+      while (!(bot.shown(lane.x, ROW.key).scorePts > 0)) {
+        await must(bot, bot.wait(1), 'waiting for the key');
+        if (++waited > 80) throw new Error(`key ${lane.id} never lit`);
+      }
+      await must(bot, bot.wait(1 + Math.floor(bot.hand() * 2)), 'reacting');
+      const before = bot.sim.ci.score;
+      await must(bot, bot.tap('space', 0), 'boop');
+      if (bot.sim.ci.score > before) played++;
+      else whiffs++;
+      while (bot.shown(lane.x, ROW.key).scorePts > 0) await must(bot, bot.wait(1), 'letting the key go dark');
+    }
+    bot.say(`verse ${verse + 1}: played ${played} notes, ${whiffs} missed; ${hits()} hits, ${bot.sim.money} tips`);
+    if (whiffs) throw new Error(`the bot missed ${whiffs} notes`);
+    await leave(bot, bot.walk(EXIT_X + 1, 'through the gate and out'), 'out of the verse');
   };
-  Object.defineProperty(run, 'name', { value: `theBandstand${scene}` });
+  Object.defineProperty(run, 'name', { value: `timingBeat${verse + 1}` });
   return run;
 }
-export const theBandstand1 = theBandstand(4, 7);
-export const theBandstand2 = theBandstand(6, 8);
 
-/** Climbs a harp's strings (nothing pulls Teddy down there) to level row `row`. */
-export async function climb(bot: Bot, row: number, what: string): Promise<void> {
-  await must(
-    bot,
-    bot.until('up', () => bot.px.y <= row * 20, `up ${what}`, 120),
-    what,
-  );
-}
-
-/** 3. The Music Store's Back Room: eight string instruments, two harps, the guitar cases. */
-export async function theMusicStore(bot: Bot): Promise<void> {
-  expect(bot, 5, 'the music store');
-  await must(bot, bot.land(), 'on the counter');
-  await must(bot, bot.walk(6, 'along the counter'), 'counter');
-  picked(bot, 6, 5, 'the violin');
-  await must(bot, bot.walk(3, 'off the counter'), 'down');
-  picked(bot, 3, 8, 'the steel guitar');
-  await must(bot, bot.walk(11, 'under the counter'), 'under');
-  picked(bot, 11, 8, 'the pizzicato strings');
-  await must(bot, bot.walk(HARPS[0], 'to the first harp'), 'harp');
-  await climb(bot, 1, 'the first harp');
-  await must(bot, bot.walk(18, 'along the high shelf'), 'high shelf');
-  picked(bot, 18, 1, 'the harp');
-  await carefully(bot, 'down past the drummer', 8, async () => {
-    await must(bot, bot.walk(21, 'off the high shelf'), 'down');
-    picked(bot, 21, 8, 'the nylon guitar');
-  });
-  await must(bot, bot.walk(27, 'up the guitar cases'), 'cases');
-  await must(bot, bot.walk(30, 'along the shelf'), 'shelf');
-  picked(bot, 30, 2, 'the oud');
-  await must(bot, bot.walk(33, 'down to the floor'), 'floor');
-  picked(bot, 33, 8, 'the orchestra');
-  await must(bot, bot.walk(HARPS[1], 'to the second harp'), 'harp');
-  await climb(bot, 1, 'the second harp');
-  picked(bot, HARPS[1], 1, 'the chime harp');
-  await must(bot, bot.walk(37, 'off the harp'), 'off');
-  if (found(bot) < 8) throw new Error(`found ${found(bot)} string instruments, not 8`);
-  await leave(bot, bot.walk(40, 'out the door'), 'the door');
-}
-
-/** 6. The Arcade: up the cabinets, across the wobbling pads, seven synths, out the door. */
-export async function theArcade(bot: Bot): Promise<void> {
-  expect(bot, 11, 'the arcade');
-  await must(bot, bot.land(), 'on the floor');
-  await must(bot, bot.walk(3, 'along the floor'), 'floor');
-  picked(bot, 3, 8, 'the bright lead');
-  await must(bot, bot.walk(7, 'up the cabinets'), 'cabinets');
-  picked(bot, 7, 6, 'the square lead');
-  await must(bot, bot.hop('right', 12, 'right', 10), 'onto the first pad');
-  await must(bot, bot.land(), 'on the pad');
-  await must(bot, bot.walk(11, 'along the pad'), 'pad');
-  picked(bot, 11, 4, 'the warm pad');
-  await must(bot, bot.walk(13, 'off the pad'), 'down');
-  picked(bot, 13, 8, 'the saw lead');
-  await carefully(bot, 'up the cabinets and onto the second pad', 0, async () => {
-    await must(bot, bot.walk(16, 'up the cabinets'), 'cabinets');
-    await must(bot, bot.hop('right', 12, 'right', 19), 'onto the second pad');
-    await must(bot, bot.land(), 'on the pad');
-    await must(bot, bot.walk(20, 'along the pad'), 'pad');
-    picked(bot, 20, 4, 'the sweep pad');
-    await must(bot, bot.walk(22, 'off the pad'), 'down');
-    picked(bot, 22, 8, 'the 80s pad');
-  });
-  await must(bot, bot.walk(25, 'up the cabinets'), 'cabinets');
-  await must(bot, bot.hop('right', 12, 'right', 27), 'onto the third pad');
-  await must(bot, bot.land(), 'on the pad');
-  await must(bot, bot.walk(28, 'along the pad'), 'pad');
-  picked(bot, 28, 4, 'the wobble pad');
-  if (found(bot) < 7) throw new Error(`found ${found(bot)} synths, not 7`);
-  await leave(bot, bot.walk(32, 'out the door'), 'the door');
-}
-
-/** The rink lane Teddy is in (0 the bottom), from his row. */
-const laneOf = (bot: Bot) => LANE_ROWS.indexOf(Math.round(bot.px.y / 20));
-
-/** Taps Up or Down (a tick each, three ticks apart, as a person taps) until Teddy is in `lane`. */
-async function toLane(bot: Bot, lane: number): Promise<void> {
-  for (let n = 0; laneOf(bot) !== lane; n++) {
-    if (n > 6) throw new Error(`the rink: stuck out of lane ${lane}`);
-    await must(bot, bot.hold(laneOf(bot) < lane ? 'up' : 'down', 1), 'a tap');
-    await must(bot, bot.wait(GLIDE_WAIT + Math.floor(bot.hand() * 2)), 'gliding');
-  }
-}
-/** Ticks for a lane glide to finish and the hand to come off the key. */
-const GLIDE_WAIT = 5;
-
-/** Lets Teddy skate on until his left edge is at or past level column `x` minus `ahead` blocks. */
-async function skateTo(bot: Bot, x: number, ahead: number): Promise<void> {
-  await must(
-    bot,
-    bot.until(undefined, () => bot.px.x >= (x - ahead) * 20, `skating to ${x}`, 400),
-    'skating',
-  );
-}
-
-/** 7. The Roller Rink: skate the staff, a lane at a time, through the tune and its six organs. */
-export async function theRollerRink(bot: Bot): Promise<void> {
-  expect(bot, 13, 'the roller rink');
-  // each target in order along the rink: the notes of the tune, and the organs after them
-  const stops = [...MELODY_LANES.map((lane, i) => ({ x: 4 + i * 4, lane, organ: false })), ...ORGAN_AT.map(([x, lane]) => ({ x, lane, organ: true }))].sort(
-    (a, b) => a.x - b.x,
-  );
-  for (const s of stops) {
-    // change lanes a block or two before it comes up, the way a skater looks ahead
-    await skateTo(bot, s.x, 2);
-    await toLane(bot, s.lane);
-    if (bot.px.x > s.x * 20) throw new Error(`the rink: past ${s.x} before reaching lane ${s.lane}`);
-    await skateTo(bot, s.x, -1);
-    if (s.organ) picked(bot, s.x, LANE_ROWS[s.lane], 'an organ');
-  }
-  if (found(bot) < 6) throw new Error(`found ${found(bot)} organs, not 6`);
-  await skateTo(bot, GATE[0], 3);
-  await toLane(bot, GATE[1]);
-  await leave(
-    bot,
-    bot.until(undefined, () => false, 'through the gate', 200),
-    'the gate',
-  );
-}
-
-/** The note-showing glide blocks of each field line (by line index): the bot reads the staff as a person does. */
-const FIELD_NOTES = (() => {
-  const book = fieldBlocks(buildPalette('afternoon')).book;
-  return LINES.map((l) => {
-    const set = new Set<number>();
-    if (l.at >= 0) for (const [name, n] of book.index) if (name.startsWith(`l${l.row}.g`) && fieldNoteShown(book, name)) set.add(n);
-    return set;
-  });
-})();
-
-/** How many cells from the keys the nearest note on line `i` is (99: none showing). */
-function noteDistance(bot: Bot, i: number): number {
-  for (let x = BATON_X + 2; x < 16; x++) if (FIELD_NOTES[i].has(bot.sim.w.blkmap[bot.sim.blockAt(x + ORIGIN, LINES[i].row + ORIGIN)])) return x - BATON_X - 1;
-  return 99;
-}
-
-/** Taps Up or Down (a tick each, a person's pause between) until the hero's row is `row`. */
-export async function toRow(bot: Bot, row: number, what: string): Promise<void> {
-  for (let n = 0; Math.round(bot.px.y / 20) !== row; n++) {
-    if (n > 6) throw new Error(`${what}: stuck out of row ${row}`);
-    await must(bot, bot.hold(Math.round(bot.px.y / 20) > row ? 'up' : 'down', 1), 'a tap');
-    await must(bot, bot.wait(GLIDE_WAIT + Math.floor(bot.hand() * 2)), 'gliding');
-  }
-}
-
-/** 8. The Marching Field: Doc Leo's baton glides to each note's line and flicks as it arrives, then walks out past the brass. */
-export async function theMarchingField(bot: Bot): Promise<void> {
-  expect(bot, 15, 'the marching field');
-  const hits = () => bot.sim.meter(CTR.beats) - 1;
-  const start = hits();
-  let played = 0;
-  let whiffs = 0;
-  while (bot.sim.ticks < FIELD_TICKS || hits() - start < HITS_NEEDED) {
-    if (bot.sim.ticks > FIELD_TICKS * 3) throw new Error(`still conducting with ${hits() - start} hits`);
-    // the next note to arrive is the nearest one on any line: glide to its line
-    const next = LINES.map((_, i) => i).sort((a, b) => noteDistance(bot, a) - noteDistance(bot, b))[0];
-    const row = LINES[next].row;
-    await toRow(bot, row, 'the baton');
-    // wait for its key to light, then a person's reaction before the flick
-    let waited = 0;
-    while (!(bot.shown(BATON_X + 1, row).scorePts > 0)) {
-      const r = await bot.tick();
-      if (r) throw new Error(`the field: ${r}`);
-      if (++waited > 120) throw new Error(`line ${next} never lit`);
+/** 4. Oil's Well: a drop up a line whenever a Squeak paces it and no drop is on its way, until every note is home. */
+export async function oilsWell(bot: Bot): Promise<void> {
+  expect(bot, 7, "oil's well");
+  await must(bot, bot.land(), 'down from the top of the oil pan');
+  await must(bot, bot.walk(OIL.step, 'onto the step'), 'step');
+  const { sim } = bot;
+  const rows = LINES;
+  /** The monsters on a line of the staff (level row), by kind. */
+  const on = (row: number, kinds: number[]) => sim.w.mi.filter((mi, i) => kinds.includes(sim.w.mm[i].monnum) && mi.cury[0] - ORIGIN === row).length;
+  const drops = OIL_KEYS.map((_, i) => MON.drop0 + i);
+  let squirts = 0;
+  while (bot.count(CTR.oiled) < SQUEAKS.length) {
+    if (sim.ticks > 2000) throw new Error(`still oiling: ${bot.count(CTR.oiled)} notes home`);
+    const line = rows.findIndex((row) => on(row, [MON.squeak, MON.squeakFast]) && !on(row, drops));
+    if (line < 0) {
+      await must(bot, bot.wait(1), 'watching the staff');
+      continue;
     }
-    await must(bot, bot.wait(1 + Math.floor(bot.hand() * 2)), 'reacting');
-    const before = hits();
-    await must(bot, bot.boop(), 'flick');
-    if (hits() > before) played++;
-    else whiffs++;
-    while (bot.shown(BATON_X + 1, row).scorePts > 0) await must(bot, bot.wait(1), 'waiting');
+    // a look at the line, then a squirt; hands still a moment before the next key
+    await must(bot, bot.react(), 'reacting');
+    await must(bot, bot.tap(OIL_KEYS[line], 8), `squirting line ${line + 1}`);
+    squirts++;
   }
-  bot.say(`conducted ${played} notes, ${whiffs} missed; ${hits() - start} hits`);
-  if (whiffs) throw new Error(`the bot missed ${whiffs} notes`);
-  // down through the gate onto the touchline, and along it past the brass
-  await toRow(bot, BATON_ROW, 'the gate');
-  for (const x of BRASS_AT) {
-    await must(bot, bot.walk(x, 'along the touchline'), 'touchline');
-    picked(bot, x, BATON_ROW, 'a brass instrument');
-  }
-  if (found(bot) < 5) throw new Error(`found ${found(bot)} brass, not 5`);
-  await leave(bot, bot.walk(16, 'off the field'), 'off the field');
-}
-
-/** Lets Teddy down a reed (Down, nothing pulling him) until he is at level row `row`. */
-export async function climbDown(bot: Bot, row: number, what: string): Promise<void> {
-  await must(
-    bot,
-    bot.until('down', () => bot.px.y >= row * 20, `down ${what}`, 160),
-    what,
-  );
-}
-
-/** 9. The Woods by the River: six woodwinds, and three staff doors each opened by playing its hollow note. */
-export async function theWoods(bot: Bot): Promise<void> {
-  expect(bot, 17, 'the woods');
-  await must(bot, bot.land(), 'on the bank');
-  const at = (id: string) => WINDS_AT.find(([w]) => w === id)!;
-  const take = async (id: string) => {
-    const [, x, y] = at(id);
-    await must(bot, bot.walk(x, `to the ${id}`), id);
-    picked(bot, x, y, `the ${id}`);
-  };
-  const played = () => bot.sim.meter(CTR.staff) - 1;
-  const staffDoor = async (i: number, before?: () => Promise<void>) => {
-    const d = STAFF_DOORS[i];
-    await must(bot, bot.walk(d.x - 1, `into the reeds by staff door ${i + 1}`), 'reeds');
-    if (before) await before();
-    // climb to the hollow note's line (or down to it), then a paw at the staff
-    if (bot.px.y > d.row * 20) await climb(bot, d.row, `the reed to line ${d.row}`);
-    else await climbDown(bot, d.row, `the reed to line ${d.row}`);
-    const n = played();
-    await must(bot, bot.boop(), 'a paw at the hollow note');
-    if (played() !== n + 1) throw new Error(`staff door ${i + 1}: the hollow note did not play`);
-    await climbDown(bot, 8, 'the reed');
-    await must(bot, bot.walk(d.x + 1, `through staff door ${i + 1}`), 'door');
-  };
-  await take('flute');
-  await take('clarinet');
-  await staffDoor(0, async () => {
-    // the pan flute sits at the top of the first cattail
-    await climb(bot, 2, 'to the top of the cattail');
-    picked(bot, 9, 2, 'the pan flute');
-  });
-  await take('oboe');
-  await take('sax');
-  await staffDoor(1);
-  await take('reed-soft');
-  await staffDoor(2);
-  if (found(bot) < 6) throw new Error(`found ${found(bot)} woodwinds, not 6`);
-  await leave(bot, bot.walk(EXIT_X + 2, 'out the door in the trunk'), 'the door');
+  bot.say(`oiled ${SQUEAKS.length} Squeaks with ${squirts} squirts`);
+  await leave(bot, bot.walk(OIL.exit, 'through the gate and out under the staff'), 'out');
 }

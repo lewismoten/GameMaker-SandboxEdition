@@ -6,7 +6,6 @@ import { LEVELS } from '../src/levels/levels';
 import { SEED, play } from './play';
 
 const { sim } = await play(SEED);
-// scene 2 on are the levels in order; a bandstand isn't counted as a level
-let level = 0;
-const titles: Record<number, string> = Object.fromEntries(LEVELS.map((l, i) => [i + 2, l.file.startsWith('band') ? l.desc : `Level ${++level}: ${l.desc}`]));
+// scene 2 on are the levels' scenes in order; a level of several scenes names each part
+const titles: Record<number, string> = Object.fromEntries(LEVELS.map((l, i) => [i + 2, `Level ${l.level}: ${l.desc}${l.part ? `, ${l.part}` : ''}`]));
 await writeSimWalkthrough('tuneup', sim, SEED, titles);

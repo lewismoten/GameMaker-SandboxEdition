@@ -14,35 +14,46 @@ import { clipEntries, clipEveryList, fliClips } from '@lewismoten/gamemaker-sand
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
-import { buildPalette } from './src/art/pal';
-import { buildBaton, buildMonsters, buildRailTeddy, buildRinkTeddy, buildStaffTeddy, buildTeddy } from './src/characters';
-import { LEVELS } from './src/levels/levels';
+import { buildPalette } from './src/art/palette';
+import { buildLeo, buildMonsters, buildOilLeo, buildPianoLeo } from './src/characters';
+import { LEVELS, firstOfLevel } from './src/levels/levels';
 import { buildScreens } from './src/screens/screens';
+import { OUTRO } from './src/screens/banter';
+import { endingReel, openingReel, SPEED, stingReel } from './src/screens/reels';
+import type { Tool } from './src/screens/art';
 import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
 import { lostSong, menuSong, wonSong } from './src/sound/song';
 import { buildSoundSet, buildVocs } from './src/sound/sounds';
-import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
+import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/cast';
 import { demoRecording } from './src/demo';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
 const cb = buildCharBlocks();
-disk.put('teddy.cbl', serializeBlocks(cb.blocks));
-disk.put('teddy.chr', serializeCharacter(buildTeddy(cb)));
-disk.put('rail.chr', serializeCharacter(buildRailTeddy(cb)));
-disk.put('rink.chr', serializeCharacter(buildRinkTeddy(cb)));
-disk.put('baton.chr', serializeCharacter(buildBaton(cb)));
-disk.put('staff.chr', serializeCharacter(buildStaffTeddy(cb)));
+disk.put('leo.cbl', serializeBlocks(cb.blocks));
+disk.put('leo.chr', serializeCharacter(buildLeo(cb)));
+disk.put('piano.chr', serializeCharacter(buildPianoLeo(cb)));
+disk.put('oil.chr', serializeCharacter(buildOilLeo(cb)));
 const mb = buildMonsterBlocks();
-disk.put('things.mbl', serializeBlocks(mb.blocks));
+disk.put('cast.mbl', serializeBlocks(mb.blocks));
 for (const place of new Set(LEVELS.map((l) => l.snd))) disk.put(`${place}.snd`, serializeSoundSet(buildSoundSet(place)));
 for (const [name, voc] of Object.entries(buildVocs())) disk.put(`${name}.voc`, voc);
 
-// Scenes: 0 title/menu, 1 the ending (won or lost), then the levels in order.
+/** The tool each level's Hat Sting pulls out. */
+const TOOLS: Record<number, Tool> = { 1: 'cables', 2: 'plug', 3: 'roll', 4: 'oilcan' };
+/** A cartoon cut into clips (Esc skips within a few seconds), its files on the disk, its entries for a list. */
+const reel = (name: string, fli: Uint8Array) => {
+  const clips = fliClips(name, fli);
+  for (const [n, b] of Object.entries(clips)) disk.put(n, b);
+  return clipEntries(clips, 0);
+};
+const opening = reel('opening.fli', openingReel().fli(SPEED));
+
+// Scenes: 0 title/menu, 1 the ending (won or lost), then the levels' scenes in order.
 const game = newGame('TUNE-UP');
 const built = LEVELS.map((l) => {
-  const pal = buildPalette(l.light);
+  const pal = buildPalette(l.theme);
   const kit = l.blocks(pal);
   const level = l.build(kit.book);
   return { l, pal, kit, bbl: kit.book.finish(), ...level };
@@ -54,23 +65,32 @@ built.forEach(({ l, m, pal, bbl }, i) => {
   disk.put(`${l.file}.mon`, serializeMonsters(buildMonsters(mb, l.mons)));
   disk.put(`${l.file}.cmf`, l.song());
   const scene = emptyScene(ADVTYPE);
-  scene.desc = l.desc;
+  scene.desc = l.part ? `${l.desc}, ${l.part}` : l.desc;
   scene.pos = { x: 60 + i * 60, y: 110 };
   // a one-screen level never scrolls; a wide one scrolls side to side only
   const side = l.wide ? 0xff : 0;
   scene.scroll = { up: 0, down: 0, left: side, right: side, style: 0, xtra: new Uint8Array(11) };
+  // before a level: (the opening,) the Hat Sting with the level's tool, and Doc Leo and the chicken's card
+  let intro = '';
+  if (firstOfLevel(i)) {
+    intro = `lvl${l.level}.lst`;
+    const sting = reel(`sting${l.level}.fli`, stingReel(l.level, TOOLS[l.level], l.desc.toUpperCase()).fli(SPEED));
+    disk.put(intro, serializeSlideList([...(l.level === 1 ? opening : []), ...sting, { name: `intro${l.level}.gif`, pause: 8 }]));
+  }
+  // after it (or a verse): their card, is it fixed?
+  const exit = OUTRO[l.file] ? `${l.file}out.gif` : '';
   scene.files = [
     `${l.file}.pal`,
     `${l.file}.map`,
     `${l.file}.bbl`,
     `${l.file}.mon`,
-    'things.mbl',
+    'cast.mbl',
     `${l.chr}.chr`,
-    'teddy.cbl',
+    'leo.cbl',
     `${l.snd}.snd`,
     `${l.file}.cmf`,
-    '',
-    '',
+    intro,
+    exit,
     ...new Array(9).fill(''),
   ];
   if (m.links.length > MAXSCENELINKS) throw new Error(`${l.file}: too many links`);
@@ -115,7 +135,7 @@ disk.put('story.lst', serializeSlideList([{ name: 'storybg.gif', pause: 0 }, { n
 disk.put('howto.lst', serializeSlideList([{ name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
 disk.put('demo.rec', demoRecording());
-disk.put('won.lst', serializeSlideList([{ name: 'won.gif', pause: 10 }]));
+disk.put('won.lst', serializeSlideList([...reel('ending.fli', endingReel(4).fli(SPEED)), { name: 'won.gif', pause: 10 }]));
 disk.put('lost.lst', serializeSlideList([{ name: 'lost.gif', pause: 6 }]));
 disk.put('story.txt', STORY);
 disk.put('howto.txt', INSTRUCTIONS);
