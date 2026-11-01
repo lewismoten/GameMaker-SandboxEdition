@@ -211,9 +211,10 @@ describe('sorting the Library', () => {
 });
 
 describe('the site’s own reading', () => {
-  it('has TURBO BUTTON and the Guide, and the desk’s zine only once it is found', () => {
+  it('has both issues of TURBO BUTTON and the Guide, and the desk’s zine only once it is found', () => {
     const hidden = siteShelf(false).map((i) => i.open);
-    expect(hidden).toContainEqual({ via: 'href', href: '#/magazine' });
+    expect(hidden).toContainEqual({ via: 'href', href: '#/magazine?vol=3&num=1' });
+    expect(hidden).toContainEqual({ via: 'href', href: '#/magazine?vol=1&num=4' });
     expect(hidden).toContainEqual({ via: 'href', href: '#/help' });
     expect(hidden).not.toContainEqual({ via: 'zine' });
     expect(siteShelf(true).map((i) => i.open)).toContainEqual({ via: 'zine' });

@@ -142,8 +142,9 @@ export async function loadShelf(): Promise<Shelf> {
   for (const [key, make] of walked.thumbs) thumbs.set(key, make);
   items.push(...(await videos));
   const site = siteShelf(zine);
-  items.push(site[0], turboCd, ...site.slice(1), ...videoShelf());
+  items.push(site[0], site[1], turboCd, ...site.slice(2), ...videoShelf());
   thumbs.set(`${SITE_OWNER}:magazine`, () => magazineCoverSheet(entries));
+  thumbs.set(`${SITE_OWNER}:magazine-1993`, () => magazineCoverSheet(entries, 1));
   if (zine) thumbs.set(`${SITE_OWNER}:zine`, async () => (await import('../manual/zine/zineItem')).zineCover());
   return { items: mergeShared(items), thumbs, games };
 }

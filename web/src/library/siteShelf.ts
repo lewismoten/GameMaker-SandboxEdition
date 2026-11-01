@@ -16,9 +16,13 @@ const site = (id: string, title: string, note: string, icon: string, type: Shelf
 
 export function siteShelf(zineFound: boolean): ShelfItem[] {
   return [
-    site('magazine', 'TURBO BUTTON', 'The shareware gamer’s monthly: news, reviews, hints and every game', '📰', 'magazine', {
+    site('magazine', 'TURBO BUTTON, January 1995', 'Vol. 3, No. 1: the shareware gamer’s monthly, with the free CD-ROM', '📰', 'magazine', {
       via: 'href',
-      href: '#/magazine',
+      href: '#/magazine?vol=3&num=1',
+    }),
+    site('magazine-1993', 'TURBO BUTTON, Spring 1993', 'Vol. 1, No. 4, a back issue: the snow story and a free Snowbound disk', '📰', 'magazine', {
+      via: 'href',
+      href: '#/magazine?vol=1&num=4',
     }),
     ...(zineFound ? [site('zine', 'NO CARRIER #3', 'A photocopied zine about the desk PC’s power tools', '📠', 'magazine', { via: 'zine' })] : []),
     site('guide', 'The Guide', 'How to play, make and share games here', '📖', 'guide', { via: 'href', href: '#/help' }),
