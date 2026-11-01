@@ -1,4 +1,4 @@
-// The fake 1996 pages in TURBO BUTTON's Log Off the Games article must be period HTML:
+// The fake 1995 pages in TURBO BUTTON's Log Off the Games article must be period HTML:
 // no CSS in the page itself (only the browser's own defaults draw table and form bevels).
 import { describe, expect, it } from 'vitest';
 import { OLD_PAGES } from '../../../scripts/oldWebPages';

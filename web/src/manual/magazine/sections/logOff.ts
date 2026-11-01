@@ -1,4 +1,4 @@
-// Log Off the Games: a Net Notes piece on useful things to do on the web in 1996, in
+// Log Off the Games: a Net Notes piece on useful things to do on the web in early 1995, in
 // the spirit of the era's "something productive to do online" columns and written fresh here.
 // Every site, host and address is made up (.edu, .gov and country-code hosts that are not real
 // institutions), and the seven screenshots are real renders of made-up pages in a made-up browser

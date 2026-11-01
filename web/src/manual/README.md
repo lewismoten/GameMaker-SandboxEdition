@@ -178,7 +178,7 @@ address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues f
     take it again; `webShots.ts`, its screenshots of today's web, `web/public/magazine/web-*.webp`,
     likewise; and `dosShot.ts`, Lewis's DOSBox screenshot of Carl's garbled cover,
     `web/public/magazine/dos-carl.webp`, for `sections/dosBugs.ts`; and the `oldweb-*` pictures,
-    made-up 1996 web pages in a made-up browser (`scripts/oldWebShots.ts`), for `sections/logOff.ts`
+    made-up early-1995 web pages in a made-up browser (`scripts/oldWebShots.ts`), for `sections/logOff.ts`
     (Log Off the Games). Its sites, and every made-up domain in the project, are in
     `magazine/mockSites.json` (read through `mockSites.ts`; `npm run domains:check` checks them).
 - `viewer.ts` lays every page out at one size (a letter sheet at 96 CSS pixels to the inch, as

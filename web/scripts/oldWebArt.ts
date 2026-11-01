@@ -1,5 +1,5 @@
 // Pixel art for the Dandelion Pages mockup (oldWebPages.ts): a 468 x 60 banner, the tiled name
-// background and four textured buttons, drawn pixel by pixel with a few colors, the way a 1996
+// background and four textured buttons, drawn pixel by pixel with a few colors, the way a 1995
 // GIF was, and written as small indexed PNGs (data URIs). Bevels and shadows are baked into the
 // pixels, since a page could not draw them. Drawn fresh for this repo: no real logo or font.
 import { deflateSync } from 'node:zlib';

@@ -14,7 +14,7 @@
   box-shadow: 0.25em 0.25em 0 rgba(0, 0, 0, 0.45);
 }
 
-/* the made-up 1996 browser's 640 x 480 pages (scripts/oldWebShots.ts): each at its own 640 x 480 */
+/* the made-up 1995 browser's 640 x 480 pages (scripts/oldWebShots.ts): each at its own 640 x 480 */
 .mag-art[class*='art-oldweb-'] {
   --tilt: 0deg;
 }

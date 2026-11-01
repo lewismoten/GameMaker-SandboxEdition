@@ -1,5 +1,5 @@
 // The "web pages" for TURBO BUTTON's Log Off the Games article (oldWebShots.ts renders them):
-// a made-up 1996 browser, WebWanderer 1.1, drawn here in HTML and CSS at 640 x 480, and three
+// a made-up 1995 browser, WebWanderer 1.1, drawn here in HTML and CSS at 640 x 480, and three
 // pages in it. Every site, host and URL is fictional; the browser has no real browser's name or
 // logo, and the telephone dial and finger are drawn fresh for this page. Written for this repo.
 
@@ -23,7 +23,7 @@ const btn = (label: string, glyph: string): string =>
   `<div style="width:46px;height:38px;${BEVEL_OUT}background:#c0c0c0;box-sizing:border-box;text-align:center;padding-top:3px"><div style="font-size:15px;line-height:16px">${glyph}</div><div style="font-size:10px">${label}</div></div>`;
 
 /**
- * What a 1996 browser drew by itself, since the page has no CSS: beveled table borders, gray form
+ * What a 1995 browser drew by itself, since the page has no CSS: beveled table borders, gray form
  * controls with 3D edges. It belongs to the browser, so it is added here and never to the page.
  */
 const BROWSER_DEFAULTS = `body{font-family:'Times New Roman',Times,serif;font-size:16px}
@@ -101,7 +101,7 @@ export const DICT: OldPage = {
 <input type="radio" name="match" value="begins">Begins With<br>
 <input type="submit"></form>
 <hr size="2">
-<address>Maintained by ${dict.contact}. Last updated 9 Jan 1996. You are visitor number 004,127.</address>`,
+<address>Maintained by ${dict.contact}. Last updated 4 Jan 1995. You are visitor number 004,127.</address>`,
   ),
 };
 
