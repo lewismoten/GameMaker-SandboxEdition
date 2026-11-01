@@ -147,7 +147,7 @@ export const STOOLS: [number, number][] = [
   [-1.4, -0.72],
 ];
 export const LAMP = { x: 1.8, z: 0.25 };
-export const CART = { x0: 2.5, x1: 3.15, z0: -0.8, z1: -0.52 };
+export const CART = { x0: 2.15, x1: 2.8, z0: -1.2, z1: -0.92 };
 
 export function stoolsArt(): Spot {
   const body = STOOLS.map(([cx, cz]) => {
@@ -171,8 +171,8 @@ export function stoolsArt(): Spot {
 export function lampArt(): Spot {
   const { x, z } = LAMP;
   const base = box(x - 0.14, x + 0.14, z - 0.14, z + 0.14, 0, 0.05);
-  const pole = box(x - 0.025, x + 0.025, z - 0.025, z + 0.025, 0.05, 1.45);
-  const shade = box(x - 0.2, x + 0.2, z - 0.2, z + 0.2, 1.4, 1.7);
+  const pole = box(x - 0.025, x + 0.025, z - 0.025, z + 0.025, 0.05, 0.72);
+  const shade = box(x - 0.2, x + 0.2, z - 0.2, z + 0.2, 0.67, 0.9);
   const glow = rect(onFront(shade, 0.1, 0.1, 0.9, 0.9), 'fill="#ffe7a8" opacity=".75"');
   return spot(
     faces(base, 'var(--wood-lo)', 'var(--wood)') + faces(pole, 'var(--brass)', 'var(--brass)') + faces(shade, '#e9c46a', '#fff1c4') + glow,
