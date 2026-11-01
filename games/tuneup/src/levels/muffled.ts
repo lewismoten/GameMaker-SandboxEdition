@@ -7,6 +7,7 @@
 // past her bed, where the rubber egg rolled: the felt egg (in the set's last slot, a number no
 // other map shows), and by the door the sign that tells how to save.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
 import { GWINN } from '../../../teddy2/src/sprites/gwinn';
 import { ZZZ } from '../../../teddy2/src/sprites/teddy';
@@ -34,6 +35,15 @@ export const MUFFLED = {
   exit: 41,
 } as const;
 /** Squeaky toys on the floor (level x). */
+/** Gwinn's width in blocks, across the bed. */
+const GWINN_W = 3;
+/** The box round a sprite's own pixels (255 is clear). */
+function bounds(p: Pixels): { x: number; y: number; w: number; h: number } {
+  let [x0, y0, x1, y1] = [p.w, p.h, -1, -1];
+  for (let y = 0; y < p.h; y++)
+    for (let x = 0; x < p.w; x++) if (p.get(x, y) !== 255) [x0, y0, x1, y1] = [Math.min(x0, x), Math.min(y0, y), Math.max(x1, x), Math.max(y1, y)];
+  return { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+}
 export const TOYS = [11, 14, 27, 33, 35];
 /** Blanket corners to tuck back in (level x, on the floor). */
 export const TUCKS = [16, 31];
@@ -75,19 +85,35 @@ export function muffledBlocks(pal: Pal): Kit {
   blanket.rect(0, 12, 20, 8, c('accent', 1));
   for (let x = 1; x < 20; x += 3) blanket.rect(x, 13, 1, 7, c('accent', 2));
   book.add('blanket', blanket, AIR);
+  // Gwinn three times life size, curled up across three blocks of the blanket and two rows (her
+  // drawing's own pixels, each one a 3x3 square), feet toward Teddy
   const gwinn = (stir: boolean) => {
-    const p = k.pic('blanket');
-    p.blit(GWINN[stir ? 'gwinn1' : 'gwinnRoll'], 0, 0, 255);
-    return p;
+    const src = GWINN[stir ? 'gwinn1' : 'gwinnRoll'];
+    const b = bounds(src);
+    const big = new Pixels(GWINN_W * 20, 40, 0);
+    for (let x = 0; x < GWINN_W; x++) big.blit(wall(), x * 20, 0).blit(k.pic('blanket'), x * 20, 20);
+    const s = 3;
+    scaleBlit(big, src.crop(b.x, b.y, b.w, b.h), Math.round((big.w - b.w * s) / 2), 38 - b.h * s, s, false, 255);
+    return big;
   };
-  // touching Gwinn herself wakes her a lot
-  book.add('gwinn', gwinn(false), { ...AIR, hp: -8, touch: 'gwinn.stir' });
-  book.add('gwinn.stir', gwinn(true), AIR);
-  // her Zzz, drifting up
-  for (let f = 0; f < 3; f++) {
-    const p = wall();
-    p.blit(ZZZ, 6 - f, 10 - f * 4, 255);
-    book.add(`zzz${f}`, p, { ...AIR, ntime: 10, next: `zzz${(f + 1) % 3}` });
+  // touching Gwinn herself wakes her a lot (each block of her stirs on its own touch)
+  const [sleeping, stirred] = [gwinn(false), gwinn(true)];
+  for (let y = 0; y < 2; y++)
+    for (let x = 0; x < GWINN_W; x++) {
+      book.add(`gwinn${x}.${y}`, sleeping.crop(x * 20, y * 20, 20, 20), { ...AIR, hp: -8, touch: `gwinn${x}.${y}.stir` });
+      book.add(`gwinn${x}.${y}.stir`, stirred.crop(x * 20, y * 20, 20, 20), AIR);
+    }
+  // her Zzz, twice size, drifting up and to the right across two blocks
+  const zb = bounds(ZZZ);
+  // (in moonlight white, so they read on the night wall)
+  const zzz = ZZZ.crop(zb.x, zb.y, zb.w, zb.h);
+  for (let y = 0; y < zzz.h; y++) for (let x = 0; x < zzz.w; x++) if (zzz.get(x, y) !== 255) zzz.set(x, y, c('lamp', 4));
+  for (let f = 0; f < 4; f++) {
+    const big = new Pixels(40, 20, 0);
+    big.blit(wall(), 0, 0).blit(wall(), 20, 0);
+    scaleBlit(big, zzz, 4 + f * 3, 6 - f * 2, 2, false, 255);
+    book.add(`zzz${f}`, big.crop(0, 0, 20, 20), { ...AIR, ntime: 9, next: `zzz${(f + 1) % 4}` });
+    book.add(`zzz${f}.r`, big.crop(20, 0, 20, 20), { ...AIR, ntime: 9, next: `zzz${(f + 1) % 4}.r` });
   }
   // the tapes: a stack of 8-tracks on the crate; fetched, the crate's top is bare
   const tapes = wall();
@@ -123,9 +149,9 @@ export function muffled(book: Kit['book']): Level {
   m.fill(M.bench[0], floor - 2, M.bench[1] - M.bench[0] + 1, 1, 'b').fill(M.bench[0], floor - 1, M.bench[1] - M.bench[0] + 1, 1, 'bench.legs');
   m.fill(M.shelf[0], 5, M.shelf[1] - M.shelf[0] + 1, 1, 's');
   // her bed under the shelf, and her Zzz
-  m.fill(M.bed[0] - 1, floor - 1, M.bed[1] - M.bed[0] + 3, 1, 'B')
-    .set(22, floor - 1, 'gwinn')
-    .set(22, 6, 'zzz0');
+  m.fill(M.bed[0] - 1, floor - 1, M.bed[1] - M.bed[0] + 3, 1, 'B');
+  for (let y = 0; y < 2; y++) for (let x = 0; x < GWINN_W; x++) m.set(M.bed[0] + x, floor - 2 + y, `gwinn${x}.${y}`);
+  m.set(22, 6, 'zzz0').set(23, 6, 'zzz0.r');
   // the high shelf past her bed, where the egg rolled
   m.fill(M.egg[0], M.egg[1] + 1, 2, 1, 's').set(...M.egg, 'egg');
   TOYS.forEach((x, i) => m.set(x, floor - 1, `toy${i}`));
