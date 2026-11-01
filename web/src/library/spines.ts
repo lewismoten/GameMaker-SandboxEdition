@@ -14,6 +14,24 @@ function colorOf(text: string): string {
   return COLORS[n % COLORS.length];
 }
 
+/** At most two short lines (about 9 letters each) so no word is cut mid-way; the full title stays the label. */
+function spineText(title: string): string {
+  const max = 9;
+  const lines: string[] = [];
+  let line = '';
+  for (const w of title.split(/\s+/).filter(Boolean)) {
+    const word = w;
+    if (line && (line + ' ' + word).length > max) {
+      lines.push(line);
+      line = '';
+    }
+    if (lines.length === 2) break;
+    line = line ? `${line} ${word}` : word;
+  }
+  if (line && lines.length < 2) lines.push(line);
+  return lines.join('\n');
+}
+
 export function makeSpine(item: ShelfItem | undefined, open: (from: HTMLElement) => void): HTMLElement {
   if (!item) {
     const b = h(
@@ -25,7 +43,7 @@ export function makeSpine(item: ShelfItem | undefined, open: (from: HTMLElement)
     return b;
   }
   const props = { class: 'lib-spine-btn', style: `--spine:${colorOf(item.owner + item.type)}`, 'aria-label': item.title, title: item.title };
-  if (item.open.via === 'href') return h('a', { ...props, href: item.open.href, onclick: () => tally('library-kinds', item.type) }, item.title);
-  const b = h('button', { ...props, type: 'button', onclick: () => open(b) }, item.title);
+  if (item.open.via === 'href') return h('a', { ...props, href: item.open.href, onclick: () => tally('library-kinds', item.type) }, spineText(item.title));
+  const b = h('button', { ...props, type: 'button', onclick: () => open(b) }, spineText(item.title));
   return b;
 }

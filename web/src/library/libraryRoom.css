@@ -155,9 +155,18 @@
 .lib-o-joe {
   z-index: 2;
   left: 46%;
-  top: 35%;
+  top: 40.5%;
   width: 8%;
   min-width: 56px;
+}
+
+/* his name tag hangs above his head, clear of the desk's top edge */
+.lib-o-joe .lib-tag {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 2px;
 }
 
 .lib-o-joe canvas {
@@ -231,13 +240,14 @@
   color: #fff;
   cursor: pointer;
   font:
-    700 9px/1 system-ui,
+    700 9px/1.05 system-ui,
     sans-serif;
   text-decoration: none;
   overflow: hidden;
   writing-mode: vertical-rl;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: pre;
+  text-align: center;
+  line-height: 1.05;
   display: flex;
   align-items: center;
   justify-content: center;
