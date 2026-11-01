@@ -16,6 +16,10 @@ export interface MockSite {
   dept?: string;
   contact?: string;
   bannerText?: string;
+  /** List content for the mockup: links, regions or sample rows ("a|b|c"). */
+  items?: string[];
+  /** The page's "last updated" line. */
+  updated?: string;
 }
 
 export const MOCK_REGISTRY = registry;

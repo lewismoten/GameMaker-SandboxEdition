@@ -46,7 +46,10 @@
       "query": "state=PA",
       "title": "ZIP Code Lookup",
       "description": "The Postal Annex ZIP code lookup.",
-      "org": "The Postal Annex"
+      "org": "The Postal Annex",
+      "bannerText": "Enter a ZIP code or a town",
+      "items": ["15201|Sandbox Falls|PA", "15202|Sandbox Falls|PA", "15217|Marmot Heights|PA"],
+      "updated": "Last updated 2 Feb 1996"
     },
     {
       "id": "recipes",
@@ -57,7 +60,11 @@
       "query": "",
       "title": "Casserole File",
       "description": "Eleven hundred recipes, sorted by main ingredient, in plain text.",
-      "org": "Wombat State"
+      "org": "Wombat State",
+      "dept": "Home Economics Club",
+      "contact": "mmcgill@casserole.wombat-state.edu",
+      "items": ["Beef and noodle casseroles", "Chicken and rice", "Tuna surprise", "Green bean things", "Potluck desserts", "Soups (see also the Soup Archive)"],
+      "updated": "Last updated 21 Jan 1996"
     },
     {
       "id": "soups",
@@ -68,7 +75,8 @@
       "path": "/pub/soups/index.html",
       "query": "",
       "title": "Soup Archive",
-      "description": "An archive of soup recipes in New Zealand."
+      "description": "An archive of soup recipes in New Zealand.",
+      "org": "Dustbunny Tucker"
     },
     {
       "id": "weather",
@@ -79,7 +87,10 @@
       "query": "",
       "title": "Current Weather Map",
       "description": "A current weather map, updated every hour.",
-      "org": "Skywatch Weather"
+      "org": "Skywatch Weather",
+      "bannerText": "Current Weather Map",
+      "items": ["Northeast", "Southeast", "Midwest", "Plains", "Mountain West", "Pacific Coast"],
+      "updated": "Last updated: 14:00 Eastern, 2 Feb 1996"
     },
     {
       "id": "yellow",

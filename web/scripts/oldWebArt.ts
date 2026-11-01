@@ -86,6 +86,23 @@ class Canvas {
   disc(cx: number, cy: number, r: number, c: Rgb): void {
     for (let y = -r; y <= r; y++) for (let x = -r; x <= r; x++) if (x * x + y * y <= r * r + r / 2) this.set(cx + x, cy + y, c);
   }
+  /** A filled polygon (even-odd scanline), points as [x, y]. */
+  poly(pts: [number, number][], c: Rgb): void {
+    for (let y = 0; y < this.h; y++) {
+      const xs: number[] = [];
+      pts.forEach(([x1, y1], i) => {
+        const [x2, y2] = pts[(i + 1) % pts.length];
+        if ((y1 <= y && y2 > y) || (y2 <= y && y1 > y)) xs.push(x1 + ((y - y1) / (y2 - y1)) * (x2 - x1));
+      });
+      xs.sort((a, b) => a - b);
+      for (let k = 0; k + 1 < xs.length; k += 2) this.rect(Math.round(xs[k]), y, Math.round(xs[k + 1]) - Math.round(xs[k]), 1, c);
+    }
+  }
+  /** A line, one pixel thick. */
+  line(x1: number, y1: number, x2: number, y2: number, c: Rgb): void {
+    const n = Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1));
+    for (let i = 0; i <= n; i++) this.set(Math.round(x1 + ((x2 - x1) * i) / (n || 1)), Math.round(y1 + ((y2 - y1) * i) / (n || 1)), c);
+  }
   png(): string {
     const raw = Buffer.alloc((this.w + 1) * this.h);
     for (let y = 0; y < this.h; y++) Buffer.from(this.px.subarray(y * this.w, (y + 1) * this.w)).copy(raw, y * (this.w + 1) + 1);
@@ -183,4 +200,107 @@ export function textBanner(bg: Rgb, fg: Rgb, text: string, sub: string): string 
   c.text(text, Math.round((468 - w) / 2), 7, 4, fg, BLACK);
   c.text(sub, Math.round((468 - (sub.length * 6 - 1)) / 2), 45, 1, WHITE);
   return c.png();
+}
+
+/** A simple outline of the lower 48 (about 40 points) on a 400 x 240 canvas. */
+const US: [number, number][] = [
+  [28, 30],
+  [70, 34],
+  [120, 36],
+  [170, 36],
+  [172, 30],
+  [200, 34],
+  [230, 30],
+  [262, 40],
+  [290, 34],
+  [312, 46],
+  [340, 50],
+  [362, 30],
+  [372, 40],
+  [366, 66],
+  [352, 84],
+  [356, 104],
+  [346, 128],
+  [338, 150],
+  [344, 176],
+  [334, 202],
+  [322, 196],
+  [312, 160],
+  [300, 168],
+  [294, 190],
+  [276, 196],
+  [262, 184],
+  [236, 190],
+  [216, 214],
+  [196, 200],
+  [186, 176],
+  [160, 176],
+  [136, 176],
+  [112, 154],
+  [84, 146],
+  [60, 140],
+  [40, 114],
+  [30, 86],
+  [22, 56],
+];
+
+/** The weather map GIF: a gray US with temperature blobs, a legend and a title, 400 x 240. */
+export function weatherMap(title: string): string {
+  const c = new Canvas(400, 240, [150, 190, 232]);
+  c.bevel(0, 0, 400, 240, [220, 235, 255], [30, 50, 90], 2);
+  c.poly(US, [186, 186, 186]);
+  const blobs: [number, number, number, Rgb][] = [
+    [90, 70, 26, [90, 120, 240]],
+    [160, 90, 22, [90, 120, 240]],
+    [280, 70, 30, [90, 120, 240]],
+    [340, 80, 18, [120, 170, 255]],
+    [110, 120, 22, [60, 190, 90]],
+    [230, 110, 30, [60, 190, 90]],
+    [320, 120, 22, [60, 190, 90]],
+    [175, 150, 24, [250, 230, 60]],
+    [290, 150, 18, [250, 230, 60]],
+    [225, 175, 20, [240, 130, 30]],
+    [250, 168, 10, [220, 40, 30]],
+  ];
+  for (const [x, y, r, col] of blobs) {
+    c.disc(x, y, r, col);
+    c.disc(x, y, Math.round(r * 0.5), [Math.min(255, col[0] + 50), Math.min(255, col[1] + 50), Math.min(255, col[2] + 50)]);
+  }
+  for (let i = 0; i < US.length; i++) c.line(...US[i], ...US[(i + 1) % US.length], [40, 40, 40]);
+  c.text(title.toUpperCase(), 10, 8, 2, [255, 255, 255], [0, 0, 60]);
+  const key: [string, Rgb][] = [
+    ['COLD', [90, 120, 240]],
+    ['MILD', [60, 190, 90]],
+    ['WARM', [250, 230, 60]],
+    ['HOT', [220, 40, 30]],
+  ];
+  key.forEach(([t, col], i) => {
+    c.rect(10 + i * 60, 224, 8, 8, col);
+    c.text(t, 22 + i * 60, 225, 1, [0, 0, 40]);
+  });
+  return c.png();
+}
+
+/** An "under construction" GIF: hazard stripes, a hard hat and a shovel, 240 x 48. */
+export function constructionSign(): Picture {
+  const c = new Canvas(240, 48, [255, 200, 0]);
+  for (let y = 0; y < 8; y++)
+    for (let x = 0; x < 240; x++) {
+      if (((x + y) >> 2) % 2 === 0) {
+        c.set(x, y, BLACK);
+        c.set(x, 47 - y, BLACK);
+      }
+    }
+  c.rect(0, 8, 240, 1, BLACK);
+  c.rect(0, 39, 240, 1, BLACK);
+  c.disc(24, 28, 9, [255, 255, 255]);
+  c.rect(14, 28, 21, 3, [255, 255, 255]);
+  c.rect(11, 31, 27, 2, [200, 40, 20]);
+  c.disc(24, 28, 3, [200, 40, 20]);
+  c.line(205, 14, 220, 36, [110, 70, 20]);
+  c.rect(216, 33, 10, 6, [90, 90, 90]);
+  c.text('UNDER', 48, 13, 2, BLACK);
+  c.text('CONSTRUCTION', 112, 14, 1, BLACK);
+  c.text('PLEASE BE PATIENT!', 48, 28, 1, [140, 0, 0]);
+  return { src: c.png(), w: 240, h: 48 };
 }
