@@ -1,0 +1,150 @@
+// The preset picker's instrument drawings: small line pictures (24x24, drawn here for this
+// project, no outside icon set) in the current text color. A preset picks one by its id, else
+// by its group, so a new preset needs no change here (it shows its group's picture).
+
+const note = '<path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>';
+const guitar = '<circle cx="8.5" cy="15.5" r="5"/><circle cx="8.5" cy="15.5" r="1.5"/><path d="M12 12l8-8M18 2l4 4"/>';
+const bars = (hs: number[]) => hs.map((hh, i) => `<rect x="${2 + i * 4}" y="${20 - hh}" width="3" height="${hh}" rx="0.5"/>`).join('');
+const tubes = (hs: number[]) => `<path d="M2 4h20"/>${hs.map((hh, i) => `<path d="M${4 + i * 4} 4v${hh}"/>`).join('')}`;
+const horn = '<circle cx="9" cy="14" r="6"/><circle cx="9" cy="14" r="2.5"/><path d="M15 12l7-6v16l-7-6"/>';
+const drum = '<ellipse cx="12" cy="8" rx="8" ry="3"/><path d="M4 8v9c0 3 16 3 16 0V8"/>';
+const wave = (d: string) => `<path d="${d}"/>`;
+
+const ICONS: Record<string, string> = {
+  piano: '<rect x="2" y="5" width="20" height="14" rx="1"/><path d="M8.7 12v7M15.3 12v7"/><path d="M6 5v7M11 5v7M13 5v7M18 5v7" stroke-width="3"/>',
+  keyboard: '<rect x="2" y="9" width="20" height="9" rx="1"/><path d="M7 14v4M12 14v4M17 14v4"/><path d="M5 6h3M11 6h3M17 6h2"/>',
+  violin: '<path d="M12 8c-3 0-4 2-3 4-3 1-3 6 3 6s6-5 3-6c1-2 0-4-3-4z"/><path d="M12 8V2M9.5 14v3M14.5 14v3M10 18h4"/>',
+  guitar,
+  lute: '<circle cx="9" cy="15" r="6"/><path d="M9 15l7-9 5 0M16 6l-1-3"/><circle cx="9" cy="15" r="1.5"/>',
+  harp: '<path d="M5 21V8c0-4 5-6 9-4l5 12v5z"/><path d="M8 8v13M11 6v15M14 8v13M17 14v7"/>',
+  mic: '<rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8"/>',
+  choir:
+    '<circle cx="6" cy="8" r="2.5"/><circle cx="12" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M2 20c0-5 3-7 4-7s4 2 4 7M8 20c0-6 3-8 4-8s4 2 4 8M14 20c0-5 3-7 4-7s4 2 4 7"/>',
+  speaker: '<rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><circle cx="12" cy="6.5" r="1.5"/>',
+  sine: wave('M1 12c3-9 5-9 8 0s5 9 8 0c1.500-4 3-6 6-6'),
+  saw: wave('M1 18L9 6v12l8-12v12'),
+  square: wave('M1 17h6V7h6v10h6V7h4'),
+  organ:
+    '<rect x="3" y="9" width="3.500" height="12"/><rect x="8" y="4" width="3.500" height="17"/><rect x="13" y="6" width="3.500" height="15"/><rect x="18" y="11" width="3.500" height="10"/>',
+  accordion: '<rect x="2" y="6" width="5" height="12" rx="1"/><rect x="17" y="6" width="5" height="12" rx="1"/><path d="M9 7v10M12 7v10M15 7v10"/>',
+  harmonica: '<rect x="2" y="8" width="20" height="8" rx="1"/><path d="M6 8v8M10 8v8M14 8v8M18 8v8"/>',
+  trumpet: '<path d="M2 11h13M2 15h13M2 11v4"/><path d="M15 11l7-5v14l-7-5"/><path d="M7 11V8M10 11V8"/>',
+  horn,
+  flute: '<path d="M2 20L20 2l2 2L4 22z"/><circle cx="8" cy="14" r="0.800"/><circle cx="11" cy="11" r="0.800"/><circle cx="14" cy="8" r="0.800"/>',
+  clarinet:
+    '<path d="M10 2h4v15M10 2v15M8 22l2-5M16 22l-2-5"/><circle cx="12" cy="6" r="0.800"/><circle cx="12" cy="10" r="0.800"/><circle cx="12" cy="14" r="0.800"/>',
+  sax: '<path d="M6 2h5l1 14a4 4 0 008 0v-4"/><path d="M17 12h6M7 6h3M7 10h3"/>',
+  panflute: bars([16, 14, 12, 10, 8]).replace(/y="(\d+)"/g, (_, y: string) => `y="${Number(y) + 1}"`),
+  bell: '<path d="M12 2v2M5 18c2-2 2-5 2-8a5 5 0 0110 0c0 3 0 6 2 8z"/><path d="M10 21a2 2 0 004 0"/>',
+  tubes: tubes([14, 17, 12, 16, 10]),
+  bars: `${bars([12, 14, 16, 14, 12])}<path d="M3 3l5 5M21 3l-5 5"/>`,
+  musicbox: '<rect x="3" y="9" width="14" height="10" rx="1"/><path d="M17 14h4M21 11v6M6 9V6M10 9V5"/>',
+  steeldrum: `${drum}<circle cx="9" cy="8" r="0.800"/><circle cx="14" cy="8" r="0.800"/>`,
+  cowbell: '<path d="M7 5h10l3 14H4z"/><ellipse cx="12" cy="12" rx="2" ry="2.500"/>',
+  woodblock: '<rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 12h12"/>',
+  timpani: '<path d="M3 10h18a9 9 0 01-18 0z"/><path d="M8 19l-2 3M16 19l2 3M15 2l-4 6"/>',
+  kick: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M3 12h3"/>',
+  snare: `${drum}<path d="M5 2l8 6M19 2l-8 6"/>`,
+  tom: `${drum}<path d="M4 12c4 2 12 2 16 0"/>`,
+  hat: '<ellipse cx="12" cy="6" rx="9" ry="2"/><ellipse cx="12" cy="10" rx="9" ry="2"/><path d="M12 12v10M8 22h8"/>',
+  cymbal: '<ellipse cx="12" cy="9" rx="10" ry="3"/><circle cx="12" cy="9" r="1"/><path d="M12 12v10M8 22h8"/>',
+  clap: '<path d="M4 16l8-9 3 3-7 9zM20 16l-8-9-3 3 7 9z"/><path d="M12 2v2M5 4l1 2M19 4l-1 2"/>',
+  note,
+};
+
+const BY_ID: Record<string, string> = {
+  epiano: 'keyboard',
+  'epiano-round': 'keyboard',
+  clavinet: 'keyboard',
+  violin: 'violin',
+  orchestra: 'violin',
+  pizzicato: 'violin',
+  'upright-bass': 'violin',
+  strings: 'violin',
+  'guitar-steel': 'guitar',
+  'guitar-nylon': 'guitar',
+  'finger-bass': 'guitar',
+  'slap-bass': 'guitar',
+  fretless: 'guitar',
+  bass: 'guitar',
+  oud: 'lute',
+  harp: 'harp',
+  pluck: 'harp',
+  aah: 'mic',
+  ooh: 'mic',
+  soprano: 'mic',
+  choir: 'choir',
+  'sub-bass': 'speaker',
+  'punch-bass': 'speaker',
+  'lead-bright': 'saw',
+  'lead-saw': 'saw',
+  lead: 'saw',
+  'lead-square': 'square',
+  'synth-brass': 'square',
+  'pad-80s': 'sine',
+  'pad-warm': 'sine',
+  'pad-sweep': 'sine',
+  pad: 'sine',
+  accordion: 'accordion',
+  harmonica: 'harmonica',
+  kazoo: 'harmonica',
+  trumpet: 'trumpet',
+  trombone: 'trumpet',
+  brass: 'trumpet',
+  horn: 'horn',
+  tuba: 'horn',
+  flute: 'flute',
+  'pan-flute': 'panflute',
+  oboe: 'clarinet',
+  clarinet: 'clarinet',
+  sax: 'sax',
+  'tubular-bells': 'tubes',
+  chimes: 'tubes',
+  'music-box': 'musicbox',
+  bell: 'bell',
+  glockenspiel: 'bell',
+  celesta: 'bell',
+  'steel-drum': 'steeldrum',
+  cowbell: 'cowbell',
+  woodblock: 'woodblock',
+  timpani: 'timpani',
+  'timpani-tom': 'timpani',
+  'kick-punchy': 'kick',
+  'kick-boomy': 'kick',
+  'melodic-kick': 'kick',
+  'snare-tight': 'snare',
+  'snare-fat': 'snare',
+  'melodic-snare': 'snare',
+  rimshot: 'snare',
+  'tom-low': 'tom',
+  'tom-mid': 'tom',
+  'tom-high': 'tom',
+  crash: 'cymbal',
+  ride: 'cymbal',
+  'hat-closed': 'hat',
+  'hat-open': 'hat',
+  'hat-pedal': 'hat',
+  'melodic-hat': 'hat',
+  clap: 'clap',
+};
+const BY_GROUP: Record<string, string> = {
+  keys: 'piano',
+  strings: 'guitar',
+  voices: 'mic',
+  bass: 'guitar',
+  synth: 'sine',
+  organ: 'organ',
+  brass: 'trumpet',
+  winds: 'flute',
+  mallets: 'bars',
+  perc: 'snare',
+  kit: 'snare',
+  classic: 'note',
+};
+
+/** The picture for a preset: an inline SVG element's markup, hidden from screen readers. */
+export function presetIcon(id: string, group: string): string {
+  const key = BY_ID[id] ?? BY_GROUP[group] ?? 'note';
+  const body = ICONS[key] ?? ICONS[BY_GROUP[group] ?? 'note'] ?? note;
+  return `<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${body}</svg>`;
+}
