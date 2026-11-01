@@ -24,6 +24,7 @@ import { onCatalogChanged } from '../project/catalogWatch';
 import { originId } from '../editor/shell/homeOrigin';
 import { libraryStartGame } from '../libraryStart';
 import { drawerId, makeCabinet, plaque } from './cabinet';
+import { inCallOrder } from './callOrder';
 import { makeCopier } from './copier';
 import { callNumber } from './tinyShelf';
 
@@ -203,7 +204,18 @@ export function renderLibrary(el: HTMLElement): void {
     keepAddress();
     show();
   });
-  const copier = makeCopier((item, from) => openPiece(item, shelf?.games ?? new Map(), from));
+  const copier = makeCopier(
+    (item, from) => openPiece(item, shelf?.games ?? new Map(), from),
+    () => {
+      order = 'type';
+      only = 'stickers';
+      rememberOrder(order);
+      rememberOnly(order, only);
+      keepAddress();
+      show();
+      list.scrollIntoView({ block: 'start' });
+    },
+  );
   const gamePicker = h('select', {
     id: 'lib-game',
     class: 'lib-only',
@@ -242,7 +254,7 @@ export function renderLibrary(el: HTMLElement): void {
   const show = () => {
     buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(ORDERS[i][0] === order)));
     if (!shelf) return;
-    const groups = groupShelf(shelf.items, order);
+    const groups = inCallOrder(groupShelf(shelf.items, order), order);
     // a pick this shelf doesn't have (a game gone, an old link), or none, opens the first drawer
     if (only && !groups.some((g) => pickOf(g) === only)) only = undefined;
     const open = groups.find((g) => pickOf(g) === only) ?? groups[0];

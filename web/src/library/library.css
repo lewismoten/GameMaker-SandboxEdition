@@ -375,10 +375,10 @@ main.library {
 /* the card catalog: a cabinet of small drawers, one a group (cabinet.ts) */
 .lib-cabinet {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 6px;
-  margin: 0 0 18px;
-  padding: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 8px;
   border: 2px solid var(--wood-dark);
   border-radius: 6px 6px 3px 3px;
   background:
@@ -396,11 +396,11 @@ main.library {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  min-height: 92px;
+  gap: 3px;
+  min-height: 64px;
   min-width: 0;
   margin: 0;
-  padding: 6px 6px 8px;
+  padding: 4px 4px 5px;
   border: 2px solid var(--wood-dark);
   border-radius: 3px;
   background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 5px), linear-gradient(var(--wood-hi), var(--wood));
@@ -472,23 +472,12 @@ main.library {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   min-height: 2.5em;
+  padding-bottom: 2px;
   white-space: normal;
   overflow-wrap: anywhere;
   font:
     700 13px/1.25 system-ui,
     sans-serif;
-}
-
-.lib-dcount {
-  padding-bottom: 2px;
-  font:
-    11px/1.2 ui-monospace,
-    'Courier New',
-    monospace;
-}
-
-.lib-dcount::before {
-  content: '× ';
 }
 
 /* the drawer's pull */
@@ -840,7 +829,7 @@ main.library {
   .lib-cabinet {
     grid-template-columns: none;
     grid-template-rows: repeat(2, auto);
-    grid-auto-columns: 138px;
+    grid-auto-columns: 118px;
     grid-auto-flow: column;
     overflow-x: auto;
     overscroll-behavior-x: contain;

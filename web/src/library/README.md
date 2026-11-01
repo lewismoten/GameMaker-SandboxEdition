@@ -44,6 +44,9 @@ form, e.g. 614-MAH TED. Games whose titles share a mark are told apart by number
 (TED, TED2, TED3; `setAuthorMarks`, set when `listing.ts` builds the shelf). `cabinet.ts` also draws the
 brass plaque on the cabinet's top rail with the Tiny Pockets Press logo (`web/public/library/tiny-pockets-press.webp`,
 ISC, Lewis Moten; see NOTICE.md and the Credits page).
+`callOrder.ts` puts the drawers, and the cards in each, in call-number order (the three-digit class, then the
+author mark with numbers as numbers: 614-MAH TED, 660-GAM TED, 660-GAM TED2, 660-GAM TED10); cards with the same
+call number keep the order `shelf.ts` gave them. The drawers no longer show a count (the line under the sort does).
 `copier.ts` is the photocopier beside the cabinet (below it on small windows): "Copies: choose a paper" lists the
 print shop's pieces in the open drawer and COPY sweeps a green scan light (a still glow with reduced motion), then
 opens that piece in the print shop through `libraryPage.ts`'s `openPiece`. With nothing to print its display reads
