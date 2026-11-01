@@ -4,6 +4,7 @@
 // turn or chair creak is made now and then with Web Audio. Both stop when the visitor leaves the page; the
 // sound follows the site's demo sound choice (None is silent). With reduced motion the visitors stand
 // still where they appear and the sounds are the same.
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 import { demoAudio } from '../media/demoAudio';
 
 const CAST = ['teddy', 'gwinn', 'leo', 'lewie'];
@@ -14,7 +15,7 @@ function makeSound(ctx: AudioContext, kind: number): void {
   const t = ctx.currentTime;
   const out = ctx.createGain();
   out.gain.value = 0.05;
-  out.connect(ctx.destination);
+  out.connect(output(ctx)); // through the speakers' volume knob, like the desk's sounds
   const noise = (len: number) => {
     const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * len), ctx.sampleRate);
     const d = buf.getChannelData(0);
