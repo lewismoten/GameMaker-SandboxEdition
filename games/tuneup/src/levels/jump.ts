@@ -4,11 +4,13 @@
 // clamp). Then Doc Leo cranks: Space held under the crank's handle turns it a notch each reach,
 // and its gauge fills, eight notches. The last one plays "Charge!" and the headlight door opens.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { blob } from '../../../snowbound/src/art/draw';
+import { scaleBlit } from '../../../snowbound/src/screens/scenery';
+import { POSES } from '../../../teddy2/src/sprites/teddy';
+import { CHEZ_LAMP, chezPicture } from '../../../kit/chez';
 import { AIR, countedDoor, kit, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
-import { CTR } from '../ids';
+import { CTR, MON } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
 
 /** Notches on the crank's gauge. */
@@ -21,13 +23,18 @@ export const JUMP = {
   floor: 8,
   red: [23, 2] as [number, number],
   black: [16, 7] as [number, number],
-  redDoor: 28,
-  blackDoor: 31,
-  crank: 35,
-  drum: 38,
-  lamp: 41,
-  exit: 42,
+  redDoor: 26,
+  blackDoor: 29,
+  crank: 32,
+  drum: 34,
+  /** THE CHEZ, parked facing left at the garage's end: its box's left column and top row. */
+  car: [36, 5] as [number, number],
+  /** The headlight: the block of the car Doc Leo bumps into, shut until the battery is charged. */
+  lamp: [37, 6] as [number, number],
+  exit: 39,
 } as const;
+/** The car's size in blocks (scale 3: 120 x 60). */
+const CAR = [6, 3] as const;
 
 export function jumpBlocks(pal: Pal): Kit {
   const k = kit(pal);
@@ -69,13 +76,14 @@ export function jumpBlocks(pal: Pal): Kit {
   // the crank: a handle hanging over the floor, and its gauge filling a notch a turn
   const crank = (n: number, turned: boolean) => {
     const p = k.pic('wall');
-    // the gauge: eight cells across the top, lit up to n
-    p.rect(1, 1, 18, 5, c('ink', 0));
-    for (let i = 0; i < NOTCHES; i++) p.rect(2 + i * 2 + Math.floor(i / 4), 2, 2, 3, i < n ? c(n === NOTCHES ? 'green' : 'yellow', 2) : c('shade', 1));
-    // the axle and the handle, turned a quarter between notches
-    p.disc(10, 12, 2.4, c('mach', 4)).disc(10, 12, 1, c('ink', 0));
-    if (turned) p.rect(10, 11, 7, 2, c('mach', 3)).rect(15, 11, 2, 8, c('accent', 2));
-    else p.rect(3, 11, 7, 2, c('mach', 3)).rect(3, 11, 2, 8, c('accent', 2));
+    // the gauge: eight tall cells across the top half, lit up to n (green when full)
+    p.rect(0, 0, 20, 11, c('ink', 0));
+    for (let i = 0; i < NOTCHES; i++)
+      p.rect(1 + i * 2 + Math.floor(i / 4) * 2, 1, 2, 9, i < n ? c(n === NOTCHES ? 'green' : 'yellow', 2 + (i % 2)) : c('shade', 1));
+    // the axle and the handle, turned a half between notches
+    p.disc(10, 15, 2.4, c('mach', 4)).disc(10, 15, 1, c('ink', 0));
+    if (turned) p.rect(10, 14, 8, 2, c('mach', 3)).rect(16, 14, 3, 6, c('accent', 2));
+    else p.rect(2, 14, 8, 2, c('mach', 3)).rect(1, 14, 3, 6, c('accent', 2));
     return p;
   };
   for (let n = 0; n < NOTCHES; n++) {
@@ -86,16 +94,51 @@ export function jumpBlocks(pal: Pal): Kit {
     book.add(`crank${n}.t`, crank(n + 1, true), { ...AIR, ntime: TURN, next: last ? 'crank.full' : `crank${n + 1}` });
   }
   book.add('crank.full', crank(NOTCHES, false), AIR);
-  // the way out: THE CHEZ's headlight, dark until the battery is charged; touched, it lights
-  const lamp = (lit: boolean) => {
+  // the way out: THE CHEZ itself, parked at the end of the garage facing left (the passenger side,
+  // Teddy at the door window), drawn over the wall a block at a time. Its headlight is shut (a
+  // solid block, its lens dark) until the battery is charged; touched then, it lights and opens.
+  const car = chezPicture(
+    {
+      body: [c('red', 1), c('red', 2), c('red', 3)],
+      trim: c('red', 0),
+      glass: [c('siding', 0), c('sky', 4)],
+      roof: c('ink', 0),
+      tire: c('ink', 0),
+      hub: c('metal', 4),
+      rim: c('paint', 3),
+      stripe: c('asphalt', 1),
+      pin: c('paint', 3),
+      bumper: c('ink', 1),
+      lamp: c('orange', 3),
+      tail: c('red', 3),
+      lens: c('asphalt', 1),
+      outline: c('ink', 0),
+    },
+    'left',
+    3,
+  );
+  // Teddy in the front passenger seat, his head in the door window
+  scaleBlit(car, POSES.front.crop(2, 0, 16, 11), 48 - 8, 15 - 2, 1);
+  const carBlock = (bx: number, by: number, lit = false) => {
     const p = k.pic('wall');
-    blob(p, 10, 10, 8, 8, R('mach'), 1, 5);
-    blob(p, 10, 10, 6, 6, lit ? R('lamp') : R('shade'), lit ? 2 : 0, lit ? 4 : 2);
-    if (lit) p.rect(7, 7, 2, 2, c('cloud', 2));
+    p.blit(car.crop(bx * 20, by * 20, 20, 20), 0, 0, 255);
+    if (lit) {
+      // the lens, lit, and its beam
+      const lx = Math.round(40 * 3 - CHEZ_LAMP[0] * 3) - bx * 20;
+      const ly = Math.round(CHEZ_LAMP[1] * 3) - by * 20;
+      p.disc(lx, ly, 3, c('lamp', 4)).disc(lx, ly, 1.5, c('cloud', 2));
+      for (let i = 4; i < 9; i++) p.set(lx - i, ly - 1, c('lamp', 3)).set(lx - i, ly + 1, c('lamp', 3));
+    }
     return p;
   };
-  book.add('headlight', lamp(false), { solid: SOLID, effect: CTR.charge, eamt: -1, touch: 'headlight.on' });
-  book.add('headlight.on', lamp(true), AIR);
+  for (let by = 0; by < CAR[1]; by++)
+    for (let bx = 0; bx < CAR[0]; bx++) {
+      const at = [JUMP.car[0] + bx, JUMP.car[1] + by];
+      if (at[0] === JUMP.lamp[0] && at[1] === JUMP.lamp[1]) {
+        book.add('headlight', carBlock(bx, by), { solid: SOLID, effect: CTR.charge, eamt: -1, touch: 'headlight.on' });
+        book.add('headlight.on', carBlock(bx, by, true), AIR);
+      } else book.add(`car${bx}.${by}`, carBlock(bx, by), AIR);
+    }
   return k;
 }
 
@@ -136,10 +179,14 @@ export function jump(book: Kit['book']): Level {
   m.set(JUMP.blackDoor, 6, 'term.black.top').set(JUMP.blackDoor, 7, 'term.black');
   m.set(JUMP.crank, 5, 'crank0');
   m.set(JUMP.drum, 7, 'D');
-  m.set(JUMP.lamp, 6, 'term.red.top').set(JUMP.lamp, 7, 'headlight');
+  for (let by = 0; by < CAR[1]; by++)
+    for (let bx = 0; bx < CAR[0]; bx++) {
+      const [x, y] = [JUMP.car[0] + bx, JUMP.car[1] + by];
+      m.set(x, y, x === JUMP.lamp[0] && y === JUMP.lamp[1] ? 'headlight' : `car${bx}.${by}`);
+    }
   m.fill(w - 1, 0, 1, floor, 'C');
   m.link(JUMP.exit, 7);
-  m.mon(0, JUMP.drum, 6);
+  m.mon(MON.reggie, JUMP.drum, 6);
   // he starts in mid air at (8, 5), so the view (centered on where he starts, and never scrolling
   // up or down) shows the whole garage from its left wall; he drops to the floor
   return { m, start: at(8, 5), size: [w, 10] };

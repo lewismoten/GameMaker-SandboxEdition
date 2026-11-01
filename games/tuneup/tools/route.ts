@@ -7,7 +7,7 @@ import { CTR, MON, OIL_KEYS } from '../src/ids';
 import { JUMP, NOTCHES } from '../src/levels/jump';
 import { SPARK, WIRES, WIRE_TOP } from '../src/levels/spark';
 import { EXIT_X, ROW, VERSES, VERSE_TICKS, beatBlocks, hitCounter, pathOf } from '../src/levels/beat';
-import { LINES, OIL, SQUEAKS } from '../src/levels/oil';
+import { ALL_SQUEAKS, LINES, OIL } from '../src/levels/oil';
 import { ORIGIN } from '../src/levels/maps';
 import { Bot } from './bot';
 
@@ -155,10 +155,11 @@ export async function oilsWell(bot: Bot): Promise<void> {
   const on = (row: number, kinds: number[]) => sim.w.mi.filter((mi, i) => kinds.includes(sim.w.mm[i].monnum) && mi.cury[0] - ORIGIN === row).length;
   const drops = OIL_KEYS.map((_, i) => MON.drop0 + i);
   let squirts = 0;
-  while (bot.count(CTR.oiled) < SQUEAKS.length) {
+  while (bot.count(CTR.oiled) < ALL_SQUEAKS) {
     if (sim.ticks > 2000) throw new Error(`still oiling: ${bot.count(CTR.oiled)} notes home`);
     const line = rows.findIndex((row) => on(row, [MON.squeak, MON.squeakFast]) && !on(row, drops));
     if (line < 0) {
+      // nothing to oil just now: watch the staff (the next wave squeaks out of the clef end)
       await must(bot, bot.wait(1), 'watching the staff');
       continue;
     }
@@ -167,6 +168,6 @@ export async function oilsWell(bot: Bot): Promise<void> {
     await must(bot, bot.tap(OIL_KEYS[line], 8), `squirting line ${line + 1}`);
     squirts++;
   }
-  bot.say(`oiled ${SQUEAKS.length} Squeaks with ${squirts} squirts`);
+  bot.say(`oiled ${ALL_SQUEAKS} Squeaks with ${squirts} squirts`);
   await leave(bot, bot.walk(OIL.exit, 'through the gate and out under the staff'), 'out');
 }

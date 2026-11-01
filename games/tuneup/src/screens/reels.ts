@@ -104,8 +104,9 @@ export function stingReel(level: number, tool: Tool, name: string): Reel {
     });
   for (let f = 0; f < 10; f++)
     r.frame(bg, (p) => {
-      drawLeo(p, 'grin', 130, 170, 3);
-      scaleBlit(p, pic, 128, 0, 2);
+      drawLeo(p, 'hop', 130, 170, 3);
+      scaleBlit(p, pic, 186, 18, 2);
+      sparkle(p, 182, 22, 3);
       centered(p, 182, `LEVEL ${level}: ${name}`, c('lamp', 4), 1, INK);
     });
   // the cutaway: what's tuned so far, the newest part blinking

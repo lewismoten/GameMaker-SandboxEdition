@@ -3,7 +3,9 @@
 // Z X C V B each squirt the oil can into its own line, bottom to top (the frame that fires a
 // drop picks its row; Doc Leo stays put on his step at the right, and the drop flies left). A drop that meets a Squeak oils it: the
 // Squeak becomes a calm note that floats down to Doc Leo, and its touch counts it. Ten Squeaks,
-// two a line, one quick; when every note is home, the gate under the staff opens.
+// two a line, one quick; then two more waves of quick ones squeak out of the clef end of every
+// line (blocks that give birth once, on a timetable). When every note is home, the gate under
+// the staff opens.
 import { kit, AIR, countedDoor, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
@@ -13,6 +15,10 @@ import { MapBuilder, at, type Level } from './maps';
 /** The staff's lines, bottom (Z) to top (B). */
 export const LINES = [6, 5, 4, 3, 2];
 export const OIL = { w: 16, floor: 9, step: 13, gate: 2, exit: 1 } as const;
+/** Ticks into the level each later wave squeaks out (a quick Squeak on every line). */
+export const WAVES = [260, 440];
+/** Every Squeak there will be: the first ten and the waves. */
+export const ALL_SQUEAKS = 10 + WAVES.length * 5;
 /** The Squeaks: line, column it starts at, quick or not. */
 export const SQUEAKS: { line: number; x: number; fast: boolean }[] = [
   { line: 0, x: 1, fast: false },
@@ -43,7 +49,13 @@ export function oilBlocks(pal: Pal): Kit {
   const step = k.pic('casting.top');
   step.rect(4, 6, 12, 3, c('pipe', 2));
   book.add('step', step, { solid: SOLID });
-  countedDoor(k, 'gate', 'bay', CTR.oiled, SQUEAKS.length, (p) => {
+  // the waves: the line's left end waits, then gives birth to a quick Squeak for one tick
+  WAVES.forEach((t, i) => {
+    const after = i + 1 < WAVES.length ? `wave${i + 1}` : 'line';
+    book.add(`wave${i}`, k.pic('line'), { ...AIR, ntime: t - (i ? WAVES[i - 1] + 1 : 0), next: `wave${i}.go` });
+    book.add(`wave${i}.go`, k.pic('line'), { ...AIR, birthMon: MON.squeakFast, birthTime: 1, ntime: 1, next: after });
+  });
+  countedDoor(k, 'gate', 'bay', CTR.oiled, ALL_SQUEAKS, (p) => {
     p.disc(10, 12, 3, c('pipe', 3)).rect(12, 4, 1, 8, c('ink', 0));
   });
   return k;
@@ -54,7 +66,7 @@ export function oil(book: Kit['book']): Level {
   const m = new MapBuilder(book, { '.': 'bay', r: 'bay.ribs', '#': 'casting', '=': 'casting.top', '-': 'line' }, 'casting');
   m.fill(0, 0, w, floor, '.').fill(0, floor, w, 1, '=');
   m.fill(0, 0, w, 1, 'r');
-  for (const y of LINES) m.fill(1, y, OIL.step - 1, 1, '-');
+  for (const y of LINES) m.fill(1, y, OIL.step - 1, 1, '-').set(1, y, 'wave0');
   m.set(OIL.step - 1, LINES[2], 'clef');
   m.fill(w - 1, 0, 1, floor, '#');
   // Doc Leo's step at the right: he squirts left along the lines. The gate and the way out at the left

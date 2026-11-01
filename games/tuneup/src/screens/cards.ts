@@ -4,6 +4,7 @@
 // laid, every card names her Lady Regina III; the card where it happens says so, formally.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { centered, text, textWidth } from '../../../snowbound/src/art/font';
+import { rubberEgg } from '../art/egg';
 import { SP, INK, drawChicken, drawLeo, garage } from './art';
 
 const c = SP.c;
@@ -16,6 +17,8 @@ export interface Card {
   lines: Line[];
   /** The chicken is Lady Regina III. */
   lady?: boolean;
+  /** Her egg sits beside her on the bench. */
+  egg?: boolean;
   leoPose?: string;
 }
 
@@ -49,15 +52,18 @@ export function card(k: Card): Pixels {
   drawLeo(p, k.leoPose ?? 'grin', 6, 190, 3);
   p.rect(258, 128, 62, 8, c('pipe', 3)).rect(258, 128, 62, 2, c('pipe', 4)).rect(262, 136, 4, 64, c('pipe', 1)).rect(312, 136, 4, 64, c('pipe', 1));
   drawChicken(p, 254, 129, 3, { lady: k.lady, squawk: true }, true);
+  if (k.egg) p.blit(rubberEgg(new Pixels(20, 20, 255)), 290, 109, 255);
   let y = k.title ? 32 : 12;
   for (const [who, words] of k.lines) {
     if (who === 'stamp') {
       // a formal correction, stamped across the card
-      const w = textWidth(words) + 12;
-      const x = 160 - Math.round(w / 2);
-      p.rect(x, y, w, 14, c('red', 1)).frame(x, y, w, 14, c('red', 3));
-      text(p, x + 6, y + 3, words, c('paint', 3));
-      y += 20;
+      const rows = wrap(words, 15);
+      const w = Math.max(...rows.map((r) => textWidth(r))) + 12;
+      const x = BOX_X + Math.round((BOX_W - w) / 2);
+      const h = 6 + rows.length * 10;
+      p.rect(x, y, w, h, c('red', 1)).frame(x, y, w, h, c('red', 3));
+      rows.forEach((r, i) => text(p, x + 6, y + 4 + i * 10, r, c('paint', 3)));
+      y += h + 4;
       continue;
     }
     const rows = wrap(words);

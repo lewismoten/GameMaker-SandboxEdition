@@ -67,16 +67,18 @@ export const OUTRO: Record<string, Card> = {
   },
   beat2: {
     leoPose: 'hurt',
+    egg: true,
     lines: [
       ['reggie', 'BAWK!'],
       ['leo', 'Reginald... was that an EGG?'],
       ['reggie', 'So it would appear.'],
-      ['stamp', '*CORRECTION: LADY REGINA III'],
+      ['stamp', '*CORRECTION: Lady Regina III'],
       ['regina', 'Double time, if you please.'],
     ],
   },
   beat3: {
     lady: true,
+    egg: true,
     lines: [
       ['leo', "Your egg's tag says 100% natural rubber."],
       ['regina', 'High tensile strength. Great elasticity. Tear resistant.'],

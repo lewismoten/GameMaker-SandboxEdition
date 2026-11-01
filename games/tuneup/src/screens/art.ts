@@ -6,6 +6,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
+import { text } from '../../../snowbound/src/art/font';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { chezSide, type ChezInk } from '../../../kit/chez';
 import { chicken, type ChickenPose } from '../art/chicken';
@@ -136,10 +137,10 @@ export function toolPic(t: Tool): Pixels {
 
 /** The cutaway's parts, in the order they're tuned: label and spot on a scale-6 CHEZ (240x120). */
 export const PARTS: { label: string; x: number; y: number }[] = [
-  { label: 'BATTERY', x: 196, y: 84 },
-  { label: 'PLUGS', x: 174, y: 64 },
-  { label: 'TIMING', x: 150, y: 74 },
-  { label: 'OIL', x: 126, y: 98 },
+  { label: 'BATTERY', x: 62, y: 118 },
+  { label: 'PLUGS', x: 84, y: 98 },
+  { label: 'TIMING', x: 108, y: 112 },
+  { label: 'OIL', x: 96, y: 136 },
 ];
 
 /** The cutaway CHEZ: the car seen from the side, its parts as lamps, the first `done` lit green but part `blink`, lit gold when `on`. */
@@ -154,6 +155,10 @@ export function cutaway(done: number, blink = -1, on = true): Pixels {
     const col = lit === 'green' ? c('green', 2) : lit === 'gold' && on ? c('yellow', 3) : c('asphalt', 1);
     p.disc(part.x, part.y, 7, INK).disc(part.x, part.y, 5, col);
     if (lit) p.rect(part.x - 2, part.y - 2, 2, 2, c('paint', 3));
+    // the legend along the bottom: each part's name, lit as its lamp is
+    const lx = 16 + i * 76;
+    p.disc(lx + 4, 186, 4, INK).disc(lx + 4, 186, 3, col);
+    text(p, lx + 12, 182, part.label, lit ? col : c('navy', 2));
   });
   return p;
 }
