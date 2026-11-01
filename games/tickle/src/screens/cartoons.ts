@@ -104,7 +104,7 @@ export function coverFli(cast: Cast): { fli: Uint8Array; title: Pixels; pal: Uin
     outlined(p, 160 - textWidth('RAT TICKLER', 3) / 2, drop + 20, 'RAT TICKLER', 4, 3, 3, 3);
     if (sub) {
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1994 Shareware`, 4);
     }
   };
   const r = new Reel(pal);
@@ -268,7 +268,7 @@ export function certFli(cast: Cast): Uint8Array {
       micro(p, 198, 173, 'PROF. R. TICKLES', ink);
       micro(p, 202, 179, 'DEAN OF GIGGLES', c('brown', 1));
       micro(p, 100, 160, 'DORSAL DELIGHT', c('brown', 1));
-      micro(p, 116, 166, '- 1995 -', c('brown', 1));
+      micro(p, 116, 166, '- 1994 -', c('brown', 1));
     }
   };
   const first = new Pixels(W, H);
