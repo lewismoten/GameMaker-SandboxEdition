@@ -3,11 +3,13 @@
 import type { Pal, TimeOfDay } from '../art/pal';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
-import { bandSong, railSong, shopSong } from '../sound/song';
+import { bandSong, railSong, shopSong, stringsSong } from '../sound/song';
 import type { Place } from '../sound/sounds';
+import { band, bandBlocks } from './band';
 import type { Level } from './maps';
 import { rail, railBlocks } from './rail';
 import { shop, shopBlocks } from './shop';
+import { strings, stringsBlocks } from './strings';
 
 export interface LevelDef {
   /** The level's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
@@ -38,6 +40,40 @@ export const LEVELS: LevelDef[] = [
     wide: true,
   },
   { file: 'piano', desc: 'The Player Piano', light: 'noon', blocks: railBlocks, build: rail, chr: 'rail', snd: 'rail', song: railSong, mons: {}, wide: false },
+  {
+    file: 'band1',
+    desc: 'The Bandstand',
+    light: 'sunset',
+    blocks: bandBlocks(0),
+    build: band(0),
+    chr: 'teddy',
+    snd: 'band',
+    song: () => bandSong(1),
+    mons: {},
+    wide: false,
+  },
+  {
+    file: 'store',
+    desc: "The Music Store's Back Room",
+    light: 'afternoon',
+    blocks: stringsBlocks,
+    build: strings,
+    chr: 'teddy',
+    snd: 'strings',
+    song: stringsSong,
+    mons: { march: 3 },
+    wide: true,
+  },
+  {
+    file: 'band2',
+    desc: 'The Bandstand Again',
+    light: 'sunset',
+    blocks: bandBlocks(1),
+    build: band(1),
+    chr: 'teddy',
+    snd: 'band',
+    song: () => bandSong(2),
+    mons: {},
+    wide: false,
+  },
 ];
-
-export { bandSong };

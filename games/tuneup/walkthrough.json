@@ -1,0 +1,94 @@
+{
+ "version": 1,
+ "game": "tuneup",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "BE0QzQZLG8sRTQjNBk0fSArICM0GEgySAE0PzQNNBM0GTQNICsgHSArIB0gKyAdICsgHSArIB0gKyATNBk0MzQZNC80SEgySAE0DzQNNBM0GTQbNEU0DSArICM0GTQpICsgPSArICkgKyA=="
+  },
+  {
+   "scene": 3,
+   "keys": "D0sEywQ5AbkCTQjNBDkBuQJLCMsEOQG5Ak0IzQQ5AbkSOQG5A0sIywQ5AbkCTQjNBDkBuQJLCMsEOQG5Ak0IzQQ5AbkSOQG5A0sIywQ5AbkCTQjNAzkBuQNLCMsDOQG5A00IzQM5AbkTOQG5A0sIywM5AbkDTQjNBDkBuQJLCMsDOQG5A00IzQM5AbkTOQG5A00="
+  },
+  {
+   "scene": 4,
+   "keys": "BEsYywZNGM0GTRZICsg="
+  },
+  {
+   "scene": 5,
+   "keys": "BEsIywZLC8sNTSDNBk0MzQZIDcgATRDNBk0LzRRNA0gKyAdICsgHSArIB0gKyAdICsgHSArIBM0GTQzNBk0LzRJNDM0GSA3IAE0EzRdN"
+  },
+  {
+   "scene": 6,
+   "keys": "BEsYywZNHM0GTRJICsg="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: The Piano Shop"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Player Piano"
+  },
+  {
+   "scene": 4,
+   "title": "The Bandstand"
+  },
+  {
+   "scene": 5,
+   "title": "Level 3: The Music Store's Back Room"
+  },
+  {
+   "scene": 6,
+   "title": "The Bandstand Again"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10404,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0
+   },
+   {
+    "title": "Story",
+    "frame": 1028
+   },
+   {
+    "title": "Level 1: The Piano Shop",
+    "frame": 2257
+   },
+   {
+    "title": "Level 2: The Player Piano",
+    "frame": 3954
+   },
+   {
+    "title": "The Bandstand",
+    "frame": 5223
+   },
+   {
+    "title": "Level 3: The Music Store's Back Room",
+    "frame": 5695
+   },
+   {
+    "title": "The Bandstand Again",
+    "frame": 7063
+   },
+   {
+    "title": "Ending",
+    "frame": 7535
+   },
+   {
+    "title": "Credits",
+    "frame": 8849
+   }
+  ]
+ }
+}

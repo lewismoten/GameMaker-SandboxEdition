@@ -5,6 +5,7 @@ import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/r
 import { buildPalette } from '../src/art/pal';
 import { CTR, HITS_NEEDED } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
+import { HARPS } from '../src/levels/strings';
 import { LANES, KEY_ROW, SONG_TICKS, STEPS, railBlocks } from '../src/levels/rail';
 import { Bot } from './bot';
 
@@ -149,4 +150,61 @@ export async function thePlayerPiano(bot: Bot): Promise<void> {
   bot.say(`played ${played} notes on the beat, ${whiffs} missed; ${hits()} hits`);
   if (whiffs) throw new Error(`the bot missed ${whiffs} notes`);
   await leave(bot, bot.walk(16, 'through the lid and out'), 'out of the piano');
+}
+
+/** The bandstand: every stand along the stage gets its instrument, then out by the gate. */
+function theBandstand(scene: number, stands: number) {
+  const run = async (bot: Bot): Promise<void> => {
+    expect(bot, scene, 'the bandstand');
+    await must(bot, bot.land(), 'on the stage');
+    await must(bot, bot.walk(2, 'to the first stand'), 'stands');
+    await must(bot, bot.walk(2 + stands - 1, 'along the stands'), 'stands');
+    const set = bot.sim.meter(CTR.band) - 1;
+    if (set !== stands) throw new Error(`set ${set} of ${stands} instruments on their stands`);
+    await leave(bot, bot.walk(16, 'off the stage and out the gate'), 'the gate');
+  };
+  Object.defineProperty(run, 'name', { value: `theBandstand${scene}` });
+  return run;
+}
+export const theBandstand1 = theBandstand(4, 7);
+export const theBandstand2 = theBandstand(6, 8);
+
+/** Climbs a harp's strings (nothing pulls Teddy down there) to level row `row`. */
+async function climb(bot: Bot, row: number, what: string): Promise<void> {
+  await must(
+    bot,
+    bot.until('up', () => bot.px.y <= row * 20, `up ${what}`, 120),
+    what,
+  );
+}
+
+/** 3. The Music Store's Back Room: eight string instruments, two harps, the guitar cases. */
+export async function theMusicStore(bot: Bot): Promise<void> {
+  expect(bot, 5, 'the music store');
+  await must(bot, bot.land(), 'on the counter');
+  await must(bot, bot.walk(6, 'along the counter'), 'counter');
+  picked(bot, 6, 5, 'the violin');
+  await must(bot, bot.walk(3, 'off the counter'), 'down');
+  picked(bot, 3, 8, 'the steel guitar');
+  await must(bot, bot.walk(11, 'under the counter'), 'under');
+  picked(bot, 11, 8, 'the pizzicato strings');
+  await must(bot, bot.walk(HARPS[0], 'to the first harp'), 'harp');
+  await climb(bot, 1, 'the first harp');
+  await must(bot, bot.walk(18, 'along the high shelf'), 'high shelf');
+  picked(bot, 18, 1, 'the harp');
+  await carefully(bot, 'down past the drummer', 8, async () => {
+    await must(bot, bot.walk(21, 'off the high shelf'), 'down');
+    picked(bot, 21, 8, 'the nylon guitar');
+  });
+  await must(bot, bot.walk(27, 'up the guitar cases'), 'cases');
+  await must(bot, bot.walk(30, 'along the shelf'), 'shelf');
+  picked(bot, 30, 2, 'the oud');
+  await must(bot, bot.walk(33, 'down to the floor'), 'floor');
+  picked(bot, 33, 8, 'the orchestra');
+  await must(bot, bot.walk(HARPS[1], 'to the second harp'), 'harp');
+  await climb(bot, 1, 'the second harp');
+  picked(bot, HARPS[1], 1, 'the chime harp');
+  await must(bot, bot.walk(37, 'off the harp'), 'off');
+  if (found(bot) < 8) throw new Error(`found ${found(bot)} string instruments, not 8`);
+  await leave(bot, bot.walk(40, 'out the door'), 'the door');
 }
