@@ -1,0 +1,393 @@
+{
+  "pitch": "The trunk is down and every instrument is loose: fetch each family home to Doc Leo's bandstand across thirteen neighborhoods, and hear the parade tune grow.",
+  "keys": {
+    "Up": "Hop (hold to hop higher; climbs strings; changes lanes)",
+    "Down": "Sit (lets go of strings; changes lanes)",
+    "Space": "Boop: play keys, bells and drums",
+    "F": "Fetch",
+    "Q": "Hop up and to the left",
+    "E": "Hop up and to the right",
+    "F2": "Instruments carried"
+  },
+  "stickers": [
+    {
+      "text": "FETCH!",
+      "sub": "TEDDY",
+      "shape": "cut",
+      "color": "#c9522a",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "teddy.chr",
+        "cbl": "teddy.cbl",
+        "pal": "shop.pal"
+      }
+    },
+    {
+      "text": "OOPS.",
+      "sub": "GWINN (SORRY)",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#2a1408"
+    },
+    {
+      "text": "TOOT!",
+      "sub": "TRUMPET",
+      "shape": "burst",
+      "color": "#ffd23f",
+      "ink": "#2a1408",
+      "sprite": {
+        "blocks": "field.bbl",
+        "pal": "field.pal",
+        "grid": [[115]]
+      }
+    },
+    {
+      "text": "BOW AND PLUCK",
+      "sub": "VIOLIN",
+      "shape": "cut",
+      "color": "#7a3fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "store.bbl",
+        "pal": "store.pal",
+        "grid": [[14]]
+      }
+    },
+    {
+      "text": "WHOO",
+      "sub": "FLUTE",
+      "shape": "circle",
+      "color": "#2f9e44",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "woods.bbl",
+        "pal": "woods.pal",
+        "grid": [[30]]
+      }
+    },
+    {
+      "text": "MOO-BELL",
+      "sub": "COWBELL",
+      "shape": "star",
+      "color": "#e0569a",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "farm.bbl",
+        "pal": "farm.pal",
+        "grid": [[31]]
+      }
+    },
+    {
+      "text": "KEY OF C",
+      "sub": "BRIGHT PIANO",
+      "shape": "cut",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "shop.bbl",
+        "pal": "shop.pal",
+        "grid": [[21]]
+      }
+    },
+    {
+      "text": "OOM-PAH",
+      "sub": "TUBA",
+      "shape": "cut",
+      "color": "#d9381e",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "field.bbl",
+        "pal": "field.pal",
+        "grid": [[121]]
+      }
+    },
+    {
+      "text": "ON THE BEAT",
+      "sub": "LET THE SONG LEAD",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#2a1408"
+    },
+    {
+      "text": "ONE MORE PART",
+      "sub": "THE BAND PLAYS ON",
+      "shape": "badge",
+      "color": "#120c34",
+      "ink": "#ffd23f"
+    }
+  ],
+  "news": [
+    {
+      "head": "Tune-Up: the parade needs its band",
+      "html": "<p>The night before the town parade, Gwinn found the Clown Club's instrument trunk. Our newest game, <b>Tune-Up</b>, starts right after: thirteen neighborhoods, one family of instruments in each, and Teddy to fetch them home to Doc Leo at the bandstand. Every family brings one more part of the parade tune, so the music grows as you play. From a piano shop to the inside of a sound card, you will meet every sound the music editor can make. A Sound Blaster is a very good idea."
+    },
+    {
+      "head": "Since last issue: Teddy's Little Bigger Adventure",
+      "html": "<p>The dog show is over, and Teddy's Little Bigger Adventure players are still not telling the BBS how the Best Behaved ring came out. Thank you. The most-asked question: can Gwinn really sit? Halfway, yes. Her tail has opinions."
+    },
+    {
+      "head": "Around the Sandbox: Practice makes noise",
+      "html": "<p>The workshop has been very loud this month. Doc Leo tried every instrument in Tune-Up, one after another, and says the tuba is easy and the accordion is not. Teddy slept through all of it on the modem cable. Gwinn was not allowed within ten feet of the instrument closet, which she has taken as a challenge."
+    },
+    {
+      "head": "In the workshop: One more Teddy",
+      "html": "<p>The Teddy trilogy ends next month with <b>Teddy's Little Biggest Adventure</b>: seventeen stops, every place and friend from the first two games, and a surprise Teddy knows nothing about. For the first time, you get to drive THE\u00a0CHEZ. What is the occasion? We can't say. Gwinn made us promise.</p>"
+    },
+    {
+      "head": "Letters: \"Does the tuba know it is a tuba?\"",
+      "html": "<p>We asked. The tuba has not commented. It is, however, very good at keeping the beat, and it has never once knocked over a trunk. Write to us about the trunk."
+    }
+  ],
+  "items": [
+    {
+      "kind": "map",
+      "title": "Parade band poster",
+      "note": "Full color, as promised",
+      "promised": true,
+      "landscape": true,
+      "heading": "TUNE-UP",
+      "intro": "The whole band, ready for tomorrow's parade. Hang it where Gwinn can see it, and keep the trunk shut.",
+      "panels": [
+        {
+          "map": "piano.map",
+          "x": 0,
+          "y": 0,
+          "w": 16,
+          "h": 10,
+          "caption": "The player piano"
+        },
+        {
+          "map": "choir.map",
+          "x": 0,
+          "y": 0,
+          "w": 16,
+          "h": 10,
+          "caption": "The choir loft"
+        },
+        {
+          "map": "field.map",
+          "x": 0,
+          "y": 0,
+          "w": 16,
+          "h": 10,
+          "caption": "The marching field"
+        },
+        {
+          "map": "band1.map",
+          "x": 0,
+          "y": 0,
+          "w": 16,
+          "h": 10,
+          "caption": "The first bandstand"
+        },
+        {
+          "map": "shop.map",
+          "x": 0,
+          "y": 0,
+          "w": 16,
+          "h": 10,
+          "caption": "The piano shop"
+        }
+      ],
+      "columns": 2
+    },
+    {
+      "kind": "idcard",
+      "title": "Parade band pass",
+      "note": "Admits one very good dog",
+      "org": "THE CLOWN CLUB PARADE BAND",
+      "name": "TEDDY",
+      "role": "INSTRUMENT FETCHER",
+      "fields": [
+        ["Breed", "Pembroke Welsh Corgi"],
+        ["Color", "Red-gold, white blaze"],
+        ["Ears", "Two, always up"],
+        ["Section", "All of them"],
+        ["Parade", "Tomorrow"],
+        ["Bandstand", "Doc Leo, ask for him"]
+      ],
+      "color": "#c9522a",
+      "ink": "#ffffff",
+      "photo": {
+        "map": "shop.map",
+        "x": 8,
+        "y": 6,
+        "w": 2,
+        "h": 2
+      },
+      "portrait": {
+        "chr": "teddy.chr",
+        "cbl": "teddy.cbl",
+        "pal": "shop.pal"
+      },
+      "back": "This pass admits one dog to the bandstand, a tuba, and anyone who plays the tuba. Please return any stray trumpets to the Clown Club."
+    },
+    {
+      "kind": "hintbook",
+      "title": "Tune-Up Hint Book",
+      "note": "Answers hidden: use the red film",
+      "intro": "Stuck? Find your question, then slide the red film over the answer. One answer at a time: the band is counting on you.",
+      "sections": [
+        {
+          "head": "Every Neighborhood",
+          "hints": [
+            {
+              "q": "What am I looking for?",
+              "a": "Instruments in gold frames with a sparkle going round. The ones in shop windows and on stands are scenery."
+            },
+            {
+              "q": "The door won't open.",
+              "a": "It opens when the whole family is found. Press F2 to see how many you are carrying, then keep looking."
+            },
+            {
+              "q": "What do the bandstands do?",
+              "a": "Walk up to the stand and the clowns take what you carried and play it. They are not a level; you can't lose there."
+            }
+          ]
+        },
+        {
+          "head": "1. The Piano Shop",
+          "hints": [
+            {
+              "q": "How do I get across the keys?",
+              "a": "Hop the black keys. They are ledges over the white keys, and each step plays a note."
+            }
+          ]
+        },
+        {
+          "head": "2. The Player Piano",
+          "hints": [
+            {
+              "q": "I keep missing the notes.",
+              "a": "Stand under a key and press Space as the note lands on it. The key stays lit for a good while, so there is no need to hurry."
+            },
+            {
+              "q": "The door is still shut.",
+              "a": "It needs 12 notes played. The song keeps playing and the notes keep dropping, so keep trying."
+            }
+          ]
+        },
+        {
+          "head": "3. The Music Store's Back Room",
+          "hints": [
+            {
+              "q": "How do I get up the harp?",
+              "a": "Climb the strings with Up and let go with Down. Bounce on the plucked springs for the high shelves."
+            }
+          ]
+        },
+        {
+          "head": "4. The Choir Loft",
+          "hints": [
+            {
+              "q": "Where is the way out?",
+              "a": "Climb to the loft rail. The voices join you, and the door opens."
+            }
+          ]
+        },
+        {
+          "head": "5. The Basement",
+          "hints": [
+            {
+              "q": "It's too dark and low.",
+              "a": "Stand in a speaker column to be pushed up, and ride the pulses to the ducts."
+            }
+          ]
+        },
+        {
+          "head": "6. The Arcade",
+          "hints": [
+            {
+              "q": "The pads keep wobbling.",
+              "a": "Wait for one to steady, then hop. The pickups chirp as you take them."
+            }
+          ]
+        },
+        {
+          "head": "7. The Roller Rink",
+          "hints": [
+            {
+              "q": "Teddy won't stop skating!",
+              "a": "He skates by himself on purpose. Tap Up and Down to change lanes, and hold Left to hold him back."
+            }
+          ]
+        },
+        {
+          "head": "8. The Marching Field",
+          "hints": [
+            {
+              "q": "I'm not Teddy any more.",
+              "a": "You are Doc Leo's baton. Tap Up and Down to put it on a line, and press Space as a note arrives."
+            },
+            {
+              "q": "The notes are too fast.",
+              "a": "Take the lines one at a time. A note is lit for plenty of time, and you can always try the next one."
+            }
+          ]
+        },
+        {
+          "head": "9. The Woods by the River",
+          "hints": [
+            {
+              "q": "How do I open a staff door?",
+              "a": "Climb the cattail beside it to the hollow note and press Space."
+            },
+            {
+              "q": "The reeds look funny.",
+              "a": "Look closely at the clump behind where Teddy starts."
+            }
+          ]
+        },
+        {
+          "head": "10. The Clock Tower",
+          "hints": [
+            {
+              "q": "The bell curtains won't open.",
+              "a": "Wait for the clock hand to reach the gold wedge. They swing open then, and stay for a moment."
+            }
+          ]
+        },
+        {
+          "head": "11. The Farm",
+          "hints": [
+            {
+              "q": "The drum won't take.",
+              "a": "Boop it from underneath while its hook is lit. Wait for the next beat if you miss."
+            }
+          ]
+        },
+        {
+          "head": "12. The Attic",
+          "hints": [
+            {
+              "q": "How do I open the old trunk?",
+              "a": "Play Doc Leo's phrase on the toy piano. The first two chords are keys; the trunk's latch is the third."
+            }
+          ]
+        },
+        {
+          "head": "13. Sound Check",
+          "hints": [
+            {
+              "q": "Two drum doors won't both open.",
+              "a": "They share a channel, so they take turns: snare and hi-hat, tom and cymbal. Wait for yours."
+            }
+          ]
+        },
+        {
+          "head": "Secrets",
+          "hints": [
+            {
+              "q": "Is there a tin heart?",
+              "a": "Up in the clock tower, among the gears, where a ticking heart is at home."
+            },
+            {
+              "q": "And an egg?",
+              "a": "Down by the river, in the reeds."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

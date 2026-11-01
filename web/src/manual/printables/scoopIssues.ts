@@ -18,6 +18,7 @@ export const SCOOP_MONTHS: Readonly<Record<string, string>> = {
   depth: '1994-11',
   realm: '1994-11',
   teddy2: '1994-11',
+  tuneup: '1994-11',
   teddy3: '1994-12',
 };
 
