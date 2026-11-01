@@ -112,7 +112,7 @@ export const CARDS: { title: string; where: string; lines: [string, string] }[] 
 const CREDITS_TEXT = page(
   [
     'LOAF #13 (LEFT IN THE BASKET)',
-    'by The Bard of Bizarre, 1995',
+    'by The Bard of Bizarre, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Based on the song "Loaf #13',
@@ -153,7 +153,7 @@ export function readme(price: string): string {
   return `
     LOAF #13
     (LEFT IN THE BASKET)
-    Version ${about.version} - May 1995
+    Version ${about.version} - September 1994
     by The Bard of Bizarre
 
 "But I'm still bread!
