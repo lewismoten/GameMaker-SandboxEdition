@@ -448,7 +448,15 @@ export class Tour {
       const sprite = this.sprites?.get(id);
       if (!sprite) return undefined;
       a = new Actor(sprite, this.scaleFor(HOSTS[id].scale), false);
-      a.place(offStage(a.size, this.view(), this.floor(), false));
+      // already in the Library (a regular wandering it, or Joe behind his desk, hidden while the tour is on):
+      // the tour takes them over where they stand, so they walk out from there
+      const visitor = document.querySelector<HTMLElement>(`.lib-visitor[data-cast="${id}"]`);
+      const there = visitor ?? (id === 'joe' ? document.querySelector<HTMLElement>('.lib-o-joe canvas') : null);
+      const r = there?.getBoundingClientRect();
+      if (r && r.width && r.right > 0 && r.left < this.view().w && r.bottom > 0 && r.top < this.view().h) {
+        a.place({ x: r.left + r.width / 2 - a.size.w / 2, y: r.bottom - a.size.h });
+        visitor?.remove();
+      } else a.place(offStage(a.size, this.view(), this.floor(), false));
       a.el.dataset.host = id;
       this.layer.append(a.el);
       this.hosts.set(id, a);

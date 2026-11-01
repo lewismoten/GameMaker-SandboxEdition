@@ -117,12 +117,16 @@ export function startAmbience(room: HTMLElement): void {
     if (!layer || document.hidden) return later(visit, between(20_000, 40_000));
     const { loadSprites } = await import('../tour/actor');
     const all = await loadSprites();
-    const id = CAST[Math.floor(Math.random() * CAST.length)];
+    // never a second copy of someone the tour has on screen (the tour takes over a visitor already here)
+    const free = CAST.filter((who) => !document.querySelector(`.tour-actor[data-host="${who}"]`));
+    if (!free.length) return later(visit, between(20_000, 40_000));
+    const id = free[Math.floor(Math.random() * free.length)];
     const sprite = all.get(id);
     if (!sprite || gone()) return;
     const frames = (walking: boolean) => (walking && sprite.walk.length ? sprite.walk : sprite.front);
     const c = document.createElement('canvas');
     c.className = 'lib-visitor';
+    c.dataset.cast = id;
     c.width = sprite.sprite.w;
     c.height = sprite.sprite.h;
     // standing on the floor in front of the desk, sized for that depth (a sprite pixel is about 4 cm)
@@ -153,7 +157,7 @@ export function startAmbience(room: HTMLElement): void {
     c.style.left = fromLeft ? '-12%' : '104%';
     faceHeading(!fromLeft);
     layer.append(c);
-    const tick = window.setInterval(() => (room.isConnected ? draw() : clearInterval(tick)), sprite.sprite.ms);
+    const tick = window.setInterval(() => (room.isConnected && c.isConnected ? draw() : clearInterval(tick)), sprite.sprite.ms);
     void c.offsetWidth;
     c.style.left = `${spot}%`;
     later(() => {
