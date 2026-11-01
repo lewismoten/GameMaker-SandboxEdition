@@ -153,7 +153,7 @@ describe('another scene adds to it', () => {
 
   it('names the scenes that add to the counter', () => {
     const t = twoScenes();
-    expect(otherScenesAdding(t.game, t, 2, [20])).toEqual(new Map([[20, ['Cave']]]));
+    expect(otherScenesAdding(t.game, t, 2, [20])).toEqual(new Map([[20, ['Cave (scene 3)']]]));
     expect(otherScenesAdding(t.game, t, 3, [20]).size).toBe(0);
     expect(otherScenesAdding(t.game, t, 2, [21]).size).toBe(0);
   });
