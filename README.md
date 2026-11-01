@@ -39,12 +39,12 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
 - **The CD's games:** the sample "gameware" (edit a copy) and the shareware (play only,
   with their authors' notices). CD games that shipped without a title demo get one recorded
   for this edition, kept apart from their original files.
-- **Thirteen new Sandbox Software games** built for this fork, entirely in code
+- **Fourteen new Sandbox Software games** built for this fork, entirely in code
   ([games/](games)): *Maximus: The Hundred Worlds*, *Sandcastle Knight*, *Snowbound: The $89
   Shovel*, *In The Year 2000!*, *Teddy's Little Big Adventure*, *Teddy's Little Bigger
   Adventure*, *Teddy's Little Biggest Adventure*, *Ohm Sweet Ohm*, *Virus Blaster*, *Final
-  Curtain*, *KEEP IT BRIEF! The Tiny Pockets Library*, *Depth Perception* and *Quest for the
-  Round Tuit*. Each comes
+  Curtain*, *KEEP IT BRIEF! The Tiny Pockets Library*, *Depth Perception*, *Quest for the
+  Round Tuit* and *Tune-Up*. Each comes
   with a manual, box art, printable extras (among them a fold-out World Map and Level Maps)
   and a hidden tin heart, and most hide a felt egg to find.
 - **Twelve "bizarre" games**, also built in code from Lewis's own comic songs and
