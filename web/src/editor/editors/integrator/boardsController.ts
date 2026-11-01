@@ -4,8 +4,9 @@
 // the selection and the canvas; this owns which board is showing and keeps boardLayout.ts's data
 // in the project's companion (editor-only: the .gam and DOS export are never touched).
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import type { Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { h, clear } from '../../core/ui';
+import { NOSCENE, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { arrangements, closeGaps, spreadOut, type Arrangement } from './integratorLayout';
+import { h, clear, toast } from '../../core/ui';
 import type { Project } from '../../core/project';
 import { usedScenes, inRect, type BoardView, type Rect } from './board';
 import {
@@ -46,8 +47,15 @@ interface Host {
 export function boardsController(c: Host) {
   const file = c.project.gam;
   const data: BoardsData = readBoards(c.project.extras(file, BOARDS_SECTION, undefined));
-  /** 'dos' for the DOS layout, else a board id. */
-  let mode = data.boards[0]?.id ?? 'dos';
+  // every game works on boards: one without any gets "All scenes" at its DOS positions (kept once something changes)
+  if (!data.boards.length) data.boards.push({ id: 'all', name: 'All scenes' });
+  /** What the author last saw, as text: the step Undo goes back to (and Redo forward to). */
+  let current = JSON.stringify(data);
+  const undoStack: string[] = [];
+  const redoStack: string[] = [];
+  let animating = false;
+  /** The board showing. */
+  let mode = data.boards[0].id;
   let model: BoardsModel | undefined;
   let openGroup: string | undefined;
   /** Set by integrator.ts: the BoardView the canvas paints with. */
@@ -59,17 +67,45 @@ export function boardsController(c: Host) {
     return measureCtx.measureText(t).width;
   };
   const row = h('div', { class: 'toolbar grator-boards', role: 'group', 'aria-label': 'Boards' });
+  const tabStrip = h('div', { role: 'tablist', 'aria-label': 'Boards', class: 'grator-tabs' });
   const pop = h('div', { class: 'grator-pop', role: 'dialog', 'aria-label': 'Scenes in this group', hidden: true });
 
-  const on = () => mode !== 'dos' && data.boards.some((b) => b.id === mode);
+  const on = () => data.boards.some((b) => b.id === mode);
   const rebuild = () => {
     model = on() ? buildModel(c.game, data, mode, measure) : undefined;
     return model;
   };
-  const save = () => {
+  const persist = () => {
     c.project.setExtras(file, BOARDS_SECTION, JSON.parse(JSON.stringify(data)));
     rebuild();
   };
+  /** Keeps the change (the boards in the companion) and what Undo goes back to. */
+  const save = () => {
+    const now = JSON.stringify(data);
+    if (now !== current) {
+      undoStack.push(current);
+      if (undoStack.length > 50) undoStack.shift();
+      redoStack.length = 0;
+      current = now;
+    }
+    persist();
+  };
+  function step(from: string[], to: string[]): void {
+    const prev = from.pop();
+    if (prev === undefined) return;
+    to.push(current);
+    current = prev;
+    const back = readBoards(JSON.parse(prev));
+    Object.assign(data, back);
+    if (!data.boards.some((b) => b.id === mode)) mode = data.boards[0].id;
+    persist();
+    closePop();
+    render();
+    c.fit();
+    c.draw();
+  }
+  const undoBoards = () => step(undoStack, redoStack);
+  const redoBoards = () => step(redoStack, undoStack);
   const nodeAt = (x: number, y: number): BoardNode | undefined => {
     const m = model ?? rebuild();
     const sel = m?.nodeOf.get(c.selected());
@@ -170,7 +206,9 @@ export function boardsController(c: Host) {
   });
   c.board.addEventListener('keydown', (e) => {
     if (!on()) return;
-    if (e.key === 'Escape' && openGroup) closePop();
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') (e.shiftKey ? redoBoards : undoBoards)();
+    else if (nudge(e)) e.stopImmediatePropagation();
+    else if (e.key === 'Escape' && openGroup) closePop();
     else if (e.key === 'Enter') {
       const n = model?.nodeOf.get(c.selected());
       if (n?.group) showGroup(n);
@@ -179,19 +217,32 @@ export function boardsController(c: Host) {
   });
 
   function render(): void {
-    const tab = (id: string, name: string) =>
-      h('button', { role: 'tab', 'aria-selected': String(mode === id), class: mode === id ? 'primary' : undefined, onclick: () => switchTo(id) }, name);
-    const kids: (HTMLElement | null)[] = [
-      h('div', { role: 'tablist', 'aria-label': 'Layouts', class: 'grator-tabs' }, tab('dos', 'DOS layout'), ...data.boards.map((b) => tab(b.id, b.name))),
+    const ids = data.boards.map((x) => x.id);
+    const tabs = data.boards.map((x) =>
       h(
         'button',
-        {
-          title: 'Add a board: a named page of the editor’s own, much larger layout space. Your DOS layout stays as it is.',
-          onclick: () => {
-            const id = addBoard(data, `Board ${data.boards.length + 1}`);
-            save();
-            switchTo(id);
-          },
+        { role: 'tab', id: `grator-tab-${x.id}`, 'aria-selected': String(mode === x.id), tabIndex: mode === x.id ? 0 : -1, onclick: () => switchTo(x.id) },
+        x.name,
+      ),
+    );
+    clear(tabStrip, ...tabs);
+    tabStrip.onkeydown = (e) => {
+      const k = ids.indexOf(mode);
+      const to = { ArrowRight: (k + 1) % ids.length, ArrowLeft: (k + ids.length - 1) % ids.length, Home: 0, End: ids.length - 1 }[e.key];
+      if (to === undefined) return;
+      e.preventDefault();
+      switchTo(ids[to]);
+      tabStrip.querySelector<HTMLElement>('[aria-selected="true"]')?.focus();
+    };
+    const tool = (label: string, title: string, run: () => void, face = label) => h('button', { 'aria-label': label, title, onclick: run }, face);
+    const kids: (HTMLElement | null)[] = [
+      tool(
+        'Add a board',
+        'Add a board: a named page in the editor’s own, much larger layout space. The positions saved in the game are not touched.',
+        () => {
+          const id = addBoard(data, `Board ${data.boards.length + 1}`);
+          save();
+          switchTo(id);
         },
         '+ Board',
       ),
@@ -245,25 +296,25 @@ export function boardsController(c: Host) {
       kids.push(
         move,
         group,
-        h(
-          'button',
-          {
-            title: 'Put this board’s cards in neat rows',
-            onclick: () => {
-              tidy();
-            },
-          },
-          'Tidy',
+        tool(
+          'Auto-arrange',
+          'Lay this board’s scenes out by how they link, the start first and the end last, a group as one card (again for another layout)',
+          () => arrange('auto'),
+          '⇄ Auto-arrange',
         ),
-        data.boards.length > 0
+        tool('Spread out', 'Move cards apart so none hides another, keeping your arrangement', () => arrange('spread'), '✥ Spread out'),
+        tool('Close gaps', 'Bring cards closer together, keeping your arrangement', () => arrange('gaps'), '⇲ Close gaps'),
+        tool('Undo', 'Undo the last change to the boards (Ctrl+Z on the board)', undoBoards, '↶'),
+        tool('Redo', 'Redo (Ctrl+Shift+Z on the board)', redoBoards, '↷'),
+        data.boards.length > 1
           ? h(
               'button',
               {
-                title: `Delete this board; its scenes move to ${data.boards.find((x) => x.id !== mode)?.name ?? 'the DOS layout'}`,
+                title: `Delete this board; its scenes move to ${data.boards.find((x) => x.id !== mode)?.name ?? 'another board'}`,
                 onclick: () => {
                   removeBoard(data, b.id);
                   save();
-                  switchTo(data.boards[0]?.id ?? 'dos');
+                  switchTo(data.boards[0].id);
                 },
               },
               'Delete board',
@@ -328,24 +379,86 @@ export function boardsController(c: Host) {
     const m = buildModel(c.game, data, data.boards[0].id, measure);
     return [...m.nodeOf.values()].filter((n, k, a) => a.indexOf(n) === k);
   };
-  function tidy(): void {
-    if (!model) return;
-    const nodes = [...model.nodes].sort((a, b) => a.pos.y - b.pos.y || a.pos.x - b.pos.x);
-    const perRow = Math.max(1, Math.floor((BOARD_WORLD.w - 16) / 26));
-    nodes.forEach((n, k) => {
-      const p = clampBoardPos({ x: 8 + (k % perRow) * 26, y: 8 + Math.floor(k / perRow) * 24 });
+  /** Moves this board's cards to `at` (a scene's new spot; a group follows its first member), sliding them unless motion is reduced. */
+  function applyPositions(at: Map<number, Point>, nothing: string): void {
+    const m = model;
+    if (!m) return;
+    const from = new Map(m.nodes.map((n) => [n.key, { ...n.pos }]));
+    for (const n of m.nodes) {
+      const p = at.get(n.scenes[0]);
+      if (!p) continue;
       if (n.group) moveGroup(data, n.group.id, n.board, p);
       else placeScene(data, n.scenes[0], n.board, p);
-    });
+    }
+    const before = current;
     save();
+    if (current === before) return toast(nothing);
+    const moved = model!;
+    const to = new Map(moved.nodes.map((n) => [n.key, { ...n.pos }]));
     c.fit();
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return c.draw();
+    animating = true;
+    const t0 = performance.now();
+    const frame = (now: number) => {
+      const k = Math.min(1, (now - t0) / 280);
+      const e = k * (2 - k);
+      for (const n of moved.nodes) {
+        const a = from.get(n.key);
+        const b = to.get(n.key);
+        if (a && b) n.pos = { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e };
+      }
+      if (k < 1) requestAnimationFrame(frame);
+      else animating = false;
+      c.draw();
+    };
+    requestAnimationFrame(frame);
+  }
+  /** The game as the arrange tools see it: this board's cards at their board spots (a group's links are all its members'), every other scene unused. */
+  function boardGame(): Game {
+    const nodes = model?.nodes ?? [];
+    const first = new Map<number, number>();
+    for (const n of nodes) for (const m of n.scenes) first.set(m, n.scenes[0]);
+    const scenes = c.game.scenes.map((s, i) => {
+      const n = nodes.find((x) => x.scenes[0] === i);
+      if (!n) return { ...s, gametype: NOSCENE };
+      const links = n.scenes
+        .flatMap((m) => c.game.scenes[m].links)
+        .map((l) => ({ ...l, toScene: first.get(l.toScene) ?? NOSCENE }))
+        .filter((l) => l.toScene !== NOSCENE);
+      return { ...s, pos: n.pos, links };
+    });
+    return { ...c.game, scenes };
+  }
+  let layouts: { list: Arrangement[]; k: number } | undefined;
+  function arrange(kind: 'auto' | 'spread' | 'gaps'): void {
+    if (!model) return;
+    if (kind === 'spread') applyPositions(spreadOut(boardGame()), 'Nothing to spread: no card hides another.');
+    else if (kind === 'gaps') applyPositions(closeGaps(boardGame()), 'Already close: no gaps to close.');
+    else {
+      if (layouts) layouts.k = (layouts.k + 1) % layouts.list.length;
+      else layouts = { list: arrangements(boardGame()), k: 0 };
+      if (layouts.list.length) applyPositions(layouts.list[layouts.k].positions, 'Already laid out that way.');
+    }
+  }
+  /** Alt+arrow keys nudge the selected card (Shift: bigger steps). */
+  function nudge(e: KeyboardEvent): boolean {
+    const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    const n = model?.nodeOf.get(c.selected());
+    if (!d || !n || !e.altKey) return false;
+    const k = e.shiftKey ? 10 : 2;
+    const q = clampBoardPos({ x: n.pos.x + d[0] * k, y: n.pos.y + d[1] * k });
+    if (n.group) moveGroup(data, n.group.id, n.board, q);
+    else placeScene(data, n.scenes[0], n.board, q);
+    save();
     c.draw();
+    return true;
   }
 
   render();
   rebuild();
   return {
     el: row,
+    tabs: tabStrip,
     pop,
     on,
     /** Shows scene `i` from outside (the side list, the URL…). */
@@ -353,7 +466,7 @@ export function boardsController(c: Host) {
     refresh: () => (rebuild(), render()),
     /** The BoardView part for painting. */
     view(): BoardView['boards'] {
-      const m = rebuild();
+      const m = animating ? model : rebuild();
       if (!m) return undefined;
       return { world: BOARD_WORLD, title: m.active.name, paint: (ctx, forExport) => paintModel(ctx, forExport, boardView!(), m) };
     },

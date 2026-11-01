@@ -861,7 +861,7 @@ registerEditor(['gam'], (host, owner, file) => {
         'ul',
         null,
         h('li', null, 'Click a card to edit it below; double-click a level to play it.'),
-        h('li', null, 'Drag cards to arrange them; drag the background to pan.'),
+        h('li', null, 'Drag cards to arrange them (Alt+arrow keys nudge the selected one); drag the background to pan.'),
         h('li', null, 'Scroll or pinch to zoom (keys: + − 0); arrow keys step between scenes.'),
         h('li', null, 'Arrows are links: gold leave the selected scene, green lead into it.'),
       ),
@@ -872,7 +872,7 @@ registerEditor(['gam'], (host, owner, file) => {
     host,
     missing ? h('p', { class: 'hint grator-missing' }, 'This game is missing its start or end scene.') : null,
     (grator.append(
-      h('div', { class: 'grator-main' }, boards.el, tools, h('div', { class: 'grator-board-wrap' }, board, zoomBar, tips, boards.pop)),
+      h('div', { class: 'grator-main' }, tools, boards.el, boards.tabs, h('div', { class: 'grator-board-wrap' }, board, zoomBar, tips, boards.pop)),
       handle,
       side,
     ),
@@ -882,9 +882,12 @@ registerEditor(['gam'], (host, owner, file) => {
   renderSide();
   renderPanel();
   // the board gives up the height of a toolbar that wraps onto a second row
-  const toolsSize = new ResizeObserver(() => grator.style.setProperty('--grator-tools-h', `${tools.offsetHeight + boards.el.offsetHeight}px`));
+  const toolsSize = new ResizeObserver(() =>
+    grator.style.setProperty('--grator-tools-h', `${tools.offsetHeight + boards.el.offsetHeight + boards.tabs.offsetHeight}px`),
+  );
   toolsSize.observe(tools);
   toolsSize.observe(boards.el);
+  toolsSize.observe(boards.tabs);
   requestAnimationFrame(fit);
   return () => {
     stopKeys();
