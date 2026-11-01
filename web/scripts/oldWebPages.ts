@@ -4,7 +4,7 @@
 // logo, and the telephone dial and finger are drawn fresh for this page. Written for this repo.
 
 import { mockSite, mockUrl } from '../src/manual/magazine/mockSites';
-import { dandelionBanner, dandelionTile, textBanner, textureButton } from './oldWebArt';
+import { constructionSign, dandelionBanner, dandelionTile, textBanner, textureButton, weatherMap } from './oldWebArt';
 
 /** One page of the fake web: where it lives, its title and its HTML 3.2 document. */
 export interface OldPage {
@@ -31,9 +31,14 @@ table[border]{border-style:outset;border-color:#fff #404040 #404040 #fff}
 table[border]>tbody>tr>td{border:1px inset;border-color:#404040 #fff #fff #404040}
 table[border="0"]>tbody>tr>td{border:0}
 input[type=text]{appearance:none;box-sizing:border-box;border:2px inset;border-color:#404040 #fff #fff #404040;background:#fff;font:13px Courier,monospace;padding:1px 3px;border-radius:0}
+input[type=radio]{accent-color:#000;margin:2px 4px 2px 0}
 input[type=submit]{appearance:none;border:2px outset;border-color:#fff #404040 #404040 #fff;background:#c0c0c0;color:#000;font:13px Helvetica,Arial,sans-serif;padding:2px 8px;border-radius:0}`;
 
-const srcdoc = (html: string): string => html.replace('</head>', `<style>${BROWSER_DEFAULTS}</style></head>`).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+/** A submit button with no value="" was labeled "Submit Query" by period browsers; modern ones say "Submit". */
+const withDefaultLabels = (html: string): string => html.replace(/<input type="submit">/g, '<input type="submit" value="Submit Query">');
+
+const srcdoc = (html: string): string =>
+  withDefaultLabels(html).replace('</head>', `<style>${BROWSER_DEFAULTS}</style></head>`).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
 /** The browser: menu bar, buttons, throbber, Location: field, the page in its window, and the status bar. */
 export function frame(p: OldPage): string {
@@ -70,6 +75,10 @@ body{width:640px;height:480px;background:#c0c0c0;${UI}position:relative}
 const dict = mockSite('dict');
 const yellow = mockSite('yellow');
 const gopher = mockSite('gopher');
+const zip = mockSite('zip');
+const recipes = mockSite('recipes');
+const soups = mockSite('soups');
+const weather = mockSite('weather');
 
 /** A period page: HTML 3.2 only, with no style, no CSS and no scripts. oldWebPages.test.ts checks. */
 const doc = (title: string, bodyAttrs: string, body: string): string => `<html><head><title>${title}</title></head><body ${bodyAttrs}>${body}</body></html>`;
@@ -88,7 +97,9 @@ export const DICT: OldPage = {
 <hr size="2">
 <form><b>Enter a word:</b><br>
 <input type="text" size="40" value="diskette"><br>
-<input type="submit" value="Exact Match"> <input type="submit" value="Begins With"> <input type="submit" value="Submit Query"></form>
+<input type="radio" name="match" value="exact" checked>Exact Match<br>
+<input type="radio" name="match" value="begins">Begins With<br>
+<input type="submit"></form>
 <hr size="2">
 <address>Maintained by ${dict.contact}. Last updated 9 Jan 1996. You are visitor number 004,127.</address>`,
   ),
@@ -138,4 +149,93 @@ ${row('&#128222;', 'Telnet to the old terminal, no passwords', '&lt;TEL&gt;')}
   ),
 };
 
-export const OLD_PAGES: OldPage[] = [DICT, YELLOW, GOPHER];
+const GRAY = 'bgcolor="#C0C0C0" text="#000000" link="#0000EE" vlink="#551A8B"';
+const zipRows = (zip.items ?? []).map((r) => r.split('|'));
+
+export const ZIP: OldPage = {
+  file: 'oldweb-zip',
+  url: mockUrl('zip'),
+  title: zip.title,
+  status: 'Document: Done.',
+  html: doc(
+    zip.title,
+    GRAY,
+    `<h1>${zip.title}</h1>
+<p>${zip.description} ${zip.bannerText}, then press the button.</p>
+<form><b>ZIP code:</b> <input type="text" size="8" value="${zipRows[0][0]}"><br>
+<b>Town:</b> <input type="text" size="24"><br>
+<input type="submit"></form>
+<hr size="2">
+<h3>1 match for ${zipRows[0][0]}</h3>
+<table border="1" cellpadding="4" cellspacing="0">
+<tr><th>ZIP</th><th>Town</th><th>State</th></tr>
+${zipRows
+  .slice(0, 1)
+  .map(([z, t, st]) => `<tr><td>${z}</td><td>${t}</td><td>${st}</td></tr>`)
+  .join('\n')}
+</table>
+<hr size="2">
+<address>${zip.org}. ${zip.updated}.</address>`,
+  ),
+};
+
+const construction = constructionSign();
+
+export const RECIPES: OldPage = {
+  file: 'oldweb-recipes',
+  url: mockUrl('recipes'),
+  title: recipes.title,
+  status: 'Document: Done.',
+  html: doc(
+    recipes.title,
+    GRAY,
+    `<h2>Welcome to the ${recipes.title}!</h2>
+<p>${recipes.description}</p>
+<ul>
+${(recipes.items ?? []).map((i) => `<li><a href="#">${i}</a>`).join('\n')}
+</ul>
+<img src="${construction.src}" width="${construction.w}" height="${construction.h}" alt="Under construction">
+<p><font size="2"><i>Best viewed with WebWanderer 1.1 at 640x480.</i> You are visitor number <tt>000,842</tt>. ${recipes.updated}.</font></p>`,
+  ),
+};
+
+export const SOUPS: OldPage = {
+  file: 'oldweb-soups',
+  url: mockUrl('soups'),
+  title: soups.title,
+  status: 'Document: Done.',
+  html: doc(
+    soups.title,
+    GRAY,
+    `<h2>Index of /pub/soups</h2>
+<p>${soups.description} Pick a letter; every recipe is plain text.</p>
+<ul>
+<li><a href="#">Chowders</a>
+<li><a href="#">Broths and bouillons</a>
+<li><a href="#">Cream soups</a>
+<li><a href="#">Pumpkin (we have a lot)</a>
+<li><a href="#">Anything with lamb</a>
+</ul>
+<hr size="2">
+<address>${soups.host}:${soups.port}. Also served from <a href="#">${recipes.host}</a>.</address>`,
+  ),
+};
+
+const regions = weather.items ?? [];
+
+export const WEATHER: OldPage = {
+  file: 'oldweb-weather',
+  url: mockUrl('weather'),
+  title: weather.title,
+  status: 'Document: Done.',
+  html: doc(
+    weather.title,
+    GRAY,
+    `<h3>${weather.org}: ${weather.title}</h3>
+<table border="0" cellpadding="0" cellspacing="6"><tr valign="top"><td><a href="#"><img src="${weatherMap(weather.bannerText ?? '')}" width="400" height="240" border="0" alt="Weather map of the United States"></a></td>
+<td><font size="2"><b>${weather.updated}</b><br>Click the map for a closer look, or pick a region:</font><br>
+${regions.map((r) => `<font size="2"><a href="#">${r}</a></font><br>`).join('\n')}</td></tr></table>`,
+  ),
+};
+
+export const OLD_PAGES: OldPage[] = [DICT, ZIP, RECIPES, SOUPS, WEATHER, YELLOW, GOPHER];

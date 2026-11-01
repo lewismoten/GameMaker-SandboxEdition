@@ -161,7 +161,7 @@ export const WEB_SHOTS = ['games', 'map', 'blocks', 'character', 'monster', 'mus
 export type WebShot = (typeof WEB_SHOTS)[number];
 
 /** Made-up 1996 web pages in a made-up browser (scripts/oldWebShots.ts): public/magazine/oldweb-<name>.webp, 640 x 480. */
-export const OLD_WEB_SHOTS = ['dict', 'yellow', 'gopher'] as const;
+export const OLD_WEB_SHOTS = ['dict', 'zip', 'recipes', 'soups', 'weather', 'yellow', 'gopher'] as const;
 export type OldWebShot = (typeof OLD_WEB_SHOTS)[number];
 
 /**
