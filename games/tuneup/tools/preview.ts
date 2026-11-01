@@ -1,7 +1,7 @@
 // Design previews: each scene drawn whole (blocks and the monsters standing on it) as a PNG,
 // twice size, from the built disk; the five base block sets in each theme; and the cartoons as
 // contact sheets (every fourth frame). Opens nothing; prints the files it wrote.
-//   cd web && npx vite-node ../games/tuneup/tools/preview.ts [outDir]
+//   cd web && npx vite-node ../games/tuneup/tools/preview.ts [outDir] [scene...]   (scenes given: just those)
 import { mkdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -24,11 +24,12 @@ import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { endingReel, openingReel, stingReel } from '../src/screens/reels';
 
 const out = process.argv[2] ?? join(tmpdir(), 'tuneup-preview');
+const only = process.argv.slice(3);
 mkdirSync(out, { recursive: true });
 const wrote = (f: string) => console.log(join(out, f));
 const disk = (n: string) => new Uint8Array(readFileSync(new URL(`../disk/${n}`, import.meta.url)));
 const mbl = parseBlocks(disk('cast.mbl'), 100);
-for (const l of LEVELS) {
+for (const l of LEVELS.filter((l) => !only.length || only.includes(l.file))) {
   const map = parseMap(disk(`${l.file}.map`));
   const bbl = parseBlocks(disk(`${l.file}.bbl`), 150);
   const level = l.build(l.blocks(buildPalette(l.theme)).book);
@@ -37,6 +38,7 @@ for (const l of LEVELS) {
   writePng(join(out, `${l.file}.png`), pic, parsePalette(disk(`${l.file}.pal`)), 2);
   wrote(`${l.file}.png`);
 }
+if (only.length) process.exit(0);
 // the base sets: a row of blocks per set, a sheet per theme
 for (const theme of Object.keys(THEMES) as ThemeName[]) {
   const pal = buildPalette(theme);
