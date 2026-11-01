@@ -4,13 +4,13 @@
 //   Sir Reginald III shrink away into the engine).
 // - The Hat Sting, before each level: Doc Leo taps his hat and pulls out the level's tool, then
 //   the cutaway CHEZ shows the parts tuned so far, the last one lit. One reel, a tool apiece.
-// - The ending (for now, the engine bay's end): the cutaway with every part so far lit.
+// - The ending (for now, after level 9): the cutaway with every real part so far lit.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { centered } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { GWINN } from '../../../teddy2/src/sprites/gwinn';
-import { SP, INK, cutaway, drawChez, drawChicken, drawLeo, garage, nightYard, toolPic, type Tool } from './art';
+import { SP, INK, DREAM_PARTS, REAL_PARTS, cutaway, drawChez, drawChicken, drawLeo, garage, nightYard, toolPic, type Tool } from './art';
 
 const c = SP.c;
 /** Frames a second: a wait of 5/70 s a frame. */
@@ -109,15 +109,22 @@ export function stingReel(level: number, tool: Tool, name: string): Reel {
       sparkle(p, 182, 22, 3);
       centered(p, 182, `LEVEL ${level}: ${name}`, c('lamp', 4), 1, INK);
     });
-  // the cutaway: what's tuned so far, the newest part blinking
-  for (let f = 0; f < 16; f++) r.add(stamp(cutaway(level - 1, level - 2, f % 4 < 2), level > 1 ? 'TUNED SO FAR' : 'THE PARTS TO TUNE'));
+  // the cutaway: what's tuned so far, the newest part blinking (the dream's parts for levels 1-4,
+  // the real car's from level 5)
+  const real = level >= REAL_FROM;
+  const done = level - (real ? REAL_FROM : 1);
+  const parts = real ? REAL_PARTS : DREAM_PARTS;
+  for (let f = 0; f < 16; f++) r.add(stamp(cutaway(parts, done, done - 1, f % 4 < 2), done ? 'TUNED SO FAR' : 'THE PARTS TO TUNE'));
   return r.fadeOut(6);
 }
 
-/** The ending (for now): every part so far tuned, blinking in turn. */
+/** The first level of the real, electric tune-up (levels before it are the dream). */
+export const REAL_FROM = 5;
+
+/** The ending (for now): every real part so far tuned, blinking in turn. */
 export function endingReel(parts: number): Reel {
   const r = new Reel(SP.pal);
-  for (let f = 0; f < 24; f++) r.add(stamp(cutaway(parts, (f >> 2) % parts, f % 2 === 0), 'THE ENGINE BAY IS TUNED!'), 1, Math.min(1, (f + 1) / 4));
+  for (let f = 0; f < 24; f++) r.add(stamp(cutaway(REAL_PARTS, parts, (f >> 2) % parts, f % 2 === 0), 'TUNED SO FAR!'), 1, Math.min(1, (f + 1) / 4));
   return r;
 }
 

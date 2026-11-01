@@ -20,11 +20,9 @@
 //   needs more.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
-import { saveSignBlocks } from '../../../kit/saveSign';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { AIR, kit, LEDGE, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
-import { rubberEgg } from '../art/egg';
 import type { Pal } from '../art/palette';
 import { CTR, MON, MONEY } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
@@ -40,8 +38,6 @@ const ROOM = 16;
 export const W = 22;
 export const GATE_X = 13;
 export const EXIT_X = 21;
-/** The egg's block number (about.json "egg" and web/src/eggs/eggs.ts carry it too). */
-export const EGG_BLOCK = 149;
 
 export type LaneKind = 'hp' | 'count' | 'tip' | 'score';
 type Art = 'v' | 'h' | 'elbow';
@@ -67,8 +63,8 @@ export interface Verse {
   lanes: Lane[];
   /** Hits (the first two lanes' notes) the gate takes. */
   need: number;
-  /** What sits in the side room's nook: the tin heart, the felt egg or the save sign. */
-  nook?: 'heart' | 'egg' | 'sign';
+  /** What sits in the side room's nook: the tin heart (the first verse). */
+  nook?: 'heart';
 }
 
 const up = (x: number, from: number, to: number): Cell[] => Array.from({ length: from - to + 1 }, (_, i) => ({ x, y: from - i, art: 'v' as Art }));
@@ -112,7 +108,6 @@ export const VERSES: Verse[] = [
       },
     ],
     need: 6,
-    nook: 'egg',
   },
   {
     file: 'beat3',
@@ -131,7 +126,6 @@ export const VERSES: Verse[] = [
       { id: 'd', x: 9, notes: [6], kind: 'score', path: up(9, 5, 3) },
     ],
     need: 8,
-    nook: 'sign',
   },
 ];
 
@@ -319,18 +313,6 @@ export function beatBlocks(v: Verse) {
           score: 100,
         });
     }
-    if (v.nook === 'sign') {
-      const s = saveSignBlocks(pal.pal, { board: [works(), works()], posts: [works(), works()] });
-      book.add('sign.l', s.board[0], AIR);
-      book.add('sign.r', s.board[1], AIR);
-      book.add('post.l', s.posts![0], AIR);
-      book.add('post.r', s.posts![1], AIR);
-    }
-    if (v.nook === 'egg') {
-      // the felt egg Sir Reginald laid, in the last slot, a number no other map of the game shows
-      while (book.index.size < EGG_BLOCK) book.add(`spare${book.index.size}`, P());
-      book.add('egg', rubberEgg(works()), { ...AIR, obj: 1, score: 500, touch: 'works' });
-    }
     return k;
   };
 }
@@ -354,12 +336,7 @@ export function beat(v: Verse) {
     // the side room's ledges up to the nook
     m.fill(16, 6, 2, 1, 's').fill(19, 4, 2, 1, 's');
     if (v.nook === 'heart') m.set(...NOOK, 'tinHeart');
-    if (v.nook === 'egg') {
-      m.set(...NOOK, 'egg');
-      m.mon(MON.reggie, 19, ROW.feet);
-    }
-    if (v.nook === 'sign') m.set(17, ROW.head, 'sign.l').set(18, ROW.head, 'sign.r').set(17, ROW.feet, 'post.l').set(18, ROW.feet, 'post.r');
-    if (v.nook !== 'egg') m.mon(v.nook === 'sign' ? MON.regina : MON.reggie, 15, ROW.feet);
+    m.mon(MON.reggie, 15, ROW.feet);
     m.link(EXIT_X, ROW.feet);
     // he starts mid-screen between the keys and drops onto the rail
     return { m, start: at(8, 5), size: [W, 10] };

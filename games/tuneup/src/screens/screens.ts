@@ -5,9 +5,9 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { gif, scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
-import { SP, INK, cutaway, drawChez, drawChicken, drawLeo, garage } from './art';
+import { SP, INK, REAL_PARTS, cutaway, drawChez, drawChicken, drawLeo, garage } from './art';
 import { card } from './cards';
-import { INTRO, OUTRO } from './banter';
+import { INTRO, OUTRO, WAKE } from './banter';
 
 const c = SP.c;
 
@@ -66,12 +66,12 @@ export function buildScreens(): Record<string, Uint8Array> {
     p.rect(160 - rule / 2, 21, rule, 1, c('red', 1));
     save('hiscore.gif', p);
   }
-  // the ending (for now: the engine bay tuned) and game over
+  // the ending (for now: half the car tuned, the radio next) and game over; the words sit
+  // above the car, clear of the parts' legend
   {
-    const p = cutaway(4);
-    centered(p, 10, 'THE ENGINE BAY IS TUNED!', c('paint', 3), 1, INK);
-    centered(p, 24, 'CHARGE, PLUCK, BEAT AND OIL.', c('yellow', 3), 1, INK);
-    centered(p, 164, 'THE PARADE CAN WAIT A LITTLE.', c('paint', 3), 1, INK);
+    const p = cutaway(REAL_PARTS, REAL_PARTS.length);
+    centered(p, 6, 'HALF THE CHEZ IS TUNED!', c('paint', 3), 1, INK);
+    centered(p, 18, 'THE RADIO GOES IN NEXT.', c('yellow', 3), 1, INK);
     save('won.gif', p);
   }
   {
@@ -86,5 +86,6 @@ export function buildScreens(): Record<string, Uint8Array> {
   // the banter cards: before each level and after
   for (const [n, k] of Object.entries(INTRO)) save(`intro${n}.gif`, card(k));
   for (const [file, k] of Object.entries(OUTRO)) save(`${file}out.gif`, card(k));
+  WAKE.forEach((k, i) => save(`wake${i + 1}.gif`, card(k)));
   return files;
 }

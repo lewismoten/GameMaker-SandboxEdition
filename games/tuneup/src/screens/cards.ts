@@ -2,14 +2,18 @@
 // (is it fixed, or do they try something else?). Doc Leo stands at the left, the chicken on the
 // workbench at the right, and their lines run down the middle in speech boxes. Once the egg is
 // laid, every card names her Lady Regina III; the card where it happens says so, formally.
+// Asleep (the dream's end), the chicken snores; with Teddy, he sits at Doc Leo's feet.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { centered, text, textWidth } from '../../../snowbound/src/art/font';
 import { rubberEgg } from '../art/egg';
+import { POSES } from '../../../teddy2/src/sprites/teddy';
+import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { SP, INK, drawChicken, drawLeo, garage } from './art';
 
 const c = SP.c;
 
-export type Who = 'leo' | 'reggie' | 'regina';
+/** `aside`: the chicken turning to the player. */
+export type Who = 'leo' | 'reggie' | 'regina' | 'aside';
 export type Line = [Who, string] | ['stamp', string];
 export interface Card {
   /** The heading across the top (a level's name, or none). */
@@ -20,9 +24,13 @@ export interface Card {
   /** Her egg sits beside her on the bench. */
   egg?: boolean;
   leoPose?: string;
+  /** The chicken is asleep on the bench, snoring (the dream's end). */
+  asleep?: boolean;
+  /** Teddy sits at Doc Leo's feet. */
+  teddy?: boolean;
 }
 
-const NAMES: Record<Who, string> = { leo: 'DOC LEO', reggie: 'SIR REGINALD III', regina: 'LADY REGINA III' };
+const NAMES: Record<Who, string> = { leo: 'DOC LEO', reggie: 'SIR REGINALD III', regina: 'LADY REGINA III', aside: 'SIR REGINALD, TO YOU' };
 /** The middle column the speech boxes fill. */
 const BOX_X = 66;
 const BOX_W = 188;
@@ -51,7 +59,9 @@ export function card(k: Card): Pixels {
   // Doc Leo at the left; the chicken on the workbench at the right
   drawLeo(p, k.leoPose ?? 'grin', 6, 190, 3);
   p.rect(258, 128, 62, 8, c('pipe', 3)).rect(258, 128, 62, 2, c('pipe', 4)).rect(262, 136, 4, 64, c('pipe', 1)).rect(312, 136, 4, 64, c('pipe', 1));
-  drawChicken(p, 254, 129, 3, { lady: k.lady, squawk: true }, true);
+  drawChicken(p, 254, 129, 3, { lady: k.lady, squawk: !k.asleep, bob: k.asleep ? 1 : 0 }, true);
+  if (k.asleep) for (const [i, s] of ['z', 'z', 'Z'].entries()) text(p, 290 + i * 8, 112 - i * 12, s, INK, i === 2 ? 2 : 1);
+  if (k.teddy) scaleBlit(p, POSES.sit, 40, 160, 2);
   if (k.egg) p.blit(rubberEgg(new Pixels(20, 20, 255)), 290, 109, 255);
   let y = k.title ? 32 : 12;
   for (const [who, words] of k.lines) {
@@ -69,6 +79,15 @@ export function card(k: Card): Pixels {
     const rows = wrap(words);
     const h = 13 + rows.length * 9;
     const left = who === 'leo';
+    if (who === 'aside') {
+      // turned to the player: the box faces out of the card, and its edge is dashed
+      p.rect(BOX_X, y, BOX_W, h, c('yellow', 3));
+      for (let x = BOX_X; x < BOX_X + BOX_W; x += 4) p.rect(x, y, 2, 1, INK).rect(x, y + h - 1, 2, 1, INK);
+      text(p, BOX_X + 4, y + 3, NAMES[who], c('orange', 0));
+      rows.forEach((r, i) => text(p, BOX_X + 4, y + 12 + i * 9, r, INK));
+      y += h + 4;
+      continue;
+    }
     p.rect(BOX_X, y, BOX_W, h, c('paint', 3)).frame(BOX_X, y, BOX_W, h, INK);
     // the box's tail, toward whoever is talking
     const tx = left ? BOX_X : BOX_X + BOX_W - 1;

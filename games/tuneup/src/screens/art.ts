@@ -96,7 +96,7 @@ export function drawChez(p: Pixels, x: number, y: number, s: number, teddy = tru
 }
 
 /** The tools Doc Leo's hat gives, a 32x32 picture each on clear. */
-export type Tool = 'cables' | 'plug' | 'roll' | 'oilcan';
+export type Tool = 'cables' | 'plug' | 'roll' | 'oilcan' | 'kazoo' | 'bone' | 'hubcap' | 'pump' | 'tape';
 export function toolPic(t: Tool): Pixels {
   const p = new Pixels(32, 32, 255);
   if (t === 'cables') {
@@ -124,6 +124,35 @@ export function toolPic(t: Tool): Pixels {
       [10, 20],
     ])
       p.rect(x, y, 2, 1, INK);
+  } else if (t === 'kazoo') {
+    // a kazoo: a tapered tube with the round buzzer on top
+    p.rect(3, 13, 24, 8, c('red', 2)).rect(3, 13, 24, 2, c('red', 3)).rect(27, 14, 3, 6, c('red', 1));
+    p.disc(16, 11, 4, c('metal', 3)).disc(16, 11, 2, c('metal', 1));
+  } else if (t === 'bone') {
+    // a dog biscuit shaped like a bone: Teddy's turn
+    for (const [x, y] of [
+      [6, 10],
+      [6, 20],
+      [26, 10],
+      [26, 20],
+    ])
+      p.disc(x, y, 5, c('wood', 3));
+    p.rect(6, 11, 20, 9, c('wood', 3)).rect(8, 13, 16, 2, c('wood', 4));
+  } else if (t === 'hubcap') {
+    // a hubcap, and the little ball beside it
+    p.disc(14, 18, 12, c('metal', 2)).disc(14, 18, 9, c('metal', 4)).disc(14, 18, 3, c('metal', 1));
+    p.disc(28, 27, 3.5, c('yellow', 3)).set(27, 26, c('paint', 3));
+  } else if (t === 'pump') {
+    // a balloon pump: a long barrel, the handle up top, a twisted balloon on the nozzle
+    p.rect(4, 2, 12, 3, c('wood', 2)).rect(9, 5, 2, 6, c('metal', 4));
+    p.rect(6, 11, 8, 18, c('blue', 2)).rect(6, 11, 2, 18, c('blue', 3)).rect(9, 29, 2, 3, c('metal', 2));
+    blob(p, 23, 20, 6, 4, SP.r('orange'), 0, 2);
+    blob(p, 27, 12, 3, 5, SP.r('orange'), 0, 2);
+  } else if (t === 'tape') {
+    // an 8-track tape: a chunky cartridge, its label, the tape showing at the end
+    p.rect(2, 6, 28, 20, c('ink', 1)).rect(4, 8, 24, 10, c('yellow', 3)).rect(4, 20, 24, 4, c('asphalt', 1));
+    for (let x = 6; x < 26; x += 4) p.rect(x, 11, 2, 4, c('red', 2));
+    p.rect(26, 20, 4, 4, c('wood', 1));
   } else {
     // an oil can: a round body, a long spout, a thumb pump, a drop at the tip
     blob(p, 13, 22, 9, 7, SP.r('gold'), 0, 2);
@@ -135,30 +164,51 @@ export function toolPic(t: Tool): Pixels {
   return outline(p, INK);
 }
 
-/** The cutaway's parts, in the order they're tuned: label and spot on a scale-6 CHEZ (240x120). */
-export const PARTS: { label: string; x: number; y: number }[] = [
+/** A part on the cutaway: its label and its spot on a scale-6 CHEZ (240x120, its box at 40,30). */
+export interface Part {
+  label: string;
+  x: number;
+  y: number;
+}
+/** The dream's parts (levels 1-4): a gas engine THE CHEZ never had. */
+export const DREAM_PARTS: Part[] = [
   { label: 'BATTERY', x: 62, y: 118 },
   { label: 'PLUGS', x: 84, y: 98 },
   { label: 'TIMING', x: 108, y: 112 },
   { label: 'OIL', x: 96, y: 136 },
 ];
+/** The real tune-up's parts (level 5 on), in the order they're tuned. */
+export const REAL_PARTS: Part[] = [
+  { label: 'DEFROST', x: 150, y: 78 },
+  { label: 'BRAKE LAMP', x: 232, y: 106 },
+  { label: 'ANTENNA', x: 124, y: 62 },
+  { label: 'TIRES', x: 93, y: 130 },
+  { label: '8-TRACK', x: 182, y: 96 },
+];
 
-/** The cutaway CHEZ: the car seen from the side, its parts as lamps, the first `done` lit green but part `blink`, lit gold when `on`. */
-export function cutaway(done: number, blink = -1, on = true): Pixels {
+/**
+ * The cutaway CHEZ: the car seen from the side, its parts as lamps, the first `done` lit green
+ * but part `blink`, lit gold when `on`; a legend of the parts along the bottom (two rows when
+ * there are more than four).
+ */
+export function cutaway(parts: Part[], done: number, blink = -1, on = true): Pixels {
   const p = new Pixels(320, 200, c('navy', 0));
   // blueprint paper: a grid
   for (let y = 0; y < 200; y += 10) p.rect(0, y, 320, 1, c('navy', 1));
   for (let x = 0; x < 320; x += 10) p.rect(x, 0, 1, 200, c('navy', 1));
   chezSide(p, 40, 30, { ...CHEZ_INK, outline: c('paint', 3) }, 'left', 6);
-  PARTS.forEach((part, i) => {
+  const perRow = parts.length > 4 ? 3 : 4;
+  const rows = Math.ceil(parts.length / perRow);
+  parts.forEach((part, i) => {
     const lit = i === blink ? 'gold' : i < done ? 'green' : '';
     const col = lit === 'green' ? c('green', 2) : lit === 'gold' && on ? c('yellow', 3) : c('asphalt', 1);
     p.disc(part.x, part.y, 7, INK).disc(part.x, part.y, 5, col);
     if (lit) p.rect(part.x - 2, part.y - 2, 2, 2, c('paint', 3));
     // the legend along the bottom: each part's name, lit as its lamp is
-    const lx = 16 + i * 76;
-    p.disc(lx + 4, 186, 4, INK).disc(lx + 4, 186, 3, col);
-    text(p, lx + 12, 182, part.label, lit ? col : c('navy', 2));
+    const lx = 16 + (i % perRow) * (perRow === 3 ? 102 : 76);
+    const ly = 196 - (rows - Math.floor(i / perRow)) * 12;
+    p.disc(lx + 4, ly + 4, 4, INK).disc(lx + 4, ly + 4, 3, col);
+    text(p, lx + 12, ly, part.label, lit ? col : c('navy', 2));
   });
   return p;
 }
