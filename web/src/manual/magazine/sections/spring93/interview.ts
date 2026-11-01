@@ -2,8 +2,9 @@
 // the years up to spring 1993 (docs/history.md): Fort Ashby, the ad, the snow and the box
 // arriving. What came after (graduation, the 486, Pittsburgh) is in No. 2's update (lewis.ts).
 // The ad that started it follows on its own page, reprinted and labeled as one.
-import { a, adPage, adframe, big, button, cols, grid, head, list, note, p, pull, q, shot, side } from '../../blocks';
+import { a, adPage, adframe, big, button, cols, grid, head, list, note, p, pull, q, side } from '../../blocks';
 import { ORIGINAL_AD } from '../ads';
+import { SWAP_MEET } from '../smallAds';
 import type { MagSection } from '../../types';
 
 const L = 'LEWIS';
@@ -107,10 +108,10 @@ export const LEWIS_1: MagSection = {
           ],
           'cyan',
         ),
-        shot('snowbound', 'level', 'Snowbound: the kid with his shovel on a snowy street', 'The streets in *Snowbound* are the ones Lewis grew up on.'),
         note(
           'Interview for this issue. Lewis’s answers are drawn from his own account of those years, “Lewis and Game-Maker”, in the Sandbox Edition’s notes.',
         ),
+        SWAP_MEET,
       ],
     },
     {

@@ -3,6 +3,7 @@
 import { cols, grid, head, note, p, shot, side } from '../../blocks';
 import { MAG } from '../../masthead';
 import type { MagSection } from '../../types';
+import { BLANK_DISKS } from '../smallAds';
 
 export const LETTER_1: MagSection = {
   id: 'letter',
@@ -61,6 +62,7 @@ export const LETTER_1: MagSection = {
         note(
           'The magazine is part of the story the 1994 desk tells: its prices, coupons and addresses are make-believe, and every game and page it links to is free on this site.',
         ),
+        BLANK_DISKS,
       ],
     },
   ],

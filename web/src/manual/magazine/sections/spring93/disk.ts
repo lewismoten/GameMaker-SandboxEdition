@@ -3,6 +3,7 @@
 // the game's own printed label, and the disk plays the game here.
 import { grid, head, list, p, side } from '../../blocks';
 import type { Block, MagSection } from '../../types';
+import { FUN_NIGHT } from '../smallAds';
 
 /** The cover disk as a block, on its page or on the cover (cover.ts has its own). */
 const floppy = (caption: string): Block => ({
@@ -58,6 +59,7 @@ export const DISK_1: MagSection = {
             `**${g?.title ?? 'Snowbound: The $89 Shovel'}** is shareware from Sandbox Software: play all of it, and if you like it the registration is ${g?.price ?? '$12'}. It was made with Game-Maker, the kit in [our interview](go:mag/lewis), and it is Lewis’s own winter, Fort Ashby, December 1992.`,
           ),
           p('Stuck on a street? The [Strategy Guide](go:mag/strategy) has the hint book, and the [Critic’s Corner](go:mag/critics-corner) has an opinion.'),
+          FUN_NIGHT,
         ],
       },
     ];

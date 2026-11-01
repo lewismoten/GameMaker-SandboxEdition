@@ -29,7 +29,6 @@ export const COVER_1: MagSection = {
           [
             [shot('snowbound', 'title', 'Snowbound: The $89 Shovel, its title screen', undefined, -3)],
             [shot('snowbound', 'level', 'Snowbound: the kid with his shovel on a snowy street', undefined, 2)],
-            [shot('snowbound', 'map', 'Snowbound: a street of the neighborhood, drawn out whole', undefined, -1)],
           ],
           0.25,
         ),

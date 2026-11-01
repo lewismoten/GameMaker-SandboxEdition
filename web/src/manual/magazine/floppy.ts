@@ -3,6 +3,7 @@
 // own floppy with the game's real printed label (desk/disks/diskLabel.ts), so the picture on it
 // comes from the game's files. The whole disk is one link; on the cover it carries a starburst.
 import './disc.css';
+import '../../desk/disks/diskBox.css';
 import './floppy.css';
 import { h } from '../../editor/core/ui';
 import { printedDiskLabel } from '../../desk/disks/diskLabel';

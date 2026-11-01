@@ -7,7 +7,8 @@ import type { MagSection } from '../types';
 export const BACK_ISSUE: MagSection = {
   id: 'back-issue',
   title: 'Missed Our Spring Issue?',
-  blurb: 'Vol. 1, No. 4: the snow story, Snowbound and its free disk',
+  // not on the contents page: its rows already fill it (the letter links here)
+  toc: false,
   dept: 'BACK ISSUES',
   pages: () => [
     {

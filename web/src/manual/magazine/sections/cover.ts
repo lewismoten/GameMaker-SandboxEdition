@@ -30,7 +30,7 @@ export const COVER: MagSection = {
           0.25,
         ),
         list([
-          '**“I shoveled snow to buy it.”** [The interview](go:mag/lewis)',
+          '**Lewis Moten, two years on.** [The update](go:mag/lewis)',
           '**An AI ported it to the web.** [We ask how](go:mag/claude)',
           '**Hints for every game** [Strategy Guide](go:mag/strategy)',
           '**Every game, listed** [The Directory](go:mag/directory)',

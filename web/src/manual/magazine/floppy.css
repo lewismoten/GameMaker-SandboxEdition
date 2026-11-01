@@ -72,14 +72,14 @@
 /* on the cover: in a corner over the screenshots, with its starburst */
 .mag-floppy.on-cover {
   position: absolute;
-  right: 2.4em;
-  bottom: 6.4em;
+  right: 1.4em;
+  bottom: 9em;
   z-index: 4;
   transform: rotate(-6deg);
 }
 
 .mag-floppy.on-cover .mag-floppy-link {
-  width: 10em;
+  width: 11em;
 }
 
 .flow .mag-floppy.on-cover {
@@ -88,4 +88,11 @@
   justify-content: center;
   gap: 1em;
   transform: none;
+}
+
+/* the starburst sits on the disk's top left corner, clear of the cover lines beside it */
+.mag-page .mag-floppy.on-cover a.mag-disc-burst {
+  left: auto;
+  right: -2.2em;
+  top: -4.4em;
 }
