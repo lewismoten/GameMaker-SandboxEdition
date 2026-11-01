@@ -76,9 +76,10 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
   const kept = lookOnlyKept(project);
   const opt: WalkDialogOptions = { keeps: kept?.keeps, ...given };
   let redoing: Redoing | undefined;
-  // dev server only: a walkthrough file in the maintainer's .for-lewis folder (devLocalWalk.ts), for a game with none
+  // dev server only: a walkthrough file in the maintainer's .for-lewis folder (devLocalWalk.ts), for a game with
+  // nothing to watch (a kept entry with no frames, such as an empty first try, doesn't count)
   let local: { walk: Walkthrough; note: string } | undefined;
-  if (import.meta.env.DEV && !opt.shipped && !project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined)?.walk) {
+  if (import.meta.env.DEV && !walkSource(project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined), opt.shipped)) {
     local = await (await import('./devLocalWalk')).localWalk(project.gam, project.game().scenes.length, project.name);
   }
   for (;;) {
