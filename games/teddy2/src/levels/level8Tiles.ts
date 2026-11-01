@@ -62,7 +62,7 @@ export function showTiles(): Tiles {
   );
   const banner = canvas(6, 1, () => wall);
   banner.rect(0, 3, 120, 14, c('blue', 1)).frame(0, 3, 120, 14, c('gold', 2));
-  const show = 'TRI-COUNTY FAIR DOG SHOW 1996';
+  const show = 'TRI-COUNTY FAIR DOG SHOW 1995';
   micro(banner, 60 - Math.floor((show.length * 4 - 1) / 2), 8, show, c('yellow', 3));
   const bc = cut(banner);
   for (let bx = 0; bx < 6; bx++) t.air(`banner${bx}`, bc[0][bx]);
