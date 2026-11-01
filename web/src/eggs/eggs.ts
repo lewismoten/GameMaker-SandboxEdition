@@ -204,12 +204,12 @@ export const EGGS: readonly Egg[] = [
   {
     game: 'tuneup',
     gameTitle: 'Tune-Up',
-    name: 'The Reed Egg',
+    name: 'The Rubber Egg',
     description:
-      'Moss-green felt stitched round with two white staves of music, a black felt eighth note sewn on its side, and a band of gold ribbon at the waist, still smelling faintly of river reeds.',
-    credits: ['Arranged by Claude Opus 5.5', 'for Lewis "Lewie" Moten III, Teddy, Gwinn and Doc Leo'],
-    lore: 'Rolled up inside it, a page of the parade tune in Doc Leo\'s hand, with a verse nobody ever sings: "Twelve good things in the family mug, and one more nobody names. Pour it for whoever comes in late." The last bar is marked "repeat until everyone has a glass."',
-    look: { felt: '#5f9a3c', band: '#ffffff', patch: '#1c1414', thread: '#e8c14a', pattern: 'staff', motif: 'note' },
+      'Hot-pink felt sewn to look like a glossy rubber egg, with an orange band stitched round its waist, a white felt shine, and a little sewn-in tag that reads "100% NATURAL RUBBER*" and, underneath, "*felt".',
+    credits: ['Laid by Lady Regina Cluckington III (*corrected)', 'Arranged by Claude Opus 5.5', 'for Lewis "Lewie" Moten III, Teddy, Gwinn and Doc Leo'],
+    lore: 'Doc Leo read the tag twice. High tensile strength, great elasticity, tear resistant, and not one bit of rubber in it. Folded under the tag, a page of the parade tune in his hand: "Twelve good things in the family mug, and one more nobody names. Pour it for whoever comes in late."',
+    look: { felt: '#e8609c', band: '#ffb03a', patch: '#ffffff', thread: '#ffffff', pattern: 'dots', motif: 'note' },
     detect: { block: 149 },
   },
   {
