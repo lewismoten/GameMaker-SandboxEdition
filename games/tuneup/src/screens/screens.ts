@@ -77,7 +77,7 @@ export function buildScreens(): Record<string, Uint8Array> {
   {
     const p = garage(160);
     title(p, 30);
-    centered(p, 80, 'DOC LEO NEEDS A NAP.', c('paint', 3), 2, INK);
+    centered(p, 80, 'TIME FOR A NAP.', c('paint', 3), 2, INK);
     centered(p, 104, 'THE PARADE WILL WAIT.', c('paint', 3), 1, INK);
     drawLeo(p, 'die1', 120, 190, 2);
     scaleBlit(p, POSES.sit, 180, 150, 2);

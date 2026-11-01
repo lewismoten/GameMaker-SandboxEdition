@@ -5,12 +5,21 @@
   "year": 1994,
   "price": "$15",
   "version": "1.0",
-  "blurb": "The night before the town parade, Gwinn knocks over the Clown Club's instrument trunk. As Teddy, fetch every family of instruments home across thirteen neighborhoods, from the piano shop to the sound card, and hear each one add its part to the parade tune at Doc Leo's bandstand.",
+  "blurb": "It's the morning of the Clown Club parade, and THE CHEZ honks like a kazoo: Gwinn tipped the instrument trunk into the hood. With no wrenches, Doc Leo shrinks down and tunes it up by ear, with Sir Reginald III, his rubber chicken, doing the fiddly bits.",
   "exe": "TUNEUP.EXE",
   "sound": "sb",
-  "egg": { "block": 149 },
-  "tinHeart": { "map": "clock.map", "at": [39, 5] },
-  "saveSign": { "map": "band8.map", "at": [2, 9], "after": "woods.map" },
+  "egg": {
+    "block": 149
+  },
+  "tinHeart": {
+    "map": "beat1.map",
+    "at": [22, 5]
+  },
+  "saveSign": {
+    "map": "beat3.map",
+    "at": [19, 9],
+    "after": "beat2.map"
+  },
   "label": {
     "background": "#fff6e0",
     "band": "#c8302a",
@@ -18,39 +27,39 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
-    "hours": 3,
-    "levels": "13 neighborhoods, a bandstand between them",
+    "hours": 2,
+    "levels": "4 parts of the engine bay, a cartoon before each",
     "background": "#14204e",
     "accent": "#ffb43a",
     "ink": "#ffffff",
-    "tagline": "One trunk. Thirteen neighborhoods. Every part of the parade tune.",
-    "back": "The night before the town parade, Gwinn knocks over the Clown Club's instrument trunk, and the instruments scatter all over town: one family to a neighborhood.\n\nTeddy fetches them home. He hops the piano shop's black keys, climbs the music store's harp strings, glides round the roller rink, and slips through the woods by the river, where the doors are staffs. Doc Leo waits at the bandstand, friendly as ever, with a baton, and every family Teddy brings home adds its part to the parade tune.\n\nThe last stop is inside the sound card itself, where the drum kit lives. Will the whole band be ready by morning?",
+    "tagline": "No wrenches. No problem. Just a really good ear.",
+    "back": "It's the morning of the Clown Club parade, and THE CHEZ is meant to lead it. But overnight Gwinn buried Doc Leo's toolbox and tipped the instrument trunk into the open hood, and now the car honks like a kazoo.\n\nSo Doc Leo does his shrinking trick and climbs inside to tune it up by ear. Crank the battery to a bugle's \"Charge!\", pluck the spark plugs like harp strings between the sparks, play the timing back into step on a player piano's four pipes, and oil the Squeaks off the staff.\n\nSir Reginald III, his rubber chicken, does the fiddly bits. Formally.",
     "features": [
-      "Thirteen neighborhoods, from the piano shop to the inside of the sound card, with a bandstand after each",
-      "Every family of instruments you bring home adds its part to the parade tune, until the whole band plays",
-      "Inside the player piano, boop each key as its note drops down the glass tubes",
-      "Skate the roller rink at the tune's tempo and change lanes to touch the notes",
-      "MEANWHILE... Doc Leo conducts the marching field: flick the baton on each line as the notes glide by",
-      "Staff doors in the woods open when you play their hollow note",
-      "Tubular bells ring the clock tower's doors open, a clock face counting down each one",
-      "Sound Blaster music for every stop, and a drum kit finale that plays the band, the speaker chords and a choir at once"
+      "Doc Leo and Sir Reginald III, his rubber chicken, talk over every repair",
+      "Crank the battery while its gauge fills, and hear the bugle call \"Charge!\"",
+      "Pluck the spark plugs like harp strings while the sparks run in firing order",
+      "The Timing Beat: notes drop down four glass pipes onto four keys, in three verses",
+      "Oil's Well: Z X C V B squirt the oil can up the five lines of a staff",
+      "A Hat Sting cartoon before every level, and a cutaway CHEZ that lights up as it's tuned",
+      "Sound Blaster music for every part of the engine, and a note for everything you fix"
     ],
     "shots": [
-      ["shop.map", 16, 5],
-      ["field.map", 0, 0],
-      ["clock.map", 16, 0]
+      ["jump.map", 28, 2],
+      ["beat2.map", 2, 2],
+      ["oil.map", 2, 2]
     ],
     "rating": "Ages 6 and up"
   },
   "acceptedFindings": [
-    "counters s3 Block 20 drains counter 20 on every tick",
-    "counters s3 Block 45 drains counter 20 on every tick",
-    "hurt-lock s2 Monster 0 holds the hero while it hurts",
-    "hurt-lock s5 Monster 0 holds the hero while it hurts",
-    "hurt-lock s11 Monster 0 holds the hero while it hurts",
-    "facing s13 Monster 1 walks up and down the map showing the same side",
-    "facing s13 The hero shows the same picture walking up or down as another way",
-    "facing s15 The hero climbs side on",
-    "facing s15 The hero faces the same way walking left and right"
+    "counters s4 Block 26 drains counter 24 on every tick",
+    "counters s4 Block 31 drains counter 24 on every tick",
+    "counters s4 Block 36 drains counter 3 on every tick",
+    "counters s5 Block 74 drains counter 26 on every tick",
+    "counters s5 Block 83 drains counter 26 on every tick",
+    "counters s5 Block 88 drains counter 3 on every tick",
+    "counters s6 Block 71 drains counter 3 on every tick",
+    "every-tick s4 Block 41 gives 5 points on every tick the hero touches it",
+    "every-tick s6 Block 58 gives 5 points on every tick the hero touches it",
+    "hazard-art s3 Block 9 hurts through its whole cell, but its art fills 23% of it"
   ]
 }
