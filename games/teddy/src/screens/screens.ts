@@ -162,7 +162,7 @@ function menuScreen(): Pixels {
   p.rect(58, 96, 204, 78, c('ink', 0));
   p.rect(60, 98, 200, 74, c('cream', 3));
   p.rect(60, 98, 200, 2, c('paint', 3));
-  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1995', c('paint', 3));
+  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1994', c('paint', 3));
   return p;
 }
 
@@ -177,7 +177,7 @@ function titleScreen(): Pixels {
   p.rect(272, 140, 34, 24, c('wood', 1)).rect(272, 140, 34, 3, c('wood', 3)).rect(272, 151, 34, 2, c('gold', 1)).rect(283, 135, 12, 5, c('wood', 0));
   scaleBlit(p, propSprite('nose'), 276, 100, 2);
   scaleBlit(p, propSprite('tie'), 290, 112, 2);
-  centered(p, 186, '(C) 1995 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
+  centered(p, 186, '(C) 1994 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
   return p;
 }
 

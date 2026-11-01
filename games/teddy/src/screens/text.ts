@@ -129,7 +129,7 @@ export const HELP = pages(
 const CREDITS_TEXT = pages(
   [
     "TEDDY'S LITTLE BIG ADVENTURE",
-    `Version ${about.version}, 1995`,
+    `Version ${about.version}, 1994`,
     '',
     'Design, art, music and',
     'programming: Claude',
@@ -236,8 +236,8 @@ const README_WIDTH = 31;
 function readme(price: string): string {
   const out = `
  TEDDY'S LITTLE BIG ADVENTURE
-     Version ${about.version} - 1995
-  (c) 1995 Sandbox Software
+     Version ${about.version} - 1994
+  (c) 1994 Sandbox Software
 
 Teddy is a Pembroke Welsh Corgi
 who knows a ton of tricks. His
