@@ -127,7 +127,7 @@
     },
     {
       "head": "Around the Sandbox: Practice makes noise",
-      "html": "<p>The workshop has been very loud this month. Doc Leo tried every instrument in Tune-Up, one after another, and says the tuba is easy and the accordion is not. Teddy slept through all of it on the modem cable. Gwinn was not allowed within ten feet of the instrument closet, which she has taken as a challenge."
+      "html": "<p>The workshop has been very loud this month. Doc Leo tried every instrument in Tune-Up, one after another, and says the tuba is easy and the accordion is not. Teddy slept through all of it on the modem cable. Gwinn was not allowed within ten feet of the instrument closet, which she has taken as a challenge. Doc Leo's new metal kazoo made no sound at all on its first day: the cap was on too tight. A kazoo silenced by too much engineering.</p><p>On Friday night the workshop held an open jam: bring an instrument, stand in a circle, and start with a minute of quiet. Doc Leo led on a steel tongue drum in D, which can't play a harsh chord if it tries. Friends brought two saxophones, guitars, hand drums and a singing bowl, and Teddy played his training clicker. The second saxophone slipped in behind the first, who didn't notice for a while. The loudest thing in the room was a little plastic frog scraper. The frog is probably still proud of itself."
     },
     {
       "head": "In the workshop: One more Teddy",
@@ -309,6 +309,10 @@
             {
               "q": "Teddy won't stop skating!",
               "a": "He skates by himself on purpose. Tap Up and Down to change lanes, and hold Left to hold him back."
+            },
+            {
+              "q": "Is that Doc Leo's kazoo?",
+              "a": "It is: the metal one he keeps in his pocket. It counts with the organs. Gwinn prefers plastic."
             }
           ]
         },
@@ -371,6 +375,10 @@
             {
               "q": "Two drum doors won't both open.",
               "a": "They share a channel, so they take turns: snare and hi-hat, tom and cymbal. Wait for yours."
+            },
+            {
+              "q": "I can't hear the band.",
+              "a": "The sound is there; it may be the signal chain that isn't. Check the volume wheel on the back of the Sound Blaster, the speaker cable and the speakers' power. Without a card, the PC speaker plays the notes but not the band."
             }
           ]
         },

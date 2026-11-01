@@ -41,6 +41,10 @@ export const STORY = pages(
     'Gwinn is very sorry. She is',
     'also having the best night',
     'of her life.',
+    '',
+    'Doc Leo kept his slide',
+    'whistle. It is brass. Gwinn',
+    'has checked.',
   ],
 );
 
@@ -140,7 +144,13 @@ const CREDITS_TEXT = pages(
   [
     'No instruments were harmed.',
     'Gwinn would like that on the',
-    'record.',
+    'record. (The plastic slide',
+    'whistles before the brass one',
+    'are another story.)',
+    '',
+    "Doc Leo's brass slide whistle",
+    'and metal kazoo are Lewis',
+    `"Lewie" Moten III's own.`,
     '',
     'Made with GAME-MAKER 3.0 by',
     'Recreational Software',
