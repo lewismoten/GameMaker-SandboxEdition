@@ -1,5 +1,5 @@
 // A 3.5" floppy disk drawn on a canvas, the disk-space tool's picture of a game: plastic in the
-// game's own color, a metal shutter, the notches, and a paper label carrying the game's title
+// game's own color, a metal shutter at the bottom, the two corner windows, and a paper label at the top carrying the game's title
 // picture with its hero standing on it. A render, not an icon.
 //
 // Who shows the title: a game with a title picture shows its name in that picture, so no title text
@@ -59,19 +59,19 @@ export function drawFloppy(canvas: HTMLCanvasElement, art: FloppyArt, width = 17
   ctx.scale(scale, scale);
   const p = art.plastic;
 
-  // the case: square except the rounded corners and the cut one at the top right
+  // the case: rounded corners, and the one cut corner at the bottom left (the reference's shape)
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,.35)';
   ctx.shadowBlur = 8;
   ctx.shadowOffsetY = 3;
   ctx.beginPath();
-  ctx.moveTo(10, 4);
-  ctx.lineTo(FLOPPY_W - 34, 4);
-  ctx.lineTo(FLOPPY_W - 4, 34);
-  ctx.lineTo(FLOPPY_W - 4, FLOPPY_H - 12);
+  ctx.moveTo(14, 4);
+  ctx.lineTo(FLOPPY_W - 14, 4);
+  ctx.arcTo(FLOPPY_W - 4, 4, FLOPPY_W - 4, 14, 8);
+  ctx.lineTo(FLOPPY_W - 4, FLOPPY_H - 14);
   ctx.arcTo(FLOPPY_W - 4, FLOPPY_H - 4, FLOPPY_W - 14, FLOPPY_H - 4, 8);
-  ctx.lineTo(14, FLOPPY_H - 4);
-  ctx.arcTo(4, FLOPPY_H - 4, 4, FLOPPY_H - 14, 8);
+  ctx.lineTo(30, FLOPPY_H - 4);
+  ctx.lineTo(4, FLOPPY_H - 30);
   ctx.lineTo(4, 14);
   ctx.arcTo(4, 4, 14, 4, 8);
   ctx.closePath();
@@ -86,20 +86,22 @@ export function drawFloppy(canvas: HTMLCanvasElement, art: FloppyArt, width = 17
   ctx.strokeStyle = shade(p, -0.4);
   ctx.stroke();
 
-  // the molded recess around the shutter, and the two notches at the top
+  // the molded recess around the shutter, and the two small square windows in the top corners
   ctx.strokeStyle = shade(p, -0.22);
   ctx.lineWidth = 2;
-  rounded(ctx, 28, 12, FLOPPY_W - 82, 8, 4);
+  rounded(ctx, 66, 232, FLOPPY_W - 132, 126, [6, 6, 0, 0]);
   ctx.stroke();
-  for (const x of [20, FLOPPY_W - 56]) {
+  for (const x of [12, FLOPPY_W - 28]) {
     ctx.fillStyle = shade(p, -0.78);
-    rounded(ctx, x, 24, 16, 14, 2);
+    rounded(ctx, x, 26, 16, 14, 2);
     ctx.fill();
   }
 
-  // the metal shutter, with its window
-  const sx = 96;
-  const sw = 150;
+  // the metal shutter at the bottom, with its window
+  const sx = 82;
+  const sw = 178;
+  const sy = 244;
+  const sh = FLOPPY_H - 4 - sy;
   const metal = ctx.createLinearGradient(sx, 0, sx + sw, 0);
   metal.addColorStop(0, '#9ea3a8');
   metal.addColorStop(0.35, '#e4e7ea');
@@ -108,30 +110,30 @@ export function drawFloppy(canvas: HTMLCanvasElement, art: FloppyArt, width = 17
   ctx.fillStyle = metal;
   ctx.strokeStyle = '#555a5f';
   ctx.lineWidth = 1.5;
-  rounded(ctx, sx, 4, sw, 112, [0, 0, 8, 8]);
+  rounded(ctx, sx, sy, sw, sh, [8, 8, 0, 0]);
   ctx.fill();
   ctx.stroke();
   ctx.fillStyle = shade(p, -0.8);
-  rounded(ctx, sx + 84, 12, 44, 80, 3);
+  rounded(ctx, sx + 30, sy + 8, 46, 90, 3);
   ctx.fill();
   ctx.strokeStyle = 'rgba(0,0,0,.35)';
   ctx.stroke();
 
   // the label: paper with the title picture covering it
-  const lx = 40;
-  const ly = 148;
-  const lw = FLOPPY_W - 80;
-  const lh = 188;
+  const lx = 34;
+  const ly = 4;
+  const lw = FLOPPY_W - 68;
+  const lh = 212;
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,.3)';
   ctx.shadowBlur = 3;
   ctx.shadowOffsetY = 1;
   ctx.fillStyle = '#f4f1e8';
-  rounded(ctx, lx, ly, lw, lh, 5);
+  rounded(ctx, lx, ly, lw, lh, [0, 0, 10, 10]);
   ctx.fill();
   ctx.restore();
   ctx.save();
-  rounded(ctx, lx + 6, ly + 6, lw - 12, lh - 12, 3);
+  rounded(ctx, lx + 6, ly + 6, lw - 12, lh - 12, [0, 0, 6, 6]);
   ctx.clip();
   const iw = lw - 12;
   const ih = lh - 12;
