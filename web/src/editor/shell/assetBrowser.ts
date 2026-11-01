@@ -64,7 +64,15 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
         if (!file || !entry.target.isConnected) continue;
         try {
           const patches = companionPatches(project.companion, project.gam);
-          clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files, palette: shownPalette(project, file), patches }));
+          const show = (boardAt?: Map<number, { x: number; y: number }>) =>
+            clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files, palette: shownPalette(project, file), patches, boardAt }));
+          show();
+          // the game's own tile draws the Integrator board the author last had open (loaded when first needed)
+          if (file === project.gam)
+            void import('../editors/integrator/activeBoard').then((m) => {
+              const at = m.activeBoardPositions(project, project.game());
+              if (at && entry.target.isConnected) (show(at), fillPreview(entry.target as HTMLElement));
+            });
           fillPreview(entry.target as HTMLElement);
         } catch {
           clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files }));

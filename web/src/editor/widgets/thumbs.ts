@@ -34,6 +34,8 @@ export interface ThumbSource {
   palette?: Palette;
   /** The DOS player's patches (companion), for the text color and the high-score screen. */
   patches?: PlayerPatches;
+  /** A game's thumbnail draws only these scenes, at these spots (the Integrator's remembered board), not the DOS positions. */
+  boardAt?: Map<number, { x: number; y: number }>;
 }
 
 /** A fallback icon for each kind, drawn when there is no picture to show. */
@@ -309,25 +311,26 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         const [c, ctx] = canvas();
         ctx.fillStyle = '#10142a';
         ctx.fillRect(0, 0, SIZE, SIZE);
-        const xs = g.scenes.map((s) => s.pos.x);
-        const ys = g.scenes.map((s) => s.pos.y);
+        const at = (i: number) => src.boardAt?.get(i) ?? g.scenes[i].pos;
+        const shown = g.scenes.map((_, i) => i).filter((i) => !src.boardAt || src.boardAt.has(i));
+        const xs = shown.map((i) => at(i).x);
+        const ys = shown.map((i) => at(i).y);
         const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs) + 1, Math.min(...ys), Math.max(...ys) + 1];
         const sx = (x: number) => 8 + ((x - x0) / Math.max(1, x1 - x0)) * (SIZE - 16);
         const sy = (y: number) => 8 + ((y - y0) / Math.max(1, y1 - y0)) * (SIZE - 16);
         ctx.strokeStyle = '#7f9cff';
-        g.scenes.forEach((s) =>
-          s.links.forEach((l) => {
-            const t = g.scenes[l.toScene];
-            if (!t) return;
+        shown.forEach((i) =>
+          g.scenes[i].links.forEach((l) => {
+            if (!shown.includes(l.toScene)) return;
             ctx.beginPath();
-            ctx.moveTo(sx(s.pos.x), sy(s.pos.y));
-            ctx.lineTo(sx(t.pos.x), sy(t.pos.y));
+            ctx.moveTo(sx(at(i).x), sy(at(i).y));
+            ctx.lineTo(sx(at(l.toScene).x), sy(at(l.toScene).y));
             ctx.stroke();
           }),
         );
-        g.scenes.forEach((s, i) => {
-          ctx.fillStyle = i === 0 ? '#ffd400' : s.gametype === 2 ? '#ff6b61' : '#6cf28a';
-          ctx.fillRect(sx(s.pos.x) - 4, sy(s.pos.y) - 4, 8, 8);
+        shown.forEach((i) => {
+          ctx.fillStyle = i === 0 ? '#ffd400' : g.scenes[i].gametype === 2 ? '#ff6b61' : '#6cf28a';
+          ctx.fillRect(sx(at(i).x) - 4, sy(at(i).y) - 4, 8, 8);
         });
         return c;
       }
