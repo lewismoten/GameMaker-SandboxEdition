@@ -74,12 +74,12 @@ export const INSTRUCTIONS = pages(
     'it. No hurry: the key stays',
     'lit for a while.',
     '',
-    'Watch the notes across the',
-    'top fill in. When they are',
-    'full and you have played 12',
-    'notes, the door at the end',
-    'opens. Missed some? The notes',
-    'keep coming.',
+    'The row of notes across the',
+    'top turns gold as the song',
+    'plays. When all are gold and',
+    'you have played 12 notes,',
+    'the door at the end opens.',
+    'Missed some? Keep playing.',
   ],
 );
 
