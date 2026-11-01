@@ -26,7 +26,10 @@ merge them, and says how many 3.5" disks the game needs.
   the disks it takes at 1.44 MB and 720 KB (FAT12 clusters, the root directory's entry limit).
 - `floppy.ts`, `floppyData.ts`: the card's picture, a 3.5" disk drawn on a canvas. The plastic is
   color 255 of the first palette that is not one solid color; the label is the title scene's first
-  still picture (an animation if there is none), the player's character block and the game's name.
+  still picture (an animation if there is none) and the player's character block. A game with a title
+  picture shows its name in that picture, so no title text is printed; one without (imported or in
+  progress) gets its title written on the label, wrapped or shrunk to fit (`floppyTitle.ts`). No
+  per-game override: a picture means it shows the title.
 - `diskCard.ts` (the floppy and status line the Tools card draws, kept small so that tab stays
   light) and `diskTool.ts` (the dialog: sizes, the merges with a preview of each, Apply, and Undo
   through the project's file history, which stays while the project is open).

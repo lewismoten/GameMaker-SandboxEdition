@@ -1,6 +1,12 @@
 // A 3.5" floppy disk drawn on a canvas, the disk-space tool's picture of a game: plastic in the
 // game's own color, a metal shutter, the notches, and a paper label carrying the game's title
-// picture with its hero standing on it and its name along the bottom. A render, not an icon.
+// picture with its hero standing on it. A render, not an icon.
+//
+// Who shows the title: a game with a title picture shows its name in that picture, so no title text
+// is printed under it. A game without one (imported, or still in progress) gets its title written
+// on the label itself, wrapped or shrunk to fit. There is no per-game override: the rule follows
+// `art.picture` alone.
+import { fitTitle } from './floppyTitle';
 import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 export interface FloppyArt {
@@ -138,22 +144,26 @@ export function drawFloppy(canvas: HTMLCanvasElement, art: FloppyArt, width = 17
     ctx.fillStyle = shade(p, 0.55);
     ctx.fillRect(lx + 6, ly + 6, iw, ih);
   }
-  const band = 46;
-  ctx.fillStyle = 'rgba(8,8,16,.72)';
-  ctx.fillRect(lx + 6, ly + 6 + ih - band, iw, band);
   if (art.hero) {
     const hero = indexed(art.hero, true);
     const k = Math.max(1, Math.floor(Math.min(104 / hero.height, 3)));
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(hero, lx + 14, ly + 6 + ih - band - hero.height * k + 4, hero.width * k, hero.height * k);
+    ctx.drawImage(hero, lx + 14, ly + 6 + ih - hero.height * k + 4, hero.width * k, hero.height * k);
   }
-  ctx.fillStyle = '#fff';
-  ctx.textBaseline = 'middle';
-  ctx.textAlign = 'center';
-  let size = 26;
-  ctx.font = `bold ${size}px system-ui, sans-serif`;
-  while (ctx.measureText(art.title).width > iw - 16 && size > 11) ctx.font = `bold ${--size}px system-ui, sans-serif`;
-  ctx.fillText(art.title, lx + 6 + iw / 2, ly + 6 + ih - band / 2 + 1);
+  if (!art.picture) {
+    // no title picture: the name is written on the label, on a dark plate so it reads on any plastic
+    const fit = fitTitle((t, s) => ((ctx.font = `bold ${s}px system-ui, sans-serif`), ctx.measureText(t).width), art.title, iw - 24, 3, 32, 12);
+    const lh2 = fit.size * 1.15;
+    const plate = fit.lines.length * lh2 + 16;
+    const top = ly + 6 + (ih - plate) / 3;
+    ctx.fillStyle = 'rgba(8,8,16,.72)';
+    ctx.fillRect(lx + 6, top, iw, plate);
+    ctx.fillStyle = '#fff';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.font = `bold ${fit.size}px system-ui, sans-serif`;
+    fit.lines.forEach((l, i) => ctx.fillText(l, lx + 6 + iw / 2, top + 8 + lh2 * (i + 0.5)));
+  }
   ctx.restore();
   return canvas;
 }
