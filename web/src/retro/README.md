@@ -47,6 +47,15 @@ picture; `host.ts` is what programs on it can use.
   add to C: in `deskFiles.ts` and `pcExtras.ts`, which also keeps the serial in PLAYGAME.EXE):
   debugging tools for registration modes, saved games and backups, dressed as 1990s scene
   programs.
+- `hacks/flags.ts`, `flagsItems.ts`, `flagsBackup.ts`, `flagsText.ts`: FLAGS.EXE in C:\DOS and in
+  the BBS's Warez area (FLAGS.ZIP, with a FILE_ID.DIZ and FLAGS.NFO). `FLAGS` lists the PC's
+  hard-to-reach browser state (badges, felt eggs, tin hearts, score trophy tiers, the hint line
+  bill, registration mail, the BBS caller file, the room clock, registration; the bonus-game row
+  only once one is open, never by name). `SET`/`CLEAR`/`RESET <what>|ALL` change it (`SET HEARTS 3`
+  counts exactly 3 as found, as overrides over the saves, like EGG.EXE's; `SET TROPHY BEST 2`),
+  `/BACKUP` and `/RESTORE` keep and put back everything in C:\DOS\FLAGS.BAK (made by the first
+  change when none exists). It never writes a game save (SAVEHACK's job); `replaceAchievements` in
+  achievements/store.ts is its one way to take a badge away. Tests: `hacks/flags.test.ts`.
 - `hacks/roomFix.ts` and `roomFixItems.ts`: ROOMFIX.EXE in C:\DOS (`/SAFE`, `/FULL`, `/ROOM`,
   `/ALL`, names like `LIGHTS MUG`, `/?`) puts the desk room's small remembered states back: the toy
   safe's door (coins and treats kept unless `/FULL`), lights, wall-clock lume paint, mug, mouse pad,

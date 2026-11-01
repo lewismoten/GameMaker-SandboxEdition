@@ -18,6 +18,7 @@ import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { GMCRACK_DIZ, GMCRACK_NFO } from '../hacks/gmcrackText';
 import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
 import { FASTPLAY_DIZ, FASTPLAY_DOC } from '../hacks/fastPlay';
+import { FLAGS_DIZ, FLAGS_NFO } from '../hacks/flagsText';
 import { PLAYHACK_DIZ, PLAYHACK_NFO } from '../hacks/playHackText';
 import { GM30_DIZ, GM30_NFO, GM30_PART_BYTES, GM30_PARTS } from '../hacks/gm30Text';
 import { account, filePoints, recordDownload, updateAccount } from './ratio';
@@ -97,6 +98,16 @@ export const WAREZ: WarezRelease[] = [
     files: [
       { name: 'FASTPLAY.EXE', size: 6_144, run: { kind: 'fastplay' } },
       { name: 'FASTPLAY.DOC', size: 0, text: FASTPLAY_DOC },
+    ],
+  },
+  {
+    id: 'flags',
+    zip: 'FLAGS.ZIP',
+    bytes: 21_337,
+    diz: FLAGS_DIZ,
+    files: [
+      { name: 'FLAGS.EXE', size: 24_576, run: { kind: 'flags' } },
+      { name: 'FLAGS.NFO', size: 0, text: FLAGS_NFO },
     ],
   },
 ];

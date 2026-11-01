@@ -229,6 +229,9 @@ export class Computer extends ComputerFolders {
         case 'roomfix':
           await (await import('./hacks/roomFix')).runRoomFix(this, _args);
           break;
+        case 'flags':
+          await (await import('./hacks/flags')).runFlags(this, _args);
+          break;
         case 'batch':
           for (const l of ref.lines) await this.shell.execute(l);
           break;

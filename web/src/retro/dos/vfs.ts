@@ -45,6 +45,7 @@ export type ProgramRef =
   | { kind: 'achieve' }
   | { kind: 'offline' }
   | { kind: 'roomfix' }
+  | { kind: 'flags' }
   | { kind: 'batch'; lines: string[] };
 
 interface Drive {

@@ -399,6 +399,8 @@ export class Shell {
       'HEXEDIT     Look inside a file byte by byte (HEXEDIT \\GM\\SAMPLE\\SAMPLE.GAM)',
       "ACHIEVE     What you've done so far: your merit badges",
       'OFFLINE     Copy the whole site here, to use with no connection',
+      'ROOMFIX     Put the desk room back the way it started (ROOMFIX /?)',
+      'FLAGS       List, set and back up what the PC remembers (FLAGS /?)',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
       this.out(l);
