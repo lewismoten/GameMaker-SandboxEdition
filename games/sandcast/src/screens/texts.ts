@@ -1,6 +1,7 @@
 // Every word Teddy's players read: the story, the instructions, the level briefings
 // (shown as BBS messages, 30 columns wide), and the shareware notice.
 import { withCreditPage } from '../../../kit/license';
+import about from '../../about.json';
 
 /** The BBS's name, which a line break must never split. */
 const BBS_NAME = 'THE -= S A N D B O X =- BBS';
@@ -72,7 +73,7 @@ ACORNS open root doors. A cracked wall may not be a wall at all.
 `);
 
 const CREDITS_TEXT = wrap(`
-|SANDCASTLE KNIGHT  v1.1
+|SANDCASTLE KNIGHT  v${about.version}
 |(c) 1994 Sandbox Software
 
 Design, pixels and beeps by Claude. Made with GAME-MAKER 3.0 from Recreational Software Designs.
@@ -187,7 +188,7 @@ Shake it off and try again, brave knight!
 
 export const README = wrap(
   `
-|SANDCASTLE KNIGHT  v1.1
+|SANDCASTLE KNIGHT  v${about.version}
 |(c) 1994 Sandbox Software.
 |All rights reserved.
 |===============================

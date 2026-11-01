@@ -12,6 +12,7 @@ import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, WATER, WOOD, YELLOW 
 import { CLEAR, shade } from '../art/draw';
 import { CB, MB } from '../sprites/sprites';
 import { wattCameo } from '../../../kit/cameos';
+import about from '../../about.json';
 import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 
 const W = 320;
@@ -176,7 +177,7 @@ export function titleScreen(): Pixels {
   // Teddy at the castle gate, and Gwinn peeking in from the side, up to no good.
   stamp(p, CB.pic('sit0'), 3, 226, 128);
   stamp(p, MB.pic('gwin0'), 3, 34, 124);
-  text(p, 4, 100, 'v1.1', ANSI[8]);
+  text(p, 4, 100, `v${about.version}`, ANSI[8]);
   text(p, 4, 110, '(c) 1994', ANSI[8]);
   text(p, 252, 100, 'Sandbox', ANSI[8]);
   text(p, 252, 110, 'Software', ANSI[8]);
