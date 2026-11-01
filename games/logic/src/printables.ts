@@ -27,7 +27,7 @@ function printables(): unknown {
         html: '<p>A thunderstorm has scrambled the Bitmores\' brand-new Smart Home, and Watt, the pocket-sized repair robot who lives in the fuse box, must roll home through twenty-three haywire circuit boards, from the toaster to the attic. Every switch, fuse and relay is built from ordinary Game-Maker blocks and monsters: batteries are blocks that give birth to "current" monsters, and gates fall when a stronger monster touches them. Not one line of code!</p>',
       },
       {
-        head: 'Since last issue: Two years of Sparky mail',
+        head: 'Since last issue: A year of Sparky mail',
         html: '<p>It has been a while since issue 2, and the mailbag filled up. Your favorite gadget in In The Year 2000! was the Teleport-A-Phone. Your least favorite moment was running out of quarters at the Phone Exchange (every room has more, and they come back each time you dial). Three of you sent drawings of Sparky 3000, and one of you built him out of a shoebox and two flashlights.</p>',
       },
       {
