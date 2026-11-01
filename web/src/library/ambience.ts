@@ -6,6 +6,7 @@
 // still where they appear and the sounds are the same.
 import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 import { demoAudio } from '../media/demoAudio';
+import { place } from './roomObjects';
 
 const CAST = ['teddy', 'gwinn', 'leo', 'lewie'];
 const between = (a: number, b: number) => a + Math.random() * (b - a);
@@ -124,8 +125,8 @@ export function startAmbience(room: HTMLElement): void {
     c.className = 'lib-visitor';
     c.width = sprite.sprite.w;
     c.height = sprite.sprite.h;
-    c.style.width = `${sprite.sprite.w * 3}px`;
-    c.style.height = `${sprite.sprite.h * 3}px`;
+    // standing on the floor in front of the desk, sized for that depth (a sprite pixel is about 4 cm)
+    place(c, 0, -0.95, sprite.sprite.w * 0.035);
     const g = c.getContext('2d');
     let walking = true;
     let n = 0;
@@ -137,6 +138,8 @@ export function startAmbience(room: HTMLElement): void {
     draw();
     const spot = between(22, 70);
     const fromLeft = Math.random() < 0.5;
+    // the sprites face right: face the way each walk goes, and the viewer while browsing
+    const faceHeading = (left: boolean) => (c.style.transform = left ? 'scaleX(-1)' : '');
     const end = () => {
       c.remove();
       later(visit, between(25_000, 55_000));
@@ -147,17 +150,20 @@ export function startAmbience(room: HTMLElement): void {
       layer.append(c);
       return later(end, 20_000);
     }
-    c.style.left = fromLeft ? '-6%' : '104%';
+    c.style.left = fromLeft ? '-12%' : '104%';
+    faceHeading(!fromLeft);
     layer.append(c);
     const tick = window.setInterval(() => (room.isConnected ? draw() : clearInterval(tick)), sprite.sprite.ms);
     void c.offsetWidth;
     c.style.left = `${spot}%`;
     later(() => {
-      walking = false; // browsing: stands facing the shelves
+      walking = false; // browsing: stands facing the room
+      faceHeading(false);
       later(
         () => {
           walking = true;
-          c.style.left = fromLeft ? '-6%' : '104%';
+          faceHeading(fromLeft);
+          c.style.left = fromLeft ? '-12%' : '104%';
           later(() => (clearInterval(tick), end()), 6200);
         },
         between(5000, 9000),
