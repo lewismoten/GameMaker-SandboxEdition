@@ -6,7 +6,7 @@
 // sequence starts again while its key is down; keys.ts: letting go ends one that can be
 // interrupted) and the FLI facts against code/Image/FLI/FLI.CPP and code/DRV/FILECLSS.CPP as
 // formats/fliPlaygame.test.ts ports them, the CMF clock against code/GM/SBMUSIC.C load_file
-// (HDRCLK 146 in SOUND.H), and the archive counts are the survey's (.for-lewis/reference/archive/NOTES.md);
+// (HDRCLK 146 in SOUND.H), and the archive counts are the survey's (.for-lewis/reference/archive2/NOTES.md (its "First survey" section));
 // the Maximus findings are TURBO BUTTON's
 // (manual/magazine/sections/maximus.ts). The wall glitch is code/GM/PLAYGAME.C ChkMonChr (the
 // axis the two are farther apart on, and which solid bit pushes which way) and movechars (the
