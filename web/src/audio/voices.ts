@@ -17,8 +17,14 @@ const MAN = ['Fred', 'Alex', 'Daniel', 'Microsoft David', 'Google UK English Mal
 
 export const VOICES = {
   dispatcher: { who: '911', pitch: 1, rate: 1.05, prefer: WOMAN },
-  receptionist: { who: 'Receptionist', pitch: 1.25, rate: 1.1, prefer: WOMAN },
-  mom: { who: 'Mom', pitch: 1.15, rate: 1.1, prefer: WOMAN },
+  // Linda, who answers Mom's work line: another woman's voice than Mom's where the browser has one, and higher
+  receptionist: {
+    who: 'Receptionist',
+    pitch: 1.45,
+    rate: 1.15,
+    prefer: ['Victoria', 'Karen', 'Moira', 'Tessa', 'Microsoft Hazel', 'Microsoft Susan', 'Google UK English Female', ...WOMAN],
+  },
+  mom: { who: 'Mom', pitch: 1.05, rate: 1.05, prefer: WOMAN },
   dad: { who: 'Dad', pitch: 0.7, rate: 1.15, prefer: MAN },
   shop: { who: 'Maintenance shop', pitch: 0.85, rate: 1.05, prefer: MAN },
   jenny: { who: 'Jenny', pitch: 1.3, rate: 1.25, prefer: WOMAN },
