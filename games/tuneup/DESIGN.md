@@ -10,9 +10,18 @@ It's the morning of the Clown Club parade, and THE CHEZ is meant to lead it. Ove
 buried Doc Leo's toolbox in the yard and tipped the Clown Club's instrument trunk into the open
 hood. With no wrenches, Doc Leo does his shrinking trick and tunes the car up by ear. Sir
 Reginald III, his rubber chicken, does the fiddly bits (he fits where Doc Leo can't), and the
-two of them talk every repair over. Partway through The Timing Beat he lays an egg, and from
-then on every card names her Lady Regina III, formally corrected. Teddy rides along in the
-front passenger seat.
+two of them talk every repair over. Teddy rides along in the front passenger seat.
+
+Levels 1-4 are Sir Reginald Cluckington III's dream (he was talking in his sleep): a gas
+engine THE CHEZ never had. After Oil's Well he swims the oil pipe (a scene nobody steers), and
+Doc Leo's card wakes him: THE CHEZ is electric (no exhaust, no spark plugs, no engine oil; the
+only oil is in the rear differential), so the dream can be dismissed. The chicken blames
+battery fumes; Doc Leo says the batteries are lithium ion now (a deliberate time slip, logged in
+the timeline), and the chicken tells the player such car batteries are years off. What's really
+wrong: THE CHEZ has no radio, so the real tune-up (levels 5 on) builds toward an AM radio with an
+8-track. Every car fact from level 5 on is from the car's blog, thechez.car.blog. After Pump Up
+the Volume a balloon pops, he lays an egg, and from then on every card names her Lady Regina
+III, formally corrected (*CORRECTION: Lady Regina Cluckington III).
 
 ## Scenes
 
@@ -26,9 +35,14 @@ asks whether it's fixed.
 | 1   | Jump Start      | jump                | GARAGE, dawn           | The red clamp on the shelf and the black clamp under the bench open their terminals; Space held under the crank fills its gauge; "Charge!" and THE CHEZ's headlight opens |
 | 2   | Spark Plucks    | spark               | ENGINE, electric       | Climb each plug wire between sparks (firing order 1-3-4-2) and pluck its plug: C, E, G, E                                                                                 |
 | 3   | The Timing Beat | beat1, beat2, beat3 | ENGINE, brass          | Four pipes drop notes onto four keys; boop each as it lands. Straight, syncopated (a Y-pipe, a slow bent pipe), double time (a crossover)                                 |
-| 4   | Oil's Well      | oil                 | ENGINE, amber          | Z X C V B squirt the oil can along the staff's five lines; oiled Squeaks float home as notes; two later waves                                                             |
+| 4   | Oil's Well      | oil, swim           | ENGINE, amber          | Z X C V B squirt the oil can along the staff's five lines; oiled Squeaks float home as notes; two later waves, counted down by a row of lamps. Then the swim (nobody steers) |
+| 5   | The Fan Band    | fan1, fan2          | ENGINE, electric/amber | The motor's warm air to the defroster: ride the pulsing columns up and reach each kazoo fan (Space); the hot verse's columns are out of step                              |
+| 6   | Brake Dance     | brake               | GARAGE, disco (Teddy)  | Each stiff brake lamp wants a trick (Z turn, X roll over, C play dead, V dance); the freed lamp floats to Teddy                                                           |
+| 7   | Hubcaps and Balls | cups1-3           | CURB, spot             | Cups and balls with three hubcaps and the antenna's ball: watch the shuffle, reach under the right cap; three rounds, the last quicker                                    |
+| 8   | Pump Up the Volume | pump             | CURB, noon             | Balloon animals breathe in and out on their own; hop onto each as it puffs up, up to the squashed tire, and pump it to 32 psi                                              |
+| 9   | Muffled         | hush                | GARAGE, night (Teddy)  | Gwinn asleep with the 8-track tapes: hop the squeaky toys (each costs energy, the Zzz meter), take the shelf over her bed, fetch the tapes. The felt egg and the save sign |
 
-The ending is a stub for now: the cutaway CHEZ with the engine bay tuned.
+The ending is a stub for now: the cutaway CHEZ with the real parts tuned so far.
 
 ## How it's made
 
@@ -48,11 +62,19 @@ The ending is a stub for now: the cutaway CHEZ with the engine bay tuned.
 - **Oil's Well** (`src/levels/oil.ts`): a drop (power 60) turns a Squeak (50) into a note (60)
   that heads for Doc Leo; its monster block counts it on touch. Waves are blocks that give
   birth once on a timetable.
+- **Timers belong to block numbers, not cells.** PLAYGAME runs every block's timer for all
+  blocks of its number at once, from the scene's start, so a touched block can't start its own
+  countdown. Balloons are rings that breathe on their own (each balloon starts at its own
+  point); a squeaky toy squeaks once and stays squashed. PLAYGAME also changes only blocks
+  wholly on screen, so nothing touchable sits on a level's top row.
+- **Teddy** (`src/heroes.ts`) is the trilogy's corgi drawing, one block tall, with four tricks
+  that each fire a sparkle on a power ladder (`src/realMonsters.ts`). **Nobody** is a clear
+  block with no keys, for the swim.
 - **Views**: a level's view is centered on where Doc Leo starts and never scrolls up or down,
   so every level starts him at (8, 5) in mid air and he drops to the floor.
 
 ## Still to build (the design's later phases)
 
-Levels 5 to 14 (the Fan Band, Teddy's levels, the shell game, balloons, Muffled, the rain,
-the horn section, Key Change, the instrument panel and the parade route), the ending cartoons,
-the box cover, and a DOSBox listen and timing pass.
+Levels 10 to 14 (the rain, the horn section, Key Change, the instrument panel where the radio
+goes in, and the parade route), the ending cartoons, the box cover and text, and a DOSBox
+listen and timing pass.

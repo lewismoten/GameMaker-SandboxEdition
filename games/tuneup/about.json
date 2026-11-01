@@ -16,9 +16,9 @@
     "at": [22, 5]
   },
   "saveSign": {
-    "map": "beat3.map",
-    "at": [19, 9],
-    "after": "beat2.map"
+    "map": "hush.map",
+    "at": [39, 9],
+    "after": "hush.map"
   },
   "label": {
     "background": "#fff6e0",
@@ -27,8 +27,8 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
-    "hours": 2,
-    "levels": "4 parts of the engine bay, a cartoon before each",
+    "hours": 4,
+    "levels": "9 levels: a dream of an engine bay, then the real electric car, a cartoon before each",
     "background": "#14204e",
     "accent": "#ffb43a",
     "ink": "#ffffff",
@@ -60,6 +60,18 @@
     "counters s6 Block 71 drains counter 3 on every tick",
     "every-tick s4 Block 41 gives 5 points on every tick the hero touches it",
     "every-tick s6 Block 58 gives 5 points on every tick the hero touches it",
-    "hazard-art s3 Block 9 hurts through its whole cell, but its art fills 23% of it"
+    "hazard-art s3 Block 9 hurts through its whole cell, but its art fills 23% of it",
+    "facing s12 Monster 22 paces left and right facing the player",
+    "facing s13 Monster 22 paces left and right facing the player",
+    "facing s14 Monster 22 paces left and right facing the player",
+    "hazard-art s16 Block 11 hurts through its whole cell, but its art fills 24% of it",
+    "hazard-art s16 Block 13 hurts through its whole cell, but its art fills 23% of it",
+    "hazard-art s16 Block 15 hurts through its whole cell, but its art fills 20% of it",
+    "hazard-art s16 Block 17 hurts through its whole cell, but its art fills 24% of it",
+    "hazard-art s16 Block 19 hurts through its whole cell, but its art fills 23% of it",
+    "response s11 C (fire) waits 1.0 s before anything happens",
+    "response s11 V (fire) waits 0.8 s before anything happens",
+    "response s11 X (fire) waits 0.8 s before anything happens",
+    "response s11 Z (fire) waits 0.7 s before anything happens"
   ]
 }
