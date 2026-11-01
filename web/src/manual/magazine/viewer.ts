@@ -199,8 +199,11 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   // the page in view (or turned to), as the bar, the contents and the address tell it
   const reading = (shown: number[]) => {
     const total = issue!.pages.length;
-    for (const i of shown) tally('mag-features', issue!.pages[i].section);
-    if (shown.includes(total - 1)) unlockAchievement('mag-back');
+    // the achievements are No. 2's (the one on the desk), so saved progress stays
+    if (which === 2) {
+      for (const i of shown) tally('mag-features', issue!.pages[i].section);
+      if (shown.includes(total - 1)) unlockAchievement('mag-back');
+    }
     counter.textContent = counterFor(shown);
     prev.disabled = at === 0;
     next.disabled = shown.at(-1) === total - 1;

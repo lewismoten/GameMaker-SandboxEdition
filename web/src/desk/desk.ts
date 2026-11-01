@@ -275,7 +275,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     );
   }
 
-  /** The magazine lying on the desk with the catalog: open=turbobutton&vol=1&num=1&page=6-7 keeps the issue and the pages in view, so a reload comes back to them. Its links play disks, call the BBS and look at the props. */
+  /** The magazine lying on the desk with the catalog: open=turbobutton&vol=3&num=1&page=6-7 (vol=1&num=4 is the spring 1993 back issue) keeps the issue and the pages in view, so a reload comes back to them. Its links play disks, call the BBS and look at the props. */
   const magazine = async () => {
     const [{ openMagazine }, { issueFor }] = await Promise.all([import('../manual/magazine/viewer'), import('../manual/magazine/masthead')]);
     // vol=1&num=4 is the back issue; the old vol=1&num=1 and a bare address open No. 2 (vol=3&num=1)
