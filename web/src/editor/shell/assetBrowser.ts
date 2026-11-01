@@ -11,6 +11,13 @@ import { fileThumb, KIND_ICON } from '../widgets/thumbs';
 import { PLAYABLE, playButton, stopThumbPlayback } from '../widgets/thumbPlayButton';
 import { assetSearch } from './assetSearch';
 import { companionPatches } from '../../dosPlayer/playerRecord';
+import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+
+/** The palette a tile is drawn in: the one picked in the file's editor ("Show with palette", kept in the companion), else the scene's. */
+function shownPalette(project: Project, file: string): Palette {
+  const saved = project.extras<string>(file, 'showPalette', '');
+  return saved && project.files.has(saved) ? parsePalette(project.files.get(saved)!) : project.paletteFor(file).palette;
+}
 
 interface BrowserHost {
   project: Project;
@@ -57,7 +64,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
         if (!file || !entry.target.isConnected) continue;
         try {
           const patches = companionPatches(project.companion, project.gam);
-          clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files, palette: project.paletteFor(file).palette, patches }));
+          clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files, palette: shownPalette(project, file), patches }));
           fillPreview(entry.target as HTMLElement);
         } catch {
           clear(entry.target, fileThumb(file, project.files.get(file), { files: project.files }));
