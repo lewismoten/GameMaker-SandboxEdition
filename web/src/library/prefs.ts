@@ -1,7 +1,7 @@
 // What the Library remembers per browser (libraryPage.ts): the sort, the one game or kind of
 // paper picked for each sort, and the game picked within a kind. Kept in localStorage; with none (a private window) the address
 // still holds them.
-import { isShelfOrder, type ShelfOrder } from './shelf';
+import { isSeries, isShelfOrder, type Series, type ShelfOrder } from './shelf';
 
 const ORDER_KEY = 'gm-library-by';
 const onlyKey = (order: ShelfOrder) => `gm-library-only-${order}`;
@@ -41,3 +41,13 @@ const GAME_KEY = 'gm-library-game';
 export const savedGame = (): string | undefined => read(GAME_KEY);
 
 export const rememberGame = (game: string | undefined): void => write(GAME_KEY, game);
+
+const SERIES_KEY = 'gm-library-series';
+
+/** Which games' papers By type shows: all, Sandbox or Bizarre. */
+export const savedSeries = (): Series => {
+  const v = read(SERIES_KEY);
+  return isSeries(v) ? v : 'all';
+};
+
+export const rememberSeries = (series: Series): void => write(SERIES_KEY, series === 'all' ? undefined : series);

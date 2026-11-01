@@ -14,9 +14,21 @@ import './library.css';
 import { h, clear, modal } from '../editor/core/ui';
 import { viewState } from '../urlState';
 import { loadHostedGame, type CatalogEntry } from '../project/files';
-import { groupShelf, hms, isShelfOrder, ownersOf, SITE_OWNER, type ShelfGroup, type ShelfItem, type ShelfOrder } from './shelf';
+import {
+  groupShelf,
+  hms,
+  inSeries,
+  isSeries,
+  isShelfOrder,
+  ownersOf,
+  SITE_OWNER,
+  type ShelfGroup,
+  type ShelfItem,
+  type Series,
+  type ShelfOrder,
+} from './shelf';
 import { loadShelf, type Shelf } from './listing';
-import { rememberGame, rememberOnly, rememberOrder, savedGame, savedOnly, savedOrder } from './prefs';
+import { rememberGame, rememberOnly, rememberOrder, rememberSeries, savedGame, savedSeries, savedOnly, savedOrder } from './prefs';
 import { forgetThumbs, lazyThumb } from './thumbs';
 import { tally, unlockAchievement } from '../achievements';
 import { openFromLibrary, readerOpen } from './readerAddress';
@@ -201,7 +213,7 @@ export function renderLibrary(el: HTMLElement): void {
   unlockAchievement('library-visit');
   const state = viewState(['library']);
   // the address only moved within the Game-Maker box (a chapter, Back, closing it): the shelves stay
-  const shelfKey = () => ['by', 'only', 'game'].map((k) => state.get(k) ?? '').join('|');
+  const shelfKey = () => ['by', 'only', 'game', 'series'].map((k) => state.get(k) ?? '').join('|');
   const gm = state.get('gm');
   if (el.dataset.library === shelfKey() && el.querySelector(':scope > .library')) {
     if (gm && !readerOpen()) void openFromLibrary(gm, state.get('ch'), false); // Forward, back into it
@@ -213,6 +225,9 @@ export function renderLibrary(el: HTMLElement): void {
   let only = isShelfOrder(asked) ? state.get('only') : savedOnly(order);
   // within a kind, one game's pieces (By type only)
   let game = isShelfOrder(asked) ? state.get('game') : savedGame();
+  // By type: all the games' papers, or the Sandbox ones, or the Bizarre ones
+  const askedSeries = state.get('series');
+  let series: Series = isShelfOrder(asked) ? (isSeries(askedSeries) ? askedSeries : 'all') : savedSeries();
   let shelf: Shelf | undefined;
   const list = h('div', { class: 'lib-shelf', id: 'lib-shelf', role: 'tabpanel' }, h('p', { class: 'lib-loading' }, 'Taking everything off the shelves…'));
   // said, not shown: the plate shows how many (the room's Joe reads this too)
@@ -311,8 +326,37 @@ export function renderLibrary(el: HTMLElement): void {
     },
   });
   const gamePick = h('span', { class: 'lib-pick', hidden: true }, h('label', { for: 'lib-game', class: 'lib-only-label' }, 'Game'), gamePicker);
+  const SERIES_LABELS: [Series, string][] = [
+    ['all', 'All'],
+    ['sandbox', 'Sandbox'],
+    ['bizarre', 'Bizarre'],
+  ];
+  const seriesRadios = SERIES_LABELS.map(([v, label]) =>
+    h(
+      'label',
+      { class: 'lib-seg' },
+      h('input', {
+        type: 'radio',
+        name: 'lib-series',
+        value: v,
+        onchange: () => {
+          series = v;
+          rememberSeries(series);
+          keepAddress();
+          show();
+        },
+      }),
+      h('span', null, label),
+    ),
+  );
+  const seriesPick = h('fieldset', { class: 'lib-series', hidden: true }, h('legend', { class: 'lib-only-label' }, 'Show'), ...seriesRadios);
   const keepAddress = () => {
-    state.set({ by: order === 'game' && !only ? undefined : order, only, game: order === 'type' && only ? game : undefined });
+    state.set({
+      by: order === 'game' && !only ? undefined : order,
+      only,
+      game: order === 'type' && only ? game : undefined,
+      series: order === 'type' && series !== 'all' ? series : undefined,
+    });
     el.dataset.library = shelfKey();
   };
   const buttons = ORDERS.map(([o, label]) =>
@@ -336,7 +380,10 @@ export function renderLibrary(el: HTMLElement): void {
   const show = () => {
     buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(ORDERS[i][0] === order)));
     if (!shelf) return;
-    const groups = inCallOrder(groupShelf(shelf.items, order), order);
+    seriesPick.hidden = order !== 'type';
+    seriesRadios.forEach((l, i) => (l.querySelector('input')!.checked = SERIES_LABELS[i][0] === (order === 'type' ? series : 'all')));
+    const items = order === 'type' ? inSeries(shelf.items, series, shelf.games) : shelf.items;
+    const groups = inCallOrder(groupShelf(items, order), order);
     // a pick this shelf doesn't have (a game gone, an old link), or none, opens the first drawer
     if (only && !groups.some((g) => pickOf(g) === only)) only = undefined;
     const open = groups.find((g) => pickOf(g) === only) ?? groups[0];
@@ -356,13 +403,14 @@ export function renderLibrary(el: HTMLElement): void {
     if (pickedGame) shown = shown.map((g) => ({ ...g, parts: g.parts.map((p) => ({ ...p, items: p.items.filter((i) => i.owner === pickedGame) })) }));
     forgetThumbs(list.querySelectorAll('.lib-thumb')); // the old cards' pictures are no longer wanted
     const whole = open ? open.parts.reduce((k, p) => k + p.items.length, 0) : 0;
-    list.replaceChildren(...shown.map((g) => groupSection(g, shelf!, order, whole, gamePick, !!pickedGame)));
+    const aside = h('span', { class: 'lib-aside' }, seriesPick, gamePick);
+    list.replaceChildren(...shown.map((g) => groupSection(g, shelf!, order, whole, aside, !!pickedGame)));
     room.setShelf({
       items: shown.flatMap((g) => g.parts.flatMap((p) => p.items)).map((it) => makeSpine(it, (from) => void openPiece(it, shelf!.games, from))),
       more: () => makeSpine(undefined, () => void showStacks()),
     });
     const n = shown.reduce((sum, g) => sum + g.parts.reduce((k, p) => k + p.items.length, 0), 0);
-    count.textContent = `${n} of ${shelf.items.length} things to read and print, in ${groups.length} ${order === 'game' ? 'drawers' : 'kinds'}`;
+    count.textContent = `${n} of ${items.length} things to read and print, in ${groups.length} ${order === 'game' ? 'drawers' : 'kinds'}`;
   };
   show();
   root.append(h('h1', { id: 'lib-h' }, 'Library'), room.el);

@@ -52,7 +52,7 @@ perspective (front, top and side faces) and stands the flat pictures (Joe, the t
 depth, and `libraryRoom.css` styles it.
 Each object is a labeled button and opens a dialog from `libraryPage.ts`, which keeps the open one in the address (`open=stacks|catalog|copier|
 notebook|trash|joe`, so a reload reopens it; `by`, `only` and `game` work as before): the stacks (the open drawer's whole list, with
-the game picker), the card catalog (By game / By type and the drawers; picking one closes it), the copier, Mystery Robot Joe behind
+the game picker, and By type's All / Sandbox / Bizarre choice: radio buttons, remembered in prefs.ts and the address as `series`), the card catalog (By game / By type and the drawers; picking one closes it), the copier, Mystery Robot Joe behind
 the desk (help; his art is `../tinHearts/joeArt.ts`, from Keep It Brief!; he steps out while the guided tour runs, with a
 "Back in a moment" sign), the composition notebook lying on the desk (`../imported/notesShelf.ts('here')`) and the trash can on the floor
 (`notesShelf('removed')`, crumpled reviews when there are any). `spines.ts` stands the open drawer's items on the far wall as spines (as

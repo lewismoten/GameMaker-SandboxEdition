@@ -153,6 +153,21 @@ export function shelfGames(entries: readonly CatalogEntry[], unlocked: ReadonlyS
   };
 }
 
+/** By type: all the games' papers, or only the Sandbox Software games' or the Bard of Bizarre games'. */
+export type Series = 'all' | 'sandbox' | 'bizarre';
+
+export const isSeries = (s: unknown): s is Series => s === 'all' || s === 'sandbox' || s === 'bizarre';
+
+/** The items of one series' games (a piece with no game of that series, such as the site's own reading, drops out); all keeps everything. */
+export function inSeries(items: readonly ShelfItem[], series: Series, games: ReadonlyMap<string, CatalogEntry>): ShelfItem[] {
+  if (series === 'all') return [...items];
+  const test = series === 'sandbox' ? isSandboxGame : isBizarreGame;
+  return items.filter((i) => {
+    const g = games.get(i.owner);
+    return !!g && test(g);
+  });
+}
+
 /** The two ways to sort the shelf. */
 export type ShelfOrder = 'game' | 'type';
 

@@ -958,3 +958,87 @@ dialog.modal:has(.lib-stacks) {
     padding-right: 30px;
   }
 }
+
+/* By type: All / Sandbox / Bizarre, a segmented set of radio buttons beside the game picker */
+.lib-aside {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px 12px;
+  margin: 6px 12px 0 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lib-aside .lib-pick,
+.lib-plate-row .lib-aside .lib-pick {
+  margin: 0;
+}
+
+.lib-series {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.lib-series[hidden] {
+  display: none;
+}
+
+.lib-series legend {
+  float: left;
+  padding: 0;
+  margin-right: 6px;
+  color: var(--brass-hi);
+}
+
+.lib-seg {
+  position: relative;
+  display: inline-flex;
+}
+
+.lib-seg input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.lib-seg span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  min-width: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--brass-lo);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--brass-hi);
+  font:
+    600 13px/1.2 system-ui,
+    sans-serif;
+}
+
+.lib-seg:first-of-type span {
+  border-radius: 4px 0 0 4px;
+}
+
+.lib-seg:last-of-type span {
+  border-radius: 0 4px 4px 0;
+}
+
+.lib-seg input:checked + span {
+  background: linear-gradient(var(--brass-hi), var(--brass));
+  color: var(--paper-ink, #222);
+  font-weight: 700;
+}
+
+.lib-seg input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
