@@ -117,7 +117,7 @@ const CREDITS_TEXT = pages(
   [
     "TEDDY'S LITTLE BIGGEST",
     'ADVENTURE',
-    `Version ${about.version}, 1997`,
+    `Version ${about.version}, 1994`,
     '',
     'Design, art, music and',
     'programming: Claude',
@@ -271,8 +271,8 @@ function readme(price: string): string {
   const out = `
 TEDDY'S LITTLE BIGGEST
 ADVENTURE
-     Version ${about.version} - 1997
-  (c) 1997 Sandbox Software
+     Version ${about.version} - 1994
+  (c) 1994 Sandbox Software
 
 It is Teddy's birthday, and
 nobody says so. Doc Leo hands

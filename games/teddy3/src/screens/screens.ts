@@ -169,7 +169,7 @@ function menuScreen(): Pixels {
   teddyBig(p, 'frontBeg', 16, 140, 2);
   chezBig(p, 262, 112, 1.4);
   gwinnBig(p, 'gwinn1', 272, 142, 2, true);
-  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1997', c('paint', 3));
+  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1994', c('paint', 3));
   return p;
 }
 
@@ -184,7 +184,7 @@ function titleScreen(): Pixels {
   chezBig(p, 196, 120, 3);
   // a trail of confetti across the grass
   for (let i = 0; i < 30; i++) p.rect(60 + i * 8, 180 + ((i * 5) % 9), 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
-  centered(p, 190, '(C) 1997 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
+  centered(p, 190, '(C) 1994 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
   return p;
 }
 
