@@ -3,7 +3,8 @@
 import { h, clear } from '../../core/ui';
 import { channelNotes, programChanges, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import { RHYTHM_CHANNELS } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
-import { TRACK_COLORS, type MusicDoc } from './doc';
+import type { MusicDoc } from './doc';
+import { instrumentLook } from './instrumentLook';
 import {
   ENVELOPE,
   FLAGS,
@@ -26,6 +27,14 @@ import { noteName } from './roll/layout';
 import { pickPreset } from './presetPicker';
 
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
+
+/** An instrument's picture (its preset on its group's color, else a plain note) as a small tile. */
+export function lookIcon(inst: Uint8Array | undefined, cls: string): HTMLElement {
+  const look = instrumentLook(inst);
+  const el = h('span', { class: cls, 'aria-hidden': 'true' });
+  el.innerHTML = look.icon;
+  return el;
+}
 
 export function instLabel(doc: MusicDoc, i: number): string {
   const inst = doc.song.instruments[i];
@@ -210,13 +219,14 @@ export class InstrumentPanel {
             },
           },
           h('span', { class: 'mus-inst-num' }, String(i + 1)),
+          lookIcon(inst, 'mus-inst-icon'),
           h(
             'span',
             { class: 'mus-track-text' },
             h('b', null, p ? cap(p) : `Instrument ${i + 1}`),
             h('small', null, users.length ? users.map((c) => doc.trackName(c)).join(', ') : 'not used'),
           ),
-          h('span', { class: 'mus-inst-dots', 'aria-hidden': 'true' }, ...users.map((c) => h('i', { style: `--track:${TRACK_COLORS[c]}` }))),
+          h('span', { class: 'mus-inst-dots', 'aria-hidden': 'true' }, ...users.map((c) => h('i', { style: `--track:${doc.trackColor(c)}` }))),
         ),
       );
     });
@@ -328,7 +338,7 @@ export class InstrumentPanel {
           {
             type: 'button',
             class: 'mus-chip',
-            style: `--track:${TRACK_COLORS[c]}`,
+            style: `--track:${doc.trackColor(c)}`,
             'aria-pressed': String(c === ch),
             title: `Select ${doc.trackName(c)}`,
             onclick: () => pickTrack(c),

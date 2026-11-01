@@ -3,7 +3,6 @@
 // instrument changes, and the velocity bars.
 import { channelNotes, programChanges } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import { noteEnd, type Note } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
-import { TRACK_COLORS } from '../doc';
 import { KEYW, RULER, LANE, HEAD, VEL, BLACK, noteName } from './layout';
 import { RollView } from './view';
 
@@ -14,7 +13,7 @@ export abstract class RollDraw extends RollView {
     const W = this.w;
     const H = this.hgt;
     const beat = doc.beat;
-    const color = TRACK_COLORS[doc.track];
+    const color = doc.trackColor(doc.track);
     g.save();
     g.font = '10px ui-monospace, Menlo, Consolas, monospace';
     g.textBaseline = 'middle';
@@ -223,7 +222,7 @@ export abstract class RollDraw extends RollView {
       g.fillStyle = black ? '#1a1a1a' : '#e8e8e8';
       g.fillRect(black ? 0 : 0, y, black ? KEYW - 14 : KEYW - 1, this.rowH - 1);
       if (this.hover?.note === undefined && this.hoverKey === k) {
-        g.fillStyle = TRACK_COLORS[this.doc.track];
+        g.fillStyle = this.doc.trackColor(this.doc.track);
         g.fillRect(KEYW - 6, y, 5, this.rowH - 1);
       }
       if (k % 12 === 0 && this.rowH >= 7) {
@@ -274,7 +273,7 @@ export abstract class RollDraw extends RollView {
       if (x < KEYW - 2) continue;
       const label = `♪${e.a + 1}`;
       const w = g.measureText(label).width + 8;
-      g.fillStyle = doc.song.instruments[e.a] ? TRACK_COLORS[doc.track] : '#ff5555';
+      g.fillStyle = doc.song.instruments[e.a] ? doc.trackColor(doc.track) : '#ff5555';
       g.fillRect(x, RULER + 2, w, LANE - 4);
       g.fillStyle = '#000';
       g.fillText(label, x + 4, RULER + LANE / 2);
@@ -294,7 +293,7 @@ export abstract class RollDraw extends RollView {
     const W = this.w;
     const H = this.hgt;
     const top = this.velTop;
-    const color = TRACK_COLORS[doc.track];
+    const color = doc.trackColor(doc.track);
     g.fillStyle = '#000';
     g.fillRect(0, top, W, VEL);
     g.fillStyle = '#070920';

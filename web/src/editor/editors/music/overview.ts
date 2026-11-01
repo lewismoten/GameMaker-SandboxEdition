@@ -2,7 +2,7 @@
 // loop region, the song end and the playhead. Click or drag to move around.
 import { h } from '../../core/ui';
 import { noteEnd } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
-import { TRACK_COLORS, type MusicDoc } from './doc';
+import type { MusicDoc } from './doc';
 import type { PianoRoll } from './roll';
 
 export class Overview {
@@ -104,11 +104,12 @@ export class Overview {
       g.fillStyle = doc.loopOn ? 'rgba(85,255,255,0.18)' : 'rgba(85,255,255,0.07)';
       g.fillRect(doc.loop[0] * sx, 0, (doc.loop[1] - doc.loop[0]) * sx, H);
     }
+    const colors = new Map([...row.keys()].map((c) => [c, doc.trackColor(c)]));
     for (const n of doc.song.notes) {
       const i = row.get(n.on.ch);
       if (i === undefined) continue;
       const heard = doc.heard(n.on.ch) && doc.sounds(n.on.ch);
-      g.fillStyle = TRACK_COLORS[n.on.ch];
+      g.fillStyle = colors.get(n.on.ch)!;
       g.globalAlpha = heard ? 0.9 : 0.25;
       const y = 2 + i * rh + 1 + Math.round((1 - n.on.a / 127) * Math.max(0, rh - 4));
       g.fillRect(n.on.tick * sx, y, Math.max(1, (noteEnd(doc.song, n) - n.on.tick) * sx - 0.5), Math.max(1, Math.min(3, rh - 3)));

@@ -3,8 +3,9 @@
 import { h, clear } from '../../core/ui';
 import { channelNotes, removeChannel, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import { RHYTHM_CHANNELS, DRUM_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
-import { TRACK_COLORS, type MusicDoc } from './doc';
-import { instLabel, instShortLabel } from './instrument';
+import type { MusicDoc } from './doc';
+import { instLabel, instShortLabel, lookIcon } from './instrument';
+import { instrumentLook } from './instrumentLook';
 import { presetName } from './sbi';
 import { presetById } from '../../../audio/oplPresets';
 import { DRUM_KIT, slotOfChannel } from '../../../audio/oplDrumPresets';
@@ -85,6 +86,7 @@ export class TrackList {
       const p = startProgram(song, ch);
       // a drum's name is the drum: its sound (the preset it matches) goes under it
       const sound = drum && song.instruments[p] ? presetName(song.instruments[p]) : undefined;
+      const group = instrumentLook(song.instruments[p]).groupName;
       const bank = h(
         'select',
         { 'aria-label': `Instrument for ${doc.trackName(ch)}`, title: instLabel(doc, p) },
@@ -98,7 +100,7 @@ export class TrackList {
       });
       return h(
         'div',
-        { class: `mus-track${ch === doc.track ? ' active' : ''}${silent ? ' silent' : ''}`, role: 'listitem', style: `--track:${TRACK_COLORS[ch]}` },
+        { class: `mus-track${ch === doc.track ? ' active' : ''}${silent ? ' silent' : ''}`, role: 'listitem', style: `--track:${doc.trackColor(ch)}` },
         h(
           'div',
           { class: 'mus-track-head' },
@@ -113,12 +115,12 @@ export class TrackList {
                 this.onSelect();
               },
             },
-            h('span', { class: 'mus-swatch' }, drum ? '🥁' : String(ch + 1)),
+            lookIcon(song.instruments[p], 'mus-swatch'),
             h(
               'span',
               { class: 'mus-track-text' },
               h('b', null, doc.trackName(ch)),
-              h('small', null, `${silent ? 'silent · ' : ''}${sound ? `${sound} · ` : ''}${notes} note${notes === 1 ? '' : 's'}`),
+              h('small', null, `${silent ? 'silent · ' : ''}${sound ? `${sound} · ` : ''}${group ? `${group} · ` : ''}${notes} note${notes === 1 ? '' : 's'}`),
             ),
           ),
           h(
@@ -249,7 +251,12 @@ export class TrackList {
         );
     // keep the keyboard on a track's preset button when the list is drawn again (after undo)
     const had = this.el.contains(document.activeElement) ? document.activeElement?.getAttribute('data-presets') : null;
-    clear(this.el, ...rows, h('div', { role: 'listitem', style: 'display:contents' }, add));
+    const why = h(
+      'p',
+      { class: 'hint mus-track-why', role: 'listitem' },
+      'A track’s color and picture come from its instrument: the picture is the preset it matches, on its group’s color (strings, keys, drums…). Change the instrument and they follow. A sound that matches no preset keeps a plain note and its channel’s own color.',
+    );
+    clear(this.el, ...rows, h('div', { role: 'listitem', style: 'display:contents' }, add), why);
     if (had) this.el.querySelector<HTMLElement>(`[data-presets="${had}"]`)?.focus();
     if (this.adding) add.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }

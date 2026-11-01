@@ -9,6 +9,7 @@ import { readSong, RHYTHM_CHANNELS, writeSong, type CmfSong, type Note, DRUM_NAM
 import { presetName } from './sbi';
 import { presetPreview } from '../../../audio/oplPresetPreview';
 import type { OplPreset } from '../../../audio/oplPatch';
+import { instrumentLook } from './instrumentLook';
 
 /** What changed: the song itself, the view (scroll, zoom, selection), the selected track, or playback. */
 type Change = 'song' | 'view' | 'track' | 'play';
@@ -50,6 +51,12 @@ export const SNAPS: [number, string][] = [
   [0.125, '1/8 beat'],
   [0, 'Off'],
 ];
+
+/** A track's color: its instrument's group color, else its channel's own. */
+export function trackColorOf(song: CmfSong, ch: number): string {
+  const inst = song.instruments[startProgram(song, ch)];
+  return instrumentLook(inst).color ?? TRACK_COLORS[ch];
+}
 
 export class MusicDoc {
   song: CmfSong;
@@ -123,6 +130,10 @@ export class MusicDoc {
   tracks(): number[] {
     const set = new Set([...usedChannels(this.song), ...this.extra]);
     return [...set].sort((a, b) => a - b);
+  }
+
+  trackColor(ch: number): string {
+    return trackColorOf(this.song, ch);
   }
 
   trackName(ch: number): string {
