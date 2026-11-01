@@ -7,6 +7,7 @@ import { callFor, dialComplete, HungUp, type Call, type CallLine } from './calls
 import { openDialPad, type DialPad } from './dialPad';
 import { PhoneSounds } from './sounds';
 import { speak } from '../../../audio/voices';
+import { captionPieces } from './captionPieces';
 
 type State = 'hung-up' | 'dialing' | 'call' | 'ended';
 
@@ -72,14 +73,18 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
       async say(v, text) {
         live();
         status('Connected');
-        pad?.caption(v.who, text);
         speech?.abort();
         const current = new AbortController();
         speech = current;
         const stop = () => current.abort();
         signal.addEventListener('abort', stop, { once: true });
         try {
-          await speak(text, v, current.signal);
+          // a long speech in a few short captions, each said as it shows, so none has to scroll
+          for (const piece of captionPieces(text)) {
+            if (current.signal.aborted) break;
+            pad?.caption(v.who, piece);
+            await speak(piece, v, current.signal);
+          }
           live();
         } finally {
           signal.removeEventListener('abort', stop);
