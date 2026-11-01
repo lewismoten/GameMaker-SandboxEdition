@@ -5,8 +5,7 @@
 // settle, Doc Leo reaches up under the cap he picks (Space). The ball counts; an empty cap just
 // says "ta-da?", and he may pick again. Three rounds, a scene each, the last one quicker; the
 // door at the left opens when the ball is found.
-import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { gradient } from '../../../snowbound/src/art/draw';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, countedDoor, kit, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
@@ -17,6 +16,8 @@ import { MapBuilder, at, type Level } from './maps';
 /** The table's three slots (level x, two apart) and the row the caps sit on. */
 export const SLOTS = [10, 12, 14];
 export const CUPS = { w: 16, floor: 9, row: 6, door: 2, exit: 1 } as const;
+/** The spotlight's cone: its blocks, from under the valance down to the caps. */
+const SPOT = { x: 9, y: 1, w: 7, h: 6 } as const;
 
 export interface CupRound {
   file: string;
@@ -83,10 +84,34 @@ export function cupsBlocks(pal: Pal): Kit {
   valance.rect(0, 0, 20, 12, c('wall', 3)).rect(0, 12, 20, 2, c('pipe', 3));
   for (let x = 1; x < 20; x += 3) valance.rect(x, 14, 1, 4, c('pipe', 2));
   book.add('valance', valance, { solid: SOLID });
-  // the spotlight's pool on the curtain behind the table
-  const glow = P(c('wall', 3));
-  gradient(glow, 0, 0, 20, 20, R('lamp'), 0, 1);
-  book.add('glow', glow, AIR);
+  // the spotlight: a lamp on the valance throws a soft cone down onto the table, the curtain's
+  // folds a shade lighter inside it, a fine sprinkle of gold, and a pool behind the caps
+  const [sw, sh] = [SPOT.w * 20, SPOT.h * 20];
+  const spot = new Pixels(sw, sh, 0);
+  for (let by = 0; by < SPOT.h; by++) for (let bx = 0; bx < SPOT.w; bx++) spot.blit(curtain(0), bx * 20, by * 20);
+  const cx = sw / 2;
+  for (let y = 0; y < sh; y++) {
+    const half = 6 + (y / sh) * (sw / 2 - 8);
+    for (let x = Math.ceil(cx - half); x < cx + half; x++) {
+      const edge = Math.abs(x - cx) > half - 4;
+      const was = spot.get(x, y);
+      const lit = R('wall').indexOf(was);
+      if (lit >= 0) spot.set(x, y, c('wall', Math.min(5, lit + (edge ? 1 : 2))));
+      if (!edge && (x * 7 + y * 3) % 11 === 0) spot.set(x, y, c('lamp', 0));
+    }
+  }
+  // the pool on the curtain behind the caps
+  for (let y = sh - 30; y < sh; y++)
+    for (let x = 0; x < sw; x++) {
+      const d = ((x - cx) / (sw / 2 - 6)) ** 2 + ((y - (sh - 12)) / 16) ** 2;
+      if (d < 1 && (x + y) % 2 === 0) spot.set(x, y, c('lamp', d < 0.5 ? 1 : 0));
+    }
+  // the lamp itself, hung under the valance
+  spot
+    .rect(cx - 8, 0, 16, 6, c('mach', 1))
+    .rect(cx - 6, 6, 12, 2, c('lamp', 3))
+    .rect(cx - 8, 0, 16, 1, c('mach', 4));
+  for (let by = 0; by < SPOT.h; by++) for (let bx = 0; bx < SPOT.w; bx++) book.add(`spot${bx}.${by}`, spot.crop(bx * 20, by * 20, 20, 20), AIR);
   // the magic table: its top edge (the caps sit on it) and its cloth with a gold star
   const table = (star: boolean) => {
     const p = k.pic('curtain');
@@ -112,9 +137,9 @@ export function cupsBlocks(pal: Pal): Kit {
 export function cups(book: Kit['book']): Level {
   {
     const { w, floor } = CUPS;
-    const m = new MapBuilder(book, { '.': 'curtain', g: 'glow', '=': 'stage', '#': 'valance', t: 'table' }, 'valance');
+    const m = new MapBuilder(book, { '.': 'curtain', '=': 'stage', '#': 'valance', t: 'table' }, 'valance');
     m.fill(0, 0, w, floor, '.').fill(0, floor, w, 1, '=').fill(0, 0, w, 1, '#');
-    m.fill(9, 2, 7, 4, 'g');
+    for (let y = 0; y < SPOT.h; y++) for (let x = 0; x < SPOT.w; x++) m.set(SPOT.x + x, SPOT.y + y, `spot${x}.${y}`);
     m.fill(9, CUPS.row + 1, 7, 2, 't').set(12, CUPS.row + 1, 'table.star');
     SLOTS.forEach((x, i) => m.mon(MON.cap0 + i, x, CUPS.row));
     m.set(CUPS.door, floor - 2, 'door.top').set(CUPS.door, floor - 1, 'door');
