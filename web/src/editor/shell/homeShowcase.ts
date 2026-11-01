@@ -66,6 +66,7 @@ function whenIdleAndSeen(el: Element, ready: Promise<unknown>, f: () => void): v
   const go = () => {
     if (done) return;
     done = true;
+    if (!el.isConnected) return void io.disconnect(); // the visitor has gone to another page meanwhile
     io.disconnect();
     for (const t of ['pointerenter', 'pointerdown', 'focusin']) el.removeEventListener(t, go);
     f();
@@ -153,6 +154,19 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     tourPlay?.((e as CustomEvent<'play' | 'stop'>).detail);
   };
   window.addEventListener('gm-tour-demo', onTourDemo);
+  // leaving the game list stops its demo: the picture is gone, so its sound must go too (the
+  // next page may draw a moment after the address changes, so look again shortly after)
+  const gone = () => {
+    if (el.isConnected) return false;
+    demo?.stop();
+    demo = undefined;
+    window.removeEventListener('hashchange', onLeave);
+    return true;
+  };
+  const onLeave = () => {
+    if (!gone()) for (const ms of [100, 600, 2000]) setTimeout(gone, ms);
+  };
+  window.addEventListener('hashchange', onLeave);
   let generation = 0;
   let saves: ReturnType<typeof savesButton> = null;
 
@@ -220,6 +234,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       if (!on) demo = undefined;
     };
     const play = () => {
+      if (!el.isConnected) return;
       demo = demoInPicture(game, screen, { loop: true, onState: (on) => gen === generation && setPlaying(on) });
     };
     playBtn.addEventListener('click', () => {
