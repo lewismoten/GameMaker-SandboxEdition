@@ -38,3 +38,9 @@ __pycache__/
 /games/*/walkPaths.json
 /games/.build-cache.json
 /games/.render-cache/
+
+# local secrets (API keys, tokens, certificates) never get committed
+.env
+.env.*
+*.pem
+*.p12
