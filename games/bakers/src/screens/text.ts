@@ -57,7 +57,7 @@ export const CREDITS = withCreditPage(
     `BAKER'S DOZEN
 The Thirteenth Ingredient
 
-A Sandbox Software game, 1996
+A Sandbox Software game, December 1994
 
 Game design, rooms, art, music and every block: Claude Opus 5.5
 
@@ -105,7 +105,7 @@ Somewhere, a Redcoat is very pleased with himself.`,
 export function readme(): string {
   return [
     "BAKER'S DOZEN: The Thirteenth Ingredient",
-    'Sandbox Software, 1996',
+    'Sandbox Software, December 1994',
     '',
     'Type BAKERS and press Enter. You need a VGA display.',
     'A Sound Blaster plays the music; without one the PC',
