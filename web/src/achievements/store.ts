@@ -269,6 +269,23 @@ export async function resetAchievements(): Promise<void> {
   await writing;
 }
 
+/**
+ * Puts a whole record in place of the kept one (FLAGS.EXE's set, clear and restore): unlike a
+ * change it may take unlocks away, so a merge with the stored file must not bring them back.
+ */
+export async function replaceAchievements(next: AchievementRecord): Promise<void> {
+  await loadAchievements();
+  held = [];
+  epoch++;
+  record = next;
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(ACHIEVEMENTS_CHANGED));
+  writing = writing
+    .then(() => writeSaveFile(SAVE_ID, FILE, new TextEncoder().encode(JSON.stringify(record)), { quiet: true }))
+    .then(tellOthers)
+    .catch((e) => console.warn('Could not store achievements', e));
+  await writing;
+}
+
 /** Waits for the writes asked for so far (tests, the reset). */
 export const achievementsWritten = (): Promise<void> => writing;
 
