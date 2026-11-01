@@ -383,7 +383,7 @@ function hornCoil(c: Ctx, x: number, y: number, r: number): void {
 
 const paint = (c: Ctx, w: number, h: number): void => {
   const r = seeded('tuneup-cover');
-  const ground = 530;
+  const ground = 478;
   // the night sky, a late moon, stars
   c.fillStyle = lin(c, 0, 0, 0, ground, [
     [0, '#0a0828'],
@@ -392,9 +392,9 @@ const paint = (c: Ctx, w: number, h: number): void => {
   ]);
   c.fillRect(0, 0, w, h);
   stars(c, w, 220, 80, 'tuneup-stars');
-  ell(c, 100, 90, 28, 28);
+  ell(c, 44, 206, 22, 22);
   fill(c, '#fff4d0');
-  glow(c, 100, 90, 90, '#fff0c0', 0.35);
+  glow(c, 44, 206, 70, '#fff0c0', 0.35);
   town(c, w, ground - 10);
   // the green, a dark lawn under the lights
   c.fillStyle = lin(c, 0, ground - 10, 0, h, [
@@ -402,43 +402,48 @@ const paint = (c: Ctx, w: number, h: number): void => {
     [1, '#08180e'],
   ]);
   c.fillRect(0, ground - 10, w, h);
-  ell(c, 290, 560, 330, 40);
+  ell(c, 250, 548, 300, 30);
   fill(c, 'rgba(255,220,150,0.12)');
-  bandstand(c, 280, 400, 150, 205, 120);
+  // the bandstand and its band, a little smaller so the title and the badges clear them
+  c.save();
+  c.translate(12, 55);
+  c.scale(0.85, 0.85);
+  bandstand(c, 280, 404, 150, 205, 120);
   // the band: a clown with a horn and a clown with a drum either side of Doc Leo
-  clown(c, 195, 404, 0.95, '#ff7a1a', ['#ffd23f', '#d9381e'], 'horn');
-  clown(c, 372, 404, 0.95, '#3ab0e8', ['#ff7aa8', '#1d5fb8'], 'drum');
-  docLeo(c, 282, 404, 0.4);
-  // lights from the roof to the lamp posts and across the town square
-  lights(c, 130, 195, 0, 150, 22, 8);
-  lights(c, 440, 195, w, 130, 24, 8);
-  lights(c, 0, 250, 280, 200, 52, 14);
-  lights(c, 280, 200, w, 250, 52, 14);
+  clown(c, 195, 408, 0.95, '#ff7a1a', ['#ffd23f', '#d9381e'], 'horn');
+  clown(c, 372, 408, 0.95, '#3ab0e8', ['#ff7aa8', '#1d5fb8'], 'drum');
+  docLeo(c, 282, 408, 0.4);
+  // lights from the roof across the town square
+  lights(c, 130, 195, -20, 150, 22, 8);
+  lights(c, 440, 195, 700, 130, 24, 8);
+  lights(c, -20, 250, 280, 200, 52, 14);
+  lights(c, 280, 200, 700, 250, 52, 14);
   // notes rising from the bandstand
   note(c, 130, 170, 1.2, '#ffd23f');
   note(c, 430, 150, 1, '#ff7aa8');
   note(c, 330, 78, 1.1, '#6ae0ff');
+  c.restore();
   // the trunk, tipped over, and what fell out of it
   c.save();
-  c.translate(502, 678);
-  c.scale(0.85, 0.85);
+  c.translate(404, 552);
+  c.scale(0.6, 0.6);
   trunk(c, 0, 0);
   c.restore();
-  hornCoil(c, 268, 676, 18);
-  note(c, 280, 618, 0.9, '#9aff6a');
+  hornCoil(c, 228, 548, 13);
+  note(c, 252, 506, 0.8, '#9aff6a');
   // Gwinn, beside the trunk she knocked over, looking at it
-  dog(c, 352, 690, 0.58, GWINN);
+  dog(c, 296, 552, 0.42, GWINN);
   // Teddy trotting up from the left with a trumpet in his mouth; his ears match
   c.save();
-  c.translate(140, 684);
-  c.scale(0.85, 0.85);
+  c.translate(78, 552);
+  c.scale(0.62, 0.62);
   dog(c, 0, 0, 1, TEDDY);
   c.translate(104, -104);
   c.rotate(-0.4);
   trumpet(c, 70);
   c.restore();
-  // a few fireflies and confetti
-  for (let i = 0; i < 24; i++) glow(c, r() * w, 420 + r() * 260, 7, '#d8ff8a', 0.7);
+  // a few fireflies
+  for (let i = 0; i < 24; i++) glow(c, r() * w, 330 + r() * 230, 7, '#d8ff8a', 0.7);
   finish(c, w, h, 'tuneup', 0.5);
 };
 export default paint;
