@@ -13,6 +13,8 @@ export const S = 8;
 const CARD = { w: CARD_UNITS.w * S - 8, h: CARD_UNITS.h * S - 6 };
 const THUMB = { x: 8, y: 22, w: CARD.w - 16, h: 100 };
 const COLORS = { start: '#ffd400', end: '#ff6b61', adventure: '#6cf28a', unused: '#888' } as const;
+/** A pass-through (talk) scene's frame: not a map to play, so not the playable green. */
+const TALK = '#d58cff';
 const FONT = 'ui-monospace, Menlo, Consolas, monospace';
 
 export interface Rect {
@@ -121,7 +123,9 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
   const kind = sceneKind(s);
   const r = cardRect(v.game, i);
   const sel = i === v.selected && !forExport;
-  const color = COLORS[kind];
+  const pal = s.files[0] ? v.project.files.get(s.files[0]) : undefined;
+  const talk = kind === 'adventure' && !!s.files[9] && !!pal && isSolidPalette(pal) && !!v.screenOf(s.files[9]);
+  const color = talk ? TALK : COLORS[kind];
   ctx.save();
   ctx.shadowColor = sel ? color : 'rgba(0,0,0,.6)';
   ctx.shadowBlur = sel ? 18 : 8;
@@ -145,8 +149,6 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
   const title = kind === 'start' ? `★ ${s.desc || 'Untitled'}` : kind === 'end' ? `⚑ ${s.desc || 'Game over'}` : `${i}  ${s.desc || '(untitled)'}`;
   ctx.fillText(title, r.x + 6, r.y + 13, r.w - 12);
   // picture
-  const pal = s.files[0] ? v.project.files.get(s.files[0]) : undefined;
-  const talk = kind === 'adventure' && !!s.files[9] && !!pal && isSolidPalette(pal) && !!v.screenOf(s.files[9]);
   const box = { x: r.x + THUMB.x, y: r.y + THUMB.y, w: THUMB.w, h: THUMB.h };
   if (kind === 'start') drawThumb(ctx, v.screenOf(s.files[0]) ?? v.screenOf(s.files[2]), box, s.files[0] ? 'Title' : 'Menu');
   else if (kind === 'end') {
