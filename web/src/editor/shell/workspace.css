@@ -396,8 +396,8 @@
   }
 }
 
-/* A phone held sideways has too few rows for a tip above the editor: fold it there too (hintFold.ts) */
-@media (max-height: 480px) and (max-width: 900px) {
+/* A short window (a phone held sideways, a 1024x768 tablet) has too few rows for a tip above the editor: fold it there too (hintFold.ts) */
+@media (max-height: 800px) {
   .hint-toggle {
     display: inline-block;
     float: right;
