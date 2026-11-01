@@ -11,6 +11,7 @@ import { uploadSummary } from '../widgets/uploadChecklist';
 import { howFar, WALK_SECTION, type SavedWalk } from '../check/walk/keptWalk';
 import { firstStepsState, stepsDone, STEPS } from './firstSteps';
 import { projectTarget, showHealthReport } from './gameHealth';
+import { visionPalette } from './visionPalette';
 import { diskStatus, floppyFor } from '../disk/diskCard';
 
 interface ToolsHost {
@@ -167,7 +168,7 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
   }
 
   // Color vision: the game's palette, drawn
-  const pal = files.byExtension('pal')[0];
+  const pal = visionPalette(files.byExtension('pal'), (name) => files.get(name));
   if (pal) {
     cards.push(
       card(
