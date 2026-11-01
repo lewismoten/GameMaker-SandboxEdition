@@ -99,7 +99,7 @@ The Ultimate Owner's Guide in the Game-Maker box.
 - `chapters*.ts` are its chapters: palettes and blocks (`chaptersLook.ts`), monsters, logic and
   scenes (`chaptersPlay.ts`), sound (`chaptersSound.ts`), title screens, demos and play-testing
   (`chaptersShow.ts`), designing with a goal (`chaptersCraft.ts`), 12 level design
-  (`chaptersLevels.ts`), 13 tricks from the Sandbox games (`chaptersTricks.ts`), 14 the Level
+  (`chaptersLevels.ts`), 13 tricks from the Sandbox games (`chaptersTricks.ts`, the later ones in `tricksMore.ts`), 14 the Level
   check and walkthrough bot (`chaptersCheck.ts`), 15 and 16 designing for every player and where
   Game-Maker runs out (`chaptersPlayers.ts`, with its clock and file ceilings in
   `limitsClock.ts`), and 17 tricks from the shareware authors

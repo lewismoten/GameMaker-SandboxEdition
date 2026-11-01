@@ -4,8 +4,10 @@
 // teddy2 levelLotTiles.ts (gusts), realm characters/chez.ts, snowbound blocks/sled.ts and
 // characters/kid.ts, maximus characters/vehicleChar.ts, depth game.ts and tiles/ (planes, iso,
 // pulse panels), smirked blocks.ts (fog vents), brief levels/wing.ts (word locks), remote and
-// tickle sprites (stings, cameos), blaster bosses/, depth and maximus monsters (bosses).
+// tickle sprites (stings, cameos), blaster bosses/, depth and maximus monsters (bosses). The
+// later tricks (flocks, sweeping pulses, power-ladder locks, a copied set) are tricksMore.ts.
 import { opening, tip, type Chapter } from './chapter';
+import { MORE_TRICKS } from './tricksMore';
 
 export const TRICKS: Chapter = {
   id: 'tricks',
@@ -130,5 +132,6 @@ export const TRICKS: Chapter = {
     faster). Last comes a light worth 10,000 that heals the hero. Six stages use six of the
     set’s 64 monsters: count them early.</li>
   </ul>
+  ${MORE_TRICKS}
   ${tip('Borrow freely:', 'Open any Sandbox game in the editor and look at the blocks and monsters behind a trick you liked. Everything above is there to be read, setting by setting.')}`,
 };
