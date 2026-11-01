@@ -194,6 +194,11 @@ export const CHECKS = {
     why: 'With a Sound Blaster, a sound that names a .VOC the game doesn’t have plays nothing, and cuts off the sound before it.',
     guide: { chapter: 'sounds', section: 'Two sounds in every slot' },
   },
+  'voc-size': {
+    name: 'Sounds over 64 KB',
+    why: 'PLAYGAME loads a whole .VOC with a 16-bit size (SOUNDC.C PlaySbVocFile), so a sound of 64 KB or more is likely to play nothing or cut off in DOS. The web player plays it either way.',
+    guide: { chapter: 'sounds', section: 'Two sounds in every slot' },
+  },
   'out-of-range': {
     name: 'Blocks and monsters that aren’t there',
     why: 'A number past the end of a block set or the counters makes DOS read stray memory; a monster from an empty slot never appears.',

@@ -6,7 +6,7 @@ import type { GameFiles } from '../../project/files';
 import { blockChecks, counterSources, counters } from './checks/blockChecks';
 import { characterChecks, controls, endingChecks, jumps, mechanics, soundChecks, speedCap, variety } from './checks/gameChecks';
 import { cornerLinks, offMap, shadowedLinks, solidLinks, startsOnLink, wonRoute } from './checks/linkChecks';
-import { missingFiles, missingVocs, outOfRange } from './checks/missingParts';
+import { bigVocs, missingFiles, missingVocs, outOfRange } from './checks/missingParts';
 import { monsterChecks, startThreat } from './checks/monsterChecks';
 import { sealed } from './checks/sealed';
 import { facing } from './checks/facing';
@@ -148,6 +148,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...solidLinks(game, d),
       ...offMap(game, d),
       ...missingVocs(d, files),
+      ...bigVocs(d, files),
       ...outOfRange(d),
       ...speedCap(d),
     );

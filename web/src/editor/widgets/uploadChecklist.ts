@@ -84,7 +84,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   },
   { text: 'Nothing flashes faster than three times a second', checks: ['flashing'] },
   { text: 'The title screen shows the game you’ll play', checks: [] },
-  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music', 'voc-missing'] },
+  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music', 'voc-missing', 'voc-size'] },
   { text: 'Storyline, instructions, credits, won and lost screens are filled in', checks: ['ending'], full: true },
   {
     text: 'The first scene’s hero sets the starting hit points, lives and counters for every hero; every hero has a standing picture',
