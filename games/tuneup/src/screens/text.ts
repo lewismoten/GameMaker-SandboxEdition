@@ -122,10 +122,10 @@ export const INSTRUCTIONS = pages(
 const CREDITS_TEXT = pages(
   [
     'TUNE-UP',
-    `Version ${about.version}, 1994`,
+    `Version ${about.version} - November 1994`,
     '',
     'Design, art, music and',
-    'programming: Claude',
+    'programming: Claude Opus 5.5',
     '',
     'The instruments are the',
     'pictures and sounds of the',
@@ -154,7 +154,7 @@ export const CREDITS = withCreditPage(CREDITS_TEXT);
 export function readme(): string {
   return [
     'TUNE-UP',
-    `Version ${about.version}`,
+    `Version ${about.version} - November 1994`,
     'A Sandbox Software game, made with Game-Maker 3.0.',
     '',
     'The night before the town parade, Gwinn knocks over the Clown Club',
