@@ -36,7 +36,7 @@ export async function sandboxCatalogEpub(ctx: PrintContext): Promise<EpubBook> {
     title: 'Sandbox Software Games Catalog',
     creator: 'Sandbox Software',
     publisher: 'Sandbox Software',
-    date: '1995',
+    date: '1994',
     description:
       'Sandbox Software’s games catalog, from the boxes in Game-Maker: Sandbox Edition: every Sandbox Software game, made with Game-Maker 3.0, and how to order it.',
     cover: await coverPicture(front, 'Sandbox Software games catalog, its first page'),

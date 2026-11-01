@@ -18,7 +18,7 @@ import { redCode } from './redFilm';
 import { paginate } from './paginate';
 import { measured } from './fitSheet';
 
-const ISSUE_DATE = 'Fall 1995';
+const ISSUE_DATE = 'December 1994';
 
 /** Games the catalog announces as coming soon until they ship (then their catalog entries take over). */
 const COMING: { id: string; title: string; blurb: string; when: string }[] = [
@@ -278,7 +278,7 @@ export async function catalogBlocks(ctx: PrintContext): Promise<HTMLElement[]> {
           h(
             'p',
             { class: 'cat-meta' },
-            `${g.year ?? 1995} · ${g.original?.sound === 'sb' ? 'Sound Blaster' : 'PC speaker'} · ${storageLine(g)} · register ${price(g)}`,
+            `${Math.min(g.year ?? 1994, 1994)} · ${g.original?.sound === 'sb' ? 'Sound Blaster' : 'PC speaker'} · ${storageLine(g)} · register ${price(g)}`,
           ),
           h('p', null, g.original?.printables?.pitch ?? g.blurb ?? ''),
           h('ul', null, ...(g.original?.box?.features ?? []).slice(0, 3).map((f) => h('li', null, f))),

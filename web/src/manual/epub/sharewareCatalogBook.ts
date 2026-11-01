@@ -52,7 +52,7 @@ export async function sharewareCatalogEpub(games: CatalogEntry[]): Promise<EpubB
       'Shareware catalog',
       [
         h('h1', null, 'SHAREWARE CATALOG'),
-        h('p', null, `Games made with GAME-MAKER · Fall 1994 · ${games.length} titles`),
+        h('p', null, `Games made with GAME-MAKER · Winter 1994 · ${games.length} titles`),
         h('p', null, 'Try them free. If you like one, register it with its author — see each game’s notice.'),
         ...items,
       ],

@@ -83,7 +83,7 @@ export function openCatalog(entries: CatalogEntry[], actions: CatalogActions): P
         'div',
         { class: 'masthead' },
         h('h2', null, 'Shareware Catalog'),
-        h('p', null, `Games made with GAME-MAKER  ·  Fall 1994  ·  ${games.length} titles on ${games.length} disks`),
+        h('p', null, `Games made with GAME-MAKER  ·  Winter 1994  ·  ${games.length} titles on ${games.length} disks`),
         h('p', null, 'Try them free. If you like one, register it with its author — see each game’s notice.'),
         epub.el,
       ),

@@ -14,7 +14,7 @@ const catalogSheet = (): HTMLElement =>
     'div',
     { class: 'ps-sheet ps-catalog' },
     h('b', null, 'SHAREWARE', h('br'), 'CATALOG'),
-    h('em', null, 'Games made with Game-Maker · Fall 1994 · call our BBS!'),
+    h('em', null, 'Games made with Game-Maker · Winter 1994 · call our BBS!'),
   );
 
 /** The magazine's cover small: the red masthead, the big news, cover lines and the free CD's burst. */
