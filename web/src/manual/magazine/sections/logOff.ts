@@ -39,7 +39,7 @@ export const LOG_OFF: MagSection = {
         ),
         head('1. The dictionary', { level: 3 }),
         p(
-          `Start small. ${dict.org}’s ${dict.dept} keeps a 38,000-word dictionary on a machine in the basement of its library, and it answers anyone with a forms-capable browser. Type a word in the box, press Submit Query, and the definition comes back in a few seconds. That is the whole page. There is a banner and a guestbook nobody signs.`,
+          `Start small. ${dict.org}’s ${dict.dept} keeps a 38,000-word dictionary on a machine in the basement of its library, and it answers anyone with a forms-capable browser. Type a word in the box, press Submit Query, and the definition comes back in a few seconds. That is the whole page. There is a banner and a guestbook nobody signs. Every kid who ever asked what a word meant heard it: “Look it up, dear.” Said sweetly, and meaning that you would not. Now you can look it up without leaving the chair, and the sentence has finally run out of excuses.`,
         ),
         art(
           'oldweb-dict',
@@ -88,12 +88,12 @@ export const LOG_OFF: MagSection = {
       blocks: [
         head('5. The yellow pages', { level: 3 }),
         p(
-          `It is usually pizza. ${yellow.org}, a directory out of New Zealand with an American area code section, lets you type a business and an area code and gives back a list. Handy. Not handy: the background, which is the site’s name, over and over, in two shades of yellow, behind the text you are trying to read. The buttons look like toasted bread. We cannot say whether the author was happy with it, but he was thorough, and he has 1,000 listings.`,
+          `This is where the Web is headed, and ${yellow.org} has already arrived. A directory out of New Zealand with an American area code section, it lets you type a business and an area code and gives back a list. Our reviewer found it breathtaking. The clip art! A rotary dial with a finger in it, which is exactly what a telephone directory should have on it. The background tiles the site’s own name, over and over, in two shades of yellow, so no visitor can forget where they are. The buttons are textured, like toasted bread, and the banner has a drop shadow, the first we have seen on a page that was not trying to sell us a modem. “It takes full advantage of everything the Web can do,” he wrote, and then, in a smaller voice, “I am told there is also text.” There is: 1,000 listings, and we have never been more certain of anything than that the author is not done adding clip art.`,
         ),
         art(
           'oldweb-yellow',
-          'A 640 by 480 screen of the same old browser showing Dandelion Pages: the page background is the words DANDELION PAGES repeated in yellow and gold, a red banner with a rotary telephone dial and a finger, a search form, and four brown textured buttons',
-          `${yellow.org}, an example of what happens when a page tiles its own name behind its own text. Ugh. Holy smokes.`,
+          'A 640 by 480 screen of the same old browser showing Dandelion Pages: the page background is the words DANDELION PAGES repeated in yellow and gold, a red banner with a rotary telephone dial and the name in big yellow letters, a search form in a beveled table, and four brown textured buttons',
+          `${yellow.org}, the cutting edge: clip art, a tiled background, textured buttons and a banner. Our reviewer would like to see anyone top it.`,
         ),
         side(
           'A note about addresses',
