@@ -79,6 +79,11 @@
       "gamemaker-source": "./src/releaseNotes.ts",
       "import": "./dist/release-notes.js"
     },
+    "./menu-version": {
+      "types": "./dist/types/menuVersionEntry.d.ts",
+      "gamemaker-source": "./src/menuVersionEntry.ts",
+      "import": "./dist/menu-version.js"
+    },
     "./microFont": {
       "types": "./dist/types/microFont.d.ts",
       "gamemaker-source": "./src/microFont.ts",

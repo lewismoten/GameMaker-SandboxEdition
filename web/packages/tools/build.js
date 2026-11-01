@@ -57,6 +57,7 @@ const sources = {
   'kit/disk': 'kit/disk',
   'kit/menuVersion': 'kit/menuVersion',
   'kit/textfit': 'kit/textfit',
+  'menu-version': 'menuVersionEntry',
   microFont: 'microFont',
   'music/compose': 'music/compose',
   simulation: 'simulation',
