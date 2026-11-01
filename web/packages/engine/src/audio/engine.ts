@@ -28,6 +28,7 @@ export class AudioEngine {
   /** Music and effects of a game being played also pass the Games setting (setGame). */
   private gameGain?: GainNode;
   private game = false;
+  private level = 1;
   private unmix?: () => void;
   private music?: AudioWorkletNode;
   private musicReady?: Promise<void>;
@@ -79,7 +80,7 @@ export class AudioEngine {
       const mixed = () => {
         if (this.musicGain) this.musicGain.gain.value = channelGain('music');
         if (this.sfxGain) this.sfxGain.gain.value = channelGain('sfx');
-        if (this.gameGain) this.gameGain.gain.value = this.game ? channelGain('games') : 1;
+        if (this.gameGain) this.gameGain.gain.value = this.gameLevel();
       };
       mixed();
       this.unmix = onMix(mixed);
@@ -108,7 +109,17 @@ export class AudioEngine {
   /** Marks this engine as a game's: its sound also follows the Games setting (live). */
   setGame(game: boolean): void {
     this.game = game;
-    if (this.gameGain) this.gameGain.gain.value = game ? channelGain('games') : 1;
+    if (this.gameGain) this.gameGain.gain.value = this.gameLevel();
+  }
+
+  /** A fixed trim (0 to 1) under the visitor's settings, for sound meant to sit quietly in the background. */
+  setLevel(level: number): void {
+    this.level = level;
+    if (this.gameGain) this.gameGain.gain.value = this.gameLevel();
+  }
+
+  private gameLevel(): number {
+    return (this.game ? channelGain('games') : 1) * this.level;
   }
 
   /** Where this engine's sound leaves it (for recording just this game's sound). */

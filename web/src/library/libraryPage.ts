@@ -31,6 +31,7 @@ import { callNumber } from './tinyShelf';
 import { makeSpine } from './spines';
 import { lSpaceTrip } from './lSpace';
 import { startAmbience } from './ambience';
+import { startLibraryMusic } from './libraryMusic';
 
 /** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
 let unwatchShelf: (() => void) | undefined;
@@ -367,6 +368,7 @@ export function renderLibrary(el: HTMLElement): void {
   root.append(h('h1', { id: 'lib-h' }, 'Library'), room.el);
   clear(el, root);
   startAmbience(room.el);
+  startLibraryMusic(room.el);
   el.dataset.library = shelfKey();
   // a link to a piece of the Game-Maker box, at a chapter (#/library?gm=ultimate&ch=12)
   if (gm) void openFromLibrary(gm, state.get('ch'), false);

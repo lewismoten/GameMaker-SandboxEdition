@@ -60,7 +60,9 @@ many as fit; the last, "...", opens the stacks dialog). `lSpace.ts` is L-Space, 
 Pratchett's Discworld): it picks a random game's shelf, the magazine or the Guide. `ambience.ts` sends cast visitors (Teddy, Gwinn,
 Doc Leo, Teenage Lewie) wandering through now and then (still with reduced motion) and, after the first click or key, makes a very
 quiet cough, page turn or chair creak (Web Audio, silent when the demo sound is None, stopped on leaving). Under 700px the room is a
-row of labeled buttons.
+row of labeled buttons. `libraryMusic.ts` plays Keep It Brief!'s `library.cmf` (a bell over a pad, 100 BPM, looping) softly
+under the Music setting: it starts on the first click or key press, pauses while the tab is hidden, is silent when the demo
+sound is None, and stops on leaving (the engine loads on that first gesture).
 `callOrder.ts` puts the drawers, and the cards in each, in call-number order (the three-digit class, then the
 author mark with numbers as numbers: 614-MAH TED, 660-GAM TED, 660-GAM TED2, 660-GAM TED10); cards with the same
 call number keep the order `shelf.ts` gave them. The drawers no longer show a count (the line under the sort does).
