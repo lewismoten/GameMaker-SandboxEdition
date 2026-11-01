@@ -26,6 +26,7 @@ export const CAST_GAMES = {
   teddy: ['Teddy’s Little Big Adventure', 'sandbox'],
   teddy2: ['Teddy’s Little Bigger Adventure', 'sandbox'],
   teddy3: ['Teddy’s Little Biggest Adventure', 'sandbox'],
+  tuneup: ['Tune-Up', 'sandbox'],
   year2000: ['In The Year 2000!', 'sandbox'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
