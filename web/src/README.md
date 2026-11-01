@@ -113,7 +113,7 @@ SDK implementation lives in the packages below; the app imports their declared e
   the Community submission form; [contribution guide](../../docs/community-games.md).
 - [`offline/`](offline): "Make available offline": the whole site in the service worker's cache at
   once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
-  the desk (`offlineExe.ts`).
+  the desk (`offlineExe.ts`); `loadFailure.ts` says so when a part of the site cannot load.
 - [`seo/`](seo): page titles, descriptions and JSON-LD for the site and its game pages: `site.ts`
   (shared with the build), `route.ts` (keeps the tags in step at run time) and `siteSections.ts` (the home page's WebSite and
   magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in).

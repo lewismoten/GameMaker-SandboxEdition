@@ -6,9 +6,12 @@
 // A new version of the site waits until the visitor says so: a small notice offers to
 // reload (a game on the desk's PC, or one being played, is never switched off by itself).
 
+import { watchLoadFailures } from './offline/loadFailure';
+
 const HOUR = 60 * 60 * 1000;
 
 export function registerServiceWorker(): void {
+  watchLoadFailures(showNotice);
   if (!('serviceWorker' in navigator) || !import.meta.env.PROD) return;
   const sw = navigator.serviceWorker;
   // there was a worker before this one: a newer one taking over is a new version
@@ -79,5 +82,26 @@ function offerUpdate(worker: ServiceWorker | undefined): void {
     }),
     button('Later', false, () => notice?.remove()),
   );
+  document.body.append(notice);
+}
+
+/** A short status notice (dismissible), for a part of the site that would not load. */
+function showNotice(message: string): void {
+  if (notice?.isConnected) notice.remove();
+  const text = document.createElement('span');
+  text.textContent = message;
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.textContent = 'OK';
+  close.style.cssText = 'font:inherit;padding:4px 12px;border-radius:4px;cursor:pointer;border:1px solid #fff;background:transparent;color:#fff';
+  close.addEventListener('click', () => notice?.remove());
+  notice = document.createElement('div');
+  notice.className = 'gm-update';
+  notice.setAttribute('role', 'status');
+  notice.style.cssText =
+    'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483000;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;' +
+    'max-width:calc(100vw - 32px);box-sizing:border-box;padding:10px 14px;border-radius:6px;background:#000080;color:#fff;' +
+    'font:14px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.45)';
+  notice.append(text, close);
   document.body.append(notice);
 }
