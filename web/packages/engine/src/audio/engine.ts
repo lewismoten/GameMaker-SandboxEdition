@@ -10,6 +10,7 @@ import { loadSong } from './cmfLoad';
 import { decodeVoc, isVoc } from '../formats/voc';
 import { TICK_RATE } from './cmfPlayer';
 import { output } from './output';
+import { channelGain, onMix } from './mix';
 import { audioContext, unlock } from './context';
 
 /** How long a game waits for the sound to start before it goes on without it. */
@@ -21,6 +22,10 @@ let worklet: Promise<void> | undefined;
 export class AudioEngine {
   private ctx?: AudioContext;
   private master?: GainNode;
+  /** Music and effects each go through their own gain, set by the visitor's sound settings (mix.ts). */
+  private musicGain?: GainNode;
+  private sfxGain?: GainNode;
+  private unmix?: () => void;
   private music?: AudioWorkletNode;
   private musicReady?: Promise<void>;
   private speaker?: { osc: OscillatorNode; gain: GainNode };
@@ -62,15 +67,26 @@ export class AudioEngine {
       this.master = ctx.createGain();
       this.master.gain.value = 0.8;
       this.master.connect(output(ctx));
+      this.musicGain = ctx.createGain();
+      this.sfxGain = ctx.createGain();
+      this.musicGain.connect(this.master);
+      this.sfxGain.connect(this.master);
+      const mixed = () => {
+        if (this.musicGain) this.musicGain.gain.value = channelGain('music');
+        if (this.sfxGain) this.sfxGain.gain.value = channelGain('sfx');
+      };
+      mixed();
+      this.unmix = onMix(mixed);
       // The OPL2 emulator and CMF sequencer run inside the worklet (audio thread); this
       // side only posts load/stop/pause messages to it.
       worklet ??= ctx.audioWorklet.addModule(workletUrl);
       const master = this.master;
+      const musicGain = this.musicGain;
       this.musicReady = worklet
         .then(() => {
           if (this.master !== master) return; // disposed meanwhile
           this.music = new AudioWorkletNode(ctx, 'gm-music', { outputChannelCount: [1] });
-          this.music.connect(master);
+          this.music.connect(musicGain);
         })
         .catch((e) => console.warn('Music unavailable:', e));
     }
@@ -95,9 +111,12 @@ export class AudioEngine {
   dispose(): void {
     this.stopAll();
     this.music?.port.postMessage({ type: 'end' } satisfies MusicMessage);
+    this.unmix?.();
     this.music?.disconnect();
+    this.musicGain?.disconnect();
+    this.sfxGain?.disconnect();
     this.master?.disconnect();
-    this.music = this.master = this.ctx = undefined;
+    this.unmix = this.music = this.musicGain = this.sfxGain = this.master = this.ctx = undefined;
     this.musicReady = undefined;
   }
 
@@ -154,7 +173,7 @@ export class AudioEngine {
     const gain = this.ctx.createGain();
     osc.type = 'square';
     gain.gain.value = 0;
-    osc.connect(gain).connect(this.master);
+    osc.connect(gain).connect(this.sfxGain ?? this.master);
     // The whole effect is scheduled up front on the audio clock, one step per timer tick.
     const t0 = this.ctx.currentTime + 0.005;
     const step = 1 / TICK_RATE;
@@ -200,7 +219,7 @@ export class AudioEngine {
     }
     const src = this.ctx.createBufferSource();
     src.buffer = buffer;
-    src.connect(this.master);
+    src.connect(this.sfxGain ?? this.master);
     src.start();
     this.voc = src;
     return true;

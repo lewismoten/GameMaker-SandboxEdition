@@ -46,6 +46,11 @@
       "gamemaker-source": "./src/audio/opl.ts",
       "import": "./dist/audio/opl.js"
     },
+    "./audio/mix": {
+      "types": "./dist/types/audio/mix.d.ts",
+      "gamemaker-source": "./src/audio/mix.ts",
+      "import": "./dist/audio/mix.js"
+    },
     "./audio/output": {
       "types": "./dist/types/audio/output.d.ts",
       "gamemaker-source": "./src/audio/output.ts",

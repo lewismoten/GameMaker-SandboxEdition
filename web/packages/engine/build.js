@@ -12,6 +12,7 @@ const sources = {
   'audio/context': 'audio/context',
   'audio/engine': 'audio/engine',
   'audio/opl': 'audio/opl',
+  'audio/mix': 'audio/mix',
   'audio/output': 'audio/output',
   'core/gameFiles': 'core/gameFiles',
   'engine/character': 'engine/character',
