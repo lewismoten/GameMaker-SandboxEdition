@@ -234,3 +234,12 @@
     z-index: 1;
   }
 }
+
+/* The Level check panel in the side column: the column already scrolls, so the panel does not
+   scroll again inside it (below 901px the column grows with the page and the panel keeps its cap) */
+@media (min-width: 901px) {
+  .mt-side-col .lc-panel {
+    max-height: none;
+    overflow: visible;
+  }
+}
