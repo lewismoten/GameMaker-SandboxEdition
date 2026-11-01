@@ -66,8 +66,8 @@ const SIDE_L: Plan = [-APOTHEM, HALF_SIDE];
 const SIDE_R: Plan = [APOTHEM, HALF_SIDE];
 const DIAG = Math.hypot(APOTHEM - HALF_SIDE, APOTHEM - HALF_SIDE);
 /** The gap leading to L-Space: on the left diagonal wall, just short of its corner with the far wall. */
-const GAP_U: [number, number] = [DIAG - 1.5, DIAG - 0.8];
-const GAP_H = 2.1;
+const GAP_U: [number, number] = [DIAG - 1.5, DIAG - 1.38];
+const GAP_H = WALL_H - 0.1;
 const WIN_U: [number, number] = [2.2, 3.8];
 const WIN_H: [number, number] = [1.85, 2.75];
 
@@ -81,23 +81,22 @@ const onRight = (u: number, h: number): Pt => {
   return proj(FAR_R[0] + (SIDE_R[0] - FAR_R[0]) * k, h, FAR_R[1] + (SIDE_R[1] - FAR_R[1]) * k);
 };
 
-/** The gap between two stacks that leads to L-Space: a dark, faintly glowing doorway in the wall. */
+/** The gap between two stacks that leads to L-Space: a thin dark sliver where two shelf ends do not quite meet. */
 function lspaceGap(): string {
   const [u0, u1] = GAP_U;
-  const frame = pts([onLeft(u0 - 0.08, 0), onLeft(u1 + 0.08, 0), onLeft(u1 + 0.08, GAP_H + 0.1), onLeft(u0 - 0.08, GAP_H + 0.1)]);
   const hole = pts([onLeft(u0, 0), onLeft(u1, 0), onLeft(u1, GAP_H), onLeft(u0, GAP_H)]);
-  return (
-    `<polygon points="${frame}" fill="var(--room-beam)"/>` + `<polygon points="${hole}" fill="url(#lr-gap)" stroke="rgba(150,160,255,.35)" stroke-width="1"/>`
-  );
+  return `<polygon points="${hole}" fill="url(#lr-gap)" stroke="rgba(150,160,255,.3)" stroke-width=".5"/>`;
 }
 
-/** Where the L-Space doorway is, as percent of the room (for its button). */
+/** Where the L-Space gap is, as percent of the room (for its button). The button is wider than the drawn line, so it is easy to hit. */
 export function lspaceBox(): { l: number; t: number; w: number; h: number } {
   const [u0, u1] = GAP_U;
   const p = [onLeft(u0, 0), onLeft(u1, 0), onLeft(u1, GAP_H), onLeft(u0, GAP_H)];
   const xs = p.map((q) => q[0]);
   const ys = p.map((q) => q[1]);
-  return { l: pctX(Math.min(...xs)), t: pctY(Math.min(...ys)), w: pctX(Math.max(...xs) - Math.min(...xs)), h: pctY(Math.max(...ys) - Math.min(...ys)) };
+  const w = Math.max(pctX(Math.max(...xs) - Math.min(...xs)), 3);
+  const mid = pctX((Math.min(...xs) + Math.max(...xs)) / 2);
+  return { l: mid - w / 2, t: pctY(Math.min(...ys)), w, h: pctY(Math.max(...ys) - Math.min(...ys)) };
 }
 
 /** The small window in the right-hand wall's top shelves, with a slice of daylight falling from it to the floor. */

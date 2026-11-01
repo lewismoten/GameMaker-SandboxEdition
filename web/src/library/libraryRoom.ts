@@ -66,7 +66,7 @@ function joeHelp(status: string, from: HTMLElement, mark: RoomActions['mark']): 
       h('li', null, 'Pick By game or By type above the catalog to file the same papers the other way.'),
       h('li', null, 'The copier prints a paper from the open drawer. It also does mugs and stickers.'),
       h('li', null, 'The notebook on my desk holds your stars and notes on imported games. The trash can holds the records of ones you removed.'),
-      h('li', null, 'The gap between two stacks, with the faint glow, is L-Space, a nod to Terry Pratchett’s Discworld. It leads somewhere else to read.'),
+      h('li', null, 'The thin dark gap between two shelf ends is L-Space, a nod to Terry Pratchett’s Discworld. It leads somewhere else to read.'),
     ),
     h('p', null, `Right now: ${status || 'the shelves are being stocked.'}`),
     h('div', { class: 'buttons' }, h('button', { type: 'button', autofocus: true, onclick: () => close(undefined) }, 'Thank you, Joe')),
@@ -161,7 +161,7 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   const tableSpot = tableArt();
   const catalog = thing('lib-o-catalog', 'Card catalog', 'Card catalog: open the drawers', catalogSpot.svg, () => actions.go('catalog'));
   const copier = thing('lib-o-copier', 'Copier', 'Copier: print a paper, a mug or stickers', copierSpot.svg, () => actions.go('copier'));
-  const lspace = thing('lib-o-lspace', '', 'L-Space: a dim gap between two stacks that leads somewhere else to read', null, () => actions.go('lspace'));
+  const lspace = thing('lib-o-lspace', '', 'L-Space: a thin gap between two bookshelves that leads somewhere else to read', null, () => actions.go('lspace'));
   const desk = h('div', { class: 'lib-desk', 'aria-hidden': 'true' }, deskSpot.svg, h('span', { class: 'lib-brb' }, 'Back in a moment'));
   box(catalog, catalogSpot);
   box(copier, copierSpot);
