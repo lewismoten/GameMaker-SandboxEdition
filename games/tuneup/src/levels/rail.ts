@@ -64,16 +64,22 @@ export function railBlocks(pal: Pal): Kit {
   book.add('felt', P(c('wood', 0)).rect(0, 14, 20, 6, c('green', 0)).rect(0, 14, 20, 1, c('green', 1)), still);
   book.add('bar', P(c('gold', 1)).rect(0, 0, 20, 3, c('gold', 2)).rect(0, 17, 20, 3, c('gold', 0)), { solid: SOLID });
 
-  // the tubes: glass, with a note head or not
+  // a big note head, nearly the tube's width, tipped like a written note, with its shine
+  const head = (p: Pixels, cx: number, cy: number, ink: number, shine: number) => {
+    blob(p, cx, cy, 6.4, 4.6, [c('ink', 0), ink, ink], 0, 2);
+    p.rect(cx - 3, cy - 2, 2, 1, shine).set(cx - 4, cy - 1, shine);
+    return p;
+  };
+  // the tubes: round glass, shaded dark at the edges to a bright streak, a brass collar at each joint
+  const GLASS = [0, 2, 4, 5, 4, 3, 2, 2, 2, 2, 1, 1, 1, 0, 0, 0];
   for (const lane of LANES) {
     const ink = lane.high ? c('red', 2) : c('blue', 2);
     const tube = (note: boolean) => {
       const p = inside();
-      p.rect(3, 0, 14, 20, c('sky', 1)).rect(3, 0, 1, 20, c('sky', 4)).rect(16, 0, 1, 20, c('sky', 0)).rect(5, 0, 1, 20, c('sky', 3));
-      if (note) {
-        blob(p, 10, 11, 4.4, 3.4, [c('ink', 0), ink, ink], 0, 2);
-        p.set(9, 10, c('cloud', 2));
-      }
+      GLASS.forEach((s, i) => p.rect(2 + i, 0, 1, 20, c('sky', s)));
+      p.rect(1, 0, 1, 20, c('ink', 0)).rect(18, 0, 1, 20, c('ink', 0));
+      p.rect(1, 18, 18, 2, c('gold', 1)).rect(1, 18, 18, 1, c('gold', 2));
+      if (note) head(p, 10, 9, ink, c('cloud', 2));
       return p;
     };
     // member j shows a note if a note lands on the key TUBE eighths after it shows in the top row
@@ -86,7 +92,7 @@ export function railBlocks(pal: Pal): Kit {
       const p = inside();
       p.rect(2, 2, 16, 18, glow ? c('yellow', glow) : c('paint', 3)).frame(2, 2, 16, 18, c('ink', 0));
       p.rect(3, 17, 14, 2, glow ? c('yellow', glow - 1) : c('paint', 1));
-      if (glow) blob(p, 10, 9, 4.4, 3.4, [c('ink', 0), ink, ink], 0, 2);
+      if (glow) head(p, 10, 9, ink, c('cloud', 2));
       return p;
     };
     // the ring: unlit stretches as one block each, a lit eighth as its three grades

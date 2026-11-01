@@ -48,9 +48,9 @@ export function buildScreens(): Record<string, Uint8Array> {
     for (let x = 0; x < W; x += 4) p.rect(x, 10, 2, 3, c('gold', 2));
     return p;
   };
-  const strew = (p: Pixels, y0: number, seed: number) => {
+  const strew = (p: Pixels, y0: number, seed: number, count = STREWN.length) => {
     const r = rng(seed);
-    STREWN.forEach((id, i) => {
+    STREWN.slice(0, count).forEach((id, i) => {
       const x = 6 + i * 26 + Math.floor(r() * 6);
       const y = y0 + Math.floor(r() * 10);
       const icon = iconPic(id);
@@ -79,7 +79,8 @@ export function buildScreens(): Record<string, Uint8Array> {
     title(p, 22);
     p.rect(56, 82, 208, 100, c('wood', 0)).rect(58, 84, 204, 96, c('cream', 1));
     p.rect(62, 88, 196, 88, c('cream', 3)).frame(62, 88, 196, 88, c('cream', 0));
-    strew(p, 182, 3);
+    // the floor's last stretch left clear for the version number in the corner
+    strew(p, 182, 3, STREWN.length - 2);
     scaleBlit(p, POSES.sit, 272, 136, 2);
     save('menu.gif', p);
   }

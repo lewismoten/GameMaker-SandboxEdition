@@ -38,24 +38,25 @@ export function bandBlocks(n: number) {
     const k = kit(pal);
     const { book, c, P } = k;
     const air = { grav: GRAV.down };
-    // the evening sky over the town square, and the gazebo's back wall (white lattice)
-    const sky = () => P(c('sky', 3)).rect(0, 15, 20, 5, c('sky', 4));
+    // the evening sky over the town square, dusk overhead to gold at the rooftops (a shade a
+    // row), and the gazebo's back wall (white lattice)
+    const sky = (row: number) => P(c('sky', Math.min(7, row))).rect(0, 15, 20, 5, c('sky', Math.min(7, row + 1)));
     const lattice = () => {
       const p = P(c('paint', 1));
       for (let i = -20; i < 20; i += 6) p.line(i, 0, i + 20, 20, c('paint', 3)).line(i + 20, 0, i, 20, c('paint', 3));
       return p;
     };
-    book.add('sky', sky(), air);
+    for (let r = 0; r < 9; r++) book.add(`sky${r}`, sky(r), air);
     book.add('lattice', lattice(), air);
     // the roof: red and white stripes, a gold ball on top
     book.add('roof', P(c('red', 2)).rect(0, 0, 20, 4, c('red', 0)).rect(5, 4, 5, 16, c('paint', 3)).rect(15, 4, 5, 16, c('paint', 3)), { solid: SOLID });
-    book.add('eave', sky().rect(0, 0, 20, 6, c('red', 1)).rect(0, 6, 20, 2, c('gold', 2)), air);
+    book.add('eave', sky(1).rect(0, 0, 20, 6, c('red', 1)).rect(0, 6, 20, 2, c('gold', 2)), air);
     book.add('post', lattice().rect(8, 0, 4, 20, c('paint', 3)).rect(8, 0, 1, 20, c('paint', 2)), air);
     // the stage: painted boards (stand on top), and the lattice skirt under it
     book.add('stage', P(c('wood', 3)).rect(0, 0, 20, 3, c('wood', 4)).rect(0, 3, 20, 1, c('wood', 1)), { solid: LEDGE, grav: GRAV.down });
     book.add('skirt', lattice().rect(0, 0, 20, 2, c('wood', 1)), air);
     book.add('lawn', P(c('grass', 3)).rect(0, 0, 20, 2, c('grass', 4)), { solid: SOLID });
-    book.add('square', sky().rect(0, 12, 20, 8, c('stone', 3)).rect(0, 12, 20, 1, c('stone', 4)), air);
+    book.add('square', sky(8).rect(0, 12, 20, 8, c('stone', 3)).rect(0, 12, 20, 1, c('stone', 4)), air);
     // a music stand, empty; and the same stand with its instrument on it
     const stand = (id?: string) => {
       const p = lattice();
@@ -76,12 +77,12 @@ export function bandBlocks(n: number) {
       book.add(`${who}.top`, t, air);
       book.add(who, b, air);
     });
-    const [lt, lb] = tall(sky(), sky(), LEO.wave);
+    const [lt, lb] = tall(sky(7), sky(8), LEO.wave);
     book.add('leo.top', lt, air);
     book.add('leo', lb, air);
     // the gate in the picket fence: shut until every stand has its instrument
     const picket = (open: boolean) => {
-      const p = sky();
+      const p = sky(8);
       if (open) return p.rect(0, 6, 3, 14, c('paint', 3));
       for (let x = 1; x < 20; x += 5) p.rect(x, 4, 3, 16, c('paint', 3)).set(x + 1, 3, c('paint', 3));
       return p.rect(0, 9, 20, 2, c('paint', 2)).rect(0, 15, 20, 2, c('paint', 2));
@@ -89,15 +90,15 @@ export function bandBlocks(n: number) {
     book.add('gate', picket(false), { solid: SOLID, effect: CTR.band, eamt: -fam.finds.length, touch: 'gate.open' });
     book.add('gate.open', picket(true), air);
     // the rose arbor over the gate, up to the treetops: the way on is through the gate
-    const arbor = () => {
-      const p = sky().rect(2, 0, 3, 20, c('paint', 3)).rect(15, 0, 3, 20, c('paint', 3));
+    const arbor = (row: number) => {
+      const p = sky(row).rect(2, 0, 3, 20, c('paint', 3)).rect(15, 0, 3, 20, c('paint', 3));
       for (let y = 2; y < 20; y += 6)
         p.disc(4, y, 2, c('red', 2))
           .disc(16, y + 3, 2, c('pink', 2))
           .set(6, y + 1, c('leaf', 2));
       return p;
     };
-    book.add('arbor', arbor(), { solid: SOLID });
+    for (let r = 0; r < 8; r++) book.add(`arbor${r}`, arbor(r), { solid: SOLID });
     return k;
   };
 }
@@ -105,8 +106,9 @@ export function bandBlocks(n: number) {
 /** The bandstand for homecoming `n`. */
 export function band(n: number) {
   return (book: Kit['book']): Level => {
-    const m = new MapBuilder(book, { '.': 'sky', l: 'lattice', R: 'roof', e: 'eave', p: 'post', s: 'stage', k: 'skirt', g: 'lawn', q: 'square' }, 'roof');
-    m.fill(0, 0, W, 9, '.').fill(0, 8, W, 1, 'q').fill(0, 9, W, 1, 'g');
+    const m = new MapBuilder(book, { l: 'lattice', R: 'roof', e: 'eave', p: 'post', s: 'stage', k: 'skirt', g: 'lawn', q: 'square' }, 'roof');
+    for (let r = 0; r < 9; r++) m.fill(0, r, W, 1, `sky${r}`);
+    m.fill(0, 8, W, 1, 'q').fill(0, 9, W, 1, 'g');
     // the gazebo: roof, eave, back wall, posts, stage and skirt
     m.fill(1, 0, 12, 1, 'R').fill(1, 1, 12, 1, 'e').fill(1, 2, 12, 4, 'l');
     m.fill(1, 2, 1, 4, 'p').fill(12, 2, 1, 4, 'p');
@@ -116,7 +118,8 @@ export function band(n: number) {
     FAMILIES.slice(0, n).forEach((f, fi) => f.finds.forEach((_, i) => m.set(STAND_X + i, 4 - fi, `home${fi}.${i}`)));
     FAMILIES[n].finds.forEach((_, i) => m.set(STAND_X + i, 5, `stand${i}`));
     m.set(13, 7, 'leo.top').set(13, 8, 'leo');
-    m.set(14, 8, 'gate').fill(14, 0, 1, 8, 'arbor');
+    m.set(14, 8, 'gate');
+    for (let r = 0; r < 8; r++) m.set(14, r, `arbor${r}`);
     m.link(15, 8);
     return { m, start: at(8, 5), size: [W, 10] };
   };

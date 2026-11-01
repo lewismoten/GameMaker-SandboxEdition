@@ -3,7 +3,7 @@
 // pictures' fixed colors (presetIcons.ts PALETTE), which no time of day changes, and a ramp per
 // instrument family in the preset picker's hues (instrumentLook.ts: pale tile, mid, strong).
 import { buildRampPalette, type PalWithBuilder as Pal, type RampSpec } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
-import { lightColor, TIME_OF_DAY_SKY as SKY, type TimeOfDay } from '@lewismoten/gamemaker-sandbox-tools/colors';
+import { lightColor, TIME_OF_DAY_SKY as SKY, type Lighting, type TimeOfDay } from '@lewismoten/gamemaker-sandbox-tools/colors';
 import { SCREEN_RAMPS } from '../../../teddy/src/art/screenRamps';
 import { P as FINALE } from '../../../teddy3/src/art/pal';
 import { iconColor } from '../../../../web/src/editor/editors/music/presetIcons';
@@ -78,6 +78,9 @@ const ICONS: RampSpec[] = [...ICON_LETTERS].map((ch) => {
 /** fam-<group>: 0 strong (the track color), 1 mid, 2 the pale tile behind a picture. */
 const FAMILIES: RampSpec[] = PRESET_GROUPS.map((g, gi) => [`fam-${g.id}`, 3, hsl(hueOf(gi), 0.65, 0.5), hsl(hueOf(gi), 0.7, 0.84)] as RampSpec);
 
+/** The bandstand's evening light. */
+const EVENING: Lighting = { mul: [1, 0.92, 0.82], add: [16, 8, 0] };
+
 const FIXED = (name: string) => name.startsWith('icon-') || name.startsWith('fam-');
 
 export function buildPalette(time: TimeOfDay): Pal {
@@ -85,6 +88,8 @@ export function buildPalette(time: TimeOfDay): Pal {
     overrides: { sky: SKY[time] },
     transform: (name, c, glows) => {
       if (FIXED(name)) return c;
+      // the bandstand's evening: a warm gold light, not the stock sunset's rose over everything
+      if (time === 'sunset' && !glows) return lightColor(c, EVENING);
       if (time === 'night' && name === 'fur') return lightColor(c, { mul: [0.78, 0.82, 0.94], add: [12, 12, 12] });
       return glows && (time === 'night' || time === 'sunset' || time === 'show') ? c : lightColor(c, time);
     },
