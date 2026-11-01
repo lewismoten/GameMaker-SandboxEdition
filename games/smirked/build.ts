@@ -197,7 +197,7 @@ disk.put(
   'license.txt',
   licenseText(
     'I Screamed, She Smirked',
-    `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The song is The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}. Lily and her mom are characters in the song.`,
+    `The Bard of Bizarre's 1994 shareware notice, its fee and its address are part of the story: there is nothing to pay. The song is The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}. Lily and her mom are characters in the song.`,
     RECORDED_VOCS,
   ),
 );
