@@ -11,6 +11,36 @@
   "egg": { "block": 149 },
   "tinHeart": { "map": "clock.map", "at": [39, 5] },
   "saveSign": { "map": "band8.map", "at": [2, 9], "after": "woods.map" },
+  "label": {
+    "background": "#fff6e0",
+    "band": "#c8302a",
+    "ink": "#1a1030",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "13 neighborhoods, a bandstand between them",
+    "background": "#14204e",
+    "accent": "#ffb43a",
+    "ink": "#ffffff",
+    "tagline": "One trunk. Thirteen neighborhoods. Every part of the parade tune.",
+    "back": "The night before the town parade, Gwinn knocks over the Clown Club's instrument trunk, and the instruments scatter all over town: one family to a neighborhood.\n\nTeddy fetches them home. He hops the piano shop's black keys, climbs the music store's harp strings, glides round the roller rink, and slips through the woods by the river, where the doors are staffs. Doc Leo waits at the bandstand, friendly as ever, with a baton, and every family Teddy brings home adds its part to the parade tune.\n\nThe last stop is inside the sound card itself, where the drum kit lives. Will the whole band be ready by morning?",
+    "features": [
+      "Thirteen neighborhoods, from the piano shop to the inside of the sound card, with a bandstand after each",
+      "Every family of instruments you bring home adds its part to the parade tune, until the whole band plays",
+      "Inside the player piano, boop each key as its note drops down the glass tubes",
+      "Skate the roller rink at the tune's tempo and change lanes to touch the notes",
+      "MEANWHILE... Doc Leo conducts the marching field: flick the baton on each line as the notes glide by",
+      "Staff doors in the woods open when you play their hollow note",
+      "Tubular bells ring the clock tower's doors open, a clock face counting down each one",
+      "Sound Blaster music for every stop, and a drum kit finale that plays the band, the speaker chords and a choir at once"
+    ],
+    "shots": [
+      ["shop.map", 16, 5],
+      ["field.map", 0, 0],
+      ["clock.map", 16, 0]
+    ],
+    "rating": "Ages 6 and up"
+  },
   "acceptedFindings": [
     "counters s3 Block 20 drains counter 20 on every tick",
     "counters s3 Block 45 drains counter 20 on every tick",
