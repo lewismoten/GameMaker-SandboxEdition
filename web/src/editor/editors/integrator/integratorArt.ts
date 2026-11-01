@@ -2,7 +2,7 @@
 // the block the hero arrives on, with its monsters and the hero), and the between-scene
 // graphics (.gif, .bkd, .fli, .lst, .txt) as a 320x200 screen.
 import { lut, paintIndexed } from '../../core/draw';
-import { STOCK_LOOK } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { matchColor } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { GameFiles } from '../../../project/files';
 import type { Point, Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelPixels } from '../../../gfx/levelPicture';
@@ -98,13 +98,14 @@ export function graphicShot(files: GameFiles, name: string, depth = 0): HTMLCanv
   return undefined;
 }
 
-/** The text-page color ShowGraphic picks from a picture's own palette (a .gif, or a .bkd's), or undefined. */
+/** The text-page color ShowGraphic picks from a picture's own palette (a .gif, or a .bkd's), or undefined: the
+ *  stock player's purple (color.rgb.purple, 50,10,50) matched into it. Not through playerLook, which brings in the engine. */
 function textColor(files: GameFiles, name: string): string | undefined {
   const gif = name.toLowerCase().endsWith('.bkd') ? parseBackdrop(files.get(name)!).gif : name;
   const bytes = files.get(gif);
   if (!bytes || !isGif(bytes)) return undefined;
   const pal = decodeGif(bytes).palette;
-  const v = lut(pal)[STOCK_LOOK.color(pal, 'color.select.textPages')];
+  const v = lut(pal)[matchColor(pal, 50, 10, 50)];
   return `rgb(${v & 255},${(v >> 8) & 255},${(v >> 16) & 255})`;
 }
 
