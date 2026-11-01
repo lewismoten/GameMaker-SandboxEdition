@@ -79,5 +79,5 @@ export function rink(book: Kit['book']): Level {
   m.fill(gx, 2, 1, 5, 'B').fill(gx + 1, 2, W - gx - 1, 5, 'B');
   m.set(gx, LANE_ROWS[gl], 'door').set(gx + 1, LANE_ROWS[gl], 'door.open');
   m.link(gx + 1, LANE_ROWS[gl]);
-  return { m, start: at(1, LANE_ROWS[0]), size: [W, 10] };
+  return { m, start: at(1, LANE_ROWS[1]), size: [W, 10] };
 }

@@ -161,5 +161,5 @@ export function field(book: Kit['book']): Level {
   m.set(BATON_X, BATON_ROW, 'lid');
   BRASS_FINDS.forEach((id, i) => m.set(BRASS_AT[i], BATON_ROW, `pick-${id}`));
   m.link(W - 1, BATON_ROW);
-  return { m, start: at(BATON_X, LINES[0].row), size: [W, 10] };
+  return { m, start: at(BATON_X, LINES[1].row), size: [W, 10] };
 }

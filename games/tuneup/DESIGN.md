@@ -89,8 +89,8 @@ What phase 2b changed from the plan, and why:
   clock tower.
 - **A one-screen level starts Teddy at (8, 5)** and a wide one on row 5: PLAYGAME puts the view
   with the hero mid-screen and these levels never scroll up or down, so any other row leaves the
-  view off the level (the arcade started on row 8 and is fixed; the rink and the field start on
-  row 6, one row off, still to fix in phase 2c).
+  view off the level (the arcade started on row 8 and is fixed; phase 2c starts the rink and the
+  field on row 5, their second lane and line, in place of row 6).
 
 ### Ideas left out, and why
 

@@ -5,7 +5,7 @@
   "year": 1994,
   "price": "$15",
   "version": "1.0",
-  "blurb": "The night before the town parade, Gwinn knocks over the Clown Club's instrument trunk, and every family of instruments lands in a different neighborhood. Teddy fetches them home to Doc Leo at the bandstand, and every family he brings back adds its part to the parade tune. Hop the black keys of the piano shop, boop the keys inside the player piano as the notes land, and climb the harp strings in the music store's back room.",
+  "blurb": "The night before the town parade, Gwinn knocks over the Clown Club's instrument trunk. As Teddy, fetch every family of instruments home across thirteen neighborhoods, from the piano shop to the sound card, and hear each one add its part to the parade tune at Doc Leo's bandstand.",
   "exe": "TUNEUP.EXE",
   "sound": "sb",
   "egg": { "block": 149 },
