@@ -12,6 +12,7 @@ import { howFar, WALK_SECTION, type SavedWalk } from '../check/walk/keptWalk';
 import { firstStepsState, stepsDone, STEPS } from './firstSteps';
 import { projectTarget, showHealthReport } from './gameHealth';
 import { visionPalette } from './visionPalette';
+import { versionCard } from './overviewVersion';
 import { diskStatus, floppyFor } from '../disk/diskCard';
 
 interface ToolsHost {
@@ -192,6 +193,8 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
       ),
     );
   }
+
+  if (!project.readOnly) cards.push(versionCard(project));
 
   cards.push(
     card('play', 'Play the game', null, 'From the title screen', 'Plays the whole game as a player would; Esc or Stop comes back.', 'Play Game', host.play),

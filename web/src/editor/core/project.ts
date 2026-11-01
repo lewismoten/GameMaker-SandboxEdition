@@ -7,7 +7,7 @@ import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemake
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { debounce } from './ui';
 import { isSolidPalette, mostReadable } from './readablePalette';
-import { emptyCompanion, getSection, renameInCompanion, setSection, type Companion } from '../../project/companion';
+import { emptyCompanion, getSection, renameInCompanion, setMenuVersion, setSection, type Companion } from '../../project/companion';
 import { editedFile, unlockAchievement } from '../../achievements';
 import { MEMORY_SECTIONS, refuse, type ReadOnlyGuard } from './readOnly';
 
@@ -150,6 +150,14 @@ export class Project {
     setSection(this.companion, file, section, value);
     this.persist();
     for (const l of this.extrasListeners) l(file, section);
+  }
+
+  /** The author's version and whether it is lettered on the menu picture (companion.ts); the game's files are not touched. */
+  setMenuVersion(version: string, show: boolean): void {
+    if (this.readOnly) refuse(this, 'version');
+    this.companion ??= emptyCompanion();
+    setMenuVersion(this.companion, version, show);
+    this.persist();
   }
 
   /** A file was renamed: its extras follow it. */
