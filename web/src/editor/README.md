@@ -45,7 +45,7 @@ Part of the [source map](../README.md).
   used by the media editors (`mediaPictures.ts`, `mediaShared.ts`).
   - The level check's parts outside the map: badges in the block, monster and sound editors
     (`checkBadges.ts`), the self-ticking Before You Upload list (`uploadChecklist.ts`), Make a
-    walkthrough (`walkDialog.ts`), the findings as a report with a CSV and a printable checklist
+    walkthrough (`walkDialog.ts`; Open a walkthrough file… plays a saved bot `.walkthrough.json` after `walkFile.ts` checks its version, game and scenes), the findings as a report with a CSV and a printable checklist
     (`checkReport.ts`, its rows in `checkRows.ts`; Play it myself on any scene, Mine or Bot on each,
     Stop keeping what the bot got through), Play and record, the one play session of a scene
     that adds to the author's heat map and keeps their play for the walkthrough (`playScene.ts`),

@@ -21,6 +21,7 @@ import { startWalk, type RunningWalk } from '../check/walk/walkClient';
 import { allWalkPaths } from '../check/walk/walkPaths';
 import { howFar, lookOnlyKept, reuseFrom, savedFrom, WALK_SECTION, type SavedWalk } from '../check/walk/keptWalk';
 import { unlockAchievement } from '../../achievements';
+import { checkWalkFile } from './walkFile';
 import './walkDialog.css';
 
 export interface WalkDialogOptions {
@@ -90,6 +91,32 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
     h('h3', { id: 'wd-watch-h' }, 'Watch'),
     h('p', { class: 'meta' }, 'It opens in the player, with chapters, Download MP4 and Copy for YouTube.'),
     h('div', { class: 'toolbar' }, shippedBtn, watchBtn),
+  );
+  // a walkthrough file from disk (the bot's <GAM>.walkthrough.json): checked against this game, then played
+  const fileMsg = h('p', { class: 'meta', role: 'status', 'aria-live': 'polite' });
+  const fileInput = h('input', { type: 'file', accept: '.json,application/json', hidden: true, tabindex: '-1' });
+  fileInput.onchange = () => {
+    const f = fileInput.files?.[0];
+    fileInput.value = '';
+    if (!f) return;
+    void f.text().then(async (text) => {
+      const r = checkWalkFile(text, project.gam, game().scenes.length);
+      if (!r.ok) {
+        fileMsg.textContent = r.why;
+        return;
+      }
+      fileMsg.textContent = `Playing ${f.name}…`;
+      await watchMade(project, r.walk, opt.entry);
+      fileMsg.textContent = '';
+    });
+  };
+  const openPart = h(
+    'section',
+    { class: 'wd-part', 'aria-labelledby': 'wd-open-h' },
+    h('h3', { id: 'wd-open-h' }, 'Open a walkthrough file'),
+    h('p', { class: 'meta' }, 'A saved .walkthrough.json for this game plays in the same player. Nothing is kept.'),
+    h('div', { class: 'toolbar' }, h('button', { type: 'button', onclick: () => fileInput.click() }, 'Open a walkthrough file…'), fileInput),
+    fileMsg,
   );
   let stoppedMap: string | undefined;
   const mapLink = h('a', { class: 'wd-map', hidden: true }, '🗺 See where the bot got to on the map (Level check 🩺)');
@@ -329,6 +356,7 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
       'div',
       { class: 'stack wd' },
       watchPart,
+      openPart,
       h(
         'section',
         { class: 'wd-part', 'aria-labelledby': 'wd-make-h' },
