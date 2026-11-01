@@ -174,7 +174,7 @@ function menuScreen(): Pixels {
   p.rect(60, 98, 200, 2, c('paint', 3));
   teddyBig(p, 'frontBeg', 0, 112, 4);
   gwinnBig(p, 'gwinn1', 252, 108, 3, true);
-  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1996', c('paint', 3));
+  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1994', c('paint', 3));
   return p;
 }
 
@@ -190,7 +190,7 @@ function titleScreen(): Pixels {
   const car = new Pixels(40, 40, CLEAR);
   citiCar(car, 0, 0);
   scaleBlit(p, car, 262, 128, 1);
-  centered(p, 190, '(C) 1996 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
+  centered(p, 190, '(C) 1994 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
   return p;
 }
 
