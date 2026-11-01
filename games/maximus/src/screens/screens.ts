@@ -146,7 +146,7 @@ export function titleScreen(): Uint8Array {
   // the pod streaking past, trailing its flame
   for (let i = 0; i < 70; i++) c.set(70 + i, 132 + i * 0.12, C('orange')[Math.min(7, Math.floor(i / 9))]);
   c.sprite(drawPod('r', { flicker: 2, glow: 1 }), 140, 128, 3);
-  c.center(180, '(C) 1995 SANDBOX SOFTWARE', C('gray')[5], { shadow: 0 });
+  c.center(180, '(C) 1994 SANDBOX SOFTWARE', C('gray')[5], { shadow: 0 });
   c.center(190, `SHAREWARE VERSION ${about.version}`, C('gray')[3], { shadow: 0 });
   return gif(c);
 }
@@ -352,7 +352,7 @@ export function wonScreens(): Map<string, Uint8Array> {
     col(108, 'NOR HEAT NOR GLOOM', C('ice')[5], { shadow: 0 });
     col(118, 'OF NIGHT...', C('ice')[5], { shadow: 0 });
     col(144, 'THANK YOU FOR PLAYING', C('cyan')[6], { shadow: 0 });
-    col(160, 'SANDBOX SOFTWARE 1995', C('gray')[4]);
+    col(160, 'SANDBOX SOFTWARE 1994', C('gray')[4]);
     // Doc Leo, who walked a parcel over for Max at Boxcar Flats: his snapshot, scanned in
     const leo = resample(loadScan('leo'), 84);
     const at = polaroid(c, 26, 66, leo.w, leo.h, { paper: WHITE, edge: C('gray')[3], shadow: 0, tape: C('sand')[6] });

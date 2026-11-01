@@ -81,7 +81,7 @@ CLAUDE
 for SANDBOX SOFTWARE
 Pittsburgh, PA
 
-Made with GAME-MAKER 3.0 by
+Made with GAME-MAKER 2.0 by
 Recreational Software Designs
 
 Every world, sprite, song and sound effect was made by a program, from a seed, so you and your friends fly the same galaxy.
@@ -135,7 +135,7 @@ export function wrapDoc(text: string, width = 30): string {
 export const README = (price: string, files: number, mb: string) =>
   wrapDoc(`MAXIMUS: THE HUNDRED WORLDS
 Version ${about.version}
-Sandbox Software, 1995
+Sandbox Software, 1994
 ==============================
 
 This is shareware.

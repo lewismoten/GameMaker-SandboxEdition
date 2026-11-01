@@ -141,7 +141,7 @@ export function limitsTxt(b: Built): string {
     'HOW FAR GAME-MAKER GOES',
     '==============================',
     '',
-    'Maximus was built to find the edges of Game-Maker 3.0 and to stand on them. These are the limits we found in its file formats and in PLAYGAME, and how close this game comes.',
+    'Maximus was built to find the edges of Game-Maker 2.0 and to stand on them. These are the limits we found in its file formats and in PLAYGAME, and how close this game comes.',
     '',
   ];
   for (const r of rows) {
@@ -200,7 +200,7 @@ export function about(b: Built): object {
     title: 'Maximus: The Hundred Worlds',
     author: 'Claude',
     company: 'Sandbox Software',
-    year: 1995,
+    year: 1994,
     price: '$15',
     version: aboutFile.version,
     blurb:
@@ -244,7 +244,7 @@ export function about(b: Built): object {
       // hours is filled in by build.ts from about.json (games/kit/playtime.ts is its only writer)
       hours: 0,
       reviews: [
-        { quote: 'A whole galaxy on four floppies. We lost a long weekend to the Hundred Worlds and want it back.', source: 'VGA Voyager, March 1995' },
+        { quote: 'A whole galaxy on four floppies. We lost a long weekend to the Hundred Worlds and want it back.', source: 'VGA Voyager, November 1994' },
         { quote: 'The most ambitious Game-Maker game we have seen.', source: 'Diskette Digest' },
       ],
       award: { title: 'Shareware Game of the Month', from: 'Megapixel Monthly' },
@@ -355,11 +355,11 @@ export function manual(b: Built): object {
       },
       {
         head: 'Registering Maximus',
-        html: `<h2>This is shareware</h2><p>Copy it, share it, upload it. If you enjoy Maximus, please register: registration is <b>$15</b> and gets you the printed manual with a fold-out galaxy chart, the courier's sector map of all 88 worlds and their vaults, the hint book, and news of our next game.</p><p>Send a check or money order (US funds) to:</p><p><b>Sandbox Software<br>Attn: Maximus Registration<br>P.O. Box 000<br>Pittsburgh, PA 15213</b></p><h2>Credits</h2><p>Designed and built by <b>Claude</b> for Sandbox Software, with Game-Maker 3.0 by Recreational Software Designs. Every world, sprite, song and sound was made by a program from a seed.</p><h2>Hails</h2><p>Three worlds call you before you land. <b>Galileo</b> is an old Earth probe still running a loop on its RCA 1802 (the real chip flew to Jupiter). <b>Liberty</b> keeps a cracked bell under thirteen stars, and an archive of every letter a courier ever brought. On <b>Boxcar Flats</b>, Doc Leo, PhD (Comedic Science), will walk your parcel over with his rubber chicken. Answer them all!</p><p><i>Dedicated to three real couriers: Lewis's mother, a letter carrier; his father, who kept the post office running in maintenance; and his grandmother, a postal clerk. All three were at the post office when he bought Game-Maker in 1992.</i></p>${vault('Ambermoor', 'A shard vault')}`,
+        html: `<h2>This is shareware</h2><p>Copy it, share it, upload it. If you enjoy Maximus, please register: registration is <b>$15</b> and gets you the printed manual with a fold-out galaxy chart, the courier's sector map of all 88 worlds and their vaults, the hint book, and news of our next game.</p><p>Send a check or money order (US funds) to:</p><p><b>Sandbox Software<br>Attn: Maximus Registration<br>P.O. Box 000<br>Pittsburgh, PA 15213</b></p><h2>Credits</h2><p>Designed and built by <b>Claude</b> for Sandbox Software, with Game-Maker 2.0 by Recreational Software Designs. Every world, sprite, song and sound was made by a program from a seed.</p><h2>Hails</h2><p>Three worlds call you before you land. <b>Galileo</b> is an old Earth probe still running a loop on its RCA 1802 (the real chip flew to Jupiter). <b>Liberty</b> keeps a cracked bell under thirteen stars, and an archive of every letter a courier ever brought. On <b>Boxcar Flats</b>, Doc Leo, PhD (Comedic Science), will walk your parcel over with his rubber chicken. Answer them all!</p><p><i>Dedicated to three real couriers: Lewis's mother, a letter carrier; his father, who kept the post office running in maintenance; and his grandmother, a postal clerk. All three were at the post office when he bought Game-Maker in 1992.</i></p>${vault('Ambermoor', 'A shard vault')}`,
       },
       {
         head: 'Pushing the Limits',
-        html: `<h2>How far Game-Maker goes</h2><p>Maximus was built to stand on every edge of Game-Maker 3.0. These are the limits we found in its file formats and in PLAYGAME, and how much of each this game uses (also in <kbd>LIMITS.TXT</kbd> on the disk).</p><table><tr><th>Limit</th><th>Maximum</th><th>Maximus uses</th></tr>${rows}</table>`,
+        html: `<h2>How far Game-Maker goes</h2><p>Maximus was built to stand on every edge of Game-Maker 2.0. These are the limits we found in its file formats and in PLAYGAME, and how much of each this game uses (also in <kbd>LIMITS.TXT</kbd> on the disk).</p><table><tr><th>Limit</th><th>Maximum</th><th>Maximus uses</th></tr>${rows}</table>`,
       },
     ],
   };
