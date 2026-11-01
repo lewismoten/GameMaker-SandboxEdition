@@ -74,6 +74,15 @@ export const ZINE: ZinePage[] = [
     scrawl: ['BACKUP /? for the rest'],
   },
   {
+    title: 'FLAGS',
+    lines: [
+      'C:\\DOS\\FLAGS.EXE, also in the BBS Warez area. For testing: it shows what this pretend PC remembers (badges, eggs, hearts, trophies, the phone bill, the mail) and lets you set it, clear it or start over.',
+      'FLAGS alone lists everything. FLAGS SET HEARTS 3, FLAGS SET TROPHY BEST 2, FLAGS CLEAR MAIL, FLAGS RESET ALL. FLAGS /? has the names.',
+      'It keeps C:\\DOS\\FLAGS.BAK before the first change. FLAGS /RESTORE puts it all back. It never writes a saved game; SAVEHACK does that.',
+    ],
+    scrawl: ['a testing tool, not a cheat'],
+  },
+  {
     title: 'DISK TRICKS',
     lines: [
       'Out of 1.44 MB disks? Look at a 720K double density disk: ONE square hole, the write-protect one with the little slide. A high density disk has a second hole in the other corner. That hole is how the drive tells them apart.',
