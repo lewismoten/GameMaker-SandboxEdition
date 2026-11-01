@@ -111,11 +111,18 @@ The Ultimate Owner's Guide in the Game-Maker box.
 ## `magazine/`: TURBO BUTTON
 
 TURBO BUTTON, a mid-90s game magazine (`#/magazine`, and
-lying on the desk's left, `#/desk?open=turbobutton&vol=1&num=1&page=6-7`, which keeps the issue and the pages in view across a reload; `open=magazine` still opens it).
+lying on the desk's left, `#/desk?open=turbobutton&vol=3&num=1&page=6-7`, which keeps the issue and the pages in view across a reload; `open=magazine` still opens it).
+It comes in two issues, addressed by year and month (Vol. 1 is 1993): **Vol. 1, No. 4**
+(April 1993, a back issue with a free Snowbound floppy: `vol=1&num=4`) and **Vol. 3, No. 1**
+(January 1995, the one on the desk, with the free CD). The old address `vol=1&num=1`, and an
+address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues from inside.
 
 - Putting it together: `issue.ts` holds the running order (page numbers, the contents page, the
   advertiser index, and house ads from `sections/houseAd.ts` to fill whole folded sheets);
-  `masthead.ts` its name and issue; `games.ts` the games it may name (never a secret one).
+  `masthead.ts` its name, the two `ISSUES` and `issueFor` (an address to an issue); `SECTIONS` is
+  No. 2's running order and `SECTIONS_1` No. 1's (`sections/spring93/`: its cover, letter,
+  interview, Critic's Corner page, Snowbound tips, free-disk page and back cover; `floppy.ts` draws
+  the taped-on floppy with the game's real printed disk label); `games.ts` the games it may name (never a secret one).
 - `pageRefs.ts`: the page numbers pages give each other once placed (a jumped story's "Continued
   on page N" and "Continued from", `{page:<id>}` in text) and the small ads on editorial pages for
   the advertiser index, which `sections/smallAds.ts` holds (half- and third-page ads, The Sofa

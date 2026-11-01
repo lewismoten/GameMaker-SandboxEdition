@@ -222,7 +222,9 @@ async function route(): Promise<void> {
     const { renderMagazinePage } = await import('./manual/magazine/viewer');
     if (ui !== 'modern') return;
     document.title = `TURBO BUTTON magazine · ${PRODUCT}`;
-    disposeMagazine = renderMagazinePage(content, parseHash(location.hash).params.page);
+    const { params } = parseHash(location.hash);
+    const { issueFor } = await import('./manual/magazine/masthead');
+    disposeMagazine = renderMagazinePage(content, params.page, issueFor(Number(params.vol), Number(params.num)).which);
     return;
   }
   if (kind === 'library') {

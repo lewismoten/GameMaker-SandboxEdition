@@ -1,6 +1,7 @@
 // The Mail Bag's replies and correction hold up: OOPS!'s keys are the ones PLAYGAME (and this
 // port's engine) gives, the octopus really needs slime, the Sandbox BBS really has one line,
 // and every reader is a made-up handle and town with no phone number.
+import { ISSUES } from '../masthead';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -13,11 +14,11 @@ const repo = join(__dirname, '../../../../..');
 const read = (...p: string[]) => readFileSync(join(repo, ...p), 'latin1');
 
 describe('the Mail Bag', async () => {
-  const ctx = { games: [], game: () => undefined };
+  const ctx = { games: [], game: () => undefined, mag: ISSUES[2] };
   const pages = await MAIL_BAG.pages(ctx);
   const text = plain(JSON.stringify(pages));
 
-  it('corrects the preview issue with the keys PLAYGAME really uses', () => {
+  it('corrects the April issue with the keys PLAYGAME really uses', () => {
     // F4 toggles the sound effects: PLAYGAME.C's playscene, and the port's scene.ts
     expect(read('code/GM/PLAYGAME.C')).toMatch(new RegExp(`case ${CORRECTION.said}: soundon\\^=TRUE`));
     expect(read('web/packages/engine/src/engine/scene.ts')).toMatch(new RegExp(`f === ${CORRECTION.said}\\) s\\.soundOn = !s\\.soundOn`));

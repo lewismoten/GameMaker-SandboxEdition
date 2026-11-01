@@ -277,18 +277,24 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   /** The magazine lying on the desk with the catalog: open=turbobutton&vol=1&num=1&page=6-7 keeps the issue and the pages in view, so a reload comes back to them. Its links play disks, call the BBS and look at the props. */
   const magazine = async () => {
-    const [{ openMagazine }, { MAG }] = await Promise.all([import('../manual/magazine/viewer'), import('../manual/magazine/masthead')]);
-    // another issue's address (one not on this desk) starts at the cover
-    const sameIssue = deskView.num('vol') === MAG.vol && deskView.num('num') === MAG.num;
+    const [{ openMagazine }, { issueFor }] = await Promise.all([import('../manual/magazine/viewer'), import('../manual/magazine/masthead')]);
+    // vol=1&num=4 is the back issue; the old vol=1&num=1 and a bare address open No. 2 (vol=3&num=1)
+    const MAG = issueFor(deskView.num('vol'), deskView.num('num'));
+    const legacy = deskView.num('vol') === 1 && deskView.num('num') === 1;
+    const sameIssue = legacy || (deskView.num('vol') === MAG.vol && deskView.num('num') === MAG.num);
     const start = sameIssue ? deskView.get('page') : undefined;
     await opened('turbobutton', () =>
       openMagazine({
         where: 'desk',
         start,
+        issue: MAG.which,
+        onIssue: (mag) => {
+          if (deskView.get('open') === 'turbobutton') deskView.set({ vol: String(mag.vol), num: String(mag.num) });
+        },
         onPages: (folios) => {
           if (deskView.get('open') !== 'turbobutton') return;
           const page = folios.length > 1 ? `${folios[0]}-${folios.at(-1)}` : String(folios[0]);
-          deskView.set({ vol: String(MAG.vol), num: String(MAG.num), page: folios[0] === 1 && folios.length === 1 ? undefined : page });
+          deskView.set({ page: folios[0] === 1 && folios.length === 1 ? undefined : page });
         },
         desk: {
           play: (id) => void insertOriginal(id),

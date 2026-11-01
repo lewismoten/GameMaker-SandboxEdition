@@ -2,6 +2,7 @@
 // module returning pages; a page is a list of blocks; text is a string with a tiny markup.
 // All of it is plain data (no DOM), so tests read the whole issue in Node; render.ts draws it.
 import type { Go } from './go';
+import type { MagIssue } from './masthead';
 
 /** The paper a page is printed on. */
 export type Tone = 'white' | 'news' | 'pink' | 'yellow' | 'cyan' | 'black';
@@ -81,6 +82,11 @@ export type Block =
    * cover it sits in a corner with a starburst (`burst`) that links to `page`, the page about it.
    */
   | { t: 'disc'; go: Go; alt: string; caption?: Inline; cover?: { burst: string; page: Go } }
+  /**
+   * The spring issue's cover-mounted floppy (floppy.ts): a game's disk in a taped sleeve, the whole
+   * disk one link (`go`). On the cover it sits in a corner with a starburst (`burst`) linking to `page`.
+   */
+  | { t: 'floppy'; game: string; go: Go; alt: string; caption?: Inline; cover?: { burst: string; page: Go } }
   /** A picture with numbered spots on it and a key to them below (callouts.ts): an ad's tour of a product. */
   | { t: 'callouts'; art: ArtId; alt: string; spots: Callout[] }
   /** Back issues and ones to come, fanned out small (coverFan.ts): a subscription ad's stack of covers. */
@@ -224,6 +230,8 @@ export interface MagContext {
   /** Every game the magazine may list: never a secret one (games.ts). */
   games: MagGame[];
   game(id: string): MagGame | undefined;
+  /** The issue being built (masthead.ts): its sections and the folio line read it. */
+  mag: MagIssue;
 }
 
 export interface MagSection {
@@ -245,6 +253,8 @@ export interface PlacedPage extends MagPage {
   id: string;
   folio: number;
   section: string;
+  /** The issue line in this page's foot ("Vol. 1, No. 4 · Spring 1993"). */
+  foot?: string;
 }
 
 export interface TocEntry {
@@ -257,6 +267,8 @@ export interface TocEntry {
 }
 
 export interface Issue {
+  /** Which issue this is (masthead.ts). */
+  mag: MagIssue;
   pages: PlacedPage[];
   toc: TocEntry[];
   /** The advertisers, in page order. */

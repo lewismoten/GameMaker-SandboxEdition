@@ -2,6 +2,8 @@
 // Guide, the BBS, a desk prop, the store…), checked and turned into addresses here (no DOM).
 // goRun.ts runs the ones that open something on top of the page instead.
 
+import { ISSUES } from './masthead';
+
 /** A link target, e.g. 'go:play/teddy', 'go:hints/snowbound', 'go:desk/modem'. */
 export type Go = `go:${string}`;
 
@@ -22,6 +24,7 @@ type GoKind =
   | 'dos'
   | 'route'
   | 'mag'
+  | 'issue'
   | 'url';
 
 interface GoTarget {
@@ -74,6 +77,7 @@ const KINDS: readonly GoKind[] = [
   'dos',
   'route',
   'mag',
+  'issue',
   'url',
 ];
 
@@ -117,19 +121,21 @@ export function goProblem(go: string, known: GoKnown): string | undefined {
               ? (ROUTES as readonly string[]).includes(arg)
               : kind === 'mag'
                 ? known.pages.has(arg)
-                : kind === 'url'
-                  ? /^https:\/\/[\w.-]+\.\w+(\/\S*)?$/.test(arg)
-                  : kind === 'store'
-                    ? /^[\w-]*$/.test(arg)
-                    : kind === 'mousepad'
-                      ? arg === ''
-                      : kind === 'dos'
-                        ? arg === '' || known.games.has(arg)
-                        : kind === 'bbs'
-                          ? (BBS_BOARDS as readonly string[]).includes(arg)
-                          : kind === 'editor'
-                            ? /^[\w-]*$/.test(arg)
-                            : false;
+                : kind === 'issue'
+                  ? arg === '1' || arg === '2'
+                  : kind === 'url'
+                    ? /^https:\/\/[\w.-]+\.\w+(\/\S*)?$/.test(arg)
+                    : kind === 'store'
+                      ? /^[\w-]*$/.test(arg)
+                      : kind === 'mousepad'
+                        ? arg === ''
+                        : kind === 'dos'
+                          ? arg === '' || known.games.has(arg)
+                          : kind === 'bbs'
+                            ? (BBS_BOARDS as readonly string[]).includes(arg)
+                            : kind === 'editor'
+                              ? /^[\w-]*$/.test(arg)
+                              : false;
   return ok ? undefined : `leads nowhere: ${go}`;
 }
 
@@ -176,6 +182,10 @@ export function goHref(go: string, where: Where): string {
       return `#/${arg}`;
     case 'mag':
       return `#/magazine?page=${encodeURIComponent(arg)}`;
+    case 'issue': {
+      const { vol, num } = ISSUES[arg === '1' ? 1 : 2];
+      return where === 'desk' ? `#/desk?open=turbobutton&vol=${vol}&num=${num}` : `#/magazine?vol=${vol}&num=${num}`;
+    }
     case 'url':
       return arg;
   }

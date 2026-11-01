@@ -1,6 +1,7 @@
 // The Maximus feature's numbers are the game's own: each count is read again from
 // games/maximus/disk with the file formats, and each limit the article prints is the one the
 // formats (and PLAYGAME) use.
+import { ISSUES } from '../masthead';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -19,7 +20,7 @@ const ext = (e: string) => files.filter((f) => f.endsWith(`.${e}`));
 const game = parseGame(read('maximus.gam'));
 
 describe('the Maximus feature', async () => {
-  const pages = await MAXIMUS.pages({ games: [], game: () => undefined });
+  const pages = await MAXIMUS.pages({ games: [], game: () => undefined, mag: ISSUES[2] });
   const text = JSON.stringify(pages);
 
   it('counts the scenes, links and file slots in MAXIMUS.GAM', () => {
