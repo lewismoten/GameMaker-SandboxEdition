@@ -102,3 +102,10 @@
 .pick-tabs {
   flex-wrap: wrap;
 }
+
+/* Reduced motion: the playing button stays red without pulsing */
+@media (prefers-reduced-motion: reduce) {
+  .pick-play.playing {
+    animation: none;
+  }
+}

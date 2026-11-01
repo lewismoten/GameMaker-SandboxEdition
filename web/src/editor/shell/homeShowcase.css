@@ -471,3 +471,10 @@
     font-size: 11px;
   }
 }
+
+/* Reduced motion: the waiting button holds still */
+@media (prefers-reduced-motion: reduce) {
+  .demo-loading .sc-demo-btn {
+    animation: none;
+  }
+}

@@ -144,3 +144,10 @@
     height: 130px;
   }
 }
+
+/* Reduced motion: the recording button stays lit instead of blinking */
+@media (prefers-reduced-motion: reduce) {
+  .voc-rec.on {
+    animation: none;
+  }
+}

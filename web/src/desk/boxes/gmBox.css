@@ -424,3 +424,11 @@
 .guide-book.has-cover::before {
   z-index: 1;
 }
+
+/* Reduced motion: the holo CD holds still */
+@media (prefers-reduced-motion: reduce) {
+  .holo-spin,
+  .holo-cd::before {
+    animation: none;
+  }
+}
