@@ -12,6 +12,29 @@
 .grator.side-collapsed .grator-resize {
   visibility: hidden;
 }
+/* narrow windows (as the music editor does at 760): the folded side list is a full-width bar under the board, not a sliver */
+@media (max-width: 760px) {
+  .grator.side-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 8px;
+  }
+  .grator.side-collapsed .grator-resize {
+    display: none;
+  }
+  .grator.side-collapsed .grator-side {
+    max-height: none;
+  }
+  .grator-side-open {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 36px;
+    padding: 6px 12px;
+    text-align: left;
+    writing-mode: horizontal-tb;
+  }
+}
 .grator-main {
   min-width: 0;
   container: grator-main / inline-size;
