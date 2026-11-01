@@ -3,7 +3,8 @@
 import type { Pal, TimeOfDay } from '../art/pal';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
-import { bandSong, railSong, shopSong, stringsSong } from '../sound/song';
+import { arcadeSong, bandSong, railSong, shopSong, stringsSong } from '../sound/song';
+import { arcade, arcadeBlocks } from './arcade';
 import type { Place } from '../sound/sounds';
 import { band, bandBlocks } from './band';
 import type { Level } from './maps';
@@ -76,4 +77,33 @@ export const LEVELS: LevelDef[] = [
     mons: {},
     wide: false,
   },
+  {
+    file: 'arcade',
+    desc: 'The Arcade',
+    light: 'show',
+    blocks: arcadeBlocks,
+    build: arcade,
+    chr: 'teddy',
+    snd: 'arcade',
+    song: arcadeSong,
+    mons: { march: 3 },
+    wide: true,
+  },
+  bandstand(3),
 ];
+
+/** The bandstand after the `n`th family comes home (from the third on). */
+function bandstand(n: number): LevelDef {
+  return {
+    file: `band${n}`,
+    desc: 'The Bandstand Again',
+    light: 'sunset',
+    blocks: bandBlocks(n - 1),
+    build: band(n - 1),
+    chr: 'teddy',
+    snd: 'band',
+    song: () => bandSong(n),
+    mons: {},
+    wide: false,
+  };
+}

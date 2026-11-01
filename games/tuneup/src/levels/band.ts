@@ -2,7 +2,7 @@
 // stand (the stand rings a bell, counter 25), the band waits behind (Honker, Bubbles and
 // Twirly of the Clown Club), and Doc Leo waves from the lawn. The gate at the end opens when
 // every stand is full. The song is the parade tune with one more family than last time; the
-// families already home sit on the back riser.
+// families already home sit on the back riser, one instrument standing for each.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { over } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { KLUB } from '../../../teddy2/src/sprites/klubfolk';
@@ -17,6 +17,10 @@ import { MapBuilder, at, type Level } from './maps';
 export const FAMILIES: { id: string; finds: string[] }[] = [
   { id: 'keys', finds: ['piano-bright', 'piano-mellow', 'epiano', 'epiano-round', 'harpsichord', 'clavinet', 'tine-glass'] },
   { id: 'strings', finds: ['violin', 'orchestra', 'pizzicato', 'guitar-steel', 'guitar-nylon', 'oud', 'harp', 'harp-chime'] },
+  { id: 'synth', finds: ['lead-bright', 'lead-square', 'lead-saw', 'pad-80s', 'pad-warm', 'pad-sweep', 'pad-wobble'] },
+  { id: 'organ', finds: ['pipe-organ', 'tonewheel', 'combo-organ', 'accordion', 'harmonica', 'kazoo'] },
+  { id: 'brass', finds: ['synth-brass', 'trumpet', 'trombone', 'horn', 'tuba'] },
+  { id: 'winds', finds: ['flute', 'clarinet', 'oboe', 'sax', 'pan-flute', 'reed-soft'] },
 ];
 const W = 16;
 /** Stands start here on the stage (level x), in Teddy's row. */
@@ -32,7 +36,7 @@ function tall(top: Pixels, bottom: Pixels, figure: Pixels): [Pixels, Pixels] {
   return [a, b];
 }
 
-/** The bandstand's blocks for homecoming `n` (0 the keys, 1 the strings). */
+/** The bandstand's blocks for homecoming `n` (0 the keys, 1 the strings, then FAMILIES' order). */
 export function bandBlocks(n: number) {
   return (pal: Pal): Kit => {
     const k = kit(pal);
@@ -69,8 +73,8 @@ export function bandBlocks(n: number) {
       book.add(`stand${i}`, stand(), { ...air, effect: CTR.band, eamt: 1, score: 100, touch: `stand${i}.full` });
       book.add(`stand${i}.full`, stand(id), air);
     });
-    // the families already home, on the back riser
-    FAMILIES.slice(0, n).forEach((f, fi) => f.finds.forEach((id, i) => book.add(`home${fi}.${i}`, iconPic(id, lattice()), air)));
+    // the families already home, on the back riser: one instrument for each
+    FAMILIES.slice(0, n).forEach((f, fi) => book.add(`home${fi}`, iconPic(f.finds[0], lattice()), air));
     // the band behind the stands, and Doc Leo on the lawn, waving
     (['honker', 'bubbles', 'twirly'] as const).forEach((who) => {
       const [t, b] = tall(lattice(), lattice(), KLUB[who]);
@@ -115,7 +119,7 @@ export function band(n: number) {
     m.fill(1, STAGE_ROW, 12, 1, 's').fill(1, STAGE_ROW + 1, 12, 2, 'k');
     // the band at the back, the families home already on the riser, the stands in front
     (['honker', 'bubbles', 'twirly'] as const).forEach((who, i) => m.set(9 + i, 3, `${who}.top`).set(9 + i, 4, who));
-    FAMILIES.slice(0, n).forEach((f, fi) => f.finds.forEach((_, i) => m.set(STAND_X + i, 4 - fi, `home${fi}.${i}`)));
+    FAMILIES.slice(0, n).forEach((_, fi) => m.set(STAND_X + fi, 4, `home${fi}`));
     FAMILIES[n].finds.forEach((_, i) => m.set(STAND_X + i, 5, `stand${i}`));
     m.set(13, 7, 'leo.top').set(13, 8, 'leo');
     m.set(14, 8, 'gate');

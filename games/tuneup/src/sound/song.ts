@@ -67,10 +67,61 @@ const stringsPart = (): Part => [
   ),
 ];
 
-/** The bandstand's tune with the families home so far (1 keys, 2 keys and strings). */
+// Each chord note takes a channel of its own (one OPL voice each), so with more than two
+// families home the strings' chord drops its middle note to leave a voice for each new part.
+const stringsPair = (): Part => [
+  v(
+    2,
+    patchOf('orchestra'),
+    eachBar((b) => `[${b.chord[0]} ${b.chord[2]}] w`),
+    70,
+  ),
+  v(
+    4,
+    patchOf('pizzicato'),
+    eachBar((b) => times(4, `r e, ${up(b.chord[2])} e`)),
+    85,
+  ),
+];
+const synthPart = (): Part => [
+  v(
+    5,
+    patchOf('pad-warm'),
+    eachBar((b) => `${up(b.chord[1])} w`),
+    60,
+  ),
+];
+const organPart = (): Part => [
+  v(
+    6,
+    patchOf('accordion'),
+    eachBar((b) => `${up(b.root)} h, ${up(b.fifth)} h`),
+    55,
+  ),
+];
+const brassPart = (): Part => [
+  v(
+    7,
+    patchOf('trumpet'),
+    eachBar((b) => `r h, ${up(b.chord[0])} e, ${up(b.chord[1])} e, ${up(b.chord[2])} q`),
+    80,
+  ),
+];
+const windsPart = (): Part => [
+  v(
+    8,
+    patchOf('flute'),
+    eachBar((b) => `${up(b.chord[2])} h, ${up(b.chord[1])} h`),
+    70,
+  ),
+];
+/** The parts each family adds, after the keys and strings (FAMILIES' order). */
+const LATER = [synthPart, organPart, brassPart, windsPart];
+
+/** The bandstand's tune with the families home so far (1 keys, 2 keys and strings, and so on). */
 export function bandSong(families: number): Uint8Array {
-  const parts = [...keysPart(), ...(families >= 2 ? stringsPart() : [])];
-  return tune(bpmFor(9), parts);
+  if (families <= 2) return tune(bpmFor(9), [...keysPart(), ...(families >= 2 ? stringsPart() : [])]);
+  return tune(bpmFor(9), [...keysPart(), ...stringsPair(), ...LATER.slice(0, families - 2).flatMap((p) => p())]);
 }
 
 /** The menu: the whole band so far, with a parade drum on melody tracks. */
@@ -143,6 +194,89 @@ export function stringsSong(): Uint8Array {
       patchOf('upright-bass'),
       eachBar((b) => `${b.root} q, r q, ${b.fifth} q, r q`),
       90,
+    ),
+  ]);
+}
+
+/** The arcade: the tune on a square lead over a warm pad, a saw running the chord (a beat of 8 ticks). */
+export function arcadeSong(): Uint8Array {
+  return tune(bpmFor(8), [
+    v(0, patchOf('lead-square'), MELODY, 95),
+    v(
+      1,
+      patchOf('pad-80s'),
+      eachBar((b) => chordOf(b, 'w')),
+      50,
+    ),
+    v(
+      4,
+      patchOf('lead-saw'),
+      eachBar((b) => times(2, [...b.chord, up(b.chord[0])].map((n) => `${up(n)} e`).join(', '))),
+      45,
+    ),
+    v(
+      5,
+      patchOf('sub-bass'),
+      eachBar((b) => `${b.root} q, ${b.root} e, ${b.root} e, ${b.fifth} q, ${b.root} q`),
+      90,
+    ),
+  ]);
+}
+
+/** The roller rink: the tune on a tonewheel organ, oom-pah-pah chords (a beat of 8 ticks: a block a beat). */
+export function rinkSong(): Uint8Array {
+  return tune(bpmFor(8), [
+    v(0, patchOf('tonewheel'), MELODY, 95),
+    v(
+      1,
+      patchOf('combo-organ'),
+      eachBar((b) => `r q, ${chordOf(b, 'q')}, r q, ${chordOf(b, 'q')}`),
+      50,
+    ),
+    v(
+      4,
+      patchOf('pipe-organ'),
+      eachBar((b) => `${b.root} h, ${b.fifth} h`),
+      80,
+    ),
+  ]);
+}
+
+/** The marching field: the tune on trumpet, trombone under it, a tuba and a snare (a beat of 10 ticks, as the staff glides). */
+export function fieldSong(): Uint8Array {
+  return tune(bpmFor(10), [
+    v(0, patchOf('trumpet'), MELODY, 90),
+    v(
+      1,
+      patchOf('trombone'),
+      eachBar((b) => `${b.chord[1]} h, ${b.chord[0]} h`),
+      70,
+    ),
+    v(
+      2,
+      patchOf('tuba'),
+      eachBar((b) => `${b.root} q, ${b.fifth} q, ${b.root} q, ${b.fifth} q`),
+      90,
+    ),
+    v(3, patchOf('melodic-snare'), times(8, 'D4 e, D4 e, r q, D4 q, r q'), 55),
+  ]);
+}
+
+/** The woods by the river: the tune on flute, a clarinet's broken chords and an oboe's long notes, unhurried. */
+export function woodsSong(): Uint8Array {
+  return tune(bpmFor(11), [
+    v(0, patchOf('flute'), MELODY, 90),
+    v(
+      1,
+      patchOf('clarinet'),
+      eachBar((b) => times(2, b.chord.map((n) => `${n} e`).join(', ') + `, ${b.chord[1]} e`)),
+      55,
+    ),
+    v(
+      2,
+      patchOf('oboe'),
+      eachBar((b) => `${up(b.root)} w`),
+      50,
     ),
   ]);
 }

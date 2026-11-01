@@ -43,12 +43,25 @@ export function noteVoc(id: string, notes: string, seconds: number, hold = secon
   // a beat as long as the hold: 146 CMF ticks a second
   const bpm = 60 / hold;
   const x = render(song(bpm, [{ channel: 0, instrument: patchOf(id), notes: `${notes} q, r q` }]), seconds);
+  return level(x);
+}
+
+/** Raised to a steady level, with a short fade at the end, as a VOC. */
+function level(x: Float32Array): Uint8Array {
   let peak = 0;
   for (const s of x) peak = Math.max(peak, Math.abs(s));
   const gain = peak > 0 ? 0.85 / peak : 0;
   const fade = Math.round(0.04 * RATE);
   for (let i = 0; i < x.length; i++) x[i] *= gain * Math.min(1, (x.length - i) / fade);
   return encodeVoc(x, RATE);
+}
+
+/** A broken chord: `notes` one after another, `step` seconds each, ringing on, as a VOC `seconds` long. */
+export function arpVoc(id: string, notes: string[], seconds: number, step = 0.07): Uint8Array {
+  // an eighth as long as a step: 146 CMF ticks a second
+  const bpm = 60 / (2 * step);
+  const x = render(song(bpm, [{ channel: 0, instrument: patchOf(id), notes: notes.map((n) => `${n} e`).join(', ') + ', r h' }]), seconds);
+  return level(x);
 }
 
 /** A note name's frequency (A4 = 440). */

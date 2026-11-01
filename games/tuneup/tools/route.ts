@@ -168,6 +168,7 @@ function theBandstand(scene: number, stands: number) {
 }
 export const theBandstand1 = theBandstand(4, 7);
 export const theBandstand2 = theBandstand(6, 8);
+export const theBandstand3 = theBandstand(8, 7);
 
 /** Climbs a harp's strings (nothing pulls Teddy down there) to level row `row`. */
 async function climb(bot: Bot, row: number, what: string): Promise<void> {
@@ -207,4 +208,36 @@ export async function theMusicStore(bot: Bot): Promise<void> {
   await must(bot, bot.walk(37, 'off the harp'), 'off');
   if (found(bot) < 8) throw new Error(`found ${found(bot)} string instruments, not 8`);
   await leave(bot, bot.walk(40, 'out the door'), 'the door');
+}
+
+/** 6. The Arcade: up the cabinets, across the wobbling pads, seven synths, out the door. */
+export async function theArcade(bot: Bot): Promise<void> {
+  expect(bot, 7, 'the arcade');
+  await must(bot, bot.land(), 'on the floor');
+  await must(bot, bot.walk(3, 'along the floor'), 'floor');
+  picked(bot, 3, 8, 'the bright lead');
+  await must(bot, bot.walk(7, 'up the cabinets'), 'cabinets');
+  picked(bot, 7, 6, 'the square lead');
+  await must(bot, bot.hop('right', 12, 'right', 10), 'onto the first pad');
+  await must(bot, bot.land(), 'on the pad');
+  await must(bot, bot.walk(11, 'along the pad'), 'pad');
+  picked(bot, 11, 4, 'the warm pad');
+  await must(bot, bot.walk(13, 'off the pad'), 'down');
+  picked(bot, 13, 8, 'the saw lead');
+  await carefully(bot, 'up the cabinets and onto the second pad', 0, async () => {
+    await must(bot, bot.walk(16, 'up the cabinets'), 'cabinets');
+    await must(bot, bot.hop('right', 12, 'right', 19), 'onto the second pad');
+    await must(bot, bot.land(), 'on the pad');
+    await must(bot, bot.walk(20, 'along the pad'), 'pad');
+    picked(bot, 20, 4, 'the sweep pad');
+    await must(bot, bot.walk(22, 'off the pad'), 'down');
+    picked(bot, 22, 8, 'the 80s pad');
+  });
+  await must(bot, bot.walk(25, 'up the cabinets'), 'cabinets');
+  await must(bot, bot.hop('right', 12, 'right', 28), 'onto the third pad');
+  await must(bot, bot.land(), 'on the pad');
+  await must(bot, bot.walk(29, 'along the pad'), 'pad');
+  picked(bot, 29, 4, 'the wobble pad');
+  if (found(bot) < 7) throw new Error(`found ${found(bot)} synths, not 7`);
+  await leave(bot, bot.walk(32, 'out the door'), 'the door');
 }

@@ -8,9 +8,9 @@ import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine
 import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { boing, honk, pop, woof, yelp } from '../../../kit/teddySounds';
 import { SND } from '../ids';
-import { hz, noteVoc } from './notes';
+import { arpVoc, hz, noteVoc } from './notes';
 
-export type Place = 'shop' | 'rail' | 'band' | 'strings';
+export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade';
 
 /** A held PC speaker tone at a pitch, short (about a sixth of a second) and then quiet. */
 const tone = (name: string, steps = 24) => speaker((i) => (i < steps ? hz(name) : 0));
@@ -33,6 +33,15 @@ export const HARP_NOTES: [number, string][] = [
   [SND.gain, 'B5'],
   [SND.spend, 'D6'],
 ];
+/** The arcade's notes: a chord each, broken upward on a square lead (the speaker plays it too). */
+export const ARCADE_CHORDS: [number, string[]][] = [
+  [SND.help, ['C5', 'E5', 'G5', 'C6']],
+  [SND.money, ['D5', 'F5', 'A5', 'D6']],
+  [SND.score, ['E5', 'G5', 'B5', 'E6']],
+  [SND.lose, ['F5', 'A5', 'C6', 'F6']],
+  [SND.gain, ['G5', 'B5', 'D6', 'G6']],
+  [SND.spend, ['A5', 'C6', 'E6', 'A6']],
+];
 /** The Player Piano's two lanes: the low key rings slot 7 (a hit), the high one slot 0 (hit points and a hit). */
 export const RAIL_LOW = 'C5';
 export const RAIL_HIGH = 'G5';
@@ -42,6 +51,7 @@ export function buildVocs(): Record<string, Uint8Array> {
   const v: Record<string, Uint8Array> = {};
   for (const [, n] of STAIR_NOTES) v[`pn${n.toLowerCase().replace('#', 's')}`] = noteVoc('piano-bright', n, 0.6, 0.35);
   for (const [, n] of HARP_NOTES) v[`hp${n.toLowerCase().replace('#', 's')}`] = noteVoc('harp', n, 0.6, 0.35);
+  ARCADE_CHORDS.forEach(([, ch], i) => (v[`arp${i}`] = arpVoc('lead-square', ch, 0.5)));
   v.railhi = noteVoc('piano-bright', RAIL_HIGH, 0.35, 0.22);
   v.raillo = noteVoc('piano-bright', RAIL_LOW, 0.35, 0.22);
   v.clunk = noteVoc('melodic-kick', 'C3', 0.18, 0.08);
@@ -81,6 +91,8 @@ export function buildSoundSet(place: Place): SoundSet {
   if (place === 'shop' || place === 'strings') {
     const [prefix, scale] = place === 'shop' ? ['pn', STAIR_NOTES] : ['hp', HARP_NOTES];
     for (const [slot, n] of scale) add(slot, vocName(prefix, n), tone(n));
+  } else if (place === 'arcade') {
+    ARCADE_CHORDS.forEach(([slot, ch], i) => add(slot, `arp${i}`, SPEAKER.arpeggio(ch.map(hz))));
   } else if (place === 'rail') {
     add(SND.gain, 'raillo', tone(RAIL_LOW, 12));
     add(SND.help, 'railhi', tone(RAIL_HIGH, 12));
