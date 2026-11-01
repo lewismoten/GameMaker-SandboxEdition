@@ -28,11 +28,13 @@ export function redoReuse(
   scene: number,
   fallback: Reused['strategy'],
 ): (Reused | undefined)[] {
-  return walk.segments.map((seg) => {
-    if (seg.scene === scene) return undefined;
-    const was = scenes?.find((s) => s.scene === seg.scene);
-    return { scene: seg.scene, keys: seg.keys, strategy: was?.strategy ?? fallback, paths: was?.paths };
-  });
+  return walk.segments
+    .filter((s) => !s.incomplete)
+    .map((seg) => {
+      if (seg.scene === scene) return undefined;
+      const was = scenes?.find((s) => s.scene === seg.scene);
+      return { scene: seg.scene, keys: seg.keys, strategy: was?.strategy ?? fallback, paths: was?.paths };
+    });
 }
 
 /** Scenes after `scene` whose keys are not the old ones: the bot had to play them again. */

@@ -15,6 +15,7 @@
 // through and says on its closing card where it stopped (`ending`).
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
 import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { bestAttempt } from './bestAttempt';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Entry, type Exploration, type ExploreOptions } from '../explore';
 import type { Move } from '../inputs';
@@ -314,6 +315,12 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       outcome.heat = biggest?.heat;
       out.stopped = `No bot style got through ${name}: the walkthrough stops there.${lockWhy ? ` ${lockWhy}` : ''}`;
       ending = endingOf(name, 'stuck');
+      // the bot's furthest try, so the person can watch how far it got in this scene
+      const part = await bestAttempt(game, files, scene, entry, biggest, goal, MLEN, ending, seed);
+      if (part) {
+        segments.push(part);
+        chapters.push({ scene, title: `${name} (didn’t finish)` });
+      }
       break;
     }
     const { replay, strategy } = found;

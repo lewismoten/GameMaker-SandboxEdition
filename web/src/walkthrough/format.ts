@@ -17,6 +17,11 @@ export interface WalkSegment {
   scene: number;
   /** Key events (scan code, bit 7 = released) and the game ticks before each: encodeKeys(). */
   keys: string;
+  /**
+   * The bot's furthest try at a scene it didn't get through: the keys stop where it got to, and
+   * this says why ("It found no way through Cave."). Older readers ignore it (still version 1).
+   */
+  incomplete?: string;
 }
 
 export interface WalkChapterMark {

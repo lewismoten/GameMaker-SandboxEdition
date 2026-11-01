@@ -40,8 +40,8 @@ export function savedFrom(result: AutoWalk, verified: Verified | undefined, when
 
 /** The scenes the bot got through last time, in order, with their keys: what autoWalk plays again first. */
 export function reuseFrom(saved: SavedWalk | undefined): Reused[] | undefined {
-  const segments = saved?.walk?.segments;
-  if (!segments) return undefined;
+  const segments = saved?.walk?.segments?.filter((s) => !s.incomplete);
+  if (!segments || !saved) return undefined;
   const through = saved.scenes.filter((s) => s.strategy);
   if (through.length !== segments.length || through.some((s, i) => segments[i].scene !== s.scene)) return undefined;
   return through.map((s, i) => ({ scene: s.scene, keys: segments[i].keys, strategy: s.strategy!, paths: s.paths }));
