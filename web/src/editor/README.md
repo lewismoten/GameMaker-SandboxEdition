@@ -71,7 +71,8 @@ Part of the [source map](../README.md).
   `slideShow/`, `textScreen/`, `recording/` and `highScores/`.
 - `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
   `convert.ts`), composing songs (`songMaker.ts`), recording or synthesizing samples
-  (`vocMaker.ts`, `sfxMaker.ts`), speaker effects (`speakerFx.ts`), textures (`textures.ts`), a
+  (`vocMaker.ts`, `sfxMaker.ts`; a recording stops itself where the .VOC would reach 64 KB, with the
+  `widgets/recordMeter.ts` meter), speaker effects (`speakerFx.ts`), textures (`textures.ts`), a
   new game's opening (`opening/`) and the integrator's instruction and level cards (`cards/`: the
   words from the game's keys in `cardText.ts`, a plain backdrop in `cardBackdrop.ts`, the files in
   the scene's slot by `cardWire.ts`, and the dialogs in `cardDialog.ts`). `makers.ts` is their registry, offered by the file picker;
@@ -104,7 +105,8 @@ Part of the [source map](../README.md).
     close in, and monsters that are solid and hurt; `linkChecks.ts` links that misfire, as
     PLAYGAME's chklnk reads them: two on one cell, a scene that starts on its own link, a link left
     at (0, 0), links and landings in walls, links off the map, and no chain of links to the won
-    scene; `missingParts.ts` .VOC files and level files that aren't there, block numbers and
+    scene; `missingParts.ts` .VOC files and level files that aren't there (and `bigVocs`: a .VOC over
+    64 KB, which PLAYGAME can't load; `widgets/bigVocWarning.ts` warns the same when one is added), block numbers and
     counters past their sets and monsters from empty slots) and the play checks
     (`playChecks.ts`, `landings.ts`; `wayBack.ts`: one-way spots, things left behind by a
     whole-game run carrying the least it can, and Slower hands, a second run with one key at a
