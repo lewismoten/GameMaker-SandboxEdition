@@ -44,3 +44,11 @@ export function fitTitle(
   }
   return { size: minSize, lines: lines.map((l) => (measure(l, minSize) > maxWidth ? `${l.slice(0, Math.max(1, l.length - 1))}…` : l)) };
 }
+
+/** True when a title picture is one solid color (every pixel the same palette index, or the same RGB), so it says nothing and the title text is drawn instead. */
+export function isBlankPicture(p: { pixels: Uint8Array; palette: Uint8Array }): boolean {
+  if (!p.pixels.length) return true;
+  const rgb = (v: number) => `${p.palette[v * 3]},${p.palette[v * 3 + 1]},${p.palette[v * 3 + 2]}`;
+  const first = rgb(p.pixels[0]);
+  return p.pixels.every((v) => v === p.pixels[0] || rgb(v) === first);
+}

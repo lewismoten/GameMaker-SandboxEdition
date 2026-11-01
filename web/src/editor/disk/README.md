@@ -29,7 +29,9 @@ merge them, and says how many 3.5" disks the game needs.
   still picture (an animation if there is none) and the player's character block. A game with a title
   picture shows its name in that picture, so no title text is printed; one without (imported or in
   progress) gets its title written on the label, wrapped or shrunk to fit (`floppyTitle.ts`). No
-  per-game override: a picture means it shows the title.
+  per-game override: a picture means it shows the title, except a picture of one solid color (every
+  pixel the same palette index or the same RGB, as in a game from "New game"), which counts as none
+  (`isBlankPicture`).
 - `diskCard.ts` (the floppy and status line the Tools card draws, kept small so that tab stays
   light) and `diskTool.ts` (the dialog: sizes, the merges with a preview of each, Apply, and Undo
   through the project's file history, which stays while the project is open).

@@ -5,8 +5,9 @@
 // Who shows the title: a game with a title picture shows its name in that picture, so no title text
 // is printed under it. A game without one (imported, or still in progress) gets its title written
 // on the label itself, wrapped or shrunk to fit. There is no per-game override: the rule follows
-// `art.picture` alone.
-import { fitTitle } from './floppyTitle';
+// `art.picture` alone, except that a picture of one solid color (every pixel the same palette index or
+// the same RGB, like the all-black title of a game from "New game") counts as no picture.
+import { fitTitle, isBlankPicture } from './floppyTitle';
 import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 export interface FloppyArt {
@@ -137,8 +138,9 @@ export function drawFloppy(canvas: HTMLCanvasElement, art: FloppyArt, width = 17
   ctx.clip();
   const iw = lw - 12;
   const ih = lh - 12;
-  if (art.picture) {
-    const pic = indexed(art.picture, false);
+  const picture = art.picture && !isBlankPicture(art.picture) ? art.picture : undefined;
+  if (picture) {
+    const pic = indexed(picture, false);
     const k = Math.max(iw / pic.width, ih / pic.height);
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(pic, lx + 6 + (iw - pic.width * k) / 2, ly + 6 + (ih - pic.height * k) / 2, pic.width * k, pic.height * k);
@@ -152,7 +154,7 @@ export function drawFloppy(canvas: HTMLCanvasElement, art: FloppyArt, width = 17
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(hero, lx + 14, ly + 6 + ih - hero.height * k + 4, hero.width * k, hero.height * k);
   }
-  if (!art.picture) {
+  if (!picture) {
     // no title picture: the name is written on the label, on a dark plate so it reads on any plastic
     const fit = fitTitle((t, s) => ((ctx.font = `bold ${s}px system-ui, sans-serif`), ctx.measureText(t).width), art.title, iw - 24, 3, 32, 12);
     const lh2 = fit.size * 1.15;
