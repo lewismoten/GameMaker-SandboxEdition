@@ -21,7 +21,7 @@ function article(heading: 'h2' | 'div'): HTMLElement {
       null,
       'Andy Stone, the original programmer of Game-Maker, the DOS kit for making your own computer games from Recreational Software Designs of Amherst, N.H., has published its source code on GitHub under the MIT License, along with the CD image and an installed copy.',
     ),
-    h('p', null, 'Game-Maker was created by G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone, and sold from 1991 to 1995.'),
+    h('p', null, 'Game-Maker was created by G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone, and sold through the early 1990s.'),
     h('p', null, 'People are free to use the code as they like, Stone said, but ', h('q', null, QUOTE), '.'),
     h('p', { class: 'clip-url' }, 'github.com/gandrewstone/GameMaker'),
   );

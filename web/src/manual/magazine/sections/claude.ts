@@ -234,7 +234,7 @@ export const CLAUDE: MagSection = {
           q('Who are the games for?'),
           a(
             C,
-            'Two publishers in the story. Sandbox Software, the company behind the Sandbox BBS, has games like *Snowbound*, *Teddy’s Little Big Adventure* and *Maximus: The Hundred Worlds*, each with a box, a manual and its paper extras. The Bard of Bizarre’s song-games come from Lewis’s own comic songs and monologues, dressed as 1995 shareware from The Sofa BBS, with FM music arranged from the recordings.',
+            'Two publishers in the story. Sandbox Software, the company behind the Sandbox BBS, has games like *Snowbound*, *Teddy’s Little Big Adventure* and *Maximus: The Hundred Worlds*, each with a box, a manual and its paper extras. The Bard of Bizarre’s song-games come from Lewis’s own comic songs and monologues, dressed as 1994 shareware from The Sofa BBS, with FM music arranged from the recordings.',
           ),
           q('Many of the games star the same faces.'),
           a(
