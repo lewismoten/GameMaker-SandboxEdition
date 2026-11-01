@@ -1,6 +1,6 @@
 // Mail Bag: readers' letters with the editors' replies (an octopus that won't climb, a score a
 // big sister disputes, a tin heart theory, a drawing of the moon, the Sandbox BBS's busy signal)
-// and OOPS!, a correction to the preview issue. Every fact in a reply is the games' or the
+// and OOPS!, a correction to the April issue. Every fact in a reply is the games' or the
 // boards' own: the octopus needs slime (Octolris's help screen), the hearts sit in their maps
 // whatever the time, the Sandbox BBS has one line (bbsListings.ts), and the correction's keys
 // are PLAYGAME's (mailBag.test.ts reads the engine). Its second page, the Design Desk, answers
@@ -13,7 +13,7 @@
 import { a, art, card, cols, grid, head, list, note, p, side } from '../blocks';
 import type { Block, MagSection } from '../types';
 
-/** The correction: the key the preview issue named for the score, and the one that shows it. */
+/** The correction: the key the April issue named for the score, and the one that shows it. */
 export const CORRECTION = { said: 4, right: 2 };
 
 interface Letter {
@@ -36,7 +36,7 @@ const LETTERS: Letter[] = [
   },
   {
     title: 'Seventy-three?!',
-    text: 'Your preview gave Glubada Pond a 73. My little brother has played it every night for three weeks and draws the fish on everything, including my homework. That is a 100.',
+    text: 'Your reviewer at the swap meet gave Glubada Pond a 73. My little brother has played it every night for three weeks and draws the fish on everything, including my homework. That is a 100.',
     from: 'BIG SIS, Keyser, W.Va.',
     reply:
       'FINS stands by 73, which [in our book](go:mag/reviews-4) means a good evening. Your brother has had twenty-one good evenings, which beats any score we print. Please ask him to leave your homework alone.',
@@ -122,7 +122,7 @@ export const MAIL_BAG: MagSection = {
           kicker: 'Letters',
           size: 'l',
           level: 2,
-          deck: 'Our free preview issue went around the computer swap meet, and the mailbox has not been empty since. Letters may be edited for length. Drawings are never edited.',
+          deck: 'Our April issue went around the computer swap meet, and the mailbox has not been empty since. Letters may be edited for length. Drawings are never edited.',
         }),
         cols(2, LETTERS.flatMap(letter)),
         grid([
@@ -131,7 +131,7 @@ export const MAIL_BAG: MagSection = {
               'OOPS!',
               [
                 p(
-                  `In our preview issue we told you to press F${CORRECTION.said} to check your score. F${CORRECTION.said} turns the sound effects off. (Press it again and they come back.) Your score is on the status screen: press **F${CORRECTION.right}**. Sorry, Kevin.`,
+                  `In our April issue (Vol. 1, No. 4) we told you to press F${CORRECTION.said} to check your score. F${CORRECTION.said} turns the sound effects off. (Press it again and they come back.) Your score is on the status screen: press **F${CORRECTION.right}**. Sorry, Kevin.`,
                 ),
               ],
               'pink',

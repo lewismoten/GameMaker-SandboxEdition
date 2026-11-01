@@ -4,7 +4,7 @@
 // down is one shove (src/levels/maps.ts, src/characters/kid.ts norepeat); four levels, about
 // three and a half minutes of them in the walkthrough (walkthrough.json's timeline); nothing gates the
 // street exits, and the mall lot snows over and pays again (src/blocks/ground.ts). The
-// price is the one on the box (about.json), and the ad it mentions really carries the game.
+// price is the one on the box (about.json). It runs in the spring issue (spring93/review.ts).
 import { cols, grid, head, note, p, shot, side } from '../blocks';
 import type { MagContext, MagPage } from '../types';
 
@@ -51,10 +51,10 @@ export function criticsCorner(ctx: MagContext): MagPage {
           'Then you play it. The sled run starts at the top of Jamie Street on flat snow, and the sled just sits there. Each press of the down arrow is one shove, and holding it down doesn’t keep pushing, so I tapped, tapped, tapped like I was sending Morse code before the hill finally took me. It felt like a lot of work for a sled. Once it’s rolling it’s a fair little run: rocks, trees, moguls, dollar bills on the snow and toboggan kids cutting across.',
         ),
         p(
-          'And then it’s over. There are four levels: Gale Street, Jamie Street, Bowden Drive and LaVale Mall. The walkthrough Sandbox recorded plays all four in about three and a half minutes. Worse, nothing makes you shovel the streets at all. I walked past every driveway, rode the hill, dodged the plows on Bowden Drive and stood in the mall lot while the squalls buried it again, a dollar a scoop, until I had $89 for the register. Box bought, credits up.',
+          'And then it’s over. There are four levels: Gale Street, Jamie Street, Bowden Drive and LaVale Mall. A walkthrough of all four takes about three and a half minutes. Worse, nothing makes you shovel the streets at all. I walked past every driveway, rode the hill, dodged the plows on Bowden Drive and stood in the mall lot while the squalls buried it again, a dollar a scoop, until I had $89 for the register. Box bought, credits up.',
         ),
         p(
-          'So why the A+? Because the heart of it is right, and the heart is the hard part. Snowbound plays like a practice swing, the kind every studio takes early on. Teddy’s Little Big Adventure and Maximus show what Sandbox can do when it connects. Read Snowbound’s story, ride the hill once, and spend your money on one of those.',
+          'So why the A+? Because the heart of it is right, and the heart is the hard part. Snowbound plays like a practice swing, the kind every studio takes early on. Read Snowbound’s story, ride the hill once, and keep an eye on what Sandbox makes next.',
         ),
       ]),
       grid(
@@ -73,14 +73,10 @@ export function criticsCorner(ctx: MagContext): MagPage {
           ],
           [
             side(
-              'Yes, they advertise with us',
+              'Judge for yourself',
               [
                 p(
-                  'Sandbox Software bought the ad on page {page:ad-sandbox-edition}, and Snowbound’s title screen is in it. No, it didn’t help. Nobody at Sandbox saw this review before you did.',
-                ),
-                // the sled was fixed after the review was written (one push of Down starts it now)
-                p(
-                  '**Update:** after we went to press, Sandbox mailed out a fix: the top of Jamie Street now glides, so one push sends the sled. The rest of the review stands.',
+                  'Snowbound is the free disk taped to this issue’s cover, so you can try it before you believe me. Sandbox Software doesn’t advertise with us, and nobody there saw this review before you did.',
                 ),
               ],
               'cyan',

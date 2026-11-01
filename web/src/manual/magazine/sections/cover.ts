@@ -8,12 +8,12 @@ export const COVER: MagSection = {
   id: 'cover',
   title: 'Cover',
   toc: false,
-  pages: () => [
+  pages: (ctx) => [
     {
       kind: 'cover',
       tone: 'black',
       blocks: [
-        { t: 'masthead', ...MAG },
+        { t: 'masthead', ...MAG, issue: ctx.mag.issue },
         p('A modern tribute to the shareware years', { lead: true }),
         head('GAME-MAKER’S SOURCE CODE SET FREE!', {
           kicker: 'Exclusive',
