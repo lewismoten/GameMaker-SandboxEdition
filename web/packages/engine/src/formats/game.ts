@@ -22,6 +22,7 @@
 // tx, ty, all i16; tnum 20 = unused), red, green, blue i8, ssup, ssdown, ssleft, ssright,
 // PinChar u8, extra[11].
 import { Reader, Writer, cString } from './binary';
+import { fromCp437 } from '../text/cp437';
 
 // Constants from GRATOR.H.
 export const NOSCENE = 0xffff;
@@ -333,6 +334,16 @@ function buildPool(scenes: Scene[]): { pool: Uint8Array; offsets: number[][] } {
     }),
   );
   return { pool: new Uint8Array(bytes), offsets };
+}
+
+/**
+ * The game's name for showing outside DOS: the start scene's description, which holds CP437
+ * byte codes (the menu draws them with the PC font), as the Unicode a PC showed, without the
+ * spaces and frame characters (box lines, blocks) authors put around it to center or box it.
+ * Empty when there is none.
+ */
+export function gameTitle(game: Game): string {
+  return fromCp437(game.scenes[0]?.desc ?? '').replace(/^[\s\u2500-\u259f]+|[\s\u2500-\u259f]+$/g, '');
 }
 
 export function sceneKind(s: Scene): 'start' | 'end' | 'adventure' | 'unused' {
