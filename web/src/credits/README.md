@@ -3,7 +3,7 @@
 Part of the [source map](../README.md).
 
 The Credits page (`#/credits`, `creditsPage.ts`, one `*Section.ts` per
-part, sharing `section.ts`), all arriving at once at modem speed (`modemSheet.ts`). Tests check
+part, sharing `section.ts`), one tab per part (`tabs.ts`: the open one is `#/credits?tab=ai`, `?go=<element id>` opens the tab holding it, `gotoCredit(id)` does the same for in-page links; print shows every part), all arriving at once at modem speed (`modemSheet.ts`). Tests check
 each against the lockfile, `code/` and the games' credits.
 
 - Software: the npm packages (`deps.json`, written from the lockfile by `web/scripts/credits.ts`

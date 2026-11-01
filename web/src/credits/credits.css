@@ -234,51 +234,7 @@ main.credits-page q {
   margin-left: 0.3em;
 }
 
-/* the sections as cards to jump to, when "On this page" has no room beside the text */
-main.credits-page .credits-jump ul {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
-  gap: 8px;
-  margin: 0 0 24px;
-  padding: 0;
-  list-style: none;
-}
-
-main.credits-page .credits-jump li + li {
-  margin: 0;
-}
-
-main.credits-page .credits-jump a {
-  display: block;
-  min-height: 24px;
-  height: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--panel);
-  color: var(--text);
-  text-decoration: none;
-}
-
-main.credits-page .credits-jump a:hover {
-  border-color: var(--accent);
-}
-
-main.credits-page .credits-jump b {
-  display: block;
-  color: var(--accent);
-}
-
-main.credits-page .credits-jump span {
-  display: block;
-  color: var(--muted);
-  font-size: 14px;
-}
-
 @media (min-width: 1200px) {
-  main.credits-page .credits-jump {
-    display: none;
-  }
 }
 
 /* ---- pictures: a label's intro screen beside the section's first facts ---- */
@@ -590,13 +546,6 @@ main.credits-page .bard-table thead th {
   }
 
   /* the section cards: two to a row, titles only */
-  main.credits-page .credits-jump ul {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  main.credits-page .credits-jump span {
-    display: none;
-  }
 }
 
 /* the AI tools: a line each (name, maker, what it made in short), opening to the whole story */
