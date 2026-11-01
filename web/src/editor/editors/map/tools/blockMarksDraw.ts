@@ -1,7 +1,8 @@
 // Draws the map editor's block behavior marks (blockMarks.ts) on their own canvas over the map:
 // barrier edges, gravity chevrons that move the way the pull goes (still when the viewer asks
-// for reduced motion), and badges for touch, pickup and timed blocks. Only the cells in view are
-// drawn; each block's behavior is worked out once per block set. Editor-only; never exported.
+// for reduced motion; opposite pulls that cancel are left unmarked, as they pull nowhere), and
+// badges for touch, pickup and timed blocks. Only the cells in view are drawn; each block's
+// behavior is worked out once per block set. Editor-only; never exported.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { barrierEdges, behaviors, Edge, type BlockBehavior } from './blockMarks';
@@ -94,34 +95,6 @@ function chevron(g: CanvasRenderingContext2D, x: number, y: number, s: number, k
   g.restore();
 }
 
-/** Opposite pulls that cancel (up and down, or left and right): a still double-headed bar. */
-function cancelBar(g: CanvasRenderingContext2D, x: number, y: number, s: number, axis: 'x' | 'y'): void {
-  const c = { x: x + s / 2, y: y + s / 2 };
-  const r = s * 0.3,
-    h = s * 0.12;
-  g.beginPath();
-  if (axis === 'y') {
-    g.moveTo(c.x, c.y - r);
-    g.lineTo(c.x, c.y + r);
-    g.moveTo(c.x - h, c.y - r + h);
-    g.lineTo(c.x, c.y - r);
-    g.lineTo(c.x + h, c.y - r + h);
-    g.moveTo(c.x - h, c.y + r - h);
-    g.lineTo(c.x, c.y + r);
-    g.lineTo(c.x + h, c.y + r - h);
-  } else {
-    g.moveTo(c.x - r, c.y);
-    g.lineTo(c.x + r, c.y);
-    g.moveTo(c.x - r + h, c.y - h);
-    g.lineTo(c.x - r, c.y);
-    g.lineTo(c.x - r + h, c.y + h);
-    g.moveTo(c.x + r - h, c.y - h);
-    g.lineTo(c.x + r, c.y);
-    g.lineTo(c.x + r - h, c.y + h);
-  }
-  outlined(g, '#c8c8c8', Math.max(1, s / 16));
-}
-
 /** One edge from (x1, y1) to (x2, y2); a one-way edge gets teeth on the solid side, pointing into the block it guards. */
 function edgePath(walls: Path2D, oneWay: Path2D, e: Edge, x1: number, y1: number, x2: number, y2: number, s: number): void {
   if (e === Edge.None) return;
@@ -204,7 +177,6 @@ export function blockMarksLayer(host: LayerHost) {
             chevron(g, px, py, s, k, phase);
             moving = true;
           }
-          for (const a of k.cancels) if (!(a === 'x' ? k.pull.x : k.pull.y)) cancelBar(g, px, py, s, a);
         }
         for (const kind of ['touch', 'pickup', 'timed'] as const) if (shown.has(kind) && k[kind]) badge(g, kind, px, py, s);
       }
