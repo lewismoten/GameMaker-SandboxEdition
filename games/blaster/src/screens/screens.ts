@@ -82,7 +82,7 @@ function titleScreen(): Pixels {
   logo(p, 14);
   scaleBlit(p, SHIP, 34, 110, 3);
   scaleBlit(p, SHIP, 232, 124, 2);
-  centered(p, 186, '(C) 1995 SANDBOX SOFTWARE', c('gray', 7), 1, c('ink', 0));
+  centered(p, 186, '(C) 1994 SANDBOX SOFTWARE', c('gray', 7), 1, c('ink', 0));
   return p;
 }
 
@@ -152,7 +152,7 @@ function introFli(): Uint8Array {
       return s;
     });
     const p = desk((g) => dos(g, lines.concat(f % 4 < 2 ? ['_'] : [])));
-    caption(p, 'LATE ONE NIGHT IN 1995...');
+    caption(p, 'LATE ONE NIGHT IN 1994...');
     frames.push(frame(p));
   }
   // 2. GLITCH appears

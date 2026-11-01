@@ -13,7 +13,7 @@ const pages = (...ps: string[][]) => ps.map(page).join('\n');
 
 export const STORY = pages(
   [
-    'Late one night in 1995, you',
+    'Late one night in 1994, you',
     'downloaded COOLGAME.ZIP from a',
     "BBS you'd never called before.",
     '',
@@ -156,12 +156,12 @@ export const HELP = pages(
 const CREDITS_TEXT = pages(
   [
     'VIRUS BLASTER',
-    `Version ${about.version}, 1995`,
+    `Version ${about.version}, July 1994`,
     '',
     'Design, art, music and',
     'programming: Claude',
     '',
-    'Made with GAME-MAKER 3.0 by',
+    'Made with GAME-MAKER 2.0 by',
     'Recreational Software Designs.',
     'Every scroll, every shot and',
     'every boss is plain',
@@ -267,8 +267,8 @@ for (const l of DEBUG_EGG.split('\n')) if (l.length > 30) throw new Error(`Egg l
 function readme(price: string): string {
   const lines = [
     '         VIRUS BLASTER',
-    `      Version ${about.version} - 1995`,
-    '  (c) 1995 Sandbox Software',
+    `      Version ${about.version} - July 1994`,
+    '  (c) 1994 Sandbox Software',
     '',
     'Your PC has a virus. Shrink',
     'down and blast it!',
@@ -368,7 +368,7 @@ function readme(price: string): string {
     'money anywhere.',
     '',
     'SAYING THANKS',
-    'Built with GAME-MAKER 3.0 by',
+    'Built with GAME-MAKER 2.0 by',
     'Recreational Software Designs.',
     'Remember: scan every download!',
   ];
