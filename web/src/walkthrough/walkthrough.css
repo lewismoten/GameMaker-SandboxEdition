@@ -311,5 +311,18 @@ dialog.modal:has(.wt-dialog) {
 }
 
 .wt-redo-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
   margin-top: 6px;
+}
+
+.wt-redo-body > p {
+  flex: 1 0 100%;
+  margin: 0;
+}
+
+.wt-redo-body .toolbar {
+  margin: 0;
 }

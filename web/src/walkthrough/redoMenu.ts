@@ -31,7 +31,7 @@ export function redoMenu(walk: Walkthrough, opt: RedoOptions, choose: (c: RedoCh
     h('summary', null, 'Redo…'),
     h(
       'div',
-      { class: 'wt-redo-body stack' },
+      { class: 'wt-redo-body' },
       h(
         'p',
         { class: 'meta' },

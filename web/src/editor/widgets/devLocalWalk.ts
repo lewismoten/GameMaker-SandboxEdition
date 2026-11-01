@@ -7,12 +7,20 @@
 import type { Walkthrough } from '../../walkthrough/format';
 import { checkWalkFile } from './walkFile';
 
+export interface LocalWalk {
+  walk: Walkthrough;
+  /** Said in the player's Redo… menu. */
+  note: string;
+}
+
+const NOTE =
+  'This walkthrough is a local file from your .for-lewis folder (the dev server only); it is not saved with the game. Redo keeps a new one in the usual place.';
 const FOLDER = '.for-lewis/research/archive-walks';
 let rootCache: Promise<string | undefined> | undefined;
 
 /** The repository root, from the list of folders Vite's 403 page says it serves. */
 function repoRoot(): Promise<string | undefined> {
-  rootCache ??= fetch('/@fs/outside-the-allow-list/x')
+  rootCache ??= fetch('/@fs/etc/hosts')
     .then((r) => r.text())
     .then((t) => /serving allow list\.<br\/><br\/>- ([^<]+)</.exec(t)?.[1])
     .catch(() => undefined);
@@ -22,7 +30,7 @@ function repoRoot(): Promise<string | undefined> {
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '');
 
 /** A walkthrough on disk for this .gam (matched without case); `name` (the project's) picks among several zips. */
-export async function localWalk(gam: string, sceneCount: number, name = ''): Promise<Walkthrough | undefined> {
+export async function localWalk(gam: string, sceneCount: number, name = ''): Promise<LocalWalk | undefined> {
   try {
     const root = await repoRoot();
     if (!root) return undefined;
@@ -40,7 +48,7 @@ export async function localWalk(gam: string, sceneCount: number, name = ''): Pro
       const r = await fetch(`${base}/${zip}/${file}.walkthrough.json`);
       if (!r.ok) continue;
       const checked = checkWalkFile(await r.text(), gam, sceneCount);
-      if (checked.ok) return checked.walk;
+      if (checked.ok) return { walk: checked.walk, note: NOTE };
     }
   } catch {
     // no folder, no network: no local walkthrough
