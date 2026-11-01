@@ -396,6 +396,28 @@
   }
 }
 
+/* A phone held sideways has too few rows for a tip above the editor: fold it there too (hintFold.ts) */
+@media (max-height: 480px) and (max-width: 900px) {
+  .hint-toggle {
+    display: inline-block;
+    float: right;
+    min-height: 24px;
+    margin: 0 0 0 8px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .hint-fold.hint-short .hint-toggle {
+    display: none;
+  }
+
+  .hint-fold.folded {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
 /* The Assistant button beside the file's title (assistant/bridge/panel.ts): shown on phones
    too, unlike the keyboard shortcuts beside it. */
 .editor .assistant-btn {
