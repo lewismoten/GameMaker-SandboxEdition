@@ -130,6 +130,15 @@ records every clip again.
 | [settings-ai.ogg](settings/settings-ai.ogg) | AI setup connects your own AI, on your computer or with your own key, for the editor’s Assistant. | Settings: Max points at AI setup in the Settings menu | 7.41 |
 | [settings-backup.ogg](settings/settings-backup.ogg) | Back up saves everything this browser keeps to one file. Restore brings it back, here or on another computer. | Settings: Max points at Back up / restore in the Settings menu | 7.76 |
 | [settings-page.ogg](settings/settings-page.ogg) | This page’s sections: the people who made the original Game-Maker, the game authors, and every tool used, AI too. | Settings: Max points at the Credits page’s sections | 8.15 |
+| [settings-tab-original.ogg](settings/settings-tab-original.ogg) | The original names RSD and the Stone family, part by part. | Settings: Max presses the The original tab | 5.21 |
+| [settings-tab-authors.ogg](settings/settings-tab-authors.ogg) | Game authors covers the CD’s games, Sandbox Software, and the Bard. | Settings: Max presses the Game authors tab | 5.42 |
+| [settings-tab-people.ogg](settings/settings-tab-people.ogg) | The people are Lewis, and the cast who appear as themselves. | Settings: Max presses the The people tab | 4.40 |
+| [settings-tab-more-games.ogg](settings/settings-tab-more-games.ogg) | More games points to other sites that keep the games players made. | Settings: Max presses the More games tab | 4.70 |
+| [settings-tab-bard.ogg](settings/settings-tab-bard.ogg) | The Bard shows who made what, game by game. | Settings: Max presses the The Bard tab | 3.71 |
+| [settings-tab-bbs.ogg](settings/settings-tab-bbs.ogg) | BBS pictures says who took each one, and lets you download one by modem. | Settings: Max presses the BBS pictures tab | 5.91 |
+| [settings-tab-ai.ogg](settings/settings-tab-ai.ogg) | AI tools lists what each tool made. | Settings: Max presses the AI tools tab | 3.27 |
+| [settings-tab-pieces.ogg](settings/settings-tab-pieces.ogg) | Third-party pieces are the fonts, headers and runtimes in the site and players. | Settings: Max presses the Third-party pieces tab | 5.65 |
+| [settings-tab-software.ogg](settings/settings-tab-software.ogg) | Software lists the build and test tools, and what they use. | Settings: Max presses the Software tab | 4.38 |
 | [settings-bye.ogg](settings/settings-bye.ogg) | Delivered. Signed, sealed, and on to the next world. | Settings: Max says goodbye and walks off | 3.94 |
 
 ## editor

@@ -16,6 +16,8 @@ export const settingsChapter: Chapter = {
   actor: 'max',
   speaker: 'max',
   music: 'maxStation',
+  // the page's open tab is kept in the address
+  keep: { params: ['tab'] },
   steps: [
     {
       id: 'settings-hello',
@@ -76,6 +78,69 @@ export const settingsChapter: Chapter = {
       action: 'point',
       target: { label: 'the Credits page’s sections', css: ['.credits-page .credits-tabs', '.credits-page h1'] },
       say: 'This page’s sections: the people who made the original Game-Maker, the game authors, and every tool used, AI too.',
+    },
+    {
+      id: 'settings-tab-original',
+      action: 'press',
+      target: { label: 'the The original tab', css: '.credits-tab', text: 'The original' },
+      click: true,
+      say: 'The original names RSD and the Stone family, part by part.',
+    },
+    {
+      id: 'settings-tab-authors',
+      action: 'press',
+      target: { label: 'the Game authors tab', css: '.credits-tab', text: 'Game authors' },
+      click: true,
+      say: 'Game authors covers the CD’s games, Sandbox Software, and the Bard.',
+    },
+    {
+      id: 'settings-tab-people',
+      action: 'press',
+      target: { label: 'the The people tab', css: '.credits-tab', text: 'The people' },
+      click: true,
+      say: 'The people are Lewis, and the cast who appear as themselves.',
+    },
+    {
+      id: 'settings-tab-more-games',
+      action: 'press',
+      target: { label: 'the More games tab', css: '.credits-tab', text: 'More games' },
+      click: true,
+      say: 'More games points to other sites that keep the games players made.',
+    },
+    {
+      id: 'settings-tab-bard',
+      action: 'press',
+      target: { label: 'the The Bard tab', css: '.credits-tab', text: 'The Bard' },
+      click: true,
+      say: 'The Bard shows who made what, game by game.',
+    },
+    {
+      id: 'settings-tab-bbs',
+      action: 'press',
+      target: { label: 'the BBS pictures tab', css: '.credits-tab', text: 'BBS pictures' },
+      click: true,
+      say: 'BBS pictures says who took each one, and lets you download one by modem.',
+    },
+    {
+      id: 'settings-tab-ai',
+      action: 'press',
+      target: { label: 'the AI tools tab', css: '.credits-tab', text: 'AI tools' },
+      click: true,
+      say: 'AI tools lists what each tool made.',
+    },
+    {
+      id: 'settings-tab-pieces',
+      action: 'press',
+      target: { label: 'the Third-party pieces tab', css: '.credits-tab', text: 'Third-party pieces' },
+      click: true,
+      say: 'Third-party pieces are the fonts, headers and runtimes in the site and players.',
+    },
+    {
+      id: 'settings-tab-software',
+      action: 'press',
+      target: { label: 'the Software tab', css: '.credits-tab', text: 'Software' },
+      click: true,
+      say: 'Software lists the build and test tools, and what they use.',
     },
     {
       id: 'settings-bye',

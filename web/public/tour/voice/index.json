@@ -2927,6 +2927,78 @@
     "hash": "1eb08af078ef",
     "voice": "3705d98401bd"
   },
+  "settings-tab-ai": {
+    "chapter": "settings",
+    "where": "Settings: Max presses the AI tools tab",
+    "text": "AI tools lists what each tool made.",
+    "seconds": 3.27,
+    "hash": "6b65e23aff7e",
+    "voice": "3705d98401bd"
+  },
+  "settings-tab-authors": {
+    "chapter": "settings",
+    "where": "Settings: Max presses the Game authors tab",
+    "text": "Game authors covers the CD’s games, Sandbox Software, and the Bard.",
+    "seconds": 5.42,
+    "hash": "d9067373ac67",
+    "voice": "3705d98401bd"
+  },
+  "settings-tab-bard": {
+    "chapter": "settings",
+    "where": "Settings: Max presses the The Bard tab",
+    "text": "The Bard shows who made what, game by game.",
+    "seconds": 3.71,
+    "hash": "9b11c1fb368f",
+    "voice": "3705d98401bd"
+  },
+  "settings-tab-bbs": {
+    "chapter": "settings",
+    "where": "Settings: Max presses the BBS pictures tab",
+    "text": "BBS pictures says who took each one, and lets you download one by modem.",
+    "seconds": 5.91,
+    "hash": "185d192df903",
+    "voice": "3705d98401bd"
+  },
+  "settings-tab-more-games": {
+    "chapter": "settings",
+    "where": "Settings: Max presses the More games tab",
+    "text": "More games points to other sites that keep the games players made.",
+    "seconds": 4.7,
+    "hash": "6d62ba29235e",
+    "voice": "3705d98401bd"
+  },
+  "settings-tab-original": {
+    "chapter": "settings",
+    "where": "Settings: Max presses the The original tab",
+    "text": "The original names RSD and the Stone family, part by part.",
+    "seconds": 5.21,
+    "hash": "b3cbb80dde07",
+    "voice": "3705d98401bd"
+  },
+  "settings-tab-people": {
+    "chapter": "settings",
+    "where": "Settings: Max presses the The people tab",
+    "text": "The people are Lewis, and the cast who appear as themselves.",
+    "seconds": 4.4,
+    "hash": "dfa5cc1357bb",
+    "voice": "3705d98401bd"
+  },
+  "settings-tab-pieces": {
+    "chapter": "settings",
+    "where": "Settings: Max presses the Third-party pieces tab",
+    "text": "Third-party pieces are the fonts, headers and runtimes in the site and players.",
+    "seconds": 5.65,
+    "hash": "166dab505ff0",
+    "voice": "3705d98401bd"
+  },
+  "settings-tab-software": {
+    "chapter": "settings",
+    "where": "Settings: Max presses the Software tab",
+    "text": "Software lists the build and test tools, and what they use.",
+    "seconds": 4.38,
+    "hash": "94e421db562e",
+    "voice": "3705d98401bd"
+  },
   "settings-theme": {
     "chapter": "settings",
     "where": "Settings: Max points at Theme in the Settings menu",
