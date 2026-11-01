@@ -4,7 +4,6 @@
 // The ad that started it follows on its own page, reprinted and labeled as one.
 import { a, adPage, adframe, big, button, cols, grid, head, list, note, p, pull, q, side } from '../../blocks';
 import { ORIGINAL_AD } from '../ads';
-import { SWAP_MEET } from '../smallAds';
 import type { MagSection } from '../../types';
 
 const L = 'LEWIS';
@@ -111,7 +110,6 @@ export const LEWIS_1: MagSection = {
         note(
           'Interview for this issue. Lewis’s answers are drawn from his own account of those years, “Lewis and Game-Maker”, in the Sandbox Edition’s notes.',
         ),
-        SWAP_MEET,
       ],
     },
     {

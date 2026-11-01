@@ -66,6 +66,11 @@ describe('the two issues', async () => {
     expect(JSON.stringify(two.pages)).not.toMatch(/first issue|preview issue|debut issue/i);
   });
 
+  it('keep a half-page ad off the interview’s second page, which has no room for one (checked by eye at 1500 and 700 wide)', () => {
+    const page = one.pages.find((pg) => pg.id === 'lewis-2')!;
+    expect(page.blocks.some((b) => b.t === 'halfad')).toBe(false);
+  });
+
   it('put Snowbound on one 1.44 MB floppy, as the disk page says', () => {
     const snowbound = catalog.find((g) => g.id === 'snowbound')!;
     expect(gameDisks(snowbound)).toBe(1);
