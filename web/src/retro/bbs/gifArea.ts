@@ -17,20 +17,7 @@ import { recordDownload, updateAccount } from './ratio';
 import { downloadLine } from '../../project/diskFacts';
 import { cps, slowWait, warpCount } from './lineSpeed';
 import { cpsText, expectText } from './transfer';
-import { words } from '../../keepTogether';
-
-function wrap(text: string, width: number): string[] {
-  const out: string[] = [];
-  let line = '';
-  for (const word of words(text)) {
-    if ((line + ' ' + word).trim().length > width) {
-      out.push(line);
-      line = word;
-    } else line = (line + ' ' + word).trim();
-  }
-  if (line) out.push(line);
-  return out;
-}
+import { wrap } from './wrapWords';
 
 export async function gifGallery(t: Term, h: RetroHost): Promise<void> {
   const s = h.screen;

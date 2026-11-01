@@ -38,7 +38,7 @@ import { sizeAbout } from './sofaFiles';
 import { cpsText, expectText, progress } from './transfer';
 import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { doorGames } from './ticTacToeDoor';
-import { words } from '../../keepTogether';
+import { wrap } from './wrapWords';
 import { rsdLine } from './rsdLine';
 import { signup } from './signup';
 import { signupAccounts } from './signupAccounts';
@@ -156,19 +156,6 @@ function leechWarning(t: Term): void {
   t.line(`|12  ** LEECHES WILL BE DELETED! **  |07This board keeps a |141:${RATIO}|07 upload/download ratio.`);
   t.line(`|07  New callers get |14${NEW_USER_FILES}|07 files on the house; each call earns |14${POINTS_PER_CALL}|07 more, each upload |14${RATIO}|07.`);
   t.line(`|07  The SysOp's own files are |10FREE|07.   Your file points: |14${filePoints(a)}|07   U/D: |14${ratioText(a)}`);
-}
-
-export function wrap(text: string, width: number): string[] {
-  const out: string[] = [];
-  let line = '';
-  for (const word of words(text)) {
-    if ((line + ' ' + word).trim().length > width) {
-      out.push(line);
-      line = word;
-    } else line = (line + ' ' + word).trim();
-  }
-  if (line) out.push(line);
-  return out;
 }
 
 /** Renegade-style: the last few callers after logon. */
