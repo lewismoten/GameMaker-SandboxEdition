@@ -68,6 +68,16 @@ const result=await unpackGame(archive);
 const files=new GameFiles(result.entries);
 assert.equal(files.mainGame(),'demo.gam');assert.deepEqual(files.get('demo.gam'),bytes);
 assert.equal(new Pixels(20,20).px.length,400);
+// Every subpath each package declares must resolve and load from the installed tarballs.
+import { readFileSync } from 'node:fs';
+for (const name of ['engine','archives','tools']) {
+  const pkg = '@lewismoten/gamemaker-sandbox-' + name;
+  const manifest = JSON.parse(readFileSync(new URL('./node_modules/' + pkg + '/package.json', import.meta.url), 'utf8'));
+  for (const sub of Object.keys(manifest.exports)) {
+    if (sub.endsWith('package.json') || sub.includes('*')) continue;
+    await import(sub === '.' ? pkg : pkg + sub.slice(1));
+  }
+}
 `,
   );
   execFileSync(process.execPath, [join(scratch, 'smoke.mjs')], { cwd: scratch, stdio: 'inherit' });

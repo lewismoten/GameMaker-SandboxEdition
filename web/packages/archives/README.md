@@ -81,6 +81,10 @@ const listing = listZip(bytes); // lazy entry.read()
 
 ZIP creation uses deflate when available and smaller; otherwise it stores entries. It shares the reader's CRC code and adds no dependency. Consumers that only import unpacking can tree-shake the writer. Entry data is returned in memory; this package writes nothing to the filesystem. For the existing streaming game-pack format, `/pack` exports `encodePack`, `decodePack`, and `PackReader`.
 
+## License and notices
+
+The source is MIT licensed. The published package carries `LICENSE` and `NOTICE.md` (credits for third-party code and formats); it includes no game assets.
+
 ## Developing
 
 This package's source lives in [the project's repository](https://github.com/lewismoten/GameMaker-SandboxEdition), in `web/packages/archives`. The folder holds its source in `src/`, build configuration, license and notices. It depends on the engine through its declared npm dependency. Run `npm install`, then `npm run verify` in the package folder. Inside the repository, run `npm ci` at the root and `npm run verify:packages`, which builds isolated source copies and supplies packed workspace dependencies, so unpublished sibling versions can be verified. Use `npm pack` to inspect the distribution. The build is independent of the site's Vite configuration. The distribution includes JavaScript, TypeScript declarations, LICENSE, and NOTICE.md; no game assets. Keep npm tarballs outside source control. The [monorepo guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/monorepo.md) covers the workspace layout, and the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md) covers publishing.

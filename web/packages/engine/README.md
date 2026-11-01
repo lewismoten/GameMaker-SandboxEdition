@@ -103,6 +103,10 @@ Restart markers preserve already decoded MCUs. `scans` counts fully delimited sc
 Neither callback runs during demo or walkthrough playback. These callbacks do not
 change DOS gameplay or the game files.
 
+## Supported environments
+
+Playback needs a browser with canvas, Web Audio and keyboard events (the `Machine` class owns them). The file-format, decoding and simulation modules have no DOM dependency and also run in Node.js 22.12 or later, which is the version the package declares in `engines`. It ships as ES modules with TypeScript declarations.
+
 ## Developing
 
 This package's source lives in [the project's repository](https://github.com/lewismoten/GameMaker-SandboxEdition), in `web/packages/engine`. The folder holds all its source in `src/`, plus its build configuration, license and notices. It can be copied outside the repository: run `npm install` and `npm run verify` there to build and test a packed consumer. Inside the repository, run `npm ci` at the root, then `npm run build -w @lewismoten/gamemaker-sandbox-engine`. Run `npm pack` in the package folder to inspect a local distribution. Tarballs are build artifacts and should not be committed. The [monorepo guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/monorepo.md) covers the workspace layout, and the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md) covers publishing.
