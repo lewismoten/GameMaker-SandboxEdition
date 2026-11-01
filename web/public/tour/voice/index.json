@@ -402,9 +402,9 @@
   "cast-families": {
     "chapter": "cast",
     "where": "Cast: Teddy points at the cast tabs",
-    "text": "Three kinds of games: Sandbox Software, the Bard of Bizarre’s songs, and the games from the original CD.",
-    "seconds": 7.39,
-    "hash": "324b8fa69ed7",
+    "text": "Tabs sort the regulars. The last one tells the three kinds of games: Sandbox, the Bard’s songs, and the original CD.",
+    "seconds": 8.67,
+    "hash": "b0da1b6cb90b",
     "voice": "ec6d8641063d"
   },
   "cast-filters": {

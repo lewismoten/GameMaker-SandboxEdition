@@ -94,7 +94,7 @@ records every clip again.
 | [cast-next.ogg](cast/cast-next.ogg) | The arrows bring on the next one, or the one before. | Cast: Teddy presses the Next character button | 3.07 |
 | [cast-pick.ogg](cast/cast-pick.ogg) | Or call one by name from this list. | Cast: Teddy points at the Pick a character list | 2.43 |
 | [cast-sound.ogg](cast/cast-sound.ogg) | The stage stays quiet until you ask. Then the Teddy games’ theme plays along. | Cast: Teddy points at the stage’s sound button | 5.95 |
-| [cast-families.ogg](cast/cast-families.ogg) | Tabs sort the regulars. The last one tells the three kinds of games: Sandbox, the Bard’s songs, and the original CD. | Cast: Teddy points at the cast tabs | 7.39 |
+| [cast-families.ogg](cast/cast-families.ogg) | Tabs sort the regulars. The last one tells the three kinds of games: Sandbox, the Bard’s songs, and the original CD. | Cast: Teddy points at the cast tabs | 8.67 |
 | [cast-card.ogg](cast/cast-card.ogg) | Each regular has a card: who they are, and a little about them. Teddy knows left from right! | Cast: Teddy points at Teddy’s card | 6.59 |
 | [cast-appears.ogg](cast/cast-appears.ogg) | And the games each one is seen in. Press a picture to go to that game. | Cast: Teddy points at the games Teddy is seen in | 4.75 |
 | [cast-gwinn.ogg](cast/cast-gwinn.ogg) | It wasn’t me. (It was me.) Zoomies! | Cast: Gwinn comes on | 3.12 |
