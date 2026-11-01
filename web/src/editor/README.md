@@ -227,7 +227,11 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   radio buttons, one picture and name each, in families flowing like words (a turned name, then
   its buttons on a tint). `presetIcons.ts` holds the pictures (20x20 pixel art, Game-Maker's block size, as rows of palette letters,
   made for this project) by
-  preset id, else by family, so a new preset needs only its data.
+  preset id, else by family, so a new preset needs only its data. It opens on a Classic tab (the song
+  maker's nine sounds, tinted by the family each sounds like: `soundGroup` in `audio/oplPresets.ts`); a
+  More tab holds the search bar and every family, Classic's sounds included (the tab is remembered for the
+  session). A drum preset picked while the drum kit is off asks first, then `editors/music/drumMode.ts`
+  switches the kit on (the same CMF mode event as Settings) and gives the drum track its sound in one undo step.
 - **Copying tracks between songs.** The music editor's ⧉ on a track, Paste track and Add a track
   from another song…: `editors/music/trackClip.ts` (pure) copies a track's notes, instruments
   (SBI bytes), program changes and channel events and adds them to a song on its next free

@@ -603,6 +603,22 @@ const CLASSIC: OplPreset[] = Object.entries(CLASSIC_NAMES).map(([id, [name, key,
   preset('classic', id, name, key, 'tune', about, INSTRUMENTS[id as keyof typeof INSTRUMENTS]),
 );
 
+/** The family each Classic preset sounds like, so the picker colors it and lists it there too. */
+export const CLASSIC_HOME: Record<string, string> = {
+  piano: 'keys',
+  bass: 'bass',
+  strings: 'strings',
+  brass: 'brass',
+  lead: 'synth',
+  bell: 'mallets',
+  organ: 'organ',
+  pad: 'synth',
+  pluck: 'strings',
+};
+
+/** The family a preset sounds like: its own, or for a Classic one, its home (Classic is a favorites view). */
+export const soundGroup = (p: OplPreset): string => (p.group === 'classic' ? (CLASSIC_HOME[p.id] ?? 'classic') : p.group);
+
 /** Every preset, in the order the picker lists them. */
 export const OPL_PRESETS: OplPreset[] = [...MELODIC, ...DRUM_KIT, ...CLASSIC];
 

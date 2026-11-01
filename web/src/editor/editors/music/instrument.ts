@@ -24,6 +24,8 @@ import {
 } from './sbi';
 import { noteName } from './roll/layout';
 import { pickPreset } from './presetPicker';
+import { applyToTrack } from './drumMode';
+import { DRUM_SLOTS } from '../../../audio/oplDrumPresets';
 
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
 
@@ -246,6 +248,10 @@ export class InstrumentPanel {
         onclick: async () => {
           const preset = await pickPreset(doc, { ch: doc.track, label: `new for ${doc.trackName(doc.track)}` });
           if (!preset || song.instruments.length >= 128) return;
+          if (preset.drum) {
+            applyToTrack(doc, doc.track, preset);
+            return;
+          }
           doc.edit(() => {
             song.instruments.push(preset.patch.slice());
             setStartProgram(song, doc.track, song.instruments.length - 1);
@@ -284,7 +290,8 @@ export class InstrumentPanel {
           if (!inst) return;
           const preset = await pickPreset(doc, { ch: tryCh, label: instLabel(doc, p), current: inst });
           if (!preset) return;
-          doc.edit(() => inst.set(preset.patch.subarray(0, 11)));
+          if (preset.drum && !(doc.rhythm && tryCh === DRUM_SLOTS[preset.drum].ch)) applyToTrack(doc, tryCh, preset);
+          else doc.edit(() => inst.set(preset.patch.subarray(0, 11)));
           this.editor.querySelector<HTMLElement>('[data-presets]')?.focus();
         },
       },

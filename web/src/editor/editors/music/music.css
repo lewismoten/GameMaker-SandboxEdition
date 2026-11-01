@@ -795,6 +795,25 @@ dialog.modal:has(.mus-presets) {
 .mus-presets .hint {
   margin: 0;
 }
+.mus-preset-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+}
+.mus-preset-tabs .mus-tab {
+  min-height: 32px;
+}
+.mus-preset-more {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.mus-preset-more[hidden],
+.mus-preset-favs[hidden] {
+  display: none;
+}
 .mus-preset-search {
   width: 100%;
   box-sizing: border-box;
@@ -862,14 +881,20 @@ dialog.modal .mus-preset[hidden],
 .mus-preset-group[hidden] {
   display: none;
 }
-.mus-preset:hover {
+/* a Classic sound wears the color of the family it sounds like */
+dialog.modal .mus-preset-tinted {
+  --tint: hsl(var(--h) 65% 50%);
+  background: color-mix(in srgb, var(--tint) 14%, transparent);
+  border-color: color-mix(in srgb, var(--tint) 55%, transparent);
+}
+dialog.modal .mus-preset:hover {
   background: color-mix(in srgb, var(--tint, var(--accent)) 22%, transparent);
 }
-.mus-preset:has(input:checked) {
+dialog.modal .mus-preset:has(input:checked) {
   background: color-mix(in srgb, var(--tint, var(--accent)) 35%, transparent);
   border-color: var(--text);
 }
-.mus-preset:has(input:focus-visible) {
+dialog.modal .mus-preset:has(input:focus-visible) {
   outline: 3px solid var(--accent);
   outline-offset: 1px;
 }
