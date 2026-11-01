@@ -26,10 +26,11 @@ import { lockedWhy } from './gates';
 import { otherScenesAdding } from './otherScenes';
 import { scenePaths } from './walkPaths';
 import { ON_PATH_ENOUGH, pathShare, preferPathRoute } from './pathRoute';
+import { humanRoute } from './humanRoute';
 import { pathTo, replayPath, type Replay } from './replayPath';
 
 interface Strategy {
-  id: 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'keys' | 'mine';
+  id: 'human' | 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'keys' | 'mine';
   name: string;
   /** Only for scenes with gravity (true) or without (false). */
   gravity?: boolean;
@@ -41,6 +42,8 @@ interface Strategy {
 const movesOnly = (re: RegExp) => (m: Move) => re.test(m.name);
 
 export const STRATEGIES: Strategy[] = [
+  // played apart (humanRoute.ts): treasure and foes in sight first, steady hands; the others follow when it finds no way
+  { id: 'human', name: 'Play like a person', share: 0.4, options: () => ({}) },
   { id: 'runner', name: 'Run and hop', gravity: true, share: 0.15, options: (goal) => ({ goal, moveFilter: movesOnly(/^(walk|step|jump)/) }) },
   { id: 'walker', name: 'Maze walker', gravity: false, share: 0.15, options: (goal) => ({ goal, moveFilter: movesOnly(/^walk/) }) },
   { id: 'search', name: 'Every move', share: 0.35, options: (goal) => ({ goal }) },
@@ -106,6 +109,8 @@ interface AutoWalkOptions {
   onScene?: (soFar: AutoWalk) => void;
   /** Stop after this many scenes (1: just the first scene). */
   maxScenes?: number;
+  /** Play like a person first (humanRoute.ts); false skips it (default true). */
+  human?: boolean;
   /** Walking paths to keep to: block numbers by the .bbl's name in lower case (walkPaths.ts allWalkPaths). */
   paths?: Record<string, number[]>;
   /**
@@ -271,8 +276,17 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       }
       return undefined;
     };
+    // a person's route first: what is in sight is taken, then the way on (else the styles below)
+    // (a scene with walking paths keeps to them: the styles below weigh those, pathRoute.ts)
+    if (!found && !canceled && opt.human !== false && !paths) {
+      const st = STRATEGIES.find((x) => x.id === 'human')!;
+      outcome.tried.push(st.id);
+      if (opt.progress?.(scene, st.name, 0)) canceled = true;
+      const replay = !canceled && (await humanRoute(game, files, scene, entry, goal, wanted, budget * st.share, seed, paths));
+      if (replay && wanted.has(replay.link)) found = { replay, strategy: st };
+    }
     for (const st of found ? [] : STRATEGIES) {
-      if (st.id === 'collector' || st.id === 'keys' || (st.gravity !== undefined && st.gravity !== gravity)) continue;
+      if (st.id === 'human' || st.id === 'collector' || st.id === 'keys' || (st.gravity !== undefined && st.gravity !== gravity)) continue;
       outcome.tried.push(st.id);
       const replay = await tryStyle(st);
       if (replay) {
