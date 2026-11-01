@@ -111,7 +111,7 @@ function bookCover(item: ShelfItem, entry: CatalogEntry | undefined): HTMLElemen
   );
 }
 
-function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
+function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder, oneGame: boolean): HTMLElement {
   const entry = shelf.games.get(item.owner);
   const frame = h(
     'span',
@@ -123,8 +123,9 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   );
   const make = shelf.thumbs.get(item.key);
   if (make) lazyThumb(frame, item.key, make);
-  // by type, a game's or the Game-Maker box's card says whose it is; by game, the heading does, so it says what it is
-  const sub = order === 'type' && item.owner !== SITE_OWNER && !item.boxes && !item.title.startsWith(item.ownerTitle) ? item.ownerTitle : item.note;
+  // by type, a game's or the Game-Maker box's card says whose it is; by game, or with one game picked, the heading or
+  // picker does, so it says what it is
+  const sub = order === 'type' && !oneGame && item.owner !== SITE_OWNER && !item.boxes && !item.title.startsWith(item.ownerTitle) ? item.ownerTitle : item.note;
   // an issue's number over its picture, readable at a glance (said to a screen reader in the card's text)
   const length = item.seconds !== undefined ? hms(item.seconds) : undefined;
   const badgeText = item.issue ? `No. ${item.issue.no}` : length;
@@ -141,7 +142,6 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
     h(
       'span',
       { class: 'lib-name' },
-      h('span', { class: 'lib-spine', title: 'Tiny Shelf call number' }, callNumber(item)),
       h('strong', null, item.title),
       sub ? h('small', null, sub) : null,
       // the same in several boxes: listed once, opened from the first
@@ -152,6 +152,8 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
       // the badge over the picture shows the length; this says it to a screen reader
       length ? h('span', { class: 'sr-only' }, `Length ${length}`) : null,
     ),
+    // the spine label, over the picture's foot
+    h('span', { class: 'lib-spine', title: 'Tiny Shelf call number' }, callNumber(item)),
   ];
   const el =
     item.open.via === 'href'
@@ -165,22 +167,30 @@ function onlineNote(heading: string, items: readonly ShelfItem[]): (string | HTM
   return items.length && items.every((i) => i.open.via === 'video') ? [heading, ' ', h('span', { class: 'lib-net' }, '(needs the internet)')] : [heading];
 }
 
-function groupSection(g: ShelfGroup, shelf: Shelf, order: ShelfOrder): HTMLElement {
+/** A drawer's case: its brass plate with how many it holds (and `aside`, the game picker, across from it), then its shelves. */
+function groupSection(g: ShelfGroup, shelf: Shelf, order: ShelfOrder, of: number, aside: HTMLElement, oneGame: boolean): HTMLElement {
   const id = `lib-${g.key}`;
+  const n = g.parts.reduce((k, p) => k + p.items.length, 0);
   return h(
     'section',
     { class: 'lib-group', 'aria-labelledby': id },
     h(
-      'h2',
-      { id },
-      ...onlineNote(
-        g.heading,
-        g.parts.flatMap((p) => p.items),
+      'div',
+      { class: 'lib-plate-row' },
+      h(
+        'h2',
+        { id },
+        ...onlineNote(
+          g.heading,
+          g.parts.flatMap((p) => p.items),
+        ),
+        h('span', { class: 'lib-plate-n' }, n < of ? `${n} of ${of}` : String(n)),
       ),
+      aside,
     ),
     ...g.parts.flatMap((p) => [
       p.heading ? h('h3', null, ...onlineNote(p.heading, p.items)) : null,
-      h('ul', { class: 'lib-grid' }, ...p.items.map((it) => card(it, shelf, order))),
+      h('ul', { class: 'lib-grid' }, ...p.items.map((it) => card(it, shelf, order, oneGame))),
     ]),
   );
 }
@@ -204,7 +214,8 @@ export function renderLibrary(el: HTMLElement): void {
   let game = isShelfOrder(asked) ? state.get('game') : savedGame();
   let shelf: Shelf | undefined;
   const list = h('div', { class: 'lib-shelf', id: 'lib-shelf', role: 'tabpanel' }, h('p', { class: 'lib-loading' }, 'Taking everything off the shelves…'));
-  const count = h('p', { class: 'lib-count', role: 'status' });
+  // said, not shown: the plate shows how many (the room's Joe reads this too)
+  const count = h('p', { class: 'lib-count sr-only', role: 'status' });
   const cabinet = makeCabinet((key) => {
     only = key.replace(/^(game|type)-/, '');
     rememberOnly(order, only);
@@ -230,7 +241,7 @@ export function renderLibrary(el: HTMLElement): void {
   let busy = false;
   const mark = (name: string | undefined) => state.set({ open: name });
   /** Shows nodes in a dialog (the address keeps its name so a reload reopens it), then returns focus to `from`. */
-  const dialog = async (name: string, title: string, nodes: Node[], from?: HTMLElement) => {
+  const dialog = async (name: string, title: string, nodes: Node[], from?: HTMLElement, cls = '') => {
     if (busy) return;
     busy = true;
     mark(name);
@@ -241,8 +252,9 @@ export function renderLibrary(el: HTMLElement): void {
     await modal<void>(title, (close) => {
       closeDialog = () => close(undefined);
       return [
-        h('div', { class: 'lib-dlg' }, ...nodes),
-        h('div', { class: 'buttons' }, h('button', { type: 'button', autofocus: true, onclick: () => close(undefined) }, 'Close')),
+        h('div', { class: `lib-dlg ${cls}`.trim() }, ...nodes),
+        // a long shelf starts at its top: there the dialog's own × takes the focus, not Close at the foot
+        h('div', { class: 'buttons' }, h('button', { type: 'button', autofocus: !cls, onclick: () => close(undefined) }, 'Close')),
       ];
     });
     window.removeEventListener('hashchange', away);
@@ -252,7 +264,9 @@ export function renderLibrary(el: HTMLElement): void {
     from?.focus();
   };
   const fromRoom = (cls: string) => root.querySelector<HTMLElement>(`.lib-o-${cls}`) ?? undefined;
-  const showStacks = () => dialog('stacks', `The stacks: ${list.getAttribute('data-name') ?? 'the open drawer'}`, [gamePick, count, list], fromRoom('stacks'));
+  // the drawer's name is on the case's plate, so the dialog's title is only said
+  const showStacks = () =>
+    dialog('stacks', `The stacks: ${list.getAttribute('data-name') ?? 'the open drawer'}`, [count, list], fromRoom('stacks'), 'lib-stacks');
   const showCatalog = () =>
     dialog(
       'catalog',
@@ -340,7 +354,8 @@ export function renderLibrary(el: HTMLElement): void {
     gamePicker.value = pickedGame ?? '';
     if (pickedGame) shown = shown.map((g) => ({ ...g, parts: g.parts.map((p) => ({ ...p, items: p.items.filter((i) => i.owner === pickedGame) })) }));
     forgetThumbs(list.querySelectorAll('.lib-thumb')); // the old cards' pictures are no longer wanted
-    list.replaceChildren(...shown.map((g) => groupSection(g, shelf!, order)));
+    const whole = open ? open.parts.reduce((k, p) => k + p.items.length, 0) : 0;
+    list.replaceChildren(...shown.map((g) => groupSection(g, shelf!, order, whole, gamePick, !!pickedGame)));
     room.setShelf({
       items: shown.flatMap((g) => g.parts.flatMap((p) => p.items)).map((it) => makeSpine(it, (from) => void openPiece(it, shelf!.games, from))),
       more: () => makeSpine(undefined, () => void showStacks()),

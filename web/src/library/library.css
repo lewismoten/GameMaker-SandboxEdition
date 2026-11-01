@@ -511,6 +511,85 @@ main.library,
   padding: 0;
 }
 
+/* the stacks' dialog: its title is only said (the case's plate shows the drawer), and its × sits in the corner,
+   so the case starts at the top */
+dialog.modal:has(.lib-stacks) .modal-head {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  margin: 0;
+}
+
+dialog.modal:has(.lib-stacks) .modal-head h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+dialog.modal:has(.lib-stacks) {
+  padding-top: 12px;
+}
+
+.lib-stacks .lib-shelf .lib-group {
+  margin-right: 24px;
+}
+
+.lib-stacks .lib-shelf .lib-group:last-child {
+  margin-bottom: 0;
+}
+
+/* a denser shelf, so more rows show at once */
+.lib-stacks {
+  --lib-card-w: 150px;
+  --lib-thumb-h: 112px;
+}
+
+.lib-stacks .lib-grid {
+  gap: 14px 12px;
+  padding-top: 12px;
+}
+
+.lib-stacks .lib-name {
+  padding: 6px 8px 7px;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.lib-stacks .lib-name small {
+  font-size: 11.5px;
+}
+
+/* the plate on the left, the game picker across from it */
+.lib-plate-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+
+.lib-plate-row .lib-pick {
+  margin: 6px 12px 0 auto;
+}
+
+.lib-plate-row .lib-only-label {
+  color: var(--brass-hi);
+}
+
+.lib-plate-n {
+  margin-left: 0.6em;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.lib-plate-n::before {
+  content: '· ';
+}
+
 .lib-shelf .lib-group {
   margin-bottom: 28px;
   border: 10px solid var(--wood);
@@ -583,11 +662,14 @@ main.library,
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
 }
 
-/* the spine label: a small paper label with the Tiny Shelf call number */
+/* the spine label: a small paper label with the Tiny Shelf call number, over the picture's foot */
 .lib-spine {
-  align-self: flex-start;
-  margin-bottom: 3px;
+  position: absolute;
+  top: calc(var(--lib-thumb-h) - 24px);
+  left: 6px;
+  z-index: 1;
   padding: 1px 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 2px;
   background: var(--paper);
@@ -858,5 +940,21 @@ main.library,
   .lib-grid {
     padding-right: 10px;
     padding-left: 10px;
+  }
+}
+
+/* the stacks on a phone: two cards a row, and the case reaches the dialog's edge under the × */
+@media (max-width: 480px) {
+  .lib-stacks {
+    --lib-card-w: 118px;
+    --lib-thumb-h: 100px;
+  }
+
+  .lib-stacks .lib-shelf .lib-group {
+    margin-right: 0;
+  }
+
+  .lib-stacks .lib-plate-row {
+    padding-right: 30px;
   }
 }
