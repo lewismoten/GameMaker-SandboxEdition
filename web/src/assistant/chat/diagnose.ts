@@ -10,7 +10,8 @@ import { hostOf, type AiSettings } from './settings';
 type Fetch = typeof fetch;
 
 export interface Problem {
-  kind: 'bad-url' | 'mixed-content' | 'cors' | 'refused' | 'auth' | 'host-refused' | 'not-found' | 'model-missing' | 'no-tools' | 'timeout' | 'http';
+  kind:
+    'bad-url' | 'mixed-content' | 'cors' | 'refused' | 'auth' | 'host-refused' | 'not-found' | 'model-missing' | 'no-tools' | 'timeout' | 'http' | 'offline';
   /** One plain sentence. */
   title: string;
   /** What to do, a step a line. */
@@ -130,6 +131,16 @@ export function diagnose(s: Pick<AiSettings, 'provider' | 'baseUrl' | 'model'>, 
             'See Remote Ollama over Tailscale below for where to set it.',
           ]
         : ['Turn on CORS in the server for this page’s address (LM Studio: Developer › Server settings › Enable CORS).'],
+    };
+  // this device has no network at all (a server on this same computer still answers)
+  if (!local && typeof navigator !== 'undefined' && navigator.onLine === false)
+    return {
+      kind: 'offline',
+      title: 'This device is offline, so the assistant can’t reach it.',
+      fix: [
+        'Everything else (playing, editing, reading) works without a connection.',
+        'Reconnect, or point the assistant at a model on this computer (Ollama).',
+      ],
     };
   return {
     kind: 'refused',
