@@ -6,19 +6,19 @@
 
 /** Each game's release month, within its about.json year, in release order. */
 export const SCOOP_MONTHS: Readonly<Record<string, string>> = {
-  snowbound: '1993-01',
-  year2000: '1993-03',
-  logic: '1995-02',
-  blaster: '1995-04',
-  maximus: '1995-06',
-  sandcast: '1995-07',
-  teddy: '1995-09',
-  sleuth: '1995-10',
-  brief: '1995-11',
-  depth: '1996-02',
-  realm: '1996-05',
-  teddy2: '1996-09',
-  teddy3: '1997-06',
+  snowbound: '1993-03',
+  year2000: '1993-07',
+  logic: '1994-06',
+  blaster: '1994-07',
+  maximus: '1994-08',
+  sandcast: '1994-09',
+  teddy: '1994-09',
+  sleuth: '1994-10',
+  brief: '1994-10',
+  depth: '1994-11',
+  realm: '1994-11',
+  teddy2: '1994-11',
+  teddy3: '1994-12',
 };
 
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
