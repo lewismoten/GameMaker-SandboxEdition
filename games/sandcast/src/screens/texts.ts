@@ -33,7 +33,7 @@ function wrap(text: string, width = 30): string {
 }
 
 export const STORY = wrap(`
-Pittsburgh, the Fourth of July, 1995. Behind a brick house on a hill sits a wooden sandbox, and it has a knight: TEDDY, a Pembroke Welsh Corgi in a tin helmet with a red plume.
+Pittsburgh, the Fourth of July, 1994. Behind a brick house on a hill sits a wooden sandbox, and it has a knight: TEDDY, a Pembroke Welsh Corgi in a tin helmet with a red plume.
 
 Teddy knows lots of tricks. He loves his toys. Everybody on the street loves him.
 
@@ -73,7 +73,7 @@ ACORNS open root doors. A cracked wall may not be a wall at all.
 
 const CREDITS_TEXT = wrap(`
 |SANDCASTLE KNIGHT  v1.1
-|(c) 1995 Sandbox Software
+|(c) 1994 Sandbox Software
 
 Design, pixels and beeps by Claude. Made with GAME-MAKER 3.0 from Recreational Software Designs.
 
@@ -188,7 +188,7 @@ Shake it off and try again, brave knight!
 export const README = wrap(
   `
 |SANDCASTLE KNIGHT  v1.1
-|(c) 1995 Sandbox Software.
+|(c) 1994 Sandbox Software.
 |All rights reserved.
 |===============================
 

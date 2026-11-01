@@ -82,7 +82,7 @@ const message = (base: string, subject: string, body: string, from?: string) => 
   lst(`${base}.lst`, [[`${base}.gif`, 0], [`${base}.txt`]]);
   return `${base}.lst`;
 };
-const story = message('story', 'The Zoomies of 1995', STORY);
+const story = message('story', 'The Zoomies of 1994', STORY);
 // The story opens with Gwinn's zoomies, animated.
 disk.put('zoomies.fli', zoomiesFli());
 lst('story.lst', [['zoomies.fli', 0], ['story.gif', 0], ['story.txt']]);

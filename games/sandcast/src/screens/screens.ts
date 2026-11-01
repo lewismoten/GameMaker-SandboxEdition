@@ -177,7 +177,7 @@ export function titleScreen(): Pixels {
   stamp(p, CB.pic('sit0'), 3, 226, 128);
   stamp(p, MB.pic('gwin0'), 3, 34, 124);
   text(p, 4, 100, 'v1.1', ANSI[8]);
-  text(p, 4, 110, '(c) 1995', ANSI[8]);
+  text(p, 4, 110, '(c) 1994', ANSI[8]);
   text(p, 252, 100, 'Sandbox', ANSI[8]);
   text(p, 252, 110, 'Software', ANSI[8]);
   return statusBar(p, ' ALT-Z HELP | ANSI | 14400 N81 | ONLINE');
