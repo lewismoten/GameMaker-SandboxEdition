@@ -23,7 +23,7 @@ export const ZINE: ZinePage[] = [
   {
     title: 'NO CARRIER',
     lines: [
-      'issue #3 ... spring 1995 ... FREE if you found the whistle',
+      'issue #3 ... winter 1994 ... FREE if you found the whistle',
       'Edited by DiAL ToNE, ex-SysOp of THE STATIC LINE BBS (300/1200/2400 baud, R.I.P., the line got disconnected).',
       'WARNING: for your OWN computer only!! Every trick in here works on the PC on this desk and nowhere else. Do not try this at school. Do not try this at the library. The library is where we photocopied it.',
       'Inside: secret DOS stuff, hex editing, save hacks, backups, the crack scene (lol), your name in old games, eggs, merit badges, a BBS code, and THE PHONE LIST.',
