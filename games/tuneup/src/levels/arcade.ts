@@ -115,5 +115,6 @@ export function arcade(book: Kit['book']): Level {
   m.set(30, 8, 'door').set(30, 7, 'door.top').set(31, 8, 'door.open').fill(30, 1, 1, 6, 'pillar');
   m.link(31, 8);
   m.mon(MON.drummer, 20, 8);
-  return { m, start: at(1, 8), size: [W, 10] };
+  // row 5: the view (which never scrolls up or down) sits square on the level; Teddy drops to the floor
+  return { m, start: at(1, 5), size: [W, 10] };
 }

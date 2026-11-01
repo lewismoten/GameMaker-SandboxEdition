@@ -8,9 +8,10 @@ import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine
 import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { boing, honk, pop, woof, yelp } from '../../../kit/teddySounds';
 import { SND } from '../ids';
+import { TICK_TOCK } from '../../../kit/tinHeart';
 import { arpVoc, hz, noteVoc } from './notes';
 
-export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade' | 'rink' | 'field' | 'woods';
+export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade' | 'rink' | 'field' | 'woods' | 'choir' | 'basement' | 'clock';
 
 /** A held PC speaker tone at a pitch, short (about a sixth of a second) and then quiet. */
 const tone = (name: string, steps = 24) => speaker((i) => (i < steps ? hz(name) : 0));
@@ -51,6 +52,29 @@ export const FIELD_HIGH = 'C5';
 export const WOODS_LOW = 'C5';
 export const WOODS_HIGH = 'G5';
 export const RAIL_HIGH = 'G5';
+/** The choir loft's hymn notes, sung "aah" (a voice found sings F, the door G); the rail blooms a chord. */
+export const CHOIR_NOTES: [number, string][] = [
+  [SND.help, 'C5'],
+  [SND.money, 'D5'],
+  [SND.lose, 'E5'],
+  [SND.gain, 'F5'],
+  [SND.spend, 'G5'],
+];
+export const CHOIR_BLOOM = '[C4 E4 G4 C5]';
+/** The basement's notes, plucked on a slap bass (a bass found plays G, the door the high C). */
+/** The clock tower's notes on a glockenspiel (a mallet found rings G, the door the high C). */
+export const GLOCK_NOTES: [number, string][] = [
+  [SND.help, 'C6'],
+  [SND.money, 'E6'],
+  [SND.gain, 'G6'],
+  [SND.spend, 'C7'],
+];
+export const BASS_NOTES: [number, string][] = [
+  [SND.help, 'C3'],
+  [SND.money, 'E3'],
+  [SND.gain, 'G3'],
+  [SND.spend, 'C4'],
+];
 
 /** Every VOC on the disk, by name. */
 export function buildVocs(): Record<string, Uint8Array> {
@@ -59,6 +83,10 @@ export function buildVocs(): Record<string, Uint8Array> {
   for (const [, n] of HARP_NOTES) v[`hp${n.toLowerCase().replace('#', 's')}`] = noteVoc('harp', n, 0.6, 0.35);
   ARCADE_CHORDS.forEach(([, ch], i) => (v[`arp${i}`] = arpVoc('lead-square', ch, 0.5)));
   for (const [, n] of STAIR_NOTES) v[vocName('tw', n)] = noteVoc('tonewheel', n, 0.6, 0.35);
+  for (const [, n] of CHOIR_NOTES) v[vocName('ah', n)] = noteVoc('aah', n, 0.7, 0.45);
+  v.bloom = noteVoc('choir', CHOIR_BLOOM, 1.6, 1.1);
+  for (const [, n] of BASS_NOTES) v[vocName('sb', n)] = noteVoc('slap-bass', n, 0.5, 0.3);
+  for (const [, n] of GLOCK_NOTES) v[vocName('gl', n)] = noteVoc('glockenspiel', n, 0.6, 0.3);
   v.woodslo = noteVoc('flute', WOODS_LOW, 0.6, 0.35);
   v.woodshi = noteVoc('flute', WOODS_HIGH, 0.6, 0.35);
   v.fieldlo = noteVoc('horn', FIELD_LOW, 0.35, 0.22);
@@ -104,6 +132,14 @@ export function buildSoundSet(place: Place): SoundSet {
     for (const [slot, n] of scale) add(slot, vocName(prefix, n), tone(n));
   } else if (place === 'arcade') {
     ARCADE_CHORDS.forEach(([slot, ch], i) => add(slot, `arp${i}`, SPEAKER.arpeggio(ch.map(hz))));
+  } else if (place === 'choir' || place === 'basement') {
+    const [prefix, scale] = place === 'choir' ? ['ah', CHOIR_NOTES] : ['sb', BASS_NOTES];
+    for (const [slot, n] of scale) add(slot, vocName(prefix, n), tone(n));
+    if (place === 'choir') add(SND.score, 'bloom', SPEAKER.arpeggio([262, 330, 392, 523]));
+  } else if (place === 'clock') {
+    for (const [slot, n] of GLOCK_NOTES) add(slot, vocName('gl', n), tone(n));
+    // the tin heart's tick-tock: score up, on the speaker only (never a .VOC)
+    add(SND.score, '', TICK_TOCK());
   } else if (place === 'woods') {
     add(SND.gain, 'woodslo', tone(WOODS_LOW));
     add(SND.help, 'woodshi', tone(WOODS_HIGH));

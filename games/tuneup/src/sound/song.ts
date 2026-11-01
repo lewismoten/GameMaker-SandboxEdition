@@ -6,6 +6,7 @@
 // blocks that animate with it never drift: a beat of 8 game ticks is 64 CMF ticks.
 import { tune, v, times, join } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 import { patchOf } from './notes';
+import { rhythmTune } from './rhythm';
 
 /** The tempo for a beat `ticks` game ticks long (146 CMF ticks a second, 8 to a game tick). */
 export const bpmFor = (ticks: number) => (146 * 60) / (8 * ticks);
@@ -13,7 +14,7 @@ export const bpmFor = (ticks: number) => (146 * 60) / (8 * ticks);
 export const RAIL_BEAT = 10;
 
 // ---- the parade tune: eight bars in C, a chord a bar
-const MELODY = join(
+export const MELODY = join(
   'C5 q, E5 q, G5 q, E5 q',
   'F5 q, A5 q, G5 h',
   'E5 q, G5 q, C6 q, G5 q',
@@ -24,7 +25,7 @@ const MELODY = join(
   'E5 q, D5 q, C5 h',
 );
 /** Each bar's chord, low to high, and its bass root and fifth. */
-const BARS: { chord: string[]; root: string; fifth: string }[] = [
+export const BARS: { chord: string[]; root: string; fifth: string }[] = [
   { chord: ['C4', 'E4', 'G4'], root: 'C3', fifth: 'G2' },
   { chord: ['C4', 'F4', 'A4'], root: 'F2', fifth: 'C3' },
   { chord: ['C4', 'E4', 'G4'], root: 'C3', fifth: 'G2' },
@@ -34,12 +35,12 @@ const BARS: { chord: string[]; root: string; fifth: string }[] = [
   { chord: ['B3', 'D4', 'G4'], root: 'G2', fifth: 'D3' },
   { chord: ['C4', 'E4', 'G4'], root: 'C3', fifth: 'G2' },
 ];
-const chordOf = (b: (typeof BARS)[number], len: string) => `[${b.chord.join(' ')}] ${len}`;
-const eachBar = (fn: (b: (typeof BARS)[number]) => string) => join(...BARS.map(fn));
+export const chordOf = (b: (typeof BARS)[number], len: string) => `[${b.chord.join(' ')}] ${len}`;
+export const eachBar = (fn: (b: (typeof BARS)[number]) => string) => join(...BARS.map(fn));
 /** Up an octave (for a part that sits above the chords). */
-const up = (n: string) => n.replace(/(\d)/, (d) => String(Number(d) + 1));
+export const up = (n: string) => n.replace(/(\d)/, (d) => String(Number(d) + 1));
 
-// ---- the parts each family adds at the bandstand
+// ---- the menu's band: the keys and the strings
 type Part = ReturnType<typeof v>[];
 const keysPart = (): Part => [
   v(0, patchOf('piano-bright'), MELODY, 110),
@@ -67,61 +68,156 @@ const stringsPart = (): Part => [
   ),
 ];
 
-// Each chord note takes a channel of its own (one OPL voice each), so with more than two
-// families home the strings' chord drops its middle note to leave a voice for each new part.
-const stringsPair = (): Part => [
-  v(
-    2,
-    patchOf('orchestra'),
-    eachBar((b) => `[${b.chord[0]} ${b.chord[2]}] w`),
-    70,
-  ),
-  v(
-    4,
-    patchOf('pizzicato'),
-    eachBar((b) => times(4, `r e, ${up(b.chord[2])} e`)),
-    85,
-  ),
+// ---- the bandstand: the tune with every family home so far. The OPL2 has nine voices (a
+// chord takes one a note), so as the band grows, parts make room: the bass takes over the
+// piano's left hand, the strings' chord thins, and from the ninth family on an older part
+// rests for each newcomer (the glockenspiel takes the pizzicato's off-beats, the timpani the
+// synth pad's place, the classic bell the accordion's). With the drum kit home the chip goes
+// to rhythm mode: six voices and the five drums.
+type One = (ch: number) => ReturnType<typeof v>;
+const BAND: Record<string, One> = {
+  mel: (ch) => v(ch, patchOf('piano-bright'), MELODY, 110),
+  left: (ch) =>
+    v(
+      ch,
+      patchOf('piano-mellow'),
+      eachBar((b) => `${b.root} q, ${b.fifth} q, ${b.root} q, ${b.fifth} q`),
+      90,
+    ),
+  orch3: (ch) =>
+    v(
+      ch,
+      patchOf('orchestra'),
+      eachBar((b) => chordOf(b, 'w')),
+      70,
+    ),
+  orch2: (ch) =>
+    v(
+      ch,
+      patchOf('orchestra'),
+      eachBar((b) => `[${b.chord[0]} ${b.chord[2]}] w`),
+      70,
+    ),
+  orch1: (ch) =>
+    v(
+      ch,
+      patchOf('orchestra'),
+      eachBar((b) => `${b.chord[0]} w`),
+      70,
+    ),
+  pizz: (ch) =>
+    v(
+      ch,
+      patchOf('pizzicato'),
+      eachBar((b) => times(4, `r e, ${up(b.chord[2])} e`)),
+      85,
+    ),
+  voice: (ch) =>
+    v(
+      ch,
+      patchOf('aah'),
+      eachBar((b) => `${b.chord[1]} h, ${b.chord[2]} h`),
+      60,
+    ),
+  bass: (ch) =>
+    v(
+      ch,
+      patchOf('finger-bass'),
+      eachBar((b) => `${b.root} q, ${b.fifth} q, ${b.root} q, ${b.fifth} q`),
+      95,
+    ),
+  synth: (ch) =>
+    v(
+      ch,
+      patchOf('pad-warm'),
+      eachBar((b) => `${up(b.chord[1])} w`),
+      60,
+    ),
+  organ: (ch) =>
+    v(
+      ch,
+      patchOf('accordion'),
+      eachBar((b) => `${up(b.root)} h, ${up(b.fifth)} h`),
+      55,
+    ),
+  brass: (ch) =>
+    v(
+      ch,
+      patchOf('trumpet'),
+      eachBar((b) => `r h, ${up(b.chord[0])} e, ${up(b.chord[1])} e, ${up(b.chord[2])} q`),
+      80,
+    ),
+  winds: (ch) =>
+    v(
+      ch,
+      patchOf('flute'),
+      eachBar((b) => `${up(b.chord[2])} h, ${up(b.chord[1])} h`),
+      70,
+    ),
+  mallets: (ch) =>
+    v(
+      ch,
+      patchOf('glockenspiel'),
+      eachBar((b) => times(4, `r e, ${up(up(b.chord[0]))} e`)),
+      60,
+    ),
+  perc: (ch) =>
+    v(
+      ch,
+      patchOf('timpani'),
+      eachBar((b) => `${b.root} q, r q, ${b.fifth} q, r q`),
+      85,
+    ),
+  classic: (ch) =>
+    v(
+      ch,
+      patchOf('bell'),
+      eachBar((b) => `${up(b.chord[2])} h, r h`),
+      55,
+    ),
+};
+/** The parts playing with `n` families home (n = 1..11; the twelfth is bandFinale). */
+const LINEUP: string[][] = [
+  ['mel', 'left'],
+  ['mel', 'left', 'orch3', 'pizz'],
+  ['mel', 'left', 'orch2', 'pizz', 'voice'],
+  ['mel', 'bass', 'orch2', 'pizz', 'voice'],
+  ['mel', 'bass', 'orch2', 'pizz', 'voice', 'synth'],
+  ['mel', 'bass', 'orch2', 'pizz', 'voice', 'synth', 'organ'],
+  ['mel', 'bass', 'orch2', 'pizz', 'voice', 'synth', 'organ', 'brass'],
+  ['mel', 'bass', 'orch1', 'pizz', 'voice', 'synth', 'organ', 'brass', 'winds'],
+  ['mel', 'bass', 'orch1', 'mallets', 'voice', 'synth', 'organ', 'brass', 'winds'],
+  ['mel', 'bass', 'orch1', 'mallets', 'voice', 'perc', 'organ', 'brass', 'winds'],
+  ['mel', 'bass', 'orch1', 'mallets', 'voice', 'perc', 'classic', 'brass', 'winds'],
 ];
-const synthPart = (): Part => [
-  v(
-    5,
-    patchOf('pad-warm'),
-    eachBar((b) => `${up(b.chord[1])} w`),
-    60,
-  ),
-];
-const organPart = (): Part => [
-  v(
-    6,
-    patchOf('accordion'),
-    eachBar((b) => `${up(b.root)} h, ${up(b.fifth)} h`),
-    55,
-  ),
-];
-const brassPart = (): Part => [
-  v(
-    7,
-    patchOf('trumpet'),
-    eachBar((b) => `r h, ${up(b.chord[0])} e, ${up(b.chord[1])} e, ${up(b.chord[2])} q`),
-    80,
-  ),
-];
-const windsPart = (): Part => [
-  v(
-    8,
-    patchOf('flute'),
-    eachBar((b) => `${up(b.chord[2])} h, ${up(b.chord[1])} h`),
-    70,
-  ),
-];
-/** The parts each family adds, after the keys and strings (FAMILIES' order). */
-const LATER = [synthPart, organPart, brassPart, windsPart];
 
 /** The bandstand's tune with the families home so far (1 keys, 2 keys and strings, and so on). */
 export function bandSong(families: number): Uint8Array {
-  if (families <= 2) return tune(bpmFor(9), [...keysPart(), ...(families >= 2 ? stringsPart() : [])]);
-  return tune(bpmFor(9), [...keysPart(), ...stringsPair(), ...LATER.slice(0, families - 2).flatMap((p) => p())]);
+  if (families >= 12) return bandFinale();
+  let ch = 0;
+  const voices = LINEUP[families - 1].map((id) => {
+    const x = BAND[id](ch);
+    ch += id === 'orch3' ? 3 : id === 'orch2' ? 2 : 1;
+    return x;
+  });
+  if (ch > 9) throw new Error(`bandSong(${families}): ${ch} voices`);
+  return tune(bpmFor(9), voices);
+}
+
+/** The whole band, the drum kit too: six voices in rhythm mode and the five drums marching. */
+export function bandFinale(): Uint8Array {
+  const parts = ['mel', 'bass', 'voice', 'mallets', 'brass', 'winds'];
+  return rhythmTune(
+    bpmFor(9),
+    parts.map((id, ch) => BAND[id](ch)),
+    [
+      { channel: 11, instrument: patchOf('kick-punchy'), notes: times(16, 'C2 q, r q'), velocity: 100 },
+      { channel: 12, instrument: patchOf('snare-tight'), notes: times(8, 'r q, G3 q, r q, G3 e, G3 e'), velocity: 90 },
+      { channel: 15, instrument: patchOf('hat-closed'), notes: times(32, 'r e, G3 e'), velocity: 70 },
+      { channel: 14, instrument: patchOf('crash'), notes: times(4, 'C5 w, r w'), velocity: 80 },
+      { channel: 13, instrument: patchOf('tom-mid'), notes: times(4, 'r w, r h, r q, C3 e, C3 e'), velocity: 85 },
+    ],
+  );
 }
 
 /** The menu: the whole band so far, with a parade drum on melody tracks. */

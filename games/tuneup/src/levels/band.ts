@@ -18,11 +18,23 @@ import { MapBuilder, at, type Level } from './maps';
 export const FAMILIES: { id: string; finds: string[] }[] = [
   { id: 'keys', finds: ['piano-bright', 'piano-mellow', 'epiano', 'epiano-round', 'harpsichord', 'clavinet', 'tine-glass'] },
   { id: 'strings', finds: ['violin', 'orchestra', 'pizzicato', 'guitar-steel', 'guitar-nylon', 'oud', 'harp', 'harp-chime'] },
+  { id: 'voices', finds: ['aah', 'ooh', 'soprano', 'choir'] },
+  { id: 'bass', finds: ['sub-bass', 'upright-bass', 'finger-bass', 'slap-bass', 'fretless', 'punch-bass', 'sub-round'] },
   { id: 'synth', finds: ['lead-bright', 'lead-square', 'lead-saw', 'pad-80s', 'pad-warm', 'pad-sweep', 'pad-wobble'] },
   { id: 'organ', finds: ['pipe-organ', 'tonewheel', 'combo-organ', 'accordion', 'harmonica', 'kazoo'] },
   { id: 'brass', finds: ['synth-brass', 'trumpet', 'trombone', 'horn', 'tuba'] },
   { id: 'winds', finds: ['flute', 'clarinet', 'oboe', 'sax', 'pan-flute', 'reed-soft'] },
+  {
+    id: 'mallets',
+    finds: ['glockenspiel', 'tubular-bells', 'celesta', 'music-box', 'vibraphone', 'marimba', 'xylophone', 'chimes', 'steel-drum', 'vibes-wobbly'],
+  },
+  { id: 'perc', finds: ['cowbell', 'woodblock', 'timpani', 'melodic-kick', 'melodic-snare', 'melodic-hat'] },
+  { id: 'classic', finds: ['piano', 'bass', 'strings', 'brass', 'lead', 'bell', 'organ', 'pad', 'pluck'] },
+  // the drum kit takes five stands, one for each of the chip's drums
+  { id: 'kit', finds: ['kick-punchy', 'snare-tight', 'tom-mid', 'crash', 'hat-closed'] },
 ];
+/** Where family `fi`'s instrument stands on the back riser (two shelves of seven). */
+const homeAt = (fi: number): [number, number] => (fi < 7 ? [STAND_X + fi, 4] : [STAND_X + fi - 7, 3]);
 const W = 16;
 /** Where the save sign's board stands (level blocks), on the bandstand after the felt egg's level. */
 export const SIGN_AT: [number, number] = [0, 7];
@@ -132,7 +144,7 @@ export function band(n: number, sign = false) {
     m.fill(1, STAGE_ROW, 12, 1, 's').fill(1, STAGE_ROW + 1, 12, 2, 'k');
     // the band at the back, the families home already on the riser, the stands in front
     (['honker', 'bubbles', 'twirly'] as const).forEach((who, i) => m.set(9 + i, 3, `${who}.top`).set(9 + i, 4, who));
-    FAMILIES.slice(0, n).forEach((_, fi) => m.set(STAND_X + fi, 4, `home${fi}`));
+    FAMILIES.slice(0, n).forEach((_, fi) => m.set(...homeAt(fi), `home${fi}`));
     FAMILIES[n].finds.forEach((_, i) => m.set(STAND_X + i, 5, `stand${i}`));
     m.set(13, 7, 'leo.top').set(13, 8, 'leo');
     m.set(14, 8, 'gate');

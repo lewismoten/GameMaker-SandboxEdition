@@ -4,12 +4,9 @@ import { playLevels } from '../../kit/levelRun';
 import { Bot } from './bot';
 import {
   theArcade,
+  theBandstand,
   theBandstand1,
   theBandstand2,
-  theBandstand3,
-  theBandstand4,
-  theBandstand5,
-  theBandstand6,
   theMarchingField,
   theMusicStore,
   theRollerRink,
@@ -17,6 +14,7 @@ import {
   thePlayerPiano,
   theWoods,
 } from './route';
+import { theBasement, theChoirLoft } from './route2';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -26,14 +24,18 @@ const LEVELS = [
   theBandstand1,
   theMusicStore,
   theBandstand2,
+  theChoirLoft,
+  theBandstand(8, 4),
+  theBasement,
+  theBandstand(10, 7),
   theArcade,
-  theBandstand3,
+  theBandstand(12, 7),
   theRollerRink,
-  theBandstand4,
+  theBandstand(14, 6),
   theMarchingField,
-  theBandstand5,
+  theBandstand(16, 5),
   theWoods,
-  theBandstand6,
+  theBandstand(18, 6),
 ];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: Bot }> {

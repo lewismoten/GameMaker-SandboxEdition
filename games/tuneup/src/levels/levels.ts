@@ -4,6 +4,9 @@ import type { Pal, TimeOfDay } from '../art/pal';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
 import { arcadeSong, bandSong, fieldSong, railSong, rinkSong, shopSong, stringsSong, woodsSong } from '../sound/song';
+import { basementSong, choirSong } from '../sound/laterSongs';
+import { basement, basementBlocks } from './basement';
+import { choir, choirBlocks } from './choir';
 import { woods, woodsBlocks } from './woods';
 import { field, fieldBlocks } from './field';
 import { arcade, arcadeBlocks } from './arcade';
@@ -81,6 +84,32 @@ export const LEVELS: LevelDef[] = [
     wide: false,
   },
   {
+    file: 'choir',
+    desc: 'The Choir Loft',
+    light: 'noon',
+    blocks: choirBlocks,
+    build: choir,
+    chr: 'teddy',
+    snd: 'choir',
+    song: choirSong,
+    mons: {},
+    wide: false,
+  },
+  bandstand(3),
+  {
+    file: 'basement',
+    desc: 'The Basement',
+    light: 'night',
+    blocks: basementBlocks,
+    build: basement,
+    chr: 'teddy',
+    snd: 'basement',
+    song: basementSong,
+    mons: {},
+    wide: true,
+  },
+  bandstand(4),
+  {
     file: 'arcade',
     desc: 'The Arcade',
     light: 'show',
@@ -92,9 +121,9 @@ export const LEVELS: LevelDef[] = [
     mons: { march: 3 },
     wide: true,
   },
-  bandstand(3),
+  bandstand(5),
   { file: 'rink', desc: 'The Roller Rink', light: 'show', blocks: rinkBlocks, build: rink, chr: 'rink', snd: 'rink', song: rinkSong, mons: {}, wide: true },
-  bandstand(4),
+  bandstand(6),
   {
     file: 'field',
     desc: 'The Marching Field',
@@ -107,7 +136,7 @@ export const LEVELS: LevelDef[] = [
     mons: {},
     wide: true,
   },
-  bandstand(5),
+  bandstand(7),
   {
     file: 'woods',
     desc: 'The Woods by the River',
@@ -121,7 +150,7 @@ export const LEVELS: LevelDef[] = [
     wide: true,
   },
   // the save sign is here, in the level after the felt egg's
-  bandstand(6, true),
+  bandstand(8, true),
 ];
 
 /** The bandstand after the `n`th family comes home (from the third on). */

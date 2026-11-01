@@ -28,34 +28,50 @@
   },
   {
    "scene": 7,
-   "keys": "BE0IzQZNC0gKyAdICsgEzQYSDJIATQPNBk0EzQZNB80bTQdICsgHSArIBM0GEgySAE0DzQZNBM0GTQbNE00HSArIB0gKyATNBhIMkgBNAM0GTQPNBk0FSArI"
+   "keys": "D0sPSArIC8sITQdICsgfzQZNA0gKyAdICsgMzQZLBMsGSAbIAEsUywZLEMsGSw=="
   },
   {
    "scene": 8,
-   "keys": "BEsYywZNGM0GTRZICsg="
+   "keys": "BEsYywZNDM0GTSJICsg="
   },
   {
    "scene": 9,
-   "keys": "KEgByAZIAcgmSAHIBkgByB5QAdAGUAHQFkgByCpQAdAFUAHQIEgByCJQAdAGUAHQTkgByAVIAcg="
+   "keys": "D00IzQZNDM1CTQzNBk0LzRZLCMsGTRNICsgEzQdNB80+TRDNBk0PzRJNC0gKyATNB00GSArI"
   },
   {
    "scene": 10,
-   "keys": "BEsYywZNFM0GTRpICsg="
+   "keys": "BEsYywZNGM0GTRZICsg="
   },
   {
    "scene": 11,
-   "keys": "AUgByAVIAcgTOQG5A0gByBM5AbkDUAHQBVAB0Aw5AbkEUAHQEjkBuQRIAcgGSAHICzkBuQRIAcgTOQG5A1AB0AZQAdALOQG5BFAB0BM5AbkDSAHIBkgByAs5AbkESAHIEzkBuQNQAdAGUAHQDDkBuQNQAdATOQG5A0gByAZIAcgMOQG5A0gByBI5AbkEUAHQBlAB0As5AbkEUAHQEzkBuQNQAdAGTRDNBk0IzQZNCM0GTQjNBk0EzQZN"
+   "keys": "D00IzQZNC0gKyAdICsgEzQcSDJIATQPNB00EzQZNB80TTQdICsgHSArIBM0HEgySAE0DzQZNBM0GTQbNE00HSArIB0gKyATNBxIMkgBNAM0JTQPNBk0FSArI"
   },
   {
    "scene": 12,
-   "keys": "BEsYywZNEM0GTR5ICsg="
+   "keys": "BEsYywZNGM0GTRZICsg="
   },
   {
    "scene": 13,
-   "keys": "D00IzQZNB0gKyATNB00HzQZICsgAUBzQADkBuQJQBtAATQrNBk0IzQZNB0gKyATNB00LzQZICMgAOQG5AlAK0ABNCs0GTQzNBk0MzQZIC8gAOQG5AlAN0ABNCs0GTQ=="
+   "keys": "KEgByAZIAcgmSAHIBkgByB5QAdAGUAHQFkgByCpQAdAFUAHQIEgByCJQAdAGUAHQTkgByAVIAcg="
   },
   {
    "scene": 14,
+   "keys": "BEsYywZNFM0GTRpICsg="
+  },
+  {
+   "scene": 15,
+   "keys": "AUgByAVIAcgTOQG5A0gByBM5AbkDUAHQBVAB0Aw5AbkEUAHQEjkBuQRIAcgGSAHICzkBuQRIAcgTOQG5A1AB0AZQAdALOQG5BFAB0BM5AbkDSAHIBkgByAs5AbkESAHIEzkBuQNQAdAGUAHQDDkBuQNQAdATOQG5A0gByAZIAcgMOQG5A0gByBI5AbkEUAHQBlAB0As5AbkEUAHQEzkBuQNQAdAGTRDNBk0IzQZNCM0GTQjNBk0EzQZN"
+  },
+  {
+   "scene": 16,
+   "keys": "BEsYywZNEM0GTR5ICsg="
+  },
+  {
+   "scene": 17,
+   "keys": "D00IzQZNB0gKyATNB00HzQZICsgAUBzQADkBuQJQBtAATQrNBk0IzQZNB0gKyATNB00LzQZICMgAOQG5AlAK0ABNCs0GTQzNBk0MzQZIC8gAOQG5AlAN0ABNCs0GTQ=="
+  },
+  {
+   "scene": 18,
    "keys": "BEsYywZNFM0GTRpICsg="
   }
  ],
@@ -82,7 +98,7 @@
   },
   {
    "scene": 7,
-   "title": "Level 6: The Arcade"
+   "title": "Level 4: The Choir Loft"
   },
   {
    "scene": 8,
@@ -90,7 +106,7 @@
   },
   {
    "scene": 9,
-   "title": "Level 7: The Roller Rink"
+   "title": "Level 5: The Basement"
   },
   {
    "scene": 10,
@@ -98,7 +114,7 @@
   },
   {
    "scene": 11,
-   "title": "Level 8: The Marching Field"
+   "title": "Level 6: The Arcade"
   },
   {
    "scene": 12,
@@ -106,16 +122,32 @@
   },
   {
    "scene": 13,
-   "title": "Level 9: The Woods by the River"
+   "title": "Level 7: The Roller Rink"
   },
   {
    "scene": 14,
+   "title": "The Bandstand Again"
+  },
+  {
+   "scene": 15,
+   "title": "Level 8: The Marching Field"
+  },
+  {
+   "scene": 16,
+   "title": "The Bandstand Again"
+  },
+  {
+   "scene": 17,
+   "title": "Level 9: The Woods by the River"
+  },
+  {
+   "scene": 18,
    "title": "The Bandstand Again"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 17805,
+  "frames": 21087,
   "chapters": [
    {
     "title": "Opening",
@@ -146,44 +178,60 @@
     "frame": 7063
    },
    {
-    "title": "Level 6: The Arcade",
+    "title": "Level 4: The Choir Loft",
     "frame": 7535
    },
    {
     "title": "The Bandstand Again",
-    "frame": 8732
+    "frame": 8428
+   },
+   {
+    "title": "Level 5: The Basement",
+    "frame": 8900
+   },
+   {
+    "title": "The Bandstand Again",
+    "frame": 10307
+   },
+   {
+    "title": "Level 6: The Arcade",
+    "frame": 10779
+   },
+   {
+    "title": "The Bandstand Again",
+    "frame": 12015
    },
    {
     "title": "Level 7: The Roller Rink",
-    "frame": 9204
+    "frame": 12487
    },
    {
     "title": "The Bandstand Again",
-    "frame": 10598
+    "frame": 13881
    },
    {
     "title": "Level 8: The Marching Field",
-    "frame": 11070
+    "frame": 14353
    },
    {
     "title": "The Bandstand Again",
-    "frame": 12751
+    "frame": 16034
    },
    {
     "title": "Level 9: The Woods by the River",
-    "frame": 13223
+    "frame": 16506
    },
    {
     "title": "The Bandstand Again",
-    "frame": 14469
+    "frame": 17752
    },
    {
     "title": "Ending",
-    "frame": 14941
+    "frame": 18224
    },
    {
     "title": "Credits",
-    "frame": 16253
+    "frame": 19535
    }
   ]
  }

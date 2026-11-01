@@ -13,13 +13,13 @@ import { LANES, KEY_ROW, SONG_TICKS, STEPS, railBlocks } from '../src/levels/rai
 import { Bot } from './bot';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
-async function must(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {
+export async function must(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {
   const out = await r;
   if (out) throw new Error(`${what}: ${out}\n${bot.log.slice(-8).join('\n')}`);
 }
 
 /** Runs the last order of a level: it must take Teddy into the next scene (or the ending). */
-async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {
+export async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {
   const out = await r;
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
@@ -29,7 +29,7 @@ async function leave(bot: Bot, r: Promise<string | undefined>, what: string): Pr
  * `maxLoss` hit points, it is taken back and played again after a short wait, so Teddy sets
  * out at a better moment (as a person waits for the drummer to march away).
  */
-async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
+export async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () => Promise<void>): Promise<void> {
   const start = bot.snapshot();
   const hp = bot.sim.ci.hitpts;
   const deaths = bot.sim.deaths;
@@ -54,11 +54,11 @@ async function carefully(bot: Bot, label: string, maxLoss: number, stretch: () =
 }
 
 /** An instrument picked up at level (x, y): it must be gone, not still lying there. */
-function picked(bot: Bot, x: number, y: number, what: string): void {
+export function picked(bot: Bot, x: number, y: number, what: string): void {
   if (bot.shown(x, y).effect === CTR.found) throw new Error(`missed ${what} at ${x},${y}`);
 }
 
-const found = (bot: Bot) => bot.sim.meter(CTR.found) - 1;
+export const found = (bot: Bot) => bot.sim.meter(CTR.found) - 1;
 
 /** 1. The Piano Shop: six keyboards, the piano stairs, and out the back door. */
 export async function thePianoShop(bot: Bot): Promise<void> {
@@ -156,7 +156,7 @@ export async function thePlayerPiano(bot: Bot): Promise<void> {
 }
 
 /** The bandstand: every stand along the stage gets its instrument, then out by the gate. */
-function theBandstand(scene: number, stands: number) {
+export function theBandstand(scene: number, stands: number) {
   const run = async (bot: Bot): Promise<void> => {
     expect(bot, scene, 'the bandstand');
     await must(bot, bot.land(), 'on the stage');
@@ -171,13 +171,9 @@ function theBandstand(scene: number, stands: number) {
 }
 export const theBandstand1 = theBandstand(4, 7);
 export const theBandstand2 = theBandstand(6, 8);
-export const theBandstand3 = theBandstand(8, 7);
-export const theBandstand4 = theBandstand(10, 6);
-export const theBandstand5 = theBandstand(12, 5);
-export const theBandstand6 = theBandstand(14, 6);
 
 /** Climbs a harp's strings (nothing pulls Teddy down there) to level row `row`. */
-async function climb(bot: Bot, row: number, what: string): Promise<void> {
+export async function climb(bot: Bot, row: number, what: string): Promise<void> {
   await must(
     bot,
     bot.until('up', () => bot.px.y <= row * 20, `up ${what}`, 120),
@@ -218,7 +214,7 @@ export async function theMusicStore(bot: Bot): Promise<void> {
 
 /** 6. The Arcade: up the cabinets, across the wobbling pads, seven synths, out the door. */
 export async function theArcade(bot: Bot): Promise<void> {
-  expect(bot, 7, 'the arcade');
+  expect(bot, 11, 'the arcade');
   await must(bot, bot.land(), 'on the floor');
   await must(bot, bot.walk(3, 'along the floor'), 'floor');
   picked(bot, 3, 8, 'the bright lead');
@@ -273,7 +269,7 @@ async function skateTo(bot: Bot, x: number, ahead: number): Promise<void> {
 
 /** 7. The Roller Rink: skate the staff, a lane at a time, through the tune and its six organs. */
 export async function theRollerRink(bot: Bot): Promise<void> {
-  expect(bot, 9, 'the roller rink');
+  expect(bot, 13, 'the roller rink');
   // each target in order along the rink: the notes of the tune, and the organs after them
   const stops = [...MELODY_LANES.map((lane, i) => ({ x: 4 + i * 4, lane, organ: false })), ...ORGAN_AT.map(([x, lane]) => ({ x, lane, organ: true }))].sort(
     (a, b) => a.x - b.x,
@@ -313,7 +309,7 @@ function noteDistance(bot: Bot, i: number): number {
 }
 
 /** Taps Up or Down (a tick each, a person's pause between) until the hero's row is `row`. */
-async function toRow(bot: Bot, row: number, what: string): Promise<void> {
+export async function toRow(bot: Bot, row: number, what: string): Promise<void> {
   for (let n = 0; Math.round(bot.px.y / 20) !== row; n++) {
     if (n > 6) throw new Error(`${what}: stuck out of row ${row}`);
     await must(bot, bot.hold(Math.round(bot.px.y / 20) > row ? 'up' : 'down', 1), 'a tap');
@@ -323,7 +319,7 @@ async function toRow(bot: Bot, row: number, what: string): Promise<void> {
 
 /** 8. The Marching Field: Doc Leo's baton glides to each note's line and flicks as it arrives, then walks out past the brass. */
 export async function theMarchingField(bot: Bot): Promise<void> {
-  expect(bot, 11, 'the marching field');
+  expect(bot, 15, 'the marching field');
   const hits = () => bot.sim.meter(CTR.beats) - 1;
   const start = hits();
   let played = 0;
@@ -361,7 +357,7 @@ export async function theMarchingField(bot: Bot): Promise<void> {
 }
 
 /** Lets Teddy down a reed (Down, nothing pulling him) until he is at level row `row`. */
-async function climbDown(bot: Bot, row: number, what: string): Promise<void> {
+export async function climbDown(bot: Bot, row: number, what: string): Promise<void> {
   await must(
     bot,
     bot.until('down', () => bot.px.y >= row * 20, `down ${what}`, 160),
@@ -371,7 +367,7 @@ async function climbDown(bot: Bot, row: number, what: string): Promise<void> {
 
 /** 9. The Woods by the River: six woodwinds, and three staff doors each opened by playing its hollow note. */
 export async function theWoods(bot: Bot): Promise<void> {
-  expect(bot, 13, 'the woods');
+  expect(bot, 17, 'the woods');
   await must(bot, bot.land(), 'on the bank');
   const at = (id: string) => WINDS_AT.find(([w]) => w === id)!;
   const take = async (id: string) => {
