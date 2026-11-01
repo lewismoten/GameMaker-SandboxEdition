@@ -187,7 +187,7 @@ registerEditor(['gam'], (host, owner, file) => {
   });
   boards.setScreen((p) => ({ x: (p.x - cam.x) * cam.z, y: (p.y - cam.y) * cam.z }));
   boards.setBoardView(() => ({ project, game, selected, playing, screenOf, levelOf }));
-  boards.reveal(selected);
+  selected = boards.settle(selected);
   const cardRect = (i: number): Rect => (boards.on() ? boards.rectOf(i) : undefined) ?? cardRectOf(game, i);
   /** The scenes with a card on the board now (a group shows as its first member, or the selected one). */
   const shown = () => (boards.on() ? boards.shown() : used());

@@ -137,6 +137,23 @@ export function boardsController(c: Host) {
     if (n && n.board !== mode) switchTo(n.board);
   }
 
+  /**
+   * The scene to start on when the editor opens. A remembered board wins over the address's scene
+   * (which usually just says what was last selected): the scene stays if it is on that board, else
+   * the board's first card is chosen. Without a remembered board the scene's own board shows.
+   */
+  function settle(i: number): number {
+    const m = rebuild();
+    // (the editor is still being built: set the board directly, nothing to redraw yet)
+    if (c.project.extras(file, ACTIVE_BOARD_SECTION, undefined) === undefined || !on()) {
+      const n = m?.nodeOf.get(i);
+      if (n) mode = n.board;
+      return i;
+    }
+    if (m?.nodeOf.get(i)?.board === mode) return i;
+    return m?.nodes.find((n) => n.board === mode)?.scenes[0] ?? i;
+  }
+
   function showGroup(n: BoardNode): void {
     const g = n.group;
     if (!g) return closePop();
@@ -466,6 +483,7 @@ export function boardsController(c: Host) {
     on,
     /** Shows scene `i` from outside (the side list, the URL…). */
     reveal,
+    settle,
     refresh: () => (rebuild(), render()),
     /** The BoardView part for painting. */
     view(): BoardView['boards'] {
