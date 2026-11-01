@@ -66,12 +66,12 @@ export function buildScreens(): Record<string, Uint8Array> {
     p.rect(160 - rule / 2, 21, rule, 1, c('red', 1));
     save('hiscore.gif', p);
   }
-  // the ending (for now: half the car tuned, the radio next) and game over; the words sit
+  // the ending (for now: the car tuned and the radio in, the parade next) and game over; the words sit
   // above the car, clear of the parts' legend
   {
     const p = cutaway(REAL_PARTS, REAL_PARTS.length);
-    centered(p, 6, 'HALF THE CHEZ IS TUNED!', c('paint', 3), 1, INK);
-    centered(p, 18, 'THE RADIO GOES IN NEXT.', c('yellow', 3), 1, INK);
+    centered(p, 6, 'THE CHEZ IS TUNED UP!', c('paint', 3), 1, INK);
+    centered(p, 18, 'NEXT: THE PARADE.', c('yellow', 3), 1, INK);
     save('won.gif', p);
   }
   {

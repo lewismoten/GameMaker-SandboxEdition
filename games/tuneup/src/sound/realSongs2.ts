@@ -1,8 +1,11 @@
 // The parade tune's arrangements for levels 10-13: the rain on a steel tongue drum in D major
-// (a step up from the tune's C); the horn section's call on kazoos, in time with its board.
+// (a step up from the tune's C); the horn section's call on kazoos, in time with its board; the
+// gear rooms a whole step higher each; the radio heard through static; and the choir swell.
+import { Writer } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { Fx, detuned, sweep } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 import { tune, v, times } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 import { patchOf } from './notes';
-import { MELODY, bpmFor, chordOf, eachBar, up } from './song';
+import { BARS, MELODY, bpmFor, chordOf, eachBar, up } from './song';
 import { RAIN_BEAT } from '../levels/rain';
 import { KEY_BEAT } from '../levels/key';
 import { HORN_BEAT, HORN_REST, type HornRound } from '../levels/horn';
@@ -66,4 +69,49 @@ export function keySong(room: number): Uint8Array {
     v(3, patchOf('melodic-kick'), times(8, room >= 2 ? 'C3 q, C3 q, C3 q, C3 q' : 'C3 q, r q, C3 q, r q'), 80),
     v(4, patchOf('melodic-snare'), times(8, room >= 1 ? 'r q, D4 q, r q, D4 e, D4 e' : 'r q, D4 q, r q, D4 q'), 60),
   ]);
+}
+
+/** The Instrument Panel, tuning: the tune faint on a wobbly vibraphone, as if through static, over a soft pad. */
+export function tuningSong(): Uint8Array {
+  return tune(bpmFor(12), [
+    v(0, patchOf('vibes-wobbly'), MELODY, 60),
+    v(
+      1,
+      patchOf('pad-warm'),
+      eachBar((b) => chordOf(b, 'w')),
+      30,
+    ),
+  ]);
+}
+
+/**
+ * The Instrument Panel, the gauges: the choir swell. Nine FM voices (every melodic channel, out of
+ * rhythm mode) come in one by one, a bar apart, each pair a voice and its vibrato twin so they
+ * beat like a section, all of them swelling louder by program changes; the ninth sings the tune
+ * over the top. Sixteen bars, then round again.
+ */
+export function choirSong(): Uint8Array {
+  const w = new Writer(bpmFor(16));
+  // (nine melodic voices: rhythm mode off)
+  w.events[0].data = [0xb0, 0x67, 0x00];
+  const fx = new Fx(w);
+  const aah = patchOf('aah');
+  const twin = detuned(aah);
+  const from = { car: 34 };
+  const to = { car: 4 };
+  const swellA = sweep(aah, 8, from, to);
+  const swellB = sweep(twin, 8, from, to);
+  for (let ch = 0; ch < 9; ch++) fx.open(ch, ch % 2 ? swellB[0] : swellA[0]);
+  // each voice's note in each bar's chord: low to high, an octave apart every three voices
+  const tone = (ch: number, bar: number) => {
+    const b = BARS[bar % BARS.length];
+    const note = b.chord[ch % 3];
+    return note.replace(/\d/, (d) => String(Number(d) - 1 + Math.floor(ch / 3)));
+  };
+  for (let ch = 0; ch < 8; ch++) for (let bar = ch; bar < 16; bar++) fx.phrase(ch, bar * 4, `${tone(ch, bar)} w`, 70 + ch * 4);
+  fx.phrase(8, 8 * 4, MELODY, 100);
+  // the swell: louder step by step as the voices come in
+  fx.swell([0, 2, 4, 6], 0, 32, swellA);
+  fx.swell([1, 3, 5, 7], 0, 32, swellB);
+  return fx.cmf(16);
 }

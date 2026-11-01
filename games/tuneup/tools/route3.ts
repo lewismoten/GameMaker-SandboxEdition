@@ -6,6 +6,8 @@ import { buildPalette } from '../src/art/palette';
 import { BLADE_FOOT, DROPS, RAIN, SECTIONS, bladeName, parkedFrames, rainBlocks } from '../src/levels/rain';
 import { HORN_BEAT, HORN_REST, HORN_ROUNDS, HORN_ROW, hornSize, padX, stageX } from '../src/levels/horn';
 import { GEARS, freshTooth, keyBlocks, toothName } from '../src/levels/key';
+import { CTR } from '../src/ids';
+import { GAUGES, PANEL, RADIO_X, STATIONS, dialRing, panelBlocks } from '../src/levels/panel';
 import type { Bot } from './bot';
 import { leave, must } from './route';
 
@@ -125,4 +127,66 @@ export function keyChange(room: number) {
   return run;
 }
 
-export const LEVELS_10_13 = [rainDelay, hornSection(0), hornSection(1), hornSection(2), keyChange(0), keyChange(1), keyChange(2), keyChange(3)];
+const dashBook = panelBlocks('tune')(buildPalette('dash')).book;
+const gaugeBook = panelBlocks('gauges')(buildPalette('dash')).book;
+/** Dial cell `j` with the needle on it going right (the first time round, for cell 0). */
+const needleRight = (j: number) => dashBook.n(`dial${j}.${dialRing(j)[0][0] ? 0 : 1}`);
+
+/** 13. The Instrument Panel, the radio: under each preset, the needle watched coming, then a hop into the lit button. */
+export async function tuneRadio(bot: Bot): Promise<void> {
+  expect(bot, 25, 'the instrument panel, the radio');
+  await must(bot, bot.land(), 'onto the dash');
+  for (const [s, i] of STATIONS.entries()) {
+    const x = PANEL.dialX + i;
+    await must(bot, bot.walk(x, `under preset ${s + 1}`), 'to the preset');
+    // the needle a cell before the station, sweeping toward it: hop then
+    const before = needleRight(i - 1);
+    await must(
+      bot,
+      bot.until(undefined, () => bot.shownNum(x - 1, PANEL.dial) !== before, 'watching the needle', 100),
+      'needle',
+    );
+    await must(
+      bot,
+      bot.until(undefined, () => bot.shownNum(x - 1, PANEL.dial) === before, `saw the needle near station ${s + 1}`, 200),
+      'needle',
+    );
+    await must(bot, bot.react(), 'reacting');
+    await must(bot, bot.hop('up', 8), `hopping into preset ${s + 1}`);
+    if (bot.shownNum(x, PANEL.buttons) !== dashBook.n(`preset${s}.set`)) throw new Error(`station ${s + 1} didn't come in`);
+  }
+  // the choir's "aah" plays out before the door's clunk
+  await must(bot, bot.sim.waitForClip(), 'the choir');
+  await leave(bot, bot.walk(PANEL.exit, 'through the door'), 'out');
+}
+
+/** 13. The Instrument Panel, the gauges: a hop into each for its chord, then the radio into its space, then out. */
+export async function gaugeChords(bot: Bot): Promise<void> {
+  expect(bot, 26, 'the instrument panel, the gauges');
+  await must(bot, bot.land(), 'onto the dash');
+  for (const [g, x] of GAUGES.entries()) {
+    await must(bot, bot.walk(x, `under gauge ${g + 1}`), 'to the gauge');
+    await must(bot, bot.react(), 'looking up');
+    await must(bot, bot.hop('up', 8), `hopping into gauge ${g + 1}`);
+    if (bot.shownNum(x, PANEL.buttons) !== gaugeBook.n(`gauge${g}.up`)) throw new Error(`gauge ${g + 1} didn't play`);
+    // each chord rings out before the next
+    await must(bot, bot.sim.waitForClip(), 'the chord');
+  }
+  await must(bot, bot.walk(RADIO_X, 'into the radio space'), 'radio');
+  if (bot.count(CTR.radio) !== 1) throw new Error('no radio');
+  await must(bot, bot.sim.waitForClip(), 'the radio playing');
+  await leave(bot, bot.walk(PANEL.exit, 'through the door'), 'out');
+}
+
+export const LEVELS_10_13 = [
+  rainDelay,
+  hornSection(0),
+  hornSection(1),
+  hornSection(2),
+  keyChange(0),
+  keyChange(1),
+  keyChange(2),
+  keyChange(3),
+  tuneRadio,
+  gaugeChords,
+];

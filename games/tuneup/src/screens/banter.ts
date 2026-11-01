@@ -112,6 +112,16 @@ export const INTRO: Record<number, Card> = {
       ['leo', 'Hop the teeth as they come round. The door keeps its own time.'],
     ],
   },
+  13: {
+    title: 'LEVEL 13: THE INSTRUMENT PANEL',
+    lady: true,
+    teddy: true,
+    lines: [
+      ['regina', 'A radio was a factory option. A few extra dollars, and nobody paid them.'],
+      ['leo', 'Its space is just above the accessory light. Teddy, tune it in.'],
+      ['regina', 'Hop into each preset as the needle crosses its station. Then the gauges.'],
+    ],
+  },
 };
 
 /** After each level (or a part of one), by scene file. */
@@ -275,6 +285,15 @@ export const OUTRO: Record<string, Card> = {
     lines: [
       ['leo', 'No whine. Is it fixed?'],
       ['regina', 'Fixed, and in a much better key.'],
+    ],
+  },
+  dash2: {
+    lady: true,
+    teddy: true,
+    lines: [
+      ['leo', 'An AM/FM radio with an 8-track. Four programs on every tape.'],
+      ['regina', 'And a head cleaning cartridge, for afterwards.'],
+      ['leo', 'Good boy, Teddy. Now: the parade.'],
     ],
   },
 };

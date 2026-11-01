@@ -3,4 +3,4 @@
 import { play } from './play';
 
 const { sim } = await play();
-console.log(`tuneup: the bot tuned up half of THE CHEZ; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
+console.log(`tuneup: the bot tuned up THE CHEZ and put the radio in; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);

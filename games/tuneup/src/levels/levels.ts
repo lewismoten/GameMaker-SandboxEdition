@@ -20,7 +20,8 @@ import { muffled, muffledBlocks } from './muffled';
 import { pump, pumpBlocks } from './pump';
 import { swim, swimBlocks } from './swim';
 import { rain, rainBlocks } from './rain';
-import { hornSong, keySong, rainSong } from '../sound/realSongs2';
+import { choirSong, hornSong, keySong, rainSong, tuningSong } from '../sound/realSongs2';
+import { panel, panelBlocks } from './panel';
 import { keyBlocks, keyRoom } from './key';
 import { horn, hornBlocks, HORN_ROUNDS } from './horn';
 
@@ -210,6 +211,20 @@ export const LEVELS: LevelDef[] = [
     song: () => keySong(room),
     mons: {},
     wide: true,
+  })),
+  ...(['tune', 'gauges'] as const).map((scene, i): LevelDef => ({
+    file: `dash${i + 1}`,
+    level: 13,
+    desc: 'The Instrument Panel',
+    part: ['the radio', 'the gauges'][i],
+    theme: 'dash',
+    blocks: panelBlocks(scene),
+    build: panel(scene),
+    chr: 'teddy',
+    snd: i ? 'panel2' : 'panel1',
+    song: i ? choirSong : tuningSong,
+    mons: {},
+    wide: false,
   })),
 ];
 

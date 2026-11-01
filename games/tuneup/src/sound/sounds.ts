@@ -9,7 +9,8 @@ import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound'
 import { SND } from '../ids';
 import { hz, noteVoc, phraseVoc, slideWhistleVoc } from './notes';
 
-export type Place = 'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled' | 'rain' | 'horn' | 'key1' | 'key2' | 'key3' | 'key4';
+export type Place =
+  'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled' | 'rain' | 'horn' | 'key1' | 'key2' | 'key3' | 'key4' | 'panel1' | 'panel2';
 
 /** "Charge!": the bugle call on a trumpet (the last note held). */
 const CHARGE: [string, string[], number] = ['trumpet', ['G4', 'C5', 'E5', 'G5', 'E5', 'G5'], 0.11];
@@ -79,6 +80,14 @@ export function buildVocs(): Record<string, Uint8Array> {
   for (const [, n] of DROP_NOTES) v[vocName('td', n)] = noteVoc('steel-drum', n, 0.45, 0.2);
   for (const [, n] of PAD_NOTES) v[vocName('kz', n)] = noteVoc('kazoo', n, 0.4, 0.3);
   for (const n of new Set(KEY_NOTES.flat())) v[vocName('vb', n)] = noteVoc('vibes-wobbly', n, 0.5, 0.3);
+  // the radio's stations coming in (the last, the choir's "aah"), the gauges' chords, the radio in
+  v.st1 = phraseVoc('piano-bright', ['C5', 'E5', 'G5', 'E5'], 0.1, 0.3);
+  v.st2 = phraseVoc('trumpet', ['F5', 'A5', 'G5'], 0.12, 0.3);
+  v.aah = noteVoc('aah', '[C4 E4 G4 C5]', 1.6, 1.3);
+  v.chordc = noteVoc('choir', '[C4 E4 G4]', 0.9, 0.7);
+  v.chordf = noteVoc('choir', '[C4 F4 A4]', 0.9, 0.7);
+  v.chordg = noteVoc('choir', '[B3 D4 G4]', 0.9, 0.7);
+  v.radio = phraseVoc('music-box', ['C5', 'E5', 'G5', 'E5', 'F5', 'A5', 'G5'], 0.12, 0.5);
   // a wrong horn pad: a raspberry, a low kazoo blat sagging down
   v.razz = phraseVoc('kazoo', ['E3', 'D3', 'C3', 'A2'], 0.07, 0.15);
   return v;
@@ -173,6 +182,21 @@ export function buildSoundSet(place: Place): SoundSet {
     );
   } else if (place.startsWith('key')) {
     KEY_NOTES[Number(place.slice(3)) - 1].forEach((n, i) => add(KEY_SLOTS[i], vocName('vb', n), tone(n, 12)));
+  } else if (place === 'panel1') {
+    add(SND.help, 'st1', SPEAKER.arpeggio([523, 659, 784, 659]));
+    add(SND.money, 'st2', SPEAKER.arpeggio([698, 880, 784]));
+    add(SND.gain, 'aah', SPEAKER.arpeggio([262, 330, 392, 523]));
+    // a hop into a dark preset: a crackle of static, on the speaker
+    add(
+      SND.lose,
+      '',
+      speaker((i) => (i < 3 ? [1900, 700, 2600][i] : 0)),
+    );
+  } else if (place === 'panel2') {
+    add(SND.help, 'chordc', SPEAKER.arpeggio([262, 330, 392]));
+    add(SND.money, 'chordf', SPEAKER.arpeggio([262, 349, 440]));
+    add(SND.score, 'chordg', SPEAKER.arpeggio([247, 294, 392]));
+    add(SND.gain, 'radio', SPEAKER.arpeggio([523, 659, 784, 659, 698, 880, 784]));
   } else if (place === 'rain') {
     for (const [slot, n] of DROP_NOTES) add(slot, vocName('td', n), tone(n, 10));
     // a wet slap from a wiper blade (Doc Leo's hurt sound): a smack, on the speaker

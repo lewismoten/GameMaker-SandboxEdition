@@ -74,6 +74,9 @@ export const CTR = {
   honks: 24,
   /** Key Change: notes of each room's phrase (one kind of three). */
   gears: 25,
+  /** The Instrument Panel: the last station tuned in; the radio installed (the fans' and the tapes' counters, spent to nothing by their doors). */
+  stations: 20,
+  radio: 21,
 } as const;
 /** Money: the Tips line on F2. */
 export const MONEY = 3;
