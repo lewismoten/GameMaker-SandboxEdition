@@ -1,5 +1,5 @@
 // The sites that keep the games Game-Maker players made, from Lewis's researched list
-// (.for-lewis/more-games-sources.md), as plain data and HTML with no DOM, so the build can
+// (.for-lewis/reference/more-games-sources.md), as plain data and HTML with no DOM, so the build can
 // write it into the Guide's static pages (scripts/seoBuild.ts) as the app shows it
 // (credits/moreGames.ts on the Credits page, manual/guideSections.ts in the Guide).
 

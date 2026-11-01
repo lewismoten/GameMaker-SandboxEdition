@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Cuts the digitized lines of "Shakespeare in Sweatpants" (The Bard of Bizarre: seventeen spoken
 # monologues over music beds, made with Riffusion) out of the recordings, which are NOT committed
-# (.for-lewis/songs/shakespeare/*.mp3), into games/sweats/src/sound/clips/<name>.wav, plus
+# (.for-lewis/reference/songs/shakespeare/*.mp3), into games/sweats/src/sound/clips/<name>.wav, plus
 # clips/rates.json (the rate each was kept at); games/sweats/src/sound/clips.ts wraps them as
 # Creative Voice Files. games/kit/song/cutclips.py does the cutting (see it for the filters).
 #

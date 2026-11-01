@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Cuts the sung Latin clips of Veni, Vidi, Risi! out of the six recordings, which are NOT
-# committed (.for-lewis/songs/veni-vidi-risi/<title>.mp3), into games/risi/src/sound/clips/
+# committed (.for-lewis/reference/songs/veni-vidi-risi/<title>.mp3), into games/risi/src/sound/clips/
 # <name>.wav (games/kit/song/cutclips.py does the cutting; see it for the filters), which
 # games/risi/src/sound/clips.ts wraps as Creative Voice Files.
 #

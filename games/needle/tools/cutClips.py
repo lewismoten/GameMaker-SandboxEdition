@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Cuts the digitized sound clips for "Thread the Needle, Brother Camel" out of the recording,
-# which is NOT committed (.for-lewis/songs/needle/Thread the Needle, Brother Camel.mp3), into
+# which is NOT committed (.for-lewis/reference/songs/needle/Thread the Needle, Brother Camel.mp3), into
 # games/needle/src/sound/clips/<name>.wav (games/kit/song/cutclips.py does the cutting; see it
 # for the filters), which games/needle/src/sound/clips.ts wraps as Creative Voice Files.
 #

@@ -1,4 +1,4 @@
-// "Scanned at Lewis's desk": the owner's photos (.for-lewis/images, not in git) cropped,
+// "Scanned at Lewis's desk": the owner's photos (.for-lewis/reference/images, not in git) cropped,
 // scaled down to about what a 1995 flatbed scan for a VGA game would keep, and saved here
 // as small JPEGs that the game builds read (games/kit/photo.ts). The builds never touch the
 // original photos, so they stay deterministic and work without them.
@@ -12,7 +12,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
-const PHOTOS = resolve(__dirname, '../../../.for-lewis/images');
+const PHOTOS = resolve(__dirname, '../../../.for-lewis/reference/images');
 
 type Box = [x0: number, y0: number, x1: number, y1: number]; // fractions of the photo
 

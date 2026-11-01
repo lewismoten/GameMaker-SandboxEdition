@@ -39,7 +39,7 @@ const DEFAULTS = {
  * Local Agent Lab's workspace. NARRATE_SAMPLE_<NAME> (e.g. NARRATE_SAMPLE_SCROOBIE) moves one.
  */
 const SAMPLES: Record<string, string> = {
-  lewis: fileURLToPath(new URL('../../.for-lewis/voice/lewie-sample-audio.mp3', import.meta.url)),
+  lewis: fileURLToPath(new URL('../../.for-lewis/reference/voice/lewie-sample-audio.mp3', import.meta.url)),
   scroobie: join(WORKSPACE, 'voices/samples/f2a53d0c-14b9-4919-89fd-582ef03b8c05.webm'),
   'olden-mon': join(WORKSPACE, 'voices/samples/a6c6994c-ad62-48a0-89e9-81d744701b0e.webm'),
   'snooty-wiz': join(WORKSPACE, 'voices/samples/3a31070f-6ac7-4868-8b9c-37018e0dc1f4.webm'),

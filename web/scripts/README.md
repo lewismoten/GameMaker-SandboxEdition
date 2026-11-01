@@ -116,7 +116,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   achromatopsia (Machado et al. 2009 matrices) for pairs that differ in color but not through the filter.
   Tiers of one achievement (`every-win-1`, `-3`) are skipped. It also lists badges whose art is nearly gray
   already, where only the unearned frame and lock tell earned from not. Hidden badges show their id, not their
-  title. Writes `../../.for-lewis/badges-similar/index.html` (git-ignored; pairs at 4x, pixelated), prints a table, exits 0
+  title. Writes `../../.for-lewis/research/badges-similar/index.html` (git-ignored; pairs at 4x, pixelated), prints a table, exits 0
   unless `--strict`. Parts: `badgeSimilarMetrics.ts` (+ test), `badgePng.ts`, `badgeSimilarPng.ts`, `badgeSimilarReport.ts`.
 - `walkAuto.ts` (`npm run walk:auto -- <folder | .zip> [--budget ms] [--game NAME.GAM] [--out walkthrough.json]`) runs the
   editor's "Make a walkthrough…" bot (`autoWalk`, 60 s a scene by default) on a game folder or zip and prints each scene's

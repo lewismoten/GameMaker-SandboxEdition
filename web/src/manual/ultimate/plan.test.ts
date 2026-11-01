@@ -64,7 +64,7 @@ describe('The Ultimate Owner’s Guide', () => {
     'bad-games/friction.md',
     'bad-games/sherwood forest software.md',
     'binge/adg-250-game-maker.md',
-  ].map((f) => new URL(`../../../../.for-lewis/${f}`, import.meta.url));
+  ].map((f) => new URL(`../../../../.for-lewis/reference/${f}`, import.meta.url));
   it.skipIf(!sources.every(existsSync))('shares no run of six words with the original manual, the reviews or the video', () => {
     const theirs = words(sources.map((f) => readFileSync(f, 'utf8')).join(' '));
     const runs = new Set<string>();

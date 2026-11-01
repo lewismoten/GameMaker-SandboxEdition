@@ -3,7 +3,7 @@
 # OPL2 arrangement in games/carl/src/sound/song.ts (games/kit/song/analyze.py does the work; see
 # it for what is measured and how).
 #
-# It reads the MP3 at .for-lewis/songs/fly/A fly named Carl.mp3, which is NOT
+# It reads the MP3 at .for-lewis/reference/songs/fly/A fly named Carl.mp3, which is NOT
 # committed (the arrangement is committed as note data in TypeScript, so the game build never
 # needs it).
 #

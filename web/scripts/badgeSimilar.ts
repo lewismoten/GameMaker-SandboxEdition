@@ -1,7 +1,7 @@
 // Advisory check: which achievement badges look too alike (in gray, or to a color-blind eye), and
 // which badges are so gray already that only the frame and lock say "not earned yet".
 // Run from web/: npm run badges:similar [-- --threshold 0.27] [--top 12] [--out dir] [--strict]
-// Writes an HTML report (default ../.for-lewis/badges-similar/index.html, git-ignored). Exit 0
+// Writes an HTML report (default ../.for-lewis/research/badges-similar/index.html, git-ignored). Exit 0
 // unless --strict and something was flagged. Metrics are in badgeSimilarMetrics.ts.
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -17,7 +17,7 @@ const opt = (name: string, d: string): string => (argv.includes(`--${name}`) ? (
 const threshold = Number(opt('threshold', '0.27'));
 /** Mean chroma below which a badge's art is nearly gray already. */
 const grayCut = Number(opt('gray', '0.03'));
-const outDir = resolve(opt('out', new URL('../../.for-lewis/badges-similar', import.meta.url).pathname));
+const outDir = resolve(opt('out', new URL('../../.for-lewis/research/badges-similar', import.meta.url).pathname));
 const strict = argv.includes('--strict');
 const SIZE = 40;
 const COARSE = 0.3;

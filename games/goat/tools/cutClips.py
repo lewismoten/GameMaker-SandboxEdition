@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Cuts the digitized sound clips for "Third Goat from the Left" out of Lewis's recording, which
-# is NOT committed (.for-lewis/songs/goat/Third Goat from the Left.mp3), into
+# is NOT committed (.for-lewis/reference/songs/goat/Third Goat from the Left.mp3), into
 # games/goat/src/sound/clips/<name>.wav (games/kit/song/cutclips.py does the cutting; see it for
 # the filters), which games/goat/src/sound/clips.ts wraps as Creative Voice Files.
 #

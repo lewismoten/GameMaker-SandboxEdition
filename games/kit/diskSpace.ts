@@ -1,7 +1,7 @@
 // The editor's disk-space tool (web/src/editor/disk) over built games: what it would merge, what
 // it left alone and why, and the size on floppy disks. Reads games/<id>/disk, changes nothing.
 //   cd web && npx vite-node ../games/kit/diskSpace.ts [<id>...]            one line per finding
-//   cd web && npx vite-node ../games/kit/diskSpace.ts --write              also writes .for-lewis/disk-space-findings.md
+//   cd web && npx vite-node ../games/kit/diskSpace.ts --write              also writes .for-lewis/research/disk-space-findings.md
 //   cd web && npx vite-node ../games/kit/diskSpace.ts <id> --strict        exit 1 when a step is left to apply
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -53,7 +53,7 @@ for (const id of ids.length ? ids : all) {
   lines.push('');
 }
 if (args.includes('--write')) {
-  const dir = join(here, '..', '..', '.for-lewis');
+  const dir = join(here, '..', '..', '.for-lewis', 'research');
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'disk-space-findings.md'), lines.join('\n'));
 }

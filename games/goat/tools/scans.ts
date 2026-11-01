@@ -1,5 +1,5 @@
 // "Scanned" for THIRD GOAT FROM THE LEFT: the song's cover art, The Bard of Bizarre's logo and
-// Doc Leo's profile picture (Lewis's own, in .for-lewis/songs, not in git) cut down to
+// Doc Leo's profile picture (Lewis's own, in .for-lewis/reference/songs, not in git) cut down to
 // small JPEGs in games/kit/scans, which the build dithers into its pictures (kit/photo.ts).
 // Transparent corners are laid on the color each picture is pasted over. Doc Leo's picture is
 // the whole square photo, not the round-cropped profile picture, so the square instant prints
@@ -11,7 +11,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
-const SONGS = resolve(__dirname, '../../../.for-lewis/songs');
+const SONGS = resolve(__dirname, '../../../.for-lewis/reference/songs');
 const OUT = resolve(__dirname, '../../kit/scans');
 
 const SCANS: { name: string; file: string; size: number; matte: string }[] = [

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Analyzes the Riffusion recordings of "Shakespeare in Sweatpants" (The Bard of Bizarre's spoken
-# monologues over music beds), which are NOT committed (.for-lewis/songs/shakespeare/<title>.mp3,
+# monologues over music beds), which are NOT committed (.for-lewis/reference/songs/shakespeare/<title>.mp3,
 # with their word timings in <title>.json beside them), for the music beds' tempo, key and
 # chords: games/kit/song/analyze.py does the work (see it for what is measured and how). The
 # game's FM score (src/sound/song.ts) is composed from what it found; its comments say which

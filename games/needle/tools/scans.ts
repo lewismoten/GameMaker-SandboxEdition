@@ -1,6 +1,6 @@
 // "Scanned" for THREAD THE NEEDLE, BROTHER CAMEL: the fourteen screenshots of the song's
 // animated cover (a man by an oasis holds a needle up to a camel's nose; the picture closes in
-// on the needle until its eye is an actual eye, looking back; .for-lewis/songs/needle/cover,
+// on the needle until its eye is an actual eye, looking back; .for-lewis/reference/songs/needle/cover,
 // not in git) saved as small JPEGs in games/kit/scans (needle1..14.jpg), in the order they
 // were taken, which is the order the cover plays. The build dithers them into the title
 // cartoon (kit/photo.ts) and never needs the originals.
@@ -11,7 +11,7 @@ import { mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
-const FRAMES = resolve(__dirname, '../../../.for-lewis/songs/needle/cover');
+const FRAMES = resolve(__dirname, '../../../.for-lewis/reference/songs/needle/cover');
 const OUT = resolve(__dirname, '../../kit/scans');
 const W = 219;
 const H = 217;

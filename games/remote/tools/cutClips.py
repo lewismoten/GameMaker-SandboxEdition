@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Cuts the digitized sound clips for "Where's the Remote?" out of the recording, which is NOT
-# committed (.for-lewis/songs/remote/Where's The Remote.mp3), into
+# committed (.for-lewis/reference/songs/remote/Where's The Remote.mp3), into
 # games/remote/src/sound/clips/<name>.wav (games/kit/song/cutclips.py does the cutting; see it
 # for the filters), which games/remote/src/sound/clips.ts wraps as Creative Voice Files.
 #
