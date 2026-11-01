@@ -79,7 +79,7 @@ export const DOS_BUGS: MagSection = {
             [
               art(
                 'dos-carl',
-                'A Fly Named Carl’s cover in DOSBox: the title and the line The Bard of Bizarre, 1995 - Shareware are sharp, but the room behind them is smeared with stripes and specks of junk',
+                'A Fly Named Carl’s cover in DOSBox: the title and the line The Bard of Bizarre, 1994 - Shareware are sharp, but the room behind them is smeared with stripes and specks of junk',
                 'Lewis’s own DOSBox screenshot. The title and the bottom line came in later, small chunks that fit, so they drew right; the room behind them is the first frame, decoded from stale memory.',
               ),
             ],
