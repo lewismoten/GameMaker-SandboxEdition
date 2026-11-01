@@ -60,6 +60,7 @@
 /* Game version: the real title menu picture, big enough to read the stamp */
 .version-pic {
   height: auto;
+  overflow: visible;
 }
 .version-pic > .version-img {
   width: 100%;

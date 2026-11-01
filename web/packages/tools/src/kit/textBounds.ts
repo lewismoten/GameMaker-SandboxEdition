@@ -4,7 +4,9 @@
 // as an empty box (a curly quote), to that file as JSON when it exits.
 // Off (the usual case) it records nothing and costs one check per string; it never changes a
 // pixel. textBoundsCheck.ts runs the builds and reads the files.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+// node:fs is fetched only when a build or a check needs it, so a browser can import this file
+// (the web editor's menu version stamp, menuVersionEntry.ts) without a node-only import.
+const fs = () => process.getBuiltinModule('node:fs');
 
 /** A rectangle as [x0, y0, x1, y1], x1 and y1 exclusive. */
 type Box = [number, number, number, number];
@@ -73,7 +75,7 @@ if (file)
       overflows,
       shown: Object.fromEntries([...shown].map(([k, at]) => [k, [...at].map((xy) => xy.split(',').map(Number) as [number, number])])),
     };
-    writeFileSync(file, JSON.stringify(report));
+    fs().writeFileSync(file, JSON.stringify(report));
   });
 
 /** Collects one string's ink as a helper draws it; `end()` checks it against the area. */
@@ -169,6 +171,6 @@ export function describe(o: TextOverflow): string {
 
 /** Reads a build's TEXT_BOUNDS file: the cut strings, and how many moved. */
 export function readBounds(file: string): { cut: TextOverflow[]; moving: TextOverflow[] } {
-  if (!existsSync(file)) throw new Error(`${file}: the build wrote no text-bounds report`);
-  return judge(JSON.parse(readFileSync(file, 'utf8')) as TextBoundsReport);
+  if (!fs().existsSync(file)) throw new Error(`${file}: the build wrote no text-bounds report`);
+  return judge(JSON.parse(fs().readFileSync(file, 'utf8')) as TextBoundsReport);
 }

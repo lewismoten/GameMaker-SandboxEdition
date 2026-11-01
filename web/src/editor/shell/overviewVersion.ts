@@ -33,14 +33,24 @@ export function versionCard(project: Project): HTMLElement {
       ? 'Use up to 10 letters, digits, dots, dashes or pluses, such as 1.0 or 2.1-beta.'
       : 'Players see it in the lower right of the title menu, in Play and in every download. The saved game files stay as they are.';
     status.textContent = on ? `The menu shows v${version}` : version ? `Version ${version}, not shown on the menu` : 'No version set';
-    // the real title picture, stamped as Play and Export will have it
+    // the real menu picture (the start scene's menu graphic), stamped as Play and Export will have it
     try {
-      const [{ composeFiles }, { titlePoster }] = await Promise.all([import('../../project/composeFiles'), import('../../gfx/titlePoster')]);
+      const [{ composeFiles }, { decodeGif, isGif }, { paintIndexed }] = await Promise.all([
+        import('../../project/composeFiles'),
+        import('@lewismoten/gamemaker-sandbox-engine/formats/gif'),
+        import('../core/draw'),
+      ]);
       const shown = composeFiles(project.files, { ...(project.companion ?? emptyCompanion()), gameVersion: version, showVersion: on });
-      const src = on ? titlePoster(shown, project.gam) : titlePoster(project.files, project.gam);
-      picture.replaceChildren(
-        src ? h('img', { src, alt: on ? `The title menu with v${version} in the lower right` : 'The title menu', class: 'version-img' }) : '',
-      );
+      const bytes = shown.get(project.game().scenes[0]?.files[2]);
+      if (!bytes || !isGif(bytes)) return picture.replaceChildren();
+      const img = decodeGif(bytes);
+      const canvas = h('canvas', {
+        class: 'version-img',
+        role: 'img',
+        'aria-label': on ? `The title menu with v${version} in the lower right` : 'The title menu',
+      });
+      paintIndexed(canvas, img.pixels, img.width, img.height, img.palette);
+      picture.replaceChildren(canvas);
     } catch {
       picture.replaceChildren();
     }
