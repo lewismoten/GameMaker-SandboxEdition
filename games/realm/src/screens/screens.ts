@@ -60,7 +60,7 @@ export function titleScreen(): Screen {
   sc.fancy(Math.round(160 - (word.length * 8 * scale) / 2), 18, word, scale, GOLD);
   sc.centered(52, 'A Realm of Procrastia Adventure', [250, 236, 210], 1, [30, 16, 40]);
   sc.text(4, 190, 'SANDBOX SOFTWARE', [255, 230, 160], 1, [0, 0, 0]);
-  sc.text(252, 190, '(c) 1996', [255, 230, 160], 1, [0, 0, 0]);
+  sc.text(252, 190, '(c) 1994', [255, 230, 160], 1, [0, 0, 0]);
   return sc;
 }
 
