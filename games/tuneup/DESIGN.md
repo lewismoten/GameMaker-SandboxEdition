@@ -21,12 +21,12 @@ its intro list plays: (before level 1, the opening cartoon,) the Hat Sting with 
 and the cutaway CHEZ, then Doc Leo and the chicken's card. After a level (or a verse) their card
 asks whether it's fixed.
 
-| #   | Level            | Scenes                  | Look (base set, theme) | What you do                                                                                                                  |
-| --- | ---------------- | ----------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Jump Start       | jump                    | GARAGE, dawn           | The red clamp on the shelf and the black clamp under the bench open their terminals; Space held under the crank fills its gauge; "Charge!" and THE CHEZ's headlight opens |
-| 2   | Spark Plucks     | spark                   | ENGINE, electric       | Climb each plug wire between sparks (firing order 1-3-4-2) and pluck its plug: C, E, G, E                                    |
-| 3   | The Timing Beat  | beat1, beat2, beat3     | ENGINE, brass          | Four pipes drop notes onto four keys; boop each as it lands. Straight, syncopated (a Y-pipe, a slow bent pipe), double time (a crossover) |
-| 4   | Oil's Well       | oil                     | ENGINE, amber          | Z X C V B squirt the oil can along the staff's five lines; oiled Squeaks float home as notes; two later waves                |
+| #   | Level           | Scenes              | Look (base set, theme) | What you do                                                                                                                                                               |
+| --- | --------------- | ------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Jump Start      | jump                | GARAGE, dawn           | The red clamp on the shelf and the black clamp under the bench open their terminals; Space held under the crank fills its gauge; "Charge!" and THE CHEZ's headlight opens |
+| 2   | Spark Plucks    | spark               | ENGINE, electric       | Climb each plug wire between sparks (firing order 1-3-4-2) and pluck its plug: C, E, G, E                                                                                 |
+| 3   | The Timing Beat | beat1, beat2, beat3 | ENGINE, brass          | Four pipes drop notes onto four keys; boop each as it lands. Straight, syncopated (a Y-pipe, a slow bent pipe), double time (a crossover)                                 |
+| 4   | Oil's Well      | oil                 | ENGINE, amber          | Z X C V B squirt the oil can along the staff's five lines; oiled Squeaks float home as notes; two later waves                                                             |
 
 The ending is a stub for now: the cutaway CHEZ with the engine bay tuned.
 
