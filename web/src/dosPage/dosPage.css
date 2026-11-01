@@ -560,8 +560,13 @@ body:has(.rs-reopen:not([hidden])) .dos-foot {
     overflow: hidden;
     clip-path: inset(50%);
   }
+  /* 24px targets, so the whole row (down to the ⋯ menu) fits a 390px phone without a sideways scroll */
   .dos-btn {
-    padding: 2px 4px;
+    min-width: 24px;
+    padding: 2px 3px;
+  }
+  .dos-more > summary {
+    width: 34px;
   }
   .dos-foot {
     padding: 2px 8px;
