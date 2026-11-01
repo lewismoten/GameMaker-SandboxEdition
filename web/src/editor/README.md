@@ -208,6 +208,14 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its
   bar) and keeps the links between a sequence and its twin, and a block and its mirror, in the
   companion file.
+- **Instrument looks and track order.** In the music editor an instrument's picture, group color
+  and name come from `editors/music/instrumentLook.ts`: the preset whose patch matches, or one
+  differing in at most two of its 11 bytes (a close match, named "≈ Name"), else a plain note.
+  `presetIconBadges.ts` marks the preset icons that would look alike; `presetIcons.ts` draws them.
+  The Song tab's track list (`tracks.ts`) has Move up / Move down, drag and drop, and Sort by
+  group. The order (`trackOrder.ts`, pure; `doc.setOrder`, one undo step) is editor-only and
+  lives in the companion file's `trackOrder` section: a track is a MIDI channel in the .CMF, so
+  the song file and its channel numbers never change.
 - **Accompaniment.** The music editor's Accompany… and Copy tune…
   (`editors/music/accompanyDialog.ts`, `copyTuneDialog.ts`) use `editors/music/arrange/`, pure:
   `harmony.ts` hears a tune's key and chords, `styles.ts` holds the band's patterns and preset
