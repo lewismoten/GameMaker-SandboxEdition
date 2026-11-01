@@ -1,0 +1,21 @@
+{
+  "base": "xferplay-3.00",
+  "patches": {
+    "str.menu.highScores": "Top Ten Tunes",
+    "str.hiscore.title": "Top Ten Tunes",
+    "str.hiscore.congrats": "Encore!",
+    "str.invent.money": "Tips:      %d",
+    "str.invent.hitpoints": "Energy:    %d",
+    "color.rgb.hsRed": [50, 12, 10],
+    "color.rgb.hsBlue": [5, 8, 19],
+    "color.rgb.hsGreen": [63, 45, 14],
+    "color.select.status": "hsGreen",
+    "color.select.dropFrame": "hsGreen",
+    "color.select.aboutFrame": "hsGreen",
+    "color.select.joyText": "hsGreen",
+    "color.select.hsPrompt": "red",
+    "color.select.hsName": "hsGreen",
+    "layout.hiscore.title.x": 108,
+    "layout.hiscore.congrats.x": 127
+  }
+}
