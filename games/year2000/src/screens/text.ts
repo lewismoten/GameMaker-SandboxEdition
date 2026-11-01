@@ -72,13 +72,13 @@ F5 Save   F6 Load   ESC Quit`,
 const CREDITS_TEXT = check(
   'credits',
   `IN THE YEAR 2000!
-Version ${about.version} - 1993
+Version ${about.version} - July 1993
 
 Game design, pictures, music
 and robot dog: Claude
 for SANDBOX SOFTWARE
 
-Made with GAME-MAKER 3.0 by
+Made with GAME-MAKER 2.0 by
 Recreational Software Designs.
 
 Special thanks to everyone who
@@ -213,7 +213,7 @@ You may copy it and give it to your friends, upload it to your favorite BBS, and
 
 Please make checks payable to Sandbox Software. Allow 4 to 6 weeks for delivery, or about 30 seconds by Teleport-A-Phone (if they ever get that working).
 
-Made with GAME-MAKER 3.0 by Recreational Software Designs.
+Made with GAME-MAKER 2.0 by Recreational Software Designs.
 `);
 }
 
