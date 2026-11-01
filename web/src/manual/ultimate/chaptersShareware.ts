@@ -1,6 +1,6 @@
 // The Ultimate Owner's Guide, chapter 17: tricks from the shareware authors, the techniques a
 // survey of the Internet Archive's Game-Maker Archive collection found in other people's games
-// (.for-lewis/reference/archive2/NOTES.md (its "First survey" section)), told as advice with the game each came from. Only the ideas are
+// (.for-lewis/reference/archive/NOTES.md (its "First survey" section)), told as advice with the game each came from. Only the ideas are
 // described; nothing of those games is copied (NOTICE.md). Each is checked against code/GM:
 // PLAYGAME.C DoCollision (the higher power kills the lower; a shot that kills dies too and pays
 // the victim's upscore), KillMon (a monster with a newmon is born again as it, also when its

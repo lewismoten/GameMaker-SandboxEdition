@@ -11,8 +11,8 @@ import { GameFiles } from './files';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
-// GM_ARCHIVE_DIR, else the git-ignored .for-lewis/reference/archive2/ at the repo root, holds the games as game-maker_<name>.zip
-const ARCHIVE = process.env.GM_ARCHIVE_DIR ?? fileURLToPath(new URL('../../../.for-lewis/reference/archive2/', import.meta.url));
+// GM_ARCHIVE_DIR, else the git-ignored .for-lewis/reference/archive/ at the repo root, holds the games as game-maker_<name>.zip
+const ARCHIVE = process.env.GM_ARCHIVE_DIR ?? fileURLToPath(new URL('../../../.for-lewis/reference/archive/', import.meta.url));
 const zipPath = (dir: string) => join(ARCHIVE, dir + '.zip');
 const folder = async (dir: string) => {
   const files = new GameFiles();

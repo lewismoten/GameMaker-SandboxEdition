@@ -1,5 +1,5 @@
 // The Ultimate Owner's Guide, chapter 17's second survey: techniques found in the rest of the
-// Internet Archive's Game-Maker Archive collection (.for-lewis/reference/archive2/NOTES.md), told the
+// Internet Archive's Game-Maker Archive collection (.for-lewis/reference/archive/NOTES.md), told the
 // guide's way, without naming the games: the ideas only (NOTICE.md). Each is checked against
 // code/GM/PLAYGAME.C: doblocktouchchar refuses a money or 20-29 counter touch that would leave
 // it at 0 or less and then changes nothing (3441), PickupBloc asks the same of a pick-up,
