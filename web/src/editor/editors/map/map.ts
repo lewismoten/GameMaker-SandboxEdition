@@ -19,6 +19,9 @@ import { LASTMON, parseMonsters, type Monster } from '@lewismoten/gamemaker-sand
 import { normalize } from '../../../project/files';
 import { WHOLE_MAP, contentBounds, dragRect, gameView, type BlockRect, type Handle } from './mapClip';
 import { drawOverlay, type OverlayState } from './tools/overlay';
+import { blockMarksLayer } from './tools/blockMarksDraw';
+import { blockMarksControls } from './tools/blockMarksControls';
+import { describeBehavior } from './tools/blockMarks';
 import { MapTools, type ToolMode } from './tools/toolController';
 import { findBlock, floodCells, replaceAll } from './tools/cellOps';
 import type { checkPanel } from './check/checkPanel';
@@ -176,6 +179,7 @@ registerEditor(['map'], (host, project, file) => {
 
   const canvas = h('canvas', { class: 'pixel', style: 'cursor:crosshair;display:block' });
   const over = h('canvas', { class: 'pixel mt-overlay', 'aria-hidden': 'true' });
+  const marksCanvas = h('canvas', { class: 'pixel mt-overlay', 'aria-hidden': 'true' });
   const scroller = h(
     'div',
     {
@@ -187,11 +191,42 @@ registerEditor(['map'], (host, project, file) => {
     },
     h('div', { class: 'mt-stack' }, canvas, over),
   );
-  const viewport = mapViewport({ scroller, stack: canvas.parentElement!, canvas, overlay: over, block: () => BLEN * zoom, moved: () => markers.render() });
+  const viewport = mapViewport({
+    scroller,
+    stack: canvas.parentElement!,
+    canvas,
+    overlay: over,
+    layers: [marksCanvas],
+    block: () => BLEN * zoom,
+    moved: () => {
+      markers.render();
+      if (viewport.wrapped && marks.any()) (marks.redraw(), viewport.render());
+    },
+  });
+  // what blocks do (barriers, push and pull, touch, pickup, timed): drawn for the cells in view
+  const marks = blockMarksLayer({
+    canvas: marksCanvas,
+    block: () => BLEN * zoom,
+    cells: () => map.blocks,
+    blocks: () => bg,
+    view: () => viewport.view(),
+    frame: () => viewport.wrapped && viewport.render(),
+  });
+  let marksPending = 0;
+  scroller.addEventListener(
+    'scroll',
+    () => {
+      if (viewport.wrapped || !marks.any() || marksPending) return;
+      marksPending = requestAnimationFrame(() => ((marksPending = 0), marks.redraw()));
+    },
+    { passive: true },
+  );
+  const marksUi = blockMarksControls(marks);
   const ctx = viewport.picture.getContext('2d')!;
   const redrawOverlay = () => {
     overlay.found = finding ? findBlock(map.blocks, brush) : [];
     drawOverlay(over, zoom, overlay, bgImgs);
+    marks.refresh();
     viewport.render();
   };
   const status = h('div', { class: 'meta' });
@@ -685,8 +720,9 @@ registerEditor(['map'], (host, project, file) => {
     let p = cell(e);
     const b = map.blocks[p.y * MLEN + p.x];
     const mon = map.monsters.find((m) => m.monnum < LASTMON && m.curx === p.x && m.cury === p.y);
-    const marks = linkMarks().filter((m) => m.x === p.x && m.y === p.y);
-    status.textContent = `(${p.x}, ${p.y}) block ${b}${mon ? ` · monster ${mon.monnum}` : ''}${marks.map((m) => ` · link ${m.label}`).join('')}${finding ? ` · block ${brush} is used ${overlay.found.length} times` : ''}`;
+    const links = linkMarks().filter((m) => m.x === p.x && m.y === p.y);
+    const does = marks.any() && bg[b] ? describeBehavior(bg[b], b) : '';
+    status.textContent = `(${p.x}, ${p.y}) block ${b}${does ? ` · ${does}` : ''}${mon ? ` · monster ${mon.monnum}` : ''}${links.map((m) => ` · link ${m.label}`).join('')}${finding ? ` · block ${brush} is used ${overlay.found.length} times` : ''}`;
     if (isTool(mode)) return tools.pointerMove(viewport.gestureCell(e), e.buttons);
     if (!painting || !canvas.hasPointerCapture(e.pointerId)) return;
     // a fast stroke skips cells: fill them in along a line
@@ -1021,6 +1057,7 @@ registerEditor(['map'], (host, project, file) => {
       gridBtn,
       wrapBtn,
       linksBtn,
+      marksUi.button,
       exitBtn,
       findBtn,
       replaceBtn,
@@ -1183,7 +1220,7 @@ registerEditor(['map'], (host, project, file) => {
       zoomControl,
       h('button', { onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' }, '🖼 Download map picture'),
     ),
-    h('div', { class: 'row' }, h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, scroller, status), sideCol),
+    h('div', { class: 'row' }, h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, marksUi.panel, scroller, status), sideCol),
   );
   rebuild();
   // One screen: the map, and the blocks and monsters lists, end at the editor's bottom edge,
@@ -1266,6 +1303,8 @@ registerEditor(['map'], (host, project, file) => {
     hideTip();
     tip.remove();
     markers.dispose();
+    marks.dispose();
+    cancelAnimationFrame(marksPending);
     viewport.dispose();
     window.removeEventListener('keydown', onKey);
     fitter.disconnect();

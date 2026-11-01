@@ -399,6 +399,18 @@ are real previews too; a blank idle can fall back to a movement frame.
   map zoom; Shift+wheel keeps scrolling. Choosing a zoom in the toolbar uses the
   viewport center as its anchor. These view changes never edit native map data.
 
+- **What blocks do.** The map toolbar's ◈ button opens toggles for marks over the
+  map, each remembered in the browser (`gm-map-mark-*`): barriers (white walls;
+  amber one-way sides with teeth on the solid side; blocks solid all round share
+  one outline), push and pull (chevrons moving the way gravity pulls; still under
+  reduced motion), and touch, pickup and timed badges. `tools/blockMarks.ts`
+  works out each block's behavior from PLAYGAME's rules (cited in its header) and
+  the merged barrier edges, with no DOM; `tools/blockMarksDraw.ts` draws only the
+  cells in view on a layer `mapViewport.ts` copies when the map wraps;
+  `tools/blockMarksControls.ts` is the panel and its legend. With the marks on,
+  the status line says what the block under the pointer does. Editor-only: no
+  game file or export changes.
+
 - **Polygon selections.** `editors/map/tools/selection.ts` builds cell masks from
   closed corner paths using the existing line and outside-flood helpers. Captured
   selections preserve unselected cells as holes, so fill, cut, paste, stamps and
