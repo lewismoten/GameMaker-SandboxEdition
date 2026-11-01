@@ -27,6 +27,7 @@ function bookHint(g: MagGame, qStart: string): Block | undefined {
 const PICKS: [id: string, questions: string[]][] = [
   ['teddy', ['The back fence is way too tall.', 'The turnstile won’t let me in.', "The turnstile won't let me in."]],
   ['teddy2', ['What is that faint wispy thing', 'The wind keeps blowing me back!']],
+  ['tuneup', ['The door won’t open.', "The door won't open.", 'Two drum doors']],
   ['teddy3', ['A button does nothing.', 'The car won’t climb the hill.', "The car won't climb the hill."]],
   ['sandcast', ['How do I get into Anthill Keep?', 'The ants keep biting me.']],
   ['snowbound', ['I got to the register without $89.', 'Big Pete won’t stop shoving me.', "Big Pete won't stop shoving me."]],
