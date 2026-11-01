@@ -11,6 +11,8 @@
 //     "format": "gamemaker-companion",
 //     "version": 1,
 //     "releaseNotes": { "1.2": "…" },   // text per game version (optional; see releaseNotesOf)
+//     "gameVersion": "1.0",         // the author's version of the game (optional; see gameVersionOf)
+//     "showVersion": true,          // letter it on the menu picture of Play and exports (composeFiles.ts); off when absent
 //     "files": {                    // extras of one game file, by its normalized name
 //       "forest.bbl": {
 //         "terrains": [ … ],       // map/tools/autotile.ts
@@ -38,6 +40,10 @@ export interface Companion {
   files: Record<string, FileExtras>;
   /** Release notes by game version, such as "1.2". Editor-only; absent unless set. */
   releaseNotes?: Record<string, string>;
+  /** The author's version of the game, such as "1.0" (not the companion's own `version`). Editor-only. */
+  gameVersion?: string;
+  /** True to letter `gameVersion` on the menu picture of Play and exports. Off when absent. */
+  showVersion?: boolean;
   /** Anything else a newer version wrote. */
   [key: string]: unknown;
 }
@@ -151,4 +157,22 @@ export function setReleaseNotes(c: Companion, version: string, text: string): vo
   else delete notes[version];
   if (Object.keys(notes).length) c.releaseNotes = notes;
   else delete c.releaseNotes;
+}
+
+/** A version the menu picture can hold: a short run of letters, digits, dots, dashes and pluses. */
+export const VERSION_PATTERN = /^[0-9A-Za-z.+-]{1,10}$/;
+
+/** The game's version and whether it is lettered on the menu picture (a version nobody can read there counts as none). */
+export function menuVersionOf(c: Companion | undefined): { version: string; show: boolean } {
+  const version = typeof c?.gameVersion === 'string' && VERSION_PATTERN.test(c.gameVersion) ? c.gameVersion : '';
+  return { version, show: c?.showVersion === true };
+}
+
+/** Sets the version and the toggle in place; an empty version and an off toggle leave nothing behind. */
+export function setMenuVersion(c: Companion, version: string, show: boolean): void {
+  const v = version.trim();
+  if (v) c.gameVersion = v;
+  else delete c.gameVersion;
+  if (show) c.showVersion = true;
+  else delete c.showVersion;
 }
