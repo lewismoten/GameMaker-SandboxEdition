@@ -52,7 +52,7 @@
   },
   {
    "scene": 13,
-   "keys": "KEgByAZIAcgmSAHIBkgByB5QAdAGUAHQFkgByCpQAdAFUAHQIEgByCJQAdAGUAHQTkgByAVIAcg="
+   "keys": "CFAB0CJIAcgFSAHIKEgByAVIAcggUAHQBVAB0BhIAcgqUAHQBVAB0CBIAcgiUAHQBlAB0E5IAcgFSAHI"
   },
   {
    "scene": 14,
@@ -60,7 +60,7 @@
   },
   {
    "scene": 15,
-   "keys": "AUgByAVIAcgTOQG5A0gByBM5AbkDUAHQBVAB0Aw5AbkEUAHQEjkBuQRIAcgGSAHICzkBuQRIAcgTOQG5A1AB0AZQAdALOQG5BFAB0BM5AbkDSAHIBkgByAs5AbkESAHIEzkBuQNQAdAGUAHQDDkBuQNQAdATOQG5A0gByAZIAcgMOQG5A0gByBI5AbkEUAHQBlAB0As5AbkEUAHQEzkBuQNQAdAGTRDNBk0IzQZNCM0GTQjNBk0EzQZN"
+   "keys": "AUgByBk5AbkDSAHIEzkBuQNQAdAFUAHQDDkBuQRQAdASOQG5BEgByAZIAcgLOQG5BEgByBM5AbkDUAHQBlAB0As5AbkEUAHQEzkBuQNIAcgGSAHICzkBuQRIAcgTOQG5A1AB0AZQAdAMOQG5A1AB0BM5AbkDSAHIBkgByAw5AbkDSAHIEjkBuQRQAdAGUAHQCzkBuQRQAdATOQG5A1AB0AZNEM0GTQjNBk0IzQZNCM0GTQTNBk0="
   },
   {
    "scene": 16,
@@ -211,7 +211,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 28787,
+  "frames": 28807,
   "chapters": [
    {
     "title": "Opening",
@@ -271,63 +271,63 @@
    },
    {
     "title": "The Bandstand Again",
-    "frame": 13881
+    "frame": 13901
    },
    {
     "title": "Level 8: The Marching Field",
-    "frame": 14353
+    "frame": 14373
    },
    {
     "title": "The Bandstand Again",
-    "frame": 16034
+    "frame": 16054
    },
    {
     "title": "Level 9: The Woods by the River",
-    "frame": 16506
+    "frame": 16526
    },
    {
     "title": "The Bandstand Again",
-    "frame": 17752
+    "frame": 17772
    },
    {
     "title": "Level 10: The Clock Tower",
-    "frame": 18224
+    "frame": 18244
    },
    {
     "title": "The Bandstand Again",
-    "frame": 19859
+    "frame": 19879
    },
    {
     "title": "Level 11: The Farm",
-    "frame": 20331
+    "frame": 20351
    },
    {
     "title": "The Bandstand Again",
-    "frame": 21340
+    "frame": 21360
    },
    {
     "title": "Level 12: The Attic",
-    "frame": 21812
+    "frame": 21832
    },
    {
     "title": "The Bandstand Again",
-    "frame": 22798
+    "frame": 22818
    },
    {
     "title": "Level 13: Sound Check",
-    "frame": 23270
+    "frame": 23290
    },
    {
     "title": "The Bandstand Again",
-    "frame": 25452
+    "frame": 25472
    },
    {
     "title": "Ending",
-    "frame": 25924
+    "frame": 25944
    },
    {
     "title": "Credits",
-    "frame": 27235
+    "frame": 27255
    }
   ]
  }

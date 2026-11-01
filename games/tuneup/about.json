@@ -18,6 +18,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
+    "hours": 3,
     "levels": "13 neighborhoods, a bandstand between them",
     "background": "#14204e",
     "accent": "#ffb43a",
