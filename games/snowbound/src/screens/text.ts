@@ -69,7 +69,7 @@ const CREDITS_TEXT = page(
     'Design, pixels, music, sound',
     'and levels by Claude - every',
     'block, monster and song built',
-    'as Game-Maker 3.0 files.',
+    'as Game-Maker 2.0 files.',
     '',
     'For the founder and operator',
     'of Moten Snow-to-Software',
@@ -93,7 +93,7 @@ export function readme(price: string): string {
   return `
     S N O W B O U N D
     The $89 Shovel
-    Version ${about.version} - January 1993
+    Version ${about.version} - March 1993
     (c) 1993 Sandbox Software
 
 Fort Ashby, West Virginia,
@@ -164,7 +164,7 @@ THIS IS SHAREWARE
   you call.
 
 SAYING THANKS
-  Built with GAME-MAKER 3.0 by
+  Built with GAME-MAKER 2.0 by
   Recreational Software
   Designs. For every kid who
   ever shoveled a driveway to

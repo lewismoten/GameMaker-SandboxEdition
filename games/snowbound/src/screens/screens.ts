@@ -103,7 +103,7 @@ export function buildScreens(
     micro(p, x + 5 * s, y + 10 * s, 'GAME', c('gold', 3), s);
     micro(p, x + 5 * s, y + 16 * s, 'MAKER', c('gold', 3), s);
     for (let k = 0; k < 4; k++) p.rect(x + (4 + k * 8) * s, y + 28 * s, 6 * s, 6 * s, c(['coat', 'siding', 'money', 'gold'][k], 3));
-    micro(p, x + 4 * s, y + 40 * s, 'VER 3.0', c('pink', 0), s);
+    micro(p, x + 4 * s, y + 40 * s, 'VER 2.0', c('pink', 0), s);
   };
   box(n2, 26, 92, 1);
   body(n2, 80, 96, 120, [
