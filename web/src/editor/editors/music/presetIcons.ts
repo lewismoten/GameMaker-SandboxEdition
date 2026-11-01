@@ -4,6 +4,8 @@
 // picker's pale tile in light and dark. A preset picks one by its id, else by its group, so a
 // new preset needs no change here (it shows its group's picture).
 
+import { withBadge } from './presetIconBadges';
+
 const PALETTE: Record<string, string> = {
   k: '#1f1d2e',
   w: '#ffffff',
@@ -837,6 +839,8 @@ const ICONS: Record<string, string[]> = {
 };
 
 const BY_ID: Record<string, string> = {
+  piano: 'piano',
+  organ: 'organ',
   epiano: 'keyboard',
   'tine-glass': 'keyboard',
   'reed-soft': 'clarinet',
@@ -933,12 +937,22 @@ const BY_GROUP: Record<string, string> = {
   classic: 'note',
 };
 
-/** The picture for a preset: an inline 20x20 SVG (one rect per run of a color), hidden from screen readers. */
-export function presetIcon(id: string, group: string): string {
+/** The preset's 20 rows of palette letters (its family's drawing, with its badge if it shares one). */
+export function presetRows(id: string, group: string): string[] {
   const key = BY_ID[id] ?? BY_GROUP[group] ?? 'note';
-  const rows = ICONS[key] ?? ICONS[BY_GROUP[group] ?? 'note'] ?? ICONS.note;
-  const rects: string[] = [];
-  rows.forEach((row, y) => {
+  return withBadge(ICONS[key] ?? ICONS[BY_GROUP[group] ?? 'note'] ?? ICONS.note, id);
+}
+
+/** The color a palette letter stands for. */
+export const iconColor = (ch: string): string | undefined => PALETTE[ch];
+
+/**
+ * The picture for a preset: an inline 20x20 SVG (one rect per run of a color), hidden from
+ * screen readers. `back` fills the tile behind it (a group's color).
+ */
+export function presetIcon(id: string, group: string, back?: string): string {
+  const rects: string[] = back ? [`<rect width="20" height="20" fill="${back}"/>`] : [];
+  presetRows(id, group).forEach((row, y) => {
     for (let x = 0; x < row.length;) {
       const ch = row[x];
       let end = x + 1;
@@ -949,3 +963,6 @@ export function presetIcon(id: string, group: string): string {
   });
   return `<svg viewBox="0 0 20 20" width="40" height="40" shape-rendering="crispEdges" aria-hidden="true" focusable="false">${rects.join('')}</svg>`;
 }
+
+/** The picture for an instrument that matches no preset: the plain music note. */
+export const genericIcon = (back?: string): string => presetIcon('', '', back);
