@@ -14,7 +14,8 @@ import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/gra
 // GM_ARCHIVE_DIR, else the git-ignored .for-lewis/reference/archive/ at the repo root, holds the games as game-maker_<name>.zip
 const ARCHIVE = process.env.GM_ARCHIVE_DIR ?? fileURLToPath(new URL('../../../.for-lewis/reference/archive/', import.meta.url));
 // pre-3.0 games (their players carry the buyer's stamp) live in the pre-3.0/ subfolder
-const zipPath = (dir: string) => [join(ARCHIVE, dir + '.zip'), join(ARCHIVE, 'pre-3.0', dir + '.zip')].find((p) => existsSync(p)) ?? join(ARCHIVE, dir + '.zip');
+const zipPath = (dir: string) =>
+  [join(ARCHIVE, dir + '.zip'), join(ARCHIVE, 'pre-3.0', dir + '.zip')].find((p) => existsSync(p)) ?? join(ARCHIVE, dir + '.zip');
 const folder = async (dir: string) => {
   const files = new GameFiles();
   const players: { name: string; bytes: Uint8Array }[] = [];
