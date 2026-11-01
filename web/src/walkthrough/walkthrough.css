@@ -303,3 +303,13 @@ dialog.modal:has(.wt-dialog) {
     padding: 12px;
   }
 }
+
+.wt-redo summary {
+  cursor: pointer;
+  min-height: 24px;
+  font-weight: 600;
+}
+
+.wt-redo-body {
+  margin-top: 6px;
+}

@@ -18,6 +18,7 @@ import { claimMediaFocus } from '../media/mediaFocus';
 import { unlockAchievement, watchedWalkthrough } from '../achievements';
 import { catalogPatches } from '../dosPlayer/catalogPatches';
 import { endCardLines } from './endCard';
+import { redoMenu, type RedoChoice, type RedoOptions } from './redoMenu';
 
 const FRAME_MS = 1000 / WALKTHROUGH_FPS;
 /** A skip ahead moves the clock 40 timer ticks a frame: the most the engine's loop takes at once. */
@@ -102,12 +103,14 @@ export async function watchWalkthrough(
   chapter?: number,
   /** A project's DOS player patches (dosPlayer/): its menu and player screens as its .EXE shows them. */
   player?: PlayerPatches,
+  /** Redo… on the player (redoMenu.ts): the choice is heard after the player has closed. */
+  redo?: RedoOptions,
 ): Promise<void> {
   // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
   let lose = () => {};
   const release = claimMediaFocus('player', () => lose());
   try {
-    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter, player);
+    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter, player, redo);
   } finally {
     release?.();
   }
@@ -121,6 +124,7 @@ async function watch(
   given?: Walkthrough,
   chapter?: number,
   player?: PlayerPatches,
+  redo?: RedoOptions,
 ): Promise<void> {
   // a walkthrough handed in (the editor's walkthrough bot made it), else the catalog's
   const [walk, files] = await Promise.all([given ? Promise.resolve(given) : loadWalkthrough(entry), loadFiles()]);
@@ -506,7 +510,8 @@ async function watch(
     .then(() => (chapter !== undefined && tl.chapters[chapter] ? seek(chapter) : undefined));
 
   onReady?.();
-  await modal<void>(`${entry.title}: walkthrough`, () =>
+  let picked: RedoChoice | undefined;
+  await modal<void>(`${entry.title}: walkthrough`, (close) =>
     h(
       'div',
       { class: 'wt-dialog' },
@@ -518,6 +523,12 @@ async function watch(
         h('div', { class: 'wt-controls' }, playBtn, timeEl, h('span', { class: 'wt-speeds', role: 'group', 'aria-label': 'Speed' }, ...speeds), soundPick),
         h('div', { class: 'wt-actions', role: 'group', 'aria-label': 'Download and share' }, exportSel, exportBtn, copyBtn),
         exportBar,
+        redo
+          ? redoMenu(walk, redo, (c) => {
+              picked = c;
+              close(undefined);
+            })
+          : null,
         status,
         ytDetails,
       ),
@@ -530,4 +541,5 @@ async function watch(
   cancelAnimationFrame(raf);
   run?.stop();
   audio.dispose();
+  if (picked && redo) await redo.onChoose(picked, walk);
 }

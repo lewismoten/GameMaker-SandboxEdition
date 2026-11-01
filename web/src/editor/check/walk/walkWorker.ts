@@ -25,7 +25,7 @@ export interface WalkRequest {
   /** Don't walk: play this walkthrough on the engine, to check and time it. */
   walk?: Walkthrough;
   /** The walkthrough made before (autoWalk's `reuse`): its scenes' keys are tried first. */
-  reuse?: Reused[];
+  reuse?: (Reused | undefined)[];
 }
 
 export type WalkMessage =

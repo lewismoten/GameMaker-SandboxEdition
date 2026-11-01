@@ -11,4 +11,10 @@ one dialog (`editor/widgets/walkDialog.ts`) to watch the game's own walkthrough 
 make your own with the walkthrough bot; it loads it all only when pressed.
 A walkthrough the bot made only partway (`partial`, with its `ending`) plays as far as it got and
 ends on a closing card (`endCard.ts`), in the player and for a few seconds at the end of its MP4.
+A game that already has a walkthrough (one kept in this browser or in its companion, one just
+made, or a catalog game's shipped one: `editor/widgets/walkRoute.ts`) opens in the player; its
+Redo… (`redoMenu.ts`) redoes the whole walkthrough (the making dialog), one level (the bot
+replays the game with the other levels' old keys tried first, `editor/check/walk/redoLevel.ts`),
+or opens a walkthrough file. A look-only game's redone walkthrough is kept in this browser.
+
 The bot itself and the dialog are the editor's (`editor/check/walk/`, `editor/widgets/walkDialog.ts`).

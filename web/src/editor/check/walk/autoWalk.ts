@@ -107,7 +107,7 @@ interface AutoWalkOptions {
    * them: a scene the bot got through then is played with those keys again when they still
    * reach a way on from here, so making it again goes quickly to where it stopped.
    */
-  reuse?: Reused[];
+  reuse?: (Reused | undefined)[];
 }
 
 /** One scene of an earlier walkthrough the bot played: its keys, from the scene's entry, and how it got through. */
