@@ -1,4 +1,4 @@
-// Today's web header: the ⚙ Settings menu (playing offline, the source code, the credits, the theme, the whole
+// Today's web header: the ⚙ Settings menu (playing offline, the source code, the credits, the theme, sound and tour, the whole
 // guided tour, AI setup and back up / restore), and the same items for the ⋯ menu on narrow windows (main.ts). The
 // Offline dialog, AI setup and back up / restore load when chosen.
 import { h, toast } from './editor/core/ui';
@@ -24,6 +24,9 @@ const openBackup = () => {
   void load().then((m) => m.openDataBackup());
 };
 
+/** "Sound and tour…": the dialog for music, voice and sound effects (on and volume) and the tour (soundSettings/). */
+const openSound = () => void import('./soundSettings/soundDialog').then((m) => m.openSoundDialog());
+
 const icon = (s: string) => h('span', { 'aria-hidden': 'true' }, s);
 
 /** The settings in their order, each given `attrs` (the ⚙ menu's role and tabindex). */
@@ -38,6 +41,12 @@ export function settingsItems(attrs: Record<string, string> = {}): HTMLElement[]
     h('a', { ...attrs, href: SOURCE_URL, target: '_blank', rel: 'noopener' }, icon('</>'), ' Source on GitHub'),
     h('a', { ...attrs, href: '#/credits', title: 'Who and what made Game-Maker: Sandbox Edition' }, icon('📜'), ' Credits'),
     themeItem(attrs),
+    h(
+      'button',
+      { ...attrs, type: 'button', onclick: openSound, title: 'Music, voice, sound effects and the tour: on or off, and volume' },
+      icon('🔊'),
+      ' Sound and tour…',
+    ),
     wholeTourItem(attrs),
     h('button', { ...attrs, type: 'button', onclick: openAi, title: 'Set up your own AI (Ollama or OpenAI) for the Assistant' }, icon('✦'), ' AI setup…'),
     h(

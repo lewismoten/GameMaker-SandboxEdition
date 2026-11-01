@@ -42,6 +42,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 - [`urlState.ts`](urlState.ts): what the address bar keeps. [`viewSwitch.ts`](viewSwitch.ts): the
   Desk | DOS | Web switch.
 - [`settingsMenu.ts`](settingsMenu.ts): today's web header's ⚙ Settings menu (play offline, the source, the theme, the guided tour, AI setup, back up / restore), its items also in the narrow ⋯ menu.
+- [`soundSettings/`](soundSettings/README.md): the ⚙ menu's Sound and tour dialog: music, voice and sound effects (on, volume) and the tour switch.
 - [`theme.ts`](theme.ts): light or dark for today's web, as the Settings menu's Theme item. [`edition.ts`](edition.ts): the fork's
   name, in one place. [`pageToc.ts`](pageToc.ts): "On this page" beside a reading page (the Mac,
   Windows and Linux pages, the cast, credits and achievements), or a row of its section links
