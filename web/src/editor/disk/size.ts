@@ -5,7 +5,7 @@
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
-import { WEB_ONLY } from '../../export/exportDos';
+import { WEB_ONLY } from '../../export/webOnly';
 import { normalize, type GameFiles } from '../../project/files';
 
 /** PLAYGAME's files as the DOS export adds them (cd/gm/: XFERPLAY.EXE, SNDBLAST.DRV, CONFIG.HLP) plus the two small text files. */

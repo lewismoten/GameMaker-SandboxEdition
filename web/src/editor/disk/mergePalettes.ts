@@ -24,6 +24,7 @@ export function planPalettes(files: GameFiles, gam: string, uses: SceneUse[]): S
         saves: y.length,
         title: `Merge palette ${pals[b]} into ${pals[a]}`,
         changes: [`${pals[b]} has exactly the colors of ${pals[a]}`, `${n} scene${n === 1 ? '' : 's'} open ${pals[a]} instead of ${pals[b]}`],
+        touches: [...writes.files.keys(), gam],
         apply: (f, g) => commit(f, g, writes),
       };
     }

@@ -11,6 +11,7 @@ import { uploadSummary } from '../widgets/uploadChecklist';
 import { howFar, WALK_SECTION, type SavedWalk } from '../check/walk/keptWalk';
 import { firstStepsState, stepsDone, STEPS } from './firstSteps';
 import { projectTarget, showHealthReport } from './gameHealth';
+import { diskStatus, floppyFor } from '../disk/diskCard';
 
 interface ToolsHost {
   open: (file: string) => void;
@@ -131,6 +132,19 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
       'Reads every file with its format’s reader and lists the ones that are missing, empty, misnamed or broken.',
       'Check every file…',
       () => void showHealthReport(projectTarget(project.id, project.name, Date.now())),
+    ),
+  );
+
+  // Disk space: the floppy, drawn from the game's own title picture and palette
+  cards.push(
+    card(
+      'disk',
+      'Disk space',
+      floppyFor(project, 84),
+      diskStatus(project),
+      'What the game takes to run as a DOS game, how many 3.5″ disks that is, and files (monster files, block sets, palettes) that could share one.',
+      'Open the disk tool…',
+      () => void import('../disk/diskTool').then((m) => m.diskTool(project)),
     ),
   );
 

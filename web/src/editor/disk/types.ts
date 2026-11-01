@@ -13,6 +13,8 @@ export interface Step {
   title: string;
   /** What changes, one line each (shown in the preview before anything is applied). */
   changes: string[];
+  /** Every file apply() changes, for the undo snapshot. */
+  touches: string[];
   /** Rewrites the files (and the .gam) in place. The caller keeps the undo snapshot. */
   apply(files: GameFiles, gam: string): void;
 }

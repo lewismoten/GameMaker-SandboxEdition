@@ -24,6 +24,12 @@ merge them, and says how many 3.5" disks the game needs.
   renumbers every map cell.
 - `size.ts`: what the DOS export (`export/exportDos.ts`) ships, PLAYGAME's own files included, and
   the disks it takes at 1.44 MB and 720 KB (FAT12 clusters, the root directory's entry limit).
+- `floppy.ts`, `floppyData.ts`: the card's picture, a 3.5" disk drawn on a canvas. The plastic is
+  color 255 of the first palette that is not one solid color; the label is the title scene's first
+  still picture (an animation if there is none), the player's character block and the game's name.
+- `diskCard.ts` (the floppy and status line the Tools card draws, kept small so that tab stays
+  light) and `diskTool.ts` (the dialog: sizes, the merges with a preview of each, Apply, and Undo
+  through the project's file history, which stays while the project is open).
 - `refs.ts`, `palettes.ts`, `blockSlots.ts`, `commit.ts`: which scene opens what, palette
   questions, block-slot placement, and writing a step's result (refusing when a file changed since
   the preview). A block is drawn with its own scene's palette wherever it is stored, so a merge

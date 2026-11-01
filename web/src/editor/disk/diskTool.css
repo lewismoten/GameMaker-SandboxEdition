@@ -1,0 +1,71 @@
+/* The disk-space tool's dialog: the floppy beside the numbers, the merges below. */
+.disk-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 640px;
+}
+.disk-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+.disk-floppy {
+  flex: none;
+}
+.disk-summary {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.disk-sizes {
+  border-collapse: collapse;
+  width: 100%;
+}
+.disk-sizes caption {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: 4px;
+}
+.disk-sizes th,
+.disk-sizes td {
+  padding: 3px 8px 3px 0;
+  text-align: left;
+  font-weight: normal;
+  border-bottom: 1px solid var(--border);
+}
+.disk-sizes td {
+  text-align: right;
+  white-space: nowrap;
+}
+.disk-fit {
+  font-weight: 600;
+}
+.disk-steps {
+  margin: 8px 0;
+  padding-left: 24px;
+}
+.disk-step summary {
+  cursor: pointer;
+  min-height: 24px;
+}
+.disk-applied {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-2);
+}
+.disk-undo {
+  display: flex;
+  gap: 8px;
+}
+.disk-undo button {
+  min-height: 24px;
+}
+.disk-notes {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+.disk-tool h3 {
+  margin: 12px 0 0;
+}

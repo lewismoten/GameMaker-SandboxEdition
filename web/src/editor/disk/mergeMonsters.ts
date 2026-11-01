@@ -114,6 +114,7 @@ export function planMonsters(files: GameFiles, gam: string, uses: SceneUse[], ke
     saves: readFor(files, before, drop).length,
     title: `Merge monsters ${drop} into ${keep}`,
     changes,
+    touches: [...writes.files.keys(), gam],
     apply: (f, g) => commit(f, g, writes),
   };
 }

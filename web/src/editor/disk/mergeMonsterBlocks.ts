@@ -71,6 +71,7 @@ export function planMonsterBlocks(files: GameFiles, gam: string, uses: SceneUse[
     saves: dBytes.length,
     title: `Merge monster blocks ${drop} into ${keep}`,
     changes,
+    touches: [...writes.files.keys(), gam],
     apply: (f, g) => commit(f, g, writes),
   };
 }
