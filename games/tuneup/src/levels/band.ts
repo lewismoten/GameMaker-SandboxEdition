@@ -11,6 +11,7 @@ import { iconPic } from '../art/icons';
 import type { Pal } from '../art/pal';
 import { kit, LEDGE, SOLID, GRAV, type Kit } from '../blocks/common';
 import { CTR } from '../ids';
+import { saveSignBlocks } from '../../../kit/saveSign';
 import { MapBuilder, at, type Level } from './maps';
 
 /** The families in the order Teddy brings them home, with the instruments of each. */
@@ -23,6 +24,8 @@ export const FAMILIES: { id: string; finds: string[] }[] = [
   { id: 'winds', finds: ['flute', 'clarinet', 'oboe', 'sax', 'pan-flute', 'reed-soft'] },
 ];
 const W = 16;
+/** Where the save sign's board stands (level blocks), on the bandstand after the felt egg's level. */
+export const SIGN_AT: [number, number] = [0, 7];
 /** Stands start here on the stage (level x), in Teddy's row. */
 const STAND_X = 2;
 const STAGE_ROW = 6;
@@ -37,7 +40,7 @@ function tall(top: Pixels, bottom: Pixels, figure: Pixels): [Pixels, Pixels] {
 }
 
 /** The bandstand's blocks for homecoming `n` (0 the keys, 1 the strings, then FAMILIES' order). */
-export function bandBlocks(n: number) {
+export function bandBlocks(n: number, sign = false) {
   return (pal: Pal): Kit => {
     const k = kit(pal);
     const { book, c, P } = k;
@@ -60,7 +63,17 @@ export function bandBlocks(n: number) {
     book.add('stage', P(c('wood', 3)).rect(0, 0, 20, 3, c('wood', 4)).rect(0, 3, 20, 1, c('wood', 1)), { solid: LEDGE, grav: GRAV.down });
     book.add('skirt', lattice().rect(0, 0, 20, 2, c('wood', 1)), air);
     book.add('lawn', P(c('grass', 3)).rect(0, 0, 20, 2, c('grass', 4)), { solid: SOLID });
-    book.add('square', sky(8).rect(0, 12, 20, 8, c('stone', 3)).rect(0, 12, 20, 1, c('stone', 4)), air);
+    const square = () => sky(8).rect(0, 12, 20, 8, c('stone', 3)).rect(0, 12, 20, 1, c('stone', 4));
+    book.add('square', square(), air);
+    if (sign) {
+      // the save sign at the corner of the square, over the sky and the gazebo's skirt
+      const skirt = () => lattice().rect(0, 0, 20, 2, c('wood', 1));
+      const s = saveSignBlocks(pal.pal, { board: [sky(7), skirt()], posts: [square(), skirt()] });
+      book.add('sign.l', s.board[0], air);
+      book.add('sign.r', s.board[1], air);
+      book.add('post.l', s.posts![0], air);
+      book.add('post.r', s.posts![1], air);
+    }
     // a music stand, empty; and the same stand with its instrument on it
     const stand = (id?: string) => {
       const p = lattice();
@@ -108,7 +121,7 @@ export function bandBlocks(n: number) {
 }
 
 /** The bandstand for homecoming `n`. */
-export function band(n: number) {
+export function band(n: number, sign = false) {
   return (book: Kit['book']): Level => {
     const m = new MapBuilder(book, { l: 'lattice', R: 'roof', e: 'eave', p: 'post', s: 'stage', k: 'skirt', g: 'lawn', q: 'square' }, 'roof');
     for (let r = 0; r < 9; r++) m.fill(0, r, W, 1, `sky${r}`);
@@ -125,6 +138,11 @@ export function band(n: number) {
     m.set(14, 8, 'gate');
     for (let r = 0; r < 8; r++) m.set(14, r, `arbor${r}`);
     m.link(15, 8);
+    if (sign)
+      m.set(SIGN_AT[0], SIGN_AT[1], 'sign.l')
+        .set(SIGN_AT[0] + 1, SIGN_AT[1], 'sign.r')
+        .set(SIGN_AT[0], SIGN_AT[1] + 1, 'post.l')
+        .set(SIGN_AT[0] + 1, SIGN_AT[1] + 1, 'post.r');
     return { m, start: at(8, 5), size: [W, 10] };
   };
 }

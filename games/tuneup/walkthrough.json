@@ -25,6 +25,38 @@
   {
    "scene": 6,
    "keys": "BEsYywZNHM0GTRJICsg="
+  },
+  {
+   "scene": 7,
+   "keys": "BE0IzQZNC0gKyAdICsgEzQYSDJIATQPNBk0EzQZNB80bTQdICsgHSArIBM0GEgySAE0DzQZNBM0GTQbNE00HSArIB0gKyATNBhIMkgBNAM0GTQPNBk0FSArI"
+  },
+  {
+   "scene": 8,
+   "keys": "BEsYywZNGM0GTRZICsg="
+  },
+  {
+   "scene": 9,
+   "keys": "KEgByAZIAcgmSAHIBkgByB5QAdAGUAHQFkgByCpQAdAFUAHQIEgByCJQAdAGUAHQTkgByAVIAcg="
+  },
+  {
+   "scene": 10,
+   "keys": "BEsYywZNFM0GTRpICsg="
+  },
+  {
+   "scene": 11,
+   "keys": "AUgByAVIAcgTOQG5A0gByBM5AbkDUAHQBVAB0Aw5AbkEUAHQEjkBuQRIAcgGSAHICzkBuQRIAcgTOQG5A1AB0AZQAdALOQG5BFAB0BM5AbkDSAHIBkgByAs5AbkESAHIEzkBuQNQAdAGUAHQDDkBuQNQAdATOQG5A0gByAZIAcgMOQG5A0gByBI5AbkEUAHQBlAB0As5AbkEUAHQEzkBuQNQAdAGTRDNBk0IzQZNCM0GTQjNBk0EzQZN"
+  },
+  {
+   "scene": 12,
+   "keys": "BEsYywZNEM0GTR5ICsg="
+  },
+  {
+   "scene": 13,
+   "keys": "D00IzQZNB0gKyATNB00HzQZICsgAUBzQADkBuQJQBtAATQrNBk0IzQZNB0gKyATNB00LzQZICMgAOQG5AlAK0ABNCs0GTQzNBk0MzQZIC8gAOQG5AlAN0ABNCs0GTQ=="
+  },
+  {
+   "scene": 14,
+   "keys": "BEsYywZNFM0GTRpICsg="
   }
  ],
  "chapters": [
@@ -47,11 +79,43 @@
   {
    "scene": 6,
    "title": "The Bandstand Again"
+  },
+  {
+   "scene": 7,
+   "title": "Level 6: The Arcade"
+  },
+  {
+   "scene": 8,
+   "title": "The Bandstand Again"
+  },
+  {
+   "scene": 9,
+   "title": "Level 7: The Roller Rink"
+  },
+  {
+   "scene": 10,
+   "title": "The Bandstand Again"
+  },
+  {
+   "scene": 11,
+   "title": "Level 8: The Marching Field"
+  },
+  {
+   "scene": 12,
+   "title": "The Bandstand Again"
+  },
+  {
+   "scene": 13,
+   "title": "Level 9: The Woods by the River"
+  },
+  {
+   "scene": 14,
+   "title": "The Bandstand Again"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10404,
+  "frames": 17805,
   "chapters": [
    {
     "title": "Opening",
@@ -82,12 +146,44 @@
     "frame": 7063
    },
    {
-    "title": "Ending",
+    "title": "Level 6: The Arcade",
     "frame": 7535
    },
    {
+    "title": "The Bandstand Again",
+    "frame": 8732
+   },
+   {
+    "title": "Level 7: The Roller Rink",
+    "frame": 9204
+   },
+   {
+    "title": "The Bandstand Again",
+    "frame": 10598
+   },
+   {
+    "title": "Level 8: The Marching Field",
+    "frame": 11070
+   },
+   {
+    "title": "The Bandstand Again",
+    "frame": 12751
+   },
+   {
+    "title": "Level 9: The Woods by the River",
+    "frame": 13223
+   },
+   {
+    "title": "The Bandstand Again",
+    "frame": 14469
+   },
+   {
+    "title": "Ending",
+    "frame": 14941
+   },
+   {
     "title": "Credits",
-    "frame": 8849
+    "frame": 16253
    }
   ]
  }

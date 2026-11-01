@@ -49,7 +49,12 @@ function teddy(cb: ReturnType<typeof buildCharBlocks>, rail: boolean, rink = fal
   set(S[SEQ.idle], [f({ pic: 'stand', pause: 30 }), f({ pic: 'sit', pause: 12 }), f({ pic: 'stand', pause: 20 }), f({ pic: 'bark', pause: 3 })]);
   set(S[SEQ.die], [f({ pic: 'hurt', pause: 4 }), f({ pic: 'dead', pause: 30 })], { sound: SND.faint, jstkBut: 0 });
   set(S[SEQ.hurt], [f({ pic: 'hurt', pause: 2 }), f({ pic: 'stand', pause: 1 }), f({ pic: 'hurt', pause: 2 })], { sound: SND.hurt, jstkBut: 0 });
-  set(S[3], [f({ pic: 'stand' })], { key: 0 });
+  // F: fetch (pick up) a thing to carry, as in Teddy's own adventures
+  set(
+    S[3],
+    rail ? [f({ pic: 'stand' })] : [f({ pic: 'reach', pause: 3 }), f({ pic: 'stand', pause: 3 })],
+    rail ? { key: 0 } : { key: KEY.f, sound: SND.boop, ground: 1, norepeat: 1 },
+  );
   set(S[4], [f({ pic: 'stand' })], { key: 0 });
 
   const walk = (dx: number, mirror: boolean) => ['walk1', 'walk2'].map((pic) => f({ pic, x: dx, mirror }));

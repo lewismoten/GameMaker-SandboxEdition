@@ -10,7 +10,7 @@ import { boing, honk, pop, woof, yelp } from '../../../kit/teddySounds';
 import { SND } from '../ids';
 import { arpVoc, hz, noteVoc } from './notes';
 
-export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade' | 'rink' | 'field';
+export type Place = 'shop' | 'rail' | 'band' | 'strings' | 'arcade' | 'rink' | 'field' | 'woods';
 
 /** A held PC speaker tone at a pitch, short (about a sixth of a second) and then quiet. */
 const tone = (name: string, steps = 24) => speaker((i) => (i < steps ? hz(name) : 0));
@@ -47,6 +47,9 @@ export const RAIL_LOW = 'C5';
 /** The marching field's lines: the low three ring a horn (a hit), the high two a trumpet (hit points and a hit). */
 export const FIELD_LOW = 'G4';
 export const FIELD_HIGH = 'C5';
+/** The woods' staff doors: a low hollow note (and a wind found) rings a flute's C, a high one its G. */
+export const WOODS_LOW = 'C5';
+export const WOODS_HIGH = 'G5';
 export const RAIL_HIGH = 'G5';
 
 /** Every VOC on the disk, by name. */
@@ -56,6 +59,8 @@ export function buildVocs(): Record<string, Uint8Array> {
   for (const [, n] of HARP_NOTES) v[`hp${n.toLowerCase().replace('#', 's')}`] = noteVoc('harp', n, 0.6, 0.35);
   ARCADE_CHORDS.forEach(([, ch], i) => (v[`arp${i}`] = arpVoc('lead-square', ch, 0.5)));
   for (const [, n] of STAIR_NOTES) v[vocName('tw', n)] = noteVoc('tonewheel', n, 0.6, 0.35);
+  v.woodslo = noteVoc('flute', WOODS_LOW, 0.6, 0.35);
+  v.woodshi = noteVoc('flute', WOODS_HIGH, 0.6, 0.35);
   v.fieldlo = noteVoc('horn', FIELD_LOW, 0.35, 0.22);
   v.fieldhi = noteVoc('trumpet', FIELD_HIGH, 0.35, 0.22);
   v.railhi = noteVoc('piano-bright', RAIL_HIGH, 0.35, 0.22);
@@ -99,6 +104,15 @@ export function buildSoundSet(place: Place): SoundSet {
     for (const [slot, n] of scale) add(slot, vocName(prefix, n), tone(n));
   } else if (place === 'arcade') {
     ARCADE_CHORDS.forEach(([slot, ch], i) => add(slot, `arp${i}`, SPEAKER.arpeggio(ch.map(hz))));
+  } else if (place === 'woods') {
+    add(SND.gain, 'woodslo', tone(WOODS_LOW));
+    add(SND.help, 'woodshi', tone(WOODS_HIGH));
+    add(
+      SND.spend,
+      'clunk',
+      speaker((i) => (i < 4 ? 110 : 0)),
+    );
+    add(SND.score, 'tada', SPEAKER.arpeggio([523, 659, 784, 1047]));
   } else if (place === 'field') {
     add(SND.gain, 'fieldlo', tone(FIELD_LOW, 12));
     add(SND.help, 'fieldhi', tone(FIELD_HIGH, 12));

@@ -9,11 +9,13 @@ import {
   theBandstand3,
   theBandstand4,
   theBandstand5,
+  theBandstand6,
   theMarchingField,
   theMusicStore,
   theRollerRink,
   thePianoShop,
   thePlayerPiano,
+  theWoods,
 } from './route';
 import { GameSim } from './sim';
 
@@ -30,6 +32,8 @@ const LEVELS = [
   theBandstand4,
   theMarchingField,
   theBandstand5,
+  theWoods,
+  theBandstand6,
 ];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: Bot }> {

@@ -3,7 +3,8 @@
 import type { Pal, TimeOfDay } from '../art/pal';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
-import { arcadeSong, bandSong, fieldSong, railSong, rinkSong, shopSong, stringsSong } from '../sound/song';
+import { arcadeSong, bandSong, fieldSong, railSong, rinkSong, shopSong, stringsSong, woodsSong } from '../sound/song';
+import { woods, woodsBlocks } from './woods';
 import { field, fieldBlocks } from './field';
 import { arcade, arcadeBlocks } from './arcade';
 import type { Place } from '../sound/sounds';
@@ -107,16 +108,30 @@ export const LEVELS: LevelDef[] = [
     wide: true,
   },
   bandstand(5),
+  {
+    file: 'woods',
+    desc: 'The Woods by the River',
+    light: 'afternoon',
+    blocks: woodsBlocks,
+    build: woods,
+    chr: 'staff',
+    snd: 'woods',
+    song: woodsSong,
+    mons: {},
+    wide: true,
+  },
+  // the save sign is here, in the level after the felt egg's
+  bandstand(6, true),
 ];
 
 /** The bandstand after the `n`th family comes home (from the third on). */
-function bandstand(n: number): LevelDef {
+function bandstand(n: number, sign = false): LevelDef {
   return {
     file: `band${n}`,
     desc: 'The Bandstand Again',
     light: 'sunset',
-    blocks: bandBlocks(n - 1),
-    build: band(n - 1),
+    blocks: bandBlocks(n - 1, sign),
+    build: band(n - 1, sign),
     chr: 'teddy',
     snd: 'band',
     song: () => bandSong(n),

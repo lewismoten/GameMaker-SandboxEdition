@@ -38,7 +38,20 @@ level.
 | 12 | The Attic (Classic) | The stock instruments in an old trunk; Teddy plays Doc Leo's phrase on a toy piano with chord keys to open it | 7 the hero is the instrument, 8 chord buttons | 2 |
 | 13 | Sound Check (Drum kit) | Inside the sound card: the drum channels are doors, and doors that share a channel can't both be open (snare and hi-hat, tom and cymbal) | drum-channel doors, three-layer finale (FM band, speaker chords, VOC choir) | 2 |
 
-Phase 1 builds levels 1-3 and the two bandstands after them, then goes to the ending.
+Phase 1 builds levels 1-3 and the two bandstands after them, then goes to the ending. Phase 2a
+builds levels 6-9 and a bandstand after each (they follow level 3's bandstand for now; levels 4
+and 5 slot in before them in phase 2b).
+
+What phase 2a changed from the plan, and why:
+
+- **No key a line or a row** (the Conductor's `D F G H J`, the staff doors' `A` to `K`): PLAYGAME
+  moves a hero at most 11 px a tick (`MAXGRAV`), and it touches every cell on the way, so no
+  key can send the baton or Teddy straight to a line. Up and Down glide a line at a time
+  instead (the rink's lanes too), and Space pokes sideways, half a block, at the key or note.
+- **The staff doors** play two pitches, not a scale: a touch sounds one slot, picked by the
+  kind of change (hit points first, then a counter), and the door has to count the note.
+- **The rink's skating** is Teddy's own idle sequence moving him a block a beat; block gravity
+  can't do it (it keeps speeding up, to PLAYGAME's cap of 11 px a tick).
 
 ### Ideas left out, and why
 
@@ -58,13 +71,11 @@ Phase 1 builds levels 1-3 and the two bandstands after them, then goes to the en
 
 ## Felt egg and tin heart
 
-- **Felt egg:** in the reeds by the river (level 9, The Woods by the River), behind a clump
-  that is hollow: "the reeds hide secrets". The save sign goes in level 10.
-  - Lewis wants the 13-egg bonus to open at 13 eggs found, not at every egg. Today it opens
-    only when every felt egg is found (`web/src/project/secretGames.ts:25`, `states.every`), and
-    `web/src/eggs/teddyEgg.test.ts:40` expects exactly 13 eggs. So this game's egg is not
-    declared in `about.json` or `web/src/eggs/eggs.ts` yet: that change (open at 13 or more,
-    and a 14th egg) is phase 2.
+- **Felt egg:** in the reeds by the river (level 9, The Woods by the River): the clump of reeds
+  behind where Teddy starts has one hollow reed; walking into it shows the egg, and F fetches it
+  (block 149, `about.json` and `web/src/eggs/eggs.ts`). The save sign is on the bandstand after
+  the woods (the next scene) until level 10 exists. The 13-egg bonus now opens at 13 felt eggs
+  found (`web/src/eggs/eggGate.ts`), so this 14th egg is a spare, not a new requirement.
 - **Tin heart:** in the clock tower (level 10), ticking among the music-box gears, where a
   ticking heart is at home. Declared in phase 2 with `games/kit/TIN-HEARTS.md`.
 
@@ -100,6 +111,7 @@ tick), so tempos sit on whole ticks:
 
 ## Phase 2
 
-Levels 4-13, the felt egg and tin heart (and the 13-egg change above), box art, manual,
-printables, the catalog and Scoop entries and the timeline date, voices, the player look, the
-attract demo, and the DOSBox tests above.
+Phase 2a (done): levels 6-9 with their bandstands, the felt egg and its save sign, the 13-egg
+gate. Phase 2b: levels 4, 5 and 10-13 (and moving the save sign to level 10), the tin heart, the
+finale, box art, manual, printables, the catalog and Scoop entries and the timeline date,
+voices, the player look, the attract demo, and the DOSBox tests above.

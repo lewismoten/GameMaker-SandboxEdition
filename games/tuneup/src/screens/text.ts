@@ -81,6 +81,24 @@ export const INSTRUCTIONS = pages(
     'the door at the end opens.',
     'Missed some? Keep playing.',
   ],
+  [
+    'At the roller rink, Teddy',
+    'skates on his own. Tap UP or',
+    'DOWN to change lanes; LEFT',
+    'holds him back.',
+    '',
+    'On the marching field, tap',
+    "UP or DOWN to move Doc Leo's",
+    'baton to a line, and press',
+    'SPACE as its note arrives.',
+    '',
+    'In the woods, climb the',
+    'cattail by a staff door to',
+    'the hollow note and press',
+    'SPACE to play it.',
+    '',
+    'F fetches a thing to carry.',
+  ],
 );
 
 const CREDITS_TEXT = pages(

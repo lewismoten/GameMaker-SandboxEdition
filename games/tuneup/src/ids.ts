@@ -24,10 +24,11 @@ export const KEY = {
   space: 0x3920,
   q: 0x1071,
   e: 0x1265,
+  f: 0x2166,
 } as const;
 
 /** PC scan codes the bot presses. */
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18 } as const;
+export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, f: 33 } as const;
 
 /**
  * Counters. Each starts one higher than F2 shows, and a touch that would leave one at 0 or

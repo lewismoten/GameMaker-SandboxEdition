@@ -6,6 +6,7 @@ import { buildPalette } from '../src/art/pal';
 import { CTR, HITS_NEEDED } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import { HARPS } from '../src/levels/strings';
+import { EXIT_X, STAFF_DOORS, WINDS_AT } from '../src/levels/woods';
 import { BATON_ROW, BATON_X, BRASS_AT, FIELD_TICKS, LINES, fieldBlocks, fieldNoteShown } from '../src/levels/field';
 import { GATE, LANE_ROWS, MELODY_LANES, ORGAN_AT } from '../src/levels/rink';
 import { LANES, KEY_ROW, SONG_TICKS, STEPS, railBlocks } from '../src/levels/rail';
@@ -173,6 +174,7 @@ export const theBandstand2 = theBandstand(6, 8);
 export const theBandstand3 = theBandstand(8, 7);
 export const theBandstand4 = theBandstand(10, 6);
 export const theBandstand5 = theBandstand(12, 5);
+export const theBandstand6 = theBandstand(14, 6);
 
 /** Climbs a harp's strings (nothing pulls Teddy down there) to level row `row`. */
 async function climb(bot: Bot, row: number, what: string): Promise<void> {
@@ -356,4 +358,53 @@ export async function theMarchingField(bot: Bot): Promise<void> {
   }
   if (found(bot) < 5) throw new Error(`found ${found(bot)} brass, not 5`);
   await leave(bot, bot.walk(16, 'off the field'), 'off the field');
+}
+
+/** Lets Teddy down a reed (Down, nothing pulling him) until he is at level row `row`. */
+async function climbDown(bot: Bot, row: number, what: string): Promise<void> {
+  await must(
+    bot,
+    bot.until('down', () => bot.px.y >= row * 20, `down ${what}`, 160),
+    what,
+  );
+}
+
+/** 9. The Woods by the River: six woodwinds, and three staff doors each opened by playing its hollow note. */
+export async function theWoods(bot: Bot): Promise<void> {
+  expect(bot, 13, 'the woods');
+  await must(bot, bot.land(), 'on the bank');
+  const at = (id: string) => WINDS_AT.find(([w]) => w === id)!;
+  const take = async (id: string) => {
+    const [, x, y] = at(id);
+    await must(bot, bot.walk(x, `to the ${id}`), id);
+    picked(bot, x, y, `the ${id}`);
+  };
+  const played = () => bot.sim.meter(CTR.staff) - 1;
+  const staffDoor = async (i: number, before?: () => Promise<void>) => {
+    const d = STAFF_DOORS[i];
+    await must(bot, bot.walk(d.x - 1, `into the reeds by staff door ${i + 1}`), 'reeds');
+    if (before) await before();
+    // climb to the hollow note's line (or down to it), then a paw at the staff
+    if (bot.px.y > d.row * 20) await climb(bot, d.row, `the reed to line ${d.row}`);
+    else await climbDown(bot, d.row, `the reed to line ${d.row}`);
+    const n = played();
+    await must(bot, bot.boop(), 'a paw at the hollow note');
+    if (played() !== n + 1) throw new Error(`staff door ${i + 1}: the hollow note did not play`);
+    await climbDown(bot, 8, 'the reed');
+    await must(bot, bot.walk(d.x + 1, `through staff door ${i + 1}`), 'door');
+  };
+  await take('flute');
+  await take('clarinet');
+  await staffDoor(0, async () => {
+    // the pan flute sits at the top of the first cattail
+    await climb(bot, 2, 'to the top of the cattail');
+    picked(bot, 9, 2, 'the pan flute');
+  });
+  await take('oboe');
+  await take('sax');
+  await staffDoor(1);
+  await take('reed-soft');
+  await staffDoor(2);
+  if (found(bot) < 6) throw new Error(`found ${found(bot)} woodwinds, not 6`);
+  await leave(bot, bot.walk(EXIT_X + 2, 'out the door in the trunk'), 'the door');
 }

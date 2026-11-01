@@ -11,5 +11,13 @@ const titles: Record<number, string> = {
   4: 'The Bandstand',
   5: "Level 3: The Music Store's Back Room",
   6: 'The Bandstand Again',
+  7: 'Level 6: The Arcade',
+  8: 'The Bandstand Again',
+  9: 'Level 7: The Roller Rink',
+  10: 'The Bandstand Again',
+  11: 'Level 8: The Marching Field',
+  12: 'The Bandstand Again',
+  13: 'Level 9: The Woods by the River',
+  14: 'The Bandstand Again',
 };
 await writeSimWalkthrough('tuneup', sim, SEED, titles);
