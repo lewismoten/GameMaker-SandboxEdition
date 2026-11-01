@@ -102,7 +102,7 @@ The Ultimate Owner's Guide in the Game-Maker box.
   (`chaptersLevels.ts`), 13 tricks from the Sandbox games (`chaptersTricks.ts`, the later ones in `tricksMore.ts`), 14 the Level
   check and walkthrough bot (`chaptersCheck.ts`), 15 and 16 designing for every player and where
   Game-Maker runs out (`chaptersPlayers.ts`, with its clock and file ceilings in
-  `limitsClock.ts`), and 17 tricks from the shareware authors
+  `limitsClock.ts` and ideas to try in `limitIdeas.ts`), and 17 tricks from the shareware authors
   (`chaptersShareware.ts`, with the second survey's "More from the archive" in
   `archiveTricks.ts`), whose table of the words the DOS player shows, and where they sit in
   the CD's `XFERPLAY.EXE`, is `playerWords.ts` (its test reads the .EXE).

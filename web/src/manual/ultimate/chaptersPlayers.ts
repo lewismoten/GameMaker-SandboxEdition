@@ -12,8 +12,10 @@
 // axis the two are farther apart on, and which solid bit pushes which way) and movechars (the
 // hero put beside MMsolid with no wall check, that axis's move canceled, chkmapbounds wrapping
 // him), as engine/monsters.ts chkMonChr and engine/character.ts port them. The DOSBox screenshot
-// is Lewis's (NOTICE.md). The clock and the ceilings are limitsClock.ts.
+// is Lewis's (NOTICE.md). The clock and the ceilings are limitsClock.ts, the ideas to try
+// limitIdeas.ts.
 import { opening, tip, type Chapter } from './chapter';
+import { LIMIT_IDEAS } from './limitIdeas';
 import { CLOCK_LIMITS } from './limitsClock';
 
 export const PLAYERS: Chapter = {
@@ -236,5 +238,6 @@ export const LIMITS: Chapter = {
     <li><b>Twenty sequences go fast.</b> Three play themselves, so a hero has 17 keys at most.
     List them before you draw.</li>
   </ul>
+  ${LIMIT_IDEAS}
   ${tip('Test on the real thing:', 'An emulator such as DOSBox, set to a modest machine, finds what no editor can: memory, timing and the sound card. Play every animation and every scene in it once before you upload.')}`,
 };
