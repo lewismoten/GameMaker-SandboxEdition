@@ -14,7 +14,7 @@ inside zips too) by their .gam files, and reading the picked ones again (`import
 "Continue where you left off" (`projectUse.ts`), a
 folder's own hand-edited player read into DOS player patches, its renamed
 extensions mapped back (`importPlayer.ts`; the names inside its files are rewritten by
-`extensionNames.ts`, which the DOS export uses the other way), and the editor-only companion file (`companion.ts`, which also holds release notes by game version,
+`extensionNames.ts`, which the DOS export uses the other way), and the editor-only companion file (`companion.ts`, which also holds release notes by game version, the author's `gameVersion` and the `showVersion` switch, with `composeFiles.ts` stamping that version on a copy of the menu picture for Play and Export,
 never exported).
 
 `importScan.ts` and `importPlayer.ts` use the portable `gameFiles.ts` container directly;

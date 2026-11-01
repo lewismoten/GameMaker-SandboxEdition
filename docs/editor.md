@@ -80,6 +80,11 @@ palettes, block sets, monsters, characters, maps, sound sets, pictures and so on
 A game opens on its **Overview**, with four tabs: **Files**, **Controls**, **DOS player** and **Tools**.
 The address keeps the tab (`?tab=controls`), so Back, Forward and a reload return to it.
 
+**Tools** has a **Game version** card: type a version such as `1.0` and tick **Show the version on the
+title menu** to letter it (`v1.0`) in the lower right of the menu picture, so players can tell which
+version they have. It is off until you tick it, and the picture beside it is the real menu with the
+stamp. Only Play, play tests and downloads get the stamped picture; your game files stay as they are.
+
 **Files** is the asset browser. Each file type has a preview and a file count;
 _None yet_ marks an empty category. Choose a category to see its files, then click a thumbnail
 to open its editor. **Assets** returns to that file's category, and **All assets** opens the
