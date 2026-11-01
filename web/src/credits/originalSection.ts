@@ -21,7 +21,7 @@ export function originalSection(): HTMLElement {
         h(
           'p',
           null,
-          'Recreational Software Designs of Amherst, New Hampshire, 1991–1995: G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone.',
+          'Recreational Software Designs of Amherst, New Hampshire, 1991–1994: G. Andrew (Andy) Stone with G. Oliver Stone, Oliver Stone Jr. and Joan Stone.',
         ),
       ),
       card(

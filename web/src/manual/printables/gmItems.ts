@@ -25,7 +25,7 @@ import { currentMail } from '../../retro/gmReg/replyMail';
 import { regConfirmItem } from './regConfirm';
 
 /** Game-Maker SE as if it were one more catalog entry, for the generic cards. */
-const GM_ENTRY: CatalogEntry = { id: 'gamemaker-se', title: PRODUCT, kind: 'gameware', path: '', gam: null, files: [], price: '$0.00', year: 1995 };
+const GM_ENTRY: CatalogEntry = { id: 'gamemaker-se', title: PRODUCT, kind: 'gameware', path: '', gam: null, files: [], price: '$0.00', year: 1994 };
 
 function contextFor(entry: CatalogEntry, family: CatalogEntry[]): PrintContext {
   return { entry, family, printables: entry.original?.printables ?? {}, manual: { title: entry.title, pages: [] }, shot: shotCache(entry) };

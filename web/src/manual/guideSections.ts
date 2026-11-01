@@ -9,7 +9,7 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     'start',
     'Getting started',
     `<p>Game-Maker: Sandbox Edition designs and plays games made with Recreational Software Designs’
-    Game-Maker 3.0 (1991–1995). It reads and writes the original file formats, so a game
+    Game-Maker 3.0 (1991–1994). It reads and writes the original file formats, so a game
     made here also plays in DOS, and an old game folder opens here unchanged.</p>
     <p>Everything is kept in this browser. Nothing is uploaded, unless you set up your own AI to
     work on a game. To keep a copy elsewhere, choose <b>Download</b> and then <b>Game files</b> for

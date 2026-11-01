@@ -234,7 +234,7 @@ function about(): HTMLElement {
       h(
         'p',
         null,
-        `The web player of ${PRODUCT}, a fork of RSD Game-Maker 3.0 (Game-Maker 3.0 by Recreational Software Designs, 1991–1995). MIT License. The games are their makers’; this page only plays the files beside it.`,
+        `The web player of ${PRODUCT}, a fork of RSD Game-Maker 3.0 (Game-Maker 3.0 by Recreational Software Designs, 1991–1994). MIT License. The games are their makers’; this page only plays the files beside it.`,
       ),
     ),
     h(
