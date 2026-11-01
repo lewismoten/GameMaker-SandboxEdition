@@ -49,6 +49,20 @@
   }
 }
 
+/* a phone held sideways: the open game's name stays on the header's one row, cut with … */
+@media (max-height: 480px) and (min-width: 601px) and (max-width: 900px) {
+  .topbar > :nth-child(2) {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .topbar {
+    padding: 3px 12px;
+  }
+}
+
 /* the header's ⋯ menu (the pages the bar has no room for, then the settings), on phones and tablets */
 .topbar .show-narrow {
   display: none;
@@ -228,5 +242,17 @@
   }
   .topbar .topbar-menu > .show-tiny {
     display: flex;
+  }
+}
+
+/* a phone held sideways: header controls 28px tall (still over the 24px target) */
+@media (max-height: 480px) and (min-width: 601px) and (max-width: 900px) {
+  .topbar .topbar-more > summary,
+  .topbar .tour-btn,
+  .topbar .topbar-gear {
+    min-width: 28px;
+    min-height: 28px;
+    height: 28px;
+    padding-block: 0;
   }
 }

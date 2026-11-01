@@ -438,3 +438,10 @@
   min-height: 28px;
   border-color: var(--accent);
 }
+
+/* a phone held sideways: the editor's frame takes less of the few rows there are */
+@media (max-height: 480px) and (max-width: 900px) {
+  .editor {
+    padding-block: 6px;
+  }
+}

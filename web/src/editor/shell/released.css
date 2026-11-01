@@ -43,3 +43,27 @@
     --ws-vh: calc(100dvh - 104px);
   }
 }
+
+/* a phone held sideways: a one-line bar, so the editor below keeps its rows */
+@media (max-height: 480px) and (max-width: 900px) {
+  .released-bar {
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin: 0 0 6px;
+    padding: 3px 6px;
+    font-size: 13px;
+  }
+
+  .released-text {
+    flex: 1 1 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .released-bar button {
+    flex: none;
+    min-height: 24px;
+    padding: 2px 10px;
+  }
+}
