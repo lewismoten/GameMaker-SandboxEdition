@@ -168,7 +168,7 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   const gap = lspaceBox();
   box(lspace, gap);
   // flat pictures stand on the floor (or the desk) at their depth: Joe behind the desk, the trash can beside it
-  place(joe, DESK.x, DESK.z + 0.85, 1.9);
+  place(joe, DESK.x, DESK.z + 0.85, 1.6);
   // where the tour has him step out: on the floor just past the desk's back corner, in the clear (tourEngine.ts)
   const [outX, outY] = proj(DESK.x + DESK.w / 2 + 0.35, 0, DESK.z + 0.85);
   joe.dataset.out = `${pctX(outX).toFixed(2)},${pctY(outY).toFixed(2)}`;
