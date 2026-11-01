@@ -22,6 +22,8 @@ export class Actor {
   readonly size: Size;
   pos: Point = { x: -999, y: -999 };
   private walking = false;
+  private shown: Size;
+  private shrinkFrom: Size | undefined;
   private left = false;
   private frame = 0;
   private timer = 0;
@@ -34,6 +36,7 @@ export class Actor {
   ) {
     const { w, h } = sprite.sprite;
     this.size = { w: w * scale, h: h * scale };
+    this.shown = { ...this.size };
     this.el = document.createElement('canvas');
     this.el.className = 'tour-actor';
     this.el.width = w;
@@ -66,8 +69,18 @@ export class Actor {
 
   place(p: Point): void {
     this.pos = p;
-    this.el.style.left = `${Math.round(p.x)}px`;
-    this.el.style.top = `${Math.round(p.y)}px`;
+    // drawn at `shown` (bigger than `size` while shrinking in), feet and middle kept where they would be at `size`
+    const s = this.shown;
+    this.el.style.width = `${s.w}px`;
+    this.el.style.height = `${s.h}px`;
+    this.el.style.left = `${Math.round(p.x + (this.size.w - s.w) / 2)}px`;
+    this.el.style.top = `${Math.round(p.y + this.size.h - s.h)}px`;
+  }
+
+  /** Starts drawn at `from` (a bigger stand-in's size) and shrinks to `size` over the next walk. */
+  startAt(from: Size): void {
+    this.shown = { ...from };
+    this.shrinkFrom = { ...from };
   }
 
   /** Faces left or right (a walk faces where it goes). */
@@ -80,7 +93,10 @@ export class Actor {
   walk(to: Point, still: boolean): Promise<void> {
     cancelAnimationFrame(this.raf);
     const from = { ...this.pos };
+    const big = this.shrinkFrom;
+    this.shrinkFrom = undefined;
     if (still || Math.hypot(to.x - from.x, to.y - from.y) < 4) {
+      this.shown = { ...this.size };
       this.place(to);
       return Promise.resolve();
     }
@@ -93,6 +109,7 @@ export class Actor {
         const k = Math.min(1, (now - t0) / ms);
         // a little bob as it goes
         const bob = Math.sin(k * Math.PI * 6) * 2 * (1 - k);
+        if (big) this.shown = { w: big.w + (this.size.w - big.w) * k, h: big.h + (this.size.h - big.h) * k };
         this.place({ x: from.x + (to.x - from.x) * k, y: from.y + (to.y - from.y) * k - Math.abs(bob) });
         if (k < 1) this.raf = requestAnimationFrame(step);
         else {

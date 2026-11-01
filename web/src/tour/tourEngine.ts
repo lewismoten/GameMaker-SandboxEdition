@@ -461,6 +461,8 @@ export class Tour {
           a.place({ x: room.left + (room.width * out[0]) / 100 - a.size.w / 2, y: room.top + (room.height * out[1]) / 100 - a.size.h });
         else a.place({ x: r.left + r.width / 2 - a.size.w / 2, y: r.bottom - a.size.h });
         visitor?.remove();
+        // Joe starts as big as he stands in the room, then shrinks to tour size as he slides to his spot
+        if (!visitor && r.width > a.size.w && !this.still) a.startAt({ w: r.width, h: (r.width * a.size.h) / a.size.w });
       } else a.place(offStage(a.size, this.view(), this.floor(), false));
       a.el.dataset.host = id;
       this.layer.append(a.el);
