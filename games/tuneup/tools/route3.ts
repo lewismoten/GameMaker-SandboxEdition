@@ -5,6 +5,7 @@ import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/r
 import { buildPalette } from '../src/art/palette';
 import { BLADE_FOOT, DROPS, RAIN, SECTIONS, bladeName, parkedFrames, rainBlocks } from '../src/levels/rain';
 import { HORN_BEAT, HORN_REST, HORN_ROUNDS, HORN_ROW, hornSize, padX, stageX } from '../src/levels/horn';
+import { GEARS, freshTooth, keyBlocks, toothName } from '../src/levels/key';
 import type { Bot } from './bot';
 import { leave, must } from './route';
 
@@ -70,4 +71,58 @@ export function hornSection(round: number) {
   return run;
 }
 
-export const LEVELS_10_13 = [rainDelay, hornSection(0), hornSection(1), hornSection(2)];
+const gearBook = keyBlocks(0)(buildPalette('gear1')).book;
+/** Each tooth's blocks just come up (lower, then upper), and the door's open block. */
+const fresh = [false, true].map((upper) => new Set(freshTooth(upper).map((f) => gearBook.n(toothName(upper, f)))));
+const doorOpen = gearBook.n('door.open');
+
+/** Waits for the tooth at (x, row) to come up, then hops up onto it. */
+async function onTooth(bot: Bot, x: number, upper: boolean): Promise<void> {
+  const row = upper ? GEARS.high : GEARS.low;
+  const up = () => fresh[upper ? 1 : 0].has(bot.shownNum(x, row));
+  // (from the floor a person waits for the lower tooth to come round, not one already on its way
+  // down; the upper comes up while he stands on the lower)
+  if (!upper)
+    await must(
+      bot,
+      bot.until(undefined, () => !up(), `saw the tooth at ${x}, ${row} go`, 200),
+      'waiting for the tooth',
+    );
+  await must(bot, bot.until(undefined, up, `saw the tooth at ${x}, ${row} come up`, 200), 'waiting for the tooth');
+  await must(bot, bot.react(), 'reacting');
+  await must(bot, bot.hop('up', 12), 'up onto the tooth');
+  if (bot.px.y !== (row - 1) * 20) throw new Error(`not on the tooth at ${x}, ${row} (y ${bot.px.y})`);
+}
+
+/** 12. Key Change, one gear room: up each tower's teeth on the beat, over its wall, the notes, out the door on its clock. */
+export function keyChange(room: number) {
+  const run = async (bot: Bot): Promise<void> => {
+    expect(bot, 21 + room, `key change, gear ${room + 1}`);
+    await must(bot, bot.land(), 'into the gearbox');
+    const score = bot.sim.ci.score;
+    for (const x of GEARS.towers) {
+      await must(bot, bot.walk(x, `under the tower at ${x}`), 'to the tower');
+      await onTooth(bot, x, false);
+      await onTooth(bot, x, true);
+      await must(bot, bot.walk(x + 4, 'along the ledge and over the wall'), 'over');
+    }
+    await must(bot, bot.walk(GEARS.door - 1, 'to the door'), 'door');
+    if (bot.sim.ci.score < score + 150) throw new Error(`gear ${room + 1}: missed a note`);
+    await must(
+      bot,
+      bot.until(undefined, () => bot.shownNum(GEARS.door, GEARS.floor - 1) !== doorOpen, 'saw the door shut', 80),
+      'door',
+    );
+    await must(
+      bot,
+      bot.until(undefined, () => bot.shownNum(GEARS.door, GEARS.floor - 1) === doorOpen, 'saw the door open', 80),
+      'door',
+    );
+    await must(bot, bot.react(), 'reacting');
+    await leave(bot, bot.walk(GEARS.exit, 'through the door'), 'out');
+  };
+  Object.defineProperty(run, 'name', { value: `keyChange${room + 1}` });
+  return run;
+}
+
+export const LEVELS_10_13 = [rainDelay, hornSection(0), hornSection(1), hornSection(2), keyChange(0), keyChange(1), keyChange(2), keyChange(3)];

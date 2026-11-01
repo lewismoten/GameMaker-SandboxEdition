@@ -9,7 +9,7 @@ import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound'
 import { SND } from '../ids';
 import { hz, noteVoc, phraseVoc, slideWhistleVoc } from './notes';
 
-export type Place = 'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled' | 'rain' | 'horn';
+export type Place = 'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled' | 'rain' | 'horn' | 'key1' | 'key2' | 'key3' | 'key4';
 
 /** "Charge!": the bugle call on a trumpet (the last note held). */
 const CHARGE: [string, string[], number] = ['trumpet', ['G4', 'C5', 'E5', 'G5', 'E5', 'G5'], 0.11];
@@ -42,6 +42,14 @@ export const PAD_NOTES: [number, string][] = [
   [SND.gain, 'G5'],
   [SND.score, 'C6'],
 ];
+/** Key Change: each room's phrase (do, mi, sol), a whole step higher room by room, by the note's kind of change. */
+export const KEY_NOTES: string[][] = [
+  ['C5', 'E5', 'G5'],
+  ['D5', 'F#5', 'A5'],
+  ['E5', 'G#5', 'B5'],
+  ['F#5', 'A#5', 'C#6'],
+];
+const KEY_SLOTS = [SND.help, SND.money, SND.gain];
 /** Oil's Well: the oil can's five lines, bottom to top, a note each. */
 export const OIL_NOTES = ['C5', 'D5', 'E5', 'G5', 'A5'];
 
@@ -70,6 +78,7 @@ export function buildVocs(): Record<string, Uint8Array> {
   v.slide = slideWhistleVoc(1600, 520, 0.7);
   for (const [, n] of DROP_NOTES) v[vocName('td', n)] = noteVoc('steel-drum', n, 0.45, 0.2);
   for (const [, n] of PAD_NOTES) v[vocName('kz', n)] = noteVoc('kazoo', n, 0.4, 0.3);
+  for (const n of new Set(KEY_NOTES.flat())) v[vocName('vb', n)] = noteVoc('vibes-wobbly', n, 0.5, 0.3);
   // a wrong horn pad: a raspberry, a low kazoo blat sagging down
   v.razz = phraseVoc('kazoo', ['E3', 'D3', 'C3', 'A2'], 0.07, 0.15);
   return v;
@@ -162,6 +171,8 @@ export function buildSoundSet(place: Place): SoundSet {
       'razz',
       speaker((i) => (i < 8 ? 110 - i * 6 + (i % 2) * 30 : 0)),
     );
+  } else if (place.startsWith('key')) {
+    KEY_NOTES[Number(place.slice(3)) - 1].forEach((n, i) => add(KEY_SLOTS[i], vocName('vb', n), tone(n, 12)));
   } else if (place === 'rain') {
     for (const [slot, n] of DROP_NOTES) add(slot, vocName('td', n), tone(n, 10));
     // a wet slap from a wiper blade (Doc Leo's hurt sound): a smack, on the speaker

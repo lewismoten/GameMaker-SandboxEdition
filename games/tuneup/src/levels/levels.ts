@@ -20,7 +20,8 @@ import { muffled, muffledBlocks } from './muffled';
 import { pump, pumpBlocks } from './pump';
 import { swim, swimBlocks } from './swim';
 import { rain, rainBlocks } from './rain';
-import { hornSong, rainSong } from '../sound/realSongs2';
+import { hornSong, keySong, rainSong } from '../sound/realSongs2';
+import { keyBlocks, keyRoom } from './key';
 import { horn, hornBlocks, HORN_ROUNDS } from './horn';
 
 export interface LevelDef {
@@ -193,6 +194,20 @@ export const LEVELS: LevelDef[] = [
     chr: 'piano',
     snd: 'horn',
     song: () => hornSong(r),
+    mons: {},
+    wide: true,
+  })),
+  ...[0, 1, 2, 3].map((room): LevelDef => ({
+    file: `gear${room + 1}`,
+    level: 12,
+    desc: 'Key Change',
+    part: ['first gear', 'second gear', 'third gear', 'top gear'][room],
+    theme: (['gear1', 'gear2', 'gear3', 'gear4'] as const)[room],
+    blocks: keyBlocks(room),
+    build: keyRoom,
+    chr: 'leo',
+    snd: (['key1', 'key2', 'key3', 'key4'] as const)[room],
+    song: () => keySong(room),
     mons: {},
     wide: true,
   })),

@@ -4,6 +4,7 @@ import { tune, v, times } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 import { patchOf } from './notes';
 import { MELODY, bpmFor, chordOf, eachBar, up } from './song';
 import { RAIN_BEAT } from '../levels/rain';
+import { KEY_BEAT } from '../levels/key';
 import { HORN_BEAT, HORN_REST, type HornRound } from '../levels/horn';
 
 /** The Rain Delay: the tune on a tongue drum in D, a soft pad, a light patter on the hat for the rain. */
@@ -40,5 +41,29 @@ export function hornSong(r: HornRound): Uint8Array {
     v(1, patchOf('kazoo'), times(8, call), 55, -12),
     v(2, patchOf('tuba'), times(8, oom), 80),
     v(4, patchOf('melodic-kick'), times(8, drum), 70),
+  ]);
+}
+
+/** Key Change, room `room` (0-3): the tune a whole step higher each room, on a bright synth brass over a driving bass and a beat that gets busier. */
+export function keySong(room: number): Uint8Array {
+  const shift = room * 2;
+  return tune(bpmFor(KEY_BEAT / 2), [
+    v(0, patchOf('synth-brass'), MELODY, 90, shift),
+    v(
+      1,
+      patchOf('slap-bass'),
+      eachBar((b) => `${b.root} e, ${b.root} e, ${b.fifth} e, ${b.root} e, ${b.root} e, ${b.fifth} e, ${b.root} e, ${b.fifth} e`),
+      85,
+      shift,
+    ),
+    v(
+      2,
+      patchOf('pad-warm'),
+      eachBar((b) => chordOf(b, 'w')),
+      40,
+      shift,
+    ),
+    v(3, patchOf('melodic-kick'), times(8, room >= 2 ? 'C3 q, C3 q, C3 q, C3 q' : 'C3 q, r q, C3 q, r q'), 80),
+    v(4, patchOf('melodic-snare'), times(8, room >= 1 ? 'r q, D4 q, r q, D4 e, D4 e' : 'r q, D4 q, r q, D4 q'), 60),
   ]);
 }

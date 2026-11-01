@@ -103,6 +103,15 @@ export const INTRO: Record<number, Card> = {
       ['leo', 'Watch the board, then reach up under each pad in turn. A wrong one blows a raspberry.'],
     ],
   },
+  12: {
+    title: 'LEVEL 12: KEY CHANGE',
+    lady: true,
+    lines: [
+      ['leo', 'That whine. Last time, the speedometer gear housing was still on the motor.'],
+      ['regina', 'Then shift it up. Four gears, a key change in each.'],
+      ['leo', 'Hop the teeth as they come round. The door keeps its own time.'],
+    ],
+  },
 };
 
 /** After each level (or a part of one), by scene file. */
@@ -238,6 +247,34 @@ export const OUTRO: Record<string, Card> = {
     lines: [
       ['leo', 'Is it fixed?'],
       ['regina', 'It honks the parade call. Not a kazoo in sight. Well. One kazoo.'],
+    ],
+  },
+  gear1: {
+    lady: true,
+    lines: [
+      ['regina', 'Up a step.'],
+      ['leo', 'And the needle with it.'],
+    ],
+  },
+  gear2: {
+    lady: true,
+    lines: [
+      ['leo', 'Higher still.'],
+      ['regina', 'Like the last chorus of a pop song. Everyone stands up.'],
+    ],
+  },
+  gear3: {
+    lady: true,
+    lines: [
+      ['regina', 'One more. Top gear.'],
+      ['leo', 'Hold on to your comb.'],
+    ],
+  },
+  gear4: {
+    lady: true,
+    lines: [
+      ['leo', 'No whine. Is it fixed?'],
+      ['regina', 'Fixed, and in a much better key.'],
     ],
   },
 };

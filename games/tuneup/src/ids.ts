@@ -72,6 +72,8 @@ export const CTR = {
   drops: 23,
   /** The Horn Section: pads honked open (one kind of pad of four). */
   honks: 24,
+  /** Key Change: notes of each room's phrase (one kind of three). */
+  gears: 25,
 } as const;
 /** Money: the Tips line on F2. */
 export const MONEY = 3;
