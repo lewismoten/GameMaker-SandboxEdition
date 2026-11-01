@@ -71,7 +71,7 @@ function titleScreen(): Pixels {
   // Ada under the marquee, in silhouette with her hat
   const ada = actor('ada', 56);
   scaleBlit(p, ada, 268, 136, 1);
-  centered(p, 190, '(C) 1995 SANDBOX SOFTWARE', c('paper', 4), 1, c('black', 0));
+  centered(p, 190, '(C) 1994 SANDBOX SOFTWARE', c('paper', 4), 1, c('black', 0));
   return p;
 }
 
@@ -88,7 +88,7 @@ function menuScreen(): Pixels {
   p.rect(58, 92, 206, 84, c('black', 0));
   p.rect(56, 90, 206, 84, c('paper', 4)).frame(58, 92, 202, 80, c('gold', 2)).frame(60, 94, 198, 76, c('gold', 1));
   symbol(p, 232, 140, 'raven', c('black', 1), c('velvet', 4));
-  micro(p, 62, 191, 'SANDBOX SOFTWARE  -  SHAREWARE  -  1995', c('paper', 5));
+  micro(p, 62, 191, 'SANDBOX SOFTWARE  -  SHAREWARE  -  1994', c('paper', 5));
   return p;
 }
 
