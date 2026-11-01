@@ -4,7 +4,9 @@ import type { Pal, TimeOfDay } from '../art/pal';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
 import { arcadeSong, bandSong, fieldSong, railSong, rinkSong, shopSong, stringsSong, woodsSong } from '../sound/song';
-import { basementSong, choirSong, clockSong, farmSong } from '../sound/laterSongs';
+import { atticSong, basementSong, cardSong, choirSong, clockSong, farmSong } from '../sound/laterSongs';
+import { attic, atticBlocks } from './attic';
+import { card, cardBlocks } from './card';
 import { clock, clockBlocks } from './clock';
 import { farm, farmBlocks } from './farm';
 import { basement, basementBlocks } from './basement';
@@ -179,6 +181,22 @@ export const LEVELS: LevelDef[] = [
     wide: true,
   },
   bandstand(10),
+  {
+    file: 'attic',
+    desc: 'The Attic',
+    light: 'afternoon',
+    blocks: atticBlocks,
+    build: attic,
+    chr: 'teddy',
+    snd: 'attic',
+    song: atticSong,
+    mons: {},
+    wide: true,
+  },
+  bandstand(11),
+  { file: 'card', desc: 'Sound Check', light: 'show', blocks: cardBlocks, build: card, chr: 'teddy', snd: 'card', song: cardSong, mons: {}, wide: true },
+  // the whole band home, and on to the parade
+  bandstand(12),
 ];
 
 /** The bandstand after the `n`th family comes home (from the third on). */

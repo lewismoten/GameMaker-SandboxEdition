@@ -6,6 +6,8 @@ import { LOFT_ROW, RAIL_X, ROPE_X, VOICES_AT } from '../src/levels/choir';
 import { BELL_DOORS, MALLETS_AT } from '../src/levels/clock';
 import { HOOKS, HOOK_ROW, PERC_AT } from '../src/levels/farm';
 import { CTR } from '../src/ids';
+import { CHORD_KEYS, CLASSIC_AT, TRUNK } from '../src/levels/attic';
+import { CHANNEL_DOORS, DRUMS_AT } from '../src/levels/card';
 import type { Bot } from './bot';
 import { climb, found, leave, must, picked } from './route';
 
@@ -126,4 +128,44 @@ export async function theFarm(bot: Bot): Promise<void> {
   await take(bot, PERC_AT, 'timpani');
   if (found(bot) < 6) throw new Error(`found ${found(bot)} percussion, not 6`);
   await leave(bot, bot.walk(36, 'out the barn door'), 'the barn door');
+}
+
+/** 12. The Attic: two instruments, Doc Leo's phrase on the toy piano (C, F, and the trunk's latch is G), three in the trunk, four more, out. */
+export async function theAttic(bot: Bot): Promise<void> {
+  expect(bot, 23, 'the attic');
+  await must(bot, bot.land(), 'on the floor');
+  const get = (id: string) => take(bot, CLASSIC_AT, id);
+  await get('piano');
+  await get('bass');
+  await must(bot, bot.walk(CHORD_KEYS[1], 'across the chord keys'), 'chord keys');
+  if (bot.sim.meter(CTR.chords) - 1 < 2) throw new Error('the chord keys did not play');
+  for (const id of ['strings', 'brass', 'lead']) await get(id);
+  if (bot.shown(TRUNK.latch, 8).solid) throw new Error('the trunk did not open');
+  for (const id of ['bell', 'organ', 'pad', 'pluck']) await get(id);
+  if (found(bot) < 9) throw new Error(`found ${found(bot)} classics, not 9`);
+  await leave(bot, bot.walk(32, 'out the attic door'), 'the attic door');
+}
+
+/** 13. Sound Check: fifteen drums, through the channel doors as each one's turn comes, out. */
+export async function theSoundCheck(bot: Bot): Promise<void> {
+  expect(bot, 25, 'sound check');
+  await must(bot, bot.land(), 'on the card');
+  const get = (id: string) => take(bot, DRUMS_AT, id);
+  const rooms: string[][] = [
+    ['kick-punchy', 'kick-boomy'],
+    ['snare-tight', 'snare-fat', 'clap', 'rimshot'],
+    ['hat-closed', 'hat-open', 'hat-pedal'],
+    ['tom-low', 'tom-mid', 'tom-high', 'timpani-tom'],
+    ['crash', 'ride'],
+  ];
+  for (const [i, room] of rooms.entries()) {
+    if (i > 0) {
+      const [, x] = CHANNEL_DOORS[i - 1];
+      await must(bot, bot.walk(x - 1, `to the ${CHANNEL_DOORS[i - 1][0]} door`), 'door');
+      await throughBells(bot, x, x + 1);
+    }
+    for (const id of room) await get(id);
+  }
+  if (found(bot) < 15) throw new Error(`found ${found(bot)} drums, not 15`);
+  await leave(bot, bot.walk(48, 'out of the sound card'), 'the way out');
 }
