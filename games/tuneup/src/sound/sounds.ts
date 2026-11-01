@@ -9,7 +9,7 @@ import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound'
 import { SND } from '../ids';
 import { hz, noteVoc, phraseVoc, slideWhistleVoc } from './notes';
 
-export type Place = 'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled' | 'rain';
+export type Place = 'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled' | 'rain' | 'horn';
 
 /** "Charge!": the bugle call on a trumpet (the last note held). */
 const CHARGE: [string, string[], number] = ['trumpet', ['G4', 'C5', 'E5', 'G5', 'E5', 'G5'], 0.11];
@@ -34,6 +34,13 @@ export const DROP_NOTES: [number, string][] = [
   [SND.money, 'F#5'],
   [SND.gain, 'A5'],
   [SND.score, 'B5'],
+];
+/** The Horn Section: the four pads' kazoo notes (C, E, G, high C), slot by slot (by the pad's kind of change). */
+export const PAD_NOTES: [number, string][] = [
+  [SND.help, 'C5'],
+  [SND.money, 'E5'],
+  [SND.gain, 'G5'],
+  [SND.score, 'C6'],
 ];
 /** Oil's Well: the oil can's five lines, bottom to top, a note each. */
 export const OIL_NOTES = ['C5', 'D5', 'E5', 'G5', 'A5'];
@@ -62,6 +69,9 @@ export function buildVocs(): Record<string, Uint8Array> {
   // sliding down the full tire: a slide whistle, falling (synthesized)
   v.slide = slideWhistleVoc(1600, 520, 0.7);
   for (const [, n] of DROP_NOTES) v[vocName('td', n)] = noteVoc('steel-drum', n, 0.45, 0.2);
+  for (const [, n] of PAD_NOTES) v[vocName('kz', n)] = noteVoc('kazoo', n, 0.4, 0.3);
+  // a wrong horn pad: a raspberry, a low kazoo blat sagging down
+  v.razz = phraseVoc('kazoo', ['E3', 'D3', 'C3', 'A2'], 0.07, 0.15);
   return v;
 }
 
@@ -145,6 +155,13 @@ export function buildSoundSet(place: Place): SoundSet {
       speaker((i) => (i < 4 ? 200 - i * 20 : 0)),
     );
     add(SND.gain, 'tapes', SPEAKER.arpeggio([659, 784, 1047]));
+  } else if (place === 'horn') {
+    for (const [slot, n] of PAD_NOTES) add(slot, vocName('kz', n), tone(n, 12));
+    add(
+      SND.lose,
+      'razz',
+      speaker((i) => (i < 8 ? 110 - i * 6 + (i % 2) * 30 : 0)),
+    );
   } else if (place === 'rain') {
     for (const [slot, n] of DROP_NOTES) add(slot, vocName('td', n), tone(n, 10));
     // a wet slap from a wiper blade (Doc Leo's hurt sound): a smack, on the speaker

@@ -94,6 +94,15 @@ export const INTRO: Record<number, Card> = {
       ['regina', 'Cross between the sweeps, on the beat. Each drop rings like a tongue drum.'],
     ],
   },
+  11: {
+    title: 'LEVEL 11: THE HORN SECTION',
+    lady: true,
+    lines: [
+      ['leo', 'The horn quit on me once. Now it has its own 10 amp circuit.'],
+      ['regina', 'And it honks like a kazoo. The Clown Club horn section will teach it a call.'],
+      ['leo', 'Watch the board, then reach up under each pad in turn. A wrong one blows a raspberry.'],
+    ],
+  },
 };
 
 /** After each level (or a part of one), by scene file. */
@@ -208,6 +217,27 @@ export const OUTRO: Record<string, Card> = {
       ['regina', 'The wind is fierce. Could it tip us over?'],
       ['leo', "I've wondered that myself, in a storm like this. Not today."],
       ['regina', 'And the wipers keep time beautifully. Two, three, and the tricky five.'],
+    ],
+  },
+  horn1: {
+    lady: true,
+    lines: [
+      ['leo', 'Honk, honk, HONK.'],
+      ['regina', 'Promising. Four notes this time.'],
+    ],
+  },
+  horn2: {
+    lady: true,
+    lines: [
+      ['regina', 'The clowns are cheering.'],
+      ['leo', 'One more call. Five notes, the big finish.'],
+    ],
+  },
+  horn3: {
+    lady: true,
+    lines: [
+      ['leo', 'Is it fixed?'],
+      ['regina', 'It honks the parade call. Not a kazoo in sight. Well. One kazoo.'],
     ],
   },
 };

@@ -20,7 +20,8 @@ import { muffled, muffledBlocks } from './muffled';
 import { pump, pumpBlocks } from './pump';
 import { swim, swimBlocks } from './swim';
 import { rain, rainBlocks } from './rain';
-import { rainSong } from '../sound/realSongs2';
+import { hornSong, rainSong } from '../sound/realSongs2';
+import { horn, hornBlocks, HORN_ROUNDS } from './horn';
 
 export interface LevelDef {
   /** The scene's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
@@ -181,6 +182,20 @@ export const LEVELS: LevelDef[] = [
     mons: {},
     wide: true,
   },
+  ...HORN_ROUNDS.map((r, i): LevelDef => ({
+    file: r.file,
+    level: 11,
+    desc: 'The Horn Section',
+    part: `round ${i + 1}`,
+    theme: 'gold',
+    blocks: hornBlocks(r),
+    build: horn(r),
+    chr: 'piano',
+    snd: 'horn',
+    song: () => hornSong(r),
+    mons: {},
+    wide: true,
+  })),
 ];
 
 /** The first scene of each level (its intro plays before it). */

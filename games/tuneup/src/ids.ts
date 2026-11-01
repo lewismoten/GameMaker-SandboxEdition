@@ -70,6 +70,8 @@ export const CTR = {
   psi: 22,
   /** The Rain Delay: raindrops rung (one kind of drop of four). */
   drops: 23,
+  /** The Horn Section: pads honked open (one kind of pad of four). */
+  honks: 24,
 } as const;
 /** Money: the Tips line on F2. */
 export const MONEY = 3;
