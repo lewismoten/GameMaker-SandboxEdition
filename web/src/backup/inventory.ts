@@ -88,6 +88,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
       'gm-read-size',
       'gm-library-by',
       'gm-library-game',
+      'gm-library-series',
       'gm-home-sort',
       'gm-ach-dates',
       'gm-ach-progress',
