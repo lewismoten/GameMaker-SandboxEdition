@@ -98,11 +98,11 @@ function wall(
 
 /** The small high window on the right-hand wall, with a slice of daylight falling from it. */
 function windowAndDaylight(): string {
-  // right-hand mid wall runs x 610 to 785; the window is in its bare strip below the ceiling
-  const x0 = 650;
-  const x1 = 730;
-  const top = (x: number) => 74 - ((x - 610) / 175) * 30;
-  const bot = (x: number) => top(x) + 20 - ((x - 610) / 175) * 4;
+  // right-hand mid wall runs x 700 to 840; the window is in its bare strip below the ceiling
+  const x0 = 730;
+  const x1 = 810;
+  const top = (x: number) => 70 - ((x - 700) / 140) * 32;
+  const bot = (x: number) => top(x) + 18 - ((x - 700) / 140) * 3;
   const pane = `${x0},${top(x0) + 4} ${x1},${top(x1) + 4} ${x1},${bot(x1)} ${x0},${bot(x0)}`;
   const beam = `${x0},${bot(x0)} ${x1},${bot(x1)} ${x1 - 150},232 ${x0 - 170},232`;
   return (
@@ -116,10 +116,10 @@ function windowAndDaylight(): string {
 function ceiling(): string {
   const tops: Pt[] = [
     [40, 14],
-    [215, 44],
-    [390, 74],
-    [610, 74],
-    [785, 44],
+    [160, 38],
+    [300, 70],
+    [700, 70],
+    [840, 38],
     [960, 14],
   ];
   const hub: Pt = [500, 24];
@@ -128,7 +128,7 @@ function ceiling(): string {
     .join(' ');
   const planks = [0.2, 0.4, 0.6, 0.8].map((k) => `<path d="M0 ${(k * 70).toFixed(0)}H1000" stroke="rgba(0,0,0,.22)" stroke-width="1"/>`).join('');
   return (
-    `<polygon points="0,0 1000,0 960,14 785,44 610,74 390,74 215,44 40,14" fill="var(--room-ceiling)"/>` +
+    `<polygon points="0,0 1000,0 960,14 840,38 700,70 300,70 160,38 40,14" fill="var(--room-ceiling)"/>` +
     planks +
     tops.map(([x, y]) => `<path d="M${hub[0]} ${hub[1]}L${x} ${y}" stroke="var(--room-beam)" stroke-width="7" stroke-linecap="round"/>`).join('') +
     `<path d="M${hub[0]} ${hub[1]}L0 2M${hub[0]} ${hub[1]}L1000 2" stroke="var(--room-beam)" stroke-width="7"/>` +
@@ -156,11 +156,11 @@ export function aisle(): SVGSVGElement {
       `<rect width="1000" height="240" fill="var(--room-floor)"/>` +
       `<polygon points="${rug}" fill="var(--room-runner)" stroke="rgba(0,0,0,.4)" stroke-width="2"/>` +
       // far wall, the two walls beside it, and the two nearest the door
-      wall(false, 7, [40, 14, 228], [215, 44, 196], 5, 0.12, 0.38) +
-      wall(true, 19, [40, 14, 228], [215, 44, 196], 5, 0.12, 0.38) +
-      wall(false, 31, [215, 44, 196], [390, 74, 168], 4, 0.25, 0.16) +
-      wall(true, 43, [215, 44, 196], [390, 74, 168], 4, 0.25, 0.16) +
-      wall(false, 55, [390, 74, 168], [610, 74, 168], 4, 0.2, 0) +
+      wall(false, 7, [40, 14, 228], [160, 38, 204], 5, 0.12, 0.38) +
+      wall(true, 19, [40, 14, 228], [160, 38, 204], 5, 0.12, 0.38) +
+      wall(false, 31, [160, 38, 204], [300, 70, 172], 4, 0.25, 0.16) +
+      wall(true, 43, [160, 38, 204], [300, 70, 172], 4, 0.25, 0.16) +
+      wall(false, 55, [300, 70, 172], [700, 70, 172], 4, 0.2, 0) +
       ceiling() +
       windowAndDaylight() +
       // the door jambs at the near edges
@@ -184,7 +184,9 @@ export const ICONS = {
           .join(''),
     )
     .join('')}</svg>`,
-  catalog: `<svg viewBox="0 0 80 80"><rect x="8" y="6" width="64" height="70" rx="3" fill="var(--wood)" ${STROKE}/>${[0, 1, 2]
+  catalog: `<svg viewBox="0 0 80 84"><ellipse cx="40" cy="79" rx="38" ry="4" fill="rgba(0,0,0,.45)"/><rect x="12" y="74" width="8" height="6" fill="var(--wood-dark)"/><rect x="60" y="74" width="8" height="6" fill="var(--wood-dark)"/><rect x="8" y="4" width="64" height="72" rx="3" fill="var(--wood)" ${STROKE}/>${[
+    0, 1, 2,
+  ]
     .flatMap((r) =>
       [0, 1].map(
         (c) =>
@@ -192,10 +194,10 @@ export const ICONS = {
       ),
     )
     .join('')}</svg>`,
-  copier: `<svg viewBox="0 0 80 80"><rect x="6" y="22" width="68" height="50" rx="4" fill="#d8ceb2" ${STROKE}/><rect x="6" y="22" width="68" height="10" rx="3" fill="#b9ad8c" ${STROKE}/><rect x="14" y="36" width="30" height="8" fill="#31413a"/><rect x="14" y="36" width="12" height="8" fill="#6fd08a"/><rect x="50" y="36" width="18" height="12" rx="2" fill="#2f6f45" ${STROKE}/><rect x="16" y="56" width="48" height="10" rx="1" fill="#8d8363" ${STROKE}/><rect x="22" y="48" width="36" height="12" fill="#fff" ${STROKE}/><path d="M12 22 L24 8 H58 L68 22Z" fill="#c9bfa0" ${STROKE}/></svg>`,
-  notebook: `<svg viewBox="0 0 80 80"><rect x="14" y="6" width="52" height="68" rx="3" fill="#25252b" ${STROKE}/><rect x="14" y="6" width="9" height="68" rx="3" fill="#111" /><rect x="28" y="16" width="32" height="26" fill="#f4f1e6" stroke="#25252b" stroke-width="1.5"/><path d="M32 24h24M32 30h24M32 36h16" stroke="#6b6b73" stroke-width="2"/><path d="M26 56h36" stroke="#f4f1e6" stroke-width="2" opacity=".5"/></svg>`,
+  copier: `<svg viewBox="0 0 80 100"><ellipse cx="40" cy="95" rx="38" ry="4" fill="rgba(0,0,0,.45)"/><rect x="10" y="58" width="60" height="36" rx="2" fill="#a89d7d" ${STROKE}/><rect x="14" y="64" width="52" height="12" fill="#8d8363" ${STROKE}/><rect x="14" y="80" width="52" height="10" fill="#8d8363" ${STROKE}/><rect x="6" y="28" width="68" height="32" rx="4" fill="#d8ceb2" ${STROKE}/><rect x="6" y="28" width="68" height="9" rx="3" fill="#b9ad8c" ${STROKE}/><rect x="14" y="42" width="28" height="7" fill="#31413a"/><rect x="14" y="42" width="11" height="7" fill="#6fd08a"/><rect x="48" y="41" width="18" height="12" rx="2" fill="#2f6f45" ${STROKE}/><path d="M12 28 L22 10 H58 L68 28Z" fill="#c9bfa0" ${STROKE}/></svg>`,
+  notebook: `<svg viewBox="0 0 80 40"><ellipse cx="40" cy="34" rx="36" ry="4" fill="rgba(0,0,0,.4)"/><path d="M10 30 L20 8 H70 L62 30Z" fill="#25252b" ${STROKE}/><path d="M10 30 L20 8 L22 8 L13 32Z" fill="#111"/><path d="M26 24 L32 12 H58 L53 24Z" fill="#f4f1e6" stroke="#25252b" stroke-width="1.5"/><path d="M33 17h22M32 20h20" stroke="#6b6b73" stroke-width="1.5"/></svg>`,
 } as const;
 
 /** The trash can, with crumpled reviews sticking out of it when it has any. */
 export const trashIcon = (full: boolean) =>
-  `<svg viewBox="0 0 80 80"><path d="M22 28 L26 72 H54 L58 28Z" fill="#8f98a3" ${STROKE}/><path d="M32 34v32M40 34v32M48 34v32" stroke="#69727d" stroke-width="2"/>${full ? '<g fill="#f6edd2" stroke="#4d2f16" stroke-width="1.5" stroke-linejoin="round"><path d="M26 28 L30 10 L42 14 L38 28Z"/><path d="M40 28 L44 8 L56 14 L52 28Z"/><path d="M33 28 L38 14 L48 18 L44 28Z" fill="#fffaf0"/></g><path d="M32 16l7 2M46 14l6 2" stroke="#9b8d6d" stroke-width="1.5"/>' : ''}<path d="M16 28h48" stroke="var(--wood-dark)" stroke-width="5" stroke-linecap="round"/></svg>`;
+  `<svg viewBox="0 0 80 84"><ellipse cx="40" cy="76" rx="22" ry="4" fill="rgba(0,0,0,.45)"/><path d="M22 28 L26 72 H54 L58 28Z" fill="#8f98a3" ${STROKE}/><path d="M32 34v32M40 34v32M48 34v32" stroke="#69727d" stroke-width="2"/>${full ? '<g fill="#f6edd2" stroke="#4d2f16" stroke-width="1.5" stroke-linejoin="round"><path d="M26 28 L30 10 L42 14 L38 28Z"/><path d="M40 28 L44 8 L56 14 L52 28Z"/><path d="M33 28 L38 14 L48 18 L44 28Z" fill="#fffaf0"/></g><path d="M32 16l7 2M46 14l6 2" stroke="#9b8d6d" stroke-width="1.5"/>' : ''}<path d="M16 28h48" stroke="var(--wood-dark)" stroke-width="5" stroke-linecap="round"/></svg>`;

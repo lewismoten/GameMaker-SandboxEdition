@@ -11,7 +11,7 @@
 // "Showing: <game> · All games" line says what is picked and goes back to everything.
 // Below the shelves, your imported games' ratings and notes (imported/notesShelf.ts).
 import './library.css';
-import { h, clear } from '../editor/core/ui';
+import { h, clear, modal } from '../editor/core/ui';
 import { viewState } from '../urlState';
 import { loadHostedGame, type CatalogEntry } from '../project/files';
 import { groupShelf, hms, isShelfOrder, ownersOf, SITE_OWNER, type ShelfGroup, type ShelfItem, type ShelfOrder } from './shelf';
@@ -28,6 +28,9 @@ import { inCallOrder } from './callOrder';
 import { makeCopier } from './copier';
 import { makeRoom } from './libraryRoom';
 import { callNumber } from './tinyShelf';
+import { makeSpine } from './spines';
+import { lSpaceTrip } from './lSpace';
+import { startAmbience } from './ambience';
 
 /** Stops the last Library page's watch on the catalog (a secret game revealed or hidden again). */
 let unwatchShelf: (() => void) | undefined;
@@ -49,6 +52,9 @@ function whenShown(done: Promise<unknown>, shown = '.gmb'): Promise<void> {
     done.then(finish, finish);
   });
 }
+
+/** Closes the dialog open now, if any (a piece opens in its own viewer, which must not sit behind it). */
+let closeDialog: () => void = () => undefined;
 
 /** Opens a card's piece where the site already shows it. */
 async function openPiece(item: ShelfItem, games: Map<string, CatalogEntry>, from: HTMLElement): Promise<void> {
@@ -150,7 +156,7 @@ function card(item: ShelfItem, shelf: Shelf, order: ShelfOrder): HTMLElement {
   const el =
     item.open.via === 'href'
       ? h('a', { class: 'lib-card', href: item.open.href, onclick: () => tally('library-kinds', item.type) }, ...body)
-      : h('button', { type: 'button', class: 'lib-card', onclick: () => void openPiece(item, shelf.games, el) }, ...body);
+      : h('button', { type: 'button', class: 'lib-card', onclick: () => (closeDialog(), void openPiece(item, shelf.games, el)) }, ...body);
   return h('li', null, el);
 }
 
@@ -204,6 +210,7 @@ export function renderLibrary(el: HTMLElement): void {
     rememberOnly(order, only);
     keepAddress();
     show();
+    closeDialog();
   });
   const copier = makeCopier(
     (item, from) => openPiece(item, shelf?.games ?? new Map(), from),
@@ -214,24 +221,67 @@ export function renderLibrary(el: HTMLElement): void {
       rememberOnly(order, only);
       keepAddress();
       show();
-      list.scrollIntoView({ block: 'start' });
+      closeDialog();
+      void showStacks();
     },
   );
   list.tabIndex = -1;
+  const root = h('main', { class: 'library', 'aria-labelledby': 'lib-h' });
+  let busy = false;
+  const mark = (name: string | undefined) => state.set({ open: name });
+  /** Shows nodes in a dialog (the address keeps its name so a reload reopens it), then returns focus to `from`. */
+  const dialog = async (name: string, title: string, nodes: Node[], from?: HTMLElement) => {
+    if (busy) return;
+    busy = true;
+    mark(name);
+    const away = () => {
+      if (!location.hash.startsWith('#/library')) closeDialog();
+    };
+    window.addEventListener('hashchange', away);
+    await modal<void>(title, (close) => {
+      closeDialog = () => close(undefined);
+      return [
+        h('div', { class: 'lib-dlg' }, ...nodes),
+        h('div', { class: 'buttons' }, h('button', { type: 'button', autofocus: true, onclick: () => close(undefined) }, 'Close')),
+      ];
+    });
+    window.removeEventListener('hashchange', away);
+    closeDialog = () => undefined;
+    busy = false;
+    mark(undefined);
+    from?.focus();
+  };
+  const fromRoom = (cls: string) => root.querySelector<HTMLElement>(`.lib-o-${cls}`) ?? undefined;
+  const showStacks = () => dialog('stacks', `The stacks: ${list.getAttribute('data-name') ?? 'the open drawer'}`, [gamePick, count, list], fromRoom('stacks'));
+  const showCatalog = () =>
+    dialog(
+      'catalog',
+      'Card catalog',
+      [
+        h('div', { class: 'lib-bar' }, h('div', { class: 'lib-orders', role: 'group', 'aria-label': 'Sort the library' }, buttons)),
+        h('div', { class: 'lib-case' }, plaque(), cabinet.el),
+      ],
+      fromRoom('catalog'),
+    );
+  const showCopier = () => dialog('copier', 'Copier', [copier.el], fromRoom('copier'));
+  const dialogs: Record<string, () => unknown> = { stacks: showStacks, catalog: showCatalog, copier: showCopier };
   const room = makeRoom({
     status: () => count.textContent ?? '',
+    mark,
     go: (where) => {
-      if (where === 'stacks') {
-        list.scrollIntoView({ block: 'start' });
-        list.focus({ preventScroll: true });
-      } else if (where === 'catalog') {
-        const drawer = cabinet.el.querySelector<HTMLElement>('[role=tab][aria-selected=true]') ?? cabinet.el.querySelector<HTMLElement>('[role=tab]');
-        cabinet.el.scrollIntoView({ block: 'center' });
-        drawer?.focus({ preventScroll: true });
-      } else {
-        copier.el.scrollIntoView({ block: 'center' });
-        copier.el.querySelector<HTMLElement>('#lib-copies')?.focus({ preventScroll: true });
-      }
+      if (where === 'stacks') void showStacks();
+      else if (where === 'catalog') void showCatalog();
+      else if (where === 'copier') void showCopier();
+      else if (shelf)
+        void lSpaceTrip(groupShelf(shelf.items, 'game').map(pickOf), (id) => {
+          order = 'game';
+          only = id;
+          rememberOrder(order);
+          rememberOnly(order, only);
+          keepAddress();
+          show();
+          void showStacks();
+        });
     },
   });
   const gamePicker = h('select', {
@@ -256,7 +306,6 @@ export function renderLibrary(el: HTMLElement): void {
       {
         type: 'button',
         class: 'lib-order',
-        'aria-controls': 'lib-shelf',
         onclick: () => {
           if (o === order) return;
           order = o;
@@ -278,7 +327,10 @@ export function renderLibrary(el: HTMLElement): void {
     const open = groups.find((g) => pickOf(g) === only) ?? groups[0];
     cabinet.update(groups, open?.key ?? '', order);
     copier.update(open ? open.parts.flatMap((p) => p.items) : []);
-    if (open) list.setAttribute('aria-labelledby', drawerId(open.key));
+    if (open) {
+      list.setAttribute('aria-labelledby', drawerId(open.key));
+      list.setAttribute('data-name', open.heading);
+    }
     let shown = open ? [open] : [];
     // one kind (By type) from several games: a second picker for the game
     const owners = order === 'type' && shown[0] ? ownersOf(shown[0].parts[0].items) : [];
@@ -289,37 +341,24 @@ export function renderLibrary(el: HTMLElement): void {
     if (pickedGame) shown = shown.map((g) => ({ ...g, parts: g.parts.map((p) => ({ ...p, items: p.items.filter((i) => i.owner === pickedGame) })) }));
     forgetThumbs(list.querySelectorAll('.lib-thumb')); // the old cards' pictures are no longer wanted
     list.replaceChildren(...shown.map((g) => groupSection(g, shelf!, order)));
+    room.setShelf({
+      items: shown.flatMap((g) => g.parts.flatMap((p) => p.items)).map((it) => makeSpine(it, (from) => void openPiece(it, shelf!.games, from))),
+      more: () => makeSpine(undefined, () => void showStacks()),
+    });
     const n = shown.reduce((sum, g) => sum + g.parts.reduce((k, p) => k + p.items.length, 0), 0);
     count.textContent = `${n} of ${shelf.items.length} things to read and print, in ${groups.length} ${order === 'game' ? 'drawers' : 'kinds'}`;
   };
   show();
-  clear(
-    el,
-    h(
-      'main',
-      { class: 'library', 'aria-labelledby': 'lib-h' },
-      h('p', { class: 'lib-kicker' }, 'Everything to read and print'),
-      h('h1', { id: 'lib-h' }, 'Library'),
-      h('p', { class: 'lead' }, 'Every paper from the game boxes, plus magazines, guides and videos.'),
-      room.el,
-      h('div', { class: 'lib-bar' }, h('div', { class: 'lib-orders', role: 'group', 'aria-label': 'Sort the library' }, buttons), gamePick, count),
-      h('div', { class: 'lib-office' }, h('div', { class: 'lib-case' }, plaque(), cabinet.el), copier.el),
-      list,
-    ),
-  );
+  root.append(h('h1', { id: 'lib-h' }, 'Library'), room.el);
+  clear(el, root);
+  startAmbience(room.el);
   el.dataset.library = shelfKey();
-  // the imported games' ratings and notes, removed ones too (imported/notesShelf.ts), when there are any
-  const page = el.querySelector<HTMLElement>(':scope > .library');
-  void import('../imported/notesShelf')
-    .then((m) => m.notesShelf())
-    .then((notes) => notes && page?.isConnected && page.append(notes))
-    .catch(() => undefined);
   // a link to a piece of the Game-Maker box, at a chapter (#/library?gm=ultimate&ch=12)
   if (gm) void openFromLibrary(gm, state.get('ch'), false);
   void loadShelf()
     .then((s) => {
       shelf = s;
-      if (!list.isConnected) return;
+      if (!root.isConnected) return;
       // no sort in the address, just after showing one game with paper here: start on its shelf, as if picked
       const start = isShelfOrder(asked) ? undefined : libraryStartGame((id) => groupShelf(s.items, 'game').some((g) => pickOf(g) === id), originId);
       if (start) {
@@ -330,15 +369,18 @@ export function renderLibrary(el: HTMLElement): void {
         keepAddress();
       }
       show();
+      const want = state.get('open');
+      if (want && dialogs[want]) void dialogs[want]();
+      else if (want) room.open(want);
     })
     .catch(() => list.replaceChildren(h('p', { class: 'lib-loading' }, 'The shelves could not be loaded. Try reloading the page.')));
   // a secret game revealed or hidden again (the felt eggs, the tin hearts, EGG.EXE): its pieces join or leave without a reload
   unwatchShelf?.();
   const unwatch = (unwatchShelf = onCatalogChanged(() => {
-    if (!list.isConnected) return unwatch();
+    if (!root.isConnected) return unwatch();
     void loadShelf()
       .then((s) => {
-        if (!list.isConnected) return;
+        if (!root.isConnected) return;
         shelf = s;
         show();
       })

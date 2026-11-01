@@ -52,7 +52,6 @@ export function makeCabinet(onPick: (key: string) => void): Cabinet {
                 class: 'lib-drawer',
                 id: drawerId(g.key),
                 'data-key': g.key,
-                'aria-controls': 'lib-shelf',
                 onclick: () => onPick(g.key),
               },
               h('span', { class: 'lib-holder' }, h('span', { class: 'lib-call' }, drawerCall(g, order)), h('span', { class: 'lib-dname' }, g.heading)),

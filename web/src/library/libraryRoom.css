@@ -11,7 +11,7 @@
   --room-back: #6b5439;
   --room-dim: 0.8;
   position: relative;
-  height: 250px;
+  height: clamp(250px, calc(100vh - 150px), 660px);
   margin: 0 0 14px;
   overflow: hidden;
   border: 2px solid var(--wood-dark);
@@ -102,8 +102,8 @@
 
 .lib-o-stacks .lib-tag {
   position: absolute;
-  top: 38%;
-  left: 18%;
+  top: 24%;
+  left: 31%;
 }
 
 .lib-o-stacks:hover {
@@ -112,61 +112,190 @@
 
 .lib-desk {
   position: absolute;
-  z-index: 2;
-  left: 40%;
-  top: 60%;
-  width: 20%;
+  z-index: 3;
+  left: 41.5%;
+  top: 51%;
+  width: 17%;
   height: 22%;
-  box-shadow: 0 -6px 18px rgba(255, 200, 110, 0.35);
+  pointer-events: none;
+  box-shadow: 0 -8px 22px rgba(255, 200, 110, 0.35);
   border: 2px solid var(--wood-dark);
   border-radius: 3px 3px 0 0;
   background:
-    linear-gradient(var(--wood-hi) 0 22%, transparent 22%), repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.07) 0 2px, transparent 2px 9px),
-    linear-gradient(var(--wood), var(--wood-lo));
+    linear-gradient(var(--wood-hi) 0 16%, var(--wood) 16% 18%, transparent 18%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0 2px, transparent 2px 11px), linear-gradient(var(--wood), var(--wood-lo));
 }
 
+/* the sign that stands on the desk while the tour has Joe out front */
+.lib-brb {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  border: 1px solid var(--brass-lo);
+  background: var(--paper);
+  color: var(--paper-ink);
+  font:
+    700 11px/1.3 system-ui,
+    sans-serif;
+  white-space: nowrap;
+}
+
+.tour-on .lib-brb {
+  display: block;
+}
+
+.tour-on .lib-o-joe canvas {
+  visibility: hidden;
+}
+
+/* Joe stands behind the desk: its front overlaps his lower half */
 .lib-o-joe {
-  z-index: 3;
-  left: calc(50% - 40px);
-  top: 26%;
-  width: 80px;
+  z-index: 2;
+  left: 46%;
+  top: 35%;
+  width: 8%;
+  min-width: 56px;
 }
 
 .lib-o-joe canvas {
   image-rendering: pixelated;
 }
 
+/* the notebook lies flat on the desktop */
 .lib-o-notebook {
   z-index: 4;
-  left: 42%;
-  top: 41%;
-  width: 46px;
+  left: 43%;
+  top: 51.5%;
+  width: 5%;
+  min-width: 44px;
 }
 
 .lib-o-trash {
   z-index: 3;
-  left: 63%;
-  top: 46%;
-  width: 56px;
-}
-
-.lib-o-catalog svg,
-.lib-o-copier svg {
-  filter: brightness(0.82) drop-shadow(0 3px 2px rgba(0, 0, 0, 0.35));
+  left: 65%;
+  bottom: 6%;
+  width: 4.5%;
+  min-width: 40px;
 }
 
 .lib-o-catalog {
   z-index: 3;
-  left: 5%;
-  top: 48%;
-  width: 78px;
+  left: 6%;
+  bottom: 5%;
+  width: 7%;
+  min-width: 60px;
 }
 
 .lib-o-copier {
   z-index: 3;
-  right: 5%;
-  top: 46%;
-  width: 92px;
+  right: 6%;
+  bottom: 5%;
+  width: 7.5%;
+  min-width: 64px;
+}
+
+/* the open drawer's items, standing on the far wall to each side of Joe */
+.lib-spines {
+  position: absolute;
+  z-index: 2;
+  top: 33%;
+  height: 22%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.lib-spines-l {
+  left: 28.5%;
+  width: 12.5%;
+}
+
+.lib-spines-r {
+  left: 59%;
+  width: 12.5%;
+}
+
+.lib-spine-btn {
+  flex: 0 0 24px;
+  width: 24px;
+  height: calc(50% - 1px);
+  padding: 2px 0;
+  border: 1px solid rgba(0, 0, 0, 0.55);
+  border-radius: 2px 2px 0 0;
+  background: var(--spine, #7a2622);
+  color: #fff;
+  cursor: pointer;
+  font:
+    700 9px/1 system-ui,
+    sans-serif;
+  text-decoration: none;
+  overflow: hidden;
+  writing-mode: vertical-rl;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lib-spine-btn:hover {
+  filter: brightness(1.25);
+}
+
+.lib-spine-btn:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+  z-index: 5;
+}
+
+/* L-Space: a dim gap between two stacks on the left wall, with a faint glow */
+.lib-o-lspace {
+  z-index: 3;
+  left: 17.5%;
+  top: 28%;
+  width: 3.2%;
+  min-width: 26px;
+  height: 36%;
+  justify-content: flex-end;
+  background: linear-gradient(#030208, #0a0a1c);
+  box-shadow:
+    0 0 14px 3px rgba(140, 150, 255, 0.45),
+    inset 0 0 8px rgba(160, 170, 255, 0.5);
+  border-radius: 2px;
+}
+
+.lib-o-lspace .lib-tag {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.lib-visitors {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.lib-visitor {
+  position: absolute;
+  bottom: 9%;
+  image-rendering: pixelated;
+  filter: brightness(0.8);
+  transition: left 6s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lib-visitor {
+    transition: none;
+  }
 }
 
 .lib-help {
@@ -186,13 +315,18 @@
   }
 
   .lib-room-bg,
-  .lib-desk {
+  .lib-desk,
+  .lib-spines,
+  .lib-visitors {
     display: none;
   }
 
   .lib-obj,
   .lib-o-stacks {
     position: static;
+    height: auto;
+    box-shadow: none;
+    background: var(--room-back);
     flex: 1 1 100px;
     width: auto;
     padding: 6px;
@@ -208,8 +342,19 @@
     height: 48px;
   }
 
-  .lib-o-stacks .lib-tag {
+  .lib-o-stacks .lib-tag,
+  .lib-o-lspace .lib-tag {
     position: static;
+    transform: none;
+  }
+
+  .lib-o-lspace {
+    background: #0a0a1c;
+  }
+
+  .lib-o-notebook svg,
+  .lib-o-stacks svg {
+    height: 48px;
   }
 }
 

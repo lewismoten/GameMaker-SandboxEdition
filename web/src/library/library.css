@@ -1,6 +1,19 @@
 /* The Library (#/library, libraryPage.ts): a card for everything to read and print. */
 
-main.library {
+/* the dialogs the room opens (stacks, card catalog, copier) carry the page's colors and are wide */
+.lib-dlg {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+dialog.modal:has(.lib-dlg) {
+  width: min(1100px, 96vw);
+  max-width: none;
+}
+
+main.library,
+.lib-dlg {
   --lib-card-w: 168px;
   --lib-thumb-h: 132px;
   --lib-shelf: #e7dcc4;
@@ -20,7 +33,8 @@ main.library {
   padding: 24px 16px 64px;
 }
 
-:root[data-theme='dark'] main.library {
+:root[data-theme='dark'] main.library,
+:root[data-theme='dark'] .lib-dlg {
   --lib-shelf: #2a2a33;
   --lib-shelf-edge: #4a4a58;
   --wood-hi: #7a5530;
@@ -36,7 +50,8 @@ main.library {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root[data-theme='auto'] main.library {
+  :root[data-theme='auto'] main.library,
+  :root[data-theme='auto'] .lib-dlg {
     --lib-shelf: #2a2a33;
     --lib-shelf-edge: #4a4a58;
     --wood-hi: #7a5530;
