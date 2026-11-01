@@ -146,7 +146,7 @@ function pages(ctx: MagContext): MagPage[] {
           [
             side('How to read the listings', [
               p(
-                '**Title** plays the game. **Price** is the mail-order price in 1995; SHAREWARE means try it first and register with the author for the fee shown. **Manual** and **Hint book** open the box.',
+                '**Title** plays the game. **Price** is the mail-order price; SHAREWARE means try it first and register with the author for the fee shown. **Manual** and **Hint book** open the box.',
               ),
             ]),
           ],

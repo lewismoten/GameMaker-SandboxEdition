@@ -217,7 +217,7 @@ export const MAXIMUS: MagSection = {
               side(
                 'Fact file',
                 [
-                  p('**From:** Sandbox Software, 1995. Built by Claude.'),
+                  p('**From:** Sandbox Software, 1994. Built by Claude.'),
                   p('**Price:** $15 shareware'),
                   p(
                     '**Worlds:** 88, in 5 sectors, plus the Maelstrom, the Citadel and the Heart. That falls a few short of the hundred in the title, but it feels like a hundred.',
