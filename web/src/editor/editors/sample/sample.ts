@@ -10,6 +10,8 @@ import { decodeVoc, encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/forma
 import { audio } from '../../widgets/mediaShared';
 import { drawWave } from '../../widgets/waveform';
 import { startRecording } from '../../tools/vocMaker';
+import { recordMeter } from '../../widgets/recordMeter';
+import { VOC_MAX_BYTES, VOC_MAX_SAMPLES, vocBytesFor, vocTooBig } from '../../../audio/vocLimit';
 import {
   applyEffect,
   cut,
@@ -64,7 +66,22 @@ registerEditor(['voc'], (host, project, file) => {
     drawWave(wave, samples, { selection: span(), marks, tick: Math.round(rate / 10) });
   };
 
+  const meter = recordMeter(rate);
+  const cutToFit = h(
+    'button',
+    { class: 'voc-fit', title: 'Keep the first part that fits under 64 KB and cut the rest', onclick: () => commit(samples.slice(0, VOC_MAX_SAMPLES)) },
+    '✂ Cut to fit',
+  );
+  const sizeNote = h('div', { class: 'voc-size-note hint', role: 'status' });
+
   const refresh = () => {
+    const big = vocTooBig(vocBytesFor(samples.length));
+    sizeNote.hidden = !big;
+    if (big)
+      sizeNote.replaceChildren(
+        `This sound is ${vocBytesFor(samples.length).toLocaleString()} bytes. PLAYGAME can only load one under 64 KB (${VOC_MAX_BYTES.toLocaleString()} bytes), so in DOS it is likely to play nothing. You could cut it to the first ${secs(VOC_MAX_SAMPLES)}, or trim it yourself. `,
+        cutToFit,
+      );
     const group = samples.length ? SOUND_GROUPS.find((g) => g.id === classifySound(samples, rate)) : undefined;
     clear(
       info,
@@ -223,6 +240,7 @@ registerEditor(['voc'], (host, project, file) => {
       recording = undefined;
       recBtn.textContent = '⏺ Record over';
       recBtn.classList.remove('on');
+      meter.hide();
       try {
         const voice = await r.stop();
         if (!voice.length) return;
@@ -234,12 +252,28 @@ registerEditor(['voc'], (host, project, file) => {
       }
       return;
     }
+    const s0 = span();
+    const room = VOC_MAX_SAMPLES - (samples.length - (s0 ? s0.end - s0.start : 0));
+    if (room < rate / 2) {
+      toast('There is no room to record: a DOS sound must be under 64 KB. Select part of the sound to record over, or cut some out first.', 'error');
+      return;
+    }
     try {
       stop();
-      recording = await startRecording(rate);
+      meter.arm(room);
+      recording = await startRecording(rate, {
+        maxSamples: room,
+        onTick: (n) => meter.tick(n),
+        onFull: () => {
+          toast('Recording stopped: a sound must be under 64 KB for DOS.');
+          recBtn.click();
+          meter.full();
+        },
+      });
       recBtn.textContent = '⏹ Stop recording';
       recBtn.classList.add('on');
     } catch {
+      meter.hide();
       toast('The microphone is not available (check the browser’s permission).', 'error');
     }
   });
@@ -273,6 +307,8 @@ registerEditor(['voc'], (host, project, file) => {
       'div',
       { class: 'voc-edit', onkeydown: keys },
       info,
+      sizeNote,
+      meter.el,
       h('div', { class: 'voc-edit-scope' }, wave),
       h(
         'div',

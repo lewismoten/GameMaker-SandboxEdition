@@ -7,6 +7,8 @@ import { registerMaker } from './makers';
 import { encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';
+import { VOC_MAX_SAMPLES, vocTooBig } from '../../audio/vocLimit';
+import { recordMeter } from '../widgets/recordMeter';
 import { applyEffect as effectAt, EFFECTS, tidy as tidyAt, type Effect } from '../../audio/sampleEdit';
 
 const RATE = 11025;
@@ -27,22 +29,40 @@ async function toMono(buf: AudioBuffer, rate = RATE): Promise<Float32Array> {
  * Starts recording from the microphone (asks for permission). stop() resolves with the
  * recording as mono samples at `rate`, quiet ends trimmed and leveled.
  */
-export async function startRecording(rate = RATE): Promise<{ stop: () => Promise<Float32Array> }> {
+export async function startRecording(
+  rate = RATE,
+  limit?: { maxSamples: number; onTick?: (samples: number) => void; onFull?: () => void },
+): Promise<{ stop: () => Promise<Float32Array> }> {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
   const chunks: Blob[] = [];
   const recorder = new MediaRecorder(stream);
   recorder.ondataavailable = (e) => chunks.push(e.data);
   const stopped = new Promise<void>((resolve) => (recorder.onstop = () => resolve()));
   recorder.start();
+  // a sound over 64 KB won't load in DOS, so the recording ends itself where the .VOC would
+  const began = performance.now();
+  let timer = 0;
+  if (limit) {
+    timer = window.setInterval(() => {
+      const n = Math.min(limit.maxSamples, ((performance.now() - began) / 1000) * rate);
+      limit.onTick?.(n);
+      if (n >= limit.maxSamples) {
+        window.clearInterval(timer);
+        limit.onFull?.();
+      }
+    }, 100);
+  }
   return {
     stop: async () => {
+      window.clearInterval(timer);
       recorder.stop();
       await stopped;
       stream.getTracks().forEach((t) => t.stop());
       const ctx = new AudioContext();
       try {
         const buf = await ctx.decodeAudioData(await new Blob(chunks).arrayBuffer());
-        return tidy(await toMono(buf, rate), rate);
+        const mono = tidy(await toMono(buf, rate), rate);
+        return limit && mono.length > limit.maxSamples ? mono.slice(0, limit.maxSamples) : mono;
       } finally {
         void ctx.close();
       }
@@ -88,6 +108,7 @@ function makeVoc(project: Project): Promise<string | undefined> {
     let effect: Effect = 'none';
     const result = () => applyEffect(raw, effect);
     const wave = h('canvas', { class: 'voc-wave', width: 640, height: 120 });
+    const meter = recordMeter(RATE);
     const info = h('p', { class: 'hint' }, 'Press Record and speak; press Stop when you are done.');
     const nameInput = h('input', { type: 'text', value: project.freeName('voice', 'voc'), required: true });
     const refresh = () => {
@@ -103,11 +124,12 @@ function makeVoc(project: Project): Promise<string | undefined> {
 
     let recording: { stop: () => Promise<Float32Array> } | undefined;
     const recBtn = h('button', { type: 'button', class: 'primary' }, '⏺ Record');
-    recBtn.addEventListener('click', async () => {
+    const finish = async () => {
       if (recording) {
         const r = recording;
         recording = undefined;
         recBtn.textContent = '⏺ Record again';
+        meter.hide();
         try {
           setRaw(await r.stop());
         } catch {
@@ -116,13 +138,23 @@ function makeVoc(project: Project): Promise<string | undefined> {
         return;
       }
       try {
-        recording = await startRecording();
+        meter.arm(VOC_MAX_SAMPLES);
+        recording = await startRecording(RATE, {
+          maxSamples: VOC_MAX_SAMPLES,
+          onTick: (n) => meter.tick(n),
+          onFull: () => {
+            toast('Recording stopped: a sound must be under 64 KB for DOS.');
+            void finish().then(() => meter.full());
+          },
+        });
         recBtn.textContent = '⏹ Stop';
         info.textContent = 'Recording… speak now.';
       } catch {
+        meter.hide();
         toast('The microphone is not available (check the browser’s permission).', 'error');
       }
-    });
+    };
+    recBtn.addEventListener('click', finish);
 
     const save = () => {
       if (!raw.length) {
@@ -135,7 +167,12 @@ function makeVoc(project: Project): Promise<string | undefined> {
         toast('Use a DOS name: up to 8 letters, then .VOC.', 'error');
         return;
       }
-      project.files.set(name, encodeVoc(result(), RATE));
+      const out = encodeVoc(result(), RATE);
+      if (vocTooBig(out.length)) {
+        toast(`That sound is ${out.length.toLocaleString()} bytes: DOS can only load one under 64 KB. Record a shorter one.`, 'error');
+        return;
+      }
+      project.files.set(name, out);
       void ctx.close();
       close(name);
     };
@@ -145,6 +182,7 @@ function makeVoc(project: Project): Promise<string | undefined> {
       { class: 'stack voc-maker' },
       h('div', { class: 'toolbar' }, recBtn),
       wave,
+      meter.el,
       info,
       h(
         'div',

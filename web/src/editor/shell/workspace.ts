@@ -934,6 +934,7 @@ export class Workspace implements AssistantHost {
     for (const [file, sections] of Object.entries(extras?.files ?? {})) for (const [k, v] of Object.entries(sections)) this.project.setExtras(file, k, v);
     for (const [n, b] of files.entries()) this.project.files.set(n, b);
     if (files.size) toast(`Added ${files.size} file(s).`);
+    (await import('../widgets/bigVocWarning')).warnBigVocs(files.entries());
     this.renderSidebar();
   }
 

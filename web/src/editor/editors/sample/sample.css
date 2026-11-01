@@ -151,3 +151,8 @@
     animation: none;
   }
 }
+
+.voc-size-note {
+  border-left: 3px solid #e0a030;
+  padding: 4px 8px;
+}

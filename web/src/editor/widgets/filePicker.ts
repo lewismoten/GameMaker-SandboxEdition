@@ -334,7 +334,9 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       const f = list[0];
       if (!f) return;
       const name = normalize(f.name);
-      project.files.set(name, new Uint8Array(await f.arrayBuffer()));
+      const bytes = new Uint8Array(await f.arrayBuffer());
+      project.files.set(name, bytes);
+      (await import('./bigVocWarning')).warnBigVocs([[name, bytes]]);
       close(name);
     };
 
