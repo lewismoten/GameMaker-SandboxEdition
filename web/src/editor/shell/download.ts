@@ -284,7 +284,12 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
       return downloaded('web');
     }
     toast(`Building the ${kind === 'web' && alt ? 'web app' : NAMES[kind]} of ${game.title}…`);
-    const files = await game.files();
+    const saved = await game.files();
+    // the author's version lettered on the menu picture, when they asked: not in their own backup (project/composeFiles.ts)
+    const files =
+      game.project && kind !== 'files' && game.companion?.()?.showVersion
+        ? (await import('../../project/composeFiles')).composeFiles(saved, game.companion())
+        : saved;
     if (kind === 'windows') {
       const win = await import('../../export/winApp');
       const [o, player] = await Promise.all([nativeOptions(game, files), win.preferredArch().then((a) => win.fetchWinPlayer(a))]);

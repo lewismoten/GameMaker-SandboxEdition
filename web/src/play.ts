@@ -96,12 +96,14 @@ async function choose(): Promise<
     // the home page's "Continue where you left off" shows the game played last
     if (p) {
       markUsed(projectId);
+      // the author's version, lettered on the menu picture when they asked (project/composeFiles.ts)
+      const files = p.record.companion?.showVersion ? (await import('./project/composeFiles')).composeFiles(p.files, p.record.companion) : p.files;
       return {
         id: `project:${projectId}`,
         title: p.record.name,
         gam: p.record.gam,
-        files: p.files,
-        poster: posterFromFiles(p.files, p.record.gam).catch(() => undefined),
+        files,
+        poster: posterFromFiles(files, p.record.gam).catch(() => undefined),
         back: './',
         player: companionPatches(p.record.companion, p.record.gam),
       };
