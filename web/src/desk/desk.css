@@ -1375,6 +1375,20 @@
   right: 12px;
 }
 
+/* phones: the overlay starts under the bar, so the Desk | DOS | Web switch stays in view and in
+   reach, and its Close takes the first row of the overlay instead of lying over the switch */
+@media (max-width: 600px) {
+  .desk-overlay {
+    top: 48px;
+    gap: 8px;
+  }
+  .desk-overlay .close {
+    position: static;
+    flex: none;
+    align-self: flex-end;
+  }
+}
+
 @media (max-width: 960px) {
   .desk-scene {
     grid-template-columns: 1fr;

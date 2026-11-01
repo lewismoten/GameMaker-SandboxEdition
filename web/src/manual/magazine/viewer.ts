@@ -98,7 +98,17 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     '🔍 Zoom',
   );
   const tocList = h('ul', { class: 'mag-toc-list' });
-  const toc = h('details', { class: 'mag-toc' }, h('summary', null, '☰ Contents'), h('nav', { 'aria-label': 'Contents' }, tocList));
+  const toc = h(
+    'details',
+    { class: 'mag-toc' },
+    h(
+      'summary',
+      { 'aria-label': 'Contents' },
+      h('span', { 'aria-hidden': 'true' }, '☰'),
+      h('span', { class: 'mag-wide-only', 'aria-hidden': 'true' }, ' Contents'),
+    ),
+    h('nav', { 'aria-label': 'Contents' }, tocList),
+  );
   const printMenu = h('div', { class: 'mag-print-menu', hidden: true, role: 'menu' });
   const printBtn = h(
     'button',
@@ -114,7 +124,14 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
       return magazineBook(l.issue, l.entries, o.where);
     },
   });
-  const closeBtn = o.onClose ? h('button', { type: 'button', onclick: () => o.onClose?.() }, 'Close (Esc)') : null;
+  const closeBtn = o.onClose
+    ? h(
+        'button',
+        { type: 'button', 'aria-label': 'Close (Esc)', onclick: () => o.onClose?.() },
+        h('span', { 'aria-hidden': 'true' }, 'Close'),
+        h('span', { class: 'mag-wide-only', 'aria-hidden': 'true' }, ' (Esc)'),
+      )
+    : null;
   const root = h(
     'div',
     { class: `mag-viewer where-${o.where}` },
