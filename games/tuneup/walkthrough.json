@@ -60,11 +60,51 @@
   },
   {
    "scene": 15,
-   "keys": "D00KzQ9IDMgQSAzIBE0KzQZNGkgKyA9ICsgFSArIBc0eSAzIEkgMyARNCs0GTQtICsgFSArIBUgKyAVICsgFSArIBUgKyAnNIkgMyBJIDMgETQjNDE0UzQY5HbkGTRzN"
+   "keys": "D00KzQ9IDMgQSAzIBE0KzQZNGkgKyA9ICsgFSArIBc0eSAzIEkgMyARNCs0GTQtICsgFSArIBUgKyAVICsgFSArIBUgKyAnNIkgMyBJIDMgETQjNDE0UzQY5HbkGTRLNFk0="
   },
   {
    "scene": 16,
    "keys": "D00EzQZNAs0DEgiSAE0EzQRNAs0BEgiSAE0EzQRNBM0DSwHLA00BzQNLAcsDEgaSAE0EzQNNBM0GEgiSAE0BzQRNEM0GTQPNE00AzQMSCJIATQXNA00EzQYSCJIATQDNB00DzQxNAs0DEgiSAE0EzQNNAM0DEgiSAE0CzQZN"
+  },
+  {
+   "scene": 17,
+   "keys": "D00PzRxNCs0GTQXNG00KzQZNBc0bTQrNBk0KzQpNCs0GTQXND00KzQZNBc0RTQrNBk0KzRVNCs0GTQXNKE0KzQZNBc0lTQrNBk0="
+  },
+  {
+   "scene": 18,
+   "keys": "S00ZzQg5AbkESAzIC0gMyARNK80WTSjNCDkBuQRIDMgKSAzIBE0hzRZNMs0HOQG5BEgMyApIDMgETRfNFk0="
+  },
+  {
+   "scene": 19,
+   "keys": "V00tzQg5AbkESAzIC0gMyARNF80WTSjNCTkBuQRIDMgLSAzIBE0hzRZNHs0JOQG5BEgMyAtIDMgETSvNFk08zQk5AbkESAzIC0gMyARNDc0WTQ=="
+  },
+  {
+   "scene": 20,
+   "keys": "Y00ZzQg5AbkESAzICUgMyARNK80WTTLNBzkBuQRIDMgKSAzIBE0XzRZNKM0JOQG5BEgMyAlIDMgETSHNFk08zQk5AbkESAzICUgMyARNDc0WTTLNCTkBuQRIDMgKSAzIBE0XzRZN"
+  },
+  {
+   "scene": 21,
+   "keys": "D00PzSRIDMgHSAzIA00SzRZNCs0MSAzIBkgMyANNEs0WTQrNLk0="
+  },
+  {
+   "scene": 22,
+   "keys": "D00PzSVIDMgFSAzIA00SzRZNCs0PSAzIBkgMyANNEs0WTQrNLE0="
+  },
+  {
+   "scene": 23,
+   "keys": "D00PzSRIDMgHSAzIA00SzRZNCs0MSAzIBUgMyANNEs0WTQrNME0="
+  },
+  {
+   "scene": 24,
+   "keys": "D00PzSVIDMgHSAzIA00SzRZNCs0LSAzIBkgMyANNEs0WTQrNL00="
+  },
+  {
+   "scene": 25,
+   "keys": "D0sQyzNICMgITRDNQEgIyAhNDM1CSAjIGU0="
+  },
+  {
+   "scene": 26,
+   "keys": "D0sQywhICMgMTQzNB0gIyAxNDM0HSAjIDE0IzRRN"
   }
  ],
  "chapters": [
@@ -127,11 +167,51 @@
   {
    "scene": 16,
    "title": "Level 9: Muffled"
+  },
+  {
+   "scene": 17,
+   "title": "Level 10: The Rain Delay"
+  },
+  {
+   "scene": 18,
+   "title": "Level 11: The Horn Section, round 1"
+  },
+  {
+   "scene": 19,
+   "title": "Level 11: The Horn Section, round 2"
+  },
+  {
+   "scene": 20,
+   "title": "Level 11: The Horn Section, round 3"
+  },
+  {
+   "scene": 21,
+   "title": "Level 12: Key Change, first gear"
+  },
+  {
+   "scene": 22,
+   "title": "Level 12: Key Change, second gear"
+  },
+  {
+   "scene": 23,
+   "title": "Level 12: Key Change, third gear"
+  },
+  {
+   "scene": 24,
+   "title": "Level 12: Key Change, top gear"
+  },
+  {
+   "scene": 25,
+   "title": "Level 13: The Instrument Panel, the radio"
+  },
+  {
+   "scene": 26,
+   "title": "Level 13: The Instrument Panel, the gauges"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 42021,
+  "frames": 64786,
   "chapters": [
    {
     "title": "Opening",
@@ -199,15 +279,55 @@
    },
    {
     "title": "Level 9: Muffled",
-    "frame": 36709
+    "frame": 36759
+   },
+   {
+    "title": "Level 10: The Rain Delay",
+    "frame": 39094
+   },
+   {
+    "title": "Level 11: The Horn Section, round 1",
+    "frame": 42036
+   },
+   {
+    "title": "Level 11: The Horn Section, round 2",
+    "frame": 45149
+   },
+   {
+    "title": "Level 11: The Horn Section, round 3",
+    "frame": 48033
+   },
+   {
+    "title": "Level 12: Key Change, first gear",
+    "frame": 51411
+   },
+   {
+    "title": "Level 12: Key Change, second gear",
+    "frame": 53809
+   },
+   {
+    "title": "Level 12: Key Change, third gear",
+    "frame": 55434
+   },
+   {
+    "title": "Level 12: Key Change, top gear",
+    "frame": 57062
+   },
+   {
+    "title": "Level 13: The Instrument Panel, the radio",
+    "frame": 58690
+   },
+   {
+    "title": "Level 13: The Instrument Panel, the gauges",
+    "frame": 60607
    },
    {
     "title": "Ending",
-    "frame": 39044
+    "frame": 61813
    },
    {
     "title": "Credits",
-    "frame": 40466
+    "frame": 63234
    }
   ]
  }
