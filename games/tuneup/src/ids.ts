@@ -1,4 +1,4 @@
-// The numbers every file of TUNE-UP agrees on: Teddy's sequences and keys, the counters, the
+// The numbers every file of TUNE-UP agrees on: Doc Leo's sequences and keys, the counters, the
 // monster slots and the sound slots.
 
 /** Sequences: 0..4 are Game-Maker's own (idle, die, hurt, pick up, drop); there are 20 in all. */
@@ -11,8 +11,10 @@ export const SEQ = {
   hop: 7,
   hopLeft: 8,
   hopRight: 9,
-  sit: 10,
+  down: 10,
   boop: 11,
+  /** Oil's Well: Z X C V B squirt the oil can into the staff's five lines, bottom to top. */
+  oil0: 12,
 } as const;
 
 /** Keys (scan code << 8 | ASCII). */
@@ -24,62 +26,75 @@ export const KEY = {
   space: 0x3920,
   q: 0x1071,
   e: 0x1265,
-  f: 0x2166,
+  z: 0x2c7a,
+  x: 0x2d78,
+  c: 0x2e63,
+  v: 0x2f76,
+  b: 0x3062,
 } as const;
 
 /** PC scan codes the bot presses. */
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, f: 33 } as const;
+export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, z: 44, x: 45, c: 46, v: 47, b: 48 } as const;
+/** The oil can's keys, bottom line to top. */
+export const OIL_KEYS = ['z', 'x', 'c', 'v', 'b'] as const;
 
 /**
  * Counters. Each starts one higher than F2 shows, and a touch that would leave one at 0 or
  * less is refused: that is how a door waits for enough.
  */
 export const CTR = {
-  /** Notes played on the beat in the Player Piano (its way out takes HITS_NEEDED). */
-  hits: 20,
-  /** Instruments found in this neighborhood (its way out takes them all). */
-  found: 22,
-  /** A count that only goes down, from high (so the touch rings slot 8). */
-  down: 24,
-  /** Instruments set on their stands at the bandstand. */
-  band: 25,
-  /** Notes Doc Leo's baton flicks on the beat at the marching field (its own: the piano's spare hits stay there). */
-  beats: 26,
-  /** Hollow notes played on the staff doors in the woods. */
-  staff: 27,
-  /** Chords played on the attic's toy piano (the trunk's latch takes two). */
-  chords: 28,
+  /** Jump Start: the red clamp and the black clamp, each its own terminal's key. */
+  red: 20,
+  black: 21,
+  /** Jump Start: the battery, charged by the crank. */
+  charge: 22,
+  /** Spark Plucks: plugs plucked (the third plug's pluck is a tip instead, for its pitch). */
+  plucked: 23,
+  /** The Timing Beat: notes played on the beat in the first verse (the second and third count on 26 and 27). */
+  hits: 24,
+  /** Oil's Well: oiled Squeaks whose notes have come home. */
+  oiled: 25,
+  hits2: 26,
+  hits3: 27,
 } as const;
-export const HITS_NEEDED = 12;
-export const DOWN_START = 100;
+/** Money: the Tips line on F2. */
+export const MONEY = 3;
 
 /** Monster slots in every .MON. */
 export const MON = {
-  drummer: 0,
-  sparkle: 1,
-  gwinn: 2,
+  /** Sir Reginald III, at work. */
+  reggie: 0,
+  /** Lady Regina III (the same bird, once she has laid the egg). */
+  regina: 1,
+  /** Oil's Well: a Squeak on its line, the oil can's drop (one per line), an oiled note coming home. */
+  squeak: 2,
+  squeakFast: 3,
+  note: 4,
+  drop0: 5,
 } as const;
 
 /** Sound slots (0..8 are the ones PLAYGAME plays by itself, by the kind of change). */
 export const SND = {
-  /** Hit points up: in the Player Piano, the high lane's note; on the stairs, a note. */
+  /** Hit points up. */
   help: 0,
+  /** A monster done for (an oiled Squeak). */
   kill: 1,
-  /** Money up: a stair note. */
+  /** Money up. */
   money: 2,
-  /** Money down: a floating note's fifth step (so slot 7 is the finds' own). */
   tip: 3,
   life: 4,
-  /** Score up: a stair note, or a cheer. */
+  /** Score up. */
   score: 5,
-  /** Score down: a stair note. */
   lose: 6,
-  /** A counter up: an instrument found (its family's phrase), the low lane's note, a hollow note. */
+  /** A counter up. */
   gain: 7,
-  /** A counter down: a boop on an unlit key, a stair note, a door opening. */
+  /** A counter down (a door opening). */
   spend: 8,
   hop: 9,
   hurt: 10,
   faint: 11,
+  /** Space: the reach (a crank's ratchet, a key's boop). */
   boop: 12,
+  /** Oil's Well: the oil can's squirt on each line, a note of the scale each. */
+  oil0: 13,
 } as const;
