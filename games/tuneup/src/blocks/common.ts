@@ -31,14 +31,14 @@ export function kit(pal: Pal): Kit {
 
 /**
  * The instruments of a neighborhood, to pick up: block `pick-<id>` (two glinting frames) over
- * nothing (the frame fills its tile). Each is one found (counter 22, ringing slot 7) and 50
- * points, and leaves `after` (its block, or a block for each) behind.
+ * nothing (the frame fills its tile). Each is one found (counter 22, ringing slot 7; unless
+ * `counts` is false, for one found after its neighborhood's door) and 50 points, and leaves `after` (its block, or a block for each) behind.
  */
-export function pickups(k: Kit, ids: string[], after: string | ((id: string) => string)): void {
+export function pickups(k: Kit, ids: string[], after: string | ((id: string) => string), counts = true): void {
   for (const id of ids) {
     const a = `pick-${id}`;
     const b = `pick-${id}.1`;
-    const hit = { effect: CTR.found, eamt: 1, score: 50, touch: typeof after === 'string' ? after : after(id), ntime: GLINT };
+    const hit = { effect: counts ? CTR.found : 0, eamt: counts ? 1 : 0, score: 50, touch: typeof after === 'string' ? after : after(id), ntime: GLINT };
     k.book.add(a, pickupPic(id, 0), { ...hit, next: b });
     k.book.add(b, pickupPic(id, 2), { ...hit, next: a });
   }

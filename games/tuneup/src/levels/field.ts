@@ -9,7 +9,7 @@
 //   end holds ring member (-u mod STEPS), so a note slides one cell left an eighth.
 // - The column after the baton's is each line's key ring (solid, so the baton stays by the
 //   staff), lit for the eighth its note arrives: early 1 tick (+5), on the beat 4 (+20), late 1
-//   (+5), each a hit (counter 20). A flick at an unlit key takes a hit back (refused at none).
+//   (+5), each a hit (counter 26). A flick at an unlit key takes a hit back (refused at none).
 // - The low lines ring a horn (a counter up, slot 7), the high ones a trumpet (hit points first,
 //   slot 0).
 // - Four notes a phrase, 4 eighths (24 ticks) apart and never more than two lines from the last,
@@ -91,7 +91,7 @@ export function fieldBlocks(pal: Pal): Kit {
       if (glow) note(p.rect(2, 2, 16, 16, c('yellow', glow)), l.high);
       return p;
     };
-    const miss = { effect: CTR.hits, eamt: -1 };
+    const miss = { effect: CTR.beats, eamt: -1 };
     if (l.at < 0) {
       // a line that rests: its key never lights
       book.add(`${id}.k0`, key(0), { ...miss, solid: SOLID });
@@ -113,7 +113,7 @@ export function fieldBlocks(pal: Pal): Kit {
     if (rest) ring.push({ pic: key(0), ticks: rest });
     if (ring.reduce((n, r) => n + r.ticks, 0) !== FIELD_STEP * STEPS) throw new Error(`field: line ${l.row} is out of step`);
     ring.forEach((r, i) => {
-      const lit = { effect: CTR.hits, eamt: 1, score: r.hit, hp: l.high ? 1 : 0 };
+      const lit = { effect: CTR.beats, eamt: 1, score: r.hit, hp: l.high ? 1 : 0 };
       book.add(`${id}.k${i}`, r.pic, { solid: SOLID, ntime: r.ticks, next: `${id}.k${(i + 1) % ring.length}`, ...(r.hit ? lit : miss) });
     });
   }
@@ -137,7 +137,7 @@ export function fieldBlocks(pal: Pal): Kit {
     return p;
   };
   book.add('lid', gate(false, false), { solid: SOLID, ntime: FIELD_TICKS, next: 'gate' });
-  book.add('gate', gate(false, true), { solid: SOLID, effect: CTR.hits, eamt: -HITS_NEEDED, touch: 'gate.open' });
+  book.add('gate', gate(false, true), { solid: SOLID, effect: CTR.beats, eamt: -HITS_NEEDED, touch: 'gate.open' });
   book.add('gate.open', gate(true, true), still);
   pickups(k, BRASS_FINDS, 'chalk');
   return k;

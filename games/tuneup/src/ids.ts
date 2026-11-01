@@ -44,6 +44,10 @@ export const CTR = {
   down: 24,
   /** Instruments set on their stands at the bandstand. */
   band: 25,
+  /** Notes Doc Leo's baton flicks on the beat at the marching field (its own: the piano's spare hits stay there). */
+  beats: 26,
+  /** Hollow notes played on the staff doors in the woods. */
+  staff: 27,
 } as const;
 export const HITS_NEEDED = 12;
 export const DOWN_START = 100;

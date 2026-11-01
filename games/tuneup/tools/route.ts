@@ -238,10 +238,10 @@ export async function theArcade(bot: Bot): Promise<void> {
     picked(bot, 22, 8, 'the 80s pad');
   });
   await must(bot, bot.walk(25, 'up the cabinets'), 'cabinets');
-  await must(bot, bot.hop('right', 12, 'right', 28), 'onto the third pad');
+  await must(bot, bot.hop('right', 12, 'right', 27), 'onto the third pad');
   await must(bot, bot.land(), 'on the pad');
-  await must(bot, bot.walk(29, 'along the pad'), 'pad');
-  picked(bot, 29, 4, 'the wobble pad');
+  await must(bot, bot.walk(28, 'along the pad'), 'pad');
+  picked(bot, 28, 4, 'the wobble pad');
   if (found(bot) < 7) throw new Error(`found ${found(bot)} synths, not 7`);
   await leave(bot, bot.walk(32, 'out the door'), 'the door');
 }
@@ -322,7 +322,7 @@ async function toRow(bot: Bot, row: number, what: string): Promise<void> {
 /** 8. The Marching Field: Doc Leo's baton glides to each note's line and flicks as it arrives, then walks out past the brass. */
 export async function theMarchingField(bot: Bot): Promise<void> {
   expect(bot, 11, 'the marching field');
-  const hits = () => bot.sim.meter(CTR.hits) - 1;
+  const hits = () => bot.sim.meter(CTR.beats) - 1;
   const start = hits();
   let played = 0;
   let whiffs = 0;

@@ -148,8 +148,9 @@ export function railBlocks(pal: Pal): Kit {
   book.add('lid', lid(false, false), { solid: SOLID, ntime: SONG_TICKS, next: 'gate' });
   book.add('gate', lid(false, true), { solid: SOLID, effect: CTR.hits, eamt: -HITS_NEEDED, touch: 'gate.open' });
   book.add('gate.open', lid(true, true), still);
-  // the seventh keyboard, stuck in the piano all along
-  pickups(k, ['tine-glass'], 'felt');
+  // the seventh keyboard, stuck in the piano all along (the shop's door has counted its six, so
+  // this one doesn't count: no spare is left over to open a later door early)
+  pickups(k, ['tine-glass'], 'felt', false);
   return k;
 }
 

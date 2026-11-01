@@ -25,7 +25,7 @@ const CABINETS: [number, number][] = [
 export const PADS: [number, number, number][] = [
   [10, 5, 3],
   [19, 5, 3],
-  [28, 5, 2],
+  [27, 5, 2],
 ];
 /** Ticks each frame of a pad's wobble shows. */
 const WOBBLE = 4;
@@ -74,6 +74,7 @@ export function arcadeBlocks(pal: Pal): Kit {
     return p;
   };
   for (let i = 0; i < 4; i++) book.add(`pad${i}`, pad(i), { solid: LEDGE, grav: GRAV.down, ntime: WOBBLE, next: `pad${(i + 1) % 4}` });
+  book.add('pillar', P(c('ink', 0)).rect(8, 0, 4, 20, c('neon', 1)).rect(9, 0, 1, 20, c('neon', 3)), { solid: SOLID });
   notes(k, wall(), [c('neon', 1), c('neon', 2), c('neon', 3), c('glow', 3), c('green', 2), c('pink', 2)]);
   pickups(k, SYNTH_FINDS, 'wall');
   door(k, wall(), SYNTH_FINDS.length, (p: Pixels) => {
@@ -109,8 +110,9 @@ export function arcade(book: Kit['book']): Level {
     .set(13, 8, 'pick-lead-saw')
     .set(20, 4, 'pick-pad-sweep')
     .set(22, 8, 'pick-pad-80s')
-    .set(29, 4, 'pick-pad-wobble');
-  m.set(30, 8, 'door').set(30, 7, 'door.top').set(31, 8, 'door.open');
+    .set(28, 4, 'pick-pad-wobble');
+  // the door, with a neon pillar over it up to the marquee: the only way on is through it
+  m.set(30, 8, 'door').set(30, 7, 'door.top').set(31, 8, 'door.open').fill(30, 1, 1, 6, 'pillar');
   m.link(31, 8);
   m.mon(MON.drummer, 20, 8);
   return { m, start: at(1, 8), size: [W, 10] };
