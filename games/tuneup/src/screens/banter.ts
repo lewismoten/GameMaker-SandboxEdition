@@ -85,6 +85,15 @@ export const INTRO: Record<number, Card> = {
       ['regina', 'Each squeaky toy wakes her a little. A blanket corner tucked in settles her.'],
     ],
   },
+  10: {
+    title: 'LEVEL 10: THE RAIN DELAY',
+    lady: true,
+    lines: [
+      ['regina', 'Rain. The radio will have to wait.'],
+      ['leo', 'Last storm, the wipers dragged on wet glass. The accessory battery sank to 12 volts.'],
+      ['regina', 'Cross between the sweeps, on the beat. Each drop rings like a tongue drum.'],
+    ],
+  },
 };
 
 /** After each level (or a part of one), by scene file. */
@@ -191,6 +200,14 @@ export const OUTRO: Record<string, Card> = {
       ['regina', 'It fades in and out. Muffled.'],
       ['leo', 'The belt in the player is on wrong. Turned inside out, it plays fine.'],
       ['regina', 'Now all it needs is a radio to live in.'],
+    ],
+  },
+  rain: {
+    lady: true,
+    lines: [
+      ['regina', 'The wind is fierce. Could it tip us over?'],
+      ['leo', "I've wondered that myself, in a storm like this. Not today."],
+      ['regina', 'And the wipers keep time beautifully. Two, three, and the tricky five.'],
     ],
   },
 };

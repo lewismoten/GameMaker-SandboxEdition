@@ -96,7 +96,7 @@ export function drawChez(p: Pixels, x: number, y: number, s: number, teddy = tru
 }
 
 /** The tools Doc Leo's hat gives, a 32x32 picture each on clear. */
-export type Tool = 'cables' | 'plug' | 'roll' | 'oilcan' | 'kazoo' | 'bone' | 'hubcap' | 'pump' | 'tape';
+export type Tool = 'cables' | 'plug' | 'roll' | 'oilcan' | 'kazoo' | 'bone' | 'hubcap' | 'pump' | 'tape' | 'wiper' | 'horn' | 'gear' | 'radio';
 export function toolPic(t: Tool): Pixels {
   const p = new Pixels(32, 32, 255);
   if (t === 'cables') {
@@ -148,6 +148,37 @@ export function toolPic(t: Tool): Pixels {
     p.rect(6, 11, 8, 18, c('blue', 2)).rect(6, 11, 2, 18, c('blue', 3)).rect(9, 29, 2, 3, c('metal', 2));
     blob(p, 23, 20, 6, 4, SP.r('orange'), 0, 2);
     blob(p, 27, 12, 3, 5, SP.r('orange'), 0, 2);
+  } else if (t === 'wiper') {
+    // a wiper blade: the steel arm, the black rubber edge, a drop flying off it
+    p.line(4, 28, 26, 4, c('metal', 4)).line(5, 28, 27, 4, c('metal', 2));
+    p.line(20, 2, 30, 14, c('ink', 0)).line(19, 3, 29, 15, c('asphalt', 1)).line(21, 2, 31, 13, c('metal', 3));
+    p.disc(4, 28, 3, c('metal', 1));
+    blob(p, 9, 8, 1.6, 2.4, SP.r('water'), 0, 3);
+  } else if (t === 'horn') {
+    // a clown's bulb horn: the red rubber bulb, the brass bell
+    p.disc(7, 16, 6, c('red', 2)).disc(6, 14, 2.5, c('red', 3));
+    p.rect(12, 14, 8, 4, c('gold', 1)).rect(12, 14, 8, 1, c('gold', 2));
+    for (let x = 20; x < 30; x++) {
+      const r = 2 + (x - 20) * 1.1;
+      p.rect(x, Math.round(16 - r), 1, Math.round(r * 2), c('gold', x % 3 === 0 ? 2 : 1));
+    }
+    p.rect(29, 4, 2, 24, c('gold', 2));
+  } else if (t === 'gear') {
+    // a gear: teeth round a wheel, a hub, the speedometer's little worm gear beside it
+    for (let a = 0; a < 10; a++) {
+      const ang = (a * Math.PI * 2) / 10;
+      p.disc(14 + Math.cos(ang) * 10, 16 + Math.sin(ang) * 10, 2.6, c('metal', 2));
+    }
+    p.disc(14, 16, 10, c('metal', 3)).disc(14, 16, 7, c('metal', 2)).disc(14, 16, 3, c('metal', 4)).disc(14, 16, 1.5, INK);
+    p.rect(26, 4, 4, 24, c('gold', 2));
+    for (let y = 5; y < 28; y += 3) p.rect(26, y, 4, 1, c('gold', 0));
+  } else if (t === 'radio') {
+    // a car radio: the faceplate, the dial and its needle, two knobs, the 8-track's slot
+    p.rect(1, 8, 30, 18, c('asphalt', 0)).rect(2, 9, 28, 16, c('asphalt', 1));
+    p.rect(8, 11, 16, 6, c('glow', 3)).rect(15, 11, 1, 6, c('red', 2));
+    for (let x = 9; x < 24; x += 3) p.set(x, 15, INK);
+    p.disc(5, 14, 2.5, c('metal', 3)).disc(27, 14, 2.5, c('metal', 3));
+    p.rect(8, 20, 16, 3, INK).rect(9, 21, 14, 1, c('asphalt', 0));
   } else if (t === 'tape') {
     // an 8-track tape: a chunky cartridge, its label, the tape showing at the end
     p.rect(2, 6, 28, 20, c('ink', 1)).rect(4, 8, 24, 10, c('yellow', 3)).rect(4, 20, 24, 4, c('asphalt', 1));
@@ -184,6 +215,10 @@ export const REAL_PARTS: Part[] = [
   { label: 'ANTENNA', x: 124, y: 62 },
   { label: 'TIRES', x: 93, y: 130 },
   { label: '8-TRACK', x: 182, y: 96 },
+  { label: 'WIPERS', x: 136, y: 70 },
+  { label: 'HORN', x: 52, y: 120 },
+  { label: 'SPEEDO', x: 206, y: 128 },
+  { label: 'RADIO', x: 160, y: 98 },
 ];
 
 /**

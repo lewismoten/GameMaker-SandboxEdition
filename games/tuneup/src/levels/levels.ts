@@ -19,6 +19,8 @@ import { fan, fanBlocks, FAN_VERSES } from './fan';
 import { muffled, muffledBlocks } from './muffled';
 import { pump, pumpBlocks } from './pump';
 import { swim, swimBlocks } from './swim';
+import { rain, rainBlocks } from './rain';
+import { rainSong } from '../sound/realSongs2';
 
 export interface LevelDef {
   /** The scene's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
@@ -163,6 +165,19 @@ export const LEVELS: LevelDef[] = [
     chr: 'teddy',
     snd: 'muffled',
     song: muffledSong,
+    mons: {},
+    wide: true,
+  },
+  {
+    file: 'rain',
+    level: 10,
+    desc: 'The Rain Delay',
+    theme: 'rain',
+    blocks: rainBlocks,
+    build: rain,
+    chr: 'leo',
+    snd: 'rain',
+    song: rainSong,
     mons: {},
     wide: true,
   },

@@ -68,6 +68,8 @@ export const CTR = {
   /** Hubcaps and Balls: the ball found, each round; Pump Up the Volume: the tire full (the crank's). */
   ball: 22,
   psi: 22,
+  /** The Rain Delay: raindrops rung (one kind of drop of four). */
+  drops: 23,
 } as const;
 /** Money: the Tips line on F2. */
 export const MONEY = 3;

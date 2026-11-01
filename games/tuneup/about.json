@@ -16,8 +16,8 @@
     "at": [22, 5]
   },
   "saveSign": {
-    "map": "hush.map",
-    "at": [39, 9],
+    "map": "rain.map",
+    "at": [5, 9],
     "after": "hush.map"
   },
   "label": {

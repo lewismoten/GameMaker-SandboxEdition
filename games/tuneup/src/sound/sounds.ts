@@ -9,7 +9,7 @@ import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound'
 import { SND } from '../ids';
 import { hz, noteVoc, phraseVoc, slideWhistleVoc } from './notes';
 
-export type Place = 'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled';
+export type Place = 'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled' | 'rain';
 
 /** "Charge!": the bugle call on a trumpet (the last note held). */
 const CHARGE: [string, string[], number] = ['trumpet', ['G4', 'C5', 'E5', 'G5', 'E5', 'G5'], 0.11];
@@ -28,6 +28,13 @@ export const LANE_NOTES: [number, string][] = [
   [SND.money, 'G5'],
 ];
 const LANE_D = 'C6';
+/** The Rain Delay: the raindrops' tongue drum notes in D major, slot by slot (by the drop's kind of change). */
+export const DROP_NOTES: [number, string][] = [
+  [SND.help, 'D5'],
+  [SND.money, 'F#5'],
+  [SND.gain, 'A5'],
+  [SND.score, 'B5'],
+];
 /** Oil's Well: the oil can's five lines, bottom to top, a note each. */
 export const OIL_NOTES = ['C5', 'D5', 'E5', 'G5', 'A5'];
 
@@ -54,6 +61,7 @@ export function buildVocs(): Record<string, Uint8Array> {
   v.tapes = phraseVoc('music-box', ['E5', 'G5', 'C6'], 0.1, 0.4);
   // sliding down the full tire: a slide whistle, falling (synthesized)
   v.slide = slideWhistleVoc(1600, 520, 0.7);
+  for (const [, n] of DROP_NOTES) v[vocName('td', n)] = noteVoc('steel-drum', n, 0.45, 0.2);
   return v;
 }
 
@@ -137,6 +145,14 @@ export function buildSoundSet(place: Place): SoundSet {
       speaker((i) => (i < 4 ? 200 - i * 20 : 0)),
     );
     add(SND.gain, 'tapes', SPEAKER.arpeggio([659, 784, 1047]));
+  } else if (place === 'rain') {
+    for (const [slot, n] of DROP_NOTES) add(slot, vocName('td', n), tone(n, 10));
+    // a wet slap from a wiper blade (Doc Leo's hurt sound): a smack, on the speaker
+    add(
+      SND.hurt,
+      '',
+      speaker((i) => (i < 3 ? 180 - i * 40 : 0)),
+    );
   }
   return set;
 }

@@ -48,7 +48,21 @@ for (const place of new Set(LEVELS.map((l) => l.snd))) disk.put(`${place}.snd`, 
 for (const [name, voc] of Object.entries(buildVocs())) disk.put(`${name}.voc`, voc);
 
 /** The tool each level's Hat Sting pulls out. */
-const TOOLS: Record<number, Tool> = { 1: 'cables', 2: 'plug', 3: 'roll', 4: 'oilcan', 5: 'kazoo', 6: 'bone', 7: 'hubcap', 8: 'pump', 9: 'tape' };
+const TOOLS: Record<number, Tool> = {
+  1: 'cables',
+  2: 'plug',
+  3: 'roll',
+  4: 'oilcan',
+  5: 'kazoo',
+  6: 'bone',
+  7: 'hubcap',
+  8: 'pump',
+  9: 'tape',
+  10: 'wiper',
+  11: 'horn',
+  12: 'gear',
+  13: 'radio',
+};
 /** A cartoon cut into clips (Esc skips within a few seconds), its files on the disk, its entries for a list. */
 const reel = (name: string, fli: Uint8Array) => {
   const clips = fliClips(name, fli);

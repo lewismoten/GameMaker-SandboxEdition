@@ -5,13 +5,12 @@
 // The way over her is the shelf above her bed; touching Gwinn herself wakes her a lot. The
 // tapes sit on a crate past her bed; with them, the door at the end opens. Up on the high shelf
 // past her bed, where the rubber egg rolled: the felt egg (in the set's last slot, a number no
-// other map shows), and by the door the sign that tells how to save.
+// other map shows). The sign that tells how to save is in the next level, The Rain Delay.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
 import { GWINN } from '../../../teddy2/src/sprites/gwinn';
 import { ZZZ } from '../../../teddy2/src/sprites/teddy';
-import { saveSignBlocks } from '../../../kit/saveSign';
 import { rubberEgg } from '../art/egg';
 import { AIR, countedDoor, kit, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
@@ -30,7 +29,6 @@ export const MUFFLED = {
   shelf: [20, 25] as [number, number],
   crate: 30,
   egg: [27, 2] as [number, number],
-  sign: 37,
   door: 40,
   exit: 41,
 } as const;
@@ -129,11 +127,6 @@ export function muffledBlocks(pal: Pal): Kit {
   countedDoor(k, 'door', 'wall', CTR.tapes, 1, (p: Pixels) => {
     p.rect(6, 9, 8, 6, c('ink', 1)).rect(7, 10, 5, 3, c('lamp', 3));
   });
-  const s = saveSignBlocks(pal.pal, { board: [wall(), wall()], posts: [wall(), wall()] });
-  book.add('sign.l', s.board[0], AIR);
-  book.add('sign.r', s.board[1], AIR);
-  book.add('post.l', s.posts![0], AIR);
-  book.add('post.r', s.posts![1], AIR);
   // the felt egg, in the last slot
   while (book.index.size < EGG_BLOCK) book.add(`spare${book.index.size}`, new Pixels(20, 20, 0));
   book.add('egg', rubberEgg(wall()), { ...AIR, obj: 1, score: 500, touch: 'wall' });
@@ -157,10 +150,6 @@ export function muffled(book: Kit['book']): Level {
   TOYS.forEach((x, i) => m.set(x, floor - 1, `toy${i}`));
   for (const x of TUCKS) m.set(x, floor - 1, 'tuck');
   m.set(M.crate, floor - 1, 'c').set(M.crate, floor - 2, 'tapes');
-  m.set(M.sign, floor - 2, 'sign.l')
-    .set(M.sign + 1, floor - 2, 'sign.r')
-    .set(M.sign, floor - 1, 'post.l')
-    .set(M.sign + 1, floor - 1, 'post.r');
   m.set(M.door, floor - 2, 'door.top').set(M.door, floor - 1, 'door');
   m.fill(w - 1, 0, 1, floor, 'slab');
   m.link(M.exit, floor - 1);
