@@ -124,7 +124,7 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
     if (sub) {
       outlined(p, 160 - textWidth('I CAME, I SAW, I LAUGHED') / 2, drop + 22, 'I CAME, I SAW, I LAUGHED', 2, 3);
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1994 Shareware`, 4);
     }
   };
   const r = new Reel(pal);
@@ -478,7 +478,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       blob(p, 146, 160, 7, 6, pal.r('rufus'), 1, 3);
       p.set(143, 158, c('ink', 0)).set(149, 158, c('ink', 0)).rect(144, 163, 4, 1, c('ink', 0));
       say(p, pal, 120, 140, 'RUFUS', 'rufus', 3);
-      caption(p, pal, [`${AUTHOR} (c) 1995`, 'Thank you for laughing!']);
+      caption(p, pal, [`${AUTHOR} (c) 1994`, 'Thank you for laughing!']);
     };
     const first = new Pixels(W, H);
     first.px.set(bg.px);

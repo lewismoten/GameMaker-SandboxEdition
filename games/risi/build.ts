@@ -187,7 +187,7 @@ disk.put(
   'license.txt',
   licenseText(
     'Veni, Vidi, Risi!',
-    `The 1995 shareware notice of Veni, Vidi, Risi!, its fee and its address are part of the story: there is nothing to pay. The songs are Veni, Vidi, Risi!'s (Lewis Moten's group): ${SONG_CREDIT}; ${ART_CREDIT}.`,
+    `The 1994 shareware notice of Veni, Vidi, Risi!, its fee and its address are part of the story: there is nothing to pay. The songs are Veni, Vidi, Risi!'s (Lewis Moten's group): ${SONG_CREDIT}; ${ART_CREDIT}.`,
     RECORDED_VOCS,
   ),
 );
