@@ -22,6 +22,7 @@ import { SceneSim, startCharInfo, type FileSource } from '../sim';
 import { replayMine } from './replayMine';
 import { fetchKeys, locksAtEntry } from './fetchKeys';
 import { lockedWhy } from './gates';
+import { otherScenesAdding } from './otherScenes';
 import { scenePaths } from './walkPaths';
 import { ON_PATH_ENOUGH, pathShare, preferPathRoute } from './pathRoute';
 import { pathTo, replayPath, type Replay } from './replayPath';
@@ -301,7 +302,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
           }));
         if (replay) found = { replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
       }
-      lockWhy = lockedWhy(locks, unreached);
+      lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing));
     }
     if (!found && !canceled && !backOnly) await collect();
     if (canceled) {

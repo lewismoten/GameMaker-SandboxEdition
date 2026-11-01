@@ -118,7 +118,12 @@ Part of the [source map](../README.md).
     marked as meant to be (by a stable key; `sameEverySide.ts` is the facing check's own list).
   - `walk/`: the walkthrough bot. `pace.ts` measures how tight a walkthrough's key changes are;
     `autoWalk.ts` walks, checked on the engine by `verify.ts`; `gates.ts` finds the locked doors and
-    what adds to their counters, and `fetchKeys.ts` fetches those keys first, then goes on; `takes.ts` cuts the author's own play
+    what adds to their counters (map blocks, monsters and what they turn into when they die, blocks
+    that turn into a key, with a key's price in another counter owed too), and `fetchKeys.ts`
+    fetches those keys first, then goes on; when nothing in the scene adds to a door's counter,
+    `otherScenes.ts` names the scenes that do and the bot's message says "another scene adds to it:
+    <scene>" as a suggestion (counters carry across scenes; it can't tell which way leads there);
+    `takes.ts` cuts the author's own play
     of a scene from the player's recorder, `mine.ts` keeps it, and `replayMine.ts` plays it in place
     of the bot's; `botRoutes.ts` keeps the bot's route of one scene with a fingerprint of the scene,
     to tell when the map changed since. `keptWalk.ts` is what Make a walkthrough keeps (companion
