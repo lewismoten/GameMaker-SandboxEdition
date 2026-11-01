@@ -22,6 +22,7 @@ import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
 import { lostSong, menuSong, wonSong } from './src/sound/song';
 import { buildSoundSet, buildVocs } from './src/sound/sounds';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/sprites';
+import { demoRecording } from './src/demo';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -97,7 +98,7 @@ start.files = [
   'hiscore.gif',
   'loadgame.gif',
   'savegame.gif',
-  '',
+  'demo.rec',
   ...new Array(8).fill(''),
 ];
 start.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: built[0].start[0], y: built[0].start[1] } };
@@ -113,6 +114,7 @@ disk.put('title.lst', serializeSlideList([...clipEntries(logo, 0), { name: 'titl
 disk.put('story.lst', serializeSlideList([{ name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]));
 disk.put('howto.lst', serializeSlideList([{ name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
+disk.put('demo.rec', demoRecording());
 disk.put('won.lst', serializeSlideList([{ name: 'won.gif', pause: 10 }]));
 disk.put('lost.lst', serializeSlideList([{ name: 'lost.gif', pause: 6 }]));
 disk.put('story.txt', STORY);
