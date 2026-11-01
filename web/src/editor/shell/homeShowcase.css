@@ -478,3 +478,81 @@
     animation: none;
   }
 }
+
+/* A phone held sideways: the selected game is a short strip (a small monitor, the title, the
+   actions), so the game list is on the first screen. The tags, byline, fiction line, blurb,
+   rating and the demo's controls give way. */
+@media (max-height: 480px) and (max-width: 900px) {
+  .home .showcase {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 2px 10px;
+    align-items: center;
+    margin: 0 0 12px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .showcase .sc-info {
+    display: contents;
+  }
+
+  .showcase .sc-screen {
+    grid-row: 1 / span 2;
+    padding: 3px;
+    border-radius: 6px;
+  }
+
+  .showcase .sc-glass {
+    border-radius: 3px;
+  }
+
+  .showcase .sc-label,
+  .showcase .sc-byline,
+  .showcase .sc-fiction,
+  .showcase .sc-blurb,
+  .showcase .sc-rate,
+  .showcase .sc-notes,
+  .sc-glass .sc-demo-btn,
+  .sc-glass .demo-audio,
+  .sc-glass .demo-kind-tag,
+  .sc-glass .demo-sound-hint {
+    display: none;
+  }
+
+  .showcase .sc-title {
+    grid-column: 2;
+    margin: 0;
+    overflow: hidden;
+    font-size: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .showcase .sc-actions {
+    grid-column: 2;
+    gap: 4px 6px;
+  }
+
+  .showcase .sc-actions > .button,
+  .showcase .sc-actions > button,
+  .showcase .sc-actions > .card-more > summary {
+    min-height: 26px;
+    padding: 2px 9px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .home .showcase {
+    position: relative;
+  }
+
+  .showcase .card-more {
+    position: static;
+  }
+
+  .showcase .card-more-menu {
+    left: 10px;
+    right: 10px;
+    top: calc(100% - 6px);
+  }
+}
