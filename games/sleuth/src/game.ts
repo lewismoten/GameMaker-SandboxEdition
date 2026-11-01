@@ -86,8 +86,8 @@ export function buildGame(acts: Theater[], pl: ParlorLinks): { game: Game; ix: S
     game.scenes.push(s);
     return game.scenes.length - 1;
   };
-  const theater = { bbl: 'paragon.bbl', mon: 'paragon.mon', mbl: 'paragon.mbl' };
-  const green = { map: 'green.map', bbl: 'green.bbl', mon: 'green.mon', mbl: 'green.mbl', pal: 'house.pal', cmf: 'parlor.cmf' };
+  const theater = { bbl: 'paragon.bbl', mon: 'people.mon', mbl: 'people.mbl' };
+  const green = { map: 'green.map', bbl: 'green.bbl', mon: 'people.mon', mbl: 'people.mbl', pal: 'house.pal', cmf: 'parlor.cmf' };
   const stage = { ...green, pal: 'dawn.pal', cmf: 'dawn.cmf' };
 
   const ix = {} as SceneIndex;

@@ -158,9 +158,8 @@ export const LINEUP: Who[] = ['agatha', 'felix', 'pike', 'lila', 'edgar'];
 
 const MONS: Who[] = ['lila', 'edgar', 'agatha', 'felix', 'pike', 'dobbs'];
 
-export function buildParlorMonsters(): { mb: BlockSet; mon: Monster[] } {
-  const mb = new BlockSet(100, true);
-  const mon: Monster[] = [];
+/** Adds the suspects' blocks and monsters (monsters 0-5) to the shared sets (characters/cast.ts). */
+export function addParlorMonsters(mb: BlockSet, mon: Monster[]): void {
   MONS.forEach((who, i) => {
     mb.add(`${who}0`, figure(who));
     mb.add(`${who}1`, figure(who, true));
@@ -175,9 +174,9 @@ export function buildParlorMonsters(): { mb: BlockSet; mon: Monster[] } {
     m.pic[3] = [mb.id(`${who}1`), 2];
     mon.push(m);
   });
-  while (mon.length < 64) mon.push(emptyMonster());
-  return { mb, mon };
 }
+
+export const SUSPECT_MONSTERS = MONS.length;
 
 export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks } {
   const map = newMap();
