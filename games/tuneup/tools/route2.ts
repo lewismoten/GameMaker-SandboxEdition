@@ -4,6 +4,8 @@ import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/r
 import { BASSES_AT, DUCT_ROW, LIFTS } from '../src/levels/basement';
 import { LOFT_ROW, RAIL_X, ROPE_X, VOICES_AT } from '../src/levels/choir';
 import { BELL_DOORS, MALLETS_AT } from '../src/levels/clock';
+import { HOOKS, HOOK_ROW, PERC_AT } from '../src/levels/farm';
+import { CTR } from '../src/ids';
 import type { Bot } from './bot';
 import { climb, found, leave, must, picked } from './route';
 
@@ -98,4 +100,30 @@ export async function theClockTower(bot: Bot): Promise<void> {
   await get('vibes-wobbly');
   if (found(bot) < 10) throw new Error(`found ${found(bot)} mallets, not 10`);
   await leave(bot, bot.walk(40, 'out the tower door'), 'the tower door');
+}
+
+/** Under a hook at level column `x`: waits for its instrument to light on its beat (a fresh beat, not one half gone), reacts, and boops it down. */
+async function onTheBeat(bot: Bot, x: number, what: string): Promise<void> {
+  const lit = () => bot.shown(x, HOOK_ROW).effect === CTR.found;
+  let waited = 0;
+  while (lit()) if ((await bot.tick()) || ++waited > 100) throw new Error(`${what} never went dark`);
+  while (!lit()) if ((await bot.tick()) || ++waited > 200) throw new Error(`${what} never lit`);
+  await must(bot, bot.wait(1 + Math.floor(bot.hand() * 2)), 'reacting');
+  await must(bot, bot.boop(), `a boop at the ${what}`);
+  picked(bot, x, HOOK_ROW, what);
+}
+
+/** 11. The Farm: the cowbell, the woodblock, the drum, snare and shaker each on its beat, the timpani, out the barn door. */
+export async function theFarm(bot: Bot): Promise<void> {
+  expect(bot, 21, 'the farm');
+  await must(bot, bot.land(), 'on the grass');
+  await take(bot, PERC_AT, 'cowbell');
+  await take(bot, PERC_AT, 'woodblock');
+  for (const [id, x] of HOOKS) {
+    await must(bot, bot.walk(x, `under the ${id}`), 'stage');
+    await onTheBeat(bot, x, id);
+  }
+  await take(bot, PERC_AT, 'timpani');
+  if (found(bot) < 6) throw new Error(`found ${found(bot)} percussion, not 6`);
+  await leave(bot, bot.walk(36, 'out the barn door'), 'the barn door');
 }

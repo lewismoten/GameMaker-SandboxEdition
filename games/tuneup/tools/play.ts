@@ -14,7 +14,7 @@ import {
   thePlayerPiano,
   theWoods,
 } from './route';
-import { theBasement, theChoirLoft, theClockTower } from './route2';
+import { theBasement, theChoirLoft, theClockTower, theFarm } from './route2';
 import { GameSim } from './sim';
 
 export const SEED = 1;
@@ -38,6 +38,8 @@ const LEVELS = [
   theBandstand(18, 6),
   theClockTower,
   theBandstand(20, 10),
+  theFarm,
+  theBandstand(22, 6),
 ];
 
 export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: Bot }> {

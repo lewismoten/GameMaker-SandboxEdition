@@ -4,8 +4,9 @@ import type { Pal, TimeOfDay } from '../art/pal';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
 import { arcadeSong, bandSong, fieldSong, railSong, rinkSong, shopSong, stringsSong, woodsSong } from '../sound/song';
-import { basementSong, choirSong, clockSong } from '../sound/laterSongs';
+import { basementSong, choirSong, clockSong, farmSong } from '../sound/laterSongs';
 import { clock, clockBlocks } from './clock';
+import { farm, farmBlocks } from './farm';
 import { basement, basementBlocks } from './basement';
 import { choir, choirBlocks } from './choir';
 import { woods, woodsBlocks } from './woods';
@@ -165,6 +166,19 @@ export const LEVELS: LevelDef[] = [
     wide: true,
   },
   bandstand(9),
+  {
+    file: 'farm',
+    desc: 'The Farm',
+    light: 'afternoon',
+    blocks: farmBlocks,
+    build: farm,
+    chr: 'teddy',
+    snd: 'farm',
+    song: farmSong,
+    mons: {},
+    wide: true,
+  },
+  bandstand(10),
 ];
 
 /** The bandstand after the `n`th family comes home (from the third on). */
