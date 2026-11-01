@@ -6,6 +6,8 @@
 // Color Vision Deficiency", IEEE TVCG 15(6), 2009, severity 1.0 (the published tables, applied to
 // linear RGB). Achromatopsia is plain luminance. See NOTICE.md.
 
+import { MACHADO } from '../src/editor/editors/palette/machadoMatrices';
+
 /** 8-bit RGBA, row-major. */
 export interface Raster {
   w: number;
@@ -16,9 +18,9 @@ export interface Raster {
 export type Matrix = readonly [number, number, number, number, number, number, number, number, number];
 
 export const CVD: Record<string, Matrix> = {
-  protanopia: [0.152286, 1.052583, -0.204868, 0.114503, 0.786281, 0.099216, -0.003882, -0.048116, 1.051998],
-  deuteranopia: [0.367322, 0.860646, -0.227968, 0.280085, 0.672501, 0.047413, -0.01182, 0.04294, 0.968881],
-  tritanopia: [1.255528, -0.076749, -0.178779, -0.078411, 0.930809, 0.147602, 0.004733, 0.691367, 0.3039],
+  protanopia: MACHADO.protan,
+  deuteranopia: MACHADO.deutan,
+  tritanopia: MACHADO.tritan,
 };
 export const FILTERS = [...Object.keys(CVD), 'achromatopsia'] as const;
 
