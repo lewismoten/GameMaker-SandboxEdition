@@ -1,11 +1,15 @@
-/* The Library's room (libraryRoom.ts): an aisle of stacks, the circulation desk and the things on it. */
+/* The Library's room (libraryRoom.ts): a small octagonal library lit by one lamp, the circulation desk and the things on it. */
 .lib-room {
-  --room-wall: #d9c9a3;
-  --room-ceiling: #efe6cf;
-  --room-floor: #b88f5e;
-  --room-runner: #8c3b3b;
-  --room-back: #e8dcc0;
-  --room-window: #a9d3e8;
+  --room-wall: #5a4530;
+  --room-wall-wood: #4a3320;
+  --room-shelf-back: #2e1f12;
+  --room-board: #6b4a2a;
+  --room-beam: #3a2514;
+  --room-ceiling: #5c4630;
+  --room-floor: #4d3622;
+  --room-runner: #5e2a2a;
+  --room-back: #6b5439;
+  --room-dim: 0.8;
   position: relative;
   height: 250px;
   margin: 0 0 14px;
@@ -16,12 +20,16 @@
 }
 
 :root[data-theme='dark'] .lib-room {
-  --room-wall: #231c14;
-  --room-ceiling: #17120c;
-  --room-floor: #3a2a1b;
-  --room-runner: #4a2226;
-  --room-back: #2c241a;
-  --room-window: #1d3550;
+  --room-wall: #2a1f15;
+  --room-wall-wood: #2c1e12;
+  --room-shelf-back: #1a110a;
+  --room-board: #46301b;
+  --room-beam: #22150b;
+  --room-ceiling: #34281c;
+  --room-floor: #2d2015;
+  --room-runner: #3a1a1c;
+  --room-back: #3a2d1f;
+  --room-dim: 1;
 }
 
 .lib-room-bg {
@@ -95,7 +103,7 @@
 .lib-o-stacks .lib-tag {
   position: absolute;
   top: 38%;
-  left: 12%;
+  left: 18%;
 }
 
 .lib-o-stacks:hover {
@@ -109,6 +117,7 @@
   top: 60%;
   width: 20%;
   height: 22%;
+  box-shadow: 0 -6px 18px rgba(255, 200, 110, 0.35);
   border: 2px solid var(--wood-dark);
   border-radius: 3px 3px 0 0;
   background:
@@ -139,6 +148,11 @@
   left: 63%;
   top: 46%;
   width: 56px;
+}
+
+.lib-o-catalog svg,
+.lib-o-copier svg {
+  filter: brightness(0.82) drop-shadow(0 3px 2px rgba(0, 0, 0, 0.35));
 }
 
 .lib-o-catalog {
