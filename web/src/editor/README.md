@@ -215,7 +215,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `copyTune.ts` copies a tune at a new speed and pitch.
 - **Instrument presets.** The music editor's preset picker (`editors/music/presetPicker.ts`) is a grid of
   radio buttons, one picture and name each, in families flowing like words (a turned name, then
-  its buttons on a tint). `presetIcons.ts` draws the pictures (line SVG made for this project) by
+  its buttons on a tint). `presetIcons.ts` holds the pictures (20x20 pixel art, Game-Maker's block size, as rows of palette letters,
+  made for this project) by
   preset id, else by family, so a new preset needs only its data.
 - **Copying tracks between songs.** The music editor's ⧉ on a track, Paste track and Add a track
   from another song…: `editors/music/trackClip.ts` (pure) copies a track's notes, instruments
