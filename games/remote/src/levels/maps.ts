@@ -1,6 +1,6 @@
 // The four levels, from the song, each drawn as rows of characters (one a block; each level
 // has its own legend); everything outside a level is solid:
-//   1. Where's the Remote?!: the living room, 1995. The couch, the cushions, Teddy asleep in his
+//   1. Where's the Remote?!: the living room, 1994. The couch, the cushions, Teddy asleep in his
 //      bed, the cat on the armchair, the laundry, the magazines, the afghan, the Voice-O-Matic.
 //      Search six spots and the baby gate to the kitchen opens.
 //   2. Who Knows Anymore?: the kitchen. Open the fridge, dodge the toast, find Mom's number (seven

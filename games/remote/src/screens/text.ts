@@ -97,7 +97,7 @@ const LYRICS: Record<string, string[]> = {
 export const STORY = [
   page([`"WHERE'S THE REMOTE?"`, '', ...LYRICS.verse1, '', '        - The Bard of Bizarre']),
   page([
-    "Friday night, 1995. You've",
+    "Friday night, 1994. You've",
     'got snacks. The tape is in',
     'the VCR (the Bard calls it',
     '"streaming"; it blinks',
@@ -169,7 +169,7 @@ export const INSTRUCTIONS = [
 
 /** Each level's card: its name, where, and two lines of the song. */
 export const CARDS: { title: string; where: string; lines: [string, string] }[] = [
-  { title: '1. THE LIVING ROOM', where: 'Friday night, 1995', lines: ["Where's the remote?!", 'I just had it here!'] },
+  { title: '1. THE LIVING ROOM', where: 'Friday night, 1994', lines: ["Where's the remote?!", 'I just had it here!'] },
   { title: '2. THE KITCHEN', where: 'Under the fluorescent tube', lines: ['Opened the fridge-', 'who knows anymore?'] },
   { title: '3. THE VOID', where: 'Between the cushions', lines: ['This couch is a portal,', 'a Bermuda zone-'] },
   { title: '4. THE RIDE', where: 'The living room, spinning', lines: ['Just existential panic on', 'the living room ride.'] },
@@ -186,7 +186,7 @@ const SONG_PAGES = [
 const CREDITS_TEXT = page(
   [
     "WHERE'S THE REMOTE?!",
-    'by The Bard of Bizarre, 1995',
+    'by The Bard of Bizarre, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Based on the song "Where\'s',
@@ -226,7 +226,7 @@ export const CREDITS = withCreditPage([...SONG_PAGES, CREDITS_TEXT].join('\n'), 
 export function readme(price: string): string {
   return `
     WHERE'S THE REMOTE?!
-    Version ${about.version} - June 1995
+    Version ${about.version} - November 1994
     by The Bard of Bizarre
 
 "Where's the remote?!
