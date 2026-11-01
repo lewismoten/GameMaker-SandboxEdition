@@ -1,35 +1,29 @@
-// The levels in order: each one's files, its light, its block set, Teddy's character file, its
-// sound set, its song, its monsters' options and how its view scrolls.
-import type { Pal, TimeOfDay } from '../art/pal';
+// The scenes in order: each one's files, its look (a theme over its base block set), Doc Leo's
+// character file, its sound set, its song, its monsters' options and how its view scrolls. A
+// level of more than one scene (The Timing Beat's three verses) names its level once.
+import type { ThemeName, Pal } from '../art/palette';
 import type { Kit } from '../blocks/common';
 import type { MonsterOptions } from '../characters';
-import { arcadeSong, bandSong, fieldSong, railSong, rinkSong, shopSong, stringsSong, woodsSong } from '../sound/song';
-import { atticSong, basementSong, cardSong, choirSong, clockSong, farmSong } from '../sound/laterSongs';
-import { attic, atticBlocks } from './attic';
-import { card, cardBlocks } from './card';
-import { clock, clockBlocks } from './clock';
-import { farm, farmBlocks } from './farm';
-import { basement, basementBlocks } from './basement';
-import { choir, choirBlocks } from './choir';
-import { woods, woodsBlocks } from './woods';
-import { field, fieldBlocks } from './field';
-import { arcade, arcadeBlocks } from './arcade';
 import type { Place } from '../sound/sounds';
-import { band, bandBlocks } from './band';
+import { beatSong, jumpSong, oilSong, sparkSong } from '../sound/song';
+import { beat, beatBlocks, VERSES } from './beat';
+import { jump, jumpBlocks } from './jump';
 import type { Level } from './maps';
-import { rail, railBlocks } from './rail';
-import { rink, rinkBlocks } from './rink';
-import { shop, shopBlocks } from './shop';
-import { strings, stringsBlocks } from './strings';
+import { oil, oilBlocks } from './oil';
+import { spark, sparkBlocks } from './spark';
 
 export interface LevelDef {
-  /** The level's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
+  /** The scene's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
   file: string;
+  /** The level it belongs to (1 on), and its name. */
+  level: number;
   desc: string;
-  light: TimeOfDay;
+  /** A part of a level: its verse (shown in the walkthrough's chapters). */
+  part?: string;
+  theme: ThemeName;
   blocks: (pal: Pal) => Kit;
   build: (b: Kit['book']) => Level;
-  chr: 'teddy' | 'rail' | 'rink' | 'baton' | 'staff';
+  chr: 'leo' | 'piano' | 'oil';
   snd: Place;
   song: () => Uint8Array;
   mons: MonsterOptions;
@@ -38,179 +32,48 @@ export interface LevelDef {
 }
 
 export const LEVELS: LevelDef[] = [
+  { file: 'jump', level: 1, desc: 'Jump Start', theme: 'dawn', blocks: jumpBlocks, build: jump, chr: 'leo', snd: 'jump', song: jumpSong, mons: {}, wide: true },
   {
-    file: 'shop',
-    desc: 'The Piano Shop',
-    light: 'morning',
-    blocks: shopBlocks,
-    build: shop,
-    chr: 'teddy',
-    snd: 'shop',
-    song: shopSong,
-    mons: { march: 4 },
+    file: 'spark',
+    level: 2,
+    desc: 'Spark Plucks',
+    theme: 'electric',
+    blocks: sparkBlocks,
+    build: spark,
+    chr: 'leo',
+    snd: 'spark',
+    song: sparkSong,
+    mons: {},
     wide: true,
   },
-  { file: 'piano', desc: 'The Player Piano', light: 'noon', blocks: railBlocks, build: rail, chr: 'rail', snd: 'rail', song: railSong, mons: {}, wide: false },
-  {
-    file: 'band1',
-    desc: 'The Bandstand',
-    light: 'sunset',
-    blocks: bandBlocks(0),
-    build: band(0),
-    chr: 'teddy',
-    snd: 'band',
-    song: () => bandSong(1),
+  ...VERSES.map((v, i): LevelDef => ({
+    file: v.file,
+    level: 3,
+    desc: 'The Timing Beat',
+    part: ['the straight verse', 'the syncopated verse', 'the double-time verse'][i],
+    theme: 'brass',
+    blocks: beatBlocks(v),
+    build: beat(v),
+    chr: 'piano',
+    snd: 'beat',
+    song: () => beatSong(i),
     mons: {},
+    wide: true,
+  })),
+  {
+    file: 'oil',
+    level: 4,
+    desc: "Oil's Well",
+    theme: 'amber',
+    blocks: oilBlocks,
+    build: oil,
+    chr: 'oil',
+    snd: 'oil',
+    song: oilSong,
+    mons: { squeak: 6, reach: 13 },
     wide: false,
   },
-  {
-    file: 'store',
-    desc: "The Music Store's Back Room",
-    light: 'afternoon',
-    blocks: stringsBlocks,
-    build: strings,
-    chr: 'teddy',
-    snd: 'strings',
-    song: stringsSong,
-    mons: { march: 3 },
-    wide: true,
-  },
-  {
-    file: 'band2',
-    desc: 'The Bandstand Again',
-    light: 'sunset',
-    blocks: bandBlocks(1),
-    build: band(1),
-    chr: 'teddy',
-    snd: 'band',
-    song: () => bandSong(2),
-    mons: {},
-    wide: false,
-  },
-  {
-    file: 'choir',
-    desc: 'The Choir Loft',
-    light: 'noon',
-    blocks: choirBlocks,
-    build: choir,
-    chr: 'teddy',
-    snd: 'choir',
-    song: choirSong,
-    mons: {},
-    wide: false,
-  },
-  bandstand(3),
-  {
-    file: 'basement',
-    desc: 'The Basement',
-    light: 'night',
-    blocks: basementBlocks,
-    build: basement,
-    chr: 'teddy',
-    snd: 'basement',
-    song: basementSong,
-    mons: {},
-    wide: true,
-  },
-  bandstand(4),
-  {
-    file: 'arcade',
-    desc: 'The Arcade',
-    light: 'show',
-    blocks: arcadeBlocks,
-    build: arcade,
-    chr: 'teddy',
-    snd: 'arcade',
-    song: arcadeSong,
-    mons: { march: 3 },
-    wide: true,
-  },
-  bandstand(5),
-  { file: 'rink', desc: 'The Roller Rink', light: 'show', blocks: rinkBlocks, build: rink, chr: 'rink', snd: 'rink', song: rinkSong, mons: {}, wide: true },
-  bandstand(6),
-  {
-    file: 'field',
-    desc: 'The Marching Field',
-    light: 'afternoon',
-    blocks: fieldBlocks,
-    build: field,
-    chr: 'baton',
-    snd: 'field',
-    song: fieldSong,
-    mons: {},
-    wide: true,
-  },
-  bandstand(7),
-  {
-    file: 'woods',
-    desc: 'The Woods by the River',
-    light: 'afternoon',
-    blocks: woodsBlocks,
-    build: woods,
-    chr: 'staff',
-    snd: 'woods',
-    song: woodsSong,
-    mons: {},
-    wide: true,
-  },
-  // the save sign is here, in the level after the felt egg's
-  bandstand(8, true),
-  {
-    file: 'clock',
-    desc: 'The Clock Tower',
-    light: 'morning',
-    blocks: clockBlocks,
-    build: clock,
-    chr: 'teddy',
-    snd: 'clock',
-    song: clockSong,
-    mons: {},
-    wide: true,
-  },
-  bandstand(9),
-  {
-    file: 'farm',
-    desc: 'The Farm',
-    light: 'afternoon',
-    blocks: farmBlocks,
-    build: farm,
-    chr: 'teddy',
-    snd: 'farm',
-    song: farmSong,
-    mons: {},
-    wide: true,
-  },
-  bandstand(10),
-  {
-    file: 'attic',
-    desc: 'The Attic',
-    light: 'afternoon',
-    blocks: atticBlocks,
-    build: attic,
-    chr: 'teddy',
-    snd: 'attic',
-    song: atticSong,
-    mons: {},
-    wide: true,
-  },
-  bandstand(11),
-  { file: 'card', desc: 'Sound Check', light: 'show', blocks: cardBlocks, build: card, chr: 'teddy', snd: 'card', song: cardSong, mons: {}, wide: true },
-  // the whole band home, and on to the parade
-  bandstand(12),
 ];
 
-/** The bandstand after the `n`th family comes home (from the third on). */
-function bandstand(n: number, sign = false): LevelDef {
-  return {
-    file: `band${n}`,
-    desc: 'The Bandstand Again',
-    light: 'sunset',
-    blocks: bandBlocks(n - 1, sign),
-    build: band(n - 1, sign),
-    chr: 'teddy',
-    snd: 'band',
-    song: () => bandSong(n),
-    mons: {},
-    wide: false,
-  };
-}
+/** The first scene of each level (its intro plays before it). */
+export const firstOfLevel = (i: number) => i === 0 || LEVELS[i - 1].level !== LEVELS[i].level;
