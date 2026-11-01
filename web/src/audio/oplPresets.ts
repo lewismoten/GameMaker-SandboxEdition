@@ -67,6 +67,15 @@ const MELODIC: OplPreset[] = [
     p('x1 tl14 ar15 dr8 sl4 rr4 w2', 'x1 ar15 dr4 sl5 rr5', 'fb7'),
   ),
   keys('clavinet', 'Clavinet', 60, 'A funky clavinet: nasal, snappy and short', p('x3 tl20 ar15 dr5 sl6 rr6 w1', 'x1 ar15 dr4 sl6 rr7 w1', 'fb6')),
+  preset(
+    'keys',
+    'tine-glass',
+    'Glass Tine Keys',
+    72,
+    'tune',
+    'A glassy tine keyboard: a hard, bright tick over a long fade',
+    p('x8 tl34 ar15 dr6 sl11 rr7 w1', 'x1 ar15 dr2 sl5 rr5', 'fb3'),
+  ),
 
   // ---- strings ----
   preset(
@@ -131,6 +140,15 @@ const MELODIC: OplPreset[] = [
     'tune',
     'A concert harp: a soft pluck that rings (from Veni, Vidi, Risi!)',
     p('x2 tl29 ar15 dr4 sl3 rr2', 'x1 ar15 dr3 sl2 rr4', 'fb3'),
+  ),
+  preset(
+    'strings',
+    'harp-chime',
+    'Chime Harp',
+    72,
+    'tune',
+    'A chiming harp pluck: bright, ringing and slow to die',
+    p('x4 tl26 ar15 dr6 sl10 rr5 ksl1.5', 'x2 ar15 dr3 sl8 rr4 w1', 'fb1'),
   ),
 
   // ---- voices ----
@@ -226,6 +244,15 @@ const MELODIC: OplPreset[] = [
     'A fretless bass: smooth, singing "mwah"',
     p('x1 tl30 ar8 dr3 sl3 rr6 hold', 'x1 ar9 dr2 sl2 rr6 hold', 'fb3'),
   ),
+  preset(
+    'bass',
+    'sub-round',
+    'Round Sub',
+    33,
+    'tune',
+    'A rounder sub that thumps and sinks, a half-sine hum an octave below',
+    p('x0.5 tl40 ar14 dr3 sl7 rr6 w1', 'x0.5 ar15 dr2 sl2 rr5 w2', 'fb1'),
+  ),
 
   // ---- synth ----
   preset(
@@ -281,6 +308,15 @@ const MELODIC: OplPreset[] = [
     'chord',
     'A filter sweep: the brightness rises slowly, then settles',
     p('x1 tl20 ar2 dr2 sl4 rr3 hold', 'x1 ar5 dr0 sl0 rr4 hold', 'fb5'),
+  ),
+  preset(
+    'synth',
+    'pad-wobble',
+    'Wobble Pad',
+    60,
+    'tune',
+    'A slow pad that breathes: vibrato and tremolo ride a rough, held tone',
+    p('x1 tl28 ar5 dr1 sl2 rr4 hold vib w3', 'x2 ar4 dr0 sl0 rr3 hold trem vib', 'fb2'),
   ),
 
   // ---- organ ----
@@ -416,6 +452,15 @@ const MELODIC: OplPreset[] = [
     'Pan pipes: a puff of breath, then a pure hollow tone',
     p('x1 tl26 ar10 dr5 sl8 rr6 hold', 'x1 ar5 dr2 sl1 rr6 hold vib', 'fb7'),
   ),
+  preset(
+    'winds',
+    'reed-soft',
+    'Soft Reed',
+    60,
+    'tune',
+    'A soft reed: hollow and steady, a little breath at the start',
+    p('x2 tl40 ar9 dr0 sl0 rr7 hold', 'x1 ar10 dr0 sl1 rr7 hold w2', 'fb0'),
+  ),
 
   // ---- mallets and bells ----
   preset(
@@ -498,6 +543,15 @@ const MELODIC: OplPreset[] = [
     'tune',
     'A Caribbean steel pan: a bright ping with a hollow ring',
     p('x2 tl28 ar15 dr4 sl4 rr5', 'x1 ar15 dr4 sl4 rr5 w1', 'fb2'),
+  ),
+  preset(
+    'mallets',
+    'vibes-wobbly',
+    'Wobbly Vibes',
+    72,
+    'tune',
+    'Vibes with a bright strike and a wide wobble: vibrato and tremolo on a shimmering ring',
+    p('x7 tl26 ar15 dr6 sl12 rr6 vib', 'x1 ar15 dr3 sl5 rr4 vib trem', 'fb0'),
   ),
 
   // ---- percussion on melody tracks ----
