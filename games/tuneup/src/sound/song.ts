@@ -242,9 +242,9 @@ export function rinkSong(): Uint8Array {
   ]);
 }
 
-/** The marching field: the tune on trumpet, trombone under it, a tuba and a snare (a beat of 10 ticks, as the staff glides). */
+/** The marching field: the tune on trumpet, trombone under it, a tuba and a snare (a beat of 12 ticks, as the staff glides). */
 export function fieldSong(): Uint8Array {
-  return tune(bpmFor(10), [
+  return tune(bpmFor(12), [
     v(0, patchOf('trumpet'), MELODY, 90),
     v(
       1,

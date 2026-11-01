@@ -6,6 +6,7 @@ import { buildPalette } from '../src/art/pal';
 import { CTR, HITS_NEEDED } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import { HARPS } from '../src/levels/strings';
+import { BATON_ROW, BATON_X, BRASS_AT, FIELD_TICKS, LINES, fieldBlocks, fieldNoteShown } from '../src/levels/field';
 import { GATE, LANE_ROWS, MELODY_LANES, ORGAN_AT } from '../src/levels/rink';
 import { LANES, KEY_ROW, SONG_TICKS, STEPS, railBlocks } from '../src/levels/rail';
 import { Bot } from './bot';
@@ -171,6 +172,7 @@ export const theBandstand1 = theBandstand(4, 7);
 export const theBandstand2 = theBandstand(6, 8);
 export const theBandstand3 = theBandstand(8, 7);
 export const theBandstand4 = theBandstand(10, 6);
+export const theBandstand5 = theBandstand(12, 5);
 
 /** Climbs a harp's strings (nothing pulls Teddy down there) to level row `row`. */
 async function climb(bot: Bot, row: number, what: string): Promise<void> {
@@ -290,4 +292,68 @@ export async function theRollerRink(bot: Bot): Promise<void> {
     bot.until(undefined, () => false, 'through the gate', 200),
     'the gate',
   );
+}
+
+/** The note-showing glide blocks of each field line (by line index): the bot reads the staff as a person does. */
+const FIELD_NOTES = (() => {
+  const book = fieldBlocks(buildPalette('afternoon')).book;
+  return LINES.map((l) => {
+    const set = new Set<number>();
+    if (l.at >= 0) for (const [name, n] of book.index) if (name.startsWith(`l${l.row}.g`) && fieldNoteShown(book, name)) set.add(n);
+    return set;
+  });
+})();
+
+/** How many cells from the keys the nearest note on line `i` is (99: none showing). */
+function noteDistance(bot: Bot, i: number): number {
+  for (let x = BATON_X + 2; x < 16; x++) if (FIELD_NOTES[i].has(bot.sim.w.blkmap[bot.sim.blockAt(x + ORIGIN, LINES[i].row + ORIGIN)])) return x - BATON_X - 1;
+  return 99;
+}
+
+/** Taps Up or Down (a tick each, a person's pause between) until the hero's row is `row`. */
+async function toRow(bot: Bot, row: number, what: string): Promise<void> {
+  for (let n = 0; Math.round(bot.px.y / 20) !== row; n++) {
+    if (n > 6) throw new Error(`${what}: stuck out of row ${row}`);
+    await must(bot, bot.hold(Math.round(bot.px.y / 20) > row ? 'up' : 'down', 1), 'a tap');
+    await must(bot, bot.wait(GLIDE_WAIT + Math.floor(bot.hand() * 2)), 'gliding');
+  }
+}
+
+/** 8. The Marching Field: Doc Leo's baton glides to each note's line and flicks as it arrives, then walks out past the brass. */
+export async function theMarchingField(bot: Bot): Promise<void> {
+  expect(bot, 11, 'the marching field');
+  const hits = () => bot.sim.meter(CTR.hits) - 1;
+  const start = hits();
+  let played = 0;
+  let whiffs = 0;
+  while (bot.sim.ticks < FIELD_TICKS || hits() - start < HITS_NEEDED) {
+    if (bot.sim.ticks > FIELD_TICKS * 3) throw new Error(`still conducting with ${hits() - start} hits`);
+    // the next note to arrive is the nearest one on any line: glide to its line
+    const next = LINES.map((_, i) => i).sort((a, b) => noteDistance(bot, a) - noteDistance(bot, b))[0];
+    const row = LINES[next].row;
+    await toRow(bot, row, 'the baton');
+    // wait for its key to light, then a person's reaction before the flick
+    let waited = 0;
+    while (!(bot.shown(BATON_X + 1, row).scorePts > 0)) {
+      const r = await bot.tick();
+      if (r) throw new Error(`the field: ${r}`);
+      if (++waited > 120) throw new Error(`line ${next} never lit`);
+    }
+    await must(bot, bot.wait(1 + Math.floor(bot.hand() * 2)), 'reacting');
+    const before = hits();
+    await must(bot, bot.boop(), 'flick');
+    if (hits() > before) played++;
+    else whiffs++;
+    while (bot.shown(BATON_X + 1, row).scorePts > 0) await must(bot, bot.wait(1), 'waiting');
+  }
+  bot.say(`conducted ${played} notes, ${whiffs} missed; ${hits() - start} hits`);
+  if (whiffs) throw new Error(`the bot missed ${whiffs} notes`);
+  // down through the gate onto the touchline, and along it past the brass
+  await toRow(bot, BATON_ROW, 'the gate');
+  for (const x of BRASS_AT) {
+    await must(bot, bot.walk(x, 'along the touchline'), 'touchline');
+    picked(bot, x, BATON_ROW, 'a brass instrument');
+  }
+  if (found(bot) < 5) throw new Error(`found ${found(bot)} brass, not 5`);
+  await leave(bot, bot.walk(16, 'off the field'), 'off the field');
 }

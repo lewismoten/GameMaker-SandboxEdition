@@ -22,7 +22,21 @@ export function buildCharBlocks() {
     if (!pic) throw new Error(`No Teddy pose ${pose}`);
     book.add(pose, pic);
   }
+  // Doc Leo's baton, for the marching field: a white stick with a gold star at its tip
+  book.add('baton', baton(false));
+  book.add('batonFlick', baton(true));
   return book;
+}
+
+/** Doc Leo's baton: the stick held at a slant, a star at its tip (flicked: the star flares). */
+function baton(flick: boolean): Pixels {
+  const p = new Pixels(20, 20, T);
+  p.line(3, 18, 13, 8, c('paint', 3)).line(4, 18, 14, 8, c('paint', 2));
+  p.rect(2, 16, 4, 4, c('wood', 2));
+  const r = flick ? 4 : 2;
+  for (let i = -r; i <= r; i++) p.set(15 + i, 6, c('gold', 2)).set(15, 6 + i, c('gold', 2));
+  p.rect(14, 5, 3, 3, c('yellow', 3));
+  return outline(p, ink);
 }
 
 /** A wind-up toy drummer, marching to the right: a drum at his belly, sticks up and down, a key in his back. */

@@ -67,10 +67,7 @@ function teddy(cb: ReturnType<typeof buildCharBlocks>, rail: boolean, rink = fal
   if (rink) {
     // skating on his own: the idle sequence moves him
     set(S[SEQ.idle], [f({ pic: 'walk1', x: SKATE, pause: SKATE_PAUSE }), f({ pic: 'walk2', x: SKATE, pause: SKATE_PAUSE })]);
-    const glide = (dy: number) => Array.from({ length: GLIDE }, () => f({ pic: 'hop', y: dy }));
-    const once = { norepeat: 1, ground: 1 };
-    set(S[SEQ.hop], glide(-20 / GLIDE), { key: KEY.up, jstkMov: JOY.up, sound: SND.hop, ...once });
-    set(S[SEQ.sit], glide(20 / GLIDE), { key: KEY.down, jstkMov: JOY.down, sound: SND.hop, ...once });
+    glides(S, f({ pic: 'hop' }), f({ pic: 'hop' }));
   } else if (!rail) {
     set(S[SEQ.hop], [f({ pic: 'hop', y: -HOP })], { key: KEY.up, jstkMov: JOY.up, sound: SND.hop });
     const side = (dx: number, mirror: boolean) => [f({ pic: 'hop', x: dx, y: -HOP, mirror }), f({ pic: 'hop', x: dx, y: -HOP, mirror })];
@@ -94,6 +91,55 @@ function teddy(cb: ReturnType<typeof buildCharBlocks>, rail: boolean, rink = fal
 export const buildTeddy = (cb: ReturnType<typeof buildCharBlocks>) => teddy(cb, false);
 export const buildRailTeddy = (cb: ReturnType<typeof buildCharBlocks>) => teddy(cb, true);
 export const buildRinkTeddy = (cb: ReturnType<typeof buildCharBlocks>) => teddy(cb, false, true);
+
+/** A tap of Up or Down: one lane (or line) over, the whole glide however short the tap. */
+function glides(S: Character['sequences'], up: Frame, down: Frame): void {
+  const glide = (f: Frame, dy: number) => Array.from({ length: GLIDE }, () => ({ ...f, y: dy / GLIDE }));
+  const once = { norepeat: 1, ground: 1 };
+  set(S[SEQ.hop], glide(up, -20), { key: KEY.up, jstkMov: JOY.up, sound: SND.hop, ...once });
+  set(S[SEQ.sit], glide(down, 20), { key: KEY.down, jstkMov: JOY.down, sound: SND.hop, ...once });
+}
+
+/** Space: a poke half a block to the right for one tick and back (PLAYGAME moves a hero at most 11 px a tick). */
+function poke(S: Character['sequences'], out: Frame, back: Frame, sound: number): void {
+  set(
+    S[SEQ.boop],
+    [
+      { ...out, x: POKE },
+      { ...back, x: -POKE },
+    ],
+    { key: KEY.space, sound, norepeat: 1, ground: 1, jstkMov: JOY.any, jstkBut: 1 },
+  );
+}
+/** How far a poke reaches (px). */
+export const POKE = 10;
+
+/**
+ * BATON.CHR, for the marching field: Doc Leo's baton. Up and Down glide it a line of the staff
+ * at a time, Space flicks it at the line's key, and on the touchline it walks.
+ */
+export function buildBaton(cb: ReturnType<typeof buildCharBlocks>): Character {
+  const ch = teddy(cb, true);
+  const S = ch.sequences;
+  const pic = (name: string, x = 0, pause = 1): Frame => ({ ...emptyFrame(), x, pic1: CHARBL, pic2: cb.index.get(name)!, pause });
+  set(S[SEQ.idle], [pic('baton', 0, 30)]);
+  set(S[SEQ.right], [pic('baton', STEP), pic('baton', STEP)], { key: KEY.right, jstkMov: JOY.right });
+  set(S[SEQ.left], [pic('baton', -STEP), pic('baton', -STEP)], { key: KEY.left, jstkMov: JOY.left });
+  set(S[SEQ.hurt], [pic('baton')], { sound: SND.hurt, jstkBut: 0 });
+  set(S[SEQ.die], [pic('baton', 0, 30)], { sound: SND.faint, jstkBut: 0 });
+  glides(S, pic('baton'), pic('baton'));
+  // a swish (the hop's pop) for each flick
+  poke(S, pic('batonFlick'), pic('baton'), SND.hop);
+  return ch;
+}
+
+/** STAFF.CHR, for the woods: Teddy as everywhere, but Space pokes a paw to the right (at a note on a staff door). */
+export function buildStaffTeddy(cb: ReturnType<typeof buildCharBlocks>): Character {
+  const ch = teddy(cb, false);
+  const pic = (name: string): Frame => ({ ...emptyFrame(), pic1: CHARBL, pic2: cb.index.get(name)!, pause: 1 });
+  poke(ch.sequences, pic('reach'), pic('stand'), SND.boop);
+  return ch;
+}
 
 export interface MonsterOptions {
   /** Blocks the toy drummer marches before turning round. */
