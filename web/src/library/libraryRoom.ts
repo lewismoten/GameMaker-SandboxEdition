@@ -11,6 +11,7 @@ import { h, modal } from '../editor/core/ui';
 import { drawJoe } from '../tinHearts/joeArt';
 import { removedGames } from '../imported/removedGames';
 import { aisle, ICONS, lspaceBox, svgOf, trashIcon } from './roomArt';
+import { pctX, pctY, proj } from './roomGeo';
 import { catalogArt, copierArt, deskArt, DESK, place, spineBox, type Spot } from './roomObjects';
 
 export interface RoomActions {
@@ -167,7 +168,10 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   const gap = lspaceBox();
   box(lspace, gap);
   // flat pictures stand on the floor (or the desk) at their depth: Joe behind the desk, the trash can beside it
-  place(joe, DESK.x, DESK.z + 0.85, 1.4);
+  place(joe, DESK.x, DESK.z + 0.85, 1.9);
+  // where the tour has him step out: on the floor just past the desk's back corner, in the clear (tourEngine.ts)
+  const [outX, outY] = proj(DESK.x + DESK.w / 2 + 0.35, 0, DESK.z + 0.85);
+  joe.dataset.out = `${pctX(outX).toFixed(2)},${pctY(outY).toFixed(2)}`;
   place(trashBtn, DESK.x + 1.35, DESK.z - 0.05, 0.5);
   place(notebook, DESK.x - 0.35, DESK.z - 0.02, 0.42, DESK.h);
   const el = h(

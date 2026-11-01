@@ -454,7 +454,12 @@ export class Tour {
       const there = visitor ?? (id === 'joe' ? document.querySelector<HTMLElement>('.lib-o-joe canvas') : null);
       const r = there?.getBoundingClientRect();
       if (r && r.width && r.right > 0 && r.left < this.view().w && r.bottom > 0 && r.top < this.view().h) {
-        a.place({ x: r.left + r.width / 2 - a.size.w / 2, y: r.bottom - a.size.h });
+        // Joe steps out from the desk's back corner (his spot, as percents of the room), not onto the desk's front
+        const out = visitor ? undefined : document.querySelector<HTMLElement>('.lib-o-joe')?.dataset.out?.split(',').map(Number);
+        const room = document.querySelector('.lib-room')?.getBoundingClientRect();
+        if (out && room && out.length === 2 && out.every(Number.isFinite))
+          a.place({ x: room.left + (room.width * out[0]) / 100 - a.size.w / 2, y: room.top + (room.height * out[1]) / 100 - a.size.h });
+        else a.place({ x: r.left + r.width / 2 - a.size.w / 2, y: r.bottom - a.size.h });
         visitor?.remove();
       } else a.place(offStage(a.size, this.view(), this.floor(), false));
       a.el.dataset.host = id;
