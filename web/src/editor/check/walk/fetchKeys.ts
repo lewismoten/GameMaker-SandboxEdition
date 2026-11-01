@@ -36,8 +36,7 @@ const ROUNDS = 6;
 /** The route that fetches the keys and then reaches a way on (merged keys), or undefined. */
 export async function fetchKeys(game: Game, files: FileSource, scene: number, entry: Entry, locks: Locks, o: FetchOptions): Promise<Replay | undefined> {
   if (!locks.wanted.size) return undefined;
-  const owed = new Map<number, number>();
-  for (const g of locks.gates) owed.set(g.counter, (owed.get(g.counter) ?? 0) + g.takes);
+  const owed = locks.owed;
   const paid = (meter: ArrayLike<number>) => [...locks.wanted].every((c) => meter[c] === INF_REPEAT || meter[c] > (owed.get(c) ?? 0));
   const seed = o.seed ?? 1;
   const deadline = Date.now() + o.budgetMs * 0.5;
