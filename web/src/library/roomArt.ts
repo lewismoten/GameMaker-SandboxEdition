@@ -1,9 +1,16 @@
-// Pictures for the Library's room (libraryRoom.ts), drawn here as SVG: the octagonal room in
-// perspective, and the small object icons (card catalog, copier, notebook, trash can,
-// stacks). Plain drawings made for this site; the fills use the Library's wood and brass colors.
+// Pictures for the Library's room (libraryRoom.ts), drawn here as SVG: the octagonal room in perspective
+// (every point goes through roomGeo.ts's `proj`, so floor, walls, books, ceiling beams, window, the L-Space
+// gap and the objects of roomObjects.ts share one vanishing point) and the small icons for the notebook,
+// the trash can and the stacks. Plain drawings made for this site; the fills use the Library's wood and
+// brass colors.
+import { APOTHEM, HALF_SIDE, HORIZON, VB_H, VB_W, WALL_H, pctX, pctY, proj, pts, type Pt } from './roomGeo';
 
 const NS = 'http://www.w3.org/2000/svg';
 const SPINES = ['#8c2f2a', '#2f5d8c', '#3f7a4a', '#c8a23a', '#6a4a8c', '#b5632c', '#2b6f6f', '#a33d5f', '#58606b'];
+/** Heights of the shelf boards, in meters; books stand on a board and reach the next. */
+export const BOARDS = [0.3, 1.0, 1.7, 2.4];
+/** Thickness of a board. */
+export const BOARD = 0.05;
 
 /** Parses a fixed piece of SVG markup into an element. */
 export function svgOf(markup: string): SVGSVGElement {
@@ -17,156 +24,169 @@ function rng(seed: number) {
   return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
 }
 
-type Pt = [number, number];
-const mirror = (n: number, flip: boolean) => (flip ? 1000 - n : n);
+type Plan = [number, number];
+/** A span of shelf that stays bare: the window in the stacks, the gap that leads to L-Space. */
+interface Hole {
+  /** Meters along the wall. */
+  u: [number, number];
+  /** Shelves at or above this level are bare there. */
+  from: number;
+}
 
-/**
- * One wall of the octagon as a quad in perspective: it runs from x `xa` (top `ta`, bottom `ba`) to x `xb`
- * (`tb`, `bb`). Shelves of books fill it below `plain` (a fraction of its height kept bare for a window).
- * `flip` mirrors it onto the right-hand side. `shade` darkens the walls turned away from the lamp.
- */
-function wall(
-  flip: boolean,
-  seed: number,
-  [xa, ta, ba]: [number, number, number],
-  [xb, tb, bb]: [number, number, number],
-  levels: number,
-  plain: number,
-  shade: number,
-): string {
+/** One wall of the octagon, from plan point `a` to `b`, with shelves of books on it. `shade` darkens walls turned from the lamp. */
+function wall(a: Plan, b: Plan, seed: number, shade: number, holes: Hole[]): string {
   const rand = rng(seed);
-  const X = (t: number) => mirror(xa + (xb - xa) * t, flip);
-  const T = (t: number) => ta + (tb - ta) * t;
-  const B = (t: number) => ba + (bb - ba) * t;
-  const shelfTop = (t: number) => T(t) + (B(t) - T(t)) * plain;
-  const at = (t: number, k: number) => shelfTop(t) + ((B(t) - shelfTop(t)) * k) / levels;
-  const q = (pts: Pt[]) => pts.map((p) => p.map((n) => n.toFixed(1)).join(',')).join(' ');
-  const out: string[] = [
-    `<polygon points="${q([
-      [X(0), T(0)],
-      [X(1), T(1)],
-      [X(1), B(1)],
-      [X(0), B(0)],
-    ])}" fill="var(--room-wall-wood)"/>`,
-  ];
-  out.push(
-    `<polygon points="${q([
-      [X(0), shelfTop(0)],
-      [X(1), shelfTop(1)],
-      [X(1), B(1)],
-      [X(0), B(0)],
-    ])}" fill="var(--room-shelf-back)"/>`,
-  );
-  const span = Math.abs(xb - xa);
-  for (let j = 0; j < levels; j++) {
-    let t = 0.01;
-    while (t < 0.985) {
-      const t2 = Math.min(0.99, t + (3.5 + rand() * 5) / span);
-      const h = 0.6 + rand() * 0.32;
-      const base = (u: number) => at(u, j + 1) - 1.5;
-      const rise = (u: number) => (at(u, j + 1) - at(u, j)) * h;
-      const c = SPINES[Math.floor(rand() * SPINES.length)];
-      out.push(
-        `<polygon points="${q([
-          [X(t), base(t) - rise(t)],
-          [X(t2), base(t2) - rise(t2)],
-          [X(t2), base(t2)],
-          [X(t), base(t)],
-        ])}" fill="${c}" stroke="rgba(0,0,0,.4)" stroke-width=".5"/>`,
-      );
-      t = t2 + (rand() < 0.1 ? 0.03 : 0.003);
+  const L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+  const P = (u: number, h: number): Pt => proj(a[0] + ((b[0] - a[0]) * u) / L, h, a[1] + ((b[1] - a[1]) * u) / L);
+  const quad = (u0: number, u1: number, h0: number, h1: number) => pts([P(u0, h0), P(u1, h0), P(u1, h1), P(u0, h1)]);
+  const bare = (k: number, u0: number, u1: number) => holes.some((o) => k >= o.from && u1 > o.u[0] && u0 < o.u[1]);
+  const out: string[] = [`<polygon points="${quad(0, L, 0, WALL_H)}" fill="var(--room-wall-wood)"/>`];
+  out.push(`<polygon points="${quad(0.06, L - 0.06, 0.1, WALL_H - 0.08)}" fill="var(--room-shelf-back)"/>`);
+  BOARDS.forEach((hb, k) => {
+    const hn = k < BOARDS.length - 1 ? BOARDS[k + 1] - BOARD : WALL_H - 0.12;
+    let u = 0.1;
+    while (u < L - 0.14) {
+      const u2 = Math.min(L - 0.1, u + 0.05 + rand() * 0.08);
+      const height = (hn - hb) * (0.6 + rand() * 0.34);
+      const color = SPINES[Math.floor(rand() * SPINES.length)];
+      if (!bare(k, u, u2)) {
+        out.push(`<polygon points="${quad(u, u2, hb, hb + height)}" fill="${color}" stroke="rgba(0,0,0,.4)" stroke-width=".4"/>`);
+      }
+      u = u2 + (rand() < 0.1 ? 0.06 : 0);
     }
-    out.push(
-      `<polygon points="${q([
-        [X(0), at(0, j + 1) - 1],
-        [X(1), at(1, j + 1) - 1],
-        [X(1), at(1, j + 1) + 2],
-        [X(0), at(0, j + 1) + 4],
-      ])}" fill="var(--room-board)" stroke="rgba(0,0,0,.5)" stroke-width=".6"/>`,
-    );
-  }
-  out.push(
-    `<polygon points="${q([
-      [X(0), T(0)],
-      [X(1), T(1)],
-      [X(1), B(1)],
-      [X(0), B(0)],
-    ])}" fill="#000" opacity="${shade}"/>`,
-  );
+    out.push(`<polygon points="${quad(0.04, L - 0.04, hb - BOARD, hb)}" fill="var(--room-board)" stroke="rgba(0,0,0,.5)" stroke-width=".6"/>`);
+  });
+  out.push(`<polygon points="${quad(0, L, 0, WALL_H)}" fill="#000" opacity="${shade}"/>`);
   return out.join('');
 }
 
-/** The small high window on the right-hand wall, with a slice of daylight falling from it. */
+const FAR_L: Plan = [-HALF_SIDE, APOTHEM];
+const FAR_R: Plan = [HALF_SIDE, APOTHEM];
+const SIDE_L: Plan = [-APOTHEM, HALF_SIDE];
+const SIDE_R: Plan = [APOTHEM, HALF_SIDE];
+const DIAG = Math.hypot(APOTHEM - HALF_SIDE, APOTHEM - HALF_SIDE);
+/** The gap leading to L-Space: on the left diagonal wall, just short of its corner with the far wall. */
+const GAP_U: [number, number] = [DIAG - 1.5, DIAG - 0.8];
+const GAP_H = 2.1;
+const WIN_U: [number, number] = [2.2, 3.8];
+const WIN_H: [number, number] = [1.85, 2.75];
+
+/** A point on the left diagonal wall (u meters from the side-wall end), and on the right one (u from the far-wall end). */
+const onLeft = (u: number, h: number): Pt => {
+  const k = u / DIAG;
+  return proj(SIDE_L[0] + (FAR_L[0] - SIDE_L[0]) * k, h, SIDE_L[1] + (FAR_L[1] - SIDE_L[1]) * k);
+};
+const onRight = (u: number, h: number): Pt => {
+  const k = u / DIAG;
+  return proj(FAR_R[0] + (SIDE_R[0] - FAR_R[0]) * k, h, FAR_R[1] + (SIDE_R[1] - FAR_R[1]) * k);
+};
+
+/** The gap between two stacks that leads to L-Space: a dark, faintly glowing doorway in the wall. */
+function lspaceGap(): string {
+  const [u0, u1] = GAP_U;
+  const frame = pts([onLeft(u0 - 0.08, 0), onLeft(u1 + 0.08, 0), onLeft(u1 + 0.08, GAP_H + 0.1), onLeft(u0 - 0.08, GAP_H + 0.1)]);
+  const hole = pts([onLeft(u0, 0), onLeft(u1, 0), onLeft(u1, GAP_H), onLeft(u0, GAP_H)]);
+  return (
+    `<polygon points="${frame}" fill="var(--room-beam)"/>` + `<polygon points="${hole}" fill="url(#lr-gap)" stroke="rgba(150,160,255,.35)" stroke-width="1"/>`
+  );
+}
+
+/** Where the L-Space doorway is, as percent of the room (for its button). */
+export function lspaceBox(): { l: number; t: number; w: number; h: number } {
+  const [u0, u1] = GAP_U;
+  const p = [onLeft(u0, 0), onLeft(u1, 0), onLeft(u1, GAP_H), onLeft(u0, GAP_H)];
+  const xs = p.map((q) => q[0]);
+  const ys = p.map((q) => q[1]);
+  return { l: pctX(Math.min(...xs)), t: pctY(Math.min(...ys)), w: pctX(Math.max(...xs) - Math.min(...xs)), h: pctY(Math.max(...ys) - Math.min(...ys)) };
+}
+
+/** The small window in the right-hand wall's top shelves, with a slice of daylight falling from it to the floor. */
 function windowAndDaylight(): string {
-  // right-hand mid wall runs x 700 to 840; the window is in its bare strip below the ceiling
-  const x0 = 730;
-  const x1 = 810;
-  const top = (x: number) => 70 - ((x - 700) / 140) * 32;
-  const bot = (x: number) => top(x) + 18 - ((x - 700) / 140) * 3;
-  const pane = `${x0},${top(x0) + 4} ${x1},${top(x1) + 4} ${x1},${bot(x1)} ${x0},${bot(x0)}`;
-  const beam = `${x0},${bot(x0)} ${x1},${bot(x1)} ${x1 - 150},232 ${x0 - 170},232`;
+  const [u0, u1] = WIN_U;
+  const [h0, h1] = WIN_H;
+  const frame = pts([onRight(u0 - 0.1, h0 - 0.1), onRight(u1 + 0.1, h0 - 0.1), onRight(u1 + 0.1, h1 + 0.1), onRight(u0 - 0.1, h1 + 0.1)]);
+  const pane = pts([onRight(u0, h0), onRight(u1, h0), onRight(u1, h1), onRight(u0, h1)]);
+  const mid = (h: number) => onRight((u0 + u1) / 2, h);
+  // the light lands on the floor 2.2 m toward the middle of the room, in both plan directions
+  const fall = (u: number): Pt => {
+    const k = u / DIAG;
+    return proj(FAR_R[0] + (SIDE_R[0] - FAR_R[0]) * k - 2.2, 0, FAR_R[1] + (SIDE_R[1] - FAR_R[1]) * k - 2.2);
+  };
+  const beam = pts([onRight(u0, h0), onRight(u1, h0), fall(u1), fall(u0)]);
   return (
-    `<polygon points="${beam}" fill="url(#lr-day)"/>` +
-    `<polygon points="${pane}" fill="#cfe3e8" stroke="#2c1d10" stroke-width="3"/>` +
-    `<path d="M${(x0 + x1) / 2} ${(top(x0) + top(x1)) / 2 + 4}V${(bot(x0) + bot(x1)) / 2}" stroke="#2c1d10" stroke-width="2"/>`
+    `<polygon points="${frame}" fill="#2c1d10"/>` +
+    `<polygon points="${pane}" fill="#cfe3e8"/>` +
+    `<path d="M${mid(h0)[0].toFixed(1)} ${mid(h0)[1].toFixed(1)}L${mid(h1)[0].toFixed(1)} ${mid(h1)[1].toFixed(1)}" stroke="#2c1d10" stroke-width="3"/>` +
+    `<polygon points="${beam}" fill="url(#lr-day)"/>`
   );
 }
 
-/** The ceiling: planks, beams converging on a ring around the lamp fixture. */
+/** How far a beam or board can run inside the octagon at a given x (or z). */
+const limit = (v: number) => Math.min(APOTHEM, 2 * APOTHEM - HALF_SIDE - Math.abs(v));
+
+/** The ceiling: planks running to the far wall and cross beams, with a pendant lamp over the middle of the room. */
 function ceiling(): string {
-  const tops: Pt[] = [
-    [40, 14],
-    [160, 38],
-    [300, 70],
-    [700, 70],
-    [840, 38],
-    [960, 14],
+  const roof: Pt[] = [
+    [-300, -300],
+    [1300, -300],
+    proj(APOTHEM, WALL_H, HALF_SIDE),
+    proj(HALF_SIDE, WALL_H, APOTHEM),
+    proj(-HALF_SIDE, WALL_H, APOTHEM),
+    proj(-APOTHEM, WALL_H, HALF_SIDE),
   ];
-  const hub: Pt = [500, 24];
-  const ring = [0, 1, 2, 3, 4, 5, 6, 7]
-    .map((i) => `${(hub[0] + Math.cos((i * Math.PI) / 4) * 70).toFixed(1)},${(hub[1] + Math.sin((i * Math.PI) / 4) * 11).toFixed(1)}`)
-    .join(' ');
-  const planks = [0.2, 0.4, 0.6, 0.8].map((k) => `<path d="M0 ${(k * 70).toFixed(0)}H1000" stroke="rgba(0,0,0,.22)" stroke-width="1"/>`).join('');
+  const line = (a: Pt, b: Pt, w: number) =>
+    `<path d="M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}" stroke="var(--room-beam)" stroke-width="${w}" stroke-linecap="round"/>`;
+  const beams = [-6, -3, 0, 3, 6].map((x) => line(proj(x, WALL_H, limit(x)), proj(x, WALL_H, -4.9), x === 0 ? 7 : 5));
+  for (const z of [-2, 1.5, 5]) beams.push(line(proj(-limit(z), WALL_H, z), proj(limit(z), WALL_H, z), 6));
+  const lamp = proj(0, 2.3, 0);
+  const top = proj(0, WALL_H, 0);
   return (
-    `<polygon points="0,0 1000,0 960,14 840,38 700,70 300,70 160,38 40,14" fill="var(--room-ceiling)"/>` +
-    planks +
-    tops.map(([x, y]) => `<path d="M${hub[0]} ${hub[1]}L${x} ${y}" stroke="var(--room-beam)" stroke-width="7" stroke-linecap="round"/>`).join('') +
-    `<path d="M${hub[0]} ${hub[1]}L0 2M${hub[0]} ${hub[1]}L1000 2" stroke="var(--room-beam)" stroke-width="7"/>` +
-    `<polygon points="${ring}" fill="none" stroke="var(--room-beam)" stroke-width="6" stroke-linejoin="round"/>` +
-    // the ceiling fixture: a brass dome with a glowing lamp under it
-    `<ellipse cx="500" cy="26" rx="150" ry="40" fill="url(#lr-lamp)"/>` +
-    `<path d="M480 22q20-14 40 0z" fill="#6b4a1c" stroke="#2c1d10" stroke-width="1.5"/>` +
-    `<ellipse cx="500" cy="24" rx="14" ry="4" fill="#ffe7a8"/>`
+    `<polygon points="${pts(roof)}" fill="var(--room-ceiling)"/>` +
+    beams.join('') +
+    `<ellipse cx="${lamp[0]}" cy="${lamp[1]}" rx="190" ry="60" fill="url(#lr-lamp)"/>` +
+    `<path d="M${lamp[0]} ${top[1]}V${lamp[1] - 12}" stroke="#2c1d10" stroke-width="3"/>` +
+    `<path d="M${lamp[0] - 26} ${lamp[1]}q26-24 52 0z" fill="#6b4a1c" stroke="#2c1d10" stroke-width="2"/>` +
+    `<ellipse cx="${lamp[0]}" cy="${lamp[1] + 1}" rx="18" ry="4" fill="#ffe7a8"/>`
   );
 }
 
-/** The octagon: five walls of stacks seen from just inside the door, a beamed ceiling and a dim, warm light. */
+/** The floor: boards running away from the camera, a round runner and the lamp's pool of light. */
+function floor(): string {
+  let lines = '';
+  for (let x = -7; x <= 7; x++) {
+    const a = proj(x, 0, limit(x));
+    const b = proj(x, 0, -4.9);
+    lines += `M${a[0].toFixed(1)} ${a[1].toFixed(1)}L${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
+  }
+  const ring = (r: number): string => pts(Array.from({ length: 24 }, (_, i) => proj(Math.cos((i * Math.PI) / 12) * r, 0, Math.sin((i * Math.PI) / 12) * r)));
+  return (
+    `<rect width="${VB_W}" height="${VB_H}" fill="var(--room-floor)"/>` +
+    `<path d="${lines}" stroke="rgba(0,0,0,.22)" stroke-width="1.2" fill="none"/>` +
+    `<polygon points="${ring(3.4)}" fill="var(--room-runner)" stroke="rgba(0,0,0,.4)" stroke-width="2"/>` +
+    `<polygon points="${ring(2.6)}" fill="none" stroke="rgba(255,225,160,.25)" stroke-width="2"/>` +
+    `<polygon points="${ring(5)}" fill="url(#lr-pool)"/>`
+  );
+}
+
+/** The octagon seen from just inside the door: the far wall and the two beside it, a beamed ceiling, a lamp's glow and a high window. */
 export function aisle(): SVGSVGElement {
-  const rug = [0, 1, 2, 3, 4, 5, 6, 7]
-    .map((i) => `${(500 + Math.cos((i * Math.PI) / 4 + Math.PI / 8) * 230).toFixed(1)},${(198 + Math.sin((i * Math.PI) / 4 + Math.PI / 8) * 30).toFixed(1)}`)
-    .join(' ');
   return svgOf(
-    `<svg viewBox="0 0 1000 240" preserveAspectRatio="none" class="lib-room-bg">` +
+    `<svg viewBox="0 0 ${VB_W} ${VB_H}" preserveAspectRatio="xMidYMid slice" class="lib-room-bg" data-horizon="${HORIZON}">` +
       `<defs>` +
-      `<radialGradient id="lr-lamp" gradientUnits="userSpaceOnUse" cx="500" cy="26" r="150"><stop offset="0" stop-color="#ffd98a" stop-opacity=".75"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>` +
-      `<radialGradient id="lr-pool" gradientUnits="userSpaceOnUse" cx="500" cy="168" r="190" gradientTransform="translate(0 168) scale(1 .55) translate(0 -168)"><stop offset="0" stop-color="#ffcf7a" stop-opacity=".7"/><stop offset=".6" stop-color="#ffb85a" stop-opacity=".25"/><stop offset="1" stop-color="#ffb85a" stop-opacity="0"/></radialGradient>` +
-      `<radialGradient id="lr-dim" gradientUnits="userSpaceOnUse" cx="500" cy="150" r="600" gradientTransform="translate(0 150) scale(1 .5) translate(0 -150)"><stop offset=".25" stop-color="#0c0602" stop-opacity="0"/><stop offset=".7" stop-color="#0c0602" stop-opacity=".45"/><stop offset="1" stop-color="#0c0602" stop-opacity=".85"/></radialGradient>` +
+      `<radialGradient id="lr-lamp"><stop offset="0" stop-color="#ffd98a" stop-opacity=".75"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>` +
+      `<radialGradient id="lr-pool"><stop offset="0" stop-color="#ffcf7a" stop-opacity=".6"/><stop offset=".6" stop-color="#ffb85a" stop-opacity=".2"/><stop offset="1" stop-color="#ffb85a" stop-opacity="0"/></radialGradient>` +
+      `<radialGradient id="lr-dim" gradientUnits="userSpaceOnUse" cx="500" cy="300" r="620" gradientTransform="translate(0 300) scale(1 .6) translate(0 -300)"><stop offset=".3" stop-color="#0c0602" stop-opacity="0"/><stop offset=".7" stop-color="#0c0602" stop-opacity=".45"/><stop offset="1" stop-color="#0c0602" stop-opacity=".85"/></radialGradient>` +
       `<linearGradient id="lr-day" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0c0" stop-opacity=".4"/><stop offset="1" stop-color="#fff0c0" stop-opacity=".05"/></linearGradient>` +
+      `<linearGradient id="lr-gap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#030208"/><stop offset="1" stop-color="#1a1a3a"/></linearGradient>` +
       `</defs>` +
-      `<rect width="1000" height="240" fill="var(--room-floor)"/>` +
-      `<polygon points="${rug}" fill="var(--room-runner)" stroke="rgba(0,0,0,.4)" stroke-width="2"/>` +
-      // far wall, the two walls beside it, and the two nearest the door
-      wall(false, 7, [40, 14, 228], [160, 38, 204], 5, 0.12, 0.38) +
-      wall(true, 19, [40, 14, 228], [160, 38, 204], 5, 0.12, 0.38) +
-      wall(false, 31, [160, 38, 204], [300, 70, 172], 4, 0.25, 0.16) +
-      wall(true, 43, [160, 38, 204], [300, 70, 172], 4, 0.25, 0.16) +
-      wall(false, 55, [300, 70, 172], [700, 70, 172], 4, 0.2, 0) +
+      floor() +
+      wall(SIDE_L, FAR_L, 31, 0.2, [{ u: GAP_U, from: 0 }]) +
+      wall(FAR_R, SIDE_R, 43, 0.2, [{ u: WIN_U, from: 2 }]) +
+      wall(FAR_L, FAR_R, 55, 0, []) +
+      lspaceGap() +
       ceiling() +
       windowAndDaylight() +
-      // the door jambs at the near edges
-      `<rect x="0" y="0" width="40" height="240" fill="#120a04"/><rect x="960" y="0" width="40" height="240" fill="#120a04"/>` +
-      `<ellipse cx="500" cy="176" rx="230" ry="46" fill="url(#lr-pool)"/>` +
-      `<rect width="1000" height="240" fill="url(#lr-dim)" style="opacity:var(--room-dim)"/>` +
+      `<rect width="${VB_W}" height="${VB_H}" fill="url(#lr-dim)" style="opacity:var(--room-dim)"/>` +
       `</svg>`,
   );
 }
@@ -184,17 +204,6 @@ export const ICONS = {
           .join(''),
     )
     .join('')}</svg>`,
-  catalog: `<svg viewBox="0 0 80 84"><ellipse cx="40" cy="79" rx="38" ry="4" fill="rgba(0,0,0,.45)"/><rect x="12" y="74" width="8" height="6" fill="var(--wood-dark)"/><rect x="60" y="74" width="8" height="6" fill="var(--wood-dark)"/><rect x="8" y="4" width="64" height="72" rx="3" fill="var(--wood)" ${STROKE}/>${[
-    0, 1, 2,
-  ]
-    .flatMap((r) =>
-      [0, 1].map(
-        (c) =>
-          `<rect x="${13 + c * 29}" y="${11 + r * 21}" width="25" height="17" rx="1.5" fill="var(--wood-hi)" ${STROKE}/><rect x="${18 + c * 29}" y="${14 + r * 21}" width="15" height="6" fill="var(--paper)"/><rect x="${22 + c * 29}" y="${23 + r * 21}" width="7" height="2.5" rx="1" fill="var(--brass)"/>`,
-      ),
-    )
-    .join('')}</svg>`,
-  copier: `<svg viewBox="0 0 80 100"><ellipse cx="40" cy="95" rx="38" ry="4" fill="rgba(0,0,0,.45)"/><rect x="10" y="58" width="60" height="36" rx="2" fill="#a89d7d" ${STROKE}/><rect x="14" y="64" width="52" height="12" fill="#8d8363" ${STROKE}/><rect x="14" y="80" width="52" height="10" fill="#8d8363" ${STROKE}/><rect x="6" y="28" width="68" height="32" rx="4" fill="#d8ceb2" ${STROKE}/><rect x="6" y="28" width="68" height="9" rx="3" fill="#b9ad8c" ${STROKE}/><rect x="14" y="42" width="28" height="7" fill="#31413a"/><rect x="14" y="42" width="11" height="7" fill="#6fd08a"/><rect x="48" y="41" width="18" height="12" rx="2" fill="#2f6f45" ${STROKE}/><path d="M12 28 L22 10 H58 L68 28Z" fill="#c9bfa0" ${STROKE}/></svg>`,
   notebook: `<svg viewBox="0 0 80 40"><ellipse cx="40" cy="34" rx="36" ry="4" fill="rgba(0,0,0,.4)"/><path d="M10 30 L20 8 H70 L62 30Z" fill="#25252b" ${STROKE}/><path d="M10 30 L20 8 L22 8 L13 32Z" fill="#111"/><path d="M26 24 L32 12 H58 L53 24Z" fill="#f4f1e6" stroke="#25252b" stroke-width="1.5"/><path d="M33 17h22M32 20h20" stroke="#6b6b73" stroke-width="1.5"/></svg>`,
 } as const;
 

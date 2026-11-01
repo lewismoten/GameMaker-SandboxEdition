@@ -11,8 +11,12 @@
   --room-back: #6b5439;
   --room-dim: 0.8;
   position: relative;
-  height: clamp(250px, calc(100vh - 150px), 660px);
-  margin: 0 0 14px;
+  /* a fixed 2:1 picture, so the perspective never stretches; as wide as the window or the height allows */
+  aspect-ratio: 2 / 1;
+  width: min(100%, calc((100vh - 150px) * 2));
+  min-width: 500px;
+  max-width: 100%;
+  margin: 0 auto 14px;
   overflow: hidden;
   border: 2px solid var(--wood-dark);
   border-radius: 6px;
@@ -102,8 +106,8 @@
 
 .lib-o-stacks .lib-tag {
   position: absolute;
-  top: 24%;
-  left: 31%;
+  top: 26%;
+  left: 38%;
 }
 
 .lib-o-stacks:hover {
@@ -113,17 +117,18 @@
 .lib-desk {
   position: absolute;
   z-index: 3;
-  left: 41.5%;
-  top: 51%;
-  width: 17%;
-  height: 22%;
+  left: var(--l);
+  top: var(--t);
+  width: var(--w);
+  height: var(--h);
   pointer-events: none;
-  box-shadow: 0 -8px 22px rgba(255, 200, 110, 0.35);
-  border: 2px solid var(--wood-dark);
-  border-radius: 3px 3px 0 0;
-  background:
-    linear-gradient(var(--wood-hi) 0 16%, var(--wood) 16% 18%, transparent 18%),
-    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0 2px, transparent 2px 11px), linear-gradient(var(--wood), var(--wood-lo));
+}
+
+.lib-desk svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 -6px 16px rgba(255, 200, 110, 0.3));
 }
 
 /* the sign that stands on the desk while the tour has Joe out front */
@@ -151,13 +156,26 @@
   visibility: hidden;
 }
 
-/* Joe stands behind the desk: its front overlaps his lower half */
+.lib-o-joe,
+.lib-o-notebook,
+.lib-o-trash {
+  left: var(--l);
+  bottom: var(--b);
+  width: var(--w);
+}
+
+.lib-o-catalog,
+.lib-o-copier,
+.lib-o-lspace {
+  left: var(--l);
+  top: var(--t);
+  width: var(--w);
+  height: var(--h);
+}
+
+/* Joe stands behind the desk: its top hides his lower half */
 .lib-o-joe {
   z-index: 2;
-  left: 46%;
-  top: 40.5%;
-  width: 8%;
-  min-width: 56px;
 }
 
 /* his name tag hangs above his head, clear of the desk's top edge */
@@ -176,63 +194,39 @@
 /* the notebook lies flat on the desktop */
 .lib-o-notebook {
   z-index: 4;
-  left: 43%;
-  top: 51.5%;
-  width: 5%;
-  min-width: 44px;
 }
 
 .lib-o-trash {
   z-index: 3;
-  left: 65%;
-  bottom: 6%;
-  width: 4.5%;
-  min-width: 40px;
 }
 
-.lib-o-catalog {
-  z-index: 3;
-  left: 6%;
-  bottom: 5%;
-  width: 7%;
-  min-width: 60px;
-}
-
+.lib-o-catalog,
 .lib-o-copier {
   z-index: 3;
-  right: 6%;
-  bottom: 5%;
-  width: 7.5%;
-  min-width: 64px;
 }
 
-/* the open drawer's items, standing on the far wall to each side of Joe */
+.lib-o-catalog svg,
+.lib-o-copier svg {
+  height: 100%;
+}
+
 .lib-spines {
   position: absolute;
   z-index: 2;
-  top: 33%;
-  height: 22%;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 2px;
+  left: var(--l);
+  top: var(--t);
+  width: var(--w);
+  height: var(--h);
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 5), 24px);
+  grid-template-rows: 1fr 1fr;
+  gap: var(--gap, 4%) 2px;
   overflow: hidden;
 }
 
-.lib-spines-l {
-  left: 28.5%;
-  width: 12.5%;
-}
-
-.lib-spines-r {
-  left: 59%;
-  width: 12.5%;
-}
-
 .lib-spine-btn {
-  flex: 0 0 24px;
-  width: 24px;
-  height: calc(50% - 1px);
+  min-width: 24px;
+  min-height: 0;
   padding: 2px 0;
   border: 1px solid rgba(0, 0, 0, 0.55);
   border-radius: 2px 2px 0 0;
@@ -263,42 +257,32 @@
   z-index: 5;
 }
 
-/* L-Space: a dim gap between two stacks on the left wall, with a faint glow */
+/* L-Space: a doorway drawn in the wall in the room's corner; the button over it shows nothing until hovered or focused */
 .lib-o-lspace {
   z-index: 3;
-  left: 17.5%;
-  top: 28%;
-  width: 3.2%;
-  min-width: 26px;
-  height: 36%;
-  justify-content: flex-end;
-  background: linear-gradient(#030208, #0a0a1c);
-  box-shadow:
-    0 0 14px 3px rgba(140, 150, 255, 0.45),
-    inset 0 0 8px rgba(160, 170, 255, 0.5);
   border-radius: 2px;
 }
 
-.lib-o-lspace .lib-tag {
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
+.lib-o-lspace:hover {
+  box-shadow: 0 0 14px 3px rgba(140, 150, 255, 0.45);
 }
 
 .lib-visitors {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
   overflow: hidden;
 }
 
+/* visitors walk in front of the desk, so they stand at the depth set in ambience.ts (--b, --w) */
 .lib-visitor {
   position: absolute;
-  bottom: 9%;
+  bottom: var(--b);
+  width: var(--w);
+  height: auto;
   image-rendering: pixelated;
-  filter: brightness(0.8);
+  filter: brightness(0.85);
   transition: left 6s linear;
 }
 
@@ -316,6 +300,9 @@
 /* small windows: no picture of a room, just the labeled objects in a row */
 @media (max-width: 700px) {
   .lib-room {
+    aspect-ratio: auto;
+    width: auto;
+    min-width: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -360,6 +347,18 @@
 
   .lib-o-lspace {
     background: #0a0a1c;
+    color: #fff;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* the room has no label on its doorway; the row of buttons names it */
+  .lib-o-lspace::after {
+    content: 'L-Space';
+    font:
+      700 11px/1.3 system-ui,
+      sans-serif;
   }
 
   .lib-o-notebook svg,

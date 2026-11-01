@@ -10,7 +10,8 @@ import './libraryRoom.css';
 import { h, modal } from '../editor/core/ui';
 import { drawJoe } from '../tinHearts/joeArt';
 import { removedGames } from '../imported/removedGames';
-import { aisle, ICONS, svgOf, trashIcon } from './roomArt';
+import { aisle, ICONS, lspaceBox, svgOf, trashIcon } from './roomArt';
+import { catalogArt, copierArt, deskArt, DESK, place, spineBox, type Spot } from './roomObjects';
 
 export interface RoomActions {
   /** Takes the visitor to the shelves, the card catalog or the copier. */
@@ -29,13 +30,13 @@ function joeCanvas(): HTMLCanvasElement {
   return c;
 }
 
-/** One object: a button with its picture and a visible name. */
+/** One object: a button with its picture and a visible name (none, for L-Space: its name is only the label). */
 function thing(cls: string, name: string, label: string, art: Element | null, onclick: (from: HTMLButtonElement) => void): HTMLButtonElement {
   const b = h(
     'button',
     { type: 'button', class: `lib-obj ${cls}`, 'aria-label': label, onclick: () => onclick(b) },
     ...(art ? [art] : []),
-    h('span', { class: 'lib-tag', 'aria-hidden': 'true' }, name),
+    ...(name ? [h('span', { class: 'lib-tag', 'aria-hidden': 'true' }, name)] : []),
   );
   return b;
 }
@@ -83,6 +84,14 @@ export interface RoomShelf {
 
 const NOTEBOOK = 'Composition notebook: ratings and notes of your imported games';
 
+/** Sets where a piece goes (percent of the room) for the room's stylesheet. */
+function box(el: HTMLElement, at: Pick<Spot, 'l' | 't' | 'w' | 'h'>): void {
+  el.style.setProperty('--l', `${at.l.toFixed(2)}%`);
+  el.style.setProperty('--t', `${at.t.toFixed(2)}%`);
+  el.style.setProperty('--w', `${at.w.toFixed(2)}%`);
+  el.style.setProperty('--h', `${at.h.toFixed(2)}%`);
+}
+
 /** The room, ready to put at the top of the page. */
 export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): void; setShelf(s: RoomShelf): void; open(name: string): boolean } {
   const mark = (name: string | undefined) => actions.mark(name);
@@ -129,30 +138,52 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   openers.set('notebook', () => notebook.click());
   openers.set('joe', () => joe.click());
   const sides = [h('div', { class: 'lib-spines lib-spines-l' }), h('div', { class: 'lib-spines lib-spines-r' })];
+  sides.forEach((side, i) => {
+    const b = spineBox(i === 0);
+    box(side, b);
+    side.style.setProperty('--gap', `${b.gap}%`);
+  });
   let shelf: RoomShelf | undefined;
   // as many spines as fit the two runs of shelf on the far wall (two rows each), the last one "more on this shelf"
   const layout = () => {
     if (!shelf) return;
-    const cols = Math.max(1, Math.floor(sides[0].clientWidth / 26)) || 6;
+    const cols = Math.max(1, Math.floor((sides[0].clientWidth + 2) / 26)) || 5;
+    sides.forEach((s) => s.style.setProperty('--cols', String(cols)));
     const cap = cols * 2 * 2;
     const list = shelf.items.length <= cap ? shelf.items : [...shelf.items.slice(0, cap - 1), shelf.more()];
     sides[0].replaceChildren(...list.slice(0, cols * 2));
     sides[1].replaceChildren(...list.slice(cols * 2));
   };
+  const catalogSpot = catalogArt();
+  const copierSpot = copierArt();
+  const deskSpot = deskArt();
+  const catalog = thing('lib-o-catalog', 'Card catalog', 'Card catalog: open the drawers', catalogSpot.svg, () => actions.go('catalog'));
+  const copier = thing('lib-o-copier', 'Copier', 'Copier: print a paper, a mug or stickers', copierSpot.svg, () => actions.go('copier'));
+  const lspace = thing('lib-o-lspace', '', 'L-Space: a dim gap between two stacks that leads somewhere else to read', null, () => actions.go('lspace'));
+  const desk = h('div', { class: 'lib-desk', 'aria-hidden': 'true' }, deskSpot.svg, h('span', { class: 'lib-brb' }, 'Back in a moment'));
+  box(catalog, catalogSpot);
+  box(copier, copierSpot);
+  box(desk, deskSpot);
+  const gap = lspaceBox();
+  box(lspace, gap);
+  // flat pictures stand on the floor (or the desk) at their depth: Joe behind the desk, the trash can beside it
+  place(joe, DESK.x, DESK.z + 0.85, 1.4);
+  place(trashBtn, DESK.x + 1.35, DESK.z - 0.05, 0.5);
+  place(notebook, DESK.x - 0.35, DESK.z - 0.02, 0.42, DESK.h);
   const el = h(
     'section',
     { class: 'lib-room', 'aria-label': 'The library room' },
     aisle(),
     thing('lib-o-stacks', 'The stacks', 'The stacks: open the shelf in a list', null, () => actions.go('stacks')),
     ...sides,
-    thing('lib-o-lspace', 'L-Space', 'L-Space: a dim gap between two stacks that leads somewhere else to read', null, () => actions.go('lspace')),
-    h('div', { class: 'lib-visitors', 'aria-hidden': 'true' }),
+    lspace,
     joe,
-    h('div', { class: 'lib-desk', 'aria-hidden': 'true' }, h('span', { class: 'lib-brb' }, 'Back in a moment')),
+    desk,
     notebook,
     trashBtn,
-    thing('lib-o-catalog', 'Card catalog', 'Card catalog: open the drawers', svgOf(ICONS.catalog), () => actions.go('catalog')),
-    thing('lib-o-copier', 'Copier', 'Copier: print a paper, a mug or stickers', svgOf(ICONS.copier), () => actions.go('copier')),
+    h('div', { class: 'lib-visitors', 'aria-hidden': 'true' }),
+    catalog,
+    copier,
   );
   if (typeof ResizeObserver !== 'undefined') new ResizeObserver(layout).observe(sides[0]);
   return {
