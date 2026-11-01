@@ -38,9 +38,9 @@ level.
 | 12 | The Attic (Classic) | The stock instruments in an old trunk; Teddy plays Doc Leo's phrase on a toy piano with chord keys to open it | 7 the hero is the instrument, 8 chord buttons | 2 |
 | 13 | Sound Check (Drum kit) | Inside the sound card: the drum channels are doors, and doors that share a channel can't both be open (snare and hi-hat, tom and cymbal) | drum-channel doors, three-layer finale (FM band, speaker chords, VOC choir) | 2 |
 
-Phase 1 builds levels 1-3 and the two bandstands after them, then goes to the ending. Phase 2a
-builds levels 6-9 and a bandstand after each (they follow level 3's bandstand for now; levels 4
-and 5 slot in before them in phase 2b).
+Phase 1 built levels 1-3 and the two bandstands after them. Phase 2a built levels 6-9 and a
+bandstand after each, and phase 2b levels 4, 5 and 10-13, the last bandstand (the whole band)
+and the ending.
 
 What phase 2a changed from the plan, and why:
 
@@ -53,7 +53,50 @@ What phase 2a changed from the plan, and why:
 - **The rink's skating** is Teddy's own idle sequence moving him a block a beat; block gravity
   can't do it (it keeps speeding up, to PLAYGAME's cap of 11 px a tick).
 
+What phase 2b changed from the plan, and why:
+
+- **Levels 4 and 5** went in before the arcade, so the game runs 1 to 13 in order, a bandstand
+  after each. The choir's swell is the song itself: the choir comes in a voice a bar, one FM
+  channel each, until all nine sing in the last bar (a song can't change mid-scene, so the
+  loft rail's bloom is a .VOC chord on slot 5). The Deep Sub-Bass doesn't move platforms (a
+  block can't move); its speaker columns push Teddy up in pulses on the beat instead (a ring of
+  a block that pulls up and one that doesn't), and the metronome floor is a lamp that steps a
+  tile a beat.
+- **The clock tower's doors** are curtains of tubular bells on a 72-tick ring, with a clock face
+  over each on the same ring, so the hand reaching the gold wedge is the countdown.
+- **Band on the beat** (the farm): the drum, snare and shaker can only be taken in their beat's
+  6-tick window (the hook's ring lights the gold frame), booped from underneath. Setting
+  instruments on pads to clear a stage became this, because a touch can't change another cell.
+- **Chord buttons** (the attic): only three kinds of touch can count on one counter with
+  different sound slots (hit points and a counter, a counter up, a counter down), so the
+  phrase is three chords: C and F are keys that count, and G is the trunk's latch, which
+  takes them (it is refused until both have played). The F slot is also the "instrument found"
+  slot, so finds ring the F chord.
+- **Drum-channel doors** (Sound Check): each pair's doors are rings of the song's bar, one open
+  while the other is shut; the song plays the snare in the bars its door is open and the hats in
+  the others (they share an FM channel in rhythm mode), the toms and cymbal the same. The
+  kick's room is the open one at the start.
+- **The three-layer finale** works in PLAYGAME: `DoSound` plays a slot's .VOC only when it has one
+  and a card is there, and otherwise its PC speaker tune, even with a Sound Blaster. So Sound
+  Check's chord chips are slots with no .VOC (speaker chords), the drums found ring a choir
+  .VOC, and the song is the FM band in rhythm mode, all at once.
+- **The bandstand tune** has nine FM voices for twelve families: the bass takes over the piano's
+  left hand, the strings' chord thins, and from the ninth family an older part rests for each
+  newcomer; with the drum kit home the chip goes to rhythm mode (six voices and the drums). The
+  riser holds two shelves of seven; the drum kit takes five stands, one a drum.
+- **The save sign stays on the bandstand after the woods** (band8). `saveSignCheck.ts` wants the
+  egg's map to link straight to the sign's map, and the woods link to their bandstand, not to the
+  clock tower.
+- **A one-screen level starts Teddy at (8, 5)** and a wide one on row 5: PLAYGAME puts the view
+  with the hero mid-screen and these levels never scroll up or down, so any other row leaves the
+  view off the level (the arcade started on row 8 and is fixed; the rink and the field start on
+  row 6, one row off, still to fix in phase 2c).
+
 ### Ideas left out, and why
+
+- **7 The hero is the instrument** (the attic): Teddy plays the toy piano's chords instead; a
+  character file that plays a note per step would need a sound per frame, and PLAYGAME's
+  character sounds appear to be one per sequence (its `sound`), not one per frame.
 
 - **9 Choose your instrument:** Teddy is the hero of every neighborhood, so a select screen that
   swaps him for a tuba or a flute would fight the story. It could come back as a bonus scene.
@@ -74,10 +117,11 @@ What phase 2a changed from the plan, and why:
 - **Felt egg:** in the reeds by the river (level 9, The Woods by the River): the clump of reeds
   behind where Teddy starts has one hollow reed; walking into it shows the egg, and F fetches it
   (block 149, `about.json` and `web/src/eggs/eggs.ts`). The save sign is on the bandstand after
-  the woods (the next scene) until level 10 exists. The 13-egg bonus now opens at 13 felt eggs
+  the woods (the next scene: see phase 2b above). The 13-egg bonus now opens at 13 felt eggs
   found (`web/src/eggs/eggGate.ts`), so this 14th egg is a spare, not a new requirement.
-- **Tin heart:** in the clock tower (level 10), ticking among the music-box gears, where a
-  ticking heart is at home. Declared in phase 2 with `games/kit/TIN-HEARTS.md`.
+- **Tin heart:** in the clock tower (level 10), on the top gear ledge at the far end (two hops
+  up from the floor), where a ticking heart is at home. Its touch rings slot 5, which in the
+  tower is only the PC speaker's `TICK_TOCK`.
 
 ## Timing (slow hands welcome)
 
@@ -112,6 +156,7 @@ tick), so tempos sit on whole ticks:
 ## Phase 2
 
 Phase 2a (done): levels 6-9 with their bandstands, the felt egg and its save sign, the 13-egg
-gate. Phase 2b: levels 4, 5 and 10-13 (and moving the save sign to level 10), the tin heart, the
-finale, box art, manual, printables, the catalog and Scoop entries and the timeline date,
-voices, the player look, the attract demo, and the DOSBox tests above.
+gate. Phase 2b (done): levels 4, 5 and 10-13 with their bandstands, the tin heart, the finale,
+the ending. Phase 2c: box art, manual, printables, the catalog and Scoop entries and the
+timeline date, voices, the player look, the attract demo, the rink's and field's start rows,
+and the DOSBox tests above.

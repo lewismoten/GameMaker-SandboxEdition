@@ -73,6 +73,38 @@
   {
    "scene": 18,
    "keys": "BEsYywZNFM0GTRpICsg="
+  },
+  {
+   "scene": 19,
+   "keys": "D00IzQZNB0gKyAdICsgEzQdNC80jTQzNBk0EzQZNA0gKyAdICsgEzQdNC80HTQTNNU0MzQZNBM0GTQNICsgHSArIB0gKyATNB00HzQ1NBM0iTQjNBk0EzQZNDM0GTQ=="
+  },
+  {
+   "scene": 20,
+   "keys": "BEsYywZNJM0GTQpICsg="
+  },
+  {
+   "scene": 21,
+   "keys": "D00QzQZNC0gKyApICsgHSArIBM0ITRJICsgMzQ85AbkCTQzNCjkBuQJNDM0JOQG5Ak0SSArIBM0HTQ=="
+  },
+  {
+   "scene": 22,
+   "keys": "BEsYywZNFM0GTRpICsg="
+  },
+  {
+   "scene": 23,
+   "keys": "D00IzQZNC0gKyATNB00XzQZNEM0GTQTNBk0EzQZNEM0GTQdICsgEzQdNB80ITQNICsgHSArIBM0HTQZICsg="
+  },
+  {
+   "scene": 24,
+   "keys": "BEsYywZNIM0GTQ5ICsg="
+  },
+  {
+   "scene": 25,
+   "keys": "D00IzQZND0gKyATNB00HzTpNCM0GTQTNBk0DSArIB0gKyATNB00LzQdNB0gKyATNB00DzS5NCM0GTQTNBk0DSArIB0gKyATNB00LzQdNBM0JTQjNBk0EzQZNA0gKyAdICsgEzQdNA0gKyATNB00HzQ1NBM0wTQjNBk0IzQZNB0gKyATNB00GSArI"
+  },
+  {
+   "scene": 26,
+   "keys": "BEsYywZNEM0GTR5ICsg="
   }
  ],
  "chapters": [
@@ -143,11 +175,43 @@
   {
    "scene": 18,
    "title": "The Bandstand Again"
+  },
+  {
+   "scene": 19,
+   "title": "Level 10: The Clock Tower"
+  },
+  {
+   "scene": 20,
+   "title": "The Bandstand Again"
+  },
+  {
+   "scene": 21,
+   "title": "Level 11: The Farm"
+  },
+  {
+   "scene": 22,
+   "title": "The Bandstand Again"
+  },
+  {
+   "scene": 23,
+   "title": "Level 12: The Attic"
+  },
+  {
+   "scene": 24,
+   "title": "The Bandstand Again"
+  },
+  {
+   "scene": 25,
+   "title": "Level 13: Sound Check"
+  },
+  {
+   "scene": 26,
+   "title": "The Bandstand Again"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 21087,
+  "frames": 28787,
   "chapters": [
    {
     "title": "Opening",
@@ -226,12 +290,44 @@
     "frame": 17752
    },
    {
-    "title": "Ending",
+    "title": "Level 10: The Clock Tower",
     "frame": 18224
    },
    {
+    "title": "The Bandstand Again",
+    "frame": 19859
+   },
+   {
+    "title": "Level 11: The Farm",
+    "frame": 20331
+   },
+   {
+    "title": "The Bandstand Again",
+    "frame": 21340
+   },
+   {
+    "title": "Level 12: The Attic",
+    "frame": 21812
+   },
+   {
+    "title": "The Bandstand Again",
+    "frame": 22798
+   },
+   {
+    "title": "Level 13: Sound Check",
+    "frame": 23270
+   },
+   {
+    "title": "The Bandstand Again",
+    "frame": 25452
+   },
+   {
+    "title": "Ending",
+    "frame": 25924
+   },
+   {
     "title": "Credits",
-    "frame": 19535
+    "frame": 27235
    }
   ]
  }

@@ -1,5 +1,5 @@
 // The 320x200 pictures: the title, the menu, the paper behind text pages, the high scores,
-// load and save. A stage curtain and a bandstand's worth of instruments (the preset pictures,
+// load and save, the ending (the band home, on with the parade) and game over. A stage curtain and a bandstand's worth of instruments (the preset pictures,
 // twice size) run through all of them.
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient } from '../../../snowbound/src/art/draw';
@@ -7,6 +7,7 @@ import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { gif, H, scaleBlit, W } from '../../../snowbound/src/screens/scenery';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { GWINN } from '../../../teddy2/src/sprites/gwinn';
+import { KLUB } from '../../../teddy2/src/sprites/klubfolk';
 import { LEO } from '../../../teddy3/src/sprites/leo';
 import { iconPic } from '../art/icons';
 import { buildScreenPalette } from '../art/pal';
@@ -118,7 +119,11 @@ export function buildScreens(): Record<string, Uint8Array> {
     const p = stage();
     title(p, 30);
     centered(p, 74, 'THE BAND IS HOME!', c('cream', 3), 2);
-    centered(p, 96, 'MORE NEIGHBORHOODS SOON', c('cream', 2));
+    centered(p, 96, 'ON WITH THE PARADE!', c('cream', 2));
+    // the band in front of the curtain: Honker and Bubbles, Doc Leo, Teddy, and Twirly
+    scaleBlit(p, KLUB.honker, 40, 128, 1);
+    scaleBlit(p, KLUB.bubbles, 66, 128, 1);
+    scaleBlit(p, KLUB.twirly, 256, 128, 1);
     scaleBlit(p, LEO.wave, 100, 110, 2);
     scaleBlit(p, POSES.bark, 180, 136, 2);
     strew(p, 172, 11);

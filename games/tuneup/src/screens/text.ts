@@ -99,6 +99,24 @@ export const INSTRUCTIONS = pages(
     '',
     'F fetches a thing to carry.',
   ],
+  [
+    'Ropes and harp strings: UP',
+    'climbs, DOWN lets you down.',
+    'Stand in a speaker to ride',
+    'it up to the ducts.',
+    '',
+    'Bell curtains swing open',
+    'when the clock hand reaches',
+    'the gold.',
+    '',
+    'On the farm, press SPACE',
+    'under a hook while its',
+    'instrument is lit.',
+    '',
+    "Play Doc Leo's chords to",
+    'open the trunk. Drum doors',
+    'take turns.',
+  ],
 );
 
 const CREDITS_TEXT = pages(
