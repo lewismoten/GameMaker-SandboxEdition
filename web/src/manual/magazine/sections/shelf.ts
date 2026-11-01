@@ -10,10 +10,10 @@ import { head, note, p, shelf } from '../blocks';
 import type { Block, MagContext, MagPage, MagSection, ShelfItem } from '../types';
 
 /** Titles on the section's first page (under its headline and introduction), and at most on each page after. */
-const FIRST = 84;
+const FIRST = 78;
 const PER_PAGE = 130;
 /** Room the future section's heading and line take on a page, in titles. */
-const HEADING = 20;
+const HEADING = 45;
 
 /** The issue's year: titles dated this year or later are not out yet (it is January, so the whole year is ahead). */
 const ISSUE_YEAR = 1995;
@@ -45,7 +45,7 @@ async function pages(ctx: MagContext): Promise<MagPage[]> {
           level: 2,
         }),
         p(
-          'Uploaded to a board near you, swapped at school, mailed for a couple of dollars: here are the ${now.length} titles out so far, A to Z, with who made each and when. A ✓ means it’s one of the ' +
+          `Uploaded to a board near you, swapped at school, mailed for a couple of dollars: here are the ${now.length} titles out so far, A to Z, with who made each and when. A ✓ means it’s one of the ` +
             `${marked} on the Game-Maker CD, and plays on this site: look it up in [The Game Directory](go:mag/directory).`,
         ),
         shelf(now.slice(0, FIRST), MARK),
