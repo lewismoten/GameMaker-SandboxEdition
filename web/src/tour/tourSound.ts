@@ -5,6 +5,7 @@
 // until a tour starts from a click; the mute switch is remembered in this browser, and a
 // browser whose demo sound is "None" starts muted.
 import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
+import { channelGain, onMix } from '@lewismoten/gamemaker-sandbox-engine/audio/mix';
 import { fetchGameFile, loadGameList } from '../project/files';
 import { BARKS, MUSIC, SOUNDS, barkUrl, type MusicId, type SoundId } from './steps';
 
@@ -30,6 +31,10 @@ export class TourSound {
   /** Clips loading ahead of their step (prefetch), by address. */
   private warm = new Map<string, HTMLAudioElement>();
   on = savedOn();
+  /** The Voice volume applies to a line already playing. */
+  private unmix = onMix(() => {
+    if (this.voice) this.voice.volume = channelGain('voice');
+  });
 
   private file(path: string): Promise<Uint8Array | undefined> {
     let p = this.files.get(path);
@@ -85,7 +90,7 @@ export class TourSound {
     if (id in BARKS) {
       const clips: readonly string[] = BARKS[id as keyof typeof BARKS];
       const a = new Audio(barkUrl(clips[Math.floor(Math.random() * clips.length)]));
-      a.volume = 0.6;
+      a.volume = 0.6 * channelGain('sfx');
       void a.play().catch(() => undefined);
       return;
     }
@@ -134,12 +139,14 @@ export class TourSound {
    */
   speak(url: string): Promise<number> {
     this.stopVoice();
-    if (!this.on) return Promise.resolve(0);
+    // Voice off in the sound settings: the bubble's own timing is used, as with a step that has no clip
+    if (!this.on || channelGain('voice') === 0) return Promise.resolve(0);
     const early = this.warm.get(url);
     this.warm.delete(url);
     const a = early ?? new Audio();
     a.preload = 'auto';
     this.voice = a;
+    a.volume = channelGain('voice');
     return new Promise<number>((resolve) => {
       let given = false;
       const give = (ms: number) => {
@@ -176,6 +183,7 @@ export class TourSound {
   dispose(): void {
     this.stopVoice();
     this.started = false;
+    this.unmix();
     this.engine.dispose();
   }
 }

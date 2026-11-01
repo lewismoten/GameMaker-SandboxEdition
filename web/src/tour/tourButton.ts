@@ -148,6 +148,9 @@ async function dockFor(page: PageKey | undefined): Promise<void> {
 }
 let dockLoaded = false;
 
+/** Shows or hides the waiting guides for this page after the Tour switch changed (soundSettings/). */
+export const refreshGuides = (): Promise<void> => dockFor(pageHere());
+
 let watching = false;
 
 /** Follows the address: a tour it asks for starts, and the guides wait where they were turned on. */
