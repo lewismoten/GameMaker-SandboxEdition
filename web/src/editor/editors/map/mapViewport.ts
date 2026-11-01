@@ -9,14 +9,17 @@ interface ViewportHost {
   stack: HTMLElement;
   canvas: HTMLCanvasElement;
   overlay: HTMLCanvasElement;
+  /** More map-sized layers between the map and the overlay (the block behavior marks). */
+  layers?: HTMLCanvasElement[];
   block(): number;
   moved(): void;
 }
 
 export function mapViewport(host: ViewportHost) {
   const { scroller, stack, canvas, overlay } = host;
+  const layers = host.layers ?? [];
   const picture = h('canvas');
-  const surface = h('div', { style: 'position:relative;width:max-content' }, canvas, overlay);
+  const surface = h('div', { style: 'position:relative;width:max-content' }, canvas, ...layers, overlay);
   stack.replaceChildren(surface);
   let wrapped = false;
   let pending = 0;
@@ -44,6 +47,7 @@ export function mapViewport(host: ViewportHost) {
     for (const top of tileOrigins(y, h, height))
       for (const left of tileOrigins(x, w, width)) {
         g.drawImage(picture, left, top);
+        for (const l of layers) if (l.width && l.height) g.drawImage(l, left, top);
         g.drawImage(overlay, left, top);
       }
   }
@@ -58,6 +62,7 @@ export function mapViewport(host: ViewportHost) {
     surface.style.width = `${wrapped ? scroller.clientWidth : w}px`;
     surface.style.height = `${wrapped ? scroller.clientHeight : h}px`;
     overlay.hidden = wrapped;
+    for (const l of layers) l.hidden = wrapped;
     render();
   }
 
@@ -109,6 +114,11 @@ export function mapViewport(host: ViewportHost) {
   return {
     picture,
     render,
+    /** The part of the map in view, in map pixels; with wrapping it may run past the map's edges. */
+    view() {
+      const p = phase();
+      return { x: p.x, y: p.y, w: scroller.clientWidth, h: scroller.clientHeight };
+    },
     layout,
     at,
     goTo,
