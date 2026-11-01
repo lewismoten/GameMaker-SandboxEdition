@@ -257,9 +257,9 @@ main.ach-page h1 {
   text-overflow: ellipsis;
 }
 
-/* the date of an earned badge, turned along its right edge on a darker strip */
+/* the date of an earned badge, turned along its right edge on a darker strip, in two short lines
+   (day, then year) so it needs no more height than a card without one */
 .ach-card.has-when {
-  min-height: 6.5rem;
   padding-right: 40px;
 }
 
@@ -273,10 +273,16 @@ main.ach-page h1 {
   width: 30px;
   background: color-mix(in srgb, var(--panel-2) 78%, var(--text));
   color: var(--text);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
+  line-height: 1.2;
   white-space: nowrap;
   writing-mode: vertical-rl;
+}
+
+.ach-when time > span:not(.sr-only) {
+  display: block;
+  text-align: center;
 }
 
 .ach-start-over {

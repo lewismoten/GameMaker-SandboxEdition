@@ -52,6 +52,8 @@ const LEAD =
 
 const dateOf = (t: number) => new Date(t);
 const longDate = (t: number) => dateOf(t).toLocaleDateString('en-US', { dateStyle: 'medium' } as Intl.DateTimeFormatOptions);
+// "Nov 1" and "2026" as two short lines, so the turned date fits a card no taller than one without it
+const shortDate = (t: number) => [dateOf(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), String(dateOf(t).getFullYear())];
 
 function bar(n: number, of: number, label: string): HTMLElement {
   const pct = of ? Math.round((n / of) * 100) : 0;
@@ -127,7 +129,16 @@ function card(a: Achievement, r: AchievementRecord, open: () => void, dates: boo
       ),
       // earned only, and only the date, along the card's right edge; a screen reader still hears "Unlocked <date>"
       dates && when
-        ? h('span', { class: 'ach-when' }, h('time', { datetime: dateOf(when).toISOString() }, h('span', { class: 'sr-only' }, 'Unlocked '), longDate(when)))
+        ? h(
+            'span',
+            { class: 'ach-when' },
+            h(
+              'time',
+              { datetime: dateOf(when).toISOString(), title: longDate(when) },
+              h('span', { class: 'sr-only' }, 'Unlocked '),
+              ...shortDate(when).map((line, i) => h('span', {}, i ? h('span', { class: 'sr-only' }, ', ') : null, line)),
+            ),
+          )
         : null,
     ),
   );
