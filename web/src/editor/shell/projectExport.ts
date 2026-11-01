@@ -2,7 +2,7 @@
 // Download… item open the chooser (download.ts) for the stored project.
 import { h, toast } from '../core/ui';
 import { loadProject } from '../../project/storage';
-import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { chooseDownload, downloadButton, type DownloadGame } from './download';
 
 /** The project as the chooser takes it, or undefined when it is gone from this browser. */
@@ -13,7 +13,7 @@ async function projectGame(id: string): Promise<DownloadGame | undefined> {
     return undefined;
   }
   // trimmed: authors padded the name with spaces to center it on the DOS menu
-  const title = parseGame(p.files.get(p.record.gam)!).scenes[0]?.desc.trim() || p.record.name;
+  const title = gameTitle(parseGame(p.files.get(p.record.gam)!)) || p.record.name;
   return { title, gam: p.record.gam, files: async () => p.files, project: true, companion: () => p.record.companion };
 }
 

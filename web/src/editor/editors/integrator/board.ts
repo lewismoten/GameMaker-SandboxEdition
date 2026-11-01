@@ -3,7 +3,7 @@
 // curved arrows for the links between scenes (one per pair, with a count). Used for the
 // live board and for Export PNG.
 import type { Project } from '../../core/project';
-import { NOSCENE, sceneKind, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { NOSCENE, sceneKind, type Game, type Point, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { WORLD, CARD_UNITS, arrival } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
 import { isSolidPalette } from '../../core/readablePalette';
@@ -350,7 +350,7 @@ export function paintBoard(ctx: CanvasRenderingContext2D, view: Rect, forExport:
   ctx.font = `bold 14px ${FONT}`;
   ctx.fillStyle = '#ffd400';
   const count = usedScenes(v.game).length;
-  ctx.fillText(v.boards?.title ?? `${v.game.scenes[0]?.desc || 'Untitled'} — ${count} scene${count === 1 ? '' : 's'}`, wr.x, wr.y - 10);
+  ctx.fillText(v.boards?.title ?? `${gameTitle(v.game) || 'Untitled'} — ${count} scene${count === 1 ? '' : 's'}`, wr.x, wr.y - 10);
   ctx.imageSmoothingEnabled = false;
   if (v.boards) return v.boards.paint(ctx, forExport);
   drawEdges(ctx, sceneEdges(forExport, v), forExport);

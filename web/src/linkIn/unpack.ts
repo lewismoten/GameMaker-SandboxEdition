@@ -7,7 +7,7 @@ import { GameFiles, IGNORED_FILE } from '../project/files';
 import { isZip, readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { decodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import { fromBase64, readSinglePage, unpack, type SinglePageGame } from '../export/singlePage';
-import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { takeCompanion, type Companion } from '../project/companion';
 import { LinkError, MAX_FILES, MAX_TOTAL_BYTES, checkLimits, cleanName } from './protocol';
 
@@ -145,7 +145,7 @@ export async function unpackGame(input: [string, Uint8Array][], opts: { name?: s
   try {
     const game = parseGame(files.get(gam)!);
     if (!game.scenes.length) throw new Error('no scenes');
-    desc = game.scenes[0]?.desc ?? '';
+    desc = gameTitle(game);
   } catch {
     throw new LinkError(`${gam.toUpperCase()} is damaged or is not a Game-Maker game file.`, 'invalid');
   }

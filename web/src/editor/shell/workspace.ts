@@ -15,7 +15,7 @@ import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
 import type { PlayerHandle } from '../../player/player';
-import { ADVTYPE, parseGame, serializeGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { ADVTYPE, parseGame, serializeGame, type Game, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelForMap } from '../editors/integrator/startAt';
 import { sceneName, sourceName } from '../editors/integrator/linkSpots';
 import { playButtons } from './playButtons';
@@ -975,7 +975,7 @@ export class Workspace implements AssistantHost {
 
   /** The Download chooser (download.ts) for this game, as it is now. */
   private chooseDownload(): Promise<void> {
-    const title = this.project.game().scenes[0]?.desc.trim() || this.project.name;
+    const title = gameTitle(this.project.game()) || this.project.name;
     return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true, companion: () => this.project.companion });
   }
 }

@@ -7,7 +7,7 @@
 // homeImport.ts, importChooser.ts) shows it.
 import { cdName, GameFiles, IGNORED_FILE, normalize } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 import { crc32, isZip, listZip, type ZipLimits } from './zip';
-import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { isFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
@@ -202,7 +202,7 @@ function missingFiles(bytes: Uint8Array | undefined, have: ScanFile[]): number {
 /** The title on a game's menu screen, from its main .gam (as Project.fromFiles names it). */
 function titleOf(bytes: Uint8Array | undefined, gamName: string): string {
   try {
-    if (bytes) return parseGame(bytes).scenes[0]?.desc.trim() || gamName;
+    if (bytes) return gameTitle(parseGame(bytes)) || gamName;
   } catch {
     // a damaged .gam is still a game to import; its name will do
   }

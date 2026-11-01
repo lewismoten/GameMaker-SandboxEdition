@@ -11,6 +11,7 @@
 // (autoWalk's `reuse`), then the person's, then goes on. A play that no longer reaches an exit is
 // said so, and the bot plays that scene. In a scene with walking paths (marked in the block
 // editor, check/walk/walkPaths.ts) it says how much of the route keeps to them.
+import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { h, clear, modal, selectField, toast } from '../core/ui';
 import type { Project } from '../core/project';
 import type { CatalogEntry } from '../../project/files';
@@ -47,7 +48,7 @@ const secs = (ticks?: number) => ((ticks ?? 0) / 18.2).toFixed(0);
 export async function watchMade(project: Project, walk: Walkthrough, entry?: CatalogEntry, redo?: RedoOptions): Promise<void> {
   const [{ watchWalkthrough }, { companionPatches }] = await Promise.all([import('../../walkthrough/player'), import('../../dosPlayer/playerRecord')]);
   if (entry) return watchWalkthrough(entry, () => Promise.resolve(project.files), undefined, walk, undefined, undefined, redo);
-  const title = project.game().scenes[0]?.desc.trim() || project.name;
+  const title = gameTitle(project.game()) || project.name;
   const mine = { id: `project:${project.id}`, title, gam: project.gam, kind: 'mine', path: '', files: [] } as unknown as CatalogEntry;
   return watchWalkthrough(mine, () => Promise.resolve(project.files), undefined, walk, undefined, companionPatches(project.companion, project.gam), redo);
 }

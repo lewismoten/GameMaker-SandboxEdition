@@ -7,7 +7,7 @@
 // Reset (session.ts, agent.ts). It also holds the game's to-do list and "What should I do next?"
 // (coach.ts), and the Describe a game box (makeGame.ts). Loaded when ✦ is first pressed.
 import { h } from '../../editor/core/ui';
-import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { gameTitle, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { setHashParams } from '../../urlState';
 import { assistantHost, onAssistantHost, type AssistantHost } from '../hostSlot';
 import { EditorContext } from '../bridge/editorContext';
@@ -450,7 +450,7 @@ async function build(description: string): Promise<void> {
       r.won ? 'info' : 'error',
     );
     // a new game named "My Game" takes the title the AI gave it
-    const title = hst.project.game().scenes[0]?.desc.trim();
+    const title = gameTitle(hst.project.game());
     if (title && hst.project.name === 'My Game' && title !== 'My Game') {
       hst.project.name = title;
       void hst.project.saveNow().catch(() => undefined);

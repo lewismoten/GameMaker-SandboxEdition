@@ -13,6 +13,7 @@ import {
   type Game,
   type Link,
   type Scene,
+  gameTitle,
 } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { DRY_RUN, commit } from './run';
 import { FILE, SCENE, fileName, gameOf, int, sceneOf } from './common';
@@ -42,7 +43,7 @@ const summary: ToolDef = {
     for (const n of ctx.files.names()) kinds[kindOfName(n)] = (kinds[kindOfName(n)] ?? 0) + 1;
     const patches = ctx.playerPatches();
     return json({
-      title: game.scenes[0]?.desc.trim() ?? '',
+      title: gameTitle(game),
       gam: ctx.gam,
       read_only: ctx.readOnly,
       scenes: game.scenes.flatMap((s, i) =>

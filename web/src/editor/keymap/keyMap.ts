@@ -14,7 +14,7 @@ import {
   type Character,
   type Sequence,
 } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
-import { ADVTYPE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { ADVTYPE, parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { GameFiles } from '../../project/files';
@@ -351,7 +351,7 @@ export function gameKeyMap(files: GameFiles, gamFile?: string): GameKeyMap {
   const order = (scan: number) => ([72, 80, 75, 77].includes(scan) ? scan - 100 : scan);
   const keys = [...byKey.entries()].sort((a, b) => order(a[0]) - order(b[0])).map(([scan, uses]) => ({ scan, name: scanName(scan), uses }));
   return {
-    title: game?.scenes[0]?.desc.trim() || gam || 'Game',
+    title: (game && gameTitle(game)) || gam || 'Game',
     levels,
     keys,
     joystick: [...joy.values()],

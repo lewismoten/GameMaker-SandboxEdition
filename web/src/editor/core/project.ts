@@ -2,7 +2,7 @@
 import { GameFiles, normalize } from '../../project/files';
 import { saveProject, newId } from '../../project/storage';
 import { libraryDefaultPalette } from '@lewismoten/gamemaker-sandbox-tools/palettes';
-import { parseGame, serializeGame, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseGame, serializeGame, newGame, type Game, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { debounce } from './ui';
@@ -91,7 +91,7 @@ export class Project {
       files.set(gam, serializeGame(newGame(name ?? 'My Game')));
     }
     // trimmed: authors padded the name with spaces to center it on the DOS menu
-    const title = name?.trim() || parseGame(files.get(gam)!).scenes[0]?.desc.trim() || gam;
+    const title = name?.trim() || gameTitle(parseGame(files.get(gam)!)) || gam;
     return new Project(id, title, gam, files, companion);
   }
 
