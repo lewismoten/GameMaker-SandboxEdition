@@ -16,7 +16,6 @@ import {
   maxOf,
   MULT,
   MULT_VALUES,
-  presetName,
   setAdditive,
   setFeedback,
   setOp,
@@ -36,18 +35,25 @@ export function lookIcon(inst: Uint8Array | undefined, cls: string): HTMLElement
   return el;
 }
 
+/** The preset's name when the sound is it or close to it (the same rule as its picture, instrumentLook.ts); a close one reads "≈ Name". */
+function lookName(inst: Uint8Array): string | undefined {
+  const look = instrumentLook(inst);
+  if (!look.preset) return undefined;
+  return look.exact ? cap(look.preset.name) : `≈ ${cap(look.preset.name)}`;
+}
+
 export function instLabel(doc: MusicDoc, i: number): string {
   const inst = doc.song.instruments[i];
   if (!inst) return `Instrument ${i + 1} (missing)`;
-  const p = presetName(inst);
-  return `Instrument ${i + 1}${p ? ` · ${cap(p)}` : ''}`;
+  const p = lookName(inst);
+  return `Instrument ${i + 1}${p ? ` · ${p}` : ''}`;
 }
 
 /** instLabel short enough for a track's narrow header: "2 · Brass" (the full label goes in its tooltip). */
 export function instShortLabel(doc: MusicDoc, i: number): string {
   const inst = doc.song.instruments[i];
-  const p = inst ? presetName(inst) : '';
-  return p ? `${i + 1} · ${cap(p)}` : instLabel(doc, i);
+  const p = inst ? lookName(inst) : '';
+  return p ? `${i + 1} · ${p}` : instLabel(doc, i);
 }
 
 /** Tracks whose notes use instrument i. */
@@ -202,7 +208,7 @@ export class InstrumentPanel {
     const song = doc.song;
     const items = song.instruments.map((inst, i) => {
       const users = usersOf(doc, i);
-      const p = presetName(inst);
+      const p = lookName(inst);
       return h(
         'li',
         null,
@@ -223,7 +229,7 @@ export class InstrumentPanel {
           h(
             'span',
             { class: 'mus-track-text' },
-            h('b', null, p ? cap(p) : `Instrument ${i + 1}`),
+            h('b', null, p ?? `Instrument ${i + 1}`),
             h('small', null, users.length ? users.map((c) => doc.trackName(c)).join(', ') : 'not used'),
           ),
           h('span', { class: 'mus-inst-dots', 'aria-hidden': 'true' }, ...users.map((c) => h('i', { style: `--track:${doc.trackColor(c)}` }))),
