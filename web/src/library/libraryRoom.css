@@ -114,7 +114,8 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
-.lib-desk {
+.lib-desk,
+.lib-table {
   position: absolute;
   z-index: 3;
   left: var(--l);
@@ -124,7 +125,8 @@
   pointer-events: none;
 }
 
-.lib-desk svg {
+.lib-desk svg,
+.lib-table svg {
   display: block;
   width: 100%;
   height: 100%;
@@ -313,6 +315,7 @@
 
   .lib-room-bg,
   .lib-desk,
+  .lib-table,
   .lib-spines,
   .lib-visitors {
     display: none;

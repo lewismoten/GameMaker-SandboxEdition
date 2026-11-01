@@ -119,6 +119,28 @@ export function deskArt(): Spot {
   );
 }
 
+/** A reading table to the left of the desk, with an open book on it: a slab on four legs, drawn back to front. */
+export const TABLE = { x0: -2.0, x1: -1.15, z0: 0.0, z1: 0.6, h: 0.74 };
+
+export function tableArt(): Spot {
+  const { x0, x1, z0, z1, h } = TABLE;
+  const leg = 0.07;
+  const legs = [
+    [x0 + 0.06, z1 - 0.06 - leg],
+    [x1 - 0.06 - leg, z1 - 0.06 - leg],
+    [x0 + 0.06, z0 + 0.06],
+    [x1 - 0.06 - leg, z0 + 0.06],
+  ].map(([lx, lz]) => faces(box(lx, lx + leg, lz, lz + leg, 0, h - 0.05), 'var(--wood-lo)', 'var(--wood)'));
+  const slab = box(x0, x1, z0, z1, h - 0.05, h);
+  const mx = (x0 + x1) / 2;
+  const book = box(mx - 0.2, mx + 0.2, z0 + 0.15, z0 + 0.45, h, h + 0.03);
+  return spot(
+    legs.join('') + faces(slab, 'var(--wood)', 'var(--wood-hi)') + faces(book, '#a33d5f', '#f4f1e6'),
+    [...slab.front, ...(slab.top ?? []), ...(book.top ?? []), proj(x0 + 0.06, 0, z0 + 0.06), proj(x1 - 0.06, 0, z0 + 0.06)],
+    footprint(x0 + 0.05, x1 - 0.05, z0 + 0.05, z1 - 0.05),
+  );
+}
+
 /** Stands a flat picture `widthM` meters wide with its feet on the floor (or on a surface `y` high) at plan point (x, z). */
 export function place(el: HTMLElement, x: number, z: number, widthM: number, y = 0): void {
   const [sx, sy] = proj(x, y, z);

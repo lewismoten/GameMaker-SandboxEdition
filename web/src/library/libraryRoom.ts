@@ -12,7 +12,7 @@ import { drawJoe } from '../tinHearts/joeArt';
 import { removedGames } from '../imported/removedGames';
 import { aisle, ICONS, lspaceBox, svgOf, trashIcon } from './roomArt';
 import { pctX, pctY, proj } from './roomGeo';
-import { catalogArt, copierArt, deskArt, DESK, place, spineBox, type Spot } from './roomObjects';
+import { catalogArt, copierArt, deskArt, DESK, place, spineBox, tableArt, type Spot } from './roomObjects';
 
 export interface RoomActions {
   /** Takes the visitor to the shelves, the card catalog or the copier. */
@@ -158,6 +158,7 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   const catalogSpot = catalogArt();
   const copierSpot = copierArt();
   const deskSpot = deskArt();
+  const tableSpot = tableArt();
   const catalog = thing('lib-o-catalog', 'Card catalog', 'Card catalog: open the drawers', catalogSpot.svg, () => actions.go('catalog'));
   const copier = thing('lib-o-copier', 'Copier', 'Copier: print a paper, a mug or stickers', copierSpot.svg, () => actions.go('copier'));
   const lspace = thing('lib-o-lspace', '', 'L-Space: a dim gap between two stacks that leads somewhere else to read', null, () => actions.go('lspace'));
@@ -165,6 +166,8 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   box(catalog, catalogSpot);
   box(copier, copierSpot);
   box(desk, deskSpot);
+  const table = h('div', { class: 'lib-table', 'aria-hidden': 'true' }, tableSpot.svg);
+  box(table, tableSpot);
   const gap = lspaceBox();
   box(lspace, gap);
   // flat pictures stand on the floor (or the desk) at their depth: Joe behind the desk, the trash can beside it
@@ -182,6 +185,7 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
     ...sides,
     lspace,
     joe,
+    table,
     desk,
     notebook,
     trashBtn,
