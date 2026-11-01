@@ -8,10 +8,17 @@
   "blurb": "The night before the town parade, Gwinn knocks over the Clown Club's instrument trunk, and every family of instruments lands in a different neighborhood. Teddy fetches them home to Doc Leo at the bandstand, and every family he brings back adds its part to the parade tune. Hop the black keys of the piano shop, boop the keys inside the player piano as the notes land, and climb the harp strings in the music store's back room.",
   "exe": "TUNEUP.EXE",
   "sound": "sb",
+  "egg": { "block": 149 },
+  "saveSign": { "map": "band6.map", "at": [2, 9], "after": "woods.map" },
   "acceptedFindings": [
     "counters s3 Block 20 drains counter 20 on every tick",
     "counters s3 Block 45 drains counter 20 on every tick",
     "hurt-lock s2 Monster 0 holds the hero while it hurts",
-    "hurt-lock s5 Monster 0 holds the hero while it hurts"
+    "hurt-lock s5 Monster 0 holds the hero while it hurts",
+    "hurt-lock s7 Monster 0 holds the hero while it hurts",
+    "facing s9 Monster 1 walks up and down the map showing the same side",
+    "facing s9 The hero shows the same picture walking up or down as another way",
+    "facing s11 The hero climbs side on",
+    "facing s11 The hero faces the same way walking left and right"
   ]
 }

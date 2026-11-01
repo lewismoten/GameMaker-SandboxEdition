@@ -1,4 +1,4 @@
-// The thirteen felt eggs hidden in the Sandbox games: one per game, each carrying a few names
+// The felt eggs hidden in the Sandbox games: one per game, each carrying a few names
 // (easter eggs began as authors' hidden credits) and one piece of a small mystery about a
 // family root beer recipe that keeps asking for one more than anybody has. However many there
 // are, the mystery's last egg is always the one more: it is never one of these.
@@ -31,8 +31,22 @@ export interface EggLook {
   band: string;
   patch: string;
   thread: string;
-  pattern: 'zigzag' | 'dots' | 'stars' | 'snowflakes' | 'scallops' | 'checks' | 'waves' | 'circuit' | 'ruled' | 'pawprints' | 'grid' | 'diamonds' | 'confetti';
-  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'bookworm' | 'bone' | 'cube' | 'sword' | 'cake';
+  pattern:
+    | 'zigzag'
+    | 'dots'
+    | 'stars'
+    | 'snowflakes'
+    | 'scallops'
+    | 'checks'
+    | 'waves'
+    | 'circuit'
+    | 'ruled'
+    | 'pawprints'
+    | 'grid'
+    | 'diamonds'
+    | 'confetti'
+    | 'staff';
+  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'bookworm' | 'bone' | 'cube' | 'sword' | 'cake' | 'note';
 }
 
 export interface Egg {
@@ -196,6 +210,17 @@ export const EGGS: readonly Egg[] = [
     credits: ['Sent from the future by Lewis "Lewie" Moten III', 'and Claude Opus 5.5'],
     lore: 'A postcard from the future: "The grandkids still argue over the family root beer. The recipe calls for thirteen of something. Thirteen eggs, it turns out, are not it."',
     look: { felt: '#1f9a9a', band: '#c8d4dc', patch: '#e2412f', thread: '#eaf6f6', pattern: 'waves', motif: 'rocket' },
+    detect: { block: 149 },
+  },
+  {
+    game: 'tuneup',
+    gameTitle: 'Tune-Up',
+    name: 'The Reed Egg',
+    description:
+      'Moss-green felt stitched round with two white staves of music, a black felt eighth note sewn on its side, and a band of gold ribbon at the waist, still smelling faintly of river reeds.',
+    credits: ['Arranged by Claude Opus 5.5', 'for Lewis "Lewie" Moten III, Teddy, Gwinn and Doc Leo'],
+    lore: 'Rolled up inside it, a page of the parade tune in Doc Leo\'s hand, with a verse nobody ever sings: "Twelve good things in the family mug, and one more nobody names. Pour it for whoever comes in late." The last bar is marked "repeat until everyone has a glass."',
+    look: { felt: '#5f9a3c', band: '#ffffff', patch: '#1c1414', thread: '#e8c14a', pattern: 'staff', motif: 'note' },
     detect: { block: 149 },
   },
 ];

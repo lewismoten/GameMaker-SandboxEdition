@@ -4,6 +4,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { EGGS_NEEDED } from './eggGate';
 import { EGGS } from './eggs';
 import { TEDDY_EGG, TEDDY_GAMES, hasTeddyEgg, laidFromSaves } from './teddyEgg';
 
@@ -31,13 +32,14 @@ describe("Teddy's special egg", () => {
 
   it('is a bonus, never one of the felt eggs', () => {
     expect(EGGS.some((e) => e.name === TEDDY_EGG.name)).toBe(false);
-    expect(EGGS.length).toBe(13);
+    expect(EGGS.length).toBe(14);
   });
 });
 
 describe('the felt eggs', () => {
-  it('are thirteen, one per game', () => {
-    expect(EGGS.length).toBe(13);
+  it('are fourteen, one per game, and thirteen of them open what the eggs unlock', () => {
+    expect(EGGS.length).toBe(14);
+    expect(EGGS_NEEDED).toBe(13);
     expect(new Set(EGGS.map((e) => e.game)).size).toBe(EGGS.length);
   });
 

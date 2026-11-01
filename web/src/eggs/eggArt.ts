@@ -130,6 +130,25 @@ export function eggTexture(look: EggLook, seed = look.felt + look.motif): ImageD
         g.fillRect(x, waist - 4, 5, 8);
       }
       break;
+    case 'staff':
+      // two staves of music in backstitch, above and below the waist, with felt-knot notes on their lines
+      g.strokeStyle = look.band;
+      g.lineWidth = 1.5;
+      for (const top of [TEX_H * 0.24, waist + 22]) {
+        for (let k = 0; k < 5; k++) {
+          g.beginPath();
+          g.moveTo(0, top + k * 7);
+          g.lineTo(TEX_W, top + k * 7);
+          g.stroke();
+        }
+        g.fillStyle = look.thread;
+        for (let x = 10, i = 0; x < TEX_W; x += 23, i++) {
+          g.beginPath();
+          g.ellipse(x, top + ((i * 3) % 9) * 3.5, 4.2, 3.2, -0.4, 0, Math.PI * 2);
+          g.fill();
+        }
+      }
+      break;
     case 'ruled':
       // a notebook page: pale blue ruled lines, and a red margin down the front and back
       g.strokeStyle = '#a9c0dc';
@@ -536,6 +555,18 @@ function drawMotif(g: CanvasRenderingContext2D, look: EggLook, x: number, y: num
       g.arc(0, 30, 3.5, 0, Math.PI * 2);
       g.fill();
       g.restore();
+      break;
+    case 'note':
+      // an eighth note: an oval head tipped as it is written, a stem and a curling flag
+      blob(() => g.ellipse(-6, 14, 12, 8.5, -0.4, 0, Math.PI * 2));
+      blob(() => g.rect(3, -26, 4.5, 40));
+      blob(() => {
+        g.moveTo(7.5, -26);
+        g.quadraticCurveTo(22, -16, 17, 0);
+        g.lineTo(14, -3);
+        g.quadraticCurveTo(16, -13, 7.5, -15);
+        g.closePath();
+      });
       break;
     case 'cake':
       // a birthday cake: a frosted layer with a cream drip, and three yarn candles lit
