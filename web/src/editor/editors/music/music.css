@@ -38,6 +38,14 @@
   color: #000;
 }
 
+/* gold buttons (Play/Stop, a pressed toggle) stay gold on hover, a shade brighter, not navy */
+.mus-bar button.primary:hover:not(:disabled),
+.mus-bar button[aria-pressed='true']:hover:not(:disabled) {
+  background: #ffe55c;
+  border-color: #fff;
+  color: #000;
+}
+
 .mus-bar button.primary {
   background: var(--mus-gold);
   border-color: var(--mus-gold);
