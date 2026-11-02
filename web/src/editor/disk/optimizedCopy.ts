@@ -1,6 +1,7 @@
 // "Make an optimized copy": the pack applied to a separate game in My Games instead of this one, so
 // the saved games of this game keep working. The copy's name says what it came from and when it was
-// optimized (the project's name only; the .gam is not touched, so DOS limits don't apply).
+// optimized, in My Games and, shortened to fit DOS, in the .gam's title.
+import { SCENEDESCLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { diffDisks } from '@lewismoten/gamemaker-sandbox-tools/disk-diff';
 import { menuVersionOf, getSection, setSection, emptyCompanion, type Companion } from '../../project/companion';
 import { versionAt } from '../../project/checkpoint';
@@ -29,6 +30,17 @@ export function optimizedName(name: string, from: string, taken: readonly string
     const n = i === 1 ? base : `${base} ${i}`;
     if (!used.has(n.toLowerCase())) return n;
   }
+}
+
+/** The copy's .gam title within the 19 characters DOS keeps: “Tune-Up (opt v2.0)”, the title cut short to make room, else just “(opt)”. */
+export function optimizedTitle(title: string, from: string): string {
+  const max = SCENEDESCLEN - 1;
+  const base = title.replace(/ \(opt( [^)]*)?\)$/, '').trim();
+  for (const tail of [` (opt ${from})`, ' (opt)']) {
+    const room = max - tail.length;
+    if (room >= Math.min(base.length, 6)) return `${base.slice(0, room).trimEnd()}${tail}`;
+  }
+  return base.slice(0, max);
 }
 
 /** The companion store the steps' remapExtras needs, over a copy of the project's notes. */
