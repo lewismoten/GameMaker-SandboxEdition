@@ -499,7 +499,8 @@ export function cdGames(cdRoot: string): Plugin {
         preview = undefined;
         archives.clear();
         worker.restart();
-        setTimeout(() => archives.enqueue(listed()), 500);
+        // vite-node (checks and game builds) has a watcher but its HTTP server never listens: nothing asks for ZIPs, and a worker started there idled for hours
+        if (server.httpServer?.listening) setTimeout(() => archives.enqueue(listed()), 500);
       };
       server.watcher.on('change', forget);
       server.watcher.on('add', forget);
