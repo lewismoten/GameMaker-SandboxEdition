@@ -48,8 +48,13 @@ export function addRealMonsters(out: Monster[], n: (name: string) => number, cap
     ]);
     out[MON.lock0 + k] = mon(two('lamp.stiff0', 'lamp.stiff1', 6 + k), { power: lockPower(k), thru: 0, newmon: MON.lamp0 + k });
   }
-  // freed, each lamp glows bright red with its letter of BRAKE (the door's lamp is the E)
-  for (let k = 0; k < 4; k++) out[MON.lamp0 + k] = mon(two(`lamp.lit${k}.0`, `lamp.lit${k}.1`, 3), { power: LAMP, thru: 0, towards: 2, newmon: LASTMON });
+  // freed, each lamp glows bright red with its letter of BRAKE (the door's lamp is the E) and slides
+  // one block left out of its housing (the side Teddy comes from), waiting there for him; on a path,
+  // not "towards" him: PLAYGAME
+  // mirrors a monster moving left toward the character (orient |= 4), which turned B, R and K
+  // backwards; a path's corners keep orient 0
+  for (let k = 0; k < 4; k++)
+    out[MON.lamp0 + k] = mon(two(`lamp.lit${k}.0`, `lamp.lit${k}.1`, 3), { power: LAMP, thru: 0, newmon: LASTMON }, [corner(-1, 0, 2)]);
   // Pump Up the Volume: born in the curb under Doc Leo's shoes, the balloon dog rises seven blocks
   // (lifting him, as it is solid; a little over an awning, so he steps down onto it), bobs a
   // moment at the top (time to step off) and pops: the Teddy finale's ride, on its path

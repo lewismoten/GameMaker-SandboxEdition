@@ -90,6 +90,7 @@ export async function brakeDance(bot: Bot): Promise<void> {
     await must(bot, bot.react(), 'reading the sign');
     const lit = bot.count(CTR.lamps);
     await must(bot, bot.tap(TRICK_KEYS[i], 30), `the ${h.key} trick`);
+    // the freed lamp slides out of its housing toward Teddy, beside it, and he takes it
     await must(
       bot,
       bot.until(undefined, () => bot.count(CTR.lamps) === lit + 1, `caught lamp ${i + 1}`, 120),
