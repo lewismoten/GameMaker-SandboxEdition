@@ -97,7 +97,7 @@ export interface Swap {
  * `speed` pixels a tick for the cap crossing over (the others at half, so every move takes the
  * same time). `slots` are level columns two apart; cap i starts in slot i.
  */
-export function capPaths(swaps: Swap[], speed: 2 | 4): March[][] {
+export function capPaths(swaps: Swap[], speed: 4 | 8): March[][] {
   const pos = [0, 1, 2];
   const paths: March[][] = [0, 1, 2].map(() => [corner(0, -1, 1), corner(0, 0, 1)]);
   // a corner is an offset from where that cap started

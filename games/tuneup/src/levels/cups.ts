@@ -3,7 +3,8 @@
 // lift to show where the ball is, then shuffle on the table: one crossing over the top while
 // another slides under it, the third bobbing in place (realMonsters.ts capPaths). When they
 // settle, Doc Leo reaches up under the cap he picks (Space). The ball counts; an empty cap just
-// says "ta-da?", and he may pick again. Three rounds, a scene each, the last one quicker; the
+// says "ta-da?", and he may pick again. Three rounds, a scene each, brisk (a swap in about a
+// second, the last round's in half that), but the reveal held as long as ever; the
 // door at the left opens when the ball is found.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, countedDoor, kit, SOLID, type Kit } from '../blocks/common';
@@ -22,7 +23,8 @@ const SPOT = { x: 9, y: 1, w: 7, h: 6 } as const;
 export interface CupRound {
   file: string;
   swaps: Swap[];
-  speed: 2 | 4;
+  /** Pixels a tick for the cap crossing over (the others at half). */
+  speed: 4 | 8;
   /** The cap the ball starts under. */
   ball: number;
 }
@@ -30,7 +32,7 @@ export interface CupRound {
 export const ROUNDS: CupRound[] = [
   {
     file: 'cups1',
-    speed: 2,
+    speed: 4,
     ball: 1,
     swaps: [
       { over: 0, under: 1 },
@@ -40,7 +42,7 @@ export const ROUNDS: CupRound[] = [
   },
   {
     file: 'cups2',
-    speed: 2,
+    speed: 4,
     ball: 0,
     swaps: [
       { over: 1, under: 0 },
@@ -50,7 +52,7 @@ export const ROUNDS: CupRound[] = [
   },
   {
     file: 'cups3',
-    speed: 4,
+    speed: 8,
     ball: 2,
     swaps: [
       { over: 2, under: 1 },
