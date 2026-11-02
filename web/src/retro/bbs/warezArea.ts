@@ -17,7 +17,7 @@ import { Pager, pageLabel } from './pager';
 import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { GMCRACK_DIZ, GMCRACK_NFO } from '../hacks/gmcrackText';
 import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
-import { FASTPLAY_DIZ, FASTPLAY_DOC } from '../hacks/fastPlay';
+import { FASTPLAY_DIZ, FASTPLAY_DOC } from '../hacks/fastPlayText';
 import { FLAGS_DIZ, FLAGS_NFO } from '../hacks/flagsText';
 import { PLAYHACK_DIZ, PLAYHACK_NFO } from '../hacks/playHackText';
 import { GM30_DIZ, GM30_NFO, GM30_PART_BYTES, GM30_PARTS } from '../hacks/gm30Text';
