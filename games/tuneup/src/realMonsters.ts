@@ -12,8 +12,9 @@
 //   at the end of the path each settles. Doc Leo's reach lifts a settled cap: on the ball, or on
 //   nothing.
 import { LASTMON, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
-import { corner, mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
+import { corner, mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 import { MON } from './ids';
+import { CHARACTERS } from './sprites/clowns';
 
 /** A level's shell game: the caps' paths (one each) and which cap hides the ball. */
 export interface CapGame {
@@ -59,6 +60,11 @@ export function addRealMonsters(out: Monster[], n: (name: string) => number, cap
     corner(0, -7, 1),
   ]);
   out[MON.ridePop] = mon(two('pop0', 'pop1', 3), { power: 0, thru: 0, end: 6, newmon: LASTMON });
+  // The Horn Section: the character clowns stroll a few steps along the curb and back; friendly
+  // (they never hurt), and a stronger monster leaves them as they are
+  CHARACTERS.forEach((who, i) => {
+    out[MON.clown0 + i] = mon(two(`${who}0`, `${who}1`, 5), { power: 40, thru: 0, newmon: MON.clown0 + i }, pace(3, 1));
+  });
   if (caps) {
     caps.paths.forEach((path, i) => {
       const ball = i === caps.ball;

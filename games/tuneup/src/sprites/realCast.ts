@@ -6,6 +6,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { chicken } from '../art/chicken';
 import { popPic, rideDog } from './balloonDogs';
+import { CHARACTERS, characterClown } from './clowns';
 import { P } from '../art/palette';
 import { CTR } from '../ids';
 import { text } from '../../../snowbound/src/art/font';
@@ -104,4 +105,6 @@ export function addRealCast(add: Add): void {
   add('ride1', rideDog(1), { solid: 15 });
   add('pop0', popPic(0));
   add('pop1', popPic(1));
+  // The Horn Section: the character clowns, two steps each
+  for (const who of CHARACTERS) for (let f = 0; f < 2; f++) add(`${who}${f}`, characterClown(who, f, c));
 }

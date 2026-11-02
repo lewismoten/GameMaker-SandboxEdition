@@ -112,6 +112,8 @@ export const MON = {
   /** Pump Up the Volume: the balloon dog Doc Leo twists (it floats him up), and its pop. */
   ride: 33,
   ridePop: 34,
+  /** The Horn Section: the character clowns strolling the curb (fireman, police, baker, butcher). */
+  clown0: 35,
 } as const;
 
 /** Sound slots (0..8 are the ones PLAYGAME plays by itself, by the kind of change). */

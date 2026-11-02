@@ -14,6 +14,7 @@ import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
 import { CTR, MONEY, MON } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
+import { clownFace, FACES } from '../sprites/clowns';
 
 /** A beat of the horn section's song in ticks (hornSong's tempo): the board lights a horn a beat. */
 export const HORN_BEAT = 12;
@@ -21,6 +22,10 @@ export const HORN_BEAT = 12;
 export const HORN_REST = 2;
 /** The rows: the walkway over a stage, its pads, the floor. */
 export const HORN_ROW = { board: 2, walk: 3, pads: 6, floor: 9 } as const;
+/** Points for a red foam nose. */
+export const NOSE = 25;
+/** The start's clown faces' left columns. */
+const FACE_X = [1, 4, 9];
 /** The four horns' colors (fixed ramps), low C to high C. */
 const HORN_COLORS = ['red', 'yellow', 'green', 'blue'] as const;
 /** What each pad's note does when it opens: its kind of change picks its pitch (C, E, G, high C). */
@@ -87,28 +92,46 @@ export function hornBlocks(r: HornRound) {
         book.add(`board${h}.${f}`, p, { ...AIR, ...(ring.length > 1 ? { ntime: t, next: `board${h}.${(f + 1) % ring.length}` } : {}) });
       });
     }
-    // the pads: a horn on a plate, hung in the stage's ceiling; the right one honks and opens
-    // (solid on top only, to hop up through), a wrong one blows a raspberry and stays shut
-    const pad = (h: number, half: number, open: boolean) => {
-      const p = sky();
-      if (open) {
-        p.rect(0, 0, 20, 3, c('mach', 3)).rect(0, 0, 20, 1, c('mach', 5));
-        return p;
-      }
-      p.rect(0, 0, 20, 20, c('mach', 2)).rect(0, 0, 20, 2, c('mach', 4)).rect(0, 18, 20, 2, c('mach', 0));
+    // the pads: a horn hung in the stage's ceiling, a cell wide, with its colored name plate
+    // beside it; the right horn honks and fades away (two dithered steps) to leave a ledge to
+    // hop up through, a wrong one blows a raspberry and stays shut. The plate never changes.
+    const shell = () => sky().rect(0, 0, 20, 20, c('mach', 2)).rect(0, 0, 20, 2, c('mach', 4)).rect(0, 18, 20, 2, c('mach', 0));
+    const ledge = () => sky().rect(0, 0, 20, 3, c('mach', 3)).rect(0, 0, 20, 1, c('mach', 5));
+    const pad = (h: number) => {
       const big = new Pixels(40, 20, 255);
       horn(h, false, big);
-      const bell = big.crop(0, 0, 20, 20);
-      if (half === 0) p.blit(bell, 6, 1, 255);
-      else p.rect(0, 6, 4, 8, c('gold', 2)).disc(8, 10, 3, R(HORN_COLORS[h])[2]);
+      return shell().blit(big.crop(0, 0, 20, 20), 1, 1, 255);
+    };
+    /** The pad mid-fade: every other pixel (then every fourth) of the horn left over the sky. */
+    const fading = (h: number, keep: number) => {
+      const full = pad(h);
+      const p = ledge();
+      for (let y = 3; y < 20; y++) for (let x = 0; x < 20; x++) if ((x + y * keep) % (keep * 2) === 0) p.set(x, y, full.get(x, y));
       return p;
     };
-    for (let h = 0; h < 4; h++)
-      for (let half = 0; half < 2; half++) {
-        book.add(`pad${h}.${half}`, pad(h, half, false), { solid: SOLID, ...PAD_KINDS[h], score: 50, touch: `pad${h}.${half}.open` });
-        book.add(`pad${h}.${half}.open`, pad(h, half, true), { solid: LEDGE });
-        book.add(`pad${h}.${half}.no`, pad(h, half, false), { solid: SOLID, score: -5, touch: `pad${h}.${half}.no` });
-      }
+    for (let h = 0; h < 4; h++) {
+      book.add(`pad${h}`, pad(h), { solid: SOLID, ...PAD_KINDS[h], score: 50, touch: `pad${h}.fade0` });
+      book.add(`pad${h}.fade0`, fading(h, 1), { solid: LEDGE, ntime: 3, next: `pad${h}.fade1` });
+      book.add(`pad${h}.fade1`, fading(h, 2), { solid: LEDGE, ntime: 3, next: 'pad.open' });
+      book.add(`pad${h}.no`, pad(h), { solid: SOLID, score: -5, touch: `pad${h}.no` });
+      const plate = shell().rect(4, 5, 12, 10, c('mach', 1)).disc(10, 10, 3.5, R(HORN_COLORS[h])[2]).disc(9, 9, 1, c('paint', 3));
+      for (const [x, y] of [
+        [5, 6],
+        [14, 6],
+        [5, 13],
+        [14, 13],
+      ])
+        plate.set(x, y, c('mach', 5));
+      book.add(`plate${h}`, plate, { solid: SOLID });
+    }
+    book.add('pad.open', ledge(), { solid: LEDGE });
+    // red foam noses to collect (they honk): over the walkway's far end and on the curb
+    for (const row of [HORN_ROW.walk - 1, HORN_ROW.floor - 1])
+      book.add(`nose${row}`, sky(row).disc(10, 13, 4.5, c('red', 2)).disc(9, 12, 3, c('red', 3)).disc(8, 11, 1, c('paint', 3)), {
+        ...AIR,
+        score: NOSE,
+        touch: `sky${row}`,
+      });
     // the stage's sides: stacked speaker cabinets; the walkway over it
     const cab = k.P(c('shade', 1));
     cab.rect(1, 1, 18, 18, c('shade', 0)).disc(10, 10, 6, c('mach', 1)).disc(10, 10, 3, c('mach', 3)).frame(0, 0, 20, 20, c('mach', 2));
@@ -117,24 +140,13 @@ export function hornBlocks(r: HornRound) {
     walk.rect(0, 0, 20, 4, c('pipe', 2)).rect(0, 0, 20, 1, c('pipe', 4));
     for (let x = 2; x < 20; x += 6) walk.rect(x, 4, 2, 3, c('pipe', 1));
     book.add('walkway', walk, { solid: LEDGE, ...AIR });
-    // the Clown Club's horn section: two friendly clowns, two blocks square each
-    for (const [i, hair] of (['orange', 'blue'] as const).entries()) {
+    // the Clown Club's horn section, as the real clown types: a whiteface, an auguste and a hobo
+    FACES.forEach((face, i) => {
       const p = new Pixels(40, 40, 0);
       for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) p.blit(sky(7 + y), x * 20, y * 20);
-      blob(p, 9, 14, 7, 8, R(hair), 0, 3);
-      blob(p, 31, 14, 7, 8, R(hair), 0, 3);
-      p.disc(20, 18, 12, c('paint', 3)).disc(20, 18, 11, c('paint', 3));
-      p.disc(15, 15, 1.6, c('ink', 0)).disc(25, 15, 1.6, c('ink', 0));
-      p.disc(20, 20, 3.5, c('red', 2)).set(19, 19, c('red', 3));
-      // a big smile
-      for (let x = 14; x <= 26; x++) p.rect(x, 24 + Math.round(3 * (1 - ((x - 20) / 6) ** 2)), 1, 2, c('red', 1));
-      p.disc(12, 22, 2, c('pink', 2)).disc(28, 22, 2, c('pink', 2));
-      // a little hat, and a bulb horn raised to honk
-      p.rect(14, 2, 12, 4, c(i ? 'purple' : 'green', 2)).rect(11, 6, 18, 2, c(i ? 'purple' : 'green', 1));
-      blob(p, 33, 33, 4, 4, R(HORN_COLORS[i * 2]), 0, 3);
-      p.rect(28, 30, 2, 8, c('gold', 2));
+      clownFace(p, face, c);
       for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) book.add(`clown${i}.${x}.${y}`, p.crop(x * 20, y * 20, 20, 20), AIR);
-    }
+    });
     return k;
   };
 }
@@ -150,14 +162,20 @@ export function horn(r: HornRound) {
       for (let h = 0; h < 4; h++) m.set(x + h, R.board, `board${h}.0`);
     };
     // the horn section at the start, under the first board
-    for (let i = 0; i < 2; i++) for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) m.set(1 + i * 3 + x, 7 + y, `clown${i}.${x}.${y}`);
+    FACES.forEach((_, i) => {
+      for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) m.set(FACE_X[i] + x, 7 + y, `clown${i}.${x}.${y}`);
+    });
     r.phrase.forEach((note, k) => {
       const sx = stageX(k);
       board(sx - 4);
       m.fill(sx, 1, 1, R.pads, '#');
       m.fill(sx + 9, R.walk, 1, R.floor - R.walk, '#');
       m.fill(sx + 1, R.walk, 8, 1, '-');
-      for (let p = 0; p < 4; p++) for (let half = 0; half < 2; half++) m.set(padX(sx, p) + half, R.pads, `pad${p}.${half}${p === note ? '' : '.no'}`);
+      for (let p = 0; p < 4; p++) m.set(padX(sx, p), R.pads, `pad${p}${p === note ? '' : '.no'}`).set(padX(sx, p) + 1, R.pads, `plate${p}`);
+      m.set(sx + 8, R.walk - 1, `nose${R.walk - 1}`);
+      // between this stage and the next (or the exit): a nose on the curb, a character clown strolling
+      m.set(sx + 12, R.floor - 1, `nose${R.floor - 1}`);
+      m.mon(MON.clown0 + ((k + HORN_ROUNDS.indexOf(r)) % 4), sx + 11, R.floor - 1);
     });
     m.fill(w - 1, 0, 1, R.floor, '#');
     m.link(exit, R.floor - 1);
