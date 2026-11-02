@@ -81,6 +81,10 @@ export function cupsBlocks(pal: Pal): Kit {
     return p;
   };
   book.add('curtain', curtain(0), AIR);
+  // the velvet catches the spotlight here and there: a sheen down a fold (its edges as the plain curtain's)
+  const sheen = curtain(0);
+  for (let y = 0; y < 20; y += 2) sheen.set(9 + ((y >> 2) % 2), y, c('wall', 3)).set(10, y + 1, c('wall', 3));
+  book.add('curtain.fold', sheen, AIR);
   // the valance along the top: gold fringe
   const valance = curtain(1);
   valance.rect(0, 0, 20, 12, c('wall', 3)).rect(0, 12, 20, 2, c('pipe', 3));
@@ -147,6 +151,8 @@ export function cups(book: Kit['book']): Level {
     m.set(CUPS.door, floor - 2, 'door.top').set(CUPS.door, floor - 1, 'door');
     m.link(CUPS.exit, floor - 1);
     m.mon(MON.reggie, 5, floor - 1);
+    // variants here and there so the walls and floors don't repeat
+    m.vary('curtain', ['curtain.fold'], 5);
     return { m, start: at(8, 5), size: [w, 10] };
   }
 }

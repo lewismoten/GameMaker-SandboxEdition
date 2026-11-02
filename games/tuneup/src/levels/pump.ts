@@ -110,10 +110,6 @@ export function pumpBlocks(pal: Pal): Kit {
   for (let x = 1; x < 19; x += 3) cap.rect(x, 18, 2, 2, c('red', 0));
   cap.rect(4, 12, 12, 4, c('paint', 3)).rect(6, 13, 8, 2, c('red', 2));
   book.add('bottlecap', cap, AIR);
-  // the sidewalk's slabs: a crack here, a pebble there, so the curb doesn't repeat
-  const walk = k.pic('walk');
-  book.add('walk.crack', walk.line(4, 3, 8, 9, c('floor', 1)).line(8, 9, 7, 16, c('floor', 1)).line(8, 9, 13, 12, c('floor', 1)), { solid: SOLID });
-  book.add('walk.pebble', k.pic('walk').disc(14, 6, 2.5, c('stone', 2)).disc(13, 5, 1, c('stone', 4)), { solid: SOLID });
   // the far end: a wooden fence, its boards and their pointed tops
   const fence = (top: boolean) => {
     const p = top ? sky(0) : k.P(c('wood', 1));

@@ -177,5 +177,7 @@ export function oil(book: Kit['book']): Level {
   for (const s of SQUEAKS) m.mon(s.fast ? MON.squeakFast : MON.squeak, s.x, LINES[s.line]);
   m.mon(MON.dreamWalk, 4, 8);
   // he starts mid-screen (the view, which never scrolls, is centered on where he starts) and drops to the floor
+  // variants here and there so the walls and floors don't repeat
+  m.vary('bay', ['bay.bolts'], 11).vary('casting', ['casting.plate'], 7);
   return { m, start: at(8, 5), size: [w, 10] };
 }

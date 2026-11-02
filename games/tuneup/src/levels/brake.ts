@@ -114,5 +114,7 @@ export function brake(book: Kit['book']): Level {
     ['board', 34, 3],
     ['charger', 2, 6],
   ]);
+  // variants here and there so the walls and floors don't repeat
+  m.vary('wall', ['wall.hook'], 13).vary('slab', ['slab.crack'], 9);
   return { m, start: at(8, 5), size: [w, 10] };
 }

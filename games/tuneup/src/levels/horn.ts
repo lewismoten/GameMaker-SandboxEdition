@@ -180,6 +180,8 @@ export function horn(r: HornRound) {
     m.fill(w - 1, 0, 1, R.floor, '#');
     m.link(exit, R.floor - 1);
     m.mon(MON.regina, 7, R.floor - 1);
+    // variants here and there so the walls and floors don't repeat
+    m.vary('walk', ['walk.crack', 'walk.pebble'], 9);
     return { m, start: at(8, 5), size: [w, 10] };
   };
 }

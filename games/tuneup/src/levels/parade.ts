@@ -143,6 +143,8 @@ export function paradeBlocks(scene: ParadeScene) {
     front.rect(3, 4, 6, 16, c('siding', 2)).rect(11, 4, 6, 16, c('siding', 2)).rect(0, 2, 20, 2, c('accent', 2));
     book.add('front', front, AIR);
     for (const sign of SHOP_SIGNS) book.add(`sign.${sign}`, shopSign(k, sign), AIR);
+    // the street patched in places
+    book.add('road.patch', k.pic('road').rect(3, 8, 12, 6, c('shade', 0)).rect(4, 9, 10, 4, c('shade', 1)), { solid: SOLID });
     // a band section in a side street: plumed hats over the instruments (by section)
     const band = (sec: number) => {
       const p = skyRow(DRIVE.row);
@@ -234,5 +236,7 @@ export const parade = (scene: ParadeScene) =>
     if (scene.fireworks) for (let x = 6; x < w; x += 11) m.set(x, 1, `fw${x % 5}`);
     m.set(scene.ribbon, row, 'ribbon');
     m.link(EXIT_X, row);
+    // variants here and there so the street doesn't repeat
+    m.vary('road', ['road.patch'], 13);
     return { m, start: at(startX(scene), 5), size: [w, 10] };
   };

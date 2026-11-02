@@ -46,6 +46,9 @@ function garage(k: Kit): void {
   };
   book.add('floor', floor(true), { solid: SOLID });
   book.add('slab', floor(false), { solid: SOLID });
+  // the floor's variants: an old oil drip, a crack in the slab
+  book.add('floor.drip', floor(true).disc(9, 7, 4, c('floor', 0)).disc(8, 6, 2.5, c('floor', 1)).set(7, 5, c('floor', 3)), { solid: SOLID });
+  book.add('slab.crack', floor(false).line(3, 2, 8, 9, c('floor', 0)).line(8, 9, 7, 17, c('floor', 0)).line(8, 9, 15, 13, c('floor', 0)), { solid: SOLID });
   // the workbench: a thick wooden top to stand on, legs and a shelf under it
   const bench = wall(6);
   bevel(bench, 0, 0, 20, 5, R('pipe'), 3);
@@ -153,6 +156,18 @@ function engine(k: Kit): void {
   bevel(top, 0, 0, 20, 20, R('mach'), 3);
   top.rect(0, 0, 20, 2, c('mach', 6)).rect(0, 2, 20, 1, c('mach', 1));
   book.add('casting.top', top, { solid: SOLID });
+  // the casting's variant: a stamped part plate held by four rivets
+  const plate = P();
+  bevel(plate, 0, 0, 20, 20, R('mach'), 3);
+  plate.rect(4, 5, 12, 9, c('mach', 1)).rect(5, 6, 10, 7, c('mach', 4)).rect(6, 8, 8, 1, c('mach', 2)).rect(6, 10, 5, 1, c('mach', 2));
+  for (const [x, y] of [
+    [4, 5],
+    [15, 5],
+    [4, 13],
+    [15, 13],
+  ])
+    plate.set(x, y, c('mach', 6));
+  book.add('casting.plate', plate, { solid: SOLID });
   // a ledge: a metal bracket to stand on
   const ledge = bay(5);
   ledge.rect(0, 0, 20, 4, c('mach', 4)).rect(0, 0, 20, 1, c('mach', 6)).rect(0, 4, 20, 1, c('mach', 0));
@@ -173,6 +188,10 @@ function curb(k: Kit): void {
   for (let x = 0; x < 20; x += 10) walk.rect(x, 0, 1, 20, c('floor', 1));
   walk.rect(0, 0, 20, 2, c('floor', 4));
   book.add('walk', walk, { solid: SOLID });
+  // the sidewalk's slabs varied: a crack here, a pebble there
+  const slab = () => k.pic('walk');
+  book.add('walk.crack', slab().line(4, 3, 8, 9, c('floor', 1)).line(8, 9, 7, 16, c('floor', 1)).line(8, 9, 13, 12, c('floor', 1)), { solid: SOLID });
+  book.add('walk.pebble', slab().disc(14, 6, 2.5, c('stone', 2)).disc(13, 5, 1, c('stone', 4)), { solid: SOLID });
   const edge = P(c('floor', 2));
   edge.rect(0, 0, 20, 4, c('floor', 4)).rect(0, 4, 20, 2, c('floor', 1));
   book.add('curb', edge, { solid: SOLID });

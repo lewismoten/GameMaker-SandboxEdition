@@ -259,5 +259,7 @@ export function muffled(book: Kit['book']): Level {
     ['board', 38, 4],
     ['charger', 1, 6],
   ]);
+  // variants here and there so the walls and floors don't repeat
+  m.vary('floor', ['floor.drip'], 9).vary('slab', ['slab.crack'], 9);
   return { m, start: at(8, 5), size: [w, 10] };
 }

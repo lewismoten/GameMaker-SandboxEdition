@@ -155,9 +155,13 @@ What PLAYGAME allows (code/GM), and how the disk uses it. Version 2.0 measured 3
   merged. Two blocks merge only when their pixels, settings and next and touch blocks match.
   A block's timer belongs to its number, and its phase depends only on those settings, so a
   merge changes nothing that plays. The felt egg keeps block 149. The sets: street (band1-3, road1-2,
-  90 blocks), curb (cups1-3, horn1-3, 108), garage (jump, brake, hush, 110), engine (spark,
-  fan1-2, oil, 124), gear (gear1-4, 120), dash (dash1-2, 85); rain, pump, swim and beat1-3 keep
-  their own, untouched. Each leaves room for later art. 30 sets become 12: about -1,134,000.
+  106 blocks drawn), curb (cups1-3, horn1-3, 122), garage (jump, brake, hush, 126), engine
+  (spark, fan1-2, oil, 126), gear (gear1-4, 123), dash (dash1-2, 86); rain (115), pump (101),
+  swim (140) and beat1-3 (120, 148, 144) keep their own. 30 sets become 12: about -1,134,000.
+- **Variants.** A long wall or floor gets a variant block or two (a hook on the pegboard, an
+  oil drip, a cracked slab, a riveted plate on a casting, a crooked vent slat, a patched street,
+  the washer's nozzle) sprinkled by `MapBuilder.vary`: same settings as the block they replace,
+  placed by a hash of the cell, so play is unchanged and the pattern stops repeating.
 - **One map where scenes are one place.** cups1-3 and gear1-4 already have identical maps (one
   file each). The parade's three verses differ in their side streets, so they stack in one map,
   one verse every 13 rows; the view starts half a screen above the start (`scene.ts`) and never

@@ -190,5 +190,7 @@ export function keyRoom(book: Kit['book']): Level {
   m.fill(w - 1, 0, 1, floor, '#');
   m.link(GEARS.exit, floor - 1);
   m.mon(MON.regina, 5, floor - 1);
+  // variants here and there so the walls and floors don't repeat
+  m.vary('bay.ribs', ['bay.bolts'], 13).vary('casting', ['casting.plate'], 7);
   return { m, start: at(8, 5), size: [w, 10] };
 }

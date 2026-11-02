@@ -103,6 +103,10 @@ export function fanBlocks(v: FanVerse) {
     const vent = k.pic('bay');
     for (let y = 2; y < 20; y += 6) vent.rect(0, y, 20, 2, c('wall', 2)).rect(0, y + 2, 20, 1, c('wall', 0));
     book.add('vent', vent, AIR);
+    // a slat knocked crooked and a rivet, now and then along the vent
+    const dent = k.pic('vent');
+    dent.rect(0, 8, 20, 3, c('wall', 1)).line(0, 8, 19, 10, c('wall', 2)).line(0, 10, 19, 12, c('wall', 0)).set(15, 16, c('mach', 4)).set(4, 4, c('mach', 4));
+    book.add('vent.dent', dent, AIR);
     // a column of warm air: specks of dust carried up it. Four frames a beat, the specks rising
     // 7 pixels a frame while it pushes (half a beat) and 3 while it rests, 20 in all, so the
     // stacked blocks show one stream of specks climbing; the column's color never changes.
@@ -235,6 +239,8 @@ export function fan(v: FanVerse) {
     m.fill(w - 1, 0, 1, R.floor, '#');
     m.link(v.exit + 1, R.floor - 1);
     m.mon(MON.reggie, 1, R.floor - 1);
+    // variants here and there so the walls and floors don't repeat
+    m.vary('vent', ['vent.dent'], 11).vary('casting', ['casting.plate'], 7);
     return { m, start: at(8, 5), size: [w, 10] };
   };
 }

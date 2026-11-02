@@ -138,5 +138,7 @@ export function spark(book: Kit['book']): Level {
   m.mon(MON.dreamBird, WIRES[3].x + 3, WIRE_TOP);
   // he starts in mid air at (8, 5), so the view (centered on where he starts, and never scrolling
   // up or down) shows the bay from its left wall; he drops to the floor
+  // variants here and there so the walls and floors don't repeat
+  m.vary('bay', ['bay.bolts'], 11).vary('casting', ['casting.plate'], 7);
   return { m, start: at(8, 5), size: [w, 10] };
 }

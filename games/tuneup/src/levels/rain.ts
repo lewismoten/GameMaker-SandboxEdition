@@ -88,6 +88,9 @@ export function rainBlocks(pal: Pal): Kit {
   cowl.rect(0, 0, 20, 1, c('lamp', 3));
   for (let x = 3; x < 20; x += 7) cowl.set(x, 1, c('lamp', 4));
   book.add('cowl', cowl, { solid: SOLID });
+  // the washer's nozzle on the cowl, and a seam in the roof liner with its clip
+  book.add('cowl.nozzle', k.pic('cowl').rect(8, 1, 5, 3, c('mach', 1)).rect(9, 1, 3, 1, c('mach', 4)), { solid: SOLID });
+  book.add('roof.seam', k.pic('roof').rect(10, 0, 1, 16, c('shade', 0)).rect(8, 13, 5, 3, c('mach', 3)), { solid: SOLID });
   // rain running down the glass: a few streaks, falling (three frames), on every row
   for (let y = 1; y < RAIN.floor; y++)
     for (let f = 0; f < 3; f++) {
@@ -170,5 +173,7 @@ export function rain(book: Kit['book']): Level {
     .set(RAIN.sign + 1, floor - 1, 'post.r');
   m.link(RAIN.exit, floor - 1);
   m.mon(MON.regina, 6, floor - 1);
+  // variants here and there so the walls and floors don't repeat
+  m.vary('roof', ['roof.seam'], 6).vary('cowl', ['cowl.nozzle'], 7);
   return { m, start: at(8, 5), size: [w, 10] };
 }

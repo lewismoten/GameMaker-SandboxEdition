@@ -32,13 +32,35 @@ export class MapBuilder {
   }
 
   /** A block at level coordinates: a legend character, or a block's name. */
+  /** The level's extent: the furthest cell laid (vary keeps inside it). */
+  private extent = [0, 0];
   set(x: number, y: number, what: string): this {
+    this.extent = [Math.max(this.extent[0], x), Math.max(this.extent[1], y)];
     this.map.blocks[(y + ORIGIN) * 100 + x + ORIGIN] = what.length === 1 ? this.block(what) : this.book.n(what);
     return this;
   }
 
   fill(x: number, y: number, w: number, h: number, what: string): this {
     for (let yy = y; yy < y + h; yy++) for (let xx = x; xx < x + w; xx++) this.set(xx, yy, what);
+    return this;
+  }
+
+  /**
+   * Sprinkles `variants` over the cells showing `base` (same settings, so play is unchanged): a
+   * cell takes variant i when a hash of its position lands on i out of `every`, so a long wall or
+   * floor stops repeating. Run it after the base is laid and before what goes on top.
+   */
+  vary(base: string, variants: string[], every = 9): this {
+    const n = this.book.n(base);
+    const v = variants.map((name) => this.book.n(name));
+    for (let i = 0; i < this.map.blocks.length; i++) {
+      if (this.map.blocks[i] !== n) continue;
+      const x = i % 100;
+      const y = Math.floor(i / 100);
+      if (x < ORIGIN || y < ORIGIN || x > ORIGIN + this.extent[0] || y > ORIGIN + this.extent[1]) continue;
+      const h = (((x * 73) ^ (y * 151)) + x * y * 7) % every;
+      if (h < v.length) this.map.blocks[i] = v[h];
+    }
     return this;
   }
 

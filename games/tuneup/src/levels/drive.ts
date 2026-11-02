@@ -127,6 +127,12 @@ export function driveBlocks(pal: Pal): Kit {
   const street = k.pic('street');
   street.rect(0, 0, 20, 1, c('shade', 4));
   book.add('road', street, { solid: SOLID });
+  // the street patched in places, and a vent low in the brick
+  book.add('road.patch', k.pic('road').rect(4, 5, 11, 7, c('shade', 0)).rect(5, 6, 9, 5, c('shade', 1)), { solid: SOLID });
+  const vent = brick();
+  vent.rect(5, 6, 10, 8, c('ink', 1));
+  for (let y = 7; y < 14; y += 2) vent.rect(6, y, 8, 1, c('metal', 2));
+  book.add('brick.vent', vent, AIR);
   const line = k.pic('road');
   line.rect(0, 0, 4, 2, c('paint', 3)).rect(0, 2, 4, 1, c('paint', 1));
   book.add('stopline', line, { solid: SOLID });
@@ -228,5 +234,7 @@ export const drive = (r: Route) =>
       m.set(s.x + 1, street, 'stopline');
     }
     m.link(EXIT_X, row);
+    // variants here and there so the walls and floors don't repeat
+    m.vary('brick', ['brick.vent'], 17).vary('road', ['road.patch'], 13);
     return { m, start: at(startX(r), 5), size: [w, 10] };
   };
