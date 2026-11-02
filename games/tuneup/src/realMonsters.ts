@@ -1,7 +1,8 @@
 // The monsters of the dream's end and the real tune-up, added to every .MON after the engine
 // bay's (characters.ts buildMonsters).
 //
-// - The swim: Sir Reginald paddles the length of the oil pipe and out of the far end.
+// - The swim: Sir Reginald paddles the length of the oil pipe and out of the far end (no scene
+//   places him now: the swim is a close-up drawn in blocks, swim.ts).
 // - Brake Dance, on the power ladder: each stiff brake lamp sits inside its solid housing, where
 //   Teddy can't touch it, and only a trick at least as strong as its own frees it (turn < roll
 //   over < play dead < dance); a weaker trick fizzles on it. A freed lamp, stronger than any
