@@ -161,7 +161,8 @@ export function planColorFolds(files: GameFiles, gam: string): Step | undefined 
       title: `Join ${n} block${n === 1 ? '' : 's'} in ${bbl} that are the same shape in other colors`,
       changes: [
         ...done.map(
-          (d) => `Block ${d.fold} becomes block ${d.keep}; ${d.palettes.join(', ')} show${d.palettes.length === 1 ? 's' : ''} it in block ${d.fold}'s colors`,
+          (d) =>
+            `Block ${d.fold} becomes block ${d.keep} (the same shape); in ${d.palettes.join(', ')} block ${d.keep}'s color numbers take block ${d.fold}'s colors`,
         ),
         `${[...pals.keys()].join(', ')} change only in color numbers nothing else draws with, so every scene looks the same`,
         `${n} slot${n === 1 ? '' : 's'} in ${bbl} become blank, so another block set can use them`,
