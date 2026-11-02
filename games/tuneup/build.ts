@@ -71,10 +71,12 @@ const TOOLS: Record<number, Tool> = {
   15: 'baton',
 };
 // Cartoons go without the ring frame nothing plays, and cut where the picture changes anyway.
+// Clips run up to 6 s (Esc answers a little slower) so each Hat Sting cuts at its scene change.
 const CLIPS: ClipOptions = { noLoopFrame: true, cheapCuts: true };
+const CLIP_SECONDS = 6;
 /** A cartoon cut into clips (Esc skips within a few seconds), its files on the disk, its entries for a list. */
 const reel = (name: string, fli: Uint8Array) => {
-  const clips = fliClips(name, fli, 4, CLIPS);
+  const clips = fliClips(name, fli, CLIP_SECONDS, CLIPS);
   for (const [n, b] of Object.entries(clips)) disk.put(n, b);
   return clipEntries(clips, 0);
 };
@@ -188,7 +190,7 @@ disk.put('tuneup.gam', serializeGame(game));
 
 // the pictures and words
 for (const [name, bytes] of Object.entries(buildScreens())) disk.put(name, bytes);
-const logo = fliClips(SANDLOGO, sandLogoFli(), 4, CLIPS);
+const logo = fliClips(SANDLOGO, sandLogoFli(), CLIP_SECONDS, CLIPS);
 for (const [n, b] of Object.entries(logo)) disk.put(n, b);
 disk.put('title.lst', serializeSlideList([...clipEntries(logo, 0), { name: 'title.gif', pause: 10 }]));
 disk.put('story.lst', serializeSlideList([{ name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]));
@@ -202,7 +204,7 @@ disk.put('howto.txt', INSTRUCTIONS);
 disk.put('credits.txt', CREDITS);
 disk.put('readme.txt', readme());
 disk.put('license.txt', licenseText('Tune-Up'));
-clipEveryList(disk.files, 4, CLIPS);
+clipEveryList(disk.files, CLIP_SECONDS, CLIPS);
 disk.write();
 const usedIn = (blocks: Iterable<{ pixels: Uint8Array }>) => [...blocks].filter((b) => b.pixels.some(Boolean)).length;
 console.log([...shared.sets].map(([name, blocks]) => `${name}: ${usedIn(blocks)} drawn blocks`).join(', ') + `; ${mb.index.size} monster blocks`);
