@@ -140,13 +140,18 @@ async function saveImported({ files, name, gam, players }: Imported): Promise<{ 
   const p = Project.fromFiles(files, name, undefined, companion);
   if (gam && files.has(gam)) p.gam = gam;
   if (player) {
-    const { playerRecord, PLAYER_SECTION } = await import('../../dosPlayer/playerRecord');
+    const [{ playerRecord, PLAYER_SECTION }, { ORIGIN_SECTION }] = await Promise.all([
+      import('../../dosPlayer/playerRecord'),
+      import('../../dosPlayer/playerOrigin'),
+    ]);
     if (Object.keys(player.patches).length) p.setExtras(p.gam, PLAYER_SECTION, playerRecord(player.patches));
+    // which build it came from and what its author changed, read-only (the Player file shows it)
+    p.setExtras(p.gam, ORIGIN_SECTION, player.origin);
   }
   await p.saveNow();
   // listed under Imported, apart from the games made here (⋯ More can move it to My games)
   setImported(p.id, true);
-  return { project: p, note: player?.message, madeGam };
+  return { project: p, note: player?.message || undefined, madeGam };
 }
 
 /** Where an imported game came from and its fingerprint, kept with its rating and note (imported/). */

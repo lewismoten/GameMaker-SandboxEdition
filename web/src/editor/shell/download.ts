@@ -231,6 +231,13 @@ async function gamePatches(game: DownloadGame): Promise<PlayerPatches> {
   return (await import('../../dosPlayer/playerRecord')).companionPatches(game.companion?.(), game.gam);
 }
 
+/** An imported 3.00 player's own bytes, which the DOS download writes back (none for a catalog game). */
+async function gameKept(game: DownloadGame) {
+  if (game.entry) return undefined;
+  const { companionOrigin, keptParts } = await import('../../dosPlayer/playerOrigin');
+  return keptParts(companionOrigin(game.companion?.(), game.gam));
+}
+
 /** The options the native downloads share. */
 
 async function nativeOptions(game: DownloadGame, files: GameFiles) {
@@ -332,6 +339,7 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
         title: game.title,
         gam: game.gam,
         player: await gamePatches(game),
+        kept: await gameKept(game),
       });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else {

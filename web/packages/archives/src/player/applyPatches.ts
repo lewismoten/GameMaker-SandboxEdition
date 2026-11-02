@@ -3,6 +3,8 @@
 // blanked menu and Rōdïp's renamed status words were made with a hex editor in the 1990s).
 import { md5Hex } from './md5';
 import { writePreserved, type PreservedParts } from './preservedRegions';
+
+export type { PreservedParts } from './preservedRegions';
 import { PATCHES } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
 import {
   isStock,

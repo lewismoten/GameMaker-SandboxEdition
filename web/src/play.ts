@@ -17,6 +17,8 @@ import { playAchievements, playWrote } from './achievements';
 import { catalogPatches } from './dosPlayer/catalogPatches';
 import { companionPatches } from './dosPlayer/playerRecord';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import type { PlayerAbout } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { companionOrigin, playerAbout } from './dosPlayer/playerOrigin';
 
 interface BundleManifest {
   id: string;
@@ -85,6 +87,8 @@ async function choose(): Promise<
       poster?: Promise<string | undefined>;
       /** Its DOS player look (dosPlayer/): a project's companion, an original game's player.json. */
       player?: PlayerPatches;
+      /** An imported game's own player About page and first build (dosPlayer/playerOrigin.ts). */
+      playerAbout?: PlayerAbout;
     }
   | undefined
 > {
@@ -106,6 +110,7 @@ async function choose(): Promise<
         poster: posterFromFiles(files, p.record.gam).catch(() => undefined),
         back: './',
         player: companionPatches(p.record.companion, p.record.gam),
+        playerAbout: playerAbout(companionOrigin(p.record.companion, p.record.gam)),
       };
     }
   }
@@ -176,6 +181,7 @@ async function main(): Promise<void> {
       title: game.title,
       notice: game.notice,
       player: game.player,
+      playerAbout: game.playerAbout,
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
       onFileWrite: (name, bytes) => (playWrote(game.id, name), void writeSaveFile(game.id, name, bytes)),

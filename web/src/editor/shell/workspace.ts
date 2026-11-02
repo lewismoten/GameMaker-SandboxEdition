@@ -869,19 +869,23 @@ export class Workspace implements AssistantHost {
       if (start !== game) copy.set(this.project.gam, serializeGame(start));
     }
     // the player loads with the first play test; not if another file was opened meanwhile
-    void Promise.all([import('../../player/player'), import('../../dosPlayer/playerRecord'), import('../../project/composeFiles')]).then(
-      ([{ mountPlayer }, { companionPatches }, { composeFiles }]) => {
-        const player = companionPatches(this.project.companion, this.project.gam);
-        if (!this.disposed && host.isConnected)
-          this.player = mountPlayer(host, composeFiles(copy, this.project.companion), this.project.gam, {
-            title: this.project.name,
-            hardwareId: `project:${this.project.id}`,
-            player,
-            skipTitle: !!level,
-            ...watch,
-          });
-      },
-    );
+    void Promise.all([
+      import('../../player/player'),
+      import('../../dosPlayer/playerRecord'),
+      import('../../project/composeFiles'),
+      import('../../dosPlayer/playerOrigin'),
+    ]).then(([{ mountPlayer }, { companionPatches }, { composeFiles }, { companionOrigin, playerAbout }]) => {
+      const player = companionPatches(this.project.companion, this.project.gam);
+      if (!this.disposed && host.isConnected)
+        this.player = mountPlayer(host, composeFiles(copy, this.project.companion), this.project.gam, {
+          title: this.project.name,
+          hardwareId: `project:${this.project.id}`,
+          player,
+          playerAbout: playerAbout(companionOrigin(this.project.companion, this.project.gam)),
+          skipTitle: !!level,
+          ...watch,
+        });
+    });
   }
 
   /** Play Level's pick when none is given: the last one, else a way into the open map's level, else the first. */

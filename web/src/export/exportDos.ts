@@ -10,7 +10,7 @@ import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
-import { applyPlayerPatches } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import { applyPlayerPatches, type PreservedParts } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { playerChanges, renamedFiles } from '../dosPlayer/describePatches';
 import { extensionClashes, extensionMap } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
@@ -24,6 +24,8 @@ interface DosExportOptions {
   appBase?: string;
   /** The project's DOS player customizations (dosPlayer/playerRecord.ts), written into its copy of XFERPLAY.EXE. */
   player?: PlayerPatches;
+  /** An imported 3.00 player's own bytes no setting explains (dosPlayer/playerOrigin.ts keptParts), written back as they were. */
+  kept?: PreservedParts;
   /** Build-time callers supply the CD runtime directly, without HTTP or browser globals. */
   runtime?: { player: Uint8Array; driver: Uint8Array; help?: Uint8Array };
   /** A fixed timestamp makes catalog distributions reproducible. */
@@ -126,7 +128,7 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
   let player = runtime.player;
   const driver = runtime.driver;
   const changes = playerChanges(opts.player ?? {});
-  if (changes.length) player = applyPlayerPatches(player, opts.player!);
+  if (changes.length || opts.kept) player = applyPlayerPatches(player, opts.player ?? {}, opts.kept);
   const help: ZipEntry[] = runtime.help && !names.some((n) => n.toUpperCase() === 'CONFIG.HLP') ? [{ name: 'CONFIG.HLP', data: runtime.help }] : [];
 
   const entries: ZipEntry[] = [
@@ -140,7 +142,10 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     {
       name: names.some((n) => n.toUpperCase() === 'README.TXT') ? 'PLAYER.TXT' : 'README.TXT',
       data: textBytes(
-        readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  '), changes, renamedFiles(opts.player ?? {}), gamExt).replace(/\n/g, '\r\n'),
+        readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  '), changes, renamedFiles(opts.player ?? {}), gamExt, !!opts.kept).replace(
+          /\n/g,
+          '\r\n',
+        ),
       ),
     },
   ];
@@ -162,7 +167,7 @@ async function loadRuntime(appBase?: string): Promise<NonNullable<DosExportOptio
   return { player, driver, help };
 }
 
-function readme(title: string, stem: string, audio: string | undefined, changes: string[], exts: string[], gamExt: string): string {
+function readme(title: string, stem: string, audio: string | undefined, changes: string[], exts: string[], gamExt: string, kept: boolean): string {
   return `${title}
 ${'='.repeat(title.length)}
 
@@ -195,11 +200,15 @@ Made with Game-Maker by Recreational Software Designs, exported by Game-Maker: S
 
 Notices
   ${
-    changes.length
+    changes.length || kept
       ? `${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE from the Game-Maker CD, customized
   by this game's author in Game-Maker: Sandbox Edition's DOS player panel. Only these
   changed (each the same length or shorter, in place):
-${changes.map((c) => `    - ${c}`).join('\n')}
+${changes.map((c) => `    - ${c}`).join('\n')}${
+          kept
+            ? `\n  Other bytes are as the player this game was imported from had them (such as\n  an About page of its author's own), written back unchanged.`
+            : ''
+        }
   CONFIG.HLP is its setup screen's help text, from the same CD.`
       : `${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE as it came on the Game-Maker CD, and
   CONFIG.HLP its setup screen's help text, from the same CD.`
