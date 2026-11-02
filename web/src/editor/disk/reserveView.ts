@@ -110,7 +110,7 @@ export function reserveProposalView(p: ReservationProposal | undefined, save: (p
           h('strong', null, `${LABEL[r.role]} ${r.first}-${r.last}`),
           `: ${r.last - r.first + 1} colors for ${r.files.join(', ')}, shown with ${r.palettes} palette${r.palettes === 1 ? '' : 's'}.`,
           r.conflicts
-            ? ` Other blocks draw with ${r.conflicts} color${r.conflicts === 1 ? '' : 's'} in this range; “Colors outside their range” would move them.`
+            ? ` Other blocks draw ${r.conflicts} pixel${r.conflicts === 1 ? '' : 's'} with colors in this range; “Colors outside their range” would move them.`
             : '',
         ),
       ),
