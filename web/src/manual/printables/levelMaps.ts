@@ -674,9 +674,7 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
 }
 
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
-export function levelMaps(
-  ctx: PrintContext,
-):
+export function levelMaps(ctx: PrintContext):
   | {
       render(): Promise<Sheet[]>;
       release(): void;
