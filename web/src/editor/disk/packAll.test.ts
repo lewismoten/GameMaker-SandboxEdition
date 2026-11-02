@@ -14,7 +14,7 @@ describe('planPack', () => {
   it('has nothing to pack for a game with no sprites', () => {
     expect(planPack(empty(), 't.gam', [])).toBeUndefined();
   });
-  it('has nothing to pack when the reservations change nothing', () => {
+  it('has nothing to pack when the reservations free nothing', () => {
     expect(planPack(empty(), 't.gam', [{ first: 10, last: 20, role: 'monster' }])).toBeUndefined();
   });
 });

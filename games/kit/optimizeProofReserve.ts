@@ -13,7 +13,7 @@ export interface ReserveProof {
 
 export function reserveProof(files: GameFiles, gam: string, plainSaved: number): ReserveProof {
   const pack = planPack(files, gam, []);
-  if (!pack) return { line: 'no ranges to propose, or nothing they would change', ok: true };
+  if (!pack) return { line: 'no ranges to propose, or none that would free more than the plain steps', ok: true };
   // the plan was found on a copy; applying it to another one must give the same game
   const work = files.copy();
   for (const u of pack.units) u.apply(work, gam);

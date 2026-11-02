@@ -39,7 +39,7 @@ export interface PackPlan {
 
 const total = (f: GameFiles) => f.entries().reduce((n, [, v]) => n + v.length, 0);
 
-/** undefined when there are no sprites to reserve for, or nothing the ranges would change. */
+/** undefined when there are no sprites to reserve for, or the ranges would free no more than the plain steps (planDisk) do. */
 export function planPack(files: GameFiles, gam: string, existing: readonly PaletteReservation[]): PackPlan | undefined {
   const proposed = !existing.length;
   const roles = proposed ? proposeReservations(files, gam, [])?.roles : [...existing];
@@ -68,7 +68,8 @@ export function planPack(files: GameFiles, gam: string, existing: readonly Palet
     s.apply(work, gam);
     units.push({ kind: 'merge', title: s.title, touches: s.touches, moves: s.moves, apply: (f, g) => s.apply(f, g) });
   }
-  if (!units.length) return undefined;
   const saves = total(files) - total(work);
+  // color changes that free no more than the plain steps do are not worth offering
+  if (!units.length || saves <= plainSaved) return undefined;
   return { roles, proposed, units, saves, extra: saves - plainSaved, delta: sceneDelta(files, work, gam), allowed, stuck };
 }

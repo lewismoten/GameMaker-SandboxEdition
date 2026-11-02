@@ -23,7 +23,11 @@ export function packView(plan: PackPlan | 'none' | undefined, busy: boolean, fin
     );
   } else if (plan === 'none') {
     body.push(
-      h('p', null, 'Nothing more to pack: the reserved ranges would change nothing, or the game has no monster or character blocks to reserve for.'),
+      h(
+        'p',
+        null,
+        'Nothing more to pack: reserved ranges would free no more space than the steps above, or the game has no monster or character blocks to reserve for.',
+      ),
       h('button', { type: 'button', onclick: find }, 'Look again'),
     );
   } else {
