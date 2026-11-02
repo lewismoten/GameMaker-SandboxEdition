@@ -90,6 +90,20 @@ export const INSTRUCTIONS = pages(
     'notes, energy and tips.',
     'F5 saves, F6 loads.',
   ],
+  [
+    'THE TEST DRIVE: you drive THE',
+    'CHEZ. Left goes, let go to',
+    'coast, Right brakes. Stop',
+    'before the line on red, and',
+    'let a stop sign count to',
+    'three. Run one and lose',
+    'points (smile for the camera).',
+    '',
+    'THE PARADE ROUTE: Space toots',
+    'the horn under each cue lamp',
+    'and the band joins in. Down',
+    'backs up.',
+  ],
 );
 
 const CREDITS_TEXT = pages(
@@ -117,8 +131,9 @@ const CREDITS_TEXT = pages(
     '',
     'The songs are played on the',
     "music editor's instrument",
-    'presets; the slide whistle',
-    'is synthesized.',
+    'presets; the slide whistle,',
+    'the camera and the siren are',
+    'synthesized.',
     '',
     'Made with GAME-MAKER 3.0 by',
     'Recreational Software',
