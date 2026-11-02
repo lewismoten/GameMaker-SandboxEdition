@@ -1,6 +1,6 @@
 // Building models out of distance-field parts, the way 1995 modelers built characters out of
 // blobs and primitives: each part has a material; the surface takes the nearest part's.
-import { Sdf, sd, type Material, type V } from '../render/tracer';
+import { Sdf, clamp01, sd, type Material, type V } from '../render/tracer';
 
 type Field = (x: number, y: number, z: number) => number;
 
@@ -11,10 +11,12 @@ interface Part {
 
 /** A model from parts joined with a smooth seam `k` (0 = hard). */
 export function model(parts: Part[], bounds: [V, V], k = 0): Sdf {
+  const fs = parts.map((p) => p.d);
+  const n = fs.length;
   const field: Field = (x, y, z) => {
     let d = Infinity;
-    for (const p of parts) {
-      const v = p.d(x, y, z);
+    for (let i = 0; i < n; i++) {
+      const v = fs[i](x, y, z);
       d = k > 0 && d !== Infinity ? sd.smin(d, v, k) : Math.min(d, v);
     }
     return d;
@@ -55,14 +57,38 @@ export const F = {
     (c: V, r: number): Field =>
     (x, y, z) =>
       sd.sphere(x - c[0], y - c[1], z - c[2], r),
-  ell:
-    (c: V, a: number, b: number, h: number): Field =>
-    (x, y, z) =>
-      sd.ellipsoid(x - c[0], y - c[1], z - c[2], a, b, h),
-  cap:
-    (a: V, b: V, ra: number, rb = ra): Field =>
-    (x, y, z) =>
-      sd.capsule(x, y, z, a, b, ra, rb),
+  ell: (c: V, a: number, b: number, h: number): Field => {
+    const [cx, cy, cz] = c;
+    const aa = a * a;
+    const bb = b * b;
+    const hh = h * h;
+    const lowest = -Math.min(a, b, h);
+    // sd.ellipsoid with the squares of its radii worked out once (same arithmetic)
+    return (x, y, z) => {
+      x -= cx;
+      y -= cy;
+      z -= cz;
+      const k0 = Math.sqrt((x / a) ** 2 + (y / b) ** 2 + (z / h) ** 2);
+      const k1 = Math.sqrt((x / aa) ** 2 + (y / bb) ** 2 + (z / hh) ** 2);
+      return k1 === 0 ? lowest : (k0 * (k0 - 1)) / k1;
+    };
+  },
+  cap: (a: V, b: V, ra: number, rb = ra): Field => {
+    const [ax, ay, az] = a;
+    const bx = b[0] - ax;
+    const by = b[1] - ay;
+    const bz = b[2] - az;
+    const len2 = bx * bx + by * by + bz * bz || 1;
+    const dr = rb - ra;
+    // sd.capsule with the segment's constants worked out once (same arithmetic)
+    return (x, y, z) => {
+      const px = x - ax;
+      const py = y - ay;
+      const pz = z - az;
+      const t = clamp01((px * bx + py * by + pz * bz) / len2);
+      return Math.hypot(px - bx * t, py - by * t, pz - bz * t) - (ra + dr * t);
+    };
+  },
   box:
     (c: V, h: V, r = 0): Field =>
     (x, y, z) =>
