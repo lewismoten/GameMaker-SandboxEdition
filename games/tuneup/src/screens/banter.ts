@@ -195,6 +195,8 @@ export const OUTRO: Record<string, Card> = {
       ['reggie', 'One last thing: the oil pipe is clogged. I shall swim it.'],
       ['leo', "You can't swim."],
       ['reggie', 'I am rubber. I float.'],
+      ['leo', 'So does wood. And a duck.'],
+      ['reggie', 'Do NOT weigh me against a duck.'],
     ],
   },
   // the dream ends: he dozed off on the workbench
