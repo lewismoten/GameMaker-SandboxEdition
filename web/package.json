@@ -14,6 +14,7 @@
     "test": "vitest run",
     "walk:auto": "vite-node scripts/walkAuto.ts",
     "check:games": "vite-node ../games/kit/checkGames.ts",
+    "perf:check": "vite-node scripts/perfCheck.ts",
     "disk:diff": "vite-node scripts/diskDiff.ts --",
     "dosbox": "vite-node scripts/dosbox.ts",
     "domains:check": "vite-node scripts/domainsCheck.ts",

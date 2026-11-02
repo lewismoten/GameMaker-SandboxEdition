@@ -20,6 +20,8 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
     `og/<id>.png` (drawn by `ogImage.ts`), `downloads.html` (a plain page linking every listed Sandbox and Bizarre game's ZIP, for crawlers and the Internet Archive), each Guide section's page `help-<id>.html` (its text from
     `manual/guideSections.ts`, which `webManual.ts` shows), and The Sandbox Scoop's RSS feed `scoop.xml`
     (`scoopFeed.ts`: every game's `printables.json` news story, dated from `scoopDates.json`).
+- `devLog.ts`: the dev server's `gamemaker-dev-log` plugin (`vite serve` only). It appends the page's opt-in interaction log (`src/devLog/interactionLog.ts`) to `../.for-lewis/debug/interaction-log/<local date>.jsonl`, taking only POSTs from this machine of at most 256 KB.
+- `perfCheck.ts` (`npm run perf:check -- [--port 5196] [--url <url>] [--out dir]`): starts its own vite (never 5173), or measures `--url` (e.g. a `vite preview` of a scratch build: the dev server serves modules one by one, so first opens there are several seconds slower than in production) and clicks through the site in Playwright's bundled headless Chromium: each nav page, the editor's biggest song, map and blocks with their tabs, play and stop, leaving, the desk. It prints per step the time until quiet, LCP, INP, CLS, long tasks and playback frame times next to the last run, and writes `../.for-lewis/research/perf/perf-<time>.json`.
 - `domainsCheck.ts` (`npm run domains:check`): asks each registry's whois (and DNS) whether every
   made-up domain in `../src/manual/magazine/mockSites.json` is still unregistered, with a
   nonsense-name control per TLD; prints a table, exits 1 if one is taken, 2 if a lookup couldn't run.
