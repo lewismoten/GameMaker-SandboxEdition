@@ -134,6 +134,44 @@ Before level 14 Doc Leo and Lady Regina un-shrink. The ending cartoon is the par
   car; the bounce touches them. Both kinds count on the stations counter (spent to nothing by
   level 13's door), and the ribbon spends four.
 
+## Structure
+
+What PLAYGAME allows (code/GM), and how the disk uses it. Version 2.0 measured 384 files and
+9,090,811 bytes.
+
+- **Scenes name their files** (`GRATOR.H` `Scene::Files`), so any number of scenes can share a
+  .BBL, .MAP or .MON and still have their own .PAL, start, links and song. The .BBL (63,000 bytes),
+  .MAP (22,000) and .MON (19,200) are fixed sizes, so only fewer files save space; empty slots
+  cost nothing extra.
+- **Shared block sets.** Blocks are drawn in palette roles, so scenes merge into one set where
+  their used blocks (reached from the map through next and touch) fit 150 once duplicates are
+  merged. Two blocks merge only when their pixels, settings and next and touch blocks match.
+  A block's timer belongs to its number, and its phase depends only on those settings, so a
+  merge changes nothing that plays. The felt egg keeps block 149. The sets: street (band1-3, road1-2,
+  90 blocks), curb (cups1-3, horn1-3, 108), garage (jump, brake, hush, 110), engine (spark,
+  fan1-2, oil, 124), gear (gear1-4, 120), dash (dash1-2, 85); rain, pump, swim and beat1-3 keep
+  their own, untouched. Each leaves room for later art. 30 sets become 12: about -1,134,000.
+- **One map where scenes are one place.** cups1-3 and gear1-4 already have identical maps (one
+  file each). The parade's three verses differ in their side streets, so they stack in one map,
+  one verse every 13 rows; the view starts half a screen above the start (`scene.ts`) and never
+  scrolls up or down, so each verse shows exactly what it did. About -154,000.
+- **Shared monster set.** Every scene already uses the same 32 slots; only Oil's Well (its own
+  Squeak and drop timings, which no other scene places) and the cups' shuffles differ. One set
+  with Oil's Well's timings and round 1's shuffle serves 28 scenes; rounds 2 and 3 keep their own.
+  30 sets become 3: -518,400.
+- **Text over a picture.** A slide list's TXT (`PLAYGAME.C` `Display_File`) draws over whatever
+  is on screen: 8x8 letters from x 40, y 40, one line every 8 pixels, up to 16 lines of 31
+  characters, in the picture's color nearest RGB (50, 10, 50). A GIF listed with a pause of 0
+  then a TXT shows words in a bubble drawn in the GIF (as the story, how-to and credits do).
+  The card's words then appear after its fade-in, in that one color and column.
+- **Cartoons.** FLI.CPP plays COLOR, LC (line delta), BLACK, BRUN and COPY chunks, and
+  `encodeFli` already writes LC deltas, with 26-byte holds. Its ring frame (back to frame 0)
+  follows the header's frame count, so PLAYGAME never plays it: 754,000 bytes here. A clip after
+  the first opens on a whole frame; a cut where the picture changes anyway (the cutaway after the
+  title) costs almost nothing, where a cut in a hold costs a whole frame (about 40,000).
+
+Expected: about 9.1 MB down to under 6.5 MB before the cards and cartoons' cuts.
+
 ## Still to build
 
 The manual's pages for levels 5-15 and the printables (keys and stickers still describe the
