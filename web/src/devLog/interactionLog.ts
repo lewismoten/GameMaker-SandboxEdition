@@ -1,6 +1,6 @@
 // Dev server on localhost only, opt in: a log of how the maintainer uses the site, sent to the dev
 // server (scripts/devLog.ts) so Claude can see what was looked at, whether anyone is at the page,
-// and every JavaScript error. A small switch in the corner turns it on or off and is remembered.
+// and every JavaScript error. A small switch in the bottom-left corner (🙈 off, 🐵 on) turns it on or off and is remembered.
 // It records the screen and window size, the pointer (a few times a second), clicks (what was
 // clicked), keys (outside text fields only; inside one, just that typing happened), the page
 // route, scrolling, slow paints (LCP), slow clicks to the next paint (INP), long tasks and errors.
@@ -93,27 +93,30 @@ function toggle(): HTMLButtonElement {
   b.type = 'button';
   b.className = 'dev-log-toggle';
   const paint = () => {
-    b.textContent = on ? '● Logging' : '○ Log';
+    b.textContent = on ? '🐵' : '🙈';
     b.title = on
       ? 'Dev only: your clicks, pointer and errors are logged to .for-lewis/debug (click to stop)'
       : 'Dev only: log your clicks, pointer and errors to .for-lewis/debug for Claude to review';
     b.setAttribute('aria-pressed', String(on));
   };
   b.setAttribute('aria-label', 'Dev log of this session');
+  // a 24 px emoji in the corner, faint until pointed at (demo recordings and other controls share it)
   Object.assign(b.style, {
     position: 'fixed',
-    left: '4px',
-    bottom: '4px',
+    left: '2px',
+    bottom: '2px',
     zIndex: '2147483000',
-    minHeight: '24px',
-    padding: '2px 8px',
-    font: '12px system-ui, sans-serif',
-    borderRadius: '12px',
-    border: '1px solid currentColor',
-    background: 'Canvas',
-    color: 'CanvasText',
-    opacity: '0.7',
+    width: '24px',
+    height: '24px',
+    padding: '0',
+    font: '14px/24px system-ui, sans-serif',
+    border: '0',
+    background: 'transparent',
+    cursor: 'pointer',
+    opacity: '0.45',
   });
+  b.onpointerenter = b.onfocus = () => (b.style.opacity = '1');
+  b.onpointerleave = b.onblur = () => (b.style.opacity = '0.45');
   b.onclick = () => {
     on = !on;
     try {
