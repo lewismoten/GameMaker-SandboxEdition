@@ -11,6 +11,7 @@ import { planRangeSync } from './rangeSync';
 import type { PaletteReservation } from '../editors/palette/paletteReservations';
 import { planMonsterBlocks } from './mergeMonsterBlocks';
 import { planMonsters } from './mergeMonsters';
+import { planColorFolds } from './lookAlikeColors';
 import { planGifs } from './shrinkGifs';
 import { filesIn, sceneUses } from './refs';
 import { SAVE_SAFE_KINDS } from './savesSafe';
@@ -31,7 +32,7 @@ function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][
     if (kind === 'gif') return planGifs(files);
     if (kind === 'pal') return planPalettes(files, gam, uses);
     if (kind === 'look') {
-      const s = planLookAlikes(files, gam, uses);
+      const s = planLookAlikes(files, gam, uses) ?? planColorFolds(files, gam);
       if (s) return s;
       continue;
     }
