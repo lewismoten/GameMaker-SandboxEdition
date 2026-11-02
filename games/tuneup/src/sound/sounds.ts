@@ -42,13 +42,13 @@ export const PLUG_NOTES: [number, string][] = [
   [SND.gain, 'E5'],
   [SND.money, 'G5'],
 ];
-/** The Timing Beat: the four lanes' piano notes (the fourth, points only, rings the speaker alone). */
+/** The Timing Beat: the four lanes' piano notes, slot by slot (the fourth, points only, is the score slot). */
 export const LANE_NOTES: [number, string][] = [
   [SND.help, 'C5'],
   [SND.gain, 'E5'],
   [SND.money, 'G5'],
+  [SND.score, 'C6'],
 ];
-const LANE_D = 'C6';
 /** The Rain Delay: the raindrops' tongue drum notes in D major, slot by slot (by the drop's kind of change). */
 export const DROP_NOTES: [number, string][] = [
   [SND.help, 'D5'],
@@ -163,9 +163,8 @@ export function buildSoundSet(place: Place): SoundSet {
   } else if (place === 'spark') {
     for (const [slot, n] of PLUG_NOTES) add(slot, vocName('hp', n), tone(n));
   } else if (place === 'beat') {
+    // every lane's key a piano note (the tin heart's points ring the top C too)
     for (const [slot, n] of LANE_NOTES) add(slot, vocName('pn', n), tone(n, 12));
-    // the fourth lane (points only) on the speaker alone, a layer under the FM band; so is the tin heart's tick
-    add(SND.score, '', tone(LANE_D, 12));
     // a boop on an unlit key: a dull thud
     add(SND.lose, '', thud());
     add(SND.tip, '', thud());
