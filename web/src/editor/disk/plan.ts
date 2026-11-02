@@ -45,9 +45,9 @@ function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][
           kind === 'bbl'
             ? planBackgrounds(files, gam, uses, x, y)
             : kind === 'mbl'
-              ? planMonsterBlocks(files, gam, uses, x, y)
+              ? planMonsterBlocks(files, gam, uses, x, y, ranges)
               : kind === 'cbl'
-                ? planCharacterBlocks(files, gam, uses, x, y)
+                ? planCharacterBlocks(files, gam, uses, x, y, ranges)
                 : planMonsters(files, gam, uses, x, y);
         if (typeof r !== 'string') return r;
         if (a < b && !/do not fit|merge those first/.test(r) && (kind !== 'bbl' || /carried between|also used with/.test(r)))

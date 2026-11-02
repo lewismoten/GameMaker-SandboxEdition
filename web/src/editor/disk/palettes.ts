@@ -23,3 +23,11 @@ const same = (a: Uint8Array, b: Uint8Array) => a.length === b.length && a.every(
 export function sharePalette(a: Uint8Array[], b: Uint8Array[]): boolean {
   return a.some((x) => b.some((y) => same(x, y)));
 }
+
+/** Like sharePalette, but when the role has reserved colors, two palettes also count as shared when those colors are the same (a sprite file only needs its own range to look right in the editor). */
+export function shareRange(a: Uint8Array[], b: Uint8Array[], reserved: readonly { first: number; last: number }[]): boolean {
+  if (sharePalette(a, b)) return true;
+  if (!reserved.length) return false;
+  const eq = (x: Uint8Array, y: Uint8Array) => reserved.every((r) => x.subarray(r.first * 3, (r.last + 1) * 3).every((v, i) => v === y[r.first * 3 + i]));
+  return a.some((x) => b.some((y) => eq(x, y)));
+}

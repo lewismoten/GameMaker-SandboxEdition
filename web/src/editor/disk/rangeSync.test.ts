@@ -69,4 +69,10 @@ describe('syncing a reserved range', () => {
     syncs[0].apply(f, 't.gam');
     expect(rangeSyncs(f, 't.gam', ranges).syncs).toEqual([]);
   });
+  it('merges palettes that differ only where nothing is drawn, and not when a drawn color differs', () => {
+    const f = room();
+    const step = planDisk(f, 't.gam', ranges).steps.find((x) => x.kind === 'pal');
+    expect(step?.changes[0]).toMatch(/exactly|differ only/);
+    expect(planDisk(room([0, 0, 60]), 't.gam').steps.some((x) => x.kind === 'pal')).toBe(false);
+  });
 });

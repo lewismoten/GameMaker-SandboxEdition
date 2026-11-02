@@ -5,14 +5,22 @@
 import { MONBL, serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { LASTMON, LASTSL, parseMonsters, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { GameFiles } from '../../project/files';
-import { shownPalettes, sharePalette } from './palettes';
+import { shownPalettes, shareRange } from './palettes';
+import type { PaletteReservation } from '../editors/palette/paletteReservations';
 import { placeBlocks, readBlocks } from './blockSlots';
 import { commit, readFor, type Writes } from './commit';
 import { filesIn, readGame, repoint, usersOf, type SceneUse } from './refs';
 import type { Step } from './types';
 
 /** Why two monster block sets can't merge, or the step that merges them. */
-export function planMonsterBlocks(files: GameFiles, gam: string, uses: SceneUse[], keep: string, drop: string): Step | string {
+export function planMonsterBlocks(
+  files: GameFiles,
+  gam: string,
+  uses: SceneUse[],
+  keep: string,
+  drop: string,
+  ranges: readonly PaletteReservation[] = [],
+): Step | string {
   const before: Writes['before'] = new Map();
   const kBytes = readFor(files, before, keep);
   const dBytes = readFor(files, before, drop);
@@ -32,7 +40,14 @@ export function planMonsterBlocks(files: GameFiles, gam: string, uses: SceneUse[
   const kPals = shownPalettes(files, kUsers);
   const dPals = shownPalettes(files, dUsers);
   if (!kPals || !dPals) return 'a scene that uses one of them has no palette file';
-  if (!sharePalette(kPals, dPals)) return 'their scenes have no palette in common';
+  if (
+    !shareRange(
+      kPals,
+      dPals,
+      ranges.filter((r) => r.role === 'monster'),
+    )
+  )
+    return 'their scenes have no palette in common';
   // the moved blocks, with their links to other blocks of the same file following them
   const moved = new Map(K.map((b, i) => [i, b] as [number, Block]));
   for (const i of placed.fresh) {

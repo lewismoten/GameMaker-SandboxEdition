@@ -6,7 +6,8 @@
 import { CHARBL, MONBL, serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { frameCount, parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import type { GameFiles } from '../../project/files';
-import { shownPalettes, sharePalette } from './palettes';
+import { shownPalettes, shareRange } from './palettes';
+import type { PaletteReservation } from '../editors/palette/paletteReservations';
 import { placeBlocks, readBlocks } from './blockSlots';
 import { commit, readFor, type Writes } from './commit';
 import { filesIn, readGame, repoint, usersOf, type SceneUse } from './refs';
@@ -24,7 +25,14 @@ export function framePictures(bytes: Uint8Array): number[] {
 }
 
 /** Why two character block sets can't merge, or the step that merges them. */
-export function planCharacterBlocks(files: GameFiles, gam: string, uses: SceneUse[], keep: string, drop: string): Step | string {
+export function planCharacterBlocks(
+  files: GameFiles,
+  gam: string,
+  uses: SceneUse[],
+  keep: string,
+  drop: string,
+  ranges: readonly PaletteReservation[] = [],
+): Step | string {
   const before: Writes['before'] = new Map();
   const dBytes = readFor(files, before, drop);
   const K = readBlocks(readFor(files, before, keep), CHARBL);
@@ -41,7 +49,14 @@ export function planCharacterBlocks(files: GameFiles, gam: string, uses: SceneUs
   const kPals = shownPalettes(files, kUsers);
   const dPals = shownPalettes(files, dUsers);
   if (!kPals || !dPals) return 'a scene that uses one of them has no palette file';
-  if (!sharePalette(kPals, dPals)) return 'their scenes have no palette in common';
+  if (
+    !shareRange(
+      kPals,
+      dPals,
+      ranges.filter((r) => r.role === 'character'),
+    )
+  )
+    return 'their scenes have no palette in common';
   const moved = new Map(K.map((b, i) => [i, b] as [number, Block]));
   for (const i of placed.fresh) {
     const b = { ...D[i] };
