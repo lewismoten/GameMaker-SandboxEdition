@@ -100,17 +100,36 @@ export function fanBlocks(v: FanVerse) {
     const vent = k.pic('bay');
     for (let y = 2; y < 20; y += 6) vent.rect(0, y, 20, 2, c('wall', 2)).rect(0, y + 2, 20, 1, c('wall', 0));
     book.add('vent', vent, AIR);
-    // a column of warm air: wavy rising lines, pushing up for half a beat, then still
-    const column = (push: boolean, f: number) => {
+    // a column of warm air: specks of dust carried up it. Four frames a beat, the specks rising
+    // 7 pixels a frame while it pushes (half a beat) and 3 while it rests, 20 in all, so the
+    // stacked blocks show one stream of specks climbing; the column's color never changes.
+    const SPECKS = [
+      [5, 1],
+      [12, 4],
+      [8, 8],
+      [15, 11],
+      [6, 14],
+      [11, 17],
+      [9, 3],
+      [14, 15],
+    ];
+    const column = (push: boolean, off: number) => {
       const p = k.pic('vent');
-      p.rect(3, 0, 14, 20, c('accent', push ? 1 : 0));
-      for (const x of [6, 10, 14]) for (let y = 0; y < 20; y += 2) p.set(x + Math.round(Math.sin((y + f * 5 + x) / 3)), y, c('accent', push ? 4 : 2));
-      if (push) p.rect(8, (20 - f * 6) % 20, 4, 2, c('lamp', 4));
+      p.rect(3, 0, 14, 20, c('accent', 0));
+      SPECKS.forEach(([x, y0], i) => {
+        const y = (((y0 - off) % 20) + 20) % 20;
+        p.set(x, y, c('accent', push ? 4 : 3));
+        // the bigger specks trail a short streak while the air pushes
+        if (i % 2 === 0) p.set(x + 1, y, c('accent', push ? 3 : 2));
+        if (push) p.set(x, (y + 1) % 20, c('accent', 2));
+      });
       return p;
     };
     const half = FAN_BEAT / 2;
-    book.add('air.up', column(true, 0), { grav: GRAV.up, ntime: half, next: 'air.rest' });
-    book.add('air.rest', column(false, 1), { grav: GRAV.none, ntime: half, next: 'air.up' });
+    book.add('air.up', column(true, 0), { grav: GRAV.up, ntime: 2, next: 'air.up2' });
+    book.add('air.up2', column(true, 7), { grav: GRAV.up, ntime: half - 2, next: 'air.rest' });
+    book.add('air.rest', column(false, 14), { grav: GRAV.none, ntime: 2, next: 'air.rest2' });
+    book.add('air.rest2', column(false, 17), { grav: GRAV.none, ntime: half - 2, next: 'air.up' });
     // the cap over a column: solid, a grille
     const cap = k.pic('casting');
     for (let x = 3; x < 18; x += 3) cap.rect(x, 12, 2, 8, c('shade', 0));
