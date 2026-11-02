@@ -8,7 +8,8 @@ and tarballs are removed afterwards. This catches hidden repository source depen
 that testing a package inside the workspace would miss.
 
 `build-games.mjs` rebuilds the ignored game outputs (root `npm run build:games`), caching a key and an
-output hash per game. `--timing` (or `GM_BUILD_TIMING=1`) prints each game's seconds, `--game <id>` builds
+output hash per game, written as each game lands so a build stopped partway keeps what it finished (CI
+caches these outputs between runs; `prune-render-cache.mjs` keeps only the current Depth frames there). `--timing` (or `GM_BUILD_TIMING=1`) prints each game's seconds, `--game <id>` builds
 only that game (repeatable), `GM_BUILD_JOBS=n` sets the workers (two by default, every core when `CI` is
 set). `game-import-keys.mjs` makes the keys: the files a game's `build.ts` really imports (an esbuild
 metafile), its own folder, the data files in `games/kit` and the packages, the stock player and the
