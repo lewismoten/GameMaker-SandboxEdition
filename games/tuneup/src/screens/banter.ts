@@ -322,7 +322,7 @@ export const OUTRO: Record<string, Card> = {
     lady: true,
     teddy: true,
     lines: [
-      ['leo', 'An AM/FM radio with a state of the art 8-track. Four programs on every tape.'],
+      ['leo', 'An AM radio with a state of the art 8-track. Four programs on every tape.'],
       ['regina', 'And a head cleaning cartridge, for afterwards.'],
       ['leo', 'Good boy, Teddy. Now: a test drive.'],
     ],
