@@ -37,6 +37,7 @@ const sources = {
   'kit/palRamps': 'kit/palRamps',
   'kit/quantize': 'kit/quantize',
   'kit/sdftext': 'kit/sdftext',
+  'kit/tar': 'kit/tar',
   'kit/raytrace': 'kit/raytrace',
   'kit/actors': 'kit/actors',
   'kit/screenText': 'kit/screenText',
