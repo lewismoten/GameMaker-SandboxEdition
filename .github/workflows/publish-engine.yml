@@ -22,10 +22,10 @@ jobs:
     env:
       GM_SKIP_GAME_BUILD: '1'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
       - name: Check tag and master
@@ -51,7 +51,7 @@ jobs:
           npm run lint
           npx tsc --noEmit -p .
           npm run test:fast -- src/engine src/audio src/project/dosNames.test.ts test/formats.test.ts
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           registry-url: 'https://npm.pkg.github.com/'
