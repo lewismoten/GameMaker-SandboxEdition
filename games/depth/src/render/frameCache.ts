@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { deserialize, serialize } from 'node:v8';
 import { gzipSync, gunzipSync } from 'node:zlib';
 import type { Picture } from './image';
+import { SHARD_PLAN } from './shardPlan';
 /** `group` names the frame whose shard should also render this one (when it is drawn from that frame's pixels). */
 export function cachedFrame(key: string, render: () => Picture, group = key): Picture {
   const dir = process.env.DEPTH_FRAME_CACHE;
@@ -11,9 +12,13 @@ export function cachedFrame(key: string, render: () => Picture, group = key): Pi
   const shard = process.env.DEPTH_FRAME_SHARD;
   if (shard) {
     const [index, count] = shard.split('/').map(Number);
-    let owner = 0;
-    for (const ch of group) owner = (owner * 31 + ch.charCodeAt(0)) >>> 0;
-    if (owner % count !== index) return { w: 320, h: 200, rgb: new Float32Array(320 * 200 * 3) };
+    let owner = SHARD_PLAN[group];
+    if (owner === undefined || count !== 8) {
+      owner = 0;
+      for (const ch of group) owner = (owner * 31 + ch.charCodeAt(0)) >>> 0;
+      owner %= count;
+    }
+    if (owner !== index) return { w: 320, h: 200, rgb: new Float32Array(320 * 200 * 3) };
   }
   const file = join(dir, `${key}.bin.gz`);
   if (existsSync(file)) return deserialize(gunzipSync(readFileSync(file))) as Picture;
