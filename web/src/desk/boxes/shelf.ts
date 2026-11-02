@@ -7,7 +7,7 @@ import './shelf.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { boxModel, openBoxViewer, type BoxViewerPage } from './boxViewer';
-import { drawBox, type BoxFaces } from './gameBox';
+import { drawBox, releaseFaces, type BoxFaces } from './gameBox';
 import { dressUv, uvGame } from './boxUv';
 import { hideWallPoster, setPosterWall, showWallPoster } from '../room/wallPoster';
 import { shelfLayout } from './shelfLayout';
@@ -95,6 +95,10 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   // Boxes spine out are drawn without their cover painting or screenshots (no cover code or
   // game files to load); a box gets them when it is turned face out or taken down, its cover
   // first (quick), then the screenshots.
+  const releaseFacesOf = (id: string) => {
+    const old = faces.get(id);
+    if (old) releaseFaces(old);
+  };
   const complete = new Map<string, Promise<BoxFaces | undefined>>();
   const whole = new Set<string>();
   const completed = (g: CatalogEntry): Promise<BoxFaces | undefined> => {
@@ -103,6 +107,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       void drawBox(g, { shots: false }).then(
         (f) => {
           if (!f || whole.has(g.id)) return;
+          releaseFacesOf(g.id);
           faces.set(g.id, f);
           slots.get(g.id)?.replaceChildren(boxModel(f));
         },
@@ -113,6 +118,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
         .then((f) => {
           if (!f) return faces.get(g.id);
           whole.add(g.id);
+          releaseFacesOf(g.id);
           faces.set(g.id, f);
           uvGame(f, g);
           slots.get(g.id)?.replaceChildren(boxModel(f));

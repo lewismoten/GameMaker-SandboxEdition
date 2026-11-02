@@ -121,14 +121,27 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
 export async function drawBox(entry: CatalogEntry, { shots = true, cover = true, blobs = false } = {}): Promise<BoxFaces | undefined> {
   const sides = await paintBox(entry, shots, false, cover);
   if (!sides) return undefined;
-  // `blobs`: the pictures are encoded off the main thread, into addresses good for this page only
-  // (the shelf's spines); otherwise data addresses, which a manual or a saved page can carry away
-  const url = Object.fromEntries(await Promise.all(Object.entries(sides).map(async ([k, c]) => [k, blobs ? await blobUrl(c) : c.toDataURL()] as const)));
+  // `blobs`: for the shelf. Only the sides that show there (the spine, and the front when it
+  // is turned out) are encoded, off the main thread, into addresses good for this page only
+  // (released by releaseFaces); the other four are blank until the box is drawn whole.
+  // Otherwise data addresses, which a manual or a saved page can carry away.
+  const url = Object.fromEntries(
+    await Promise.all(
+      Object.entries(sides).map(async ([k, c]) => [k, !blobs ? c.toDataURL() : k === 'left' || k === 'front' ? await blobUrl(c) : BLANK] as const),
+    ),
+  );
   return url as unknown as BoxFaces;
 }
 
+const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+
 function blobUrl(c: HTMLCanvasElement): Promise<string> {
   return new Promise((resolve) => c.toBlob((b) => resolve(b ? URL.createObjectURL(b) : c.toDataURL())));
+}
+
+/** Lets go of the page-only addresses a shelf box (drawBox with `blobs`) holds, once its pictures are replaced. */
+export function releaseFaces(faces: BoxFaces): void {
+  for (const u of Object.values(faces)) if (typeof u === 'string' && u.startsWith('blob:')) URL.revokeObjectURL(u);
 }
 
 /**
