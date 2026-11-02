@@ -192,6 +192,17 @@
       "repo": "https://github.com/humanwhocodes/retry"
     },
     {
+      "name": "@isaacs/nonrecursive-glob-match",
+      "version": "1.0.3",
+      "license": "BlueOak-1.0.0",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint",
+        "typescript-eslint"
+      ]
+    },
+    {
       "name": "@jridgewell/resolve-uri",
       "version": "3.1.2",
       "license": "MIT",
@@ -1822,7 +1833,7 @@
     },
     {
       "name": "minimatch",
-      "version": "10.2.6",
+      "version": "11.0.4",
       "license": "BlueOak-1.0.0",
       "runtime": false,
       "direct": false,
