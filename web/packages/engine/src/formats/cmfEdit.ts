@@ -115,7 +115,12 @@ export function setEnd(song: CmfSong, tick: number): void {
 
 /** Mode in effect at the start (before any note). */
 export function startMode(song: CmfSong): boolean {
-  const first = streamEvents(song).find((e) => e.type === 'mode' || e.type === 'on');
+  // the first mode change or note-on in stream order, found in one pass (the editor asks this
+  // for every track name and redraw, so it never sorts the whole song)
+  let first: Ev | undefined;
+  const earlier = (e: Ev) => !first || e.tick < first.tick || (e.tick === first.tick && e.seq < first.seq);
+  for (const e of song.events) if (e.type === 'mode' && earlier(e)) first = e;
+  for (const n of song.notes) if (earlier(n.on)) first = n.on;
   return !!first && first.type === 'mode' && first.a !== 0;
 }
 

@@ -99,6 +99,7 @@ export class MusicDoc {
   private frame = 0;
   private restartTimer?: ReturnType<typeof setTimeout>;
   private auditionTimer?: ReturnType<typeof setTimeout>;
+  private rhythmCache?: boolean;
 
   constructor(
     readonly project: Project,
@@ -118,6 +119,8 @@ export class MusicDoc {
   }
 
   emit(c: Change): void {
+    // anything but a playback tick may follow an edit: ask the song again
+    if (c !== 'play') this.rhythmCache = undefined;
     for (const fn of this.listeners) fn(c);
   }
 
@@ -136,8 +139,9 @@ export class MusicDoc {
     return Math.max(0, Math.round(t / s) * s);
   }
 
+  /** Rhythm mode at the start; asked per note while drawing, so kept until the next change. */
   get rhythm(): boolean {
-    return startMode(this.song);
+    return (this.rhythmCache ??= startMode(this.song));
   }
 
   tracks(): number[] {
