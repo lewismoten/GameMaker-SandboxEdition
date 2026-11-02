@@ -67,13 +67,19 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const libTitle = h('h2', { id: 'lib-title' });
   // the collection in a line (cut short with … if it must be); More shows all of it
   const libLeadText = h('span', { class: 'lib-lead-text' });
-  const leadMore = h('button', {
-    type: 'button',
-    class: 'lib-lead-more',
-    'aria-expanded': 'false',
-    'aria-controls': 'lib-lead',
-    onclick: () => showLead(leadMore.getAttribute('aria-expanded') !== 'true'),
-  });
+  const leadMore = h(
+    'button',
+    {
+      type: 'button',
+      class: 'lib-lead-more',
+      'aria-expanded': 'false',
+      'aria-controls': 'lib-lead',
+      // named from the start: showLead fills in the collection once the tabs are drawn
+      'aria-label': 'More about this collection',
+      onclick: () => showLead(leadMore.getAttribute('aria-expanded') !== 'true'),
+    },
+    'More',
+  );
   const libLead = h('p', { class: 'lead', id: 'lib-lead' }, libLeadText, leadMore);
   const showLead = (all: boolean) => {
     const info = CATEGORIES.find((x) => x.id === current)!;
