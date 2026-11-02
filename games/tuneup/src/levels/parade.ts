@@ -7,6 +7,7 @@
 // ribbon across the street at the end parts when every section of the scene has joined (a
 // counter it spends); a section driven past can be backed up to (Down). No signals: the road is
 // closed for the parade.
+import { addFork, glint } from '../blocks/fork';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { AIR, kit, SOLID, type Kit } from '../blocks/common';
@@ -33,10 +34,12 @@ export interface ParadeScene {
   /** The ribbon's column, near the end. */
   ribbon: number;
   fireworks: boolean;
+  /** The first stretch's secret: a tuning fork on the street at the second side street, a glint over it (level x). */
+  fork?: number;
 }
 
 export const PARADES: ParadeScene[] = [
-  { file: 'band1', w: 70, cues: [54, 42, 30, 18], ribbon: 8, fireworks: false },
+  { file: 'band1', w: 70, cues: [54, 42, 30, 18], ribbon: 8, fireworks: false, fork: 43 },
   { file: 'band2', w: 70, cues: [56, 45, 32, 20], ribbon: 8, fireworks: false },
   { file: 'band3', w: 70, cues: [53, 41, 29, 17], ribbon: 8, fireworks: true },
 ];
@@ -192,6 +195,10 @@ export function paradeBlocks(scene: ParadeScene) {
         else if (f < 4) for (let a = 0; a < 8; a++) p.set(10 + Math.round(Math.cos(a * 0.785) * rr), 10 + Math.round(Math.sin(a * 0.785) * rr), col);
         book.add(`fw${f}`, p, { ...AIR, ntime: [6, 3, 3, 4, 20][f], next: `fw${(f + 1) % 5}` });
       }
+    if (scene.fork !== undefined) {
+      addFork(k, `crowd${(scene.fork * 3) % 4}`);
+      glint(k, 'corner');
+    }
     return k;
   };
 }
@@ -234,6 +241,7 @@ export const parade = (scene: ParadeScene) =>
     });
     for (let x = 3; x < w; x += 9) m.set(x, 2, 'confetti0');
     if (scene.fireworks) for (let x = 6; x < w; x += 11) m.set(x, 1, `fw${x % 5}`);
+    if (scene.fork !== undefined) m.set(scene.fork, row, 'fork').set(scene.fork, top, 'corner.glint');
     m.set(scene.ribbon, row, 'ribbon');
     m.link(EXIT_X, row);
     // variants here and there so the street doesn't repeat

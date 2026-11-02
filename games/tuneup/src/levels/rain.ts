@@ -6,6 +6,7 @@
 // rings a steel tongue drum, a note of D major by the kind of change it makes. The first three
 // wipers sweep every 2 beats, the next three every 3, and the last three in a tricky 5/4: two
 // beats, then three. No monsters. The save sign stands by the start, the level after the felt egg.
+import { addFork, glint } from '../blocks/fork';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { saveSignBlocks } from '../../../kit/saveSign';
@@ -36,7 +37,7 @@ export const SECTIONS: WiperSection[] = [
   { name: 'three', wipers: [22, 25, 28], sweeps: [0], bar: 3 },
   { name: 'five', wipers: [32, 35, 38], sweeps: [0, 2], bar: 5 },
 ];
-export const RAIN = { w: 46, floor: 9, sign: 3, exit: 43 } as const;
+export const RAIN = { w: 46, floor: 9, sign: 3, exit: 43, fork: 40 } as const;
 /** The rows a blade is drawn in (it stings on the bottom two, where Doc Leo is). */
 const BLADE_ROWS = [5, 6, 7, 8];
 /** Raindrops on the dry spots (level x, on the cowl), and the note each rings (by its kind of change). */
@@ -150,6 +151,9 @@ export function rainBlocks(pal: Pal): Kit {
   book.add('sign.r', s.board[1], AIR);
   book.add('post.l', s.posts![0], AIR);
   book.add('post.r', s.posts![1], AIR);
+  // the secret: a glint on the glass and a tuning fork on the cowl, short of the far pillar
+  addFork(k, `sky${RAIN.floor - 1}`);
+  glint(k, `sky${RAIN.floor - 2}`);
   return k;
 }
 
@@ -171,6 +175,7 @@ export function rain(book: Kit['book']): Level {
     .set(RAIN.sign + 1, floor - 2, 'sign.r')
     .set(RAIN.sign, floor - 1, 'post.l')
     .set(RAIN.sign + 1, floor - 1, 'post.r');
+  m.set(RAIN.fork, floor - 1, 'fork').set(RAIN.fork - 1, floor - 2, `sky${floor - 2}.glint`);
   m.link(RAIN.exit, floor - 1);
   m.mon(MON.regina, 6, floor - 1);
   // variants here and there so the walls and floors don't repeat

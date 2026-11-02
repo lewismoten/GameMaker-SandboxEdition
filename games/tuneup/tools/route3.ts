@@ -10,7 +10,7 @@ import { CTR } from '../src/ids';
 import { diskNumber } from '../src/blocks/shared';
 import { GAUGES, PANEL, RADIO_X, STATIONS, dialRing, panelBlocks } from '../src/levels/panel';
 import type { Bot } from './bot';
-import { leave, must } from './route';
+import { leave, must, takeFork } from './route';
 
 const rainBook = rainBlocks(buildPalette('rain')).book;
 /** The raindrops' blocks. */
@@ -39,6 +39,7 @@ export async function rainDelay(bot: Bot): Promise<void> {
     }
   }
   if (bot.sim.ci.hitpts < hp) throw new Error(`slapped by a wiper: ${hp} -> ${bot.sim.ci.hitpts}`);
+  await takeFork(bot, RAIN.fork, 'on the cowl');
   const left = DROPS.filter((x) => drops.has(bot.shownNum(x, RAIN.floor - 1)));
   if (left.length) throw new Error(`raindrops left at ${left.join(', ')}`);
   await leave(bot, bot.walk(RAIN.exit, 'to the far pillar'), 'out');

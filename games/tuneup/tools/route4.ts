@@ -132,6 +132,7 @@ export function paradeRoute(part: number) {
   const run = async (bot: Bot): Promise<void> => {
     expect(bot, 30 + part, `the parade route, ${p.file}`);
     await must(bot, bot.land(), 'onto the route');
+    const forks = bot.count(CTR.forks);
     for (const x of [...p.cues].sort((a, b) => b - a)) {
       await coastTo(bot, x * 20 - 6, `the side street at ${x}`);
       await must(bot, bot.react(), 'looking up at the cue');
@@ -139,6 +140,7 @@ export function paradeRoute(part: number) {
       await must(bot, bot.tap('space', 6), `tooting under the cue at ${x}`);
       if (bot.sim.ci.score !== score + JOIN) throw new Error(`the section at ${x} (cue row ${CUE_ROW}) didn't join`);
     }
+    if (p.fork !== undefined && bot.count(CTR.forks) !== forks + 1) throw new Error('drove past the tuning fork');
     if (bot.count(CTR.stations) !== p.cues.length) throw new Error(`${bot.count(CTR.stations)} sections joined`);
     await leave(bot, bot.dig('left', PARADE_EXIT, 'through the ribbon to the end of the route'), 'out');
   };
