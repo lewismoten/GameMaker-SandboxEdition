@@ -186,7 +186,7 @@ export function jump(book: Kit['book']): Level {
     }
   m.fill(w - 1, 0, 1, floor, 'C');
   m.link(JUMP.exit, 7);
-  m.mon(MON.reggie, JUMP.drum, 6);
+  m.mon(MON.dreamBird, JUMP.drum, 6);
   // he starts in mid air at (8, 5), so the view (centered on where he starts, and never scrolling
   // up or down) shows the whole garage from its left wall; he drops to the floor
   decorate(m, [

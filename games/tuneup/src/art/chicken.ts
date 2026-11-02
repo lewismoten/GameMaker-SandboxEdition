@@ -2,7 +2,9 @@
 // Lady Regina III, the same bird with a tiara in front of her comb. A classic rubber chicken, limp as one:
 // pale yellow rubber lying on its belly, its long scrawny legs trailing out behind it, a long
 // floppy neck that just about holds the head up, a red comb and wattle, an orange beak open
-// mid-squawk. Drawn in a 20x20 box at any scale `s`, facing right, on clear (255).
+// mid-squawk. In his dream (levels 1-4) he stands and walks like a live bird (`stand`); the
+// swim, though in the dream, keeps him floating limp. Drawn in a 20x20 box at any scale `s`,
+// facing right, on clear (255).
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
@@ -22,6 +24,9 @@ export interface ChickenPose {
   peck?: boolean;
   /** Wings up (a flap). */
   flap?: boolean;
+  /** In Sir Reginald's dream: standing up on his legs like a live bird (`step` 1: mid-stride). */
+  stand?: boolean;
+  step?: number;
 }
 
 /** The chicken in a (20s x 20s) picture, facing right. */
@@ -29,8 +34,48 @@ export function chicken(s: number, o: ChickenPose = {}): Pixels {
   const W = Math.round(20 * s);
   const p = new Pixels(W, W, 255);
   const S = (v: number) => v * s;
-  const rubber = P.r('rubber');
   const bob = o.bob ? 1 : 0;
+  const head = o.stand ? standing(p, S, o, bob) : limp(p, S, s, o, bob);
+  drawHead(p, S, s, o, head[0], head[1]);
+  return outline(p, ink);
+}
+
+type Scale = (v: number) => number;
+
+/** The dream's bird: up on his legs, tail up, neck up (or down at the ground, pecking); returns where the head goes. */
+function standing(p: Pixels, S: Scale, o: ChickenPose, bob: number): [number, number] {
+  const rubber = P.r('rubber');
+  // legs: from under the body to the ground, a knee bent back; mid-stride one reaches ahead
+  const stride = o.step ? 1.8 : 0;
+  for (const [hip, foot] of [
+    [9, 9 - stride],
+    [11.4, 11.4 + stride],
+  ]) {
+    const knee = (hip + foot) / 2 - 0.9;
+    p.line(Math.round(S(hip)), Math.round(S(13.6)), Math.round(S(knee)), Math.round(S(16.6)), c('orange', 2));
+    p.line(Math.round(S(knee)), Math.round(S(16.6)), Math.round(S(foot)), Math.round(S(19.2)), c('orange', 2));
+    // three toes along the ground, the long one ahead
+    p.line(Math.round(S(foot - 1.4)), Math.round(S(19.4)), Math.round(S(foot + 1.8)), Math.round(S(19.4)), c('orange', 1));
+  }
+  // the body: a plump teardrop held level, the tail cocked up at the back
+  blob(p, S(10), S(11.4), S(5.2), S(3.4), rubber, 0, 3);
+  blob(p, S(5), S(8.6), S(1.8), S(2.6), rubber, 0, 3);
+  if (o.flap) blob(p, S(8.8), S(7.6), S(3), S(2), rubber, 0, 2);
+  else blob(p, S(9.8), S(11.2), S(3), S(1.8), rubber, 0, 1);
+  // the neck: up from the breast with a little S, or bent down to the ground to peck
+  const hx = o.peck ? 16.4 : 15;
+  const hy = (o.peck ? 14 : 4.6) + bob;
+  for (let t = 0; t <= 1; t += 0.05) {
+    const x = 13.2 + (hx - 13.2) * t + Math.sin(t * Math.PI * 2) * (o.peck ? 0.3 : 0.5);
+    const y = 9.6 + (hy - 9.6) * t;
+    blob(p, S(x), S(y), S(1.35), S(1.35), rubber, 1, 3);
+  }
+  return [hx, hy];
+}
+
+/** The waking world's rubber chicken, limp on its belly; returns where the head goes. */
+function limp(p: Pixels, S: Scale, s: number, o: ChickenPose, bob: number): [number, number] {
+  const rubber = P.r('rubber');
   // legs: long and scrawny, trailing out behind the body along the floor, three toes each
   for (const [lx, ly, fx, fy] of [
     [8.6, 17.4, 1.8, 17.2],
@@ -59,6 +104,12 @@ export function chicken(s: number, o: ChickenPose = {}): Pixels {
     const y = 15 + (hy - 15) * t + Math.sin(t * Math.PI) * (o.peck ? -1.6 : 0.6);
     blob(p, S(x), S(y), S(1.3), S(1.3), rubber, 1, 3);
   }
+  return [hx, hy];
+}
+
+/** The head at (hx, hy): the comb (three bumps), the wattle, the beak, the eye, and Lady Regina's tiara. */
+function drawHead(p: Pixels, S: Scale, s: number, o: ChickenPose, hx: number, hy: number): void {
+  const rubber = P.r('rubber');
   // the head, the comb (three bumps) and the wattle
   blob(p, S(hx), S(hy), S(2.3), S(2.1), rubber, 1, 3);
   for (const [dx, dy, r] of [
@@ -100,5 +151,4 @@ export function chicken(s: number, o: ChickenPose = {}): Pixels {
     }
     p.disc(S(hx - 0.3), S(hy - 2.4), Math.max(0.6, S(0.7)), c('pink', 1));
   }
-  return outline(p, ink);
 }

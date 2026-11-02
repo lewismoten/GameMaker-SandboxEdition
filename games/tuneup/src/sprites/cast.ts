@@ -84,6 +84,11 @@ export function buildMonsterBlocks() {
   book.add('reggie0', bird({}));
   book.add('reggie1', bird({ bob: 1, squawk: true }));
   book.add('reggiePeck', bird({ peck: true }));
+  // in the dream he stands and walks like a live bird
+  book.add('dream0', bird({ stand: true }));
+  book.add('dream1', bird({ stand: true, step: 1 }));
+  book.add('dreamPeck', bird({ stand: true, peck: true }));
+  book.add('dreamSquawk', bird({ stand: true, bob: 1, squawk: true }));
   book.add('regina0', bird({ lady: true }));
   book.add('regina1', bird({ lady: true, bob: 1, squawk: true }));
   book.add('squeak0', squeak(0));

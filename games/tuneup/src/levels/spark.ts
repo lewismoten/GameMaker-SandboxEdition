@@ -135,7 +135,7 @@ export function spark(book: Kit['book']): Level {
   m.set(SPARK.gateC, 6, 'gate.c.top').set(SPARK.gateC, 7, 'gate.c');
   m.link(SPARK.exit, 7);
   // Sir Reginald on the last ledge, at work on the fourth plug's boot
-  m.mon(MON.reggie, WIRES[3].x + 3, WIRE_TOP);
+  m.mon(MON.dreamBird, WIRES[3].x + 3, WIRE_TOP);
   // he starts in mid air at (8, 5), so the view (centered on where he starts, and never scrolling
   // up or down) shows the bay from its left wall; he drops to the floor
   return { m, start: at(8, 5), size: [w, 10] };

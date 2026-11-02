@@ -114,6 +114,9 @@ export const MON = {
   ridePop: 34,
   /** The Horn Section: the character clowns strolling the curb (fireman, police, baker, butcher). */
   clown0: 35,
+  /** Sir Reginald in his dream (levels 1-4): up on his legs like a live bird, standing and pecking, or strolling. */
+  dreamBird: 39,
+  dreamWalk: 40,
 } as const;
 
 /** Sound slots (0..8 are the ones PLAYGAME plays by itself, by the kind of change). */

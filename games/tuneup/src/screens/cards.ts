@@ -130,7 +130,8 @@ export function card(k: Card): Pixels {
     .rect(272, HEN[1], 48, 1, c('wood', 4))
     .rect(272, HEN[1] + 4, 48, 1, c('wood', 1));
   for (const x of [278, 310]) p.rect(x, HEN[1] + 5, 2, 8, c('pipe', 1)).rect(x - 2 + (x > 290 ? 2 : 0), HEN[1] + 5, 4, 2, c('pipe', 1));
-  drawChicken(p, HEN[0] + (k.egg ? 6 : 2), HEN[1], 2, { lady: k.lady, squawk: !k.asleep, bob: k.asleep ? 1 : 0 }, true);
+  // in the dream he stands like a live bird; awake (or dozing) he's the limp rubber chicken
+  drawChicken(p, HEN[0] + (k.egg ? 6 : 2), HEN[1], 2, { lady: k.lady, squawk: !k.asleep, bob: k.asleep ? 1 : 0, stand: k.dream && !k.asleep }, true);
   if (k.asleep) for (const [i, s] of ['z', 'z', 'Z'].entries()) text(p, 282 + i * 10, 46 - i * 10, s, INK, i === 2 ? 2 : 1);
   if (k.egg) p.blit(rubberEgg(new Pixels(20, 20, 255)), 271, HEN[1] - 19, 255);
   drawLeo(p, k.leoPose ?? 'grin', LEO[0], LEO[1], 2);

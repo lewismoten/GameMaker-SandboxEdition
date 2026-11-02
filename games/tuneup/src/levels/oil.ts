@@ -175,7 +175,7 @@ export function oil(book: Kit['book']): Level {
   m.set(OIL.gate, 7, 'gate.top').set(OIL.gate, 8, 'gate');
   m.link(OIL.exit, 8);
   for (const s of SQUEAKS) m.mon(s.fast ? MON.squeakFast : MON.squeak, s.x, LINES[s.line]);
-  m.mon(MON.reggie, 4, 8);
+  m.mon(MON.dreamWalk, 4, 8);
   // he starts mid-screen (the view, which never scrolls, is centered on where he starts) and drops to the floor
   return { m, start: at(8, 5), size: [w, 10] };
 }

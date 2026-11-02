@@ -159,6 +159,18 @@ export function buildMonsters(mb: MonsterBlocks, o: MonsterOptions = {}): Monste
     { power: POWER.bird, thru: 1 },
     still,
   );
+  // the dream's bird: standing, pecking, a squawk; or strolling a few steps and back
+  out[MON.dreamBird] = mon(
+    [
+      [n('dream0'), 20],
+      [n('dreamPeck'), 5],
+      [n('dream0'), 12],
+      [n('dreamSquawk'), 6],
+    ],
+    { power: POWER.bird, thru: 1 },
+    still,
+  );
+  out[MON.dreamWalk] = mon(anim('dream0', 'dream1', 4), { power: POWER.bird, thru: 1 }, pace(2, 1));
   out[MON.regina] = mon(anim('regina0', 'regina1', 12), { power: POWER.bird, thru: 1 }, still);
   // a Squeak paces its line; oiled, it becomes a note that floats home to Doc Leo
   const run = o.squeak ?? 6;

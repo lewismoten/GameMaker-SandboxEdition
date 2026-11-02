@@ -483,7 +483,7 @@ export function beat(v: Verse) {
     // the side room's ledges up to the nook
     m.fill(16, 6, 2, 1, 's').fill(19, 4, 2, 1, 's');
     if (v.nook === 'heart') m.set(...NOOK, 'tinHeart');
-    m.mon(MON.reggie, 15, ROW.feet);
+    m.mon(MON.dreamBird, 15, ROW.feet);
     m.link(EXIT_X, ROW.feet);
     // he starts mid-screen between the keys and drops onto the rail
     return { m, start: at(8, 5), size: [W, 10] };
