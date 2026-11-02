@@ -45,7 +45,14 @@ export function checkpointPanel(project: Project, hist: ReturnType<typeof fileUn
 
   const restore = async (i: number) => {
     const cp = list[i];
-    if (!(await confirmDialog('Restore the checkpoint', `Put every file back as it was ${when(cp.made)}? Undo takes the files back; the project’s editor notes (block names, groups, palette reservations) stay as the checkpoint had them.`, 'Restore'))) return;
+    if (
+      !(await confirmDialog(
+        'Restore the checkpoint',
+        `Put every file back as it was ${when(cp.made)}? Undo takes the files back; the project’s editor notes (block names, groups, palette reservations) stay as the checkpoint had them.`,
+        'Restore',
+      ))
+    )
+      return;
     const changes = restoreChanges(project.files, versionAt(list, i));
     hist.before(...changes.keys());
     for (const [n, b] of changes) {
