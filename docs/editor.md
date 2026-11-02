@@ -44,7 +44,7 @@ has your own AI build one from a few lines of description (see
 ![The My games tab with one game, a copy of Snowbound, under "Continue where you left off", and a Getting started box](screenshots/editor/01-my-games.webp)
 
 Games you make or copy are kept in this browser under _My games_, newest first, and the side
-panel offers to pick up where you left off. Nothing is uploaded anywhere.
+panel offers to pick up where you left off. Nothing is uploaded, unless you set up your own AI to work on a game.
 
 The Play screen offers **Show setup on first run**. With it checked, a game without saved
 hardware choices opens video/audio setup before playing. Choose Sound Blaster for music and
