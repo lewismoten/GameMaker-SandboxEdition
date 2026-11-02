@@ -14,6 +14,7 @@ const sources = {
   'look-alike': 'lookAlike',
   delta: 'delta',
   'color-reduce': 'colorReduce',
+  'gif-shrink': 'gifShrink',
   'palette-reserve': 'paletteReserve',
   'block-merge': 'blockMerge',
   'release-notes': 'releaseNotes',

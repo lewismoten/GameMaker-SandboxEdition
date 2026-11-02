@@ -89,6 +89,11 @@
       "gamemaker-source": "./src/paletteReserve.ts",
       "import": "./dist/palette-reserve.js"
     },
+    "./gif-shrink": {
+      "types": "./dist/types/gifShrink.d.ts",
+      "gamemaker-source": "./src/gifShrink.ts",
+      "import": "./dist/gif-shrink.js"
+    },
     "./color-reduce": {
       "types": "./dist/types/colorReduce.d.ts",
       "gamemaker-source": "./src/colorReduce.ts",

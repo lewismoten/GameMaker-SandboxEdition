@@ -10,7 +10,7 @@ export interface BlockMove {
 }
 
 export interface Step {
-  kind: 'bbl' | 'mbl' | 'cbl' | 'mon' | 'pal' | 'look' | 'sync';
+  kind: 'bbl' | 'mbl' | 'cbl' | 'mon' | 'pal' | 'look' | 'sync' | 'gif';
   /** The file that stays and the file that goes. */
   keep: string;
   drop: string;

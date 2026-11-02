@@ -11,14 +11,12 @@ import { planRangeSync } from './rangeSync';
 import type { PaletteReservation } from '../editors/palette/paletteReservations';
 import { planMonsterBlocks } from './mergeMonsterBlocks';
 import { planMonsters } from './mergeMonsters';
+import { planGifs } from './shrinkGifs';
 import { filesIn, sceneUses } from './refs';
 import type { Note, Plan, Step } from './types';
 
 // block sets join last: once two scenes share a block set, their monster files can no longer tell whose birth blocks are whose
-const ORDER: Step['kind'][][] = [
-  ['sync', 'mbl', 'mon', 'cbl', 'pal'],
-  ['look', 'bbl'],
-];
+const ORDER: Step['kind'][][] = [['sync', 'mbl', 'mon', 'cbl', 'pal'], ['look', 'bbl'], ['gif']];
 
 /** The next step that can be applied, and why the other pairs can't. */
 function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][], ranges: readonly PaletteReservation[]): Step | undefined {
@@ -29,6 +27,7 @@ function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][
       if (s) return s;
       continue;
     }
+    if (kind === 'gif') return planGifs(files);
     if (kind === 'pal') return planPalettes(files, gam, uses);
     if (kind === 'look') {
       const s = planLookAlikes(files, gam, uses);
