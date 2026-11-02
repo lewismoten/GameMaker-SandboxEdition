@@ -24,14 +24,50 @@ export const leoPose = (name: string): Pixels => {
   if (!p) throw new Error(`No Doc Leo pose ${name}`);
   return p;
 };
-/** Doc Leo scaled `s` times with his feet at (x, y). */
-export function drawLeo(p: Pixels, pose: string, x: number, y: number, s: number, flip = false): void {
-  scaleBlit(p, leoPose(pose), x, y - 40 * s, s, flip);
+/** The x extent of a picture's lowest drawn row: where its feet are. */
+function feet(pic: Pixels): [number, number] {
+  for (let y = pic.h - 1; y >= 0; y--) {
+    let a = -1;
+    let b = -1;
+    for (let x = 0; x < pic.w; x++)
+      if (pic.get(x, y) !== 255) {
+        if (a < 0) a = x;
+        b = x;
+      }
+    if (a >= 0) return [a, b];
+  }
+  return [0, pic.w - 1];
 }
-/** The chicken `s` times a block with its feet at (x, y). */
-export function drawChicken(p: Pixels, x: number, y: number, s: number, o: ChickenPose = {}, flip = false): void {
+/** A soft shadow on the floor from x0 to x1 with its middle on line y: a dark core, a lighter rim. */
+export function shadow(p: Pixels, x0: number, x1: number, y: number, ink: [number, number] = [c('floor', 1), c('floor', 0)]): void {
+  const cx = (x0 + x1) / 2;
+  const rx = (x1 - x0) / 2 + 0.5;
+  const ry = Math.max(2.5, rx / 9);
+  for (let dy = -Math.ceil(ry); dy <= Math.ceil(ry); dy++)
+    for (let dx = -Math.ceil(rx); dx <= Math.ceil(rx); dx++) {
+      const d = (dx / rx) ** 2 + (dy / ry) ** 2;
+      const X = Math.round(cx + dx);
+      if (d <= 1 && X >= 0 && X < p.w && y + dy >= 0 && y + dy < p.h) p.set(X, y + dy, ink[d < 0.6 ? 1 : 0]);
+    }
+}
+/** Doc Leo scaled `s` times with his feet at (x, y), on a shadow when `ground`. */
+export function drawLeo(p: Pixels, pose: string, x: number, y: number, s: number, flip = false, ground = false): void {
+  const pic = leoPose(pose);
+  if (ground) {
+    const [a, b] = feet(flip ? pic.flipX() : pic);
+    shadow(p, x + (a - 2) * s, x + (b + 3) * s - 1, y);
+  }
+  scaleBlit(p, pic, x, y - 40 * s, s, flip);
+}
+/** The chicken `s` times a block with its feet at (x, y), on a shadow when `ground`. */
+export function drawChicken(p: Pixels, x: number, y: number, s: number, o: ChickenPose = {}, flip = false, ground = false): void {
   const pic = chicken(s, o);
   const q = flip ? pic.flipX() : pic;
+  if (ground) {
+    const [a, b] = feet(q);
+    const w = Math.max(b - a, q.w / 3);
+    shadow(p, x + (a + b) / 2 - w / 2 - 4, x + (a + b) / 2 + w / 2 + 4, y);
+  }
   p.blit(q, x, y - q.h, 255);
 }
 
@@ -89,6 +125,15 @@ export const CHEZ_INK: ChezInk = {
 export function drawChez(p: Pixels, x: number, y: number, s: number, teddy = true): void {
   chezSide(p, x, y, CHEZ_INK, 'left', s);
   if (teddy) teddyInWindow(p, x, y, s);
+}
+
+/**
+ * THE CHEZ parked facing left with its tires on floor line `floor` (its box's left at x), on a
+ * contact shadow: the shadow under the tires and the sill, a little wider than the car.
+ */
+export function parkChez(p: Pixels, x: number, floor: number, s: number, teddy = true, ink?: [number, number]): void {
+  shadow(p, x + Math.round(2 * s), x + Math.round(38 * s), floor - 1, ink);
+  drawChez(p, x, floor - Math.round(20 * s), s, teddy);
 }
 
 /** The tools Doc Leo's hat gives, a 32x32 picture each on clear. */

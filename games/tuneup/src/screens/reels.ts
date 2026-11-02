@@ -13,7 +13,7 @@ import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { centered } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { GWINN } from '../../../teddy2/src/sprites/gwinn';
-import { SP, INK, DREAM_PARTS, REAL_PARTS, cutaway, drawChez, drawChicken, drawLeo, garage, nightYard, toolPic, type Tool } from './art';
+import { SP, INK, DREAM_PARTS, REAL_PARTS, cutaway, drawChez, parkChez, drawChicken, drawLeo, garage, nightYard, toolPic, type Tool } from './art';
 
 const c = SP.c;
 /** Frames a second: a wait of 5/70 s a frame. */
@@ -38,8 +38,8 @@ export function openingReel(): Reel {
   const r = new Reel(SP.pal);
   // 1. night: THE CHEZ in the yard, hood up; Gwinn tips the trunk, the instruments' notes fly in
   const night = nightYard();
-  drawChez(night, 60, 70, 4, false);
-  night.rect(60, 92, 50, 3, c('red', 3)).line(60, 92, 76, 70, c('red', 2));
+  parkChez(night, 60, 158, 4, false, [c('leaf', 0), c('ink', 0)]);
+  night.rect(60, 100, 50, 3, c('red', 3)).line(60, 100, 76, 78, c('red', 2));
   const trunk = (p: Pixels, tip: number) => {
     const x = 220;
     const y = 150 - 26;
@@ -66,23 +66,23 @@ export function openingReel(): Reel {
     );
   // 2. morning: Doc Leo and Sir Reginald come to the car; the horn honks like a kazoo
   const morn = garage(160);
-  drawChez(morn, 100, 60, 5);
+  parkChez(morn, 100, 170, 5);
   for (let f = 0; f < 20; f++)
     r.frame(morn, (p) => {
       const x = Math.min(30, -40 + f * 6);
-      drawLeo(p, f < 12 ? `walk${f % 4}` : 'front', x, 160, 2);
-      drawChicken(p, x + 34, 160, 1.5, { bob: f % 2 });
+      drawLeo(p, f < 12 ? `walk${f % 4}` : 'front', x, 170, 2, false, true);
+      drawChicken(p, x + 34, 170, 1.5, { bob: f % 2 }, false, true);
       if (f >= 12) balloon(p, 150, 20, 'HONK-ZOO!', 120, 70);
     });
   // 3. the shrinking trick: smaller and smaller, in a swirl of sparkles, into the hood
   for (let f = 0; f < 18; f++)
     r.frame(morn, (p) => {
       const s = f < 6 ? 2 : f < 10 ? 1 : 0;
-      if (s) drawLeo(p, 'grin', 40 + (2 - s) * 20, 160, s);
-      if (s) drawChicken(p, 74 + (2 - s) * 20, 160, s * 0.75);
+      if (s) drawLeo(p, 'grin', 40 + (2 - s) * 20, 170, s, false, true);
+      if (s) drawChicken(p, 74 + (2 - s) * 20, 170, s * 0.75, {}, false, true);
       for (let k = 0; k < 8; k++) {
         const a = k * 0.8 + f * 0.5;
-        sparkle(p, 70 + Math.round(Math.cos(a) * (40 - f * 2)), 120 + Math.round(Math.sin(a) * (30 - f)), 3);
+        sparkle(p, 70 + Math.round(Math.cos(a) * (40 - f * 2)), 130 + Math.round(Math.sin(a) * (30 - f)), 3);
       }
       if (f >= 12) centered(p, 176, 'THE SHRINKING TRICK!', c('lamp', 4), 1, INK);
     });
@@ -162,17 +162,17 @@ function confetti(p: Pixels, f: number, n = 40): void {
 export function unshrinkReel(): Reel {
   const r = new Reel(SP.pal);
   const morn = garage(160);
-  drawChez(morn, 100, 60, 5);
+  parkChez(morn, 100, 170, 5);
   for (let f = 0; f < 18; f++)
     r.frame(
       morn,
       (p) => {
         const s = f < 6 ? 0 : f < 11 ? 1 : 2;
-        if (s) drawLeo(p, f < 14 ? 'grin' : 'front', 40 + (2 - s) * 20, 160, s);
-        if (s) drawChicken(p, 74 + (2 - s) * 20, 160, s * 0.75, { lady: true, bob: f % 2 });
+        if (s) drawLeo(p, f < 14 ? 'grin' : 'front', 40 + (2 - s) * 20, 170, s, false, true);
+        if (s) drawChicken(p, 74 + (2 - s) * 20, 170, s * 0.75, { lady: true, bob: f % 2 }, false, true);
         for (let k = 0; k < 8; k++) {
           const a = k * 0.8 - f * 0.5;
-          sparkle(p, 70 + Math.round(Math.cos(a) * (6 + f * 2)), 120 + Math.round(Math.sin(a) * (4 + f)), 3);
+          sparkle(p, 70 + Math.round(Math.cos(a) * (6 + f * 2)), 130 + Math.round(Math.sin(a) * (4 + f)), 3);
         }
         if (f >= 12) centered(p, 176, 'FULL SIZE AGAIN!', c('lamp', 4), 1, INK);
       },
@@ -227,11 +227,11 @@ export function endingReel(): Reel {
   const show = garage(160);
   const S3 = 3;
   const ox = 120;
-  const oy = 92;
+  const oy = 106;
   const pts = CHEZ_BODY.map(([x, y]) => [ox + (40 - x) * S3, oy + y * S3] as const);
   for (let f = 0; f < 22; f++)
     r.frame(show, (p) => {
-      drawLeo(p, f % 4 < 2 ? 'grin' : 'front', 50, 160, 2);
+      drawLeo(p, f % 4 < 2 ? 'grin' : 'front', 50, 170, 2, false, true);
       const n = Math.min(pts.length, Math.floor(f / 2));
       for (let i = 0; i < n; i++) {
         const [x0, y0] = pts[i];
@@ -246,11 +246,11 @@ export function endingReel(): Reel {
     });
   // 3. Gwinn brings back the toolbox; everyone by the car, the last chord
   const yard = garage(160);
-  drawChez(yard, 90, 60, 5);
+  parkChez(yard, 90, 170, 5);
   for (let f = 0; f < 24; f++)
     r.frame(yard, (p) => {
-      drawLeo(p, 'front', 30, 160, 2);
-      drawChicken(p, 150, 62, 1.25, { lady: true, squawk: f > 16 });
+      drawLeo(p, 'front', 30, 170, 2, false, true);
+      drawChicken(p, 200, 75, 1.25, { lady: true, squawk: f > 16 });
       const gx = Math.max(262, 330 - f * 8);
       scaleBlit(p, f % 4 < 2 ? GWINN.gwinnRun1 : GWINN.gwinnRun2, gx, 128, 2, true);
       toolbox(p, gx - 8, 150, 2);

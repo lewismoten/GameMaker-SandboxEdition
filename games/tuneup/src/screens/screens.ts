@@ -5,7 +5,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { gif, scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
-import { SP, INK, REAL_PARTS, cutaway, drawChez, drawChicken, drawLeo, garage } from './art';
+import { SP, INK, REAL_PARTS, cutaway, parkChez, drawChicken, drawLeo, garage } from './art';
 import { card } from './cards';
 import { INTRO, OUTRO, WAKE } from './banter';
 
@@ -23,9 +23,9 @@ export function buildScreens(): Record<string, Uint8Array> {
     const p = garage(160);
     title(p, 14);
     centered(p, 52, 'NO WRENCHES. NO PROBLEM.', c('paint', 3), 1, INK);
-    drawChez(p, 120, 70, 4);
-    drawLeo(p, 'grin', 40, 188, 3);
-    drawChicken(p, 106, 188, 2.5, { lady: true, squawk: true });
+    parkChez(p, 120, 170, 4);
+    drawLeo(p, 'grin', 40, 188, 3, false, true);
+    drawChicken(p, 106, 188, 2.5, { lady: true, squawk: true }, false, true);
     save('title.gif', p);
   }
   // ---------------- menu: the name, a board for the menu, the chicken on the bench beside it
