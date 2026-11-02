@@ -90,7 +90,7 @@ const ICONS: Record<ShopSign, string[]> = {
 export function shopSign(k: Kit, sign: ShopSign): Pixels {
   const { c } = k;
   const board: Record<ShopSign, number> = {
-    pizza: c('paint', 3),
+    pizza: c('green', 0),
     floppy: c('yellow', 3),
     police: c('blue', 1),
     pets: c('green', 2),
