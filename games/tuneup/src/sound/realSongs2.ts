@@ -6,8 +6,9 @@
 //   bars, 120 beats: whole rounds of the 2-, 3- and 5-beat wipers.
 // - The Horn Section (brass): the round's call on the clowns' kazoos, as the board lights it,
 //   and the brass answering in the two beats of rest, a funk in A minor, sixteen calls.
-// - Key Change (synth): an 80s pop song, verse, verse, lift and chorus, a whole step higher
-//   each gear room and busier each time; 32 bars, whole rounds of the doors' two-bar clock.
+// - Key Change (synth): an 80s pop song, a part of it a gear room (verses; lift and chorus;
+//   bridge; last choruses), a whole step higher each room and busier each time; 32 bars a room,
+//   whole rounds of the doors' two-bar clock.
 // - The Instrument Panel (strings, then voices): a bossa on the radio in A minor, its needle's
 //   sweep two bars long; then the choir swell for the gauges, a hymn in C.
 import { Writer } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
@@ -24,7 +25,7 @@ import { DIAL } from '../levels/panel';
 
 const RAIN_A = ['D', 'Bm', 'G', 'A', 'D', 'F#m', 'Em', 'A'];
 const RAIN_B = ['G', 'D', 'Em', 'Bm', 'G', 'D', 'E', 'A'];
-const DROPS_A = ['F#5q A5q D6q B5q A5q', 'F#5h. D5h', 'G5q B5q D6q E6q D6q', 'C#6h. A5h', 'F#5q A5q D6q F#6q E6q', 'C#6h. A5h', 'B5q G5q E5q G5q B5q'];
+const DROPS_A = ['F#5q A5q D6q B5q A5q', 'F#5h. D5h', 'G5q B5q D6q E6q D6q', 'C#6h. A5h', 'D5q F#5q A5q D6q E6q', 'C#6h. A5h', 'B5q G5q E5q G5q B5q'];
 const DROPS_B = bars(
   'D6q. B5e G5q D6h',
   'A5q. F#5e D5q A5h',
@@ -111,7 +112,7 @@ const LIFT = bars(
   'D5h G5h',
   'A5e C6e E6e C6e A5e C6e E6e C6e',
   'F6q. E6e C6h',
-  'E6e D6e C6e G5e E6e D6e C6e G5e',
+  'E6e D6e C6e G5e A5e C6e E6e G6e',
   'B5h D6h',
 );
 const CHORUS = bars(
@@ -125,14 +126,68 @@ const CHORUS = bars(
   'C6h. rq',
 );
 
+const POP_BRIDGE = ['F', 'G', 'Em', 'Am', 'F', 'G', 'Dm', 'G'];
+const POP_TAG = ['F', 'G', 'C', 'Am', 'F', 'G', 'C', 'C'];
+const VERSE3 = bars(
+  'G5e. G5s E5e G5e C6q rq',
+  'B5e. B5s G5e B5e D6q rq',
+  'C6e. C6s A5e C6e E6q rq',
+  'A5e G5e F5e E5e C5h',
+  'G5e. G5s E5e G5e C6q E6q',
+  'D6e. D6s B5e G5e D5h',
+  'F5e. F5s A5e C6e F6q E6q',
+  'D6h. rq',
+);
+const BRIDGE = bars('C6h A5q F5q', 'D6h B5q G5q', 'E6q. D6e B5q G5q', 'C6h. rq', 'A5q C6q F6q E6q', 'D6q B5q G5q B5q', 'A5q F5q D5q F5q', 'G5w');
+const CHORUS2 = bars(
+  'G6q E6q rq C6q',
+  'D6q B5q rq G5q',
+  'A5q C6q E6q A6q',
+  'A6h. rq',
+  'G6q E6q rq C6q',
+  'D6q G6q rq B5q',
+  'A5e C6e F6e A6e G6e E6e C6e B5e',
+  'C6h. rq',
+);
+const TAG = bars('A5q. C6e F6q C6q', 'B5q. D6e G6q D6q', 'E6q. C6e G5q C6q', 'A5h. E6q', 'F6q E6q C6q A5q', 'D6q B5q G5q D6q', 'C6w', 'rh G5q B5q');
+/** Each gear room's part of the song: the verses, then the lift and chorus, the bridge and a new chorus, the last choruses. */
+const ROOMS: [string, string[]][][] = [
+  [
+    [VERSE1, POP_V],
+    [VERSE2, POP_V],
+    [VERSE3, POP_V],
+    [VERSE2, POP_V],
+  ],
+  [
+    [LIFT, POP_P],
+    [CHORUS, POP_C],
+    [LIFT, POP_P],
+    [CHORUS, POP_C],
+  ],
+  [
+    [BRIDGE, POP_BRIDGE],
+    [CHORUS2, POP_C],
+    [BRIDGE, POP_BRIDGE],
+    [CHORUS2, POP_C],
+  ],
+  [
+    [TAG, POP_TAG],
+    [CHORUS, POP_C],
+    [TAG, POP_TAG],
+    [CHORUS2, POP_C],
+  ],
+];
+
 /**
- * Key Change, room `room` (0-3): one pop song, a whole step higher each room (the rooms' do, mi
- * and sol follow it): a saw lead over an 80s pad and a sub bass, the drums coming in in the
- * second room, a square arpeggio in the third, the lead doubled an octave up in the top gear.
+ * Key Change, room `room` (0-3): one pop song, a part of it a room, each room a whole step
+ * higher (the rooms' do, mi and sol follow it): the verses, the lift and chorus, the bridge and
+ * a new chorus, then the last choruses. A saw lead over an 80s pad and a sub bass, the drums
+ * coming in in the second room, a square arpeggio in the third, the lead doubled an octave up
+ * in the top gear.
  */
 export function keySong(room: number): Uint8Array {
   const shift = room * 2;
-  const chords = [...POP_V, ...POP_V, ...POP_P, ...POP_C];
+  const chords = ROOMS[room].flatMap(([, c]) => c);
   const drums: Drum[] = [];
   if (room >= 1)
     drums.push(
@@ -141,7 +196,7 @@ export function keySong(room: number): Uint8Array {
     );
   if (room >= 2) drums.push({ patch: 'hat-closed', grid: grid(32, room >= 3 ? 'xxxxxxxxxxxxxxxx' : 'x.x.x.x.x.x.x.x.'), vel: 40 });
   if (room >= 3) drums.push({ patch: 'crash', grid: ['X...............', ...new Array<string>(31).fill('................')].join('|'), vel: 60 });
-  const tune = bars(VERSE1, VERSE2, LIFT, CHORUS);
+  const tune = bars(...ROOMS[room].map(([t]) => t));
   return score(
     KEY_BEAT / 2,
     4,

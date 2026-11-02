@@ -4,7 +4,7 @@
 //   on the main theme as Doc Leo wakes, then a hotter trio in E-flat for the second verse.
 // - Brake Dance (the drum kit, with a slap bass): an electro breakbeat in E minor with a break.
 // - Hubcaps and Balls (percussion: timpani, woodblock, a snare roll, over mallets): a sly
-//   habanera in D minor, a sneaky swing in G minor, then a galop in D for the fast round.
+//   habanera in D minor, a sneaky swing in G minor, then a galop in B-flat for the fast round.
 // - Pump Up the Volume (the basses): a house groove in G minor, verse and chorus.
 // - Muffled (the voices): a hummed lullaby in F, 6/8, hushed.
 import { bars, comp, grid, rep, score, shift } from './score';
@@ -204,8 +204,8 @@ const SNEAK_B = bars(
   'Bb5u A5t G5u F#5t G5h',
   'D5h rh',
 );
-const GALOP = ['D', 'A7', 'A7', 'D', 'D', 'A7', 'A7', 'D'];
-const GALOP_B = ['G', 'D', 'A7', 'D', 'G', 'D', 'E7', 'A7'];
+const GALOP = ['Bb', 'F7', 'F7', 'Bb', 'Bb', 'F7', 'F7', 'Bb'];
+const GALOP_B = ['Eb', 'Bb', 'F7', 'Bb', 'Eb', 'Bb', 'C7', 'F7'];
 const GALOP_A1 = bars(
   'F#5e A5e F#5e A5e D6q A5q',
   'G5e A5e G5e A5e E6q C#6q',
@@ -271,7 +271,7 @@ export function cupsSong(round: number): Uint8Array {
     8,
     4,
     [
-      { ch: 0, patch: 'glockenspiel', notes: bars(GALOP_A1, GALOP_A1, GALOP_B1, GALOP_A1), vel: 80 },
+      { ch: 0, patch: 'glockenspiel', notes: shift(bars(GALOP_A1, GALOP_A1, GALOP_B1, GALOP_A1), -4), vel: 80 },
       { ch: 1, patch: 'woodblock', notes: rep(32, 'C5e C5e C5e C5e C5e C5e C5q'), vel: 40 },
       { ch: 2, patch: 'timpani', notes: comp(chords, 4, 'Rq 5q Rq 5q', { bass: 'A2' }), vel: 90 },
       { ch: 3, patch: 'xylophone', notes: comp(chords, 4, 'rq Xq rq Xq', { lo: 'A3' }), vel: 45 },
