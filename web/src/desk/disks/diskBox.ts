@@ -205,8 +205,8 @@ export function openDiskBox(disks: Disk[], startId: string | undefined, onPick: 
       h(
         'div',
         { class: 'disk-cases' },
-        h('section', { class: 'disk-col' }, h('h3', null, 'From the CD & Sandbox Software'), h('div', { class: 'disk-case' }, rows.site)),
-        h('section', { class: 'disk-col mine' }, h('h3', null, 'Your disks'), h('div', { class: 'disk-case' }, rows.mine)),
+        h('section', { class: 'disk-col' }, h('h2', null, 'From the CD & Sandbox Software'), h('div', { class: 'disk-case' }, rows.site)),
+        h('section', { class: 'disk-col mine' }, h('h2', null, 'Your disks'), h('div', { class: 'disk-case' }, rows.mine)),
       ),
       info,
     );
