@@ -21,8 +21,8 @@ import { CHEZ_BLOCKS, buildChez } from './src/sprites/chezHero';
 import { LEVELS, firstOfLevel } from './src/levels/levels';
 import { buildScreens } from './src/screens/screens';
 import { OUTRO } from './src/screens/banter';
-import { endingReel, openingReel, SPEED, stingReel } from './src/screens/reels';
-import { REAL_PARTS, type Tool } from './src/screens/art';
+import { endingReel, openingReel, SPEED, stingReel, unshrinkReel } from './src/screens/reels';
+import type { Tool } from './src/screens/art';
 import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
 import { lostSong, menuSong, wonSong } from './src/sound/song';
 import { buildSoundSet, buildVocs } from './src/sound/sounds';
@@ -75,6 +75,7 @@ const reel = (name: string, fli: Uint8Array) => {
   return clipEntries(clips, 0);
 };
 const opening = reel('opening.fli', openingReel().fli(SPEED));
+const unshrink = reel('unshrnk.fli', unshrinkReel().fli(SPEED));
 
 // Scenes: 0 title/menu, 1 the ending (won or lost), then the levels' scenes in order.
 const game = newGame('TUNE-UP');
@@ -102,7 +103,16 @@ built.forEach(({ l, m, pal, bbl }, i) => {
     intro = `lvl${l.level}.lst`;
     const sting = reel(`sting${l.level}.fli`, stingReel(l.level, TOOLS[l.level], l.desc.toUpperCase()).fli(SPEED));
     const before = (l.before ?? []).map((name) => ({ name, pause: 8 }));
-    disk.put(intro, serializeSlideList([...(l.level === 1 ? opening : []), ...before, ...sting, { name: `intro${l.level}.gif`, pause: 8 }]));
+    disk.put(
+      intro,
+      serializeSlideList([
+        ...(l.level === 1 ? opening : []),
+        ...(l.level === 14 ? unshrink : []),
+        ...before,
+        ...sting,
+        { name: `intro${l.level}.gif`, pause: 8 },
+      ]),
+    );
   }
   // after it (or a verse): their card, is it fixed?
   const exit = OUTRO[l.file] ? `${l.file}out.gif` : '';
@@ -162,7 +172,7 @@ disk.put('story.lst', serializeSlideList([{ name: 'storybg.gif', pause: 0 }, { n
 disk.put('howto.lst', serializeSlideList([{ name: 'howto.gif', pause: 0 }, { name: 'howto.txt' }]));
 disk.put('credits.lst', serializeSlideList([{ name: 'credits.gif', pause: 0 }, { name: 'credits.txt' }]));
 disk.put('demo.rec', demoRecording());
-disk.put('won.lst', serializeSlideList([...reel('ending.fli', endingReel(REAL_PARTS.length).fli(SPEED)), { name: 'won.gif', pause: 10 }]));
+disk.put('won.lst', serializeSlideList([...reel('ending.fli', endingReel().fli(SPEED)), { name: 'won.gif', pause: 10 }]));
 disk.put('lost.lst', serializeSlideList([{ name: 'lost.gif', pause: 6 }]));
 disk.put('story.txt', STORY);
 disk.put('howto.txt', INSTRUCTIONS);

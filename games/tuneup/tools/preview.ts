@@ -21,7 +21,7 @@ import { ORIGIN } from '../src/levels/maps';
 import { SP } from '../src/screens/art';
 import { buildScreens } from '../src/screens/screens';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
-import { endingReel, openingReel, stingReel } from '../src/screens/reels';
+import { endingReel, unshrinkReel, openingReel, stingReel } from '../src/screens/reels';
 
 const out = process.argv[2] ?? join(tmpdir(), 'tuneup-preview');
 const only = process.argv.slice(3);
@@ -74,4 +74,5 @@ const sheet = (name: string, r: Reel, every = 4) => {
 };
 sheet('opening', openingReel());
 sheet('sting2', stingReel(2, 'plug', 'SPARK PLUCKS'));
-sheet('ending', endingReel(4));
+sheet('unshrink', unshrinkReel());
+sheet('ending', endingReel());
