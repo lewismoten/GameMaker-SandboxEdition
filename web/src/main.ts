@@ -388,6 +388,11 @@ registerServiceWorker();
 // achievements: the gm-achievement event, other tabs, and the counted ones kept current
 void import('./achievements/start').then((m) => m.startAchievements());
 
+// The first AudioContext costs a long task (about 150 ms in headless Chrome) if it is made inside
+// the first click; made while the page is idle it starts suspended, and that click only resumes it.
+const warmSound = () => void import('@lewismoten/gamemaker-sandbox-engine/audio/context').then((m) => m.audioContext());
+setTimeout(() => ('requestIdleCallback' in window ? requestIdleCallback(warmSound, { timeout: 4000 }) : warmSound()), 800);
+
 watchForUpdates();
 // dev server on localhost only: the opt-in interaction log (its switch is in the corner)
 if (import.meta.env.DEV) void import('./devLog/interactionLog').then((m) => m.startInteractionLog());
