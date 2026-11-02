@@ -122,8 +122,9 @@ const CREDITS_TEXT = pages(
     'Starring Doc Leo as the',
     'friendliest hobo clown in',
     'the Clown Club, Sir Reginald',
-    'III as himself (and later',
-    'herself), Teddy and Gwinn.',
+    'III, a tiara (in its first',
+    'starring role), Teddy and',
+    'Gwinn.',
   ],
   [
     'No wrenches were harmed.',
