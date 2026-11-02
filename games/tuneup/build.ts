@@ -20,6 +20,7 @@ import { buildLeo, buildMonsters, buildOilLeo, buildPianoLeo } from './src/chara
 import { TEDDY_BLOCKS, buildNobody, buildTeddy, nobodyBlocks } from './src/heroes';
 import { CHEZ_BLOCKS, buildChez } from './src/sprites/chezHero';
 import { LEVELS, firstOfLevel } from './src/levels/levels';
+import { mapOf, rowOffset, stackMaps } from './src/levels/stacks';
 import { buildScreens, cardPauses } from './src/screens/screens';
 import { OUTRO } from './src/screens/banter';
 import { endingReel, openingReel, SPEED, stingReel, unshrinkReel } from './src/screens/reels';
@@ -90,6 +91,8 @@ const built = LEVELS.map((l) => {
 // scenes drawn in the same roles share one block set (src/blocks/shared.ts)
 const shared = shareSets(built.map(({ l, bbl, m }) => ({ file: l.file, blocks: bbl, map: m.build() })));
 for (const [name, blocks] of shared.sets) disk.put(name, serializeBlocks(blocks));
+// a level's scenes share one map (src/levels/stacks.ts)
+for (const [name, map] of stackMaps(shared.maps)) disk.put(name, serializeMap(map));
 // a song is written once: scenes that truly share one share its file
 const songFiles = new Map<string, string>();
 const putSong = (name: string, bytes: Uint8Array) => {
@@ -102,7 +105,6 @@ const putSong = (name: string, bytes: Uint8Array) => {
 };
 built.forEach(({ l, m, pal }, i) => {
   disk.put(`${l.file}.pal`, serializePalette(pal.pal));
-  disk.put(`${l.file}.map`, serializeMap(shared.maps.get(l.file)!));
   disk.put(`${l.file}.mon`, serializeMonsters(buildMonsters(mb, l.mons)));
   const song = putSong(`${l.file}.cmf`, l.song());
   const scene = emptyScene(ADVTYPE);
@@ -132,7 +134,7 @@ built.forEach(({ l, m, pal }, i) => {
   const exit = OUTRO[l.file] ? `${l.file}out.gif` : '';
   scene.files = [
     `${l.file}.pal`,
-    `${l.file}.map`,
+    mapOf(l.file),
     bblOf(l.file),
     `${l.file}.mon`,
     'cast.mbl',
@@ -148,10 +150,10 @@ built.forEach(({ l, m, pal }, i) => {
   scene.links = Array.from({ length: MAXSCENELINKS }, (_, k) => {
     const spec = m.links[k];
     if (!spec) return { toScene: NOSCENE, from: { x: 0, y: 0 }, to: { x: 0, y: 0 } };
-    const from = { x: spec.from[0], y: spec.from[1] };
+    const from = { x: spec.from[0], y: spec.from[1] + rowOffset(l.file) };
     const next = built[i + 1];
     if (spec.toScene === 'won' || !next) return { toScene: 1, from, to: { x: 0, y: 0 } };
-    return { toScene: i + 3, from, to: { x: next.start[0], y: next.start[1] } };
+    return { toScene: i + 3, from, to: { x: next.start[0], y: next.start[1] + rowOffset(next.l.file) } };
   });
   game.scenes.push(scene);
 });

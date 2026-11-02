@@ -45,8 +45,8 @@
     ],
     "shots": [
       ["jump.map", 28, 2],
-      ["road1.map", 40, 2],
-      ["band3.map", 40, 2]
+      ["road.map", 40, 2],
+      ["band.map", 40, 28]
     ],
     "rating": "Ages 6 and up"
   },

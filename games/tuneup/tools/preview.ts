@@ -19,6 +19,7 @@ import { bblOf } from '../src/blocks/shared';
 import { baseSet, SET_NAMES } from '../src/blocks/sets';
 import { LEVELS } from '../src/levels/levels';
 import { ORIGIN } from '../src/levels/maps';
+import { mapOf, rowOffset } from '../src/levels/stacks';
 import { SP } from '../src/screens/art';
 import { buildScreens } from '../src/screens/screens';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
@@ -31,11 +32,11 @@ const wrote = (f: string) => console.log(join(out, f));
 const disk = (n: string) => new Uint8Array(readFileSync(new URL(`../disk/${n}`, import.meta.url)));
 const mbl = parseBlocks(disk('cast.mbl'), 100);
 for (const l of LEVELS.filter((l) => !only.length || only.includes(l.file))) {
-  const map = parseMap(disk(`${l.file}.map`));
+  const map = parseMap(disk(mapOf(l.file)));
   const bbl = parseBlocks(disk(bblOf(l.file)), 150);
   const level = l.build(l.blocks(buildPalette(l.theme)).book);
   const [w, h] = level.size;
-  const pic = renderRegion(map, bbl, mbl, parseMonsters(disk(`${l.file}.mon`)), ORIGIN, ORIGIN, w, h);
+  const pic = renderRegion(map, bbl, mbl, parseMonsters(disk(`${l.file}.mon`)), ORIGIN, ORIGIN + rowOffset(l.file), w, h);
   writePng(join(out, `${l.file}.png`), pic, parsePalette(disk(`${l.file}.pal`)), 2);
   wrote(`${l.file}.png`);
 }

@@ -5,7 +5,9 @@
 import { HopBot } from '@lewismoten/gamemaker-sandbox-tools/kit/hopBot';
 import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CTR, SCAN } from '../src/ids';
+import { LEVELS } from '../src/levels/levels';
 import { ORIGIN } from '../src/levels/maps';
+import { rowOffset } from '../src/levels/stacks';
 import type { GameSim } from './sim';
 
 export type { Dir } from '@lewismoten/gamemaker-sandbox-tools/kit/hopBot';
@@ -19,6 +21,18 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
     this.hand = rng(seed * 7919 + 13);
   }
 
+  /** Rows down its map this scene is drawn (src/levels/stacks.ts); levels' scenes start at 2. */
+  private get dy(): number {
+    const l = LEVELS[this.sim.scene - 2];
+    return l ? rowOffset(l.file) : 0;
+  }
+
+  /** The hero's position in level pixels, wherever on its map the scene is drawn. */
+  override get px(): { x: number; y: number } {
+    const p = super.px;
+    return { x: p.x, y: p.y - this.dy * 20 };
+  }
+
   /** A person's reaction: 1 to 3 ticks. */
   react(): Promise<string | undefined> {
     return this.wait(1 + Math.floor(this.hand() * 3));
@@ -26,12 +40,12 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
 
   /** The block shown at level (x, y). */
   shown(x: number, y: number) {
-    return this.sim.shown(x + ORIGIN, y + ORIGIN);
+    return this.sim.shown(x + ORIGIN, y + ORIGIN + this.dy);
   }
 
   /** The number of the block shown at level (x, y) (an animation's frame is its own block). */
   shownNum(x: number, y: number): number {
-    return this.sim.w.blkmap[this.sim.blockAt(x + ORIGIN, y + ORIGIN)] ?? 0;
+    return this.sim.w.blkmap[this.sim.blockAt(x + ORIGIN, y + ORIGIN + this.dy)] ?? 0;
   }
 
   /** A counter as F2 shows it. */
