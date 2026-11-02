@@ -1,23 +1,9 @@
 # Build SDK workspaces and run quick API tests; isolated packed-consumer checks run locally.
 name: Check npm packages
 
+# Manual only: the same quick tests run locally before a push (npm run verify), so no Actions minutes on every change.
 on:
-  pull_request:
-    branches: [master]
-    paths:
-      - 'web/packages/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'scripts/verify-packages.mjs'
-      - '.github/workflows/packages.yml'
-  push:
-    branches: [master]
-    paths:
-      - 'web/packages/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'scripts/verify-packages.mjs'
-      - '.github/workflows/packages.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read

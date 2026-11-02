@@ -36,7 +36,7 @@ lives under `web/packages/*/src/`. See `docs/monorepo.md`.
 ```sh
 npm ci                                            # uses the root workspace lockfile
 npm run format                                     # Prettier: web/, games/*.ts, code/README.md
-npm run format:check                               # what CI runs
+npm run format:check                               # checking only (part of the root npm run verify)
 npm run lint                                       # ESLint (type-aware) on web/; lint:fix fixes
 npx tsc --noEmit -p .                              # typecheck
 npx vitest run                                     # tests
@@ -104,9 +104,11 @@ preserve what was there.
   `.prettierignore` at the root, and `web/eslint.config.js`. Writing
   `web/vite.config.ts` or a file it imports restarts the dev server and reloads every open
   page, so change those only when the maintainer has it stopped.
-- **GitHub Actions:** cap every job at five minutes. Use `npm run test:fast` so tests
-  measured over 50 ms in `web/test/slowTests.json` run only locally. Full game checks and
-  `npm run verify:packages` also stay local. Prefer fake timers over real waits in tests
+- **GitHub Actions:** only builds and publishes (Pages on a `pages-v*` tag), in as few jobs as
+  possible: Lewis budgets the total minutes of a run, every job bills at least a minute, and
+  CI must not rely on caches from earlier runs. Format, lint, typecheck, tests, game checks and
+  `npm run verify:packages` run locally (`npm run verify` from the root runs the checks).
+  Prefer fake timers over real waits in tests
   when the assertions still exercise the same behavior.
 - **Formatting-only commits:** a commit that only reformats goes in `.git-blame-ignore-revs`
   (its full hash, with a comment line). For local `git blame` to honor it, run
