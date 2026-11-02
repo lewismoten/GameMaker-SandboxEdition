@@ -14,8 +14,8 @@ import { checkpointPanel } from './checkpointPanel';
 import { PALETTE_RESERVATIONS, paletteReservations } from '../editors/palette/paletteReservations';
 import { remapExtras } from './remapExtras';
 import { notesUndo } from './notesUndo';
-import { planPack, type PackPlan } from './packAll';
-import { packView } from './packView';
+import { planPack, type PackMode, type PackPlan } from './packAll';
+import { packView, type PackSet } from './packView';
 import { reductions } from './reduceColors';
 import { rangeSyncs } from './rangeSync';
 import { proposeReservations } from './reservePlan';
@@ -126,7 +126,8 @@ export async function diskTool(project: Project): Promise<void> {
     const root = h('div', { class: 'disk-tool' });
     const undoBar = h('div', { class: 'disk-undo' });
     let applied = '';
-    let pack: PackPlan | 'none' | undefined;
+    let pack: PackSet | undefined;
+    let packMode: PackMode = 'all';
     let packBusy = false;
     // saved games this project has: while it has some, the steps applied in place are the ones that keep their numbers
     let nSaves = 0;
@@ -315,6 +316,11 @@ export async function diskTool(project: Project): Promise<void> {
         }),
         packView(
           pack,
+          packMode,
+          (m) => {
+            packMode = m;
+            render();
+          },
           packBusy,
           () => {
             packBusy = true;
@@ -323,10 +329,14 @@ export async function diskTool(project: Project): Promise<void> {
             setTimeout(() => {
               try {
                 packSeen = project.files.entries();
-                pack = planPack(project.files, project.gam, paletteReservations(project)) ?? 'none';
+                const ranges = paletteReservations(project);
+                pack = {
+                  all: planPack(project.files, project.gam, ranges, 'all') ?? 'none',
+                  sprites: planPack(project.files, project.gam, ranges, 'sprites') ?? 'none',
+                };
               } catch (e) {
                 console.warn('Packing not planned', e);
-                pack = 'none';
+                pack = { all: 'none', sprites: 'none' };
               }
               packBusy = false;
               render();

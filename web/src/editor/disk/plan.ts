@@ -58,13 +58,19 @@ function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][
 }
 
 /** `ranges` are the project's palette reservations (editors/palette/paletteReservations.ts); without them no range is synced. */
-/** With `keepSaves`, only the steps that never change a number a saved game holds (savesSafe.ts). */
-export function planDisk(files: GameFiles, gam: string, ranges: readonly PaletteReservation[] = [], keepSaves = false): Plan {
+/** `skip` leaves out step kinds ("Monsters and characters only" skips the background ones). With `keepSaves`, only the steps that never change a number a saved game holds (savesSafe.ts). */
+export function planDisk(
+  files: GameFiles,
+  gam: string,
+  ranges: readonly PaletteReservation[] = [],
+  keepSaves = false,
+  skip: ReadonlySet<Step['kind']> = new Set(),
+): Plan {
   const work = files.copy();
   const steps: Step[] = [];
   const notes: Note[] = [];
   for (const all of ORDER) {
-    const order = keepSaves ? all.filter((k) => SAVE_SAFE_KINDS.has(k)) : all;
+    const order = all.filter((k) => !skip.has(k) && (!keepSaves || SAVE_SAFE_KINDS.has(k)));
     for (let guard = 0; guard < 50; guard++) {
       const note: Note[] = [];
       const step = next(work, gam, note, order, ranges);

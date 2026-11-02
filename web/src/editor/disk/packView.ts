@@ -5,14 +5,38 @@
 import { FLAG_MEAN, FLAG_WORST } from '@lewismoten/gamemaker-sandbox-tools/color-reduce';
 import { h } from '../core/ui';
 import { kb, plural } from './diskCard';
-import type { PackPlan } from './packAll';
+import type { PackMode, PackPlan } from './packAll';
 
 const LABEL = { monster: 'monsters', character: 'characters', background: 'backgrounds' } as const;
 
-/** `plan` is undefined before the person asks, `'none'` when the tool found nothing to do. */
-export function packView(plan: PackPlan | 'none' | undefined, busy: boolean, find: () => void, apply: (p: PackPlan) => void): HTMLElement {
+/** The two ways to pack, each found separately (`'none'` when the tool found nothing to do in that way). */
+export interface PackSet {
+  all: PackPlan | 'none';
+  sprites: PackPlan | 'none';
+}
+
+const MODES: { mode: PackMode; label: string; what: string }[] = [
+  { mode: 'all', label: 'All block types', what: 'backgrounds, monsters and characters' },
+  { mode: 'sprites', label: 'Monsters and characters only', what: 'background blocks and their pixels are never touched' },
+];
+
+const summary = (p: PackPlan | 'none'): string =>
+  p === 'none'
+    ? 'nothing to pack'
+    : `${plural(p.units.length, 'step')}, saves ${kb(p.saves)}${p.delta.changed ? `, delta E mean ${p.delta.mean.toFixed(1)} worst ${p.delta.worst.toFixed(1)}` : ', no scene draws differently'}`;
+
+/** `set` is undefined before the person asks. */
+export function packView(
+  set: PackSet | undefined,
+  mode: PackMode,
+  setMode: (m: PackMode) => void,
+  busy: boolean,
+  find: () => void,
+  apply: (p: PackPlan) => void,
+): HTMLElement {
   const body: (HTMLElement | null)[] = [];
-  if (plan === undefined || busy) {
+  const plan = set?.[mode];
+  if (set === undefined || busy) {
     body.push(
       h(
         'p',
@@ -21,7 +45,7 @@ export function packView(plan: PackPlan | 'none' | undefined, busy: boolean, fin
       ),
       h('button', { type: 'button', disabled: busy, onclick: find }, busy ? 'Looking…' : 'Look for more savings'),
     );
-  } else if (plan === 'none') {
+  } else if (set.all === 'none' && set.sprites === 'none') {
     body.push(
       h(
         'p',
@@ -30,7 +54,26 @@ export function packView(plan: PackPlan | 'none' | undefined, busy: boolean, fin
       ),
       h('button', { type: 'button', onclick: find }, 'Look again'),
     );
-  } else {
+  } else if (plan !== undefined) {
+    body.push(
+      h(
+        'fieldset',
+        { class: 'disk-pack-mode' },
+        h('legend', null, 'Pack'),
+        ...MODES.map((m) =>
+          h(
+            'label',
+            { class: 'disk-pack-choice' },
+            h<'input'>('input', { type: 'radio', name: 'disk-pack-mode', value: m.mode, checked: mode === m.mode, onchange: () => setMode(m.mode) }),
+            h('span', null, h('strong', null, ` ${m.label}`), ` (${m.what}): ${summary(set[m.mode])}`),
+          ),
+        ),
+      ),
+    );
+    if (plan === 'none') {
+      body.push(h('p', null, 'Nothing to pack in this way.'), h('button', { type: 'button', onclick: find }, 'Look again'));
+      return h('div', { class: 'disk-reserve disk-pack' }, h('h3', null, 'Pack with reserved palettes'), ...body);
+    }
     const flag = plan.delta.mean > FLAG_MEAN || plan.delta.worst > FLAG_WORST;
     const reds = plan.units.filter((u) => u.kind !== 'merge').length;
     body.push(

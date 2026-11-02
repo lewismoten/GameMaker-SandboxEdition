@@ -19,7 +19,7 @@ import { GameFiles } from '../../web/src/project/files';
 import { planDisk } from '../../web/src/editor/disk/plan';
 import { carriedBlocks } from '../../web/src/editor/disk/lookAlikes';
 import { sceneUses } from '../../web/src/editor/disk/refs';
-import { reserveProof } from './optimizeProofReserve';
+import { reserveProof, spritesProof } from './optimizeProofReserve';
 import { scenePixels } from '../../web/src/gfx/levelPicture';
 
 const games = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -126,6 +126,9 @@ for (const id of readdirSync(games).filter((d) => existsSync(join(games, d, 'dis
     const rp = reserveProof(files, gam, bytes(files) - bytes(after));
     console.log(' '.repeat(10), rp.line);
     if (!rp.ok) failed++;
+    const sp = spritesProof(files, gam);
+    console.log(' '.repeat(10), sp.line);
+    if (!sp.ok) failed++;
   }
   if (out && plan.steps.length) {
     mkdirSync(join(out, id), { recursive: true });

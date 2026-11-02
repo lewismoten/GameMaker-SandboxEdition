@@ -12,8 +12,9 @@ import { reductions } from './reduceColors';
 import { rangeSyncs } from './rangeSync';
 import { proposeReservations } from './reservePlan';
 import { sceneDelta, type SceneDelta } from './sceneDelta';
+import { backgroundsKept } from './backgroundsKept';
 import { savesRisk } from './savesSafe';
-import type { BlockMove } from './types';
+import type { BlockMove, Step } from './types';
 
 export interface PackUnit {
   kind: 'reduce' | 'sync' | 'merge';
@@ -43,11 +44,16 @@ export interface PackPlan {
 const total = (f: GameFiles) => f.entries().reduce((n, [, v]) => n + v.length, 0);
 
 /** undefined when there are no sprites to reserve for, or the ranges would free no more than the plain steps (planDisk) do. */
-export function planPack(files: GameFiles, gam: string, existing: readonly PaletteReservation[]): PackPlan | undefined {
+/** Which block types a pack may change: all of them, or monsters and characters only (background blocks and their pixels are never touched). */
+export type PackMode = 'all' | 'sprites';
+const BACKGROUND_STEPS = new Set<Step['kind']>(['look', 'bbl']);
+
+export function planPack(files: GameFiles, gam: string, existing: readonly PaletteReservation[], mode: PackMode = 'all'): PackPlan | undefined {
+  const skip = mode === 'sprites' ? BACKGROUND_STEPS : new Set<Step['kind']>();
   const proposed = !existing.length;
   const roles = proposed ? proposeReservations(files, gam, [])?.roles : [...existing];
   if (!roles?.length) return undefined;
-  const plain = planDisk(files, gam, existing);
+  const plain = planDisk(files, gam, existing, false, skip);
   const plainSaved = plain.steps.reduce((a, s) => a + s.saves, 0);
   const work = files.copy();
   const units: PackUnit[] = [];
@@ -55,7 +61,7 @@ export function planPack(files: GameFiles, gam: string, existing: readonly Palet
   let allowed = 0;
   // one at a time: each apply rewrites files the next preview reads
   for (let round = 0; round < 40; round++) {
-    const r = reductions(work, gam, roles)[0];
+    const r = reductions(work, gam, roles).find((x) => mode === 'all' || x.role !== 'background');
     const { syncs, stuck: why } = rangeSyncs(work, gam, roles);
     const s = r ?? syncs[0];
     if (!s) {
@@ -66,11 +72,13 @@ export function planPack(files: GameFiles, gam: string, existing: readonly Palet
     allowed = Math.max(allowed, s.score.worst);
     units.push({ kind: r ? 'reduce' : 'sync', title: s.title, touches: s.touches, apply: (f, g) => s.apply(f, g) });
   }
-  const plan = planDisk(work, gam, roles);
+  const plan = planDisk(work, gam, roles, false, skip);
   for (const s of plan.steps) {
     s.apply(work, gam);
     units.push({ kind: 'merge', title: s.title, touches: s.touches, moves: s.moves, risk: savesRisk(s), apply: (f, g) => s.apply(f, g) });
   }
+  // a sync could move a color number a background draws with: then this pack is not offered
+  if (mode === 'sprites' && backgroundsKept(files, work, gam)) return undefined;
   const saves = total(files) - total(work);
   // color changes that free no more than the plain steps do are not worth offering
   if (!units.length || saves <= plainSaved) return undefined;
