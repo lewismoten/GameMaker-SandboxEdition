@@ -8,7 +8,8 @@ import { h, clear } from '../core/ui';
 import type { FileKind, Project } from '../core/project';
 import { searchMove } from './searchNav';
 import { queryWords } from './searchMatch';
-import { GROUP_TITLES, type SearchEntry, type SearchGroup } from './searchIndex';
+import { GROUP_TITLES, type SearchGroup } from './searchGroups';
+import type { SearchEntry } from './searchIndex';
 
 export interface SearchHost {
   project: Project;
