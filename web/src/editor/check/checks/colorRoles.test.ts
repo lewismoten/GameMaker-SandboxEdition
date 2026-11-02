@@ -52,4 +52,13 @@ describe('colorRoles', () => {
     const r = await runChecks(new GameFiles(t.files), { play: false, reservations: [{ role: 'monster', first: 12, last: 14 }] });
     expect(r.findings.some((x) => x.check === 'color-roles')).toBe(true);
   });
+  it('lists the first five blocks of a file, then one line for the rest', () => {
+    const sc = scenes();
+    for (let n = 0; n < 10; n++) sc[0].bbl[n].pixels.fill(5);
+    const f = colorRoles(sc, [{ role: 'monster', first: 1, last: 254 }]);
+    const bg = f.filter((x) => x.where.file === 'test.bbl');
+    expect(bg.filter((x) => x.where.block)).toHaveLength(5);
+    expect(bg.filter((x) => !x.where.block)).toHaveLength(1);
+    expect(bg.at(-1)?.title).toMatch(/^\d+ more background blocks in test\.bbl/);
+  });
 });

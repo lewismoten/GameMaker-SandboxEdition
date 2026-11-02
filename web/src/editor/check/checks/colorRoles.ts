@@ -13,6 +13,8 @@ const KINDS: { kind: BlockKind; role: PaletteRole; noun: string }[] = [
   { kind: 'mbl', role: 'monster', noun: 'Monster' },
   { kind: 'bbl', role: 'background', noun: 'Background' },
 ];
+/** Blocks listed one by one for a file before the rest are gathered into one finding. */
+const SHOWN = 5;
 const PLURAL: Record<PaletteRole, string> = { character: 'characters', monster: 'monsters', background: 'backgrounds' };
 
 /** Colors as "40–42, 50", for a sorted list. */
@@ -47,16 +49,33 @@ export function colorRoles(scenes: SceneData[], ranges: readonly PaletteReservat
       const file = d.names[kind];
       if (!file || done.has(file.toLowerCase())) continue;
       done.add(file.toLowerCase());
+      const found: Finding[] = [];
+      const more: number[] = [];
       d[kind].slice(0, BLOCK_COUNTS[kind]).forEach((block, n) => {
-        for (const [other, colors] of foreignColors(block, role, ranges))
-          out.push({
+        for (const [other, colors] of foreignColors(block, role, ranges)) {
+          if (found.length >= SHOWN) {
+            if (!more.includes(n)) more.push(n);
+            continue;
+          }
+          found.push({
             check: 'color-roles',
             severity: 'warning',
             title: `${noun} block ${n} in ${file} draws with ${colors.length > 1 ? 'colors' : 'color'} ${spans(colors)}, which this project reserves for ${PLURAL[other]}`,
             detail: `If that’s on purpose, dismiss this. The check can’t see whether the art is meant to share a color, or whether a palette change would look worse; it only compares the colors in the block with the ranges set in the palette editor.`,
             where: { scene: d.scene, file, block: { file, n } },
           });
+        }
       });
+      out.push(...found);
+      // a whole set drawn in another kind's colors would flood the list: the rest in one line
+      if (more.length)
+        out.push({
+          check: 'color-roles',
+          severity: 'warning',
+          title: `${more.length} more ${noun.toLowerCase()} blocks in ${file} draw with colors this project reserves for another kind`,
+          detail: `Blocks ${spans(more)}. If that’s on purpose, dismiss this. The palette editor’s reserved ranges may simply not match how this set uses color; the check can’t tell which is intended.`,
+          where: { scene: d.scene, file },
+        });
     }
   }
   return out;
