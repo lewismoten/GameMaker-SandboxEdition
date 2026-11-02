@@ -21,4 +21,10 @@ so the player shows how far it got. On the dev server only, a game with no walkt
 from the maintainer's git-ignored `.for-lewis/research/archive-walks/` folder
 (`editor/widgets/devLocalWalk.ts`; the production build drops it). A look-only game's redone walkthrough is kept in this browser.
 
+Previous item / Next item (⏮ ⏭, the `,` and `.` keys; `items.ts`): the run records each picture, cartoon,
+text page, slide list, level, menu, high-score list and credits roll as it plays (kept only in the
+run, so walkthrough files are unchanged), the player names the current one under the screen, and a
+jump goes to the last mark before now (the one before when within a second of it) or plays ahead
+unseen to the next.
+
 The bot itself and the dialog are the editor's (`editor/check/walk/`, `editor/widgets/walkDialog.ts`).

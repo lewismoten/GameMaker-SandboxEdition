@@ -17,6 +17,7 @@ import { playerLook, type PlayerLook } from '@lewismoten/gamemaker-sandbox-engin
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { serializeHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 import { fillBlankScores } from './madeUpScores';
+import type { ItemKind, WalkItem } from './items';
 import { showGraphic } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
 import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
@@ -223,6 +224,8 @@ interface WalkHooks {
   /** A chapter starts (index into the chapters as they come: the opening, the story, the game's, the ending, the credits). */
   onChapter?: (title: string) => void;
   onSession?: (s: Session) => void;
+  /** Something new is on screen: a level, the menu, the scores or the credits (the engine's own pictures come by Machine.onItem). */
+  onItem?: (kind: ItemKind, name: string, num?: number) => void;
 }
 
 const SCAN_UP = 72;
@@ -239,6 +242,9 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
   const shared = mulberry32(walk.rand.seed);
   const marks = new Map(walk.chapters.map((c) => [c.scene, c.title]));
   const chapter = (title: string) => hooks.onChapter?.(title);
+  let levelAt = -1;
+  const levelNo = new Map<number, number>();
+  m.onItem = (kind, name) => hooks.onItem?.(kind, name);
   const s: Session = {
     m,
     game,
@@ -260,7 +266,13 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
         // the ending: a fresh disk's empty Top Ten gets made-up callers' scores (madeUpScores.ts)
         const name = highScoreFile(s.gameName);
         m.files.set(name, serializeHighScores(fillBlankScores(readHighScores(m, s.gameName), s.ci.score, walk.rand.seed)));
+        hooks.onItem?.('scores', '');
         return chapter(FRONT_CHAPTERS.ending);
+      }
+      if (scene > 1 && scene !== levelAt) {
+        levelAt = scene;
+        if (!levelNo.has(scene)) levelNo.set(scene, levelNo.size + 1);
+        hooks.onItem?.('level', marks.get(scene) || game.scenes[scene]?.desc || '', levelNo.get(scene));
       }
       const title = marks.get(scene);
       if (title !== undefined) {
@@ -298,6 +310,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
   let blue = 0;
   const marker = menuMarker(look);
   const menu = async () => {
+    hooks.onItem?.('menu', '');
     if (file(0, 2)) await show(file(0, 2)!, s.colors, 0);
     else drawDefaultScreen(m, s.colors);
     blue = drawMenu(m.screen, look, s.colors, game.scenes[0].desc);
@@ -334,6 +347,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
     screen = await menu();
     await pick(4);
     chapter(FRONT_CHAPTERS.credits);
+    hooks.onItem?.('credits', '');
     m.screen.restore(screen);
     await show(file(0, 7)!);
   }
@@ -353,7 +367,9 @@ export class WalkRun {
   error?: unknown;
   session?: Session;
   /** Chapters reached so far, with the frame each began on. */
-  readonly chapters: { title: string; frame: number }[] = [];
+  readonly chapters: { title: string; frame: number; time: number }[] = [];
+  /** Items shown so far (items.ts), with the run's clock when each began. */
+  readonly items: WalkItem[] = [];
   onChapter?: (title: string, index: number) => void;
   private ended: Promise<void>;
   private started?: Promise<void>;
@@ -380,8 +396,13 @@ export class WalkRun {
         walk,
         {
           onSession: (s) => (this.session = s),
+          onItem: (kind, name, num) => {
+            const last = this.items[this.items.length - 1];
+            if (last && last.kind === kind && last.name === name && last.time === this.m.time) return;
+            this.items.push({ kind, name, num, time: this.m.time });
+          },
           onChapter: (title) => {
-            this.chapters.push({ title, frame: this.frame });
+            this.chapters.push({ title, frame: this.frame, time: this.m.time });
             this.onChapter?.(title, this.chapters.length - 1);
           },
         },

@@ -142,6 +142,18 @@ dialog.modal:has(.wt-dialog) {
   gap: 8px;
 }
 
+.wt-item-btn {
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.wt-item {
+  margin: 0;
+  min-height: 1.4em;
+  overflow-wrap: anywhere;
+  font-size: 0.9em;
+}
+
 .wt-play {
   min-width: 7.5em;
 }
