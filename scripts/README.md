@@ -15,6 +15,7 @@ set). `game-import-keys.mjs` makes the keys: the files a game's `build.ts` reall
 metafile), its own folder, the data files in `games/kit` and the packages, the stock player and the
 lockfile, so editing a page under `web/src` that no game imports rebuilds nothing.
 `logo-build-entry.mjs` renders the Sand logo sting (about 7 s of ray tracing, the same in 17 games) once per run into the render cache; `build-games.mjs` hands the file to each game as `SANDLOGO_FLI`, keyed by the files `sandlogo.ts` imports.
+`game-bundle.mjs` bundles a build entry (each game's `build.ts`, the Depth frame shards, the logo) with esbuild so `build-games.mjs` runs the child under plain `node`, not vite-node (about 16% less CPU, no 1.7 s startup per child); `GM_VITE_NODE=1` or any bundle failure runs vite-node as before.
 `game-build-entry.mjs` runs one `build.ts` and exits at once (vite-node sometimes lingered after a finished
 build until the 240 s timeout killed it). `game-build-inputs.mjs` is the fingerprint shared with
 `render-game-frames.mjs`, which renders one animation shard for the game-frames workflow.
