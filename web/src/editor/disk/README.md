@@ -54,6 +54,7 @@ merge them, and says how many 3.5" disks the game needs.
   `project/checkpoint.ts` keeps them in the game's stored record as deltas, `tools/delta`, so no export carries them) and the
   Before/After look around (the file changes from `tools/disk-diff`, then each level's map drawn
   both ways). Applying a step makes a checkpoint first only when "Make a checkpoint first" is ticked (off by default; Undo works either way); deleting a release checkpoint asks again.
+- `notesUndo.ts`: the Optimize dialog's Undo and Redo take the editor notes (the whole companion: block names, groups, palette reservations) back together with the files, one note snapshot per file snapshot (`diskTool.ts` calls `keep.before`, never the file history directly). A checkpoint Restore is one such step, so a person can hop between the head and a checkpoint with Undo and Redo; a pack's saved reservations go with Undo.
 - `playCheckpoint.ts`: "Play…" on a checkpoint runs the web player on that checkpoint's own copy of the files in a dialog (nothing saved, no saved games touched), to play the before beside the after.
 - `refs.ts`, `palettes.ts`, `blockSlots.ts`, `commit.ts`: which scene opens what, palette
   questions, block-slot placement, and writing a step's result (refusing when a file changed since

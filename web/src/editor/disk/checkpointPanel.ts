@@ -8,7 +8,6 @@ import { deltaSize } from '@lewismoten/gamemaker-sandbox-tools/delta';
 import { deleteCheckpoint, getCheckpoints, makeCheckpoint, restoreChanges, tagCheckpoint, versionAt } from '../../project/checkpoint';
 import type { StoredCheckpoint } from '../../project/storage';
 import { confirmDialog, h, promptText, toast } from '../core/ui';
-import type { fileUndo } from '../core/fileUndo';
 import type { Project } from '../core/project';
 import { kb } from './diskCard';
 
@@ -22,7 +21,7 @@ export interface CheckpointPanel {
   ensure(name: string): Promise<boolean>;
 }
 
-export function checkpointPanel(project: Project, hist: ReturnType<typeof fileUndo>, changed: () => void): CheckpointPanel {
+export function checkpointPanel(project: Project, before: (...names: string[]) => void, changed: () => void): CheckpointPanel {
   const el = h('section', { class: 'disk-checkpoint', 'aria-label': 'Checkpoints' });
   let list: StoredCheckpoint[] = [];
 
@@ -48,13 +47,13 @@ export function checkpointPanel(project: Project, hist: ReturnType<typeof fileUn
     if (
       !(await confirmDialog(
         'Restore the checkpoint',
-        `Put every file back as it was ${when(cp.made)}? Undo takes the files back; the project’s editor notes (block names, groups, palette reservations) stay as the checkpoint had them.`,
+        `Put every file back as it was ${when(cp.made)}? The files and the project’s editor notes (block names, groups, palette reservations) go back as the checkpoint had them. Undo (and Redo) bring everything back, so you can hop between the checkpoint and now to compare.`,
         'Restore',
       ))
     )
       return;
     const changes = restoreChanges(project.files, versionAt(list, i));
-    hist.before(...changes.keys());
+    before(...changes.keys());
     for (const [n, b] of changes) {
       if (b) project.files.set(n, b);
       else project.files.delete(n);
