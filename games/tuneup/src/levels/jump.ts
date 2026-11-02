@@ -4,12 +4,11 @@
 // clamp). Then Doc Leo cranks: Space held under the crank's handle turns it a notch each reach,
 // and its gauge fills, eight notches. The last one plays "Charge!" and the headlight door opens.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { scaleBlit } from '../../../snowbound/src/screens/scenery';
-import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { CHEZ_LAMP, chezPicture } from '../../../kit/chez';
 import { AIR, countedDoor, kit, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
+import { teddyInWindow } from '../art/chezTeddy';
 import { CTR, MON } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
 
@@ -118,7 +117,7 @@ export function jumpBlocks(pal: Pal): Kit {
     3,
   );
   // Teddy in the front passenger seat, his head in the door window
-  scaleBlit(car, POSES.front.crop(2, 0, 16, 11), 48 - 8, 15 - 2, 1);
+  teddyInWindow(car, 0, 0, 3);
   const carBlock = (bx: number, by: number, lit = false) => {
     const p = k.pic('wall');
     p.blit(car.crop(bx * 20, by * 20, 20, 20), 0, 0, 255);

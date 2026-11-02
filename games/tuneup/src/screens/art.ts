@@ -7,11 +7,11 @@ import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { text } from '../../../snowbound/src/art/font';
-import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { chezSide, type ChezInk } from '../../../kit/chez';
 import { chicken, type ChickenPose } from '../art/chicken';
 import { buildScreenPalette } from '../art/palette';
 import { buildCharBlocks } from '../sprites/cast';
+import { teddyInWindow } from '../art/chezTeddy';
 
 export const SP = buildScreenPalette();
 const c = SP.c;
@@ -88,11 +88,7 @@ export const CHEZ_INK: ChezInk = {
  */
 export function drawChez(p: Pixels, x: number, y: number, s: number, teddy = true): void {
   chezSide(p, x, y, CHEZ_INK, 'left', s);
-  if (!teddy) return;
-  // Teddy in the front passenger seat, his head in the door window, looking out
-  const head = POSES.front.crop(2, 0, 16, 11);
-  const k = Math.max(1, Math.round(s / 2.5));
-  scaleBlit(p, head, x + Math.round(s * 15.5) - 8 * k, y + Math.round(s * 5.2) - 2 * k, k);
+  if (teddy) teddyInWindow(p, x, y, s);
 }
 
 /** The tools Doc Leo's hat gives, a 32x32 picture each on clear. */
