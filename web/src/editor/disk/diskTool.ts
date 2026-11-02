@@ -12,6 +12,8 @@ import { lookAlikeView } from './lookAlikeView';
 import { checkpointPanel } from './checkpointPanel';
 import { PALETTE_RESERVATIONS, paletteReservations } from '../editors/palette/paletteReservations';
 import { movedFiles, remapExtras, restoreExtras, snapshotExtras, type ExtrasSnapshot } from './remapExtras';
+import { planPack, type PackPlan } from './packAll';
+import { packView } from './packView';
 import { reductions } from './reduceColors';
 import { rangeSyncs } from './rangeSync';
 import { proposeReservations } from './reservePlan';
@@ -92,16 +94,26 @@ export async function diskTool(project: Project): Promise<void> {
     const root = h('div', { class: 'disk-tool' });
     const undoBar = h('div', { class: 'disk-undo' });
     let applied = '';
+    let pack: PackPlan | 'none' | undefined;
+    let packBusy = false;
+    let packSeen: [string, Uint8Array][] = [];
+    // a plan found for other files is not shown: it was worked out on bytes that have since changed
+    const packStale = () => {
+      const now = project.files.entries();
+      return now.length !== packSeen.length || now.some(([n, b], i) => packSeen[i][0] !== n || packSeen[i][1] !== b);
+    };
     const keep = historyFor(project);
     const hist = keep.hist;
     keep.redraw = () => {
       applied = '';
+      pack = undefined;
       render();
     };
     stopKeys = hist.listenKeys();
     const checkpoint = checkpointPanel(project, hist, () => render());
 
     function render() {
+      if (pack !== undefined && !packBusy && packStale()) pack = undefined;
       const size = sizeUp(project.files, project.gam);
       let plan: Plan;
       try {
@@ -233,6 +245,48 @@ export async function diskTool(project: Project): Promise<void> {
           toast(applied);
           render();
         }),
+        packView(
+          pack,
+          packBusy,
+          () => {
+            packBusy = true;
+            render();
+            // let the "Looking…" label paint before the search, which takes a few seconds on a big game
+            setTimeout(() => {
+              try {
+                packSeen = project.files.entries();
+                pack = planPack(project.files, project.gam, paletteReservations(project)) ?? 'none';
+              } catch (e) {
+                console.warn('Packing not planned', e);
+                pack = 'none';
+              }
+              packBusy = false;
+              render();
+            }, 30);
+          },
+          async (p) => {
+            if (!(await confirmSaves(project))) return;
+            if (!(await checkpoint.ensure('Before packing'))) return;
+            try {
+              const moved = movedFiles(p.units.flatMap((u) => u.moves ?? []));
+              hist.before(...new Set(p.units.flatMap((u) => u.touches)));
+              if (moved.length) keep.extras.set(project.files.get(project.gam)!, snapshotExtras(project, moved));
+              if (p.proposed) project.setExtras(project.gam, PALETTE_RESERVATIONS, p.roles);
+              for (const u of p.units) {
+                u.apply(project.files, project.gam);
+                if (u.moves) remapExtras(project, u.moves);
+              }
+              if (moved.length) keep.extras.set(project.files.get(project.gam)!, snapshotExtras(project, moved));
+              project.forgetParsed();
+              applied = `Applied ${plural(p.units.length, 'packing step')}, saving ${kb(p.saves)}.`;
+              toast(applied);
+            } catch (e) {
+              toast(`Could not pack: ${(e as Error).message}`, 'error');
+            }
+            pack = undefined;
+            render();
+          },
+        ),
         rangeSyncView(sync.syncs, sync.stuck, async (r) => {
           if (!(await confirmSaves(project))) return;
           if (!(await checkpoint.ensure('Before syncing reserved colors'))) return;
