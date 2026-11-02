@@ -56,7 +56,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   string hash (FNV-1a) that pictures, songs, maps and walkthroughs use to come out the same every
   time.
 - [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page; the dev server keeps serving the old code until it is pressed (`manualReload` in `vite.config.ts` holds back Vite's invalidation)
-- [`devLog/interactionLog.ts`](devLog/interactionLog.ts): development on localhost only, opt in with the corner switch (remembered): logs screen size, pointer, clicks, keys (never what is typed in a field), routes, slow paints, long tasks and every JavaScript error to `.for-lewis/debug/interaction-log/<date>.jsonl` through `scripts/devLog.ts`; it pauses after 5 minutes with no mouse or keyboard
+- [`devLog/interactionLog.ts`](devLog/interactionLog.ts): development on localhost only, opt in with the 🙈/🐵 corner switch (remembered): logs screen size, pointer, clicks, keys (never what is typed in a field), routes, slow paints, long tasks and every JavaScript error to `.for-lewis/debug/interaction-log/<date>.jsonl` through `scripts/devLog.ts`; it pauses after 5 minutes with no mouse or keyboard
   (which would switch off the desk's PC) whenever a source file changes.
 - [`firstLoad.test.ts`](firstLoad.test.ts) and [`importWalk.ts`](importWalk.ts): the up-front
   download checks (above).
