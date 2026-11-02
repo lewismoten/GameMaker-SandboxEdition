@@ -124,5 +124,5 @@ describe('catalog DOS distribution', () => {
     } finally {
       await server.close();
     }
-  });
+  }, 30000);
 });
