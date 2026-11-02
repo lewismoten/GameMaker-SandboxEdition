@@ -32,7 +32,7 @@ export interface UnpackedGame {
   gam: string;
   /** Portable tuples: pass these to the engine's own GameFiles constructor. */
   entries: [string, Uint8Array][];
-  /** Recovered DOS-player settings, when a customized player was supplied. */
+  /** The game's player, when one was supplied: its Game-Maker build (`origin`) and, if customized, its settings. */
   player?: ImportedPlayer;
 }
 export type GameInput = Uint8Array | ArrayBuffer | Iterable<ScanFile | File>;

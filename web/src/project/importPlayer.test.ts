@@ -6,6 +6,8 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { adoptPlayer } from '@lewismoten/gamemaker-sandbox-archives/project/importPlayer';
+import { applyPlayerPatches } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import { md5Hex } from '@lewismoten/gamemaker-sandbox-archives/player/md5';
 import { readZip } from '@lewismoten/gamemaker-sandbox-archives/project/zip';
 import { GameFiles } from './files';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -13,9 +15,10 @@ import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/gra
 
 // GM_ARCHIVE_DIR, else the git-ignored .for-lewis/reference/archive/ at the repo root, holds the games as game-maker_<name>.zip
 const ARCHIVE = process.env.GM_ARCHIVE_DIR ?? fileURLToPath(new URL('../../../.for-lewis/reference/archive/', import.meta.url));
-// pre-3.0 games (their players carry the buyer's stamp) live in the pre-3.0/ subfolder
+// games are filed by their player's build (3.0/, 2.02/…; older copies: the root or pre-3.0/)
 const zipPath = (dir: string) =>
-  [join(ARCHIVE, dir + '.zip'), join(ARCHIVE, 'pre-3.0', dir + '.zip')].find((p) => existsSync(p)) ?? join(ARCHIVE, dir + '.zip');
+  ['', 'pre-3.0', '3.0', '2.02', '2.00', '2.04', '1.04', '1.0'].map((sub) => join(ARCHIVE, sub, dir + '.zip')).find((p) => existsSync(p)) ??
+  join(ARCHIVE, dir + '.zip');
 const folder = async (dir: string) => {
   const files = new GameFiles();
   const players: { name: string; bytes: Uint8Array }[] = [];
@@ -30,10 +33,12 @@ const folder = async (dir: string) => {
 const has = (dir: string) => existsSync(zipPath(dir));
 
 describe('adoptPlayer', () => {
-  it('says nothing for the CD’s own player, or none', () => {
+  it('says nothing for the CD’s own player, but records its build', () => {
     const exe = new Uint8Array(readFileSync(new URL('../../../cd/gm/xferplay.exe', import.meta.url)));
-    expect(adoptPlayer(new GameFiles(), [{ name: 'GAME.EXE', bytes: exe }])).toBeUndefined();
+    const r = adoptPlayer(new GameFiles(), [{ name: 'GAME.EXE', bytes: exe }])!;
+    expect(r).toMatchObject({ message: '', patches: {}, origin: { build: '3.00', stock: true, regions: [] } });
     expect(adoptPlayer(new GameFiles(), [])).toBeUndefined();
+    expect(adoptPlayer(new GameFiles(), [{ name: 'SETUP.EXE', bytes: new Uint8Array(3000) }])).toBeUndefined();
   });
 
   it.skipIf(!has('game-maker_builder'))('reads Builder’s blanked words', async () => {
@@ -63,5 +68,25 @@ describe('adoptPlayer', () => {
     expect(game.scenes[0].files[11].toLowerCase()).toBe('any1.rec'); // a demo the folder lacks keeps its (renamed) name
     const lst = parseSlideList(files.get('any1.lst')!);
     for (const e of lst) expect(files.has(e.name), e.name).toBe(true);
+  });
+
+  it.skipIf(!has('game-maker_anyworld'))('keeps Acord Games’ About page and writes the player back byte for byte', async () => {
+    const { files, players } = await folder('game-maker_anyworld');
+    const exe = players.find((p) => p.bytes.length === 160_598)!;
+    const r = adoptPlayer(files, players)!;
+    expect(r.origin).toMatchObject({ build: '3.00', stock: false, aboutAuthor: 'Acord Games' });
+    expect(r.origin.about?.length).toBe(22);
+    expect(r.message).toMatch(/writes them back/);
+    const stock = new Uint8Array(readFileSync(new URL('../../../cd/gm/xferplay.exe', import.meta.url)));
+    const out = applyPlayerPatches(stock, r.origin.importPatches, { regions: r.origin.regions, patches: r.origin.importPatches });
+    expect(md5Hex(out)).toBe(md5Hex(exe.bytes));
+  });
+
+  it.skipIf(!has('game-maker_capn-zapn_more-dosgames-2'))('reads an older build’s player by its own offsets', async () => {
+    const { files, players } = await folder('game-maker_capn-zapn_more-dosgames-2');
+    const r = adoptPlayer(files, players)!;
+    expect(r.origin).toMatchObject({ build: '1.04', aboutAuthor: 'Gary Acord' });
+    expect(r.origin.regions.length).toBeGreaterThan(0);
+    expect(r.message).toMatch(/aren’t in it/);
   });
 });

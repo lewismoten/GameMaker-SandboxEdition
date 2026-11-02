@@ -2,6 +2,7 @@
 // the player, and an imported game's hand-edited player is read back into choices (as Builder's
 // blanked menu and Rōdïp's renamed status words were made with a hex editor in the 1990s).
 import { md5Hex } from './md5';
+import { writePreserved, type PreservedParts } from './preservedRegions';
 import { PATCHES } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
 import {
   isStock,
@@ -26,10 +27,11 @@ export const STOCK_PLAYER_MD5 = 'fcaf47d50ececa0b59cd22b3fae3cda3';
 const STOCK_PLAYER_SIZE = 160_598;
 
 /**
- * A patched copy of the CD's player. Throws when `exe` is any other file, or when a patch is
- * unknown or breaks its rules (nothing is written then).
+ * A patched copy of the CD's player, with an imported 3.00 player's preserved parts (`kept`)
+ * written back. Throws when `exe` is any other file, or when a patch is unknown or breaks its
+ * rules (nothing is written then).
  */
-export function applyPlayerPatches(exe: Uint8Array, patches: PlayerPatches): Uint8Array {
+export function applyPlayerPatches(exe: Uint8Array, patches: PlayerPatches, kept?: PreservedParts): Uint8Array {
   if (exe.length !== STOCK_PLAYER_SIZE || md5Hex(exe) !== STOCK_PLAYER_MD5)
     throw new Error('This is not the Game-Maker 3.00 CD’s XFERPLAY.EXE, so it can’t be customized safely.');
   const out = exe.slice();
@@ -47,6 +49,7 @@ export function applyPlayerPatches(exe: Uint8Array, patches: PlayerPatches): Uin
     writePatch(out, entry, value);
   }
   writeExtensions(out, patches);
+  if (kept) writePreserved(out, kept, patches);
   return out;
 }
 
