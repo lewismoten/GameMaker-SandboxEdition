@@ -50,7 +50,7 @@ export function titlePicture(): Picture {
   const ray = rayModel('y', 0.5, NEAR_COL, [2.1, -2.4, 0.62], 0.62);
   const shapes = titleSet([logoShapes([0, 0.4, 1.0], 1.45), ...ray, new Sphere([-2.6, -1.6, 0.35], 0.35, MAT.chrome)]);
   const w = stage(shapes, { env: SKY });
-  const pic = still(w, cam(TITLE_EYE, TITLE_LOOK, 0.78), 4, 25, 7);
+  const pic = still(w, cam(TITLE_EYE, TITLE_LOOK, 0.78), 4, 25, 7, 'title');
   bloom(pic, 0.9, 2.5, 0.5);
   flare(pic, 76, 46, 0.7);
   centered(pic, 184, 'NO GLASSES REQUIRED.', rgb(255, 255, 255), 1, { outline: rgb(20, 16, 50) });
