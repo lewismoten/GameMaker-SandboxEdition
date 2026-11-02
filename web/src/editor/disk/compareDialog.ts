@@ -7,6 +7,7 @@ import { scenePixels, type LevelPicture } from '../../gfx/levelPicture';
 import { GameFiles } from '../../project/files';
 import { clear, h, modal } from '../core/ui';
 import { pictureCanvas } from './pictureCanvas';
+import { blockSheet, sheetKind } from './blockSheet';
 import { sceneName } from '../core/uses';
 import type { Project } from '../core/project';
 
@@ -97,10 +98,32 @@ export async function compareDialog(project: Project, version: Map<string, Uint8
         ...diff.removed.map((f) => h('li', null, `− ${f.name} (gone)`)),
       ),
     );
+    const sheetFiles = [...new Set([...diff.changed.map((f) => f.name), ...diff.added.map((f) => f.name), ...diff.removed.map((f) => f.name)])].filter(
+      sheetKind,
+    );
+    const sheets = h('div', { class: 'disk-compare-pics' });
+    const drawSheet = (name: string) =>
+      clear(sheets, canvasOf(blockSheet(before, project.gam, name), `${name} before`), canvasOf(blockSheet(after, project.gam, name), `${name} after`));
+    if (sheetFiles[0]) drawSheet(sheetFiles[0]);
+    const sheetPart = sheetFiles.length
+      ? h(
+          'details',
+          null,
+          h('summary', null, `Block sheets (${sheetFiles.length} changed)`),
+          h(
+            'label',
+            null,
+            'Block file ',
+            h('select', { onchange: (e: Event) => drawSheet((e.target as HTMLSelectElement).value) }, ...sheetFiles.map((n) => h('option', { value: n }, n))),
+          ),
+          sheets,
+        )
+      : null;
     const root = h(
       'div',
       { class: 'disk-compare' },
       files,
+      sheetPart,
       levels.length
         ? h(
             'div',
