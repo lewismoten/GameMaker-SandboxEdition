@@ -11,6 +11,8 @@ export interface LibraryFileFact {
   paletteData?: string;
   soundGroup?: SoundGroup;
 }
+/** A sound's group by its bytes: the same sample ships in many games, and measuring one takes several milliseconds. */
+const groups = new Map<string, SoundGroup | undefined>();
 const cache = new Map<string, { size: number; modified: number; fact: LibraryFileFact }>();
 
 export function libraryFacts(files: ReadonlyMap<string, string>): Record<string, LibraryFileFact> {
@@ -30,8 +32,13 @@ export function libraryFacts(files: ReadonlyMap<string, string>): Record<string,
             fact.paletteData = Buffer.from(palette).toString('base64');
           }
         } else {
-          const voice = decodeVoc(bytes);
-          if (voice.samples.length) fact.soundGroup = classifySound(voice.samples, voice.sampleRate);
+          const key = createHash('sha1').update(bytes).digest('hex');
+          if (!groups.has(key)) {
+            const voice = decodeVoc(bytes);
+            groups.set(key, voice.samples.length ? classifySound(voice.samples, voice.sampleRate) : undefined);
+          }
+          const group = groups.get(key);
+          if (group) fact.soundGroup = group;
         }
       } catch {
         // A damaged sample remains available without a misleading hash or sound group.
