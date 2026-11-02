@@ -203,6 +203,13 @@ is a list of byte-range patches (one recolored block or map cell is a few bytes)
 md...) a line patch, so each version costs only what changed. Lossless for any bytes. Import from
 `@lewismoten/gamemaker-sandbox-tools/delta`.
 
+### Color reduction
+
+`reduceBlocks` moves the pixels of blocks that use colors outside their allowed set (a block type's reserved
+range plus the colors nobody reserved) to the nearest allowed color, and scores the change in CIELAB delta E
+(mean over changed pixels, worst pixel; a block is flagged above 6 mean or 20 worst, thresholds a guess). Index
+0 and 255 never move. Import from `@lewismoten/gamemaker-sandbox-tools/color-reduce`.
+
 ### Joining block sets
 
 `mergeBackgroundSets` moves one background set's drawn blocks into another's free slots (reusing an

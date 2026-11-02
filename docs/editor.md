@@ -120,6 +120,8 @@ broken ones), **First steps** (in games started from the starter), **Color visio
 palette, drawn) and **Play Game** and **Download**. The status comes from what is already saved;
 opening the tab never runs a check. Each tool also opens from where it always did.
 
+If you have reserved palette ranges for backgrounds, monsters and characters (Palette editor), Disk space also lists block files that draw with colors reserved for another kind. **Apply** moves those pixels to the nearest allowed color, after showing each changed block before and after with a difference score (CIELAB delta E; large changes are flagged). It is separate from the automatic steps because it changes how the game looks.
+
 **Disk space** also holds your **checkpoints**: stamps of the whole game (every file and its editor
 notes), made with **Make a checkpoint…** any time and always before an optimization is applied. Each
 stores only what changed since the one before, the way a git repository does: a changed block or map

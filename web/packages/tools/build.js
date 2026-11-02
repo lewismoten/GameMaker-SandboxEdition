@@ -13,6 +13,7 @@ const sources = {
   'disk-diff': 'diskDiff',
   'look-alike': 'lookAlike',
   delta: 'delta',
+  'color-reduce': 'colorReduce',
   'block-merge': 'blockMerge',
   'release-notes': 'releaseNotes',
   palettes: 'palettes',

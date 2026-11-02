@@ -84,6 +84,11 @@
       "gamemaker-source": "./src/lookAlike.ts",
       "import": "./dist/look-alike.js"
     },
+    "./color-reduce": {
+      "types": "./dist/types/colorReduce.d.ts",
+      "gamemaker-source": "./src/colorReduce.ts",
+      "import": "./dist/color-reduce.js"
+    },
     "./delta": {
       "types": "./dist/types/delta.d.ts",
       "gamemaker-source": "./src/delta.ts",

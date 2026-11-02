@@ -10,6 +10,9 @@ import { planDisk } from './plan';
 import { lookAlikeSets } from './lookAlikes';
 import { lookAlikeView } from './lookAlikeView';
 import { checkpointPanel } from './checkpointPanel';
+import { paletteReservations } from '../editors/palette/paletteReservations';
+import { rangeDrift, reductions } from './reduceColors';
+import { reduceView } from './reduceView';
 import { sizeUp, type SizeUp } from './size';
 import { floppyFor } from './diskCard';
 import type { Plan, Step } from './types';
@@ -98,6 +101,21 @@ export async function diskTool(project: Project): Promise<void> {
           return [];
         }
       })();
+      const reduce = (() => {
+        try {
+          return reductions(project.files, project.gam, paletteReservations(project));
+        } catch (e) {
+          console.warn('Color reduction not checked', e);
+          return [];
+        }
+      })();
+      const drift = (() => {
+        try {
+          return rangeDrift(project.files, project.gam, paletteReservations(project));
+        } catch {
+          return [];
+        }
+      })();
       const saves = plan.steps.reduce((a, s) => a + s.saves, 0);
       const fits = size.disks.low === 1;
       const canvas = floppyFor(project, 160);
@@ -162,6 +180,19 @@ export async function diskTool(project: Project): Promise<void> {
             )
           : h('p', null, 'Nothing is left to merge.'),
         lookAlikeView(looks),
+        reduceView(reduce, async (r) => {
+          if (!(await checkpoint.ensure('Before color reduction'))) return;
+          try {
+            hist.before(...r.touches);
+            r.apply(project.files, project.gam);
+            project.forgetParsed();
+            applied = `Reduced the colors of ${r.file}.`;
+            toast(applied);
+          } catch (e) {
+            toast(`Could not reduce: ${(e as Error).message}`, 'error');
+          }
+          render();
+        }),
         applied
           ? h(
               'div',
@@ -176,12 +207,24 @@ export async function diskTool(project: Project): Promise<void> {
           : null,
         undoBar,
         checkpoint.el,
-        plan.notes.length
+        plan.notes.length || drift.length
           ? h(
               'div',
               null,
               h('h3', null, 'Left alone'),
-              h('ul', { class: 'disk-notes' }, ...plan.notes.map((n) => h('li', null, h('strong', null, n.title), `: ${n.why}.`))),
+              h(
+                'ul',
+                { class: 'disk-notes' },
+                ...plan.notes.map((n) => h('li', null, h('strong', null, n.title), `: ${n.why}.`)),
+                ...drift.map((d) =>
+                  h(
+                    'li',
+                    null,
+                    h('strong', null, d.file),
+                    `: its ${d.role} colors are not the same in the ${d.palettes} palettes its scenes show, so they change color from scene to scene. Copy the ${d.role} range between those palettes in the Palette editor if that is not intended.`,
+                  ),
+                ),
+              ),
               h('p', { class: 'hint' }, 'These are suggestions; the tool only reads the files, so it can’t see what you meant them for.'),
             )
           : null,
