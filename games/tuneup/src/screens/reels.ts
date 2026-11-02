@@ -308,9 +308,11 @@ function toolbox(p: Pixels, x: number, y: number, s: number): void {
  */
 export function endingReel(): Reel {
   const r = new Reel(SP.pal);
-  // 1. the parade: the car rolls in from the right, the band behind, confetti falling
+  // 1. the parade: the car rolls in from the right, the band behind, confetti falling; then it
+  // holds while the band plays on (a cartoon's moves at half speed, its moments held: Lewis
+  // found the first cut far too fast to follow)
   const street = paradeStreet();
-  for (let f = 0; f < 22; f++)
+  for (let f = 0; f < 22 + 30; f++)
     r.frame(
       street,
       (p) => {
@@ -328,7 +330,7 @@ export function endingReel(): Reel {
         }
         confetti(p, f);
       },
-      1,
+      f < 22 ? 2 : 1,
       Math.min(1, (f + 1) / 4),
     );
   // 2. the balloon CHEZ: Doc Leo twists red balloons along the car's own outline (the shared
@@ -355,22 +357,31 @@ export function endingReel(): Reel {
           for (const wx of CHEZ_WHEELS) p.disc(ox + (40 - wx) * S3, oy + 18 * S3, 8, c('paint', 3)).ring(ox + (40 - wx) * S3, oy + 18 * S3, 8, c('metal', 2));
         if (f >= 18) balloon(p, 150, 24, 'TA-DA!', 180, 80);
       },
-      f === 21 ? readFrames('TA-DA!') : 1,
+      f === 21 ? readFrames('TA-DA!') : 2,
     );
   // 3. Gwinn brings back the toolbox; everyone by the car, the last chord
   const yard = garage(160);
   parkChez(yard, 90, 170, 5);
   // the confetti keeps falling while the words are read
-  for (let f = 0; f < 12 + readFrames('TUNED UP!'); f++)
-    r.frame(yard, (p) => {
-      drawLeo(p, 'front', 30, 170, 2, false, true);
-      drawChicken(p, 200, 75, 1.25, { lady: true, squawk: f > 16 });
-      const gx = Math.max(262, 330 - f * 8);
-      scaleBlit(p, f % 4 < 2 ? GWINN.gwinnRun1 : GWINN.gwinnRun2, gx, 128, 2, true);
-      toolbox(p, gx - 8, 150, 2);
-      if (f >= 12) centered(p, 10, 'TUNED UP!', c('lamp', 4), 2, INK);
-      if (f >= 16) confetti(p, f - 16, 24);
-    });
+  // Gwinn trots in with the toolbox (at half speed), a beat to see it, then the words held
+  // long enough to read and a moment more before the fade
+  const arrive = 9;
+  const beat = 14;
+  for (let f = 0; f < arrive + beat + readFrames('TUNED UP!') + 14; f++)
+    r.frame(
+      yard,
+      (p) => {
+        const t = f - arrive - beat;
+        drawLeo(p, 'front', 30, 170, 2, false, true);
+        drawChicken(p, 200, 75, 1.25, { lady: true, squawk: t > 4 });
+        const gx = Math.max(262, 330 - f * 8);
+        scaleBlit(p, f < arrive && f % 4 < 2 ? GWINN.gwinnRun2 : GWINN.gwinnRun1, gx, 128, 2, true);
+        toolbox(p, gx - 8, 150, 2);
+        if (t >= 0) centered(p, 10, 'TUNED UP!', c('lamp', 4), 2, INK);
+        if (t >= 4) confetti(p, t - 4, 24);
+      },
+      f < arrive ? 2 : 1,
+    );
   return r.fadeOut(8);
 }
 
