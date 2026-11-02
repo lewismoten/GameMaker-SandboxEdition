@@ -18,12 +18,14 @@ import { GameFiles } from '../../web/src/project/files';
 import { planDisk } from '../../web/src/editor/disk/plan';
 import { carriedBlocks } from '../../web/src/editor/disk/lookAlikes';
 import { sceneUses } from '../../web/src/editor/disk/refs';
+import { reserveProof } from './optimizeProofReserve';
 import { scenePixels } from '../../web/src/gfx/levelPicture';
 
 const games = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const wi = args.indexOf('--write');
 const out = wi >= 0 ? args.splice(wi, 2)[1] : '';
+const reserve = args.includes('--no-reserve');
 const ids = args.filter((a) => !a.startsWith('--'));
 const secret = (d: string) => {
   try {
@@ -109,6 +111,11 @@ for (const id of readdirSync(games).filter((d) => existsSync(join(games, d, 'dis
     problems.length ? `FAIL ${problems.join('; ')}` : 'PASS every scene draws the same',
   );
   if (problems.length) failed++;
+  if (!reserve) {
+    const rp = reserveProof(files, gam, bytes(files) - bytes(after));
+    console.log(' '.repeat(10), rp.line);
+    if (!rp.ok) failed++;
+  }
   if (out && plan.steps.length) {
     mkdirSync(join(out, id), { recursive: true });
     for (const [n, v] of after.entries()) writeFileSync(join(out, id, n), v);

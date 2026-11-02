@@ -164,7 +164,7 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   hands and stuck spots, which scenes it found no way through, and how tight the walkthrough's key changes are
   (`web/src/editor/check/walk/pace.ts`). It only reports: play findings depend on the time the bot has, so they are
   not in the baseline.
-- `optimizeProof.ts [<id>...] [--write <dir>]` (`npm run optimize:proof`, from `web/`) — applies every disk-tool step to a copy of each built game and proves each scene draws the same (pixel for pixel in RGB) and carried block numbers keep their picture; prints steps and bytes saved, exits 1 on a difference.
+- `optimizeProof.ts [<id>...] [--write <dir>]` (`npm run optimize:proof`, from `web/`) — applies every disk-tool step to a copy of each built game and proves each scene draws the same (pixel for pixel in RGB) and carried block numbers keep their picture; prints steps and bytes saved, exits 1 on a difference. `optimizeProofReserve.ts` adds a second line per game: proposed palette reservations, the reductions and syncs they need, the extra bytes the steps then save, and the delta E of any scene against the original (`--no-reserve` skips it).
 - `diskSpace.ts [<id>...] [--write] [--strict]` — runs the editor's disk-space tool (`web/src/editor/disk`) over built
   games: what it would merge, what it leaves alone and why, and the size in 1.44 MB and 720 KB floppies. It reads
   `games/<id>/disk` and changes nothing; `--write` also writes `.for-lewis/research/disk-space-findings.md`, `--strict`
