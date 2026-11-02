@@ -33,7 +33,7 @@ describe('foreignColors', () => {
 });
 
 describe('colorRoles', () => {
-  const t = testGame(['######', '#S..E#', '######']);
+  const t = testGame(['######', '#Sc^E#', '######']);
   const scenes = () => scenesOf(t.game, t.files);
   it('finds nothing without reservations', () => {
     expect(colorRoles(scenes(), undefined)).toEqual([]);
@@ -54,11 +54,23 @@ describe('colorRoles', () => {
   });
   it('lists the first five blocks of a file, then one line for the rest', () => {
     const sc = scenes();
-    for (let n = 0; n < 10; n++) sc[0].bbl[n].pixels.fill(5);
+    for (let n = 0; n < 10; n++) {
+      sc[0].bbl[n].pixels.fill(5);
+      sc[0].map.blocks[n] = n;
+    }
     const f = colorRoles(sc, [{ role: 'monster', first: 1, last: 254 }]);
     const bg = f.filter((x) => x.where.file === 'test.bbl');
     expect(bg.filter((x) => x.where.block)).toHaveLength(5);
     expect(bg.filter((x) => !x.where.block)).toHaveLength(1);
     expect(bg.at(-1)?.title).toMatch(/^\d+ more background blocks in test\.bbl/);
+  });
+  it('looks only at blocks a level shows', () => {
+    const sc = scenes();
+    sc[0].bbl[60].pixels.fill(13);
+    sc[0].bbl[61].pixels.fill(13);
+    sc[0].map.blocks[0] = 60; // on the map
+    expect(colorRoles(sc, [{ role: 'monster', first: 13, last: 13 }]).map((x) => x.where.block?.n)).toEqual([60]);
+    sc[0].bbl[60].nextBl = 61; // what it changes into counts too
+    expect(colorRoles(sc, [{ role: 'monster', first: 13, last: 13 }]).map((x) => x.where.block?.n)).toEqual([60, 61]);
   });
 });
