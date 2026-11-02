@@ -108,23 +108,27 @@
   },
   {
    "scene": 27,
-   "keys": "D0sAywBLDMsGSwXLBEsDywVLDMsASwnLAEsPywBLA8sASwfLB0sFywVLA8sgSwzLAEsHywBLB8sHSwTLBEsDyz9LDMsASwfLAEsPywBLBMsASwbLCEsFywRLA8thSwzLAEsJywBLBssISwbLBEsEyzxLDMsASw=="
+   "keys": "gAFLAcuKAU0BzfgBSwHLW00BzdsBTQHNYksByx1LAcs="
   },
   {
    "scene": 28,
-   "keys": "D0sAywBLCcsGSwXLBUsDy0NLDMsASwXLAEsHywZLBMsESwPLaUsMywBLBcsASwfLBksFy21LDcsASwTLAEsHywhLBcsFSwPLPksMywBLB8sASwbLBksGywRLBMsqSwzLAEsHywBLB8sGSwTLA0sDywNLDMsASwfLAEsPywBLAssASwfLCEsEywNLA8sGSwzLAEs="
+   "keys": "D0sAywBLDMsGSwXLBEsDywZLDMsASwnLAEsPywBLA8sASwfLCUsFywVLA8sbSwzLAEsHywBLB8sGSwTLBEsDy0NLDMsASwfLAEsPywBLBMsASwbLB0sFywVLA8tiSwzLAEsJywBLBssISwbLBEsEyzlLDMsASw=="
   },
   {
    "scene": 29,
-   "keys": "D0sSywZLBssDSwTLBEsDywM5AbkGSxvLBksGywVLA8sEOQG5BksbywdLBssFSwTLAzkBuQZLG8sISwbLBEsEywM5AbkGSw=="
+   "keys": "D0sAywBLCcsFSwXLA0sDy0ZLDMsASwXLAEsHywdLBMsDSwPLaEsMywBLBcsASwfLB0sFy21LDcsASwTLAEsHywdLBcsDSwPLQksMywBLB8sASwbLB0sGywNLBMsrSwzLAEsHywBLB8sISwTLA0sDywRLDMsASwfLAEsPywBLAssASwfLCEsEywRLA8sDSwzLAEs="
   },
   {
    "scene": 30,
-   "keys": "D0sPywZLBcsDOQG5BksaywhLBcsDSwPLAjkBuQZLHcsGSwXLBEsDywQ5AbkGSxvLCEsGywRLA8sDOQG5Bks="
+   "keys": "D0sSywZLBssESwTLAksDywQ5AbkGSxvLBksGywNLA8sCOQG5BksbywdLBssFSwTLBDkBuQZLG8sHSwbLBEsEywI5AbkGSw=="
   },
   {
    "scene": 31,
-   "keys": "D0sUywVLBssDSwTLAjkBuQZLG8sISwbLA0sEywM5AbkGSxvLBksGywRLBMsDOQG5BksbywhLBssESwTLBDkBuQZL"
+   "keys": "D0sPywVLBcsDOQG5BksaywhLBcsDSwPLAzkBuQZLHcsGSwXLBEsDywM5AbkGSxvLCEsGywRLA8sEOQG5Bks="
+  },
+  {
+   "scene": 32,
+   "keys": "D0sUywZLBssFSwTLBDkBuQZLG8sHSwbLBEsEywI5AbkGSxvLCEsGywRLBMsEOQG5BksbywhLBssFSwTLAjkBuQZL"
   }
  ],
  "chapters": [
@@ -230,164 +234,207 @@
   },
   {
    "scene": 27,
-   "title": "Level 14: The Test Drive, round the block"
+   "title": "Level 14: The Beltway"
   },
   {
    "scene": 28,
-   "title": "Level 14: The Test Drive, Main Street"
+   "title": "Level 15: The Test Drive, round the block"
   },
   {
    "scene": 29,
-   "title": "Level 15: The Parade Route, the morning"
+   "title": "Level 15: The Test Drive, Main Street"
   },
   {
    "scene": 30,
-   "title": "Level 15: The Parade Route, sunset"
+   "title": "Level 16: The Parade Route, the morning"
   },
   {
    "scene": 31,
-   "title": "Level 15: The Parade Route, the fireworks"
+   "title": "Level 16: The Parade Route, sunset"
+  },
+  {
+   "scene": 32,
+   "title": "Level 16: The Parade Route, the fireworks"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 86798,
+  "frames": 92365,
   "chapters": [
    {
     "title": "Opening",
-    "frame": 0
+    "frame": 0,
+    "time": 0
    },
    {
     "title": "Story",
-    "frame": 1028
+    "frame": 1028,
+    "time": 17133.33333333315
    },
    {
     "title": "Level 1: Jump Start",
-    "frame": 2257
+    "frame": 2257,
+    "time": 37616.66666666692
    },
    {
     "title": "Level 2: Spark Plucks",
-    "frame": 7168
+    "frame": 7168,
+    "time": 119466.66666667855
    },
    {
     "title": "Level 3: The Timing Beat, the straight verse",
-    "frame": 10440
+    "frame": 10440,
+    "time": 173999.99999999028
    },
    {
     "title": "Level 3: The Timing Beat, the syncopated verse",
-    "frame": 13437
+    "frame": 13437,
+    "time": 223949.9999999612
    },
    {
     "title": "Level 3: The Timing Beat, the double-time verse",
-    "frame": 15220
+    "frame": 15220,
+    "time": 253666.66666661057
    },
    {
     "title": "Level 4: Oil's Well",
-    "frame": 17075
+    "frame": 17075,
+    "time": 284583.33333329845
    },
    {
     "title": "Level 4: Oil's Well, the swim",
-    "frame": 20991
+    "frame": 20991,
+    "time": 349850.0000000411
    },
    {
     "title": "Level 5: The Fan Band, the cool verse",
-    "frame": 22328
+    "frame": 22328,
+    "time": 372133.33333340037
    },
    {
     "title": "Level 5: The Fan Band, the hot verse",
-    "frame": 26978
+    "frame": 26978,
+    "time": 449633.3333334906
    },
    {
     "title": "Level 6: Brake Dance",
-    "frame": 29251
+    "frame": 29251,
+    "time": 487516.666666868
    },
    {
     "title": "Level 7: Hubcaps and Balls, round 1",
-    "frame": 32445
+    "frame": 32445,
+    "time": 540750.0000002058
    },
    {
     "title": "Level 7: Hubcaps and Balls, round 2",
-    "frame": 34886
+    "frame": 34886,
+    "time": 581433.3333334444
    },
    {
     "title": "Level 7: Hubcaps and Balls, round 3",
-    "frame": 36231
+    "frame": 36231,
+    "time": 603850.0000000589
    },
    {
     "title": "Level 8: Pump Up the Volume",
-    "frame": 37342
+    "frame": 37342,
+    "time": 622366.6666666825
    },
    {
     "title": "Level 9: Muffled",
-    "frame": 40891
+    "frame": 40891,
+    "time": 681516.6666665447
    },
    {
     "title": "Level 10: The Rain Delay",
-    "frame": 43589
+    "frame": 43589,
+    "time": 726483.3333331067
    },
    {
     "title": "Level 11: The Horn Section, round 1",
-    "frame": 49065
+    "frame": 49065,
+    "time": 817749.9999995609
    },
    {
     "title": "Level 11: The Horn Section, round 2",
-    "frame": 52570
+    "frame": 52570,
+    "time": 876166.6666660915
    },
    {
     "title": "Level 11: The Horn Section, round 3",
-    "frame": 55437
+    "frame": 55437,
+    "time": 923949.9999993136
    },
    {
     "title": "Level 12: Key Change, first gear",
-    "frame": 58825
+    "frame": 58825,
+    "time": 980416.6666658488
    },
    {
     "title": "Level 12: Key Change, second gear",
-    "frame": 61589
+    "frame": 61589,
+    "time": 1026483.3333324082
    },
    {
     "title": "Level 12: Key Change, third gear",
-    "frame": 63213
+    "frame": 63213,
+    "time": 1053549.9999990466
    },
    {
     "title": "Level 12: Key Change, top gear",
-    "frame": 64834
+    "frame": 64834,
+    "time": 1080566.666665839
    },
    {
     "title": "Level 13: The Instrument Panel, the radio",
-    "frame": 66458
+    "frame": 66458,
+    "time": 1107633.3333326317
    },
    {
     "title": "Level 13: The Instrument Panel, the gauges",
-    "frame": 68757
+    "frame": 68757,
+    "time": 1145949.9999994768
    },
    {
-    "title": "Level 14: The Test Drive, round the block",
-    "frame": 69966
+    "title": "Level 14: The Beltway",
+    "frame": 69966,
+    "time": 1166099.9999995707
    },
    {
-    "title": "Level 14: The Test Drive, Main Street",
-    "frame": 73931
+    "title": "Level 15: The Test Drive, round the block",
+    "frame": 75852,
+    "time": 1264200.0000000275
    },
    {
-    "title": "Level 15: The Parade Route, the morning",
-    "frame": 76982
+    "title": "Level 15: The Test Drive, Main Street",
+    "frame": 79484,
+    "time": 1324733.3333336427
    },
    {
-    "title": "Level 15: The Parade Route, sunset",
-    "frame": 79724
+    "title": "Level 16: The Parade Route, the morning",
+    "frame": 82545,
+    "time": 1375750.000000547
    },
    {
-    "title": "Level 15: The Parade Route, the fireworks",
-    "frame": 81242
+    "title": "Level 16: The Parade Route, sunset",
+    "frame": 85271,
+    "time": 1421183.3333340918
+   },
+   {
+    "title": "Level 16: The Parade Route, the fireworks",
+    "frame": 86789,
+    "time": 1446483.3333342096
    },
    {
     "title": "Ending",
-    "frame": 82793
+    "frame": 88360,
+    "time": 1472666.666667665
    },
    {
     "title": "Credits",
-    "frame": 85246
+    "frame": 90813,
+    "time": 1513550.0000011886
    }
   ]
  }

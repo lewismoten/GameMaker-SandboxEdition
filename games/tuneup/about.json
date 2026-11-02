@@ -27,7 +27,7 @@
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
-    "hours": 9,
+    "hours": 10,
     "levels": "16 levels: a rubber chicken's dream of an engine, the real electric car and its new radio, a spin round the beltway, a test drive and the parade, a cartoon before each",
     "background": "#14204e",
     "accent": "#ffb43a",
@@ -68,6 +68,8 @@
     "response s11 V (fire) waits 0.8 s before anything happens",
     "response s11 X (fire) waits 0.8 s before anything happens",
     "response s11 Z (fire) waits 0.7 s before anything happens",
-    "facing s27 The hero faces the same way walking left and right"
+    "facing s27 The hero faces the same way walking left and right",
+    "facing s28 The hero faces the same way walking left and right",
+    "waits s27 Timed block 36 stays shut for 62.1 s at a time"
   ]
 }
