@@ -62,11 +62,29 @@ const isPlatformBuild = (p: LockPackage) => !!p.optional && !!(p.os || p.cpu);
 export function depsFromLock(lock: Lockfile): { deps: Dep[]; platformBuilds: DepsFile['platformBuilds'] } {
   const workspace = lock.packages.web ? 'web' : '';
   const root = lock.packages[workspace];
-  const runtimeDirect = Object.keys(root.dependencies ?? {});
-  const direct = [...runtimeDirect, ...Object.keys(root.devDependencies ?? {})];
+  // the repository root holds the dev-only tools, the app its build tools and the SDK workspaces
+  const top = workspace && lock.packages[''] ? lock.packages[''] : undefined;
+  const direct = [...new Set([...[root, top].flatMap((p) => [...Object.keys(p?.dependencies ?? {}), ...Object.keys(p?.devDependencies ?? {})])])];
+  // what ships is the SDK workspaces and what they depend on; the app's build tools are tools
+  const sdkQueue = Object.keys(root.dependencies ?? {})
+    .map((d) => resolveIn(lock, workspace, d))
+    .filter((at): at is string => !!at && !!lock.packages[at].link);
+  const shipped = new Set(sdkQueue);
+  for (const seen = new Set(sdkQueue); sdkQueue.length;) {
+    const installed = lock.packages[sdkQueue.shift()!];
+    const source = installed.link && installed.resolved ? installed.resolved : undefined;
+    const p = source ? lock.packages[source] : installed;
+    for (const d of Object.keys({ ...p.dependencies, ...p.optionalDependencies })) {
+      const at = resolveIn(lock, source ?? '', d);
+      if (!at || seen.has(at)) continue;
+      seen.add(at);
+      sdkQueue.push(at);
+      shipped.add(at);
+    }
+  }
   const usedBy = new Map<string, Set<string>>();
-  for (const top of direct) {
-    const start = resolveIn(lock, workspace, top);
+  for (const name of direct) {
+    const start = resolveIn(lock, workspace, name);
     const queue = start ? [start] : [];
     const seen = new Set(queue);
     while (queue.length) {
@@ -80,7 +98,7 @@ export function depsFromLock(lock: Lockfile): { deps: Dep[]; platformBuilds: Dep
         seen.add(at);
         queue.push(at);
         if (!usedBy.has(at)) usedBy.set(at, new Set());
-        usedBy.get(at)!.add(top);
+        usedBy.get(at)!.add(name);
       }
     }
   }
@@ -101,7 +119,7 @@ export function depsFromLock(lock: Lockfile): { deps: Dep[]; platformBuilds: Dep
       name,
       version: p.version ?? '',
       license,
-      runtime: !p.dev,
+      runtime: shipped.has(path),
       direct: isDirect,
       usedBy: isDirect ? [] : [...(usedBy.get(path) ?? [])].sort(),
     });
