@@ -10,6 +10,7 @@ import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
 import { teddyInWindow } from '../art/chezTeddy';
 import { CTR, MON } from '../ids';
+import { addFork, glint } from '../blocks/fork';
 import { decorate } from './decor';
 import { MapBuilder, at, type Level } from './maps';
 
@@ -22,6 +23,8 @@ export const JUMP = {
   w: 44,
   floor: 8,
   red: [23, 2] as [number, number],
+  /** The secret: the shelf runs on past the red clamp, a glint over its end, a tuning fork on it. */
+  fork: [28, 2] as [number, number],
   black: [16, 7] as [number, number],
   redDoor: 26,
   blackDoor: 29,
@@ -94,6 +97,8 @@ export function jumpBlocks(pal: Pal): Kit {
     book.add(`crank${n}.t`, crank(n + 1, true), { ...AIR, ntime: TURN, next: last ? 'crank.full' : `crank${n + 1}` });
   }
   book.add('crank.full', crank(NOTCHES, false), AIR);
+  addFork(k, 'wall');
+  glint(k, 'wall');
   // the way out: THE CHEZ itself, parked at the end of the garage facing left (the passenger side,
   // Teddy at the door window), drawn over the wall a block at a time. Its headlight is shut (a
   // solid block, its lens dark) until the battery is charged; touched then, it lights and opens.
@@ -172,8 +177,9 @@ export function jump(book: Kit['book']): Level {
   m.fill(14, 5, 5, 1, 'B').set(14, 6, 'L').set(14, 7, 'L').set(18, 6, 'L').set(18, 7, 'L');
   m.set(...JUMP.black, 'clamp.black');
   // the shelf up on the wall with the red clamp
-  m.fill(20, 3, 4, 1, 's');
+  m.fill(20, 3, 9, 1, 's');
   m.set(...JUMP.red, 'clamp.red');
+  m.set(JUMP.fork[0] - 2, 1, 'wall.glint').set(...JUMP.fork, 'fork');
   // the terminals, the crank, the drum (Sir Reginald's perch) and the headlight
   m.set(JUMP.redDoor, 6, 'term.red.top').set(JUMP.redDoor, 7, 'term.red');
   m.set(JUMP.blackDoor, 6, 'term.black.top').set(JUMP.blackDoor, 7, 'term.black');

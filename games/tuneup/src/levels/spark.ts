@@ -6,6 +6,7 @@
 // energy). Each plug's note is its own kind of change (sounds.ts): the first gives energy back,
 // the second and fourth count a pluck, the third a tip, so two terminals stand between the
 // halves and two at the end.
+import { addFork, glint } from '../blocks/fork';
 import { gradient } from '../../../snowbound/src/art/draw';
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLIMB, countedDoor, kit, type Kit } from '../blocks/common';
@@ -30,6 +31,8 @@ export const SPARK_ROWS = [3, 4, 5, 6, 7];
 export const SPARK = {
   w: 38,
   floor: 8,
+  /** The secret: on the last wire's ledge, a glint over it and a tuning fork on it. */
+  fork: [30, 2] as [number, number],
   gateA: 17,
   gateB: 33,
   gateC: 35,
@@ -119,6 +122,8 @@ export function sparkBlocks(pal: Pal): Kit {
   countedDoor(k, 'gate.a', 'bay', CTR.plucked, 2, bolt);
   countedDoor(k, 'gate.b', 'bay', MONEY, 1, bolt);
   countedDoor(k, 'gate.c', 'bay', CTR.plucked, 1, bolt);
+  addFork(k, 'bay');
+  glint(k, 'bay');
   return k;
 }
 
@@ -152,6 +157,7 @@ export function spark(book: Kit['book']): Level {
     // the ledge off the top to the right, to walk off and down
     m.fill(wr.x + 1, WIRE_TOP + 1, 3, 1, '_');
   });
+  m.set(SPARK.fork[0] - 1, 1, 'bay.glint').set(...SPARK.fork, 'fork');
   // a casting to hop on the way to the second half
   m.set(9, 7, '#').set(24, 7, '#').set(25, 7, '#').set(25, 6, '#');
   m.set(SPARK.gateA, 6, 'gate.a.top').set(SPARK.gateA, 7, 'gate.a');

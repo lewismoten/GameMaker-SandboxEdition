@@ -23,6 +23,13 @@ export async function leave(bot: Bot, r: Promise<string | undefined>, what: stri
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
 
+/** Takes a tuning fork the way a person does: walks to its column, and checks the counter went up. */
+export async function takeFork(bot: Bot, x: number, what: string): Promise<void> {
+  const before = bot.count(CTR.forks);
+  await must(bot, bot.walk(x, `to the tuning fork ${what}`), `fork ${what}`);
+  if (bot.count(CTR.forks) !== before + 1) throw new Error(`missed the tuning fork ${what}`);
+}
+
 /** 1. Jump Start: the red clamp on the shelf, the black one under the bench, the terminals, the crank. */
 export async function jumpStart(bot: Bot): Promise<void> {
   expect(bot, 2, 'jump start');
@@ -33,7 +40,8 @@ export async function jumpStart(bot: Bot): Promise<void> {
   await must(bot, bot.hop('right', 12, 'right', 21), 'up to the shelf');
   await must(bot, bot.walk(JUMP.red[0], 'to the red clamp'), 'red clamp');
   if (bot.count(CTR.red) !== 1) throw new Error('missed the red clamp');
-  await must(bot, bot.walk(25, 'off the shelf'), 'down');
+  await takeFork(bot, JUMP.fork[0], 'at the shelf end');
+  await must(bot, bot.walk(30, 'off the shelf'), 'down');
   await must(bot, bot.walk(JUMP.black[0], 'under the bench'), 'black clamp');
   if (bot.count(CTR.black) !== 1) throw new Error('missed the black clamp');
   await must(bot, bot.walk(JUMP.crank, 'through both terminals to the crank'), 'terminals');
@@ -70,8 +78,13 @@ export async function sparkPlucks(bot: Bot): Promise<void> {
       'climbing',
     );
     if (bot.sim.ci.hitpts < hp) throw new Error(`wire ${i + 1}: frizzed`);
-    await must(bot, bot.walk(w.x + 2, 'onto the ledge'), 'ledge');
-    await must(bot, bot.walk(w.x + 4, 'off the ledge'), 'off the ledge');
+    if (i === WIRES.length - 1) {
+      await takeFork(bot, SPARK.fork[0], 'on the last ledge');
+      await must(bot, bot.walk(SPARK.fork[0] + 1, 'off the ledge'), 'off the ledge');
+    } else {
+      await must(bot, bot.walk(w.x + 2, 'onto the ledge'), 'ledge');
+      await must(bot, bot.walk(w.x + 4, 'off the ledge'), 'off the ledge');
+    }
   }
   const plucked = bot.count(CTR.plucked) + 2;
   if (plucked !== 3 || bot.sim.money !== 1) throw new Error(`plucked ${plucked} and ${bot.sim.money} tips`);
