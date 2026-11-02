@@ -6,7 +6,10 @@
 // frame of the one before. Each clip after the first opens on the next frame drawn whole,
 // with its palette (encodeFli sets it in frame 0, after the bands when a frame is split), and
 // cuts fall where the palette holds and the least of the picture changes, so the joins don't
-// show. The fade to black stays at the end of the last clip.
+// show. The fade to black stays at the end of the last clip. With `cheapCuts` a cut falls
+// where the whole frame costs the fewest bytes more than the change it replaces (a scene
+// change or a big delta) instead of in a still hold, where the clip would open on a whole
+// frame for nothing; every frame and its delay stay the same.
 import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { parseSlideList, serializeSlideList, type SlideEntry } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
@@ -14,6 +17,15 @@ import { parseSlideList, serializeSlideList, type SlideEntry } from '@lewismoten
 export function fliSeconds(fli: Uint8Array): number {
   const a = parseFli(fli);
   return (a.frameCount * a.speed) / 70;
+}
+
+/** The FLI cut off after the header's frame count (its ring frame, if any, dropped), byte for byte otherwise. */
+function withoutLoopFrame(fli: Uint8Array): Uint8Array {
+  const a = parseFli(fli);
+  if (a.frames.length <= a.frameCount) return fli;
+  const out = fli.slice(0, a.frames[a.frameCount]);
+  new DataView(out.buffer).setUint32(0, out.length, true);
+  return out;
 }
 
 /** Every frame's pixels and palette, as FLI::View leaves the screen after it. */
@@ -41,6 +53,35 @@ function cutCost(frames: Uint8Array[], palettes: Uint8Array[], i: number): numbe
   return n;
 }
 
+/** How cartoons are cut and written (both off by default, so other games' bytes stay the same). */
+export interface ClipOptions {
+  /** Each clip without encodeFli's closing ring frame, which nothing plays. */
+  noLoopFrame?: boolean;
+  /** Cut where opening on a whole frame costs the fewest extra bytes, not where least changes. */
+  cheapCuts?: boolean;
+}
+
+/**
+ * What a cut before each frame adds to the disk: the frame written whole (as a clip opens)
+ * less the change from the frame before, as `fli` stores it (encodeFli writes a clip's later
+ * frames the same way). A palette change there shows. A frame like the one before it is
+ * as big written whole, so a still hold is measured once.
+ */
+function byteCosts(fli: Uint8Array, frames: Uint8Array[], palettes: Uint8Array[], w: number, h: number): (i: number) => number {
+  const a = parseFli(fli);
+  const record = (i: number) => (i + 1 < a.frames.length ? a.frames[i + 1] : fli.length) - a.frames[i];
+  const wholes: number[] = [];
+  const whole = (i: number): number => {
+    if (wholes[i] === undefined)
+      wholes[i] =
+        i > 0 && same(frames[i - 1], frames[i]) && same(palettes[i - 1], palettes[i])
+          ? whole(i - 1)
+          : encodeFli([frames[i]], palettes[i], { width: w, height: h, runs: true, noLoopFrame: true }).length - 128;
+    return wholes[i];
+  };
+  return (i) => (same(palettes[i - 1], palettes[i]) ? whole(i) - record(i) : 1e9);
+}
+
 /** The first frame of each clip after the first: as few clips as hold `most` frames each. */
 function cuts(frames: Uint8Array[], palettes: Uint8Array[], most: number): number[] {
   const total = frames.length;
@@ -65,6 +106,37 @@ function cuts(frames: Uint8Array[], palettes: Uint8Array[], most: number): numbe
   return out;
 }
 
+/**
+ * The cuts with the least total `cost`, in no more clips than `count`, each at most `most`
+ * frames: a search over every cut position, for `cheapCuts`.
+ */
+function cheapestCuts(total: number, most: number, count: number, cost: (i: number) => number): number[] {
+  // best[c][j]: the least cost of c cuts, the last before frame j (j = 0 for none)
+  const best: number[][] = [new Array<number>(total + 1).fill(Infinity)];
+  const from: number[][] = [new Array<number>(total + 1).fill(-1)];
+  best[0][0] = 0;
+  const costs = new Map<number, number>();
+  const at = (i: number) => costs.get(i) ?? (costs.set(i, cost(i)), costs.get(i)!);
+  let pick: [number, number] | undefined;
+  for (let c = 0; c < count; c++) {
+    // the clip from the last cut runs to the end
+    for (let j = 0; j < total; j++) if (best[c][j] < Infinity && total - j <= most && (!pick || best[c][j] < best[pick[0]][pick[1]])) pick = [c, j];
+    if (c + 1 === count) break;
+    best.push(new Array<number>(total + 1).fill(Infinity));
+    from.push(new Array<number>(total + 1).fill(-1));
+    for (let j = 0; j < total; j++) {
+      if (best[c][j] === Infinity) continue;
+      for (let i = j + 1; i <= Math.min(j + most, total - 1); i++) {
+        const v = best[c][j] + at(i);
+        if (v < best[c + 1][i]) [best[c + 1][i], from[c + 1][i]] = [v, j];
+      }
+    }
+  }
+  const out: number[] = [];
+  for (let [c, j] = pick!; c > 0; j = from[c][j], c--) out.unshift(j);
+  return out;
+}
+
 /** The clip names: the first keeps `name`, the rest add 2, 3… to its first 7 letters (DOS 8.3). */
 function clipName(name: string, k: number): string {
   if (k === 0) return name;
@@ -76,16 +148,18 @@ function clipName(name: string, k: number): string {
  * The FLI as clips of at most `seconds` each, by file name in play order. One that plays no
  * longer than a quarter more than `seconds` stays whole, under its own name.
  */
-export function fliClips(name: string, fli: Uint8Array, seconds = 4): Record<string, Uint8Array> {
-  if (fliSeconds(fli) <= seconds * 1.25) return { [name]: fli };
+export function fliClips(name: string, fli: Uint8Array, seconds = 4, opts: ClipOptions = {}): Record<string, Uint8Array> {
+  if (fliSeconds(fli) <= seconds * 1.25) return { [name]: opts.noLoopFrame ? withoutLoopFrame(fli) : fli };
   const { frames, palettes, w, h, speed } = decode(fli);
   const most = Math.max(1, Math.floor((seconds * 70) / Math.max(1, speed)));
-  const starts = [0, ...cuts(frames, palettes, most), frames.length];
+  const even = cuts(frames, palettes, most);
+  const chosen = opts.cheapCuts ? cheapestCuts(frames.length, most, even.length + 1, byteCosts(fli, frames, palettes, w, h)) : even;
+  const starts = [0, ...chosen, frames.length];
   const out: Record<string, Uint8Array> = {};
   for (let k = 0; k + 1 < starts.length; k++) {
     const fs = frames.slice(starts[k], starts[k + 1]);
     const ps = palettes.slice(starts[k], starts[k + 1]);
-    out[clipName(name, k)] = encodeFli(fs, ps[0], { width: w, height: h, speed, palettes: ps, runs: true });
+    out[clipName(name, k)] = encodeFli(fs, ps[0], { width: w, height: h, speed, palettes: ps, runs: true, noLoopFrame: opts.noLoopFrame });
   }
   return out;
 }
@@ -102,14 +176,14 @@ export function clipEntries(clips: Record<string, Uint8Array>, pause?: number): 
  * plays the clips instead, the entry's pause after the last. For a build whose lists are
  * written in several places.
  */
-export function clipLists(files: Map<string, Uint8Array>, lists: string[], seconds = 4): void {
+export function clipLists(files: Map<string, Uint8Array>, lists: string[], seconds = 4, opts: ClipOptions = {}): void {
   const cut = new Map<string, Record<string, Uint8Array>>();
   for (const l of lists) {
     for (const e of parseSlideList(files.get(l) ?? new Uint8Array())) {
       const name = e.name.toLowerCase();
       const fli = files.get(name);
       if (!name.endsWith('.fli') || !fli || cut.has(name)) continue;
-      const clips = fliClips(name, fli, seconds);
+      const clips = fliClips(name, fli, seconds, opts);
       if (Object.keys(clips).length > 1) cut.set(name, clips);
     }
   }
@@ -128,10 +202,11 @@ export function clipLists(files: Map<string, Uint8Array>, lists: string[], secon
  * `clipLists` on every slide list on the disk: the title's, story's and help's, and the
  * game's own (endings, game over, cut scenes), so Esc answers within a few seconds anywhere.
  */
-export function clipEveryList(files: Map<string, Uint8Array>, seconds = 4): void {
+export function clipEveryList(files: Map<string, Uint8Array>, seconds = 4, opts: ClipOptions = {}): void {
   clipLists(
     files,
     [...files.keys()].filter((n) => n.endsWith('.lst')),
     seconds,
+    opts,
   );
 }

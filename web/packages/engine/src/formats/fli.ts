@@ -425,6 +425,8 @@ function fliChunk(type: number, data: number[]): number[] {
  * or as the lines that changed, the 6-bit palette in the first frame, and a closing "ring"
  * frame that leads back to the start. No chunk is bigger than FLI_CHUNK_MAX: a bigger frame
  * is split into bands of lines. `speed` is the delay after each frame in 1/70 s.
+ * `noLoopFrame` leaves the ring frame out: PLAYGAME's FLI::View (code/Image/FLI/FLI.CPP)
+ * plays only the header's frame count, so the ring frame is never shown there.
  */
 export function encodeFli(
   frames: Uint8Array[],
@@ -435,12 +437,14 @@ export function encodeFli(
     speed?: number;
     /** A palette per frame (fades, flashes); changes are stored where they happen. */ palettes?: Uint8Array[];
     /** Code runs of a color inside changed spans as run packets too (smaller deltas for drawn art). */ runs?: boolean;
+    /** Leave out the closing ring frame (nothing that plays the file shows it). */ noLoopFrame?: boolean;
   } = {},
 ): Uint8Array {
   const w = opts.width ?? 320;
   const h = opts.height ?? 200;
-  const all = [...frames, frames[0]];
-  const pals = opts.palettes ? [...frames.map((_, i) => opts.palettes![i] ?? palette), opts.palettes[0] ?? palette] : undefined;
+  const ring = !opts.noLoopFrame;
+  const all = ring ? [...frames, frames[0]] : frames;
+  const pals = opts.palettes ? [...frames.map((_, i) => opts.palettes![i] ?? palette), ...(ring ? [opts.palettes[0] ?? palette] : [])] : undefined;
   const records = all.map((px, i) => {
     const chunks: number[][] = [];
     const pal = pals?.[i] ?? palette;

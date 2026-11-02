@@ -94,7 +94,9 @@ Making the files:
   endings, game overs and cut scenes are cut too).
   PLAYGAME plays a whole FLI before it reads Esc, so a list of short clips lets the player skip within a few seconds.
   Cuts fall where the palette holds and least changes; the clips play exactly the frames of the whole one
-  (`web/src/formats/fliClips.test.ts`).
+  (`web/src/formats/fliClips.test.ts`). Opt-in `ClipOptions`: `noLoopFrame` drops each clip's ring frame
+  (PLAYGAME plays only the header's frame count), `cheapCuts` cuts where opening on a whole frame adds the
+  fewest bytes (a scene change), in no more clips.
 - `photo.ts` — real photos for the endings: the small scans in `scans/` (made once from the owner's photos by
   `scans/scan.ts`) resized for VGA's tall pixels, given a picture's unused palette entries and dithered in; polaroid frames.
 - `chez.ts` — THE CHEZ, the red CitiCar, as a two-block side view (or smaller, seen through a window) for a

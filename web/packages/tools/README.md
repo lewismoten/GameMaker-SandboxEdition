@@ -171,7 +171,9 @@ project data under the MIT License; recordings and complete songs are not includ
 ### Native animations and demos
 
 `kit/fadeOut` adds palette-only FLI fades. `kit/fliClips` splits long animations at stable
-palette boundaries and builds their slide-list entries. `kit/recordedDemo` turns delta/key
+palette boundaries and builds their slide-list entries; its opt-in `ClipOptions` leave out
+the closing ring frame no player shows (`noLoopFrame`, also an `encodeFli` option) and put
+cuts where a whole frame costs the fewest extra bytes (`cheapCuts`). `kit/recordedDemo` turns delta/key
 pairs into a native title demo with configurable Escape press and release delays.
 
 ### Shared block sets

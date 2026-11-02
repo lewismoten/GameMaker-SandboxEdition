@@ -101,4 +101,40 @@ describe('fliClips', () => {
     expect(names('won.lst')).toEqual(['intro.fli 0', 'intro2.fli 0', 'intro3.fli 4', 'won.txt undefined']);
     expect(files.get('logo.fli')).toBe(short);
   });
+
+  it('leaves the ring frame out and cuts at a scene change with cheapCuts, playing the same frames', () => {
+    // two shots of noise, each held still apart from a small moving dot; the shot changes at frame 50
+    const pal = new Uint8Array(768).map((_, i) => (i * 5) % 64);
+    const shot = (seed: number) => new Uint8Array(320 * 200).map((_, i) => ((i + seed) * 2654435761) >>> 28);
+    const frames: Uint8Array[] = [];
+    for (let f = 0; f < 100; f++) {
+      const px = shot(f < 50 ? 1 : 7);
+      px[f] = 255;
+      frames.push(px);
+    }
+    const whole = encodeFli(frames, pal, { speed: 5, runs: true });
+    const plain = fliClips('reel.fli', whole);
+    const cheap = fliClips('reel.fli', whole, 4, { noLoopFrame: true, cheapCuts: true });
+    expect(Object.keys(cheap)).toEqual(Object.keys(plain));
+    expect(parseFli(cheap['reel2.fli']).frameCount).toBe(50);
+    for (const c of Object.values(cheap)) {
+      const a = parseFli(c);
+      expect(a.frames.length).toBe(a.frameCount);
+      expect(fliFaults(c)).toEqual([]);
+    }
+    const size = (cs: Record<string, Uint8Array>) => Object.values(cs).reduce((n, c) => n + c.length, 0);
+    expect(size(cheap)).toBeLessThan(size(plain) - 30000);
+    const a = play([whole]);
+    const b = play(Object.values(cheap));
+    expect(b.length).toBe(a.length);
+    expect(b.filter((s, i) => !Buffer.from(s.pal).equals(a[i].pal) || !Buffer.from(s.px).equals(a[i].px)).length).toBe(0);
+  });
+
+  it('drops a short FLI’s ring frame byte for byte with noLoopFrame', () => {
+    const frames = [new Uint8Array(64000), new Uint8Array(64000).fill(3)];
+    const short = encodeFli(frames, new Uint8Array(768), { speed: 6 });
+    const kept = fliClips('logo.fli', short, 4, { noLoopFrame: true })['logo.fli'];
+    expect(kept).toEqual(encodeFli(frames, new Uint8Array(768), { speed: 6, noLoopFrame: true }));
+    expect(new DataView(kept.buffer).getUint32(0, true)).toBe(kept.length);
+  });
 });
