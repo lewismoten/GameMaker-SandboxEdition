@@ -3,7 +3,6 @@
 // singers' faces and the distant choir. Drawn with iconCanvas.
 import { canvas } from './iconCanvas';
 
-
 export const STRINGS_ICONS: Record<string, () => string[]> = {
   orchestra: () => {
     // a cello with its bow lying across the strings
