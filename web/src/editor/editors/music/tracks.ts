@@ -26,7 +26,7 @@ export class TrackList {
     private onSelect: () => void,
   ) {
     doc.on((c) => {
-      if (c === 'song' || c === 'track') this.render();
+      if (c === 'song' || c === 'track') this.songChanged();
     });
     this.render();
   }
@@ -125,10 +125,50 @@ export class TrackList {
     });
   }
 
+  /** What the list shows apart from the note counts; when an edit leaves it alone, only the counts are redrawn. */
+  private shapeKey(): string {
+    const doc = this.doc;
+    const song = doc.song;
+    const order = doc.tracks();
+    const clip = currentTrackClip();
+    return JSON.stringify([
+      order,
+      doc.track,
+      doc.rhythm,
+      [...doc.muted],
+      [...doc.solo],
+      this.adding,
+      clip ? clipLabel(clip) : null,
+      order.map((ch) => [startProgram(song, ch), doc.sounds(ch)]),
+      song.instruments.map((inst) => (inst ? Array.from(inst) : null)),
+    ]);
+  }
+
+  private shape = '';
+  /** Each track's text under its name, without the note count, and the element that shows it. */
+  private counts = new Map<number, { el: HTMLElement; head: string }>();
+
+  private songChanged(): void {
+    // names, colors, pictures and labels all come from the start programs and instrument bytes in the key
+    if (this.shapeKey() !== this.shape) {
+      this.render();
+      return;
+    }
+    const tally = new Map<number, number>();
+    for (const n of this.doc.song.notes) tally.set(n.on.ch, (tally.get(n.on.ch) ?? 0) + 1);
+    for (const [ch, { el, head }] of this.counts) {
+      const notes = tally.get(ch) ?? 0;
+      const text = `${head}${notes} note${notes === 1 ? '' : 's'}`;
+      if (el.textContent !== text) el.textContent = text;
+    }
+  }
+
   render(): void {
     const doc = this.doc;
     const song = doc.song;
     const order = doc.tracks();
+    this.shape = this.shapeKey();
+    this.counts.clear();
     const rows = order.map((ch, i) => {
       const notes = channelNotes(song, ch).length;
       const silent = !doc.sounds(ch);
@@ -170,7 +210,12 @@ export class TrackList {
               'span',
               { class: 'mus-track-text' },
               h('b', null, doc.trackName(ch)),
-              h('small', null, `${silent ? 'silent · ' : ''}${sound ? `${sound} · ` : ''}${group ? `${group} · ` : ''}${notes} note${notes === 1 ? '' : 's'}`),
+              (() => {
+                const head = `${silent ? 'silent · ' : ''}${sound ? `${sound} · ` : ''}${group ? `${group} · ` : ''}`;
+                const el = h('small', null, `${head}${notes} note${notes === 1 ? '' : 's'}`);
+                this.counts.set(ch, { el, head });
+                return el;
+              })(),
             ),
           ),
           h(
