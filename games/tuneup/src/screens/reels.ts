@@ -10,10 +10,26 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { CHEZ_BODY, CHEZ_WHEELS } from '../../../kit/chez';
 import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { centered, text } from '../../../snowbound/src/art/font';
+import { centered, text, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { GWINN } from '../../../teddy2/src/sprites/gwinn';
-import { SP, INK, DREAM_PARTS, REAL_PARTS, cutaway, drawChez, dreamFrame, parkChez, drawChicken, drawLeo, nightYard, toolPic, type Tool } from './art';
+import {
+  SP,
+  INK,
+  DREAM_PARTS,
+  REAL_PARTS,
+  clownNoses,
+  cutaway,
+  noseless,
+  drawChez,
+  dreamFrame,
+  parkChez,
+  drawChicken,
+  drawLeo,
+  nightYard,
+  toolPic,
+  type Tool,
+} from './art';
 import { garage } from './garage';
 
 const c = SP.c;
@@ -42,7 +58,10 @@ export function readFrames(...words: string[]): number {
 
 /** Caption lines centered near the bottom of a frame. */
 function caption(p: Pixels, lines: string[], y = 200 - lines.length * 11 - 6): void {
-  lines.forEach((s, i) => centered(p, y + i * 11, s, c('lamp', 4), 1, INK));
+  lines.forEach((s, i) => {
+    centered(p, y + i * 11, noseless(s), c('lamp', 4), 1, INK);
+    clownNoses(p, Math.round(160 - textWidth(s) / 2), y + i * 11, s);
+  });
 }
 
 /** One of the Clown Club's instruments, `k` 0-2 (a kazoo, a tambourine, a little horn), centered on (x, y). */

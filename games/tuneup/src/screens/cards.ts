@@ -8,7 +8,7 @@ import { centered, text, textWidth } from '../../../snowbound/src/art/font';
 import { rubberEgg } from '../art/egg';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
-import { SP, INK, drawChicken, drawLeo, dreamFrame } from './art';
+import { SP, INK, clownNoses, drawChicken, drawLeo, dreamFrame, noseless } from './art';
 import { garage } from './garage';
 
 const c = SP.c;
@@ -101,7 +101,7 @@ export function card(k: Card): Pixels {
       p.rect(BOX_X, y, BOX_W, h, c('yellow', 3));
       for (let x = BOX_X; x < BOX_X + BOX_W; x += 4) p.rect(x, y, 2, 1, INK).rect(x, y + h - 1, 2, 1, INK);
       text(p, BOX_X + 4, y + 3, NAMES[who], c('orange', 0));
-      rows.forEach((r, i) => text(p, BOX_X + 4, y + 12 + i * 9, r, INK));
+      rows.forEach((r, i) => (text(p, BOX_X + 4, y + 12 + i * 9, noseless(r), INK), clownNoses(p, BOX_X + 4, y + 12 + i * 9, r)));
       y += h + 4;
       continue;
     }
@@ -110,7 +110,7 @@ export function card(k: Card): Pixels {
     const tx = left ? BOX_X : BOX_X + BOX_W - 1;
     for (let i = 0; i < 5; i++) p.rect(left ? tx - i - 1 : tx + 1, y + 6 + i, 1, 5 - i, c('paint', 3));
     text(p, BOX_X + 4, y + 3, NAMES[who], who === 'leo' ? c('purple', 0) : who === 'regina' ? c('pink', 0) : c('orange', 0));
-    rows.forEach((r, i) => text(p, BOX_X + 4, y + 12 + i * 9, r, INK));
+    rows.forEach((r, i) => (text(p, BOX_X + 4, y + 12 + i * 9, noseless(r), INK), clownNoses(p, BOX_X + 4, y + 12 + i * 9, r)));
     y += h + 4;
   }
   if (y > 196) throw new Error(`card "${k.title ?? k.lines[0][1]}" runs off the bottom (${y})`);

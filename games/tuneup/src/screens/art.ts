@@ -289,6 +289,24 @@ export function cutaway(parts: Part[], done: number, blink = -1, on = true): Pix
 }
 
 /**
+ * The Clown Club's lettering: wherever "Clown" is in `s` (drawn in the 8x8 font at (x, y) as
+ * `noseless(s)`, its "o" left out), the "o" is a red rubber nose (a capital O a full-height
+ * nose, a small o a smaller one).
+ */
+export const noseless = (s: string): string => s.replace(/(cl)o(wn)/gi, '$1 $2');
+export function clownNoses(p: Pixels, x: number, y: number, s: string): void {
+  for (let i = s.toUpperCase().indexOf('CLOWN'); i >= 0; i = s.toUpperCase().indexOf('CLOWN', i + 1)) {
+    const cap = s[i + 2] === 'O';
+    const cx = x + (i + 2) * 8 + 3;
+    const cy = y + (cap ? 3.5 : 4.5);
+    const r = cap ? 3.4 : 2.6;
+    p.disc(cx, cy, r + 1, INK)
+      .disc(cx, cy, r, c('red', 2))
+      .set(Math.round(cx - r / 2), Math.round(cy - r / 2), c('paint', 3));
+  }
+}
+
+/**
  * Sir Reginald's dream (levels 1-4) framed as one: puffs of cloud all round the edges of a
  * picture, like a thought balloon, and when `trail` gives a sleeper's head, three bubbles
  * rising from it toward the corner. Without `top`, a title bar is the top edge.
