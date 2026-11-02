@@ -68,6 +68,14 @@ export function trackColorOf(song: CmfSong, ch: number): string {
   return instrumentLook(inst).color ?? TRACK_COLORS[ch];
 }
 
+/** Resolves just after the next paint (or soon, when no frames are being drawn). */
+function afterPaint(): Promise<void> {
+  return new Promise((done) => {
+    const t = setTimeout(done, 80);
+    requestAnimationFrame(() => setTimeout(() => (clearTimeout(t), done())));
+  });
+}
+
 export class MusicDoc {
   song: CmfSong;
   track = 0;
@@ -338,6 +346,9 @@ export class MusicDoc {
   async audition(ch: number, key: number, program = startProgram(this.song, ch), ticks = 60, vel = this.velocity): Promise<void> {
     if (this.preview) return;
     await audio.resume();
+    // after the edit that asked for it has painted: building the tune must not hold the click up
+    await afterPaint();
+    if (this.preview) return;
     await audio.playSong(auditionSong(this.song, ch, program, key, ticks, vel));
     clearTimeout(this.auditionTimer);
     this.auditionTimer = setTimeout(() => !this.preview && audio.stopSong(), (ticks / TICK_RATE) * 1000 + 1500);
