@@ -10,6 +10,7 @@ import { gzipSync } from 'node:zlib';
 import { singlePagePlayer } from './scripts/singlePageBuild';
 import { hostedPlayer } from './scripts/hostedPlayerBuild';
 import { seoPages } from './scripts/seoBuild';
+import { devLog } from './scripts/devLog';
 
 const publicDir = resolve(__dirname, 'public');
 
@@ -289,6 +290,7 @@ export default defineConfig({
     offline(),
     noDotfiles(),
     manualReload(),
+    devLog(resolve(__dirname, '../.for-lewis/debug/interaction-log')),
   ],
   build: {
     target: 'es2022',

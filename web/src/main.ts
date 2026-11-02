@@ -389,3 +389,5 @@ registerServiceWorker();
 void import('./achievements/start').then((m) => m.startAchievements());
 
 watchForUpdates();
+// dev server on localhost only: the opt-in interaction log (its switch is in the corner)
+if (import.meta.env.DEV) void import('./devLog/interactionLog').then((m) => m.startInteractionLog());
