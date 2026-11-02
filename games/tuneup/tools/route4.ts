@@ -112,6 +112,7 @@ export function testDrive(part: number) {
     expect(bot, 28 + part, `the test drive, ${r.file}`);
     await must(bot, bot.land(), 'onto the street');
     const score = bot.sim.ci.score;
+    const forks = bot.count(CTR.forks);
     let passes = 0;
     for (const s of [...r.signals].sort((a, b) => b.x - a.x)) {
       const before = bot.sim.ci.score;
@@ -119,6 +120,7 @@ export function testDrive(part: number) {
       if (bot.sim.ci.score < before) throw new Error(`ticketed at ${s.kind} ${s.x}`);
       if (bot.sim.ci.score > before) passes++;
     }
+    if (r.fork !== undefined && bot.count(CTR.forks) !== forks + 1) throw new Error('drove past the tuning fork');
     bot.say(`${passes} polite passes, score +${bot.sim.ci.score - score}`);
     await leave(bot, bot.dig('left', EXIT_X, 'to the end of the street'), 'out');
   };

@@ -13,6 +13,7 @@
 // cheerful toot and points on; either way that corner is done with. Yellow does nothing. Stop
 // signs count to three on their post (the foot tickets while the dots fill), then light GO.
 // Nobody is ever in the street.
+import { addFork, glint } from '../blocks/fork';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { AIR, kit, SOLID, type Kit } from '../blocks/common';
@@ -59,13 +60,15 @@ export interface Route {
   file: string;
   w: number;
   signals: Signal[];
+  /** The first street's secret: a tuning fork in the crosswalk of a corner, a glint above it (level x). */
+  fork?: number;
 }
 
 const light = (x: number, start: number): Signal => ({ kind: 'light', x, start });
 const stop = (x: number): Signal => ({ kind: 'stop', x, start: 0 });
 /** The two drives: round the block, then down Main Street (a run of lights, then a stop sign). */
 export const ROUTES: Route[] = [
-  { file: 'road1', w: 94, signals: [stop(80), light(68, 9), light(57, 4), stop(46), light(35, 11), light(24, 1), light(12, 7)] },
+  { file: 'road1', w: 94, signals: [stop(80), light(68, 9), light(57, 4), stop(46), light(35, 11), light(24, 1), light(12, 7)], fork: 55 },
   { file: 'road2', w: 94, signals: [light(81, 6), light(71, 10), light(61, 2), light(51, 8), stop(40), light(29, 5), light(18, 0), light(8, 9)] },
 ];
 /** Where the car starts (level x) and where the street leaves the scene. */
@@ -201,6 +204,8 @@ export function driveBlocks(pal: Pal): Kit {
       next: stopFootName(next),
     });
   });
+  addFork(k, 'cross');
+  glint(k, 'air6');
   return k;
 }
 
@@ -233,6 +238,7 @@ export const drive = (r: Route) =>
       m.set(s.x, row, s.kind === 'light' ? footName(s.start) : stopFootName(0));
       m.set(s.x + 1, street, 'stopline');
     }
+    if (r.fork !== undefined) m.set(r.fork, row, 'fork').set(r.fork, row - 2, 'air6.glint');
     m.link(EXIT_X, row);
     // variants here and there so the walls and floors don't repeat
     m.vary('brick', ['brick.vent'], 17).vary('road', ['road.patch'], 13);
