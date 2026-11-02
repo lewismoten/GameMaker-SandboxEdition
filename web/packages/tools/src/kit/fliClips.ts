@@ -42,7 +42,11 @@ function decode(fli: Uint8Array): { frames: Uint8Array[]; palettes: Uint8Array[]
   return { frames, palettes, w: a.width, h: a.height, speed: a.speed };
 }
 
-const same = (a: Uint8Array, b: Uint8Array) => a.length === b.length && a.every((v, i) => v === b[i]);
+function same(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
 
 /** What a cut before frame `i` costs: a palette change there shows, then the pixels that change. */
 function cutCost(frames: Uint8Array[], palettes: Uint8Array[], i: number): number {
