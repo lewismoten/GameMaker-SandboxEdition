@@ -1,5 +1,5 @@
 // Level 10, The Rain Delay (the cab in a rainstorm, gray-blue). The radio has to wait: it's
-// pouring, and Doc Leo crosses the windshield along the cowl under the glass while the wipers keep
+// pouring, and Doc Leo crosses the windshield along the cowl under the glass while the wiper keeps
 // time like a metronome. Each wiper is a blade that sweeps through its column on the beat (a ring
 // of blocks, the blade stinging only while it stands upright in the column: a wet slap costs a
 // little energy, never a life). Between the blades are dry spots where raindrops collect; each drop

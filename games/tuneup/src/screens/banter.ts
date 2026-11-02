@@ -48,7 +48,7 @@ export const INTRO: Record<number, Card> = {
   5: {
     title: 'LEVEL 5: THE FAN BAND',
     lines: [
-      ['leo', "First, the defroster. The motor's warm air comes up a vent to a flap under the windshield."],
+      ['leo', 'First, the warm air. It comes up a vent from the motor, through a flap we open under the windshield.'],
       ['reggie', 'The vent is full of little fans. Playing kazoos.'],
       ['leo', 'A fan band! Ride the warm air up, and reach each fan with Space.'],
     ],
@@ -65,7 +65,7 @@ export const INTRO: Record<number, Card> = {
   7: {
     title: 'LEVEL 7: HUBCAPS AND BALLS',
     lines: [
-      ['leo', 'The antenna sticks up past the roof. It needs a ball on top.'],
+      ['leo', "The radio's antenna will need a ball on top, for the parade."],
       ['reggie', 'I had one. Then three hubcaps happened.'],
       ['leo', 'Cups and balls! Watch the cap with the ball, then reach up under it.'],
     ],
@@ -94,7 +94,7 @@ export const INTRO: Record<number, Card> = {
     lady: true,
     lines: [
       ['regina', 'Rain. The radio will have to wait.'],
-      ['leo', 'Last storm, the wipers dragged on wet glass. The accessory battery sank to 12 volts.'],
+      ['leo', 'Last storm, the wiper dragged on wet glass. The accessory battery sank to 12 volts.'],
       ['regina', 'Cross between the sweeps, on the beat. Each drop rings like a tongue drum.'],
     ],
   },
@@ -122,7 +122,7 @@ export const INTRO: Record<number, Card> = {
     teddy: true,
     lines: [
       ['regina', 'A radio was a factory option. A few extra dollars, and nobody paid them.'],
-      ['leo', 'Its space is just above the accessory light. Teddy, tune it in.'],
+      ['leo', 'Its space is above the accessory light. I drill the antenna hole, Teddy tunes.'],
       ['regina', 'Hop into each preset as the needle crosses its station. Then the gauges.'],
     ],
   },
@@ -210,7 +210,7 @@ export const OUTRO: Record<string, Card> = {
   fan2: {
     lines: [
       ['leo', 'Warm air on the windshield. Is it fixed?'],
-      ['reggie', 'Defrosted. And the fans know the parade tune now.'],
+      ['reggie', 'Warm glass. And the fans know the parade tune now.'],
     ],
   },
   brake: {
@@ -229,13 +229,13 @@ export const OUTRO: Record<string, Card> = {
   cups2: {
     lines: [
       ['reggie', 'Twice. Suspicious.'],
-      ['leo', 'Once more, and then it goes on the antenna.'],
+      ['leo', 'Once more, and then it waits for the antenna.'],
     ],
   },
   cups3: {
     lines: [
       ['leo', 'Ta-da! One antenna ball.'],
-      ['reggie', 'Bravo. The antenna looks very festive.'],
+      ['reggie', 'Bravo. The antenna will look very festive.'],
     ],
   },
   pump: {
@@ -264,7 +264,7 @@ export const OUTRO: Record<string, Card> = {
     lines: [
       ['regina', 'The wind is fierce. Could it tip us over?'],
       ['leo', "I've wondered that myself, in a storm like this. Not today."],
-      ['regina', 'And the wipers keep time beautifully. Two, three, and the tricky five.'],
+      ['regina', 'And the wiper keeps time beautifully. Two, three, and the tricky five.'],
     ],
   },
   horn1: {
@@ -320,7 +320,7 @@ export const OUTRO: Record<string, Card> = {
     lady: true,
     teddy: true,
     lines: [
-      ['leo', 'An AM/FM radio with an 8-track. Four programs on every tape.'],
+      ['leo', 'An AM/FM radio with a state of the art 8-track. Four programs on every tape.'],
       ['regina', 'And a head cleaning cartridge, for afterwards.'],
       ['leo', 'Good boy, Teddy. Now: a test drive.'],
     ],

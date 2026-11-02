@@ -250,12 +250,12 @@ export const DREAM_PARTS: Part[] = [
 ];
 /** The real tune-up's parts (level 5 on), in the order they're tuned. */
 export const REAL_PARTS: Part[] = [
-  { label: 'DEFROST', x: 150, y: 78 },
+  { label: 'AIR FLAP', x: 150, y: 78 },
   { label: 'BRAKE LAMP', x: 232, y: 106 },
   { label: 'ANTENNA', x: 124, y: 62 },
   { label: 'TIRES', x: 93, y: 130 },
   { label: '8-TRACK', x: 182, y: 96 },
-  { label: 'WIPERS', x: 136, y: 70 },
+  { label: 'WIPER', x: 136, y: 70 },
   { label: 'HORN', x: 52, y: 120 },
   { label: 'SPEEDO', x: 206, y: 128 },
   { label: 'RADIO', x: 160, y: 98 },

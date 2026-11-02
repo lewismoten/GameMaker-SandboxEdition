@@ -1,4 +1,4 @@
-// Level 5, The Fan Band (the motor's vent to the defroster flap; cool teal, then hot amber over
+// Level 5, The Fan Band (the motor's vent up to the flap under the windshield; cool teal, then hot amber over
 // the same blocks). THE CHEZ's motor warms the air, and a vent carries it up to a flap under the
 // windshield. The vent is full of little fans, each with a kazoo, and Doc Leo switches each one
 // on (Space, reaching up under it) to join the band. Warm air rises up the columns in pulses on
