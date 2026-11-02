@@ -21,8 +21,12 @@ export const PANEL_GAP = 1.2;
 type Course = CourseLayout<Level['marks'][number]>;
 type Colors = Record<'start' | 'exit' | 'end' | 'join', string>;
 
-/** Each panel's picture as a URL, in order. */
-export async function coursePanelUrls(game: Game, files: GameFiles, l: Level): Promise<string[]> {
+/** Makes a picture's URL from its PNG (null when the browser couldn't encode it). */
+export type Mint = (b: Blob | null, canvas: HTMLCanvasElement) => string;
+const blobUrl: Mint = (b, canvas) => (b ? URL.createObjectURL(b) : canvas.toDataURL());
+
+/** Each panel's picture as a URL, in order (a blob URL unless `mint` makes them). */
+export async function coursePanelUrls(game: Game, files: GameFiles, l: Level, mint: Mint = blobUrl): Promise<string[]> {
   const course = l.course!;
   const src = scenePixels(files, game.scenes[l.scene], 0, 0, 100, 100, l.cells);
   if (!src) return course.panels.map(() => '');
@@ -38,7 +42,7 @@ export async function coursePanelUrls(game: Game, files: GameFiles, l: Level): P
     const out = new Uint32Array(img.data.buffer);
     for (let i = 0; i < r.pixels.length; i++) out[i] = r.pixels[i] > 255 ? 0 : lut[r.pixels[i]];
     ctx.putImageData(img, 0, 0);
-    urls.push(await new Promise<string>((resolve) => canvas.toBlob((b) => resolve(b ? URL.createObjectURL(b) : canvas.toDataURL()))));
+    urls.push(await new Promise<string>((resolve) => canvas.toBlob((b) => resolve(mint(b, canvas)))));
   }
   return urls;
 }

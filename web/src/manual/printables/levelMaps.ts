@@ -20,7 +20,7 @@ import { el, SERIF } from './worldMapArt';
 import { fillerBlock, levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
 import { listedSecrets } from './levelSecrets';
 import { listedCourses, listedUnrolled, listedViews } from './levelViews';
-import { GUTTER, PANEL_GAP, PANEL_HEAD, wholeCourseSize, wholeCourseSvg, coursePanelUrls } from './levelCourseSvg';
+import { GUTTER, PANEL_GAP, PANEL_HEAD, wholeCourseSize, wholeCourseSvg, coursePanelUrls, type Mint } from './levelCourseSvg';
 import { listedRoomHints } from './levelRoomHints';
 import { mergeStates } from './levelStates';
 import { unrolledShows } from '../../editor/check/unroll';
@@ -435,7 +435,17 @@ export function levelCanvas(game: Game, files: GameFiles, l: Level): HTMLCanvasE
   return canvas;
 }
 
-function painter(game: Game, files: GameFiles): Painter {
+/** Blob URLs it made are kept in `blobs` to revoke later; with none kept, pictures are data URLs (nothing to release). */
+function minter(blobs?: Set<string>): Mint {
+  return (b, canvas) => {
+    if (!b || !blobs) return canvas.toDataURL();
+    const url = URL.createObjectURL(b);
+    blobs.add(url);
+    return url;
+  };
+}
+
+function painter(game: Game, files: GameFiles, mint: Mint): Painter {
   const done = new Map<Level, Promise<string>>();
   return (l) => {
     let p = done.get(l);
@@ -443,7 +453,7 @@ function painter(game: Game, files: GameFiles): Painter {
       p = new Promise<string>((resolve) => {
         const canvas = levelCanvas(game, files, l);
         canvas.toBlob((b) => {
-          const url = b ? URL.createObjectURL(b) : canvas.toDataURL();
+          const url = mint(b, canvas);
           const img = new Image();
           img.src = url;
           void img.decode().then(
@@ -461,11 +471,11 @@ function painter(game: Game, files: GameFiles): Painter {
 /** Draws a course's panels (once) and gives the URL of each, in order. */
 type CoursePainter = (l: Level) => Promise<string[]>;
 
-function coursePainter(game: Game, files: GameFiles): CoursePainter {
+function coursePainter(game: Game, files: GameFiles, mint: Mint): CoursePainter {
   const done = new Map<Level, Promise<string[]>>();
   return (l) => {
     let p = done.get(l);
-    if (!p) done.set(l, (p = coursePanelUrls(game, files, l)));
+    if (!p) done.set(l, (p = coursePanelUrls(game, files, l, mint)));
     return p;
   };
 }
@@ -667,13 +677,23 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
 export function levelMaps(
   ctx: PrintContext,
 ):
-  | { render(): Promise<Sheet[]>; first(): Promise<Sheet | undefined>; reader(o: ReaderOptions): Promise<Reader>; preview(): Promise<Sheet | undefined> }
+  | {
+      render(): Promise<Sheet[]>;
+      release(): void;
+      first(): Promise<Sheet | undefined>;
+      reader(o: ReaderOptions): Promise<Reader>;
+      preview(): Promise<Sheet | undefined>;
+    }
   | undefined {
   const secret = listedSecrets(ctx.entry.id);
   if (!secret) return undefined;
+  // the open viewer's pictures are blobs, revoked by release(); small pictures are data URLs, so closing the viewer leaves them be
+  let blobs = new Set<string>();
   let loaded: Promise<Loaded | undefined> | undefined;
-  const load = () =>
-    (loaded ??= loadLevels(ctx.entry).then((x) => {
+  let thumb: Promise<Loaded | undefined> | undefined;
+  let source: ReturnType<typeof loadLevels> | undefined;
+  const make = (keep?: Set<string>) =>
+    (source ??= loadLevels(ctx.entry)).then((x) => {
       if (!x) return undefined;
       // the states of one place (near and far planes) print as one map
       const seen = mergeStates(
@@ -696,21 +716,29 @@ export function levelMaps(
         game: x.game,
         seen,
         every,
-        paint: painter(x.game, x.files),
-        paintCourse: coursePainter(x.game, x.files),
+        paint: painter(x.game, x.files, minter(keep)),
+        paintCourse: coursePainter(x.game, x.files, minter(keep)),
         crop: cropper(),
         full: pageCounts(x.game, seen).full <= MOST_PAGES,
         all: false,
       };
-    }));
+    });
+  const load = () => (loaded ??= make(blobs));
+  const loadThumb = () => (thumb ??= make());
   return {
+    /** Lets go of the viewer's blob pictures (when the box viewer closes); the next open paints them again. */
+    release() {
+      for (const url of blobs) URL.revokeObjectURL(url);
+      blobs = new Set();
+      loaded = undefined;
+    },
     async render() {
       const x = await load();
       return x ? printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.paintCourse, x.crop, x.full) : [];
     },
     /** Only the first printed sheet, painting just the levels on it (the box list's small picture). */
     async first() {
-      const x = await load();
+      const x = await loadThumb();
       return x ? (await printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.paintCourse, x.crop, x.full, true))[0] : undefined;
     },
     async reader(o) {
@@ -721,7 +749,7 @@ export function levelMaps(
     },
     /** The first level's picture, cropped as printed, for a small picture of the Level Maps (the Library's card). */
     async preview() {
-      const x = await load();
+      const x = await loadThumb();
       const l = x?.seen[0];
       if (!x || !l) return undefined;
       if (l.course) {

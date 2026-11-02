@@ -67,6 +67,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
             icon: '🧭',
             render: () => levels.render(),
             first: () => levels.first(),
+            release: () => levels.release(),
             reader: (o: ReaderOptions) => levels.reader(o),
           },
         ]

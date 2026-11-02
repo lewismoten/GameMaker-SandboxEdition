@@ -25,6 +25,8 @@ export interface BoxItem {
   render(): Promise<Sheet[]>;
   /** Just the first sheet, built without the rest (the small picture in the box's list). Falls back to `render`. */
   first?(): Promise<Sheet | undefined>;
+  /** Lets go of pictures the piece's sheets hold (blob URLs), when the viewer closes. */
+  release?(): void;
   /** A special on-screen presentation (e.g. a fold-out that unfolds). */
   screen?(sheets: Sheet[]): HTMLElement;
   /** Its own on-screen view, built without rendering every sheet (`render` is then only for printing). */
@@ -487,6 +489,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     const close = () => {
       dropColumn();
       dropReader();
+      for (const it of items) it.release?.();
       for (const el of shut) el.inert = false;
       opener?.focus({ preventScroll: true });
       window.removeEventListener('keydown', onKey, true);
