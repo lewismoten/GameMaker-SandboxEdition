@@ -127,6 +127,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
   const findings: Finding[] = [];
   const gives = counterSources(all);
   const same = new Set(opt.sameEverySide);
+  findings.push(...colorRoles(scenes, opt.reservations));
   for (const d of scenes) {
     findings.push(...counters(d, gives));
     for (const c of [...blockChecks, ...monsterChecks, ...solidPushChecks]) findings.push(...c(d));
@@ -164,7 +165,6 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...helpKeys(game, files),
       ...textContrast(game, files, opt.player),
       ...colorZero(game, files, opt.player),
-      ...colorRoles(all, opt.reservations),
       ...dosChars(game, files, files.mainGame()),
       ...startValues(game, all),
       ...stakes(game, all),
