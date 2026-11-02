@@ -122,12 +122,14 @@ opening the tab never runs a check. Each tool also opens from where it always di
 
 If you have reserved palette ranges for backgrounds, monsters and characters (Palette editor), Optimize also lists block files that draw with colors reserved for another kind. **Apply** moves those pixels to the nearest allowed color, after showing each changed block before and after with a difference score (CIELAB delta E; large changes are flagged). It is separate from the automatic steps because it changes how the game looks.
 
+**Pack with reserved palettes** (the **Look for more savings** button) goes further: it uses your reserved ranges, or proposes a range for monsters and for characters when there are none, moves each file's colors into them, then looks for monster, character and background files that can join. It shows the bytes it would save, how many map pixels would draw differently and the delta E, and applies it all in one click and one Undo; it is offered only when it frees more than the automatic steps. When blocks join or fold, the names and groups you gave them follow.
+
 **Optimize** also holds your **checkpoints**: stamps of the whole game (every file and its editor
 notes), made with **Make a checkpoint…** any time and always before an optimization is applied. Each
 stores only what changed since the one before, the way a git repository does: a changed block or map
 cell is a few bytes, a changed text file a few lines. **Compare…** lists what changed and draws each
 level's map as it was and as it is (Before, After or side by side, with a jump to the next view that
-differs). **Restore** puts everything back (Undo takes that back), **Tag release…** labels a stamp as a
+differs). **Play…** runs the game as that stamp stored it in the web player, nothing saved. **Restore** puts everything back (Undo takes the files back), **Tag release…** labels a stamp as a
 release, and **Delete** removes one (the later stamps keep everything they had). They stay with the game
 in this browser and in a browser backup (tick _Leave out checkpoints_ in the backup dialog for a shallow
 copy), never in a download or a DOS export.
