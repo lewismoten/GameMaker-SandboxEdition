@@ -1,21 +1,34 @@
-// The game list of downloads.html, dressed up: one card per game with its real level picture
-// (the build's games/shots/<id>-16x10.png, 320 x 200) beside its ZIP link, and the page's styles.
-// Pictures are used only when the build drew them (the catalog's `shots`); never a stand-in.
+// The game list of downloads.html, dressed up: one card per game with its real title screen and a
+// level picture (the build's games/shots/<id>-title.png and <id>-16x10.png, 320 x 200 each) above
+// its ZIP link, and the page's styles. Pictures are used only when the build draws them; never a
+// stand-in. The secret games are listed here too (Lewis's choice, this page only): their pictures
+// are inlined, as the build writes no games/shots/ file for them.
 import type { CdCatalogEntry } from './cdGames';
 import { builtShotPath } from '../src/gfx/levelPicture';
+import { builtTitlePath } from '../src/gfx/titlePicture';
 import { cdFiles } from './cdGames';
 import { gameShots } from './gameShots';
 
-/** The ids of the games whose level picture the build draws (the same call that emits games/shots/). */
-export function pictured(games: CdCatalogEntry[], cdRoot: string): Set<string> {
+/** A card's pictures, as image sources: a games/shots/ path, or a data URL for a secret game. */
+export interface CardPictures {
+  title?: string;
+  level?: string;
+}
+
+/** Each game's title and level pictures, drawn by the same call that emits games/shots/ (`inline`: as data URLs). */
+export function cardPictures(games: CdCatalogEntry[], cdRoot: string, inline = false): Map<string, CardPictures> {
   const files = cdFiles(cdRoot);
-  return new Set(
-    games
-      .filter((g) => {
-        const disk = new Map(g.files.flatMap((n) => (files.get(`${g.path}${n}`) ? [[n, files.get(`${g.path}${n}`)!] as [string, string]] : [])));
-        return gameShots(g.id, g.gam, disk).has(builtShotPath(g.id, 16, 10));
-      })
-      .map((g) => g.id),
+  return new Map(
+    games.map((g) => {
+      const disk = new Map(g.files.flatMap((n) => (files.get(`${g.path}${n}`) ? [[n, files.get(`${g.path}${n}`)!] as [string, string]] : [])));
+      const shots = gameShots(g.id, g.gam, disk);
+      const src = (path: string) => {
+        const png = shots.get(path);
+        if (!png) return undefined;
+        return inline ? `data:image/png;base64,${Buffer.from(png).toString('base64')}` : `./${path}`;
+      };
+      return [g.id, { title: src(builtTitlePath(g.id)), level: src(builtShotPath(g.id, 16, 10)) }];
+    }),
   );
 }
 
@@ -24,8 +37,8 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 /** Styles for the cards, in the page's colors (light and dark). */
 export const DOWNLOADS_STYLE = `<style>
       .seo-static .dl-list { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 14px; }
-      .seo-static .dl-card { display: grid; grid-template-columns: minmax(0, 9.5rem) 1fr; gap: 14px; padding: 12px; border: 2px solid #3a3a66; border-radius: 6px; background: #1a1a38; }
-      .seo-static .dl-nopic { grid-template-columns: 1fr; }
+      .seo-static .dl-card { display: grid; gap: 10px; padding: 12px; border: 2px solid #3a3a66; border-radius: 6px; background: #1a1a38; }
+      .seo-static .dl-pics { display: grid; grid-template-columns: repeat(2, minmax(0, 20rem)); gap: 8px; }
       .seo-static .dl-card img { display: block; width: 100%; height: auto; border: 1px solid #55558a; background: #000; image-rendering: pixelated; }
       .seo-static .dl-card h3 { font: bold 1.05rem monospace; margin: 0 0 4px; }
       .seo-static .dl-card p { margin: 4px 0; }
@@ -33,7 +46,6 @@ export const DOWNLOADS_STYLE = `<style>
       .seo-static .dl-links a { display: inline-block; min-height: 24px; padding: 6px 12px; border: 2px solid #9cf; border-radius: 4px; text-decoration: none; font-weight: bold; }
       .seo-static .dl-links a:first-child { background: #9cf; color: #12122a; }
       .seo-static .dl-links a:hover, .seo-static .dl-links a:focus-visible { outline: 2px solid #ff5; outline-offset: 2px; }
-      @media (max-width: 30rem) { .seo-static .dl-card { grid-template-columns: 1fr; } .seo-static .dl-card img { max-width: 20rem; } }
       @media (prefers-color-scheme: light) {
         .seo-static { background: #f4f4fb; color: #1a1a2e; }
         .seo-static a { color: #0b4f9c; }
@@ -48,18 +60,19 @@ export const DOWNLOADS_STYLE = `<style>
       }
     </style>`;
 
-/** One game's card. `first` pictures load at once; the rest are lazy. */
-export function downloadCard(g: CdCatalogEntry, version: string | undefined, playHref: string, first: boolean, hasPicture: boolean): string {
-  const picture = hasPicture
-    ? `<img src="./${esc(builtShotPath(g.id, 16, 10))}" width="320" height="200" alt="${esc(`A level from ${g.title}`)}"${first ? '' : ' loading="lazy"'} decoding="async" />`
-    : '';
+/** One game's card (`playHref` undefined: no play page, as for a secret game). `first` pictures load at once; the rest are lazy. */
+export function downloadCard(g: CdCatalogEntry, version: string | undefined, playHref: string | undefined, first: boolean, pics: CardPictures = {}): string {
+  const img = (src: string | undefined, alt: string) =>
+    src ? `<img src="${esc(src)}" width="320" height="200" alt="${esc(alt)}"${first ? '' : ' loading="lazy"'} decoding="async" />` : '';
+  const pictures = [img(pics.title, `The title screen of ${g.title}`), img(pics.level, `A level from ${g.title}`)].filter(Boolean).join('');
   const blurb = g.blurb ? `<p>${esc(g.blurb.length > 160 ? `${g.blurb.slice(0, 159).trimEnd()}…` : g.blurb)}</p>` : '';
-  return `          <li class="dl-card${picture ? '' : ' dl-nopic'}" id="game-${esc(g.id)}">
-            ${picture}
+  const play = playHref ? ` <a href="${esc(playHref)}">Play ${esc(g.title)} in your browser</a>` : '';
+  return `          <li class="dl-card" id="game-${esc(g.id)}">
+            ${pictures ? `<div class="dl-pics">${pictures}</div>` : ''}
             <div>
               <h3>${esc(g.title)}${version ? ` <small>version ${esc(version)}</small>` : ''}</h3>
               ${blurb}
-              <div class="dl-links"><a href="./${esc(g.path + g.pack)}">Download ${esc(g.title)} (ZIP)</a> <a href="${esc(playHref)}">Play ${esc(g.title)} in your browser</a></div>
+              <div class="dl-links"><a href="./${esc(g.path + g.pack)}">Download ${esc(g.title)} (ZIP)</a>${play}</div>
             </div>
           </li>`;
 }

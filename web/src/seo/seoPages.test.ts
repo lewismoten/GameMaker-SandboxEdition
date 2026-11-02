@@ -1,6 +1,7 @@
 // What the build gives search engines (scripts/seoBuild.ts): the sitemap, robots.txt, llms.txt,
 // the home page's and the play pages' tags, JSON-LD and readable text. Every list and count of
-// games leaves out the secret ones, and no page, file or picture name gives one away.
+// games leaves out the secret ones, and no page, file or picture name gives one away; downloads.html
+// is the one exception (Lewis's choice): it lists them, with no play page and inlined pictures.
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { IndexHtmlTransformContext } from 'vite';
@@ -88,14 +89,18 @@ describe('seoBuild', () => {
     }
   });
 
-  it('lists every listed original game’s ZIP on downloads.html, and no secret game', () => {
+  it('lists every original game’s ZIP on downloads.html, the secret ones last with no play page', () => {
     const html = files['downloads.html'];
     const originals = playable.filter((g) => g.original);
     expect(originals.length).toBeGreaterThan(0);
-    for (const g of originals) expect(html).toContain(`href="./${g.path}${g.pack}"`);
+    for (const g of [...originals, ...secret]) expect(html).toContain(`href="./${g.path}${g.pack}"`);
+    for (const g of secret) {
+      expect(html).not.toContain(gamePage(g.id));
+      expect(html).not.toContain(`games/shots/${g.id}-`);
+      expect(html.indexOf(`game-${g.id}"`)).toBeGreaterThan(Math.max(...originals.map((o) => html.indexOf(`game-${o.id}"`))));
+    }
     expect(html).not.toMatch(/href="\.\/games\/(gameware|shareware)\//);
     expect(html.match(/<h1>/g)).toHaveLength(1);
-    expect(secretHits(html)).toEqual([]);
     for (const img of html.match(/<img [^>]*>/g) ?? []) expect(img).toMatch(/ alt="[^"]+"[^>]* width="\d+" height="\d+"| width="\d+" height="\d+" alt="[^"]+"/);
   });
 
@@ -104,8 +109,9 @@ describe('seoBuild', () => {
     expect(files['robots.txt']).toMatch(/^User-agent: \*\nAllow: \//);
   });
 
-  it('never names or links a secret game in a generated file or page', () => {
-    for (const [name, text] of Object.entries({ ...files, home, play })) expect(secretHits(text), name).toEqual([]);
+  it('never names or links a secret game in a generated file or page but downloads.html', () => {
+    const { 'downloads.html': _downloads, ...others } = files;
+    for (const [name, text] of Object.entries({ ...others, home, play })) expect(secretHits(text), name).toEqual([]);
     for (const g of playable) expect(secretHits(gamePageHtml(play, g)), g.id).toEqual([]);
   });
 

@@ -15,7 +15,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   - `gameShots.ts` draws each listed game's pictures into `games/shots/`;
   - `singlePageBuild.ts` builds `standalone.html`, and `hostedPlayerBuild.ts` the web player
     (`web-player.html`, `player/index.html` and `player/games.json`);
-  - `downloadsList.ts` draws `downloads.html`'s game cards (each with its real level picture when the build made one) and their styles;
+  - `downloadsList.ts` draws `downloads.html`'s game cards (each with its real title screen and a level picture when the build drew them; the games the desk hides are listed last, with inlined pictures and no play page) and their styles;
   - `seoBuild.ts` puts tags, JSON-LD and readable text into the pages and writes (and serves in dev)
     `robots.txt`, `sitemap.xml`, `llms.txt`, each game's `play-<id>.html` and its preview picture
     `og/<id>.png` (drawn by `ogImage.ts`), `downloads.html` (a plain page linking every listed Sandbox and Bizarre game's ZIP, for crawlers and the Internet Archive), each Guide section's page `help-<id>.html` (its text from
