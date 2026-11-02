@@ -69,7 +69,8 @@ Part of the [source map](../README.md).
   tab per screen (`screenTabs.ts` groups the patches, `screenFields.ts` lays out a tab,
   `playerFields.ts` makes each field, `fieldTools.ts` adds the Hide and Reset buttons beside it) and a Files tab for the DOS download's extensions (`fileFields.ts`), `playerPreview.ts`, which draws XFERPLAY's screens with the
   engine's own `draw*` functions, and dragging words and frames on that preview: `dragItems.ts`
-  (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, accompaniment in
+  (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, drawn from cached tiles
+  (`tiles.ts`, `paint.ts`) that an edit repaints only where it changed (`state.ts`), accompaniment in
   `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
   `slideShow/`, `textScreen/`, `recording/` and `highScores/`.
 - `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,

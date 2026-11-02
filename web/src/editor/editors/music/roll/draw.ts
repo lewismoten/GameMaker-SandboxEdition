@@ -1,159 +1,198 @@
-// Painting the piano roll: the grid and notes of the selected track (other tracks faint
-// behind), the keyboard, the ruler with loop region, song end and play head, the lane of
-// instrument changes, and the velocity bars.
-import { channelNotes, programChanges } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
-import { noteEnd, type Note } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+// Showing the piano roll. The scrolling content (grid, notes, ruler, instrument lane,
+// velocity bars; paint.ts) lives in cached tiles (tiles.ts) and the keyboard column in one
+// more; a frame copies those and draws the cursor, song end, play head and what follows the
+// pointer on top. draw() first brings the caches up to date: a change of zoom, rows, track,
+// colors, loop or the like repaints every tile, a note change only the ticks it touched
+// (state.ts). frame() alone, for each playback tick, never repaints the content.
+import { programChanges } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { type Note } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { KEYW, RULER, LANE, HEAD, VEL, BLACK, noteName } from './layout';
+import { FONT, paintStretch, type Scene } from './paint';
+import { changedSpans, shownNotes, type Drawn } from './state';
+import { TILE, Tiles } from './tiles';
 import { RollView } from './view';
 
-export abstract class RollDraw extends RollView {
-  draw(): void {
-    const { g, doc } = this;
-    const song = doc.song;
-    const W = this.w;
-    const H = this.hgt;
-    const beat = doc.beat;
-    const color = doc.trackColor(doc.track);
-    g.save();
-    g.font = '10px ui-monospace, Menlo, Consolas, monospace';
-    g.textBaseline = 'middle';
-    g.fillStyle = '#05061a';
-    g.fillRect(0, 0, W, H);
+/** World pixels around a changed span that are repainted too (velocity bar heads, outlines). */
+const PAD = 8;
 
-    // rows
+export abstract class RollDraw extends RollView {
+  private scene?: Scene;
+  private tiles = new Tiles((g, ox, a, b) => paintStretch(g, this.scene!, ox, a, b));
+  private looks = '';
+  private drawn = new Map<Note, Drawn>();
+  private endTick = 0;
+  private keys = document.createElement('canvas');
+  private keysLook = '';
+  /** Whether the selected track is one of the song's tracks (asked once per change). */
+  private listed = true;
+
+  /** Brings the cached picture up to date with the song and view, then shows a frame. */
+  draw(): void {
+    this.sync();
+    this.frame();
+  }
+
+  /** Shows a frame from the cached picture: for the play head and following playback. */
+  frame(): void {
+    if (!this.scene) this.sync();
+    const { g, doc } = this;
+    const W = this.w;
+    const dpr = window.devicePixelRatio || 1;
+    const zx = this.scrollX * this.zoom;
+    const i0 = Math.max(0, Math.floor(zx / TILE));
+    const i1 = Math.floor((zx + W - KEYW) / TILE);
+    const tiles = this.tiles.span(i0, i1);
+    if (doc.playing) this.tiles.prefetch(i1 + 1);
+    g.save();
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    // whole device pixels, so tiles meet without seams and stay crisp
+    const off = Math.round((KEYW - zx) * dpr);
+    const step = Math.round(TILE * dpr);
+    tiles.forEach((c, j) => g.drawImage(c, off + (i0 + j) * step, 0));
+    this.paintKeys(dpr);
+    g.drawImage(this.keys, 0, 0);
+    g.restore();
+    this.drawOverlays();
+  }
+
+  /** Repaints what changed since the last paint (everything when unsure). */
+  private sync(): void {
+    const { doc } = this;
+    const song = doc.song;
+    const dpr = window.devicePixelRatio || 1;
+    const shown = shownNotes(song, doc.track, doc.ghosts, doc.selection, this.hover);
+    const color = doc.trackColor(doc.track);
+    const silent = !doc.sounds(doc.track);
+    this.listed = doc.tracks().includes(doc.track);
+    this.scene = {
+      doc,
+      song,
+      zoom: this.zoom,
+      rowH: this.rowH,
+      topKey: this.topKey,
+      rows: this.visibleRows + 1,
+      hgt: this.hgt,
+      notes: shown.notes,
+      cuts: shown.cuts,
+      color,
+      silent,
+      hover: this.hover,
+    };
+    const lane = programChanges(song, doc.track)
+      .map((e) => `${e.tick}:${e.a}:${song.instruments[e.a] ? 1 : 0}`)
+      .join();
+    const modes = song.events
+      .filter((e) => e.type === 'mode')
+      .map((e) => `${e.tick}:${e.a}`)
+      .join();
+    const looks = [
+      this.zoom,
+      this.rowH,
+      this.topKey,
+      this.hgt,
+      dpr,
+      doc.track,
+      color,
+      silent,
+      doc.ghosts,
+      doc.beat,
+      doc.snap,
+      doc.loop,
+      doc.loopOn,
+      lane,
+      modes,
+    ].join('|');
+    const spans = looks === this.looks ? changedSpans(this.drawn, shown.drawn) : null;
+    if (!spans) this.tiles.reset(dpr, this.hgt);
+    else {
+      if (song.end.tick !== this.endTick) spans.push([Math.min(song.end.tick, this.endTick), Infinity]);
+      for (const [s, e] of spans) this.tiles.repaint(s * this.zoom - PAD, e * this.zoom + PAD);
+    }
+    this.looks = looks;
+    this.drawn = shown.drawn;
+    this.endTick = song.end.tick;
+  }
+
+  /** The keyboard and the lane names down the left, cached until they change. */
+  private paintKeys(dpr: number): void {
+    const hot = this.hover?.note === undefined ? this.hoverKey : -1;
+    const color = this.scene!.color;
+    const look = [this.topKey, this.rowH, this.hgt, dpr, hot, color].join('|');
+    if (look === this.keysLook) return;
+    this.keysLook = look;
+    const c = this.keys;
+    c.width = Math.round(KEYW * dpr);
+    c.height = Math.round(this.hgt * dpr);
+    const g = c.getContext('2d')!;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.font = FONT;
+    g.textBaseline = 'middle';
+    const H = this.hgt;
+    g.fillStyle = '#000';
+    g.fillRect(0, HEAD, KEYW, H - HEAD);
     const rows = this.visibleRows + 1;
     for (let i = 0; i < rows; i++) {
       const k = this.topKey - i;
       if (k < 0) break;
       const y = this.yOf(k);
-      g.fillStyle = BLACK.includes(k % 12) ? '#080a24' : '#0d1030';
-      g.fillRect(KEYW, y, W - KEYW, this.rowH);
-      if (k % 12 === 0) {
-        g.fillStyle = '#1c2050';
-        g.fillRect(KEYW, y + this.rowH - 1, W - KEYW, 1);
+      const black = BLACK.includes(k % 12);
+      g.fillStyle = black ? '#1a1a1a' : '#e8e8e8';
+      g.fillRect(0, y, black ? KEYW - 14 : KEYW - 1, this.rowH - 1);
+      if (hot === k) {
+        g.fillStyle = color;
+        g.fillRect(KEYW - 6, y, 5, this.rowH - 1);
+      }
+      if (k % 12 === 0 && this.rowH >= 7) {
+        g.fillStyle = '#000080';
+        g.fillText(noteName(k), KEYW - 26, y + this.rowH / 2);
       }
     }
+    // the ruler's and instrument lane's names
+    g.fillStyle = '#000';
+    g.fillRect(0, 0, KEYW, HEAD);
+    g.fillStyle = '#ffd400';
+    g.fillText('BAR', 6, RULER / 2);
+    g.fillStyle = '#9aa2d8';
+    g.fillText('INST', 6, RULER + LANE / 2);
+    // the velocity lane's name and scale
+    const top = this.velTop;
+    g.fillStyle = '#000';
+    g.fillRect(0, top, KEYW, VEL);
+    g.fillStyle = '#2e3680';
+    g.fillRect(0, top, KEYW, 2);
+    g.fillStyle = '#9aa2d8';
+    g.fillText('VEL', 6, top + VEL / 2);
+    g.fillStyle = '#5c64a0';
+    g.textAlign = 'right';
+    g.fillText('127', KEYW - 4, top + 9);
+    g.fillText('1', KEYW - 4, H - 8);
+  }
 
-    // beat and bar lines
-    const t0 = this.scrollX;
-    const t1 = this.tOf(W);
-    const sub = doc.snap;
-    if (sub * this.zoom >= 6 && sub < beat) {
-      g.fillStyle = '#121640';
-      for (let t = Math.ceil(t0 / sub) * sub; t < t1; t += sub) g.fillRect(Math.round(this.xOf(t)), HEAD, 1, H - HEAD);
+  /** The marquee, notices, the velocity being set, the cursor, the song end and the play head. */
+  private drawOverlays(): void {
+    const { g, doc } = this;
+    const W = this.w;
+    const H = this.hgt;
+    const silent = this.scene!.silent;
+    // setting a font is slow, so only when the canvas was reset (a resize)
+    if (g.textBaseline !== 'middle') {
+      g.font = FONT;
+      g.textBaseline = 'middle';
     }
-    const beatStep = beat * this.zoom >= 8 ? beat : beat * 4 * this.zoom >= 8 ? beat * 4 : beat * 16;
-    for (let t = Math.ceil(t0 / beatStep) * beatStep; t < t1; t += beatStep) {
-      const bar = Math.round(t / beat) % 4 === 0;
-      g.fillStyle = bar ? '#2e3680' : '#1a1f55';
-      g.fillRect(Math.round(this.xOf(t)), HEAD, 1, H - HEAD);
-    }
-
-    // after the end: the song repeats
-    const endX = this.xOf(song.end.tick);
-    if (endX < W) {
-      g.fillStyle = 'rgba(255,85,85,0.08)';
-      g.fillRect(Math.max(KEYW, endX), HEAD, W, H - HEAD);
-    }
-
-    // loop region
-    if (doc.loop && doc.loopOn) {
-      const a = this.xOf(doc.loop[0]);
-      const b = this.xOf(doc.loop[1]);
-      g.fillStyle = 'rgba(85,255,255,0.06)';
-      g.fillRect(Math.max(KEYW, a), HEAD, Math.max(0, b - Math.max(KEYW, a)), H - HEAD);
-    }
-
     g.save();
-    g.beginPath();
-    g.rect(KEYW, HEAD, W - KEYW, this.velTop - HEAD);
-    g.clip();
-
-    // other tracks, faint
-    if (doc.ghosts) {
-      g.fillStyle = 'rgba(160,170,220,0.16)';
-      for (const n of song.notes) {
-        if (n.on.ch === doc.track) continue;
-        const s = n.on.tick;
-        const e = noteEnd(song, n);
-        if (e < t0 || s > t1) continue;
-        const k = n.on.a;
-        if (k > this.topKey || k < this.topKey - rows) continue;
-        g.fillRect(this.xOf(s), this.yOf(k) + 2, Math.max(1, (e - s) * this.zoom), this.rowH - 4);
-      }
-    }
-
-    // this track's notes; the part a later note cuts off is drawn hatched
-    const notes = channelNotes(song, doc.track);
-    const silent = !doc.sounds(doc.track);
-    for (let i = 0; i < notes.length; i++) {
-      const n = notes[i];
-      const s = n.on.tick;
-      const e = noteEnd(song, n);
-      if (e < t0 || s > t1) continue;
-      const k = n.on.a;
-      if (k > this.topKey + 1 || k < this.topKey - rows) continue;
-      let cut = e;
-      for (let j = i + 1; j < notes.length; j++) {
-        if (notes[j].on.tick >= e) break;
-        if (notes[j].on.tick > s || (notes[j].on.tick === s && notes[j].on.seq > n.on.seq)) {
-          cut = notes[j].on.tick;
-          break;
-        }
-      }
-      const x = this.xOf(s);
-      const y = this.yOf(k);
-      const wAll = Math.max(2, (e - s) * this.zoom);
-      const wHeard = Math.max(2, (cut - s) * this.zoom);
-      const sel = doc.selection.has(n);
-      // shaded by velocity: soft notes are dim, loud ones bright
-      const shade = 0.3 + (0.7 * n.on.b) / 127;
-      g.globalAlpha = silent ? 0.35 : 1;
-      if (cut < e) {
-        g.strokeStyle = color;
-        g.globalAlpha *= 0.5;
-        g.strokeRect(x + wHeard + 0.5, y + 2.5, wAll - wHeard - 1, this.rowH - 5);
-        g.globalAlpha = silent ? 0.35 : 1;
-      }
-      g.fillStyle = color;
-      g.globalAlpha *= shade;
-      g.fillRect(x, y + 1, wHeard, this.rowH - 2);
-      g.globalAlpha = silent ? 0.35 : 1;
-      g.fillRect(x, y + 1, 2, this.rowH - 2);
-      g.fillStyle = 'rgba(0,0,0,0.35)';
-      g.fillRect(x, y + this.rowH - 3, wHeard, 2);
-      if (!n.off) {
-        // no note-off: it rings until cut or the song repeats
-        g.fillStyle = '#ffffff';
-        g.fillRect(x + wHeard - 2, y + 1, 2, this.rowH - 2);
-      }
-      if (sel) {
-        g.strokeStyle = '#ffffff';
-        g.lineWidth = 2;
-        g.strokeRect(x + 1, y + 1, wAll - 2, this.rowH - 2);
-        g.lineWidth = 1;
-      } else if (this.hover?.note === n) {
-        g.strokeStyle = 'rgba(255,255,255,0.7)';
-        g.strokeRect(x + 0.5, y + 0.5, wAll - 1, this.rowH - 1);
-      }
-      if (this.rowH >= 10 && wHeard > 28) {
-        g.fillStyle = shade < 0.6 ? '#fff' : '#000';
-        g.fillText(noteName(k), x + 3, y + this.rowH / 2);
-      }
-      g.globalAlpha = 1;
-    }
-
-    // marquee
     if (this.drag?.kind === 'marquee') {
       const d = this.drag;
+      g.save();
+      g.beginPath();
+      g.rect(KEYW, HEAD, W - KEYW, this.velTop - HEAD);
+      g.clip();
       g.strokeStyle = '#ffd400';
       g.setLineDash([4, 3]);
       g.strokeRect(Math.min(d.x0, d.x1) + 0.5, Math.min(d.y0, d.y1) + 0.5, Math.abs(d.x1 - d.x0), Math.abs(d.y1 - d.y0));
       g.setLineDash([]);
+      g.restore();
     }
-    g.restore();
-
-    if (!doc.tracks().includes(doc.track)) {
+    if (!this.listed) {
       g.fillStyle = '#ffd400';
       g.fillText('No tracks yet: press ＋ Add track to start a melody or a drum part.', KEYW + 14, HEAD + 19);
     } else if (silent) {
@@ -170,11 +209,7 @@ export abstract class RollDraw extends RollView {
         HEAD + 19,
       );
     }
-
-    this.drawKeys(rows);
-    this.drawRuler(t0, t1);
-    this.drawLane(t0, t1);
-    this.drawVelocity(notes, t0, t1, silent);
+    this.drawVelocityLabel();
 
     // cursor (where play starts) and playhead
     const cx = this.xOf(doc.cursor);
@@ -193,6 +228,7 @@ export abstract class RollDraw extends RollView {
       g.lineTo(cx, 7);
       g.fill();
     }
+    const endX = this.xOf(doc.song.end.tick);
     if (endX >= KEYW && endX <= W) {
       g.fillStyle = '#ff5555';
       g.fillRect(Math.round(endX) - 1, 0, 2, H);
@@ -210,148 +246,50 @@ export abstract class RollDraw extends RollView {
     g.restore();
   }
 
-  protected drawKeys(rows: number): void {
-    const g = this.g;
-    g.fillStyle = '#000';
-    g.fillRect(0, HEAD, KEYW, this.hgt - HEAD);
-    for (let i = 0; i < rows; i++) {
-      const k = this.topKey - i;
-      if (k < 0) break;
-      const y = this.yOf(k);
-      const black = BLACK.includes(k % 12);
-      g.fillStyle = black ? '#1a1a1a' : '#e8e8e8';
-      g.fillRect(black ? 0 : 0, y, black ? KEYW - 14 : KEYW - 1, this.rowH - 1);
-      if (this.hover?.note === undefined && this.hoverKey === k) {
-        g.fillStyle = this.doc.trackColor(this.doc.track);
-        g.fillRect(KEYW - 6, y, 5, this.rowH - 1);
-      }
-      if (k % 12 === 0 && this.rowH >= 7) {
-        g.fillStyle = '#000080';
-        g.fillText(noteName(k), KEYW - 26, y + this.rowH / 2);
-      }
-    }
-  }
-
-  protected drawRuler(t0: number, t1: number): void {
-    const { g, doc } = this;
-    const beat = doc.beat;
-    g.fillStyle = '#000080';
-    g.fillRect(0, 0, this.w, RULER);
-    if (doc.loop) {
-      const a = Math.max(KEYW, this.xOf(doc.loop[0]));
-      const b = this.xOf(doc.loop[1]);
-      g.fillStyle = doc.loopOn ? 'rgba(85,255,255,0.55)' : 'rgba(85,255,255,0.2)';
-      g.fillRect(a, 3, Math.max(0, b - a), RULER - 6);
-    }
-    const barTicks = beat * 4;
-    const every = Math.max(1, Math.ceil(36 / (barTicks * this.zoom)));
-    g.fillStyle = '#ffd400';
-    for (let bar = Math.floor(t0 / barTicks); bar * barTicks < t1; bar++) {
-      if (bar % every) continue;
-      const x = this.xOf(bar * barTicks);
-      if (x < KEYW) continue;
-      g.fillRect(Math.round(x), RULER - 6, 1, 6);
-      g.fillText(String(bar + 1), Math.round(x) + 3, RULER / 2);
-    }
-    g.fillStyle = '#000';
-    g.fillRect(0, 0, KEYW, HEAD);
-    g.fillStyle = '#ffd400';
-    g.fillText('BAR', 6, RULER / 2);
-    g.fillStyle = '#9aa2d8';
-    g.fillText('INST', 6, RULER + LANE / 2);
-  }
-
-  protected drawLane(t0: number, t1: number): void {
-    const { g, doc } = this;
-    g.fillStyle = '#0a0c26';
-    g.fillRect(KEYW, RULER, this.w - KEYW, LANE);
-    g.fillStyle = '#1c2050';
-    g.fillRect(KEYW, HEAD - 1, this.w - KEYW, 1);
-    for (const e of programChanges(doc.song, doc.track)) {
-      if (e.tick < t0 - 100 / this.zoom || e.tick > t1) continue;
-      const x = this.xOf(e.tick);
-      if (x < KEYW - 2) continue;
-      const label = `♪${e.a + 1}`;
-      const w = g.measureText(label).width + 8;
-      g.fillStyle = doc.song.instruments[e.a] ? doc.trackColor(doc.track) : '#ff5555';
-      g.fillRect(x, RULER + 2, w, LANE - 4);
-      g.fillStyle = '#000';
-      g.fillText(label, x + 4, RULER + LANE / 2);
-    }
-    // the drum kit switching on or off part way through (at the start it is a song setting)
-    for (const e of doc.song.events) {
-      if (e.type !== 'mode' || e.tick === 0 || e.tick < t0 || e.tick > t1) continue;
-      const x = this.xOf(e.tick);
-      g.fillStyle = '#ffffff';
-      g.fillRect(Math.round(x), RULER, 1, LANE);
-      g.fillText(e.a ? 'DRUMS ON' : 'DRUMS OFF', x + 3, RULER + LANE / 2);
-    }
-  }
-
-  protected drawVelocity(notes: Note[], t0: number, t1: number, silent: boolean): void {
+  /** The number over the velocity bar being hovered or dragged. */
+  private drawVelocityLabel(): void {
     const { g, doc } = this;
     const W = this.w;
-    const H = this.hgt;
     const top = this.velTop;
-    const color = doc.trackColor(doc.track);
-    g.fillStyle = '#000';
-    g.fillRect(0, top, W, VEL);
-    g.fillStyle = '#070920';
-    g.fillRect(KEYW, top + 2, W - KEYW, VEL - 2);
-    g.fillStyle = '#2e3680';
-    g.fillRect(0, top, W, 2);
-    // guides at 127, 64 and 1
-    for (const v of [127, 64]) {
-      g.fillStyle = v === 127 ? '#1c2050' : '#141838';
-      g.fillRect(KEYW, Math.round(this.velY(v)), W - KEYW, 1);
+    const d = this.drag?.kind === 'vel' ? this.drag : undefined;
+    const t0 = this.scrollX;
+    const t1 = this.tOf(W);
+    let note: Note | undefined;
+    if (d?.grab && d.relative) note = d.grab;
+    else {
+      const picks: Note[] = [];
+      if (this.hover?.vel && this.hover.note) picks.push(this.hover.note);
+      if (d?.grab) picks.push(d.grab);
+      if (d?.changed && d.notes.length === 1) picks.push(d.notes[0]);
+      // as the bars are painted: selected ones last, then by start; the last one painted wins
+      const notes = this.scene!.notes;
+      const rank = (n: Note) => (doc.selection.has(n) ? notes.length : 0) + notes.indexOf(n);
+      for (const n of picks) {
+        if (n.on.ch !== doc.track || n.on.tick < t0 - 4 / this.zoom || n.on.tick > t1) continue;
+        if (!note || rank(n) > rank(note)) note = n;
+      }
     }
-    const beat = doc.beat;
-    const beatStep = beat * this.zoom >= 8 ? beat : beat * 4 * this.zoom >= 8 ? beat * 4 : beat * 16;
-    g.fillStyle = '#12163a';
-    for (let t = Math.ceil(t0 / beatStep) * beatStep; t < t1; t += beatStep) g.fillRect(Math.round(this.xOf(t)), top + 2, 1, VEL - 2);
-    g.fillStyle = '#9aa2d8';
-    g.fillText('VEL', 6, top + VEL / 2);
-    g.fillStyle = '#5c64a0';
-    g.textAlign = 'right';
-    g.fillText('127', KEYW - 4, top + 9);
-    g.fillText('1', KEYW - 4, H - 8);
-    g.textAlign = 'left';
+    if (!note) return;
+    const x = Math.round(this.xOf(note.on.tick));
+    const y = Math.round(this.velY(note.on.b));
     g.save();
     g.beginPath();
     g.rect(KEYW, top + 2, W - KEYW, VEL - 2);
     g.clip();
-    const d = this.drag?.kind === 'vel' ? this.drag : undefined;
-    let label: { x: number; y: number; v: number } | undefined;
-    // selected bars on top
-    const order = [...notes].sort((a, b) => Number(doc.selection.has(a)) - Number(doc.selection.has(b)));
-    for (const n of order) {
-      const s = n.on.tick;
-      if (s < t0 - 4 / this.zoom || s > t1) continue;
-      const x = Math.round(this.xOf(s));
-      const y = Math.round(this.velY(n.on.b));
-      const sel = doc.selection.has(n);
-      const hot = this.hover?.vel && this.hover.note === n;
-      g.globalAlpha = silent ? 0.4 : 1;
-      g.fillStyle = sel ? '#ffffff' : color;
-      g.globalAlpha *= sel || hot ? 1 : 0.4 + (0.6 * n.on.b) / 127;
-      g.fillRect(x, y, 2, H - 4 - y);
-      g.fillRect(x - 2, y - 1, 7, 3);
-      g.globalAlpha = 1;
-      if (hot || (d && (d.grab === n || (d.changed && d.notes.includes(n) && d.notes.length === 1)))) label = { x, y, v: n.on.b };
-    }
-    if (d?.grab && d.relative) label = { x: Math.round(this.xOf(d.grab.on.tick)), y: Math.round(this.velY(d.grab.on.b)), v: d.grab.on.b };
-    if (label) {
-      const text = String(label.v);
-      const tw = g.measureText(text).width + 6;
-      const lx = Math.min(W - tw - 2, label.x + 6);
-      const ly = Math.max(top + 4, label.y - 14);
-      g.fillStyle = '#ffd400';
-      g.fillRect(lx, ly, tw, 12);
-      g.fillStyle = '#000';
-      g.fillText(text, lx + 3, ly + 6);
-    }
+    const text = String(note.on.b);
+    const tw = g.measureText(text).width + 6;
+    const lx = Math.min(W - tw - 2, x + 6);
+    const ly = Math.max(top + 4, y - 14);
+    g.fillStyle = '#ffd400';
+    g.fillRect(lx, ly, tw, 12);
+    g.fillStyle = '#000';
+    g.fillText(text, lx + 3, ly + 6);
     g.restore();
   }
 
-  // ---- hit testing ----
+  override dispose(): void {
+    super.dispose();
+    this.tiles.dispose();
+    this.keys.width = this.keys.height = 0;
+  }
 }
