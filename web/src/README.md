@@ -39,6 +39,8 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 - [`main.ts`](main.ts), [`modernUi.ts`](modernUi.ts): the site's entry and today's web interface
   (see Main flows).
 - [`play.ts`](play.ts): the play page's entry. [`dosPage/`](dosPage) is `dos.html`'s.
+- [`libraryStart.ts`](libraryStart.ts): the game the Library starts on, noted from the last game page, look or
+  project view (`library/libraryPage.ts` reads it once).
 - [`urlState.ts`](urlState.ts): what the address bar keeps. [`viewSwitch.ts`](viewSwitch.ts): the
   Desk | DOS | Web switch.
 - [`settingsMenu.ts`](settingsMenu.ts): today's web header's ⚙ Settings menu (play offline, the source, the theme, the guided tour, AI setup, back up / restore), its items also in the narrow ⋯ menu.

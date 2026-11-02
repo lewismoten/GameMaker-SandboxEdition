@@ -164,6 +164,10 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   hands and stuck spots, which scenes it found no way through, and how tight the walkthrough's key changes are
   (`web/src/editor/check/walk/pace.ts`). It only reports: play findings depend on the time the bot has, so they are
   not in the baseline.
+- `diskSpace.ts [<id>...] [--write] [--strict]` — runs the editor's disk-space tool (`web/src/editor/disk`) over built
+  games: what it would merge, what it leaves alone and why, and the size in 1.44 MB and 720 KB floppies. It reads
+  `games/<id>/disk` and changes nothing; `--write` also writes `.for-lewis/research/disk-space-findings.md`, `--strict`
+  exits 1 when a step is left to apply.
 - `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
   `playtime.ts` would write), and `levelViews.json` was scanned from the game's disk and walkthrough as they are now
   (else rerun `npx vite-node scripts/levelViews.ts <id>`), without writing anything.
