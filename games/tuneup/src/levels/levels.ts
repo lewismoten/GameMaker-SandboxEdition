@@ -28,6 +28,8 @@ import { horn, hornBlocks, HORN_ROUNDS } from './horn';
 import { drive, driveBlocks, ROUTES } from './drive';
 import { driveSong, paradeSong } from '../sound/finaleSongs';
 import { parade, paradeBlocks, PARADES } from './parade';
+import { beltway, beltwayBlocks } from './beltway';
+import { beltSong } from '../sound/beltSong';
 
 export interface LevelDef {
   /** The scene's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
@@ -40,7 +42,7 @@ export interface LevelDef {
   theme: ThemeName;
   blocks: (pal: Pal) => Kit;
   build: (b: Kit['book']) => Level;
-  chr: 'leo' | 'piano' | 'oil' | 'pump' | 'teddy' | 'nobody' | 'chez';
+  chr: 'leo' | 'piano' | 'oil' | 'pump' | 'teddy' | 'nobody' | 'chez' | 'driver';
   snd: Place;
   song: () => Uint8Array;
   mons: MonsterOptions;
@@ -231,9 +233,23 @@ export const LEVELS: LevelDef[] = [
     mons: {},
     wide: false,
   })),
+  // the driver's seat: out on the ring road to try the radio, then off at the exit into town
+  {
+    file: 'belt',
+    level: 14,
+    desc: 'The Beltway',
+    theme: 'beltway',
+    blocks: beltwayBlocks,
+    build: beltway,
+    chr: 'driver',
+    snd: 'belt',
+    song: beltSong,
+    mons: {},
+    wide: false,
+  },
   ...ROUTES.map((r, i): LevelDef => ({
     file: r.file,
-    level: 14,
+    level: 15,
     desc: 'The Test Drive',
     part: ['round the block', 'Main Street'][i],
     theme: 'noon',
@@ -247,7 +263,7 @@ export const LEVELS: LevelDef[] = [
   })),
   ...PARADES.map((p, i): LevelDef => ({
     file: p.file,
-    level: 15,
+    level: 16,
     desc: 'The Parade Route',
     part: ['the morning', 'sunset', 'the fireworks'][i],
     theme: (['parade', 'sunset', 'fireworks'] as const)[i],

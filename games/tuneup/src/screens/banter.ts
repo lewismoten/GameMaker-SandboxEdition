@@ -126,16 +126,26 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   14: {
-    title: 'LEVEL 14: THE TEST DRIVE',
+    title: 'LEVEL 14: THE BELTWAY',
     lady: true,
+    teddy: true,
     lines: [
       ['leo', 'The dial says kHz: Keeps Humming while Zooming. We have to drive it.'],
       ['regina', 'It means kilohertz.'],
-      ['leo', 'Then why put it on a car? Left to go, Right to brake. Stop on red.'],
+      ['leo', 'Then why put it on a car? Round the beltway first.'],
+      ['regina', 'Left, Right: lanes. A glint in the mirror? Move over.'],
     ],
   },
   15: {
-    title: 'LEVEL 15: THE PARADE ROUTE',
+    title: 'LEVEL 15: THE TEST DRIVE',
+    lady: true,
+    lines: [
+      ['leo', 'Off the beltway and round the block. Left to go, Right to brake.'],
+      ['regina', 'Stop on red. Count to three at a stop sign.'],
+    ],
+  },
+  16: {
+    title: 'LEVEL 16: THE PARADE ROUTE',
     lady: true,
     teddy: true,
     lines: [
@@ -325,6 +335,15 @@ export const OUTRO: Record<string, Card> = {
 
 /** After the test drive's parts (appended to OUTRO below). */
 const DRIVE_OUTRO: Record<string, Card> = {
+  belt: {
+    lady: true,
+    teddy: true,
+    lines: [
+      ['regina', 'Twenty-five miles an hour, and everybody honked.'],
+      ['leo', 'They were waving. The 8-track never skipped once.'],
+      ['regina', 'Then the radio is fixed. Our exit, Doc.'],
+    ],
+  },
   road1: {
     lady: true,
     lines: [

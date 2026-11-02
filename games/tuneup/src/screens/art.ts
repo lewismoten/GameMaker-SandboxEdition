@@ -124,7 +124,7 @@ export function parkChez(p: Pixels, x: number, floor: number, s: number, teddy =
 
 /** The tools Doc Leo's hat gives, a 32x32 picture each on clear. */
 export type Tool =
-  'cables' | 'plug' | 'roll' | 'oilcan' | 'kazoo' | 'bone' | 'hubcap' | 'pump' | 'tape' | 'wiper' | 'horn' | 'gear' | 'radio' | 'key' | 'baton';
+  'cables' | 'plug' | 'roll' | 'oilcan' | 'kazoo' | 'bone' | 'hubcap' | 'pump' | 'tape' | 'wiper' | 'horn' | 'gear' | 'radio' | 'key' | 'map' | 'baton';
 export function toolPic(t: Tool): Pixels {
   const p = new Pixels(32, 32, 255);
   if (t === 'cables') {
@@ -214,6 +214,12 @@ export function toolPic(t: Tool): Pixels {
     p.rect(15, 21, 3, 9, c('metal', 3));
     for (const y of [23, 26]) p.rect(18, y, 2, 2, c('metal', 3));
     p.disc(6, 22, 3.5, c('rubber', 2)).disc(4, 18, 1.8, c('rubber', 2)).set(3, 17, c('nose', 1)).set(2, 18, c('cheese', 1));
+  } else if (t === 'map') {
+    // a road map folded in four: green town, a blue river, the red route round the block
+    for (let i = 0; i < 4; i++) p.rect(2 + i * 7, 6 + (i % 2), 7, 20, i % 2 ? c('paint', 2) : c('paint', 3));
+    p.rect(3, 9, 26, 5, c('green', 1)).line(2, 22, 30, 17, c('water', 2)).line(2, 23, 30, 18, c('water', 2));
+    p.rect(8, 11, 14, 1, c('red', 2)).rect(21, 11, 1, 9, c('red', 2)).rect(8, 19, 14, 1, c('red', 2)).rect(8, 11, 1, 9, c('red', 2));
+    p.frame(2, 6, 28, 21, INK);
   } else if (t === 'baton') {
     // a drum major's baton: a striped shaft, a white ball at each end, a tassel
     for (let i = 0; i < 22; i++) p.rect(5 + i, 25 - i, 2, 2, i % 6 < 3 ? c('red', 2) : c('paint', 3));

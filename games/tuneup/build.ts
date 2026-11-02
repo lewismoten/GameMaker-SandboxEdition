@@ -19,6 +19,7 @@ import { bblOf, shareSets } from './src/blocks/shared';
 import { buildLeo, buildMonsters, buildOilLeo, buildPianoLeo, buildPumpLeo } from './src/characters';
 import { TEDDY_BLOCKS, buildNobody, buildTeddy, nobodyBlocks } from './src/heroes';
 import { CHEZ_BLOCKS, buildChez } from './src/sprites/chezHero';
+import { DRIVER_BLOCKS, buildDriver } from './src/sprites/driver';
 import { LEVELS, firstOfLevel } from './src/levels/levels';
 import { mapOf, rowOffset, stackMaps } from './src/levels/stacks';
 import { buildScreens, cardEntries } from './src/screens/screens';
@@ -46,8 +47,10 @@ disk.put('nobody.cbl', serializeBlocks(nobodyBlocks().blocks));
 disk.put('nobody.chr', serializeCharacter(buildNobody()));
 disk.put('chez.cbl', serializeBlocks(CHEZ_BLOCKS.blocks));
 disk.put('chez.chr', serializeCharacter(buildChez()));
+disk.put('driver.cbl', serializeBlocks(DRIVER_BLOCKS.blocks));
+disk.put('driver.chr', serializeCharacter(buildDriver()));
 /** Each hero's character blocks. */
-const CBL: Record<string, string> = { teddy: 'teddy.cbl', nobody: 'nobody.cbl', chez: 'chez.cbl' };
+const CBL: Record<string, string> = { teddy: 'teddy.cbl', nobody: 'nobody.cbl', chez: 'chez.cbl', driver: 'driver.cbl' };
 const mb = buildMonsterBlocks();
 disk.put('cast.mbl', serializeBlocks(mb.blocks));
 for (const place of new Set(LEVELS.map((l) => l.snd))) disk.put(`${place}.snd`, serializeSoundSet(buildSoundSet(place)));
@@ -69,7 +72,8 @@ const TOOLS: Record<number, Tool> = {
   12: 'gear',
   13: 'radio',
   14: 'key',
-  15: 'baton',
+  15: 'map',
+  16: 'baton',
 };
 // Cartoons go without the ring frame nothing plays, and cut where the picture changes anyway.
 // Clips run up to 6 s (Esc answers a little slower) so each Hat Sting cuts at its scene change.
