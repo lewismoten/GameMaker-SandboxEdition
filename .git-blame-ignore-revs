@@ -28,3 +28,5 @@ f20dce2e0146ddf35f5f56747d8059d657af90dc
 4888fa2388099828e49fbd95c7dfa25c995d94f6
 # Prettier on Depth pictures.ts and build-games.mjs
 12c7df363dd9dbc429d748aac0fc027222bc20ee
+# Prettier on the levelMaps return type
+8f8f4d89bbcc59ab9fdc171f5c53013fcf44342a
