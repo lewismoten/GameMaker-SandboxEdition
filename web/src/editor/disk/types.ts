@@ -3,7 +3,7 @@
 import type { GameFiles } from '../../project/files';
 
 export interface Step {
-  kind: 'bbl' | 'mbl' | 'cbl' | 'mon' | 'pal' | 'look';
+  kind: 'bbl' | 'mbl' | 'cbl' | 'mon' | 'pal' | 'look' | 'sync';
   /** The file that stays and the file that goes. */
   keep: string;
   drop: string;

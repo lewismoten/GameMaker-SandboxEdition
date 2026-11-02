@@ -33,7 +33,7 @@ const ROLE = { bbl: 'background', mbl: 'monster', cbl: 'character' } as const;
 const SIZE = { bbl: BACKBL, mbl: MONBL, cbl: CHARBL } as const;
 
 /** The block numbers of a file that scenes actually show. */
-function shownBlocks(files: GameFiles, uses: SceneUse[], slot: 'bbl' | 'mbl' | 'cbl', file: string, blocks: Block[]): Set<number> {
+export function shownBlocks(files: GameFiles, uses: SceneUse[], slot: 'bbl' | 'mbl' | 'cbl', file: string, blocks: Block[]): Set<number> {
   const users = usersOf(uses, slot, file);
   if (slot === 'bbl') return drawn(files, uses, file, blocks);
   const out = new Set<number>();
