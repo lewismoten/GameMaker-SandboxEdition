@@ -2,7 +2,10 @@
 // the shapes that carry them - spheres, boxes, cylinders, convex solids, distance-field
 // models and moved/rotated copies - each with a hit() test that fills in the nearest hit.
 // sd holds the signed distance pieces the distance-field models are built from.
-import { add, clamp01, cross, dot, len, mul, norm, sub, type V } from './vec';
+import * as vec from './vec';
+import type { V } from './vec';
+// vite-node turns every imported name into a getter call on each use; hot code binds them once here.
+const { add, clamp01, cross, dot, len, mul, norm, sub } = vec;
 
 // ---------------------------------------------------------------- materials
 

@@ -1,7 +1,11 @@
 // Ray: the chrome sphere from every ray-tracing demo, with two neon bands round him that roll
 // as he rolls: amber while the near plane is in focus, cyan in the far one.
 import { MAT } from '../render/look';
-import { Sdf, Sphere, rgb, sd, type Material, type Shape, type V } from '../render/tracer';
+import * as tracer from '../render/tracer';
+import type { Material, Shape, V } from '../render/tracer';
+
+const { Sdf, Sphere, rgb, sd } = tracer;
+const { sphere: sphereD } = sd;
 
 export const RAY_R = 0.41;
 const RAY_AT: V = [0.5, 0.6, RAY_R + 0.02];
@@ -34,7 +38,7 @@ export function rayModel(axis: 'x' | 'y', angle: number, band: V, at: V = RAY_AT
         [at[0] - r - 0.06, at[1] - r - 0.06, at[2] - r - 0.06],
         [at[0] + r + 0.06, at[1] + r + 0.06, at[2] + r + 0.06],
       ],
-      (x, y, z) => Math.min(sd.sphere(x - at[0], y - at[1], z - at[2], r), bandsAt(x, y, z)),
+      (x, y, z) => Math.min(sphereD(x - at[0], y - at[1], z - at[2], r), bandsAt(x, y, z)),
       [chrome, neon],
       (x, y, z) => (bandsAt(x, y, z) < sd.sphere(x - at[0], y - at[1], z - at[2], r) + 0.002 ? 1 : 0),
     ),

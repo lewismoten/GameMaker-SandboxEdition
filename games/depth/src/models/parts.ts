@@ -1,6 +1,11 @@
 // Building models out of distance-field parts, the way 1995 modelers built characters out of
 // blobs and primitives: each part has a material; the surface takes the nearest part's.
-import { Sdf, clamp01, sd, type Material, type V } from '../render/tracer';
+import * as tracer from '../render/tracer';
+import type { Material, V } from '../render/tracer';
+
+// vite-node turns every imported name into a getter call on each use; the field loop binds them once here.
+const { Sdf, clamp01, sd } = tracer;
+const { smin, sphere: sphereD, cylinder: cylinderD } = sd;
 
 type Field = (x: number, y: number, z: number) => number;
 /** A field that says what primitive it is and its numbers, so `model` can evaluate it without a call. */
@@ -17,7 +22,7 @@ interface Part {
 }
 
 /** A model from parts joined with a smooth seam `k` (0 = hard). */
-export function model(parts: Part[], bounds: [V, V], k = 0): Sdf {
+export function model(parts: Part[], bounds: [V, V], k = 0): tracer.Sdf {
   const fs = parts.map((p) => p.d);
   const n = fs.length;
   // The common primitives are evaluated in this loop instead of through a call each (their tags and numbers are
@@ -37,7 +42,7 @@ export function model(parts: Part[], bounds: [V, V], k = 0): Sdf {
       let v: number;
       switch (kind[i]) {
         case SPHERE:
-          v = sd.sphere(x - num[q], y - num[q + 1], z - num[q + 2], num[q + 3]);
+          v = sphereD(x - num[q], y - num[q + 1], z - num[q + 2], num[q + 3]);
           break;
         case ELL: {
           const px = x - num[q];
@@ -60,12 +65,12 @@ export function model(parts: Part[], bounds: [V, V], k = 0): Sdf {
           break;
         }
         case CYL:
-          v = sd.cylinder(x - num[q], y - num[q + 1], z - num[q + 2], num[q + 3], num[q + 4], num[q + 5]);
+          v = cylinderD(x - num[q], y - num[q + 1], z - num[q + 2], num[q + 3], num[q + 4], num[q + 5]);
           break;
         default:
           v = fs[i](x, y, z);
       }
-      d = k > 0 && d !== Infinity ? sd.smin(d, v, k) : Math.min(d, v);
+      d = k > 0 && d !== Infinity ? smin(d, v, k) : Math.min(d, v);
     }
     return d;
   };
