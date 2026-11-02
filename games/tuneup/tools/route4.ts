@@ -6,7 +6,7 @@ import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/r
 import { buildPalette } from '../src/art/palette';
 import { EXIT_X, ROUTES, driveBlocks, footName, phaseOf, stopFootName, type Signal } from '../src/levels/drive';
 import { LIGHT } from '../src/levels/drive';
-import { CUE_ROW, PARADES, EXIT_X as PARADE_EXIT, JOIN } from '../src/levels/parade';
+import { CUE_ROW, PARADES, EXIT_X as PARADE_EXIT, JOIN, FORKS_PER_GATE, GATE_POINTS } from '../src/levels/parade';
 import { CTR } from '../src/ids';
 import { diskNumber } from '../src/blocks/shared';
 import type { Bot } from './bot';
@@ -143,6 +143,16 @@ export function paradeRoute(part: number) {
       if (bot.sim.ci.score !== score + JOIN) throw new Error(`the section at ${x} (cue row ${CUE_ROW}) didn't join`);
     }
     if (p.fork !== undefined && bot.count(CTR.forks) !== forks + 1) throw new Error('drove past the tuning fork');
+    // the encore gates: a toot under each takes the forks it needs (a bonus; the ribbon is the way out)
+    for (const x of [...(p.gates ?? [])].sort((a, b) => b - a)) {
+      await coastTo(bot, x * 20 - 6, `the encore gate at ${x}`);
+      await must(bot, bot.react(), 'looking up at the gate');
+      const held = bot.count(CTR.forks);
+      const score = bot.sim.ci.score;
+      await must(bot, bot.tap('space', 6), `tooting under the gate at ${x}`);
+      const open = held >= FORKS_PER_GATE;
+      if (bot.sim.ci.score !== score + (open ? GATE_POINTS : 0)) throw new Error(`gate at ${x}: ${held} forks held, score +${bot.sim.ci.score - score}`);
+    }
     if (bot.count(CTR.stations) !== p.cues.length) throw new Error(`${bot.count(CTR.stations)} sections joined`);
     await leave(bot, bot.dig('left', PARADE_EXIT, 'through the ribbon to the end of the route'), 'out');
   };

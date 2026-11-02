@@ -36,12 +36,19 @@ export interface ParadeScene {
   fireworks: boolean;
   /** The first stretch's secret: a tuning fork on the street at the second side street, a glint over it (level x). */
   fork?: number;
+  /** The encore gates (fireworks only): building columns over the street after the last side street, each taking FORKS_PER_GATE forks. */
+  gates?: number[];
 }
+
+/** Tuning forks each encore gate takes (nine forks open all three); the gates are a bonus, never in the way. */
+export const FORKS_PER_GATE = 3;
+/** Points for opening an encore gate. */
+export const GATE_POINTS = 1000;
 
 export const PARADES: ParadeScene[] = [
   { file: 'band1', w: 70, cues: [54, 42, 30, 18], ribbon: 8, fireworks: false, fork: 43 },
   { file: 'band2', w: 70, cues: [56, 45, 32, 20], ribbon: 8, fireworks: false },
-  { file: 'band3', w: 70, cues: [53, 41, 29, 17], ribbon: 8, fireworks: true },
+  { file: 'band3', w: 70, cues: [53, 41, 29, 17], ribbon: 8, fireworks: true, gates: [14, 12, 10] },
 ];
 /** The row the cue lamps hang in, just over the car's roof: the car is one block tall (its
  * top block is clear, so only its bottom block touches), and the bounce reaches up into it. */
@@ -195,6 +202,28 @@ export function paradeBlocks(scene: ParadeScene) {
         else if (f < 4) for (let a = 0; a < 8; a++) p.set(10 + Math.round(Math.cos(a * 0.785) * rr), 10 + Math.round(Math.sin(a * 0.785) * rr), col);
         book.add(`fw${f}`, p, { ...AIR, ntime: [6, 3, 3, 4, 20][f], next: `fw${(f + 1) % 5}` });
       }
+    if (scene.gates) {
+      // an encore gate: a board hung from the bunting with a socket for each fork it takes; a toot under
+      // it spends them if you hold enough (a hollow socket is dark, a filled one shines)
+      const board = (open: boolean) => {
+        const p = k.P(c('brick', 2));
+        for (let y = 0; y < 20; y += 5) p.rect(0, y, 20, 1, c('brick', 1));
+        p.rect(0, 0, 20, 3, c('stone', 3));
+        p.rect(1, 3, 18, 15, c('ink', 0)).rect(2, 4, 16, 13, open ? c('gold', 2) : c('shade', 1));
+        for (let i = 0; i < FORKS_PER_GATE; i++) {
+          const x = 4 + i * 5;
+          const tone = open ? c('metal', 5) : c('ink', 1);
+          p.rect(x, 6, 1, 4, tone)
+            .rect(x + 2, 6, 1, 4, tone)
+            .rect(x, 9, 3, 1, tone)
+            .rect(x + 1, 10, 1, 5, tone);
+          if (open) p.set(x + 1, 7, c('cloud', 2));
+        }
+        return p;
+      };
+      book.add('gate', board(false), { solid: UNDER, effect: CTR.forks, eamt: -FORKS_PER_GATE, score: GATE_POINTS, touch: 'gate.open' });
+      book.add('gate.open', board(true), { solid: UNDER });
+    }
     if (scene.fork !== undefined) {
       addFork(k, `crowd${(scene.fork * 3) % 4}`);
       glint(k, 'corner');
@@ -242,6 +271,7 @@ export const parade = (scene: ParadeScene) =>
     for (let x = 3; x < w; x += 9) m.set(x, 2, 'confetti0');
     if (scene.fireworks) for (let x = 6; x < w; x += 11) m.set(x, 1, `fw${x % 5}`);
     if (scene.fork !== undefined) m.set(scene.fork, row, 'fork').set(scene.fork, top, 'corner.glint');
+    for (const x of scene.gates ?? []) m.set(x, CUE_ROW, 'gate');
     m.set(scene.ribbon, row, 'ribbon');
     m.link(EXIT_X, row);
     // variants here and there so the street doesn't repeat
