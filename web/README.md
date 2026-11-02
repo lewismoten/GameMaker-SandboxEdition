@@ -223,9 +223,8 @@ Every game file but a GIF also gets a gzip copy (`<file>.gz`), which the site fe
 unpacks, since GitHub Pages sends unknown file types uncompressed.
 
 The GitHub Actions workflow in [`.github/workflows/pages.yml`](../.github/workflows/pages.yml)
-checks formatting, lint and types, runs only the quick tests (`GM_FAST_TESTS`: a test over
-50 ms here runs only locally, listed in `test/slowTests.json`), builds on every push and pull
-request, and deploys `web/dist` to GitHub Pages from `master`. Run `npm test` locally for
+builds every game and the site (no format, lint or tests: those run locally with `npm run verify`).
+A pull request into `master` stops after the build; a `pages-v*` tag or a manual run deploys `web/dist` to GitHub Pages. Run `npm test` locally for
 everything; after adding a slow test, run `npm run test:slow-list` so CI leaves it out. In the repository settings, set **Pages → Source** to **GitHub Actions**.
 
 ## Layout

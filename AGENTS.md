@@ -104,7 +104,7 @@ preserve what was there.
   `.prettierignore` at the root, and `web/eslint.config.js`. Writing
   `web/vite.config.ts` or a file it imports restarts the dev server and reloads every open
   page, so change those only when the maintainer has it stopped.
-- **GitHub Actions:** only builds and publishes (Pages on a `pages-v*` tag), in as few jobs as
+- **GitHub Actions:** only builds and publishes (Pages on a `pages-v*` tag; a pull request into master runs the same build without deploying, to show a release's cost), in as few jobs as
   possible: Lewis budgets the total minutes of a run, every job bills at least a minute, and
   CI must not rely on caches from earlier runs. Format, lint, typecheck, tests, game checks and
   `npm run verify:packages` run locally (`npm run verify` from the root runs the checks).
