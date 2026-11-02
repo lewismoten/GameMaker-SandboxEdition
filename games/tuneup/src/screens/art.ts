@@ -267,6 +267,18 @@ export const REAL_PARTS: Part[] = [
   { label: 'RADIO', x: 160, y: 98 },
 ];
 
+/** The cutaway's blueprint paper and the CHEZ on it: the same for every frame, so drawn once. */
+let blueprintPaper: Pixels | undefined;
+function blueprint(): Pixels {
+  if (blueprintPaper) return blueprintPaper;
+  const p = new Pixels(320, 200, c('navy', 0));
+  // blueprint paper: a grid
+  for (let y = 0; y < 200; y += 10) p.rect(0, y, 320, 1, c('navy', 1));
+  for (let x = 0; x < 320; x += 10) p.rect(x, 0, 1, 200, c('navy', 1));
+  chezSide(p, 40, 30, { ...CHEZ_INK, outline: c('paint', 3) }, 'left', 6);
+  return (blueprintPaper = p);
+}
+
 /**
  * The cutaway CHEZ: the car seen from the side, its parts as lamps, the first `done` lit green
  * but part `blink`, lit gold when `on`; a legend of the parts along the bottom (two rows when
@@ -274,10 +286,7 @@ export const REAL_PARTS: Part[] = [
  */
 export function cutaway(parts: Part[], done: number, blink = -1, on = true): Pixels {
   const p = new Pixels(320, 200, c('navy', 0));
-  // blueprint paper: a grid
-  for (let y = 0; y < 200; y += 10) p.rect(0, y, 320, 1, c('navy', 1));
-  for (let x = 0; x < 320; x += 10) p.rect(x, 0, 1, 200, c('navy', 1));
-  chezSide(p, 40, 30, { ...CHEZ_INK, outline: c('paint', 3) }, 'left', 6);
+  p.px.set(blueprint().px);
   const perRow = parts.length > 4 ? 3 : 4;
   const rows = Math.ceil(parts.length / perRow);
   parts.forEach((part, i) => {
