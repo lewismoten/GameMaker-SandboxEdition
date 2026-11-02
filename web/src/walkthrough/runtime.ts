@@ -273,6 +273,15 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
   await m.need(highScoreFile(s.gameName)); // loaded now, so the ending can fill it in (onScene)
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
   const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors, look });
+  /** A story or credits page with something to show: the file is on the disk, and a text file has more than blanks. */
+  const hasPage = async (f: string | undefined) => {
+    if (!f) return false;
+    await m.need(f);
+    const bytes = m.files.get(f);
+    if (!bytes?.length) return false;
+    // blanks, line ends and the DOS end-of-file mark (26) don't count
+    return !/\.txt$/i.test(f) || bytes.some((b) => b > 32 && b !== 26);
+  };
   const song = async (slot: number) => {
     await m.need(file(0, slot));
     await m.audio.playSong(m.files.get(file(0, slot) ?? ''));
@@ -304,7 +313,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
 
   await song(3);
   let screen = await menu();
-  if (walk.story !== false && file(0, 4)) {
+  if (walk.story !== false && (await hasPage(file(0, 4)))) {
     await pick(3);
     chapter(FRONT_CHAPTERS.story);
     m.screen.restore(screen);
@@ -318,8 +327,8 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
   rec.begin();
   await play(s, 0);
 
-  // Back on the menu: the credits
-  if (file(0, 7)) {
+  // Back on the menu: the credits (skipped when there are none to read)
+  if (await hasPage(file(0, 7))) {
     await song(3);
     choice = 1;
     screen = await menu();
