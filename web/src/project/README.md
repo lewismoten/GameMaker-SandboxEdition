@@ -6,7 +6,7 @@ Portable `GameFiles` and 8.3 names belong to the engine package (`src/core/gameF
 
 A game's files (`files.ts`: the CD catalog),
 streaming a hosted game (`streamGame.ts`, from its pack, `gamePack.ts`), IndexedDB storage
-(`storage.ts`), zip (`zip.ts`), the health check (`health.ts`), importing an exported page
+(`storage.ts`), the Optimize tool's checkpoint (`checkpoint.ts`: a stamp of the game kept in its stored record, never exported), zip (`zip.ts`), the health check (`health.ts`), importing an exported page
 (`importPage.ts`), finding the games in what an import was given, in folders and zips (zips
 inside zips too) by their .gam files, and reading the picked ones again (`importScan.ts`; a test
 .gam missing files beside a whole game in the same zip is a leftover, left unticked:

@@ -24,6 +24,17 @@ export interface ProjectRecord {
   files: Record<string, Uint8Array>;
   /** Editor-only extras (companion.ts): never one of the game's files, so no export but the backup carries it. */
   companion?: Companion;
+  /** A named stamp of the whole game kept by the Optimize tool (checkpoint.ts); never one of the game's files, so no export carries it. */
+  checkpoint?: StoredCheckpoint;
+}
+
+/** What a checkpoint keeps: every file and the companion as they were. */
+export interface StoredCheckpoint {
+  name: string;
+  /** Date.now() when it was made. */
+  made: number;
+  files: Record<string, Uint8Array>;
+  companion?: Companion;
 }
 
 let dbPromise: Promise<IDBDatabase> | undefined;
@@ -85,10 +96,35 @@ export async function saveProject(id: string, name: string, gam: string, files: 
   });
 }
 
-/** The record to store: the given companion, else the stored one, else none. */
+/** The record to store: the given companion, else the stored one, else none; the stored checkpoint always stays. */
 export function withCompanion(next: ProjectRecord, stored: ProjectRecord | undefined, companion?: Companion): ProjectRecord {
   const c = companion ?? stored?.companion;
-  return c ? { ...next, companion: c } : next;
+  const out = c ? { ...next, companion: c } : next;
+  return stored?.checkpoint ? { ...out, checkpoint: stored.checkpoint } : out;
+}
+
+/** The project's checkpoint, if it has one. */
+export async function loadCheckpoint(id: string): Promise<StoredCheckpoint | undefined> {
+  return (await request<ProjectRecord | undefined>(PROJECTS, 'readonly', (s) => s.get(id)))?.checkpoint;
+}
+
+/** Stores (or, with undefined, discards) the project's checkpoint, leaving the rest of its record as it is. */
+export async function saveCheckpoint(id: string, checkpoint: StoredCheckpoint | undefined): Promise<void> {
+  const d = await db();
+  await new Promise<void>((resolve, reject) => {
+    const tx = d.transaction(PROJECTS, 'readwrite');
+    const store = tx.objectStore(PROJECTS);
+    const get = store.get(id);
+    get.onsuccess = () => {
+      const rec = get.result as ProjectRecord | undefined;
+      if (!rec) return reject(new Error('The game is not saved yet'));
+      const { checkpoint: _old, ...rest } = rec;
+      store.put(checkpoint ? { ...rest, checkpoint } : rest);
+    };
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error);
+  });
 }
 
 export async function deleteProject(id: string): Promise<void> {

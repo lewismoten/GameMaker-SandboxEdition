@@ -7,6 +7,7 @@ import { clear, h, modal, toast } from '../core/ui';
 import { fileUndo } from '../core/fileUndo';
 import type { Project } from '../core/project';
 import { planDisk } from './plan';
+import { checkpointPanel } from './checkpointPanel';
 import { sizeUp, type SizeUp } from './size';
 import { floppyFor } from './diskCard';
 import type { Plan, Step } from './types';
@@ -72,6 +73,7 @@ export async function diskTool(project: Project): Promise<void> {
       render();
     };
     stopKeys = hist.listenKeys();
+    const checkpoint = checkpointPanel(project, hist, () => render());
 
     function render() {
       const size = sizeUp(project.files, project.gam);
@@ -126,7 +128,8 @@ export async function diskTool(project: Project): Promise<void> {
                 {
                   type: 'button',
                   class: 'primary',
-                  onclick: () => {
+                  onclick: async () => {
+                    if (!(await checkpoint.ensure('Before optimization'))) return;
                     try {
                       hist.before(...new Set(plan.steps.flatMap((s) => s.touches)));
                       for (const s of plan.steps) s.apply(project.files, project.gam);
@@ -156,6 +159,7 @@ export async function diskTool(project: Project): Promise<void> {
             )
           : null,
         undoBar,
+        checkpoint.el,
         plan.notes.length
           ? h(
               'div',

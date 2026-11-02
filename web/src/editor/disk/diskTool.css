@@ -69,3 +69,42 @@
 .disk-tool h3 {
   margin: 12px 0 0;
 }
+
+/* The checkpoint section and the compare dialog */
+.disk-checkpoint-buttons,
+.disk-compare-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.disk-checkpoint-buttons button,
+.disk-compare-controls button {
+  min-height: 24px;
+  min-width: 24px;
+}
+.disk-compare-controls input[type='number'] {
+  width: 4.5em;
+  min-height: 24px;
+}
+.disk-compare-pics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.disk-compare-pics figure {
+  margin: 0;
+  flex: 1 1 320px;
+  min-width: 0;
+}
+.disk-compare-pic {
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  image-rendering: pixelated;
+  aspect-ratio: 8 / 5;
+}
+.disk-compare-controls button[aria-pressed='true'] {
+  font-weight: 700;
+  outline: 2px solid currentColor;
+}

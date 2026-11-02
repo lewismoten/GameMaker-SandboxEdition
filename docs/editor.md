@@ -120,6 +120,13 @@ broken ones), **First steps** (in games started from the starter), **Color visio
 palette, drawn) and **Play Game** and **Download**. The status comes from what is already saved;
 opening the tab never runs a check. Each tool also opens from where it always did.
 
+**Disk space** also holds the **checkpoint**: a stamp of the whole game (every file and its editor
+notes), made with one click and always before an optimization is applied. **Compare…** lists what
+changed and draws each level's map as it was and as it is (Before, After or side by side, with a
+jump to the next view that differs). **Restore** puts everything back (Undo takes that back) and
+**Discard** deletes the stamp. It stays with the game in this browser (and in a browser backup),
+never in a download or a DOS export.
+
 The first card adds files. **Add a file…** offers new files, the Library, uploads and the
 available converters. **From this game…** makes a copy of an existing file. Copy a file, open
 another project in this browser tab, then use **Paste** in the matching category. Block groups
