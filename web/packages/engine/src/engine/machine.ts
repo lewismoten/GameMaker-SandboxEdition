@@ -44,6 +44,8 @@ export class Machine {
   files: GameFiles;
   readonly pointer: PointerState = { x: 160, y: 100, clicks: 0 };
   aborted = false;
+  /** Observer only (the walkthrough player's item marks): a picture, cartoon, text page or slide list is about to be shown. Never changes timing. */
+  onItem?: (kind: 'picture' | 'cartoon' | 'text' | 'slides', name: string) => void;
   private frameWaiters: (() => void)[] = [];
   private raf = 0;
   /** The ball mouse on the desk moves the pointer and clicks too. */

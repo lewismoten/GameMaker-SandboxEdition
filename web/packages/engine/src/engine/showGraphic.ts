@@ -50,6 +50,7 @@ async function showGraphicNow(m: Machine, file: string, opts: GraphicOptions): P
   const look = opts.look ?? STOCK_LOOK;
   const cols = opts.cols ?? new Uint8Array(PALETTE_SIZE);
   let key: number | undefined;
+  m.onItem?.(e === '.fli' ? 'cartoon' : e === '.txt' ? 'text' : e === '.lst' ? 'slides' : 'picture', file);
 
   if (e === '.gif' || e === '.bkd') {
     if (pause === -1) pause = look.seconds(e === '.gif' ? 'timing.showGraphic.gif' : 'timing.showGraphic.bkd');
