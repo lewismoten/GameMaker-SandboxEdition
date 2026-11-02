@@ -59,12 +59,12 @@ describe('disk space plan', () => {
   it('merges identical palettes, then monster blocks, then monsters, and then has nothing left', () => {
     const f = twoRooms();
     const plan = planDisk(f, 't.gam');
-    expect(plan.steps.map((s) => s.kind)).toEqual(['mbl', 'mon', 'pal']);
+    expect(plan.steps.map((s) => s.kind)).toEqual(['mbl', 'mon', 'pal', 'bbl']);
     const saved = plan.steps.reduce((a, s) => a + s.saves, 0);
     const before = f.names().reduce((a, n) => a + f.get(n)!.length, 0);
     for (const s of plan.steps) s.apply(f, 't.gam');
     expect(f.names().reduce((a, n) => a + f.get(n)!.length, 0)).toBeLessThanOrEqual(before - saved);
-    expect(f.has('b.mbl') || f.has('b.mon') || f.has('b.pal')).toBe(false);
+    expect(f.has('b.mbl') || f.has('b.mon') || f.has('b.pal') || f.has('b.bbl')).toBe(false);
     expect(planDisk(f, 't.gam').steps).toEqual([]);
 
     const game = parseGame(f.get('t.gam')!);
@@ -72,6 +72,7 @@ describe('disk space plan', () => {
       ['a.mon', 'a.mbl', 'a.pal'],
       ['a.mon', 'a.mbl', 'a.pal'],
     ]);
+    expect(game.scenes.slice(2).map((s) => s.files[2])).toEqual(['a.bbl', 'a.bbl']);
     // b's blocks (1-4) went to the first free slots (4-7 after a's 1-3); b's monsters 2 and 3 took slots 0 and 1
     // (a's own 2 and 3 stay put), and monster 1 (was 3) now turns into slot 0 (was 2) when it dies
     const mons = parseMonsters(f.get('a.mon')!);
@@ -82,14 +83,17 @@ describe('disk space plan', () => {
     // b's map and its birth block follow the renumbered monsters; a's are untouched
     expect(parseMap(f.get('a.map')!).monsters[0].monnum).toBe(3);
     expect(parseMap(f.get('b.map')!).monsters[0].monnum).toBe(1);
-    expect(parseBlocks(f.get('b.bbl')!, BACKBL)[7].birthMon).toBe(0);
-    expect(parseBlocks(f.get('a.bbl')!, BACKBL)[7].birthMon).toBe(2);
+    // b's birth block was renumbered before b.bbl joined a.bbl; a's own block 7 is untouched, and b's undrawn one is dropped
+    const bbl = parseBlocks(f.get('a.bbl')!, BACKBL);
+    expect(bbl[7].birthMon).toBe(2);
+    expect(bbl.filter((b) => b.birthTime === 5).map((b) => b.birthMon)).toEqual([2]);
+    expect(parseMap(f.get('b.map')!).blocks.every((v) => v === 0)).toBe(true);
   });
 
   it('leaves a monster file alone when the character shared by both rooms fires monsters', () => {
     const f = twoRooms({ birth: true });
     const plan = planDisk(f, 't.gam');
-    expect(plan.steps.map((s) => s.kind)).toEqual(['mbl', 'pal']);
+    expect(plan.steps.map((s) => s.kind)).toEqual(['mbl', 'pal', 'bbl']);
     expect(plan.notes.some((n) => /ada\.chr/.test(n.why))).toBe(true);
     expect(parseCharacter(f.get('ada.chr')!).sequences[5].frames[0].pic1).toBe(0);
     expect(CHARBL).toBe(50);

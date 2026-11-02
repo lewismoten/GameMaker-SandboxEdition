@@ -196,6 +196,13 @@ is shown with and play the same (it keeps what they turn into in step), and list
 share a shape in other colors without joining them: a scene has one palette. `applyFold` removes
 the folded blocks and renumbers maps and links. Import from `@lewismoten/gamemaker-sandbox-tools/look-alike`.
 
+### Joining block sets
+
+`mergeBackgroundSets` moves one background set's drawn blocks into another's free slots (reusing an
+identical block already there) and renumbers the moved set's maps; the kept set is not renumbered.
+Pickups, required and starting items and block 0 keep their number or the join is refused.
+Import from `@lewismoten/gamemaker-sandbox-tools/block-merge`.
+
 ### Disk comparison
 
 `diffDisks(a, b)` takes two `Map<name, bytes>` disks and returns the added, removed and changed files, with a plain-text

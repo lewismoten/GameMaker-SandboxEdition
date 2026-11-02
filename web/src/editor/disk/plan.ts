@@ -3,28 +3,36 @@
 // and looking again; plus the near misses the author may want to do by hand.
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { GameFiles } from '../../project/files';
-import { mergeBackgroundNotes } from './similarBackgrounds';
+import { planBackgrounds } from './mergeBackgrounds';
 import { planPalettes } from './mergePalettes';
 import { planMonsterBlocks } from './mergeMonsterBlocks';
 import { planMonsters } from './mergeMonsters';
 import { filesIn, sceneUses } from './refs';
 import type { Note, Plan, Step } from './types';
 
-const ORDER: Step['kind'][] = ['mbl', 'mon', 'pal'];
+// block sets join last: once two scenes share a block set, their monster files can no longer tell whose birth blocks are whose
+const ORDER: Step['kind'][][] = [['mbl', 'mon', 'pal'], ['bbl']];
 
 /** The next step that can be applied, and why the other pairs can't. */
-function next(files: GameFiles, gam: string, notes: Note[]): Step | undefined {
+function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][]): Step | undefined {
   const uses = sceneUses(files, parseGame(files.get(gam)!));
-  for (const kind of ORDER) {
+  for (const kind of order) {
     if (kind === 'pal') return planPalettes(files, gam, uses);
     const slot = kind;
     const names = filesIn(uses, slot).sort();
     for (let a = 0; a < names.length; a++)
       for (let b = 0; b < names.length; b++) {
         if (a === b) continue;
-        const r = kind === 'mbl' ? planMonsterBlocks(files, gam, uses, names[a], names[b]) : planMonsters(files, gam, uses, names[a], names[b]);
+        const [x, y] = [names[a], names[b]];
+        const r =
+          kind === 'bbl'
+            ? planBackgrounds(files, gam, uses, x, y)
+            : kind === 'mbl'
+              ? planMonsterBlocks(files, gam, uses, x, y)
+              : planMonsters(files, gam, uses, x, y);
         if (typeof r !== 'string') return r;
-        if (a < b && !/do not fit|merge those first/.test(r)) notes.push({ kind, title: `${names[a]} and ${names[b]} stay separate`, why: r });
+        if (a < b && !/do not fit|merge those first/.test(r) && (kind !== 'bbl' || /carried between|also used with/.test(r)))
+          notes.push({ kind, title: `${names[a]} and ${names[b]} stay separate`, why: r });
       }
   }
   return undefined;
@@ -34,16 +42,16 @@ export function planDisk(files: GameFiles, gam: string): Plan {
   const work = files.copy();
   const steps: Step[] = [];
   const notes: Note[] = [];
-  for (let guard = 0; guard < 50; guard++) {
-    const note: Note[] = [];
-    const step = next(work, gam, note);
-    if (!step) {
-      notes.push(...note);
-      break;
+  for (const order of ORDER)
+    for (let guard = 0; guard < 50; guard++) {
+      const note: Note[] = [];
+      const step = next(work, gam, note, order);
+      if (!step) {
+        notes.push(...note);
+        break;
+      }
+      steps.push(step);
+      step.apply(work, gam);
     }
-    steps.push(step);
-    step.apply(work, gam);
-  }
-  notes.push(...mergeBackgroundNotes(work, gam));
   return { steps, notes };
 }

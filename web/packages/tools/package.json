@@ -74,6 +74,11 @@
       "gamemaker-source": "./src/audioFiles.ts",
       "import": "./dist/audio-files.js"
     },
+    "./block-merge": {
+      "types": "./dist/types/blockMerge.d.ts",
+      "gamemaker-source": "./src/blockMerge.ts",
+      "import": "./dist/block-merge.js"
+    },
     "./look-alike": {
       "types": "./dist/types/lookAlike.d.ts",
       "gamemaker-source": "./src/lookAlike.ts",

@@ -9,7 +9,7 @@ import { findLookAlikes, type LookGroup, type LookResult } from '@lewismoten/gam
 import type { GameFiles } from '../../project/files';
 import { shownPalettes } from './palettes';
 import { filesIn, sceneUses, usersOf, type SceneUse } from './refs';
-import { drawn } from './similarBackgrounds';
+import { drawn } from './blockUse';
 
 export interface LookSet extends LookResult {
   bbl: string;
@@ -24,7 +24,7 @@ export interface LookSet extends LookResult {
 }
 
 /** Block numbers a character or inventory holds across scenes: they keep their number in every set. */
-function carried(files: GameFiles, uses: SceneUse[]): Set<number> {
+export function carriedBlocks(files: GameFiles, uses: SceneUse[]): Set<number> {
   const out = new Set<number>();
   for (const name of filesIn(uses, 'chr')) {
     try {
@@ -40,7 +40,7 @@ function carried(files: GameFiles, uses: SceneUse[]): Set<number> {
 
 export function lookAlikeSets(files: GameFiles, gam: string): LookSet[] {
   const uses = sceneUses(files, parseGame(files.get(gam)!));
-  const carry = carried(files, uses);
+  const carry = carriedBlocks(files, uses);
   return filesIn(uses, 'bbl').map((bbl): LookSet => {
     const mine = usersOf(uses, 'bbl', bbl);
     const blocks = parseBlocks(files.get(bbl)!, BACKBL);

@@ -12,6 +12,7 @@ const sources = {
   colors: 'colors',
   'disk-diff': 'diskDiff',
   'look-alike': 'lookAlike',
+  'block-merge': 'blockMerge',
   'release-notes': 'releaseNotes',
   palettes: 'palettes',
   drawing: 'drawing',

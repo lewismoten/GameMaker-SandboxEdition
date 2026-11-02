@@ -20,8 +20,8 @@ merge them, and says how many 3.5" disks the game needs.
   that the kept file's scenes share with the dropped file's scenes is ambiguous, so that pair stays
   apart (the note says which file).
 - `mergePalettes.ts`: two `.pal` files with the same 256 colors (always safe).
-- `similarBackgrounds.ts`: `.bbl` sets that would fit together; reported only, since joining them
-  renumbers every map cell.
+- `mergeBackgrounds.ts`: two `.bbl` sets whose scenes share a palette and whose drawn blocks fit in 150: the dropped set's blocks move into the kept set's blank slots (an identical block there is reused; `tools/block-merge`), its maps get the new numbers and its scenes open the kept file. The kept set is not renumbered. Pickups, required and starting items and block 0 keep their number or the pair stays apart. Planned last, after the monster and palette merges.
+- `blockUse.ts`: the blocks a set's maps draw and what they turn into.
 - `lookAlikes.ts`, `lookAlikeView.ts`, `pictureCanvas.ts`: per background set, the blocks drawn the
   same colors under every palette the set is shown with and with the same rules (found by
   `tools/look-alike`), and blocks of one shape in other colors, which stay (a scene has one palette).

@@ -129,7 +129,7 @@ never in a download or a DOS export.
 
 **Blocks that look the same** (also in Disk space) lists, per block set, blocks that are drawn the same
 colors in every palette the set is shown with and play the same, each with a picture and how many
-map cells use it, plus blocks of one shape in other colors, which stay as they are. It only reports for now.
+map cells use it, plus blocks of one shape in other colors, which stay as they are. Joining two block sets into one file (the dropped set's blocks move into the other's free slots and its maps follow) is one of the merges Disk space offers; every scene is drawn the same afterward.
 
 The first card adds files. **Add a file…** offers new files, the Library, uploads and the
 available converters. **From this game…** makes a copy of an existing file. Copy a file, open
