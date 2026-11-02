@@ -25,7 +25,7 @@ const notCode = (name) => notDoc(name) && !/\.(ts|mts)$/.test(name);
 const shared = [
   ...walk(join(root, 'games/kit'), notCode),
   ...packages.flatMap((p) => [...walk(join(p, 'src'), notCode), join(p, 'package.json'), join(p, 'tsconfig.json')]),
-  ...['package.json', 'web/package.json', 'web/tsconfig.json', 'web/vite.config.ts'].map((file) => join(root, file)),
+  ...['package.json', 'web/package.json', 'web/tsconfig.json', 'scripts/game-build.config.mjs'].map((file) => join(root, file)),
   join(root, 'cd/gm/xferplay.exe'),
   join(root, 'package-lock.json'),
 ].filter(existsSync);

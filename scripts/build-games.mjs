@@ -10,6 +10,8 @@ import { promisify } from 'node:util';
 const games = join(root, 'games');
 const cacheFile = join(games, '.build-cache.json');
 const run = promisify(execFile);
+// every child is vite-node with game-build.config.mjs: the site's vite.config.ts (CD scan, SEO and offline plugins) costs each child ~0.7 s of CPU for nothing
+const viteNode = [join(root, 'node_modules/vite-node/vite-node.mjs'), '-c', join(root, 'scripts/game-build.config.mjs')];
 if (process.env.GM_SKIP_GAME_BUILD === '1') {
   console.log('Game output generation deferred to the build job.');
   process.exit(0);
@@ -63,7 +65,7 @@ function logo() {
   logoReady ??= existsSync(logoFile)
     ? Promise.resolve()
     : (mkdirSync(frames, { recursive: true }),
-      run(process.execPath, [join(root, 'node_modules/vite-node/vite-node.mjs'), '../scripts/logo-build-entry.mjs', logoFile], {
+      run(process.execPath, [...viteNode, '../scripts/logo-build-entry.mjs', logoFile], {
         cwd: join(root, 'web'),
         maxBuffer: 64 << 20,
         timeout: 240_000,
@@ -107,7 +109,7 @@ async function worker() {
           for (;;) {
             const shard = shards.shift();
             if (shard === undefined) return;
-            await run(process.execPath, [join(root, 'node_modules/vite-node/vite-node.mjs'), '../games/depth/tools/renderFrames.ts', `${shard}/8`], {
+            await run(process.execPath, [...viteNode, '../games/depth/tools/renderFrames.ts', `${shard}/8`], {
               cwd: join(root, 'web'),
               env: { ...process.env, DEPTH_FRAME_CACHE: frames },
               timeout: 240_000,
@@ -124,7 +126,7 @@ async function worker() {
       for (let attempt = 1; ; attempt++) {
         const began = Date.now();
         try {
-          await run(process.execPath, [join(root, 'node_modules/vite-node/vite-node.mjs'), '../scripts/game-build-entry.mjs', id], {
+          await run(process.execPath, [...viteNode, '../scripts/game-build-entry.mjs', id], {
             cwd: join(root, 'web'),
             maxBuffer: 64 << 20,
             timeout: 240_000,
