@@ -1,7 +1,8 @@
 // The rubber chicken who does the repairs: Sir Reginald III, and (once the egg is laid)
-// Lady Regina III, the same bird with a bow on the comb. A classic rubber chicken: pale yellow
-// rubber, a long limp neck, a red comb and wattle, an orange beak open mid-squawk, little wings
-// and long scrawny legs. Drawn in a 20x20 box at any scale `s`, facing right, on clear (255).
+// Lady Regina III, the same bird with a bow on the comb. A classic rubber chicken, limp as one:
+// pale yellow rubber lying on its belly, its long scrawny legs trailing out behind it, a long
+// floppy neck that just about holds the head up, a red comb and wattle, an orange beak open
+// mid-squawk. Drawn in a 20x20 box at any scale `s`, facing right, on clear (255).
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
@@ -30,25 +31,33 @@ export function chicken(s: number, o: ChickenPose = {}): Pixels {
   const S = (v: number) => v * s;
   const rubber = P.r('rubber');
   const bob = o.bob ? 1 : 0;
-  // legs: long and scrawny, three toes each
-  for (const lx of [8.5, 11]) {
-    p.line(Math.round(S(lx)), Math.round(S(14)), Math.round(S(lx - 0.5)), Math.round(S(19)), c('orange', 2));
-    if (s >= 2) p.line(Math.round(S(lx) + 1), Math.round(S(14)), Math.round(S(lx - 0.5) + 1), Math.round(S(19)), c('orange', 1));
-    p.line(Math.round(S(lx - 2)), Math.round(S(19.4)), Math.round(S(lx + 1.6)), Math.round(S(19.4)), c('orange', 1));
+  // legs: long and scrawny, trailing out behind the body along the floor, three toes each
+  for (const [lx, ly, fx, fy] of [
+    [8.6, 17.4, 1.8, 17.2],
+    [9.2, 18.6, 2.2, 19.2],
+  ]) {
+    p.line(Math.round(S(lx)), Math.round(S(ly)), Math.round(S(fx)), Math.round(S(fy)), c('orange', 2));
+    if (s >= 2) p.line(Math.round(S(lx)), Math.round(S(ly)) + 1, Math.round(S(fx)), Math.round(S(fy)) + 1, c('orange', 1));
+    for (const [tx, ty] of [
+      [-1.4, -1.2],
+      [-1.6, 0],
+      [-1.2, 0.6],
+    ])
+      p.line(Math.round(S(fx)), Math.round(S(fy)), Math.round(S(fx + tx)), Math.round(S(fy + ty)), c('orange', 1));
   }
-  // the body: a plump teardrop, tail up at the back
-  blob(p, S(9), S(11.5), S(5.4), S(3.6), rubber, 0, 3);
-  blob(p, S(4.4), S(9.2), S(2), S(2.6), rubber, 0, 3);
-  // the wing
-  if (o.flap) blob(p, S(8.6), S(7.8), S(3), S(2), rubber, 0, 2);
-  else blob(p, S(9.6), S(11.4), S(3), S(1.8), rubber, 0, 1);
-  // the neck: long and limp, a little bent
-  const hx = o.peck ? 15.6 : 14.2;
-  const hy = (o.peck ? 13 : 4.4) + bob;
+  // the body: a plump teardrop lying on its belly, the tail flopped at the back
+  blob(p, S(11.8), S(16.2), S(4.4), S(3), rubber, 0, 3);
+  blob(p, S(7.6), S(14.8), S(1.6), S(1.5), rubber, 0, 3);
+  // the wing, flat along the side (raised in a flap)
+  if (o.flap) blob(p, S(9.4), S(12.2), S(3), S(1.8), rubber, 0, 2);
+  else blob(p, S(11.8), S(15.8), S(2.6), S(1.5), rubber, 0, 1);
+  // the neck: long and floppy, sagging before it lifts the head (or flopped to the floor)
+  const hx = o.peck ? 17.4 : 16;
+  const hy = (o.peck ? 17.4 : 8.6) + bob;
   for (let t = 0; t <= 1; t += 0.05 / s) {
-    const x = 12 + (hx - 12) * t + Math.sin(t * Math.PI) * (o.peck ? 1.5 : -0.8);
-    const y = 9.4 + (hy - 9.4) * t;
-    blob(p, S(x), S(y), S(1.4), S(1.4), rubber, 1, 3);
+    const x = 14 + (hx - 14) * t + Math.sin(t * Math.PI) * (o.peck ? 0.4 : 1.4);
+    const y = 15 + (hy - 15) * t + Math.sin(t * Math.PI) * (o.peck ? -1.6 : 0.6);
+    blob(p, S(x), S(y), S(1.3), S(1.3), rubber, 1, 3);
   }
   // the head, the comb (three bumps) and the wattle
   blob(p, S(hx), S(hy), S(2.3), S(2.1), rubber, 1, 3);
