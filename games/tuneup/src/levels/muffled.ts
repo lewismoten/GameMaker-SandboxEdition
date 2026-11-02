@@ -7,9 +7,9 @@
 // past her bed, where the rubber egg rolled: the felt egg (in the set's last slot, a number no
 // other map shows). The sign that tells how to save is in the next level, The Rain Delay.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+import { outline, scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
-import { GWINN } from '../../../teddy2/src/sprites/gwinn';
+import { text } from '../../../snowbound/src/art/font';
 import { ZZZ } from '../../../teddy2/src/sprites/teddy';
 import { rubberEgg } from '../art/egg';
 import { AIR, countedDoor, kit, type Kit } from '../blocks/common';
@@ -37,6 +37,45 @@ export const MUFFLED = {
 /** Gwinn's width in blocks, across the bed. */
 const GWINN_W = 3;
 /** The box round a sprite's own pixels (255 is clear). */
+/** Gwinn lying asleep on her side (60x40, clear 255), her head to the left; `stir`: head up, an eye open. */
+function sleepingGwinn(pal: Pal, stir: boolean): Pixels {
+  const c = pal.c;
+  const ink = c('ink', 0);
+  const fur = pal.r('gwinn');
+  const p = new Pixels(60, 40, 255);
+  const hy = stir ? 23 : 28;
+  // the thin tail, curled round the back
+  p.line(50, 31, 55, 28, c('gwinn', 1)).line(55, 28, 56, 24, c('gwinn', 1)).line(51, 32, 56, 29, c('gwinn', 2));
+  // the body and the haunch, the far legs tucked under
+  blob(p, 33, 30, 17, 7.5, fur, 1, 3);
+  blob(p, 44, 28, 8, 8, fur, 1, 3);
+  // the hind paw out in front of the haunch, and the front paws under her chin
+  p.rect(38, 35, 12, 3, c('gwinn', 2)).rect(38, 35, 12, 1, c('gwinn', 3));
+  p.rect(5, 35, 14, 3, c('gwinn', 2)).rect(5, 35, 14, 1, c('gwinn', 3)).set(9, 37, c('gwinn', 1)).set(14, 37, c('gwinn', 1));
+  // the white chest
+  blob(p, 22, 33, 3, 2.6, pal.r('fur'), 1, 3);
+  // the head: round, a muzzle out to the left, the floppy ear hanging
+  blob(p, 15, hy, 7, 6, fur, 1, 3);
+  blob(p, 8, hy + 2, 5, 3.4, fur, 1, 3);
+  p.rect(3, hy + 1, 2, 2, ink);
+  for (const [y, r] of [
+    [hy + 1, 3.4],
+    [hy + 4, 3],
+  ])
+    p.disc(18, y, r + 1, ink);
+  p.disc(18, hy + 1, 2.4, c('gwinn', 1))
+    .disc(18, hy + 4, 2, c('gwinn', 1))
+    .set(17, hy, c('gwinn', 2));
+  if (stir) {
+    p.rect(11, hy - 1, 2, 2, c('fur', 2)).set(12, hy, ink);
+    p.rect(6, hy + 5, 2, 2, c('tongue', 1));
+  } else p.line(11, hy - 1, 14, hy - 1, ink).set(10, hy - 2, ink);
+  // the pink collar and its yellow tag
+  for (let y = hy - 2; y < hy + 7; y++) p.rect(22, y, 2, 1, c('pink', 2));
+  p.rect(22, hy + 7, 2, 2, c('yellow', 3));
+  return outline(p, ink);
+}
+
 function bounds(p: Pixels): { x: number; y: number; w: number; h: number } {
   let [x0, y0, x1, y1] = [p.w, p.h, -1, -1];
   for (let y = 0; y < p.h; y++)
@@ -84,17 +123,26 @@ export function muffledBlocks(pal: Pal): Kit {
   blanket.rect(0, 12, 20, 8, c('accent', 1));
   for (let x = 1; x < 20; x += 3) blanket.rect(x, 13, 1, 7, c('accent', 2));
   book.add('blanket', blanket, AIR);
-  // Gwinn three times life size, curled up across three blocks of the blanket and two rows (her
-  // drawing's own pixels, each one a 3x3 square), feet toward Teddy
+  // Gwinn asleep across three blocks of the blanket and two rows, drawn at full size: the
+  // trilogy's brown rescue (floppy ears, white chest, pink collar and its yellow tag, a thin
+  // tail), lying on her side with her chin on her paws; stirred, her head comes up, one eye open
   const gwinn = (stir: boolean) => {
-    const src = GWINN[stir ? 'gwinn1' : 'gwinnRoll'];
-    const b = bounds(src);
     const big = new Pixels(GWINN_W * 20, 40, 0);
     for (let x = 0; x < GWINN_W; x++) big.blit(wall(), x * 20, 0).blit(k.pic('blanket'), x * 20, 20);
-    const s = 3;
-    scaleBlit(big, src.crop(b.x, b.y, b.w, b.h), Math.round((big.w - b.w * s) / 2), 38 - b.h * s, s, false, 255);
+    big.blit(sleepingGwinn(pal, stir), 0, 0, 255);
     return big;
   };
+  // on the wall over her bed, her certificate from the dog show: FIRST PLACE, for SITTING (a
+  // whole three seconds), with its blue ribbon; two blocks by two
+  const cert = new Pixels(40, 40, 0);
+  for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) cert.blit(wall(), x * 20, y * 20);
+  cert.rect(2, 4, 36, 30, c('wood', 2)).rect(4, 6, 32, 26, c('paint', 3)).frame(5, 7, 30, 24, c('lamp', 3));
+  text(cert, 8, 9, '1ST', c('ink', 0));
+  text(cert, 8, 19, 'SIT', c('ink', 0));
+  // the blue rosette and its two tails
+  cert.line(32, 31, 30, 38, c('blue', 1)).line(33, 31, 31, 38, c('blue', 1)).line(34, 31, 36, 38, c('blue', 1)).line(35, 31, 37, 38, c('blue', 1));
+  cert.disc(34, 28, 4.5, c('blue', 2)).disc(34, 28, 2.5, c('blue', 3)).disc(34, 28, 1.2, c('yellow', 3));
+  for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) book.add(`cert${x}.${y}`, cert.crop(x * 20, y * 20, 20, 20), AIR);
   // touching Gwinn herself wakes her a lot (each block of her stirs on its own touch; only her body
   // wakes her, not the air round her ears in the row above)
   const [sleeping, stirred] = [gwinn(false), gwinn(true)];
@@ -147,6 +195,7 @@ export function muffled(book: Kit['book']): Level {
   m.fill(M.bed[0] - 1, floor - 1, M.bed[1] - M.bed[0] + 3, 1, 'B');
   for (let y = 0; y < 2; y++) for (let x = 0; x < GWINN_W; x++) m.set(M.bed[0] + x, floor - 2 + y, `gwinn${x}.${y}`);
   m.set(22, 6, 'zzz0').set(23, 6, 'zzz0.r');
+  for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) m.set(21 + x, 2 + y, `cert${x}.${y}`);
   // the high shelf past her bed, where the egg rolled
   m.fill(M.egg[0], M.egg[1] + 1, 2, 1, 's').set(...M.egg, 'egg');
   TOYS.forEach((x, i) => m.set(x, floor - 1, `toy${i}`));
