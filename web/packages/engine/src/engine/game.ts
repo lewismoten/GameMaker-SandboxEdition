@@ -12,7 +12,7 @@ import { Recorder } from './recorder';
 import { playScene, sceneFile, startGameInits, type Session, type SpeedSetting } from './scene';
 import { checkHighScores, drawDefaultScreen, drawMenu, drawNoFile, gVertMenu, menuMarker, showHighScores } from './menus';
 import { showGraphic } from './showGraphic';
-import { playerLook, STOCK_LOOK } from './playerLook';
+import { playerLook, STOCK_LOOK, type PlayerAbout } from './playerLook';
 import type { PlayerPatches } from '../player/patchRules';
 import { newCharInfo } from './world';
 import { MAXSCENELINKS, parseGame, type Game } from '../formats/game';
@@ -49,6 +49,8 @@ export interface RunOptions {
    * positions, times and F-keys as its patched .EXE shows them. Left out, the CD's player.
    */
   player?: PlayerPatches;
+  /** An imported game's own player About page and first build (F10 shows them, read-only). */
+  playerAbout?: PlayerAbout;
   /** A touch changed a map cell while the player played (never during a demo's playback). */
   onTouched?: Session['onTouched'];
   /** Play ended with this score (never during a demo's playback; see Session.onPlayEnd). */
@@ -97,7 +99,7 @@ export async function runGame(m: Machine, gamFile: string, opts: RunOptions = {}
     onPlayEnd: opts.onPlayEnd,
     onLifeLost: opts.onLifeLost,
     gmHelp: opts.gmHelp,
-    look: playerLook(opts.player),
+    look: playerLook(opts.player, opts.playerAbout),
   };
   const look = s.look!;
   const touched = opts.onTouched;

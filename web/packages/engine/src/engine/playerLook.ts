@@ -7,6 +7,17 @@ import { matchColor } from '../formats/palette';
 import { PATCHES, type ColorName, type PatchEntry } from '../player/patchTable';
 import { cleanPatches, type PatchValue, type PlayerPatches } from '../player/patchRules';
 
+/**
+ * An imported game's own player About page (F10), as that player drew it: read-only, since it is
+ * RSD's or the original author's attribution (dosPlayer/playerOrigin.ts).
+ */
+export interface PlayerAbout {
+  /** Its pages, each a list of [y, text] lines drawn at x 40; left out, this edition's own words. */
+  pages?: [number, string][][];
+  /** The build it was first made with, as lines for the last page ("Originally made with" / "Game-Maker 2.02."). */
+  origin?: string[];
+}
+
 type Rgb = [number, number, number];
 type Frame = [number, number, number, number];
 
@@ -26,6 +37,8 @@ export interface PlayerLook {
   seconds(id: string): number;
   /** False when the player's patches turned this F-key off. */
   fkeyOn(key: number): boolean;
+  /** An imported game's own About page and first build, when it has them. */
+  about?: PlayerAbout;
 }
 
 const BY_ID = new Map<string, PatchEntry>(PATCHES.map((e) => [e.id, e]));
@@ -42,7 +55,7 @@ export function sprintf(format: string, args: (number | string)[]): string {
   });
 }
 
-export function playerLook(patches?: PlayerPatches): PlayerLook {
+export function playerLook(patches?: PlayerPatches, about?: PlayerAbout): PlayerLook {
   const set = cleanPatches(patches);
   const value = (id: string): PatchValue => {
     const e = BY_ID.get(id);
@@ -65,6 +78,7 @@ export function playerLook(patches?: PlayerPatches): PlayerLook {
       return v < 0 ? v & 0xffff : v;
     },
     fkeyOn: (key) => !BY_ID.has(`table.fkeys.F${key}`) || value(`table.fkeys.F${key}`) !== 'off',
+    ...(about ? { about } : {}),
   };
 }
 

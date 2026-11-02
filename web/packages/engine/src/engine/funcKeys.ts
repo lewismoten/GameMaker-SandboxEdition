@@ -75,12 +75,8 @@ export async function statusScreen(m: Machine, w: World, look = STOCK_LOOK): Pro
   await m.pauseTimeKey();
 }
 
-/** GMabout's first page (this web edition's words); returns the text color. */
-export function drawAbout(screen: Screen, palette: Uint8Array, look: PlayerLook): number {
-  const blue = look.color(palette, 'color.select.aboutFrame');
-  const yellow = look.color(palette, 'color.select.aboutText');
-  frame2(screen, blue, look, 'about');
-  const page1 = [
+const WEB_ABOUT: [number, string][][] = [
+  [
     '      G A M E - M A K E R',
     '          Version 3.00   ',
     '',
@@ -96,8 +92,34 @@ export function drawAbout(screen: Screen, palette: Uint8Array, look: PlayerLook)
     'HTML canvas and Web Audio.',
     '',
     '                      MORE... ',
-  ];
-  page1.forEach((line, i) => screen.write(40, 40 + i * 8, yellow, line));
+  ].map((t, i): [number, string] => [40 + i * 8, t]),
+  ['Game-Maker software, documen-', 'tation, and data files are', 'COPYRIGHTED by Recreational', 'Software Designs.'].map((t, i): [number, string] => [
+    40 + i * 8,
+    t,
+  ]),
+];
+
+/** A page of GMabout's text: an imported game's own player's (read-only), else this web edition's words; the last page ends with the build it was first made with. */
+function aboutLines(look: PlayerLook, page: number): [number, string][] {
+  const pages = look.about?.pages ?? WEB_ABOUT;
+  const lines = [...(pages[page] ?? [])];
+  const origin = look.about?.origin;
+  if (origin && page === pages.length - 1) {
+    const below = Math.max(...lines.map(([y]) => y), 32) + 16;
+    origin.forEach((t, i) => lines.push([Math.min(below, 184 - 8 * origin.length) + i * 8, t]));
+  }
+  return lines;
+}
+
+/** How many pages GMabout shows (two, as the DOS player does). */
+export const aboutPages = (look: PlayerLook) => (look.about?.pages ?? WEB_ABOUT).length;
+
+/** One page of GMabout (0: the first, as F10 opens it), framed; returns the text color. */
+export function drawAbout(screen: Screen, palette: Uint8Array, look: PlayerLook, page = 0): number {
+  const blue = look.color(palette, 'color.select.aboutFrame');
+  const yellow = look.color(palette, 'color.select.aboutText');
+  frame2(screen, blue, look, 'about');
+  for (const [y, t] of aboutLines(look, page)) screen.write(40, y, yellow, t);
   return yellow;
 }
 
@@ -106,11 +128,11 @@ export async function aboutScreen(m: Machine, w: World, look = STOCK_LOOK): Prom
   const yellow = drawAbout(m.screen, w.palette, look);
   m.flushKeys();
   await m.pauseTimeKey(look.seconds('timing.aboutPage1'));
-  m.screen.boxFill(16, 16, 304, 184, 0);
-  ['Game-Maker software, documen-', 'tation, and data files are', 'COPYRIGHTED by Recreational', 'Software Designs.'].forEach((line, i) =>
-    m.screen.write(40, 40 + i * 8, yellow, line),
-  );
-  await m.pauseTimeKey();
+  for (let page = 1; page < aboutPages(look); page++) {
+    m.screen.boxFill(16, 16, 304, 184, 0);
+    for (const [y, t] of aboutLines(look, page)) m.screen.write(40, y, yellow, t);
+    await m.pauseTimeKey();
+  }
 }
 
 /** DropBloc's picker screen, with the selection box on slot (j, k); returns the box's color. */
