@@ -210,6 +210,15 @@ range plus the colors nobody reserved) to the nearest allowed color, and scores 
 (mean over changed pixels, worst pixel; a block is flagged above 6 mean or 20 worst, thresholds a guess). Index
 0 and 255 never move. Import from `@lewismoten/gamemaker-sandbox-tools/color-reduce`.
 
+### Palette reservations
+
+`planRanges` proposes, for a game with no reservations, a range of color numbers for monsters and one for
+characters (sized by the different colors their blocks draw, at most 48 each, starting at 16 because 1-15 look
+like the engine's own interface colors, placed where the fewest other blocks already draw). `syncRange` makes a
+reserved range identical in every palette a role's files are shown with: the role's colors move into the range
+(pixels renumbered, palettes updated), and colors beyond the range's size become the nearest kept one, all scored
+in delta E. Import from `@lewismoten/gamemaker-sandbox-tools/palette-reserve`.
+
 ### Joining block sets
 
 `mergeBackgroundSets` moves one background set's drawn blocks into another's free slots (reusing an

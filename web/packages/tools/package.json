@@ -84,6 +84,11 @@
       "gamemaker-source": "./src/lookAlike.ts",
       "import": "./dist/look-alike.js"
     },
+    "./palette-reserve": {
+      "types": "./dist/types/paletteReserve.d.ts",
+      "gamemaker-source": "./src/paletteReserve.ts",
+      "import": "./dist/palette-reserve.js"
+    },
     "./color-reduce": {
       "types": "./dist/types/colorReduce.d.ts",
       "gamemaker-source": "./src/colorReduce.ts",

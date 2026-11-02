@@ -14,6 +14,7 @@ const sources = {
   'look-alike': 'lookAlike',
   delta: 'delta',
   'color-reduce': 'colorReduce',
+  'palette-reserve': 'paletteReserve',
   'block-merge': 'blockMerge',
   'release-notes': 'releaseNotes',
   palettes: 'palettes',
