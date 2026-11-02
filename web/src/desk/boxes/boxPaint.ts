@@ -34,12 +34,24 @@ const marked = (text: string) => text.replace(BBS_NAME, (_m, the, bbs) => `${NAM
 const fontPx = (ctx: CanvasRenderingContext2D) => Number(/([\d.]+)px/.exec(ctx.font)?.[1] ?? 14);
 
 /** Width of text that may hold the marked name. */
+const widths = new Map<string, number>();
+/** measureText, remembered by font and text: wrapping at several widths asks for the same lines again and again. */
+function widthOf(ctx: CanvasRenderingContext2D, text: string): number {
+  const key = `${ctx.font}|${ctx.letterSpacing}|${text}`;
+  let w = widths.get(key);
+  if (w === undefined) {
+    if (widths.size > 4000) widths.clear();
+    widths.set(key, (w = ctx.measureText(text).width));
+  }
+  return w;
+}
+
 function measure(ctx: CanvasRenderingContext2D, text: string): number {
-  if (!text.includes(NAME_MARK)) return ctx.measureText(text).width;
+  if (!text.includes(NAME_MARK)) return widthOf(ctx, text);
   let w = 0;
   for (const [i, part] of text.split(NAME_MARK).entries()) {
-    if (i === 0) w += ctx.measureText(part).width;
-    else w += bbsNameWidth(ctx, fontPx(ctx), part[0] === 'F') + ctx.measureText(part.slice(1)).width;
+    if (i === 0) w += widthOf(ctx, part);
+    else w += bbsNameWidth(ctx, fontPx(ctx), part[0] === 'F') + widthOf(ctx, part.slice(1));
   }
   return w;
 }

@@ -176,7 +176,10 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
 
   // draw the boxes one by one, so the first ones appear while the rest are drawn
   for (const [i, g] of games.entries()) {
-    const f = await (g.id === front ? completed(g) : drawBox(g, { shots: false, cover: false }).catch(() => undefined));
+    // let the page paint and answer between boxes: drawing one is most of a frame's worth of work
+    if (i) await new Promise<void>((r) => setTimeout(r));
+    // the box face out gets its cover painting now and its screenshots after the shelf is up
+    const f = await drawBox(g, { shots: false, cover: g.id === front, blobs: true }).catch(() => undefined);
     if (!f) continue;
     faces.set(g.id, f);
     uvGame(f, g);
@@ -195,6 +198,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
     glow(g.id);
   }
   if (!slots.has(front) && slots.size) face([...slots.keys()][0]);
+  else face(front);
 
   const tubeWatch = new MutationObserver(tube);
   tubeWatch.observe(desk, { attributes: true, attributeFilter: ['class'] });

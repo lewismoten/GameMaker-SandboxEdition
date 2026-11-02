@@ -118,11 +118,17 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
  * the game but its .gam is downloaded (the shelf shows most boxes spine out); with `cover`
  * false the cover painting is left off too, so its code isn't loaded for a box seen edge on.
  */
-export async function drawBox(entry: CatalogEntry, { shots = true, cover = true } = {}): Promise<BoxFaces | undefined> {
+export async function drawBox(entry: CatalogEntry, { shots = true, cover = true, blobs = false } = {}): Promise<BoxFaces | undefined> {
   const sides = await paintBox(entry, shots, false, cover);
   if (!sides) return undefined;
-  const url = Object.fromEntries(Object.entries(sides).map(([k, c]) => [k, c.toDataURL()]));
+  // `blobs`: the pictures are encoded off the main thread, into addresses good for this page only
+  // (the shelf's spines); otherwise data addresses, which a manual or a saved page can carry away
+  const url = Object.fromEntries(await Promise.all(Object.entries(sides).map(async ([k, c]) => [k, blobs ? await blobUrl(c) : c.toDataURL()] as const)));
   return url as unknown as BoxFaces;
+}
+
+function blobUrl(c: HTMLCanvasElement): Promise<string> {
+  return new Promise((resolve) => c.toBlob((b) => resolve(b ? URL.createObjectURL(b) : c.toDataURL())));
 }
 
 /**
