@@ -103,7 +103,12 @@ async function worker() {
       throw new Error(
         secret
           ? 'A game build failed.'
-          : `${id}: game build failed (code ${error.code}, signal ${error.signal}, killed ${error.killed}, after ${((Date.now() - started) / 1000).toFixed(0)} s; last step logged: ${String(error.stdout ?? '').trim().split('\n').at(-1) || 'none'})\n${error.stderr || error.stdout?.slice(-2000) || error.message}`,
+          : `${id}: game build failed (code ${error.code}, signal ${error.signal}, killed ${error.killed}, after ${((Date.now() - started) / 1000).toFixed(0)} s; last step logged: ${
+              String(error.stdout ?? '')
+                .trim()
+                .split('\n')
+                .at(-1) || 'none'
+            })\n${error.stderr || error.stdout?.slice(-2000) || error.message}`,
       );
     }
     times.push([secret ? 'a game' : id, (Date.now() - started) / 1000]);
