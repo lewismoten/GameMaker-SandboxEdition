@@ -145,7 +145,7 @@ export const LEVELS: LevelDef[] = [
     build: cups,
     chr: 'leo',
     snd: 'cups',
-    song: () => cupsSong(r.speed === 4),
+    song: () => cupsSong(i),
     mons: { caps: capGame(r) },
     wide: false,
   })),

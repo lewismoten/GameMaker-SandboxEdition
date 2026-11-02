@@ -20,6 +20,8 @@ export const MELODY = join(
   'B4 q, D5 q, G5 q, F5 q',
   'E5 q, D5 q, C5 h',
 );
+/** The main theme's first two bars, the motif the title, the wake and the finale quote (in score.ts's notation). */
+export const MOTIF = 'C5q E5q G5q E5q | F5q A5q G5h';
 /** Each bar's chord, low to high, and its bass root and fifth. */
 export const BARS: { chord: string[]; root: string; fifth: string }[] = [
   { chord: ['C4', 'E4', 'G4'], root: 'C3', fifth: 'G2' },
