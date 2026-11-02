@@ -1,6 +1,4 @@
-// LEO.CBL and CAST.MBL. Doc Leo, two blocks tall, is drawn by the drawing CERTIFIED RAT TICKLER
-// made of him (games/tickle), in this game's colors: there his coat is a lab coat; here the
-// same coat is a mechanic's blue shop coat. The monster blocks: the rubber chicken (Sir
+// LEO.CBL and CAST.MBL. Doc Leo, two blocks tall, is the hobo clown (leo.ts). The monster blocks: the rubber chicken (Sir
 // Reginald III, then Lady Regina III), the friendly noise critters that live in the engine (the
 // Squeaks), the oil can's drop and the calm note head an oiled Squeak becomes; then the dream's
 // end and the real tune-up's (realCast.ts).
@@ -8,7 +6,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
-import { buildCharBlocks as tickleLeo } from '../../../tickle/src/sprites/sprites';
+import { buildLeoBlocks } from './leo';
 import { chicken } from '../art/chicken';
 import { P, type Pal } from '../art/palette';
 import { CTR } from '../ids';
@@ -17,12 +15,12 @@ import { addRealCast } from './realCast';
 const c = P.c;
 const ink = c('ink', 0);
 
-/** Doc Leo's colors as the tickle drawing reads them: its white is this palette's brightest paint. */
+/** Doc Leo's colors: his face paint's white is this palette's brightest paint. */
 const leoPal = (): Pal => ({ ...P, c: (name: string, shade: number) => (name === 'paint' ? P.c('paint', 3) : P.c(name, shade)) }) as Pal;
 
-/** Doc Leo's poses (top and bottom blocks each), named as the tickle drawing names them. */
+/** Doc Leo's poses (top and bottom blocks each). */
 export function buildCharBlocks() {
-  return tickleLeo(leoPal());
+  return buildLeoBlocks(leoPal());
 }
 export type LeoBlocks = ReturnType<typeof buildCharBlocks>;
 

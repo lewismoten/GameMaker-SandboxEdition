@@ -57,8 +57,9 @@ Before level 14 Doc Leo and Lady Regina un-shrink. The ending cartoon is the par
   drawn in roles is the garage at dawn or the engine bay lit blue-white, brass or amber.
 - **Block sets** (`src/blocks/sets.ts`): GARAGE, ENGINE, CURB, CAB and PARADE base sets. A
   level's .BBL starts with its base set in the same slots and adds its own blocks.
-- **Doc Leo** (`src/sprites/cast.ts`) is the drawing CERTIFIED RAT TICKLER made of him, his
-  coat recolored as a blue shop coat. Three character files: LEO (walk, hop, climb, a reach that
+- **Doc Leo** (`src/sprites/leo.ts`) is the hobo clown: chewed gray fedora, his own face paint,
+  wire glasses, a patched navy corduroy jacket and a red shop rag (the poses follow CERTIFIED RAT
+  TICKLER's drawing, without its lab coat). Three character files: LEO (walk, hop, climb, a reach that
   repeats while Space is held), PIANO (one reach a press) and OIL (Z to B each fire a drop into
   their own row, no hopping).
 - **The Timing Beat** (`src/levels/beat.ts`): a pipe cell `d` cells above its key shows a ring

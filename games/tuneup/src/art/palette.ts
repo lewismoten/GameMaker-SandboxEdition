@@ -53,14 +53,14 @@ const TEDDY: RampSpec[] = [
 ];
 
 /**
- * Doc Leo's own ramps (his hobo clown look: a dark fedora with pins in its band, a white mouth
- * patch, a purple shirt and green tie, red sneakers), with a blue mechanic's shop coat over it
- * all for the tune-up; and the rubber chicken's (its pale rubber, its red comb).
+ * Doc Leo's own ramps (his hobo clown look: a chewed gray fedora with pins in its band, white
+ * face paint, wire glasses, a navy corduroy jacket, a purple shirt and green tie, red sneakers);
+ * and the rubber chicken's (its pale rubber, its red comb).
  */
 const CAST: RampSpec[] = [
-  ['coat', 5, [34, 52, 92], [196, 214, 240], [90, 120, 176]],
+  ['coat', 5, [20, 26, 62], [118, 134, 196], [46, 60, 118]],
   ['nose', 3, [150, 10, 20], [255, 120, 110]],
-  ['hat', 4, [26, 22, 26], [110, 100, 96]],
+  ['hat', 4, [40, 38, 42], [150, 144, 136]],
   ['navy', 3, [18, 24, 60], [70, 90, 150]],
   ['tie', 3, [10, 70, 60], [70, 190, 150]],
   ['sneaker', 3, [130, 14, 14], [250, 90, 70]],
