@@ -40,6 +40,17 @@ interface SimScene {
   names: string[];
 }
 
+/** A deep copy of plain data (numbers, booleans, arrays, plain objects); much faster than structuredClone for the bot's many forks. */
+function plain<T>(v: T): T {
+  if (Array.isArray(v)) return v.map(plain) as T;
+  if (v !== null && typeof v === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const k in v) out[k] = plain((v as Record<string, unknown>)[k]);
+    return out as T;
+  }
+  return v;
+}
+
 export class Sim {
   readonly w: World;
   private held = new Set<number>();
@@ -80,14 +91,14 @@ export class Sim {
       ...w,
       map: w.map.slice(),
       mapMon: w.mapMon.slice(),
-      ci: structuredClone(w.ci),
-      mi: structuredClone(w.mi),
+      ci: plain(w.ci),
+      mi: plain(w.mi),
       mm: w.mm.map((m) => ({ ...m })),
       blkMon: w.blkMon.map((b) => ({ ...b })),
       birthFlag: w.birthFlag.slice(),
       nxtchg: w.nxtchg.slice(),
       blkmap: w.blkmap.slice(),
-      scroll: structuredClone(w.scroll),
+      scroll: plain(w.scroll),
       keydn: w.keydn.slice(),
       keystack: w.keystack.map((k) => ({ ...k })),
       chr: { ...w.chr, x: [...w.chr.x], y: [...w.chr.y] },
