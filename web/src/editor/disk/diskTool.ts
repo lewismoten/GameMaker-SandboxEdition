@@ -12,6 +12,7 @@ import { lookAlikeView } from './lookAlikeView';
 import { checkpointPanel } from './checkpointPanel';
 import { paletteReservations } from '../editors/palette/paletteReservations';
 import { rangeDrift, reductions } from './reduceColors';
+import { confirmSaves } from './savesWarning';
 import { reduceView } from './reduceView';
 import { sizeUp, type SizeUp } from './size';
 import { floppyFor } from './diskCard';
@@ -162,6 +163,7 @@ export async function diskTool(project: Project): Promise<void> {
                   type: 'button',
                   class: 'primary',
                   onclick: async () => {
+                    if (!(await confirmSaves(project))) return;
                     if (!(await checkpoint.ensure('Before optimization'))) return;
                     try {
                       hist.before(...new Set(plan.steps.flatMap((s) => s.touches)));
@@ -181,6 +183,7 @@ export async function diskTool(project: Project): Promise<void> {
           : h('p', null, 'Nothing is left to merge.'),
         lookAlikeView(looks),
         reduceView(reduce, async (r) => {
+          if (!(await confirmSaves(project))) return;
           if (!(await checkpoint.ensure('Before color reduction'))) return;
           try {
             hist.before(...r.touches);
