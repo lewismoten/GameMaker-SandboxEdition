@@ -808,6 +808,42 @@ export const THEMES = {
       [30, 34, 50],
     ],
   },
+  /** The Beltway: the driver's seat at midday, black dash vinyl, a beige headliner, chrome, the far hills' haze. */
+  beltway: {
+    wall: [
+      [14, 14, 18],
+      [128, 126, 132],
+      [46, 46, 52],
+    ],
+    floor: [
+      [70, 62, 54],
+      [218, 208, 190],
+    ],
+    mach: [
+      [40, 44, 52],
+      [236, 240, 244],
+      [140, 146, 156],
+    ],
+    pipe: [
+      [70, 96, 130],
+      [184, 204, 226],
+      [124, 150, 184],
+    ],
+    accent: [
+      [130, 40, 10],
+      [255, 170, 90],
+      [240, 100, 30],
+    ],
+    lamp: [
+      [120, 90, 20],
+      [255, 246, 200],
+      [250, 210, 100],
+    ],
+    shade: [
+      [4, 4, 8],
+      [40, 40, 50],
+    ],
+  },
 } satisfies Record<string, Theme>;
 export type ThemeName = keyof typeof THEMES;
 

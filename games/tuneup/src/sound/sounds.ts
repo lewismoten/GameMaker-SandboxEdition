@@ -28,6 +28,7 @@ export type Place =
   | 'key4'
   | 'panel1'
   | 'panel2'
+  | 'belt'
   | 'drive'
   | 'parade1'
   | 'parade2'
@@ -127,6 +128,9 @@ export function buildVocs(): Record<string, Uint8Array> {
   // the test drive: a red light run (the camera's click and a friendly siren, synthesized), a polite pass on green
   v.ticket = ticketVoc();
   v.toot = phraseVoc('trumpet', ['E5', 'G5'], 0.09, 0.25);
+  // the beltway: a car coming up behind honks at THE CHEZ, a friendly two-tone beep (a short one, so it
+  // never covers the next)
+  v.honk = noteVoc('kazoo', '[F4 A4]', 0.22, 0.16);
   // the parade: each band section's phrase as it joins (two a scene), and the ribbon parting
   for (const [name, [inst, notes]] of Object.entries(SECTION_PHRASES)) v[name] = phraseVoc(inst, notes, 0.11, 0.35);
   return v;
@@ -242,6 +246,13 @@ export function buildSoundSet(place: Place): SoundSet {
     add(SND.money, 'chordf', SPEAKER.arpeggio([262, 349, 440]));
     add(SND.score, 'chordg', SPEAKER.arpeggio([247, 294, 392]));
     add(SND.gain, 'radio', SPEAKER.arpeggio([523, 659, 784, 659, 698, 880, 784]));
+  } else if (place === 'belt') {
+    // still in a passing car's lane: it honks (on the speaker, a two-tone beep)
+    add(
+      SND.lose,
+      'honk',
+      speaker((i) => (i < 8 ? (i < 4 ? 349 : 440) : 0)),
+    );
   } else if (place === 'drive') {
     // a ticket: the camera and the siren (on the speaker, a two-tone boo-bee); a pass on green: a toot
     add(
