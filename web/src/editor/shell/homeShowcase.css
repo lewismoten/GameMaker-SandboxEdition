@@ -371,6 +371,25 @@
     padding: 10px;
   }
 
+  /* until its game is picked the panel is empty but holds its height, so the library below doesn't jump down when it fills */
+  .home .showcase:not([data-key]) {
+    display: block;
+    visibility: hidden;
+    min-height: 320px;
+  }
+
+  /* and the library waits unseen (its shifts don't count) until the panel has its game; if none ever comes it shows after 1.5 s */
+  .home:has(.showcase:not([data-key])) .library {
+    visibility: hidden;
+    animation: sc-unhide 0s 1.5s forwards;
+  }
+
+  @keyframes sc-unhide {
+    to {
+      visibility: visible;
+    }
+  }
+
   .showcase .sc-info {
     display: contents;
   }
