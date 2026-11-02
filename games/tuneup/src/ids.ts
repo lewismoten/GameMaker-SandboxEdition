@@ -117,6 +117,8 @@ export const MON = {
   /** Sir Reginald in his dream (levels 1-4): up on his legs like a live bird, standing and pecking, or strolling. */
   dreamBird: 39,
   dreamWalk: 40,
+  /** The Beltway: the traffic, the lane dashes, the shoulder posts and the EXIT sign (beltMonsters.ts BELTMON). */
+  belt: 41,
 } as const;
 
 /** Sound slots (0..8 are the ones PLAYGAME plays by itself, by the kind of change). */

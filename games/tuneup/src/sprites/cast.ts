@@ -10,6 +10,7 @@ import { buildLeoBlocks } from './leo';
 import { chicken } from '../art/chicken';
 import { P, type Pal } from '../art/palette';
 import { CTR } from '../ids';
+import { addBeltCast } from './beltSprites';
 import { addRealCast } from './realCast';
 
 const c = P.c;
@@ -101,6 +102,7 @@ export function buildMonsterBlocks() {
   book.add('note1', noteHead(1), home);
   book.add('calm0', squeak(0, true));
   addRealCast(book.add);
+  addBeltCast(book.add);
   return book;
 }
 export type MonsterBlocks = ReturnType<typeof buildMonsterBlocks>;

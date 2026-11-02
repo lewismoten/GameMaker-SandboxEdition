@@ -14,6 +14,7 @@ import { corner, mon, pace, set } from '@lewismoten/gamemaker-sandbox-tools/kit/
 import { CTR, KEY, MON, MONEY, OIL_KEYS, SEQ, SND } from './ids';
 import type { LeoBlocks, MonsterBlocks } from './sprites/cast';
 import { addRealMonsters, type CapGame } from './realMonsters';
+import { addBeltMonsters } from './beltMonsters';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 /** Both blocks flipped left-right (low nibble the top, high nibble the bottom). */
@@ -182,5 +183,6 @@ export function buildMonsters(mb: MonsterBlocks, o: MonsterOptions = {}): Monste
   for (let i = 0; i < 5; i++)
     out[MON.drop0 + i] = mon(anim('drop0', 'drop1', 2), { power: POWER.drop, thru: 0, end: -1 }, [corner(0, 0, 8), corner(-reach, 0, 8, 4)]);
   addRealMonsters(out, n, o.caps);
+  addBeltMonsters(out, n);
   return out;
 }
