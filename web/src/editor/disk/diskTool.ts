@@ -3,7 +3,8 @@
 // the bytes saved) and what it left alone. Applying is one undoable step in the project's file
 // history (Undo here, Ctrl+Z, or the next time the tool opens); it can't see how a level plays, so
 // it points at the Level check and the walkthrough bot to confirm afterwards.
-import { clear, h, modal, toast } from '../core/ui';
+import { clear, confirmDialog, h, modal, toast } from '../core/ui';
+import { setSection } from '../../project/companion';
 import { fileUndo } from '../core/fileUndo';
 import type { Project } from '../core/project';
 import { planDisk } from './plan';
@@ -19,7 +20,7 @@ import { reductions } from './reduceColors';
 import { rangeSyncs } from './rangeSync';
 import { proposeReservations } from './reservePlan';
 import { rangeSyncView, reserveProposalView } from './reserveView';
-import { confirmSaves } from './savesWarning';
+import { savedGames } from './savesWarning';
 import { reduceView } from './reduceView';
 import { sizeUp, type SizeUp } from './size';
 import { floppyFor } from './diskCard';
@@ -64,6 +65,28 @@ function historyFor(project: Project): Kept {
 
 import { kb, plural } from './diskCard';
 
+/** The copy with these steps applied (makeOptimizedCopy.ts; loaded when first used). */
+async function copyAll(project: Project, steps: Step[]): Promise<string> {
+  const { makeOptimizedCopy } = await import('./makeOptimizedCopy');
+  return makeOptimizedCopy(project, (files, store) => {
+    for (const s of steps) {
+      s.apply(files, project.gam);
+      if (s.moves) remapExtras(store, s.moves);
+    }
+  });
+}
+
+async function copyPack(project: Project, p: PackPlan): Promise<string> {
+  const { makeOptimizedCopy } = await import('./makeOptimizedCopy');
+  return makeOptimizedCopy(project, (files, store) => {
+    if (p.proposed) setSection(store.companion, project.gam, PALETTE_RESERVATIONS, p.roles);
+    for (const u of p.units) {
+      u.apply(files, project.gam);
+      if (u.moves) remapExtras(store, u.moves);
+    }
+  });
+}
+
 function sizeTable(s: SizeUp): HTMLElement {
   const row = (label: string, bytes: string) => h('tr', null, h('th', { scope: 'row' }, label), h('td', null, bytes));
   const disks = (n: number) => (n === Infinity ? 'a file is too big for one disk' : plural(n, 'disk'));
@@ -105,6 +128,8 @@ export async function diskTool(project: Project): Promise<void> {
     let applied = '';
     let pack: PackPlan | 'none' | undefined;
     let packBusy = false;
+    // saved games this project has: while it has some, the steps applied in place are the ones that keep their numbers
+    let nSaves = 0;
     let packSeen: [string, Uint8Array][] = [];
     // a plan found for other files is not shown: it was worked out on bytes that have since changed
     const packStale = () => {
@@ -125,11 +150,20 @@ export async function diskTool(project: Project): Promise<void> {
       if (pack !== undefined && !packBusy && packStale()) pack = undefined;
       const size = sizeUp(project.files, project.gam);
       let plan: Plan;
+      let all: Plan;
       try {
-        plan = planDisk(project.files, project.gam, paletteReservations(project));
+        all = planDisk(project.files, project.gam, paletteReservations(project));
+        plan = nSaves > 0 ? planDisk(project.files, project.gam, paletteReservations(project), true) : all;
       } catch {
-        plan = { steps: [], notes: [] };
+        plan = all = { steps: [], notes: [] };
       }
+      const held = all.steps.length - plan.steps.length;
+      void savedGames(project).then((n) => {
+        if (n.length !== nSaves) {
+          nSaves = n.length;
+          render();
+        }
+      });
       const looks = (() => {
         try {
           return lookAlikeSets(project.files, project.gam);
@@ -209,7 +243,6 @@ export async function diskTool(project: Project): Promise<void> {
                   type: 'button',
                   class: 'primary',
                   onclick: async () => {
-                    if (!(await confirmSaves(project))) return;
                     if (!(await checkpoint.ensure('Before optimization'))) return;
                     try {
                       keep.before(...new Set(plan.steps.flatMap((s) => s.touches)));
@@ -229,10 +262,37 @@ export async function diskTool(project: Project): Promise<void> {
                 `Apply ${plural(plan.steps.length, 'step')} (saves ${kb(saves)})`,
               ),
             )
-          : h('p', null, 'Nothing is left to merge.'),
+          : h('p', null, nSaves > 0 && held ? 'Nothing is left that keeps your saved games working.' : 'Nothing is left to merge.'),
+        all.steps.length
+          ? h(
+              'div',
+              { class: 'disk-copy' },
+              nSaves > 0 && held
+                ? h(
+                    'p',
+                    null,
+                    `${plural(held, 'more step')} would renumber blocks or monsters, and this game has ${plural(nSaves, 'saved game')} that remember them by number. They are not applied here.`,
+                  )
+                : h('p', { class: 'hint' }, 'Prefer to keep this game as it is? Make a copy and optimize that instead.'),
+              h(
+                'button',
+                {
+                  type: 'button',
+                  onclick: async () => {
+                    try {
+                      const name = await copyAll(project, all.steps);
+                      toast(`Made “${name}” in My Games. This game and its saved games are unchanged.`);
+                    } catch (e) {
+                      toast(`Could not make the copy: ${(e as Error).message}`, 'error');
+                    }
+                  },
+                },
+                `Make an optimized copy (all ${plural(all.steps.length, 'step')})`,
+              ),
+            )
+          : null,
         lookAlikeView(looks),
         reduceView(reduce, async (r) => {
-          if (!(await confirmSaves(project))) return;
           if (!(await checkpoint.ensure('Before color reduction'))) return;
           try {
             keep.before(...r.touches);
@@ -272,7 +332,22 @@ export async function diskTool(project: Project): Promise<void> {
             }, 30);
           },
           async (p) => {
-            if (!(await confirmSaves(project))) return;
+            const risky = p.units.filter((u) => u.risk);
+            if (nSaves > 0 && risky.length) {
+              const ok = await confirmDialog(
+                'Saved games would break',
+                `This pack renumbers blocks or monsters (${[...new Set(risky.map((u) => u.risk))].join('; ')}), and this game has ${plural(nSaves, 'saved game')} that remember them by number. Make an optimized copy in My Games instead? This game stays as it is.`,
+                'Make the copy',
+              );
+              if (!ok) return;
+              try {
+                const name = await copyPack(project, p);
+                toast(`Made “${name}” in My Games. This game and its saved games are unchanged.`);
+              } catch (e) {
+                toast(`Could not make the copy: ${(e as Error).message}`, 'error');
+              }
+              return;
+            }
             if (!(await checkpoint.ensure('Before packing'))) return;
             try {
               keep.before(...new Set(p.units.flatMap((u) => u.touches)));
@@ -292,7 +367,6 @@ export async function diskTool(project: Project): Promise<void> {
           },
         ),
         rangeSyncView(sync.syncs, sync.stuck, async (r) => {
-          if (!(await confirmSaves(project))) return;
           if (!(await checkpoint.ensure('Before syncing reserved colors'))) return;
           try {
             keep.before(...r.touches);

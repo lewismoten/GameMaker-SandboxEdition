@@ -13,6 +13,7 @@ import { planMonsterBlocks } from './mergeMonsterBlocks';
 import { planMonsters } from './mergeMonsters';
 import { planGifs } from './shrinkGifs';
 import { filesIn, sceneUses } from './refs';
+import { SAVE_SAFE_KINDS } from './savesSafe';
 import type { Note, Plan, Step } from './types';
 
 // block sets join last: once two scenes share a block set, their monster files can no longer tell whose birth blocks are whose
@@ -57,11 +58,13 @@ function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][
 }
 
 /** `ranges` are the project's palette reservations (editors/palette/paletteReservations.ts); without them no range is synced. */
-export function planDisk(files: GameFiles, gam: string, ranges: readonly PaletteReservation[] = []): Plan {
+/** With `keepSaves`, only the steps that never change a number a saved game holds (savesSafe.ts). */
+export function planDisk(files: GameFiles, gam: string, ranges: readonly PaletteReservation[] = [], keepSaves = false): Plan {
   const work = files.copy();
   const steps: Step[] = [];
   const notes: Note[] = [];
-  for (const order of ORDER)
+  for (const all of ORDER) {
+    const order = keepSaves ? all.filter((k) => SAVE_SAFE_KINDS.has(k)) : all;
     for (let guard = 0; guard < 50; guard++) {
       const note: Note[] = [];
       const step = next(work, gam, note, order, ranges);
@@ -72,5 +75,6 @@ export function planDisk(files: GameFiles, gam: string, ranges: readonly Palette
       steps.push(step);
       step.apply(work, gam);
     }
+  }
   return { steps, notes };
 }

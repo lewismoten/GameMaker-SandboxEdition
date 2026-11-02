@@ -12,6 +12,7 @@ import { reductions } from './reduceColors';
 import { rangeSyncs } from './rangeSync';
 import { proposeReservations } from './reservePlan';
 import { sceneDelta, type SceneDelta } from './sceneDelta';
+import { savesRisk } from './savesSafe';
 import type { BlockMove } from './types';
 
 export interface PackUnit {
@@ -19,6 +20,8 @@ export interface PackUnit {
   title: string;
   touches: string[];
   moves?: BlockMove[];
+  /** Why the unit would break saved games (savesSafe.ts), when it would. */
+  risk?: string;
   apply(files: GameFiles, gam: string): void;
 }
 
@@ -66,7 +69,7 @@ export function planPack(files: GameFiles, gam: string, existing: readonly Palet
   const plan = planDisk(work, gam, roles);
   for (const s of plan.steps) {
     s.apply(work, gam);
-    units.push({ kind: 'merge', title: s.title, touches: s.touches, moves: s.moves, apply: (f, g) => s.apply(f, g) });
+    units.push({ kind: 'merge', title: s.title, touches: s.touches, moves: s.moves, risk: savesRisk(s), apply: (f, g) => s.apply(f, g) });
   }
   const saves = total(files) - total(work);
   // color changes that free no more than the plain steps do are not worth offering
