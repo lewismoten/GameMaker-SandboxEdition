@@ -167,6 +167,8 @@ try {
   await page.addInitScript(OBSERVE);
   const nav = (href: string) => page.locator(`a[href="${href}"]:visible`).first();
   steps.push(await measure(page, 'home: first load', () => page.goto(`${base}/#/`), true));
+  // a person reads the page before the first click (idle work such as the sound warm-up runs then)
+  await page.waitForTimeout(1500);
   for (const [name, href] of [
     ['Guide', '#/help'],
     ['Library', '#/library'],
