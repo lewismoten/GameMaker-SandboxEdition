@@ -1,6 +1,6 @@
 // Teddy in THE CHEZ's door window: the trilogy's corgi head, front on, his chin on the sill of a
 // left-facing car's window (toward its upright back edge) and clipped to the glass, so nothing of
-// him lands on the hood, the roof or the door.
+// him lands on the windshield, the roof or the door.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CHEZ_WINDOW } from '../../../kit/chez';
 import { POSES } from '../../../teddy2/src/sprites/teddy';

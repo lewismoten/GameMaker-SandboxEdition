@@ -1,7 +1,7 @@
 // The cartoons (kit's Reel: whole pictures, stored as what changed, faded by palette).
-// - The opening, in three parts: Gwinn's night of mischief (the trunk tipped into THE CHEZ's
-//   open hood), the morning (the horn honks like a kazoo), and the shrinking trick (Doc Leo and
-//   Sir Reginald III shrink away into the engine).
+// - The opening, in four parts: Gwinn's night of mischief (the toolbox buried, the instrument
+//   trunk tipped into THE CHEZ), the morning (the horn honks like a kazoo), the shrinking trick,
+//   and Sir Reginald III dozing off on the workbench into his dream (levels 1-4).
 // - The Hat Sting, before each level: Doc Leo taps his hat and pulls out the level's tool, then
 //   the cutaway CHEZ shows the parts tuned so far, the last one lit. One reel, a tool apiece.
 // - Before the test drive: the un-shrink, Doc Leo and Lady Regina back to full size.
@@ -10,10 +10,10 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { CHEZ_BODY, CHEZ_WHEELS } from '../../../kit/chez';
 import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
-import { centered } from '../../../snowbound/src/art/font';
+import { centered, text } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { GWINN } from '../../../teddy2/src/sprites/gwinn';
-import { SP, INK, DREAM_PARTS, REAL_PARTS, cutaway, drawChez, parkChez, drawChicken, drawLeo, nightYard, toolPic, type Tool } from './art';
+import { SP, INK, DREAM_PARTS, REAL_PARTS, cutaway, drawChez, dreamFrame, parkChez, drawChicken, drawLeo, nightYard, toolPic, type Tool } from './art';
 import { garage } from './garage';
 
 const c = SP.c;
@@ -34,59 +34,122 @@ function balloon(p: Pixels, x: number, y: number, s: string, tx: number, ty: num
   centered(p, y + 4, s, INK, 1, undefined, x + w / 2);
 }
 
-/** The opening: three parts of about four seconds each. */
+/** Frames a caption of `words` needs on screen to be read: about 3 s, and a quarter second a word. */
+export function readFrames(...words: string[]): number {
+  const n = words.join(' ').split(/\s+/).filter(Boolean).length;
+  return Math.ceil(((3 + 0.25 * n) * 70) / SPEED);
+}
+
+/** Caption lines centered near the bottom of a frame. */
+function caption(p: Pixels, lines: string[], y = 200 - lines.length * 11 - 6): void {
+  lines.forEach((s, i) => centered(p, y + i * 11, s, c('lamp', 4), 1, INK));
+}
+
+/** One of the Clown Club's instruments, `k` 0-2 (a kazoo, a tambourine, a little horn), centered on (x, y). */
+function instrument(p: Pixels, k: number, x: number, y: number): void {
+  if (k === 0)
+    p.rect(x - 7, y - 2, 12, 5, c('orange', 2))
+      .rect(x + 5, y - 1, 3, 3, c('orange', 3))
+      .rect(x - 2, y - 4, 3, 2, c('metal', 3))
+      .frame(x - 7, y - 2, 12, 5, INK);
+  else if (k === 1) {
+    p.disc(x, y, 7, INK).disc(x, y, 6, c('wood', 2)).disc(x, y, 4, c('paint', 3));
+    for (let a = 0; a < 6; a++) p.rect(x + Math.round(Math.cos(a) * 6) - 1, y + Math.round(Math.sin(a) * 6) - 1, 2, 2, c('gold', 3));
+  } else {
+    p.rect(x - 8, y - 1, 9, 3, c('gold', 2)).line(x + 1, y - 5, x + 1, y + 5, INK);
+    for (let i = 0; i < 6; i++) p.rect(x + 1 + i, y - 1 - Math.round(i * 0.7), 1, 3 + Math.round(i * 1.4), c('gold', 3));
+  }
+}
+
+/**
+ * The opening, in four parts. Night: Gwinn buries the toolbox, then tips the Clown Club's
+ * instrument trunk into THE CHEZ through its open door window. Morning: Doc Leo comes in with
+ * Sir Reginald on his leash, and the horn honks like a kazoo. The shrinking trick. Then, on the
+ * workbench, Sir Reginald dozes off, and the dream (levels 1-4) closes round him in cloud.
+ */
 export function openingReel(): Reel {
   const r = new Reel(SP.pal);
-  // 1. night: THE CHEZ in the yard, hood up; Gwinn tips the trunk, the instruments' notes fly in
+  // 1. night: THE CHEZ in the yard (no hood: what matters is under its bench seat)
   const night = nightYard();
-  parkChez(night, 60, 158, 4, false, [c('leaf', 0), c('ink', 0)]);
-  night.rect(60, 100, 50, 3, c('red', 3)).line(60, 100, 76, 78, c('red', 2));
+  parkChez(night, 40, 158, 4, false, [c('leaf', 0), c('ink', 0)]);
+  const hole = 268;
+  const dig = (p: Pixels, f: number, sunk: number) => {
+    // the toolbox sinks into its hole: the lawn in front of it stays
+    p.disc(hole, 152, 15, c('dirt', 0));
+    toolbox(p, hole - 14, 130 + sunk, 2);
+    for (let y = 153; y < 200; y++) for (let x = hole - 16; x <= hole + 16; x++) p.set(x, y, night.get(x, y));
+    p.rect(hole - 15, 151, 31, 2, c('dirt', 0));
+    p.disc(hole + 26, 152, 6 + Math.min(4, f / 3), c('dirt', 1)).disc(hole + 24, 149, 3 + Math.min(3, f / 4), c('dirt', 2));
+    scaleBlit(p, f % 4 < 2 ? GWINN.gwinnRun1 : GWINN.gwinnRun2, hole + 8, 124, 2, true);
+    if (f % 2) p.rect(hole + 40 + (f % 3) * 3, 132 - (f % 4) * 3, 2, 2, c('dirt', 2)).rect(hole + 46, 128 + (f % 3) * 2, 2, 2, c('dirt', 1));
+  };
+  for (let f = 0; f < 16; f++) r.frame(night, (p) => dig(p, f, f), 1, Math.min(1, (f + 1) / 4));
+  const buried = ['GWINN BURIES THE TOOLBOX...'];
+  r.frame(night, (p) => (dig(p, 16, 22), caption(p, buried)), readFrames(...buried));
+  // she noses the trunk over: the instruments tumble out and in through the door window
+  const tipped = ["...AND TIPS THE CLOWN CLUB'S", 'INSTRUMENTS INTO THE CAR.'];
   const trunk = (p: Pixels, tip: number) => {
-    const x = 220;
+    const x = 204;
     const y = 150 - 26;
     p.rect(x, y + tip, 44, 26 - tip, c('wood', 1))
       .frame(x, y + tip, 44, 26 - tip, INK)
       .rect(x, y + tip + 8, 44, 3, c('gold', 1));
   };
-  for (let f = 0; f < 18; f++)
+  const mound = (p: Pixels) => p.disc(hole, 154, 12, c('dirt', 1)).disc(hole - 2, 151, 7, c('dirt', 2));
+  for (let f = 0; f < 28; f++)
     r.frame(
       night,
       (p) => {
+        mound(p);
         trunk(p, Math.min(10, f));
-        scaleBlit(p, f % 4 < 2 ? GWINN.gwinnRun1 : GWINN.gwinnRun2, 300 - f * 6, 126, 2, true);
-        for (let k = 0; k < Math.max(0, f - 4); k++) {
-          const t = (f - 4 - k) / 10;
-          if (t > 1) continue;
-          const nx = Math.round(220 - t * 120);
-          const ny = Math.round(130 - Math.sin(t * Math.PI) * 60);
-          p.disc(nx, ny, 3, c('yellow', 2)).rect(nx + 2, ny - 8, 1, 8, c('yellow', 2));
+        scaleBlit(p, f % 4 < 2 ? GWINN.gwinnRun1 : GWINN.gwinnRun2, Math.max(244, 280 - f * 6), 126, 2, true);
+        for (let k = 0; k < 3; k++) {
+          const t = (f - 6 - k * 5) / 8;
+          if (t < 0 || t > 1) continue;
+          instrument(p, k, Math.round(224 - t * 74), Math.round(124 - Math.sin(t * Math.PI) * 50 - t * 6));
         }
+        if (f >= 24) caption(p, tipped);
       },
-      1,
-      Math.min(1, (f + 1) / 4),
+      f === 27 ? readFrames(...tipped) : 1,
     );
-  // 2. morning: Doc Leo and Sir Reginald come to the car; the horn honks like a kazoo
+  // 2. morning: Doc Leo comes in with Sir Reginald on his leash; the horn honks like a kazoo
   const morn = garage(160);
   parkChez(morn, 100, 170, 5);
-  for (let f = 0; f < 20; f++)
-    r.frame(morn, (p) => {
-      const x = Math.min(30, -40 + f * 6);
-      drawLeo(p, f < 12 ? `walk${f % 4}` : 'front', x, 170, 2, false, true);
-      drawChicken(p, x + 34, 170, 1.5, { bob: f % 2 }, false, true);
-      if (f >= 12) balloon(p, 150, 20, 'HONK-ZOO!', 120, 70);
-    });
-  // 3. the shrinking trick: smaller and smaller, in a swirl of sparkles, into the hood
-  for (let f = 0; f < 18; f++)
-    r.frame(morn, (p) => {
-      const s = f < 6 ? 2 : f < 10 ? 1 : 0;
-      if (s) drawLeo(p, 'grin', 40 + (2 - s) * 20, 170, s, false, true);
-      if (s) drawChicken(p, 74 + (2 - s) * 20, 170, s * 0.75, {}, false, true);
-      for (let k = 0; k < 8; k++) {
-        const a = k * 0.8 + f * 0.5;
-        sparkle(p, 70 + Math.round(Math.cos(a) * (40 - f * 2)), 130 + Math.round(Math.sin(a) * (30 - f)), 3);
-      }
-      if (f >= 12) centered(p, 176, 'THE SHRINKING TRICK!', c('lamp', 4), 1, INK);
-    });
+  const honk = ['THE HORN HONKS LIKE A KAZOO!'];
+  const walk = (p: Pixels, x: number, pose: string) => {
+    drawLeo(p, pose, x, 170, 2, false, true);
+    drawChicken(p, x - 34, 170, 1.25, {}, false, true);
+    p.line(x + 22, 148, x - 14, 157, c('red', 2));
+  };
+  for (let f = 0; f < 14; f++) r.frame(morn, (p) => walk(p, -10 + f * 4, `walk${f % 4}`));
+  r.frame(morn, (p) => (walk(p, 46, 'front'), balloon(p, 150, 20, 'HONK-ZOO!', 126, 124), caption(p, honk)), readFrames('HONK-ZOO!', ...honk));
+  // 3. the shrinking trick: smaller and smaller, in a swirl of sparkles
+  const trick = ['THE SHRINKING TRICK!'];
+  for (let f = 0; f < 14; f++)
+    r.frame(
+      morn,
+      (p) => {
+        const s = f < 6 ? 2 : f < 10 ? 1 : 0;
+        if (s) drawLeo(p, 'grin', 46 + (2 - s) * 20, 170, s, false, true);
+        if (s) drawChicken(p, 12 + (2 - s) * 20, 170, s * 0.62, {}, false, true);
+        for (let k = 0; k < 8; k++) {
+          const a = k * 0.8 + f * 0.5;
+          sparkle(p, 70 + Math.round(Math.cos(a) * (40 - f * 2)), 130 + Math.round(Math.sin(a) * (30 - f)), 3);
+        }
+        if (f === 13) caption(p, trick);
+      },
+      f === 13 ? readFrames(...trick) : 1,
+    );
+  // 4. tiny on the workbench, Sir Reginald dozes off, and the dream closes round him
+  const doze = ['SIR REGINALD DOZES OFF', 'ON THE WORKBENCH, AND DREAMS...'];
+  const bench = (p: Pixels, f: number) => {
+    drawLeo(p, 'front', 20, 124, 1);
+    drawChicken(p, 44, 124, 0.75, { peck: true });
+    for (let i = 0; i < 3; i++) if (f > i * 3) text(p, 60 + i * 7, 112 - i * 9 - (f % 3), 'z', c('paint', 3), 1);
+  };
+  for (let f = 0; f < 10; f++) r.frame(morn, (p) => bench(p, f));
+  r.frame(morn, (p) => (bench(p, 10), caption(p, doze)), readFrames(...doze));
+  r.frame(morn, (p) => (bench(p, 11), dreamFrame(p, [52, 112]), caption(p, doze)), 12);
   return r.fadeOut(6);
 }
 
@@ -96,29 +159,55 @@ export function stingReel(level: number, tool: Tool, name: string): Reel {
   const bg = garage(170);
   const pic = toolPic(tool);
   // he taps his hat twice
-  for (let f = 0; f < 8; f++) r.frame(bg, (p) => drawLeo(p, f % 4 < 2 ? 'hop' : 'front', 130, 170, 3), 1, Math.min(1, (f + 1) / 3));
+  // levels 1-4 are Sir Reginald's dream: every picture of theirs is framed in cloud
+  const dream = level < REAL_FROM;
+  const framed = (draw: (p: Pixels) => void) => (p: Pixels) => {
+    draw(p);
+    if (dream) dreamFrame(p);
+  };
+  for (let f = 0; f < 8; f++)
+    r.frame(
+      bg,
+      framed((p) => drawLeo(p, f % 4 < 2 ? 'hop' : 'front', 130, 170, 3)),
+      1,
+      Math.min(1, (f + 1) / 3),
+    );
   // the tool rises out of the hat, sparkling, and grows
   for (let f = 0; f < 14; f++)
-    r.frame(bg, (p) => {
-      drawLeo(p, 'hop', 130, 170, 3);
-      const s = f < 7 ? 1 : 2;
-      const y = 40 - f * 2;
-      scaleBlit(p, pic, 160 - 16 * s, y - 16 * s + 16, s);
-      for (let k = 0; k < 4; k++) sparkle(p, 160 + Math.round(Math.cos(k * 1.6 + f) * 30), y + Math.round(Math.sin(k * 1.6 + f) * 16), 2 + (f % 2));
-    });
-  for (let f = 0; f < 10; f++)
-    r.frame(bg, (p) => {
+    r.frame(
+      bg,
+      framed((p) => {
+        drawLeo(p, 'hop', 130, 170, 3);
+        const s = f < 7 ? 1 : 2;
+        const y = 40 - f * 2;
+        scaleBlit(p, pic, 160 - 16 * s, y - 16 * s + 16, s);
+        for (let k = 0; k < 4; k++) sparkle(p, 160 + Math.round(Math.cos(k * 1.6 + f) * 30), y + Math.round(Math.sin(k * 1.6 + f) * 16), 2 + (f % 2));
+      }),
+    );
+  // the level's name, held long enough to read
+  const title = `LEVEL ${level}: ${name}`;
+  r.frame(
+    bg,
+    framed((p) => {
       drawLeo(p, 'hop', 130, 170, 3);
       scaleBlit(p, pic, 186, 18, 2);
       sparkle(p, 182, 22, 3);
-      centered(p, 182, `LEVEL ${level}: ${name}`, c('lamp', 4), 1, INK);
-    });
+      centered(p, 182, title, c('lamp', 4), 1, INK);
+    }),
+    readFrames(title),
+  );
   // the cutaway: what's tuned so far, the newest part blinking (the dream's parts for levels 1-4,
   // the real car's from level 5)
   const real = level >= REAL_FROM;
   const parts = real ? REAL_PARTS : DREAM_PARTS;
   const done = Math.min(parts.length, level - (real ? REAL_FROM : 1));
-  for (let f = 0; f < 16; f++) r.add(stamp(cutaway(parts, done, done - 1, f % 4 < 2), done ? 'TUNED SO FAR' : 'THE PARTS TO TUNE'));
+  const words = done ? (dream ? 'IN THE DREAM: TUNED SO FAR' : 'TUNED SO FAR') : dream ? "THE DREAM'S PARTS TO TUNE" : 'THE PARTS TO TUNE';
+  const blinks = Math.ceil(readFrames(words) / 4) * 4;
+  for (let f = 0; f < blinks; f++) {
+    const p = stamp(cutaway(parts, done, done - 1, f % 4 < 2), words);
+    if (dream) dreamFrame(p);
+    r.add(p);
+  }
   return r.fadeOut(6);
 }
 
@@ -159,7 +248,7 @@ function confetti(p: Pixels, f: number, n = 40): void {
   }
 }
 
-/** Before the test drive: Doc Leo and Lady Regina pop out of the hood and grow back to full size, in a swirl of sparkles. */
+/** Before the test drive: Doc Leo and Lady Regina pop out from under the seat and grow back to full size, in a swirl of sparkles. */
 export function unshrinkReel(): Reel {
   const r = new Reel(SP.pal);
   const morn = garage(160);

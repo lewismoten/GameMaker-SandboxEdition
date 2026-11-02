@@ -8,7 +8,7 @@ import { centered, text, textWidth } from '../../../snowbound/src/art/font';
 import { rubberEgg } from '../art/egg';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
-import { SP, INK, drawChicken, drawLeo } from './art';
+import { SP, INK, drawChicken, drawLeo, dreamFrame } from './art';
 import { garage } from './garage';
 
 const c = SP.c;
@@ -29,6 +29,8 @@ export interface Card {
   asleep?: boolean;
   /** Teddy sits at Doc Leo's feet. */
   teddy?: boolean;
+  /** Sir Reginald's dream (levels 1-4): the card is framed in cloud. */
+  dream?: boolean;
 }
 
 const NAMES: Record<Who, string> = { leo: 'DOC LEO', reggie: 'SIR REGINALD III', regina: 'LADY REGINA III', aside: 'SIR REGINALD, TO YOU' };
@@ -64,6 +66,7 @@ export function card(k: Card): Pixels {
   if (k.asleep) for (const [i, s] of ['z', 'z', 'Z'].entries()) text(p, 290 + i * 8, 112 - i * 12, s, INK, i === 2 ? 2 : 1);
   if (k.teddy) scaleBlit(p, POSES.sit, 40, 160, 2);
   if (k.egg) p.blit(rubberEgg(new Pixels(20, 20, 255)), 290, 109, 255);
+  if (k.dream) dreamFrame(p, [266, 104], !k.title);
   let y = k.title ? 32 : 12;
   for (const [who, words] of k.lines) {
     if (who === 'stamp') {

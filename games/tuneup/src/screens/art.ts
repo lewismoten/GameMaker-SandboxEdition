@@ -241,9 +241,9 @@ export interface Part {
   x: number;
   y: number;
 }
-/** The dream's parts (levels 1-4): a gas engine THE CHEZ never had. */
+/** The dream's parts (levels 1-4): a gas engine THE CHEZ never had (the battery, under the seat, is real). */
 export const DREAM_PARTS: Part[] = [
-  { label: 'BATTERY', x: 62, y: 118 },
+  { label: 'BATTERY', x: 176, y: 116 },
   { label: 'PLUGS', x: 84, y: 98 },
   { label: 'TIMING', x: 108, y: 112 },
   { label: 'OIL', x: 96, y: 136 },
@@ -286,4 +286,26 @@ export function cutaway(parts: Part[], done: number, blink = -1, on = true): Pix
     text(p, lx + 12, ly, part.label, lit ? col : c('navy', 2));
   });
   return p;
+}
+
+/**
+ * Sir Reginald's dream (levels 1-4) framed as one: puffs of cloud all round the edges of a
+ * picture, like a thought balloon, and when `trail` gives a sleeper's head, three bubbles
+ * rising from it toward the corner. Without `top`, a title bar is the top edge.
+ */
+export function dreamFrame(p: Pixels, trail?: [number, number], top = true): void {
+  const puff = (x: number, y: number, r: number) =>
+    p
+      .disc(x, y, r + 1, c('lilac', 2))
+      .disc(x, y, r, c('cloud', 1))
+      .disc(x - r / 3, y - r / 3, r / 2, c('cloud', 2));
+  for (let x = 0; x <= 320; x += 16) {
+    if (top) puff(x, -3, (x / 16) % 2 ? 7 : 9);
+    puff(x + 8, 203, (x / 16) % 2 ? 9 : 7);
+  }
+  for (let y = 16; y < 190; y += 16) {
+    puff(0, y, (y / 16) % 2 ? 8 : 6);
+    puff(319, y + 8, (y / 16) % 2 ? 6 : 8);
+  }
+  if (trail) [2, 3, 4].forEach((r, i) => puff(trail[0] + 8 + i * 9, trail[1] - 8 - i * 11, r));
 }

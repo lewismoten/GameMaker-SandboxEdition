@@ -7,8 +7,8 @@ file says what is built.
 ## Story
 
 It's the morning of the Clown Club parade, and THE CHEZ is meant to lead it. Overnight, Gwinn
-buried Doc Leo's toolbox in the yard and tipped the Clown Club's instrument trunk into the open
-hood. With no wrenches, Doc Leo does his shrinking trick and tunes the car up by ear. Sir
+buried Doc Leo's toolbox in the yard and tipped the Clown Club's instrument trunk in through the
+door window (THE CHEZ has no hood). With no wrenches, Doc Leo does his shrinking trick and tunes the car up by ear. Sir
 Reginald III, his rubber chicken, does the fiddly bits (he fits where Doc Leo can't), and the
 two of them talk every repair over. Teddy rides along in the front passenger seat.
 

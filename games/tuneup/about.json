@@ -5,7 +5,7 @@
   "year": 1994,
   "price": "$15",
   "version": "2.0",
-  "blurb": "It's the morning of the Clown Club parade, and THE CHEZ honks like a kazoo: Gwinn tipped the instrument trunk into the hood. With no wrenches, Doc Leo shrinks down and tunes it up by ear, with Sir Reginald III, his rubber chicken, doing the fiddly bits. Then a test drive to hear the new radio, and the parade.",
+  "blurb": "It's the morning of the Clown Club parade, and THE CHEZ honks like a kazoo: Gwinn tipped the instrument trunk into the car. With no wrenches, Doc Leo shrinks down and tunes it up by ear, with Sir Reginald III, his rubber chicken, doing the fiddly bits. Then a test drive to hear the new radio, and the parade.",
   "exe": "TUNEUP.EXE",
   "sound": "sb",
   "egg": {
@@ -33,7 +33,7 @@
     "accent": "#ffb43a",
     "ink": "#ffffff",
     "tagline": "No wrenches. No problem. Just a really good ear.",
-    "back": "It's the morning of the Clown Club parade, and THE CHEZ is meant to lead it. But overnight Gwinn buried Doc Leo's toolbox and tipped the instrument trunk into the open hood, and now the car honks like a kazoo.\n\nSo Doc Leo does his shrinking trick and climbs inside to tune it up by ear. First Sir Reginald III dreams up an engine THE CHEZ never had. Then comes the real tune-up of the little electric car: kazoo fans, a brake-lamp dance, hubcaps and balls, a rain delay, a horn section, and a brand-new AM radio with an 8-track.\n\nThen take it for a test drive (stop on red: the camera never blinks) and lead the parade.\n\nSir Reginald III does the fiddly bits. Formally.",
+    "back": "It's the morning of the Clown Club parade, and THE CHEZ is meant to lead it. But overnight Gwinn buried Doc Leo's toolbox and tipped the instrument trunk into the car, and now the car honks like a kazoo.\n\nSo Doc Leo does his shrinking trick and climbs inside to tune it up by ear. First Sir Reginald III dreams up an engine THE CHEZ never had. Then comes the real tune-up of the little electric car: kazoo fans, a brake-lamp dance, hubcaps and balls, a rain delay, a horn section, and a brand-new AM radio with an 8-track.\n\nThen take it for a test drive (stop on red: the camera never blinks) and lead the parade.\n\nSir Reginald III does the fiddly bits. Formally.",
     "features": [
       "Doc Leo and Sir Reginald III, his rubber chicken, talk over every repair",
       "A dream of an engine first: crank the battery, pluck the plugs, play the timing beat",

@@ -9,6 +9,7 @@ import type { Card } from './cards';
 /** Before each level, by level number. */
 export const INTRO: Record<number, Card> = {
   1: {
+    dream: true,
     title: 'LEVEL 1: JUMP START',
     lines: [
       ['leo', "The battery's flat, and Gwinn buried my wrenches."],
@@ -18,6 +19,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   2: {
+    dream: true,
     title: 'LEVEL 2: SPARK PLUCKS',
     lines: [
       ['reggie', 'The spark plugs are out of tune. Pluck them.'],
@@ -26,6 +28,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   3: {
+    dream: true,
     title: 'LEVEL 3: THE TIMING BEAT',
     lines: [
       ['reggie', 'The distributor has a piano roll in it.'],
@@ -34,6 +37,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   4: {
+    dream: true,
     title: "LEVEL 4: OIL'S WELL",
     lines: [
       ['reggie', 'Five squeaky lines, one oil can. Z, X, C, V and B.'],
@@ -146,6 +150,7 @@ export const INTRO: Record<number, Card> = {
 /** After each level (or a part of one), by scene file. */
 export const OUTRO: Record<string, Card> = {
   jump: {
+    dream: true,
     lines: [
       ['leo', 'CHARGE! Is it fixed?'],
       ['reggie', 'Fully charged. I tightened the terminals myself.'],
@@ -154,6 +159,7 @@ export const OUTRO: Record<string, Card> = {
     ],
   },
   spark: {
+    dream: true,
     lines: [
       ['leo', 'C, E, G, E. Sounds fixed to me.'],
       ['reggie', 'Nearly. Listen: the timing is off. It ticks sideways.'],
@@ -161,6 +167,7 @@ export const OUTRO: Record<string, Card> = {
     ],
   },
   beat1: {
+    dream: true,
     lines: [
       ['reggie', 'Steady. Now the off-beats. One pipe splits in two, another takes the long way round.'],
       ['leo', 'Stand under the fork and I get both keys?'],
@@ -168,6 +175,7 @@ export const OUTRO: Record<string, Card> = {
     ],
   },
   beat2: {
+    dream: true,
     lines: [
       ['reggie', 'Double time, if you please.'],
       ['leo', 'My feet are already in double time.'],
@@ -175,12 +183,14 @@ export const OUTRO: Record<string, Card> = {
     ],
   },
   beat3: {
+    dream: true,
     lines: [
       ['leo', 'The timing is perfect.'],
       ['reggie', 'Naturally. Now the oil. Every engine needs its oil.'],
     ],
   },
   oil: {
+    dream: true,
     lines: [
       ['reggie', 'One last thing: the oil pipe is clogged. I shall swim it.'],
       ['leo', "You can't swim."],
