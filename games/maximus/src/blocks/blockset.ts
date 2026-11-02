@@ -23,6 +23,8 @@ export class SetBuilder {
   readonly blocks: Block[] = Array.from({ length: BACKBL }, (_, i) => emptyBlock(i));
   readonly pics: (Pixels | undefined)[] = new Array(BACKBL).fill(undefined);
   private names = new Map<string, number>();
+  /** family() answers by prefix; cleared whenever a name is added or removed. */
+  private families = new Map<string, number[]>();
   private links: { i: number; next?: string; touch?: string }[] = [];
   private cursor = 0;
   readonly used = new Set<number>();
@@ -48,6 +50,7 @@ export class SetBuilder {
     if (this.used.has(i)) throw new Error(`${this.name}: slot ${i} taken (${name})`);
     this.used.add(i);
     this.names.set(name, i);
+    this.families.clear();
     const { next, touch, scorePts, ...rest } = props;
     const b = this.blocks[i];
     // Background blocks are opaque: clear pixels become black.
@@ -63,6 +66,7 @@ export class SetBuilder {
     const i = this.id(old);
     if (this.links.some((l) => l.next === old || l.touch === old)) throw new Error(`${this.name}: ${old} is still pointed to`);
     this.names.delete(old);
+    this.families.clear();
     this.used.delete(i);
     this.links = this.links.filter((l) => l.i !== i);
     Object.assign(this.blocks[i], emptyBlock(i));
@@ -85,7 +89,12 @@ export class SetBuilder {
 
   /** All names starting with a prefix, in slot order. */
   family(prefix: string): number[] {
-    return [...this.names.entries()].filter(([n]) => n === prefix || n.startsWith(prefix + ':')).map(([, i]) => i);
+    let list = this.families.get(prefix);
+    if (!list) {
+      list = [...this.names.entries()].filter(([n]) => n === prefix || n.startsWith(prefix + ':')).map(([, i]) => i);
+      this.families.set(prefix, list);
+    }
+    return list.slice();
   }
 
   resolve(): Block[] {
