@@ -104,9 +104,16 @@ Before level 14 Doc Leo and Lady Regina un-shrink. The ending cartoon is the par
 - **Counters** for doors in levels 10-13 reuse the fans' and the tapes' counters, which their
   doors spent to nothing; counters a gate leaves something in (the Timing Beat's) are never reused
   for a door.
+- **Songs** (`src/sound/`): every level has its own tune, key, meter and form, scored for one
+  group of the music editor's presets (`score.ts` writes them: any meter, chords by name, the
+  drum kit from grids). The main theme's two-bar motif (`song.ts` `MOTIF`) is heard only at the
+  title, the wake (the Fan Band's first verse) and the ending, and in the parade's fireworks
+  strain. A level whose blocks keep time keeps its beat and lasts whole rounds of its rings (the
+  rain's 2-, 3- and 5-beat wipers, the horn board, the gear doors, the traffic lights). The build
+  writes a song once: scenes share a song file only when their songs are the same.
 - **The choir swell** (`src/sound/realSongs2.ts` `choirSong`): rhythm mode off for all nine FM
   voices, each pair a voice and its vibrato twin (`kit/songFx` `detuned`), coming in a bar apart,
-  louder by program changes (`sweep`, `swell`); the ninth sings the tune.
+  louder by program changes (`sweep`, `swell`); the ninth sings a hymn over them.
 - **Views**: a level's view is centered on where Doc Leo starts and never scrolls up or down,
   so every level starts him at (8, 5) in mid air and he drops to the floor (THE CHEZ starts
   at row 5 too, nine blocks from the right end, and drives left).

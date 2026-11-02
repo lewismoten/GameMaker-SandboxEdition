@@ -24,7 +24,7 @@ import { OUTRO } from './src/screens/banter';
 import { endingReel, openingReel, SPEED, stingReel, unshrinkReel } from './src/screens/reels';
 import type { Tool } from './src/screens/art';
 import { CREDITS, INSTRUCTIONS, STORY, readme } from './src/screens/text';
-import { lostSong, menuSong, wonSong } from './src/sound/song';
+import { lostSong, menuSong, wonSong } from './src/sound/themeSongs';
 import { buildSoundSet, buildVocs } from './src/sound/sounds';
 import { buildCharBlocks, buildMonsterBlocks } from './src/sprites/cast';
 import { demoRecording } from './src/demo';
@@ -86,12 +86,22 @@ const built = LEVELS.map((l) => {
   const level = l.build(kit.book);
   return { l, pal, kit, bbl: kit.book.finish(), ...level };
 });
+// a song is written once: scenes that truly share one share its file
+const songFiles = new Map<string, string>();
+const putSong = (name: string, bytes: Uint8Array) => {
+  const key = Buffer.from(bytes).toString('base64');
+  const had = songFiles.get(key);
+  if (had) return had;
+  songFiles.set(key, name);
+  disk.put(name, bytes);
+  return name;
+};
 built.forEach(({ l, m, pal, bbl }, i) => {
   disk.put(`${l.file}.pal`, serializePalette(pal.pal));
   disk.put(`${l.file}.map`, serializeMap(m.build()));
   disk.put(`${l.file}.bbl`, serializeBlocks(bbl));
   disk.put(`${l.file}.mon`, serializeMonsters(buildMonsters(mb, l.mons)));
-  disk.put(`${l.file}.cmf`, l.song());
+  const song = putSong(`${l.file}.cmf`, l.song());
   const scene = emptyScene(ADVTYPE);
   scene.desc = l.part ? `${l.desc}, ${l.part}` : l.desc;
   scene.pos = { x: 60 + i * 60, y: 110 };
@@ -126,7 +136,7 @@ built.forEach(({ l, m, pal, bbl }, i) => {
     `${l.chr}.chr`,
     CBL[l.chr] ?? 'leo.cbl',
     `${l.snd}.snd`,
-    `${l.file}.cmf`,
+    song,
     intro,
     exit,
     ...new Array(9).fill(''),
@@ -143,14 +153,17 @@ built.forEach(({ l, m, pal, bbl }, i) => {
   game.scenes.push(scene);
 });
 
+const menu = putSong('menu.cmf', menuSong());
+const won = putSong('won.cmf', wonSong());
+const lost = putSong('lost.cmf', lostSong());
 const start = game.scenes[0];
 start.files = [
   'title.lst',
-  'menu.cmf',
+  menu,
   'menu.gif',
-  'menu.cmf',
+  menu,
   'story.lst',
-  'menu.cmf',
+  menu,
   'howto.lst',
   'credits.lst',
   'hiscore.gif',
@@ -161,7 +174,7 @@ start.files = [
 ];
 start.links[0] = { toScene: 2, from: { x: 0, y: 0 }, to: { x: built[0].start[0], y: built[0].start[1] } };
 const end = game.scenes[1];
-end.files = ['won.lst', 'won.cmf', 'lost.lst', 'lost.cmf', ...new Array(16).fill('')];
+end.files = ['won.lst', won, 'lost.lst', lost, ...new Array(16).fill('')];
 disk.put('tuneup.gam', serializeGame(game));
 
 // the pictures and words
@@ -178,9 +191,6 @@ disk.put('lost.lst', serializeSlideList([{ name: 'lost.gif', pause: 6 }]));
 disk.put('story.txt', STORY);
 disk.put('howto.txt', INSTRUCTIONS);
 disk.put('credits.txt', CREDITS);
-disk.put('menu.cmf', menuSong());
-disk.put('won.cmf', wonSong());
-disk.put('lost.cmf', lostSong());
 disk.put('readme.txt', readme());
 disk.put('license.txt', licenseText('Tune-Up'));
 clipEveryList(disk.files);

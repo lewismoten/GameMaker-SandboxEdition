@@ -1,57 +1,17 @@
-// The parade tune and every arrangement of it, scored with the music editor's presets
-// (web/src/audio/oplPresets.ts): each part of THE CHEZ that Doc Leo tunes up by ear has its own.
+// Tune-Up's main theme and The Timing Beat's songs. Every other level has a song of its own
+// (dreamSongs, realSongs, realSongs2, finaleSongs; the title and the ending in themeSongs),
+// scored with the music editor's presets (web/src/audio/oplPresets.ts).
 //
 // Tempos sit on whole game ticks (the game clock is the music clock / 8), so a song and the
 // blocks that animate with it never drift: a beat of 8 game ticks is 64 CMF ticks.
-import { tune, v, times, join } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
+import { tune, v, join } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 import { patchOf } from './notes';
 
 /** The tempo for a beat `ticks` game ticks long (146 CMF ticks a second, 8 to a game tick). */
 export const bpmFor = (ticks: number) => (146 * 60) / (8 * ticks);
 
-// ---- the parade tune: eight bars in C, a chord a bar
-export const MELODY = join(
-  'C5 q, E5 q, G5 q, E5 q',
-  'F5 q, A5 q, G5 h',
-  'E5 q, G5 q, C6 q, G5 q',
-  'A5 q, G5 e, F5 e, E5 h',
-  'D5 q, F5 q, A5 q, F5 q',
-  'E5 q, G5 q, C6 h',
-  'B4 q, D5 q, G5 q, F5 q',
-  'E5 q, D5 q, C5 h',
-);
-/** The main theme's first two bars, the motif the title, the wake and the finale quote (in score.ts's notation). */
+/** The main theme's first two bars, the motif the title, the wake and the ending quote (in score.ts's notation). */
 export const MOTIF = 'C5q E5q G5q E5q | F5q A5q G5h';
-/** Each bar's chord, low to high, and its bass root and fifth. */
-export const BARS: { chord: string[]; root: string; fifth: string }[] = [
-  { chord: ['C4', 'E4', 'G4'], root: 'C3', fifth: 'G2' },
-  { chord: ['C4', 'F4', 'A4'], root: 'F2', fifth: 'C3' },
-  { chord: ['C4', 'E4', 'G4'], root: 'C3', fifth: 'G2' },
-  { chord: ['C4', 'F4', 'A4'], root: 'F2', fifth: 'C3' },
-  { chord: ['D4', 'F4', 'A4'], root: 'D3', fifth: 'A2' },
-  { chord: ['C4', 'E4', 'G4'], root: 'C3', fifth: 'G2' },
-  { chord: ['B3', 'D4', 'G4'], root: 'G2', fifth: 'D3' },
-  { chord: ['C4', 'E4', 'G4'], root: 'C3', fifth: 'G2' },
-];
-export const chordOf = (b: (typeof BARS)[number], len: string) => `[${b.chord.join(' ')}] ${len}`;
-export const eachBar = (fn: (b: (typeof BARS)[number]) => string) => join(...BARS.map(fn));
-/** Up an octave (for a part that sits above the chords). */
-export const up = (n: string) => n.replace(/(\d)/, (d) => String(Number(d) + 1));
-
-/** The menu: the tune on a kazoo over the piano's oom-pah, a parade drum on melody tracks. */
-export function menuSong(): Uint8Array {
-  return tune(bpmFor(9), [
-    v(0, patchOf('kazoo'), MELODY, 100),
-    v(
-      1,
-      patchOf('piano-mellow'),
-      eachBar((b) => `${b.root} q, ${chordOf(b, 'q')}, ${b.fifth} q, ${chordOf(b, 'q')}`),
-      75,
-    ),
-    v(4, patchOf('melodic-kick'), times(8, 'C3 q, r q, C3 q, r q'), 80),
-    v(5, patchOf('melodic-snare'), times(8, 'r q, D4 e, D4 e, r q, D4 q'), 70),
-  ]);
-}
 
 /** The Timing Beat's beat: 12 game ticks (91 BPM); a step of the pipes is an eighth. */
 export const BEAT = 12;
@@ -119,18 +79,4 @@ export function beatSong(verse: number): Uint8Array {
     }),
   );
   return tune(bpmFor(BEAT), [v(0, patchOf('pipe-organ'), melody, 60), v(3, patchOf('piano-mellow'), stride, 62)]);
-}
-
-/** The ending: the tune's last line, the band all together, then a held chord. */
-export function wonSong(): Uint8Array {
-  return tune(bpmFor(9), [
-    v(0, patchOf('trumpet'), 'B4 q, D5 q, G5 q, F5 q, E5 q, D5 q, C5 h, C6 w', 100),
-    v(1, patchOf('piano-bright'), 'G3 h, G3 h, C4 h, C4 h, [C4 E4 G4] w', 80),
-    v(5, patchOf('orchestra'), '[B3 D4 G4] w, [C4 E4 G4] w, [C4 E4 G4] w', 60),
-  ]);
-}
-
-/** Game over: the tune's opening, slowly, on a lone music box. Even this is friendly. */
-export function lostSong(): Uint8Array {
-  return tune(bpmFor(14), [v(0, patchOf('music-box'), 'C5 q, E5 q, G5 q, E5 q, F5 q, D5 q, C5 h', 80)]);
 }
