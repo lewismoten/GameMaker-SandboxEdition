@@ -70,6 +70,9 @@ export function addRealMonsters(out: Monster[], n: (name: string) => number, cap
   CHARACTERS.forEach((who, i) => {
     out[MON.clown0 + i] = mon(two(`${who}0`, `${who}1`, 5), { power: 40, thru: 0, newmon: MON.clown0 + i }, pace(3, 1));
   });
+  // Pump Up the Volume: a pigeon flies a pattern over the awnings, 14 blocks right and back; friendly: stronger than Doc Leo, so a bump never
+  // turns it back to its start, and it costs a couple of points a tick while they overlap
+  out[MON.pigeon] = mon(two('pigeon0', 'pigeon1', 4), { power: BIRD, thru: 0 }, pace(14, 1));
   if (caps) {
     caps.paths.forEach((path, i) => {
       const ball = i === caps.ball;

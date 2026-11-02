@@ -25,6 +25,8 @@ export const PUMP = { w: 37, floor: 9, tire: [25, 32] as [number, number], tireT
 const TIRE_H = PUMP.floor - PUMP.tireTop;
 /** The awnings' row, just under a balloon dog's ride (it rises seven blocks from the curb). */
 export const AWNING_ROW = 3;
+/** The pigeon's start (level x, y): it flies 14 blocks right and back over the awnings. */
+export const PIGEON = [12, 1] as const;
 /** The secret: a glint over the second awning's left end, and a tuning fork on it (level x, y). */
 export const PUMP_FORK = [19, AWNING_ROW - 1] as const;
 /** The awnings: [first x, last x]. Doc Leo twists a balloon dog just left of each and rides it up. */
@@ -241,5 +243,6 @@ export function pump(book: Kit['book']): Level {
   m.set(w - 1, 0, 'fence.top').fill(w - 1, 1, 1, floor - 1, 'fence');
   m.link(PUMP.exit, floor - 1);
   m.mon(MON.reggie, 4, floor - 1);
+  m.mon(MON.pigeon, PIGEON[0], PIGEON[1]);
   return { m, start: at(8, 5), size: [w, 10] };
 }

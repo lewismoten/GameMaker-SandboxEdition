@@ -148,6 +148,19 @@ export function hubcaps(round: number) {
   return run;
 }
 
+/** Waits (as a person watching the pigeon would) until it is flying away from the awnings at `x`, or far off. */
+async function waitPigeon(bot: Bot, x: number): Promise<void> {
+  const pigeon = () => monsters(bot, [MON.pigeon])[0]?.x ?? 99;
+  for (let waited = 0; waited < 900; waited++) {
+    const was = pigeon();
+    await must(bot, bot.wait(4), 'watching the pigeon');
+    const now = pigeon();
+    const away = now === was ? false : now > was === now > x;
+    if (Math.abs(now - x) >= 9 || (away && Math.abs(now - x) >= 2)) return;
+  }
+  throw new Error('the pigeon never gave way');
+}
+
 /** Twists a balloon dog under Doc Leo's shoes (B), rides it up to the awning's height. */
 async function balloonUp(bot: Bot, x: number): Promise<void> {
   await must(bot, bot.walk(x, `to the awning's left at ${x}`), 'to the twist');
@@ -167,6 +180,7 @@ export async function pumpUp(bot: Bot): Promise<void> {
   await must(bot, bot.land(), 'onto the curb');
   for (const [i, [a, b]] of AWNINGS.entries()) {
     const forks = bot.count(CTR.forks);
+    await waitPigeon(bot, (a + b) / 2);
     await balloonUp(bot, TWISTS[i]);
     const score = bot.sim.ci.score;
     await must(bot, bot.walk(b, 'along the awning, past its balloon poodle'), 'across');

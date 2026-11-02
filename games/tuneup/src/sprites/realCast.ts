@@ -79,6 +79,17 @@ function hubcap(lift: number, under: 'none' | 'ball' | 'tada'): Pixels {
   return outline(p, ink);
 }
 
+/** A friendly pigeon flying, facing right: a plump gray body, a shiny neck, an orange beak; its wing up, then down. */
+function pigeon(f: number): Pixels {
+  const p = new Pixels(20, 20, 255);
+  p.disc(9, 11, 5.5, c('gray', 2)).disc(14, 8, 3, c('gray', 3)).rect(7, 12, 4, 3, c('gray', 1));
+  p.rect(2, 11, 4, 2, c('gray', 1)).disc(14, 9, 1.5, c('green', 3));
+  p.rect(17, 8, 3, 1, c('orange', 2)).set(15, 7, ink).set(15, 7, c('paint', 3)).set(16, 7, ink);
+  if (f) p.rect(5, 12, 7, 3, c('gray', 3)).rect(6, 14, 4, 2, c('gray', 2));
+  else p.rect(4, 3, 3, 6, c('gray', 3)).rect(6, 5, 4, 5, c('gray', 3)).line(4, 3, 8, 8, ink);
+  return outline(p, ink);
+}
+
 export function addRealCast(add: Add): void {
   add('swim0', swimmer(0));
   add('swim1', swimmer(1));
@@ -105,6 +116,9 @@ export function addRealCast(add: Add): void {
   add('ride1', rideDog(1), { solid: 15 });
   add('pop0', popPic(0));
   add('pop1', popPic(1));
+  // Pump Up the Volume: the pigeon on patrol; bumping into it costs a couple of points a tick, never a hit
+  add('pigeon0', pigeon(0), { scorePts: -2 });
+  add('pigeon1', pigeon(1), { scorePts: -2 });
   // The Horn Section: the character clowns, two steps each
   for (const who of CHARACTERS) for (let f = 0; f < 2; f++) add(`${who}${f}`, characterClown(who, f, c));
 }
