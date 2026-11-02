@@ -150,7 +150,7 @@ async function watch(
   const playBtn = h('button', { class: 'primary wt-play', type: 'button' });
   const prevBtn = h('button', { class: 'wt-item-btn', type: 'button', 'aria-label': 'Previous item', title: 'Previous item (,)' }, '⏮');
   const nextBtn = h('button', { class: 'wt-item-btn', type: 'button', 'aria-label': 'Next item', title: 'Next item (.)' }, '⏭');
-  const itemEl = h('p', { class: 'wt-item', 'aria-label': 'Now showing' });
+  const itemEl = h('p', { class: 'wt-item', role: 'group', 'aria-label': 'Now showing' });
   const timeEl = h('span', { class: 'wt-time', 'aria-live': 'off' });
   const bar = h('div', { class: 'wt-bar-fill' });
   const ticks = tl.chapters.slice(1).map((c) => h('span', { class: 'wt-bar-tick', style: `left:${(100 * c.frame) / total}%` }));
