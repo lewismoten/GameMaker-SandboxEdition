@@ -1,4 +1,4 @@
-// The Disk space dialog's "Blocks that look the same": per block set, the groups of blocks drawn
+// The Optimize dialog's "Blocks that look the same": per block set, the groups of blocks drawn
 // alike (picture of each, and how many map cells draw it), then the same-shape-other-color
 // families, which are shown but never joined (a scene has one palette).
 import { h } from '../core/ui';

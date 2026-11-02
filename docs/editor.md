@@ -120,9 +120,9 @@ broken ones), **First steps** (in games started from the starter), **Color visio
 palette, drawn) and **Play Game** and **Download**. The status comes from what is already saved;
 opening the tab never runs a check. Each tool also opens from where it always did.
 
-If you have reserved palette ranges for backgrounds, monsters and characters (Palette editor), Disk space also lists block files that draw with colors reserved for another kind. **Apply** moves those pixels to the nearest allowed color, after showing each changed block before and after with a difference score (CIELAB delta E; large changes are flagged). It is separate from the automatic steps because it changes how the game looks.
+If you have reserved palette ranges for backgrounds, monsters and characters (Palette editor), Optimize also lists block files that draw with colors reserved for another kind. **Apply** moves those pixels to the nearest allowed color, after showing each changed block before and after with a difference score (CIELAB delta E; large changes are flagged). It is separate from the automatic steps because it changes how the game looks.
 
-**Disk space** also holds your **checkpoints**: stamps of the whole game (every file and its editor
+**Optimize** also holds your **checkpoints**: stamps of the whole game (every file and its editor
 notes), made with **Make a checkpoint…** any time and always before an optimization is applied. Each
 stores only what changed since the one before, the way a git repository does: a changed block or map
 cell is a few bytes, a changed text file a few lines. **Compare…** lists what changed and draws each
@@ -132,7 +132,7 @@ release, and **Delete** removes one (the later stamps keep everything they had).
 in this browser and in a browser backup (tick _Leave out checkpoints_ in the backup dialog for a shallow
 copy), never in a download or a DOS export.
 
-**Blocks that look the same** (also in Disk space) lists, per block set, blocks that are drawn the same
+**Blocks that look the same** (also in Optimize) lists, per block set, blocks that are drawn the same
 colors in every palette the set is shown with and play the same, each with a picture and how many
 map cells use it, plus blocks of one shape in other colors, which stay as they are. Blocks that look the same (same colors under every palette, same rules) can be joined into one, with the maps following; this frees slots and changes no scene. Joining two block sets into one file (the dropped set's blocks move into the other's free slots and its maps follow) is one of the merges Disk space offers; every scene is drawn the same afterward.
 

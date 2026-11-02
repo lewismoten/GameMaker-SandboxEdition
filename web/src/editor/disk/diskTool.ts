@@ -1,4 +1,4 @@
-// The disk-space tool's dialog (Overview › Tools › Disk space): the floppy, what the game needs
+// The disk-space tool's dialog (Overview › Tools › Optimize): the floppy, what the game needs
 // to run and the disks it takes, the merges the tool can apply (with a preview of every change and
 // the bytes saved) and what it left alone. Applying is one undoable step in the project's file
 // history (Undo here, Ctrl+Z, or the next time the tool opens); it can't see how a level plays, so
@@ -72,7 +72,7 @@ function stepView(step: Step): HTMLElement {
 /** Opens the dialog. */
 export async function diskTool(project: Project): Promise<void> {
   let stopKeys = () => undefined as void;
-  await modal<void>('Disk space', () => {
+  await modal<void>('Optimize', () => {
     const root = h('div', { class: 'disk-tool' });
     const undoBar = h('div', { class: 'disk-undo' });
     let applied = '';

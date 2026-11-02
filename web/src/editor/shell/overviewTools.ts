@@ -147,15 +147,15 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
     ),
   );
 
-  // Disk space: the floppy, drawn from the game's own title picture and palette
+  // Optimize: the floppy, drawn from the game's own title picture and palette
   cards.push(
     card(
       'disk',
-      'Disk space',
+      'Optimize',
       floppyFor(project, 84),
       diskStatus(project),
-      'What the game takes to run as a DOS game, how many 3.5″ disks that is, and files (monster files, block sets, palettes) that could share one.',
-      'Open the disk tool…',
+      'What the game takes to run as a DOS game, how many 3.5″ disks that is, files (monster files, block sets, palettes) that could share one, blocks that look the same, colors outside their range, and checkpoints to compare against.',
+      'Open Optimize…',
       () => void import('../disk/diskTool').then((m) => m.diskTool(project)),
     ),
   );
