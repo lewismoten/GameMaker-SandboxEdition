@@ -4,8 +4,8 @@
   "company": "Sandbox Software",
   "year": 1994,
   "price": "$15",
-  "version": "1.0",
-  "blurb": "It's the morning of the Clown Club parade, and THE CHEZ honks like a kazoo: Gwinn tipped the instrument trunk into the hood. With no wrenches, Doc Leo shrinks down and tunes it up by ear, with Sir Reginald III, his rubber chicken, doing the fiddly bits.",
+  "version": "2.0",
+  "blurb": "It's the morning of the Clown Club parade, and THE CHEZ honks like a kazoo: Gwinn tipped the instrument trunk into the hood. With no wrenches, Doc Leo shrinks down and tunes it up by ear, with Sir Reginald III, his rubber chicken, doing the fiddly bits. Then a test drive to hear the new radio, and the parade.",
   "exe": "TUNEUP.EXE",
   "sound": "sb",
   "egg": {
@@ -28,25 +28,25 @@
   },
   "box": {
     "hours": 7,
-    "levels": "13 levels: a dream of an engine bay, then the real electric car and its radio, a cartoon before each",
+    "levels": "15 levels: a rubber chicken's dream of an engine, the real electric car and its new radio, a test drive and the parade, a cartoon before each",
     "background": "#14204e",
     "accent": "#ffb43a",
     "ink": "#ffffff",
     "tagline": "No wrenches. No problem. Just a really good ear.",
-    "back": "It's the morning of the Clown Club parade, and THE CHEZ is meant to lead it. But overnight Gwinn buried Doc Leo's toolbox and tipped the instrument trunk into the open hood, and now the car honks like a kazoo.\n\nSo Doc Leo does his shrinking trick and climbs inside to tune it up by ear. Crank the battery to a bugle's \"Charge!\", pluck the spark plugs like harp strings between the sparks, play the timing back into step on a player piano's four pipes, and oil the Squeaks off the staff.\n\nSir Reginald III, his rubber chicken, does the fiddly bits. Formally.",
+    "back": "It's the morning of the Clown Club parade, and THE CHEZ is meant to lead it. But overnight Gwinn buried Doc Leo's toolbox and tipped the instrument trunk into the open hood, and now the car honks like a kazoo.\n\nSo Doc Leo does his shrinking trick and climbs inside to tune it up by ear. First Sir Reginald III dreams up an engine THE CHEZ never had. Then comes the real tune-up of the little electric car: kazoo fans, a brake-lamp dance, hubcaps and balls, a rain delay, a horn section, and a brand-new AM radio with an 8-track.\n\nThen take it for a test drive (stop on red: the camera never blinks) and lead the parade.\n\nSir Reginald III does the fiddly bits. Formally.",
     "features": [
       "Doc Leo and Sir Reginald III, his rubber chicken, talk over every repair",
-      "Crank the battery while its gauge fills, and hear the bugle call \"Charge!\"",
-      "Pluck the spark plugs like harp strings while the sparks run in firing order",
-      "The Timing Beat: notes drop down four glass pipes onto four keys, in three verses",
-      "Oil's Well: Z X C V B squirt the oil can up the five lines of a staff",
-      "A Hat Sting cartoon before every level, and a cutaway CHEZ that lights up as it's tuned",
-      "Sound Blaster music for every part of the engine, and a note for everything you fix"
+      "A dream of an engine first: crank the battery, pluck the plugs, play the timing beat",
+      "Then the real electric car: kazoo fans, a brake-lamp dance, hubcaps and balls, a balloon pump",
+      "Tune in the new AM radio, then hear a nine-voice choir swell",
+      "A test drive with traffic lights and stop signs: stop on red, or smile for the camera",
+      "Lead the Clown Club parade and cue each band section with a toot of the horn",
+      "A Hat Sting cartoon before every level, and a cutaway CHEZ that lights up as it's tuned"
     ],
     "shots": [
       ["jump.map", 28, 2],
-      ["beat2.map", 2, 2],
-      ["oil.map", 2, 2]
+      ["road1.map", 40, 2],
+      ["band3.map", 40, 2]
     ],
     "rating": "Ages 6 and up"
   },
