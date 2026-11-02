@@ -1,4 +1,4 @@
-// The way through levels 14-15 as orders for the bot, driving THE CHEZ as a person does: up to
+// The way through levels 15-16 as orders for the bot, driving THE CHEZ as a person does: up to
 // speed, a look at each signal as it comes into view, through on a green with time to spare,
 // otherwise let go, coast and inch up to the stop line, wait for green (or a stop sign's GO),
 // a person's reaction, and away. No tickets: running a red is a failure.
@@ -105,11 +105,11 @@ async function signal(bot: Bot, s: Signal): Promise<void> {
   );
 }
 
-/** 14. The Test Drive, part `part`: every signal obeyed, out at the far end of the street. */
+/** 15. The Test Drive, part `part`: every signal obeyed, out at the far end of the street. */
 export function testDrive(part: number) {
   const r = ROUTES[part];
   const run = async (bot: Bot): Promise<void> => {
-    expect(bot, 27 + part, `the test drive, ${r.file}`);
+    expect(bot, 28 + part, `the test drive, ${r.file}`);
     await must(bot, bot.land(), 'onto the street');
     const score = bot.sim.ci.score;
     let passes = 0;
@@ -126,11 +126,11 @@ export function testDrive(part: number) {
   return run;
 }
 
-/** 15. The Parade Route, scene `part`: up to each side street, a toot under its cue, then through the ribbon. */
+/** 16. The Parade Route, scene `part`: up to each side street, a toot under its cue, then through the ribbon. */
 export function paradeRoute(part: number) {
   const p = PARADES[part];
   const run = async (bot: Bot): Promise<void> => {
-    expect(bot, 29 + part, `the parade route, ${p.file}`);
+    expect(bot, 30 + part, `the parade route, ${p.file}`);
     await must(bot, bot.land(), 'onto the route');
     for (const x of [...p.cues].sort((a, b) => b - a)) {
       await coastTo(bot, x * 20 - 6, `the side street at ${x}`);
@@ -146,4 +146,4 @@ export function paradeRoute(part: number) {
   return run;
 }
 
-export const LEVELS_14_15 = [testDrive(0), testDrive(1), paradeRoute(0), paradeRoute(1), paradeRoute(2)];
+export const LEVELS_15_16 = [testDrive(0), testDrive(1), paradeRoute(0), paradeRoute(1), paradeRoute(2)];
