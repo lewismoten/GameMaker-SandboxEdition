@@ -80,7 +80,8 @@ async function worker() {
             });
           }
         }
-        await Promise.all([renderWorker(), renderWorker()]);
+        // the shards are independent, so a local build with no cached frames uses the cores it has
+        await Promise.all(Array.from({ length: Math.min(shards.length, Math.max(2, availableParallelism())) }, renderWorker));
       }
       // a build killed from outside well before its timeout (memory pressure, a stray pkill) is tried once more
       for (let attempt = 1; ; attempt++) {
@@ -102,7 +103,7 @@ async function worker() {
       throw new Error(
         secret
           ? 'A game build failed.'
-          : `${id}: game build failed (code ${error.code}, signal ${error.signal}, killed ${error.killed}, after ${((Date.now() - started) / 1000).toFixed(0)} s)\n${error.stderr || error.stdout?.slice(-2000) || error.message}`,
+          : `${id}: game build failed (code ${error.code}, signal ${error.signal}, killed ${error.killed}, after ${((Date.now() - started) / 1000).toFixed(0)} s; last step logged: ${String(error.stdout ?? '').trim().split('\n').at(-1) || 'none'})\n${error.stderr || error.stdout?.slice(-2000) || error.message}`,
       );
     }
     times.push([secret ? 'a game' : id, (Date.now() - started) / 1000]);
