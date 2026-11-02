@@ -46,7 +46,7 @@ jobs:
       - name: npm ci
         run: |
           start=$SECONDS
-          npm ci
+          npm ci --omit=dev --no-audit --no-fund
           echo "| npm ci | $((SECONDS - start)) |" >> "$GITHUB_STEP_SUMMARY"
         env:
           GM_SKIP_GAME_BUILD: '1'
