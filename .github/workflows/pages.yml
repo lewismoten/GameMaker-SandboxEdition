@@ -28,8 +28,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # a pull request has no environment (the github-pages one only accepts deploys), and a fork's token is read-only anyway
-    environment: ${{ github.event_name == 'pull_request' && '' || 'github-pages' }}
+    # a pull request has no environment (the github-pages one only accepts deploys), and a fork's token is read-only anyway;
+    # the deploy name comes first because '' is falsy (`pr && '' || 'github-pages'` would always give github-pages)
+    environment: ${{ github.event_name != 'pull_request' && 'github-pages' || '' }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
