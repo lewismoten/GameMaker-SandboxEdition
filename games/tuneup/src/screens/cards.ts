@@ -53,6 +53,16 @@ export function wrap(s: string, width = CHARS): string[] {
   return out;
 }
 
+/**
+ * Whole seconds to read a card: about 3 s and a quarter second a word, and never under the 8 s
+ * a card always had. (A level's after card is shown for PLAYGAME's 15 s default, which is more
+ * than any of them needs.)
+ */
+export function cardSeconds(k: Card): number {
+  const words = [k.title ?? '', ...k.lines.map((l) => l[1])].join(' ').split(/\s+/).filter(Boolean).length;
+  return Math.max(8, Math.ceil(3 + 0.25 * words));
+}
+
 export function card(k: Card): Pixels {
   const p = garage(166);
   if (k.title) {

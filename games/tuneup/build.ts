@@ -19,7 +19,7 @@ import { buildLeo, buildMonsters, buildOilLeo, buildPianoLeo } from './src/chara
 import { TEDDY_BLOCKS, buildNobody, buildTeddy, nobodyBlocks } from './src/heroes';
 import { CHEZ_BLOCKS, buildChez } from './src/sprites/chezHero';
 import { LEVELS, firstOfLevel } from './src/levels/levels';
-import { buildScreens } from './src/screens/screens';
+import { buildScreens, cardPauses } from './src/screens/screens';
 import { OUTRO } from './src/screens/banter';
 import { endingReel, openingReel, SPEED, stingReel, unshrinkReel } from './src/screens/reels';
 import type { Tool } from './src/screens/art';
@@ -74,6 +74,7 @@ const reel = (name: string, fli: Uint8Array) => {
   for (const [n, b] of Object.entries(clips)) disk.put(n, b);
   return clipEntries(clips, 0);
 };
+const PAUSE = cardPauses();
 const opening = reel('opening.fli', openingReel().fli(SPEED));
 const unshrink = reel('unshrnk.fli', unshrinkReel().fli(SPEED));
 
@@ -102,7 +103,7 @@ built.forEach(({ l, m, pal, bbl }, i) => {
   if (firstOfLevel(i)) {
     intro = `lvl${l.level}.lst`;
     const sting = reel(`sting${l.level}.fli`, stingReel(l.level, TOOLS[l.level], l.desc.toUpperCase()).fli(SPEED));
-    const before = (l.before ?? []).map((name) => ({ name, pause: 8 }));
+    const before = (l.before ?? []).map((name) => ({ name, pause: PAUSE[name] }));
     disk.put(
       intro,
       serializeSlideList([
@@ -110,7 +111,7 @@ built.forEach(({ l, m, pal, bbl }, i) => {
         ...(l.level === 14 ? unshrink : []),
         ...before,
         ...sting,
-        { name: `intro${l.level}.gif`, pause: 8 },
+        { name: `intro${l.level}.gif`, pause: PAUSE[`intro${l.level}.gif`] },
       ]),
     );
   }

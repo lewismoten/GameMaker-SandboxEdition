@@ -266,7 +266,7 @@ export function unshrinkReel(): Reel {
         }
         if (f >= 12) centered(p, 176, 'FULL SIZE AGAIN!', c('lamp', 4), 1, INK);
       },
-      1,
+      f === 17 ? readFrames('FULL SIZE AGAIN!') : 1,
       Math.min(1, (f + 1) / 4),
     );
   return r.fadeOut(6);
@@ -320,24 +320,29 @@ export function endingReel(): Reel {
   const oy = 106;
   const pts = CHEZ_BODY.map(([x, y]) => [ox + (40 - x) * S3, oy + y * S3] as const);
   for (let f = 0; f < 22; f++)
-    r.frame(show, (p) => {
-      drawLeo(p, f % 4 < 2 ? 'grin' : 'front', 50, 170, 2, false, true);
-      const n = Math.min(pts.length, Math.floor(f / 2));
-      for (let i = 0; i < n; i++) {
-        const [x0, y0] = pts[i];
-        const [x1, y1] = pts[(i + 1) % pts.length];
-        const len = Math.max(1, Math.hypot(x1 - x0, y1 - y0));
-        for (let t = 0; t <= len; t += 2) p.disc(x0 + ((x1 - x0) * t) / len, y0 + ((y1 - y0) * t) / len, 4, c('red', 2));
-        p.disc(x0, y0, 2, c('red', 0)).set(Math.round(x0) + 2, Math.round(y0) - 2, c('paint', 3));
-      }
-      if (n >= pts.length)
-        for (const wx of CHEZ_WHEELS) p.disc(ox + (40 - wx) * S3, oy + 18 * S3, 8, c('paint', 3)).ring(ox + (40 - wx) * S3, oy + 18 * S3, 8, c('metal', 2));
-      if (f >= 18) balloon(p, 150, 24, 'TA-DA!', 180, 80);
-    });
+    r.frame(
+      show,
+      (p) => {
+        drawLeo(p, f % 4 < 2 ? 'grin' : 'front', 50, 170, 2, false, true);
+        const n = Math.min(pts.length, Math.floor(f / 2));
+        for (let i = 0; i < n; i++) {
+          const [x0, y0] = pts[i];
+          const [x1, y1] = pts[(i + 1) % pts.length];
+          const len = Math.max(1, Math.hypot(x1 - x0, y1 - y0));
+          for (let t = 0; t <= len; t += 2) p.disc(x0 + ((x1 - x0) * t) / len, y0 + ((y1 - y0) * t) / len, 4, c('red', 2));
+          p.disc(x0, y0, 2, c('red', 0)).set(Math.round(x0) + 2, Math.round(y0) - 2, c('paint', 3));
+        }
+        if (n >= pts.length)
+          for (const wx of CHEZ_WHEELS) p.disc(ox + (40 - wx) * S3, oy + 18 * S3, 8, c('paint', 3)).ring(ox + (40 - wx) * S3, oy + 18 * S3, 8, c('metal', 2));
+        if (f >= 18) balloon(p, 150, 24, 'TA-DA!', 180, 80);
+      },
+      f === 21 ? readFrames('TA-DA!') : 1,
+    );
   // 3. Gwinn brings back the toolbox; everyone by the car, the last chord
   const yard = garage(160);
   parkChez(yard, 90, 170, 5);
-  for (let f = 0; f < 24; f++)
+  // the confetti keeps falling while the words are read
+  for (let f = 0; f < 12 + readFrames('TUNED UP!'); f++)
     r.frame(yard, (p) => {
       drawLeo(p, 'front', 30, 170, 2, false, true);
       drawChicken(p, 200, 75, 1.25, { lady: true, squawk: f > 16 });
