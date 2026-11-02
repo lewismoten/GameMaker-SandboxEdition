@@ -157,7 +157,7 @@ export function cableBlocks(bs: BlockSet, p: Pal): DiagBlocks<Mark> {
     ...(mark === 'spark' ? { birth: 'zap', birthTime: 9 } : {}),
     ...(mark === 'crawl' ? { birth: 'crawl', birthTime: 40 } : {}),
   });
-  return new DiagBlocks(bs, CABLE_TRACK, paint, props, 'cab');
+  return new DiagBlocks(bs, CABLE_TRACK, paint, props, 'cab', (x) => x === KINK || x === 0);
 }
 
 /** The look the pickups are drawn over: the middle of the cable on the slant. */
