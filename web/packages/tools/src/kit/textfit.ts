@@ -111,7 +111,16 @@ function drawImage(s: Shown, px: Uint8Array, w: number, h: number, x0 = 0, y0 = 
 }
 
 /** Walks a graphic file as ShowGraphic would, collecting each text page it draws. */
-function walk(files: Map<string, Uint8Array>, file: string, s: Shown, gamePal: Uint8Array, out: TextScreen[], from: string, cols?: Uint8Array): void {
+function walk(
+  files: Map<string, Uint8Array>,
+  file: string,
+  s: Shown,
+  gamePal: Uint8Array,
+  out: TextScreen[],
+  from: string,
+  cols?: Uint8Array,
+  ink: RGB = PURPLE,
+): void {
   const bytes = files.get(file.toLowerCase());
   if (!bytes) return;
   const e = ext(file);
@@ -140,7 +149,7 @@ function walk(files: Map<string, Uint8Array>, file: string, s: Shown, gamePal: U
     s.palette.set(c.palette);
     s.cols.set(c.palette);
   } else if (e === '.txt') {
-    const col = match(cols ?? gamePal, PURPLE);
+    const col = match(cols ?? gamePal, ink);
     const red = match(gamePal, RED);
     const lines = textLines(bytes);
     for (let p = 0; p * 16 < lines.length; p++) {
@@ -149,7 +158,7 @@ function walk(files: Map<string, Uint8Array>, file: string, s: Shown, gamePal: U
       out.push({ name: `${from}${file}${lines.length > 16 ? ` p${p + 1}` : ''}`, kind: 'page', pixels: s.pixels.slice(), palette: s.palette.slice(), texts });
     }
   } else if (e === '.lst') {
-    for (const entry of parseSlideList(bytes)) walk(files, entry.name, s, gamePal, out, `${from}${file} > `, s.cols);
+    for (const entry of parseSlideList(bytes)) walk(files, entry.name, s, gamePal, out, `${from}${file} > `, s.cols, ink);
   }
 }
 
@@ -165,8 +174,11 @@ function picture(files: Map<string, Uint8Array>, file: string): Shown {
   return s;
 }
 
-/** Every screen where PLAYGAME draws text over this game's pictures. */
-export function textScreens(files: Map<string, Uint8Array>): TextScreen[] {
+/**
+ * Every screen where PLAYGAME draws text over this game's pictures. `ink` is the text pages' RGB
+ * (6-bit), when a game's player patches color.rgb.purple.
+ */
+export function textScreens(files: Map<string, Uint8Array>, ink: RGB = PURPLE): TextScreen[] {
   const gam = [...files.keys()].find((f) => f.endsWith('.gam'));
   if (!gam) throw new Error('no .gam on the disk');
   const game = parseGame(files.get(gam)!);
@@ -189,7 +201,7 @@ export function textScreens(files: Map<string, Uint8Array>): TextScreen[] {
       if (!f || seen.has(f)) continue;
       seen.add(f);
       const s = i === 0 && slot !== 0 ? menu.clone() : new Shown();
-      walk(files, f, s, gamePal, out, '');
+      walk(files, f, s, gamePal, out, '', undefined, ink);
     }
   });
 

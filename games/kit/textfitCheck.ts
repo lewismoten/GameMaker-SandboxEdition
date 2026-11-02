@@ -1,6 +1,7 @@
 // Checks that PLAYGAME's text lands on plain paper in a built game (see textfit.ts), and that the
 // game's own words the player draws in play use no character 128-255, which DOS draws as
-// scribbles (the Level check's dos-chars, web/src/editor/check/checks/dosChars.ts).
+// scribbles (the Level check's dos-chars, web/src/editor/check/checks/dosChars.ts). Text pages are
+// in the game's own ink when its player.json patches color.rgb.purple.
 //   cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]
 // Lists every text line that touches art, reads badly or DOS can't draw, and exits 1 if there are any.
 // --png writes each screen as the player sees it (art near text tinted magenta) to <dir>;
@@ -12,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { checkTextScreen, H, readDisk, renderRgb, textScreens, W, type TextFitIssue } from '@lewismoten/gamemaker-sandbox-tools/kit/textfit';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { asciiFor, gwriteLines, highChars } from '../../web/src/editor/check/checks/dosChars';
+import { readPlayer } from './player';
 
 /** A plain 24-bit PNG, scaled up `s` times. */
 function rgbPng(file: string, rgb: Uint8Array, w: number, h: number, s = 2): void {
@@ -57,7 +59,9 @@ const all = args.includes('--all');
 const here = dirname(fileURLToPath(import.meta.url));
 const files = readDisk(join(here, '..', id, 'disk'));
 const issues: TextFitIssue[] = [];
-const screens = textScreens(files);
+// the text pages' ink, when the game's player (player.json) recolors it
+const ink = readPlayer(id)['color.rgb.purple'];
+const screens = textScreens(files, Array.isArray(ink) ? (ink as [number, number, number]) : undefined);
 if (pngDir) mkdirSync(pngDir, { recursive: true });
 for (const s of screens) {
   const marks = new Uint8Array(W * H);
