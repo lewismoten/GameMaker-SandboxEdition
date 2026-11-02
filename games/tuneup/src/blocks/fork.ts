@@ -4,6 +4,7 @@
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, type Kit } from './common';
 import { CTR } from '../ids';
+import { POP_TICKS, drawPoints } from './pop';
 
 /** A tuning fork: two tines joined at the bottom of a U, a stem and a foot; `shine` adds its twinkle. */
 function drawFork(p: Pixels, k: Kit, shine: boolean): Pixels {
@@ -30,7 +31,9 @@ export function glint(k: Kit, back: string, name = `${back}.glint`): string {
 
 /** The fork over `back`: it twinkles, and a touch takes it (a tune, 250 points, one more fork). */
 export function addFork(k: Kit, back: string): void {
-  const hit = { ...AIR, effect: CTR.forks, eamt: 1, score: 250, touch: back, ntime: 12 };
+  const hit = { ...AIR, effect: CTR.forks, eamt: 1, score: 250, touch: 'fork.pop', ntime: 12 };
+  // taken: its 250 pops up over the wall for a moment
+  k.book.add('fork.pop', drawPoints(k, k.pic(back), 250, 4), { ...AIR, ntime: POP_TICKS, next: back });
   k.book.add('fork', drawFork(k.pic(back), k, false), { ...hit, next: 'fork.1' });
   k.book.add('fork.1', drawFork(k.pic(back), k, true), { ...hit, next: 'fork' });
 }

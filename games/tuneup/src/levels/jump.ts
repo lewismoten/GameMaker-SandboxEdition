@@ -124,7 +124,7 @@ export function jumpBlocks(pal: Pal): Kit {
   );
   // Teddy in the front passenger seat, his head in the door window
   teddyInWindow(car, 0, 0, 3);
-  const carBlock = (bx: number, by: number, lit = false) => {
+  const carBlock = (bx: number, by: number, lit = false, beam = true) => {
     const p = k.pic('wall');
     p.blit(car.crop(bx * 20, by * 20, 20, 20), 0, 0, 255);
     if (lit) {
@@ -132,7 +132,7 @@ export function jumpBlocks(pal: Pal): Kit {
       const lx = Math.round(40 * 3 - CHEZ_LAMP[0] * 3) - bx * 20;
       const ly = Math.round(CHEZ_LAMP[1] * 3) - by * 20;
       p.disc(lx, ly, 3, c('lamp', 4)).disc(lx, ly, 1.5, c('cloud', 2));
-      for (let i = 4; i < 9; i++) p.set(lx - i, ly - 1, c('lamp', 3)).set(lx - i, ly + 1, c('lamp', 3));
+      if (beam) for (let i = 4; i < 9; i++) p.set(lx - i, ly - 1, c('lamp', 3)).set(lx - i, ly + 1, c('lamp', 3));
     }
     return p;
   };
@@ -141,7 +141,9 @@ export function jumpBlocks(pal: Pal): Kit {
       const at = [JUMP.car[0] + bx, JUMP.car[1] + by];
       if (at[0] === JUMP.lamp[0] && at[1] === JUMP.lamp[1]) {
         book.add('headlight', carBlock(bx, by), { solid: SOLID, effect: CTR.charge, eamt: -1, touch: 'headlight.on' });
-        book.add('headlight.on', carBlock(bx, by, true), AIR);
+        // (open, the headlight blinks: the way out)
+        book.add('headlight.on', carBlock(bx, by, true), { ...AIR, ntime: 9, next: 'headlight.dim' });
+        book.add('headlight.dim', carBlock(bx, by, true, false), { ...AIR, ntime: 9, next: 'headlight.on' });
       } else book.add(`car${bx}.${by}`, carBlock(bx, by), AIR);
     }
   return k;

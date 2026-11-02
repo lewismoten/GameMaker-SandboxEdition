@@ -57,6 +57,8 @@ asks whether it's fixed.
 
 Skill points: a station's preset button, lit while the needle crosses, scores 60 early, 150 on the beat and 60 late (every grade still tunes it). In Hubcaps and Balls the ball found on the first try is worth 300, and each empty cap lifted first costs 50.
 
+The Rain Delay's second scene (the tricky five) begins by a thermos on the cowl that gives energy back, and a lost life restarts there. Juice: a taken tuning fork and a joined cue lamp pop up their points (+250, +100; `src/blocks/pop.ts`, a block chain with no monster slot); the open headlight and the ribbon's rosette and post lamps blink as the way out; the Test Drive's streets have a clock tower at their halfway.
+
 The fireworks scene (band3) ends with three encore gates over the street after the last side street: boards with three hollow tuning-fork sockets. A toot under one spends three forks (if you hold them), lights its sockets and scores 1000; with fewer, nothing happens. Nine forks open all three, and how many open shows how many you held. They are a bonus off the ribbon's path, never in the way.
 
 Before level 14 Doc Leo and Lady Regina un-shrink (he drives from there on). The ending cartoon is the parade in confetti, a balloon CHEZ twisted along the car's outline, and Gwinn bringing back the toolbox she buried; then the cutaway with every part tuned.

@@ -62,14 +62,16 @@ export interface Route {
   signals: Signal[];
   /** The first street's secret: a tuning fork in the crosswalk of a corner, a glint above it (level x). */
   fork?: number;
+  /** The halfway landmark: a clock tower two blocks wide at this column (level x), above the shops. */
+  tower: number;
 }
 
 const light = (x: number, start: number): Signal => ({ kind: 'light', x, start });
 const stop = (x: number): Signal => ({ kind: 'stop', x, start: 0 });
 /** The two drives: round the block, then down Main Street (a run of lights, then a stop sign). */
 export const ROUTES: Route[] = [
-  { file: 'road1', w: 94, signals: [stop(80), light(68, 9), light(57, 4), stop(46), light(35, 11), light(24, 1), light(12, 7)], fork: 55 },
-  { file: 'road2', w: 94, signals: [light(81, 6), light(71, 10), light(61, 2), light(51, 8), stop(40), light(29, 5), light(18, 0), light(8, 9)] },
+  { file: 'road1', w: 94, signals: [stop(80), light(68, 9), light(57, 4), stop(46), light(35, 11), light(24, 1), light(12, 7)], fork: 55, tower: 48 },
+  { file: 'road2', w: 94, signals: [light(81, 6), light(71, 10), light(61, 2), light(51, 8), stop(40), light(29, 5), light(18, 0), light(8, 9)], tower: 45 },
 ];
 /** Where the car starts (level x) and where the street leaves the scene. */
 export const startX = (r: Route) => r.w - 9;
@@ -115,6 +117,41 @@ export function driveBlocks(pal: Pal): Kit {
       .rect(0, 7, 20, 1, c('stone', 1));
     book.add(name, p, AIR);
   }
+  // the clock tower at the halfway point, two blocks wide: a gold spire, a belfry, the clock, a stone shaft
+  const tw = (draw: (p: Pixels) => void, row: number) => {
+    const p = new Pixels(40, 20, 0);
+    p.blit(skyRow(row), 0, 0).blit(skyRow(row), 20, 0);
+    draw(p);
+    return [p.crop(0, 0, 20, 20), p.crop(20, 0, 20, 20)];
+  };
+  const stone = (p: Pixels, y: number, h: number) => p.rect(6, y, 28, h, c('stone', 2)).rect(6, y, 2, h, c('stone', 3)).rect(32, y, 2, h, c('stone', 1));
+  const parts = [
+    tw((p) => {
+      for (let i = 0; i < 16; i++) p.rect(20 - Math.ceil(i / 1.6), 4 + i, Math.ceil(i / 1.6) * 2, 1, c('gold', 2));
+      p.rect(19, 0, 2, 5, c('gold', 3)).rect(21, 0, 4, 2, c('red', 2));
+    }, 0),
+    tw((p) => {
+      stone(p, 0, 20);
+      p.rect(16, 4, 8, 14, c('ink', 1)).rect(17, 5, 6, 12, c('siding', 1));
+    }, 1),
+    tw((p) => {
+      stone(p, 0, 20);
+      p.disc(20, 10, 9, c('stone', 3)).disc(20, 10, 8, c('paint', 3)).ring(20, 10, 8, c('ink', 0));
+      for (const [dx, dy] of [
+        [0, -6],
+        [6, 0],
+        [0, 6],
+        [-6, 0],
+      ])
+        p.rect(20 + dx - 1, 10 + dy - 1, 2, 2, c('ink', 0));
+      p.line(20, 10, 20, 5, c('ink', 0)).line(20, 10, 24, 12, c('ink', 0));
+    }, 2),
+    tw((p) => stone(p, 0, 20), 3),
+  ];
+  parts.forEach(([l, r], i) => {
+    book.add(`tower${i}.l`, l, AIR);
+    book.add(`tower${i}.r`, r, AIR);
+  });
   const awning = brick();
   for (let x = 0; x < 20; x += 6) awning.rect(x, 0, 3, 12, c('accent', 2)).rect(x + 3, 0, 3, 12, c('paint', 3));
   for (let x = 0; x < 20; x += 3) awning.rect(x, 12, 2, 2, c('accent', 1));
@@ -225,6 +262,16 @@ export const drive = (r: Route) =>
         continue;
       }
       const roof = 2 + ((Math.floor(x / 6) * 5) % 3);
+      const tx = x - r.tower;
+      if (tx === 0 || tx === 1) {
+        // the clock tower rises over the shops (a spire in the sky rows above the shops' wall)
+        for (let y = 0; y < 4; y++) m.set(x, y, `tower${y}.${tx ? 'r' : 'l'}`);
+        for (let y = 4; y < top - 1; y++) m.set(x, y, y === 4 ? 'cornice4' : x % 3 === 1 ? 'window' : 'brick');
+        m.set(x, top - 1, 'brick')
+          .set(x, top, 'awning')
+          .set(x, row, 'shop');
+        continue;
+      }
       m.set(x, roof, `cornice${roof}`);
       for (let y = roof + 1; y < top - 1; y++) m.set(x, y, x % 3 === 1 ? 'window' : 'brick');
       // every other shop hangs out its sign over the awning (what it sells, in pictures)

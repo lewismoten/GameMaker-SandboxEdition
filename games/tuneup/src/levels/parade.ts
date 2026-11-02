@@ -8,6 +8,7 @@
 // counter it spends); a section driven past can be backed up to (Down). No signals: the road is
 // closed for the parade.
 import { addFork, glint } from '../blocks/fork';
+import { POP_TICKS, drawPoints } from '../blocks/pop';
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { AIR, kit, SOLID, type Kit } from '../blocks/common';
@@ -110,7 +111,8 @@ export function paradeBlocks(scene: ParadeScene) {
           p.set(10 + dx, 12 + dy - 5, c('paint', 3));
       return p;
     };
-    CUE_KINDS.forEach((kind, i) => book.add(cueName(i), lamp(false), { solid: UNDER, ...kind, effect: CTR.stations, eamt: 1, score: JOIN, touch: 'cue.lit' }));
+    CUE_KINDS.forEach((kind, i) => book.add(cueName(i), lamp(false), { solid: UNDER, ...kind, effect: CTR.stations, eamt: 1, score: JOIN, touch: 'cue.pop' }));
+    book.add('cue.pop', drawPoints(k, lamp(true), JOIN, 1), { solid: UNDER, ntime: POP_TICKS, next: 'cue.lit' });
     book.add('cue.lit', lamp(true), { solid: UNDER });
     // the crowd behind the barrier on the far sidewalk: heads and hats, a friendly clown or two waving
     let r = rng(scene.file.length * 31 + scene.cues[0]);
@@ -178,14 +180,21 @@ export function paradeBlocks(scene: ParadeScene) {
     top.rect(0, 16, 20, 4, c('stone', 2));
     book.add('corner', top, AIR);
     // the ribbon across the street: it parts when every section has joined
-    const ribbon = (cut: boolean) => {
+    const ribbon = (cut: boolean, blink = false) => {
       const p = skyRow(DRIVE.row);
       for (const x of [1, 18]) p.rect(x, 2, 2, 18, c('metal', 3));
-      if (!cut) p.rect(0, 9, 20, 3, c('red', 2)).rect(0, 9, 20, 1, c('red', 3)).disc(10, 10, 3, c('red', 3));
+      if (!cut)
+        p.rect(0, 9, 20, 3, c('red', 2))
+          .rect(0, 9, 20, 1, c('red', 3))
+          .disc(10, 10, 3, blink ? c('yellow', 3) : c('red', 3));
+      if (!cut && blink) for (const x of [1, 18]) p.disc(x + 1, 1, 1.5, c('yellow', 3));
       else p.rect(3, 9, 3, 6, c('red', 2)).rect(15, 9, 3, 6, c('red', 2));
       return p;
     };
-    book.add('ribbon', ribbon(false), { solid: SOLID, effect: CTR.stations, eamt: -SECTIONS, touch: 'ribbon.cut' });
+    // (the rosette blinks, and the lamps on its posts: the way out)
+    const tie = { solid: SOLID, effect: CTR.stations, eamt: -SECTIONS, touch: 'ribbon.cut', ntime: 10 };
+    book.add('ribbon', ribbon(false), { ...tie, next: 'ribbon.b' });
+    book.add('ribbon.b', ribbon(false, true), { ...tie, next: 'ribbon' });
     book.add('ribbon.cut', ribbon(true), AIR);
     // confetti drifting down the sky (three frames), and at dusk fireworks bursting (a ring)
     for (let f = 0; f < 3; f++) {
