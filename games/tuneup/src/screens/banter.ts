@@ -10,7 +10,7 @@ import type { Card } from './cards';
 export const INTRO: Record<number, Card> = {
   1: {
     dream: true,
-    title: 'LEVEL 1: JUMP START',
+    title: 'LEVEL 1 OF 16: JUMP START',
     lines: [
       ['leo', "The battery's flat, and Gwinn buried my wrenches."],
       ['reggie', 'Then we improvise, old bean. Find the clamps.'],
@@ -20,7 +20,7 @@ export const INTRO: Record<number, Card> = {
   },
   2: {
     dream: true,
-    title: 'LEVEL 2: SPARK PLUCKS',
+    title: 'LEVEL 2 OF 16: SPARK PLUCKS',
     lines: [
       ['reggie', 'The spark plugs are out of tune. Pluck them.'],
       ['leo', "Spark plugs don't have strings."],
@@ -29,7 +29,7 @@ export const INTRO: Record<number, Card> = {
   },
   3: {
     dream: true,
-    title: 'LEVEL 3: THE TIMING BEAT',
+    title: 'LEVEL 3 OF 16: THE TIMING BEAT',
     lines: [
       ['reggie', 'The distributor has a piano roll in it.'],
       ['leo', 'Since when?'],
@@ -38,7 +38,7 @@ export const INTRO: Record<number, Card> = {
   },
   4: {
     dream: true,
-    title: "LEVEL 4: OIL'S WELL",
+    title: "LEVEL 4 OF 16: OIL'S WELL",
     lines: [
       ['reggie', 'Five squeaky lines, one oil can. Press the note on the line: E, G, B, D or F.'],
       ['leo', "Oil's well that ends well."],
@@ -46,7 +46,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   5: {
-    title: 'LEVEL 5: THE FAN BAND',
+    title: 'LEVEL 5 OF 16: THE FAN BAND',
     lines: [
       ['leo', 'First, the warm air. It comes up a vent from the motor, through a flap we open under the windshield.'],
       ['reggie', 'The vent is full of little fans. Playing kazoos.'],
@@ -54,7 +54,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   6: {
-    title: 'LEVEL 6: BRAKE DANCE',
+    title: 'LEVEL 6 OF 16: BRAKE DANCE',
     teddy: true,
     lines: [
       ['leo', "The brake lights won't come on. The switch at the pedal has gone stiff."],
@@ -63,7 +63,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   7: {
-    title: 'LEVEL 7: HUBCAPS AND BALLS',
+    title: 'LEVEL 7 OF 16: HUBCAPS AND BALLS',
     lines: [
       ['leo', "The radio's antenna will need a ball on top, for the parade."],
       ['reggie', 'I had one. Then three hubcaps happened.'],
@@ -71,7 +71,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   8: {
-    title: 'LEVEL 8: PUMP UP THE VOLUME',
+    title: 'LEVEL 8 OF 16: PUMP UP THE VOLUME',
     lines: [
       ['reggie', 'The tires are soft.'],
       ['leo', "The owner's manual says 32 psi. Hand me the pump."],
@@ -80,7 +80,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   9: {
-    title: 'LEVEL 9: MUFFLED',
+    title: 'LEVEL 9 OF 16: MUFFLED',
     teddy: true,
     lines: [
       ['reggie', 'Gwinn took the 8-track tapes to bed. She is asleep on the moving blanket.'],
@@ -89,7 +89,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   10: {
-    title: 'LEVEL 10: THE RAIN DELAY',
+    title: 'LEVEL 10 OF 16: THE RAIN DELAY',
     lady: true,
     lines: [
       ['regina', 'Rain. The radio will have to wait.'],
@@ -98,7 +98,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   11: {
-    title: 'LEVEL 11: THE HORN SECTION',
+    title: 'LEVEL 11 OF 16: THE HORN SECTION',
     lady: true,
     lines: [
       ['leo', 'The horn quit on me once. Now it has its own 10 amp circuit.'],
@@ -107,7 +107,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   12: {
-    title: 'LEVEL 12: KEY CHANGE',
+    title: 'LEVEL 12 OF 16: KEY CHANGE',
     lady: true,
     lines: [
       ['leo', 'That whine. Last time, the speedometer gear housing was still on the motor.'],
@@ -116,7 +116,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   13: {
-    title: 'LEVEL 13: THE INSTRUMENT PANEL',
+    title: 'LEVEL 13 OF 16: THE INSTRUMENT PANEL',
     lady: true,
     teddy: true,
     lines: [
@@ -126,7 +126,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   14: {
-    title: 'LEVEL 14: THE BELTWAY',
+    title: 'LEVEL 14 OF 16: THE BELTWAY',
     lady: true,
     teddy: true,
     lines: [
@@ -137,7 +137,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   15: {
-    title: 'LEVEL 15: THE TEST DRIVE',
+    title: 'LEVEL 15 OF 16: THE TEST DRIVE',
     lady: true,
     lines: [
       ['leo', 'Off the beltway and round the block. Left to go, Right to brake.'],
@@ -145,7 +145,7 @@ export const INTRO: Record<number, Card> = {
     ],
   },
   16: {
-    title: 'LEVEL 16: THE PARADE ROUTE',
+    title: 'LEVEL 16 OF 16: THE PARADE ROUTE',
     lady: true,
     teddy: true,
     lines: [
@@ -155,6 +155,9 @@ export const INTRO: Record<number, Card> = {
     ],
   },
 };
+
+// every level's card says the save keys under it
+for (const k of Object.values(INTRO)) k.footer = 'F5 SAVES, F6 LOADS';
 
 /** After each level (or a part of one), by scene file. */
 export const OUTRO: Record<string, Card> = {
@@ -258,6 +261,7 @@ export const OUTRO: Record<string, Card> = {
   },
   hush: {
     teddy: true,
+    footer: 'CHAPTER 2 DONE. F5 SAVES.',
     lines: [
       ['leo', "The tapes! Let's hear one."],
       ['reggie', 'It fades in and out. Muffled.'],
@@ -325,6 +329,7 @@ export const OUTRO: Record<string, Card> = {
   dash2: {
     lady: true,
     teddy: true,
+    footer: 'CHAPTER 3 DONE. F5 SAVES.',
     lines: [
       ['leo', 'An AM radio with a state of the art 8-track. Four programs on every tape.'],
       ['regina', 'And a head cleaning cartridge, for afterwards.'],
@@ -464,6 +469,7 @@ export const WAKE: Card[] = [
     ],
   },
   {
+    footer: 'CHAPTER 1 DONE. F5 SAVES.',
     lines: [
       ['reggie', 'It has no radio. The parade car, and not one note.'],
       ['leo', 'A radio was always an extra. Its space is just above the accessory light.'],

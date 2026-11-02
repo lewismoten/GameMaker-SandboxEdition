@@ -8,7 +8,7 @@
 // a shelf and Doc Leo on the floor below her, where the bubbles' tails point. Cards with the same
 // rows, people and props share one picture (screens.ts names them).
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { centered, text } from '../../../snowbound/src/art/font';
+import { centered, text, textWidth } from '../../../snowbound/src/art/font';
 import { rubberEgg } from '../art/egg';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
@@ -38,6 +38,8 @@ export interface Card {
   teddy?: boolean;
   /** Sir Reginald's dream (levels 1-4): the card is framed in cloud. */
   dream?: boolean;
+  /** A line lettered in a bar along the bottom, left of the two of them ("F5 SAVES", a chapter's end). */
+  footer?: string;
 }
 
 const NAMES: Record<Who | 'stamp', string> = {
@@ -56,6 +58,9 @@ const ROW = 8;
 /** The bubbles' sides, clear of the words by more than textfit's 2 pixels. */
 const BX0 = 34;
 const BX1 = 270;
+/** The footer bar's top and width. */
+const FOOT_Y = 184;
+const FOOT_W = 240;
 
 /** Words wrapped to `width` columns. */
 export function wrap(s: string, width = COLS): string[] {
@@ -113,7 +118,7 @@ export function cardText(k: Card): string {
 /** What the picture depends on: cards that agree here share one. */
 export function cardKey(k: Card): string {
   const flags = (['lady', 'egg', 'hatEgg', 'asleep', 'teddy', 'dream'] as const).filter((f) => k[f]).join(',');
-  return `${k.title ?? ''}|${flags}|${k.leoPose ?? 'grin'}|${layout(k)
+  return `${k.title ?? ''}|${k.footer ?? ''}|${flags}|${k.leoPose ?? 'grin'}|${layout(k)
     .map((s) => `${s.who}${s.words.length}`)
     .join(' ')}`;
 }
@@ -142,6 +147,13 @@ export function card(k: Card): Pixels {
   if (k.title) {
     p.rect(0, 0, 320, 22, INK).rect(0, 22, 320, 2, c('accent', 2));
     centered(p, 7, k.title, c('lamp', 4));
+  }
+  // the bottom bar stops short of Teddy and Doc Leo's shoes; the bubbles end above it (16 rows end at y 170)
+  if (k.footer) {
+    const w = textWidth(k.footer);
+    if (w > FOOT_W - 8) throw new Error(`card footer too wide: "${k.footer}"`);
+    p.rect(0, FOOT_Y, FOOT_W, 200 - FOOT_Y, INK).rect(0, FOOT_Y - 2, FOOT_W, 2, c('accent', 2));
+    text(p, Math.floor((FOOT_W - w) / 2), FOOT_Y + 4, k.footer, c('lamp', 4));
   }
   for (const s of layout(k)) {
     const y0 = TY + s.row * ROW - 4;
