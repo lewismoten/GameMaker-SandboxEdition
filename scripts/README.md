@@ -19,3 +19,8 @@ build until the 240 s timeout killed it). `game-build-inputs.mjs` is the fingerp
 `render-game-frames.mjs`, which renders one animation shard for the game-frames workflow.
 
 Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
+
+`backup-local.mjs` (root `npm run backup:local -- <folder>`, `npm run backup:restore -- <file> <folder>`)
+backs up the work Git doesn't keep: `.for-lewis`, `.narrate`'s results (not its `node_modules` or
+models), `dosbox-saves`, `.claude/agents` and Claude's memory folder, into one dated archive encrypted
+with AES-256-GCM (passphrase from `BACKUP_PASSPHRASE`, or asked). Restore into an empty folder for a drill.

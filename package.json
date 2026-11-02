@@ -11,6 +11,8 @@
     "prepare": "npm run build:packages && npm run build:games",
     "verify:packages": "node scripts/verify-packages.mjs",
     "verify": "npm run format:check -w gamemaker-web && npm run lint && npm run typecheck && npm run test && npm run verify:packages",
+    "backup:local": "node scripts/backup-local.mjs backup",
+    "backup:restore": "node scripts/backup-local.mjs restore",
     "dev": "npm run dev -w gamemaker-web",
     "start": "npm run dev -w gamemaker-web",
     "build": "npm run build:packages && npm run build -w gamemaker-web",
