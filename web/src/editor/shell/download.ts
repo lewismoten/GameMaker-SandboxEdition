@@ -232,6 +232,13 @@ async function gamePatches(game: DownloadGame): Promise<PlayerPatches> {
 }
 
 /** An imported 3.00 player's own bytes, which the DOS download writes back (none for a catalog game). */
+/** An imported player's About lines and first build for the web-page and native downloads (only those, never the companion). */
+async function gameAbout(game: DownloadGame) {
+  if (game.entry) return undefined;
+  const { companionOrigin, playerAbout } = await import('../../dosPlayer/playerOrigin');
+  return playerAbout(companionOrigin(game.companion?.(), game.gam));
+}
+
 async function gameKept(game: DownloadGame) {
   if (game.entry) return undefined;
   const { companionOrigin, keptParts } = await import('../../dosPlayer/playerOrigin');
@@ -247,7 +254,13 @@ async function nativeOptions(game: DownloadGame, files: GameFiles) {
     import('../../export/macApp'),
     import('../../export/recordedAudio'),
   ]);
-  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: aboutNote(game), player: await gamePatches(game) });
+  const { html } = await exportSinglePage(files, {
+    title: game.title,
+    gam: game.gam,
+    fiction: aboutNote(game),
+    player: await gamePatches(game),
+    playerAbout: await gameAbout(game),
+  });
   return {
     title: game.title,
     id: game.id ?? slug(game.title),
@@ -322,12 +335,24 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
     } else if (kind === 'web' && alt) {
       const { name, zip } = await (
         await import('../../export/exportWebApp')
-      ).exportWebApp(files, { title: game.title, gam: game.gam, fiction: aboutNote(game), player: await gamePatches(game) });
+      ).exportWebApp(files, {
+        title: game.title,
+        gam: game.gam,
+        fiction: aboutNote(game),
+        player: await gamePatches(game),
+        playerAbout: await gameAbout(game),
+      });
       save(name, zip, 'application/zip', 'Unzip it onto any static web host.');
     } else if (kind === 'web') {
       const { name, html } = await (
         await import('../../export/exportSinglePage')
-      ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: aboutNote(game), player: await gamePatches(game) });
+      ).exportSinglePage(files, {
+        title: game.title,
+        gam: game.gam,
+        fiction: aboutNote(game),
+        player: await gamePatches(game),
+        playerAbout: await gameAbout(game),
+      });
       save(name, html, 'text/html', 'Open it in any browser to play, no internet needed.');
     } else if (kind === 'player') {
       const { name, zip } = await (await import('../../export/exportWebPlayer')).exportWebPlayer(files, game);

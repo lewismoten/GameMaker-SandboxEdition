@@ -1,5 +1,6 @@
 // "Export as one web page": one .html file with the player and every game file inside it.
 // Double-click it to play — from disk, offline, no web server — or email / host it as is.
+import type { PlayerAbout } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import type { GameFiles } from '../project/files';
 import { slug } from './exportWebApp';
 import { encodeGame, fillPage } from './singlePage';
@@ -20,6 +21,8 @@ interface SinglePageOptions {
   fiction?: string;
   /** The project's DOS player customizations, so the page shows XFERPLAY's screens as the DOS export does. */
   player?: PlayerPatches;
+  /** An imported game's own About text and first build, so F10 shows what Play's does (dosPlayer/playerOrigin.ts). */
+  playerAbout?: PlayerAbout;
 }
 
 export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions): Promise<{ name: string; html: string }> {
@@ -35,6 +38,9 @@ export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions
   // renamed file extensions are for the DOS download only
   const look = opts.player && withoutExtensions(opts.player);
   const player = look && Object.keys(look).length ? look : undefined;
-  const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice, player }, entries);
+  const game = await encodeGame(
+    { id, title: opts.title, gam: opts.gam, notice, player, ...(opts.playerAbout ? { playerAbout: opts.playerAbout } : {}) },
+    entries,
+  );
   return { name: `${id}.html`, html: fillPage(template, game, { blurb, fiction: opts.fiction, audio: recordedAudioNotice(recordedClips(files)) }) };
 }

@@ -66,6 +66,7 @@ async function main(): Promise<void> {
       hardwareId: `export:${game.id}`,
       notice: game.notice,
       player: game.player as PlayerPatches | undefined,
+      playerAbout: game.playerAbout,
       onFileWrite: (name, bytes) => writeSave(game.id, name, bytes),
       onQuit: () => false, // "Quit" shows the game's menu again
       onExit: start,

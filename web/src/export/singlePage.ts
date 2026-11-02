@@ -6,6 +6,7 @@
 // gzip-compressed when the browser can, then base64. The player page is a template built
 // with the app (standalone.html); the exporter fills in the title, the game, and the tags
 // and text that say what the game is and what made it (pageSeo.ts).
+import type { PlayerAbout } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import { exportAbout, exportHead, type ExportMeta } from './pageSeo';
 
 /** What the page's <script type="application/json" id="gm-game"> holds. */
@@ -25,6 +26,8 @@ export interface SinglePageGame {
   notice?: string;
   /** The project's DOS player customizations (dosPlayer/patchTable.ts ids), so the page plays as its DOS export looks. */
   player?: Record<string, unknown>;
+  /** An imported game's own About text and first build (F10), only those lines, never the companion. */
+  playerAbout?: PlayerAbout;
 }
 
 /** What the exporter knows about the game, for the page's tags and text (see pageSeo.ts). */
@@ -81,7 +84,7 @@ async function transform(data: Uint8Array, stream: CompressionStream | Decompres
 }
 
 export async function encodeGame(
-  meta: { id: string; title: string; gam: string; notice?: string; player?: Record<string, unknown> },
+  meta: { id: string; title: string; gam: string; notice?: string; player?: Record<string, unknown>; playerAbout?: PlayerAbout },
   entries: [string, Uint8Array][],
 ): Promise<SinglePageGame> {
   const { files, blob } = pack(entries);
