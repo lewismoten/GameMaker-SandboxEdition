@@ -233,6 +233,9 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       observer.disconnect();
       tubeWatch.disconnect();
       hideWallPoster();
+      // the shelf's page-only picture addresses (gameBox.ts drawBox `blobs`) go with it
+      for (const f of faces.values()) releaseFaces(f);
+      faces.clear();
     },
   };
 }
