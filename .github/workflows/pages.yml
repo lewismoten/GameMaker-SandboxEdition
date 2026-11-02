@@ -20,10 +20,8 @@ defaults:
     working-directory: web
 
 jobs:
-  frames:
-    uses: ./.github/workflows/game-frames.yml
+  # one job for the whole check: every job is billed as at least a minute, so no matrix here
   build:
-    needs: frames
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -33,12 +31,39 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: package-lock.json
-      - uses: actions/download-artifact@v8
+      # the last run's built games and Depth's frames; build-games.mjs then rebuilds only the games whose own inputs changed
+      - uses: actions/cache/restore@v6
         with:
-          pattern: game-frames-*
-          path: games/.render-cache
-          merge-multiple: true
+          path: |
+            games/*/disk
+            games/*/walkPaths.json
+            games/.build-cache.json
+            games/.render-cache
+          key: games-${{ github.sha }}
+          restore-keys: games-
       - run: npm ci
+        env:
+          GM_SKIP_GAME_BUILD: '1'
+      # capped so a cold cache still leaves time to save what was built; build-games.mjs records each game as it lands
+      - id: games
+        run: node ../scripts/build-games.mjs
+        timeout-minutes: 3
+        continue-on-error: true
+      # keep only this source's Depth frames, so the cache doesn't grow with every change
+      - run: node ../scripts/prune-render-cache.mjs
+        if: always()
+      - uses: actions/cache/save@v6
+        if: always()
+        with:
+          path: |
+            games/*/disk
+            games/*/walkPaths.json
+            games/.build-cache.json
+            games/.render-cache
+          key: games-${{ github.sha }}
+      # a cold cache: the games saved so far are kept, and the next run builds the rest
+      - if: steps.games.outcome != 'success'
+        run: echo "::error::Not every game was built in time; the next run continues from the cache." && exit 1
       - run: npm run format:check
       - run: npm run lint
       # only the quick tests (each under 50 ms here); the slow ones run locally (test/slowTests.json)

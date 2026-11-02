@@ -58,6 +58,21 @@ const pending = [
 const jobs = Math.max(1, Math.floor(Number(process.env.GM_BUILD_JOBS)) || (process.env.CI ? availableParallelism() : 2));
 const timing = process.argv.includes('--timing') || process.env.GM_BUILD_TIMING === '1';
 const times = [];
+// the cache records a game as built only once it is; written after every game, so a build stopped
+// partway (a CI step timeout) keeps what it finished and the next run picks up from there
+const built = new Set();
+function save(all = false) {
+  // at the end every game counts (as before); partway, only the games built so far
+  const fresh = (id) => (all ? !(only.length && !only.includes(id)) : built.has(id));
+  writeFileSync(
+    cacheFile,
+    JSON.stringify({
+      keys: Object.fromEntries(ids.map((id) => [id, fresh(id) ? keys[id] : cached?.keys?.[id]])),
+      frames,
+      outputs: Object.fromEntries(ids.map((id) => [id, all || fresh(id) ? outputs(id) : cached?.outputs?.[id]])),
+    }) + '\n',
+  );
+}
 async function worker() {
   for (;;) {
     const id = pending.shift();
@@ -111,6 +126,8 @@ async function worker() {
             })\n${error.stderr || error.stdout?.slice(-2000) || error.message}`,
       );
     }
+    built.add(id);
+    save();
     times.push([secret ? 'a game' : id, (Date.now() - started) / 1000]);
     if (!secret) console.log(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
   }
@@ -121,12 +138,5 @@ if (timing)
   console.log(
     `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,
   );
-writeFileSync(
-  cacheFile,
-  JSON.stringify({
-    keys: Object.fromEntries(ids.map((id) => [id, only.length && !only.includes(id) ? cached?.keys?.[id] : keys[id]])),
-    frames,
-    outputs: Object.fromEntries(ids.map((id) => [id, outputs(id)])),
-  }) + '\n',
-);
+save(true);
 console.log('Game build outputs are ready.');
