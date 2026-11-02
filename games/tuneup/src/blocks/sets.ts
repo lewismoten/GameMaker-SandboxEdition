@@ -66,6 +66,46 @@ function garage(k: Kit): void {
   bevel(chest, 1, 0, 18, 20, R('mach'), 3);
   for (let y = 3; y < 20; y += 5) chest.rect(3, y, 14, 3, c('mach', 2)).rect(8, y + 1, 4, 1, c('mach', 5));
   book.add('chest', chest, { solid: SOLID });
+  // wall dressing, all passable: a shadow board two blocks wide (a hammer, a hose, and the
+  // painted shapes of wrenches with nothing on them), THE CHEZ's charger with its cord coiled
+  // under it, and a shop light hung from the ceiling
+  const board = (left: boolean) => {
+    const p = wall(left ? 11 : 12);
+    p.rect(left ? 2 : 0, 2, 18, 16, c('wall', 2))
+      .rect(left ? 2 : 0, 2, 18, 1, c('wall', 1))
+      .rect(left ? 2 : 0, 17, 18, 1, c('wall', 1));
+    p.rect(left ? 2 : 17, 2, 1, 16, c('wall', 1));
+    const wrench = (x: number, h: number) =>
+      p
+        .disc(x, 5, 2, c('shade', 1))
+        .rect(x - 1, 6, 3, h, c('shade', 1))
+        .disc(x, 6 + h, 2, c('shade', 1))
+        .set(x, 4, c('wall', 2))
+        .set(x, 7 + h, c('wall', 2));
+    if (left) {
+      p.rect(7, 6, 2, 10, c('pipe', 2)).rect(4, 4, 8, 3, c('mach', 4)).rect(4, 6, 8, 1, c('mach', 2));
+      wrench(15, 8);
+    } else {
+      wrench(3, 7);
+      p.rect(10, 3, 2, 2, c('mach', 2));
+      for (let r = 3; r <= 5; r++) p.ring(11, 10, r, c('shade', r === 5 ? 0 : 2));
+    }
+    return p;
+  };
+  book.add('board.l', board(true), AIR);
+  book.add('board.r', board(false), AIR);
+  const charger = wall(13);
+  charger.rect(9, 0, 2, 3, c('mach', 2));
+  charger.rect(4, 3, 12, 10, c('mach', 5)).frame(4, 3, 12, 10, c('mach', 1)).rect(7, 5, 6, 2, c('lamp', 3));
+  charger.line(11, 8, 9, 10, c('lamp', 4)).line(9, 10, 11, 10, c('lamp', 4));
+  charger.rect(9, 13, 2, 2, c('shade', 0));
+  charger.ring(10, 17, 2, c('shade', 0)).ring(10, 17, 3, c('shade', 1));
+  book.add('charger', charger, AIR);
+  const light = wall(14);
+  light.line(5, 0, 5, 5, c('mach', 1)).line(14, 0, 14, 5, c('mach', 1));
+  light.rect(1, 6, 18, 3, c('mach', 4)).rect(1, 6, 18, 1, c('mach', 5)).rect(2, 9, 16, 2, c('lamp', 4));
+  for (let x = 3; x < 18; x += 3) light.set(x, 12, c('lamp', 3));
+  book.add('light', light, AIR);
 }
 
 /** A coil of hose on a peg. */

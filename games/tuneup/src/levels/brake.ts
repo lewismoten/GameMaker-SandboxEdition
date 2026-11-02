@@ -12,6 +12,7 @@ import { AIR, countedDoor, kit, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
 import { CTR, MON } from '../ids';
+import { decorate } from './decor';
 import { MapBuilder, at, type Level } from './maps';
 
 /** A beat of the breakbeat, in ticks: the floor's tiles step on it. */
@@ -93,5 +94,12 @@ export function brake(book: Kit['book']): Level {
   m.fill(w - 1, 0, 1, floor, 'slab');
   m.link(BRAKE.exit + 1, floor - 1);
   m.mon(MON.reggie, 4, floor - 1);
+  decorate(m, [
+    ['board', 3, 4],
+    ['board', 16, 3],
+    ['board', 26, 4],
+    ['board', 34, 3],
+    ['charger', 2, 6],
+  ]);
   return { m, start: at(8, 5), size: [w, 10] };
 }

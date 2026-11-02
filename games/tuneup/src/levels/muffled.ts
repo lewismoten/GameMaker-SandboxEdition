@@ -16,6 +16,7 @@ import { AIR, countedDoor, kit, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
 import { CTR, MON } from '../ids';
+import { decorate } from './decor';
 import { MapBuilder, at, type Level } from './maps';
 
 /** The egg's block number (about.json "egg" and web/src/eggs/eggs.ts carry it too). */
@@ -155,5 +156,15 @@ export function muffled(book: Kit['book']): Level {
   m.fill(w - 1, 0, 1, floor, 'slab');
   m.link(M.exit, floor - 1);
   m.mon(MON.regina, 3, floor - 1);
+  decorate(m, [
+    ['light', 12, 0],
+    ['light', 26, 0],
+    ['light', 38, 0],
+    ['board', 2, 4],
+    ['board', 14, 3],
+    ['board', 30, 3],
+    ['board', 38, 4],
+    ['charger', 1, 6],
+  ]);
   return { m, start: at(8, 5), size: [w, 10] };
 }

@@ -10,6 +10,7 @@ import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
 import { teddyInWindow } from '../art/chezTeddy';
 import { CTR, MON } from '../ids';
+import { decorate } from './decor';
 import { MapBuilder, at, type Level } from './maps';
 
 /** Notches on the crank's gauge. */
@@ -188,5 +189,14 @@ export function jump(book: Kit['book']): Level {
   m.mon(MON.reggie, JUMP.drum, 6);
   // he starts in mid air at (8, 5), so the view (centered on where he starts, and never scrolling
   // up or down) shows the whole garage from its left wall; he drops to the floor
+  decorate(m, [
+    ['light', 6, 0],
+    ['light', 18, 0],
+    ['light', 30, 0],
+    ['board', 6, 4],
+    ['board', 30, 3],
+    ['board', 38, 2],
+    ['charger', 42, 5],
+  ]);
   return { m, start: at(8, 5), size: [w, 10] };
 }
