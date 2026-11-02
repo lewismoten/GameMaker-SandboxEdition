@@ -144,6 +144,13 @@ and clamping. `kit/palRamps` exports `Pal` and `wrap` for named palette ramps.
 provides shapes, transforms, cameras and lighting. Consumers supply their own scenes.
 The stroke glyphs, implementation provenance and method references are in NOTICE.md.
 
+### Archives for downloads
+
+`kit/tar` writes and reads POSIX ustar archives (`createTar`, `createTarGz`, `readTar`). Entries keep
+their Unix mode, so a game folder's programs and scripts unpack executable, and names over 100
+bytes use the header's prefix field. It has no dependencies and runs in Node and browsers
+(`.tar.gz` uses the platform's `CompressionStream`).
+
 ### Native object builders
 
 `kit/actors` builds character sequences and monster paths. `kit/screenText` validates

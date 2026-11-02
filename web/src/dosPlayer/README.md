@@ -30,7 +30,7 @@ its bytes stay in the record only).
 
 - The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with
   `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`),
-  `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`tar.ts`).
+  `winApp.ts` (`peResources.ts`, `winIcon.ts`) and `linuxApp.ts` (`kit/tar` in the tools package).
 - What a download carries about itself: `notices.ts` (`THIRD-PARTY-NOTICES.txt`),
   `recordedAudio.ts` (a Bard of Bizarre game's non-commercial voice clips), `fiction.ts` (the note
   that this project's games were made in 2026), `pageSeo.ts` (an exported page's search and share

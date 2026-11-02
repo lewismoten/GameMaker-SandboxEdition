@@ -16,7 +16,7 @@
 // program" ticked (or "Run" chosen) for play.sh.
 import { drawIcon, encodeRgbaPng, type IconColors } from './macIcon';
 import { shrink } from './winIcon';
-import { createTarGz, type TarEntry } from './tar';
+import { createTarGz, type TarEntry } from '@lewismoten/gamemaker-sandbox-tools/kit/tar';
 import { thirdPartyNotices } from './notices';
 import { SITE_URL } from '../seo/site';
 import type { IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';

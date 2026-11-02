@@ -5,14 +5,13 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { createTar, readTar } from './tar';
+import { readTar } from '@lewismoten/gamemaker-sandbox-tools/kit/tar';
 import { folderName, linuxAppFiles, linuxId, linuxTarGz, playScript, shQuote } from './linuxApp';
 
 const players = {
   x86_64: new Uint8Array(readFileSync(resolve(__dirname, '../../public/linux/GameMakerPlayer-x86_64'))),
   aarch64: new Uint8Array(readFileSync(resolve(__dirname, '../../public/linux/GameMakerPlayer-aarch64'))),
 };
-const enc = new TextEncoder();
 const dec = new TextDecoder();
 const html = '<!doctype html><title>Test</title><p>game</p>';
 const options = { title: `Teddy's "$HOME" \`Test\``, id: 'Teddy Test', html, players, author: 'Lewis Moten', year: 2026 };
@@ -27,27 +26,6 @@ describe('the Linux player', () => {
       expect(text).toContain('libwebkit2gtk-4.1.so.0');
       expect(text).not.toContain('libgtk-3.so'); // loaded through WebKitGTK at run time, not linked
     }
-  });
-});
-
-describe('tar', () => {
-  it('reads back what it writes, modes and long names too', async () => {
-    const long = `${'folder/'.repeat(20)}file.txt`;
-    const tar = createTar(
-      [
-        { path: 'a/', mode: 0o755 },
-        { path: 'a/run', data: enc.encode('#!/bin/sh\n'), mode: 0o755 },
-        { path: long, data: new Uint8Array(1000) },
-      ],
-      new Date(0),
-    );
-    expect(tar.length % 512).toBe(0);
-    const entries = await readTar(tar);
-    expect(entries.map((e) => [e.path, e.mode, e.data.length])).toEqual([
-      ['a/', 0o755, 0],
-      ['a/run', 0o755, 10],
-      [long, 0o644, 1000],
-    ]);
   });
 });
 

@@ -1,6 +1,6 @@
 // A .tar.gz writer (and a reader, for tests): POSIX ustar archives, which keep each file's
-// Unix mode, so the Linux download's programs and scripts unpack executable. Used by
-// linuxApp.ts. Names longer than 100 bytes are split into the header's prefix field.
+// Unix mode, so a Linux download's programs and scripts unpack executable. Used by
+// the site's linuxApp.ts. Names longer than 100 bytes are split into the header's prefix field.
 
 export interface TarEntry {
   /** A/B/c, with "/" between folders; a folder ends with "/". */
