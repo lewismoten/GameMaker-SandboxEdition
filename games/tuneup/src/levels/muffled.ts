@@ -86,6 +86,31 @@ export const TOYS = [11, 14, 27, 33, 35];
 /** Blanket corners to tuck back in (level x, on the floor). */
 export const TUCKS = [16, 31];
 
+/** The moonbeam: from under the window (its top-left cell) down to the floor, drifting right
+ * `drift` pixels as it falls; `blocks` lists the cells (in the beam's own grid) it lights. */
+const BEAM = {
+  x: 6,
+  y: 3,
+  w: 5,
+  h: 6,
+  drift: 56,
+  blocks(): [number, number][] {
+    const out: [number, number][] = [];
+    for (let by = 0; by < this.h; by++)
+      for (let bx = 0; bx < this.w; bx++) {
+        let hit = false;
+        for (let y = by * 20; y < by * 20 + 20 && !hit; y++) {
+          const t = y / (this.h * 20);
+          const cx = 10 + t * this.drift;
+          const half = 7 + t * 6;
+          hit = cx + half > bx * 20 && cx - half < bx * 20 + 20;
+        }
+        if (hit) out.push([bx, by]);
+      }
+    return out;
+  },
+};
+
 export function muffledBlocks(pal: Pal): Kit {
   const k = kit(pal);
   baseSet(k, 'garage');
@@ -170,10 +195,21 @@ export function muffledBlocks(pal: Pal): Kit {
     tapes.rect(3, y, 14, 5, c('ink', 1)).rect(4, y + 1, 9, 3, [c('lamp', 3), c('accent', 3), c('pipe', 3)][i]);
   }
   book.add('tapes', tapes, { ...AIR, effect: CTR.tapes, eamt: 1, score: 200, touch: 'wall' });
-  // a moonbeam through the window lights a stripe of the wall
-  const beam = wall();
-  for (let y = 0; y < 20; y++) beam.line(y, y, y + 6, y, c('lamp', 1));
-  book.add('beam', beam, AIR);
+  // one moonbeam from the window down to the floor: the pegboard lit in a dithered shaft that
+  // widens and fades as it falls (a block for each cell it crosses)
+  const lit = BEAM.blocks();
+  const shaft = new Pixels(BEAM.w * 20, BEAM.h * 20);
+  for (let by = 0; by < BEAM.h; by++) for (let bx = 0; bx < BEAM.w; bx++) shaft.blit(wall(), bx * 20, by * 20);
+  const bayer = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+  shaft.map((x, y, col) => {
+    const t = y / (BEAM.h * 20);
+    const dx = Math.abs(x - (10 + t * BEAM.drift));
+    const half = 7 + t * 6;
+    if (dx >= half) return col;
+    const density = (0.6 - 0.4 * t) * (dx > half - 3 ? 0.45 : 1);
+    return bayer[(y % 4) * 4 + (x % 4)] / 16 < density ? c('wall', 5) : col;
+  });
+  for (const [bx, by] of lit) book.add(`beam${bx}.${by}`, shaft.crop(bx * 20, by * 20, 20, 20), AIR);
   countedDoor(k, 'door', 'wall', CTR.tapes, 1, (p: Pixels) => {
     p.rect(6, 9, 8, 6, c('ink', 1)).rect(7, 10, 5, 3, c('lamp', 3));
   });
@@ -188,7 +224,15 @@ export function muffled(book: Kit['book']): Level {
   const { w, floor } = M;
   const m = new MapBuilder(book, { '.': 'wall', '=': 'floor', b: 'bench', s: 'shelf', B: 'blanket', c: 'chest', t: 'tire' }, 'slab');
   m.fill(0, 0, w, floor, '.').fill(0, floor, w, 1, '=');
-  m.set(6, 2, 'window').fill(7, 3, 1, 6, 'beam');
+  // the pegboard's variants, here and there, then the window and its moonbeam over them
+  for (let y = 0; y < floor; y++)
+    for (let x = 0; x < w - 1; x++) {
+      // a panel's join runs the wall's height; a hook here and there
+      if (x % 9 === 4) m.set(x, y, 'wall.seam');
+      else if ((x * 7 + y * 13) % 19 === 11 && y > 1) m.set(x, y, 'wall.hook');
+    }
+  m.set(6, 2, 'window');
+  for (const [bx, by] of BEAM.blocks()) m.set(BEAM.x + bx, BEAM.y + by, `beam${bx}.${by}`);
   m.fill(M.bench[0], floor - 2, M.bench[1] - M.bench[0] + 1, 1, 'b').fill(M.bench[0], floor - 1, M.bench[1] - M.bench[0] + 1, 1, 'bench.legs');
   m.fill(M.shelf[0], 5, M.shelf[1] - M.shelf[0] + 1, 1, 's');
   // her bed under the shelf, and her Zzz

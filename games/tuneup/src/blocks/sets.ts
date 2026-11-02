@@ -21,6 +21,14 @@ function garage(k: Kit): void {
     return p;
   };
   book.add('wall', wall(1), AIR);
+  // two variants so a long wall doesn't repeat: a panel seam with its screws, and a lone hook
+  const seam = wall(7);
+  seam.rect(19, 0, 1, 20, c('wall', 0)).rect(18, 0, 1, 20, c('wall', 4));
+  for (const y of [4, 15]) seam.set(17, y, c('mach', 3));
+  book.add('wall.seam', seam, AIR);
+  const hook = wall(11);
+  hook.rect(11, 6, 2, 2, c('mach', 5)).rect(12, 8, 1, 4, c('mach', 4)).rect(10, 11, 2, 1, c('mach', 4)).set(10, 10, c('mach', 4));
+  book.add('wall.hook', hook, AIR);
   const pegs = wall(2);
   // a hook with a coil of hose and a hanging hand pump (no wrenches: Gwinn buried those)
   p_hose(k, pegs);
