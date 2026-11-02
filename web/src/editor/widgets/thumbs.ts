@@ -245,8 +245,23 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         const anim = parseFli(bytes);
         const fc = newFliCanvas(anim);
         applyFliFrame(anim, 0, fc);
+        // a cartoon that fades in starts dark, white or flat: play on while its palette is still
+        // fading, to the first settled frame with contrast (none: the frame with the most)
+        let shown = { pixels: fc.pixels.slice(), palette: fc.palette.slice() };
+        let best = contrast(fc.pixels, fc.palette);
+        if (washedOut(best))
+          for (let n = 1; n < anim.frames.length; n++) {
+            const fading = applyFliFrame(anim, n, fc);
+            const now = contrast(fc.pixels, fc.palette);
+            const settled = !fading && !washedOut(now);
+            if (settled || now.spread > best.spread) {
+              best = now;
+              shown = { pixels: fc.pixels.slice(), palette: fc.palette.slice() };
+            }
+            if (settled) break;
+          }
         const [c] = canvas(anim.width, anim.height);
-        paintIndexed(c, fc.pixels, anim.width, anim.height, fc.palette);
+        paintIndexed(c, shown.pixels, anim.width, anim.height, shown.palette);
         return c;
       }
       case 'snd': {
@@ -339,4 +354,29 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
     if (['gif', 'bkd', 'txt', 'lst', 'his', 'rec'].includes(kind)) return iconFor(kind, `${name.toUpperCase()} could not be decoded.`);
   }
   return iconFor(kind);
+}
+
+/** A frame's mean brightness and its spread (0-255), from about 4,000 pixels; the palette may be 6-bit (0-63). */
+function contrast(pixels: Uint8Array, palette: Uint8Array): { mean: number; spread: number } {
+  let top = 0;
+  for (const v of palette) top = Math.max(top, v);
+  const scale = top <= 63 ? 255 / 63 : 1;
+  const step = Math.max(1, Math.floor(pixels.length / 4000));
+  let sum = 0;
+  let sq = 0;
+  let n = 0;
+  for (let i = 0; i < pixels.length; i += step) {
+    const k = pixels[i] * 3;
+    const y = (0.299 * palette[k] + 0.587 * palette[k + 1] + 0.114 * palette[k + 2]) * scale;
+    sum += y;
+    sq += y * y;
+    n++;
+  }
+  const mean = n ? sum / n : 0;
+  return { mean, spread: n ? Math.sqrt(Math.max(0, sq / n - mean * mean)) : 0 };
+}
+
+/** Mostly dark or mostly white with little contrast, or nearly one flat color: a fade. */
+function washedOut({ mean, spread }: { mean: number; spread: number }): boolean {
+  return spread < 10 || ((mean < 48 || mean > 208) && spread < 28);
 }
