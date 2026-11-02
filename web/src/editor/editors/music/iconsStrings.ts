@@ -3,7 +3,6 @@
 // singers' faces and the distant choir. Drawn with iconCanvas.
 import { canvas } from './iconCanvas';
 
-const PICK = ['.kkkkkkk.', 'kkbbbbbkk', 'kbbbbbbbk', '.kbbbbbk.', '..kbbbk..', '...kbk...', '....k....'];
 
 export const STRINGS_ICONS: Record<string, () => string[]> = {
   orchestra: () => {
@@ -47,10 +46,12 @@ export const STRINGS_ICONS: Record<string, () => string[]> = {
     return c.rows();
   },
   pluck: () => {
-    // a pick pressing a string out of line, the others still
+    // a red pick bending one string away from the others, with its ripples
     const c = canvas();
-    for (const y of [12, 16, 18]) c.fill(0, y, 20, 1, 'g');
-    c.line(0, 14, 10, 10, 'k').line(10, 10, 19, 14, 'k').spr(6, 2, PICK);
+    for (const y of [12, 15, 18]) c.fill(0, y, 20, 1, 'g');
+    c.line(0, 9, 8, 13, 'k').line(8, 13, 19, 9, 'k').line(0, 10, 8, 14, 'w').line(8, 14, 19, 10, 'w');
+    c.spr(5, 0, ['.kkkkkkk.', 'kkyyyyykk', 'kyyyyyyyk', '.kyyyyyk.', '..kyyyk..', '...kyk...', '....k....']);
+    c.spr(13, 3, ['.c', 'c.', '.c']).spr(16, 4, ['.c', 'c.', '.c']).spr(1, 4, ['c.', '.c', 'c.']);
     return c.rows();
   },
   ooh: () => face(false),

@@ -43,19 +43,14 @@ export const PERC_ICONS: Record<string, () => string[]> = {
     return mallets(c, 'w', 2, 0).rows();
   },
   chimes: () => {
-    const c = canvas().ell(10, 2, 6, 1.5, 'n').fill(10, 3, 1, 3, 'g');
-    [
-      [3, 12],
-      [6, 14],
-      [9, 10],
-      [12, 15],
-      [15, 11],
-    ].forEach(([x, len], i) => {
-      c.line(x, 3, x, 5, 'g')
-        .box(x - 1, 5, 3, len, i % 2 ? 'g' : 'w')
-        .fill(x, 6, 1, len - 2, 'w');
+    // five hanging tubes, shortest to longest, from a wooden bar
+    const c = canvas().box(0, 0, 20, 3, 'n').fill(1, 1, 18, 1, 'o');
+    [6, 8, 11, 14, 16].forEach((len, i) => {
+      const x = 1 + i * 4;
+      c.px(x + 1, 3, 'k')
+        .box(x, 4, 3, len, 'g')
+        .fill(x + 1, 5, 1, len - 2, 'w');
     });
-    c.ell(10, 11, 2, 2, 'n').fill(10, 5, 1, 4, 'g');
     return c.rows();
   },
   'vibes-wobbly': () => {
@@ -191,6 +186,17 @@ export const PERC_ICONS: Record<string, () => string[]> = {
     const c = canvas().ell(10, 2.5, 8, 1.5, 'T').ell(10, 5, 8, 1.5, 'T').fill(9, 7, 2, 7, 'g');
     c.fill(4, 15, 13, 2, 'k').fill(5, 15, 11, 1, 'g').fill(14, 11, 4, 4, 'k').fill(13, 14, 2, 2, 'k').fill(14, 12, 3, 1, 'w').line(10, 14, 10, 15, 'g');
     c.fill(2, 17, 16, 2, 'k').fill(3, 17, 14, 1, 'g');
+    return c.rows();
+  },
+  'steel-drum': () => {
+    // a steel pan from above: the bowl with its oval note fields
+    const c = canvas().ell(9.5, 9.5, 9, 9, 'g');
+    c.ell(9.5, 9.5, 7, 7, 'b');
+    c.ell(9.5, 9.5, 1.5, 1.5, 'w', 'w');
+    for (let i = 0; i < 6; i++) {
+      const a = (i * Math.PI) / 3 + 0.5;
+      c.ell(9.5 + 4.8 * Math.cos(a), 9.5 + 4.8 * Math.sin(a), 1.5, 1.5, 'w', 'w');
+    }
     return c.rows();
   },
 };

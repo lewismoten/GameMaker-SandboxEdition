@@ -40,9 +40,12 @@ export const WINDS_ICONS: Record<string, () => string[]> = {
     return c.rows();
   },
   'organ-wobble': () => {
-    const c = canvas().box(2, 1, 7, 13, 'T').fill(3, 2, 5, 2, 'T').fill(3, 3, 5, 1, 'k').box(11, 4, 7, 10, 'T').fill(12, 6, 5, 1, 'k');
-    c.fill(5, 5, 1, 7, 'o').fill(14, 8, 1, 4, 'o');
-    for (let x = 1; x < 19; x++) c.px(x, 16 + Math.round(1.5 * Math.sin(x * 0.9)), 'p').px(x, 17 + Math.round(1.5 * Math.sin(x * 0.9)), 'p');
+    // a Leslie speaker cabinet: louvred front, a spinning horn behind it, and a wobbling hum
+    const c = canvas().box(4, 1, 12, 18, 'n').fill(5, 2, 10, 1, 'o').ell(9.5, 8, 4, 4, 'k').fill(6, 8, 8, 1, 'T').fill(9, 5, 2, 7, 'g');
+    c.fill(5, 14, 10, 1, 'k').fill(5, 16, 10, 1, 'k').fill(5, 15, 10, 1, 'o').fill(5, 17, 10, 1, 'o');
+    for (let y = 3; y <= 13; y++) {
+      c.px(1 + Math.round(1.2 * Math.sin(y * 1.1)), y, 'p').px(18 - Math.round(1.2 * Math.sin(y * 1.1)), y, 'p');
+    }
     return c.rows();
   },
   organ: () => {
@@ -71,11 +74,17 @@ export const WINDS_ICONS: Record<string, () => string[]> = {
     return c.fill(1, 17, 18, 1, 'b').rows();
   },
   trombone: () => {
-    const c = canvas().fill(1, 4, 15, 11, 'k').fill(2, 5, 13, 2, 'T').fill(2, 12, 13, 2, 'T').fill(2, 5, 2, 9, 'T').fill(5, 8, 12, 3, '.');
-    c.fill(5, 7, 10, 1, 'k').fill(5, 11, 10, 1, 'k');
-    c.fill(13, 2, 1, 15, 'g').fill(13, 8, 1, 3, '.');
-    for (let i = 0; i < 6; i++) c.fill(15 + Math.floor(i / 2), 4 - i + 0, 1, 1, 'k').fill(15 + Math.floor(i / 2), 14 + i, 1, 1, 'k');
-    c.fill(16, 5, 3, 9, 'T').fill(18, 1, 1, 17, 'k').fill(17, 2, 1, 15, 'T');
+    // a slide trombone: two long slide tubes, a U-bend and brace, and a flared bell below
+    const c = canvas();
+    for (const y of [1, 5]) c.fill(3, y, 17, 3, 'k').fill(4, y + 1, 15, 1, 'T');
+    c.fill(2, 1, 3, 7, 'k').fill(3, 2, 1, 5, 'T').fill(17, 1, 3, 15, 'k').fill(18, 2, 1, 13, 'T');
+    c.fill(6, 13, 12, 3, 'k').fill(6, 14, 12, 1, 'T');
+    for (let x = 0; x < 7; x++) {
+      const half = 1 + (6 - x) * 0.8;
+      const top = Math.round(14 - half),
+        bot = Math.round(14 + half);
+      c.fill(x, top, 1, bot - top + 1, 'k').fill(x, top + 1, 1, Math.max(0, bot - top - 1), x < 2 ? 'w' : 'T');
+    }
     return c.rows();
   },
   tuba: () => {
@@ -91,13 +100,17 @@ export const WINDS_ICONS: Record<string, () => string[]> = {
     return c.rows();
   },
   'brass-swell': () => {
+    // a euphonium: wide upturned bell, coiled body, valves, and a crescendo wedge
     const c = canvas();
-    for (let x = 1; x <= 14; x++) {
-      const h = 1 + Math.round((x - 1) * 0.45);
-      c.fill(x, 8 - h, 1, h * 2 + 1, 'k').fill(x, 9 - h, 1, h * 2 - 1, 'T');
+    for (let y = 0; y <= 5; y++) {
+      const half = 3 + y * 0.5;
+      c.fill(Math.round(13.5 - half), y, Math.round(half * 2), 1, 'k');
+      c.fill(Math.round(14.5 - half), y, Math.round(half * 2) - 2, 1, y < 1 ? 'g' : 'T');
     }
-    c.fill(14, 1, 2, 15, 'k').fill(14, 2, 1, 13, 'T').fill(1, 8, 4, 2, 'k').fill(2, 8, 3, 1, 'g');
-    c.line(3, 18, 18, 15, 'r').line(3, 18, 18, 19, 'r').line(18, 15, 18, 19, 'r');
+    c.fill(4, 3, 4, 2, 'k').fill(2, 2, 3, 1, 'g').ell(8.5, 9.5, 6, 3.5, 'T').ell(8.5, 9.5, 3, 1.5, '.');
+    c.fill(11, 5, 6, 4, 'T').fill(10, 5, 1, 4, 'k').fill(17, 5, 1, 4, 'k');
+    for (const x of [5, 7, 9]) c.fill(x, 6, 1, 2, 'g');
+    c.line(1, 17, 18, 14, 'r').line(1, 17, 18, 19, 'r').line(18, 14, 18, 19, 'r');
     return c.rows();
   },
   brass: () => {
@@ -138,13 +151,12 @@ export const WINDS_ICONS: Record<string, () => string[]> = {
     return c.rows();
   },
   'reed-swell': () => {
-    // a clarinet mouthpiece with its reed and ligature, and a crescendo wedge
-    const c = canvas();
-    for (const d of [-2, -1, 0, 1, 2]) c.line(2, 13 + d, 12, 3 + d, d === 0 ? 'k' : 'k');
-    for (const d of [-1, 0, 1]) c.line(3, 13 + d, 12, 4 + d, 'k');
-    c.line(5, 9, 11, 3, 'o').line(6, 9, 12, 3, 'T').line(4, 11, 2, 13, 'o');
-    c.line(7, 10, 9, 8, 'g').line(8, 11, 10, 9, 'g').line(7, 9, 9, 7, 'g');
-    c.line(3, 17, 18, 15, 'r').line(3, 17, 18, 19, 'r').line(18, 15, 18, 19, 'r');
+    // a clarinet: mouthpiece with its reed, key-dotted body, flared bell, and a crescendo wedge
+    const c = canvas().box(3, 4, 12, 5, 'k').fill(4, 5, 10, 1, 'n').fill(4, 6, 10, 2, 'k');
+    for (const x of [6, 9, 12]) c.fill(x, 5, 1, 1, 'g').fill(x, 7, 1, 1, 'g');
+    c.fill(0, 5, 4, 3, 'k').fill(1, 6, 3, 1, 'y').fill(0, 7, 1, 1, '.');
+    c.fill(15, 2, 2, 9, 'k').fill(16, 3, 1, 7, 'g').fill(17, 1, 3, 11, 'k').fill(18, 2, 1, 9, 'g').fill(17, 5, 1, 3, 'k');
+    c.line(1, 17, 18, 14, 'r').line(1, 17, 18, 19, 'r').line(18, 14, 18, 19, 'r');
     return c.rows();
   },
 };

@@ -75,8 +75,11 @@ export const SYNTH_ICONS: Record<string, () => string[]> = {
     return c.rows();
   },
   'pad-wobble': () => {
-    const c = canvas().ell(9.5, 9.5, 8, 5, 'e').ell(9.5, 9.5, 5, 8, 'c').ell(9.5, 9.5, 3, 3, 'w');
-    c.px(9, 9, 'k').px(10, 9, 'k').px(9, 10, 'k').px(10, 10, 'k');
+    // a pad synth's panel: a screen showing the LFO's sine wave, knobs, and a strip of pads
+    const c = canvas().box(0, 2, 20, 16, 'g').box(2, 4, 16, 7, 'k', 'k').fill(3, 5, 14, 5, 'k');
+    for (let x = 3; x < 17; x++) c.px(x, 7 + Math.round(2 * Math.sin((x - 3) * 0.9)), 'c');
+    for (const x of [4, 9, 14]) c.ell(x + 0.5, 13.5, 1.5, 1.5, 'w').px(x + 1, 12, 'k');
+    for (const x of [2, 6, 10, 14]) c.box(x, 16, 4, 2, 'p');
     return c.rows();
   },
 };
