@@ -1,6 +1,7 @@
 // The selected native block's behavior panels; group painting changes pictures independently.
 import { h, clear, numberField, checkField, selectField } from '../../core/ui';
 import type { Project } from '../../core/project';
+import { blockChoiceField } from './blockChoice';
 import { monsterBirthField } from '../../widgets/monsterBirthField';
 import { SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -58,7 +59,7 @@ export function blockProperties(o: {
         ),
       );
     const blockNum = (labelText: string, get: () => number, set: (v: number) => void, title: string) =>
-      numberField(labelText, get, (v) => edit(() => set(v)), { min: 0, max: 255, title });
+      blockChoiceField({ label: labelText, title, blocks, pal, sprites: kind !== 'bbl', self: current(), get, set: (v) => edit(() => set(v)) });
     const touch = [
       numberField(
         'Score points',

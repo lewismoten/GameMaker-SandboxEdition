@@ -296,3 +296,46 @@ dialog.modal label.recolor-check {
 .blk-edit-group[hidden] {
   display: none;
 }
+
+/* "Becomes block" fields: number plus a live picture that opens the block chooser */
+.block-choice-field {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+}
+.block-preview {
+  min-width: 32px;
+  min-height: 32px;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.block-preview-pic,
+.block-choice-pic {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+.block-none {
+  font-size: 0.85rem;
+  padding: 0 4px;
+}
+.block-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 6px;
+  max-height: 60vh;
+  overflow: auto;
+  min-width: min(360px, 80vw);
+}
+.block-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 48px;
+  padding: 2px;
+}
+.block-choice[aria-pressed='true'] {
+  outline: 2px solid var(--accent, currentColor);
+}

@@ -194,6 +194,8 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `blockProperties.ts` owns the selected block's Walking, Touch, Time and monster behavior
   panels separately from canvas painting, including scene-specific named counters and
   monster-birth choices. Group tools do not spread those behavior fields across the group.
+  `blockChoice.ts` is the "Becomes block" / "Changes into block" field: the number, a live picture of
+  that block (or "None" when it is the block's own number) and a dialog of every non-empty block to pick from.
   `blockNames.ts` stores designer labels under each BBL, CBL or MBL's `blockNames`
   companion section. Labels are independent of monster-definition names; selectors retain
   the native block number alongside the label. Naming never writes into a native block set.
