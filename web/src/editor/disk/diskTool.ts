@@ -57,7 +57,12 @@ function stepView(step: Step): HTMLElement {
   return h(
     'li',
     { class: 'disk-step' },
-    h('details', null, h('summary', null, `${step.title} (saves ${kb(step.saves)})`), h('ul', null, ...step.changes.map((c) => h('li', null, c)))),
+    h(
+      'details',
+      null,
+      h('summary', null, step.saves ? `${step.title} (saves ${kb(step.saves)})` : step.title),
+      h('ul', null, ...step.changes.map((c) => h('li', null, c))),
+    ),
   );
 }
 
@@ -130,7 +135,7 @@ export async function diskTool(project: Project): Promise<void> {
               h(
                 'p',
                 null,
-                `${plural(plan.steps.length, 'merge')} would give back ${kb(saves)}. A DOS file is the same size however little is in it, so a monster file or block set that is mostly empty can take another’s place. Each opens to show what changes; nothing changes until you apply them.`,
+                `${plural(plan.steps.length, 'step')} would give back ${kb(saves)}. A DOS file is the same size however little is in it, so a monster file or block set that is mostly empty can take another’s place; blocks that look the same become one so sets fit together. Each opens to show what changes; nothing changes until you apply them.`,
               ),
               h('ol', { class: 'disk-steps' }, ...plan.steps.map(stepView)),
               h(
@@ -144,7 +149,7 @@ export async function diskTool(project: Project): Promise<void> {
                       hist.before(...new Set(plan.steps.flatMap((s) => s.touches)));
                       for (const s of plan.steps) s.apply(project.files, project.gam);
                       project.forgetParsed();
-                      applied = `Merged ${plural(plan.steps.length, 'file pair')}, saving ${kb(saves)}.`;
+                      applied = `Applied ${plural(plan.steps.length, 'step')}, saving ${kb(saves)}.`;
                       toast(applied);
                     } catch (e) {
                       toast(`Could not merge: ${(e as Error).message}`, 'error');
@@ -152,7 +157,7 @@ export async function diskTool(project: Project): Promise<void> {
                     render();
                   },
                 },
-                `Apply ${plural(plan.steps.length, 'merge')} (saves ${kb(saves)})`,
+                `Apply ${plural(plan.steps.length, 'step')} (saves ${kb(saves)})`,
               ),
             )
           : h('p', null, 'Nothing is left to merge.'),

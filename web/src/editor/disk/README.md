@@ -20,6 +20,7 @@ merge them, and says how many 3.5" disks the game needs.
   that the kept file's scenes share with the dropped file's scenes is ambiguous, so that pair stays
   apart (the note says which file).
 - `mergePalettes.ts`: two `.pal` files with the same 256 colors (always safe).
+- `lookAlikeFold.ts`: the fold as a step (`kind: 'look'`), one block set at a time: blocks drawn alike under every palette the set is shown with, with equal rules, become one (the pinned one, else the lowest), the set's maps and "becomes" links follow, the freed slots go blank. It saves no bytes itself; it comes before the block-set join so the join has room. Two blocks that are both pickups or carried stay apart.
 - `mergeBackgrounds.ts`: two `.bbl` sets whose scenes share a palette and whose drawn blocks fit in 150: the dropped set's blocks move into the kept set's blank slots (an identical block there is reused; `tools/block-merge`), its maps get the new numbers and its scenes open the kept file. The kept set is not renumbered. Pickups, required and starting items and block 0 keep their number or the pair stays apart. Planned last, after the monster and palette merges.
 - `blockUse.ts`: the blocks a set's maps draw and what they turn into.
 - `lookAlikes.ts`, `lookAlikeView.ts`, `pictureCanvas.ts`: per background set, the blocks drawn the
@@ -51,3 +52,5 @@ merge them, and says how many 3.5" disks the game needs.
 
 `games/kit/diskSpace.ts` runs the planner over every built game
 (`cd web && npx vite-node ../games/kit/diskSpace.ts [id…] [--write] [--strict]`).
+
+`npm run optimize:proof` (web/, `games/kit/optimizeProof.ts`) applies every step to a copy of each built game and checks that each scene draws the same map pixel for pixel and that carried block numbers keep their picture and rules. It prints the steps and bytes saved per game and exits 1 on a difference.

@@ -1,9 +1,10 @@
 // The disk-space tool's findings: every consolidation that is safe to apply, in the order it must
-// happen (monster blocks, then monster files, then palettes), found by applying each to a copy
+// happen (monster blocks, then monster files, then palettes, then look-alike blocks, then block sets), found by applying each to a copy
 // and looking again; plus the near misses the author may want to do by hand.
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { GameFiles } from '../../project/files';
 import { planBackgrounds } from './mergeBackgrounds';
+import { planLookAlikes } from './lookAlikeFold';
 import { planPalettes } from './mergePalettes';
 import { planMonsterBlocks } from './mergeMonsterBlocks';
 import { planMonsters } from './mergeMonsters';
@@ -11,13 +12,21 @@ import { filesIn, sceneUses } from './refs';
 import type { Note, Plan, Step } from './types';
 
 // block sets join last: once two scenes share a block set, their monster files can no longer tell whose birth blocks are whose
-const ORDER: Step['kind'][][] = [['mbl', 'mon', 'pal'], ['bbl']];
+const ORDER: Step['kind'][][] = [
+  ['mbl', 'mon', 'pal'],
+  ['look', 'bbl'],
+];
 
 /** The next step that can be applied, and why the other pairs can't. */
 function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][]): Step | undefined {
   const uses = sceneUses(files, parseGame(files.get(gam)!));
   for (const kind of order) {
     if (kind === 'pal') return planPalettes(files, gam, uses);
+    if (kind === 'look') {
+      const s = planLookAlikes(files, gam, uses);
+      if (s) return s;
+      continue;
+    }
     const slot = kind;
     const names = filesIn(uses, slot).sort();
     for (let a = 0; a < names.length; a++)

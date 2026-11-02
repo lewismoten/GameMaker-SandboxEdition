@@ -13,6 +13,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "walk:auto": "vite-node scripts/walkAuto.ts",
+    "optimize:proof": "vite-node ../games/kit/optimizeProof.ts",
     "check:games": "vite-node ../games/kit/checkGames.ts",
     "perf:check": "vite-node scripts/perfCheck.ts",
     "perf:trace": "vite-node scripts/perfTrace.ts",
