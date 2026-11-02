@@ -7,6 +7,7 @@
 // each other. When every fan in a verse plays, the flap opens. A thermometer on the wall shows the
 // motor warming the air, a notch at a time: cool blue in the first verse, up into the red in the hot one.
 // In the hot verse a floor grate glows red, then puffs a gust that stings a little (GUST).
+import { addFork, glint } from '../blocks/fork';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, countedDoor, GRAV, kit, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
@@ -44,6 +45,8 @@ export interface FanVerse {
   gust?: number;
   /** The last verse: a big switch on the wall by the flap, thrown as Doc Leo walks out (fans off, flap shut). */
   lever?: boolean;
+  /** The first verse's secret: a glint, and a tuning fork on the high ledge between two fans (level x, y). */
+  fork?: [number, number];
 }
 
 export const FAN_VERSES: FanVerse[] = [
@@ -70,6 +73,7 @@ export const FAN_VERSES: FanVerse[] = [
     exit: 27,
     gauges: [1, 15],
     heat: [2, 7],
+    fork: [22, 4],
   },
   {
     file: 'fan2',
@@ -242,6 +246,10 @@ export function fanBlocks(v: FanVerse) {
         book.add(`lever.${half}.off`, lever(half, false), AIR);
         book.add(`lever.${half}`, lever(half, true), { ...AIR, touch: `lever.${half}.off` });
       }
+    if (v.fork) {
+      addFork(k, 'vent');
+      glint(k, 'vent');
+    }
     return k;
   };
 }
@@ -263,6 +271,7 @@ export function fan(v: FanVerse) {
     for (const x of v.gauges) m.set(x, 2, `thermo${v.heat[0]}`).set(x, 3, `thermo${v.heat[0]}.b`);
     m.set(v.exit, R.floor - 2, 'flap.top').set(v.exit, R.floor - 1, 'flap');
     if (v.lever) m.set(v.exit - 1, R.floor - 2, 'lever.top').set(v.exit - 1, R.floor - 1, 'lever.bot');
+    if (v.fork) m.set(...v.fork, 'fork').set(v.fork[0] - 1, v.fork[1] - 1, 'vent.glint');
     m.fill(w - 1, 0, 1, R.floor, '#');
     m.link(v.exit + 1, R.floor - 1);
     m.mon(MON.reggie, 1, R.floor - 1);

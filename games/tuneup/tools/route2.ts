@@ -6,14 +6,14 @@
 import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
 import { CTR, MON } from '../src/ids';
 import { TRICK_KEYS } from '../src/heroes';
-import { BRAKE, HOUSINGS } from '../src/levels/brake';
+import { BRAKE, BRAKE_FORK, HOUSINGS } from '../src/levels/brake';
 import { CUPS } from '../src/levels/cups';
 import { FAN_ROW, FAN_VERSES } from '../src/levels/fan';
 import { ORIGIN } from '../src/levels/maps';
 import { MUFFLED, TOYS, TUCKS, WATCHED } from '../src/levels/muffled';
 import { AWNINGS, AWNING_ROW, POODLE, PUMP, TWISTS } from '../src/levels/pump';
 import type { Bot } from './bot';
-import { leave, must } from './route';
+import { leave, must, takeFork } from './route';
 
 /** The swim: nobody steers; the scene ends by itself. */
 export async function theSwim(bot: Bot): Promise<void> {
@@ -51,6 +51,7 @@ export function fanBand(verse: number) {
     await must(bot, bot.land(), 'into the vent');
     const fans = [...v.fans].sort((a, b) => a[0] - b[0]);
     const before = bot.count(CTR.fans);
+    const forks = bot.count(CTR.forks);
     const ledgeOf = (x: number) => v.ledges.find(([a, b]) => x >= a && x <= b);
     const columnBefore = (x: number) => [...v.columns].reverse().find((c) => c.x < x);
     let high = false;
@@ -88,6 +89,7 @@ export function fanBand(verse: number) {
         high = false;
       }
     }
+    if (v.fork && bot.count(CTR.forks) !== forks + 1) throw new Error('walked the ledge past the tuning fork');
     if (bot.count(CTR.fans) - before !== v.fans.length) throw new Error(`only ${bot.count(CTR.fans) - before} fans`);
     await leave(bot, bot.walk(v.exit + 1, 'through the flap'), 'out');
   };
@@ -111,6 +113,11 @@ export async function brakeDance(bot: Bot): Promise<void> {
       'the lamp',
     );
     await must(bot, bot.walk(h.x + 1, 'over the housing'), 'over');
+    if (i === 0) {
+      // up the tire stack to the bench top for the tuning fork, and back down
+      await takeFork(bot, BRAKE_FORK[0], 'on the tire bench');
+      await must(bot, bot.walk(HOUSINGS[1].x - 1, 'down the other side'), 'down');
+    }
   }
   await leave(bot, bot.walk(BRAKE.exit + 1, 'out the door'), 'out');
 }

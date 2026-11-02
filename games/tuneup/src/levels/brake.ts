@@ -6,6 +6,7 @@
 // the lamp, which floats out to Teddy, and his touch counts it (realMonsters.ts). The floor's
 // tiles flash on the beat. Each freed lamp glows with its letter (B, R, A, K); when all four are
 // lit, the door at the end opens and its own lamp lights the E.
+import { addFork, glint } from '../blocks/fork';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { text } from '../../../snowbound/src/art/font';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
@@ -26,6 +27,8 @@ export const HOUSINGS: { x: number; key: string; pose: string }[] = [
   { x: 26, key: 'C', pose: 'dead' },
   { x: 33, key: 'V', pose: 'frontBeg' },
 ];
+/** The secret: tires stacked 1, 2 and 3 high up to a bench top, a glint over it and a tuning fork on it (level x, y). */
+export const BRAKE_FORK = [17, 5] as const;
 /** Tires on the floor between them, to hop. */
 const TIRES = [16, 23, 30];
 
@@ -88,6 +91,8 @@ export function brakeBlocks(pal: Pal): Kit {
       text(p, 7, 3, 'E', c('paint', 3));
     },
   );
+  addFork(k, 'wall');
+  glint(k, 'wall');
   return k;
 }
 
@@ -104,6 +109,13 @@ export function brake(book: Kit['book']): Level {
     m.mon(MON.lock0 + i, h.x, floor - 1);
   });
   for (const x of TIRES) m.set(x, floor - 1, 't');
+  // the secret: tires stacked up to a bench top (as in the garage), a tuning fork shining on it
+  m.set(14, floor - 1, 't')
+    .fill(15, floor - 2, 1, 2, 't')
+    .fill(16, floor - 3, 1, 3, 't');
+  m.set(17, floor - 3, 'bench')
+    .set(...BRAKE_FORK, 'fork')
+    .set(16, BRAKE_FORK[1] - 1, 'wall.glint');
   m.set(BRAKE.exit, floor - 2, 'door.top').set(BRAKE.exit, floor - 1, 'door');
   m.fill(w - 1, 0, 1, floor, 'slab');
   m.link(BRAKE.exit + 1, floor - 1);
