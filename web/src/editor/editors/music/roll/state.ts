@@ -8,7 +8,12 @@ import { noteEnd, type CmfSong, type Note } from '@lewismoten/gamemaker-sandbox-
 export interface Drawn {
   s: number;
   e: number;
-  look: string;
+  /** Cut-off tick (this track) or -1 (another track's note). */
+  cut: number;
+  key: number;
+  vel: number;
+  /** 1 no note-off, 2 selected, 4 hovered, 8 its velocity bar hovered. */
+  flags: number;
 }
 
 export interface Shown {
@@ -39,13 +44,14 @@ export function shownNotes(song: CmfSong, track: number, ghosts: boolean, select
       }
     }
     cuts.set(n, cut);
-    const hov = hover?.note === n ? (hover.vel ? 2 : 1) : 0;
-    drawn.set(n, { s, e, look: `${cut} ${n.on.a} ${n.on.b} ${n.off ? 1 : 0} ${selection.has(n) ? 1 : 0} ${hov}` });
+    const hov = hover?.note === n ? (hover.vel ? 8 : 4) : 0;
+    const flags = (n.off ? 0 : 1) | (selection.has(n) ? 2 : 0) | hov;
+    drawn.set(n, { s, e, cut, key: n.on.a, vel: n.on.b, flags });
   }
   if (ghosts) {
     for (const n of song.notes) {
       if (n.on.ch === track) continue;
-      drawn.set(n, { s: n.on.tick, e: noteEnd(song, n), look: `g${n.on.a}` });
+      drawn.set(n, { s: n.on.tick, e: noteEnd(song, n), cut: -1, key: n.on.a, vel: 0, flags: 0 });
     }
   }
   return { notes, cuts, drawn };
@@ -56,7 +62,7 @@ export function changedSpans(before: Map<Note, Drawn>, after: Map<Note, Drawn>):
   const out: [number, number][] = [];
   for (const [n, d] of after) {
     const o = before.get(n);
-    if (o && o.s === d.s && o.e === d.e && o.look === d.look) continue;
+    if (o && o.s === d.s && o.e === d.e && o.cut === d.cut && o.key === d.key && o.vel === d.vel && o.flags === d.flags) continue;
     out.push(o ? [Math.min(o.s, d.s), Math.max(o.e, d.e)] : [d.s, d.e]);
     if (out.length > MANY) return null;
   }

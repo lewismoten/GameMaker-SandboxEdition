@@ -16,7 +16,7 @@ export class Overview {
   /** The rows, bars, loop and notes, painted once and repainted where they change. */
   private cache = document.createElement('canvas');
   private looks = '';
-  private drawn = new Map<Note, string>();
+  private drawn = new Map<Note, [number, number, number, number]>();
   /** The height when last drawn (asking the song for its tracks is too slow for every frame). */
   private shownH = 40;
 
@@ -58,7 +58,9 @@ export class Overview {
   }
 
   private resize(): void {
-    this.w = Math.max(200, Math.floor(this.el.getBoundingClientRect().width));
+    const width = this.el.getBoundingClientRect().width;
+    if (!width) return; // hidden (another tab is open): keep the cached picture
+    this.w = Math.max(200, Math.floor(width));
     this.draw();
   }
 
@@ -97,8 +99,8 @@ export class Overview {
       doc.loopOn,
       tracks.map((c) => `${doc.trackColor(c)}${doc.heard(c) && doc.sounds(c)}`).join(),
     ].join('|');
-    const drawn = new Map<Note, string>();
-    for (const n of doc.song.notes) drawn.set(n, `${n.on.ch} ${n.on.tick} ${noteEnd(doc.song, n)} ${n.on.a}`);
+    const drawn = new Map<Note, [number, number, number, number]>();
+    for (const n of doc.song.notes) drawn.set(n, [n.on.ch, n.on.tick, noteEnd(doc.song, n), n.on.a]);
     const sx = this.w / L;
     if (looks !== this.looks) {
       const c = this.cache;
@@ -108,12 +110,14 @@ export class Overview {
     } else {
       // repaint only where notes changed
       const spans: [number, number][] = [];
-      const add = (k: string) => {
-        const [, s, e] = k.split(' ').map(Number);
-        spans.push([Math.floor(s * sx) - 1, Math.ceil(e * sx) + 2]);
-      };
-      for (const [n, k] of drawn) if (this.drawn.get(n) !== k) add(k);
-      for (const [n, k] of this.drawn) if (!drawn.has(n)) add(k);
+      const add = (d: number[]) => spans.push([Math.floor(d[1] * sx) - 1, Math.ceil(d[2] * sx) + 2]);
+      for (const [n, d] of drawn) {
+        const o = this.drawn.get(n);
+        if (o && o[0] === d[0] && o[1] === d[1] && o[2] === d[2] && o[3] === d[3]) continue;
+        add(d);
+        if (o) add(o);
+      }
+      for (const [n, o] of this.drawn) if (!drawn.has(n)) add(o);
       if (spans.length > 400) this.paint(0, this.w);
       else for (const [a, b] of spans) this.paint(a, b);
     }
