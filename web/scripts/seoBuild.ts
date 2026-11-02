@@ -21,6 +21,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cdCatalog, cdFiles, type CdCatalogEntry } from './cdGames';
 import { gameCardPng } from './ogImage';
+import { DOWNLOADS_STYLE, downloadCard } from './downloadsList';
 import { readScoopDates, SCOOP_TITLE, scoopRss } from './scoopFeed';
 import { GUIDE_SECTIONS } from '../src/manual/guideSections';
 import {
@@ -370,17 +371,15 @@ export function downloadsPageHtml(catalog: CdCatalogEntry[], cdRoot: string): st
     ['Sandbox Software games', 'Made for this project with Game-Maker.', games.filter((g) => !bizarre.includes(g))],
     ['Bizarre games', 'Songs by The Bard of Bizarre, turned into games.', bizarre],
   ];
-  const item = (g: CdCatalogEntry) => {
-    const v = versionOf(cdRoot, g.id);
-    return `          <li id="game-${escapeHtml(g.id)}"><a href="./${escapeHtml(g.path + g.pack)}">${escapeHtml(g.title)} (ZIP)</a>${v ? ` <small>version ${escapeHtml(v)}</small>` : ''}${g.blurb ? ` — ${escapeHtml(clip(g.blurb, 160))}` : ''} <a href="./${gamePage(g.id)}">Play it in your browser</a></li>`;
-  };
+  const item = (g: CdCatalogEntry, i: number, list: CdCatalogEntry[]) =>
+    downloadCard(g, versionOf(cdRoot, g.id), `./${gamePage(g.id)}`, list === sections[0][2] && i < 2);
   const body = sections
     .filter(([, , list]) => list.length)
     .map(
       ([head, about, list]) => `<section>
         <h2>${escapeHtml(head)}</h2>
         <p>${escapeHtml(about)}</p>
-        <ul>
+        <ul class="dl-list">
 ${list.map(item).join('\n')}
         </ul>
       </section>`,
@@ -395,6 +394,7 @@ ${list.map(item).join('\n')}
     <title>${escapeHtml(ROUTES.downloads.title)}</title>
     ${meta}
     ${STYLE}
+    ${DOWNLOADS_STYLE}
   </head>
   <body>
     <main class="seo-static">

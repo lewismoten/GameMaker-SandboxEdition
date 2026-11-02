@@ -96,6 +96,7 @@ describe('seoBuild', () => {
     expect(html).not.toMatch(/href="\.\/games\/(gameware|shareware)\//);
     expect(html.match(/<h1>/g)).toHaveLength(1);
     expect(secretHits(html)).toEqual([]);
+    for (const img of html.match(/<img [^>]*>/g) ?? []) expect(img).toMatch(/ alt="[^"]+"[^>]* width="\d+" height="\d+"| width="\d+" height="\d+" alt="[^"]+"/);
   });
 
   it('points robots.txt at the sitemap', () => {
