@@ -6,6 +6,7 @@ import { endingFrames } from '../src/screens/ending';
 import * as P from '../src/screens/pictures';
 import { storyPictures } from '../src/screens/story';
 import { titlePicture } from '../src/screens/title';
+import { spritePictures } from '../src/sprites/sprites';
 import { levelPictures } from '../src/levels/blocks';
 import { LEVELS } from '../src/levels/levels';
 import { levelExtras } from '../src/levels/extras';
@@ -29,6 +30,7 @@ P.savePicture('SAVE GAME');
 P.lostPicture();
 P.eggPicture();
 for (let n = 1; n <= 6; n++) P.cardPicture(n, 6, '', '', []);
+spritePictures();
 // every level's blocks (the build only reads them)
 for (const level of LEVELS) {
   const x = levelExtras(level);

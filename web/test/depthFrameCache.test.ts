@@ -22,7 +22,7 @@ it('reuses exact floating samples without retaining subsequent overlays', () => 
   const rgb = Float32Array.of(0.1, 0.2, 0.3);
   const image = { w: 1, h: 1, rgb };
   cachedFrame('image', () => image).rgb[0] = 1;
-  const cached = cachedFrame('image', () => {
+  const cached = cachedFrame<typeof image>('image', () => {
     throw new Error('must use cache');
   });
   expect(cached.rgb).toEqual(Float32Array.of(0.1, 0.2, 0.3));

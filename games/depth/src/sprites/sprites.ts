@@ -2,6 +2,7 @@
 // every level's palette carries at the same place (entries 9..72), so the sprites look the same
 // on every scene.
 import { emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { cachedFrame } from '../render/frameCache';
 import { toBytes } from '../render/image';
 import { Matcher, medianCut, putColors, type Col } from '../render/quant';
 import { rgb } from '../render/tracer';
@@ -80,9 +81,14 @@ function monsterEntries(): Entry[] {
 
 const pixelsOf = (p: SpritePic): Uint8Array => toBytes({ w: 20, h: 20, rgb: p.rgb });
 
+/** Every sprite rendered, through the frame cache (the frame shards render them in parallel; the build only reads them). */
+export function spritePictures() {
+  const via = ([n, f]: Entry) => [n, cachedFrame(`sprite-${n}`, f)] as const;
+  return { chars: charEntries().map(via), mons: monsterEntries().map(via) };
+}
+
 export function buildSprites(): SpriteSet {
-  const chars = charEntries().map(([n, f]) => [n, f()] as const);
-  const mons = monsterEntries().map(([n, f]) => [n, f()] as const);
+  const { chars, mons } = spritePictures();
   if (chars.length > 50) throw new Error(`${chars.length} character blocks`);
   if (mons.length > 100) throw new Error(`${mons.length} monster blocks`);
   // colors: only the pixels that show
