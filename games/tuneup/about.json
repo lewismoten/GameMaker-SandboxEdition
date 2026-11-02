@@ -68,6 +68,7 @@
     "response s11 C (fire) waits 1.0 s before anything happens",
     "response s11 V (fire) waits 0.8 s before anything happens",
     "response s11 X (fire) waits 0.8 s before anything happens",
-    "response s11 Z (fire) waits 0.7 s before anything happens"
+    "response s11 Z (fire) waits 0.7 s before anything happens",
+    "facing s27 The hero faces the same way walking left and right"
   ]
 }
