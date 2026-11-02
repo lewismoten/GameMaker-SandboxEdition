@@ -100,39 +100,68 @@ export function sparkSong(): Uint8Array {
 export const BEAT = 12;
 
 /**
- * The Timing Beat's verses, quiet under the notes Doc Leo plays (four lanes, four pitches):
- * soft chords and a walking bass, two bars a loop of the pipes (eight bars in all). The third
- * verse is a waltz: six eighths a bar, two bars a loop.
+ * The Timing Beat's own tune, the roll's rag (not the parade tune): three strains, one a verse,
+ * the organ pipes playing it over a stride bass. Each strain leaves room for the keys Doc Leo
+ * boops (C5, E5, G5 and C6, landing where the roll's holes put them) and picks chords those notes
+ * belong to, so his boops finish the phrase instead of repeating over the same one.
+ * - Verse 1 lands on beats 1 and 3 (C6 C5 | E5 G5), so the tune answers on beats 2 and 4.
+ * - Verse 2 lands off the beat (C5 on 2-and, E5 and G5 or C6 on 4-and): a tune on the beats.
+ * - Verse 3, a waltz, lands on every beat (C5 E5 G5 | C6 G5 E5): long notes over a C pedal.
  */
-export function beatSong(verse: number): Uint8Array {
-  if (verse === 2)
-    return tune(bpmFor(BEAT), [
-      v(
-        0,
-        patchOf('epiano-round'),
-        eachBar((b) => `${b.root} q, ${chordOf(b, 'q')}, ${chordOf(b, 'q')}`),
-        55,
-      ),
-      v(
-        3,
-        patchOf('music-box'),
-        eachBar((b) => `${up(up(b.chord[2]))} h.`),
-        40,
-      ),
-    ]);
-  const comp =
-    verse === 0
-      ? (b: (typeof BARS)[number]) => `${chordOf(b, 'h')}, ${chordOf(b, 'h')}`
-      : (b: (typeof BARS)[number]) => `r e, ${chordOf(b, 'q')}, r e, r e, ${chordOf(b, 'q')}, r e`;
-  return tune(bpmFor(BEAT), [
-    v(0, patchOf('epiano-round'), eachBar(comp), 55),
-    v(
-      3,
-      patchOf('piano-mellow'),
-      eachBar((b) => `${b.root} q, ${b.chord[0].replace(/\d/, '3')} q, ${b.fifth} q, ${b.chord[1].replace(/\d/, '3')} q`),
-      75,
+const ROLL_STRAINS: { meter: 3 | 4; chords: string[]; tune: string }[] = [
+  {
+    meter: 4,
+    chords: ['C', 'C', 'F', 'Em', 'Am', 'C', 'F', 'C'],
+    tune: join(
+      'r q, E5 e, G5 e, r q, A5 e, G5 e',
+      'r q, F5 e, E5 e, r q, D5 e, E5 e',
+      'r q, A5 e, C6 e, r q, A5 e, F5 e',
+      'r q, B5 e, G5 e, r q, E5 e, B4 e',
+      'r q, A5 e, E5 e, r q, C6 e, B5 e',
+      'r q, G5 e, E5 e, r q, D5 e, C5 e',
+      'r q, F5 e, A5 e, r q, G5 e, F5 e',
+      'r q, E5 e, D5 e, r q, C5 e, r e',
     ),
-  ]);
+  },
+  {
+    meter: 4,
+    chords: ['C', 'F', 'Am7', 'Am', 'C', 'F', 'Am7', 'C'],
+    tune: join(
+      'G5 q, E5 q, G5 q, C6 q',
+      'A5 q, F5 q, A5 h',
+      'C6 q, A5 q, G5 q, E5 q',
+      'A5 q, E5 q, A5 h',
+      'E5 q, G5 q, C6 q, E6 q',
+      'D6 q, C6 q, A5 h',
+      'G5 q, A5 q, G5 q, E5 q',
+      'E5 q, D5 q, C5 h',
+    ),
+  },
+  {
+    meter: 3,
+    chords: ['C', 'C', 'F', 'C', 'Am', 'Am', 'F', 'C'],
+    tune: join('E6 h.', 'D6 q, C6 q, G5 q', 'A5 h.', 'G5 h, E5 q', 'A5 h, C6 q', 'E6 h.', 'F6 q, E6 q, C6 q', 'C6 h.'),
+  },
+];
+/** The strains' chords: the stride's low root and the chord over it. */
+const ROLL_CHORDS: Record<string, { root: string; chord: string }> = {
+  C: { root: 'C3', chord: '[E3 G3 C4]' },
+  F: { root: 'F2', chord: '[F3 A3 C4]' },
+  Em: { root: 'E3', chord: '[E3 G3 B3]' },
+  Am: { root: 'A2', chord: '[E3 A3 C4]' },
+  Am7: { root: 'A2', chord: '[E3 G3 C4]' },
+};
+
+/** The Timing Beat, verse `verse`: its strain of the roll's rag, the stride under it. */
+export function beatSong(verse: number): Uint8Array {
+  const { meter, chords, tune: melody } = ROLL_STRAINS[verse];
+  const stride = join(
+    ...chords.map((name) => {
+      const { root, chord } = ROLL_CHORDS[name];
+      return meter === 3 ? `${root} q, ${chord} q, ${chord} q` : `${root} q, ${chord} q, ${root} q, ${chord} q`;
+    }),
+  );
+  return tune(bpmFor(BEAT), [v(0, patchOf('pipe-organ'), melody, 60), v(3, patchOf('piano-mellow'), stride, 62)]);
 }
 
 /** Oil's Well: slow and slick, the tune on a soft reed over an upright bass and a vibraphone. */
