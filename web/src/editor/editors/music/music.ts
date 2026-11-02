@@ -188,12 +188,19 @@ registerEditor(['cmf'], (host, project, file) => {
   doc.on((c) => {
     if (c === 'play') {
       if (doc.playing && doc.follow && doc.playhead !== null) {
-        if (doc.playhead < roll.scrollX || doc.playhead > roll.scrollX + roll.span * 0.92) roll.scrollX = Math.max(0, doc.playhead - roll.span * 0.05);
+        // glide: once the playhead reaches a quarter of the way across, the notes scroll under it
+        const at = Math.max(0, doc.playhead - roll.span * 0.25);
+        if (doc.playhead < roll.scrollX || doc.playhead > roll.scrollX + roll.span || roll.scrollX < at) roll.scrollX = at;
       }
       if (wasPlaying !== doc.playing) refresh();
       wasPlaying = doc.playing;
       time.textContent = `${doc.barBeat(doc.playhead ?? doc.cursor)}  ${doc.seconds(doc.playhead ?? doc.cursor)} / ${doc.seconds(doc.song.end.tick)}`;
-    } else refresh();
+      // a playback tick moves only the playhead: show it over the cached pictures
+      roll.frame();
+      overview.frame();
+      return;
+    }
+    refresh();
     roll.draw();
     overview.draw();
   });
