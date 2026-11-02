@@ -3,6 +3,21 @@
 // Pictures are used only when the build drew them (the catalog's `shots`); never a stand-in.
 import type { CdCatalogEntry } from './cdGames';
 import { builtShotPath } from '../src/gfx/levelPicture';
+import { cdFiles } from './cdGames';
+import { gameShots } from './gameShots';
+
+/** The ids of the games whose level picture the build draws (the same call that emits games/shots/). */
+export function pictured(games: CdCatalogEntry[], cdRoot: string): Set<string> {
+  const files = cdFiles(cdRoot);
+  return new Set(
+    games
+      .filter((g) => {
+        const disk = new Map(g.files.flatMap((n) => (files.get(`${g.path}${n}`) ? [[n, files.get(`${g.path}${n}`)!] as [string, string]] : [])));
+        return gameShots(g.id, g.gam, disk).has(builtShotPath(g.id, 16, 10));
+      })
+      .map((g) => g.id),
+  );
+}
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -34,8 +49,8 @@ export const DOWNLOADS_STYLE = `<style>
     </style>`;
 
 /** One game's card. `first` pictures load at once; the rest are lazy. */
-export function downloadCard(g: CdCatalogEntry, version: string | undefined, playHref: string, first: boolean): string {
-  const picture = g.shots
+export function downloadCard(g: CdCatalogEntry, version: string | undefined, playHref: string, first: boolean, hasPicture: boolean): string {
+  const picture = hasPicture
     ? `<img src="./${esc(builtShotPath(g.id, 16, 10))}" width="320" height="200" alt="${esc(`A level from ${g.title}`)}"${first ? '' : ' loading="lazy"'} decoding="async" />`
     : '';
   const blurb = g.blurb ? `<p>${esc(g.blurb.length > 160 ? `${g.blurb.slice(0, 159).trimEnd()}…` : g.blurb)}</p>` : '';

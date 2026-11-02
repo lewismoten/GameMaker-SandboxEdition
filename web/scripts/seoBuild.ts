@@ -21,7 +21,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { cdCatalog, cdFiles, type CdCatalogEntry } from './cdGames';
 import { gameCardPng } from './ogImage';
-import { DOWNLOADS_STYLE, downloadCard } from './downloadsList';
+import { DOWNLOADS_STYLE, downloadCard, pictured } from './downloadsList';
 import { readScoopDates, SCOOP_TITLE, scoopRss } from './scoopFeed';
 import { GUIDE_SECTIONS } from '../src/manual/guideSections';
 import {
@@ -371,8 +371,9 @@ export function downloadsPageHtml(catalog: CdCatalogEntry[], cdRoot: string): st
     ['Sandbox Software games', 'Made for this project with Game-Maker.', games.filter((g) => !bizarre.includes(g))],
     ['Bizarre games', 'Songs by The Bard of Bizarre, turned into games.', bizarre],
   ];
+  const shown = pictured(games, cdRoot);
   const item = (g: CdCatalogEntry, i: number, list: CdCatalogEntry[]) =>
-    downloadCard(g, versionOf(cdRoot, g.id), `./${gamePage(g.id)}`, list === sections[0][2] && i < 2);
+    downloadCard(g, versionOf(cdRoot, g.id), `./${gamePage(g.id)}`, list === sections[0][2] && i < 2, shown.has(g.id));
   const body = sections
     .filter(([, , list]) => list.length)
     .map(
