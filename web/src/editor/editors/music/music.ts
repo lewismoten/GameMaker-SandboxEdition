@@ -251,6 +251,8 @@ registerEditor(['cmf'], (host, project, file) => {
     tab = key;
     for (const [k, el] of Object.entries(panels)) el.hidden = k !== key;
     rollTools.hidden = key !== 'song';
+    instrument.setActive(key === 'inst');
+    songPanel.setActive(key === 'set');
     for (const b of tabBar.querySelectorAll<HTMLElement>('.mus-tab')) {
       const on = b.id === `mus-tab-${key}`;
       b.setAttribute('aria-selected', String(on));

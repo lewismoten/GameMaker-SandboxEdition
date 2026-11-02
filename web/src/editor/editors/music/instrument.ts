@@ -152,10 +152,24 @@ export class InstrumentPanel {
     doc.on((c) => {
       if (c === 'track') {
         if (!this.keepSel) this.sel = this.program;
-        this.render();
-      } else if (c === 'song' && !this.quiet) this.render();
+        this.draw();
+      } else if (c === 'song' && !this.quiet) this.draw();
     });
     this.render();
+  }
+
+  private active = true;
+  private stale = false;
+
+  /** The Instruments tab is shown (true) or hidden: a hidden panel waits and draws once when shown. */
+  setActive(on: boolean): void {
+    this.active = on;
+    if (on && this.stale) this.render();
+  }
+
+  private draw(): void {
+    if (this.active) this.render();
+    else this.stale = true;
   }
 
   /** The instrument the selected track starts with. */
@@ -266,6 +280,7 @@ export class InstrumentPanel {
   }
 
   render(): void {
+    this.stale = false;
     this.renderList();
     const doc = this.doc;
     const song = doc.song;

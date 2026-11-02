@@ -26,7 +26,11 @@ export class SongPanel {
   private scope: 'track' | 'all' = 'track';
 
   constructor(private doc: MusicDoc) {
-    doc.on((c) => (c === 'song' || c === 'track') && this.render());
+    doc.on((c) => {
+      if (c !== 'song' && c !== 'track') return;
+      if (this.active) this.render();
+      else this.stale = true;
+    });
     this.render();
   }
 
@@ -99,7 +103,17 @@ export class SongPanel {
     );
   }
 
+  private active = true;
+  private stale = false;
+
+  /** The Settings tab is shown (true) or hidden: a hidden panel waits and draws once when shown. */
+  setActive(on: boolean): void {
+    this.active = on;
+    if (on && this.stale) this.render();
+  }
+
   render(): void {
+    this.stale = false;
     const doc = this.doc;
     const song = doc.song;
     const bpm = (TICK_RATE * 60) / doc.beat;
