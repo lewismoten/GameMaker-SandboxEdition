@@ -1,11 +1,11 @@
 // Rebuild ignored game outputs before development, tests, and releases; cache source and output hashes.
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { availableParallelism } from 'node:os';
 import { gameSourceHash, root } from './game-build-inputs.mjs';
-import { gameKeys } from './game-import-keys.mjs';
+import { gameKeys, logoUsers } from './game-import-keys.mjs';
 import { promisify } from 'node:util';
 const games = join(root, 'games');
 const cacheFile = join(games, '.build-cache.json');
@@ -55,6 +55,25 @@ const pending = [
   ...stale.filter((id) => slowFirst.includes(id)).sort((a, b) => slowFirst.indexOf(a) - slowFirst.indexOf(b)),
   ...stale.filter((id) => !slowFirst.includes(id)),
 ];
+// the Sand logo sting is the same in the 17 games that use it and takes about 7 s of ray tracing, so it is
+// rendered once per run (in step with the depth frame shards) and the games read the file
+const logoFile = join(frames, `sandlogo-${gameSourceHash('games/kit/sandlogo.ts').slice(0, 16)}.fli`);
+let logoReady;
+function logo() {
+  logoReady ??= existsSync(logoFile)
+    ? Promise.resolve()
+    : (mkdirSync(frames, { recursive: true }),
+      run(process.execPath, [join(root, 'node_modules/vite-node/vite-node.mjs'), '../scripts/logo-build-entry.mjs', logoFile], {
+        cwd: join(root, 'web'),
+        maxBuffer: 64 << 20,
+        timeout: 240_000,
+        killSignal: 'SIGKILL',
+      }).then(
+        () => undefined,
+        () => undefined, // a failed shared render only means each game renders its own
+      ));
+  return logoReady;
+}
 const jobs = Math.max(1, Math.floor(Number(process.env.GM_BUILD_JOBS)) || (process.env.CI ? availableParallelism() : 2));
 const timing = process.argv.includes('--timing') || process.env.GM_BUILD_TIMING === '1';
 const times = [];
@@ -75,7 +94,9 @@ function save(all = false) {
 }
 async function worker() {
   for (;;) {
-    const id = pending.shift();
+    // a game that needs the logo waits for it only if no game that doesn't is queued
+    const next = pending.findIndex((id) => !logoUsers.has(id));
+    const id = pending.splice(logoReady && next >= 0 && !existsSync(logoFile) ? next : 0, 1)[0];
     if (!id) return;
     const secret = JSON.parse(readFileSync(join(games, id, 'about.json'), 'utf8')).secret;
     const started = Date.now();
@@ -98,6 +119,7 @@ async function worker() {
         // the shards are independent, so a local build with no cached frames uses the cores it has
         await Promise.all(Array.from({ length: Math.min(shards.length, Math.max(2, availableParallelism())) }, renderWorker));
       }
+      if (logoUsers.has(id)) await logo();
       // a build killed from outside well before its timeout (memory pressure, a stray pkill) is tried once more
       for (let attempt = 1; ; attempt++) {
         const began = Date.now();
@@ -107,7 +129,7 @@ async function worker() {
             maxBuffer: 64 << 20,
             timeout: 240_000,
             killSignal: 'SIGKILL',
-            env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames },
+            env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames, SANDLOGO_FLI: logoFile },
           });
           break;
         } catch (error) {
@@ -133,6 +155,7 @@ async function worker() {
   }
 }
 const began = Date.now();
+if (pending.some((id) => logoUsers.has(id))) void logo();
 await Promise.all(Array.from({ length: Math.min(jobs, pending.length) }, worker));
 if (timing)
   console.log(

@@ -20,7 +20,7 @@ export function gameSourceHash(frames = false) {
   if (frames) {
     // rendered frames depend only on the files renderFrames.ts really imports, so an edit elsewhere in games/kit or the packages keeps the cache
     const result = buildSync({
-      entryPoints: [join(root, 'games/depth/tools/renderFrames.ts')],
+      entryPoints: [join(root, frames === true ? 'games/depth/tools/renderFrames.ts' : frames)],
       bundle: true,
       write: false,
       metafile: true,

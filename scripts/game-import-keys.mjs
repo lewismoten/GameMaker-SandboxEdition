@@ -49,12 +49,16 @@ export async function importedFiles(id) {
     .filter((file) => !file.includes('/node_modules/'));
 }
 
+/** Games whose build imports the Sand logo sting (found while keys are made). */
+export const logoUsers = new Set();
+
 /** {id: sha256} for every game id given. */
 export async function gameKeys(ids) {
   const frames = gameSourceHash(true);
   const entries = await Promise.all(
     ids.map(async (id) => {
       const files = new Set([...(await importedFiles(id)), ...walk(join(root, 'games', id), notDoc), ...shared]);
+      if ([...files].some((file) => file.endsWith('games/kit/sandlogo.ts'))) logoUsers.add(id);
       const hash = createHash('sha256');
       for (const file of [...files].sort()) hash.update(rel(file)).update('\0').update(readFileSync(file)).update('\0');
       if (id === 'depth') hash.update(frames);
