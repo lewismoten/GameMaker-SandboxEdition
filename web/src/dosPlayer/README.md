@@ -20,6 +20,13 @@ README, which says its .EXE was customized; `exportDos.ts` writes them into XFER
 (the same record), carried on its catalog entry as `player`, which its Play, demos,
 walkthrough, downloads, the desk's copies and Transfer, and Look inside / Edit a copy read
 (`gamePlayers.test.ts` checks every player.json with `games/kit/player.ts`).
+`playerOrigin.ts` is an imported game's own player, kept read-only in the .gam's
+`importedPlayer` companion section: which Game-Maker build it is (1.0 to 3.00, from the
+archives package's `player/playerBuild.ts`, with a confidence and reasons), its About page when
+its author changed it, and the bytes no setting explains (`player/playerPreserve.ts`). Play's
+F10 shows that About page and "Originally made with Game-Maker x.xx"; the DOS export writes a
+3.00 player's kept bytes back byte for byte (`keptParts`; an older build's offsets differ, so
+its bytes stay in the record only).
 
 - The native downloads wrap the single page in the prebuilt players: `macApp.ts` (with
   `macSign.ts`, `macIcon.ts`, and `iso9660.ts`, `dsStore.ts` and `udif.ts` for the `.dmg`),

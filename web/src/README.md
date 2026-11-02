@@ -107,7 +107,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`export/`](export/README.md): publishing a game: web app, single page, web player, DOS folder,
   and the Mac, Windows and Linux downloads.
 - [`dosPlayer/`](dosPlayer/README.md): the DOS player customizer's core: patching XFERPLAY.EXE's
-  words, colors, frames and keys.
+  words, colors, frames and keys, and an imported game's own player (its build and kept bytes).
 - [`hostedPlayer/`](hostedPlayer/README.md): the web player, one file that plays Game-Maker game
   folders on any web host.
 - [`linkIn/`](linkIn/README.md): opening a game another site links to or sends by postMessage.
