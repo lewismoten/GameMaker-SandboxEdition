@@ -289,6 +289,7 @@ export const OUTRO: Record<string, Card> = {
     lines: [
       ['regina', 'The clowns are cheering.'],
       ['leo', 'One more call. Five notes, the big finish.'],
+      ['regina', 'The board shows it twice, then goes dark. Remember it.'],
     ],
   },
   horn3: {
@@ -310,6 +311,7 @@ export const OUTRO: Record<string, Card> = {
     lines: [
       ['leo', 'Higher still.'],
       ['regina', 'Like the last chorus of a pop song. Everyone stands up.'],
+      ['leo', 'And the door opens quicker in the high gears.'],
     ],
   },
   gear3: {

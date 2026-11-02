@@ -19,8 +19,8 @@ export const KEY_BEAT = 16;
 const RISE = 3;
 /** The speedometer's steps in each room, and the ticks for each. */
 const SPEEDO = { steps: 6, ticks: 80 } as const;
-/** The door's clock: shut for two beats, open for two. */
-const DOOR = { shut: 2 * KEY_BEAT, open: 2 * KEY_BEAT } as const;
+/** The door's clock in each room, a four-beat round: open two beats, then one and a half in third gear, one in top gear. */
+const DOORS = [2, 2, 1.5, 1].map((open) => ({ shut: (4 - open) * KEY_BEAT, open: open * KEY_BEAT }));
 
 export const GEARS = {
   w: 27,
@@ -165,6 +165,7 @@ export function keyBlocks(room: number) {
         .disc(10, 12, 3, open ? c('green', 3) : c('red', 2));
       return p;
     };
+    const DOOR = DOORS[room];
     book.add('door.shut', door(false), { solid: SOLID, ntime: DOOR.shut, next: 'door.open' });
     book.add('door.open', door(true), { ...AIR, ntime: DOOR.open, next: 'door.shut' });
     book.add('lamp.shut', lamp(false), { ...AIR, ntime: DOOR.shut, next: 'lamp.open' });

@@ -69,7 +69,8 @@ export function brakeBlocks(pal: Pal): Kit {
     book.add(`sign${i}`, sign, AIR);
     const plate = k.pic('wall');
     plate.rect(4, 4, 12, 12, c('lamp', 3)).frame(4, 4, 12, 12, c('ink', 0));
-    text(plate, 6, 6, h.key, c('ink', 0));
+    // the last sign is a test: only the pose, its key left for Teddy to remember
+    text(plate, 6, 6, i === HOUSINGS.length - 1 ? '?' : h.key, c('ink', 0));
     book.add(`key${i}`, plate, AIR);
   });
   // the door's own brake lamp lights the E of BRAKE when it opens (the freed lamps are B, R, A, K)

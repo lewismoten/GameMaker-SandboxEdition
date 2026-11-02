@@ -35,11 +35,13 @@ export interface HornRound {
   file: string;
   /** The phrase: a horn (0-3) a note. */
   phrase: number[];
+  /** Played from memory: the board shows the call this many times, then goes dark. */
+  showings?: number;
 }
 export const HORN_ROUNDS: HornRound[] = [
   { file: 'horn1', phrase: [0, 1, 2] },
   { file: 'horn2', phrase: [2, 1, 0, 3] },
-  { file: 'horn3', phrase: [0, 2, 1, 3, 2] },
+  { file: 'horn3', phrase: [0, 2, 1, 3, 2], showings: 2 },
 ];
 /** The stages' left walls (level x): the first at 12, then every 15. */
 export const stageX = (k: number) => 12 + k * 15;
@@ -48,15 +50,17 @@ export const padX = (sx: number, p: number) => sx + 1 + p * 2;
 /** A round's width and exit. */
 export const hornSize = (r: HornRound) => ({ w: stageX(r.phrase.length) + 2, exit: stageX(r.phrase.length - 1) + 12 });
 
-/** The beats horn `h` is lit on in a round's call, as a ring: [lit, ticks] runs. */
+/** The beats horn `h` is lit on in a round's call, as a ring: [lit, ticks] runs (from memory: the showings, then dark for good, its last run 0). */
 function boardRing(r: HornRound, h: number): [boolean, number][] {
-  const beats = [...r.phrase.map((p) => p === h), ...new Array<boolean>(HORN_REST).fill(false)];
+  const call = [...r.phrase.map((p) => p === h), ...new Array<boolean>(HORN_REST).fill(false)];
+  const beats = r.showings ? Array.from({ length: r.showings }, () => call).flat() : call;
   const ring: [boolean, number][] = [];
   for (const lit of beats) {
     const last = ring[ring.length - 1];
     if (last && last[0] === lit) last[1] += HORN_BEAT;
     else ring.push([lit, HORN_BEAT]);
   }
+  if (r.showings) ring.push([false, 0]);
   return ring;
 }
 
@@ -89,7 +93,8 @@ export function hornBlocks(r: HornRound) {
         const p = sky(HORN_ROW.board);
         p.rect(0, 0, 20, 20, c('mach', 1)).rect(1, 1, 18, 18, c('shade', 0));
         horn(h, lit, p);
-        book.add(`board${h}.${f}`, p, { ...AIR, ...(ring.length > 1 ? { ntime: t, next: `board${h}.${(f + 1) % ring.length}` } : {}) });
+        const more = ring.length > 1 && t > 0 ? { ntime: t, next: `board${h}.${(f + 1) % ring.length}` } : {};
+        book.add(`board${h}.${f}`, p, { ...AIR, ...more });
       });
     }
     // the pads: a horn hung in the stage's ceiling, a cell wide, with its colored name plate
