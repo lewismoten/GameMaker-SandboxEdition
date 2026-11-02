@@ -7,6 +7,7 @@
 import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
+import { BARKS, barkVoc } from './barks';
 import { hz, noteVoc, phraseVoc, slideWhistleVoc, ticketVoc } from './notes';
 
 export type Place =
@@ -108,6 +109,8 @@ export function buildVocs(): Record<string, Uint8Array> {
   v.tapes = phraseVoc('music-box', ['E5', 'G5', 'C6'], 0.1, 0.4);
   // sliding down the full tire: a slide whistle, falling (synthesized)
   v.slide = slideWhistleVoc(1600, 520, 0.7);
+  // Teddy's and Gwinn's own barks (Lewis's recordings)
+  for (const b of BARKS) v[b] = barkVoc(b);
   for (const [, n] of DROP_NOTES) v[vocName('td', n)] = noteVoc('steel-drum', n, 0.45, 0.2);
   for (const [, n] of PAD_NOTES) v[vocName('kz', n)] = noteVoc('kazoo', n, 0.4, 0.3);
   for (const n of new Set(KEY_NOTES.flat())) v[vocName('vb', n)] = noteVoc('vibes-wobbly', n, 0.5, 0.3);
@@ -175,11 +178,12 @@ export function buildSoundSet(place: Place): SoundSet {
   } else if (place === 'fan') {
     add(SND.gain, 'fanon', SPEAKER.arpeggio([523, 659, 784]));
   } else if (place === 'brake') {
-    // each trick's whoosh on the speaker, a step higher up the ladder; a lamp lit
+    // Teddy barks as he does each trick, his own bark a trick (the speaker's whoosh, a step
+    // higher up the ladder, without a Sound Blaster); a lamp lit
     for (let k = 0; k < 4; k++)
       add(
         SND.trick0 + k,
-        '',
+        BARKS[k],
         speaker((i) => (i < 6 ? 300 + k * 120 + i * 60 : 0)),
       );
     add(SND.gain, 'lamp', SPEAKER.arpeggio([784, 1047, 1319]));
@@ -202,10 +206,10 @@ export function buildSoundSet(place: Place): SoundSet {
     // off the full tire and down its side: the slide whistle
     add(SND.help, 'slide', SPEAKER.fall(1600, 520));
   } else if (place === 'muffled') {
-    // a squeaky toy (energy down: Teddy's hurt sound), a blanket tucked (energy up), the tapes
+    // a squeaky toy (energy down): Gwinn woofs in her sleep; a blanket tucked (energy up), the tapes
     add(
       SND.hurt,
-      '',
+      'gwinn1',
       speaker((i) => (i < 5 ? 1600 + (i % 2) * 500 : 0)),
     );
     add(

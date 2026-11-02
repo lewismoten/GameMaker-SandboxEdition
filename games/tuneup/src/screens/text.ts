@@ -135,6 +135,8 @@ const CREDITS_TEXT = pages(
     'presets; the slide whistle,',
     'the camera and the siren are',
     'synthesized.',
+    "Teddy's and Gwinn's barks:",
+    "Lewis Moten's recordings.",
     '',
     'Made with GAME-MAKER 3.0 by',
     'Recreational Software',

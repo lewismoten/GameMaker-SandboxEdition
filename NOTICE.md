@@ -309,7 +309,9 @@ game folder opens in the browser unchanged.
   Runtime (MIT). These are installed by `npm run voice:setup` into a git-ignored folder outside
   the app's own packages, and the model stays on Lewis's computer.
 - **Teddy's and Gwinn's barks** (`web/public/tour/sfx`): Lewis Moten's own recordings of his
-  dogs, cut into short clips for the guided tour. The whole recordings stay on his computer.
+  dogs, cut into short clips for the guided tour. Five of the clips are Tune-Up's barks too
+  (`games/tuneup/src/sound/barks`, as 8-bit WAVs for its VOCs). The whole recordings stay on
+  his computer.
 - **Tune-Up's slide whistle** (`games/tuneup/src/sound/notes.ts` `slideWhistleVoc`): synthesized
   in code for the game (a gliding tone with a breath of noise), not a recording.
 - **Tune-Up's traffic camera and siren** (`games/tuneup/src/sound/notes.ts` `ticketVoc`):
