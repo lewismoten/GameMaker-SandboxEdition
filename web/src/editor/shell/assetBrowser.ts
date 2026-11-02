@@ -11,6 +11,7 @@ import { fileThumb, KIND_ICON } from '../widgets/thumbs';
 import { PLAYABLE, playButton, stopThumbPlayback } from '../widgets/thumbPlayButton';
 import { assetSearch } from './assetSearch';
 import { companionPatches } from '../../dosPlayer/playerRecord';
+import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
 import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 /** The palette a tile is drawn in: the one picked in the file's editor ("Show with palette", kept in the companion), else the scene's. */
@@ -180,6 +181,24 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     });
     return card;
   }
+  /** A game imported with its own player .EXE: what it was (read-only; playerInfo.ts). */
+  function playerCard(): HTMLElement | null {
+    const o = companionOrigin(project.companion, project.gam);
+    if (!o) return null;
+    return h(
+      'button',
+      {
+        type: 'button',
+        class: 'asset-card asset-category',
+        'data-category': 'player',
+        onclick: () => void import('./playerInfo').then((m) => m.showPlayerInfo(project)),
+      },
+      h('span', { class: 'asset-preview', 'aria-hidden': 'true' }, '▣'),
+      h('strong', null, 'Player'),
+      h('small', null, `${o.exe} · ${originText(o)}${o.stock ? '' : ', patched'}`),
+    );
+  }
+
   function render(): void {
     closeMenu?.();
     stopThumbPlayback();
@@ -205,6 +224,7 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
             ),
           );
         }),
+        playerCard(),
       );
     } else {
       const files = assetNames(project, kind);

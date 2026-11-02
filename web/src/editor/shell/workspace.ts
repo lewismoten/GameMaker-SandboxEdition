@@ -1,5 +1,6 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
 import { onPatchesChanged } from '../../dosPlayer/patchesChanged';
+import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
 import { currentRoute, formatHash, setHashParams } from '../../urlState';
 import { overviewTabFrom, TAB_TITLES, type OverviewTab } from './overviewLink';
 import { migrateCounterNames } from '../core/gameControls';
@@ -365,6 +366,7 @@ export class Workspace implements AssistantHost {
         ),
         this.search,
         ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
+        this.playerEntry(),
       ),
     );
     this.filter();
@@ -401,6 +403,22 @@ export class Workspace implements AssistantHost {
       h('span', { class: 'rail-label' }, ' Hide files'),
     );
     return b;
+  }
+
+  /** A game imported with its own player .EXE: a Player entry under the files, showing what it was (playerInfo.ts). */
+  private playerEntry(): HTMLElement | null {
+    const o = companionOrigin(this.project.companion, this.project.gam);
+    if (!o) return null;
+    return h(
+      'button',
+      {
+        type: 'button',
+        class: 'asset-home side-player',
+        title: `${o.exe}: ${originText(o)}`,
+        onclick: () => void import('./playerInfo').then((m) => m.showPlayerInfo(this.project)),
+      },
+      '▣ Player',
+    );
   }
 
   /** In the folded bar, a button to the game's Overview (the same as ▦ Overview in the list). */
