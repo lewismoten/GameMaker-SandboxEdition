@@ -13,8 +13,9 @@ export default mergeConfig(
     test: {
       // Keep successful runs quiet, but retain a failing test's console diagnostics.
       silent: 'passed-only',
-      // Bound parallel transforms so quick codec/event-loop checks get CPU promptly.
-      ...(fast ? { maxWorkers: 2, exclude: [...configDefaults.exclude, ...slow.files], setupFiles: ['./test/fastOnly.ts'] } : {}),
+      // The fast run uses vitest's default workers (cores - 1). It was capped at 2 for GitHub's
+      // runners, which no longer run tests; the cap made it 2.4x slower on a 10-core Mac.
+      ...(fast ? { exclude: [...configDefaults.exclude, ...slow.files], setupFiles: ['./test/fastOnly.ts'] } : {}),
     },
   }),
 );
