@@ -2,8 +2,8 @@
 // Levels 1-4 are Sir Reginald Cluckington III's dream (he was talking in his sleep): a gas
 // engine THE CHEZ never had. He wakes after the swim through the oil pipe, and the real,
 // electric tune-up starts at level 5. Every car fact from level 5 on is from THE CHEZ's own
-// blog (thechez.car.blog). After the balloon pops in level 8 he lays an egg, and from then on
-// she is Lady Regina Cluckington III, formally corrected.
+// blog (thechez.car.blog). After Muffled (level 9) the 8-track's clunk startles him into laying an
+// egg (EGG), and from level 10 on she is Lady Regina Cluckington III, formally corrected.
 import type { Card } from './cards';
 
 /** Before each level, by level number. */
@@ -81,12 +81,11 @@ export const INTRO: Record<number, Card> = {
   },
   9: {
     title: 'LEVEL 9: MUFFLED',
-    lady: true,
     teddy: true,
     lines: [
-      ['regina', 'Gwinn took the 8-track tapes to bed. She is asleep on the moving blanket.'],
+      ['reggie', 'Gwinn took the 8-track tapes to bed. She is asleep on the moving blanket.'],
       ['leo', 'Teddy, fetch them. Quietly.'],
-      ['regina', 'Each squeaky toy wakes her a little. A blanket corner tucked in settles her.'],
+      ['reggie', 'Each squeaky toy wakes her a little. A blanket corner tucked in settles her.'],
     ],
   },
   10: {
@@ -241,24 +240,19 @@ export const OUTRO: Record<string, Card> = {
     ],
   },
   pump: {
-    leoPose: 'hurt',
-    egg: true,
     lines: [
-      ['reggie', 'BAWK!'],
-      ['leo', 'Reginald... was that an EGG?'],
-      ['reggie', 'A balloon popped. I was startled. So it would appear.'],
-      ['stamp', '*CORRECTION: Lady Regina Cluckington III'],
-      ['regina', 'And the tires are at 32. Shall we?'],
+      ['leo', 'All four tires at 32 psi. Is it fixed?'],
+      ['reggie', 'Firm as a balloon poodle. Not one of them popped.'],
+      ['leo', 'Then on to the tapes.'],
     ],
   },
   hush: {
-    lady: true,
     teddy: true,
     lines: [
       ['leo', "The tapes! Let's hear one."],
-      ['regina', 'It fades in and out. Muffled.'],
+      ['reggie', 'It fades in and out. Muffled.'],
       ['leo', 'The belt in the player is on wrong. Turned inside out, it plays fine.'],
-      ['regina', 'Now all it needs is a radio to live in.'],
+      ['reggie', 'Now all it needs is a radio to live in.'],
     ],
   },
   rain: {
@@ -372,13 +366,52 @@ const DRIVE_OUTRO: Record<string, Card> = {
 };
 Object.assign(OUTRO, DRIVE_OUTRO);
 
-/** Before The Rain Delay: Lady Regina keeps her egg somewhere safe. */
+/**
+ * After Muffled, before The Rain Delay: the 8-track changes programs with its KA-CHUNK, and he
+ * lays an egg. Doc Leo stares; only hens lay eggs, so by rubber-chicken logic he must be a hen
+ * (a hen with a comb); the paperwork is corrected; and the egg is hers to keep.
+ */
+export const EGG: Card[] = [
+  {
+    leoPose: 'hurt',
+    egg: true,
+    lines: [
+      ['leo', 'Hear that? The tape changes programs with a big KA-CHUNK.'],
+      ['reggie', 'BAWK!'],
+      ['leo', '...'],
+      ['reggie', 'What? Why are you staring at me like that?'],
+    ],
+  },
+  {
+    egg: true,
+    lines: [
+      ['leo', 'Reginald, you laid an EGG. Only hens lay eggs. Barnyard rule number one.'],
+      [
+        'reggie',
+        'Then let us reason it out. I laid an egg. Only hens lay eggs. I am rubber, so I bend to the facts: I am a hen. A hen with a comb, the very best kind.',
+      ],
+      ['leo', "I can't argue with that."],
+    ],
+  },
+  {
+    lady: true,
+    egg: true,
+    lines: [
+      ['leo', 'Then the paperwork needs fixing. One new name card.'],
+      ['stamp', 'Lady Regina Cluckington III'],
+      ['regina', 'In triplicate. I am the Third, after all. And this egg is mine, Doc. I am keeping it for myself.'],
+      ['leo', "Wouldn't dream of taking it."],
+    ],
+  },
+];
+
+/** Then, in the same break: Lady Regina keeps her egg somewhere safe. */
 export const EGG_KEEP: Card = {
   lady: true,
   teddy: true,
   hatEgg: true,
   lines: [
-    ['regina', 'There is my egg, safe and sound. For now.'],
+    ['regina', 'Now my egg needs somewhere safe.'],
     ['leo', 'Where will you keep it safe?'],
     ['regina', 'Somewhere warm, high up and well guarded.'],
     ['leo', '...Under my HAT?'],

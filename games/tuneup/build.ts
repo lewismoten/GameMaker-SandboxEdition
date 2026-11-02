@@ -21,7 +21,7 @@ import { TEDDY_BLOCKS, buildNobody, buildTeddy, nobodyBlocks } from './src/heroe
 import { CHEZ_BLOCKS, buildChez } from './src/sprites/chezHero';
 import { LEVELS, firstOfLevel } from './src/levels/levels';
 import { mapOf, rowOffset, stackMaps } from './src/levels/stacks';
-import { buildScreens, cardPauses } from './src/screens/screens';
+import { buildScreens, cardEntries } from './src/screens/screens';
 import { OUTRO } from './src/screens/banter';
 import { endingReel, openingReel, SPEED, stingReel, unshrinkReel } from './src/screens/reels';
 import type { Tool } from './src/screens/art';
@@ -78,7 +78,6 @@ const reel = (name: string, fli: Uint8Array) => {
   for (const [n, b] of Object.entries(clips)) disk.put(n, b);
   return clipEntries(clips, 0);
 };
-const PAUSE = cardPauses();
 // One monster set serves every scene whose options agree with it: Oil's Well's timings (no
 // other scene places a Squeak or a drop) and the cups' first shuffle. Later rounds keep their own.
 const CAST_MONS = { ...LEVELS.find((l) => l.file === 'oil')!.mons, ...LEVELS.find((l) => l.file === 'cups1')!.mons };
@@ -128,20 +127,15 @@ built.forEach(({ l, m, pal }, i) => {
     intro = `lvl${l.level}.lst`;
     // two digits, so level 1's clips (sting012, sting013) aren't level 12's and 13's
     const sting = reel(`sting${String(l.level).padStart(2, '0')}.fli`, stingReel(l.level, TOOLS[l.level], l.desc.toUpperCase()).fli(SPEED));
-    const before = (l.before ?? []).map((name) => ({ name, pause: PAUSE[name] }));
+    const before = (l.before ?? []).flatMap(cardEntries);
     disk.put(
       intro,
-      serializeSlideList([
-        ...(l.level === 1 ? opening : []),
-        ...(l.level === 14 ? unshrink : []),
-        ...before,
-        ...sting,
-        { name: `intro${l.level}.gif`, pause: PAUSE[`intro${l.level}.gif`] },
-      ]),
+      serializeSlideList([...(l.level === 1 ? opening : []), ...(l.level === 14 ? unshrink : []), ...before, ...sting, ...cardEntries(`intro${l.level}`)]),
     );
   }
   // after it (or a verse): their card, is it fixed?
-  const exit = OUTRO[l.file] ? `${l.file}out.gif` : '';
+  const exit = OUTRO[l.file] ? `${l.file}out.lst` : '';
+  if (exit) disk.put(exit, serializeSlideList(cardEntries(`${l.file}out`)));
   scene.files = [
     `${l.file}.pal`,
     mapOf(l.file),

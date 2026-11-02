@@ -7,8 +7,8 @@ import { gif, scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { SP, INK, REAL_PARTS, cutaway, parkChez, drawChicken, drawLeo } from './art';
 import { garage } from './garage';
-import { card, cardSeconds } from './cards';
-import { EGG_KEEP, INTRO, OUTRO, WAKE } from './banter';
+import { bubbleNames, card, cardKey, cardSeconds, cardText, type Card } from './cards';
+import { EGG, EGG_KEEP, INTRO, OUTRO, WAKE } from './banter';
 
 const c = SP.c;
 
@@ -84,19 +84,33 @@ export function buildScreens(): Record<string, Uint8Array> {
     scaleBlit(p, POSES.front, 180, 150, 2);
     save('lost.gif', p);
   }
-  // the banter cards: before each level and after
-  for (const [n, k] of Object.entries(INTRO)) save(`intro${n}.gif`, card(k));
-  for (const [file, k] of Object.entries(OUTRO)) save(`${file}out.gif`, card(k));
-  WAKE.forEach((k, i) => save(`wake${i + 1}.gif`, card(k)));
-  save('eggkeep.gif', card(EGG_KEEP));
+  // the banter cards: a speech-bubble picture each (shared where they agree) and their words
+  const drawn = new Set<string>();
+  for (const [name, k] of CARDS) {
+    const pic = PICS.get(cardKey(k))!;
+    if (!drawn.has(pic)) save(pic, card(k));
+    drawn.add(pic);
+    files[`${name}.txt`] = new TextEncoder().encode(cardText(k));
+  }
   return files;
 }
 
-/** The seconds a slide list shows each card (by file name): long enough to read it. */
-export function cardPauses(): Record<string, number> {
-  const out: Record<string, number> = {};
-  for (const [n, k] of Object.entries(INTRO)) out[`intro${n}.gif`] = cardSeconds(k);
-  WAKE.forEach((k, i) => (out[`wake${i + 1}.gif`] = cardSeconds(k)));
-  out['eggkeep.gif'] = cardSeconds(EGG_KEEP);
-  return out;
+/** Every banter card by its name (its words are `<name>.txt`): before each level, after, waking up, and the egg. */
+const CARDS = new Map<string, Card>([
+  ...Object.entries(INTRO).map(([n, k]) => [`intro${n}`, k] as const),
+  ...Object.entries(OUTRO).map(([file, k]) => [`${file}out`, k] as const),
+  ...WAKE.map((k, i) => [`wake${i + 1}`, k] as const),
+  ...EGG.map((k, i) => [`egg${i + 1}`, k] as const),
+  ['eggkeep', EGG_KEEP] as const,
+]);
+const PICS = bubbleNames([...CARDS.values()]);
+
+/** A card's slide list entries: its picture at once, then its words for long enough to read them. */
+export function cardEntries(name: string): { name: string; pause: number }[] {
+  const k = CARDS.get(name);
+  if (!k) throw new Error(`No card ${name}`);
+  return [
+    { name: PICS.get(cardKey(k))!, pause: 0 },
+    { name: `${name}.txt`, pause: cardSeconds(k) },
+  ];
 }

@@ -46,7 +46,7 @@ export interface LevelDef {
   mons: MonsterOptions;
   /** Scrolls side to side (else the level is one screen and the view stays put). */
   wide: boolean;
-  /** Cards shown before the level's cartoon (waking from the dream). */
+  /** Cards (by name, screens.ts) shown before the level's cartoon: waking from the dream, the egg. */
   before?: string[];
 }
 
@@ -120,7 +120,7 @@ export const LEVELS: LevelDef[] = [
     song: () => fanSong(i),
     mons: {},
     wide: true,
-    before: i ? undefined : ['wake1.gif', 'wake2.gif', 'wake3.gif', 'wake4.gif'],
+    before: i ? undefined : ['wake1', 'wake2', 'wake3', 'wake4'],
   })),
   {
     file: 'brake',
@@ -187,7 +187,7 @@ export const LEVELS: LevelDef[] = [
     song: rainSong,
     mons: {},
     wide: true,
-    before: ['eggkeep.gif'],
+    before: ['egg1', 'egg2', 'egg3', 'eggkeep'],
   },
   ...HORN_ROUNDS.map((r, i): LevelDef => ({
     file: r.file,
