@@ -216,32 +216,44 @@ function ss2Chunk(b: Uint8Array, p: number, end: number, w: number, h: number, p
   }
 }
 
+/** Appends src[from, to) to dst (a loop: spreading a subarray into push is slow). */
+function pushRange(dst: number[], src: Uint8Array, from: number, to: number): void {
+  for (let i = from; i < to; i++) dst.push(src[i]);
+}
+
+/** Appends every item of src to dst (spreading a big array into push can overflow the stack and is slow). */
+function pushAll(dst: number[], src: readonly number[]): void {
+  for (let i = 0; i < src.length; i++) dst.push(src[i]);
+}
+
 /** BRUN: each line as runs of one value or stretches of literal pixels. */
 function brun(px: Uint8Array, w: number, h: number): number[] {
   const out: number[] = [];
   for (let y = 0; y < h; y++) {
     // Runs of 3 or more equal pixels become run packets (count 1..127, value); anything
     // else goes in literal packets (count -1..-128) that stop where a 3-run begins.
-    const row = px.subarray(y * w, y * w + w);
+    const base = y * w;
     const line: number[] = [];
     let packets = 0;
     let x = 0;
     while (x < w) {
       let run = 1;
-      while (x + run < w && run < 127 && row[x + run] === row[x]) run++;
+      while (x + run < w && run < 127 && px[base + x + run] === px[base + x]) run++;
       if (run >= 3 || x + run >= w) {
-        line.push(run, row[x]);
+        line.push(run, px[base + x]);
         x += run;
       } else {
         let n = 0;
-        while (x + n < w && n < 128 && !(x + n + 2 < w && row[x + n] === row[x + n + 1] && row[x + n] === row[x + n + 2])) n++;
-        line.push((256 - n) & 255, ...row.subarray(x, x + n));
+        while (x + n < w && n < 128 && !(x + n + 2 < w && px[base + x + n] === px[base + x + n + 1] && px[base + x + n] === px[base + x + n + 2])) n++;
+        line.push((256 - n) & 255);
+        pushRange(line, px, base + x, base + x + n);
         x += n;
       }
       packets++;
     }
     // The packet count byte is capped; readers (brunChunk here) decode by width instead.
-    out.push(Math.min(255, packets), ...line);
+    out.push(Math.min(255, packets));
+    pushAll(out, line);
   }
   return out;
 }
@@ -271,7 +283,7 @@ const LC_LINE_PACKETS = 127;
  */
 function lcLine(prev: Uint8Array, px: Uint8Array, y: number, w: number, runs: boolean): number[] | undefined {
   const row = y * w;
-  const packets: number[] = [];
+  const packets: number[] = [0]; // the packet count goes first, filled in at the end
   let count = 0;
   let x = 0;
   let lastEnd = 0;
@@ -291,18 +303,28 @@ function lcLine(prev: Uint8Array, px: Uint8Array, y: number, w: number, runs: bo
       skip -= 255;
     }
     const n = end - x;
-    const allSame = px.subarray(row + x, row + end).every((v) => v === px[row + x]);
+    let allSame = true;
+    for (let i = row + x + 1; i < row + end; i++) {
+      if (px[i] !== px[row + x]) {
+        allSame = false;
+        break;
+      }
+    }
     if (runs && !allSame) count += packRuns(px, row + x, row + end, skip, packets);
     else {
       if (allSame && n > 2) packets.push(skip, (256 - n) & 255, px[row + x]);
-      else packets.push(skip, n, ...px.subarray(row + x, row + end));
+      else {
+        packets.push(skip, n);
+        pushRange(packets, px, row + x, row + end);
+      }
       count++;
     }
     lastEnd = end;
     x = end;
   }
   if (count > LC_LINE_PACKETS) return runs ? lcLine(prev, px, y, w, false) : undefined;
-  return [count, ...packets];
+  packets[0] = count;
+  return packets;
 }
 
 /** The first and last lines that differ, or undefined when the pictures are the same. */
@@ -331,7 +353,7 @@ function lineDelta(prev: Uint8Array, px: Uint8Array, w: number, h: number, runs 
   for (let y = first; y <= last; y++) {
     const line = lcLine(prev, px, y, w, runs);
     if (!line) return undefined;
-    out.push(...line);
+    pushAll(out, line);
   }
   return out;
 }
@@ -352,7 +374,11 @@ function lineBands(prev: Uint8Array, px: Uint8Array, w: number, h: number, max: 
   const close = () => {
     // trailing unchanged lines (a 0 packet count each) are left off
     while (band.length && band[band.length - 1].length === 1 && band[band.length - 1][0] === 0) band.pop();
-    if (band.length) chunks.push(fliChunk(12, [...lcHeader(start, band.length), ...band.flat()]));
+    if (band.length) {
+      const data = lcHeader(start, band.length);
+      for (const line of band) pushAll(data, line);
+      chunks.push(fliChunk(12, data));
+    }
     band = [];
     size = 0;
   };
@@ -380,7 +406,8 @@ function packRuns(px: Uint8Array, from: number, to: number, skip: number, packet
   let lit = from;
   const flush = (end: number) => {
     if (end > lit) {
-      packets.push(count ? 0 : skip, end - lit, ...px.subarray(lit, end));
+      packets.push(count ? 0 : skip, end - lit);
+      pushRange(packets, px, lit, end);
       count++;
     }
   };
@@ -417,7 +444,10 @@ function fliChunk(type: number, data: number[]): number[] {
   let size = data.length + 6;
   const pad = size & 1;
   size += pad;
-  return [size & 255, (size >> 8) & 255, (size >> 16) & 255, size >>> 24, type & 255, type >> 8, ...data, ...(pad ? [0] : [])];
+  const out = [size & 255, (size >> 8) & 255, (size >> 16) & 255, size >>> 24, type & 255, type >> 8];
+  pushAll(out, data);
+  if (pad) out.push(0);
+  return out;
 }
 
 /**
@@ -486,7 +516,7 @@ export function encodeFli(
     const body = chunks.flat();
     // Frame header: size u32, magic 0xF1FA, chunk count u16, 8 reserved bytes.
     const size = body.length + 16;
-    return [
+    const record = [
       size & 255,
       (size >> 8) & 255,
       (size >> 16) & 255,
@@ -503,8 +533,9 @@ export function encodeFli(
       0,
       0,
       0,
-      ...body,
     ];
+    pushAll(record, body);
+    return record;
   });
   const total = 128 + records.reduce((n, r) => n + r.length, 0);
   const out = new Uint8Array(total);
