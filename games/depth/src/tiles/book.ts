@@ -4,6 +4,7 @@
 // Blocks are made as the map asks for them: a cell's kind plus what its neighbors do to it
 // (shadows, a pit's inner wall), so only the variants a level uses take up its 150 numbers.
 import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { cachedFrame } from '../render/frameCache';
 import type { Picture } from '../render/image';
 import { ISO, KINDS, PLANES, renderCell, type CellKey, type Ctx, type Plane } from './cells';
 import { renderIsoCell } from './iso';
@@ -154,7 +155,9 @@ export class TileBook {
     const out = { near: [] as (Picture | undefined)[], far: [] as (Picture | undefined)[] };
     this.keys.forEach((k, n) => {
       if (!k) return;
-      for (const p of PLANES) out[p][n] = (k.variant === ISO ? renderIsoCell : renderCell)(k, p, this.theme, seed + n * 31);
+      // through the frame cache, so the frame shards render the blocks in parallel and the build only reads them
+      for (const p of PLANES)
+        out[p][n] = cachedFrame(`cell-${seed}-${n}-${p}`, () => (k.variant === ISO ? renderIsoCell : renderCell)(k, p, this.theme, seed + n * 31));
     });
     return out;
   }

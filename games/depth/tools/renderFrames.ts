@@ -6,6 +6,9 @@ import { endingFrames } from '../src/screens/ending';
 import * as P from '../src/screens/pictures';
 import { storyPictures } from '../src/screens/story';
 import { titlePicture } from '../src/screens/title';
+import { levelPictures } from '../src/levels/blocks';
+import { LEVELS } from '../src/levels/levels';
+import { levelExtras } from '../src/levels/extras';
 const started = Date.now();
 const dir = process.env.DEPTH_FRAME_CACHE;
 const shard = process.argv[2];
@@ -26,5 +29,10 @@ P.savePicture('SAVE GAME');
 P.lostPicture();
 P.eggPicture();
 for (let n = 1; n <= 6; n++) P.cardPicture(n, 6, '', '', []);
+// every level's blocks (the build only reads them)
+for (const level of LEVELS) {
+  const x = levelExtras(level);
+  levelPictures(level, x.rules, x.prepare);
+}
 writeFileSync(join(dir, `shard-${shard[0]}.json`), JSON.stringify({ shard }));
 console.log(`Animation frame shard ${shard} ready in ${((Date.now() - started) / 1000).toFixed(1)} seconds.`);

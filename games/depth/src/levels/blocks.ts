@@ -20,18 +20,24 @@ export interface LevelSet {
   pal: Uint8Array;
 }
 
-export function buildLevelSet(
-  level: Level,
-  spriteColors: Col[],
-  extra?: (kind: string, plane: Plane, part: number) => Behavior | undefined,
-  prepare?: (book: TileBook) => void,
-): LevelSet {
+/** The level laid out and every block rendered in both planes (what the frame shards cache, so they can render the blocks in parallel). */
+export function levelPictures(level: Level, extra?: (kind: string, plane: Plane, part: number) => Behavior | undefined, prepare?: (book: TileBook) => void) {
   const book = new TileBook(level.theme, rulesFor({ level: level.n, extra }));
   pinHidden(book);
   prepare?.(book);
   const built = buildLevel(book, level);
   const blocks = { near: book.blocks('near'), far: book.blocks('far') };
   const pics = book.renderAll(level.n * 1000);
+  return { book, built, blocks, pics };
+}
+
+export function buildLevelSet(
+  level: Level,
+  spriteColors: Col[],
+  extra?: (kind: string, plane: Plane, part: number) => Behavior | undefined,
+  prepare?: (book: TileBook) => void,
+): LevelSet {
+  const { book, built, blocks, pics } = levelPictures(level, extra, prepare);
   const bytes: Uint8Array[] = [];
   for (const p of PLANES) pics[p].forEach((pic, n) => pic && !isHidden(book, n) && bytes.push(toBytes(pic)));
   const { pal, matcher } = levelPalette(spriteColors, bytes);
