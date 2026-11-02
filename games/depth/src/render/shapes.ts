@@ -290,14 +290,17 @@ export class Sdf implements Shape {
     }
     return [t0, t1];
   }
-  march(o: V, d: V, tmax: number): number {
+  /** Sphere traces to the surface; a shadow test (`rough`) takes whole distance steps (it only needs whether the ray gets through). */
+  march(o: V, d: V, tmax: number, rough = false): number {
     const r = this.clip(o, d, tmax);
     if (!r) return -1;
     let t = r[0];
+    const eps = this.eps;
+    const k = rough ? 1 : 0.9;
     for (let i = 0; i < 160 && t <= r[1]; i++) {
       const dist = this.sdf(o[0] + d[0] * t, o[1] + d[1] * t, o[2] + d[2] * t);
-      if (dist < this.eps) return t;
-      t += Math.max(dist * 0.9, this.eps * 0.5);
+      if (dist < eps) return t;
+      t += Math.max(dist * k, eps * 0.5);
     }
     return -1;
   }
@@ -320,7 +323,7 @@ export class Sdf implements Shape {
     return true;
   }
   occludes(o: V, d: V, tmax: number): boolean {
-    return this.march(o, d, tmax) >= 0;
+    return this.march(o, d, tmax, true) >= 0;
   }
 }
 

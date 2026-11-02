@@ -76,6 +76,11 @@ interface RenderOptions {
   seed?: number;
   /** Only this rectangle (x0, y0, x1, y1 exclusive). */
   area?: [number, number, number, number];
+  /** Luminance spread of the first samples above which a pixel is an edge (default 0.06). */
+  edgeAt?: number;
+  /** A pixel whose spread is between `edgeAt` and `hardAt` gets only `softSpp` samples (default: no softer tier). */
+  hardAt?: number;
+  softSpp?: number;
   /** Trace the ghost (out-of-focus) layer only, returning coverage in `alpha`. */
   ghost?: boolean;
 }
@@ -85,6 +90,8 @@ export interface Picture {
   h: number;
   rgb: Float32Array;
   alpha?: Float32Array;
+  /** A stand-in for a frame another shard renders (frameCache.ts): the finishing touches skip it. */
+  placeholder?: boolean;
 }
 
 const hash = (x: number, y: number, s: number) => {
@@ -99,6 +106,9 @@ const hash = (x: number, y: number, s: number) => {
 export function render(world: World, cam: Camera, w: number, h: number, opts: RenderOptions = {}): Picture {
   const spp = opts.spp ?? 4;
   const edge = opts.edgeSpp ?? 16;
+  const edgeAt = opts.edgeAt ?? 0.06;
+  const hardAt = opts.hardAt ?? 0;
+  const soft = opts.softSpp ?? edge;
   const rgb = new Float32Array(w * h * 3);
   const alpha = opts.ghost ? new Float32Array(w * h) : undefined;
   const [ax0, ay0, ax1, ay1] = opts.area ?? [0, 0, w, h];
@@ -132,7 +142,10 @@ export function render(world: World, cam: Camera, w: number, h: number, opts: Re
         n++;
       };
       for (let k = 0; k < spp; k++) shoot(k, spp);
-      if (edge > spp && (hi - lo > 0.06 || (opts.ghost && cover > 0 && cover < n))) for (let k = 0; k < edge; k++) shoot(k, edge);
+      if (edge > spp && (hi - lo > edgeAt || (opts.ghost && cover > 0 && cover < n))) {
+        const e = hi - lo > hardAt || opts.ghost ? edge : Math.min(edge, soft);
+        for (let k = 0; k < e; k++) shoot(k, e);
+      }
       const i = y * w + x;
       rgb[i * 3] = acc[0] / n;
       rgb[i * 3 + 1] = acc[1] / n;
@@ -216,6 +229,7 @@ export function over(base: Picture, top: Picture, opacity = 1, dx = 0, dy = 0): 
 
 /** Bright parts bleed light around them (the glow every 1995 renderer's users added in post). */
 export function bloom(p: Picture, threshold = 0.85, sigma = 3, strength = 0.6): Picture {
+  if (p.placeholder) return p;
   const bright: Picture = { w: p.w, h: p.h, rgb: new Float32Array(p.rgb.length) };
   for (let i = 0; i < p.rgb.length; i++) bright.rgb[i] = Math.max(0, p.rgb[i] - threshold);
   const b = blur(bright, sigma);
@@ -225,6 +239,7 @@ export function bloom(p: Picture, threshold = 0.85, sigma = 3, strength = 0.6): 
 
 /** A lens flare at (fx, fy): hot core, a streak, a halo and a row of ghosts toward the center. */
 export function flare(p: Picture, fx: number, fy: number, intensity: number, tint: V = [1, 0.95, 0.85], aspect = 1.2): Picture {
+  if (p.placeholder) return p;
   const { w, h } = p;
   const ghosts: [number, number, V][] = [
     [-0.3, 7, [0.35, 0.9, 0.55]],

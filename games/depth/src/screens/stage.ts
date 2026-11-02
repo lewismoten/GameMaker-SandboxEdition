@@ -48,7 +48,19 @@ export function cam(eye: V, look: V, fov = 0.8, extra: Partial<Parameters<typeof
 }
 
 export function still(world: World, c: Camera, spp = 4, edge = 25, seed = 1, key?: string, group?: string): Picture {
-  const go = () => render(world, c, W, H, { spp, edgeSpp: edge, seed });
+  // Stills (these are full-screen frames, grainy by design) spend fewer samples than asked for: a pixel the first
+  // samples find only slightly uneven gets a few more, a clear edge gets a fuller set. 4 and 9 are whole sample
+  // grids (2x2 and 3x3), so the extra samples stay evenly spread over the pixel.
+  const heavy = edge > 25; // the blurred (depth of field) pictures need more
+  const go = () =>
+    render(world, c, W, H, {
+      spp: Math.min(spp, heavy ? 6 : 4),
+      edgeSpp: Math.min(edge, heavy ? 16 : 9),
+      softSpp: heavy ? 9 : 4,
+      edgeAt: 0.08,
+      hardAt: 0.2,
+      seed,
+    });
   // named stills go through the frame cache, so CI renders them in parallel shards
   return key ? cachedFrame(`still-${key}`, go, group && `still-${group}`) : go();
 }
