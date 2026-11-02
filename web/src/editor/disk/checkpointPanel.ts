@@ -92,6 +92,15 @@ export function checkpointPanel(project: Project, hist: ReturnType<typeof fileUn
           },
           'Compare…',
         ),
+        h(
+          'button',
+          {
+            type: 'button',
+            'aria-label': `Play ${cp.name}`,
+            onclick: () => void import('./playCheckpoint').then((m) => m.playCheckpoint(cp.name, versionAt(list, i), project.gam)),
+          },
+          'Play…',
+        ),
         h('button', { type: 'button', 'aria-label': `Restore ${cp.name}`, disabled: !n, onclick: () => void act(() => restore(i)) }, 'Restore'),
         h(
           'button',
