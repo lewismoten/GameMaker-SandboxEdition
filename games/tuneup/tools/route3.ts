@@ -3,7 +3,7 @@
 // A person's timing throughout (bot.ts).
 import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
 import { buildPalette } from '../src/art/palette';
-import { BLADE_FOOT, DROPS, RAIN, SECTIONS, bladeName, parkedFrames, rainBlocks } from '../src/levels/rain';
+import { BLADE_FOOT, RAIN, RAIN_PARTS, SECTIONS, bladeName, parkedFrames, rainBlocks } from '../src/levels/rain';
 import { HORN_BEAT, HORN_REST, HORN_ROUNDS, HORN_ROW, hornSize, padX, stageX } from '../src/levels/horn';
 import { GEARS, freshTooth, keyBlocks, toothName } from '../src/levels/key';
 import { CTR } from '../src/ids';
@@ -12,44 +12,53 @@ import { GAUGES, PANEL, RADIO_X, STATIONS, dialRing, panelBlocks } from '../src/
 import type { Bot } from './bot';
 import { leave, must, takeFork } from './route';
 
-const rainBook = rainBlocks(buildPalette('rain')).book;
-/** The raindrops' blocks. */
-const drops = new Set([0, 1, 2, 3].map((i) => rainBook.n(`drop${i}`)));
-/** Each wiper's blocks, at Doc Leo's feet, that show its blade has just gone by. */
-const parked = SECTIONS.map((s) => new Set(parkedFrames(s).map((f) => rainBook.n(bladeName(s, BLADE_FOOT, f)))));
+/** The raindrops' blocks, and each section's just-wiped frames, as each part's block book numbers them. */
+const rainParts = RAIN_PARTS.map((part) => {
+  const book = rainBlocks(part)(buildPalette('rain')).book;
+  return {
+    part,
+    drops: new Set([0, 1, 2, 3].map((i) => book.n(`drop${i}`))),
+    parked: part.sections.map((i) => new Set(parkedFrames(SECTIONS[i]).map((f) => book.n(bladeName(SECTIONS[i], BLADE_FOOT, f))))),
+  };
+});
 
-/** 10. The Rain Delay: up to each wiper, its blade watched go by, then across before the next sweep. */
-export async function rainDelay(bot: Bot): Promise<void> {
-  expect(bot, 17, 'the rain delay');
-  await must(bot, bot.land(), 'onto the cowl');
-  const hp = bot.sim.ci.hitpts;
-  for (const [i, s] of SECTIONS.entries()) {
-    for (const x of s.wipers) {
-      await must(bot, bot.walk(x - 1, `before the wiper at ${x}`), 'to the wiper');
-      const isParked = () => parked[i].has(bot.shownNum(x, BLADE_FOOT));
-      // a sweep starting, then gone by: cross right behind it
-      await must(
-        bot,
-        bot.until(undefined, () => !isParked(), `saw the blade at ${x} come`, 200),
-        'waiting for the sweep',
-      );
-      await must(bot, bot.until(undefined, isParked, `saw the blade at ${x} go by`, 40), 'the sweep');
-      await must(bot, bot.react(), 'reacting');
-      await must(bot, bot.walk(x + 1, `past the wiper at ${x}`), 'across');
+/** 10. The Rain Delay, part `n`: up to each wiper, its blade watched go by, then across before the next sweep. */
+export function rainDelay(n: number) {
+  const { part, drops, parked } = rainParts[n];
+  const run = async (bot: Bot): Promise<void> => {
+    expect(bot, 17 + n, `the rain delay, part ${n + 1}`);
+    await must(bot, bot.land(), 'onto the cowl');
+    const hp = bot.sim.ci.hitpts;
+    for (const [i, si] of part.sections.entries()) {
+      for (const x of SECTIONS[si].wipers) {
+        await must(bot, bot.walk(x - 1, `before the wiper at ${x}`), 'to the wiper');
+        const isParked = () => parked[i].has(bot.shownNum(x, BLADE_FOOT));
+        // a sweep starting, then gone by: cross right behind it
+        await must(
+          bot,
+          bot.until(undefined, () => !isParked(), `saw the blade at ${x} come`, 200),
+          'waiting for the sweep',
+        );
+        await must(bot, bot.until(undefined, isParked, `saw the blade at ${x} go by`, 40), 'the sweep');
+        await must(bot, bot.react(), 'reacting');
+        await must(bot, bot.walk(x + 1, `past the wiper at ${x}`), 'across');
+      }
     }
-  }
-  if (bot.sim.ci.hitpts < hp) throw new Error(`slapped by a wiper: ${hp} -> ${bot.sim.ci.hitpts}`);
-  await takeFork(bot, RAIN.fork, 'on the cowl');
-  const left = DROPS.filter((x) => drops.has(bot.shownNum(x, RAIN.floor - 1)));
-  if (left.length) throw new Error(`raindrops left at ${left.join(', ')}`);
-  await leave(bot, bot.walk(RAIN.exit, 'to the far pillar'), 'out');
+    if (bot.sim.ci.hitpts < hp) throw new Error(`slapped by a wiper: ${hp} -> ${bot.sim.ci.hitpts}`);
+    if (part.fork !== undefined) await takeFork(bot, part.fork, 'on the cowl');
+    const left = part.drops.filter((x) => drops.has(bot.shownNum(x, RAIN.floor - 1)));
+    if (left.length) throw new Error(`raindrops left at ${left.join(', ')}`);
+    await leave(bot, bot.walk(part.exit, 'to the far pillar'), 'out');
+  };
+  Object.defineProperty(run, 'name', { value: `rainDelay${n + 1}` });
+  return run;
 }
 
 /** 11. The Horn Section, one round: the call watched once through, then each stage's pad reached and climbed. */
 export function hornSection(round: number) {
   const r = HORN_ROUNDS[round];
   const run = async (bot: Bot): Promise<void> => {
-    expect(bot, 18 + round, `the horn section, round ${round + 1}`);
+    expect(bot, 19 + round, `the horn section, round ${round + 1}`);
     await must(bot, bot.land(), 'onto the sidewalk');
     // listening to the clowns: the whole call, once through
     await must(bot, bot.wait((r.phrase.length + HORN_REST) * HORN_BEAT), 'listening to the call');
@@ -103,7 +112,7 @@ async function onTooth(bot: Bot, room: number, x: number, upper: boolean): Promi
 /** 12. Key Change, one gear room: up each tower's teeth on the beat, over its wall, the notes, out the door on its clock. */
 export function keyChange(room: number) {
   const run = async (bot: Bot): Promise<void> => {
-    expect(bot, 21 + room, `key change, gear ${room + 1}`);
+    expect(bot, 22 + room, `key change, gear ${room + 1}`);
     await must(bot, bot.land(), 'into the gearbox');
     const score = bot.sim.ci.score;
     for (const x of GEARS.towers) {
@@ -138,7 +147,7 @@ const needleRight = (j: number) => diskNumber('dash1', dashBook.n(`dial${j}.${di
 
 /** 13. The Instrument Panel, the radio: under each preset, the needle watched coming, then a hop into the lit button. */
 export async function tuneRadio(bot: Bot): Promise<void> {
-  expect(bot, 25, 'the instrument panel, the radio');
+  expect(bot, 26, 'the instrument panel, the radio');
   await must(bot, bot.land(), 'onto the dash');
   for (const [s, i] of STATIONS.entries()) {
     const x = PANEL.dialX + i;
@@ -166,7 +175,7 @@ export async function tuneRadio(bot: Bot): Promise<void> {
 
 /** 13. The Instrument Panel, the gauges: a hop into each for its chord, then the radio into its space, then out. */
 export async function gaugeChords(bot: Bot): Promise<void> {
-  expect(bot, 26, 'the instrument panel, the gauges');
+  expect(bot, 27, 'the instrument panel, the gauges');
   await must(bot, bot.land(), 'onto the dash');
   for (const [g, x] of GAUGES.entries()) {
     await must(bot, bot.walk(x, `under gauge ${g + 1}`), 'to the gauge');
@@ -183,7 +192,8 @@ export async function gaugeChords(bot: Bot): Promise<void> {
 }
 
 export const LEVELS_10_13 = [
-  rainDelay,
+  rainDelay(0),
+  rainDelay(1),
   hornSection(0),
   hornSection(1),
   hornSection(2),

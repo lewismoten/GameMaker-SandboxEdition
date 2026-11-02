@@ -20,7 +20,7 @@ import { fan, fanBlocks, FAN_VERSES } from './fan';
 import { muffled, muffledBlocks } from './muffled';
 import { pump, pumpBlocks } from './pump';
 import { swim, swimBlocks } from './swim';
-import { rain, rainBlocks } from './rain';
+import { RAIN_PARTS, rain, rainBlocks } from './rain';
 import { choirSong, hornSong, keySong, rainSong, tuningSong } from '../sound/realSongs2';
 import { panel, panelBlocks } from './panel';
 import { keyBlocks, keyRoom } from './key';
@@ -177,20 +177,21 @@ export const LEVELS: LevelDef[] = [
     mons: {},
     wide: true,
   },
-  {
-    file: 'rain',
+  ...RAIN_PARTS.map((r, i): LevelDef => ({
+    file: r.file,
     level: 10,
     desc: 'The Rain Delay',
+    part: ['the two and the three', 'the tricky five'][i],
     theme: 'rain',
-    blocks: rainBlocks,
-    build: rain,
+    blocks: rainBlocks(r),
+    build: rain(r),
     chr: 'leo',
     snd: 'rain',
     song: rainSong,
     mons: {},
     wide: true,
-    before: ['egg1', 'egg2', 'egg3', 'eggkeep'],
-  },
+    before: i ? undefined : ['egg1', 'egg2', 'egg3', 'eggkeep'],
+  })),
   ...HORN_ROUNDS.map((r, i): LevelDef => ({
     file: r.file,
     level: 11,

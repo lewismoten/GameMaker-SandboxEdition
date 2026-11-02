@@ -272,6 +272,13 @@ export const OUTRO: Record<string, Card> = {
   rain: {
     lady: true,
     lines: [
+      ['regina', 'Two and three, and not a drop on my tiara. The five is next.'],
+      ['leo', "There's a thermos on the dash. Have a sip first."],
+    ],
+  },
+  rain2: {
+    lady: true,
+    lines: [
       ['regina', 'The wind is fierce. Could it tip us over?'],
       ['leo', "I've wondered that myself, in a storm like this. Not today."],
       ['regina', 'And the wiper keeps time beautifully. Two, three, and the tricky five.'],

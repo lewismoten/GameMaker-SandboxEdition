@@ -109,7 +109,7 @@ async function signal(bot: Bot, s: Signal): Promise<void> {
 export function testDrive(part: number) {
   const r = ROUTES[part];
   const run = async (bot: Bot): Promise<void> => {
-    expect(bot, 28 + part, `the test drive, ${r.file}`);
+    expect(bot, 29 + part, `the test drive, ${r.file}`);
     await must(bot, bot.land(), 'onto the street');
     const score = bot.sim.ci.score;
     const forks = bot.count(CTR.forks);
@@ -132,7 +132,7 @@ export function testDrive(part: number) {
 export function paradeRoute(part: number) {
   const p = PARADES[part];
   const run = async (bot: Bot): Promise<void> => {
-    expect(bot, 30 + part, `the parade route, ${p.file}`);
+    expect(bot, 31 + part, `the parade route, ${p.file}`);
     await must(bot, bot.land(), 'onto the route');
     const forks = bot.count(CTR.forks);
     for (const x of [...p.cues].sort((a, b) => b - a)) {

@@ -10,6 +10,7 @@ export const STRIDE = 13;
 /** Each shared .MAP (by name, without .map) and its scenes, in order down the map. */
 export const STACKS: Record<string, string[]> = {
   fan: ['fan1', 'fan2'],
+  rain: ['rain', 'rain2'],
   cups: ['cups1', 'cups2', 'cups3'],
   horn: ['horn1', 'horn2', 'horn3'],
   gear: ['gear1', 'gear2', 'gear3', 'gear4'],
