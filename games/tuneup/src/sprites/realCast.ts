@@ -105,9 +105,10 @@ export function addRealCast(add: Add): void {
     add(`lamp.lit${k}.0`, lamp('lit', 0, letter), lit);
     add(`lamp.lit${k}.1`, lamp('lit', 1, letter), lit);
   });
-  add('cap', hubcap(0, 'none'));
+  // a first-try find is worth 300; every empty cap lifted first costs 50 (a ball found on the third try is the old 200)
+  add('cap', hubcap(0, 'none'), { scorePts: -50 });
   // the cap over the ball looks the same; reaching up under it finds the ball
-  add('cap.ball', hubcap(0, 'none'), { effect: CTR.ball, eamt: 1, scorePts: 200 });
+  add('cap.ball', hubcap(0, 'none'), { effect: CTR.ball, eamt: 1, scorePts: 300 });
   add('cap.up', hubcap(9, 'none'));
   add('cap.upBall', hubcap(9, 'ball'));
   add('cap.tada', hubcap(9, 'tada'));

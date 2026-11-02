@@ -47,6 +47,20 @@ export function dialRing(i: number): [boolean, number][] {
   return ring;
 }
 
+/** Points for a preset hopped into early, on the beat (the middle of the needle's pass) and late. */
+const PRESET_GRADES = [60, 150, 60] as const;
+
+/** A preset button's ring: the dial's, with each lit run in three grades (a tick, two, a tick; every grade is lit and tunes the station). */
+function presetRing(i: number): { on: boolean; ticks: number; points?: number }[] {
+  return dialRing(i).flatMap(([on, ticks]) => {
+    if (!on) return [{ on, ticks }];
+    const { ticks: step } = DIAL;
+    if (ticks !== step) throw new Error(`dial cell ${i}: a lit run of ${ticks} ticks can't be graded`);
+    const parts = [step / 4, step / 2, step / 4];
+    return parts.map((t, g) => ({ on, ticks: t, points: PRESET_GRADES[g] }));
+  });
+}
+
 export function panelBlocks(scene: 'tune' | 'gauges') {
   return (pal: Pal): Kit => {
     const k = kit(pal);
@@ -106,11 +120,11 @@ export function panelBlocks(scene: 'tune' | 'gauges') {
         return p;
       };
       STATIONS.forEach((i, s) => {
-        const ring = dialRing(i);
-        ring.forEach(([on, t], f) =>
+        const ring = presetRing(i);
+        ring.forEach(({ on, ticks: t, points }, f) =>
           book.add(`preset${s}.${f}`, button(s, on), {
             ...AIR,
-            ...(on ? { ...STATION_KINDS[s], score: 100, touch: `preset${s}.set` } : { score: -1, touch: `preset${s}.${f}` }),
+            ...(on ? { ...STATION_KINDS[s], score: points, touch: `preset${s}.set` } : { score: -1, touch: `preset${s}.${f}` }),
             ntime: t,
             next: `preset${s}.${(f + 1) % ring.length}`,
           }),
