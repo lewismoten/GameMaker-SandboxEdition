@@ -131,7 +131,7 @@
       "promised": true,
       "landscape": true,
       "heading": "TUNE-UP",
-      "intro": "THE CHEZ's engine bay, tuned part by part. Hang it in the garage, well away from the toolbox Gwinn buried.",
+      "intro": "THE CHEZ, tuned part by part: motor, controller, battery under the seat. Hang it in the garage, well away from the toolbox Gwinn buried.",
       "panels": [
         {
           "map": "jump.map",
