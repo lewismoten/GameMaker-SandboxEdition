@@ -89,9 +89,7 @@ function exitSign(size: number): Pixels {
     return p.rect(8, 11, 4, 1, c('paint', 3));
   }
   p.rect(0, 0, 20, 12, c('green', 0)).frame(0, 0, 20, 12, c('paint', 3));
-  micro(p, 3, 2, 'EXIT', c('paint', 3));
-  p.rect(14, 8, 3, 1, c('paint', 3)).set(16, 7, c('paint', 3)).set(16, 9, c('paint', 3));
-  p.rect(3, 8, 6, 1, c('paint', 3));
+  micro(p, 2, 2, 'EXIT', c('paint', 3));
   return p.rect(4, 12, 2, 8, c('metal', 2)).rect(14, 12, 2, 8, c('metal', 2));
 }
 
