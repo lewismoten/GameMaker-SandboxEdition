@@ -77,6 +77,13 @@ const reel = (name: string, fli: Uint8Array) => {
   return clipEntries(clips, 0);
 };
 const PAUSE = cardPauses();
+// One monster set serves every scene whose options agree with it: Oil's Well's timings (no
+// other scene places a Squeak or a drop) and the cups' first shuffle. Later rounds keep their own.
+const CAST_MONS = { ...LEVELS.find((l) => l.file === 'oil')!.mons, ...LEVELS.find((l) => l.file === 'cups1')!.mons };
+const fitsCast = (l: (typeof LEVELS)[number]) =>
+  Object.entries(l.mons).every(([k, v]) => JSON.stringify(v) === JSON.stringify(CAST_MONS[k as keyof typeof CAST_MONS]));
+const monOf = (l: (typeof LEVELS)[number]) => (fitsCast(l) ? 'cast.mon' : `${l.file}.mon`);
+disk.put('cast.mon', serializeMonsters(buildMonsters(mb, CAST_MONS)));
 const opening = reel('opening.fli', openingReel().fli(SPEED));
 const unshrink = reel('unshrnk.fli', unshrinkReel().fli(SPEED));
 
@@ -105,7 +112,7 @@ const putSong = (name: string, bytes: Uint8Array) => {
 };
 built.forEach(({ l, m, pal }, i) => {
   disk.put(`${l.file}.pal`, serializePalette(pal.pal));
-  disk.put(`${l.file}.mon`, serializeMonsters(buildMonsters(mb, l.mons)));
+  if (!fitsCast(l)) disk.put(`${l.file}.mon`, serializeMonsters(buildMonsters(mb, l.mons)));
   const song = putSong(`${l.file}.cmf`, l.song());
   const scene = emptyScene(ADVTYPE);
   scene.desc = l.part ? `${l.desc}, ${l.part}` : l.desc;
@@ -136,7 +143,7 @@ built.forEach(({ l, m, pal }, i) => {
     `${l.file}.pal`,
     mapOf(l.file),
     bblOf(l.file),
-    `${l.file}.mon`,
+    monOf(l),
     'cast.mbl',
     `${l.chr}.chr`,
     CBL[l.chr] ?? 'leo.cbl',
