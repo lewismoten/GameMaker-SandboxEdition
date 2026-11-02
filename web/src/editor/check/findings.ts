@@ -356,7 +356,7 @@ export const CHECKS = {
     name: 'Colors reserved for another kind of art',
     why: 'This project reserved palette ranges for characters, monsters and backgrounds. A block drawing with another kind’s color is easy to miss: a later palette change meant for one kind recolors it too.',
     taste: true,
-    guide: { chapter: 'palettes', section: 'Color 0 is the background' },
+    guide: { chapter: 'palettes', section: 'How a block knows its colors' },
   },
   'dos-chars': {
     name: 'Characters DOS can’t draw',
