@@ -22,6 +22,7 @@ import { playButtons } from './playButtons';
 import { currentPick, gameFor, parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
 import { keepPick, lastPick } from './playPickStore';
 import './workspace.css';
+import { noteLastPlace, resumeLastPlace, watchLastPlace } from './lastPlace';
 import { FILE_ORDER as ORDER, ADD_KINDS as SECTIONS, FILE_KIND_HELP as KIND_HELP } from './fileKinds';
 import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
@@ -147,6 +148,9 @@ export class Workspace implements AssistantHost {
     this.renderSidebar();
     // a reload while play testing (…?play) starts the play test again
     const playing = currentRoute().params.play;
+    // back from the Games page with no file named: where the editor was last open (lastPlace.ts)
+    file ??= resumeLastPlace(project);
+    watchLastPlace();
     this.navigate(file);
     if (playing !== undefined) this.play(playing === 'title' ? 'title' : parsePick(playing));
     // Phones: the dropped-down file list closes on Escape or a tap outside it.
@@ -553,6 +557,7 @@ export class Workspace implements AssistantHost {
   /** Opens the Overview page on a tab (Files, optionally in one category; Controls; DOS player). */
   private openAssets(kind?: FileKind, tab: OverviewTab = 'files'): void {
     if (tab !== 'files') kind = undefined;
+    noteLastPlace();
     this.cleanup?.();
     this.cleanup = undefined;
     this.player?.stop();

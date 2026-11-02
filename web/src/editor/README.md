@@ -25,6 +25,9 @@ Part of the [source map](../README.md).
     `projectExport.ts`; the health badge (`gameHealth.ts`). Imported games' ratings on the home
     page (`homeRatings.ts`: a tile's stars, the Show picker, grouping by rating, and the stars and
     note in the panel at the top); "Remove all imported…" can take only some ratings.
+  - Coming back to the editor from the Games page with no file in the address picks up where it was last open
+    (`lastPlace.ts`): the same game opens the same file and its tab; another game opens its file of the same name, else
+    the Files overview on that kind.
   - The workspace (`workspace.ts`: asset overview, file galleries, file list + editor), with Play Game and the Play Level split
     button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
     into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,

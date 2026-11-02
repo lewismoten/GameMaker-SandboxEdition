@@ -140,6 +140,7 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-library-context-used': 'the Library’s start, noted as pages are viewed',
   'gm-mus-track-clip': 'the music editor’s clipboard',
   'gm-dev-log': 'the dev server’s interaction-log switch (localhost only)',
+  'gm-last-place': 'where the editor was last open, to pick up there',
   'gm-file-clip': 'the asset browser’s copied native file and editor extras (this tab only)',
   'gm-map-clip': 'the map editor’s clipboard (this visit only)',
   'gm-mus-preset-tab': 'the music editor’s preset picker tab (this tab only)',
