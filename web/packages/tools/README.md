@@ -38,7 +38,7 @@ const data = serializeBlocks(blocks);
 
 `medianCutRgba` from `images` chooses up to a requested 1–256 eight-bit RGB colors from portable RGBA image buffers. It needs no canvas or DOM; flatten transparency onto the intended background before calling it. The palette is based on pixel colors and their frequency, not unused color-table entries.
 
-Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `text`, `colors`, `microFont`, `music/compose`, `image/png` and `menu-version` (stamps "v1.0" on a game menu picture) entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
+Keep drawing and simulation imports in Node build scripts and tests; those entry points reject browser imports. Browser-safe `audio`, `images`, `text`, `colors`, `microFont`, `music/compose`, `image/png`, `kit/tar` and `menu-version` (stamps "v1.0" on a game menu picture) entry points also support the web editor. Playback through the engine and archives packages does not load this toolkit. Generated game data and your own copied assets belong in the consuming project.
 
 ## Fonts, text images, and lighting
 

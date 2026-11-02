@@ -47,6 +47,11 @@
       "gamemaker-source": "./src/formats/*.ts",
       "import": "./dist/formats/*.js"
     },
+    "./kit/tar": {
+      "types": "./dist/types/kit/tar.d.ts",
+      "gamemaker-source": "./src/kit/tar.ts",
+      "import": "./dist/kit/tar.js"
+    },
     "./kit/*": {
       "types": "./dist/types/kit/*.d.ts",
       "browser": null,
