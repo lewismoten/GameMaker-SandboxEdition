@@ -4,7 +4,7 @@ import { MAT } from '../render/look';
 import * as tracer from '../render/tracer';
 import type { Material, Shape, V } from '../render/tracer';
 
-const { Sdf, Sphere, rgb, sd } = tracer;
+const { Sdf, Sphere, hypot2, rgb, sd } = tracer;
 const { sphere: sphereD } = sd;
 
 export const RAY_R = 0.41;
@@ -28,8 +28,8 @@ export function rayModel(axis: 'x' | 'y', angle: number, band: V, at: V = RAY_AT
     // both circles contain the rolling axis: for axis y, the planes x = 0 and z = 0
     const [u, v] = axis === 'y' ? [lx, lz] : [ly, lz];
     const w = axis === 'y' ? ly : lx;
-    const ring1 = Math.hypot(Math.hypot(w, v) - r, u) - 0.036;
-    const ring2 = Math.hypot(Math.hypot(w, u) - r, v) - 0.036;
+    const ring1 = hypot2(hypot2(w, v) - r, u) - 0.036;
+    const ring2 = hypot2(hypot2(w, u) - r, v) - 0.036;
     return Math.min(ring1, ring2);
   };
   return [

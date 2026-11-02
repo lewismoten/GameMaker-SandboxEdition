@@ -4,7 +4,7 @@ import * as tracer from '../render/tracer';
 import type { Material, V } from '../render/tracer';
 
 // vite-node turns every imported name into a getter call on each use; the field loop binds them once here.
-const { Sdf, clamp01, sd } = tracer;
+const { Sdf, clamp01, hypot3, sd } = tracer;
 const { smin, sphere: sphereD, cylinder: cylinderD } = sd;
 
 type Field = (x: number, y: number, z: number) => number;
@@ -61,7 +61,7 @@ export function model(parts: Part[], bounds: [V, V], k = 0): tracer.Sdf {
           const by = num[q + 4];
           const bz = num[q + 5];
           const t = clamp01((px * bx + py * by + pz * bz) / num[q + 6]);
-          v = Math.hypot(px - bx * t, py - by * t, pz - bz * t) - (num[q + 7] + num[q + 8] * t);
+          v = hypot3(px - bx * t, py - by * t, pz - bz * t) - (num[q + 7] + num[q + 8] * t);
           break;
         }
         case CYL:
@@ -150,7 +150,7 @@ export const F = {
         const py = y - ay;
         const pz = z - az;
         const t = clamp01((px * bx + py * by + pz * bz) / len2);
-        return Math.hypot(px - bx * t, py - by * t, pz - bz * t) - (ra + dr * t);
+        return hypot3(px - bx * t, py - by * t, pz - bz * t) - (ra + dr * t);
       },
       CAP,
       ax,
