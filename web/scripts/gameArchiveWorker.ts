@@ -16,4 +16,15 @@ process.on('message', async (msg: { id: number; key: string }) => {
     process.send!({ id: msg.id, error: String(e) });
   }
 });
+// Leave with the parent: a killed or crashed dev server or test runner closes the IPC channel, and without
+// this the worker idled for hours at 0% CPU. The parent-pid check covers a channel that stays open.
+const parent = process.ppid;
+process.on('disconnect', () => process.exit(0));
+setInterval(() => {
+  try {
+    process.kill(parent, 0);
+  } catch {
+    process.exit(0);
+  }
+}, 5000).unref();
 process.send!({ ready: true });
