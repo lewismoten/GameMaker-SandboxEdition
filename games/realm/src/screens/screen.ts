@@ -79,6 +79,7 @@ export class Screen {
           },
           col,
           3,
+          [gx, y, gx + 8 * scale, y + 8 * scale],
         );
       }
       cx += 8 * scale;
