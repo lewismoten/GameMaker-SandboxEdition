@@ -10,7 +10,7 @@ import { BRAKE, HOUSINGS } from '../src/levels/brake';
 import { CUPS } from '../src/levels/cups';
 import { FAN_ROW, FAN_VERSES } from '../src/levels/fan';
 import { ORIGIN } from '../src/levels/maps';
-import { MUFFLED, TOYS, TUCKS } from '../src/levels/muffled';
+import { MUFFLED, TOYS, TUCKS, WATCHED } from '../src/levels/muffled';
 import { AWNINGS, AWNING_ROW, POODLE, PUMP, TWISTS } from '../src/levels/pump';
 import type { Bot } from './bot';
 import { leave, must } from './route';
@@ -32,6 +32,18 @@ async function reach(bot: Bot, what: string): Promise<void> {
 }
 
 /** 5. The Fan Band, one verse: each fan reached, the columns ridden up when they push. */
+/** Watches the hot grate until its gust has puffed and passed, then a person's reaction. */
+async function waitOutGust(bot: Bot, x: number): Promise<void> {
+  const hot = () => bot.shown(x, FAN_ROW.floor - 1).chHitPt < 0;
+  let waited = 0;
+  while (!hot()) {
+    await must(bot, bot.wait(1), 'watching the grate');
+    if (++waited > 100) throw new Error('the grate never puffed');
+  }
+  while (hot()) await must(bot, bot.wait(1), 'waiting out the gust');
+  await must(bot, bot.react(), 'the gust passed');
+}
+
 export function fanBand(verse: number) {
   const v = FAN_VERSES[verse];
   const run = async (bot: Bot): Promise<void> => {
@@ -49,6 +61,8 @@ export function fanBand(verse: number) {
           // down to the floor if need be, into the column before the ledge, up it
           const col = columnBefore(ledge[0])!;
           if (high) await must(bot, bot.walk(ledge[0] - 1 >= col.x + 1 ? col.x + 1 : col.x, 'toward the column'), 'column');
+          // the hot verse's grate on the way: watch it puff, then go while it's quiet
+          if (v.gust !== undefined && bot.px.x < v.gust * 20 && v.gust < col.x) await waitOutGust(bot, v.gust);
           await must(bot, bot.walk(col.x, `into the warm air at ${col.x}`), 'column');
           await must(
             bot,
@@ -188,6 +202,15 @@ export async function muffled(bot: Bot): Promise<void> {
   await must(bot, bot.walk(MUFFLED.bench[0] - 1, 'by the bench'), 'bench');
   await must(bot, bot.hop('right', 6, 'right', MUFFLED.bench[0] + 1), 'onto the bench');
   await must(bot, bot.walk(MUFFLED.bench[1], 'along the bench'), 'bench');
+  // watch Gwinn: her eye opens, her head comes up; once she settles back down, go over her
+  const watching = () => bot.shown(WATCHED.xs[0], WATCHED.y).chHitPt < 0;
+  let waited = 0;
+  while (!watching()) {
+    await must(bot, bot.wait(1), 'watching Gwinn');
+    if (++waited > 200) throw new Error('Gwinn never stirred');
+  }
+  while (watching()) await must(bot, bot.wait(1), 'waiting for Gwinn to settle');
+  await must(bot, bot.react(), 'she settled');
   await must(bot, bot.hop('right', 8, 'right', MUFFLED.shelf[0] + 1), 'onto the shelf');
   await must(bot, bot.walk(MUFFLED.shelf[1], 'along the shelf over Gwinn'), 'shelf');
   await must(bot, bot.walk(MUFFLED.shelf[1] + 1, 'off the shelf'), 'down');

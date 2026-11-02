@@ -2,7 +2,7 @@
 // Doc Leo climbs each plug wire (nothing pulls there: Up climbs, Down climbs down) and plucks
 // its plug at the top, which rings a note: C, E, G and E, the parade tune's opening. Sparks run
 // up the wires in the engine's firing order, 1-3-4-2, on a timetable you can watch: wait for
-// your wire's spark to pass, then climb. A spark doesn't hurt, it frizzes his hair (a little
+// your wire's spark to pass, then climb (each wire's foot glows a moment before its spark runs). A spark doesn't hurt, it frizzes his hair (a little
 // energy). Each plug's note is its own kind of change (sounds.ts): the first gives energy back,
 // the second and fourth count a pluck, the third a tip, so two terminals stand between the
 // halves and two at the end.
@@ -35,6 +35,8 @@ export const SPARK = {
   gateC: 35,
   exit: 36,
 } as const;
+/** Ticks the wire's foot glows before its spark runs (a warning; it doesn't frizz). */
+export const WARN = 10;
 /** Energy a spark takes. */
 const FRIZZ = -2;
 
@@ -55,6 +57,19 @@ export function sparkBlocks(pal: Pal): Kit {
     }
     return p;
   };
+  // the wire's foot gathering its spark: a blue-white glow round the cable's bottom
+  const glow = () => {
+    const p = wire(0);
+    p.disc(10, 17, 4.5, c('lamp', 2)).disc(10, 17, 3, c('lamp', 3)).rect(8, 14, 4, 6, c('pipe', 1)).rect(9, 15, 2, 4, c('lamp', 4));
+    for (const [x, y] of [
+      [4, 12],
+      [16, 13],
+      [5, 19],
+      [15, 19],
+    ])
+      p.set(x, y, c('lamp', 4));
+    return p;
+  };
   book.add('wire.top', wire(0), CLIMB);
   WIRES.forEach((w, i) => {
     const id = `w${i + 1}`;
@@ -64,6 +79,12 @@ export function sparkBlocks(pal: Pal): Kit {
     if (pre) book.add(`${id}.pre`, wire(0), { ...CLIMB, ntime: pre, next: `${id}.on` });
     book.add(`${id}.on`, wire(1 + i), { ...CLIMB, hp: FRIZZ, ntime: w.on, next: `${id}.off` });
     book.add(`${id}.off`, wire(0), { ...CLIMB, ntime: off, next: `${id}.on` });
+    // the foot: the same ring, but it glows for WARN ticks before each spark
+    const f = `${id}.foot`;
+    if (pre > WARN) book.add(`${f}.pre`, wire(0), { ...CLIMB, ntime: pre - WARN, next: `${f}.warn` });
+    book.add(`${f}.warn`, glow(), { ...CLIMB, ntime: WARN, next: `${f}.on` });
+    book.add(`${f}.on`, wire(1 + i), { ...CLIMB, hp: FRIZZ, ntime: w.on, next: `${f}.off` });
+    book.add(`${f}.off`, wire(0), { ...CLIMB, ntime: off - WARN, next: `${f}.warn` });
   });
   // the plugs: a white insulator on a hex, the boot on top; plucked, it rings and glows
   const plug = (lit: boolean) => {
@@ -124,7 +145,10 @@ export function spark(book: Kit['book']): Level {
   WIRES.forEach((wr, i) => {
     const id = `w${i + 1}`;
     m.set(wr.x, 1, `plug${i + 1}`).set(wr.x, WIRE_TOP, 'wire.top');
-    for (const y of SPARK_ROWS) m.set(wr.x, y, wr.slot ? `${id}.pre` : `${id}.on`);
+    for (const y of SPARK_ROWS.slice(0, -1)) m.set(wr.x, y, wr.slot ? `${id}.pre` : `${id}.on`);
+    // the foot's ring starts where its glow lines up with the spark (a first spark at tick 0 can't be warned)
+    const pre = wr.slot * SLOT;
+    m.set(wr.x, SPARK_ROWS[SPARK_ROWS.length - 1], !pre ? `${id}.foot.on` : pre > WARN ? `${id}.foot.pre` : `${id}.foot.warn`);
     // the ledge off the top to the right, to walk off and down
     m.fill(wr.x + 1, WIRE_TOP + 1, 3, 1, '_');
   });

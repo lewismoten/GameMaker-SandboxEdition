@@ -2,7 +2,8 @@
 // 8-track tapes to bed, and she's asleep on the moving blanket. Teddy sneaks in to fetch them.
 // Squeaky toys lie about: a touch squeaks one (once) and wakes Gwinn a little (the Zzz meter is his
 // energy), so he hops them. A blanket corner he tucks back in lets her settle (energy back).
-// The way over her is the shelf above her bed; touching Gwinn herself wakes her a lot. The
+// The way over her is the shelf above her bed; now and then she opens an eye, then lifts her head
+// and watches that shelf a moment (STIR), so Teddy waits for her to settle. Touching Gwinn herself wakes her a lot. The
 // tapes sit on a crate past her bed; with them, the door at the end opens. Up on the high shelf
 // past her bed: the felt egg (in the set's last slot, a number no other map shows). Sir Reginald
 // is still Sir Reginald here; his egg comes after this level (banter.ts EGG). The sign that tells how to save is in the next level, The Rain Delay.
@@ -33,12 +34,18 @@ export const MUFFLED = {
   door: 40,
   exit: 41,
 } as const;
+/** Gwinn stirring on her own, in ticks: asleep, one eye open (the warning), head up watching the shelf. */
+export const STIR = { asleep: 90, peek: 18, up: 36 } as const;
+/** The shelf cells over her bed that she watches while her head is up (level x, the row Teddy walks the shelf in). */
+export const WATCHED = { xs: [21, 23], y: 4 } as const;
+/** Energy (the Zzz meter) a cell she sees Teddy in takes. */
+const SEEN = -3;
 /** Squeaky toys on the floor (level x). */
 /** Gwinn's width in blocks, across the bed. */
 const GWINN_W = 3;
 /** The box round a sprite's own pixels (255 is clear). */
-/** Gwinn lying asleep on her side (60x40, clear 255), her head to the left; `stir`: head up, an eye open. */
-function sleepingGwinn(pal: Pal, stir: boolean): Pixels {
+/** Gwinn lying asleep on her side (60x40, clear 255), her head to the left; `stir`: head up, an eye open; `peek`: still lying down, one eye open. */
+function sleepingGwinn(pal: Pal, stir: boolean, peek = false): Pixels {
   const c = pal.c;
   const ink = c('ink', 0);
   const fur = pal.r('gwinn');
@@ -66,7 +73,12 @@ function sleepingGwinn(pal: Pal, stir: boolean): Pixels {
   p.disc(18, hy + 1, 2.4, c('gwinn', 1))
     .disc(18, hy + 4, 2, c('gwinn', 1))
     .set(17, hy, c('gwinn', 2));
-  if (stir) {
+  if (peek)
+    p.rect(11, hy - 2, 3, 2, c('paint', 3))
+      .set(12, hy - 1, ink)
+      .set(11, hy - 3, ink)
+      .set(13, hy - 3, ink);
+  else if (stir) {
     p.rect(11, hy - 1, 2, 2, c('fur', 2)).set(12, hy, ink);
     p.rect(6, hy + 5, 2, 2, c('tongue', 1));
   } else p.line(11, hy - 1, 14, hy - 1, ink).set(10, hy - 2, ink);
@@ -151,10 +163,10 @@ export function muffledBlocks(pal: Pal): Kit {
   // Gwinn asleep across three blocks of the blanket and two rows, drawn at full size: the
   // trilogy's brown rescue (floppy ears, white chest, pink collar and its yellow tag, a thin
   // tail), lying on her side with her chin on her paws; stirred, her head comes up, one eye open
-  const gwinn = (stir: boolean) => {
+  const gwinn = (stir: boolean, peek = false) => {
     const big = new Pixels(GWINN_W * 20, 40, 0);
     for (let x = 0; x < GWINN_W; x++) big.blit(wall(), x * 20, 0).blit(k.pic('blanket'), x * 20, 20);
-    big.blit(sleepingGwinn(pal, stir), 0, 0, 255);
+    big.blit(sleepingGwinn(pal, stir, peek), 0, 0, 255);
     return big;
   };
   // on the wall over her bed, her certificate from the dog show: FIRST PLACE, for SITTING (a
@@ -170,12 +182,26 @@ export function muffledBlocks(pal: Pal): Kit {
   for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) book.add(`cert${x}.${y}`, cert.crop(x * 20, y * 20, 20, 20), AIR);
   // touching Gwinn herself wakes her a lot (each block of her stirs on its own touch; only her body
   // wakes her, not the air round her ears in the row above)
-  const [sleeping, stirred] = [gwinn(false), gwinn(true)];
+  // On her own she stirs now and then (STIR): an eye opens first (the warning), then her head comes
+  // up and she watches the shelf over her bed for a while; her head and collar are the two left
+  // columns, so only they change.
+  const [sleeping, stirred, peeking] = [gwinn(false), gwinn(true), gwinn(false, true)];
   for (let y = 0; y < 2; y++)
     for (let x = 0; x < GWINN_W; x++) {
-      book.add(`gwinn${x}.${y}`, sleeping.crop(x * 20, y * 20, 20, 20), { ...AIR, ...(y ? { hp: -8 } : {}), touch: `gwinn${x}.${y}.stir` });
-      book.add(`gwinn${x}.${y}.stir`, stirred.crop(x * 20, y * 20, 20, 20), AIR);
+      const id = `gwinn${x}.${y}`;
+      const own = { ...AIR, ...(y ? { hp: -8 } : {}), touch: `${id}.stir` };
+      const crop = (p: Pixels) => p.crop(x * 20, y * 20, 20, 20);
+      if (x < 2) {
+        book.add(id, crop(sleeping), { ...own, ntime: STIR.asleep, next: `${id}.peek` });
+        book.add(`${id}.peek`, crop(peeking), { ...own, ntime: STIR.peek, next: `${id}.up` });
+        book.add(`${id}.up`, crop(stirred), { ...own, ntime: STIR.up, next: id });
+      } else book.add(id, crop(sleeping), own);
+      book.add(`${id}.stir`, crop(stirred), AIR);
     }
+  // the shelf over her bed, while her head is up: she sees Teddy there (each cell once)
+  book.add('watch', wall(), { ...AIR, ntime: STIR.asleep, next: 'watch.peek' });
+  book.add('watch.peek', wall(), { ...AIR, ntime: STIR.peek, next: 'watch.up' });
+  book.add('watch.up', wall(), { ...AIR, hp: SEEN, touch: 'wall', ntime: STIR.up, next: 'watch' });
   // her Zzz, twice size, drifting up and to the right across two blocks
   const zb = bounds(ZZZ);
   // (in moonlight white, so they read on the night wall)
@@ -239,6 +265,7 @@ export function muffled(book: Kit['book']): Level {
   m.fill(M.bed[0] - 1, floor - 1, M.bed[1] - M.bed[0] + 3, 1, 'B');
   for (let y = 0; y < 2; y++) for (let x = 0; x < GWINN_W; x++) m.set(M.bed[0] + x, floor - 2 + y, `gwinn${x}.${y}`);
   m.set(22, 6, 'zzz0').set(23, 6, 'zzz0.r');
+  for (const x of WATCHED.xs) m.set(x, WATCHED.y, 'watch');
   for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) m.set(21 + x, 2 + y, `cert${x}.${y}`);
   // the high shelf past her bed, where the egg rolled
   m.fill(M.egg[0], M.egg[1] + 1, 2, 1, 's').set(...M.egg, 'egg');

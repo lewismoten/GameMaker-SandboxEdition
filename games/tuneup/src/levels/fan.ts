@@ -6,6 +6,7 @@
 // off at the top). Two verses, a scene each; the second is hotter, its columns out of step with
 // each other. When every fan in a verse plays, the flap opens. A thermometer on the wall shows the
 // motor warming the air, a notch at a time: cool blue in the first verse, up into the red in the hot one.
+// In the hot verse a floor grate glows red, then puffs a gust that stings a little (GUST).
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, countedDoor, GRAV, kit, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
@@ -17,6 +18,10 @@ import { MapBuilder, at, type Level } from './maps';
 export const FAN_BEAT = 10;
 /** The rows: the ceiling, the ledges, the floor (Doc Leo stands two blocks over a floor). */
 export const FAN_ROW = { ceiling: 0, cap: 1, high: 2, ledge: 5, low: 6, floor: 9 } as const;
+/** The hot gust's ring: ticks idle, glowing (the warning) and puffing (it stings). */
+export const GUST = { idle: 50, warn: 12, hot: 10 } as const;
+/** Energy the gust takes. */
+const SCORCH = -1;
 /** The temperature gauge: its notches, and the ticks the warming motor takes for each. */
 export const GAUGE = { notches: 12, ticks: 90 } as const;
 
@@ -35,6 +40,8 @@ export interface FanVerse {
   /** The temperature gauges on the wall (x, rows 2-3), and the notches the motor warms them through, from and to. */
   gauges: number[];
   heat: [number, number];
+  /** The hot verse: a floor grate (level x) that puffs a hot gust on a ring, glowing red first. */
+  gust?: number;
   /** The last verse: a big switch on the wall by the flap, thrown as Doc Leo walks out (fans off, flap shut). */
   lever?: boolean;
 }
@@ -90,6 +97,7 @@ export const FAN_VERSES: FanVerse[] = [
     exit: 33,
     gauges: [1, 23],
     heat: [7, GAUGE.notches],
+    gust: 24,
     lever: true,
   },
 ];
@@ -182,6 +190,24 @@ export function fanBlocks(v: FanVerse) {
       book.add(`thermo${n}`, hi, { ...AIR, ...more, ...(n < to ? { next: `thermo${n + 1}` } : {}) });
       book.add(`thermo${n}.b`, lo, { ...AIR, ...more, ...(n < to ? { next: `thermo${n + 1}.b` } : {}) });
     }
+    // the hot verse's floor grate: idle, then its slots glow red (a warning), then a gust of hot air puffs up it
+    if (v.gust !== undefined) {
+      const grate = (state: 'idle' | 'warn' | 'hot') => {
+        const p = k.pic('vent');
+        p.rect(3, 16, 14, 4, c('mach', 0)).frame(3, 16, 14, 4, c('mach', 3));
+        for (let x = 5; x < 16; x += 3) p.rect(x, 17, 1, 3, state === 'idle' ? c('ink', 0) : c('red', state === 'warn' ? 2 : 3));
+        if (state === 'warn') for (const x of [6, 12]) p.set(x, 14, c('orange', 2)).set(x + 1, 12, c('orange', 1));
+        if (state === 'hot')
+          for (let i = 0; i < 4; i++) {
+            const x = 5 + i * 3;
+            for (let y = 1; y < 16; y++) if ((y + i * 2) % 5 < 3) p.set(x + ((y >> 2) % 2), y, c(y < 7 ? 'orange' : 'red', y < 7 ? 2 : 3));
+          }
+        return p;
+      };
+      book.add('gust', grate('idle'), { ...AIR, ntime: GUST.idle, next: 'gust.warn' });
+      book.add('gust.warn', grate('warn'), { ...AIR, ntime: GUST.warn, next: 'gust.hot' });
+      book.add('gust.hot', grate('hot'), { ...AIR, hp: SCORCH, ntime: GUST.hot, next: 'gust' });
+    }
     // the ledges' metal brackets come from the base set; the floor's top
     book.add('chest', k.pic('casting.top'), { solid: SOLID });
     // the flap at the end: shut until every fan plays
@@ -233,6 +259,7 @@ export function fan(v: FanVerse) {
     for (const [a, b] of v.ledges) m.fill(a, R.ledge, b - a + 1, 1, 'l');
     for (const [x, y] of v.fans) m.set(x, y, 'fan');
     for (const x of v.chests) m.set(x, R.floor - 1, 'chest');
+    if (v.gust !== undefined) m.set(v.gust, R.floor - 1, 'gust');
     for (const x of v.gauges) m.set(x, 2, `thermo${v.heat[0]}`).set(x, 3, `thermo${v.heat[0]}.b`);
     m.set(v.exit, R.floor - 2, 'flap.top').set(v.exit, R.floor - 1, 'flap');
     if (v.lever) m.set(v.exit - 1, R.floor - 2, 'lever.top').set(v.exit - 1, R.floor - 1, 'lever.bot');
