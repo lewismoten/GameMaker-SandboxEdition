@@ -28,14 +28,14 @@ export function buildScreens(): Record<string, Uint8Array> {
     drawChicken(p, 106, 188, 2.5, { lady: true, squawk: true }, false, true);
     save('title.gif', p);
   }
-  // ---------------- menu: the name, a board for the menu, the chicken on the bench beside it
+  // ---------------- menu: the name, a board for the menu, Doc Leo and the chicken on the floor either side
   {
     const p = garage(180);
     title(p, 14);
     p.rect(56, 82, 208, 100, c('mach', 0)).rect(58, 84, 204, 96, c('cream', 1));
     p.rect(62, 88, 196, 88, c('cream', 3)).frame(62, 88, 196, 88, c('cream', 0));
-    drawLeo(p, 'front', 6, 180, 2);
-    drawChicken(p, 270, 178, 2, { lady: true });
+    drawLeo(p, 'front', 6, 192, 2, false, true);
+    drawChicken(p, 270, 192, 2, { lady: true }, false, true);
     save('menu.gif', p);
   }
   // ---------------- paper behind text pages: a clipboard's sheet on the garage wall
