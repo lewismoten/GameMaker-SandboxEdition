@@ -34,7 +34,7 @@ asks whether it's fixed.
 | --- | -------------------- | ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | Jump Start           | jump                | GARAGE, dawn                             | The red clamp on the shelf and the black clamp under the bench open their terminals; Space held under the crank fills its gauge; "Charge!" and THE CHEZ's headlight opens                                                                                                                                  |
 | 2   | Spark Plucks         | spark               | ENGINE, electric                         | Climb each plug wire between sparks (firing order 1-3-4-2) and pluck its plug: C, E, G, E                                                                                                                                                                                                                  |
-| 3   | The Timing Beat      | beat1, beat2, beat3 | ENGINE, brass                            | Four pipes drop notes onto four keys; boop each as it lands. Straight, syncopated (a Y-pipe, a slow bent pipe), double time (a crossover)                                                                                                                                                                  |
+| 3   | The Timing Beat      | beat1, beat2, beat3 | ENGINE, brass                            | The roll's holes drop notes down four tubes onto four keys; boop each as it lands. Straight, syncopated (a Y-tube, a slow bent tube), double time                                                                                                                                                          |
 | 4   | Oil's Well           | oil, swim           | ENGINE, amber                            | Z X C V B squirt the oil can along the staff's five lines; oiled Squeaks float home as notes; two later waves, counted down by a row of lamps. Then the swim (nobody steers)                                                                                                                               |
 | 5   | The Fan Band         | fan1, fan2          | ENGINE, cool/hot                         | The motor's warm air up the vent to the flap under the windshield: ride the pulsing columns up and reach each kazoo fan (Space); the hot verse's columns are out of step; a thermometer on the wall climbs as the motor warms; at the hot verse's end Doc Leo throws the big switch by the flap (fans off) |
 | 6   | Brake Dance          | brake               | GARAGE, disco (Teddy)                    | Each stiff brake lamp wants a trick (Z turn, X roll over, C play dead, V dance); the freed lamp, lit with its letter of BRAKE, floats to Teddy; the door's lamp is the E                                                                                                                                   |
@@ -62,10 +62,25 @@ Before level 14 Doc Leo and Lady Regina un-shrink. The ending cartoon is the par
   TICKLER's drawing, without its lab coat). Three character files: LEO (walk, hop, climb, a reach that
   repeats while Space is held), PIANO (one reach a press) and OIL (Z to B each fire a drop into
   their own row, no hopping).
-- **The Timing Beat** (`src/levels/beat.ts`): a pipe cell `d` cells above its key shows a ring
-  of blocks started at member `d - r`, so lanes whose notes are one pattern turned share a ring.
-  Keys judge the timing by the frame on show. Each lane's hit is its own kind of change, so its
-  own pitch; each verse counts on its own counter.
+- **The Timing Beat** (`src/levels/beat.ts`): a player piano, one picture in all three verses.
+  The roll is the top row: six cells of paper (two wider than the four keys), a thin ragged edge
+  block each side, and the crank wheel turning it at the left. Its holes feed glass tubes down
+  to four keys; boop a key as its note lands. A bellows breathes under the wheel and four organ
+  pipes on the right speak each lane's note as it lands.
+  - A tube cell `d` cells above its key shows a ring of blocks started at member `d - r`, so lanes
+    whose notes are one pattern turned share a ring. Keys judge the timing by the frame on show.
+    Each lane's hit is its own kind of change, so its own pitch; each verse counts on its own
+    counter.
+  - The roll's cell is just the tube's top cell under the same rule, so nothing in the timetable
+    moves (the keys, the song, the bot's route). Its ring draws the paper scrolled 5 pixels a step
+    (a turn of the wheel every 4 steps) and each hole over the 4 steps before its note drops: a
+    sliver at the roll's crest that grows as it comes toward you, full size on the step the note
+    enters the tube. A ring shared by cells started at different members can't scroll them
+    together, so each roll ring also carries the paper's turn (a cell whose turn differs gets its
+    own ring). Plain paper, the edges, the wheel and the bellows are 4-step rings started in step.
+  - Every tube reaches the roll, so verse 3's crossover is gone (its tubes run straight; double
+    time is its trouble). Rings as long as a pattern takes to repeat (verse 2's first lane, every 8
+    steps) keep verse 2 under PLAYGAME's 150 blocks.
 - **Oil's Well** (`src/levels/oil.ts`): a drop (power 60) turns a Squeak (50) into a note (60)
   that heads for Doc Leo; its monster block counts it on touch. Waves are blocks that give
   birth once on a timetable.

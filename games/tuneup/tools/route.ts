@@ -83,7 +83,7 @@ function noteHeads(v: (typeof VERSES)[number]): Set<number> {
   const book = beatBlocks(v)(buildPalette('brass')).book;
   const heads = new Set<number>();
   for (const [name, i] of book.index) {
-    const m = /^(v|h|elbow)([\d.]+)\.(\d+)$/.exec(name);
+    const m = /^(v|elbow)([\d.]+)p\d+\.(\d+)$/.exec(name);
     if (m && m[2].split('.').map(Number).includes(Number(m[3]))) heads.add(i);
   }
   return heads;

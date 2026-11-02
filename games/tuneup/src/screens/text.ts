@@ -72,7 +72,7 @@ export const INSTRUCTIONS = pages(
     'little energy).',
     '',
     'THE TIMING BEAT: notes drop',
-    'down the pipes onto the keys.',
+    'down the tubes onto the keys.',
     'Press Space as a note lands:',
     'on the beat scores best. Each',
     'verse ends when the meter at',
