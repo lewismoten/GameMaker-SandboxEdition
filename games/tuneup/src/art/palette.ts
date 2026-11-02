@@ -340,6 +340,78 @@ export const THEMES = {
       [90, 90, 104],
     ],
   },
+  /** The parade route at sunset: an orange and rose sky, warm light on everything. */
+  sunset: {
+    wall: [
+      [120, 40, 70],
+      [255, 220, 150],
+      [240, 120, 90],
+    ],
+    floor: [
+      [50, 36, 44],
+      [210, 170, 150],
+    ],
+    mach: [
+      [70, 30, 20],
+      [250, 200, 140],
+      [180, 100, 60],
+    ],
+    pipe: [
+      [30, 70, 40],
+      [200, 220, 120],
+      [100, 150, 70],
+    ],
+    accent: [
+      [120, 10, 30],
+      [255, 170, 130],
+      [230, 60, 60],
+    ],
+    lamp: [
+      [200, 120, 20],
+      [255, 250, 210],
+      [255, 200, 80],
+    ],
+    shade: [
+      [26, 16, 26],
+      [100, 80, 96],
+    ],
+  },
+  /** The parade route at dusk: a deep blue sky for the fireworks, the lamps glowing. */
+  fireworks: {
+    wall: [
+      [8, 10, 40],
+      [90, 80, 170],
+      [30, 34, 100],
+    ],
+    floor: [
+      [30, 30, 44],
+      [140, 140, 170],
+    ],
+    mach: [
+      [40, 24, 30],
+      [210, 180, 160],
+      [120, 80, 70],
+    ],
+    pipe: [
+      [20, 50, 50],
+      [120, 230, 200],
+      [40, 140, 120],
+    ],
+    accent: [
+      [110, 10, 60],
+      [255, 160, 220],
+      [230, 50, 140],
+    ],
+    lamp: [
+      [200, 140, 20],
+      [255, 255, 230],
+      [255, 220, 90],
+    ],
+    shade: [
+      [10, 10, 20],
+      [70, 70, 96],
+    ],
+  },
   /** Brake Dance: the lift pit under THE CHEZ as a disco, purple walls and magenta lights. */
   disco: {
     wall: [

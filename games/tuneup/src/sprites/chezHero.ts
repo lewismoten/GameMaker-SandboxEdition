@@ -6,7 +6,8 @@
 // CHEZ.CHR drives the way the archive's Jet Driver does: Left is the accelerator, a momentum
 // sequence (its frames add to the car's momentum instead of moving it, engine/character.ts);
 // let go and the car coasts to a stop (momentum decays to 5/6 a tick while no momentum sequence
-// runs); Right is the brake, a sequence that holds still so the decay goes on. Space toots the
+// runs); Right is the brake, a sequence that holds still so the decay goes on; Down backs up
+// (momentum the other way, gently). Space toots the
 // horn and bounces the car on its springs (a reach up: the parade's cue lamps hang overhead).
 import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
@@ -66,7 +67,7 @@ export const BOUNCE = 6;
 
 const f = (pose: string, pause = 1, x = 0, y = 0): Frame => ({ ...emptyFrame(), x, y, pic1: CHARBL, pic2: CB.n(pose), pause });
 
-/** CHEZ.CHR: THE CHEZ, Left to go, Right to brake, Space to toot. */
+/** CHEZ.CHR: THE CHEZ, Left to go, Right to brake, Down to back up, Space to toot. */
 export function buildChez(): Character {
   const ch = newCharacter();
   const S = ch.sequences;
@@ -77,6 +78,7 @@ export function buildChez(): Character {
   set(S[4], [f('roll0')], { key: 0 });
   set(S[SEQ.left], [f('roll0', 2, -GAS), f('roll1', 2, -GAS)], { key: KEY.left, jstkMov: 7, momentum: 1 });
   set(S[SEQ.right], [f('roll0', 1)], { key: KEY.right, jstkMov: 3 });
+  set(S[SEQ.down], [f('roll1', 3, GAS), f('roll0', 3, GAS)], { key: KEY.down, jstkMov: 5, momentum: 1 });
   set(S[SEQ.boop], [f('bounce', 2, 0, -BOUNCE), f('roll0', 3)], { key: KEY.space, jstkBut: 1, sound: SND.boop, norepeat: 1 });
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 20;
