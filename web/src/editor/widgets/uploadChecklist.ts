@@ -11,6 +11,7 @@ import { companionPatches } from '../../dosPlayer/playerRecord';
 import { sameEverySide } from '../check/sameEverySide';
 import { acceptedFindings, openFindings } from '../check/accepted';
 import { runChecks } from '../check/report';
+import { paletteReservations } from '../editors/palette/paletteReservations';
 import { guideLink } from './guideLink';
 import { unlockAchievement } from '../../achievements';
 
@@ -44,7 +45,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   { text: 'Two or three enemies on a screen, each with a job, unless a crowd is the point; birth blocks rest', checks: ['density', 'births'], full: true },
   {
     text: 'Enemies stand out in every palette; a touch costs little and pushes clear',
-    checks: ['contrast', 'hurt-lock', 'every-tick', 'speed', 'chasers'],
+    checks: ['contrast', 'hurt-lock', 'every-tick', 'speed', 'chasers', 'color-roles'],
     full: true,
   },
   {
@@ -160,7 +161,12 @@ export async function uploadChecklist(project: Project): Promise<void> {
   let fileFindings: Finding[] = [];
   try {
     fileFindings = (
-      await runChecks(project.files, { play: false, sameEverySide: sameEverySide(project), player: companionPatches(project.companion, project.gam) })
+      await runChecks(project.files, {
+        play: false,
+        sameEverySide: sameEverySide(project),
+        player: companionPatches(project.companion, project.gam),
+        reservations: paletteReservations(project),
+      })
     ).findings;
   } catch {
     /* a game without levels: every item is the designer's */
