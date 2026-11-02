@@ -21,7 +21,7 @@ describe('notesUndo', () => {
     p.companion = emptyCompanion();
     setSection(p.companion, 'a.bbl', 'names', { 1: 'old' });
     files.set('a.bbl', new Uint8Array([9]));
-    const name = () => getSection(p.companion!, 'a.bbl', 'names', {})[1];
+    const name = () => getSection<Record<number, string>>(p.companion!, 'a.bbl', 'names', {})[1];
     expect(name()).toBe('old');
     hist.undo();
     expect([...files.get('a.bbl')!], name()).toEqual([2]);
