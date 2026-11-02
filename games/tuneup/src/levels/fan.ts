@@ -35,6 +35,8 @@ export interface FanVerse {
   /** The temperature gauges on the wall (x, rows 2-3), and the notches the motor warms them through, from and to. */
   gauges: number[];
   heat: [number, number];
+  /** The last verse: a big switch on the wall by the flap, thrown as Doc Leo walks out (fans off, flap shut). */
+  lever?: boolean;
 }
 
 export const FAN_VERSES: FanVerse[] = [
@@ -88,6 +90,7 @@ export const FAN_VERSES: FanVerse[] = [
     exit: 33,
     gauges: [1, 23],
     heat: [7, GAUGE.notches],
+    lever: true,
   },
 ];
 
@@ -181,6 +184,34 @@ export function fanBlocks(v: FanVerse) {
     countedDoor(k, 'flap', 'vent', CTR.fans, v.fans.length, (p: Pixels) => {
       p.disc(10, 10, 4, c('accent', 3)).rect(9, 6, 2, 8, c('mach', 0));
     });
+    // the big switch (two blocks tall): up is FANS ON; walking into it throws it down
+    const lever = (half: 'top' | 'bot', on: boolean) => {
+      const p = k.pic('vent');
+      const panel = (y: number, h: number) => p.rect(2, y, 16, h, c('shade', 0)).frame(2, y, 16, h, c('paint', 3));
+      const handle = (y0: number, y1: number, knob: number) =>
+        p
+          .rect(9, y0, 3, y1 - y0, c('paint', 3))
+          .disc(10.5, knob, 4, c('pipe', 4))
+          .disc(9.5, knob - 1, 1.5, c('paint', 3));
+      if (half === 'top') {
+        panel(4, 16);
+        // the switch's lamp: lit while the fans run
+        p.rect(5, 0, 10, 4, on ? c('lamp', 4) : c('shade', 1)).frame(5, 0, 10, 4, c('ink', 0));
+        for (let x = 3; x < 17; x += 4) p.rect(x, 5, 2, 1, c('lamp', 3));
+        if (on) handle(8, 20, 8);
+      } else {
+        panel(0, 16);
+        p.disc(10.5, 1, 3, c('mach', 0));
+        if (!on) handle(1, 12, 13);
+        for (let x = 3; x < 17; x += 4) p.rect(x, 14, 2, 1, c('lamp', 3));
+      }
+      return p;
+    };
+    if (v.lever)
+      for (const half of ['top', 'bot'] as const) {
+        book.add(`lever.${half}.off`, lever(half, false), AIR);
+        book.add(`lever.${half}`, lever(half, true), { ...AIR, touch: `lever.${half}.off` });
+      }
     return k;
   };
 }
@@ -200,6 +231,7 @@ export function fan(v: FanVerse) {
     for (const x of v.chests) m.set(x, R.floor - 1, 'chest');
     for (const x of v.gauges) m.set(x, 2, `thermo${v.heat[0]}`).set(x, 3, `thermo${v.heat[0]}.b`);
     m.set(v.exit, R.floor - 2, 'flap.top').set(v.exit, R.floor - 1, 'flap');
+    if (v.lever) m.set(v.exit - 1, R.floor - 2, 'lever.top').set(v.exit - 1, R.floor - 1, 'lever.bot');
     m.fill(w - 1, 0, 1, R.floor, '#');
     m.link(v.exit + 1, R.floor - 1);
     m.mon(MON.reggie, 1, R.floor - 1);
