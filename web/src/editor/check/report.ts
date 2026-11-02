@@ -17,6 +17,8 @@ import { keyReach } from './checks/keyReach';
 import { helpKeys } from './checks/helpKeys';
 import { textContrast } from './checks/textContrast';
 import { colorZero } from './checks/colorZero';
+import { colorRoles } from './checks/colorRoles';
+import type { PaletteReservation } from '../editors/palette/paletteReservations';
 import { dosChars } from './checks/dosChars';
 import { blankIdle, startValues } from './checks/heroStart';
 import { shotPrize } from './checks/shotPrize';
@@ -85,6 +87,8 @@ export interface CheckOptions {
   towardExits?: boolean;
   /** The project's DOS player patches (dosPlayer/), for the menu's words in the text-contrast check and the words the color 0 check matches. */
   player?: PlayerPatches;
+  /** The project's palette reservations (color-roles check); none, no findings. */
+  reservations?: PaletteReservation[];
 }
 
 /** A scene the bot couldn't load or play: said, rather than stopping the whole check. */
@@ -160,6 +164,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...helpKeys(game, files),
       ...textContrast(game, files, opt.player),
       ...colorZero(game, files, opt.player),
+      ...colorRoles(all, opt.reservations),
       ...dosChars(game, files, files.mainGame()),
       ...startValues(game, all),
       ...stakes(game, all),
