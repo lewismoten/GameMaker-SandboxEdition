@@ -18,7 +18,10 @@ describe('preset icons', () => {
     expect(presetIcon('vibes-wobbly', 'mallets')).not.toBe(presetIcon('marimba', 'mallets'));
   });
   it('no two presets have the same or a near-identical picture', () => {
-    const MIN_DIFFERENT = 12; // pixels (of 400) that must differ
+    // Pixels (of 400) that must differ: 10%, about where two 20x20 pictures stop reading as
+    // different things at a glance. There are no corner badges now, so the shape itself must differ
+    // (the closest pair today, the three wave screens, differ by about 50).
+    const MIN_DIFFERENT = 40;
     const alike: string[] = [];
     const rows = OPL_PRESETS.map((p) => ({ id: p.id, px: presetRows(p.id, p.group).join('') }));
     for (let i = 0; i < rows.length; i++) {

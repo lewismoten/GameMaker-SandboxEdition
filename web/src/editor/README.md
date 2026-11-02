@@ -225,7 +225,7 @@ makes Ctrl+S save at once). Files are always written in the original binary form
 - **Instrument looks and track order.** In the music editor an instrument's picture, group color
   and name come from `editors/music/instrumentLook.ts`: the preset whose patch matches, or one
   differing in at most two of its 11 bytes (a close match, named "≈ Name"), else a plain note.
-  `presetIconBadges.ts` marks the preset icons that would look alike; `presetIcons.ts` draws them.
+  `presetIcons.ts` holds the preset icons' shared drawings and `iconsOwn.ts` gathers each preset's own (`iconsKeys`, `iconsStrings`, `iconsSynth`, `iconsWinds`, `iconsPerc`, drawn with `iconCanvas.ts`).
   The Song tab's track list (`tracks.ts`) has Move up / Move down, drag and drop, and Sort by
   group. The order (`trackOrder.ts`, pure; `doc.setOrder`, one undo step) is editor-only and
   lives in the companion file's `trackOrder` section: a track is a MIDI channel in the .CMF, so

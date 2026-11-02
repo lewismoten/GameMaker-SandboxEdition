@@ -1,10 +1,10 @@
 // The preset picker's instrument drawings: 20x20 pixel pictures, the size of a Game-Maker
 // block, drawn for this project (no outside icon set). Each is 20 rows of 20 letters from
 // PALETTE ("." is clear). They keep a 1px dark outline and fixed colors, so they read on the
-// picker's pale tile in light and dark. A preset picks one by its id, else by its group, so a
-// new preset needs no change here (it shows its group's picture).
+// picker's pale tile in light and dark. A preset has its own drawing (iconsOwn.ts), else the drawing named here by its id, else its
+// group's picture, so a new preset needs no change here (presetIcons.test.ts asks for its own).
 
-import { withBadge } from './presetIconBadges';
+import { OWN } from './iconsOwn';
 
 const PALETTE: Record<string, string> = {
   k: '#1f1d2e',
@@ -40,28 +40,6 @@ const ICONS: Record<string, string[]> = {
     '.kggggggggggggggggk.',
     '.kggggggggggggggggk.',
     '..kkkkkkkkkkkkkkkk..',
-    '....................',
-    '....................',
-    '....................',
-  ],
-  keyboard: [
-    '....................',
-    '....................',
-    '....................',
-    '....................',
-    '.kkkkkkkkkkkkkkkkkk.',
-    'kbbbbbbbbbbbbbbbbbbk',
-    'kbccccbyybyybbbbbbbk',
-    'kbccccbyybyybbbbbbbk',
-    'kbbbbbbbbbbbbbbbbbbk',
-    'kbbbbbbbbbbbbbbbbbbk',
-    'kbwwkwwkwwkwwkwwkwbk',
-    'kbwwkgwkgwkgwkgwkwbk',
-    'kbwwkgwkgwkgwkgwkwbk',
-    'kbwwwgwwgwwgwwgwwwbk',
-    'kbwwwgwwgwwgwwgwwwbk',
-    'kbbbbbbbbbbbbbbbbbbk',
-    '.kkkkkkkkkkkkkkkkkk.',
     '....................',
     '....................',
     '....................',
@@ -792,28 +770,6 @@ const ICONS: Record<string, string[]> = {
     '......kkkkkkkk......',
     '....................',
   ],
-  clap: [
-    '...k.....krk.....k..',
-    '..krk....krk....krk.',
-    '...krk.kkkrkk..krk..',
-    '....krkyyyyyykkrk...',
-    '.....kyyyyyyyykk....',
-    '....kyyyyyyyyyyk....',
-    '.....kyyyyyyyyk.....',
-    '.....kyyyyyyyok.....',
-    '....kyyyyoyooook....',
-    '....kyyyyoyooook....',
-    '....kyyyyoyooook....',
-    '...kyyyyyyooooook...',
-    '...kyyyyyyooooook...',
-    '...kyyyyyyooooook...',
-    '..kyyyyyykkooooook..',
-    '..kyyyyyykkooooook..',
-    '.kyyyyyyk..kooooook.',
-    '.kyyyyyyk..kooooook.',
-    '..kkkkkk....kkkkkk..',
-    '....................',
-  ],
   note: [
     '................kk..',
     '.......kkkkkkkkkppk.',
@@ -840,96 +796,37 @@ const ICONS: Record<string, string[]> = {
 
 const BY_ID: Record<string, string> = {
   piano: 'piano',
-  organ: 'organ',
-  epiano: 'keyboard',
-  'tine-glass': 'keyboard',
-  'reed-soft': 'clarinet',
-  'sub-round': 'speaker',
-  'harp-chime': 'harp',
-  'pad-wobble': 'sine',
-  'vibes-wobbly': 'vibes',
-  // proposed from the archive survey (placeholders on family drawings until each gets its own)
-  'choir-distant': 'choir',
-  'fuzz-stab': 'saw',
-  'whistle-lead': 'flute',
-  'organ-wobble': 'organ',
-  'brass-swell': 'horn',
-  'reed-swell': 'clarinet',
-  'steel-clank': 'cowbell',
-  'sparkle-bell': 'bell',
   vibraphone: 'vibes',
-  'epiano-round': 'keyboard',
-  clavinet: 'keyboard',
   violin: 'violin',
-  orchestra: 'violin',
-  pizzicato: 'violin',
-  'upright-bass': 'violin',
-  strings: 'violin',
   'guitar-steel': 'guitar',
-  'guitar-nylon': 'guitar',
-  'finger-bass': 'guitar',
-  'slap-bass': 'guitar',
-  fretless: 'guitar',
-  bass: 'guitar',
   oud: 'lute',
   harp: 'harp',
-  pluck: 'harp',
   aah: 'mic',
-  ooh: 'mic',
-  soprano: 'mic',
   choir: 'choir',
   'sub-bass': 'speaker',
-  'punch-bass': 'speaker',
   'lead-bright': 'saw',
-  'lead-saw': 'saw',
-  lead: 'saw',
   'lead-square': 'square',
-  'synth-brass': 'square',
-  'pad-80s': 'sine',
-  'pad-warm': 'sine',
-  'pad-sweep': 'sine',
   pad: 'sine',
   accordion: 'accordion',
   harmonica: 'harmonica',
-  kazoo: 'harmonica',
   trumpet: 'trumpet',
-  trombone: 'trumpet',
-  brass: 'trumpet',
   horn: 'horn',
-  tuba: 'horn',
   flute: 'flute',
   'pan-flute': 'panflute',
-  oboe: 'clarinet',
   clarinet: 'clarinet',
   sax: 'sax',
   'tubular-bells': 'tubes',
-  chimes: 'tubes',
   'music-box': 'musicbox',
   bell: 'bell',
-  glockenspiel: 'bell',
-  celesta: 'bell',
   'steel-drum': 'steeldrum',
   cowbell: 'cowbell',
   woodblock: 'woodblock',
   timpani: 'timpani',
-  'timpani-tom': 'timpani',
   'kick-punchy': 'kick',
-  'kick-boomy': 'kick',
-  'melodic-kick': 'kick',
   'snare-tight': 'snare',
-  'snare-fat': 'snare',
-  'melodic-snare': 'snare',
-  rimshot: 'snare',
-  'tom-low': 'tom',
   'tom-mid': 'tom',
-  'tom-high': 'tom',
   crash: 'cymbal',
-  ride: 'cymbal',
   'hat-closed': 'hat',
-  'hat-open': 'hat',
-  'hat-pedal': 'hat',
-  'melodic-hat': 'hat',
-  clap: 'clap',
 };
 const BY_GROUP: Record<string, string> = {
   keys: 'piano',
@@ -948,8 +845,10 @@ const BY_GROUP: Record<string, string> = {
 
 /** The preset's 20 rows of palette letters (its family's drawing, with its badge if it shares one). */
 export function presetRows(id: string, group: string): string[] {
+  const own = OWN[id];
+  if (own) return own();
   const key = BY_ID[id] ?? BY_GROUP[group] ?? 'note';
-  return withBadge(ICONS[key] ?? ICONS[BY_GROUP[group] ?? 'note'] ?? ICONS.note, id);
+  return ICONS[key] ?? ICONS[BY_GROUP[group] ?? 'note'] ?? ICONS.note;
 }
 
 /** The color a palette letter stands for. */
