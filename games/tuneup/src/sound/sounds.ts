@@ -7,10 +7,27 @@
 import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { SPEAKER, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
-import { hz, noteVoc, phraseVoc, slideWhistleVoc } from './notes';
+import { hz, noteVoc, phraseVoc, slideWhistleVoc, ticketVoc } from './notes';
 
 export type Place =
-  'jump' | 'spark' | 'beat' | 'oil' | 'fan' | 'brake' | 'cups' | 'pump' | 'muffled' | 'rain' | 'horn' | 'key1' | 'key2' | 'key3' | 'key4' | 'panel1' | 'panel2';
+  | 'jump'
+  | 'spark'
+  | 'beat'
+  | 'oil'
+  | 'fan'
+  | 'brake'
+  | 'cups'
+  | 'pump'
+  | 'muffled'
+  | 'rain'
+  | 'horn'
+  | 'key1'
+  | 'key2'
+  | 'key3'
+  | 'key4'
+  | 'panel1'
+  | 'panel2'
+  | 'drive';
 
 /** "Charge!": the bugle call on a trumpet (the last note held). */
 const CHARGE: [string, string[], number] = ['trumpet', ['G4', 'C5', 'E5', 'G5', 'E5', 'G5'], 0.11];
@@ -90,6 +107,9 @@ export function buildVocs(): Record<string, Uint8Array> {
   v.radio = phraseVoc('music-box', ['C5', 'E5', 'G5', 'E5', 'F5', 'A5', 'G5'], 0.12, 0.5);
   // a wrong horn pad: a raspberry, a low kazoo blat sagging down
   v.razz = phraseVoc('kazoo', ['E3', 'D3', 'C3', 'A2'], 0.07, 0.15);
+  // the test drive: a red light run (the camera's click and a friendly siren, synthesized), a polite pass on green
+  v.ticket = ticketVoc();
+  v.toot = phraseVoc('trumpet', ['E5', 'G5'], 0.09, 0.25);
   return v;
 }
 
@@ -197,6 +217,20 @@ export function buildSoundSet(place: Place): SoundSet {
     add(SND.money, 'chordf', SPEAKER.arpeggio([262, 349, 440]));
     add(SND.score, 'chordg', SPEAKER.arpeggio([247, 294, 392]));
     add(SND.gain, 'radio', SPEAKER.arpeggio([523, 659, 784, 659, 698, 880, 784]));
+  } else if (place === 'drive') {
+    // a ticket: the camera and the siren (on the speaker, a two-tone boo-bee); a pass on green: a toot
+    add(
+      SND.lose,
+      'ticket',
+      speaker((i) => (i < 24 ? (Math.floor(i / 6) % 2 ? 733 : 550) : 0)),
+    );
+    add(SND.score, 'toot', SPEAKER.arpeggio([659, 784]));
+    // Space: THE CHEZ's own horn, on the speaker (it never cuts a VOC)
+    add(
+      SND.boop,
+      '',
+      speaker((i) => (i < 5 ? 440 : 0)),
+    );
   } else if (place === 'rain') {
     for (const [slot, n] of DROP_NOTES) add(slot, vocName('td', n), tone(n, 10));
     // a wet slap from a wiper blade (Doc Leo's hurt sound): a smack, on the speaker

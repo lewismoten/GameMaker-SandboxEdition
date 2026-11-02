@@ -102,3 +102,39 @@ export function slideWhistleVoc(from: number, to: number, seconds: number): Uint
   }
   return level(x);
 }
+
+/**
+ * A traffic camera and a friendly siren, synthesized: the shutter's two clicks (a burst of
+ * noise each, the second softer) and the flash's rising whine, then two rounds of a soft
+ * "boo-bee" two-tone siren, rounded off like a toy's, never a wail.
+ */
+export function ticketVoc(): Uint8Array {
+  const n = Math.round(1.25 * RATE);
+  const x = new Float32Array(n);
+  let seed = 11;
+  const noise = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff), seed / 0x7fffffff - 0.5);
+  let phase = 0;
+  for (let i = 0; i < n; i++) {
+    const t = i / RATE;
+    let s = 0;
+    // the shutter: click (0 s), clack (0.07 s), each a few milliseconds of noise dying away
+    for (const [at, amp] of [
+      [0, 1],
+      [0.07, 0.6],
+    ])
+      if (t >= at && t < at + 0.02) s += amp * noise() * Math.exp(-(t - at) / 0.004);
+    // the flash charging: a thin whine rising from 2 to 5 kHz, quiet
+    if (t > 0.1 && t < 0.3) s += 0.12 * Math.sin(2 * Math.PI * (2000 + 15000 * (t - 0.1)) * (t - 0.1));
+    // the siren: boo (550 Hz) and bee (733 Hz), 0.2 s each, twice, a soft square-ish tone
+    if (t >= 0.35) {
+      const k = Math.floor((t - 0.35) / 0.2);
+      const f = k % 2 ? 733 : 550;
+      phase += (2 * Math.PI * f) / RATE;
+      const local = (t - 0.35) % 0.2;
+      const env = Math.min(1, local / 0.015, (0.2 - local) / 0.03) * (k < 4 ? 0.55 : 0);
+      s += env * (Math.sin(phase) + 0.25 * Math.sin(3 * phase));
+    }
+    x[i] = s;
+  }
+  return level(x);
+}
