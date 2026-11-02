@@ -4,6 +4,7 @@
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { GameFiles } from '../../project/files';
 import { planBackgrounds } from './mergeBackgrounds';
+import { planCharacterBlocks } from './mergeCharacterBlocks';
 import { planLookAlikes } from './lookAlikeFold';
 import { planPalettes } from './mergePalettes';
 import { planMonsterBlocks } from './mergeMonsterBlocks';
@@ -13,7 +14,7 @@ import type { Note, Plan, Step } from './types';
 
 // block sets join last: once two scenes share a block set, their monster files can no longer tell whose birth blocks are whose
 const ORDER: Step['kind'][][] = [
-  ['mbl', 'mon', 'pal'],
+  ['mbl', 'mon', 'cbl', 'pal'],
   ['look', 'bbl'],
 ];
 
@@ -38,7 +39,9 @@ function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][
             ? planBackgrounds(files, gam, uses, x, y)
             : kind === 'mbl'
               ? planMonsterBlocks(files, gam, uses, x, y)
-              : planMonsters(files, gam, uses, x, y);
+              : kind === 'cbl'
+                ? planCharacterBlocks(files, gam, uses, x, y)
+                : planMonsters(files, gam, uses, x, y);
         if (typeof r !== 'string') return r;
         if (a < b && !/do not fit|merge those first/.test(r) && (kind !== 'bbl' || /carried between|also used with/.test(r)))
           notes.push({ kind, title: `${names[a]} and ${names[b]} stay separate`, why: r });
