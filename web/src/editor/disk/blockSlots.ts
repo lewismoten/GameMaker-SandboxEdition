@@ -16,8 +16,13 @@ export function twinKey(b: Block, index: number): string | undefined {
   return serializeBlocks([{ ...b, nextBl: 0, touchBl: 0 }]).join(',');
 }
 
-/** Where each of `from`'s taken blocks lands in `into`: a twin already there, else the first blank slot. */
-export function placeBlocks(from: Block[], into: Block[], reserved: ReadonlySet<number> = new Set()): { at: Map<number, number>; fresh: number[] } | undefined {
+/** Where each of `from`'s taken blocks lands in `into`: a twin already there (or already placed), else the first blank slot. Only `needed` blocks move when given: the others are not drawn by anything. */
+export function placeBlocks(
+  from: Block[],
+  into: Block[],
+  reserved: ReadonlySet<number> = new Set(),
+  needed?: ReadonlySet<number>,
+): { at: Map<number, number>; fresh: number[] } | undefined {
   const twins = new Map<string, number>();
   into.forEach((b, i) => {
     const k = isBlank(b, i) ? undefined : twinKey(b, i);
@@ -27,7 +32,7 @@ export function placeBlocks(from: Block[], into: Block[], reserved: ReadonlySet<
   const at = new Map<number, number>();
   const fresh: number[] = [];
   for (let i = 0; i < from.length; i++) {
-    if (isBlank(from[i], i)) continue;
+    if (isBlank(from[i], i) || (needed && !needed.has(i))) continue;
     const k = twinKey(from[i], i);
     const twin = k ? twins.get(k) : undefined;
     if (twin !== undefined) at.set(i, twin);
@@ -36,6 +41,7 @@ export function placeBlocks(from: Block[], into: Block[], reserved: ReadonlySet<
       if (slot === undefined) return undefined;
       at.set(i, slot);
       fresh.push(i);
+      if (k) twins.set(k, slot); // a later identical block of `from` shares this slot
     }
   }
   return { at, fresh };

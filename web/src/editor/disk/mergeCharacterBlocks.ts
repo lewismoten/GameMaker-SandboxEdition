@@ -34,7 +34,9 @@ export function planCharacterBlocks(files: GameFiles, gam: string, uses: SceneUs
   // a blank slot that a kept character still draws is not free
   const reserved = new Set<number>();
   for (const chr of filesIn(kUsers, 'chr')) for (const n of framePictures(readFor(files, before, chr))) reserved.add(n);
-  const placed = placeBlocks(D, K, reserved);
+  const needed = new Set<number>();
+  for (const chr of filesIn(dUsers, 'chr')) framePictures(readFor(files, before, chr)).forEach((n) => needed.add(n));
+  const placed = placeBlocks(D, K, reserved, needed);
   if (!placed) return `their blocks do not fit in one file of ${CHARBL}`;
   const kPals = shownPalettes(files, kUsers);
   const dPals = shownPalettes(files, dUsers);

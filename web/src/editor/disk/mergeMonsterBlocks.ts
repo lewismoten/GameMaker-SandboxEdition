@@ -24,7 +24,10 @@ export function planMonsterBlocks(files: GameFiles, gam: string, uses: SceneUse[
   const reserved = new Set<number>();
   for (const mon of filesIn(kUsers, 'mon'))
     for (const m of parseMonsters(readFor(files, before, mon))) for (let s = 0; s <= LASTSL && m.pic[s][0] < MONBL; s++) reserved.add(m.pic[s][0]);
-  const placed = placeBlocks(D, K, reserved);
+  const needed = new Set<number>();
+  for (const mon of filesIn(dUsers, 'mon'))
+    for (const m of parseMonsters(readFor(files, before, mon))) for (let s = 0; s <= LASTSL && m.pic[s][0] < MONBL; s++) needed.add(m.pic[s][0]);
+  const placed = placeBlocks(D, K, reserved, needed);
   if (!placed) return 'their drawn blocks do not fit in one file of 100';
   const kPals = shownPalettes(files, kUsers);
   const dPals = shownPalettes(files, dUsers);

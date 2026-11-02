@@ -3,7 +3,7 @@ import { BACKBL, CHARBL, MONBL, newBlockSet, parseBlocks, serializeBlocks } from
 import { newCharacter, parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { newMap, parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { emptyMonster, newMonsterSet, parseMonsters, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { LASTSL, emptyMonster, newMonsterSet, parseMonsters, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { GameFiles } from '../../project/files';
 import { planDisk } from './plan';
@@ -37,6 +37,11 @@ function twoRooms(opts: { fatMbl?: boolean; birth?: boolean } = {}): GameFiles {
     mon[2] = { ...emptyMonster(), used: 1 };
     mon[2].pic[0] = [1, 2];
     mon[2].pic[1] = [2, 2];
+    if (k === 'b' && opts.fatMbl)
+      for (let m = 4; m < 12; m++) {
+        mon[m] = { ...emptyMonster(), used: 1 };
+        for (let sl = 0; sl <= LASTSL; sl++) mon[m].pic[sl] = [Math.min(99, 1 + (m - 4) * (LASTSL + 1) + sl), 2];
+      }
     mon[3] = { ...emptyMonster(), used: 1, newmon: 2 };
     mon[3].pic[0] = [3, 1];
     f.set(`${k}.mon`, serializeMonsters(mon));
