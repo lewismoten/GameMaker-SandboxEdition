@@ -262,6 +262,18 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
           h('span', { class: 'lib-cat-count' }, String(counts[c.id]), h('span', { class: 'vh' }, ` game${counts[c.id] === 1 ? '' : 's'}`)),
         ),
       ),
+      // until the catalog is in, Bizarre's tab may be coming: its place is kept so the rows below don't drop
+      ...(lib.catalog.length || lib.catalogError
+        ? []
+        : [
+            h(
+              'span',
+              { class: 'lib-cat', 'aria-hidden': 'true', style: 'visibility:hidden' },
+              icon('help'),
+              h('span', { class: 'lib-cat-name' }, 'Bizarre'),
+              h('span', { class: 'lib-cat-count' }, '00'),
+            ),
+          ]),
     );
   };
   // Arrow keys move between the tiles (Tab stops once per tile); Home and End go to the ends.
@@ -368,6 +380,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     () => void refreshProjects(),
   );
 
+  // the tabs stand in their place before the lists load, so the page below them doesn't jump
+  renderCats();
   lib.projects = await listProjects().catch(() => []);
   await lib.loadWalkBadges();
   if (!savedCategory() && lib.projects.length) current = lib.own('mine').length ? 'mine' : 'imported';
@@ -401,6 +415,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   if (tabbed) current = tabbed;
   if (q) search.value = q;
   await select(current);
+  // Getting started shows once the game above it and the tabs are in place (it may turn out clipped)
+  root.querySelector('.home-start')?.classList.add('ready');
 
   // a secret game revealed or hidden again (the felt eggs, EGG.EXE): the collections, their
   // counts and the game at the top follow without a reload

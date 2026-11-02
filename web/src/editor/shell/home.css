@@ -362,6 +362,10 @@
 }
 
 /* Getting started: under the library when the page stacks, under the game on a wide window */
+.home-start:not(.ready) {
+  visibility: hidden;
+}
+
 .home-start {
   margin: 24px 0 0;
   padding: 12px 16px;
