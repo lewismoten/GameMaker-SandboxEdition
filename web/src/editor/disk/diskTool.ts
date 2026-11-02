@@ -10,8 +10,11 @@ import { planDisk } from './plan';
 import { lookAlikeSets } from './lookAlikes';
 import { lookAlikeView } from './lookAlikeView';
 import { checkpointPanel } from './checkpointPanel';
-import { paletteReservations } from '../editors/palette/paletteReservations';
-import { rangeDrift, reductions } from './reduceColors';
+import { PALETTE_RESERVATIONS, paletteReservations } from '../editors/palette/paletteReservations';
+import { reductions } from './reduceColors';
+import { rangeSyncs } from './rangeSync';
+import { proposeReservations } from './reservePlan';
+import { rangeSyncView, reserveProposalView } from './reserveView';
 import { confirmSaves } from './savesWarning';
 import { reduceView } from './reduceView';
 import { sizeUp, type SizeUp } from './size';
@@ -90,7 +93,7 @@ export async function diskTool(project: Project): Promise<void> {
       const size = sizeUp(project.files, project.gam);
       let plan: Plan;
       try {
-        plan = planDisk(project.files, project.gam);
+        plan = planDisk(project.files, project.gam, paletteReservations(project));
       } catch {
         plan = { steps: [], notes: [] };
       }
@@ -110,11 +113,20 @@ export async function diskTool(project: Project): Promise<void> {
           return [];
         }
       })();
-      const drift = (() => {
+      const sync = (() => {
         try {
-          return rangeDrift(project.files, project.gam, paletteReservations(project));
-        } catch {
-          return [];
+          return rangeSyncs(project.files, project.gam, paletteReservations(project));
+        } catch (e) {
+          console.warn('Reserved ranges not checked', e);
+          return { syncs: [], stuck: [] };
+        }
+      })();
+      const proposal = (() => {
+        try {
+          return proposeReservations(project.files, project.gam, paletteReservations(project));
+        } catch (e) {
+          console.warn('Reservations not planned', e);
+          return undefined;
         }
       })();
       const saves = plan.steps.reduce((a, s) => a + s.saves, 0);
@@ -146,6 +158,7 @@ export async function diskTool(project: Project): Promise<void> {
               : null,
           ),
         ),
+        checkpoint.option,
         h('h3', null, 'Files that can share'),
         plan.steps.length
           ? h(
@@ -196,6 +209,26 @@ export async function diskTool(project: Project): Promise<void> {
           }
           render();
         }),
+        reserveProposalView(proposal, (p) => {
+          project.setExtras(project.gam, PALETTE_RESERVATIONS, p.roles);
+          applied = `Saved ${p.roles.length} palette reservation${p.roles.length === 1 ? '' : 's'} to the project.`;
+          toast(applied);
+          render();
+        }),
+        rangeSyncView(sync.syncs, sync.stuck, async (r) => {
+          if (!(await confirmSaves(project))) return;
+          if (!(await checkpoint.ensure('Before syncing reserved colors'))) return;
+          try {
+            hist.before(...r.touches);
+            r.apply(project.files, project.gam);
+            project.forgetParsed();
+            applied = `Made the ${r.role} colors ${r.first}-${r.last} the same in every palette.`;
+            toast(applied);
+          } catch (e) {
+            toast(`Could not sync: ${(e as Error).message}`, 'error');
+          }
+          render();
+        }),
         applied
           ? h(
               'div',
@@ -210,24 +243,12 @@ export async function diskTool(project: Project): Promise<void> {
           : null,
         undoBar,
         checkpoint.el,
-        plan.notes.length || drift.length
+        plan.notes.length
           ? h(
               'div',
               null,
               h('h3', null, 'Left alone'),
-              h(
-                'ul',
-                { class: 'disk-notes' },
-                ...plan.notes.map((n) => h('li', null, h('strong', null, n.title), `: ${n.why}.`)),
-                ...drift.map((d) =>
-                  h(
-                    'li',
-                    null,
-                    h('strong', null, d.file),
-                    `: its ${d.role} colors are not the same in the ${d.palettes} palettes its scenes show, so they change color from scene to scene. Copy the ${d.role} range between those palettes in the Palette editor if that is not intended.`,
-                  ),
-                ),
-              ),
+              h('ul', { class: 'disk-notes' }, ...plan.notes.map((n) => h('li', null, h('strong', null, n.title), `: ${n.why}.`))),
               h('p', { class: 'hint' }, 'These are suggestions; the tool only reads the files, so it can’t see what you meant them for.'),
             )
           : null,

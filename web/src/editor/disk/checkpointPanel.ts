@@ -16,7 +16,9 @@ const when = (t: number) => new Date(t).toLocaleString([], { weekday: 'short', m
 
 export interface CheckpointPanel {
   el: HTMLElement;
-  /** Makes a checkpoint first unless the game is exactly as the latest one; false (and a message) when it can't. */
+  /** The "Make a checkpoint first" choice the person can tick (off until they do). */
+  option: HTMLElement;
+  /** Makes a checkpoint first when the choice is ticked, unless the game is exactly as the latest one; false (and a message) when it can't. */
   ensure(name: string): Promise<boolean>;
 }
 
@@ -113,9 +115,11 @@ export function checkpointPanel(project: Project, hist: ReturnType<typeof fileUn
               void act(async () => {
                 if (
                   await confirmDialog(
-                    'Delete the checkpoint',
-                    `Delete “${cp.name}”? The game stays as it is now; the later checkpoints keep everything they had.`,
-                    'Delete',
+                    cp.tag ? 'Delete a release checkpoint' : 'Delete the checkpoint',
+                    cp.tag
+                      ? `“${cp.name}” is tagged as the release “${cp.tag}”. Deleting it removes that release stamp for good. The game stays as it is now; the later checkpoints keep everything they had.`
+                      : `Delete “${cp.name}”? The game stays as it is now; the later checkpoints keep everything they had.`,
+                    cp.tag ? 'Delete the release' : 'Delete',
                   )
                 )
                   list = await deleteCheckpoint(project.id, cp.id);
@@ -133,7 +137,7 @@ export function checkpointPanel(project: Project, hist: ReturnType<typeof fileUn
       h(
         'p',
         null,
-        'A checkpoint is a stamp of the whole game as it is now. Optimizing makes one first; you can make one any time, tag it as a release, look around, compare, and put everything back. Each stores only what changed since the one before. They stay with this game in your browser and in a backup (unless you leave them out), and are never in a download.',
+        'A checkpoint is a stamp of the whole game as it is now. Tick “Make a checkpoint first” before an optimization to be able to put everything back; you can make one any time, tag it as a release, look around, compare, and put everything back. Each stores only what changed since the one before. They stay with this game in your browser and in a backup (unless you leave them out), and are never in a download.',
       ),
       list.length ? h('ol', { class: 'disk-checkpoint-list' }, ...list.map(row)) : h('p', { class: 'hint' }, 'No checkpoints yet.'),
       h(
@@ -158,10 +162,17 @@ export function checkpointPanel(project: Project, hist: ReturnType<typeof fileUn
     () => render(),
   );
   render();
+  const box = h<'input'>('input', { type: 'checkbox', id: 'disk-checkpoint-first' });
+  const option = h(
+    'p',
+    { class: 'disk-checkpoint-first' },
+    h('label', null, box, ' Make a checkpoint first (so you can put everything back). Undo works either way.'),
+  );
   return {
     el,
+    option,
     async ensure(name) {
-      if (sameAsLatest()) return true;
+      if (!box.checked || sameAsLatest()) return true;
       const ok = await stamp(name);
       if (ok) render();
       return ok;
