@@ -52,3 +52,35 @@ describe('remapExtras', () => {
     expect(s.d['a.bbl'].blockNames).toEqual({ 7: 'x' });
   });
 });
+
+describe('remapExtras brushes', () => {
+  it('renumbers terrains, stamps and buildings, and moves a dropped set’s brushes to the kept set', () => {
+    const s = store({
+      'a.bbl': {
+        terrains: [{ id: 't', tiles: [7, 9, -1], outside: 7 }],
+        stamps: [{ id: 's', cells: [7, -1, 12] }],
+        buildings: [{ id: 'b', parts: { roof: 9, wall: 2 } }],
+      },
+    });
+    remapExtras(s, [
+      {
+        file: 'a.bbl',
+        into: 'a.bbl',
+        at: new Map([
+          [7, 3],
+          [9, 4],
+        ]),
+      },
+    ]);
+    expect(s.d['a.bbl'].terrains).toEqual([{ id: 't', tiles: [3, 4, -1], outside: 3 }]);
+    expect(s.d['a.bbl'].stamps).toEqual([{ id: 's', cells: [3, -1, 12] }]);
+    expect(s.d['a.bbl'].buildings).toEqual([{ id: 'b', parts: { roof: 4, wall: 2 } }]);
+    const j = store({ 'k.bbl': { stamps: [{ id: 'x', cells: [1] }] }, 'd.bbl': { stamps: [{ id: 'y', cells: [5, 6] }] } });
+    remapExtras(j, [{ file: 'd.bbl', into: 'k.bbl', at: new Map([[5, 40]]) }]);
+    expect(j.d['k.bbl'].stamps).toEqual([
+      { id: 'x', cells: [1] },
+      { id: 'y', cells: [40, -1] },
+    ]);
+    expect(j.d['d.bbl'].stamps).toBeUndefined();
+  });
+});

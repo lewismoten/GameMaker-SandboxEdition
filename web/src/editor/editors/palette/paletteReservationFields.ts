@@ -3,7 +3,7 @@ import type { Project } from '../../core/project';
 import { h, selectField, toast } from '../../core/ui';
 import { PALETTE_RESERVATIONS, paletteReservations, reserveColors, type PaletteReservation, type PaletteRole } from './paletteReservations';
 
-export const ROLE_LABELS = { character: 'Characters', background: 'Backgrounds', monster: 'Monsters', menu: 'Menu backgrounds', transparent: 'Transparency' };
+export const ROLE_LABELS = { character: 'Characters', background: 'Backgrounds', monster: 'Monsters', menu: 'Background color', transparent: 'Transparency' };
 
 export function paletteReservationFields(
   project: Project,
@@ -24,7 +24,7 @@ export function paletteReservationFields(
       project.setExtras(project.gam, PALETTE_RESERVATIONS, next.length ? next : undefined);
       changed();
     } catch {
-      toast('Choose colors 1–254. Color 0 is reserved for menus, and 255 for transparency.', 'error');
+      toast('Choose colors 1–254. Color 0 is the background color, and 255 for transparency.', 'error');
     }
   };
   const el = h(
@@ -34,7 +34,7 @@ export function paletteReservationFields(
     h(
       'p',
       { class: 'meta' },
-      'Shared by all palettes in this project. Color 0: menu backgrounds. Color 255: sprite transparency. Shift-click colors to choose a range.',
+      'Optional, and shared by all palettes in this project. Choose any ranges you like for each kind. Colors in no range are global: any kind may use them. Color 0 is the background color (menus and screens clear to it) and color 255 is transparency. The Level check suggests a look when a block uses a color reserved for another kind. Shift-click colors to choose a range.',
     ),
     selectField(
       'Reserve for',
@@ -75,7 +75,9 @@ export function paletteReservationFields(
   );
   const refresh = () => {
     const ranges = paletteReservations(project);
-    list.textContent = ranges.length ? ranges.map((range) => `${ROLE_LABELS[range.role]}: ${range.first}–${range.last}`).join('; ') : 'No custom reservations.';
+    list.textContent = ranges.length
+      ? ranges.map((range) => `${ROLE_LABELS[range.role]}: ${range.first}–${range.last}`).join('; ')
+      : 'No reservations: every color is global.';
   };
   refresh();
   return { el, refresh };

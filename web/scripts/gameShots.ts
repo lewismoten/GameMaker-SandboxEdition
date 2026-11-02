@@ -25,9 +25,10 @@ import { cdName } from '../src/project/files';
 
 /**
  * A palette PNG of only the colors the picture uses; rows unfiltered (flat pixel art packs best
- * that way). With `transparent`, that palette index is see-through.
+ * that way). With `transparent`, that palette index is see-through. `level` is the deflate effort: 9 for
+ * committed pictures (their bytes are checked), 6 for the site build's own (about 10 times faster).
  */
-export function encodeIndexedPng(pic: LevelPicture, transparent?: number): Uint8Array {
+export function encodeIndexedPng(pic: LevelPicture, transparent?: number, level = 9): Uint8Array {
   const used = [...new Set(pic.pixels)].sort((a, b) => a - b);
   const index = new Map(used.map((c, i) => [c, i]));
   const raw = new Uint8Array((pic.width + 1) * pic.height);
@@ -45,7 +46,7 @@ export function encodeIndexedPng(pic: LevelPicture, transparent?: number): Uint8
     pngChunk('IHDR', ihdr),
     pngChunk('PLTE', plte),
     ...trns,
-    pngChunk('IDAT', deflateSync(raw, { level: 6 })),
+    pngChunk('IDAT', deflateSync(raw, { level })),
     pngChunk('IEND', new Uint8Array(0)),
   ];
   const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
@@ -81,17 +82,17 @@ export function gameShots(
     const game = parseGame(files.get(gam)!);
     for (const [cols, rows] of BUILT_SHOTS) {
       const pic = gamePicture(files, game, cols, rows);
-      if (pic) out.set(builtShotPath(id, cols, rows), encodeIndexedPng(pic));
+      if (pic) out.set(builtShotPath(id, cols, rows), encodeIndexedPng(pic, undefined, 6));
     }
     const title = out.size ? titlePixels(files, game) : undefined;
-    if (title) out.set(builtTitlePath(id), encodeIndexedPng(title));
+    if (title) out.set(builtTitlePath(id), encodeIndexedPng(title, undefined, 6));
     if (out.size)
       for (const view of builtMapViews(boxShots)) {
         const pic = mapPixels(files, game, ...view);
-        if (pic) out.set(builtMapShotPath(id, view), encodeIndexedPng(pic));
+        if (pic) out.set(builtMapShotPath(id, view), encodeIndexedPng(pic, undefined, 6));
       }
     const face = out.size && hero ? heroPixels(files, hero) : undefined;
-    if (face) out.set(builtHeroPath(id), encodeIndexedPng(face, TRANSPARENT));
+    if (face) out.set(builtHeroPath(id), encodeIndexedPng(face, TRANSPARENT, 6));
   } catch {
     /* unreadable: the page draws it, or shows none */
   }

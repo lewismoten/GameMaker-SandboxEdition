@@ -1,6 +1,11 @@
 // Cameras, the pixel loop and the darkroom: turning a World into a picture with antialiasing,
 // then the 1995 finishing touches (glow, lens flares, an out-of-focus blur) on linear RGB.
-import { HitRec, Sampler, add, clamp01, cross, intersect, mul, norm, shadeHit, sub, trace, type V, type World } from './tracer';
+import * as tracer from './tracer';
+import type { V, World } from './tracer';
+// vite-node turns every imported name into a getter call on each use; hot code binds them once here.
+const { HitRec, Sampler, add, clamp01, cross, intersect, mul, norm, shadeHit, sub, trace } = tracer;
+type HitRec = tracer.HitRec;
+type Sampler = tracer.Sampler;
 
 export interface Camera {
   /** The ray through pixel position (sx, sy) (fractions allowed). `u, v` jitter the lens. */

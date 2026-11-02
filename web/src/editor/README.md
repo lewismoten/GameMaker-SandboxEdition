@@ -95,7 +95,7 @@ Part of the [source map](../README.md).
     uses; `textContrast.ts` text pages and the menu hard to read against their pictures (the pages
     and the pictures under them from `../textScreens.ts`); `colorZero.ts` level palettes (and, under a first level card that is a bare text
     page, the menu picture) whose color 0 isn't black, the background of the name prompt and the
-    F-key screens; `heroStart.ts` starting values PLAYGAME
+    F-key screens; `colorRoles.ts` blocks a level shows (on a map or changed into, monsters' and the hero's frames) drawing with a color the project's palette reservations give to another kind of art (a dismissable suggestion; none without reservations; Before You Upload counts it on the enemies-stand-out line); `heroStart.ts` starting values PLAYGAME
     ignores and a blank Idle; `shotPrize.ts` shots that destroy prize monsters; `keyHabits.ts` a
     fire key that roots the hero, ammunition for each key and keys whose job changes between
     levels; `screenText.ts` long help or story and placeholder pages; `dosChars.ts` in-game words

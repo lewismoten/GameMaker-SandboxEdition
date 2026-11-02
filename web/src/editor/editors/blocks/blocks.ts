@@ -19,6 +19,8 @@ import type { BlockGroup } from './blockGroups';
 import { characterFramesPanel, type CharacterFramesPanel } from './characterFramesPanel';
 import { shade } from '../palette/ramps';
 import { blockInsight } from './blockInsight';
+import { colorRoleNote, foreignRole } from './blockColorRole';
+import { paletteReservations } from '../palette/paletteReservations';
 import { openInEditor } from '../../core/uses';
 import { applyRecolor, recolorDialog } from './recolorDialog';
 import { edgeSetDialog } from './edgeSetDialog';
@@ -638,13 +640,17 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     name: (i) => (sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}`),
   });
   function renderSwatches(): void {
+    const ranges = paletteReservations(project);
     clear(
       swatches,
       ...Array.from({ length: 256 }, (_, i) =>
         h('button', {
           class: i === color ? 'selected' : '',
           style: `background:${swatchCss(i)}`,
-          title: sprites && i === TRANSPARENT ? '255: transparent' : `Color ${i}`,
+          title:
+            sprites && i === TRANSPARENT
+              ? '255: transparent'
+              : `Color ${i}${foreignRole(kind, ranges, i) ? ` (reserved for ${foreignRole(kind, ranges, i)}s)` : ''}`,
           onclick: () => {
             color = i;
             renderSwatches();
@@ -653,7 +659,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       ),
     );
     colorBox.refresh();
-    colorLabel.textContent = `Drawing with color ${color}${sprites && color === TRANSPARENT ? ' (transparent)' : ''}. Right-drag erases; Alt-click picks.`;
+    colorLabel.textContent = `Drawing with color ${color}${sprites && color === TRANSPARENT ? ' (transparent)' : ''}. Right-drag erases; Alt-click picks.${colorRoleNote(kind, ranges, color)}`;
   }
 
   // ---- properties -----------------------------------------------------------

@@ -2,7 +2,10 @@
 // the shapes that carry them - spheres, boxes, cylinders, convex solids, distance-field
 // models and moved/rotated copies - each with a hit() test that fills in the nearest hit.
 // sd holds the signed distance pieces the distance-field models are built from.
-import { add, clamp01, cross, dot, len, mul, norm, sub, type V } from './vec';
+import * as vec from './vec';
+import type { V } from './vec';
+// vite-node turns every imported name into a getter call on each use; hot code binds them once here.
+const { add, clamp01, cross, dot, hypot2, hypot3, len, mul, norm, sub } = vec;
 
 // ---------------------------------------------------------------- materials
 
@@ -422,7 +425,7 @@ export const sd = {
     const qx = Math.abs(x) - bx + r;
     const qy = Math.abs(y) - by + r;
     const qz = Math.abs(z) - bz + r;
-    return Math.hypot(Math.max(qx, 0), Math.max(qy, 0), Math.max(qz, 0)) + Math.min(Math.max(qx, qy, qz), 0) - r;
+    return hypot3(Math.max(qx, 0), Math.max(qy, 0), Math.max(qz, 0)) + Math.min(Math.max(qx, qy, qz), 0) - r;
   },
   /** A capsule from a to b with radius r (tapering from ra to rb). */
   capsule: (x: number, y: number, z: number, a: V, b: V, ra: number, rb = ra) => {
@@ -433,14 +436,14 @@ export const sd = {
     const by = b[1] - a[1];
     const bz = b[2] - a[2];
     const t = clamp01((px * bx + py * by + pz * bz) / (bx * bx + by * by + bz * bz || 1));
-    return Math.hypot(px - bx * t, py - by * t, pz - bz * t) - (ra + (rb - ra) * t);
+    return hypot3(px - bx * t, py - by * t, pz - bz * t) - (ra + (rb - ra) * t);
   },
   /** A torus lying flat (around z). */
-  torus: (x: number, y: number, z: number, R: number, r: number) => Math.hypot(Math.hypot(x, y) - R, z) - r,
+  torus: (x: number, y: number, z: number, R: number, r: number) => hypot2(hypot2(x, y) - R, z) - r,
   cylinder: (x: number, y: number, z: number, r: number, h: number, round = 0) => {
-    const dx = Math.hypot(x, y) - r + round;
+    const dx = hypot2(x, y) - r + round;
     const dz = Math.abs(z) - h + round;
-    return Math.min(Math.max(dx, dz), 0) + Math.hypot(Math.max(dx, 0), Math.max(dz, 0)) - round;
+    return Math.min(Math.max(dx, dz), 0) + hypot2(Math.max(dx, 0), Math.max(dz, 0)) - round;
   },
   /** Smooth union (polynomial smooth min). */
   smin: (a: number, b: number, k: number) => {

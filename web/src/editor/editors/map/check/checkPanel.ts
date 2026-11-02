@@ -27,6 +27,7 @@ import { fixFor } from '../../../check/generators/fixes';
 import { unlockAchievement } from '../../../../achievements';
 import { mazeFor } from '../../../check/generators/mazeFor';
 import { companionPatches } from '../../../../dosPlayer/playerRecord';
+import { paletteReservations } from '../../palette/paletteReservations';
 import { markSame, sameEverySide, sameKeyOf } from '../../../check/sameEverySide';
 import { acceptedFindings, findingKey, setAccepted, splitAccepted } from '../../../check/accepted';
 import type { LiveProgress } from '../../../check/live';
@@ -654,6 +655,7 @@ export function checkPanel(host: CheckHost): {
         budgetMs: budget * 1000,
         sameEverySide: sameEverySide(project),
         player: companionPatches(project.companion, project.gam),
+        reservations: paletteReservations(project),
         steadyMs: steady ? steadyMs : undefined,
       },
       undefined,

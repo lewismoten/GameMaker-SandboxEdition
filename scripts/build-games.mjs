@@ -6,12 +6,29 @@ import { join } from 'node:path';
 import { availableParallelism } from 'node:os';
 import { gameSourceHash, root } from './game-build-inputs.mjs';
 import { gameKeys, logoUsers } from './game-import-keys.mjs';
+import { bundleEntry } from './game-bundle.mjs';
 import { promisify } from 'node:util';
 const games = join(root, 'games');
 const cacheFile = join(games, '.build-cache.json');
 const run = promisify(execFile);
 // every child is vite-node with game-build.config.mjs: the site's vite.config.ts (CD scan, SEO and offline plugins) costs each child ~0.7 s of CPU for nothing
 const viteNode = [join(root, 'node_modules/vite-node/vite-node.mjs'), '-c', join(root, 'scripts/game-build.config.mjs')];
+// a child runs a bundle of its entry under plain node (game-bundle.mjs); GM_VITE_NODE=1, a bundle that can't be made,
+// or one that fails (a non-signal exit) means vite-node runs it as before, so a game needing a vite-only feature still builds
+const useBundles = process.env.GM_VITE_NODE !== '1';
+const fallbacks = [];
+async function runEntry(name, entry, viteFile, args, options, label) {
+  const bundle = useBundles ? await bundleEntry(name, entry) : undefined;
+  if (bundle) {
+    try {
+      return await run(process.execPath, ['--enable-source-maps', bundle, ...args], options);
+    } catch (error) {
+      if (error.signal) throw error;
+      fallbacks.push(label);
+    }
+  }
+  return run(process.execPath, [...viteNode, viteFile, ...args], options);
+}
 if (process.env.GM_SKIP_GAME_BUILD === '1') {
   console.log('Game output generation deferred to the build job.');
   process.exit(0);
@@ -65,12 +82,19 @@ function logo() {
   logoReady ??= existsSync(logoFile)
     ? Promise.resolve()
     : (mkdirSync(frames, { recursive: true }),
-      run(process.execPath, [...viteNode, '../scripts/logo-build-entry.mjs', logoFile], {
-        cwd: join(root, 'web'),
-        maxBuffer: 64 << 20,
-        timeout: 240_000,
-        killSignal: 'SIGKILL',
-      }).then(
+      runEntry(
+        'logo',
+        { file: join(root, 'scripts/logo-build-entry.mjs') },
+        '../scripts/logo-build-entry.mjs',
+        [logoFile],
+        {
+          cwd: join(root, 'web'),
+          maxBuffer: 64 << 20,
+          timeout: 240_000,
+          killSignal: 'SIGKILL',
+        },
+        'logo',
+      ).then(
         () => undefined,
         () => undefined, // a failed shared render only means each game renders its own
       ));
@@ -109,13 +133,20 @@ async function worker() {
           for (;;) {
             const shard = shards.shift();
             if (shard === undefined) return;
-            await run(process.execPath, [...viteNode, '../games/depth/tools/renderFrames.ts', `${shard}/8`], {
-              cwd: join(root, 'web'),
-              env: { ...process.env, DEPTH_FRAME_CACHE: frames },
-              timeout: 240_000,
-              killSignal: 'SIGKILL',
-              maxBuffer: 64 << 20,
-            });
+            await runEntry(
+              'depth-frames',
+              { file: join(root, 'games/depth/tools/renderFrames.ts') },
+              '../games/depth/tools/renderFrames.ts',
+              [`${shard}/8`],
+              {
+                cwd: join(root, 'web'),
+                env: { ...process.env, DEPTH_FRAME_CACHE: frames },
+                timeout: 240_000,
+                killSignal: 'SIGKILL',
+                maxBuffer: 64 << 20,
+              },
+              'depth frames',
+            );
           }
         }
         // the shards are independent, so a local build with no cached frames uses the cores it has
@@ -126,13 +157,22 @@ async function worker() {
       for (let attempt = 1; ; attempt++) {
         const began = Date.now();
         try {
-          await run(process.execPath, [...viteNode, '../scripts/game-build-entry.mjs', id], {
-            cwd: join(root, 'web'),
-            maxBuffer: 64 << 20,
-            timeout: 240_000,
-            killSignal: 'SIGKILL',
-            env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames, SANDLOGO_FLI: logoFile },
-          });
+          await runEntry(
+            id,
+            {
+              contents: `import ${JSON.stringify(join(games, id, 'build.ts'))};\nawait new Promise((done) => process.stdout.write('', done));\nprocess.exit(0);\n`,
+            },
+            '../scripts/game-build-entry.mjs',
+            [id],
+            {
+              cwd: join(root, 'web'),
+              maxBuffer: 64 << 20,
+              timeout: 240_000,
+              killSignal: 'SIGKILL',
+              env: { ...process.env, GAME_DISK_OUT: '', TEXT_BOUNDS: '', DEPTH_FRAME_CACHE: frames, SANDLOGO_FLI: logoFile },
+            },
+            secret ? 'a game' : id,
+          );
           break;
         } catch (error) {
           if (attempt > 1 || !error.signal || Date.now() - began > 230_000) throw error;
@@ -163,5 +203,6 @@ if (timing)
   console.log(
     `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,
   );
+if (fallbacks.length) console.log(`Ran under vite-node (bundle failed): ${fallbacks.join(', ')}`);
 save(true);
 console.log('Game build outputs are ready.');

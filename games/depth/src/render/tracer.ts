@@ -7,8 +7,14 @@
 // Coordinates: z is up. Cameras (camera.ts) turn a pixel into a ray; this file lights and traces
 // the scene. The vector math is in vec.ts and the materials and shapes in shapes.ts; both are
 // re-exported here, so a model only needs to import the tracer.
-import { add, clamp01, cross, dot, len, mix, mul, norm, sub, type V } from './vec';
-import { HitRec, resolveColor, type Shape } from './shapes';
+import * as vec from './vec';
+import type { V } from './vec';
+import * as shapes from './shapes';
+import type { Shape } from './shapes';
+// vite-node turns every imported name into a getter call on each use; hot code binds them once here.
+const { add, clamp01, cross, dot, len, mix, mul, norm, sub } = vec;
+const { HitRec, resolveColor } = shapes;
+type HitRec = shapes.HitRec;
 
 export * from './vec';
 export * from './shapes';

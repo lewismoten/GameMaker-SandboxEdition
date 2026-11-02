@@ -156,7 +156,7 @@ registerEditor(['pal'], (host, project, file) => {
       const role = reservationAt(roles, i);
       if (role) b.dataset.reservation = role;
       else delete b.dataset.reservation;
-      const name = `Color ${i}${role ? `: reserved for ${ROLE_LABELS[role].toLowerCase()}` : ''}`;
+      const name = `Color ${i}${role === 'menu' ? ': the background color' : role ? `: reserved for ${ROLE_LABELS[role].toLowerCase()}` : roles.length ? ': global' : ''}`;
       b.setAttribute('aria-label', name);
       b.title = name;
     });

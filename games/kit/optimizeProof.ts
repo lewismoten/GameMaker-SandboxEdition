@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { frameCount, parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { LASTSL, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { ADVTYPE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { BACKBL, CHARBL, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
@@ -18,7 +19,7 @@ import { GameFiles } from '../../web/src/project/files';
 import { planDisk } from '../../web/src/editor/disk/plan';
 import { carriedBlocks } from '../../web/src/editor/disk/lookAlikes';
 import { sceneUses } from '../../web/src/editor/disk/refs';
-import { reserveProof } from './optimizeProofReserve';
+import { reserveProof, spritesProof } from './optimizeProofReserve';
 import { scenePixels } from '../../web/src/gfx/levelPicture';
 
 const games = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -56,6 +57,16 @@ for (const id of readdirSync(games).filter((d) => existsSync(join(games, d, 'dis
         return void problems.push(`scene ${i} draws differently`);
     }
   });
+  // a picture whose color table shrank decodes to the same pixels and the same 256 screen colors
+  let gifBytes = 0;
+  for (const [n, v] of files.entries()) {
+    const w = after.get(n);
+    if (!w || w === v || !isGif(v) || !isGif(w)) continue;
+    gifBytes += v.length - w.length;
+    const [x, y] = [decodeGif(v), decodeGif(w)];
+    if (x.width !== y.width || x.height !== y.height || x.pixels.some((c, k) => c !== y.pixels[k]) || x.palette.some((c, k) => c !== y.palette[k]))
+      problems.push(`picture ${n} decodes differently`);
+  }
   // carried block numbers keep their picture and rules in the file each scene opens
   const uBefore = sceneUses(files, parseGame(files.get(gam)!));
   const uAfter = sceneUses(after, parseGame(after.get(gam)!));
@@ -107,7 +118,7 @@ for (const id of readdirSync(games).filter((d) => existsSync(join(games, d, 'dis
   console.log(
     id.padEnd(10),
     JSON.stringify(kinds).padEnd(40),
-    `${bytes(files) - bytes(after)} bytes saved`.padEnd(20),
+    `${bytes(files) - bytes(after)} bytes saved${gifBytes ? ` (${gifBytes} from picture tables)` : ''}`.padEnd(20),
     problems.length ? `FAIL ${problems.join('; ')}` : 'PASS every scene draws the same',
   );
   if (problems.length) failed++;
@@ -115,6 +126,9 @@ for (const id of readdirSync(games).filter((d) => existsSync(join(games, d, 'dis
     const rp = reserveProof(files, gam, bytes(files) - bytes(after));
     console.log(' '.repeat(10), rp.line);
     if (!rp.ok) failed++;
+    const sp = spritesProof(files, gam);
+    console.log(' '.repeat(10), sp.line);
+    if (!sp.ok) failed++;
   }
   if (out && plan.steps.length) {
     mkdirSync(join(out, id), { recursive: true });

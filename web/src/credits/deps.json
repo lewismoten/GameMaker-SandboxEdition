@@ -990,11 +990,8 @@
       "version": "0.28.2",
       "license": "MIT",
       "runtime": false,
-      "direct": false,
-      "usedBy": [
-        "vite",
-        "vite-node"
-      ],
+      "direct": true,
+      "usedBy": [],
       "repo": "https://github.com/evanw/esbuild"
     },
     {

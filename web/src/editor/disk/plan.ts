@@ -11,14 +11,14 @@ import { planRangeSync } from './rangeSync';
 import type { PaletteReservation } from '../editors/palette/paletteReservations';
 import { planMonsterBlocks } from './mergeMonsterBlocks';
 import { planMonsters } from './mergeMonsters';
+import { planColorFolds } from './lookAlikeColors';
+import { planGifs } from './shrinkGifs';
 import { filesIn, sceneUses } from './refs';
+import { SAVE_SAFE_KINDS } from './savesSafe';
 import type { Note, Plan, Step } from './types';
 
 // block sets join last: once two scenes share a block set, their monster files can no longer tell whose birth blocks are whose
-const ORDER: Step['kind'][][] = [
-  ['sync', 'mbl', 'mon', 'cbl', 'pal'],
-  ['look', 'bbl'],
-];
+const ORDER: Step['kind'][][] = [['sync', 'mbl', 'mon', 'cbl', 'pal'], ['look', 'bbl'], ['gif']];
 
 /** The next step that can be applied, and why the other pairs can't. */
 function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][], ranges: readonly PaletteReservation[]): Step | undefined {
@@ -29,9 +29,10 @@ function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][
       if (s) return s;
       continue;
     }
+    if (kind === 'gif') return planGifs(files);
     if (kind === 'pal') return planPalettes(files, gam, uses);
     if (kind === 'look') {
-      const s = planLookAlikes(files, gam, uses);
+      const s = planLookAlikes(files, gam, uses) ?? planColorFolds(files, gam);
       if (s) return s;
       continue;
     }
@@ -58,11 +59,19 @@ function next(files: GameFiles, gam: string, notes: Note[], order: Step['kind'][
 }
 
 /** `ranges` are the project's palette reservations (editors/palette/paletteReservations.ts); without them no range is synced. */
-export function planDisk(files: GameFiles, gam: string, ranges: readonly PaletteReservation[] = []): Plan {
+/** `skip` leaves out step kinds ("Monsters and characters only" skips the background ones). With `keepSaves`, only the steps that never change a number a saved game holds (savesSafe.ts). */
+export function planDisk(
+  files: GameFiles,
+  gam: string,
+  ranges: readonly PaletteReservation[] = [],
+  keepSaves = false,
+  skip: ReadonlySet<Step['kind']> = new Set(),
+): Plan {
   const work = files.copy();
   const steps: Step[] = [];
   const notes: Note[] = [];
-  for (const order of ORDER)
+  for (const all of ORDER) {
+    const order = all.filter((k) => !skip.has(k) && (!keepSaves || SAVE_SAFE_KINDS.has(k)));
     for (let guard = 0; guard < 50; guard++) {
       const note: Note[] = [];
       const step = next(work, gam, note, order, ranges);
@@ -73,5 +82,6 @@ export function planDisk(files: GameFiles, gam: string, ranges: readonly Palette
       steps.push(step);
       step.apply(work, gam);
     }
+  }
   return { steps, notes };
 }

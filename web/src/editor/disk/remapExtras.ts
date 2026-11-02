@@ -4,6 +4,7 @@
 // A snapshot lets Undo and Redo put them back with the files.
 import { BLOCK_NAMES, readBlockNames, type BlockNames } from '../editors/blocks/blockNames';
 import { readGroups, writeGroups, type BlockGroup } from '../editors/blocks/blockGroups';
+import { remapBrushes } from './remapBrushes';
 import type { BlockMove } from './types';
 
 interface Store {
@@ -69,5 +70,6 @@ export function remapExtras(store: Store, moves: readonly BlockMove[]): { names:
       if (m.file !== m.into) writeGroups(store, m.file, []);
     }
   }
+  remapBrushes(store, moves);
   return { names, groups };
 }

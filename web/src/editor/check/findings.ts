@@ -352,6 +352,12 @@ export const CHECKS = {
     why: 'PLAYGAME clears the high-score name prompt and the F-key screens to color 0, then writes on them in the nearest red and blue: on a gray or bright color 0 those words can be hard to read.',
     guide: { chapter: 'palettes', section: 'Color 0 is the background' },
   },
+  'color-roles': {
+    name: 'Colors reserved for another kind of art',
+    why: 'This project reserved palette ranges for characters, monsters and backgrounds. A block drawing with another kind’s color is easy to miss: a later palette change meant for one kind recolors it too.',
+    taste: true,
+    guide: { chapter: 'palettes', section: 'How a block knows its colors' },
+  },
   'dos-chars': {
     name: 'Characters DOS can’t draw',
     why: 'In DOS the player draws in-game words from the PC’s built-in font, which stops at character 127: accented letters, symbols and box lines come out as scribbles.',

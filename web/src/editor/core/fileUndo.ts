@@ -26,7 +26,11 @@ interface FileUndo extends FileHistory {
 }
 
 /** The steps alone (no buttons); `changed` hears after every step and every before(). */
-export function fileHistory(files: GameFiles, restored: () => void, opts: { merge?: number; limit?: number; changed?: () => void } = {}): FileHistory {
+export function fileHistory(
+  files: GameFiles,
+  restored: (dir: 'undo' | 'redo') => void,
+  opts: { merge?: number; limit?: number; changed?: () => void } = {},
+): FileHistory {
   const merge = opts.merge ?? 500;
   const limit = opts.limit ?? 50;
   const past: Snapshot[] = [];
@@ -40,14 +44,14 @@ export function fileHistory(files: GameFiles, restored: () => void, opts: { merg
       else if (files.has(n)) files.delete(n);
     }
   };
-  const step = (from: Snapshot[], to: Snapshot[]): boolean => {
+  const step = (from: Snapshot[], to: Snapshot[], dir: 'undo' | 'redo'): boolean => {
     const s = from.pop();
     if (!s) return false;
     to.push(snap(s.keys()));
     last = 0;
     put(s);
     sync();
-    restored();
+    restored(dir);
     return true;
   };
   const before = (names: string[], join: boolean) => {
@@ -67,8 +71,8 @@ export function fileHistory(files: GameFiles, restored: () => void, opts: { merg
   return {
     before: (...names) => before(names, false),
     join: (...names) => before(names, true),
-    undo: () => step(past, future),
-    redo: () => step(future, past),
+    undo: () => step(past, future, 'undo'),
+    redo: () => step(future, past, 'redo'),
     get canUndo() {
       return past.length > 0;
     },
@@ -79,7 +83,7 @@ export function fileHistory(files: GameFiles, restored: () => void, opts: { merg
 }
 
 /** fileHistory with Undo and Redo buttons, kept enabled only when there is a step to take. */
-export function fileUndo(files: GameFiles, restored: () => void, opts: { merge?: number; limit?: number } = {}): FileUndo {
+export function fileUndo(files: GameFiles, restored: (dir: 'undo' | 'redo') => void, opts: { merge?: number; limit?: number } = {}): FileUndo {
   const sync = () => {
     undoBtn.disabled = !steps.canUndo;
     redoBtn.disabled = !steps.canRedo;

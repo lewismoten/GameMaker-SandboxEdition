@@ -1,9 +1,13 @@
 name: Deploy web app to GitHub Pages
 
 # Builds and publishes only: format, lint, typecheck and tests run locally before a push (npm run verify).
+# A pull request into master runs the same build (the whole deploy path but the upload and deploy steps), so its
+# total Actions time is what a release costs; a pages-v* tag or a manual run deploys.
 on:
   push:
     tags: ['pages-v*']
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -12,8 +16,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: pages${{ github.event_name == 'pull_request' && format('-pr-{0}', github.event.number) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 defaults:
   run:
@@ -24,9 +28,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    # a pull request has no environment (the github-pages one only accepts deploys), and a fork's token is read-only anyway;
+    # the deploy name comes first because '' is falsy (`pr && '' || 'github-pages'` would always give github-pages)
+    environment: ${{ github.event_name != 'pull_request' && 'github-pages' || '' }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -34,14 +38,34 @@ jobs:
           node-version: 26
           cache: npm
           cache-dependency-path: package-lock.json
-      - run: npm ci
+      - name: Summary header
+        run: |
+          {
+            echo '| Stage | Seconds |'
+            echo '|---|---|'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: npm ci
+        run: |
+          start=$SECONDS
+          npm ci --omit=dev --no-audit --no-fund
+          echo "| npm ci | $((SECONDS - start)) |" >> "$GITHUB_STEP_SUMMARY"
         env:
           GM_SKIP_GAME_BUILD: '1'
       # every game from its source, on every core (Depth's animation frames included)
-      - run: node ../scripts/build-games.mjs --timing
-      - run: npx vite build
-      - uses: actions/upload-pages-artifact@v5
+      - name: Build games
+        run: |
+          start=$SECONDS
+          node ../scripts/build-games.mjs --timing
+          echo "| games (build-games) | $((SECONDS - start)) |" >> "$GITHUB_STEP_SUMMARY"
+      - name: Build site
+        run: |
+          start=$SECONDS
+          npx vite build
+          echo "| vite build | $((SECONDS - start)) |" >> "$GITHUB_STEP_SUMMARY"
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
         with:
           path: web/dist
-      - id: deployment
+      - if: github.event_name != 'pull_request'
+        id: deployment
         uses: actions/deploy-pages@v5

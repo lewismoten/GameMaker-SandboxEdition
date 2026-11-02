@@ -1,30 +1,35 @@
 // Ray: the chrome sphere from every ray-tracing demo, with two neon bands round him that roll
 // as he rolls: amber while the near plane is in focus, cyan in the far one.
 import { MAT } from '../render/look';
-import { Sdf, Sphere, rgb, sd, type Material, type Shape, type V } from '../render/tracer';
+import * as tracer from '../render/tracer';
+import type { Material, Shape, V } from '../render/tracer';
+
+const { Sdf, Sphere, hypot2, rgb, sd } = tracer;
+const { sphere: sphereD } = sd;
 
 export const RAY_R = 0.41;
 const RAY_AT: V = [0.5, 0.6, RAY_R + 0.02];
-
-/** Rotates (x, y, z) about the x or y axis by `a`. */
-function spin(axis: 'x' | 'y', a: number, x: number, y: number, z: number): V {
-  const c = Math.cos(a);
-  const s = Math.sin(a);
-  return axis === 'y' ? [c * x + s * z, y, -s * x + c * z] : [x, c * y - s * z, s * y + c * z];
-}
 
 /** Ray rolling about `axis` (x: up/down the screen, y: left/right), turned `angle` radians. */
 export function rayModel(axis: 'x' | 'y', angle: number, band: V, at: V = RAY_AT, r = RAY_R): Shape[] {
   const neon: Material = { color: band, diffuse: 0.5, spec: 1, shine: 60, emit: [band[0] * 0.55, band[1] * 0.55, band[2] * 0.55] };
   const chrome: Material = { ...MAT.chrome, color: rgb(225, 230, 240) };
   // the bands: two great circles through the rolling axis, at right angles
+  const ca = Math.cos(angle);
+  const sa = Math.sin(angle);
   const bandsAt = (x: number, y: number, z: number) => {
-    const [lx, ly, lz] = spin(axis, angle, x - at[0], y - at[1], z - at[2]);
+    const px = x - at[0];
+    const py = y - at[1];
+    const pz = z - at[2];
+    // spin() with its cosine and sine worked out once
+    const lx = axis === 'y' ? ca * px + sa * pz : px;
+    const ly = axis === 'y' ? py : ca * py - sa * pz;
+    const lz = axis === 'y' ? -sa * px + ca * pz : sa * py + ca * pz;
     // both circles contain the rolling axis: for axis y, the planes x = 0 and z = 0
     const [u, v] = axis === 'y' ? [lx, lz] : [ly, lz];
     const w = axis === 'y' ? ly : lx;
-    const ring1 = Math.hypot(Math.hypot(w, v) - r, u) - 0.036;
-    const ring2 = Math.hypot(Math.hypot(w, u) - r, v) - 0.036;
+    const ring1 = hypot2(hypot2(w, v) - r, u) - 0.036;
+    const ring2 = hypot2(hypot2(w, u) - r, v) - 0.036;
     return Math.min(ring1, ring2);
   };
   return [
@@ -33,7 +38,7 @@ export function rayModel(axis: 'x' | 'y', angle: number, band: V, at: V = RAY_AT
         [at[0] - r - 0.06, at[1] - r - 0.06, at[2] - r - 0.06],
         [at[0] + r + 0.06, at[1] + r + 0.06, at[2] + r + 0.06],
       ],
-      (x, y, z) => Math.min(sd.sphere(x - at[0], y - at[1], z - at[2], r), bandsAt(x, y, z)),
+      (x, y, z) => Math.min(sphereD(x - at[0], y - at[1], z - at[2], r), bandsAt(x, y, z)),
       [chrome, neon],
       (x, y, z) => (bandsAt(x, y, z) < sd.sphere(x - at[0], y - at[1], z - at[2], r) + 0.002 ? 1 : 0),
     ),
