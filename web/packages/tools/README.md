@@ -189,6 +189,13 @@ pairs into a native title demo with configurable Escape press and release delays
 map uses (and what they change into) are kept, matching blocks and rings become one, a pinned
 number (such as a felt egg's) stays put, and each scene's map is renumbered.
 
+### Look-alike blocks
+
+`findLookAlikes` finds background blocks that are drawn the same colors under every palette a set
+is shown with and play the same (it keeps what they turn into in step), and lists blocks that
+share a shape in other colors without joining them: a scene has one palette. `applyFold` removes
+the folded blocks and renumbers maps and links. Import from `@lewismoten/gamemaker-sandbox-tools/look-alike`.
+
 ### Disk comparison
 
 `diffDisks(a, b)` takes two `Map<name, bytes>` disks and returns the added, removed and changed files, with a plain-text

@@ -22,6 +22,11 @@ merge them, and says how many 3.5" disks the game needs.
 - `mergePalettes.ts`: two `.pal` files with the same 256 colors (always safe).
 - `similarBackgrounds.ts`: `.bbl` sets that would fit together; reported only, since joining them
   renumbers every map cell.
+- `lookAlikes.ts`, `lookAlikeView.ts`, `pictureCanvas.ts`: per background set, the blocks drawn the
+  same colors under every palette the set is shown with and with the same rules (found by
+  `tools/look-alike`), and blocks of one shape in other colors, which stay (a scene has one palette).
+  Pickups, a character's required and starting inventory blocks and block 0 keep their numbers.
+  Reported with a picture of each block; applying comes next.
 - `size.ts`: what the DOS export (`export/exportDos.ts`) ships, PLAYGAME's own files included, and
   the disks it takes at 1.44 MB and 720 KB (FAT12 clusters, the root directory's entry limit).
 - `floppy.ts`, `floppyData.ts`: the card's picture, a 3.5" disk drawn on a canvas. The plastic is

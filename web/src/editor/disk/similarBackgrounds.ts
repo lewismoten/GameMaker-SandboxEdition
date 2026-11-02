@@ -10,7 +10,7 @@ import { filesIn, sceneUses, usersOf, type SceneUse } from './refs';
 import type { Note } from './types';
 
 /** The blocks a set's maps draw, and what they follow through "becomes" links. */
-function drawn(files: GameFiles, uses: SceneUse[], bbl: string, blocks: Block[]): Set<number> {
+export function drawn(files: GameFiles, uses: SceneUse[], bbl: string, blocks: Block[]): Set<number> {
   const used = new Set<number>();
   for (const map of filesIn(usersOf(uses, 'bbl', bbl), 'map')) for (const cell of parseMap(files.get(map)!).blocks) used.add(cell);
   for (const i of [...used]) {

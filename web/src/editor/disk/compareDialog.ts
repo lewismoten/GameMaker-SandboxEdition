@@ -3,11 +3,11 @@
 // differs. Pictures are real renders of the game's own blocks and palette (gfx/levelPicture.ts).
 import { diffDisks } from '@lewismoten/gamemaker-sandbox-tools/disk-diff';
 import { ADVTYPE, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
-import { vga8 } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { scenePixels, type LevelPicture } from '../../gfx/levelPicture';
 import { GameFiles } from '../../project/files';
 import type { StoredCheckpoint } from '../../project/storage';
 import { clear, h, modal } from '../core/ui';
+import { pictureCanvas } from './pictureCanvas';
 import { sceneName } from '../core/uses';
 import type { Project } from '../core/project';
 
@@ -16,15 +16,7 @@ const H = 10;
 
 function canvasOf(p: LevelPicture | undefined, label: string): HTMLElement {
   if (!p) return h('p', { class: 'hint' }, `${label}: nothing to draw (the level has no map, palette or blocks).`);
-  const c = document.createElement('canvas');
-  c.width = p.width;
-  c.height = p.height;
-  const img = c.getContext('2d')!.createImageData(p.width, p.height);
-  for (let i = 0; i < p.pixels.length; i++) {
-    const v = p.pixels[i] * 3;
-    img.data.set([vga8(p.palette[v]), vga8(p.palette[v + 1]), vga8(p.palette[v + 2]), 255], i * 4);
-  }
-  c.getContext('2d')!.putImageData(img, 0, 0);
+  const c = pictureCanvas(p);
   c.className = 'disk-compare-pic';
   c.setAttribute('role', 'img');
   c.setAttribute('aria-label', label);

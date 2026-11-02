@@ -127,6 +127,10 @@ jump to the next view that differs). **Restore** puts everything back (Undo take
 **Discard** deletes the stamp. It stays with the game in this browser (and in a browser backup),
 never in a download or a DOS export.
 
+**Blocks that look the same** (also in Disk space) lists, per block set, blocks that are drawn the same
+colors in every palette the set is shown with and play the same, each with a picture and how many
+map cells use it, plus blocks of one shape in other colors, which stay as they are. It only reports for now.
+
 The first card adds files. **Add a file…** offers new files, the Library, uploads and the
 available converters. **From this game…** makes a copy of an existing file. Copy a file, open
 another project in this browser tab, then use **Paste** in the matching category. Block groups

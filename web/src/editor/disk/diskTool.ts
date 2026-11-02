@@ -7,6 +7,8 @@ import { clear, h, modal, toast } from '../core/ui';
 import { fileUndo } from '../core/fileUndo';
 import type { Project } from '../core/project';
 import { planDisk } from './plan';
+import { lookAlikeSets } from './lookAlikes';
+import { lookAlikeView } from './lookAlikeView';
 import { checkpointPanel } from './checkpointPanel';
 import { sizeUp, type SizeUp } from './size';
 import { floppyFor } from './diskCard';
@@ -83,6 +85,14 @@ export async function diskTool(project: Project): Promise<void> {
       } catch {
         plan = { steps: [], notes: [] };
       }
+      const looks = (() => {
+        try {
+          return lookAlikeSets(project.files, project.gam);
+        } catch (e) {
+          console.warn('Look-alike blocks not checked', e);
+          return [];
+        }
+      })();
       const saves = plan.steps.reduce((a, s) => a + s.saves, 0);
       const fits = size.disks.low === 1;
       const canvas = floppyFor(project, 160);
@@ -146,6 +156,7 @@ export async function diskTool(project: Project): Promise<void> {
               ),
             )
           : h('p', null, 'Nothing is left to merge.'),
+        lookAlikeView(looks),
         applied
           ? h(
               'div',

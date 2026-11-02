@@ -108,3 +108,26 @@
   font-weight: 700;
   outline: 2px solid currentColor;
 }
+
+/* Blocks that look the same */
+.disk-lookalike-groups {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+}
+.disk-block-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.disk-block {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8em;
+}
+.disk-block-thumb {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  display: block;
+}

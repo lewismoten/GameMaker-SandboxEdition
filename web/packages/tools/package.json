@@ -69,6 +69,11 @@
       "gamemaker-source": "./src/audioFiles.ts",
       "import": "./dist/audio-files.js"
     },
+    "./look-alike": {
+      "types": "./dist/types/lookAlike.d.ts",
+      "gamemaker-source": "./src/lookAlike.ts",
+      "import": "./dist/look-alike.js"
+    },
     "./disk-diff": {
       "types": "./dist/types/diskDiff.d.ts",
       "gamemaker-source": "./src/diskDiff.ts",
