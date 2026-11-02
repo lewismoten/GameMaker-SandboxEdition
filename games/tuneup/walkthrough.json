@@ -251,7 +251,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 85431,
+  "frames": 87041,
   "chapters": [
    {
     "title": "Opening",
@@ -327,67 +327,67 @@
    },
    {
     "title": "Level 11: The Horn Section, round 1",
-    "frame": 48153
+    "frame": 49764
    },
    {
     "title": "Level 11: The Horn Section, round 2",
-    "frame": 51660
+    "frame": 53271
    },
    {
     "title": "Level 11: The Horn Section, round 3",
-    "frame": 54527
+    "frame": 56138
    },
    {
     "title": "Level 12: Key Change, first gear",
-    "frame": 57915
+    "frame": 59526
    },
    {
     "title": "Level 12: Key Change, second gear",
-    "frame": 60681
+    "frame": 62292
    },
    {
     "title": "Level 12: Key Change, third gear",
-    "frame": 62306
+    "frame": 63916
    },
    {
     "title": "Level 12: Key Change, top gear",
-    "frame": 63927
+    "frame": 65537
    },
    {
     "title": "Level 13: The Instrument Panel, the radio",
-    "frame": 65551
+    "frame": 67161
    },
    {
     "title": "Level 13: The Instrument Panel, the gauges",
-    "frame": 67850
+    "frame": 69460
    },
    {
     "title": "Level 14: The Test Drive, round the block",
-    "frame": 69059
+    "frame": 70669
    },
    {
     "title": "Level 14: The Test Drive, Main Street",
-    "frame": 73024
+    "frame": 74634
    },
    {
     "title": "Level 15: The Parade Route, the morning",
-    "frame": 76075
+    "frame": 77685
    },
    {
     "title": "Level 15: The Parade Route, sunset",
-    "frame": 78817
+    "frame": 80427
    },
    {
     "title": "Level 15: The Parade Route, the fireworks",
-    "frame": 80335
+    "frame": 81945
    },
    {
     "title": "Ending",
-    "frame": 81886
+    "frame": 83496
    },
    {
     "title": "Credits",
-    "frame": 83879
+    "frame": 85489
    }
   ]
  }
