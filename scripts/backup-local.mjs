@@ -38,6 +38,9 @@ function tarArgs() {
 
 async function backup(folder) {
   const pass = await passphrase();
+  // refresh the session transcripts in .for-lewis first, so the backup has today's
+  const chats = join(root, '.for-lewis/tools/extract-all-chats.sh');
+  if (existsSync(chats)) await new Promise((ok) => spawn('zsh', [chats], { stdio: 'ignore' }).on('close', ok));
   mkdirSync(folder, { recursive: true });
   const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
   const file = join(folder, `gamemaker-local-${stamp}.tgz.enc`);
