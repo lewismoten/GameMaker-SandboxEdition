@@ -165,12 +165,15 @@ What PLAYGAME allows (code/GM), and how the disk uses it. Version 2.0 measured 3
   then a TXT shows words in a bubble drawn in the GIF (as the story, how-to and credits do).
   The card's words then appear after its fade-in, in that one color and column.
 - **Cartoons.** FLI.CPP plays COLOR, LC (line delta), BLACK, BRUN and COPY chunks, and
-  `encodeFli` already writes LC deltas, with 26-byte holds. Its ring frame (back to frame 0)
-  follows the header's frame count, so PLAYGAME never plays it: 754,000 bytes here. A clip after
-  the first opens on a whole frame; a cut where the picture changes anyway (the cutaway after the
-  title) costs almost nothing, where a cut in a hold costs a whole frame (about 40,000).
-
-Expected: about 9.1 MB down to under 6.5 MB before the cards and cartoons' cuts.
+  `encodeFli` already writes LC deltas, with 26-byte holds. `FLI::View` plays only the header's
+  frame count, so the clips leave out the ring frame (back to frame 0) that followed it
+  (`noLoopFrame`): -796,000. A clip after the first opens on a whole frame; `cheapCuts` puts the
+  cuts where that costs least (a scene change) in the same number of clips, but each Hat Sting
+  holds its title and its tool for about 4 seconds between its changes, so with clips of at most
+  4 seconds nearly every cut still falls in a hold: only -6,000. Clips of up to 6 seconds would
+  let each sting cut at its scene change (about -80,000 a sting), at the cost of a slower Esc.
+  The stings are named with two digits (`sting01`), so level 1's clips aren't level 12's and 13's.
+  Expected: about 9.1 MB down to under 6.5 MB before the cards and cartoons' cuts.
 
 ## Still to build
 

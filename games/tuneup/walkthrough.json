@@ -251,7 +251,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 85240,
+  "frames": 85431,
   "chapters": [
    {
     "title": "Opening",
@@ -267,127 +267,127 @@
    },
    {
     "title": "Level 2: Spark Plucks",
-    "frame": 6983
+    "frame": 7171
    },
    {
     "title": "Level 3: The Timing Beat, the straight verse",
-    "frame": 10255
+    "frame": 10443
    },
    {
     "title": "Level 3: The Timing Beat, the syncopated verse",
-    "frame": 13253
+    "frame": 13441
    },
    {
     "title": "Level 3: The Timing Beat, the double-time verse",
-    "frame": 15036
+    "frame": 15224
    },
    {
     "title": "Level 4: Oil's Well",
-    "frame": 16891
+    "frame": 17079
    },
    {
     "title": "Level 4: Oil's Well, the swim",
-    "frame": 20807
+    "frame": 20995
    },
    {
     "title": "Level 5: The Fan Band, the cool verse",
-    "frame": 22144
+    "frame": 22332
    },
    {
     "title": "Level 5: The Fan Band, the hot verse",
-    "frame": 26794
+    "frame": 26982
    },
    {
     "title": "Level 6: Brake Dance",
-    "frame": 29067
+    "frame": 29255
    },
    {
     "title": "Level 7: Hubcaps and Balls, round 1",
-    "frame": 32262
+    "frame": 32449
    },
    {
     "title": "Level 7: Hubcaps and Balls, round 2",
-    "frame": 34902
+    "frame": 35090
    },
    {
     "title": "Level 7: Hubcaps and Balls, round 3",
-    "frame": 36444
+    "frame": 36632
    },
    {
     "title": "Level 8: Pump Up the Volume",
-    "frame": 37657
+    "frame": 37845
    },
    {
     "title": "Level 9: Muffled",
-    "frame": 41398
+    "frame": 41586
    },
    {
     "title": "Level 10: The Rain Delay",
-    "frame": 44097
+    "frame": 44286
    },
    {
     "title": "Level 11: The Horn Section, round 1",
-    "frame": 47963
+    "frame": 48153
    },
    {
     "title": "Level 11: The Horn Section, round 2",
-    "frame": 51469
+    "frame": 51660
    },
    {
     "title": "Level 11: The Horn Section, round 3",
-    "frame": 54336
+    "frame": 54527
    },
    {
     "title": "Level 12: Key Change, first gear",
-    "frame": 57724
+    "frame": 57915
    },
    {
     "title": "Level 12: Key Change, second gear",
-    "frame": 60489
+    "frame": 60681
    },
    {
     "title": "Level 12: Key Change, third gear",
-    "frame": 62114
+    "frame": 62306
    },
    {
     "title": "Level 12: Key Change, top gear",
-    "frame": 63735
+    "frame": 63927
    },
    {
     "title": "Level 13: The Instrument Panel, the radio",
-    "frame": 65359
+    "frame": 65551
    },
    {
     "title": "Level 13: The Instrument Panel, the gauges",
-    "frame": 67658
+    "frame": 67850
    },
    {
     "title": "Level 14: The Test Drive, round the block",
-    "frame": 68867
+    "frame": 69059
    },
    {
     "title": "Level 14: The Test Drive, Main Street",
-    "frame": 72833
+    "frame": 73024
    },
    {
     "title": "Level 15: The Parade Route, the morning",
-    "frame": 75884
+    "frame": 76075
    },
    {
     "title": "Level 15: The Parade Route, sunset",
-    "frame": 78626
+    "frame": 78817
    },
    {
     "title": "Level 15: The Parade Route, the fireworks",
-    "frame": 80144
+    "frame": 80335
    },
    {
     "title": "Ending",
-    "frame": 81695
+    "frame": 81886
    },
    {
     "title": "Credits",
-    "frame": 83688
+    "frame": 83879
    }
   ]
  }

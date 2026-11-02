@@ -10,7 +10,7 @@ import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/
 import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
-import { clipEntries, clipEveryList, fliClips } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
+import { clipEntries, clipEveryList, fliClips, type ClipOptions } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
@@ -70,9 +70,11 @@ const TOOLS: Record<number, Tool> = {
   14: 'key',
   15: 'baton',
 };
+// Cartoons go without the ring frame nothing plays, and cut where the picture changes anyway.
+const CLIPS: ClipOptions = { noLoopFrame: true, cheapCuts: true };
 /** A cartoon cut into clips (Esc skips within a few seconds), its files on the disk, its entries for a list. */
 const reel = (name: string, fli: Uint8Array) => {
-  const clips = fliClips(name, fli);
+  const clips = fliClips(name, fli, 4, CLIPS);
   for (const [n, b] of Object.entries(clips)) disk.put(n, b);
   return clipEntries(clips, 0);
 };
@@ -124,7 +126,8 @@ built.forEach(({ l, m, pal }, i) => {
   let intro = '';
   if (firstOfLevel(i)) {
     intro = `lvl${l.level}.lst`;
-    const sting = reel(`sting${l.level}.fli`, stingReel(l.level, TOOLS[l.level], l.desc.toUpperCase()).fli(SPEED));
+    // two digits, so level 1's clips (sting012, sting013) aren't level 12's and 13's
+    const sting = reel(`sting${String(l.level).padStart(2, '0')}.fli`, stingReel(l.level, TOOLS[l.level], l.desc.toUpperCase()).fli(SPEED));
     const before = (l.before ?? []).map((name) => ({ name, pause: PAUSE[name] }));
     disk.put(
       intro,
@@ -191,7 +194,7 @@ disk.put('tuneup.gam', serializeGame(game));
 
 // the pictures and words
 for (const [name, bytes] of Object.entries(buildScreens())) disk.put(name, bytes);
-const logo = fliClips(SANDLOGO, sandLogoFli());
+const logo = fliClips(SANDLOGO, sandLogoFli(), 4, CLIPS);
 for (const [n, b] of Object.entries(logo)) disk.put(n, b);
 disk.put('title.lst', serializeSlideList([...clipEntries(logo, 0), { name: 'title.gif', pause: 10 }]));
 disk.put('story.lst', serializeSlideList([{ name: 'storybg.gif', pause: 0 }, { name: 'story.txt' }]));
@@ -205,7 +208,7 @@ disk.put('howto.txt', INSTRUCTIONS);
 disk.put('credits.txt', CREDITS);
 disk.put('readme.txt', readme());
 disk.put('license.txt', licenseText('Tune-Up'));
-clipEveryList(disk.files);
+clipEveryList(disk.files, 4, CLIPS);
 disk.write();
 const usedIn = (blocks: Iterable<{ pixels: Uint8Array }>) => [...blocks].filter((b) => b.pixels.some(Boolean)).length;
 console.log([...shared.sets].map(([name, blocks]) => `${name}: ${usedIn(blocks)} drawn blocks`).join(', ') + `; ${mb.index.size} monster blocks`);
