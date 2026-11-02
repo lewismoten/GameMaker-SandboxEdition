@@ -2,7 +2,7 @@
 // twice size, from the built disk; the five base block sets in each theme; and the cartoons as
 // contact sheets (every fourth frame). Opens nothing; prints the files it wrote.
 //   cd web && npx vite-node ../games/tuneup/tools/preview.ts [outDir] [scene...]   (scenes given: just those)
-import { mkdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -31,12 +31,14 @@ mkdirSync(out, { recursive: true });
 const wrote = (f: string) => console.log(join(out, f));
 const disk = (n: string) => new Uint8Array(readFileSync(new URL(`../disk/${n}`, import.meta.url)));
 const mbl = parseBlocks(disk('cast.mbl'), 100);
+// most scenes share cast.mon; the ones with their own timings keep <file>.mon
+const monOf = (f: string) => (existsSync(new URL(`../disk/${f}.mon`, import.meta.url)) ? `${f}.mon` : 'cast.mon');
 for (const l of LEVELS.filter((l) => !only.length || only.includes(l.file))) {
   const map = parseMap(disk(mapOf(l.file)));
   const bbl = parseBlocks(disk(bblOf(l.file)), 150);
   const level = l.build(l.blocks(buildPalette(l.theme)).book);
   const [w, h] = level.size;
-  const pic = renderRegion(map, bbl, mbl, parseMonsters(disk(`${l.file}.mon`)), ORIGIN, ORIGIN + rowOffset(l.file), w, h);
+  const pic = renderRegion(map, bbl, mbl, parseMonsters(disk(monOf(l.file))), ORIGIN, ORIGIN + rowOffset(l.file), w, h);
   writePng(join(out, `${l.file}.png`), pic, parsePalette(disk(`${l.file}.pal`)), 2);
   wrote(`${l.file}.png`);
 }
@@ -56,6 +58,7 @@ for (const theme of Object.keys(THEMES) as ThemeName[]) {
 }
 // every picture on the disk (the title, the menu, the cards, the ending...) and the cartoons' contact sheets
 for (const [name, bytes] of Object.entries(buildScreens())) {
+  if (!name.endsWith('.gif')) continue; // the cards' words are TXT
   const g = decodeGif(bytes);
   const p = new Pixels(g.width, g.height);
   p.px.set(g.pixels);
