@@ -19,9 +19,15 @@ only oil is in the rear differential), so the dream can be dismissed. The chicke
 battery fumes; Doc Leo says the batteries are lithium ion now (a deliberate time slip, logged in
 the timeline), and the chicken tells the player such car batteries are years off. What's really
 wrong: THE CHEZ has no radio, so the real tune-up (levels 5 on) builds toward an AM radio with an
-8-track. Every car fact from level 5 on is from the car's blog, thechez.car.blog. After Pump Up
-the Volume a balloon pops, he lays an egg, and from then on every card names her Lady Regina
-III, formally corrected (*CORRECTION: Lady Regina Cluckington III). She wears a tiara in front of her comb, her name is pink on the cards, and before The Rain Delay a card has her keep the egg on Doc Leo's hat. (PLAYGAME can't show a card only when the felt egg wasn't found, so that card always plays and never mentions finding anything.)
+8-track. Every car fact from level 5 on is from the car's blog, thechez.car.blog. After Muffled
+(level 9) the 8-track changes programs with a KA-CHUNK, and he lays an egg. Over three cards Doc
+Leo stares, then says only hens lay eggs; the chicken reasons it out by rubber-chicken logic (she
+must be a hen, a hen with a comb); the paperwork is corrected (a reissued name card, *CORRECTION:
+Lady Regina Cluckington III, "in triplicate"); and she tells him the egg is hers to keep. From
+The Rain Delay (level 10) on, every card names her Lady Regina III. She wears a tiara in front of
+her comb, her name is pink on the cards, and in the same break a card has her keep the egg on Doc
+Leo's hat. (PLAYGAME can't show a card only when the felt egg wasn't found, so these cards always
+play and never mention finding anything.)
 
 ## Scenes
 
@@ -164,6 +170,15 @@ What PLAYGAME allows (code/GM), and how the disk uses it. Version 2.0 measured 3
   characters, in the picture's color nearest RGB (50, 10, 50). A GIF listed with a pause of 0
   then a TXT shows words in a bubble drawn in the GIF (as the story, how-to and credits do).
   The card's words then appear after its fade-in, in that one color and column.
+- **Cards.** Each banter card is a slide list pair: a speech-bubble GIF at pause 0, then its TXT
+  for 3 s and a quarter second a word (at least 8 s). The TXT holds a level's title (row 0) and
+  each speech's words (28 columns, a 31st would make PLAYGAME read the line break as a line of
+  its own); the GIF holds a bubble per speech sized to its rows, the speaker's name lettered on
+  the blank row above the words (Lady Regina's in pink), the title's plaque, and the chicken on a
+  shelf at the right with Doc Leo below her, where the tails point. Cards with the same rows,
+  people and props share a GIF (`bubNN.gif`). The ink is `player.json`'s `color.rgb.purple`,
+  (5, 3, 4): the screen palette's own ink (its outline color), so it matches exactly in every
+  card and on the story, how-to and credits paper. An after card is its own list (`<file>out.lst`).
 - **Cartoons.** FLI.CPP plays COLOR, LC (line delta), BLACK, BRUN and COPY chunks, and
   `encodeFli` already writes LC deltas, with 26-byte holds. `FLI::View` plays only the header's
   frame count, so the clips leave out the ring frame (back to frame 0) that followed it

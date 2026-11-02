@@ -4,8 +4,8 @@
 // energy), so he hops them. A blanket corner he tucks back in lets her settle (energy back).
 // The way over her is the shelf above her bed; touching Gwinn herself wakes her a lot. The
 // tapes sit on a crate past her bed; with them, the door at the end opens. Up on the high shelf
-// past her bed, where the rubber egg rolled: the felt egg (in the set's last slot, a number no
-// other map shows). The sign that tells how to save is in the next level, The Rain Delay.
+// past her bed: the felt egg (in the set's last slot, a number no other map shows). Sir Reginald
+// is still Sir Reginald here; his egg comes after this level (banter.ts EGG). The sign that tells how to save is in the next level, The Rain Delay.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline, scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
@@ -204,7 +204,7 @@ export function muffled(book: Kit['book']): Level {
   m.set(M.door, floor - 2, 'door.top').set(M.door, floor - 1, 'door');
   m.fill(w - 1, 0, 1, floor, 'slab');
   m.link(M.exit, floor - 1);
-  m.mon(MON.regina, 3, floor - 1);
+  m.mon(MON.reggie, 3, floor - 1);
   decorate(m, [
     ['light', 12, 0],
     ['light', 26, 0],
