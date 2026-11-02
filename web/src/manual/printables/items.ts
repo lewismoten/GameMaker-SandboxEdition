@@ -7,6 +7,7 @@ import type { BoxItem } from './viewer';
 import type { ReaderOptions } from '../readView';
 import type { GeneratedKind, PrintableItem } from './types';
 import { foldOut, renderItem } from './story';
+import { hintBookCover } from './hintCover';
 import { bbsAd, catalog, hintOffer, keycard, newsletter, postcard, warranty } from './gen';
 import { stickerScreen, stickers } from './stickers';
 import { worldMap, worldMapScreen } from './worldMap';
@@ -34,6 +35,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     promised: it.promised,
     icon: ICONS[it.kind],
     render: () => renderItem(ctx, it),
+    first: it.kind === 'hintbook' ? () => hintBookCover(ctx, it) : undefined,
     screen: it.kind === 'starchart' ? foldOut : undefined,
     redFilm: it.kind === 'hintbook',
     epub:
@@ -64,6 +66,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
             note: 'Every level’s real map, start and ways out marked',
             icon: '🧭',
             render: () => levels.render(),
+            first: () => levels.first(),
             reader: (o: ReaderOptions) => levels.reader(o),
           },
         ]

@@ -496,14 +496,16 @@ async function printSheets(
   paintCourse: CoursePainter,
   crop: CropOf,
   full: boolean,
+  firstOnly = false,
 ): Promise<Sheet[]> {
   const urls = new Map<Level, string>();
-  for (const l of levels) if (!l.course) urls.set(l, await paint(l));
   const boxes = levels.map((l) => levelBox(game, l));
   const placed = packPages(boxes, AREA, GAP);
+  // a first-sheet picture paints only the levels on page 0
+  for (const [i, l] of levels.entries()) if (!l.course && (!firstOnly || placed[i].page === 0)) urls.set(l, await paint(l));
   const pages = new Map<number, SVGElement[]>();
   const out: Sheet[] = [];
-  const pageCount = placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0;
+  const pageCount = firstOnly ? Math.min(1, placed.length) : placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0;
   let sheetNo = 0;
   for (let k = 0; k < pageCount; k++) {
     const course = levels.find((l, i) => placed[i].page === k && l.course);
@@ -561,7 +563,7 @@ async function printSheets(
     }
     out.push(pageSheet(entry, `page ${++sheetNo}`, body));
     // a big level's full-size pages follow its overview
-    if (!full) continue;
+    if (!full || firstOnly) continue;
     for (const l of levels.filter((x, i) => placed[i].page === k && tiled(x))) {
       const ts = levelTiles(l);
       const cols = Math.max(...ts.map((t) => t.col)) + 1;
@@ -664,7 +666,9 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
 export function levelMaps(
   ctx: PrintContext,
-): { render(): Promise<Sheet[]>; reader(o: ReaderOptions): Promise<Reader>; preview(): Promise<Sheet | undefined> } | undefined {
+):
+  | { render(): Promise<Sheet[]>; first(): Promise<Sheet | undefined>; reader(o: ReaderOptions): Promise<Reader>; preview(): Promise<Sheet | undefined> }
+  | undefined {
   const secret = listedSecrets(ctx.entry.id);
   if (!secret) return undefined;
   let loaded: Promise<Loaded | undefined> | undefined;
@@ -703,6 +707,11 @@ export function levelMaps(
     async render() {
       const x = await load();
       return x ? printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.paintCourse, x.crop, x.full) : [];
+    },
+    /** Only the first printed sheet, painting just the levels on it (the box list's small picture). */
+    async first() {
+      const x = await load();
+      return x ? (await printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.paintCourse, x.crop, x.full, true))[0] : undefined;
     },
     async reader(o) {
       const x = await load();

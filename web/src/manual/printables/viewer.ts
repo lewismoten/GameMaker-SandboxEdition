@@ -23,6 +23,8 @@ export interface BoxItem {
   promised?: boolean;
   /** Fresh sheets every call (the screen and each print get their own copies). */
   render(): Promise<Sheet[]>;
+  /** Just the first sheet, built without the rest (the small picture in the box's list). Falls back to `render`. */
+  first?(): Promise<Sheet | undefined>;
   /** A special on-screen presentation (e.g. a fold-out that unfolds). */
   screen?(sheets: Sheet[]): HTMLElement;
   /** Its own on-screen view, built without rendering every sheet (`render` is then only for printing). */
