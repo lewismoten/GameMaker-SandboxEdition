@@ -105,6 +105,26 @@
   {
    "scene": 26,
    "keys": "D0sQywhICMgMTQzNB0gIyAxNDM0HSAjIDE0IzRRN"
+  },
+  {
+   "scene": 27,
+   "keys": "D0sAywBLDMsGSwXLBUsDywVLDMsASwnLAEsPywBLA8sASwfLCUsFywRLA8sdSwzLAEsHywBLB8sHSwTLAksDy0NLDMsASwfLAEsPywBLBMsASwbLCEsFywRLA8tiSwzLAEsJywBLBssISwbLA0sEyzpLDMsASw=="
+  },
+  {
+   "scene": 28,
+   "keys": "D0sAywBLCcsGSwXLBUsDy0NLDMsASwXLAEsHywhLBMsESwPLZ0sMywBLBcsASwfLB0sFy2pLDcsASwTLAEsHywdLBcsDSwPLQksMywBLB8sASwbLB0sGywRLBMsrSwzLAEsHywBLB8sHSwTLBEsDywNLDMsASwfLAEsPywBLAssASwfLB0sEywRLA8sDSwzLAEs="
+  },
+  {
+   "scene": 29,
+   "keys": "D0sSywVLBssFSwTLBEsDywM5AbkGSxvLCEsGywRLA8sEOQG5BksbywdLBssESwTLAzkBuQZLG8sGSwbLBUsEywI5AbkGSw=="
+  },
+  {
+   "scene": 30,
+   "keys": "D0sPywVLBcsDOQG5BksaywdLBcsFSwPLBDkBuQZLHcsHSwXLBEsDywI5AbkGSxvLBksGywNLA8sEOQG5Bks="
+  },
+  {
+   "scene": 31,
+   "keys": "D0sUywVLBssESwTLAjkBuQZLG8sHSwbLBEsEywQ5AbkGSxvLB0sGywVLBMsDOQG5BksbywhLBssFSwTLAzkBuQZL"
   }
  ],
  "chapters": [
@@ -207,11 +227,31 @@
   {
    "scene": 26,
    "title": "Level 13: The Instrument Panel, the gauges"
+  },
+  {
+   "scene": 27,
+   "title": "Level 14: The Test Drive, round the block"
+  },
+  {
+   "scene": 28,
+   "title": "Level 14: The Test Drive, Main Street"
+  },
+  {
+   "scene": 29,
+   "title": "Level 15: The Parade Route, the morning"
+  },
+  {
+   "scene": 30,
+   "title": "Level 15: The Parade Route, sunset"
+  },
+  {
+   "scene": 31,
+   "title": "Level 15: The Parade Route, the fireworks"
   }
  ],
  "timeline": {
   "fps": 60,
-  "frames": 64786,
+  "frames": 76846,
   "chapters": [
    {
     "title": "Opening",
@@ -322,12 +362,32 @@
     "frame": 60607
    },
    {
-    "title": "Ending",
+    "title": "Level 14: The Test Drive, round the block",
     "frame": 61813
    },
    {
+    "title": "Level 14: The Test Drive, Main Street",
+    "frame": 65168
+   },
+   {
+    "title": "Level 15: The Parade Route, the morning",
+    "frame": 68219
+   },
+   {
+    "title": "Level 15: The Parade Route, sunset",
+    "frame": 70572
+   },
+   {
+    "title": "Level 15: The Parade Route, the fireworks",
+    "frame": 72087
+   },
+   {
+    "title": "Ending",
+    "frame": 73652
+   },
+   {
     "title": "Credits",
-    "frame": 63234
+    "frame": 75294
    }
   ]
  }
