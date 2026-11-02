@@ -13,7 +13,8 @@ import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { centered } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { GWINN } from '../../../teddy2/src/sprites/gwinn';
-import { SP, INK, DREAM_PARTS, REAL_PARTS, cutaway, drawChez, parkChez, drawChicken, drawLeo, garage, nightYard, toolPic, type Tool } from './art';
+import { SP, INK, DREAM_PARTS, REAL_PARTS, cutaway, drawChez, parkChez, drawChicken, drawLeo, nightYard, toolPic, type Tool } from './art';
+import { garage } from './garage';
 
 const c = SP.c;
 /** Frames a second: a wait of 5/70 s a frame. */

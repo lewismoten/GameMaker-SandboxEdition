@@ -5,7 +5,8 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { centered, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { gif, scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
-import { SP, INK, REAL_PARTS, cutaway, parkChez, drawChicken, drawLeo, garage } from './art';
+import { SP, INK, REAL_PARTS, cutaway, parkChez, drawChicken, drawLeo } from './art';
+import { garage } from './garage';
 import { card } from './cards';
 import { INTRO, OUTRO, WAKE } from './banter';
 

@@ -8,7 +8,8 @@ import { centered, text, textWidth } from '../../../snowbound/src/art/font';
 import { rubberEgg } from '../art/egg';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
-import { SP, INK, drawChicken, drawLeo, garage } from './art';
+import { SP, INK, drawChicken, drawLeo } from './art';
+import { garage } from './garage';
 
 const c = SP.c;
 

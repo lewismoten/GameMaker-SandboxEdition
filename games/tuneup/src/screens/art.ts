@@ -1,4 +1,4 @@
-// What the title, the cards and the cartoons are drawn from: the garage backdrop, Doc Leo and
+// What the title, the cards and the cartoons are drawn from (the garage backdrop is garage.ts): Doc Leo and
 // the rubber chicken at any size, THE CHEZ (kit/chez.ts) with Teddy riding in the passenger
 // seat, the tools that come out of Doc Leo's hat, and the cutaway CHEZ whose parts light up as
 // they are tuned. Everything is in the screen palette (palette.ts buildScreenPalette).
@@ -69,20 +69,6 @@ export function drawChicken(p: Pixels, x: number, y: number, s: number, o: Chick
     shadow(p, x + (a + b) / 2 - w / 2 - 4, x + (a + b) / 2 + w / 2 + 4, y);
   }
   p.blit(q, x, y - q.h, 255);
-}
-
-/** The garage at dawn: a pegboard wall, a window full of sunrise, the slab floor from `floor`. */
-export function garage(floor = 160): Pixels {
-  const p = new Pixels(320, 200, c('wall', 3));
-  gradient(p, 0, 0, 320, floor, SP.r('wall'), 2, 4);
-  for (let y = 8; y < floor - 4; y += 10) for (let x = 6; x < 320; x += 10) p.set(x, y, c('wall', 1));
-  // the window: sunrise through it
-  p.rect(200, 20, 96, 64, c('mach', 1));
-  gradient(p, 204, 24, 88, 56, SP.r('lamp'), 1, 4);
-  p.rect(246, 24, 4, 56, c('mach', 1)).rect(204, 50, 88, 4, c('mach', 1));
-  gradient(p, 0, floor, 320, 200 - floor, SP.r('floor'), 1, 3);
-  p.rect(0, floor, 320, 2, c('floor', 4));
-  return p;
 }
 
 /** The night yard: dark sky with stars, the fence, the lawn. */
