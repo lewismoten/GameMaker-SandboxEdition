@@ -30,23 +30,25 @@ its intro list plays: (before level 1, the opening cartoon,) the Hat Sting with 
 and the cutaway CHEZ, then Doc Leo and the chicken's card. After a level (or a verse) their card
 asks whether it's fixed.
 
-| #   | Level                | Scenes              | Look (base set, theme)                   | What you do                                                                                                                                                                                       |
-| --- | -------------------- | ------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Jump Start           | jump                | GARAGE, dawn                             | The red clamp on the shelf and the black clamp under the bench open their terminals; Space held under the crank fills its gauge; "Charge!" and THE CHEZ's headlight opens                         |
-| 2   | Spark Plucks         | spark               | ENGINE, electric                         | Climb each plug wire between sparks (firing order 1-3-4-2) and pluck its plug: C, E, G, E                                                                                                         |
-| 3   | The Timing Beat      | beat1, beat2, beat3 | ENGINE, brass                            | Four pipes drop notes onto four keys; boop each as it lands. Straight, syncopated (a Y-pipe, a slow bent pipe), double time (a crossover)                                                         |
-| 4   | Oil's Well           | oil, swim           | ENGINE, amber                            | Z X C V B squirt the oil can along the staff's five lines; oiled Squeaks float home as notes; two later waves, counted down by a row of lamps. Then the swim (nobody steers)                      |
-| 5   | The Fan Band         | fan1, fan2          | ENGINE, cool/hot                         | The motor's warm air to the defroster: ride the pulsing columns up and reach each kazoo fan (Space); the hot verse's columns are out of step; a thermometer on the wall climbs as the motor warms |
-| 6   | Brake Dance          | brake               | GARAGE, disco (Teddy)                    | Each stiff brake lamp wants a trick (Z turn, X roll over, C play dead, V dance); the freed lamp floats to Teddy                                                                                   |
-| 7   | Hubcaps and Balls    | cups1-3             | CURB, spot                               | Cups and balls with three hubcaps and the antenna's ball: watch the shuffle, reach under the right cap; three rounds, the last quicker                                                            |
-| 8   | Pump Up the Volume   | pump                | CURB, noon                               | Balloon animals breathe in and out on their own; hop onto each as it puffs up, up to the squashed tire, and pump it to 32 psi; a slide whistle down its far side                                  |
-| 9   | Muffled              | hush                | GARAGE, night (Teddy)                    | Gwinn asleep with the 8-track tapes: hop the squeaky toys (each costs energy, the Zzz meter), take the shelf over her bed, fetch the tapes. The felt egg                                          |
-| 10  | The Rain Delay       | rain                | CAB, rain                                | Cross the windshield between wiper sweeps (every 2 beats, every 3, then 5/4); each raindrop rings a tongue drum in D. The save sign                                                               |
-| 11  | The Horn Section     | horn1-3             | CURB, gold                               | The Clown Club's board lights a call (3, 4, then 5 notes); on each stage reach up under the right horn pad to honk it open and climb through; a wrong one blows a raspberry                       |
-| 12  | Key Change           | gear1-4             | ENGINE, gear1-4 (blue, green, gold, red) | Four gear rooms, each a whole step higher: hop the teeth as they come round on the beat; a speedometer climbs; the door keeps its own clock                                                       |
-| 13  | The Instrument Panel | dash1, dash2        | CAB, dash (Teddy)                        | Hop into each preset as the dial's needle crosses its station (the last brings the choir's "aah"); three gauge chords, C F G, under the choir swell; the AM/FM radio and its 8-track go in        |
+| #   | Level                | Scenes              | Look (base set, theme)                   | What you do                                                                                                                                                                                                             |
+| --- | -------------------- | ------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Jump Start           | jump                | GARAGE, dawn                             | The red clamp on the shelf and the black clamp under the bench open their terminals; Space held under the crank fills its gauge; "Charge!" and THE CHEZ's headlight opens                                               |
+| 2   | Spark Plucks         | spark               | ENGINE, electric                         | Climb each plug wire between sparks (firing order 1-3-4-2) and pluck its plug: C, E, G, E                                                                                                                               |
+| 3   | The Timing Beat      | beat1, beat2, beat3 | ENGINE, brass                            | Four pipes drop notes onto four keys; boop each as it lands. Straight, syncopated (a Y-pipe, a slow bent pipe), double time (a crossover)                                                                               |
+| 4   | Oil's Well           | oil, swim           | ENGINE, amber                            | Z X C V B squirt the oil can along the staff's five lines; oiled Squeaks float home as notes; two later waves, counted down by a row of lamps. Then the swim (nobody steers)                                            |
+| 5   | The Fan Band         | fan1, fan2          | ENGINE, cool/hot                         | The motor's warm air to the defroster: ride the pulsing columns up and reach each kazoo fan (Space); the hot verse's columns are out of step; a thermometer on the wall climbs as the motor warms                       |
+| 6   | Brake Dance          | brake               | GARAGE, disco (Teddy)                    | Each stiff brake lamp wants a trick (Z turn, X roll over, C play dead, V dance); the freed lamp floats to Teddy                                                                                                         |
+| 7   | Hubcaps and Balls    | cups1-3             | CURB, spot                               | Cups and balls with three hubcaps and the antenna's ball: watch the shuffle, reach under the right cap; three rounds, the last quicker                                                                                  |
+| 8   | Pump Up the Volume   | pump                | CURB, noon                               | Balloon animals breathe in and out on their own; hop onto each as it puffs up, up to the squashed tire, and pump it to 32 psi; a slide whistle down its far side                                                        |
+| 9   | Muffled              | hush                | GARAGE, night (Teddy)                    | Gwinn asleep with the 8-track tapes: hop the squeaky toys (each costs energy, the Zzz meter), take the shelf over her bed, fetch the tapes. The felt egg                                                                |
+| 10  | The Rain Delay       | rain                | CAB, rain                                | Cross the windshield between wiper sweeps (every 2 beats, every 3, then 5/4); each raindrop rings a tongue drum in D. The save sign                                                                                     |
+| 11  | The Horn Section     | horn1-3             | CURB, gold                               | The Clown Club's board lights a call (3, 4, then 5 notes); on each stage reach up under the right horn pad to honk it open and climb through; a wrong one blows a raspberry                                             |
+| 12  | Key Change           | gear1-4             | ENGINE, gear1-4 (blue, green, gold, red) | Four gear rooms, each a whole step higher: hop the teeth as they come round on the beat; a speedometer climbs; the door keeps its own clock                                                                             |
+| 13  | The Instrument Panel | dash1, dash2        | CAB, dash (Teddy)                        | Hop into each preset as the dial's needle crosses its station (the last brings the choir's "aah"); three gauge chords, C F G, under the choir swell; the AM/FM radio and its 8-track go in                              |
+| 14  | The Test Drive       | road1, road2        | CURB, noon (THE CHEZ)                    | Drive THE CHEZ left down two streets: Left goes, let go to coast, Right brakes; stop before the line on red and let stop signs count to three (a red run costs points: the camera clicks and a friendly siren boo-bees) |
+| 15  | The Parade Route     | band1-3             | PARADE, parade/sunset/fireworks          | Lead the parade: toot (Space) under each side street's cue lamp so its band section joins; the ribbon parts once all four have; Down backs up                                                                           |
 
-The ending is a stub for now: the cutaway CHEZ with every real part tuned, the parade next.
+Before level 14 Doc Leo and Lady Regina un-shrink. The ending cartoon is the parade in confetti, a balloon CHEZ twisted along the car's outline, and Gwinn bringing back the toolbox she buried; then the cutaway with every part tuned.
 
 ## How it's made
 
@@ -90,9 +92,27 @@ The ending is a stub for now: the cutaway CHEZ with every real part tuned, the p
   voices, each pair a voice and its vibrato twin (`kit/songFx` `detuned`), coming in a bar apart,
   louder by program changes (`sweep`, `swell`); the ninth sings the tune.
 - **Views**: a level's view is centered on where Doc Leo starts and never scrolls up or down,
-  so every level starts him at (8, 5) in mid air and he drops to the floor.
+  so every level starts him at (8, 5) in mid air and he drops to the floor (THE CHEZ starts
+  at row 5 too, nine blocks from the right end, and drives left).
 
-## Still to build (the design's later phases)
+- **THE CHEZ as the hero** (`src/sprites/chezHero.ts`): the shared side view at half scale,
+  facing left (the passenger side, Teddy in the window). A hero is one block wide and its top
+  block here is clear, so only the car's own block touches. Left is a momentum sequence (its
+  frames add to the car's momentum, as Jet Driver's Up does); with no momentum sequence running
+  the momentum decays to 5/6 twice a tick, so letting go coasts to a stop; Right holds still (a
+  brake); Down backs up; Space toots and bounces 6 pixels, a reach into the row above.
+- **Signals** (`src/levels/drive.ts`): a light's head and the pole's foot are two rings of 12
+  blocks with the same timings (a bar of the countdown each); every light shares them, started
+  at its own member. Touches use the shown block, so the foot fines on red (points only, the
+  score-down slot plays the camera and siren) and turns into the camera's smiley card, or toots
+  on green and turns plain; one touch a corner. Stop signs are a ring of four: three dots
+  (fines), then GO (a pass).
+- **The parade's cue lamps** (`src/levels/parade.ts`) are solid underneath in the row over the
+  car; the bounce touches them. Both kinds count on the stations counter (spent to nothing by
+  level 13's door), and the ribbon spends four.
 
-Level 14 (the parade route on the kit's pseudo-3D road), the ending cartoons, the box cover and
-text, version 2.0, and a DOSBox listen and timing pass.
+## Still to build
+
+The manual's pages for levels 5-15 and the printables (keys and stickers still describe the
+dream levels only), and a DOSBox listen and timing pass (the ticket VOC, the momentum feel at
+real speed, the song under each intro).
