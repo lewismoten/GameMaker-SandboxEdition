@@ -250,6 +250,15 @@ interface Scan {
   files: Map<string, string>;
 }
 
+/** True for a regular file; false for anything else, or a file that vanished since the listing (another build moved it). */
+function isFile(path: string): boolean {
+  try {
+    return statSync(path).isFile();
+  } catch {
+    return false;
+  }
+}
+
 function scan(cdRoot: string): Scan {
   const files = new Map<string, string>();
   const catalog: CdCatalogEntry[] = [];
@@ -356,7 +365,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     const names: string[] = [];
     const disk = new Map<string, string>();
     for (const name of readdirSync(diskDir).sort()) {
-      if (SKIP.test(name) || !statSync(join(diskDir, name)).isFile()) continue;
+      if (name.startsWith('.') || SKIP.test(name) || !isFile(join(diskDir, name))) continue; // a build's half-written .NAME.pid.part comes and goes
       disk.set(name.toLowerCase(), join(diskDir, name));
       names.push(name.toLowerCase());
     }
