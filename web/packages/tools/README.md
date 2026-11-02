@@ -196,6 +196,13 @@ is shown with and play the same (it keeps what they turn into in step), and list
 share a shape in other colors without joining them: a scene has one palette. `applyFold` removes
 the folded blocks and renumbers maps and links. Import from `@lewismoten/gamemaker-sandbox-tools/look-alike`.
 
+### Versions as deltas
+
+`diffVersions`, `applyDelta` and `deltaSize` keep a game's earlier versions like a git repository: a binary file
+is a list of byte-range patches (one recolored block or map cell is a few bytes), a text file (lst, txt, json,
+md...) a line patch, so each version costs only what changed. Lossless for any bytes. Import from
+`@lewismoten/gamemaker-sandbox-tools/delta`.
+
 ### Joining block sets
 
 `mergeBackgroundSets` moves one background set's drawn blocks into another's free slots (reusing an

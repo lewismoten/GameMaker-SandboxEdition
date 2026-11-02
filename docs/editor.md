@@ -120,12 +120,15 @@ broken ones), **First steps** (in games started from the starter), **Color visio
 palette, drawn) and **Play Game** and **Download**. The status comes from what is already saved;
 opening the tab never runs a check. Each tool also opens from where it always did.
 
-**Disk space** also holds the **checkpoint**: a stamp of the whole game (every file and its editor
-notes), made with one click and always before an optimization is applied. **Compare…** lists what
-changed and draws each level's map as it was and as it is (Before, After or side by side, with a
-jump to the next view that differs). **Restore** puts everything back (Undo takes that back) and
-**Discard** deletes the stamp. It stays with the game in this browser (and in a browser backup),
-never in a download or a DOS export.
+**Disk space** also holds your **checkpoints**: stamps of the whole game (every file and its editor
+notes), made with **Make a checkpoint…** any time and always before an optimization is applied. Each
+stores only what changed since the one before, the way a git repository does: a changed block or map
+cell is a few bytes, a changed text file a few lines. **Compare…** lists what changed and draws each
+level's map as it was and as it is (Before, After or side by side, with a jump to the next view that
+differs). **Restore** puts everything back (Undo takes that back), **Tag release…** labels a stamp as a
+release, and **Delete** removes one (the later stamps keep everything they had). They stay with the game
+in this browser and in a browser backup (tick _Leave out checkpoints_ in the backup dialog for a shallow
+copy), never in a download or a DOS export.
 
 **Blocks that look the same** (also in Disk space) lists, per block set, blocks that are drawn the same
 colors in every palette the set is shown with and play the same, each with a picture and how many

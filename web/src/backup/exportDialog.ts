@@ -67,6 +67,13 @@ export async function exportDialog(): Promise<'restore' | undefined> {
         )
       : null;
     withKey.setAttribute('aria-describedby', 'backup-api-key-warn');
+    const shallow = h('input', { type: 'checkbox', id: 'backup-shallow' });
+    const shallowBox = h(
+      'div',
+      { class: 'backup-key' },
+      h('label', { class: 'backup-check', for: 'backup-shallow' }, shallow, h('span', null, 'Leave out checkpoints (a shallow copy)')),
+      h('span', { class: 'hint' }, 'Checkpoints are the stamps the Optimize tool keeps of a game. They come along unless you tick this.'),
+    );
     function count() {
       const n = [...boxes.values()].filter((b) => b.checked).length;
       const of = [...boxes.values()].filter((b) => !b.disabled).length;
@@ -78,10 +85,12 @@ export async function exportDialog(): Promise<'restore' | undefined> {
       for (const b of boxes.values()) b.checked = on && !b.disabled;
       count();
     };
-    withKey.addEventListener('change', async () => {
-      snaps = await snapshot(world, { withApiKey: withKey.checked });
+    const resnap = async () => {
+      snaps = await snapshot(world, { withApiKey: withKey.checked, shallow: shallow.checked });
       count();
-    });
+    };
+    withKey.addEventListener('change', resnap);
+    shallow.addEventListener('change', resnap);
     const go = h('button', { type: 'submit', class: 'primary' }, 'Download backup');
     count();
     return h(
@@ -125,6 +134,7 @@ export async function exportDialog(): Promise<'restore' | undefined> {
         'div',
         { class: 'backup-foot' },
         keyBox,
+        shallowBox,
         status,
         h(
           'div',

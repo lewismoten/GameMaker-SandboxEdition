@@ -84,6 +84,11 @@
       "gamemaker-source": "./src/lookAlike.ts",
       "import": "./dist/look-alike.js"
     },
+    "./delta": {
+      "types": "./dist/types/delta.d.ts",
+      "gamemaker-source": "./src/delta.ts",
+      "import": "./dist/delta.js"
+    },
     "./disk-diff": {
       "types": "./dist/types/diskDiff.d.ts",
       "gamemaker-source": "./src/diskDiff.ts",

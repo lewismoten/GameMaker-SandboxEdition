@@ -5,7 +5,6 @@ import { diffDisks } from '@lewismoten/gamemaker-sandbox-tools/disk-diff';
 import { ADVTYPE, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { scenePixels, type LevelPicture } from '../../gfx/levelPicture';
 import { GameFiles } from '../../project/files';
-import type { StoredCheckpoint } from '../../project/storage';
 import { clear, h, modal } from '../core/ui';
 import { pictureCanvas } from './pictureCanvas';
 import { sceneName } from '../core/uses';
@@ -26,13 +25,13 @@ function canvasOf(p: LevelPicture | undefined, label: string): HTMLElement {
 const differs = (a?: LevelPicture, b?: LevelPicture) =>
   !a || !b || a.pixels.length !== b.pixels.length || a.pixels.some((v, i) => v !== b.pixels[i]) || a.palette.some((v, i) => v !== b.palette[i]);
 
-export async function compareDialog(project: Project, cp: StoredCheckpoint): Promise<void> {
-  const before = new GameFiles(Object.entries(cp.files));
+export async function compareDialog(project: Project, version: Map<string, Uint8Array>): Promise<void> {
+  const before = new GameFiles([...version.entries()]);
   const after = project.files;
-  const diff = diffDisks(new Map(Object.entries(cp.files)), new Map(after.entries()));
+  const diff = diffDisks(version, new Map(after.entries()));
   let beforeGame: Game | undefined;
   try {
-    beforeGame = parseGame(cp.files[project.gam]);
+    beforeGame = parseGame(version.get(project.gam)!);
   } catch {
     beforeGame = undefined;
   }

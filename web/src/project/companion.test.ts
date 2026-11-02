@@ -58,9 +58,9 @@ describe('the companion file', () => {
     const d = emptyCompanion();
     expect(withCompanion(rec(), rec(c), d).companion).toBe(d);
     expect(withCompanion(rec(), undefined).companion).toBeUndefined();
-    const cp = { name: 'before', made: 1, files: { 'a.gam': new Uint8Array([1]) } };
-    expect(withCompanion(rec(), { ...rec(), checkpoint: cp }).checkpoint).toBe(cp);
-    expect(withCompanion(rec(), rec()).checkpoint).toBeUndefined();
+    const cp = [{ id: 'a', name: 'before', made: 1, delta: {} }];
+    expect(withCompanion(rec(), { ...rec(), checkpoints: cp }).checkpoints).toBe(cp);
+    expect(withCompanion(rec(), rec()).checkpoints).toBeUndefined();
   });
 
   it('goes into the Game files backup and comes back out on import', async () => {

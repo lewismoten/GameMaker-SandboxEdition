@@ -42,10 +42,10 @@ merge them, and says how many 3.5" disks the game needs.
 - `diskCard.ts` (the floppy and status line the Tools card draws, kept small so that tab stays
   light) and `diskTool.ts` (the dialog: sizes, the merges with a preview of each, Apply, and Undo
   through the project's file history, which stays while the project is open).
-- `checkpointPanel.ts` and `compareDialog.ts`: the dialog's checkpoint (make, compare, restore, discard;
-  `project/checkpoint.ts` keeps it in the game's stored record, so no export carries it) and the
+- `checkpointPanel.ts` and `compareDialog.ts`: the dialog's checkpoint list (make, compare, restore, tag as a release, delete;
+  `project/checkpoint.ts` keeps them in the game's stored record as deltas, `tools/delta`, so no export carries them) and the
   Before/After look around (the file changes from `tools/disk-diff`, then each level's map drawn
-  both ways). Applying a merge makes a checkpoint first when there is none.
+  both ways). Applying a merge makes a checkpoint first unless the game is exactly as the latest one.
 - `refs.ts`, `palettes.ts`, `blockSlots.ts`, `commit.ts`: which scene opens what, palette
   questions, block-slot placement, and writing a step's result (refusing when a file changed since
   the preview). A block is drawn with its own scene's palette wherever it is stored, so a merge

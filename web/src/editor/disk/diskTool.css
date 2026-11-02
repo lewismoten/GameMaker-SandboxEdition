@@ -131,3 +131,18 @@
   image-rendering: pixelated;
   display: block;
 }
+
+.disk-checkpoint-list {
+  margin: 4px 0;
+  padding-left: 0;
+  list-style: none;
+}
+.disk-checkpoint-row {
+  margin: 0 0 10px;
+}
+.disk-checkpoint-row p {
+  margin: 0 0 4px;
+}
+.disk-tag {
+  font-weight: bold;
+}

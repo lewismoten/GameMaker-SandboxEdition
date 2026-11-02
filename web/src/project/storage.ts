@@ -5,6 +5,7 @@
 // Database "gamemaker-web", version 1, two object stores:
 //   projects: ProjectRecord rows keyed by their `id`.
 //   saves: one object per game id mapping file name -> bytes (out-of-line keys).
+import type { Delta } from '@lewismoten/gamemaker-sandbox-tools/delta';
 import { GameFiles } from './files';
 import type { Companion } from './companion';
 
@@ -24,14 +25,28 @@ export interface ProjectRecord {
   files: Record<string, Uint8Array>;
   /** Editor-only extras (companion.ts): never one of the game's files, so no export but the backup carries it. */
   companion?: Companion;
-  /** A named stamp of the whole game kept by the Optimize tool (checkpoint.ts); never one of the game's files, so no export carries it. */
-  checkpoint?: StoredCheckpoint;
+  /** The Optimize tool's checkpoints, oldest first (checkpoint.ts); never one of the game's files, so no export carries them. */
+  checkpoints?: StoredCheckpoint[];
+  /** The one checkpoint an earlier version kept, whole; read once into `checkpoints`. */
+  checkpoint?: LegacyCheckpoint;
 }
 
-/** What a checkpoint keeps: every file and the companion as they were. */
+/** A checkpoint: a stamp of the whole game, stored as what changed since the one before it (delta.ts), like a commit. */
 export interface StoredCheckpoint {
+  id: string;
   name: string;
   /** Date.now() when it was made. */
+  made: number;
+  /** A release label the person gave it, if any. */
+  tag?: string;
+  /** Changes since the previous checkpoint (all files, for the first). */
+  delta: Delta;
+  companion?: Companion;
+}
+
+/** The single checkpoint of earlier versions: every file whole. */
+export interface LegacyCheckpoint {
+  name: string;
   made: number;
   files: Record<string, Uint8Array>;
   companion?: Companion;
@@ -96,20 +111,22 @@ export async function saveProject(id: string, name: string, gam: string, files: 
   });
 }
 
-/** The record to store: the given companion, else the stored one, else none; the stored checkpoint always stays. */
+/** The record to store: the given companion, else the stored one, else none; the stored checkpoints always stay. */
 export function withCompanion(next: ProjectRecord, stored: ProjectRecord | undefined, companion?: Companion): ProjectRecord {
   const c = companion ?? stored?.companion;
-  const out = c ? { ...next, companion: c } : next;
-  return stored?.checkpoint ? { ...out, checkpoint: stored.checkpoint } : out;
+  let out = c ? { ...next, companion: c } : next;
+  if (stored?.checkpoints) out = { ...out, checkpoints: stored.checkpoints };
+  if (stored?.checkpoint) out = { ...out, checkpoint: stored.checkpoint };
+  return out;
 }
 
-/** The project's checkpoint, if it has one. */
-export async function loadCheckpoint(id: string): Promise<StoredCheckpoint | undefined> {
-  return (await request<ProjectRecord | undefined>(PROJECTS, 'readonly', (s) => s.get(id)))?.checkpoint;
+/** The project's stored record. */
+export async function loadRecord(id: string): Promise<ProjectRecord | undefined> {
+  return request<ProjectRecord | undefined>(PROJECTS, 'readonly', (s) => s.get(id));
 }
 
-/** Stores (or, with undefined, discards) the project's checkpoint, leaving the rest of its record as it is. */
-export async function saveCheckpoint(id: string, checkpoint: StoredCheckpoint | undefined): Promise<void> {
+/** Stores the project's checkpoints (none: removes them, and the old single one), leaving the rest of its record as it is. */
+export async function saveCheckpoints(id: string, checkpoints: StoredCheckpoint[]): Promise<void> {
   const d = await db();
   await new Promise<void>((resolve, reject) => {
     const tx = d.transaction(PROJECTS, 'readwrite');
@@ -118,8 +135,8 @@ export async function saveCheckpoint(id: string, checkpoint: StoredCheckpoint | 
     get.onsuccess = () => {
       const rec = get.result as ProjectRecord | undefined;
       if (!rec) return reject(new Error('The game is not saved yet'));
-      const { checkpoint: _old, ...rest } = rec;
-      store.put(checkpoint ? { ...rest, checkpoint } : rest);
+      const { checkpoint: _old, checkpoints: _list, ...rest } = rec;
+      store.put(checkpoints.length ? { ...rest, checkpoints } : rest);
     };
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
