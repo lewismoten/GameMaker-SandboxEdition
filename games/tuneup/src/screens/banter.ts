@@ -122,6 +122,15 @@ export const INTRO: Record<number, Card> = {
       ['regina', 'Hop into each preset as the needle crosses its station. Then the gauges.'],
     ],
   },
+  14: {
+    title: 'LEVEL 14: THE TEST DRIVE',
+    lady: true,
+    lines: [
+      ['leo', 'The dial says kHz: Keeps Humming while Zooming. We have to drive it.'],
+      ['regina', 'It means kilohertz.'],
+      ['leo', 'Then why put it on a car? Left to go, Right to brake. Stop on red.'],
+    ],
+  },
 };
 
 /** After each level (or a part of one), by scene file. */
@@ -293,10 +302,31 @@ export const OUTRO: Record<string, Card> = {
     lines: [
       ['leo', 'An AM/FM radio with an 8-track. Four programs on every tape.'],
       ['regina', 'And a head cleaning cartridge, for afterwards.'],
-      ['leo', 'Good boy, Teddy. Now: the parade.'],
+      ['leo', 'Good boy, Teddy. Now: a test drive.'],
     ],
   },
 };
+
+/** After the test drive's parts (appended to OUTRO below). */
+const DRIVE_OUTRO: Record<string, Card> = {
+  road1: {
+    lady: true,
+    lines: [
+      ['leo', 'Hear that? It hums while we zoom.'],
+      ['regina', 'And it hushes at every red light. Very law-abiding.'],
+      ['leo', 'Main Street next.'],
+    ],
+  },
+  road2: {
+    lady: true,
+    lines: [
+      ['regina', 'The radio says the Clown Club parade is lining up without its lead car.'],
+      ['leo', 'Then the radio works. Is it fixed?'],
+      ['regina', 'Fixed, tested, and running late.'],
+    ],
+  },
+};
+Object.assign(OUTRO, DRIVE_OUTRO);
 
 /** Waking up, before level 5's cartoon: the dream dismissed, and what's really wrong. */
 export const WAKE: Card[] = [

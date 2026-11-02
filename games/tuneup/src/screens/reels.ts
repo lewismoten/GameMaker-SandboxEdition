@@ -112,8 +112,8 @@ export function stingReel(level: number, tool: Tool, name: string): Reel {
   // the cutaway: what's tuned so far, the newest part blinking (the dream's parts for levels 1-4,
   // the real car's from level 5)
   const real = level >= REAL_FROM;
-  const done = level - (real ? REAL_FROM : 1);
   const parts = real ? REAL_PARTS : DREAM_PARTS;
+  const done = Math.min(parts.length, level - (real ? REAL_FROM : 1));
   for (let f = 0; f < 16; f++) r.add(stamp(cutaway(parts, done, done - 1, f % 4 < 2), done ? 'TUNED SO FAR' : 'THE PARTS TO TUNE'));
   return r.fadeOut(6);
 }

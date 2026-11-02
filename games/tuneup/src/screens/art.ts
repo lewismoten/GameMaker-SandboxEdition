@@ -96,7 +96,8 @@ export function drawChez(p: Pixels, x: number, y: number, s: number, teddy = tru
 }
 
 /** The tools Doc Leo's hat gives, a 32x32 picture each on clear. */
-export type Tool = 'cables' | 'plug' | 'roll' | 'oilcan' | 'kazoo' | 'bone' | 'hubcap' | 'pump' | 'tape' | 'wiper' | 'horn' | 'gear' | 'radio';
+export type Tool =
+  'cables' | 'plug' | 'roll' | 'oilcan' | 'kazoo' | 'bone' | 'hubcap' | 'pump' | 'tape' | 'wiper' | 'horn' | 'gear' | 'radio' | 'key' | 'baton';
 export function toolPic(t: Tool): Pixels {
   const p = new Pixels(32, 32, 255);
   if (t === 'cables') {
@@ -179,6 +180,18 @@ export function toolPic(t: Tool): Pixels {
     for (let x = 9; x < 24; x += 3) p.set(x, 15, INK);
     p.disc(5, 14, 2.5, c('metal', 3)).disc(27, 14, 2.5, c('metal', 3));
     p.rect(8, 20, 16, 3, INK).rect(9, 21, 14, 1, c('asphalt', 0));
+  } else if (t === 'key') {
+    // the car key on a ring with a little rubber chicken fob
+    p.ring(9, 10, 6, c('metal', 3)).ring(9, 10, 5, c('metal', 1));
+    p.rect(13, 13, 6, 8, c('metal', 4)).frame(13, 13, 6, 8, c('metal', 1)).disc(16, 16, 1.2, c('metal', 1));
+    p.rect(15, 21, 3, 9, c('metal', 3));
+    for (const y of [23, 26]) p.rect(18, y, 2, 2, c('metal', 3));
+    p.disc(6, 22, 3.5, c('rubber', 2)).disc(4, 18, 1.8, c('rubber', 2)).set(3, 17, c('nose', 1)).set(2, 18, c('cheese', 1));
+  } else if (t === 'baton') {
+    // a drum major's baton: a striped shaft, a white ball at each end, a tassel
+    for (let i = 0; i < 22; i++) p.rect(5 + i, 25 - i, 2, 2, i % 6 < 3 ? c('red', 2) : c('paint', 3));
+    p.disc(5, 26, 3.5, c('paint', 3)).disc(27, 4, 2.5, c('paint', 3));
+    p.line(27, 6, 29, 12, c('gold', 2)).line(26, 6, 26, 12, c('gold', 1));
   } else if (t === 'tape') {
     // an 8-track tape: a chunky cartridge, its label, the tape showing at the end
     p.rect(2, 6, 28, 20, c('ink', 1)).rect(4, 8, 24, 10, c('yellow', 3)).rect(4, 20, 24, 4, c('asphalt', 1));
