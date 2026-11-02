@@ -40,7 +40,7 @@ export const INTRO: Record<number, Card> = {
     dream: true,
     title: "LEVEL 4: OIL'S WELL",
     lines: [
-      ['reggie', 'Five squeaky lines, one oil can. Z, X, C, V and B.'],
+      ['reggie', 'Five squeaky lines, one oil can. Press the note on the line: E, G, B, D or F.'],
       ['leo', "Oil's well that ends well."],
       ['reggie', 'I shall pretend you did not say that. Mind the gauge up top: more Squeaks when it runs out.'],
     ],

@@ -13,7 +13,7 @@ export const SEQ = {
   hopRight: 9,
   down: 10,
   boop: 11,
-  /** Oil's Well: Z X C V B squirt the oil can into the staff's five lines, bottom to top. */
+  /** Oil's Well: E G B D F (the lines' notes) squirt the oil can into the staff's five lines, bottom to top. */
   oil0: 12,
   /** Teddy's tricks (Brake Dance): Z turn, X roll over, C play dead, V dance. */
   trick0: 12,
@@ -33,12 +33,15 @@ export const KEY = {
   c: 0x2e63,
   v: 0x2f76,
   b: 0x3062,
+  d: 0x2064,
+  f: 0x2166,
+  g: 0x2267,
 } as const;
 
 /** PC scan codes the bot presses. */
-export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, z: 44, x: 45, c: 46, v: 47, b: 48 } as const;
-/** The oil can's keys, bottom line to top. */
-export const OIL_KEYS = ['z', 'x', 'c', 'v', 'b'] as const;
+export const SCAN = { up: 72, down: 80, left: 75, right: 77, space: 57, q: 16, e: 18, z: 44, x: 45, c: 46, v: 47, b: 48, d: 32, f: 33, g: 34 } as const;
+/** The oil can's keys, bottom line to top: each line's note on a treble clef staff. */
+export const OIL_KEYS = ['e', 'g', 'b', 'd', 'f'] as const;
 
 /**
  * Counters. Each starts one higher than F2 shows, and a touch that would leave one at 0 or

@@ -6,7 +6,7 @@
     "Space": "Reach up: turn a crank, play a key",
     "Q": "Hop up and to the left",
     "E": "Hop up and to the right",
-    "Z X C V B": "Oil's Well: squirt the oil can up a line of the staff",
+    "E G B D F": "Oil's Well: squirt the oil can into the line with that note",
     "F2": "Clamps, plucks, notes, energy and tips"
   },
   "stickers": [
@@ -258,7 +258,7 @@
           "hints": [
             {
               "q": "Which key is which line?",
-              "a": "Z is the bottom line, then X, C, V, and B at the top. Squirt a line when a Squeak is on it."
+              "a": "Each key is its line's note in the treble clef: E is the bottom line, then G, B, D, and F at the top (Every Good Boy Does Fine). The letters sit at the right end of the lines. Squirt a line when a Squeak is on it."
             }
           ]
         }

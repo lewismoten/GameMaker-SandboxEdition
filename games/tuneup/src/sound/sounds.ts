@@ -72,7 +72,7 @@ export const KEY_NOTES: string[][] = [
 ];
 const KEY_SLOTS = [SND.help, SND.money, SND.gain];
 /** Oil's Well: the oil can's five lines, bottom to top, a note each. */
-export const OIL_NOTES = ['C5', 'D5', 'E5', 'G5', 'A5'];
+export const OIL_NOTES = ['E4', 'G4', 'B4', 'D5', 'F5'];
 
 /** The parade's band sections, two a scene: [VOC name, [instrument, notes]], by scene. */
 const SECTION_PHRASES: Record<string, [string, string[]]> = {

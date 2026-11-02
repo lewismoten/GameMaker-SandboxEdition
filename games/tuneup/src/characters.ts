@@ -5,7 +5,7 @@
 // press two). Where nothing pulls (a plug wire), Up climbs and Down climbs back down. Space
 // reaches up: his hands go up into the block over his hat for a tick and come back, again and
 // again while it is held (a crank's handle). PIANO.CHR: the same, but one reach a press (a key).
-// OIL.CHR: Doc Leo with the oil can. Z X C V B each squirt a drop into one line of the staff
+// OIL.CHR: Doc Leo with the oil can. E G B D F (the lines' notes) each squirt a drop into one line of the staff
 // over his head (the frame that fires a monster picks its row, and doesn't move him).
 import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';

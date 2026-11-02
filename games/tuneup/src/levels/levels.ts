@@ -88,7 +88,7 @@ export const LEVELS: LevelDef[] = [
     chr: 'oil',
     snd: 'oil',
     song: oilSong,
-    mons: { squeak: 6, reach: 13 },
+    mons: { squeak: 4, reach: 13 },
     wide: false,
   },
   // the dream ends: Sir Reginald swims the oil pipe (nobody steers), then Doc Leo wakes him
