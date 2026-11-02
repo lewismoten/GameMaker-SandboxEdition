@@ -15,6 +15,7 @@ import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildPalette } from './src/art/palette';
+import { bblOf, shareSets } from './src/blocks/shared';
 import { buildLeo, buildMonsters, buildOilLeo, buildPianoLeo } from './src/characters';
 import { TEDDY_BLOCKS, buildNobody, buildTeddy, nobodyBlocks } from './src/heroes';
 import { CHEZ_BLOCKS, buildChez } from './src/sprites/chezHero';
@@ -86,6 +87,9 @@ const built = LEVELS.map((l) => {
   const level = l.build(kit.book);
   return { l, pal, kit, bbl: kit.book.finish(), ...level };
 });
+// scenes drawn in the same roles share one block set (src/blocks/shared.ts)
+const shared = shareSets(built.map(({ l, bbl, m }) => ({ file: l.file, blocks: bbl, map: m.build() })));
+for (const [name, blocks] of shared.sets) disk.put(name, serializeBlocks(blocks));
 // a song is written once: scenes that truly share one share its file
 const songFiles = new Map<string, string>();
 const putSong = (name: string, bytes: Uint8Array) => {
@@ -96,10 +100,9 @@ const putSong = (name: string, bytes: Uint8Array) => {
   disk.put(name, bytes);
   return name;
 };
-built.forEach(({ l, m, pal, bbl }, i) => {
+built.forEach(({ l, m, pal }, i) => {
   disk.put(`${l.file}.pal`, serializePalette(pal.pal));
-  disk.put(`${l.file}.map`, serializeMap(m.build()));
-  disk.put(`${l.file}.bbl`, serializeBlocks(bbl));
+  disk.put(`${l.file}.map`, serializeMap(shared.maps.get(l.file)!));
   disk.put(`${l.file}.mon`, serializeMonsters(buildMonsters(mb, l.mons)));
   const song = putSong(`${l.file}.cmf`, l.song());
   const scene = emptyScene(ADVTYPE);
@@ -130,7 +133,7 @@ built.forEach(({ l, m, pal, bbl }, i) => {
   scene.files = [
     `${l.file}.pal`,
     `${l.file}.map`,
-    `${l.file}.bbl`,
+    bblOf(l.file),
     `${l.file}.mon`,
     'cast.mbl',
     `${l.chr}.chr`,
@@ -195,4 +198,5 @@ disk.put('readme.txt', readme());
 disk.put('license.txt', licenseText('Tune-Up'));
 clipEveryList(disk.files);
 disk.write();
-console.log(built.map(({ l, kit }) => `${l.file}: ${kit.book.index.size} blocks`).join(', ') + `; ${mb.index.size} monster blocks`);
+const usedIn = (blocks: Iterable<{ pixels: Uint8Array }>) => [...blocks].filter((b) => b.pixels.some(Boolean)).length;
+console.log([...shared.sets].map(([name, blocks]) => `${name}: ${usedIn(blocks)} drawn blocks`).join(', ') + `; ${mb.index.size} monster blocks`);

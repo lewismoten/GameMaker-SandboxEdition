@@ -7,6 +7,7 @@ import { BLADE_FOOT, DROPS, RAIN, SECTIONS, bladeName, parkedFrames, rainBlocks 
 import { HORN_BEAT, HORN_REST, HORN_ROUNDS, HORN_ROW, hornSize, padX, stageX } from '../src/levels/horn';
 import { GEARS, freshTooth, keyBlocks, toothName } from '../src/levels/key';
 import { CTR } from '../src/ids';
+import { diskNumber } from '../src/blocks/shared';
 import { GAUGES, PANEL, RADIO_X, STATIONS, dialRing, panelBlocks } from '../src/levels/panel';
 import type { Bot } from './bot';
 import { leave, must } from './route';
@@ -75,13 +76,15 @@ export function hornSection(round: number) {
 
 const gearBook = keyBlocks(0)(buildPalette('gear1')).book;
 /** Each tooth's blocks just come up (lower, then upper), and the door's open block. */
-const fresh = [false, true].map((upper) => new Set(freshTooth(upper).map((f) => gearBook.n(toothName(upper, f)))));
-const doorOpen = gearBook.n('door.open');
+const gearN = (room: number, name: string) => diskNumber(`gear${room + 1}`, gearBook.n(name));
+const fresh = (room: number) => [false, true].map((upper) => new Set(freshTooth(upper).map((f) => gearN(room, toothName(upper, f)))));
+const doorOpen = (room: number) => gearN(room, 'door.open');
 
 /** Waits for the tooth at (x, row) to come up, then hops up onto it. */
-async function onTooth(bot: Bot, x: number, upper: boolean): Promise<void> {
+async function onTooth(bot: Bot, room: number, x: number, upper: boolean): Promise<void> {
   const row = upper ? GEARS.high : GEARS.low;
-  const up = () => fresh[upper ? 1 : 0].has(bot.shownNum(x, row));
+  const teeth = fresh(room)[upper ? 1 : 0];
+  const up = () => teeth.has(bot.shownNum(x, row));
   // (from the floor a person waits for the lower tooth to come round, not one already on its way
   // down; the upper comes up while he stands on the lower)
   if (!upper)
@@ -104,20 +107,20 @@ export function keyChange(room: number) {
     const score = bot.sim.ci.score;
     for (const x of GEARS.towers) {
       await must(bot, bot.walk(x, `under the tower at ${x}`), 'to the tower');
-      await onTooth(bot, x, false);
-      await onTooth(bot, x, true);
+      await onTooth(bot, room, x, false);
+      await onTooth(bot, room, x, true);
       await must(bot, bot.walk(x + 4, 'along the ledge and over the wall'), 'over');
     }
     await must(bot, bot.walk(GEARS.door - 1, 'to the door'), 'door');
     if (bot.sim.ci.score < score + 150) throw new Error(`gear ${room + 1}: missed a note`);
     await must(
       bot,
-      bot.until(undefined, () => bot.shownNum(GEARS.door, GEARS.floor - 1) !== doorOpen, 'saw the door shut', 80),
+      bot.until(undefined, () => bot.shownNum(GEARS.door, GEARS.floor - 1) !== doorOpen(room), 'saw the door shut', 80),
       'door',
     );
     await must(
       bot,
-      bot.until(undefined, () => bot.shownNum(GEARS.door, GEARS.floor - 1) === doorOpen, 'saw the door open', 80),
+      bot.until(undefined, () => bot.shownNum(GEARS.door, GEARS.floor - 1) === doorOpen(room), 'saw the door open', 80),
       'door',
     );
     await must(bot, bot.react(), 'reacting');
@@ -130,7 +133,7 @@ export function keyChange(room: number) {
 const dashBook = panelBlocks('tune')(buildPalette('dash')).book;
 const gaugeBook = panelBlocks('gauges')(buildPalette('dash')).book;
 /** Dial cell `j` with the needle on it going right (the first time round, for cell 0). */
-const needleRight = (j: number) => dashBook.n(`dial${j}.${dialRing(j)[0][0] ? 0 : 1}`);
+const needleRight = (j: number) => diskNumber('dash1', dashBook.n(`dial${j}.${dialRing(j)[0][0] ? 0 : 1}`));
 
 /** 13. The Instrument Panel, the radio: under each preset, the needle watched coming, then a hop into the lit button. */
 export async function tuneRadio(bot: Bot): Promise<void> {
@@ -153,7 +156,7 @@ export async function tuneRadio(bot: Bot): Promise<void> {
     );
     await must(bot, bot.react(), 'reacting');
     await must(bot, bot.hop('up', 8), `hopping into preset ${s + 1}`);
-    if (bot.shownNum(x, PANEL.buttons) !== dashBook.n(`preset${s}.set`)) throw new Error(`station ${s + 1} didn't come in`);
+    if (bot.shownNum(x, PANEL.buttons) !== diskNumber('dash1', dashBook.n(`preset${s}.set`))) throw new Error(`station ${s + 1} didn't come in`);
   }
   // the choir's "aah" plays out before the door's clunk
   await must(bot, bot.sim.waitForClip(), 'the choir');
@@ -168,7 +171,7 @@ export async function gaugeChords(bot: Bot): Promise<void> {
     await must(bot, bot.walk(x, `under gauge ${g + 1}`), 'to the gauge');
     await must(bot, bot.react(), 'looking up');
     await must(bot, bot.hop('up', 8), `hopping into gauge ${g + 1}`);
-    if (bot.shownNum(x, PANEL.buttons) !== gaugeBook.n(`gauge${g}.up`)) throw new Error(`gauge ${g + 1} didn't play`);
+    if (bot.shownNum(x, PANEL.buttons) !== diskNumber('dash2', gaugeBook.n(`gauge${g}.up`))) throw new Error(`gauge ${g + 1} didn't play`);
     // each chord rings out before the next
     await must(bot, bot.sim.waitForClip(), 'the chord');
   }

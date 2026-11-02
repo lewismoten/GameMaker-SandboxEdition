@@ -15,6 +15,7 @@ import type { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { buildPalette, THEMES, type ThemeName } from '../src/art/palette';
 import { kit } from '../src/blocks/common';
+import { bblOf } from '../src/blocks/shared';
 import { baseSet, SET_NAMES } from '../src/blocks/sets';
 import { LEVELS } from '../src/levels/levels';
 import { ORIGIN } from '../src/levels/maps';
@@ -31,7 +32,7 @@ const disk = (n: string) => new Uint8Array(readFileSync(new URL(`../disk/${n}`, 
 const mbl = parseBlocks(disk('cast.mbl'), 100);
 for (const l of LEVELS.filter((l) => !only.length || only.includes(l.file))) {
   const map = parseMap(disk(`${l.file}.map`));
-  const bbl = parseBlocks(disk(`${l.file}.bbl`), 150);
+  const bbl = parseBlocks(disk(bblOf(l.file)), 150);
   const level = l.build(l.blocks(buildPalette(l.theme)).book);
   const [w, h] = level.size;
   const pic = renderRegion(map, bbl, mbl, parseMonsters(disk(`${l.file}.mon`)), ORIGIN, ORIGIN, w, h);

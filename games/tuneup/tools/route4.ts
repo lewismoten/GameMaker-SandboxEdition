@@ -8,14 +8,15 @@ import { EXIT_X, ROUTES, driveBlocks, footName, phaseOf, stopFootName, type Sign
 import { LIGHT } from '../src/levels/drive';
 import { CUE_ROW, PARADES, EXIT_X as PARADE_EXIT, JOIN } from '../src/levels/parade';
 import { CTR } from '../src/ids';
+import { diskNumber } from '../src/blocks/shared';
 import type { Bot } from './bot';
 import { leave, must } from './route';
 
 const book = driveBlocks(buildPalette('noon')).book;
 /** A shown foot block's light phase, by block number ('go' for a stop sign's GO, 'count' while it counts). */
 const PHASE = new Map<number, { phase: string; bars: number }>();
-LIGHT.forEach((_, m) => PHASE.set(book.n(footName(m)), { phase: phaseOf(m)[0], bars: phaseOf(m)[1] }));
-[1, 2, 3, 0].forEach((dots, m) => PHASE.set(book.n(stopFootName(m)), { phase: dots ? 'count' : 'go', bars: dots }));
+LIGHT.forEach((_, m) => PHASE.set(diskNumber('road1', book.n(footName(m))), { phase: phaseOf(m)[0], bars: phaseOf(m)[1] }));
+[1, 2, 3, 0].forEach((dots, m) => PHASE.set(diskNumber('road1', book.n(stopFootName(m))), { phase: dots ? 'count' : 'go', bars: dots }));
 
 /** How far the car coasts from momentum `gx` once let go (PLAYGAME: 5/6 twice a tick, at most 11 pixels a move). */
 function coast(gx: number): number {

@@ -174,6 +174,12 @@ project data under the MIT License; recordings and complete songs are not includ
 palette boundaries and builds their slide-list entries. `kit/recordedDemo` turns delta/key
 pairs into a native title demo with configurable Escape press and release delays.
 
+### Shared block sets
+
+`kit/shareBlocks` merges several scenes' background blocks into one `.BBL`: only the blocks a
+map uses (and what they change into) are kept, matching blocks and rings become one, a pinned
+number (such as a felt egg's) stays put, and each scene's map is renumbered.
+
 ### Disk comparison
 
 `diffDisks(a, b)` takes two `Map<name, bytes>` disks and returns the added, removed and changed files, with a plain-text
