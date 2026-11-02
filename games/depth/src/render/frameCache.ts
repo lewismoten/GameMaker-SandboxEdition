@@ -22,7 +22,10 @@ export function cachedFrame<T extends object = Picture>(key: string, render: () 
   }
   const file = join(dir, `${key}.bin.gz`);
   if (existsSync(file)) return deserialize(gunzipSync(readFileSync(file))) as T;
+  const began = Date.now();
   const picture = render();
+  // `DEPTH_FRAME_TIMES=1` prints each frame's render time (what shardPlan.ts is balanced from)
+  if (process.env.DEPTH_FRAME_TIMES) console.log(`frame ${key} ${Date.now() - began}`);
   writeFileSync(file, gzipSync(serialize(picture)));
   return picture;
 }
