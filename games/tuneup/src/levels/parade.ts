@@ -15,6 +15,7 @@ import type { Pal } from '../art/palette';
 import { CTR } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
 import { DRIVE } from './drive';
+import { SHOP_SIGNS, shopSign } from '../art/shopSigns';
 
 /** Solid underneath only: the bounce reaches up into it. */
 const UNDER = 4;
@@ -82,10 +83,12 @@ export function paradeBlocks(scene: ParadeScene) {
     };
     book.add('flags', bunting(skyRow(CUE_ROW - 1)), AIR);
     book.add('flagswall', bunting(wall(true)), AIR);
-    // a cue lamp hanging from the bunting: a round bulb on a cord, dark until the section joins
+    // a street light at the corner: a pole, its arm, the cue lamp hung from it, dark until the section joins
+    const pole = (p: Pixels, y0: number) => p.rect(16, y0, 2, 20 - y0, c('metal', 2)).rect(16, y0, 1, 20 - y0, c('metal', 4));
     const lamp = (lit: boolean) => {
       const p = skyRow(CUE_ROW);
-      p.rect(0, 16, 20, 4, c('stone', 2)).rect(10, 0, 1, 7, c('ink', 1)).rect(8, 6, 5, 2, c('metal', 2));
+      p.rect(0, 16, 20, 4, c('stone', 2));
+      pole(p, 2).rect(9, 2, 9, 2, c('metal', 2)).disc(17, 2, 1.5, c('metal', 3)).rect(10, 4, 1, 3, c('ink', 1)).rect(8, 6, 5, 2, c('metal', 2));
       p.disc(10.5, 12, 4.5, lit ? c('yellow', 3) : c('ink', 1)).disc(10.5, 12, 3, lit ? c('glow', 3) : c('metal', 1));
       if (lit)
         for (const [dx, dy] of [
@@ -100,9 +103,9 @@ export function paradeBlocks(scene: ParadeScene) {
     CUE_KINDS.forEach((kind, i) => book.add(cueName(i), lamp(false), { solid: UNDER, ...kind, effect: CTR.stations, eamt: 1, score: JOIN, touch: 'cue.lit' }));
     book.add('cue.lit', lamp(true), { solid: UNDER });
     // the crowd behind the barrier on the far sidewalk: heads and hats, a friendly clown or two waving
-    const r = rng(scene.file.length * 31 + scene.cues[0]);
-    const crowd = (clown: boolean, n: number) => {
-      const p = skyRow(DRIVE.row);
+    let r = rng(scene.file.length * 31 + scene.cues[0]);
+    const crowd = (clown: boolean, n: number, onWall: boolean) => {
+      const p = onWall ? storefront() : skyRow(DRIVE.row);
       for (let i = 0; i < 3; i++) {
         const x = 3 + i * 6 + Math.floor(r() * 2);
         const skin = c('skin', 1 + ((n + i) % 3));
@@ -125,17 +128,28 @@ export function paradeBlocks(scene: ParadeScene) {
       for (const x of [2, 17]) p.rect(x, 12, 2, 8, c('metal', 2));
       return p;
     };
-    for (let n = 0; n < 4; n++) book.add(`crowd${n}`, crowd(n === 2, n), AIR);
+    // the shops' ground floor behind the crowd: the shop windows end on a stone sill, brick below
+    const storefront = () =>
+      wall(false).rect(3, 0, 6, 2, c('siding', 2)).rect(11, 0, 6, 2, c('siding', 2)).rect(0, 2, 20, 2, c('stone', 2)).rect(0, 4, 20, 1, c('stone', 1));
+    for (let n = 0; n < 4; n++) {
+      const seed = Math.floor(r() * 1e9); // the same faces in front of the sky and the shops
+      r = rng(seed);
+      book.add(`crowd${n}`, crowd(n === 2, n, false), AIR);
+      r = rng(seed);
+      book.add(`crowdwall${n}`, crowd(n === 2, n, true), AIR);
+    }
     // the far buildings behind the crowd, and the windows' faces
     const front = wall(false);
     front.rect(3, 4, 6, 16, c('siding', 2)).rect(11, 4, 6, 16, c('siding', 2)).rect(0, 2, 20, 2, c('accent', 2));
     book.add('front', front, AIR);
+    for (const sign of SHOP_SIGNS) book.add(`sign.${sign}`, shopSign(k, sign), AIR);
     // a band section in a side street: plumed hats over the instruments (by section)
     const band = (sec: number) => {
       const p = skyRow(DRIVE.row);
       p.rect(0, 14, 20, 6, c('shade', 1));
+      pole(p, 0).rect(15, 18, 4, 2, c('metal', 1));
       for (let i = 0; i < 2; i++) {
-        const x = 5 + i * 10;
+        const x = 4 + i * 9;
         p.rect(x - 3, 8, 7, 10, c('red', 2)).rect(x - 3, 8, 7, 2, c('paint', 3));
         p.disc(x, 5, 2.5, c('skin', 2))
           .rect(x - 2, 0, 5, 3, c('ink', 1))
@@ -190,15 +204,25 @@ export const parade = (scene: ParadeScene) =>
     m.fill(0, street, w, 1, 'road');
     // the buildings, with a side street (open sky) at every cue
     const street3 = new Set(scene.cues.flatMap((x) => [x - 1, x, x + 1]));
+    const signAt = new Map<number, string>();
+    let run: number[] = [];
+    let shops = PARADES.indexOf(scene) * 2;
+    for (let x = 0; x <= w; x++) {
+      if (x < w && !street3.has(x)) run.push(x);
+      else if (run.length) {
+        signAt.set(run[Math.floor(run.length / 2)] | 1, `sign.${SHOP_SIGNS[shops++ % SHOP_SIGNS.length]}`);
+        run = [];
+      }
+    }
     for (let x = 0; x < w; x++) {
-      m.set(x, row, `crowd${(x * 3) % 4}`);
+      m.set(x, row, `crowd${street3.has(x) ? '' : 'wall'}${(x * 3) % 4}`);
       if (street3.has(x)) {
         m.set(x, CUE_ROW - 1, 'flags');
         if (!scene.cues.includes(x)) m.set(x, top, 'corner');
         continue;
       }
       m.set(x, CUE_ROW - 3, 'cap')
-        .set(x, CUE_ROW - 2, x % 2 ? 'wallwin' : 'wall')
+        .set(x, CUE_ROW - 2, signAt.get(x) ?? (x % 2 ? 'wallwin' : 'wall'))
         .set(x, CUE_ROW - 1, 'flagswall')
         .set(x, top, 'front');
     }

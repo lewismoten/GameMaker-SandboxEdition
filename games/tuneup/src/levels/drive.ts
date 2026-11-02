@@ -18,6 +18,7 @@ import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { AIR, kit, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
 import type { Pal } from '../art/palette';
+import { SHOP_SIGNS, shopSign } from '../art/shopSigns';
 import { MapBuilder, at, type Level } from './maps';
 
 /** Ticks a bar of a light's countdown lasts (about a second). */
@@ -121,6 +122,7 @@ export function driveBlocks(pal: Pal): Kit {
   const door = brick();
   door.rect(5, 2, 10, 18, c('wood', 1)).rect(7, 4, 6, 7, c('siding', 2)).set(13, 13, c('gold', 2));
   book.add('door', door, AIR);
+  for (const sign of SHOP_SIGNS) book.add(`sign.${sign}`, shopSign(k, sign), AIR);
   // the street: asphalt, the curb's lip along the far side, and the stop line seen edge on
   const street = k.pic('street');
   street.rect(0, 0, 20, 1, c('shade', 4));
@@ -214,7 +216,9 @@ export const drive = (r: Route) =>
       const roof = 2 + ((Math.floor(x / 6) * 5) % 3);
       m.set(x, roof, `cornice${roof}`);
       for (let y = roof + 1; y < top - 1; y++) m.set(x, y, x % 3 === 1 ? 'window' : 'brick');
-      m.set(x, top - 1, x % 3 === 1 ? 'window' : 'brick');
+      // every other shop hangs out its sign over the awning (what it sells, in pictures)
+      const sign = x % 12 === 3 ? SHOP_SIGNS[(Math.floor(x / 12) + w) % SHOP_SIGNS.length] : undefined;
+      m.set(x, top - 1, sign ? `sign.${sign}` : x % 3 === 1 ? 'window' : 'brick');
       m.set(x, top, 'awning');
       m.set(x, row, x % 6 === 2 ? 'door' : 'shop');
     }
