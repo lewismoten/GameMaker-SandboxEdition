@@ -187,7 +187,8 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     const focused = document.activeElement instanceof HTMLElement ? document.activeElement.closest<HTMLElement>('[data-file]')?.dataset.file : undefined;
     pasteButton = undefined;
     if (!kind) {
-      count.textContent = `${project.files.names().length.toLocaleString()} files`;
+      const all = project.files.names();
+      count.textContent = `${all.length.toLocaleString()} files · ${sizeText(project, all)}`;
       clear(
         grid,
         ...FILE_ORDER.map((k) => {
@@ -197,13 +198,17 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
             { type: 'button', class: 'asset-card asset-category', 'data-category': k, onclick: () => host.category(k) },
             preview(representative(files, k), k),
             h('strong', null, KIND_LABELS[k]),
-            h('small', null, files.length ? `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'}` : 'None yet'),
+            h(
+              'small',
+              null,
+              files.length ? `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'} · ${sizeText(project, files)}` : 'None yet',
+            ),
           );
         }),
       );
     } else {
       const files = assetNames(project, kind);
-      count.textContent = `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'}`;
+      count.textContent = `${files.length.toLocaleString()} ${files.length === 1 ? 'file' : 'files'} · ${sizeText(project, files)}`;
       clear(grid, addCard(kind), ...files.map((file) => fileCard(file, kind)));
       updatePaste();
     }
@@ -276,4 +281,12 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
       window.removeEventListener('keydown', onKey);
     },
   };
+}
+
+/** The files' total size, as a DOS directory listing would round it: bytes, KB or MB (1 KB = 1,024 bytes). */
+function sizeText(project: Project, names: readonly string[]): string {
+  const bytes = names.reduce((n, name) => n + (project.files.get(name)?.byteLength ?? 0), 0);
+  if (bytes < 1024) return `${bytes.toLocaleString()} bytes`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024).toLocaleString()} KB`;
+  return `${(bytes / (1024 * 1024)).toLocaleString(undefined, { maximumFractionDigits: 1 })} MB`;
 }
