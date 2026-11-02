@@ -32,7 +32,7 @@ picture; `host.ts` is what programs on it can use.
   (`structure.ts` the map and its Builder; `structureGm.ts` Game-Maker's formats,
   `structureMedia.ts` the media files). `view/`: VPIC.EXE (`vpic.ts`) and the VGA/SVGA picture
   screen (`picture.ts`).
-- `hacks/fastPlay.ts`: FASTPLAY ON bypasses first-run hardware setup; OFF restores it for
+- `hacks/fastPlay.ts` (its manual and FILE_ID.DIZ in `hacks/fastPlayText.ts`, for the BBS list): FASTPLAY ON bypasses first-run hardware setup; OFF restores it for
   unconfigured games and STATUS reports the choice. CONFIG.BAT and PLAYGAME’s Configure
   menu force a game’s setup. Hardware choices live in browser preferences, outside DOS files.
   Download FASTPLAY.ZIP from the Sandbox BBS W)arez area (the access code is in its bulletins).
