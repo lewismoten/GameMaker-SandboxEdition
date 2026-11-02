@@ -45,7 +45,7 @@ export function encodeIndexedPng(pic: LevelPicture, transparent?: number): Uint8
     pngChunk('IHDR', ihdr),
     pngChunk('PLTE', plte),
     ...trns,
-    pngChunk('IDAT', deflateSync(raw, { level: 9 })),
+    pngChunk('IDAT', deflateSync(raw, { level: 6 })),
     pngChunk('IEND', new Uint8Array(0)),
   ];
   const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
