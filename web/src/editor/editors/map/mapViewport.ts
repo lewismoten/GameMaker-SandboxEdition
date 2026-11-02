@@ -11,7 +11,10 @@ interface ViewportHost {
   overlay: HTMLCanvasElement;
   /** More map-sized layers between the map and the overlay (the block behavior marks). */
   layers?: HTMLCanvasElement[];
+  /** CSS pixels per block at the current zoom; the map picture and layers may be drawn at another scale. */
   block(): number;
+  /** Zoomed out (below 100%): scale the picture smoothed; at 100% and above keep its pixels crisp. */
+  smooth(): boolean;
   moved(): void;
 }
 
@@ -32,23 +35,32 @@ export function mapViewport(host: ViewportHost) {
 
   function render(): void {
     const { w, h } = periods();
-    const width = wrapped ? Math.max(1, scroller.clientWidth) : w;
-    const height = wrapped ? Math.max(1, scroller.clientHeight) : h;
+    const smooth = host.smooth();
+    // not wrapped: the canvas holds the picture as drawn and the browser scales it to w x h;
+    // wrapped: the canvas is the window and the picture and layers are scaled onto it
+    const width = wrapped ? Math.max(1, scroller.clientWidth) : picture.width || 1;
+    const height = wrapped ? Math.max(1, scroller.clientHeight) : picture.height || 1;
     if (canvas.width !== width) canvas.width = width;
     if (canvas.height !== height) canvas.height = height;
     const g = canvas.getContext('2d')!;
-    g.imageSmoothingEnabled = false;
+    g.imageSmoothingEnabled = smooth;
+    g.imageSmoothingQuality = 'high';
     g.clearRect(0, 0, width, height);
+    const rendering = smooth ? 'auto' : 'pixelated';
+    for (const c of [canvas, overlay, ...layers]) c.style.imageRendering = rendering;
     if (!wrapped) {
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
       if (picture.width && picture.height) g.drawImage(picture, 0, 0);
       return;
     }
+    canvas.style.width = canvas.style.height = '';
     const { x, y } = phase();
     for (const top of tileOrigins(y, h, height))
       for (const left of tileOrigins(x, w, width)) {
-        g.drawImage(picture, left, top);
-        for (const l of layers) if (l.width && l.height) g.drawImage(l, left, top);
-        g.drawImage(overlay, left, top);
+        g.drawImage(picture, left, top, w, h);
+        for (const l of layers) if (l.width && l.height) g.drawImage(l, left, top, w, h);
+        g.drawImage(overlay, left, top, w, h);
       }
   }
 

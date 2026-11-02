@@ -397,10 +397,18 @@ are real previews too; a blank idle can fall back to a movement frame.
   block, alongside the original and enlarged sizes. These sizes apply to the
   downloaded PNG; editing and native game files keep their original dimensions.
 
-- **Map wheel zoom.** `editors/map/mapZoom.ts` keeps the map coordinate under the
-  pointer fixed while stepping through the zoom choices. Wheel events over the
-  map zoom; Shift+wheel keeps scrolling. Choosing a zoom in the toolbar uses the
-  viewport center as its anchor. These view changes never edit native map data.
+- **Map wheel zoom.** `editors/map/mapZoom.ts` zooms continuously from one screen
+  pixel per block (5%) to 400%: the wheel and a trackpad pinch change the zoom by a
+  small factor per event (one change per animation frame), keeping the map coordinate
+  under the pointer fixed; Shift+wheel keeps scrolling. The toolbar menu keeps round
+  presets (and shows the exact percentage the wheel reached); the URL's `zoom` takes
+  an old preset or any number in range. The picture is drawn at a power-of-two scale
+  (`pictureScale`: 1/16 to 2) and the browser scales it the rest of the way, so a zoom
+  change inside a level redraws nothing and 400% needs no 8000-pixel canvas. Below
+  100% blocks are shrunk in halves first and drawn smoothed (`mapTile.ts`, a mipmap;
+  at 1 pixel per block each block is its average color); at 100% and above the pixels
+  stay crisp. The overlay and marks draw at the picture's scale; link markers and
+  pointer math use the screen zoom. These view changes never edit native map data.
 
 - **What blocks do.** The map toolbar's ◈ button opens toggles for marks over the
   map, each remembered in the browser (`gm-map-mark-*`): barriers (white walls;

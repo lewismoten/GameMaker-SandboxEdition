@@ -1,5 +1,6 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
-import { nextZoom } from './mapZoom';
+import { MAX_ZOOM, MIN_ZOOM, clampZoom, pictureScale, wheelZoom, zoomFromUrl, zoomToUrl } from './mapZoom';
+import { drawTile } from './mapTile';
 import { mapViewport } from './mapViewport';
 import { nativeCell } from './mapWrap';
 import { panelTabs } from '../../widgets/panelTabs';
@@ -56,8 +57,9 @@ const TOOLS: [Mode, string, string, string, string][] = [
 /** The map picture's choices for the whole map, the level and a game screen. */
 const OPT_LABELS = { monsters: 'Monsters where they start', grid: 'Block grid (yellow lines every 10 blocks)', links: 'Scene links and start points' };
 
-/** Fine-grained map zoom: 10% sees the whole map; 200% supports pixel-level painting. */
+/** The zoom menu's round presets; the wheel and pinch zoom continuously between 1 pixel per block and 400%. */
 const ZOOMS: [number, string][] = [
+  [MIN_ZOOM, '5% (1 pixel per block)'],
   [0.1, '10%'],
   [0.15, '15%'],
   [0.2, '20%'],
@@ -71,6 +73,8 @@ const ZOOMS: [number, string][] = [
   [1.5, '150%'],
   [1.75, '175%'],
   [2, '200%'],
+  [3, '300%'],
+  [MAX_ZOOM, '400%'],
 ];
 
 /** A remembered on/off choice (the grid); off when storage is unavailable. */
@@ -123,8 +127,11 @@ registerEditor(['map'], (host, project, file) => {
   // the address keeps where the map is scrolled to (the block at the middle) and the zoom
   // (…/PLANET1.MAP?x=40&y=12&zoom=2)
   const view = viewState(['p', project.id, file]);
-  const urlZoom = Number(view.get('zoom'));
-  let zoom = ZOOMS.some(([z]) => z === urlZoom) ? urlZoom : 1;
+  let zoom = zoomFromUrl(view.get('zoom'));
+  /** The scale the map picture and its layers are drawn at (a power of two); the browser scales it to `zoom`. */
+  let drawnScale = pictureScale(zoom);
+  const scale = () => drawnScale;
+  let redrawTimer: ReturnType<typeof setTimeout> | undefined;
   let bgImgs: HTMLCanvasElement[] = [];
   const overlay: OverlayState = { grid: readPref('gm-map-grid'), found: [] };
   let finding = false;
@@ -198,6 +205,7 @@ registerEditor(['map'], (host, project, file) => {
     overlay: over,
     layers: [marksCanvas],
     block: () => BLEN * zoom,
+    smooth: () => zoom < 1,
     moved: () => {
       markers.render();
       if (viewport.wrapped && marks.any()) (marks.redraw(), viewport.render());
@@ -206,10 +214,15 @@ registerEditor(['map'], (host, project, file) => {
   // what blocks do (barriers, push and pull, touch, pickup, timed): drawn for the cells in view
   const marks = blockMarksLayer({
     canvas: marksCanvas,
-    block: () => BLEN * zoom,
+    block: () => BLEN * scale(),
     cells: () => map.blocks,
     blocks: () => bg,
-    view: () => viewport.view(),
+    // the marks are drawn at the picture's scale, the view is in screen pixels
+    view: () => {
+      const v = viewport.view(),
+        k = scale() / zoom;
+      return { x: v.x * k, y: v.y * k, w: v.w * k, h: v.h * k };
+    },
     frame: () => viewport.wrapped && viewport.render(),
   });
   let marksPending = 0;
@@ -225,7 +238,7 @@ registerEditor(['map'], (host, project, file) => {
   const ctx = viewport.picture.getContext('2d')!;
   const redrawOverlay = () => {
     overlay.found = finding ? findBlock(map.blocks, brush) : [];
-    drawOverlay(over, zoom, overlay, bgImgs);
+    drawOverlay(over, scale(), overlay, bgImgs);
     marks.refresh();
     viewport.render();
   };
@@ -318,18 +331,20 @@ registerEditor(['map'], (host, project, file) => {
   }
 
   function draw(): void {
-    const s = BLEN * zoom;
+    clearTimeout(redrawTimer);
+    drawnScale = pictureScale(zoom);
+    const s = BLEN * scale();
     viewport.picture.width = MLEN * s;
     viewport.picture.height = MWID * s;
     ctx.imageSmoothingEnabled = false;
     const { bg: bgI, mon: monI } = onScreen();
     drawnGray = !!overlay.gray;
-    for (let y = 0; y < MWID; y++) for (let x = 0; x < MLEN; x++) ctx.drawImage(bgI[map.blocks[y * MLEN + x]] ?? bgI[0], x * s, y * s, s, s);
+    for (let y = 0; y < MWID; y++) for (let x = 0; x < MLEN; x++) drawTile(ctx, bgI[map.blocks[y * MLEN + x]] ?? bgI[0], x, y, s);
     map.monsters.forEach((m) => {
       if (m.monnum >= LASTMON) return;
       const pic = firstPic(mons[m.monnum]);
-      if (pic >= 0) ctx.drawImage(monI[pic], m.curx * s, m.cury * s, s, s);
-      else if (s < 8) {
+      if (pic >= 0) drawTile(ctx, monI[pic], m.curx, m.cury, s);
+      else if (BLEN * zoom < 8) {
         // zoomed far out: too small to outline, a filled dot
         ctx.fillStyle = '#f0f';
         ctx.fillRect(m.curx * s, m.cury * s, s, s);
@@ -341,7 +356,7 @@ registerEditor(['map'], (host, project, file) => {
     monCount.textContent = `${map.monsters.filter((m) => m.monnum < LASTMON).length} of ${LASTMM} monster slots used`;
     for (const mk of linkMarks()) {
       const color = mk.kind === 'from' ? '#ffd400' : '#00e0ff';
-      if (s < 8) {
+      if (BLEN * zoom < 8) {
         ctx.fillStyle = color;
         ctx.fillRect(mk.x * s, mk.y * s, s, s);
         continue;
@@ -622,16 +637,15 @@ registerEditor(['map'], (host, project, file) => {
     if (wrapping) ({ x, y } = nativeCell({ x, y }));
     if (x < 0 || y < 0 || x >= MLEN || y >= MWID) return;
     map.blocks[y * MLEN + x] = v;
-    const s = BLEN * zoom;
-    ctx.drawImage(onScreen().bg[v], x * s, y * s, s, s);
+    drawTile(ctx, onScreen().bg[v], x, y, BLEN * scale());
   }
 
   /** Cells the tools changed: draw just them (with the links over them) and save. */
   function changedCells(cells: number[]): void {
     if (!cells.length) return;
-    const s = BLEN * zoom;
+    const s = BLEN * scale();
     const bgI = onScreen().bg;
-    for (const i of cells) ctx.drawImage(bgI[map.blocks[i]] ?? bgI[0], (i % MLEN) * s, Math.floor(i / MLEN) * s, s, s);
+    for (const i of cells) drawTile(ctx, bgI[map.blocks[i]] ?? bgI[0], i % MLEN, Math.floor(i / MLEN), s);
     if (cells.length > 400) draw();
     else redrawOverlay();
     save();
@@ -1085,6 +1099,7 @@ registerEditor(['map'], (host, project, file) => {
     );
 
   function setZoom(value: number, pointer = { x: scroller.clientWidth / 2, y: scroller.clientHeight / 2 }): void {
+    value = clampZoom(value);
     if (value === zoom) return;
     tools.cancel();
     if (painting) save();
@@ -1092,10 +1107,18 @@ registerEditor(['map'], (host, project, file) => {
     lastPaint = undefined;
     const anchor = viewport.at(pointer);
     zoom = value;
-    view.set({ zoom: value === 1 ? undefined : value });
-    draw();
-    zoomControl.querySelector('select')!.value = String(value);
+    view.set({ zoom: zoomToUrl(value) });
+    showZoom();
+    // the picture is only scaled by the browser; when the zoom crosses into another drawing level the
+    // redraw waits until the wheel pauses, so no step is slower than a frame
+    viewport.layout();
+    markers.render();
+    if (pictureScale(zoom) !== drawnScale) {
+      clearTimeout(redrawTimer);
+      redrawTimer = setTimeout(draw, 140);
+    }
     viewport.goTo(anchor, pointer);
+    if (!viewport.wrapped && marks.any()) marks.redraw();
   }
   const zoomControl = selectField(
     'Zoom',
@@ -1103,27 +1126,37 @@ registerEditor(['map'], (host, project, file) => {
     () => zoom,
     (value) => setZoom(value),
   );
-  scroller.title = 'Mouse wheel zooms around the pointer; Shift+wheel scrolls.';
-  let wheelAmount = 0;
-  let wheelAt = 0;
+  /** The menu shows a round preset, or the exact percentage the wheel reached. */
+  const zoomSelect = zoomControl.querySelector('select')!;
+  const zoomCustom = h('option', { value: 'custom', hidden: true });
+  zoomSelect.append(zoomCustom);
+  function showZoom(): void {
+    const preset = ZOOMS.find(([z]) => Math.abs(z - zoom) < 0.0005);
+    zoomCustom.hidden = !!preset;
+    zoomCustom.textContent = `${Math.round(zoom * 100)}%`;
+    zoomSelect.value = preset ? String(preset[0]) : 'custom';
+  }
+  showZoom();
+  scroller.title = 'Mouse wheel or pinch zooms around the pointer; Shift+wheel scrolls.';
+  // wheel and pinch turn into one zoom change per animation frame, around the last pointer position
+  let wheelTarget = zoom;
+  let wheelPointer = { x: 0, y: 0 };
+  let wheelFrame = 0;
   scroller.addEventListener(
     'wheel',
     (event) => {
-      if (event.shiftKey || !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      if (event.shiftKey || !event.deltaY || (!event.ctrlKey && Math.abs(event.deltaX) > Math.abs(event.deltaY))) return;
       event.preventDefault();
-      const now = performance.now();
-      if (now - wheelAt > 250 || Math.sign(wheelAmount) !== Math.sign(event.deltaY)) wheelAmount = 0;
-      wheelAt = now;
-      wheelAmount += event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? scroller.clientHeight : 1);
-      if (Math.abs(wheelAmount) < 40) return;
-      const next = nextZoom(
-        ZOOMS.map(([value]) => value),
-        zoom,
-        wheelAmount,
-      );
-      wheelAmount = 0;
+      if (!wheelFrame) wheelTarget = zoom;
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? scroller.clientHeight : 1;
+      wheelTarget = wheelZoom(wheelTarget, event.deltaY * unit, event.ctrlKey);
       const bounds = scroller.getBoundingClientRect();
-      setZoom(next, { x: event.clientX - bounds.left - scroller.clientLeft, y: event.clientY - bounds.top - scroller.clientTop });
+      wheelPointer = { x: event.clientX - bounds.left - scroller.clientLeft, y: event.clientY - bounds.top - scroller.clientTop };
+      if (wheelFrame) return;
+      wheelFrame = requestAnimationFrame(() => {
+        wheelFrame = 0;
+        setZoom(wheelTarget, wheelPointer);
+      });
     },
     { passive: false },
   );
@@ -1302,6 +1335,7 @@ registerEditor(['map'], (host, project, file) => {
   return () => {
     hideTip();
     tip.remove();
+    clearTimeout(redrawTimer);
     markers.dispose();
     marks.dispose();
     cancelAnimationFrame(marksPending);
