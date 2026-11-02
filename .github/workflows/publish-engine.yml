@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '26'
       - name: Check tag and master
         working-directory: web
         run: |
@@ -53,7 +53,7 @@ jobs:
           npm run test:fast -- src/engine src/audio src/project/dosNames.test.ts test/formats.test.ts
       - uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '26'
           registry-url: 'https://npm.pkg.github.com/'
           scope: '@lewismoten'
       - name: Publish package
