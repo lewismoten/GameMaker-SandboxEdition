@@ -24,6 +24,9 @@ import { fileFields } from './fileFields';
 import { withoutExtensions } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 import { itemFor, screenItems, type DragItem } from './dragItems';
 import { dragStage } from './dragStage';
+import { aboutFields, aboutLookOf, type AboutView } from './aboutFields';
+import { creditsLink } from './creditsLink';
+import { companionOrigin } from '../../../../dosPlayer/playerOrigin';
 
 const PREVIEWS: PreviewScreen[] = ['menu', 'hiscores', 'newHiscore', 'status', 'load', 'save', 'drop', 'help', 'text', 'missing', 'about'];
 const isPreview = (s: PanelTab): s is PreviewScreen => (PREVIEWS as string[]).includes(s);
@@ -37,6 +40,10 @@ export function playerPanel(project: Project): HTMLElement {
   const gameName = project.gam.replace(/\.[^.]*$/, '').toLowerCase();
   const locked = !!project.readOnly;
   let tab: PanelTab = 'menu';
+  // the About tab's switch: the page as the DOS player shows it or as Play on the web does
+  const origin = companionOrigin(project.companion, project.gam);
+  let aboutView: AboutView = 'dos';
+  let aboutPage = 0;
   let shown: PreviewScreen = 'menu';
   /** The patch whose field has the focus: the menu preview shows a "No game-specific" line only for those. */
   let focused = '';
@@ -77,11 +84,11 @@ export function playerPanel(project: Project): HTMLElement {
   const count = h('p', { class: 'dp-count-all', role: 'status' });
   function redraw() {
     const noFile = focused || (stage.picked() === 'menu.noFile' ? 'layout.menu.noFile.x' : '');
-    const look = playerLook(patches);
-    const drawn = drawPreview(screen, project.files, game, gameName, look, shown, noFile);
+    const look = playerLook(patches, shown === 'about' ? aboutLookOf(aboutView, origin) : undefined);
+    const drawn = drawPreview(screen, project.files, game, gameName, look, shown, noFile, aboutPage);
     items = screenItems(shown, look, drawn);
     stage.refresh();
-    heading.textContent = `${SCREEN_NAMES[shown]}, as the DOS player draws it`;
+    heading.textContent = `${SCREEN_NAMES[shown]}, as ${shown === 'about' && aboutView === 'web' ? 'Play on the web' : 'the DOS player'} draws it`;
     const n = Object.keys(withoutExtensions(patches)).length;
     const files = Object.keys(patches).length - n;
     count.textContent =
@@ -216,8 +223,20 @@ export function playerPanel(project: Project): HTMLElement {
     body.setAttribute('aria-labelledby', `${id}-tab-${tab}`);
     clear(body, ...(tab === 'files' ? fileFields({ id, patches, locked, save: (again) => (save(), again && render()) }) : screenFields(tab, make)));
     body.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLButtonElement>('input, select, button').forEach((el) => (el.disabled = locked));
+    if (tab === 'about') body.prepend(aboutFields({ id, view: aboutView, page: aboutPage, origin, change: changeAbout }));
+    if (tab === 'menu') body.querySelector('[data-patch="str.menu.credits"]')?.after(creditsLink(project));
     // the F-keys and the shared colors have no screen of their own: they pick one to preview
     pickRow.hidden = isPreview(tab);
+  }
+
+  /** The About switch or page changed: the preview follows, and the focus stays on the choice. */
+  function changeAbout(view: AboutView, page: number) {
+    const which = view !== aboutView ? 'view' : 'page';
+    aboutView = view;
+    aboutPage = page;
+    render();
+    show('about');
+    body.querySelector<HTMLInputElement>(`input[name="${id}-about-${which}"]:checked`)?.focus();
   }
 
   /** Shows the screen a patch belongs to and focuses its field (Overview search opens fields this way). */

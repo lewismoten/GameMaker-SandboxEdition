@@ -335,3 +335,48 @@ dialog.modal .dp-preview [hidden] {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* the About tab's read-only words and its DOS / web switch (aboutFields.ts) */
+.dp-about-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0 0 6px;
+  padding: 0;
+  border: 0;
+}
+.dp-about-switch legend {
+  padding: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.dp-about-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+}
+.dp-about-why {
+  margin: 4px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.dp-about-text {
+  max-width: 100%;
+  margin: 4px 0 8px;
+  padding: 6px 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: pre;
+}
+.dp-credits-link {
+  margin: 2px 0 8px;
+  font-size: 13px;
+}
+.dp-credits-link a {
+  display: inline-block;
+  min-height: 24px;
+  line-height: 24px;
+}

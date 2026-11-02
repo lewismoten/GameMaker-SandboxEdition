@@ -107,6 +107,7 @@ export function drawPreview(
   look: PlayerLook,
   which: PreviewScreen,
   focused = '',
+  aboutPage = 0,
 ): PreviewDrawn {
   screen.setPalette(new Uint8Array(PALETTE_SIZE));
   screen.clear(0);
@@ -159,7 +160,7 @@ export function drawPreview(
       pal = levelPalette(files, game);
       if (which === 'status') drawStatus(screen, SAMPLE_WORLD(pal), look);
       else if (which === 'drop') drawDropPicker(screen, SAMPLE_WORLD(pal), look);
-      else if (which === 'about') drawAbout(screen, pal, look);
+      else if (which === 'about') drawAbout(screen, pal, look, aboutPage);
       else screen.write(40, 80, look.color(pal, 'color.select.helpNone'), look.text('str.help.none'));
       break;
     case 'load':
