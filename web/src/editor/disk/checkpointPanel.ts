@@ -19,6 +19,8 @@ export interface CheckpointPanel {
   option: HTMLElement;
   /** Makes a checkpoint first when the choice is ticked, unless the game is exactly as the latest one; false (and a message) when it can't. */
   ensure(name: string): Promise<boolean>;
+  /** Draws the list again (what changed since each stamp moves with every apply, Undo and Restore). */
+  refresh(): void;
 }
 
 export function checkpointPanel(project: Project, before: (...names: string[]) => void, changed: () => void): CheckpointPanel {
@@ -186,6 +188,7 @@ export function checkpointPanel(project: Project, before: (...names: string[]) =
   return {
     el,
     option,
+    refresh: render,
     async ensure(name) {
       if (!box.checked || sameAsLatest()) return true;
       const ok = await stamp(name);

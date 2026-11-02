@@ -147,6 +147,7 @@ export async function diskTool(project: Project): Promise<void> {
     const checkpoint = checkpointPanel(project, keep.before, () => render());
 
     function render() {
+      checkpoint.refresh();
       if (pack !== undefined && !packBusy && packStale()) pack = undefined;
       const size = sizeUp(project.files, project.gam);
       let plan: Plan;
@@ -271,7 +272,7 @@ export async function diskTool(project: Project): Promise<void> {
                 ? h(
                     'p',
                     null,
-                    `${plural(held, 'more step')} would renumber blocks or monsters, and this game has ${plural(nSaves, 'saved game')} that remember them by number. They are not applied here.`,
+                    `${plural(held, 'more step')} would renumber blocks or monsters, and saved games remember them by number (this game has ${plural(nSaves, 'saved game')}). They are not applied here.`,
                   )
                 : h('p', { class: 'hint' }, 'Prefer to keep this game as it is? Make a copy and optimize that instead.'),
               h(
@@ -336,7 +337,7 @@ export async function diskTool(project: Project): Promise<void> {
             if (nSaves > 0 && risky.length) {
               const ok = await confirmDialog(
                 'Saved games would break',
-                `This pack renumbers blocks or monsters (${[...new Set(risky.map((u) => u.risk))].join('; ')}), and this game has ${plural(nSaves, 'saved game')} that remember them by number. Make an optimized copy in My Games instead? This game stays as it is.`,
+                `This pack renumbers blocks or monsters (${[...new Set(risky.map((u) => u.risk))].join('; ')}), and saved games remember them by number (this game has ${plural(nSaves, 'saved game')}). Make an optimized copy in My Games instead? This game stays as it is.`,
                 'Make the copy',
               );
               if (!ok) return;
