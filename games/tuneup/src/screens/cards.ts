@@ -74,7 +74,7 @@ export function card(k: Card): Pixels {
   p.rect(258, 128, 62, 8, c('pipe', 3)).rect(258, 128, 62, 2, c('pipe', 4)).rect(262, 136, 4, 64, c('pipe', 1)).rect(312, 136, 4, 64, c('pipe', 1));
   drawChicken(p, 254, 129, 3, { lady: k.lady, squawk: !k.asleep, bob: k.asleep ? 1 : 0 }, true);
   if (k.asleep) for (const [i, s] of ['z', 'z', 'Z'].entries()) text(p, 290 + i * 8, 112 - i * 12, s, INK, i === 2 ? 2 : 1);
-  if (k.teddy) scaleBlit(p, POSES.sit, 40, 160, 2);
+  if (k.teddy) scaleBlit(p, POSES.front, 40, 160, 2);
   if (k.egg) p.blit(rubberEgg(new Pixels(20, 20, 255)), 290, 109, 255);
   if (k.dream) dreamFrame(p, [266, 104], !k.title);
   let y = k.title ? 32 : 12;
