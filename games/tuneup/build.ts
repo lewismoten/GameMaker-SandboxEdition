@@ -17,6 +17,7 @@ import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
 import { buildPalette } from './src/art/palette';
 import { buildLeo, buildMonsters, buildOilLeo, buildPianoLeo } from './src/characters';
 import { TEDDY_BLOCKS, buildNobody, buildTeddy, nobodyBlocks } from './src/heroes';
+import { CHEZ_BLOCKS, buildChez } from './src/sprites/chezHero';
 import { LEVELS, firstOfLevel } from './src/levels/levels';
 import { buildScreens } from './src/screens/screens';
 import { OUTRO } from './src/screens/banter';
@@ -40,8 +41,10 @@ disk.put('teddy.cbl', serializeBlocks(TEDDY_BLOCKS.build()));
 disk.put('teddy.chr', serializeCharacter(buildTeddy()));
 disk.put('nobody.cbl', serializeBlocks(nobodyBlocks().blocks));
 disk.put('nobody.chr', serializeCharacter(buildNobody()));
+disk.put('chez.cbl', serializeBlocks(CHEZ_BLOCKS.blocks));
+disk.put('chez.chr', serializeCharacter(buildChez()));
 /** Each hero's character blocks. */
-const CBL: Record<string, string> = { teddy: 'teddy.cbl', nobody: 'nobody.cbl' };
+const CBL: Record<string, string> = { teddy: 'teddy.cbl', nobody: 'nobody.cbl', chez: 'chez.cbl' };
 const mb = buildMonsterBlocks();
 disk.put('cast.mbl', serializeBlocks(mb.blocks));
 for (const place of new Set(LEVELS.map((l) => l.snd))) disk.put(`${place}.snd`, serializeSoundSet(buildSoundSet(place)));
@@ -62,6 +65,8 @@ const TOOLS: Record<number, Tool> = {
   11: 'horn',
   12: 'gear',
   13: 'radio',
+  14: 'key',
+  15: 'baton',
 };
 /** A cartoon cut into clips (Esc skips within a few seconds), its files on the disk, its entries for a list. */
 const reel = (name: string, fli: Uint8Array) => {

@@ -24,6 +24,8 @@ import { choirSong, hornSong, keySong, rainSong, tuningSong } from '../sound/rea
 import { panel, panelBlocks } from './panel';
 import { keyBlocks, keyRoom } from './key';
 import { horn, hornBlocks, HORN_ROUNDS } from './horn';
+import { drive, driveBlocks, ROUTES } from './drive';
+import { driveSong } from '../sound/finaleSongs';
 
 export interface LevelDef {
   /** The scene's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
@@ -36,7 +38,7 @@ export interface LevelDef {
   theme: ThemeName;
   blocks: (pal: Pal) => Kit;
   build: (b: Kit['book']) => Level;
-  chr: 'leo' | 'piano' | 'oil' | 'teddy' | 'nobody';
+  chr: 'leo' | 'piano' | 'oil' | 'teddy' | 'nobody' | 'chez';
   snd: Place;
   song: () => Uint8Array;
   mons: MonsterOptions;
@@ -225,6 +227,20 @@ export const LEVELS: LevelDef[] = [
     song: i ? choirSong : tuningSong,
     mons: {},
     wide: false,
+  })),
+  ...ROUTES.map((r, i): LevelDef => ({
+    file: r.file,
+    level: 14,
+    desc: 'The Test Drive',
+    part: ['round the block', 'Main Street'][i],
+    theme: 'noon',
+    blocks: driveBlocks,
+    build: drive(r),
+    chr: 'chez',
+    snd: 'drive',
+    song: () => driveSong(i),
+    mons: {},
+    wide: true,
   })),
 ];
 
