@@ -134,12 +134,13 @@ export function rainBlocks(pal: Pal): Kit {
       });
     });
   }
-  // a raindrop on the cowl: a bead of water that rings when Doc Leo walks through it
+  // a raindrop on the cowl: a bead of water that rings when Doc Leo walks through it, leaving
+  // the windshield of its own row behind (the drops sit on the blades' foot row)
   DROP_KINDS.forEach((kind, i) => {
-    const p = glass();
+    const p = glass(BLADE_FOOT);
     p.disc(10, 13, 5, c('pipe', 1)).disc(10, 12, 4, c('pipe', 3)).disc(9, 11, 1.5, c('lamp', 4));
     for (let y = 4; y < 9; y++) p.rect(10 - Math.floor((y - 4) / 2), y, 1 + Math.floor((y - 4) / 2) * 2, 1, c('pipe', 3));
-    book.add(`drop${i}`, p, { ...AIR, ...kind, touch: 'glass' });
+    book.add(`drop${i}`, p, { ...AIR, ...kind, touch: `sky${BLADE_FOOT}` });
   });
   const s = saveSignBlocks(pal.pal, { board: [glass(RAIN.floor - 2), glass(RAIN.floor - 2)], posts: [glass(), glass()] });
   book.add('sign.l', s.board[0], AIR);
