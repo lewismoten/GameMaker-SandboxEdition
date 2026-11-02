@@ -135,9 +135,9 @@ const OIL_HIGH = bars(
 export function oilSong(): Uint8Array {
   const chords = [...OIL, ...OIL, ...OIL];
   return score(13, 4, [
-    { ch: 0, patch: 'sax', notes: bars(...OIL_LOW, OIL_HIGH, ...OIL_LOW.slice(0, 11), 'A4h F#4h'), vel: 85 },
+    { ch: 0, patch: 'sax', notes: bars(...OIL_LOW, OIL_HIGH, ...OIL_LOW.slice(0, 11), 'A4h F#4h'), vel: 105 },
     { ch: 1, patch: 'flute', notes: comp(chords, 4, 'rw | rh. 5u 3t | rw | rh 8u 5t 3q', { bass: 'C5' }), vel: 55 },
-    { ch: 2, patch: 'reed-soft', notes: comp(chords, 4, 'Rq 5q 8q 5q', { bass: 'E2' }), vel: 95 },
+    { ch: 2, patch: 'reed-soft', notes: comp(chords, 4, 'Rq 5q 8q 5q', { bass: 'E2' }), vel: 70 },
     { ch: 3, patch: 'clarinet', notes: comp(chords, 4, 'Xh Xh', { lo: 'F3' }), vel: 40, legato: 0.97 },
   ]);
 }

@@ -241,9 +241,9 @@ export function cupsSong(round: number): Uint8Array {
       11,
       4,
       [
-        { ch: 0, patch: 'xylophone', notes: bars(HABANERA_A, HABANERA_A, HABANERA_B, HABANERA_A), vel: 85 },
-        { ch: 1, patch: 'woodblock', notes: rep(32, 'C5e. C5s rq C5e. C5s rq'), vel: 50 },
-        { ch: 2, patch: 'timpani', notes: comp(chords, 4, 'Re. Rs 5e Re Re. Rs 5e Re', { bass: 'A2' }), vel: 85 },
+        { ch: 0, patch: 'xylophone', notes: bars(HABANERA_A, HABANERA_A, HABANERA_B, HABANERA_A), vel: 115 },
+        { ch: 1, patch: 'woodblock', notes: rep(32, 'C5e. C5s rq C5e. C5s rq'), vel: 75 },
+        { ch: 2, patch: 'timpani', notes: comp(chords, 4, 'Re. Rs 5e Re Re. Rs 5e Re', { bass: 'A2' }), vel: 70 },
         { ch: 3, patch: 'marimba', notes: comp(chords, 4, 'rq Xq rq Xq', { lo: 'F3' }), vel: 45 },
       ],
       [{ patch: 'snare-tight', grid: grid(4, rep(7, '................').replace(/ \| /g, '|') + '|' + ROLL), vel: 55 }],
@@ -255,9 +255,9 @@ export function cupsSong(round: number): Uint8Array {
       11,
       4,
       [
-        { ch: 0, patch: 'marimba', notes: bars(SNEAK_A, SNEAK_A, SNEAK_B, SNEAK_A), vel: 90 },
-        { ch: 1, patch: 'cowbell', notes: rep(32, 'rq C5u C5t rq C5q'), vel: 35 },
-        { ch: 2, patch: 'timpani', notes: comp(chords, 4, 'Rq 5q 8q 5q', { bass: 'A2' }), vel: 80 },
+        { ch: 0, patch: 'marimba', notes: bars(SNEAK_A, SNEAK_A, SNEAK_B, SNEAK_A), vel: 115 },
+        { ch: 1, patch: 'cowbell', notes: rep(32, 'rq C5u C5t rq C5q'), vel: 55 },
+        { ch: 2, patch: 'timpani', notes: comp(chords, 4, 'Rq 5q 8q 5q', { bass: 'A2' }), vel: 65 },
         { ch: 3, patch: 'vibraphone', notes: comp(chords, 4, 'ru Xt rq ru Xt rq', { lo: 'F3' }), vel: 40 },
       ],
       [

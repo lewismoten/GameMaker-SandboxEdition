@@ -44,7 +44,7 @@ export function rainSong(): Uint8Array {
     RAIN_BEAT,
     5,
     [
-      { ch: 0, patch: 'steel-drum', notes: bars(...DROPS_A, 'A5w rq', DROPS_B, ...DROPS_A, 'E5q F#5q E5q C#5q A4q'), vel: 85 },
+      { ch: 0, patch: 'steel-drum', notes: bars(...DROPS_A, 'A5w rq', DROPS_B, ...DROPS_A, 'E5q F#5q E5q C#5q A4q'), vel: 115 },
       { ch: 1, patch: 'celesta', notes: comp(chords, 5, 'rq 8e re rq 5e 3e rq | rh. 3e 5e 8q', { bass: 'D6' }), vel: 40 },
       { ch: 2, patch: 'marimba', notes: comp(chords, 5, 'Rh. 5h', { bass: 'E2' }), vel: 75 },
       { ch: 3, patch: 'vibraphone', notes: comp(chords, 5, 'Xh. Xh', { lo: 'F#3' }), vel: 40 },
