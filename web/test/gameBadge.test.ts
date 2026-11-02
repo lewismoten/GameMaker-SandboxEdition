@@ -5,8 +5,8 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { BADGE_CX, BADGE_CY, BADGE_H, BADGE_W, RING, composeBadge, cropCenterX, titleMask, trimSprite, type Indexed } from '../src/desk/mug/gameBadge';
 import { GAME_MUGS } from '../src/desk/mug/gameMugArt';
-import { decodeGif } from '../src/formats/gif';
-import { paletteToRGBA } from '../src/formats/palette';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { paletteToRGBA } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 /** A 320 x 200 screen in color 1, a 40 x 16 block of "lettering" in color 2 at (140, 20) and a 2-pixel speck in color 2. */
 function screen(): Indexed {
@@ -90,7 +90,8 @@ describe('each game’s badge', () => {
       expect(cropCenterX(img.width, m.centerX)).toBe(m.centerX ?? img.width / 2);
       const t = titleMask(img, m.title)!;
       expect(t.w).toBeGreaterThan(150);
-      expect(t.h).toBeGreaterThan(20);
+      // at least one line of lettering (mustard's single line is about 14 px, its box kept clear of the seed)
+      expect(t.h).toBeGreaterThan(10);
       // the lettering fits across the badge between the ribbon's tails
       expect(t.w + 2).toBeLessThanOrEqual(BADGE_W - 32);
     });

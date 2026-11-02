@@ -6,9 +6,9 @@
 // boards is tried on a copy too, to see where the slide ends. Mice and Redcoats in its way get
 // a squawk.
 import { GameSim } from './sim';
-import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../web/src/formats/blocks';
-import { MLEN, MWID } from '../../../web/src/formats/map';
+import { MAXSCENELINKS, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { CTR, SCAN } from '../src/ids';
 import type { Compiled } from '../src/compile';
 import { sceneOf } from '../src/game';

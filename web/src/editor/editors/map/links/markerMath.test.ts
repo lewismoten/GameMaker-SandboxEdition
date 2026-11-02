@@ -1,8 +1,8 @@
 // The map's link markers in numbers (markerMath.ts): which links become markers, where they sit,
 // and the block a drag or an arrow key moves one to.
 import { describe, expect, it } from 'vitest';
-import { ADVTYPE, emptyScene, newGame, type Game } from '../../../../formats/game';
-import { cellAtPoint, mapMarkers, markerBox, MIN_MARK, nudge, stackIndex } from './markerMath';
+import { ADVTYPE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { cellAtPoint, mapMarkers, markerBox, markerGroups, MIN_MARK, nudge, stackIndex } from './markerMath';
 
 function game(): Game {
   const g = newGame('Test');
@@ -41,6 +41,13 @@ describe('link markers on a map', () => {
     expect([0, 1, 2].map((i) => stackIndex(m, i))).toEqual([0, 1, 0]);
   });
 
+  it('groups ways in that land on one block; a lone exit is a group of one', () => {
+    const m = mapMarkers(game(), [2]);
+    expect(markerGroups(m).filter((x) => x.markers.length > 1)).toEqual([
+      expect.objectContaining({ key: 'in-group:5,6', at: { x: 5, y: 6 }, markers: [m[0], m[1]], distinct: 2 }),
+    ]);
+  });
+
   it('puts a marker round its block, never smaller than a 24-pixel target', () => {
     // 100% zoom: blocks are 20 pixels, so the marker overhangs by 2 on each side
     expect(markerBox({ x: 5, y: 6 }, 20)).toEqual({ left: 98, top: 118, size: MIN_MARK });
@@ -66,5 +73,21 @@ describe('link markers on a map', () => {
     expect(nudge({ x: 0, y: 5 }, 'ArrowLeft')).toBeUndefined();
     expect(nudge({ x: 99, y: 95 }, 'ArrowDown', true)).toEqual({ x: 99, y: 99 });
     expect(nudge({ x: 5, y: 5 }, 'a')).toBeUndefined();
+  });
+});
+
+describe('markers sharing a block', () => {
+  it('groups exits on one block with a distinct count, exact duplicates counted once', () => {
+    const g = game();
+    g.scenes[3].links[2] = { toScene: 2, from: { x: 3, y: 3 }, to: { x: 5, y: 6 } };
+    const groups = markerGroups(mapMarkers(g, [3]));
+    const exits = groups.find((x) => x.kind === 'out' && x.at.x === 3)!;
+    expect(exits.markers).toHaveLength(3);
+    expect(exits.distinct).toBe(2);
+  });
+  it('labels a scene that links to itself plainly', () => {
+    const g = game();
+    g.scenes[3].links[0] = { toScene: 3, from: { x: 3, y: 3 }, to: { x: 5, y: 6 } };
+    expect(mapMarkers(g, [3]).find((m) => m.kind === 'out')!.label).toContain('↻ this scene');
   });
 });

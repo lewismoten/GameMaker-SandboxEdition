@@ -9,7 +9,7 @@ Part of the [source map](../README.md).
   messages (`plainError.ts`), and `fitPane.ts`, which keeps an editor's columns inside the window
   (each scrolls by itself, the pane never does).
 - `shell/`: the pages.
-  - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top), `homeCategories.ts`
+  - Home: `home.ts` with `homeShowcase.ts` (the selected game at the top: its title picture first, its demo after the page is idle and a quiet 2.5 s, or at once when pointed at, touched or focused; reduced motion and data saver keep it still), `homeCategories.ts`
     (the tabs in order, the first one opened, and the random game featured when one is chosen), `homeCards.ts`,
     `homeBlurb.ts`, `homeAuthors.ts` and `homePack.ts` (the tabs' collections), `homeLibrary.ts`
     (each collection's games, no DOM) and `homeLibraryCards.ts` (its tiles and headings), packed by
@@ -25,11 +25,17 @@ Part of the [source map](../README.md).
     `projectExport.ts`; the health badge (`gameHealth.ts`). Imported games' ratings on the home
     page (`homeRatings.ts`: a tile's stars, the Show picker, grouping by rating, and the stars and
     note in the panel at the top); "Remove all imported…" can take only some ratings.
-  - The workspace (`workspace.ts`: file list + editor), with Play Game and the Play Level split
+  - Coming back to the editor from the Games page with no file in the address picks up where it was last open
+    (`lastPlace.ts`): the same game opens the same file and its tab; another game opens its file of the same name, else
+    the Files overview on that kind.
+  - The workspace (`workspace.ts`: asset overview, file galleries, file list + editor), with Play Game and the Play Level split
     button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
     into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,
     the last pick per game in `playPickStore.ts`), the open file's actions
-    (`fileActions.ts`), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
+    (`fileActions.ts`), accessible file-card context menus (`assetMenu.ts` and `assetMenu.css`), native asset categories (`fileKinds.ts`), the selected GAM’s Integrator context (`gameProject.ts`, preserving the owner’s primary game and autosaves), the Overview page every game opens on (`overview.ts`, with tabs Files = the lazy category/file galleries in `assetBrowser.ts` and `assetBrowser.css` plus the search box above them: `assetSearch.ts` (box, debounce, grouped results; its index is built in the background on first focus), `searchIndex.ts` (names, words inside .txt/.lst/.gam/.his/.snd/.bkd, companion strings, DOS player patches), `searchNav.ts` (arrow keys: Up/Down pick the card visually above or below by x center, across groups), `searchMatch.ts` (matching and highlight snippets) and `searchCards.ts` (thumbnail and field cards; player fields open through `editors/integrator/dosPlayer/playerTarget.ts`), Controls = `overviewControls.ts`, DOS player = `integrator/dosPlayer/playerPanel.ts`, and a read-only Player card (also under the file list) for a game imported with its own player .EXE, opening `playerInfo.ts` (its build, settings read, bytes kept and About text), and Tools = `overviewTools.ts` (cards for the game-wide tools, each with a picture or live status read from what is saved and a button that opens it: Level check, Before You Upload, Make a walkthrough, Health check, Disk space, Game version (`overviewVersion.ts`), First steps, Color vision check, Play Game and Download; the tools keep their own entry points; Game version keeps the author's version and a switch, "Show the version on the title menu", in the companion, off by default, with a real preview of the menu picture, and `project/composeFiles.ts` letters it on the copy Play, play tests and downloads hand the engine, never on the saved files); its tab is the address's `?tab=controls|player|tools`, `overviewLink.ts` builds those links, `counterUse.ts` finds where each counter is used),
+    the cross-project native file clipboard (`assetClipboard.ts`, bytes plus file-local companion extras),
+    exact file snapshot/replacement helpers (`assetFiles.ts`, including unknown extensions and extensionless DOS files),
+    gallery commands (`assetCommands.ts`: duplicate, copy/paste, matching-type replacement, delete and non-overwriting file drops), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
     (`quickOpen.ts`), folding hints (`hintFold.ts`) and the Download chooser (`download.ts`).
   - New games (`starter.ts`, with the "First steps" checklist, `firstSteps.ts` and
     `firstStepsPanel.ts`), new-file templates (`templates.ts`; + New music's empty song is
@@ -42,7 +48,7 @@ Part of the [source map](../README.md).
   used by the media editors (`mediaPictures.ts`, `mediaShared.ts`).
   - The level check's parts outside the map: badges in the block, monster and sound editors
     (`checkBadges.ts`), the self-ticking Before You Upload list (`uploadChecklist.ts`), Make a
-    walkthrough (`walkDialog.ts`), the findings as a report with a CSV and a printable checklist
+    walkthrough (`walkDialog.ts`; Open a walkthrough file… plays a saved bot `.walkthrough.json` after `walkFile.ts` checks its version, game and scenes), the findings as a report with a CSV and a printable checklist
     (`checkReport.ts`, its rows in `checkRows.ts`; Play it myself on any scene, Mine or Bot on each,
     Stop keeping what the bot got through), Play and record, the one play session of a scene
     that adds to the author's heat map and keeps their play for the walkthrough (`playScene.ts`),
@@ -58,17 +64,19 @@ Part of the [source map](../README.md).
   `map/` (its newer tools in `map/tools/`, its Level check panel in `map/check/`, the
   integrator's links as markers to drag, nudge and open in `map/links/`: `markerMath.ts` with no
   DOM, `linkMarkers.ts` on the map and `linkPopover.ts` for one link's details and pictures),
-  `integrator/` (its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
-  changed from a map with GRATOR's rules in `linkEdits.ts`; its toolbar's DOS player dialog in `integrator/dosPlayer/`: `playerPanel.ts`, a
+  `integrator/` (its boards and groups for big games, editor-only in the companion's `integratorBoards` section: data and helpers `boardLayout.ts`, suggestions `boardSuggest.ts`, painting `boardPaint.ts`, tabs/popover `boardsController.ts`, a released game’s shipped arrangement `shippedBoards.ts`; the board last open is remembered per project in the companion's `integratorActiveBoard` section (`activeBoard.ts`; a removed board falls back to the first) and is the board the game's tile on the Assets page draws; a group is a stacked card opened in a popover; the arrange tools (Auto-arrange, Spread out, Close gaps, Undo/Redo, Alt+arrow nudging) are in `boardsController.ts` over `integratorLayout.ts`; its links read as places on the maps, ways in and exits, in `linkSpots.ts`, and
+  changed from a map with GRATOR's rules in `linkEdits.ts`; its toolbar's DOS player button opens Overview › DOS player, built in `integrator/dosPlayer/`: `playerPanel.ts`, a
   tab per screen (`screenTabs.ts` groups the patches, `screenFields.ts` lays out a tab,
-  `playerFields.ts` makes each field) and a Files tab for the DOS download's extensions (`fileFields.ts`), `playerPreview.ts`, which draws XFERPLAY's screens with the
+  `playerFields.ts` makes each field, `fieldTools.ts` adds the Hide and Reset buttons beside it) and a Files tab for the DOS download's extensions (`fileFields.ts`); the About (F10) tab's read-only words with its As in DOS / As on the web switch (`aboutFields.ts`) and, beside the menu's See Credits, a link to the game's credits page (`creditsLink.ts`); `playerPreview.ts`, which draws XFERPLAY's screens with the
   engine's own `draw*` functions, and dragging words and frames on that preview: `dragItems.ts`
-  (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, accompaniment in
+  (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, drawn from cached tiles
+  (`tiles.ts`, `paint.ts`) that an edit repaints only where it changed (`state.ts`), accompaniment in
   `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
   `slideShow/`, `textScreen/`, `recording/` and `highScores/`.
 - `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
   `convert.ts`), composing songs (`songMaker.ts`), recording or synthesizing samples
-  (`vocMaker.ts`, `sfxMaker.ts`), speaker effects (`speakerFx.ts`), textures (`textures.ts`), a
+  (`vocMaker.ts`, `sfxMaker.ts`; a recording stops itself where the .VOC would reach 64 KB, with the
+  `widgets/recordMeter.ts` meter), speaker effects (`speakerFx.ts`), textures (`textures.ts`), a
   new game's opening (`opening/`) and the integrator's instruction and level cards (`cards/`: the
   words from the game's keys in `cardText.ts`, a plain backdrop in `cardBackdrop.ts`, the files in
   the scene's slot by `cardWire.ts`, and the dialogs in `cardDialog.ts`). `makers.ts` is their registry, offered by the file picker;
@@ -101,7 +109,8 @@ Part of the [source map](../README.md).
     close in, and monsters that are solid and hurt; `linkChecks.ts` links that misfire, as
     PLAYGAME's chklnk reads them: two on one cell, a scene that starts on its own link, a link left
     at (0, 0), links and landings in walls, links off the map, and no chain of links to the won
-    scene; `missingParts.ts` .VOC files and level files that aren't there, block numbers and
+    scene; `missingParts.ts` .VOC files and level files that aren't there (and `bigVocs`: a .VOC over
+    64 KB, which PLAYGAME can't load; `widgets/bigVocWarning.ts` warns the same when one is added), block numbers and
     counters past their sets and monsters from empty slots) and the play checks
     (`playChecks.ts`, `landings.ts`; `wayBack.ts`: one-way spots, things left behind by a
     whole-game run carrying the least it can, and Slower hands, a second run with one key at a
@@ -112,7 +121,14 @@ Part of the [source map](../README.md).
     `mapFixes.ts`) and the maze maker (`mazeFor.ts`); `accepted.ts` keeps the findings a designer
     marked as meant to be (by a stable key; `sameEverySide.ts` is the facing check's own list).
   - `walk/`: the walkthrough bot. `pace.ts` measures how tight a walkthrough's key changes are;
-    `autoWalk.ts` walks, checked on the engine by `verify.ts`; `takes.ts` cuts the author's own play
+    `autoWalk.ts` walks, checked on the engine by `verify.ts`, trying `humanRoute.ts` first (treasure and
+    foes in sight, steady hands, only for walkthroughs, never the Level check's search); `gates.ts` finds the locked doors and
+    what adds to their counters (map blocks, monsters and what they turn into when they die, blocks
+    that turn into a key, with a key's price in another counter owed too), and `fetchKeys.ts`
+    fetches those keys first, then goes on; when nothing in the scene adds to a door's counter,
+    `otherScenes.ts` names the scenes that do and the bot's message says "another scene adds to it:
+    <scene>" as a suggestion (counters carry across scenes; it can't tell which way leads there);
+    `takes.ts` cuts the author's own play
     of a scene from the player's recorder, `mine.ts` keeps it, and `replayMine.ts` plays it in place
     of the bot's; `botRoutes.ts` keeps the bot's route of one scene with a fingerprint of the scene,
     to tell when the map changed since. `keptWalk.ts` is what Make a walkthrough keeps (companion
@@ -145,9 +161,14 @@ Part of the [source map](../README.md).
 
 ## How the editors work
 
+The home library's thumbnail action menu (`shell/homeTileMenu.ts`) opens beside its own
+ellipsis button in the browser's top layer. It reuses the project actions, keeps the
+featured game unchanged, and shows a scrolling cue when the available space is short.
+Arrow keys, Home/End and Escape work inside it; action dialogs return to the invoking tile.
+
 Each `editor/editors/<kind>/<kind>.ts` calls `registerEditor([...kinds], fn)`
 (`editors/registry.ts`). The workspace (`shell/workspace.ts`) lists the project's files by kind
-and renders `editors[kind]` for the one chosen; edits go through `core/project.ts`, which
+and renders `editors[kind]` for the one chosen. On screens 1200px and wider, "Hide files" folds the list into a thin 40px bar (toggle and Overview stay; remembered in `gm-files-folded`; the guided tour opens it while it runs); edits go through `core/project.ts`, which
 autosaves to IndexedDB (`shell/saveNote.ts` says so under Download, says why if a save fails, and
 makes Ctrl+S save at once). Files are always written in the original binary formats.
 
@@ -160,16 +181,69 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   group shown assembled (`groupView.ts`), and live animation previews at the game's tick rate
   (`animClip.ts` builds them from block chains, monsters and character sequences; `animPlayer.ts`
   plays them).
+  The painter's `blockSurface.ts` joins native tiles, masks absent cells, keeps repeated
+  references synchronized, and writes pixels without touching behavior fields. A quarter
+  turn rearranges the companion's group layout along with its picture, including holes and
+  repeats; it does not rearrange cells in a map.
+  `blockPaintHistory.ts` records all affected tile pictures in one Undo step, including
+  the group layout for a turn. Independent block histories survive; overlapping histories
+  are invalidated when an edit would otherwise let them restore stale pixels.
+  Edit as one picture opens the group in the main canvas, sharing every paint tool and
+  palette control. The banner returns to one block and identifies whose behavior fields
+  the sidebar edits. Strokes update native tile thumbnails live; Escape cancels a stroke
+  without changing Undo/Redo. A group turn also turns its companion layout; maps retain
+  their own tile placement.
+  Replace colors applies to the whole active group unless the whole-set option is selected;
+  both choices are one Undo step, including blocks beyond the currently visible picture.
+  `blockProperties.ts` owns the selected block's Walking, Touch, Time and monster behavior
+  panels separately from canvas painting, including scene-specific named counters and
+  monster-birth choices. Group tools do not spread those behavior fields across the group.
+  `blockChoice.ts` is the "Becomes block" / "Changes into block" field: the number, a live picture of
+  that block (or "None" when it is the block's own number) and a dialog of every non-empty block to pick from.
+  `blockNames.ts` stores designer labels under each BBL, CBL or MBL's `blockNames`
+  companion section. Labels are independent of monster-definition names; selectors retain
+  the native block number alongside the label. Naming never writes into a native block set.
+  The shared painter's `blockNameField.ts` edits the selected picture's label, supports
+  clearing it, and updates the picker without adding a pixel Undo step. Pixel Undo leaves
+  names intact; both are saved through their respective native/companion paths.
+  `widgets/blockChooser.ts` shows supplied picture labels in its grid and button captions,
+  with wrapping/clamping for long names and full accessible labels. Numbered choices remain
+  compact when no designer label was supplied.
+  Picture buttons explicitly use the non-submitting button type, so opening their chooser
+  inside a terrain or other staged form never saves that form as a side effect.
+  The assembled group view and its replacement chooser use labels from that group's
+  native block set, keeping duplicate picture references and file-specific names distinct.
+  Character frame tooltips and top/bottom picture selectors read labels from the selected
+  CBL, while orientation bits, frame indices and the character's native bytes remain numeric.
+  Map brushes and replacement choices use the current BBL's picture names. Monster
+  animation frames use the current MBL's names, independently of the MON's monster names.
 - **Mirrors.** The character editor makes a sequence's mirror
   (`editors/character/characterMirror.ts`, pure: both blocks of each frame mirrored and each move's
   x negated, on the same blocks turned or on new mirrored blocks; `characterMirrorPanel.ts`, its
   bar) and keeps the links between a sequence and its twin, and a block and its mirror, in the
   companion file.
+- **Instrument looks and track order.** In the music editor an instrument's picture, group color
+  and name come from `editors/music/instrumentLook.ts`: the preset whose patch matches, or one
+  differing in at most two of its 11 bytes (a close match, named "≈ Name"), else a plain note.
+  `presetIcons.ts` holds the preset icons' shared drawings and `iconsOwn.ts` gathers each preset's own (`iconsKeys`, `iconsStrings`, `iconsSynth`, `iconsWinds`, `iconsPerc`, drawn with `iconCanvas.ts`).
+  The Song tab's track list (`tracks.ts`) has Move up / Move down, drag and drop, and Sort by
+  group. The order (`trackOrder.ts`, pure; `doc.setOrder`, one undo step) is editor-only and
+  lives in the companion file's `trackOrder` section: a track is a MIDI channel in the .CMF, so
+  the song file and its channel numbers never change.
 - **Accompaniment.** The music editor's Accompany… and Copy tune…
   (`editors/music/accompanyDialog.ts`, `copyTuneDialog.ts`) use `editors/music/arrange/`, pure:
   `harmony.ts` hears a tune's key and chords, `styles.ts` holds the band's patterns and preset
   sounds, `accompany.ts` writes bass, chords and drums in rhythm mode around the tune, and
   `copyTune.ts` copies a tune at a new speed and pitch.
+- **Instrument presets.** The music editor's preset picker (`editors/music/presetPicker.ts`) is a grid of
+  radio buttons, one picture and name each, in families flowing like words (a turned name, then
+  its buttons on a tint). `presetIcons.ts` holds the pictures (20x20 pixel art, Game-Maker's block size, as rows of palette letters,
+  made for this project) by
+  preset id, else by family, so a new preset needs only its data. It opens on a Classic tab (the song
+  maker's nine sounds, tinted by the family each sounds like: `soundGroup` in `audio/oplPresets.ts`); a
+  More tab holds the search bar and every family, Classic's sounds included (the tab is remembered for the
+  session). A drum preset picked while the drum kit is off asks first, then `editors/music/drumMode.ts`
+  switches the kit on (the same CMF mode event as Settings) and gives the drum track its sound in one undo step.
 - **Copying tracks between songs.** The music editor's ⧉ on a track, Paste track and Add a track
   from another song…: `editors/music/trackClip.ts` (pure) copies a track's notes, instruments
   (SBI bytes), program changes and channel events and adds them to a song on its next free
@@ -201,11 +275,297 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   puts them first in the title `.LST` as the game's own files (what was added is kept in the
   companion, so it comes out again exactly, or is swapped for another). The Sandbox, CD and
   imported games never get one.
-- **Color vision.** The palette editor's Color vision tab (`editors/palette/visionPanel.ts`) shows
+- **Color vision.** The palette editor's Vision tab (`editors/palette/visionPanel.ts`) shows
   a level as seen in grayscale and with color-vision differences (`colorVision.ts`) and lists
   colors that look alike there (`visionWarnings.ts`); `visionDismissed.ts` keeps the ones a
   designer dismissed as meant to look alike, in the companion file on the `.pal`.
-- **Color 0.** The palette editor's note by color 0 opens `editors/palette/colorZeroDialog.ts`:
+  `visionFallback.ts` supplies block artwork using the selected palette when the map is
+  empty, then all 256 palette swatches when no suitable artwork is available.
+- **Color 0.** The palette editor's Backgrounds tab and its color-0 links show live miniatures;
+  choosing one opens `editors/palette/colorZeroDialog.ts`:
   each player screen drawn on color 0 (`colorZeroScreens.ts`: the high-score name prompt and
   table, F1, F2, F5, F10), drawn with the engine's own functions in the palette and the
   project's DOS player patches, with the palette entry each word color matched.
+  Its native renderers also supply the palette editor's live Backgrounds tab, loaded dynamically
+  so the native player remains outside the editor's initial bundle.
+- **Color picker.** `editors/palette/colorPicker.ts` stages hue, saturation and brightness
+  with a draggable square and vertical hue bar, keyboard controls and explicit confirmation.
+  It uses the tools package's RGB/HSV helpers and rounds the result to VGA's six-bit channels.
+  `paletteCopy.ts` copies inclusive ranges from another project palette (or within the same
+  palette), validates destination bounds, and returns one staged, undoable change.
+- **Palette roles.** `editors/palette/paletteReservations.ts` keeps character, background
+  and monster ranges under the game's `paletteReservations` companion section, shared by
+  all project palettes. Reassignment splits and merges ranges; color 0 (menus) and 255
+  (sprite transparency) retain their fixed roles. No reservation data enters DOS files.
+  `copyReservedRanges` merges selected areas from another game's companion, optionally
+  copying their palette colors at the same indices. The receiving palette editor owns
+  the single Undo step for both colors and metadata; other native files remain unchanged.
+  `paletteRoleCopy.ts`, opened from Reserved color ranges, lists other saved games with
+  reservations, lets you select roles and a source palette, and previews the ranges before
+  copying. Cancel leaves both projects untouched. Uncheck Also copy palette colors for
+  a companion-only layout transfer.
+
+Catalog DOS downloads save the same built game ZIP used for browser loading. Downloads of edited projects are still rebuilt from their current files.
+
+Integrator link placement uses `editors/integrator/linkConflicts.ts` alongside
+`linkEdits.ts`: an exit cannot share a block with another exit or an incoming
+entrance, and an entrance cannot land on an exit. These checks guide edits; opening
+an existing DOS game never silently rewrites its links.
+
+New projects (`Project.create`) include `default.pal`, an independent byte-for-byte
+copy of the RSD CD Library default palette supplied by the tools package. This
+also makes an Empty game useful immediately without a network fetch. Importing
+an existing game preserves its files and palettes. Source/license: tools `NOTICE.md`.
+
+The visual asset picker (`widgets/filePicker.ts`) reads library assets through
+`core/library.ts` and the cached game ZIP loader. Previewing visible files does not
+try obsolete loose-file URLs before downloading their game archive.
+
+`core/libraryCatalog.ts` chooses CD or public original-game assets, orders Library
+first (DEFAULT.PAL first), then Sample, RSD, Gameware and Shareware, and consolidates
+identical palettes using catalog hashes. Palette source labels prefer Library, then
+the first Gameware source. Precomputed VOC groups keep sound lists lazy.
+
+The file picker offers This game, Library (CD samples), and Sandbox & Bizarre
+source tabs, with search by filename or source-game title in every list. Source
+sounds use catalog groups and fetch their game ZIP only for visible previews or
+a chosen file; opening a list does not listen to every game first.
+
+`widgets/characterPicture.ts` resolves a CHR’s actual scene CBL (or a paired
+filename/single unambiguous set), skips sequence-end and monster-birth commands,
+and renders top/bottom orientation nibbles as PLAYGAME does. Bottom-only sprites
+are real previews too; a blank idle can fall back to a movement frame.
+
+- **Character-block auditions.** The file picker's animation button loads
+  `widgets/characterAuditionPlayer.ts` on demand. It cycles native sequences in
+  the card, temporarily names the current animation in its caption, and restores
+  the representative pose and source/size caption on Stop. Explicit wandering
+  and speech controls allow a character to leave the thumbnail and roam in eight
+  directions; the native source files remain read-only.
+
+- **Music thumbnails.** `widgets/musicTimeline.ts` draws decoded CMF notes against
+  time and calculates the playhead through PlayIt's first pass and repeat lead-in.
+  The file picker overlays the playhead while auditioning a song and restores the
+  thumbnail when playback stops.
+
+- **Sound-set auditions.** `widgets/soundAuditions.ts` keeps each effect's DOS slot
+  number and its PC speaker/VOC pair. `soundSetPreview.ts` offers individual effects
+  or all effects, either source or both in sequence, and updates the status and
+  thumbnail for the part currently playing. Closing the dialog stops playback.
+
+- **Playable thumbnails.** In the Files grids, `widgets/thumbPlayButton.ts` puts a Play/Stop
+  button on animation, slide show, demo, sound set, digital sound and music cards, and
+  `widgets/thumbRunners.ts` plays them in place (loaded on the first press, one at a time,
+  stopped when the card scrolls away). A slide or title that waits for a key shows a drawn
+  "ANY" keycap being pressed.
+
+- **Text-screen thumbnails.** `widgets/textPicture.ts` draws the first native text
+  page with Display_File's wrapping, position and stock color selection, reusing
+  the tools package's credited font data. Slide-show thumbnails follow readable
+  slides; damaged images and missing backdrop dependencies report why no preview
+  can be drawn. In the thumbnail only, the ink falls back to the palette's lightest
+  or darkest color when the stock purple would vanish against color 0. High-score
+  files draw as their names and scores, recordings as ticks for their key presses.
+  Quick open (Ctrl+P) draws the same thumbnails, only for rows in view.
+
+- **Editor side-panel tabs.** `widgets/panelTabs.ts` shares the tab and panel
+  semantics, roving keyboard focus, arrow/Home/End navigation and hidden-panel
+  behavior used to separate block colors from their gameplay properties. Character
+  sequences use Controls, Animation, Requirements and Sound tabs, remembering the
+  selected settings panel in the address when frames or sequences change. Frame
+  toolbars keep Swap halves alongside move, duplicate and delete.
+
+- **Readable palettes.** `core/readablePalette.ts` picks which palette shows a sprite readably: one that does not paint most of its colors near black.
+- **Readable time fields.** `core/duration.ts` formats timer values as hours,
+  minutes, seconds and milliseconds using each field's clock. `numberField` can
+  show a live duration with its `time` option, including disabled-zero timers or
+  minimum frame lengths. The stored DOS tick counts stay unchanged.
+
+- **Map panels.** Blocks, Monsters and Tool options share the accessible panel-tab
+  widget. Picking a toolbar tool opens its relevant panel. Selection exposes the
+  existing fill, copy/cut, paste and stamp actions; the clipboard survives changing
+  maps in the same browser tab. The side column scrolls as a whole, leaving tool
+  settings readable instead of dividing the remaining height between three lists.
+
+- **Pending map rectangles.** The map tool controller draws the chosen blocks as
+  a ghost while a rectangle changes size, preserving the map and undo history
+  until pointer release. Escape discards a pending shape, including its later
+  pointer release.
+
+- **Groups from maps.** `editors/map/tools/mapGroup.ts` captures a selected picture
+  as a named block group, preserving its tile layout in the background block set's
+  companion metadata. Groups fit up to 8×8 blocks; larger selections can remain
+  stamps. Creating a group leaves the native map and block files unchanged.
+
+- **Small map pictures.** Download map picture includes 1, 5 and 10 pixels per
+  block, alongside the original and enlarged sizes. These sizes apply to the
+  downloaded PNG; editing and native game files keep their original dimensions.
+
+- **Map wheel zoom.** `editors/map/mapZoom.ts` zooms continuously from one screen
+  pixel per block (5%) to 400%: the wheel and a trackpad pinch change the zoom by a
+  small factor per event (one change per animation frame), keeping the map coordinate
+  under the pointer fixed; Shift+wheel keeps scrolling. The toolbar menu keeps round
+  presets (and shows the exact percentage the wheel reached); the URL's `zoom` takes
+  an old preset or any number in range. The picture is drawn at a power-of-two scale
+  (`pictureScale`: 1/16 to 2) and the browser scales it the rest of the way, so a zoom
+  change inside a level redraws nothing and 400% needs no 8000-pixel canvas. Below
+  100% blocks are shrunk in halves first and drawn smoothed (`mapTile.ts`, a mipmap;
+  at 1 pixel per block each block is its average color); at 100% and above the pixels
+  stay crisp. The overlay and marks draw at the picture's scale; link markers and
+  pointer math use the screen zoom. These view changes never edit native map data.
+
+- **What blocks do.** The map toolbar's ◈ button opens toggles for marks over the
+  map, each remembered in the browser (`gm-map-mark-*`): barriers (white walls;
+  amber one-way sides with teeth on the solid side; blocks solid all round share
+  one outline), push and pull (chevrons moving the way gravity pulls; still under
+  reduced motion), and touch, pickup and timed badges. `tools/blockMarks.ts`
+  works out each block's behavior from PLAYGAME's rules (cited in its header) and
+  the merged barrier edges, with no DOM; `tools/blockMarksDraw.ts` draws only the
+  cells in view on a layer `mapViewport.ts` copies when the map wraps;
+  `tools/blockMarksControls.ts` is the panel and its legend. With the marks on,
+  the status line says what the block under the pointer does. Editor-only: no
+  game file or export changes.
+
+- **Polygon selections.** `editors/map/tools/selection.ts` builds cell masks from
+  closed corner paths using the existing line and outside-flood helpers. Captured
+  selections preserve unselected cells as holes, so fill, cut, paste, stamps and
+  block groups can respect the shape instead of its bounding rectangle.
+
+  In the Select tool's options, choose Polygon, click its corners, and finish with
+  Enter, a double-click or a click on its first corner. Backspace removes the last
+  corner; Escape cancels. Fill, copy/cut, paste, stamps and block groups keep its
+  shape. The maze generator asks for a rectangular selection.
+
+- **Monster births.** `widgets/monsterBirthSource.ts` resolves the MON/MBL pair
+  used by scenes sharing a background block set, then maps monster numbers to
+  their first-frame pictures. The Time panel's picture chooser keeps the native
+  birth-monster index and numeric field, with a source selector when scenes use
+  different monster files. `widgets/monsterBirthField.ts` keeps numeric edits and
+  the picture chooser synchronized, including the designer's monster names.
+
+Image import (`tools/convert.ts`) and palette picture-color selection share the tools
+package’s portable `medianCutRgba` reducer; the browser keeps canvas loading and fitting.
+`editors/palette/pictureColors.ts` previews a bounded color budget from the selected GIF's
+actual pixels, applies it inside the selected palette range, and leaves other entries alone.
+
+The character starting sheet's `editors/character/characterStatus.ts` renders its inventory
+with the native F2 renderer, palette color 0, and the project's DOS player text, colors and
+frames. The editor loads that renderer dynamically and keeps item selection controls separate.
+Counter names are game-wide (see Game controls below): `editors/character/counterNames.ts`
+reads and validates them by native meter number (5-19 repetition counters, 20-24 hidden tallies)
+and still names the older per-character `counterNames` section, which `core/gameControls.ts`
+moves to the game-wide names when a project opens. The character editor only shows a counter's
+name, with a link to Overview › Controls. Fixed engine counters and the character's native bytes
+retain their original meanings.
+The block editor's counter choices keep their DOS numbers and add the game-wide name.
+
+Palette file pickers have a separate **Ready-made palettes** tab, selected first when adding
+a palette. It reads the tools package's template registry, previews occupied entries without
+fetching game ZIPs, and creates a fresh file with a free DOS 8.3 name. CD samples retain their
+own tab. Picker tabs support arrow keys and Home/End.
+
+Community games use reviewed metadata alongside native `HomeGame` entries. Their cards
+open the creator's play site, optional permanent ZIP, source/credits, and the existing
+`?open=` import flow for editing a copy. Their previews use creator images or title cards;
+native game files are loaded only when the player chooses an archive action.
+
+- **Game controls.** `core/gameControls.ts` holds what the player's keys, the two joystick
+  buttons and the 20 nameable counters mean, written once for every character in the .gam's
+  companion (editor-only; DOS, native and web-page exports never carry it). Its type,
+  `GameControls`, is plain JSON that a game's own `controls.json` can hold as it is:
+  `{ "keys": { "57": { "short": "Jump", "long": "…" } }` (DOS scan code to text),
+  `"joystick": { "1": { "short": "…", "long": "…" } }` (buttons 1 and 2, kept in the older
+  `joystickButtons` section) and `"counters": { "20": "Gold keys" }` (meter 5-24 to name) and `"sounds": { "9": "Zap" } }` (a sound slot past PLAYGAME's nine named ones to a name of up to 40 characters; `shell/soundUse.ts` lists the slots and which characters play them, and the sound editor and auditions show the name instead of "Effect").
+  Every part is optional. It is edited in Overview › Controls (`shell/overviewControls.ts`),
+  which has its own Undo and Redo; the character editor's Controls tab keeps the joystick
+  button picker (`character/joystickControls.ts`) and shows the shared words. The ⌨ Keys dialog
+  (`keymap/keyMapView.ts`) and Saves & scores counter labels use them when a game of yours has
+  them. `migrateCounterNames` runs when the workspace opens: the first name found for a counter
+  wins, and the old per-character entries are removed.
+
+- **Monster birth sources.** `widgets/monsterBirthSource.ts` resolves the native
+  MON/MBL pairs of every adventure scene using a background set or character,
+  deduplicating shared pairs and avoiding unrelated first-file previews. Character
+  frame cards expose an explicit birth action and picture chooser through
+  `character/characterBirthPreview.ts`; the selected preview source is saved in
+  the CHR companion section `monsterBirthPreview`. Scene file bindings and
+  native birth command numbers remain unchanged by preview choices.
+
+- **Character frame groups.** `blocks/blockClips.ts` infers top/bottom pairs from
+  every CHR linked to the CBL through an adventure scene. Repeated pairs across
+  frames, scenes and characters appear once. Birth commands and oriented frames
+  are excluded because a plain block group cannot represent their appearance.
+  In the CBL Groups panel, **Group character frames…** opens the inferred pairs
+  for review; **All of them** adds the complete set in one step. Existing groups
+  are retained and omitted from subsequent suggestions.
+
+- **Oriented painting surfaces.** `blocks/blockSurface.ts` can project native
+  pictures through each character half’s PLAYGAME orientation. Reads, writes,
+  staged Undo snapshots and shared pixel addresses refer back to the original
+  CBL, so editing a turned or mirrored frame also updates its other occurrences.
+
+- **Character painter frame model.** `blocks/characterFrameModel.ts` finds
+  animations through each CBL’s scene bindings and retains original CHR frame
+  indices, including gaps left by birth commands. Its 1×1 and 1×2 views keep
+  per-half orientations, empty halves and shared block references intact.
+
+- **Animation stages.** `blocks/animPlayer.ts` optionally centers a live native
+  animation on a fixed-size stage, with a caller-drawn palette or scene backdrop.
+  Existing block and group previews retain their picture-sized canvases.
+
+- **Character frame painter controls.** `blocks/characterFramesPanel.ts` selects
+  a linked CHR animation and native frame, steps backward/forward, and chooses
+  one half or a full 1×2 frame. Playback reads live CBL pixels over a saved
+  palette color or a map scene. View choices stay in the address; only backdrop
+  preferences use companion metadata. Related-block highlights are exposed to
+  the main picker without changing character definitions.
+
+  The main CBL painter uses these oriented surfaces and scoped Undo histories.
+  Its block picker marks the selected animation’s pictures; quarter turns of a
+  full frame are disabled to retain the native 20×40 shape. Individual 20×20
+  blocks and ordinary groups retain their existing transforms. The live preview
+  sits beside the painter on desktop and shares a compact workbench with its
+  canvas on phones and tablets, retaining playback and background choices during resizing. Map
+  mode starts on actual scenery; palette mode supplies a plain backdrop. Scene
+  preview code loads dynamically when map mode is first requested.
+
+- **Character costumes.** `widgets/characterPicture.ts` accepts an explicit CBL
+  when a thumbnail auditions a particular block set. The same CHR can therefore
+  preview several linked costumes using the actual selected pictures.
+
+- **CBL poses and companions.** `widgets/characterSets.ts` resolves each block
+  set’s scene-linked characters and MON/MBL resources. Its thumbnail shows one
+  representative native pose; unbound sets without a CHR show one visible block.
+  `widgets/thumbs.ts` uses these poses for CBL cards instead of a picture grid.
+
+- **Audition clock.** `widgets/characterAuditions.ts` reads each CBL’s native
+  sequences and monster companions without creating or saving a project. Its
+  deterministic clock keeps blank pictures, emits birth/movement events once
+  at native frame boundaries, and bounds catch-up after a delayed browser frame.
+  Automatic tours hold brief poses for two seconds and always finish the full
+  native period of longer animations before advancing.
+
+- **Character audition stage.** `widgets/characterAuditionStage.ts` paints
+  native body/monster frames and bounded projectiles. Its optional manual
+  popover lets the character roam outside an open file picker without taking
+  pointer events or adding page scroll. Stopping removes the layer and speech.
+
+Map wrapping geometry lives in `editors/map/mapWrap.ts`: native cell normalization,
+seam-continuous gestures, and viewport tile/marker placement without enlarging DOS maps.
+`editors/map/mapViewport.ts` owns the scroll surface, bounded/repeating canvas presentation,
+visible native cells and marker placement. The repeating canvas is only viewport sized;
+its source artwork and overlays keep their native map dimensions.
+The map toolbar’s **Wrap scrolling** toggle remembers its view preference. Repeating
+views use the same native painting, monster and link data; link markers project into
+the viewport, and zoom, Level check jumps and URL positions keep native coordinates.
+Pointer gestures retain their physical direction through a seam or scroll recenter,
+including fast drags spanning more than half the map at a small zoom.
+Wrapped gestures also apply to line/rectangle/polygon tools, fill, terrain, stamps,
+buildings, and selection copy/cut/paste and block groups. A gesture spans at most
+one map per axis; native files and Undo continue to store only the original map.
+The overlay repeats drag previews, polygon edges and selections through the same
+seams; Find, grid, link and Level check overlays keep their native positions.
+
+Project URLs without a file open the asset overview; `?assets=map` opens a category.
+Direct file links keep their editor and view parameters. Browser Back and Forward,
+the Assets button in a file editor, and stopping a play test return to the appropriate view.

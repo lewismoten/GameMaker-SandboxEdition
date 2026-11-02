@@ -6,9 +6,9 @@ import { h, modal, pickFiles, toast } from '../core/ui';
 import { registerMaker } from './makers';
 import { paintIndexed } from '../core/draw';
 import { decodeFrames, rgbaOf, toIndexed, type Fit, type Indexed } from './convert';
-import { encodeGif } from '../../formats/gif';
-import { encodeFli } from '../../formats/fli';
-import { parsePalette } from '../../formats/palette';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { validDosName, type Project } from '../core/project';
 import { normalize } from '../../project/files';
 

@@ -4,10 +4,10 @@
 // virus pictures and paths are the stage's own, turned the same way (its own .bbl, .mon and
 // .mbl), so everything still joins up and comes at the ship from ahead; words and numbers
 // stay readable, and a few blocks the lane never shows become its distance meter.
-import { BACKBL, emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../../../web/src/formats/blocks';
-import { MLEN, MWID } from '../../../../web/src/formats/map';
-import type { Monster } from '../../../../web/src/formats/monster';
-import { Pixels } from '../../../kit/pixels';
+import { BACKBL, emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { flipX, turn180 } from '../art/draw';
 import { EGG_BLOCK } from '../blocks/egg';
 import { Grid, LENGTH, STRIP_START, X0 } from './mapkit';

@@ -5,20 +5,20 @@ import { scoopIssue } from './scoopIssue';
 import { scoopDateline } from './scoopIssues';
 import { sandboxMarkEl } from './sandboxMark';
 import { h } from '../../editor/core/ui';
-import { parseCharacter } from '../../formats/character';
-import { scanName } from '../../input/scancodes';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import { fetchGameFile, type CatalogEntry } from '../../project/files';
 import { storageLine } from '../../project/diskFacts';
 import { shotCache, sheet, fictionalNote, sandboxLogo, sandboxBanner, splitTitle, html, BBS_PHONE, mapPicture, type PrintContext, type Sheet } from './kit';
 import { fnv1a } from '../../seededRandom';
 import { shotFrame } from '../../gfx/shotFrame';
-import { CHARBL } from '../../formats/blocks';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { DIR_ARROW, DIR_PAD, PLAYGAME_KEYS, manualKeyText, splitKeys, type BoundKey, type Dir } from './keys';
 import { redCode } from './redFilm';
 import { paginate } from './paginate';
 import { measured } from './fitSheet';
 
-const ISSUE_DATE = 'Fall 1995';
+const ISSUE_DATE = 'December 1994';
 
 /** Games the catalog announces as coming soon until they ship (then their catalog entries take over). */
 const COMING: { id: string; title: string; blurb: string; when: string }[] = [
@@ -278,7 +278,7 @@ export async function catalogBlocks(ctx: PrintContext): Promise<HTMLElement[]> {
           h(
             'p',
             { class: 'cat-meta' },
-            `${g.year ?? 1995} · ${g.original?.sound === 'sb' ? 'Sound Blaster' : 'PC speaker'} · ${storageLine(g)} · register ${price(g)}`,
+            `${Math.min(g.year ?? 1994, 1994)} · ${g.original?.sound === 'sb' ? 'Sound Blaster' : 'PC speaker'} · ${storageLine(g)} · register ${price(g)}`,
           ),
           h('p', null, g.original?.printables?.pitch ?? g.blurb ?? ''),
           h('ul', null, ...(g.original?.box?.features ?? []).slice(0, 3).map((f) => h('li', null, f))),

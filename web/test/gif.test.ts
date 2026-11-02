@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { decodeGif, encodeGif, isGif } from '../src/formats/gif';
+import { decodeGif, encodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 
 const gameware = resolve(__dirname, '../../cd/gameware');
 const gifs = existsSync(gameware)

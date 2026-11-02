@@ -4,8 +4,8 @@
 // screams at whatever cousin stands in the gap.
 // Moving monsters (the crowd, camels, pigeons) are handled by trying a stretch again from a
 // snapshot after a wait (see route.ts, carefully()).
-import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
-import { LASTMON } from '../../../web/src/formats/monster';
+import { MAXSCENELINKS, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';
 import { SCREAMSEQ, WOOL } from '../src/ids';

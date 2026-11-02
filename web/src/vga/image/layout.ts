@@ -1,7 +1,7 @@
 // IMAGE.EXE's screen layout and small helpers (the #defines at the top of code/GM/IMAGE.C).
 import { type RGBdata } from '../shared/vga';
 import { BLEN } from '../shared/facelift';
-import { type Block, emptyBlock } from '../../formats/blocks';
+import { type Block, emptyBlock } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export const LOLEN = 12;
 export const LOX = 15;

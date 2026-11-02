@@ -2,17 +2,18 @@
 // (index.html), icons, a web app manifest and an offline service worker, plus a copy of the
 // game's files, zipped up and ready to unpack onto any static web host (GitHub Pages,
 // Netlify, an S3 bucket…). index.html also plays straight from disk.
-import { createZip, type ZipEntry } from '../project/zip';
+import type { PlayerAbout } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import type { GameFiles } from '../project/files';
 import { hashText, serviceWorkerSource } from './serviceWorker';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { encodeGame, fillPage, GAME_MARK } from './singlePage';
 import { gameAbout } from './gameAbout';
 import { gameDescription, REPO_URL, SITE_URL } from '../seo/site';
 import { PRODUCT } from '../edition';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 import { PROJECT } from './notices';
-import { withoutExtensions } from '../dosPlayer/fileExtensions';
+import { withoutExtensions } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 
 export interface ExportOptions {
   title: string;
@@ -26,6 +27,8 @@ export interface ExportOptions {
   fiction?: string;
   /** The project's DOS player customizations, so the app shows XFERPLAY's screens as the DOS export does. */
   player?: PlayerPatches;
+  /** An imported game's own About text and first build, so F10 shows what Play's does (dosPlayer/playerOrigin.ts). */
+  playerAbout?: PlayerAbout;
 }
 
 const ICONS = ['icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'icon.svg', 'apple-touch-icon.png'];
@@ -70,7 +73,10 @@ export async function exportWebApp(files: GameFiles, opts: ExportOptions): Promi
   // renamed file extensions are for the DOS download only
   const look = opts.player && withoutExtensions(opts.player);
   const player = look && Object.keys(look).length ? look : undefined;
-  const game = await encodeGame({ id, title: opts.title, gam: opts.gam, notice, player }, gameEntries);
+  const game = await encodeGame(
+    { id, title: opts.title, gam: opts.gam, notice, player, ...(opts.playerAbout ? { playerAbout: opts.playerAbout } : {}) },
+    gameEntries,
+  );
   const audio = recordedAudioNotice(recordedClips(files), 78, '  ');
   entries.push({ name: 'index.html', data: enc.encode(customizePage(fillPage(template, game, { blurb, fiction: opts.fiction, audio }), theme)) });
 

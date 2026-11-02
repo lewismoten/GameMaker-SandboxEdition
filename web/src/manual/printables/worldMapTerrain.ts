@@ -2,7 +2,7 @@
 // into a kind of country (forest, water, sand, snow...) and a muted ink for the paper, and
 // wobbly coastlines. Pure arithmetic on numbers and strings, deterministic, so every print is
 // the same.
-import type { Point } from '../../formats/game';
+import type { Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { xorshift32 } from '../../seededRandom';
 
 export type Terrain = 'forest' | 'grass' | 'water' | 'sand' | 'rock' | 'snow' | 'ember' | 'night' | 'town';

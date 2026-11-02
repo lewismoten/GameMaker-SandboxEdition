@@ -1,13 +1,13 @@
 // Lettering and finishing for the 320x200 screens: the PC's 8x8 font drawn into the linear
 // RGB picture before it is reduced to 256 colors (so the letters get colors of their own),
 // and the reduction itself, into a GIF or a frame.
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import { encodeGif } from '../../../../web/src/formats/gif';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { toBytes, type Picture } from '../render/image';
 import { Matcher, medianCut, putColors, type Col } from '../render/quant';
 import type { V } from '../render/tracer';
-import { textInk } from '../../../kit/textBounds';
-import { textWidth } from '../../../kit/pcText';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
+import { textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
 
 /** Draws text (8x8 font scaled by `s`) in color c, with an optional dark outline and drop shadow. */
 export function text(p: Picture, x: number, y: number, str: string, c: V, s = 1, o: { outline?: V; shadow?: V; alpha?: number } = {}): number {

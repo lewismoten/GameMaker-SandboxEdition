@@ -14,7 +14,7 @@ the original source in [`code/GM`](../code/GM). It can:
   pictures; compose Sound Blaster `.CMF` songs by mood, key and speed; record `.VOC`
   samples with the microphone or synthesize them; generate and transform PC speaker
   effects; and record demo `.REC` files by playing. (`src/editor/tools`, encoders in
-  `src/formats`.)
+  `packages/engine/src/formats`.)
 - **Read original projects**: open a game folder, loose files or a `.zip`, including
   pre-3.00 `.gam` files (they are converted the same way the 3.00 integrator did).
 - **Run the original games**: the sample "gameware" from the CD, the shareware games
@@ -183,12 +183,13 @@ cd web
 npm install
 npm run dev        # http://localhost:5173
 npm test           # every *.test.ts in test/ and src/ (vitest), a minute or two
-npm run test:fast  # only the quick tests, as GitHub runs them (each under 50 ms here)
-npm run test:slow-list  # times every test and rewrites test/slowTests.json, the ones CI skips
+npm run test:fast  # only the quick tests (each under 50 ms here)
+npm run test:slow-list  # times every test and rewrites test/slowTests.json, the ones test:fast skips
 npm run typecheck  # tsc --noEmit (strict)
 npm run format     # Prettier on web/'s code, games/*.ts and code/README.md (config at the repo root)
-npm run format:check  # the same, only checking (CI runs it)
-npm run lint       # ESLint 10 with typescript-eslint's type-aware rules (web/eslint.config.js)
+npm run format:check  # the same, only checking (npm run verify at the root runs it)
+npm run lint       # ESLint 10 with typescript-eslint's type-aware rules (web/eslint.config.js); cached per file, so a type change in one file can leave a stale pass in another
+npm run lint:full  # the same without the cache (run it before a release)
 npm run lint:fix   # lint, fixing what it can
 npm run check:games  # every game's checks (bot, clips, text fit, hidden things, Level check), as a table
 npm run build      # typecheck, then the static site in web/dist
@@ -263,6 +264,8 @@ area's own README for more detail. In short:
 | `scripts` | Vite plugins: serving the CD's games, the build's game pictures, the one-page player, SEO pages. Run by hand: `macDmg.ts`, `winExe.ts` and `linuxTar.ts` (native downloads of catalog games, into `../dist`), `castArt.ts` and `castSprites.ts` (the Cast page's pictures, with the other `cast*.ts` drawings they use), `credits.ts` (the Credits page's package list), `levelSecrets.ts` and `levelViews.ts` (what the Level Maps hide and show), `castHidden.ts` (where the cast's Easter eggs and tin hearts are), `gameMakerArchive.ts` (the magazine's Shareware Shelf), `bbsGifs.ts` (the BBS's pictures) and `dosbox.ts` (`npm run dosbox`). |
 | `test` | Vitest tests, one file per subject, each starting with a line saying what it covers (many newer `*.test.ts` sit beside their source in `src/`). |
 
+The app is an npm workspace; reusable implementation belongs to [`packages/`](../docs/monorepo.md), not `src/`. Run `npm ci` at the repository root to install and build all SDKs.
+
 ## How the site works
 
 - **Addresses** (`src/urlState.ts`): both interfaces keep their place in the hash, so a
@@ -314,6 +317,7 @@ area's own README for more detail. In short:
   that already shows it. Walkthroughs and the videos about the site are listed too.
 - **Tests** (`test/`, and many beside their source in `src/`): one Vitest file per subject,
   each starting with a line saying what it covers; they run in Node (`npm test`). Many check formats against the CD's own files.
+  Console output from passing tests is hidden; a failing test keeps its console diagnostics. Use `npm test -- --silent=false` when debugging passing tests.
 
 ## File formats
 

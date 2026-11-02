@@ -5,8 +5,8 @@
 // animation (two monsters, three sequences) a menu chooses which.
 import { h, clear } from '../../core/ui';
 import { drawBlockTo } from '../../core/draw';
-import { BLEN } from '../../../formats/blocks';
-import type { Palette } from '../../../formats/palette';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { TICK_HZ } from './blockAnim';
 import { clipTicks, isStill, nextChange, stepAt, tickOf, type Clip } from './animClip';
 import './animPlayer.css';
@@ -14,7 +14,7 @@ import './animPlayer.css';
 interface AnimPlayer {
   el: HTMLElement;
   /** Shows these clips (the first chosen), paused on the frame that shows `focus` if paused. */
-  show(clips: Clip[], focus?: number): void;
+  show(clips: Clip[], focus?: number, startTick?: number): void;
   /** Draws again with the blocks as they are now (after a paint, when paused). */
   redraw(): void;
   dispose(): void;
@@ -30,6 +30,8 @@ export function animPlayer(o: {
   label: string;
   /** Screen pixels per block pixel. */
   scale?: number;
+  /** Optional scene in native pixels; the animated picture is centered over it. */
+  stage?: { width: number; height: number; draw(ctx: CanvasRenderingContext2D): void };
 }): AnimPlayer {
   const scale = o.scale ?? 3;
   const canvas = h('canvas', { class: `pixel anim-player-canvas${o.transparent ? ' checker' : ''}`, role: 'img', 'aria-label': o.label });
@@ -46,6 +48,7 @@ export function animPlayer(o: {
   let clips: Clip[] = [];
   let current: Clip | undefined;
   let focus: number | undefined;
+  let startTick: number | undefined;
   let playing = !reducedMotion();
   /** The clip's tick when paused, or the tick it started at when playing. */
   let tick = 0;
@@ -57,11 +60,19 @@ export function animPlayer(o: {
   function draw(): void {
     const c = current;
     if (!c) return;
-    const w = c.cols * BLEN * scale;
-    const hgt = c.rows * BLEN * scale;
+    const w = (o.stage?.width ?? c.cols * BLEN) * scale;
+    const hgt = (o.stage?.height ?? c.rows * BLEN) * scale;
     if (canvas.width !== w) canvas.width = w;
     if (canvas.height !== hgt) canvas.height = hgt;
     ctx.clearRect(0, 0, w, hgt);
+    if (o.stage) {
+      ctx.save();
+      ctx.scale(scale, scale);
+      o.stage.draw(ctx);
+      ctx.restore();
+    }
+    const left = Math.floor((w - c.cols * BLEN * scale) / 2),
+      top = Math.floor((hgt - c.rows * BLEN * scale) / 2);
     const t = nowTick();
     const blocks = o.blocks();
     const shown: number[] = [];
@@ -69,11 +80,11 @@ export function animPlayer(o: {
       const s = tr.steps[stepAt(tr, t)];
       shown.push(s.block);
       const px = blocks[s.block]?.pixels;
-      if (px) drawBlockTo(ctx, px, o.pal(), tr.col * BLEN * scale, tr.row * BLEN * scale, scale, o.transparent, s.orient ?? 0);
+      if (px) drawBlockTo(ctx, px, o.pal(), left + tr.col * BLEN * scale, top + tr.row * BLEN * scale, scale, o.transparent, s.orient ?? 0);
       if (s.block === focus && c.tracks.length > 1) {
         ctx.strokeStyle = '#ff0';
         ctx.lineWidth = 2;
-        ctx.strokeRect(tr.col * BLEN * scale + 1, tr.row * BLEN * scale + 1, BLEN * scale - 2, BLEN * scale - 2);
+        ctx.strokeRect(left + tr.col * BLEN * scale + 1, top + tr.row * BLEN * scale + 1, BLEN * scale - 2, BLEN * scale - 2);
       }
     }
     const around = clipTicks(c);
@@ -121,8 +132,8 @@ export function animPlayer(o: {
   /** Paused: the first frame that shows the block being edited; playing: from the start. */
   function restart(): void {
     const c = current;
-    tick = 0;
-    if (c && focus !== undefined) {
+    tick = startTick ?? 0;
+    if (startTick === undefined && c && focus !== undefined) {
       const tr = c.tracks.find((t) => t.steps.some((s) => s.block === focus));
       if (tr)
         tick = tickOf(
@@ -139,10 +150,11 @@ export function animPlayer(o: {
 
   return {
     el,
-    show(next, f) {
+    show(next, f, at) {
       const label = current?.label;
       clips = next;
       focus = f;
+      startTick = at;
       choiceLabel.hidden = clips.length < 2;
       clear(choice, ...clips.map((c, i) => h('option', { value: String(i) }, c.label)));
       const keep = clips.findIndex((c) => c.label === label);

@@ -67,13 +67,19 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const libTitle = h('h2', { id: 'lib-title' });
   // the collection in a line (cut short with … if it must be); More shows all of it
   const libLeadText = h('span', { class: 'lib-lead-text' });
-  const leadMore = h('button', {
-    type: 'button',
-    class: 'lib-lead-more',
-    'aria-expanded': 'false',
-    'aria-controls': 'lib-lead',
-    onclick: () => showLead(leadMore.getAttribute('aria-expanded') !== 'true'),
-  });
+  const leadMore = h(
+    'button',
+    {
+      type: 'button',
+      class: 'lib-lead-more',
+      'aria-expanded': 'false',
+      'aria-controls': 'lib-lead',
+      // named from the start: showLead fills in the collection once the tabs are drawn
+      'aria-label': 'More about this collection',
+      onclick: () => showLead(leadMore.getAttribute('aria-expanded') !== 'true'),
+    },
+    'More',
+  );
   const libLead = h('p', { class: 'lead', id: 'lib-lead' }, libLeadText, leadMore);
   const showLead = (all: boolean) => {
     const info = CATEGORIES.find((x) => x.id === current)!;
@@ -98,6 +104,17 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   // where games come in, as one more tile: drop them on it (or anywhere in the library), or pick them
   const dropTile = importTile(nav, () => void refreshProjects());
   const lib = homeLibrary();
+  const newGameBtn = h('button', { class: 'primary lib-new', type: 'button', onclick: () => void homeImport().then((m) => m.newGame(nav)) }, '+ New game');
+  const communityBtn = h(
+    'button',
+    {
+      class: 'primary',
+      type: 'button',
+      hidden: true,
+      onclick: () => void import('../../community/submit').then((m) => m.submitCommunityGame()),
+    },
+    'Add your game',
+  );
   // an import can bring in hundreds: all of them go at once (importRemove.ts, loaded when used)
   const removeAllBtn = h(
     'button',
@@ -124,6 +141,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       h('option', { value: 'edited', selected: lib.sort === 'edited' }, 'Last edited'),
       h('option', { value: 'name', selected: lib.sort === 'name' }, 'Name'),
       h('option', { value: 'rating', selected: lib.sort === 'rating' }, 'Rating (Imported)'),
+      h('option', { value: 'walk', selected: lib.sort === 'walk' }, 'Walkthrough % (Imported)'),
     ),
   );
   // Imported narrowed to one rating, or Unrated (homeRatings.ts)
@@ -199,7 +217,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   };
 
   /** The games a collection can feature: its finished ones (all of yours). */
-  const featurable = (c: Category) => lib.gamesOf(c).filter((g) => g.gam || isOwn(c));
+  const featurable = (c: Category) => lib.gamesOf(c).filter((g) => g.gam || g.community || isOwn(c));
   /**
    * Shows a game of collection `c` picked at random (homeCategories.ts pickFeatured), or of
    * Sandbox while `c` has none; its Another button picks again from the same collection.
@@ -228,7 +246,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   // The collections are tabs: arrow keys move between them, Tab goes on to the games.
   const renderCats = () => {
-    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, isOwn(c.id) ? lib.own(c.id).length : lib.entriesOf(c.id).length]));
+    const counts = Object.fromEntries(CATEGORIES.map((c) => [c.id, lib.gamesOf(c.id).length]));
     clear(
       catNav,
       ...lib.shownCats().map((c) =>
@@ -250,6 +268,18 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
           h('span', { class: 'lib-cat-count' }, String(counts[c.id]), h('span', { class: 'vh' }, ` game${counts[c.id] === 1 ? '' : 's'}`)),
         ),
       ),
+      // until the catalog is in, Bizarre's tab may be coming: its place is kept so the rows below don't drop
+      ...(lib.catalog.length || lib.catalogError
+        ? []
+        : [
+            h(
+              'span',
+              { class: 'lib-cat', 'aria-hidden': 'true', style: 'visibility:hidden' },
+              icon('help'),
+              h('span', { class: 'lib-cat-name' }, 'Bizarre'),
+              h('span', { class: 'lib-cat-count' }, '00'),
+            ),
+          ]),
     );
   };
   // Arrow keys move between the tiles (Tab stops once per tile); Home and End go to the ends.
@@ -289,17 +319,18 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     sortBox.hidden = !isOwn(c) || lib.own(c).length < 2;
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
+    newGameBtn.hidden = c === 'community';
+    communityBtn.hidden = c !== 'community';
     const cards = libraryCards(lib, c, ratingFilter, {
       choose,
-      more: (game) => (choose(game), top.openMore()),
+      more: (game, anchor) => void import('./homeTileMenu').then((m) => m.homeTileMenu(anchor, game, refreshProjects)),
       browse: (to) => void select(to, true).then(() => document.getElementById(`lib-tab-${to}`)?.focus()),
       newGame: () => void homeImport().then((m) => m.newGame(nav)),
     });
-    // your own collections take more games in: the import tile, first while there are none
+    // The import target stays first, including after sorting or filtering the games.
     if (isOwn(c)) {
       dropTile.classList.remove('over');
-      if (cards.some((el) => el.classList.contains('game-tile'))) cards.push(dropTile);
-      else cards.unshift(dropTile);
+      cards.unshift(dropTile);
     }
     // Keep the page from jumping while the tiles are swapped.
     tiles.style.minHeight = `${tiles.offsetHeight}px`;
@@ -312,6 +343,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   const refreshProjects = async () => {
     lib.projects = await listProjects().catch(() => []);
+    await lib.loadWalkBadges();
     // renamed or saved since: made afresh
     lib.forgetOwn();
     const key = top.game?.key;
@@ -334,17 +366,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       h(
         'section',
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
-        h(
-          'div',
-          { class: 'lib-bar' },
-          catNav,
-          h(
-            'div',
-            { class: 'lib-find' },
-            search,
-            h('button', { class: 'primary lib-new', type: 'button', onclick: () => void homeImport().then((m) => m.newGame(nav)) }, '+ New game'),
-          ),
-        ),
+        h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
         h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, removeAllBtn, start.howBtn),
         tiles,
       ),
@@ -364,7 +386,10 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     () => void refreshProjects(),
   );
 
+  // the tabs stand in their place before the lists load, so the page below them doesn't jump
+  renderCats();
   lib.projects = await listProjects().catch(() => []);
+  await lib.loadWalkBadges();
   if (!savedCategory() && lib.projects.length) current = lib.own('mine').length ? 'mine' : 'imported';
   renderCats();
   try {
@@ -396,6 +421,8 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   if (tabbed) current = tabbed;
   if (q) search.value = q;
   await select(current);
+  // Getting started shows once the game above it and the tabs are in place (it may turn out clipped)
+  root.querySelector('.home-start')?.classList.add('ready');
 
   // a secret game revealed or hidden again (the felt eggs, EGG.EXE): the collections, their
   // counts and the game at the top follow without a reload

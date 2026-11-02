@@ -2,7 +2,7 @@
 // games, starting a new one, saving to the working folder and building the downloads.
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { parseGame } from '../../src/formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { DRY_RUN, argsProblem } from '../../src/assistant/tools/run';
 import { fail, json, ToolError, type ToolDef, type ToolResult } from '../../src/assistant/tools/types';
 import { createGame, openGame, type OpenGame } from './session';

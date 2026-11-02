@@ -10,7 +10,7 @@
 //      lights flickering, the dogs awake and wanting to play, three rolls of toilet paper.
 //   4. The Reckoning: the lights turn blood red. The Devil in leisure wear, sipping a milkshake.
 //      Almond milk, oat milk and lactase pills; his last straw; the porcelain throne.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 
@@ -197,6 +197,7 @@ export function bedroom(book: BlockBook): Level {
   m.col(1, 6, 8, 'H').set(2, 8, 'w').row(8, 3, 7, 'q').row(9, 2, 7, 'Q').set(1, 9, 'Q');
   // the night stand and the clock: 3:17
   m.set(8, 9, 'n').set(8, 8, 'c');
+  m.set(5, 4, 'lumeDial');
   m.set(11, 4, 'O').set(11, 5, 'o').set(12, 4, 'O').set(12, 5, 'o');
   // the creaky board, the dresser (coins on top), the door to the hall
   m.set(10, 9, '!');
@@ -247,6 +248,8 @@ export function fridge(book: BlockBook): Level {
   // an Easter egg up in the corner over the end of the counter, a hop left off the counter
   m.set(2, 7, 'easterEgg');
   m.set(17, 13, 'V');
+  // badge scenery: a rolled magazine on the counter, a gold and a silver cup on the fridge's glass shelves
+  m.set(5, 11, 'magRoll').set(27, 9, 'trophyGold').set(28, 6, 'trophySilver');
   // the fridge, standing open (its bottom open to walk in): its walls, the cold glowing inside, the freezer, the bulb
   m.row(0, 22, 44, 'E').col(22, 1, 9, 'F').col(44, 7, 13, 'F').set(22, 7, '3');
   m.fill(23, 1, 21, 13, 'f').set(22, 10, 'f').set(22, 11, 'f').set(22, 12, 'f').set(22, 13, 'f').fill(23, 1, 8, 2, 'Z').set(35, 1, '*');

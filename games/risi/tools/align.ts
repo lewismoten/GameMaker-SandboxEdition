@@ -3,7 +3,8 @@
 // amphora, the scrolls, the tents, the palisade, the archers' tower, the gate, THE CHEZ, the
 // tavern, the diva's basin, and that their art joins up across the block edges. Run by
 // tools/check.ts.
-import { alignGame, namesOf, pair, type PartRule } from '../../kit/align';
+import { namesOf, pair, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';
 import { LEVELS } from '../src/levels/levels';

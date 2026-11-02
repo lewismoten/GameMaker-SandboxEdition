@@ -4,9 +4,9 @@
 // another take (a new seed), and use it: the song changes in one step that Ctrl+Z undoes.
 import { h, clear, modal } from '../../core/ui';
 import { audio } from '../../widgets/mediaShared';
-import { buildPreview } from '../../../formats/cmfPreview';
-import { channelNotes } from '../../../formats/cmfEdit';
-import type { CmfSong } from '../../../formats/cmfSong';
+import { buildPreview } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfPreview';
+import { channelNotes } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import type { CmfSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { accompany, type Accompaniment } from './arrange/accompany';
 import { STYLES, type StyleId } from './arrange/styles';
 import { pitchName } from './arrange/harmony';

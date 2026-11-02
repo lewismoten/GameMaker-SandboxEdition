@@ -6,14 +6,17 @@
 // sequence starts again while its key is down; keys.ts: letting go ends one that can be
 // interrupted) and the FLI facts against code/Image/FLI/FLI.CPP and code/DRV/FILECLSS.CPP as
 // formats/fliPlaygame.test.ts ports them, the CMF clock against code/GM/SBMUSIC.C load_file
-// (HDRCLK 146 in SOUND.H), and the archive counts are the survey's (.for-lewis/archive/NOTES.md);
+// (HDRCLK 146 in SOUND.H), and the archive counts are the survey's (.for-lewis/reference/archive/NOTES.md (its "First survey" section));
 // the Maximus findings are TURBO BUTTON's
 // (manual/magazine/sections/maximus.ts). The wall glitch is code/GM/PLAYGAME.C ChkMonChr (the
 // axis the two are farther apart on, and which solid bit pushes which way) and movechars (the
 // hero put beside MMsolid with no wall check, that axis's move canceled, chkmapbounds wrapping
 // him), as engine/monsters.ts chkMonChr and engine/character.ts port them. The DOSBox screenshot
-// is Lewis's (NOTICE.md).
+// is Lewis's (NOTICE.md). The clock and the ceilings are limitsClock.ts, the ideas to try
+// limitIdeas.ts.
 import { opening, tip, type Chapter } from './chapter';
+import { LIMIT_IDEAS } from './limitIdeas';
+import { CLOCK_LIMITS } from './limitsClock';
 
 export const PLAYERS: Chapter = {
   id: 'players',
@@ -162,6 +165,7 @@ export const LIMITS: Chapter = {
     <li><b>Keep intros short.</b> <kbd>Esc</kbd> is read only between animations, so a long one
     can’t be skipped until it ends. A few short clips in a slide list answer sooner.</li>
   </ul>
+  ${CLOCK_LIMITS}
   <h2>Limits that aren’t, and one that is</h2>
   <ul>
     <li><b>More than 20 scenes.</b> The Integrator starts with 20, but that is no ceiling: community
@@ -234,5 +238,6 @@ export const LIMITS: Chapter = {
     <li><b>Twenty sequences go fast.</b> Three play themselves, so a hero has 17 keys at most.
     List them before you draw.</li>
   </ul>
+  ${LIMIT_IDEAS}
   ${tip('Test on the real thing:', 'An emulator such as DOSBox, set to a modest machine, finds what no editor can: memory, timing and the sound card. Play every animation and every scene in it once before you upload.')}`,
 };

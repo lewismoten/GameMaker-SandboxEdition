@@ -87,7 +87,7 @@ export function softwareSection(): HTMLElement {
       'details',
       { class: 'credits-more' },
       h('summary', null, `Build and test tools (${tools.length} npm packages)`),
-      h('p', null, 'None of these ship. Versions and licenses are from ', repoFile('web/package-lock.json'), '.'),
+      h('p', null, 'None of these ship. Versions and licenses are from ', repoFile('package-lock.json'), '.'),
       h('h3', { id: 'credits-tools' }, `The tools (${direct.length})`),
       h('ul', { class: 'credits-deps credits-deps-grid' }, ...direct.map(depItem)),
       h('h3', { id: 'credits-tools-use' }, `What they use (${pulled.length})`),

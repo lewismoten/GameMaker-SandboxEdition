@@ -1,7 +1,7 @@
 // Beside the monster path's map: the notice (when playgame ignores the path, and the attack
 // modes on the Attack path tab) and the corners, with the picked one's picture and speed.
 import { h, clear } from '../../core/ui';
-import { MAXMARCH } from '../../../formats/monster';
+import { MAXMARCH } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { clearPath, corners, firstCorner } from './monsterPath';
 import { kind, mon, path, type PathEd } from './monsterPathState';
 import { deleteSelected, hidePop, insertHere, orientPicker, pictureCanvas, speedControl } from './monsterPathCorner';

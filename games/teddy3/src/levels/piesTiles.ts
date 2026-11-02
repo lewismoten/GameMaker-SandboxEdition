@@ -4,7 +4,7 @@
 // the pie comes out of the block that shows the throw), the little stage, Professor
 // Pratfall's bakery stall up on the balcony over it, the birthday cake, and the back flap
 // out, which only opens for the cake.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { CTR } from '../ids';
 import { GRAV, Tiles } from './level';

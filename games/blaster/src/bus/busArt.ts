@@ -2,7 +2,7 @@
 // perspective (the dark inside of the PC over the horizon, the bus of copper lines coming at
 // the ship between two bundles of thin traces, the board on either side), the sign that
 // counts the cycles, the progress bar, the destination chip and the way into it.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, shadeAt, text } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { HORIZON, VX, halfWidth } from './view';

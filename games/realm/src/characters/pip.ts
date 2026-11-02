@@ -4,7 +4,7 @@
 // before the wooden one's (14, unlimited): buying the sword fills its counter with 30,000
 // swings and Space swings steel from then on. The kazoo and the tonic are counters too, filled
 // by shops and by Doc Leo, and empty means the key does nothing.
-import { PICKUPSEQ, DIESEQ, HURTSEQ, emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
+import { PICKUPSEQ, DIESEQ, HURTSEQ, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { MON, SEQ, SND } from '../ids';
 import type { SpriteSheet } from '../sprites/sheet';
 
@@ -133,7 +133,7 @@ export function buildPip(cb: SpriteSheet): Character {
   );
   ch.meter[0] = 100; // hit points
   ch.meter[1] = 3; // lives
-  ch.meter[3] = 1 + 10; // money: shown as meter - 1, so 10 gold
+  ch.meter[3] = 1 + 3; // money: shown as meter - 1, so 3 gold
   ch.meter[SEQ.steel] = 0; // no steel sword yet
   ch.meter[SEQ.kazoo] = 0; // no kazoo yet
   ch.meter[SEQ.tonic] = 1; // one tonic in the satchel

@@ -3,7 +3,7 @@
 // from "Mustard Seed Hustle" by The Bard of Bizarre.
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 const TITLE = 'MUSTARD SEED HUSTLE';
 export const AUTHOR = 'The Bard of Bizarre';
@@ -131,7 +131,7 @@ export const CARDS: { title: string; where: string; lines: [string, string] }[] 
 const CREDITS_TEXT = page(
   [
     TITLE,
-    'by The Bard of Bizarre, 1995',
+    'by The Bard of Bizarre, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Based on the song "Mustard',
@@ -171,7 +171,7 @@ export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 export function readme(price: string): string {
   return `
     MUSTARD SEED HUSTLE
-    Version ${about.version} - March 1995
+    Version ${about.version} - September 1994
     by The Bard of Bizarre
 
 "Oh, it's the mustard seed

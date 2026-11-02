@@ -11,9 +11,9 @@
 //   him for being above it and lifted him onto it, into row my, where nexty is 2000+
 //   (charScreenColumn.test.ts) and the view ran off round the map after him.
 import { describe, expect, it } from 'vitest';
-import { newMap } from '../src/formats/map';
-import { createWorld } from '../src/engine/world';
-import { drawScroll } from '../src/engine/scroll';
+import { newMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { createWorld } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { drawScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
 
 function world() {
   const w = createWorld(newMap(), { play: () => false }, () => 0.5);

@@ -1,0 +1,27 @@
+/* The Overview page: tabs on top, one panel filling the rest and scrolling inside. */
+.overview {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+.overview > .panel-tabs {
+  flex: 1;
+  min-height: 0;
+}
+.overview-panel {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+}
+.overview-panel.overview-files:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.overview-title {
+  margin: 0 0 8px;
+  font-size: 20px;
+}

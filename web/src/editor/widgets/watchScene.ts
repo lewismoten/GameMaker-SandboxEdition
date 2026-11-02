@@ -9,7 +9,7 @@
 import { toast } from '../core/ui';
 import type { Project } from '../core/project';
 import { GameFiles, type CatalogEntry } from '../../project/files';
-import { serializeGame } from '../../formats/game';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Walkthrough } from '../../walkthrough/format';
 import { myPlays, oneScene } from '../check/walk/mine';
 import { startWalk } from '../check/walk/walkClient';

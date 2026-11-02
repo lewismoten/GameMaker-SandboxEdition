@@ -1,7 +1,7 @@
 // DEMO.REC: what plays on the title screen when nobody touches the keyboard. Recorded from
 // the bot (tools/gendemo.ts) walking out of Nowish and up the road, swinging at slimes:
 // pairs of [game ticks since the last key, PC scan code; +128 = released], ending with Esc.
-import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 
 const RECORDED = [
   1, 80, 15, 208, 1, 77, 5, 205, 1, 80, 15, 208, 1, 77, 5, 205, 1, 80, 10, 208, 1, 77, 5, 205, 1, 80, 10, 208, 1, 77, 5, 205, 1, 80, 50, 208, 1, 77, 5, 205, 1,

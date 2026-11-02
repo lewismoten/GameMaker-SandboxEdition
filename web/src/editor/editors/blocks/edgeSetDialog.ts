@@ -2,8 +2,8 @@
 // wavy the border is and where the 12 new blocks go, with a live 4 x 4 preview of the set.
 import { h, modal } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
-import { BLEN, type Block } from '../../../formats/blocks';
-import type { Palette } from '../../../formats/palette';
+import { BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { shade } from '../palette/ramps';
 import { EDGE_SLOTS, freeRun, makeEdgeSet, type EdgeOptions } from './edgeSet';
 

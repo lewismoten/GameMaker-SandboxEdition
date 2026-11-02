@@ -4,12 +4,12 @@
 // partner files are those of the scenes that use this block set, as "Used in" finds them.
 import type { Project } from '../../core/project';
 import { partners } from '../../core/uses';
-import { parseMap } from '../../../formats/map';
-import { parseMonsters, type Monster } from '../../../formats/monster';
-import { parseCharacter, SEQUENCE_NAMES, type Character } from '../../../formats/character';
-import type { Block, BlockKind } from '../../../formats/blocks';
-import { scanName } from '../../../input/scancodes';
-import { ADVTYPE } from '../../../formats/game';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseCharacter, SEQUENCE_NAMES, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import type { Block, BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
+import { ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { normalize } from '../../../project/files';
 import { bblClip, bblGroupClip, characterClips, monsterClips, monsterGroupClip, type Clip } from './animClip';
 import type { BlockGroup } from './blockGroups';
@@ -83,7 +83,17 @@ export function groupClipFor(project: Project, file: string, kind: BlockKind, bl
 
 /** Groups the files suggest for this set. */
 export function suggestionsFor(project: Project, file: string, kind: BlockKind, count: number): Suggestion[] {
-  if (kind === 'cbl') return charactersFor(project, file).flatMap((c) => guessCharacterGroups(c, (i) => seqName(c, i)));
+  if (kind === 'cbl') {
+    const seen = new Set<string>();
+    return charactersFor(project, file)
+      .flatMap((c) => guessCharacterGroups(c, (i) => seqName(c, i)))
+      .filter((suggestion) => {
+        const key = suggestion.group.cells.join(',');
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+  }
   if (kind === 'bbl') {
     const maps = filesFor(project, file, kind, 'map').flatMap((f) => some(tryParse(() => parseMap(project.files.get(f)!).blocks)));
     return guessMapGroups(maps, count);

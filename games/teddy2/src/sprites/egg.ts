@@ -1,7 +1,7 @@
 // The Second Paw Egg: butterscotch felt walked all over with little brown paw prints, a white
 // felt bone appliqued on its side with a red bow tied round it, and a collar of blue rickrack
 // round its middle with a tiny brass tag that reads "2".
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { shadeAt } from '../art/draw';
 import { P } from '../art/pal';
 

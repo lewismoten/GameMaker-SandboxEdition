@@ -3,7 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import type { CatalogEntry } from '../project/files';
-import { GM_OWNER, groupShelf, hms, ownersOf, shelfGames, SHELF_TYPES, SITE_OWNER, typeOfPiece, type ShelfItem } from './shelf';
+import { GM_OWNER, groupShelf, hms, inSeries, isSeries, ownersOf, shelfGames, SHELF_TYPES, SITE_OWNER, typeOfPiece, type ShelfItem } from './shelf';
 import { siteShelf } from './siteShelf';
 import { dateText, videoShelf } from './videos';
 
@@ -211,9 +211,10 @@ describe('sorting the Library', () => {
 });
 
 describe('the site’s own reading', () => {
-  it('has TURBO BUTTON and the Guide, and the desk’s zine only once it is found', () => {
+  it('has both issues of TURBO BUTTON and the Guide, and the desk’s zine only once it is found', () => {
     const hidden = siteShelf(false).map((i) => i.open);
-    expect(hidden).toContainEqual({ via: 'href', href: '#/magazine' });
+    expect(hidden).toContainEqual({ via: 'href', href: '#/magazine?vol=3&num=1' });
+    expect(hidden).toContainEqual({ via: 'href', href: '#/magazine?vol=1&num=4' });
     expect(hidden).toContainEqual({ via: 'href', href: '#/help' });
     expect(hidden).not.toContainEqual({ via: 'zine' });
     expect(siteShelf(true).map((i) => i.open)).toContainEqual({ via: 'zine' });
@@ -245,5 +246,31 @@ describe('the site’s videos', () => {
   it('writes a date as it is written, in no time zone', () => {
     expect(dateText('2026-10-22')).toBe('Oct 22, 2026');
     expect(dateText('2027-01-01')).toBe('Jan 1, 2027');
+  });
+});
+
+describe('inSeries (By type: All / Sandbox / Bizarre)', () => {
+  const item = (owner: string): ShelfItem => ({
+    key: owner,
+    title: owner,
+    icon: '',
+    type: 'manual',
+    owner,
+    ownerTitle: owner,
+    open: { via: 'video', id: 'x' } as never,
+  });
+  const games = new Map([
+    ['s', boxed('s')],
+    ['b', bard('b')],
+  ]);
+  const items = [item('s'), item('b'), item(SITE_OWNER)];
+  it('keeps everything for all, and the right games for each series', () => {
+    expect(inSeries(items, 'all', games)).toHaveLength(3);
+    expect(inSeries(items, 'sandbox', games).map((i) => i.owner)).toEqual(['s']);
+    expect(inSeries(items, 'bizarre', games).map((i) => i.owner)).toEqual(['b']);
+  });
+  it('knows the three choices', () => {
+    expect(['all', 'sandbox', 'bizarre'].every(isSeries)).toBe(true);
+    expect(isSeries('secret')).toBe(false);
   });
 });

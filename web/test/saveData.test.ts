@@ -27,7 +27,7 @@ import {
   summarize,
   UNLIMITED,
 } from '../src/project/saveData';
-import { INF_REPEAT } from '../src/formats/character';
+import { INF_REPEAT } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 
 const root = join(__dirname, '..', '..');
 const fixtures = join(__dirname, 'fixtures', 'saves');

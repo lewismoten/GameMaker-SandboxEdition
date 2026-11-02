@@ -6,7 +6,7 @@
 // Like a player, the walkthrough rolls over for each board's gold screw on the way
 // (tools/loot.ts): the solution with the cheapest detour that still reaches the outlet.
 //   cd web && npx vite-node ../games/logic/tools/walkthrough.ts
-import { newCharInfo } from '../../../web/src/engine/world';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { encodeKeys, keysAt, type WalkChapterMark, type WalkSegment } from '../../../web/src/walkthrough/format';
 import { writeWalkthrough } from '../../kit/walkthrough';
 import { buildGame } from '../src/game';

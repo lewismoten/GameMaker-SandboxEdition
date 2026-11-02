@@ -3,7 +3,7 @@
 // "The Great Dairy Reckoning of 3:17 a.m." by The Bard of Bizarre.
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 export const AUTHOR = 'The Bard of Bizarre';
 
@@ -116,7 +116,7 @@ const CREDITS_TEXT = page(
   [
     'THE GREAT DAIRY RECKONING',
     'OF 3:17 A.M.',
-    'by The Bard of Bizarre, 1995',
+    'by The Bard of Bizarre, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Based on the spoken piece',
@@ -161,7 +161,7 @@ export function readme(price: string): string {
   return `
     THE GREAT DAIRY RECKONING
     OF 3:17 A.M.
-    Version ${about.version} - Nov 1995
+    Version ${about.version} - November 1994
     by The Bard of Bizarre
 
 "There it is. The enemy.

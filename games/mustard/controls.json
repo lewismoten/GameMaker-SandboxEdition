@@ -1,0 +1,70 @@
+{
+  "keys": {
+    "72": {
+      "short": "Hop",
+      "long": "Hop. Hold to hop higher."
+    },
+    "80": {
+      "short": "Root down",
+      "long": "Push roots down into soft dust."
+    },
+    "75": {
+      "short": "Walk left",
+      "long": "Walk left."
+    },
+    "77": {
+      "short": "Walk right",
+      "long": "Walk right."
+    },
+    "17": {
+      "short": "Hop",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Walk left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Walk right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Root down",
+      "long": "Same as the Down arrow."
+    },
+    "16": {
+      "short": "Hop left",
+      "long": "Hop up and to the left; steer as you fall."
+    },
+    "18": {
+      "short": "Hop right",
+      "long": "Hop up and to the right; steer as you fall."
+    },
+    "28": {
+      "short": "Pick up",
+      "long": "Pick up what is in front of you."
+    },
+    "57": {
+      "short": "Hallelujah",
+      "long": "Say Hallelujah!"
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Hallelujah",
+      "long": "Say Hallelujah!"
+    }
+  },
+  "counters": {
+    "20": "Water drops",
+    "21": "Faith"
+  },
+  "sounds": {
+    "9": "Hop",
+    "10": "Root",
+    "11": "Hurt",
+    "12": "Wilt",
+    "13": "Joy",
+    "14": "Laces picked up"
+  }
+}

@@ -7,8 +7,17 @@
 // rest is in roll/, a chain of classes each extending the one before: view -> draw ->
 // pointer -> PianoRoll; layout.ts has the measurements.
 import { h } from '../../core/ui';
-import { addNote, channelNotes, deleteNotes, programChanges, removeEvent, setNote, setVelocity, startProgram } from '../../../formats/cmfEdit';
-import { noteEnd, type Ev, type Note } from '../../../formats/cmfSong';
+import {
+  addNote,
+  channelNotes,
+  deleteNotes,
+  programChanges,
+  removeEvent,
+  setNote,
+  setVelocity,
+  startProgram,
+} from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { noteEnd, type Ev, type Note } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { HEAD } from './roll/layout';
 import { RollPointer } from './roll/pointer';
 

@@ -5,7 +5,7 @@
 // shore at night, its stops one after another (the toy shop, then the car lot, then the
 // lighthouse), so only its first lane leads in, and Joe goes on over the hill from the cove; the
 // third, in the snow, the same (Lewie's street, then the Hive, and on from there).
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 

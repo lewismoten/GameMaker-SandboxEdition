@@ -62,8 +62,7 @@ export function boxList(o: BoxListOptions): HTMLElement {
     for (const [i, item] of items.entries()) {
       if (list.isConnected) shown = true;
       else if (shown) return;
-      const sheets = await item.render().catch(() => []);
-      const first = sheets[0];
+      const first = await (item.first ? item.first() : item.render().then((s) => s[0])).catch(() => undefined);
       const thumb = list.children[i]?.querySelector('.box-list-thumb');
       if (!first || !thumb) continue;
       // laid out at a readable size and shrunk, so pieces sized in pixels look as they do full size

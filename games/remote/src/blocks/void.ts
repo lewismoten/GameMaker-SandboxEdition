@@ -1,6 +1,6 @@
 // The void between the cushions' blocks: the solid nothing, the Bermuda swirl, the lost things, the fake remotes and the pay TV.
 // Part of REMOTE.BBL (blocks.ts adds them after the living room's, in this order).
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { SOLID } from '../../../snowbound/src/blocks/book';

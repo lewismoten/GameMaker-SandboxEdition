@@ -4,10 +4,10 @@
 // (sinking into the void), and the endings ("But wait - what's this, beneath my thigh?", the
 // remote taped to your chest, THE END on channel 13). Each reel opens on black and fades by
 // palette (kit/reel.ts); only what moves is stored.
-import { Pixels } from '../../../kit/pixels';
-import { medianCutPalette, Quantizer } from '../../../kit/quantize';
-import { Reel } from '../../../kit/reel';
-import { fadeOutLength } from '../../../kit/fadeOut';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { medianCutPalette, Quantizer } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
+import { fadeOutLength } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { blob } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
@@ -15,7 +15,7 @@ import { coverRgb } from '../art/cover';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { couchArt, remoteArt, roomBackdrop, tvArt, vcrArt } from './screens';
 import { AUTHOR, CARDS } from './text';
-import { sprite } from '../../../kit/screenText';
+import { sprite } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 const W = 320;
 const H = 200;
@@ -107,7 +107,7 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
     outlined(p, 160 - textWidth('REMOTE?!', 3) / 2, drop + 20, 'REMOTE?!', 1, 3, 3, 2);
     if (sub) {
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1994 Shareware`, 4);
     }
   };
   const r = new Reel(pal);

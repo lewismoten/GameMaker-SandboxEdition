@@ -5,11 +5,11 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { GameFiles } from '../../src/project/files';
-import { readZip } from '../../src/project/zip';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { takeCompanion } from '../../src/project/companion';
 import { companionPatches, recordPatches } from '../../src/dosPlayer/playerRecord';
-import { parseGame } from '../../src/formats/game';
-import type { PlayerPatches } from '../../src/dosPlayer/patchRules';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { ToolError } from '../../src/assistant/tools/types';
 import { CD_GAMES_DIR, GAMES_DIR, type Roots } from './roots';
 

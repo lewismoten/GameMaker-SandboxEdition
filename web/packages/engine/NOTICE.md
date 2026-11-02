@@ -22,8 +22,12 @@ site editor, DOS executables, or native player shells.
 
 - **8×8 text font:** `font8x8_basic`, `font8x8_ext_latin`, `font8x8_misc`, and
   `font8x8_greek` by Daniel Hepper are public domain. They supply the ASCII and
-  selected code page 437 glyphs in the engine. The other glyphs were drawn for
-  this project. [Source](https://github.com/dhepper/font8x8).
+  selected code page 437 glyphs in `src/gfx/font8x8.ts` and `src/gfx/cp437Glyphs.ts`.
+  The upstream headers also credit Marcel Sondaar and International Business Machines
+  (public domain VGA fonts) as their basis. [Source](https://github.com/dhepper/font8x8).
+  The remaining CP437 symbols and box-drawing glyphs were drawn for this project with
+  Anthropic Claude Opus 5.5 under Lewis Moten's direction and are distributed under the
+  project's MIT License; they were not copied from IBM's ROM.
 - **GIF:** Graphics Interchange Format is a format and trademark of CompuServe
   Incorporated. The engine implements GIF decoding from the format description.
 - **FLI:** Autodesk Animator's animation format, implemented from its public
@@ -39,3 +43,16 @@ site editor, DOS executables, or native player shells.
   documentation.
 
 The package does not bundle DOSBox, Creative software, or Autodesk software.
+
+## Incremental JPEG decoding
+
+The JPEG decoder follows ITU-T Recommendation T.81 (1992), by CCITT/ITU and the
+Joint Photographic Experts Group: [specification](https://www.w3.org/Graphics/JPEG/itu-t81.pdf).
+This is a format reference; the recommendation's text and diagrams are not bundled.
+The existing AC-refinement procedure identifies libjpeg's `decode_mcu_AC_refine` as its
+algorithm reference (Independent JPEG Group, Thomas G. Lane and contributors;
+[IJG License](https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/README.ijg)).
+This software is based in part on the work of the Independent JPEG Group.
+No libjpeg C source or binaries are bundled. Incremental block visibility and atomic
+MCU updates were corrected with OpenAI Codex (GPT-6), directed by Lewis Moten, under
+this project's MIT License.

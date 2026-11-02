@@ -4,9 +4,9 @@
 // the bedroom by moonlight, the backyard at noon, the nature documentary's golden hour, and the
 // living room at dusk in gloom. Carl's red eyes, the lamps, the clock and the stereo's lights
 // keep their own light everywhere.
-import { PaletteBuilder } from '../../../kit/palette';
-import { type Pal, wrap } from '../../../kit/palRamps';
-export { type Pal } from '../../../kit/palRamps';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
+import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+export { type Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 type RGB = [number, number, number];
 export type Light = 'day' | 'kitchen' | 'night' | 'yard' | 'doc' | 'gloom' | 'plain';

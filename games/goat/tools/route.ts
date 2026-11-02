@@ -5,9 +5,7 @@
 import { ORIGIN } from '../src/levels/maps';
 import { BLOCK, Bot } from './bot';
 
-const expect = (bot: Bot, scene: number, what: string) => {
-  if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
-};
+import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
 
 /**
  * A level's first few ticks, then standing still while any clip it starts with plays out (in

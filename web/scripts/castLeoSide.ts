@@ -6,7 +6,7 @@
 // purple shirt, green tie, blue suspenders, patched trousers, red sneakers, and the rubber
 // chicken trotting behind on its leash. (The face is Teddy's Little Biggest Adventure's side
 // view, games/teddy3/src/sprites/leo.ts.)
-import { Pixels } from '../../games/kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, outline } from '../../games/teddy/src/art/draw';
 import { CK } from '../../games/teddy/src/sprites/klown';
 import { P } from '../../games/teddy/src/art/pal';

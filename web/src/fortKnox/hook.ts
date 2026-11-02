@@ -1,0 +1,19 @@
+// Captures a catalog game's actual money counter when it is won, without changing PLAYGAME.
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import type { RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
+
+export function piggyBankHook(saveId: string | undefined): Pick<RunOptions, 'onSession' | 'onPlayEnd'> | undefined {
+  const game = saveId?.startsWith('game:') ? saveId.slice(5) : undefined;
+  if (!game) return undefined;
+  let session: Session | undefined;
+  return {
+    onSession: (s) => (session = s),
+    onPlayEnd: (_score, how) => {
+      if (how !== 'won' || !session) return;
+      // PLAYGAME stores visible money one higher so zero can still be a real amount.
+      const stored = session.ci.meter[3];
+      const money = stored > 0 && stored < 32767 ? stored - 1 : 0;
+      void import('./money').then(({ recordMoney }) => recordMoney(game, money));
+    },
+  };
+}

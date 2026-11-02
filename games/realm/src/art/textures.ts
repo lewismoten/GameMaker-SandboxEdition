@@ -4,7 +4,7 @@
 // using the texture join without a seam. Variants keep the same edges and differ only inside
 // (blend() fades the variant in from 4 pixels in), which breaks up the repeat on big fields.
 import { Canvas, type RGB, mix, smooth, tnoise, speck, clamp01 } from './rgb';
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 const B = 20;
 

@@ -5,6 +5,8 @@
 // dithers into the same 8-bit files Game-Maker 3.0 always read.
 
 export type RGB = [number, number, number];
+/** A bounding box: left, top, right, bottom. */
+type Box = [number, number, number, number];
 
 /** A w x h true-color picture with an alpha channel (0 = nothing drawn, 1 = solid). */
 export class Canvas {
@@ -72,9 +74,14 @@ export class Canvas {
   }
 
   /** Antialiased shape: `inside(x, y)` is a signed distance (negative inside), painted with `col(x, y)`. */
-  fillSdf(sdf: (x: number, y: number) => number, col: RGB | ((x: number, y: number) => RGB), ss = 4): this {
-    for (let y = 0; y < this.h; y++)
-      for (let x = 0; x < this.w; x++) {
+  fillSdf(sdf: (x: number, y: number) => number, col: RGB | ((x: number, y: number) => RGB), ss = 4, box?: Box): this {
+    // `box`: the shape's bounding box. Beyond it the distance is over 1.5, so those pixels would be skipped anyway.
+    const xa = box ? Math.max(0, Math.floor(box[0] - 2)) : 0;
+    const ya = box ? Math.max(0, Math.floor(box[1] - 2)) : 0;
+    const xb = box ? Math.min(this.w, Math.ceil(box[2] + 2)) : this.w;
+    const yb = box ? Math.min(this.h, Math.ceil(box[3] + 2)) : this.h;
+    for (let y = ya; y < yb; y++)
+      for (let x = xa; x < xb; x++) {
         const d0 = sdf(x + 0.5, y + 0.5);
         if (d0 > 1.5) continue;
         let k: number;
@@ -90,36 +97,59 @@ export class Canvas {
   }
 
   disc(cx: number, cy: number, r: number, col: RGB | ((x: number, y: number) => RGB)): this {
-    return this.fillSdf((x, y) => Math.hypot(x - cx, y - cy) - r, col);
+    return this.fillSdf((x, y) => Math.hypot(x - cx, y - cy) - r, col, 4, [cx - r, cy - r, cx + r, cy + r]);
   }
 
   ellipse(cx: number, cy: number, rx: number, ry: number, col: RGB | ((x: number, y: number) => RGB)): this {
-    return this.fillSdf((x, y) => (Math.hypot((x - cx) / rx, (y - cy) / ry) - 1) * Math.min(rx, ry), col);
+    const k = Math.max(rx, ry) / Math.min(rx, ry);
+    const ex = rx + 1.5 * k;
+    const ey = ry + 1.5 * k;
+    return this.fillSdf((x, y) => (Math.hypot((x - cx) / rx, (y - cy) / ry) - 1) * Math.min(rx, ry), col, 4, [cx - ex, cy - ey, cx + ex, cy + ey]);
   }
 
   rect(x0: number, y0: number, w: number, h: number, col: RGB | ((x: number, y: number) => RGB)): this {
-    return this.fillSdf((x, y) => Math.max(x0 - x, x - (x0 + w), y0 - y, y - (y0 + h)), col);
+    return this.fillSdf((x, y) => Math.max(x0 - x, x - (x0 + w), y0 - y, y - (y0 + h)), col, 4, [
+      Math.min(x0, x0 + w),
+      Math.min(y0, y0 + h),
+      Math.max(x0, x0 + w),
+      Math.max(y0, y0 + h),
+    ]);
   }
 
   /** A rounded rectangle. */
   rrect(x0: number, y0: number, w: number, h: number, r: number, col: RGB | ((x: number, y: number) => RGB)): this {
     const cx = x0 + w / 2;
     const cy = y0 + h / 2;
-    return this.fillSdf((x, y) => {
-      const qx = Math.abs(x - cx) - (w / 2 - r);
-      const qy = Math.abs(y - cy) - (h / 2 - r);
-      return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
-    }, col);
+    return this.fillSdf(
+      (x, y) => {
+        const qx = Math.abs(x - cx) - (w / 2 - r);
+        const qy = Math.abs(y - cy) - (h / 2 - r);
+        return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
+      },
+      col,
+      4,
+      [Math.min(x0, x0 + w), Math.min(y0, y0 + h), Math.max(x0, x0 + w), Math.max(y0, y0 + h)],
+    );
   }
 
   /** A thick antialiased line segment with round caps. */
   line(x0: number, y0: number, x1: number, y1: number, width: number, col: RGB | ((x: number, y: number) => RGB)): this {
-    return this.fillSdf((x, y) => segDist(x, y, x0, y0, x1, y1) - width / 2, col);
+    return this.fillSdf((x, y) => segDist(x, y, x0, y0, x1, y1) - width / 2, col, 4, [
+      Math.min(x0, x1) - width / 2,
+      Math.min(y0, y1) - width / 2,
+      Math.max(x0, x1) + width / 2,
+      Math.max(y0, y1) + width / 2,
+    ]);
   }
 
   /** A filled polygon (even-odd), antialiased. */
   poly(pts: [number, number][], col: RGB | ((x: number, y: number) => RGB)): this {
-    return this.fillSdf((x, y) => polySdf(x, y, pts), col);
+    return this.fillSdf((x, y) => polySdf(x, y, pts), col, 4, [
+      Math.min(...pts.map((p) => p[0])),
+      Math.min(...pts.map((p) => p[1])),
+      Math.max(...pts.map((p) => p[0])),
+      Math.max(...pts.map((p) => p[1])),
+    ]);
   }
 
   /** Copies another canvas over this one at (dx, dy), by its alpha. */

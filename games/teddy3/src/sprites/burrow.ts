@@ -1,7 +1,7 @@
 // Under Doc Leo's backyard: a mole (two steps of its digging paws, and diving back into the
 // dirt), a tangle of tree roots across a tunnel (chew it), and hard clay (whole, and cracked
 // after one big dig) for Gwinn's Buried Treasure.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { speckle, sprite } from '../art/draw';
 import { P } from '../art/pal';
 

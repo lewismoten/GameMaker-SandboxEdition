@@ -3,7 +3,7 @@
 // shovel, and a sofa, the way 1990s BBS screens looked.
 import { SANDBOX_COLORS } from './bbsName';
 import { attr, COLS, type TextScreen } from '../text/textScreen';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 /** 5x5 block letters. */
 const FONT: Record<string, string[]> = {

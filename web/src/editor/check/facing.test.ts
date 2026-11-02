@@ -1,6 +1,6 @@
 // The facing check: a hero who walks sideways facing the player, and one whose head doesn’t turn.
 import { describe, expect, it } from 'vitest';
-import { BLEN } from '../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { facing, sameKey } from './checks/facing';
 import { scenesOf } from './sceneData';
 import { testGame } from './testGame';

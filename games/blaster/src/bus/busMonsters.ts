@@ -6,7 +6,7 @@
 // the ship's row, runs off the bottom and is gone. Everything here has the same power, so the
 // traffic, the prizes and the pulses pass through one another; under 100, so a touch with the
 // ship ends it: a hazard pops (after its bump), a prize sparkles.
-import { growPics, laneSlide, leapTo, type RoadStep } from '../../../kit/road3d';
+import { growPics, laneSlide, leapTo, type RoadStep } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 import { POWER } from '../ids';
 import { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';

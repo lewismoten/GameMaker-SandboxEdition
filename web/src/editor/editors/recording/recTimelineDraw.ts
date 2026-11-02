@@ -1,7 +1,7 @@
 // Drawing a demo recording's timeline on a canvas: a ruler in seconds, one track per key
 // held at the same time, each press a keycap (arrows drawn bigger, as on a keyboard) with a
 // bar for as long as it is held, folded pauses, the END flag and the play head.
-import { scanName } from '../../../input/scancodes';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import { toNotes, screenKeys, isDown, capLabel, clock, TimeMap, type RecEvent, type Note, type Grip, type ScreenKey } from './recTimelineModel';
 
 export const TICK = 18.2;

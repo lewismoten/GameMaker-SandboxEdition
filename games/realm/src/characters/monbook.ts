@@ -1,7 +1,7 @@
 // A .MON built by name: the eight shared monsters first (characters/mon.ts), then whatever a
 // scene adds, numbered in the order they're added. Chains (a foe that turns into its hurt self,
 // then into a gem) name what they become, resolved when the book is finished.
-import { LASTMON, type Monster } from '../../../../web/src/formats/monster';
+import { LASTMON, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { MON_FREE, POWER } from '../ids';
 import { baseMonsters, monster, type MonSpec } from './mon';
 import type { SpriteSheet } from '../sprites/sheet';

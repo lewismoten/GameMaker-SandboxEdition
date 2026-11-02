@@ -34,7 +34,7 @@ export async function zineBook(): Promise<EpubBook> {
     key: 'zine/no-carrier-3',
     title: `${ZINE_TITLE} #3`,
     creator: 'DiAL ToNE',
-    date: '1995',
+    date: '1994',
     description:
       'NO CARRIER #3, a photocopied zine about the desk PC’s power tools, found under the toy whistle on the 1994 desk in Game-Maker: Sandbox Edition. Every trick in it is for that PC only.',
     cover: await coverPicture(zineCover(), `${ZINE_TITLE} #3, its cover page`),

@@ -8,10 +8,10 @@
 // Layout (12 rows: the ceiling on row 0, the carpet on row 10): the table top is a ledge on
 // row 7 (stand on it, hop up through it), the coworkers' heads above it are scenery that give
 // birth to buzzwords, the closet's shelves are ledges.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, loot, plotThing, spotlight } from '../../common/blocks';
 import { anim, corner, mon, pace } from '../../common/characters';

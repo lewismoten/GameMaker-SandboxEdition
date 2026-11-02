@@ -1,0 +1,193 @@
+/* The disk-space tool's dialog: the floppy beside the numbers, the merges below. */
+.disk-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 640px;
+}
+.disk-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+.disk-floppy {
+  flex: none;
+}
+.disk-summary {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.disk-sizes {
+  border-collapse: collapse;
+  width: 100%;
+}
+.disk-sizes caption {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: 4px;
+}
+.disk-sizes th,
+.disk-sizes td {
+  padding: 3px 8px 3px 0;
+  text-align: left;
+  font-weight: normal;
+  border-bottom: 1px solid var(--border);
+}
+.disk-sizes td {
+  text-align: right;
+  white-space: nowrap;
+}
+.disk-fit {
+  font-weight: 600;
+}
+.disk-steps {
+  margin: 8px 0;
+  padding-left: 24px;
+}
+.disk-step summary {
+  cursor: pointer;
+  min-height: 24px;
+}
+.disk-applied {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-2);
+}
+.disk-undo {
+  display: flex;
+  gap: 8px;
+}
+.disk-undo button {
+  min-height: 24px;
+}
+.disk-notes {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+.disk-tool h3 {
+  margin: 12px 0 0;
+}
+
+/* The checkpoint section and the compare dialog */
+.disk-checkpoint-buttons,
+.disk-compare-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.disk-checkpoint-buttons button,
+.disk-compare-controls button {
+  min-height: 24px;
+  min-width: 24px;
+}
+.disk-compare-controls input[type='number'] {
+  width: 4.5em;
+  min-height: 24px;
+}
+.disk-compare-pics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.disk-compare-pics figure {
+  margin: 0;
+  flex: 1 1 320px;
+  min-width: 0;
+}
+.disk-compare-pic {
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  image-rendering: pixelated;
+  aspect-ratio: 8 / 5;
+}
+.disk-compare-controls button[aria-pressed='true'] {
+  font-weight: 700;
+  outline: 2px solid currentColor;
+}
+
+/* Blocks that look the same */
+.disk-lookalike-groups {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+}
+.disk-block-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.disk-block {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8em;
+}
+.disk-block-thumb {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.disk-checkpoint-list {
+  margin: 4px 0;
+  padding-left: 0;
+  list-style: none;
+}
+.disk-checkpoint-row {
+  margin: 0 0 10px;
+}
+.disk-checkpoint-row p {
+  margin: 0 0 4px;
+}
+.disk-tag {
+  font-weight: bold;
+}
+
+.disk-reduce-pair {
+  display: flex;
+  gap: 4px;
+}
+.disk-reduce button {
+  min-height: 24px;
+  min-width: 24px;
+  margin-top: 6px;
+}
+
+/* Palette reservations: a strip of the palette with the proposed ranges named under it */
+.disk-reserve button {
+  min-height: 24px;
+  min-width: 24px;
+  margin-top: 6px;
+}
+.disk-strip {
+  position: relative;
+  max-width: 512px;
+}
+.disk-strip canvas {
+  display: block;
+  width: 100%;
+  height: 20px;
+  image-rendering: pixelated;
+  border: 1px solid currentColor;
+}
+.disk-strip-ranges {
+  position: relative;
+  height: 2.6em;
+}
+.disk-strip-range {
+  position: absolute;
+  top: 0;
+  box-sizing: border-box;
+  min-width: 4px;
+  border-left: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  border-top: 2px solid currentColor;
+  font-size: 0.75em;
+  line-height: 1.2;
+  padding: 1px 2px;
+  white-space: nowrap;
+}

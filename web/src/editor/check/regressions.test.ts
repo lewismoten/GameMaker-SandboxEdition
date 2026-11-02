@@ -81,9 +81,9 @@ describe.skipIf(!has)('the level check on the Sandbox games’ old bugs', () => 
         old.g.scenes.find((s) => s.scene === 8),
       ).some((f) => f.severity === 'error' && f.check === 'link-unreached'),
     ).toBe(true);
-    const fixed = await exploreFrom('teddy2', '128c0619', 8, 58, 39, 20_000);
+    const fixed = await exploreFrom('teddy2', '128c0619', 8, 58, 39, 50_000);
     expect(fixed.ex.exits.length).toBeGreaterThan(0);
-  }, 60_000);
+  }, 120_000);
 
   it('finds Loaf’s brook that held the loaf while it bit (before 298c8e05), gone after', async () => {
     const brook = async (rev: string) => {

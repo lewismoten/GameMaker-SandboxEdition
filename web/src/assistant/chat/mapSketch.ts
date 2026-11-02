@@ -1,10 +1,10 @@
 // map_sketch: a map region as a few characters a cell, the chat's cheap stand-in for a picture:
 // # solid, . open, * points or a pickup, ^ hurts, M a monster, S where the hero starts, E a link
 // out. A small model reads it in a few hundred tokens where render_png costs far more.
-import { ADVTYPE, NOSCENE } from '../../formats/game';
-import { BACKBL, parseBlocks } from '../../formats/blocks';
-import { LASTMON } from '../../formats/monster';
-import { MLEN, MWID, parseMap } from '../../formats/map';
+import { ADVTYPE, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { normalize } from '../../project/files';
 import { clampInt, fileName, gameOf, int, need } from '../tools/common';
 import { runTool } from '../tools/run';

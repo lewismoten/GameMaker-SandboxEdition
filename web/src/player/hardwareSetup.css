@@ -1,0 +1,87 @@
+/* First-run controls and a readable VGA-inspired setup panel, also on small monitors. */
+.gm-hardware-launch {
+  position: absolute;
+  z-index: 2;
+  bottom: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 8px;
+  background: #11131a;
+  color: #fff;
+  border: 1px solid #889;
+  border-radius: 6px;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+}
+.gm-hardware-launch label,
+.gm-hardware-dialog .gm-setup-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+}
+.gm-hardware-launch input,
+.gm-hardware-dialog input {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  accent-color: #ffd400;
+}
+.gm-hardware-dialog {
+  box-sizing: border-box;
+  width: min(500px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  padding: 20px;
+  border: 2px solid #ffd400;
+  border-radius: 6px;
+  background: #111b42;
+  color: #fff;
+  font:
+    15px/1.4 system-ui,
+    sans-serif;
+  touch-action: auto;
+}
+.gm-hardware-dialog::backdrop {
+  background: #000b;
+}
+.gm-hardware-dialog h2 {
+  margin: 0 0 12px;
+  color: #ffd400;
+  font-size: 20px;
+}
+.gm-hardware-dialog label {
+  display: grid;
+  gap: 6px;
+}
+.gm-hardware-dialog select,
+.gm-hardware-dialog button,
+.gm-hardware-launch button {
+  min-height: 32px;
+  max-width: 100%;
+  padding: 5px 10px;
+  border: 1px solid #adb7da;
+  border-radius: 4px;
+  background: #192853;
+  color: #fff;
+  font: inherit;
+}
+.gm-hardware-dialog :focus-visible,
+.gm-hardware-launch :focus-visible {
+  outline: 3px solid #ffd400;
+  outline-offset: 2px;
+}
+.gm-setup-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}

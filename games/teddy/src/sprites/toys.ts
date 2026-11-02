@@ -1,7 +1,7 @@
 // Teddy's things: his green wobble ball (his favorite toy: it giggles when it rolls), Gwinn
 // zooming off with it in her mouth, a book from the tiny little library on Maple Street,
 // and a frosty mug of root beer (Doc Leo always asks for root beer).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, outline, sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { GWINN } from './gwinn';

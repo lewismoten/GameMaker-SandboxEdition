@@ -1,0 +1,20 @@
+/* Native 20px blocks at whole-number scales inside the achievement badge frames. */
+.ach-block-art {
+  display: block;
+  width: 40px;
+  height: 40px;
+  max-width: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.ach-dlg-icon .ach-block-art {
+  width: 60px;
+  height: 60px;
+}
+
+.ach-desk .ach-block-art,
+.ach-placed .ach-block-art {
+  width: 20px;
+  height: 20px;
+}

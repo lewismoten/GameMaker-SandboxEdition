@@ -3,7 +3,7 @@
 // inventory keeps only block numbers, and the drop menu and a sequence's tie read them in
 // whatever set the scene has), from KEEPSAKE_BASE up. A keepsake can teach Joe a move: the move's
 // sequence is tied to the block (Sequence.bloc), on only while he carries it.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
 import type { BlockSet } from './sets';

@@ -3,7 +3,7 @@
 // size, as realm drives it). Teddy's ear tip pokes up at the back. Two frames of a bounce for driving, a squat and a spring for the
 // bump, a honk (the horn's sound rings drawn by the honk monster), a flash for a jolt, and
 // the car sagging on its springs when the team is all tuckered out.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { chezSide, type ChezInk } from '../../../kit/chez';
 import { CLEAR } from '../art/draw';
 import { P } from '../art/pal';

@@ -118,6 +118,54 @@
   font-weight: 600;
 }
 
+/* Wide screens: "Hide files" folds the list into a thin bar (the guided tour opens it again while it runs). */
+.sidebar .rail-toggle,
+.sidebar .rail-home {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .sidebar .rail-toggle {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    min-width: 24px;
+    min-height: 24px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sidebar .side-top {
+    flex-wrap: wrap;
+  }
+  html:not(.tour-on) .workspace.rail-folded {
+    grid-template-columns: 40px 1fr;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar {
+    padding: 6px 4px;
+    overflow-x: hidden;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar .side-top {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar .side-top > :not(.rail-toggle):not(.rail-home) {
+    display: none;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar .rail-label {
+    display: none;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar .rail-toggle,
+  html:not(.tour-on) .workspace.rail-folded .sidebar .rail-home {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    padding-inline: 0;
+  }
+  html:not(.tour-on) .workspace.rail-folded .sidebar > .side-files {
+    display: none;
+  }
+}
+
 /* Phones: the file list folds into one "Files" button, kept at the top of the screen. */
 .sidebar .files-toggle {
   display: none;
@@ -348,6 +396,28 @@
   }
 }
 
+/* A short window (a phone held sideways, a 1024x768 tablet) has too few rows for a tip above the editor: fold it there too (hintFold.ts) */
+@media (max-height: 800px) {
+  .hint-toggle {
+    display: inline-block;
+    float: right;
+    min-height: 24px;
+    margin: 0 0 0 8px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .hint-fold.hint-short .hint-toggle {
+    display: none;
+  }
+
+  .hint-fold.folded {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
 /* The Assistant button beside the file's title (assistant/bridge/panel.ts): shown on phones
    too, unlike the keyboard shortcuts beside it. */
 .editor .assistant-btn {
@@ -367,4 +437,11 @@
   flex: 1 0 100%;
   min-height: 28px;
   border-color: var(--accent);
+}
+
+/* a phone held sideways: the editor's frame takes less of the few rows there are */
+@media (max-height: 480px) and (max-width: 900px) {
+  .editor {
+    padding-block: 6px;
+  }
 }

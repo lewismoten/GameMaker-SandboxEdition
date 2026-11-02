@@ -2,9 +2,9 @@
 // PLAYGAME never reads (it takes hit points, lives, counters and the inventory from the first
 // scene's character only, engine/scene.ts startSceneInits), and an Idle with no frames, which
 // PLAYGAME stands in for with character block 0 (engine/character.ts).
-import { CHARBL } from '../../../formats/blocks';
-import { IDLESEQ, MAXSEQ, frameCount, type Character } from '../../../formats/character';
-import { NOSCENE, type Game } from '../../../formats/game';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { IDLESEQ, MAXSEQ, frameCount, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { NOSCENE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Finding } from '../findings';
 import type { SceneData } from '../sceneData';
 

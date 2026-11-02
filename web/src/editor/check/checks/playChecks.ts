@@ -2,9 +2,9 @@
 // links never touched, falls the player can't see, hurts that hold, scoring that never stops,
 // how much of each scene the bot covered, long scenes, and the hit points at each exit.
 import { prizeInView, seenFrom } from './inView';
-import { BACKBL } from '../../../formats/blocks';
-import { LASTMON } from '../../../formats/monster';
-import { MLEN } from '../../../formats/map';
+import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import type { Incident } from '../explore';
 import type { SceneRun } from '../playtest';
@@ -75,7 +75,7 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
       out.push({
         check: 'unreachable',
         severity: 'info',
-        title: `${foes} enemies are where the hero never goes`,
+        title: `${foes} enemies are where the bot’s runs never went`,
         detail: 'If nobody is meant to meet them, they could go; if they guard a secret, keep them.',
         where: { ...where, cells: far.filter((p) => hostile(d.mon[p.monnum], d.mbl)).map((p) => p.cury * MLEN + p.curx) },
       });
@@ -87,7 +87,7 @@ export function playFindings(run: SceneRun, d: SceneData | undefined): Finding[]
       check: 'link-unreached',
       severity: sure ? 'warning' : 'info',
       title: `Link ${k + 1} at ${at(l.from.y * MLEN + l.from.x)} was never reached`,
-      detail: 'Fine if it is a way back the bot never needed; a door to nowhere if not.',
+      detail: 'Fine if it is a way back the bot never needed; if not, players may not reach that door.',
       where: { ...where, cell: l.from.y * MLEN + l.from.x },
     });
   });

@@ -2,7 +2,7 @@
 // the chosen scene, unless one is given, then plays it on the engine and writes the demo
 // (botDemo.ts). Posts progress, then the demo; stopping ends the worker (botDemoClient.ts).
 import { GameFiles } from '../../../project/files';
-import { parseGame } from '../../../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Walkthrough } from '../../../walkthrough/format';
 import { autoWalk } from '../../check/walk/autoWalk';
 import { walkToDemo, type BotDemo } from './botDemo';

@@ -4,8 +4,8 @@
 //   view -> draw (painting the roll) -> pointer (mouse and touch editing) -> PianoRoll
 //   (keys, clipboard and the instrument popup, in roll.ts).
 import { h } from '../../../core/ui';
-import { channelNotes, programChanges, clampVelocity } from '../../../../formats/cmfEdit';
-import { noteEnd, type Ev, type Note } from '../../../../formats/cmfSong';
+import { channelNotes, programChanges, clampVelocity } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { noteEnd, type Ev, type Note } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { type MusicDoc } from '../doc';
 import { KEYW, HEAD, VEL, Drag } from './layout';
 

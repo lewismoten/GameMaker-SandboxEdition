@@ -2,7 +2,7 @@
 // waiting at each level's end with Doc Leo beside it (its door only opens once Teddy brings
 // what Gwinn dropped on that stop), the things she dropped, and Doc Leo's costume pieces
 // (for the cartoons). Pockets drove it in the first adventure; he is still in the code.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { chezSide, type ChezInk } from '../../../kit/chez';
 import { CLEAR, blob, over, sprite } from '../art/draw';
 import { P } from '../art/pal';

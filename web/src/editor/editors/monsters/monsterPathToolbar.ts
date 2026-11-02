@@ -1,7 +1,7 @@
 // The monster path editor's top: the Path and Attack path tabs, and the toolbar with the map, the
 // start (picked from the monster's placed copies or anywhere on the whole map), play and restart.
 import { h, clear, modal } from '../../core/ui';
-import { MLEN, MWID } from '../../../formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { corners, firstCorner, pathKind, pathLength } from './monsterPath';
 import { kind, mon, path, placed, type PathEd } from './monsterPathState';
 import { hidePop } from './monsterPathCorner';

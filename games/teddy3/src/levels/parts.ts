@@ -3,7 +3,7 @@
 // then sends a spark down its wire to what it works and back (and is a button again, to
 // push as often as you like). A door the spark reaches swings open, and a timed one shuts
 // again after a while.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { canvas, cut } from '../blocks/tiles';
 import type { Tiles } from './level';
 import type { Bestiary } from '../characters/mons';

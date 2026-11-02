@@ -2,14 +2,15 @@
 // window drawbkd draws, text screens as Display_File's pages, slide shows by their first
 // slide. Used by the backdrop, text screen and slide show editors and their media bins.
 import type { GameFiles } from '../../project/files';
-import { decodeGif, isGif, type IndexedImage } from '../../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../formats/fli';
-import { parseBackdrop, parseSlideList, textLines } from '../../formats/graphicScripts';
-import { defaultPalette, matchColor, type Palette } from '../../formats/palette';
-import { Screen, SIZEX, SIZEY } from '../../gfx/screen';
-import { match, RGB_PURPLE, RGB_RED } from '../../engine/showGraphic';
+import { decodeGif, isGif, type IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { defaultPalette, matchColor, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { Screen, SIZEX, SIZEY } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { match, RGB_PURPLE, RGB_RED } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
 import { paintIndexed } from '../core/draw';
 import { fileThumb } from './thumbs';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { kindOf } from '../core/project';
 
 /** A 320x200 screen of palette indices and the palette it is shown with. */
@@ -126,7 +127,7 @@ export function textPages(lines: string[], over: ScreenPicture, gamePalette: Pal
  * A thumbnail of a slide show item as the game shows it: backdrops as their window, text
  * screens as their first page, slide shows as their first slide; others as fileThumb.
  */
-export function mediaThumb(files: GameFiles, name: string, palette?: Palette, depth = 0): HTMLElement {
+export function mediaThumb(files: GameFiles, name: string, palette?: Palette, depth = 0, patches?: PlayerPatches): HTMLElement {
   const kind = kindOf(name);
   const bytes = files.get(name);
   const thumb = (pic: ScreenPicture) => screenCanvas(pic, 'thumb pixel');
@@ -137,7 +138,7 @@ export function mediaThumb(files: GameFiles, name: string, palette?: Palette, de
   if (bytes && kind === 'txt') return thumb(textPages(textLines(bytes), blankScreen(palette ?? defaultPalette()))[0]);
   if (bytes && kind === 'lst' && depth < 3) {
     const first = parseSlideList(bytes).find((e) => files.has(e.name) && kindOf(e.name) !== 'txt');
-    if (first) return mediaThumb(files, first.name, palette, depth + 1);
+    if (first) return mediaThumb(files, first.name, palette, depth + 1, patches);
   }
-  return fileThumb(name, bytes, { files, palette });
+  return fileThumb(name, bytes, { files, palette, patches });
 }

@@ -3,7 +3,7 @@
 // white gazebo (green roof, a weathervane with Gwinn's leash tangled on it), the electric
 // company's bucket truck, the bank and the charging station where THE CHEZ waits, a tall
 // hedge, and behind it Gwinn's secret digging spot and her den full of loot.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { bricks, c, canvas, cloud, copy, cut, dirt, grassTop, hedge, leaves, picket, r, sky, trunk, tuft, windowOn } from '../blocks/tiles';

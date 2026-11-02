@@ -3,10 +3,15 @@
 // few well-known ones get a line of their own. deps.test.ts checks every direct package has one.
 
 export const DEP_NOTES: Record<string, string> = {
+  '@lewismoten/gamemaker-sandbox-engine': 'The shared browser player, audio runtime, and native game formats.',
+  '@lewismoten/gamemaker-sandbox-archives': 'Reads game archives and self-extracting ZIPs, discovers games, and writes ZIP downloads.',
+  '@lewismoten/gamemaker-sandbox-tools': 'The authoring toolkit: music composition and image helpers for the editor, plus Node build and simulation tools.',
   vite: 'Builds the site: bundles the TypeScript into the pages, runs the development server, and adds its small module-preload helper to the built pages.',
   vitest: 'Runs the tests (npm test).',
   typescript: 'The TypeScript compiler, used to type-check the code (npx tsc).',
   '@types/node': 'Type descriptions of Node.js, for the build scripts and tests.',
+  'playwright-core': 'Drives a headless Chrome for the tour check (npm run tour:check).',
+  'axe-core': 'Finds accessibility problems on the pages the tour check plays (npm run tour:check).',
   prettier: 'Lays out the code the same way everywhere (npm run format).',
   eslint: 'Checks the code for likely mistakes (npm run lint).',
   '@eslint/js': 'ESLint’s recommended JavaScript rules.',

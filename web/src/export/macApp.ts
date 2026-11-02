@@ -12,11 +12,11 @@
 //
 // The app is not notarized by Apple (that needs a paid Apple Developer ID), so the first
 // time it is opened macOS asks to confirm (the Download chooser, editor/shell/download.ts, and the #/mac page say how).
-import { parseGame } from '../formats/game';
-import { decodeGif, isGif, type IndexedImage } from '../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../formats/fli';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { decodeGif, isGif, type IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { gamePicture, type FileSource } from '../gfx/levelPicture';
-import { createZip } from '../project/zip';
+import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { SITE_URL } from '../seo/site';
 import { createIso } from './iso9660';
 import { udzo } from './udif';

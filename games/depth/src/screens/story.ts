@@ -72,7 +72,7 @@ function slide1(render: Picture): Picture {
     points: [{ at: [-3, -4, 5], color: rgb(255, 230, 190), radius: 0.3, reach: 7 }],
     fog: { color: rgb(0, 0, 0), scale: 400 },
   });
-  const pic = still(world, cam([0.6, -6.5, 2.6], [0.2, 0, 1.8], 0.8), 4, 20, 41);
+  const pic = still(world, cam([0.6, -6.5, 2.6], [0.2, 0, 1.8], 0.8), 4, 20, 41, 'story1', 'title');
   bloom(pic, 0.8, 3, 0.6);
   return caption(pic, [
     '3:00 AM at Sandbox Software. The render',
@@ -101,7 +101,7 @@ function slide2(): Picture {
     new Sphere([2.6, 0.4, 0.5], 0.5, MAT.chrome),
   ];
   const world = stage(shapes, { keyColor: rgb(200, 160, 255), env: (d) => studio(d, { top: rgb(40, 10, 60), horizon: rgb(200, 90, 160) }) });
-  const pic = still(world, cam([0.4, -7, 2.4], [0.4, 0, 1.4], 0.8), 4, 20, 42);
+  const pic = still(world, cam([0.4, -7, 2.4], [0.4, 0, 1.4], 0.8), 4, 20, 42, 'story2');
   bloom(pic, 0.9, 2.5, 0.5);
   return caption(
     pic,
@@ -114,7 +114,7 @@ function slide2(): Picture {
 function slide3(): Picture {
   const shapes: Shape[] = [floor(), ...rayModel('y', 0.4, NEAR_COL, [0, 0, 1.2], 1.2), ...props([0, 5, 0], 1.2)];
   const world = stage(shapes, { env: (d) => studio(d, { top: rgb(90, 120, 210), horizon: rgb(255, 214, 180) }) });
-  const pic = still(world, cam([0.8, -5, 2.0], [0, 0, 1.15], 0.75), 4, 20, 43);
+  const pic = still(world, cam([0.8, -5, 2.0], [0, 0, 1.15], 0.75), 4, 20, 43, 'story3');
   flare(pic, 128, 58, 0.5);
   return caption(pic, [
     'He missed one. RAY, the chrome sphere',
@@ -148,7 +148,7 @@ function slide4(): Picture {
     cube(3.2, -6, far, { h: 1.5 }),
   ];
   const world = stage(shapes);
-  const pic = still(world, cam([0, 6.5, 2.4], [0, 0, 1.0], 0.8, { aperture: 0.18, focus: 6.8 }), 8, 40, 44);
+  const pic = still(world, cam([0, 6.5, 2.4], [0, 0, 1.0], 0.8, { aperture: 0.18, focus: 6.8 }), 8, 40, 44, 'story4');
   bloom(pic, 0.9, 2.5, 0.5);
   return caption(pic, [
     'Six scenes, two planes each: sharp is',

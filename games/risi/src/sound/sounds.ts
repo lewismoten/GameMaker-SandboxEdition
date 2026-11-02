@@ -4,12 +4,12 @@
 // squeak, a clang, a splash, a drum's boing, a sparkle, a cabbage's thud, a rimshot, a gulp,
 // a fanfare for a laurel wreath); the sung Latin is cut from the recordings (clips.ts), one set a
 // level: what Marcus sings on B, what plays when a counter goes up or is spent, and so on.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { rng } from '../../../kit/pixels';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { CLIPS, clipVoc, type ClipName } from './clips';
-import { lowNoise, gate, env } from '../../../kit/synthParts';
+import { lowNoise, gate, env } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 
 /** A voice: harmonics of a pitch through two vowel formants (which may move). */
 function voice(pitch: (t: number) => number, f1: number | ((t: number) => number), f2: number | ((t: number) => number), seed = 3, breath = 0.03): Synth {

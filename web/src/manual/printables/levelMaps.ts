@@ -5,14 +5,14 @@
 // sit on and never marked (levelSecrets.ts). Small maps share a printed page; a big one gets a
 // page of its own and, if wanted, full-size pages to tape together (A1, B1... as the World Map
 // does). A course through the wrap (levelCourse.ts) prints as the strip the way runs, turned to
-// run up the page, in panels side by side (levelCourseSvg.ts). Nothing is drawn until the piece
+// run up the page as one continuous map (levelCourseSvg.ts). Nothing is drawn until the piece
 // is opened or printed, and on screen only the map shown (or, scrolled, the maps near the view).
 import './paper.css'; // first: this piece's own styles build on the paper's
 import './levelMaps.css';
 import { h } from '../../editor/core/ui';
 import { paintIndexed } from '../../editor/core/draw';
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
-import { parseGame, type Game } from '../../formats/game';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { scenePixels } from '../../gfx/levelPicture';
 import { sheet, type PrintContext, type Sheet } from './kit';
 import { tiles } from './worldMapLayout';
@@ -20,12 +20,12 @@ import { el, SERIF } from './worldMapArt';
 import { fillerBlock, levelsOf, markLabel, packPages, type Level } from './levelMapLayout';
 import { listedSecrets } from './levelSecrets';
 import { listedCourses, listedUnrolled, listedViews } from './levelViews';
-import { GUTTER, PANEL_GAP, PANEL_HEAD, coursePanelBox, coursePages, coursePanelUrls, courseSvg, placedSize } from './levelCourseSvg';
+import { GUTTER, PANEL_GAP, PANEL_HEAD, wholeCourseSize, wholeCourseSvg, coursePanelUrls, type Mint } from './levelCourseSvg';
 import { listedRoomHints } from './levelRoomHints';
 import { mergeStates } from './levelStates';
 import { unrolledShows } from '../../editor/check/unroll';
-import { BLEN } from '../../formats/blocks';
-import { MLEN } from '../../formats/map';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { panZoom } from './panZoom';
 import type { Reader, ReaderOptions, ReadView } from '../readView';
 import { percentOf, widthAt, type ReadSize } from '../readSize';
@@ -418,10 +418,8 @@ function pageCounts(game: Game, levels: Level[]): { overviews: number; full: num
     AREA,
     GAP,
   );
-  // a course takes a page for each set of its panels
-  const courses = levels.reduce((n, l) => n + (l.course ? coursePages(l.course, COURSE_AREA).length - 1 : 0), 0);
-  const overviews = (placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0) + courses;
-  const extra = levels.filter(tiled).reduce((n, l) => n + levelTiles(l).length, 0);
+  const overviews = placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0;
+  const extra = levels.reduce((n, l) => n + (l.course ? courseTiles(l).length : tiled(l) ? levelTiles(l).length : 0), 0);
   return { overviews, full: overviews + extra };
 }
 
@@ -437,7 +435,17 @@ export function levelCanvas(game: Game, files: GameFiles, l: Level): HTMLCanvasE
   return canvas;
 }
 
-function painter(game: Game, files: GameFiles): Painter {
+/** Blob URLs it made are kept in `blobs` to revoke later; with none kept, pictures are data URLs (nothing to release). */
+function minter(blobs?: Set<string>): Mint {
+  return (b, canvas) => {
+    if (!b || !blobs) return canvas.toDataURL();
+    const url = URL.createObjectURL(b);
+    blobs.add(url);
+    return url;
+  };
+}
+
+function painter(game: Game, files: GameFiles, mint: Mint): Painter {
   const done = new Map<Level, Promise<string>>();
   return (l) => {
     let p = done.get(l);
@@ -445,7 +453,7 @@ function painter(game: Game, files: GameFiles): Painter {
       p = new Promise<string>((resolve) => {
         const canvas = levelCanvas(game, files, l);
         canvas.toBlob((b) => {
-          const url = b ? URL.createObjectURL(b) : canvas.toDataURL();
+          const url = mint(b, canvas);
           const img = new Image();
           img.src = url;
           void img.decode().then(
@@ -463,11 +471,11 @@ function painter(game: Game, files: GameFiles): Painter {
 /** Draws a course's panels (once) and gives the URL of each, in order. */
 type CoursePainter = (l: Level) => Promise<string[]>;
 
-function coursePainter(game: Game, files: GameFiles): CoursePainter {
+function coursePainter(game: Game, files: GameFiles, mint: Mint): CoursePainter {
   const done = new Map<Level, Promise<string[]>>();
   return (l) => {
     let p = done.get(l);
-    if (!p) done.set(l, (p = coursePanelUrls(game, files, l)));
+    if (!p) done.set(l, (p = coursePanelUrls(game, files, l, mint)));
     return p;
   };
 }
@@ -498,19 +506,21 @@ async function printSheets(
   paintCourse: CoursePainter,
   crop: CropOf,
   full: boolean,
+  firstOnly = false,
 ): Promise<Sheet[]> {
   const urls = new Map<Level, string>();
-  for (const l of levels) if (!l.course) urls.set(l, await paint(l));
   const boxes = levels.map((l) => levelBox(game, l));
   const placed = packPages(boxes, AREA, GAP);
+  // a first-sheet picture paints only the levels on page 0
+  for (const [i, l] of levels.entries()) if (!l.course && (!firstOnly || placed[i].page === 0)) urls.set(l, await paint(l));
   const pages = new Map<number, SVGElement[]>();
   const out: Sheet[] = [];
-  const pageCount = placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0;
+  const pageCount = firstOnly ? Math.min(1, placed.length) : placed.length ? Math.max(...placed.map((p) => p.page)) + 1 : 0;
   let sheetNo = 0;
   for (let k = 0; k < pageCount; k++) {
     const course = levels.find((l, i) => placed[i].page === k && l.course);
     if (course) {
-      out.push(...(await courseSheets(entry, game, course, paintCourse, () => ++sheetNo)));
+      out.push(...(await courseSheets(entry, game, course, paintCourse, () => ++sheetNo, full)));
       continue;
     }
     const body: SVGElement[] = [];
@@ -563,7 +573,7 @@ async function printSheets(
     }
     out.push(pageSheet(entry, `page ${++sheetNo}`, body));
     // a big level's full-size pages follow its overview
-    if (!full) continue;
+    if (!full || firstOnly) continue;
     for (const l of levels.filter((x, i) => placed[i].page === k && tiled(x))) {
       const ts = levelTiles(l);
       const cols = Math.max(...ts.map((t) => t.col)) + 1;
@@ -592,38 +602,96 @@ async function printSheets(
 /** What a course's caption adds: how to read its strip (one that runs down the page reads from the top). */
 const courseNote = (c: { down: boolean }) =>
   c.down
-    ? ' · the way as you ride it, unrolled through the wrap: start at the top of 1 and go down'
-    : ' · the way as you fly it, unrolled through the wrap: start at the foot of 1 and go up';
+    ? ' · the way as you ride it, unrolled through the wrap: start at the top and go down'
+    : ' · the way as you fly it, unrolled through the wrap: start at the foot and go up';
 
-/** A course's printed pages: its panels side by side, in order, under its caption. */
-async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: CoursePainter, next: () => number): Promise<Sheet[]> {
-  const c = l.course!;
+/** Atlas sheets use one coordinate system, so adjacent pages can be taped into a giant map. */
+function courseTiles(l: Level) {
+  const size = wholeCourseSize({ ...l.course!, scale: FULL });
+  return Math.min(COURSE_AREA.w / size.w, COURSE_AREA.h / size.h) < 0.8 ? tiles(size.w, size.h, COURSE_AREA.w, COURSE_AREA.h, OVERLAP) : [];
+}
+
+/** One continuous overview, optionally followed by full-size atlas pages. */
+async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: CoursePainter, next: () => number, full: boolean): Promise<Sheet[]> {
+  const c = { ...l.course!, scale: FULL };
+  const level = { ...l, course: c };
   const urls = await paint(l);
-  const pages = coursePages(c, COURSE_AREA);
-  return pages.map((which, n) => {
-    const { w: width, h: height } = placedSize(c, which);
-    const y = HEAD + CAPTION + Math.max(0, (COURSE_AREA.h - height) / 2);
-    return pageSheet(entry, `page ${next()} · ${l.name}, ${n + 1} of ${pages.length}`, [
+  const size = wholeCourseSize(c);
+  const ts = full ? courseTiles(l) : [];
+  const art = () => wholeCourseSvg(game, level, urls, 0, 0, COLORS, (m) => markText(game, m));
+  const picture = (viewBox: string, ...body: SVGElement[]) =>
+    el(
+      'svg',
+      {
+        x: MARGIN,
+        y: HEAD + CAPTION,
+        width: COURSE_AREA.w,
+        height: COURSE_AREA.h,
+        viewBox,
+        overflow: 'hidden',
+      },
+      ...body,
+    );
+  const overview = picture(`0 0 ${size.w} ${size.h}`, art());
+  for (const t of ts)
+    overview.append(
+      el('rect', {
+        x: t.x,
+        y: t.y,
+        width: Math.min(t.w, size.w - t.x),
+        height: Math.min(t.h, size.h - t.y),
+        fill: 'none',
+        stroke: '#1565c0',
+        'stroke-width': 0.25,
+        'stroke-dasharray': '2 1',
+      }),
+      el('text', { x: t.x + 0.8, y: t.y + 2.6, 'font-size': 2.2, 'font-weight': 900, fill: '#1565c0' }, t.name),
+    );
+  const out = [
+    pageSheet(entry, `page ${next()} · ${l.name}, whole course`, [
       captionSvg(game, { ...l, note: `${courseNote(c).slice(3)}${l.note ? ` · ${l.note}` : ''}` }, MARGIN, HEAD, AREA.w),
-      courseSvg(game, l, urls, which, MARGIN + Math.max(0, (AREA.w - width) / 2), y, COLORS, (m) => markText(game, m)),
+      overview,
       el(
         'text',
-        { x: PAGE.w - MARGIN, y: PAGE.h - FOOT + 1, 'font-family': 'Arial, Helvetica, sans-serif', 'font-size': 1.2, fill: COLORS.join, 'text-anchor': 'end' },
-        'Dashed: an edge of the map, where the way runs on round it and comes in at the opposite edge',
+        { x: MARGIN, y: PAGE.h - FOOT + 1, 'font-family': 'Arial, Helvetica, sans-serif', 'font-size': 1.2, fill: COLORS.join },
+        `Dashed purple: map wrap.${ts.length ? ' Blue grid: full-size sheets to trim and tape together.' : ''}`,
       ),
-    ]);
-  });
+    ]),
+  ];
+  for (const t of ts) {
+    const joins = [
+      t.col > 0 ? `${String.fromCharCode(64 + t.col)}${t.row + 1} to the left` : '',
+      t.row > 0 ? `${String.fromCharCode(65 + t.col)}${t.row} above` : '',
+    ].filter(Boolean);
+    out.push(
+      pageSheet(entry, `page ${next()} · ${t.name}${joins.length ? ` · tape over ${joins.join(' and ')}` : ''}`, [
+        captionSvg(game, l, MARGIN, HEAD, AREA.w),
+        picture(`${t.x} ${t.y} ${t.w} ${t.h}`, art()),
+      ]),
+    );
+  }
+  return out;
 }
 
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
-export function levelMaps(
-  ctx: PrintContext,
-): { render(): Promise<Sheet[]>; reader(o: ReaderOptions): Promise<Reader>; preview(): Promise<Sheet | undefined> } | undefined {
+export function levelMaps(ctx: PrintContext):
+  | {
+      render(): Promise<Sheet[]>;
+      release(): void;
+      first(): Promise<Sheet | undefined>;
+      reader(o: ReaderOptions): Promise<Reader>;
+      preview(): Promise<Sheet | undefined>;
+    }
+  | undefined {
   const secret = listedSecrets(ctx.entry.id);
   if (!secret) return undefined;
+  // the open viewer's pictures are blobs, revoked by release(); small pictures are data URLs, so closing the viewer leaves them be
+  let blobs = new Set<string>();
   let loaded: Promise<Loaded | undefined> | undefined;
-  const load = () =>
-    (loaded ??= loadLevels(ctx.entry).then((x) => {
+  let thumb: Promise<Loaded | undefined> | undefined;
+  let source: ReturnType<typeof loadLevels> | undefined;
+  const make = (keep?: Set<string>) =>
+    (source ??= loadLevels(ctx.entry)).then((x) => {
       if (!x) return undefined;
       // the states of one place (near and far planes) print as one map
       const seen = mergeStates(
@@ -646,17 +714,30 @@ export function levelMaps(
         game: x.game,
         seen,
         every,
-        paint: painter(x.game, x.files),
-        paintCourse: coursePainter(x.game, x.files),
+        paint: painter(x.game, x.files, minter(keep)),
+        paintCourse: coursePainter(x.game, x.files, minter(keep)),
         crop: cropper(),
         full: pageCounts(x.game, seen).full <= MOST_PAGES,
         all: false,
       };
-    }));
+    });
+  const load = () => (loaded ??= make(blobs));
+  const loadThumb = () => (thumb ??= make());
   return {
+    /** Lets go of the viewer's blob pictures (when the box viewer closes); the next open paints them again. */
+    release() {
+      for (const url of blobs) URL.revokeObjectURL(url);
+      blobs = new Set();
+      loaded = undefined;
+    },
     async render() {
       const x = await load();
       return x ? printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.paintCourse, x.crop, x.full) : [];
+    },
+    /** Only the first printed sheet, painting just the levels on it (the box list's small picture). */
+    async first() {
+      const x = await loadThumb();
+      return x ? (await printSheets(ctx.entry, x.game, x.all ? x.every : x.seen, x.paint, x.paintCourse, x.crop, x.full, true))[0] : undefined;
     },
     async reader(o) {
       const x = await load();
@@ -666,10 +747,28 @@ export function levelMaps(
     },
     /** The first level's picture, cropped as printed, for a small picture of the Level Maps (the Library's card). */
     async preview() {
-      const x = await load();
+      const x = await loadThumb();
       const l = x?.seen[0];
       if (!x || !l) return undefined;
-      if (l.course) return sheet(4, 4, 'lm-preview', h('img', { src: (await x.paintCourse(l))[0], alt: '' }));
+      if (l.course) {
+        const size = wholeCourseSize(l.course);
+        return sheet(
+          4,
+          4,
+          'lm-preview',
+          el(
+            'svg',
+            {
+              viewBox: `0 0 ${size.w} ${size.h}`,
+              width: '100%',
+              height: '100%',
+              role: 'img',
+              'aria-label': `${l.name}, whole course`,
+            },
+            wholeCourseSvg(x.game, l, await x.paintCourse(l), 0, 0, COLORS, (m) => markText(x.game, m)),
+          ),
+        );
+      }
       const url = await x.paint(l);
       // a long strip shows its start; a tall one its top
       const aspect = Math.min(2, Math.max(0.75, l.area.w / l.area.h));
@@ -742,18 +841,12 @@ function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
       )
     : null;
   const pad = 3;
-  /** A map's size in blocks as drawn on screen, and (a course) its panels side by side in one row. */
+  /** A map's size on screen, keeping a wrapped course connected in one coordinate system. */
   const sizeOf = (l: Level) => {
     if (l.course) {
       const c = l.course;
-      let across = 0;
-      const which = c.panels.map((_, k) => {
-        const p = { i: k, x: across, y: 0 };
-        across += coursePanelBox(c, k).w + 1.2;
-        return p;
-      });
-      const size = placedSize(c, which);
-      return { w: size.w + pad * 2, ht: size.h + pad * 2, which };
+      const size = wholeCourseSize(c);
+      return { w: size.w + pad * 2, ht: size.h + pad * 2 };
     }
     const room = labelRoom(game, l);
     return { w: levelWidth(l) + pad * 2, ht: Math.max(l.area.h + room.above + room.below, castHeight(l)) + pad * 2 + 1, room };
@@ -764,7 +857,7 @@ function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
       : `${sceneWord(l)} ${sceneList(game, l)} · ${l.name}${l.note ? ` · ${l.note}` : ''} · ${l.area.w} × ${l.area.h} blocks`;
   /** The map's drawing, or undefined once another is wanted. */
   const drawMap = async (l: Level, still: () => boolean): Promise<SVGElement | undefined> => {
-    const { w, ht, which, room } = sizeOf(l);
+    const { w, ht, room } = sizeOf(l);
     const svg = (label: string, ...art: SVGElement[]) =>
       el(
         'svg',
@@ -777,7 +870,7 @@ function levelViewer(opts: Loaded, o: ReaderOptions): Reader {
       if (!still()) return undefined;
       return svg(
         `Map of scene ${sceneList(game, l)}, ${l.name}, as you ${l.course.down ? 'ride' : 'fly'} it`,
-        courseSvg(game, l, urls, which!, pad, pad, COLORS, (m) => markText(game, m)),
+        wholeCourseSvg(game, l, urls, pad, pad, COLORS, (m) => markText(game, m)),
       );
     }
     const url = await paint(l);

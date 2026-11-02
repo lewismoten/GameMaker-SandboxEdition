@@ -39,12 +39,12 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
 - **The CD's games:** the sample "gameware" (edit a copy) and the shareware (play only,
   with their authors' notices). CD games that shipped without a title demo get one recorded
   for this edition, kept apart from their original files.
-- **Thirteen new Sandbox Software games** built for this fork, entirely in code
+- **Fourteen new Sandbox Software games** built for this fork, entirely in code
   ([games/](games)): *Maximus: The Hundred Worlds*, *Sandcastle Knight*, *Snowbound: The $89
   Shovel*, *In The Year 2000!*, *Teddy's Little Big Adventure*, *Teddy's Little Bigger
   Adventure*, *Teddy's Little Biggest Adventure*, *Ohm Sweet Ohm*, *Virus Blaster*, *Final
-  Curtain*, *KEEP IT BRIEF! The Tiny Pockets Library*, *Depth Perception* and *Quest for the
-  Round Tuit*. Each comes
+  Curtain*, *KEEP IT BRIEF! The Tiny Pockets Library*, *Depth Perception*, *Quest for the
+  Round Tuit* and *Tune-Up*. Each comes
   with a manual, box art, printable extras (among them a fold-out World Map and Level Maps)
   and a hidden tin heart, and most hide a felt egg to find.
 - **Twelve "bizarre" games**, also built in code from Lewis's own comic songs and
@@ -86,9 +86,9 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
   `?game=<name>`, and keeps high scores and saved games in the browser, with export and
   import. [Try it with the games here](https://lewismoten.github.io/GameMaker-SandboxEdition/player/)
   or see [The web player](docs/web-player.md).
-- **A reusable browser engine:** build an npm tarball from [`web/packages/engine/`](web/packages/engine/README.md)
-  to run your own Game-Maker DOS files from JavaScript. It includes TypeScript declarations and
-  the audio worklet; the package has not been published to the npm registry.
+- **Reusable npm packages:** run Game-Maker DOS files in your own web application with the
+  browser engine, build or check game data with the development tools, and load game archives. See
+  [npm packages](#npm-packages) for installation and API documentation.
 
 ## Screenshots
 
@@ -104,20 +104,59 @@ to buy Game-Maker. The desk, the BBSes and *Snowbound* come from those years: se
 [A tour of the web editor](docs/editor.md) has a picture of each of its editors: maps, blocks,
 monsters, the hero, palettes, music, sounds, animations, the Integrator, the Level check and more.
 
-## Run it yourself
+## npm packages
 
-You need [Node.js](https://nodejs.org/) 22 or later.
+Use these packages in a separate JavaScript or TypeScript project, installed from your
+configured npm registry. All include TypeScript declarations.
+
+**[@lewismoten/gamemaker-sandbox-engine](web/packages/engine/README.md)** runs games from
+their original DOS files in a browser and includes the audio worklet. Its README provides
+the API, a complete player example, and instructions for supplying game files.
 
 ```sh
-cd web
-npm install
+npm install @lewismoten/gamemaker-sandbox-engine
+```
+
+**[@lewismoten/gamemaker-sandbox-tools](web/packages/tools/README.md)** provides development
+APIs for reading and writing game formats, drawing indexed artwork and text, building
+palettes and audio, and running headless checks. Its README documents the APIs and examples.
+Use Node.js 22.12 or newer for these tools.
+
+```sh
+npm install --save-dev @lewismoten/gamemaker-sandbox-tools
+```
+
+The tools run during development; browser playback uses the engine and generated game data.
+
+**[@lewismoten/gamemaker-sandbox-archives](web/packages/archives/README.md)** discovers games
+in folders, ZIPs, nested archives, and ZIP-based self-extracting executables. It can also
+create ZIPs for single-file downloads. Its README covers extraction, game selection, and
+passing the unpacked file entries to the browser engine.
+
+```sh
+npm install @lewismoten/gamemaker-sandbox-archives
+```
+
+
+## Run it yourself
+
+You need [Node.js](https://nodejs.org/) 22.12 or later.
+
+```sh
+npm ci             # from the repository root; builds workspace packages and game output
 npm run dev        # http://localhost:5173
 npm test           # the test suite (vitest)
 npm run typecheck  # tsc --noEmit
-npm run build      # typecheck, then the static site in web/dist
+npm run build      # refresh game output, typecheck, then the static site in web/dist
 npm run format     # Prettier (config at the repo root)
 npm run lint       # ESLint
 ```
+
+This is an npm workspace monorepo with one root lockfile. The root `package.json` exists to declare
+the workspaces (`web` and `web/packages/*`) so a single `npm ci` links them and one
+`package-lock.json` pins everything; `npm start` there runs the web dev server. The app is in `web/`;
+self-contained engine, archives and tools packages own their source in `web/packages/`.
+See [workspace development](docs/monorepo.md) for package ownership, isolated builds and release checks.
 
 The repository was reformatted with Prettier in a few big commits. They are listed in
 [`.git-blame-ignore-revs`](.git-blame-ignore-revs), which GitHub's blame view already skips.
@@ -147,11 +186,15 @@ to GitHub Pages through [`.github/workflows/pages.yml`](.github/workflows/pages.
 Pull requests to `master` run validation without deploying; branch pushes do not publish the site.
 The `mac-dmg`, `win-exe` and
 `linux-tar` workflows build every game for each system and attach them to a GitHub release.
-Every check job stops after 5 minutes; only the deployments and release builds may run longer.
+Engine, tool, and archive releases are described in [Package releases](docs/package-releases.md).
+Games are deployed as standalone DOS ZIPs with [permanent download links](docs/game-distributions.md),
+shared by the browser player, editor and DOS downloads.
+Every GitHub job stops after five minutes, including deployments and release builds.
 Checking every game takes far longer than that, so run `npm run check:games` (with the rebuild
 compare, about 20 minutes) yourself before committing a game.
-[`.github/workflows/games.yml`](.github/workflows/games.yml) checks one or two named games by hand
-(Actions → Check the games → Run workflow).
+Run whole-game checks locally with `npm run check:games` from `web/` (or add
+`-- --game <id>` for one game). GitHub jobs are capped at five minutes; tests over
+50 ms and isolated package-consumer checks run locally.
 
 ## Where things are
 

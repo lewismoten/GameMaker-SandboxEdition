@@ -6,7 +6,7 @@
 // window, a frog and its tongue, a dragonfly, a spider, the third goat, the mustard seed and
 // Brother Camel (cameos from the Bard's other songs), and Carl's own barrel roll and buzz. Every
 // sprite is drawn from shapes and given a dark outline.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';

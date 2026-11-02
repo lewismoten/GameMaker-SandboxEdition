@@ -2,8 +2,8 @@
 // theme, runs through the title, menu, story and ending; each room of the house gets its
 // own tune (a jaunty kitchen, a lounge-lizard living room, a garage-band shuffle and a
 // spooky attic). Each voice is its own OPL2 channel; chords spread across three channels.
-import { INSTRUMENTS, sbi, type Voice } from '../../../kit/music';
-import { tune, join, times } from '../../../kit/tune';
+import { INSTRUMENTS, sbi, type Voice } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { tune, join, times } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   C: ['E4', 'G4', 'C5'],

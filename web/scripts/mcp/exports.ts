@@ -3,13 +3,19 @@
 // unless --app-dir names another), with web/public for the native players, read through a
 // fetch that only answers for that one made-up address. Nothing goes on the network.
 import { existsSync, readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { isAbsolute, join, relative, resolve } from 'node:path';
 import type { GameFiles } from '../../src/project/files';
-import type { PlayerPatches } from '../../src/dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { ToolError } from '../../src/assistant/tools/types';
 import { REPO } from './roots';
 
 const BASE = 'http://gamemaker-app.invalid/';
+
+/** Whether `p` is `dir` or inside it (a sibling such as `dir-old` is not, as a plain prefix test would say). */
+export function insideDir(p: string, dir: string): boolean {
+  const r = relative(dir, p);
+  return r === '' || (!r.startsWith('..') && !isAbsolute(r));
+}
 
 /** Answers requests for BASE from the app folders (the build first, then public/). */
 function localFetch(dirs: string[]): typeof fetch {
@@ -19,7 +25,7 @@ function localFetch(dirs: string[]): typeof fetch {
     const rel = decodeURIComponent(url.pathname.slice(1));
     for (const d of dirs) {
       const p = resolve(d, rel);
-      if (p.startsWith(resolve(d)) && existsSync(p)) return new Response(new Uint8Array(readFileSync(p)));
+      if (insideDir(p, resolve(d)) && existsSync(p)) return new Response(new Uint8Array(readFileSync(p)));
     }
     return new Response('not found', { status: 404 });
   };

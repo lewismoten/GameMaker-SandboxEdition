@@ -1,7 +1,7 @@
 // Small route helpers the levels' routes share: the car's charge, where a monster is, boarding
 // a see-saw end from its step, and a long hop.
 import type { Order } from '../bot';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { CTR } from '../../src/ids';
 
 /** The car's charge (counters read one more than they hold). */

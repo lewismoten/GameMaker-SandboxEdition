@@ -13,3 +13,53 @@
   border-color: #fff #555 #555 #fff;
   box-shadow: 0.25em 0.25em 0 rgba(0, 0, 0, 0.45);
 }
+
+/* the made-up 1995 browser's 640 x 480 pages (scripts/oldWebShots.ts): each at its own 640 x 480 */
+.mag-art[class*='art-oldweb-'] {
+  --tilt: 0deg;
+}
+
+.mag-art img.mag-old-web {
+  aspect-ratio: 640 / 480;
+  box-sizing: border-box;
+  padding: 0.25em;
+  background: #c3c3c3;
+  border: 0.18em solid;
+  border-color: #fff #555 #555 #fff;
+  box-shadow: 0.25em 0.25em 0 rgba(0, 0, 0, 0.45);
+}
+
+.mag-body:has(> .mag-art:is(.art-oldweb-zip, .art-oldweb-recipes, .art-oldweb-soups, .art-oldweb-weather)) {
+  display: flow-root;
+}
+
+.mag-body:has(> .mag-art:is(.art-oldweb-zip, .art-oldweb-recipes, .art-oldweb-soups, .art-oldweb-weather)) > * + * {
+  margin-top: 0.8em;
+}
+
+/* the four small sites' shots sit beside their section's words, the text running round them; on a
+   narrow column they drop to the full width between paragraphs */
+.mag-art:is(.art-oldweb-zip, .art-oldweb-recipes, .art-oldweb-soups, .art-oldweb-weather) {
+  float: right;
+  width: 64%;
+  margin: 0.2em 0 0.4em 0.9em !important;
+}
+
+.mag-art:is(.art-oldweb-recipes, .art-oldweb-weather) {
+  float: left;
+  margin: 0.2em 0.9em 0.4em 0 !important;
+}
+
+@container (max-width: 420px) {
+  .mag-art:is(.art-oldweb-zip, .art-oldweb-recipes, .art-oldweb-soups, .art-oldweb-weather) {
+    float: none;
+    width: auto;
+    margin: 0.4em 0 0.6em;
+  }
+}
+
+/* the dictionary's shot is the first, and a little smaller so the page keeps its last paragraph */
+.mag-art.art-oldweb-dict {
+  width: 80%;
+  margin-inline: auto;
+}

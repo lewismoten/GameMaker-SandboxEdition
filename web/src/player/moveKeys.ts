@@ -17,8 +17,8 @@
 // The strip leaves out every key the pad sends, and every move key that does just what one of
 // those does (W beside the up arrow, Q beside the keypad's 7). A key that fires, jumps, moves
 // differently or does anything else stays.
-import { CHARBL, MONBL } from '../formats/blocks';
-import type { Sequence } from '../formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 
 /** The pad's eight directions as 45° sectors, clockwise from right (screen y grows down). */
 export type Sector = 0 | 1 | 2 | 3 | 4 | -1 | -2 | -3;

@@ -4,10 +4,10 @@
 // least it can into each scene can no longer finish one the ordinary run finished), and steady
 // hands (a run with one key at a time and unhurried changes can't get through a scene the
 // ordinary run got through, and where it stops).
-import { BACKBL } from '../../../formats/blocks';
-import { scanName } from '../../../input/scancodes';
-import { MLEN } from '../../../formats/map';
-import type { CharInfo } from '../../../engine/world';
+import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { at, type Finding } from '../findings';
 import type { Exploration, ExitReach } from '../explore';
 import type { Move } from '../inputs';
@@ -196,7 +196,7 @@ export function steadyFindings(main: SceneRun, steady: SceneRun, d: SceneData | 
     {
       check: 'steady',
       severity: steady.ex.complete ? 'warning' : 'info',
-      title: `With slower hands the bot can’t get past ${at(cell)}`,
+      title: `In the bot’s runs with slower hands, it did not get past ${at(cell)}`,
       detail: `Playing one key at a time with at least ${ms} ms between changes, it found no way on${steady.ex.complete ? '' : ' in the time it had'}. The ordinary bot went on from here with ${describeMove(move, minTicks)}. A jump that already carries sideways, a step to climb, a wider ledge or a lift that waits makes it kinder.`,
       where: { scene: main.scene, map: d?.names.map, cell },
     },

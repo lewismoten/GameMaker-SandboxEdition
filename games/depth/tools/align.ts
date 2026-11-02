@@ -1,7 +1,8 @@
 // Checks the multi-cell models on the built disk's maps (games/kit/align.ts): every kind with a
 // span (columns by rows, its parts numbered row by row) stands whole on every plane of every
 // level, and its art joins up across the block edges. Run by tools/check.ts.
-import { alignGame, type Need, type PartRule } from '../../kit/align';
+import { type Need, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { LEVELS } from '../src/levels/levels';
 import { levelExtras } from '../src/levels/extras';
 import { buildLevel } from '../src/levels/map';

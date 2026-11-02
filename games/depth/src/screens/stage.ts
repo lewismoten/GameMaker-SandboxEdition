@@ -4,6 +4,7 @@ import { perspective, render, type Camera, type Picture } from '../render/image'
 import { MAT, checker, studio } from '../render/look';
 import { Box, Cylinder, Sphere, mix, norm, rgb, type Material, type Shape, type V, type World } from '../render/tracer';
 import { teapotModel } from '../models/cast';
+import { cachedFrame } from '../render/frameCache';
 
 export const W = 320;
 export const H = 200;
@@ -46,8 +47,10 @@ export function cam(eye: V, look: V, fov = 0.8, extra: Partial<Parameters<typeof
   return perspective({ eye, look, w: W, h: H, fov, ...extra });
 }
 
-export function still(world: World, c: Camera, spp = 4, edge = 25, seed = 1): Picture {
-  return render(world, c, W, H, { spp, edgeSpp: edge, seed });
+export function still(world: World, c: Camera, spp = 4, edge = 25, seed = 1, key?: string, group?: string): Picture {
+  const go = () => render(world, c, W, H, { spp, edgeSpp: edge, seed });
+  // named stills go through the frame cache, so CI renders them in parallel shards
+  return key ? cachedFrame(`still-${key}`, go, group && `still-${group}`) : go();
 }
 
 /** The props of every 1995 ray tracing demo, around a spot. */

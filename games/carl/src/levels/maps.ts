@@ -12,7 +12,7 @@
 //      the big clock breaks.
 //   6. The Aux Cord: back in the living room at dusk, in gloom: sage, oils, the mop, the clap,
 //      to the stereo.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/common';
 import { MON } from '../ids';
 
@@ -208,6 +208,8 @@ export function theCouch(book: BlockBook): Level {
     [39, 9],
     [53, 6],
   ]);
+  // scenery for the site's achievement badges: off the way between the sugar
+  m.set(2, 10, 'packPad').set(9, 10, 'dosDisk').set(19, 6, 'phoneWide').set(26, 5, 'phoneTall');
   m.link(56, 9, 'next');
   return { m, start: at(4, 5), size: [W, H] };
 }
@@ -377,6 +379,8 @@ export function theWindow(book: BlockBook): Level {
     [49, 7],
     [54, 10],
   ]);
+  // scenery for the site's achievement badges: a parcel on the porch, the mail jeep at the curb
+  m.set(11, 11, 'parcelWings').set(17, 11, 'mailJeep').set(36, 11, 'mailTruck');
   m.link(71, 9, 'next');
   return { m, start: at(6, 5), size: [W, H] };
 }

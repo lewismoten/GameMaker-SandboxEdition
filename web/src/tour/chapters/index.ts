@@ -5,9 +5,23 @@
 import type { Chapter } from '../steps';
 import { achievementsChapter } from './achievements';
 import { bbsChapter } from './bbs';
+import { boxChapter } from './box';
 import { castChapter } from './cast';
 import { deskChapter } from './desk';
 import { dosChapter } from './dos';
+import { editAnimationChapter } from './editAnimation';
+import { editAroundChapter } from './editAround';
+import { editBlocksChapter } from './editBlocks';
+import { editMapChapter } from './editMap';
+import { editMonstersChapter } from './editMonsters';
+import { editPaletteChapter } from './editPalette';
+import { editSoundsChapter } from './editSounds';
+import { editIntegratorChapter } from './editIntegrator';
+import { editPlayerChapter } from './editPlayer';
+import { editCheckChapter } from './editCheck';
+import { editExportChapter } from './editExport';
+import { editAssistantChapter } from './editAssistant';
+import { editWalkthroughChapter } from './editWalkthrough';
 import { editorChapter } from './editor';
 import { guideChapter } from './guide';
 import { homeChapter } from './home';
@@ -22,7 +36,21 @@ export const CHAPTERS: Chapter[] = [
   guideChapter,
   settingsChapter,
   editorChapter,
+  editAroundChapter,
+  editMapChapter,
+  editBlocksChapter,
+  editMonstersChapter,
+  editPaletteChapter,
+  editSoundsChapter,
+  editAnimationChapter,
+  editIntegratorChapter,
+  editPlayerChapter,
+  editCheckChapter,
+  editExportChapter,
+  editAssistantChapter,
+  editWalkthroughChapter,
   deskChapter,
+  boxChapter,
   bbsChapter,
   dosChapter,
 ];

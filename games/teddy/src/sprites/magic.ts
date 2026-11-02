@@ -1,7 +1,7 @@
 // Doc Leo's other clown work: magic tricks and parades. Presto, the Clown Club's magician
 // (two blocks tall, doves flutter out of his top hat), the doves themselves, and the
 // Clown Club parade marching down Main Street (each marcher two monsters, top and bottom).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, micro, sprite } from '../art/draw';
 import { CK } from './klown';
 import { P } from '../art/pal';

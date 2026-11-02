@@ -1,7 +1,8 @@
 // Checks the multi-block objects on the built disk's maps (games/kit/align.ts): the clouds, the
 // great plant's two-block stalk (and its branches), the pot, the hand of God, and that their art
 // joins up across the block edges. Run by tools/check.ts.
-import { alignGame, namesOf, pair, shape, type PartRule } from '../../kit/align';
+import { namesOf, pair, shape, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';
 import { LEVELS } from '../src/levels/levels';

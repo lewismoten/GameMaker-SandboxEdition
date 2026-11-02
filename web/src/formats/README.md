@@ -1,6 +1,6 @@
 # `formats/`: Game-Maker's file formats
 
-Part of the [source map](../README.md).
+Integration tests remain here. The implementation now belongs to the [engine workspace](../../packages/engine/README.md), under `src/formats/`. Part of the [source map](../README.md).
 
 Readers and writers for every Game-Maker file
 (`.gam .pal .bbl/.mbl/.cbl .chr .mon .map .snd .his .rec .bkd .lst .txt`) and the standard ones
@@ -9,4 +9,4 @@ it uses (`.gif .fli .cmf .voc`, and `.jpg` for the BBS's pictures). Borland C++ 
 
 - `cmfSong.ts`, `cmfEdit.ts` and `cmfPreview.ts` are the music editor's model of a CMF song;
   `fliFrames.ts` an `.FLI` as whole frames for editing; `fliLimits.ts` what DOS can play.
-- `gifProgressive.ts` and `jpeg.ts` decode a picture as its bytes arrive (the BBS's downloads).
+- `gifProgressive.ts` and `jpeg.ts` decode a picture as its bytes arrive (the BBS's downloads). JPEG visibility follows completed MCU blocks; partial refinement blocks keep the prior scan's coefficients. The package README documents the incremental result.

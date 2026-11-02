@@ -7,14 +7,14 @@
 // Devil in leisure wear (two blocks tall, sipping a milkshake, four stages of being splashed),
 // his milkshakes, their splats, the almond milk splash and the Devil's last straw. Every sprite
 // is drawn from shapes and given a dark outline.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
 import { SEQ, STRAW } from '../ids';
-import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export { T, outline };
 

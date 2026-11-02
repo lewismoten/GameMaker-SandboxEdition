@@ -18,7 +18,7 @@
 import json from './hearts.json';
 import { isHeartAt, type HeartManifest, type HeartPlace } from './manifest';
 import { loadSaveData, SAVES_CHANGED, writeSaveFile } from '../project/storage';
-import type { Session } from '../engine/scene';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { CLOCK_FOUND_KEY, clockHeartTaken, DESK_HEARTS, grandfathered, TIN_HEARTS_CHANGED } from './deskHearts';
 
 export const MANIFEST = json as unknown as HeartManifest;

@@ -12,9 +12,9 @@
 import './monsterPath.css';
 import { h } from '../../core/ui';
 import { blockImages } from '../../core/draw';
-import { BACKBL, parseBlocks } from '../../../formats/blocks';
-import { MLEN, MWID, parseMap } from '../../../formats/map';
-import { parsePalette } from '../../../formats/palette';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { corners, firstCorner, pathBox, pathLength, PathWalker } from './monsterPath';
 import { TICK_MS, mapChoices, type PathEditorOptions } from './monsterPathView';
 import { drawPathScene, mapLayerCanvas } from './monsterPathDraw';

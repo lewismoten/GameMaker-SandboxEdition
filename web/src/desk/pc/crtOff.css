@@ -68,3 +68,21 @@
     transform: scale(0.3);
   }
 }
+
+/* Reduced motion: switching off just fades the picture out (no squeeze, bright wash or flash dot). */
+@media (prefers-reduced-motion: reduce) {
+  .crt.switching-off .crt-picture {
+    animation: crt-fade 0.25s ease-out forwards;
+  }
+
+  .crt.switching-off .crt-picture > *,
+  .crt.switching-off::before {
+    animation: none;
+  }
+
+  @keyframes crt-fade {
+    to {
+      opacity: 0;
+    }
+  }
+}

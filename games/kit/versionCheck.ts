@@ -9,6 +9,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { versionProblems, type VersionSource } from './versions';
+import { hardCodedVersions } from './hardCodedVersion';
+import { lastPushToMaster, VersionDisks } from './versionDisks';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const root = join(gamesDir, '..');
@@ -18,25 +20,29 @@ function git(...args: string[]): { ok: boolean; out: string } {
   return { ok: r.status === 0, out: (r.stdout ?? '').trim() };
 }
 
-/** The commit of the last push to master, or undefined when there is none to compare with. */
-function lastPush(): string | undefined {
-  for (const ref of ['origin/master', 'master']) {
-    const r = git('merge-base', 'HEAD', ref);
-    if (r.ok && r.out) return r.out;
-  }
-  return undefined;
-}
-
 const ids = process.argv.slice(2).length
   ? process.argv.slice(2)
   : readdirSync(gamesDir)
       .filter((id) => existsSync(join(gamesDir, id, 'about.json')))
       .sort();
 
-const base = lastPush();
+const typed = hardCodedVersions(gamesDir, ids);
+for (const t of typed) console.log(t);
+if (typed.length) process.exitCode = 1;
+
+const base = lastPushToMaster(root);
 if (!base) {
   console.log('versions: skipped (no master to compare with: no git history here)');
   process.exit(0);
+}
+
+const changed = new Map<string, boolean>();
+const disks = new VersionDisks(root, base);
+try {
+  // a game new since the last push has no disk there to build: it starts at any version
+  for (const id of ids) if (git('show', `${base}:games/${id}/about.json`).ok) changed.set(id, await disks.changed(id));
+} finally {
+  disks.dispose();
 }
 
 const src: VersionSource = {
@@ -45,14 +51,10 @@ const src: VersionSource = {
     const r = git('show', `${base}:games/${id}/about.json`);
     return r.ok ? (JSON.parse(r.out) as { version?: string }) : undefined;
   },
-  changed: (id) => {
-    const disk = `games/${id}/disk`;
-    const tracked = spawnSync('git', ['diff', '--quiet', base, '--', disk], { cwd: root }).status !== 0;
-    return tracked || !!git('ls-files', '--others', '--exclude-standard', '--', disk).out;
-  },
+  changed: (id) => changed.get(id) ?? false,
 };
 
 const problems = versionProblems(ids, src);
 for (const p of problems) console.log(p);
 console.log(`versions: ${problems.length ? `${problems.length} to bump` : 'ok'} (against ${base.slice(0, 9)}, the last push to master)`);
-process.exit(problems.length ? 1 : 0);
+process.exit(problems.length || typed.length ? 1 : 0);

@@ -8,7 +8,7 @@
 // (like the sequel's car door taking a keepsake); open, it is a slope of up-gravity air that
 // carries the car up a block onto the upper road. With no charge, the wall stays shut, and
 // the sign beside it says to plug in.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, copy, r } from '../blocks/tiles';

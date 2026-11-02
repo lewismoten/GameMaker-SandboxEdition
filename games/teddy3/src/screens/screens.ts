@@ -1,11 +1,11 @@
 // The 320x200 screens: the title (an FLI cartoon, then the poster), the menu, the story,
 // help and credits pages, a card before each level, and the endings. All share one
 // palette (the game's ramps plus a few inks), so Game-Maker's text colors come out the same.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../../../kit/pixels';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, centered, gradient, clubArt, micro, outlined, scaleBlit, text, textWidth } from '../art/draw';
-import { saveSlots } from '../../../kit/saveSlots';
+import { saveSlots } from '@lewismoten/gamemaker-sandbox-tools/kit/saveSlots';
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
@@ -18,7 +18,7 @@ import type { Level } from '../levels/level';
 import { LEVEL_SONGS, lostSong, menuSong, storySong, titleSong, wonSong } from '../sound/music';
 import { CREDITS, EGG, HELP, LOST, README, STORY, WON, CARDS } from './text';
 import { drawEgg } from '../sprites/egg';
-import { dosText } from '../../../kit/disk';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 
 export const SP: Pal = buildScreenPalette();
@@ -169,7 +169,7 @@ function menuScreen(): Pixels {
   teddyBig(p, 'frontBeg', 16, 140, 2);
   chezBig(p, 262, 112, 1.4);
   gwinnBig(p, 'gwinn1', 272, 142, 2, true);
-  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1997', c('paint', 3));
+  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1994', c('paint', 3));
   return p;
 }
 
@@ -184,7 +184,7 @@ function titleScreen(): Pixels {
   chezBig(p, 196, 120, 3);
   // a trail of confetti across the grass
   for (let i = 0; i < 30; i++) p.rect(60 + i * 8, 180 + ((i * 5) % 9), 2, 2, c(['red', 'yellow', 'blue', 'green', 'pink'][i % 5], 3));
-  centered(p, 190, '(C) 1997 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
+  centered(p, 190, '(C) 1994 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
   return p;
 }
 

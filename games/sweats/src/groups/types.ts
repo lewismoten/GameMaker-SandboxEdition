@@ -2,7 +2,7 @@
 // blocks after the common ones), one monster block set (.MBL, up to 100 after the common
 // sprites), its own palette ramps, and its monologues in the order they are performed; each
 // monologue is one scene with its own map, .MON, palette, sound set and title card.
-import type { Monster } from '../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Lighting, Pal, Ramp } from '../art/pal';
 import type { BlockBook } from '../common/blocks';
 import type { MapBuilder } from '../levels/maps';

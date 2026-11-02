@@ -7,20 +7,30 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { moveChars } from '../../../web/src/engine/character';
-import { simKeyPress } from '../../../web/src/engine/keys';
-import { blockBirthMonsters, moveAllMonsters } from '../../../web/src/engine/monsters';
-import { updateCharDrawState } from '../../../web/src/engine/render';
-import { changeScroll, drawScroll, initScroll } from '../../../web/src/engine/scroll';
-import { changeBlocks, startSceneInits } from '../../../web/src/engine/scene';
-import { getTouchBlocks } from '../../../web/src/engine/touch';
-import { BACKBL, LASTMM, MLEN, bgBlock, createWorld, newCharInfo, padBlocks, type CharInfo, type World } from '../../../web/src/engine/world';
-import { parseBlocks, BACKBL as NBACK, MONBL as NMON, CHARBL as NCHR } from '../../../web/src/formats/blocks';
-import { parseCharacter } from '../../../web/src/formats/character';
-import { parseMonsters } from '../../../web/src/formats/monster';
-import { parseMap } from '../../../web/src/formats/map';
-import { MAXSCENELINKS, NOSCENE, parseGame, type Game } from '../../../web/src/formats/game';
-import type { RecordedKey } from '../../../web/src/formats/recording';
+import { moveChars } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { simKeyPress } from '@lewismoten/gamemaker-sandbox-engine/engine/keys';
+import { blockBirthMonsters, moveAllMonsters } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { updateCharDrawState } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
+import { changeScroll, drawScroll, initScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
+import { changeBlocks, startSceneInits } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { getTouchBlocks } from '@lewismoten/gamemaker-sandbox-engine/engine/touch';
+import {
+  BACKBL,
+  LASTMM,
+  MLEN,
+  bgBlock,
+  createWorld,
+  newCharInfo,
+  padBlocks,
+  type CharInfo,
+  type World,
+} from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { parseBlocks, BACKBL as NBACK, MONBL as NMON, CHARBL as NCHR } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { MAXSCENELINKS, NOSCENE, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import type { RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 
 const diskDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'disk');
 

@@ -14,7 +14,7 @@ import { setHashParams } from '../../urlState';
 import { spreadAt, stepSpread } from '../printables/imposition';
 import { buildIssue } from './issue';
 import { magContext, magGames } from './games';
-import { MAG } from './masthead';
+import { ISSUES, MAG, type MagIssue } from './masthead';
 import { renderPage, type RenderEnv } from './render';
 import { runGo, type DeskHooks } from './goRun';
 import type { Where } from './go';
@@ -30,32 +30,41 @@ interface Loaded {
   entries: Map<string, CatalogEntry>;
 }
 
-let loading: Promise<Loaded> | undefined;
+const loading = new Map<1 | 2, Promise<Loaded>>();
 
 /**
  * The issue, from the games catalog as the site serves it (games/index.json, which never lists
  * a secret game; games.ts drops any an older dev server still lists).
  */
-function loadIssue(): Promise<Loaded> {
-  loading ??= fetch('./games/index.json')
+function loadIssue(which: 1 | 2): Promise<Loaded> {
+  const have = loading.get(which);
+  if (have) return have;
+  const made = fetch('./games/index.json')
     .then((r) => (r.ok ? (r.json() as Promise<CatalogEntry[]>) : []))
     .catch(() => [] as CatalogEntry[])
     .then(async (list) => {
       const games = magGames(list);
       const listed = new Set(games.map((g) => g.id));
-      return { issue: await buildIssue(magContext(games)), entries: new Map(list.filter((e) => listed.has(e.id)).map((e) => [e.id, e])) };
+      return { issue: await buildIssue(magContext(games, ISSUES[which])), entries: new Map(list.filter((e) => listed.has(e.id)).map((e) => [e.id, e])) };
     });
-  loading.catch(() => (loading = undefined));
-  return loading;
+  made.catch(() => loading.delete(which));
+  loading.set(which, made);
+  return made;
 }
 
 export interface MagazineOptions {
   where: Where;
   /** The page to open at: its id (go:mag) or its number. */
   start?: string;
+  /** Which issue (masthead.ts ISSUES; No. 2, the one on the desk, by default). */
+  issue?: 1 | 2;
   desk?: DeskHooks;
   /** Opened over the page: a Close button and Esc call this. */
   onClose?: () => void;
+  /** Hears the folios in view each time they change (the desk keeps them in its address). */
+  onPages?: (folios: number[]) => void;
+  /** Hears which issue is showing (once it has loaded), so the desk can keep it in its address. */
+  onIssue?: (mag: MagIssue) => void;
 }
 
 /** The size every page is laid out at: 8.5 x 11 inches at 96 CSS pixels to the inch (as printed). */
@@ -71,6 +80,7 @@ const SCROLL_MOST = 900;
 /** Builds the viewer in `host`; returns its dispose. */
 export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void {
   let issue: Issue | undefined;
+  let which: 1 | 2 = o.issue ?? 2;
   let entries = new Map<string, CatalogEntry>();
   let at = 0;
   let zoom = false;
@@ -96,7 +106,17 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     '🔍 Zoom',
   );
   const tocList = h('ul', { class: 'mag-toc-list' });
-  const toc = h('details', { class: 'mag-toc' }, h('summary', null, '☰ Contents'), h('nav', { 'aria-label': 'Contents' }, tocList));
+  const toc = h(
+    'details',
+    { class: 'mag-toc' },
+    h(
+      'summary',
+      { 'aria-label': 'Contents' },
+      h('span', { 'aria-hidden': 'true' }, '☰'),
+      h('span', { class: 'mag-wide-only', 'aria-hidden': 'true' }, ' Contents'),
+    ),
+    h('nav', { 'aria-label': 'Contents' }, tocList),
+  );
   const printMenu = h('div', { class: 'mag-print-menu', hidden: true, role: 'menu' });
   const printBtn = h(
     'button',
@@ -106,13 +126,20 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   );
   const epub = epubControl({ wide: 'mag-wide-only' });
   epub.use({
-    file: 'turbo-button.epub',
+    file: which === 1 ? 'turbo-button-spring-1993.epub' : 'turbo-button.epub',
     make: async () => {
-      const [l, { magazineBook }] = await Promise.all([loadIssue(), import('../epub/magazineBook')]);
+      const [l, { magazineBook }] = await Promise.all([loadIssue(which), import('../epub/magazineBook')]);
       return magazineBook(l.issue, l.entries, o.where);
     },
   });
-  const closeBtn = o.onClose ? h('button', { type: 'button', onclick: () => o.onClose?.() }, 'Close (Esc)') : null;
+  const closeBtn = o.onClose
+    ? h(
+        'button',
+        { type: 'button', 'aria-label': 'Close (Esc)', onclick: () => o.onClose?.() },
+        h('span', { 'aria-hidden': 'true' }, 'Close'),
+        h('span', { class: 'mag-wide-only', 'aria-hidden': 'true' }, ' (Esc)'),
+      )
+    : null;
   const root = h(
     'div',
     { class: `mag-viewer where-${o.where}` },
@@ -143,7 +170,9 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   const pageAt = (key?: string) => {
     if (!issue || !key) return -1;
     const byId = issue.pages.findIndex((pg) => pg.id === key);
-    return byId >= 0 ? byId : /^\d+$/.test(key) ? Math.min(issue.pages.length - 1, Math.max(0, Number(key) - 1)) : -1;
+    // a number, or a spread's two ("6-7"): the first of them
+    const n = /^(\d+)(?:-\d+)?$/.exec(key)?.[1];
+    return byId >= 0 ? byId : n ? Math.min(issue.pages.length - 1, Math.max(0, Number(n) - 1)) : -1;
   };
 
   // ---- Scroll: every page in one column
@@ -170,8 +199,11 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   // the page in view (or turned to), as the bar, the contents and the address tell it
   const reading = (shown: number[]) => {
     const total = issue!.pages.length;
-    for (const i of shown) tally('mag-features', issue!.pages[i].section);
-    if (shown.includes(total - 1)) unlockAchievement('mag-back');
+    // the achievements are No. 2's (the one on the desk), so saved progress stays
+    if (which === 2) {
+      for (const i of shown) tally('mag-features', issue!.pages[i].section);
+      if (shown.includes(total - 1)) unlockAchievement('mag-back');
+    }
     counter.textContent = counterFor(shown);
     prev.disabled = at === 0;
     next.disabled = shown.at(-1) === total - 1;
@@ -179,6 +211,7 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
       li.querySelector('button')?.setAttribute('aria-current', String(shown.some((i) => issue!.pages[i].section === li.dataset.section)));
     const first = issue!.pages[shown[0]];
     if (o.where === 'web') setHashParams({ page: first.folio === 1 ? undefined : first.folio }, ['magazine']);
+    o.onPages?.(shown.map((i) => issue!.pages[i].folio));
   };
   const scrollWidth = () =>
     widthAt(size, { viewW: stage.clientWidth - (narrow() ? 0 : 24), viewH: stage.clientHeight - 48, natural: PAGE_W, ratio: 11 / 8.5, most: SCROLL_MOST });
@@ -308,7 +341,14 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
     const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-go]');
     if (!a) return;
     if (a.classList.contains('mag-disc-link')) unlockAchievement('mag-disc');
-    const handled = runGo(a.dataset.go!, { where: o.where, desk: o.desk, entry: (id) => entries.get(id), turnTo, close: () => o.onClose?.() });
+    const handled = runGo(a.dataset.go!, {
+      where: o.where,
+      desk: o.desk,
+      entry: (id) => entries.get(id),
+      turnTo,
+      issue: (n) => openIssue(n),
+      close: () => o.onClose?.(),
+    });
     if (handled) e.preventDefault();
     else if (o.onClose && a.target !== '_blank') o.onClose(); // leaving for another page: put the magazine down first
   });
@@ -336,21 +376,30 @@ export function mountMagazine(host: HTMLElement, o: MagazineOptions): () => void
   const onResize = () => show();
   window.addEventListener('resize', onResize);
 
-  void loadIssue().then((l) => {
-    if (!root.isConnected) return;
-    issue = l.issue;
-    entries = l.entries;
-    for (const e of [...l.issue.toc, ...l.issue.ads.map((a) => ({ ...a, title: `Ad: ${a.title}` }))])
-      tocList.append(
-        h(
-          'li',
-          { dataset: { section: e.section } },
-          h('button', { type: 'button', onclick: () => ((toc.open = false), turnTo(e.page)) }, h('span', null, e.title), h('small', null, String(e.folio))),
-        ),
-      );
-    at = Math.max(0, pageAt(o.start));
-    show();
-  });
+  /** Loads an issue into the viewer, at `start` (its cover by default). */
+  const openIssue = (n: 1 | 2, start?: string) => {
+    which = n;
+    issue = undefined;
+    tocList.replaceChildren();
+    dropColumn();
+    void loadIssue(n).then((l) => {
+      if (!root.isConnected || which !== n) return;
+      issue = l.issue;
+      entries = l.entries;
+      for (const e of [...l.issue.toc, ...l.issue.ads.map((a) => ({ ...a, title: `Ad: ${a.title}` }))])
+        tocList.append(
+          h(
+            'li',
+            { dataset: { section: e.section } },
+            h('button', { type: 'button', onclick: () => ((toc.open = false), turnTo(e.page)) }, h('span', null, e.title), h('small', null, String(e.folio))),
+          ),
+        );
+      at = Math.max(0, pageAt(start));
+      o.onIssue?.(l.issue.mag);
+      show();
+    });
+  };
+  openIssue(which, o.start);
 
   const unpinch = pinchZoom(
     stage,
@@ -399,9 +448,9 @@ export function openMagazine(o: Omit<MagazineOptions, 'onClose'>): Promise<void>
 }
 
 /** The web's #/magazine page: the viewer filling the page, at ?page=<n>. Returns its dispose. */
-export function renderMagazinePage(el: HTMLElement, start?: string): () => void {
+export function renderMagazinePage(el: HTMLElement, start?: string, issue?: 1 | 2): () => void {
   el.replaceChildren();
   const main = h('main', { class: 'mag-main', 'aria-label': `${MAG.name} magazine` }, h('h1', { class: 'mag-sr' }, `${MAG.name}: ${MAG.tagline}`));
   el.append(main);
-  return mountMagazine(main, { where: 'web', start });
+  return mountMagazine(main, { where: 'web', start, issue });
 }

@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { GameFiles } from '../../project/files';
-import { newGame, parseGame, serializeGame } from '../../formats/game';
+import { newGame, parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { MemoryContext } from '../tools/memoryContext';
 import { Agent } from './agent';
 import { chatTools } from './chatTools';

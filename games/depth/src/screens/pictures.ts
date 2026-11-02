@@ -9,7 +9,7 @@ import { RAY_R, rayDeath, rayModel } from '../models/ray';
 import { FAR_COL, KINDS, NEAR_COL, cube, eggShape } from '../tiles/cells';
 import { THEMES, type ThemeId } from '../tiles/themes';
 import { centered, panel, text } from './draw';
-import { STATUS } from '../../../kit/saveSlots';
+import { STATUS } from '@lewismoten/gamemaker-sandbox-tools/kit/saveSlots';
 import { logoShapes, SKY } from './title';
 import { H, W, cam, floor, glowMat, props, stage, still } from './stage';
 
@@ -112,7 +112,7 @@ export function cardPicture(n: number, of: number, title: string, line: string, 
     n === 6
       ? mix(rgb(4, 4, 18), rgb(30, 60, 120), Math.max(0, 1 - Math.abs(d[2]) * 4))
       : studio(d, { boxes: false, top: t.sky, horizon: mix(t.sky, [1, 1, 1], 0.5) });
-  const pic = still(world, cam(eye, look, 0.75), 4, 20, n);
+  const pic = still(world, cam(eye, look, 0.75), 4, 20, n, `card-${n}`);
   bloom(pic, 0.95, 2.5, 0.45);
   card(pic, title, line, advice, n, of);
   return pic;
@@ -131,7 +131,7 @@ function boulder(x: number, y: number, s: number): Shape {
 /** The menu: the logo small at the top, a frosted panel where PLAYGAME writes the menu. */
 export function menuPicture(): Picture {
   const shapes = [floor(), ...props([0, 3.5, 0], 1.1), logoShapes([0, 1.2, 2.25], 0.95), ...ray(2.6, -2.8), new Sphere([-2.8, -2.2, 0.4], 0.4, MAT.gold)];
-  const pic = still(stage(shapes, { env: SKY }), cam([0.2, -8.6, 2.6], [0, 0, 1.6], 0.8), 4, 20, 3);
+  const pic = still(stage(shapes, { env: SKY }), cam([0.2, -8.6, 2.6], [0, 0, 1.6], 0.8), 4, 20, 3, 'menu');
   bloom(pic, 0.95, 2.5, 0.4);
   // where the menu goes: title at (96, 104), choices from y 120 to 167, the marker at x 70
   panel(pic, 60, 96, 262, 172, rgb(236, 240, 255), 0.82, rgb(255, 255, 255));
@@ -159,7 +159,7 @@ export function howtoPicture(): Picture {
   for (const x of [1.4, 2.4, 3.4]) shapes.push(cube(x, -6, farCube, { h: 1.4 }));
   const world = stage(shapes, { env: t.env });
   // a long lens focused on the near cubes: the far ones fall out of focus
-  const pic = still(world, cam([0.5, 6, 3.4], [0.5, -0.6, 0.3], 0.7, { aperture: 0.25, focus: 7.2 }), 10, 48, 11);
+  const pic = still(world, cam([0.5, 6, 3.4], [0.5, -0.6, 0.3], 0.7, { aperture: 0.25, focus: 7.2 }), 10, 48, 11, 'howto');
   centered(pic, 6, 'SHARP IS SOLID.', WHITE, 2, { outline: INK });
   centered(pic, 180, "A BLUR ISN'T THERE.", WHITE, 2, { outline: INK });
   return pic;
@@ -188,7 +188,7 @@ export function castPicture(labels = true): Picture {
     ...ray(-3.25, 1.1, 1.0),
   ];
   const world = stage(shapes, { points: [{ at: [0.5, 3, 5], color: rgb(255, 240, 210), radius: 0.3, reach: 6 }], keyColor: rgb(120, 120, 150) });
-  const pic = still(world, cam(CAST_CAM.eye, CAST_CAM.look, CAST_CAM.fov), 4, 20, 5);
+  const pic = still(world, cam(CAST_CAM.eye, CAST_CAM.look, CAST_CAM.fov), 4, 20, 5, 'cast');
   bloom(pic, 0.9, 2.5, 0.5);
   if (!labels) return pic;
   centered(pic, 8, 'THE CAST', WHITE, 2, { outline: INK });
@@ -212,19 +212,19 @@ export function castPicture(labels = true): Picture {
 export function creditsBackground(): Picture {
   const shapes: Shape[] = [floor(), ...props([0, 2, 0], 1), ...ray(0.5, -1, 1.2)];
   const world = stage(shapes, { points: [{ at: [0.5, -1, 6], color: rgb(255, 230, 200), radius: 0.4, reach: 7 }], keyColor: rgb(80, 80, 120) });
-  return textPage(still(world, cam([0.5, -9, 3.2], [0.5, 0, 0.8], 0.8), 4, 16, 6));
+  return textPage(still(world, cam([0.5, -9, 3.2], [0.5, 0, 0.8], 0.8), 4, 16, 6, 'credits'));
 }
 
 /** The background for the instructions' pages. */
 export function howtoBackground(): Picture {
   const shapes: Shape[] = [floor(), ...wallRow('checker', -6, 6, 2), ...ray(-1.5, -1), cube(1, -1, nearCube), cube(2, -1, farCube)];
-  return textPage(still(stage(shapes), cam([0, -8, 4], [0, 0, 0.5], 0.8), 4, 16, 8));
+  return textPage(still(stage(shapes), cam([0, -8, 4], [0, 0, 0.5], 0.8), 4, 16, 8, 'howbg'));
 }
 
 /** High scores: PLAYGAME writes the title in red at the top and the scores in blue below. */
 export function hiscorePicture(): Picture {
   const shapes: Shape[] = [floor(), logoShapes([0, 6, 3.2], 0.8)];
-  const pic = still(stage(shapes, { env: SKY }), cam([0, -6, 3], [0, 0, 1.6], 0.9), 4, 16, 9);
+  const pic = still(stage(shapes, { env: SKY }), cam([0, -6, 3], [0, 0, 1.6], 0.9), 4, 16, 9, 'hiscore');
   panel(pic, 10, 0, 310, 12, rgb(255, 255, 255), 0.97);
   panel(pic, 10, 22, 310, 200, rgb(246, 248, 255), 0.94, rgb(255, 255, 255));
   return pic;
@@ -237,7 +237,7 @@ export function hiscorePicture(): Picture {
  */
 export function savePicture(word: string): Picture {
   const shapes: Shape[] = [floor(), ...ray(-2.4, -1.4, 1.4)];
-  const pic = still(stage(shapes), cam([0, -7, 3.4], [0, 0, 0.5], 0.85), 4, 16, 10);
+  const pic = still(stage(shapes), cam([0, -7, 3.4], [0, 0, 0.5], 0.85), 4, 16, 10, 'save');
   panel(pic, 50, 30, 300, 178, rgb(8, 6, 28), 0.92, rgb(120, 220, 255));
   panel(pic, STATUS.x, STATUS.y, STATUS.x + STATUS.w, STATUS.y + STATUS.h, rgb(236, 240, 255), 0.93, rgb(255, 255, 255));
   centered(pic, 8, word, WHITE, 2, { outline: INK });
@@ -247,7 +247,7 @@ export function savePicture(word: string): Picture {
 /** Out of light: Ray falling apart into a wireframe. */
 export function lostPicture(): Picture {
   const shapes: Shape[] = [floor(), ...place(rayDeath(2), 0, 0, 2.6), ...place(rayDeath(4), -2.4, -1.6, 1.6)];
-  const pic = still(stage(shapes, { keyColor: rgb(120, 120, 160) }), cam([0.3, -6, 2.4], [0, 0, 0.8], 0.8), 4, 16, 12);
+  const pic = still(stage(shapes, { keyColor: rgb(120, 120, 160) }), cam([0.3, -6, 2.4], [0, 0, 0.8], 0.8), 4, 16, 12, 'lost');
   bloom(pic, 0.8, 3, 0.7);
   centered(pic, 14, 'OUT OF LIGHT', rgb(255, 120, 120), 3, { outline: INK });
   centered(pic, 176, 'The render stopped at 99%.', WHITE, 1, { outline: INK });
@@ -267,7 +267,7 @@ export function eggPicture(): Picture {
     points: [{ at: [0.6, -2, 5], color: rgb(255, 245, 220), radius: 0.3, reach: 6 }],
     keyColor: rgb(110, 100, 150),
   });
-  const pic = still(world, cam([0, 6, 2.6], [0, 0, 1.0], 0.75), 6, 30, 13);
+  const pic = still(world, cam([0, 6, 2.6], [0, 0, 1.0], 0.75), 6, 30, 13, 'egg');
   bloom(pic, 0.85, 3, 0.6);
   flare(pic, 186, 54, 0.45);
   return pic;

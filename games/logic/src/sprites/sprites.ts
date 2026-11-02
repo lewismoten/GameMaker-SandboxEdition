@@ -1,7 +1,7 @@
 // Sprites: Watt the repair robot (.CBL) and the moving parts of the boards (.MBL): the
 // current itself, switches, timer buttons, force-field gates, fuses and relays.
-import { orientIndex } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { chezSide, CHEZ_LAMP } from '../../../kit/chez';
 import { CLEAR, bevel, blob, micro, outline, shadeAt } from '../art/draw';
 import { c, r } from '../art/pal';

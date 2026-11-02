@@ -2,7 +2,7 @@
 // (or a skirt, or shorts), walking legs, arms down or flung up, and a mark over the head ("?" for
 // the confused, "!" for the afraid). Face on for folk who stand, side on (walking right, mirrored
 // for left) for folk who walk.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
 import type { Pal } from '../../art/pal';

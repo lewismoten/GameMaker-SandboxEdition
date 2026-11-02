@@ -1,12 +1,12 @@
 // The path preview must move monsters exactly like the game engine does.
 import { describe, expect, it } from 'vitest';
 import { readFileSync, existsSync } from 'fs';
-import { parseMonsters } from '../src/formats/monster';
-import { newMap } from '../src/formats/map';
-import { createWorld, padBlocks } from '../src/engine/world';
-import { birthMon, moveAllMonsters, resetMonInfo } from '../src/engine/monsters';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { newMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { createWorld, padBlocks } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { birthMon, moveAllMonsters, resetMonInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
 import { PathWalker } from '../src/editor/editors/monsters/monsterPath';
-import type { Character } from '../src/formats/character';
+import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 
 const SETS = ['../cd/gameware/nebula/monshad.mon', '../cd/gameware/pipemare/pipes.mon'].map((f) => new URL(`../${f}`, import.meta.url));
 

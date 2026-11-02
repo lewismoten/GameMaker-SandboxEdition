@@ -3,15 +3,18 @@
 // curved arrows for the links between scenes (one per pair, with a count). Used for the
 // live board and for Export PNG.
 import type { Project } from '../../core/project';
-import { NOSCENE, sceneKind, type Game, type Point } from '../../../formats/game';
+import { NOSCENE, sceneKind, type Game, type Point, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { WORLD, CARD_UNITS, arrival } from './layoutCells';
 import { START_SONGS } from './sceneSlots';
+import { isSolidPalette } from '../../core/readablePalette';
 
 /** Board pixels per integrator unit, and the card size on the board. */
 export const S = 8;
 const CARD = { w: CARD_UNITS.w * S - 8, h: CARD_UNITS.h * S - 6 };
 const THUMB = { x: 8, y: 22, w: CARD.w - 16, h: 100 };
 const COLORS = { start: '#ffd400', end: '#ff6b61', adventure: '#6cf28a', unused: '#888' } as const;
+/** A pass-through scene's frame (a talk page or a fade): not a map to play, so not the playable green. */
+const TALK = '#d58cff';
 const FONT = 'ui-monospace, Menlo, Consolas, monospace';
 
 export interface Rect {
@@ -28,13 +31,13 @@ export interface CardButton extends Rect {
 
 export const inRect = (r: Rect, x: number, y: number) => x >= r.x && y >= r.y && x <= r.x + r.w && y <= r.y + r.h;
 
-function roundRect(ctx: CanvasRenderingContext2D, r: Rect, rad: number): void {
+export function roundRect(ctx: CanvasRenderingContext2D, r: Rect, rad: number): void {
   ctx.beginPath();
   ctx.roundRect(r.x, r.y, r.w, r.h, rad);
 }
 
 /** Where a line from the center of `r` towards (tx, ty) leaves the rectangle. */
-function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
+export function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
   const cx = r.x + r.w / 2;
   const cy = r.y + r.h / 2;
   const dx = tx - cx;
@@ -45,7 +48,9 @@ function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
 }
 
 /** What the board shows besides the game: the selection, the song playing and the scene pictures. */
-interface BoardView {
+export interface BoardView {
+  /** On one of the editor's boards (boardPaint.ts) instead of the DOS layout: the board draws its own cards and arrows. */
+  boards?: { world: Rect; title: string; paint(ctx: CanvasRenderingContext2D, forExport: boolean): void };
   project: Project;
   game: Game;
   selected: number;
@@ -59,8 +64,9 @@ export { arrival } from './layoutCells';
 /** The scenes in use (not NOSCENE), in order. */
 export const usedScenes = (game: Game) => game.scenes.map((_, i) => i).filter((i) => game.scenes[i].gametype !== NOSCENE);
 /** A scene's card on the board: centered on its integrator position (Pos + 2, the middle of its 5x5 box). */
-export function cardRect(game: Game, i: number): Rect {
-  const p = game.scenes[i].pos;
+export const cardRect = (game: Game, i: number): Rect => rectAt(game.scenes[i].pos);
+/** The card whose scene (or group) sits at integrator position `p`. */
+export function rectAt(p: Point): Rect {
   return { x: (p.x + 2) * S - CARD.w / 2, y: (p.y + 2) * S - CARD.h / 2, w: CARD.w, h: CARD.h };
 }
 
@@ -115,12 +121,37 @@ function drawThumb(ctx: CanvasRenderingContext2D, img: HTMLCanvasElement | undef
   }
 }
 
-function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, v: BoardView): void {
+/** A group's card stands for its members: shown as a stack, with the group's name and size. */
+export interface GroupFace {
+  name: string;
+  count: number;
+  /** Any member is the selected scene. */
+  selected: boolean;
+}
+
+export function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, v: BoardView, place?: Rect, group?: GroupFace): void {
   const s = v.game.scenes[i];
   const kind = sceneKind(s);
-  const r = cardRect(v.game, i);
-  const sel = i === v.selected && !forExport;
-  const color = COLORS[kind];
+  const r = place ?? cardRect(v.game, i);
+  const sel = (group ? group.selected : i === v.selected) && !forExport;
+  if (group) {
+    // the rest of the stack, peeking out behind
+    ctx.fillStyle = '#0d1024';
+    ctx.strokeStyle = 'rgba(143,170,255,.55)';
+    ctx.lineWidth = 1.5;
+    for (const d of [8, 4]) {
+      roundRect(ctx, { ...r, x: r.x + d, y: r.y + d }, 7);
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
+  // a pass-through scene: the hero arrives on one of its own links out, so it leaves at once (a talk page
+  // between scenes, or just a fade)
+  const at = kind === 'adventure' ? arrival(v.game, i) : undefined;
+  const pass = !!at && s.links.some((l) => l.toScene !== NOSCENE && !!v.game.scenes[l.toScene] && l.from.x === at.x && l.from.y === at.y);
+  const pal = s.files[0] ? v.project.files.get(s.files[0]) : undefined;
+  const page = pass ? (v.screenOf(s.files[9]) ?? v.screenOf(s.files[10])) : undefined;
+  const color = pass ? TALK : COLORS[kind];
   ctx.save();
   ctx.shadowColor = sel ? color : 'rgba(0,0,0,.6)';
   ctx.shadowBlur = sel ? 18 : 8;
@@ -141,7 +172,13 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
   ctx.fillStyle = '#000';
   ctx.font = `bold 11px ${FONT}`;
   ctx.textBaseline = 'alphabetic';
-  const title = kind === 'start' ? `★ ${s.desc || 'Untitled'}` : kind === 'end' ? `⚑ ${s.desc || 'Game over'}` : `${i}  ${s.desc || '(untitled)'}`;
+  const title = group
+    ? `${group.name} (${group.count})`
+    : kind === 'start'
+      ? `★ ${s.desc || 'Untitled'}`
+      : kind === 'end'
+        ? `⚑ ${s.desc || 'Game over'}`
+        : `${i}  ${s.desc || '(untitled)'}`;
   ctx.fillText(title, r.x + 6, r.y + 13, r.w - 12);
   // picture
   const box = { x: r.x + THUMB.x, y: r.y + THUMB.y, w: THUMB.w, h: THUMB.h };
@@ -154,6 +191,18 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
       drawThumb(ctx, won, { ...box, w: half }, 'Won');
       drawThumb(ctx, lost, { ...box, x: box.x + half + 4, w: half }, 'Lost');
     } else drawThumb(ctx, won ?? lost, box, won ? 'Won' : lost ? 'Lost' : 'graphic');
+  } else if (page) {
+    // a pass-through scene's picture (its intro, else its exit) is the message, so show that, not its map
+    drawThumb(ctx, page, box, 'Talk');
+  } else if (pass && pal && isSolidPalette(pal)) {
+    // no picture and a one-color palette: the player only sees a fade
+    ctx.fillStyle = '#000';
+    ctx.fillRect(box.x, box.y, box.w, box.h);
+    ctx.fillStyle = '#9aa2b8';
+    ctx.font = `10px ${FONT}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('fade, passes through', box.x + box.w / 2, box.y + box.h / 2 + 3);
+    ctx.textAlign = 'left';
   } else {
     drawThumb(ctx, v.levelOf(i), box);
     if (s.files[1]) {
@@ -170,11 +219,12 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
   // footer
   ctx.font = `10px ${FONT}`;
   ctx.fillStyle = '#9aa2b8';
-  const foot =
-    kind === 'adventure'
+  const foot = group
+    ? `${group.count} scenes · click to choose`
+    : kind === 'adventure'
       ? (() => {
-          const a = arrival(v.game, i);
-          return `in at ${a.x},${a.y}`;
+          const a = at!;
+          return `${pass ? (page ? 'talk · ' : 'pass · ') : ''}in at ${a.x},${a.y}`;
         })()
       : kind === 'start'
         ? 'start'
@@ -191,8 +241,21 @@ function drawCard(ctx: CanvasRenderingContext2D, i: number, forExport: boolean, 
   }
 }
 
-function drawLinks(ctx: CanvasRenderingContext2D, forExport: boolean, v: BoardView): void {
-  // one arrow per pair of scenes, however many links join them
+/** One arrow on the board: from one card to another (a scene's, a group's or a stub's). */
+export interface Edge {
+  a: Rect;
+  b: Rect;
+  /** How many links it stands for. */
+  n: number;
+  /** Leaves the selected scene / leads into it. */
+  out: boolean;
+  inn: boolean;
+  /** A link inside one card. */
+  self: boolean;
+}
+
+/** The DOS board's arrows: one per pair of scenes, however many links join them. */
+function sceneEdges(forExport: boolean, v: BoardView): Edge[] {
   const pairs = new Map<string, { a: number; b: number; n: number }>();
   for (const i of usedScenes(v.game))
     for (const l of v.game.scenes[i].links) {
@@ -203,19 +266,26 @@ function drawLinks(ctx: CanvasRenderingContext2D, forExport: boolean, v: BoardVi
       if (p) p.n++;
       else pairs.set(k, { a: i, b: t, n: 1 });
     }
+  return [...pairs.values()].map(({ a, b, n }) => ({
+    a: cardRect(v.game, a),
+    b: cardRect(v.game, b),
+    n,
+    out: a === v.selected && !forExport,
+    inn: b === v.selected && !forExport,
+    self: a === b,
+  }));
+}
+
+export function drawEdges(ctx: CanvasRenderingContext2D, edges: Edge[], forExport: boolean): void {
   // with lots of links, the selected scene's stand out and the rest fade back
-  const busy = pairs.size > 40 && !forExport;
-  const ordered = [...pairs.values()].sort((p, q) => Number(p.a === v.selected || p.b === v.selected) - Number(q.a === v.selected || q.b === v.selected));
-  for (const { a, b, n } of ordered) {
-    const ra = cardRect(v.game, a);
-    const rb = cardRect(v.game, b);
-    const out = a === v.selected && !forExport;
-    const inn = b === v.selected && !forExport;
+  const busy = edges.length > 40 && !forExport;
+  const ordered = [...edges].sort((p, q) => Number(p.out || p.inn) - Number(q.out || q.inn));
+  for (const { a: ra, b: rb, n, out, inn, self } of ordered) {
     const color = out ? '#ffd400' : inn ? '#6cf28a' : busy ? 'rgba(143,170,255,.45)' : 'rgba(143,170,255,.75)';
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
     ctx.lineWidth = out || inn ? 2.5 : 1.5;
-    if (a === b) {
+    if (self) {
       // a link inside the same map: a loop on the card's corner
       ctx.beginPath();
       ctx.arc(ra.x + ra.w, ra.y + 9, 11, Math.PI * 0.9, Math.PI * 2.4);
@@ -268,20 +338,22 @@ export function paintBoard(ctx: CanvasRenderingContext2D, view: Rect, forExport:
   ctx.fillStyle = '#05061a';
   ctx.fillRect(view.x, view.y, view.w, view.h);
   // the DOS integrator's world
-  const wr = { x: WORLD.x * S, y: WORLD.y * S, w: WORLD.w * S, h: WORLD.h * S };
+  const bw = v.boards?.world ?? WORLD;
+  const wr = { x: bw.x * S, y: bw.y * S, w: bw.w * S, h: bw.h * S };
   ctx.fillStyle = '#000048';
   ctx.fillRect(wr.x, wr.y, wr.w, wr.h);
   ctx.fillStyle = 'rgba(127,156,255,.18)';
-  for (let x = WORLD.x; x <= WORLD.x + WORLD.w; x += 10) for (let y = WORLD.y; y <= WORLD.y + WORLD.h; y += 10) ctx.fillRect(x * S - 1, y * S - 1, 2, 2);
+  for (let x = bw.x; x <= bw.x + bw.w; x += 10) for (let y = bw.y; y <= bw.y + bw.h; y += 10) ctx.fillRect(x * S - 1, y * S - 1, 2, 2);
   ctx.strokeStyle = '#2b3bb0';
   ctx.lineWidth = 2;
   ctx.strokeRect(wr.x, wr.y, wr.w, wr.h);
   ctx.font = `bold 14px ${FONT}`;
   ctx.fillStyle = '#ffd400';
   const count = usedScenes(v.game).length;
-  ctx.fillText(`${v.game.scenes[0]?.desc || 'Untitled'} — ${count} scene${count === 1 ? '' : 's'}`, wr.x, wr.y - 10);
+  ctx.fillText(v.boards?.title ?? `${gameTitle(v.game) || 'Untitled'} — ${count} scene${count === 1 ? '' : 's'}`, wr.x, wr.y - 10);
   ctx.imageSmoothingEnabled = false;
-  drawLinks(ctx, forExport, v);
+  if (v.boards) return v.boards.paint(ctx, forExport);
+  drawEdges(ctx, sceneEdges(forExport, v), forExport);
   const order = usedScenes(v.game).sort((a, b) => Number(a === v.selected) - Number(b === v.selected));
   for (const i of order) drawCard(ctx, i, forExport, v);
 }

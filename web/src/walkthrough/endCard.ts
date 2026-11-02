@@ -2,7 +2,7 @@
 // got this far." and where it stopped, over the last screen played, dimmed. The player shows
 // the words over its screen; the MP4 (exportVideo.ts) ends with a few seconds of this card,
 // drawn here in the 8x8 font on the 320x200 frame.
-import { FONT8X8 } from '../gfx/font8x8';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import type { Walkthrough } from './format';
 
 const W = 320;

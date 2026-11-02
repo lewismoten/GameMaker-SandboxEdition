@@ -2,7 +2,7 @@
 // hurts through all of it), and draw a one-pixel outline round a monster's picture in the
 // palette color that stands out most from the scenery behind it. Both return new pixels and
 // leave the block's other settings alone.
-import { BLEN, TRANSPARENT } from '../../../formats/blocks';
+import { BLEN, TRANSPARENT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { contrastRatio, luminance } from '../sceneData';
 
 /** The art's bounding box: pixels that aren't the sky colors. */

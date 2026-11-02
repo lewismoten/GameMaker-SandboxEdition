@@ -10,10 +10,10 @@
 //
 // Layout (12 rows: the cracked ceiling on row 0, the walking row 9, the linoleum on row 10). The
 // counter top (row 7) is a ledge, the fridge is solid (stand on it).
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, loot, plotThing, spotlight } from '../../common/blocks';
 import { anim, corner, mon, pace } from '../../common/characters';

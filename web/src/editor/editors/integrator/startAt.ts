@@ -1,6 +1,6 @@
 // Playing from a level instead of the title screen: a copy of the game whose start scene goes
 // straight to that level. Only the play-test copy changes; the project's .gam stays as it is.
-import { ADVTYPE, type Game, type Point } from '../../../formats/game';
+import { ADVTYPE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 /** The map slot of a level scene (ADV_FILES[1]). */
 const MAP_SLOT = 1;

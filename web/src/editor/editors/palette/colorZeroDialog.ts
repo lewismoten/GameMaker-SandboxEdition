@@ -4,9 +4,9 @@
 // colors matched. Loaded when the note by color 0 is first used.
 import { modal, h } from '../../core/ui';
 import type { Project } from '../../core/project';
-import { Screen } from '../../../gfx/screen';
-import { paletteCss } from '../../../formats/palette';
-import { playerLook } from '../../../engine/playerLook';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { paletteCss } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import { companionPatches } from '../../../dosPlayer/playerRecord';
 import { contrastRatio, luminance } from '../../check/sceneData';
 import { blackAtZero } from '../../check/checks/colorZero';
@@ -22,6 +22,50 @@ const TARGET_WORDS: Record<string, string> = {
   hsBlue: 'high-score blue',
   hsGreen: 'high-score green',
 };
+
+/** Live miniatures for the palette's Backgrounds tab; opening a card shows the full comparison. */
+export function colorZeroPreviews(project: Project, file: string, pal: Uint8Array): { el: HTMLElement; refresh(): void } {
+  const look = playerLook(companionPatches(project.companion, project.gam));
+  const previews = ZERO_SCREENS.filter((s) => s.fkey === undefined || look.fkeyOn(s.fkey)).map((scene) => {
+    const canvas = h('canvas', { class: 'pal-zero-shot', role: 'img', 'aria-label': `${scene.title}, as the player draws it` });
+    return {
+      scene,
+      canvas,
+      el: h(
+        'figure',
+        { class: 'pal-zero-fig' },
+        h('figcaption', null, scene.title),
+        h(
+          'button',
+          {
+            type: 'button',
+            style: 'display:block;padding:0;max-width:100%',
+            'aria-label': `Preview ${scene.title} on color 0`,
+            onclick: () => void colorZeroDialog(project, file, pal),
+          },
+          canvas,
+        ),
+      ),
+    };
+  });
+  const el = h(
+    'div',
+    { class: 'stack' },
+    h('p', { class: 'meta' }, 'Player screens drawn on color 0, with your DOS player settings. Open a preview to inspect its matched text colors.'),
+    ...previews.map((preview) => preview.el),
+  );
+  const refresh = () => {
+    for (const { scene, canvas } of previews) {
+      const screen = new Screen(canvas);
+      screen.setPalette(pal);
+      screen.clear(0);
+      scene.draw(screen, pal, look);
+      screen.present();
+    }
+  };
+  refresh();
+  return { el, refresh };
+}
 
 export function colorZeroDialog(project: Project, file: string, pal: Uint8Array): Promise<void> {
   const patches = companionPatches(project.companion, project.gam);

@@ -6,7 +6,7 @@ import type { RetroHost } from '../../retro/host';
 import { attr } from '../../retro/text/textScreen';
 import { MENUATTR, SHADATTR, vertMenu } from '../../retro/text/textUi';
 import type { WorkArea } from '../../retro/dos/workArea';
-import { BACKBL, BLEN, CHARBL, MONBL, parseBlocks, serializeBlocks, type Block } from '../../formats/blocks';
+import { BACKBL, BLEN, CHARBL, MONBL, parseBlocks, serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Vga } from './vga';
 
 /** BlkExtensions: background, monster and character block sets (btype 1..3). */

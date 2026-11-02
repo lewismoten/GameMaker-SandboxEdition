@@ -4,7 +4,7 @@
 import type { Chapter } from '../steps';
 
 /** A card on the shelves by its title (the name under its picture). */
-const card = (title: string, label: string) => ({ label, css: '.lib-card .lib-name', text: title });
+const card = (title: string, label: string) => ({ label, css: '.lib-spine-btn', text: title });
 
 export const libraryChapter: Chapter = {
   id: 'library',
@@ -12,7 +12,7 @@ export const libraryChapter: Chapter = {
   place: 'Library',
   page: 'library',
   hash: '#/library',
-  ready: '.lib-orders .lib-order',
+  ready: '.lib-spine-btn',
   actor: 'lewie',
   speaker: 'joe',
   music: 'briefLibrary',
@@ -34,38 +34,28 @@ export const libraryChapter: Chapter = {
     {
       id: 'library-sort',
       action: 'point',
-      target: { label: 'the By game and By type buttons', css: '.lib-orders' },
-      say: 'Sort the shelves by game, or by type: every manual together, every map together.',
+      target: { label: 'the card catalog', css: '.lib-o-catalog' },
+      say: 'Open the card catalog to sort the shelves by game, or by type: every manual together, every map together.',
     },
     {
       id: 'library-pick',
       action: 'point',
-      target: { label: 'the Game or Kind picker', css: '#lib-only' },
-      say: 'Pick one game, or one kind, to see just that shelf.',
-    },
-    {
-      // the Library opens on a game's own shelf just after that game was shown
-      id: 'library-all',
-      action: 'press',
-      target: { label: 'the All games button', css: '.lib-showing .lib-show-all' },
-      click: true,
-      say: 'Showing just one game? This puts everything back on the shelves.',
-      sound: 'flutter',
-      optional: true,
+      target: { label: 'the card catalog', css: '.lib-o-catalog' },
+      say: 'Each drawer in the card catalog is one game, or one kind. Pull one open to see just that shelf.',
     },
     {
       id: 'library-count',
       action: 'point',
       actor: 'joe',
-      target: { label: 'the count of things on the shelves', css: '.lib-count' },
-      say: 'This counts everything on the shelves. I counted them too. Twice.',
+      target: { label: 'the stacks', css: '.lib-o-stacks' },
+      say: 'The stacks hold everything on these shelves. I counted them too. Twice.',
     },
     {
       id: 'library-card',
       action: 'point',
-      target: { label: 'the first manual on the shelves', css: '.lib-shelf .lib-card' },
-      // each kind of paper is shown with the Kind picker set to it, so it is at the top of the page
-      go: { hash: '#/library?by=type&only=manual', ready: '.lib-shelf .lib-card' },
+      target: { label: 'the first manual on the shelves', css: '.lib-spine-btn' },
+      // each kind of paper is shown with the catalog's drawer set to it, so its spines stand on the far wall
+      go: { hash: '#/library?by=type&only=manual', ready: '.lib-spine-btn' },
       say: 'Each card opens its piece on screen: a manual, a hint book, a map, a key card. Most can be printed, too.',
       sound: 'ding',
     },
@@ -73,7 +63,7 @@ export const libraryChapter: Chapter = {
       id: 'library-print',
       action: 'point',
       target: card('Disk labels', 'a Disk labels card'),
-      go: { hash: '#/library?by=type&only=labels', ready: '.lib-shelf .lib-card' },
+      go: { hash: '#/library?by=type&only=labels', ready: '.lib-spine-btn' },
       say: 'Disk labels and retail boxes open in the print shop, with lines to cut and fold along.',
       optional: true,
     },
@@ -81,7 +71,7 @@ export const libraryChapter: Chapter = {
       id: 'library-walkthrough',
       action: 'point',
       target: card('Walkthrough', 'a Walkthrough card'),
-      go: { hash: '#/library?by=type&only=walkthrough', ready: '.lib-shelf .lib-card' },
+      go: { hash: '#/library?by=type&only=walkthrough', ready: '.lib-spine-btn' },
       say: 'Every game’s walkthrough is here too, played start to finish. Its length is on the card.',
       optional: true,
     },
@@ -89,7 +79,7 @@ export const libraryChapter: Chapter = {
       id: 'library-magazine',
       action: 'point',
       target: card('TURBO BUTTON', 'the TURBO BUTTON card'),
-      go: { hash: '#/library?by=type&only=magazine', ready: '.lib-shelf .lib-card' },
+      go: { hash: '#/library?by=type&only=magazine', ready: '.lib-spine-btn' },
       say: 'TURBO BUTTON is the shareware gamer’s monthly: news, reviews, hints and every game.',
       sound: 'flutter',
       optional: true,
@@ -98,7 +88,7 @@ export const libraryChapter: Chapter = {
       id: 'library-guide',
       action: 'point',
       target: card('The Guide', 'the Guide card'),
-      go: { hash: '#/library?by=type&only=guide', ready: '.lib-shelf .lib-card' },
+      go: { hash: '#/library?by=type&only=guide', ready: '.lib-spine-btn' },
       say: 'The Guide and the help for Mac, Windows and Linux are shelved here as well.',
       optional: true,
     },

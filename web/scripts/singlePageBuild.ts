@@ -18,6 +18,7 @@ const VIRTUAL = '\0gm-inline-worker:';
 async function bundle(input: string, format: 'es' | 'iife', plugins: Plugin[] = []): Promise<Rollup.OutputBundle> {
   const result = await build({
     configFile: false,
+    resolve: { conditions: ['gamemaker-source', 'module', 'browser', 'production'] },
     root,
     publicDir: false,
     logLevel: 'warn',

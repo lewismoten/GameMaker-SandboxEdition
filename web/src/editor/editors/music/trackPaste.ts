@@ -2,7 +2,7 @@
 // as one undo step, with a toast that says what happened (Paste track, and Add a track from
 // another song…, which share this).
 import { toast } from '../../core/ui';
-import { channelNotes } from '../../../formats/cmfEdit';
+import { channelNotes } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import type { MusicDoc } from './doc';
 import { copyTrack, pasteTrack, type TrackClip } from './trackClip';
 import { saveTrackClip } from './trackClipboard';

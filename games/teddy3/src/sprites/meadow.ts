@@ -1,7 +1,7 @@
 // Firefly Meadow's monster art: a sleepy firefly dozing on a grass stem (two breaths, with a
 // little "z"), a woken firefly glowing bright with its friends around it (two flickers), and
 // a patch of the deep dark that Teddy won't walk into (a slow swirl with a few faint specks).
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 

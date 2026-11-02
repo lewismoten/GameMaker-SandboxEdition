@@ -5,7 +5,7 @@
 // flat lashed down by its foot, the riser with its crate step, Clown Club members setting up
 // (Professor Pratfall at the light board, Juggles practicing, Honker with the party horns),
 // and the cake table, whose long tablecloth hides Gwinn's spot.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { Tiles } from './level';
 import { boxFace, c, copy, r } from '../blocks/tiles';

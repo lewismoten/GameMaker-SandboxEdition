@@ -1,7 +1,7 @@
 // Night critters (monster block art, facing right): a raccoon in a bandit mask, a skunk and
 // the cloud it leaves, an owl swooping, fireflies; and things in Gwinn's way: a rope knot,
 // a pile of cardboard boxes, a lump of hard clay.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, sprite } from '../art/draw';
 import { P } from '../art/pal';
 

@@ -84,7 +84,7 @@ export const FREE_CD: MagSection = {
             [
               head('\\CODE: the source', { size: 's', level: 2 }),
               p(
-                'Every C, C++ and assembly file of Game-Maker 3.0 (1991–1995), as Andy Stone released it: the designers, PLAYGAME, the file formats and the makefiles. **\\CODE\\README.MD** tells you what else you need to build it.',
+                'Every C, C++ and assembly file of Game-Maker 3.0 (1991–1994), as Andy Stone released it: the designers, PLAYGAME, the file formats and the makefiles. **\\CODE\\README.MD** tells you what else you need to build it.',
               ),
               head('\\CD: the original CD', { size: 's', level: 2 }),
               p(`**Gameware**, free sample games to play, take apart and use in your own: ${titles(of(ctx, 'gameware'))}.`),

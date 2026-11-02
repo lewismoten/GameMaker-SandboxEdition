@@ -1,14 +1,14 @@
 // The animation maker: text placement and its edge warnings, actor paths and mirroring,
 // palette matching, rendering to an .FLI PLAYGAME can play, and the generators.
 import { describe, expect, it } from 'vitest';
-import { ADVTYPE, emptyScene as emptyGameScene, newGame, type Game } from '../../../../formats/game';
-import { BLEN, newBlockSet, serializeBlocks } from '../../../../formats/blocks';
-import { newCharacter, serializeCharacter } from '../../../../formats/character';
-import { emptyMonster, serializeMonsters } from '../../../../formats/monster';
-import { newMap, serializeMap } from '../../../../formats/map';
-import { defaultPalette } from '../../../../formats/palette';
-import { decodeFliFrames } from '../../../../formats/fliFrames';
-import { textBytes } from '../../../../formats/binary';
+import { ADVTYPE, emptyScene as emptyGameScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { BLEN, newBlockSet, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { emptyMonster, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { defaultPalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { decodeFliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 import { actorAt, allItems, emptyScene, normalizeScene, textItem, type ActorItem, type Scene, type TextItem } from './sceneModel';
 import { drawText, fitText, restBox, textAt, textSize, textWarnings, wrapText } from './sceneText';
 import { mergePalettes, sceneAssets, walkSequence } from './sceneAssets';

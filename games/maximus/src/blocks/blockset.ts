@@ -1,8 +1,8 @@
 // A named background block set (.BBL): blocks are added by name and refer to each other
 // by name (animation chains, what they turn into when touched), then resolved to the
 // 150 numbered slots Game-Maker uses.
-import { Pixels } from '../../../kit/pixels';
-import { BACKBL, emptyBlock, type Block } from '../../../../web/src/formats/blocks';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { BACKBL, emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { CLEAR } from '../art/draw';
 
 interface BlockProps extends Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl'>> {
@@ -14,6 +14,8 @@ interface BlockProps extends Partial<Omit<Block, 'pixels' | 'nextBl' | 'touchBl'
 
 export const SOLID = 15;
 export const TOP = 1;
+/** Maximus crosses many worlds; fifth-sized rewards keep a whole voyage comparable with the other adventures. */
+export const SCORE_SCALE = 0.2;
 /** Gravity bits */
 export const G = { none: 0, up: 1, right: 2, down: 4, left: 8 } as const;
 
@@ -21,6 +23,8 @@ export class SetBuilder {
   readonly blocks: Block[] = Array.from({ length: BACKBL }, (_, i) => emptyBlock(i));
   readonly pics: (Pixels | undefined)[] = new Array(BACKBL).fill(undefined);
   private names = new Map<string, number>();
+  /** family() answers by prefix; cleared whenever a name is added or removed. */
+  private families = new Map<string, number[]>();
   private links: { i: number; next?: string; touch?: string }[] = [];
   private cursor = 0;
   readonly used = new Set<number>();
@@ -46,11 +50,12 @@ export class SetBuilder {
     if (this.used.has(i)) throw new Error(`${this.name}: slot ${i} taken (${name})`);
     this.used.add(i);
     this.names.set(name, i);
-    const { next, touch, ...rest } = props;
+    this.families.clear();
+    const { next, touch, scorePts, ...rest } = props;
     const b = this.blocks[i];
     // Background blocks are opaque: clear pixels become black.
     b.pixels.set(p.px.map((c) => (c === CLEAR ? 0 : c)));
-    Object.assign(b, { grav: this.defaultGrav }, rest);
+    Object.assign(b, { grav: this.defaultGrav, ...(scorePts === undefined ? {} : { scorePts: Math.round(scorePts * SCORE_SCALE) }) }, rest);
     this.pics[i] = p;
     this.links.push({ i, next, touch });
     return i;
@@ -61,6 +66,7 @@ export class SetBuilder {
     const i = this.id(old);
     if (this.links.some((l) => l.next === old || l.touch === old)) throw new Error(`${this.name}: ${old} is still pointed to`);
     this.names.delete(old);
+    this.families.clear();
     this.used.delete(i);
     this.links = this.links.filter((l) => l.i !== i);
     Object.assign(this.blocks[i], emptyBlock(i));
@@ -83,7 +89,12 @@ export class SetBuilder {
 
   /** All names starting with a prefix, in slot order. */
   family(prefix: string): number[] {
-    return [...this.names.entries()].filter(([n]) => n === prefix || n.startsWith(prefix + ':')).map(([, i]) => i);
+    let list = this.families.get(prefix);
+    if (!list) {
+      list = [...this.names.entries()].filter(([n]) => n === prefix || n.startsWith(prefix + ':')).map(([, i]) => i);
+      this.families.set(prefix, list);
+    }
+    return list.slice();
   }
 
   resolve(): Block[] {

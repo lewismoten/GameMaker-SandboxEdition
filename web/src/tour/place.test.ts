@@ -1,6 +1,6 @@
 // Where the tour puts its hosts and bubbles: on screen, above the caption bar, and off the control.
 import { describe, expect, it } from 'vitest';
-import { placeBubble, standBy, walkMs, type Rect } from './place';
+import { barOnTop, steadyRect, placeBubble, standBy, walkMs, type Rect } from './place';
 
 const VIEWS = [
   { w: 1440, h: 900 },
@@ -42,5 +42,59 @@ describe('placing the tour', () => {
   it('walks at a steady pace', () => {
     expect(walkMs({ x: 0, y: 0 }, { x: 1, y: 0 })).toBe(250);
     expect(walkMs({ x: 0, y: 0 }, { x: 5000, y: 0 })).toBe(1800);
+  });
+  it('keeps every host clear even when the control spans the page', () => {
+    for (const view of [
+      { w: 390, h: 600 },
+      { w: 1440, h: 900 },
+    ]) {
+      const speaker = { x: 16, y: view.h - FLOOR - 76, w: 80, h: 64 };
+      const other = { x: 110, y: speaker.y - 120, w: 90, h: 80 };
+      const size = { w: 320, h: 90 };
+      const p = placeBubble(speaker, size, view, FLOOR, { x: 0, y: 0, w: view.w, h: view.h }, 8, [other]);
+      const bubble = { ...p, ...size };
+      expect(inView(bubble, view)).toBe(true);
+      expect(overlaps(bubble, speaker)).toBe(false);
+      expect(overlaps(bubble, other)).toBe(false);
+    }
+  });
+  it('stays by its speaker when the control fills the page but for a far corner', () => {
+    const view = { w: 1440, h: 900 };
+    const speaker = { x: 1200, y: view.h - FLOOR - 120, w: 80, h: 100 };
+    const size = { w: 320, h: 90 };
+    // a guide open over everything but the top-left corner
+    const p = placeBubble(speaker, size, view, FLOOR, { x: 360, y: 0, w: 1080, h: 900 });
+    const far = Math.hypot(p.x + size.w / 2 - (speaker.x + speaker.w / 2), p.y + size.h / 2 - (speaker.y + speaker.h / 2));
+    expect(far).toBeLessThan(400);
+    expect(overlaps({ ...p, ...size }, speaker)).toBe(false);
+  });
+  it('keeps below a top bar when told how much room it takes', () => {
+    const view = { w: 1440, h: 900 };
+    const speaker = { x: 700, y: 60, w: 80, h: 100 };
+    const p = placeBubble(speaker, { w: 320, h: 90 }, view, 0, undefined, 8, [], 80);
+    expect(p.y).toBeGreaterThanOrEqual(80);
+  });
+});
+
+describe('barOnTop', () => {
+  const bottom = { x: 0, y: 800, w: 1440, h: 100 };
+  const top = { x: 0, y: 0, w: 1440, h: 100 };
+  it('is true for a link in a fixed footer under the bar, false for one above it', () => {
+    expect(barOnTop({ x: 1200, y: 840, w: 60, h: 20 }, bottom, top)).toBe(true);
+    expect(barOnTop({ x: 1200, y: 700, w: 60, h: 20 }, bottom, top)).toBe(false);
+  });
+  it('ignores a control that only grazes it', () => {
+    expect(barOnTop({ x: 100, y: 790, w: 200, h: 3000 }, bottom, top)).toBe(false);
+  });
+  it('moves for a tall panel a quarter under the bar, unless the top would hide more', () => {
+    expect(barOnTop({ x: 0, y: 200, w: 400, h: 700 }, bottom, top)).toBe(true);
+    expect(barOnTop({ x: 0, y: 10, w: 400, h: 880 }, bottom, top)).toBe(false);
+  });
+});
+
+describe('steadyRect', () => {
+  it('is the same square wherever the turning thing is at the moment', () => {
+    const stage = { x: 0, y: 100, w: 1440, h: 600 };
+    expect(steadyRect(stage, 576)).toEqual({ x: 432, y: 112, w: 576, h: 576 });
   });
 });

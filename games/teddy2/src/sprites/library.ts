@@ -3,7 +3,7 @@
 // a barrel latch, a paw-print knob, dog books on the shelf and a little chest of drawers with
 // paw knobs (dog snacks inside). Under it hangs a red-roofed cubby of painted rocks to trade.
 // Drawn 2 blocks wide and 3 high over the blocks behind it.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { micro } from '../art/draw';
 import { P } from '../art/pal';
 import { tinyEgg } from './egg';

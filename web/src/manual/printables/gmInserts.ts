@@ -13,7 +13,7 @@ import { pcExtras } from '../../retro/hacks/pcExtras';
 
 /** Sandbox Software's (made-up) numbers and addresses, as printed on the support card. */
 export const SUPPORT = {
-  tech: '(412) 555-0187',
+  tech: '(412) 555-0188',
   install: '1-800-555-0176',
   sales: '1-800-555-0133',
   fax: '(412) 555-0164',

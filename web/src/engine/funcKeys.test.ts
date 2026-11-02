@@ -1,8 +1,8 @@
 // Tests for F1 (funcKeys.ts helpScreen): XFERPLAY never reads GMHELP.TXT; PLAYGAME shows it first.
 import { describe, expect, it } from 'vitest';
-import { helpScreen } from './funcKeys';
-import type { Machine } from './machine';
-import type { World } from './world';
+import { helpScreen } from '@lewismoten/gamemaker-sandbox-engine/engine/funcKeys';
+import type { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 
 /** A Machine whose screen keeps the words written on it, and whose waits end at once. */
 function fakeMachine(files: Record<string, string> = {}): { m: Machine; words: string[] } {

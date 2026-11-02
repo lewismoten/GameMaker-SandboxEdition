@@ -11,7 +11,7 @@ import { TrackList } from './tracks';
 import { InstrumentPanel } from './instrument';
 import { SongPanel } from './songPanel';
 import { VelocityField } from './velocity';
-import { startProgram } from '../../../formats/cmfEdit';
+import { startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
 import { MUS_TABS, loadTab, saveTab, stepTab, type MusTab } from './tabs';
 import './music.css';
 import { fitToPane } from '../../core/fitPane';
@@ -188,12 +188,19 @@ registerEditor(['cmf'], (host, project, file) => {
   doc.on((c) => {
     if (c === 'play') {
       if (doc.playing && doc.follow && doc.playhead !== null) {
-        if (doc.playhead < roll.scrollX || doc.playhead > roll.scrollX + roll.span * 0.92) roll.scrollX = Math.max(0, doc.playhead - roll.span * 0.05);
+        // glide: once the playhead reaches a quarter of the way across, the notes scroll under it
+        const at = Math.max(0, doc.playhead - roll.span * 0.25);
+        if (doc.playhead < roll.scrollX || doc.playhead > roll.scrollX + roll.span || roll.scrollX < at) roll.scrollX = at;
       }
       if (wasPlaying !== doc.playing) refresh();
       wasPlaying = doc.playing;
       time.textContent = `${doc.barBeat(doc.playhead ?? doc.cursor)}  ${doc.seconds(doc.playhead ?? doc.cursor)} / ${doc.seconds(doc.song.end.tick)}`;
-    } else refresh();
+      // a playback tick moves only the playhead: show it over the cached pictures
+      roll.frame();
+      overview.frame();
+      return;
+    }
+    refresh();
     roll.draw();
     overview.draw();
   });
@@ -244,6 +251,8 @@ registerEditor(['cmf'], (host, project, file) => {
     tab = key;
     for (const [k, el] of Object.entries(panels)) el.hidden = k !== key;
     rollTools.hidden = key !== 'song';
+    instrument.setActive(key === 'inst');
+    songPanel.setActive(key === 'set');
     for (const b of tabBar.querySelectorAll<HTMLElement>('.mus-tab')) {
       const on = b.id === `mus-tab-${key}`;
       b.setAttribute('aria-selected', String(on));

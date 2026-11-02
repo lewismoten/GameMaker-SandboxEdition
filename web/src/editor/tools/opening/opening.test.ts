@@ -5,15 +5,15 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { newGame, serializeGame, type Scene } from '../../../formats/game';
-import { decodeGif } from '../../../formats/gif';
-import { decodeFliFrames } from '../../../formats/fliFrames';
-import { parseSlideList, serializeSlideList } from '../../../formats/graphicScripts';
+import { newGame, serializeGame, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { decodeFliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
+import { parseSlideList, serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { GameFiles } from '../../../project/files';
 import { SCENE_H, SCENE_W } from '../../editors/animation/scene/sceneModel';
 import { restBox, textWarnings } from '../../editors/animation/scene/sceneText';
 import { applyOpening, openingCards, presentsCard, presentsText } from './openingCards';
-import { fliFaults } from '../../../formats/fliLimits';
+import { fliFaults } from '@lewismoten/gamemaker-sandbox-engine/formats/fliLimits';
 import { NAME_MAX, addOpening, nameProblem, openingOf, removeOpening, type OpeningProject } from './openingWire';
 import { CLASSIC_SITE, INTROS, introOf, type OpeningStyle } from './openingIntros';
 

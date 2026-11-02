@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Analyzes the six recordings of Veni, Vidi, Risi! (Lewis Moten's group; Latin lyrics shaped with
 # ChatGPT from his prompts, music and vocals made with Riffusion, now Google Flow Music), which
-# are NOT committed (.for-lewis/songs/veni-vidi-risi/<title>.mp3, with Whisper's Latin word
+# are NOT committed (.for-lewis/reference/songs/veni-vidi-risi/<title>.mp3, with Whisper's Latin word
 # timings in <title>.json beside each), to inform the OPL2 arrangements in src/sound/song.ts:
 # games/kit/song/analyze.py does the work (tempo, key, chords per bar, sections, the sung tune).
 #

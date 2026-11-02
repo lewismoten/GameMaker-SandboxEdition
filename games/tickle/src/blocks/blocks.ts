@@ -14,13 +14,14 @@
 import { CLEAR, joeCameo } from '../../../kit/cameos';
 import { chezSide } from '../../../kit/chez';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import { buildPalette, type Pal } from '../art/pal';
 import { CARPET, NEEDED } from '../ids';
+import { addBadgeBlocks } from './badges';
 
 export { BlockBook, SOLID };
 /** Solid on top only: stand on it, hop up through it. */
@@ -574,5 +575,7 @@ export function buildBlocks(pal: Pal): BlockBook {
     ),
     air,
   );
+  // scenery for the site's achievement badges (added last: the blocks above keep their numbers)
+  addBadgeBlocks(book, pal, { course: () => wall('course'), wains, lab: () => wall('lab'), tower: () => wall('tower') });
   return book;
 }

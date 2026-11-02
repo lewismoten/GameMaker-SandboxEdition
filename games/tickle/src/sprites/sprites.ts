@@ -10,13 +10,13 @@
 // The pin and the tickle work by the shapes of these pictures (see ids.ts): a wary rat's pixels
 // stay in the bottom half of its block (rows 11 and down), a pinned rat's paws reach up into the
 // top half, and the tickling fingers stay in the top half (rows 8 and up). spriteRules() checks it.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export { T, outline };
 

@@ -8,9 +8,19 @@ import { Project } from '../core/project';
 import { starterProject } from './starter';
 import { beginFirstSteps } from './firstSteps';
 import { loadCatalog, type CatalogEntry, type GameFiles } from '../../project/files';
-import { GameReader, gameFromFiles, scanFile, type FoundGame, type ReadGame, type ScanFile, type ScanReport } from '../../project/importScan';
+import {
+  GameReader,
+  gameFromFiles,
+  scanFile,
+  type FoundGame,
+  type ReadGame,
+  type ScanFile,
+  type ScanReport,
+} from '@lewismoten/gamemaker-sandbox-archives/scan';
 import * as chooser from './importChooser';
 import { markBatch, newBatch } from './importBatch';
+import { looksLikeGamePieces } from './importLoose';
+import { alreadyHave } from '../../imported/alreadyHave';
 import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
@@ -107,7 +117,7 @@ type Imported = ReadGame;
 async function sharewareMatch(files: GameFiles): Promise<CatalogEntry | undefined> {
   const shareware = await sharewareByCrc();
   if (!shareware.size) return undefined;
-  const { crc32 } = await import('../../project/zip');
+  const { crc32 } = await import('@lewismoten/gamemaker-sandbox-archives/zip');
   return files
     .byExtension('gam')
     .map((n) => shareware.get(crc32(files.get(n)!)))
@@ -123,20 +133,25 @@ async function sharewareByCrc(): Promise<Map<number, CatalogEntry>> {
 /** Saves imported files as a project listed under Imported; what its player's patches said, if anything. */
 async function saveImported({ files, name, gam, players }: Imported): Promise<{ project: Project; note?: string; madeGam: boolean }> {
   // a hand-edited player (or one that renamed the files' extensions): read before the .gam is looked for
-  const player = players.length ? (await import('../../project/importPlayer')).adoptPlayer(files, players) : undefined;
+  const player = players.length ? (await import('@lewismoten/gamemaker-sandbox-archives/project/importPlayer')).adoptPlayer(files, players) : undefined;
   // a backup's editor-only extras (<game>.GMX) go back beside the files, not among them
   const companion = takeCompanion(files);
   const madeGam = !files.mainGame();
   const p = Project.fromFiles(files, name, undefined, companion);
   if (gam && files.has(gam)) p.gam = gam;
   if (player) {
-    const { playerRecord, PLAYER_SECTION } = await import('../../dosPlayer/playerRecord');
+    const [{ playerRecord, PLAYER_SECTION }, { ORIGIN_SECTION }] = await Promise.all([
+      import('../../dosPlayer/playerRecord'),
+      import('../../dosPlayer/playerOrigin'),
+    ]);
     if (Object.keys(player.patches).length) p.setExtras(p.gam, PLAYER_SECTION, playerRecord(player.patches));
+    // which build it came from and what its author changed, read-only (the Player file shows it)
+    p.setExtras(p.gam, ORIGIN_SECTION, player.origin);
   }
   await p.saveNow();
   // listed under Imported, apart from the games made here (⋯ More can move it to My games)
   setImported(p.id, true);
-  return { project: p, note: player?.message, madeGam };
+  return { project: p, note: player?.message || undefined, madeGam };
 }
 
 /** Where an imported game came from and its fingerprint, kept with its rating and note (imported/). */
@@ -155,7 +170,8 @@ function removedBefore(r: RemovedGame): string {
   return `Previously removed (${what})`;
 }
 
-async function importFiles(nav: HomeNav, imported: Imported, origin: Origin): Promise<void> {
+/** `missing`: how many files the game's .gam names that were not among those given. */
+async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, missing = 0): Promise<void> {
   const { files } = imported;
   if (!files.size) return;
   const shareware = await sharewareMatch(files);
@@ -177,11 +193,21 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin): Pr
     ]);
     return;
   }
+  const had = alreadyHave(origin.fingerprint);
   const { project: p, note, madeGam } = await saveImported(imported);
   noteImport(p.id, origin.source, origin.fingerprint);
   if (madeGam) toast('No .gam file found — a new one was created for these files.');
   if (note) toast(note);
-  toast(`Opened ${p.name} (${files.size} files). It is listed under Imported.`);
+  if (missing) {
+    const these = `${missing} ${missing === 1 ? 'file' : 'files'}`;
+    toast(
+      `${p.name} names ${these} that weren’t in what you gave, so parts of it will be missing or won’t play. Was the rest of the game left behind?`,
+      'error',
+    );
+  }
+  toast(
+    `Opened ${p.name} (${files.size} files). It is listed under Imported.${had ? ' You already had a copy of this game, so this is a second one; delete either from its ⋯ More menu.' : ''}`,
+  );
   nav.openProject(p.id);
 }
 
@@ -203,11 +229,13 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
   if (!chosen?.length) return;
   const reader = new GameReader(given);
   const batch = newBatch();
+  let repeats = 0;
   const { done, failed } = await importWithProgress(chosen, async (g) => {
+    const { source, fingerprint } = originOf(g);
+    if (alreadyHave(fingerprint)) repeats++;
     const { project } = await saveImported(await reader.read(g));
     markBatch([project.id], batch);
     // its source and fingerprint; one removed before takes back its rating and note
-    const { source, fingerprint } = originOf(g);
     noteImport(project.id, source, fingerprint);
   });
   onAdded?.();
@@ -219,7 +247,7 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
     h(
       'p',
       null,
-      `${canceled ? 'Canceled: imported' : 'Imported'} ${done === chosen.length ? games(done) : `${done} of ${games(chosen.length)}`}. They are listed under Imported.`,
+      `${canceled ? 'Canceled: imported' : 'Imported'} ${done === chosen.length ? games(done) : `${done} of ${games(chosen.length)}`}. They are listed under Imported.${repeats ? ` ${repeats} of them ${repeats === 1 ? 'was a game' : 'were games'} you already had, so you now hold ${repeats === 1 ? 'a second copy' : 'second copies'}.` : ''}`,
     ),
     failed.length
       ? h('details', { class: 'ic-notes' }, h('summary', null, `Not imported (${failed.length})`), h('ul', null, ...failed.map((f) => h('li', null, f))))
@@ -256,11 +284,11 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
   if (!report) return;
   // one game opens as it always has, unless it was removed before: then it is listed, unticked, to say so
   const one = report.games.length === 1 && report.games[0];
-  if (one && !removedMatch(fingerprintOf(one))) return importFiles(nav, await new GameReader(given).read(one), originOf(one));
+  if (one && !removedMatch(fingerprintOf(one))) return importFiles(nav, await new GameReader(given).read(one), originOf(one), one.missing);
   if (report.games.length) return importChosen(report, given, onAdded);
   // no .gam anywhere: loose files (no zips) still make a new game around them, as they always have
   const files = await gameFromFiles(report.loose);
-  if (!report.zips && files.files.size)
+  if (!report.zips && files.files.size && looksLikeGamePieces(report.loose.map((f) => f.path)))
     return importFiles(nav, files, { source: 'the files picked', fingerprint: fingerprintOfFiles(Object.fromEntries(files.files.entries())) });
   await chooser.showNothingFound(report);
 }

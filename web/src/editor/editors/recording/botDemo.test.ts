@@ -3,7 +3,7 @@
 // same place with the same score at the demo's last tick.
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../../project/files';
-import { parseRecording, RECLEN } from '../../../formats/recording';
+import { parseRecording, RECLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { testGame } from '../../check/testGame';
 import { autoWalk } from '../../check/walk/autoWalk';
 import { demoKeys, runDemo, walkToDemo } from './botDemo';

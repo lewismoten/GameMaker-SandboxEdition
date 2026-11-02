@@ -51,3 +51,16 @@ export function drawWave(c: HTMLCanvasElement, s: Float32Array, style: WaveStyle
     ctx.fillRect(Math.min(w - 2, Math.round(x(m.at))), 0, 2, hgt);
   }
 }
+
+/** The PC speaker's frequency steps, shown in the same thumbnail space as digital waveforms. */
+export function drawSpeakerPitch(c: HTMLCanvasElement, frequencies: ArrayLike<number>): void {
+  const ctx = c.getContext('2d')!;
+  ctx.fillStyle = '#0d1a10';
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.fillStyle = '#6cf28a';
+  const width = c.width / frequencies.length;
+  for (let i = 0; i < frequencies.length; i++) {
+    const height = Math.min(1, frequencies[i] / 4000) * c.height;
+    ctx.fillRect(i * width, c.height - height, Math.max(1, width - 1), height);
+  }
+}

@@ -1,5 +1,5 @@
 // Y2K.MON: who mows, chases, honks and hugs. One list for every level.
-import { emptyMonster, newMonsterSet, type Monster } from '../../../../web/src/formats/monster';
+import { emptyMonster, newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { BlockSet } from '../blocks/book';
 import { COPY_TICKS, MON } from '../ids';
 

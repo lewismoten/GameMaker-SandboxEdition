@@ -1,14 +1,14 @@
 // The level check's content generators: stretched hazard art, outlines, ladders and plain air.
 import { describe, expect, it } from 'vitest';
-import { TRANSPARENT, newBlockSet } from '../../../formats/blocks';
-import { MLEN } from '../../../formats/map';
+import { TRANSPARENT, newBlockSet } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { blockUse } from '../sceneData';
 import { artBox, contrastColor, fillHazard, outline } from './blockArt';
 import { airBlock, ladderBlock, ladderCells, makeMaze } from './mapFixes';
 import { findMazes } from '../checks/mazeCheck';
 import { testGame, WALL } from '../testGame';
-import { parseMap } from '../../../formats/map';
-import { BACKBL, parseBlocks } from '../../../formats/blocks';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 describe('the level check’s generators', () => {
   it('stretches a hazard drawn in the bottom rows over the whole cell', () => {

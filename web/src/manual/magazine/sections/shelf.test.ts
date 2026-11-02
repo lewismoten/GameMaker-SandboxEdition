@@ -56,6 +56,18 @@ describe('The Shareware Shelf', () => {
   it('prints every title once over its pages', async () => {
     const pages = await SHAREWARE_SHELF.pages(ctx);
     const printed = pages.flatMap((pg) => pg.blocks.flatMap((b) => (b.t === 'shelf' ? b.items.map((i) => i.title) : [])));
-    expect(printed).toEqual(ARCHIVE.games.map((g) => g.title));
+    const future = (y?: number) => !!y && y >= 1995;
+    const order = [...ARCHIVE.games.filter((g) => !future(g.year)), ...ARCHIVE.games.filter((g) => future(g.year))];
+    expect(printed).toEqual(order.map((g) => g.title));
+  });
+
+  it('puts titles dated after the January 1995 issue in their own section, after the A-Z list', async () => {
+    const pages = await SHAREWARE_SHELF.pages(ctx);
+    expect(JSON.stringify(pages)).toContain('Coming Soon to a BBS Near You');
+    const years = pages.flatMap((pg) => pg.blocks.flatMap((b) => (b.t === 'shelf' ? b.items.map((i) => i.year ?? 0) : [])));
+    const firstFuture = years.findIndex((y) => y >= 1995);
+    expect(firstFuture).toBeGreaterThan(0);
+    expect(years.slice(0, firstFuture).every((y) => y < 1995)).toBe(true);
+    expect(years.slice(firstFuture).every((y) => y >= 1995)).toBe(true);
   });
 });

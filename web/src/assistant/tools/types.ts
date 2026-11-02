@@ -5,7 +5,7 @@
 // arguments and a handler that works on a GameContext, with no DOM. Results are MCP's content
 // blocks (text and PNG images), which the other transports pass along as they are.
 import type { GameFiles } from '../../project/files';
-import type { PlayerPatches } from '../../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import type { CheckOptions, Report } from '../../editor/check/report';
 import type { AutoWalk } from '../../editor/check/walk/autoWalk';
 import type { Verified } from '../../editor/check/walk/verify';

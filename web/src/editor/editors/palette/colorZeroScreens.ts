@@ -4,13 +4,13 @@
 // with the engine's own functions (engine/menus.ts, engine/funcKeys.ts) and says which color
 // selectors (dosPlayer/patchTable.ts color.select.*) its words match, so the palette editor's
 // color 0 dialog (colorZeroDialog.ts) can show what really gets matched in a palette.
-import type { Screen } from '../../../gfx/screen';
-import { drawHighScores, drawNewHighScore } from '../../../engine/menus';
-import { drawAbout, drawSaveHeading, drawSaveSlots, drawStatus, type InventoryWorld } from '../../../engine/funcKeys';
-import type { PlayerLook } from '../../../engine/playerLook';
-import { BACKBL, INF_REPEAT } from '../../../engine/world';
-import { PATCHES, type ColorName } from '../../../dosPlayer/patchTable';
-import { cleanPatches, type PlayerPatches } from '../../../dosPlayer/patchRules';
+import type { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { drawHighScores, drawNewHighScore } from '@lewismoten/gamemaker-sandbox-engine/engine/menus';
+import { drawAbout, drawSaveHeading, drawSaveSlots, drawStatus, type InventoryWorld } from '@lewismoten/gamemaker-sandbox-engine/engine/funcKeys';
+import type { PlayerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { BACKBL, INF_REPEAT } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { PATCHES, type ColorName } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { cleanPatches, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 export interface ZeroScreen {
   id: string;

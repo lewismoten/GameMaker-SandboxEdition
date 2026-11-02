@@ -1,7 +1,7 @@
 // joe.cbl: Mystery Robot Joe, the night librarian. A tin box of a robot with a bulb on his
 // antenna, reading glasses he does not need, a red bow tie, and a tally counter for a heart
 // (its little window always reads the words he is carrying, in spirit).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
 import { BlockSet } from '../blocks/sets';

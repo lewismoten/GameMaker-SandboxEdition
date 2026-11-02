@@ -22,6 +22,7 @@ export const ONE_LINE: Record<string, string> = {
   realm: 'Lord Deadline stole the round tuit. A full adventure across Procrastia, jester and all.',
   teddy2: 'Gwinn’s bed is empty! Sniff out her trail to the Tri-County Fair, and play as Gwinn herself.',
   teddy3: 'It’s Teddy’s birthday and nobody says so. Run Doc Leo’s errands, and drive THE CHEZ.',
+  tuneup: 'Parade morning, and THE\u00a0CHEZ honks like a kazoo. Shrink down with Doc Leo and his rubber chicken and tune it up by ear.',
   // The Bard of Bizarre
   carl: 'You are Carl, the fly in the room, and you’re winning.',
   goat: 'The goat nobody painted eats its way to its place at the manger, third from the left.',
@@ -146,7 +147,7 @@ function pages(ctx: MagContext): MagPage[] {
           [
             side('How to read the listings', [
               p(
-                '**Title** plays the game. **Price** is the mail-order price in 1995; SHAREWARE means try it first and register with the author for the fee shown. **Manual** and **Hint book** open the box.',
+                '**Title** plays the game. **Price** is the mail-order price; SHAREWARE means try it first and register with the author for the fee shown. **Manual** and **Hint book** open the box.',
               ),
             ]),
           ],

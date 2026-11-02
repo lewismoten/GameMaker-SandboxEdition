@@ -1,7 +1,7 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. The bot pilot
 // flies the first leg of the motherboard for a while (every key it presses is recorded the
 // way PLAYGAME records a game), then presses Esc.
-import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { fly } from '../tools/bot';
 import { SCAN } from './ids';
 import type { Stage } from './stages/stage';

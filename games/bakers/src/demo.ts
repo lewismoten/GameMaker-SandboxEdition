@@ -1,7 +1,7 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. The play-testing bot
 // plays the Pantry on the disk being built: across the kitchen, a squawk at a mouse, the spoon,
 // a look at the latch, and then Esc back to the menu before it gives the sassafras away.
-import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import type { Compiled } from './compile';
 import { ORIGIN } from './levels/room';
 import { Bot } from '../tools/bot';

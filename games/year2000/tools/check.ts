@@ -2,7 +2,7 @@
 // doors, dials the right phone booths and walks out the exit, carrying its counters
 // from level to level like the real game does. The multi-block objects are checked first (tools/align.ts).
 //   cd web && npx vite-node ../games/year2000/tools/check.ts      (GOD=1 keeps the bot alive)
-import { newCharInfo } from '../../../web/src/engine/world';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { buildCarCharacter, buildCharacter } from '../src/characters/character';
 import { CTR, MON, PAGES_NEEDED, SEQ } from '../src/ids';
 import { LEVELS, SETS } from '../src/levels/levels';

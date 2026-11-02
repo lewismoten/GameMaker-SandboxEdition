@@ -2,8 +2,8 @@
 // is a tune of exactly one hundred notes... give or take. The reading room has it on a music
 // box; every wing plays it its own way (a calliope for Clown Alley, a mad organ for the
 // Laboratory, a shanty for the Docks...), and the title, story and ending dress it up.
-import { INSTRUMENTS, sbi } from '../../../kit/music';
-import { tune, v, times } from '../../../kit/tune';
+import { INSTRUMENTS, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { tune, v, times } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   F: ['F4', 'A4', 'C5'],

@@ -12,7 +12,7 @@ import type { World } from '../world';
 import { importedIds } from './projects';
 import { parseSlotNames, serializeSlotNames, slotOfFile, SLOT_NAMES_FILE } from '../../project/saveData/saveGame';
 import { parseHighScoreTable, serializeHighScoreTable, sortHighScores } from '../../project/saveData/highScores';
-import { HIGH_SCORES } from '../../formats/highscore';
+import { HIGH_SCORES } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 import { fileMap, isRecord, need, plural, type MergeContext, type Section } from './types';
 
 type Files = Record<string, Uint8Array>;

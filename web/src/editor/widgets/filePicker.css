@@ -93,3 +93,19 @@
 .pick-chip[aria-pressed='true'] small {
   color: #a8f5b9;
 }
+
+.pick-search input {
+  width: 100%;
+  min-width: 0;
+}
+
+.pick-tabs {
+  flex-wrap: wrap;
+}
+
+/* Reduced motion: the playing button stays red without pulsing */
+@media (prefers-reduced-motion: reduce) {
+  .pick-play.playing {
+    animation: none;
+  }
+}

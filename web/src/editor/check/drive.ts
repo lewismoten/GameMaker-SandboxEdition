@@ -2,9 +2,9 @@
 // until each step's end, then let go and wait for the hero to come to rest. The explorer plays
 // moves through it, and a walkthrough replays a found path through it tick for tick, so both
 // press the same keys at the same ticks.
-import { BLEN, SOLTOP } from '../../formats/blocks';
-import { MLEN, MWID } from '../../formats/map';
-import type { World } from '../../engine/world';
+import { BLEN, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { Move } from './inputs';
 import type { SceneSim } from './sim';
 
@@ -69,13 +69,17 @@ export async function driveMove(sim: SceneSim, m: Move, h: DriveHooks): Promise<
     const startCols = colsOf(w);
     const startY = sim.px.y;
     let airborne = false;
+    let was = sim.px;
     for (let t = 0; t < s.max; t++) {
       const r = await go();
       if (r !== undefined) return { end: r, ticks };
       if (w.ci.gravy !== 0) airborne = true;
       if (t + 1 < (s.min ?? 0)) continue;
       if (s.until === 'cell' && cellOf() !== cell) break;
-      if (s.until === 'over' && ((sim.px.y < startY && overLanding(w, startCols)) || (airborne && w.ci.gravy === 0 && t > 1))) break;
+      // (a landing counts once he stays put a tick: a jump pressed against a pillar's side touches down for one tick on its way up)
+      const settled = sim.px.x === was.x && sim.px.y === was.y;
+      was = sim.px;
+      if (s.until === 'over' && ((sim.px.y < startY && overLanding(w, startCols)) || (airborne && w.ci.gravy === 0 && t > 1 && settled))) break;
       // landed again, or never left the ground
       if (s.until === 'land' && w.ci.gravy === 0 && (airborne ? t > 1 : t >= 4)) break;
     }

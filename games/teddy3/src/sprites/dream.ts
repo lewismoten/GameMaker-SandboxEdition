@@ -1,7 +1,7 @@
 // What comes along the dream run's path: Teddy's wobble ball rolling at him (hop it), a
 // puddle (hop it), a low branch (play dead under it: its leaves in the block above, its bough
 // at a standing dog's head). The treats are the shared ones.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, sprite } from '../art/draw';
 import { c, r } from '../blocks/tiles';
 import { wobbleBall } from './toys';

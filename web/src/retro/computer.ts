@@ -18,12 +18,17 @@ import { kindOf } from '../editor/core/project';
 import { Vga } from '../vga/shared/vga';
 import { PictureScreen } from './view/picture';
 import { cutPcSound, pcOutput } from './computer/pcAudio';
-import { audioContext, unlock } from '../audio/context';
+import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { h, clear } from '../editor/core/ui';
 import { AUTOEXEC } from './computer/setup';
+import { mouseDriverLine } from './computer/mouseDriver';
 import { soundBlaster } from './computer/soundBlaster';
 import { ComputerFolders } from './computer/folders';
+import { clearEnergySnore, drawEnergySnore } from './energySnore';
 import { deskProgram, playAchievements, playWrote, unlockAchievement } from '../achievements';
+
+/** How long the BIOS screen with its logo stays up, in a quick boot too. */
+const POST_HOLD_MS = 2500;
 
 export class Computer extends ComputerFolders {
   async powerOn(): Promise<void> {
@@ -40,6 +45,8 @@ export class Computer extends ComputerFolders {
     // a quick boot (the DOS page, on its way to Game-Maker) says the same in a quarter of the time
     const pause = (ms: number) => sleep(this.opts.quickBoot ? ms / 4 : ms);
     s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
+    const postStart = Date.now();
+    drawEnergySnore(s);
     for (let k = 0; k <= 4096; k += 256) {
       s.cursorX = 0;
       s.print(`Memory Test: ${String(k).padStart(5)}K${k === 4096 ? ' OK' : ''}`);
@@ -50,6 +57,10 @@ export class Computer extends ComputerFolders {
     s.print('\n\nStarting MS-DOS...\n\n');
     await pause(500);
     if (!this.powered) return;
+    // the logo needs time to be seen: the POST screen stays up about 2.5 s even on a quick boot
+    await sleep(Math.max(0, POST_HOLD_MS - (Date.now() - postStart)));
+    if (!this.powered) return;
+    clearEnergySnore(s);
     // CONFIG.SYS
     s.print('HIMEM is testing extended memory...');
     await pause(turbo ? 350 : 1100);
@@ -70,7 +81,7 @@ export class Computer extends ComputerFolders {
         await pause(300);
         if (!this.powered) return;
       } else if (l.includes('DOSKEY')) s.print('DOSKEY installed.\n');
-      else if (l.includes('MOUSE')) s.print('Mouse driver installed\n');
+      else if (l.includes('MOUSE')) s.print(document.documentElement.classList.contains('tour-on') ? 'Mouse driver installed\n' : mouseDriverLine());
     }
     s.print('\nType HELP for commands, GM to start Game-Maker, TERMINAL to call the BBS.\n\n');
     s.cursorVisible = true;
@@ -90,6 +101,7 @@ export class Computer extends ComputerFolders {
     this.player = undefined;
     this.keys.abort();
     this.vgaScreen?.abort();
+    this.picture?.destroy();
     this.closeEditor?.();
     this.shell.stop();
   }
@@ -184,7 +196,7 @@ export class Computer extends ComputerFolders {
                 if (e instanceof ProgramAborted) throw e;
                 console.warn('cracktro', e);
               });
-          await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId, undefined, ref.projectId);
+          await this.playGame(files, ref.gam, ref.title, ref.notice, ref.saveId, undefined, ref.projectId, /^config/i.test(_args[0] ?? ''));
           break;
         }
         case 'gmcrack':
@@ -195,6 +207,9 @@ export class Computer extends ComputerFolders {
           break;
         case 'playhack':
           await (await import('./hacks/playHack')).runPlayHack(this);
+          break;
+        case 'fastplay':
+          await (await import('./hacks/fastPlay')).runFastPlay(this, _args);
           break;
         case 'backup':
           await (await import('./hacks/backupExe')).runBackup(this, _args);
@@ -210,6 +225,12 @@ export class Computer extends ComputerFolders {
           break;
         case 'offline':
           await (await import('../offline/offlineExe')).runOfflineExe(this);
+          break;
+        case 'roomfix':
+          await (await import('./hacks/roomFix')).runRoomFix(this, _args);
+          break;
+        case 'flags':
+          await (await import('./hacks/flags')).runFlags(this, _args);
           break;
         case 'batch':
           for (const l of ref.lines) await this.shell.execute(l);
@@ -301,22 +322,22 @@ export class Computer extends ComputerFolders {
     return !!this.player;
   }
 
-  /** Set while restartGame stops the game, so it starts again instead of going back to DOS. */
-  private restarting = false;
-
-  /**
-   * Starts the game playing over from the beginning, as if you'd quit it and run it again:
-   * it looks for the Sound Blaster card again as it starts. False if no game is playing.
-   */
-  restartGame(): boolean {
-    const p = this.player;
-    if (!p || this.restarting) return false;
-    this.restarting = true;
-    p.stop();
-    return true;
+  /** Changes the running game's sound card without replacing its player or session. */
+  setSoundCard(on: boolean): void {
+    this.unlockAudio();
+    this.player?.machine.audio.setSoundCard(on);
   }
 
-  playGame(files: GameFiles, gam: string, title: string, notice?: string, saveId?: string, gmHelp?: Uint8Array, projectId?: string): Promise<void> {
+  playGame(
+    files: GameFiles,
+    gam: string,
+    title: string,
+    notice?: string,
+    saveId?: string,
+    gmHelp?: Uint8Array,
+    projectId?: string,
+    configure?: boolean,
+  ): Promise<void> {
     this.unlockAudio();
     this.keys.enabled = false;
     this.setMode('game');
@@ -336,11 +357,15 @@ export class Computer extends ComputerFolders {
             ? import('../dosPlayer/catalogPatches').then((m) => m.catalogPatchesById(catalogId))
             : Promise.resolve(undefined);
       const mount = () =>
-        void Promise.all([import('../player/player'), patches]).then(
-          ([{ mountPlayer }, player]) =>
-            (this.player = mountPlayer(host, files, gam, {
+        void Promise.all([import('../player/player'), patches, import('@lewismoten/gamemaker-sandbox-engine/audio/engine')]).then(
+          ([{ mountPlayer }, player, { AudioEngine }]) => {
+            const audio = new AudioEngine();
+            audio.setSoundCard(soundBlaster());
+            this.player = mountPlayer(host, files, gam, {
               title,
               notice,
+              configure,
+              hardwareId: projectId ? `project:${projectId}` : saveId,
               player,
               autoStart: true,
               noKeysButton: true,
@@ -349,28 +374,22 @@ export class Computer extends ComputerFolders {
               gmHelp,
               // the game port: the desk's game pad (when the desk has one) and any real gamepad
               joystick: deskJoystick,
-              // the card is looked for as the game starts, as PLAYGAME did (switching it mid-game waits for the next)
-              noSoundCard: !soundBlaster(),
+              // The desk opts into live card control; DOS-compatible startup-only detection stays available to other hosts.
+              audio,
               onQuit: () => false, // back to DOS
               onFileWrite: saveId ? (name, bytes) => (playWrote(saveId, name), void writeSaveFile(saveId, name, bytes)) : undefined,
               saveId,
               ...playAchievements(saveId, this.opts.view ?? 'desk'),
               onExit: () => {
                 this.player = undefined;
-                if (this.restarting) {
-                  // restartGame: the same game, from the start
-                  this.restarting = false;
-                  clear(host);
-                  mount();
-                  return;
-                }
                 this.opts.onGame?.(undefined);
                 clear(this.layer);
                 this.keys.enabled = true;
                 this.keys.clear();
                 resolve();
               },
-            })),
+            });
+          },
         );
       mount();
     });
@@ -474,6 +493,7 @@ export class Computer extends ComputerFolders {
 
   /** Back to text mode from a picture, the text screen as it was left. */
   leavePictureMode(): void {
+    this.picture?.destroy();
     this.picture = undefined;
     clear(this.layer);
     this.keys.enabled = true;

@@ -38,6 +38,14 @@
   color: #000;
 }
 
+/* gold buttons (Play/Stop, a pressed toggle) stay gold on hover, a shade brighter, not navy */
+.mus-bar button.primary:hover:not(:disabled),
+.mus-bar button[aria-pressed='true']:hover:not(:disabled) {
+  background: #ffe55c;
+  border-color: #fff;
+  color: #000;
+}
+
 .mus-bar button.primary {
   background: var(--mus-gold);
   border-color: var(--mus-gold);
@@ -215,16 +223,32 @@
 
 .mus-swatch {
   flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
+  display: block;
+  width: 32px;
+  height: 32px;
+  border-radius: 5px;
+  /* the track's color: its instrument's group, drawn as a frame round the picture */
+  border: 2px solid var(--track);
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+.mus-swatch svg,
+.mus-inst-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.mus-inst-icon {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
   border-radius: 4px;
-  background: var(--track);
-  color: #000;
-  font:
-    700 12px/1 ui-monospace,
-    monospace;
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+.mus-track-why {
+  margin: 4px 2px;
+  font-size: 11px;
 }
 
 .mus-track-text {
@@ -253,6 +277,11 @@
 .mus-track-head .mus-track-name {
   flex: 1 1 auto;
   min-width: 0;
+}
+
+.mus-track.drop {
+  outline: 2px dashed var(--mus-gold);
+  outline-offset: -2px;
 }
 
 .mus-track-tools {
@@ -760,7 +789,7 @@
 
 /* the preset picker (presetPicker.ts) */
 dialog.modal:has(.mus-presets) {
-  width: min(640px, calc(100vw - 32px));
+  width: min(1240px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
   padding: 16px;
   box-sizing: border-box;
@@ -774,65 +803,146 @@ dialog.modal:has(.mus-presets) {
 .mus-presets .hint {
   margin: 0;
 }
+.mus-preset-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+}
+.mus-preset-tabs .mus-tab {
+  min-height: 32px;
+}
+.mus-preset-more {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.mus-preset-more[hidden],
+.mus-preset-favs[hidden] {
+  display: none;
+}
 .mus-preset-search {
   width: 100%;
   box-sizing: border-box;
   min-height: 32px;
 }
+/* the families flow like words: a turned name, then its buttons, all on one tint */
 .mus-preset-list {
   flex: 1 1 auto;
   min-height: 120px;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 4px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 6px;
+  padding: 2px;
 }
 .mus-preset-group {
-  margin: 0 0 6px;
-  padding: 0;
-  border: 0;
+  --tint: hsl(var(--h) 65% 50%);
+  display: flex;
+  flex: 1 1 auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  gap: 2px;
+  padding: 3px;
+  border: 2px solid color-mix(in srgb, var(--tint) 55%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--tint) 14%, transparent);
+  color: var(--text);
+}
+.mus-preset-gname {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  flex: 0 0 auto;
+  align-self: stretch;
+  text-align: center;
+  padding: 2px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: color-mix(in srgb, var(--tint) 25%, var(--text));
+}
+.mus-preset-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
   min-width: 0;
 }
-.mus-preset-group legend {
-  padding: 6px 0 2px;
-  font-weight: 700;
-  color: var(--mus-gold);
-}
 dialog.modal .mus-preset {
+  position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  min-height: 32px;
-  padding: 2px 6px;
-  border-radius: 4px;
+  gap: 1px;
+  width: 74px;
+  min-height: 68px;
+  padding: 2px 2px;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  border-radius: 6px;
   cursor: pointer;
+  text-align: center;
 }
 dialog.modal .mus-preset[hidden],
 .mus-preset-group[hidden] {
   display: none;
 }
-.mus-preset:hover {
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
+/* a Classic sound wears the color of the family it sounds like */
+dialog.modal .mus-preset-tinted {
+  --tint: hsl(var(--h) 65% 50%);
+  background: color-mix(in srgb, var(--tint) 14%, transparent);
+  border-color: color-mix(in srgb, var(--tint) 55%, transparent);
 }
-.mus-preset:has(input:checked) {
-  background: color-mix(in srgb, var(--accent) 26%, transparent);
+dialog.modal .mus-preset:hover {
+  background: color-mix(in srgb, var(--tint, var(--accent)) 22%, transparent);
+}
+dialog.modal .mus-preset:has(input:checked) {
+  background: color-mix(in srgb, var(--tint, var(--accent)) 35%, transparent);
+  border-color: var(--text);
+}
+dialog.modal .mus-preset:has(input:focus-visible) {
+  outline: 3px solid var(--accent);
+  outline-offset: 1px;
 }
 .mus-preset input {
-  flex: 0 0 auto;
-  width: 18px;
-  height: 18px;
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   margin: 0;
+  cursor: pointer;
 }
-.mus-preset-text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
+.mus-preset-icon {
+  display: block;
+  box-sizing: content-box;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 3px;
+  /* a pale tile so the drawings' dark outlines read in light and dark themes */
+  background: #f1ecdf;
+  image-rendering: pixelated;
 }
-.mus-preset-text small {
-  color: var(--muted);
-  overflow-wrap: anywhere;
+.mus-preset-icon svg {
+  display: block;
+}
+.mus-preset-name {
+  font-size: 11px;
+  line-height: 1.1;
+  overflow-wrap: break-word;
+  max-height: 3.4em;
+  overflow: hidden;
+}
+@media (max-width: 480px) {
+  dialog.modal:has(.mus-presets) {
+    padding: 10px;
+  }
+  .mus-preset-list {
+    min-height: 200px;
+  }
 }
 .mus-presets .buttons {
   flex-wrap: wrap;
@@ -844,9 +954,6 @@ dialog.modal .mus-preset[hidden],
 }
 .mus-inst-new {
   width: 100%;
-}
-.mus-preset:has(input:checked) small {
-  color: var(--text);
 }
 
 /* Generate accompaniment and Copy melody to a new song (accompanyDialog.ts, copyTuneDialog.ts) */

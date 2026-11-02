@@ -10,6 +10,7 @@ import { gzipSync } from 'node:zlib';
 import { singlePagePlayer } from './scripts/singlePageBuild';
 import { hostedPlayer } from './scripts/hostedPlayerBuild';
 import { seoPages } from './scripts/seoBuild';
+import { devLog } from './scripts/devLog';
 
 const publicDir = resolve(__dirname, 'public');
 
@@ -109,7 +110,7 @@ function offlineFiles(bundle: Bundle): [string, number, number][] {
     !secret.some((dir) => f.startsWith(dir)) &&
     // the web player plays loose game folders from a web server, never from the offline copy
     !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|web-player\.html$|player\/)/.test(f) &&
-    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.gmpak$|\/walkthrough\.json\.gz$/.test(f));
+    (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
     .sort(([a], [b]) => (a < b ? -1 : 1))
@@ -176,6 +177,14 @@ function noDotfiles(): Plugin {
 /**
  * Development: don't hot-reload the page when a source file changes (it would switch
  * off the retro PC); tell the page instead, which offers a Reload button.
+ *
+ * The page must also keep getting the OLD code until then. Vite invalidates a changed module
+ * as soon as its file changes and stamps its URL (?t=), so an editor loaded lazily afterwards
+ * would import a second, new copy of shared modules beside the page's old ones. So this
+ * wraps each environment's moduleGraph.onFileChange to collect the files instead; the
+ * page's button sends `gm:apply-updates`, which invalidates them all, answers
+ * `gm:updates-applied`, and the page reloads. (Build-time plugins watch server.watcher
+ * themselves, so they are not affected.)
  */
 function manualReload(): Plugin {
   return {
@@ -188,6 +197,26 @@ function manualReload(): Plugin {
     // New or deleted files (e.g. a module matched by import.meta.glob) make Vite send a
     // full reload directly; turn those into the same "ready to reload" notice.
     configureServer(server) {
+      const waiting = new Set<string>();
+      const graphs = Object.values(server.environments).map((e) => e.moduleGraph);
+      let applying = false;
+      for (const graph of graphs) {
+        const invalidate = graph.onFileChange.bind(graph);
+        graph.onFileChange = (file) => {
+          if (applying) return invalidate(file);
+          waiting.add(file);
+        };
+      }
+      server.ws.on('gm:apply-updates', () => {
+        applying = true;
+        try {
+          for (const graph of graphs) for (const file of waiting) graph.onFileChange(file);
+        } finally {
+          applying = false;
+          waiting.clear();
+        }
+        server.ws.send({ type: 'custom', event: 'gm:updates-applied' });
+      });
       const channels = new Set([server.ws, server.environments?.client?.hot].filter((c) => !!c));
       for (const channel of channels) {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- bind() keeps the overloads; the wrapper below needs one plain signature
@@ -249,6 +278,9 @@ function playChunks(): Rollup.GetManualChunk {
 
 // Relative base so the build works at https://<user>.github.io/<repo>/ and from any folder.
 export default defineConfig({
+  // Use workspace source consistently; published consumers keep the default dist exports.
+  resolve: { conditions: ['gamemaker-source', 'module', 'browser', 'development|production'] },
+  ssr: { noExternal: [/^@lewismoten\/gamemaker-sandbox-/], resolve: { conditions: ['gamemaker-source', 'module', 'node', 'development|production'] } },
   base: './',
   plugins: [
     cdGames(resolve(__dirname, '../cd')),
@@ -258,6 +290,7 @@ export default defineConfig({
     offline(),
     noDotfiles(),
     manualReload(),
+    devLog(resolve(__dirname, '../.for-lewis/debug/interaction-log')),
   ],
   build: {
     target: 'es2022',
@@ -276,8 +309,10 @@ export default defineConfig({
   server: {
     // Editing this config or the build-time plugins in scripts/ would restart the dev
     // server, and Vite's client then reloads every open page (switching off the desk PC
-    // mid-session). Don't watch them: restart the dev server by hand to pick them up.
-    watch: { ignored: ['**/vite.config.ts', '**/scripts/**'] },
+    // mid-session). Don't watch them: restart the dev server by hand to pick them up. Nor the
+    // game builds' half-written disk files (.NAME.pid.part), which come and go while games
+    // rebuild in the background and would otherwise stop the watcher.
+    watch: { ignored: ['**/vite.config.ts', '**/scripts/**', '**/*.part'] },
   },
   test: {
     environment: 'node',

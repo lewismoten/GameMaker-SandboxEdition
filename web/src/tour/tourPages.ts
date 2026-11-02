@@ -59,6 +59,13 @@ export function setGuidesOn(page: PageKey, on: boolean): void {
   }
 }
 
+/** The Tour switch in the sound dialog: the guides wait on every page that has a tour. */
+export const allGuidesOn = (): boolean => CHAPTER_PAGES.every((p) => guidesOn(p));
+
+export function setAllGuides(on: boolean): void {
+  for (const p of CHAPTER_PAGES) setGuidesOn(p, on);
+}
+
 /**
  * A tour the address asks for: ?tour=all (or a chapter's id, or several ids with commas), with
  * &record for recording mode and &cont when a tour carries on from another page (its title card

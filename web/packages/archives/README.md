@@ -1,0 +1,90 @@
+# @lewismoten/gamemaker-sandbox-archives
+
+Discover and unpack Game-Maker games in browsers or Node.js 22.12+. This runtime package works alongside the engine; it does not depend on the development tools.
+
+```sh
+npm install @lewismoten/gamemaker-sandbox-archives
+```
+
+Install through your configured npm registry; configure authentication according to that registry's instructions.
+
+```ts
+import { unpackGame } from '@lewismoten/gamemaker-sandbox-archives';
+import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine';
+
+const response = await fetch('/stripe-chase.zip');
+if (!response.ok) throw new Error('Could not download the game');
+const game = await unpackGame(await response.arrayBuffer());
+const files = new GameFiles(game.entries);
+// Supply files and game.gam to Machine/runGame from the engine package.
+```
+
+Supported inputs:
+
+- File/directory selections (`File[]` preserves `webkitRelativePath`), or portable `ScanFile[]` records with `path`, `size`, and async `read`.
+- ZIPs, ZIPs inside ZIPs, and ZIP-based self-extracting DOS EXEs, including EXEs inside ZIPs. Both ZIP-relative and file-relative SFX offsets are supported.
+- Raw or gzip-compressed GMPK game packs (`.gmpak`).
+
+Executables are inspected as data and never run. Ordinary executables are not archive formats. A supplied Game-Maker player EXE is identified by build (1.0, 1.04, 2.00, 2.02, 2.04 or 3.00: size and MD5, then its About text's version line, with a confidence and reasons). A customized one can restore renamed game-file extensions; its settings (read at each build's own offsets) are returned in `player`, and its other changed bytes in `player.origin.regions` (128-byte blocks, a buyer's owner field never kept), which `applyPlayerPatches` writes back into a 3.00 player. Archives with several games use `unpackGames`; `unpackGame` requires exactly one. Low-level discovery (`scanImport`, `GameReader`, `scanFile`) exposes selection, progress, leftovers, and malformed archive reports using the same importer as the main application.
+
+`UnpackedGame.entries` is a portable tuple array, avoiding a dependency on the engine's class identity. ZIPs are searched up to the importer's existing three archive levels. `maxEntries` (8192) and `maxBytes` (128 MiB) bound each archive and the returned game; `signal` supports cancellation between reads. ZIP64, encrypted ZIPs, and compression methods other than stored/deflate are not supported. HTML game exports are not archive inputs.
+
+## Scan and choose games before reading their files
+
+The full import scanner is included, both at the package root and through `/scan`. It
+finds games in folder selections and nested ZIP/SFX archives, reports damaged or empty
+archives, identifies incomplete leftovers, and recognizes customized DOS player files.
+Scanning reads game headers and archive directories; `GameReader` then reads the chosen
+game's files. This lets an application offer a choice when an archive contains several games.
+
+```ts
+import { scanFile, scanImport, scanSummary, GameReader, type FoundGame }
+  from '@lewismoten/gamemaker-sandbox-archives/scan';
+import { GameFiles } from '@lewismoten/gamemaker-sandbox-engine';
+
+const given = Array.from(input.files ?? [], (file) => scanFile(file));
+const report = await scanImport(given, {
+  signal: controller.signal,
+  zipLimits: { maxEntries: 8192, maxBytes: 128 << 20 },
+  onProgress: (done, total, path) => showProgress(done, total, path),
+});
+showGames(report.games); // Let the user choose a FoundGame.
+showSummary(scanSummary(report));
+
+const reader = new GameReader(given, { maxEntries: 8192, maxBytes: 128 << 20 });
+async function openChosenGame(choice: FoundGame) {
+  const game = await reader.read(choice);
+  return new GameFiles(game.files.entries());
+}
+```
+
+`report.games` holds the choices; `badZips`, `emptyZips`, and `loose` explain the rest.
+`GameReader.file` reads just one chosen resource and `mainGam` identifies a game's entry
+point. `scanFile` adapts browser files, while `ScanFile` records work with any asynchronous
+file source. `/scan` also exports `groupGames`, `playedBy`, `PLAYER_EXE`, `gameFromFiles`,
+and their report types. The higher-level `unpackGame` and `unpackGames` APIs use this same
+scanner and also perform customized-player recovery.
+
+## ZIP reading and writing
+
+```ts
+import { createZip, readZip, listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+
+const bytes = await createZip([
+  { name: 'GAME/DEMO.GAM', data: gameBytes },
+  { name: 'GAME/README.TXT', data: new TextEncoder().encode('How to play…') },
+], new Date(2000, 0, 1, 12));
+// A fixed date and stable entry order make repeatable distribution builds.
+const entries = await readZip(bytes);
+const listing = listZip(bytes); // lazy entry.read()
+```
+
+ZIP creation uses deflate when available and smaller; otherwise it stores entries. It shares the reader's CRC code and adds no dependency. Consumers that only import unpacking can tree-shake the writer. Entry data is returned in memory; this package writes nothing to the filesystem. For the existing streaming game-pack format, `/pack` exports `encodePack`, `decodePack`, and `PackReader`.
+
+## License and notices
+
+The source is MIT licensed. The published package carries `LICENSE` and `NOTICE.md` (credits for third-party code and formats); it includes no game assets.
+
+## Developing
+
+This package's source lives in [the project's repository](https://github.com/lewismoten/GameMaker-SandboxEdition), in `web/packages/archives`. The folder holds its source in `src/`, build configuration, license and notices. It depends on the engine through its declared npm dependency. Run `npm install`, then `npm run verify` in the package folder. Inside the repository, run `npm ci` at the root and `npm run verify:packages`, which builds isolated source copies and supplies packed workspace dependencies, so unpublished sibling versions can be verified. Use `npm pack` to inspect the distribution. The build is independent of the site's Vite configuration. The distribution includes JavaScript, TypeScript declarations, LICENSE, and NOTICE.md; no game assets. Keep npm tarballs outside source control. The [monorepo guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/monorepo.md) covers the workspace layout, and the [package release guide](https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/docs/package-releases.md) covers publishing.

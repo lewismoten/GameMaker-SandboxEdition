@@ -1,13 +1,14 @@
 // The 320x200 screens: the title (an FLI cartoon, then the poster), the menu, the story,
 // help and credits pages, a card before each level, and the endings. All share one
 // palette (the game's ramps plus a few inks), so Game-Maker's text colors come out the same.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../../../kit/pixels';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, centered, gradient, clubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
-import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
+import { pastePhoto, polaroid, resample, tone } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
@@ -19,7 +20,7 @@ import type { Level } from '../levels/level';
 import { backyardSong, citySong, klubSong, lostSong, menuSong, parkSong, storySong, streetSong, titleSong, wonSong } from '../sound/music';
 import { CREDITS, DOGHOUSE, HELP, LOST, README, STORY, WON, CARDS } from './text';
 import { drawEgg } from '../sprites/egg';
-import { dosText } from '../../../kit/disk';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 
 export const SP: Pal = buildScreenPalette();
@@ -161,7 +162,7 @@ function menuScreen(): Pixels {
   p.rect(58, 96, 204, 78, c('ink', 0));
   p.rect(60, 98, 200, 74, c('cream', 3));
   p.rect(60, 98, 200, 2, c('paint', 3));
-  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1995', c('paint', 3));
+  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1994', c('paint', 3));
   return p;
 }
 
@@ -176,7 +177,7 @@ function titleScreen(): Pixels {
   p.rect(272, 140, 34, 24, c('wood', 1)).rect(272, 140, 34, 3, c('wood', 3)).rect(272, 151, 34, 2, c('gold', 1)).rect(283, 135, 12, 5, c('wood', 0));
   scaleBlit(p, propSprite('nose'), 276, 100, 2);
   scaleBlit(p, propSprite('tie'), 290, 112, 2);
-  centered(p, 186, '(C) 1995 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
+  centered(p, 186, '(C) 1994 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
   return p;
 }
 

@@ -1,7 +1,7 @@
 // CMF 1.0 songs read the way PLAYGAME's load_file reads them (a 16-bit instrument count).
 import { describe, expect, it } from 'vitest';
-import { readSong, writeSong } from '../formats/cmfSong';
-import { loadSong } from './cmfLoad';
+import { readSong, writeSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import { loadSong } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfLoad';
 
 const MUSIC = [0x00, 0x90, 0x3c, 0x40, 0x10, 0x80, 0x3c, 0x00, 0x00, 0xff, 0x2f, 0x00];
 

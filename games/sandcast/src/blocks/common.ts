@@ -1,7 +1,7 @@
 // What every background-block module shares: the one block set they all add to (in order,
 // so a block's index is its place in the build), the solid/gravity bit names, and helpers
 // for drawing an object over sand.
-import { BACKBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
+import { BACKBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { BlockSet } from '../rules';
 import { Pixels, sandTexture, shadowOnSand } from '../art/draw';
 

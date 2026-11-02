@@ -1,8 +1,8 @@
 // The web player's look of XFERPLAY's own screens: with no patches every word, color, time and
 // key is exactly what the engine drew before the customizer; with patches, what they set.
 import { describe, expect, it } from 'vitest';
-import { playerLook, sprintf, STOCK_LOOK } from './playerLook';
-import { RGB_BLUE, RGB_PURPLE, RGB_RED, RGB_YELLOW, match } from './showGraphic';
+import { playerLook, sprintf, STOCK_LOOK } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { RGB_BLUE, RGB_PURPLE, RGB_RED, RGB_YELLOW, match } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
 
 const pal = new Uint8Array(768).map((_, i) => (i * 37) % 64);
 

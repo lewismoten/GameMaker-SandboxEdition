@@ -15,7 +15,7 @@
 //     tub to bubbles, the soap dish behind the demon sponge to cursed citrus suds.
 import { CLEAR, joeCameo } from '../../../kit/cameos';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro, microWidth, text } from '../../../snowbound/src/art/font';

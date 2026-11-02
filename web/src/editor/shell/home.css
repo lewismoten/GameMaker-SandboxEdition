@@ -138,6 +138,8 @@
 }
 
 .lib-about {
+  /* tall enough for its tallest state (the how-it-works button shown, 29px), so the tiles below don't jump while the collection loads */
+  min-height: 29px;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -147,6 +149,11 @@
 .home .lib-about h2 {
   margin: 0;
   font-size: 16px;
+}
+
+/* the collection's name is filled in a moment after the page first paints: keep its line, so the page below doesn't jump */
+.home .lib-about h2:empty::before {
+  content: '\200b';
 }
 
 .lib-about .lead {
@@ -362,6 +369,10 @@
 }
 
 /* Getting started: under the library when the page stacks, under the game on a wide window */
+.home-start:not(.ready) {
+  visibility: hidden;
+}
+
 .home-start {
   margin: 24px 0 0;
   padding: 12px 16px;

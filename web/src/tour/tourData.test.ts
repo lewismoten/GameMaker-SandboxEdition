@@ -3,7 +3,7 @@
 // (never a secret game's, never the Bard of Bizarre's recordings).
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { CHAPTERS } from './chapters/index';
 import { tourLines } from './lines';
 import { BARKS, HOSTS, MAX_CAPTION, MAX_SAY, MUSIC, PROPS, SOUNDS, captionOf, cssList, type Opener } from './steps';
@@ -22,7 +22,32 @@ const SOURCES: Record<string, string[]> = {
   cast: ['cast'],
   guide: ['manual/webManual.ts', 'manual/guideSections.ts', 'manual/printables/viewer.ts'],
   credits: ['main.ts', 'settingsMenu.ts', 'theme.ts', 'tour/tourButton.ts', 'credits', 'pageToc.ts'],
-  editor: ['editor/shell', 'editor/editors/map/map.ts', 'editor/editors/map/check/checkPanel.ts', 'editor/editors/palette/palette.ts'],
+  editor: [
+    'main.ts',
+    'editor/shell',
+    'editor/core/ui.ts',
+    'editor/editors/map/map.ts',
+    'editor/editors/map/check/checkPanel.ts',
+    'editor/editors/map/check/checkExtras.ts',
+    'editor/editors/map/links/linkMarkers.ts',
+    'editor/editors/blocks',
+    'editor/editors/monsters',
+    'editor/editors/character',
+    'editor/editors/palette',
+    'editor/editors/sounds',
+    'editor/editors/music',
+    'editor/editors/animation',
+    'editor/editors/animation/scene',
+    'editor/editors/picture',
+    'editor/editors/slideShow',
+    'editor/editors/integrator',
+    'editor/editors/integrator/dosPlayer',
+    'editor/widgets/colorChoice.ts',
+    'editor/widgets/walkDialog.ts',
+    'assistant/chat/panel.ts',
+    'editor/widgets/filePicker.ts',
+    'editor/widgets/panelTabs.ts',
+  ],
   desk: [
     'desk',
     'desk/pc',
@@ -31,6 +56,8 @@ const SOURCES: Record<string, string[]> = {
     'desk/room',
     'desk/props',
     'manual/magazine/viewer.ts',
+    'manual/printables/items.ts',
+    'manual/printables/viewer.ts',
     'retro/bbs/lineSpeedControls.ts',
     'viewSwitch.ts',
     'tour/tourButton.ts',
@@ -50,9 +77,28 @@ const sourceText = (paths: string[]) =>
     .map((f) => readFileSync(f, 'utf8'))
     .join('\n');
 
+const sourceTexts = new Map<string, string>();
+/** A page's source text, read once however many chapters are on that page. */
+const pageText = (page: string) => {
+  if (!sourceTexts.has(page)) sourceTexts.set(page, sourceText(SOURCES[page] ?? []));
+  return sourceTexts.get(page)!;
+};
+
+/** Whether a page's source has this text, looked for once per page. */
+const found = new Map<string, boolean>();
+const pageHas = (page: string, needle: string) => {
+  const key = `${page}\0${needle}`;
+  if (!found.has(key)) found.set(key, pageText(page).includes(needle));
+  return found.get(key)!;
+};
+
 const steps = CHAPTERS.flatMap((c) => c.steps.map((s) => ({ c, s })));
 
 describe('the tour’s data', () => {
+  beforeAll(() => {
+    for (const c of CHAPTERS) pageText(c.page);
+  });
+
   it('has a page list in step with its chapters', () => {
     expect([...new Set(CHAPTERS.map((c) => c.page))].sort()).toEqual([...CHAPTER_PAGES].sort());
   });
@@ -84,16 +130,15 @@ describe('the tour’s data', () => {
 
   it('points at controls the page’s code makes', () => {
     for (const c of CHAPTERS) {
-      const text = sourceText(SOURCES[c.page] ?? []);
       const opener = (o?: Opener) => (o ? [o.by, o.shown, o.close] : []);
       const css = c.steps
         .flatMap((s) => [...(s.target ? [...cssList(s.target.css), ...cssList(s.target.reveal), ...opener(s.target.in)] : []), ...opener(s.opens)])
         .concat(c.ready);
       for (const sel of css) {
-        for (const [, name] of sel.matchAll(/[.#]([a-z][\w-]*)/gi)) expect(text.includes(name), `${c.id}: ${sel} (${name})`).toBe(true);
-        for (const [, href] of sel.matchAll(/href="([^"]+)"/g)) expect(text.includes(`'${href}'`), `${c.id}: ${sel}`).toBe(true);
+        for (const [, name] of sel.matchAll(/[.#]([a-z][\w-]*)/gi)) expect(pageHas(c.page, name), `${c.id}: ${sel} (${name})`).toBe(true);
+        for (const [, href] of sel.matchAll(/href="([^"]+)"/g)) expect(pageHas(c.page, `'${href}'`), `${c.id}: ${sel}`).toBe(true);
       }
-      for (const s of c.steps) if (s.target?.text) expect(text.includes(s.target.text), `${s.id}: ${s.target.text}`).toBe(true);
+      for (const s of c.steps) if (s.target?.text) expect(pageHas(c.page, s.target.text), `${s.id}: ${s.target.text}`).toBe(true);
     }
   });
 

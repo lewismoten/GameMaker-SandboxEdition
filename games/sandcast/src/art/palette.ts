@@ -2,7 +2,7 @@
 // water blues, grass edging, toy colors, and the 16 ANSI colors of a BBS screen. The same
 // blocks are re-lit for other scenes by tinting this palette (the tunnels underground, the
 // hose-soaked moat, and the patio at sunset where Gwinn naps).
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 
 const pb = new PaletteBuilder();
 // Index 0 is black: the screen border and fades use it.

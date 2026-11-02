@@ -7,15 +7,18 @@ import type { listProjects } from '../../project/storage';
 import { catalogGame, projectGame, type GameKind, type HomeGame } from './homeCards';
 import { CATEGORIES, type Category } from './homeCategories';
 import { findOriginal, isImported } from './homeOrigin';
+import { COMMUNITY_GAMES } from '../../community/catalog';
+import { byWalkPercent, keptBadge, type WalkBadge } from '../../walkthrough/walkBadge';
+import { communityGame } from '../../community/homeGame';
 
 export const SORT_KEY = 'gm-home-sort';
-/** 'rating' groups Imported by stars (My games keep the edited order). */
-export type MySort = 'edited' | 'name' | 'rating';
+/** 'rating' groups Imported by stars; 'walk' puts complete walkthroughs first, then by share of scenes won (My games keep the edited order). */
+export type MySort = 'edited' | 'name' | 'rating' | 'walk';
 
 function savedSort(): MySort {
   try {
     const v = localStorage.getItem(SORT_KEY);
-    return v === 'name' || v === 'rating' ? v : 'edited';
+    return v === 'name' || v === 'rating' || v === 'walk' ? v : 'edited';
   } catch {
     return 'edited';
   }
@@ -45,6 +48,20 @@ export function homeLibrary() {
     projects: [] as Projects,
     /** My games in the order you like: the one edited last first, or by name. */
     sort: savedSort(),
+    /** Imported games' walkthrough icons, by project id (loadWalkBadges). */
+    walkBadges: new Map<string, WalkBadge>(),
+    /** Fills walkBadges from the kept walkthroughs and, on the dev server only, the local index. */
+    loadWalkBadges: async () => {
+      lib.walkBadges.clear();
+      const local = import.meta.env.DEV ? await import('../widgets/devLocalWalk') : undefined;
+      for (const p of lib.projects) {
+        if (!isImported(p.id)) continue;
+        let b = keptBadge(p.companion, p.gam);
+        const s = !b && local ? await local.localSummary(p.gam, p.name) : undefined;
+        if (s) b = { ...s, local: true };
+        if (b) lib.walkBadges.set(p.id, b);
+      }
+    },
     /** The collections this catalog has: Bizarre only with enough of the Bard's games. */
     shownCats: () => CATEGORIES.filter((c) => c.id !== 'bizarre' || hasBizarreTab(lib.catalog)),
     entriesOf: (c: Category): CatalogEntry[] => byTitle(entriesIn(c)),
@@ -52,11 +69,13 @@ export function homeLibrary() {
     /** Your games made here (My games) or imported. */
     own: (c: Category) => (isOwn(c) ? lib.projects.filter((p) => isImported(p.id) === (c === 'imported')) : []),
     gamesOf: (c: Category): HomeGame[] =>
-      isOwn(c)
-        ? sorted()
-            .filter((p) => isImported(p.id) === (c === 'imported'))
-            .map(lib.mine)
-        : lib.entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind))),
+      c === 'community'
+        ? [...COMMUNITY_GAMES].sort((a, b) => a.title.localeCompare(b.title)).map((game) => remember(communityGame(game)))
+        : isOwn(c)
+          ? sorted()
+              .filter((p) => isImported(p.id) === (c === 'imported'))
+              .map(lib.mine)
+          : lib.entriesOf(c).map((e) => remember(catalogGame(e, c as GameKind))),
     findGame: (key: string): HomeGame | undefined => {
       for (const c of CATEGORIES) {
         const g = lib.gamesOf(c.id).find((x) => x.key === key);
@@ -87,9 +106,15 @@ export function homeLibrary() {
             : [];
   };
   const sorted = () =>
-    lib.sort === 'name'
-      ? [...lib.projects].sort((a, b) => a.name.trim().localeCompare(b.name.trim(), undefined, { numeric: true, sensitivity: 'base' }))
-      : lib.projects;
+    lib.sort === 'walk'
+      ? [...lib.projects].sort(
+          (a, b) =>
+            byWalkPercent(lib.walkBadges.get(a.id), lib.walkBadges.get(b.id)) ||
+            a.name.trim().localeCompare(b.name.trim(), undefined, { numeric: true, sensitivity: 'base' }),
+        )
+      : lib.sort === 'name'
+        ? [...lib.projects].sort((a, b) => a.name.trim().localeCompare(b.name.trim(), undefined, { numeric: true, sensitivity: 'base' }))
+        : lib.projects;
   return lib;
 }
 

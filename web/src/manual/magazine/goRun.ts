@@ -21,6 +21,8 @@ interface GoEnv {
   desk?: DeskHooks;
   entry(id: string): CatalogEntry | undefined;
   turnTo(pageId: string): void;
+  /** Opens the other issue of the magazine (at its cover). */
+  issue(which: 1 | 2): void;
   /** Puts the magazine down (before the desk does something with the PC or a prop). */
   close(): void;
 }
@@ -52,6 +54,9 @@ export function runGo(go: string, env: GoEnv): boolean {
   switch (kind) {
     case 'mag':
       env.turnTo(arg);
+      return true;
+    case 'issue':
+      env.issue(arg === '1' ? 1 : 2);
       return true;
     case 'hints':
     case 'newsletter':

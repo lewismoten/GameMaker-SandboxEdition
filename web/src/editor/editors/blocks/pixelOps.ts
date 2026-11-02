@@ -1,7 +1,7 @@
 // Whole-block pixel transforms for the block painter: flip, rotate, shift with wrap, recolor
 // and swap a color range, plus the mirror points for symmetric drawing. Pure: each takes a
 // 20x20 block's pixels and returns new ones.
-import { BLEN } from '../../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 const L = BLEN - 1;
 

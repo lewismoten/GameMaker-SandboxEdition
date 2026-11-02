@@ -3,7 +3,7 @@
 // garbage-can mess, up the old oak for Doc Leo's hat, and under the back fence.
 //
 // The blocks are in level1Tiles.ts, the monsters in level1Beasts.ts; this file lays out the map.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { P } from '../art/pal';
 import { LevelMap, type Level } from './level';
 import { GROUND, backyardTiles, bandOf } from './level1Tiles';

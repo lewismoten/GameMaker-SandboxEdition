@@ -1,7 +1,7 @@
 // TUIT.GAM: the scene graph, put together from the scenes each area declares. A scene names
 // its files and its links; a link says which block it starts on, which scene it leads to (by
 // name) and where Pip arrives there. Scene 0 is the title and menu, scene 1 the ending.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 const TITLE = 'ROUND TUIT';
 

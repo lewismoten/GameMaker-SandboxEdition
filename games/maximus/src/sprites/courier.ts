@@ -1,7 +1,7 @@
 // Max, the courier, drawn from a little skeleton so every pose (walk cycle, jet hop,
 // crouch, firing, waving...) is consistent. A pose is 20x40 pixels facing right and is
 // cut into the top and bottom character blocks Game-Maker stacks.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, Mask, fill, outline, shade } from '../art/draw';
 import { OUTLINE, S, WHITE, shared } from '../art/palette';
 

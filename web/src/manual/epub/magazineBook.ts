@@ -118,13 +118,14 @@ export async function magazineBook(issue: Issue, entries: Map<string, CatalogEnt
     chapters.push({ ...chapter, title: run.title, unlisted: run.picture && run.pages[0].kind === 'ad' });
   }
   return {
-    key: 'magazine/turbo-button-1',
-    title: `${MAG.name}: ${MAG.tagline}`,
+    // No. 2 keeps the old key; No. 1 is its own book
+    key: issue.mag.which === 1 ? 'magazine/turbo-button-spring-1993' : 'magazine/turbo-button-1',
+    title: `${MAG.name}: ${MAG.tagline}${issue.mag.which === 1 ? `, ${issue.mag.cover}` : ''}`,
     creator: 'Claude',
     publisher: 'Lewis Moten',
-    date: '1995',
-    description: `${MAG.name}, ${MAG.issue}: a 1990s-style shareware game magazine written and designed by Claude (Claude Opus 5.5, by Anthropic) for Game-Maker: Sandbox Edition.`,
-    cover: await coverPicture(await magazineCoverSheet([...entries.values()]), `${MAG.name} front cover, ${MAG.issue}`),
+    date: issue.mag.which === 1 ? '1993' : '1995',
+    description: `${MAG.name}, ${issue.mag.issue}: a 1990s-style shareware game magazine written and designed by Claude (Claude Opus 5.5, by Anthropic) for Game-Maker: Sandbox Edition.`,
+    cover: await coverPicture(await magazineCoverSheet([...entries.values()], issue.mag.which), `${MAG.name} front cover, ${issue.mag.issue}`),
     chapters,
     files: media.files,
     css: CSS,

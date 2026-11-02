@@ -9,12 +9,12 @@ import type { RetroHost } from '../host';
 import { attr, ROWS } from '../text/textScreen';
 import { listProjects } from '../../project/storage';
 import { dosDirName } from '../dos/hardDisk';
-import { PATCHES, COLOR_TARGETS, type ColorName, type PatchEntry, type PatchGroup } from '../../dosPlayer/patchTable';
-import { isStock, patchProblem, type PatchValue, type PlayerPatches } from '../../dosPlayer/patchRules';
+import { PATCHES, COLOR_TARGETS, type ColorName, type PatchEntry, type PatchGroup } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { isStock, patchProblem, type PatchValue, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { loadProjectPatches, saveProjectPatches } from '../../dosPlayer/projectPatches';
 import { PLAYER_PRESETS } from '../../dosPlayer/presets';
 import { COLOR_LABELS, SCREEN_NAMES } from '../../dosPlayer/describePatches';
-import { playerLook } from '../../engine/playerLook';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import { PLAYHACK_VERSION } from './playHackText';
 import { HACK_GROUPS, hackGroupOf, type HackGroup } from './playHackGroups';
 import { diskGame, diskLine } from './playHackDisk';
@@ -26,7 +26,7 @@ const RULE = '='.repeat(79);
 const HEADER = [
   RULE,
   `                PLAYHACK v${PLAYHACK_VERSION} - XFERPLAY.EXE Patcher for Game-Maker 3.00`,
-  '                      DiGiTAL DUNE * code: vesuvian * 1995',
+  '                      DiGiTAL DUNE * code: vesuvian * 1994',
   '              Your words, your colors, your player. (Your games only.)',
   RULE,
 ];
@@ -241,7 +241,7 @@ async function editGame(h: RetroHost, projectId: string, dos: string, chrome: (k
       rowEntry.push(e);
     }
     statusLine(h, dirty ? 'Changed: F2 saves them for the DOS export and Play.' : `${Object.keys(patches).length} change(s) saved for ${dos}.`);
-    // the chosen color's nearest text color, as a 1995 tool would show it
+    // the chosen color's nearest text color, as a 1994 tool would show it
     const swatch = (i: number) => {
       const e = rowEntry[i];
       if (!e || (e.kind !== 'rgb' && e.kind !== 'select')) return;

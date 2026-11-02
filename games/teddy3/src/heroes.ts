@@ -1,8 +1,8 @@
 // The heroes' character files, by the name a level gives its hero: Teddy's and Gwinn's
 // from the sequel, Doc Leo's and THE CHEZ's new for the finale, and Teddy hopping on the spot
 // for the dream run (runner.chr).
-import type { Block } from '../../../web/src/formats/blocks';
-import type { Character } from '../../../web/src/formats/character';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import type { Hero } from './levels/level';
 import { buildCharacter, CB } from './characters/character';
 import { buildGwinn, GB } from './characters/gwinnChar';

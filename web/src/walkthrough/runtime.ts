@@ -8,34 +8,29 @@
 // menu, where the walkthrough reads the storyline and then picks Play, every level through
 // play() as a demo plays them, the ending and score table, and back on the menu the credits.
 import { mulberry32 } from '../seededRandom';
-import { Machine } from '../engine/machine';
-import { Recorder } from '../engine/recorder';
-import { gameNameOf, loadGameFile, play } from '../engine/game';
-import { sceneFile, type Session } from '../engine/scene';
-import { drawDefaultScreen, drawMenu, gVertMenu, highScoreFile, menuMarker, readHighScores } from '../engine/menus';
-import { playerLook, type PlayerLook } from '../engine/playerLook';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
-import { serializeHighScores } from '../formats/highscore';
+import { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
+import { gameNameOf, loadGameFile, play } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
+import { sceneFile, type Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { drawDefaultScreen, drawMenu, gVertMenu, highScoreFile, menuMarker, readHighScores } from '@lewismoten/gamemaker-sandbox-engine/engine/menus';
+import { playerLook, type PlayerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import { serializeHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 import { fillBlankScores } from './madeUpScores';
-import { showGraphic } from '../engine/showGraphic';
-import { newCharInfo } from '../engine/world';
-import { AudioEngine } from '../audio/engine';
-import { PALETTE_SIZE } from '../formats/palette';
-import type { RecordedKey } from '../formats/recording';
+import type { ItemKind, WalkItem } from './items';
+import { showGraphic } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
+import { PALETTE_SIZE } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import type { RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import type { GameFiles } from '../project/files';
 import { DEFAULT_HOLD, decodeKeys, WALKTHROUGH_FPS, type Walkthrough } from './format';
 
 /** The walkthroughs' generator (Mulberry32), by the name the games' tools use for it. */
 export { mulberry32 as seeded } from '../seededRandom';
 
-export type AudioEvent =
-  | { t: number; kind: 'song'; bytes?: Uint8Array }
-  | { t: number; kind: 'stopSong' }
-  | { t: number; kind: 'pause'; paused: boolean }
-  | { t: number; kind: 'speaker'; freqs: ArrayLike<number> }
-  | { t: number; kind: 'stopSpeaker' }
-  | { t: number; kind: 'voc'; bytes?: Uint8Array }
-  | { t: number; kind: 'stopVoc' };
+export type { AudioEvent } from '@lewismoten/gamemaker-sandbox-tools/kit/audioEvents';
+import type { AudioEvent } from '@lewismoten/gamemaker-sandbox-tools/kit/audioEvents';
 
 /**
  * The game's sound, also written down with the walkthrough clock's time (for the video's
@@ -229,6 +224,8 @@ interface WalkHooks {
   /** A chapter starts (index into the chapters as they come: the opening, the story, the game's, the ending, the credits). */
   onChapter?: (title: string) => void;
   onSession?: (s: Session) => void;
+  /** Something new is on screen: a level, the menu, the scores or the credits (the engine's own pictures come by Machine.onItem). */
+  onItem?: (kind: ItemKind, name: string, num?: number) => void;
 }
 
 const SCAN_UP = 72;
@@ -245,6 +242,9 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
   const shared = mulberry32(walk.rand.seed);
   const marks = new Map(walk.chapters.map((c) => [c.scene, c.title]));
   const chapter = (title: string) => hooks.onChapter?.(title);
+  let levelAt = -1;
+  const levelNo = new Map<number, number>();
+  m.onItem = (kind, name) => hooks.onItem?.(kind, name);
   const s: Session = {
     m,
     game,
@@ -266,7 +266,13 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
         // the ending: a fresh disk's empty Top Ten gets made-up callers' scores (madeUpScores.ts)
         const name = highScoreFile(s.gameName);
         m.files.set(name, serializeHighScores(fillBlankScores(readHighScores(m, s.gameName), s.ci.score, walk.rand.seed)));
+        hooks.onItem?.('scores', '');
         return chapter(FRONT_CHAPTERS.ending);
+      }
+      if (scene > 1 && scene !== levelAt) {
+        levelAt = scene;
+        if (!levelNo.has(scene)) levelNo.set(scene, levelNo.size + 1);
+        hooks.onItem?.('level', marks.get(scene) || game.scenes[scene]?.desc || '', levelNo.get(scene));
       }
       const title = marks.get(scene);
       if (title !== undefined) {
@@ -279,6 +285,15 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
   await m.need(highScoreFile(s.gameName)); // loaded now, so the ending can fill it in (onScene)
   const file = (scene: number, slot: number) => sceneFile(game, scene, slot);
   const show = (f: string, cols?: Uint8Array, pause?: number) => showGraphic(m, f, { cols, pause, gamePalette: s.colors, look });
+  /** A story or credits page with something to show: the file is on the disk, and a text file has more than blanks. */
+  const hasPage = async (f: string | undefined) => {
+    if (!f) return false;
+    await m.need(f);
+    const bytes = m.files.get(f);
+    if (!bytes?.length) return false;
+    // blanks, line ends and the DOS end-of-file mark (26) don't count
+    return !/\.txt$/i.test(f) || bytes.some((b) => b > 32 && b !== 26);
+  };
   const song = async (slot: number) => {
     await m.need(file(0, slot));
     await m.audio.playSong(m.files.get(file(0, slot) ?? ''));
@@ -295,6 +310,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
   let blue = 0;
   const marker = menuMarker(look);
   const menu = async () => {
+    hooks.onItem?.('menu', '');
     if (file(0, 2)) await show(file(0, 2)!, s.colors, 0);
     else drawDefaultScreen(m, s.colors);
     blue = drawMenu(m.screen, look, s.colors, game.scenes[0].desc);
@@ -310,7 +326,7 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
 
   await song(3);
   let screen = await menu();
-  if (walk.story !== false && file(0, 4)) {
+  if (walk.story !== false && (await hasPage(file(0, 4)))) {
     await pick(3);
     chapter(FRONT_CHAPTERS.story);
     m.screen.restore(screen);
@@ -324,13 +340,14 @@ async function runWalkthrough(m: WalkMachine, gamFile: string, walk: Walkthrough
   rec.begin();
   await play(s, 0);
 
-  // Back on the menu: the credits
-  if (file(0, 7)) {
+  // Back on the menu: the credits (skipped when there are none to read)
+  if (await hasPage(file(0, 7))) {
     await song(3);
     choice = 1;
     screen = await menu();
     await pick(4);
     chapter(FRONT_CHAPTERS.credits);
+    hooks.onItem?.('credits', '');
     m.screen.restore(screen);
     await show(file(0, 7)!);
   }
@@ -350,7 +367,9 @@ export class WalkRun {
   error?: unknown;
   session?: Session;
   /** Chapters reached so far, with the frame each began on. */
-  readonly chapters: { title: string; frame: number }[] = [];
+  readonly chapters: { title: string; frame: number; time: number }[] = [];
+  /** Items shown so far (items.ts), with the run's clock when each began. */
+  readonly items: WalkItem[] = [];
   onChapter?: (title: string, index: number) => void;
   private ended: Promise<void>;
   private started?: Promise<void>;
@@ -377,8 +396,13 @@ export class WalkRun {
         walk,
         {
           onSession: (s) => (this.session = s),
+          onItem: (kind, name, num) => {
+            const last = this.items[this.items.length - 1];
+            if (last && last.kind === kind && last.name === name && last.time === this.m.time) return;
+            this.items.push({ kind, name, num, time: this.m.time });
+          },
           onChapter: (title) => {
-            this.chapters.push({ title, frame: this.frame });
+            this.chapters.push({ title, frame: this.frame, time: this.m.time });
             this.onChapter?.(title, this.chapters.length - 1);
           },
         },

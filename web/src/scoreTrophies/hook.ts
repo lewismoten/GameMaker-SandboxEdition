@@ -2,7 +2,7 @@
 // (scores.ts): only games played under a catalog save id ('game:<id>', the play page and the
 // desk's PC), never a demo's or walkthrough's playback (the engine doesn't tell those), a
 // preview, a game of your own or a downloaded copy. The record's code loads when a play ends.
-import type { Session } from '../engine/scene';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 
 export function scoreHook(saveId: string | undefined): NonNullable<Session['onPlayEnd']> | undefined {
   const id = saveId?.startsWith('game:') ? saveId.slice(5) : undefined;

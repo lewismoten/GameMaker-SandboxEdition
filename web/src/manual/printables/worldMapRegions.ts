@@ -3,7 +3,7 @@
 // it (a sector's worlds, a wing's books) are one; so are a level's scenes when the game gives
 // each level a palette of its own; so are linked scenes that share a map (a map every part of
 // the game passes through, like a passage, doesn't count).
-import { ENDTYPE, STARTTYPE, type Game } from '../../formats/game';
+import { ENDTYPE, STARTTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Graph } from '../../editor/editors/integrator/layoutCells';
 import { sceneLabel } from './worldMapGroups';
 

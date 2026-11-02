@@ -4,10 +4,11 @@
 // and alignment marks; a 3D mug shows where the front and back land. Printed at actual size
 // (the page is an SVG in real inches) or saved as a 300 dpi PNG. The setup is remembered.
 import { download, h } from '../../editor/core/ui';
-import { MUG_DESIGNS, designCanvas, loadDesigns, type MugDesignId } from './mugArt';
+import { MUG_DESIGNS, designCanvas, loadDesigns, type MugDesign, type MugDesignId } from './mugArt';
 import { pageLayout, type PageLayout, type StripInput } from './mugLayout';
 import { MUG_SIZES, PAPERS, type MugSize } from './mugSizes';
 import { MUG_COLORS, drawMug, stripTexture, wrapAngle } from './mug3d';
+import { wrapTab } from './mugFocus';
 import { MAX_MUGS, loadSetup, newMug, saveSetup, type PageMug, type PageSetup } from './mugPageStore';
 import { PRINT_DPI, preparePrint, sheetPng, sheetSvg, type SideDesigns } from './mugSheet';
 
@@ -36,7 +37,8 @@ const designsOf = (setup: PageSetup): SideDesigns[] => setup.mugs.map((m) => ({ 
 /** A choice of picture: blank, a BBS design or a game's. */
 function designSelect(label: string, value: MugDesignId | '', change: (v: MugDesignId | '') => void): HTMLLabelElement {
   const opt = (id: string, name: string) => h('option', { value: id, selected: id === value }, name);
-  const group = (g: 'bbs' | 'game', name: string) => h('optgroup', { label: name }, ...MUG_DESIGNS.filter((d) => d.group === g).map((d) => opt(d.id, d.name)));
+  const group = (g: MugDesign['group'], name: string) =>
+    h('optgroup', { label: name }, ...MUG_DESIGNS.filter((d) => d.group === g).map((d) => opt(d.id, d.name)));
   return h(
     'label',
     null,
@@ -47,6 +49,7 @@ function designSelect(label: string, value: MugDesignId | '', change: (v: MugDes
       opt('', 'Blank (nothing printed)'),
       group('bbs', 'The Sandbox BBS'),
       group('game', 'Sandbox Software games'),
+      group('bizarre', 'The Bard of Bizarre'),
     ),
   );
 }
@@ -299,6 +302,7 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
       resolve();
     };
     const onKey = (e: KeyboardEvent) => {
+      wrapTab(overlay, e);
       if (e.key === 'Escape') (e.preventDefault(), close());
       e.stopImmediatePropagation(); // not for the PC underneath
     };
@@ -308,7 +312,7 @@ export function openSublimation(start: { design: MugDesignId; size: string }): P
       'div',
       { class: 'mugv subl', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'subl-title' },
       h(
-        'header',
+        'div',
         { class: 'mugv-bar' },
         h('h2', { id: 'subl-title' }, 'Make your own mugs: one sublimation page'),
         h('span', { class: 'mugv-spacer' }),

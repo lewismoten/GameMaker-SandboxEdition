@@ -7,7 +7,7 @@ import { DIZ_WIDTH, warezSignoff } from '../bbs/fileId';
 import { GROUP, GREETS } from './gmcrackText';
 
 export const PLAYHACK_VERSION = '1.0';
-const RELEASED = '09/12/95';
+const RELEASED = '11/12/94';
 
 export const PLAYHACK_DIZ: string[] = [
   `PLAYHACK v${PLAYHACK_VERSION} * XFERPLAY.EXE PATCHER    [1/1]`,
@@ -29,7 +29,7 @@ export const PLAYHACK_NFO: string[] = [
   '                 ██   ██  ██   ██  ██▀█▄ ██  ██▄▄▄',
   '                 ██   ██  ██   ██  ██ ▀█▄██  ██▀▀▀',
   '                 ██████▀  ▀█████▀  ██   ▀██  ███████',
-  '                ░▒▓ cracking the sand since 1995 ▓▒░',
+  '                ░▒▓ cracking the sand since 1994 ▓▒░',
   '',
   '  ╔══════════════════════════════════════════════════════════════════════════╗',
   `  ║  PRODUCT ...: PLAYHACK v${PLAYHACK_VERSION} - XFERPLAY.EXE Patcher                       ║`,

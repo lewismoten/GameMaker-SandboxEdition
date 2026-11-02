@@ -5,7 +5,7 @@
 // paddles are monsters), the flume that pours down the mill's far side into the millrace (air
 // whose gravity points down and along), the millrace (water that floats Teddy and carries him
 // downstream to the big wheel), the quay beyond it, and the miller with his sacks.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import type { BlockDef } from '../blocks/blockset';

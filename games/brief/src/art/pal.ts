@@ -2,7 +2,7 @@
 // wing, every book and every screen. Named ramps keep the art readable ("wood at shade 3"),
 // and the inks PLAYGAME looks up by color (menu blue, warning red, text purple) are exact
 // matches so its own words come out crisp on our pages.
-import { PaletteBuilder } from '../../../kit/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
 
 type RGB = [number, number, number];
 

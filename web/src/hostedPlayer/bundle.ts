@@ -2,7 +2,7 @@
 // game wrote, as DOS wrote them ("nebula/NEBULA.HIS", "nebula/GAME1.SAV"), so a folder can
 // also be copied into a DOS game folder. Importing reads only what fits that shape; anything
 // else in the zip is skipped. No DOM here (bundle.test.ts).
-import { createZip, readZip } from '../project/zip';
+import { createZip, readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { gameId, safeFileName } from './list';
 import type { SaveFiles } from './saves';
 

@@ -1,7 +1,7 @@
 // Drawing the Block Designer's VGA screen (drawscrn and friends): the zoomed block, the
 // palette bar, the 6x6 viewing grid (animated as the game would animate it), the block
 // bar, and the tool and key buttons.
-import { BACKBL, BLEN, CHARBL, MONBL } from '../../formats/blocks';
+import { BACKBL, BLEN, CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { SIZEX, SIZEY } from '../shared/vga';
 import { BLACK, GREEN, GRAY1, GRAY3, GRAY4 } from '../shared/facelift';
 import { blocnum, drawblk, drawlist, getblk, pixelsOf } from '../shared/blocc';

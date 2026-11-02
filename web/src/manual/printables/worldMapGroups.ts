@@ -5,7 +5,7 @@
 // shares its map, else the one it leads to, else the one that leads to it. A game can also
 // name its places itself in printables.json ("worldMap": { "groups": [...] }). Folded scenes
 // are listed on their place's land by name and number; the map's "Every scene" view keeps them all.
-import { ENDTYPE, NOSCENE, STARTTYPE, type Game, type Link, SCENEDESCLEN } from '../../formats/game';
+import { ENDTYPE, NOSCENE, STARTTYPE, type Game, type Link, SCENEDESCLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Graph } from '../../editor/editors/integrator/layoutCells';
 import type { WorldMapHints } from './types';
 

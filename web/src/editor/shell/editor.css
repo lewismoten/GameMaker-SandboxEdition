@@ -344,7 +344,7 @@ main.home {
 }
 
 .sidebar button.file .ext {
-  color: hsl(var(--ext-h) 75% 24%);
+  color: hsl(var(--ext-h) 75% 17%);
   font-weight: 600;
 }
 
@@ -575,6 +575,18 @@ canvas.pixel {
   outline: 2px solid var(--focus);
   outline-offset: -2px;
   z-index: 1;
+}
+
+/* a finger: 24px cells (WCAG 2.5.8). The 16 columns keep their rows; a box narrower than 16
+   cells scrolls sideways inside itself, never the page. */
+@media (pointer: coarse) {
+  .swatches,
+  .swatches.pal-swatches {
+    grid-template-columns: repeat(16, minmax(24px, 1fr));
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
 
 .block-picker {
@@ -1424,4 +1436,24 @@ main:focus,
     margin-bottom: 6px;
     color: var(--muted);
   }
+}
+
+/* Damaged legacy graphics explain their missing preview without implying replacement art. */
+.thumb.icon.problem {
+  padding: 4px;
+  box-sizing: border-box;
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: normal;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* Tick fields show a live clock conversion without changing their stored numeric units. */
+.field-duration {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }

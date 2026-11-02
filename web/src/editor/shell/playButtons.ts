@@ -3,7 +3,7 @@
 // whose ▾ opens a menu of every way the game's links bring the player into a level.
 import './playButtons.css';
 import { h, clear } from '../core/ui';
-import type { Game } from '../../formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { currentPick, playChoices, type PlayChoice, type PlayPick } from './playLevel';
 
 interface PlayButtonsContext {

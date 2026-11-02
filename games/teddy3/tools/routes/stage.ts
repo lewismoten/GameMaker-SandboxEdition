@@ -3,7 +3,7 @@
 // comes over her, stands still behind a light going the same way, and keeps out of a wing
 // just before a light is born there.
 import type { Order } from '../bot';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { GSEQ, SCAN } from '../../src/ids';
 import { STAGE } from '../../src/levels/stage';
 import { BEAMS } from '../../src/levels/stageBeasts';

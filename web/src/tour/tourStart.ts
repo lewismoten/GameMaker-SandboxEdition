@@ -3,16 +3,17 @@
 import { h } from '../editor/core/ui';
 import { Actor, loadSprites } from './actor';
 import { CHAPTERS } from './chapters/index';
+import { editorChapterIds } from './editorChoice';
 import { Tour, tourPlaying } from './tourEngine';
 import type { PageKey } from './steps';
 
 /**
  * Plays the whole tour ('all'), chapters by id ('dos', or 'desk,dos'), or (no id) the chapter
- * for `page`. `cont`: carrying on from another page (the whole tour, gone on to the DOS page).
+ * for `page` (on the editor page: the overview and the sub-chapter for the open editor). `cont`: carrying on from another page (the whole tour, gone on to the DOS page).
  */
 export function startTour(which: string | undefined, opts: { record?: boolean; page?: PageKey; cont?: boolean } = {}): void {
   hideDock();
-  const ids = which?.split(',');
+  const ids = which?.split(',') ?? (opts.page === 'editor' ? editorChapterIds(location.hash) : undefined);
   const chosen = which === 'all' ? CHAPTERS : CHAPTERS.filter((c) => (ids ? ids.includes(c.id) : c.page === opts.page));
   if (!chosen.length) return;
   // more than one page: what another page says (Settings has the theme) is left to that page

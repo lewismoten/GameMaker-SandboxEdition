@@ -3,7 +3,7 @@
 // to dig under, the see-saw's step and fulcrum, the fast belt, the ball pit and its blinking
 // boards (two beats), the station signs the Clown Club painted, the flap into the dark ring,
 // and the ring itself, dark, with the party waiting (and nobody making a sound).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { boxFace, c, copy, r } from '../blocks/tiles';

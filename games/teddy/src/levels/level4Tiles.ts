@@ -3,7 +3,7 @@
 // escape, the inside of Biggles Department Store (Gwinn's shoe-department mess), the
 // construction site's sidewalk shed, Juggles and Presto (blocks that give birth to pins and
 // doves), the plaza and its billboard, and the Bijou's blinking marquee.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, clubArt, micro, scaleBlit, speckle } from '../art/draw';
 import { DRESSED, docLeo } from '../sprites/people';
 import { GRAV, Tiles } from './level';

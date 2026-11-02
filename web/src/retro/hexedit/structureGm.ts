@@ -1,10 +1,10 @@
 // HEXEDIT's maps of Game-Maker's own formats (.GAM, .MAP, block sets, .CHR, .MON, .PAL, .HIS,
 // .SND, .REC, SAVNAMES.DAT and text pages), built with structure.ts's Builder; GM_FORMATS
 // names them by extension. The layouts follow the original C headers named on each.
-import { cString } from '../../formats/binary';
-import { ADV_FILES, END_FILES, START_FILES } from '../../formats/game';
-import { SEQUENCE_NAMES } from '../../formats/character';
-import { SOUND_NAMES } from '../../formats/sound';
+import { cString } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { ADV_FILES, END_FILES, START_FILES } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { SEQUENCE_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { SOUND_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { Builder, hex, part, type Describer } from './structure';
 
 const sceneKind = (t: number | string) => (t === 1 ? 'title & menus' : t === 2 ? 'game over' : t === 10 ? 'level' : t === 0xffff ? 'unused' : '?');

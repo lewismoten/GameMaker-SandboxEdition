@@ -10,9 +10,9 @@
 // Paths are followed as engine/monsters.ts walks them (each corner an offset from the one before,
 // Bresenham steps at the leg's speed, a "stops on solid" monster held at walls), from where the
 // monster is placed, normal paths only, with the picture (and its solid sides) of every tick.
-import { BLEN, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../formats/blocks';
-import { LASTMON, MAXMARCH, type Monster } from '../../../formats/monster';
-import { MLEN, MWID } from '../../../formats/map';
+import { BLEN, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON, MAXMARCH, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import type { SceneData } from '../sceneData';
 import { pictures } from './monsterChecks';

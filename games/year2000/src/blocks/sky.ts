@@ -13,7 +13,7 @@
 //  - off the right edge of the screen, where no one sees them, each lane has a chain of spawner
 //    blocks, one per entry in cloudWaves.ts, each giving birth once; and two give birth to the
 //    dashes between the lanes every few ticks, forever.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { C, PAL } from '../art/pal';
 import { text } from '../art/font';
@@ -23,7 +23,7 @@ import { T, shadeAt } from '../art/draw';
 import { EXIT_COL, HORIZON, HORIZON_ROW, VX, WALL_ROW, CAR_ROW, LANE_COLS, halfWidth } from '../art/skyView';
 import { MILE, MILES, OPEN_AT, WAVES, type Lane } from '../levels/cloudWaves';
 import { CTR, EGG_BLOCK, SKYMON } from '../ids';
-import { spawnChains } from '../../../kit/road3d';
+import { spawnChains } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 
 const R = PAL.r;
 const W = 320;

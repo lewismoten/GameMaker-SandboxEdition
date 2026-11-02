@@ -1,7 +1,7 @@
 // A felt egg on a pad: charcoal felt crossed with lime-green circuit traces in backstitch,
 // a little red felt bug with six French-knot legs, and a ribbon of white chip pins around
 // its waist. Drawn only in the shared ramps, so it looks the same in every stage.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../art/pal';
 
 /** The block number it has in every stage's block set (the last one: nothing else is there). */

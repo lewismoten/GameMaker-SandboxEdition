@@ -2,8 +2,8 @@
 // characters (keymap/keyMap.ts), the goal, dangers and items the designer writes, wrapped to the
 // 30 letters a text-screen line holds safely (Display_File reads 31, and a line of exactly 31
 // leaves a blank one after it), in pages of 16 lines.
-import { textBytes } from '../../../formats/binary';
-import { ADVTYPE, NOSCENE, type Game } from '../../../formats/game';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { ADVTYPE, NOSCENE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { GameFiles } from '../../../project/files';
 import { gameKeyMap } from '../../keymap/keyMap';
 

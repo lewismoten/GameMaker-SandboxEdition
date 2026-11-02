@@ -5,7 +5,7 @@
 // that looks more like the fill is "in". The block whose eight in/out guesses match a slot's
 // neighbors exactly, most clearly, fills that slot. Only blocks made mostly of the two
 // blocks' colors are considered.
-import { BLEN, type Block } from '../../../../formats/blocks';
+import { BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { E, N, NE, NW, S, SE, SLOTS, SW, W, type TerrainKind } from './autotile';
 
 type Region = [x0: number, y0: number, x1: number, y1: number]; // inclusive

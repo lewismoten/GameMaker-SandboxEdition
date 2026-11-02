@@ -1,16 +1,19 @@
 // The track list: one track per MIDI channel, with its instrument, mute and solo, and
 // buttons to add, copy, paste and remove tracks (copy and paste in trackPaste.ts).
-import { h, clear, confirmDialog } from '../../core/ui';
-import { channelNotes, removeChannel, setStartProgram, startProgram } from '../../../formats/cmfEdit';
-import { RHYTHM_CHANNELS, DRUM_NAMES } from '../../../formats/cmfSong';
-import { TRACK_COLORS, type MusicDoc } from './doc';
-import { instLabel, instShortLabel } from './instrument';
+import { h, clear } from '../../core/ui';
+import { channelNotes, removeChannel, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { RHYTHM_CHANNELS, DRUM_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import type { MusicDoc } from './doc';
+import { instLabel, instShortLabel, lookIcon } from './instrument';
+import { instrumentLook } from './instrumentLook';
 import { presetName } from './sbi';
 import { presetById } from '../../../audio/oplPresets';
 import { DRUM_KIT, slotOfChannel } from '../../../audio/oplDrumPresets';
-import { applyToTrack, pickPreset } from './presetPicker';
+import { pickPreset } from './presetPicker';
+import { applyToTrack } from './drumMode';
 import { clipLabel, copyToClipboard, pasteIntoDoc } from './trackPaste';
 import { currentTrackClip } from './trackClipboard';
+import { moveTrackTo, sortByGroup } from './trackOrder';
 
 export class TrackList {
   readonly el = h('div', { class: 'mus-tracks', role: 'list', 'aria-label': 'Tracks' });
@@ -23,7 +26,7 @@ export class TrackList {
     private onSelect: () => void,
   ) {
     doc.on((c) => {
-      if (c === 'song' || c === 'track') this.render();
+      if (c === 'song' || c === 'track') this.songChanged();
     });
     this.render();
   }
@@ -60,10 +63,8 @@ export class TrackList {
     this.render();
   }
 
-  private async remove(ch: number): Promise<void> {
+  private remove(ch: number): void {
     const doc = this.doc;
-    const n = channelNotes(doc.song, ch).length;
-    if (n && !(await confirmDialog('Remove track', `Remove ${doc.trackName(ch)} and its ${n} notes?`, 'Remove'))) return;
     doc.edit(() => {
       removeChannel(doc.song, ch);
       doc.extra.delete(ch);
@@ -77,16 +78,105 @@ export class TrackList {
     }
   }
 
+  /** Lists track ch at index `to` (one undo step; the song's channels do not change). */
+  private moveTo(ch: number, to: number): void {
+    this.doc.setOrder(moveTrackTo(this.doc.tracks(), ch, to));
+  }
+
+  private moveButton(ch: number, dir: -1 | 1, i: number, count: number): HTMLElement {
+    const name = this.doc.trackName(ch);
+    const word = dir < 0 ? 'up' : 'down';
+    return h(
+      'button',
+      {
+        class: 'mus-ms',
+        title: `Move this track ${word} the list (only how it is listed here; the song file is not changed)`,
+        'aria-label': `Move ${name} ${word}`,
+        'data-move': `${ch}:${word}`,
+        disabled: dir < 0 ? i === 0 : i === count - 1,
+        onclick: () => this.moveTo(ch, i + dir),
+      },
+      dir < 0 ? '▲' : '▼',
+    );
+  }
+
+  /** Drag a track onto another to put it in that place. */
+  private dragging: number | null = null;
+  private wireDrag(row: HTMLElement, ch: number, i: number): void {
+    row.draggable = true;
+    row.addEventListener('dragstart', (e) => {
+      this.dragging = ch;
+      e.dataTransfer?.setData('text/plain', this.doc.trackName(ch));
+      if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragover', (e) => {
+      if (this.dragging === null) return;
+      e.preventDefault();
+      row.classList.add('drop');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drop'));
+    row.addEventListener('dragend', () => (this.dragging = null));
+    row.addEventListener('drop', (e) => {
+      e.preventDefault();
+      row.classList.remove('drop');
+      const from = this.dragging;
+      this.dragging = null;
+      if (from !== null && from !== ch) this.moveTo(from, i);
+    });
+  }
+
+  /** What the list shows apart from the note counts; when an edit leaves it alone, only the counts are redrawn. */
+  private shapeKey(): string {
+    const doc = this.doc;
+    const song = doc.song;
+    const order = doc.tracks();
+    const clip = currentTrackClip();
+    return JSON.stringify([
+      order,
+      doc.track,
+      doc.rhythm,
+      [...doc.muted],
+      [...doc.solo],
+      this.adding,
+      clip ? clipLabel(clip) : null,
+      order.map((ch) => [startProgram(song, ch), doc.sounds(ch)]),
+      song.instruments.map((inst) => (inst ? Array.from(inst) : null)),
+    ]);
+  }
+
+  private shape = '';
+  /** Each track's text under its name, without the note count, and the element that shows it. */
+  private counts = new Map<number, { el: HTMLElement; head: string }>();
+
+  private songChanged(): void {
+    // names, colors, pictures and labels all come from the start programs and instrument bytes in the key
+    if (this.shapeKey() !== this.shape) {
+      this.render();
+      return;
+    }
+    const tally = new Map<number, number>();
+    for (const n of this.doc.song.notes) tally.set(n.on.ch, (tally.get(n.on.ch) ?? 0) + 1);
+    for (const [ch, { el, head }] of this.counts) {
+      const notes = tally.get(ch) ?? 0;
+      const text = `${head}${notes} note${notes === 1 ? '' : 's'}`;
+      if (el.textContent !== text) el.textContent = text;
+    }
+  }
+
   render(): void {
     const doc = this.doc;
     const song = doc.song;
-    const rows = doc.tracks().map((ch) => {
+    const order = doc.tracks();
+    this.shape = this.shapeKey();
+    this.counts.clear();
+    const rows = order.map((ch, i) => {
       const notes = channelNotes(song, ch).length;
       const silent = !doc.sounds(ch);
       const drum = doc.rhythm && RHYTHM_CHANNELS.includes(ch);
       const p = startProgram(song, ch);
       // a drum's name is the drum: its sound (the preset it matches) goes under it
       const sound = drum && song.instruments[p] ? presetName(song.instruments[p]) : undefined;
+      const group = instrumentLook(song.instruments[p]).groupName;
       const bank = h(
         'select',
         { 'aria-label': `Instrument for ${doc.trackName(ch)}`, title: instLabel(doc, p) },
@@ -98,9 +188,9 @@ export class TrackList {
         doc.edit(() => setStartProgram(song, ch, Number(bank.value)));
         void doc.audition(ch, 60);
       });
-      return h(
+      const row = h(
         'div',
-        { class: `mus-track${ch === doc.track ? ' active' : ''}${silent ? ' silent' : ''}`, role: 'listitem', style: `--track:${TRACK_COLORS[ch]}` },
+        { class: `mus-track${ch === doc.track ? ' active' : ''}${silent ? ' silent' : ''}`, role: 'listitem', style: `--track:${doc.trackColor(ch)}` },
         h(
           'div',
           { class: 'mus-track-head' },
@@ -115,12 +205,17 @@ export class TrackList {
                 this.onSelect();
               },
             },
-            h('span', { class: 'mus-swatch' }, drum ? '🥁' : String(ch + 1)),
+            lookIcon(song.instruments[p], 'mus-swatch'),
             h(
               'span',
               { class: 'mus-track-text' },
               h('b', null, doc.trackName(ch)),
-              h('small', null, `${silent ? 'silent · ' : ''}${sound ? `${sound} · ` : ''}${notes} note${notes === 1 ? '' : 's'}`),
+              (() => {
+                const head = `${silent ? 'silent · ' : ''}${sound ? `${sound} · ` : ''}${group ? `${group} · ` : ''}`;
+                const el = h('small', null, `${head}${notes} note${notes === 1 ? '' : 's'}`);
+                this.counts.set(ch, { el, head });
+                return el;
+              })(),
             ),
           ),
           h(
@@ -136,6 +231,8 @@ export class TrackList {
             },
             '⧉',
           ),
+          this.moveButton(ch, -1, i, order.length),
+          this.moveButton(ch, 1, i, order.length),
         ),
         h(
           'div',
@@ -195,6 +292,8 @@ export class TrackList {
           h('button', { class: 'mus-ms', title: 'Remove this track', 'aria-label': `Remove ${doc.trackName(ch)}`, onclick: () => void this.remove(ch) }, '×'),
         ),
       );
+      this.wireDrag(row, ch, i);
+      return row;
     });
     const free = doc.freeChannels();
     const clip = currentTrackClip();
@@ -225,6 +324,16 @@ export class TrackList {
             },
             '＋ Add track',
           ),
+          h(
+            'button',
+            {
+              class: 'mus-add-btn',
+              disabled: order.length < 2,
+              title: 'List the tracks by instrument group (strings, keys, drums…); only the list changes, not the song file',
+              onclick: () => doc.setOrder(sortByGroup(doc.tracks(), (ch) => instrumentLook(song.instruments[startProgram(song, ch)]).preset?.group)),
+            },
+            '⇅ Sort by group',
+          ),
           clip
             ? h(
                 'button',
@@ -250,9 +359,23 @@ export class TrackList {
           ),
         );
     // keep the keyboard on a track's preset button when the list is drawn again (after undo)
-    const had = this.el.contains(document.activeElement) ? document.activeElement?.getAttribute('data-presets') : null;
-    clear(this.el, ...rows, h('div', { role: 'listitem', style: 'display:contents' }, add));
+    const active = this.el.contains(document.activeElement) ? document.activeElement : null;
+    const had = active?.getAttribute('data-presets');
+    const moved = active?.getAttribute('data-move');
+    const why = h(
+      'p',
+      { class: 'hint mus-track-why', role: 'listitem' },
+      'A track’s color and picture come from its instrument: the picture is the preset it matches, on its group’s color (strings, keys, drums…). Change the instrument and they follow. A sound that matches no preset keeps a plain note and its channel’s own color.',
+    );
+    clear(this.el, ...rows, h('div', { role: 'listitem', style: 'display:contents' }, add), why);
     if (had) this.el.querySelector<HTMLElement>(`[data-presets="${had}"]`)?.focus();
+    if (moved) {
+      // the same button on the moved track; at an end it is disabled, so the other arrow gets the focus
+      const [ch, way] = moved.split(':');
+      const other = way === 'up' ? 'down' : 'up';
+      const pick = (w: string) => this.el.querySelector<HTMLButtonElement>(`[data-move="${ch}:${w}"]:not(:disabled)`);
+      (pick(way) ?? pick(other))?.focus();
+    }
     if (this.adding) add.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
 }

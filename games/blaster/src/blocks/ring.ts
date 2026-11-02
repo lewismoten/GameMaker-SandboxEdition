@@ -4,8 +4,8 @@
 // wraps: the course reads from TAIL, comes round the wrap at each kink onto the next row, and
 // ends at HEAD, the way out. Where a bit is stuck it sparks, a leak lets mites out, and one
 // pointer (a dotted cyan link) jumps a row a lap early.
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, blob, micro, outlined, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import type { StageArt } from './tiles';

@@ -1,8 +1,8 @@
 // The demos' sound choice: Sound Blaster, PC speaker or none, and switching between them.
 import { describe, expect, it, vi } from 'vitest';
-import { AudioEngine } from '../src/audio/engine';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { DemoAudioEngine, demoAudio, onDemoAudio, setDemoAudio } from '../src/media/demoAudio';
-import type { Session } from '../src/engine/scene';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 
 const song = new Uint8Array([1, 2, 3]);
 

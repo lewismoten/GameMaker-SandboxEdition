@@ -3,7 +3,7 @@
 // and web-page exports never carry the companion; the DOS export writes the patches into its copy
 // of XFERPLAY.EXE instead, and the web player reads them through RunOptions.player.
 import { getSection, type Companion } from '../project/companion';
-import { cleanPatches, type PlayerPatches } from './patchRules';
+import { cleanPatches, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 export const PLAYER_SECTION = 'dosPlayer';
 const BASE = 'xferplay-3.00';

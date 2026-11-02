@@ -14,18 +14,23 @@
 // quickly on to where it stopped. A walkthrough that stops partway keeps the scenes it got
 // through and says on its closing card where it stopped (`ending`).
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
-import type { Game } from '../../../formats/game';
-import { MLEN } from '../../../formats/map';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { bestAttempt } from './bestAttempt';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Entry, type Exploration, type ExploreOptions } from '../explore';
 import type { Move } from '../inputs';
 import { SceneSim, startCharInfo, type FileSource } from '../sim';
 import { replayMine } from './replayMine';
+import { fetchKeys, locksAtEntry } from './fetchKeys';
+import { lockedWhy } from './gates';
+import { otherScenesAdding } from './otherScenes';
 import { scenePaths } from './walkPaths';
 import { ON_PATH_ENOUGH, pathShare, preferPathRoute } from './pathRoute';
+import { humanRoute } from './humanRoute';
 import { pathTo, replayPath, type Replay } from './replayPath';
 
 interface Strategy {
-  id: 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'mine';
+  id: 'human' | 'runner' | 'walker' | 'search' | 'patient' | 'collector' | 'keys' | 'mine';
   name: string;
   /** Only for scenes with gravity (true) or without (false). */
   gravity?: boolean;
@@ -37,12 +42,16 @@ interface Strategy {
 const movesOnly = (re: RegExp) => (m: Move) => re.test(m.name);
 
 export const STRATEGIES: Strategy[] = [
+  // played apart (humanRoute.ts): treasure and foes in sight first, steady hands; the others follow when it finds no way
+  { id: 'human', name: 'Play like a person', share: 0.4, options: () => ({}) },
   { id: 'runner', name: 'Run and hop', gravity: true, share: 0.15, options: (goal) => ({ goal, moveFilter: movesOnly(/^(walk|step|jump)/) }) },
   { id: 'walker', name: 'Maze walker', gravity: false, share: 0.15, options: (goal) => ({ goal, moveFilter: movesOnly(/^walk/) }) },
   { id: 'search', name: 'Every move', share: 0.35, options: (goal) => ({ goal }) },
   { id: 'patient', name: 'Every move, waiting out hazards', share: 0.5, options: () => ({ waitEverywhere: true }) },
   // played apart from the others (collect()): gathers what the scene holds first, then goes on
   { id: 'collector', name: 'Collect everything, then go on', share: 0.8, options: () => ({}) },
+  // played apart too (fetchKeys.ts): the keys of the doors still shut, then the way on
+  { id: 'keys', name: 'Fetch the keys, then go on', share: 0.8, options: () => ({}) },
 ];
 
 /** The author's own play of a scene (not one of the bot's styles). */
@@ -77,10 +86,15 @@ export interface AutoWalk {
 }
 
 /** What the closing card of a walkthrough that stops partway says, after "The bot got this far." */
-function endingOf(name: string, why: 'stopped' | 'stuck' | 'no-way'): string {
-  if (why === 'stopped') return `It was stopped partway through ${name}.`;
-  if (why === 'stuck') return `It found no way through ${name}.`;
-  return `${name} had no way on it hadn’t taken.`;
+export function endingOf(name: string, why: 'stopped' | 'stuck' | 'no-way', scene = -1, cannot = false): string {
+  // a scene named only by a number ("2") would read as a scene number: say which one it is
+  const label = /^\d+$/.test(name) && scene >= 0 ? `${name} (scene ${scene})` : name;
+  if (why === 'stopped') return `It was stopped partway through ${label}.`;
+  if (why === 'stuck') {
+    const base = `It found no way through ${label}.`;
+    return cannot ? `${base} The hero could not move from where it starts: every key it tried left it in place.` : base;
+  }
+  return `${label} had no way on it hadn’t taken.`;
 }
 
 interface AutoWalkOptions {
@@ -95,6 +109,8 @@ interface AutoWalkOptions {
   onScene?: (soFar: AutoWalk) => void;
   /** Stop after this many scenes (1: just the first scene). */
   maxScenes?: number;
+  /** Play like a person first (humanRoute.ts); false skips it (default true). */
+  human?: boolean;
   /** Walking paths to keep to: block numbers by the .bbl's name in lower case (walkPaths.ts allWalkPaths). */
   paths?: Record<string, number[]>;
   /**
@@ -102,7 +118,7 @@ interface AutoWalkOptions {
    * them: a scene the bot got through then is played with those keys again when they still
    * reach a way on from here, so making it again goes quickly to where it stopped.
    */
-  reuse?: Reused[];
+  reuse?: (Reused | undefined)[];
 }
 
 /** One scene of an earlier walkthrough the bot played: its keys, from the scene's entry, and how it got through. */
@@ -163,7 +179,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     out.scenes.push(outcome);
     if (!ways.length) {
       out.stopped = `${name} has no way on that the bot hasn’t taken already.`;
-      ending = endingOf(name, 'no-way');
+      ending = endingOf(name, 'no-way', scene);
       break;
     }
     const goal = ways.map((l) => l.from.y * MLEN + l.from.x);
@@ -174,6 +190,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
     }
     const wanted = new Set(ways.map((l) => s.links.indexOf(l)));
     let biggest: Exploration | undefined;
+    let lockWhy: string | undefined;
     let found: { replay: Replay; strategy: Strategy } | undefined;
     /**
      * The collector: explore the whole scene, go to the place where the hero has gathered the
@@ -259,8 +276,17 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       }
       return undefined;
     };
+    // a person's route first: what is in sight is taken, then the way on (else the styles below)
+    // (a scene with walking paths keeps to them: the styles below weigh those, pathRoute.ts)
+    if (!found && !canceled && opt.human !== false && !paths) {
+      const st = STRATEGIES.find((x) => x.id === 'human')!;
+      outcome.tried.push(st.id);
+      if (opt.progress?.(scene, st.name, 0)) canceled = true;
+      const replay = !canceled && (await humanRoute(game, files, scene, entry, goal, wanted, budget * st.share, seed, paths));
+      if (replay && wanted.has(replay.link)) found = { replay, strategy: st };
+    }
     for (const st of found ? [] : STRATEGIES) {
-      if (st.id === 'collector' || (st.gravity !== undefined && st.gravity !== gravity)) continue;
+      if (st.id === 'human' || st.id === 'collector' || st.id === 'keys' || (st.gravity !== undefined && st.gravity !== gravity)) continue;
       outcome.tried.push(st.id);
       const replay = await tryStyle(st);
       if (replay) {
@@ -276,16 +302,46 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       }
       if (found || canceled) break;
     }
+    // doors that shut until the hero has a key from off the route: fetch it, then go on
+    if (!found && !canceled) {
+      const locks = locksAtEntry(game, files, scene, entry);
+      const unreached = new Set<number>();
+      if (locks.wanted.size) {
+        outcome.tried.push('keys');
+        if (opt.progress?.(scene, 'Fetch the keys, then go on', 0)) canceled = true;
+        const replay =
+          !canceled &&
+          (await fetchKeys(game, files, scene, entry, locks, {
+            goal,
+            wanted,
+            budgetMs: budget * 0.8,
+            seed,
+            paths,
+            unreached,
+            progress: (places) => (opt.progress?.(scene, 'Fetch the keys, then go on', places) ? (canceled = true) : canceled),
+          }));
+        if (replay) found = { replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
+      }
+      lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing));
+    }
     if (!found && !canceled && !backOnly) await collect();
     if (canceled) {
       out.stopped = 'Stopped.';
-      ending = endingOf(name, 'stopped');
+      ending = endingOf(name, 'stopped', scene);
       break;
     }
     if (!found) {
       outcome.heat = biggest?.heat;
-      out.stopped = `No bot style got through ${name}: the walkthrough stops there.`;
-      ending = endingOf(name, 'stuck');
+      out.stopped = `No bot style got through ${/^\d+$/.test(name) ? `${name} (scene ${scene})` : name}: the walkthrough stops there.${lockWhy ? ` ${lockWhy}` : ''}`;
+      // did the hero ever leave the start? (the card says so when it never moved)
+      const places = biggest?.places.length ?? 0;
+      ending = endingOf(name, 'stuck', scene, !!biggest && places <= 1);
+      // the bot's furthest try, so the person can watch how far it got in this scene
+      const part = await bestAttempt(game, files, scene, entry, biggest, goal, MLEN, ending, seed);
+      if (part) {
+        segments.push(part);
+        chapters.push({ scene, title: `${name} (didn’t finish)` });
+      }
       break;
     }
     const { replay, strategy } = found;
@@ -314,7 +370,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
         scenes: [...out.scenes.map(({ heat: _h, ...o }) => ({ ...o, tried: o.tried.slice() })), { scene, name: nextName, tried: [] }],
         won: false,
         stopped: 'Stopped.',
-        walk: walkSoFar(false, endingOf(nextName, 'stopped')),
+        walk: walkSoFar(false, endingOf(nextName, 'stopped', scene)),
       });
     }
   }

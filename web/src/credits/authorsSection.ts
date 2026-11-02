@@ -2,6 +2,7 @@
 // written by scripts/cdGames.ts from the CD games' credit screens and the new games'
 // about.json). It reads the catalog as published, never the revealed extras, so a game kept
 // secret is never listed here.
+import { gotoCredit } from './tabs';
 import { h } from '../editor/core/ui';
 import { isSandboxGame, type CatalogEntry } from '../project/files';
 import { isBizarreGame } from '../project/bizarre';
@@ -48,8 +49,7 @@ interface Group {
   banner?: HTMLElement;
 }
 
-const jump = (id: string, text: string) =>
-  h('a', { href: '#/credits', onclick: (e: Event) => (e.preventDefault(), document.getElementById(id)?.scrollIntoView()) }, text);
+const jump = (id: string, text: string) => h('a', { href: '#/credits', onclick: (e: Event) => (e.preventDefault(), gotoCredit(id)) }, text);
 
 const GROUPS: Group[] = [
   {

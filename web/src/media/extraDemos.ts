@@ -3,7 +3,7 @@
 // played. They are kept apart from the games' own files, in extras/demos.json and
 // extras/demos/<id>.rec, and are never part of a game unless someone asks for it, with a
 // notice that the original game did not have it.
-import { crc32 } from '../project/zip';
+import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { fetchSiteFile, type CatalogEntry } from '../project/files';
 
 export interface ExtraDemo {

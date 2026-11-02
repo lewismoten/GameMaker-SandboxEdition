@@ -8,7 +8,7 @@
 //      to climb, pins, scissors, the sewing machine, needles to crawl through.
 //   4. The Eye of the Needle: up the great golden needle in the night, past a rolling thimble,
 //      and through its eye while it is open (it blinks).
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/common';
 import { MON } from '../ids';
 
@@ -385,6 +385,8 @@ export function tailor(book: BlockBook): Level {
   // the last needle: crawl through its eye at the floor to the back door
   m.col(59, 1, 13, 'N').set(59, 14, 'A').set(59, 15, 'e').set(61, 14, 'n').set(61, 15, 'd');
   m.mon(MON.moth, 15, 5).mon(MON.scissors, 12, 15).mon(MON.needle, 31, 5).mon(MON.thimble, 38, 15).mon(MON.moth, 54, 10).mon(MON.seed, 56, 3);
+  // scenery for the site's achievement badges: on the paneling, off the way between the spools
+  m.set(10, 3, 'compass').set(17, 3, 'foldMap').set(41, 3, 'rulerTriangle').set(56, 12, 'seenGlasses').set(25, 3, 'robotCrank').set(48, 3, 'phoneBill');
   m.link(61, 15, 'next');
   return { m, start: at(2, 15), size: [W, H] };
 }

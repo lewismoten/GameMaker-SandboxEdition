@@ -6,8 +6,8 @@
 // are the same block number: the same map file, or a copy of it, drawn with another block set or
 // palette. A layout that only matches with its blocks renumbered (a level built alike from other
 // blocks) is another place. A course, a map that wraps, and a room with a cast stay their own.
-import type { Game } from '../../formats/game';
-import { MLEN } from '../../formats/map';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { fillerBlock, markLabel, type Level } from './levelMapLayout';
 import type { Rect } from './worldMapLayout';
 

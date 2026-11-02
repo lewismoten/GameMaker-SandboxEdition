@@ -18,15 +18,15 @@
 // Exits 1 when anything shows. hiddenView.test.ts (web/src/tinHearts) keeps it from coming back.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { GameSim, readDisk } from './gameSim';
+import { GameSim, readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { gamesDir, readAbouts } from './tinHeartDisk';
-import { SCRNBLEN, SCRNBWID } from '../../web/src/engine/world';
-import { BACKBL, BLEN, parseBlocks, type Block } from '../../web/src/formats/blocks';
-import { parseGame, type Game } from '../../web/src/formats/game';
-import { MLEN, MWID, parseMap } from '../../web/src/formats/map';
-import { parseRecording } from '../../web/src/formats/recording';
-import { decodeGif, isGif } from '../../web/src/formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../web/src/formats/fli';
+import { SCRNBLEN, SCRNBWID } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { BACKBL, BLEN, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { builtMapViews, busiest, firstLevels, levelPixels, type FileSource } from '../../web/src/gfx/levelPicture';
 
 type ItemKind = 'tinHeart' | 'easterEgg';

@@ -1,6 +1,6 @@
 // Two more eggs, kept apart from the felt eggs: they never count toward them (what the felt
-// eggs unlock still needs exactly the ones in eggs.ts), and nothing loads this file until the
-// felt eggs are all found (eggDisplay.ts and eggExe.ts import it only then).
+// eggs unlock still counts only the ones in eggs.ts), and nothing loads this file until 13
+// felt eggs are found (eggGate.ts; eggDisplay.ts and eggExe.ts import it only then).
 //
 // DETECTION works as in eggs.ts: an egg is found when any saved slot of its game holds it, as
 // `detect` says ({ block: N } in the inventory, or { counter: N, atLeast: M }). Until `detect`

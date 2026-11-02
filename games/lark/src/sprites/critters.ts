@@ -3,12 +3,12 @@
 // tumbling about the lawn and Gwinn with the valentine box are caught by a touch (power 50: the
 // touch pays, and they are gone, or Gwinn sits). The parade's clowns and carts never stop, and
 // bumping into one winds Joe down a little. Nothing on the Long Road fights; nothing needs to.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
 import { BlockSet, Bestiary } from '../blocks/sets';
 import { heart } from '../blocks/keepsakes';
-import { SOLBOT } from '../../../../web/src/formats/blocks';
+import { SOLBOT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { carlPic } from '../../../kit/carlCameo';
 import { CTR, ROCKS, TOOL_MON, VALENTINES } from '../ids';
 import { gwinnRun, gwinnSit } from './friends';

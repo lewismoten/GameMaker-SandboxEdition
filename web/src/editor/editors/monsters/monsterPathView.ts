@@ -2,9 +2,9 @@
 // can use (turns and mirrors, as orient in BLOCC.C), and the maps it can draw the path on:
 // the scenes that use this monster set, any map, or a plain grid.
 import type { Project } from '../../core/project';
-import { BLEN, type Block } from '../../../formats/blocks';
-import type { Monster } from '../../../formats/monster';
-import type { Palette } from '../../../formats/palette';
+import { BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { normalize } from '../../../project/files';
 
 export const ORIENTS: [number, string][] = [

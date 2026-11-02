@@ -5,18 +5,19 @@
 // to play, the camel kneeling in the dusk (lost), and the endings (through the eye of the
 // needle; stitched whole with Heaven's seam; THE END). Each reel opens on black and fades by
 // palette (kit/reel.ts); only what moves is stored.
-import { loadScan, resample } from '../../../kit/photo';
-import { Pixels, rng } from '../../../kit/pixels';
-import { medianCutPalette, Quantizer } from '../../../kit/quantize';
-import { Reel } from '../../../kit/reel';
-import { fadeOutLength } from '../../../kit/fadeOut';
+import { resample } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { medianCutPalette, Quantizer } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
+import { fadeOutLength } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
 import { blob, gradient } from '../../../snowbound/src/art/draw';
 import { centered, micro, microWidth, outlined, textWidth } from '../../../snowbound/src/art/font';
 import { scaleBlit } from '../../../snowbound/src/screens/scenery';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { desertBackdrop, palm } from './screens';
 import { AUTHOR, CARDS } from './text';
-import { sprite } from '../../../kit/screenText';
+import { sprite } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 const W = 320;
 const H = 200;
@@ -149,7 +150,7 @@ export function coverFli(): { fli: Uint8Array; title: Pixels; pal: Uint8Array } 
       outlined(p, 160 - textWidth(line, 2) / 2, drop + dy, line, 1, 3, 2, 2);
     if (sub) {
       p.rect(0, 186, W, 14, 3);
-      centered(p, 189, `${AUTHOR} (c) 1995 Shareware`, 4);
+      centered(p, 189, `${AUTHOR} (c) 1994 Shareware`, 4);
     }
   };
   const r = new Reel(pal);

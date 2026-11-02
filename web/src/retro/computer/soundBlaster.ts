@@ -1,8 +1,8 @@
-// Whether the desk PC has its Sound Blaster card in. The switch is on the desk (desk/pc/
-// blasterSwitch.ts); programs read it as they start, the way PLAYGAME looked for the card once
-// at startup (SoundCard() in code/GM/SBMUSIC.C): with no card there is no music and every
-// sound effect plays on the PC speaker.
+// The desk PC's remembered Sound Blaster presence. Programs may read it at startup;
+// the desk also forwards switch changes to the active player's live audio control.
+// Legacy PLAYGAME startup detection remains available through RunOptions.noSoundCard.
 const KEY = 'gm-sound-blaster';
+export const SOUND_CARD_CHANGED = 'gm-sound-card-changed';
 
 let cardIn = ((): boolean => {
   try {
@@ -25,4 +25,5 @@ export function setSoundBlaster(on: boolean): void {
   } catch {
     /* storage blocked: the switch still works until the page closes */
   }
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(SOUND_CARD_CHANGED));
 }

@@ -11,10 +11,12 @@ import { coverFan } from './coverFan';
 import { discFigure } from './disc';
 import { goHref, parseGo, type Where } from './go';
 import { runs } from './inline';
+import { floppyFigure } from './floppy';
 import { MAG } from './masthead';
 import { mugShelf } from './mugShelf';
 import { shelfList } from './shelf';
 import { replyMail } from './replyMail';
+import type { Tool } from './toolShots';
 import type { Block, HalfAd, Inline, PlacedPage, ShotView } from './types';
 
 export interface RenderEnv {
@@ -56,8 +58,12 @@ const shots = new Map<string, Promise<string | undefined>>();
 function shotUrl(entry: CatalogEntry, view: ShotView): Promise<string | undefined> {
   const key = `${entry.id}:${view}`;
   let p = shots.get(key);
+  if (!p && (view.startsWith('walk:') || view.startsWith('page:'))) {
+    p = import('./passShots').then(({ passShot }) => passShot(entry, view));
+    shots.set(key, p);
+  }
   if (!p && view !== 'title' && view !== 'level') {
-    p = import('./toolShots').then(({ toolShot }) => toolShot(entry, view));
+    p = import('./toolShots').then(({ toolShot }) => toolShot(entry, view as Tool));
     shots.set(key, p);
   }
   if (!p) {
@@ -256,6 +262,13 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
         (go, ...kids) => goLink(go, where, ...kids),
         (text) => inline(text, where),
       );
+    case 'floppy':
+      return floppyFigure(
+        b,
+        env.entry(b.game),
+        (go, ...kids) => goLink(go, where, ...kids),
+        (text) => inline(text, where),
+      );
     case 'callouts':
       return calloutsFigure(b, (text) => inline(text, where));
     case 'covers':
@@ -325,7 +338,7 @@ export function renderPage(pg: PlacedPage, env: RenderEnv): { el: HTMLElement; r
       h('div', { class: 'mag-body' }, ...body),
       plainPage
         ? null
-        : h('div', { class: 'mag-folio', 'aria-hidden': 'true' }, h('span', null, String(pg.folio)), h('span', null, `${MAG.name} · ${MAG.issue}`)),
+        : h('div', { class: 'mag-folio', 'aria-hidden': 'true' }, h('span', null, String(pg.folio)), h('span', null, `${MAG.name} · ${pg.foot ?? MAG.issue}`)),
     ),
   );
   decorateBbsName(el);

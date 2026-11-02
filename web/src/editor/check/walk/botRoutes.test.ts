@@ -2,7 +2,7 @@
 // edit since shows it is out of date, and moving or renaming the scene doesn't.
 import { describe, expect, it } from 'vitest';
 import type { Project } from '../../core/project';
-import { parseGame, serializeGame, type Game } from '../../../formats/game';
+import { parseGame, serializeGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { GameFiles } from '../../../project/files';
 import type { Walkthrough } from '../../../walkthrough/format';
 import { testGame } from '../testGame';

@@ -53,7 +53,8 @@ export async function openReleased(catalogId: string, host: HTMLElement, file?: 
     new GameFiles(original.entries().map(([n, b]) => [n, b.slice()])),
     entry.title,
     lookId(entry.id),
-    catalogCompanion(entry, entry.gam),
+    // …and the boards its author arranged its scenes into (games/<id>/integrator.json)
+    await (await import('../editors/integrator/shippedBoards')).withShippedBoards(catalogCompanion(entry, entry.gam), entry.id, entry.gam),
   );
   project.gam = entry.gam;
   const r: Released = { entry, original };

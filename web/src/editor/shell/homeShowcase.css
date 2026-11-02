@@ -371,6 +371,25 @@
     padding: 10px;
   }
 
+  /* until its game is picked the panel is empty but holds its height, so the library below doesn't jump down when it fills */
+  .home .showcase:not([data-key]) {
+    display: block;
+    visibility: hidden;
+    min-height: 320px;
+  }
+
+  /* and the library waits unseen (its shifts don't count) until the panel has its game; if none ever comes it shows after 1.5 s */
+  .home:has(.showcase:not([data-key])) .library {
+    visibility: hidden;
+    animation: sc-unhide 0s 1.5s forwards;
+  }
+
+  @keyframes sc-unhide {
+    to {
+      visibility: visible;
+    }
+  }
+
   .showcase .sc-info {
     display: contents;
   }
@@ -469,5 +488,90 @@
     min-height: 24px;
     padding: 2px 8px;
     font-size: 11px;
+  }
+}
+
+/* Reduced motion: the waiting button holds still */
+@media (prefers-reduced-motion: reduce) {
+  .demo-loading .sc-demo-btn {
+    animation: none;
+  }
+}
+
+/* A phone held sideways: the selected game is a short strip (a small monitor, the title, the
+   actions), so the game list is on the first screen. The tags, byline, fiction line, blurb,
+   rating and the demo's controls give way. */
+@media (max-height: 480px) and (max-width: 900px) {
+  .home .showcase {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 2px 10px;
+    align-items: center;
+    margin: 0 0 12px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .showcase .sc-info {
+    display: contents;
+  }
+
+  .showcase .sc-screen {
+    grid-row: 1 / span 2;
+    padding: 3px;
+    border-radius: 6px;
+  }
+
+  .showcase .sc-glass {
+    border-radius: 3px;
+  }
+
+  .showcase .sc-label,
+  .showcase .sc-byline,
+  .showcase .sc-fiction,
+  .showcase .sc-blurb,
+  .showcase .sc-rate,
+  .showcase .sc-notes,
+  .sc-glass .sc-demo-btn,
+  .sc-glass .demo-audio,
+  .sc-glass .demo-kind-tag,
+  .sc-glass .demo-sound-hint {
+    display: none;
+  }
+
+  .showcase .sc-title {
+    grid-column: 2;
+    margin: 0;
+    overflow: hidden;
+    font-size: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .showcase .sc-actions {
+    grid-column: 2;
+    gap: 4px 6px;
+  }
+
+  .showcase .sc-actions > .button,
+  .showcase .sc-actions > button,
+  .showcase .sc-actions > .card-more > summary {
+    min-height: 26px;
+    padding: 2px 9px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .home .showcase {
+    position: relative;
+  }
+
+  .showcase .card-more {
+    position: static;
+  }
+
+  .showcase .card-more-menu {
+    left: 10px;
+    right: 10px;
+    top: calc(100% - 6px);
   }
 }

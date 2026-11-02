@@ -1,6 +1,21 @@
 // games/kit/raytrace: shapes, placing, groups, shadows and the camera.
 import { describe, expect, it } from 'vitest';
-import { blocked, Box, Camera, Capsule, Cone, Group, nearest, norm, placed, Ring, rotY, Sphere, Tri, type Material } from '../../games/kit/raytrace';
+import {
+  blocked,
+  Box,
+  Camera,
+  Capsule,
+  Cone,
+  Group,
+  nearest,
+  norm,
+  placed,
+  Ring,
+  rotY,
+  Sphere,
+  Tri,
+  type Material,
+} from '@lewismoten/gamemaker-sandbox-tools/kit/raytrace';
 
 const m: Material = () => ({ color: [1, 1, 1], kd: 1, ks: 0, shine: 1, mirror: 0 });
 const down = norm([0, -1, 0]);

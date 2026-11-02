@@ -28,7 +28,7 @@ function label(): string {
     <text class="disc-small"><textPath href="#${id}-bottom" startOffset="50%" text-anchor="middle">SOURCE CODE · GAMES · SHAREWARE</textPath></text>
     <text x="50" y="31" class="disc-num">DISC 1</text>
     <text x="50" y="77" class="disc-cover">COVER DISC</text>
-    <text x="50" y="83.5" class="disc-num">VOL. 1, NO. 1</text>
+    <text x="50" y="83.5" class="disc-num">VOL. ${MAG.vol}, NO. ${MAG.num}</text>
   </svg>`;
 }
 

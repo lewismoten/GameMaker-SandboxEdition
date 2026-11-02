@@ -14,14 +14,15 @@
 //   dos.html?game=<id>&run=play, dos.html?project=<id>&run=play|design
 //                        plays (or designs) a catalog game, or a game kept in this browser (a
 //                        game sent by another site lands here, with &linked=1: see linkIn/)
+import { setPretendUnregistered } from '../retro/gmReg/tourPretend';
 import './dosPage.css';
 import { h, clear } from '../editor/core/ui';
 import { Computer } from '../retro/computer';
 import { regSide } from '../retro/gmReg/regSide';
 import { soundBlaster, setSoundBlaster } from '../retro/computer/soundBlaster';
-import { getVolume, setVolume } from '../audio/output';
-import type { SpeedSetting } from '../engine/scene';
-import { TURBO_OFF } from '../engine/slowPc';
+import { getVolume, setVolume } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
+import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { TURBO_OFF } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 import { PRODUCT } from '../edition';
 import { registerServiceWorker } from '../offline';
 import { watchForUpdates } from '../devReload';
@@ -29,7 +30,7 @@ import { diskMenu } from './diskMenu';
 import { keypad } from './keypad';
 import { viewSwitch } from '../viewSwitch';
 import { tourButton } from '../tour/tourButton';
-import { placeNotes } from '../achievements/toast';
+import { placeNotes } from '../achievements/notesPlacer';
 import { footer } from './footer';
 import { moreMenu } from './moreMenu';
 import { speedHint, speedItem } from './lineSpeed';
@@ -361,6 +362,20 @@ void powerOn().then(async () => {
   return startGameMaker();
 });
 void disks.refresh();
+
+// the guided tour: the PC pretends it is not registered while it plays (so the copy check shows),
+// and 'copy-check' starts Game-Maker over to ask it (tour/chapters/dos.ts)
+let tourAsked = false;
+window.addEventListener('gm-tour', (e) => {
+  const start = (e as CustomEvent<string>).detail === 'start';
+  setPretendUnregistered(start);
+  // registered again as it ends: Game-Maker starts over without the question
+  if (!start && tourAsked) void reset().then(startGameMaker);
+  if (!start) tourAsked = false;
+});
+window.addEventListener('gm-tour-act', (e) => {
+  if ((e as CustomEvent<{ do: string }>).detail.do === 'copy-check') ((tourAsked = true), void reset().then(startGameMaker));
+});
 
 registerServiceWorker();
 void import('../achievements/start').then((m) => m.startAchievements());

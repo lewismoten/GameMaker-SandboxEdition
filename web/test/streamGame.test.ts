@@ -1,6 +1,6 @@
 // Progressive loading of a hosted game: files in the order play needs them, the .gam first.
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { emptyScene, newGame, serializeGame } from '../src/formats/game';
+import { emptyScene, newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { demoNeeds, filesNamedBy, playOrder, streamHostedGame } from '../src/project/streamGame';
 
 afterEach(() => vi.unstubAllGlobals());

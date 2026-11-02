@@ -98,13 +98,13 @@ export function profileSound(samples: Float32Array, rate: number): SoundProfile 
     let bestLag = 0;
     let prev = 1;
     let rising = false;
+    // the shifted window's energy slides one sample per lag instead of being summed again
+    let e1 = 0;
+    for (let i = a; i < a + win; i++) e1 += samples[i + minLag] * samples[i + minLag];
     for (let lag = minLag; lag <= maxLag; lag++) {
+      if (lag > minLag) e1 += samples[a + win + lag - 1] ** 2 - samples[a + lag - 1] ** 2;
       let c = 0;
-      let e1 = 0;
-      for (let i = a; i < a + win; i++) {
-        c += samples[i] * samples[i + lag];
-        e1 += samples[i + lag] * samples[i + lag];
-      }
+      for (let i = a; i < a + win; i++) c += samples[i] * samples[i + lag];
       const r = c / Math.sqrt(e0 * e1 || 1);
       // the first strong peak after the correlation has dipped is the period
       if (r > prev) rising = true;

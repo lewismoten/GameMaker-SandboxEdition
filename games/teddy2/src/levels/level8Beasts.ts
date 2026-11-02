@@ -5,7 +5,7 @@
 // the Best Behaved ring, wiggling. The judge's "SIT?" hangs over her: sit pretty beside it,
 // and the heart wins it over; it drops onto Gwinn (a chain of monsters), and Gwinn SITS.
 // She wins a blue ribbon, and the stage's curtain opens for it.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { FLIP } from '../characters/mons';

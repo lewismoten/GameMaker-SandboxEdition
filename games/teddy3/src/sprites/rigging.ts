@@ -2,7 +2,7 @@
 // height: pratfall under it), the rigging lift (a plank on its ropes, and folded up flat
 // against them for the ride back down), the outlet box at the top of the tent (dark, then
 // lit up once the party lights are plugged in), and a string of party bulbs.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../art/draw';
 import { P } from '../art/pal';
 

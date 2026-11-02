@@ -5,7 +5,7 @@
 // Painted in true color, a pixel at a time, then reduced to one 256-color palette for the FLI
 // (cartoons.ts). `t` (0..1) animates it: the steam drifts up, the candles flicker, the loofah
 // sways on its hook, a glint runs along the rack, and its eyes open and glow.
-import { smooth, noise2 } from '../../../kit/coverPaint';
+import { smooth, noise2 } from '@lewismoten/gamemaker-sandbox-tools/kit/coverPaint';
 
 const COVER_W = 320;
 const COVER_H = 200;

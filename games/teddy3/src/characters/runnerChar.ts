@@ -2,8 +2,8 @@
 // the spot. It is teddy.chr with his standing still turned into a rabbit hop on the spot
 // facing right, and his walks and hops facing right too: Right runs on a little, Left eases
 // back (he never turns round on a run). Every trick is on the same key as in teddy.chr.
-import { CHARBL } from '../../../../web/src/formats/blocks';
-import { emptyFrame, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { emptyFrame, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BlockSet } from '../blocks/blockset';
 import { buildCharacter, CB, HOP, STEP } from './character';
 import { SEQ } from '../../../teddy2/src/ids';

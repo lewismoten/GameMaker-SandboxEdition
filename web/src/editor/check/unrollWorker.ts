@@ -2,7 +2,7 @@
 // page's thread (unrollMap.ts) and posts progress, then what it found. Stopping ends the worker
 // (unrollClient.ts).
 import { GameFiles } from '../../project/files';
-import { parseGame } from '../../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { unrollMap, type MapUnroll } from './unrollMap';
 
 export interface UnrollRequest {

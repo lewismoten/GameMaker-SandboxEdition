@@ -3,7 +3,7 @@
 // game's three kinds of link: a door (walk onto a cell, arrive at another), a talk (walk onto a
 // friend: a pass scene whose intro is the conversation, which gives its gift and comes straight
 // back) and a pass (a chapter card or a cartoon on the way somewhere).
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Light } from './art/pal';
 import type { Bestiary, BlockSet } from './blocks/sets';
 import { giftCell, type Gift } from './levels/pass';

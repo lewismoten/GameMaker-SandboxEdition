@@ -1,9 +1,9 @@
 // Building character files: a block list that deduplicates identical pictures, and a
 // small vocabulary for sequences (frames that move, frames that fire a monster).
-import { Pixels } from '../../../kit/pixels';
-import { CHARBL, emptyBlock, type Block } from '../../../../web/src/formats/blocks';
-import { MONBL } from '../../../../web/src/formats/blocks';
-import { MAXFRAME, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { CHARBL, emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXFRAME, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { keyOf, SCAN } from '../ids';
 
 export const NONE = CHARBL;

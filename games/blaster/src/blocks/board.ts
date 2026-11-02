@@ -1,6 +1,6 @@
 // Stage 1: THE MOTHERBOARD. Green fiberglass, copper bus lines running up the board,
 // chips, capacitors, resistors and blinking LEDs. Its blocks and its virus.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, blob, micro, shadeAt, text } from '../art/draw';
 import { pics } from '../characters/enemies';
 import { biter, bomb, claw, cluster, keyOf, mite, moth } from '../sprites/sprites';

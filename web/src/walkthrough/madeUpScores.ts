@@ -4,7 +4,7 @@
 // changed (runtime.ts); real entries stay where they are. The scores are scaled to the game:
 // around what the walkthrough itself scored, rounded to the game's own steps, so a game that
 // counts in hundreds doesn't show a table of fives. A game that never scores keeps a blank table.
-import type { HighScore } from '../formats/highscore';
+import type { HighScore } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 
 /** Made-up callers (BBS handles of the day; no real people). */
 const NAMES = [

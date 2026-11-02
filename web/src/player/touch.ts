@@ -7,9 +7,9 @@
 // until pressed (player.css): upright (9:16) the screen sits at the top with the pad and
 // buttons over the black below it, sideways (16:9) they float over the screen's edges.
 // 🎮 hides them (remembered).
-import type { Keyboard } from '../input/keyboard';
-import { scanName } from '../input/scancodes';
-import type { Sequence } from '../formats/character';
+import type { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
+import type { Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { padPlan, type PadPlan, type Sector } from './moveKeys';
 
 const UP = 72;

@@ -12,7 +12,7 @@ vi.mock('../../project/storage', () => ({
 
 import { saveProject } from '../../project/storage';
 import { GameFiles } from '../../project/files';
-import { newGame, serializeGame } from '../../formats/game';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { Project } from './project';
 import { MEMORY_SECTIONS, ReadOnlyError, makeReadOnly, restoreFiles } from './readOnly';
 

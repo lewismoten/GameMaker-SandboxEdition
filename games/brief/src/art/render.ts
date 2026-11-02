@@ -1,7 +1,7 @@
 // Draws a window of an area's map (blocks, then monsters in their first frame) the way
 // PLAYGAME shows it: for previews, title cards and screens.
-import { MLEN } from '../../../../web/src/formats/map';
-import { Pixels } from '../../../kit/pixels';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from './draw';
 import type { Area } from '../levels/area';
 

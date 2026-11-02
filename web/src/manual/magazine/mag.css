@@ -262,6 +262,25 @@
     white-space: nowrap;
   }
 
+  /* on the desk, the magazine starts under the bar so the Desk | DOS | Web switch stays in reach */
+  body:has(.desk-bar) .mag-overlay {
+    top: 48px;
+  }
+
+  /* one row on a phone: tighter gaps and padding, the buttons still 24px or more */
+  .mag-bar {
+    flex-wrap: nowrap;
+    gap: 4px;
+    padding: 6px 8px;
+  }
+  .mag-bar button,
+  .mag-toc summary {
+    min-height: 28px;
+    min-width: 28px;
+    padding: 2px 6px;
+    white-space: nowrap;
+  }
+
   /* a phone scrolls the pages: the bar keeps to one row without Back and Next */
   .scrolled .mag-turn {
     display: none;
@@ -798,6 +817,11 @@
 /* the contents page: a line a section, set close */
 .kind-contents .mag-rows li {
   padding: 0.05em 0;
+}
+
+/* every line close, so the advertiser index clears the page footer (No. 2 has 19 sections) */
+.kind-contents :is(.mag-row-title, .mag-row-price, .mag-row-blurb) {
+  line-height: 1.05;
 }
 
 /* and its advertiser index in three columns, set a little closer than body text */

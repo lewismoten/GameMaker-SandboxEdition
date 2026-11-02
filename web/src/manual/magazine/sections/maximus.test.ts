@@ -1,15 +1,16 @@
 // The Maximus feature's numbers are the game's own: each count is read again from
 // games/maximus/disk with the file formats, and each limit the article prints is the one the
 // formats (and PLAYGAME) use.
+import { ISSUES } from '../masthead';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { BACKBL, CHARBL, MONBL, parseBlocks } from '../../../formats/blocks';
-import { frameCount, MAXSEQ, METERS, parseCharacter } from '../../../formats/character';
-import { NOSCENE, parseGame, serializeGame } from '../../../formats/game';
-import { LASTMM, parseMap } from '../../../formats/map';
-import { LASTMON, LASTSL, parseMonsters } from '../../../formats/monster';
-import { parseSoundSet } from '../../../formats/sound';
+import { BACKBL, CHARBL, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { frameCount, MAXSEQ, METERS, parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { NOSCENE, parseGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { LASTMM, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMON, LASTSL, parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { COUNTS, MAXIMUS, SCENE_CAP, SCENE_RECORD, TEXT_READ } from './maximus';
 
 const disk = join(__dirname, '../../../../../games/maximus/disk');
@@ -19,7 +20,7 @@ const ext = (e: string) => files.filter((f) => f.endsWith(`.${e}`));
 const game = parseGame(read('maximus.gam'));
 
 describe('the Maximus feature', async () => {
-  const pages = await MAXIMUS.pages({ games: [], game: () => undefined });
+  const pages = await MAXIMUS.pages({ games: [], game: () => undefined, mag: ISSUES[2] });
   const text = JSON.stringify(pages);
 
   it('counts the scenes, links and file slots in MAXIMUS.GAM', () => {

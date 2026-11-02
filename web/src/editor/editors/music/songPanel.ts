@@ -1,8 +1,8 @@
 // Settings for the whole song: the drum kit (rhythm mode), beat length and speed, where it
 // repeats, Game-Maker's clock, loudness (scaling note velocities), and clearing out events
 // the game ignores.
-import { h, clear, toast } from '../../core/ui';
-import { CMF_GAMEMAKER_CLOCK } from '../../../formats/cmf';
+import { h, clear, toast, numberField } from '../../core/ui';
+import { CMF_GAMEMAKER_CLOCK } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import {
   channelNotes,
   clampVelocity,
@@ -15,9 +15,9 @@ import {
   setStartMode,
   setVelocity,
   stripIgnored,
-} from '../../../formats/cmfEdit';
-import { writeSong, type Note } from '../../../formats/cmfSong';
-import { TICK_RATE } from '../../../audio/cmfPlayer';
+} from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { writeSong, type Note } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
 import type { MusicDoc } from './doc';
 
 export class SongPanel {
@@ -26,7 +26,11 @@ export class SongPanel {
   private scope: 'track' | 'all' = 'track';
 
   constructor(private doc: MusicDoc) {
-    doc.on((c) => (c === 'song' || c === 'track') && this.render());
+    doc.on((c) => {
+      if (c !== 'song' && c !== 'track') return;
+      if (this.active) this.render();
+      else this.stale = true;
+    });
     this.render();
   }
 
@@ -99,7 +103,17 @@ export class SongPanel {
     );
   }
 
+  private active = true;
+  private stale = false;
+
+  /** The Settings tab is shown (true) or hidden: a hidden panel waits and draws once when shown. */
+  setActive(on: boolean): void {
+    this.active = on;
+    if (on && this.stale) this.render();
+  }
+
   render(): void {
+    this.stale = false;
     const doc = this.doc;
     const song = doc.song;
     const bpm = (TICK_RATE * 60) / doc.beat;
@@ -107,11 +121,12 @@ export class SongPanel {
     drums.addEventListener('change', () => doc.edit(() => setStartMode(song, drums.checked)));
     const midSong = modeChanges(song).length > 1;
 
-    const beat = h('input', { type: 'number', min: 4, max: 2000, value: String(song.ticksPerBeat), style: 'width:6em' });
-    beat.addEventListener('change', () => {
-      const v = Math.max(4, Math.min(2000, Math.round(Number(beat.value) || 0)));
-      doc.edit(() => (song.ticksPerBeat = v));
-    });
+    const beat = numberField(
+      `Beat length (ticks) · ${bpm.toFixed(1)} beats a minute`,
+      () => song.ticksPerBeat,
+      (value) => doc.edit(() => (song.ticksPerBeat = value)),
+      { min: 4, max: 2000, title: 'Only sets the grid: Game-Maker counts time in audio timer ticks', time: { rate: TICK_RATE } },
+    );
 
     const pct = h('input', { type: 'number', min: 25, max: 400, value: '100', step: 5, style: 'width:5em', 'aria-label': 'New speed in percent' });
     const speed = (factor: number) => {
@@ -160,12 +175,7 @@ export class SongPanel {
           h('span', null, 'Drum kit (6 melody tracks + 5 drums)'),
         ),
         midSong ? h('p', { class: 'hint' }, 'This song also switches the drum kit on or off part way through (🥁/♫ marks on the ruler).') : null,
-        h(
-          'label',
-          { class: 'field', title: 'Only sets the grid: Game-Maker counts time in ticks of 1/146 s' },
-          h('span', null, `Beat length (ticks) · ${bpm.toFixed(1)} beats a minute`),
-          beat,
-        ),
+        beat,
         h(
           'div',
           { class: 'field' },

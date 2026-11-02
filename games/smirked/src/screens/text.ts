@@ -6,7 +6,7 @@
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
 import { BATTERIES_NEEDED, SORRY_NEEDED, SWORD_PRICE } from '../ids';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 export const AUTHOR = 'The Bard of Bizarre';
 
@@ -113,7 +113,7 @@ const LYRICS: Record<string, string[]> = {
 export const STORY = [
   page(['"I SCREAMED, SHE SMIRKED"', '', ...LYRICS.verse1, '', '        - The Bard of Bizarre']),
   page([
-    'October, 1995. Your',
+    'October, 1994. Your',
     "girlfriend's kid, Lily, is",
     'eight. The sign at the',
     'haunted house says MILD',
@@ -206,7 +206,7 @@ const SONG_PAGES = [
 const CREDITS_TEXT = page(
   [
     'I SCREAMED, SHE SMIRKED',
-    'by The Bard of Bizarre, 1995',
+    'by The Bard of Bizarre, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Based on the song "I',
@@ -253,7 +253,7 @@ export const CREDITS = withCreditPage([...SONG_PAGES, CREDITS_TEXT].join('\n'), 
 export function readme(price: string): string {
   return `
     I SCREAMED, SHE SMIRKED
-    Version ${about.version} - October 1995
+    Version ${about.version} - November 1994
     by The Bard of Bizarre
 
 "She's eight, and I'm afraid,

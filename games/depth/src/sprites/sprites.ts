@@ -1,7 +1,7 @@
 // RAY.CBL and DEPTH.MBL: every sprite rendered from its 3D model, in one set of 64 colors that
 // every level's palette carries at the same place (entries 9..72), so the sprites look the same
 // on every scene.
-import { emptyBlock, type Block } from '../../../../web/src/formats/blocks';
+import { emptyBlock, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { toBytes } from '../render/image';
 import { Matcher, medianCut, putColors, type Col } from '../render/quant';
 import { rgb } from '../render/tracer';

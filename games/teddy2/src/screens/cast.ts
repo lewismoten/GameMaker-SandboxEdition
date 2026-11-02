@@ -7,8 +7,8 @@
 // The last two scenes animate the 1995 way, by palette cycling: the pictures stay still and
 // only the colors move (current running down the charging cable, fireflies blinking), so
 // those frames are nothing but a color chunk each and cost the file almost nothing.
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { Pixels, rng } from '../../../kit/pixels';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, centered, gradient, clubArt, micro, outline, outlined, scaleBlit, speckle } from '../art/draw';
 import { buildScreenPalette, type Pal } from '../art/pal';
 import { drawArt } from './castArt';

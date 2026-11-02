@@ -17,7 +17,7 @@
 // The Cold Cellar has a second vanilla bean behind a false wall, whose link drops into
 // Ebenezer's hidey-hole; the hidey-hole's own way out is the spare pinch of tea, straight on
 // to the Sugar Room. The Tea Room never knows you skipped it.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { ORIGIN, type Room } from './levels/room';
 
 const TITLE = "BAKER'S DOZEN";

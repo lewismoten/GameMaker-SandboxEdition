@@ -1,0 +1,75 @@
+{
+  "title": "Tune-Up",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "year": 1994,
+  "price": "$15",
+  "version": "2.0",
+  "blurb": "It's the morning of the Clown Club parade, and THE CHEZ honks like a kazoo: Gwinn tipped the instrument trunk into the car. With no wrenches, Doc Leo shrinks down and tunes it up by ear, with Sir Reginald III, his rubber chicken, doing the fiddly bits. Then a test drive to hear the new radio, and the parade.",
+  "exe": "TUNEUP.EXE",
+  "sound": "sb",
+  "egg": {
+    "block": 149
+  },
+  "tinHeart": {
+    "map": "beat1.map",
+    "at": [22, 5]
+  },
+  "saveSign": {
+    "map": "rain.map",
+    "at": [5, 9],
+    "after": "hush.map"
+  },
+  "label": {
+    "background": "#fff6e0",
+    "band": "#c8302a",
+    "ink": "#1a1030",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "hours": 10,
+    "levels": "16 levels: a rubber chicken's dream of an engine, the real electric car and its new radio, a spin round the beltway, a test drive and the parade, a cartoon before each",
+    "background": "#14204e",
+    "accent": "#ffb43a",
+    "ink": "#ffffff",
+    "tagline": "No wrenches. No problem. Just a really good ear.",
+    "back": "It's the morning of the Clown Club parade, and THE CHEZ is meant to lead it. But overnight Gwinn buried Doc Leo's toolbox and tipped the instrument trunk into the car, and now the car honks like a kazoo.\n\nSo Doc Leo does his shrinking trick and climbs inside to tune it up by ear. First Sir Reginald III dreams up an engine THE CHEZ never had. Then comes the real tune-up of the little electric car: kazoo fans, a brake-lamp dance, hubcaps and balls, a rain delay, a horn section, and a brand-new AM radio with an 8-track.\n\nThen take it for a test drive (stop on red: the camera never blinks) and lead the parade.\n\nSir Reginald III does the fiddly bits. Formally.",
+    "features": [
+      "Doc Leo and Sir Reginald III, his rubber chicken, talk over every repair",
+      "A dream of an engine first: crank the battery, pluck the plugs, play the timing beat",
+      "Then the real electric car: kazoo fans, a brake-lamp dance, hubcaps and balls, a balloon pump",
+      "Tune in the new AM radio, then hear a nine-voice choir swell",
+      "A test drive with traffic lights and stop signs: stop on red, or smile for the camera",
+      "Lead the Clown Club parade and cue each band section with a toot of the horn",
+      "A Hat Sting cartoon before every level, and a cutaway CHEZ that lights up as it's tuned"
+    ],
+    "shots": [
+      ["jump.map", 28, 2],
+      ["road.map", 40, 2],
+      ["band.map", 40, 28]
+    ],
+    "rating": "Ages 6 and up"
+  },
+  "acceptedFindings": [
+    "counters s4 Block 81 drains counter 24 on every tick",
+    "counters s4 Block 86 drains counter 24 on every tick",
+    "counters s4 Block 91 drains counter 3 on every tick",
+    "counters s5 Block 113 drains counter 26 on every tick",
+    "counters s5 Block 118 drains counter 26 on every tick",
+    "counters s5 Block 123 drains counter 3 on every tick",
+    "counters s6 Block 114 drains counter 3 on every tick",
+    "every-tick s4 Block 96 gives 5 points on every tick the hero touches it",
+    "every-tick s6 Block 101 gives 5 points on every tick the hero touches it",
+    "facing s2 Monster 22 paces left and right facing the player",
+    "hazard-art s16 Block 83 hurts through its whole cell, but its art fills 21% of it",
+    "hazard-art s16 Block 85 hurts through its whole cell, but its art fills 18% of it",
+    "hazard-art s16 Block 87 hurts through its whole cell, but its art fills 15% of it",
+    "response s11 C (fire) waits 1.0 s before anything happens",
+    "response s11 V (fire) waits 0.8 s before anything happens",
+    "response s11 X (fire) waits 0.8 s before anything happens",
+    "response s11 Z (fire) waits 0.7 s before anything happens",
+    "facing s29 The hero faces the same way walking left and right",
+    "facing s28 The hero faces the same way walking left and right",
+    "waits s28 Timed block 36 stays shut for 62.1 s at a time"
+  ]
+}

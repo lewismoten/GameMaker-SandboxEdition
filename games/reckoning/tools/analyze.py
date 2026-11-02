@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Analyzes the recording of "The Great Dairy Reckoning of 3:17 a.m." (The Bard of Bizarre, a spoken
-# monologue), which is NOT committed (.for-lewis/songs/reckoning/The Great Dairy Reckoning of
+# monologue), which is NOT committed (.for-lewis/reference/songs/reckoning/The Great Dairy Reckoning of
 # 3_17 a.m..mp3), for a music bed, and prints Whisper's word timings (the cue table in
 # src/sound/clips.ts came from them).
 #

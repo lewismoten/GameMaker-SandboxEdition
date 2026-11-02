@@ -2,7 +2,7 @@
 // streets (and the census), the wise men's caravan, and the stable, where the line of
 // animals at the manger has an empty place, third from the left.
 // Each map is laid out with fills and ASCII patches; everything outside it is solid.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 
@@ -197,6 +197,8 @@ export function field(book: BlockBook): Level {
   m.mon(MON.goat, 39, 8).mon(MON.goat, 40, 8);
   m.mon(MON.cousin, 30, 4).mon(MON.cousin, 33, 12);
   m.mon(MON.lamb, 10, 13).mon(MON.lamb, 30, 10);
+  // scenery for the site's achievement badge: a shooting star in the corner of the night, off the way
+  m.set(1, 1, 'shootingStar');
   // a tin heart in the grass, in the far corner past the shepherds' camp
   m.set(50, 14, 'tinHeart');
   m.link(51, 8, 'next');
@@ -351,6 +353,8 @@ export function stable(book: BlockBook): Level {
   m.mon(MON.pigeon, 8, 11).mon(MON.pigeon, 17, 6);
   // Teenage Lewie, visiting from Snowbound with his shovel, mucking out the back corner
   m.set(28, 12, 'lewie');
+  // scenery for the site's achievement badge: a startled goat by the back wall, off the way
+  m.set(19, 3, 'surprisedGoat');
   m.link(12, 4, 'won');
   return { m, start: at(1, 9) };
 }

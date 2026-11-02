@@ -4,7 +4,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { exportDos, dosNameProblems } from '../src/export/exportDos';
 import { GameFiles } from '../src/project/files';
-import { readZip } from '../src/project/zip';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 const cdgm = resolve(__dirname, '../../cd/gm');
 const sample = resolve(__dirname, '../../cd/gameware/sample');
@@ -22,6 +22,7 @@ describe('DOS export', () => {
 
   it('flags names DOS cannot store', () => {
     expect(dosNameProblems(['sample.gam', 'toolongname.map', 'two.dots.pal', 'ok_1.cmf'])).toEqual(['toolongname.map', 'two.dots.pal']);
+    expect(dosNameProblems(["can't.gif"])).toEqual([]); // The CD's CAN_T.GIF is named this by its game.
   });
 
   it.skipIf(!existsSync(sample) || !existsSync(join(cdgm, 'xferplay.exe')))(
@@ -31,7 +32,8 @@ describe('DOS export', () => {
       const files = new GameFiles(readdirSync(sample).map((n) => [n, new Uint8Array(readFileSync(join(sample, n)))]));
       files.set('game0.sav', new TextEncoder().encode('{}')); // web-only save, must be left out
       const { name, zip, exe } = await exportDos(files, { title: 'SAMPLE GAME', gam: 'sample.gam', appBase: 'http://x/' });
-      expect(name).toBe('sample-dos.zip');
+      expect(name).toBe('sample.zip');
+      expect(dosNameProblems([name])).toEqual([]);
       expect(exe).toBe('SAMPLE.EXE');
       const entries = new Map((await readZip(zip)).map((e) => [e.name, e.data]));
       expect(Buffer.compare(entries.get('SAMPLE.EXE')!, readFileSync(join(cdgm, 'xferplay.exe')))).toBe(0);

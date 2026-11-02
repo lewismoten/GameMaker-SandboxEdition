@@ -3,8 +3,8 @@
 import { describe, expect, it } from 'vitest';
 import { SFX_RATE, cleanParams, defaultParams, renderSfx, seconds, speakerSteps, MAX_SECONDS } from './sfxSynth';
 import { PRESETS, SLOT_PRESET, mutate, randomParams } from './sfxPresets';
-import { decodeVoc, encodeVoc } from '../formats/voc';
-import { NUMFREQ } from '../formats/sound';
+import { decodeVoc, encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
+import { NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 
 function seeded(seed: number): () => number {
   let a = seed;

@@ -39,6 +39,13 @@ export const CATEGORIES: { id: Category; icon: IconName; name: string; short: st
     lead: 'Big, heartfelt songs about all the wrong things (the goat nobody painted, the loaf nobody picked, a fly named Carl, the TV remote), made into games. The Bard of Bizarre is Lewis “Lewie” Moten III, with Doc Leo the hobo clown as his face: he dreams up each song, AI tools shape and record it, and you can play it, read its notice, or edit a copy (they’re MIT, except their voice clips: personal, non-commercial use only) to see how it was made.',
   },
   {
+    id: 'community',
+    icon: 'link',
+    name: 'Community',
+    short: 'Games hosted by their creators. Play, download, or add yours.',
+    lead: 'Games hosted on their creators’ websites. Open a game there, download its optional ZIP, or edit a copy. Add your own through a pull request using Add your game.',
+  },
+  {
     id: 'gameware',
     icon: 'disk',
     name: 'Gameware',

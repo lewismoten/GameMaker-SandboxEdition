@@ -1,7 +1,7 @@
 // Level 6's monsters: in the corn maze, scents that a sniff turns into paw-print arrows
 // (Gwinn went this way), the corn dog stick she left at the heart of the maze (sniff it out),
 // field mice in the rows and crows over the corn.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { P } from '../art/pal';
 import { CRITTERS } from '../sprites/critters';
 import { FARM } from '../sprites/farm';

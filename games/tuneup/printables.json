@@ -1,0 +1,268 @@
+{
+  "pitch": "THE CHEZ won't run right on parade morning: shrink down with Doc Leo and Sir Reginald III and tune it up by ear, from the battery to the oil pan.",
+  "keys": {
+    "Up": "Hop (hold to hop higher; climbs a plug wire)",
+    "Down": "Climb down a plug wire",
+    "Space": "Reach up: turn a crank, play a key",
+    "Q": "Hop up and to the left",
+    "E": "Hop up and to the right",
+    "E G B D F": "Oil's Well: squirt the oil can into the line with that note",
+    "F2": "Clamps, plucks, notes, energy and tips"
+  },
+  "stickers": [
+    {
+      "text": "CHARGE!",
+      "sub": "THE BUGLE CALL",
+      "shape": "burst",
+      "color": "#ffd23f",
+      "ink": "#2a1408"
+    },
+    {
+      "text": "NO WRENCHES",
+      "sub": "NO PROBLEM",
+      "shape": "badge",
+      "color": "#120c34",
+      "ink": "#ffd23f"
+    },
+    {
+      "text": "BY EAR",
+      "sub": "DOC LEO",
+      "shape": "cut",
+      "color": "#3a5aa8",
+      "ink": "#ffffff",
+      "hero": {
+        "chr": "leo.chr",
+        "cbl": "leo.cbl",
+        "pal": "jump.pal"
+      }
+    },
+    {
+      "text": "BAWK.",
+      "sub": "SIR REGINALD III",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#2a1408"
+    },
+    {
+      "text": "CLAMP ON",
+      "sub": "RED CLAMP",
+      "shape": "cut",
+      "color": "#d9381e",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "jump.bbl",
+        "pal": "jump.pal",
+        "grid": [[11]]
+      }
+    },
+    {
+      "text": "PLUCK!",
+      "sub": "SPARK PLUG",
+      "shape": "circle",
+      "color": "#1d5fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "spark.bbl",
+        "pal": "spark.pal",
+        "grid": [[24]]
+      }
+    },
+    {
+      "text": "ON THE BEAT",
+      "sub": "THE TIMING BEAT",
+      "shape": "cut",
+      "color": "#7a3fb8",
+      "ink": "#ffffff",
+      "sprite": {
+        "blocks": "beat1.bbl",
+        "pal": "beat1.pal",
+        "grid": [[27]]
+      }
+    },
+    {
+      "text": "OIL'S WELL",
+      "sub": "THAT ENDS WELL",
+      "shape": "star",
+      "color": "#e0a32a",
+      "ink": "#2a1408"
+    },
+    {
+      "text": "HONK-ZOO!",
+      "sub": "THE CHEZ",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#2a1408"
+    },
+    {
+      "text": "OOPS.",
+      "sub": "GWINN (SORRY)",
+      "shape": "bubble",
+      "color": "#fff6e0",
+      "ink": "#2a1408"
+    }
+  ],
+  "news": [
+    {
+      "head": "Tune-Up: no wrenches, no problem",
+      "html": "<p>It's parade morning, THE&nbsp;CHEZ honks like a kazoo, and Gwinn has buried the toolbox. Our newest game, <b>Tune-Up</b>, sends Doc Leo inside the car to tune it up by ear, with Sir Reginald III, his rubber chicken, doing the fiddly bits. Crank the battery to a bugle call, pluck the spark plugs like a harp, play the timing back into step on four glass pipes and oil the Squeaks off a staff. A Sound Blaster is a very good idea."
+    },
+    {
+      "head": "Since last issue: Teddy's Little Bigger Adventure",
+      "html": "<p>The dog show is over, and Teddy's Little Bigger Adventure players are still not telling the BBS how the Best Behaved ring came out. Thank you. The most-asked question: can Gwinn really sit? Halfway, yes. Her tail has opinions."
+    },
+    {
+      "head": "Around the Sandbox: Bouncy",
+      "html": "<p>The workshop smelled of vinegar for two days this month. Doc Leo read that a raw egg left in vinegar loses its shell and goes bouncy, and had to see it for himself. It worked. Sir Reginald III watched the whole time and called it \"hardly the point of an egg.\" Teddy was not allowed to play with it. Gwinn was not asked."
+    },
+    {
+      "head": "In the workshop: One more Teddy",
+      "html": "<p>The Teddy trilogy ends next month with <b>Teddy's Little Biggest Adventure</b>: seventeen stops, every place and friend from the first two games, and a surprise Teddy knows nothing about. For the first time, you get to drive THE CHEZ. What is the occasion? We can't say. Gwinn made us promise.</p>"
+    },
+    {
+      "head": "Letters: \"Does the tuba know it is a tuba?\"",
+      "html": "<p>We asked. The tuba has not commented. It is, however, very good at keeping the beat, and it has never once knocked over a trunk. Write to us about the trunk."
+    }
+  ],
+  "items": [
+    {
+      "kind": "map",
+      "title": "Cutaway poster",
+      "note": "Full color, as promised",
+      "promised": true,
+      "landscape": true,
+      "heading": "TUNE-UP",
+      "intro": "THE CHEZ, tuned part by part: motor, controller, battery under the seat. Hang it in the garage, well away from the toolbox Gwinn buried.",
+      "panels": [
+        {
+          "map": "jump.map",
+          "x": 2,
+          "y": 2,
+          "w": 16,
+          "h": 10,
+          "caption": "Jump Start: the garage"
+        },
+        {
+          "map": "spark.map",
+          "x": 2,
+          "y": 2,
+          "w": 16,
+          "h": 10,
+          "caption": "Spark Plucks"
+        },
+        {
+          "map": "beat2.map",
+          "x": 2,
+          "y": 2,
+          "w": 16,
+          "h": 10,
+          "caption": "The Timing Beat"
+        },
+        {
+          "map": "oil.map",
+          "x": 2,
+          "y": 2,
+          "w": 16,
+          "h": 10,
+          "caption": "Oil's Well"
+        }
+      ],
+      "columns": 2
+    },
+    {
+      "kind": "idcard",
+      "title": "Parade pit crew pass",
+      "note": "Admits one clown, one chicken",
+      "org": "THE CLOWN CLUB PARADE",
+      "name": "DOC LEO",
+      "role": "MECHANIC, BY EAR",
+      "fields": [
+        ["Tools", "None (ask Gwinn)"],
+        ["Coat", "Blue, shop"],
+        ["Hat", "Fedora, chewed"],
+        ["Assistant", "Sir Reginald III"],
+        ["Car", "THE CHEZ"],
+        ["Parade", "This morning"]
+      ],
+      "color": "#3a5aa8",
+      "ink": "#ffffff",
+      "photo": {
+        "map": "jump.map",
+        "x": 35,
+        "y": 7,
+        "w": 2,
+        "h": 2
+      },
+      "portrait": {
+        "chr": "leo.chr",
+        "cbl": "leo.cbl",
+        "pal": "jump.pal"
+      },
+      "back": "This pass admits Doc Leo to the pit, under the bench seat and, after his shrinking trick, inside the motor. Rubber chickens of good family admitted with him."
+    },
+    {
+      "kind": "hintbook",
+      "title": "Tune-Up Hint Book",
+      "note": "Answers hidden: use the red film",
+      "intro": "Stuck? Find your question, then slide the red film over the answer. One answer at a time: Sir Reginald III is watching.",
+      "sections": [
+        {
+          "head": "Everywhere",
+          "hints": [
+            {
+              "q": "The door won't open.",
+              "a": "Each door waits for something: a clamp, a pluck, enough notes, every oiled Squeak. Press F2 to see what you have, then keep going."
+            },
+            {
+              "q": "Can I skip the cartoons?",
+              "a": "Press a key. Each cartoon is cut into short clips, so the next key gets you to the level."
+            }
+          ]
+        },
+        {
+          "head": "1. Jump Start",
+          "hints": [
+            {
+              "q": "How do I get up to the shelf?",
+              "a": "Up the tire stacks, along the workbench, then a hop to the right (E) from the end of the bench."
+            },
+            {
+              "q": "The crank won't turn.",
+              "a": "Stand right under it and hold Space. Each reach turns it a notch; eight notches fill the gauge."
+            }
+          ]
+        },
+        {
+          "head": "2. Spark Plucks",
+          "hints": [
+            {
+              "q": "The sparks keep frizzing me.",
+              "a": "Stand beside the wire and watch. The sparks run first, third, fourth, second: when yours has just passed, step on and hold Up."
+            }
+          ]
+        },
+        {
+          "head": "3. The Timing Beat",
+          "hints": [
+            {
+              "q": "I keep missing the notes.",
+              "a": "Watch the pipes, not the keys: the lowest note in a pipe lands next. Stand under its key and tap Space as it lights."
+            },
+            {
+              "q": "Two keys lit at once!",
+              "a": "That's the Y-pipe. Either key counts. Stand between them and you might get both."
+            }
+          ]
+        },
+        {
+          "head": "4. Oil's Well",
+          "hints": [
+            {
+              "q": "Which key is which line?",
+              "a": "Each key is its line's note in the treble clef: E is the bottom line, then G, B, D, and F at the top (Every Good Boy Does Fine). The letters sit at the right end of the lines. Squirt a line when a Squeak is on it."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

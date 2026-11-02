@@ -2,7 +2,7 @@
 // fan of horn rings rolling ahead), Doc Leo's SQUAWK (the rubber chicken's notes) and his
 // balloon dog (sky blue, so it never looks like the pink balloon dogs to collect), with the
 // POP it ends in.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 

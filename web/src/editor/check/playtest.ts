@@ -4,9 +4,9 @@
 // order play reaches them from the title's first link. It can also play with steady hands
 // (one key at a time, unhurried), or go on into each scene carrying the least the hero could
 // have left the last one with (what a player who skips things brings).
-import { parseBlocks, BACKBL } from '../../formats/blocks';
-import { NOSCENE, parseGame, type Game } from '../../formats/game';
-import { parseMap } from '../../formats/map';
+import { parseBlocks, BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { NOSCENE, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore, type Entry, type Exploration, type ExploreLive } from './explore';
 import { startCharInfo, type FileSource } from './sim';
 import { stuckAreas, type StuckArea } from './stuck';

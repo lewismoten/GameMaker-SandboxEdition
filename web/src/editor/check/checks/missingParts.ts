@@ -4,12 +4,13 @@
 // missing (loadscene stops the game there), map cells and block changes past a block set's 150
 // blocks (DOS reads stray memory past them), counters past 29, and placed or born monsters from
 // an empty slot of the .mon file (nothing ever shows).
-import { BACKBL, MONBL } from '../../../formats/blocks';
-import type { Game } from '../../../formats/game';
-import { LASTMON, type Monster } from '../../../formats/monster';
-import { SOUND_NAMES } from '../../../formats/sound';
+import { BACKBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { LASTMON, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { SOUND_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { at, type Finding } from '../findings';
 import { blockUse, type SceneData } from '../sceneData';
+import { vocLimitNote, vocTooBig } from '../../../audio/vocLimit';
 import type { FileSource } from '../sim';
 
 /** A sound slot's name as the findings say it. */
@@ -42,6 +43,29 @@ export function missingVocs(d: SceneData, files: FileSource): Finding[] {
       fix: 'speaker-sound',
     },
   ];
+}
+
+/** Sound slots whose .VOC is over what PLAYGAME can load (a suggestion: the web player plays it). */
+export function bigVocs(d: SceneData, files: FileSource): Finding[] {
+  const snd = d.sounds;
+  if (!snd || !d.names.snd) return [];
+  const out: Finding[] = [];
+  const told = new Set<string>();
+  snd.digital.forEach((raw, n) => {
+    const name = raw.trim();
+    if (!name || raw[0] === ' ' || !goodName(name) || told.has(name.toLowerCase())) return;
+    const bytes = files.get(`${name}.voc`);
+    if (!bytes || !vocTooBig(bytes.length)) return;
+    told.add(name.toLowerCase());
+    out.push({
+      check: 'voc-size',
+      severity: 'warning',
+      title: `${name.toUpperCase()}.VOC is ${(bytes.length / 1024).toFixed(1)} KB, over the 64 KB DOS can load`,
+      detail: vocLimitNote(`${name.toUpperCase()}.VOC`, bytes.length),
+      where: { scene: d.scene, sound: { file: d.names.snd!, n }, file: `${name}.voc` },
+    });
+  });
+  return out;
 }
 
 /** Files a level names that aren't in the game: play stops there. */

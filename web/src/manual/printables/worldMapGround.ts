@@ -4,7 +4,7 @@
 // wings and shelves); a circuit board with its parts outlined; a draftsman's blue grid. Each
 // region (worldMapRegions.ts) is drawn as one piece, and little drawings fill the spaces
 // between places and paths, never on them. Also what the key shows for it.
-import type { Point } from '../../formats/game';
+import type { Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Rect } from './worldMapLayout';
 import { el, glyph, TERRAIN_NAMES } from './worldMapArt';
 import { INK, PAPER, blobPath, mix, type Terrain } from './worldMapTerrain';

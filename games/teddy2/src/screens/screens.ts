@@ -1,13 +1,14 @@
 // The 320x200 screens: the title (an FLI cartoon, then the poster), the menu, the story,
 // help and credits pages, a card before each level, and the endings. All share one
 // palette (the game's ramps plus a few inks), so Game-Maker's text colors come out the same.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../../../kit/pixels';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, centered, gradient, clubArt, micro, microWidth, outlined, scaleBlit, text, textWidth } from '../art/draw';
-import { loadScan, pastePhoto, polaroid, resample, tone } from '../../../kit/photo';
-import { saveSlots } from '../../../kit/saveSlots';
+import { pastePhoto, polaroid, resample, tone } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
+import { saveSlots } from '@lewismoten/gamemaker-sandbox-tools/kit/saveSlots';
 import { buildPalette, buildScreenPalette, type Pal } from '../art/pal';
 import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
@@ -36,7 +37,7 @@ import {
 import { CREDITS, EGG, HELP, LOST, README, STORY, WON, CARDS } from './text';
 import { drawEgg } from '../sprites/egg';
 import { gwinnSits } from '../sprites/klubfolk';
-import { dosText } from '../../../kit/disk';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 
 export const SP: Pal = buildScreenPalette();
@@ -173,7 +174,7 @@ function menuScreen(): Pixels {
   p.rect(60, 98, 200, 2, c('paint', 3));
   teddyBig(p, 'frontBeg', 0, 112, 4);
   gwinnBig(p, 'gwinn1', 252, 108, 3, true);
-  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1996', c('paint', 3));
+  micro(p, 66, 189, 'SANDBOX SOFTWARE  SHAREWARE  1994', c('paint', 3));
   return p;
 }
 
@@ -189,7 +190,7 @@ function titleScreen(): Pixels {
   const car = new Pixels(40, 40, CLEAR);
   citiCar(car, 0, 0);
   scaleBlit(p, car, 262, 128, 1);
-  centered(p, 190, '(C) 1996 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
+  centered(p, 190, '(C) 1994 SANDBOX SOFTWARE', c('paint', 3), 1, c('ink', 0));
   return p;
 }
 

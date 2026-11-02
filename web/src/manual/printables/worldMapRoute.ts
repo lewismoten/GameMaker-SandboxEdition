@@ -3,7 +3,7 @@
 // A path leaves a place from the top or the sides of its round picture (never through its
 // ribbon or the names under it). Paths that share a place may run together, like a road that
 // forks; any other path is kept a lane apart and crossed only when there's no way round.
-import type { Point } from '../../formats/game';
+import type { Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Rect } from './worldMapLayout';
 import type { DrawnPath } from './worldMapMeasure';
 

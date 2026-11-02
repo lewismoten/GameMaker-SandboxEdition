@@ -12,8 +12,8 @@ import './paper.css'; // first: this piece's own styles build on the paper's
 import './worldMap.css';
 import { h } from '../../editor/core/ui';
 import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
-import { ENDTYPE, NOSCENE, STARTTYPE, parseGame, type Game, type Point } from '../../formats/game';
-import { parseBackdrop, parseSlideList } from '../../formats/graphicScripts';
+import { ENDTYPE, NOSCENE, STARTTYPE, parseGame, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { arrival, graphOf } from '../../editor/editors/integrator/layoutCells';
 import { graphicShot, levelShot } from '../../editor/editors/integrator/integratorArt';
 import { sheet, type PrintContext, type Sheet } from './kit';

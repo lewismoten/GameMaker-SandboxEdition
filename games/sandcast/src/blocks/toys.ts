@@ -1,7 +1,7 @@
 // Toys left in the sandbox (ABC blocks, a two-block dump truck, a pail, a rubber duck),
 // sticker burrs that prick (hp -2), and the secret hole that looks like an ant hole but is
 // really a scene link.
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { GRASS, OCHRE, RED, SAND, STEEL, WATER, YELLOW } from '../art/palette';
 import { Pixels, art, ball, bevel, rng, shade, tile } from '../art/draw';
 import { SOLID, bg, onSand, sand, sprite20 } from './common';

@@ -12,7 +12,7 @@ import { Term, boxBottom, boxRow, boxRule, boxTop, modemSignal, sleep, statusLin
 import { gifGallery } from './gifArea';
 import { gameDiz, isSofaFile } from './fileId';
 import { WAREZ, warezArea, zipsOf } from './warezArea';
-import { dizSummary, Pager, pageLabel, readNumber, uploadDate } from './pager';
+import { dizSummary, Pager, pageLabel, readNumber, releaseKey, uploadDate } from './pager';
 import { GALLERY } from './gallery';
 import {
   account,
@@ -38,8 +38,10 @@ import { sizeAbout } from './sofaFiles';
 import { cpsText, expectText, progress } from './transfer';
 import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { doorGames } from './ticTacToeDoor';
-import { words } from '../../keepTogether';
+import { wrap } from './wrapWords';
 import { rsdLine } from './rsdLine';
+import { signup } from './signup';
+import { signupAccounts } from './signupAccounts';
 
 export const BBS_NAME = 'THE -= S A N D B O X =- BBS';
 export const PHONE = '1-412-555-SAND';
@@ -55,10 +57,14 @@ export async function runSandbox(t: Term, h: RetroHost): Promise<void> {
     s.cursorX = 0;
     s.cursorY = sandboxLogin(s);
   });
-  t.print('|14Enter your handle, or |15GUEST|14: |15');
-  const name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase() || 'GUEST';
+  t.print('|14Enter your handle, |15NEW|14 to join, or |15GUEST|14: |15');
+  let name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase() || 'GUEST';
   t.line();
-  if (name !== 'GUEST') {
+  if (name === 'NEW') {
+    const joined = await signup(t, h, 'sandbox');
+    if (!joined) return;
+    name = joined;
+  } else if (name !== 'GUEST' && !signupAccounts.find('sandbox', name)) {
     t.print('|14Password: |15');
     await readLine(s, h.keys, [], 16, attr(0, 0)); // typed in black: nobody sees it
     t.line();
@@ -150,19 +156,6 @@ function leechWarning(t: Term): void {
   t.line(`|12  ** LEECHES WILL BE DELETED! **  |07This board keeps a |141:${RATIO}|07 upload/download ratio.`);
   t.line(`|07  New callers get |14${NEW_USER_FILES}|07 files on the house; each call earns |14${POINTS_PER_CALL}|07 more, each upload |14${RATIO}|07.`);
   t.line(`|07  The SysOp's own files are |10FREE|07.   Your file points: |14${filePoints(a)}|07   U/D: |14${ratioText(a)}`);
-}
-
-export function wrap(text: string, width: number): string[] {
-  const out: string[] = [];
-  let line = '';
-  for (const word of words(text)) {
-    if ((line + ' ' + word).trim().length > width) {
-      out.push(line);
-      line = word;
-    } else line = (line + ' ' + word).trim();
-  }
-  if (line) out.push(line);
-  return out;
 }
 
 /** Renegade-style: the last few callers after logon. */
@@ -282,11 +275,11 @@ const NEWEST_SHOWN = 6;
 
 /** The bulletins: news from the SysOp, picked by number. */
 async function bulletins(t: Term, catalog: CatalogEntry[]): Promise<void> {
-  // the newest few (by year, latest first), so the bulletin fits a screen; N lists them all
+  // the newest few (by release month, latest first), so the bulletin fits a screen; N lists them all
   const fresh = catalog.filter((g) => g.original);
   const newest = fresh
     .map((g, i) => ({ g, i }))
-    .sort((x, y) => (y.g.year ?? 0) - (x.g.year ?? 0) || y.i - x.i)
+    .sort((x, y) => releaseKey(y.g) - releaseKey(x.g) || y.i - x.i)
     .slice(0, NEWEST_SHOWN)
     .map((x) => x.g);
   const items: [string, string[]][] = [

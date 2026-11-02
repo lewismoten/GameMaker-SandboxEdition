@@ -6,7 +6,7 @@
 //   &autoplay (or ?autoplay) starts the game without its click-to-play screen (the catalog's
 //   ▶ Play links have it); sound comes on at the first click or key if the browser held it back
 import { mountPlayer } from './player/player';
-import { unlock } from './audio/context';
+import { unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { watchForUpdates } from './devReload';
 import { GameFiles, loadCatalogList, withDetails, type CatalogEntry } from './project/files';
 import { streamHostedGame } from './project/streamGame';
@@ -16,7 +16,9 @@ import { registerServiceWorker } from './offline';
 import { playAchievements, playWrote } from './achievements';
 import { catalogPatches } from './dosPlayer/catalogPatches';
 import { companionPatches } from './dosPlayer/playerRecord';
-import type { PlayerPatches } from './dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import type { PlayerAbout } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { companionOrigin, playerAbout } from './dosPlayer/playerOrigin';
 
 interface BundleManifest {
   id: string;
@@ -44,7 +46,7 @@ function unlockOnFirstTouch(): void {
   addEventListener('keydown', go, true);
 }
 
-async function loadBundle(): Promise<{ id: string; title: string; gam: string; files: GameFiles } | undefined> {
+async function loadBundle(): Promise<{ id: string; title: string; gam: string; files: GameFiles; poster?: Promise<string | undefined> } | undefined> {
   const res = await fetch('./game/manifest.json').catch(() => undefined);
   // A dev server answers a missing file with index.html (status 200): only JSON is a bundle.
   if (!res?.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
@@ -56,16 +58,22 @@ async function loadBundle(): Promise<{ id: string; title: string; gam: string; f
       if (r.ok) files.set(name, new Uint8Array(await r.arrayBuffer()));
     }),
   );
-  return { id: `bundle:${m.id}`, title: m.title, gam: m.gam, files };
+  return { id: `bundle:${m.id}`, title: m.title, gam: m.gam, files, poster: posterFromFiles(files, m.gam) };
 }
 
-/** A shot of the game's first level, for the start screen (drawn while you read it). */
+/** A project's or bundle's title, loaded only when its play page needs the picture. */
+async function posterFromFiles(files: GameFiles, gam: string): Promise<string | undefined> {
+  const { titlePoster } = await import('./gfx/titlePoster');
+  return titlePoster(files, gam);
+}
+
+/** The game's title screen, drawn while the visitor reads its Play button. */
 async function posterOf(entry: CatalogEntry): Promise<string | undefined> {
-  const { renderShot } = await import('./gfx/gameShots');
+  const { renderTitle } = await import('./gfx/gameShots');
   const c = document.createElement('canvas');
   c.width = 320;
   c.height = 200;
-  return (await renderShot(entry, c, 16, 10)) ? c.toDataURL() : undefined;
+  return (await renderTitle(entry, c)) ? c.toDataURL() : undefined;
 }
 
 async function choose(): Promise<
@@ -79,6 +87,8 @@ async function choose(): Promise<
       poster?: Promise<string | undefined>;
       /** Its DOS player look (dosPlayer/): a project's companion, an original game's player.json. */
       player?: PlayerPatches;
+      /** An imported game's own player About page and first build (dosPlayer/playerOrigin.ts). */
+      playerAbout?: PlayerAbout;
     }
   | undefined
 > {
@@ -90,13 +100,17 @@ async function choose(): Promise<
     // the home page's "Continue where you left off" shows the game played last
     if (p) {
       markUsed(projectId);
+      // the author's version, lettered on the menu picture when they asked (project/composeFiles.ts)
+      const files = p.record.companion?.showVersion ? (await import('./project/composeFiles')).composeFiles(p.files, p.record.companion) : p.files;
       return {
         id: `project:${projectId}`,
         title: p.record.name,
         gam: p.record.gam,
-        files: p.files,
+        files,
+        poster: posterFromFiles(files, p.record.gam).catch(() => undefined),
         back: './',
         player: companionPatches(p.record.companion, p.record.gam),
+        playerAbout: playerAbout(companionOrigin(p.record.companion, p.record.gam)),
       };
     }
   }
@@ -167,6 +181,7 @@ async function main(): Promise<void> {
       title: game.title,
       notice: game.notice,
       player: game.player,
+      playerAbout: game.playerAbout,
       poster: game.poster,
       back: game.back ? { href: game.back, label: '← All games' } : undefined,
       onFileWrite: (name, bytes) => (playWrote(game.id, name), void writeSaveFile(game.id, name, bytes)),

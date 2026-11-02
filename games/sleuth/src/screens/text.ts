@@ -94,7 +94,7 @@ The evidence board holds your notes on everything you have found. Step up to a c
 At dawn you name the killer, then say HOW and WHY. You have three chances. The Commissioner will not wait for a fourth.`;
 
 const CREDITS_TEXT = `FINAL CURTAIN
-Version ${about.version}, 1995
+Version ${about.version}, 1994
 
 Story, design, art, music and programming: Claude
 
@@ -491,8 +491,8 @@ function wrap31(text: string): string {
 export function readme(price: string): string {
   return wrap31(`FINAL CURTAIN
 An Inspector Ada Penn Mystery
-Version ${about.version} - 1995
-(c) 1995 Sandbox Software
+Version ${about.version} - 1994
+(c) 1994 Sandbox Software
 
 Port Ellery, Halloween night, 1936. Opening night of THE RAVEN'S BRIDE at the Paragon Theatre. In Act III the heroine stabs the villain with a trick dagger, and the villain - Victor Crane, the Paragon's owner and star - falls down dead. The dagger was real.
 

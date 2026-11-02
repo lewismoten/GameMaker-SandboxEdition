@@ -2,8 +2,8 @@
 // walls, wooden floors you can hop up through (solid on top only), the escapement's bridges that
 // tick and tock in turn (each warns in red before it lets go), the three stuck gears to turn,
 // the striking hammer that will only swing once all three turn, and the bell.
-import { SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, shadeAt } from '../art/draw';
 import { c, r } from '../art/pal';
 import { CTR, GEARS } from '../ids';

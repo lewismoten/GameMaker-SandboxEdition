@@ -1,7 +1,7 @@
 // Boss 2: THE MEMORY LEECH. Its sucker mouth is clamped over the way out, draining the
 // memory; its body, twelve monsters long, coils around the arena in a loop (one path, each
 // segment starting at its own point on it), soaking up shots meant for the mouth.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, micro } from '../art/draw';
 import { slicesOf, snake, tint, weakPoint } from './boss';
 import { mite, pics } from '../characters/enemies';

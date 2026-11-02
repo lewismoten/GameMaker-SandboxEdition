@@ -3,7 +3,7 @@
 // up to the loft: gravity up and to the right, two pictures taking turns), the pig wallow
 // (mud lifts like water), the pasture fence and gate, a scarecrow in the pumpkins, the farm
 // stand, and the Fair's ride truck with a Ferris wheel car on its flatbed.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, grassTop, hedge, plankFence, planks, r, sky, tuft } from '../blocks/tiles';

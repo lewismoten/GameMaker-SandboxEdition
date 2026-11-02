@@ -11,6 +11,7 @@
 // (autoWalk's `reuse`), then the person's, then goes on. A play that no longer reaches an exit is
 // said so, and the bot plays that scene. In a scene with walking paths (marked in the block
 // editor, check/walk/walkPaths.ts) it says how much of the route keeps to them.
+import { gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { h, clear, modal, selectField, toast } from '../core/ui';
 import type { Project } from '../core/project';
 import type { CatalogEntry } from '../../project/files';
@@ -21,6 +22,10 @@ import { startWalk, type RunningWalk } from '../check/walk/walkClient';
 import { allWalkPaths } from '../check/walk/walkPaths';
 import { howFar, lookOnlyKept, reuseFrom, savedFrom, WALK_SECTION, type SavedWalk } from '../check/walk/keptWalk';
 import { unlockAchievement } from '../../achievements';
+import { checkWalkFile } from './walkFile';
+import { walkSource } from './walkRoute';
+import { changedAfter, redoReuse } from '../check/walk/redoLevel';
+import type { RedoChoice, RedoOptions } from '../../walkthrough/redoMenu';
 import './walkDialog.css';
 
 export interface WalkDialogOptions {
@@ -40,22 +45,94 @@ const styleName = (id?: string) => (id === MINE.id ? MINE.name : (STRATEGIES.fin
 const secs = (ticks?: number) => ((ticks ?? 0) / 18.2).toFixed(0);
 
 /** Opens a walkthrough the bot made in the walkthrough player (a CD game's `entry`: its own address and DOS player look). */
-export async function watchMade(project: Project, walk: Walkthrough, entry?: CatalogEntry): Promise<void> {
+export async function watchMade(project: Project, walk: Walkthrough, entry?: CatalogEntry, redo?: RedoOptions): Promise<void> {
   const [{ watchWalkthrough }, { companionPatches }] = await Promise.all([import('../../walkthrough/player'), import('../../dosPlayer/playerRecord')]);
-  if (entry) return watchWalkthrough(entry, () => Promise.resolve(project.files), undefined, walk);
-  const title = project.game().scenes[0]?.desc.trim() || project.name;
+  if (entry) return watchWalkthrough(entry, () => Promise.resolve(project.files), undefined, walk, undefined, undefined, redo);
+  const title = gameTitle(project.game()) || project.name;
   const mine = { id: `project:${project.id}`, title, gam: project.gam, kind: 'mine', path: '', files: [] } as unknown as CatalogEntry;
-  return watchWalkthrough(mine, () => Promise.resolve(project.files), undefined, walk, undefined, companionPatches(project.companion, project.gam));
+  return watchWalkthrough(mine, () => Promise.resolve(project.files), undefined, walk, undefined, companionPatches(project.companion, project.gam), redo);
 }
 
+/** What making it again is asked to do: redo a level of this walkthrough, or all of it (and come back to the player when it wins). */
+interface Redoing {
+  /** The one scene to play fresh; the rest keep their keys. Left out: the whole walkthrough. */
+  scene?: number;
+  /** The walkthrough being redone. */
+  base: Walkthrough;
+}
+
+interface MadeResult {
+  /** The bot won and the dialog closed itself, to go back to the player. */
+  finished: boolean;
+  changed?: number[];
+}
+
+/**
+ * "Make a walkthrough" and the home page's Walkthrough. A game that already has a walkthrough
+ * (a kept one, one just made, or the game's shipped one: walkRoute.ts) opens in the player, whose
+ * Redo… offers the whole walkthrough (the making dialog), one level, or a walkthrough file; a
+ * game with none opens the making dialog. After a redo that wins, the player opens again.
+ */
 export async function walkDialog(project: Project, given: WalkDialogOptions = {}): Promise<void> {
-  // a look-only game opened with Look inside keeps its walkthrough as the home page's does
   const kept = lookOnlyKept(project);
   const opt: WalkDialogOptions = { keeps: kept?.keeps, ...given };
+  let redoing: Redoing | undefined;
+  // dev server only: a walkthrough file in the maintainer's .for-lewis folder (devLocalWalk.ts), for a game with
+  // nothing to watch (a kept entry with no frames, such as an empty first try, doesn't count)
+  let local: { walk: Walkthrough; note: string } | undefined;
+  if (import.meta.env.DEV && !walkSource(project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined), opt.shipped)) {
+    local = await (await import('./devLocalWalk')).localWalk(project.gam, project.game().scenes.length, project.name);
+  }
+  for (;;) {
+    const saved = project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined);
+    const own = walkSource(saved, opt.shipped);
+    const source = own ?? (local ? ('local' as const) : undefined);
+    if (source && !redoing) {
+      let chose: { choice: RedoChoice; walk: Walkthrough } | undefined;
+      const note = project.readOnly
+        ? opt.keeps?.() === false
+          ? `${project.readOnly.title} is open to look at only: a redone walkthrough lasts until this page closes, and the game’s own is not changed.`
+          : `${project.readOnly.title} is open to look at only: a redone walkthrough is kept in this browser, and the game’s own is not changed.`
+        : undefined;
+      const fromDisk = source === 'local' ? local?.note : undefined;
+      const redo: RedoOptions = { note: [fromDisk, note].filter(Boolean).join(' ') || undefined, onChoose: (choice, walk) => void (chose = { choice, walk }) };
+      if (source === 'kept') await watchMade(project, saved!.walk!, opt.entry, redo);
+      else if (source === 'local') await watchMade(project, local!.walk, opt.entry, redo);
+      else
+        await (
+          await import('../../walkthrough/player')
+        ).watchWalkthrough(opt.shipped!, () => Promise.resolve(project.files), undefined, undefined, undefined, undefined, redo);
+      if (!chose) return;
+      // "Open a walkthrough file…" is a part of the making dialog
+      if (chose.choice.kind === 'level') redoing = { scene: chose.choice.scene, base: chose.walk };
+      else if (chose.choice.kind === 'all') redoing = { base: chose.walk };
+    }
+    const before = redoing?.base;
+    const r = await makeDialog(project, opt, redoing);
+    const scene = redoing?.scene;
+    redoing = undefined;
+    if (!r.finished) return;
+    const now = project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined);
+    if (before && scene !== undefined && now?.walk) {
+      const later = changedAfter(before, now.walk, scene);
+      const names = later.map((n) => project.game().scenes[n]?.desc.trim() || `Scene ${n}`);
+      toast(
+        later.length
+          ? `Redone. The levels after it that the bot had to play again, because they no longer carried on from the new play: ${names.join(', ')}.`
+          : 'Redone. The levels after it still carry on from the new play, so they are as they were.',
+      );
+    }
+  }
+}
+
+async function makeDialog(project: Project, opt: WalkDialogOptions, redoing?: Redoing): Promise<MadeResult> {
+  // a look-only game opened with Look inside keeps its walkthrough as the home page's does
   let saved = project.extras<SavedWalk | undefined>(project.gam, WALK_SECTION, undefined);
   let budget = 60;
   let running: RunningWalk | undefined;
   let stopping = false;
+  let finished = false;
+  let closeModal: ((v: undefined) => void) | undefined;
   const game = () => project.game();
   const sceneName = (n: number) => game().scenes[n]?.desc.trim() || `Scene ${n}`;
   /** The scene's map, when it has one to play on. */
@@ -90,6 +167,32 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
     h('h3', { id: 'wd-watch-h' }, 'Watch'),
     h('p', { class: 'meta' }, 'It opens in the player, with chapters, Download MP4 and Copy for YouTube.'),
     h('div', { class: 'toolbar' }, shippedBtn, watchBtn),
+  );
+  // a walkthrough file from disk (the bot's <GAM>.walkthrough.json): checked against this game, then played
+  const fileMsg = h('p', { class: 'meta', role: 'status', 'aria-live': 'polite' });
+  const fileInput = h('input', { type: 'file', accept: '.json,application/json', hidden: true, tabindex: '-1' });
+  fileInput.onchange = () => {
+    const f = fileInput.files?.[0];
+    fileInput.value = '';
+    if (!f) return;
+    void f.text().then(async (text) => {
+      const r = checkWalkFile(text, project.gam, game().scenes.length);
+      if (!r.ok) {
+        fileMsg.textContent = r.why;
+        return;
+      }
+      fileMsg.textContent = `Playing ${f.name}…`;
+      await watchMade(project, r.walk, opt.entry);
+      fileMsg.textContent = '';
+    });
+  };
+  const openPart = h(
+    'section',
+    { class: 'wd-part', 'aria-labelledby': 'wd-open-h' },
+    h('h3', { id: 'wd-open-h' }, 'Open a walkthrough file'),
+    h('p', { class: 'meta' }, 'A saved .walkthrough.json for this game plays in the same player. Nothing is kept.'),
+    h('div', { class: 'toolbar' }, h('button', { type: 'button', onclick: () => fileInput.click() }, 'Open a walkthrough file…'), fileInput),
+    fileMsg,
   );
   let stoppedMap: string | undefined;
   const mapLink = h('a', { class: 'wd-map', hidden: true }, '🗺 See where the bot got to on the map (Level check 🩺)');
@@ -264,20 +367,26 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
     runBtn.textContent = '■ Stop';
     status.textContent = 'Starting the bot…';
     stopping = false;
+    let ok = false;
+    // one level to redo: the bot plays it fresh, the other scenes try their old keys first
+    const mine = playsToUse(project);
+    if (redoing?.scene !== undefined) delete mine[redoing.scene];
+    const reuse = redoing?.scene !== undefined ? redoReuse(redoing.base, saved?.walk ? saved.scenes : undefined, redoing.scene, 'search') : reuseFrom(saved);
     running = startWalk(
       project.files,
       {
         gam: project.gam,
         id: project.id,
         budgetMs: budget * 1000,
-        mine: playsToUse(project),
+        mine,
         paths: allWalkPaths(project, project.game()),
-        reuse: reuseFrom(saved),
+        reuse,
       },
       (what) => (status.textContent = stopping ? `Stopping: ${what}` : what),
     );
     try {
       const { result, verified } = await running.done;
+      ok = true;
       saved = savedFrom(result, verified);
       project.setExtras(project.gam, WALK_SECTION, saved);
       opt.onChange?.();
@@ -302,6 +411,11 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
       // where it stopped: the way on is the person's play of that scene
       if (saved && !saved.won) list.querySelector<HTMLElement>('.wd-stop .wd-myself')?.focus();
     }
+    // a redo that got to the end goes back to the player
+    if (redoing && ok && saved?.won && saved.walk?.timeline.frames) {
+      finished = true;
+      closeModal?.(undefined);
+    }
   }
 
   async function watch(): Promise<void> {
@@ -322,13 +436,24 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
 
   renderAll();
   // from the home page this is the game's one Walkthrough dialog: watching, and making your own
-  await modal<void>(opt.home ? 'Walkthrough' : 'Make a walkthrough', (close) => {
+  const title = redoing
+    ? redoing.scene === undefined
+      ? 'Redo the walkthrough'
+      : `Redo ${sceneName(redoing.scene)}`
+    : opt.home
+      ? 'Walkthrough'
+      : 'Make a walkthrough';
+  await modal<void>(title, (close) => {
+    closeModal = close;
     // going to the map closes this
     mapLink.onclick = () => close(undefined);
+    // one level to redo starts at once
+    if (redoing?.scene !== undefined) queueMicrotask(() => press());
     return h(
       'div',
       { class: 'stack wd' },
       watchPart,
+      openPart,
       h(
         'section',
         { class: 'wd-part', 'aria-labelledby': 'wd-make-h' },
@@ -364,4 +489,5 @@ export async function walkDialog(project: Project, given: WalkDialogOptions = {}
     );
   });
   running?.cancel();
+  return { finished };
 }

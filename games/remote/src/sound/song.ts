@@ -27,9 +27,9 @@
 //   bridge "I found ten pennies..."           86.1 - 104.1  (43-51; "a tiny raccoon" 94.0)
 //   last chorus "My will's worn thin"        104.1 - 122.1  (52-60; "There you are" 114.1)
 //   outro                                    122.1 - 128.5  (61-63)
-import { sbi } from '../../../kit/music';
-import { Writer, type Groove } from '../../../kit/song';
-import { DRUM, Fx, boomPatch, detuned, sweep, waved } from '../../../kit/songFx';
+import { sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { Writer, type Groove } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { DRUM, Fx, boomPatch, detuned, sweep, waved } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 
 const BPM = 120;
 

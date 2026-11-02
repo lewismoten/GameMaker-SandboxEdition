@@ -4,7 +4,7 @@
 // the whole run on the real engine (title, story, the six levels, the ending, the credits).
 // It never goes near the launch pad's closet.
 //   cd web && npx vite-node ../games/year2000/tools/walkthrough.ts
-import { newCharInfo } from '../../../web/src/engine/world';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { buildCarCharacter, buildCharacter } from '../src/characters/character';
 import { CTR, MON, SEQ } from '../src/ids';
 import { LEVELS, SETS } from '../src/levels/levels';

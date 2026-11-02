@@ -1,0 +1,77 @@
+{
+  "keys": {
+    "72": {
+      "short": "Rise",
+      "long": "Rise. Hold to rise higher; inside a basket, climb."
+    },
+    "80": {
+      "short": "Hunker",
+      "long": "Hunker down. Inside a basket, climb down."
+    },
+    "75": {
+      "short": "Roll left",
+      "long": "Roll left."
+    },
+    "77": {
+      "short": "Roll right",
+      "long": "Roll right."
+    },
+    "17": {
+      "short": "Rise",
+      "long": "Same as the Up arrow."
+    },
+    "31": {
+      "short": "Hunker",
+      "long": "Same as the Down arrow."
+    },
+    "30": {
+      "short": "Roll left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Roll right",
+      "long": "Same as the Right arrow."
+    },
+    "16": {
+      "short": "Rise left",
+      "long": "Rise up and to the left; steer as you come down."
+    },
+    "18": {
+      "short": "Rise right",
+      "long": "Rise up and to the right; steer as you come down."
+    },
+    "71": {
+      "short": "Rise left",
+      "long": "Number pad 7: rise up and to the left."
+    },
+    "73": {
+      "short": "Rise right",
+      "long": "Number pad 9: rise up and to the right."
+    },
+    "57": {
+      "short": "Still bread",
+      "long": "I'm still bread!"
+    },
+    "48": {
+      "short": "Still bread",
+      "long": "I'm still bread!"
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Still bread",
+      "long": "I'm still bread!"
+    }
+  },
+  "counters": {
+    "20": "Holy crumbs",
+    "21": "Baskets gathered"
+  },
+  "sounds": {
+    "9": "Dough rising",
+    "10": "Roll",
+    "11": "Hurt",
+    "12": "Crumble",
+    "13": "Bread"
+  }
+}

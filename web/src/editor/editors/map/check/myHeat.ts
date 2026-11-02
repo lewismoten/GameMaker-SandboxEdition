@@ -2,9 +2,9 @@
 // recorded tick by tick like the bot's (time spent per cell, the first tick reached, deaths),
 // kept in the companion file and added to across sessions. Also how it compares with the bot's:
 // the Compare view's steps and the coverage line ("You've been to 84% of the places…").
-import { MLEN, MWID } from '../../../../formats/map';
-import { DIESEQ } from '../../../../formats/character';
-import type { World } from '../../../../engine/world';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { DIESEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { touchedCells } from '../../../check/sim';
 
 const CELLS = MLEN * MWID;

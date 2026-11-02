@@ -7,13 +7,13 @@
 // an owl at dusk, a village dog, a moth, Brother Camel kneeling (two blocks wide) and the child
 // waiting at her door (two blocks tall). Every sprite is drawn from shapes and given a dark outline
 // (the critters that hide in the wicker and the dusk a pale one).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export { T, outline };
 

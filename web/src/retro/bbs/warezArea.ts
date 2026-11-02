@@ -9,7 +9,7 @@ import type { RetroHost } from '../host';
 import type { ProgramRef } from '../dos/vfs';
 import { attr } from '../text/textScreen';
 import { readLine } from '../text/textInput';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { expectText, progress } from './transfer';
 import { commas } from '../dos/vfs';
 import { boxBottom, boxRow, boxTop, sleep, type Term } from './term';
@@ -17,6 +17,8 @@ import { Pager, pageLabel } from './pager';
 import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { GMCRACK_DIZ, GMCRACK_NFO } from '../hacks/gmcrackText';
 import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
+import { FASTPLAY_DIZ, FASTPLAY_DOC } from '../hacks/fastPlay';
+import { FLAGS_DIZ, FLAGS_NFO } from '../hacks/flagsText';
 import { PLAYHACK_DIZ, PLAYHACK_NFO } from '../hacks/playHackText';
 import { GM30_DIZ, GM30_NFO, GM30_PART_BYTES, GM30_PARTS } from '../hacks/gm30Text';
 import { account, filePoints, recordDownload, updateAccount } from './ratio';
@@ -86,6 +88,26 @@ export const WAREZ: WarezRelease[] = [
       { name: 'INSTALL.EXE', size: 61_421, run: { kind: 'install', from: 'warez' } },
       { name: 'GM30.NFO', size: 0, text: GM30_NFO },
       ...GM30_PARTS.map((_, i) => ({ name: `GM30.00${i + 1}`, size: GM30_PART_BYTES - 1_517 - i * 211, part: i })),
+    ],
+  },
+  {
+    id: 'fastplay',
+    zip: 'FASTPLAY.ZIP',
+    bytes: 4_096,
+    diz: FASTPLAY_DIZ,
+    files: [
+      { name: 'FASTPLAY.EXE', size: 6_144, run: { kind: 'fastplay' } },
+      { name: 'FASTPLAY.DOC', size: 0, text: FASTPLAY_DOC },
+    ],
+  },
+  {
+    id: 'flags',
+    zip: 'FLAGS.ZIP',
+    bytes: 21_337,
+    diz: FLAGS_DIZ,
+    files: [
+      { name: 'FLAGS.EXE', size: 24_576, run: { kind: 'flags' } },
+      { name: 'FLAGS.NFO', size: 0, text: FLAGS_NFO },
     ],
   },
 ];

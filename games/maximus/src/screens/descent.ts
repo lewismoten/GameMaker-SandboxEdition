@@ -3,8 +3,8 @@
 // world's own sky onto its own ground: green hills, dunes, ice teeth, lava, mushroom
 // forests, crystal spires; a splash and a dive for the seas; a docking bay for stations.
 // Only the canopy changes from frame to frame, so each film stays small.
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { rng } from '../../../kit/pixels';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Canvas } from '../art/canvas';
 import { SCREEN, planetArt } from './screens';
 import { WHITE, shared } from '../art/palette';

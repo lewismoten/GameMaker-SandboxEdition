@@ -1,8 +1,8 @@
 // The bot's way through each level (also the source of the title demo).
 import type { Order } from './bot';
 import { CTR } from '../src/ids';
-import { mapBlock, shownBlock } from '../../../web/src/engine/world';
-import type { Sim } from '../../kit/sceneSim';
+import { mapBlock, shownBlock } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { GRAV } from '../src/levels/level';
 import { SHELTERS, UPDRAFT } from '../src/levels/levelLot';
 

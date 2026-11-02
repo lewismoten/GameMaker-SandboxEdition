@@ -6,9 +6,9 @@
 // Lewis's own, except CHEZTED.GIF and THECHEZ2.GIF (one shot), taken by Nicky Foster, and
 // COLONIAL.GIF, taken by Todd Jones (NOTICE.md).
 import list from './gallery.json';
-import { decodePartialGif, partialPixels } from '../../formats/gifProgressive';
-import { decodePartialJpeg, isJpeg, type PartialJpeg } from '../../formats/jpeg';
-import { isGif } from '../../formats/gif';
+import { decodePartialGif, partialPixels } from '@lewismoten/gamemaker-sandbox-engine/formats/gifProgressive';
+import { decodePartialJpeg, isJpeg, type PartialJpeg } from '@lewismoten/gamemaker-sandbox-engine/formats/jpeg';
+import { isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { nearestColor, placeIn, type PictureScreen } from '../view/picture';
 
 export interface GalleryFile {

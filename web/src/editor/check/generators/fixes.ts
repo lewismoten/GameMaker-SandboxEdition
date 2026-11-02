@@ -1,12 +1,12 @@
 // The level check's one-click fixes: for a finding, the generator that helps (generators/*.ts)
 // set up to change the project's files. Each writes ordinary Game-Maker data, and the panel
 // keeps the files as they were so the fix can be undone.
-import { BACKBL, MONBL, SOLTOP, parseBlocks, serializeBlocks } from '../../../formats/blocks';
-import { NOSCENE, serializeGame } from '../../../formats/game';
-import { parseSoundSet, serializeSoundSet } from '../../../formats/sound';
-import { parseMap, serializeMap } from '../../../formats/map';
-import { parseMonsters, serializeMonsters } from '../../../formats/monster';
-import { scanName } from '../../../input/scancodes';
+import { BACKBL, MONBL, SOLTOP, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { NOSCENE, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseSoundSet, serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters, serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { Project } from '../../core/project';
 import { gameKeyMap } from '../../keymap/keyMap';
 import { blockCycle, skyColors, WAIT_TICKS } from '../checks/blockChecks';
@@ -19,7 +19,7 @@ import { airBlock, ladderBlock, ladderCells, landmarkBlocks, placeLandmarks } fr
 import { findMazes } from '../checks/mazeCheck';
 import { asciiBytes, asciiText } from '../checks/dosChars';
 import { goodName } from '../checks/missingParts';
-import { parseHighScores, serializeHighScores } from '../../../formats/highscore';
+import { parseHighScores, serializeHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 
 interface Fix {
   label: string;

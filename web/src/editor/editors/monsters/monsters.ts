@@ -10,13 +10,14 @@ import { blockCanvas, paintBlock } from '../../core/draw';
 import { paletteChooser } from '../../widgets/paletteChooser';
 import { blockButton } from '../../widgets/blockChooser';
 import { fileField } from '../../widgets/filePicker';
-import { MONBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
-import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from '../../../formats/monster';
+import { MONBL, newBlockSet, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { monsterPathEditor } from './monsterPathEditor';
 import { checkBadges } from '../../widgets/checkBadges';
 import { normalize } from '../../../project/files';
 import { fitToPane } from '../../core/fitPane';
 import { monsterName, setMonsterName } from './monsterNames';
+import { blockLabel } from '../blocks/blockNames';
 
 type Motion = 'path' | 'toward' | 'away' | 'random';
 
@@ -156,6 +157,12 @@ registerEditor(['mon'], (host, project, file) => {
     const frames = m.pic.slice(0, LASTSL);
     const count = frames.findIndex(([p]) => p >= MONBL || p < 0);
     const shown = count < 0 ? LASTSL : count;
+    const timing = h('p', { class: 'meta mon-animation-total' });
+    const updateTiming = () => {
+      const ticks = frames.slice(0, shown).reduce((sum, frame) => sum + Math.max(1, frame[1]), 0);
+      timing.textContent = shown ? `${shown} frame${shown === 1 ? '' : 's'} · ${(ticks / 18.2).toFixed(2)} s per loop` : '0 frames · no pictures';
+    };
+    updateTiming();
     const endKind = m.end === -2 ? -2 : m.end === -1 ? -1 : m.end === 0 ? 0 : 1;
 
     clear(
@@ -210,6 +217,7 @@ registerEditor(['mon'], (host, project, file) => {
                 ),
             ),
           ),
+          timing,
           h(
             'ol',
             { class: 'mon-frames', 'aria-labelledby': 'mon-anim-head' },
@@ -222,13 +230,17 @@ registerEditor(['mon'], (host, project, file) => {
                   () => chooser.palette,
                   () => f[0],
                   (v) => edit(() => ((f[0] = v), renderDetail(), renderList())),
-                  { title: `Frame ${i + 1}: a monster block` },
+                  { title: `Frame ${i + 1}: a monster block`, name: (index) => blockLabel(project, mblName, index) },
                 ),
                 numberField(
                   '',
                   () => f[1],
-                  (v) => edit(() => (f[1] = v)),
-                  { min: 1, max: 32767, title: `Frame ${i + 1}: ticks to show it (1/18 s each)` },
+                  (v) =>
+                    edit(() => {
+                      f[1] = v;
+                      updateTiming();
+                    }),
+                  { min: 1, max: 32767, title: `Frame ${i + 1}: ticks to show it (1/18 s each)`, time: { rate: 18.2, minimum: 1 } },
                 ),
               ),
             ),
@@ -282,7 +294,7 @@ registerEditor(['mon'], (host, project, file) => {
               'Lifetime (ticks)',
               () => m.end,
               (v) => edit(() => (m.end = v)),
-              { min: 1, max: 32767 },
+              { min: 1, max: 32767, time: { rate: 18.2 } },
             )
           : null,
         checkField(

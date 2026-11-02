@@ -4,7 +4,7 @@
 // costs its flight counter) and pulls him down when he has none; the floor gives a lick of sugar
 // now and then, and sugar cubes give a lot. The gusts in the backyard push him (gravity to the
 // left, coming and going).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
 import type { Pal } from '../art/pal';
 

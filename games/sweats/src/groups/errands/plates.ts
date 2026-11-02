@@ -11,9 +11,9 @@
 //
 // Layout (13 rows: the crown molding on row 0, the wainscot on row 10, the parquet on row 11):
 // the tables' tops are ledges on row 9, the tower's plates ledges on rows 7..10.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, gate, plotThing } from '../../common/blocks';
 import { anim, corner, mon, pace } from '../../common/characters';

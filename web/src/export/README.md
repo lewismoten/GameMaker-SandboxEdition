@@ -21,3 +21,13 @@ player panel's Files tab gives them), and the Mac, Windows and Linux downloads
 `export/downloadable.ts` says which catalog games may be downloaded, for the button and for
 `web/scripts/macDmg.ts`, `winExe.ts` and `linuxTar.ts`, which run the same code from the command
 line.
+
+`exportDos` also accepts supplied CD runtime bytes and a fixed ZIP date for reproducible website distributions without browser globals or network requests.
+
+An imported game's F10 About page: `exportSinglePage` and `exportWebApp` take an optional
+`playerAbout` (the About lines and "Originally made with" line from `dosPlayer/playerOrigin.ts`),
+store it in the page's game record, and `standalonePlayer.ts` hands it to the engine, so F10 shows what
+Play's does. The Mac, Windows and Linux downloads embed that same single page, so they carry it too.
+Only those lines travel; the companion never does, and a game that wasn't imported exports byte for
+byte as before (`exportPlayerAbout.test.ts`). The web player download plays a folder with no per-game
+record, so it has none.

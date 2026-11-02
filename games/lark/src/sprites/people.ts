@@ -2,7 +2,7 @@
 // glasses, white greasepaint round his eyes and mouth, a sunburned pink nose, gray stubble, a
 // purple shirt, green tie, corduroy jacket, blue suspenders, red sneakers), Sir Reginald
 // Cluckington III on his leash, and the Clown Club in the square (scenery, waving, all friendly).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from '../art/draw';
 import { c } from '../art/pal';
 

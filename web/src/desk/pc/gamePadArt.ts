@@ -2,10 +2,11 @@
 // shaped like a peanut in its shell (a faint net of shell texture, two round lobes pinched at
 // the waist), molded with a side wall and a rounded edge, its purple d-pad standing up on the
 // left with the brass socket the joystick shaft screws into recessed in it, and four colored
-// buttons in a diamond on the right. A picture only, sized by its box: the desk's pad (gamePad.ts) and its
+// buttons in a diamond on the right and, under the logo, the TURBO slide switch. A picture only, sized by its box: the desk's pad (gamePad.ts) and its
 // large controls press it, and TURBO BUTTON's ad (manual/magazine/sections/hardware.ts) shows it.
 import './gamePadArt.css';
 import { h } from '../../editor/core/ui';
+import { turboOn } from '../../input/padTurbo';
 import { dpadSvg, shaftLyingSvg, shaftUpSvg, shellSvg } from './gamePadSvg';
 
 /** The four buttons, 1 to 4: their color and where each sits in the diamond. */
@@ -36,8 +37,16 @@ export function gamePadArt(opts: { shaft?: boolean; alt?: string } = {}): HTMLEl
       h('span', { class: 'gp-socket' }, opts.shaft ? h('span', { class: 'gp-stick' }) : null),
     ),
     ...PAD_BUTTONS.map((b) => h('span', { class: `gp-btn ${b.color} at-${b.at}`, dataset: { b: String(b.n) } })),
+    // the TURBO slide switch under the logo, its knob left for 4 BUTTON and right for TURBO
+    h(
+      'span',
+      { class: 'gp-switch' },
+      h('span', { class: 'gp-sw-names' }, h('span', null, '4 BUTTON'), ' ', h('span', null, 'TURBO')),
+      h('span', { class: 'gp-sw-slot' }, h('span', { class: 'gp-sw-knob' })),
+    ),
     opts.shaft ? h('span', { class: 'gp-shaft' }) : null,
   );
+  art.dataset.turbo = turboOn() ? '1' : '0';
   const id = `gp-plastic-${++made}`;
   const fill = (sel: string, svg: string) => {
     const box = art.querySelector(sel);
@@ -52,6 +61,7 @@ export function gamePadArt(opts: { shaft?: boolean; alt?: string } = {}): HTMLEl
 
 /** Presses the drawing's d-pad toward `pos` (0 centered, 1..8 clockwise from up) and the buttons in `buttons` (bit 0 = button 1). */
 export function showPad(art: HTMLElement, pos: number, buttons: number): void {
+  art.dataset.turbo = turboOn() ? '1' : '0';
   const dpad = art.querySelector<HTMLElement>('.gp-dpad');
   if (dpad && dpad.dataset.pos !== String(pos)) {
     dpad.dataset.pos = String(pos);

@@ -1,7 +1,7 @@
 // THE -= S A N D B O X =- BBS, the room inside the computer: ANSI floor and shade-block
 // walls, letter blocks that spell the board's name, the floppy and juice prizes (drawn over
 // the ANSI floor), the SysOp's terminal and the NO CARRIER doorway out.
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { ANSI, GRAY, STEEL } from '../art/palette';
 import { CTR } from '../rules';
 import { Pixels, art, bevel, rng, tile } from '../art/draw';

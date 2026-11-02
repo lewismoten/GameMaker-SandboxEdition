@@ -3,11 +3,11 @@
 //   cd web && npx vite-node ../games/teddy3/tools/one.ts <level file> [VERBOSE=1]
 // It imports src/levels/<file>.ts (the exported function of the same name) and
 // tools/routes/<file>.ts, starts with fresh energy, and fails on a missed exit or a lost life.
-import { newCharInfo } from '../../../web/src/engine/world';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { HEROES } from '../src/heroes';
 import type { Level } from '../src/levels/level';
 import { Recorder, playLevel, type Order } from './bot';
-import { Sim } from '../../kit/sceneSim';
+import { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 
 const file = process.argv[2];
 const mod = (await import(`../src/levels/${file}.ts`)) as Record<string, () => Level>;

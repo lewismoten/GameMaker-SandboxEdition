@@ -6,12 +6,21 @@
 //   cd web && npx vite-node scripts/castSprites.ts
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { BLEN, BLOCK_COUNTS, CHARBL, TRANSPARENT, orientIndex, parseBlocks, type Block, type BlockKind } from '../src/formats/blocks';
-import { parseCharacter, type Frame, type Sequence } from '../src/formats/character';
-import { parsePalette } from '../src/formats/palette';
+import {
+  BLEN,
+  BLOCK_COUNTS,
+  CHARBL,
+  TRANSPARENT,
+  orientIndex,
+  parseBlocks,
+  type Block,
+  type BlockKind,
+} from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseCharacter, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { chezPicture } from '../../games/kit/chez';
 import type { CastSprite } from '../src/cast/castSprite';
-import type { Pixels } from '../../games/kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { docLeo, DRESSED } from '../../games/teddy/src/sprites/people';
 import { propSprite } from '../../games/teddy/src/sprites/klown';
 import { docLeoWalk } from './castLeoSide';

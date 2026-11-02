@@ -5,7 +5,7 @@
 // fruit stand Gwinn already knocked over, and the Bijou, where the Clown Car waits.
 //
 // The blocks are in level4Tiles.ts, the monsters in level4Beasts.ts; this file lays out the map.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../art/draw';
 import { LevelMap, type Level } from './level';
 import { bandOf } from './level1Tiles';

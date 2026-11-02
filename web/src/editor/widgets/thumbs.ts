@@ -4,19 +4,27 @@
 // waveforms, music as a little score.
 import { kindOf, type FileKind } from '../core/project';
 import { paintIndexed } from '../core/draw';
-import { drawWave } from './waveform';
-import { BACKBL, BLEN, CHARBL, MONBL, TRANSPARENT, parseBlocks, type Block } from '../../formats/blocks';
-import { parsePalette, defaultPalette, type Palette } from '../../formats/palette';
-import { parseMap, MLEN, MWID } from '../../formats/map';
-import { parseMonsters } from '../../formats/monster';
-import { parseCharacter } from '../../formats/character';
-import { decodeGif, isGif } from '../../formats/gif';
-import { applyFliFrame, isFli, newFliCanvas, parseFli } from '../../formats/fli';
-import { parseSoundSet } from '../../formats/sound';
-import { decodeVoc, isVoc } from '../../formats/voc';
-import { isCmf, parseCmf } from '../../formats/cmf';
-import { parseGame } from '../../formats/game';
-import { parseBackdrop } from '../../formats/graphicScripts';
+import { drawSpeakerPitch, drawWave } from './waveform';
+import { BACKBL, BLEN, MONBL, TRANSPARENT, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parsePalette, defaultPalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { parseMap, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { characterPicture } from './characterPicture';
+import { characterBlockPicture } from './characterSets';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { applyFliFrame, isFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
+import { readSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import { paintMusicTimeline } from './musicTimeline';
+import { isCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { parseHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
+import { textColors, textPicture } from './textPicture';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../project/files';
 
 /** Everything a thumbnail may need: the file and its neighbors (for palettes and blocks). */
@@ -24,9 +32,13 @@ export interface ThumbSource {
   files: GameFiles;
   /** The palette the file is shown with. */
   palette?: Palette;
+  /** The DOS player's patches (companion), for the text color and the high-score screen. */
+  patches?: PlayerPatches;
+  /** A game's thumbnail draws only these scenes, at these spots (the Integrator's remembered board), not the DOS positions. */
+  boardAt?: Map<number, { x: number; y: number }>;
 }
 
-/** An emoji-free icon for each kind, drawn when there's nothing to show. */
+/** A fallback icon for each kind, drawn when there is no picture to show. */
 export const KIND_ICON: Record<FileKind, string> = {
   gam: '🎮',
   pal: '🎨',
@@ -74,6 +86,21 @@ function blocksMosaic(blocks: Block[], pal: Palette, count: number, cols: number
   return c;
 }
 
+/** The block a monster set is shown by: the first frame of the first monster a .mon uses, else the fullest block. */
+function monsterBlockChoice(blocks: Block[], files: GameFiles): Block[] {
+  const opaque = (b: Block) => b.pixels.reduce((n, p) => n + (p === TRANSPARENT ? 0 : 1), 0);
+  for (const monFile of files.byExtension('mon')) {
+    try {
+      const first = parseMonsters(files.get(monFile)!).find((m) => m.used && blocks[m.pic[0][0]] && opaque(blocks[m.pic[0][0]]));
+      if (first) return [blocks[first.pic[0][0]]];
+    } catch {
+      // an unreadable monster file: fall back to the fullest block
+    }
+  }
+  const best = blocks.reduce<Block | undefined>((a, b) => (!a || opaque(b) > opaque(a) ? b : a), undefined);
+  return best ? [best] : blocks;
+}
+
 /** The first frame of a 20x20 or 20x40 sprite, centered. */
 function sprite(top: Block | undefined, bottom: Block | undefined, pal: Palette): HTMLCanvasElement {
   const px = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
@@ -84,30 +111,22 @@ function sprite(top: Block | undefined, bottom: Block | undefined, pal: Palette)
   return c;
 }
 
-function bars(values: ArrayLike<number>, max: number, color: string): HTMLCanvasElement {
-  const [c, ctx] = canvas(SIZE, SIZE * 0.6);
-  ctx.fillStyle = '#0d1a10';
-  ctx.fillRect(0, 0, c.width, c.height);
-  ctx.fillStyle = color;
-  const w = c.width / values.length;
-  for (let i = 0; i < values.length; i++) {
-    const v = Math.min(1, values[i] / max);
-    ctx.fillRect(i * w, c.height * (1 - v), Math.max(1, w - 1), c.height * v);
-  }
-  return c;
-}
-
 function iconFor(kind: FileKind, label?: string): HTMLElement {
   const span = document.createElement('span');
-  span.className = 'thumb icon';
-  span.textContent = KIND_ICON[kind];
-  if (label) span.title = label;
+  span.className = label ? 'thumb icon problem' : 'thumb icon';
+  span.textContent = label ? 'Preview unavailable' : KIND_ICON[kind];
+  if (label) {
+    span.title = label;
+    span.setAttribute('role', 'img');
+    span.setAttribute('aria-label', label);
+  }
   return span;
 }
 
 /** A thumbnail for the file, or a kind icon when it can't be drawn. */
-export function fileThumb(name: string, bytes: Uint8Array | undefined, src: ThumbSource): HTMLElement {
+export function fileThumb(name: string, bytes: Uint8Array | undefined, src: ThumbSource, depth = 0): HTMLElement {
   const kind = kindOf(name);
+  if (depth > 4) return iconFor(kind, 'This slideshow links too deeply or loops back to itself.');
   if (!bytes) return iconFor(kind);
   const pal = src.palette ?? defaultPalette();
   try {
@@ -122,9 +141,15 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       case 'bbl':
         return blocksMosaic(parseBlocks(bytes, BACKBL), pal, 16, 4);
       case 'mbl':
-        return blocksMosaic(parseBlocks(bytes, MONBL), pal, 9, 3, true);
-      case 'cbl':
-        return blocksMosaic(parseBlocks(bytes, CHARBL), pal, 9, 3, true);
+        return blocksMosaic(monsterBlockChoice(parseBlocks(bytes, MONBL), src.files), pal, 1, 1, true);
+      case 'cbl': {
+        const picture = characterBlockPicture(src.files, name, bytes);
+        const [c] = canvas();
+        paintIndexed(c, picture.pixels, picture.width, picture.height, pal, true);
+        c.setAttribute('role', 'img');
+        c.setAttribute('aria-label', `Representative character pose from ${name.toUpperCase()}`);
+        return c;
+      }
       case 'map': {
         const m = parseMap(bytes);
         // the block set of the scene that uses this map, else the first one
@@ -156,14 +181,14 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         return first ? sprite(blocks[first.pic[0][0]], undefined, pal) : iconFor(kind);
       }
       case 'chr': {
-        const chr = parseCharacter(bytes);
-        const cbl = src.files.byExtension('cbl')[0];
-        const blocks = cbl ? parseBlocks(src.files.get(cbl)!, CHARBL) : [];
-        const f = chr.sequences[0]?.frames[0];
-        return f && blocks[f.pic1] ? sprite(blocks[f.pic1], blocks[f.pic2], pal) : iconFor(kind);
+        const picture = characterPicture(src.files, name, bytes);
+        if (!picture) return iconFor(kind);
+        const [c] = canvas();
+        paintIndexed(c, picture.pixels, picture.width, picture.height, pal, true);
+        return c;
       }
       case 'gif': {
-        if (!isGif(bytes)) return iconFor(kind);
+        if (!isGif(bytes)) return iconFor(kind, `${name.toUpperCase()} is not a GIF image.`);
         const g = decodeGif(bytes);
         const [c] = canvas(g.width, g.height);
         paintIndexed(c, g.pixels, g.width, g.height, g.palette);
@@ -173,7 +198,8 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         // the 320x200 window of its GIF that the game shows
         const b = parseBackdrop(bytes);
         const gif = src.files.get(b.gif);
-        if (!gif || !isGif(gif)) return iconFor(kind, `${b.gif} is missing`);
+        if (!gif) return iconFor(kind, `${b.gif.toUpperCase()} is missing.`);
+        if (!isGif(gif)) return iconFor(kind, `${b.gif.toUpperCase()} is not a GIF image.`);
         const g = decodeGif(gif);
         const w = Math.min(320, g.width);
         const hgt = Math.min(200, g.height);
@@ -185,19 +211,65 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
         paintIndexed(c, px, w, hgt, g.palette);
         return c;
       }
+      case 'txt': {
+        const [c] = canvas(320, 200);
+        const paint = (preferred?: number[]) => {
+          const text = textColors(pal, preferred);
+          paintIndexed(c, textPicture(bytes, text.ink), 320, 200, text.palette);
+        };
+        paint();
+        // then the player's text-pages color if it reads on this palette, else the nearest that does
+        // (the player's look is in the engine chunk, so it loads after the first paint)
+        const patches = src.patches;
+        if (patches)
+          void import('@lewismoten/gamemaker-sandbox-engine/engine/playerLook')
+            .then(({ playerLook }) => {
+              const i = playerLook(patches).color(pal, 'color.select.textPages');
+              paint(Array.from(pal.subarray(i * 3, i * 3 + 3)));
+            })
+            .catch(() => undefined);
+        c.title = 'First text page, on a blank background';
+        return c;
+      }
+      case 'lst': {
+        for (const slide of parseSlideList(bytes)) {
+          const data = src.files.get(slide.name);
+          if (!data) continue;
+          const picture = fileThumb(slide.name, data, src, depth + 1);
+          if (picture instanceof HTMLCanvasElement) return picture;
+        }
+        return iconFor(kind, 'This slideshow has no readable slides.');
+      }
       case 'fli': {
         if (!isFli(bytes)) return iconFor(kind);
         const anim = parseFli(bytes);
         const fc = newFliCanvas(anim);
         applyFliFrame(anim, 0, fc);
+        // a cartoon that fades in starts dark, white or flat: play on while its palette is still
+        // fading, to the first settled frame with contrast (none: the frame with the most)
+        let shown = { pixels: fc.pixels.slice(), palette: fc.palette.slice() };
+        let best = contrast(fc.pixels, fc.palette);
+        if (washedOut(best))
+          for (let n = 1; n < anim.frames.length; n++) {
+            const fading = applyFliFrame(anim, n, fc);
+            const now = contrast(fc.pixels, fc.palette);
+            const settled = !fading && !washedOut(now);
+            if (settled || now.spread > best.spread) {
+              best = now;
+              shown = { pixels: fc.pixels.slice(), palette: fc.palette.slice() };
+            }
+            if (settled) break;
+          }
         const [c] = canvas(anim.width, anim.height);
-        paintIndexed(c, fc.pixels, anim.width, anim.height, fc.palette);
+        paintIndexed(c, shown.pixels, anim.width, anim.height, shown.palette);
         return c;
       }
       case 'snd': {
         const s = parseSoundSet(bytes);
         const f = s.freqs.find((x) => x.some(Boolean)) ?? s.freqs[0];
-        return bars(f, 4000, '#6cf28a');
+        const [c] = canvas(SIZE, SIZE * 0.6);
+        drawSpeakerPitch(c, f);
+        return c;
       }
       case 'voc': {
         if (!isVoc(bytes)) return iconFor(kind);
@@ -208,47 +280,103 @@ export function fileThumb(name: string, bytes: Uint8Array | undefined, src: Thum
       }
       case 'cmf': {
         if (!isCmf(bytes)) return iconFor(kind);
-        const music = parseCmf(bytes).music;
-        const notes: number[] = [];
-        for (let i = 0; i < music.length - 2 && notes.length < 40; i++) if ((music[i] & 0xf0) === 0x90 && music[i + 2] > 0) notes.push(music[i + 1]);
-        return notes.length
-          ? bars(
-              notes.map((n) => n - 30),
-              70,
-              '#8fb4ff',
-            )
-          : iconFor(kind);
+        const [c] = canvas(SIZE, SIZE * 0.6);
+        paintMusicTimeline(c, readSong(bytes));
+        return c;
+      }
+      case 'his': {
+        // the game's own high-score screen, drawn by the DOS player preview over its picture
+        const list = parseHighScores(bytes);
+        const [c] = canvas(320, 200);
+        c.setAttribute('role', 'img');
+        c.setAttribute('aria-label', `High scores: ${list.filter((e) => e.score).length} of ${list.length} places filled`);
+        const gam = src.files.byExtension('gam')[0];
+        void Promise.all([import('../editors/integrator/dosPlayer/playerPreview'), import('@lewismoten/gamemaker-sandbox-engine/engine/playerLook')])
+          .then(([{ drawPreview }, { playerLook }]) => {
+            const game = parseGame(src.files.get(gam)!);
+            const stem = name.replace(/\.[^.]*$/, '');
+            drawPreview(new Screen(c), src.files, game, stem, playerLook(src.patches), 'hiscores');
+          })
+          .catch(() => undefined);
+        return c;
+      }
+      case 'rec': {
+        // a recording holds key presses, not pictures: draw them as ticks along its length
+        const keys = parseRecording(bytes);
+        const [c, ctx] = canvas(SIZE, SIZE * 0.6);
+        ctx.fillStyle = '#10142a';
+        ctx.fillRect(0, 0, c.width, c.height);
+        const total = keys.reduce((t, k) => t + k.delta, 0) || 1;
+        let at = 0;
+        ctx.fillStyle = '#6cf28a';
+        for (const k of keys) {
+          at += k.delta;
+          const x = Math.min(c.width - 2, Math.round((at / total) * (c.width - 4)) + 1);
+          if (k.key & 0x80) ctx.fillRect(x, 28, 1, 6);
+          else ctx.fillRect(x, 8, 1, 20);
+        }
+        ctx.fillStyle = '#c8d0ff';
+        ctx.fillRect(1, 40, c.width - 2, 1);
+        c.setAttribute('role', 'img');
+        c.setAttribute('aria-label', `Recording of ${keys.length} key events, about ${Math.round(total / 18.2)} seconds`);
+        return c;
       }
       case 'gam': {
         const g = parseGame(bytes);
         const [c, ctx] = canvas();
         ctx.fillStyle = '#10142a';
         ctx.fillRect(0, 0, SIZE, SIZE);
-        const xs = g.scenes.map((s) => s.pos.x);
-        const ys = g.scenes.map((s) => s.pos.y);
+        const at = (i: number) => src.boardAt?.get(i) ?? g.scenes[i].pos;
+        const shown = g.scenes.map((_, i) => i).filter((i) => !src.boardAt || src.boardAt.has(i));
+        const xs = shown.map((i) => at(i).x);
+        const ys = shown.map((i) => at(i).y);
         const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs) + 1, Math.min(...ys), Math.max(...ys) + 1];
         const sx = (x: number) => 8 + ((x - x0) / Math.max(1, x1 - x0)) * (SIZE - 16);
         const sy = (y: number) => 8 + ((y - y0) / Math.max(1, y1 - y0)) * (SIZE - 16);
         ctx.strokeStyle = '#7f9cff';
-        g.scenes.forEach((s) =>
-          s.links.forEach((l) => {
-            const t = g.scenes[l.toScene];
-            if (!t) return;
+        shown.forEach((i) =>
+          g.scenes[i].links.forEach((l) => {
+            if (!shown.includes(l.toScene)) return;
             ctx.beginPath();
-            ctx.moveTo(sx(s.pos.x), sy(s.pos.y));
-            ctx.lineTo(sx(t.pos.x), sy(t.pos.y));
+            ctx.moveTo(sx(at(i).x), sy(at(i).y));
+            ctx.lineTo(sx(at(l.toScene).x), sy(at(l.toScene).y));
             ctx.stroke();
           }),
         );
-        g.scenes.forEach((s, i) => {
-          ctx.fillStyle = i === 0 ? '#ffd400' : s.gametype === 2 ? '#ff6b61' : '#6cf28a';
-          ctx.fillRect(sx(s.pos.x) - 4, sy(s.pos.y) - 4, 8, 8);
+        shown.forEach((i) => {
+          ctx.fillStyle = i === 0 ? '#ffd400' : g.scenes[i].gametype === 2 ? '#ff6b61' : '#6cf28a';
+          ctx.fillRect(sx(at(i).x) - 4, sy(at(i).y) - 4, 8, 8);
         });
         return c;
       }
     }
   } catch {
-    /* fall through to the icon */
+    if (['gif', 'bkd', 'txt', 'lst', 'his', 'rec'].includes(kind)) return iconFor(kind, `${name.toUpperCase()} could not be decoded.`);
   }
   return iconFor(kind);
+}
+
+/** A frame's mean brightness and its spread (0-255), from about 4,000 pixels; the palette may be 6-bit (0-63). */
+function contrast(pixels: Uint8Array, palette: Uint8Array): { mean: number; spread: number } {
+  let top = 0;
+  for (const v of palette) top = Math.max(top, v);
+  const scale = top <= 63 ? 255 / 63 : 1;
+  const step = Math.max(1, Math.floor(pixels.length / 4000));
+  let sum = 0;
+  let sq = 0;
+  let n = 0;
+  for (let i = 0; i < pixels.length; i += step) {
+    const k = pixels[i] * 3;
+    const y = (0.299 * palette[k] + 0.587 * palette[k + 1] + 0.114 * palette[k + 2]) * scale;
+    sum += y;
+    sq += y * y;
+    n++;
+  }
+  const mean = n ? sum / n : 0;
+  return { mean, spread: n ? Math.sqrt(Math.max(0, sq / n - mean * mean)) : 0 };
+}
+
+/** Mostly dark or mostly white with little contrast, or nearly one flat color: a fade. */
+function washedOut({ mean, spread }: { mean: number; spread: number }): boolean {
+  return spread < 10 || ((mean < 48 || mean > 208) && spread < 28);
 }

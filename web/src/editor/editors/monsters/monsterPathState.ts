@@ -1,8 +1,8 @@
 // The monster path editor's shared state: which path is open, the corner picked, the map and
 // start it is drawn on, the walking preview, the panels' elements, and the calls each part makes
 // back into the editor (monsterPathEditor.ts makes one per editor).
-import type { Block } from '../../../formats/blocks';
-import type { GameMap } from '../../../formats/map';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { pathKind, type PathKind, type PathWalker } from './monsterPath';
 import type { mapChoices, PathEditorOptions } from './monsterPathView';
 

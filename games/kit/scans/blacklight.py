@@ -20,7 +20,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[3]
-PHOTO = ROOT / '.for-lewis/songs/the-bard-of-bizarre-lewie.jpg'
+PHOTO = ROOT / '.for-lewis/reference/songs/the-bard-of-bizarre-lewie.jpg'
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / 'web/public/desk'
 W, H = 416, 430  # the poster: as wide as the wall between the big poster and the monitor
 ART_H = 340  # the portrait above the title
@@ -39,7 +39,7 @@ BRIM = [(100, 300), (124, 300), (220, 250), (350, 216), (480, 236), (560, 282), 
 FACE = (344, 404, 182, 214)  # an ellipse: center, radii (the ears and neck join it by color)
 BAND = ((176, 172), (512, 184))  # the hat band's bottom edge, a line just above the brim
 # his hobo makeup, drawn as a cartoon over the photo's shapes where it sits on his face
-# (700-scale; .for-lewis/clown/doc-leo-walking-rubber-chicken.webp shows it best): his
+# (700-scale; .for-lewis/reference/clown/doc-leo-walking-rubber-chicken.webp shows it best): his
 # glasses, white patches round both eyes, bold painted eyebrows, his own nose and cheeks
 # sunburned red (a hobo wears no clown nose), the blue-gray painted stubble all round the
 # jaw, chin and upper lip, and the white mouth with the turned-down line in it (sad, never

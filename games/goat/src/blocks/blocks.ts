@@ -5,7 +5,7 @@
 // census scroll opens the alley), wool caught on the thorns counts toward your gift, the
 // kneeling camels give birth to spit, the pail costs you points to kick, and the empty
 // place in the line at the manger only opens for five wool.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
@@ -13,6 +13,7 @@ import type { Pal } from '../art/pal';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 import { lewieCameo } from '../../../kit/cameos';
+import { goatBadges } from './badges';
 import { goatArt } from '../sprites/sprites';
 import { MON, SCREAMSEQ, WOOL, WOOL_NEEDED } from '../ids';
 
@@ -719,5 +720,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   micro(screamSign, 1, 5, 'SPACE', c('red', 1));
   book.add('signScream', screamSign, { solid: SOLID });
   book.add('troughFieldSip', stoneTrough(true), { ...sip, next: 'troughField', touch: 'troughField' });
+  // (last) scenery for the site's achievement badges: a shooting star and a startled goat
+  goatBadges(book, pal, book.pics.get('floor')!);
   return book;
 }

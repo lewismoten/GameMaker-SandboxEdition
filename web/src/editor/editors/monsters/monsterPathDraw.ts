@@ -3,8 +3,8 @@
 // the next lap goes), the start or the character, each corner with the picture the monster
 // shows on the way there, and the monster walking it. monsterPathEditor.ts keeps the state
 // and redraws with drawPathScene when something changed.
-import { MLEN, MWID, type GameMap } from '../../../formats/map';
-import { BLEN } from '../../../formats/blocks';
+import { MLEN, MWID, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Corner, PathKind, PathWalker } from './monsterPath';
 import { CELL, SCALE } from './monsterPathView';
 

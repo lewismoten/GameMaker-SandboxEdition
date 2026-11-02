@@ -71,17 +71,81 @@ export class Sampler {
 
 const tmpHit = new HitRec();
 
+// A cheap box test in front of every shape that has bounds. The bounds are padded, so it only rejects
+// rays that cannot hit the shape: what is drawn is exactly what testing every shape would draw.
+interface BoundsTable {
+  n: number;
+  /** Per shape: lo x, y, z then hi x, y, z, or NaN when the shape has no bounds. */
+  b: Float64Array;
+}
+const tables = new WeakMap<Shape[], BoundsTable>();
+
+function boundsOf(shapes: Shape[]): Float64Array {
+  let t = tables.get(shapes);
+  if (t && t.n === shapes.length) return t.b;
+  const b = new Float64Array(shapes.length * 6).fill(NaN);
+  shapes.forEach((s, i) => {
+    if (!s.bounds) return;
+    for (let a = 0; a < 3; a++) {
+      const lo = s.bounds[0][a];
+      const hi = s.bounds[1][a];
+      b[i * 6 + a] = lo - 1e-6 - Math.abs(lo) * 1e-9;
+      b[i * 6 + 3 + a] = hi + 1e-6 + Math.abs(hi) * 1e-9;
+    }
+  });
+  t = { n: shapes.length, b };
+  tables.set(shapes, t);
+  return b;
+}
+
+/** False only when the ray certainly misses the padded bounds of shape `i` before `tmax`. */
+function reaches(b: Float64Array, i: number, o: V, d: V, tmax: number): boolean {
+  const k = i * 6;
+  if (b[k] !== b[k]) return true;
+  let t0 = 0;
+  let t1 = tmax * (1 + 1e-9) + 1e-9;
+  for (let a = 0; a < 3; a++) {
+    const da = d[a];
+    const oa = o[a];
+    const lo = b[k + a];
+    const hi = b[k + 3 + a];
+    if (Math.abs(da) < 1e-12) {
+      if (oa < lo || oa > hi) return false;
+      continue;
+    }
+    let ta = (lo - oa) / da;
+    let tb = (hi - oa) / da;
+    if (ta > tb) {
+      const x = ta;
+      ta = tb;
+      tb = x;
+    }
+    if (ta > t0) t0 = ta;
+    if (tb < t1) t1 = tb;
+    if (t0 > t1) return false;
+  }
+  return true;
+}
+
 export function intersect(world: World, o: V, d: V, h: HitRec, ghost = false): boolean {
   h.t = Infinity;
   h.shape = undefined;
   let any = false;
-  for (const s of world.shapes) if (!!s.ghost === ghost && s.hit(o, d, h)) any = true;
+  const shapes = world.shapes;
+  const b = boundsOf(shapes);
+  for (let i = 0; i < shapes.length; i++) {
+    const s = shapes[i];
+    if (!!s.ghost === ghost && reaches(b, i, o, d, h.t) && s.hit(o, d, h)) any = true;
+  }
   return any;
 }
 
 function occluded(world: World, o: V, d: V, tmax: number): boolean {
-  for (const s of world.shapes) {
-    if (s.ghost) continue;
+  const shapes = world.shapes;
+  const b = boundsOf(shapes);
+  for (let i = 0; i < shapes.length; i++) {
+    const s = shapes[i];
+    if (s.ghost || !reaches(b, i, o, d, tmax)) continue;
     if (s.occludes) {
       if (s.occludes(o, d, tmax)) {
         return true;

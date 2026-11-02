@@ -1,7 +1,7 @@
 // Turbo off: the slower PC skips only the timer ticks it is still busy for, as PLAYGAME did.
 import { describe, expect, it } from 'vitest';
-import { TICK_RATE } from '../audio/cmfPlayer';
-import { scrollCost, SlowCpu, tickCost, TURBO_OFF, type PcCosts } from './slowPc';
+import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { scrollCost, SlowCpu, tickCost, TURBO_OFF, type PcCosts } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 
 const INT_MS = 1000 / TICK_RATE;
 

@@ -2,9 +2,9 @@
 // time on each FM voice, only the channels rhythm mode sounds, at most 128 instruments, and
 // the tune untouched. A seed gives the same take again; another seed gives another.
 import { describe, expect, it } from 'vitest';
-import { song as composeSong, INSTRUMENTS } from '../../../../audio/compose';
-import { channelNotes, channelSounds, startMode, startProgram } from '../../../../formats/cmfEdit';
-import { noteEnd, readSong, traceMusic, writeSong, musicOf, type CmfSong } from '../../../../formats/cmfSong';
+import { song as composeSong, INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/music/compose';
+import { channelNotes, channelSounds, startMode, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { noteEnd, readSong, traceMusic, writeSong, musicOf, type CmfSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { presetById } from '../../../../audio/oplPresets';
 import { accompany, RANGES } from './accompany';
 import { copyTune } from './copyTune';

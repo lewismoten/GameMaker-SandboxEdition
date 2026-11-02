@@ -7,7 +7,7 @@
 //   3. The Sewers: "No rats yet, but I will answer when fate makes its demand": the city's wild
 //      rats along the walkways, steam to ride, an alligator in the channel, bats.
 //   4. The Empire: up the storm-struck tower to the balcony, where the laughing carpet will bow.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 
@@ -198,6 +198,8 @@ export function course(book: BlockBook): Level {
   m.patch(13, 2, ['1234', 'tttt']).set(10, 2, 'O').set(25, 3, 'W').set(53, 3, 'W');
   // Mystery Robot Joe (Keep It Brief!) by the chalkboard, counting rats on his tally counter
   m.set(12, 9, 'joe');
+  // scenery: a toolbox on the floor, a clipboard by the keys, a fax and a hex keypad and a pirate-hatted monitor on the desks
+  m.set(29, 9, 'toolbox').set(6, 3, 'clipboardOk').set(34, 7, 'fax').set(18, 7, 'hexPad').set(48, 7, 'pirateDos');
   // the wide window onto the parking lot, THE CHEZ charging under the lamp
   m.set(40, 3, 'windowLotL').set(41, 3, 'windowLotR');
   // practice rat 1, on the floor
@@ -228,6 +230,18 @@ export function lab(book: BlockBook): Level {
   const W = 78;
   const H = 14;
   const m = new MapBuilder(book, 'lab', 1).room(W, H);
+  // scenery: a mixing panel, a UV bulb, a blacklight, a CRT, a sound card, a disk, a terminal
+  m.set(14, 4, 'mixer')
+    .set(36, 1, 'uvBulb')
+    .set(56, 3, 'blacklight')
+    .set(58, 9, 'crtRings')
+    .set(29, 9, 'soundCard')
+    .set(15, 9, 'screwdriverDisk')
+    .set(38, 5, 'helloTerm')
+    .set(3, 2, 'eggTeddy')
+    .set(24, 2, 'rocketCord')
+    .set(69, 3, 'cardFile')
+    .set(50, 2, 'uvEgg');
   m.set(4, 5, 'p').set(8, 4, 'd').set(30, 4, 'd').set(47, 3, 'p').set(64, 4, 'd');
   // the first bench, flasks bubbling, a rat on the floor (its walk a block short of the bench, so
   // coming back it never pushes the rat tickler's head into the bench top) and one on the bench
@@ -296,6 +310,7 @@ export function tower(book: BlockBook): Level {
   const W = 44;
   const H = 24;
   const m = new MapBuilder(book, 'tower', 3).room(W, H);
+  m.set(6, 6, 'surfer');
   m.set(3, 14, 'B').set(8, 17, 'n').set(16, 2, 'n').set(28, 17, 'n').set(38, 11, 'n').set(26, 3, 'B').set(40, 18, 'B');
   // the floor: rats, a Jacob's ladder
   m.mon(MON.wildRat, 4, 21).mon(MON.labTense, 12, 21).mon(MON.wildRat, 30, 21);

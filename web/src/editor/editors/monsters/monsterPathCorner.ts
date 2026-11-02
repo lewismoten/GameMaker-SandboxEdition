@@ -2,8 +2,8 @@
 // speed controls (in the popup on the map and the side panel), and adding or deleting a corner.
 import { h, clear, toast } from '../../core/ui';
 import { paintBlock } from '../../core/draw';
-import { BLEN, MONBL } from '../../../formats/blocks';
-import { MAXMARCH } from '../../../formats/monster';
+import { BLEN, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXMARCH } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corners, firstCorner, insertCorner, removeCorner } from './monsterPath';
 import { MAX_SPEED, ORIENTS } from './monsterPathView';
 import { kind, mon, path, type PathEd } from './monsterPathState';

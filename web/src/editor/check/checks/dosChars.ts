@@ -5,10 +5,10 @@
 // game's own files are text pages (a .txt any scene slot shows, also inside a slide list), the
 // game's name on the menu (the start scene's description) and the names in a shipped .his.
 // games/kit/textfitCheck.ts runs the same scan over a built disk.
-import { ADVTYPE, type Game } from '../../../formats/game';
-import { parseSlideList, textLines } from '../../../formats/graphicScripts';
-import { parseHighScores } from '../../../formats/highscore';
-import { fromCp437 } from '../../../retro/text/cp437';
+import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { parseHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
+import { fromCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import type { Finding } from '../findings';
 import type { FileSource } from '../sim';
 

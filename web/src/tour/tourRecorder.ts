@@ -12,6 +12,9 @@ interface CaptureOptions extends DisplayMediaStreamOptions {
 
 const TYPES = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/webm;codecs=vp9,opus', 'video/webm'];
 
+/** The outcome of asking to record: a recorder, or why there is none. */
+export type AskResult = { recorder: TourRecorder; reason?: undefined } | { recorder?: undefined; reason: 'declined' | 'unsupported' };
+
 export class TourRecorder {
   private recorder?: MediaRecorder;
   private parts: Blob[] = [];
@@ -21,9 +24,9 @@ export class TourRecorder {
 
   private constructor(private stream: MediaStream) {}
 
-  /** Asks to share this tab (call it right after a click); undefined when refused or not possible. */
-  static async ask(): Promise<TourRecorder | undefined> {
-    if (!navigator.mediaDevices?.getDisplayMedia || typeof MediaRecorder === 'undefined') return undefined;
+  /** Asks to share this tab (call it right after a click); says why not when refused or not possible. */
+  static async ask(): Promise<AskResult> {
+    if (!navigator.mediaDevices?.getDisplayMedia || typeof MediaRecorder === 'undefined') return { reason: 'unsupported' };
     const options: CaptureOptions = {
       video: { frameRate: 30 },
       audio: true,
@@ -32,9 +35,9 @@ export class TourRecorder {
       systemAudio: 'include',
     };
     try {
-      return new TourRecorder(await navigator.mediaDevices.getDisplayMedia(options));
+      return { recorder: new TourRecorder(await navigator.mediaDevices.getDisplayMedia(options)) };
     } catch {
-      return undefined;
+      return { reason: 'declined' };
     }
   }
 

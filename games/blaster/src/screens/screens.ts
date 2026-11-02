@@ -3,15 +3,16 @@
 // stages (busCartoon.ts), and the endings. Every page
 // Game-Maker writes on has a pale panel where its text goes, so its purple, blue and red
 // letters stay readable over the art.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../../../kit/pixels';
-import { loadScan, pastePhoto, resample } from '../../../kit/photo';
-import { dosText } from '../../../kit/disk';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { pastePhoto, resample } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { clipEntries, fliClips } from '../../../kit/fliClips';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
+import { clipEntries, fliClips } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { CLEAR, centered, flipX, outlined, text, turn180, turn45, turn90 } from '../art/draw';
 import { X0 } from '../stages/mapkit';
 import { renderRegion } from '../art/render';
@@ -81,7 +82,7 @@ function titleScreen(): Pixels {
   logo(p, 14);
   scaleBlit(p, SHIP, 34, 110, 3);
   scaleBlit(p, SHIP, 232, 124, 2);
-  centered(p, 186, '(C) 1995 SANDBOX SOFTWARE', c('gray', 7), 1, c('ink', 0));
+  centered(p, 186, '(C) 1994 SANDBOX SOFTWARE', c('gray', 7), 1, c('ink', 0));
   return p;
 }
 
@@ -151,7 +152,7 @@ function introFli(): Uint8Array {
       return s;
     });
     const p = desk((g) => dos(g, lines.concat(f % 4 < 2 ? ['_'] : [])));
-    caption(p, 'LATE ONE NIGHT IN 1995...');
+    caption(p, 'LATE ONE NIGHT IN 1994...');
     frames.push(frame(p));
   }
   // 2. GLITCH appears

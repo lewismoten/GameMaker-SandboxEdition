@@ -2,12 +2,26 @@
 
 Helpers for building the original games in `games/<id>/` in code. Each game has a
 `build.ts` that draws its blocks, lays out its maps, composes its music and writes every
-file through the same format code the web app reads (`web/src/formats`), into
+file through the same format code the web app reads (`@lewismoten/gamemaker-sandbox-engine/formats/*`), into
 `games/<id>/disk/`. Run one with:
 
 ```sh
 cd web && npx vite-node ../games/<id>/build.ts
 ```
+
+Reusable builders, drawing, synthesis, native animation, layout audits and headless helpers
+belong to [`web/packages/tools`](../../web/packages/tools/README.md). Its `kit/*` APIs include
+`pixels`, `palette`, `palRamps`, `pcText`, `microText`, `blit`, `shading`, `transforms`,
+`coverPaint`, `quantize`, `sdftext`, `raytrace`, `png`, `photo`, `levelPicture`, `actors`,
+`screenText`, `saveSlots`, `road3d`, `disk`, `menuVersion`, `fadeOut`, `fliClips`,
+`recordedDemo`, `synthParts`, `song`, `songFx`, `hopBot`, `align`, `sceneInit`, `routeChecks`,
+and `textfit`, alongside the earlier music, sound, simulation and clip APIs.
+Import them through the package rather than copying implementations here.
+
+This folder keeps game artwork and repository policy: `disk.ts` reads `about.json`, honors
+`GAME_DISK_OUT` and reports build totals; `photo.ts` locates this repository's scans;
+`align.ts` selects a repository disk and prints its audit. The portable work is in the package.
+The descriptions below cover both package-owned helpers and the remaining repository tools.
 
 Making the files:
 
@@ -80,7 +94,9 @@ Making the files:
   endings, game overs and cut scenes are cut too).
   PLAYGAME plays a whole FLI before it reads Esc, so a list of short clips lets the player skip within a few seconds.
   Cuts fall where the palette holds and least changes; the clips play exactly the frames of the whole one
-  (`web/src/formats/fliClips.test.ts`).
+  (`web/src/formats/fliClips.test.ts`). Opt-in `ClipOptions`: `noLoopFrame` drops each clip's ring frame
+  (PLAYGAME plays only the header's frame count), `cheapCuts` cuts where opening on a whole frame adds the
+  fewest bytes (a scene change), in no more clips.
 - `photo.ts` — real photos for the endings: the small scans in `scans/` (made once from the owner's photos by
   `scans/scan.ts`) resized for VGA's tall pixels, given a picture's unused palette entries and dithered in; polaroid frames.
 - `chez.ts` — THE CHEZ, the red CitiCar, as a two-block side view (or smaller, seen through a window) for a
@@ -107,17 +123,23 @@ Making the files:
 
 Checking the games:
 
-- `checkGames.ts` — `cd web && npm run check:games`: every game's checks, one game at a time, and a table; exits 1 on
-  any failure. Per game: a rebuild into a temp folder (`GAME_DISK_OUT`) that must match the committed `disk/` byte for
-  byte and cut off no text (`textBounds.ts`), `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
-  `playerCheck.ts` (when the game has a player.json); then `tinHearts.ts check`,
-  `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no rebuild compare), `--no-level`, `--verbose`, and `--play`
+- `checkGames.ts` — `cd web && npm run check:games`: every game's checks and a table (builds one at a time, then `--jobs N` games checked at once, default half the CPUs; a lock in the temp folder makes a second run wait); exits 1 on
+  any failure. Per game: two builds into temporary folders (`GAME_DISK_OUT`) that must match each other byte for
+  byte and cut off no text (`textBounds.ts`); unchanged working output is kept in place, `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
+  `playerCheck.ts` (when the game has a player.json), `controlsCheck.ts` (when it has a controls.json); then `tinHearts.ts check`,
+  `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no reproducibility rebuild), `--jobs N`, `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
+- `controlsCheck.ts` — `npx vite-node ../games/kit/controlsCheck.ts [<id>...]`: a game's `controls.json` (keys by scan code, joystick
+  buttons, counters by meter, sound names by slot; the shape of `editor/core/gameControls.ts`) describes exactly what its built disk uses, by the
+  editor's `gameKeyMap`, `counterUses` and `soundUses` (a custom slot past the engine's nine that a character plays must be named): lists used-but-not-described, described-but-not-used and text over the limits (32/240/80, sound names 40).
 - `saveSignCheck.ts` — `npx vite-node ../games/kit/saveSignCheck.ts [<id>...]`: every felt-egg game has exactly one save
   sign, where its about.json says, on the egg's map or one it links to; no other game has one.
 - `walkCheck.ts` — replays a committed `walkthrough.json` on the real engine: it must reach the ending with the frames and
   chapter marks it was recorded with, and cut off no clip.
+- `integrator.json` (optional, per game) — how the web editor's Game Integrator arranges a big game's scenes into named boards
+  and stacked groups (`web/src/editor/editors/integrator/boardLayout.ts`: `{ boards, place, groups }`, scenes by index). "Look inside"
+  opens with it (`shippedBoards.ts`, found with `import.meta.glob`). Editor-only: never in `disk/`, a download or the DOS export.
 - `player.ts` / `playerCheck.ts` — a game's DOS player look, `games/<id>/player.json`: the `{ "base": "xferplay-3.00",
 "patches": { … } }` record a project keeps in its companion (`web/src/dosPlayer/playerRecord.ts`; ids and limits in
   `web/src/dosPlayer/patchTable.ts`). The site shows it wherever the game plays or ships (`web/src/dosPlayer/
@@ -142,16 +164,25 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   hands and stuck spots, which scenes it found no way through, and how tight the walkthrough's key changes are
   (`web/src/editor/check/walk/pace.ts`). It only reports: play findings depend on the time the bot has, so they are
   not in the baseline.
+- `optimizeProof.ts [<id>...] [--write <dir>]` (`npm run optimize:proof`, from `web/`) — applies every disk-tool step to a copy of each built game and proves each scene draws the same (pixel for pixel in RGB) and carried block numbers keep their picture; prints steps and bytes saved, exits 1 on a difference. `optimizeProofReserve.ts` adds a second line per game: proposed palette reservations, the reductions and syncs they need, the extra bytes the steps then save, and the delta E of any scene against the original (`--no-reserve` skips it).
+- `diskSpace.ts [<id>...] [--write] [--strict]` — runs the editor's disk-space tool (`web/src/editor/disk`) over built
+  games: what it would merge, what it leaves alone and why, and the size in 1.44 MB and 720 KB floppies. It reads
+  `games/<id>/disk` and changes nothing; `--write` also writes `.for-lewis/research/disk-space-findings.md`, `--strict`
+  exits 1 when a step is left to apply.
 - `syncCheck.ts` — `levelSecrets.json` and every box's play hours are current (what `scripts/levelSecrets.ts` and
   `playtime.ts` would write), and `levelViews.json` was scanned from the game's disk and walkthrough as they are now
   (else rerun `npx vite-node scripts/levelViews.ts <id>`), without writing anything.
 - `versionCheck.ts` / `versions.ts` — each game's version is `"version": "major.minor"` in its about.json, the one
   place it is written: the game's text reads it from there (the in-story date beside it stays as written), and the
   site shows it. Once a game's `disk/` differs from the last push to master (`git merge-base HEAD origin/master`, else
-  the local master), its version must be higher than it was there: bump the **major** (1.1 → 2.0) for new, removed or
+  the local master), its version must be higher than it was there (historical disks are rebuilt from source when untracked): bump the **major** (1.1 → 2.0) for new, removed or
   reordered levels or a big gameplay change, the **minor** (1.0 → 1.1) for anything else (art, text, sounds, a level's
   layout). One bump covers every change until the next push. `npx vite-node ../games/kit/versionCheck.ts [<id>...]`
   names each game to bump; with no master to compare with (no git history) it skips with a note.
+  `hardCodedVersion.ts` (run by `versionCheck.ts`) also fails a game whose `src/` types its own version by hand
+  (`v1.2`, `Version 1.2`, `VER 1.2`) instead of reading `about.version`; a line naming another program's version
+  goes in its `ALLOWED` list (now: the software box in Snowbound's scene art). Engine and format versions
+  ("Game-Maker 3.0", "MS-DOS 5.0", CMF, VOC) don't match the pattern.
 - `sceneSim.ts` — a headless copy of PLAYGAME's main loop for one scene, built from the build's own data
   (no disk). The bots of teddy, teddy2, teddy3, logic and brief play on it.
 - `gameSim.ts` — a headless PLAYGAME that plays a built disk scene after scene (links, deaths, the ending),
@@ -190,8 +221,20 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   joins up across block edges. Each game's `tools/align.ts` names its objects; its `tools/check.ts` runs it.
 - `playtime.ts` — sets each box's "Over N hours of gameplay!" (`about.json` `box.hours`) from the walkthroughs:
   `cd web && npx vite-node ../games/kit/playtime.ts` after any walkthrough changes.
+- `scoreAudit.ts` — replays committed walkthroughs without rebuilding disks and prints each completed game's final score plus its score at every scene entrance. Use it to compare score curves before changing a game's point values: `cd web && npx vite-node ../games/kit/scoreAudit.ts [id...]`.
+- `dosStates.ts` — replays each CD game's `demo.rec` through the web engine and compares it with the DOS-recorded tables in `dosStates/` (see its README), printing the first differing line per game: `cd web && npx vite-node ../games/kit/dosStates.ts [game...]`. Local only (nebula and peach are long).
 - `png.ts` — a PNG writer and block sheets for design previews (used by the games' `tools/`, never on a disk).
 
 `cdDemos/` is apart from the Sandbox games: a curious bot (`bot.ts`, `probe.ts`) that plays any Game-Maker
 game on the real engine run headless (`headless.ts`), used by `make.ts` to record title demos for the CD
 games that shipped without one (`cd web && npx vite-node ../games/kit/cdDemos/make.ts [ids…]`).
+
+Recorded source clips use lossless PCM WAV for inline GitHub audio previews. The cutters in `song/cutclips.py` write that
+format with the nominal sample rate; game builders use
+`@lewismoten/gamemaker-sandbox-tools/audio-files` to decode samples or create native VOCs.
+The native WAV conversion needs no external decoder; FFmpeg is only needed for cutting
+recordings or converting compressed sources such as Ogg. Keep `.wav` authoring sources outside
+`disk/`; native 8.3 `.VOC` output must remain byte-identical in this format migration.
+
+`versionDisks.ts` compares current build output to a Git revision. It reads legacy tracked disk blobs directly; for source-only revisions it extracts a temporary source snapshot, reuses installed third-party dependencies, resolves workspace packages from that snapshot, and builds the historical disk. `files(id)` returns a game's disk at the revision as name to bytes (used by `npm run disk:diff -- <id> --since`), and `lastPushToMaster(root)` picks the default revision. This stays local, outside CI.
+`moneyAudit.ts` replays the committed walkthroughs without rebuilding disks and reports each game's visible money counter at scene starts and its win.

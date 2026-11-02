@@ -6,8 +6,8 @@
 //   transfer (copying blocks, converting palettes) -> BlockDesigner (menus, mouse).
 import type { RetroHost } from '../../retro/host';
 import { WorkArea } from '../../retro/dos/workArea';
-import { BACKBL, BLEN, type Block } from '../../formats/blocks';
-import { type Monster } from '../../formats/monster';
+import { BACKBL, BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { type RGBdata, type Vga } from '../shared/vga';
 import { BLACK, Face, GREEN, GRAY3, RED1, RED2, RED3, initStartCols } from '../shared/facelift';
 import { GLEN, newBlock, copyBlock } from './layout';

@@ -2,7 +2,7 @@
 // photos, `s` pixels a unit. Whoever sits inside shows only through the door window; a head out
 // of the window is drawn on top. Teddy rides in the front passenger seat, looking out the door
 // window beside the driver. (The sequel draws its rides with this file too.)
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CHEZ_WINDOW, chezSide, type ChezInk } from '../../../kit/chez';
 import { CLEAR } from '../art/draw';
 

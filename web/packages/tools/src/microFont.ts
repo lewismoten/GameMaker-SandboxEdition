@@ -1,7 +1,17 @@
-// 3×5 sign font by Lewis Moten using Anthropic Claude Opus 5.5, project MIT License.
-// From games/teddy/src/art/draw.ts (introduced in 7241036f49cab9dea52f58541e30ce6c9ce86052).
-// Extracted by OpenAI Codex; see ../NOTICE.md. Row-major bits, uppercase ASCII and punctuation.
-export const MICRO_GLYPHS: Readonly<Record<string, string>> = Object.freeze({
+// Project 3×5 sign fonts by Lewis Moten using Anthropic Claude Opus 5.5 (MIT); see ../NOTICE.md.
+// OpenAI Codex consolidated the rounded and square variants, retaining every published glyph.
+export type MicroGlyphs = Readonly<Record<string, string>>;
+export const MICRO_GLYPHS: MicroGlyphs = Object.freeze({
+  '0': '111101101101111',
+  '1': '010110010010111',
+  '2': '110001010100111',
+  '3': '110001010001110',
+  '4': '101101111001001',
+  '5': '111100110001110',
+  '6': '011100111101111',
+  '7': '111001010010010',
+  '8': '111101111101111',
+  '9': '111101111001110',
   A: '010101111101101',
   B: '110101110101110',
   C: '011100100100011',
@@ -28,16 +38,6 @@ export const MICRO_GLYPHS: Readonly<Record<string, string>> = Object.freeze({
   X: '101101010101101',
   Y: '101101010010010',
   Z: '111001010100111',
-  '0': '111101101101111',
-  '1': '010110010010111',
-  '2': '110001010100111',
-  '3': '110001010001110',
-  '4': '101101111001001',
-  '5': '111100110001110',
-  '6': '011100111101111',
-  '7': '111001010010010',
-  '8': '111101111101111',
-  '9': '111101111001110',
   $: '011110010011110',
   '&': '010101010101011',
   '-': '000000111000000',
@@ -54,4 +54,53 @@ export const MICRO_GLYPHS: Readonly<Record<string, string>> = Object.freeze({
   '<': '001010100010001',
   '(': '010100100100010',
   ')': '010001001001010',
+  '#': '101111101111101',
+  µ: '000101101111100',
+  '=': '000111000111000',
+  _: '000000000000111',
+  '\\': '100100010001001',
+  '"': '101101000000000',
+  '¢': '010111100111010',
+  '*': '101010101000000',
+  '%': '101001010100101',
+  '@': '010101111100011',
+  '~': '000011110000000',
 });
+
+/** Square letterforms for technical labels, with the full punctuation repertoire. */
+export const MICRO_SQUARE_GLYPHS: MicroGlyphs = Object.freeze({
+  ...MICRO_GLYPHS,
+  ...{
+    '2': '111001111100111',
+    '3': '111001111001111',
+    '5': '111100111001111',
+    '6': '111100111101111',
+    '7': '111001001010010',
+    '9': '111101111001111',
+    C: '111100100100111',
+    G: '111100101101111',
+    J: '001001001101111',
+    O: '111101101101111',
+    P: '111101111100100',
+    Q: '111101101111001',
+    S: '111100111001111',
+    '?': '111001011000010',
+    '*': '000101010101000',
+    '%': '101001010100101',
+    '@': '010101111100011',
+    '~': '000011110000000',
+  },
+});
+
+/** Select an exact repertoire when preserving an existing font's fallback behavior. */
+export function microGlyphs(characters: string, square = false): MicroGlyphs {
+  const source = square ? MICRO_SQUARE_GLYPHS : MICRO_GLYPHS;
+  return Object.freeze(
+    Object.fromEntries(
+      [...characters].map((ch) => {
+        if (!(ch in source)) throw new RangeError(`No micro glyph for ${ch}`);
+        return [ch, source[ch]];
+      }),
+    ),
+  );
+}

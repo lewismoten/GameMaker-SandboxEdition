@@ -1,0 +1,26 @@
+/* the Player entry's dialog (playerInfo.ts) */
+.player-info dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 2px 12px;
+  margin: 0 0 8px;
+}
+.player-info dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.player-info h3 {
+  margin: 12px 0 4px;
+  font-size: 15px;
+}
+.player-info-text {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 12px;
+}
+.player-info summary {
+  min-height: 24px;
+}

@@ -9,7 +9,7 @@
 // with parabolic interpolation of the peaks (NOTICE.md). Written fresh from the paper. Where
 // there is no clear pitch (noise, like an explosion), the zero-crossing rate gives how bright it
 // is, and the steps hop around that pitch, as the sound effect maker's noise does.
-import { NUMFREQ } from '../formats/sound';
+import { NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 
 /** The PC speaker's timer tick: one step of a sound set slot lasts 1/145.6 s. */
 export const SPEAKER_STEP = 1 / 145.6;

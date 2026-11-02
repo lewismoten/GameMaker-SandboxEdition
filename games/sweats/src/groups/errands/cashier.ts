@@ -11,10 +11,10 @@
 //
 // Layout (14 rows: the lot's asphalt top on row 12 at the store, stepping up a row at x 28, 42
 // and 54: thirty feet uphill). The parked cars' roofs are ledges.
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, loot, plotThing, spotlight } from '../../common/blocks';
 import { anim, bob, corner, mon, pace, still } from '../../common/characters';

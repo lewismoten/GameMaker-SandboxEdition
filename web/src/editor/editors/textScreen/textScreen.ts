@@ -6,11 +6,11 @@ import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
 import { h, clear, debounce } from '../../core/ui';
 import { kindOf, type Project } from '../../core/project';
-import { latin1Text, textBytes } from '../../../formats/binary';
-import { parseSlideList } from '../../../formats/graphicScripts';
-import { displayFile, match, RGB_PURPLE } from '../../../engine/showGraphic';
+import { latin1Text, textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { displayFile, match, RGB_PURPLE } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
 import { gamePreview } from '../../widgets/mediaShared';
-import type { Palette } from '../../../formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { blankScreen, pictureScreen, screenCanvas, textPages, type ScreenPicture } from '../../widgets/mediaPictures';
 import { layoutText, pageOfLine, wrapLongLines, LINE_CHARS, PAGE_LINES, type TextLayout } from './textLayout';
 

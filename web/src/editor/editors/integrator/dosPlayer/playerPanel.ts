@@ -1,44 +1,49 @@
-// The integrator's "DOS player" dialog: customize XFERPLAY.EXE, the stand-alone player the DOS
+// Overview's "DOS player" tab (the integrator's DOS player button opens it): customize XFERPLAY.EXE, the stand-alone player the DOS
 // export ships, within the rules a 1990s hex editor had to keep (dosPlayer/). A tab per screen
 // (screenTabs.ts) holds all of that screen's words, positions, frames, colors and times, beside
 // a live preview drawn by the web engine with the patches applied, where words and frames can be
 // dragged (dragStage.ts). Choices go in the .gam's companion section, so the DOS export, Play and
 // the web-page exports all show them.
 import './playerPanel.css';
-import { h, clear, modal } from '../../../core/ui';
+import { h, clear } from '../../../core/ui';
 import type { Project } from '../../../core/project';
-import { Screen } from '../../../../gfx/screen';
-import type { PatchEntry, PatchScreen } from '../../../../dosPlayer/patchTable';
-import { isStock, patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '../../../../dosPlayer/patchRules';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import type { PatchEntry, PatchScreen } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { isStock, patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { companionPatches, playerRecord, PLAYER_SECTION } from '../../../../dosPlayer/playerRecord';
 import { PLAYER_PRESETS } from '../../../../dosPlayer/presets';
 import { SCREEN_NAMES } from '../../../../dosPlayer/describePatches';
-import { playerLook } from '../../../../engine/playerLook';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { History } from '../../../core/history';
 import { drawPreview, type PreviewScreen } from './playerPreview';
 import { fieldMaker } from './playerFields';
 import { screenFields } from './screenFields';
+import { PLAYER_FIELD_EVENT, takePlayerField } from './playerTarget';
 import { SCREEN_TABS, type PanelTab } from './screenTabs';
 import { fileFields } from './fileFields';
-import { withoutExtensions } from '../../../../dosPlayer/fileExtensions';
+import { withoutExtensions } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 import { itemFor, screenItems, type DragItem } from './dragItems';
 import { dragStage } from './dragStage';
+import { aboutFields, aboutLookOf, type AboutView } from './aboutFields';
+import { creditsLink } from './creditsLink';
+import { companionOrigin } from '../../../../dosPlayer/playerOrigin';
 
 const PREVIEWS: PreviewScreen[] = ['menu', 'hiscores', 'newHiscore', 'status', 'load', 'save', 'drop', 'help', 'text', 'missing', 'about'];
 const isPreview = (s: PanelTab): s is PreviewScreen => (PREVIEWS as string[]).includes(s);
 
 let uid = 0;
 
-/** Opens the DOS player dialog for a project. */
-export function openPlayerPanel(project: Project): void {
-  void modal<void>('DOS player', () => playerPanel(project));
-}
-
-function playerPanel(project: Project): HTMLElement {
+/** The panel itself: Overview's DOS player tab shows it. */
+export function playerPanel(project: Project): HTMLElement {
   const patches: PlayerPatches = { ...companionPatches(project.companion, project.gam) };
   const game = project.game();
   const gameName = project.gam.replace(/\.[^.]*$/, '').toLowerCase();
   const locked = !!project.readOnly;
   let tab: PanelTab = 'menu';
+  // the About tab's switch: the page as the DOS player shows it or as Play on the web does
+  const origin = companionOrigin(project.companion, project.gam);
+  let aboutView: AboutView = 'dos';
+  let aboutPage = 0;
   let shown: PreviewScreen = 'menu';
   /** The patch whose field has the focus: the menu preview shows a "No game-specific" line only for those. */
   let focused = '';
@@ -79,11 +84,11 @@ function playerPanel(project: Project): HTMLElement {
   const count = h('p', { class: 'dp-count-all', role: 'status' });
   function redraw() {
     const noFile = focused || (stage.picked() === 'menu.noFile' ? 'layout.menu.noFile.x' : '');
-    const look = playerLook(patches);
-    const drawn = drawPreview(screen, project.files, game, gameName, look, shown, noFile);
+    const look = playerLook(patches, shown === 'about' ? aboutLookOf(aboutView, origin) : undefined);
+    const drawn = drawPreview(screen, project.files, game, gameName, look, shown, noFile, aboutPage);
     items = screenItems(shown, look, drawn);
     stage.refresh();
-    heading.textContent = `${SCREEN_NAMES[shown]}, as the DOS player draws it`;
+    heading.textContent = `${SCREEN_NAMES[shown]}, as ${shown === 'about' && aboutView === 'web' ? 'Play on the web' : 'the DOS player'} draws it`;
     const n = Object.keys(withoutExtensions(patches)).length;
     const files = Object.keys(patches).length - n;
     count.textContent =
@@ -95,18 +100,65 @@ function playerPanel(project: Project): HTMLElement {
     pick.value = s;
     redraw();
   };
+  // Undo and redo step through snapshots of the patches; a run of typing in one field is one step,
+  // and a Reset button or any other field starts a new one.
+  const history = new History<PlayerPatches>();
+  let base: PlayerPatches = { ...patches };
+  let lastChange = 0;
+  let lastBy: Element | null = null;
+  const undoBtn = h('button', { type: 'button', title: 'Undo (Ctrl+Z)', disabled: true, onclick: () => step(true) }, '↶ Undo');
+  const redoBtn = h('button', { type: 'button', title: 'Redo (Ctrl+Y)', disabled: true, onclick: () => step(false) }, '↷ Redo');
+  const syncHistory = () => {
+    undoBtn.disabled = locked || !history.canUndo;
+    redoBtn.disabled = locked || !history.canRedo;
+  };
+  const replacePatches = (to: PlayerPatches) => {
+    for (const k of Object.keys(patches)) delete patches[k];
+    Object.assign(patches, to);
+  };
   function save() {
+    if (JSON.stringify(patches) !== JSON.stringify(base)) {
+      const now = Date.now();
+      const by = document.activeElement;
+      if (now - lastChange > 500 || by !== lastBy || by instanceof HTMLButtonElement) history.record(base);
+      lastChange = now;
+      lastBy = by;
+      base = { ...patches };
+      syncHistory();
+    }
     project.setExtras(project.gam, PLAYER_SECTION, playerRecord(patches));
     redraw();
   }
+  function step(back: boolean) {
+    const to = back ? history.undo(base) : history.redo(base);
+    if (!to) return;
+    replacePatches(to);
+    base = { ...patches };
+    lastChange = 0;
+    project.setExtras(project.gam, PLAYER_SECTION, playerRecord(patches));
+    syncHistory();
+    render();
+    redraw();
+  }
+  const onKey = (ev: KeyboardEvent) => {
+    if (!body.isConnected) return window.removeEventListener('keydown', onKey);
+    if (locked || !(ev.ctrlKey || ev.metaKey) || ev.target instanceof HTMLInputElement || ev.target instanceof HTMLSelectElement) return;
+    const k = ev.key.toLowerCase();
+    if (k !== 'z' && k !== 'y') return;
+    // only while the DOS player tab is the one showing
+    if (!body.offsetParent) return;
+    ev.preventDefault();
+    step(k === 'z' && !ev.shiftKey);
+  };
+  window.addEventListener('keydown', onKey);
   // patches saved from outside (the desk's PLAYHACK, editor/shell/workspace.ts) replace the ones shown
   const offExtras = project.onExtrasChange((file, section) => {
     if (!body.isConnected) return offExtras();
     if (file !== project.gam || section !== PLAYER_SECTION) return;
     const now = companionPatches(project.companion, project.gam);
     if (JSON.stringify(now) === JSON.stringify(patches)) return;
-    for (const k of Object.keys(patches)) delete patches[k];
-    Object.assign(patches, now);
+    replacePatches(now);
+    base = { ...patches };
     render();
     redraw();
   });
@@ -124,6 +176,7 @@ function playerPanel(project: Project): HTMLElement {
       return undefined;
     },
     onSync: (f) => refreshers.push(f),
+    locked,
   });
 
   const tabs = h('div', { class: 'dp-tabs', role: 'tablist', 'aria-label': 'Screens' });
@@ -168,11 +221,42 @@ function playerPanel(project: Project): HTMLElement {
     renderTabs();
     refreshers = [];
     body.setAttribute('aria-labelledby', `${id}-tab-${tab}`);
-    clear(body, ...(tab === 'files' ? fileFields({ id, patches, save: (again) => (save(), again && render()) }) : screenFields(tab, make)));
+    clear(body, ...(tab === 'files' ? fileFields({ id, patches, locked, save: (again) => (save(), again && render()) }) : screenFields(tab, make)));
     body.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLButtonElement>('input, select, button').forEach((el) => (el.disabled = locked));
+    if (tab === 'about') body.prepend(aboutFields({ id, view: aboutView, page: aboutPage, origin, change: changeAbout }));
+    if (tab === 'menu') body.querySelector('[data-patch="str.menu.credits"]')?.after(creditsLink(project));
     // the F-keys and the shared colors have no screen of their own: they pick one to preview
     pickRow.hidden = isPreview(tab);
   }
+
+  /** The About switch or page changed: the preview follows, and the focus stays on the choice. */
+  function changeAbout(view: AboutView, page: number) {
+    const which = view !== aboutView ? 'view' : 'page';
+    aboutView = view;
+    aboutPage = page;
+    render();
+    show('about');
+    body.querySelector<HTMLInputElement>(`input[name="${id}-about-${which}"]:checked`)?.focus();
+  }
+
+  /** Shows the screen a patch belongs to and focuses its field (Overview search opens fields this way). */
+  const goTo = (pid: string) => {
+    const entry = patchEntry(pid);
+    if (!entry) return;
+    pending = undefined;
+    if (tab !== entry.screen) choose(entry.screen);
+    const field = Array.from(body.querySelectorAll<HTMLElement>('[data-patch]')).find((f) => f.dataset.patch === pid);
+    if (!field) return;
+    field.scrollIntoView({ block: 'center' });
+    field.classList.add('dp-found');
+    setTimeout(() => field.classList.remove('dp-found'), 2500);
+    const control = field.querySelector<HTMLElement>('input:not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled)');
+    if (!control) field.tabIndex = -1;
+    (control ?? field).focus({ preventScroll: true });
+  };
+  window.addEventListener(PLAYER_FIELD_EVENT, (ev) => body.isConnected && goTo((ev as CustomEvent<string>).detail));
+  let pending = takePlayerField();
+  if (pending) requestAnimationFrame(() => pending && goTo(pending));
 
   const presets = h(
     'div',
@@ -193,6 +277,8 @@ function playerPanel(project: Project): HTMLElement {
         p.label,
       ),
     ),
+    undoBtn,
+    redoBtn,
   );
 
   // the preview follows the field being edited, and picks what that field moves

@@ -1,8 +1,9 @@
 // Making .MON records: a helper for the fields the realm uses, and the eight monsters every
 // .MON starts with (the character file fires the first five; foes drop the last three).
-import { emptyMonster, newMonsterSet, LASTMON, type Monster, type March } from '../../../../web/src/formats/monster';
+import { emptyMonster, newMonsterSet, LASTMON, type Monster, type March } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { MON, POWER } from '../ids';
 import type { SpriteSheet } from '../sprites/sheet';
+import { SCORE_SCALE } from '../score';
 
 export interface MonSpec {
   /** [block, ticks] animation frames. */
@@ -32,7 +33,7 @@ export function monster(s: MonSpec): Monster {
   m.towards = s.towards ?? 0;
   m.end = s.end ?? 0;
   m.newmon = s.newmon ?? LASTMON;
-  m.upscore = s.upscore ?? 0;
+  m.upscore = Math.round((s.upscore ?? 0) * SCORE_SCALE);
   m.activate = s.activate ?? 0;
   const fill = (dst: March[], src?: [number, number, number, number?][]) =>
     src?.forEach(([x, y, pic, orient], i) => (dst[i] = { x, y, pic, orient: orient ?? 0 }));

@@ -1,7 +1,7 @@
 // The bot's way through road.ts (the level's own comment says what happens there).
 import type { Order } from '../bot';
 import { charge } from './helpers';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { ROAD } from '../../src/levels/road';
 
 /**

@@ -132,6 +132,12 @@ main.credits-page .bbs-xfer-speeds label {
   min-height: 24px;
 }
 
+main.credits-page .bbs-xfer-speeds input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
 main.credits-page .bbs-xfer .buttons {
   display: flex;
   flex-wrap: wrap;

@@ -23,6 +23,7 @@ const KIND_LABEL: Record<GameKind, string> = {
   sandbox: 'Sandbox',
   shareware: 'Shareware',
   bizarre: 'Bizarre',
+  community: 'Community',
 };
 
 /** Movement is welcome, data is not scarce and no guided tour is on: demos may start by themselves. */
@@ -52,14 +53,35 @@ const setDemosStopped = (on: boolean): void => {
 /** A featured game plays by itself only when its files are this small (a demo needs them all). */
 const AUTOPLAY_BYTES = 1.2e6;
 
-/** Runs `f` once the page is idle after loading and `el` is on screen (so a demo waits for the page). */
-function whenIdleAndSeen(el: Element, f: () => void): void {
-  const idle = (cb: () => void) => ('requestIdleCallback' in window ? requestIdleCallback(cb, { timeout: 3000 }) : setTimeout(cb, 1500));
+/** After the page is idle, the demo waits this long more: the player (about 118 kB) is not what the page needs first. */
+const AUTOPLAY_QUIET_MS = 2500;
+
+/**
+ * Runs `f` once, when `el` is on screen and the page has loaded, `ready` (the title picture) is
+ * done, and a quiet moment has passed; or at once when the visitor points at, touches or
+ * focuses `el` (so the player is fetched when someone shows interest, else late).
+ */
+function whenIdleAndSeen(el: Element, ready: Promise<unknown>, f: () => void): void {
+  let done = false;
+  const go = () => {
+    if (done) return;
+    done = true;
+    if (!el.isConnected) return void io.disconnect(); // the visitor has gone to another page meanwhile
+    io.disconnect();
+    for (const t of ['pointerenter', 'pointerdown', 'focusin']) el.removeEventListener(t, go);
+    f();
+  };
+  const idle = () => {
+    const after = () => setTimeout(go, AUTOPLAY_QUIET_MS);
+    if ('requestIdleCallback' in window) requestIdleCallback(after, { timeout: 3000 });
+    else after();
+  };
   const io = new IntersectionObserver((entries) => {
     if (!entries.some((e) => e.isIntersecting)) return;
     io.disconnect();
-    idle(f);
+    void ready.then(idle);
   });
+  for (const t of ['pointerenter', 'pointerdown', 'focusin']) el.addEventListener(t, go, { once: true });
   const start = () => io.observe(el);
   if (document.readyState === 'complete') start();
   else addEventListener('load', start, { once: true });
@@ -100,8 +122,6 @@ interface Showcase {
   el: HTMLElement;
   /** Shows a game; `featured` when nobody chose it, `resume` for the game of yours edited last. */
   show(game: HomeGame, how: { featured?: boolean; resume?: boolean; onAnother?: () => void }): void;
-  /** Opens the ⋯ More menu of the game shown and puts the keyboard on its first item. */
-  openMore(): void;
   /** Opens the game's Saves & scores (at a part named in the address: a slot, 'scores', 'backups'). */
   openSaves(initial?: string): void;
   readonly game: HomeGame | undefined;
@@ -134,6 +154,19 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     tourPlay?.((e as CustomEvent<'play' | 'stop'>).detail);
   };
   window.addEventListener('gm-tour-demo', onTourDemo);
+  // leaving the game list stops its demo: the picture is gone, so its sound must go too (the
+  // next page may draw a moment after the address changes, so look again shortly after)
+  const gone = () => {
+    if (el.isConnected) return false;
+    demo?.stop();
+    demo = undefined;
+    window.removeEventListener('hashchange', onLeave);
+    return true;
+  };
+  const onLeave = () => {
+    if (!gone()) for (const ms of [100, 600, 2000]) setTimeout(gone, ms);
+  };
+  window.addEventListener('hashchange', onLeave);
   let generation = 0;
   let saves: ReturnType<typeof savesButton> = null;
 
@@ -184,7 +217,14 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     const canvas = h('canvas', { class: 'sc-shot pixel', width: 320, height: 200, 'aria-hidden': 'true' });
     const playBtn = h('button', { class: 'sc-demo-btn', type: 'button', hidden: true });
     clear(screen, canvas, playBtn, game.health && !game.health.released ? healthBadge(game.health, true) : null);
-    if (game.gam || game.kind === 'mine') void game.drawShot(canvas).catch(() => undefined);
+    // the still comes first: the game's title picture (else its first level); the player is fetched later
+    let shown: Promise<unknown> = Promise.resolve();
+    if (game.gam || game.kind === 'mine' || game.community)
+      shown = game
+        .drawTitle(canvas)
+        .catch(() => false)
+        .then((title) => title || game.drawShot(canvas))
+        .catch(() => undefined);
     else screen.append(h('div', { class: 'sc-none', 'aria-hidden': 'true' }, '🎨'));
 
     const setPlaying = (on: boolean) => {
@@ -194,6 +234,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       if (!on) demo = undefined;
     };
     const play = () => {
+      if (!el.isConnected) return;
       demo = demoInPicture(game, screen, { loop: true, onState: (on) => gen === generation && setPlaying(on) });
     };
     playBtn.addEventListener('click', () => {
@@ -250,22 +291,13 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
       if (!mayAutoplay() || demosStopped()) return;
       // a game the visitor chose plays straight away; one shown by itself waits for the page, and only when small
       if (!how.featured && !how.resume) play();
-      else if ((game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES) whenIdleAndSeen(screen, () => gen === generation && !demo && play());
+      else if ((game.entry?.bytes ?? 0) <= AUTOPLAY_BYTES) whenIdleAndSeen(screen, shown, () => gen === generation && !demo && play());
     });
-  };
-
-  const openMore = () => {
-    const more = actions.querySelector<HTMLDetailsElement>('.card-more');
-    if (!more) return;
-    more.open = true;
-    more.querySelector<HTMLElement>('.card-more-menu button')?.focus({ preventScroll: true });
-    more.scrollIntoView({ block: 'nearest' });
   };
 
   return {
     el,
     show,
-    openMore,
     openSaves: (initial) => void saves?.open(initial),
     get game() {
       return current;

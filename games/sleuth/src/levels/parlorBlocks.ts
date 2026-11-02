@@ -4,7 +4,7 @@
 // Ada's pocket), the stage at dawn, and the blocks that keep score of the accusation: a
 // wrong answer passes over a block that owes a strike and costs 500, the Commissioner's
 // block collects it (and the right answer passes over one worth 5000).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from '../blocks/blockset';
 import { CLEAR, blob, microC, microWidth, pool, speckle } from '../art/draw';
 import { P, c, ramp as r } from '../art/pal';
@@ -13,6 +13,7 @@ import { addItems, symbol } from '../blocks/items';
 import { portrait } from '../art/people';
 import { CTR } from '../ids';
 import { addEggBlocks } from '../blocks/egg';
+import { addBadgeBlocks } from '../blocks/badges';
 import { saveSignBlocks } from '../../../kit/saveSign';
 import { CARDS, HOW, SUSPECTS, WHY } from './parlor';
 
@@ -376,5 +377,7 @@ export function buildParlorBlocks(): BlockSet {
   // last so no block before it moves
   const sign = saveSignBlocks(P.pal, { board: [RUG, RUG], posts: [RUG, RUG] });
   [...sign.board, ...sign.posts!].forEach((p, k) => add(`saveSign${k}`, p));
+  // scenery for the site's achievement badges, after everything else so no block moves
+  addBadgeBlocks(add, { rug: RUG, stage: ST, curtain: velvetCurtain });
   return bs;
 }

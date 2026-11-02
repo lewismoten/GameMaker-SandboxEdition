@@ -1,19 +1,21 @@
 // A self-contained game player: canvas, input and audio around runGame().
 import './player.css';
-import { Machine, GameAborted } from '../engine/machine';
-import type { AudioEngine } from '../audio/engine';
-import { Keyboard } from '../input/keyboard';
-import { runGame, type RunOptions } from '../engine/game';
+import { hardwareSetup } from './hardwareSetup';
+import { Machine, GameAborted } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
+import { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
+import { runGame, type RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
 import { TouchControls, wantsTouchControls } from './touch';
 import { screenKeys } from './screenKeys';
 import { exactScale } from './exactScale';
 import { hideIdleCursor } from './cursorHide';
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { icon } from '../editor/shell/homeIcons';
 import { heartHook } from '../tinHearts/tinHearts';
 import { scoreHook } from '../scoreTrophies/hook';
+import { piggyBankHook } from '../fortKnox/hook';
 
 interface PlayerOptions extends RunOptions {
   /** Shown on the start overlay. */
@@ -45,6 +47,10 @@ interface PlayerOptions extends RunOptions {
   preview?: boolean;
   /** Where the game's saves are kept ('game:<id>'): a catalog game's tin heart is looked for (tinHearts/tinHearts.ts). */
   saveId?: string;
+  /** Stable identity for browser hardware settings (defaults to saveId, or file and title). */
+  hardwareId?: string;
+  /** CONFIG.BAT: open setup even when settings are already saved or bypassed. */
+  configure?: boolean;
 }
 
 export interface PlayerHandle {
@@ -63,6 +69,8 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   canvas.setAttribute('role', 'application');
   container.append(canvas);
   const machine = new Machine(canvas, files, opts.audio);
+  machine.audio.setGame(true); // a game's sound follows the Games setting too
+  const piggy = piggyBankHook(opts.saveId);
   if (opts.preview) {
     container.classList.add('gm-preview');
     canvas.setAttribute('role', 'img');
@@ -160,9 +168,34 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   // a catalog game's final score, for the desk's score trophies (never a preview or a demo)
   const scores = opts.preview ? undefined : scoreHook(opts.saveId);
   let stopped = false;
+  let started = false;
+  let finished = false;
+  const setup =
+    opts.preview || opts.playback || opts.record
+      ? undefined
+      : hardwareSetup(container, opts.hardwareId ?? opts.saveId ?? `${gamFile.toLowerCase()}:${opts.title ?? ''}`, machine.audio);
+  let finish = () => {};
   let unhide: (() => void) | undefined;
   const done = new Promise<void>((resolve) => {
+    finish = () => {
+      if (finished) return;
+      finished = true;
+      window.removeEventListener('keydown', onKey);
+      start.remove();
+      setup?.dispose();
+      if (!stopped) machine.destroy();
+      unexact?.();
+      unhide?.();
+      touch?.detach();
+      unkeys?.();
+      files.onChange = previousWrite;
+      opts.onExit?.();
+      resolve();
+    };
     const begin = async () => {
+      if (started || stopped) return;
+      started = true;
+      setup?.controls.remove();
       start.remove();
       // the way back stays while playing, small, beside Keys (Esc's menu and Quit also lead there)
       if (back && !opts.preview && !opts.noKeysButton) {
@@ -177,19 +210,24 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
         unhide = hideIdleCursor(container);
         canvas.focus();
       }
-      await machine.audio.resume();
       try {
+        await machine.audio.resume();
+        if (stopped) return;
+        const hardware = await setup?.prepare(opts.configure);
+        if (stopped) return;
+        if (!opts.preview) canvas.focus();
         // Without an onQuit handler, "Quit" just shows the game's menu again.
         await runGame(machine, gamFile, {
           joystick: readGamepad,
           onQuit: () => true,
           onFrame: touch ? (w) => touch.setSequences(w.chr.sequences) : undefined,
           ...opts,
-          ...(hearts && {
-            onSession: (s) => (hearts.onSession(s), opts.onSession?.(s)),
-            onTouched: (...a) => (hearts.onTouched(...a), opts.onTouched?.(...a)),
+          noSoundCard: opts.noSoundCard || hardware?.sound === 'speaker',
+          ...((hearts || piggy) && {
+            onSession: (s) => (hearts?.onSession(s), piggy?.onSession?.(s), opts.onSession?.(s)),
+            ...(hearts && { onTouched: (...a) => (hearts.onTouched(...a), opts.onTouched?.(...a)) }),
           }),
-          ...(scores && { onPlayEnd: (...a) => (scores(...a), opts.onPlayEnd?.(...a)) }),
+          ...((scores || piggy) && { onPlayEnd: (...a) => (scores?.(...a), piggy?.onPlayEnd?.(...a), opts.onPlayEnd?.(...a)) }),
         });
       } catch (e) {
         if (!(e instanceof GameAborted)) {
@@ -200,14 +238,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
           container.append(err);
         }
       } finally {
-        if (!stopped) machine.destroy();
-        unexact?.();
-        unhide?.();
-        touch?.detach();
-        unkeys?.();
-        files.onChange = previousWrite;
-        opts.onExit?.();
-        resolve();
+        finish();
       }
     };
     const onKey = (e: KeyboardEvent) => {
@@ -233,13 +264,10 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
     machine,
     done,
     stop() {
+      if (finished) return;
       stopped = true;
       machine.destroy();
-      unexact?.();
-      unhide?.();
-      touch?.detach();
-      unkeys?.();
-      files.onChange = previousWrite;
+      finish();
     },
   };
 }

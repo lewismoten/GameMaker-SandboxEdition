@@ -3,6 +3,7 @@
 // as "added" overrides, so the eggs stay found even when the saves aren't brought back.
 // Merge: found stays found (an egg broken here stays broken), the taps keep the higher count.
 import { EGGS } from '../../eggs/eggs';
+import { eggsOpenFor } from '../../eggs/eggGate';
 import { savesHold } from '../../eggs/eggState';
 import { savesOf, type World } from '../world';
 import { localOf } from '../inventory';
@@ -25,8 +26,8 @@ const overrides = (local: Record<string, string>): Overrides => {
 
 async function eggsInSaves(w: World, o: Overrides): Promise<string[]> {
   const found = EGGS.filter((e) => savesHold(savesOf(w, `game:${e.game}`), e.detect)).map((e) => e.game);
-  // the bonus eggs' file loads only once every felt egg is found, as everywhere else
-  if (!EGGS.every((e) => o[e.game] !== 'broken' && (found.includes(e.game) || o[e.game] === 'added'))) return found;
+  // the bonus eggs' file loads only once 13 felt eggs are found, as everywhere else
+  if (!eggsOpenFor(EGGS.map((e) => ({ found: o[e.game] !== 'broken' && (found.includes(e.game) || o[e.game] === 'added') })))) return found;
   const { BONUS_EGGS, bonusKey } = await import('../../eggs/bonus');
   return [...found, ...BONUS_EGGS.filter((e) => savesHold(savesOf(w, `game:${e.game}`), e.detect)).map(bonusKey)];
 }

@@ -2,6 +2,7 @@
 // module returning pages; a page is a list of blocks; text is a string with a tiny markup.
 // All of it is plain data (no DOM), so tests read the whole issue in Node; render.ts draws it.
 import type { Go } from './go';
+import type { MagIssue } from './masthead';
 
 /** The paper a page is printed on. */
 export type Tone = 'white' | 'news' | 'pink' | 'yellow' | 'cyan' | 'black';
@@ -81,6 +82,11 @@ export type Block =
    * cover it sits in a corner with a starburst (`burst`) that links to `page`, the page about it.
    */
   | { t: 'disc'; go: Go; alt: string; caption?: Inline; cover?: { burst: string; page: Go } }
+  /**
+   * The spring issue's cover-mounted floppy (floppy.ts): a game's disk in a taped sleeve, the whole
+   * disk one link (`go`). On the cover it sits in a corner with a starburst (`burst`) linking to `page`.
+   */
+  | { t: 'floppy'; game: string; go: Go; alt: string; caption?: Inline; cover?: { burst: string; page: Go } }
   /** A picture with numbered spots on it and a key to them below (callouts.ts): an ad's tour of a product. */
   | { t: 'callouts'; art: ArtId; alt: string; spots: Callout[] }
   /** Back issues and ones to come, fanned out small (coverFan.ts): a subscription ad's stack of covers. */
@@ -150,13 +156,19 @@ export interface MiniCover {
 /**
  * What a `shot` shows of a game: its title screen, its first level, or one of Game-Maker's design
  * tools at work on that level's files (toolShots.ts): the palette, the block editor, the
- * monsters' animation frames, or the whole map.
+ * monsters' animation frames, or the whole map. Or, for the pass-through feature, a walk-in or a page.
  */
-export type ShotView = 'title' | 'level' | 'palette' | 'blocks' | 'monsters' | 'map';
+export type ShotView = 'title' | 'level' | 'palette' | 'blocks' | 'monsters' | 'map' | `walk:${string}` | `page:${string}`;
+// `walk:<scene>` is the level where the hero stands on the link into a pass-through scene of that
+// name, `page:<scene>` the picture and page that scene shows (passShots.ts).
 
 /** Screenshots of today's web (webShots.ts): public/magazine/web-<name>.webp. */
 export const WEB_SHOTS = ['games', 'map', 'blocks', 'character', 'monster', 'music', 'scene'] as const;
 export type WebShot = (typeof WEB_SHOTS)[number];
+
+/** Made-up early-1995 web pages in a made-up browser (scripts/oldWebShots.ts): public/magazine/oldweb-<name>.webp, 640 x 480. */
+export const OLD_WEB_SHOTS = ['dict', 'zip', 'recipes', 'soups', 'weather', 'yellow', 'gopher'] as const;
+export type OldWebShot = (typeof OLD_WEB_SHOTS)[number];
 
 /**
  * Pictures drawn for the magazine (art.ts), and the photos of the desk and of today's web.
@@ -165,6 +177,7 @@ export type WebShot = (typeof WEB_SHOTS)[number];
  * joey is a reader's crayon drawing in the Mail Bag (joeyDrawing.ts).
  * blankdisk is a stack of bulk disks with no labels, for the Floppy Barn ad (blankDisk.ts).
  * bosschain is the Design Workshop's diagram of a boss with hit points (bossChain.ts).
+ * The bnb ones are the Bits & Bytes Software spread's (bnbArt.ts): three turned boxes, its logo, prices, tabs and Bitsy.
  * dos-carl is Lewis's DOSBox screenshot of A Fly Named Carl's garbled cover (dosShot.ts).
  */
 export type ArtId =
@@ -187,6 +200,16 @@ export type ArtId =
   | 'joey'
   | 'dos-carl'
   | 'bosschain'
+  | 'bnb-teddy3'
+  | 'bnb-pair'
+  | 'bnb-title'
+  | 'bnb-price-teddy'
+  | 'bnb-price-gm'
+  | 'bnb-tab-left'
+  | 'bnb-tab-right'
+  | 'bnb-logo'
+  | 'bnb-bitsy'
+  | `oldweb-${OldWebShot}`
   | `web-${WebShot}`;
 
 export interface MagPage {
@@ -207,6 +230,8 @@ export interface MagContext {
   /** Every game the magazine may list: never a secret one (games.ts). */
   games: MagGame[];
   game(id: string): MagGame | undefined;
+  /** The issue being built (masthead.ts): its sections and the folio line read it. */
+  mag: MagIssue;
 }
 
 export interface MagSection {
@@ -228,6 +253,8 @@ export interface PlacedPage extends MagPage {
   id: string;
   folio: number;
   section: string;
+  /** The issue line in this page's foot ("Vol. 1, No. 4 · Spring 1993"). */
+  foot?: string;
 }
 
 export interface TocEntry {
@@ -240,6 +267,8 @@ export interface TocEntry {
 }
 
 export interface Issue {
+  /** Which issue this is (masthead.ts). */
+  mag: MagIssue;
   pages: PlacedPage[];
   toc: TocEntry[];
   /** The advertisers, in page order. */

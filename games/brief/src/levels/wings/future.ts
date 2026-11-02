@@ -1,7 +1,7 @@
 // The Future Shelf: books from a strange year called
 // 2026. Prompted Royalty, Everything But the Tea, Craigslist Said It Was Healthy, and The Day
 // the Vase Fell.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { blank, corgi, figure, figureBack, figureSide, floor, on, sign, wall } from '../../art/kit';

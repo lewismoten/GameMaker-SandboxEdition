@@ -1,24 +1,69 @@
 /* The Library (#/library, libraryPage.ts): a card for everything to read and print. */
 
-main.library {
+/* the dialogs the room opens (stacks, card catalog, copier) carry the page's colors and are wide */
+.lib-dlg {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+dialog.modal:has(.lib-dlg) {
+  width: min(1100px, 96vw);
+  max-width: none;
+}
+
+main.library,
+.lib-dlg {
   --lib-card-w: 168px;
   --lib-thumb-h: 132px;
   --lib-shelf: #e7dcc4;
   --lib-shelf-edge: #b9a57f;
+  --wood-hi: #c99a62;
+  --wood: #a9743f;
+  --wood-lo: #7d4f27;
+  --wood-dark: #4d2f16;
+  --wood-back: #5e3b1d;
+  --brass-hi: #f1d98a;
+  --brass: #c9a24a;
+  --brass-lo: #8a6a22;
+  --paper: #f6edd2;
+  --paper-ink: #2d2416;
   max-width: 1180px;
   margin: 0 auto;
   padding: 24px 16px 64px;
 }
 
-:root[data-theme='dark'] main.library {
+:root[data-theme='dark'] main.library,
+:root[data-theme='dark'] .lib-dlg {
   --lib-shelf: #2a2a33;
   --lib-shelf-edge: #4a4a58;
+  --wood-hi: #7a5530;
+  --wood: #5c3e22;
+  --wood-lo: #3f2a16;
+  --wood-dark: #24160b;
+  --wood-back: #1c130c;
+  --brass-hi: #d9bf6c;
+  --brass: #a8832f;
+  --brass-lo: #6c5219;
+  --paper: #d9cfb2;
+  --paper-ink: #231c10;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root[data-theme='auto'] main.library {
+  :root[data-theme='auto'] main.library,
+  :root[data-theme='auto'] .lib-dlg {
     --lib-shelf: #2a2a33;
     --lib-shelf-edge: #4a4a58;
+    --wood-hi: #7a5530;
+    --wood: #5c3e22;
+    --wood-lo: #3f2a16;
+    --wood-dark: #24160b;
+    --wood-back: #1c130c;
+    --brass-hi: #d9bf6c;
+    --brass: #a8832f;
+    --brass-lo: #6c5219;
+    --paper: #d9cfb2;
+    --paper-ink: #231c10;
   }
 }
 
@@ -98,9 +143,9 @@ main.library {
 .lib-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--lib-card-w)), 1fr));
-  gap: 14px;
+  gap: 22px 14px;
   margin: 0;
-  padding: 0;
+  padding: 18px 16px 8px;
   list-style: none;
 }
 
@@ -340,4 +385,660 @@ main.library {
   font: inherit;
   text-decoration: underline;
   cursor: pointer;
+}
+
+/* the card catalog: a cabinet of small drawers, one a group (cabinet.ts) */
+.lib-cabinet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 8px;
+  border: 2px solid var(--wood-dark);
+  border-radius: 6px 6px 3px 3px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 7px), linear-gradient(var(--wood-hi), var(--wood) 30%, var(--wood-lo));
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.3),
+    0 8px 0 var(--wood-dark),
+    0 12px 18px rgba(0, 0, 0, 0.3);
+}
+
+.lib-drawer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 64px;
+  min-width: 0;
+  margin: 0;
+  padding: 4px 4px 5px;
+  border: 2px solid var(--wood-dark);
+  border-radius: 3px;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 5px), linear-gradient(var(--wood-hi), var(--wood));
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.35),
+    0 2px 0 rgba(0, 0, 0, 0.35);
+  color: var(--paper-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.lib-drawer:hover {
+  filter: brightness(1.12);
+}
+
+.lib-drawer:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* the drawer that is pulled out: a dark gap above, the front pushed down and its label lit */
+.lib-drawer[aria-selected='true'] {
+  background: linear-gradient(var(--wood), var(--wood-lo));
+  box-shadow:
+    inset 0 5px 8px rgba(0, 0, 0, 0.55),
+    0 0 0 2px var(--brass-hi),
+    0 4px 0 var(--wood-dark);
+  transform: translateY(3px);
+}
+
+/* the brass label holder with its paper card */
+.lib-holder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding: 3px 5px 4px;
+  border: 1px solid var(--brass-lo);
+  border-radius: 2px;
+  background: linear-gradient(var(--brass-hi), var(--brass) 45%, var(--brass-lo));
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.lib-holder > * {
+  width: 100%;
+  min-width: 0;
+  padding: 0 3px;
+  background: var(--paper);
+  color: var(--paper-ink);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lib-call {
+  padding-top: 2px;
+  font:
+    700 10px/1.2 ui-monospace,
+    'Courier New',
+    monospace;
+  letter-spacing: 0.02em;
+}
+
+.lib-dname {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: 2.5em;
+  padding-bottom: 2px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font:
+    700 13px/1.25 system-ui,
+    sans-serif;
+}
+
+/* the drawer's pull */
+.lib-pull {
+  width: 26px;
+  height: 7px;
+  border-radius: 4px;
+  background: linear-gradient(var(--brass-hi), var(--brass-lo));
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* the stacks: the open drawer's cards on a bookcase's shelves */
+.lib-shelf {
+  padding: 0;
+}
+
+/* the stacks' dialog: its title is only said (the case's plate shows the drawer), and its × sits in the corner,
+   so the case starts at the top */
+dialog.modal:has(.lib-stacks) .modal-head {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  margin: 0;
+}
+
+dialog.modal:has(.lib-stacks) .modal-head h2 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+dialog.modal:has(.lib-stacks) {
+  padding-top: 12px;
+}
+
+.lib-stacks .lib-shelf .lib-group {
+  margin-right: 24px;
+}
+
+.lib-stacks .lib-shelf .lib-group:last-child {
+  margin-bottom: 0;
+}
+
+/* a denser shelf, so more rows show at once */
+.lib-stacks {
+  --lib-card-w: 150px;
+  --lib-thumb-h: 112px;
+}
+
+.lib-stacks .lib-grid {
+  gap: 14px 12px;
+  padding-top: 12px;
+}
+
+.lib-stacks .lib-name {
+  padding: 6px 8px 7px;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.lib-stacks .lib-name small {
+  font-size: 11.5px;
+}
+
+/* the plate on the left, the game picker across from it */
+.lib-plate-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+
+.lib-plate-row .lib-pick {
+  margin: 6px 12px 0 auto;
+}
+
+.lib-plate-row .lib-only-label {
+  color: var(--brass-hi);
+}
+
+.lib-plate-n {
+  margin-left: 0.6em;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.lib-plate-n::before {
+  content: '· ';
+}
+
+.lib-shelf .lib-group {
+  margin-bottom: 28px;
+  border: 10px solid var(--wood);
+  border-top-width: 14px;
+  border-image: none;
+  border-radius: 6px;
+  background: var(--wood-back);
+  box-shadow:
+    inset 0 10px 22px rgba(0, 0, 0, 0.55),
+    inset 8px 0 14px rgba(0, 0, 0, 0.3),
+    inset -8px 0 14px rgba(0, 0, 0, 0.3),
+    0 0 0 2px var(--wood-dark),
+    0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* the group's name on a brass plate on the case's top rail */
+.lib-shelf .lib-group h2 {
+  display: block;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: -2px 12px 0;
+  padding: 3px 14px;
+  border: 1px solid var(--brass-lo);
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(var(--brass-hi), var(--brass) 50%, var(--brass-lo));
+  color: var(--paper-ink);
+  font:
+    700 15px/1.3 Georgia,
+    'Times New Roman',
+    serif;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.lib-shelf .lib-group h2 .lib-net {
+  color: var(--paper-ink);
+}
+
+.lib-shelf .lib-group h3 {
+  margin: 14px 16px 0;
+  color: var(--brass-hi);
+  font:
+    italic 600 14px/1.3 Georgia,
+    serif;
+}
+
+/* each card stands on its own length of plank; side by side they make a shelf */
+.lib-grid > li {
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.lib-grid > li::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  bottom: 0;
+  left: -8px;
+  z-index: 0;
+  height: 14px;
+  background: linear-gradient(var(--wood-hi), var(--wood) 40%, var(--wood-lo));
+  box-shadow:
+    0 3px 0 var(--wood-dark),
+    0 7px 8px rgba(0, 0, 0, 0.45);
+}
+
+.lib-grid > li > .lib-card {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+}
+
+/* the spine label: a small paper label with the Tiny Shelf call number, over the picture's foot */
+.lib-spine {
+  position: absolute;
+  top: calc(var(--lib-thumb-h) - 24px);
+  left: 6px;
+  z-index: 1;
+  padding: 1px 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  background: var(--paper);
+  color: var(--paper-ink);
+  font:
+    700 10px/1.3 ui-monospace,
+    'Courier New',
+    monospace;
+  letter-spacing: 0.02em;
+}
+
+/* the office: the cabinet and, beside it (below on small windows), the photocopier */
+.lib-office {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 16px;
+  align-items: start;
+  margin: 0 0 18px;
+}
+
+.lib-case .lib-cabinet {
+  margin-bottom: 0;
+  border-top-width: 0;
+  border-radius: 0 0 3px 3px;
+}
+
+/* the cabinet's top rail with its brass plaque */
+.lib-rail {
+  display: flex;
+  justify-content: center;
+  padding: 5px 12px;
+  border: 2px solid var(--wood-dark);
+  border-bottom: 1px solid var(--wood-dark);
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(var(--wood-hi), var(--wood));
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.25);
+}
+
+.lib-plaque {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px 2px 4px;
+  border: 1px solid var(--brass-lo);
+  border-radius: 2px;
+  background: linear-gradient(var(--brass-hi), var(--brass) 60%, var(--brass-lo));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 1px 0 rgba(0, 0, 0, 0.4);
+  color: #2d2416;
+  font:
+    700 11px/1 Georgia,
+    'Times New Roman',
+    serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lib-plaque img {
+  display: block;
+  image-rendering: pixelated;
+  border-radius: 2px;
+}
+
+/* the photocopier: beige, a lid over a green-lit glass, a little display and the COPY button */
+.lib-copier {
+  --cp-beige: #d8cdb0;
+  --cp-beige-lo: #b3a784;
+  --cp-ink: #2d2416;
+  color-scheme: light;
+  position: relative;
+  display: grid;
+  gap: 0;
+  color: var(--cp-ink);
+}
+
+.lib-cp-lid {
+  position: relative;
+  height: 22px;
+  border: 2px solid #8d8363;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(#e8dfc6, var(--cp-beige));
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.lib-cp-hinge {
+  position: absolute;
+  right: 14px;
+  bottom: -4px;
+  left: 14px;
+  height: 4px;
+  border-radius: 0 0 2px 2px;
+  background: #6f6650;
+}
+
+.lib-cp-glass {
+  position: relative;
+  height: 34px;
+  overflow: hidden;
+  border: 2px solid #8d8363;
+  border-top: 0;
+  background: linear-gradient(#9fe8a8, #3fae58);
+  box-shadow: inset 0 0 12px rgba(0, 80, 20, 0.5);
+}
+
+.lib-cp-light {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 14px;
+  background: linear-gradient(90deg, transparent, #eaffe9, transparent);
+  box-shadow: 0 0 14px 6px rgba(190, 255, 190, 0.85);
+  opacity: 0;
+}
+
+.lib-copier.scanning .lib-cp-light {
+  opacity: 1;
+  animation: lib-scan 1.1s ease-in-out forwards;
+}
+
+@keyframes lib-scan {
+  from {
+    left: 0;
+  }
+
+  to {
+    left: calc(100% - 14px);
+  }
+}
+
+.lib-copier.scanning .lib-cp-glass {
+  background: linear-gradient(#d4ffd6, #6fe08a);
+}
+
+.lib-cp-panel {
+  display: grid;
+  gap: 4px;
+  padding: 8px 10px 10px;
+  border: 2px solid #8d8363;
+  border-top: 0;
+  background: linear-gradient(var(--cp-beige), var(--cp-beige-lo));
+  box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.lib-cp-label {
+  font:
+    700 11px/1.2 ui-monospace,
+    'Courier New',
+    monospace;
+}
+
+.lib-copier select.lib-cp-pick {
+  border: 2px solid #8d8363;
+  border-radius: 3px;
+  background-color: #f6f1e2;
+  color-scheme: light;
+  color: var(--cp-ink);
+  min-height: 28px;
+  min-width: 0;
+  font: inherit;
+  font-size: 12px;
+}
+
+.lib-cp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lib-cp-display {
+  flex: 1;
+  padding: 3px 6px;
+  border: 2px inset #5c6b4a;
+  background: #b9d9a0;
+  color: #1c2b12;
+  font:
+    700 12px/1.3 ui-monospace,
+    'Courier New',
+    monospace;
+  letter-spacing: 0.1em;
+}
+
+.lib-cp-btn {
+  min-width: 64px;
+  min-height: 28px;
+  padding: 2px 10px;
+  border: 2px solid #3d4a2e;
+  border-radius: 14px;
+  background: linear-gradient(#5fd078, #2f9a4a);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.5),
+    0 2px 0 #1f5f2f;
+  color: #06220f;
+  font:
+    800 12px/1 ui-monospace,
+    'Courier New',
+    monospace;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.lib-cp-btn:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+
+.lib-cp-btn[aria-disabled='true'] {
+  filter: grayscale(0.8);
+  cursor: default;
+}
+
+.lib-cp-btn:focus-visible,
+.lib-cp-pick:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.lib-cp-tray {
+  height: 8px;
+  margin: 0 18px;
+  border: 2px solid #8d8363;
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+  background: #f6f1e2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lib-copier.scanning .lib-cp-light {
+    left: 0;
+    width: 100%;
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* small windows: the drawers stay two rows high and slide sideways inside the cabinet */
+@media (max-width: 700px) {
+  .lib-office {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lib-cp-lid,
+  .lib-cp-tray {
+    display: none;
+  }
+
+  .lib-cp-glass {
+    height: 16px;
+    border-top: 2px solid #8d8363;
+    border-radius: 6px 6px 0 0;
+  }
+
+  .lib-cabinet {
+    grid-template-columns: none;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-columns: 118px;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
+  .lib-shelf .lib-group {
+    border-width: 8px;
+    border-top-width: 12px;
+  }
+
+  .lib-grid {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+}
+
+/* the stacks on a phone: two cards a row, and the case reaches the dialog's edge under the × */
+@media (max-width: 480px) {
+  .lib-stacks {
+    --lib-card-w: 118px;
+    --lib-thumb-h: 100px;
+  }
+
+  .lib-stacks .lib-shelf .lib-group {
+    margin-right: 0;
+  }
+
+  .lib-stacks .lib-plate-row {
+    padding-right: 30px;
+  }
+}
+
+/* By type: All / Sandbox / Bizarre, a segmented set of radio buttons beside the game picker */
+.lib-aside {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px 12px;
+  margin: 6px 12px 0 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lib-aside .lib-pick,
+.lib-plate-row .lib-aside .lib-pick {
+  margin: 0;
+}
+
+.lib-series {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.lib-series[hidden] {
+  display: none;
+}
+
+.lib-series legend {
+  float: left;
+  padding: 0;
+  margin-right: 6px;
+  color: var(--brass-hi);
+}
+
+.lib-seg {
+  position: relative;
+  display: inline-flex;
+}
+
+.lib-seg input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.lib-seg span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  min-width: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--brass-lo);
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--brass-hi);
+  font:
+    600 13px/1.2 system-ui,
+    sans-serif;
+}
+
+.lib-seg:first-of-type span {
+  border-radius: 4px 0 0 4px;
+}
+
+.lib-seg:last-of-type span {
+  border-radius: 0 4px 4px 0;
+}
+
+.lib-seg input:checked + span {
+  background: linear-gradient(var(--brass-hi), var(--brass));
+  color: var(--paper-ink, #222);
+  font-weight: 700;
+}
+
+.lib-seg input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
 }

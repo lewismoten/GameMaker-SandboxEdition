@@ -19,7 +19,7 @@ export const READERS_PICKS: MagSection = {
       blocks: [
         head('Readers’ Picks: Polish Over Size', {
           kicker: 'You voted with your evenings',
-          deck: 'We asked which disks you played to the very end this month. The winner wasn’t the biggest game in the pile, or the smallest. It was the most finished.',
+          deck: 'We asked in April which disks you played to the very end. The winner wasn’t the biggest game in the pile, or the smallest. It was the most finished.',
           size: 'l',
           level: 2,
         }),

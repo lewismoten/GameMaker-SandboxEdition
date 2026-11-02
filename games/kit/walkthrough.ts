@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { GameFiles } from '../../web/src/project/files';
 import { headlessCanvas, WalkRun } from '../../web/src/walkthrough/runtime';
 import { encodeKeys, WALKTHROUGH_FPS, type Walkthrough } from '../../web/src/walkthrough/format';
-import { clipCuts, describeCut, type ClipCut, type ClipLog } from './clips';
+import { clipCuts, describeCut, type ClipCut, type ClipLog } from '@lewismoten/gamemaker-sandbox-tools/kit/clips';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -28,6 +28,12 @@ interface ReplayResult {
   scenes: number[];
   /** Keys never played (the run ended before them). */
   keysLeft: number;
+  /** Score when each scene began, followed by the score when the replay stopped. */
+  scores: { scene: number; score: number }[];
+  score: number;
+  /** Visible money, when this game uses a finite money counter, at scenes and the end. */
+  money: { scene: number; money: number | undefined }[];
+  finalMoney: number | undefined;
   error?: unknown;
   /** With `clips`: the digital sounds cut off at a scene's end or a level's start (kit/clips.ts). */
   clipCuts?: ClipCut[];
@@ -39,6 +45,9 @@ export async function replay(id: string, walk: Walkthrough, opts: { maxMinutes?:
   const gam = [...files.names()].find((n) => n.endsWith('.gam'))!;
   const run = new WalkRun(headlessCanvas(), files, gam, walk);
   const scenes: number[] = [];
+  const scores: { scene: number; score: number }[] = [];
+  const visibleMoney = () => (s.ci.meter[3] > 0 && s.ci.meter[3] < 32767 ? s.ci.meter[3] - 1 : undefined);
+  const money: { scene: number; money: number | undefined }[] = [];
   run.onChapter = (title) => opts.log && console.log(`  ${(run.frame / WALKTHROUGH_FPS).toFixed(1).padStart(7)} s  ${title}`);
   await run.start();
   const s = run.session!;
@@ -49,6 +58,8 @@ export async function replay(id: string, walk: Walkthrough, opts: { maxMinutes?:
   let started = true;
   s.onScene = (n) => {
     scenes.push(n);
+    scores.push({ scene: n, score: s.ci.score });
+    money.push({ scene: n, money: visibleMoney() });
     log.scenes.push({ t: run.m.time, n });
     started = false;
     onScene(n);
@@ -65,7 +76,19 @@ export async function replay(id: string, walk: Walkthrough, opts: { maxMinutes?:
   if (opts.log && run.error) console.log(run.error);
   const rec = s.rec as unknown as { keysLeft: number };
   const cuts = opts.clips ? clipCuts(log) : undefined;
-  return { won: scenes.includes(1), frames: run.frame, chapters: run.chapters, scenes, keysLeft: rec.keysLeft, error: run.error, clipCuts: cuts };
+  return {
+    won: scenes.includes(1),
+    frames: run.frame,
+    chapters: run.chapters,
+    scenes,
+    keysLeft: rec.keysLeft,
+    scores,
+    score: s.ci.score,
+    money,
+    finalMoney: visibleMoney(),
+    error: run.error,
+    clipCuts: cuts,
+  };
 }
 
 /**

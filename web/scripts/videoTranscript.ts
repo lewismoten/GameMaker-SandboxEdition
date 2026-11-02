@@ -4,6 +4,8 @@
 // and the names the captions mishear are spelled right (FIXES); nothing else Lewis said changes:
 // his videos are his own words, kept as he said them. Run from web/:
 //   npx vite-node scripts/videoTranscript.ts <path>/<id>.en-orig.vtt
+// It also reads a Whisper .srt (<id>.srt, from `npm run video:transcript`): each cue's words are
+// spread evenly across the cue.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 
@@ -58,6 +60,24 @@ interface Word {
   text: string;
 }
 
+/** An .srt's words, spread evenly across each cue's time. */
+function srtWords(srt: string): Word[] {
+  const out: Word[] = [];
+  for (const cue of srt.replace(/\r/g, '').split(/\n\n+/)) {
+    const lines = cue.split('\n');
+    const at = lines.findIndex((l) => l.includes('-->'));
+    if (at < 0) continue;
+    const [from, to] = lines[at].split('-->').map((x) => seconds(x.trim().replace(',', '.')));
+    const list = lines
+      .slice(at + 1)
+      .join(' ')
+      .split(/\s+/)
+      .filter(Boolean);
+    list.forEach((text, i) => out.push({ t: from + ((to - from) * i) / list.length, text }));
+  }
+  return out;
+}
+
 /** The captions' words, each once, with when it is said. */
 function words(vtt: string): Word[] {
   const out: Word[] = [];
@@ -109,7 +129,8 @@ function tidy(text: string): string {
 const path = process.argv[2];
 if (!path) throw new Error('Give the .vtt path: npx vite-node scripts/videoTranscript.ts <id>.en-orig.vtt');
 const id = basename(path).split('.')[0];
-const out = paragraphs(words(readFileSync(path, 'utf8')))
+const text = readFileSync(path, 'utf8');
+const out = paragraphs(path.endsWith('.srt') ? srtWords(text) : words(text))
   .map((p) => ({ t: p.t, text: tidy(p.text) }))
   .filter((p) => p.text);
 const file = join(__dirname, '../public/videos', `${id}.transcript.json`);

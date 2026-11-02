@@ -11,7 +11,7 @@
 //      Lily pats you. Twelve dollars buy the souvenir sword at the gift shop's register.
 //   4. The Emergency Exit Sign: the last hall. An 11-year-old in a cardboard knight costume; your
 //      $12 foam sword knocks his helmet off, and the emergency exit opens for it.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 
@@ -327,6 +327,8 @@ export function lastHall(book: BlockBook): Level {
     .mon(MON.lilyNear, 16, 10 + y)
     .mon(MON.bat, 4, 5 + y)
     .mon(MON.bat, 25, 6 + y);
+  // scenery for the site's achievement badge: a violin on the carpet, off the way
+  m.set(22, 8 + y, 'violin');
   // up the exit corridor to the sign at its end: "the emergency exit sign"
   m.link(14, 1, 'won');
   return { m, start: at(14, 10 + y), size: [map.w, map.h] };

@@ -2,7 +2,7 @@
 // size: a drawbridge's leaf standing up (and its tip with the red lamp), the leaf falling,
 // the deck lying flat (and blinking when it is about to go back up), the ferry (its stern
 // that pushes the car, the hull it sits in and the bow), and a cow taking her time.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob } from '../art/draw';
 import { P } from '../art/pal';
 

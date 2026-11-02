@@ -1,7 +1,7 @@
 // Drawing tools for Maximus: ASCII sprites, masks shaded like lit volumes, automatic
 // outlines, and textures for terrain. Everything is 20x20 palette indices; 255 is clear.
-import { Pixels, rng } from '../../../kit/pixels';
-import { TRANSPARENT } from '../../../../web/src/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { TRANSPARENT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export const CLEAR = TRANSPARENT;
 const N = 20;
@@ -153,16 +153,25 @@ export function outline(p: Pixels, c: number, diagonal = false): Pixels {
 export function tileNoise(seed: number, period = N, cells = 4): (x: number, y: number) => number {
   const r = rng(seed);
   const g = Array.from({ length: cells * cells }, () => r());
-  const at = (i: number, j: number) => g[(((j % cells) + cells) % cells) * cells + (((i % cells) + cells) % cells)];
-  const s = (t: number) => t * t * (3 - 2 * t);
+  // the grid wrapped one cell to the right and down, so the four corners of a cell are plain lookups
+  const stride = cells + 1;
+  const wrapped = new Float64Array(stride * stride);
+  for (let j = 0; j <= cells; j++) for (let i = 0; i <= cells; i++) wrapped[j * stride + i] = g[(j % cells) * cells + (i % cells)];
+  const wrap = (v: number) => {
+    const m = v % cells;
+    return m < 0 ? m + cells : m;
+  };
   return (x, y) => {
     const fx = (x / period) * cells;
     const fy = (y / period) * cells;
     const i = Math.floor(fx);
     const j = Math.floor(fy);
-    const u = s(fx - i);
-    const v = s(fy - j);
-    return at(i, j) * (1 - u) * (1 - v) + at(i + 1, j) * u * (1 - v) + at(i, j + 1) * (1 - u) * v + at(i + 1, j + 1) * u * v;
+    let t = fx - i;
+    const u = t * t * (3 - 2 * t);
+    t = fy - j;
+    const v = t * t * (3 - 2 * t);
+    const k = wrap(j) * stride + wrap(i);
+    return wrapped[k] * (1 - u) * (1 - v) + wrapped[k + 1] * u * (1 - v) + wrapped[k + stride] * (1 - u) * v + wrapped[k + stride + 1] * u * v;
   };
 }
 

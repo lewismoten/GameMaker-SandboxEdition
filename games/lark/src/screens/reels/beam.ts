@@ -2,8 +2,8 @@
 // Carl buzzing round the lamp room; the old lamp sputters, catches, and its beam sweeps round
 // over the cove and the sea, while the boats come home by it. The cove lights up as the beam
 // comes on (the dark palette turning to the night's).
-import { Pixels } from '../../../../kit/pixels';
-import { Reel } from '../../../../kit/reel';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { blob, gradient, scaleBlit } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { carlPicture } from '../../sprites/critters';

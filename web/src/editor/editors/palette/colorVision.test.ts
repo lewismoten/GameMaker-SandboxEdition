@@ -4,10 +4,10 @@ import { describe, expect, it } from 'vitest';
 import { VIEWS, deltaE, lab, labs, seen, simulate, unlab } from './colorVision';
 import { ALIKE, STEP, analyze, fixFor, warnings, whereTouch, type VisionScene } from './visionWarnings';
 import { luminance } from '../../check/sceneData';
-import { newBlockSet } from '../../../formats/blocks';
-import { MLEN, newMap } from '../../../formats/map';
-import { newMonsterSet } from '../../../formats/monster';
-import { parsePalette, serializePalette } from '../../../formats/palette';
+import { newBlockSet } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, newMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { newMonsterSet } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parsePalette, serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 /** A dark red and a dark green that deuteranopia (only) makes look alike. */
 const RED = [20, 4, 4];

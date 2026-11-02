@@ -1,10 +1,10 @@
 // Every picture, cartoon, text page and slide list on the disk, by file name (build.ts writes
 // them): the title, the menu, the story, how to play, the credits, the intermission cards, each
 // monologue's title card and the applause after it, and the endings.
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels } from '../../../kit/pixels';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BARDLOGO, bardIntroFli } from '../../../kit/bard';
-import { clipEntries, fliClips } from '../../../kit/fliClips';
+import { clipEntries, fliClips } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { centered } from '../../../snowbound/src/art/font';
 import { gif, H, W } from '../../../snowbound/src/screens/scenery';
 import type { Pal } from '../art/pal';

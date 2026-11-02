@@ -13,7 +13,7 @@
 // graphic) is shown exactly when it has been put back. Nothing in a book can take words away
 // (shushers and the like fine points instead), so every book can always be finished.
 // (An X in the rows is page edge, where the back cover used to be.)
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, bevel, micro } from '../art/draw';
 import { c, r } from '../art/pal';
 import { blank, floor, on, sign } from '../art/kit';

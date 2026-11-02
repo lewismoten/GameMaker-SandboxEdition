@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { Project } from '../core/project';
-import { newGame, emptyScene, serializeGame, ADVTYPE } from '../../formats/game';
+import { newGame, emptyScene, serializeGame, ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { quickHits, noteOpened, recentFiles } from './quickOpen';
 import { deleteMessage } from './usedBy';
 

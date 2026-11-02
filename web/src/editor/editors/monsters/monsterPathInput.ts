@@ -2,8 +2,8 @@
 // corner to move it, click one to open its popup; the arrow keys pick a corner and change its
 // speed, R and S turn and mirror its picture, Delete and Backspace remove, Space plays.
 import { toast } from '../../core/ui';
-import { MLEN, MWID } from '../../../formats/map';
-import { MAXMARCH } from '../../../formats/monster';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { MAXMARCH } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { addCorner, corners, firstCorner, mirrorOrient, moveCorner, pathLength, removeCorner, rotateOrient, type Corner } from './monsterPath';
 import { MAX_SPEED } from './monsterPathView';
 import { kind, mon, path, type PathEd } from './monsterPathState';

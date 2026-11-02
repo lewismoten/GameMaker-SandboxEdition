@@ -1,7 +1,7 @@
 // Tests: decoding a GIF from only the bytes received so far (formats/gifProgressive.ts).
 import { describe, expect, it } from 'vitest';
-import { decodeGif } from '../src/formats/gif';
-import { decodePartialGif, encodeGif89, partialPixels, storedRows } from '../src/formats/gifProgressive';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { decodePartialGif, encodeGif89, partialPixels, storedRows } from '@lewismoten/gamemaker-sandbox-engine/formats/gifProgressive';
 
 /** A 37x29 test picture: each row its own color, with some texture so LZW has work to do. */
 function picture(w = 37, h = 29) {

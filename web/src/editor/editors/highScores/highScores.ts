@@ -2,7 +2,7 @@
 import { registerEditor } from '../registry';
 import { h, clear } from '../../core/ui';
 import { fileUndo } from '../../core/fileUndo';
-import { parseHighScores, serializeHighScores } from '../../../formats/highscore';
+import { parseHighScores, serializeHighScores } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 
 registerEditor(['his'], (host, project, file) => {
   let scores = parseHighScores(project.files.get(file)!);

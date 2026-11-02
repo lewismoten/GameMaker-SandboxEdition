@@ -2,8 +2,8 @@
 // hatch is gold"): in Watt's workshop, Watt rolls up to Joe, reaches up and opens the little
 // hatch on his chest, and gold light pours out of the tally counter, rays and all, until the
 // whole room has turned gold (the lamplit palette turning to the gold one).
-import { Pixels } from '../../../../kit/pixels';
-import { Reel } from '../../../../kit/reel';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { wattCameo } from '../../../../kit/cameos';
 import { gradient, scaleBlit } from '../../art/draw';
 import { PAL, c, r } from '../../art/pal';

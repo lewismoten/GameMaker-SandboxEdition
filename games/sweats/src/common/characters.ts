@@ -6,13 +6,13 @@
 // up and sideways at once (Game-Maker follows one key at a time). Space declaims: a word balloon
 // flies out to each side along a path of its own (power 160), beating what comes at him (150);
 // it doesn't hurt friends, the dogs or the tough things (200). B says the monologue's line.
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../../web/src/formats/character';
-import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { type March, type Monster } from '../../../../web/src/formats/monster';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { COFFEE, KEY, MON, PLOT, POWER, SEQ, SND } from '../ids';
 import type { buildCharBlocks, SpriteBook } from './sprites';
-import { set, mon, corner, pace } from '../../../kit/actors';
-export { mon, corner, pace } from '../../../kit/actors';
+import { set, mon, corner, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
+export { mon, corner, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // the block flipped left-right

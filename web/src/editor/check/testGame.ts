@@ -1,9 +1,9 @@
 // A tiny platform game built in memory for the level check's tests: a floor with walls, a pit
 // with no way out, a coin sealed in a wall, and an exit link. `cells` paints the map.
-import { newBlockSet, serializeBlocks } from '../../formats/blocks';
-import { newCharacter, serializeCharacter } from '../../formats/character';
-import { ADVTYPE, emptyScene, newGame, serializeGame, type Game } from '../../formats/game';
-import { MLEN, newMap, serializeMap } from '../../formats/map';
+import { newBlockSet, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { ADVTYPE, emptyScene, newGame, serializeGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 
 const AIR = 0;
 export const WALL = 1;

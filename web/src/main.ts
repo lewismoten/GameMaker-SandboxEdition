@@ -194,11 +194,12 @@ async function route(): Promise<void> {
     a.href = shown ? `#/library?by=game&only=${encodeURIComponent(shown)}` : '#/library';
   }
   content.removeAttribute('role');
-  const { renderHome, openStored } = await modernUi();
-  if (ui !== 'modern') return;
+  // the home page's chunk (modernUi) is fetched only by the routes that use it: a project and the game list
   if (kind === 'p' && id) {
+    const { openStored } = await modernUi();
+    if (ui !== 'modern') return;
     if (workspace?.project.id === id) {
-      if (file && file !== workspace.currentFile) workspace.open(file);
+      workspace.navigate(file);
       return;
     }
     workspace?.dispose();
@@ -210,7 +211,6 @@ async function route(): Promise<void> {
     }
     workspace = opened;
     clear(titleSlot, ` · ${opened.project.name}`);
-    document.title = `${opened.currentFile ? `${opened.currentFile} · ` : ''}${opened.project.name} · ${SHORT}`;
     return;
   }
   workspace?.dispose();
@@ -222,7 +222,9 @@ async function route(): Promise<void> {
     const { renderMagazinePage } = await import('./manual/magazine/viewer');
     if (ui !== 'modern') return;
     document.title = `TURBO BUTTON magazine · ${PRODUCT}`;
-    disposeMagazine = renderMagazinePage(content, parseHash(location.hash).params.page);
+    const { params } = parseHash(location.hash);
+    const { issueFor } = await import('./manual/magazine/masthead');
+    disposeMagazine = renderMagazinePage(content, params.page, issueFor(Number(params.vol), Number(params.num)).which);
     return;
   }
   if (kind === 'library') {
@@ -287,6 +289,8 @@ async function route(): Promise<void> {
   document.title = PRODUCT;
   // on the game list, the bar carries the short tagline (the page's own heading is for screen readers)
   clear(titleSlot, h('span', { class: 'topbar-tagline hide-narrow', title: FORK_NOTE }, 'Make 1994 DOS games. No programming.'));
+  const { renderHome } = await modernUi();
+  if (ui !== 'modern') return;
   await renderHome(content, nav);
 }
 
@@ -384,4 +388,11 @@ registerServiceWorker();
 // achievements: the gm-achievement event, other tabs, and the counted ones kept current
 void import('./achievements/start').then((m) => m.startAchievements());
 
+// The first AudioContext costs a long task (about 150 ms in headless Chrome) if it is made inside
+// the first click; made while the page is idle it starts suspended, and that click only resumes it.
+const warmSound = () => void import('@lewismoten/gamemaker-sandbox-engine/audio/context').then((m) => m.audioContext());
+setTimeout(() => ('requestIdleCallback' in window ? requestIdleCallback(warmSound, { timeout: 4000 }) : warmSound()), 800);
+
 watchForUpdates();
+// dev server on localhost only: the opt-in interaction log (its switch is in the corner)
+if (import.meta.env.DEV) void import('./devLog/interactionLog').then((m) => m.startInteractionLog());

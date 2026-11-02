@@ -12,10 +12,10 @@
 //
 // Layout (12 rows: the rafters on row 0, the walking row 9, the floorboards on row 10). The
 // beam (row 7) and the gift shop's shelf (row 7) are ledges.
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, SOLID, gate, loot, plotThing, spotlight } from '../../common/blocks';
 import { anim, bob, corner, mon, pace } from '../../common/characters';

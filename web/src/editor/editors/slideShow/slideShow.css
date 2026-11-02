@@ -560,3 +560,10 @@
 .sl-then.then-key {
   font-size: 19px;
 }
+
+/* Reduced motion: the recording mark stays lit instead of blinking */
+@media (prefers-reduced-motion: reduce) {
+  .sl-clip.playing.waiting::after {
+    animation: none;
+  }
+}

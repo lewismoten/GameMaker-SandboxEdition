@@ -1,6 +1,6 @@
 // The Shakespeare in Sweatpants score's arranger: the band's styles (lead, twin, bass, comping, drums) playing a section's bars as CMF (song.ts).
-import { BASS as UPRIGHT, Writer } from '../../../kit/song';
-import { detuned, DRUM, Fx, tones } from '../../../kit/songFx';
+import { BASS as UPRIGHT, Writer } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
+import { detuned, DRUM, Fx, tones } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 import { type Chord, chord, fold, inChord, type Sec } from './material';
 import { BONGO, BRUSH, CRASH, HAT, KICK, PIANO, RIDE, RIM, SNARE, SWELL, TIMP, VIBES } from './patches';
 

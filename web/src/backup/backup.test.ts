@@ -1,7 +1,7 @@
 // Tests for the backup: a file made and read back, merges, untouched sections, partial and
 // damaged files. On plain in-memory worlds (world.ts), so no browser storage is needed.
 import { describe, expect, it } from 'vitest';
-import { createZip } from '../project/zip';
+import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { parseHighScoreTable, serializeHighScoreTable } from '../project/saveData/highScores';
 import { parseSlotNames, serializeSlotNames } from '../project/saveData/saveGame';
 import { FORMAT, FORMAT_VERSION, makeBackup, readBackup, snapshot } from './file';
@@ -282,5 +282,29 @@ describe('damaged files', () => {
   it('skips sections from a later version it doesn’t know', async () => {
     const b = await readBackup(await zip({ 'manifest.json': JSON.stringify(manifest({ sections: [{ id: 'future', title: 'Future things' }] })) }));
     expect(b.unknown).toEqual(['Future things']);
+  });
+});
+
+it('restores the repeating map view preference from a preferences-only backup', async () => {
+  const original = emptyWorld();
+  original.local['gm-map-wrap'] = '1';
+  const backup = await backupOf(original, ['prefs']);
+  const { next } = await planImport(emptyWorld(), backup, all('replace'));
+  expect(next.local['gm-map-wrap']).toBe('1');
+});
+
+describe('checkpoints in a backup', () => {
+  it('travel with a game, and a shallow copy leaves them out', async () => {
+    const w = seeded();
+    (w.stores.projects.p1 as { checkpoints?: unknown }).checkpoints = [
+      { id: 'c1', name: 'Before', made: 1, delta: { 'a.map': { kind: 'new', bytes: bytes(1, 2) } } },
+    ];
+    const row = (b: Awaited<ReturnType<typeof backupOf>>) =>
+      (b.payloads.projects as { projects: Record<string, { checkpoints?: { name: string; delta: Record<string, { bytes: Uint8Array }> }[] }> }).projects.p1;
+    const full = row(await backupOf(w));
+    expect(full.checkpoints?.[0].name).toBe('Before');
+    expect([...full.checkpoints![0].delta['a.map'].bytes]).toEqual([1, 2]);
+    const { bytes: zip } = await makeBackup(await snapshot(w, { shallow: true }), [...SECTION_IDS], new Date(2026, 9, 27));
+    expect(row(await readBackup(zip)).checkpoints).toBeUndefined();
   });
 });

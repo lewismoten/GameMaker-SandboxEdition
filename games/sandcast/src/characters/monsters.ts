@@ -1,5 +1,5 @@
 // sandcast.mon: who walks, chases, scuttles and rolls, and what each becomes when beaten.
-import { emptyMonster, newMonsterSet, type March, type Monster } from '../../../../web/src/formats/monster';
+import { emptyMonster, newMonsterSet, type March, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { MB } from '../sprites/sprites';
 import { SIGNS } from '../sprites/signs';
 import { MON } from '../rules';

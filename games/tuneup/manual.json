@@ -1,0 +1,25 @@
+{
+  "title": "Tune-Up",
+  "pages": [
+    {
+      "head": "The Story",
+      "html": "<h1>The Story</h1><p>It is the morning of the Clown Club parade, and THE&nbsp;CHEZ is meant to lead it. Overnight, Gwinn buried Doc Leo's toolbox in the yard and tipped the Clown Club's instrument trunk in through the car's door window. Now THE&nbsp;CHEZ honks like a kazoo and rattles like a tambourine.</p><p>No wrenches? No problem. Doc Leo gives the car a <b>tune-up by ear</b>. He does his shrinking trick and climbs inside, and Sir Reginald III, his rubber chicken, does the fiddly bits: he fits where Doc Leo can't. Teddy rides along in the front passenger seat.</p>"
+    },
+    {
+      "head": "Getting Started",
+      "html": "<h1>Getting Started</h1><p>Type <kbd>TUNEUP</kbd> and press <kbd>Enter</kbd>. You need a VGA display. A Sound Blaster (or compatible) plays the music and the notes; without one, the PC speaker plays the notes.</p><p>Pick <b>Play</b> from the menu. Before each level, Doc Leo taps his hat and pulls out the tool for the job, and a cutaway of THE&nbsp;CHEZ shows what is tuned so far. Then he and Sir Reginald III talk it over. Press a key to skip ahead.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Up</kbd> hops; <kbd>Q</kbd> and <kbd>E</kbd> hop left and right. On a plug wire, <kbd>Up</kbd> climbs and <kbd>Down</kbd> climbs down. <kbd>Space</kbd> reaches up: hold it under a crank to turn it, or tap it to play a key. In Oil's Well, <kbd>E</kbd> <kbd>G</kbd> <kbd>B</kbd> <kbd>D</kbd> <kbd>F</kbd> squirt the oil can. In Pump Up the Volume, <kbd>B</kbd> twists a balloon dog that floats Doc Leo up. <kbd>F2</kbd> shows what you have, <kbd>F5</kbd> saves and <kbd>F6</kbd> loads.</p>"
+    },
+    {
+      "head": "Doc Leo and Sir Reginald III",
+      "html": "<h1>Doc Leo and Sir Reginald III</h1><p><b>Doc Leo</b> is the friendliest hobo clown in the Clown Club: a chewed-up gray fedora with pins in its band, his own face paint, wire glasses, a patched navy corduroy jacket and red sneakers, and today a red shop rag in his pocket. He has an excellent ear.</p><p><b>Sir Reginald III</b> is a rubber chicken of very good family. He does the repairs, tightens terminals with his beak and corrects Doc Leo's puns. Bump into him all you like; he is at work and does not mind.</p><p>A <b>spark</b> doesn't hurt Doc Leo; it frizzes his hair and costs a little energy. Energy comes back as you play: each note of the first key in The Timing Beat gives a little.</p>"
+    },
+    {
+      "head": "The Dream Engine",
+      "html": "<h1>The Dream Engine</h1><h2>1. Jump Start</h2><p>The battery is flat. Find the red clamp on the shelf and the black clamp under the workbench: each opens its own terminal. Then stand under the crank and hold <kbd>Space</kbd> until the gauge is full.</p><h2>2. Spark Plucks</h2><p>The spark plugs are harp strings. Climb each wire and pluck its plug. Sparks run up the wires in the firing order, first, third, fourth, second: wait for yours to pass, then climb.</p><h2>3. The Timing Beat</h2><p>A paper roll turns across the top, and its holes drop notes down four glass tubes onto four keys. Stand under a key and tap <kbd>Space</kbd> as its note lands; right on the beat scores best. Three verses: a straight one, a syncopated one with a tube that splits in two and one that takes the long way round, and a quick one in double time. Each verse's gate opens when the meter at the top is full and you have played enough notes.</p><h2>4. Oil's Well</h2><p>Squeaks pace the five lines of a staff over Doc Leo's head. It's a treble clef staff, so each line is a note, and its letter is the key that squirts oil along it: <kbd>E</kbd> the bottom line, then <kbd>G</kbd>, <kbd>B</kbd>, <kbd>D</kbd> and <kbd>F</kbd> at the top. The letters sit at the lines' right ends. An oiled Squeak turns into a calm note that floats home to you. More Squeaks come out of the clef end as you go; bring every note home and the gate opens.</p>"
+    },
+    {
+      "head": "Credits and Registering",
+      "html": "<h1>Credits and Registering</h1><p><b>Tune-Up</b>, version 2.0, November 1994. Design, art, music and programming by Claude Opus 5.5 (Anthropic's AI model), made in code for Game-Maker: Sandbox Edition. Built with GAME-MAKER 3.0 by Recreational Software Designs.</p><p>Starring Doc Leo as the friendliest hobo clown in the Clown Club, Sir Reginald III as himself, Teddy and Gwinn. Doc Leo's poses follow the ones drawn for CERTIFIED RAT TICKLER. The songs are played on the music editor's instrument presets. No wrenches were harmed. Gwinn would like that on the record.</p><h2>This is shareware</h2><p>Copy it for your friends and upload it to your favorite BBS. If you enjoy it, please register for $15 with Sandbox Software, Dept. HONK-ZOO, P.O. Box 000 (a made-up address: please don't mail anything). Registered players get a cutaway poster of THE&nbsp;CHEZ, and our thanks.</p>"
+    }
+  ]
+}

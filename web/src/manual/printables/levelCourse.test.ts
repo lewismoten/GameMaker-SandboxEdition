@@ -2,7 +2,7 @@
 // (as Virus Blaster's ribbon cable is built), unrolled into one strip that runs up the page; and
 // a shallow slant down the map (as Snowbound's sled run is), kept upright and running down it.
 import { describe, expect, it } from 'vitest';
-import type { Block } from '../../formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { findCourse } from '../../editor/check/course';
 import { courseRaster, layOutCourse, panelOf } from './levelCourse';
 
@@ -141,6 +141,32 @@ describe('a course laid out as one strip', () => {
     const seen = new Set(r.pixels);
     expect(seen.has(256)).toBe(true);
     for (const v of seen) expect(v === 256 || (v >= 10 && v < 17)).toBe(true);
+  });
+
+  it('draws every panel exactly as the straightforward per-pixel lookup does', () => {
+    const blen = 4;
+    const source = { width: 100 * blen, height: 100 * blen, pixels: new Uint8Array(100 * blen * 100 * blen) };
+    for (let i = 0; i < source.pixels.length; i++) source.pixels[i] = (i * 7) % 251;
+    const mod = (v: number, n: number) => ((v % n) + n) % n;
+    const drawn = new Set(l.cells.map((c) => `${c.x},${c.y}`));
+    for (const p of l.panels.slice(0, 3)) {
+      const r = courseRaster(l, p, source, blen, 2 * blen, 256);
+      const want = new Uint16Array(r.width * r.height).fill(256);
+      for (let py = 0; py < r.height; py++)
+        for (let px = 0; px < r.width; px++) {
+          const a = p.a1 - (py + 0.5) / (2 * blen);
+          const c = p.c0 + (px + 0.5) / (2 * blen);
+          const x = c * l.right[0] + a * l.up[0];
+          const y = c * l.right[1] + a * l.up[1];
+          const bx = Math.floor(x);
+          const by = Math.floor(y);
+          if (!drawn.has(`${bx},${by}`)) continue;
+          const sx = mod(bx, 100) * blen + Math.min(blen - 1, Math.floor((x - bx) * blen));
+          const sy = mod(by, 100) * blen + Math.min(blen - 1, Math.floor((y - by) * blen));
+          want[py * r.width + px] = source.pixels[sy * source.width + sx];
+        }
+      expect(r.pixels.findIndex((v, i) => v !== want[i])).toBe(-1);
+    }
   });
 });
 

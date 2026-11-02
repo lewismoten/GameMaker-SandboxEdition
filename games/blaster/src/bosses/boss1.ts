@@ -1,7 +1,7 @@
 // Boss 1: THE BIOS BUG, a beetle the size of a chip, clamped onto the BIOS. Its shell is
 // the arena's back wall; its jaws are turrets, its sides spit seekers and mites, and its
 // head (four monsters: a crown over two great eyes) plugs the only way out.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, micro, shadeAt } from '../art/draw';
 import { opaque, slicesOf, tint, weakPoint } from './boss';
 import { pics } from '../characters/enemies';
@@ -12,7 +12,7 @@ import type { Bestiary } from '../characters/mons';
 import type { Pal } from '../art/pal';
 import { kit, type Leg } from '../stages/stage';
 import type { StageArt } from '../blocks/tiles';
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { BlockSet } from '../art/draw';
 
 const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;

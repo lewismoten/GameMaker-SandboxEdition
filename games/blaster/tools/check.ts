@@ -5,7 +5,7 @@ import { rideBus } from './busBot';
 import { STAGES } from '../src/stages/stages';
 import { arenaGoal, goalOf, maxTicksOf, simOf, watchLanes } from './testkit';
 import { Sim } from './sim';
-import { MLEN } from '../../../web/src/formats/map';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { SCAN } from '../src/ids';
 import { EGG_BLOCK } from '../src/blocks/egg';
 import type { Stage } from '../src/stages/stage';

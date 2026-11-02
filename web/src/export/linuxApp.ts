@@ -16,10 +16,10 @@
 // program" ticked (or "Run" chosen) for play.sh.
 import { drawIcon, encodeRgbaPng, type IconColors } from './macIcon';
 import { shrink } from './winIcon';
-import { createTarGz, type TarEntry } from './tar';
+import { createTarGz, type TarEntry } from '@lewismoten/gamemaker-sandbox-tools/kit/tar';
 import { thirdPartyNotices } from './notices';
 import { SITE_URL } from '../seo/site';
-import type { IndexedImage } from '../formats/gif';
+import type { IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 
 export type LinuxArch = 'x86_64' | 'aarch64';
 export const LINUX_ARCHES: LinuxArch[] = ['x86_64', 'aarch64'];

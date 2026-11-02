@@ -1,7 +1,7 @@
 // The piano roll's measurements (keyboard width, ruler, instrument lane, velocity lane), note
 // names, and the kinds of drag a pointer can be doing.
-import { programChanges } from '../../../../formats/cmfEdit';
-import { type Note } from '../../../../formats/cmfSong';
+import { programChanges } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { type Note } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import type { MusicDoc } from '../doc';
 
 export const KEYW = 46;

@@ -7,7 +7,7 @@
 //   flying things 80: they beat a squawk, and burst on Doc Leo (under 100, so once each)
 //   rolling pins, knives 150: they keep hurting while they touch him
 //   Teddy and Gwinn 200: harmless, and nothing in the kitchen can move them
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from '../art/draw';
 import {
   ant,

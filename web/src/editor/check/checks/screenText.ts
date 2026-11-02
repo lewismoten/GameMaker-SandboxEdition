@@ -1,6 +1,6 @@
 // The level check's reading of the front screens' words: instructions or a story that runs past
 // three pages (players skim, then skip), and pages left as placeholders (empty, or "pending").
-import type { Game } from '../../../formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Finding } from '../findings';
 import type { FileSource } from '../sim';
 import { textPages, type TextRole } from '../textScreens';

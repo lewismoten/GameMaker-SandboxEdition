@@ -1,7 +1,7 @@
 // The monsters every stage shares, always first in its .mon/.mbl so their numbers never
 // change: the ship's shots and Nova bolts, sparks and explosions, the wreck that a dead
 // turret leaves behind, and the virus's bullets.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob, turn45 } from '../art/draw';
 import { POWER } from '../ids';
 import type { Bestiary } from './mons';

@@ -3,7 +3,7 @@
 // step with the tools (prompt.ts buildBrief), and the bot plays it. Until the bot wins, the model
 // is shown why and asked to fix it, a couple of times at most.
 import { GameFiles } from '../../project/files';
-import { ADVTYPE, parseGame } from '../../formats/game';
+import { ADVTYPE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { fillStarter } from '../../editor/shell/starter';
 import { GAME_TOOL_DEFS } from '../tools/index';
 import { runTool } from '../tools/run';

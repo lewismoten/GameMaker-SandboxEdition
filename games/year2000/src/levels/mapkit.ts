@@ -1,7 +1,7 @@
 // Building 100x100 Game-Maker maps from ASCII: each level is drawn as rows of characters,
 // with a legend for blocks, monsters standing on a floor, named spots (starts, booth
 // doors) and big pictures (domes, billboards) placed by their top-left corner.
-import { newMap, reindexMonsters, MLEN, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockSet } from '../blocks/book';
 
 type Cell = string | { tile?: string; mon?: number; mark?: string; big?: string; w?: number; h?: number };

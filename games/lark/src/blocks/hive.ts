@@ -3,7 +3,7 @@
 // counter with its espresso machine and pastry case, shelves of books, ceiling fans turning over
 // the floor, the stage with its mic, the turret stair door (it opens for the pages caught on the
 // floor), Will, his stage steps (they want the rest of his pages) and his corner by the curtain.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { willCameo } from '../../../kit/cameos';
 import { bevel, shadeAt } from '../art/draw';
 import { PAL, c, r } from '../art/pal';

@@ -1,7 +1,7 @@
 // A GameContext over files in memory: the MCP server's (which writes them to the working folder
 // on save) and the tests'. Each applied change is remembered by name until `saved()`.
 import type { GameFiles } from '../../project/files';
-import type { PlayerPatches } from '../../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import type { Change, GameContext } from './types';
 
 export class MemoryContext implements GameContext {

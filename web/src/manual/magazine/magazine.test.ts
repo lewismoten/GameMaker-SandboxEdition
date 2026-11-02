@@ -6,7 +6,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { cdCatalog, cdSecretCatalog } from '../../../scripts/cdGames';
 import { CHAPTERS } from '../ultimate/plan';
-import { buildIssue, SECTIONS } from './issue';
+import { buildIssue, SECTIONS, SECTIONS_1 } from './issue';
+import { ISSUES } from './masthead';
 import { GUIDE_CHAPTERS } from './sections/houseAd';
 import { magContext, magGames } from './games';
 import { GUIDE_SECTIONS, goProblem, type GoKnown } from './go';
@@ -17,8 +18,6 @@ import type { Block, Issue } from './types';
 const repo = join(__dirname, '../../../..');
 const catalog = cdCatalog(join(repo, 'cd'));
 const secret = cdSecretCatalog(join(repo, 'cd'));
-const ctx = magContext(magGames(catalog));
-
 /** Every piece of inline text in a block, and every link target it holds. */
 function walk(b: Block, text: string[], links: string[]): void {
   const t = (s?: string) => s !== undefined && (text.push(plain(s)), links.push(...linksIn(s)));
@@ -100,6 +99,11 @@ function walk(b: Block, text: string[], links: string[]): void {
       text.push(b.label);
       links.push(b.go);
       break;
+    case 'floppy':
+      text.push(b.alt, b.cover?.burst ?? '');
+      t(b.caption);
+      links.push(b.go, ...(b.cover ? [b.cover.page] : []));
+      break;
     case 'disc':
       text.push(b.alt, b.cover?.burst ?? '');
       t(b.caption);
@@ -154,7 +158,11 @@ function read(issue: Issue): { text: string[]; links: string[] } {
   return { text, links };
 }
 
-describe('TURBO BUTTON', async () => {
+describe.each([
+  ['No. 1', ISSUES[1], SECTIONS_1],
+  ['No. 2', ISSUES[2], SECTIONS],
+])('TURBO BUTTON %s', async (_name, mag, sections) => {
+  const ctx = magContext(magGames(catalog), mag);
   const issue = await buildIssue(ctx);
 
   it('comes out to whole folded sheets, cover first and back cover last', () => {
@@ -166,7 +174,7 @@ describe('TURBO BUTTON', async () => {
   });
 
   it('lists every section on the contents page at the page it starts on', () => {
-    const listed = SECTIONS.filter((s) => s.toc !== false).map((s) => s.id);
+    const listed = sections.filter((s) => s.toc !== false).map((s) => s.id);
     expect(issue.toc.map((e) => e.section)).toEqual(listed);
     for (const e of [...issue.toc, ...issue.ads]) {
       const pg = issue.pages[e.folio - 1];
@@ -212,7 +220,7 @@ describe('TURBO BUTTON', async () => {
 
   it('never names the secret game, even when it is handed one', async () => {
     expect(secret.length).toBeGreaterThan(0);
-    const handed = magContext(magGames([...catalog, ...secret]));
+    const handed = magContext(magGames([...catalog, ...secret]), mag);
     for (const s of secret) expect(handed.game(s.id), s.id).toBeUndefined();
     const all = await buildIssue(handed);
     const { text, links } = read(all);

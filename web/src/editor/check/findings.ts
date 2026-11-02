@@ -95,13 +95,21 @@ const G: GuideRef = { chapter: 'limits', section: 'The wall glitch' };
 
 export const CHECKS = {
   stuck: { name: 'Stuck spots', why: 'A player who can’t go on or go back has to start over, and few will.', guide: L('Never trap the player') },
-  unreachable: { name: 'Out of reach', why: 'A prize nobody can get to reads as a mistake, not a secret.', guide: L('Everything on the map has a job') },
+  unreachable: {
+    name: 'Out of reach',
+    why: 'Players may not find a way to this prize; if it is a secret, dismiss this.',
+    guide: L('Everything on the map has a job'),
+  },
   'prize-in-view': {
     name: 'Prizes in view but out of reach',
     why: 'A prize the screen shows that no way leads to reads as a cruel joke: players spend lives trying for it.',
     guide: L('Everything on the map has a job'),
   },
-  'link-unreached': { name: 'Exits never reached', why: 'A link the hero can’t touch is a door to nowhere.', guide: L('Never trap the player') },
+  'link-unreached': {
+    name: 'Exits never reached',
+    why: 'Players may not be able to reach this link; if that is on purpose, dismiss this.',
+    guide: L('Never trap the player'),
+  },
   'blind-drop': {
     name: 'Blind drops',
     why: 'A fall faster than the view, or to a landing off screen, is more guess than choice. A leap of faith the game has taught can be fun.',
@@ -186,6 +194,11 @@ export const CHECKS = {
     why: 'With a Sound Blaster, a sound that names a .VOC the game doesn’t have plays nothing, and cuts off the sound before it.',
     guide: { chapter: 'sounds', section: 'Two sounds in every slot' },
   },
+  'voc-size': {
+    name: 'Sounds over 64 KB',
+    why: 'PLAYGAME loads a whole .VOC with a 16-bit size (SOUNDC.C PlaySbVocFile), so a sound of 64 KB or more is likely to play nothing or cut off in DOS. The web player plays it either way.',
+    guide: { chapter: 'sounds', section: 'Two sounds in every slot' },
+  },
   'out-of-range': {
     name: 'Blocks and monsters that aren’t there',
     why: 'A number past the end of a block set or the counters makes DOS read stray memory; a monster from an empty slot never appears.',
@@ -238,7 +251,7 @@ export const CHECKS = {
   },
   density: {
     name: 'Crowded screens',
-    why: 'Two or three foes at once is usually plenty to read; a crowd can blur into noise. A swarm can be the point of a level, though.',
+    why: 'Two or three foes at once is usually plenty to read; a crowd can be hard to read. A swarm can be the point of a level, though.',
     guide: C('Fair enemies'),
     taste: true,
   },
@@ -250,7 +263,7 @@ export const CHECKS = {
   },
   'start-threat': {
     name: 'A threat at the start',
-    why: 'A level that hurts before the player has moved often feels unfair; a moment to look around helps. A boss that meets the hero at the door can be the point.',
+    why: 'A level that hurts before the player has moved may feel unfair to some players; a moment to look around helps. A boss that meets the hero at the door can be the point.',
     taste: true,
     guide: P('A safe start'),
   },
@@ -326,7 +339,7 @@ export const CHECKS = {
   },
   'help-keys': {
     name: 'Help that names the wrong keys',
-    why: 'Players press the keys the help names. A key nothing uses reads as a broken game, and the real key may never be found.',
+    why: 'Players press the keys the help names. A key nothing uses may look like a mistake to players, and the real key may go unfound.',
     guide: { chapter: 'show', section: 'Instructions players read' },
   },
   'text-contrast': {
@@ -352,7 +365,7 @@ export const CHECKS = {
   },
   response: {
     name: 'Slow keys',
-    why: 'A key that waits before it answers can feel broken. A wind-up can suit a heavy move; is the wait meant?',
+    why: 'A key that waits before it answers may seem not to respond. A wind-up can suit a heavy move; is the wait meant?',
     guide: L('Controls the level teaches'),
     taste: true,
   },
@@ -364,7 +377,7 @@ export const CHECKS = {
   },
   'hero-speed': {
     name: 'Hero speed',
-    why: 'A slow walk can make levels drag, an uneven one feel slippery and a jump cut off in mid-air feel broken, unless the weight is the point.',
+    why: 'A slow walk can make levels drag, an uneven one feel slippery and a jump cut off in mid-air feel odd, unless the weight is the point.',
     guide: C('A hero who feels right'),
     taste: true,
   },
@@ -403,7 +416,7 @@ export const CHECKS = {
   },
   music: {
     name: 'Levels without music',
-    why: 'A level with no song, or one DOS won’t play, is silent. Quiet can set a mood; more often players hear it as something broken.',
+    why: 'A level with no song, or one DOS won’t play, is silent. Quiet can set a mood; players may take it for a problem.',
     guide: C('Polish that players notice'),
   },
   flashing: {
@@ -413,7 +426,7 @@ export const CHECKS = {
   },
   stakes: {
     name: 'Lives to spare',
-    why: 'With many lives a death costs nothing, and the danger stops mattering. A few lives keep each mistake worth avoiding.',
+    why: 'With many lives a death costs nothing, and the danger stops mattering. A few lives keep each death worth avoiding.',
     taste: true,
     guide: C('A difficulty curve, not a cliff'),
   },
@@ -423,7 +436,11 @@ export const CHECKS = {
     taste: true,
     guide: { chapter: 'show', section: 'Instructions players read' },
   },
-  ending: { name: 'Ending and screens', why: 'A game with no won screen, credits or instructions feels unfinished.', guide: L('An ending, not an ad') },
+  ending: {
+    name: 'Ending and screens',
+    why: 'Players may expect a won screen, credits or instructions; if it ends without them on purpose, dismiss this.',
+    guide: L('An ending, not an ad'),
+  },
   variety: {
     name: 'Variety',
     why: 'Something new every level or two keeps a game lively; one look all the way through can be a style of its own.',

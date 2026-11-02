@@ -12,9 +12,36 @@ const STATIC = /(?:^|[;\s])(?:import|export)\s+(?!type\s)(?:[^'";]*?\sfrom\s*)?[
 const DYNAMIC = /import\(\s*['"]([^'"]+)['"]\s*\)/g;
 
 function resolveImport(from: string, spec: string): string | undefined {
-  if (!spec.startsWith('.')) return undefined; // packages
-  const p = resolve(dirname(from), spec.replace(/\?.*$/, ''));
+  let p: string;
+  if (spec.startsWith('@lewismoten/gamemaker-sandbox-')) {
+    const [scope, name, ...parts] = spec.split('/');
+    const folder = resolve(SRC, '../packages', name.replace('gamemaker-sandbox-', ''));
+    const manifest = JSON.parse(readFileSync(resolve(folder, 'package.json'), 'utf8')) as {
+      name: string;
+      exports: Record<string, { 'gamemaker-source'?: string }>;
+    };
+    if (manifest.name !== `${scope}/${name}`) throw new Error(`Unknown workspace: ${spec}`);
+    const subpath = parts.length ? `./${parts.join('/')}` : '.';
+    let target = manifest.exports[subpath]?.['gamemaker-source'];
+    if (!target)
+      for (const [pattern, entry] of Object.entries(manifest.exports)) {
+        if (!pattern.endsWith('/*') || !subpath.startsWith(pattern.slice(0, -1))) continue;
+        target = entry['gamemaker-source']?.replace('*', subpath.slice(pattern.length - 1));
+        if (target) break;
+      }
+    if (!target) throw new Error(`Missing workspace source export: ${spec}`);
+    p = resolve(folder, target);
+  } else {
+    if (!spec.startsWith('.')) return undefined;
+    p = resolve(dirname(from), spec.replace(/\?.*$/, ''));
+  }
   return [p, `${p}.ts`, `${p}/index.ts`].find((c) => existsSync(c) && statSync(c).isFile());
+}
+
+// Keep existing area rules meaningful after runtime modules move into their workspace.
+function sourcePath(file: string): string {
+  const p = relative(SRC, file);
+  return p.replace(/^\.\.\/packages\/engine\/src\//, '');
 }
 
 /** Every file reachable from `entry` (a path under src/), each with the file that first imported it. */
@@ -45,7 +72,7 @@ export function reachable(entry: string, { dynamic }: { dynamic: boolean }): Map
 /** The files in `graph` whose path under src/ matches, each as the chain of imports that brings it in. */
 export function chains(graph: Map<string, string | undefined>, match: RegExp): string[] {
   return [...graph.keys()]
-    .filter((f) => match.test(relative(SRC, f)))
+    .filter((f) => match.test(sourcePath(f)))
     .map((file) => {
       const out: string[] = [];
       for (let f: string | undefined = file; f; f = graph.get(f)) out.unshift(relative(SRC, f));

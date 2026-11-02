@@ -4,7 +4,7 @@
 // (a lattice tower 24 blocks tall; its ticket gate takes three tickets, the way Game-Maker
 // refuses a touch the counter can't pay for), a trampoline (hop onto it and the air above
 // carries Teddy up to a perch of treats), the food row, and the show barn.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, clubArt, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, r, sky } from '../blocks/tiles';

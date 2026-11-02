@@ -8,10 +8,10 @@
 // a death replays the level from there. Score, hit points, lives, inventory and counters are kept
 // (StartSceneInits only fills those the first time). The save editors (the web's "Saves &
 // scores" panel and the desk PC's SAVEHACK.EXE) use it.
-import { loadScene, restoreSaved, savedState, startSceneInits, type Saved } from '../../engine/scene';
-import { currentFrame, moveCharGrav, updateCharScreenPos } from '../../engine/character';
-import { calcDraw, monPicNum } from '../../engine/monsters';
-import { renderWorld, VISIBLE_H, VISIBLE_W } from '../../engine/render';
+import { loadScene, restoreSaved, savedState, startSceneInits, type Saved } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { currentFrame, moveCharGrav, updateCharScreenPos } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { calcDraw, monPicNum } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { renderWorld, VISIBLE_H, VISIBLE_W } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
 import {
   BLEN,
   CHARBL,
@@ -27,13 +27,13 @@ import {
   newCharInfo,
   shownBlock,
   type World,
-} from '../../engine/world';
-import { TRANSPARENT, orientIndex } from '../../formats/blocks';
-import { LASTSL } from '../../formats/monster';
-import { Recorder } from '../../engine/recorder';
-import { MAXFRAME } from '../../formats/character';
-import { ADVTYPE, NOSCENE, parseGame, type Game, type Point } from '../../formats/game';
-import { Screen, SIZEX } from '../../gfx/screen';
+} from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { TRANSPARENT, orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTSL } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
+import { MAXFRAME } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { ADVTYPE, NOSCENE, parseGame, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { Screen, SIZEX } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
 import { parseSave, SaveFormatError, serializeSave, type SavedGame } from './saveGame';
 import type { FileSource } from './gameLabels';
 

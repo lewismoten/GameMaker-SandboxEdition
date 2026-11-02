@@ -1,6 +1,6 @@
 // The bot's way through mill.ts (the level's own comment says what happens there).
 import type { Order } from '../bot';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { CORNERS } from '../../src/levels/millBeasts';
 import { CTR } from '../../src/ids';
 import { MILL_AT } from '../../src/levels/mill';

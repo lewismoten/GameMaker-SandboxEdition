@@ -1,7 +1,7 @@
 // Palette ramps: runs of shades of one material, dark to light, as the Ultimate Owner's Guide
 // plans a palette. Finds the ramp a color sits in (for the block painter's lighten and darken
 // brush), blends a range between two colors, and lays out a shade ramp from one color.
-import type { Palette } from '../../../formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 type RGB = [number, number, number];
 const rgb = (pal: Palette, i: number): RGB => [pal[i * 3] & 63, pal[i * 3 + 1] & 63, pal[i * 3 + 2] & 63];

@@ -1,7 +1,7 @@
 // Records a demo for a CD game with the bot, and replays a .REC to see how it plays out:
 // where the character went, what it scored, whether it died, plus screenshots.
-import { parseRecording, serializeRecording } from '../../../web/src/formats/recording';
-import type { World } from '../../../web/src/engine/world';
+import { parseRecording, serializeRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { GameFiles } from '../../../web/src/project/files';
 import { deflateSync } from 'node:zlib';
 import { writeFileSync } from 'node:fs';

@@ -292,7 +292,7 @@ export function readme(): string {
   const r = wrap(`KEEP IT BRIEF!
 The Tiny Pockets Library
 Version ${about.version}
-(c) 1995 Sandbox Software
+(c) 1994 Sandbox Software
 
 A library game for IBM PC compatibles with VGA. Sound Blaster recommended.
 

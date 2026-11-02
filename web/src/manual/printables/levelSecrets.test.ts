@@ -5,8 +5,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import SECRETS from './levelSecrets.json';
 import { levelSecretsJson, scanLevelSecrets } from '../../../scripts/levelSecretsScan';
-import { parseGame } from '../../formats/game';
-import { MLEN, parseMap } from '../../formats/map';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { levelsOf } from './levelMapLayout';
 
 const games = join(__dirname, '../../../../games');

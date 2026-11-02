@@ -13,7 +13,7 @@ import { plain } from './autotiles';
 import { bridgeName } from '../levels/ground';
 import { gateArt } from './gateArt';
 import { C as color } from '../art/pal';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
 

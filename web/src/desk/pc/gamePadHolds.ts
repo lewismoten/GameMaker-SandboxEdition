@@ -4,6 +4,7 @@
 // gamepad's presses included.
 import { holdDeskPad, padPosition, type Joy } from '../../input/deskJoystick';
 import { showPad } from './gamePadArt';
+import { onTurbo } from '../../input/padTurbo';
 import { unlockAchievement } from '../../achievements';
 
 /** What the pointers and keys hold on the pad, and the pad shown pressed. */
@@ -13,6 +14,8 @@ export class PadHolds {
   private buttons = new Map<string, number>();
   private real: Joy = { pos: 0, buttons: 0 };
   private arts = new Set<HTMLElement>();
+  /** Every drawing shows the TURBO switch where it is thrown; stop() ends that. */
+  readonly stop = onTurbo(() => this.show());
 
   /** A drawing to keep pressed as the pad is; returns what forgets it. */
   watch(art: HTMLElement): () => void {

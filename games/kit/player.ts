@@ -10,15 +10,15 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { isStock, patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '../../web/src/dosPlayer/patchRules';
-import { extKind } from '../../web/src/dosPlayer/fileExtensions';
-import { applyPlayerPatches } from '../../web/src/dosPlayer/applyPatches';
-import { playerLook } from '../../web/src/engine/playerLook';
-import { parseGame } from '../../web/src/formats/game';
-import { parsePalette } from '../../web/src/formats/palette';
-import { sceneFile } from '../../web/src/engine/scene';
+import { isStock, patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import { extKind } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
+import { applyPlayerPatches } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { sceneFile } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { contrastRatio, luminance } from '../../web/src/editor/check/sceneData';
-import { readDisk } from './gameSim';
+import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const STOCK_PLAYER = join(gamesDir, '../cd/gm/xferplay.exe');

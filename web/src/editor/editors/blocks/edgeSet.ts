@@ -3,7 +3,7 @@
 // map's terrain brush uses (map/tools/autotile.ts lists the same order). The border can wave
 // (the same wave on every block, so neighbors meet) and get a darker outline from the fill's
 // own palette ramp.
-import { BLEN } from '../../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 /** The 12 blocks made, in the terrain template's order (without the fill, which is slot 4). */
 export const EDGE_SLOTS = [

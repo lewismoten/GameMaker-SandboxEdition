@@ -1,0 +1,291 @@
+// Web Audio output for GameMaker games:
+//  - Sound Blaster music (.cmf) through the OPL2 AudioWorklet,
+//  - PC speaker effects (.snd) as a square wave stepping one frequency per timer tick,
+//  - Sound Blaster digital effects (.voc) as AudioBuffers.
+// The method names follow PLAYGAME.C (PlaySong, DoSound, PlaySbVocFile). Everything
+// passes through one master gain into the shared volume node from output.ts.
+import workletUrl from './music.worklet.ts?worker&url';
+import type { MusicMessage } from './music.worklet';
+import { loadSong } from './cmfLoad';
+import { decodeVoc, isVoc } from '../formats/voc';
+import { TICK_RATE } from './cmfPlayer';
+import { output } from './output';
+import { channelGain, onMix } from './mix';
+import { audioContext, unlock } from './context';
+
+/** How long a game waits for the sound to start before it goes on without it. */
+const RESUME_WAIT_MS = 300;
+
+/** The music worklet's module, added once to the page's context. */
+let worklet: Promise<void> | undefined;
+
+export class AudioEngine {
+  private ctx?: AudioContext;
+  private master?: GainNode;
+  /** Music and effects each go through their own gain, set by the visitor's sound settings (mix.ts). */
+  private musicGain?: GainNode;
+  private sfxGain?: GainNode;
+  /** Music and effects of a game being played also pass the Games setting (setGame). */
+  private gameGain?: GainNode;
+  private game = false;
+  private level = 1;
+  private unmix?: () => void;
+  private music?: AudioWorkletNode;
+  private musicReady?: Promise<void>;
+  private speaker?: { osc: OscillatorNode; gain: GainNode };
+  private voc?: AudioBufferSourceNode;
+  private vocCache = new WeakMap<Uint8Array, AudioBuffer>();
+  musicEnabled = true;
+  soundEnabled = true;
+  private cardEnabled = true;
+  private requestedSong?: Uint8Array;
+  private loadedSong?: Uint8Array;
+
+  get soundCardEnabled(): boolean {
+    return this.cardEnabled;
+  }
+
+  /** Optional live host control: card removal pauses FM and stops digital effects, leaving the PC speaker alone. */
+  setSoundCard(enabled: boolean): void {
+    if (this.cardEnabled === enabled) return;
+    this.cardEnabled = enabled;
+    if (!enabled) {
+      this.stopVoc();
+      this.pauseMusic(true);
+    } else if (this.musicEnabled && this.requestedSong) {
+      if (this.requestedSong === this.loadedSong) this.pauseMusic(false);
+      else void this.playSong(this.requestedSong);
+    }
+  }
+
+  /**
+   * Starts the sound. The first time, call it from a user gesture's handler (iOS: inside
+   * the touchend/click itself, before any await); the page's one AudioContext (context.ts)
+   * is resumed there.
+   */
+  async resume(): Promise<void> {
+    if (!this.ctx) {
+      const ctx = audioContext();
+      if (!ctx) return;
+      this.ctx = ctx;
+      this.master = ctx.createGain();
+      this.master.gain.value = 0.8;
+      this.master.connect(output(ctx));
+      this.musicGain = ctx.createGain();
+      this.sfxGain = ctx.createGain();
+      this.gameGain = ctx.createGain();
+      this.gameGain.connect(this.master);
+      this.musicGain.connect(this.gameGain);
+      this.sfxGain.connect(this.gameGain);
+      const mixed = () => {
+        if (this.musicGain) this.musicGain.gain.value = channelGain('music');
+        if (this.sfxGain) this.sfxGain.gain.value = channelGain('sfx');
+        if (this.gameGain) this.gameGain.gain.value = this.gameLevel();
+      };
+      mixed();
+      this.unmix = onMix(mixed);
+      // The OPL2 emulator and CMF sequencer run inside the worklet (audio thread); this
+      // side only posts load/stop/pause messages to it.
+      worklet ??= ctx.audioWorklet.addModule(workletUrl);
+      const master = this.master;
+      const musicGain = this.musicGain;
+      this.musicReady = worklet
+        .then(() => {
+          if (this.master !== master) return; // disposed meanwhile
+          this.music = new AudioWorkletNode(ctx, 'gm-music', { outputChannelCount: [1] });
+          this.music.connect(musicGain);
+        })
+        .catch((e) => console.warn('Music unavailable:', e));
+    }
+    if (this.ctx.state !== 'running') {
+      if (navigator.userActivation?.isActive) unlock();
+      // iOS leaves resume() pending until a gesture comes (or for good while another app has
+      // the audio): the game must not wait for it, or its screen stays black. The sound
+      // starts whenever the context does (context.ts resumes it on the next tap).
+      await Promise.race([this.ctx.resume().catch(() => undefined), new Promise((r) => setTimeout(r, RESUME_WAIT_MS))]);
+    }
+  }
+
+  /** Marks this engine as a game's: its sound also follows the Games setting (live). */
+  setGame(game: boolean): void {
+    this.game = game;
+    if (this.gameGain) this.gameGain.gain.value = this.gameLevel();
+  }
+
+  /** A fixed trim (0 to 1) under the visitor's settings, for sound meant to sit quietly in the background. */
+  setLevel(level: number): void {
+    this.level = level;
+    if (this.gameGain) this.gameGain.gain.value = this.gameLevel();
+  }
+
+  private gameLevel(): number {
+    return (this.game ? channelGain('games') : 1) * this.level;
+  }
+
+  /** Where this engine's sound leaves it (for recording just this game's sound). */
+  get node(): AudioNode | undefined {
+    return this.master;
+  }
+
+  /**
+   * Stops everything and lets go of the page's context (it is shared, so it stays open);
+   * a later resume() starts afresh.
+   */
+  dispose(): void {
+    this.stopAll();
+    this.music?.port.postMessage({ type: 'end' } satisfies MusicMessage);
+    this.unmix?.();
+    this.music?.disconnect();
+    this.musicGain?.disconnect();
+    this.sfxGain?.disconnect();
+    this.gameGain?.disconnect();
+    this.master?.disconnect();
+    this.unmix = this.music = this.musicGain = this.sfxGain = this.gameGain = this.master = this.ctx = undefined;
+    this.musicReady = undefined;
+  }
+
+  get context(): AudioContext | undefined {
+    return this.ctx;
+  }
+
+  private post(m: MusicMessage, transfer: Transferable[] = []): void {
+    this.music?.port.postMessage(m, transfer);
+  }
+
+  /** PlaySong: returns false (silently, as the original did) for invalid songs. */
+  async playSong(bytes: Uint8Array | undefined): Promise<boolean> {
+    this.stopSong();
+    if (!this.musicEnabled) return false;
+    this.requestedSong = bytes;
+    if (!this.cardEnabled) return false;
+    // Playgame refused songs not converted to its 146 Hz clock (and a few others, see cmfLoad).
+    const cmf = loadSong(bytes);
+    if (!cmf) return false;
+    const song = ++this.songs;
+    const load = () => {
+      if (song !== this.songs || !this.cardEnabled) return;
+      this.loadedSong = bytes;
+      this.post({ type: 'load', music: cmf.music.slice(), instruments: cmf.instruments.map((i) => i.slice()) });
+    };
+    // the music worklet loads with the first sound; a game waits a moment for it, never
+    // for good (a phone still loading it, or never: its screen would stay black)
+    const ready = this.musicReady;
+    if (ready && !this.music) await Promise.race([ready, new Promise((r) => setTimeout(r, RESUME_WAIT_MS * 3))]);
+    if (this.music) load();
+    else void ready?.then(load);
+    return true;
+  }
+
+  /** Counts songs asked for, so one still waiting for the worklet doesn't start after a newer one (or a stop). */
+  private songs = 0;
+
+  stopSong(): void {
+    this.songs++;
+    this.requestedSong = this.loadedSong = undefined;
+    this.post({ type: 'stop' });
+  }
+
+  pauseMusic(paused: boolean): void {
+    this.post({ type: 'pause', paused });
+  }
+
+  /** DoSound's PC speaker path: one frequency per 1/145.6 s tick; 0 = silence. */
+  playSpeaker(freqs: ArrayLike<number>): void {
+    if (!this.ctx || !this.master || !this.soundEnabled) return;
+    this.stopSpeaker();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    gain.gain.value = 0;
+    osc.connect(gain).connect(this.sfxGain ?? this.master);
+    // The whole effect is scheduled up front on the audio clock, one step per timer tick.
+    const t0 = this.ctx.currentTime + 0.005;
+    const step = 1 / TICK_RATE;
+    for (let i = 0; i < freqs.length; i++) {
+      const f = freqs[i];
+      const t = t0 + i * step;
+      // Borland's sound() programs the PIT with 1193180 / f; very low values are inaudible.
+      if (f >= 20) {
+        osc.frequency.setValueAtTime(Math.min(f, 20000), t);
+        gain.gain.setValueAtTime(0.12, t);
+      } else gain.gain.setValueAtTime(0, t);
+    }
+    const end = t0 + freqs.length * step;
+    gain.gain.setValueAtTime(0, end);
+    osc.start(t0);
+    osc.stop(end + 0.01);
+    this.speaker = { osc, gain };
+    osc.onended = () => {
+      if (this.speaker?.osc === osc) this.speaker = undefined;
+    };
+  }
+
+  stopSpeaker(): void {
+    if (!this.speaker) return;
+    try {
+      this.speaker.osc.stop();
+    } catch {
+      /* already stopped */
+    }
+    this.speaker = undefined;
+  }
+
+  /** PlaySbVocFile: a new digital sound cuts off the previous one. */
+  playVoc(bytes: Uint8Array | undefined): boolean {
+    if (!this.cardEnabled || !this.ctx || !this.master || !bytes || !this.soundEnabled || !isVoc(bytes)) return false;
+    this.stopVoc();
+    let buffer = this.vocCache.get(bytes);
+    if (!buffer) {
+      const voc = decodeVoc(bytes);
+      if (!voc.samples.length) return false;
+      buffer = vocBuffer(this.ctx, voc.samples, voc.sampleRate);
+      this.vocCache.set(bytes, buffer);
+    }
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(this.sfxGain ?? this.master);
+    src.start();
+    this.voc = src;
+    return true;
+  }
+
+  stopVoc(): void {
+    try {
+      this.voc?.stop();
+    } catch {
+      /* already stopped */
+    }
+    this.voc = undefined;
+  }
+
+  stopAll(): void {
+    this.stopSong();
+    this.stopSpeaker();
+    this.stopVoc();
+  }
+}
+
+/**
+ * A VOC's samples at their own rate (Web Audio resamples them to the device's, 48000 on
+ * most phones). Older Safari refuses buffers below 22050 Hz: there they are resampled here.
+ */
+function vocBuffer(ctx: BaseAudioContext, samples: Float32Array, rate: number): AudioBuffer {
+  try {
+    const b = ctx.createBuffer(1, samples.length, rate);
+    b.copyToChannel(samples as Float32Array<ArrayBuffer>, 0);
+    return b;
+  } catch {
+    const to = ctx.sampleRate;
+    const n = Math.max(1, Math.floor((samples.length * to) / rate));
+    const b = ctx.createBuffer(1, n, to);
+    const out = b.getChannelData(0);
+    const r = rate / to;
+    for (let i = 0; i < n; i++) {
+      const x = i * r;
+      const a = Math.floor(x);
+      const f = x - a;
+      out[i] = (samples[a] ?? 0) * (1 - f) + (samples[a + 1] ?? samples[a] ?? 0) * f;
+    }
+    return b;
+  }
+}

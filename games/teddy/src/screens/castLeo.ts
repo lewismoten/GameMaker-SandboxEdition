@@ -1,5 +1,5 @@
 // Doc Leo for cast.fli (see castArt.ts), his face paint, and his rubber chicken in his fist.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Art } from './castArt';
 
 /** Doc Leo from the chest up (from 'lewies-first-dressout-as-a-hobo-clown'): chewed felt fedora, wire glasses, painted brows, ash beard and white mouth, purple shirt, green tie, blue suspenders, navy corduroy jacket. */

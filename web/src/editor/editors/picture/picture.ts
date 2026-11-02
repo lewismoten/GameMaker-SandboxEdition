@@ -5,9 +5,9 @@ import { h, clear, selectField, pickFiles, toast, download, confirmDialog } from
 import { blockCanvas, paintBlock, paintIndexed } from '../../core/draw';
 import './picture.css';
 import { isBlankBlock } from './pictureLogic';
-import { decodeGif, encodeGif, isGif, type IndexedImage } from '../../../formats/gif';
-import { matchColor, parsePalette, type Palette } from '../../../formats/palette';
-import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type Block, type BlockKind } from '../../../formats/blocks';
+import { decodeGif, encodeGif, isGif, type IndexedImage } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { matchColor, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { BLEN, BLOCK_COUNTS, BLOCK_SIZE, parseBlocks, serializeBlocks, type Block, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { gamePreview } from '../../widgets/mediaShared';
 import { fitToPane } from '../../core/fitPane';
 import { fileUndo } from '../../core/fileUndo';

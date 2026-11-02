@@ -14,7 +14,7 @@
 // the room fades it in again. The card and fuse box page scenes therefore load dark.pal,
 // all black: their map fades in and out unseen, and only the room scene shows the board.
 // The crawlspace behind the Home Computer is a scene of its own, the only one that scrolls.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Scene } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { CompiledRoom } from './levels/board';
 
 const TITLE = 'OHM SWEET OHM';

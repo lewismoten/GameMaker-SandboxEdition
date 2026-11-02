@@ -3,11 +3,11 @@
 // text (words, size, colors, how it moves, and a warning when it runs off the frame), a
 // character or monster (which one, its size and facing, the keys of its path), or a block.
 import { h, numberField, selectField, checkField, debounce } from '../../../core/ui';
-import { paletteCss } from '../../../../formats/palette';
+import { paletteCss } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { colorChoice } from '../../../widgets/colorChoice';
 import { blockButton } from '../../../widgets/blockChooser';
-import { BACKBL, parseBlocks } from '../../../../formats/blocks';
-import { SEQUENCE_NAMES, parseCharacter, frameCount } from '../../../../formats/character';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { SEQUENCE_NAMES, parseCharacter, frameCount } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import {
   actorAt,
   backgroundEnd,

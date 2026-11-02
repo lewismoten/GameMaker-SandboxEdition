@@ -4,7 +4,7 @@
 // digs (her soft-dirt and clay plugs, the roots and the moles are monsters), the old well's
 // stone shaft with the step beside its bucket, the tunnel from the top of the well to her
 // den, and the gift box there that takes her best bone. Her best bone itself is the errand.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro } from '../art/draw';
 import { Tiles } from './level';
 import { buried, c, canvas, cloud, copy, cut, dirt, grassTop, hedge, leaves, picket, r, sky, trunk, tuft } from '../blocks/tiles';

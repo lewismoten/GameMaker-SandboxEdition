@@ -1,79 +1,74 @@
-// The Sound Boaster switch on the right speaker's front, under the volume knob: it puts the
-// desk PC's sound card in or takes it out (retro/computer/soundBlaster.ts). Sound Boaster is
-// the card's made-up parody brand (like the speakers' ILLOGITECH); the card itself is Sound
-// Blaster compatible. Without the card, games and Game-Maker's designers play their sounds on
-// the PC speaker and there is no music. Programs look for the card as they start, as PLAYGAME
-// did, so a game already playing keeps its sound until the next: flipping it mid-game shows a
-// note over the speaker with a button to start the game again.
+// The Sound Boaster switch changes the desk PC's remembered card state and its active
+// player's FM/digital output immediately. PC-speaker effects and game progress continue.
 import './blasterSwitch.css';
 import { h } from '../../editor/core/ui';
-import { setSoundBlaster, soundBlaster } from '../../retro/computer/soundBlaster';
+import { setSoundBlaster, soundBlaster, SOUND_CARD_CHANGED } from '../../retro/computer/soundBlaster';
 import { unlockAchievement } from '../../achievements';
 
 /** What the switch needs from the desk PC. */
 export interface BlasterPc {
   /** A game is playing on the monitor. */
   gamePlaying(): boolean;
-  /** Starts the playing game over; false if none is playing. */
-  restartGame(): boolean;
+  /** Changes the current player’s card without replacing its session. */
+  setSoundCard(on: boolean): void;
 }
 
 /** How long the note stays up (ms) unless the pointer or focus is on it. */
 const NOTE_MS = 6000;
 
-export function blasterSwitch(pc?: BlasterPc): HTMLElement {
+function showSwitch(el: HTMLElement): void {
+  const on = soundBlaster();
+  el.setAttribute('aria-checked', String(on));
+  el.dataset.on = String(on);
+  el.title = on ? 'Sound Boaster on: music and digital sound. Click to switch it off.' : 'Sound Boaster off: PC speaker only. Click to switch it on.';
+}
+// One listener for all present controls; no detached switch is retained between desk visits.
+if (typeof window !== 'undefined') window.addEventListener(SOUND_CARD_CHANGED, () => document.querySelectorAll<HTMLElement>('.sb-switch').forEach(showSwitch));
+
+export function blasterSwitch(pc?: BlasterPc, compact = false): HTMLElement {
   const el = h(
     'button',
-    { class: 'sb-switch', type: 'button', role: 'switch', 'aria-label': 'Sound Boaster card' },
-    h('span', { class: 'sb-print', 'aria-hidden': 'true' }, 'SOUND', h('br'), 'BOASTER'),
+    { class: `sb-switch${compact ? ' sb-mobile-switch' : ''}`, type: 'button', role: 'switch', 'aria-label': 'Sound Boaster card' },
+    compact ? h('span', null, 'Sound Boaster') : h('span', { class: 'sb-print', 'aria-hidden': 'true' }, 'SOUND', h('br'), 'BOASTER'),
     h('span', { class: 'sb-track', 'aria-hidden': 'true' }, h('span', { class: 'sb-knob' })),
   );
-  const show = () => {
-    const on = soundBlaster();
-    el.setAttribute('aria-checked', String(on));
-    el.dataset.on = String(on);
-    el.title = on ? 'Sound Boaster on: music and digital sound. Click to switch it off.' : 'Sound Boaster off: PC speaker only. Click to switch it on.';
-  };
   const note = blasterNote(el);
   el.addEventListener('click', () => {
     const on = !soundBlaster();
     setSoundBlaster(on);
     if (!on) unlockAchievement('desk-soundcard');
-    show();
-    const playing = pc ? pc.gamePlaying() : !!document.querySelector('.crt-game canvas');
+    showSwitch(el);
+    pc?.setSoundCard(on);
+    const playing = pc?.gamePlaying() ?? false;
     note.open(
-      on ? 'Sound Boaster on: music and digital sound.' : 'Sound Boaster off: sounds play on the PC speaker, with no music.',
-      playing && pc ? () => pc.restartGame() : undefined,
+      `${on ? 'Sound Boaster on: music and digital sound.' : 'Sound Boaster off: sounds play on the PC speaker, with no music.'}${playing ? ' The game keeps running.' : ''}`,
     );
   });
   // Tab from the switch goes to the note's buttons while it is up (it lives outside the scaled desk)
   el.addEventListener('keydown', (e) => {
     if (e.key === 'Tab' && !e.shiftKey && !e.altKey && !e.metaKey && !e.ctrlKey && note.focusFirst()) e.preventDefault();
   });
-  show();
+  showSwitch(el);
   return el;
 }
 
 /**
- * The note over the speaker after flipping the switch: what changed and, while a game is
- * playing, a button to start it again so it finds out. It goes away by itself after NOTE_MS,
+ * The note over the speaker after flipping the switch says what changed. It goes away after NOTE_MS,
  * but waits while the pointer is over it or a key is on one of its buttons. It is announced
  * (aria-live) but never takes the focus: Tab from the switch reaches it, Esc closes it.
  */
-function blasterNote(sw: HTMLElement): { open(text: string, restart?: () => boolean): void; focusFirst(): boolean } {
+function blasterNote(sw: HTMLElement): { open(text: string): void; focusFirst(): boolean } {
   const live = h('div', { class: 'sb-note-live', role: 'status', 'aria-live': 'polite' });
   const text = h('p', { class: 'sb-note-text' });
-  const restartBtn = h('button', { type: 'button', class: 'sb-note-restart' }, 'Restart game');
   const closeBtn = h('button', { type: 'button', class: 'sb-note-close', 'aria-label': 'Close', title: 'Close (Esc)' }, '×');
   const panel = h(
     'div',
     { class: 'sb-note', role: 'group', 'aria-label': 'Sound Boaster', hidden: true },
     text,
-    h('div', { class: 'sb-note-buttons' }, restartBtn, closeBtn),
+    h('div', { class: 'sb-note-buttons' }, closeBtn),
   );
   let timer: number | undefined;
   let held = 0; // pointer over it (1) and/or focus inside it (2)
-  let onRestart: (() => boolean) | undefined;
 
   const stopTimer = () => (clearTimeout(timer), (timer = undefined));
   const startTimer = () => {
@@ -124,11 +119,6 @@ function blasterNote(sw: HTMLElement): { open(text: string, restart?: () => bool
       else nextAfter(sw)?.focus();
     }
   });
-  restartBtn.addEventListener('click', () => {
-    const go = onRestart;
-    close();
-    if (go && !go()) live.textContent = 'No game is playing now.';
-  });
   closeBtn.addEventListener('click', () => {
     close();
     sw.focus();
@@ -136,16 +126,14 @@ function blasterNote(sw: HTMLElement): { open(text: string, restart?: () => bool
   window.addEventListener('resize', () => panel.hidden || place());
 
   return {
-    open(message, restart) {
+    open(message) {
       if (!panel.isConnected) document.body.append(panel, live);
-      onRestart = restart;
-      restartBtn.hidden = !restart;
-      text.textContent = restart ? `${message} The game playing now finds out when it starts again.` : message;
+      text.textContent = message;
       panel.hidden = false;
       place();
       // say it again even when the words haven't changed (flipped off and on)
       live.textContent = '';
-      requestAnimationFrame(() => (live.textContent = restart ? `${text.textContent} Press Tab for Restart game.` : text.textContent));
+      requestAnimationFrame(() => (live.textContent = text.textContent));
       startTimer();
     },
     focusFirst() {

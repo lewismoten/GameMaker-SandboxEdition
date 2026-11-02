@@ -8,12 +8,12 @@
 // down"). Threads have no gravity: Up climbs them and Down, kneeling, lets him down ("thread
 // up"). He has no way to fight: big things (power 150, solid) hurt to bump into; stars and the
 // mustard seed (under 100) are done in by a touch, and their picture's effect lands first.
-import { CHARBL } from '../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '../../../web/src/formats/character';
-import { newMonsterSet, type Monster } from '../../../web/src/formats/monster';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { GOLD, GOLD_START, GRACE, KEY, MON, SEQ, SND, THREAD } from './ids';
 import type { buildCharBlocks, buildMonsterBlocks } from './sprites/sprites';
-import { set, mon, corner, pace } from '../../kit/actors';
+import { set, mon, corner, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 const MIRROR = 0x40; // bottom block flipped left-right

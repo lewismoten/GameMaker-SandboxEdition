@@ -4,6 +4,7 @@
 // any an older dev server still lists (secretGames.ts isOldSecret), even once they are found.
 import type { CatalogEntry } from '../../project/files';
 import { isOldSecret } from '../../project/secretGames';
+import { ISSUES, type MagIssue } from './masthead';
 import type { MagContext, MagGame } from './types';
 
 type Entry = Pick<CatalogEntry, 'id' | 'title' | 'kind' | 'author' | 'company' | 'year' | 'price' | 'blurb' | 'series' | 'gam' | 'original'>;
@@ -41,7 +42,8 @@ export function magGames(entries: readonly Entry[]): MagGame[] {
     });
 }
 
-export function magContext(games: MagGame[]): MagContext {
+/** The games as sections read them, for one issue (No. 2, the one on the desk, unless told). */
+export function magContext(games: MagGame[], mag: MagIssue = ISSUES[2]): MagContext {
   const by = new Map(games.map((g) => [g.id, g]));
-  return { games, game: (id) => by.get(id) };
+  return { games, game: (id) => by.get(id), mag };
 }

@@ -7,7 +7,7 @@
 // chained next -> next back to the start. Square i of the sign starts on frame 2i (20
 // pixels on), so the squares show neighboring windows of the ring, and as the chain turns
 // over, the whole sign slides left 10 pixels a step.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { micro } from '../art/font';
 import { C } from '../art/pal';

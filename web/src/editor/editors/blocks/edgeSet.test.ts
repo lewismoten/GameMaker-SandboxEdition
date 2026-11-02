@@ -1,6 +1,6 @@
 // Edge sets: the right sides open in each slot, waves that meet, outlines, and finding room.
 import { describe, expect, it } from 'vitest';
-import { BLEN } from '../../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { EDGE_SLOTS, freeRun, isOutside, makeEdgeSet } from './edgeSet';
 
 const flat = { depth: 4, wavy: false };

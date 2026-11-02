@@ -3,7 +3,7 @@
 // lawn (west); Gwinn runs from Joe round her fenced yard (east) until he corners her; and the
 // party's arch (north) opens for all twelve. Behind it, Teddy's corner opens once (chapter 2's
 // rope) and lets Joe out by a little gate that only swings outward.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Bestiary, BlockSet } from '../blocks/sets';
 import { stamp, type Stamped } from './stamp';
 

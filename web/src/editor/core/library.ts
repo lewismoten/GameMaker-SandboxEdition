@@ -1,29 +1,21 @@
-// The library: the free sample games ("gameware") from the Game-Maker CD, whose pictures,
-// blocks, monsters, sounds and music anyone may reuse in their own games.
+// The asset library: CD resources and public original-game assets, loaded from cached ZIPs.
 import { loadCatalog, loadHostedGame, type CatalogEntry, type GameFiles } from '../../project/files';
-import { Project, kindOf, type FileKind } from './project';
+import { Project, type FileKind } from './project';
+import { selectLibraryItems, type LibraryItem, type LibrarySource } from './libraryCatalog';
+export type { LibraryItem, LibrarySource } from './libraryCatalog';
 import type { ThumbSource } from '../widgets/thumbs';
-
-export interface LibraryItem {
-  game: CatalogEntry;
-  name: string;
-  size: number;
-}
+import { parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 let catalog: Promise<CatalogEntry[]> | undefined;
 const games = new Map<string, Promise<GameFiles>>();
 
-function gameware(): Promise<CatalogEntry[]> {
-  return (catalog ??= loadCatalog()
-    .then((c) => c.filter((g) => g.kind === 'gameware'))
-    .catch(() => []));
+function sourceCatalog(): Promise<CatalogEntry[]> {
+  return (catalog ??= loadCatalog().catch(() => []));
 }
 
-/** Every library file of a kind, game by game. */
-export async function libraryItems(kind: FileKind): Promise<LibraryItem[]> {
-  const out: LibraryItem[] = [];
-  for (const g of await gameware()) g.files.forEach((name, i) => kindOf(name) === kind && out.push({ game: g, name, size: g.sizes?.[i] ?? 0 }));
-  return out;
+/** Ordered assets from the requested source, with matching palettes shown once. */
+export async function libraryItems(kind: FileKind, source: LibrarySource = 'cd'): Promise<LibraryItem[]> {
+  return selectLibraryItems(await sourceCatalog(), kind, source);
 }
 
 /** All the files of a library game (fetched once). */
@@ -47,5 +39,6 @@ export async function libraryFile(item: LibraryItem): Promise<Uint8Array> {
 export async function libraryThumbSource(item: LibraryItem): Promise<ThumbSource> {
   const files = await libraryGame(item.game);
   const p = Project.fromFiles(files, item.game.title, `lib-${item.game.id}`);
-  return { files, palette: p.paletteFor(item.name).palette };
+  const libraryDefault = item.game.id === 'library' ? files.get('default.pal') : undefined;
+  return { files, palette: libraryDefault ? parsePalette(libraryDefault) : p.paletteFor(item.name).palette };
 }

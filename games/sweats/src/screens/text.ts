@@ -3,7 +3,7 @@
 // of Bizarre.
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 /**
  * Who made the monologues and the pictures. Used by LICENSE.TXT (the credits page and the
@@ -104,7 +104,7 @@ export const INSTRUCTIONS = [
 const CREDITS_TEXT = page(
   [
     'SHAKESPEARE IN SWEATPANTS',
-    'by The Bard of Bizarre, 1995',
+    'by The Bard of Bizarre, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Seventeen monologues about',
@@ -153,7 +153,7 @@ export const CREDITS = withCreditPage(CREDITS_TEXT, true);
 export function readme(price: string): string {
   return `
     SHAKESPEARE IN SWEATPANTS
-    Version ${about.version} - Dec 1995
+    Version ${about.version} - December 1994
     by The Bard of Bizarre
 
 "It wasn't just a pen.

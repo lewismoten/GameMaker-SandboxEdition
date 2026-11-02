@@ -2,8 +2,8 @@
 // the save editors. Unlike formats/highscore.ts this keeps each name's original 30 bytes, so a
 // table read and written back is byte for byte the file it came from, and an edit changes only
 // the entries edited.
-import { cString } from '../../formats/binary';
-import { HIGH_SCORES, type HighScore } from '../../formats/highscore';
+import { cString } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { HIGH_SCORES, type HighScore } from '@lewismoten/gamemaker-sandbox-engine/formats/highscore';
 
 export { HIGH_SCORES, type HighScore };
 

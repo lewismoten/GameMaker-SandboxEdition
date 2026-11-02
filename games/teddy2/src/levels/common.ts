@@ -1,6 +1,6 @@
 // Helpers every level's blocks use: hint signs on stakes, the sky band for a map row,
 // sidewalks and roads, wallpaper and floorboards for indoors, and scents for the sniff.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle, sprite } from '../art/draw';
 import { FLIP, type Bestiary } from '../characters/mons';
 import { POWER } from '../ids';

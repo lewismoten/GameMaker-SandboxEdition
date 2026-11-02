@@ -12,7 +12,7 @@
 // - DOS: the original Game-Maker files with the stand-alone player (.zip), exportDos.ts;
 // - a game of yours also: its files as they are here (.zip), to keep safe or import again.
 //
-// Everything is built here in the browser when the visitor presses Download. Which games
+// Catalog DOS downloads use the built ZIP; other downloads are built in the browser when the visitor presses Download. Which games
 // have the button is the caller's choice (export/downloadable.ts for the catalog's).
 import './download.css';
 import { download, h, modal, toast } from '../core/ui';
@@ -21,8 +21,9 @@ import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
 import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
-import type { PlayerPatches } from '../../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { REPO_URL } from '../../seo/site';
+import { fetchArchive } from '../../project/archiveWait';
 import { companionCredits } from '../../assistant/chat/todo';
 
 export interface DownloadGame {
@@ -79,7 +80,7 @@ const CHOICES: Choice[] = [
     kind: 'dos',
     name: 'DOS',
     format: '.zip',
-    line: 'The original Game-Maker files with the stand-alone player (PLAYGAME, named after the game), for DOSBox or a real DOS PC.',
+    line: 'The original Game-Maker files with the stand-alone player, for DOSBox or a real DOS PC. Import the ZIP here to edit a copy.',
   },
   { kind: 'files', name: 'Game files', format: '.zip', line: 'Your game’s files just as they are here, to keep a copy safe or import it again.' },
   {
@@ -132,6 +133,7 @@ export function downloadButton(title: string, open: () => unknown): HTMLElement 
 
 /** The chooser, then the download. */
 export async function chooseDownload(game: DownloadGame): Promise<void> {
+  const zipUrl = !game.project && game.entry?.pack?.endsWith('.zip') ? `./${game.entry.path}${game.entry.pack}` : undefined;
   const choices = CHOICES.filter((c) => c.kind !== 'files' || game.project);
   const picked = await modal<{ kind: DownloadKind; alt: boolean }>(`Download ${game.title}`, (close) => {
     let current = choices[0];
@@ -143,6 +145,29 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
       alt.textContent =
         current.kind === 'web' ? 'Web app (.zip)' : current.kind === 'player' ? 'Player only (.html)' : current.alt ? `Zip (${current.alt})` : '';
     };
+    // each choice's description, shown once under the grid for the chosen one
+    const detail = h('p', { class: 'dl-line', id: 'dl-detail', 'aria-live': 'polite' });
+    const describe = (c: Choice): (Node | string)[] => [
+      c.line,
+      ...(c.kind === 'dos' && zipUrl
+        ? [' ', h('a', { href: zipUrl, download: game.entry!.pack, 'aria-label': `Permanent ZIP link for ${game.title}` }, 'Permanent ZIP link')]
+        : []),
+      ...(c.details
+        ? [
+            ' ',
+            h(
+              'a',
+              {
+                href: c.details,
+                ...(c.details.startsWith('http') ? { target: '_blank', rel: 'noopener' } : { onclick: () => close(undefined) }),
+                'aria-label': `More details about the ${c.name} download`,
+              },
+              'More details →',
+            ),
+          ]
+        : []),
+    ];
+    const show = () => detail.replaceChildren(...describe(current));
     const rows = choices.map((c) => {
       const id = `dl-${c.kind}`;
       const radio = h('input', {
@@ -152,10 +177,11 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
         value: c.kind,
         checked: c === current,
         autofocus: c === current,
-        'aria-describedby': `${id}-line`,
+        'aria-describedby': 'dl-detail',
         onchange: () => {
           current = c;
           update();
+          show();
         },
       });
       const row = h(
@@ -163,27 +189,8 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
         { class: 'dl-choice' },
         radio,
         h('label', { for: id }, h('span', { class: 'dl-name' }, c.name), ' ', h('span', { class: 'dl-format' }, c.alt ? `${c.format} or ${c.alt}` : c.format)),
-        h(
-          'p',
-          { class: 'dl-line', id: `${id}-line` },
-          c.line,
-          c.details
-            ? [
-                ' ',
-                h(
-                  'a',
-                  {
-                    href: c.details,
-                    ...(c.details.startsWith('http') ? { target: '_blank', rel: 'noopener' } : { onclick: () => close(undefined) }),
-                    'aria-label': `More details about the ${c.name} download`,
-                  },
-                  'More details →',
-                ),
-              ]
-            : null,
-        ),
       );
-      // the whole row chooses (its link still goes to its page)
+      // the whole card chooses
       row.addEventListener('click', (e) => {
         if ((e.target as HTMLElement).closest('a, input')) return;
         radio.checked = true;
@@ -192,6 +199,7 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
       return row;
     });
     update();
+    show();
     return h(
       'form',
       {
@@ -202,8 +210,9 @@ export async function chooseDownload(game: DownloadGame): Promise<void> {
           close({ kind: current.kind, alt: false });
         },
       },
-      h('fieldset', null, h('legend', null, 'Download it for'), ...rows),
-      h('p', { class: 'meta' }, `Built right here in your browser, it plays offline and saves on that computer. ${ENGINE_CAVEAT}`),
+      h('fieldset', null, h('legend', null, 'Download it for'), h('div', { class: 'dl-grid' }, ...rows)),
+      detail,
+      h('p', { class: 'meta' }, `Downloads play offline and save on that computer. ${ENGINE_CAVEAT}`),
       h('div', { class: 'buttons' }, h('button', { type: 'button', onclick: () => close(undefined) }, 'Cancel'), alt, go),
     );
   });
@@ -222,6 +231,20 @@ async function gamePatches(game: DownloadGame): Promise<PlayerPatches> {
   return (await import('../../dosPlayer/playerRecord')).companionPatches(game.companion?.(), game.gam);
 }
 
+/** An imported 3.00 player's own bytes, which the DOS download writes back (none for a catalog game). */
+/** An imported player's About lines and first build for the web-page and native downloads (only those, never the companion). */
+async function gameAbout(game: DownloadGame) {
+  if (game.entry) return undefined;
+  const { companionOrigin, playerAbout } = await import('../../dosPlayer/playerOrigin');
+  return playerAbout(companionOrigin(game.companion?.(), game.gam));
+}
+
+async function gameKept(game: DownloadGame) {
+  if (game.entry) return undefined;
+  const { companionOrigin, keptParts } = await import('../../dosPlayer/playerOrigin');
+  return keptParts(companionOrigin(game.companion?.(), game.gam));
+}
+
 /** The options the native downloads share. */
 
 async function nativeOptions(game: DownloadGame, files: GameFiles) {
@@ -231,7 +254,13 @@ async function nativeOptions(game: DownloadGame, files: GameFiles) {
     import('../../export/macApp'),
     import('../../export/recordedAudio'),
   ]);
-  const { html } = await exportSinglePage(files, { title: game.title, gam: game.gam, fiction: aboutNote(game), player: await gamePatches(game) });
+  const { html } = await exportSinglePage(files, {
+    title: game.title,
+    gam: game.gam,
+    fiction: aboutNote(game),
+    player: await gamePatches(game),
+    playerAbout: await gameAbout(game),
+  });
   return {
     title: game.title,
     id: game.id ?? slug(game.title),
@@ -257,13 +286,30 @@ const NAMES: Record<DownloadKind, string> = {
 
 async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Promise<void> {
   try {
+    if (kind === 'dos' && !game.project && game.entry?.pack?.endsWith('.zip')) {
+      const response = await fetchArchive(`./${game.entry.path}${game.entry.pack}`);
+      if (!response.ok) throw new Error('Could not download the game archive. Please try again.');
+      const stem = game.gam.replace(/\.gam$/i, '');
+      save(
+        `${stem}-dos.zip`,
+        new Uint8Array(await response.arrayBuffer()),
+        'application/zip',
+        `In DOSBox, run ${stem.toUpperCase()}.EXE from the unzipped folder.`,
+      );
+      return downloaded('dos');
+    }
     if (kind === 'player' && alt) {
       const { fetchWebPlayer } = await import('../../export/exportWebPlayer');
       save('web-player.html', await fetchWebPlayer(), 'text/html', 'Put it beside Game-Maker game folders on a web host.');
       return downloaded('web');
     }
     toast(`Building the ${kind === 'web' && alt ? 'web app' : NAMES[kind]} of ${game.title}…`);
-    const files = await game.files();
+    const saved = await game.files();
+    // the author's version lettered on the menu picture, when they asked: not in their own backup (project/composeFiles.ts)
+    const files =
+      game.project && kind !== 'files' && game.companion?.()?.showVersion
+        ? (await import('../../project/composeFiles')).composeFiles(saved, game.companion())
+        : saved;
     if (kind === 'windows') {
       const win = await import('../../export/winApp');
       const [o, player] = await Promise.all([nativeOptions(game, files), win.preferredArch().then((a) => win.fetchWinPlayer(a))]);
@@ -289,12 +335,24 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
     } else if (kind === 'web' && alt) {
       const { name, zip } = await (
         await import('../../export/exportWebApp')
-      ).exportWebApp(files, { title: game.title, gam: game.gam, fiction: aboutNote(game), player: await gamePatches(game) });
+      ).exportWebApp(files, {
+        title: game.title,
+        gam: game.gam,
+        fiction: aboutNote(game),
+        player: await gamePatches(game),
+        playerAbout: await gameAbout(game),
+      });
       save(name, zip, 'application/zip', 'Unzip it onto any static web host.');
     } else if (kind === 'web') {
       const { name, html } = await (
         await import('../../export/exportSinglePage')
-      ).exportSinglePage(files, { title: game.title, gam: game.gam, fiction: aboutNote(game), player: await gamePatches(game) });
+      ).exportSinglePage(files, {
+        title: game.title,
+        gam: game.gam,
+        fiction: aboutNote(game),
+        player: await gamePatches(game),
+        playerAbout: await gameAbout(game),
+      });
       save(name, html, 'text/html', 'Open it in any browser to play, no internet needed.');
     } else if (kind === 'player') {
       const { name, zip } = await (await import('../../export/exportWebPlayer')).exportWebPlayer(files, game);
@@ -306,10 +364,11 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
         title: game.title,
         gam: game.gam,
         player: await gamePatches(game),
+        kept: await gameKept(game),
       });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else {
-      const [{ createZip }, { backupEntries }] = await Promise.all([import('../../project/zip'), import('../../project/companion')]);
+      const [{ createZip }, { backupEntries }] = await Promise.all([import('@lewismoten/gamemaker-sandbox-archives/zip'), import('../../project/companion')]);
       const zip = await createZip(backupEntries(files, game.gam, game.companion?.()));
       save(`${game.gam.replace(/\.gam$/i, '')}.zip`, zip, 'application/zip', 'Import it here again whenever you like.');
     }

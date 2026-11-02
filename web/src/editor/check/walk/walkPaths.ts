@@ -4,10 +4,10 @@
 // which no DOS, native or web-page export carries. It says how bots walk, not what the game
 // does, so a look-only game may keep it in memory (core/readOnly.ts MEMORY_SECTIONS). No DOM:
 // the walkthrough's Web Worker reads it too.
-import { BACKBL, BLEN } from '../../../formats/blocks';
-import type { Game } from '../../../formats/game';
-import { MLEN, MWID } from '../../../formats/map';
-import type { World } from '../../../engine/world';
+import { BACKBL, BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { Terrain } from '../../editors/map/tools/autotile';
 
 const WALK_PATHS = 'walkPaths';

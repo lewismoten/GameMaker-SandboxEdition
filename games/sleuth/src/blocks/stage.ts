@@ -1,7 +1,7 @@
 // The stage: the set of THE RAVEN'S BRIDE, the spot where Victor Crane fell, the ghost light
 // (at night something drifts out of it now and then), and the wings: fly rail ropes and the
 // prop table.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, microC, pool } from '../art/draw';
 import { c, ramp as r } from '../art/pal';
 import { Add, S, on, wallFace } from './painters';

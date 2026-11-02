@@ -1,4 +1,5 @@
 // The BBS listings name only boards on the desk's TERMINAL, at the numbers it dials.
+import { ISSUES } from '../masthead';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -8,7 +9,7 @@ import { BBS_LISTINGS, SANDBOX_PHONE, SOFA_PHONE } from './bbsListings';
 const src = (f: string) => readFileSync(join(__dirname, '../../../retro/bbs', f), 'utf8');
 
 describe('the BBS listings', async () => {
-  const pages = await BBS_LISTINGS.pages({ games: [], game: () => undefined });
+  const pages = await BBS_LISTINGS.pages({ games: [], game: () => undefined, mag: ISSUES[2] });
   const json = JSON.stringify(pages);
 
   it('print the numbers TERMINAL dials', () => {

@@ -2,7 +2,7 @@
 // the pulls cancel so the sled keeps its speed), steep stretches pull it down (grav 4), moguls
 // kick it up (grav 1), rocks and trees hurt, gate flags line the run, and a dollar bill and a
 // cocoa mug wait on the snow. Jamie Street's own blocks (hill.ts) reuse the slope and the fir.
-import { rng, type Pixels } from '../../../kit/pixels';
+import { rng, type Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../art/draw';
 import { Ctx, MONEY, SOLID } from './book';
 import type { addThings } from './things';

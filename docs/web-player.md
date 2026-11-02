@@ -78,9 +78,21 @@ A file nothing names, such as an extra picture a text screen does not list, need
 - `player.html?game=nebula&autoplay=1` starts it at once, without the "Play" screen
   (`&autoplay=0` keeps the screen, whatever the list says). Browsers keep the sound off until
   the visitor's first click or key press, so the game starts silent and the first touch turns
-  the sound on. After the game ends, the "Play" screen comes back as usual.
+  the sound on. First-run hardware setup still appears when enabled. After the game ends, the "Play" screen comes back as usual.
 - `player.html?list=more.json` reads another list. Lists and folders typed into `?game=` must
   be on the same site as the player.
+
+## Video and audio setup
+
+Before Play, **Show setup on first run** chooses whether an unconfigured game opens its
+video/audio setup. **Save settings** remembers Sound Blaster or PC-speaker output and the VGA
+choice for that game on this site. Sound Blaster plays music and digital samples; PC speaker
+only plays effects. Auto-detect and Standard VGA both display 320 × 200 through the browser.
+
+**Bypass setup** or Escape skips setup this time. Untick **Show setup for games without saved
+settings** to bypass it by default, including autoplay. Saved per-game choices still apply.
+**Video & audio…** on the Play screen lets you change them later. These browser preferences
+do not alter the game files on the host; clearing site data resets them.
 
 ## Saves and high scores
 

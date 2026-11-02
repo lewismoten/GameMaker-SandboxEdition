@@ -4,7 +4,7 @@
 import type { TextScreen } from '../text/textScreen';
 import { readLine, type TextKeys } from '../text/textInput';
 import { commas, deskDate, dirLine, dirWide, dosMatch, resolvePath, splitName, type DosNode, type FileSystem, type ProgramRef } from './vfs';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { deskNow, dosDate, dosTime, parseDosDate, parseDosTime, resetDeskClock, setDeskClock } from './deskClock';
 import { DOS_TIME_EVENT } from './dosTimeEvent';
 import { unlockAchievement } from '../../achievements';
@@ -338,6 +338,11 @@ export class Shell {
       this.out(time ? 'TIME [time | RESET]' : 'DATE [date | RESET]');
       this.out();
       this.out(time ? '  time    hours:minutes[:seconds[.hundredths]][a|p]' : '  date    month-day-year');
+      if (time) {
+        this.out('          An hour also works: 1pm, 2pm, 00, 23');
+        this.out('          Or: dawn, sunrise, morning, day, noon, afternoon,');
+        this.out('              dusk, sunset, evening, night, midnight');
+      }
       this.out('  RESET   Go back to the real local time (/LOCAL works too)');
       this.out();
       this.out(
@@ -384,7 +389,7 @@ export class Shell {
       'A:  C:  D:             Change drive         TYPE file   Show a text file',
       'DEL file (*.GIF)       Delete files        RD [path]   Remove an empty folder',
       'CLS  VER  VOL  MEM  DATE  TIME  PATH',
-      'TIME [11:30p]  DATE [12-25-94]  Set the clock    TIME RESET  Real time again',
+      'TIME [11:30p | dusk]  DATE [12-25-94]  Set the clock    TIME RESET  Real time again',
       '',
       'GM          Start Game-Maker SE',
       'PLAYGAME    Play a Game-Maker game',
@@ -394,6 +399,8 @@ export class Shell {
       'HEXEDIT     Look inside a file byte by byte (HEXEDIT \\GM\\SAMPLE\\SAMPLE.GAM)',
       "ACHIEVE     What you've done so far: your merit badges",
       'OFFLINE     Copy the whole site here, to use with no connection',
+      'ROOMFIX     Put the desk room back the way it started (ROOMFIX /?)',
+      'FLAGS       List, set and back up what the PC remembers (FLAGS /?)',
       'A:\\<game>   Run the game on the disk in drive A:',
     ])
       this.out(l);

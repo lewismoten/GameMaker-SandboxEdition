@@ -2,7 +2,8 @@
 // parts named <name><col><row> (the doghouse, the hay wagon, the booths, the coop, the moon...),
 // the three-block clouds, the pairs (Top over Bot, L beside R), THE CHEZ and Doc Leo beside it,
 // and that their art joins up across the block edges. Run by tools/check.ts.
-import { alignGame, gridParts, shape, sizesOf, type PartRule } from '../../kit/align';
+import { gridParts, shape, sizesOf, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { LEVELS } from '../src/game';
 
 // a bone or treat lying on a part is still that part; an animation phase (wheel00_1) too

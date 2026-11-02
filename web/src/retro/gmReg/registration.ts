@@ -8,7 +8,7 @@
 // instead and asks a word from the manual every time it starts (manualcheck, the copy
 // protection: "OR send in your registration card to skip this hassle!"). With no
 // PLAYGAME.REG at all, or one for another copy's serial number, GM won't start.
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 /**
  * ADDREG#.CPP: serial = counter * 1029 + 4 ("ser-4 must be a multiple of 1029"). This PC's copy

@@ -2,9 +2,9 @@
 // (so neighboring worlds feel different), weighted toward tougher ones in the outer
 // sectors, and puts each where it lives - walkers on flat ground, bats in caves, flyers
 // in the sky, droppers on ceilings. Up to 200 per map (Game-Maker's LASTMM).
-import { rng } from '../../../kit/pixels';
-import { LASTMM } from '../../../../web/src/formats/map';
-import { SOLLEF, SOLRIG, type Block } from '../../../../web/src/formats/blocks';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { LASTMM } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { SOLLEF, SOLRIG, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Grid, W, H, wx, wy } from './mapkit';
 import type { Creature, MonsterSet, Placement } from '../characters/bestiary';
 

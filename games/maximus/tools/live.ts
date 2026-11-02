@@ -6,9 +6,9 @@
 import { encodeKeys, keysAt, WALKTHROUGH_FPS, type Walkthrough, type WalkSegment } from '../../../web/src/walkthrough/format';
 import { headlessCanvas, seeded, WalkRun } from '../../../web/src/walkthrough/runtime';
 import { Mulberry } from './model';
-import type { World } from '../../../web/src/engine/world';
-import type { Block } from '../../../web/src/formats/blocks';
-import type { Session } from '../../../web/src/engine/scene';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { diskFiles } from '../../kit/walkthrough';
 
 /** What a bot sees and does (the shape of tools/sim.ts's Sim that the drivers use). */

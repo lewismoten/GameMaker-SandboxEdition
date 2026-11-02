@@ -1,11 +1,13 @@
 // An open project: a game directory plus its .gam, autosaved to IndexedDB.
 import { GameFiles, normalize } from '../../project/files';
 import { saveProject, newId } from '../../project/storage';
-import { parseGame, serializeGame, newGame, type Game } from '../../formats/game';
-import { defaultPalette, parsePalette, type Palette } from '../../formats/palette';
-import { decodeGif, isGif } from '../../formats/gif';
+import { libraryDefaultPalette } from '@lewismoten/gamemaker-sandbox-tools/palettes';
+import { parseGame, serializeGame, newGame, type Game, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { debounce } from './ui';
-import { emptyCompanion, getSection, renameInCompanion, setSection, type Companion } from '../../project/companion';
+import { isSolidPalette, mostReadable } from './readablePalette';
+import { emptyCompanion, getSection, renameInCompanion, setMenuVersion, setSection, type Companion } from '../../project/companion';
 import { editedFile, unlockAchievement } from '../../achievements';
 import { MEMORY_SECTIONS, refuse, type ReadOnlyGuard } from './readOnly';
 
@@ -78,6 +80,7 @@ export class Project {
         .slice(0, 8) || 'game'
     }.gam`;
     files.set(gam, serializeGame(newGame(name)));
+    files.set('default.pal', libraryDefaultPalette());
     return new Project(newId(), name, gam, files);
   }
 
@@ -88,7 +91,7 @@ export class Project {
       files.set(gam, serializeGame(newGame(name ?? 'My Game')));
     }
     // trimmed: authors padded the name with spaces to center it on the DOS menu
-    const title = name?.trim() || parseGame(files.get(gam)!).scenes[0]?.desc.trim() || gam;
+    const title = name?.trim() || gameTitle(parseGame(files.get(gam)!)) || gam;
     return new Project(id, title, gam, files, companion);
   }
 
@@ -149,6 +152,14 @@ export class Project {
     for (const l of this.extrasListeners) l(file, section);
   }
 
+  /** The author's version and whether it is lettered on the menu picture (companion.ts); the game's files are not touched. */
+  setMenuVersion(version: string, show: boolean): void {
+    if (this.readOnly) refuse(this, 'version');
+    this.companion ??= emptyCompanion();
+    setMenuVersion(this.companion, version, show);
+    this.persist();
+  }
+
   /** A file was renamed: its extras follow it. */
   renameExtras(from: string, to: string): void {
     if (this.readOnly) refuse(this, from);
@@ -188,7 +199,7 @@ export class Project {
   }
 
   /** The palette a block set/map/picture is shown with: the scene that uses it, else the first .pal. */
-  paletteFor(file: string): { palette: Palette; source: string } {
+  paletteFor(file: string, used?: ArrayLike<number>): { palette: Palette; source: string } {
     const game = this.game();
     for (const u of this.usesOf(file)) {
       const scene = game.scenes[u.scene];
@@ -196,8 +207,26 @@ export class Project {
         return { palette: parsePalette(this.files.get(scene.files[0])!), source: scene.files[0] };
     }
     // A map: the scene that uses its block set.
-    const pals = this.files.byExtension('pal');
-    if (pals.length) return { palette: parsePalette(this.files.get(pals[0])!), source: pals[0] };
+    let pals = this.files.byExtension('pal');
+    if (pals.length) {
+      // a palette that is one solid color stands for nothing: use the others, the one the scenes use most first
+      const usable = pals.filter((p) => !isSolidPalette(this.files.get(p)!));
+      if (usable.length) {
+        const uses = (p: string) => game.scenes.filter((sc) => normalize(sc.files[0] ?? '') === normalize(p)).length;
+        pals = usable
+          .map((p, i) => ({ p, i }))
+          .sort((a, b) => uses(b.p) - uses(a.p) || a.i - b.i)
+          .map((x) => x.p);
+      }
+      // with the sprite's colors known, skip a palette that would show it dark on dark
+      const i = used
+        ? mostReadable(
+            pals.map((p) => this.files.get(p)!),
+            used,
+          )
+        : 0;
+      return { palette: parsePalette(this.files.get(pals[i])!), source: pals[i] };
+    }
     for (const g of this.files.byExtension('gif')) {
       const b = this.files.get(g)!;
       if (isGif(b)) {

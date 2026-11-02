@@ -21,7 +21,7 @@
 // The title and the win play the group's own fanfare ("Veni, vidi, risi!" in C major, with a
 // laughing trill); the menu is a medley of all six refrains. A marker at every section
 // (PLAYGAME skips them; tools/songPreview.ts reads them).
-import { detuned } from '../../../kit/songFx';
+import { detuned } from '@lewismoten/gamemaker-sandbox-tools/kit/songFx';
 import { arranger, Arranger, BANDS, COLOR, COMP, LEAD, rep, TWIN_CH } from './band';
 import {
   CANIS_ARIA,

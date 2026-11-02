@@ -2,7 +2,7 @@
 // numbers go): mall walls, CRT TVs, arcade cabinets, pinball, fountains, palms, the food
 // court, the switchboards and exchange walls, and the wrong-number places' flamingos,
 // shuffleboard, test pattern, sea floor, jungle, tar pits and launch pad.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { T, blob, gradient, oval, shadeAt } from '../art/draw';
 import { FLOORS } from './floors';

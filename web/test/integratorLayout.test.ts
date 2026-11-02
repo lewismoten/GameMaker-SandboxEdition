@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, type Game } from '../src/formats/game';
+import { ADVTYPE, NOSCENE, emptyScene, newGame, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { CARD_UNITS, POS_MAX, POS_MIN, clampPos, sceneLayers, settle } from '../src/editor/editors/integrator/layoutCells';
 import { SNUG_GAP, arrangements, autoArrange, closeGaps, gapSavings, layoutCost, spreadOut } from '../src/editor/editors/integrator/integratorLayout';
 

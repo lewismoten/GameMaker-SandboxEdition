@@ -4,7 +4,7 @@
 // speaker steps of a sound set slot (1/145.6 s each), so one effect works with or without a
 // Sound Blaster. The idea of a few sliders plus presets with random variety comes from
 // DrPetter's sfxr (2007); this code is written fresh for this edition (see NOTICE.md).
-import { NUMFREQ } from '../formats/sound';
+import { NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 
 export type Wave = 'square' | 'triangle' | 'saw' | 'sine' | 'noise';
 export const WAVES: [Wave, string][] = [

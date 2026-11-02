@@ -6,13 +6,13 @@
 // friends who turn up all evening: Teddy and Gwinn asleep, Carl the fly, the third goat from the
 // left, and Doc Leo (fedora, navy corduroy, purple shirt, teal tie, red sneakers) walking his
 // rubber chicken on its leash. Every sprite is drawn from shapes and given a dark outline.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';
 import { outline } from '../../../mustard/src/sprites/sprites';
 import type { Pal } from '../art/pal';
-import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export { T, outline, makeBook };
 export type SpriteBook = ReturnType<typeof makeBook>;

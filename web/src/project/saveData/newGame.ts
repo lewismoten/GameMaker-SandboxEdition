@@ -4,11 +4,11 @@
 // engine's own new-game code (engine/game.ts play: StartGameInits, loadscene, StartSceneInits)
 // and written the way F5 writes it (engine/scene.ts savedState), so F6 loads it like any other.
 // SAVEHACK.EXE and the web's "Saves & scores" panel use it to fill an empty slot.
-import { loadScene, savedState, startGameInits, startSceneInits } from '../../engine/scene';
-import { moveCharGrav } from '../../engine/character';
-import { newCharInfo } from '../../engine/world';
-import { Recorder } from '../../engine/recorder';
-import { parseGame, type Game } from '../../formats/game';
+import { loadScene, savedState, startGameInits, startSceneInits } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { moveCharGrav } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseSave, SaveFormatError, serializeSave, type SavedGame } from './saveGame';
 import type { FileSource } from './gameLabels';
 

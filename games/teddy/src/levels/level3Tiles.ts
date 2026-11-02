@@ -3,7 +3,7 @@
 // block that lifts whoever stands in it over the tall hedge, the duck pond (water with
 // upward gravity, so Teddy paddles at the surface), the covered bridge, and the lawn with
 // its bench, lamppost, picnic tables and mud puddle.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { kid } from '../sprites/folks';

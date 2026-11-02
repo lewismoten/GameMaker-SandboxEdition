@@ -3,8 +3,8 @@
 // play first enters the level, as palette-indexed pixels in the palette it shows them in, cropped
 // to the 312 x 196 the game shows while playing (render.ts VISIBLE_W, as saveLevel.ts crops).
 // scripts/shotFrames.ts saves them for the site; shotFrames.test.ts keeps them current.
-import { ADVTYPE, type Game } from '../formats/game';
-import { VISIBLE_H, VISIBLE_W } from '../engine/render';
+import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { VISIBLE_H, VISIBLE_W } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
 import type { LevelPicture } from '../gfx/levelPicture';
 import type { WantedFrame } from '../gfx/shotFrame';
 import type { GameFiles } from '../project/files';

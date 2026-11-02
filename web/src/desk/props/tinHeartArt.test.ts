@@ -2,7 +2,7 @@
 // keep the two the same, pixel for pixel, at every frame of its shine.
 import { describe, expect, it } from 'vitest';
 import { drawTinHeart, SHINE_FRAMES } from '../../../../games/kit/tinHeart';
-import { Pixels } from '../../../../games/kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { tinHeartParts } from './tinHeartArt';
 
 describe('the room’s tin heart', () => {

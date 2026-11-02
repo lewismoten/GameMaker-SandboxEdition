@@ -10,7 +10,7 @@ vi.mock('../project/storage', () => ({
 }));
 // the unlocks are the achievements' own business (achievements.test.ts)
 const unlocked: string[] = [];
-vi.mock('../achievements/store', () => ({ unlockAchievement: (id: string) => void unlocked.push(id) }));
+vi.mock('../achievements/store', () => ({ unlockAchievement: (id: string) => void unlocked.push(id), loadAchievements: async () => ({}) }));
 
 import { addEnd, bestSum, emptyScores, FILE, loadScores, parseScores, recordEnd, SAVE_ID } from './scores';
 import { nextTier, readTrophyOverrides, resetTrophyOverrides, setTrophyOverride, shownTier, THRESHOLDS, tierOf, TOP_TIER } from './tiers';

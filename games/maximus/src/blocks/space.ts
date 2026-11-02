@@ -1,7 +1,7 @@
 // SPACE.BBL: the galaxy chart and the five sector charts the pod flies over. Planets are
 // 2x2 block pictures (fly into the middle to land), shard gates bar the way to sectors
 // and to the Core, and trading posts sell supplies by the credit.
-import { Pixels, rng, dither } from '../../../kit/pixels';
+import { Pixels, rng, dither } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, Mask, fill, outline, pick, shade, sprite, tileNoise } from '../art/draw';
 import { G, SOLID, SetBuilder, over, tex } from './blockset';
 import { EGG_BLOCK, ITEM_BASE, MONEY, SEQ, SHARD_BASE, SHARD_COUNTER } from '../ids';

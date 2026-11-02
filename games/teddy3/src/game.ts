@@ -2,7 +2,7 @@
 // (THE CHEZ's door, a parking spot, or a MEANWHILE... hero's goal) linked to the start of the
 // next. Each level scene names its own character file: teddy.chr, gwinn.chr, leo.chr or
 // chez.chr, so the hero changes from one scene to the next.
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '../../../web/src/formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Level } from './levels/level';
 import { garage } from './levels/garage';
 import { maple } from './levels/maple';

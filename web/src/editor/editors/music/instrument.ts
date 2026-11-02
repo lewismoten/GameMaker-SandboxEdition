@@ -1,9 +1,10 @@
 // The FM instrument of the selected track: pick one from the song's instrument bank, add
 // one from the presets, and shape its two operators (the SBI settings SBFMDRV loads).
 import { h, clear } from '../../core/ui';
-import { channelNotes, programChanges, setStartProgram, startProgram } from '../../../formats/cmfEdit';
-import { RHYTHM_CHANNELS } from '../../../formats/cmfSong';
-import { TRACK_COLORS, type MusicDoc } from './doc';
+import { channelNotes, programChanges, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { RHYTHM_CHANNELS } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import type { MusicDoc } from './doc';
+import { instrumentLook } from './instrumentLook';
 import {
   ENVELOPE,
   FLAGS,
@@ -15,7 +16,6 @@ import {
   maxOf,
   MULT,
   MULT_VALUES,
-  presetName,
   setAdditive,
   setFeedback,
   setOp,
@@ -24,21 +24,38 @@ import {
 } from './sbi';
 import { noteName } from './roll/layout';
 import { pickPreset } from './presetPicker';
+import { applyToTrack } from './drumMode';
+import { DRUM_SLOTS } from '../../../audio/oplDrumPresets';
 
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
+
+/** An instrument's picture (its preset on its group's color, else a plain note) as a small tile. */
+export function lookIcon(inst: Uint8Array | undefined, cls: string): HTMLElement {
+  const look = instrumentLook(inst);
+  const el = h('span', { class: cls, 'aria-hidden': 'true' });
+  el.innerHTML = look.icon;
+  return el;
+}
+
+/** The preset's name when the sound is it or close to it (the same rule as its picture, instrumentLook.ts); a close one reads "≈ Name". */
+function lookName(inst: Uint8Array): string | undefined {
+  const look = instrumentLook(inst);
+  if (!look.preset) return undefined;
+  return look.exact ? cap(look.preset.name) : `≈ ${cap(look.preset.name)}`;
+}
 
 export function instLabel(doc: MusicDoc, i: number): string {
   const inst = doc.song.instruments[i];
   if (!inst) return `Instrument ${i + 1} (missing)`;
-  const p = presetName(inst);
-  return `Instrument ${i + 1}${p ? ` · ${cap(p)}` : ''}`;
+  const p = lookName(inst);
+  return `Instrument ${i + 1}${p ? ` · ${p}` : ''}`;
 }
 
 /** instLabel short enough for a track's narrow header: "2 · Brass" (the full label goes in its tooltip). */
 export function instShortLabel(doc: MusicDoc, i: number): string {
   const inst = doc.song.instruments[i];
-  const p = inst ? presetName(inst) : '';
-  return p ? `${i + 1} · ${cap(p)}` : instLabel(doc, i);
+  const p = inst ? lookName(inst) : '';
+  return p ? `${i + 1} · ${p}` : instLabel(doc, i);
 }
 
 /** Tracks whose notes use instrument i. */
@@ -135,10 +152,24 @@ export class InstrumentPanel {
     doc.on((c) => {
       if (c === 'track') {
         if (!this.keepSel) this.sel = this.program;
-        this.render();
-      } else if (c === 'song' && !this.quiet) this.render();
+        this.draw();
+      } else if (c === 'song' && !this.quiet) this.draw();
     });
     this.render();
+  }
+
+  private active = true;
+  private stale = false;
+
+  /** The Instruments tab is shown (true) or hidden: a hidden panel waits and draws once when shown. */
+  setActive(on: boolean): void {
+    this.active = on;
+    if (on && this.stale) this.render();
+  }
+
+  private draw(): void {
+    if (this.active) this.render();
+    else this.stale = true;
   }
 
   /** The instrument the selected track starts with. */
@@ -193,7 +224,7 @@ export class InstrumentPanel {
     const song = doc.song;
     const items = song.instruments.map((inst, i) => {
       const users = usersOf(doc, i);
-      const p = presetName(inst);
+      const p = lookName(inst);
       return h(
         'li',
         null,
@@ -210,13 +241,14 @@ export class InstrumentPanel {
             },
           },
           h('span', { class: 'mus-inst-num' }, String(i + 1)),
+          lookIcon(inst, 'mus-inst-icon'),
           h(
             'span',
             { class: 'mus-track-text' },
-            h('b', null, p ? cap(p) : `Instrument ${i + 1}`),
+            h('b', null, p ?? `Instrument ${i + 1}`),
             h('small', null, users.length ? users.map((c) => doc.trackName(c)).join(', ') : 'not used'),
           ),
-          h('span', { class: 'mus-inst-dots', 'aria-hidden': 'true' }, ...users.map((c) => h('i', { style: `--track:${TRACK_COLORS[c]}` }))),
+          h('span', { class: 'mus-inst-dots', 'aria-hidden': 'true' }, ...users.map((c) => h('i', { style: `--track:${doc.trackColor(c)}` }))),
         ),
       );
     });
@@ -230,6 +262,10 @@ export class InstrumentPanel {
         onclick: async () => {
           const preset = await pickPreset(doc, { ch: doc.track, label: `new for ${doc.trackName(doc.track)}` });
           if (!preset || song.instruments.length >= 128) return;
+          if (preset.drum) {
+            applyToTrack(doc, doc.track, preset);
+            return;
+          }
           doc.edit(() => {
             song.instruments.push(preset.patch.slice());
             setStartProgram(song, doc.track, song.instruments.length - 1);
@@ -244,6 +280,7 @@ export class InstrumentPanel {
   }
 
   render(): void {
+    this.stale = false;
     this.renderList();
     const doc = this.doc;
     const song = doc.song;
@@ -268,7 +305,8 @@ export class InstrumentPanel {
           if (!inst) return;
           const preset = await pickPreset(doc, { ch: tryCh, label: instLabel(doc, p), current: inst });
           if (!preset) return;
-          doc.edit(() => inst.set(preset.patch.subarray(0, 11)));
+          if (preset.drum && !(doc.rhythm && tryCh === DRUM_SLOTS[preset.drum].ch)) applyToTrack(doc, tryCh, preset);
+          else doc.edit(() => inst.set(preset.patch.subarray(0, 11)));
           this.editor.querySelector<HTMLElement>('[data-presets]')?.focus();
         },
       },
@@ -328,7 +366,7 @@ export class InstrumentPanel {
           {
             type: 'button',
             class: 'mus-chip',
-            style: `--track:${TRACK_COLORS[c]}`,
+            style: `--track:${doc.trackColor(c)}`,
             'aria-pressed': String(c === ch),
             title: `Select ${doc.trackName(c)}`,
             onclick: () => pickTrack(c),

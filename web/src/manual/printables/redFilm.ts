@@ -486,4 +486,11 @@ export class RedFilm {
   hide(): void {
     this.el.hidden = true;
   }
+
+  /** The film lies over `target`, centered on it (the guided tour lays it over an answer). */
+  over(target: Element): void {
+    if (this.el.hidden) this.show();
+    const r = target.getBoundingClientRect();
+    this.place(r.left + r.width / 2 - this.el.offsetWidth / 2, r.top + r.height / 2 - this.el.offsetHeight / 2);
+  }
 }

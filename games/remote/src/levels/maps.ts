@@ -1,6 +1,6 @@
 // The four levels, from the song, each drawn as rows of characters (one a block; each level
 // has its own legend); everything outside a level is solid:
-//   1. Where's the Remote?!: the living room, 1995. The couch, the cushions, Teddy asleep in his
+//   1. Where's the Remote?!: the living room, 1994. The couch, the cushions, Teddy asleep in his
 //      bed, the cat on the armchair, the laundry, the magazines, the afghan, the Voice-O-Matic.
 //      Search six spots and the baby gate to the kitchen opens.
 //   2. Who Knows Anymore?: the kitchen. Open the fridge, dodge the toast, find Mom's number (seven
@@ -9,7 +9,7 @@
 //      pens, a spoon, a sock from Christmas, a tiny raccoon, fake remotes and the pay TV home.
 //   4. The Living Room Ride: the living room spins like a carnival ride. Stand up, press PLAY
 //      on the VCR, and sit back down.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 
@@ -156,6 +156,10 @@ export function livingRoom(book: BlockBook): Level {
   m.mon(MON.bunny, 4, 12).mon(MON.bunny, 20, 3).mon(MON.bunny, 14, 13).mon(MON.cat, 18, 9);
   // Will the playwright's signed head shot on the wall, and a tin heart in the far corner
   m.set(20, 0, 'willShot').set(28, 14, 'tinHeart');
+  // scenery on the carpet: a tape and a camcorder by the shelf, a game pad by the TV, a plug under the lamp, a keyboard and
+  // mouse pad by the table, a disc in its sleeve by the magazines
+  m.set(2, 2, 'saveTape').set(5, 2, 'camcorder').set(14, 3, 'gamepad').set(24, 2, 'plug');
+  m.set(18, 8, 'keyboard').set(19, 8, 'mousepad').set(22, 3, 'discSleeve');
   m.link(29, 10, 'next');
   return { m, start: at(8, 6), size: [map.w, map.h] };
 }
@@ -208,6 +212,8 @@ export function kitchen(book: BlockBook): Level {
   // the phone hangs in the doorway to the hall on its long curly cord: once Mom's on the line
   // you walk on down the hall, so "Called my mom..." plays out before you fall into the void
   m.patch(27, 2, ['....']);
+  // scenery by the phone: a modem and a disk going into a drive
+  m.set(24, 3, 'modem').set(22, 3, 'diskDrive');
   m.mon(MON.teddy, 6, 8).mon(MON.cat, 20, 6).mon(MON.roach, 3, 9).mon(MON.roach, 17, 3).mon(MON.roach, 24, 8);
   m.link(30, 2, 'next');
   return { m, start: at(1, 3), size: [map.w + 4, map.h] };

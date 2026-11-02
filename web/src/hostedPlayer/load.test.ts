@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { normalize } from '../project/files';
 import { loadListedGame } from './load';
 

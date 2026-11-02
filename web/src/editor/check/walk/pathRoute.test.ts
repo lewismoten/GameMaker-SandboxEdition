@@ -2,9 +2,9 @@
 // built in memory (testGame.ts, made top-down here) a road that bends round an open field is
 // walked when it is only modestly longer than cutting across, and not when it is a long detour.
 import { describe, expect, it } from 'vitest';
-import { BACKBL, parseBlocks, serializeBlocks } from '../../../formats/blocks';
-import { parseCharacter, serializeCharacter } from '../../../formats/character';
-import { MLEN, parseMap, serializeMap } from '../../../formats/map';
+import { BACKBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MLEN, parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore } from '../explore';
 import { startCharInfo } from '../sim';
 import { testGame, type TestGame } from '../testGame';

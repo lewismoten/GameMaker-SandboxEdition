@@ -1,7 +1,7 @@
 // Telling the common connection failures apart: mixed content before anything is sent, CORS
 // (the no-cors probe gets through), nothing listening (it doesn't), a model without tools, and
 // Ollama's 403 for a name it doesn't know; and Test connection end to end with fake servers.
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { diagnose, precheck, testConnection } from './diagnose';
 import { ProviderError } from './providers';
 import { defaultSettings } from './settings';
@@ -29,6 +29,16 @@ describe('diagnosis', () => {
     const p = diagnose(ollama('http://localhost:11434'), https, new TypeError('Failed to fetch'), true);
     expect(p.kind).toBe('cors');
     expect(p.fix[0]).toBe('Set OLLAMA_ORIGINS on the Ollama computer to include https://lewismoten.github.io, then restart Ollama.');
+  });
+
+  it('offline: a remote server is not blamed when this device has no network; this computer still is', () => {
+    vi.stubGlobal('navigator', { onLine: false });
+    try {
+      expect(diagnose(ollama('http://100.64.0.5:11434'), local, new TypeError('Failed to fetch')).kind).toBe('offline');
+      expect(diagnose(ollama('http://localhost:11434'), local, new TypeError('Failed to fetch')).kind).toBe('refused');
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it('refused: nothing answers; another computer needs OLLAMA_HOST, this one needs Ollama started', () => {

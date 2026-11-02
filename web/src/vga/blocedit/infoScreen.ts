@@ -2,8 +2,8 @@
 // BLOCEDIT.C, and the small routines that redraw one part of it): the block, its solid sides
 // and gravity, what it changes into and when, score, hit points, effect, object and the
 // monster it gives birth to. info.ts (changeinfo) handles the clicks on it.
-import { BACKBL, BLEN, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../formats/blocks';
-import { LASTMON } from '../../formats/monster';
+import { BACKBL, BLEN, MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { SIZEX } from '../shared/vga';
 import { GRAY1, GRAY2, GRAY3, GRAY4, RED1, RED2, RED3 } from '../shared/facelift';
 import { drawblk, drawlist, pixelsOf } from '../shared/blocc';

@@ -7,7 +7,7 @@
 // - every multi-block object (trees, planets, the core...) is put together right (--align: only this).
 import { ITEM_BASE, MON, MONEY, SCAN, SEAL_COUNTER, SEQ, SHARD_BASE, SHARD_COUNTER } from '../src/ids';
 import { fightEye } from './heartFight';
-import { newCharInfo } from '../../../web/src/engine/world';
+import { newCharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { reachable } from '../src/levels/mapkit';
 import { buildGame } from '../src/game';
 import { autoWalk, navigate, simFor, standStill } from './verify';

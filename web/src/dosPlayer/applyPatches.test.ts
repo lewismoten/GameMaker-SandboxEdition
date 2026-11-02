@@ -3,11 +3,11 @@
 // it is there).
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { applyPlayerPatches, readPlayerPatches, STOCK_PLAYER_MD5 } from './applyPatches';
-import { md5Hex } from './md5';
-import { PATCHES } from './patchTable';
-import { patchProblem, readPatch, cleanPatches } from './patchRules';
-import { renamedExtensions } from './fileExtensions';
+import { applyPlayerPatches, readPlayerPatches, STOCK_PLAYER_MD5 } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import { md5Hex } from '@lewismoten/gamemaker-sandbox-archives/player/md5';
+import { PATCHES } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { patchProblem, readPatch, cleanPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import { renamedExtensions } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
 import { PLAYER_PRESETS } from './presets';
 import { playerRecord, recordPatches } from './playerRecord';
 

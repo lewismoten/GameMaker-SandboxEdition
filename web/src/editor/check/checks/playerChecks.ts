@@ -3,12 +3,12 @@
 // scenery drawn like one of the scene's prizes that does nothing, and keys needed to grab or
 // fight that nothing near the start names (the first level's card, the menu's story and
 // instructions; words drawn on sign blocks can't be read).
-import { BACKBL, BLEN, MONBL, type Block } from '../../../formats/blocks';
-import { MLEN } from '../../../formats/map';
-import { frameCount } from '../../../formats/character';
-import type { Game } from '../../../formats/game';
-import { parseSlideList } from '../../../formats/graphicScripts';
-import { scanName } from '../../../input/scancodes';
+import { BACKBL, BLEN, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { frameCount } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { GameFiles } from '../../../project/files';
 import { characterActions } from '../../keymap/keyMap';
 import { at, type Finding } from '../findings';

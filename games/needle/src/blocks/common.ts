@@ -8,7 +8,7 @@
 //     and blesses him: one grace, and the coin shows in the bowl from then on;
 //   - an eye gate is a solid stone with a needle's eye cut in it: one grace opens it into a
 //     gap one block high, so he still has to hump down and crawl through.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';

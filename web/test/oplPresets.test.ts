@@ -4,9 +4,9 @@ import { describe, expect, it } from 'vitest';
 import { OPL_PRESETS, PRESET_GROUPS, findPreset } from '../src/audio/oplPresets';
 import { patch, validPatch } from '../src/audio/oplPatch';
 import { presetPreview } from '../src/audio/oplPresetPreview';
-import { Opl2 } from '../src/audio/opl';
-import { CmfPlayer, TICK_RATE } from '../src/audio/cmfPlayer';
-import { CMF_GAMEMAKER_CLOCK, parseCmf } from '../src/formats/cmf';
+import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
+import { CmfPlayer, TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { CMF_GAMEMAKER_CLOCK, parseCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 
 const SR = 11025;
 

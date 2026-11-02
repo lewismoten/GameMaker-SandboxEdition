@@ -2,9 +2,9 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { parseCmf, CMF_GAMEMAKER_CLOCK } from '../src/formats/cmf';
-import { Opl2 } from '../src/audio/opl';
-import { CmfPlayer, TICK_RATE } from '../src/audio/cmfPlayer';
+import { parseCmf, CMF_GAMEMAKER_CLOCK } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { Opl2 } from '@lewismoten/gamemaker-sandbox-engine/audio/opl';
+import { CmfPlayer, TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
 
 const song = resolve(__dirname, '../../cd/gameware/sample/gmsong1.cmf');
 

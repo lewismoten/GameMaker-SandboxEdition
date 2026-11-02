@@ -16,8 +16,8 @@
 //   "Hallelujah, keep the mustard seed hustle alive!"  121.5 - 131.5  D | E | A
 // The tune is the sung line's pitch per word (harmonic salience on the center channel, per
 // eighth note), evened out to the syllables.
-import { INSTRUMENTS } from '../../../kit/music';
-import { CELESTA, EPIANO, FLUTE, ORGAN, REED, VOICE, Writer, ending, slice, vamp, type Part, type Section } from '../../../kit/song';
+import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { CELESTA, EPIANO, FLUTE, ORGAN, REED, VOICE, Writer, ending, slice, vamp, type Part, type Section } from '@lewismoten/gamemaker-sandbox-tools/kit/song';
 
 const BPM = 95;
 

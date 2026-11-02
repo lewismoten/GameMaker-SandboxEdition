@@ -4,9 +4,9 @@
 import { h, clear, modal, toast } from '../../core/ui';
 import { audio } from '../../widgets/mediaShared';
 import { openInEditor } from '../../core/uses';
-import { channelNotes } from '../../../formats/cmfEdit';
-import { writeSong, type CmfSong } from '../../../formats/cmfSong';
-import { TICK_RATE } from '../../../audio/cmfPlayer';
+import { channelNotes } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { writeSong, type CmfSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
 import { copyTune } from './arrange/copyTune';
 import { accompany, type Accompaniment } from './arrange/accompany';
 import type { StyleId } from './arrange/styles';

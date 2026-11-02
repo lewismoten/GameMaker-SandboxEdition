@@ -13,7 +13,7 @@ const MAIL = 'Sandbox Software · P.O. Box 000 · Pittsburgh, PA 15213 (a fictio
 const RS_SANDBOX_EDITION = 1;
 
 /** The ad this page's look comes from: Computer Gaming World #99 (October 1992), page 55. */
-const ORIGINAL_AD = 'go:url/https://archive.org/details/Computer_Gaming_World_Issue_99/page/n53/mode/2up';
+export const ORIGINAL_AD = 'go:url/https://archive.org/details/Computer_Gaming_World_Issue_99/page/n53/mode/2up';
 
 /**
  * The inside front cover: Game-Maker: Sandbox Edition on the Owner's Guide's blueprint, two games made

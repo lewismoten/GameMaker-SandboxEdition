@@ -1,10 +1,10 @@
 // The home page's crawlable map of the rest of the site, for scripts/seoBuild.ts: schema.org
-// nodes for the site itself (WebSite) and its magazine (Periodical and its one issue), and a
+// nodes for the site itself (WebSite) and its magazine (Periodical and its two issues), and a
 // readable list of the pages that live at #/… addresses (the Guide, TURBO BUTTON, the cast,
 // the credits…), which search engines see as one page: the list gives each a sentence and a
 // descriptive link in index.html's static text.
 import { PRODUCT, SHORT } from '../edition';
-import { MAG } from '../manual/magazine/masthead';
+import { ISSUES, MAG } from '../manual/magazine/masthead';
 import { escapeHtml, OG_IMAGE, REPO_URL, ROUTES, SITE_URL } from './site';
 
 const MAGAZINE_URL = `${SITE_URL}#/magazine`;
@@ -27,8 +27,9 @@ export function websiteJsonLd(): Record<string, unknown> {
 }
 
 /**
- * TURBO BUTTON as a schema.org Periodical with its one issue. It is a pretend 1990s magazine
- * written for this site, so the issue has no print date; the description says what it is.
+ * TURBO BUTTON as a schema.org Periodical with its two issues (No. 1, Spring 1993, and No. 2,
+ * January 1995, the one on the desk; their names come from masthead.ts). It is a pretend 1990s
+ * magazine written for this site, so the issues carry no print date; the names say which is which.
  */
 export function magazineJsonLd(): Record<string, unknown>[] {
   const periodical = {
@@ -43,16 +44,16 @@ export function magazineJsonLd(): Record<string, unknown>[] {
     isPartOf: { '@id': `${SITE_URL}#website` },
     about: { '@id': `${SITE_URL}#app` },
   };
-  const issue = {
+  const issues = ([1, 2] as const).map((n) => ({
     '@type': 'PublicationIssue',
-    '@id': `${MAGAZINE_URL}#issue-1`,
-    name: `${MAG.name}: ${MAG.issue.replace(/\s*·\s*/g, ', ')}`,
-    issueNumber: '1',
+    '@id': `${MAGAZINE_URL}#issue-${n}`,
+    name: `${MAG.name}: ${ISSUES[n].issue.replace(/\s*·\s*/g, ', ')}`,
+    issueNumber: String(n),
     url: MAGAZINE_URL,
     isAccessibleForFree: true,
     isPartOf: { '@id': periodical['@id'] },
-  };
-  return [periodical, issue];
+  }));
+  return [periodical, ...issues];
 }
 
 /** The pages at #/… (and dos.html) that the static text links to, in reading order. */

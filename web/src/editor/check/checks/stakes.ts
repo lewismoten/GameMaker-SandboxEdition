@@ -1,7 +1,7 @@
 // The level check's stakes at the start of a game: so many lives that dying stops mattering, and
 // a hero with nothing to fight with who comes in among enemies.
-import { BACKBL } from '../../../formats/blocks';
-import type { Game } from '../../../formats/game';
+import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { characterActions } from '../../keymap/keyMap';
 import type { Finding } from '../findings';
 import { linksInto } from '../sceneLinks';

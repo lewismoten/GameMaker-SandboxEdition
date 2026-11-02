@@ -1,8 +1,8 @@
 // The dungeons' files and scenes: a block set, a monster block set, monsters and a map each.
 // Every foe in a dungeon has the same power as its boss (so they never fight each other), and
 // that power says which sword gets through: wood (130) for the Barrows, steel (160) after that.
-import { serializeBlocks } from '../../../../web/src/formats/blocks';
-import { LASTMON } from '../../../../web/src/formats/monster';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { SpriteSheet } from '../sprites/sheet';
 import { addFx } from '../sprites/fx';
 import { foePics } from '../sprites/foes';

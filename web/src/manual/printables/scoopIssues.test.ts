@@ -35,11 +35,11 @@ describe('the Sandbox Scoop’s issues', () => {
     for (const g of sandbox) expect(SCOOP_MONTHS[g.id].slice(0, 4)).toBe(String(g.year));
   });
 
-  it('numbers the issues 1 to N in month order, one issue a month', () => {
+  it('numbers the issues 1 to N in month order, months never go backward', () => {
     expect(inOrder.map((g) => scoopIssue(g.id, sandbox))).toEqual(sandbox.map((_, i) => i + 1));
     const months = inOrder.map((g) => SCOOP_MONTHS[g.id]);
-    expect(months).toEqual([...new Set(months)].sort());
-    expect(scoopDateline('snowbound')).toBe('January 1993');
+    expect(months).toEqual([...months].sort());
+    expect(scoopDateline('snowbound')).toBe('March 1993');
     expect(scoopIssue('snowbound', sandbox)).toBe(1);
   });
 

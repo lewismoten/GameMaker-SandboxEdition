@@ -2,10 +2,10 @@
 import { h, modal } from '../../core/ui';
 import { blockImages } from '../../core/draw';
 import type { Project } from '../../core/project';
-import type { Game, Point } from '../../../formats/game';
-import { BACKBL, newBlockSet, parseBlocks } from '../../../formats/blocks';
-import { MLEN, MWID, parseMap } from '../../../formats/map';
-import { defaultPalette, parsePalette } from '../../../formats/palette';
+import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { BACKBL, newBlockSet, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { defaultPalette, parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 /** Lets the user click a map cell of a scene. */
 export async function pickOnMap(project: Project, game: Game, scene: number, current: Point, title: string): Promise<Point | undefined> {

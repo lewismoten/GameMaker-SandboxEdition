@@ -5,12 +5,13 @@
 // the .gam through Project.saveGame, the integrator's own way, and the map editor's Undo takes
 // it back (map.ts keeps the .gam's bytes in that step).
 import './linkMarkers.css';
-import { h, toast } from '../../../core/ui';
+import { h, modal, toast } from '../../../core/ui';
 import type { Project } from '../../../core/project';
-import type { Game, Point } from '../../../../formats/game';
+import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { addLink, nextScene, setFrom, setTo } from '../../integrator/linkEdits';
+import { levelShot } from '../../integrator/integratorArt';
 import { waysInto } from '../../integrator/linkSpots';
-import { cellAtPoint, mapMarkers, markerBox, nudge, stackIndex, type Marker } from './markerMath';
+import { cellAtPoint, mapMarkers, markerBox, markerGroups, nudge, stackIndex, type Marker, type MarkerGroup } from './markerMath';
 
 interface MarkersHost {
   project: Project;
@@ -20,6 +21,9 @@ interface MarkersHost {
   canvas: HTMLCanvasElement;
   /** A block's size on screen now. */
   block(): number;
+  /** Optional viewport projection and inverse, including maps repeated across an edge. */
+  point?(at: Point): Point;
+  cell?(event: PointerEvent): Point;
   /** Called just before a link changes: the map editor keeps an Undo step (map and .gam). */
   remember(): void;
   /** The links changed: redraw the map's squares under the markers. */
@@ -31,7 +35,7 @@ export interface LinkEditor {
   project: Project;
   scenes: readonly number[];
   /** Changes the .gam as one Undo step (steps with the same key in quick succession join). */
-  edit(key: string, fn: (game: Game) => void): void;
+  edit(key: string, fn: (game: Game) => void | boolean | number): boolean;
   readonly locked: boolean;
 }
 
@@ -54,18 +58,25 @@ export function linkMarkers(host: MarkersHost) {
     scenes: host.scenes,
     locked,
     edit(key, fn) {
-      if (locked) return;
+      if (locked) return false;
       const game = structuredClone(project.game());
-      fn(game);
+      const result = fn(game);
+      if (result === false || (typeof result === 'number' && result < 0)) {
+        toast('Choose a free block or another scene: entrances and exits cannot overlap, and each exit needs its own block.', 'error');
+        render();
+        popover?.refresh();
+        return false;
+      }
       const now = Date.now();
       if (key !== last.key || now - last.at > JOIN_MS) host.remember();
       last = { key, at: now };
       project.saveGame(game);
+      return true;
     },
   };
 
   const place = (el: HTMLElement, at: Point, stack: number) => {
-    const b = markerBox(at, host.block(), stack);
+    const b = markerBox(host.point?.(at) ?? at, host.block(), stack);
     Object.assign(el.style, { left: `${b.left}px`, top: `${b.top}px`, width: `${b.size}px`, height: `${b.size}px` });
   };
 
@@ -73,15 +84,23 @@ export function linkMarkers(host: MarkersHost) {
   const moveTo = (m: Marker, at: Point) =>
     editor.edit(`move:${m.key}`, (g) => (m.kind === 'in' ? setTo(g, m.way.from, m.way.link, at) : setFrom(g, m.exit.scene, m.exit.link, at)));
 
+  const groupNow = new Map<string, MarkerGroup>();
+
   function render(): void {
     marks = shown ? mapMarkers(project.game(), host.scenes) : [];
-    const keep = new Set(marks.map((m) => m.key));
+    const groups = markerGroups(marks);
+    const grouped = new Set(groups.filter((group) => group.markers.length > 1).flatMap((group) => group.markers.map((marker) => marker.key)));
+    const keep = new Set([
+      ...marks.filter((m) => !grouped.has(m.key)).map((m) => m.key),
+      ...groups.filter((group) => group.markers.length > 1).map((group) => group.key),
+    ]);
     for (const [k, el] of els)
       if (!keep.has(k)) {
         el.remove();
         els.delete(k);
       }
     marks.forEach((m, i) => {
+      if (grouped.has(m.key)) return;
       let el = els.get(m.key);
       if (!el) {
         el = button(m.key);
@@ -97,6 +116,25 @@ export function linkMarkers(host: MarkersHost) {
       el.title = `${m.label}${locked ? '' : '. Drag or use the arrow keys to move it'}; click or Enter for details`;
       place(el, m.at, stackIndex(marks, i));
     });
+    for (const group of groups) {
+      if (group.markers.length < 2) continue;
+      let el = els.get(group.key);
+      if (!el) {
+        el = groupButton(group);
+        els.set(group.key, el);
+        layer.append(el);
+      }
+      groupNow.set(group.key, group);
+      const ins = group.kind === 'in';
+      const count = group.distinct;
+      el.className = `lk-mark lk-${group.kind} lk-group${group.markers.some((marker) => marker.kind === 'in' && marker.start) ? ' lk-start' : ''}`;
+      el.textContent = `${ins ? '↘' : '↗'}${count}`;
+      const names = group.markers.map((marker) => marker.label.replace(/, at .*/, '')).join('; ');
+      const what = ins ? 'ways in' : 'exits';
+      el.setAttribute('aria-label', `${count} ${what} at ${group.at.x},${group.at.y}: ${names}. Press for the list.`);
+      el.title = `${count} ${what} at ${group.at.x},${group.at.y}: ${names}; click to choose one`;
+      place(el, group.at, 0);
+    }
     popover?.refresh();
   }
 
@@ -115,7 +153,7 @@ export function linkMarkers(host: MarkersHost) {
       let to = from;
       const move = (ev: PointerEvent) => {
         if (locked) return;
-        to = cellAtPoint(ev.clientX, ev.clientY, host.canvas.getBoundingClientRect());
+        to = host.cell?.(ev) ?? cellAtPoint(ev.clientX, ev.clientY, host.canvas.getBoundingClientRect());
         place(el, to, 0);
         el.classList.toggle('lk-dragging', to.x !== from.x || to.y !== from.y);
       };
@@ -146,6 +184,53 @@ export function linkMarkers(host: MarkersHost) {
       e.preventDefault();
       e.stopPropagation();
       if (at && !locked) moveTo(m, at);
+    });
+    return el;
+  }
+
+  /** A shared arrival marker names every link and lets the player choose the one to edit. */
+  function groupButton(first: MarkerGroup): HTMLButtonElement {
+    const el = h('button', { type: 'button', class: `lk-mark lk-${first.kind} lk-group` });
+    el.addEventListener('click', () => {
+      const group = groupNow.get(first.key) ?? first;
+      const game = project.game();
+      void modal(group.kind === 'in' ? 'Ways in at this block' : 'Exits on this block', (close) =>
+        h(
+          'div',
+          { class: 'stack' },
+          h(
+            'p',
+            { class: 'meta' },
+            group.kind === 'in'
+              ? `${group.markers.length} links arrive at ${group.at.x}, ${group.at.y}. Choose one to see or move its source and destination.`
+              : `${group.markers.length} exits leave from ${group.at.x}, ${group.at.y}. Choose one to see or move it.`,
+          ),
+          ...group.markers.map((marker) =>
+            (() => {
+              const [scene, index] = marker.kind === 'in' ? [marker.way.from, marker.way.link] : [marker.exit.scene, marker.exit.link];
+              const link = game.scenes[scene].links[index];
+              const preview = levelShot(project.files, game.scenes[scene], link.from, 5, 3);
+              if (preview) {
+                preview.className = 'pixel';
+                preview.setAttribute('aria-hidden', 'true');
+                preview.style.cssText = 'width:100px;height:60px;object-fit:contain';
+              }
+              return h(
+                'button',
+                {
+                  type: 'button',
+                  onclick: () => {
+                    close(undefined);
+                    void open(marker.key, el);
+                  },
+                },
+                preview ?? null,
+                h('span', null, marker.kind === 'in' && marker.start ? '★ Start: ' : '', marker.label.replace(/, at .*/, '')),
+              );
+            })(),
+          ),
+        ),
+      );
     });
     return el;
   }
@@ -190,7 +275,7 @@ export function linkMarkers(host: MarkersHost) {
       const near = (p: Point) =>
         mapMarkers(project.game(), host.scenes).some((m) => m.kind === 'in' && Math.abs(m.at.x - p.x) <= 2 && Math.abs(m.at.y - p.y) <= 2);
       for (let i = 0; i < 4 && near(at); i++) at = { x: at.x < 90 ? at.x + 4 : at.x - 4, y: at.y };
-      if (add(structuredClone(project.game())) < 0) return toast('This level already has 20 exits, the most a scene can have.', 'error');
+      if (add(structuredClone(project.game())) < 0) return toast('Choose a free exit block and arrival block. A scene can have at most 20 exits.', 'error');
       let link = -1;
       editor.edit(`add:${Date.now()}`, (g) => (link = add(g)));
       const el = els.get(`out:${scene}:${link}`);

@@ -5,7 +5,7 @@ import { ALL, BlockBook } from './book';
 import { addFamily } from './autotiles';
 import { Canvas } from '../art/rgb';
 import { canopy, cliff, forest, grass, road, rock, shore, water } from '../art/terrain';
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blend } from '../art/textures';
 
 const bitsOf = (m: number) => [1, 2, 4, 8].filter((b) => m & b).length;

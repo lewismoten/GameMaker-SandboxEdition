@@ -2,7 +2,7 @@
 // that uses it from every way in, with Unroll (unroll.ts) following the hero. For the map
 // editor's "As players see it" picture; the printed Level Maps get theirs from levelViews.json,
 // which also replays the walkthrough. No DOM (it runs in unrollWorker.ts).
-import { ADVTYPE, NOSCENE, type Game } from '../../formats/game';
+import { ADVTYPE, NOSCENE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { explore } from './explore';
 import { startCharInfo, type FileSource } from './sim';
 import { Unroll, type Unrolled, type UnrolledBox } from './unroll';

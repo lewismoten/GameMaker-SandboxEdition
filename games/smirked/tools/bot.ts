@@ -5,10 +5,10 @@
 // (or swings the foam sword at) what's in the way. Moving monsters (zombies, bats, the ghost,
 // the werewolf guy, the cardboard knight) are handled by trying a stretch again from a
 // snapshot after a wait (route.ts, carefully()).
-import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
+import { MAXSCENELINKS, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { BATTERIES, MONEY, SCAN, SMIRKS, SORRY, HELMET } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
-import { MLEN, bgBlock, type World } from '../../../web/src/engine/world';
+import { MLEN, bgBlock, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { GameSim } from './sim';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';

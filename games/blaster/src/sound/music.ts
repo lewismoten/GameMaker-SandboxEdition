@@ -1,8 +1,8 @@
 // The soundtrack: driving FM songs for the Sound Blaster. Each song is a hand-written
 // lead over a chord progression, with a pumping bass, a sixteenth-note arpeggio, and drums
 // made from noisy FM patches (kick, snare and hi-hat on their own channels).
-import { INSTRUMENTS, sbi, type Voice } from '../../../kit/music';
-import { tune, join, times } from '../../../kit/tune';
+import { INSTRUMENTS, sbi, type Voice } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { tune, join, times } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   Am: ['A', 'C', 'E'],

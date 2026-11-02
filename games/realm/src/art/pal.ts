@@ -5,7 +5,7 @@
 //   SPRITE_END+1..254  the scene's own terrain colors, picked by median cut from the true-color
 //                   paintings of that scene's block set (grass, shore, cobbles, cave rock...).
 // 255 stays black: it is the "clear" color of sprite blocks.
-import { medianCutPalette } from '../../../kit/quantize';
+import { medianCutPalette } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
 import { Canvas, type RGB } from './rgb';
 
 /** The fixed colors, by name. Ramps are listed dark to light. */

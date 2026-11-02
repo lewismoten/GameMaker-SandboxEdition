@@ -1,16 +1,16 @@
 // RunOptions.skipTitle, the editor's Play Level test: play starts at once in the level the test
 // copy's start link leads to, at its spot, with a new game's character; without it the title and
 // menu come first, as in PLAYGAME.
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GameFiles } from '../project/files';
 import { testGame } from '../editor/check/testGame';
 import { startingAtSpot } from '../editor/editors/integrator/startAt';
-import { parseCharacter, serializeCharacter } from '../formats/character';
-import { serializeGame } from '../formats/game';
+import { parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { headlessCanvas, WalkAudio } from '../walkthrough/runtime';
-import { Machine } from './machine';
-import { runGame, type RunOptions } from './game';
-import type { World } from './world';
+import { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import { runGame, type RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
+import type { World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 
 // prettier-ignore
 const ROWS = [
@@ -19,6 +19,9 @@ const ROWS = [
   '#S...........................#',
   '##############################',
 ];
+
+beforeEach(() => vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] }));
+afterEach(() => vi.useRealTimers());
 
 /** A machine on a clock of the test's own, stepped a frame at a time. */
 class TestMachine extends Machine {
@@ -43,13 +46,22 @@ async function run(opts: RunOptions, frames = 120) {
   let first: { frame: number; x: number; y: number; hitpts: number; lives: number; inv: number[] } | undefined;
   let frame = 0;
   const onFrame = (w: World) => {
+    opts.onFrame?.(w);
     first ??= { frame, x: w.chr.x[0], y: w.chr.y[0], hitpts: w.ci.hitpts, lives: w.ci.lives, inv: [...w.ci.inv] };
   };
-  const ended = runGame(m, 'test.gam', { ...opts, onFrame, onSession: (s) => (s.onScene = (n) => scenes.push(n)) }).catch(() => undefined);
+  const ended = runGame(m, 'test.gam', {
+    ...opts,
+    onFrame,
+    onSession: (s) => {
+      s.onScene = (n) => scenes.push(n);
+      opts.onSession?.(s);
+    },
+  }).catch(() => undefined);
   for (; frame < frames; frame++) {
     m.time += 1000 / 60;
     m.presentFrame(false);
-    await new Promise((r) => setTimeout(r, 0));
+    // Flush asynchronous game work without waiting for a real timer on every frame.
+    await vi.advanceTimersByTimeAsync(0);
   }
   m.destroy();
   await ended;
@@ -66,6 +78,24 @@ describe('skipTitle', () => {
     expect(r.first!.hitpts).toBe(37);
     expect(r.first!.lives).toBe(5);
     expect(r.first!.inv).toEqual([...r.chr.inv]);
+  });
+
+  it('reports a final life lost once, but never during playback', async () => {
+    for (const playback of [false, true]) {
+      const lost = vi.fn();
+      await run({
+        skipTitle: true,
+        onLifeLost: lost,
+        onSession: (s) => {
+          s.ci.lives = 0;
+          if (playback) Object.defineProperty(s.rec, 'playing', { get: () => true });
+        },
+        onFrame: (w) => {
+          w.ci.hitpts = 0;
+        },
+      });
+      expect(lost).toHaveBeenCalledTimes(playback ? 0 : 1);
+    }
   });
 
   it('leaves a normal run on the title and menu', async () => {

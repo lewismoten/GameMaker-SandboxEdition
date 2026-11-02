@@ -14,7 +14,7 @@
 //        golden basin.
 //   VI.  Silentium Ridentium: the theater. Everyone watches, no one laughs: jokes for five stone
 //        faces, then Emperor Gravis himself, and his laurel crown on the altar.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockBook } from '../blocks/blocks';
 import { MON } from '../ids';
 
@@ -221,6 +221,8 @@ export function roofs(book: BlockBook): Level {
   alley(41, 7);
   house(m, 42, 50, 8, street);
   house(m, 51, 58, 7, street);
+  // scenery for the site's achievement badge: a library front in the sky, off the rooftops' way
+  m.set(46, 2, 'libraryFront');
   // A: a titulus, a chimney
   m.set(4, 7, 'titulus0').set(6, 7, 'chimney');
   // B: a titulus, the washing line, a pigeon (its walk a block short of the SAXA, so it never pushes him into the heap), a heap of SAXA

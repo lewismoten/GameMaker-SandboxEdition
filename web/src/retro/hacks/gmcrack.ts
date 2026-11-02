@@ -1,4 +1,4 @@
-// GMCRACK.EXE, from GMCRACK.ZIP in the BBS's Warez area: a 1995 scene-style "registration
+// GMCRACK.EXE, from GMCRACK.ZIP in the BBS's Warez area: a 1994 scene-style "registration
 // doctor" for Game-Maker SE on the desk PC. It registers Game-Maker (writes C:\GM\PLAYGAME.REG
 // with a name and key), unregisters it (spoils the key, so CHK.EXE asks the manual again), has
 // a KEYGEN that works the key out as CHK.C checks it, RESERIAL, which stamps a new serial number
@@ -15,7 +15,7 @@
 import type { RetroHost } from '../host';
 import type { CatalogEntry } from '../../project/files';
 import { attr, COLS, ROWS } from '../text/textScreen';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { TOP, clearArea, frame, hint, sleep } from './cracktro';
 import { pcExtras } from './pcExtras';
 import { FACTORY_SERIAL, NAME_MAX, checkRegistration, regFile, registrationNumber } from '../gmReg/registration';
@@ -396,7 +396,7 @@ async function answerTable(h: RetroHost): Promise<void> {
 
 function usage(h: RetroHost): void {
   const p = (t: string) => h.screen.print(`${toCp437(t)}\n`);
-  p(`GMCRACK v${VERSION}  (c) 1995 ${GROUP}`);
+  p(`GMCRACK v${VERSION}  (c) 1994 ${GROUP}`);
   p('');
   p('  GMCRACK            the menu: register, unregister, KEYGEN, crack, RESERIAL');
   p('  GMCRACK /K name    prints the registration key for a name');

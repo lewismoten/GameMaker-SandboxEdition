@@ -460,3 +460,10 @@
     overflow: visible;
   }
 }
+
+/* phones: the closer look starts under the desk's bar, so the Desk | DOS | Web switch stays in reach */
+@media (max-width: 600px) {
+  body:has(.desk-bar) .mugv {
+    top: 48px;
+  }
+}

@@ -7,6 +7,7 @@
 // (loadCatalog) lists it then.
 import type { CatalogEntry } from '../project/files';
 import { isSandboxGame, loadCatalog } from '../project/files';
+import { setAuthorMarks } from './tinyShelf';
 import { isOldSecret } from '../project/secretGames';
 import type { BoxItem } from '../manual/printables/viewer';
 import type { PrintContext, Sheet } from '../manual/printables/kit';
@@ -56,6 +57,7 @@ export async function loadShelf(): Promise<Shelf> {
   const walks = walkShelf([...boxed, ...maps]);
   // and the games' walkthrough videos: the shelved games' in their order, then any other listed game's
   const shelved = new Set([...boxed, ...maps]);
+  setAuthorMarks([...shelved]);
   const videos = gameVideoShelf([...shelved, ...entries.filter((e) => !shelved.has(e) && (!isOldSecret(e.id) || unlocked.has(e.id)))]);
   // the boxes' family, as the boxes themselves count it (gameManual.ts, dosManual.ts), so the Scoop's numbers match
   const family = entries.filter(isSandboxGame);
@@ -140,8 +142,9 @@ export async function loadShelf(): Promise<Shelf> {
   for (const [key, make] of walked.thumbs) thumbs.set(key, make);
   items.push(...(await videos));
   const site = siteShelf(zine);
-  items.push(site[0], turboCd, ...site.slice(1), ...videoShelf());
+  items.push(site[0], site[1], turboCd, ...site.slice(2), ...videoShelf());
   thumbs.set(`${SITE_OWNER}:magazine`, () => magazineCoverSheet(entries));
+  thumbs.set(`${SITE_OWNER}:magazine-1993`, () => magazineCoverSheet(entries, 1));
   if (zine) thumbs.set(`${SITE_OWNER}:zine`, async () => (await import('../manual/zine/zineItem')).zineCover());
   return { items: mergeShared(items), thumbs, games };
 }

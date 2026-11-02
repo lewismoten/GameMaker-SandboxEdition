@@ -3,8 +3,16 @@
 // two frames, and the menu's words and marker moved together. Each saves through the dialog's
 // `set` (which keeps patchRules.ts) and can be brought back in step after a drag on the preview.
 import { h } from '../../../core/ui';
-import { COLOR_TARGETS, type ColorName, type FramePatch, type NumberPatch, type PatchEntry, type TextPatch } from '../../../../dosPlayer/patchTable';
-import { formatCodes, frameLimit, patchEntry, type PatchValue } from '../../../../dosPlayer/patchRules';
+import {
+  COLOR_TARGETS,
+  type ColorName,
+  type FramePatch,
+  type NumberPatch,
+  type PatchEntry,
+  type TextPatch,
+} from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { formatCodes, frameLimit, isStock, patchEntry, type PatchValue } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
+import { fieldTools, type FieldToolsOptions } from './fieldTools';
 import { COLOR_LABELS } from '../../../../dosPlayer/describePatches';
 
 export interface FieldContext {
@@ -15,6 +23,8 @@ export interface FieldContext {
   set: (pid: string, value: PatchValue) => string | undefined;
   /** Each field gives a way to show its patches' values again (after a drag moves them). */
   onSync: (refresh: () => void) => void;
+  /** Look-only: the tools stay disabled. */
+  locked?: boolean;
 }
 
 const hex6 = (v: number[]) =>
@@ -31,7 +41,21 @@ const MENU_WORDS = ['play', 'instructions', 'storyline', 'credits', 'highScores'
 
 /** The field makers for one dialog. */
 export function fieldMaker(ctx: FieldContext) {
-  const { id, current, set, onSync } = ctx;
+  const { id, current, onSync, locked } = ctx;
+  /** Each field's Hide/Reset group, shown again after any change. */
+  const tools: (() => void)[] = [];
+  const set = (pid: string, value: PatchValue) => {
+    const problem = ctx.set(pid, value);
+    tools.forEach((f) => f());
+    return problem;
+  };
+  onSync(() => tools.forEach((f) => f()));
+  /** A field's tools, with Reset on when any of `entries` differs from XFERPLAY's own value. */
+  const toolsFor = (name: string, entries: PatchEntry[], reset: () => void, hide?: FieldToolsOptions['hide']) => {
+    const t = fieldTools({ name, atOriginal: () => entries.every((e) => isStock(e, current(e))), reset, locked, hide });
+    tools.push(t.update);
+    return t.el;
+  };
   const num = (pid: string) => current(patchEntry(pid)!) as number;
   /** Shows a value unless its input is being typed in. */
   const show = (input: HTMLInputElement, v: number) => {
@@ -70,19 +94,18 @@ export function fieldMaker(ctx: FieldContext) {
     };
     input.addEventListener('input', update);
     counter.textContent = `${input.value.length}/${e.length}`;
-    const hide = h(
-      'button',
-      {
-        type: 'button',
-        class: 'dp-hide',
-        title: 'Write spaces instead, which the player draws as nothing (as Builder did)',
-        onclick: () => {
-          input.value = '';
-          update();
-        },
+    let kept = input.value || e.stock.trimEnd();
+    const put = (v: string) => {
+      input.value = v;
+      update();
+    };
+    const hide = toolsFor(e.label, [e], () => put(e.stock.trimEnd()), {
+      hidden: () => current(e) === '',
+      toggle: () => {
+        if (input.value) kept = input.value;
+        put(input.value ? '' : kept);
       },
-      'Hide',
-    );
+    });
     return field(e, h('label', { for: fid }, e.label), h('div', { class: 'dp-row' }, input, counter, hide), err);
   };
 
@@ -117,7 +140,14 @@ export function fieldMaker(ctx: FieldContext) {
       row.append(x);
       if (codes[i]) row.append(h('code', { class: 'dp-lock', title: 'A code the player fills in: it stays as it is' }, codes[i]));
     });
-    row.append(counter);
+    row.append(
+      counter,
+      toolsFor(e.label, [e], () => {
+        const stock = split(e.stock.trimEnd());
+        inputs.forEach((x, i) => (x.value = stock[i] ?? ''));
+        update();
+      }),
+    );
     counter.textContent = `${value().length}/${e.length}`;
     return field(e, h('span', { class: 'dp-label', id: `${fid}-l` }, e.label, h('span', { class: 'dp-note' }, ' (the codes stay)')), row, err);
   };
@@ -131,23 +161,42 @@ export function fieldMaker(ctx: FieldContext) {
       report(err, set(e.id, Number(input.value)), input);
     });
     onSync(() => show(input, current(e) as number));
-    return field(e, h('label', { for: fid }, e.label, e.note ? h('span', { class: 'dp-note' }, ` (${e.note})`) : null), input, err);
+    const reset = toolsFor(e.label, [e], () => {
+      input.value = String(e.stock);
+      report(err, set(e.id, e.stock), input);
+    });
+    return field(
+      e,
+      h('label', { for: fid }, e.label, e.note ? h('span', { class: 'dp-note' }, ` (${e.note})`) : null),
+      h('div', { class: 'dp-row' }, input, reset),
+      err,
+    );
   };
 
   /** A position's x and y on one row. */
   const point = (name: string, ex: NumberPatch, ey: NumberPatch) => {
     const fid = `${id}-${ex.id}`;
     const err = errorOf(fid);
+    const inputs: HTMLInputElement[] = [];
     const pair = [ex, ey].map((e, k) => {
       const input = numInput(current(e) as number, e.min, e.max, { 'aria-label': `${name} ${k ? 'y' : 'x'}`, 'aria-describedby': `${fid}-err` });
       input.addEventListener('input', () => input.value !== '' && report(err, set(e.id, Number(input.value)), input));
       onSync(() => show(input, current(e) as number));
+      inputs.push(input);
       return h('label', { class: 'dp-mini' }, k ? 'y' : 'x', input);
     });
     return field(
       ex,
       h('span', { class: 'dp-label', id: `${fid}-l` }, name),
-      h('div', { class: 'dp-row', role: 'group', 'aria-labelledby': `${fid}-l` }, ...pair),
+      h(
+        'div',
+        { class: 'dp-row', role: 'group', 'aria-labelledby': `${fid}-l` },
+        ...pair,
+        toolsFor(name, [ex, ey], () => {
+          inputs.forEach((x, k) => (x.value = String([ex, ey][k].stock)));
+          report(err, set(ex.id, ex.stock) ?? set(ey.id, ey.stock));
+        }),
+      ),
       err,
     );
   };
@@ -161,7 +210,11 @@ export function fieldMaker(ctx: FieldContext) {
         h('option', { value: c, selected: c === current(e) }, COLOR_LABELS[c] + (c === e.stock ? ' (as shipped)' : '')),
       ),
     );
-    return field(e, h('label', { for: fid }, e.label), sel);
+    const reset = toolsFor(e.label, [e], () => {
+      sel.value = e.stock;
+      set(e.id, e.stock);
+    });
+    return field(e, h('label', { for: fid }, e.label), h('div', { class: 'dp-row' }, sel, reset));
   };
 
   const rgb = (e: PatchEntry & { kind: 'rgb' }) => {
@@ -175,17 +228,26 @@ export function fieldMaker(ctx: FieldContext) {
       showLevels(v);
       set(e.id, v);
     });
+    const reset = toolsFor(e.label, [e], () => {
+      input.value = hex6(e.stock);
+      showLevels(e.stock);
+      set(e.id, e.stock);
+    });
     return field(
       e,
       h('label', { for: fid }, e.label, e.note ? h('span', { class: 'dp-note' }, ` (${e.note})`) : null),
-      h('div', { class: 'dp-row' }, input, levels),
+      h('div', { class: 'dp-row' }, input, levels, reset),
     );
   };
 
   const fkey = (e: PatchEntry & { kind: 'fkey' }) => {
     const fid = `${id}-${e.id}`;
     const box = h('input', { type: 'checkbox', id: fid, checked: current(e) === 'on', onchange: () => set(e.id, box.checked ? 'on' : 'off') });
-    return field(e, h('label', { for: fid, class: 'dp-check' }, box, e.label));
+    const reset = toolsFor(e.label, [e], () => {
+      box.checked = true;
+      set(e.id, 'on');
+    });
+    return field(e, h('div', { class: 'dp-row' }, h('label', { for: fid, class: 'dp-check' }, box, e.label), reset));
   };
 
   /** A screen's two frames: double (as shipped), single (the inner on the outer) or custom. */
@@ -235,7 +297,13 @@ export function fieldMaker(ctx: FieldContext) {
       if (styleOf() === 'custom') sel.value = 'custom';
       custom.hidden = sel.value !== 'custom';
     });
-    return field(outer, h('label', { for: fid }, outer.label.replace(/, outer frame$/, ' frames')), sel, custom, err);
+    const name = outer.label.replace(/, outer frame$/, ' frames');
+    const reset = toolsFor(name, [outer, inner], () => {
+      sel.value = 'double';
+      custom.hidden = true;
+      apply(outer.stock, inner.stock);
+    });
+    return field(outer, h('label', { for: fid }, name), h('div', { class: 'dp-row' }, sel, reset), custom, err);
   };
 
   /** The menu's six words and marker move together: left x, top y and spacing. */
@@ -272,10 +340,25 @@ export function fieldMaker(ctx: FieldContext) {
       show(top.input, num('layout.menu.play.y'));
       show(dy.input, num('layout.menu.spacing'));
     });
+    const ids = [
+      ...MENU_WORDS.flatMap((w) => [`layout.menu.${w}.x`, `layout.menu.${w}.y`]),
+      'layout.menu.markerX',
+      'layout.menu.firstY',
+      'layout.menu.spacing',
+    ];
+    const reset = toolsFor(
+      'Menu words and marker',
+      ids.map((pid) => patchEntry(pid)!),
+      () => {
+        ids.forEach((pid) => set(pid, patchEntry(pid)!.stock));
+        [x, top, dy].forEach((f, k) => (f.input.value = String(num(['layout.menu.play.x', 'layout.menu.play.y', 'layout.menu.spacing'][k]))));
+        report(err, undefined);
+      },
+    );
     return field(
       { id: 'layout.menu.play.x', screen: 'menu', web: true },
       h('span', { class: 'dp-label' }, 'Menu words and marker, together'),
-      h('div', { class: 'dp-row', role: 'group', 'aria-label': 'Menu words and marker' }, x.label, top.label, dy.label),
+      h('div', { class: 'dp-row', role: 'group', 'aria-label': 'Menu words and marker' }, x.label, top.label, dy.label, reset),
       err,
     );
   };

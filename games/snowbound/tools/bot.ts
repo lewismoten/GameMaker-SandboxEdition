@@ -7,8 +7,8 @@
 import { GameSim } from './sim';
 import { buildBlocks } from '../src/blocks/blocks';
 import { buildPalette } from '../src/art/pal';
-import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
-import { SCRNBLEN, SCRNBWID } from '../../../web/src/engine/world';
+import { MAXSCENELINKS, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { SCRNBLEN, SCRNBWID } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { MON, THROWSEQ } from '../src/ids';
 
 type Pt = { x: number; y: number };

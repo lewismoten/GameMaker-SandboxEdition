@@ -98,7 +98,8 @@ export const ACTORS: Chapter = {
     <li><b>A visit.</b> Put a link in front of the friend that leads to a scene using the
     <i>same map</i>, arriving right beside him. That scene’s intro picture is the
     conversation: a <code>.TXT</code> page or a <code>.LST</code> slide show. The map loads
-    fresh, so keep such visits to places with nothing to collect.</li>
+    fresh, so keep such visits to places with nothing to collect. Chapter 5’s pass-through
+    scene makes the visit seamless.</li>
   </ul>`,
 };
 
@@ -263,6 +264,51 @@ export const SCENES: Chapter = {
     <li><b>No way to win.</b> Follow the links from the title’s first link: one chain of them
     must reach scene 1.</li>
   </ul>
+  <h2>Talk, pictures and cut-ins: the pass-through scene</h2>
+  <p>PLAYGAME has no dialog box. What it does have is a picture between scenes, so a
+  conversation, a found note, a short animation or a page of text is a scene of its own that
+  the hero only passes through:</p>
+  <ol>
+    <li><b>A new scene on the same level map.</b> Add a scene that loads the very map, blocks and
+    monsters of the level the hero is standing in.</li>
+    <li><b>Its intro picture is the message.</b> A <code>.GIF</code>, an <code>.FLI</code>
+    animation, a <code>.TXT</code> page or a <code>.LST</code> slide show of all three.</li>
+    <li><b>An all-black palette.</b> Every color in the scene’s palette is black.</li>
+    <li><b>Land on the way out.</b> The link into the scene lands the hero on the same cell as
+    the scene’s only link out, and that link leads back to the level, landing him beside the
+    spot that sent him (not on it, or he talks forever).</li>
+  </ol>
+  <p>Walking into the friend, the sign or the note, the game fades out, shows the picture, and
+  starts the new scene with the hero already standing on its exit. He leaves on the first
+  tick, and the level comes back. To the player, the friend simply spoke.</p>
+  <p><b>Why black?</b> PLAYGAME fades every scene’s map in and out, even one that lasts a
+  single tick. With an ordinary palette the level flashes up for a moment between the picture
+  and the return, and looks like a glitch. With every color black, that fade happens unseen.
+  The picture itself is not affected: a <code>.GIF</code> or <code>.FLI</code> carries its own
+  colors.</p>
+  <p><b>Why the same map?</b> Because the scene is only seen for one tick, the map is there for
+  the landing spot and the link out, and the level’s own map already has a cell the hero is
+  standing near. Using it costs no new files, keeps one place to edit, and puts the link out
+  exactly where he was. If something does show (a scene that isn’t quite black, a slow
+  machine), it is the same room he was in, so nothing jumps. Final Curtain goes one step
+  further and leaves the palette lit for its answers: each answer scene is the very room Ada
+  asked in, so the talk just carries on.</p>
+  <ul>
+    <li><b>Text pages need red.</b> PLAYGAME writes its MORE… prompt in the palette entry
+    nearest red. In an all-black palette that is entry 0, so give the page’s picture a palette
+    with red at 0, as Keep It Brief does, or the prompt is black on black.</li>
+    <li><b>A gift on arrival.</b> The block the hero lands on is touched in that one tick, so it
+    can score, heal or raise a counter. Quest for the Round Tuit’s townsfolk hand over a writ, a
+    lost dog or a reward that way (its talks use a small map of their own built for the
+    purpose).</li>
+    <li><b>The level comes back fresh.</b> Returning is a new visit, so the level’s map reloads:
+    keep talks away from prizes, or count what was taken in a counter.</li>
+    <li><b>The Level check knows the trick.</b> It reports a landing spot on a link, which is
+    right for a pass-through scene; dismiss it there.</li>
+  </ul>
+  <p>Quest for the Round Tuit talks to every townsperson this way, Keep It Brief shows its
+  thirty-third book’s card and its chapter-done pages, and Final Curtain gives its answers and
+  wrong verdicts.</p>
   <h2>What the camera sees first</h2>
   <p>The screen shows 16 by 10 blocks of a 100 by 100 map. A scene opens with the landing spot
   8 blocks from the left edge and 5 from the top; everything else is out of sight until the

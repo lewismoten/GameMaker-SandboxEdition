@@ -1,8 +1,8 @@
 // The soundtrack: FM songs for the Sound Blaster in the style of a 1996 3D demo: shimmering
 // arpeggios, warm pads, a pulsing bass and a lead on top. Songs are chords (one a bar) plus a
 // melody written bar by bar; the arpeggio, bass and pad are worked out from the chords.
-import { INSTRUMENTS, sbi, song, type Voice } from '../../../kit/music';
-import { v } from '../../../kit/tune';
+import { INSTRUMENTS, sbi, song, type Voice } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { v } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const NAMES = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 const nm = (m: number) => `${NAMES[m % 12]}${Math.floor(m / 12) - 1}`;

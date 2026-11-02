@@ -12,14 +12,14 @@
 //
 // Run once (needs ffmpeg and cjpeg): cd web && npx vite-node scripts/bbsGifs.ts
 // Writes web/public/bbs/* and web/src/retro/bbs/gallery.json; both are committed.
-// The photos are the owner's own (.for-lewis/images, not in git).
+// The photos are the owner's own (.for-lewis/reference/images, not in git).
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, readdirSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { encodeGif89 } from '../src/formats/gifProgressive';
+import { encodeGif89 } from '@lewismoten/gamemaker-sandbox-engine/formats/gifProgressive';
 
-const PHOTOS = resolve(__dirname, '../../.for-lewis/images');
+const PHOTOS = resolve(__dirname, '../../.for-lewis/reference/images');
 const OUT = resolve(__dirname, '../public/bbs');
 const LIST = resolve(__dirname, '../src/retro/bbs/gallery.json');
 /** Pixel width / height on a 4:3 monitor at 320x200 and 640x400. */

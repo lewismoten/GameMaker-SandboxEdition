@@ -1,0 +1,86 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Walk up one step; hold to keep walking."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Walk down one step; hold to keep walking."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Walk left one step; hold to keep walking."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Walk right one step; hold to keep walking."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Same as the Down arrow."
+    },
+    "16": {
+      "short": "Up-left",
+      "long": "Walk up and to the left."
+    },
+    "18": {
+      "short": "Up-right",
+      "long": "Walk up and to the right."
+    },
+    "71": {
+      "short": "Up-left",
+      "long": "Number pad 7: walk up and to the left."
+    },
+    "73": {
+      "short": "Up-right",
+      "long": "Number pad 9: walk up and to the right."
+    },
+    "79": {
+      "short": "Down-left",
+      "long": "Number pad 1: walk down and to the left."
+    },
+    "81": {
+      "short": "Down-right",
+      "long": "Number pad 3: walk down and to the right."
+    },
+    "57": {
+      "short": "Snowball",
+      "long": "Throw a snowball the way you last walked. Scoop the plow banks to pack more."
+    },
+    "28": {
+      "short": "Pick up",
+      "long": "Pick up what you find."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Snowball",
+      "long": "Throw a snowball the way you last walked."
+    }
+  },
+  "counters": {
+    "9": "Snowballs",
+    "20": "Newspapers",
+    "21": "Thaw"
+  },
+  "sounds": {
+    "9": "Throw",
+    "10": "Hurt",
+    "11": "Death",
+    "12": "Brake",
+    "13": "Push"
+  }
+}

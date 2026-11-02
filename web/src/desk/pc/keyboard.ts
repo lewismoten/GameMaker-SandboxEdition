@@ -15,8 +15,8 @@ import './keyboard.css';
 import { h } from '../../editor/core/ui';
 import { GLOBAL_KEYS } from '../../editor/keymap/keyMap';
 import { VirtualKeys } from '../../input/virtualKeys';
-import { audioContext, unlock } from '../../audio/context';
-import { output } from '../../audio/output';
+import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 
 /** Whether `words` has `word` as a whole word (any case). */
 const saysWord = (words: string, word: string): boolean =>

@@ -7,6 +7,7 @@ import { callFor, dialComplete, HungUp, type Call, type CallLine } from './calls
 import { openDialPad, type DialPad } from './dialPad';
 import { PhoneSounds } from './sounds';
 import { speak } from '../../../audio/voices';
+import { captionPieces } from './captionPieces';
 
 type State = 'hung-up' | 'dialing' | 'call' | 'ended';
 
@@ -61,18 +62,34 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
   };
 
   const line = (signal: AbortSignal): CallLine => {
+    let speech: AbortController | undefined;
     const live = () => {
       if (signal.aborted) throw new HungUp();
     };
     return {
+      signal,
       sounds: sounds!,
       status,
       async say(v, text) {
         live();
         status('Connected');
-        pad?.caption(v.who, text);
-        await speak(text, v, signal);
-        live();
+        speech?.abort();
+        const current = new AbortController();
+        speech = current;
+        const stop = () => current.abort();
+        signal.addEventListener('abort', stop, { once: true });
+        try {
+          // a long speech in a few short captions, each said as it shows, so none has to scroll
+          for (const piece of captionPieces(text)) {
+            if (current.signal.aborted) break;
+            pad?.caption(v.who, piece);
+            await speak(piece, v, current.signal);
+          }
+          live();
+        } finally {
+          signal.removeEventListener('abort', stop);
+          if (speech === current) speech = undefined;
+        }
       },
       wait: (seconds) =>
         new Promise((resolve, reject) => {
@@ -89,6 +106,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
         }),
       keysUntilPound: (seconds) =>
         new Promise((resolve, reject) => {
+          if (signal.aborted) return reject(new HungUp());
           let typed = '';
           let t = 0;
           const finish = () => {
@@ -116,6 +134,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
         }),
       nextKey: (seconds) =>
         new Promise((resolve, reject) => {
+          if (signal.aborted) return reject(new HungUp());
           const done = (k: string) => {
             clearTimeout(t);
             onKey = undefined;
@@ -133,6 +152,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
         }),
       caption: (who, text) => pad?.caption(who, text),
       hush() {
+        speech?.abort();
         if ('speechSynthesis' in window) speechSynthesis.cancel();
       },
       ended(why) {
@@ -200,6 +220,8 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
   const pickUp = () => {
     sounds ??= PhoneSounds.open();
     call = new AbortController();
+    window.addEventListener('pagehide', hangUp, { once: true });
+    window.addEventListener('gm-desk-close', hangUp, { once: true });
     phoneLine.offHook = true;
     el.classList.add('off-hook');
     btn.setAttribute('aria-pressed', 'true');
@@ -224,6 +246,8 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
   };
 
   function hangUp(): void {
+    window.removeEventListener('pagehide', hangUp);
+    window.removeEventListener('gm-desk-close', hangUp);
     call?.abort();
     call = undefined;
     clearTimeout(idle);

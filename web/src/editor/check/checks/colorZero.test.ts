@@ -1,9 +1,9 @@
 // The level check's color 0 check (colorZero.ts) on the tiny game in testGame.ts, given a level
 // palette and a menu picture.
 import { describe, expect, it } from 'vitest';
-import { textBytes } from '../../../formats/binary';
-import { serializeGame } from '../../../formats/game';
-import { encodeGif } from '../../../formats/gif';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { GameFiles } from '../../../project/files';
 import { runChecks } from '../report';
 import { testGame } from '../testGame';

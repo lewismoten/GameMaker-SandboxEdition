@@ -7,6 +7,7 @@ import { h } from '../../editor/core/ui';
 import { padPosition } from '../../input/deskJoystick';
 import { focusInto } from '../overlayFocus';
 import { gamePadArt, PAD_BUTTONS } from './gamePadArt';
+import { bigSwitch, throwDrawnSwitch } from './gamePadSwitch';
 import { pressWithPointer, type PadHolds } from './gamePadHolds';
 
 const WAYS = ['', 'Up', 'Up and right', 'Right', 'Down and right', 'Down', 'Down and left', 'Left', 'Up and left'];
@@ -26,8 +27,8 @@ export function gamePadPanel(holds: PadHolds, opener: HTMLElement): { open(focus
       type: 'button',
       class: `gp-face at-${b.at}`,
       dataset: { b: String(b.n) },
-      'aria-label': `Button ${b.n}, ${b.color}${b.n > 2 ? ': Game-Maker games read only buttons 1 and 2' : ''}`,
-      title: `Button ${b.n} (${b.color})`,
+      'aria-label': `Button ${b.n}, ${b.color}${b.n > 2 ? `: with TURBO on, held, it presses button ${b.n - 2} over and over; on 4 BUTTON it does nothing in Game-Maker games` : ''}`,
+      title: `Button ${b.n} (${b.color})${b.n > 2 ? `: TURBO fires button ${b.n - 2}` : ''}`,
     }),
   );
   const close = h('button', { type: 'button', class: 'gp-close', 'aria-label': 'Close the large game pad', title: 'Close (Esc)' }, '×');
@@ -36,10 +37,11 @@ export function gamePadPanel(holds: PadHolds, opener: HTMLElement): { open(focus
     { class: 'gp-panel', role: 'dialog', 'aria-label': 'GRAVITAS PC GamePad', hidden: true },
     h('div', { class: 'gp-panel-head' }, h('strong', null, 'GRAVITAS PC GamePad'), close),
     h('div', { class: 'gp-panel-pad' }, art, dirs, ...faces),
+    bigSwitch(),
     h(
       'p',
       { class: 'gp-panel-note' },
-      'Game-Maker games read the d-pad and buttons 1 and 2, red and yellow. Hold a button with the pointer, Enter or Space; the arrow keys push the d-pad.',
+      'Game-Maker games read the d-pad and buttons 1 and 2, red and yellow. On TURBO, holding green (3) or blue (4) presses red or yellow over and over, ten times a second; on 4 BUTTON they do nothing. Hold a button with the pointer, Enter or Space; the arrow keys push the d-pad.',
     ),
   );
   const unwatch = holds.watch(art);
@@ -49,7 +51,7 @@ export function gamePadPanel(holds: PadHolds, opener: HTMLElement): { open(focus
     // pressing the pad leaves the keyboard with the game
     if ((e.target as Element).closest('.gp-panel-pad')) e.preventDefault();
   });
-  panel.addEventListener('pointerdown', (e) => void pressWithPointer(holds, e, art));
+  panel.addEventListener('pointerdown', (e) => void (throwDrawnSwitch(e) || pressWithPointer(holds, e, art)));
 
   // ---- the keyboard ----
   const arrows = new Set<string>();

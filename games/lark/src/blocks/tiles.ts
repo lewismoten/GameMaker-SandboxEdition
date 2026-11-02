@@ -2,8 +2,8 @@
 // path, cobbles and hedges, trees and fences, signposts with a little hand-lettering, sawhorses,
 // field gates, lamp posts and benches, and the chapter ropes and swing gates that let Joe into a
 // friend's corner once and out again.
-import { SOLBOT, SOLLEF, SOLRIG } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLBOT, SOLLEF, SOLRIG } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { over, shadeAt } from '../art/draw';
 import { c, r } from '../art/pal';
 import { flag } from '../ids';

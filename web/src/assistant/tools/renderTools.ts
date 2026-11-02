@@ -2,18 +2,18 @@
 // regions, block sheets, a monster's or the hero's frame, the title and menu screens and any
 // picture are drawn as the game draws them (gfx/levelPicture.ts, gfx/titlePicture.ts, the
 // engine's drawMenu), with no canvas.
-import { ADVTYPE, type Game } from '../../formats/game';
-import { BLEN, BLOCK_COUNTS, CHARBL, TRANSPARENT, orientIndex, parseBlocks, type BlockKind } from '../../formats/blocks';
-import { parseMonsters, LASTMON } from '../../formats/monster';
-import { parseCharacter, MAXSEQ, MAXFRAME } from '../../formats/character';
+import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { BLEN, BLOCK_COUNTS, CHARBL, TRANSPARENT, orientIndex, parseBlocks, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseMonsters, LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseCharacter, MAXSEQ, MAXFRAME } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { normalize } from '../../project/files';
 import { scenePixels } from '../../gfx/levelPicture';
-import { defaultPalette, serializePalette } from '../../formats/palette';
+import { defaultPalette, serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { graphicPixels, titlePixels } from '../../gfx/titlePicture';
-import { Screen } from '../../gfx/screen';
-import { drawMenu } from '../../engine/menus';
-import { playerLook } from '../../engine/playerLook';
-import { base64, encodePng, type IndexedPicture } from '../png';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { drawMenu } from '@lewismoten/gamemaker-sandbox-engine/engine/menus';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
+import { base64, encodePng, type IndexedPicture } from '@lewismoten/gamemaker-sandbox-tools/image/png';
 import { FILE, SCENE, clampInt, fileName, gameOf, int, need, paletteFor, sceneOf } from './common';
 import { ToolError, type GameContext, type ToolDef, type ToolResult } from './types';
 

@@ -51,14 +51,8 @@ export const castChapter: Chapter = {
     {
       id: 'cast-families',
       action: 'point',
-      target: { label: 'the three kinds of games', css: '.cast-families' },
-      say: 'Three kinds of games: Sandbox Software, the Bard of Bizarre’s songs, and the games from the original CD.',
-    },
-    {
-      id: 'cast-filters',
-      action: 'point',
-      target: { label: 'the Show the cast of buttons', css: '.cast-filters' },
-      say: 'These show just one kind’s regulars, or everyone.',
+      target: { label: 'the cast tabs', css: '.cast-tabs' },
+      say: 'Tabs sort the regulars. The last one tells the three kinds of games: Sandbox, the Bard’s songs, and the original CD.',
     },
     {
       id: 'cast-card',

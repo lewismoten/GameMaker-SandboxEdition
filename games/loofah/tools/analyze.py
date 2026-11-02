@@ -3,7 +3,7 @@
 # inform the OPL2 arrangement in games/loofah/src/sound/song.ts (games/kit/song/analyze.py does
 # the work; see it for what is measured and how).
 #
-# It reads the MP3 at .for-lewis/songs/loofah/Cleanse Me, O Loofah, But Leave My Soul.mp3, which
+# It reads the MP3 at .for-lewis/reference/songs/loofah/Cleanse Me, O Loofah, But Leave My Soul.mp3, which
 # is NOT committed (the arrangement is committed as note data in TypeScript, so the game build
 # never needs it).
 #

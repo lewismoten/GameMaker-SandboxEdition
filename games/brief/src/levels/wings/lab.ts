@@ -1,6 +1,6 @@
 // The Laboratory: Great Minds, Strange Priorities;
 // Duplicate Daughters, Divided Dad; Becoming Purple; and Church of the First of Zero.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline, bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { blank, corgi, figure, figureBack, figureSide, floor, on, sign, wall } from '../../art/kit';

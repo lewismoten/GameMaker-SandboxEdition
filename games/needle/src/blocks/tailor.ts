@@ -4,12 +4,13 @@
 // them that only a spool mends (solid until then), pins that prick, buttons to hop along, the sewing
 // machine's table, needles standing taller than a camel with their eyes to crawl through (one
 // is an eye gate), the poor seamstress, and the back door out into the night.
-import { dither, Pixels } from '../../../kit/pixels';
+import { dither, Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import type { Pal } from '../art/pal';
 import { THREAD } from '../ids';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { wattCameo } from '../../../kit/cameos';
+import { tailorBadges } from './badges';
 import { addGate, addGoodThings, addSoul, GRAV, kit, LEDGE, SOLID, type Kit } from './common';
 
 export function tailorBlocks(pal: Pal): Kit {
@@ -249,5 +250,7 @@ export function tailorBlocks(pal: Pal): Kit {
   };
   book.add('watt', watt(false), { ...air, next: 'wattBlink', ntime: 70 });
   book.add('wattBlink', watt(true), { ...air, next: 'watt', ntime: 3 });
+  // (last) scenery for the site's achievement badges
+  tailorBadges(book, pal, () => panel(1), air);
   return k;
 }

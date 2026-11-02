@@ -2,8 +2,17 @@
 // their timing and velocities, its instruments (the SBI bytes of every program it plays), its
 // program changes and the other channel events the model keeps. A drum (rhythm mode's
 // channels 12-16) stays that drum when it can. No DOM: the clipboard is in trackClipboard.ts.
-import { addNote, channelNotes, extendEnd, programChanges, setProgramAt, setStartMode, startMode, startProgram } from '../../../formats/cmfEdit';
-import { DRUM_NAMES, RHYTHM_CHANNELS, type CmfSong } from '../../../formats/cmfSong';
+import {
+  addNote,
+  channelNotes,
+  extendEnd,
+  programChanges,
+  setProgramAt,
+  setStartMode,
+  startMode,
+  startProgram,
+} from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { DRUM_NAMES, RHYTHM_CHANNELS, type CmfSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { presetById } from '../../../audio/oplPresets';
 
 export interface TrackClip {

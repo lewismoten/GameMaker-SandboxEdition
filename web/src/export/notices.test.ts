@@ -7,7 +7,7 @@ import { readResources, RT } from './peResources';
 import { winExe, winExeZip } from './winApp';
 import { linuxAppFiles } from './linuxApp';
 import { macAppZip, NOTICES_FILE } from './macApp';
-import { readZip } from '../project/zip';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 const pub = (p: string) => new Uint8Array(readFileSync(resolve(__dirname, '../../public', p)));
 const html = '<!doctype html><title>T</title>';

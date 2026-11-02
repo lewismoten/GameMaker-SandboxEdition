@@ -3,7 +3,7 @@
 // letter two blocks wide and two tall, so the picture is 14 x 5 blocks: SOUND, a row of
 // bare board, BOASTER. Both lines sit on the same 20-pixel grid, so the S and the O of
 // SOUND are the same blocks as in BOASTER.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { micro, type BlockSet } from '../art/draw';
 import { onFloor, type StageArt } from './tiles';
 import { slicesShared } from './boaster3';

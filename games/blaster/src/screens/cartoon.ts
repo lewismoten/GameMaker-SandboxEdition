@@ -1,6 +1,6 @@
 // Pictures for the screens and cartoons: the family room at night, the beige 486 and its
 // monitor, the floppy, GLITCH grinning on the screen, the BLASTER, and the logo.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, bevel, blob, centered, gradient, micro, outlined, scaleBlit, shadeAt, text, textWidth } from '../art/draw';
 import { buildPalette, type Pal } from '../art/pal';
 import { shipBlocks } from '../characters/ship';

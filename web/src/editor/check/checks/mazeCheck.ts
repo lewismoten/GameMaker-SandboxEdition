@@ -1,8 +1,8 @@
 // The level check's maze check: on a map seen from above (no gravity), a big area of one-block
 // passages with many dead ends is a maze; it should have landmarks (blocks that differ from
 // the plain floor) and dead ends worth the walk (a pickup in them).
-import { BACKBL, type Block } from '../../../formats/blocks';
-import { MLEN, MWID } from '../../../formats/map';
+import { BACKBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import type { SceneData } from '../sceneData';
 

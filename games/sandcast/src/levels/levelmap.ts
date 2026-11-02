@@ -1,7 +1,7 @@
 // Building 100x100 Game-Maker maps in code: rectangles, rings, ASCII stamps, monsters,
 // and named spots (start points and doorways) for the scene links.
-import { newMap, reindexMonsters, MLEN, type GameMap } from '../../../../web/src/formats/map';
-import { rng } from '../../../kit/pixels';
+import { newMap, reindexMonsters, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BG } from '../blocks/bblocks';
 
 type Cell = string | { tile?: string; mon?: number; mark?: string };

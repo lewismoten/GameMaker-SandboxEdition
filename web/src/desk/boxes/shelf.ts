@@ -7,7 +7,7 @@ import './shelf.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { boxModel, openBoxViewer, type BoxViewerPage } from './boxViewer';
-import { drawBox, type BoxFaces } from './gameBox';
+import { drawBox, releaseFaces, type BoxFaces } from './gameBox';
 import { dressUv, uvGame } from './boxUv';
 import { hideWallPoster, setPosterWall, showWallPoster } from '../room/wallPoster';
 import { shelfLayout } from './shelfLayout';
@@ -95,6 +95,10 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   // Boxes spine out are drawn without their cover painting or screenshots (no cover code or
   // game files to load); a box gets them when it is turned face out or taken down, its cover
   // first (quick), then the screenshots.
+  const releaseFacesOf = (id: string) => {
+    const old = faces.get(id);
+    if (old) releaseFaces(old);
+  };
   const complete = new Map<string, Promise<BoxFaces | undefined>>();
   const whole = new Set<string>();
   const completed = (g: CatalogEntry): Promise<BoxFaces | undefined> => {
@@ -103,6 +107,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       void drawBox(g, { shots: false }).then(
         (f) => {
           if (!f || whole.has(g.id)) return;
+          releaseFacesOf(g.id);
           faces.set(g.id, f);
           slots.get(g.id)?.replaceChildren(boxModel(f));
         },
@@ -113,6 +118,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
         .then((f) => {
           if (!f) return faces.get(g.id);
           whole.add(g.id);
+          releaseFacesOf(g.id);
           faces.set(g.id, f);
           uvGame(f, g);
           slots.get(g.id)?.replaceChildren(boxModel(f));
@@ -176,7 +182,10 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
 
   // draw the boxes one by one, so the first ones appear while the rest are drawn
   for (const [i, g] of games.entries()) {
-    const f = await (g.id === front ? completed(g) : drawBox(g, { shots: false, cover: false }).catch(() => undefined));
+    // let the page paint and answer between boxes: drawing one is most of a frame's worth of work
+    if (i) await new Promise<void>((r) => setTimeout(r));
+    // the box face out gets its cover painting now and its screenshots after the shelf is up
+    const f = await drawBox(g, { shots: false, cover: g.id === front, blobs: true }).catch(() => undefined);
     if (!f) continue;
     faces.set(g.id, f);
     uvGame(f, g);
@@ -195,6 +204,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
     glow(g.id);
   }
   if (!slots.has(front) && slots.size) face([...slots.keys()][0]);
+  else face(front);
 
   const tubeWatch = new MutationObserver(tube);
   tubeWatch.observe(desk, { attributes: true, attributeFilter: ['class'] });
@@ -223,6 +233,9 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       observer.disconnect();
       tubeWatch.disconnect();
       hideWallPoster();
+      // the shelf's page-only picture addresses (gameBox.ts drawBox `blobs`) go with it
+      for (const f of faces.values()) releaseFaces(f);
+      faces.clear();
     },
   };
 }

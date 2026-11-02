@@ -3,10 +3,10 @@
 // in grayscale or with a color-vision difference (colorVision.ts); and shade ramps with steps
 // too close to see. Each warning may come with a one-click fix that only changes palette
 // colors, and only when no new warning appears in any level drawn with the palette.
-import { BLEN, type Block } from '../../../formats/blocks';
-import { LASTMON, type Monster } from '../../../formats/monster';
-import { MLEN, MWID, type GameMap } from '../../../formats/map';
-import type { Palette } from '../../../formats/palette';
+import { BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MLEN, MWID, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { contrastRatio, luminance, topColors } from '../../check/sceneData';
 import { pictures } from '../../check/checks/monsterChecks';
 import { VIEWS, deltaE, labs, relightColor, simulate, type View } from './colorVision';

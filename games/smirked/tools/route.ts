@@ -8,9 +8,7 @@ import { BATTERIES, BATTERIES_NEEDED, MON, MONEY, SCAN, SORRY, SORRY_NEEDED, SWO
 import { EXIT_HALL, FOG_HALL, HALL_TOP, ORIGIN, SHOP_HALL, STAFF_HALL, WITCHES } from '../src/levels/maps';
 import { Bot, type Dir } from './bot';
 
-const expect = (bot: Bot, scene: number, what: string) => {
-  if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
-};
+import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
 async function must(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {

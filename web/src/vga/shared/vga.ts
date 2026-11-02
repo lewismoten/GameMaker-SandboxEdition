@@ -3,10 +3,10 @@
 // reads and the 18.2 Hz clock. The drawing routines are ports of code/GM/GRAPHC.C.
 // Like a real monitor, the picture fills its box; it is drawn from a whole-number
 // upscale of 320x200 so pixels keep hard edges.
-import { FONT_CP437 } from '../../gfx/cp437Glyphs';
+import { FONT_CP437 } from '@lewismoten/gamemaker-sandbox-engine/gfx/cp437Glyphs';
 import { ProgramAborted } from '../../retro/text/textInput';
-import { Keyboard, type TypedKey } from '../../input/keyboard';
-import { listenDeskMouse, Mickeys } from '../../input/deskMouse';
+import { Keyboard, type TypedKey } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
+import { listenDeskMouse, Mickeys } from '@lewismoten/gamemaker-sandbox-engine/input/deskMouse';
 
 export const SIZEX = 320;
 export const SIZEY = 200;

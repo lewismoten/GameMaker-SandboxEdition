@@ -192,6 +192,17 @@
       "repo": "https://github.com/humanwhocodes/retry"
     },
     {
+      "name": "@isaacs/nonrecursive-glob-match",
+      "version": "1.0.3",
+      "license": "BlueOak-1.0.0",
+      "runtime": false,
+      "direct": false,
+      "usedBy": [
+        "eslint",
+        "typescript-eslint"
+      ]
+    },
+    {
       "name": "@jridgewell/resolve-uri",
       "version": "3.1.2",
       "license": "MIT",
@@ -250,6 +261,36 @@
       ],
       "author": "Jared Wray",
       "repo": "https://github.com/jaredwray/keyv"
+    },
+    {
+      "name": "@lewismoten/gamemaker-sandbox-archives",
+      "version": "3.2.0",
+      "license": "MIT",
+      "runtime": true,
+      "direct": true,
+      "usedBy": [],
+      "author": "Lewis Moten",
+      "repo": "https://github.com/lewismoten/GameMaker-SandboxEdition"
+    },
+    {
+      "name": "@lewismoten/gamemaker-sandbox-engine",
+      "version": "3.3.0",
+      "license": "MIT",
+      "runtime": true,
+      "direct": true,
+      "usedBy": [],
+      "author": "Lewis Moten",
+      "repo": "https://github.com/lewismoten/GameMaker-SandboxEdition"
+    },
+    {
+      "name": "@lewismoten/gamemaker-sandbox-tools",
+      "version": "3.4.0",
+      "license": "MIT",
+      "runtime": true,
+      "direct": true,
+      "usedBy": [],
+      "author": "Lewis Moten",
+      "repo": "https://github.com/lewismoten/GameMaker-SandboxEdition"
     },
     {
       "name": "@modelcontextprotocol/sdk",
@@ -569,6 +610,16 @@
       ],
       "author": "Jake Luer",
       "repo": "https://github.com/chaijs/assertion-error"
+    },
+    {
+      "name": "axe-core",
+      "version": "4.14.0",
+      "license": "MPL-2.0",
+      "runtime": false,
+      "direct": true,
+      "usedBy": [],
+      "author": "David Sturley",
+      "repo": "https://github.com/dequelabs/axe-core"
     },
     {
       "name": "balanced-match",
@@ -1782,7 +1833,7 @@
     },
     {
       "name": "minimatch",
-      "version": "10.2.6",
+      "version": "11.0.4",
       "license": "BlueOak-1.0.0",
       "runtime": false,
       "direct": false,
@@ -2039,6 +2090,16 @@
       ],
       "author": "crouchcd",
       "repo": "https://github.com/crouchcd/pkce-challenge"
+    },
+    {
+      "name": "playwright-core",
+      "version": "1.64.1",
+      "license": "Apache-2.0",
+      "runtime": false,
+      "direct": true,
+      "usedBy": [],
+      "author": "Microsoft Corporation",
+      "repo": "https://github.com/microsoft/playwright"
     },
     {
       "name": "postcss",

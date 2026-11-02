@@ -11,7 +11,7 @@
 //
 // The blocks are in level2Tiles.ts, the monsters in level2Beasts.ts; this file lays out the map.
 import { LevelMap, type Level } from './level';
-import { reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { G, bandRow, mainTiles, skyAt } from './level2Tiles';
 import { mainBeasts } from './level2Beasts';
 

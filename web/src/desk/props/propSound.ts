@@ -3,10 +3,10 @@
 // fly's buzz, a twinkle. They go out through the speakers' volume knob (audio/output.ts),
 // so a knob turned all the way down keeps the room quiet too, and they start only from
 // the click or key press that asked for them.
-import { output } from '../../audio/output';
-import { audioContext, unlock } from '../../audio/context';
+import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
+import { audioContext, unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 
-let gameAudio: import('../../audio/engine').AudioEngine | undefined;
+let gameAudio: import('@lewismoten/gamemaker-sandbox-engine/audio/engine').AudioEngine | undefined;
 
 interface Out {
   ctx: AudioContext;
@@ -96,6 +96,26 @@ function noise(o: Out, at: number, len: number, freq: number, level = 0.12, q = 
 }
 
 export const roomSound = {
+  /** One click of a combination dial passing a number. */
+  dialClick(): void {
+    const o = open();
+    if (!o) return;
+    noise(o, 0, 0.012, 3800, 0.14, 5);
+    tone(o, 0, 0.02, 2600, 1900, 0.025, 'square');
+  },
+  /** A faint tick inside the safe's lock: a pin picking up a wheel. About a quarter as loud as dialClick. */
+  wheelTap(): void {
+    const o = open();
+    if (!o) return;
+    noise(o, 0, 0.008, 5200, 0.035, 6);
+    tone(o, 0, 0.012, 3200, 2400, 0.005, 'square');
+  },
+  /** A crunchy treat. */
+  treatCrunch(): void {
+    const o = open();
+    if (!o) return;
+    for (let i = 0; i < 4; i++) noise(o, i * 0.09, 0.05, 900 + Math.random() * 900, 0.2, 1.5);
+  },
   /** The quartz tick and the hourly beep-beep of a sport watch. */
   watch(): void {
     const o = open();
@@ -268,9 +288,10 @@ export const roomSound = {
   },
   /** One of a Sandbox game's own digitized sounds (goat/scream.voc), through the knob too. */
   gameVoc(game: string, name: string): void {
-    void Promise.all([import('../../audio/engine'), import('../../project/files')])
+    void Promise.all([import('@lewismoten/gamemaker-sandbox-engine/audio/engine'), import('../../project/files')])
       .then(async ([{ AudioEngine }, files]) => {
         gameAudio ??= new AudioEngine();
+        gameAudio.setGame(true);
         const entry = (await files.loadGameList()).find((g) => g.id === game);
         const bytes = entry && (await files.fetchGameFile(entry, name));
         await gameAudio.resume();

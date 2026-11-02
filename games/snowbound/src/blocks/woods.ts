@@ -5,7 +5,7 @@
 // the kid's pockets (and its counter thaws the toboggan). Push the toboggan then, and it
 // slides you down through the woods to the top of Jamie Street. Added after the snack bar
 // so every older block keeps its number.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../art/draw';
 import { THAW } from '../ids';
 import { Ctx, SOLID } from './book';

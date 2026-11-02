@@ -1,8 +1,8 @@
 // Drawing helpers shared by the block, monster and character art.
-import { Pixels, rng, dither } from '../../../kit/pixels';
+import { Pixels, rng, dither } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SAND } from './palette';
-import { CLEAR } from '../../../kit/blit';
-export { CLEAR } from '../../../kit/blit';
+import { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+export { CLEAR } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 
 export { Pixels, rng, dither };
 

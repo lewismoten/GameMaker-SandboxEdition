@@ -1,9 +1,9 @@
 // Named blocks and monsters, resolved into Game-Maker block sets (.BBL/.MBL/.CBL) and monster
 // lists (.MON), so a room can say "falseWall" instead of a raw number. A block's number is
 // the order it was added, so the order of the add() calls is part of the file format.
-import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '../../../../web/src/formats/blocks';
-import { emptyMonster, newMonsterSet, type Monster } from '../../../../web/src/formats/monster';
-import type { Pixels } from '../../../kit/pixels';
+import { emptyBlock, SOLBOT, SOLLEF, SOLRIG, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { emptyMonster, newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 export const SOLID = SOLTOP | SOLRIG | SOLBOT | SOLLEF;
 export { SOLTOP, SOLRIG, SOLBOT, SOLLEF };

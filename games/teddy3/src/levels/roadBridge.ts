@@ -8,7 +8,7 @@
 // Each piece is its own monster because a monster moves as one block. Nothing is solid on its
 // way down or up, so a falling or rising piece can never shove the car.
 import { POWER } from '../ids';
-import { SOLBOT } from '../../../../web/src/formats/blocks';
+import { SOLBOT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Bestiary } from '../characters/mons';
 import { deck, leafFall, leafUp } from '../sprites/roadTrip';
 import { zap } from '../sprites/gadgets';

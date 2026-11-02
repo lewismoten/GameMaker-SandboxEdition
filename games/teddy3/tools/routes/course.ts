@@ -1,8 +1,8 @@
 // The bot's way through course.ts (the level's own comment says what happens there).
 import type { Order } from '../bot';
 import { at, leap } from './helpers';
-import type { Sim } from '../../../kit/sceneSim';
-import { mapBlock, shownBlock } from '../../../../web/src/engine/world';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
+import { mapBlock, shownBlock } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { COURSE } from '../../src/levels/course';
 import { G } from '../../src/levels/courseTiles';
 import { WHEEL } from '../../src/levels/millBeasts';

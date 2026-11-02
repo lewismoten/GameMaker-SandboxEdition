@@ -9,9 +9,9 @@
 // No DOM: runs in a Web Worker (botDemoWorker.ts) and in tests.
 import { headlessCanvas, WalkRun } from '../../../walkthrough/runtime';
 import { WALKTHROUGH_FPS, type Walkthrough } from '../../../walkthrough/format';
-import { RECLEN, serializeRecording, type RecordedKey } from '../../../formats/recording';
+import { RECLEN, serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import type { GameFiles } from '../../../project/files';
-import type { Session } from '../../../engine/scene';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 
 /** Game ticks a second (the 18.2 Hz clock a .REC counts). */
 const GAME_HZ = 18.2;

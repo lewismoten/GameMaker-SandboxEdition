@@ -1,6 +1,6 @@
 // "Watch walkthrough" on a Sandbox game's page: the whole game played from power-on to the
 // credits on the real engine (runtime.ts), at 320×200 scaled up with square pixels. Play and
-// pause, 1×/2×/4×, the demos' sound choice (None · Sound Blaster · PC speaker, media/demoAudio.ts), a chapter list to jump to (a jump replays the game from the start
+// pause, previous and next item (items.ts; , and . keys), 1×/2×/4×, the demos' sound choice (None · Sound Blaster · PC speaker, media/demoAudio.ts), a chapter list to jump to (a jump replays the game from the start
 // as fast as it can, nothing drawn, to the chapter's first scene), "Download MP4" (made frame
 // by frame, faster than real time, exportVideo.ts) and "Copy for YouTube" (title, description
 // and chapter markers) right under the screen. While it is open the page's other demos stop
@@ -9,15 +9,17 @@ import './walkthrough.css';
 import { download, h, modal, toast } from '../editor/core/ui';
 import { fetchSiteFile, type CatalogEntry, type GameFiles } from '../project/files';
 import { SITE_URL } from '../seo/site';
-import { TICK_RATE } from '../audio/cmfPlayer';
+import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
 import { clock, WALKTHROUGH_FPS, youtubeText, type Walkthrough } from './format';
 import { WalkAudio, WalkRun } from './runtime';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
+import { currentItem, frameItems, itemLabel, nextItem, previousItem, type FramedItem } from './items';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { demoAudio, demoAudioPicker, onDemoAudio, DEMO_AUDIO_LABEL } from '../media/demoAudio';
 import { claimMediaFocus } from '../media/mediaFocus';
 import { unlockAchievement, watchedWalkthrough } from '../achievements';
 import { catalogPatches } from '../dosPlayer/catalogPatches';
 import { endCardLines } from './endCard';
+import { redoMenu, type RedoChoice, type RedoOptions } from './redoMenu';
 
 const FRAME_MS = 1000 / WALKTHROUGH_FPS;
 /** A skip ahead moves the clock 40 timer ticks a frame: the most the engine's loop takes at once. */
@@ -102,12 +104,14 @@ export async function watchWalkthrough(
   chapter?: number,
   /** A project's DOS player patches (dosPlayer/): its menu and player screens as its .EXE shows them. */
   player?: PlayerPatches,
+  /** Redo… on the player (redoMenu.ts): the choice is heard after the player has closed. */
+  redo?: RedoOptions,
 ): Promise<void> {
   // the page's demos stop now (and none starts while it is open); another player taking over pauses this one
   let lose = () => {};
   const release = claimMediaFocus('player', () => lose());
   try {
-    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter, player);
+    await watch(entry, loadFiles, onReady, (f) => (lose = f), given, chapter, player, redo);
   } finally {
     release?.();
   }
@@ -121,6 +125,7 @@ async function watch(
   given?: Walkthrough,
   chapter?: number,
   player?: PlayerPatches,
+  redo?: RedoOptions,
 ): Promise<void> {
   // a walkthrough handed in (the editor's walkthrough bot made it), else the catalog's
   const [walk, files] = await Promise.all([given ? Promise.resolve(given) : loadWalkthrough(entry), loadFiles()]);
@@ -143,6 +148,9 @@ async function watch(
   const card = h('div', { class: 'wt-card', hidden: true }, h('strong', null, cardHead), cardRest.filter(Boolean).join(' '));
   const screen = h('div', { class: 'wt-screen', title: 'Play or pause' }, canvas, busy, card);
   const playBtn = h('button', { class: 'primary wt-play', type: 'button' });
+  const prevBtn = h('button', { class: 'wt-item-btn', type: 'button', 'aria-label': 'Previous item', title: 'Previous item (,)' }, '⏮');
+  const nextBtn = h('button', { class: 'wt-item-btn', type: 'button', 'aria-label': 'Next item', title: 'Next item (.)' }, '⏭');
+  const itemEl = h('p', { class: 'wt-item', role: 'group', 'aria-label': 'Now showing' });
   const timeEl = h('span', { class: 'wt-time', 'aria-live': 'off' });
   const bar = h('div', { class: 'wt-bar-fill' });
   const ticks = tl.chapters.slice(1).map((c) => h('span', { class: 'wt-bar-tick', style: `left:${(100 * c.frame) / total}%` }));
@@ -239,12 +247,31 @@ async function watch(
   );
   chapterList.append(...chapterButtons);
 
+  /** Every item found so far on the timeline (a mark is the same on every replay, so they are kept). */
+  let known: FramedItem[] = [];
+  const markItems = () => {
+    if (!run) return;
+    const framed = frameItems(run.items, run.chapters, tl.chapters);
+    const have = new Set(known.map((k) => `${k.frame}|${k.kind}|${k.name}`));
+    const more = framed.filter((k) => !have.has(`${k.frame}|${k.kind}|${k.name}`));
+    if (more.length) known = [...known, ...more].sort((a, b) => a.frame - b.frame);
+  };
+
   const showTime = () => {
     const f = run?.frame ?? 0;
     timeEl.textContent = `${clock(f / WALKTHROUGH_FPS)} / ${clock(total / WALKTHROUGH_FPS)}`;
     bar.style.width = `${Math.min(100, (100 * f) / total)}%`;
     progress.setAttribute('aria-valuenow', String(Math.round(f / WALKTHROUGH_FPS)));
     progress.setAttribute('aria-valuetext', `${clock(f / WALKTHROUGH_FPS)} of ${clock(total / WALKTHROUGH_FPS)}`);
+    markItems();
+    const here = currentItem(known, f);
+    itemEl.textContent = here ? itemLabel(here) : '';
+    const before = previousItem(known, f);
+    const after = nextItem(known, f);
+    prevBtn.title = `Previous item${before ? `: ${itemLabel(before)}` : ''} (,)`;
+    prevBtn.setAttribute('aria-label', `Previous item${before ? `: ${itemLabel(before)}` : ''}`);
+    nextBtn.title = `Next item${after ? `: ${itemLabel(after)}` : ' (found by playing ahead)'} (.)`;
+    nextBtn.setAttribute('aria-label', `Next item${after ? `: ${itemLabel(after)}` : ''}`);
     const c = chapterAt(f);
     if (c !== current) {
       chapterButtons[current]?.firstElementChild?.removeAttribute('aria-current');
@@ -307,6 +334,50 @@ async function watch(
       if (!raf) raf = requestAnimationFrame(loop);
     }
     showPlay();
+  };
+
+  /** Previous item (see items.ts previousItem). */
+  const goPrevious = async () => {
+    if (seeking || !run) return;
+    while (stepping) await new Promise((r) => setTimeout(r, 5));
+    markItems();
+    const to = previousItem(known, run.frame);
+    if (to) {
+      unlockAchievement('watch-seek');
+      await seekTo(to.frame);
+    }
+  };
+
+  /** Next item: one already found, else the run goes ahead unseen until the next one appears. */
+  const goNext = async () => {
+    if (seeking || !run) return;
+    while (stepping) await new Promise((r) => setTimeout(r, 5));
+    const r = run;
+    markItems();
+    let to = nextItem(known, r.frame);
+    if (!to && !ended(r)) {
+      seeking = true;
+      playing = false;
+      audio.setMuted(true);
+      busy.hidden = false;
+      busy.textContent = 'Looking for the next item…';
+      const at = r.frame;
+      const n0 = r.items.length;
+      let n = 0;
+      while (!closed && r === run && !ended(r) && (await r.step(false, SKIP_MS))) {
+        if (r.items.length > n0 && r.chapters.length && frameItems(r.items.slice(n0), r.chapters, tl.chapters).some((k) => k.frame > at)) break;
+        if (++n % 200 === 0) await new Promise((res) => setTimeout(res, 0));
+      }
+      seeking = false;
+      busy.hidden = true;
+      markItems();
+      to = nextItem(known, at);
+      if (closed || r !== run) return;
+    }
+    if (to) {
+      unlockAchievement('watch-seek');
+      await seekTo(to.frame);
+    } else setPlaying(false);
   };
 
   /** Jumps to chapter `i`'s start. */
@@ -400,6 +471,8 @@ async function watch(
   });
 
   playBtn.addEventListener('click', () => setPlaying(!playing));
+  prevBtn.addEventListener('click', () => void goPrevious());
+  nextBtn.addEventListener('click', () => void goNext());
   screen.addEventListener('click', () => !seeking && setPlaying(!playing));
   for (const b of speeds)
     b.addEventListener('click', () => {
@@ -506,18 +579,43 @@ async function watch(
     .then(() => (chapter !== undefined && tl.chapters[chapter] ? seek(chapter) : undefined));
 
   onReady?.();
-  await modal<void>(`${entry.title}: walkthrough`, () =>
+  let picked: RedoChoice | undefined;
+  await modal<void>(`${entry.title}: walkthrough`, (close) =>
     h(
       'div',
-      { class: 'wt-dialog' },
+      {
+        class: 'wt-dialog',
+        // , and . step to the previous and next item (the seek bar keeps the arrows, Home, End and Page keys)
+        onkeydown: (e: KeyboardEvent) => {
+          if (e.ctrlKey || e.metaKey || e.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test((e.target as HTMLElement).tagName)) return;
+          if (e.key === ',') void goPrevious();
+          else if (e.key === '.') void goNext();
+        },
+      },
       h(
         'div',
         { class: 'wt-main' },
         screen,
         progress,
-        h('div', { class: 'wt-controls' }, playBtn, timeEl, h('span', { class: 'wt-speeds', role: 'group', 'aria-label': 'Speed' }, ...speeds), soundPick),
+        itemEl,
+        h(
+          'div',
+          { class: 'wt-controls' },
+          prevBtn,
+          playBtn,
+          nextBtn,
+          timeEl,
+          h('span', { class: 'wt-speeds', role: 'group', 'aria-label': 'Speed' }, ...speeds),
+          soundPick,
+        ),
         h('div', { class: 'wt-actions', role: 'group', 'aria-label': 'Download and share' }, exportSel, exportBtn, copyBtn),
         exportBar,
+        redo
+          ? redoMenu(walk, redo, (c) => {
+              picked = c;
+              close(undefined);
+            })
+          : null,
         status,
         ytDetails,
       ),
@@ -530,4 +628,5 @@ async function watch(
   cancelAnimationFrame(raf);
   run?.stop();
   audio.dispose();
+  if (picked && redo) await redo.onChoose(picked, walk);
 }

@@ -5,12 +5,15 @@ import { History } from '../../core/history';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
 import { fileField } from '../../widgets/filePicker';
-import { h, clear } from '../../core/ui';
-import { parsePalette, paletteCss, serializePalette, defaultPalette } from '../../../formats/palette';
-import { decodeGif, isGif } from '../../../formats/gif';
+import { h, clear, toast } from '../../core/ui';
+import { parsePalette, paletteCss, serializePalette, defaultPalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { spread as spreadRange } from './ramps';
 import { paletteTools } from './paletteTools';
 import { fitToPane } from '../../core/fitPane';
+import { PALETTE_RESERVATIONS, paletteReservations, reservationAt, type PaletteReservation } from './paletteReservations';
+import { paletteReservationFields, ROLE_LABELS } from './paletteReservationFields';
+import { detectPaletteRoles } from './paletteRoleDetect';
 import './palette.css';
 
 registerEditor(['pal'], (host, project, file) => {
@@ -21,7 +24,8 @@ registerEditor(['pal'], (host, project, file) => {
   let selected = urlColor !== undefined && urlColor >= 0 && urlColor <= 255 ? urlColor : 1;
   let rangeEnd: number | undefined;
   const save = () => project.files.set(file, serializePalette(pal));
-  const history = new History<Uint8Array>();
+  const history = new History<{ pal: Uint8Array; roles: PaletteReservation[] }>();
+  const snapshot = () => ({ pal: pal.slice(), roles: paletteReservations(project) });
   // icons, so the tools stay one row in a short window
   const undoBtn = h(
     'button',
@@ -37,19 +41,22 @@ registerEditor(['pal'], (host, project, file) => {
   /** Call before a change; a slider drag (changes less than a second apart) is one step. */
   const remember = (coalesce = false) => {
     const now = Date.now();
-    if (!coalesce || now - lastRecord > 1000) history.record(pal.slice());
+    if (!coalesce || now - lastRecord > 1000) history.record(snapshot());
     lastRecord = now;
     undoBtn.disabled = !history.canUndo;
     redoBtn.disabled = !history.canRedo;
   };
   function step(back: boolean): void {
-    const to = back ? history.undo(pal.slice()) : history.redo(pal.slice());
+    const to = back ? history.undo(snapshot()) : history.redo(snapshot());
     if (!to) return;
-    pal.set(to);
+    const nativeChanged = pal.some((value, i) => value !== to.pal[i]);
+    pal.set(to.pal);
+    if (JSON.stringify(paletteReservations(project)) !== JSON.stringify(to.roles))
+      project.setExtras(project.gam, PALETTE_RESERVATIONS, to.roles.length ? to.roles : undefined);
     lastRecord = 0;
     undoBtn.disabled = !history.canUndo;
     redoBtn.disabled = !history.canRedo;
-    save();
+    if (nativeChanged) save();
     refresh();
   }
 
@@ -61,12 +68,33 @@ registerEditor(['pal'], (host, project, file) => {
         type: 'button',
         class: 'pal-zero-link',
         title: 'Preview the screens the player draws on color 0',
-        onclick: () => void import('./colorZeroDialog').then(({ colorZeroDialog }) => colorZeroDialog(project, file, pal)),
+        onclick: () => pick('backgrounds', true),
       },
       'backgrounds',
     );
   const swatches = rovingGrid(h('div', { class: 'swatches pal-swatches' }), 'Palette colors (Shift+arrow keys select a range)', { multiselect: true });
-  const preview = h('div', { style: 'width:64px;height:64px;border:1px solid var(--border);border-radius:6px' });
+  const preview = h('button', {
+    type: 'button',
+    style: 'width:64px;height:64px;border:1px solid var(--border);border-radius:6px',
+    'aria-label': 'Choose color',
+    title: 'Choose hue, saturation and brightness',
+    onclick: async () => {
+      const index = selected;
+      const { pickColor } = await import('./colorPicker');
+      if (disposed) return;
+      const color = await pickColor([0, 1, 2].map((c) => (pal[index * 3 + c] * 255) / 63) as [number, number, number]);
+      if (!color || disposed) return;
+      remember();
+      pal.set(
+        color.map((c) => Math.round((c * 63) / 255)),
+        index * 3,
+      );
+      save();
+      refresh();
+    },
+  });
+  let backgrounds: { el: HTMLElement; refresh(): void } | undefined;
+  let disposed = false;
   const label = h('div', { class: 'meta' });
   const sliders = ['Red', 'Green', 'Blue'].map((name, c) => {
     const range = h('input', { type: 'range', min: 0, max: 63, step: 1, 'aria-label': name, style: 'flex:1;min-width:0' });
@@ -120,12 +148,20 @@ registerEditor(['pal'], (host, project, file) => {
   }
 
   function refresh(): void {
+    const roles = paletteReservations(project);
     buttons.forEach((b, i) => {
       b.style.background = paletteCss(pal, i);
       const inRange = rangeEnd !== undefined && i >= Math.min(selected, rangeEnd) && i <= Math.max(selected, rangeEnd);
       b.classList.toggle('selected', i === selected || inRange);
+      const role = reservationAt(roles, i);
+      if (role) b.dataset.reservation = role;
+      else delete b.dataset.reservation;
+      const name = `Color ${i}${role ? `: reserved for ${ROLE_LABELS[role].toLowerCase()}` : ''}`;
+      b.setAttribute('aria-label', name);
+      b.title = name;
     });
     preview.style.background = paletteCss(pal, selected);
+    if (!backgroundPane.hidden) backgrounds?.refresh();
     colorBox.refresh();
     view.set({ color: selected });
     const hex =
@@ -150,6 +186,7 @@ registerEditor(['pal'], (host, project, file) => {
       s.num.value = String(pal[selected * 3 + c]);
     });
     tools.refresh();
+    reservations.refresh();
     // the check only while it is shown (opening its tab catches up)
     if (!visionPane.hidden) vision?.refresh();
   }
@@ -177,6 +214,40 @@ registerEditor(['pal'], (host, project, file) => {
   });
 
   const gifs = project.files.byExtension('gif').filter((g) => isGif(project.files.get(g)!));
+  const reservations = paletteReservationFields(
+    project,
+    () => [Math.min(selected, rangeEnd ?? selected), Math.max(selected, rangeEnd ?? selected)],
+    () => remember(),
+    refresh,
+    () => detectPaletteRoles(project, file),
+  );
+  reservations.el.append(
+    h(
+      'button',
+      {
+        type: 'button',
+        onclick: async () => {
+          try {
+            const { paletteRoleCopy } = await import('./paletteRoleCopy');
+            if (disposed) return;
+            const result = await paletteRoleCopy(project, pal);
+            if (!result || disposed) return;
+            const colorsChanged = pal.some((value, i) => value !== result.pal[i]);
+            const rolesChanged = JSON.stringify(paletteReservations(project)) !== JSON.stringify(result.roles);
+            if (!colorsChanged && !rolesChanged) return;
+            remember();
+            pal.set(result.pal);
+            if (rolesChanged) project.setExtras(project.gam, PALETTE_RESERVATIONS, result.roles.length ? result.roles : undefined);
+            if (colorsChanged) save();
+            refresh();
+          } catch {
+            if (!disposed) toast('Could not read the saved games for copying reserved areas.', 'error');
+          }
+        },
+      },
+      'Copy reserved areas from game',
+    ),
+  );
   let gifChoice = gifs[0] ?? '';
   const editPane = h(
     'div',
@@ -189,6 +260,23 @@ registerEditor(['pal'], (host, project, file) => {
       { class: 'toolbar' },
       h('button', { onclick: spread, title: 'Blend the colors between the two ends of the range' }, 'Spread range'),
       tools.rampBtn,
+      h(
+        'button',
+        {
+          type: 'button',
+          onclick: async () => {
+            const { paletteCopy } = await import('./paletteCopy');
+            if (disposed) return;
+            const result = await paletteCopy(project, file, pal, selected, rangeEnd);
+            if (!result || disposed) return;
+            remember();
+            pal.set(result);
+            save();
+            refresh();
+          },
+        },
+        'Copy range from palette',
+      ),
       // together, so they wrap as a pair
       h('span', { class: 'pal-undo' }, undoBtn, redoBtn),
     ),
@@ -207,11 +295,22 @@ registerEditor(['pal'], (host, project, file) => {
           h(
             'button',
             {
-              onclick: () => {
-                remember();
-                pal.set(decodeGif(project.files.get(gifChoice)!).palette);
-                save();
-                refresh();
+              onclick: async () => {
+                const name = gifChoice;
+                const first = Math.min(selected, rangeEnd ?? selected);
+                const last = Math.max(selected, rangeEnd ?? selected);
+                const { pictureColors } = await import('./pictureColors');
+                if (disposed) return;
+                try {
+                  const result = await pictureColors(project.files.get(name)!, name, pal, first, last);
+                  if (!result || disposed) return;
+                  remember();
+                  pal.set(result);
+                  save();
+                  refresh();
+                } catch {
+                  toast(`Could not read the colors in ${name.toUpperCase()}.`, 'error');
+                }
               },
             },
             'Copy',
@@ -231,6 +330,7 @@ registerEditor(['pal'], (host, project, file) => {
       'Reset to default colors',
     ),
     tools.uses,
+    reservations.el,
   );
   // the column's second tab, the color vision check, loads the first time it is opened
   let vision: { el: HTMLElement; refresh: () => void; dispose: () => void } | undefined;
@@ -239,9 +339,21 @@ registerEditor(['pal'], (host, project, file) => {
     { class: 'stack', id: 'pal-pane-vision', role: 'tabpanel', 'aria-labelledby': 'pal-tab-vision', hidden: true },
     h('p', { class: 'meta' }, 'Loading…'),
   );
+  const backgroundPane = h(
+    'div',
+    {
+      class: 'stack',
+      id: 'pal-pane-backgrounds',
+      role: 'tabpanel',
+      'aria-labelledby': 'pal-tab-backgrounds',
+      hidden: true,
+    },
+    h('p', { class: 'meta' }, 'Loading…'),
+  );
   const tabs = [
     { id: 'edit', label: 'Color', pane: editPane },
-    { id: 'vision', label: 'Color vision', pane: visionPane },
+    { id: 'vision', label: 'Vision', pane: visionPane },
+    { id: 'backgrounds', label: 'Backgrounds', pane: backgroundPane },
   ].map((t) => ({
     ...t,
     btn: h(
@@ -259,6 +371,15 @@ registerEditor(['pal'], (host, project, file) => {
       if (on && focus) t.btn.focus();
     }
     view.set({ tab: id === 'edit' ? undefined : id });
+    if (id === 'backgrounds') {
+      backgrounds?.refresh();
+      if (!backgrounds)
+        void import('./colorZeroDialog').then(({ colorZeroPreviews }) => {
+          if (backgrounds || disposed) return;
+          backgrounds = colorZeroPreviews(project, file, pal);
+          clear(backgroundPane, backgrounds.el);
+        });
+    }
     if (id === 'vision') vision?.refresh();
     if (id === 'vision' && !vision)
       void import('./visionPanel').then(({ visionPanel }) => {
@@ -290,8 +411,8 @@ registerEditor(['pal'], (host, project, file) => {
     e.preventDefault();
     pick(tabs[(to + tabs.length) % tabs.length].id, true);
   });
-  const side = h('div', { class: 'panel stack pal-side', style: 'flex:1 1 260px;max-width:420px' }, tabList, editPane, visionPane);
-  pick(view.get('tab') === 'vision' ? 'vision' : 'edit');
+  const side = h('div', { class: 'panel stack pal-side', style: 'flex:1 1 260px;max-width:420px' }, tabList, editPane, visionPane, backgroundPane);
+  pick(['vision', 'backgrounds'].includes(view.get('tab') ?? '') ? view.get('tab')! : 'edit');
   const row = h('div', { class: 'row pal-row' }, h('div', { class: 'panel', style: 'flex:0 1 auto' }, swatches), side);
   clear(
     host,
@@ -319,6 +440,7 @@ registerEditor(['pal'], (host, project, file) => {
   };
   window.addEventListener('keydown', onKey);
   return () => {
+    disposed = true;
     window.removeEventListener('keydown', onKey);
     tools.dispose();
     vision?.dispose();

@@ -7,12 +7,12 @@
 // Everything here has the same power, so the traffic, the prizes and the dashes pass through
 // one another; under 100, so a touch with the car ends it: a car or truck swerves off in a
 // puff of cloud (after its bump), a prize sparkles.
-import { emptyMonster, newMonsterSet, type Monster } from '../../../../web/src/formats/monster';
+import { emptyMonster, newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { BlockSet } from '../blocks/book';
 import { SKYMON } from '../ids';
 import { DASH_SPAWN, SPAWN_COL } from '../blocks/sky';
 import { HORIZON_COLS, HORIZON_ROW } from '../art/skyView';
-import { growPics, laneSlide, leapTo, roadCorners, type RoadCorner } from '../../../kit/road3d';
+import { growPics, laneSlide, leapTo, roadCorners, type RoadCorner } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
 
 const POWER = 95;
 /** The vanishing point's cell, where everything starts down its lane. */

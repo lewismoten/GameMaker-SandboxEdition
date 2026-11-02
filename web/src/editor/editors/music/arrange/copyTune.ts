@@ -1,8 +1,8 @@
 // "Copy melody to a new song": one track's tune as a song of its own, faster or slower and
 // optionally transposed (a slow version for a sad scene, a fast one for a chase), ready for
 // the accompaniment generator. No DOM.
-import { removeChannel, scaleTime, setStartProgram, startProgram } from '../../../../formats/cmfEdit';
-import type { CmfSong } from '../../../../formats/cmfSong';
+import { removeChannel, scaleTime, setStartProgram, startProgram } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import type { CmfSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { cloneSong } from './accompany';
 
 interface CopyTuneOptions {

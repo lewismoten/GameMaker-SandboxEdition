@@ -3,8 +3,8 @@
 // rubber chicken: pests can't stand it), BALLOON (1: a balloon dog inflates under his shoes
 // and floats him up, until it pops) and PRATFALL (4, hold: flat on his back, so whatever
 // flies at head height sails over).
-import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BlockSet } from '../blocks/blockset';
 import { CTR, KEY, LSEQ, MON, SND } from '../ids';
 import { LEO, LEO_FLAT } from '../sprites/leo';

@@ -1,9 +1,9 @@
 // What the tools share: reading the game and its files with a clear error when one is missing,
 // the schema pieces most tools take, and the palette a file is shown with.
 import { normalize } from '../../project/files';
-import { ADVTYPE, parseGame, type Game } from '../../formats/game';
-import { defaultPalette, parsePalette, type Palette } from '../../formats/palette';
-import { decodeGif, isGif } from '../../formats/gif';
+import { ADVTYPE, parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { ToolError, type GameContext, type JsonSchema } from './types';
 
 export const FILE: JsonSchema = { type: 'string', description: 'A file name in the game, e.g. level1.map.' };

@@ -1,7 +1,7 @@
 // Palette variants: the same palette re-lit for another time or place (night, dusk, underwater…)
 // by scaling, lifting and clamping each color, as our games make theirs (Snowbound's streets,
 // Sandcastle Knight's tunnels). Glowing colors (lamps, windows, stars) can be kept as they are.
-import type { Palette } from '../../../formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 type RGB = [number, number, number];
 

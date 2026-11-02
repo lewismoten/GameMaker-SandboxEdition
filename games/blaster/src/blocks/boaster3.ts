@@ -4,7 +4,7 @@
 // its jacks, volume wheel and joystick port, black chips that carry their makers' (parody)
 // names, and SOUND BOASTER silkscreened in white across the middle (boasterName.ts). Its
 // virus is at the bottom.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, CLEAR, bevel, blob, micro, outline, shadeAt, text } from '../art/draw';
 import { pics } from '../characters/enemies';
 import type { Bestiary } from '../characters/mons';

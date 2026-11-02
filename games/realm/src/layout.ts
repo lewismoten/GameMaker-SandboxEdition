@@ -2,7 +2,7 @@
 // links (which scene each one leads to first decides the tree it draws), and an RPG with forty
 // scenes can come out with arrows crossing. This tries orders of a hub scene's links until the
 // arrangement has no crossings, and stores the scene boxes where Auto-arrange puts them.
-import { NOSCENE, type Game } from '../../../web/src/formats/game';
+import { NOSCENE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { arrangements, layoutCost } from '../../../web/src/editor/editors/integrator/integratorLayout';
 
 function crossings(g: Game): number {

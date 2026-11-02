@@ -1,10 +1,12 @@
 // Catalog and site loading for game files; the portable file container lives in gameFiles.ts.
-import { GameFiles, cdName, IGNORED_FILE } from './gameFiles';
-export { GameFiles, cdName, normalize, IGNORED_FILE, type FileStream } from './gameFiles';
+import { GameFiles, cdName, IGNORED_FILE } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
+export { GameFiles, cdName, normalize, IGNORED_FILE, type FileStream } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 
 import type { OriginalExtras } from '../../scripts/cdGames';
+import type { LibraryFileFact } from '../../scripts/libraryFacts';
 import { withSecretGames } from './secretGames';
-import { PackReader } from './gamePack';
+import { fetchArchive } from './archiveWait';
+import { PackReader } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import type { Issue } from './health';
 import type { BoxGame } from '../desk/boxes/boxFacts';
 
@@ -35,13 +37,15 @@ export interface CatalogEntry {
   files: string[];
   /** Size of each file in `files`, in bytes (missing from older catalogs). */
   sizes?: number[];
+  /** Palette identities and precomputed sound groups for lazy asset pickers. */
+  fileFacts?: Record<string, LibraryFileFact>;
   /** Original games made for this project: label, box art, manual, sound card. */
   original?: OriginalExtras;
   /** Original games: a series of their own ("bizarre": The Bard of Bizarre's, see bizarre.ts). */
   series?: string;
-  /** Built sites: every file but the .gif pictures has a gzip copy beside it (<file>.gz, see packedUrl). */
+  /** Legacy loose-file gzip copies; also used for separate walkthrough JSON metadata. */
   gz?: boolean;
-  /** Built sites: all its files in one gzipped file in its folder (project/gamePack.ts, openPack), named with a hash of its content. */
+  /** Built sites: a downloadable DOS ZIP; older catalogs use gzipped GMPK. Named with a hash of its content. */
   pack?: string;
   /** Built sites: the size of its pack in bytes. */
   packBytes?: number;
@@ -54,6 +58,8 @@ export interface CatalogEntry {
   walkthrough?: string;
   /** Original games: its DOS player look (games/<id>/player.json, dosPlayer/catalogPatches.ts). */
   player?: unknown;
+  /** Original games: what its controls mean (games/<id>/controls.json, editor/core/gameControls.ts). */
+  controls?: unknown;
   /** Built sites: its pictures are drawn already (games/shots/, gfx/levelPicture.ts builtShotPath). */
   shots?: boolean;
   /** …and its hero (games/shots/<id>-hero.png, gfx/levelPicture.ts builtHeroPath). */
@@ -240,9 +246,9 @@ function trimPacks(): void {
   }
 }
 
-/** Where a hosted game's pack is, or undefined when it has none (or this browser cannot unpack it). */
+/** A hosted game's ZIP or legacy GMPK URL, when its required decompressor is available. */
 function packUrl(entry: Pick<CatalogEntry, 'path' | 'pack'>, base = './'): string | undefined {
-  return entry.pack && typeof DecompressionStream !== 'undefined' ? `${base}${entry.path}${entry.pack}` : undefined;
+  return entry.pack && (/\.zip$/i.test(entry.pack) || typeof DecompressionStream !== 'undefined') ? `${base}${entry.path}${entry.pack}` : undefined;
 }
 
 function startPack(url: string): Pack {
@@ -257,8 +263,35 @@ function startPack(url: string): Pack {
   };
   pack.done = (async () => {
     try {
-      const res = await fetch(url, { signal: pack.abort.signal });
+      const peeked = peekedZips.get(url);
+      peekedZips.delete(url);
+      if (peeked && /\.zip$/i.test(url)) {
+        // the bytes a peek at the .gam (peekGameFile) already fetched
+        const raw = await peeked;
+        if (!raw) return false;
+        const { readHostedZip } = await import('./hostedZip');
+        const entries = await readHostedZip(raw);
+        for (const [name, bytes] of entries) {
+          pack.files.set(name, bytes);
+          pack.size += bytes.length;
+          for (const l of pack.listeners) l(name, bytes);
+        }
+        pack.complete = true;
+        return true;
+      }
+      const res = await fetchArchive(url, { signal: pack.abort.signal });
       if (!res.ok || !res.body) return false;
+      if (/\.zip$/i.test(url)) {
+        const { readHostedZip } = await import('./hostedZip');
+        const entries = await readHostedZip(new Uint8Array(await res.arrayBuffer()));
+        for (const [name, bytes] of entries) {
+          pack.files.set(name, bytes);
+          pack.size += bytes.length;
+          for (const l of pack.listeners) l(name, bytes);
+        }
+        pack.complete = true;
+        return true;
+      }
       const reader = res.body.pipeThrough(new DecompressionStream('gzip')).getReader();
       const r = new PackReader();
       for (;;) {
@@ -287,7 +320,7 @@ function startPack(url: string): Pack {
 /** A game's pack being read: its files so far, and each one as it comes (see openPack). */
 export interface PackHandle {
   files: ReadonlyMap<string, Uint8Array>;
-  /** true once every file is in; false when the pack failed (or was stopped): fetch what is missing on its own. */
+  /** true once every file is in; false on failure. Only legacy catalogs have loose-file fallbacks. */
   done: Promise<boolean>;
   /** No longer needed: stops the download when nobody else is reading it. */
   stop(): void;
@@ -362,11 +395,12 @@ async function packAtHand(entry: Pick<CatalogEntry, 'path' | 'pack'>, base: stri
 /**
  * One file of a hosted game, by the name a game uses for it (A-J.BKD finds the CD's
  * a_j.bkd); undefined when the game has no such file or it could not be fetched. From the
- * game's pack when that is here already (played, opened, or kept offline), else on its own.
+ * ZIP-only sites always share the archive request. Legacy catalogs can fetch loose files.
  */
 export async function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz' | 'pack'>, name: string, base = './'): Promise<Uint8Array | undefined> {
   const n = [name.toLowerCase(), cdName(name)].find((x) => entry.files.includes(x));
   if (!n) return undefined;
+  if (entry.pack?.endsWith('.zip')) return fromPack(entry, n, base);
   if (await packAtHand(entry, base)) {
     const bytes = await fromPack(entry, n, base);
     if (bytes) return bytes;
@@ -374,9 +408,39 @@ export async function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' |
   return fetchSiteFile(`${base}${entry.path}${n}`, entry.gz);
 }
 
+/** Zips fetched for a peek, kept for the pack that reads the same zip next (one request). */
+const peekedZips = new Map<string, Promise<Uint8Array | undefined>>();
+
+/**
+ * A file of a hosted game's zip as it is stored, without reading the zip's player .exe (which
+ * fetches the play page's 118 kB chunk when it is not the CD's own, hostedZip.ts): enough for
+ * the home page to tell from the .gam whether a game has a demo. Falls back to fetchGameFile
+ * when the zip has no such file (a game that renames its extensions, found only after reading
+ * its player) or is not a zip.
+ */
+export async function peekGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz' | 'pack'>, name: string, base = './'): Promise<Uint8Array | undefined> {
+  const url = packUrl(entry, base);
+  if (!url || !/\.zip$/i.test(url) || packs.has(url)) return fetchGameFile(entry, name, base);
+  let zip = peekedZips.get(url);
+  if (!zip) {
+    zip = fetchArchive(url).then(
+      async (res) => (res.ok ? new Uint8Array(await res.arrayBuffer()) : undefined),
+      () => undefined,
+    );
+    peekedZips.set(url, zip);
+  }
+  const bytes = await zip;
+  if (bytes) {
+    const { findZipFile } = await import('./hostedZip');
+    const found = await findZipFile(bytes, [name.toLowerCase(), cdName(name)]);
+    if (found) return found;
+  }
+  return fetchGameFile(entry, name, base);
+}
+
 /**
  * Every file of a hosted game (copies, to change freely): its pack, in one request, when it
- * has one; files the pack did not bring (an older site, a failed download) one by one.
+ * has one. ZIP failures are reported; only legacy catalogs fall back to loose files.
  */
 export async function loadHostedGame(entry: CatalogEntry, base = './', onProgress?: (done: number, total: number) => void): Promise<GameFiles> {
   const files = new GameFiles();
@@ -388,7 +452,13 @@ export async function loadHostedGame(entry: CatalogEntry, base = './', onProgres
     files.set(name, bytes.slice());
     onProgress?.(++done, total);
   });
-  if (h) await h.done;
+  const complete = h ? await h.done : false;
+  h?.stop();
+  // ZIP-only deployments have no loose-file fallback. Report one failed archive, not many 404s.
+  if (entry.pack?.endsWith('.zip')) {
+    if (!complete || entry.files.some((name) => !files.has(name))) throw new Error(`Could not load the game archive for ${entry.title}. Please try again.`);
+    return files;
+  }
   await Promise.all(
     entry.files
       .filter((name) => !files.has(name))

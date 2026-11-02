@@ -4,7 +4,7 @@
 // and its stepping stones, the old oak with branches to climb, the hill itself with an old
 // tunnel through it (where the paper lantern is), the Big Top glowing far up the hill, and
 // the road where THE CHEZ waits.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { branch, c, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from '../blocks/tiles';

@@ -3,9 +3,9 @@
 // now and then, in the first level, with the keys the hero's own sequences answer to. It
 // is played like a demo but never saved into the game.
 import { characterActions, type SeqAction } from '../editor/keymap/keyMap';
-import { parseCharacter, type Character } from '../formats/character';
-import { ADVTYPE, NOSCENE, parseGame } from '../formats/game';
-import { serializeRecording, type RecordedKey } from '../formats/recording';
+import { parseCharacter, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { ADVTYPE, NOSCENE, parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import type { GameFiles } from '../project/files';
 
 /** Esc: playback leaves the level when the made-up keys run out. */

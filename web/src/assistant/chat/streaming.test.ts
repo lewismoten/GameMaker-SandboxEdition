@@ -5,14 +5,15 @@
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { testGame } from '../../editor/check/testGame';
-import { parseMap } from '../../formats/map';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { MemoryContext } from '../tools/memoryContext';
 import { Agent, type AgentEvent } from './agent';
 import { chatTools } from './chatTools';
 import type { ChatReply, ChatRequest } from './providers';
 
 const game = () => new MemoryContext(new GameFiles(testGame(['########', '#S....E#', '########']).files), 'test.gam');
-const tick = () => new Promise((r) => setTimeout(r, 1));
+// One macrotask turn, without a timer's 1 ms floor: the pieces still stream one turn at a time.
+const tick = () => new Promise((r) => setImmediate(r));
 
 const REPLY = [
   'I will wall it in first.\n',

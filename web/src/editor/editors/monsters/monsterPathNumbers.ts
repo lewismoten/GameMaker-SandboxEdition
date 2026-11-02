@@ -2,7 +2,7 @@
 // speed and picture) to type instead of dragging. monsterPathEditor.ts redraws it after
 // each change; a typed number calls changed() then draw(), a picture changed().
 import { h, clear } from '../../core/ui';
-import type { March } from '../../../formats/monster';
+import type { March } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corners, moveCorner, pathBox, type PathKind } from './monsterPath';
 import { MAX_SPEED, ORIENTS } from './monsterPathView';
 

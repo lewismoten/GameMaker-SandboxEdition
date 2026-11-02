@@ -3,17 +3,18 @@
 // AllBlack chunk calls BoxFill, a DOS export carries the help files, Transfer takes A:\NAME,
 // RSD's ABOUT.HLP says Version 2.00, Carl's buzz is pitched round 115 Hz, and Lewis's
 // screenshot is shipped small and credited.
+import { ISSUES } from '../masthead';
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { FLI_CHUNK_MAX } from '../../../formats/fli';
+import { FLI_CHUNK_MAX } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 import { DESIGN, DOS_BUGS, designLine } from './dosBugs';
 
 const repo = join(__dirname, '../../../../..');
 const read = (path: string, enc: BufferEncoding = 'utf8') => readFileSync(join(repo, path), enc);
 
 describe('the DOS bugs feature', async () => {
-  const pages = await DOS_BUGS.pages({ games: [], game: () => undefined });
+  const pages = await DOS_BUGS.pages({ games: [], game: () => undefined, mag: ISSUES[2] });
   const text = JSON.stringify(pages);
 
   it('runs one or two pages', () => {

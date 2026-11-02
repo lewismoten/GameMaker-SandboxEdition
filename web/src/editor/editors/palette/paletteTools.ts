@@ -4,8 +4,8 @@
 // and the blocks that paint with the chosen color.
 import { h, clear, toast } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
-import { serializePalette, parsePalette, type Palette } from '../../../formats/palette';
-import { ADVTYPE } from '../../../formats/game';
+import { serializePalette, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelPixels, type LevelPicture } from '../../../gfx/levelPicture';
 import { arrival } from '../integrator/board';
 import { normalize } from '../../../project/files';
@@ -161,7 +161,7 @@ export function paletteTools(c: PaletteContext): { el: HTMLElement; uses: HTMLEl
   );
 
   // ---- blocks that use the chosen color ------------------------------------------
-  const usesHead = h('h3', null);
+  const usesHead = h('h2', null, 'Blocks painted with the selected color');
   const usesList = h('ul', { class: 'pal-uses' });
   let usesTimer: ReturnType<typeof setTimeout> | undefined;
   const listUses = () => {

@@ -1,7 +1,7 @@
 // BLOCEDIT.EXE's screen layout and tables (the #defines and button arrays at the top of
 // code/GM/BLOCEDIT.C), plus the small helpers the Block Designer's layers share.
-import { BLEN, type Block } from '../../formats/blocks';
-import { LASTMON } from '../../formats/monster';
+import { BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { SIZEX } from '../shared/vga';
 
 export const TRANSCOL = 255; // The value that is transparent in _pic fns

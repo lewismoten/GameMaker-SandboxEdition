@@ -2,8 +2,8 @@
 // touches it (points, health, a counter) whose power is below a shot the hero fires. Monsters
 // that touch fight by power (engine/monsters.ts doCollision: the stronger kills the weaker), so
 // a stray shot blows the prize away, sometimes the one the level needs.
-import type { Block } from '../../../formats/blocks';
-import type { Monster } from '../../../formats/monster';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { characterActions } from '../../keymap/keyMap';
 import type { Finding } from '../findings';
 import type { SceneData } from '../sceneData';

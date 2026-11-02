@@ -1,0 +1,77 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Walk up one step; hold to keep walking."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Walk down one step; hold to keep walking."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Walk left one step; hold to keep walking."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Walk right one step; hold to keep walking."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Same as the Down arrow."
+    },
+    "57": {
+      "short": "Sword",
+      "long": "Swing your sword the way you last walked. On THE CHEZ, honk."
+    },
+    "28": {
+      "short": "Pick up",
+      "long": "Pick up what you stand on."
+    },
+    "44": {
+      "short": "Kazoo",
+      "long": "Toot the kazoo, once Doc Leo has taught you."
+    },
+    "20": {
+      "short": "Tonic",
+      "long": "Drink a tonic."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Sword",
+      "long": "Swing your sword the way you last walked. On THE CHEZ, honk."
+    }
+  },
+  "counters": {
+    "13": "Steel sword",
+    "15": "Kazoo toots",
+    "16": "Tonics",
+    "20": "Royal Writs",
+    "21": "Round Tuit piece 1",
+    "22": "Round Tuit piece 2",
+    "23": "Round Tuit piece 3",
+    "24": "Foghorn"
+  },
+  "sounds": {
+    "9": "Slash",
+    "10": "Hurt",
+    "11": "Death",
+    "12": "Kazoo",
+    "13": "Tonic",
+    "14": "Pickup",
+    "15": "Honk"
+  }
+}

@@ -2,7 +2,7 @@
 // downstream (gravity to the right as well as up), stepping stones, the old mill with its
 // waterwheel turning (two pictures taking turns), the miller's grain hoist and its loft,
 // the high bank, the calm pool below it, the beach and the charging post by the boat ramp.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { bricks, c, canvas, cloud, copy, cut, dirt, grassTop, hedge, leaves, planks, r, sky, trunk, tuft } from '../blocks/tiles';

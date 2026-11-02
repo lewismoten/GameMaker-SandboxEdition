@@ -1,6 +1,6 @@
 // THE CHEZ, Lewis's tomato-red 1976½ CitiCar, from the side: two blocks (40x20) at scale 1, for
 // parking a cameo in any game's lot or curb, and the one side view the other games' CitiCars
-// are drawn from. Measured off the photos (.for-lewis/citicar): a very short wedge, one long
+// are drawn from. Measured off the photos (.for-lewis/reference/citicar): a very short wedge, one long
 // straight line rising from a short low nose over the hood and the windshield to a short flat
 // BLACK roof, and a flat rear that leans back a little toward the bumper. One trapezoid window
 // in the door (its front edge slanted, its back edge upright), no quarter window behind it, a
@@ -9,7 +9,7 @@
 // rear quarter behind the door. An amber marker up front, a red one at the back, white steel
 // wheels with chrome caps on black tires, plain square black bumpers at both ends. Facing right
 // shows the driver's side; facing left shows the passenger side, with the charge port at the rear.
-import { Pixels } from './pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 
 /** The game's palette indices to draw with. */
 export interface ChezInk {

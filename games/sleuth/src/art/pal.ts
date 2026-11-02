@@ -2,8 +2,8 @@
 // The art never changes between scenes; the .PAL does. The Paragon at 10:30 PM has its
 // house lights on; at 2 AM only the ghost light (and a watchman's lantern) still burn, so the
 // night palette dims every ramp toward blue except the ones that give off light.
-import { PaletteBuilder } from '../../../kit/palette';
-import { matchColor } from '../../../../web/src/formats/palette';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
+import { matchColor } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 type RGB = [number, number, number];
 type Light = 'house' | 'night' | 'dawn';

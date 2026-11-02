@@ -2,7 +2,7 @@
 // map cell is drawn from the track value t, so the slanted lanes join up across block edges.
 // A block on the slant shows t from its corner value c to c + 2, one on the kink c to c + 1
 // down the block. Blocks that look and act the same are one block.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { BlockSet } from '../art/draw';
 import type { DiagTrack } from '../stages/diagTrack';
 
@@ -27,6 +27,9 @@ type Props = Parameters<BlockSet['add']>[2];
 
 export class DiagBlocks<M extends string> {
   private seen = new Map<string, string>();
+  /** Block key by what a cell's picture and props depend on; thousands of cells share a few hundred looks. */
+  private pics = new Map<string, [Pixels, Props]>();
+  private keys = new Map<string, string>();
   constructor(
     readonly bs: BlockSet,
     readonly track: DiagTrack,
@@ -35,6 +38,8 @@ export class DiagBlocks<M extends string> {
     /** What a cell's block does (solid ground, births). */
     readonly props: (cell: DiagCell, mark?: M) => Props,
     readonly prefix: string,
+    /** What else about a column changes the picture (besides the track's lanes), when it does. */
+    readonly columnLook?: (x: number) => unknown,
   ) {}
 
   cell(x: number, y: number): DiagCell {
@@ -47,12 +52,19 @@ export class DiagBlocks<M extends string> {
   /** The block for map cell (x, y), with an optional mark (and more props). Returns its name. */
   name(x: number, y: number, mark?: M, more?: Props): string {
     const cell = this.cell(x, y);
-    const pic = this.paint(cell, mark);
-    const props = { ...this.props(cell, mark), ...more };
-    const key = `${JSON.stringify(props)}:${pic.px.join(',')}`;
+    const look = `${cell.t}|${cell.flat}|${cell.ground}|${Array.from({ length: this.track.lanes }, (_, l) => (cell.bare(l) ? 1 : 0)).join('')}|${this.columnLook?.(x)}|${mark}|${JSON.stringify(more)}`;
+    let key = this.keys.get(look);
+    if (key === undefined) {
+      const pic = this.paint(cell, mark);
+      const props = { ...this.props(cell, mark), ...more };
+      key = `${JSON.stringify(props)}:${pic.px.join(',')}`;
+      this.keys.set(look, key);
+      this.pics.set(key, [pic, props]);
+    }
     let name = this.seen.get(key);
     if (!name) {
       name = `${this.prefix}${this.seen.size}`;
+      const [pic, props] = this.pics.get(key)!;
       this.bs.add(name, pic, props);
       this.seen.set(key, name);
     }

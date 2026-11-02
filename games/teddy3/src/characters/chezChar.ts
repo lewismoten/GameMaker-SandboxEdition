@@ -4,8 +4,8 @@
 // forward; Space HONKS, and the honk rolls ahead like a bark (geese and ducks scatter, and a
 // drawbridge keeper lowers the bridge). It runs on charge (counter 22): chargers by the road
 // give it, the hills take it (levels/road.ts).
-import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BlockSet } from '../blocks/blockset';
 import { CSEQ, CTR, KEY, MON, SND } from '../ids';
 import { CHEZ_HERO } from '../sprites/chezHero';

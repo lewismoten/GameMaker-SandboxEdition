@@ -100,9 +100,9 @@ export const LEVELS: Chapter = {
   <h2>Everything on the map has a job</h2>
   <ul>
     <li><b>Reachable treasure.</b> Collect every item in your own game at least once. A coin
-    sealed behind a log reads as a mistake, not a secret; if it is scenery, draw it as
-    scenery. An extra life in plain view that no route reaches is worse: it is a joke at the
-    player’s expense.</li>
+    sealed behind a log may look like a mistake to players, not a secret; if it is scenery, draw it as
+    scenery. An extra life in plain view that no route reaches may feel to the player like a joke
+    at their expense.</li>
     <li><b>Shots that spare the prizes.</b> A prize that moves is a monster, and the hero’s shot
     kills a monster weaker than itself. Give moving prizes at least the shot’s power (still under
     100, so the hero’s touch collects them), or a stray shot can destroy the very thing the
@@ -156,7 +156,7 @@ export const LEVELS: Chapter = {
   <h2>Controls the level teaches</h2>
   <p>Arrow keys and a fire key need no lesson; anything more does. Put the lesson in the level:
   a sign that says <i>Press Space to dig</i> right where the first digging is. And make every
-  key answer quickly: a sequence whose first frame waits half a second can feel broken, however
+  key answer quickly: a sequence whose first frame waits half a second may seem not to respond, however
   good it looks, unless the wind-up is the point of a heavy move. A key kept secret on purpose is
   a different thing, and a fine one: then let a clue lead to it.</p>
   <h2>An ending, not an ad</h2>

@@ -1,8 +1,8 @@
 // Draws a board the way PLAYGAME shows it (blocks, then the placed parts, then Watt on
 // his pad): for previews, the title cards and the screens.
-import { orientIndex } from '../../../../web/src/formats/blocks';
-import { MLEN } from '../../../../web/src/formats/map';
-import { Pixels } from '../../../kit/pixels';
+import { orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR } from './draw';
 import { COLS, ROWS, type Board } from '../levels/board';
 import type { BlockSet } from '../blocks/sets';

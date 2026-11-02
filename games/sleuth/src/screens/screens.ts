@@ -3,11 +3,12 @@
 // notebook-and-close-up page for every card on the evidence board, the act cards, the
 // endings and the high scores. Everything shares the house palette, so PLAYGAME's inks
 // (purple text, red MORE..., blue menu) land on the colors made for them.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { serializeSlideList } from '../../../../web/src/formats/graphicScripts';
-import { Pixels, rng } from '../../../kit/pixels';
-import { loadScan, pastePhoto, resample, sepia } from '../../../kit/photo';
-import { dosText } from '../../../kit/disk';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { pastePhoto, resample, sepia } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
+import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 import { CLEAR, centered, gradient, micro, microC, outlined, scaleBlit, text } from '../art/draw';
 import { P, c, ramp as r } from '../art/pal';
@@ -40,9 +41,9 @@ import { PIN_FILES, SUSPECT_LETTER, WRONG_KEYS } from '../game';
 import { SUSPECTS } from '../levels/parlor';
 import type { Who } from '../art/people';
 import { renderRegion } from '../art/render';
-import type { GameMap } from '../../../../web/src/formats/map';
-import type { Block } from '../../../../web/src/formats/blocks';
-import type { Monster } from '../../../../web/src/formats/monster';
+import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 
 function gif(p: Pixels, pal: Uint8Array = P.pal): Uint8Array {
   return encodeGif({ width: p.w, height: p.h, pixels: Uint8Array.from(p.px), palette: pal });
@@ -70,7 +71,7 @@ function titleScreen(): Pixels {
   // Ada under the marquee, in silhouette with her hat
   const ada = actor('ada', 56);
   scaleBlit(p, ada, 268, 136, 1);
-  centered(p, 190, '(C) 1995 SANDBOX SOFTWARE', c('paper', 4), 1, c('black', 0));
+  centered(p, 190, '(C) 1994 SANDBOX SOFTWARE', c('paper', 4), 1, c('black', 0));
   return p;
 }
 
@@ -87,7 +88,7 @@ function menuScreen(): Pixels {
   p.rect(58, 92, 206, 84, c('black', 0));
   p.rect(56, 90, 206, 84, c('paper', 4)).frame(58, 92, 202, 80, c('gold', 2)).frame(60, 94, 198, 76, c('gold', 1));
   symbol(p, 232, 140, 'raven', c('black', 1), c('velvet', 4));
-  micro(p, 62, 191, 'SANDBOX SOFTWARE  -  SHAREWARE  -  1995', c('paper', 5));
+  micro(p, 62, 191, 'SANDBOX SOFTWARE  -  SHAREWARE  -  1994', c('paper', 5));
   return p;
 }
 

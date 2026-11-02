@@ -4,10 +4,10 @@
 // cell that zapped an earlier try) and keeps the
 // one that costs the least time and still reaches the outlet alive. The solution itself (and
 // the hint book that prints it) stays as it is; only the walkthrough takes the detour.
-import type { CharInfo } from '../../../web/src/engine/world';
+import type { CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { Board } from '../src/levels/board';
 import type { BlockSet } from '../src/blocks/sets';
-import type { Character } from '../../../web/src/formats/character';
+import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { playSolution, type Played } from './verify';
 
 const STEP: Record<string, [number, number]> = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] };

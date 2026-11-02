@@ -4,7 +4,7 @@
 // dollar bills and a $5 tip on the walk, signposts, two-block street-name signs and the cars
 // buried in the mall lot. Returns the pine, mug and bill painters, which the sled run reuses, and
 // the car maker, which adds the back row's tan cars last.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../art/draw';
 import { micro, microWidth } from '../art/font';
 import { MON } from '../ids';

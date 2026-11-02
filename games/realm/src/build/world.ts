@@ -1,8 +1,8 @@
 // The overworld's files: WORLD.BBL, WORLD.MAP, WORLD.MON, WORLD.PAL, and the world scene.
-import { serializeBlocks } from '../../../../web/src/formats/blocks';
-import { newMap, serializeMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
-import { serializeMonsters } from '../../../../web/src/formats/monster';
-import { serializePalette } from '../../../../web/src/formats/palette';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newMap, serializeMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { serializeMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { BlockBook } from '../blocks/book';
 import { worldTerrain } from '../blocks/world';
 import { worldFeatures } from '../blocks/worldFeatures';

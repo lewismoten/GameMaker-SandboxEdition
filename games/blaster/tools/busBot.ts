@@ -3,7 +3,7 @@
 // going after good bytes and repairs when that lane is clear too, and keeping to the middle
 // once the sign nears 0 so the push carries it into the chip. In The Year 2000!'s Cloud Lane
 // pilot (games/year2000/tools/flyBot.ts) flies the same way.
-import { LASTMON } from '../../../web/src/formats/monster';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { SCAN } from '../src/ids';
 import { openAt, type Ride } from '../src/bus/rides';
 import { LANE_COLS, SHIP_ROW } from '../src/bus/view';

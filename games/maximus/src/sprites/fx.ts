@@ -1,7 +1,7 @@
 // Effects painted over a vehicle or courier block: shield bubbles, tractor beams, speed
 // streaks, charging sparkles, sonar rings, dust and splashes. They turn a handful of
 // vehicle drawings into the full fifty character blocks of a .CBL.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, Mask, fill, outline, shade } from '../art/draw';
 import { OUTLINE, S, WHITE, shared } from '../art/palette';
 

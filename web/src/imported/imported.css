@@ -224,3 +224,19 @@ dialog.modal .ir-ratings .ir-rating {
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
 }
+
+/* the walkthrough icon on an imported tile (editor/shell/homeWalkBadge.ts) */
+.tile-walk {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  color: var(--accent);
+  font-size: 12px;
+}
+.tile-walk svg {
+  flex: none;
+}
+.tile-walk-done {
+  --walk-badge-ink: var(--accent-text, #fff);
+}

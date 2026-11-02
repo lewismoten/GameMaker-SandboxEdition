@@ -4,7 +4,7 @@
 // own transcription of it.
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 export const AUTHOR = 'The Bard of Bizarre';
 
@@ -115,7 +115,7 @@ const CREDITS_TEXT = page(
   [
     'CLEANSE ME, O LOOFAH,',
     'BUT LEAVE MY SOUL',
-    'by The Bard of Bizarre, 1995',
+    'by The Bard of Bizarre, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Based on the song "Cleanse',
@@ -158,7 +158,7 @@ export function readme(price: string): string {
   return `
     CLEANSE ME, O LOOFAH,
     BUT LEAVE MY SOUL
-    Version ${about.version} - Dec 1995
+    Version ${about.version} - December 1994
     by The Bard of Bizarre
 
 "She said, 'Don't touch the

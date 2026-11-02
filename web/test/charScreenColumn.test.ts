@@ -18,12 +18,12 @@
 // - Across the wrap the same holds: mx=99 with the character at x 0 is one column in (20 pixels),
 //   and a push from a monster at x 0 gives x[0]=-1, which chkmapbounds wraps to 99 = mx.
 import { describe, expect, it } from 'vitest';
-import { newMap } from '../src/formats/map';
-import { newCharacter } from '../src/formats/character';
-import { createWorld } from '../src/engine/world';
-import { moveChars, updateCharScreenPos } from '../src/engine/character';
-import { changeScroll } from '../src/engine/scroll';
-import { SOLRIG, SOLBOT } from '../src/formats/blocks';
+import { newMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { newCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { createWorld } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { moveChars, updateCharScreenPos } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { changeScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
+import { SOLLEF, SOLRIG, SOLBOT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 function world(mx: number, my: number, cx: number, cy: number, step = 0) {
   const w = createWorld(newMap(), { play: () => false }, () => 0.5);
@@ -95,10 +95,13 @@ describe('moveChars near column mx', () => {
       await moveChars(w, async () => 0);
       expect(w.chr.x).toEqual([mx, 6]);
       expect(w.ci.nextx).toBe(2000 + 6);
-      // ChangeScroll sees it far right of center and starts scrolling the map left (mx++).
+      // ChangeScroll sees it far right of center and starts scrolling the map left (mx++). It is
+      // so far (about 1850 px past the stop line) that DOS's 16-bit (dist*40) overflows, so the
+      // speed is the wrapped value, not the 28 cap (PLAYGAME.C 3935; found by chiguire, PR #4).
       w.scroll.left = 0xff;
       changeScroll(w);
-      expect(w.scroll.totalx).toBe(28);
+      expect(w.scroll.inMotion & SOLLEF).toBeTruthy();
+      expect(w.scroll.totalx).toBe(0);
     });
   }
 

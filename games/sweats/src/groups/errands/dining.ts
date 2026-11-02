@@ -2,7 +2,7 @@
 // wainscot along the walking row, a parquet floor, the crown molding, tables in white cloths
 // (their tops are ledges), chairs, a sconce, a still life, a window; and the speech bubbles the
 // rooms murmur in.
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { shadeAt } from '../../../../snowbound/src/art/draw';
 import { micro, microWidth } from '../../../../snowbound/src/art/font';
 import type { Pal } from '../../art/pal';

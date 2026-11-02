@@ -1,8 +1,8 @@
 // The scenery the screens are painted from (screens.ts): snow-capped title lettering, a row
 // of little houses, a church and pines, dusk and night skies, falling snow, and the GIF and
 // scaled-blit helpers every picture goes through.
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { Pixels, rng } from '../../../kit/pixels';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, gradient, shadeAt } from '../art/draw';
 import { text, textWidth } from '../art/font';
 import type { Pal } from '../art/pal';

@@ -3,7 +3,7 @@
 // the walkthrough.
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { GameSim as DiskSim, readDisk as readDiskAt } from '../../kit/gameSim';
+import { GameSim as DiskSim, readDisk as readDiskAt } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 
 const diskDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'disk');
 

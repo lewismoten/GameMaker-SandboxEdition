@@ -156,31 +156,6 @@ main.credits-page .credits-games li + li {
   margin-top: 0.25em;
 }
 
-/* ---- the narrow-window jump menu: compact chips ---- */
-
-main.credits-page .credits-jump ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-main.credits-page .credits-jump a {
-  display: inline-flex;
-  align-items: center;
-  height: auto;
-  min-height: 32px;
-  padding: 4px 12px;
-  border-radius: 999px;
-}
-
-main.credits-page .credits-jump b {
-  font-weight: 600;
-}
-
-main.credits-page .credits-jump span {
-  display: none;
-}
-
 /* ---- the BBS pictures: more to a row on a wide window ---- */
 
 main.credits-page .bbs-pics {
@@ -329,4 +304,74 @@ main.credits-page details.credits-mini summary {
 main.credits-page .credits-card details.credits-mini {
   margin-top: 6px;
   font-size: 14px;
+}
+
+/* ---- distributors: smaller, lower-priority cards in one row ---- */
+
+main.credits-page .credits-cards-small {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: 8px;
+}
+
+main.credits-page .credits-cards-small .credits-card {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+main.credits-page .credits-cards-small p {
+  margin: 0;
+}
+
+/* ---- tabs: one area at a time; print shows them all ---- */
+
+main.credits-page .credits-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 12px 0 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+main.credits-page .credits-tab {
+  min-height: 32px;
+  min-width: 24px;
+  padding: 4px 12px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+main.credits-page .credits-tab:hover {
+  background: var(--panel, rgba(128, 128, 128, 0.12));
+}
+
+main.credits-page .credits-tab[aria-selected='true'] {
+  border-color: var(--border);
+  background: var(--bg, canvas);
+  box-shadow: 0 2px 0 var(--bg, canvas);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+main.credits-page .credits-panel:not(.on) {
+  display: none;
+}
+
+main.credits-page .credits-panel.on {
+  border-top: 0;
+}
+
+@media print {
+  main.credits-page .credits-tabs {
+    display: none;
+  }
+
+  main.credits-page .credits-panel:not(.on) {
+    display: block;
+  }
 }

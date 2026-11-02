@@ -1,0 +1,18 @@
+/* The recording meter (recordMeter.ts). */
+.rec-meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rec-meter[hidden] {
+  display: none;
+}
+.rec-meter meter {
+  flex: 1 1 140px;
+  min-width: 120px;
+  height: 14px;
+}
+.rec-meter.full .rec-meter-text {
+  font-weight: 700;
+}

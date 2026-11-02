@@ -2,15 +2,15 @@
 // and stepped with the same calls, in the same order, as one game tick of playscene
 // (web/src/engine/scene.ts), so the bot can try a few key presses and see what happens
 // before it presses anything in the real game.
-import { moveChars } from '../../../web/src/engine/character';
-import { simKeyPress } from '../../../web/src/engine/keys';
-import { blockBirthMonsters, moveAllMonsters } from '../../../web/src/engine/monsters';
-import { updateCharDrawState } from '../../../web/src/engine/render';
-import { changeBlocks } from '../../../web/src/engine/scene';
-import { changeScroll, drawScroll } from '../../../web/src/engine/scroll';
-import { getTouchBlocks } from '../../../web/src/engine/touch';
-import { LASTMM, type World } from '../../../web/src/engine/world';
-import { NOSCENE, type Link } from '../../../web/src/formats/game';
+import { moveChars } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { simKeyPress } from '@lewismoten/gamemaker-sandbox-engine/engine/keys';
+import { blockBirthMonsters, moveAllMonsters } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { updateCharDrawState } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
+import { changeBlocks } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { changeScroll, drawScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
+import { getTouchBlocks } from '@lewismoten/gamemaker-sandbox-engine/engine/touch';
+import { LASTMM, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { NOSCENE, type Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 /** A copy of the live world that can be played ahead; the read-only level data is shared. */
 export function cloneWorld(w: World, rand: () => number): World {

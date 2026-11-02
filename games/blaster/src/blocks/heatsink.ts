@@ -3,7 +3,7 @@
 // The fins rise from the heat sink's base and the fan's frame hangs overhead; behind, the
 // fan's blades turn dim in the dark (a ring of pictures), and the heat rising off the chip
 // shimmers up through the gaps and shoves the ship upward.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, flipY, micro, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { SOLID, addTerrain, type SideArt } from './sideTiles';

@@ -1,7 +1,7 @@
 // The Big Top Egg: felted like Doc Leo's own clown egg. Cream felt with red big-top stripes
 // that meet at the top like a circus tent, rainbow polka dots, a corgi-orange paw print on
 // its side, a ring of blue running stitch around its middle and a tiny red pom-pom nose.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { shadeAt } from '../art/draw';
 import { P } from '../art/pal';
 

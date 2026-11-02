@@ -9,7 +9,7 @@
 // spider, Carl the fly, the mustard seed in red sneakers, the 11-year-old in a cardboard knight
 // costume, his helmet, and the third goat from the left under a sheet. Every sprite is drawn from
 // shapes and given a dark outline.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';

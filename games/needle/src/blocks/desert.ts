@@ -4,7 +4,7 @@
 // with palms and a pool, cactus that pricks, dry brush that sends tumbleweeds, two travelers
 // and some children to give gold to, and at the end of the road the tailor's tent.
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
-import { dither } from '../../../kit/pixels';
+import { dither } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import type { Pal } from '../art/pal';
 import { MON } from '../ids';

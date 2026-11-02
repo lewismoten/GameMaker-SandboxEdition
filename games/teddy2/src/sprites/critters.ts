@@ -1,6 +1,6 @@
 // Critters and pests (monster block art): squirrels, cats, pigeons, geese, ducks, rats...
 // all drawn facing right; they are mirrored by their path orientation.
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 

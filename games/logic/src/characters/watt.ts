@@ -1,8 +1,8 @@
 // watt.chr: Watt the repair robot. He rolls exactly one block per key press (five frames
 // of four pixels, which can't be interrupted), so he always stands squarely on the grid
 // and bumps switches cleanly. Arrows, W A S D and the number pad all steer; R reboots.
-import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { KEY, SND } from '../ids';
 import type { BlockSet } from '../blocks/sets';
 

@@ -2,7 +2,8 @@
 // TV, the man on the couch, the sleeper, the dog bed, posts, stems, the boom mic, the shelf, the
 // fridge, the floor lamp, the tree and the tall cactus, and that their art joins up across the
 // block edges. Run by tools/check.ts.
-import { alignGame, namesOf, shape, type PartRule } from '../../kit/align';
+import { namesOf, shape, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
 import { buildHouse } from '../src/blocks/house';
 import { buildYard } from '../src/blocks/yard';

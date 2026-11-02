@@ -85,7 +85,7 @@ export const INSTRUCTIONS = [
 const CREDITS_TEXT = page(
   [
     'DEPTH PERCEPTION',
-    'Sandbox Software, 1996',
+    'Sandbox Software, 1994',
     '',
     'Modeling, rendering, levels,',
     'music and sound by Claude:',
@@ -112,7 +112,7 @@ const CREDITS_TEXT = page(
     '',
     'For Lewis "Lewie" Moten III,',
     'who drew 3D for BBSes in',
-    '1995, one frame at a time.',
+    '1994, one frame at a time.',
     '',
     'Made with GAME-MAKER by',
     'Recreational Software Designs.',
@@ -161,8 +161,8 @@ export function readme(price: string): string {
   return `
     D E P T H
     P E R C E P T I O N
-    Version ${about.version} - March 1996
-    (c) 1996 Sandbox Software
+    Version ${about.version} - November 1994
+    (c) 1994 Sandbox Software
 
 The render of the century was
 99% done when Count Polygon

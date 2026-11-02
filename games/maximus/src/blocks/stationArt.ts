@@ -1,7 +1,7 @@
 // The pictures of STATION.BBL: wall panels and windows onto space, deck plates, grates and
 // girders, pipes, consoles, laser grids, arrows, conveyors, the training deck's info panels,
 // airlocks, the reactor, crates and shrines.
-import { Pixels, dither, rng } from '../../../kit/pixels';
+import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Mask, fill, outline, pick, shade, tileNoise } from '../art/draw';
 import { tex } from './blockset';
 import { drawPickup, drawShard } from './items';

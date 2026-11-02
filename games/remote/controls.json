@@ -1,0 +1,82 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Walk up one step; hold to keep walking."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Walk down one step; hold to keep walking."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Walk left one step; hold to keep walking."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Walk right one step; hold to keep walking."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Same as the Down arrow."
+    },
+    "16": {
+      "short": "Up-left",
+      "long": "Walk up and to the left."
+    },
+    "18": {
+      "short": "Up-right",
+      "long": "Walk up and to the right."
+    },
+    "79": {
+      "short": "Down-left",
+      "long": "Number pad 1: walk down and to the left."
+    },
+    "81": {
+      "short": "Down-right",
+      "long": "Number pad 3: walk down and to the right."
+    },
+    "57": {
+      "short": "Shout",
+      "long": "Shout WHERE'S THE REMOTE?! It blows away dust bunnies, cockroaches and lint."
+    },
+    "48": {
+      "short": "Click",
+      "long": "Click your empty thumb at the TV."
+    },
+    "46": {
+      "short": "Check hand",
+      "long": "Check your hand."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Shout",
+      "long": "Shout WHERE'S THE REMOTE?!"
+    }
+  },
+  "counters": {
+    "20": "Searched spots",
+    "21": "Mom's number digits",
+    "22": "VCR PLAY"
+  },
+  "sounds": {
+    "9": "Shout",
+    "10": "Hurt",
+    "11": "Death",
+    "12": "Click",
+    "13": "Hand"
+  }
+}

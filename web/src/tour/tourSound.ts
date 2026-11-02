@@ -4,7 +4,8 @@
 // step's recorded voice line when there is one (public/tour/voice/<id>.ogg). Nothing plays
 // until a tour starts from a click; the mute switch is remembered in this browser, and a
 // browser whose demo sound is "None" starts muted.
-import { AudioEngine } from '../audio/engine';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
+import { channelGain, onMix } from '@lewismoten/gamemaker-sandbox-engine/audio/mix';
 import { fetchGameFile, loadGameList } from '../project/files';
 import { BARKS, MUSIC, SOUNDS, barkUrl, type MusicId, type SoundId } from './steps';
 
@@ -27,7 +28,13 @@ export class TourSound {
   private song?: MusicId;
   private started = false;
   private voice?: HTMLAudioElement;
+  /** Clips loading ahead of their step (prefetch), by address. */
+  private warm = new Map<string, HTMLAudioElement>();
   on = savedOn();
+  /** The Voice volume applies to a line already playing. */
+  private unmix = onMix(() => {
+    if (this.voice) this.voice.volume = channelGain('voice');
+  });
 
   private file(path: string): Promise<Uint8Array | undefined> {
     let p = this.files.get(path);
@@ -83,7 +90,7 @@ export class TourSound {
     if (id in BARKS) {
       const clips: readonly string[] = BARKS[id as keyof typeof BARKS];
       const a = new Audio(barkUrl(clips[Math.floor(Math.random() * clips.length)]));
-      a.volume = 0.6;
+      a.volume = 0.6 * channelGain('sfx');
       void a.play().catch(() => undefined);
       return;
     }
@@ -111,33 +118,59 @@ export class TourSound {
     }
   }
 
+  /** Starts loading a coming step's clip while the current one plays, so it is ready to start at once. */
+  prefetch(url: string): void {
+    if (!this.on || this.warm.has(url)) return;
+    const a = new Audio();
+    a.preload = 'auto';
+    a.src = url;
+    this.warm.set(url, a);
+    // a few at most: the oldest goes
+    if (this.warm.size > 4) {
+      const [old] = this.warm.keys();
+      this.warm.get(old)?.removeAttribute('src');
+      this.warm.delete(old);
+    }
+  }
+
   /**
    * A step's recorded line, if there is one: resolves with its length in ms once it is ready
    * to play (and plays it), or 0 when there is none (the bubble's own timing is used).
    */
   speak(url: string): Promise<number> {
     this.stopVoice();
-    if (!this.on) return Promise.resolve(0);
-    const a = new Audio();
+    // Voice off in the sound settings: the bubble's own timing is used, as with a step that has no clip
+    if (!this.on || channelGain('voice') === 0) return Promise.resolve(0);
+    const early = this.warm.get(url);
+    this.warm.delete(url);
+    const a = early ?? new Audio();
     a.preload = 'auto';
     this.voice = a;
+    a.volume = channelGain('voice');
     return new Promise<number>((resolve) => {
+      let given = false;
       const give = (ms: number) => {
         clearTimeout(timer);
+        given = true;
         resolve(ms);
       };
-      const timer = setTimeout(() => give(0), 1500);
+      const timer = setTimeout(() => give(0), 3000);
       a.addEventListener('error', () => give(0), { once: true });
       a.addEventListener(
         'canplaythrough',
         () => {
+          // ready after the step stopped waiting for it: playing now would be cut off mid-word
+          if (given) return;
           if (this.voice !== a || !isFinite(a.duration)) return give(0);
           void a.play().catch(() => undefined);
           give(Math.ceil(a.duration * 1000) + 300);
         },
         { once: true },
       );
-      a.src = url;
+      if (!early) a.src = url;
+      // loaded ahead already: no event is left to wait for
+      else if (a.error) queueMicrotask(() => give(0));
+      else if (a.readyState >= 4) queueMicrotask(() => a.dispatchEvent(new Event('canplaythrough')));
     });
   }
 
@@ -150,6 +183,7 @@ export class TourSound {
   dispose(): void {
     this.stopVoice();
     this.started = false;
+    this.unmix();
     this.engine.dispose();
   }
 }

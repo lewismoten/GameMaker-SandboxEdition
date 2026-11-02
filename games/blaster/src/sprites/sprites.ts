@@ -2,7 +2,7 @@
 // frames from ASCII art (left halves, mirrored) with these keys:
 //   o outline   1-5 main color (dark to light)   a b c accent (dark, mid, light)
 //   w white     k dark gray   r red   y yellow   s S h steel (dark, mid, light)
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, blob } from '../art/draw';
 import { sym } from '../characters/enemies';
 import type { Pal } from '../art/pal';

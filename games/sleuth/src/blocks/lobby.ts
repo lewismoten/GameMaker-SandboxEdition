@@ -1,7 +1,7 @@
 // The lobby: the box office (its count, signed at ten past nine, is Agatha's alibi), the bar
 // (Sam's chalkboard of tabs), the cloakroom and the booth. Returns the flagstone floor that
 // the dark under the stage is drawn on.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { microC } from '../art/draw';
 import { c } from '../art/pal';
 import { CTR } from '../ids';

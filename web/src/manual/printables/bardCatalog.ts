@@ -15,7 +15,7 @@ import { SOFA_PHONE } from '../../retro/bbs/sofaPhone';
 import { downloadLine, hardDiskLine, sizeText, zipBytes, zipName } from '../../project/diskFacts';
 import { sheet, type Sheet } from './kit';
 
-const ISSUE = 'Winter 1995';
+const ISSUE = 'Winter 1994';
 
 /** How the Bard's songs and pictures were made, naming the tools the Credits page's Bard table credits. */
 export const BARD_CREDIT =
@@ -70,7 +70,11 @@ async function gameBlock(g: CatalogEntry): Promise<HTMLElement> {
       'div',
       null,
       h('h3', null, g.title),
-      h('p', { class: 'bard-meta' }, `${g.year ?? 1995} · ${g.original?.sound === 'sb' ? 'Sound Blaster sings it' : 'PC speaker'} · register ${price(g)}`),
+      h(
+        'p',
+        { class: 'bard-meta' },
+        `${Math.min(g.year ?? 1994, 1994)} · ${g.original?.sound === 'sb' ? 'Sound Blaster sings it' : 'PC speaker'} · register ${price(g)}`,
+      ),
       // what a caller weighed before tying up the phone line: the ZIP's size and time, and the room it takes
       h(
         'p',

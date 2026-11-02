@@ -3,9 +3,9 @@
 // 3:17 a.m., the cold glow of the open fridge, the hall with the lights flickering a sickly
 // green, and the blood red of the reckoning. The glows (the clock's digits, the fridge light,
 // the cheesecake's aura, fire, the Devil's eyes) keep their own light everywhere.
-import { PaletteBuilder } from '../../../kit/palette';
-import { type Pal, wrap } from '../../../kit/palRamps';
-export { type Pal } from '../../../kit/palRamps';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
+import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+export { type Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 type RGB = [number, number, number];
 export type Light = 'night' | 'fridge' | 'dash' | 'hell' | 'plain';

@@ -1,13 +1,14 @@
-// A hosted game that starts before all its files are in: the .gam first, then the files in
+// ZIP distributions load as one shared archive before play. Legacy hosted games can start
+// before all their files are in: the .gam first, then the files in
 // the order play needs them (the title and menu, the first level, the scenes reachable
 // from it, the rest), with the next ones fetched while the current scene plays. The game
 // reads its files synchronously (GameFiles); where the engine is about to read one (a
 // picture, a song, a scene's files) it asks for it first and waits if it is still on its
 // way (engine/machine.ts, need), which moves it to the front of the queue.
-import { GameFiles, cdName, fetchSiteFile, normalize, openPack, type CatalogEntry, type FileStream, type PackHandle } from './files';
-import { parseGame } from '../formats/game';
-import { parseSoundSet } from '../formats/sound';
-import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
+import { GameFiles, cdName, fetchSiteFile, normalize, openPack, loadHostedGame, type CatalogEntry, type FileStream, type PackHandle } from './files';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 // Scene file slots (engine/game.ts, engine/scene.ts): scene 0 holds the front end, scene 1
 // "Game Won"; a level's 9 and 10 are the pictures shown before and after it.
@@ -142,6 +143,14 @@ interface StreamedGame {
  */
 export function streamHostedGame(entry: CatalogEntry, base = './', concurrency = 4, aheadBytes = Infinity): StreamedGame {
   const files = new GameFiles();
+  if (entry.pack?.endsWith('.zip')) {
+    const ready = loadHostedGame(entry, base).then((loaded) => {
+      for (const [name, bytes] of loaded.entries()) files.put(name, bytes);
+      files.stream = undefined;
+    });
+    files.stream = { need: () => ready, want: () => undefined };
+    return { files, started: ready, done: ready };
+  }
   const names = entry.files;
   const waiting = new Map<string, { promise: Promise<void>; resolve: () => void }>();
   for (const n of names) {

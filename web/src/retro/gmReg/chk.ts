@@ -6,7 +6,7 @@
 import type { RetroHost } from '../host';
 import { attr } from '../text/textScreen';
 import { BARATTR, MENUATTR, SHADATTR, TITLEATTR, errorBox } from '../text/textUi';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { pcExtras } from '../hacks/pcExtras';
 import { NAME_MAX, NUMBER_MAX, cardCheck, checkRegistration, regFile } from './registration';
 import { QUESTIONS, questionFor, rightAnswer } from './copyCheck';

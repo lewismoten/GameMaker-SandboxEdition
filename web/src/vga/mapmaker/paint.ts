@@ -3,9 +3,9 @@
 // preview while the button is held (updateShape and the copyFn* point functions).
 import { SIZEX, SIZEY } from '../shared/vga';
 import { BLEN, GRAY1, GRAY2, GRAY3 } from '../shared/facelift';
-import { BACKBL } from '../../formats/blocks';
-import { LASTMON } from '../../formats/monster';
-import { LASTMM, MLEN, MWID } from '../../formats/map';
+import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { LASTMON } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { LASTMM, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { LMX, TOOLX, TOOLY, LINEFN, BOXFN, BOXFILLFN, CIRCLEFN, CIRCLEFILLFN, COPYFN, BLOCACTIVE, MONACTIVE, NOTOOLS, sign, div, isqrt, Point } from './layout';
 import { MapMakerDraw } from './draw';
 

@@ -42,7 +42,8 @@ export interface DialPad {
 export function openDialPad(press: (k: string) => void, hangUp: () => void): DialPad {
   const number = h('div', { class: 'pp-number' }, ' ');
   const status = h('div', { class: 'pp-status', 'aria-live': 'polite' });
-  const caption = h('div', { class: 'pp-caption', 'aria-live': 'polite' });
+  // A long caption scrolls; Tab gives keyboard users the same way to read it all.
+  const caption = h('div', { class: 'pp-caption', 'aria-live': 'polite', tabindex: 0 });
   const button = (k: string, letters: string) =>
     h(
       'button',

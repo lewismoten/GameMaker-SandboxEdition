@@ -2,7 +2,7 @@
 // then stays one shade so anything drawn on deep water fits at any depth), the air above,
 // sand, reef rock, coral, kelp, anemones, bubble columns, currents, the uplink buoy, surface
 // waves, wrecks, shrines and clams.
-import { Pixels, dither, rng } from '../../../kit/pixels';
+import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Mask, fbm, fill, outline, pick, shade, sprite, tileNoise } from '../art/draw';
 import { tex } from './blockset';
 import { OUTLINE, WHITE } from '../art/palette';

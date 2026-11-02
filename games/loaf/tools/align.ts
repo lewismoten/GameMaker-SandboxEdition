@@ -1,7 +1,8 @@
 // Checks the multi-block objects on the built disk's maps (games/kit/align.ts): the fig trees'
 // trunks up to their branches, the palms, and the baskets' rims on their wicker, and that their
 // art joins up across the block edges. Run by tools/check.ts.
-import { alignGame, namesOf, type PartRule } from '../../kit/align';
+import { namesOf, type PartRule } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
+import { alignGame } from '../../kit/align';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';
 import { LEVELS } from '../src/levels/levels';

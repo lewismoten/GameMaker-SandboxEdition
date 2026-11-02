@@ -5,7 +5,7 @@
 // The TTY is a 2x2 picture whose two top pieces are each a next/ntime chain of the same
 // length and timing. Game-Maker animates a block number, not a map square, so both chains
 // start together when the scene loads and stay in step: the paper reads as one sheet.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from './book';
 import { oval } from '../art/draw';
 import { micro } from '../art/font';

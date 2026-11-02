@@ -10,13 +10,15 @@
 // Options: --out <dir>, --only <id>[,<id>] (a retake; each take differs), --force, --seed <n>
 // (the same take again), --sample <file> (.webm, .wav, .m4a, .mp3…; its clearest 10 s is used),
 // --engine <dir>, --model <dir>, --kbps <n> and --rate <hz> (the Opus encoding),
-// --wav (also keep each take as .wav, for comparing encodings), --dry-run (list what would be recorded).
+// --split none|sentences|clauses|stretch (voice each sentence, or each clause, alone and join them with fixed
+// silences, or stretch the whole take's own pauses with room tone; none, the default, voices the line whole), --wav (also keep each take as .wav, for comparing encodings), --dry-run (list what would be recorded).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CLIP_OGG, clearestWindow, normalize, readMono, shiftVoice, writeOgg } from './narrate/audio';
 import { clipPath, indexJson, spokenOf, lineProblems, planTakes, refreshPlaces, staleIds, textHash, type Line, type VoiceIndex } from './narrate/lineIndex';
+import { joinPieces, splitMode, splitStops, stopGaps, stretchPauses } from './narrate/split';
 import { PocketTts, randomSource } from './narrate/pocketTts';
 import { voiceReadme } from './narrate/voiceReadme';
 import { loadKokoro, type Kokoro } from './narrate/kokoro';
@@ -37,7 +39,7 @@ const DEFAULTS = {
  * Local Agent Lab's workspace. NARRATE_SAMPLE_<NAME> (e.g. NARRATE_SAMPLE_SCROOBIE) moves one.
  */
 const SAMPLES: Record<string, string> = {
-  lewis: fileURLToPath(new URL('../../.for-lewis/voice/lewie-sample-audio.mp3', import.meta.url)),
+  lewis: fileURLToPath(new URL('../../.for-lewis/reference/voice/lewie-sample-audio.mp3', import.meta.url)),
   scroobie: join(WORKSPACE, 'voices/samples/f2a53d0c-14b9-4919-89fd-582ef03b8c05.webm'),
   'olden-mon': join(WORKSPACE, 'voices/samples/a6c6994c-ad62-48a0-89e9-81d744701b0e.webm'),
   'snooty-wiz': join(WORKSPACE, 'voices/samples/3a31070f-6ac7-4868-8b9c-37018e0dc1f4.webm'),
@@ -124,7 +126,7 @@ async function main() {
   let pocket: Promise<PocketTts> | undefined;
   let kokoro: Promise<Kokoro> | undefined;
   const clones = new Map<string, Awaited<ReturnType<PocketTts['cloneVoice']>>>();
-  const speak = async (text: string, v: ReturnType<typeof voiceOf>) => {
+  const speakPiece = async (text: string, v: ReturnType<typeof voiceOf>) => {
     if (v.kokoro) {
       kokoro ??= loadKokoro(str('tools', DEFAULTS.tools), need(str('kokoro', DEFAULTS.kokoro), 'kokoro model folder'));
       const take = await (await kokoro).generate(text, v.kokoro);
@@ -142,6 +144,28 @@ async function main() {
     }
     const take = await tts.generate(text, clones.get(v.path)!, randomSource(seed));
     return { audio: take.audio, rate: tts.sampleRate, genSeconds: take.genSeconds };
+  };
+  const split = splitMode(o.split);
+  // --split voices each piece alone, trims it, and joins the pieces with fixed silences
+  const speak = async (text: string, v: ReturnType<typeof voiceOf>) => {
+    if (split === 'stretch') {
+      const t = await speakPiece(text, v);
+      return { ...t, audio: stretchPauses(t.audio, t.rate, stopGaps(text)) };
+    }
+    const pieces = splitStops(text, split);
+    if (pieces.length === 1) return speakPiece(text, v);
+    const takes = [];
+    for (const p of pieces) takes.push(await speakPiece(p.text, v));
+    const rate = takes[0].rate;
+    const tail = new Float32Array(Math.round(rate * 0.35)); // the quiet end a clip keeps, so none is cut off
+    const words = joinPieces(
+      takes.map((t) => t.audio),
+      pieces,
+      rate,
+    );
+    const audio = new Float32Array(words.length + tail.length);
+    audio.set(words);
+    return { audio, rate, genSeconds: takes.reduce((n, t) => n + t.genSeconds, 0) };
   };
   const ogg = { kbps: Number(str('kbps', String(CLIP_OGG.kbps))), rate: Number(str('rate', String(CLIP_OGG.rate))) };
   const seed = typeof o.seed === 'string' ? Number(o.seed) : undefined;

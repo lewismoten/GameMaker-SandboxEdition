@@ -61,7 +61,11 @@ their contents rows buttons that turn to the page; `gen.ts` makes what every San
   `web/scripts/levelViews.ts`; a map the hero walks off the edge of is laid out as the player goes
   through it, `editor/check/unroll.ts`, and goes round forever only if the hero got round; a
   course through the wrap, `editor/check/course.ts`, prints as the strip the way runs, turned
-  to run up the page in stitched panels, `levelCourse.ts` and `levelCourseSvg.ts`, and a map
+  to run up the page as one continuous overview, `levelCourse.ts` and `levelCourseSvg.ts`. For the screen, preview cards, printed overviews and posters,
+  `wholeCourseSvg` assembles those bounded raster pieces into one continuous map, with a single
+  annotation layer and no column breaks; it never allocates a course-sized canvas. Optional
+  full-size printing tiles that same map into overlapping atlas sheets, with a grid on the
+  overview and directions for taping adjacent sheets together. A map
   printable's panel can draw it as a poster, `levelCoursePoster.ts`),
   both looked round with `panZoom.ts`. A map of separate rooms prints each room apart
   (`levelRooms.ts`; `levelRoomHints.ts` names rooms, draws copies once and adds a cast panel),
@@ -95,9 +99,10 @@ The Ultimate Owner's Guide in the Game-Maker box.
 - `chapters*.ts` are its chapters: palettes and blocks (`chaptersLook.ts`), monsters, logic and
   scenes (`chaptersPlay.ts`), sound (`chaptersSound.ts`), title screens, demos and play-testing
   (`chaptersShow.ts`), designing with a goal (`chaptersCraft.ts`), 12 level design
-  (`chaptersLevels.ts`), 13 tricks from the Sandbox games (`chaptersTricks.ts`), 14 the Level
+  (`chaptersLevels.ts`), 13 tricks from the Sandbox games (`chaptersTricks.ts`, the later ones in `tricksMore.ts`), 14 the Level
   check and walkthrough bot (`chaptersCheck.ts`), 15 and 16 designing for every player and where
-  Game-Maker runs out (`chaptersPlayers.ts`), and 17 tricks from the shareware authors
+  Game-Maker runs out (`chaptersPlayers.ts`, with its clock and file ceilings in
+  `limitsClock.ts` and ideas to try in `limitIdeas.ts`), and 17 tricks from the shareware authors
   (`chaptersShareware.ts`, with the second survey's "More from the archive" in
   `archiveTricks.ts`), whose table of the words the DOS player shows, and where they sit in
   the CD's `XFERPLAY.EXE`, is `playerWords.ts` (its test reads the .EXE).
@@ -107,11 +112,18 @@ The Ultimate Owner's Guide in the Game-Maker box.
 ## `magazine/`: TURBO BUTTON
 
 TURBO BUTTON, a mid-90s game magazine (`#/magazine`, and
-lying on the desk's left, `#/desk?open=magazine`).
+lying on the desk's left, `#/desk?open=turbobutton&vol=3&num=1&page=6-7`, which keeps the issue and the pages in view across a reload; `open=magazine` still opens it).
+It comes in two issues, addressed by year and month (Vol. 1 is 1993): **Vol. 1, No. 4**
+(April 1993, a back issue with a free Snowbound floppy: `vol=1&num=4`) and **Vol. 3, No. 1**
+(January 1995, the one on the desk, with the free CD). The old address `vol=1&num=1`, and an
+address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues from inside.
 
 - Putting it together: `issue.ts` holds the running order (page numbers, the contents page, the
   advertiser index, and house ads from `sections/houseAd.ts` to fill whole folded sheets);
-  `masthead.ts` its name and issue; `games.ts` the games it may name (never a secret one).
+  `masthead.ts` its name, the two `ISSUES` and `issueFor` (an address to an issue); `SECTIONS` is
+  No. 2's running order and `SECTIONS_1` No. 1's (`sections/spring93/`: its cover, letter,
+  interview, Critic's Corner page, Snowbound tips, free-disk page and back cover; `floppy.ts` draws
+  the taped-on floppy with the game's real printed disk label); `games.ts` the games it may name (never a secret one).
 - `pageRefs.ts`: the page numbers pages give each other once placed (a jumped story's "Continued
   on page N" and "Continued from", `{page:<id>}` in text) and the small ads on editorial pages for
   the advertiser index, which `sections/smallAds.ts` holds (half- and third-page ads, The Sofa
@@ -134,6 +146,8 @@ lying on the desk's left, `#/desk?open=magazine`).
   - `piece.ts`, a box's printed piece small, such as a hint book's or The Ultimate Owner's
     Guide's cover;
   - `toolShots.ts`, Game-Maker's design tools drawn at work on a game's own files;
+  - `passShots.ts`, the `walk:` and `page:` shots of Walk-Through Talk (`sections/passThrough.ts`): a
+    level with the hero on a link, and the picture and text page a pass-through scene shows;
   - `callouts.ts`, a picture with numbered spots and their key;
   - `coverFan.ts`, the issue's covers fanned out small;
   - `replyMail.ts`, a reply card's business reply mail side, with `postnet.ts`, the post office's
@@ -151,6 +165,10 @@ lying on the desk's left, `#/desk?open=magazine`).
   - `soundCardArt.ts`, the Sound Boaster card and a kid's face before and after it, for the sound
     card's ad, `sections/soundCardAd.ts` (its deep blue page and burst of sound waves
     `soundCardAd.css`);
+  - `bnbArt.ts` and `bnbAd.css`, the Bits & Bytes Software two-page spread
+    (`sections/bitsBytesAd.ts`, `sections/bitsBytes.test.ts` checks it faces itself): three turned
+    boxes rendered from the desk's box art (`public/magazine/box-*.webp`, how to retake them is in the
+    file's header), the store's logo, raised-cents prices, vertical tabs and Bitsy the floppy disk;
   - `blankDisk.ts`, a stack of bulk disks without labels, for the Floppy Barn ad;
   - `notcherArt.ts`, the HOLE-Y MOLEY disk notcher and a disk before and after it, for its ad,
     `sections/notcherAd.ts` (its charcoal page `notcherAd.css`);
@@ -160,7 +178,10 @@ lying on the desk's left, `#/desk?open=magazine`).
   - `deskShot.ts`, its snapshot of the 1994 desk, `web/public/magazine/desk-1994.webp`, with how to
     take it again; `webShots.ts`, its screenshots of today's web, `web/public/magazine/web-*.webp`,
     likewise; and `dosShot.ts`, Lewis's DOSBox screenshot of Carl's garbled cover,
-    `web/public/magazine/dos-carl.webp`, for `sections/dosBugs.ts`.
+    `web/public/magazine/dos-carl.webp`, for `sections/dosBugs.ts`; and the `oldweb-*` pictures,
+    made-up early-1995 web pages in a made-up browser (`scripts/oldWebShots.ts`), for `sections/logOff.ts`
+    (Log Off the Games). Its sites, and every made-up domain in the project, are in
+    `magazine/mockSites.json` (read through `mockSites.ts`; `npm run domains:check` checks them).
 - `viewer.ts` lays every page out at one size (a letter sheet at 96 CSS pixels to the inch, as
   printed) and scales it whole to fit the window, so no page runs over at any window size, and
   turns, zooms and prints them on letter paper.

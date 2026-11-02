@@ -1,7 +1,7 @@
 // An imported game's fingerprint: the CRC-32s of its .gam files and of its own player .EXEs,
 // as the import scanner reads them (project/importScan.ts). Kept when the game is removed, so
 // a later import can say "you removed this one before". No DOM.
-import { crc32 } from '../project/zip';
+import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 export interface Fingerprint {
   /** Its .gam files' CRC-32s, smallest first. */

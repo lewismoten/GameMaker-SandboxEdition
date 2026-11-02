@@ -5,7 +5,7 @@
 // linked scene's map. A start scene has no map: play(0) follows scene 0's link 0 only, so
 // that one link is where the game starts. A link to scene 1 wins the game; nothing links to
 // "lost" (that is running out of lives, MAXSCENELINKS+2 in engine/game.ts).
-import { ADVTYPE, MAXSCENELINKS, NOSCENE, STARTTYPE, type Game, type Point } from '../../../formats/game';
+import { ADVTYPE, MAXSCENELINKS, NOSCENE, STARTTYPE, type Game, type Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 /** A way into a level: link `link` of scene `from` lands the hero at `at` in scene `to`. */
 export interface WayIn {

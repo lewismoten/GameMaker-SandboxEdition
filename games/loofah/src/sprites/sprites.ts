@@ -7,7 +7,7 @@
 // Scrubbus Maximus the demon sponge (two blocks tall, coral, horned and smug, four stages of
 // being cleansed), its citrus suds, their splats, the brine splash and the pink one, clean
 // again. Every sprite is drawn from shapes and given a dark outline.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { makeBook, T } from '../../../snowbound/src/sprites/kidArt';

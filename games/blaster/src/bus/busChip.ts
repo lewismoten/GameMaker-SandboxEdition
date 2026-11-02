@@ -1,7 +1,7 @@
 // The chip at the end of each data bus ride, standing on the horizon over the bus and
 // growing as the ship nears it: a black package with its pins along the bottom and its
 // name printed on it. Drawn 60 x 20 at full size: a flat chip, seen from the bus coming at it.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, micro, text } from '../art/draw';
 import type { Pal } from '../art/pal';
 

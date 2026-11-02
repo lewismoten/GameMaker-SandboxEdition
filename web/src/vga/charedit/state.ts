@@ -7,9 +7,9 @@ import type { RetroHost } from '../../retro/host';
 import { WorkArea } from '../../retro/dos/workArea';
 import { type RGBdata, type Vga } from '../shared/vga';
 import { BLEN, Face, initStartCols } from '../shared/facelift';
-import { BACKBL, CHARBL, MONBL, emptyBlock, parseBlocks, type Block } from '../../formats/blocks';
-import { newMonsterSet, type Monster } from '../../formats/monster';
-import { newSoundSet, type SoundSet } from '../../formats/sound';
+import { BACKBL, CHARBL, MONBL, emptyBlock, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { initalldata } from './layout';
 
 export abstract class CharacterMakerState {

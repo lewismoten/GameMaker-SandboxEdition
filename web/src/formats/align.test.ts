@@ -1,6 +1,6 @@
 // games/kit/align.ts: the multi-block object checks the games' tools/check.ts run on their disks.
 import { describe, expect, it } from 'vitest';
-import { autoParts, brokenSeams, checkParts, gridParts, pair, seams, shape, sizesOf, type NameAt } from '../../../games/kit/align';
+import { autoParts, brokenSeams, checkParts, gridParts, pair, seams, shape, sizesOf, type NameAt } from '@lewismoten/gamemaker-sandbox-tools/kit/align';
 
 /** A map from rows of names (one name per cell, separated by spaces); '.' is empty. */
 const grid = (rows: string[]): NameAt => {

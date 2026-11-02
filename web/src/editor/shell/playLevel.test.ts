@@ -1,6 +1,6 @@
 // The Play Level menu (playLevel.ts): its entries, the pick its main part plays, and the game it starts.
 import { describe, expect, it } from 'vitest';
-import { ADVTYPE, emptyScene, newGame, type Game } from '../../formats/game';
+import { ADVTYPE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { currentPick, gameFor, parsePick, pickParam, playChoices } from './playLevel';
 
 function game(): Game {

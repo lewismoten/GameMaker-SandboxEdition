@@ -1,6 +1,9 @@
 // The project workspace: file list on the left, the selected file's editor on the right.
 import { onPatchesChanged } from '../../dosPlayer/patchesChanged';
+import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
 import { currentRoute, formatHash, setHashParams } from '../../urlState';
+import { overviewTabFrom, TAB_TITLES, type OverviewTab } from './overviewLink';
+import { migrateCounterNames } from '../core/gameControls';
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
 import { pickFile } from '../widgets/filePicker';
@@ -13,13 +16,15 @@ import { GameFiles, loadFileList, normalize } from '../../project/files';
 import { takeCompanion } from '../../project/companion';
 import { chooseDownload, downloadButton } from './download';
 import type { PlayerHandle } from '../../player/player';
-import { ADVTYPE, parseGame, serializeGame, type Game } from '../../formats/game';
+import { ADVTYPE, parseGame, serializeGame, type Game, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { levelForMap } from '../editors/integrator/startAt';
 import { sceneName, sourceName } from '../editors/integrator/linkSpots';
 import { playButtons } from './playButtons';
 import { currentPick, gameFor, parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
 import { keepPick, lastPick } from './playPickStore';
 import './workspace.css';
+import { noteLastPlace, resumeLastPlace, watchLastPlace } from './lastPlace';
+import { FILE_ORDER as ORDER, ADD_KINDS as SECTIONS, FILE_KIND_HELP as KIND_HELP } from './fileKinds';
 import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
@@ -30,49 +35,7 @@ import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
-import type { RunOptions } from '../../engine/game';
-
-const ORDER: FileKind[] = [
-  'gam',
-  'pal',
-  'bbl',
-  'mbl',
-  'cbl',
-  'mon',
-  'chr',
-  'map',
-  'snd',
-  'gif',
-  'fli',
-  'bkd',
-  'txt',
-  'lst',
-  'cmf',
-  'voc',
-  'rec',
-  'his',
-  'other',
-];
-/** The kinds always listed and offered in "Add a file" (4 x 4). */
-const SECTIONS: FileKind[] = ['pal', 'bbl', 'mbl', 'cbl', 'mon', 'chr', 'map', 'snd', 'gif', 'fli', 'cmf', 'voc', 'txt', 'lst', 'bkd', 'rec'];
-const KIND_HELP: Partial<Record<FileKind, string>> = {
-  pal: '256 colors to paint with',
-  bbl: 'the scenery, 150 blocks',
-  mbl: 'monster pictures, 100 blocks',
-  cbl: 'hero pictures, 50 blocks',
-  mon: '64 monsters and how they move',
-  chr: 'the hero: moves, keys, items',
-  map: 'a 100x100 level',
-  snd: '30 sound effects',
-  gif: 'a 320x200 picture',
-  fli: 'an animation',
-  cmf: 'Sound Blaster music',
-  voc: 'a Sound Blaster sound',
-  txt: 'words on screen',
-  lst: 'pictures one after another',
-  bkd: 'part of a big picture',
-  rec: 'a recorded demo',
-};
+import type { RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 
 /** Sections with more files than this can be folded away; in a game this big, every section can. */
 const FOLD_AT = 8;
@@ -142,11 +105,23 @@ function matchesFile(name: string, query: string): boolean {
     .every((w) => n.includes(w));
 }
 
+const RAIL_KEY = 'gm-files-folded';
+
+function storedFolded(): boolean {
+  try {
+    return localStorage.getItem(RAIL_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 export class Workspace implements AssistantHost {
   readonly project: Project;
   private sidebar = h('nav', { class: 'sidebar', 'aria-label': 'Game files' });
   private main = h('main', { class: 'editor', 'aria-label': 'Editor' });
   private current?: string;
+  private assetView?: { kind?: FileKind; tab: OverviewTab };
+  private assetReturn?: { kind?: FileKind; tab: OverviewTab };
   private cleanup?: () => void;
   private player?: PlayerHandle;
   private unlisten: () => void;
@@ -163,15 +138,21 @@ export class Workspace implements AssistantHost {
     this.bar = readOnlyBar(project);
     this.saved = project.readOnly ? undefined : saveNote(project);
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
+    if (storedFolded()) root.querySelector('.workspace')?.classList.add('rail-folded');
     this.unlisten = project.onChange((name) => {
       if (this.listed.has(name) !== project.files.has(name)) this.renderSidebar();
       // links changed (the map's markers, the integrator): Play Level's menu follows
       else if (name === project.gam) this.playEl?.replaceWith((this.playEl = this.playButton()));
     });
+    // per-character counter names from an older version become the game-wide ones (core/gameControls.ts)
+    if (!project.readOnly) migrateCounterNames(project);
     this.renderSidebar();
     // a reload while play testing (…?play) starts the play test again
     const playing = currentRoute().params.play;
-    this.open(file && project.files.has(file) ? file : project.gam);
+    // back from the Games page with no file named: where the editor was last open (lastPlace.ts)
+    file ??= resumeLastPlace(project);
+    watchLastPlace();
+    this.navigate(file);
     if (playing !== undefined) this.play(playing === 'title' ? 'title' : parsePick(playing));
     // Phones: the dropped-down file list closes on Escape or a tap outside it.
     const close = () => {
@@ -241,6 +222,7 @@ export class Workspace implements AssistantHost {
   }
 
   stopPlay(): void {
+    if (this.assetReturn) return this.openAssets(this.assetReturn.kind, this.assetReturn.tab);
     const back = this.playBack;
     if (back !== undefined) this.open(this.project.files.has(back) ? back : this.project.gam);
   }
@@ -334,6 +316,8 @@ export class Workspace implements AssistantHost {
       h(
         'div',
         { class: 'side-top' },
+        this.railToggle(),
+        this.railHome(),
         h(
           'button',
           {
@@ -370,11 +354,84 @@ export class Workspace implements AssistantHost {
           downloadButton(this.project.name, () => this.chooseDownload()),
         ),
         this.saved?.el,
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'asset-home',
+            onclick: () => this.openAssets(),
+            'aria-current': this.assetView && !this.assetView.kind ? 'page' : undefined,
+          },
+          '▦ Overview',
+        ),
         this.search,
         ...sections.map((k) => this.section(k, groups.get(k) ?? [])),
+        this.playerEntry(),
       ),
     );
     this.filter();
+  }
+
+  /** Wide screens: the button that folds the file list into a thin bar and back (remembered per browser). */
+  private railToggle(): HTMLElement {
+    const folded = this.railFolded();
+    const b = h(
+      'button',
+      {
+        type: 'button',
+        class: 'rail-toggle',
+        'aria-expanded': String(!folded),
+        'aria-controls': 'side-files',
+        'aria-label': folded ? 'Show files' : 'Hide files',
+        title: folded ? 'Show files' : 'Hide files',
+        onclick: () => {
+          const now = !this.railFolded();
+          this.sidebar.parentElement?.classList.toggle('rail-folded', now);
+          try {
+            localStorage.setItem(RAIL_KEY, now ? '1' : '0');
+          } catch {
+            /* storage may be blocked: the bar still works for this visit */
+          }
+          const label = now ? 'Show files' : 'Hide files';
+          b.setAttribute('aria-expanded', String(!now));
+          b.setAttribute('aria-label', label);
+          b.title = label;
+          b.firstElementChild!.textContent = now ? '»' : '«';
+        },
+      },
+      h('span', { 'aria-hidden': 'true' }, folded ? '»' : '«'),
+      h('span', { class: 'rail-label' }, ' Hide files'),
+    );
+    return b;
+  }
+
+  /** A game imported with its own player .EXE: a Player entry under the files, showing what it was (playerInfo.ts). */
+  private playerEntry(): HTMLElement | null {
+    const o = companionOrigin(this.project.companion, this.project.gam);
+    if (!o) return null;
+    return h(
+      'button',
+      {
+        type: 'button',
+        class: 'asset-home side-player',
+        title: `${o.exe}: ${originText(o)}`,
+        onclick: () => void import('./playerInfo').then((m) => m.showPlayerInfo(this.project)),
+      },
+      '▣ Player',
+    );
+  }
+
+  /** In the folded bar, a button to the game's Overview (the same as ▦ Overview in the list). */
+  private railHome(): HTMLElement {
+    return h(
+      'button',
+      { type: 'button', class: 'rail-home', 'aria-label': 'Overview', title: 'Overview', onclick: () => this.openAssets() },
+      h('span', { 'aria-hidden': 'true' }, '▦'),
+    );
+  }
+
+  private railFolded(): boolean {
+    return this.sidebar.parentElement?.classList.contains('rail-folded') ?? storedFolded();
   }
 
   /** The file search box (kept across sidebar redraws so typing is never interrupted). */
@@ -503,7 +560,80 @@ export class Workspace implements AssistantHost {
     return (MAKERS[kind] ?? []).map((m) => ({ label: m.label, run: () => m.run(this.project) }));
   }
 
+  /** Follow a project URL without resetting a file editor for its own view parameters. */
+  navigate(file?: string): void {
+    if (file && this.project.files.has(file)) {
+      if (this.current !== file) this.open(file);
+      return;
+    }
+    const raw = currentRoute().params.assets;
+    const kind = ORDER.includes(raw as FileKind) ? (raw as FileKind) : undefined;
+    const tab = overviewTabFrom(currentRoute().params.tab);
+    if (!this.assetView || this.assetView.kind !== (tab === 'files' ? kind : undefined) || this.assetView.tab !== tab) this.openAssets(kind, tab);
+  }
+
+  /** Opens the Overview page on a tab (Files, optionally in one category; Controls; DOS player). */
+  private openAssets(kind?: FileKind, tab: OverviewTab = 'files'): void {
+    if (tab !== 'files') kind = undefined;
+    noteLastPlace();
+    this.cleanup?.();
+    this.cleanup = undefined;
+    this.player?.stop();
+    this.player = undefined;
+    this.playBack = undefined;
+    this.assetReturn = undefined;
+    this.current = undefined;
+    this.assetView = { kind, tab };
+    this.sidebar.classList.remove('open');
+    this.main.classList.add('asset-editor');
+    this.main.scrollTop = 0;
+    window.scrollTo(0, 0);
+    const at = currentRoute();
+    const path = formatHash(['p', this.project.id], { assets: kind, tab: tab === 'files' ? undefined : tab });
+    const same =
+      at.path[0] === 'p' && at.path[1] === this.project.id && !at.path[2] && at.params.assets === kind && at.params.tab === (tab === 'files' ? undefined : tab);
+    if (location.hash !== path) {
+      const href = `${location.pathname}${location.search}${path}`;
+      if (!same && at.path[0] === 'p' && at.path[1] === this.project.id) history.pushState(null, '', href);
+      else history.replaceState(null, '', href);
+    }
+    document.title = `${kind ? `${KIND_LABELS[kind]} · ` : tab !== 'files' ? `${TAB_TITLES[tab]} · ` : ''}${this.project.name} · ${SHORT}`;
+    this.renderSidebar();
+    const slot = h('div', { role: 'status' }, 'Opening the overview…');
+    clear(this.main, this.bar, slot);
+    void import('./overview')
+      .then(({ overview }) => {
+        if (this.disposed || !slot.isConnected || !this.assetView) return;
+        const page = overview({
+          project: this.project,
+          tab,
+          kind,
+          all: () => this.openAssets(),
+          category: (k) => this.openAssets(k),
+          open: (file) => this.open(file),
+          add: (k) => void this.addOfKind(k),
+          play: () => this.play('title'),
+          download: () => void this.chooseDownload(),
+          firstSteps: () => (this.firstSteps ? () => this.firstSteps?.toggle(true) : undefined),
+          tabChanged: (next) => {
+            if (!this.assetView || this.assetView.tab === next) return;
+            this.assetView = { kind: undefined, tab: next };
+            setHashParams({ tab: next === 'files' ? undefined : next, assets: undefined }, ['p', this.project.id]);
+            document.title = `${next !== 'files' ? `${TAB_TITLES[next]} · ` : ''}${this.project.name} · ${SHORT}`;
+          },
+        });
+        slot.replaceWith(page.el);
+        this.cleanup = () => page.dispose();
+      })
+      .catch((error: unknown) => {
+        if (slot.isConnected) clear(slot, h('p', { class: 'hint' }, `The overview could not open: ${(error as Error).message}`));
+      });
+  }
+
   open(file: string): void {
+    const fromAssets = !!this.assetView;
+    this.assetView = this.assetReturn = undefined;
+    this.main.classList.remove('asset-editor');
     this.cleanup?.();
     this.cleanup = undefined;
     this.player?.stop();
@@ -520,7 +650,7 @@ export class Workspace implements AssistantHost {
     const at = currentRoute();
     if (at.path[0] !== 'p' || at.path[1] !== this.project.id || at.path[2] !== file) {
       const next = `${location.pathname}${location.search}${formatHash(['p', this.project.id, file])}`;
-      if (at.path[0] === 'p' && at.path[1] === this.project.id && at.path[2]) history.pushState(null, '', next);
+      if (at.path[0] === 'p' && at.path[1] === this.project.id && (at.path[2] || fromAssets)) history.pushState(null, '', next);
       else history.replaceState(null, '', next);
     }
     setHashParams({ play: undefined });
@@ -540,6 +670,7 @@ export class Workspace implements AssistantHost {
         h(
           'div',
           { class: 'toolbar' },
+          h('button', { type: 'button', title: 'Browse this file category', onclick: () => this.openAssets(kindOf(file)) }, 'Assets'),
           h(
             'button',
             {
@@ -707,6 +838,10 @@ export class Workspace implements AssistantHost {
    * skipTitle, on the test copy only) and its menu comes after play ends. Stop goes back to that file.
    */
   private play(how?: 'title' | PlayPick, back = this.current, watch?: Pick<RunOptions, 'onSession' | 'onPlayEnd'>): void {
+    if (this.assetView) this.assetReturn = this.assetView;
+    this.assetView = undefined;
+    this.main.classList.remove('asset-editor');
+    document.title = `Playing ${this.project.name} · ${SHORT}`;
     const level = how === 'title' ? undefined : (how ?? this.defaultPick(back));
     notePlayed(this.project);
     setHashParams({ play: level ? pickParam(level) : 'title' });
@@ -733,7 +868,7 @@ export class Workspace implements AssistantHost {
           level && h('button', { onclick: () => this.play('title', back), title: 'Play the whole game from its title screen' }, 'From the title screen'),
           h(
             'button',
-            { onclick: () => this.open(back && this.project.files.has(back) ? back : this.project.gam), title: back ? `Stop and go back to ${back}` : 'Stop' },
+            { onclick: () => this.stopPlay(), title: this.assetReturn ? 'Stop and return to the overview' : back ? `Stop and go back to ${back}` : 'Stop' },
             'Stop',
           ),
         ),
@@ -752,10 +887,22 @@ export class Workspace implements AssistantHost {
       if (start !== game) copy.set(this.project.gam, serializeGame(start));
     }
     // the player loads with the first play test; not if another file was opened meanwhile
-    void Promise.all([import('../../player/player'), import('../../dosPlayer/playerRecord')]).then(([{ mountPlayer }, { companionPatches }]) => {
+    void Promise.all([
+      import('../../player/player'),
+      import('../../dosPlayer/playerRecord'),
+      import('../../project/composeFiles'),
+      import('../../dosPlayer/playerOrigin'),
+    ]).then(([{ mountPlayer }, { companionPatches }, { composeFiles }, { companionOrigin, playerAbout }]) => {
       const player = companionPatches(this.project.companion, this.project.gam);
       if (!this.disposed && host.isConnected)
-        this.player = mountPlayer(host, copy, this.project.gam, { title: this.project.name, player, skipTitle: !!level, ...watch });
+        this.player = mountPlayer(host, composeFiles(copy, this.project.companion), this.project.gam, {
+          title: this.project.name,
+          hardwareId: `project:${this.project.id}`,
+          player,
+          playerAbout: playerAbout(companionOrigin(this.project.companion, this.project.gam)),
+          skipTitle: !!level,
+          ...watch,
+        });
     });
   }
 
@@ -816,6 +963,7 @@ export class Workspace implements AssistantHost {
     for (const [file, sections] of Object.entries(extras?.files ?? {})) for (const [k, v] of Object.entries(sections)) this.project.setExtras(file, k, v);
     for (const [n, b] of files.entries()) this.project.files.set(n, b);
     if (files.size) toast(`Added ${files.size} file(s).`);
+    (await import('../widgets/bigVocWarning')).warnBigVocs(files.entries());
     this.renderSidebar();
   }
 
@@ -842,11 +990,8 @@ export class Workspace implements AssistantHost {
   }
 
   private async duplicate(file: string): Promise<void> {
-    const ext = file.split('.').pop()!;
-    const name = await this.askName(`Duplicate ${file}`, this.project.freeName(file.replace(/\.[^.]+$/, ''), ext), ext);
-    if (!name) return;
-    this.project.files.set(name, this.project.files.get(file)!.slice());
-    this.open(name);
+    const { assetCommands } = await import('./assetCommands');
+    await assetCommands(this.project, (name) => this.open(name)).duplicate(file);
   }
 
   private async remove(file: string): Promise<void> {
@@ -857,7 +1002,7 @@ export class Workspace implements AssistantHost {
 
   /** The Download chooser (download.ts) for this game, as it is now. */
   private chooseDownload(): Promise<void> {
-    const title = this.project.game().scenes[0]?.desc.trim() || this.project.name;
+    const title = gameTitle(this.project.game()) || this.project.name;
     return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true, companion: () => this.project.companion });
   }
 }

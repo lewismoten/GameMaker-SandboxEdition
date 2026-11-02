@@ -14,9 +14,9 @@ import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro
 import { BLEN } from './shared/facelift';
 import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
 import type { OpenDesigner } from '../retro/host';
-import { BACKBL, MONBL, emptyBlock, parseBlocks } from '../formats/blocks';
-import { parseMonsters } from '../formats/monster';
-import { MLEN, MWID, parseMap, serializeMap } from '../formats/map';
+import { BACKBL, MONBL, emptyBlock, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MLEN, MWID, parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import {
   LMLEN,
   LMX,

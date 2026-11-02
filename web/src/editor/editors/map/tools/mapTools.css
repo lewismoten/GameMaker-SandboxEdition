@@ -214,3 +214,69 @@
 .mt-tip[hidden] {
   display: none;
 }
+
+/* Each map panel gets the available height; options no longer share a tiny leftover strip. */
+.mt-side-col > .panel-tabs {
+  min-height: 0;
+}
+.mt-side-col .block-picker:not(.mt-brushes) {
+  max-height: max(160px, calc(var(--side-col-room, 440px) - 80px));
+}
+.mt-side-col .mt-panel {
+  max-height: none;
+  overflow: visible;
+}
+@media (min-width: 901px) {
+  .mt-side-col .panel-tabs-list {
+    position: sticky;
+    top: 0;
+    background: var(--panel);
+    z-index: 1;
+  }
+}
+
+/* The Level check panel in the side column: the column already scrolls, so the panel does not
+   scroll again inside it (below 901px the column grows with the page and the panel keeps its cap) */
+@media (min-width: 901px) {
+  .mt-side-col .lc-panel {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* "What blocks do": the block behavior marks' toggles, each with its mark as the legend */
+.mt-marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin: 0;
+  padding: 4px 8px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.mt-marks[hidden] {
+  display: none;
+}
+.mt-marks legend {
+  padding: 0 4px;
+  font-size: 0.85em;
+}
+.mt-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  cursor: pointer;
+}
+.mt-mark input {
+  width: auto;
+  margin: 0;
+}
+.mt-mark canvas {
+  border-radius: 3px;
+}
+.mt-marks-note {
+  flex-basis: 100%;
+  margin: 0;
+}

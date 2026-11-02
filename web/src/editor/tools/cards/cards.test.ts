@@ -1,9 +1,9 @@
 // The instruction and level card generators: their words fit the text screen, their keys come
 // from the game, and the files they write play in the scene's slot with text that reads well.
 import { describe, expect, it } from 'vitest';
-import { PICKUPSEQ, parseCharacter, serializeCharacter } from '../../../formats/character';
-import { parseSlideList } from '../../../formats/graphicScripts';
-import { serializeGame } from '../../../formats/game';
+import { PICKUPSEQ, parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { GameFiles } from '../../../project/files';
 import { testGame } from '../../check/testGame';
 import { textContrast } from '../../check/checks/textContrast';

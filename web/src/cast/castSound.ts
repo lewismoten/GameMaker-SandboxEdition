@@ -4,7 +4,7 @@
 // horn, a giggle, things landing) and a few made here (footsteps, the tin heart's tick-tock,
 // THE CHEZ's electric whirr). It follows the site's demo sound choice (media/demoAudio.ts:
 // "None" keeps it quiet) and only starts from a gesture on the stage.
-import { AudioEngine } from '../audio/engine';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { demoAudio, setDemoAudio } from '../media/demoAudio';
 import { fetchGameFile, loadGameList } from '../project/files';
 

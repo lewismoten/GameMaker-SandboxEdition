@@ -84,7 +84,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   },
   { text: 'Nothing flashes faster than three times a second', checks: ['flashing'] },
   { text: 'The title screen shows the game you’ll play', checks: [] },
-  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music', 'voc-missing'] },
+  { text: 'Frequent sounds are short; no voice line is cut off; music fits', checks: ['sounds', 'music', 'voc-missing', 'voc-size'] },
   { text: 'Storyline, instructions, credits, won and lost screens are filled in', checks: ['ending'], full: true },
   {
     text: 'The first scene’s hero sets the starting hit points, lives and counters for every hero; every hero has a standing picture',
@@ -138,6 +138,21 @@ function savedFindings(project: Project, all = false): { findings: Finding[]; ma
       );
   }
   return { findings, maps: maps.length, checked };
+}
+
+/** For the Overview's Tools tab: how many lines are ticked, and how many maps have a saved Level check. Only reads. */
+export function uploadSummary(project: Project): { ticked: number; total: number; maps: number; checked: number; problems: number } {
+  const ticks = new Set(project.extras<number[]>(project.gam, SECTION, []));
+  const saved = savedFindings(project);
+  const played = saved.maps > 0 && saved.checked === saved.maps;
+  let ticked = 0;
+  let problems = 0;
+  APPENDIX_B.forEach((item, i) => {
+    const st = itemState(item, saved.findings, played);
+    if (st.kind === 'problems') problems++;
+    if (ticks.has(i) || (st.kind === 'clear' && item.full)) ticked++;
+  });
+  return { ticked, total: APPENDIX_B.length, maps: saved.maps, checked: saved.checked, problems };
 }
 
 export async function uploadChecklist(project: Project): Promise<void> {

@@ -2,9 +2,11 @@
 // and the ribbon (no title-screen background caught between the letters), on Teddy's own title.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { decodeGif } from '../../formats/gif';
-import { paletteToRGBA } from '../../formats/palette';
-import { BADGE_CX, BADGE_CY, BADGE_H, BADGE_W, composeBadge, cropCenterX, titleMask } from './gameBadge';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { paletteToRGBA } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { BADGE_CX, BADGE_CY, BADGE_H, BADGE_W, OUTLINE, composeBadge, cropCenterX, rgb, titleMask } from './gameBadge';
+import { inkMask } from './badgeInk';
+import { letteringImage } from './badgeLettering';
 import { GAME_MUGS } from './gameMugArt';
 
 const game = (id: string) => new URL(`../../../../games/${id}/`, import.meta.url);
@@ -54,5 +56,89 @@ describe('composeBadge', () => {
 
   it('keeps the medallion inside the title screen', () => {
     expect(cropCenterX(320, teddy.centerX)).toBe(teddy.centerX);
+  });
+});
+
+describe('centerY', () => {
+  const at = (b: { data: Uint32Array }, x: number, y: number) => b.data[y * BADGE_W + x];
+  const plain = composeBadge(screen, undefined, box, { ...teddy, strip: false });
+  const lowered = composeBadge(screen, undefined, box, { ...teddy, strip: false, centerY: 90 });
+
+  it('moves the picture down 10 pixels', () => {
+    // the sky/ground below the ribbon, in the middle column, is the plain badge's 10 rows up
+    for (const y of [150, 170, 190]) expect(at(lowered, BADGE_CX, y)).toBe(at(plain, BADGE_CX, y - 10));
+  });
+
+  it('keeps the title where it was', () => {
+    for (let x = 60; x < BADGE_W - 60; x += 7) expect(at(lowered, x, 30)).toBe(at(plain, x, 30));
+  });
+
+  it('puts the screen top row on above the screen', () => {
+    const low = composeBadge(screen, undefined, box, { ...teddy, centerY: 60 });
+    expect(low.data.some((v) => v >>> 24)).toBe(true);
+  });
+});
+
+describe('lettering', () => {
+  const base = { title: [56, 40, 264, 112] as [number, number, number, number], centerX: 160 };
+  const depth = decodeGif(new Uint8Array(readFileSync(new URL('disk/title.gif', game('depth')))));
+  const lettering = { lines: ['DEPTH', 'PERCEPTION'], scales: [6, 3], fill: ['#ffffff', '#7fc4ff'], extrude: '#0a1c5a', centerY: 80 };
+  const fresh = composeBadge(depth, undefined, {}, { ...base, lettering });
+
+  it('sets fresh lettering with a dark outline and an extruded edge, on a ribbon', () => {
+    expect(fresh.data.filter((v) => v === 0xffffffff).length).toBeGreaterThan(100);
+    expect(fresh.data.filter((v) => v === 0xff1a0f12).length).toBeGreaterThan(300);
+    expect(fresh.data.filter((v) => v === 0xff5a1c0a).length).toBeGreaterThan(100);
+    // a solid ribbon edge across the middle of the block, past the lettering's width
+    expect(fresh.data[80 * BADGE_W + 60] >>> 24).toBe(255);
+  });
+
+  it('makes the first line bigger than the second', () => {
+    const same = letteringImage({ ...lettering, scales: [3, 3] }, 0xff000000, (h) => parseInt(h.slice(1), 16) | 0xff000000);
+    const big = letteringImage(lettering, 0xff000000, (h) => parseInt(h.slice(1), 16) | 0xff000000);
+    expect(big.height - same.height).toBe(3 * 8);
+  });
+});
+
+describe('mend', () => {
+  it('tiles the columns beside a box over it, row by row', () => {
+    const base = { title: [6, 10, 312, 86] as [number, number, number, number], centerX: 160 };
+    const flat = { width: 320, height: 200, pixels: new Uint8Array(320 * 200), palette: screen.palette };
+    for (let y = 0; y < 200; y++) flat.pixels[y * 320 + 100] = 5;
+    const a = composeBadge(flat, undefined, {}, base);
+    const b = composeBadge(flat, undefined, {}, { ...base, mend: [{ box: [90, 150, 130, 160], from: [0, 10] }] });
+    expect(a.data.some((v, i) => v !== b.data[i])).toBe(true);
+  });
+});
+
+describe('ink: a solid ribbon behind the lettering', () => {
+  it('takes only the named colors, less specks', () => {
+    const px = new Uint8Array(20 * 10).fill(7);
+    for (let y = 2; y < 6; y++) for (let x = 3; x < 9; x++) px[y * 20 + x] = 1;
+    px[8 * 20 + 15] = 1; // a speck
+    const m = inkMask({ width: 20, height: 10, pixels: px }, [0, 0, 20, 10], [1])!;
+    expect([m.x, m.y, m.w, m.h]).toEqual([3, 2, 6, 4]);
+    expect(m.mask.every((v) => v === 1)).toBe(true);
+  });
+
+  it('shows no picture between or inside the letters of any badge that names its ink', () => {
+    for (const mug of GAME_MUGS.filter((m) => m.ink)) {
+      const scr = decodeGif(new Uint8Array(readFileSync(new URL('disk/title.gif', game(mug.game)))));
+      const about = JSON.parse(readFileSync(new URL('about.json', game(mug.game)), 'utf8')).box ?? {};
+      const lut = paletteToRGBA(scr.palette);
+      const b = composeBadge(scr, undefined, about, mug);
+      const m = inkMask(scr, mug.title, mug.ink!)!;
+      const ok = new Set<number>([
+        ...mug.ink!.map((i) => lut[i] >>> 0),
+        OUTLINE >>> 0,
+        rgb(about.background ?? '#000000') >>> 0,
+        rgb(about.accent ?? '#ffd23f') >>> 0,
+      ]);
+      const sy = Math.round(scr.height / 2);
+      const top = BADGE_CY - (sy - m.y) - 1;
+      const left = Math.round(BADGE_CX - (m.w + 2) / 2);
+      for (let y = top; y < top + m.h + 2; y++)
+        for (let x = left; x < left + m.w + 2; x++) expect(ok.has(b.data[y * BADGE_W + x] >>> 0), `${mug.game} ${x},${y}`).toBe(true);
+    }
   });
 });

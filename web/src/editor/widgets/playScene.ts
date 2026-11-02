@@ -10,7 +10,7 @@ import './playScene.css';
 import { h } from '../core/ui';
 import type { Project } from '../core/project';
 import { GameFiles } from '../../project/files';
-import { serializeGame } from '../../formats/game';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { mulberry32 } from '../../seededRandom';
 import { TakeRecorder, type Take } from '../check/walk/takes';
 import { keepPlay } from '../check/walk/mine';

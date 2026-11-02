@@ -10,7 +10,7 @@
 // Leo's hand (counter 20 up, like any spoon) for the latch by the cloves.
 // A death starts the room over with every handle back but the turns counted, which only
 // makes the counter easier to turn.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { micro } from '../art/draw';
 import { c } from '../art/pal';
 import { CTR } from '../ids';

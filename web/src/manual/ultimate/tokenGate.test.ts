@@ -1,9 +1,9 @@
 // The Ultimate Owner's Guide's three-token gate (Chapter 4, chaptersPlay.ts) built as a tiny
 // game and played on the engine: the settings the exercise gives, and what it says happens.
 import { describe, expect, it } from 'vitest';
-import { BACKBL, parseBlocks, serializeBlocks } from '../../formats/blocks';
-import { parseCharacter, serializeCharacter } from '../../formats/character';
-import { MLEN, parseMap, serializeMap } from '../../formats/map';
+import { BACKBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MLEN, parseMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { SceneSim } from '../../editor/check/sim';
 import { RIGHT, testGame } from '../../editor/check/testGame';
 

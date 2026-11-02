@@ -1,0 +1,265 @@
+/* The Bits & Bytes Software spread (sections/bitsBytesAd.ts, bnbArt.ts): a bright catalog page
+   in the store's own blue, yellow and red on cream paper, with a bold vertical tab on each outer
+   edge, big angled boxes, prices with raised cents and Bitsy the floppy disk. The page keeps these
+   colors in light and dark, as every printed page does. */
+.mag-page:is([data-page='bnb-ad'], [data-page='bnb-ad-2']) .mag-adframe {
+  --bnb-blue: #1346c8;
+  --bnb-yellow: #ffd21f;
+  --bnb-red: #e0242b;
+  align-items: center;
+  gap: 0.6em;
+  background: radial-gradient(circle at 50% 30%, #fffdf4 0 45%, #fff3c4 100%);
+  color: #141210;
+}
+
+.mag-page[data-page='bnb-ad'] .mag-adframe {
+  padding-left: 3.6em;
+}
+
+.mag-page[data-page='bnb-ad-2'] .mag-adframe {
+  padding-right: 3.6em;
+}
+
+.mag-page:is([data-page='bnb-ad'], [data-page='bnb-ad-2']) .mag-adframe h2 {
+  color: var(--bnb-blue);
+  font-style: italic;
+  text-align: center;
+  text-shadow: 0.05em 0.05em 0 var(--bnb-yellow);
+}
+
+.mag-page:is([data-page='bnb-ad'], [data-page='bnb-ad-2']) .mag-adframe > * {
+  max-width: 100%;
+}
+
+/* the vertical section tab on the outer edge */
+.mag-page:is([data-page='bnb-ad'], [data-page='bnb-ad-2']) .mag-art:is(.art-bnb-tab-left, .art-bnb-tab-right) {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2.8em;
+  margin: 0;
+}
+
+.mag-page[data-page='bnb-ad'] .art-bnb-tab-left {
+  left: 0;
+}
+
+.mag-page[data-page='bnb-ad-2'] .art-bnb-tab-right {
+  right: 0;
+}
+
+.bnb-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  height: 100%;
+  background: var(--bnb-blue);
+  color: var(--bnb-yellow);
+  font-weight: 900;
+  font-size: 1.5em;
+  letter-spacing: 0.12em;
+  border-inline: 0.12em solid #0b1a33;
+}
+
+.bnb-tab span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.bnb-tab b {
+  color: var(--bnb-red);
+  background: var(--bnb-yellow);
+  border-radius: 50%;
+  width: 1.2em;
+  text-align: center;
+  line-height: 1.2em;
+}
+
+.bnb-box {
+  display: block;
+  height: auto;
+  filter: drop-shadow(0.25em 0.35em 0.2em rgba(0, 0, 0, 0.35));
+}
+
+.mag-page .art-bnb-teddy3 {
+  margin: 0;
+  width: 66%;
+  margin-block: -0.4em -1.4em;
+}
+
+.art-bnb-teddy3 .bnb-box {
+  width: 100%;
+}
+
+/* two boxes overlapping, the big one behind */
+.bnb-pair {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.38;
+}
+
+.bnb-pair .bnb-box {
+  position: absolute;
+  width: 56%;
+}
+
+.bnb-pair .gm {
+  right: 4%;
+  top: 0;
+  width: 62%;
+}
+
+.bnb-pair .snow {
+  left: 2%;
+  top: 14%;
+  z-index: 1;
+}
+
+.mag-page .art-bnb-pair {
+  margin: 0;
+  width: 100%;
+}
+
+.bnb-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  line-height: 1;
+}
+
+.bnb-title small {
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  font-size: 0.7em;
+  color: var(--bnb-red);
+}
+
+.bnb-title b {
+  font-size: 1.9em;
+  font-weight: 900;
+  font-style: italic;
+  color: var(--bnb-blue);
+  text-shadow: 0.05em 0.05em 0 var(--bnb-yellow);
+}
+
+.bnb-title i {
+  margin-top: 0.3em;
+  padding: 0.1em 0.7em;
+  background: var(--bnb-red);
+  color: #fff;
+  font-weight: 800;
+  font-style: normal;
+  transform: rotate(-1.5deg);
+}
+
+.bnb-price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.bnb-price-label {
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--bnb-red);
+}
+
+.bnb-price-num {
+  font-size: 4.2em;
+  font-weight: 900;
+  color: var(--bnb-red);
+  text-shadow: 0.04em 0.04em 0 #0b1a33;
+}
+
+.bnb-price-num sup {
+  font-size: 0.45em;
+  vertical-align: top;
+  position: relative;
+  top: 0.2em;
+  margin-left: 0.05em;
+}
+
+.bnb-price s {
+  color: #555;
+  font-weight: 700;
+}
+
+.bnb-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.4em 0.9em;
+  border: 0.18em solid #0b1a33;
+  background: #fff;
+  box-shadow: 0.25em 0.25em 0 var(--bnb-blue);
+}
+
+.mag-art .bnb-logo .bnb-logo-mascot {
+  width: 3.2em;
+  height: auto;
+  flex: none;
+}
+
+.bnb-logo-words {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.bnb-logo-words b {
+  font-size: 1.9em;
+  font-weight: 900;
+  font-style: italic;
+  color: var(--bnb-blue);
+  text-shadow: 0.05em 0.05em 0 var(--bnb-yellow);
+}
+
+.bnb-logo-words i {
+  align-self: flex-start;
+  padding: 0 0.6em;
+  background: var(--bnb-red);
+  color: #fff;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+}
+
+.bnb-logo-words em {
+  font-style: normal;
+  font-weight: 700;
+  margin-top: 0.3em;
+}
+
+.bnb-says {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4em;
+  align-self: flex-start;
+}
+
+.bnb-bitsy {
+  width: 3.4em;
+  height: auto;
+}
+
+.bnb-bubble {
+  padding: 0.2em 0.7em;
+  border: 0.14em solid #0b1a33;
+  border-radius: 0.9em;
+  background: #fff;
+  font-weight: 800;
+  margin-bottom: 1.2em;
+}
+
+.mag-page:is([data-page='bnb-ad'], [data-page='bnb-ad-2']) .mag-adframe > .mag-grid {
+  width: 100%;
+  align-items: center;
+}
+
+.mag-page[data-page='bnb-ad-2'] .mag-adframe > .mag-burst {
+  right: 3.4em;
+}

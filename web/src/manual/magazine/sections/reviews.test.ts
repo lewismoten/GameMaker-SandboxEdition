@@ -10,6 +10,7 @@ import { cdCatalog } from '../../../../scripts/cdGames';
 import { magContext, magGames } from '../games';
 import { plain } from '../inline';
 import type { Block } from '../types';
+import { criticsCorner } from './critic';
 import { REVIEWS } from './reviews';
 
 const cd = join(__dirname, '../../../../../cd');
@@ -72,9 +73,9 @@ describe('the readers’ reviews', async () => {
   });
 
   it('splits the Critic’s Corner verdict on Snowbound, with facts from the game itself', () => {
-    const critic = pages.find((pg) => pg.id === 'critics-corner');
+    const critic = criticsCorner(ctx);
     expect(critic).toBeDefined();
-    const all = text(critic!.blocks);
+    const all = text(critic.blocks);
     for (const s of ['STORY: A+', 'GAMEPLAY: C–', 'Don’t waste your money on it', ctx.game('snowbound')!.price!]) expect(all).toContain(s);
     const game = join(__dirname, '../../../../../games/snowbound');
     const walk = JSON.parse(readFileSync(join(game, 'walkthrough.json'), 'utf8')) as {

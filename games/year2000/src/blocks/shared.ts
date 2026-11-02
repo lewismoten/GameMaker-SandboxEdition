@@ -2,7 +2,7 @@
 // (and what each does when touched), the phone booths, laser fences that switch on and off
 // by next/ntime chains, the moving walkways (gravity blocks), staff doors that open for the
 // right counter, and addBig, which cuts a big picture into numbered blocks.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID, type BlockDef } from './book';
 import { T, shadeAt } from '../art/draw';
 import { FLOORS } from './floors';

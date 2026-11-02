@@ -4,11 +4,11 @@
 // most new ground, picks things up, scores, and does not get hurt. It plays the real
 // engine through headless.ts, so the keys it presses become a real .REC recording.
 import { characterActions, type ActionKind } from '../../../web/src/editor/keymap/keyMap';
-import type { Machine } from '../../../web/src/engine/machine';
-import type { Session } from '../../../web/src/engine/scene';
-import { BACKBL, LASTMON, type World } from '../../../web/src/engine/world';
-import { parseMap } from '../../../web/src/formats/map';
-import { rng } from '../pixels';
+import type { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { BACKBL, LASTMON, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Probe, cloneWorld } from './probe';
 
 export interface BotOptions {

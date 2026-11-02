@@ -3,7 +3,7 @@
 // dusts over and fills back in on a timer, roads, plow banks that hand out snowballs, ice
 // whose gravity slides you the way the chevrons point, and the footbridge. Returns the
 // painters other areas reuse.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../art/draw';
 import { THROWSEQ } from '../ids';
 import { Ctx, MONEY, SOLID } from './book';

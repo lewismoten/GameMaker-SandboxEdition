@@ -37,20 +37,25 @@ export async function gmCoverSheet(teddy: CatalogEntry | undefined): Promise<She
 const MAG_W = 816;
 const MAG_H = 1056;
 
-/** TURBO BUTTON's front cover: only the cover section's page, drawn as the magazine viewer draws it. */
-export async function magazineCoverSheet(entries: readonly CatalogEntry[]): Promise<Sheet | undefined> {
-  const [{ COVER }, { magContext, magGames }, { renderPage }, { h }] = await Promise.all([
+/** TURBO BUTTON's front cover (No. 2 by default, or No. 1): only the cover section's page, drawn as the magazine viewer draws it. */
+export async function magazineCoverSheet(entries: readonly CatalogEntry[], which: 1 | 2 = 2): Promise<Sheet | undefined> {
+  const [{ COVER }, { COVER_1 }, { ISSUES }, { magContext, magGames }, { renderPage }, { h }] = await Promise.all([
     import('../manual/magazine/sections/cover'),
+    import('../manual/magazine/sections/spring93/cover'),
+    import('../manual/magazine/masthead'),
     import('../manual/magazine/games'),
     import('../manual/magazine/render'),
     import('../editor/core/ui'),
     import('../manual/magazine/mag.css'),
   ]);
   const games = magGames(entries);
-  const page = (await COVER.pages(magContext(games)))[0];
+  const page = (await (which === 1 ? COVER_1 : COVER).pages(magContext(games, ISSUES[which])))[0];
   if (!page) return undefined;
   const byId = new Map(entries.map((e) => [e.id, e]));
-  const { el, ready } = renderPage({ ...page, id: 'cover', folio: 1, section: 'cover' }, { where: 'web', entry: (id) => byId.get(id) });
+  const { el, ready } = renderPage(
+    { ...page, id: 'cover', folio: 1, section: 'cover', foot: ISSUES[which].issue },
+    { where: 'web', entry: (id) => byId.get(id) },
+  );
   await ready;
   // laid out at its own size, as the viewer's paper is (thumbs.ts keeps data-layout)
   const paper = h('div', { class: 'lib-mag-paper', dataset: { layout: String(MAG_W) } }, el);

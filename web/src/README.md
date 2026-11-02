@@ -39,9 +39,12 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 - [`main.ts`](main.ts), [`modernUi.ts`](modernUi.ts): the site's entry and today's web interface
   (see Main flows).
 - [`play.ts`](play.ts): the play page's entry. [`dosPage/`](dosPage) is `dos.html`'s.
+- [`libraryStart.ts`](libraryStart.ts): the game the Library starts on, noted from the last game page, look or
+  project view (`library/libraryPage.ts` reads it once).
 - [`urlState.ts`](urlState.ts): what the address bar keeps. [`viewSwitch.ts`](viewSwitch.ts): the
   Desk | DOS | Web switch.
 - [`settingsMenu.ts`](settingsMenu.ts): today's web header's ⚙ Settings menu (play offline, the source, the theme, the guided tour, AI setup, back up / restore), its items also in the narrow ⋯ menu.
+- [`soundSettings/`](soundSettings/README.md): the ⚙ menu's Sound and tour dialog: music, voice and sound effects (on, volume) and the tour switch.
 - [`theme.ts`](theme.ts): light or dark for today's web, as the Settings menu's Theme item. [`edition.ts`](edition.ts): the fork's
   name, in one place. [`pageToc.ts`](pageToc.ts): "On this page" beside a reading page (the Mac,
   Windows and Linux pages, the cast, credits and achievements), or a row of its section links
@@ -54,7 +57,8 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   [`seededRandom.ts`](seededRandom.ts): the seeded random numbers (Mulberry32, xorshift32) and
   string hash (FNV-1a) that pictures, songs, maps and walkthroughs use to come out the same every
   time.
-- [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page
+- [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page; the dev server keeps serving the old code until it is pressed (`manualReload` in `vite.config.ts` holds back Vite's invalidation)
+- [`devLog/interactionLog.ts`](devLog/interactionLog.ts): development on localhost only, opt in with the 🙈/🐵 corner switch (remembered): logs screen size, pointer, clicks, keys (never what is typed in a field), routes, slow paints, long tasks and every JavaScript error to `.for-lewis/debug/interaction-log/<date>.jsonl` through `scripts/devLog.ts`; it pauses after 5 minutes with no mouse or keyboard
   (which would switch off the desk's PC) whenever a source file changes.
 - [`firstLoad.test.ts`](firstLoad.test.ts) and [`importWalk.ts`](importWalk.ts): the up-front
   download checks (above).
@@ -68,24 +72,25 @@ Each area's own README says what each of its files does; the short ones are desc
 
 ### Game files, engine and player
 
-- [`formats/`](formats/README.md): readers and writers for every Game-Maker file and the standard
+SDK implementation lives in the packages below; the app imports their declared exports. Runtime screen/fonts/keyboard/CP437 data belong to the engine package, archive and scan modules to archives, and generic drawing/music/PNG/simulation builders to tools. See [workspace development](../../docs/monorepo.md).
+
+- [`formats/`](formats/README.md): integration tests for the engine package's readers and writers for every Game-Maker file and the standard
   ones it uses (Borland C++ 16-bit layout).
-- [`engine/`](engine/README.md): the game engine, a TypeScript port of `PLAYGAME.C`, and what
+- [`engine/`](engine/README.md): engine integration tests; the engine package owns the TypeScript port of `PLAYGAME.C`, and what
   XFERPLAY's own screens show.
 - [`../packages/engine/`](../packages/engine/README.md): the npm package build and usage guide for
   the reusable browser engine.
+- [`../packages/archives/`](../packages/archives/README.md): portable browser/Node game discovery, ZIP/SFX unpacking, and ZIP creation.
 - [`../packages/tools/`](../packages/tools/README.md): the development-only npm toolkit for native formats, drawing, audio generation and headless checks.
 - [`audio/`](audio/README.md): OPL2 music, the CMF player, Web Audio output, PC speaker sounds, and
   making songs and sound effects.
-- [`gfx/`](gfx): the mode 13h screen (`screen.ts`) and 8×8 fonts (`font8x8.ts`; all of CP437 in
-  `cp437Glyphs.ts`), and pictures drawn from a game's own maps: `levelPicture.ts`,
-  `titlePicture.ts`, `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's), and
+- [`gfx/`](gfx): pictures drawn from a game's own maps: `levelPicture.ts`,
+  `titlePicture.ts`, `titlePoster.ts` (the click-to-play title for projects and bundles), `gameShots.ts` and `sandboxShots.ts` (the Game-Maker box's and guide's), and
   screenshots that are a moment of play (`shotFrame.ts`, shown by `frameShot.ts`).
-- [`input/`](input): keyboard scan codes (`scancodes.ts`, `keyboard.ts`), arrow chords and Mac
-  keys for keyboards without a keypad (`chords.ts`, `macKeys.ts`), keys pressed with the mouse or
+- [`input/`](input): Mac keys for keyboards without a keypad (`macKeys.ts`), keys pressed with the mouse or
   a finger (`virtualKeys.ts`), the gamepad (`gamepad.ts`), and the desk's game pad and ball mouse
-  as the PC's joystick and mouse (`deskJoystick.ts`, `deskMouse.ts`).
-- [`player/`](player): the embeddable player (`player.ts`): canvas, start overlay, whole-pixel
+  as the PC's joystick and mouse (`deskJoystick.ts`, with the pad's TURBO switch in `padTurbo.ts`; the portable mouse state lives in the engine package).
+- [`player/`](player): the embeddable player (`player.ts`): canvas, start overlay, optional first-run video/audio setup (`hardwareSetup.ts`) and remembered per-game choices (`hardwarePrefs.ts`, backed up with preferences), whole-pixel
   scaling (`exactScale.ts`), touch controls (`touch.ts`, with what the d-pad sends for each
   direction and which keys that leaves off the touch strip in `moveKeys.ts`), on-screen keys (`screenKeys.ts`) and a
   pointer that hides itself (`cursorHide.ts`). Used by `play.ts`, the editor's play test, the desk
@@ -104,13 +109,15 @@ Each area's own README says what each of its files does; the short ones are desc
 - [`export/`](export/README.md): publishing a game: web app, single page, web player, DOS folder,
   and the Mac, Windows and Linux downloads.
 - [`dosPlayer/`](dosPlayer/README.md): the DOS player customizer's core: patching XFERPLAY.EXE's
-  words, colors, frames and keys.
+  words, colors, frames and keys, and an imported game's own player (its build and kept bytes).
 - [`hostedPlayer/`](hostedPlayer/README.md): the web player, one file that plays Game-Maker game
   folders on any web host.
 - [`linkIn/`](linkIn/README.md): opening a game another site links to or sends by postMessage.
+- [`community/`](community/README.md): reviewed links to independently hosted games and
+  the Community submission form; [contribution guide](../../docs/community-games.md).
 - [`offline/`](offline): "Make available offline": the whole site in the service worker's cache at
   once (`offlineCopy.ts`), from the web's Offline dialog (`offlineDialog.ts`) or `OFFLINE.EXE` on
-  the desk (`offlineExe.ts`).
+  the desk (`offlineExe.ts`); `loadFailure.ts` says so when a part of the site cannot load.
 - [`seo/`](seo): page titles, descriptions and JSON-LD for the site and its game pages: `site.ts`
   (shared with the build), `route.ts` (keeps the tags in step at run time) and `siteSections.ts` (the home page's WebSite and
   magazine data and its links to the `#/…` pages, which `seoBuild.ts` writes in).
@@ -119,6 +126,8 @@ Each area's own README says what each of its files does; the short ones are desc
 
 - [`editor/`](editor/README.md): today's web interface: the home page, the workspace, the editors,
   the Level check and the Guide.
+- [`editor/disk/`](editor/disk/README.md): the disk-space tool: merges of monster files, block sets and palettes, and the floppy disks a game needs.
+- [`editor/editors/palette/`](editor/editors/palette/README.md): VGA palette editing, role reservations and contrast checks.
 - [`saves/`](saves/README.md): the home page's Saves & scores panel: saved games, high scores and
   backups.
 - [`backup/`](backup/README.md): Settings › Back up / restore: everything this browser keeps in one
@@ -155,6 +164,7 @@ Each area's own README says what each of its files does; the short ones are desc
   EGG.EXE.
 - [`tinHearts/`](tinHearts/README.md): the tin heart hunt and its trophy.
 - [`scoreTrophies/`](scoreTrophies/README.md): the desk's two score trophies.
+- [`fortKnox/`](fortKnox/README.md): money left when a catalog game is won, and Teddy's toy safe with its treat store.
 
 ### The Guides, the paper in the boxes and the magazine
 

@@ -2,7 +2,7 @@
 // F2's status and so on), then the F-keys, the player's shared colors and the Files tab (the DOS
 // download's file extensions, fileFields.ts). Each screen's tab holds every patch of that screen,
 // in sections by kind: words, positions, frames, colors, then times.
-import { PATCHES, type PatchEntry, type PatchGroup, type PatchScreen } from '../../../../dosPlayer/patchTable';
+import { PATCHES, type PatchEntry, type PatchGroup, type PatchScreen } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
 
 /** A tab: a screen's, or the Files tab. */
 export type PanelTab = PatchScreen | 'files';

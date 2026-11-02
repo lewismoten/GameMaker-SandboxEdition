@@ -4,7 +4,7 @@
 // files by name and bytes, its links, scroll and game type; moving its box or renaming it
 // doesn't count), so the Level check can say the map changed since and offer to make it again.
 import type { Project } from '../../core/project';
-import type { Game } from '../../../formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Walkthrough } from '../../../walkthrough/format';
 
 interface BotRoute {

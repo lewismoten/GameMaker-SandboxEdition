@@ -1,6 +1,6 @@
 // The Docks: A Pirate's Worst Surprise, Except
 // Those Ones, Legend at the Water's Edge and Steam-Powered Summer.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { blank, figure, figureBack, floor, gwinn, mirror, on, sign, wall } from '../../art/kit';

@@ -1,7 +1,7 @@
 // File names a game asks for, opened as DOS opened them: each part cut to 8.3 (MS-DOS drops the
 // extra letters when it opens a file), and on the CD the ISO copy's underscores.
 import { describe, expect, it } from 'vitest';
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { cdName, GameFiles, normalize } from './files';
 
 /** A pre-3.0 .gam (OLDintegratorstruct, 330 bytes a scene) whose level names these files, without extensions. */

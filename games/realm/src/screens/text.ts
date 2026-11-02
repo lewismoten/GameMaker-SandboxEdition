@@ -71,7 +71,7 @@ export const CREDITS = withCreditPage(
   [
     page([
       'QUEST FOR THE ROUND TUIT',
-      'Sandbox Software, 1996',
+      'Sandbox Software, 1994',
       '',
       'Design, pixels, maps, music,',
       'sound and words by Claude -',
@@ -113,8 +113,8 @@ export function readme(price: string): string {
   return `
     QUEST FOR THE ROUND TUIT
     A Realm of Procrastia Adventure
-    Version ${about.version} - Spring 1996
-    (c) 1996 Sandbox Software
+    Version ${about.version} - November 1994
+    (c) 1994 Sandbox Software
 
 In the Kingdom of Procrastia
 everything gets done...

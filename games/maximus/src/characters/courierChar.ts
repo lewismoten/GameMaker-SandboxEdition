@@ -1,6 +1,6 @@
 // COURIER.CHR / COURIER.CBL: Max on foot, two blocks tall: walking, jet hops, crouching,
 // firing every weapon, waving, and the explosion.
-import { CHARBL } from '../../../../web/src/formats/blocks';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { BlockList, NONE, character, setSeq, type F } from './chrkit';
 import { SEQ, SND, itemBlock } from '../ids';
 import { drawCourier, split, type Pose } from '../sprites/courier';

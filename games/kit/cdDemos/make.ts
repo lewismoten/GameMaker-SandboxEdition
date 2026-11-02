@@ -8,8 +8,8 @@
 //   INDEX=1          only rebuild demos.json from the recordings already made
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { crc32 } from '../../../web/src/project/zip';
-import { parseRecording } from '../../../web/src/formats/recording';
+import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { parseRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import type { ExtraDemo, ExtraDemoIndex } from '../../../web/src/media/extraDemos';
 import { CD_DEMO_GAMES } from './games';
 import { loadCdGame } from './headless';

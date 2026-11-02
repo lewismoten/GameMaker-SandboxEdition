@@ -1,22 +1,26 @@
 // Hear or see a file before choosing it: a small play button for sounds (.VOC), PC speaker
 // sound sets (.SND), songs (.CMF) and animations (.FLI). Only one preview plays at a time. The
 // audio engine (mediaShared.ts) loads with the first one played, so the file picker doesn't bring it.
+import type { ThumbSource } from './thumbs';
 import { h, toast } from '../core/ui';
 import { kindOf } from '../core/project';
 import { paintIndexed } from '../core/draw';
-import { decodeVoc, isVoc } from '../../formats/voc';
-import { isCmf } from '../../formats/cmf';
-import { parseSoundSet, NUMFREQ } from '../../formats/sound';
-import { isFli } from '../../formats/fli';
-import { decodeFliFrames } from '../../formats/fliFrames';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
+import { isCmf } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
+import { isFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { readSong } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
+import { musicPreviewTick } from './musicTimeline';
+import { decodeFliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
 
 /** Kinds that have something to play. */
-const PREVIEWABLE = new Set(['voc', 'cmf', 'snd', 'fli']);
+const PREVIEWABLE = new Set(['voc', 'cmf', 'snd', 'fli', 'cbl']);
 
 let active: { stop: () => void } | undefined;
+let generation = 0;
 
 /** Stops whatever preview is playing. */
 export function stopPreview(): void {
+  generation++;
   const a = active;
   active = undefined;
   a?.stop();
@@ -26,10 +30,16 @@ export function stopPreview(): void {
  * A play button for the file. `bytes` loads the file when first played; `screen` finds the
  * canvas an animation plays on (its thumbnail).
  */
-export function previewButton(name: string, bytes: () => Promise<Uint8Array | undefined>, screen?: () => HTMLCanvasElement | null): HTMLButtonElement | null {
+export function previewButton(
+  name: string,
+  bytes: () => Promise<Uint8Array | undefined>,
+  screen?: () => HTMLCanvasElement | null,
+  source?: () => Promise<ThumbSource>,
+  caption?: () => HTMLElement | null,
+): HTMLButtonElement | null {
   const kind = kindOf(name);
   if (!PREVIEWABLE.has(kind)) return null;
-  const label = kind === 'fli' ? 'Play the animation' : 'Listen';
+  const label = kind === 'fli' || kind === 'cbl' ? 'Play the animation' : 'Listen';
   const btn = h(
     'button',
     { type: 'button', class: 'pick-play', title: `${label}: ${name.toUpperCase()}`, 'aria-label': `${label}: ${name}`, 'aria-pressed': 'false' },
@@ -39,26 +49,104 @@ export function previewButton(name: string, bytes: () => Promise<Uint8Array | un
     btn.textContent = on ? '■' : '▶';
     btn.setAttribute('aria-pressed', String(on));
     btn.classList.toggle('playing', on);
+    if (!on) btn.removeAttribute('aria-busy');
   };
   btn.addEventListener('click', async (e) => {
     e.stopPropagation();
     e.preventDefault();
     if (btn.classList.contains('playing')) return stopPreview();
     stopPreview();
+    const requested = generation;
+    const loading = kind === 'cbl' ? { stop: () => set(false) } : undefined;
+    if (loading) {
+      active = loading;
+      set(true);
+      btn.setAttribute('aria-busy', 'true');
+    }
     let data: Uint8Array | undefined;
     try {
       data = await bytes();
     } catch {
       /* reported below */
     }
-    if (!data) return toast(`${name.toUpperCase()} could not be loaded.`, 'error');
-    const [{ audio }, { TICK_RATE }] = await Promise.all([import('./mediaShared'), import('../../audio/cmfPlayer')]);
+    if (requested !== generation || !btn.isConnected) {
+      if (loading && active === loading) stopPreview();
+      return;
+    }
+    if (!data) {
+      if (loading && active === loading) stopPreview();
+      return toast(`${name.toUpperCase()} could not be loaded.`, 'error');
+    }
+    if (kind === 'cbl') {
+      if (!source) {
+        stopPreview();
+        return toast('This block set needs its character files to preview an animation.');
+      }
+      try {
+        const [{ startCharacterAudition }, files] = await Promise.all([import('./characterAuditionPlayer'), source()]);
+        if (requested !== generation || !btn.isConnected) {
+          if (loading && active === loading) stopPreview();
+          return;
+        }
+        const host = btn.parentElement;
+        if (!host) return;
+        let canvas = screen?.();
+        if (!canvas) {
+          const placeholder = host.querySelector('.thumb');
+          if (!placeholder) throw new Error('A character thumbnail is needed to play this audition.');
+          canvas = h('canvas', { class: 'thumb pixel', role: 'img', 'aria-label': `Representative character pose from ${name.toUpperCase()}` });
+          placeholder.replaceWith(canvas);
+        }
+        const me = {
+          stop: () => {
+            audition.stop();
+            set(false);
+          },
+        };
+        const audition = startCharacterAudition({
+          name,
+          bytes: data,
+          source: files,
+          canvas,
+          host,
+          caption: caption?.(),
+          finished: () => {
+            if (active === me) stopPreview();
+          },
+        });
+        active = me;
+        btn.removeAttribute('aria-busy');
+        set(true);
+      } catch (error) {
+        if (requested !== generation || !btn.isConnected) {
+          if (loading && active === loading) stopPreview();
+          return;
+        }
+        if (loading && active === loading) stopPreview();
+        toast(error instanceof Error ? error.message : `${name.toUpperCase()} could not be previewed.`, 'error');
+      }
+      return;
+    }
+    if (kind === 'snd') {
+      if (!source) return toast('This sound set needs its neighboring VOC files to compare the sound pairs.');
+      try {
+        const [{ previewSoundSet }, files] = await Promise.all([import('./soundSetPreview'), source()]);
+        if (requested === generation && btn.isConnected) await previewSoundSet(name, data, files, screen?.());
+      } catch {
+        toast(`${name.toUpperCase()} could not be previewed.`, 'error');
+      }
+      return;
+    }
+    const [{ audio }, { TICK_RATE }] = await Promise.all([import('./mediaShared'), import('@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer')]);
     await audio.resume();
+    if (requested !== generation || !btn.isConnected) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let restore: (() => void) | undefined;
+    let animationFrame = 0;
     const me = {
       stop: () => {
         clearTimeout(timer);
+        cancelAnimationFrame(animationFrame);
         audio.stopVoc();
         audio.stopSpeaker();
         audio.stopSong();
@@ -86,16 +174,24 @@ export function previewButton(name: string, bytes: () => Promise<Uint8Array | un
           toast('That song cannot be played: Game-Maker only plays songs converted to its clock.', 'error');
           return;
         }
-      } else if (kind === 'snd') {
-        const sounds = parseSoundSet(data).freqs.filter((f) => f.some((v) => v >= 20));
-        if (!sounds.length) return toast('This sound set has no PC speaker sounds.');
-        let i = 0;
-        const next = () => {
-          if (i >= sounds.length || active !== me) return done();
-          audio.playSpeaker(sounds[i++]);
-          timer = setTimeout(next, (NUMFREQ / TICK_RATE) * 1000 + 120);
-        };
-        timer = setTimeout(next, 0);
+        const c = screen?.();
+        if (c) {
+          const song = readSong(data);
+          const ctx = c.getContext('2d')!;
+          const snapshot = ctx.getImageData(0, 0, c.width, c.height);
+          restore = () => ctx.putImageData(snapshot, 0, 0);
+          const clock = () => audio.context?.currentTime ?? performance.now() / 1000;
+          const started = clock();
+          const draw = () => {
+            if (active !== me) return;
+            ctx.putImageData(snapshot, 0, 0);
+            const tick = musicPreviewTick(song, (clock() - started) * TICK_RATE);
+            ctx.fillStyle = '#ffd400';
+            ctx.fillRect(Math.min(c.width - 2, (tick / Math.max(1, song.end.tick)) * c.width), 0, 2, c.height);
+            animationFrame = requestAnimationFrame(draw);
+          };
+          animationFrame = requestAnimationFrame(draw);
+        }
       } else if (kind === 'fli') {
         const c = screen?.();
         if (!c || !isFli(data)) throw new Error();

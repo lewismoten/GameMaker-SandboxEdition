@@ -48,6 +48,7 @@ const SAY: [RegExp, string][] = [
   [/\bDOS\b/g, 'doss'],
   [/\bGM\b/g, 'G M'],
   [/\bOPL2\b/g, 'O P L two'],
+  [/\bLinux\b/g, 'Linnix'],
   // a drive letter: "drive A:" is said "drive A"
   [/\b([A-D]):(?=[\s.,;!?]|$)/g, '$1'],
   // money and halves before the plain numbers
@@ -72,5 +73,7 @@ export function spokenText(text: string, engine: Engine = 'pocket'): string {
   for (const [from, to] of SAY) s = s.replace(from, to);
   // names in capitals (TURBO BUTTON, GRAVITAS) are said as words, not spelled
   s = s.replace(/\b[A-Z]{4,}\b/g, (w) => w[0] + w.slice(1).toLowerCase());
+  // the voices run straight through a colon, so it is said as the end of a sentence
+  s = s.replace(/(\w):\s+(\S)/g, (_, end: string, next: string) => `${end}. ${next.toUpperCase()}`);
   return s.replace(/\d+(?:,\d{3})*/g, (d) => sayNumber(d.replace(/,/g, '')));
 }

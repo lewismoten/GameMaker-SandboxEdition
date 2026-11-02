@@ -1,6 +1,6 @@
 // The little things Teddy's tricks send out (a bark, a spray of dirt, a paw, whirls, a
 // tumbleweed of corgi fluff, a heart) and the goodies he collects, as monster block art.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 

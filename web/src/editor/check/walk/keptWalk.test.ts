@@ -13,8 +13,8 @@ vi.mock('../../../project/storage', () => ({
 
 import { GameFiles } from '../../../project/files';
 import { getSection } from '../../../project/companion';
-import { serializeGame } from '../../../formats/game';
-import { MLEN, newMap, serializeMap } from '../../../formats/map';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, newMap, serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { Project } from '../../core/project';
 import { makeReadOnly } from '../../core/readOnly';
 import { testGame, WALL } from '../testGame';
@@ -65,8 +65,15 @@ describe('a walkthrough the bot makes only partway', () => {
       ['Level', true],
       ['Walled', false],
     ]);
-    expect(r.walk).toMatchObject({ partial: true, ending: 'It found no way through Walled.', chapters: [{ scene: 2, title: 'Level' }] });
-    expect(r.walk!.segments).toHaveLength(1);
+    expect(r.walk).toMatchObject({
+      partial: true,
+      ending: 'It found no way through Walled.',
+      chapters: [{ scene: 2, title: 'Level' }, { title: 'Walled (didn’t finish)' }],
+    });
+    // the furthest try in the scene it couldn't leave is kept too, marked incomplete
+    expect(r.walk!.segments).toHaveLength(2);
+    expect(r.walk!.segments[0].incomplete).toBeUndefined();
+    expect(r.walk!.segments[1].incomplete).toBe('It found no way through Walled.');
     const v = await verifyWalk(new GameFiles(t.files), 'test.gam', r.walk!, { maxMinutes: 2 });
     expect(v.frames).toBeGreaterThan(0);
 

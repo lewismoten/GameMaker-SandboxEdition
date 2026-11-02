@@ -7,7 +7,7 @@
 import '../export/credit.css';
 import './hosted.css';
 import { mountPlayer } from '../player/player';
-import { unlock } from '../audio/context';
+import { unlock } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
 import { GameFiles } from '../project/files';
 import { gameAbout } from '../export/gameAbout';
 import { notTrueDosNotice } from '../linkIn/notice';
@@ -86,6 +86,7 @@ async function play(game: ListedGame): Promise<void> {
     first = false;
     mountPlayer(root, files, gam, {
       title: game.title,
+      hardwareId: `hosted:${game.id}`,
       notice,
       back: { href: listHref(listParam), label: '← All games' },
       onFileWrite: (name, bytes) => void writeSave(game.id, name, bytes),

@@ -46,7 +46,7 @@
 
 .gm-player .gm-start.has-poster {
   background-position: center;
-  background-size: cover;
+  background-size: contain;
   image-rendering: pixelated;
   text-shadow: 0 2px 6px #000;
 }

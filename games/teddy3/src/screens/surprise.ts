@@ -2,7 +2,7 @@
 // Teddy pads into the ring and sniffs (cake!); the lights come up and everyone shouts
 // SURPRISE! There's a banner, balloons, the biggest cake with the bakery's candles, the Clown
 // Club, the geese and Doc Leo, and Gwinn brings her best bone and SITS. On purpose.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, centered, micro, outlined, scaleBlit } from '../art/draw';
 import { errandSprite } from '../sprites/errands';
 import { KLUB, gwinnSits } from '../sprites/klubfolk';

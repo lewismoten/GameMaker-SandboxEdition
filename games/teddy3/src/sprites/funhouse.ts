@@ -1,7 +1,7 @@
 // The funhouse's toys as monster art: a jack-in-the-box with a smiling puppy on its spring
 // (shut, rattling just before it pops, popped up, and latched shut for good once Teddy woofs
 // at it).
-import type { Pixels } from '../../../kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 

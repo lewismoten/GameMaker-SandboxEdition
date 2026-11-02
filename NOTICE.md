@@ -68,6 +68,12 @@ game folder opens in the browser unchanged.
   _modern web_ editor and player. AI assistance did most of the porting and code
   generation: reading the original C source, writing the TypeScript, building the Sandbox
   Software games in code, and testing them, directed and reviewed by Lewis.
+- **Helpers from October 30, 2026**: **Claude Sonnet 5.5** (Anthropic) runs as Claude Opus
+  5.5's helper agents. Opus plans the work and briefs each helper, Sonnet does it, and Lewis
+  directs both. Its first jobs were the guided tour's "What's in the box" chapter and fixes to
+  the game builds. It also drew Teddy's Forte Locks toy safe on the desk (`web/src/fortKnox/`: the
+  safe, its dial and the dog treat store inside), from Lewis's description of his childhood
+  bank. Notes kept for Lewis stay out of the repository.
 - **Reviews and a sounding board**: Lewis has also had **ChatGPT-6.1 Sol** (OpenAI) review
   the fork, TURBO BUTTON and the games' content, and talked ideas through with **Google
   Gemini 3** (Google): 1990s nostalgia and his own memories, the home-office supplies of the
@@ -75,10 +81,43 @@ game folder opens in the browser unchanged.
   might look, and ways to get more out of a game. Gemini 3 drew the ASCII-art can in
   LUNCHMEAT's flood on The Sofa (`web/src/retro/bbs/sofaSpam.ts`). What they suggested came
   to the project as notes and ideas, through Lewis.
+- **OpenAI Codex** (through Visual Studio Code, directed by Lewis): from October 27 to 30,
+  2026, while Claude was out of its weekly tokens, Codex worked on the fork with four OpenAI
+  models, by Lewis's account of when he switched between them (the commits carry only a
+  "Co-authored-by: Codex" line, so the hand-over times are approximate):
+  - **GPT-6.0** and **GPT-6.1 Sol**, until about 6:30 p.m. on October 30, did most of it: the
+    editor, map, palette and Integrator features, achievements, the BBS callback signup,
+    FASTPLAY, per-game ZIPs and the npm packages listed below. Which of the two made which
+    change was not recorded.
+  - **GPT-6 Astra**, from about 6:30 to 7:15 p.m.: the continuous course maps and the
+    fictional hint line.
+  - **GPT-5.6 Terra**, from about 7:15 p.m.: rebalanced the score values of seven Sandbox and
+    Bard games (and one game's gold), Teddy's piggy bank, detecting dedicated palette color
+    areas, finer map zoom, and grouped duplicate map arrivals.
+
+  Codex made no new levels, art, music or story text for the games. The entries below that say
+  "OpenAI Codex (GPT-6)" are part of the same work.
+
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
-- **The npm development toolkit** (`web/packages/tools/`): extracted, packaged and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten’s direction, using this fork’s format codecs, drawing and audio builders, and reference simulation. Game-specific assets stay in the consuming projects.
+- **Editor extensions and character auditions** (`web/src/editor/`): native frame
+  painting, live scenery previews, resource selection improvements, asset galleries,
+  native file copy/paste and Integrator file scoping, repeating map
+  viewports and seam-aware editing tools, audition code
+  and its short playful UI lines were implemented with **OpenAI Codex (GPT-6)**,
+  directed by Lewis Moten. Auditions read artwork from the selected source game;
+  that artwork remains the work of its credited authors.
+- **First-run hardware setup and FASTPLAY** (`web/src/player/`, `web/src/retro/hacks/fastPlay.ts`): browser setup controls, remembered per-game choices, the BBS utility, regression checks and playful UI lines implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. The original PLAYGAME configuration flow in `code/GM/PLAYGAME.C` is the behavioral reference; no original DOS files are changed.
+- **Incremental JPEGs and interrupted BBS picture transfers** (`web/packages/engine/src/formats/jpeg.ts`, `web/src/retro/bbs/`): completed-MCU visibility, atomic scan refinements, verified-prefix transfer handling, viewer cleanup and regression checks implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. JPEG syntax follows [ITU-T T.81 (1992)](https://www.w3.org/Graphics/JPEG/itu-t81.pdf), by CCITT/ITU and the Joint Photographic Experts Group. The existing AC-refinement procedure identifies libjpeg as its algorithm reference (Independent JPEG Group, Thomas G. Lane and contributors; [IJG License](https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/README.ijg)). This software is based in part on the work of the Independent JPEG Group. The tiny test images are original program-generated color patterns encoded locally with libjpeg-turbo 3.2.0's cjpeg ([IJG and BSD-style licenses](https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/LICENSE.md)); no encoder source or binaries are bundled. The ZMODEM simulation follows Chuck Forsberg/Omen Technology's [1988 protocol description](https://techheap.packetizer.com/communications/modems/zmodem8.html): damaged subpackets are rejected instead of painting invented pixel corruption. These publications are references; their text and diagrams are not bundled.
+- **Continuous course maps** (`web/src/manual/printables/levelCourseSvg.ts`): shared-coordinate image assembly and map annotations implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Game artwork retains its existing authors and credits.
+- **Fictional hint line** (`web/src/desk/room/phone/hintBill.ts`, `hintLine.ts`): local elapsed-time accounting, backup integration, phone menu and cancellation, achievement, original Teddy dialogue and regression tests implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. The charges are simulated game data; no payment service is used.
+- **BBS callback signup** (`web/src/retro/bbs/signup*.ts`): local verified-handle records, simulated incoming modem callbacks, signup flow, tests and playful lines implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Manual `ATA` answering and `RING` result codes follow the [U.S. Robotics modem command reference](https://ads.usr.com/support/3cxm756/3cxm756-ug/ATCOMS.HTM). This is a behavioral reference; no vendor source, documentation text or modem binaries are bundled.
+- **FLAGS.EXE** (`web/src/retro/hacks/flags*.ts`): the debugging utility that lists, sets, clears, resets, backs up and restores the desk PC's remembered browser state, its BBS Warez listing and tests, written with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten.
+- **DOS clock shortcuts** (`web/src/retro/dos/`): named room times, command help, and clock regression checks implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
+- **Website game ZIP distributions** (`web/scripts/gameArchive.ts`, `web/src/project/hostedZip.ts`): the reproducible DOS distribution builder, shared browser ZIP loading, permanent links and Vite serving were implemented and verified with **OpenAI Codex**, directed by Lewis Moten. Original game data stays intact; DOS runtime and game notices travel in each archive.
+- **The npm archive utilities** (`web/packages/archives/`): the fork's ZIP codec and portable game import discovery, consolidated and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten's direction. The underlying code was written with **Anthropic Claude Opus 5.5**. Compression uses platform streams; no third-party archive library is included. The package carries its own license and notices.
+- **The npm development toolkit** (`web/packages/tools/`): extracted, packaged and verified with **OpenAI Codex (GPT-6/6.1)** under Lewis Moten’s direction, using this fork’s format codecs, drawing and audio builders, and reference simulation. Game-specific assets stay in the consuming projects. The self-contained npm workspace migration was implemented and verified with OpenAI Codex (GPT-6.1).
 - **Added to the site in October 2026**, also written by **Claude Opus 5.5** as Lewis
   directed, from no one else's code, art, data or recordings: the desk modem's line speeds
   and the handshake sounds you hear for each (see "Modem sounds" below); TERMINAL's TTY calls
@@ -107,6 +146,18 @@ game folder opens in the browser unchanged.
   and _TURBO BUTTON_'s feature "Bugs Only DOS Could Find" (`web/public/magazine/dos-carl.webp`,
   cropped to the game screen at the size DOSBox drew it). It is source material from Lewis,
   shared under the same terms as the rest of this fork.
+- **Pictures and recordings made by scripts in this repository** (`web/public`), all under the
+  MIT License like the games they show: the Cast page's pictures (`cast/`, drawn from the games'
+  built files by `web/scripts/castArt.ts` and `castSprites.ts`); the gameplay frames behind box
+  shots and manual pages (`frames/`, `web/scripts/shotFrames.ts`); the 1200 × 630 social preview
+  `og-image.png` (`web/scripts/ogImage.ts`); the app icons (`icon.svg` and the PNGs made from
+  it, drawn for this project as a block grid); the magazine's screenshots of the site, its
+  editors and the desk (`magazine/`, `web-*.webp` and `desk-1994.webp`); and the demo recordings
+  for CD games that shipped without one (`extras/demos`, recorded and replayed by
+  `games/kit/cdDemos/make.ts`; they are not part of the original games). The Credits page's
+  small title-screen pictures (`credits/`) are frames of RSD's own Game-Maker title screen and
+  of the CD games it names, shown to credit their authors, and of this fork's own games; the
+  BBS picture thumbnails there (`credits/bbs`) are the pictures credited in the paragraph on the BBS pictures.
 - **Tricks From the Shareware Authors** (chapter 17 of The Ultimate Owner's Guide,
   `web/src/manual/ultimate/chaptersShareware.ts`) and the archive counts in its "Where Game-Maker
   Runs Out" describe techniques found by surveying community Game-Maker games in the
@@ -132,7 +183,7 @@ game folder opens in the browser unchanged.
   into the panel; Acord Games' shared player, whose renamed file extensions it recognizes and maps
   back, is only read, never copied. The patch offsets were found in this project's own reading of
   `cd/gm/xferplay.exe` against `code/GM/PLAYGAME.C` and `HISCOREL.C`.
-- **MD5** (`web/src/dosPlayer/md5.ts`) is written from the algorithm's description in RFC 1321
+- **MD5** (`web/packages/archives/src/player/md5.ts`) is written from the algorithm's description in RFC 1321
   (R. Rivest, MIT Laboratory for Computer Science and RSA Data Security, Inc., 1992), only to tell
   the CD's `XFERPLAY.EXE` from other files before patching it; no RSA reference code is used.
 - **Research: the whole Game-Maker Archive, ideas only.** A second survey read every Game-Maker
@@ -146,6 +197,8 @@ game folder opens in the browser unchanged.
   Level check's link, missing-part and speed-limit checks (`web/src/editor/check/checks/linkChecks.ts`,
   `missingParts.ts`, `gameChecks.ts`). Ideas only: none of the games' art, music, sounds, text
   or players is copied, and no author, owner or registration detail is named.
+  The same survey of the games' music instruments showed which timbres the music editor's presets lacked; six presets (Wobbly Vibes, Soft Reed, Glass Tine Keys, Round Sub, Chime Harp, Wobble Pad) were then designed from the chip's operator settings, written by **Anthropic Claude Sonnet 5.5**. No instrument data was copied.
+  A second survey (November 2026) of every archived game's CMF instruments, compared by ear-proxy renders through the engine's OPL2, proposed eight more (Distant Choir, Fuzz Stab, Whistle Lead, Wobble Organ (low), Low Brass Swell, Reed Swell, Steel Clank, Sparkle Bell), also written fresh by **Anthropic Claude Sonnet 5.5**; each differs from every archived and CD patch in at least five of its eleven bytes. No instrument data was copied.
 - **Ideas from the same archive in this project's games.** A second survey of the community games in
   the Internet Archive's Game-Maker Archive collection suggested touches to this project's own
   games: _Quest for the Round Tuit_'s tide poles on the Dawdle Flats and _In The Year 2000!_'s
@@ -257,7 +310,14 @@ game folder opens in the browser unchanged.
   Runtime (MIT). These are installed by `npm run voice:setup` into a git-ignored folder outside
   the app's own packages, and the model stays on Lewis's computer.
 - **Teddy's and Gwinn's barks** (`web/public/tour/sfx`): Lewis Moten's own recordings of his
-  dogs, cut into short clips for the guided tour. The whole recordings stay on his computer.
+  dogs, cut into short clips for the guided tour. Five of the clips are Tune-Up's barks too
+  (`games/tuneup/src/sound/barks`, as 8-bit WAVs for its VOCs). The whole recordings stay on
+  his computer.
+- **Tune-Up's slide whistle** (`games/tuneup/src/sound/notes.ts` `slideWhistleVoc`): synthesized
+  in code for the game (a gliding tone with a breath of noise), not a recording.
+- **Tune-Up's traffic camera and siren** (`games/tuneup/src/sound/notes.ts` `ticketVoc`):
+  synthesized in code for the game (two clicks of noise, a rising whine and a soft two-tone
+  siren), not a recording.
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
   this project (there is no recording to credit), but a few pieces quote older tunes whose
   compositions are in the public domain in the US:
@@ -414,6 +474,7 @@ and the free, open license here are the version of Game-Maker he wishes he'd had
 Game-Maker: Sandbox Edition contains no third-party code except as listed. It reimplements file
 formats from their published descriptions and from Game-Maker's own source.
 
+- **L-Space (the Library's gap between two stacks)**: a nod to Terry Pratchett's Discworld, where the librarian travels between libraries through the stacks. Only the idea of a shelf-gap that leads elsewhere is borrowed; no text or characters from the books. The Library's ambient cough, page turn and chair creak are synthesized in `web/src/library/ambience.ts`.
 - **GIF**: "The Graphics Interchange Format© is the Copyright property of CompuServe
   Incorporated. GIF℠ is a Service Mark property of CompuServe Incorporated." GIF images
   are encoded and decoded with LZW compression, which was patented by Unisys; those
@@ -435,8 +496,8 @@ formats from their published descriptions and from Game-Maker's own source.
   die lines are drawn by this project. The disk and CD label sizes are the common sticker-paper
   sizes (a 2.75 in wrap-around 3.5" diskette label; a 117 mm CD label with a 41 mm hole).
 - **OPL2 / YM3812** FM synthesis: a chip by Yamaha Corporation. The emulation in
-  `web/src/audio/opl.ts` was written for this project.
-- **PNG** (RFC 2083): the Assistant's pictures for AI tools (`web/src/assistant/png.ts`) are
+  `web/packages/engine/src/audio/opl.ts` was written for this project.
+- **PNG** (RFC 2083): the Assistant's pictures for AI tools (`web/packages/tools/src/image/png.ts`) are
   written from the specification; compression is the browser's or Node's own.
 - **Model Context Protocol** and **WebMCP**: the local server for AI tools (`web/scripts/mcp`)
   speaks the Model Context Protocol with its MIT-licensed TypeScript SDK (see Tools used to
@@ -458,7 +519,7 @@ formats from their published descriptions and from Game-Maker's own source.
   AdLib's BRASS1 settings; they are kept as RSD released them.
 - **8×8 text font**: Daniel Hepper's `font8x8_basic`, plus accented letters and symbols
   from his `font8x8_ext_latin` and `font8x8_misc` and Greek letters from his `font8x8_greek`
-  (`web/src/gfx/cp437Glyphs.ts`), all in the public domain. The
+  (`web/packages/engine/src/gfx/cp437Glyphs.ts`), all in the public domain. The
   [upstream font8x8 headers](https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h)
   also credit Marcel Sondaar and International Business Machines (public domain VGA fonts)
   as their basis. The other code page 437 glyphs (card suits, notes, arrows, math signs)
@@ -577,6 +638,9 @@ formats from their published descriptions and from Game-Maker's own source.
   CIE's **CIELAB** color space and 1976 color difference (ΔE), using the sRGB standard's
   (IEC 61966-2-1) transfer curve. All are published formulas and numbers; no code of theirs
   is included.
+- **The badge look-alike check** (`web/scripts/badgeSimilarMetrics.ts`, `npm run badges:similar`) uses
+  the same Machado, Oliveira and Fernandes (2009) severity-1.0 matrices in linear RGB, with
+  Rec. 601 luma for grayscale and achromatopsia. Published numbers only; no code of theirs is included.
 - **The sound effect makers** (`web/src/audio/sfxSynth.ts`, `sfxPresets.ts` and
   `web/src/editor/tools/speakerFx.ts`) follow the idea of **sfxr**, Tomas Pettersson's
   ("DrPetter") 2007 sound effect generator: a few sliders for pitch, slide, vibrato and an
@@ -593,7 +657,7 @@ formats from their published descriptions and from Game-Maker's own source.
   profiles published by **Carol L. Krumhansl and Edward J. Kessler** (Psychological Review 89,
   1982), and picks its chords with a Viterbi pass; its takes are seeded with **Mulberry32**, the
   public-domain generator by Tommy Ettinger. Its band's patterns follow the project's own
-  `games/kit/song.ts`. The profile numbers are published data; no one else's code is included.
+  `web/packages/tools/src/kit/song.ts`. The profile numbers are published data; no one else's code is included.
 - **Seeded random numbers and string hashes** (`web/src/seededRandom.ts`, shared by the
   walkthroughs, printables, magazine art, felt eggs and editors) use three public-domain
   algorithms: **Mulberry32** by Tommy Ettinger, **xorshift32** from George Marsaglia's
@@ -719,12 +783,24 @@ Game-Maker's makefiles don't build.
 - The sample pictures in `code/Image/PNG/PICS` are of unknown origin. One of them says so
   itself ("Peppers").
 
-**What the web port uses**: none of this code. `web/src/project/zip.ts` writes its own
+**What the web port uses**: none of this code. `web/packages/archives/src/project/zip.ts` writes its own
 table-driven CRC-32 (the standard ZIP polynomial that APPNOTE credits to Schwaderer) and
-follows APPNOTE's layout. The FLI reader `web/src/formats/fli.ts` follows Andy Stone's
+follows APPNOTE's layout. The FLI reader `web/packages/engine/src/formats/fli.ts` follows Andy Stone's
 `FLI.CPP` and the format in Kent's `FLIDOC.TXT`. The GIF LZW coder in
-`web/src/formats/gif.ts` is new, not GIFSAVE. `web/src/formats/voc.ts` reproduces Peter
+`web/packages/engine/src/formats/gif.ts` is new, not GIFSAVE. `web/packages/engine/src/formats/voc.ts` reproduces Peter
 Savage's `SOUNDC.C`, and `web/src/vga/sndedit.ts` ports `SNDEDIT.C`.
+
+## DOS reference tables and the scroll overflow: chiguire
+
+Pull request 4 to gandrewstone/GameMaker (https://github.com/gandrewstone/GameMaker/pull/4,
+by chiguire, MIT License like the upstream repository) ran the original PLAYGAME in DOS with a
+frame-dump hook and kept the results. This fork uses two things from it:
+
+- The tables in `games/kit/dosStates/` (one line per 20 ticks of a DOS replay of eight games'
+  `demo.rec`: tick, score, scene, character position), copied unchanged from
+  `port/baseline/<game>/states.txt`. `games/kit/dosStates.ts` compares our engine against them.
+- The finding that ChangeScroll's speed arithmetic overflows a 16-bit `int` in DOS. Our
+  `web/packages/engine/src/engine/scroll.ts` wraps the same way.
 
 ## Tools used to build and test
 
@@ -738,9 +814,9 @@ the [Model Context Protocol TypeScript SDK](https://github.com/modelcontextproto
 (`@modelcontextprotocol/sdk`, MIT, Anthropic, PBC) and [ws](https://github.com/websockets/ws)
 (MIT, Einar Otto Stangvik, Arnout Kazemier, Luigi Pinca and contributors) with `@types/ws`
 (MIT, DefinitelyTyped); they run only on the developer's own computer, in Node. These are the
-only packages in `web/package.json`, all used only to build, test and run local tools; none of
-their code ships in the app except Vite's small module runtime and preload helper (MIT). The site's Credits page (`#/credits`) lists every one of them and the packages
-they use, with versions and licenses, from `web/package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
+third-party development dependencies in the workspace manifests, used to build, test and run local tools; none of
+their code ships in the app except Vite's small module runtime and preload helper (MIT, Copyright (c) 2019-present, VoidZero Inc. and Vite contributors; the downloads' notices carry that line). The site's Credits page (`#/credits`) lists every one of them and the packages
+they use, with versions and licenses, from root `package-lock.json`. The native players are built with Zig (MIT) and, on a Mac, Apple's Swift compiler;
 see above for what ends up in them.
 
 The desk's black-light poster (`games/kit/scans/blacklight.py`) is drawn on the developer's
@@ -755,10 +831,77 @@ hears each clip with OpenAI's Whisper (MIT; the large-v3 model, run by whisper.c
 openai-whisper's own command), on the developer's computer, to find words the voices said
 wrong; nothing of it ships.
 
+`npm run video:transcript` (`web/scripts/videoTranscribe.ts`) runs on the developer's computer
+with yt-dlp (Unlicense), ffmpeg, and whisper.cpp (MIT) with OpenAI's Whisper large-v3 model
+(MIT), on the maintainer's own YouTube videos. Only the transcripts it writes are committed;
+the Library marks each one made this way as made with Whisper speech recognition.
+
 The Bard of Bizarre games' song tools (`games/kit/song/*.py` and each game's
 `tools/analyze.py` and `tools/cutClips.py`) run on the developer's computer with ffmpeg,
 NumPy and SciPy (BSD), and OpenAI's Whisper (MIT) for word timings when it is installed.
 They read recordings that are not in the repository, and nothing of theirs is
 committed except the note data and clips they produce. Browser checks during development
-(Playwright, Apache-2.0, and any accessibility checker run with it) are run from outside the
-repository and are not dependencies of it.
+(playwright-core, Apache-2.0, and axe-core, MPL-2.0, which `npm run tour:check` uses) are
+development dependencies of `web/` and ship in nothing.
+
+### Previewable source audio conversion
+
+Recorded authoring clips are stored as lossless mono 8-bit PCM WAV files, with RIFF/WAVE
+PCM fields documented by [Microsoft](https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/ns-mmeapi-waveformatex). Native WAV conversion uses this project’s own reader. The tools package's Node-only `audio-files` entry invokes an external FFmpeg
+executable to decode compressed sources such as FLAC and Ogg, or resample audio to native VOCs; no FFmpeg code
+or executable is bundled. FFmpeg is by the FFmpeg developers under LGPL-2.1-or-later, or
+GPL-2.0-or-later when GPL components are enabled ([license](https://ffmpeg.org/legal.html)).
+The converter, source-format migration and verification were implemented with OpenAI
+Codex under Lewis Moten's direction. Existing audio, voices, source recordings and their
+credits are unchanged; the native DOS audio bytes are preserved.
+
+The source-only game build runner, reproducibility and historical-version checks, and
+parallel Depth Perception animation rendering were implemented with OpenAI Codex under
+Lewis Moten's direction. No third-party rendering code or data was added.
+
+### Consolidated game-building helpers and fonts
+
+Reusable builders, drawing and image processing, synthesis, native animation and checking
+helpers are owned by `web/packages/tools`. The extended rounded and square 3×5 glyphs
+were consolidated from the public games' existing font tables. They and the rounded
+stroke-lettering data were made for this project by Lewis Moten using Anthropic Claude
+Opus 5.5, under the project's MIT License. Their provenance, source commits and references
+for median-cut quantization and sphere tracing are recorded in
+[the tools package's notices](web/packages/tools/NOTICE.md). CP437's separately credited
+public-domain data and this project's additions keep their existing attribution.
+OpenAI Codex consolidated the helpers and consumers, preserved the existing game output,
+and implemented the shared rendering adapters and verification under Lewis Moten's direction.
+
+### Tiny Shelf Classification
+
+The Library's call numbers (such as 614-MAH) use the **Tiny Shelf Classification**, dedicated to
+the public domain (CC0 1.0) by Lewis Moten, github.com/lewismoten/Tiny-Pockets-Press. Only the
+few codes the Library uses are copied, in `web/src/library/tinyShelf.ts`. The cabinet and
+shelves styling and markup were written by Claude Sonnet 5.5 under Lewis Moten's direction.
+
+### Tiny Pockets Press logo
+
+The small logo on the brass plaque at the top of the Library's card catalog is the Tiny Pockets
+Press logo (`logo-256.png`, github.com/lewismoten/Tiny-Pockets-Press), © 2026 Lewis Moten,
+under the ISC License ("Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above copyright notice and this
+permission notice appear in all copies."). It ships as `web/public/library/tiny-pockets-press.webp`
+(a lossless conversion). The photocopier beside the cabinet and the plaque were drawn in CSS by
+Claude Sonnet 5.5 under Lewis Moten's direction.
+
+### Ready-made palette references
+
+The tools package's `palettePresetData.ts` contains Atari NTSC/PAL swatches by Ricardo
+Cancho Niemietz (2008, public-domain dedication with unrestricted-use fallback), NES
+swatches from Persune's Pally (MIT-0, copyright 2024 Persune), and Groepaz's Commodore 64
+NTSC CXA2025 reference swatches (unrestricted free use, attribution appreciated).
+OpenAI Codex extracted and adapted the swatches to this project's VGA palette conventions
+under Lewis Moten's direction. Source links, transformations and Pally's complete license
+are in [the tools package's notices](web/packages/tools/NOTICE.md#ready-made-palette-reference-data).
+No third-party font or image file was added.
+
+RGBI and SMS hardware mappings use project-owned MIT code referring to IBM's 1984
+_Technical Reference: Options and Adapters_ and Maxim / SMS Power's palette documentation,
+linked in the tools notices. The monochrome ramps, added skin/hair ramps and four LCD-green
+shades are project designs made by Lewis Moten using OpenAI Codex, under the project's MIT License.
+Exported player-page and native-download notices carry the reference palette credits.

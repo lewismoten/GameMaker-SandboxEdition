@@ -4,7 +4,7 @@
 // Bizarre.
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 export const AUTHOR = 'The Bard of Bizarre';
 
@@ -133,7 +133,7 @@ export const CARDS: { title: string; where: string; lines: [string, string] }[] 
 const CREDITS_TEXT = page(
   [
     'CARL: A FLY NAMED CARL',
-    'by The Bard of Bizarre, 1995',
+    'by The Bard of Bizarre, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Based on the song "There\'s a',
@@ -174,7 +174,7 @@ export function readme(price: string): string {
   return `
     CARL
     A FLY NAMED CARL
-    Version ${about.version} - June 1995
+    Version ${about.version} - October 1994
     by The Bard of Bizarre
 
 "There's a fly in the room

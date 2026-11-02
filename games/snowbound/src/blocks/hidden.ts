@@ -3,7 +3,7 @@
 // off the paper route (a few points, no sound; touched, they leave the falling-snow yard), and
 // Will the playwright from Shakespeare in Sweatpants outside Bleeps at LaVale Mall, standing
 // against the mall wall (as solid as the wall he stands in front of).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { drawTinHeart } from '../../../kit/tinHeart';
 import { drawEasterEgg } from '../../../kit/easterEgg';
 import { willCameo } from '../../../kit/cameos';

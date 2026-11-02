@@ -1,13 +1,13 @@
 // The level check's explorer and stuck finder on a tiny game built in memory (testGame.ts).
 import { describe, expect, it } from 'vitest';
-import { MLEN } from '../../formats/map';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { explore } from './explore';
 import { playtestGame } from './playtest';
 import { SceneSim, startCharInfo } from './sim';
 import { stuckAreas } from './stuck';
 import { RIGHT, testGame } from './testGame';
-import { parseMap } from '../../formats/map';
-import { BACKBL, parseBlocks } from '../../formats/blocks';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { BACKBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 // prettier-ignore
 const ROWS = [

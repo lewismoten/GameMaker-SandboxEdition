@@ -6,8 +6,8 @@
 //
 // The case's suspects, cards and rooms are below with the map and the monsters; the blocks
 // are drawn in parlorBlocks.ts.
-import { newMap, reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
-import { emptyMonster, type Monster } from '../../../../web/src/formats/monster';
+import { newMap, reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { emptyMonster, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { BlockSet } from '../blocks/blockset';
 import { ITEM, ITEMS } from '../blocks/items';
 import { figure, type Who } from '../art/people';
@@ -158,9 +158,8 @@ export const LINEUP: Who[] = ['agatha', 'felix', 'pike', 'lila', 'edgar'];
 
 const MONS: Who[] = ['lila', 'edgar', 'agatha', 'felix', 'pike', 'dobbs'];
 
-export function buildParlorMonsters(): { mb: BlockSet; mon: Monster[] } {
-  const mb = new BlockSet(100, true);
-  const mon: Monster[] = [];
+/** Adds the suspects' blocks and monsters (monsters 0-5) to the shared sets (characters/cast.ts). */
+export function addParlorMonsters(mb: BlockSet, mon: Monster[]): void {
   MONS.forEach((who, i) => {
     mb.add(`${who}0`, figure(who));
     mb.add(`${who}1`, figure(who, true));
@@ -175,9 +174,9 @@ export function buildParlorMonsters(): { mb: BlockSet; mon: Monster[] } {
     m.pic[3] = [mb.id(`${who}1`), 2];
     mon.push(m);
   });
-  while (mon.length < 64) mon.push(emptyMonster());
-  return { mb, mon };
 }
+
+export const SUSPECT_MONSTERS = MONS.length;
 
 export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks } {
   const map = newMap();
@@ -326,6 +325,32 @@ export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks
   for (let y = 0; y < 10; y++) for (let x = 0; x < 16; x++) put(ROOM.curtain.x + x, ROOM.curtain.y + y, (x + y) % 2 ? 'curtain0' : 'curtain1');
   put(ROOM.curtain.x + 8, ROOM.curtain.y + 5, 'zcell');
   put(ROOM.curtain.x + 4, ROOM.curtain.y + 5, 'solved');
+  // scenery for the site's achievement badges (plain floor decoration: nothing on the way to a card, door or chair)
+  const deco = (o: { x: number; y: number }, list: [number, number, string][]) => list.forEach(([x, y, n]) => put(o.x + x, o.y + y, n));
+  deco(ROOM.gr1, [
+    [5, 3, 'blankSheet'],
+    [10, 3, 'regForm'],
+    [11, 5, 'leaflet'],
+    [5, 5, 'ribbonBook'],
+    [6, 7, 'badgeClip'],
+  ]);
+  deco(ROOM.gr2, [
+    [5, 3, 'deskPhone'],
+    [10, 3, 'numberCard'],
+    [11, 5, 'busyLine'],
+    [5, 5, 'rotaryDial'],
+    [12, 7, 'heatMap'],
+  ]);
+  deco(ROOM.r1(0), [[3, 2, 'loupeGrid']]);
+  deco(ROOM.r1(1), [[12, 2, 'deskSpeaker']]);
+  deco(ROOM.r1(2), [[3, 6, 'heartWreath']]);
+  deco(ROOM.who, [
+    [4, 5, 'maskPair'],
+    [10, 5, 'clapper'],
+  ]);
+  deco(ROOM.how, [[3, 6, 'filmJump']]);
+  deco(ROOM.why, [[3, 6, 'meritMedal']]);
+  deco(ROOM.curtain, [[12, 3, 'peekCurtain']]);
   reindexMonsters(map);
   return { map, links };
 }

@@ -7,9 +7,9 @@ import type { MagSection } from '../types';
 export const LETTER: MagSection = {
   id: 'letter',
   title: 'From the Editor',
-  blurb: 'Why the first issue had to be about Game-Maker',
+  blurb: 'Why this issue leads with Game-Maker’s source',
   dept: 'FROM THE EDITOR',
-  pages: () => [
+  pages: (ctx) => [
     {
       kind: 'article',
       blocks: [
@@ -20,10 +20,10 @@ export const LETTER: MagSection = {
             { drop: true },
           ),
           p(
-            'Our first issue could only lead with one story. The source code of Game-Maker, the kit that let anyone with a mouse build a real DOS game without writing a line of program, is free for anyone to read, change and share. [Our news team has the whole story](go:mag/news).',
+            'This issue could only lead with one story. The source code of Game-Maker, the kit that let anyone with a mouse build a real DOS game without writing a line of program, is free for anyone to read, change and share. [Our news team has the whole story](go:mag/news).',
           ),
           p(
-            'Then we talk to two people at the heart of the new Sandbox Edition. One is [Lewis Moten](go:mag/lewis), who shoveled driveways through the winter of 1992 to buy his copy. The other is [Claude](go:mag/claude), who carried the program across to the web browser, where every game in these pages plays.',
+            'Then we talk to two people at the heart of the new Sandbox Edition. One is [Lewis Moten](go:mag/lewis), who shoveled driveways through the winter of 1992 to buy his copy and told us so in our spring 1993 issue (Vol. 1, No. 4). This time he tells us what came after. [Missed that issue?](go:mag/back-issue) The other is [Claude](go:mag/claude), who carried the program across to the web browser, where every game in these pages plays.',
           ),
           p(
             'After that, it is all games. The [Strategy Guide](go:mag/strategy) has hints for every one of them. The [Game Directory](go:mag/directory) lists them all. Our reviewers crown a [Shareware Game of the Month](go:mag/reviews), and the [BBS Listings](go:mag/bbs) tell you who to call tonight.',
@@ -47,7 +47,7 @@ export const LETTER: MagSection = {
               side(
                 MAG.name,
                 [
-                  p(`*${MAG.tagline}* · ${MAG.issue}`),
+                  p(`*${MAG.tagline}* · ${ctx.mag.issue}`),
                   p('**Written and designed by** Claude (Claude Opus 5.5, by Anthropic), for Game-Maker: Sandbox Edition.'),
                   p('**Publisher** Lewis Moten, who keeps Game-Maker: Sandbox Edition.'),
                   p('**Screenshots** drawn from the games themselves.'),

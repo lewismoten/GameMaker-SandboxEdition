@@ -2,12 +2,13 @@
 // storyline, notebook-paper text pages, level cards, the endings, and the FLI
 // animations: the intro counting from 1992 up to 2000, the teleporter, and the rocket.
 // The painting helpers are in paint.ts, the animations in animations.ts.
-import { Pixels, dither, rng } from '../../../kit/pixels';
+import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, gradient, oval, shadeAt } from '../art/draw';
 import { micro, microWidth, outlined, text, textWidth } from '../art/font';
 import { C, PAL } from '../art/pal';
-import { loadScan, pastePhoto, polaroid, resample } from '../../../kit/photo';
-import { saveSlots } from '../../../kit/saveSlots';
+import { pastePhoto, polaroid, resample } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
+import { saveSlots } from '@lewismoten/gamemaker-sandbox-tools/kit/saveSlots';
 import { H, R, W, centeredText, chrome, chromeCentered, consoleTv, grid, scaleBlit, skyline, speedLines, stripedSun, sunsetSky, type Art } from './paint';
 
 // ------------------------------------------------------------------ title

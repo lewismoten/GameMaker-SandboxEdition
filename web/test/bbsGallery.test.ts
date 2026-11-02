@@ -4,14 +4,14 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import list from '../src/retro/bbs/gallery.json';
-import { decodeGif } from '../src/formats/gif';
-import { decodePartialGif } from '../src/formats/gifProgressive';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { decodePartialGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gifProgressive';
 import { modeFor, nearestColor, placeIn } from '../src/retro/view/picture';
 import { cps } from '../src/retro/bbs/lineSpeed';
 
 const GIF_CPS = cps('file', 14400);
 import { decodePicture, GALLERY, SOFA_GIFS } from '../src/retro/bbs/gallery';
-import { decodePartialJpeg } from '../src/formats/jpeg';
+import { decodePartialJpeg } from '@lewismoten/gamemaker-sandbox-engine/formats/jpeg';
 
 /** The VGA-sized snapshots (scripts/bbsGifs.ts), on either board; the 640x480 GIFs are tested below. */
 const sandbox = list.filter((f) => !f.board);

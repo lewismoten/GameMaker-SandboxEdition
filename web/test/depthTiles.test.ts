@@ -1,7 +1,7 @@
 // Tests: Depth Perception's block book (games/depth/src/tiles/book.ts): a level's two focus
 // planes share block numbers, behave by plane, and the felt egg keeps its pinned number.
 import { describe, expect, it } from 'vitest';
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../src/formats/blocks';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { TileBook } from '../../games/depth/src/tiles/book';
 import { rulesFor } from '../../games/depth/src/tiles/rules';
 import { buildLevel } from '../../games/depth/src/levels/map';

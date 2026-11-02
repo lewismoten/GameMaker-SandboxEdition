@@ -4,7 +4,7 @@
 // arguments and result, and sums up a play-test or Level check; pictures as thumbnails that
 // enlarge; Apply/Skip on a change waiting for a yes; notes; and the whole of it as Markdown.
 import { h, clear } from '../../editor/core/ui';
-import type { Game } from '../../formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { normalize } from '../../project/files';
 import type { ToolResult } from '../tools/types';
 import { resultText } from './agent';
@@ -108,7 +108,8 @@ export class ChatLog {
     clear(this.list);
     this.calls.clear();
     this.reading = false;
-    this.streaming = this.working = undefined;
+    this.working = undefined;
+    this.endStream();
     this.from = 0;
     this.soFar = '';
   }
@@ -150,16 +151,23 @@ export class ChatLog {
     const t = soFar.slice(this.from).trim();
     if (!t) return;
     this.stopWorking();
+    if (!this.streaming) this.el.setAttribute('aria-busy', 'true'); // the words arrive in pieces: read once, when the reply ends
     this.streaming ??= this.bubble();
     this.streaming.querySelector('p')!.textContent = t;
     this.streaming.dataset.md = `**Assistant:** ${t}`;
     this.toEnd();
   }
 
+  /** The reply (or the words before a tool call) is complete: the log may be announced again. */
+  private endStream(): void {
+    this.streaming = undefined;
+    this.el.removeAttribute('aria-busy');
+  }
+
   /** The reply ended: its last words stay, and the next reply starts afresh. */
   reply(content: string): void {
     this.text(content);
-    this.streaming = undefined;
+    this.endStream();
     this.from = 0;
     this.soFar = '';
   }
@@ -195,7 +203,7 @@ export class ChatLog {
   /** A tool call, as one line that opens to its arguments; the reply's next words go in a new bubble. */
   call(c: ToolCall, writes: boolean, game?: Game): void {
     this.stopWorking();
-    this.streaming = undefined;
+    this.endStream();
     this.from = this.soFar.length;
     const { icon, text } = callLabel(c, writes, game);
     const state = h('span', { class: 'call-state' }, 'queued');

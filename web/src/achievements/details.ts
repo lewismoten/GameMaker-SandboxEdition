@@ -4,12 +4,28 @@
 // only its hint. A modal <dialog>: Esc or Close shuts it, ← and → (or Previous and Next) step
 // through the badges in page order, and focus goes back to the badge last shown.
 import './details.css';
+import { badgeIcon } from './badgeArt';
 import { h, clear } from '../editor/core/ui';
 import { CATEGORIES, progressOf, shownText, type Achievement } from './catalog';
 import type { AchievementRecord } from './store';
 import { placesOf } from './where';
+import { ACHIEVEMENTS } from './catalog';
+import { levelStanding } from './levels';
 
 const longDate = (t: number) => new Date(t).toLocaleDateString('en-US', { dateStyle: 'long' } as Intl.DateTimeFormatOptions);
+
+/** "Level 2 of 3", the level the family is at now, and the goal of the next one. */
+function levelLine(a: Achievement, r: AchievementRecord): HTMLElement {
+  const lv = a.level!;
+  const { current, next } = levelStanding(a, ACHIEVEMENTS, r.unlocked);
+  return h(
+    'p',
+    { class: 'ach-dlg-level' },
+    h('strong', null, `Level ${lv.n} of ${lv.of}`),
+    ` · you are at ${current ? `level ${current}` : 'no level yet'}`,
+    next ? ` · next goal: ${next.desc.replace(/\.$/, '')} (level ${next.level!.n})` : ' · every level earned',
+  );
+}
 
 function body(a: Achievement, r: AchievementRecord, close: () => void): (HTMLElement | null)[] {
   const when = r.unlocked[a.id];
@@ -24,7 +40,7 @@ function body(a: Achievement, r: AchievementRecord, close: () => void): (HTMLEle
     h(
       'div',
       { class: 'ach-dlg-top' },
-      h('span', { class: `ach-dlg-icon${when ? '' : ' is-locked'}`, 'aria-hidden': 'true' }, shown.icon),
+      h('span', { class: `ach-dlg-icon${when ? '' : ' is-locked'}${when && a.hard ? ' is-gold' : ''}`, 'aria-hidden': 'true' }, badgeIcon(a, !!when)),
       h(
         'div',
         null,
@@ -40,6 +56,7 @@ function body(a: Achievement, r: AchievementRecord, close: () => void): (HTMLEle
         ),
       ),
     ),
+    a.level ? levelLine(a, r) : null,
     secret ? h('p', { class: 'ach-dlg-desc' }, h('strong', null, 'Hint: '), shown.desc) : h('p', { class: 'ach-dlg-desc' }, shown.desc),
     p
       ? h(

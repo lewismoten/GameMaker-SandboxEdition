@@ -13,6 +13,7 @@ theme. Some are cropped to the part that matters.
 
 - [The home page and your games](#the-home-page-and-your-games)
 - [Opening a copy of a Sandbox game](#opening-a-copy-of-a-sandbox-game)
+- [Overview and file galleries](#overview-and-file-galleries)
 - [The map editor](#the-map-editor)
 - [Play Game and Play Level](#play-game-and-play-level)
 - [Blocks](#blocks)
@@ -43,7 +44,16 @@ has your own AI build one from a few lines of description (see
 ![The My games tab with one game, a copy of Snowbound, under "Continue where you left off", and a Getting started box](screenshots/editor/01-my-games.webp)
 
 Games you make or copy are kept in this browser under _My games_, newest first, and the side
-panel offers to pick up where you left off. Nothing is uploaded anywhere.
+panel offers to pick up where you left off. Nothing is uploaded, unless you set up your own AI to work on a game.
+
+The Play screen offers **Show setup on first run**. With it checked, a game without saved
+hardware choices opens video/audio setup before playing. Choose Sound Blaster for music and
+digital sound, or PC speaker only for effects without music, and save the choices for that
+game. **Bypass setup** (or Escape) skips the panel for this launch; unticking its checkbox
+bypasses setup for other unconfigured games too. **Video & audio…** on the Play screen opens
+it again whenever needed. Both VGA choices use the browser's 320 × 200 renderer. Previews,
+walkthrough playback and recording do not stop for setup. Preferences backups include these
+choices; play testing keeps native project files unchanged.
 
 To keep it safe or take it to another browser, _⚙ Settings › Back up / restore…_ saves
 everything this browser keeps to one `.gmbackup` file: your games, saves and high scores,
@@ -65,6 +75,80 @@ together without changing it. _Edit a copy_ makes your own copy under My games, 
 editor can then change. The file list on the left is grouped the way Game-Maker's menus were:
 palettes, block sets, monsters, characters, maps, sound sets, pictures and so on.
 
+## Overview and file galleries
+
+A game opens on its **Overview**, with four tabs: **Files**, **Controls**, **DOS player** and **Tools**.
+The address keeps the tab (`?tab=controls`), so Back, Forward and a reload return to it.
+
+**Tools** has a **Game version** card: type a version such as `1.0` and tick **Show the version on the
+title menu** to letter it (`v1.0`) in the lower right of the menu picture, so players can tell which
+version they have. It is off until you tick it, and the picture beside it is the real menu with the
+stamp. Only Play, play tests and downloads get the stamped picture; your game files stay as they are.
+
+**Files** is the asset browser. Each file type has a preview and a file count;
+_None yet_ marks an empty category. Choose a category to see its files, then click a thumbnail
+to open its editor. **Assets** returns to that file's category, and **All assets** opens the
+overview. Back and Forward keep these views too.
+
+The **Search this game** box above the thumbnails looks through everything at once, ignoring
+case, and shows what it finds as cards grouped by kind, with a count for each: **File names**;
+**Words inside files** (text screens, slide lists, the game file's scene names, high-score
+names, digital sound names and backdrops), with the matching words marked under the thumbnail;
+**Companion notes and names** (the key, joystick, counter and sound names from Controls, and any
+other note the editor keeps for the game); and **DOS player fields**, each a small card with the
+field's name and value that matches its name, its stock text or what it is set to now. A card
+opens that file, the Controls tab, or the DOS player tab on that field. Arrow keys move between
+cards, Enter opens one, and Escape clears the box. It also works on look-only games. The sidebar's
+**Find a file** box still filters file names only.
+
+**Controls** is where you say what the game's controls mean, once for every character: a short
+and a long description for each key the game uses (the editor works out what each key does and
+shows it beside your words), for joystick buttons 1 and 2, and a name for each of the 15
+repetition counters and 5 hidden counters, with where each is used. The character editor, the
+block editor, the **Keys** dialog and the Saves panel show these words. They are only for the
+editor: the DOS files never change. **Undo** and **Redo** work here too.
+
+**DOS player** is the stand-alone player's panel, described under
+[The Integrator and the DOS player](#the-integrator-and-the-dos-player). The Integrator's
+**DOS player** button opens this tab.
+
+**Tools** gathers the tools that work on the whole game, one card each, with a picture or what is
+known now and a button that opens it: **Level check** (a picture of the first level, how many levels have
+a saved check and what it found), **Before You Upload** (lines ticked), **Make a walkthrough**
+(whether one was made and how far it got), **Health check** (reads every file and lists the
+broken ones), **First steps** (in games started from the starter), **Color vision check** (the
+palette, drawn) and **Play Game** and **Download**. The status comes from what is already saved;
+opening the tab never runs a check. Each tool also opens from where it always did.
+
+If you have reserved palette ranges for backgrounds, monsters and characters (Palette editor), Optimize also lists block files that draw with colors reserved for another kind. **Apply** moves those pixels to the nearest allowed color, after showing each changed block before and after with a difference score (CIELAB delta E; large changes are flagged). It is separate from the automatic steps because it changes how the game looks.
+
+**Optimize** also holds your **checkpoints**: stamps of the whole game (every file and its editor
+notes), made with **Make a checkpoint…** any time and always before an optimization is applied. Each
+stores only what changed since the one before, the way a git repository does: a changed block or map
+cell is a few bytes, a changed text file a few lines. **Compare…** lists what changed and draws each
+level's map as it was and as it is (Before, After or side by side, with a jump to the next view that
+differs). **Restore** puts everything back (Undo takes that back), **Tag release…** labels a stamp as a
+release, and **Delete** removes one (the later stamps keep everything they had). They stay with the game
+in this browser and in a browser backup (tick _Leave out checkpoints_ in the backup dialog for a shallow
+copy), never in a download or a DOS export.
+
+**Blocks that look the same** (also in Optimize) lists, per block set, blocks that are drawn the same
+colors in every palette the set is shown with and play the same, each with a picture and how many
+map cells use it, plus blocks of one shape in other colors, which stay as they are. Blocks that look the same (same colors under every palette, same rules) can be joined into one, with the maps following; this frees slots and changes no scene. Joining two block sets into one file (the dropped set's blocks move into the other's free slots and its maps follow) is one of the merges Disk space offers; every scene is drawn the same afterward.
+
+The first card adds files. **Add a file…** offers new files, the Library, uploads and the
+available converters. **From this game…** makes a copy of an existing file. Copy a file, open
+another project in this browser tab, then use **Paste** in the matching category. Block groups
+and other settings belonging to the copied file follow it.
+
+Right-click a file or choose its **⋯** button for Edit, Duplicate, Copy, Paste to replace,
+Delete and Download. The menu also opens with Shift+F10; use the arrow keys and Escape.
+Replacing a file keeps its name and asks for confirmation. **Download** saves the file's current
+native bytes.
+
+Drop matching native files on the first card to add several at once. Existing names get new
+DOS names, so a dropped file is added alongside the one already there.
+
 ## The map editor
 
 ![The map editor with Snowbound's LaVale Mall map: painting tools across the top, the map with a gold link marker, and the block and monster pickers on the right](screenshots/web-editor-snowbound.png)
@@ -74,6 +158,11 @@ whole houses, and place monsters from the pickers on the right. Gold markers are
 other scenes and cyan ones are where the hero arrives; drag one to move it. Any palette can be
 shown over the map to see it by night or at dusk, and _Download map picture_ saves the whole map
 as a PNG.
+
+**Wrap** (∞) keeps scrolling through any edge to the opposite side. All the visible copies
+edit the same map, including selections, pasted blocks and terrain brushes. Use Shift+wheel
+or the focused map's arrow keys to scroll; on a touch screen, choose **Scroll** before dragging.
+The Wrap preference is remembered and included in preference backups.
 
 ## Play Game and Play Level
 
@@ -176,7 +265,7 @@ pictures, songs and maps, or every screen and song at once.
 ![The DOS player panel: tabs for the main menu, text pages, high scores, status, save, load, help and about screens, with the menu words listed on the left and a preview of Snowbound's menu as the DOS player draws it](screenshots/editor/16-dos-player.webp)
 
 Authors in the 1990s changed the DOS player's words, colors and screens with a hex editor. The
-DOS player panel does it safely, a tab for each screen: rename or hide menu words, move or
+DOS player tab of the Overview does it safely, a tab for each screen: rename or hide menu words, move or
 resize a frame by dragging it on the preview, and pick colors, timings, F-keys and file
 extensions. The DOS export writes the changes into its `XFERPLAY.EXE`, and Play and the web
 exports show them too.

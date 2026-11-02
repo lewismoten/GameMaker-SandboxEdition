@@ -1,7 +1,7 @@
 // The painted Easter egg (games/kit/easterEgg.ts) in colors of its own for the cast page: its
 // card picture (castArt.ts) and its frames on the stage (castSprites.ts): the four patterns as
 // it wobbles round on its way on, then the glint sliding down its shell.
-import type { Pixels } from '../../games/kit/pixels';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { EGG_SHINE_FRAMES, easterEggSprite, type EggColors, type EggPattern } from '../../games/kit/easterEgg';
 
 const CLEAR = 255;

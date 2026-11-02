@@ -77,6 +77,11 @@ export const ROUTES = {
     title: `Editor · ${PRODUCT}`,
     description: `Designing a game in ${PRODUCT}, the browser remake of RSD Game-Maker 3.0.`,
   },
+  downloads: {
+    title: `Download the games · ${PRODUCT}`,
+    description:
+      'A plain list of every Sandbox Software and Bizarre game, each a ZIP of the real DOS files: unzip it, then run it in DOSBox or open it in Game-Maker. With each game’s version and a short description.',
+  },
   player: {
     title: `Play · ${SHORT}`,
     description: `Play games made with Game-Maker 3.0 in your browser — the original samples, 90s shareware and new games — with ${PRODUCT}.`,
@@ -245,7 +250,8 @@ export function gameJsonLd(game: GameSeo, url?: string, image?: string): Record<
     image,
     author: people.length === 1 ? people[0] : people.length ? people : undefined,
     publisher: game.company ? { '@type': 'Organization', name: game.company } : undefined,
-    datePublished: game.year ? String(game.year) : undefined,
+    // the 1990s year of a game made for this project is in-story, so only the CD's games state one
+    datePublished: game.year && !game.original ? String(game.year) : undefined,
     gamePlatform: ['Web browser', 'MS-DOS'],
     playMode: 'SinglePlayer',
     applicationCategory: 'Game',

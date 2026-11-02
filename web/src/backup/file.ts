@@ -3,7 +3,7 @@
 // each section with its item count) and sections/<id>.json for each section in it, written with
 // codec.ts so binary data comes back byte for byte. Reading checks everything before anything
 // is written. No DOM.
-import { createZip, isZip, listZip } from '../project/zip';
+import { createZip, isZip, listZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { PRODUCT } from '../edition';
 import { version as SITE_VERSION } from '../../package.json';
 import { decode, encode } from './codec';
@@ -45,12 +45,21 @@ export interface SectionSnapshot {
   text: string;
 }
 
+/** The games' payload with each game's checkpoints left out (a shallow copy). */
+function withoutCheckpoints<P extends { projects: Record<string, object> }>(p: P): P {
+  const projects = Object.fromEntries(
+    Object.entries(p.projects).map(([id, r]) => [id, Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'checkpoints' && k !== 'checkpoint'))]),
+  );
+  return { ...p, projects };
+}
+
 /** Every section of this browser, with its size (the API key left out unless `withApiKey`). */
-export async function snapshot(w: World, opts: { withApiKey?: boolean } = {}): Promise<SectionSnapshot[]> {
+export async function snapshot(w: World, opts: { withApiKey?: boolean; shallow?: boolean } = {}): Promise<SectionSnapshot[]> {
   const out: SectionSnapshot[] = [];
   for (const s of SECTIONS) {
     let payload = await s.extract(w);
     if (s.id === 'ai' && !opts.withApiKey) payload = { local: withoutApiKey((payload as { local: Record<string, string> }).local) };
+    if (s.id === 'projects' && opts.shallow) payload = withoutCheckpoints(payload as { projects: Record<string, object> });
     const text = encode(payload);
     out.push({
       id: s.id,

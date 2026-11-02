@@ -1,6 +1,7 @@
 // ENDING.FLI: the render is finished. THE CHEZ drives off down the checkerboard toward the
 // vanishing point, Ray riding on the roof with Teddy and Gwinn, while Doc Leo waves from the
 // side of the road and the sun comes up where all the lines meet.
+import { cachedFrame } from '../render/frameCache';
 import { flare, bloom, type Picture } from '../render/image';
 import { Moved, Sphere, rgb, rotation, type Shape, type V } from '../render/tracer';
 import * as C from '../models/cast';
@@ -45,7 +46,7 @@ export function endingFrames(): { frames: Picture[]; speed: number } {
       sky: rgb(110, 110, 160),
       fog: { color: rgb(255, 200, 150), scale: 40, from: 10 },
     });
-    const pic = still(world, camera, 4, 16, 31);
+    const pic = cachedFrame(`ending-drive-${f}`, () => still(world, camera, 4, 16, 31));
     flare(pic, 163, 86, 0.25 + 0.5 * t);
     frames.push(pic);
   }

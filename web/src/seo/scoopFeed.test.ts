@@ -9,6 +9,7 @@ import { gamePage } from './site';
 
 const cdRoot = join(__dirname, '../../../cd');
 const catalog = cdCatalog(cdRoot);
+const secret = cdSecretCatalog(cdRoot);
 const dates = readScoopDates();
 const feed = scoopRss(catalog, dates);
 const stories = scoopStories(catalog);
@@ -37,8 +38,8 @@ describe('The Sandbox Scoop feed', () => {
   });
 
   it('leaves out the secret games', () => {
-    expect(cdSecretCatalog(cdRoot).length).toBeGreaterThan(0);
-    for (const g of cdSecretCatalog(cdRoot)) {
+    expect(secret.length).toBeGreaterThan(0);
+    for (const g of secret) {
       expect(feed).not.toContain(gamePage(g.id));
       expect(feed).not.toContain(g.title);
       expect(Object.keys(dates).some((k) => k.startsWith(`${g.id}/`))).toBe(false);

@@ -29,7 +29,6 @@ dialog.modal:has(.dp) {
 
 .dp-presets button,
 .dp-tab,
-.dp-hide,
 .dp-arrow,
 .dp-move select {
   min-height: 28px;
@@ -291,4 +290,93 @@ dialog.modal .dp-preview [hidden] {
 
 .dp-ext .dp-note {
   flex: 1 1 20ch;
+}
+
+/* Hide and Reset, one segmented group beside a field */
+.dp-tools {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.dp-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0 4px;
+  border-radius: 0;
+}
+
+.dp-tool:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.dp-tool:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.dp-tool:only-child {
+  border-radius: 4px;
+}
+
+.dp-tool + .dp-tool {
+  margin-left: -1px;
+}
+
+.dp-tool[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+/* the field Overview search just opened */
+.dp-field.dp-found {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* the About tab's read-only words and its DOS / web switch (aboutFields.ts) */
+.dp-about-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0 0 6px;
+  padding: 0;
+  border: 0;
+}
+.dp-about-switch legend {
+  padding: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.dp-about-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+}
+.dp-about-why {
+  margin: 4px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.dp-about-text {
+  max-width: 100%;
+  margin: 4px 0 8px;
+  padding: 6px 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: pre;
+}
+.dp-credits-link {
+  margin: 2px 0 8px;
+  font-size: 13px;
+}
+.dp-credits-link a {
+  display: inline-block;
+  min-height: 24px;
+  line-height: 24px;
 }

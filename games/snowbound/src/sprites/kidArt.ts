@@ -1,8 +1,8 @@
 // The kid, drawn as ASCII rows: a color key per outfit (the kid, or a bully in other colors),
 // head/body/leg pieces for the front, back and side views that are stacked into one 20x20
 // picture, and the shovel held three ways. Also makeBook, a named block set for .MBL/.CBL.
-import { newBlockSet, type Block } from '../../../../web/src/formats/blocks';
-import { Pixels } from '../../../kit/pixels';
+import { newBlockSet, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import type { Pal } from '../art/pal';
 

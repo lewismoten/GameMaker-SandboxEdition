@@ -5,7 +5,7 @@
 // Used by the block editor and the character editor.
 import { h, clear } from '../../core/ui';
 import { blockCanvas } from '../../core/draw';
-import type { Palette } from '../../../formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { BlockGroup } from './blockGroups';
 import './groupView.css';
 
@@ -15,6 +15,7 @@ interface GroupView {
   show(g: BlockGroup | undefined, current: number): void;
   /** Paints the cells again (after a paint). */
   redraw(): void;
+  refreshNames(): void;
 }
 
 export function groupView(o: {
@@ -22,6 +23,7 @@ export function groupView(o: {
   pal: () => Palette;
   transparent: boolean;
   onPick: (block: number) => void;
+  name?: (block: number) => string;
   /** Choose a block for the empty cell at this index. */
   onFill?: (cell: number) => void;
   /** Choose another block for the current block's cell. */
@@ -59,18 +61,20 @@ export function groupView(o: {
             : h('span', { class: 'group-view-empty', title: `Empty (${where})` });
         const px = o.blocks()[b]?.pixels;
         const isCurrent = b === current;
+        const name = o.name?.(b) ?? `Block ${b}`;
         const cell = h(
           'button',
           {
             type: 'button',
             class: isCurrent ? 'current' : '',
+            dataset: { block: String(b), cell: String(i) },
             'aria-current': isCurrent ? 'true' : undefined,
             title: isCurrent
               ? o.onReplace
-                ? `Block ${b}: editing it (${where}). Click to put a different block here`
-                : `Block ${b}: editing it (${where})`
-              : `Edit block ${b} (${where})`,
-            'aria-label': isCurrent && o.onReplace ? `Block ${b}, ${where}: choose a different block for this spot` : `Block ${b}, ${where}`,
+                ? `${name}: editing it (${where}). Click to put a different block here`
+                : `${name}: editing it (${where})`
+              : `Edit ${name} (${where})`,
+            'aria-label': isCurrent && o.onReplace ? `${name}, ${where}: choose a different block for this spot` : `${name}, ${where}`,
             onclick: () => (isCurrent ? o.onReplace?.(i) : o.onPick(b)),
           },
           px ? blockCanvas(px, o.pal(), { transparent: o.transparent, className: o.transparent ? 'checker' : '' }) : null,
@@ -92,6 +96,19 @@ export function groupView(o: {
     );
   }
 
+  function refreshNames(): void {
+    if (!group) return;
+    for (const button of grid.querySelectorAll<HTMLButtonElement>('button[data-block]')) {
+      const b = Number(button.dataset.block),
+        i = Number(button.dataset.cell);
+      const where = `column ${(i % group.cols) + 1}, row ${Math.floor(i / group.cols) + 1}`;
+      const name = o.name?.(b) ?? `Block ${b}`;
+      const selected = b === current;
+      button.title = selected ? `${name}: editing it (${where})${o.onReplace ? '. Click to put a different block here' : ''}` : `Edit ${name} (${where})`;
+      button.setAttribute('aria-label', selected && o.onReplace ? `${name}, ${where}: choose a different block for this spot` : `${name}, ${where}`);
+    }
+  }
+
   return {
     el: grid,
     show(g, c) {
@@ -100,5 +117,6 @@ export function groupView(o: {
       redraw();
     },
     redraw,
+    refreshNames,
   };
 }

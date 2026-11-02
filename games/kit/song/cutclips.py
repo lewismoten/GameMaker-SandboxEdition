@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Cuts digitized sound clips out of a Bard of Bizarre recording (an MP3 that is NOT committed)
-# into <out>/<name>.pcm: raw 8-bit unsigned mono PCM at 11025 Hz, which the game's clips.ts
+# into <out>/<name>.wav: unsigned 8-bit mono PCM at 11025 Hz, which the game's clips.ts
 # wraps as Creative Voice Files. A game's tools/cutClips.py names its cues and calls main():
 #
 #   python3 -I games/<id>/tools/cutClips.py [path/to/song.mp3] [--out DIR]
@@ -13,6 +13,7 @@
 import os
 import subprocess
 import sys
+import wave
 
 import numpy as np
 import scipy.signal as sg
@@ -76,12 +77,16 @@ def slow_down(pcm, rate):
     return np.clip(np.round(y * 127 + 128), 0, 255).astype(np.uint8)
 
 
-def write_pcm(out, name, data):
-    """<out>/<name>.pcm, refusing a clip whose VOC would pass Game-Maker's 16-bit size."""
+def write_wav(out, name, data, rate=RATE):
+    """Previewable PCM WAV source, retaining the unsigned bytes used by the native VOC."""
     if len(data) + 33 >= 40000:
         raise SystemExit('%s is %d bytes as a VOC' % (name, len(data) + 33))
-    with open(os.path.join(out, name + '.pcm'), 'wb') as f:
-        f.write(data.tobytes())
+    os.makedirs(out, exist_ok=True)
+    with wave.open(os.path.join(out, name + '.wav'), 'wb') as f:
+        f.setnchannels(1)
+        f.setsampwidth(1)
+        f.setframerate(rate)
+        f.writeframes(data.tobytes())
 
 
 def paths(default_out, argv=None):
@@ -104,8 +109,7 @@ def main(song, argv=None):
     os.makedirs(out, exist_ok=True)
     for name, (s, e, fi, fo) in song['cues'].items():
         start, end, pcm = cut(x, env, s, e, fi, fo)
-        with open(os.path.join(out, name + '.pcm'), 'wb') as f:
-            f.write(pcm.tobytes())
+        write_wav(out, name, pcm, RATE)
         print('%-10s %7.2f - %7.2f s  %.2f s  %6d samples  VOC %6d bytes' % (name, start, end, end - start, len(pcm), len(pcm) + 33))
     if 'slow' in song:
         rate = song.get('slow_rate', 8000)
@@ -113,7 +117,7 @@ def main(song, argv=None):
         for name, (s, e, fi, fo) in song['slow'].items():
             start, end, p = cut(x, env, s, e, fi, fo)
             data = slow_down(p, rate)
-            write_pcm(out, name, data)
+            write_wav(out, name, data, rate)
             print('%-10s %7.2f - %7.2f s  %.2f s  %6d samples at %d Hz  VOC %6d bytes' % (name, start, end, end - start, len(data), rate, len(data) + 33))
     if 'splices' in song:
         rate = song.get('splice_rate', 8000)
@@ -126,5 +130,5 @@ def main(song, argv=None):
                 pcm.append(p)
                 print('%-10s part %d %7.2f - %7.2f s' % (name, k + 1, start, end))
             data = slow_down(np.concatenate(pcm), rate)
-            write_pcm(out, name, data)
+            write_wav(out, name, data, rate)
             print('%-10s %.2f s  %6d samples at %d Hz  VOC %6d bytes' % (name, len(data) / rate, len(data), rate, len(data) + 33))

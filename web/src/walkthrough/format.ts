@@ -8,7 +8,7 @@
 // segment's scene is entered. A bot that plays each level on its own writes one segment a
 // level, so scenes it never sees (a dark scene only passed through) cannot put it out of
 // step; a bot that plays the whole game in one go writes a single segment.
-import type { RecordedKey } from '../formats/recording';
+import type { RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 
 export const WALKTHROUGH_FPS = 60;
 
@@ -17,6 +17,11 @@ export interface WalkSegment {
   scene: number;
   /** Key events (scan code, bit 7 = released) and the game ticks before each: encodeKeys(). */
   keys: string;
+  /**
+   * The bot's furthest try at a scene it didn't get through: the keys stop where it got to, and
+   * this says why ("It found no way through Cave."). Older readers ignore it (still version 1).
+   */
+  incomplete?: string;
 }
 
 export interface WalkChapterMark {

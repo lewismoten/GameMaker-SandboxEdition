@@ -90,7 +90,13 @@ export function openVideo(id: string, title: string, picture: string | undefined
       'details',
       { class: 'lib-video-section' },
       h('summary', null, 'Transcript'),
-      h('p', { class: 'lib-video-source' }, 'Transcript from YouTube’s automatic captions, lightly cleaned.'),
+      h(
+        'p',
+        { class: 'lib-video-source' },
+        video?.transcript === 'audio'
+          ? 'Transcript made from the video’s sound with Whisper speech recognition, lightly cleaned.'
+          : 'Transcript from YouTube’s automatic captions, lightly cleaned.',
+      ),
       words,
     );
     let loaded = false;

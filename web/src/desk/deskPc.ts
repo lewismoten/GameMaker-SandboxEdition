@@ -6,8 +6,8 @@ import type { Computer } from '../retro/computer';
 import type { MonitorMode } from '../retro/computer/setup';
 import { installCrtWarp } from './pc/crtWarp';
 import { captureStub } from './pc/captureStub';
-import type { SpeedSetting } from '../engine/scene';
-import { TURBO_OFF } from '../engine/slowPc';
+import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { TURBO_OFF } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 import type { viewState } from '../urlState';
 import type { deskScene } from './deskScene';
 

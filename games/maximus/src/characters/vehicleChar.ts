@@ -1,8 +1,8 @@
 // POD, DIVER and ROVER (.CHR/.CBL): the vehicles, one block tall, with the effects painted
 // over them (shield bubbles, tractor beams, speed streaks, sonar rings, dust, splashes).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { S, WHITE } from '../art/palette';
-import { CHARBL } from '../../../../web/src/formats/blocks';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { BlockList, NONE, character, setSeq, type F } from './chrkit';
 import { SEQ, SND, itemBlock } from '../ids';
 import { drawDiver, drawPod, drawRover } from '../sprites/vehicles';

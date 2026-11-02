@@ -62,11 +62,12 @@ describe('seoBuild', () => {
     const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
     expect(locs[0]).toBe(SITE_URL);
     expect(locs).toContain(`${SITE_URL}dos.html`);
+    expect(locs).toContain(`${SITE_URL}downloads.html`);
     const guide = locs.filter((l) => /\/help-[\w-]+\.html$/.test(l));
     expect(guide.sort()).toEqual(GUIDE_SECTIONS.map(([id]) => `${SITE_URL}help-${id}.html`).sort());
     expect(
       locs
-        .slice(2)
+        .slice(3)
         .filter((l) => !guide.includes(l))
         .sort(),
     ).toEqual(playable.map((g) => `${SITE_URL}${gamePage(g.id)}`).sort());
@@ -85,6 +86,16 @@ describe('seoBuild', () => {
       expect(html.match(/<h1>/g)).toHaveLength(1);
       expect(html).toMatch(/<meta name="description" content="[^"]{20,}"/);
     }
+  });
+
+  it('lists every listed original game’s ZIP on downloads.html, and no secret game', () => {
+    const html = files['downloads.html'];
+    const originals = playable.filter((g) => g.original);
+    expect(originals.length).toBeGreaterThan(0);
+    for (const g of originals) expect(html).toContain(`href="./${g.path}${g.pack}"`);
+    expect(html).not.toMatch(/href="\.\/games\/(gameware|shareware)\//);
+    expect(html.match(/<h1>/g)).toHaveLength(1);
+    expect(secretHits(html)).toEqual([]);
   });
 
   it('points robots.txt at the sitemap', () => {

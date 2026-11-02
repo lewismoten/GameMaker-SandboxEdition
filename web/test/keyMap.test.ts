@@ -4,8 +4,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { GameFiles } from '../src/project/files';
 import { describeSequence, direction, gameKeyMap } from '../src/editor/keymap/keyMap';
-import { emptyFrame, newCharacter, serializeCharacter } from '../src/formats/character';
-import { MONBL } from '../src/formats/blocks';
+import { emptyFrame, newCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 describe('direction', () => {
   it('names compass directions and ignores small drift', () => {

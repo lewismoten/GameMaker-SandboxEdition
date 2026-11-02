@@ -10,6 +10,12 @@ from the games' files by `scripts/castSprites.ts`); the music and effects are a 
 own `.CMF` and `.VOC` files. Never a secret game's characters or files, and never the Bard of
 Bizarre's recordings (they are for non-commercial use, and the tour may be recorded for video).
 
+`place.ts` keeps speech clear of every on-stage host, before considering which control it
+might cover. It checks pockets beside host edges and viewport edges as well as the four
+preferred positions near the speaker, so another guide cannot hide behind the bubble.
+Entrance hops finish before speech is placed. Viewport and caption-bar resizing reposition
+the hosts and bubble together, using the current control and the space above the controls.
+
 ## Starting it
 
 - The **?** button (`tourButton.ts`) in today's web header, on the desk's wall and in the DOS
@@ -27,18 +33,32 @@ Bizarre's recordings (they are for non-commercial use, and the tour may be recor
 The whole tour plays them in this order, each on its own page with hosts from a fitting Sandbox
 game, that game's music and its sound effects:
 
-| Chapter                                | Page                             | Hosts (voice)                                                                          | Music                     |
-| -------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------- | ------------------------- |
-| `home`: the game list (the Games page) | `#/`                             | Teddy (barks), Gwinn (Kokoro Sky +4)                                                   | Teddy's title             |
-| `library`                              | `#/library`                      | Joe, KEEP IT BRIEF!'s night librarian (olden-mon); teenage Lewie, Snowbound (Lewis +5) | KEEP IT BRIEF!'s library  |
-| `achievements`                         | `#/achievements`                 | Dex Dynamo, In The Year 2000! (Kokoro Puck +3)                                         | In The Year 2000!'s title |
-| `cast`                                 | `#/cast`                         | Doc Leo (Lewis's own voice), Teddy, Gwinn                                              | Teddy's Clown Club        |
-| `guide`                                | `#/help` (always its first part) | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
-| `settings`: the ⚙ menu                 | `#/credits`                      | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
-| `editor`                               | `#/p/look:logic/kitchen.map`     | Watt, Ohm Sweet Ohm (Lewis +7), the BLASTER ship flying by                             | Ohm Sweet Ohm's garage    |
-| `desk`: the 1994 desk                  | `#/desk`                         | teenage Lewie, Snowbound (Lewis +5), THE CHEZ driving by                               | Snowbound's title         |
-| `bbs`: calling the BBS                 | `#/desk`                         | Dex Dynamo (Kokoro Puck +3) calls; teenage Lewie, the board's SysOp                    | In The Year 2000!'s title |
-| `dos`: DOS Game-Maker                  | `dos.html`                       | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
+| Chapter                                        | Page                                           | Hosts (voice)                                                                          | Music                     |
+| ---------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------- |
+| `home`: the game list (the Games page)         | `#/`                                           | Teddy (barks), Gwinn (Kokoro Sky +4)                                                   | Teddy's title             |
+| `library`                                      | `#/library`                                    | Joe, KEEP IT BRIEF!'s night librarian (olden-mon); teenage Lewie, Snowbound (Lewis +5) | KEEP IT BRIEF!'s library  |
+| `achievements`                                 | `#/achievements`                               | Dex Dynamo, In The Year 2000! (Kokoro Puck +3)                                         | In The Year 2000!'s title |
+| `cast`                                         | `#/cast`                                       | Doc Leo (Lewis's own voice), Teddy, Gwinn                                              | Teddy's Clown Club        |
+| `guide`                                        | `#/help` (always its first part)               | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
+| `settings`: the ⚙ menu                         | `#/credits`                                    | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
+| `editor`                                       | `#/p/look:logic/kitchen.map`                   | Watt, Ohm Sweet Ohm (Lewis +7), the BLASTER ship flying by                             | Ohm Sweet Ohm's garage    |
+| `edit-around`: getting around the editor       | `#/p/look:logic/kitchen.map`                   | Watt, Ohm Sweet Ohm (Lewis +7)                                                         | Ohm Sweet Ohm's garage    |
+| `edit-map`: the map editor, in depth           | `#/p/look:logic/kitchen.map`                   | Dex Dynamo, In The Year 2000! (Kokoro Puck +3)                                         | In The Year 2000!'s title |
+| `edit-blocks`: background and character blocks | `#/p/look:logic/kitchen.bbl`, then `watt.cbl`  | Joe, KEEP IT BRIEF!'s night librarian (olden-mon)                                      | KEEP IT BRIEF!'s library  |
+| `edit-monsters`: monsters and the hero         | `#/p/look:logic/garage.mon`, then `watt.chr`   | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
+| `edit-palette`: the palette editor             | `#/p/look:logic/watt.pal`                      | Watt, Ohm Sweet Ohm (Lewis +7), the BLASTER ship flying by                             | Ohm Sweet Ohm's garage    |
+| `edit-sounds`: sounds and music                | `#/p/look:logic/watt.snd`, then `kitchen.cmf`  | Gwinn (Kokoro Sky +4)                                                                  | Teddy's park              |
+| `edit-animation`: animations and slide shows   | `intro.fli`, then `blender.gif`, `blender.lst` | teenage Lewie, Snowbound (Lewis +5)                                                    | Snowbound's title         |
+| `edit-integrator`: the Integrator              | `#/p/look:logic/ohmsweet.gam?scene=2`          | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
+| `edit-player`: the DOS player                  | `#/p/look:logic/ohmsweet.gam`                  | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
+| `edit-check`: the Level check                  | `#/p/look:sleuth/act1.map`                     | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
+| `edit-export`: downloads                       | `#/p/look:logic/kitchen.map`                   | Courier Max, Maximus (Kokoro Michael, a little faster)                                 | Maximus's station         |
+| `edit-assistant`: the Assistant                | `#/p/look:logic/kitchen.map`                   | Dex Dynamo, In The Year 2000! (Kokoro Puck +3)                                         | In The Year 2000!'s title |
+| `edit-walkthrough`: Make a walkthrough         | `#/p/look:logic/ohmsweet.gam?scene=0`          | Doc Leo (Lewis's own voice)                                                            | Teddy's Clown Club        |
+| `desk`: the 1994 desk                          | `#/desk`                                       | teenage Lewie, Snowbound (Lewis +5), THE CHEZ driving by                               | Snowbound's title         |
+| `box`: What's in the box                       | `#/desk`                                       | Inspector Ada Penn, Final Curtain (Kokoro Emma)                                        | Final Curtain's parlor    |
+| `bbs`: calling the BBS                         | `#/desk`                                       | Dex Dynamo (Kokoro Puck +3) calls; teenage Lewie, the board's SysOp                    | In The Year 2000!'s title |
+| `dos`: DOS Game-Maker                          | `dos.html`                                     | Professor Fiddlesticks, Quest for the Round Tuit (snooty-wiz)                          | Round Tuit's menu         |
 
 Home presses each collection's tab in turn (Imported's ratings, notes, Show and Sort by when it
 has games; the import tile when it has none; what shareware was), and puts the visitor's own
@@ -51,13 +71,47 @@ game, it goes back there when it ends. The desk chapter presses Power only while
 the PC is off (`click` with a selector), opens the game pad's large controls, takes the box
 standing face out off the shelf into the box viewer and peeks inside TURBO BUTTON, shutting each
 again; on a phone, where the room is a column with no wall, its shelf (and box), phone, clock and
-poster steps are left out. The BBS chapter has the desk's PC call The Sandbox BBS
+poster steps are left out. The box chapter has Inspector Penn take the shelf's box down again and go through what came
+in it as the box viewer lays it out: the disks, the manual and the list of printed pieces (World
+Map, Level Maps, key card, registration card, The Sandbox Scoop, catalog, BBS ad, stickers, each
+only when that game's box has it), then opens the hint book's postcard in the contents viewer
+to show the Red film button, and presses the box viewer's Close. It pauses a step ("box-back") after the postcard so
+the box viewer, which comes back by itself, is there before the next step looks for it; on a
+phone, with no shelf, only its hello and goodbye play. The BBS chapter has the desk's PC call The Sandbox BBS
 (`desk/deskTour.ts`, asked with page acts): GUEST logs in, the newest files are listed, one is
 viewed and downloaded, and the modem's speed goes to Unlimited partway through; leaving the
 chapter stops the call and puts back the line speed, the board's user file, its door game and
 C:'s downloads as found. A PC busy with the visitor's own program is left alone (the call's steps
 are left out). The DOS chapter types and presses nothing. Nothing counts toward an achievement
 while a tour plays (`achievements/store.ts`).
+
+The editor's thirteen sub-chapters follow the overview and look inside Ohm Sweet Ohm the same way (read-only,
+in memory, each `always` at its own address, with `go` to its next file): getting around (the
+file list and its filter, Game assets, Used by, Undo, the map's zoom, the Play Level menu, the
+shortcuts and where help is), the map editor (side tabs, the paint, Select, Terrain and Stamp
+tools, grid, wrap, exit and way-in markers, Find and Replace), the block editors (picker, name,
+paint tools, mirror, palette and its preview, behavior tabs, groups, then the character
+frames and live character), monsters and the hero (animation, power, lives, movement, a path on
+a map, then the character editor's tabs, sequences, audition stage and frames that give birth to
+monsters) and the palette (swatches, the HSV picker and the Colors from picture box, both opened
+and shut with nothing confirmed, ramps, reserved ranges, Vision, Backgrounds, variants), sounds and
+music (the sound set's list, PC speaker and Sound Blaster columns, drawn pitches, Make one and Change
+it; then the song's tracks, piano roll, Accompany and the Instruments and Settings tabs), animations
+and slide shows (frames, speed and film strip, the scene maker's timeline, the picture editor's copy
+into a block, a slide show's timeline, Then choices and media bin), the Integrator (the board of
+scene cards, tools, key, zoom, a scene's files and links, the Screens and Music tabs) and the DOS
+player (its dialog opened and shut: presets, a tab per screen, words, the draggable preview, High
+scores, Colors and Files tabs, all look-only on this game), the Level check (the panel opened and
+Run check pressed: the bot really plays a Sandbox game's first act for its Quick 15 seconds while the
+heat map fills in live, then the colors, marks, findings, report and the Watch and Play buttons), the
+Download chooser (opened and shut with Cancel, nothing built), the Assistant (its chat panel opened:
+no message sent, the AI setup box stays shut) and Make a walkthrough (the dialog opened from the
+Integrator's start scene and shut; the bot is never started). They only
+press what changes nothing in the game: the Select tool, a monster in the list, the hero's
+Sequences tab, the palette's tabs, the music editor's tabs, the Integrator's Screens and Music
+tabs (remembered choices are put back through `keep`) and Run check (its result is kept only in the open game's companion, in memory; the marks, counts and findings steps are `optional`, so `tour:check`, which steps quickly, skips them while the run is still going). The whole tour plays all of them after the overview. Show me around on the editor page plays the
+overview and then only the sub-chapter for the editor open (`editorChoice.ts`: a map, block,
+character, monster, palette, sound, music, animation, picture, slide show or game file; any other file, or none, plays the overview alone).
 
 **Another page.** The DOS page is `dos.html`, not `index.html`, so a chapter there (`file`) is
 reached with a page load: the tour shows its title card, then goes to
@@ -77,7 +131,11 @@ stays on the tour's bar, the bar and layer stay usable over an overlay that make
 (and are raised above a modal dialog), what it opens stops above the caption bar, and the ring
 goes when what a press opened covers the control. A chapter's `keep` puts back settings, the
 selected tab and address settings it changed; a step's `act` asks the page to do something
-(`gm-tour-act`), and the chapter's `leave` act tidies up after.
+(`gm-tour-act`: `film-over` lays the box viewer's red film over a hidden answer, `copy-check`
+starts the DOS page's Game-Maker over), and the chapter's `leave` act tidies up after. While a
+tour plays on the DOS page its PC pretends it is not registered (`retro/gmReg/tourPretend.ts`, in
+memory only), so the copy check, the Owner's Guide and the card always show; it is registered
+again when the tour ends.
 
 In a tour: Back, Pause, Next, Sound (the mute switch, remembered as `gm-tour-sound`; a browser
 whose demo sound is None starts muted) and Close tour; Esc ends it from anywhere, and the keyboard
@@ -87,7 +145,9 @@ they are going instead of walking, and nothing bobs or pulses.
 **Recording mode** (`&record`, or Record the whole tour): a Start card first (its click lets the
 music play), then no pointer and no buttons, a title card before each chapter, the caption larger,
 and the same pace every time. The keys still work: Space pauses, ← and → step, M mutes, Esc ends.
-A 1280×720 or 1920×1080 window records cleanly.
+A 1280×720 or 1920×1080 window records cleanly. If the browser can't share the tab, or the viewer
+declines, a dismissable notice (`recordNotice.ts`) says recording didn't start, and the tour plays on
+as a plain tour (pointer and buttons back).
 
 ## Files
 
@@ -101,11 +161,14 @@ A 1280×720 or 1920×1080 window records cleanly.
 - `lines.ts`: every line as `{ id, chapter, where, speaker, text }` (`tourLines()`, no DOM) for the
   narration script, which records `public/tour/voice/<chapter>/<id>.ogg` per line. A step plays
   its clip when there is one and lasts at least as long; without one the bubble's timing is used.
+  The next two steps' clips load while one plays (`tourSound.ts` `prefetch`); a clip still late when
+  its step starts stays silent.
 - `tourPages.ts`: what the ? button needs up front: the page an address shows, the pages with a
   chapter, the per-page switch and a tour asked for in the address.
 - `tourButton.ts` (`tourButton.css`): the ? button and its menu, and the Settings item. The rest
   of the folder is its own download, loaded only when a tour starts or the guides wait on a page
   (`firstLoad.test.ts`).
+- `editorChoice.ts`: which editor sub-chapter goes with the open file on the editor page.
 - `tourStart.ts`: starting a chapter or the whole tour, and the guides waiting in a page's corner.
 - `tourEngine.ts` (`tour.css`): the player: the layer over the page (it never takes a click),
   the ring and arrow on the control, the bubble, the caption bar and its buttons, title cards
@@ -115,7 +178,7 @@ A 1280×720 or 1920×1080 window records cleanly.
 - `tourOpen.ts`: the menus and overlays the tour opens to show what is in them, and shuts again.
 - `findTarget.ts`: a step's control on the page: the first visible match of its selectors (so a
   narrow window's ⋯ menu stands in for a header link; one cut off by a box that hides its overflow,
-  like a phone's folded tip, doesn't count), and the menu or panel to open to show it.
+  like a phone's folded tip, doesn't count, unless a scrolling box in between can bring it into view), and the menu or panel to open to show it.
 - `place.ts`: where a host stands by a control, where a bubble goes (on screen, off the control,
   above the caption bar) and how long a walk takes, as plain math.
 - `actor.ts`: a host or prop on the layer: its sprite's walk and front frames on a canvas.
@@ -128,6 +191,6 @@ Write its steps in `chapters/<id>.ts` (ids `<chapter>-<what>`, lowercase), add i
 its page's controls in `tourData.test.ts` `SOURCES`. A new host is a sprite in
 `scripts/castSprites.ts` (run it to rewrite `public/cast/sprites.json`) and an entry in `steps.ts`
 `HOSTS` with its voice; then `npm run voice` records the new lines. `tourData.test.ts` checks every selector is really made there, the text fits a phone's bubble, the ids are unique and the sprites, sounds and music are
-Sandbox games' own. Check what each control really does before describing it. A page outside
+Sandbox games' own. Check what each control really does before describing it, and play it with `npm run tour:check -- <chapter>` (`scripts/README.md`): it reports each step's control found or missing at 1440 and 390, light and dark, with axe. A page outside
 today's web needs the ? button in its own header (the desk's and the DOS page's have it), and a
 `pageHere` for its address; one outside `index.html` names its `file`.

@@ -3,8 +3,8 @@
 // kingdom; he bows and is gone. Painted in true color, one palette chosen for every frame
 // (median cut), and dithered in a pattern fixed to the screen so still parts never change and
 // the FLI stores only what moves.
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { medianCutPalette, Quantizer } from '../../../kit/quantize';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
+import { medianCutPalette, Quantizer } from '@lewismoten/gamemaker-sandbox-tools/kit/quantize';
 import { Canvas, mix, clamp01, tnoise } from '../art/rgb';
 import { sky, stars, tuit, castle } from './scenery';
 import { bigSprite } from './talk';

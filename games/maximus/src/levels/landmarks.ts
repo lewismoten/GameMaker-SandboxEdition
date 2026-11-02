@@ -5,7 +5,7 @@
 // fall of the world's own liquid from a floating crag on lava and toxic worlds (lava or acid),
 // a bone arch in the deserts and twin obelisks on the ash worlds. Scenery only: nothing in
 // them hurts, and only the arch's lintel can be stood on.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { type Grid, W, wx } from './mapkit';
 import type { SetBuilder } from '../blocks/blockset';
 

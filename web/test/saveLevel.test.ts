@@ -19,13 +19,13 @@ import {
   serializeSave,
   parseSave,
 } from '../src/project/saveData';
-import { changeBlocks, restoreSaved, type Saved } from '../src/engine/scene';
-import { moveChars } from '../src/engine/character';
-import { blockBirthMonsters, moveAllMonsters } from '../src/engine/monsters';
-import { newCharInfo, MLEN, MWID } from '../src/engine/world';
-import { Recorder } from '../src/engine/recorder';
-import { parseGame } from '../src/formats/game';
-import { VISIBLE_H, VISIBLE_W } from '../src/engine/render';
+import { changeBlocks, restoreSaved, type Saved } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { moveChars } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { blockBirthMonsters, moveAllMonsters } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { newCharInfo, MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { VISIBLE_H, VISIBLE_W } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
 
 const games = join(__dirname, '..', '..', 'games');
 

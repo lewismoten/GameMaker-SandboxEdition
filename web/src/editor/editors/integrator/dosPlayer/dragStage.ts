@@ -3,7 +3,7 @@
 // For the keyboard, a Move list picks an item and the arrow keys (on the preview or its arrow
 // buttons) nudge it by a pixel, or 8 with Shift. The fields beside it follow every move.
 import { h, clear } from '../../../core/ui';
-import type { PatchValue } from '../../../../dosPlayer/patchRules';
+import type { PatchValue } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { describeItem, dragBy, grab, hitItem, toScreen, type DragItem, type Grip, type Held } from './dragItems';
 
 export interface StageContext {

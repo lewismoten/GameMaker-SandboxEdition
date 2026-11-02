@@ -12,17 +12,17 @@ import { BLANK_DISKS, MOUSE_PADS } from './smallAds';
 /** Where the feature picks up at the back of the book (WEB_EDITION_JUMP). */
 const JUMP = 'web-edition-jump';
 
-/** One line of the feature checklist: what it is, whether the 1995 box had it, and the module that does it now. */
+/** One line of the feature checklist: what it is, whether the 1994 box had it, and the module that does it now. */
 interface Feature {
   name: string;
-  /** In the 1995 box: yes, in part, or not at all. */
+  /** In the 1994 box: yes, in part, or not at all. */
   then: 'yes' | 'part' | 'no';
   /** The module that does it in this edition, from the repository root. */
   module: string;
 }
 
 export const CHECKLIST: Feature[] = [
-  { name: 'Plays the original game files, byte for byte', then: 'yes', module: 'web/src/engine/game.ts' },
+  { name: 'Plays the original game files, byte for byte', then: 'yes', module: 'web/packages/engine/src/engine/game.ts' },
   { name: 'Design tools in DOS (the desk’s PC runs them)', then: 'yes', module: 'web/src/vga/blocedit.ts' },
   { name: 'Point-and-click editors in a browser window', then: 'no', module: 'web/src/editor/editors/registry.ts' },
   { name: 'Undo and Redo', then: 'no', module: 'web/src/editor/core/history.ts' },
@@ -48,7 +48,7 @@ export const CHECKLIST: Feature[] = [
   { name: 'Editor-only notes kept out of DOS files', then: 'no', module: 'web/src/project/companion.ts' },
 ];
 
-const THEN: Record<Feature['then'], string> = { yes: '1995 box: yes', part: '1995 box: GIF only', no: '1995 box: no' };
+const THEN: Record<Feature['then'], string> = { yes: '1994 box: yes', part: '1994 box: GIF only', no: '1994 box: no' };
 
 const row = (f: Feature): ListingRow => ({ title: f.name, kind: THEN[f.then], price: f.then === 'no' ? 'NEW' : '✓' });
 
@@ -68,7 +68,7 @@ export const WEB_EDITION: MagSection = {
           kicker: 'Feature',
           size: 'xl',
           level: 1,
-          deck: 'Game-Maker™: Sandbox Edition is RSD’s game construction kit rebuilt to run in a web browser, with tools the 1995 box never had. We took it for a spin.',
+          deck: 'Game-Maker™: Sandbox Edition is RSD’s game construction kit rebuilt to run in a web browser, with tools the 1994 box never had. We took it for a spin.',
         }),
         art(
           'desk',
@@ -113,7 +113,7 @@ export const WEB_EDITION: MagSection = {
           [
             [
               side(
-                'What the 1995 box couldn’t do',
+                'What the 1994 box couldn’t do',
                 [
                   list([
                     'Undo a slip of the mouse: the DOS designers had no Undo',
@@ -284,7 +284,7 @@ export const WEB_EDITION: MagSection = {
           kicker: 'Game-Maker Goes Online, continued',
           size: 'l',
           level: 2,
-          deck: 'The 1995 box against the Sandbox Edition, feature by feature.',
+          deck: 'The 1994 box against the Sandbox Edition, feature by feature.',
         }),
         grid([[rows(CHECKLIST.slice(0, half).map(row))], [rows(CHECKLIST.slice(half).map(row))]], 0.4),
         side(

@@ -8,7 +8,7 @@ import { h, clear, modal, toast, debounce } from '../../../core/ui';
 import { paintIndexed } from '../../../core/draw';
 import { fitToPane } from '../../../core/fitPane';
 import type { Project } from '../../../core/project';
-import { BLEN } from '../../../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import {
   SCENE_H,
   SCENE_W,

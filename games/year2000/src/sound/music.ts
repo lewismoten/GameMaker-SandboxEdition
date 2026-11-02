@@ -1,7 +1,7 @@
 // The soundtrack: eleven FM songs for the Sound Blaster, written as note strings. The
 // future, as it sounded in 1992: arpeggiators, pumping octave bass, and a lot of bells.
-import { INSTRUMENTS, sbi, type Voice } from '../../../kit/music';
-import { tune } from '../../../kit/tune';
+import { INSTRUMENTS, sbi, type Voice } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { tune } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 const CHORDS: Record<string, string[]> = {
   C: ['C4', 'E4', 'G4'],

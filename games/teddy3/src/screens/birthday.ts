@@ -2,7 +2,7 @@
 // pages): dawn at Doc Leo's house. Teddy wakes up and nobody says happy birthday; Gwinn's bed
 // is empty again; Doc Leo hands him a list of ERRANDS. Then the camera winks at the audience
 // (a paw print on today's date, a party hat peeking out of the cupboard), and a fade to black.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, gradient, micro, outlined, scaleBlit } from '../art/draw';
 import { errandSprite } from '../sprites/errands';
 import { H, Reel, W, c, caption, leoAt, teddyAt } from './reel';

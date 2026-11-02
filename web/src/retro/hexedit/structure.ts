@@ -7,7 +7,7 @@
 // Every field may carry a `key`: where the same value is in the format module's parsed
 // object ('scenes.3.links.2.from.x' in parseGame's result), so tests check the map against
 // the parsers byte for byte (test/hexStructure.test.ts).
-import { cString, latin1Text } from '../../formats/binary';
+import { cString, latin1Text } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 
 type FieldType = 'u8' | 'i8' | 'u16' | 'i16' | 'u24' | 'u32' | 'i32' | 'vlq' | 'str' | 'text' | 'raw';
 

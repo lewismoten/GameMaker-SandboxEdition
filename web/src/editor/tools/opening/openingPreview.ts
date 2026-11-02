@@ -52,7 +52,7 @@ export function openingPreview(): OpeningPreview {
           onclick: async () => {
             stopPreview();
             show();
-            const [bytes, { decodeGif }] = await Promise.all([fetchIntro(style), import('../../../formats/gif')]);
+            const [bytes, { decodeGif }] = await Promise.all([fetchIntro(style), import('@lewismoten/gamemaker-sandbox-engine/formats/gif')]);
             if (!bytes) return toast(`${file.toUpperCase()} could not be loaded.`, 'error');
             const g = decodeGif(bytes);
             paintIndexed(screen, g.pixels, g.width, g.height, g.palette);

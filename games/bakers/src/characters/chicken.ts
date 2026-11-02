@@ -5,8 +5,8 @@
 // stops him square after one). Space squawks (the same squawk monster: mice run), B bounces
 // (squash, stretch, boing; it does nothing, he is rubber), a hurt is a bounce too, and he
 // plays dead by going flat. The counters, lives and hit points are the game's and carry over.
-import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { CHICK_SEQ as SEQ, FIXED_BLOCK, KEY, MON, SND } from '../ids';
 import type { BlockSet } from '../blocks/sets';
 import { HIT_POINTS, STEP } from './leo';

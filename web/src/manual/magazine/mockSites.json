@@ -1,0 +1,121 @@
+{
+  "_about": "Fictional web addresses for TURBO BUTTON's Log Off the Games article (sections/logOff.ts, scripts/oldWebPages.ts) and the registry of every made-up domain in the shipped project. Change a site's domain, host, path, title or text here, then re-run scripts/oldWebShots.ts. `npm run domains:check` confirms each mockDomain is still unregistered; test/domainsRegistry.test.ts fails when a shipped file names a domain that is neither here nor in realDomains.",
+  "mockDomains": [
+    { "domain": "sandbox-u.edu", "usedIn": "Log Off the Games article and screenshot" },
+    { "domain": "wombat-state.edu", "usedIn": "Log Off the Games article" },
+    { "domain": "marmot-college.edu", "usedIn": "Log Off the Games article and screenshot" },
+    { "domain": "pigeonpost.gov", "usedIn": "Log Off the Games article" },
+    { "domain": "skywatch-weather.gov", "usedIn": "Log Off the Games article" },
+    { "domain": "dustbunny.nz", "usedIn": "Log Off the Games article" },
+    { "domain": "dandelionpages.co.nz", "usedIn": "Log Off the Games article and screenshot" },
+    { "domain": "sandbox.pgh.pa.us", "usedIn": "Sandbox Software's email, FTP and web address on the Game-Maker inserts (web/src/manual/printables/gmInserts.ts)", "check": "dns" }
+  ],
+  "reservedDomains": ["example.com", "example.org", "example.net", "evil.com", "tail1234.ts.net"],
+  "realDomains": [
+    "w3.org", "paint.net", "vogons.org", "lewisman.com", "github.com", "github.io", "lewismoten.com", "archive.org", "schema.org", "huggingface.co",
+    "youtube.com", "youtube-nocookie.com", "ytimg.com", "wikipedia.org", "wikimedia.org", "openai.com",
+    "ziglang.org", "apple.com", "thegamecrafter.com", "npmjs.com", "idpf.org", "dosbox.com", "sitemaps.org",
+    "rfc-editor.org", "inkscape.org", "daisy.org", "purl.org", "sil.org", "vite.dev", "ollama.com",
+    "modelcontextprotocol.io", "google.com", "chrome.com", "scipy.io", "nasa.gov", "packetizer.com",
+    "aderack.com", "mobygames.com", "mazeguy.net", "glorioustrainwrecks.com", "dosgamesarchive.com",
+    "blogspot.com", "oneadayuntilthedayidie.com", "homestarrunner.com", "tednasmith.com", "libraryhost.com",
+    "newosxbook.com", "c02.at", "danielcwilson.com", "ts.net"
+  ],
+  "sites": [
+    {
+      "id": "dict",
+      "domain": "sandbox-u.edu",
+      "scheme": "http",
+      "host": "dict.sandbox-u.edu",
+      "port": 8080,
+      "path": "/~wordsmith/cgi-bin/define.pl",
+      "query": "",
+      "title": "Sandbox-U Word Lookup",
+      "description": "A plain English dictionary, 38,000 words.",
+      "org": "Sandbox University",
+      "dept": "Department of Letters",
+      "contact": "wordsmith@dict.sandbox-u.edu",
+      "bannerText": "WORD LOOKUP"
+    },
+    {
+      "id": "zip",
+      "domain": "pigeonpost.gov",
+      "scheme": "http",
+      "host": "zip.pigeonpost.gov",
+      "path": "/cgi-bin/zipfind/lookup",
+      "query": "state=PA",
+      "title": "ZIP Code Lookup",
+      "description": "The Postal Annex ZIP code lookup.",
+      "org": "The Postal Annex",
+      "bannerText": "Enter a ZIP code or a town",
+      "items": ["15201|Sandbox Falls|PA", "15202|Sandbox Falls|PA", "15217|Marmot Heights|PA"],
+      "updated": "Last updated 2 Jan 1995"
+    },
+    {
+      "id": "recipes",
+      "domain": "wombat-state.edu",
+      "scheme": "http",
+      "host": "www.casserole.wombat-state.edu",
+      "path": "/~mmcgill/recipes/index.html",
+      "query": "",
+      "title": "Casserole File",
+      "description": "Eleven hundred recipes, sorted by main ingredient, in plain text.",
+      "org": "Wombat State",
+      "dept": "Home Economics Club",
+      "contact": "mmcgill@casserole.wombat-state.edu",
+      "items": ["Beef and noodle casseroles", "Chicken and rice", "Tuna surprise", "Green bean things", "Potluck desserts", "Soups (see also the Soup Archive)"],
+      "updated": "Last updated 3 Jan 1995"
+    },
+    {
+      "id": "soups",
+      "domain": "dustbunny.nz",
+      "scheme": "http",
+      "host": "tucker.dustbunny.nz",
+      "port": 8080,
+      "path": "/pub/soups/index.html",
+      "query": "",
+      "title": "Soup Archive",
+      "description": "An archive of soup recipes in New Zealand.",
+      "org": "Dustbunny Tucker"
+    },
+    {
+      "id": "weather",
+      "domain": "skywatch-weather.gov",
+      "scheme": "http",
+      "host": "forecast.skywatch-weather.gov",
+      "path": "/wx/maps/us/current.html",
+      "query": "",
+      "title": "Current Weather Map",
+      "description": "A current weather map, updated every hour.",
+      "org": "Skywatch Weather",
+      "bannerText": "Current Weather Map",
+      "items": ["Northeast", "Southeast", "Midwest", "Plains", "Mountain West", "Pacific Coast"],
+      "updated": "Last updated: 14:00 Eastern, 2 Jan 1995"
+    },
+    {
+      "id": "yellow",
+      "domain": "dandelionpages.co.nz",
+      "scheme": "http",
+      "host": "www.dandelionpages.co.nz",
+      "port": 8080,
+      "path": "/cgi-bin/finder/~dp/search.cgi",
+      "query": "cat=PIZZA&amp;area=412",
+      "title": "Dandelion Pages - The Yellow Pages of the Net",
+      "description": "Over 1,000 businesses listed. Type what you need and where.",
+      "org": "Dandelion Pages",
+      "bannerText": "Dandelion Pages, the yellow pages of the net"
+    },
+    {
+      "id": "gopher",
+      "domain": "marmot-college.edu",
+      "scheme": "gopher",
+      "host": "gopher.marmot-college.edu",
+      "port": 70,
+      "path": "/11/library/catalog",
+      "query": "",
+      "title": "Marmot College Library",
+      "description": "Marmot College Library Catalog",
+      "org": "Marmot College"
+    }
+  ]
+}

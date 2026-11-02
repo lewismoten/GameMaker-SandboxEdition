@@ -1,8 +1,8 @@
 // BlockBook: SNOW.BBL built one named block at a time. A block's index is the order it was
 // added; touch/next links are given by name and resolved in finish(), once every block exists.
 // Ctx is what every area's drawing code shares: the book, the palette ramps and a blank tile.
-import { emptyBlock, newBlockSet, type Block } from '../../../../web/src/formats/blocks';
-import { Pixels } from '../../../kit/pixels';
+import { emptyBlock, newBlockSet, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Pal } from '../art/pal';
 
 interface Attrs {

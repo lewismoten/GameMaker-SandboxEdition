@@ -2,8 +2,8 @@
 // patches, a held chord for pads, a few hits for percussion, and the drum on its own channel
 // in rhythm mode for the drum kit. Written as a Game-Maker CMF, so it plays through the same
 // player as any song (the editor's preview and the offline renders in the tests).
-import { TICK_RATE } from './cmfPlayer';
-import { encodeCmf, type CmfEvent } from '../formats/cmf';
+import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { encodeCmf, type CmfEvent } from '@lewismoten/gamemaker-sandbox-engine/formats/cmf';
 import { DRUM_SLOTS } from './oplDrumPresets';
 import type { OplPreset } from './oplPatch';
 

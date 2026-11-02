@@ -3,7 +3,7 @@
 // splashed) and wagging tail, water droplets, the BBS's line-noise gremlins, Teddy's tossed
 // tennis ball and spin whirl, and Gwinn herself (standing, napping across a doorway, happy
 // with a ball).
-import { MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
+import { MONBL, SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { ANSI, BEETLE, GRASS, OCHRE, PINK, RED, SAND, STEEL, WATER, WOOD, YELLOW } from '../art/palette';
 import { BlockSet } from '../rules';
 import { CLEAR, Pixels, art, ball, dither, outline, rng, shade, sprite } from '../art/draw';

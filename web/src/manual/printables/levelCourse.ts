@@ -9,8 +9,8 @@
 // the laps they count), the bends where it runs off straight up (the kinks), the places where
 // it touches a part of itself further on (a shortcut, such as a splice across to the next lane),
 // and the page-high panels it is cut into. No DOM; levelCourseSvg.ts draws it.
-import type { Block } from '../../formats/blocks';
-import { MLEN, MWID } from '../../formats/map';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { CoursePath } from '../../editor/check/course';
 import { openCell } from './levelRooms';
 
@@ -473,9 +473,27 @@ export function courseRaster(
   const width = Math.max(1, Math.round((p.c1 - p.c0) * scale));
   const height = Math.max(1, Math.round((p.a1 - p.a0) * scale));
   const pixels = new Uint16Array(width * height).fill(blank);
-  const drawn = new Set(l.cells.map((c) => keyOf(c.x, c.y)));
+  // which blocks are drawn, as a flat grid over their bounding box (a Set lookup and two mods per pixel was most of the time)
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const c of l.cells) {
+    if (c.x < minX) minX = c.x;
+    if (c.x > maxX) maxX = c.x;
+    if (c.y < minY) minY = c.y;
+    if (c.y > maxY) maxY = c.y;
+  }
+  const gw = maxX - minX + 1;
+  const drawn = new Uint8Array(l.cells.length ? gw * (maxY - minY + 1) : 0);
+  for (const c of l.cells) drawn[(c.y - minY) * gw + (c.x - minX)] = 1;
   const [ux, uy] = l.up;
   const [rx, ry] = l.right;
+  // the source's origin for the block last looked up (the next pixel is nearly always in the same block)
+  let lastBx = NaN;
+  let lastBy = NaN;
+  let originX = 0;
+  let originY = 0;
   for (let py = 0; py < height; py++) {
     const a = p.a1 - (py + 0.5) / scale;
     for (let px = 0; px < width; px++) {
@@ -485,9 +503,15 @@ export function courseRaster(
       const y = c * ry + a * uy;
       const bx = Math.floor(x);
       const by = Math.floor(y);
-      if (!drawn.has(keyOf(bx, by))) continue;
-      const sx = mod(bx, MLEN) * blen + Math.min(blen - 1, Math.floor((x - bx) * blen));
-      const sy = mod(by, MWID) * blen + Math.min(blen - 1, Math.floor((y - by) * blen));
+      if (bx < minX || bx > maxX || by < minY || by > maxY || !drawn[(by - minY) * gw + (bx - minX)]) continue;
+      if (bx !== lastBx || by !== lastBy) {
+        lastBx = bx;
+        lastBy = by;
+        originX = mod(bx, MLEN) * blen;
+        originY = mod(by, MWID) * blen;
+      }
+      const sx = originX + Math.min(blen - 1, Math.floor((x - bx) * blen));
+      const sy = originY + Math.min(blen - 1, Math.floor((y - by) * blen));
       pixels[py * width + px] = source.pixels[sy * source.width + sx];
     }
   }

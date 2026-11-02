@@ -4,10 +4,10 @@
 // dust bunnies, socks, the whirling furniture) are handled by trying a stretch again from a
 // snapshot after a wait (route.ts, carefully()). On the living room ride the spinning rug
 // carries it off its line now and then: it steps back onto a whole block and plans again.
-import { MAXSCENELINKS, NOSCENE } from '../../../web/src/formats/game';
+import { MAXSCENELINKS, NOSCENE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { DIGITS, MONEY, PLAY, SCAN, SPOTS } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
-import { MLEN, bgBlock, type World } from '../../../web/src/engine/world';
+import { MLEN, bgBlock, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import type { GameSim } from './sim';
 import { buildPalette } from '../src/art/pal';
 import { buildBlocks } from '../src/blocks/blocks';

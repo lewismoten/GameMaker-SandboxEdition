@@ -2,9 +2,7 @@
 import { NEEDED } from '../src/ids';
 import { Bot } from './bot';
 
-const expect = (bot: Bot, scene: number, what: string) => {
-  if (bot.sim.scene !== scene) throw new Error(`Expected ${what} (scene ${scene}), in scene ${bot.sim.scene}\n${bot.log.slice(-8).join('\n')}`);
-};
+import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
 
 /** Runs an order; anything but carrying on (a scene change, getting stuck) is an error. */
 async function must(bot: Bot, r: Promise<string | undefined>, what: string): Promise<void> {

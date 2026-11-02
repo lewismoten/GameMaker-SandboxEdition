@@ -1,6 +1,6 @@
 // Ocean worlds for OCEAN.BBL: a strip of sky, the rolling surface, then a deep water
 // column over reefs, kelp forests, trenches and wrecks, down to a sunken temple.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { Grid, H, W, reachable, wave1d, wx } from './mapkit';
 import type { SetBuilder } from '../blocks/blockset';
 import type { PlanetResult, PlanetSpec, Run, Spot } from './planet';

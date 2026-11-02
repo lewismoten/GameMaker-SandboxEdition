@@ -1,15 +1,18 @@
 // The map editor's newer tools: line, rectangle, select (copy, cut, paste), terrain, stamp and building, with their side panel.
-import { h, clear, promptText, toast } from '../../../core/ui';
+import { h, clear, promptText, toast, selectField } from '../../../core/ui';
 import { blockCanvas } from '../../../core/draw';
 import type { Project } from '../../../core/project';
 import { newId } from '../../../../project/storage';
-import { MLEN } from '../../../../formats/map';
-import type { Block } from '../../../../formats/blocks';
-import type { Palette } from '../../../../formats/palette';
-import { lineCells, rectCells, spanRect, type Cell, type CellRect } from './cellOps';
+import { nativeCell } from '../mapWrap';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { lineCells, rectCells, spanRect, type Cell } from './cellOps';
 import { paintTerrain, pickBlock, type Terrain } from './autotile';
 import { assembleBuilding, placeGrid, type Building } from './building';
-import { captureStamp, mirrors, stampRows, transformStamp, type Mirrors, type Stamp, type Transform } from './stamps';
+import { mirrors, stampRows, transformStamp, type Mirrors, type Stamp, type Transform } from './stamps';
+import { captureSelection, polygonSelection, selectionCells, type MapSelection } from './selection';
+import { saveMapGroup } from './mapGroup';
 import { getClip, setClip } from './clipboard';
 import { loadBrushes, saveBrush } from './brushStore';
 import { renderBrushPanel } from './brushPanel';
@@ -17,6 +20,7 @@ import { editTerrain } from './terrainSetup';
 import { editBuilding } from './buildingSetup';
 import { drawPreview, type SetupCtx } from './setupKit';
 import type { OverlayState } from './overlay';
+import { blockLabel } from '../../blocks/blockNames';
 
 export type ToolMode = 'line' | 'rect' | 'select' | 'terrain' | 'stamp' | 'building' | 'paste';
 
@@ -29,6 +33,7 @@ interface MapHost {
   palette: () => Palette;
   imgs: () => HTMLCanvasElement[];
   brush: () => number;
+  wrap?: () => boolean;
   /** Call before a change, for undo. */
   remember: () => void;
   /** Cells changed (indexes): draw them and save. */
@@ -44,10 +49,13 @@ type Shape = Pick<Stamp, 'w' | 'h' | 'cells'>;
 export class MapTools {
   mode: ToolMode | undefined;
   private start?: Cell;
+  private gestureBase?: Cell;
   private last?: Cell;
   private down = false;
   private erase = false;
   private outline = false;
+  private selectionShape: 'rect' | 'polygon' = 'rect';
+  private polygon: Cell[] = [];
   private terrainId?: string;
   private stampId?: string;
   private buildingId?: string;
@@ -61,7 +69,12 @@ export class MapTools {
   ) {}
 
   private get ctx(): SetupCtx {
-    return { blocks: this.host.blocks(), palette: this.host.palette(), imgs: this.host.imgs() };
+    return {
+      blocks: this.host.blocks(),
+      palette: this.host.palette(),
+      imgs: this.host.imgs(),
+      name: (index) => blockLabel(this.host.project, this.host.bbl(), index),
+    };
   }
 
   private get mirrors(): Mirrors {
@@ -77,15 +90,37 @@ export class MapTools {
   /** Called when the editor switches tools (undefined: a tool of its own). */
   enter(mode: ToolMode | undefined): void {
     this.mode = mode;
-    this.start = this.last = undefined;
+    this.start = this.last = this.gestureBase = undefined;
     this.down = false;
     if (mode === 'stamp') this.held = this.stamps().find((s) => s.id === this.stampId);
     if (mode === 'paste') this.held = getClip();
-    if (mode !== 'select') this.host.overlay.selection = undefined;
+    if (mode !== 'select') {
+      this.host.overlay.selection = undefined;
+      this.polygon = [];
+    }
     this.host.overlay.ghost = undefined;
     this.host.overlay.outline = undefined;
+    if (this.polygon.length) this.previewPolygon();
     this.host.drawOverlay();
     this.renderPanel();
+  }
+
+  private get wrapped(): boolean {
+    return !!this.host.wrap?.();
+  }
+
+  /** Keep the physical drag direction, while bounding a gesture to one native map per axis. */
+  private pointer(p: Cell, begin = false): Cell {
+    if (!this.wrapped) return p;
+    const polygon = this.mode === 'select' && this.selectionShape === 'polygon' && this.polygon.length > 0;
+    if (begin && !polygon) this.gestureBase = { x: Math.floor(p.x / MLEN) * MLEN, y: Math.floor(p.y / MWID) * MWID };
+    if (!begin && !this.down && !polygon) return nativeCell(p);
+    const base = this.gestureBase ?? { x: 0, y: 0 };
+    const at = { x: p.x - base.x, y: p.y - base.y };
+    const first = this.start ?? this.polygon[0];
+    return first
+      ? { x: Math.max(first.x - MLEN + 1, Math.min(first.x + MLEN - 1, at.x)), y: Math.max(first.y - MWID + 1, Math.min(first.y + MWID - 1, at.y)) }
+      : at;
   }
 
   // ---- pointer -------------------------------------------------------------------------
@@ -93,13 +128,29 @@ export class MapTools {
   pointerDown(p: Cell, button: number): void {
     const m = this.mode;
     if (!m) return;
+    p = this.pointer(p, true);
+    if (m === 'select' && this.selectionShape === 'polygon') {
+      if (button !== 0) return;
+      const first = this.polygon[0],
+        last = this.polygon.at(-1);
+      if (this.polygon.length >= 3 && first.x === p.x && first.y === p.y) {
+        this.finishPolygon();
+        return;
+      }
+      if (last?.x === p.x && last.y === p.y) return;
+      this.host.overlay.selection = undefined;
+      this.polygon.push(p);
+      this.previewPolygon();
+      this.renderPanel();
+      return;
+    }
     this.down = true;
     this.start = this.last = p;
     if (m === 'terrain') {
       const t = this.terrain();
       if (!t) return this.noBrush();
       this.host.remember();
-      this.host.changed(paintTerrain(this.host.blocksArr, t, [p], this.erase || button === 2));
+      this.host.changed(paintTerrain(this.host.blocksArr, t, [p], this.erase || button === 2, MLEN, MWID, this.wrapped));
     } else if (m === 'stamp' || m === 'paste') {
       if (!this.held) return this.noBrush();
       this.ghostAt(p);
@@ -109,13 +160,19 @@ export class MapTools {
   pointerMove(p: Cell, buttons: number): void {
     const m = this.mode;
     if (!m) return;
+    p = this.pointer(p);
+    if (m === 'select' && this.selectionShape === 'polygon' && this.polygon.length) {
+      this.previewPolygon(p);
+      return;
+    }
     if (!this.down) {
       if ((m === 'stamp' || m === 'paste') && this.held) this.ghostAt(p);
       return;
     }
     if (m === 'terrain') {
       const t = this.terrain();
-      if (t && this.last) this.host.changed(paintTerrain(this.host.blocksArr, t, lineCells(this.last, p).slice(1), this.erase || (buttons & 2) !== 0));
+      if (t && this.last)
+        this.host.changed(paintTerrain(this.host.blocksArr, t, lineCells(this.last, p).slice(1), this.erase || (buttons & 2) !== 0, MLEN, MWID, this.wrapped));
     } else if (m === 'stamp' || m === 'paste') this.ghostAt(p);
     else this.preview(p);
     this.last = p;
@@ -124,6 +181,7 @@ export class MapTools {
   pointerUp(p: Cell): void {
     const m = this.mode;
     if (!m || !this.down) return;
+    p = this.pointer(p);
     this.down = false;
     const a = this.start ?? p;
     const r = spanRect(a, p);
@@ -133,25 +191,27 @@ export class MapTools {
       const cells = m === 'line' ? lineCells(a, p) : rectCells(r, this.outline);
       const changed: number[] = [];
       for (const c of cells) {
-        const i = c.y * MLEN + c.x;
+        const at = this.wrapped ? nativeCell(c) : c;
+        const i = at.y * MLEN + at.x;
         if (blocks[i] !== this.host.brush()) ((blocks[i] = this.host.brush()), changed.push(i));
       }
       this.host.overlay.outline = undefined;
+      this.host.overlay.ghost = undefined;
       this.host.changed(changed);
     } else if (m === 'select') {
       this.host.overlay.outline = undefined;
-      this.host.overlay.selection = r;
+      this.host.overlay.selection = this.wrapped ? { ...r, wrap: true } : r;
       this.renderPanel();
     } else if (m === 'building') {
       const b = this.building();
       this.host.overlay.ghost = undefined;
       if (!b) return this.noBrush();
       this.host.remember();
-      this.host.changed(placeGrid(blocks, assembleBuilding(b, r.w, r.h), r.x, r.y));
+      this.host.changed(placeGrid(blocks, assembleBuilding(b, r.w, r.h), r.x, r.y, MLEN, MWID, this.wrapped));
     } else if ((m === 'stamp' || m === 'paste') && this.held) {
       const at = this.anchor(p, this.held);
       this.host.remember();
-      this.host.changed(placeGrid(blocks, stampRows(this.held), at.x, at.y));
+      this.host.changed(placeGrid(blocks, stampRows(this.held), at.x, at.y, MLEN, MWID, this.wrapped));
       this.ghostAt(p);
       return;
     }
@@ -170,13 +230,62 @@ export class MapTools {
     const r = spanRect(a, p);
     const o = this.host.overlay;
     if (this.mode === 'line') o.outline = { cells: lineCells(a, p) };
-    else if (this.mode === 'rect' || this.mode === 'select') o.outline = { rect: r };
+    else if (this.mode === 'rect') {
+      const rows = Array.from({ length: r.h }, () => Array<number>(r.w).fill(-1));
+      for (const cell of rectCells(r, this.outline)) rows[cell.y - r.y][cell.x - r.x] = this.host.brush();
+      o.ghost = { x: r.x, y: r.y, rows, ok: true };
+      o.outline = { rect: r };
+    } else if (this.mode === 'select') o.outline = { rect: r };
     else if (this.mode === 'building') {
       const b = this.building();
       o.ghost = b ? { x: r.x, y: r.y, rows: assembleBuilding(b, r.w, r.h), ok: true } : undefined;
       o.outline = { rect: r };
     }
     this.host.drawOverlay();
+  }
+
+  private previewPolygon(pointer?: Cell): void {
+    const points = pointer ? [...this.polygon, pointer] : this.polygon;
+    const cells: Cell[] = [];
+    for (let i = 1; i < points.length; i++) cells.push(...lineCells(points[i - 1], points[i]));
+    if (points.length > 2) cells.push(...lineCells(points.at(-1)!, points[0]));
+    if (points.length === 1) cells.push(points[0]);
+    this.host.overlay.outline = cells.length ? { cells } : undefined;
+    this.host.drawOverlay();
+  }
+
+  /** Returns whether Enter/double-click belongs to a pending polygon gesture. */
+  finishPolygon(): boolean {
+    if (this.mode !== 'select' || this.selectionShape !== 'polygon' || !this.polygon.length) return false;
+    const origin = this.wrapped ? { x: Math.min(...this.polygon.map((p) => p.x)), y: Math.min(...this.polygon.map((p) => p.y)) } : { x: 0, y: 0 };
+    const points = this.polygon.map((p) => ({ x: p.x - origin.x, y: p.y - origin.y }));
+    const selected = this.wrapped
+      ? polygonSelection(points, Math.max(...points.map((p) => p.x)) + 1, Math.max(...points.map((p) => p.y)) + 1)
+      : polygonSelection(points);
+    if (selected && this.wrapped) {
+      selected.x += origin.x;
+      selected.y += origin.y;
+      selected.cells = selected.cells?.map((p) => ({ x: p.x + origin.x, y: p.y + origin.y }));
+      selected.wrap = true;
+    }
+    if (!selected) {
+      toast('Choose at least three corners that enclose an area.', 'error');
+      return true;
+    }
+    this.host.overlay.selection = selected;
+    this.host.overlay.outline = undefined;
+    this.polygon = [];
+    this.host.drawOverlay();
+    this.renderPanel();
+    return true;
+  }
+
+  removePolygonCorner(): boolean {
+    if (!this.polygon.length) return false;
+    this.polygon.pop();
+    this.previewPolygon();
+    this.renderPanel();
+    return true;
   }
 
   private anchor(p: Cell, s: Shape): Cell {
@@ -201,16 +310,16 @@ export class MapTools {
 
   // ---- selection -----------------------------------------------------------------------
 
-  get selection(): CellRect | undefined {
+  get selection(): MapSelection | undefined {
     return this.host.overlay.selection;
   }
 
   copy(cut = false): void {
     const r = this.selection;
     if (!r) return toast('Select an area first (the Select tool).', 'error');
-    setClip({ ...captureStamp(this.host.blocksArr, r), bbl: this.host.bbl() });
+    setClip({ ...captureSelection(this.host.blocksArr, r), bbl: this.host.bbl() });
     if (cut) this.fillSelection();
-    toast(`${cut ? 'Cut' : 'Copied'} ${r.w}×${r.h} blocks. Paste them on any map with Ctrl+V.`);
+    toast(`${cut ? 'Cut' : 'Copied'} ${selectionCells(r).length} blocks. Paste them on any map with Ctrl+V.`);
   }
 
   paste(): void {
@@ -223,8 +332,16 @@ export class MapTools {
     const r = this.selection;
     if (!r) return;
     this.host.remember();
-    const g = Array.from({ length: r.h }, () => Array<number>(r.w).fill(this.host.brush()));
-    this.host.changed(placeGrid(this.host.blocksArr, g, r.x, r.y));
+    const changed: number[] = [];
+    for (const { x, y } of selectionCells(r)) {
+      const at = r.wrap ? nativeCell({ x, y }) : { x, y };
+      const index = at.y * MLEN + at.x;
+      if (this.host.blocksArr[index] !== this.host.brush()) {
+        this.host.blocksArr[index] = this.host.brush();
+        changed.push(index);
+      }
+    }
+    this.host.changed(changed);
   }
 
   async saveStamp(): Promise<void> {
@@ -232,7 +349,7 @@ export class MapTools {
     if (!r) return toast('Select an area first, then save it as a stamp.', 'error');
     const name = await promptText('Save as a stamp', 'Name (e.g. House, Tree)', 'Stamp');
     if (!name) return;
-    const s: Stamp = { id: newId(), name, ...captureStamp(this.host.blocksArr, r) };
+    const s: Stamp = { id: newId(), name, ...captureSelection(this.host.blocksArr, r) };
     saveBrush(this.host.project, this.host.bbl(), 'stamps', s);
     this.stampId = s.id;
     toast(`Saved the stamp “${name}”. Place it with the Stamp tool.`);
@@ -245,10 +362,13 @@ export class MapTools {
       this.host.setMode('select');
       return true;
     }
-    if (this.host.overlay.selection || this.host.overlay.ghost) {
-      this.host.overlay.selection = this.host.overlay.ghost = undefined;
+    if (this.down || this.host.overlay.selection || this.host.overlay.ghost || this.host.overlay.outline) {
+      this.down = false;
+      this.polygon = [];
+      this.start = this.last = undefined;
+      this.host.overlay.selection = this.host.overlay.ghost = this.host.overlay.outline = undefined;
       this.host.drawOverlay();
-      this.renderPanel();
+      if (this.mode === 'select') this.renderPanel();
       return true;
     }
     return false;
@@ -276,18 +396,42 @@ export class MapTools {
       return clear(p, head('Rectangle'), h('label', { class: 'check' }, box, h('span', null, 'Outline only')));
     }
     if (m === 'select' || m === 'paste') {
-      const has = !!this.selection;
+      const selected = this.selection;
+      const has = !!selected;
       return clear(
         p,
         head(m === 'paste' ? 'Paste' : 'Selection'),
+        m === 'select'
+          ? selectField(
+              'Selection shape',
+              [
+                ['rect', 'Rectangle'],
+                ['polygon', 'Polygon'],
+              ],
+              () => this.selectionShape,
+              (shape) => {
+                this.selectionShape = shape;
+                this.polygon = [];
+                this.down = false;
+                this.host.overlay.selection = this.host.overlay.ghost = this.host.overlay.outline = undefined;
+                this.host.drawOverlay();
+                this.renderPanel();
+              },
+            )
+          : null,
+        m === 'select' && this.selectionShape === 'polygon'
+          ? h('button', { type: 'button', disabled: this.polygon.length < 3, onclick: () => this.finishPolygon() }, 'Finish polygon (Enter)')
+          : null,
         h(
           'p',
           { class: 'meta' },
           m === 'paste'
             ? 'Click where the copied blocks go (Esc stops).'
             : has
-              ? `${this.selection.w}×${this.selection.h} blocks selected.`
-              : 'Drag over the map to select blocks.',
+              ? `${selectionCells(selected).length} blocks selected in a ${selected.w}×${selected.h} area.`
+              : this.selectionShape === 'polygon'
+                ? 'Click corners. Double-click, click the first corner or press Enter to finish. Backspace removes a corner; Escape cancels.'
+                : 'Drag over the map to select blocks.',
         ),
         h(
           'div',
@@ -299,6 +443,19 @@ export class MapTools {
             'button',
             { type: 'button', disabled: !has, onclick: () => void this.saveStamp(), title: 'Keep these blocks as a stamp to place again' },
             '★ Save as stamp',
+          ),
+          h(
+            'button',
+            {
+              type: 'button',
+              disabled: !has,
+              title: 'Keep this picture as a block group to edit together in the background block editor',
+              onclick: () => {
+                const area = this.selection;
+                if (area) void saveMapGroup(this.host.project, this.host.bbl(), this.host.blocksArr, area, this.host.blocks().length);
+              },
+            },
+            '▦ Save as block group',
           ),
           h('button', { type: 'button', disabled: !has, onclick: () => this.fillSelection(), title: 'Fill with the chosen block (Delete)' }, '▣ Fill'),
         ),

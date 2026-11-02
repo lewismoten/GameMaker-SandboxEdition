@@ -2,10 +2,10 @@
 // integrator's scene descriptions), the level's character (sequence names, keys, and which
 // sequences an item turns on), its background blocks and palette (inventory pictures), and how
 // many blocks in the game change each counter (an unused counter is labeled so).
-import { BACKBL, MONBL, parseBlocks, type Block } from '../../formats/blocks';
-import { METERS, parseCharacter, type Character } from '../../formats/character';
-import { parseGame, type Game } from '../../formats/game';
-import { parsePalette, type Palette } from '../../formats/palette';
+import { BACKBL, MONBL, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { METERS, parseCharacter, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import type { SaveLabels } from './saveGame';
 
 /** Anything files can be read from by name (GameFiles, a Map with a get, the desk's drive…). */
@@ -29,7 +29,7 @@ export interface GameLabels extends SaveLabels {
 }
 
 /** Reads the labels from a game's files; undefined when its .gam is missing or damaged. */
-export function gameLabels(files: FileSource, gam: string): GameLabels | undefined {
+export function gameLabels(files: FileSource, gam: string, counterNames?: Record<string, string>): GameLabels | undefined {
   const bytes = files.get(gam);
   if (!bytes) return undefined;
   let game: Game;
@@ -72,6 +72,7 @@ export function gameLabels(files: FileSource, gam: string): GameLabels | undefin
   return {
     game,
     counterUse,
+    counterNames,
     sceneName: (scene) => game.scenes[scene]?.desc?.trim() || undefined,
     character: (scene) => read(scene, CHR, parseCharacter),
     blocks: (scene) => read(scene, BBL, (x) => parseBlocks(x, BACKBL)),

@@ -4,7 +4,7 @@
 // it; the sky above fades through eight bands to starry space.
 //
 // The pictures are painted in surfaceArt.ts; this file lists the blocks of the set in order.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, Mask, fill, outline, shade, sprite } from '../art/draw';
 import { G, SOLID, SetBuilder, TOP, over, tex } from './blockset';
 import { EGG_BLOCK, ITEM_BASE, MONEY, SHARD_BASE, SHARD_COUNTER } from '../ids';

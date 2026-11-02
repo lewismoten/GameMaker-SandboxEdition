@@ -2,15 +2,15 @@
 // threat at the start (in reach, on its way to the entry, or a block that hurts beside it), chasers with no lifetime, monsters the color of the scenery
 // (on the scene's own palette), monsters that score or heal every tick, and lifts that make the
 // hero wait (solid, harmless monsters that carry him up, down or over a gap; not ground pacers). (Monsters that hold the hero while they hurt are found by playing: landings.ts.)
-import { BLEN, MONBL, SOLTOP, type Block } from '../../../formats/blocks';
-import { CHARBL } from '../../../formats/blocks';
-import type { Character } from '../../../formats/character';
-import { LASTMON, MAXMARCH, type Monster } from '../../../formats/monster';
-import { MLEN, MWID } from '../../../formats/map';
+import { BLEN, MONBL, SOLTOP, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import type { Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { LASTMON, MAXMARCH, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { at, type Finding } from '../findings';
 import { linksInto } from '../sceneLinks';
 import { contrastRatio, luminance, topColors, type SceneData } from '../sceneData';
-import type { Game } from '../../../formats/game';
+import type { Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { TICK_S, WAIT_TICKS } from './blockChecks';
 
 /** The monster's picture blocks. */

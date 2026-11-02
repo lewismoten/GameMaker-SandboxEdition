@@ -1,5 +1,5 @@
 // THE BIG NEWS: Game-Maker's source code set free. Facts from the repository's README.md,
-// code/README.md and NOTICE.md: RSD's Game-Maker 1.0–3.0 (1991–1995), its source released by
+// code/README.md and NOTICE.md: RSD's Game-Maker 1.0–3.0 (1991–1994), its source released by
 // Andy Stone under the MIT License in 2014, and this fork, Game-Maker: Sandbox Edition.
 import { a, button, cols, grid, head, list, note, p, pull, shot, side } from '../blocks';
 import type { MagSection } from '../types';
@@ -32,7 +32,7 @@ export const NEWS: MagSection = {
             'Now the program itself is out in the open. Andy Stone of Recreational Software Designs released the C, C++ and assembly source of Game-Maker 3.0 under the **MIT License**, one of the most generous licenses there is. You may use it, copy it, change it, and share what you make, as long as the copyright notice and the license travel with it.',
           ),
           p(
-            'Game-Maker was the work of a family: **G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone**. Versions 1.0 through 3.0 came out from 1991 to 1995. **Peter Savage** wrote its Sound Blaster voice routines and its joystick code, and the Sound Designer’s digitized speech with Andy Stone.',
+            'Game-Maker was the work of a family: **G. Andrew Stone, G. Oliver Stone, Oliver Stone Jr. and Joan Stone**. Versions 1.0 through 3.0 came out from 1991 to 1994. **Peter Savage** wrote its Sound Blaster voice routines and its joystick code, and the Sound Designer’s digitized speech with Andy Stone.',
           ),
           p(
             'The release is the program as it was built, folder for folder: the designers, PLAYGAME, the file formats, even the sample games’ data. A few pieces belonged to other companies, such as the compiler maker’s runtime library and the sound card maker’s developer kit. Those are not covered by the MIT License, so copies made from the release leave them out.',
@@ -66,7 +66,7 @@ export const NEWS: MagSection = {
             list([
               '**1991** Game-Maker’s first version, with the sample games Houses, Nebula, Penguin Pete and Pipemare',
               '**October 1992** a magazine ad lists it for $89 plus $4 shipping',
-              '**1995** the end of Game-Maker’s run, at version 3.0',
+              '**August 1994** version 3.00 arrives: the one on this issue’s free CD',
               '**2014** Andy Stone releases the source under the MIT License',
               '**Today** Game-Maker: Sandbox Edition plays it all in a web browser',
             ]),

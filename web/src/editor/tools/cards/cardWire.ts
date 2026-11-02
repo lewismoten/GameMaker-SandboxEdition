@@ -2,8 +2,8 @@
 // and a slide list (backdrop, then the page) that the scene's slot plays. The instruction card
 // takes the start scene's instructions slot, a level card the level's intro slot, which
 // PLAYGAME shows each time the level starts, after a death too. Files the slot held before stay.
-import type { Scene } from '../../../formats/game';
-import { serializeSlideList } from '../../../formats/graphicScripts';
+import type { Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { GameFiles } from '../../../project/files';
 import { cardBackdrop } from './cardBackdrop';
 import { cardFile } from './cardText';

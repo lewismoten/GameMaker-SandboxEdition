@@ -1,8 +1,8 @@
 // teddy.chr and teddy.cbl: Teddy's poses and the tricks bound to keys. Walking left and
 // right are the only side views (mirrored by the frame orientation); every trick faces
 // the player, so Teddy never seems to turn around by himself.
-import { CHARBL, MONBL } from '../../../../web/src/formats/blocks';
-import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL, MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BlockSet } from '../blocks/blockset';
 import { CTR, KEY, MON, SEQ, SND } from '../ids';
 import { POSES, ZZZ } from '../sprites/teddy';

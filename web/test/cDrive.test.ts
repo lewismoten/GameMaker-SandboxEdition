@@ -1,6 +1,6 @@
 // Tests: the retro PC's C: remembers downloads, deletions and folders across page loads,
 // with when each happened (retro/host.ts Downloads, retro/dos/cDriveStore.ts), and the
-// PC's 1994-95 clock (retro/dos/vfs.ts deskDate).
+// PC's December 1994 clock (retro/dos/vfs.ts deskDate).
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Downloads } from '../src/retro/host';
 import { migrateOld, type CDriveState, type CDriveStore } from '../src/retro/dos/cDriveStore';
@@ -19,16 +19,18 @@ function memoryStore(start?: CDriveState): CDriveStore & { state?: CDriveState }
 const at = (y: number, mo: number, d: number, h = 12, mi = 0) => new Date(y, mo - 1, d, h, mi).getTime();
 
 describe('deskDate', () => {
-  it('keeps the month, day and time in the year after the install', () => {
+  it('pins the month and year to December 1994, keeping the real day and time', () => {
     const d = deskDate(new Date(2026, 9, 21, 21, 53));
-    expect([d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()]).toEqual([1994, 9, 21, 21, 53]);
-    expect(deskDate(new Date(2026, 0, 5, 8, 0)).getFullYear()).toBe(1995);
-    expect(deskDate(new Date(2026, 9, 20, 11, 41)).getFullYear()).toBe(1995); // a minute before the install
-    expect(deskDate(new Date(2026, 9, 20, 11, 42)).getTime()).toBe(DOS_DATE.getTime());
+    expect([d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()]).toEqual([1994, 11, 21, 21, 53]);
+    for (const real of [new Date(2026, 0, 5, 8, 0), new Date(2026, 9, 20, 11, 41), new Date(2027, 6, 31, 23, 59)]) {
+      const p = deskDate(real);
+      expect([p.getFullYear(), p.getMonth(), p.getDate()]).toEqual([1994, 11, real.getDate()]);
+      expect(p.getTime()).toBeGreaterThan(DOS_DATE.getTime());
+    }
   });
 
   it('is what DIR shows', () => {
-    expect(dirLine(file('TEDDY.GIF', 37869, { date: deskDate(at(2026, 10, 21, 21, 53)) }))).toBe('TEDDY    GIF        37,869 10-21-94   9:53p');
+    expect(dirLine(file('TEDDY.GIF', 37869, { date: deskDate(at(2026, 10, 21, 21, 53)) }))).toBe('TEDDY    GIF        37,869 12-21-94   9:53p');
   });
 });
 

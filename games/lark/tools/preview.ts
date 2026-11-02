@@ -3,10 +3,10 @@
 //   cd web && npx vite-node ../games/lark/tools/preview.ts <folder>
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { decodeGif } from '../../../web/src/formats/gif';
-import { MLEN } from '../../../web/src/formats/map';
-import { Pixels } from '../../kit/pixels';
-import { blockSheet, writePng } from '../../kit/png';
+import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { blockSheet, writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { buildPalette } from '../src/art/pal';
 import { compile } from '../src/game';
 

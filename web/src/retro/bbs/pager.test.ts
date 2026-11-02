@@ -1,6 +1,6 @@
 // The BBS file lists' pages: what fits on a page, the keys, and the summary lines.
 import { describe, expect, it } from 'vitest';
-import { dizSummary, Pager, pageKeys, pageLabel, paginate, readNumber, uploadDate } from './pager';
+import { dizSummary, Pager, pageKeys, pageLabel, paginate, readNumber, releaseKey, uploadDate } from './pager';
 import type { Term } from './term';
 
 /** A terminal that only remembers the lines printed since the last clear. */
@@ -80,7 +80,12 @@ describe('compact mode', () => {
   it('reads #, V# or R#, and summarizes a DIZ by its title', () => {
     expect([readNumber('3'), readNumber('V12'), readNumber('R1'), readNumber('D1'), readNumber('E')]).toEqual([3, 12, 1, NaN, NaN]);
     expect(dizSummary(['THIRD GOAT FROM THE LEFT              [1/1]', 'x'])).toBe('THIRD GOAT FROM THE LEFT');
-    expect(uploadDate('goat', 1995)).toMatch(/^(0[1-9]|1[0-2])-(0[1-9]|1\d|2[0-8])-95$/);
+    expect(uploadDate('goat', 1995)).toMatch(/^12-\d\d-94$/);
+    expect(uploadDate('mustard', 1995)).toMatch(/^09-\d\d-94$/);
+    expect(uploadDate('some-unlisted-game', 1995)).toMatch(/^(09|1[0-2])-(0[1-9]|1\d|2[0-8])-94$/);
     expect(uploadDate('goat', 1995)).toBe(uploadDate('goat', 1995));
+    expect(uploadDate('snowbound', 1993)).toMatch(/^03-\d\d-93$/);
+    expect(uploadDate('teddy3', 1995)).toMatch(/^12-\d\d-94$/);
+    expect(releaseKey({ id: 'teddy3', year: 1994 })).toBeGreaterThan(releaseKey({ id: 'teddy', year: 1994 }));
   });
 });

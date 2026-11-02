@@ -1,9 +1,9 @@
 // Building a 100x100 Game-Maker map in code from ASCII rows: each character names a
 // block (and maybe a monster or a named spot) through the level's legend.
-import { newMap, reindexMonsters, MLEN, LASTMM, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, reindexMonsters, MLEN, LASTMM, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { BlockSet } from '../blocks/blockset';
 import type { Bestiary } from '../characters/mons';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { FX } from '../sprites/fx';
 import { CTR } from '../ids';
 

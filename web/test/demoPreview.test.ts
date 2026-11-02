@@ -1,7 +1,7 @@
 // Tests: finding a game's title demo for the home page previews (media/demoPreview.ts).
 import { describe, expect, it } from 'vitest';
 import { demoFileName } from '../src/media/demoPreview';
-import { newGame, serializeGame } from '../src/formats/game';
+import { newGame, serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 describe('title demo', () => {
   const gam = (demo: string) => {

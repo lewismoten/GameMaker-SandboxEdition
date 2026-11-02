@@ -1,6 +1,7 @@
 // The web edition feature names only what is there: each checklist line's module is in the
 // repository, each "1995 box: no" is a feature the original source lacks, and the desk's
 // snapshot is shipped, small enough for a page.
+import { ISSUES } from '../masthead';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -17,7 +18,7 @@ const original = readdirSync(gm)
   .toLowerCase();
 
 describe('the web edition feature', async () => {
-  const pages = await WEB_EDITION.pages({ games: [], game: () => undefined });
+  const pages = await WEB_EDITION.pages({ games: [], game: () => undefined, mag: ISSUES[2] });
   const text = JSON.stringify(pages);
 
   it('runs three to six pages', () => {

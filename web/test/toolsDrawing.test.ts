@@ -12,7 +12,7 @@ import {
   colorRamp,
   TIME_OF_DAY_SKY,
   PaletteBuilder,
-} from '../packages/tools/src/drawing';
+} from '@lewismoten/gamemaker-sandbox-tools/drawing';
 
 describe('toolkit fonts and indexed text', () => {
   it('provides all DOS glyphs, including controls, shades, and box drawing', () => {

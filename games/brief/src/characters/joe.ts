@@ -2,8 +2,8 @@
 // cut short, the first held long enough that a quick tap is one block), so he always stands
 // squarely on the library's grid. Hold an arrow to keep walking. Arrows, W A S D and the number pad all steer. Nothing in the
 // library can hurt him; the worst a shusher can do is fine him a point a tick.
-import { CHARBL } from '../../../../web/src/formats/blocks';
-import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '../../../../web/src/formats/character';
+import { CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { emptyFrame, newCharacter, type Character, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { KEY, SND } from '../ids';
 import type { BlockSet } from '../blocks/sets';
 

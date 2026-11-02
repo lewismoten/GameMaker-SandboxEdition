@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { applyEffect, cut, fadeIn, fadeOut, gain, inSpan, normalize, resample, reverse, splice, spanOf, tidy, trim } from '../src/audio/sampleEdit';
 import { classifyProfile, classifySound, profileSound } from '../src/audio/soundProfile';
-import { decodeVoc, encodeVoc } from '../src/formats/voc';
+import { decodeVoc, encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 
 const RATE = 11025;
 const seq = (n: number) => Float32Array.from({ length: n }, (_, i) => i / n);

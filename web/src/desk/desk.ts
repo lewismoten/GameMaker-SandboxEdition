@@ -76,11 +76,12 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     command: (cmd) => void pc.command(cmd),
     catalog: () => void catalog(),
     magazine: () => void magazine(),
+    mug: () => void mugViewer(),
     flip: () => void flip(),
     openGmBox: () => void openGmBox(),
     setZoom: (zoom) => pc.setZoom(zoom),
     gamePlaying: () => pc.computer?.gamePlaying ?? false,
-    restartGame: () => pc.computer?.restartGame() ?? false,
+    setSoundCard: (enabled) => pc.computer?.setSoundCard(enabled),
     diskInA: () => deskView.get('disk'),
     toModern: () => nav.toModern(),
     toModernAt: nav.toModernAt && ((hash) => nav.toModernAt!(hash)),
@@ -274,11 +275,27 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     );
   }
 
-  /** The magazine lying on the desk with the catalog (open=magazine); its links play disks, call the BBS and look at the props. */
-  const magazine = () =>
-    opened('magazine', async () =>
-      (await import('../manual/magazine/viewer')).openMagazine({
+  /** The magazine lying on the desk with the catalog: open=turbobutton&vol=3&num=1&page=6-7 (vol=1&num=4 is the spring 1993 back issue) keeps the issue and the pages in view, so a reload comes back to them. Its links play disks, call the BBS and look at the props. */
+  const magazine = async () => {
+    const [{ openMagazine }, { issueFor }] = await Promise.all([import('../manual/magazine/viewer'), import('../manual/magazine/masthead')]);
+    // vol=1&num=4 is the back issue; the old vol=1&num=1 and a bare address open No. 2 (vol=3&num=1)
+    const MAG = issueFor(deskView.num('vol'), deskView.num('num'));
+    const legacy = deskView.num('vol') === 1 && deskView.num('num') === 1;
+    const sameIssue = legacy || (deskView.num('vol') === MAG.vol && deskView.num('num') === MAG.num);
+    const start = sameIssue ? deskView.get('page') : undefined;
+    await opened('turbobutton', () =>
+      openMagazine({
         where: 'desk',
+        start,
+        issue: MAG.which,
+        onIssue: (mag) => {
+          if (deskView.get('open') === 'turbobutton') deskView.set({ vol: String(mag.vol), num: String(mag.num) });
+        },
+        onPages: (folios) => {
+          if (deskView.get('open') !== 'turbobutton') return;
+          const page = folios.length > 1 ? `${folios[0]}-${folios.at(-1)}` : String(folios[0]);
+          deskView.set({ page: folios[0] === 1 && folios.length === 1 ? undefined : page });
+        },
         desk: {
           play: (id) => void insertOriginal(id),
           bbs: (board) => void command(`C:\nTERMINAL${board ? ` ${board.toUpperCase()}` : ''}`),
@@ -287,13 +304,18 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
         },
       }),
     );
+    if (deskView.get('open') !== 'turbobutton') deskView.set({ vol: undefined, num: undefined, page: undefined });
+  };
+
+  /** The mug's closer look, kept in the address (open=mug) so a reload comes back to it. */
+  const mugViewer = () => opened('mug', async () => (await import('./mug/mugViewer')).openMugViewer());
 
   /** Turns to a prop on the desk (look=modem…, from the magazine's ads): opens what opens, points out the rest. */
   function look(prop: string): void {
     if (prop === 'catalog') return void catalog();
     if (prop === 'gmbox') return void openGmBox();
     if (prop === 'diskbox') return void flip();
-    if (prop === 'mug') return void import('./mug/mugViewer').then((m) => m.openMugViewer());
+    if (prop === 'mug') return void mugViewer();
     pointOut(desk, prop, { modem: modem.el, speaker: spk.right });
   }
 
@@ -309,6 +331,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
       look,
       catalog,
       magazine,
+      mug: mugViewer,
       openGmBox,
       dosManual,
       gameManual: (g) => gameManual(g),
@@ -324,7 +347,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     () => fetch('./gm/index.json'), // C:\GM's listing, so GM starts offline too
   ]);
   void loadGameList().then((cat) => shelf.fill(cat.filter((g) => g.original?.box)));
-  // a secret game revealed or hidden again (every felt egg found, or EGG.EXE): the shelf
+  // a secret game revealed or hidden again (13 felt eggs found, or EGG.EXE): the shelf
   // and the disk box follow, and the box of a game no longer listed is put back
   const unCatalog = onCatalogChanged(async () => {
     const cat = await loadGameList().catch(() => [] as CatalogEntry[]);
@@ -340,6 +363,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const unTour = deskTour(desk, pc);
   drawBoxTiles(boxTiles);
   return () => {
+    window.dispatchEvent(new Event('gm-desk-close'));
     window.removeEventListener('keydown', onKey);
     reg.dispose();
     unfit();

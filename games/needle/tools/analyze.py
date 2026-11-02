@@ -3,7 +3,7 @@
 # the OPL2 arrangement in games/needle/src/sound/song.ts (games/kit/song/analyze.py does the
 # work; see it for what is measured and how).
 #
-# It reads the MP3 at .for-lewis/songs/needle/Thread the Needle, Brother Camel.mp3, which is NOT
+# It reads the MP3 at .for-lewis/reference/songs/needle/Thread the Needle, Brother Camel.mp3, which is NOT
 # committed (the arrangement is committed as note data in TypeScript, so the game build never
 # needs it).
 #

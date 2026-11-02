@@ -32,12 +32,20 @@ function repoUrl(r: Manifest['repository']): string | undefined {
 
 function main(): void {
   const web = resolve(import.meta.dirname, '..');
-  const lock = JSON.parse(readFileSync(join(web, 'package-lock.json'), 'utf8')) as Lockfile;
+  const root = resolve(web, '..');
+  const lock = JSON.parse(readFileSync(join(root, 'package-lock.json'), 'utf8')) as Lockfile;
   const { deps, platformBuilds } = depsFromLock(lock);
   // author and repository: from the installed package (the lockfile has neither)
-  const paths = new Map(Object.keys(lock.packages).map((path) => [`${nameOf(path)}@${lock.packages[path].version}`, path]));
+  const paths = new Map(
+    Object.entries(lock.packages)
+      .filter(([path]) => path.includes('node_modules/'))
+      .map(([path, installed]) => {
+        const p = installed.link && installed.resolved ? lock.packages[installed.resolved] : installed;
+        return [`${nameOf(path)}@${p.version}`, path];
+      }),
+  );
   for (const d of deps) {
-    const file = join(web, paths.get(`${d.name}@${d.version}`)!, 'package.json');
+    const file = join(root, paths.get(`${d.name}@${d.version}`)!, 'package.json');
     if (!existsSync(file)) continue;
     const m = JSON.parse(readFileSync(file, 'utf8')) as Manifest;
     const author = person(m.author) ?? person(m.contributors?.[0]);

@@ -1,12 +1,12 @@
 // "What uses this?": which scenes use a file, where a block appears (maps, monsters, the hero,
 // other blocks), and which blocks paint with a palette color. Read only: nothing is changed.
 import { normalize } from '../../project/files';
-import { parseBlocks, BLOCK_COUNTS, BLOCK_SIZE, MONBL, type BlockKind } from '../../formats/blocks';
-import { parseMap } from '../../formats/map';
-import { parseMonsters } from '../../formats/monster';
-import { parseCharacter, frameCount } from '../../formats/character';
-import { ADVTYPE, ADV_FILES, START_FILES, END_FILES } from '../../formats/game';
-import { parseBackdrop, parseSlideList } from '../../formats/graphicScripts';
+import { parseBlocks, BLOCK_COUNTS, BLOCK_SIZE, MONBL, type BlockKind } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { parseCharacter, frameCount } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { ADVTYPE, ADV_FILES, START_FILES, END_FILES } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import type { Project } from './project';
 import { formatHash } from '../../urlState';
 

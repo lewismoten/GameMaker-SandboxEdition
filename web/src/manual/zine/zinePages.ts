@@ -23,7 +23,7 @@ export const ZINE: ZinePage[] = [
   {
     title: 'NO CARRIER',
     lines: [
-      'issue #3 ... spring 1995 ... FREE if you found the whistle',
+      'issue #3 ... winter 1994 ... FREE if you found the whistle',
       'Edited by DiAL ToNE, ex-SysOp of THE STATIC LINE BBS (300/1200/2400 baud, R.I.P., the line got disconnected).',
       'WARNING: for your OWN computer only!! Every trick in here works on the PC on this desk and nowhere else. Do not try this at school. Do not try this at the library. The library is where we photocopied it.',
       'Inside: secret DOS stuff, hex editing, save hacks, backups, the crack scene (lol), your name in old games, eggs, merit badges, a BBS code, and THE PHONE LIST.',
@@ -72,6 +72,15 @@ export const ZINE: ZinePage[] = [
       'HEXEDIT and SAVEHACK save their own backups here too.',
     ],
     scrawl: ['BACKUP /? for the rest'],
+  },
+  {
+    title: 'FLAGS',
+    lines: [
+      'C:\\DOS\\FLAGS.EXE, also in the BBS Warez area. For testing: it shows what this pretend PC remembers (badges, eggs, hearts, trophies, the phone bill, the mail) and lets you set it, clear it or start over.',
+      'FLAGS alone lists everything. FLAGS SET HEARTS 3, FLAGS SET TROPHY BEST 2, FLAGS CLEAR MAIL, FLAGS RESET ALL. FLAGS /? has the names.',
+      'It keeps C:\\DOS\\FLAGS.BAK before the first change. FLAGS /RESTORE puts it all back. It never writes a saved game; SAVEHACK does that.',
+    ],
+    scrawl: ['a testing tool, not a cheat'],
   },
   {
     title: 'DISK TRICKS',

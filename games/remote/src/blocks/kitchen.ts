@@ -1,6 +1,6 @@
 // The kitchen's blocks: the linoleum, the counters, the fridge and its cold soda, the toaster, the magnets of Mom's number, the phone, Teddy's bowl.
 // Part of REMOTE.BBL (blocks.ts adds them after the living room's, in this order).
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { SOLID } from '../../../snowbound/src/blocks/book';

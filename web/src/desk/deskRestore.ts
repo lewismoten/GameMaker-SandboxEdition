@@ -24,6 +24,7 @@ interface RestoreActions {
   look(prop: string): void;
   catalog(): Promise<void>;
   magazine(): Promise<void>;
+  mug(): Promise<void>;
   openGmBox(): Promise<void>;
   dosManual(): Promise<void>;
   gameManual(g: CatalogEntry): Promise<void>;
@@ -50,7 +51,9 @@ export async function restoreDesk(wanted: Wanted, deskView: ReturnType<typeof vi
   else if (run === 'bbs') await on.command('C:\nTERMINAL');
   else if (run) await on.power(true);
   if (open === 'catalog') void on.catalog();
-  else if (open === 'magazine') void on.magazine();
+  else if (open === 'turbobutton' || open === 'magazine')
+    void on.magazine(); // open=magazine: addresses from before the issue was named
+  else if (open === 'mug') void on.mug();
   else if (open === 'gm-box') void on.openGmBox();
   else if (open === 'gm-manual') void on.dosManual();
   else if (open?.startsWith('manual:')) {

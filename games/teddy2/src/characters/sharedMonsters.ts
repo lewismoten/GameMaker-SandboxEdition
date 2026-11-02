@@ -3,7 +3,7 @@
 import { CTR, MON, POWER } from '../ids';
 import { Bestiary, FLIP } from './mons';
 import { FX } from '../sprites/fx';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { over, shadeAt, sprite } from '../art/draw';
 import { c, dirt, r } from '../blocks/tiles';
 

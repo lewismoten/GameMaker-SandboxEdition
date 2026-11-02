@@ -1,8 +1,8 @@
 // The screens drawn on color 0 (colorZeroScreens.ts): each draws with the engine's functions in
 // the colors its selectors match, and the project's DOS player patches change what they match.
 import { describe, expect, it } from 'vitest';
-import { Screen } from '../../../gfx/screen';
-import { playerLook } from '../../../engine/playerLook';
+import { Screen } from '@lewismoten/gamemaker-sandbox-engine/gfx/screen';
+import { playerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/playerLook';
 import { matchedColors, ZERO_SCREENS } from './colorZeroScreens';
 
 function offscreen(): Screen {

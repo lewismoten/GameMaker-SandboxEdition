@@ -56,3 +56,10 @@ dialog.modal .demo-skip input {
 .demo-bar .demo-audio {
   margin-left: 8px;
 }
+
+/* Reduced motion: the REC mark stays lit instead of blinking */
+@media (prefers-reduced-motion: reduce) {
+  .demo-player.recording::after {
+    animation: none;
+  }
+}

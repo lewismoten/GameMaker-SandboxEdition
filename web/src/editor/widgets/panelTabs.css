@@ -1,0 +1,23 @@
+/* Shared editor panel tabs, with full keyboard support and wrapping at phone widths. */
+.panel-tabs {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.panel-tabs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.panel-tabs-list button {
+  min-width: 24px;
+  min-height: 24px;
+}
+.panel-tabs-list [aria-selected='true'] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.panel-tabs-panel[hidden] {
+  display: none;
+}

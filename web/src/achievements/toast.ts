@@ -6,7 +6,9 @@
 // so an open dialog (Saves & scores) doesn't hide it. While a guided tour plays (tour/: the
 // html element's tour-on class, and its 'gm-tour' events) the notes wait, and come when it ends:
 // they would cover its title cards and bubbles. The achievement itself is kept at once.
+import { badgeIcon } from './badgeArt';
 import './toast.css';
+import { notesPlacer, onPlacerChange } from './notesPlacer';
 import { achievementById } from './catalog';
 
 const SHOW_MS = 7000;
@@ -14,14 +16,9 @@ let host: HTMLElement | undefined;
 
 const isDesk = () => document.documentElement.dataset.ui === 'desk';
 
-/** A page that places the notes itself (the DOS page: clear of its screen and the copy check's panels). */
-let placer: ((host: HTMLElement) => void) | undefined;
-
-/** Hands where the notes go to the page (placeNotes(undefined) gives it back). */
-export function placeNotes(f: ((host: HTMLElement) => void) | undefined): void {
-  placer = f;
+onPlacerChange(() => {
   if (host?.isConnected) place(host);
-}
+});
 
 function ensureHost(): HTMLElement {
   if (host?.isConnected) return host;
@@ -53,6 +50,7 @@ function raise(el: HTMLElement): void {
  * column, has them at the bottom of the window.
  */
 function place(el: HTMLElement): void {
+  const placer = notesPlacer();
   el.classList.toggle('ach-placed', !!placer);
   if (placer) return placer(el);
   const desk = isDesk();
@@ -97,7 +95,7 @@ export function showUnlock(id: string): void {
   const icon = document.createElement('span');
   icon.className = 'ach-toast-icon';
   icon.setAttribute('aria-hidden', 'true');
-  icon.textContent = a.icon;
+  icon.append(badgeIcon(a, true));
   const text = document.createElement('div');
   text.className = 'ach-toast-text';
   const kicker = document.createElement('span');
@@ -111,7 +109,7 @@ export function showUnlock(id: string): void {
   text.append(kicker, title, desc);
   if (!isDesk()) {
     const link = document.createElement('a');
-    link.href = placer ? './#/achievements' : '#/achievements'; // from a page of its own, the site's
+    link.href = notesPlacer() ? './#/achievements' : '#/achievements'; // from a page of its own, the site's
     link.className = 'ach-toast-link';
     link.textContent = 'See all';
     link.addEventListener('click', () => close());

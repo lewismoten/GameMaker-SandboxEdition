@@ -22,7 +22,7 @@ export const SWAP_MEET: HalfAd = halfAd(
             'The shareware table: bring blank disks and copy all you like',
           ]),
         ],
-        [big('SAT. 9–3', 'at the Mineral County Fairgrounds'), p('**Tables $5** · browsing free · hot dogs by the junior firefighters'), p('Info: 555-0142')],
+        [big('SAT. 9–3', 'at the Mineral County Fairgrounds'), p('**Tables $5** · browsing free · hot dogs by the junior firefighters'), p('Info: 555-0152')],
       ],
       0.3,
     ),
@@ -71,7 +71,7 @@ export const MOUSE_PADS: HalfAd = halfAd(
   ],
   {
     sub: 'Square Deal Pad Co. foam pads: the ball rolls true and the crumbs wipe right off.',
-    small: 'Square Deal Pad Co. · P.O. Box 000 · Orders 555-0156. Part of the story: nothing to order.',
+    small: 'Square Deal Pad Co. · P.O. Box 000 · Orders 555-0153. Part of the story: nothing to order.',
     tone: 'cyan',
   },
 );
@@ -91,7 +91,7 @@ export const FUN_NIGHT: HalfAd = halfAd(
             'Doc Leo’s open mic: tell your best joke',
           ]),
         ],
-        [big('FREE', 'root beer floats while they last'), p('Friday at 6, at the community hall. Questions? 555-0123')],
+        [big('FREE', 'root beer floats while they last'), p('Friday at 6, at the community hall. Questions? 555-0154')],
       ],
       0.3,
     ),

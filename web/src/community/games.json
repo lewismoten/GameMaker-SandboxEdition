@@ -1,0 +1,12 @@
+[
+  {
+    "id": "the-chez",
+    "title": "THE CHEZ: Stripe Chase",
+    "author": "Lewis Moten",
+    "url": "https://lewismoten.github.io/the-chez/",
+    "summary": "Teddy helps Doc Leo and Gwinn find racing stripes for a CitiCar with unreasonable expectations of stickers. A separate Vite project testing the sandbox engine package.",
+    "sourceUrl": "https://github.com/lewismoten/the-chez",
+    "imageUrl": "https://lewismoten.github.io/the-chez/art/teddy.png",
+    "archiveUrl": "https://lewismoten.github.io/the-chez/stripe.zip"
+  }
+]

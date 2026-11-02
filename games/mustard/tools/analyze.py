@@ -3,7 +3,7 @@
 # arrangement in games/mustard/src/sound/song.ts (games/kit/song/analyze.py does the work; see
 # it for what is measured and how).
 #
-# It reads the MP3 at .for-lewis/songs/mustard/Mustard Seed Hustle.mp3, which is NOT committed
+# It reads the MP3 at .for-lewis/reference/songs/mustard/Mustard Seed Hustle.mp3, which is NOT committed
 # (the arrangement is committed as note data in TypeScript, so the game build never needs it).
 #
 #   python3 -I games/mustard/tools/analyze.py [path/to/song.mp3] [--out DIR] [--no-whisper]

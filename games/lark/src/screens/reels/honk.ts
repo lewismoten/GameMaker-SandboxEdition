@@ -4,8 +4,8 @@
 // climbs out and waves, everybody else piles in behind, and Joe comes to the gold doorway.
 import { chezPicture } from '../../../../kit/chez';
 import { lewieCameo, willCameo } from '../../../../kit/cameos';
-import { Pixels } from '../../../../kit/pixels';
-import { Reel } from '../../../../kit/reel';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { Reel } from '@lewismoten/gamemaker-sandbox-tools/kit/reel';
 import { CLEAR, gradient, scaleBlit } from '../../art/draw';
 import { PAL, c, r } from '../../art/pal';
 import { carlPicture } from '../../sprites/critters';

@@ -20,7 +20,7 @@ import {
   serializeGame,
   type Game,
   type Scene,
-} from '../../formats/game';
+} from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { type Vga } from '../shared/vga';
 import { Face, GRAY2 } from '../shared/facelift';
 import { NOTUSED, NOLINK, EXTRASCENEBUFFER, WORLDTOP, WX, WLEN, WWID, IN, Folder } from './layout';

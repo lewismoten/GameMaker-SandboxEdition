@@ -175,7 +175,7 @@ export const CRAFT: Chapter = {
   <h2>Fair enemies</h2>
   <ul>
     <li><b>Few at a time.</b> Two or three enemies on the screen at once is usually plenty: the
-    player can read each one. Eight at once tends to blur into noise, but a swarm can be the
+    player can read each one. Eight at once can be hard to read, but a swarm can be the
     point of a level, a wave to survive or a shooter’s big moment. Count them on the map with
     the 16 by 10 view in mind, and decide which you mean.</li>
     <li><b>Births that stop.</b> A birth block keeps giving birth while it is on the screen or
@@ -229,7 +229,7 @@ export const CRAFT: Chapter = {
     <li><b>Sounds you can hear a hundred times.</b> The sounds a player makes constantly
     usually wear best short and soft, with the loud and long ones kept for rare events. Music should fit the place,
     and because each level’s song starts over on every death, its opening should wear well.</li>
-    <li><b>Music in every level.</b> A silent level feels unfinished. Players notice music of
+    <li><b>Music in every level.</b> A silent level may feel unfinished to players. Players notice music of
     your own, and they recognize a tune lifted from somewhere else, so write your own or credit
     whose it is.</li>
     <li><b>Nothing that flashes fast.</b> A block ring with one-tick frames, or an animation

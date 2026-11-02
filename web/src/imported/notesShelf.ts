@@ -68,10 +68,17 @@ function entryRow(e: NoteEntry, redraw: () => void): HTMLElement {
 }
 
 /** The section, or undefined when no imported game has a rating, a note or a record. */
-export async function notesShelf(): Promise<HTMLElement | undefined> {
-  const search = h('input', { type: 'search', id: 'lib-notes-q', placeholder: 'Name, note, zip or fingerprint', 'aria-controls': 'lib-notes-list' });
+export async function notesShelf(view?: 'here' | 'removed'): Promise<HTMLElement | undefined> {
+  // the Library room's notebook (here) and trash can (removed) show one half each, with ids of their own
+  const sfx = view ? `-${view}` : '';
+  const search = h('input', {
+    type: 'search',
+    id: `lib-notes-q${sfx}`,
+    placeholder: 'Name, note, zip or fingerprint',
+    'aria-controls': `lib-notes-list${sfx}`,
+  });
   const count = h('p', { class: 'lib-count', role: 'status' });
-  const list = h('ul', { class: 'lib-notes-list', id: 'lib-notes-list', 'aria-labelledby': 'lib-notes-h' });
+  const list = h('ul', { class: 'lib-notes-list', id: `lib-notes-list${sfx}`, 'aria-labelledby': `lib-notes-h${sfx}` });
   let entries: NoteEntry[] = [];
   const show = () => {
     const found = searchNotes(entries, search.value);
@@ -81,21 +88,25 @@ export async function notesShelf(): Promise<HTMLElement | undefined> {
   };
   const load = async () => {
     const live = (await listProjects().catch(() => [])).filter((p) => isImported(p.id));
-    entries = noteEntries(live, allNotes(), removedGames());
+    entries = noteEntries(live, allNotes(), removedGames()).filter((e) => !view || (view === 'removed') === !!e.removed);
     section.hidden = !entries.length;
     show();
   };
   search.addEventListener('input', show);
   const section = h(
     'section',
-    { class: 'lib-notes', 'aria-labelledby': 'lib-notes-h' },
-    h('h2', { id: 'lib-notes-h' }, 'Imported games: ratings and notes'),
+    { class: 'lib-notes', 'aria-labelledby': `lib-notes-h${sfx}` },
+    h(
+      'h2',
+      { id: `lib-notes-h${sfx}` },
+      view === 'removed' ? 'Removed imported games' : view === 'here' ? 'Imported games here' : 'Imported games: ratings and notes',
+    ),
     h(
       'p',
       { class: 'lead' },
       'Your stars and notes on the games you imported, kept in this browser only, with those of games you have since removed. Removing a game keeps its record, so importing it again says so.',
     ),
-    h('div', { class: 'lib-notes-bar' }, h('label', { for: 'lib-notes-q' }, 'Search notes'), search, count),
+    h('div', { class: 'lib-notes-bar' }, h('label', { for: `lib-notes-q${sfx}` }, 'Search notes'), search, count),
     list,
   );
   await load();

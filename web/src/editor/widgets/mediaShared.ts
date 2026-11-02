@@ -2,11 +2,11 @@
 // exactly as the game would.
 import { h } from '../core/ui';
 import type { Project } from '../core/project';
-import { Machine, GameAborted } from '../../engine/machine';
-import { showGraphic } from '../../engine/showGraphic';
-import { AudioEngine } from '../../audio/engine';
+import { Machine, GameAborted } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
+import { showGraphic } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
+import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { GameFiles } from '../../project/files';
-import type { Palette } from '../../formats/palette';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 export const audio = new AudioEngine();
 

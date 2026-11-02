@@ -146,3 +146,17 @@
   transform: rotate(-5deg);
   box-shadow: 1px 3px 4px rgba(0, 0, 0, 0.35);
 }
+
+/* the safe's combination, scribbled small in pencil at the foot of the sticky note */
+.pn-scribble {
+  display: block;
+  margin-top: 1.5cqw;
+  color: #5b4a52;
+  font:
+    italic 400 3cqw/1.1 'Marker Felt',
+    'Comic Sans MS',
+    cursive;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  transform: rotate(2deg);
+}

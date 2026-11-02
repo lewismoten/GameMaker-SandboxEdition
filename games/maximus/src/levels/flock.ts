@@ -3,7 +3,7 @@
 // the same path from the same start on the same clock (PLAYGAME moves every monster each
 // tick, on screen or not), and two monsters of equal power never fight, so the whole pod
 // swims as one and the picture keeps its shape.
-import type { Block } from '../../../../web/src/formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { Grid, W, H, wx, wy } from './mapkit';
 
 /** A tiny 5-row font: each letter a list of rows, X marks a whale. */

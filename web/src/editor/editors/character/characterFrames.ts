@@ -1,14 +1,14 @@
 // The character editor's frame cards: a sequence frame's top and bottom blocks (click to
-// choose, hover to turn or flip), or the monster it fires; its move and pause; and the
+// choose, use buttons to turn or flip), or the monster it fires; its move and pause; and the
 // buttons that move, copy or delete it. Also the key a sequence runs on. character.ts
 // builds them, passing what they need to read and change (FrameContext).
-import { h, numberField } from '../../core/ui';
+import { h, numberField, selectField } from '../../core/ui';
 import { paintBlock } from '../../core/draw';
 import { chooseBlock, type BlockExtra } from '../../widgets/blockChooser';
-import { BLEN, CHARBL, MONBL, type Block } from '../../../formats/blocks';
-import { MAXFRAME, type Frame, type Sequence } from '../../../formats/character';
-import type { Palette } from '../../../formats/palette';
-import { scanName, SCAN } from '../../../input/scancodes';
+import { BLEN, CHARBL, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXFRAME, type Frame, type Sequence } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { scanName, SCAN } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import {
   ORIENT_NAMES,
   bottomOrient,
@@ -20,6 +20,7 @@ import {
   moveFrame,
   normalOrient,
   rotateOrient,
+  swapHalves,
   topOrient,
   withBottomOrient,
   withTopOrient,
@@ -29,7 +30,9 @@ import {
 export interface FrameContext {
   /** The character's block set (.cbl), as it is now. */
   blocks(): Block[];
+  blockLabel?: (index: number) => string;
   palette(): Palette;
+  monsterField?: (get: () => number, set: (value: number) => void) => HTMLElement;
   /** Makes a change as one undo step, and saves. */
   edit(fn: () => void): void;
   /** A frame's picture or a key changed: redraw the sequence list. */
@@ -76,7 +79,7 @@ export function keyPicker(ctx: FrameContext, seq: Sequence): HTMLElement {
   );
 }
 
-/** One block of a frame: click to choose, hover for rotate / flip buttons. */
+/** One block of a frame: click to choose, with persistent rotate / flip buttons. */
 function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
   const get = () => (top ? f.pic1 : f.pic2);
   const orient = () => (top ? topOrient(f) : bottomOrient(f));
@@ -87,7 +90,7 @@ function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
     cell.classList.toggle('none', n >= CHARBL);
     cell.title =
       n < CHARBL
-        ? `${top ? 'Top' : 'Bottom'}: block ${n}, ${ORIENT_NAMES[normalOrient(orient())].toLowerCase()} — click to change`
+        ? `${top ? 'Top' : 'Bottom'}: ${ctx.blockLabel?.(n) ?? `block ${n}`}, ${ORIENT_NAMES[normalOrient(orient())].toLowerCase()} — click to change`
         : `No ${top ? 'top' : 'bottom'} block — click to choose one`;
     if (n < CHARBL) paintBlock(canvas, ctx.blocks()[n].pixels, ctx.palette(), { transparent: true, orient: normalOrient(orient()) });
     else canvas.getContext('2d')!.clearRect(0, 0, BLEN, BLEN);
@@ -111,7 +114,7 @@ function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
   const extras: BlockExtra[] = [{ value: CHARBL, label: 'none', icon: '∅' }];
   if (!top) extras.push({ value: MONBL, label: 'Fire a monster', icon: '🔥' });
   cell.addEventListener('click', async () => {
-    const n = await chooseBlock(`${top ? 'Top' : 'Bottom'} block`, ctx.blocks(), ctx.palette(), get(), extras, true);
+    const n = await chooseBlock(`${top ? 'Top' : 'Bottom'} block`, ctx.blocks(), ctx.palette(), get(), extras, true, undefined, ctx.blockLabel);
     if (n === undefined) return;
     const wasFiring = firesMonster(f);
     ctx.edit(() => {
@@ -142,25 +145,38 @@ function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
 export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number, n: number): HTMLElement {
   const fires = firesMonster(f);
   const tool = (label: string, icon: string, fn: () => void, disabled = false) =>
-    h('button', { class: 'chr-tool', title: label, 'aria-label': label, disabled, onclick: () => (ctx.edit(fn), ctx.redraw()) }, icon);
+    h('button', { type: 'button', class: 'chr-tool', title: label, 'aria-label': label, disabled, onclick: () => (ctx.edit(fn), ctx.redraw()) }, icon);
+  const monster = () => {
+    const get = () => f.pic1;
+    const set = (value: number) => {
+      ctx.edit(() => (f.pic1 = value));
+      ctx.listChanged();
+      ctx.redraw();
+    };
+    return ctx.monsterField?.(get, set) ?? numberField('Monster #', get, set, { min: 0, max: 63 });
+  };
   const sprite = fires
-    ? h(
-        'div',
-        { class: 'chr-sprite fires' },
-        h(
-          'div',
-          { class: 'chr-fire' },
-          h('span', { class: 'chr-fire-icon' }, '🔥'),
-          numberField(
-            'Monster #',
-            () => f.pic1,
-            (v) => ctx.edit(() => (f.pic1 = v)),
-            { min: 0, max: 63, title: 'Which monster (from the monster file) is born beside the hero' },
-          ),
-        ),
-        frameCell(ctx, f, false),
-      )
+    ? h('div', { class: 'stack', style: 'min-width:0;max-width:100%' }, monster())
     : h('div', { class: 'chr-sprite' }, frameCell(ctx, f, true), frameCell(ctx, f, false));
+  const action = selectField(
+    'Frame action',
+    [
+      [0, 'Show character'],
+      [1, 'Give birth to monster'],
+    ],
+    () => (fires ? 1 : 0),
+    (value) => {
+      if (Boolean(value) === fires) return;
+      ctx.edit(() => {
+        f.pic1 = value ? 0 : CHARBL;
+        f.pic2 = value ? MONBL : CHARBL;
+      });
+      ctx.listChanged();
+      ctx.redraw();
+    },
+  );
+  action.style.maxWidth = '100%';
+  action.querySelector('select')!.style.maxWidth = '100%';
   return h(
     'div',
     { class: 'chr-frame' },
@@ -168,11 +184,13 @@ export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number,
       'div',
       { class: 'chr-frame-head' },
       h('b', null, i + 1),
+      fires ? null : tool('Swap halves', '⇅', () => (swapHalves(f), ctx.listChanged())),
       tool('Move earlier', '◀', () => moveFrame(seq, i, -1), i === 0),
       tool('Move later', '▶', () => moveFrame(seq, i, 1), i >= n - 1),
       tool('Duplicate', '⧉', () => insertFrame(seq, i), n >= MAXFRAME),
       tool('Delete', '✕', () => deleteFrame(seq, i)),
     ),
+    action,
     sprite,
     h(
       'div',
@@ -193,7 +211,7 @@ export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number,
         '⏱ ticks',
         () => f.pause,
         (v) => ctx.edit(() => ((f.pause = v), ctx.travelChanged(seq))),
-        { min: 0, max: 999, title: 'How long the frame shows, in 1/18 s ticks' },
+        { min: 0, max: 999, title: 'How long the frame shows, in 1/18 s ticks', time: { rate: 18.2, minimum: 1 } },
       ),
     ),
   );

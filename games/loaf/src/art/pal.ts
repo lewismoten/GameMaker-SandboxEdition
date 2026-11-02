@@ -3,9 +3,9 @@
 // hillside, the warm brown dark inside the stacked baskets, a purple and orange dusk when the
 // twelve baskets are gathered, and night on the way home. The loaf's golden crust, the holy
 // crumbs, the lamps and the fire keep their own light everywhere.
-import { PaletteBuilder } from '../../../kit/palette';
-import { type Pal, wrap } from '../../../kit/palRamps';
-export { type Pal } from '../../../kit/palRamps';
+import { PaletteBuilder } from '@lewismoten/gamemaker-sandbox-tools/kit/palette';
+import { type Pal, wrap } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
+export { type Pal } from '@lewismoten/gamemaker-sandbox-tools/kit/palRamps';
 
 type RGB = [number, number, number];
 export type Light = 'noon' | 'shade' | 'dusk' | 'night' | 'plain';

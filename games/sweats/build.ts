@@ -9,14 +9,14 @@
 // curtain up on the stage lets him through with it.
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { serializeBlocks } from '../../web/src/formats/blocks';
-import { serializeCharacter } from '../../web/src/formats/character';
-import { MAXSCENELINKS, newGame, emptyScene, serializeGame, ADVTYPE, NOSCENE, type Scene } from '../../web/src/formats/game';
-import { serializeMap, type GameMap } from '../../web/src/formats/map';
-import { newMonsterSet, serializeMonsters, type Monster } from '../../web/src/formats/monster';
-import { serializePalette } from '../../web/src/formats/palette';
-import { serializeSlideList } from '../../web/src/formats/graphicScripts';
-import { serializeSoundSet } from '../../web/src/formats/sound';
+import { serializeBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MAXSCENELINKS, newGame, emptyScene, serializeGame, ADVTYPE, NOSCENE, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { serializeMap, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { newMonsterSet, serializeMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { buildPalette, type Lighting, type Pal } from './src/art/pal';
@@ -35,6 +35,10 @@ import { renderRegion } from '../snowbound/src/art/render';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
+/** A seventeen-scene recital needs a long, but peer-sized, final score. */
+const SCORE_SCALE = 0.7;
+const scoreBlocks = (blocks: Block[]) => blocks.map((block) => ({ ...block, scorePts: Math.round(block.scorePts * SCORE_SCALE) }));
+const scoreMonsters = (mons: Monster[]) => mons.map((monster) => ({ ...monster, upscore: Math.round(monster.upscore * SCORE_SCALE) }));
 
 /** A group's blocks and sprites, drawn in a palette. */
 function blockSets(g: Group, pal: Pal) {
@@ -51,11 +55,11 @@ function blockSets(g: Group, pal: Pal) {
 const sets = new Map(GROUPS.map((g) => [g.id, blockSets(g, buildPalette(g.ramps))]));
 for (const g of GROUPS) {
   const s = sets.get(g.id)!;
-  disk.put(`${g.id}.bbl`, serializeBlocks(s.bbl));
+  disk.put(`${g.id}.bbl`, serializeBlocks(scoreBlocks(s.bbl)));
   disk.put(`${g.id}.mbl`, serializeBlocks(s.mb.blocks));
 }
 const cb = buildCharBlocks(buildPalette(HIVE_GROUP.ramps));
-disk.put('poet.cbl', serializeBlocks(cb.blocks));
+disk.put('poet.cbl', serializeBlocks(scoreBlocks(cb.blocks)));
 disk.put('poet.chr', serializeCharacter(buildPoet(cb)));
 for (const [name, voc] of Object.entries(buildVocs())) disk.put(`${name}.voc`, voc);
 const songs = buildSongs();
@@ -101,7 +105,7 @@ built.forEach(({ def, map, links }) => {
   if (!palettesDone.has(`map:${def.mapFile}`)) {
     palettesDone.add(`map:${def.mapFile}`);
     disk.put(`${def.mapFile}.map`, serializeMap(map));
-    disk.put(`${def.mapFile}.mon`, serializeMonsters(mons));
+    disk.put(`${def.mapFile}.mon`, serializeMonsters(scoreMonsters(mons)));
   }
   disk.put(`${def.snd}.snd`, serializeSoundSet(buildSoundSet(def.sounds)));
   if (!songs[def.song]) throw new Error(`No song ${def.song}`);
@@ -243,7 +247,7 @@ disk.put(
   'license.txt',
   licenseText(
     'Shakespeare in Sweatpants',
-    `The Bard of Bizarre's 1995 shareware notice, its fee and its address are part of the story: there is nothing to pay. The monologues are The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}.`,
+    `The Bard of Bizarre's 1994 shareware notice, its fee and its address are part of the story: there is nothing to pay. The monologues are The Bard of Bizarre's (Lewis Moten's): ${SONG_CREDIT}.`,
     RECORDED_VOCS,
   ),
 );

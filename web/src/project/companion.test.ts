@@ -7,13 +7,15 @@ import {
   getSection,
   isEmptyCompanion,
   parseCompanion,
+  releaseNotesOf,
   renameInCompanion,
   serializeCompanion,
+  setReleaseNotes,
   setSection,
   takeCompanion,
 } from './companion';
 import { withCompanion, type ProjectRecord } from './storage';
-import { readZip, createZip } from './zip';
+import { readZip, createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { exportDos } from '../export/exportDos';
 
 const game = () =>
@@ -56,6 +58,9 @@ describe('the companion file', () => {
     const d = emptyCompanion();
     expect(withCompanion(rec(), rec(c), d).companion).toBe(d);
     expect(withCompanion(rec(), undefined).companion).toBeUndefined();
+    const cp = [{ id: 'a', name: 'before', made: 1, delta: {} }];
+    expect(withCompanion(rec(), { ...rec(), checkpoints: cp }).checkpoints).toBe(cp);
+    expect(withCompanion(rec(), rec()).checkpoints).toBeUndefined();
   });
 
   it('goes into the Game files backup and comes back out on import', async () => {
@@ -81,6 +86,30 @@ describe('the companion file', () => {
       const names = (await readZip(zip)).map((e) => e.name);
       expect(names).toContain('LEVEL1.MAP');
       expect(names.filter((n) => /\.gmx$/i.test(n))).toEqual([]);
+    });
+  });
+
+  describe('release notes', () => {
+    it('defaults to none and keeps old files loading', () => {
+      const c = parseCompanion({ format: 'gamemaker-companion', version: 1, files: {} });
+      expect(c.releaseNotes).toBeUndefined();
+      expect(releaseNotesOf(c, '1.2')).toBe('');
+      expect(isEmptyCompanion(c)).toBe(true);
+    });
+    it('saves by version, round-trips and drops junk', () => {
+      const c = emptyCompanion();
+      setReleaseNotes(c, '1.2', 'Changed 1 map (A.MAP).');
+      expect(isEmptyCompanion(c)).toBe(false);
+      const back = parseCompanion(serializeCompanion(c));
+      expect(releaseNotesOf(back, '1.2')).toBe('Changed 1 map (A.MAP).');
+      expect(parseCompanion({ releaseNotes: { '1.0': 5, '1.1': 'ok' } }).releaseNotes).toEqual({ '1.1': 'ok' });
+      expect(parseCompanion({ releaseNotes: 'bad' }).releaseNotes).toBeUndefined();
+    });
+    it('removes a version when its text is emptied', () => {
+      const c = emptyCompanion();
+      setReleaseNotes(c, '1.2', 'x');
+      setReleaseNotes(c, '1.2', '  ');
+      expect(c.releaseNotes).toBeUndefined();
     });
   });
 });

@@ -113,7 +113,9 @@ export function guidePanel(host: GuideHost) {
     clear(pageView, page);
     // bring the marked word into view in the scrolled page
     const word = page.querySelector<HTMLElement>('.rs-word');
-    pageView.scrollTop = word ? Math.max(0, word.offsetTop - pageView.clientHeight / 3) : 0;
+    // (measured against the view itself: offsetTop is from whatever positioned parent the word has)
+    const wordTop = word ? word.getBoundingClientRect().top - pageView.getBoundingClientRect().top + pageView.scrollTop : 0;
+    pageView.scrollTop = word ? Math.max(0, wordTop - pageView.clientHeight / 3) : 0;
     pageTitle.textContent = `· page ${pageNo}`;
     prevBtn.disabled = pageNo <= 1;
     nextBtn.disabled = pageNo >= last;

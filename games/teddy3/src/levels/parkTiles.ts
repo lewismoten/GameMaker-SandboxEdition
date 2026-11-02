@@ -3,7 +3,7 @@
 // that floats Teddy to the surface and drifts him back to the near bank), the stepping rocks,
 // the big oak with a kite tangled in it, its branches, Juggles by his super see-saw, a bench,
 // a lamppost, and the kid with the flying disc.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { branch, c, cloud, copy, dirt, grassTop, hedge, leaves, r, sky, trunk, tuft } from '../blocks/tiles';

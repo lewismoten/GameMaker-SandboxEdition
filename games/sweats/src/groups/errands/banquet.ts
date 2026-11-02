@@ -12,10 +12,10 @@
 //
 // Layout (13 rows, the dining room of the restaurant: the wainscot on row 10): the tables' tops
 // are ledges on row 9 (the guests sit behind them), the chandeliers ledges on row 6.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, LEDGE, gate, plotThing } from '../../common/blocks';
 import { anim, corner, mon, pace, still } from '../../common/characters';

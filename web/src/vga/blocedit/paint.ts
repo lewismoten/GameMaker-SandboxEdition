@@ -1,7 +1,7 @@
 // Drawing into a block, as BLOCEDIT.C's hi* routines do: points, lines, boxes, circles and
 // flood fill in the 5x zoom, the rubber-band preview of a shape while the button is held,
 // and shifting, flipping, reflecting and rotating a whole block.
-import { BLEN } from '../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { GLEN, BX, BY, GX, GY, LLEN, LY, LX, inBox, sign, trunc, isqrt } from './layout';
 import { BlockDesignerState } from './state';
 

@@ -3,7 +3,7 @@
 // the companion file's "groups" section of the block set, never in the .bbl/.mbl/.cbl itself.
 // Pure helpers to read, change, join and split them; the block editor and the character editor
 // both use them.
-import { BLEN } from '../../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 export interface BlockGroup {
   name: string;

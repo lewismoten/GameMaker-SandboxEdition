@@ -1,0 +1,98 @@
+/* The spring issue's cover-mounted floppy: the disk box's floppy in a clear sleeve, taped on. */
+
+.mag-floppy {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mag-floppy figcaption {
+  max-width: 22em;
+  margin-top: 0.5em;
+  font-size: 0.85em;
+  text-align: center;
+}
+
+.mag-floppy-link {
+  display: block;
+  width: 13em;
+  text-decoration: none;
+}
+
+.mag-floppy-sleeve {
+  position: relative;
+  display: block;
+  padding: 0.7em;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(220, 235, 245, 0.35);
+  box-shadow:
+    0 0.15em 0.5em rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.mag-floppy-sleeve .floppy {
+  width: 100%;
+}
+
+/* the sleeve's pocket flap along the top, and the tape that holds it to the page */
+.mag-floppy-flap {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 0.55em;
+  background: rgba(255, 255, 255, 0.35);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.mag-floppy-sleeve .tape {
+  position: absolute;
+  width: 3.2em;
+  height: 1.1em;
+  background: rgba(244, 232, 170, 0.8);
+  box-shadow: 0 0 0.2em rgba(0, 0, 0, 0.25);
+}
+
+.mag-floppy-sleeve .t1 {
+  left: -1em;
+  top: -0.3em;
+  transform: rotate(-38deg);
+}
+
+.mag-floppy-sleeve .t2 {
+  right: -1em;
+  bottom: -0.3em;
+  transform: rotate(-38deg);
+}
+
+.mag-floppy-link:focus-visible {
+  outline: 0.25em solid #ff9d00;
+  outline-offset: 0.25em;
+}
+
+/* on the cover: in a corner over the screenshots, with its starburst */
+.mag-floppy.on-cover {
+  position: absolute;
+  right: 1.4em;
+  bottom: 9em;
+  z-index: 4;
+  transform: rotate(-6deg);
+}
+
+.mag-floppy.on-cover .mag-floppy-link {
+  width: 11em;
+}
+
+.flow .mag-floppy.on-cover {
+  position: static;
+  flex-direction: row-reverse;
+  justify-content: center;
+  gap: 1em;
+  transform: none;
+}
+
+/* the starburst sits on the disk's top left corner, clear of the cover lines beside it */
+.mag-page .mag-floppy.on-cover a.mag-disc-burst {
+  left: auto;
+  right: -2.2em;
+  top: -4.4em;
+}

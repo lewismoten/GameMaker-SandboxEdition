@@ -1,7 +1,7 @@
 // Teddy, a Pembroke Welsh Corgi: one 20x20 block tall (the world is big), red-tan with a
 // white blaze, socks and the famous fluffy white rump. Every pose of every trick is drawn
 // here as ASCII art; facing left is the same art mirrored by the frame orientation.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
 

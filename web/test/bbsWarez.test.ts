@@ -13,8 +13,8 @@ import { checkRegistration, defaultReg, regFile, registrationNumber, FACTORY_SER
 const DEFAULT_REG = defaultReg(SERIAL);
 
 describe('the Warez area', () => {
-  it('holds GMCRACK, SAVEHACK, PLAYHACK and Game-Maker 3.00', () => {
-    expect(WAREZ.map((w) => w.id)).toEqual(['gmcrack', 'savehack', 'playhack', 'gm30']);
+  it('holds the game utilities and Game-Maker 3.00', () => {
+    expect(WAREZ.map((w) => w.id)).toEqual(['gmcrack', 'savehack', 'playhack', 'gm30', 'fastplay', 'flags']);
   });
 
   it('keeps every DIZ within 10 lines of 45 ASCII columns, signed by the courier', () => {

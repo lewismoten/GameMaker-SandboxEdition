@@ -24,7 +24,7 @@ import { GameFiles } from '../../web/src/project/files';
 import { runChecks } from '../../web/src/editor/check/report';
 import { gameOf, levelScenes } from '../../web/src/editor/check/playtest';
 import { findingKey, splitAccepted } from '../../web/src/editor/check/accepted';
-import { readDisk } from './gameSim';
+import { readDisk } from '@lewismoten/gamemaker-sandbox-tools/kit/gameSim';
 import { readPlayer } from './player';
 import { measurePace } from '../../web/src/editor/check/walk/pace';
 import { STEADY_MS } from '../../web/src/editor/check/findings';

@@ -3,18 +3,19 @@
 // Blaster voice driver, a CONFIG.BAT and instructions. A player customized to ask for other
 // file extensions (dosPlayer/fileExtensions.ts) gets the game's files renamed to match, with
 // the names inside its .gam, slide lists and backdrops rewritten (project/extensionNames.ts).
-import { createZip, type ZipEntry } from '../project/zip';
+import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { cdName, normalize, type GameFiles } from '../project/files';
-import { textBytes } from '../formats/binary';
-import { parseGame } from '../formats/game';
-import { parseBackdrop, parseSlideList } from '../formats/graphicScripts';
-import { parseSoundSet } from '../formats/sound';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { parseSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
-import { applyPlayerPatches } from '../dosPlayer/applyPatches';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
+import { applyPlayerPatches, type PreservedParts } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { playerChanges, renamedFiles } from '../dosPlayer/describePatches';
-import { extensionClashes, extensionMap } from '../dosPlayer/fileExtensions';
-import { rewriteNames, swapExtension } from '../project/extensionNames';
+import { extensionClashes, extensionMap } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
+import { WEB_ONLY } from './webOnly';
+import { rewriteNames, swapExtension } from '@lewismoten/gamemaker-sandbox-archives/project/extensionNames';
 
 interface DosExportOptions {
   title: string;
@@ -23,13 +24,17 @@ interface DosExportOptions {
   appBase?: string;
   /** The project's DOS player customizations (dosPlayer/playerRecord.ts), written into its copy of XFERPLAY.EXE. */
   player?: PlayerPatches;
+  /** An imported 3.00 player's own bytes no setting explains (dosPlayer/playerOrigin.ts keptParts), written back as they were. */
+  kept?: PreservedParts;
+  /** Build-time callers supply the CD runtime directly, without HTTP or browser globals. */
+  runtime?: { player: Uint8Array; driver: Uint8Array; help?: Uint8Array };
+  /** A fixed timestamp makes catalog distributions reproducible. */
+  date?: Date;
 }
 
 /** DOS 8.3 names that FAT and Game-Maker accept. */
-const DOS_NAME = /^[A-Z0-9_\-~!@#$%^&()]{1,8}(\.[A-Z0-9_\-~!@#$%^&()]{1,3})?$/;
-// Our saved games are JSON, which DOS Game-Maker can't read; SAVNAMES.DAT lists them.
-// A .gmx is the editor's companion (project/companion.ts), never one of the game's files.
-export const WEB_ONLY = /^(game\d\.sav|savnames\.dat|.*\.gmx)$/i;
+const DOS_NAME = /^[A-Z0-9_'\-~!@#$%^&()]{1,8}(\.[A-Z0-9_'\-~!@#$%^&()]{1,3})?$/;
+export { WEB_ONLY } from './webOnly';
 
 export function dosNameProblems(names: string[]): string[] {
   return names.filter((n) => !DOS_NAME.test(n.toUpperCase()));
@@ -119,25 +124,12 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     throw new Error(`The game already has a file named ${exe}, SNDBLAST.DRV or CONFIG.BAT; remove it first.`);
   }
 
-  const base = opts.appBase ?? new URL('./', location.href).href;
-  let player: Uint8Array;
-  let driver: Uint8Array;
-  try {
-    player = await fetchBytes(new URL('dos/xferplay.exe', base).href);
-    driver = await fetchBytes(new URL('dos/sndblast.drv', base).href);
-  } catch {
-    throw new Error('The DOS player is not part of this build (it is copied from cd/gm by "npm run games").');
-  }
+  const runtime = opts.runtime ?? (await loadRuntime(opts.appBase));
+  let player = runtime.player;
+  const driver = runtime.driver;
   const changes = playerChanges(opts.player ?? {});
-  if (changes.length) player = applyPlayerPatches(player, opts.player!);
-  // the setup screen's Help (CONFIG.BAT) reads CONFIG.HLP, which RSD's Transfer copied beside
-  // the player; a build made before it was copied simply goes without. (XFERPLAY's F1 shows the
-  // game's instructions and never reads GMHELP.TXT: only PLAYGAME.EXE, in Game-Maker, does.)
-  const help: ZipEntry[] = [];
-  if (!names.some((n) => n.toUpperCase() === 'CONFIG.HLP')) {
-    const data = await fetchBytes(new URL('dos/config.hlp', base).href).catch(() => undefined);
-    if (data) help.push({ name: 'CONFIG.HLP', data });
-  }
+  if (changes.length || opts.kept) player = applyPlayerPatches(player, opts.player ?? {}, opts.kept);
+  const help: ZipEntry[] = runtime.help && !names.some((n) => n.toUpperCase() === 'CONFIG.HLP') ? [{ name: 'CONFIG.HLP', data: runtime.help }] : [];
 
   const entries: ZipEntry[] = [
     { name: exe, data: player },
@@ -150,14 +142,32 @@ export async function exportDos(files: GameFiles, opts: DosExportOptions): Promi
     {
       name: names.some((n) => n.toUpperCase() === 'README.TXT') ? 'PLAYER.TXT' : 'README.TXT',
       data: textBytes(
-        readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  '), changes, renamedFiles(opts.player ?? {}), gamExt).replace(/\n/g, '\r\n'),
+        readme(opts.title, stem, recordedAudioNotice(recordedClips(files), 78, '  '), changes, renamedFiles(opts.player ?? {}), gamExt, !!opts.kept).replace(
+          /\n/g,
+          '\r\n',
+        ),
       ),
     },
   ];
-  return { name: `${stem.toLowerCase()}-dos.zip`, zip: await createZip(entries), exe };
+  return { name: `${stem.toLowerCase()}.zip`, zip: await createZip(entries, opts.date), exe };
 }
 
-function readme(title: string, stem: string, audio: string | undefined, changes: string[], exts: string[], gamExt: string): string {
+/** Runtime files from the site's CD copy; catalog builds supply these bytes themselves. */
+async function loadRuntime(appBase?: string): Promise<NonNullable<DosExportOptions['runtime']>> {
+  const base = appBase ?? new URL('./', location.href).href;
+  let player: Uint8Array;
+  let driver: Uint8Array;
+  try {
+    player = await fetchBytes(new URL('dos/xferplay.exe', base).href);
+    driver = await fetchBytes(new URL('dos/sndblast.drv', base).href);
+  } catch {
+    throw new Error('The DOS player is not part of this build (it is copied from cd/gm by the website build).');
+  }
+  const help = await fetchBytes(new URL('dos/config.hlp', base).href).catch(() => undefined);
+  return { player, driver, help };
+}
+
+function readme(title: string, stem: string, audio: string | undefined, changes: string[], exts: string[], gamExt: string, kept: boolean): string {
   return `${title}
 ${'='.repeat(title.length)}
 
@@ -190,11 +200,15 @@ Made with Game-Maker by Recreational Software Designs, exported by Game-Maker: S
 
 Notices
   ${
-    changes.length
+    changes.length || kept
       ? `${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE from the Game-Maker CD, customized
   by this game's author in Game-Maker: Sandbox Edition's DOS player panel. Only these
   changed (each the same length or shorter, in place):
-${changes.map((c) => `    - ${c}`).join('\n')}
+${changes.map((c) => `    - ${c}`).join('\n')}${
+          kept
+            ? `\n  Other bytes are as the player this game was imported from had them (such as\n  an About page of its author's own), written back unchanged.`
+            : ''
+        }
   CONFIG.HLP is its setup screen's help text, from the same CD.`
       : `${stem}.EXE is Game-Maker 3.00's XFERPLAY.EXE as it came on the Game-Maker CD, and
   CONFIG.HLP its setup screen's help text, from the same CD.`

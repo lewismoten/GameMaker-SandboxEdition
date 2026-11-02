@@ -10,12 +10,13 @@
 //     and the smudge bowl give birth to oil mist and sage smoke, and the aux cord is the end.
 import { CLEAR, wattCameo } from '../../../kit/cameos';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { buildPalette, type Pal } from '../art/pal';
 import { EARS, EARS_NEEDED, MON, SMILES, SMILES_NEEDED, SNACKS, SNACKS_NEEDED } from '../ids';
+import { houseBadges } from './badges';
 import { AIR, BlockBook, LEDGE, LICK_EVERY, LIFE, SOLID, SUGAR, SUGAR_CUBE, fresh, sugarCube } from './common';
 
 /** Ticks between puffs from the diffuser and the smudge bowl. */
@@ -743,5 +744,7 @@ export function buildHouse(pal: Pal): BlockBook {
   book.add('sugarW', cube(paper), { effect: SUGAR, eamt: SUGAR_CUBE, touch: 'paperFlown' });
   book.add('sugarP', cube(panel), { effect: SUGAR, eamt: SUGAR_CUBE, touch: 'panelFlown' });
   book.add('sugarT', cube(tiles), { effect: SUGAR, eamt: SUGAR_CUBE, touch: 'tilesFlown' });
+  // (last too) scenery for the site's achievement badges
+  houseBadges(book, pal, { paper, panel });
   return book;
 }

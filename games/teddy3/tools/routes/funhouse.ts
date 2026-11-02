@@ -1,7 +1,7 @@
 // The bot's way through funhouse.ts (the level's own comment says what happens there): it
 // waits at each edge for the next run of boards to come back, and steps on as they do.
 import type { Order } from '../bot';
-import type { Sim } from '../../../kit/sceneSim';
+import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { CTR } from '../../src/ids';
 import { FUNHOUSE } from '../../src/levels/funhouse';
 import { funhouseTiles } from '../../src/levels/funhouseTiles';

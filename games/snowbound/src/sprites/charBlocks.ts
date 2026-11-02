@@ -1,7 +1,7 @@
 // KID.CBL: the kid's character blocks (walking down, up and sideways with the shovel, a
 // blink, the wind-up and throw, a white-and-red hurt flash, flat on their back in a drift)
 // and the sled (straight, steering left/right, braking, crashed, hurt).
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, recolor, rotate } from '../art/draw';
 import type { Pal } from '../art/pal';
 import {

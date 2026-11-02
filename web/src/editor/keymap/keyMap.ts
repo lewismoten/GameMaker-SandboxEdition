@@ -2,11 +2,21 @@
 // (.chr) of every level scene (sequence keys, joystick bindings, frames that move or fire
 // monsters, objects a sequence needs, limited uses) plus PLAYGAME's own function keys.
 // Games often describe their keys in their instructions but leave some out; this does not.
-import { BACKBL, MONBL, parseBlocks } from '../../formats/blocks';
-import { DROPSEQ, INF_REPEAT, MAXSEQ, PICKUPSEQ, SEQUENCE_NAMES, frameCount, parseCharacter, type Character, type Sequence } from '../../formats/character';
-import { ADVTYPE, parseGame } from '../../formats/game';
-import { parseBackdrop, parseSlideList } from '../../formats/graphicScripts';
-import { scanName } from '../../input/scancodes';
+import { BACKBL, MONBL, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import {
+  DROPSEQ,
+  INF_REPEAT,
+  MAXSEQ,
+  PICKUPSEQ,
+  SEQUENCE_NAMES,
+  frameCount,
+  parseCharacter,
+  type Character,
+  type Sequence,
+} from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { ADVTYPE, parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseBackdrop, parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import type { GameFiles } from '../../project/files';
 
 export type ActionKind = 'move' | 'jump' | 'fire' | 'pickup' | 'drop' | 'action' | 'builtin' | 'nothing';
@@ -341,7 +351,7 @@ export function gameKeyMap(files: GameFiles, gamFile?: string): GameKeyMap {
   const order = (scan: number) => ([72, 80, 75, 77].includes(scan) ? scan - 100 : scan);
   const keys = [...byKey.entries()].sort((a, b) => order(a[0]) - order(b[0])).map(([scan, uses]) => ({ scan, name: scanName(scan), uses }));
   return {
-    title: game?.scenes[0]?.desc.trim() || gam || 'Game',
+    title: (game && gameTitle(game)) || gam || 'Game',
     levels,
     keys,
     joystick: [...joy.values()],

@@ -1,5 +1,5 @@
 // "Scanned" for MUSTARD SEED HUSTLE: seven frames of the song's animated cover (a mustard seed
-// pops out of a mound of dirt, bounces and grows into a plant; .for-lewis/songs/mustard/
+// pops out of a mound of dirt, bounces and grows into a plant; .for-lewis/reference/songs/mustard/
 // cover-frames, not in git) saved as small JPEGs in games/kit/scans, in the order the title
 // cartoon plays them. The build dithers them into its FLI (kit/photo.ts) and never needs the
 // originals.
@@ -10,7 +10,7 @@ import { mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
-const FRAMES = resolve(__dirname, '../../../.for-lewis/songs/mustard/cover-frames');
+const FRAMES = resolve(__dirname, '../../../.for-lewis/reference/songs/mustard/cover-frames');
 const OUT = resolve(__dirname, '../../kit/scans');
 const W = 219;
 const H = 217;

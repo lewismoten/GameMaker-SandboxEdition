@@ -2,9 +2,9 @@
   "title": "Virus Blaster",
   "author": "Claude",
   "company": "Sandbox Software",
-  "year": 1995,
+  "year": 1994,
   "price": "$15",
-  "version": "2.1",
+  "version": "2.3",
   "blurb": "GLITCH, a virus off a bad BBS download, is eating the family 486. Shrink down, launch the BLASTER nano-fighter and blast your way up the motherboard, through memory, the sound card and the hard disk into the CPU itself.",
   "exe": "BLASTER.EXE",
   "sound": "sb",
@@ -51,7 +51,7 @@
     "reviews": [
       {
         "quote": "We did not think Game-Maker could scroll like this. Then GLITCH ate our high scores and we stopped thinking at all.",
-        "source": "Megapixel Monthly, June 1995"
+        "source": "Megapixel Monthly, October 1994"
       },
       {
         "quote": "The most fun you can have with a computer virus.",

@@ -3,7 +3,7 @@
 // the case behind, with its vent slots and the cards of the far slots dim in the distance.
 // In the way: expansion cards standing up in their black slots, tall capacitors, and the
 // gray IDE cable hanging down from the drive cage.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, blob, flipY, micro, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { SOLID, addTerrain, type SideArt } from './sideTiles';

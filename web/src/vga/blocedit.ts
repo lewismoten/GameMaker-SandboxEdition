@@ -12,11 +12,11 @@
 // screen layout constants are in blocedit/layout.ts.
 import { attr } from '../retro/text/textScreen';
 import { MENUATTR, SHADATTR, errorBox, showHelpScreen, vertMenu } from '../retro/text/textUi';
-import { BLEN } from '../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { GRAY1, LEFT, NONE, RIGHT } from './shared/facelift';
 import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/designer';
 import type { OpenDesigner } from '../retro/host';
-import { serializeBlocks } from '../formats/blocks';
+import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { BLK_COUNT, BLK_EXT, drawblk, getblk, getblktype, loadblks, saveblks, scrollList } from './shared/blocc';
 import {
   GLEN,

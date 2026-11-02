@@ -1,8 +1,8 @@
 // Tests: Where typed lines land on a text screen (editors/textScreen/textLayout.ts).
 import { describe, expect, it } from 'vitest';
 import { layoutText, pageOfLine, wrapLongLines } from '../src/editor/editors/textScreen/textLayout';
-import { textLines } from '../src/formats/graphicScripts';
-import { textBytes } from '../src/formats/binary';
+import { textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 
 const screenLinesOf = (t: string) => textLines(textBytes(t.replace(/\n/g, '\r\n'))).length;
 

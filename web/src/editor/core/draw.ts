@@ -1,6 +1,6 @@
 // Canvas helpers for showing palette-indexed graphics in the editor.
-import { BLEN, TRANSPARENT, orientIndex } from '../../formats/blocks';
-import { paletteToRGBA, type Palette } from '../../formats/palette';
+import { BLEN, TRANSPARENT, orientIndex } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { paletteToRGBA, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 
 const lutCache = new WeakMap<Palette, Uint32Array>();
 

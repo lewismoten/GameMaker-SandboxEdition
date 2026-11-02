@@ -43,7 +43,7 @@ export async function bardCatalogEpub(): Promise<EpubBook> {
     title: 'The Bard of Bizarre: Song-Games',
     creator: 'The Bard of Bizarre',
     publisher: 'Lewis Moten',
-    date: '1995',
+    date: '1994',
     description:
       'The Bard of Bizarre’s flyer of song-games, from the Game-Maker: Sandbox Edition box, with the honest small print about how the songs and pictures were made.',
     cover: await coverPicture((await bardCatalog())[0], 'The Bard of Bizarre’s flyer, its first page'),

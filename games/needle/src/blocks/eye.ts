@@ -5,7 +5,7 @@
 // the needle's shaft, and the eye itself, which takes EYE_GRACE graces to open its pupil for
 // a camel on his knees. It blinks on a slow rhythm (its lid droops first, as a warning) and
 // only lets him in while it is wide open.
-import { dither, Pixels } from '../../../kit/pixels';
+import { dither, Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import type { Pal } from '../art/pal';
 import { EYE_GRACE, GRACE } from '../ids';

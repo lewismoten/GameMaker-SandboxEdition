@@ -1,0 +1,30 @@
+/* Teddy's Forte Locks toy safe, on the desk top against the wall beside the right speaker, under the window sill, once a game is won. */
+.kn-safe {
+  position: relative;
+  min-width: 24px;
+  min-height: 24px;
+}
+.kn-safe-art {
+  display: block;
+  width: 96px;
+  height: 102px;
+  filter: drop-shadow(2px 3px 2px rgb(0 0 0 / 50%));
+}
+.kn-safe-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 961px) {
+  .desk-scene > .kn-safe {
+    position: absolute;
+    left: 1108px; /* just clear of the right speaker's edge (1026 + 78) */
+    top: 401px; /* the base stays on the same line as before (452 + 51 = 401 + 102) */
+    z-index: 2;
+  }
+  .desk-scene > .kn-safe:hover,
+  .desk-scene > .kn-safe:has(> .prop-cover:focus-visible) {
+    transform: scale(1.06);
+  }
+}

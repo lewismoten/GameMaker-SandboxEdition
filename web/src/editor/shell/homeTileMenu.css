@@ -1,0 +1,57 @@
+/* Top-layer thumbnail actions fit the viewport, with an explicit cue when the list scrolls. */
+.tile-action-menu {
+  box-sizing: border-box;
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  width: min(280px, calc(100vw - 16px));
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+  overflow: hidden;
+}
+.tile-action-menu:popover-open {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tile-action-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.tile-action-heading strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tile-action-heading button {
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+.tile-action-items {
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  scrollbar-gutter: stable;
+}
+.tile-action-items > * {
+  flex-shrink: 0;
+  width: 100%;
+  text-align: left;
+}
+.tile-action-hint {
+  margin: 0;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+}

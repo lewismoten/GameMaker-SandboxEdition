@@ -123,11 +123,11 @@ const subscribeAd = (): MagPage =>
         `SUBSCRIBE TO ${MAG.name}!`,
         [
           covers(`Five ${MAG.name} covers fanned out: this issue and the next four`, [
-            { issue: 'Vol. 1, No. 1 · This issue', line: 'Game-Maker’s source code set free!', tone: 'black' },
-            { issue: 'Vol. 1, No. 2', line: '100 levels players forgive', tone: 'cyan' },
-            { issue: 'Vol. 1, No. 3', line: 'FM music in a weekend', tone: 'pink' },
-            { issue: 'Vol. 1, No. 4', line: 'Is a 28.8 modem worth it?', tone: 'yellow' },
-            { issue: 'Vol. 1, No. 5', line: 'Readers’ games: the best of the boards', tone: 'news' },
+            { issue: 'Vol. 3, No. 1 · This issue', line: 'Game-Maker’s source code set free!', tone: 'black' },
+            { issue: 'Vol. 3, No. 2', line: '100 levels players forgive', tone: 'cyan' },
+            { issue: 'Vol. 3, No. 3', line: 'FM music in a weekend', tone: 'pink' },
+            { issue: 'Vol. 3, No. 4', line: 'Is a 28.8 modem worth it?', tone: 'yellow' },
+            { issue: 'Vol. 3, No. 5', line: 'Readers’ games: the best of the boards', tone: 'news' },
           ]),
           grid(
             [
@@ -173,7 +173,7 @@ const subscribeAd = (): MagPage =>
         {
           burst: 'SAVE 40%!',
           sub: 'Twelve issues of hints, reviews and the newest shareware, in your mailbox before it’s on the newsstand.',
-          small: `Just a gag: ${MAG.name} is this one issue, free to read here. There is no subscription, and nothing is mailed. Prices are part of the story.`,
+          small: `Just a gag: ${MAG.name} is free to read here, this issue and the spring 1993 one. There is no subscription, and nothing is mailed. Prices are part of the story.`,
           tone: 'yellow',
         },
       ),
@@ -304,7 +304,7 @@ const prosAd = (): MagPage =>
         ],
         {
           burst: 'TIPS!',
-          sub: 'The Ultimate Owner’s Guide: sixteen chapters from the people who made the Sandbox games.',
+          sub: 'The Ultimate Owner’s Guide: seventeen chapters from the people who made the Sandbox games.',
           tone: 'pink',
         },
       ),

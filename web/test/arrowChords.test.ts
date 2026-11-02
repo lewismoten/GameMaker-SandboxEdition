@@ -1,8 +1,8 @@
 // Arrow chords (two arrows held for the keypad key between them, for keyboards with no keypad), the
 // Mac key hints and the desk's key card rows.
 import { describe, expect, it } from 'vitest';
-import { ArrowChords, chordKeys } from '../src/input/chords';
-import { Keyboard } from '../src/input/keyboard';
+import { ArrowChords, chordKeys } from '@lewismoten/gamemaker-sandbox-engine/input/chords';
+import { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
 import { macHint, withMacHint } from '../src/input/macKeys';
 
 const UP = 72,

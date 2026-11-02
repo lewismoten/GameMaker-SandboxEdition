@@ -2,8 +2,8 @@
 // Ohm Sweet Ohm: a board is one screen-sized window of its room's map and never scrolls, so
 // the scroll window is shut. The bot presses a board's solution keys on it and must reach
 // the outlet alive.
-import { Sim as SceneSim, type SimScene } from '../../kit/sceneSim';
-import type { CharInfo } from '../../../web/src/engine/world';
+import { Sim as SceneSim, type SimScene } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
+import type { CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 
 export class Sim extends SceneSim {
   constructor(scene: SimScene, start: { x: number; y: number }, ci?: CharInfo, seed?: number) {

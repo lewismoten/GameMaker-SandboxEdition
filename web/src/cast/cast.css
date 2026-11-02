@@ -6,8 +6,6 @@ main.cast {
   --fam-sandbox: #b8860b;
   --fam-bizarre: #8e3bb5;
   --fam-cd: #2f7d4f;
-  /* beside "On this page" on a wide window (pageToc.css) */
-  --toc-body: 1040px;
   max-width: 1180px;
   margin: 0 auto;
   padding: 24px 16px 64px;
@@ -46,11 +44,7 @@ main.cast .lead {
   font-size: 20px;
 }
 
-/* ---- the three kinds of games ---- */
-
-.cast-families {
-  margin-bottom: 32px;
-}
+/* ---- the kinds of games ---- */
 
 .cast-fam-grid {
   display: grid;
@@ -85,7 +79,6 @@ main.cast .lead {
   gap: 16px;
 }
 
-/* the family's links: 24px tall targets, as wide as their words */
 .cast-fam > a,
 .cast-fam-links a {
   display: inline-flex;
@@ -108,40 +101,40 @@ main.cast .lead {
 
 /* ---- the regulars ---- */
 
-.cast-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 16px;
-  margin-bottom: 16px;
-}
-
-.cast-bar h2 {
-  margin: 0;
-}
-
-.cast-filters {
+/* tabs: wrap inside themselves, 24px+ targets */
+.cast-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  margin: 12px 0 16px;
+  border-bottom: 2px solid var(--border);
 }
 
-.cast-filter {
-  border-radius: 999px;
-  padding: 5px 12px;
-  font-size: 14px;
+.cast-tab {
+  min-height: 32px;
+  padding: 5px 14px;
+  border-radius: 8px 8px 0 0;
+  font-size: 15px;
 }
 
-.cast-filter[aria-pressed='true'] {
+.cast-tab[aria-selected='true'] {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-text);
 }
 
-.cast-count {
-  margin: 0 0 0 auto;
-  color: var(--muted);
-  font-size: 14px;
+.cast-blurb {
+  margin: 0 0 8px;
+  padding: 0 0 0 12px;
+  border-left: 4px solid var(--accent);
+  line-height: 1.5;
+}
+
+.cast-blurb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  margin-right: 12px;
 }
 
 .cast-grid {
@@ -159,6 +152,11 @@ main.cast .lead {
   border-radius: 10px;
   background: var(--panel);
   scroll-margin: 80px;
+}
+
+.cast-fam-grid[hidden],
+.cast-grid[hidden] {
+  display: none;
 }
 
 .cast-card[hidden] {

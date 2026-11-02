@@ -1,8 +1,8 @@
 // Tools for the DOS player patches (dosPlayer/): XFERPLAY's words, colors, frames, positions,
 // times and F-keys as the project changes them. They live in the companion file, never in the
 // game's files; the DOS export writes them into its XFERPLAY.EXE.
-import { PATCHES, type PatchEntry } from '../../dosPlayer/patchTable';
-import { cleanPatches, isStock, patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '../../dosPlayer/patchRules';
+import { PATCHES, type PatchEntry } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
+import { cleanPatches, isStock, patchEntry, patchProblem, type PatchValue, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { DRY_RUN, commit } from './run';
 import { int } from './common';
 import { json, ToolError, type ToolDef } from './types';

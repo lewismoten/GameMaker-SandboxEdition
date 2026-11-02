@@ -11,10 +11,10 @@
 // Layout (12 rows): indoors (x 0..17) the ceiling on row 0, the floor on row 10, the table top a
 // ledge on row 7; outdoors (x 18..) the sky over the bank's brick back wall, the asphalt lot on
 // rows 10..11. The poet walks row 9.
-import { Pixels, rng } from '../../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../../snowbound/src/art/draw';
 import { micro } from '../../../../snowbound/src/art/font';
-import type { Monster } from '../../../../../web/src/formats/monster';
+import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import type { Lighting, Pal } from '../../art/pal';
 import { AIR, BlockBook, GRAV, SOLID, gate, loot, plotThing } from '../../common/blocks';
 import { anim, bob, corner, mon, pace, still } from '../../common/characters';

@@ -8,7 +8,7 @@
 // Under the floor are the pits between the belts and the tray return, a fast belt that
 // carries a fallen dog back to the foot of the fast belt above. Also the flour sacks, the
 // grates, the baker's racks, the display case, and the baker himself.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, speckle } from '../art/draw';
 import { GRAV, Tiles } from './level';
 import { bricks, c, cloud, copy, dirt, r, sky, windowOn } from '../blocks/tiles';

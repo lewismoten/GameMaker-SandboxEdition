@@ -5,16 +5,16 @@
 // On the way it keeps where the hero went (the heat map), what it touched, and what went
 // wrong as it played: deaths, falls the player can't see, hurts that hold the hero, scoring
 // that never stops. stuck.ts then finds the places with no way out.
-import { BACKBL, BLEN, type Block } from '../../formats/blocks';
-import { DIESEQ, HURTSEQ } from '../../formats/character';
-import { MLEN, MWID } from '../../formats/map';
-import { LASTMM, LASTMON, type CharInfo, type World } from '../../engine/world';
+import { BACKBL, BLEN, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { DIESEQ, HURTSEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { LASTMM, LASTMON, type CharInfo, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { keyRoles, movesFor, steadyMoves, type Move } from './inputs';
 import { SceneSim, changedCells, type FileSource, type Snap } from './sim';
 import { driveMove } from './drive';
 import { frees, getsAway } from './escape';
 import { canLeave, stuckAreas } from './stuck';
-import type { Game, Link } from '../../formats/game';
+import type { Game, Link } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { footCell } from './walk/walkPaths';
 
 const CELLS = MLEN * MWID;

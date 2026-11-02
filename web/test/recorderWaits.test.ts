@@ -3,8 +3,8 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { Recorder } from '../src/engine/recorder';
-import { serializeRecording } from '../src/formats/recording';
+import { Recorder } from '@lewismoten/gamemaker-sandbox-engine/engine/recorder';
+import { serializeRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 
 const nebula = new Uint8Array(readFileSync(join(__dirname, '../../cd/gameware/nebula/demo.rec')));
 

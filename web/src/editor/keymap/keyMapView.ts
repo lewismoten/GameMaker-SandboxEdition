@@ -3,14 +3,15 @@
 // instructions. Self-contained (no editor.css), so the player can show it too.
 import './keyMapView.css';
 import { gameKeyMap, type GameKeyMap, type KeyUse, type Level } from './keyMap';
-import { parseBlocks, BACKBL, MONBL, type Block } from '../../formats/blocks';
-import { parsePalette, defaultPalette, type Palette } from '../../formats/palette';
-import { parseMonsters, type Monster } from '../../formats/monster';
-import { decodeGif, isGif } from '../../formats/gif';
+import { parseBlocks, BACKBL, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { parsePalette, defaultPalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { parseMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { blockCanvas, paintIndexed } from '../core/draw';
 import { isMac, macHint } from '../../input/macKeys';
 import type { GameFiles } from '../../project/files';
 import { icon } from '../shell/homeIcons';
+import type { GameControls } from '../core/gameControls';
 
 type Child = Node | string | null | undefined | false;
 
@@ -227,7 +228,7 @@ class Pictures {
 // ---- the view -------------------------------------------------------------------------------
 
 /** The key map of a game as an element (keyboard, list, joystick, global keys, instructions). */
-export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = gameKeyMap(files, gamFile)): HTMLElement {
+export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = gameKeyMap(files, gamFile), controls?: GameControls): HTMLElement {
   const pics = new Pictures(files);
   const chrs = [...new Set(km.levels.map((l) => l.chr))].filter((c) => !km.missing.includes(c));
   let only = ''; // '' = every character
@@ -237,6 +238,7 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
   const joy = el('div', 'km-joy');
 
   const usesOf = (uses: KeyUse[]) => (only ? uses.filter((u) => u.chrs.includes(only)) : uses);
+  const described = (scan: number) => controls?.keys[scan];
   const globalOf = (scan: number) => km.global.find((g) => g.scan === scan);
 
   const pick = (scan: number) => {
@@ -254,7 +256,7 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
     if (!uses.length && !g) return undefined;
     const shorts = [...new Set(uses.map((u) => u.action.short))];
     return {
-      short: shorts[0] ?? g!.short,
+      short: (uses.length && described(scan)?.short) || shorts[0] || g!.short,
       title: [...new Set(uses.map((u) => u.action.title)), g?.title].filter(Boolean).join(' / '),
       game: !!uses.length,
       global: !!g,
@@ -318,6 +320,15 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
             el(
               'div',
               'km-uses',
+              described(k.scan)
+                ? el(
+                    'p',
+                    'km-desc',
+                    el('strong', null, described(k.scan)!.short),
+                    described(k.scan)!.short && described(k.scan)!.long ? ' · ' : '',
+                    described(k.scan)!.long,
+                  )
+                : null,
               ...uses.map(useRow),
               uses.length > 1 && new Set(uses.flatMap((u) => u.chrs)).size === 1
                 ? el('p', 'km-note', 'When several apply, the first one the hero can use (carrying its object, with uses left) runs.')
@@ -422,7 +433,13 @@ export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = 
 }
 
 /** Opens the key map in a dialog. Keys typed while it is open don't reach a running game. */
-export function showKeyMap(files: GameFiles | Promise<GameFiles>, gamFile: string | undefined, title: string, onClose?: () => void): HTMLDialogElement {
+export function showKeyMap(
+  files: GameFiles | Promise<GameFiles>,
+  gamFile: string | undefined,
+  title: string,
+  onClose?: () => void,
+  controls?: GameControls | Promise<GameControls | undefined>,
+): HTMLDialogElement {
   const body = el('div', 'km-body', el('p', 'km-note', 'Reading the game…'));
   const close = el('button', 'km-close', '×');
   close.title = 'Close (Esc)';
@@ -442,8 +459,8 @@ export function showKeyMap(files: GameFiles | Promise<GameFiles>, gamFile: strin
   for (const t of ['keydown', 'keyup']) dlg.addEventListener(t, (e) => e.stopPropagation());
   document.body.append(dlg);
   dlg.showModal();
-  void Promise.resolve(files)
-    .then((f) => body.replaceChildren(keyMapView(f, gamFile)))
+  void Promise.all([Promise.resolve(files), Promise.resolve(controls).catch(() => undefined)])
+    .then(([f, c]) => body.replaceChildren(keyMapView(f, gamFile, undefined, c)))
     .catch((e) => body.replaceChildren(el('p', 'km-note', `Couldn’t read the game: ${(e as Error).message}`)));
   return dlg;
 }

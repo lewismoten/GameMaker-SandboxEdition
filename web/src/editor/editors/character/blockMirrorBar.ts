@@ -4,7 +4,7 @@
 // one mirrored left to right. The link lives in the companion file (the .cbl's 'mirrors').
 import { h, clear } from '../../core/ui';
 import type { Project } from '../../core/project';
-import type { Block } from '../../../formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { MIRROR, bakeOrient, mirrorInStep, mirrorOf, type BlockLink } from './characterMirror';
 
 interface BlockMirrorBar {

@@ -1,7 +1,7 @@
 // The web player download: the page with this game's folder (DOS names) and a games.json listing it.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GameFiles } from '../project/files';
-import { readZip } from '../project/zip';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { exportWebPlayer, playerGameList } from './exportWebPlayer';
 
 const page = '<!doctype html><title>Game-Maker web player</title><p>“player”</p>';

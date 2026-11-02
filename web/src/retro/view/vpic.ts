@@ -9,7 +9,7 @@ import { commas, resolvePath } from '../dos/vfs';
 import { attr, COLS, ROWS } from '../text/textScreen';
 import { modeFor } from './picture';
 import { decodePicture, paintPicture } from '../bbs/gallery';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 
 const TITLE = 'VPIC  GIF/JPEG viewer';
 

@@ -6,9 +6,9 @@
 import type { RetroHost } from '../../retro/host';
 import { showHelpScreen } from '../../retro/text/textUi';
 import type { WorkArea } from '../../retro/dos/workArea';
-import { ENDTYPE, MAXSCENELINKS, STARTTYPE, type Link, type Scene } from '../../formats/game';
-import { BACKBL, BLOCK_SIZE } from '../../formats/blocks';
-import { MLEN, MWID } from '../../formats/map';
+import { ENDTYPE, MAXSCENELINKS, STARTTYPE, type Link, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { BACKBL, BLOCK_SIZE } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { RGBdata, Vga } from '../shared/vga';
 import { BLACK, BLEN, Face, GREEN, GRAY1, GRAY2, GRAY3, GRAY4, RED1, RED2, palFindCol } from '../shared/facelift';
 

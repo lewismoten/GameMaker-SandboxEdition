@@ -1,5 +1,5 @@
 // Makes the games on the original Game-Maker CD (../cd) available to the web app without
-// copying them into the web project: the dev server serves them straight from cd/, and
+// copying them into the web project: development and production serve their DOS ZIPs, and
 // the production build (e.g. in GitHub Actions) emits them into dist/.
 //
 //   games/index.json             catalog of every playable game (but the secret ones)
@@ -7,11 +7,11 @@
 //                                file for each thing that reveals them (1 every felt egg, 2 every
 //                                tin heart: about.json "unlock": "hearts"), fetched only once it is
 //                                found (src/project/secretGames.ts), so finding one names no other
-//   games/gameware/<id>/<file>   the free sample games that came with Game-Maker (editable)
-//   games/shareware/<id>/<file>  shareware games (play only, with the author's notice)
-//   games/originals/<id>/<file>  new games made for this project (../games/<id>/disk),
+//   games/gameware/<id>/<game>.zip   the free sample games that came with Game-Maker (editable)
+//   games/shareware/<id>/<game>.zip  shareware games (play only, with the author's notice)
+//   games/originals/<id>/<game>.zip  new games made for this project (../games/<id>/disk),
 //                                published as shareware, with box, label and manual data
-//   games/<kind>/<id>/<id>.<hash>.gmpak  each game's files in one gzipped file, what the site
+//   games/<kind>/<id>/<game>.zip           each game's DOS distribution, what the built site
 //                                fetches to play or open a game (src/project/gamePack.ts)
 //   dos/xferplay.exe, dos/sndblast.drv   the DOS stand-alone player for "Export for DOS"
 //   dos/config.hlp                       its setup screen's help, which a Transfer put beside it
@@ -21,16 +21,17 @@ import type { Plugin } from 'vite';
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import { createHash } from 'node:crypto';
-import { encodePack } from '../src/project/gamePack';
-import { packOrder } from '../src/project/streamGame';
+import { gameArchive, gameZipName } from './gameArchive';
+import { createArchiveQueue } from './archiveQueue';
+import { archiveWorker } from './archiveWorker';
+import { libraryFacts, type LibraryFileFact } from './libraryFacts';
 import type { PrintablesFile } from '../src/manual/printables/types';
 import { blurbOf, dosText, storyFile } from '../src/export/gameAbout';
 import { gameShots } from './gameShots';
 import { builtHeroPath, heroOf } from '../src/gfx/levelPicture';
 import { checkGame, QUICK_CHECK_FILE, type Issue } from '../src/project/health';
 import { boxGame, type BoxGame } from '../src/desk/boxes/boxFacts';
-import { parseGame } from '../src/formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 export interface CdCatalogEntry {
   id: string;
@@ -42,6 +43,8 @@ export interface CdCatalogEntry {
   files: string[];
   /** Size of each file in `files`, in bytes. */
   sizes: number[];
+  /** Palette identities and sound groups, for library browsing without fetching every game. */
+  fileFacts?: Record<string, LibraryFileFact>;
   /** Shareware: the author's notice (readme / order form), as text. */
   notice?: string;
   /** Shareware: CRC-32 of the .gam file, to recognize the game when imported. */
@@ -66,11 +69,13 @@ export interface CdCatalogEntry {
   walkthrough?: string;
   /** Original games: its DOS player look, ../games/<id>/player.json ({ base, patches }: src/dosPlayer/catalogPatches.ts). */
   player?: unknown;
+  /** Original games: what its keys, joystick buttons, counters and sounds mean, ../games/<id>/controls.json (src/editor/core/gameControls.ts). */
+  controls?: unknown;
   /** The build drew its pictures (games/shots/<id>-<cols>x<rows>.png, scripts/gameShots.ts). */
   shots?: boolean;
   /** …and its hero (games/shots/<id>-hero.png). */
   heroShot?: boolean;
-  /** All its files in one gzipped file in its folder, named by a hash of them (packName, src/project/gamePack.ts). */
+  /** Standalone DOS ZIP at a permanent URL, in both Vite development and production. */
   pack?: string;
   /** Built sites: what the home page's quick check finds in it (src/editor/shell/gameHealth.ts), so the page need not fetch files to know. */
   health?: Issue[];
@@ -205,13 +210,6 @@ function blurbFor(names: string[], disk: Map<string, string>): string | undefine
   return pick ? blurbOf(dosText(readFileSync(disk.get(pick)!))) : undefined;
 }
 
-/** A game's pack file name: <id>.<hash of its files>.gmpak (a new name whenever a file changes). */
-function packName(id: string, names: string[], disk: ReadonlyMap<string, string>): string {
-  const h = createHash('sha1');
-  for (const n of names) h.update(`${n}\0${statSync(disk.get(n)!).size}\0`).update(readFileSync(disk.get(n)!));
-  return `${id}.${h.digest('hex').slice(0, 10)}.gmpak`;
-}
-
 /** The quick check of a game's files (its .gam and graphic scripts, src/project/health.ts): what the ⚠ note says. */
 function quickHealth(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'sizes' | 'path'>, files: ReadonlyMap<string, string>): Issue[] {
   const loaded = new Map(
@@ -231,15 +229,14 @@ function boxGameOf(e: Pick<CdCatalogEntry, 'gam' | 'path' | 'original'>, files: 
   }
 }
 
-/** A game's pack (src/project/gamePack.ts): its files in the order play needs them, gzipped. */
-function gamePack(e: Pick<CdCatalogEntry, 'gam' | 'files' | 'path'>, files: ReadonlyMap<string, string>, level = 9): Buffer {
-  const get = (n: string) => (files.has(`${e.path}${n}`) ? new Uint8Array(readFileSync(files.get(`${e.path}${n}`)!)) : undefined);
-  const entries: [string, Uint8Array][] = [];
-  for (const n of packOrder(e.gam, e.files, get)) {
-    const b = get(n);
-    if (b) entries.push([n, b]);
-  }
-  return gzipSync(encodePack(entries), { level });
+/** Native source paths for one game, shared by previews and library metadata. */
+function entryFiles(entry: Pick<CdCatalogEntry, 'files' | 'path'>, files: ReadonlyMap<string, string>): Map<string, string> {
+  return new Map(
+    entry.files.flatMap((name) => {
+      const path = files.get(`${entry.path}${name}`);
+      return path ? [[name, path] as [string, string]] : [];
+    }),
+  );
 }
 
 interface Scan {
@@ -251,6 +248,15 @@ interface Scan {
   gates: Map<string, number>;
   /** Site path -> file on disk. */
   files: Map<string, string>;
+}
+
+/** True for a regular file; false for anything else, or a file that vanished since the listing (another build moved it). */
+function isFile(path: string): boolean {
+  try {
+    return statSync(path).isFile();
+  } catch {
+    return false;
+  }
 }
 
 function scan(cdRoot: string): Scan {
@@ -291,7 +297,7 @@ function scan(cdRoot: string): Scan {
         sizes: names.map((n) => statSync(disk.get(n)!).size),
         bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
         blurb: blurbFor(names, disk),
-        pack: packName(id, names, disk),
+        pack: gameZipName(id),
       };
       if (kind === 'shareware' && exe) entry.exe = exe.toUpperCase();
       if (kind === 'shareware') {
@@ -352,12 +358,14 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     // its DOS player look (games/kit/player.ts): the catalog carries it, never the game's files
     const player = existsSync(join(base, 'player.json')) ? (JSON.parse(readFileSync(join(base, 'player.json'), 'utf8')) as unknown) : undefined;
+    // what its controls mean (the editor's Overview > Controls); editor-only, never in a download
+    const controls = existsSync(join(base, 'controls.json')) ? (JSON.parse(readFileSync(join(base, 'controls.json'), 'utf8')) as unknown) : undefined;
     const id = dir.toLowerCase();
     const path = `games/originals/${id}/`;
     const names: string[] = [];
     const disk = new Map<string, string>();
     for (const name of readdirSync(diskDir).sort()) {
-      if (SKIP.test(name) || !statSync(join(diskDir, name)).isFile()) continue;
+      if (name.startsWith('.') || SKIP.test(name) || !isFile(join(diskDir, name))) continue; // a build's half-written .NAME.pid.part comes and goes
       disk.set(name.toLowerCase(), join(diskDir, name));
       names.push(name.toLowerCase());
     }
@@ -391,7 +399,8 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       ...(about.series ? { series: about.series } : {}),
       ...(walkthrough ? { walkthrough } : {}),
       ...(player ? { player } : {}),
-      pack: packName(id, names, disk),
+      ...(controls ? { controls } : {}),
+      pack: gameZipName(id),
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);
   }
@@ -403,7 +412,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
  * page needs only this (and, for shareware, its game's details); games/index.json has it all.
  */
 export function slimCatalog(catalog: CdCatalogEntry[]): CdCatalogEntry[] {
-  return catalog.map(({ notice: _notice, original, ...e }, i) => ({
+  return catalog.map(({ notice: _notice, fileFacts: _fileFacts, original, ...e }, i) => ({
     ...e,
     ...(original ? { original: slimOriginal(original) } : {}),
     ...(catalogDetails(catalog[i]) ? { details: true } : {}),
@@ -445,7 +454,7 @@ export function cdSecretCatalog(cdRoot: string): CdCatalogEntry[] {
   return scan(cdRoot).secret;
 }
 
-/** Where each game file the site serves (e.g. games/gameware/nebula/nebula.gam) is on disk. */
+/** Sources behind catalog game archives and shared DOS resources, not loose game HTTP endpoints. */
 export function cdFiles(cdRoot: string): ReadonlyMap<string, string> {
   return scan(cdRoot).files;
 }
@@ -458,19 +467,57 @@ export function cdGames(cdRoot: string): Plugin {
     configureServer(server) {
       const gamesRoot = join(cdRoot, '../games');
       server.watcher.add([cdRoot, gamesRoot]);
-      const forget = (f: string) => (f.startsWith(cdRoot) || f.startsWith(gamesRoot)) && (cache = undefined);
+      let preview: { catalog: CdCatalogEntry[]; secret: CdCatalogEntry[]; shots: Map<string, Uint8Array> } | undefined;
+      const worker = archiveWorker(cdRoot);
+      const archives = createArchiveQueue(worker);
+      const listed = () => [...get().catalog, ...get().secret].map((e) => `${e.path}${e.pack}`);
+      // build every archive in the background so most are ready before they are asked for
+      server.httpServer?.once('listening', () => setTimeout(() => archives.enqueue(listed()), 500));
+      const served = () => {
+        if (preview) return preview;
+        const { catalog, secret, files } = get();
+        const shots = new Map<string, Uint8Array>();
+        const known = (e: CdCatalogEntry): CdCatalogEntry => {
+          const box = boxGameOf(e, files);
+          return { ...e, fileFacts: libraryFacts(entryFiles(e, files)), health: quickHealth(e, files), ...(box ? { boxGame: box } : {}) };
+        };
+        preview = {
+          catalog: catalog.map((e) => {
+            const disk = entryFiles(e, files);
+            const pictures = gameShots(e.id, e.gam, disk, e.original?.box?.shots, heroOf(e.original));
+            for (const [name, data] of pictures) shots.set(name, data);
+            return { ...known(e), ...(pictures.size ? { shots: true } : {}), ...(pictures.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) };
+          }),
+          secret: secret.map(known),
+          shots,
+        };
+        return preview;
+      };
+      const forget = (f: string) => {
+        if (!f.startsWith(cdRoot) && !f.startsWith(gamesRoot)) return;
+        cache = undefined;
+        preview = undefined;
+        archives.clear();
+        worker.restart();
+        setTimeout(() => archives.enqueue(listed()), 500);
+      };
       server.watcher.on('change', forget);
       server.watcher.on('add', forget);
       server.watcher.on('unlink', forget);
       server.middlewares.use((req, res, next) => {
         const url = decodeURIComponent((req.url ?? '').split('?')[0]).replace(/^\/+/, '');
         const extra = /^games\/extra-(\d)\.json$/.exec(url);
-        if (url === 'games/index.json' || url === 'gm/index.json' || url === 'games/catalog.json' || (extra && GATES.includes(Number(extra[1])))) {
+        if (url === 'gm/index.json') {
           res.setHeader('Content-Type', 'application/json');
-          const { gm, catalog } = get();
+          res.end(JSON.stringify(get().gm));
+          return;
+        }
+        if (url === 'games/index.json' || url === 'games/catalog.json' || (extra && GATES.includes(Number(extra[1])))) {
+          res.setHeader('Content-Type', 'application/json');
+          const { catalog, secret } = served();
           res.end(
             JSON.stringify(
-              url.startsWith('gm/') ? gm : url.endsWith('catalog.json') ? slimCatalog(catalog) : extra ? behind(get(), Number(extra[1])) : catalog,
+              url.endsWith('catalog.json') ? slimCatalog(catalog) : extra ? secret.filter((e) => (get().gates.get(e.id) ?? 1) === Number(extra[1])) : catalog,
             ),
           );
           return;
@@ -482,11 +529,33 @@ export function cdGames(cdRoot: string): Plugin {
           res.end(JSON.stringify(catalogDetails(detailed)));
           return;
         }
-        const packed = /^(games\/[a-z]+\/[a-z0-9_-]+\/)([^/]+\.gmpak)$/.exec(url);
+        const picture = url.startsWith('games/shots/') && served().shots.get(url);
+        if (picture) {
+          res.setHeader('Content-Type', 'image/png');
+          res.end(picture);
+          return;
+        }
+        const packed = /^(games\/[a-z]+\/[a-z0-9_-]+\/)([^/]+\.zip)$/.exec(url);
         const owner = packed && [...get().catalog, ...get().secret].find((e) => e.path === packed[1] && e.pack === packed[2]);
         if (owner) {
-          res.setHeader('Content-Type', 'application/octet-stream');
-          res.end(gamePack(owner, get().files, 1));
+          // built in a worker process: until it is ready, 202 and ask again (the client retries, client/archiveWait.ts)
+          const bytes = archives.request(url);
+          res.setHeader('Cache-Control', 'no-store');
+          if (!bytes) {
+            res.statusCode = 202;
+            res.setHeader('Retry-After', '2');
+            res.setHeader('Content-Type', 'text/plain');
+            res.end(req.method === 'HEAD' ? undefined : 'This game archive is being prepared.');
+            return;
+          }
+          res.setHeader('Content-Type', 'application/zip');
+          res.setHeader('Content-Length', bytes.length);
+          res.end(req.method === 'HEAD' ? undefined : bytes);
+          return;
+        }
+        if (/^games\/(gameware|shareware|originals)\//.test(url) && !url.endsWith('/walkthrough.json')) {
+          res.statusCode = 404;
+          res.end('Game data is available in its distribution ZIP.');
           return;
         }
         const file = get().files.get(url.toLowerCase());
@@ -495,30 +564,41 @@ export function cdGames(cdRoot: string): Plugin {
         createReadStream(file).pipe(res);
       });
     },
-    generateBundle() {
+    async generateBundle() {
       const { gm, files } = get();
-      // each game's pack, made first so the catalog can say how big it is
-      const packs = new Map<string, Buffer>();
-      for (const e of [...get().catalog, ...get().secret]) if (e.pack) packs.set(`${e.path}${e.pack}`, gamePack(e, files));
+      // A standard ZIP replaces both custom GMPK and duplicate loose/gzip game payloads.
+      const packs = new Map<string, Uint8Array>();
+      const archives = new Map<string, string>();
+      for (const e of [...get().catalog, ...get().secret]) {
+        const zip = await gameArchive(e, files);
+        // Stable public links: service-worker group hashes version changed ZIP contents.
+        const name = gameZipName(e.id);
+        archives.set(e.path, name);
+        packs.set(`${e.path}${name}`, zip);
+      }
       // what the pages would otherwise fetch game files to work out: the quick check, the box's facts, the pack's size
       const known = (e: CdCatalogEntry): CdCatalogEntry => {
         const box = boxGameOf(e, files);
-        const packBytes = packs.get(`${e.path}${e.pack}`)?.length;
-        return { ...e, health: quickHealth(e, files), ...(box ? { boxGame: box } : {}), ...(packBytes ? { packBytes } : {}) };
+        const pack = archives.get(e.path)!;
+        const packBytes = packs.get(`${e.path}${pack}`)!.length;
+        return {
+          ...e,
+          pack,
+          fileFacts: libraryFacts(entryFiles(e, files)),
+          health: quickHealth(e, files),
+          ...(box ? { boxGame: box } : {}),
+          ...(packBytes ? { packBytes } : {}),
+        };
       };
       // each listed game's pictures, drawn now (scripts/gameShots.ts); the secret games' are drawn by the page
       const catalog = get().catalog.map((e) => {
-        const disk = new Map(e.files.flatMap((n) => (files.has(`${e.path}${n}`) ? [[n, files.get(`${e.path}${n}`)!] as [string, string]] : [])));
+        const disk = entryFiles(e, files);
         const shots = gameShots(e.id, e.gam, disk, e.original?.box?.shots, heroOf(e.original));
         for (const [fileName, source] of shots) this.emitFile({ type: 'asset', fileName, source });
         return shots.size ? { ...known(e), shots: true, ...(shots.has(builtHeroPath(e.id)) ? { heroShot: true } : {}) } : known(e);
       });
       const secret = (gate: number) => behind(get(), gate).map(known);
-      // GitHub Pages sends files it doesn't know (.bbl, .map, .fli…) uncompressed, and game
-      // files shrink 3-20x: a whole game comes as its pack (below), and each game file but a
-      // GIF also gets a gzip copy, <file>.gz, which the site fetches instead when it needs
-      // one file alone (src/project/files.ts, fetchSiteFile). The files themselves stay too,
-      // for exports and links.
+      // Catalogs keep precomputed previews and health; game data lives only in each ZIP.
       this.emitFile({ type: 'asset', fileName: 'games/index.json', source: JSON.stringify(catalog.map((e) => ({ ...e, gz: true }))) });
       this.emitFile({ type: 'asset', fileName: 'games/catalog.json', source: JSON.stringify(slimCatalog(catalog).map((e) => ({ ...e, gz: true }))) });
       for (const e of catalog) {
@@ -532,6 +612,8 @@ export function cdGames(cdRoot: string): Plugin {
       this.emitFile({ type: 'asset', fileName: 'gm/index.json', source: JSON.stringify(gm) });
       for (const [fileName, source] of packs) this.emitFile({ type: 'asset', fileName, source });
       for (const [site, disk] of files) {
+        // Walkthroughs are browser metadata, not native DOS resources.
+        if (site.startsWith('games/') && !site.endsWith('/walkthrough.json')) continue;
         const bytes = readFileSync(disk);
         this.emitFile({ type: 'asset', fileName: site, source: bytes });
         if (site.startsWith('games/') && !/\.gif$/i.test(site)) this.emitFile({ type: 'asset', fileName: `${site}.gz`, source: gzipSync(bytes, { level: 9 }) });

@@ -1,11 +1,11 @@
 // The level check's checks for every player, from the files (playerChecks.ts, monsterChecks.ts
 // startThreat, fliCheck.ts), on the tiny game in testGame.ts.
 import { describe, expect, it } from 'vitest';
-import { BACKBL, newBlockSet, parseBlocks, serializeBlocks } from '../../../formats/blocks';
-import { PICKUPSEQ, parseCharacter, serializeCharacter } from '../../../formats/character';
-import { emptyMonster } from '../../../formats/monster';
-import { serializeGame } from '../../../formats/game';
-import { textBytes } from '../../../formats/binary';
+import { BACKBL, newBlockSet, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { PICKUPSEQ, parseCharacter, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { emptyMonster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 import { GameFiles } from '../../../project/files';
 import { scenesOf } from '../sceneData';
 import { COIN, RIGHT, testGame, type TestGame } from '../testGame';

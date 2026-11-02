@@ -4,7 +4,7 @@
 // him over) and the turnstile (spin); a spotlight (play dead), a water wheel's paddles and a
 // balloon pump's balloon dogs (rides); and the last button, hidden in a wisp of scent (sniff it
 // out), whose spark opens the flap into the dark ring for a few seconds.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { over, sprite } from '../art/draw';
 import { P } from '../art/pal';
 import { POWER } from '../ids';

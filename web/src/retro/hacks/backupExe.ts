@@ -4,7 +4,7 @@
 // it did, DOS style; with no parameters it has menus. The backups are the same ones the web's
 // "Saves & scores" panel and SAVEHACK.EXE keep (project/saveData/backups.ts).
 import type { RetroHost } from '../host';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { ROWS } from '../text/textScreen';
 import { deskDate } from '../dos/vfs';
 import { backupNow, deleteBackup, listBackups, renameBackup, restoreBackup, type BackupSummary } from '../../project/saveData';
@@ -36,7 +36,7 @@ import {
 } from './dosUi';
 
 const TITLE = 'BACKUP 2.1  Saved-game backup for Game-Maker games';
-const COPYRIGHT = 'Copyright (C) 1995 Sandbox Software.  Freeware.';
+const COPYRIGHT = 'Copyright (C) 1994 Sandbox Software.  Freeware.';
 /** What BACKUP labels its backups (the date is kept beside the label). */
 const BACKUP_LABEL = 'BACKUP.EXE';
 

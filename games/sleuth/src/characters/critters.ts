@@ -2,8 +2,8 @@
 // the lobby, Macbeth the theater cat, sandbags on the fly lines, and at 2 AM the night
 // watchman on his rounds, wisps from the ghost light and rats under the stage, which in the
 // dark are nothing but two red eyes.
-import { emptyMonster, type Monster } from '../../../../web/src/formats/monster';
-import { Pixels } from '../../../kit/pixels';
+import { emptyMonster, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, SOLID } from '../blocks/blockset';
 import { CLEAR, art, blob } from '../art/draw';
 import { c, ramp as r } from '../art/pal';
@@ -138,11 +138,14 @@ function rat(step: number, lit: boolean): Pixels {
   return p;
 }
 
-export const MON = { dobbs: 0, cat: 1, sandbag: 2, wisp: 3, watchman: 4, rat: 5, wispWander: 6 } as const;
-export function buildCritters(): { mb: BlockSet; mon: Monster[] } {
-  const mb = new BlockSet(100, true);
-  mb.add('dobbs0', pic([...DOBBS_HEAD, ...DOBBS_BODY]), { solid: SOLID });
-  mb.add('dobbs1', pic([...DOBBS_HEAD.slice(0, 5), '....okkokkkokko.....', ...DOBBS_HEAD.slice(6), ...DOBBS_BODY]), { solid: SOLID });
+/** The parlor's six suspects take monsters 0-5 of the shared file (levels/parlor.ts); the Paragon's critters follow. */
+export const FIRST_CRITTER = 6;
+const F = FIRST_CRITTER;
+export const MON = { dobbs: F, cat: F + 1, sandbag: F + 2, wisp: F + 3, watchman: F + 4, rat: F + 5, wispWander: F + 6 } as const;
+/** Adds the Paragon's monster blocks and monsters to the shared sets (blocks after the suspects', monsters from FIRST_CRITTER). */
+export function addCritters(mb: BlockSet, mons: Monster[]): void {
+  mb.add('sergeant0', pic([...DOBBS_HEAD, ...DOBBS_BODY]), { solid: SOLID });
+  mb.add('sergeant1', pic([...DOBBS_HEAD.slice(0, 5), '....okkokkkokko.....', ...DOBBS_HEAD.slice(6), ...DOBBS_BODY]), { solid: SOLID });
   mb.add('cat0', CAT(0));
   mb.add('cat1', CAT(1));
   mb.add('sandbag', sandbag(), { score: -5 });
@@ -152,7 +155,6 @@ export function buildCritters(): { mb: BlockSet; mon: Monster[] } {
   mb.add('rat0', rat(0, false), { score: -10 });
   mb.add('rat1', rat(1, false), { score: -10 });
 
-  const mons: Monster[] = [];
   const id = (n: string) => mb.id(n);
   const make = (o: Partial<Monster>, pics: [string, number][]): Monster => {
     const m = emptyMonster();
@@ -162,10 +164,10 @@ export function buildCritters(): { mb: BlockSet; mon: Monster[] } {
     return m;
   };
   mons[MON.dobbs] = make({ power: 100, end: -2 }, [
-    ['dobbs0', 50],
-    ['dobbs1', 4],
-    ['dobbs0', 30],
-    ['dobbs1', 3],
+    ['sergeant0', 50],
+    ['sergeant1', 4],
+    ['sergeant0', 30],
+    ['sergeant1', 3],
   ]);
   // Macbeth the cat wanders at random (towards >= 64: random, speed 1)
   mons[MON.cat] = make({ power: 100, end: -2, towards: 64, thru: 1 }, [
@@ -202,6 +204,4 @@ export function buildCritters(): { mb: BlockSet; mon: Monster[] } {
     ['rat0', 6],
     ['rat1', 2],
   ]);
-  for (let i = 0; i < 64; i++) if (!mons[i]) mons[i] = emptyMonster();
-  return { mb, mon: mons };
 }

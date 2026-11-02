@@ -1,7 +1,7 @@
 // More of the sea floor for OCEAN.BBL, so every one of the 150 slots holds something: more
 // coral, plankton, sand and reef variations, vent chimneys, anchors, cannons, chests, big
 // shells, sea mines, skull rocks, obelisks, lamps, fish schools and other ruins.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, Mask, fill, outline, shade, sprite } from '../art/draw';
 import { SOLID, SetBuilder, TOP, over, tex } from './blockset';
 import { OUTLINE, WHITE } from '../art/palette';

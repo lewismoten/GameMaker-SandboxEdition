@@ -1,7 +1,7 @@
 // PC speaker effect generators, sfxr-style: each kind of sound has a recipe with random
 // variety, so pressing a button again gives a new take on it. A sound is 36 pitches, one
 // every 1/145.6 s (about a quarter second in all); 0 is silence.
-import { NUMFREQ } from '../../formats/sound';
+import { NUMFREQ } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
 
 type Speaker = Uint16Array;
 

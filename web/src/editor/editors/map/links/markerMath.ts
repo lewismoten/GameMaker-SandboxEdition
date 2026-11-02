@@ -1,13 +1,23 @@
 // The map editor's link markers in numbers, with no DOM: which ways in and exits of the
 // integrator's links (integrator/linkSpots.ts) are on this map, where a marker sits at a zoom,
 // which block a pointer is over while one is dragged, and where an arrow key nudges it.
-import type { Game, Point } from '../../../../formats/game';
-import { MLEN, MWID } from '../../../../formats/map';
+import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { exitsOf, sceneName, sourceName, waysInto, type Exit, type WayIn } from '../../integrator/linkSpots';
 
 /** A marker on the map: a way in (where a link lands the hero) or an exit (where one leaves). */
 export type Marker =
   { kind: 'in'; key: string; at: Point; label: string; start: boolean; way: WayIn } | { kind: 'out'; key: string; at: Point; label: string; exit: Exit };
+
+/** Several arrivals, or several exits, on one block share one marker with a count badge. */
+export interface MarkerGroup {
+  key: string;
+  kind: Marker['kind'];
+  at: Point;
+  markers: Marker[];
+  /** How many differ: exact duplicates (same scene, destination scene and entrance) count once. */
+  distinct: number;
+}
 
 /** The smallest a marker gets on screen (a 24-pixel target), whatever the zoom. */
 export const MIN_MARK = 24;
@@ -27,7 +37,7 @@ export function mapMarkers(game: Game, scenes: readonly number[]): Marker[] {
     kind: 'out',
     key: `out:${e.scene}:${e.link}`,
     at: e.at,
-    label: `${several ? `${sceneName(game, e.scene)} ` : ''}Exit ${e.link + 1} to ${sceneName(game, e.to)}, at ${e.at.x},${e.at.y}${
+    label: `${several ? `${sceneName(game, e.scene)} ` : ''}Exit ${e.link + 1} to ${e.to === e.scene ? '↻ this scene' : sceneName(game, e.to)}, at ${e.at.x},${e.at.y}${
       e.shadowedBy !== undefined ? ` (never taken: exit ${e.shadowedBy + 1} is on the same block)` : ''
     }`,
     exit: e,
@@ -65,4 +75,22 @@ export function nudge(at: Point, key: string, shift = false): Point | undefined 
 export function stackIndex(markers: readonly Marker[], i: number): number {
   const { x, y } = markers[i].at;
   return markers.slice(0, i).filter((m) => m.at.x === x && m.at.y === y).length;
+}
+
+/** Markers of one kind sharing a block, in map order. Singletons stay single-marker groups. */
+export function markerGroups(markers: readonly Marker[]): MarkerGroup[] {
+  const groups = new Map<string, MarkerGroup>();
+  for (const marker of markers) {
+    const key = `${marker.kind}:${marker.at.x},${marker.at.y}`;
+    const group = groups.get(key) ?? { key: `${marker.kind}-group:${marker.at.x},${marker.at.y}`, kind: marker.kind, at: marker.at, markers: [], distinct: 0 };
+    group.markers.push(marker);
+    group.distinct = new Set(group.markers.map(sameness)).size;
+    groups.set(key, group);
+  }
+  return [...groups.values()];
+}
+
+/** What makes two markers on a block the same thing to the author. */
+function sameness(m: Marker): string {
+  return m.kind === 'out' ? `out:${m.exit.scene}:${m.exit.to}:${m.exit.toAt.x},${m.exit.toAt.y}` : m.key;
 }

@@ -2,7 +2,7 @@
 // striped awnings to hop up onto, flat-roofed houses, palms, a fruit cart that sends melons
 // rolling down the street, the well, the poor souls along the way, and at the far end the city
 // wall's little "needle gate", one block high, that the preachers say the Lord meant.
-import { dither, rng } from '../../../kit/pixels';
+import { dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import type { Pal } from '../art/pal';

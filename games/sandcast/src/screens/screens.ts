@@ -1,17 +1,19 @@
 // The screens between the playfields, drawn as a dial-up BBS session: the title is an
 // ANSI logon screen, the stories are messages in a message base, and the intro FLI dials
 // THE -= S A N D B O X =- BBS and lets the logo arrive line by line, like it did at 2400 baud.
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import { encodeGif } from '../../../../web/src/formats/gif';
-import { encodeFli } from '../../../../web/src/formats/fli';
-import { encodeFliFadeOut } from '../../../kit/fadeOut';
-import { Pixels, dither, rng } from '../../../kit/pixels';
-import { loadScan, pastePhoto, resample } from '../../../kit/photo';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
+import { encodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
+import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOut';
+import { Pixels, dither, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { pastePhoto, resample } from '@lewismoten/gamemaker-sandbox-tools/kit/photo';
+import { loadScan } from '../../../kit/photo';
 import { ANSI, DAY, GRASS, OCHRE, PURPLE, RED, SAND, TABBY, WATER, WOOD, YELLOW } from '../art/palette';
 import { CLEAR, shade } from '../art/draw';
 import { CB, MB } from '../sprites/sprites';
 import { wattCameo } from '../../../kit/cameos';
-import { textInk } from '../../../kit/textBounds';
+import about from '../../about.json';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 
 const W = 320;
 const H = 200;
@@ -175,8 +177,8 @@ export function titleScreen(): Pixels {
   // Teddy at the castle gate, and Gwinn peeking in from the side, up to no good.
   stamp(p, CB.pic('sit0'), 3, 226, 128);
   stamp(p, MB.pic('gwin0'), 3, 34, 124);
-  text(p, 4, 100, 'v1.1', ANSI[8]);
-  text(p, 4, 110, '(c) 1995', ANSI[8]);
+  text(p, 4, 100, `v${about.version}`, ANSI[8]);
+  text(p, 4, 110, '(c) 1994', ANSI[8]);
   text(p, 252, 100, 'Sandbox', ANSI[8]);
   text(p, 252, 110, 'Software', ANSI[8]);
   return statusBar(p, ' ALT-Z HELP | ANSI | 14400 N81 | ONLINE');

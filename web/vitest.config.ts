@@ -10,6 +10,12 @@ const fast = !!process.env.GM_FAST_TESTS;
 export default mergeConfig(
   viteConfig,
   defineConfig({
-    test: fast ? { exclude: [...configDefaults.exclude, ...slow.files], setupFiles: ['./test/fastOnly.ts'] } : {},
+    test: {
+      // Keep successful runs quiet, but retain a failing test's console diagnostics.
+      silent: 'passed-only',
+      // The fast run uses vitest's default workers (cores - 1). It was capped at 2 for GitHub's
+      // runners, which no longer run tests; the cap made it 2.4x slower on a 10-core Mac.
+      ...(fast ? { exclude: [...configDefaults.exclude, ...slow.files], setupFiles: ['./test/fastOnly.ts'] } : {}),
+    },
   }),
 );

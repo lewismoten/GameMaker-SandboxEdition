@@ -1,7 +1,7 @@
 // The terminal on a paced line: text arrives at the line speed, in order, keys wait for the screen,
 // and a speed change takes effect at once.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Term } from './term';
+import { NoCarrier, Term } from './term';
 import { TextKeys, key, readLine } from '../text/textInput';
 import { DEFAULT_SPEED, setLineSpeed } from './lineSpeed';
 import type { TextScreen } from '../text/textScreen';
@@ -43,6 +43,26 @@ describe('the paced line', () => {
   afterEach(() => {
     vi.useRealTimers();
     setLineSpeed(DEFAULT_SPEED);
+  });
+
+  it('holds a graphic transfer through carrier-loss noise without clearing the lost call', async () => {
+    const { t } = setup();
+    setLineSpeed('unlimited');
+    t.connected = true;
+    expect(t.interrupt()).toBe(true);
+    let settled = false;
+    const waiting = t.checkCarrier().catch((error: unknown) => {
+      settled = true;
+      return error;
+    });
+    await vi.advanceTimersByTimeAsync(2399);
+    expect(settled).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(await waiting).toBeInstanceOf(NoCarrier);
+    expect(t.dropping).toBe(true);
+    await t.dropped();
+    expect(t.dropping).toBe(false);
+    t.close();
   });
 
   it('puts text up at once before a call, and when the line is unlimited', () => {

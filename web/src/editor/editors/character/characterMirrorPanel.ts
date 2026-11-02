@@ -5,10 +5,10 @@
 // .cbl's 'mirrors' (block twins), so DOS files never change shape.
 import { h, confirmDialog, toast } from '../../core/ui';
 import type { Project } from '../../core/project';
-import type { Block } from '../../../formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { normalize } from '../../../project/files';
-import { MAXSEQ, frameCount, parseCharacter, type Character } from '../../../formats/character';
-import { scanName } from '../../../input/scancodes';
+import { MAXSEQ, frameCount, parseCharacter, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import { setFrames } from './characterLogic';
 import {
   MIRROR,

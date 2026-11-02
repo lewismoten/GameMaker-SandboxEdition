@@ -4,8 +4,8 @@
 // start suspended (an armed recording starts without a click), run at another sample rate
 // or add a hop of latency between the picture and the sound. Any other context feeds a
 // MediaStream destination of its own, which the mix listens to.
-import { audioContext } from '../audio/context';
-import { tapOutputs } from '../audio/output';
+import { audioContext } from '@lewismoten/gamemaker-sandbox-engine/audio/context';
+import { tapOutputs } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 
 export class AudioMix {
   private page = audioContext();

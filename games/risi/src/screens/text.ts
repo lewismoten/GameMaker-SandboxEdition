@@ -3,7 +3,7 @@
 // are Veni, Vidi, Risi!'s (Lewis Moten's group); the Latin on screen is the songs' own.
 import { withCreditPage } from '../../../kit/license';
 import about from '../../about.json';
-import { page } from '../../../kit/screenText';
+import { page } from '@lewismoten/gamemaker-sandbox-tools/kit/screenText';
 
 export const AUTHOR = 'Veni, Vidi, Risi!';
 
@@ -19,7 +19,7 @@ export const ART_CREDIT = 'title and cover art drawn for this game by Claude Opu
 export const STORY = [
   page([
     'ROMA. A long time ago, or',
-    'about 1995.',
+    'about 1994.',
     '',
     'Marcus Iocundus writes comic',
     'songs in Latin. Cogito,',
@@ -159,7 +159,7 @@ const CREDITS_TEXT = page(
   [
     'VENI, VIDI, RISI!',
     'I Came, I Saw, I Laughed',
-    'by Veni, Vidi, Risi!, 1995',
+    'by Veni, Vidi, Risi!, 1994',
     'Shareware from The Sofa BBS',
     '',
     'Veni, Vidi, Risi! is Lewis',
@@ -206,7 +206,7 @@ export function readme(price: string): string {
   return `
     VENI, VIDI, RISI!
     I Came, I Saw, I Laughed
-    Version ${about.version} - Dec 1995
+    Version ${about.version} - December 1994
     by Veni, Vidi, Risi!
 
 "Omnes spectant, nemo ridet."

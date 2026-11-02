@@ -2,8 +2,9 @@
 // (dosPlayer/fileExtensions.ts), with Acord Games' set as a preset and a Reset. The player's own
 // kinds patch its .EXE; the rest are only renamed, with their names in the .gam rewritten.
 import { h } from '../../../core/ui';
-import { ACORD_EXTENSIONS, EXT_KINDS, extId, extValueProblem, extensionClashes } from '../../../../dosPlayer/fileExtensions';
-import type { PlayerPatches } from '../../../../dosPlayer/patchRules';
+import { ACORD_EXTENSIONS, EXT_KINDS, extId, extValueProblem, extensionClashes } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
+import { fieldTools } from './fieldTools';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 interface FileFieldsContext {
   /** Prefix for element ids, unique to the dialog. */
@@ -12,6 +13,8 @@ interface FileFieldsContext {
   patches: PlayerPatches;
   /** Saves the patches (and redraws the tab after a preset). */
   save: (rerender: boolean) => void;
+  /** Look-only: the Reset buttons stay disabled. */
+  locked?: boolean;
 }
 
 const SECTIONS = [
@@ -28,9 +31,10 @@ const SECTIONS = [
 ];
 
 /** The Files tab's contents. */
-export function fileFields({ id, patches, save }: FileFieldsContext): HTMLElement[] {
+export function fileFields({ id, patches, save, locked }: FileFieldsContext): HTMLElement[] {
   const errors = new Map<string, HTMLElement>();
   const inputs = new Map<string, HTMLInputElement>();
+  const tools: (() => void)[] = [];
 
   const set = (ext: string, raw: string) => {
     const v = raw.trim().toLowerCase();
@@ -46,6 +50,7 @@ export function fileFields({ id, patches, save }: FileFieldsContext): HTMLElemen
     if (next[extId(ext)] === undefined) delete patches[extId(ext)];
     else patches[extId(ext)] = v;
     save(false);
+    tools.forEach((f) => f());
   };
 
   const field = (ext: string, label: string, note: string) => {
@@ -68,11 +73,28 @@ export function fileFields({ id, patches, save }: FileFieldsContext): HTMLElemen
     });
     errors.set(ext, err);
     inputs.set(ext, input);
+    const reset = fieldTools({
+      name: `${label} extension`,
+      atOriginal: () => patches[extId(ext)] === undefined,
+      locked,
+      reset: () => {
+        input.value = ext;
+        set(ext, ext);
+      },
+    });
+    tools.push(reset.update);
     return h(
       'div',
       { class: 'dp-field dp-ext' },
       h('label', { for: fid }, `${label} (.${ext})`),
-      h('div', { class: 'dp-row' }, h('span', { 'aria-hidden': 'true' }, '.'), input, note ? h('span', { class: 'dp-note', id: `${fid}-note` }, note) : null),
+      h(
+        'div',
+        { class: 'dp-row' },
+        h('span', { 'aria-hidden': 'true' }, '.'),
+        input,
+        reset.el,
+        note ? h('span', { class: 'dp-note', id: `${fid}-note` }, note) : null,
+      ),
       err,
     );
   };

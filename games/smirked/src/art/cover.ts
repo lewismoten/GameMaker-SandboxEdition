@@ -8,8 +8,8 @@
 // head, smirking at you. Painted in true color, a pixel at a time, then reduced to one
 // 256-color palette for the FLI (cartoons.ts). `t` (0..1) animates it: bats cross the moon,
 // the windows flicker, lightning flashes, the sword shakes, and Lily's smirk grows.
-import { rng } from '../../../kit/pixels';
-import { mixc, clamp, noise2 } from '../../../kit/coverPaint';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { mixc, clamp, noise2 } from '@lewismoten/gamemaker-sandbox-tools/kit/coverPaint';
 
 const COVER_W = 320;
 const COVER_H = 200;

@@ -3,12 +3,12 @@
 // and waits. Moving monsters (the peacock, crows, beetles) are handled by trying a stretch
 // again from a snapshot after a wait (route.ts, carefully()). The moves are kit/hopBot.ts's;
 // when patient, the loaf lets a basket's song finish before it hops or gathers the next one.
-import { HopBot, type Dir, type Result } from '../../kit/hopBot';
+import { HopBot, type Dir, type Result } from '@lewismoten/gamemaker-sandbox-tools/kit/hopBot';
 import { BASKETS, SCAN } from '../src/ids';
 import { ORIGIN } from '../src/levels/maps';
 import type { GameSim } from './sim';
 
-export type { Dir } from '../../kit/hopBot';
+export type { Dir } from '@lewismoten/gamemaker-sandbox-tools/kit/hopBot';
 
 /** The loaf's bot: its keys, its map origin, and its crumbs meter for BOT_HURT. */
 export class Bot extends HopBot<GameSim, typeof SCAN> {

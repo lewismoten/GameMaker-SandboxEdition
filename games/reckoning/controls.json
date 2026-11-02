@@ -1,0 +1,80 @@
+{
+  "keys": {
+    "72": {
+      "short": "Hop",
+      "long": "Hop. Hold to hop higher."
+    },
+    "80": {
+      "short": "Sneak",
+      "long": "Sneak."
+    },
+    "75": {
+      "short": "Tiptoe left",
+      "long": "Tiptoe left."
+    },
+    "77": {
+      "short": "Tiptoe right",
+      "long": "Tiptoe right."
+    },
+    "17": {
+      "short": "Hop",
+      "long": "Same as the Up arrow."
+    },
+    "30": {
+      "short": "Tiptoe left",
+      "long": "Same as the Left arrow."
+    },
+    "32": {
+      "short": "Tiptoe right",
+      "long": "Same as the Right arrow."
+    },
+    "31": {
+      "short": "Sneak",
+      "long": "Same as the Down arrow."
+    },
+    "16": {
+      "short": "Hop left",
+      "long": "Hop up and to the left; steer as you come down."
+    },
+    "18": {
+      "short": "Hop right",
+      "long": "Hop up and to the right; steer as you come down."
+    },
+    "71": {
+      "short": "Hop left",
+      "long": "Number pad 7: hop up and to the left."
+    },
+    "73": {
+      "short": "Hop right",
+      "long": "Number pad 9: hop up and to the right."
+    },
+    "57": {
+      "short": "Monologue",
+      "long": "Give the monologue. At the Reckoning, throw almond milk to the right."
+    },
+    "48": {
+      "short": "Begone",
+      "long": "Say Begone!"
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Monologue",
+      "long": "Give the monologue. At the Reckoning, throw almond milk to the right."
+    }
+  },
+  "counters": {
+    "19": "Almond milk",
+    "20": "Celery",
+    "21": "Toilet paper rolls",
+    "22": "Devil's straw"
+  },
+  "sounds": {
+    "9": "Hop",
+    "10": "Step",
+    "11": "Hurt",
+    "12": "Death",
+    "13": "Monologue",
+    "14": "Other line"
+  }
+}

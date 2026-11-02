@@ -6,7 +6,7 @@
 // (seats up the rake, the screen flickering an old film), the stairs, the tall room with its
 // windows, tables and couches, and upstairs the seating and the stage: boards, footlights, the
 // microphone, the velvet curtain that only lets the poet through with a cup of coffee in hand.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import type { Pal, Ramp } from '../art/pal';

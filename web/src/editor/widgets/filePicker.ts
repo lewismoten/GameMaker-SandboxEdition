@@ -1,17 +1,19 @@
 // Choosing a file visually instead of from a drop-down: a dialog of thumbnails of this
-// game's files of one kind, a tab with the CD library's, and buttons to make a new one or
+// game's files, the CD library or public original games, plus search and ways to make or
 // add one from your computer. Library files are copied into the game when chosen.
 import './filePicker.css';
+import { companionPatches } from '../../dosPlayer/playerRecord';
 import { h, clear, modal, pickFiles, toast } from '../core/ui';
 import { KIND_LABELS, Project, kindOf, type FileKind } from '../core/project';
 import { fileThumb, KIND_ICON } from './thumbs';
-import { libraryFile, libraryGame, libraryItems, libraryThumbSource, type LibraryItem } from '../core/library';
+import { libraryFile, libraryGame, libraryItems, libraryThumbSource, type LibraryItem, type LibrarySource } from '../core/library';
 import { templateFor } from '../shell/templates';
 import { GameFiles, normalize } from '../../project/files';
 import { previewButton, stopPreview } from './preview';
-import { parseBackdrop } from '../../formats/graphicScripts';
-import { decodeVoc, isVoc } from '../../formats/voc';
+import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { classifySound, SOUND_GROUPS, type SoundGroup } from '../../audio/soundProfile';
+import { paintIndexed } from '../core/draw';
 
 interface PickOptions {
   title?: string;
@@ -28,23 +30,8 @@ interface PickOptions {
   actions?: { label: string; run: () => Promise<string | undefined> }[];
 }
 
-/** Kinds whose library files can be fetched alone: their thumbnails need no neighbors. */
+/** Independent formats whose thumbnails need no neighboring files. */
 const ALONE = new Set<FileKind>(['voc', 'cmf', 'snd', 'fli', 'gif', 'pal']);
-const fetched = new Map<string, Promise<Uint8Array>>();
-
-/** One library file, fetched by itself (cheaper than its whole game). */
-function libraryFileAlone(item: LibraryItem): Promise<Uint8Array> {
-  const key = `${item.game.id}/${item.name}`;
-  let p = fetched.get(key);
-  if (!p) {
-    p = fetch(`./${item.game.path}${item.name}`)
-      .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(r.statusText))))
-      .then((b) => new Uint8Array(b))
-      .catch(() => libraryFile(item));
-    fetched.set(key, p);
-  }
-  return p;
-}
 
 /** The sound group of a .VOC (remembered: library sounds are measured once). */
 const groups = new Map<string, SoundGroup | undefined>();
@@ -79,11 +66,24 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     let filter: SoundGroup | 'all' = 'all';
     let io: IntersectionObserver | undefined;
     let shown = 0; // which listing is current, so a slow library load doesn't land on another tab
+    let query = '';
+    type Cell = { el: HTMLElement; group?: SoundGroup; none?: boolean };
+    let listed: Cell[] = [];
+    let emptyMessage: HTMLElement | null = null;
+    const search = h('input', {
+      type: 'search',
+      placeholder: 'File name or source game',
+      'aria-label': 'Search files and source games',
+      oninput: (event: Event) => {
+        query = (event.target as HTMLInputElement).value.trim().toLocaleLowerCase();
+        layout(listed, emptyMessage);
+      },
+    });
 
     const card = (label: string, thumb: HTMLElement, meta: string, onPick: () => void, selected = false, preview?: HTMLElement | null) => {
       const cell = h(
         'div',
-        { class: 'pick-cell' },
+        { class: 'pick-cell', dataset: { search: `${label} ${meta}` } },
         h(
           'button',
           { class: `pick-card ${selected ? 'selected' : ''}`, onclick: onPick, title: label },
@@ -97,13 +97,17 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
     };
     const thumbCanvas = (cell: HTMLElement) => () => cell.querySelector<HTMLCanvasElement>('canvas.thumb');
 
-    /** Lays the cards out under a heading per sound group, with chips to show one group. */
-    const layout = (cells: { el: HTMLElement; group?: SoundGroup; none?: boolean }[], empty: HTMLElement | null) => {
+    /** Sound-group chips filter cards while preserving their source priority. */
+    const layout = (cells: Cell[], empty: HTMLElement | null) => {
+      listed = cells;
+      emptyMessage = empty;
+      const visible = cells.filter((cell) => cell.none || !query || (cell.el.dataset.search ?? cell.el.textContent)?.toLocaleLowerCase().includes(query));
+      const message = query ? h('p', { class: 'hint' }, 'No matching files. Try another file name or game title.') : empty;
       if (!grouped) {
-        clear(grid, ...cells.map((c) => c.el), cells.length ? null : empty);
+        clear(grid, ...visible.map((c) => c.el), visible.length ? null : message);
         return;
       }
-      const count = (g: SoundGroup) => cells.filter((c) => c.group === g).length;
+      const count = (g: SoundGroup) => visible.filter((c) => c.group === g).length;
       const chip = (id: SoundGroup | 'all', text: string, n: number, hint = '') =>
         h(
           'button',
@@ -122,22 +126,25 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         );
       clear(
         filters,
-        chip('all', 'All', cells.filter((c) => !c.none).length),
+        chip('all', 'All', visible.filter((c) => !c.none).length),
         ...SOUND_GROUPS.filter((g) => count(g.id)).map((g) => chip(g.id, `${g.icon} ${g.label}`, count(g.id), `Sounds like: ${g.hint}`)),
       );
-      const none = cells.filter((c) => !c.group);
-      const parts: (HTMLElement | null)[] = filter === 'all' ? none.map((c) => c.el) : [];
-      for (const g of SOUND_GROUPS) {
-        if (filter !== 'all' && filter !== g.id) continue;
-        const list = cells.filter((c) => c.group === g.id);
-        if (!list.length) continue;
-        parts.push(h('h3', { class: 'pick-group' }, `${g.icon} ${g.label}`, h('small', null, ` · ${g.hint}`)), ...list.map((c) => c.el));
-      }
-      clear(grid, ...parts, cells.length ? null : empty);
+      const matching = filter === 'all' ? visible : visible.filter((cell) => cell.group === filter);
+      const group = SOUND_GROUPS.find((item) => item.id === filter);
+      const parts: (HTMLElement | null)[] =
+        group && matching.length
+          ? [h('h3', { class: 'pick-group' }, `${group.icon} ${group.label}`, h('small', null, ` · ${group.hint}`)), ...matching.map((cell) => cell.el)]
+          : matching.map((cell) => cell.el);
+      clear(
+        grid,
+        ...parts,
+        parts.length ? null : filter === 'all' ? message : h('p', { class: 'hint' }, 'No matching files in this sound group. Choose All or another group.'),
+      );
     };
 
     const showMine = () => {
       shown++;
+      search.disabled = false;
       io?.disconnect();
       const names = kinds.flatMap((k) => project.files.byExtension(k));
       const none = opts.allowNone
@@ -153,12 +160,20 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
         const bytes = project.files.get(n);
         const el = card(
           n.toUpperCase(),
-          fileThumb(n, bytes, { files: project.files, palette: project.paletteFor(n).palette }),
+          fileThumb(n, bytes, { files: project.files, palette: project.paletteFor(n).palette, patches: companionPatches(project.companion, project.gam) }),
           `${(bytes?.length ?? 0).toLocaleString()} bytes · used ${project.usesOf(n).length}×`,
           () => close(n),
           normalize(opts.current ?? '') === n,
         );
-        el.append(previewButton(n, async () => project.files.get(n), thumbCanvas(el)) ?? '');
+        el.append(
+          previewButton(
+            n,
+            async () => project.files.get(n),
+            thumbCanvas(el),
+            async () => ({ files: project.files, palette: project.paletteFor(n).palette, patches: companionPatches(project.companion, project.gam) }),
+            () => el.querySelector<HTMLElement>('.pick-card small'),
+          ) ?? '',
+        );
         return { el, group: grouped ? vocGroup(`mine:${n}`, bytes) : undefined };
       });
       const empty = h(
@@ -169,13 +184,16 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       layout(none ? [{ el: none, none: true }, ...cells] : cells, empty);
     };
 
-    const showLibrary = async () => {
+    const showLibrary = async (source: LibrarySource = 'cd') => {
       const me = ++shown;
+      search.disabled = true;
+      listed = [];
       io?.disconnect();
       clear(filters);
-      clear(grid, h('p', { class: 'hint' }, 'Loading the library…'));
-      const items = (await Promise.all(kinds.map((k) => libraryItems(k)))).flat();
+      clear(grid, h('p', { class: 'hint' }, source === 'originals' ? 'Loading Sandbox & Bizarre assets…' : 'Loading the CD library…'));
+      const items = (await Promise.all(kinds.map((k) => libraryItems(k, source)))).flat();
       if (me !== shown) return;
+      search.disabled = false;
       // Draw each thumbnail when it scrolls into view: library games load on demand.
       io = new IntersectionObserver((entries) => {
         for (const e of entries) {
@@ -183,9 +201,25 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           io!.unobserve(e.target);
           const item = (e.target as HTMLElement & { item?: LibraryItem }).item!;
           const k = kindOf(item.name);
+          const paletteData = k === 'pal' && item.game.fileFacts?.[item.name]?.paletteData;
+          if (paletteData) {
+            try {
+              const palette = Uint8Array.from(atob(paletteData), (byte) => byte.charCodeAt(0));
+              if (palette.length === 768) {
+                e.target.querySelector('.thumb')?.replaceWith(fileThumb(item.name, palette, { files: new GameFiles() }));
+                continue;
+              }
+            } catch {
+              /* Older or damaged metadata falls back to its source archive. */
+            }
+          }
           const src = ALONE.has(k) ? Promise.resolve({ files: new GameFiles() }) : libraryThumbSource(item);
-          void Promise.all([ALONE.has(k) ? libraryFileAlone(item) : libraryFile(item), src])
-            .then(([bytes, s]) => e.target.querySelector('.thumb')?.replaceWith(fileThumb(item.name, bytes, s)))
+          void Promise.all([libraryFile(item), src])
+            .then(([bytes, s]) => {
+              const current = e.target.querySelector('.thumb');
+              if (k === 'cbl' && current instanceof HTMLCanvasElement && e.target.querySelector('.pick-play.playing')) return;
+              current?.replaceWith(fileThumb(item.name, bytes, s));
+            })
             .catch(() => undefined);
         }
       });
@@ -199,26 +233,18 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           item?: LibraryItem;
         };
         el.item = item;
-        el.append(previewButton(item.name, () => libraryFileAlone(item), thumbCanvas(el)) ?? '');
-        return { el, item, group: undefined as SoundGroup | undefined };
+        el.append(
+          previewButton(
+            item.name,
+            () => libraryFile(item),
+            thumbCanvas(el),
+            () => libraryThumbSource(item),
+            () => el.querySelector<HTMLElement>('.pick-card small'),
+          ) ?? '',
+        );
+        return { el, item, group: grouped ? item.group : undefined };
       });
       const empty = h('p', { class: 'hint' }, 'Nothing of this kind in the library.');
-      if (grouped && cells.length) {
-        // listen to every sound once to sort them into groups
-        const progress = h('p', { class: 'hint' }, `Listening to ${cells.length} sounds to sort them…`);
-        clear(grid, progress);
-        let done = 0;
-        await Promise.all(
-          cells.map(async (c) => {
-            const key = `${c.item.game.id}/${c.item.name}`;
-            const bytes = groups.has(key) ? undefined : await libraryFileAlone(c.item).catch(() => undefined);
-            if (bytes) await new Promise((r) => setTimeout(r, 0)); // let the dialog breathe
-            c.group = vocGroup(key, bytes);
-            progress.textContent = `Listening to ${cells.length} sounds to sort them… ${++done}`;
-          }),
-        );
-        if (me !== shown) return;
-      }
       layout(cells, empty);
       for (const c of cells) io.observe(c.el);
     };
@@ -270,24 +296,86 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       close(name);
     };
 
+    const showPresets = async () => {
+      const me = ++shown;
+      search.disabled = true;
+      io?.disconnect();
+      layout([], h('p', { class: 'hint' }, 'Loading palette templates…'));
+      const { PALETTE_PRESETS, createPalettePreset } = await import('@lewismoten/gamemaker-sandbox-tools/palettes');
+      if (me !== shown || !grid.isConnected) return;
+      search.disabled = false;
+      layout(
+        PALETTE_PRESETS.map((preset) => {
+          const palette = createPalettePreset(preset.id);
+          const cols = Math.ceil(Math.sqrt(preset.entries));
+          const rows = Math.ceil(preset.entries / cols);
+          const thumb = h('canvas', { class: 'thumb pixel', 'aria-hidden': 'true' });
+          paintIndexed(
+            thumb,
+            Uint8Array.from({ length: cols * rows }, (_, i) => (i < preset.entries ? i : 0)),
+            cols,
+            rows,
+            palette,
+          );
+          return {
+            el: card(preset.name, thumb, `${preset.stem.toUpperCase()}.PAL · ${preset.description}`, () => {
+              const name = project.freeName(preset.stem, 'pal');
+              project.files.set(name, createPalettePreset(preset.id));
+              close(name);
+            }),
+          };
+        }),
+        null,
+      );
+    };
+
     const upload = async () => {
       const list = await pickFiles({ multiple: false, accept: kinds.map((k) => `.${k}`).join(',') });
       const f = list[0];
       if (!f) return;
       const name = normalize(f.name);
-      project.files.set(name, new Uint8Array(await f.arrayBuffer()));
+      const bytes = new Uint8Array(await f.arrayBuffer());
+      project.files.set(name, bytes);
+      (await import('./bigVocWarning')).warnBigVocs([[name, bytes]]);
       close(name);
     };
 
-    const setTab = (t: 'mine' | 'library') => {
+    const setTab = (t: 'mine' | 'library' | 'originals' | 'presets') => {
       stopPreview();
-      [...tabs.children].forEach((b) => b.setAttribute('aria-selected', String(b.textContent === 'This game' ? t === 'mine' : t === 'library')));
+      [...tabs.children].forEach((b) => {
+        const selected = (b as HTMLElement).dataset.source === t;
+        b.setAttribute('aria-selected', String(selected));
+        (b as HTMLElement).tabIndex = selected ? 0 : -1;
+      });
       if (t === 'mine') showMine();
-      else void showLibrary();
+      else if (t === 'presets') void showPresets();
+      else void showLibrary(t === 'originals' ? 'originals' : 'cd');
     };
-    if (!opts.adding) tabs.append(h('button', { role: 'tab', onclick: () => setTab('mine') }, 'This game'));
-    tabs.append(h('button', { role: 'tab', onclick: () => setTab('library') }, '📀 Library (CD samples)'));
-    setTab(opts.adding ? 'library' : 'mine');
+    if (!opts.adding) tabs.append(h('button', { role: 'tab', 'data-source': 'mine', onclick: () => setTab('mine') }, 'This game'));
+    const presets = kind === 'pal' && kinds.length === 1;
+    if (presets) tabs.append(h('button', { role: 'tab', 'data-source': 'presets', onclick: () => setTab('presets') }, 'Ready-made palettes'));
+    tabs.append(h('button', { role: 'tab', 'data-source': 'library', onclick: () => setTab('library') }, '📀 Library (CD samples)'));
+    tabs.append(h('button', { role: 'tab', 'data-source': 'originals', onclick: () => setTab('originals') }, 'Sandbox & Bizarre'));
+    tabs.addEventListener('keydown', (event) => {
+      const buttons = [...tabs.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+      const current = buttons.findIndex((button) => button === document.activeElement);
+      const next =
+        event.key === 'ArrowRight'
+          ? current + 1
+          : event.key === 'ArrowLeft'
+            ? current - 1
+            : event.key === 'Home'
+              ? 0
+              : event.key === 'End'
+                ? buttons.length - 1
+                : undefined;
+      if (current < 0 || next === undefined) return;
+      event.preventDefault();
+      const button = buttons[(next + buttons.length) % buttons.length];
+      button.click();
+      button.focus();
+    });
+    setTab(opts.adding ? (presets ? 'presets' : 'library') : 'mine');
     return h(
       'div',
       { class: 'file-picker' },
@@ -312,6 +400,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
           ),
         ),
       ),
+      h('label', { class: 'field pick-search' }, h('span', null, 'Find a file or game'), search),
       grouped ? filters : null,
       grid,
     );
@@ -355,7 +444,11 @@ export function fileField(
           },
         },
         exists
-          ? fileThumb(name, project.files.get(name), { files: project.files, palette: project.paletteFor(name).palette })
+          ? fileThumb(name, project.files.get(name), {
+              files: project.files,
+              palette: project.paletteFor(name).palette,
+              patches: companionPatches(project.companion, project.gam),
+            })
           : h('span', { class: 'thumb icon' }, name ? '⚠' : '＋'),
         h(
           'span',

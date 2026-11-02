@@ -1,7 +1,7 @@
 // Tests: the index of demos added for this edition (media/extraDemos.ts).
 import { describe, expect, it } from 'vitest';
 import { extraDemoFor, extraDemoForGam, parseExtraDemoIndex } from '../src/media/extraDemos';
-import { crc32 } from '../src/project/zip';
+import { crc32 } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
 const gam = new Uint8Array([1, 2, 3, 4]);
 const index = parseExtraDemoIndex({

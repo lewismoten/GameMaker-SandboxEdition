@@ -9,10 +9,11 @@
 //     (counter 21), and the twelfth basket only takes you when the other eleven are full;
 //   - the fish basket gives birth to flying fish, a fire hurts, a jar of water heals, a pot of
 //     honey is an extra life, and the door of home takes one holy crumb to open.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, shadeAt, speckle } from '../../../snowbound/src/art/draw';
 import { micro } from '../../../snowbound/src/art/font';
 import { BlockBook, SOLID } from '../../../snowbound/src/blocks/book';
+import { loafBadges } from './badges';
 import { buildPalette, type Pal } from '../art/pal';
 import { SHINE_FRAMES, drawTinHeart } from '../../../kit/tinHeart';
 import { EGG_SHINE_FRAMES, drawEasterEgg } from '../../../kit/easterEgg';
@@ -579,5 +580,7 @@ export function buildBlocks(pal: Pal): BlockBook {
   bough.rect(0, 2, 20, 2, c('wood', 1)).rect(0, 2, 20, 1, c('wood', 2));
   for (const x of [4, 13]) blob(bough, x, 7, 3, 2.4, R('leaf'), 0, 3);
   book.add('bough', bough, { solid: LEDGE, grav: GRAV.down });
+  // (last) scenery for the site's achievement badges: the northern lights and a snail
+  loafBadges(book, pal, book.pics.get('sky')!, air);
   return book;
 }

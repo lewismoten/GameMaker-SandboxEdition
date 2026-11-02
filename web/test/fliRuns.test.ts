@@ -1,6 +1,6 @@
 // Tests: encodeFli's `runs` option (run packets inside changed spans) decodes to the same frames.
 import { describe, expect, it } from 'vitest';
-import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '../src/formats/fli';
+import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
 
 /** Drawn-art frames: stripes, solid blocks, a noisy patch, and a moving box. */
 function frames(): Uint8Array[] {

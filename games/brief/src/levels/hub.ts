@@ -10,7 +10,7 @@
 // chapter's doors in the reading room stay barred until it is set.
 import { chezSide } from '../../../kit/chez';
 import { saveSignBlocks } from '../../../kit/saveSign';
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, bevel, blob, micro } from '../art/draw';
 import { PAL, c, r } from '../art/pal';
 import { blank, corgi, docLeo, figure, floor, gwinn, mirror, on, sign } from '../art/kit';

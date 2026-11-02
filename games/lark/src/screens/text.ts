@@ -64,7 +64,7 @@ export const CREDITS = withCreditPage(
   page([
     `HEART OF TIN
 
-A Sandbox Software game, 1996
+A Sandbox Software game, December 1994
 
 Story, levels, art, cartoons, music, sounds and every block: Claude Opus 5.5
 
@@ -658,7 +658,7 @@ The road will still be there. So will his friends.`,
 export function readme(): string {
   return [
     TITLE,
-    'Sandbox Software, 1996',
+    'Sandbox Software, December 1994',
     '',
     'Type LARK and press Enter. You need a VGA display.',
     'A Sound Blaster plays the music; without one the PC',

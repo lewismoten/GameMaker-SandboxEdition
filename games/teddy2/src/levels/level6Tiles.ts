@@ -3,7 +3,7 @@
 // tiers (ledges: hop up through them where a hay bale step gives a boost), hay bale steps,
 // the scarecrow at its heart, the farm road in and the Fair's parking lot out, with the
 // Ferris wheel standing over the trees.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, speckle } from '../art/draw';
 import { Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, grassTop, hedge, r, sky, tuft } from '../blocks/tiles';

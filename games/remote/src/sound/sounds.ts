@@ -7,12 +7,12 @@
 // under the cat." as Teddy gets lifted, "Opened the fridge, who knows anymore?", "Called my
 // mom..." as the phone dials, "Check your hand." (C), "a tiny raccoon" and
 // "There you are, you sneaky guy." as you sit back down on the couch.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { rng } from '../../../kit/pixels';
-import { SPEAKER, mix, osc, sample, speaker, type Synth } from '../../../kit/sound';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { SPEAKER, mix, osc, sample, speaker, type Synth } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
 import { SND } from '../ids';
 import { clipVoc } from './clips';
-import { lowNoise, gate, env } from '../../../kit/synthParts';
+import { lowNoise, gate, env } from '@lewismoten/gamemaker-sandbox-tools/kit/synthParts';
 
 /** A little voice: harmonics of a pitch through two vowel formants that can move. */
 function voice(pitch: (t: number) => number, f1: number | ((t: number) => number), f2: number | ((t: number) => number), seed = 3, breath = 0.03): Synth {

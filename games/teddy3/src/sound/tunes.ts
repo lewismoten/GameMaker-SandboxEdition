@@ -1,9 +1,9 @@
 // The tools every song is written with: chords spread over three comping voices, bass lines,
 // note-string lengths checked so loops stay in step, and the FM instruments (the sequel's,
 // plus a few new ones). Each voice is its own OPL2 channel.
-import { INSTRUMENTS, sbi } from '../../../kit/music';
-import { times } from '../../../kit/tune';
-export { tune, v, join, times } from '../../../kit/tune';
+import { INSTRUMENTS, sbi } from '@lewismoten/gamemaker-sandbox-tools/kit/music';
+import { times } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
+export { tune, v, join, times } from '@lewismoten/gamemaker-sandbox-tools/kit/tune';
 
 export const CHORDS: Record<string, string[]> = {
   C: ['E4', 'G4', 'C5'],

@@ -1,7 +1,7 @@
 // The retro PC's options and monitor modes, and the startup files on its C: drive
 // (AUTOEXEC.BAT and CONFIG.SYS).
 import { GameFiles } from '../../project/files';
-import type { SpeedSetting } from '../../engine/scene';
+import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 
 /** gfx: today's editors full screen; vga: the designers' own 320x200 graphics. */
 export type MonitorMode = 'off' | 'text' | 'game' | 'gfx' | 'vga';

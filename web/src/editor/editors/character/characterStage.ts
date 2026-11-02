@@ -3,13 +3,13 @@
 // judged against real scenery. The choice is kept in the companion file, never in the .chr.
 import { h } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
-import { ADVTYPE } from '../../../formats/game';
+import { ADVTYPE } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { mapPixels } from '../../../gfx/levelPicture';
 import { normalize } from '../../../project/files';
 import type { Project } from '../../core/project';
 import { sceneName } from '../../core/uses';
 import { arrival } from '../integrator/board';
-import { BLEN } from '../../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 interface StageBackdrop {
   el: HTMLElement;

@@ -1,4 +1,5 @@
 // Smart buildings: a house of any size assembled from its parts (roof, walls, door, windows).
+import { wrapValue } from '../mapWrap';
 //
 // The rectangle dragged out is the whole building: the top row(s) are roof, the rest wall,
 // with the door in the middle of the bottom row and windows spaced along the wall rows.
@@ -98,12 +99,12 @@ export function assembleBuilding(b: Building, w: number, h: number): number[][] 
 }
 
 /** Puts an assembled grid (or a stamp's rows) on a map at (x, y); -1 cells and cells off the map are skipped. Returns the changed indexes. */
-export function placeGrid(blocks: Uint8Array, grid: number[][], x: number, y: number, mapW = 100, mapH = 100): number[] {
+export function placeGrid(blocks: Uint8Array, grid: number[][], x: number, y: number, mapW = 100, mapH = 100, wrap = false): number[] {
   const changed: number[] = [];
   grid.forEach((row, dy) =>
     row.forEach((v, dx) => {
-      const cx = x + dx,
-        cy = y + dy;
+      const cx = wrap ? wrapValue(x + dx, mapW) : x + dx,
+        cy = wrap ? wrapValue(y + dy, mapH) : y + dy;
       if (v < 0 || cx < 0 || cy < 0 || cx >= mapW || cy >= mapH) return;
       const i = cy * mapW + cx;
       if (blocks[i] !== v) {

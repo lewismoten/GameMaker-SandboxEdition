@@ -1,7 +1,7 @@
 // The overworld's monsters (WORLD.MON): Procrastislimes, Snooze Bats and (south of Eventually
 // Falls) Gloom Goblins, and, standing where you find them, the royal hounds and Sir Reginald.
-import type { GameMap } from '../../../../web/src/formats/map';
-import { rng } from '../../../kit/pixels';
+import type { GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { MonBook } from '../characters/monbook';
 import { MON, POWER } from '../ids';
 import type { SpriteSheet } from '../sprites/sheet';

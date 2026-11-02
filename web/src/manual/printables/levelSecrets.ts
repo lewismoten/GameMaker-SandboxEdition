@@ -4,9 +4,9 @@
 // about.json "egg" says the egg is). The Level Map draws the ground in their place, and never
 // marks their cells. levelSecrets.json holds the answer for every game that may show Level
 // Maps, written by web/scripts/levelSecrets.ts; a game that isn't in it gets no Level Maps.
-import { BACKBL, parseBlocks, type Block } from '../../formats/blocks';
-import { ADVTYPE, type Game } from '../../formats/game';
-import { MLEN, parseMap } from '../../formats/map';
+import { BACKBL, parseBlocks, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { ADVTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { MLEN, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { FileSource } from '../../gfx/levelPicture';
 import SECRETS from './levelSecrets.json';
 

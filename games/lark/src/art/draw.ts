@@ -1,11 +1,11 @@
 // Drawing helpers for blocks, sprites and screens, as KEEP IT BRIEF! draws them: dithered shading,
 // bevelled boxes, ASCII sprites, the PC's 8x8 font at any scale (reporting its ink to the text
 // bounds audit) and a 3x5 font for labels.
-import { Pixels } from '../../../kit/pixels';
-import { textInk } from '../../../kit/textBounds';
-export { text, textWidth, outlined, centered } from '../../../kit/pcText';
-export { CLEAR, over, scaleBlit } from '../../../kit/blit';
-export { shadeAt, gradient, blob, bevel } from '../../../kit/shading';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
+export { text, textWidth, outlined, centered } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
+export { CLEAR, over, scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+export { shadeAt, gradient, blob, bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 
 // A 3x5 font for silkscreen labels on the boards (R1, C4, U2, +5V...).
 const MICRO: Record<string, string> = {

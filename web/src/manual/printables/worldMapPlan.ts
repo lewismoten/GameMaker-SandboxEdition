@@ -5,7 +5,7 @@
 // judged with straight lines first (crossings, lines under places, length, shape), and the best
 // few are routed for real (worldMapRoute.ts): the plan with the fewest crossings and the
 // shortest, straightest paths wins. Pure arithmetic, so tests can measure every game.
-import type { Game, Point } from '../../formats/game';
+import type { Game, Point } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { flowOrder, graphOf, hubCells, snakeCells, transpose, treeCells, type Cells, type Graph } from '../../editor/editors/integrator/layoutCells';
 import type { Rect } from './worldMapLayout';
 import { PIC_R, NAME_LINE, crossings, overlaps, placeBox, throughPlaces, type DrawnPath } from './worldMapMeasure';

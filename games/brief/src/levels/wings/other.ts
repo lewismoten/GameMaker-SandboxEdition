@@ -1,6 +1,6 @@
 // Other Dimensions: Nip from Another Dimension, Relativity
 // Detour, Crime, Panic, and... Mustard, and Repeat Until Texture Is Uniform.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { blank, corgi, figure, figureSide, floor, on, sign, wall } from '../../art/kit';

@@ -20,11 +20,12 @@ import { GAME_SPOTS, gameSpot } from './index';
 import { SHELF_TYPES } from '../library/shelf';
 import { SECTIONS } from '../manual/magazine/issue';
 import { themeOf } from '../manual/printables/worldMapThemes';
-import { parseGame } from '../formats/game';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import {
   FILE,
   SAVE_ID,
   achievementsWritten,
+  countOccurrence,
   forgetForTests,
   loadAchievements,
   mergeRecords,
@@ -34,7 +35,8 @@ import {
   tally,
   unlockAchievement,
 } from './store';
-import { goalProgress, goalTargets } from './goals';
+import { goalProgress, goalTargets, refreshGoals } from './goals';
+import { repeatProgress } from './repeatGoals';
 
 const stored = () => parseRecord(saves[SAVE_ID]?.[FILE]);
 
@@ -45,6 +47,25 @@ beforeEach(() => {
 });
 
 describe('achievements store', () => {
+  it('keeps independent repeated events across merges, with a bounded count', async () => {
+    await loadAchievements();
+    await countOccurrence('win:test', 3);
+    await achievementsWritten();
+    const earlier = parseRecord(saves[SAVE_ID][FILE]);
+    const separate = parseRecord(undefined);
+    separate.sets['win:test'] = ['an-independent-win'];
+    await countOccurrence('win:test', 3);
+    await countOccurrence('win:test', 3);
+    await achievementsWritten();
+    const count = writes.length;
+    await countOccurrence('win:test', 3);
+    await achievementsWritten();
+    expect(writes).toHaveLength(count);
+    expect(stored().sets['win:test']).toHaveLength(3);
+    expect(mergeRecords(earlier, stored()).sets['win:test']).toHaveLength(3);
+    expect(mergeRecords(separate, stored()).sets['win:test']).toHaveLength(4);
+  });
+
   it('unlocks once, keeps the first date and writes quietly', async () => {
     unlockAchievement('play-first');
     await loadAchievements();
@@ -238,6 +259,31 @@ describe('derived totals', () => {
 
   it('counts only listed games as done (one played but not listed adds nothing)', () => {
     expect(goalProgress(goalTargets(catalog, 'sandbox'), ['a', 'zz', 'd'])).toEqual({ n: 1, of: 2 });
+  });
+});
+
+describe('repeat-play goals', () => {
+  const listed = [
+    { id: 'a', gam: 'a.gam' },
+    { id: 'b', gam: 'b.gam' },
+    { id: 'art', gam: null },
+  ] as never[];
+
+  it('requires the tier in each playable listed game, without counting other games', async () => {
+    await loadAchievements();
+    await countOccurrence('won:a', 10);
+    await countOccurrence('won:a', 10);
+    await countOccurrence('won:a', 10);
+    await countOccurrence('won:b', 10);
+    await countOccurrence('won:unlisted', 10);
+    await refreshGoals(listed);
+    await achievementsWritten();
+    expect(goalTargets(listed, 'everyWin')).toEqual(['a', 'b']);
+    expect(stored().unlocked['every-win-1']).toBeTypeOf('number');
+    expect(stored().progress['every-win-3']).toEqual({ n: 1, of: 2 });
+    expect(stored().unlocked['every-win-3']).toBeUndefined();
+    expect(stored().progress['every-life-1']).toEqual({ n: 0, of: 2 });
+    expect(repeatProgress(['a', 'b'], { 'life:a': ['same', 'same', 'other'] }, 'life', 3)).toEqual({ n: 0, of: 2 });
   });
 });
 

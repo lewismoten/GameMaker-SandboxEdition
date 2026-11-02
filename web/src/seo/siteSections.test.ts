@@ -12,14 +12,18 @@ describe('siteSections', () => {
     expect(site.about).toEqual({ '@id': `${SITE_URL}#app` });
   });
 
-  it('makes the magazine a Periodical with its one issue part of it', () => {
-    const [periodical, issue] = magazineJsonLd();
+  it('makes the magazine a Periodical with its two issues part of it', () => {
+    const [periodical, issue, second] = magazineJsonLd();
     expect(periodical['@type']).toBe('Periodical');
     expect(periodical.name).toBe('TURBO BUTTON');
     expect(periodical.isPartOf).toEqual({ '@id': websiteJsonLd()['@id'] });
     expect(issue['@type']).toBe('PublicationIssue');
     expect(issue.issueNumber).toBe('1');
+    expect(issue.name).toBe('TURBO BUTTON: Vol. 1, No. 4, Spring 1993');
+    expect(second.issueNumber).toBe('2');
+    expect(second.name).toBe('TURBO BUTTON: Collector’s Issue, Vol. 3, No. 1, January 1995');
     expect(issue.isPartOf).toEqual({ '@id': periodical['@id'] });
+    expect(second.isPartOf).toEqual({ '@id': periodical['@id'] });
     expect(JSON.stringify(magazineJsonLd())).not.toMatch(/undefined/);
   });
 

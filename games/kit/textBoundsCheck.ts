@@ -11,7 +11,7 @@ import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFile
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe, readBounds, type TextOverflow } from './textBounds';
+import { describe, readBounds, type TextOverflow } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 
 const gamesDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const webDir = join(gamesDir, '../web');
@@ -25,7 +25,7 @@ function build(id: string): { cut: TextOverflow[]; moving: TextOverflow[] } {
   const out = mkdtempSync(join(tmpdir(), 'gm-bounds-'));
   try {
     const report = join(out, 'bounds.json');
-    const r = spawnSync(join(webDir, 'node_modules/.bin/vite-node'), [`../games/${id}/build.ts`], {
+    const r = spawnSync(join(webDir, '../node_modules/.bin/vite-node'), [`../games/${id}/build.ts`], {
       cwd: webDir,
       env: { ...process.env, GAME_DISK_OUT: join(out, 'disk'), TEXT_BOUNDS: report },
       encoding: 'utf8',

@@ -1,10 +1,10 @@
 // What every one of Max's characters shares: the CharSet a build produces, the starting
 // meters, the weapon sequences (each weapon is a sequence whose counter is its ammunition,
 // and its frames give birth to the shot monster), and the explosion when Max is destroyed.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, Mask, fill, shade } from '../art/draw';
 import { WHITE, shared } from '../art/palette';
-import { INF_REPEAT, type Character } from '../../../../web/src/formats/character';
+import { INF_REPEAT, type Character } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { BlockList, setSeq, type F } from './chrkit';
 import { MON, SEQ, SND, itemBlock } from '../ids';
 

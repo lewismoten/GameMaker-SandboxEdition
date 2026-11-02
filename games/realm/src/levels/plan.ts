@@ -4,7 +4,7 @@
 import { CornerMap, N } from '../art/corners';
 import type { BlockBook } from '../blocks/book';
 import { bridgeName, cellHash, resolveGround } from './ground';
-import { newMap, type GameMap } from '../../../../web/src/formats/map';
+import { newMap, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import type { Talk } from './talk';
 import type { LinkSpec } from '../game';
 

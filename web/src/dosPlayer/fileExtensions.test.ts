@@ -2,11 +2,19 @@
 // Acord Games' set matching their NEVER.EXE (from the scratchpad archive, when it is there).
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { applyPlayerPatches, readPlayerPatches } from './applyPatches';
-import { ACORD_EXTENSIONS, EXT_KINDS, extId, extValueProblem, extensionClashes, renamedExtensions, withoutExtensions } from './fileExtensions';
-import { cleanPatches } from './patchRules';
+import { applyPlayerPatches, readPlayerPatches } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import {
+  ACORD_EXTENSIONS,
+  EXT_KINDS,
+  extId,
+  extValueProblem,
+  extensionClashes,
+  renamedExtensions,
+  withoutExtensions,
+} from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
+import { cleanPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { playerChanges, renamedFiles } from './describePatches';
-import { md5Hex } from './md5';
+import { md5Hex } from '@lewismoten/gamemaker-sandbox-archives/player/md5';
 
 const exe = new Uint8Array(readFileSync(new URL('../../../cd/gm/xferplay.exe', import.meta.url)));
 const NEVER =
@@ -23,7 +31,8 @@ describe('the player’s extensions', () => {
   it('patches every copy of each kind, and only those bytes', () => {
     for (const k of EXT_KINDS) {
       const out = applyPlayerPatches(exe, { [extId(k.ext)]: 'q1_' });
-      const changed = [...out.keys()].filter((i) => out[i] !== exe[i]);
+      const changed: number[] = [];
+      for (let i = 0; i < out.length; i++) if (out[i] !== exe[i]) changed.push(i);
       expect(changed, k.ext).toEqual(k.offsets.flatMap((o) => [o + 1, o + 2, o + 3]).sort((a, b) => a - b));
       for (const o of k.offsets) expect(text(out, o, 5)).toBe('.q1_\0');
       if (k.offsets.length) expect(readPlayerPatches(out)).toEqual({ patches: { [extId(k.ext)]: 'q1_' }, explained: true, unreadable: [] });

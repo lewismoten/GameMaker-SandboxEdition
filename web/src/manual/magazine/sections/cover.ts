@@ -8,12 +8,12 @@ export const COVER: MagSection = {
   id: 'cover',
   title: 'Cover',
   toc: false,
-  pages: () => [
+  pages: (ctx) => [
     {
       kind: 'cover',
       tone: 'black',
       blocks: [
-        { t: 'masthead', ...MAG },
+        { t: 'masthead', ...MAG, issue: ctx.mag.issue },
         p('A modern tribute to the shareware years', { lead: true }),
         head('GAME-MAKER’S SOURCE CODE SET FREE!', {
           kicker: 'Exclusive',
@@ -30,7 +30,7 @@ export const COVER: MagSection = {
           0.25,
         ),
         list([
-          '**“I shoveled snow to buy it.”** [The interview](go:mag/lewis)',
+          '**Lewis Moten, two years on.** [The update](go:mag/lewis)',
           '**An AI ported it to the web.** [We ask how](go:mag/claude)',
           '**Hints for every game** [Strategy Guide](go:mag/strategy)',
           '**Every game, listed** [The Directory](go:mag/directory)',

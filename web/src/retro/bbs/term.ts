@@ -5,7 +5,7 @@
 // only once the screen has caught up, so nothing draws out of order.
 import type { RetroHost } from '../host';
 import { attr, COLS, ROWS, type TextScreen } from '../text/textScreen';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { busySounds, dialSounds } from './modem';
 import { key as typed } from '../text/textInput';
 import { PacedQueue, type Unit } from './pacedQueue';
@@ -219,6 +219,13 @@ export class Term {
   /** Whether the call has just been dropped (its line noise may still be arriving). */
   get dropping(): boolean {
     return !!this.lost;
+  }
+
+  /** Holds a graphic transfer on its last verified data until carrier loss is reported. */
+  async checkCarrier(): Promise<void> {
+    if (!this.lost) return;
+    await this.lost;
+    throw new NoCarrier();
   }
 
   /** Waits out the line noise after a dropped call. */

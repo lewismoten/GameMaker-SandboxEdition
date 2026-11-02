@@ -2,16 +2,27 @@
 // playback through the app's own OPL2 emulation (the same PlayIt code the games use).
 import type { Project } from '../../core/project';
 import { audio } from '../../widgets/mediaShared';
-import { TICK_RATE } from '../../../audio/cmfPlayer';
-import { auditionSong, buildPreview, type Preview } from '../../../formats/cmfPreview';
-import { channelSounds, DEFAULT_VELOCITY, extendEnd, startMode, startProgram, usedChannels } from '../../../formats/cmfEdit';
-import { readSong, RHYTHM_CHANNELS, writeSong, type CmfSong, type Note, DRUM_NAMES } from '../../../formats/cmfSong';
+import { TICK_RATE } from '@lewismoten/gamemaker-sandbox-engine/audio/cmfPlayer';
+import { auditionSong, buildPreview, type Preview } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfPreview';
+import { channelSounds, DEFAULT_VELOCITY, extendEnd, startMode, startProgram, usedChannels } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfEdit';
+import { readSong, RHYTHM_CHANNELS, writeSong, type CmfSong, type Note, DRUM_NAMES } from '@lewismoten/gamemaker-sandbox-engine/formats/cmfSong';
 import { presetName } from './sbi';
 import { presetPreview } from '../../../audio/oplPresetPreview';
 import type { OplPreset } from '../../../audio/oplPatch';
+import { instrumentLook } from './instrumentLook';
+import { orderTracks } from './trackOrder';
+import { isReadOnlyError } from '../../core/readOnly';
 
 /** What changed: the song itself, the view (scroll, zoom, selection), the selected track, or playback. */
 type Change = 'song' | 'view' | 'track' | 'play';
+
+/** One undo step: the song's bytes and the track order from before a change. */
+interface Step {
+  song: Uint8Array;
+  order: number[];
+}
+
+const ORDER_SECTION = 'trackOrder';
 
 /** One color per MIDI channel, from the EGA palette. */
 export const TRACK_COLORS = [
@@ -51,12 +62,28 @@ export const SNAPS: [number, string][] = [
   [0, 'Off'],
 ];
 
+/** A track's color: its instrument's group color, else its channel's own. */
+export function trackColorOf(song: CmfSong, ch: number): string {
+  const inst = song.instruments[startProgram(song, ch)];
+  return instrumentLook(inst).color ?? TRACK_COLORS[ch];
+}
+
+/** Resolves just after the next paint (or soon, when no frames are being drawn). */
+function afterPaint(): Promise<void> {
+  return new Promise((done) => {
+    const t = setTimeout(done, 80);
+    requestAnimationFrame(() => setTimeout(() => (clearTimeout(t), done())));
+  });
+}
+
 export class MusicDoc {
   song: CmfSong;
   track = 0;
   selection = new Set<Note>();
   muted = new Set<number>();
   solo = new Set<number>();
+  /** The order the tracks are listed in (editor-only, saved in the companion file; trackOrder.ts). */
+  order: number[] = [];
   /** Tracks added but still empty. */
   extra = new Set<number>();
   cursor = 0;
@@ -72,20 +99,22 @@ export class MusicDoc {
   ghosts = true;
   clipboard: { dt: number; len: number; key: number; vel: number }[] = [];
 
-  private undoStack: Uint8Array[] = [];
-  private redoStack: Uint8Array[] = [];
+  private undoStack: Step[] = [];
+  private redoStack: Step[] = [];
   private listeners = new Set<(c: Change) => void>();
   private saveTimer?: ReturnType<typeof setTimeout>;
   private preview?: { p: Preview; t0: number };
   private frame = 0;
   private restartTimer?: ReturnType<typeof setTimeout>;
   private auditionTimer?: ReturnType<typeof setTimeout>;
+  private rhythmCache?: boolean;
 
   constructor(
     readonly project: Project,
     readonly file: string,
   ) {
     this.song = readSong(project.files.get(file)!);
+    this.order = project.extras<number[]>(file, ORDER_SECTION, []);
     this.noteLen = this.beat;
     this.track = this.tracks()[0] ?? 0;
   }
@@ -98,6 +127,8 @@ export class MusicDoc {
   }
 
   emit(c: Change): void {
+    // anything but a playback tick may follow an edit: ask the song again
+    if (c !== 'play') this.rhythmCache = undefined;
     for (const fn of this.listeners) fn(c);
   }
 
@@ -116,13 +147,18 @@ export class MusicDoc {
     return Math.max(0, Math.round(t / s) * s);
   }
 
+  /** Rhythm mode at the start; asked per note while drawing, so kept until the next change. */
   get rhythm(): boolean {
-    return startMode(this.song);
+    return (this.rhythmCache ??= startMode(this.song));
   }
 
   tracks(): number[] {
     const set = new Set([...usedChannels(this.song), ...this.extra]);
-    return [...set].sort((a, b) => a - b);
+    return orderTracks([...set], this.order);
+  }
+
+  trackColor(ch: number): string {
+    return trackColorOf(this.song, ch);
   }
 
   trackName(ch: number): string {
@@ -159,7 +195,7 @@ export class MusicDoc {
 
   /** Call before changing the song (once per gesture). */
   begin(): void {
-    this.undoStack.push(writeSong(this.song));
+    this.undoStack.push(this.step());
     if (this.undoStack.length > 200) this.undoStack.shift();
     this.redoStack = [];
   }
@@ -197,19 +233,43 @@ export class MusicDoc {
   undo(): void {
     const prev = this.undoStack.pop();
     if (!prev) return;
-    this.redoStack.push(writeSong(this.song));
+    this.redoStack.push(this.step());
     this.restore(prev);
   }
 
   redo(): void {
     const next = this.redoStack.pop();
     if (!next) return;
-    this.undoStack.push(writeSong(this.song));
+    this.undoStack.push(this.step());
     this.restore(next);
   }
 
-  private restore(bytes: Uint8Array): void {
-    this.song = readSong(bytes);
+  private step(): Step {
+    return { song: writeSong(this.song), order: [...this.tracks()] };
+  }
+
+  /** Lists the tracks in this order (one undo step; the song file is not touched). */
+  setOrder(order: number[]): void {
+    const now = this.tracks();
+    if (order.length === now.length && order.every((c, i) => c === now[i])) return;
+    this.undoStack.push(this.step());
+    this.redoStack = [];
+    this.storeOrder(order);
+    this.emit('song');
+  }
+
+  private storeOrder(order: number[]): void {
+    this.order = order;
+    try {
+      this.project.setExtras(this.file, ORDER_SECTION, order.length ? order : undefined);
+    } catch (e) {
+      if (!isReadOnlyError(e)) throw e;
+    }
+  }
+
+  private restore(step: Step): void {
+    if (step.order.join() !== this.tracks().join()) this.storeOrder(step.order);
+    this.song = readSong(step.song);
     this.selection.clear();
     this.commit();
     this.emit('track');
@@ -286,6 +346,9 @@ export class MusicDoc {
   async audition(ch: number, key: number, program = startProgram(this.song, ch), ticks = 60, vel = this.velocity): Promise<void> {
     if (this.preview) return;
     await audio.resume();
+    // after the edit that asked for it has painted: building the tune must not hold the click up
+    await afterPaint();
+    if (this.preview) return;
     await audio.playSong(auditionSong(this.song, ch, program, key, ticks, vel));
     clearTimeout(this.auditionTimer);
     this.auditionTimer = setTimeout(() => !this.preview && audio.stopSong(), (ticks / TICK_RATE) * 1000 + 1500);

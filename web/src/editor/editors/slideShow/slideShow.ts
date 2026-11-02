@@ -9,6 +9,7 @@
 // the media bin, and the page. Dragging and the timeline's keys are in timelineInput.ts;
 // timing as PLAYGAME plays it is in slideTimeline.ts.
 import { History } from '../../core/history';
+import { companionPatches } from '../../../dosPlayer/playerRecord';
 import './slideShow.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
@@ -16,10 +17,10 @@ import { h, clear, toast } from '../../core/ui';
 import { pickFile } from '../../widgets/filePicker';
 import { templateFor } from '../../shell/templates';
 import type { FileKind } from '../../core/project';
-import { parseSlideList, serializeSlideList, textLines, type SlideEntry } from '../../../formats/graphicScripts';
-import { isFli, parseFli } from '../../../formats/fli';
-import { PALETTE_SIZE } from '../../../formats/palette';
-import { showGraphic } from '../../../engine/showGraphic';
+import { parseSlideList, serializeSlideList, textLines, type SlideEntry } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
+import { isFli, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { PALETTE_SIZE } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { showGraphic } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
 import { normalize } from '../../../project/files';
 import { gamePreview } from '../../widgets/mediaShared';
 import { blankScreen, mediaThumb, pictureScreen, screenCanvas, textPages, TEXT_PAGE_LINES, type ScreenPicture } from '../../widgets/mediaPictures';
@@ -109,7 +110,7 @@ registerEditor(['lst'], (host, project, file) => {
     const bytes = project.files.get(name);
     const hit = thumbCache.get(name);
     if (hit && hit.bytes === bytes) return hit;
-    const el = mediaThumb(project.files, name, project.paletteFor(file).palette);
+    const el = mediaThumb(project.files, name, project.paletteFor(file).palette, 0, companionPatches(project.companion, project.gam));
     const url = el instanceof HTMLCanvasElement ? el.toDataURL() : undefined;
     const t = { bytes, el, url };
     thumbCache.set(name, t);
@@ -265,7 +266,8 @@ registerEditor(['lst'], (host, project, file) => {
       {
         class: `sl-then then-${t.then} ${t.ignored ? 'ignored' : ''}`,
         title: `${thenLabel(e, t)}. Click to change.`,
-        'aria-label': `After ${e.name}: ${thenLabel(e, t)}`,
+        // a name holds the words on the button (WCAG 2.5.3): the seconds it shows
+        'aria-label': `After ${e.name}: ${thenLabel(e, t)}${t.then === 'seconds' && !t.ignored ? `, ${e.pause}s` : ''}`,
         onclick: (ev: Event) => thenMenu(i, ev.currentTarget as HTMLElement),
       },
       t.ignored ? '·' : THEN_ICON[t.then],

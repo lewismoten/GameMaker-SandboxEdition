@@ -9,6 +9,8 @@ import { sofaFiles } from './sofaFiles';
 import { sofaPictures } from './sofaPictures';
 import { spamCanBurst, type BurstLine } from './sofaSpam';
 import { Term, sleep } from './term';
+import { signup } from './signup';
+import { signupAccounts } from './signupAccounts';
 import { unlockAchievement } from '../../achievements';
 
 /** All eight lines are often in use: about one call in three gets a busy signal. */
@@ -68,13 +70,13 @@ export async function runSofa(t: Term, h: RetroHost): Promise<void> {
   });
   t.line('|07If you already have a User-ID on this system, type it in and press ENTER.');
   t.print('|07Otherwise type |15"new"|07: |15');
-  let name = ((await readLine(s, h.keys, [], 20, attr(15, 0))) ?? '').trim().toUpperCase();
+  let name = ((await readLine(s, h.keys, [], 24, attr(15, 0))) ?? '').trim().toUpperCase();
   t.line();
   if (!name || name === 'NEW') {
-    t.print('|07Pick a User-ID to go by: |15');
-    name = ((await readLine(s, h.keys, [], 20, attr(15, 0))) ?? '').trim().toUpperCase() || 'NEWBIE';
-    t.line();
-  } else {
+    const joined = await signup(t, h, 'sofa');
+    if (!joined) return;
+    name = joined;
+  } else if (name !== 'GUEST' && !signupAccounts.find('sofa', name)) {
     t.print('|07Enter your password: |15');
     await readLine(s, h.keys, [], 16, attr(0, 0));
     t.line();

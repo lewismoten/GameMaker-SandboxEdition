@@ -1,7 +1,7 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. The play-testing
 // bot walks Joe around the reading room: past Teddy, up to the Word Counter (still jammed),
 // over to the Reserve Stacks door and back to the door of Clown Alley, then presses Esc.
-import { serializeRecording, type RecordedKey } from '../../../web/src/formats/recording';
+import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import type { Compiled } from './compile';
 import { sceneIds } from './game';
 import { Bot, hazardsOf, windowBox } from '../tools/bot';

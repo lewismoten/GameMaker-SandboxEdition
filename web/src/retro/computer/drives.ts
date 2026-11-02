@@ -18,6 +18,7 @@ import type { GmInstallEntry } from '../../../scripts/cdGames';
 import { MonitorMode, ComputerOptions, AUTOEXEC, CONFIG_SYS } from './setup';
 import bbsGifs from '../bbs/gallery.json';
 import { TTY_INFO } from '../bbs/ttyInfo';
+import { flagsBakNodes } from '../hacks/flagsBackup';
 import { deskFilesReady, gameDownloadNodes, imagesDiz, playgameReg, utilityFolders } from '../hacks/deskFiles';
 import { dosDir } from '../../project/dosDir';
 
@@ -196,7 +197,7 @@ export abstract class ComputerDrives {
       // waits for what the BBS put on C: before this visit (kept in the browser)
       root: () =>
         this.downloads.ready.then(() => [
-          folder('DOS', () =>
+          liveFolder('DOS', async () =>
             ['COMMAND.COM', 'HIMEM.SYS', 'EMM386.EXE', 'MSCDEX.EXE', 'DOSKEY.COM', 'MOUSE.COM', 'MEM.EXE', 'EDIT.COM']
               .map((n) => file(n, 20_000 + n.length * 1357))
               .concat(
@@ -204,6 +205,9 @@ export abstract class ComputerDrives {
                 file('HEXEDIT.EXE', 41_216, { run: { kind: 'hexedit' } }),
                 file('ACHIEVE.EXE', 22_418, { run: { kind: 'achieve' } }),
                 file('OFFLINE.EXE', 18_944, { run: { kind: 'offline' } }),
+                file('ROOMFIX.EXE', 16_208, { run: { kind: 'roomfix' } }),
+                file('FLAGS.EXE', 24_576, { run: { kind: 'flags' } }),
+                ...(await flagsBakNodes()),
               ),
           ),
           folder('CDROM', () => [file('CDROM.SYS', 18_432)]),

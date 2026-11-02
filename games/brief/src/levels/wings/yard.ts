@@ -1,6 +1,6 @@
 // The Backyard: Superpowers of Spooker Boy, Champion of the
 // Backyard Games, Hung Out to Dry and Santa's Little OSHA Violation.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { blank, corgi, figure, floor, on, rot90, sign, wall } from '../../art/kit';

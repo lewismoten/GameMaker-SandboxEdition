@@ -1,7 +1,7 @@
 // Painters for the Paragon's background blocks, seen from above: floors (planks, carpet,
 // marble, rugs, flagstones), walls and sconces, the painted backdrop, doorways and closed
 // doors with their name plates, notes and chalkboards on the walls, and furniture.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SOLID, type BlockDef } from './blockset';
 import { blob, micro, microC, microWidth, pool, shadeAt, speckle } from '../art/draw';
 import { c, ramp as r } from '../art/pal';

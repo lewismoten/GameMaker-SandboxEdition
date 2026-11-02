@@ -5,13 +5,13 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { exportDos } from './exportDos';
 import { GameFiles } from '../project/files';
-import { readZip } from '../project/zip';
-import { md5Hex } from '../dosPlayer/md5';
-import { STOCK_PLAYER_MD5 } from '../dosPlayer/applyPatches';
-import { ACORD_EXTENSIONS, EXT_KINDS, extId } from '../dosPlayer/fileExtensions';
-import { adoptPlayer } from '../project/importPlayer';
-import { parseGame } from '../formats/game';
-import { parseSlideList } from '../formats/graphicScripts';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { md5Hex } from '@lewismoten/gamemaker-sandbox-archives/player/md5';
+import { STOCK_PLAYER_MD5 } from '@lewismoten/gamemaker-sandbox-archives/player/applyPatches';
+import { ACORD_EXTENSIONS, EXT_KINDS, extId } from '@lewismoten/gamemaker-sandbox-engine/player/fileExtensions';
+import { adoptPlayer } from '@lewismoten/gamemaker-sandbox-archives/project/importPlayer';
+import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
+import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 const exe = new Uint8Array(readFileSync(new URL('../../../cd/gm/xferplay.exe', import.meta.url)));
 const gam = new Uint8Array(readFileSync(new URL('../../../cd/gameware/peach/peach.gam', import.meta.url)));
@@ -31,6 +31,27 @@ async function exported(player?: Record<string, unknown>) {
 
 describe('exportDos and the DOS player', () => {
   afterEach(() => vi.unstubAllGlobals());
+
+  it('builds reproducibly from supplied runtime bytes without network requests', async () => {
+    const fetch = vi.fn(() => {
+      throw new Error('No network during a catalog build');
+    });
+    vi.stubGlobal('fetch', fetch);
+    const files = new GameFiles([['nebula.gam', gam]]);
+    const options = {
+      title: 'Nebula',
+      gam: 'nebula.gam',
+      date: new Date(2000, 0, 1),
+      runtime: { player: exe, driver: Uint8Array.of(1), help: Uint8Array.of(2) },
+    };
+    const first = await exportDos(files, options);
+    expect((await exportDos(files, options)).zip).toEqual(first.zip);
+    const entries = await readZip(first.zip);
+    expect(entries.find((e) => e.name === 'NEBULA.EXE')!.data).toEqual(exe);
+    expect(entries.find((e) => e.name === 'CONFIG.HLP')!.data).toEqual(Uint8Array.of(2));
+    expect(entries.find((e) => e.name === 'NEBULA.GAM')!.data).toEqual(gam);
+    expect(fetch).not.toHaveBeenCalled();
+  });
 
   it('ships the CD’s player as it came when nothing is customized', async () => {
     const r = await exported();

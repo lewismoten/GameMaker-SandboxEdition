@@ -9,7 +9,7 @@
 //   HEXEDIT C:\GM\TEDDY\TEDDY.GAM
 import type { RetroHost } from '../host';
 import { attr, COLS, ROWS } from '../text/textScreen';
-import { toCp437 } from '../text/cp437';
+import { toCp437 } from '@lewismoten/gamemaker-sandbox-engine/text/cp437';
 import { resolvePath } from '../dos/vfs';
 import {
   BAR,

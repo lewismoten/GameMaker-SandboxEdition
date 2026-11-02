@@ -4,8 +4,8 @@ import { buildPalette } from '../src/art/pal';
 import { buildBusShip, buildDiagShip, buildDownShip, buildLeftShip, buildShip, buildSideShip, shipBlocks } from '../src/characters/ship';
 import { scrollOf } from '../src/game';
 import { Sim } from './sim';
-import type { CharInfo } from '../../../web/src/engine/world';
-import { MLEN } from '../../../web/src/formats/map';
+import type { CharInfo } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { ROWS, TOP } from '../src/stages/sideLeg';
 import { buildLeg, startOf, type Leg } from '../src/stages/stage';
 

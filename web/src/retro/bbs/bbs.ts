@@ -14,7 +14,8 @@ import { statusBps } from './lineSpeed';
 import { bbsInTdd, tddMode, toggleTddMode, ttyCall, ttyInfoPage } from './tdd';
 import { TTY_PHONE } from './ttyTalk';
 import { sandboxCall } from './ticTacToeDoor';
-import { PHONE, runSandbox, takeOverheard, wrap } from './sandbox';
+import { PHONE, runSandbox, takeOverheard } from './sandbox';
+import { wrap } from './wrapWords';
 
 // ---- the dialing directory -----------------------------------------------------------
 

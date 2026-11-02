@@ -4,7 +4,7 @@
 import { getSection, emptyCompanion, setSection } from '../project/companion';
 import { loadProject, saveProject } from '../project/storage';
 import { PLAYER_SECTION, playerRecord, recordPatches } from './playerRecord';
-import type { PlayerPatches } from './patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { announcePatches } from './patchesChanged';
 
 /** The project's patches (none when it is gone). */

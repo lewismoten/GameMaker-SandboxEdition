@@ -1,8 +1,8 @@
 // Y2K.SND: a PC speaker tune for every effect, and a digitized Sound Blaster sample
 // (.VOC) for each, made with the kit's little synthesizer.
-import { newSoundSet, type SoundSet } from '../../../../web/src/formats/sound';
-import { SPEAKER, mix, osc, sample, speaker } from '../../../kit/sound';
-import { rng } from '../../../kit/pixels';
+import { newSoundSet, type SoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/sound';
+import { SPEAKER, mix, osc, sample, speaker } from '@lewismoten/gamemaker-sandbox-tools/kit/sound';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { SND } from '../ids';
 
 export function buildSounds(): { set: SoundSet; vocs: Record<string, Uint8Array> } {

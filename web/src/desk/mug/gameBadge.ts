@@ -3,8 +3,10 @@
 // lettering lifted off the screen onto a ribbon across it, a SANDBOX SOFTWARE scroll over the
 // bottom, and the hero standing large in front, breaking out of the ring. Outside the badge
 // the picture is see-through, so the mug's white shows.
-import { paletteToRGBA, type Palette } from '../../formats/palette';
-import { FONT8X8 } from '../../gfx/font8x8';
+import { paletteToRGBA, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
+import { inkMask } from './badgeInk';
+import { letteringImage, type Lettering } from './badgeLettering';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 
 /** Packed 0xAABBGGRR pixels, as ImageData's buffer reads them; 0 is see-through. */
 export interface Rgba {
@@ -29,10 +31,24 @@ export interface BadgeLook {
   title: Box;
   /** The middle of the medallion across the screen (it is the screen's full height); the screen's middle if left out. */
   centerX?: number;
+  /** The middle of the medallion down the screen; the screen's middle if left out. Less than the middle moves the picture down (the screen's top row fills what's above it). The title keeps its place. */
+  centerY?: number;
   /** Which side the hero stands on; right if left out. */
   side?: 'left' | 'right';
   /** Bits of the screen to paint out in the color round them, such as small print the medallion would cut through. */
   hide?: Box[];
+  /** Bits of the screen to paint over by tiling (mirrored) the columns `from` to `to` of the same rows across them, such as a character that would echo the hero; unlike `hide`, no flat box shows in a starry sky. */
+  mend?: { box: Box; from: [number, number] }[];
+  /** Who made it, on the scroll below the medallion; SANDBOX SOFTWARE if left out. */
+  maker?: string;
+  /** Palette indexes of the title's own colors: only these pixels of the title box are lettering, on a solid ribbon, so no picture shows between or inside the letters (the way for titles over a picture). Any other title is found by its edges (titleMask) and, with `strip`, taken whole. */
+  ink?: number[];
+  /** The title box as it is, scene and all, on the ribbon: for lettering over a picture that can't be told from what's behind it (at most 300 wide). */
+  strip?: boolean;
+  /** The screen's top `rows` rows painted out of the picture (not the title) with a mirror of the rows beneath, so a title shifted down by centerY leaves no ghost; columns `from` to `to` (a seed, say) take their left neighbor's color instead. */
+  clearTop?: [rows: number, from: number, to: number];
+  /** None of the screen's own lettering: the title set fresh in bold pixel lettering (a metallic fill, an extruded edge, an outline) on a ribbon. Paint the screen's lettering out with hide or mend. */
+  lettering?: Lettering;
 }
 
 interface BoxColors {
@@ -172,6 +188,13 @@ export function titleMask(
   return { x: x0 + lx0, y: y0 + ly0, w, h, mask };
 }
 
+/** The box's every pixel as lettering, in the shape titleMask() gives. */
+function wholeBox(img: Pick<Indexed, 'width' | 'height'>, box: Box): ReturnType<typeof titleMask> {
+  const [x, y] = [Math.max(0, box[0]), Math.max(0, box[1])];
+  const [w, h] = [Math.min(img.width, box[2]) - x, Math.min(img.height, box[3]) - y];
+  return w > 0 && h > 0 ? { x, y, w, h, mask: new Uint8Array(w * h).fill(1) } : undefined;
+}
+
 /** The part of a sprite that isn't see-through, or undefined if it's empty. */
 export function trimSprite(src: Rgba): Rgba | undefined {
   let [x0, y0, x1, y1] = [src.width, src.height, -1, -1];
@@ -306,9 +329,11 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   const fill = rgb(bg);
   const shade = rgb(bg, 0.6);
   const ink = rgb(colors.ink ?? '#ffffff');
-  const pixels = paintOut(screen, look.hide ?? []);
+  const pixels = mended(paintOut(screen, look.hide ?? []), screen.width, look.mend ?? []);
+  const pic = look.clearTop ? mirroredTop(pixels, screen.width, ...look.clearTop) : pixels;
   const sx = cropCenterX(screen.width, look.centerX);
   const sy = Math.round(screen.height / 2);
+  const py = Math.round(look.centerY ?? sy);
   // the medallion: the screen inside, then a thin ring of the box's background, its ink, the accent and an outline
   const rings: [r: number, color: number][] = [
     [PIC_R + 2, fill],
@@ -318,20 +343,34 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
   ];
   medallion(out, BADGE_CX, BADGE_CY, PIC_R, rings, (dx, dy) => {
     const ix = sx + dx;
-    const iy = sy + dy;
-    return ix >= 0 && iy >= 0 && ix < screen.width && iy < screen.height ? lut[pixels[iy * screen.width + ix]] : fill;
+    // above or below the screen, its nearest row goes on
+    const iy = Math.max(0, Math.min(screen.height - 1, py + dy));
+    return ix >= 0 && ix < screen.width ? lut[pic[iy * screen.width + ix]] : fill;
   });
   const left = look.side === 'left';
   // the bottom scroll, over the screen's own copyright line, a little away from the hero
-  const maker = 'SANDBOX SOFTWARE';
+  const maker = look.maker ?? 'SANDBOX SOFTWARE';
   const sw = maker.length * 8 + 16;
   const sTop = BADGE_CY + RING - 26;
   const sMid = BADGE_CX + (left ? 12 : -12);
   ribbon(out, sMid - sw / 2, sMid + sw / 2, sTop, sTop + 16, fill, accent, shade);
   text(out, maker, sMid - maker.length * 4, sTop + 4, ink);
   // the title's lettering, across the middle on a ribbon, as high as the screen has it
-  const t = titleMask({ ...screen, pixels }, look.title);
-  if (t) {
+  const t = look.lettering
+    ? undefined
+    : look.ink
+      ? inkMask({ ...screen, pixels }, look.title, look.ink)
+      : look.strip
+        ? wholeBox(screen, look.title)
+        : titleMask({ ...screen, pixels }, look.title);
+  if (look.lettering) {
+    // fresh lettering on a ribbon of its own
+    const img = letteringImage(look.lettering, OUTLINE, rgb);
+    const iy = Math.round(look.lettering.centerY - img.height / 2);
+    const width = Math.min(BADGE_W - 2 * TAIL - 4, Math.max(img.width + 10, 2 * RING + 16));
+    ribbon(out, Math.round(BADGE_CX - width / 2), Math.round(BADGE_CX + width / 2), Math.max(1, iy + 1), iy + img.height - 1, fill, accent, shade);
+    stamp(out, img, Math.round(BADGE_CX - img.width / 2), iy);
+  } else if (t) {
     const letters = blank(t.w, t.h);
     for (let y = 0; y < t.h; y++)
       for (let x = 0; x < t.w; x++) {
@@ -353,6 +392,31 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
     const fig = outlined(big, [OUTLINE, OUTLINE, WHITE, WHITE]);
     const fx = left ? 0 : BADGE_W - fig.width;
     stamp(out, fig, fx, BADGE_CY + RING + FEET + 4 - fig.height);
+  }
+  return out;
+}
+
+/** `px` (a screen `w` wide) with each box's rows tiled across it from the columns `from`, back and forth. */
+function mended(px: Uint8Array, w: number, mends: NonNullable<BadgeLook['mend']>): Uint8Array {
+  if (!mends.length) return px;
+  const out = px.slice();
+  for (const { box, from } of mends) {
+    const n = Math.max(1, from[1] - from[0]);
+    for (let y = box[1]; y < box[3]; y++)
+      for (let x = box[0]; x < box[2]; x++) {
+        const m = (x - box[0]) % (2 * n);
+        out[y * w + x] = px[y * w + from[0] + (m < n ? m : 2 * n - 1 - m)];
+      }
+  }
+  return out;
+}
+
+/** `px` (a screen `w` wide) with its top `rows` rows mirrored from the rows beneath; columns `from` to `to` copy the column before them. */
+function mirroredTop(px: Uint8Array, w: number, rows: number, from: number, to: number): Uint8Array {
+  const out = px.slice();
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < w; x++) out[y * w + x] = px[(2 * rows - 1 - y) * w + x];
+    for (let x = from; x < to; x++) out[y * w + x] = out[y * w + from - 1];
   }
   return out;
 }

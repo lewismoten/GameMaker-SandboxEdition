@@ -1,0 +1,87 @@
+{
+  "keys": {
+    "72": {
+      "short": "Up",
+      "long": "Roll up."
+    },
+    "80": {
+      "short": "Down",
+      "long": "Roll down."
+    },
+    "75": {
+      "short": "Left",
+      "long": "Roll left."
+    },
+    "77": {
+      "short": "Right",
+      "long": "Roll right."
+    },
+    "17": {
+      "short": "Up",
+      "long": "Roll up."
+    },
+    "31": {
+      "short": "Down",
+      "long": "Roll down."
+    },
+    "30": {
+      "short": "Left",
+      "long": "Roll left."
+    },
+    "32": {
+      "short": "Right",
+      "long": "Roll right."
+    },
+    "16": {
+      "short": "Up-left",
+      "long": "Roll up and to the left."
+    },
+    "18": {
+      "short": "Up-right",
+      "long": "Roll up and to the right."
+    },
+    "71": {
+      "short": "Up-left",
+      "long": "Roll up and to the left."
+    },
+    "73": {
+      "short": "Up-right",
+      "long": "Roll up and to the right."
+    },
+    "79": {
+      "short": "Down-left",
+      "long": "Roll down and to the left."
+    },
+    "81": {
+      "short": "Down-right",
+      "long": "Roll down and to the right."
+    },
+    "57": {
+      "short": "Fire ray",
+      "long": "Fire a ray of light the way you last rolled."
+    },
+    "28": {
+      "short": "Pick up",
+      "long": "Pick up what Ray is rolling over."
+    }
+  },
+  "joystick": {
+    "1": {
+      "short": "Fire ray",
+      "long": "Fire a ray of light the way you last rolled."
+    }
+  },
+  "counters": {
+    "20": "Red lenses (scenes 1 and 4)",
+    "21": "Green lenses (scenes 1 and 4)",
+    "22": "Blue lenses (scenes 1 and 4)",
+    "23": "Red lenses (scenes 2 and 5)",
+    "24": "Green lenses (scenes 2 and 5)"
+  },
+  "sounds": {
+    "9": "Fire",
+    "10": "Hurt",
+    "11": "Death",
+    "12": "Egg"
+  }
+}

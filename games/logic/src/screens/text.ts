@@ -40,7 +40,7 @@ function pages(parts: string[]): string {
 }
 
 export const STORY = pages([
-  `1995. The Bitmore family of Juniper Lane has the first Smart Home on the block: every appliance in the house is wired to every other one.
+  `1994. The Bitmore family of Juniper Lane has the first Smart Home on the block: every appliance in the house is wired to every other one.
 
 Then the thunderstorm hit.`,
   `Now the toaster opens the garage door. The fridge changes the TV channel. And the clock radio plays polka at 3 a.m.
@@ -125,7 +125,7 @@ Design, art, music and wiring: Claude
 
 Published by Sandbox Software
 
-Made with Game-Maker 3.0 from Recreational Software Designs`,
+Made with Game-Maker 2.0 from Recreational Software Designs`,
   `Thanks to the Bitmore family for leaving their toaster unplugged during testing.
 
 No robots were harmed in the making of this game. A few were mildly fizzled.`,
@@ -171,7 +171,7 @@ Try again! Think before you roll.`,
 export function readme(price: string): string {
   return wrap(`OHM SWEET OHM
 Version ${about.version} - Shareware
-(c) 1995 Sandbox Software
+(c) 1994 Sandbox Software
 
 A logic puzzle game for IBM PC compatibles with VGA. Sound Blaster recommended.
 

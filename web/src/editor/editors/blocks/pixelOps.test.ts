@@ -1,6 +1,6 @@
 // Block painter transforms: flips, turns, wrap-around shifts, recolors and mirror points.
 import { describe, expect, it } from 'vitest';
-import { BLEN } from '../../../formats/blocks';
+import { BLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { flipH, flipV, mirrorPoints, moveRange, recolor, rotateCCW, rotateCW, shiftWrap, swapRange, colorCounts } from './pixelOps';
 
 const at = (s: Uint8Array, x: number, y: number) => s[y * BLEN + x];

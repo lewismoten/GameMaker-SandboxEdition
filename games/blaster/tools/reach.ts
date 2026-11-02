@@ -3,7 +3,7 @@
 //   cd web && npx vite-node ../games/blaster/tools/reach.ts
 import { STAGES } from '../src/stages/stages';
 import { buildLeg, startOf, type Leg } from '../src/stages/stage';
-import { MLEN, MWID } from '../../../web/src/formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { PICKUPS } from '../src/blocks/tiles';
 import { X0 } from '../src/stages/mapkit';
 import { ROWS, TOP } from '../src/stages/sideLeg';

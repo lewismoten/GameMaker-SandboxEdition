@@ -3,7 +3,7 @@
 // container pointing at the package, a manifest that lists every file with its media type (and
 // nothing missing), the spine, the nav document, every XML file well-formed, and every
 // picture, link and style reference resolving inside the file, with nothing on the network.
-import { readZip } from '../../project/zip';
+import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { checkXml, type XmlElement } from './xmlCheck';
 
 const TYPES: Record<string, string> = {

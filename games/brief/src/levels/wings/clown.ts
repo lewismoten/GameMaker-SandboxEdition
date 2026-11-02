@@ -1,6 +1,6 @@
 // Clown Alley: The Scissor Situation,
 // A very Cultured Performance, Bubble Rap and The Interest We Lost.
-import { Pixels } from '../../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
 import { blank, bubble, docLeoSide, figure, figureBack, figureSide, floor, on, plinth, rot90, sign, wall } from '../../art/kit';

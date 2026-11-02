@@ -2,8 +2,8 @@
 // needs first: G picks up what Teddy stands on, and Space flings sand once he has the shovel.
 // Every background block is taken, so each sign is a row of monster blocks (a stationary,
 // harmless monster for each block, MON.sign in monsters.ts) lying in the sand.
-import { FONT8X8 } from '../../../../web/src/gfx/font8x8';
-import { textInk } from '../../../kit/textBounds';
+import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
+import { textInk } from '@lewismoten/gamemaker-sandbox-tools/kit/textBounds';
 import { STEEL, WOOD } from '../art/palette';
 import { CLEAR, Pixels } from '../art/draw';
 import { mb } from './monsterBlocks';

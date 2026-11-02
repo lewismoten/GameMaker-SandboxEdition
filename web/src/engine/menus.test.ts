@@ -1,8 +1,8 @@
 // Tests for gVertMenu (menus.ts): which keys typed before a menu opens it takes, as PLAYGAME's did.
 import { describe, expect, it } from 'vitest';
-import { gVertMenu } from './menus';
-import { Keyboard } from '../input/keyboard';
-import type { Machine } from './machine';
+import { gVertMenu } from '@lewismoten/gamemaker-sandbox-engine/engine/menus';
+import { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
+import type { Machine } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
 
 /** Just enough of a Machine for GVertMenu: a keyboard, a pointer and a frame clock. */
 function fakeMachine(): Machine {

@@ -32,23 +32,34 @@ export const dosChapter: Chapter = {
       sound: 'fanfare',
     },
     {
+      // the tour makes this PC pretend it is not registered (retro/gmReg/tourPretend.ts) and starts
+      // Game-Maker over, so the question is always on the screen; nothing saved changes
       id: 'dos-check',
       action: 'point',
       target: { label: 'the screen', css: '.dos-crt' },
-      say: 'Game-Maker may ask for a word from its Owner’s Guide. That was copy protection, back in 1994.',
+      say: 'Game-Maker asks for a word from its Owner’s Guide before it starts. That was copy protection, back in 1994.',
+      act: { do: 'copy-check' },
+      ms: 9000,
     },
     {
       id: 'dos-guide',
       action: 'point',
       target: { label: 'the Owner’s Guide beside the screen', css: '.rs-panel.rs-manual' },
-      say: 'The guide opens beside it, at the right page, the word marked. Type the word and you’re in.',
+      say: 'The guide opens beside it, at the page the question names.',
+      optional: true,
+    },
+    {
+      id: 'dos-word',
+      action: 'point',
+      target: { label: 'the marked word in the guide', css: '.rs-panel.rs-manual mark.rs-word' },
+      say: 'The paragraph and the word are marked here. Type that word on the screen and you’re in.',
       optional: true,
     },
     {
       id: 'dos-card',
       action: 'point',
-      target: { label: 'the registration card', css: '.rs-panel.rs-card' },
-      say: 'Or mail the registration card. Once the reply comes, Game-Maker stops asking.',
+      target: { label: 'the registration postcard', css: '.rs-panel.rs-card .rs-postcard' },
+      say: 'Or mail this registration postcard away. Once the reply comes, Game-Maker stops asking.',
       optional: true,
     },
     {

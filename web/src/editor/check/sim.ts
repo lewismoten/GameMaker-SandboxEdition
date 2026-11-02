@@ -3,18 +3,29 @@
 // no screen, sound or timers, and a snapshot small enough to keep thousands of. The
 // explorer (explore.ts) tries moves from a snapshot and takes them back. Nothing here
 // changes how the engine plays: it only calls it.
-import { moveCharGrav, moveChars, handleJoystick } from '../../engine/character';
-import { resetKeys, simKeyPress } from '../../engine/keys';
-import { blockBirthMonsters, moveAllMonsters } from '../../engine/monsters';
-import { updateCharDrawState } from '../../engine/render';
-import { loadScene, setStartKey, startSceneInits } from '../../engine/scene';
-import { changeBlocks } from '../../engine/scene';
-import { changeScroll, drawScroll, initScroll } from '../../engine/scroll';
-import { getTouchBlocks } from '../../engine/touch';
-import { MWID } from '../../formats/map';
-import { LASTMM, LASTMON, MLEN, OFFSCRN, SCRNBLEN, SCRNBWID, newCharInfo, type CharInfo, type MonInfo, type World } from '../../engine/world';
-import { BACKBL, CHARBL } from '../../formats/blocks';
-import { MAXSCENELINKS, NOSCENE, type Game } from '../../formats/game';
+import { moveCharGrav, moveChars, handleJoystick } from '@lewismoten/gamemaker-sandbox-engine/engine/character';
+import { resetKeys, simKeyPress } from '@lewismoten/gamemaker-sandbox-engine/engine/keys';
+import { blockBirthMonsters, moveAllMonsters } from '@lewismoten/gamemaker-sandbox-engine/engine/monsters';
+import { updateCharDrawState } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
+import { loadScene, setStartKey, startSceneInits } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { changeBlocks } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
+import { changeScroll, drawScroll, initScroll } from '@lewismoten/gamemaker-sandbox-engine/engine/scroll';
+import { getTouchBlocks } from '@lewismoten/gamemaker-sandbox-engine/engine/touch';
+import { MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import {
+  LASTMM,
+  LASTMON,
+  MLEN,
+  OFFSCRN,
+  SCRNBLEN,
+  SCRNBWID,
+  newCharInfo,
+  type CharInfo,
+  type MonInfo,
+  type World,
+} from '@lewismoten/gamemaker-sandbox-engine/engine/world';
+import { BACKBL, CHARBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { MAXSCENELINKS, NOSCENE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 
 /** Where a scene's files come from (a GameFiles, or a plain map of names). */
 export interface FileSource {

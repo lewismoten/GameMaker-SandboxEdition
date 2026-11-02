@@ -3,10 +3,10 @@
 // with boxes floating on balloons, and Doc Leo's bow tie up on a porch roof.
 //
 // The blocks are in level2Tiles.ts, the monsters in level2Beasts.ts; this file lays out the map.
-import { rng } from '../../../kit/pixels';
+import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { over } from '../art/draw';
 import { LevelMap, type Level } from './level';
-import { reindexMonsters, type GameMap } from '../../../../web/src/formats/map';
+import { reindexMonsters, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { bandOf } from './level1Tiles';
 import { cut } from '../blocks/tiles';
 import { G, streetTiles } from './level2Tiles';

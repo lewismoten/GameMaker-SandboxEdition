@@ -1,6 +1,6 @@
 {
   "name": "@lewismoten/gamemaker-sandbox-tools",
-  "version": "3.1.0",
+  "version": "3.4.0",
   "description": "Development tools for building and checking games in RSD Game-Maker formats",
   "type": "module",
   "license": "MIT",
@@ -19,30 +19,120 @@
     "NOTICE.md"
   ],
   "exports": {
-    "./formats/*": {
-      "types": "./dist/types/web/src/formats/*.d.ts",
-      "browser": null,
-      "import": "./dist/formats/*.js"
-    },
     "./drawing": {
-      "types": "./dist/types/web/packages/tools/src/drawing.d.ts",
+      "types": "./dist/types/drawing.d.ts",
       "browser": null,
+      "gamemaker-source": "./src/drawing.ts",
       "import": "./dist/drawing.js"
     },
     "./audio": {
-      "types": "./dist/types/web/packages/tools/src/audio.d.ts",
-      "browser": null,
+      "types": "./dist/types/audio.d.ts",
+      "gamemaker-source": "./src/audio.ts",
       "import": "./dist/audio.js"
     },
     "./images": {
-      "types": "./dist/types/web/packages/tools/src/images.d.ts",
-      "browser": null,
+      "types": "./dist/types/images.d.ts",
+      "gamemaker-source": "./src/images.ts",
       "import": "./dist/images.js"
     },
     "./simulation": {
-      "types": "./dist/types/web/packages/tools/src/simulation.d.ts",
+      "types": "./dist/types/simulation.d.ts",
       "browser": null,
+      "gamemaker-source": "./src/simulation.ts",
       "import": "./dist/simulation.js"
+    },
+    "./formats/*": {
+      "types": "./dist/types/formats/*.d.ts",
+      "browser": null,
+      "gamemaker-source": "./src/formats/*.ts",
+      "import": "./dist/formats/*.js"
+    },
+    "./kit/tar": {
+      "types": "./dist/types/kit/tar.d.ts",
+      "gamemaker-source": "./src/kit/tar.ts",
+      "import": "./dist/kit/tar.js"
+    },
+    "./kit/*": {
+      "types": "./dist/types/kit/*.d.ts",
+      "browser": null,
+      "gamemaker-source": "./src/kit/*.ts",
+      "import": "./dist/kit/*.js"
+    },
+    "./music/*": {
+      "types": "./dist/types/music/*.d.ts",
+      "gamemaker-source": "./src/music/*.ts",
+      "import": "./dist/music/*.js"
+    },
+    "./image/*": {
+      "types": "./dist/types/image/*.d.ts",
+      "gamemaker-source": "./src/image/*.ts",
+      "import": "./dist/image/*.js"
+    },
+    "./audio-files": {
+      "types": "./dist/types/audioFiles.d.ts",
+      "browser": null,
+      "gamemaker-source": "./src/audioFiles.ts",
+      "import": "./dist/audio-files.js"
+    },
+    "./block-merge": {
+      "types": "./dist/types/blockMerge.d.ts",
+      "gamemaker-source": "./src/blockMerge.ts",
+      "import": "./dist/block-merge.js"
+    },
+    "./look-alike": {
+      "types": "./dist/types/lookAlike.d.ts",
+      "gamemaker-source": "./src/lookAlike.ts",
+      "import": "./dist/look-alike.js"
+    },
+    "./palette-reserve": {
+      "types": "./dist/types/paletteReserve.d.ts",
+      "gamemaker-source": "./src/paletteReserve.ts",
+      "import": "./dist/palette-reserve.js"
+    },
+    "./color-reduce": {
+      "types": "./dist/types/colorReduce.d.ts",
+      "gamemaker-source": "./src/colorReduce.ts",
+      "import": "./dist/color-reduce.js"
+    },
+    "./delta": {
+      "types": "./dist/types/delta.d.ts",
+      "gamemaker-source": "./src/delta.ts",
+      "import": "./dist/delta.js"
+    },
+    "./disk-diff": {
+      "types": "./dist/types/diskDiff.d.ts",
+      "gamemaker-source": "./src/diskDiff.ts",
+      "import": "./dist/disk-diff.js"
+    },
+    "./release-notes": {
+      "types": "./dist/types/releaseNotes.d.ts",
+      "gamemaker-source": "./src/releaseNotes.ts",
+      "import": "./dist/release-notes.js"
+    },
+    "./menu-version": {
+      "types": "./dist/types/menuVersionEntry.d.ts",
+      "gamemaker-source": "./src/menuVersionEntry.ts",
+      "import": "./dist/menu-version.js"
+    },
+    "./microFont": {
+      "types": "./dist/types/microFont.d.ts",
+      "gamemaker-source": "./src/microFont.ts",
+      "import": "./dist/microFont.js"
+    },
+    "./colors": {
+      "types": "./dist/types/colors.d.ts",
+      "gamemaker-source": "./src/colors.ts",
+      "import": "./dist/colors.js"
+    },
+    "./text": {
+      "types": "./dist/types/text.d.ts",
+      "gamemaker-source": "./src/text.ts",
+      "import": "./dist/text.js"
+    },
+    "./palettes": {
+      "types": "./dist/types/palettes.d.ts",
+      "gamemaker-source": "./src/palettes.ts",
+      "import": "./dist/palettes.js"
     }
   },
   "scripts": {
@@ -57,5 +147,10 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
-  }
+  },
+  "dependencies": {
+    "@lewismoten/gamemaker-sandbox-engine": "^3.2.0",
+    "@lewismoten/gamemaker-sandbox-archives": "^3.2.0"
+  },
+  "author": "Lewis Moten"
 }

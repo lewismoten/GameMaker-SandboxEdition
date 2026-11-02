@@ -5,7 +5,7 @@
 // rail, the gate near the right end (the map wraps, so the view must never reach past column
 // 99), and gives the leg a Side to put its turrets, hatches, firewalls, drafts, pickups,
 // scenery and virus on, by column and band row.
-import { MLEN, MWID } from '../../../../web/src/formats/map';
+import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { BlockSet } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { EGG_BLOCK, eggPic } from '../blocks/egg';

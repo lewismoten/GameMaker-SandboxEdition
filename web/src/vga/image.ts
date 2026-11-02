@@ -14,7 +14,7 @@ import { PGMTITLECOL, drawDesignBars, openWork, type Program } from './shared/de
 import type { OpenDesigner } from '../retro/host';
 import { SIZEX, SIZEY } from './shared/vga';
 import { BLEN, LEFT, NONE, RED1, RED2, RIGHT } from './shared/facelift';
-import { BACKBL, parseBlocks, serializeBlocks } from '../formats/blocks';
+import { BACKBL, parseBlocks, serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { LOLEN, LOX, LOY, LOX1, LOY1, MX, MY, HY, HELPFILE, pal2bytes, blankBlock, isEmpty } from './image/layout';
 import { ImageReaderScreen } from './image/screen';
 

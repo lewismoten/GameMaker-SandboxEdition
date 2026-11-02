@@ -7,7 +7,7 @@ import { warezSignoff } from '../bbs/fileId';
 
 export const SAVEHACK_DIZ: string[] = [
   'SAVEHACK v1.2a * SAVE GAME EDITOR       [1/1]',
-  'by vesuvian, 1995                   Freeware',
+  'by vesuvian, 1994                   Freeware',
   '---------------------------------------------',
   'Edit Game-Maker saved games: score, lives,',
   'hit points, money, counters and inventory.',

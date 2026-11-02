@@ -4,7 +4,7 @@ import { h, clear, modal } from '../editor/core/ui';
 import { blockCanvas } from '../editor/core/draw';
 import { chooseBlock } from '../editor/widgets/blockChooser';
 import { fieldWarnings, getField, setField, UNLIMITED, type GameLabels, type SavedGame, type SaveField } from '../project/saveData';
-import { BACKBL } from '../formats/blocks';
+import { BACKBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { tip } from './tip';
 import { rangeText } from './panelText';
 

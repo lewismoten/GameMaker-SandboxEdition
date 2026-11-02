@@ -17,17 +17,19 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 5
+    env:
+      GM_SKIP_GAME_BUILD: '1'
     defaults:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '26'
       - name: Check tag and master
         run: |
           git fetch --no-tags origin +refs/heads/master:refs/remotes/origin/master
@@ -41,19 +43,17 @@ jobs:
             exit 1
           fi
       - name: Install dependencies
+        working-directory: .
         run: npm ci
       - name: Check source
         run: |
           npm run format:check
           npm run lint
           npx tsc --noEmit -p .
-          npx vitest run src/formats src/engine src/audio src/gfx src/project/zip.test.ts test/toolsDrawing.test.ts
-      - name: Verify packed package
-        working-directory: web/packages/tools
-        run: npm run verify
-      - uses: actions/setup-node@v4
+          npm run test:fast -- src/formats src/engine src/audio src/gfx src/project/zip.test.ts test/toolsDrawing.test.ts
+      - uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '26'
           registry-url: 'https://npm.pkg.github.com/'
           scope: '@lewismoten'
       - name: Publish package

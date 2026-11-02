@@ -10,7 +10,7 @@ import { splitTitle } from '../../project/gameTitle';
 import { gameDisks, installedBytes, sizeText } from '../../project/diskFacts';
 import { renderShot } from '../../gfx/gameShots';
 import { boxShot } from '../../gfx/frameShot';
-import { parseGame, type Game } from '../../formats/game';
+import { parseGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { boxAward, boxClaims, boxGame, boxReviews, disksLine, hoursLine, planBack, playHours, shotCaption, type BoxGame } from './boxFacts';
 import { wear } from './boxWear';
 import { diskIcons, laurel, onePlayer, platformBadge, platformBadgeHeight, priceSticker, RATING_NOTE, ratingSeal, starburst } from './boxSeals';
@@ -118,11 +118,30 @@ const BACK_TEXT = 'rgba(0, 0, 0, 0.55)';
  * the game but its .gam is downloaded (the shelf shows most boxes spine out); with `cover`
  * false the cover painting is left off too, so its code isn't loaded for a box seen edge on.
  */
-export async function drawBox(entry: CatalogEntry, { shots = true, cover = true } = {}): Promise<BoxFaces | undefined> {
+export async function drawBox(entry: CatalogEntry, { shots = true, cover = true, blobs = false } = {}): Promise<BoxFaces | undefined> {
   const sides = await paintBox(entry, shots, false, cover);
   if (!sides) return undefined;
-  const url = Object.fromEntries(Object.entries(sides).map(([k, c]) => [k, c.toDataURL()]));
+  // `blobs`: for the shelf. Only the sides that show there (the spine, and the front when it
+  // is turned out) are encoded, off the main thread, into addresses good for this page only
+  // (released by releaseFaces); the other four are blank until the box is drawn whole.
+  // Otherwise data addresses, which a manual or a saved page can carry away.
+  const url = Object.fromEntries(
+    await Promise.all(
+      Object.entries(sides).map(async ([k, c]) => [k, !blobs ? c.toDataURL() : k === 'left' || k === 'front' ? await blobUrl(c) : BLANK] as const),
+    ),
+  );
   return url as unknown as BoxFaces;
+}
+
+const BLANK = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+
+function blobUrl(c: HTMLCanvasElement): Promise<string> {
+  return new Promise((resolve) => c.toBlob((b) => resolve(b ? URL.createObjectURL(b) : c.toDataURL())));
+}
+
+/** Lets go of the page-only addresses a shelf box (drawBox with `blobs`) holds, once its pictures are replaced. */
+export function releaseFaces(faces: BoxFaces): void {
+  for (const u of Object.values(faces)) if (typeof u === 'string' && u.startsWith('blob:')) URL.revokeObjectURL(u);
 }
 
 /**

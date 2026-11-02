@@ -4,8 +4,8 @@
 // measure numbers count the staves left. Sharps spark, rests let mites out, and one tie (a
 // black slur over a strip of paper) carries the ship to the next staff a lap early. The course
 // starts at a treble clef and ends at the final double bar line, the way out.
-import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '../../../../web/src/formats/blocks';
-import { Pixels, rng } from '../../../kit/pixels';
+import { SOLBOT, SOLLEF, SOLRIG, SOLTOP } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { BlockSet, bevel, blob, micro, shadeAt } from '../art/draw';
 import type { Pal } from '../art/pal';
 import type { StageArt } from './tiles';

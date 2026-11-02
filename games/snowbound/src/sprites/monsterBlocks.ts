@@ -2,7 +2,7 @@
 // yours) and the poof they leave, Biscuit the dog, Pete the bully (walking, and strolling off),
 // the plow and cars (two blocks each, rear and front), shopping carts, other sledders and
 // the cardinal.
-import { Pixels } from '../../../kit/pixels';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, sprite } from '../art/draw';
 import type { Pal } from '../art/pal';
 import { BODY_FRONT, BODY_SIDE, HEAD_DOWN, HEAD_SIDE, LEGS_A, LEGS_B, LEGS_SIDE_A, LEGS_SIDE_B, T, keyFor, kidPic, makeBook } from './kidArt';

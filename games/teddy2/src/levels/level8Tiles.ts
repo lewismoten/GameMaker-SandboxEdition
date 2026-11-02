@@ -3,7 +3,7 @@
 // round: he retired from hoops), two popcorn stands (each pops popcorn across the ring
 // now and then: a block giving birth), the judges' table, the Best Behaved ring, and the stage,
 // whose curtain only opens for a blue ribbon.
-import { Pixels, rng } from '../../../kit/pixels';
+import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, speckle } from '../art/draw';
 import { Tiles } from './level';
 import { c, canvas, copy, cut, dirt, planks, r } from '../blocks/tiles';
@@ -62,7 +62,7 @@ export function showTiles(): Tiles {
   );
   const banner = canvas(6, 1, () => wall);
   banner.rect(0, 3, 120, 14, c('blue', 1)).frame(0, 3, 120, 14, c('gold', 2));
-  const show = 'TRI-COUNTY FAIR DOG SHOW 1996';
+  const show = 'TRI-COUNTY FAIR DOG SHOW 1995';
   micro(banner, 60 - Math.floor((show.length * 4 - 1) / 2), 8, show, c('yellow', 3));
   const bc = cut(banner);
   for (let bx = 0; bx < 6; bx++) t.air(`banner${bx}`, bc[0][bx]);

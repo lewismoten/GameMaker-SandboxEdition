@@ -12,8 +12,10 @@ const SRC = join(__dirname, '..');
 /** gm-* names in storage-using files that are events, CSS classes or ids, not stored keys. */
 const NOT_KEYS = new Set([
   'gm-theme-changed',
+  'gm-sound-card-changed', // a live hardware-change event; the stored preference already has its own section
   'gm-pad-change',
   'gm-mug-change',
+  'gm-lume-reset', // ROOMFIX.EXE tells the wall clock to start its lume paint over
   'gm-score-trophies-changed',
   'gm-imported-notes-changed',
   'gm-tin-hearts-changed',

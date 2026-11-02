@@ -3,7 +3,7 @@
 // ticks, and so on. A block with no time never starts changing; a block that changes into
 // itself stops the chain. Once a block with no time has been passed, every later change comes
 // on the very next tick (nxtchg is set to 0), as in the DOS game.
-import type { Block } from '../../../formats/blocks';
+import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 
 interface AnimStep {
   block: number;

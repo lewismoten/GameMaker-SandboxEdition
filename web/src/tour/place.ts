@@ -54,7 +54,16 @@ export type Side = 'above' | 'below' | 'right' | 'left';
  * always inside the view with a margin. `tail` is where along the bubble's edge its tail
  * points at the speaker.
  */
-export function placeBubble(anchor: Rect, size: Size, view: Size, floor: number, avoid?: Rect, margin = 8): Point & { side: Side; tail: number } {
+export function placeBubble(
+  anchor: Rect,
+  size: Size,
+  view: Size,
+  floor: number,
+  avoid?: Rect,
+  margin = 8,
+  others: readonly Rect[] = [],
+  top = margin,
+): Point & { side: Side; tail: number } {
   const bottom = view.h - floor - margin;
   const cx = anchor.x + anchor.w / 2;
   const cy = anchor.y + anchor.h / 2;
@@ -65,16 +74,33 @@ export function placeBubble(anchor: Rect, size: Size, view: Size, floor: number,
     { side: 'right', x: anchor.x + anchor.w + gap, y: cy - size.h / 2 },
     { side: 'left', x: anchor.x - gap - size.w, y: cy - size.h / 2 },
   ];
-  const fits = (p: Point) => p.x >= margin && p.y >= margin && p.x + size.w <= view.w - margin && p.y + size.h <= bottom;
-  const inView = options.map((o) => ({ ...o, x: clamp(o.x, margin, view.w - margin - size.w), y: clamp(o.y, margin, bottom - size.h) }));
+  const hosts = [anchor, ...others].filter((r) => r.x + r.w > 0 && r.x < view.w && r.y + r.h > 0 && r.y < bottom);
+  // Host edges and viewport edges include every free rectangular pocket, even when a
+  // second host blocks all four preferred positions beside the speaker.
+  const xs = [margin, view.w - margin - size.w, cx - size.w / 2, ...hosts.flatMap((r) => [r.x - gap - size.w, r.x + r.w + gap])];
+  const ys = [top, bottom - size.h, cy - size.h / 2, ...hosts.flatMap((r) => [r.y - gap - size.h, r.y + r.h + gap])];
+  for (const x of xs)
+    for (const y of ys) {
+      const side: Side = y + size.h <= anchor.y ? 'above' : y >= anchor.y + anchor.h ? 'below' : x >= anchor.x + anchor.w ? 'right' : 'left';
+      options.push({ x, y, side });
+    }
+  const inView = options.map((o) => ({ ...o, x: clamp(o.x, margin, view.w - margin - size.w), y: clamp(o.y, top, bottom - size.h) }));
+  // a bubble beside the speaker, a corner's width off at most: past that it reads as nobody's
+  const reach = 1.25 * Math.hypot((size.w + anchor.w) / 2 + gap, (size.h + anchor.h) / 2 + gap);
   const cost = (o: Point & { side: Side }, i: number) => {
     const r = { x: o.x, y: o.y, w: size.w, h: size.h };
-    // covering the speaker or the control costs most; moving a bubble from where it wanted to be a little
-    return overlap(r, anchor) * 4 + (avoid ? overlap(r, avoid) * 2 : 0) + (fits(options[i]) ? 0 : 500) + i * 10;
+    const distance = Math.hypot(o.x + size.w / 2 - cx, o.y + size.h / 2 - cy);
+    // Protect every host before considering control overlap or distance. A large control
+    // must never make covering a character appear cheaper than using a free position, nor
+    // send the bubble across the screen from its speaker to find a free pocket.
+    return [hosts.reduce((sum, host) => sum + overlap(r, host), 0), distance > reach ? 1 : 0, avoid ? overlap(r, avoid) : 0, distance + i * 2];
   };
   let best = 0;
   inView.forEach((o, i) => {
-    if (cost(o, i) < cost(inView[best], best)) best = i;
+    const next = cost(o, i),
+      previous = cost(inView[best], best);
+    const different = next.findIndex((value, k) => value !== previous[k]);
+    if (different >= 0 && next[different] < previous[different]) best = i;
   });
   const p = inView[best];
   const along = p.side === 'above' || p.side === 'below' ? cx - p.x : cy - p.y;
@@ -90,3 +116,28 @@ export const offStage = (size: Size, view: Size, floor: number, right: boolean):
 
 /** How long a walk from `a` to `b` takes: a steady pace, never a crawl or a jump. */
 export const walkMs = (a: Point, b: Point): number => clamp(Math.hypot(b.x - a.x, b.y - a.y) / 0.6, 250, 1800);
+
+/** The share of a control the bar would cover. */
+const barOverlap = (control: Rect, bar: Rect): number => {
+  const w = Math.min(control.x + control.w, bar.x + bar.w) - Math.max(control.x, bar.x);
+  const h = Math.min(control.y + control.h, bar.y + bar.h) - Math.max(control.y, bar.y);
+  return w > 0 && h > 0 ? (w * h) / Math.max(1, control.w * control.h) : 0;
+};
+
+/** The bar goes to the top when the control sits under it at the bottom (a fixed footer, a tall panel) and the top hides less of the control than the bottom does (a tall panel the window can't clear). */
+export const barOnTop = (control: Rect, bottom: Rect, top: Rect): boolean => {
+  const under = barOverlap(control, bottom);
+  return under > 0.08 && under > barOverlap(control, top);
+};
+
+/**
+ * A ring that holds a turning thing at any angle: a square of `side` (its untransformed length
+ * with room for the turn) on the center of what it is centered in (`within`), not on its own
+ * moving bounds.
+ */
+export const steadyRect = (within: Rect, side: number): Rect => ({
+  x: within.x + within.w / 2 - side / 2,
+  y: within.y + within.h / 2 - side / 2,
+  w: side,
+  h: side,
+});

@@ -111,7 +111,9 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
     void (async () => {
       try {
         p.disk = await target.files();
-        p.labels = target.gam ? gameLabels(p.disk, target.gam) : undefined;
+        // a game of yours shows the counter names its author wrote (Overview › Controls)
+        const names = target.gam && target.saveId.startsWith('project:') ? await projectCounterNames(target.saveId.slice(8), target.gam) : undefined;
+        p.labels = target.gam ? gameLabels(p.disk, target.gam, names) : undefined;
       } catch {
         /* names and pictures are a nicety */
       }
@@ -140,4 +142,13 @@ function sameBytes(a: Uint8Array, b: Uint8Array | undefined): boolean {
   if (!b || a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
   return true;
+}
+
+async function projectCounterNames(id: string, gam: string): Promise<Record<string, string> | undefined> {
+  try {
+    const [{ loadProject }, { controlsFromCompanion }] = await Promise.all([import('../project/storage'), import('../editor/core/gameControls')]);
+    return controlsFromCompanion((await loadProject(id))?.record.companion, gam).counters;
+  } catch {
+    return undefined;
+  }
 }

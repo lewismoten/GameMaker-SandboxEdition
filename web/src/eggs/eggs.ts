@@ -1,4 +1,4 @@
-// The thirteen felt eggs hidden in the Sandbox games: one per game, each carrying a few names
+// The felt eggs hidden in the Sandbox games: one per game, each carrying a few names
 // (easter eggs began as authors' hidden credits) and one piece of a small mystery about a
 // family root beer recipe that keeps asking for one more than anybody has. However many there
 // are, the mystery's last egg is always the one more: it is never one of these.
@@ -31,8 +31,22 @@ export interface EggLook {
   band: string;
   patch: string;
   thread: string;
-  pattern: 'zigzag' | 'dots' | 'stars' | 'snowflakes' | 'scallops' | 'checks' | 'waves' | 'circuit' | 'ruled' | 'pawprints' | 'grid' | 'diamonds' | 'confetti';
-  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'bookworm' | 'bone' | 'cube' | 'sword' | 'cake';
+  pattern:
+    | 'zigzag'
+    | 'dots'
+    | 'stars'
+    | 'snowflakes'
+    | 'scallops'
+    | 'checks'
+    | 'waves'
+    | 'circuit'
+    | 'ruled'
+    | 'pawprints'
+    | 'grid'
+    | 'diamonds'
+    | 'confetti'
+    | 'staff';
+  motif: 'paw' | 'castle' | 'mitten' | 'bolt' | 'planet' | 'mask' | 'rocket' | 'bug' | 'bookworm' | 'bone' | 'cube' | 'sword' | 'cake' | 'note';
 }
 
 export interface Egg {
@@ -185,6 +199,17 @@ export const EGGS: readonly Egg[] = [
     credits: ['Starring Teddy, the biggest he has ever been', 'Party planned by Gwinn and Doc Leo, who never once said so', 'Stitched by Claude Opus 5.5'],
     lore: 'Tucked in with the lost party hats in the hedge: a place card in Doc Leo\'s hand. "ONE MORE CHAIR AT THE TABLE. Keep it for whoever is still coming." Teddy sat in it anyway.',
     look: { felt: '#b48ce0', band: '#ffd23f', patch: '#f59ac0', thread: '#ffffff', pattern: 'confetti', motif: 'cake' },
+    detect: { block: 149 },
+  },
+  {
+    game: 'tuneup',
+    gameTitle: 'Tune-Up',
+    name: 'The Rubber Egg',
+    description:
+      'Hot-pink felt sewn to look like a glossy rubber egg, with an orange band stitched round its waist, a white felt shine, and a little sewn-in tag that reads "100% NATURAL RUBBER*" and, underneath, "*felt".',
+    credits: ['Laid by Lady Regina Cluckington III (*corrected)', 'Arranged by Claude Opus 5.5', 'for Lewis "Lewie" Moten III, Teddy, Gwinn and Doc Leo'],
+    lore: 'Doc Leo read the tag twice. High tensile strength, great elasticity, tear resistant, and not one bit of rubber in it. Folded under the tag, a page of the parade tune in his hand: "Twelve good things in the family mug, and one more nobody names. Pour it for whoever comes in late."',
+    look: { felt: '#e8609c', band: '#ffb03a', patch: '#ffffff', thread: '#ffffff', pattern: 'dots', motif: 'note' },
     detect: { block: 149 },
   },
   {

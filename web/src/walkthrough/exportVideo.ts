@@ -12,7 +12,7 @@ import { WALKTHROUGH_FPS, type Walkthrough } from './format';
 import { muxAv, type AvSample } from './mp4av';
 import { headlessCanvas, screenRgba, WalkRun } from './runtime';
 import { drawEndCard, endCardLines } from './endCard';
-import type { PlayerPatches } from '../dosPlayer/patchRules';
+import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
 const W = 320;
 const H = 200;
