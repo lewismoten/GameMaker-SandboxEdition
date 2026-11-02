@@ -5,7 +5,7 @@
 // - Brake Dance, on the power ladder: each stiff brake lamp sits inside its solid housing, where
 //   Teddy can't touch it, and only a trick at least as strong as its own frees it (turn < roll
 //   over < play dead < dance); a weaker trick fizzles on it. A freed lamp, stronger than any
-//   trick, floats out to Teddy, and his touch counts it.
+//   trick, floats out to Teddy lit with its letter (B, R, A, K), and his touch counts it.
 // - Hubcaps and Balls: three caps lift to show the ball, then shuffle along their paths (a cap
 //   crossing over, one sliding under, one bobbing in place, every move the same length of time);
 //   at the end of the path each settles. Doc Leo's reach lifts a settled cap: on the ball, or on
@@ -42,10 +42,10 @@ export function addRealMonsters(out: Monster[], n: (name: string) => number, cap
       corner(0, 0, 4),
       corner(3, 0, 4),
     ]);
-    out[MON.lock0 + k] = mon(two('lamp.stiff0', 'lamp.stiff1', 6 + k), { power: lockPower(k), thru: 0, newmon: MON.lamp });
+    out[MON.lock0 + k] = mon(two('lamp.stiff0', 'lamp.stiff1', 6 + k), { power: lockPower(k), thru: 0, newmon: MON.lamp0 + k });
   }
-  out[MON.lamp] = mon(two('lamp.lit0', 'lamp.lit1', 3), { power: LAMP, thru: 0, towards: 2, newmon: LASTMON });
-  out[MON.lampDone] = mon(two('lamp.done', 'lamp.done', 20), { power: BIRD, thru: 0 });
+  // freed, each lamp glows bright red with its letter of BRAKE (the door's lamp is the E)
+  for (let k = 0; k < 4; k++) out[MON.lamp0 + k] = mon(two(`lamp.lit${k}.0`, `lamp.lit${k}.1`, 3), { power: LAMP, thru: 0, towards: 2, newmon: LASTMON });
   if (caps) {
     caps.paths.forEach((path, i) => {
       const ball = i === caps.ball;

@@ -94,17 +94,16 @@ export const MON = {
   drop0: 5,
   /** The dream's end: Sir Reginald swimming through the oil pipe. */
   swim: 10,
-  /** Brake Dance: a trick's sparkle (one per trick), the stiff lamp each one frees, the lamp lit, and done. */
+  /** Brake Dance: a trick's sparkle (one per trick), the stiff lamp each one frees, and that lamp lit (lamp0 on: B, R, A, K). */
   trick0: 11,
   lock0: 15,
-  lamp: 19,
-  lampDone: 20,
   /** Hubcaps and Balls: the three caps shuffling, then resting, then lifted. */
   cap0: 21,
   capRest: 24,
   capRestBall: 25,
   capLifted: 26,
   capLiftedBall: 27,
+  lamp0: 28,
 } as const;
 
 /** Sound slots (0..8 are the ones PLAYGAME plays by itself, by the kind of change). */

@@ -41,7 +41,7 @@ export function kit(pal: Pal): Kit {
  * touch only when counter `ctr` holds `need` (a touch that would leave it empty is refused).
  * `badge` draws what it waits for on the shut door.
  */
-export function countedDoor(k: Kit, name: string, back: string, ctr: number, need: number, badge: (p: Pixels) => void): void {
+export function countedDoor(k: Kit, name: string, back: string, ctr: number, need: number, badge: (p: Pixels) => void, openBadge?: (p: Pixels) => void): void {
   const { c } = k;
   const shut = k.pic(back);
   shut.rect(2, 0, 16, 20, c('mach', 3)).frame(2, 0, 16, 20, c('mach', 0));
@@ -49,6 +49,7 @@ export function countedDoor(k: Kit, name: string, back: string, ctr: number, nee
   badge(shut);
   const open = k.pic(back);
   open.rect(2, 0, 2, 20, c('mach', 2)).rect(16, 0, 2, 20, c('mach', 2));
+  openBadge?.(open);
   k.book.add(name, shut, { solid: SOLID, effect: ctr, eamt: -need, touch: `${name}.open` });
   k.book.add(`${name}.open`, open, AIR);
   // the door's top half (Doc Leo is two blocks tall): its frame and a lamp; never in the way

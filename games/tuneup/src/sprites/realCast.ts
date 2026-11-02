@@ -7,6 +7,7 @@ import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { chicken } from '../art/chicken';
 import { P } from '../art/palette';
 import { CTR } from '../ids';
+import { text } from '../../../snowbound/src/art/font';
 
 const c = P.c;
 const ink = c('ink', 0);
@@ -40,12 +41,12 @@ function sparkle(f: number, col: string): Pixels {
   return outline(p, ink);
 }
 
-/** A brake lamp: a red lens on a socket; stiff (dark, a squinting face), lit (glowing) or done (lit, content). */
-function lamp(state: 'stiff' | 'lit' | 'done', f = 0): Pixels {
+/** A brake lamp: a red lens on a socket; stiff (dark, a squinting face) or lit (glowing bright red, its white letter of BRAKE). */
+function lamp(state: 'stiff' | 'lit', f = 0, letter = ''): Pixels {
   const p = new Pixels(20, 20, 255);
   p.rect(4, 15, 12, 5, c('metal', 2)).rect(4, 15, 12, 1, c('metal', 4));
   const lens = state === 'stiff' ? c('red', 0) : c('red', 3);
-  if (state !== 'stiff') p.disc(10, 9, 9, c('red', 1));
+  if (state !== 'stiff') p.disc(10, 9, 8 + f, c('red', 1));
   p.rect(3, 3 - (state === 'stiff' ? f : 0), 14, 12, lens).frame(3, 3 - (state === 'stiff' ? f : 0), 14, 12, ink);
   if (state === 'stiff') {
     // squinting, squeaking: a line of eyes and a tight mouth
@@ -54,8 +55,8 @@ function lamp(state: 'stiff' | 'lit' | 'done', f = 0): Pixels {
       .line(8, 11 - f, 12, 11 - f, ink);
     if (f) p.line(17, 0, 19, 2, c('lamp', 4));
   } else {
-    p.rect(5, 5, 4, 2, c('paint', 3));
-    if (state === 'done' || f) p.set(7, 9, ink).set(13, 9, ink).line(8, 12, 12, 12, ink);
+    p.rect(4, 4, 3, 1, c('paint', 3));
+    text(p, 6, 5, letter, c('paint', 3));
   }
   return outline(p, ink);
 }
@@ -85,11 +86,12 @@ export function addRealCast(add: Add): void {
   });
   add('lamp.stiff0', lamp('stiff', 0));
   add('lamp.stiff1', lamp('stiff', 1));
-  // a lit lamp counts when Teddy touches it (and becomes done)
+  // a lit lamp counts when Teddy touches it
   const lit = { effect: CTR.lamps, eamt: 1, scorePts: 50 };
-  add('lamp.lit0', lamp('lit', 0), lit);
-  add('lamp.lit1', lamp('lit', 1), lit);
-  add('lamp.done', lamp('done'));
+  [...'BRAK'].forEach((letter, k) => {
+    add(`lamp.lit${k}.0`, lamp('lit', 0, letter), lit);
+    add(`lamp.lit${k}.1`, lamp('lit', 1, letter), lit);
+  });
   add('cap', hubcap(0, 'none'));
   // the cap over the ball looks the same; reaching up under it finds the ball
   add('cap.ball', hubcap(0, 'none'), { effect: CTR.ball, eamt: 1, scorePts: 200 });

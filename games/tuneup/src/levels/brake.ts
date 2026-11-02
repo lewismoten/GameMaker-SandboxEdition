@@ -4,7 +4,8 @@
 // hops over them), each under a sign of the trick it wants: Z turn, X roll over, C play dead,
 // V dance. A trick's sparkle flies into the housing; the right trick (or a stronger one) frees
 // the lamp, which floats out to Teddy, and his touch counts it (realMonsters.ts). The floor's
-// tiles flash on the beat. When all four lamps are lit, the door at the end opens.
+// tiles flash on the beat. Each freed lamp glows with its letter (B, R, A, K); when all four are
+// lit, the door at the end opens and its own lamp lights the E.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { text } from '../../../snowbound/src/art/font';
 import { POSES } from '../../../teddy2/src/sprites/teddy';
@@ -71,9 +72,21 @@ export function brakeBlocks(pal: Pal): Kit {
     text(plate, 6, 6, h.key, c('ink', 0));
     book.add(`key${i}`, plate, AIR);
   });
-  countedDoor(k, 'door', 'wall', CTR.lamps, HOUSINGS.length, (p: Pixels) => {
-    p.disc(10, 12, 4, c('red', 3)).frame(6, 8, 9, 9, c('ink', 0));
-  });
+  // the door's own brake lamp lights the E of BRAKE when it opens (the freed lamps are B, R, A, K)
+  countedDoor(
+    k,
+    'door',
+    'wall',
+    CTR.lamps,
+    HOUSINGS.length,
+    (p: Pixels) => {
+      p.disc(10, 12, 4, c('red', 0)).frame(6, 8, 9, 9, c('ink', 0));
+    },
+    (p: Pixels) => {
+      p.rect(4, 1, 12, 11, c('red', 3)).frame(4, 1, 12, 11, c('ink', 0));
+      text(p, 7, 3, 'E', c('paint', 3));
+    },
+  );
   return k;
 }
 
