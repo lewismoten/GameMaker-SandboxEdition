@@ -17,6 +17,8 @@ export const SEQ = {
   oil0: 12,
   /** Teddy's tricks (Brake Dance): Z turn, X roll over, C play dead, V dance. */
   trick0: 12,
+  /** Pump Up the Volume: B twists a balloon dog under Doc Leo's shoes. */
+  twist: 12,
 } as const;
 
 /** Keys (scan code << 8 | ASCII). */
@@ -107,6 +109,9 @@ export const MON = {
   capLifted: 26,
   capLiftedBall: 27,
   lamp0: 28,
+  /** Pump Up the Volume: the balloon dog Doc Leo twists (it floats him up), and its pop. */
+  ride: 33,
+  ridePop: 34,
 } as const;
 
 /** Sound slots (0..8 are the ones PLAYGAME plays by itself, by the kind of change). */
@@ -135,4 +140,6 @@ export const SND = {
   oil0: 13,
   /** Brake Dance: each trick's own sound. */
   trick0: 13,
+  /** Pump Up the Volume: a balloon twisted (squeak, squeak, puff). */
+  twist: 13,
 } as const;

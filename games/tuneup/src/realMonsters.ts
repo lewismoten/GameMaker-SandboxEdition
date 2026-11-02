@@ -30,6 +30,8 @@ const trickPower = (k: number) => 15 + 10 * k;
 /** A freed lamp: stronger than every trick (they pass it by), weaker than Teddy (his touch counts it). */
 const LAMP = 99;
 const BIRD = 200;
+/** The balloon dog Doc Leo rides: weaker than the bird, stronger than the rest. */
+const RIDE = 150;
 
 export function addRealMonsters(out: Monster[], n: (name: string) => number, caps?: CapGame): void {
   const two = (a: string, b: string, t: number): [number, number][] => [
@@ -47,6 +49,16 @@ export function addRealMonsters(out: Monster[], n: (name: string) => number, cap
   }
   // freed, each lamp glows bright red with its letter of BRAKE (the door's lamp is the E)
   for (let k = 0; k < 4; k++) out[MON.lamp0 + k] = mon(two(`lamp.lit${k}.0`, `lamp.lit${k}.1`, 3), { power: LAMP, thru: 0, towards: 2, newmon: LASTMON });
+  // Pump Up the Volume: born in the curb under Doc Leo's shoes, the balloon dog rises seven blocks
+  // (lifting him, as it is solid; a little over an awning, so he steps down onto it), bobs a
+  // moment at the top (time to step off) and pops: the Teddy finale's ride, on its path
+  out[MON.ride] = mon(two('ride0', 'ride1', 4), { power: RIDE, thru: 0, end: -1, newmon: MON.ridePop }, [
+    corner(0, -7, 2),
+    corner(0, -7, 1),
+    corner(0, -6, 1),
+    corner(0, -7, 1),
+  ]);
+  out[MON.ridePop] = mon(two('pop0', 'pop1', 3), { power: 0, thru: 0, end: 6, newmon: LASTMON });
   if (caps) {
     caps.paths.forEach((path, i) => {
       const ball = i === caps.ball;

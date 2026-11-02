@@ -1,7 +1,7 @@
 // The way through the dream's end and the real tune-up, as orders for the bot: the swim watched
 // to its end, every fan reached on both verses (riding the warm air up when it pushes), every
 // brake lamp freed with its own trick and collected, the ball's cap followed through each
-// shuffle and lifted, the balloon towers puffed and climbed and the tire pumped full, and
+// shuffle and lifted, a balloon dog ridden up to each awning and the tire pumped full, and
 // Gwinn's toys hopped on the way to the tapes. A person's timing throughout (bot.ts).
 import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/routeChecks';
 import { CTR, MON } from '../src/ids';
@@ -11,8 +11,7 @@ import { CUPS } from '../src/levels/cups';
 import { FAN_ROW, FAN_VERSES } from '../src/levels/fan';
 import { ORIGIN } from '../src/levels/maps';
 import { MUFFLED, TOYS, TUCKS } from '../src/levels/muffled';
-import { buildPalette } from '../src/art/palette';
-import { KNOT_ROWS, PUMP, TOWERS, pumpBlocks } from '../src/levels/pump';
+import { AWNINGS, AWNING_ROW, POODLE, PUMP, TWISTS } from '../src/levels/pump';
 import type { Bot } from './bot';
 import { leave, must } from './route';
 
@@ -127,33 +126,29 @@ export function hubcaps(round: number) {
   return run;
 }
 
-/** The blocks of a balloon just puffed up (the first two steps of its hold), as a person sees it. */
-const freshBalloons = (() => {
-  const book = pumpBlocks(buildPalette('noon')).book;
-  return new Set([...book.index].filter(([name]) => /^(dog|swan|giraffe)[01]$/.test(name)).map(([, i]) => i));
-})();
-
-/** Waits for the balloon over Doc Leo's hat to puff up, then hops up through it onto it. */
-async function balloonUp(bot: Bot, x: number, row: number): Promise<void> {
-  const y = bot.px.y;
+/** Twists a balloon dog under Doc Leo's shoes (B), rides it up to the awning's height. */
+async function balloonUp(bot: Bot, x: number): Promise<void> {
+  await must(bot, bot.walk(x, `to the awning's left at ${x}`), 'to the twist');
+  await must(bot, bot.react(), 'looking up');
+  await must(bot, bot.tap('b', 4), 'twisting a balloon dog');
   await must(
     bot,
-    bot.until(undefined, () => freshBalloons.has(bot.shownNum(x, row)), `saw the balloon at ${x} puff up`, 400),
-    'waiting for the balloon',
+    bot.until(undefined, () => bot.px.y <= (AWNING_ROW - 1) * 20 - 10, `rode the balloon dog up over the awning at ${x}`, 200),
+    'riding up',
   );
-  await must(bot, bot.react(), 'reacting');
-  await must(bot, bot.hop('up', 12), 'up through the balloon');
-  if (bot.px.y >= y) throw new Error(`didn't get onto the balloon at ${x} (${bot.px.y} from ${y})`);
+  await must(bot, bot.react(), 'at the top');
 }
 
-/** 8. Pump Up the Volume: the towers of balloons, the awnings, the tire, the pump. */
+/** 8. Pump Up the Volume: a balloon dog ridden up to each awning (its poodle taken), the tire, the pump. */
 export async function pumpUp(bot: Bot): Promise<void> {
   expect(bot, 15, 'pump up the volume');
   await must(bot, bot.land(), 'onto the curb');
-  for (const x of TOWERS) {
-    await must(bot, bot.walk(x, `under the knots at ${x}`), 'to the tower');
-    for (const row of KNOT_ROWS) await balloonUp(bot, x, row);
-    await must(bot, bot.walk(x + 2, 'off the balloon onto the top'), 'across');
+  for (const [i, [a, b]] of AWNINGS.entries()) {
+    await balloonUp(bot, TWISTS[i]);
+    const score = bot.sim.ci.score;
+    await must(bot, bot.walk(b, 'along the awning, past its balloon poodle'), 'across');
+    if (bot.sim.ci.score < score + POODLE) throw new Error(`missed the balloon poodle on the awning at ${a}`);
+    if (i < AWNINGS.length - 1) await must(bot, bot.walk(b + 1, 'off the end of the awning'), 'down');
   }
   await must(bot, bot.walk(PUMP.handle, 'under the pump handle'), 'handle');
   await must(

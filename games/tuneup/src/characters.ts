@@ -35,7 +35,7 @@ type F = { pose: string; x?: number; y?: number; pause?: number; mirror?: boolea
 /** A frame that fires monster `n` into the row `rows` over Doc Leo's top block (0: just over his hat). */
 const fire = (n: number, rows: number): Frame => ({ ...emptyFrame(), x: 0, y: -20 * (rows + 1), pic1: n, pic2: MONBL, pause: 1 });
 
-function leo(cb: LeoBlocks, mode: 'leo' | 'piano' | 'oil'): Character {
+function leo(cb: LeoBlocks, mode: 'leo' | 'piano' | 'oil' | 'pump'): Character {
   const ch = newCharacter();
   const S = ch.sequences;
   const f = (o: F): Frame => {
@@ -93,6 +93,18 @@ function leo(cb: LeoBlocks, mode: 'leo' | 'piano' | 'oil'): Character {
     });
   }
 
+  if (mode === 'pump') {
+    // B: a twist, a squeak, and a balloon dog inflates right under his shoes and floats him up
+    // (the Teddy finale's balloon trick, its dog born in the ground under him)
+    const birth: Frame = { ...emptyFrame(), x: 0, y: 40, pic1: MON.ride, pic2: MONBL, pause: 1 };
+    set(S[SEQ.twist], [f({ pose: 'twist', pause: 3 }), f({ pose: 'front', pause: 3 }), f({ pose: 'twist', pause: 3 }), birth, f({ pose: 'grin', pause: 2 })], {
+      key: KEY.b,
+      sound: SND.twist,
+      ground: 1,
+      norepeat: 1,
+    });
+  }
+
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 20; // energy (hit points)
   ch.meter[1] = 3; // lives
@@ -106,6 +118,7 @@ function leo(cb: LeoBlocks, mode: 'leo' | 'piano' | 'oil'): Character {
 export const buildLeo = (cb: LeoBlocks) => leo(cb, 'leo');
 export const buildPianoLeo = (cb: LeoBlocks) => leo(cb, 'piano');
 export const buildOilLeo = (cb: LeoBlocks) => leo(cb, 'oil');
+export const buildPumpLeo = (cb: LeoBlocks) => leo(cb, 'pump');
 
 export interface MonsterOptions {
   /** Blocks a Squeak paces along its line before turning round. */

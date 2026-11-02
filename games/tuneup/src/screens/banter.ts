@@ -76,7 +76,7 @@ export const INTRO: Record<number, Card> = {
       ['reggie', 'The tires are soft.'],
       ['leo', "The owner's manual says 32 psi. Hand me the pump."],
       ['reggie', 'This pump is for balloons.'],
-      ['leo', 'Then hop on each balloon animal as it puffs up. Mind: they sag.'],
+      ['leo', 'Then I twist a balloon dog under my shoes (B) and float up. Step off before it pops.'],
     ],
   },
   9: {

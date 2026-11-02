@@ -40,7 +40,7 @@ export interface LevelDef {
   theme: ThemeName;
   blocks: (pal: Pal) => Kit;
   build: (b: Kit['book']) => Level;
-  chr: 'leo' | 'piano' | 'oil' | 'teddy' | 'nobody' | 'chez';
+  chr: 'leo' | 'piano' | 'oil' | 'pump' | 'teddy' | 'nobody' | 'chez';
   snd: Place;
   song: () => Uint8Array;
   mons: MonsterOptions;
@@ -156,7 +156,7 @@ export const LEVELS: LevelDef[] = [
     theme: 'noon',
     blocks: pumpBlocks,
     build: pump,
-    chr: 'leo',
+    chr: 'pump',
     snd: 'pump',
     song: pumpSong,
     mons: {},

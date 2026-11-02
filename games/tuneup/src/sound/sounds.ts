@@ -193,6 +193,12 @@ export function buildSoundSet(place: Place): SoundSet {
       speaker((i) => (i < 4 ? 900 + i * 250 : 0)),
     );
     add(SND.gain, 'psi', SPEAKER.arpeggio([523, 659, 784, 1047]));
+    // B: a balloon twisted, squeak-squeak, then the dog puffs up under Doc Leo
+    add(
+      SND.twist,
+      '',
+      speaker((i) => (i < 10 ? (i % 3 === 2 ? 0 : 1200 + (i % 3) * 350 - i * 30) : 0)),
+    );
     // off the full tire and down its side: the slide whistle
     add(SND.help, 'slide', SPEAKER.fall(1600, 520));
   } else if (place === 'muffled') {

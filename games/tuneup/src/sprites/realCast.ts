@@ -5,13 +5,14 @@
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { chicken } from '../art/chicken';
+import { popPic, rideDog } from './balloonDogs';
 import { P } from '../art/palette';
 import { CTR } from '../ids';
 import { text } from '../../../snowbound/src/art/font';
 
 const c = P.c;
 const ink = c('ink', 0);
-type Add = (name: string, pic: Pixels, attrs?: { effect?: number; eamt?: number; scorePts?: number }) => number;
+type Add = (name: string, pic: Pixels, attrs?: { effect?: number; eamt?: number; scorePts?: number; solid?: number }) => number;
 
 /** Sir Reginald doing the breaststroke: wings out, then back, a trail of bubbles behind. */
 function swimmer(f: number): Pixels {
@@ -98,4 +99,9 @@ export function addRealCast(add: Add): void {
   add('cap.up', hubcap(9, 'none'));
   add('cap.upBall', hubcap(9, 'ball'));
   add('cap.tada', hubcap(9, 'tada'));
+  // Pump Up the Volume: the balloon dog Doc Leo rides (solid all round, so it lifts him), its pop
+  add('ride0', rideDog(0), { solid: 15 });
+  add('ride1', rideDog(1), { solid: 15 });
+  add('pop0', popPic(0));
+  add('pop1', popPic(1));
 }

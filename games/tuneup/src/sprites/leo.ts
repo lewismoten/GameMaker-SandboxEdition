@@ -227,6 +227,7 @@ export function buildLeoBlocks(pal: Pal) {
   add('climb', { view: 'rear', arms: 'up', hop: true });
   add('hopSide', { view: 'side', arms: 'up', hop: true, face: 'grin' });
   add('hurt', { view: 'front', face: 'ouch', arms: 'up' });
+  add('twist', { view: 'front', face: 'grin', arms: 'press' });
   add('die0', { view: 'front', face: 'dazed', crouch: 4, arms: 'press' });
   add('die1', { view: 'front', face: 'dazed', crouch: 8, arms: 'press', hatless: true });
   return { ...book, poses };
