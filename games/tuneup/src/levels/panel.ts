@@ -52,7 +52,7 @@ const PRESET_GRADES = [60, 150, 60] as const;
 
 /** A preset button's ring: the dial's, with each lit run in three grades (a tick, two, a tick; every grade is lit and tunes the station). */
 function presetRing(i: number): { on: boolean; ticks: number; points?: number }[] {
-  return dialRing(i).flatMap(([on, ticks]) => {
+  return dialRing(i).flatMap(([on, ticks]): { on: boolean; ticks: number; points?: number }[] => {
     if (!on) return [{ on, ticks }];
     const { ticks: step } = DIAL;
     if (ticks !== step) throw new Error(`dial cell ${i}: a lit run of ${ticks} ticks can't be graded`);
