@@ -131,6 +131,16 @@ export const INTRO: Record<number, Card> = {
       ['leo', 'Then why put it on a car? Left to go, Right to brake. Stop on red.'],
     ],
   },
+  15: {
+    title: 'LEVEL 15: THE PARADE ROUTE',
+    lady: true,
+    teddy: true,
+    lines: [
+      ['regina', 'A section of the band waits in every side street for its cue.'],
+      ['leo', 'Toot under its lamp (Space) and they fall in behind us.'],
+      ['regina', 'Drive past one and back up. Down is reverse.'],
+    ],
+  },
 };
 
 /** After each level (or a part of one), by scene file. */
@@ -323,6 +333,28 @@ const DRIVE_OUTRO: Record<string, Card> = {
       ['regina', 'The radio says the Clown Club parade is lining up without its lead car.'],
       ['leo', 'Then the radio works. Is it fixed?'],
       ['regina', 'Fixed, tested, and running late.'],
+    ],
+  },
+  band1: {
+    lady: true,
+    lines: [
+      ['leo', 'Bells and bugles. Is it fixed?'],
+      ['regina', "It's a parade, Doc. It isn't broken."],
+    ],
+  },
+  band2: {
+    lady: true,
+    lines: [
+      ['regina', 'Kazoos! Just like the horn this morning.'],
+      ['leo', 'Only now it is on purpose.'],
+    ],
+  },
+  band3: {
+    lady: true,
+    teddy: true,
+    lines: [
+      ['leo', 'Every section, and the radio humming along. Is it fixed?'],
+      ['regina', 'Tuned up. Every last part.'],
     ],
   },
 };

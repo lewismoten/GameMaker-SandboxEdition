@@ -6,6 +6,8 @@ import { expectScene as expect } from '@lewismoten/gamemaker-sandbox-tools/kit/r
 import { buildPalette } from '../src/art/palette';
 import { EXIT_X, ROUTES, driveBlocks, footName, phaseOf, stopFootName, type Signal } from '../src/levels/drive';
 import { LIGHT } from '../src/levels/drive';
+import { CUE_ROW, PARADES, EXIT_X as PARADE_EXIT, JOIN } from '../src/levels/parade';
+import { CTR } from '../src/ids';
 import type { Bot } from './bot';
 import { leave, must } from './route';
 
@@ -26,7 +28,7 @@ function coast(gx: number): number {
   return d;
 }
 
-/** Drives left until the car's back... its front (left edge) would coast to a stop at `goal` pixels, then lets go and waits for it to stop. */
+/** Drives left until the car's front (its left edge) would coast to a stop at `goal` pixels, then lets go and waits for it to stop. */
 async function coastTo(bot: Bot, goal: number, label: string): Promise<void> {
   const gx = () => bot.sim.ci.gravx;
   // a person's lead: they let go a few ticks before the spot, seeing the car's speed
@@ -123,4 +125,24 @@ export function testDrive(part: number) {
   return run;
 }
 
-export const LEVELS_14_15 = [testDrive(0), testDrive(1)];
+/** 15. The Parade Route, scene `part`: up to each side street, a toot under its cue, then through the ribbon. */
+export function paradeRoute(part: number) {
+  const p = PARADES[part];
+  const run = async (bot: Bot): Promise<void> => {
+    expect(bot, 29 + part, `the parade route, ${p.file}`);
+    await must(bot, bot.land(), 'onto the route');
+    for (const x of [...p.cues].sort((a, b) => b - a)) {
+      await coastTo(bot, x * 20 - 6, `the side street at ${x}`);
+      await must(bot, bot.react(), 'looking up at the cue');
+      const score = bot.sim.ci.score;
+      await must(bot, bot.tap('space', 6), `tooting under the cue at ${x}`);
+      if (bot.sim.ci.score !== score + JOIN) throw new Error(`the section at ${x} (cue row ${CUE_ROW}) didn't join`);
+    }
+    if (bot.count(CTR.stations) !== p.cues.length) throw new Error(`${bot.count(CTR.stations)} sections joined`);
+    await leave(bot, bot.dig('left', PARADE_EXIT, 'through the ribbon to the end of the route'), 'out');
+  };
+  Object.defineProperty(run, 'name', { value: `paradeRoute${part + 1}` });
+  return run;
+}
+
+export const LEVELS_14_15 = [testDrive(0), testDrive(1), paradeRoute(0), paradeRoute(1), paradeRoute(2)];
