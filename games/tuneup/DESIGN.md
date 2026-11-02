@@ -184,9 +184,9 @@ What PLAYGAME allows (code/GM), and how the disk uses it. Version 2.0 measured 3
   frame count, so the clips leave out the ring frame (back to frame 0) that followed it
   (`noLoopFrame`): -796,000. A clip after the first opens on a whole frame; `cheapCuts` puts the
   cuts where that costs least (a scene change) in the same number of clips, but each Hat Sting
-  holds its title and its tool for about 4 seconds between its changes, so with clips of at most
-  4 seconds nearly every cut still falls in a hold: only -6,000. Clips of up to 6 seconds would
-  let each sting cut at its scene change (about -80,000 a sting), at the cost of a slower Esc.
+  holds its title and its tool for about 4 seconds between its changes, so clips run up to 6
+  seconds (`build.ts` `CLIP_SECONDS`): each sting cuts at its scene change (about -80,000 a
+  sting; -1,340,527 in all), at the cost of a slightly slower Esc.
   The stings are named with two digits (`sting01`), so level 1's clips aren't level 12's and 13's.
   Expected: about 9.1 MB down to under 6.5 MB before the cards and cartoons' cuts.
 
