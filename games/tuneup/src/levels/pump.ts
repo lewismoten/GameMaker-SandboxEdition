@@ -7,6 +7,7 @@
 // Doc Leo sees them. On the tire, he works the pump's handle (Space held) while its gauge fills
 // eight notches, and the gate at the far side opens for a full tire. Down its far side, a slide
 // whistle.
+import { addFork, glint } from '../blocks/fork';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { poodle } from '../sprites/balloonDogs';
@@ -24,6 +25,8 @@ export const PUMP = { w: 37, floor: 9, tire: [25, 32] as [number, number], tireT
 const TIRE_H = PUMP.floor - PUMP.tireTop;
 /** The awnings' row, just under a balloon dog's ride (it rises seven blocks from the curb). */
 export const AWNING_ROW = 3;
+/** The secret: a glint over the second awning's left end, and a tuning fork on it (level x, y). */
+export const PUMP_FORK = [19, AWNING_ROW - 1] as const;
 /** The awnings: [first x, last x]. Doc Leo twists a balloon dog just left of each and rides it up. */
 export const AWNINGS: [number, number][] = [
   [11, 14],
@@ -190,6 +193,8 @@ export function pumpBlocks(pal: Pal): Kit {
   top.rect(2, 4, 16, 16, c('mach', 3)).frame(2, 4, 16, 16, c('mach', 0)).rect(2, 2, 16, 2, c('mach', 1));
   top.rect(8, 8, 4, 4, c('lamp', 3)).frame(8, 8, 4, 4, c('mach', 0));
   book.add('gateTop', top, AIR);
+  addFork(k, `air${AWNING_ROW - 1}`);
+  glint(k, `air${AWNING_ROW - 2}`);
   return k;
 }
 
@@ -224,6 +229,7 @@ export function pump(book: Kit['book']): Level {
     for (let y = AWNING_ROW + 1; y < floor; y++) m.set(b, y, `post${y}`);
     m.set(poodleAt([a, b]), AWNING_ROW - 1, 'poodle0');
   }
+  m.set(...PUMP_FORK, 'fork').set(PUMP_FORK[0] + 1, AWNING_ROW - 2, `air${AWNING_ROW - 2}.glint`);
   const [t0, t1] = PUMP.tire;
   for (let by = 0; by < TIRE_H; by++) for (let bx = 0; bx <= t1 - t0; bx++) m.set(t0 + bx, PUMP.tireTop + by, `tire${bx}.${by}`);
   // (the handle is a row below the screen's top: PLAYGAME changes only blocks wholly on screen)

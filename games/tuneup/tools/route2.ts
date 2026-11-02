@@ -166,9 +166,11 @@ export async function pumpUp(bot: Bot): Promise<void> {
   expect(bot, 15, 'pump up the volume');
   await must(bot, bot.land(), 'onto the curb');
   for (const [i, [a, b]] of AWNINGS.entries()) {
+    const forks = bot.count(CTR.forks);
     await balloonUp(bot, TWISTS[i]);
     const score = bot.sim.ci.score;
     await must(bot, bot.walk(b, 'along the awning, past its balloon poodle'), 'across');
+    if (i === 1 && bot.count(CTR.forks) !== forks + 1) throw new Error('missed the tuning fork on the second awning');
     if (bot.sim.ci.score < score + POODLE) throw new Error(`missed the balloon poodle on the awning at ${a}`);
     if (i < AWNINGS.length - 1) await must(bot, bot.walk(b + 1, 'off the end of the awning'), 'down');
   }
@@ -219,7 +221,9 @@ export async function muffled(bot: Bot): Promise<void> {
   while (watching()) await must(bot, bot.wait(1), 'waiting for Gwinn to settle');
   await must(bot, bot.react(), 'she settled');
   await must(bot, bot.hop('right', 8, 'right', MUFFLED.shelf[0] + 1), 'onto the shelf');
+  const forks = bot.count(CTR.forks);
   await must(bot, bot.walk(MUFFLED.shelf[1], 'along the shelf over Gwinn'), 'shelf');
+  if (bot.count(CTR.forks) !== forks + 1) throw new Error('missed the tuning fork on the shelf end');
   await must(bot, bot.walk(MUFFLED.shelf[1] + 1, 'off the shelf'), 'down');
   for (const x of TOYS.filter((t) => t > MUFFLED.bed[1] && t < MUFFLED.crate)) await hopToy(bot, x);
   await must(bot, bot.walk(MUFFLED.crate - 1, 'by the crate'), 'crate');

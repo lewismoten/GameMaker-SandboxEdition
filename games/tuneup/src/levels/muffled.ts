@@ -7,6 +7,7 @@
 // tapes sit on a crate past her bed; with them, the door at the end opens. Up on the high shelf
 // past her bed: the felt egg (in the set's last slot, a number no other map shows). Sir Reginald
 // is still Sir Reginald here; his egg comes after this level (banter.ts EGG). The sign that tells how to save is in the next level, The Rain Delay.
+import { addFork, glint } from '../blocks/fork';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { outline, scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { blob } from '../../../snowbound/src/art/draw';
@@ -31,6 +32,8 @@ export const MUFFLED = {
   shelf: [20, 25] as [number, number],
   crate: 30,
   egg: [27, 2] as [number, number],
+  /** The shelf's far end over the bed: a glint, and a tuning fork on it. */
+  fork: [25, 4] as [number, number],
   door: 40,
   exit: 41,
 } as const;
@@ -239,6 +242,8 @@ export function muffledBlocks(pal: Pal): Kit {
   countedDoor(k, 'door', 'wall', CTR.tapes, 1, (p: Pixels) => {
     p.rect(6, 9, 8, 6, c('ink', 1)).rect(7, 10, 5, 3, c('lamp', 3));
   });
+  addFork(k, 'wall');
+  glint(k, 'wall');
   // the felt egg, in the last slot
   while (book.index.size < EGG_BLOCK) book.add(`spare${book.index.size}`, new Pixels(20, 20, 0));
   book.add('egg', rubberEgg(wall()), { ...AIR, obj: 1, score: 500, touch: 'wall' });
@@ -268,6 +273,7 @@ export function muffled(book: Kit['book']): Level {
   for (const x of WATCHED.xs) m.set(x, WATCHED.y, 'watch');
   for (let y = 0; y < 2; y++) for (let x = 0; x < 2; x++) m.set(21 + x, 2 + y, `cert${x}.${y}`);
   // the high shelf past her bed, where the egg rolled
+  m.set(...M.fork, 'fork').set(M.fork[0] - 1, M.fork[1] - 1, 'wall.glint');
   m.fill(M.egg[0], M.egg[1] + 1, 2, 1, 's').set(...M.egg, 'egg');
   TOYS.forEach((x, i) => m.set(x, floor - 1, `toy${i}`));
   for (const x of TUCKS) m.set(x, floor - 1, 'tuck');
