@@ -8,25 +8,6 @@ import { BARS, MELODY, bpmFor, chordOf, eachBar, up } from './song';
 import { FAN_BEAT } from '../levels/fan';
 import { BRAKE_BEAT } from '../levels/brake';
 
-/** The swim: the tune slowed right down on a wobbly vibraphone, a soft pad under it, bubbles of celesta. */
-export function swimSong(): Uint8Array {
-  return tune(bpmFor(16), [
-    v(0, patchOf('vibes-wobbly'), MELODY, 70),
-    v(
-      1,
-      patchOf('pad-warm'),
-      eachBar((b) => chordOf(b, 'w')),
-      45,
-    ),
-    v(
-      2,
-      patchOf('celesta'),
-      eachBar((b) => `r h, ${up(up(b.chord[2]))} e, ${up(up(b.chord[1]))} e, r q`),
-      40,
-    ),
-  ]);
-}
-
 /** The Fan Band: a kazoo on the tune, a tuba, a snare; the hot verse adds a second kazoo and a busier snare. */
 export function fanSong(verse: number): Uint8Array {
   const hot = verse === 1;

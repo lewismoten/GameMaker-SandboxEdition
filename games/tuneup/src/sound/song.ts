@@ -51,51 +51,6 @@ export function menuSong(): Uint8Array {
   ]);
 }
 
-/** Jump Start: the garage at dawn, the tune on a muted trumpet, a tuba and a brushed snare, brisk. */
-export function jumpSong(): Uint8Array {
-  return tune(bpmFor(9), [
-    v(0, patchOf('trumpet'), MELODY, 90),
-    v(
-      1,
-      patchOf('tuba'),
-      eachBar((b) => `${b.root} q, r q, ${b.fifth} q, r q`),
-      90,
-    ),
-    v(
-      2,
-      patchOf('piano-mellow'),
-      eachBar((b) => `r q, ${chordOf(b, 'q')}, r q, ${chordOf(b, 'q')}`),
-      55,
-    ),
-    v(5, patchOf('melodic-snare'), times(8, 'r q, D4 q, r q, D4 e, D4 e'), 55),
-  ]);
-}
-
-/** Spark Plucks: a harp runs the chords under a bright square lead, a sweeping pad, electric. */
-export function sparkSong(): Uint8Array {
-  return tune(bpmFor(10), [
-    v(0, patchOf('lead-square'), MELODY, 70),
-    v(
-      1,
-      patchOf('harp'),
-      eachBar((b) => times(2, [...b.chord, up(b.chord[0])].map((n) => `${n} e`).join(', '))),
-      70,
-    ),
-    v(
-      2,
-      patchOf('pad-sweep'),
-      eachBar((b) => chordOf(b, 'w')),
-      45,
-    ),
-    v(
-      5,
-      patchOf('sub-bass'),
-      eachBar((b) => `${b.root} h, ${b.fifth} h`),
-      85,
-    ),
-  ]);
-}
-
 /** The Timing Beat's beat: 12 game ticks (91 BPM); a step of the pipes is an eighth. */
 export const BEAT = 12;
 
@@ -162,25 +117,6 @@ export function beatSong(verse: number): Uint8Array {
     }),
   );
   return tune(bpmFor(BEAT), [v(0, patchOf('pipe-organ'), melody, 60), v(3, patchOf('piano-mellow'), stride, 62)]);
-}
-
-/** Oil's Well: slow and slick, the tune on a soft reed over an upright bass and a vibraphone. */
-export function oilSong(): Uint8Array {
-  return tune(bpmFor(13), [
-    v(0, patchOf('reed-soft'), MELODY, 70),
-    v(
-      1,
-      patchOf('upright-bass'),
-      eachBar((b) => `${b.root} q, ${b.fifth} q, ${b.root} q, ${b.fifth} q`),
-      85,
-    ),
-    v(
-      2,
-      patchOf('vibraphone'),
-      eachBar((b) => `r q, ${chordOf(b, 'h')}, r q`),
-      45,
-    ),
-  ]);
 }
 
 /** The ending: the tune's last line, the band all together, then a held chord. */
