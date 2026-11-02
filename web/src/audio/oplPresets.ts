@@ -8,6 +8,8 @@
 // harmonics, like a square wave or a clarinet; a carrier at half pitch with the "bumps"
 // waveform plays every harmonic, like an organ). Several come from the games' own songs
 // (games/kit/song.ts, games/risi/src/sound/patches.ts), so their tracks show these names too.
+// Others were written fresh for timbres the archived games' songs use that these lacked
+// (no game's patch bytes copied; see NOTICE.md).
 import { INSTRUMENTS } from '@lewismoten/gamemaker-sandbox-tools/music/compose';
 import { patch as p, preset, type OplPreset } from './oplPatch';
 import { DRUM_KIT } from './oplDrumPresets';
@@ -188,6 +190,15 @@ const MELODIC: OplPreset[] = [
     'Many voices: a slow swell with a gentle wobble',
     p('x2 tl34 ar3 dr2 sl1 rr4 hold vib', 'x1 ar3 dr1 sl0 rr4 hold vib trem', 'fb3'),
   ),
+  preset(
+    'voices',
+    'choir-distant',
+    'Distant Choir',
+    60,
+    'chord',
+    'A far-off choir an octave down: a very slow swell that shimmers',
+    p('x1 tl20 ar9 dr2 sl4 rr4 vib', 'x0.5 ar2 dr1 sl3 rr4 hold trem', 'fb2'),
+  ),
 
   // ---- bass ----
   preset(
@@ -318,6 +329,24 @@ const MELODIC: OplPreset[] = [
     'A slow pad that breathes: vibrato and tremolo ride a rough, held tone',
     p('x1 tl28 ar5 dr1 sl2 rr4 hold vib w3', 'x2 ar4 dr0 sl0 rr3 hold trem vib', 'fb2'),
   ),
+  preset(
+    'synth',
+    'fuzz-stab',
+    'Fuzz Stab',
+    52,
+    'tune',
+    'A short, gritty stab: full-feedback buzz that is gone in a blink',
+    p('x2 tl6 ksl1.5 ar15 dr7 sl14 rr12', 'x1 ar15 dr6 sl9 rr12 ksr', 'fb7'),
+  ),
+  preset(
+    'synth',
+    'whistle-lead',
+    'Whistle Lead',
+    48,
+    'tune',
+    'A thin, high whistle far above the note, with a wavering pitch',
+    p('x12 tl10 ar12 dr2 sl6 rr4 vib', 'x12 ar14 dr1 sl4 rr8 hold vib', 'fb6'),
+  ),
 
   // ---- organ ----
   preset(
@@ -374,6 +403,15 @@ const MELODIC: OplPreset[] = [
     "A kazoo-ish reed, an octave above the note (from the games' songs)",
     p('x1 tl30 ar7 dr2 sl0 rr6 w1 hold ksr', 'x2 ar7 dr3 sl0 rr7 hold', 'fb5'),
   ),
+  preset(
+    'organ',
+    'organ-wobble',
+    'Wobble Organ (low)',
+    60,
+    'tune',
+    'A buzzy organ an octave down, wobbling in pitch and loudness',
+    p('x0.5 tl26 ar10 dr3 sl3 rr10 hold vib', 'x0.5 ar11 dr2 sl2 rr9 hold trem', 'fb4'),
+  ),
 
   // ---- brass ----
   preset(
@@ -413,6 +451,15 @@ const MELODIC: OplPreset[] = [
     p('x1 tl32 ar5 dr2 sl2 rr5 hold', 'x1 ar5 dr1 sl1 rr5 hold', 'fb4'),
   ),
   preset('brass', 'tuba', 'Tuba', 36, 'tune', 'A tuba: low, round and blowy', p('x1 tl28 ar7 dr2 sl2 rr6 hold', 'x1 ar7 dr2 sl1 rr6 hold', 'fb5')),
+  preset(
+    'brass',
+    'brass-swell',
+    'Low Brass Swell',
+    41,
+    'tune',
+    'Low brass an octave down: a buzzy swell that sinks as it is held',
+    p('x0.5 tl24 ar6 dr2 sl2 rr4 hold', 'x0.5 ar6 dr4 sl5 rr6 hold', 'fb5'),
+  ),
 
   // ---- woodwinds ----
   preset(
@@ -460,6 +507,15 @@ const MELODIC: OplPreset[] = [
     'tune',
     'A soft reed: hollow and steady, a little breath at the start',
     p('x2 tl40 ar9 dr0 sl0 rr7 hold', 'x1 ar10 dr0 sl1 rr7 hold w2', 'fb0'),
+  ),
+  preset(
+    'winds',
+    'reed-swell',
+    'Reed Swell',
+    60,
+    'tune',
+    'A reedy tone that swells in slowly: hollow, with notes between the harmonics',
+    p('x0.5 tl9 ksl3 ar6 dr1 sl2 rr3 hold', 'x1 ar4 dr2 sl1 rr10 hold', 'fb1'),
   ),
 
   // ---- mallets and bells ----
@@ -552,6 +608,24 @@ const MELODIC: OplPreset[] = [
     'tune',
     'Vibes with a bright strike and a wide wobble: vibrato and tremolo on a shimmering ring',
     p('x7 tl26 ar15 dr6 sl12 rr6 vib', 'x1 ar15 dr3 sl5 rr4 vib trem', 'fb0'),
+  ),
+  preset(
+    'mallets',
+    'steel-clank',
+    'Steel Clank',
+    60,
+    'tune',
+    'A struck piece of steel: a clangy, out-of-tune ring that dies fast',
+    p('x5 tl12 ar15 dr7 sl6 rr5', 'x3 ar15 dr6 sl8 rr5 trem', 'fb5'),
+  ),
+  preset(
+    'mallets',
+    'sparkle-bell',
+    'Sparkle Bell',
+    48,
+    'tune',
+    'A tiny, glittering bell three octaves up, with a soft start',
+    p('x8 tl12 ar15 dr3 sl8 rr4 trem', 'x8 ar6 dr6 sl5 rr3 vib', 'fb5'),
   ),
 
   // ---- percussion on melody tracks ----

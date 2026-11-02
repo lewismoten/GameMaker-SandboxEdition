@@ -198,6 +198,7 @@ game folder opens in the browser unchanged.
   `missingParts.ts`, `gameChecks.ts`). Ideas only: none of the games' art, music, sounds, text
   or players is copied, and no author, owner or registration detail is named.
   The same survey of the games' music instruments showed which timbres the music editor's presets lacked; six presets (Wobbly Vibes, Soft Reed, Glass Tine Keys, Round Sub, Chime Harp, Wobble Pad) were then designed from the chip's operator settings, written by **Anthropic Claude Sonnet 5.5**. No instrument data was copied.
+  A second survey (November 2026) of every archived game's CMF instruments, compared by ear-proxy renders through the engine's OPL2, proposed eight more (Distant Choir, Fuzz Stab, Whistle Lead, Wobble Organ (low), Low Brass Swell, Reed Swell, Steel Clank, Sparkle Bell), also written fresh by **Anthropic Claude Sonnet 5.5**; each differs from every archived and CD patch in at least five of its eleven bytes. No instrument data was copied.
 - **Ideas from the same archive in this project's games.** A second survey of the community games in
   the Internet Archive's Game-Maker Archive collection suggested touches to this project's own
   games: _Quest for the Round Tuit_'s tide poles on the Dawdle Flats and _In The Year 2000!_'s

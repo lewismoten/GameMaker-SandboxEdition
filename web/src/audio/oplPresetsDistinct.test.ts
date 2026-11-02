@@ -5,7 +5,11 @@ import { describe, expect, it } from 'vitest';
 import { OPL_PRESETS } from './oplPresets';
 
 const NEAR = 4;
-const NEW_IDS = ['tine-glass', 'harp-chime', 'sub-round', 'pad-wobble', 'reed-soft', 'vibes-wobbly'];
+const NEW_IDS = [
+  ...['tine-glass', 'harp-chime', 'sub-round', 'pad-wobble', 'reed-soft', 'vibes-wobbly'],
+  // the second survey's (oplPresetsProposed.test.ts)
+  ...['choir-distant', 'fuzz-stab', 'whistle-lead', 'organ-wobble', 'brass-swell', 'reed-swell', 'steel-clank', 'sparkle-bell'],
+];
 
 function parts(q: Uint8Array) {
   const o = (h: number) => ({
@@ -43,7 +47,7 @@ describe('preset patches', () => {
   it('ids are unique', () => {
     expect(new Set(OPL_PRESETS.map((x) => x.id)).size).toBe(OPL_PRESETS.length);
   });
-  it('the six added presets exist and are far from every other preset', () => {
+  it('the presets added from the surveys exist and are far from every other preset', () => {
     for (const id of NEW_IDS) {
       const me = OPL_PRESETS.find((x) => x.id === id);
       expect(me, id).toBeDefined();
