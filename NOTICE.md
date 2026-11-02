@@ -312,6 +312,9 @@ game folder opens in the browser unchanged.
   dogs, cut into short clips for the guided tour. The whole recordings stay on his computer.
 - **Tune-Up's slide whistle** (`games/tuneup/src/sound/notes.ts` `slideWhistleVoc`): synthesized
   in code for the game (a gliding tone with a breath of noise), not a recording.
+- **Tune-Up's traffic camera and siren** (`games/tuneup/src/sound/notes.ts` `ticketVoc`):
+  synthesized in code for the game (two clicks of noise, a rising whine and a soft two-tone
+  siren), not a recording.
 - **Public-domain melodies.** The games' and the site's music is arranged and synthesized for
   this project (there is no recording to credit), but a few pieces quote older tunes whose
   compositions are in the public domain in the US:
