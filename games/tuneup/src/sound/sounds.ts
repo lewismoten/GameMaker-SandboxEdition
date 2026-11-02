@@ -27,7 +27,10 @@ export type Place =
   | 'key4'
   | 'panel1'
   | 'panel2'
-  | 'drive';
+  | 'drive'
+  | 'parade1'
+  | 'parade2'
+  | 'parade3';
 
 /** "Charge!": the bugle call on a trumpet (the last note held). */
 const CHARGE: [string, string[], number] = ['trumpet', ['G4', 'C5', 'E5', 'G5', 'E5', 'G5'], 0.11];
@@ -71,6 +74,17 @@ const KEY_SLOTS = [SND.help, SND.money, SND.gain];
 /** Oil's Well: the oil can's five lines, bottom to top, a note each. */
 export const OIL_NOTES = ['C5', 'D5', 'E5', 'G5', 'A5'];
 
+/** The parade's band sections, two a scene: [VOC name, [instrument, notes]], by scene. */
+const SECTION_PHRASES: Record<string, [string, string[]]> = {
+  bells: ['glockenspiel', ['C6', 'E6', 'G6', 'C7']],
+  fanfare: ['trumpet', ['G4', 'C5', 'E5', 'G5']],
+  oompah: ['tuba', ['C3', 'G2', 'C3', 'G2']],
+  kazoos: ['kazoo', ['E5', 'F5', 'G5', 'C6']],
+  choir: ['choir', ['C5', 'E5', 'G5', 'C6']],
+  horns: ['trumpet', ['C5', 'E5', 'G5', 'C6']],
+};
+const PARADE_SLOTS: Record<string, [string, string]> = { parade1: ['bells', 'fanfare'], parade2: ['oompah', 'kazoos'], parade3: ['choir', 'horns'] };
+
 /** A held PC speaker tone at a pitch, short (about a sixth of a second) and then quiet. */
 const tone = (name: string, steps = 24) => speaker((i) => (i < steps ? hz(name) : 0));
 const vocName = (prefix: string, n: string) => `${prefix}${n.toLowerCase().replace('#', 's')}`;
@@ -110,6 +124,8 @@ export function buildVocs(): Record<string, Uint8Array> {
   // the test drive: a red light run (the camera's click and a friendly siren, synthesized), a polite pass on green
   v.ticket = ticketVoc();
   v.toot = phraseVoc('trumpet', ['E5', 'G5'], 0.09, 0.25);
+  // the parade: each band section's phrase as it joins (two a scene), and the ribbon parting
+  for (const [name, [inst, notes]] of Object.entries(SECTION_PHRASES)) v[name] = phraseVoc(inst, notes, 0.11, 0.35);
   return v;
 }
 
@@ -226,6 +242,17 @@ export function buildSoundSet(place: Place): SoundSet {
     );
     add(SND.score, 'toot', SPEAKER.arpeggio([659, 784]));
     // Space: THE CHEZ's own horn, on the speaker (it never cuts a VOC)
+    add(
+      SND.boop,
+      '',
+      speaker((i) => (i < 5 ? 440 : 0)),
+    );
+  } else if (place === 'parade1' || place === 'parade2' || place === 'parade3') {
+    const [a, b] = PARADE_SLOTS[place];
+    add(SND.help, a, SPEAKER.arpeggio(SECTION_PHRASES[a][1].map(hz)));
+    add(SND.gain, b, SPEAKER.arpeggio(SECTION_PHRASES[b][1].map(hz)));
+    // the ribbon parting: the magician's ta-da
+    add(SND.spend, 'tada', SPEAKER.arpeggio([392, 523]));
     add(
       SND.boop,
       '',

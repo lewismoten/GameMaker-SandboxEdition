@@ -25,7 +25,8 @@ import { panel, panelBlocks } from './panel';
 import { keyBlocks, keyRoom } from './key';
 import { horn, hornBlocks, HORN_ROUNDS } from './horn';
 import { drive, driveBlocks, ROUTES } from './drive';
-import { driveSong } from '../sound/finaleSongs';
+import { driveSong, paradeSong } from '../sound/finaleSongs';
+import { parade, paradeBlocks, PARADES } from './parade';
 
 export interface LevelDef {
   /** The scene's .PAL, .MAP, .MON, .BBL and .CMF are named for it. */
@@ -239,6 +240,20 @@ export const LEVELS: LevelDef[] = [
     chr: 'chez',
     snd: 'drive',
     song: () => driveSong(i),
+    mons: {},
+    wide: true,
+  })),
+  ...PARADES.map((p, i): LevelDef => ({
+    file: p.file,
+    level: 15,
+    desc: 'The Parade Route',
+    part: ['the morning', 'sunset', 'the fireworks'][i],
+    theme: (['parade', 'sunset', 'fireworks'] as const)[i],
+    blocks: paradeBlocks(p),
+    build: parade(p),
+    chr: 'chez',
+    snd: (['parade1', 'parade2', 'parade3'] as const)[i],
+    song: () => paradeSong(i),
     mons: {},
     wide: true,
   })),
