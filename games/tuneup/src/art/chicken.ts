@@ -1,5 +1,5 @@
 // The rubber chicken who does the repairs: Sir Reginald III, and (once the egg is laid)
-// Lady Regina III, the same bird with a bow on the comb. A classic rubber chicken, limp as one:
+// Lady Regina III, the same bird with a tiara in front of her comb. A classic rubber chicken, limp as one:
 // pale yellow rubber lying on its belly, its long scrawny legs trailing out behind it, a long
 // floppy neck that just about holds the head up, a red comb and wattle, an orange beak open
 // mid-squawk. Drawn in a 20x20 box at any scale `s`, facing right, on clear (255).
@@ -12,7 +12,7 @@ const c = P.c;
 const ink = c('ink', 0);
 
 export interface ChickenPose {
-  /** Lady Regina III: a bow on her comb. */
+  /** Lady Regina III: a tiara in front of her comb. */
   lady?: boolean;
   /** 0 or 1: the head bobs down a little on 1. */
   bob?: number;
@@ -83,12 +83,22 @@ export function chicken(s: number, o: ChickenPose = {}): Pixels {
   if (s >= 3) p.disc(ex, ey, S(0.7), c('paint', 3)).disc(ex, ey, S(0.4), ink);
   else p.set(ex, ey, ink);
   if (o.lady) {
-    // a bow on the comb, ribbon pink
-    const cx = S(hx - 0.2);
-    const cy = S(hy - 3.6);
-    blob(p, cx - S(1.1), cy, S(1), S(0.8), P.r('pink'), 1, 3);
-    blob(p, cx + S(1.1), cy, S(1), S(0.8), P.r('pink'), 1, 3);
-    p.disc(cx, cy, Math.max(0.6, S(0.45)), c('pink', 0));
+    // a gold tiara in front of the comb, three points and a pink jewel
+    const y0 = Math.round(S(hy - 1.7));
+    const x0 = Math.round(S(hx - 1.9));
+    const x1 = Math.round(S(hx + 1.3));
+    const t = Math.max(1, Math.round(S(0.5)));
+    p.rect(x0, y0, x1 - x0 + 1, t, c('gold', 1));
+    for (const [dx, h] of [
+      [-1.7, 2.4],
+      [-0.3, 3.4],
+      [1.1, 2.4],
+    ]) {
+      const x = Math.round(S(hx + dx));
+      for (let y = Math.round(S(hy - 1.7 - h)); y < y0; y++) p.rect(x - Math.floor(t / 2), y, t, 1, c('gold', 1));
+      p.rect(x - Math.floor(t / 2), Math.round(S(hy - 1.7 - h)), t, t, c('paint', 3));
+    }
+    p.disc(S(hx - 0.3), S(hy - 2.4), Math.max(0.6, S(0.7)), c('pink', 1));
   }
   return outline(p, ink);
 }

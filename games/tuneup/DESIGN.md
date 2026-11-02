@@ -21,7 +21,7 @@ the timeline), and the chicken tells the player such car batteries are years off
 wrong: THE CHEZ has no radio, so the real tune-up (levels 5 on) builds toward an AM radio with an
 8-track. Every car fact from level 5 on is from the car's blog, thechez.car.blog. After Pump Up
 the Volume a balloon pops, he lays an egg, and from then on every card names her Lady Regina
-III, formally corrected (*CORRECTION: Lady Regina Cluckington III).
+III, formally corrected (*CORRECTION: Lady Regina Cluckington III). She wears a tiara in front of her comb, her name is pink on the cards, and before The Rain Delay a card has her keep the egg on Doc Leo's hat. (PLAYGAME can't show a card only when the felt egg wasn't found, so that card always plays and never mentions finding anything.)
 
 ## Scenes
 

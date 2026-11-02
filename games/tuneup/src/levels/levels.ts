@@ -186,6 +186,7 @@ export const LEVELS: LevelDef[] = [
     song: rainSong,
     mons: {},
     wide: true,
+    before: ['eggkeep.gif'],
   },
   ...HORN_ROUNDS.map((r, i): LevelDef => ({
     file: r.file,

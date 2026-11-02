@@ -372,6 +372,20 @@ const DRIVE_OUTRO: Record<string, Card> = {
 };
 Object.assign(OUTRO, DRIVE_OUTRO);
 
+/** Before The Rain Delay: Lady Regina keeps her egg somewhere safe. */
+export const EGG_KEEP: Card = {
+  lady: true,
+  teddy: true,
+  hatEgg: true,
+  lines: [
+    ['regina', 'There is my egg, safe and sound. For now.'],
+    ['leo', 'Where will you keep it safe?'],
+    ['regina', 'Somewhere warm, high up and well guarded.'],
+    ['leo', '...Under my HAT?'],
+    ['regina', 'On it. Hold very still.'],
+  ],
+};
+
 /** Waking up, before level 5's cartoon: the dream dismissed, and what's really wrong. */
 export const WAKE: Card[] = [
   {

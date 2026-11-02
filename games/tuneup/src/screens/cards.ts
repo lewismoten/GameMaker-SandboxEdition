@@ -24,6 +24,8 @@ export interface Card {
   lady?: boolean;
   /** Her egg sits beside her on the bench. */
   egg?: boolean;
+  /** Her egg sits on Doc Leo's hat (kept safe). */
+  hatEgg?: boolean;
   leoPose?: string;
   /** The chicken is asleep on the bench, snoring (the dream's end). */
   asleep?: boolean;
@@ -76,6 +78,7 @@ export function card(k: Card): Pixels {
   if (k.asleep) for (const [i, s] of ['z', 'z', 'Z'].entries()) text(p, 290 + i * 8, 112 - i * 12, s, INK, i === 2 ? 2 : 1);
   if (k.teddy) scaleBlit(p, POSES.front, 40, 160, 2);
   if (k.egg) p.blit(rubberEgg(new Pixels(20, 20, 255)), 290, 109, 255);
+  if (k.hatEgg) p.blit(rubberEgg(new Pixels(20, 20, 255)), 26, 58, 255);
   if (k.dream) dreamFrame(p, [266, 104], !k.title);
   let y = k.title ? 32 : 12;
   for (const [who, words] of k.lines) {
@@ -106,7 +109,7 @@ export function card(k: Card): Pixels {
     // the box's tail, toward whoever is talking
     const tx = left ? BOX_X : BOX_X + BOX_W - 1;
     for (let i = 0; i < 5; i++) p.rect(left ? tx - i - 1 : tx + 1, y + 6 + i, 1, 5 - i, c('paint', 3));
-    text(p, BOX_X + 4, y + 3, NAMES[who], who === 'leo' ? c('purple', 0) : c('orange', 0));
+    text(p, BOX_X + 4, y + 3, NAMES[who], who === 'leo' ? c('purple', 0) : who === 'regina' ? c('pink', 0) : c('orange', 0));
     rows.forEach((r, i) => text(p, BOX_X + 4, y + 12 + i * 9, r, INK));
     y += h + 4;
   }

@@ -8,7 +8,7 @@ import { POSES } from '../../../teddy2/src/sprites/teddy';
 import { SP, INK, REAL_PARTS, cutaway, parkChez, drawChicken, drawLeo } from './art';
 import { garage } from './garage';
 import { card, cardSeconds } from './cards';
-import { INTRO, OUTRO, WAKE } from './banter';
+import { EGG_KEEP, INTRO, OUTRO, WAKE } from './banter';
 
 const c = SP.c;
 
@@ -88,6 +88,7 @@ export function buildScreens(): Record<string, Uint8Array> {
   for (const [n, k] of Object.entries(INTRO)) save(`intro${n}.gif`, card(k));
   for (const [file, k] of Object.entries(OUTRO)) save(`${file}out.gif`, card(k));
   WAKE.forEach((k, i) => save(`wake${i + 1}.gif`, card(k)));
+  save('eggkeep.gif', card(EGG_KEEP));
   return files;
 }
 
@@ -96,5 +97,6 @@ export function cardPauses(): Record<string, number> {
   const out: Record<string, number> = {};
   for (const [n, k] of Object.entries(INTRO)) out[`intro${n}.gif`] = cardSeconds(k);
   WAKE.forEach((k, i) => (out[`wake${i + 1}.gif`] = cardSeconds(k)));
+  out['eggkeep.gif'] = cardSeconds(EGG_KEEP);
   return out;
 }
