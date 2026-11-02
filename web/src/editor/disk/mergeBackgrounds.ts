@@ -62,6 +62,7 @@ export function planBackgrounds(files: GameFiles, gam: string, uses: SceneUse[],
       `${dUsers.length} scene${dUsers.length === 1 ? '' : 's'} open ${keep} instead of ${drop}`,
     ],
     touches: [...writes.files.keys(), gam],
+    moves: [{ file: drop, into: keep, at: merged.at }],
     apply: (f, g) => commit(f, g, writes),
   };
 }

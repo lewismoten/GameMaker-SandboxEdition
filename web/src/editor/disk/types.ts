@@ -2,6 +2,13 @@
 // for its preview), a Note is something it noticed but will not change by itself.
 import type { GameFiles } from '../../project/files';
 
+/** Where a block set's blocks went in a step: `at` maps old block numbers to new ones (blocks that stayed are left out). `file` and `into` are the same for blocks joined inside one set. */
+export interface BlockMove {
+  file: string;
+  into: string;
+  at: ReadonlyMap<number, number>;
+}
+
 export interface Step {
   kind: 'bbl' | 'mbl' | 'cbl' | 'mon' | 'pal' | 'look' | 'sync';
   /** The file that stays and the file that goes. */
@@ -15,6 +22,8 @@ export interface Step {
   changes: string[];
   /** Every file apply() changes, for the undo snapshot. */
   touches: string[];
+  /** Where blocks moved, so the names and groups kept in the companion can follow (remapExtras.ts). */
+  moves?: BlockMove[];
   /** Rewrites the files (and the .gam) in place. The caller keeps the undo snapshot. */
   apply(files: GameFiles, gam: string): void;
 }

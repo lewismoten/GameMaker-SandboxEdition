@@ -37,6 +37,7 @@ export function planLookAlikes(files: GameFiles, gam: string, _uses: SceneUse[])
         `${n} slot${n === 1 ? '' : 's'} in ${set.bbl} become blank, so another block set can use them`,
       ],
       touches: [...writes.files.keys(), gam],
+      moves: [{ file: set.bbl, into: set.bbl, at: new Map(r.to.flatMap((t, i) => (t === i ? [] : [[i, t] as [number, number]]))) }],
       apply: (f, g) => commit(f, g, writes),
     };
   }

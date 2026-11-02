@@ -90,6 +90,7 @@ export function planMonsterBlocks(
     title: `Merge monster blocks ${drop} into ${keep}`,
     changes,
     touches: [...writes.files.keys(), gam],
+    moves: [{ file: drop, into: keep, at: placed.at }],
     apply: (f, g) => commit(f, g, writes),
   };
 }

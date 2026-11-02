@@ -11,6 +11,7 @@ import { lookAlikeSets } from './lookAlikes';
 import { lookAlikeView } from './lookAlikeView';
 import { checkpointPanel } from './checkpointPanel';
 import { PALETTE_RESERVATIONS, paletteReservations } from '../editors/palette/paletteReservations';
+import { movedFiles, remapExtras, restoreExtras, snapshotExtras, type ExtrasSnapshot } from './remapExtras';
 import { reductions } from './reduceColors';
 import { rangeSyncs } from './rangeSync';
 import { proposeReservations } from './reservePlan';
@@ -26,6 +27,8 @@ interface Kept {
   hist: ReturnType<typeof fileUndo>;
   /** Redraws whichever dialog is open when an Undo or Redo lands. */
   redraw: () => void;
+  /** The block names and groups that went with each version of the .gam (by its bytes), so Undo and Redo bring them back. */
+  extras: Map<Uint8Array, ExtrasSnapshot>;
 }
 const kept = new WeakMap<Project, Kept>();
 
@@ -33,7 +36,16 @@ const kept = new WeakMap<Project, Kept>();
 function historyFor(project: Project): Kept {
   let k = kept.get(project);
   if (!k) {
-    const made: Kept = { redraw: () => undefined, hist: fileUndo(project.files, () => (project.forgetParsed(), made.redraw())) };
+    const made: Kept = {
+      redraw: () => undefined,
+      extras: new Map(),
+      hist: fileUndo(project.files, () => {
+        const snap = made.extras.get(project.files.get(project.gam)!);
+        if (snap) restoreExtras(project, snap);
+        project.forgetParsed();
+        made.redraw();
+      }),
+    };
     kept.set(project, (k = made));
   }
   return k;
@@ -180,7 +192,13 @@ export async function diskTool(project: Project): Promise<void> {
                     if (!(await checkpoint.ensure('Before optimization'))) return;
                     try {
                       hist.before(...new Set(plan.steps.flatMap((s) => s.touches)));
-                      for (const s of plan.steps) s.apply(project.files, project.gam);
+                      const moved = movedFiles(plan.steps.flatMap((s) => s.moves ?? []));
+                      if (moved.length) keep.extras.set(project.files.get(project.gam)!, snapshotExtras(project, moved));
+                      for (const s of plan.steps) {
+                        s.apply(project.files, project.gam);
+                        if (s.moves) remapExtras(project, s.moves);
+                      }
+                      if (moved.length) keep.extras.set(project.files.get(project.gam)!, snapshotExtras(project, moved));
                       project.forgetParsed();
                       applied = `Applied ${plural(plan.steps.length, 'step')}, saving ${kb(saves)}.`;
                       toast(applied);
