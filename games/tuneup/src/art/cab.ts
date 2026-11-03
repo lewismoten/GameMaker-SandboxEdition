@@ -34,6 +34,10 @@ function shield(k: Kit, p: Pixels): void {
   const { c, R } = k;
   const [x0, x1] = [SHIELD.left * 20, (SHIELD.right + 1) * 20];
   gradient(p, x0, 20, x1 - x0, SHIELD.horizon - 20, R('sky'), 3, 6);
+  // THE CHEZ's red body divider across the top of the glass (a tomato-red header with a rubber seal under it), so the windshield
+  // ends at the body rather than running into the roof
+  p.rect(x0, 20, x1 - x0, 8, c('red', 2)).rect(x0, 20, x1 - x0, 2, c('red', 3)).rect(x0, 26, x1 - x0, 2, c('red', 1));
+  p.rect(x0, 28, x1 - x0, 1, c('ink', 0));
   for (let y = SHIELD.horizon; y < 100; y++) {
     const [l, r] = roadEdges(y);
     const near = (y - SHIELD.horizon) / 40;
