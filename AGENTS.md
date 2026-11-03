@@ -98,7 +98,10 @@ preserve what was there.
 - **Branches (git flow):** `master` holds releases and `develop` collects finished work.
   Nobody commits on either directly, and several agents (a remote one included) work at once,
   so every task gets its own branch from an up-to-date `develop`:
-  - start: `git switch develop && git pull --ff-only && git switch -c feature/<short-name>`
+  - start: `git switch develop && git pull --ff-only && git switch -c feature/<short-name>`;
+    in a worktree (an agent's starts from `master`, and `develop` may be checked out
+    elsewhere): `git fetch origin && git switch -c feature/<short-name> origin/develop`.
+    Check with `git merge-base --is-ancestor origin/develop HEAD` before the first commit.
   - finish, once its checks pass: bring `develop` in first and settle any conflicts on the
     feature branch (`git merge develop`), then
     `git switch develop && git pull --ff-only && git merge --no-ff feature/<short-name> && git push origin develop`,
