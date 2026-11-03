@@ -3,7 +3,7 @@
 // CitiCar's recessed windows. Distances are in the game's units, floor at z = 0.
 import { rgb, type Material, type Shape } from '../render/tracer';
 import { F, model } from '../models/parts';
-import { WIN, Z } from '../models/citicar';
+import { SHIELD_SIDE, WIN, Z, onShield } from '../models/citicar';
 
 const fur: Material = { color: rgb(220, 128, 52), diffuse: 1, spec: 0.25, shine: 12 };
 const white: Material = { color: rgb(252, 248, 238), diffuse: 1, spec: 0.2, shine: 10 };
@@ -90,8 +90,9 @@ function polyDist(poly: [number, number][], x: number, z: number): number {
 }
 
 /**
- * THE CHEZ's windows as recesses (the door window on each side, the back window), cut a millimeter and a
- * half into the body where the painted windows are. From the side there is only the door's window.
+ * THE CHEZ's windows as recesses (the windshield in the slope, the door window on each side, the back window),
+ * cut a millimeter and a half into the body where the painted windows are. From the side there is only the door's
+ * window.
  */
 export function chezWindows({ mm, d }: { mm: number; d: (x: number, y: number, z: number) => number }): ((x: number, y: number, z: number) => number)[] {
   const depth = 1.4 * mm;
@@ -109,7 +110,13 @@ export function chezWindows({ mm, d }: { mm: number; d: (x: number, y: number, z
     return lo;
   };
   const [r0, r1] = [rear(z0), rear(z1)];
+  // the windshield: along the slope from its top to its bottom, between the pillars, `depth` into the slope
+  const shield = (x: number, y: number, z: number) => {
+    const { t, out, len } = onShield(x, z);
+    return Math.max(Math.abs(t - 0.5) * len - len / 2, Math.abs(y - W / 2) - (W / 2 - SHIELD_SIDE), -out - depth);
+  };
   return [
+    shield,
     (x, y, z) => Math.max(polyDist(WIN, x, z), y - depth),
     (x, y, z) => Math.max(polyDist(WIN, x, z), W - y - depth),
     (x, y, z) => {

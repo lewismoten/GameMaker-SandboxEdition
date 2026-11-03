@@ -30,7 +30,7 @@ export const TRINKETS: TrinketDef[] = [
     id: 'chez',
     title: 'THE CHEZ',
     blurb: 'A 1976½ CitiCar, tomato red with a black roof.',
-    shapes: () => citicar(0, 0, 1, [0, 0, 0]),
+    shapes: () => citicar(0, 0, 1, [0, 0, 0], false), // the windshield is cut in (pockets), not a pane on top
     pockets: chezWindows,
     height: 50,
     maxWidth: 90,

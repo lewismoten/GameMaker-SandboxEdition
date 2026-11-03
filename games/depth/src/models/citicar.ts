@@ -2,7 +2,8 @@
 // (games/kit/chez.ts, measured off Lewis's photos): a short tomato-red wedge, one straight line
 // from the low nose over the hood and the windshield to a short flat BLACK roof, a flat back
 // leaning back a little, the front and rear quarters stopping flat over the tires and only the
-// door coming down between them. One window in each door, a rear window in the back, the racing
+// door coming down between them. The windshield sits in the slope below a red header under the
+// roof, between red pillars. One window in each door, a rear window in the back, the racing
 // stripes (a dark pair edged in white pinstripe) low along each side and stepping up over the
 // rear quarter, round headlights in pods on the hood, amber markers up front and red ones at
 // the back, plain square black bumpers, white wheels with chrome caps on black tires, THE CHEZ
@@ -25,6 +26,22 @@ export const WIN: [number, number][] = [
   [U(13.0), Z(8.3)],
 ];
 const ROOF = Z(2.05);
+/** The windshield on the slope, below a red header under the roof: its top and bottom edges (x, z). */
+export const SHIELD: [[number, number], [number, number]] = [
+  [U(20.5), Z(3.0)],
+  [U(27.4), Z(7.6)],
+];
+/** How far in from each side the windshield stops (the pillars). */
+export const SHIELD_SIDE = 0.07;
+/** The slope's outward normal (x, z) and the unit along it, down toward the nose. */
+export const SLOPE_N: [number, number] = [0.549, 0.836];
+const ALONG: [number, number] = [0.836, -0.549];
+/** Where (x, z) is along the windshield (0 at its top, 1 at its bottom), its height above the slope, and the windshield's length. */
+export function onShield(x: number, z: number): { t: number; out: number; len: number } {
+  const [[x0, z0], [x1, z1]] = SHIELD;
+  const len = (x1 - x0) * ALONG[0] + (z1 - z0) * ALONG[1];
+  return { t: ((x - x0) * ALONG[0] + (z - z0) * ALONG[1]) / len, out: (x - x0) * SLOPE_N[0] + (z - z0) * SLOPE_N[1], len };
+}
 const BAND = Z(12.5);
 const RISE = 2.6 * K;
 const KINK: [number, number] = [U(10.0), U(13.0)];
@@ -52,7 +69,8 @@ function band(x: number): number {
   return BAND + RISE * t * t * (3 - 2 * t);
 }
 
-export function citicar(cx: number, cy: number, s = 1, at?: V): Shape[] {
+/** The car; `glass`: a pane on the windshield (the ray tracer's), or none (a trinket cuts it in instead). */
+export function citicar(cx: number, cy: number, s = 1, at?: V, glass = true): Shape[] {
   // the car's own frame: x along its length (0 rear .. 1.8 nose), y across (0 driver side,
   // W passenger side), z up; placed with its rear-left corner at o
   const W = 0.8;
@@ -66,6 +84,11 @@ export function citicar(cx: number, cy: number, s = 1, at?: V): Shape[] {
       const y = (p[1] - o[1]) / s;
       const z = (p[2] - o[2]) / s;
       if (z > ROOF && n[2] > -0.5) return rgb(16, 16, 18); // the black roof panel
+      // the windshield, in the slope below the red header (and inside its red pillars)
+      if (n[0] * SLOPE_N[0] + n[2] * SLOPE_N[1] > 0.8) {
+        const { t } = onShield(x, z);
+        if (t > 0 && t < 1 && y > SHIELD_SIDE && y < W - SHIELD_SIDE) return dark;
+      }
       const side = Math.abs(n[1]) > 0.9;
       if (side) {
         // the J1772 port: rear quarter, passenger side
@@ -100,26 +123,20 @@ export function citicar(cx: number, cy: number, s = 1, at?: V): Shape[] {
     reflect: 0.12,
     fresnel: 0.4,
   };
-  const glass: Material = { color: rgb(50, 70, 90), diffuse: 0.2, reflect: 0.55, fresnel: 0.3, spec: 1.5, shine: 140 };
+  const pane: Material = { color: rgb(50, 70, 90), diffuse: 0.2, reflect: 0.55, fresnel: 0.3, spec: 1.5, shine: 140 };
   const shapes: Shape[] = [];
   // the body above the tires: the profile of the side view, the width of the car
   const top = CHEZ_BODY.filter(([, v]) => v <= 14.4).map(([u, v]) => [U(u), Z(v)] as [number, number]);
   shapes.push(hull([...top.map(([x, z]) => P(x, 0, z)), ...top.map(([x, z]) => P(x, W, z))], () => body));
   // the door's lower half, down between the wheels to the sill
   shapes.push(new Box(P(U(13.7), 0, Z(18.1)), P(U(26.1), W, Z(14.4) + 0.01), body));
-  // the windshield, set in the top of the slope (it runs into the hood in one straight line)
-  const [rx, rz] = [U(17.9), Z(1.3)];
-  const [ex, ez] = [U(27.4), Z(7.6)];
-  const nx = 0.549 * 0.012;
-  const nz = 0.836 * 0.012;
-  const g: V[] = [];
-  for (const y of [0.06, W - 0.06])
-    for (const [x, z] of [
-      [rx + 0.02, rz - 0.02],
-      [ex, ez],
-    ])
-      g.push(P(x, y, z), P(x + nx, y, z + nz));
-  shapes.push(hull(g, glass));
+  // the windshield: a thin pane lying in the slope below the red header, inside the pillars
+  if (glass) {
+    const [nx, nz] = SLOPE_N.map((v) => v * 0.003);
+    const g: V[] = [];
+    for (const y of [SHIELD_SIDE, W - SHIELD_SIDE]) for (const [x, z] of SHIELD) g.push(P(x, y, z), P(x + nx, y, z + nz));
+    shapes.push(hull(g, pane));
+  }
   // plain square black bumpers, front and rear
   const bumper: Material = { color: rgb(20, 20, 22), diffuse: 0.7, spec: 0.8, shine: 40 };
   shapes.push(new Box(P(U(35.8), -0.02, Z(14.8)), P(U(37.2), W + 0.02, Z(13.0)), bumper));
