@@ -200,6 +200,8 @@ export function codeWheelLive(it: CodeWheelItem, only?: number): HTMLElement {
     return (Math.atan2(e.clientY - (b.top + b.height / 2), e.clientX - (b.left + b.width / 2)) * 180) / Math.PI;
   };
   dial.addEventListener('pointerdown', (e) => {
+    e.preventDefault(); // no text selection starting under the drag (focus is given back below)
+    dial.focus({ preventScroll: true });
     grab = { a: angle(e), t: turn * step };
     dial.setPointerCapture(e.pointerId);
     inner.style.transition = 'none';
