@@ -3,7 +3,8 @@
 // games/kit/teddyTheme.ts), its digitized effects (a bark, a yip, the chicken's squeak, the
 // horn, a giggle, things landing) and a few made here (footsteps, the tin heart's tick-tock,
 // THE CHEZ's electric whirr). It follows the site's demo sound choice (media/demoAudio.ts:
-// "None" keeps it quiet) and only starts from a gesture on the stage.
+// "None" keeps it quiet) and only starts from a gesture on the stage. It is hushed while the guided
+// tour plays (the tour has its own song and effects; tour/, its 'gm-tour' events and `tour-on` class).
 import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { demoAudio, setDemoAudio } from '../media/demoAudio';
 import { fetchGameFile, loadGameList } from '../project/files';
@@ -12,13 +13,26 @@ const SONG = 'title.cmf';
 /** A digitized effect: Teddy's own by name, or another game's as 'game/name' (goat/scream). */
 export type Effect = string;
 
+const tourOn = () => document.documentElement.classList.contains('tour-on');
+
 export class StageSound {
   private engine = new AudioEngine();
   private files = new Map<string, Promise<Uint8Array | undefined>>();
   private started = false;
   private paused = false;
+  /** The stage's music follows the tour: hushed from its start to its end. */
+  private onTour = () => this.engine.pauseMusic(this.hushed);
   /** Wanted: the demo sound choice isn't "None". */
   wanted = demoAudio() !== 'none';
+
+  constructor() {
+    window.addEventListener('gm-tour', this.onTour);
+  }
+
+  /** Paused by the Pause button or the tour. */
+  private get hushed(): boolean {
+    return this.paused || tourOn();
+  }
 
   private file(name: string, game = 'teddy'): Promise<Uint8Array | undefined> {
     const key = `${game}/${name}`;
@@ -45,7 +59,7 @@ export class StageSound {
     void this.engine.resume().then(async () => {
       if (!this.started) return;
       await this.engine.playSong(await this.file(SONG));
-      if (this.paused) this.engine.pauseMusic(true);
+      if (this.hushed) this.engine.pauseMusic(true);
     });
   }
 
@@ -62,12 +76,12 @@ export class StageSound {
 
   pause(paused: boolean): void {
     this.paused = paused;
-    if (this.started) this.engine.pauseMusic(paused);
+    if (this.started) this.engine.pauseMusic(this.hushed);
   }
 
   private get live(): AudioContext | undefined {
     const c = this.engine.context;
-    return this.started && c && c.state === 'running' ? c : undefined;
+    return this.started && !tourOn() && c && c.state === 'running' ? c : undefined;
   }
 
   effect(name: Effect): void {
@@ -108,6 +122,7 @@ export class StageSound {
 
   dispose(): void {
     this.started = false;
+    window.removeEventListener('gm-tour', this.onTour);
     this.engine.dispose();
   }
 }
