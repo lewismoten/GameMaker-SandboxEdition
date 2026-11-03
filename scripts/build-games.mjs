@@ -205,6 +205,7 @@ const began = Date.now();
 const fieldTrinketGames = [
   ['depth', 'Depth'],
   ['realm', 'Realm'],
+  ['sleuth', 'Sleuth'],
   ['smirked', 'Smirked'],
   ['sandcast', 'Sandcast'],
   ['tickle', 'Tickle'],

@@ -87,10 +87,6 @@ GAMES.risi = [
   hero('marcus', 'marcus', 'banquet', 'Marcus Iocundus', 'The comic poet of Rome.', 'marcus'),
   mon('banquet', 6, 'risi', 'banquet', 'rufus', 'Rufus', 'Marcus’s dog.'),
 ];
-GAMES.sleuth = [
-  hero('ada', 'ada', 'dawn', 'Inspector Ada Penn', 'The inspector of the Paragon Theatre.', 'ada'),
-  mon('people', 9, 'people', 'dawn', 'ghost', 'The ghost', 'A little ghost of the theater.'),
-];
 GAMES.sweats = [
   hero('poet', 'poet', 'ants', 'Will', 'Open-mic poet in a starched ruff.', 'will'),
   mon('ants', 17, 'errands', 'ants', 'goose', 'Goose', 'A goose out on errands.'),
