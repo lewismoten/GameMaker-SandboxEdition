@@ -21,7 +21,7 @@ describe('onlyStockPlayers', () => {
 });
 
 describe('peekGameFile', () => {
-  const entry = { path: 'games/x/', files: ['x.gam'], gz: false, pack: 'x.zip' } as unknown as Parameters<typeof peekGameFile>[0];
+  const entry = { path: 'games/x/', files: ['x.gam', 'x.bkd'], gz: false, pack: 'x.zip' } as unknown as Parameters<typeof peekGameFile>[0];
   const serve = async (names: string[]) => {
     const edited = new Uint8Array(160_598).fill(7); // a player that is not the CD's own
     const zip = await createZip([...names.map((name) => ({ name, data: new Uint8Array([1, 2, 3]) })), { name: 'x.exe', data: edited }]);

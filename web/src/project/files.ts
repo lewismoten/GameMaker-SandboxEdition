@@ -436,6 +436,7 @@ function trimPeekedZips(): void {
 export async function peekGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 'gz' | 'pack'>, name: string, base = './'): Promise<Uint8Array | undefined> {
   const url = packUrl(entry, base);
   if (!url || !/\.zip$/i.test(url) || packs.has(url)) return fetchGameFile(entry, name, base);
+  if (![name.toLowerCase(), cdName(name)].some((x) => entry.files.includes(x))) return undefined; // as fetchGameFile: not one of its files
   let zip = peekedZips.get(url);
   if (!zip) {
     const got = (zip = fetchArchive(url).then(
