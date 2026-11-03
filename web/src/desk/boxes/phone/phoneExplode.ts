@@ -4,7 +4,7 @@
 // shell, a dial or button caps added to the data need no code here: their own extents decide.
 import type { Part } from './phoneData';
 
-const GAP_MM = 14;
+const GAP_MM = 30;
 
 type Placed = Pick<Part, 'group' | 'side' | 'bbox'>;
 
@@ -20,7 +20,7 @@ export interface Stack {
 /** The stack a part belongs to: the board in one piece, everything else by group and side. */
 export const stackOf = (p: Pick<Part, 'group' | 'side'>): string => (p.group === 'board' ? 'board' : `${p.group}:${p.side}`);
 
-/** Every stack and its offset for a full explosion. Front stacks rise above the board in the order of their middles, back stacks drop below it. */
+/** Every stack and its offset for a full explosion. Front stacks rise above the board, outermost last (a shell reaching past a dial or the parts it covers goes beyond them); back stacks drop below it the same way. */
 export function explodeStacks(parts: Placed[], gap = GAP_MM): Stack[] {
   const by = new Map<string, Stack>();
   for (const p of parts) {
@@ -34,8 +34,8 @@ export function explodeStacks(parts: Placed[], gap = GAP_MM): Stack[] {
   const mid = (s: Stack) => (s.lo + s.hi) / 2;
   const board = by.get('board');
   const anchor = board ? mid(board) : (Math.min(...all.map((s) => s.lo)) + Math.max(...all.map((s) => s.hi))) / 2;
-  const up = all.filter((s) => s !== board && mid(s) >= anchor).sort((a, b) => mid(a) - mid(b));
-  const down = all.filter((s) => s !== board && mid(s) < anchor).sort((a, b) => mid(b) - mid(a));
+  const up = all.filter((s) => s !== board && mid(s) >= anchor).sort((a, b) => a.hi - b.hi);
+  const down = all.filter((s) => s !== board && mid(s) < anchor).sort((a, b) => b.lo - a.lo);
   let top = board ? board.hi : anchor;
   for (const s of up) {
     s.offset = Math.max(0, top + gap - s.lo);

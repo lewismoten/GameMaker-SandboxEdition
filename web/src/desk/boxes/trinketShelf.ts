@@ -76,7 +76,13 @@ function viewer(base: string, items: TrinketItem[], phone: boolean): HTMLElement
     chips.push(
       h(
         'button',
-        { class: 'trk-chip', type: 'button', 'aria-pressed': 'false', title: 'An untested build-it-yourself phone, in 3D', onclick: () => void choose(at === PHONE ? -1 : PHONE) },
+        {
+          class: 'trk-chip',
+          type: 'button',
+          'aria-pressed': 'false',
+          title: 'An untested build-it-yourself phone, in 3D',
+          onclick: () => void choose(at === PHONE ? -1 : PHONE),
+        },
         PHONE_TITLE,
       ),
     );

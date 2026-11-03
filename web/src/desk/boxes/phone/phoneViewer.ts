@@ -48,7 +48,7 @@ export function createPhoneViewer(): PhoneViewer {
   const canvas = h('canvas', { class: 'trk-canvas phone-canvas', tabindex: 0, role: 'img' });
   const status = h('span', { class: 'trk-flat', hidden: '' }, '3D is not available here; the parts files still download from the repository.');
   const say = h('p', { class: 'phone-say', role: 'status' });
-  const slider = h('input', { id: 'phone-explode', type: 'range', min: '0', max: '100', value: '0', class: 'phone-slider' }) as HTMLInputElement;
+  const slider = h('input', { id: 'phone-explode', type: 'range', min: '0', max: '100', value: '0', class: 'phone-slider' });
 
   const buttons = MODES.map((m) =>
     h('button', { class: 'trk-btn', type: 'button', 'aria-pressed': String(m.mode === mode), onclick: () => choose(m.mode) }, m.label),

@@ -156,7 +156,7 @@ export function createPhoneView(canvas: HTMLCanvasElement, parts: Part[]): Phone
       gl.uniformMatrix4fv(uProj, false, [f / (w / h), 0, 0, 0, 0, f, 0, 0, 0, 0, (far + near) / (near - far), -1, 0, 0, (2 * far * near) / (near - far), 0]);
       // a canvas pixel in mm at the middle's depth
       const mmPerPx = (2 * dist * Math.tan(FOV / 2)) / (h * view.zoom);
-      const px = (view.panX * dpr) * mmPerPx;
+      const px = view.panX * dpr * mmPerPx;
       const py = -(view.panY * dpr) * mmPerPx;
       let last = '';
       for (const d of drawn) {
