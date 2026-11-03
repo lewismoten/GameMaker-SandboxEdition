@@ -25,13 +25,13 @@ const SHIP = figure(
   [
     { d: ellipsoid3(0, 0, 0, 6.6, 27, 9.4), color: STEEL },
     { d: wings, color: STEEL },
-    { d: both((s) => roundCone3(10 * s, -4, 2.3, 2.3, 10 * s, 21, 1.9, 1.9)), color: STEEL },
-    { d: both((s) => sphere3(10 * s, 21.6, 1.9, 1.9)), color: CYAN },
+    { d: both((s) => roundCone3(10 * s, -4, 1.6, 2.3, 10 * s, 21, 1.3, 1.9)), color: STEEL },
+    { d: both((s) => sphere3(10 * s, 21.6, 1.3, 1.9)), color: CYAN },
     { d: ellipsoid3(0, 6, 5.4, 3.6, 8.5, 4.6), color: CYAN },
     { d: both((s) => roundBox3(21.2 * s, -19, 7, 1.4, 5.5, 7, 0.9)), color: CYAN },
-    { d: both((s) => sphere3(21.8 * s, -15.6, 2.4, 2.4)), color: RED },
-    { d: roundCone3(0, -24, 4.4, 4.4, 0, -30, 3.3, 3.3), color: STEEL },
-    { d: roundCone3(0, -30, 3.2, 3.2, 0, -41, 0.9, 0.9), color: FIRE },
+    { d: both((s) => sphere3(21.8 * s, -15.6, 1.7, 2.4)), color: RED },
+    { d: roundCone3(0, -24, 3.1, 4.4, 0, -30, 2.3, 3.3), color: STEEL },
+    { d: roundCone3(0, -30, 2.2, 3.2, 0, -41, 0.65, 0.9), color: FIRE },
   ],
   0.8,
 );
