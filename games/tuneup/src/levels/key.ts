@@ -9,6 +9,7 @@
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, kit, LEDGE, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
+import { addThermos } from '../blocks/thermos';
 import type { Pal } from '../art/palette';
 import { CTR, MONEY, MON } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
@@ -170,6 +171,8 @@ export function keyBlocks(room: number) {
     book.add('door.open', door(true), { ...AIR, ntime: DOOR.open, next: 'door.shut' });
     book.add('lamp.shut', lamp(false), { ...AIR, ntime: DOOR.shut, next: 'lamp.open' });
     book.add('lamp.open', lamp(true), { ...AIR, ntime: DOOR.open, next: 'lamp.shut' });
+    // third gear (added last, so the rooms' other blocks keep their numbers), the long climb to top gear: a thermos by the door gives a little energy back
+    if (room === 2) addThermos(k, 'thermos', 'bay.ribs', 4);
     return k;
   };
 }
@@ -190,6 +193,7 @@ export function keyRoom(book: Kit['book']): Level {
   m.set(GEARS.door, floor - 2, 'lamp.shut').set(GEARS.door, floor - 1, 'door.shut');
   m.fill(w - 1, 0, 1, floor, '#');
   m.link(GEARS.door, floor - 1);
+  if (book.index.has('thermos')) m.set(21, floor - 1, 'thermos');
   m.mon(MON.regina, 5, floor - 1);
   // variants here and there so the walls and floors don't repeat
   m.vary('bay.ribs', ['bay.bolts'], 13).vary('casting', ['casting.plate'], 7);
