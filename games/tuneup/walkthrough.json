@@ -40,7 +40,7 @@
   },
   {
    "scene": 10,
-   "keys": "D0seywg5AbkETQ/NMk0NzQk5AbkETQ/NCTkBuQRNCM0TTQXNME0UzQc5AbkETQ3NE00FzQg5AbkbTQNICsgNzSxND80HOQG5BE0PzQc5AbkETQPNE00="
+   "keys": "D0seywg5AbkETQ/NMk0NzQk5AbkETQ/NCTkBuQRNCM0TTQXNME0UzQc5AbkETQ3NE00FzQg5AbkbTQNICsgNzSxND80HOQG5BE0PzQc5AbkETQPNE0sPywZN"
   },
   {
    "scene": 11,
@@ -104,7 +104,7 @@
   },
   {
    "scene": 26,
-   "keys": "D0sQyzRICMgITRDNQUgIyAhNDM0+SAjIGk0="
+   "keys": "D0sEywZLDMsuSAjICE0QzUFICMgITQzNPkgIyBpN"
   },
   {
    "scene": 27,
@@ -267,7 +267,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 94116,
+  "frames": 94235,
   "chapters": [
    {
     "title": "Opening",
@@ -326,128 +326,128 @@
    },
    {
     "title": "Level 6: Brake Dance",
-    "frame": 29533,
-    "time": 492216.6666668735
+    "frame": 29652,
+    "time": 494200.00000020914
    },
    {
     "title": "Level 7: Hubcaps and Balls, round 1",
-    "frame": 32872,
-    "time": 547866.6666668559
+    "frame": 32991,
+    "time": 549850.0000001846
    },
    {
     "title": "Level 7: Hubcaps and Balls, round 2",
-    "frame": 35293,
-    "time": 588216.666666762
+    "frame": 35412,
+    "time": 590200.0000000907
    },
    {
     "title": "Level 7: Hubcaps and Balls, round 3",
-    "frame": 36621,
-    "time": 610350.0000000438
+    "frame": 36740,
+    "time": 612333.3333333725
    },
    {
     "title": "Level 8: Pump Up the Volume",
-    "frame": 37722,
-    "time": 628700.000000001
+    "frame": 37841,
+    "time": 630683.3333333298
    },
    {
     "title": "Level 9: Muffled",
-    "frame": 41489,
-    "time": 691483.3333331882
+    "frame": 41608,
+    "time": 693466.6666665169
    },
    {
     "title": "Level 10: The Rain Delay, the two and the three",
-    "frame": 44296,
-    "time": 738266.6666664126
+    "frame": 44415,
+    "time": 740249.9999997413
    },
    {
     "title": "Level 10: The Rain Delay, the tricky five",
-    "frame": 49185,
-    "time": 819749.9999995562
+    "frame": 49304,
+    "time": 821733.3333328849
    },
    {
     "title": "Level 11: The Horn Section, round 1",
-    "frame": 50586,
-    "time": 843099.9999995019
+    "frame": 50705,
+    "time": 845083.3333328306
    },
    {
     "title": "Level 11: The Horn Section, round 2",
-    "frame": 54088,
-    "time": 901466.6666660326
+    "frame": 54207,
+    "time": 903449.9999993613
    },
    {
     "title": "Level 11: The Horn Section, round 3",
-    "frame": 56962,
-    "time": 949366.6666659211
+    "frame": 57081,
+    "time": 951349.9999992498
    },
    {
     "title": "Level 12: Key Change, first gear",
-    "frame": 60343,
-    "time": 1005716.6666657899
+    "frame": 60462,
+    "time": 1007699.9999991186
    },
    {
     "title": "Level 12: Key Change, second gear",
-    "frame": 63089,
-    "time": 1051483.3333323703
+    "frame": 63208,
+    "time": 1053466.6666657128
    },
    {
     "title": "Level 12: Key Change, third gear",
-    "frame": 64700,
-    "time": 1078333.3333324953
+    "frame": 64819,
+    "time": 1080316.6666658379
    },
    {
     "title": "Level 12: Key Change, top gear",
-    "frame": 66330,
-    "time": 1105499.9999992885
+    "frame": 66449,
+    "time": 1107483.333332631
    },
    {
     "title": "Level 13: The Instrument Panel, the radio",
-    "frame": 67987,
-    "time": 1133116.6666660837
+    "frame": 68106,
+    "time": 1135099.9999994263
    },
    {
     "title": "Level 13: The Instrument Panel, the gauges",
-    "frame": 70272,
-    "time": 1171199.9999995944
+    "frame": 70391,
+    "time": 1173183.333332937
    },
    {
     "title": "Level 14: The Beltway",
-    "frame": 71471,
-    "time": 1191183.3333330208
+    "frame": 71590,
+    "time": 1193166.6666663634
    },
    {
     "title": "Level 15: The Test Drive, round the block",
-    "frame": 77357,
-    "time": 1289283.3333334776
+    "frame": 77476,
+    "time": 1291266.6666668202
    },
    {
     "title": "Level 15: The Test Drive, Main Street",
-    "frame": 80986,
-    "time": 1349766.6666670926
+    "frame": 81105,
+    "time": 1351750.0000004352
    },
    {
     "title": "Level 16: The Parade Route, the morning",
-    "frame": 84033,
-    "time": 1400550.0000006624
+    "frame": 84152,
+    "time": 1402533.333334005
    },
    {
     "title": "Level 16: The Parade Route, sunset",
-    "frame": 86752,
-    "time": 1445866.66666754
+    "frame": 86871,
+    "time": 1447850.0000008827
    },
    {
     "title": "Level 16: The Parade Route, the fireworks",
-    "frame": 88280,
-    "time": 1471333.3333343253
+    "frame": 88399,
+    "time": 1473316.666667668
    },
    {
     "title": "Ending",
-    "frame": 90111,
-    "time": 1501850.0000011341
+    "frame": 90230,
+    "time": 1503833.3333344767
    },
    {
     "title": "Credits",
-    "frame": 92564,
-    "time": 1542733.3333346578
+    "frame": 92683,
+    "time": 1544716.6666680004
    }
   ]
  }
