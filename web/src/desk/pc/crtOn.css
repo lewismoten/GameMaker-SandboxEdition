@@ -1,0 +1,40 @@
+/* switching the monitor on (deskPc.ts): the tube warms up. The glass stays dark a moment while
+   the heater comes up, then the picture rises out of the black, a little soft at first, and the
+   glow on the bezel (desk.css, pc/screenGlow.ts) comes up with it. The picture's own filter is
+   the glass's bulge (crtWarp.ts), so the warm-up fades what is inside it instead. */
+.crt.warming-up .crt-picture > * {
+  animation: crt-warm 3s ease-in both;
+}
+
+.crt.warming-up {
+  animation: crt-glow-warm 3s ease-in both;
+}
+
+@keyframes crt-warm {
+  0%,
+  20% {
+    opacity: 0;
+    filter: blur(1.5px);
+  }
+  70% {
+    filter: blur(0.3px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* the bezel's glow strength, registered so it can fade (it is a number in its shadows' colors) */
+@property --glow-a {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@keyframes crt-glow-warm {
+  0%,
+  20% {
+    --glow-a: 0;
+  }
+}

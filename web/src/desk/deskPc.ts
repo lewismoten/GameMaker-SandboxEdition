@@ -1,5 +1,6 @@
 // The PC on the desk, switched on and off: its insides (DOS, Game-Maker, the BBS, the VGA) load
-// when first needed, the power and turbo buttons and their lights, the tube collapsing when it
+// when first needed, the power and turbo buttons and their lights, the tube warming up when it is
+// switched on (with the fans and hard disk spinning up, pc/bootSounds.ts) and collapsing when it
 // is switched off, the enlarged screen, and typing a command at the prompt.
 import { toast } from '../editor/core/ui';
 import type { Computer } from '../retro/computer';
@@ -71,8 +72,13 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
       removeWarp = installCrtWarp(crt.querySelector<HTMLElement>('.crt-picture')!);
       return computer;
     }));
-  powerBtn.addEventListener('pointerenter', () => void pcCode(), { once: true });
-  powerBtn.addEventListener('focus', () => void pcCode(), { once: true });
+  // the fans and the hard disk spinning up, loaded with the PC's insides
+  const bootCode = () => import('./pc/bootSounds');
+  const fetchAhead = () => void Promise.all([pcCode(), bootCode()]);
+  powerBtn.addEventListener('pointerenter', fetchAhead, { once: true });
+  powerBtn.addEventListener('focus', fetchAhead, { once: true });
+  // the tube warming up from black at each switch-on (crtOn.css), done when its fade ends
+  crt.addEventListener('animationend', (e) => e.animationName === 'crt-warm' && crt.classList.remove('warming-up'));
   // the screenshot and record buttons: the capture tool loads on the first press
   let capture: { el: HTMLElement; dispose(): void } | undefined;
   const captureCode = () => import('./pc/capture');
@@ -119,7 +125,12 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     modem.power(true);
     spk.power(true);
     setTurbo(turbo);
-    poweringOn = loadPc().then((pc) => pc.powerOn());
+    crt.classList.add('warming-up');
+    poweringOn = Promise.all([loadPc(), bootCode()]).then(([pc, { bootSounds }]) => {
+      const whir = bootSounds();
+      // at the prompt (or switched off while booting) the fans and the disk fade away
+      return pc.powerOn().finally(() => whir?.settle());
+    });
     await poweringOn;
     if (!computer?.powered) return; // switched off again while it booted
     setTurbo(turbo);
@@ -143,6 +154,7 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     spk.power(false);
     modem.power(false);
     deskView.set({ disk: undefined, run: undefined, open: undefined });
+    crt.classList.remove('warming-up');
     crt.classList.add('switching-off');
     setTimeout(() => {
       crt.classList.remove('switching-off');

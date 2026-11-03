@@ -11,7 +11,9 @@ points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned
 calls The Sandbox BBS and types for the tour, then puts back what the call changed.
 
 - `pc/`: the case (`caseParts.ts`), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
-  the colors of the picture on the tube), the keyboard (`keyboard.ts`) and the keyboard tray
+  the colors of the picture on the tube; `crtOn.css` warms the tube up from black at switch-on,
+  `crtOff.css` collapses it at switch-off), the fans and hard disk spinning up at switch-on and
+  fading out at the DOS prompt (`bootSounds.ts`), the keyboard (`keyboard.ts`) and the keyboard tray
   (`tray.ts`) with its mouse pad (its print, `padPrints.ts`, chosen in `padChooser.ts` from the
   magazine's mouse pad ad and remembered by `padChoice.ts`), the GRAVITAS game pad
   (`gamePad.ts`; its drawing `gamePadArt.ts`, its SVG parts `gamePadSvg.ts`, its large controls

@@ -4,6 +4,7 @@
 import '../retro/computer/monitor.css';
 import './desk.css';
 import './deskStage.css';
+import './pc/crtOn.css';
 import './pc/crtOff.css';
 import { clear, toast } from '../editor/core/ui';
 import { loadDisks, type Disk } from '../retro/dos/disks';
