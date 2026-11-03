@@ -10,6 +10,8 @@ import { h } from '../../editor/core/ui';
 import { trinketTurntable } from './trinketTurntable';
 import { loadTrinkets, trinketBase, trinketMesh, type TrinketItem } from './trinketData';
 import { hasPhone } from './phone/phoneData';
+import { loadLaserKits, type LaserKit } from './laserKits';
+import { laserKitList } from './laserKitList';
 import type { PhoneViewer } from './phone/phoneViewer';
 
 /** The game whose box also holds the phone kit, shown in 3D with its own views (phone/phoneViewer.ts). */
@@ -22,17 +24,17 @@ const SHELF_KITS = 'Trinkets and kits';
 export function trinketShelf(id: string): HTMLElement {
   const base = trinketBase(id);
   const shelf = h('section', { class: 'bc-trinkets', hidden: '', 'aria-label': 'Plastic trinkets' });
-  void Promise.all([loadTrinkets(id), id === PHONE_GAME ? hasPhone() : false]).then(([items, phone]) => {
-    if (items.length || phone) {
-      if (phone) shelf.setAttribute('aria-label', SHELF_KITS); // a solderable kit isn't a plastic trinket
-      shelf.append(...viewer(base, items, phone));
+  void Promise.all([loadTrinkets(id), id === PHONE_GAME ? hasPhone() : false, loadLaserKits(id)]).then(([items, phone, kits]) => {
+    if (items.length || phone || kits.length) {
+      if (phone || kits.length) shelf.setAttribute('aria-label', SHELF_KITS); // a solderable or laser-cut kit isn't a plastic trinket
+      shelf.append(...viewer(base, items, phone, kits));
       shelf.hidden = false;
     }
   });
   return shelf;
 }
 
-function viewer(base: string, items: TrinketItem[], phone: boolean): HTMLElement[] {
+function viewer(base: string, items: TrinketItem[], phone: boolean, kits: LaserKit[]): HTMLElement[] {
   const PHONE = items.length; // the phone kit's place after the trinkets, when there is one
   const total = items.length + (phone ? 1 : 0);
   let at = -1; // -1: the box is showing
@@ -160,20 +162,23 @@ function viewer(base: string, items: TrinketItem[], phone: boolean): HTMLElement
     await table.show(() => meshOf(item), { spin: true });
     if (was < 0) canvas.focus({ preventScroll: true });
   }
-  const step = (dir: 1 | -1) => void choose((at + dir + total) % total);
+  const step = (dir: 1 | -1) => total > 0 && void choose((at + dir + total) % total);
 
   return [
     h(
       'div',
       { class: 'trk-panel' },
-      h('h2', null, phone ? SHELF_KITS : 'Plastic trinkets'),
-      list,
+      h('h2', null, phone || kits.length ? SHELF_KITS : 'Plastic trinkets'),
+      total ? list : null,
       info,
-      h(
-        'p',
-        { class: 'trk-help', id: 'trk-help' },
-        `Choose one to see it in place of the box. Drag it, or use the arrow keys, to turn it; PageUp and PageDown change trinket.${phone ? ' The phone also zooms (scroll or pinch), pans (shift-drag or two fingers) and resets (double-click or Home).' : ''}`,
-      ),
+      total
+        ? h(
+            'p',
+            { class: 'trk-help', id: 'trk-help' },
+            `Choose one to see it in place of the box. Drag it, or use the arrow keys, to turn it; PageUp and PageDown change trinket.${phone ? ' The phone also zooms (scroll or pinch), pans (shift-drag or two fingers) and resets (double-click or Home).' : ''}`,
+          )
+        : null,
+      kits.length ? laserKitList(kits) : null,
     ),
     float,
   ];

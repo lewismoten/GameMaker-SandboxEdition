@@ -2,7 +2,7 @@
 // each the money of its game's own world (laserNickelDefs.ts). Every one has a reeded rim, a front (the game's name round the
 // top, the token's art, a line round the bottom, sometimes a hole cut through) and a back ("GOOD FOR ..." in the game's words,
 // its number in the series, the year, SM for Sandbox Mint, and one letter of a hidden Sandscript message), for a Glowforge
-// (cut: red, score: blue, engrave: black).
+// (cut: red, engrave: blue, score: magenta; laserSvg.ts).
 //   cd web && npx vite-node ../games/kit/laserNickels.ts [--game id[,id]] [--force] [--out ROOT]
 // Writes web/public/laser/<game>/ (git-ignored build output): front.svg, back.svg (each exactly 38.1 x 38.1 mm), sheet.svg
 // (twelve fronts in a 4 x 3 grid with their cut lines, and the flip jig), sheet-back.svg (the back placed on the jig, the
