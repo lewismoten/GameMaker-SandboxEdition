@@ -12,11 +12,6 @@ const grid = (on: (x: number, y: number) => boolean): string[] =>
 const dist = (x: number, y: number) => Math.hypot(x - C, y - C);
 const disc = (r: number) => (x: number, y: number) => dist(x, y) <= r;
 const ringOf = (lo: number, hi: number) => (x: number, y: number) => dist(x, y) >= lo && dist(x, y) <= hi;
-const or =
-  (...f: ((x: number, y: number) => boolean)[]) =>
-  (x: number, y: number) =>
-    f.some((g) => g(x, y));
-
 /** The ten worlds that hold a star-shard, in the order they sit on the middle disc. */
 export const WORLDS = [
   'Ambermoor',
