@@ -75,10 +75,6 @@ GAMES.needle = [
   hero('saddled', 'saddled', 'city', 'Brother Camel', 'The camel with the saddlebags full of gold.', 'camel'),
   mon('city', 15, 'things', 'city', 'needle', 'The needle', 'The eye of the needle itself.'),
 ];
-GAMES.reckoning = [
-  hero('leo', 'reckon', 'fridge', 'Doc Leo', 'Tiptoeing to the fridge at 3:17 a.m.', 'leo'),
-  mon('bedroom', 17, 'reckon', 'bedroom', 'imp', 'Little devil', 'A little red devil with a cape.'),
-];
 GAMES.remote = [
   hero('remote', 'remote', 'den', 'The couch potato', 'On the hunt for the remote.', 'hero'),
   mon('den', 4, 'remote', 'den', 'cat', 'The cat', 'Look under the cat.'),
