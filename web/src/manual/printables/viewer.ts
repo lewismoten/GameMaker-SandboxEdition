@@ -512,6 +512,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     window.addEventListener('gm-tour-act', onTourAct);
     const onKey = (e: KeyboardEvent) => {
       if (zoomOpen()) return; // an enlarged screen shot takes the keys
+      // a control that turns with these keys (a code wheel's disc, any slider) has them while it has the focus
+      if (/^(Arrow|Home$|End$)/.test(e.key) && (e.target as Element | null)?.closest?.('[role="slider"]')) return;
       e.stopImmediatePropagation(); // not for the PC underneath
       if (!sizes.el.hidden && zoomKey(e, sizes, view === 'pages' ? 'page' : 'width')) return;
       const turn = (dir: 1 | -1) => (reader?.step ? reader.step(dir) : go(dir));

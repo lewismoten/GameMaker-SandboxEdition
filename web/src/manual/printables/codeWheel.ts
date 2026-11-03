@@ -258,6 +258,7 @@ export function codeWheelLive(it: CodeWheelItem, only?: number): HTMLElement {
       else if (e.key === 'Home') set(d, 0);
       else return;
       e.preventDefault();
+      e.stopPropagation(); // the disc's key, not the page's or the PC's underneath
       answer.textContent = '';
     });
   }
