@@ -163,7 +163,7 @@ export function courseTiles(): Tiles {
       p.rect(0, 0, 2, 60, c('ink', 0));
     },
   );
-  // The way out of the dark ring (the scene's link): a tall archway of warm light with a gold frame and a red top, the party's door, standing in the dark
+  // The way out of the dark ring (the scene's link): a circus door standing in the dark, its gold frame under an arch of bulbs, the red door swung open on warm light, and a bold arrow on it pointing in
   art(
     t,
     'ringDoor',
@@ -171,9 +171,27 @@ export function courseTiles(): Tiles {
     3,
     () => dark,
     (p) => {
-      p.rect(1, 6, 18, 54, c('gold', 1)).rect(3, 8, 14, 52, c('gold', 3));
-      for (let y = 12; y < 60; y += 8) p.rect(9, y, 2, 4, c('gold', 2));
-      p.rect(0, 2, 20, 5, c('red', 1)).rect(0, 2, 20, 1, c('gold', 2));
+      const ink = c('ink', 0);
+      // the frame: gold posts and an arched lintel, ink-edged, the corners cut round
+      p.rect(0, 2, 20, 58, ink).rect(1, 1, 18, 59, ink).rect(3, 0, 14, 1, ink);
+      p.rect(1, 3, 18, 57, c('gold', 1)).rect(3, 1, 14, 2, c('gold', 1)).rect(1, 3, 1, 57, c('gold', 2)).rect(3, 1, 14, 1, c('gold', 3));
+      // the way through: warm light, with the red door leaf swung open on the left (its top edge slants away)
+      p.rect(3, 5, 14, 55, c('gold', 3));
+      for (let x = 3; x < 11; x++) {
+        const top = 5 + Math.floor((x - 3) * 0.5);
+        p.rect(x, top, 1, 60 - top, c('red', 1));
+      }
+      p.rect(3, 5, 1, 55, c('red', 2)).rect(11, 9, 1, 51, ink);
+      p.rect(5, 12, 4, 18, c('red', 2)).rect(5, 34, 4, 22, c('red', 2)).rect(9, 38, 1, 3, c('gold', 3));
+      // the bulbs on the arch
+      for (let x = 4; x < 17; x += 3) p.set(x, 2, c('yellow', 3));
+      // the arrow, ink-edged white, on the open door and the light, pointing right
+      const arrow = (g: number, col: number) => {
+        p.rect(4 - g, 18 - g, 6 + g, 4 + 2 * g, col);
+        for (let k = 0; k < 5; k++) p.rect(9 + k - g, 14 + k - g, 1 + 2 * g, 12 - 2 * k + 2 * g, col);
+      };
+      arrow(1, ink);
+      arrow(0, c('paint', 3));
     },
   );
   // The MEANWHILE stretch, a station for each of the others' ideas: Gwinn's spotlight (its
