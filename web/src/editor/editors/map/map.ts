@@ -40,6 +40,10 @@ const TOOL_MODES = new Set<string>(['line', 'rect', 'select', 'terrain', 'stamp'
 const isTool = (m: Mode): m is ToolMode => TOOL_MODES.has(m);
 
 /** The tool buttons: mode, icon, name, key, what it does. */
+const nowTool = (m: Mode): Node[] => {
+  const t = TOOLS.find((x) => x[0] === m);
+  return t ? [h('strong', null, t[2]), document.createTextNode(` ${t[4]}`)] : [];
+};
 const TOOLS: [Mode, string, string, string, string][] = [
   ['paint', '✎', 'Paint', 'B', 'Drag to paint the chosen block'],
   ['line', '╱', 'Line', 'L', 'Drag a straight line of the chosen block'],
@@ -1067,6 +1071,8 @@ registerEditor(['map'], (host, project, file) => {
           ),
         ),
       ),
+      // touch has no hover to show a tool's title: the chosen tool says what it does here (mapTools.css)
+      h('p', { class: 'mt-now hint' }, ...nowTool(m)),
       h('span', { style: 'flex:1' }),
       gridBtn,
       wrapBtn,
@@ -1128,6 +1134,7 @@ registerEditor(['map'], (host, project, file) => {
   );
   /** The menu shows a round preset, or the exact percentage the wheel reached. */
   const zoomSelect = zoomControl.querySelector('select')!;
+  zoomSelect.classList.add('mt-big');
   const zoomCustom = h('option', { value: 'custom', hidden: true });
   zoomSelect.append(zoomCustom);
   function showZoom(): void {
@@ -1251,7 +1258,11 @@ registerEditor(['map'], (host, project, file) => {
       ),
       chooser.el,
       zoomControl,
-      h('button', { onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' }, '🖼 Download map picture'),
+      h(
+        'button',
+        { class: 'mt-big', onclick: () => void exportImage(), title: 'Save the map, just the level, or one game screen as a picture' },
+        '🖼 Download map picture',
+      ),
     ),
     h('div', { class: 'row' }, h('div', { class: 'stack', style: 'flex:1 1 480px;min-width:0' }, modeBar, marksUi.panel, scroller, status), sideCol),
   );
