@@ -223,6 +223,7 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   joins up across block edges. Each game's `tools/align.ts` names its objects; its `tools/check.ts` runs it.
 - `playtime.ts` — sets each box's "Over N hours of gameplay!" (`about.json` `box.hours`) from the walkthroughs:
   `cd web && npx vite-node ../games/kit/playtime.ts` after any walkthrough changes.
+- `pixelTrinkets.ts` (with `trinketRender.ts`) — pixel-figure 3D-print trinkets (pilot: Tune-Up and Teddy): a hero's standing frame or a monster's picture from the game's own disk as a standee on a base, a multi-color 3MF (at most 4 bodies) and a single-color STL into git-ignored `web/public/trinkets/<game>/`; `--png DIR` writes front, three-quarter and contact-sheet renders: `cd web && npx vite-node ../games/kit/pixelTrinkets.ts [--game id] [--colors 3|4] [--png DIR]`.
 - `scoreAudit.ts` — replays committed walkthroughs without rebuilding disks and prints each completed game's final score plus its score at every scene entrance. Use it to compare score curves before changing a game's point values: `cd web && npx vite-node ../games/kit/scoreAudit.ts [id...]`.
 - `dosStates.ts` — replays each CD game's `demo.rec` through the web engine and compares it with the DOS-recorded tables in `dosStates/` (see its README), printing the first differing line per game: `cd web && npx vite-node ../games/kit/dosStates.ts [game...]`. Local only (nebula and peach are long).
 - `png.ts` — a PNG writer and block sheets for design previews (used by the games' `tools/`, never on a disk).
