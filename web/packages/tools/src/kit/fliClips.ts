@@ -11,6 +11,7 @@
 // change or a big delta) instead of in a still hold, where the clip would open on a whole
 // frame for nothing; every frame and its delay stay the same.
 import { applyFliFrame, encodeFli, newFliCanvas, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
+import { decodeFli, encodeFrames, shrinkFrames, type ShrinkStep } from './fliShrink';
 import { parseSlideList, serializeSlideList, type SlideEntry } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 
 /** How long an FLI plays, in seconds (FLI::View waits `speed` 1/70 s after each frame). */
@@ -63,6 +64,8 @@ export interface ClipOptions {
   noLoopFrame?: boolean;
   /** Cut where opening on a whole frame costs the fewest extra bytes, not where least changes. */
   cheapCuts?: boolean;
+  /** Shrink steps (fliShrink.ts) run on every FLI's frames before it is cut and written. */
+  shrink?: ShrinkStep[];
 }
 
 /**
@@ -152,7 +155,16 @@ function clipName(name: string, k: number): string {
  * The FLI as clips of at most `seconds` each, by file name in play order. One that plays no
  * longer than a quarter more than `seconds` stays whole, under its own name.
  */
-export function fliClips(name: string, fli: Uint8Array, seconds = 4, opts: ClipOptions = {}): Record<string, Uint8Array> {
+export function fliClips(name: string, source: Uint8Array, seconds = 4, opts: ClipOptions = {}): Record<string, Uint8Array> {
+  let fli = source;
+  let sparsePalettes: boolean | undefined;
+  const steps = opts.shrink?.length ? shrinkFrames(decodeFli(source), opts.shrink) : [];
+  if (steps.length) {
+    const last = steps[steps.length - 1];
+    // the sparse palettes are for the clips' last write; cuts are chosen on whole ones
+    if (steps.some((r) => !r.lossless)) fli = encodeFrames(last.frames);
+    sparsePalettes = last.encode.sparsePalettes;
+  }
   if (fliSeconds(fli) <= seconds * 1.25) return { [name]: opts.noLoopFrame ? withoutLoopFrame(fli) : fli };
   const { frames, palettes, w, h, speed } = decode(fli);
   const most = Math.max(1, Math.floor((seconds * 70) / Math.max(1, speed)));
@@ -163,7 +175,15 @@ export function fliClips(name: string, fli: Uint8Array, seconds = 4, opts: ClipO
   for (let k = 0; k + 1 < starts.length; k++) {
     const fs = frames.slice(starts[k], starts[k + 1]);
     const ps = palettes.slice(starts[k], starts[k + 1]);
-    out[clipName(name, k)] = encodeFli(fs, ps[0], { width: w, height: h, speed, palettes: ps, runs: true, noLoopFrame: opts.noLoopFrame });
+    out[clipName(name, k)] = encodeFli(fs, ps[0], {
+      width: w,
+      height: h,
+      speed,
+      palettes: ps,
+      runs: true,
+      noLoopFrame: opts.noLoopFrame,
+      sparsePalettes,
+    });
   }
   return out;
 }

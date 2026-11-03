@@ -180,7 +180,12 @@ project data under the MIT License; recordings and complete songs are not includ
 `kit/fadeOut` adds palette-only FLI fades. `kit/fliClips` splits long animations at stable
 palette boundaries and builds their slide-list entries; its opt-in `ClipOptions` leave out
 the closing ring frame no player shows (`noLoopFrame`, also an `encodeFli` option) and put
-cuts where a whole frame costs the fewest extra bytes (`cheapCuts`). `kit/recordedDemo` turns delta/key
+cuts where a whole frame costs the fewest extra bytes (`cheapCuts`), and run `shrink` steps first.
+`kit/fliShrink` is the size report (`fliReport`: bytes per chunk type per frame, and why) and the shrink
+steps (`sparsePalettesStep` lossless; `holdStillStep`, `snapColorsStep`, `maxColorsStep`,
+`flattenDitherStep`, `dropFramesStep` lossy), each returning the new frames, the bytes saved and how
+visible the change is (`Visibility`: mean, worst, changed share); `decodeFli`/`encodeFrames` convert,
+`shrinkFrames` chains steps. `kit/recordedDemo` turns delta/key
 pairs into a native title demo with configurable Escape press and release delays.
 
 ### Shared block sets
