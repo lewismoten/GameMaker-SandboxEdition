@@ -47,24 +47,23 @@ function shield(k: Kit, p: Pixels): void {
   p.rect(50, 95, 92, 2, c('ink', 0)).rect(50, 97, 92, 1, c('ink', 1)).rect(46, 94, 6, 5, c('metal', 1));
 }
 
-/** The far skyline, a 40-pixel strip that repeats (row 2): the hills' haze, the town and its water tower. */
+/** The far skyline, a 20-pixel strip that repeats (row 2): the hills' haze, a few buildings and a water tower, drifting left. */
 export function skylineTile(k: Kit): Pixels {
   const { c, R } = k;
-  const p = gradient(new Pixels(40, 20), 0, 0, 40, 20, R('sky'), 4, 6);
-  for (let x = 0; x < 40; x++) {
-    const hill = 12 + Math.round(3 * Math.sin((x / 40) * Math.PI * 2));
+  const p = gradient(new Pixels(20, 20), 0, 0, 20, 20, R('sky'), 4, 6);
+  for (let x = 0; x < 20; x++) {
+    const hill = 13 + Math.round(2 * Math.sin((x / 20) * Math.PI * 2));
     p.rect(x, hill, 1, 20 - hill, c('pipe', 2));
   }
-  // the town: blocks of buildings, and the water tower on its legs
+  // the town: blocks of buildings (one taller), and the water tower on its legs, so the strip has a front and a back
   for (const [x, w, h] of [
-    [3, 4, 9],
-    [8, 3, 6],
-    [12, 5, 11],
-    [30, 4, 7],
+    [1, 4, 9],
+    [6, 3, 6],
+    [15, 4, 7],
   ])
     p.rect(x, 20 - h, w, h, c('pipe', 1)).rect(x + 1, 20 - h + 2, 1, 1, c('pipe', 3));
-  p.rect(21, 4, 6, 4, c('pipe', 1)).rect(20, 7, 8, 1, c('pipe', 0)).rect(22, 8, 1, 12, c('pipe', 1)).rect(25, 8, 1, 12, c('pipe', 1));
-  return p.rect(0, 19, 40, 1, c('grass', 1));
+  p.rect(10, 5, 4, 3, c('pipe', 1)).rect(9, 8, 6, 1, c('pipe', 0)).rect(10, 9, 1, 11, c('pipe', 1)).rect(13, 9, 1, 11, c('pipe', 1));
+  return p.rect(0, 19, 20, 1, c('grass', 1));
 }
 
 /** The roadside trees, a block that repeats (row 3's shoulders), going by fast. */
@@ -113,7 +112,7 @@ export function playPic(k: Kit, on: boolean): Pixels {
 }
 
 /** The whole driver's seat, still: every block not on a ring is cut from it. */
-export function paintCab(k: Kit): Pixels {
+export function paintCab(k: Kit, doorPhase = 0): Pixels {
   const { c, R } = k;
   const p = new Pixels(320, 200, c('wall', 2));
   // the headliner, the mirror's stem and its glass over three cells (a pale reflection of the road behind)
@@ -122,7 +121,7 @@ export function paintCab(k: Kit): Pixels {
   p.rect(141, 4, 58, 14, c('ink', 0)).rect(143, 5, 54, 12, c('sky', 5)).rect(143, 12, 54, 5, c('asphalt', 2)).rect(168, 13, 2, 1, c('paint', 2));
   shield(k, p);
   // the cab's sides, then the A-pillars slanting in toward the top
-  sides(k, p);
+  sides(k, p, doorPhase);
   for (let y = 20; y < 100; y++) {
     const s = y < 60 ? 6 : 2;
     p.rect(20 + s, y, 20 - s, 1, c('wall', 1)).rect(240, y, 20 - s, 1, c('wall', 1));

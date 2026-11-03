@@ -3,6 +3,7 @@
 // come out alike sharing one; then the tricks, all plain block timers:
 //  - the far skyline (row 2) and the roadside trees (row 3's shoulders) are rings that shift their
 //    strip left a few pixels a frame (as the swim's layers do): the skyline slowly, the trees fast;
+//    Teddy's door window has the roadside racing right in five-pixel steps (art/cabInterior.ts DOOR);
 //  - the speedometer's needle is pinned at 25, the 8-track's PLAY lamp blinks, Teddy pants, and the
 //    trip meter counts the miles to the exit down;
 //  - the lane strip (row 5): the driver walks it (sprites/driver.ts), its air pulling down onto the
@@ -17,6 +18,7 @@
 //    edge, the dashes' and posts' spawners give birth forever.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { spawnChains } from '@lewismoten/gamemaker-sandbox-tools/kit/road3d';
+import { DOOR } from '../art/cabInterior';
 import { chevrons, exitLamp, gauge, laneIcon, paintCab, playPic, skylineTile, teddyPant, treeTile, tripPic, GAUGE } from '../art/cab';
 import type { Pal } from '../art/palette';
 import { BELTMON } from '../beltMonsters';
@@ -31,8 +33,8 @@ export const HONK = -25;
 /** The 8-track's PLAY lamp: ticks lit, ticks dark (about a beat of the song). */
 const PLAY_BLINK = [6, 3];
 /** The skyline's strip: pixels a frame and ticks a frame; the trees'. */
-const SKYLINE = { shift: 10, ntime: 30 } as const;
-const TREES = { shift: 10, ntime: 6 } as const;
+const SKYLINE = { shift: 5, ntime: 12 } as const;
+const TREES = { shift: 5, ntime: 3 } as const;
 /** Row 3's shoulder cells where the trees go by. */
 const TREE_COLS = [2, 3, 4, 5, 10, 11];
 
@@ -62,6 +64,22 @@ export function beltwayBlocks(pal: Pal): Kit {
   };
   stream('skyline', skylineTile(k), SKYLINE.shift, SKYLINE.ntime);
   stream('trees', treeTile(k), TREES.shift, TREES.ntime);
+  // the door window's roadside racing right: each racing cell a ring of DOOR.phases, alike frames sharing a block
+  const doorFrames = Array.from({ length: DOOR.phases }, (_, f) => paintCab(k, f * DOOR.step));
+  const doorSeen = new Map<string, string>();
+  const doorHead = new Map<string, string>();
+  DOOR.cells.forEach(([x, y]) => {
+    const names = doorFrames.map((fr, f) => {
+      const p = cell(fr, x, y);
+      const key = `${f}:${Buffer.from(p.px).toString('base64')}`;
+      if (!doorSeen.has(key)) doorSeen.set(key, `door${x}.${y}.${f}`);
+      return doorSeen.get(key)!;
+    });
+    doorHead.set(`${x},${y}`, names[0]);
+    names.forEach((n, f) => {
+      if (n === `door${x}.${y}.${f}`) book.add(n, cell(doorFrames[f], x, y), { ntime: 1, next: `door${x}.${y}.${(f + 1) % DOOR.phases}` });
+    });
+  });
   // the instruments
   book.add('speedo', gauge(k, 0.5, 'MPH'));
   for (let m = MILES; m >= 0; m--) book.add(`trip${m}`, tripPic(k, m), m ? { ntime: MILE, next: `trip${m - 1}` } : {});
@@ -130,7 +148,7 @@ export function beltwayBlocks(pal: Pal): Kit {
     book.add(`postSpawn${i}`, blank, { birthMon: BELTMON.post(side), birthTime: POST_EVERY });
   });
   // every other cell: a plain cut of the painting, alike cells sharing a block
-  const special = specials(pantCells);
+  const special = specials(pantCells, doorHead);
   const seen = new Map<string, string>();
   const cells = new Map<string, string>();
   for (let y = 0; y < H; y++)
@@ -165,12 +183,13 @@ const mirrorChains = () =>
   );
 
 /** The cells that are rings or chains, and their first block. */
-function specials(pantCells: [number, number][]): Special {
+function specials(pantCells: [number, number][], doorHead: Map<string, string>): Special {
   const chains = mirrorChains();
   return (x, y) => {
     if (y === MIRROR.row && (MIRROR.cols as readonly number[]).includes(x)) return chains[x - MIRROR.cols[0]].first;
-    if (y === 2 && x >= 2 && x <= 11) return `skyline${x % 2}.0`;
+    if (y === 2 && x >= 2 && x <= 11) return 'skyline0.0';
     if (y === 3 && TREE_COLS.includes(x)) return 'trees0.0';
+    if (doorHead.has(`${x},${y}`)) return doorHead.get(`${x},${y}`);
     if (x === GAUGE.speedo[0] && y === GAUGE.speedo[1]) return 'speedo';
     if (x === GAUGE.trip[0] && y === GAUGE.trip[1]) return `trip${MILES}`;
     if (x === GAUGE.play[0] && y === GAUGE.play[1]) return 'play0';
