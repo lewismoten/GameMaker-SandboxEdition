@@ -10,7 +10,6 @@ import type { PrintableItem } from '../manual/printables/types';
 export const SHELF_TYPES = [
   ['manual', 'Manuals'],
   ['hintbook', 'Hint books'],
-  ['codewheel', 'Code wheels'],
   ['worldmap', 'World Maps'],
   ['levelmap', 'Level Maps'],
   ['map', 'Other maps and plans'],
@@ -130,7 +129,8 @@ function ownType(kind: PrintableItem['kind'], title: string): ShelfType {
     case 'recipe':
       return 'letter';
     case 'codewheel':
-      return 'codewheel';
+      // with the inserts until a game ships one; then a Code wheels shelf, and achievements/catalog.ts LIBRARY_KINDS with it
+      return 'insert';
   }
 }
 
