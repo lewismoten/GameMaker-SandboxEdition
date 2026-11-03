@@ -70,6 +70,6 @@
     "response s11 Z (fire) waits 0.7 s before anything happens",
     "facing s29 The hero faces the same way walking left and right",
     "facing s28 The hero faces the same way walking left and right",
-    "waits s28 Timed block 28 stays shut for 62.1 s at a time"
+    "waits s28 Timed block 40 stays shut for 62.1 s at a time"
   ]
 }
