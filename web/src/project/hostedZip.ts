@@ -37,8 +37,12 @@ export async function readHostedZip(bytes: Uint8Array): Promise<Map<string, Uint
   return out;
 }
 
+/** Unzipped entries per zip, so the many files a box or label reads from one zip inflate it once. */
+const unzipped = new WeakMap<Uint8Array, ReturnType<typeof readZip>>();
+
 /** One file of a zip by any of `names` (compared in lower case), as stored: no player is read. */
 export async function findZipFile(bytes: Uint8Array, names: string[]): Promise<Uint8Array | undefined> {
-  const entries = await readZip(bytes);
-  return entries.find((e) => names.includes(e.name.toLowerCase()))?.data;
+  let entries = unzipped.get(bytes);
+  if (!entries) unzipped.set(bytes, (entries = readZip(bytes)));
+  return (await entries).find((e) => names.includes(e.name.toLowerCase()))?.data;
 }

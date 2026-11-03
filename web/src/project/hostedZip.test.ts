@@ -42,4 +42,13 @@ describe('peekGameFile', () => {
     expect(await peekGameFile(entry, 'x.gam', './b/')).toBeUndefined();
     expect(fetchMock).toHaveBeenCalledTimes(1); // the fallback reused the zip already fetched
   });
+
+  it('inflates a zip once for many files', async () => {
+    const fetchMock = await serve(['x.gam', 'x.bkd']);
+    const a = await peekGameFile(entry, 'x.gam', './c/');
+    const b = await peekGameFile(entry, 'x.bkd', './c/');
+    expect([...a!]).toEqual([1, 2, 3]);
+    expect([...b!]).toEqual([1, 2, 3]);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
 });
