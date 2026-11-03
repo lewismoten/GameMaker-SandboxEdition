@@ -451,6 +451,36 @@ function fliChunk(type: number, data: number[]): number[] {
 }
 
 /**
+ * A COLOR64 chunk's data for the colors `px` draws whose entry in `shown` (the player's palette,
+ * updated here) differs from `pal`, in runs of neighbors; undefined when none does.
+ */
+function sparseColors(px: Uint8Array, pal: Uint8Array, shown: Uint8Array): number[] | undefined {
+  const used = new Uint8Array(256);
+  for (let k = 0; k < px.length; k++) used[px[k]] = 1;
+  const stale = (k: number) => used[k] === 1 && [0, 1, 2].some((j) => (pal[k * 3 + j] & 63) !== shown[k * 3 + j]);
+  const packets: number[] = [];
+  let count = 0;
+  let last = 0; // the index after the last packet
+  for (let c = 0; c < 256;) {
+    if (!stale(c)) {
+      c++;
+      continue;
+    }
+    let end = c;
+    while (end < 256 && end - c < 255 && stale(end)) end++;
+    packets.push(c - last, end - c);
+    for (let k = c * 3; k < end * 3; k++) {
+      packets.push(pal[k] & 63);
+      shown[k] = pal[k] & 63;
+    }
+    count++;
+    last = end;
+    c = end;
+  }
+  return count ? [count & 255, count >> 8, ...packets] : undefined;
+}
+
+/**
  * Writes an Autodesk Animator .FLI (Game-Maker shows 320x200): each frame run-length coded
  * or as the lines that changed, the 6-bit palette in the first frame, and a closing "ring"
  * frame that leads back to the start. No chunk is bigger than FLI_CHUNK_MAX: a bigger frame
@@ -468,6 +498,12 @@ export function encodeFli(
     /** A palette per frame (fades, flashes); changes are stored where they happen. */ palettes?: Uint8Array[];
     /** Code runs of a color inside changed spans as run packets too (smaller deltas for drawn art). */ runs?: boolean;
     /** Leave out the closing ring frame (nothing that plays the file shows it). */ noLoopFrame?: boolean;
+    /**
+     * After the first frame, send a palette change only for the colors the frame draws (a fade
+     * of a picture that uses 90 colors sends 90, not 256); a color the player still holds
+     * stale goes out in the first frame that draws it. What shows is the same.
+     */
+    sparsePalettes?: boolean;
   } = {},
 ): Uint8Array {
   const w = opts.width ?? 320;
@@ -475,13 +511,19 @@ export function encodeFli(
   const ring = !opts.noLoopFrame;
   const all = ring ? [...frames, frames[0]] : frames;
   const pals = opts.palettes ? [...frames.map((_, i) => opts.palettes![i] ?? palette), ...(ring ? [opts.palettes[0] ?? palette] : [])] : undefined;
+  // the palette the player holds (6-bit), kept for sparse palettes
+  const shown = new Uint8Array(768);
   const records = all.map((px, i) => {
     const chunks: number[][] = [];
     const pal = pals?.[i] ?? palette;
-    if (i === 0 || (pals && pals[i - 1].some((v, c) => c < 768 && (v & 63) !== (pal[c] & 63)))) {
+    if (opts.sparsePalettes && i > 0) {
+      const colors = sparseColors(px, pal, shown);
+      if (colors) chunks.push(fliChunk(11, colors));
+    } else if (i === 0 || (pals && pals[i - 1].some((v, c) => c < 768 && (v & 63) !== (pal[c] & 63)))) {
       const colors: number[] = [1, 0, 0, 0]; // one packet: skip 0, count 0 = 256 colors
       for (let c = 0; c < 768; c++) colors.push(pal[c] & 63);
       chunks.push(fliChunk(11, colors));
+      for (let c = 0; c < 768; c++) shown[c] = pal[c] & 63;
     }
     // After the first frame, store only what changed, when that is smaller.
     const prev = i > 0 ? all[i - 1] : undefined;
