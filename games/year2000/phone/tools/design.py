@@ -28,10 +28,10 @@ add("U1", "MCU_Microchip_PIC16:PIC16F84A-XXP", "PIC16F84A-04/P", "dip18", "B", {
     "8": "TONEA", "9": "TONEB", "10": "M_Q1", "11": "M_Q2", "12": "M_Q3", "13": "M_Q4",
     "14": V5, "15": None, "16": "CLK_PIC", "17": "TALK_H", "18": "DIN"},
     desc="8-bit microcontroller, 1K-word flash, 18-pin DIP")
-add("U2", "Local:MT8870", "MT8870DE1", "dip18", "B", {
+add("U2", "Local:MT8870", "CM8870P", "dip18", "B", {
     "1": "M_VREF", "2": "M_INN", "3": "M_GS", "4": "M_VREF", "5": GND, "6": GND, "7": "M_OSC1",
     "8": "M_OSC2", "9": GND, "10": V5, "11": "M_Q1", "12": "M_Q2", "13": "M_Q3", "14": "M_Q4",
-    "15": "M_STD", "16": "M_EST", "17": "M_STGT", "18": V5}, desc="DTMF tone decoder, 18-pin DIP")
+    "15": "M_STD", "16": "M_EST", "17": "M_STGT", "18": V5}, desc="DTMF tone decoder, 18-pin DIP; CM8870P, MT8870D and HT9170B are pin-compatible here (pins 5 and 6 tied low)")
 add("U3", "Driver_LED:MAX7219", "MAX7219CNG+", "dip24", "B", {
     "1": "DIN", "2": "DIG0", "3": "DIG4", "4": GND, "5": "DIG6", "6": "DIG2", "7": "DIG3",
     "8": "DIG7", "9": GND, "10": "DIG5", "11": "DIG1", "12": "LOAD", "13": "CLK", "14": "SEG_A",
@@ -48,8 +48,8 @@ add("U6", "Regulator_Linear:L7805", "LM2940CT-5.0", "to220", "B",
     {"1": "VBAT", "2": GND, "3": V5}, desc="5 V low-dropout regulator, TO-220 (pin 1 in, 2 gnd, 3 out)")
 add("Q1", "Transistor_BJT:Q_NPN_EBC", "2N3904", "to92", "B", {"E": "TXE", "B": "TXB", "C": "LEDC"},
     desc="NPN transistor, IR LED driver")
-add("Q2", "Transistor_BJT:Q_NPN_EBC", "2N3904", "to92", "B", {"E": GND, "B": "Q2B", "C": "AIN"},
-    desc="NPN transistor, mutes the receiver while TALK is held")
+add("Q2", "Transistor_BJT:Q_NPN_EBC", "2N3904", "to92", "B", {"E": GND, "B": "Q2B", "C": "RX_AC"},
+    desc="NPN transistor, mutes the receiver while TALK is held or a digit is being sent")
 add("X1", "Device:Crystal", "3.579545 MHz", "xtal", "B", {"1": "M_OSC1", "2": "M_OSC2"},
     desc="Crystal 3.579545 MHz, HC-49 (the MT8870 clock, shared with the PIC)")
 # ---- front-side parts (face the user) -------------------------------------------------------
@@ -77,7 +77,7 @@ add("SW4", "Switch:SW_Push", "TALK", "tact", "F", {"1": V5, "2": "TALK_H"}, desc
 add("SW5", "Switch:SW_Push", "CLEAR", "tact", "F", {"1": "MCLR", "2": GND}, desc="6 mm tactile switch")
 # ---- battery ----------------------------------------------------------------------------------
 add("BT1", "Device:Battery", "4xAAA", "batt", "B", {"1": "VBAT_RAW", "2": GND},
-    desc="4 x AAA battery holder, PC pins")
+    desc="4 x AAA battery holder with wire leads (stuck behind the dial), leads soldered to two pads")
 add("SW1", "Switch:SW_SPDT", "POWER", "slide", "B", {"B": "VBAT_RAW", "A": "VBAT", "C": None},
     desc="Slide switch SPDT (one throw unused)")
 # ---- passives ---------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ R(4, "1k", "MIC_AC1", "MIC_INV", "mic amp input")
 R(5, "47k", "MICAMP", "MIC_INV", "mic amp feedback (gain 47)")
 R(6, "10k", V5, "VMID", "half-supply divider")
 R(7, "10k", "VMID", GND, "half-supply divider")
-R(8, "6.8k", V5, "TXB", "IR LED bias")
+R(8, "6.8k", "TALK_H", "TXB", "IR LED bias: on only while TALK is held or a digit is sent (the PIC drives TALK_H)")
 R(9, "2.7k", "TXB", GND, "IR LED bias")
 R(10, "56", "TXE", GND, "IR LED emitter resistor")
 R(11, "100", V5, "LEDA", "IR LED series resistor")
@@ -100,8 +100,10 @@ R(16, "470k", "TONE_AC", "AIN", "tones to the speaker")
 R(17, "22k", "PD", GND, "photodiode load")
 R(18, "4.7k", "PD_AC", "RXINV", "receive amp input")
 R(19, "220k", "RXAMP", "RXINV", "receive amp feedback (gain 47)")
-R(20, "47k", "RX_AC", "AIN", "receiver to speaker amp")
-R(21, "47k", "AIN", GND, "speaker amp input load")
+R(20, "47k", "RX_AC", "AIN", "receiver to speaker amp (fixed volume; leave out if RV1 is fitted)")
+R(21, "47k", "AIN", GND, "speaker amp input load (leave out if RV1 is fitted)")
+add("RV1", "Device:R_Potentiometer", "10k trimmer (optional)", "trim", "B", {"1": "RX_AC", "2": "AIN", "3": GND},
+    desc="OPTIONAL volume trimmer: fit it INSTEAD of R20 and R21 (wiper to the speaker amp)")
 R(22, "10k", "TALK_H", "Q2B", "receiver mute base resistor")
 R(23, "100k", "M_IN_AC", "M_INN", "MT8870 input resistor")
 R(24, "100k", "M_GS", "M_INN", "MT8870 feedback (unity gain)")

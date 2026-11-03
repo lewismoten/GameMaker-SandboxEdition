@@ -290,6 +290,7 @@ class Board:
         self.edges = []     # (cycle, pins) on RB2/RB3
         self.prev_tone = 0
         self.talk = False
+        self.bias_log = []    # (cycle, on) whenever RA0 is driven or released by the PIC
 
     def port(self):
         p = self.p
@@ -304,6 +305,9 @@ class Board:
         if not (a & 8) and (self.prev_a & 8):
             self.nbits = 0
         self.prev_a = a
+        drv = (p.tris_a & 1) == 0 and (a & 1)
+        if (not self.bias_log and drv) or (self.bias_log and bool(drv) != self.bias_log[-1][1]):
+            self.bias_log.append((p.cycles, bool(drv)))
         tone = (p.latch_b >> 2) & 3
         if tone != self.prev_tone:
             self.edges.append((p.cycles, tone))
@@ -405,6 +409,12 @@ def main(hexfile):
                 spec = tone_spectrum(ed, c0, c1)
                 top = sorted(spec, key=spec.get, reverse=True)[:2]
                 check("digit 3 tone is 697 + 1477 Hz", sorted(top) == [697, 1477], {k: round(v, 3) for k, v in spec.items()})
+                bl = b2.bias_log
+                on = [c for c, v in bl if v]
+                off = [c for c, v in bl if not v]
+                check("IR bias: RA0 driven high before the tone and released after it, and not otherwise",
+                      len(on) == 1 and len(off) == 1 and on[0] < c0 - 0.005 * FCY and off[0] > c1 and (off[0] - c1) / FCY < 0.01,
+                      [(round(c / FCY, 3), v) for c, v in bl])
                 check("tone lasts about 100 ms", 0.09 < (c1 - c0) / FCY < 0.12, round((c1 - c0) / FCY, 3))
             else:
                 check("tone produced", False)

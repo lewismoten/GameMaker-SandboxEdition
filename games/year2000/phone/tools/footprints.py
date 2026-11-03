@@ -54,9 +54,9 @@ def _row(name, nums, pitch, body, desc, d=1.8, drill=0.9, square=None, marks=())
 def _disp():
     pads = [Pad(str(i + 1), -6.35 + 2.54 * i, 5.08, square=(i == 0)) for i in range(6)]
     pads += [Pad(str(7 + i), 6.35 - 2.54 * i, -5.08) for i in range(6)]
-    # ASSUMED: 0.36 in 4-digit module, 30 x 14 mm body, pin rows 10.16 mm apart (5641AS-style pinout)
+    # 3641AS-style 0.36 in module: 30 x 14 x 7.2 mm body, rows 10.16 mm apart (G-NOR GNQ-3641 drawing)
     return Fp("DISP4_CC_0.36in_12pin", pads, (-15, -7, 15, 7), (-15.3, -7.3, 15.3, 7.3),
-              [("1", -8.5, 7.4), ("12", -8.5, -7.4)], desc="4-digit 7-segment module, 12 pins, ASSUMED 10.16 mm row spacing")
+              [("1", -8.5, 7.4), ("12", -8.5, -7.4)], desc="4-digit 7-segment module (3641AS style), 12 pins, rows 10.16 mm apart")
 
 
 def _tact():
@@ -92,9 +92,11 @@ FP = {
               desc="subminiature lever microswitch, common and normally-open pins (ASSUMED 5.08 mm apart)"),
     "slide": _row("SW_Slide_SPDT_BigPads", ["1", "2", "3"], 2.54, (-5.0, -3.0, 5.0, 3.0), "SPDT slide switch, pins 2.54 mm apart (ASSUMED)",
                   d=2.0, drill=1.1, square="1"),
-    "batt": Fp("BatteryHolder_4xAAA_BigPads", [Pad("1", -5.08, -21.59, 2.6, 1.4, True), Pad("2", 5.08, -21.59, 2.6, 1.4)],
-               (-25, -23.5, 25, 23.5), (-25.2, -23.7, 25.2, 23.7), [("+", -5.08, -24.6), ("-", 5.08, -24.6)],
-               desc="4 x AAA holder with PC pins (placeholder pad positions: check the holder's drawing)"),
+    "batt": Fp("BatteryLeads_2pad_BigPads", [Pad("1", -5.08, 0, 2.6, 1.4, True), Pad("2", 5.08, 0, 2.6, 1.4)],
+               (-8.0, -3.2, 8.0, 3.2), (-8.3, -3.5, 8.3, 3.5), [("+", -5.08, 3.9), ("-", 5.08, 3.9)],
+               desc="two pads for the 4 x AAA holder's wire leads (red to +, black to -)"),
+    "trim": _row("Trimmer_10k_3pin_BigPads", ["1", "2", "3"], 2.54, (-5.0, -5.0, 5.0, 5.0), "10k trimmer, 3 pins 2.54 mm apart in a row (Adafruit 356 style, 9.5 mm body)",
+                 square="1", marks=[("1", -2.54, 5.8)]),
     "disp4": _disp(), "tact": _tact(),
 }
 # the netlist pins "1".."3" of the slide switch follow the schematic symbol (checked by gen_pcb)

@@ -7,6 +7,8 @@
 ;        RA4 StD in (MT8870)         RB0 PULSE in (low = closed)  RB1 OFF-NORMAL in (low = closed)
 ;        RB2/RB3 tone outputs (square waves, summed by two 10k resistors)
 ;        RB4..RB7 = MT8870 Q1..Q4 in.  CLEAR is the MCLR reset button.
+; The IR LED is only biased on while TALK is held or a digit is sent: RA0 is the TALK line, and
+; the PIC drives it high for the length of a tone (R8 feeds the LED bias from it).
 ; DTMF tone pair = two square waves from 16-bit phase accumulators in a fixed
 ; 24-cycle loop (sample rate FS = 894886/24 = 37286 Hz): phase += inc, pin = top bit.
 ; Reference: DTMF row/column frequencies, ITU-T Q.23; MT8870D and MAX7219 datasheets.
@@ -351,6 +353,12 @@ send_tone:
         clrf    cntL
         movlw   TONEHI
         movwf   cntH
+        bsf     STATUS,RP0              ; drive RA0 (the TALK line) high: it powers the IR LED's
+        bcf     TRISA,0                 ; bias and mutes the receiver, only while a digit is sent
+        bcf     STATUS,RP0
+        bsf     PORTA,0
+        movlw   d'12'
+        call    delay                   ; about 10 ms for the bias to settle
 tone:   movf    incAL,w                 ; 6 cycles
         addwf   phAL,f
         btfsc   STATUS,C
@@ -377,6 +385,10 @@ tone:   movf    incAL,w                 ; 6 cycles
         decfsz  cntH,f
         goto    tone
         clrf    PORTB
+        bcf     PORTA,0
+        bsf     STATUS,RP0              ; release RA0 back to an input (TALK button)
+        bsf     TRISA,0
+        bcf     STATUS,RP0
         movlw   d'70'
         goto    delay
 
