@@ -9098,8 +9098,8 @@
     }
   },
   "sleuth": {
-    "hash": "86b5db95a10bc7fb",
-    "maps": { "act1.map|paragon.bbl": [0, 4, 70, 60], "act2.map|paragon.bbl": [0, 4, 100, 60], "green.map|green.bbl": [0, 0, 86, 43] }
+    "hash": "dc1cf893808d5702",
+    "maps": { "act1.map|paragon.bbl": [0, 4, 70, 60], "act2.map|paragon.bbl": [0, 4, 100, 60], "green.map|green.bbl": [0, 0, 86, 53] }
   },
   "smirked": {
     "hash": "a6d0c2c28d07567e",
