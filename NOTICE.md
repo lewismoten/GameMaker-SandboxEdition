@@ -893,6 +893,13 @@ The other games' pixel-figure trinkets (`games/kit/pixelTrinkets.ts`) are made f
 hero and monster pictures and palette, one pixel to one block, with no outside art; the code was
 written with Anthropic Claude Sonnet 5.5 under Lewis Moten's direction.
 
+The laser-cut wooden nickels (`games/kit/laserNickels.ts`, with `laserNickelDefs.ts`, and the SVG builder, pixel
+text and preview in `web/packages/tools/src/kit/laser*.ts`) are made for Lewis Moten's Glowforge from each game's own
+hero and monster pictures, drawn as pixel engraving, with the words from each game's own text. Their letters are the
+engine's 8×8 PC font (Daniel Hepper's public-domain `font8x8_basic`, credited above) and the project's 3×5 micro
+font; no outline font and no other outside art is used. The code was written by Claude Sonnet 5.5 (Anthropic) under
+Lewis Moten's direction.
+
 The meshes are thinned (`web/packages/tools/src/mesh/decimate.ts`) by quadric edge collapse, the
 method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quadric Error Metrics"
 (SIGGRAPH 1997), written from the paper with no code from any library; the published method is an

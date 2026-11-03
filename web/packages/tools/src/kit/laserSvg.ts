@@ -16,8 +16,7 @@ export type Item =
 
 const n = (v: number) => String(Math.round(v * 1000) / 1000);
 const poly = (pts: readonly Pt[]) => `M${pts.map(([x, y]) => `${n(x)} ${n(y)}`).join('L')}Z`;
-const circle = (cx: number, cy: number, r: number) =>
-  `M${n(cx - r)} ${n(cy)}a${n(r)} ${n(r)} 0 1 0 ${n(2 * r)} 0a${n(r)} ${n(r)} 0 1 0 ${n(-2 * r)} 0Z`;
+const circle = (cx: number, cy: number, r: number) => `M${n(cx - r)} ${n(cy)}a${n(r)} ${n(r)} 0 1 0 ${n(2 * r)} 0a${n(r)} ${n(r)} 0 1 0 ${n(-2 * r)} 0Z`;
 
 export class LaserSheet {
   readonly items: Item[] = [];
@@ -50,9 +49,7 @@ export class LaserSheet {
         .join('');
     const eng = by('engrave');
     const fillD = eng.map((i) => (i.k === 'poly' ? poly(i.pts) : i.k === 'circle' ? circle(i.cx, i.cy, i.r) : '')).join('');
-    const rings = eng
-      .map((i) => (i.k === 'ring' ? `<path fill-rule="evenodd" d="${circle(i.cx, i.cy, i.r1)}${circle(i.cx, i.cy, i.r0)}"/>` : ''))
-      .join('');
+    const rings = eng.map((i) => (i.k === 'ring' ? `<path fill-rule="evenodd" d="${circle(i.cx, i.cy, i.r1)}${circle(i.cx, i.cy, i.r0)}"/>` : '')).join('');
     return (
       `<svg xmlns="http://www.w3.org/2000/svg" width="${n(this.w)}mm" height="${n(this.h)}mm" viewBox="0 0 ${n(this.w)} ${n(this.h)}">\n` +
       `<title>${title.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</title>\n` +

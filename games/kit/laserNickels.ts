@@ -169,73 +169,88 @@ const table: string[] = [];
 let failed = 0;
 for (const game of games)
   try {
-  const about = JSON.parse(readFileSync(join(here, '..', game, 'about.json'), 'utf8')) as { title: string; year: number };
-  const n = NICKELS[game];
-  const hero = n.noFigure ? undefined : (GAMES[game]?.[0] ?? heroDef(game, n));
-  const second = n.noFigure ? undefined : GAMES[game]?.[1];
-  const out = join(rootOut, game);
-  if (hero && !existsSync(join(here, '..', game, 'disk', hero.pal))) {
-    console.log(`${game}: skipped (its disk isn't built)`);
-    continue;
-  }
-  const h = createHash('sha1').update(codeKey).update(JSON.stringify([n, about.year, about.title]));
-  for (const d of [hero, second]) if (d) h.update(picture(game, d).cells).update(picture(game, d).palette);
-  const source = h.digest('hex').slice(0, 16);
-  const files = ['front.svg', 'back.svg', 'sheet.svg', 'sheet-back.svg', 'front.png', 'back.png', 'sheet.png', 'manifest.json'];
-  try {
-    const have = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8')) as { source?: string };
-    if (!args.includes('--force') && have.source === source && files.every((f) => existsSync(join(out, f)))) {
-      table.push(`${game}: up to date`);
+    const about = JSON.parse(readFileSync(join(here, '..', game, 'about.json'), 'utf8')) as { title: string; year: number };
+    const n = NICKELS[game];
+    const hero = n.noFigure ? undefined : (GAMES[game]?.[0] ?? heroDef(game, n));
+    const second = n.noFigure ? undefined : GAMES[game]?.[1];
+    const out = join(rootOut, game);
+    if (hero && !existsSync(join(here, '..', game, 'disk', hero.pal))) {
+      console.log(`${game}: skipped (its disk isn't built)`);
       continue;
     }
-  } catch {
-    // no manifest yet
-  }
-  mkdirSync(out, { recursive: true });
-  const fr = front(game, about.year, hero, second);
-  const bk = back(game, about.year);
-  for (const [name, f] of [['front', fr], ['back', bk]] as const) {
-    if (reach(f) > DIM.face + 0.05) throw new Error(`${game} ${name}: engraving reaches ${reach(f).toFixed(2)} mm from the center (limit ${DIM.face})`);
-    const small = f.texts.filter((t) => t.capMm < MIN_CAP);
-    if (small.length) throw new Error(`${game} ${name}: letters under ${MIN_CAP} mm tall: ${small.map((t) => t.text).join(', ')}`);
-  }
-  const [sw, sh] = DIM.sheet;
-  const sheet = new LaserSheet(sw, sh);
-  for (let row = 0; row < 3; row++)
-    for (let col = 0; col < 4; col++) sheet.place(fr.sheet, 8 + DIM.pitch * col + DIM.pitch / 2 - R, 9 + DIM.pitch * row + DIM.pitch / 2 - R);
-  const [jx, jy] = DIM.jigAt;
-  sheet.add({ op: 'cut', k: 'circle', cx: jx, cy: jy, r: DIM.jigHole / 2 });
-  sheet.add({ op: 'engrave', k: 'poly', pts: [[jx - 2.5, jy - R - 6], [jx + 2.5, jy - R - 6], [jx, jy - R - 2.5]] }); // 12 o'clock
-  const sheetBack = new LaserSheet(sw, sh).place(bk.sheet, jx - R, jy - R);
-  const view = (s: LaserSheet, mm: number) => renderPreview(s, mm, mm > 6 ? 2 : 3);
-  const write = (name: string, s: LaserSheet, title: string, mm: number) => {
-    writeFileSync(join(out, `${name}.svg`), s.svg(`${about.title}: ${title}`));
-    const p = view(s, mm);
-    writeFileSync(join(out, `${name}.png`), pngFromRgb(p.w, p.h, p.rgb));
-  };
-  write('front', fr.sheet, 'wooden nickel, front', 14);
-  write('back', bk.sheet, 'wooden nickel, back', 14);
-  write('sheet', sheet, 'twelve fronts and the flip jig', 5);
-  writeFileSync(join(out, 'sheet-back.svg'), sheetBack.svg(`${about.title}: the back, placed on the flip jig`));
-  writeFileSync(
-    join(out, 'manifest.json'),
-    JSON.stringify(
-      {
-        key: 'laser-nickel',
-        game,
-        title: about.title,
-        source,
-        mm: { coin: DIM.coin, sheet: DIM.sheet, jigHole: DIM.jigHole, jigAt: DIM.jigAt, pitch: DIM.pitch },
-        colors: { cut: CUT, score: SCORE, engrave: ENGRAVE },
-        texts: { front: fr.texts, back: bk.texts },
-        paths: { front: fr.sheet.items.length, back: bk.sheet.items.length, sheet: sheet.items.length },
-        files,
-      },
-      null,
-      1,
-    ) + '\n',
-  );
-  table.push(`${game}: front ${fr.sheet.items.length} shapes, back ${bk.sheet.items.length}, sheet ${sheet.items.length} (cut ${sheet.count('cut')}, reach ${reach(fr).toFixed(1)}/${reach(bk).toFixed(1)} mm)`);
+    const h = createHash('sha1')
+      .update(codeKey)
+      .update(JSON.stringify([n, about.year, about.title]));
+    for (const d of [hero, second]) if (d) h.update(picture(game, d).cells).update(picture(game, d).palette);
+    const source = h.digest('hex').slice(0, 16);
+    const files = ['front.svg', 'back.svg', 'sheet.svg', 'sheet-back.svg', 'front.png', 'back.png', 'sheet.png', 'manifest.json'];
+    try {
+      const have = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8')) as { source?: string };
+      if (!args.includes('--force') && have.source === source && files.every((f) => existsSync(join(out, f)))) {
+        table.push(`${game}: up to date`);
+        continue;
+      }
+    } catch {
+      // no manifest yet
+    }
+    mkdirSync(out, { recursive: true });
+    const fr = front(game, about.year, hero, second);
+    const bk = back(game, about.year);
+    for (const [name, f] of [
+      ['front', fr],
+      ['back', bk],
+    ] as const) {
+      if (reach(f) > DIM.face + 0.05) throw new Error(`${game} ${name}: engraving reaches ${reach(f).toFixed(2)} mm from the center (limit ${DIM.face})`);
+      const small = f.texts.filter((t) => t.capMm < MIN_CAP);
+      if (small.length) throw new Error(`${game} ${name}: letters under ${MIN_CAP} mm tall: ${small.map((t) => t.text).join(', ')}`);
+    }
+    const [sw, sh] = DIM.sheet;
+    const sheet = new LaserSheet(sw, sh);
+    for (let row = 0; row < 3; row++)
+      for (let col = 0; col < 4; col++) sheet.place(fr.sheet, 8 + DIM.pitch * col + DIM.pitch / 2 - R, 9 + DIM.pitch * row + DIM.pitch / 2 - R);
+    const [jx, jy] = DIM.jigAt;
+    sheet.add({ op: 'cut', k: 'circle', cx: jx, cy: jy, r: DIM.jigHole / 2 });
+    sheet.add({
+      op: 'engrave',
+      k: 'poly',
+      pts: [
+        [jx - 2.5, jy - R - 6],
+        [jx + 2.5, jy - R - 6],
+        [jx, jy - R - 2.5],
+      ],
+    }); // 12 o'clock
+    const sheetBack = new LaserSheet(sw, sh).place(bk.sheet, jx - R, jy - R);
+    const view = (s: LaserSheet, mm: number) => renderPreview(s, mm, mm > 6 ? 2 : 3);
+    const write = (name: string, s: LaserSheet, title: string, mm: number) => {
+      writeFileSync(join(out, `${name}.svg`), s.svg(`${about.title}: ${title}`));
+      const p = view(s, mm);
+      writeFileSync(join(out, `${name}.png`), pngFromRgb(p.w, p.h, p.rgb));
+    };
+    write('front', fr.sheet, 'wooden nickel, front', 14);
+    write('back', bk.sheet, 'wooden nickel, back', 14);
+    write('sheet', sheet, 'twelve fronts and the flip jig', 5);
+    writeFileSync(join(out, 'sheet-back.svg'), sheetBack.svg(`${about.title}: the back, placed on the flip jig`));
+    writeFileSync(
+      join(out, 'manifest.json'),
+      JSON.stringify(
+        {
+          key: 'laser-nickel',
+          game,
+          title: about.title,
+          source,
+          mm: { coin: DIM.coin, sheet: DIM.sheet, jigHole: DIM.jigHole, jigAt: DIM.jigAt, pitch: DIM.pitch },
+          colors: { cut: CUT, score: SCORE, engrave: ENGRAVE },
+          texts: { front: fr.texts, back: bk.texts },
+          paths: { front: fr.sheet.items.length, back: bk.sheet.items.length, sheet: sheet.items.length },
+          files,
+        },
+        null,
+        1,
+      ) + '\n',
+    );
+    table.push(
+      `${game}: front ${fr.sheet.items.length} shapes, back ${bk.sheet.items.length}, sheet ${sheet.items.length} (cut ${sheet.count('cut')}, reach ${reach(fr).toFixed(1)}/${reach(bk).toFixed(1)} mm)`,
+    );
   } catch (e) {
     failed++;
     table.push(`${game}: FAILED ${(e as Error).message}`);

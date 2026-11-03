@@ -27,28 +27,56 @@ export function renderPreview(sheet: LaserSheet, pxPerMm: number, ss = 3): { w: 
     };
     for (const it of sheet.items) {
       if (it.op !== op) continue;
-      if (it.k === 'ring') fill(it, (x, y) => { const d = Math.hypot(x - it.cx, y - it.cy); return d >= it.r0 && d <= it.r1; }, it.cx - it.r1, it.cy - it.r1, it.cx + it.r1, it.cy + it.r1);
+      if (it.k === 'ring')
+        fill(
+          it,
+          (x, y) => {
+            const d = Math.hypot(x - it.cx, y - it.cy);
+            return d >= it.r0 && d <= it.r1;
+          },
+          it.cx - it.r1,
+          it.cy - it.r1,
+          it.cx + it.r1,
+          it.cy + it.r1,
+        );
       else if (it.k === 'circle') {
         const line = op !== 'engrave';
         const r0 = line ? it.r - strokeW / 2 : 0;
         const r1 = line ? it.r + strokeW / 2 : it.r;
-        fill(it, (x, y) => { const d = Math.hypot(x - it.cx, y - it.cy); return d >= r0 && d <= r1; }, it.cx - r1, it.cy - r1, it.cx + r1, it.cy + r1);
+        fill(
+          it,
+          (x, y) => {
+            const d = Math.hypot(x - it.cx, y - it.cy);
+            return d >= r0 && d <= r1;
+          },
+          it.cx - r1,
+          it.cy - r1,
+          it.cx + r1,
+          it.cy + r1,
+        );
       } else {
         const p = it.pts;
         const xs = p.map((q) => q[0]);
         const ys = p.map((q) => q[1]);
-        fill(it, (x, y) => {
-          let pos = false;
-          let neg = false;
-          for (let i = 0; i < p.length; i++) {
-            const [ax, ay] = p[i];
-            const [bx, by] = p[(i + 1) % p.length];
-            const c = (bx - ax) * (y - ay) - (by - ay) * (x - ax);
-            if (c > 0) pos = true;
-            else if (c < 0) neg = true;
-          }
-          return !(pos && neg);
-        }, Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys));
+        fill(
+          it,
+          (x, y) => {
+            let pos = false;
+            let neg = false;
+            for (let i = 0; i < p.length; i++) {
+              const [ax, ay] = p[i];
+              const [bx, by] = p[(i + 1) % p.length];
+              const c = (bx - ax) * (y - ay) - (by - ay) * (x - ax);
+              if (c > 0) pos = true;
+              else if (c < 0) neg = true;
+            }
+            return !(pos && neg);
+          },
+          Math.min(...xs),
+          Math.min(...ys),
+          Math.max(...xs),
+          Math.max(...ys),
+        );
       }
     }
     const ink = INK[op];

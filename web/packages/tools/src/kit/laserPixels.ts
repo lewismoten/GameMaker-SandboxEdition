@@ -22,7 +22,7 @@ export function mergeRuns(b: Bitmap): Rect[] {
   let open = new Map<string, number>();
   for (let y = 0; y < b.h; y++) {
     const next = new Map<string, number>();
-    for (let x = 0; x < b.w; ) {
+    for (let x = 0; x < b.w;) {
       if (!b.on(x, y)) {
         x++;
         continue;
