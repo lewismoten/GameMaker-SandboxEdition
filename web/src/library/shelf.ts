@@ -130,6 +130,7 @@ function ownType(kind: PrintableItem['kind'], title: string): ShelfType {
     case 'recipe':
       return 'letter';
     case 'codewheel':
+    case 'codesheet': // on the wheels' shelf until a game ships a code sheet (its own shelf would add an achievement kind nobody can finish)
       return 'codewheel';
   }
 }

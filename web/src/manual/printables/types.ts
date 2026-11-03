@@ -213,6 +213,17 @@ export interface CodeWheelItem extends ItemBase {
   /** The turning disc's ring, as many as `outer`, each facing one of them. */
   inner: string[];
   /**
+   * A third disc between the two, turning on its own, with a ring of its own (as many as `outer`); the hidden
+   * rings are then printed on it, under the small disc's windows.
+   */
+  middle?: string[];
+  /**
+   * Split pictures: the big disc's ring holds the top half of each picture in `glyphs` and the next disc's ring
+   * (the middle one, or else the small one) the bottom half, drawn flush to the edge they share, so the halves of
+   * a picture join into one when the same name lines up.
+   */
+  split?: boolean;
+  /**
    * Rings on the outer disc under the turning one, seen only through its windows (each as many as `outer`): one
    * ring, or several, outermost first, each at its own distance from the pin so each window shows its own.
    */
@@ -225,15 +236,42 @@ export interface CodeWheelItem extends ItemBase {
   howto?: string[];
   /**
    * The puzzles it solves: the scenes they are on (the 1994 desk lays the wheel beside the monitor there), the
-   * question, and the setting (the turning disc's `inner` symbol and the outer disc's `outer` one, together under
-   * the arrow). The answer is what the wheel shows then: the symbol in window `window` (an index into `windows`),
+   * question, and the setting (the turning disc's `inner` symbol and the outer disc's `outer` one, and on a
+   * three-disc wheel the middle disc's `middle` one, together under the arrow). The answer is what the wheel shows then: the symbol in window `window` (an index into `windows`),
    * or, for decoding a word, a short `answer`.
    */
-  puzzles?: { scenes: number[]; ask: string; turn: { inner: string; outer: string }; window?: number; answer?: string }[];
+  puzzles?: { scenes: number[]; ask: string; turn: { inner: string; outer: string; middle?: string }; window?: number; answer?: string }[];
+}
+
+/**
+ * A look-up code sheet (codeSheet.ts): a card printed black on dark red (or light cyan), the old paper a
+ * photocopier turns to mud, with one or more grids of squares read by row and column (a place and a number, a
+ * name and a letter). It answers the game's puzzles; printed, it is one letter sheet; on screen a click lights a
+ * square's row and column, and each puzzle has a "Tell me the answer" that lights its square.
+ */
+export interface CodeSheetItem extends ItemBase {
+  kind: 'codesheet';
+  /** Across the top of the card. */
+  heading: string;
+  /** The card's color: dark red (the default) or light cyan. */
+  paper?: 'red' | 'cyan';
+  /** Lines under the heading: how to read it. */
+  howto?: string[];
+  /** The grids: a title, the row and column headings, and a square for every row and column (`cells[row][col]`). */
+  grids: { title: string; rowHead?: string; colHead?: string; rows: string[]; cols: string[]; cells: string[][] }[];
+  /** Pictures for squares and headings: a name, and rows of '#' (ink) and '.' (paper), every row as wide. */
+  glyphs?: Record<string, string[]>;
+  /** A last line along the bottom. */
+  foot?: string;
+  /**
+   * The puzzles it solves: the scenes they are on (the 1994 desk lays the sheet beside the monitor there), the
+   * question, and the square that answers it (grid index, row and column headings), with a short `answer` to say.
+   */
+  puzzles?: { scenes: number[]; ask: string; grid: number; row: string; col: string; answer?: string }[];
 }
 
 export type PrintableItem =
-  MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem | CodeWheelItem;
+  MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem | CodeWheelItem | CodeSheetItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {

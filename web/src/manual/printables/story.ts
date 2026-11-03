@@ -8,6 +8,7 @@ import { paginate } from './paginate';
 import { fitSheet } from './fitSheet';
 import { hintBookCover } from './hintCover';
 import { codeWheelSheets } from './codeWheel';
+import { codeSheetSheets } from './codeSheet';
 import type {
   ChartItem,
   HintBookItem,
@@ -406,6 +407,8 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return recipe(it);
     case 'codewheel':
       return codeWheelSheets(it);
+    case 'codesheet':
+      return codeSheetSheets(it);
   }
 }
 

@@ -162,6 +162,33 @@
   min-height: 32px;
 }
 
+/* what each window shows, upright, beside the wheel */
+.cw-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0 0 0.8em;
+}
+
+.cw-read-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cw-read-row dt {
+  font-weight: 600;
+}
+
+.cw-read-row dd {
+  margin: 0;
+}
+
+.cw-read-row .cw-answer-sym {
+  width: 2.2em;
+  height: 2.2em;
+}
+
 /* a window's outline, lit when it holds the answer */
 .cw-win {
   fill: none;
