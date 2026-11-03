@@ -33,23 +33,35 @@ const mask = (a: Art, x: number, y: number, happy: boolean) => {
     .disc(x + 1, y - 0.7, 0.45);
   for (let i = -2; i <= 2; i++) a.disc(x + i * 0.55, y + (happy ? 0.9 + 0.2 * (2 - Math.abs(i)) : 1.9 - 0.2 * (2 - Math.abs(i))), 0.26);
 };
-/** The Ω: a bold open ring on two feet. */
+/** The Ω as type draws it: a ring open at the bottom, its ends turned in a little, standing on two short feet. */
 const omega = (a: Art) => {
-  const cy = -2.5;
-  a.arcBand(0, cy, 5.6, 9.2, 125, 415, 10);
-  const ex = [Math.cos((125 * Math.PI) / 180), Math.sin((125 * Math.PI) / 180)];
-  const ox = 9.2 * ex[0];
-  const ix = 5.6 * ex[0];
-  const y1 = cy + 9.2 * ex[1];
-  for (const s of [-1, 1])
-    a.poly(
-      [
-        [s * ox + s * -0.2, y1],
-        [s * 12.4, y1],
-        [s * 12.4, y1 - 2.7],
-        [s * ix, y1 - 2.7],
-      ].map(([x, y]) => [x, y] as [number, number]),
-    );
+  const cy = -2.6;
+  const r0 = 5.5;
+  const r1 = 7.9;
+  const gap = 38; // half the opening at the bottom, degrees either side of straight down
+  a.arcBand(0, cy, r0, r1, 90 + gap, 450 - gap, 4);
+  const at = (r: number, deg: number): [number, number] => [r * Math.cos((deg * Math.PI) / 180), cy + r * Math.sin((deg * Math.PI) / 180)];
+  for (const s of [-1, 1]) {
+    const end = 90 - s * gap; // where this leg's band ends
+    const [xo, yo] = at(r1, end);
+    const [xi, yi] = at(r0, end);
+    const foot = Math.max(yo, yi) + 2.2; // the feet's bottom edge
+    // the leg runs straight down from the band's end to the foot
+    a.poly([
+      [xi, yi],
+      [xo, yo],
+      [xo, foot - 2.2],
+      [xi, foot - 2.2],
+    ]);
+    // the foot: a short bar reaching outward
+    const inner = Math.min(Math.abs(xi), Math.abs(xo));
+    a.poly([
+      [s * inner, foot - 2.2],
+      [s * (inner + 4.4), foot - 2.2],
+      [s * (inner + 4.4), foot],
+      [s * inner, foot],
+    ]);
+  }
 };
 const paw = (a: Art, x: number, y: number, k = 1) => {
   a.disc(x, y + 1.5 * k, 2.4 * k);
@@ -174,7 +186,7 @@ export const NICKELS: Record<string, NickelDef> = {
     top: 'MUSTARD SEED',
     bottom: 'HUSTLE',
     good: ['ONE MOVED', 'MOUNTAIN'],
-    art: (a) => a.ring(0, 0, 3.2).text('SMALLEST', 0, -7.6, 0.5, 'micro').text('THING', 0, 7.6, 0.5, 'micro').holeCircle(0, 0, 1.6),
+    art: (a) => a.ring(0, 0, 3.2).text('SMALLEST', 0, -6.6, 0.5, 'micro').text('THING', 0, 6.6, 0.5, 'micro').holeCircle(0, 0, 1.6),
   },
   needle: {
     concept: 'A road token: Brother Camel alone, and the eye he has to get through.',
