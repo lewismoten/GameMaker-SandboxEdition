@@ -163,6 +163,19 @@ export function courseTiles(): Tiles {
       p.rect(0, 0, 2, 60, c('ink', 0));
     },
   );
+  // The way out of the dark ring (the scene's link): a tall archway of warm light with a gold frame and a red top, the party's door, standing in the dark
+  art(
+    t,
+    'ringDoor',
+    1,
+    3,
+    () => dark,
+    (p) => {
+      p.rect(1, 6, 18, 54, c('gold', 1)).rect(3, 8, 14, 52, c('gold', 3));
+      for (let y = 12; y < 60; y += 8) p.rect(9, y, 2, 4, c('gold', 2));
+      p.rect(0, 2, 20, 5, c('red', 1)).rect(0, 2, 20, 1, c('gold', 2));
+    },
+  );
   // The MEANWHILE stretch, a station for each of the others' ideas: Gwinn's spotlight (its
   // wing and track), the mill's water wheel (its hub and spokes), and Doc Leo's balloon pump,
   // a brass valve in the floor that blows up a balloon dog under whoever stands on it.
