@@ -4,6 +4,7 @@ import type { Order } from '../bot';
 import type { Sim } from '@lewismoten/gamemaker-sandbox-tools/kit/sceneSim';
 import { CTR } from '../../src/ids';
 import { MEADOW } from '../../src/levels/meadow';
+import { GATE_WALL } from '../../src/levels/meadowGates';
 
 const M = MEADOW;
 /** No dark left at column x. */
@@ -38,5 +39,14 @@ export const route: Order[] = [
   { walk: M.lantern },
   { trick: 'f', after: 8 },
   { until: 'has the lantern', check: (s) => s.w.ci.meter[CTR.clues] > 1 },
+  // the road: read the signs, hop up the steps to the gate that wears Gwinn's face's code, and through
+  { walk: GATE_WALL.notes[0] },
+  { wait: 90 },
+  { walk: GATE_WALL.notes[1] },
+  { wait: 60 },
+  { walk: GATE_WALL.steps[0].x0 - 1 },
+  { hop: 6, dir: 'right', dirFor: 4 },
+  { until: 'on the first step', maxTicks: 30, check: (s) => s.pos.by === GATE_WALL.steps[0].row - 1 && s.pos.y % 20 === 0 },
+  { wait: 20 },
   { walk: M.car + 1 },
 ];
