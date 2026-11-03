@@ -252,8 +252,8 @@ most four color bodies (`pixelFigure`). They are browser safe, except `mesh/trin
 
 Trinkets made of distance fields (Depth Perception's, Quest for the Round Tuit's) share one pipeline, all in millimeters
 with the floor at z = 0: `mesh/sdfShapes` has the 2D shapes (circle, rounded rectangle, polygon, ring, capsule and
-`pixelText2`, lettering in the 3x5 micro font), `extrude` and the solid combiners; `mesh/trinketKinds` builds a `plate` (coin,
-token, key-chain tag or badge: outline, raised rim, raised relief, sunk art, holes) and a `die`; `mesh/fieldTrinket`
+`pixelText2`, lettering in the 3x5 micro font), `extrude` and the solid combiners; `mesh/strokeText` (`strokeText2`, `ringText2`) letters raised or sunk text in smooth capsule strokes (capitals, digits, marks; use it instead of the stair-stepped `pixelText2` for anything printed); `mesh/figureShapes` has ellipsoids, round cones, a smooth union and `place3` for 3D figures; `mesh/trinketKinds` builds a `plate` (coin,
+token, key-chain tag or badge: outline, raised rim, raised relief, sunk art, holes, a pin-back `pocket` from `pinBack`), a key-chain `ringTab`, a faceted `gem` (also a crystal shard) and a `die`; `mesh/fieldTrinket`
 (`meshFieldTrinket`) meshes a field with a color per triangle and gives the checks (eroded pieces and specks, overhang),
 up to four color bodies and supports; `mesh/trinketTool` (`runTrinketTool`, Node only) writes the STL, 3MF and manifest.json
 of a game's trinkets, with a source key so an unchanged game is skipped, in worker threads when `--workers N` runs a bundle.

@@ -17,6 +17,8 @@ export interface FlatKind {
   engrave?: { shape: D2; depth: number };
   /** Holes through the plate (a key-chain hole). */
   holes?: D2[];
+  /** A recess in the back (the floor) for gluing in a pin back or a magnet, as a solid to cut away (see pinBack). */
+  pocket?: D3;
 }
 
 /** A plate with its rim, relief, engraving and holes: the face is at z = thick. */
@@ -28,6 +30,7 @@ export function plate(k: FlatKind): D3 {
   const cuts: D3[] = [];
   if (k.engrave) cuts.push(extrude(k.engrave.shape, k.thick - k.engrave.depth, k.thick + 5));
   for (const h of k.holes ?? []) cuts.push(extrude(h, -1, k.thick + 10));
+  if (k.pocket) cuts.push(k.pocket);
   return subtract3(union3(...parts), ...cuts);
 }
 
@@ -93,3 +96,64 @@ export function die(size: number, pipR: number, corner = size * 0.18): D3 {
 /** A regular polygon outline (a hexagonal badge, a shield point up), `n` sides, radius `r`. */
 export const regular2 = (n: number, r: number, turn = Math.PI / 2): D2 =>
   polygon2(Array.from({ length: n }, (_, i) => [r * Math.cos(turn + (i * 2 * Math.PI) / n), r * Math.sin(turn + (i * 2 * Math.PI) / n)] as [number, number]));
+
+/**
+ * The pocket for a pin back: a bar-shaped recess `len` mm long and `w` mm wide at the floor, centered on (cx, cy), to glue a
+ * bar pin into (give it as `pocket`). Its roof is a gable at 45 degrees, so it prints without supports.
+ */
+export const pinBack =
+  (cx = 0, cy = 0, len = 22, w = 5): D3 =>
+  (x, y, z) => {
+    const h = w / 2;
+    const across = (Math.abs(y - cy) + z - h) * Math.SQRT1_2;
+    return Math.max(across, Math.abs(x - cx) - len / 2, -z - 1);
+  };
+
+/** A key-chain ring tab: a round lug of outer radius `r + wall` with a hole of radius `r`, at (x, y). Join `shape` to the outline with union2 and give `hole` to `holes`. */
+export const ringTab = (x: number, y: number, r = 3.2, wall = 2.6): { shape: D2; hole: D2 } => ({ shape: circle2(r + wall, x, y), hole: circle2(r, x, y) });
+
+export interface GemShape {
+  /** Sides of the table and girdle (6 or 8). */
+  sides: number;
+  /** Apothems in mm: the flat table the gem stands on, and the widest part (the girdle). */
+  table: number;
+  girdle: number;
+  /** Height of the crown (table to girdle) and of the pavilion (girdle to the point), in mm. */
+  crown: number;
+  pavilion: number;
+  /** Turn the pavilion's facets by half a side, as a brilliant cut does (default true). */
+  offset?: boolean;
+}
+
+/**
+ * A faceted gem standing on its table (flat down), the crown flaring out as it rises and the pavilion narrowing to the point:
+ * the crown leans out at under 45 degrees from vertical, so it prints without supports. Also the shape of a crystal shard.
+ * `facet(x, y, z)` is the number of the facet a surface point belongs to, for coloring.
+ */
+export function gem(g: GemShape): { field: D3; facet: (x: number, y: number, z: number) => number } {
+  const { sides: n, table, girdle, crown, pavilion } = g;
+  const step = (2 * Math.PI) / n;
+  const turn = g.offset === false ? 0 : step / 2;
+  const lc = Math.hypot(crown, girdle - table);
+  const lp = Math.hypot(pavilion, girdle);
+  const faces = (x: number, y: number, z: number): number[] => {
+    const out: number[] = [-z];
+    for (let k = 0; k < n; k++) {
+      const u = x * Math.cos(k * step) + y * Math.sin(k * step);
+      out.push(((u - table) * crown - z * (girdle - table)) / lc);
+    }
+    for (let k = 0; k < n; k++) {
+      const a = turn + k * step;
+      const u = x * Math.cos(a) + y * Math.sin(a);
+      out.push(((u - girdle) * pavilion + (z - crown) * girdle) / lp);
+    }
+    return out;
+  };
+  return {
+    field: (x, y, z) => Math.max(...faces(x, y, z)),
+    facet: (x, y, z) => {
+      const f = faces(x, y, z);
+      return f.indexOf(Math.max(...f));
+    },
+  };
+}
