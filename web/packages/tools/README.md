@@ -153,6 +153,12 @@ bytes use the header's prefix field. It has no dependencies and runs in Node and
 
 ### Native object builders
 
+`kit/laserJoints` makes flat wooden-box panel outlines for the laser kits: finger (box) joints whose two sides mesh,
+rectilinear outlines from rectangles, and mitered kerf offsets (`jointOutline`, `outlineFromRects`, `offsetPoly`).
+`kit/laserLayout` has `Part` (one flat piece with named elements, kerf applied, spacing-checked with
+`kit/laserClearance`) and `packRows`, which lays parts out on a Glowforge-bed sheet and throws if they do not fit.
+Games' laser kits (`games/sleuth/laser/`) build on them with `kit/laserSvg`, `laserPixels` and `laserPreview`.
+
 `kit/actors` builds character sequences and monster paths. `kit/screenText` validates
 30-column, 16-line DOS text pages and looks up caller-supplied named sprites.
 
