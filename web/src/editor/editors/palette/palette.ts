@@ -156,6 +156,19 @@ registerEditor(['pal'], (host, project, file) => {
       const role = reservationAt(roles, i);
       if (role) b.dataset.reservation = role;
       else delete b.dataset.reservation;
+      // one outline round each reserved range: a side is drawn only where the next cell is outside it
+      const out = (n: number | undefined) => n === undefined || reservationAt(roles, n) !== role;
+      const col = i % 16;
+      b.style.boxShadow = role
+        ? [
+            out(i >= 16 ? i - 16 : undefined) && 'inset 0 3px 0 0 var(--res)',
+            out(i < 240 ? i + 16 : undefined) && 'inset 0 -3px 0 0 var(--res)',
+            out(col ? i - 1 : undefined) && 'inset 3px 0 0 0 var(--res)',
+            out(col < 15 ? i + 1 : undefined) && 'inset -3px 0 0 0 var(--res)',
+          ]
+            .filter(Boolean)
+            .join(', ')
+        : '';
       const name = `Color ${i}${role === 'menu' ? ': the background color' : role ? `: reserved for ${ROLE_LABELS[role].toLowerCase()}` : roles.length ? ': global' : ''}`;
       b.setAttribute('aria-label', name);
       b.title = name;
