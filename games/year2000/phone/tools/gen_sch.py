@@ -3,7 +3,7 @@
 
 Every pin gets a short wire stub that ends in a net label or a power symbol, so the sheet reads
 as blocks of parts joined by named nets. Symbols come from the KiCad stock libraries (copied
-into the sheet) plus two local symbols (MT8870 and the 4-digit display) drawn here.
+into the sheet) plus two local symbols (MT8870, MCP1702 and the 4-digit display) drawn here.
 Designed by Claude Sonnet 5.5 under Lewis Moten's direction, with KiCad.
 """
 import math
@@ -106,6 +106,9 @@ LOCALS = {
          ("15", "StD", "output"), ("14", "Q4", "tri_state"), ("13", "Q3", "tri_state"),
          ("12", "Q2", "tri_state"), ("11", "Q1", "tri_state"), ("10", "TOE", "input")],
         "DTMF decoder (Mitel/Microchip MT8870 or equivalent)"),
+    "Local:MCP1702_TO92": local_symbol("MCP1702_TO92", "U", [
+        ("2", "VIN", "power_in"), ("1", "GND", "power_in")], [("3", "VOUT", "power_out")],
+        "5 V LDO regulator, TO-92 (Microchip MCP1702-5002E/TO)"),
     "Local:DISPLAY_4DIGIT_CC": local_symbol("DISPLAY_4DIGIT_CC", "DS", [
         ("11", "A", "passive"), ("7", "B", "passive"), ("4", "C", "passive"), ("2", "D", "passive"),
         ("1", "E", "passive"), ("10", "F", "passive"), ("5", "G", "passive"), ("3", "DP", "passive")],
@@ -288,7 +291,7 @@ lib_txt = "\n  ".join(s.text for s in need.values())
 
 title = '''(title_block (title "THE PHONE OF THE FUTURE") (date "2026-11-03") (rev "A")
     (company "Game-Maker: Sandbox Edition. Untested design; designed by Claude Sonnet 5.5 under Lewis Moten's direction")
-    (comment 1 "Half-duplex infrared voice and DTMF handset, PIC16F84A, MT8870, MAX7219")
+    (comment 1 "Half-duplex infrared voice and DTMF handset, PIC16F628A, MT8870, MAX7219")
     (comment 2 "References: DTMF frequencies (ITU-T Q.23), MT8870D and MAX7219 datasheets"))'''
 doc = f'''(kicad_sch (version 20250114) (generator "eeschema") (generator_version "9.0")
   (uuid "{ROOT}")
@@ -313,6 +316,6 @@ loc = "\n".join(re.sub(r'\(symbol "Local:', '(symbol "', LOCALS[k], count=1) for
 open(os.path.join(D, "phone.kicad_sym"), "w").write(
     '(kicad_symbol_lib (version 20241209) (generator "kicad_symbol_editor") (generator_version "9.0")\n' + loc + "\n)\n")
 open(os.path.join(D, "sym-lib-table"), "w").write(
-    '(sym_lib_table (version 7)\n  (lib (name "Local") (type "KiCad") (uri "${KIPRJMOD}/phone.kicad_sym") (options "") (descr "MT8870 and 4-digit display"))\n)\n')
+    '(sym_lib_table (version 7)\n  (lib (name "Local") (type "KiCad") (uri "${KIPRJMOD}/phone.kicad_sym") (options "") (descr "MT8870, MCP1702 and 4-digit display"))\n)\n')
 open(os.path.join(D, "fp-lib-table"), "w").write(
     '(fp_lib_table (version 7)\n  (lib (name "phone") (type "KiCad") (uri "${KIPRJMOD}/phone.pretty") (options "") (descr "Big-pad footprints for the phone"))\n)\n')

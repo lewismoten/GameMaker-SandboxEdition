@@ -4,6 +4,6 @@
 set -e
 cd "$(dirname "$0")/.."
 mkdir -p out/firmware
-gpasm -p p16f84a -w2 -o out/firmware/phone.hex firmware/phone.asm
+gpasm -p p16f628a -w2 -o out/firmware/phone.hex firmware/phone.asm
 python3 tools/picsim.py out/firmware/phone.hex
 echo "hex: $(pwd)/out/firmware/phone.hex"

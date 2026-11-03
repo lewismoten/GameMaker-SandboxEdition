@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A small PIC16F84A instruction simulator and a test of phone.asm's behavior.
+"""A small PIC16F84A/PIC16F628A instruction simulator and a test of phone.asm's behavior.
 
 Runs the assembled phone.hex at 894886 cycles per second, drives the pins like the board would
 (dial switches, MT8870 outputs, TALK), watches the tone pins and the MAX7219 bit-banging, and

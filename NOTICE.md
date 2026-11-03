@@ -964,7 +964,7 @@ Exported player-page and native-download notices carry the reference palette cre
 ### The Phone of the Future (electronics kit)
 
 `games/year2000/phone/` holds a solderable toy-phone design: a KiCad 9 schematic and two-layer
-board, a PIC16F84A firmware in assembly, a bill of materials and a mechanical interface file.
+board, a PIC16F628A firmware (ported from the PIC16F84A) in assembly, a bill of materials and a mechanical interface file.
 It was designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction, using KiCad
 (kicad-cli for ERC, DRC and exports) and gputils/gpasm. The circuit, footprints, generators and
 a small PIC16F84A simulator are project-owned MIT code. The schematic embeds symbols copied from

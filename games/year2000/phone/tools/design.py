@@ -23,29 +23,30 @@ def C(n, val, a, b, pol=False, desc=""):
 
 
 # ---- ICs -------------------------------------------------------------------------------------
-add("U1", "MCU_Microchip_PIC16:PIC16F84A-XXP", "PIC16F84A-04/P", "dip18", "B", {
+# symbol: the PIC16F627A-IP drawing (KiCad draws the 628A as an alias of it; same pinout)
+add("U1", "MCU_Microchip_PIC16:PIC16F627A-IP", "PIC16F628A-I/P", "dip18", "B", {
     "1": "CLK", "2": "LOAD", "3": "M_STD", "4": "MCLR", "5": GND, "6": "PULSE", "7": "OFFNORM",
     "8": "TONEA", "9": "TONEB", "10": "M_Q1", "11": "M_Q2", "12": "M_Q3", "13": "M_Q4",
     "14": V5, "15": None, "16": "CLK_PIC", "17": "TALK_H", "18": "DIN"},
-    desc="8-bit microcontroller, 1K-word flash, 18-pin DIP")
+    desc="8-bit microcontroller, 2K-word flash, 18-pin DIP (the one socketed part; pin-compatible with the PIC16F84A)")
 add("U2", "Local:MT8870", "CM8870P", "dip18", "B", {
     "1": "M_VREF", "2": "M_INN", "3": "M_GS", "4": "M_VREF", "5": GND, "6": GND, "7": "M_OSC1",
     "8": "M_OSC2", "9": GND, "10": V5, "11": "M_Q1", "12": "M_Q2", "13": "M_Q3", "14": "M_Q4",
     "15": "M_STD", "16": "M_EST", "17": "M_STGT", "18": V5}, desc="DTMF tone decoder, 18-pin DIP; CM8870P, MT8870D and HT9170B are pin-compatible here (pins 5 and 6 tied low)")
-add("U3", "Driver_LED:MAX7219", "MAX7219CNG+", "dip24", "B", {
+add("U3", "Driver_LED:MAX7219", "MAX7219N", "dip24", "B", {
     "1": "DIN", "2": "DIG0", "3": "DIG4", "4": GND, "5": "DIG6", "6": "DIG2", "7": "DIG3",
     "8": "DIG7", "9": GND, "10": "DIG5", "11": "DIG1", "12": "LOAD", "13": "CLK", "14": "SEG_A",
     "15": "SEG_F", "16": "SEG_B", "17": "SEG_G", "18": "ISET", "19": V5, "20": "SEG_C",
     "21": "SEG_E", "22": "SEG_DP", "23": "SEG_D", "24": None},
-    desc="8-digit LED display driver, 24-pin 0.3in DIP")
+    desc="8-digit LED display driver, 24-pin 0.3in DIP (HGSEMI MAX7219N clone; Maxim MAX7219CNG+ also fits)")
 add("U4", "Amplifier_Operational:LM2904", "LM358N", "dip8", "B", {
     "1": "MICAMP", "2": "MIC_INV", "3": "VMID", "5": "VMID", "6": "RXINV", "7": "RXAMP",
     "8": V5, "4": GND}, desc="Dual op-amp (mic preamp and IR receive amp), 8-pin DIP")
 add("U5", "Amplifier_Audio:LM386", "LM386N-1", "dip8", "B", {
     "1": None, "2": GND, "3": "AIN", "4": GND, "5": "SPKO", "6": V5, "7": "LMBYP", "8": None},
     desc="Audio power amplifier, 8-pin DIP")
-add("U6", "Regulator_Linear:L7805", "LM2940T-5.0", "to220", "B",
-    {"1": "VBAT", "2": GND, "3": V5}, desc="5 V low-dropout regulator, TO-220 (pin 1 in, 2 gnd, 3 out)")
+add("U6", "Local:MCP1702_TO92", "MCP1702-5002E/TO", "to92r", "B",
+    {"1": GND, "2": "VBAT", "3": V5}, desc="5 V low-dropout regulator, TO-92 (pin 1 gnd, 2 in, 3 out; 250 mA, 0.65 V dropout at 250 mA)")
 add("Q1", "Transistor_BJT:Q_NPN_EBC", "2N3904", "to92", "B", {"E": "TXE", "B": "TXB", "C": "LEDC"},
     desc="NPN transistor, IR LED driver")
 add("Q2", "Transistor_BJT:Q_NPN_EBC", "2N3904", "to92", "B", {"E": GND, "B": "Q2B", "C": "RX_AC"},
@@ -110,8 +111,8 @@ R(24, "100k", "M_GS", "M_INN", "MT8870 feedback (unity gain)")
 R(25, "390k", "M_EST", "M_STGT", "MT8870 steering resistor")
 R(26, "30k", "ISET", V5, "MAX7219 segment current (about 7 mA)")
 R(27, "10", "SPKO", "ZOB", "speaker output Zobel network")
-C(1, "0.47uF", "VBAT", GND, desc="regulator input")
-C(2, "47uF 10V tant", V5, GND, pol=True, desc="regulator output (22 uF min, low ESR)")
+C(1, "1uF", "VBAT", GND, desc="regulator input")
+C(2, "47uF", V5, GND, pol=True, desc="regulator output (1 uF minimum; electrolytic is fine)")
 C(3, "1uF", "MICB", "MIC_AC1", desc="mic coupling")
 C(4, "10uF", "VMID", GND, pol=True, desc="half-supply filter")
 C(5, "1uF", "MICAMP", "MIC_AC2", desc="mic amp to IR driver coupling")
@@ -131,4 +132,4 @@ C(18, "100nF", V5, GND, desc="decoupling LM358")
 C(19, "100nF", V5, GND, desc="decoupling LM386")
 C(20, "10uF", "LMBYP", GND, pol=True, desc="LM386 bypass")
 C(21, "220uF 10V", "SPKO", "SPKC", pol=True, desc="speaker coupling")
-C(22, "47nF", "ZOB", GND, desc="speaker output Zobel network")
+C(22, "100nF", "ZOB", GND, desc="speaker output Zobel network")

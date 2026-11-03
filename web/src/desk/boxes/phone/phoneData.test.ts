@@ -18,7 +18,7 @@ const box = (group: string, side: 'front' | 'back', lo: number, hi: number) => (
 
 describe('groups', () => {
   it('reads every part with its own vertices and indices', () => {
-    expect(parts).toHaveLength(125);
+    expect(parts).toHaveLength(124);
     for (const p of parts) {
       expect(p.positions.length).toBeGreaterThan(0);
       expect(p.indices.length % 3).toBe(0);
