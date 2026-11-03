@@ -872,6 +872,17 @@ public-domain data and this project's additions keep their existing attribution.
 OpenAI Codex consolidated the helpers and consumers, preserved the existing game output,
 and implemented the shared rendering adapters and verification under Lewis Moten's direction.
 
+### Depth Perception's plastic trinkets
+
+The 3D-printable STL files in Depth Perception's box (Roll Ray, Count Polygon, THE CHEZ, the teapot,
+Doc Leo with the rubber chicken, Teddy and Gwinn) are meshed by code from the game's own
+distance-field models, with no hand-made meshes: surface nets, the binary STL writer and the
+mesh checks are in `web/packages/tools/src/mesh`, and the small WebGL viewer in the desk's box is
+original code, with no 3D library. They were written with Anthropic Claude Sonnet 5.5 under Lewis
+Moten's direction, under the project's MIT License. The teapot is a nod to the Utah teapot
+(Martin Newell, University of Utah, 1975); it is drawn from ellipsoids, a torus and a cone, and
+none of Newell's patch data is used.
+
 ### Tiny Shelf Classification
 
 The Library's call numbers (such as 614-MAH) use the **Tiny Shelf Classification**, dedicated to

@@ -94,6 +94,8 @@ export function openBoxViewer(entry: Pick<CatalogEntry, 'title'>, faces: BoxFace
       fill();
     };
     const onKey = (e: KeyboardEvent) => {
+      // a trinket in the box turns with the arrow keys itself (trinketShelf.ts)
+      if (e.key !== 'Escape' && (e.target as Element | null)?.closest?.('.bc-trinkets')) return;
       e.stopImmediatePropagation();
       if (e.key === 'Escape') close();
       else if (e.key === 'PageDown' || e.key === ']') void step(1);
