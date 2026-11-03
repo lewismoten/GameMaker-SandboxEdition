@@ -41,9 +41,41 @@ export const CLASSIC_MINI_ZINE_CELLS: readonly MiniZineCell[] = [
   { page: 1, rotated: false },
 ];
 
-/** The fold opens the physical cells into ordinary page order. */
+/**
+ * After folding the upper row down, cutting the center slot, and pinching the
+ * strip into a book, turn pages around this exposed-paper route. The route
+ * starts at the cover in the lower-right corner, follows the folded top edge
+ * right-to-left, then returns along the lower edge. A top panel has travelled
+ * through the lengthwise fold, so it must be rotated 180 degrees to read.
+ */
+const FOLDED_PAGE_ROUTE = [
+  { row: 1, column: 3, rotated: false },
+  { row: 0, column: 3, rotated: true },
+  { row: 0, column: 2, rotated: true },
+  { row: 0, column: 1, rotated: true },
+  { row: 0, column: 0, rotated: true },
+  { row: 1, column: 0, rotated: false },
+  { row: 1, column: 1, rotated: false },
+  { row: 1, column: 2, rotated: false },
+] as const;
+
+/** Simulate the folded-and-cut paper route, rejecting a non-classic panel map. */
 export function classicMiniZineReadingOrder(cells: readonly MiniZineCell[]): number[] {
-  return [...cells].map((cell) => cell.page).sort((a, b) => a - b);
+  if (cells.length !== 8) throw new Error('A classic mini-zine needs exactly eight panels.');
+
+  const pages = FOLDED_PAGE_ROUTE.map(({ row, column, rotated }) => {
+    const cell = cells[row * 4 + column];
+    if (cell.rotated !== rotated) {
+      throw new Error(`Panel at row ${row + 1}, column ${column + 1} is upside down after the fold.`);
+    }
+    return cell.page;
+  });
+
+  const expected = Array.from({ length: 8 }, (_, index) => index + 1);
+  if (pages.some((page, index) => page !== expected[index])) {
+    throw new Error(`The folded panel route reads ${pages.join('/')}, not ${expected.join('/')}.`);
+  }
+  return pages;
 }
 
 const sourceStories = (): Story[] => WINGS.flatMap((wing) => wing.books.map(story)).sort((a, b) => a.n - b.n);
