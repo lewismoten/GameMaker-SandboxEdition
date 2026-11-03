@@ -61,7 +61,7 @@ export function coveMap(set: BlockSet, mons: Bestiary | undefined, lit: boolean)
       J: 'rope6',
       V: 'swing6',
       '@': 'sand',
-      S: 'sand',
+      S: lit ? 'exitCove' : 'sand',
     },
     set,
     'sea',
