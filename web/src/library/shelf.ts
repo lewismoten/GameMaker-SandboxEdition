@@ -107,6 +107,7 @@ const BOX_TYPES: Record<string, ShelfType> = {
   bbs: 'catalog',
   hintoffer: 'hintcard',
   stickers: 'stickers',
+  'brief-story-zines': 'magazine',
 };
 
 /** A game's own piece (its printables.json), by its kind and, for a few kinds, its title. */
