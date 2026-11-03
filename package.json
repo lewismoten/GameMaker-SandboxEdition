@@ -25,6 +25,7 @@
     "optimize:proof": "npm run optimize:proof -w gamemaker-web --",
     "test:fast": "npm run test:fast -w gamemaker-web --",
     "walk:auto": "npm run walk:auto -w gamemaker-web --",
+    "check:keys": "npm run check:keys -w gamemaker-web --",
     "replay:log": "npm run replay:log -w gamemaker-web --",
     "domains:check": "npm run domains:check -w gamemaker-web --",
     "badges:similar": "npm run badges:similar -w gamemaker-web --"

@@ -13,6 +13,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "walk:auto": "vite-node scripts/walkAuto.ts",
+    "check:keys": "vite-node ../games/kit/keyAccess.ts --",
     "replay:log": "vite-node scripts/replayLog.ts",
     "optimize:proof": "vite-node ../games/kit/optimizeProof.ts",
     "check:games": "vite-node ../games/kit/checkGames.ts",
