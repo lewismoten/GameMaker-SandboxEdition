@@ -34,6 +34,7 @@ import { BITS_BYTES_AD } from './sections/bitsBytesAd';
 import { HARDWARE } from './sections/hardware';
 import { SOUND_CARD_AD } from './sections/soundCardAd';
 import { NOTCHER_AD } from './sections/notcherAd';
+import { CONTEST_AD } from './sections/contestAd';
 import { READER_SERVICE } from './sections/readerService';
 import { BACK_COVER } from './sections/backCover';
 import { houseAd } from './sections/houseAd';
@@ -84,6 +85,7 @@ export const SECTIONS: MagSection[] = [
   HARDWARE,
   SOUND_CARD_AD,
   NOTCHER_AD,
+  CONTEST_AD,
   READER_SERVICE,
   BACK_COVER,
 ];

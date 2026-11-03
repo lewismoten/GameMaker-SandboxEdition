@@ -169,6 +169,9 @@ address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues f
     (`sections/bitsBytesAd.ts`, `sections/bitsBytes.test.ts` checks it faces itself): three turned
     boxes rendered from the desk's box art (`public/magazine/box-*.webp`, how to retake them is in the
     file's header), the store's logo, raised-cents prices, vertical tabs and Bitsy the floppy disk;
+  - `sections/contestAd.ts` and `contestAd.css`: a parody of the 1993 Game-Maker game design contest spread (banner,
+    starburst title, pastel arrows and squiggles as inline SVG, real `shot` screenshots down both sides,
+    jokey prizes, rules whose points total 100), placed before the reader service card;
   - `blankDisk.ts`, a stack of bulk disks without labels, for the Floppy Barn ad;
   - `notcherArt.ts`, the HOLE-Y MOLEY disk notcher and a disk before and after it, for its ad,
     `sections/notcherAd.ts` (its charcoal page `notcherAd.css`);
