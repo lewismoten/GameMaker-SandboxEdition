@@ -205,6 +205,7 @@ const began = Date.now();
 const fieldTrinketGames = [
   ['depth', 'Depth'],
   ['realm', 'Realm'],
+  ['blaster', 'Blaster'],
 ];
 const trinkets = Promise.all(
   fieldTrinketGames

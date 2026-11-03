@@ -65,10 +65,6 @@ export const GAMES: Record<string, Def[]> = {
   ],
 };
 
-GAMES.blaster = [
-  hero('ship', 'ship', 's1', 'The BLASTER', 'The nano-fighter that shrinks down the motherboard.', 'ship'),
-  mon('b1', 21, 'b1', 's1', 'spider', 'Spider virus', 'A purple bug that crawls where the BLASTER flies.'),
-];
 GAMES.brief = [
   hero('joe', 'joe', 'brief', 'Mystery Robot', 'The little robot who has to put every word back.', 'robot'),
   mon('after', 0, 'after', 'brief', 'ghost', 'Library ghost', 'A gray ghost with yellow glasses, haunting the stacks.'),
