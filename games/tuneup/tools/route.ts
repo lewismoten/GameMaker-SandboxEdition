@@ -37,7 +37,10 @@ export async function jumpStart(bot: Bot): Promise<void> {
   await must(bot, bot.walk(13, 'up the stacks of tires'), 'tires');
   await must(bot, bot.walk(17, 'along the workbench'), 'bench');
   await must(bot, bot.walk(18, 'to the end of the bench'), 'bench end');
-  await must(bot, bot.hop('right', 12, 'right', 21), 'up to the shelf');
+  // two plain steps of one block, the way a person climbs the tires: Up, then Right once over it
+  await must(bot, bot.hop('up', 6, 'right', 19), 'up onto the tire step');
+  await must(bot, bot.hop('up', 6, 'right', 20), 'up to the shelf');
+  await must(bot, bot.walk(21, 'onto the shelf'), 'shelf');
   await must(bot, bot.walk(JUMP.red[0], 'to the red clamp'), 'red clamp');
   if (bot.count(CTR.red) !== 1) throw new Error('missed the red clamp');
   await takeFork(bot, JUMP.fork[0], 'at the shelf end');
