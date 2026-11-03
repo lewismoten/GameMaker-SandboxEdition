@@ -6,6 +6,7 @@
 //
 // No text here names a game that the catalog keeps out of sight, or says how many there are.
 
+import { chickenWords } from '../chicken/chickenWords';
 import type { AchievementRecord } from './store';
 import { EDIT_KINDS } from './editKinds';
 import { REPEAT_TIERS, type RepeatGoal } from './repeatGoals';
@@ -721,7 +722,10 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
   {
     id: 'desk-chicken',
     title: 'Fowl flight',
-    desc: 'Caught Sir Reginald Cluckington III flying past the window.',
+    // (read each time, so it follows who the chicken is now: chicken/chickenState.ts)
+    get desc() {
+      return `Caught ${chickenWords().full} flying past the window.`;
+    },
     icon: '🐔',
     category: 'found',
     hidden: true,
