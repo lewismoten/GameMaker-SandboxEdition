@@ -47,6 +47,14 @@ export const TRINKETS: TrinketDef[] = [
     id: 'docleo',
     title: 'Doc Leo and the chicken',
     blurb: 'Doc Leo, his hat, and the rubber chicken on its red leash.',
+    // the stand takes the hat's gray, so the navy jacket stays its own filament; the yellow chicken prints in his skin tone
+    plinth: [80, 80, 88],
+    palette: [
+      [36, 48, 100],
+      [72, 70, 78],
+      [240, 196, 170],
+      [230, 30, 40],
+    ],
     shapes: () => [...docLeo(0), ...docLeoJoins()],
     height: 58,
     maxWidth: 70,

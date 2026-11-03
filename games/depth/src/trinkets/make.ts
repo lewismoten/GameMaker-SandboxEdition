@@ -4,7 +4,8 @@
 import { inspectMesh, type MeshReport } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshCheck';
 import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
 import { surfaceNets } from '@lewismoten/gamemaker-sandbox-tools/mesh/surfaceNets';
-import { tetraMesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/tetraMesh';
+import { decimate } from '@lewismoten/gamemaker-sandbox-tools/mesh/decimate';
+import { sampledField } from '@lewismoten/gamemaker-sandbox-tools/mesh/sampledField';
 import { colorBodies, pickPalette, type Rgb } from '@lewismoten/gamemaker-sandbox-tools/mesh/colorBodies';
 import { overhang, supportBody, type Overhang } from '@lewismoten/gamemaker-sandbox-tools/mesh/overhang';
 import { rgb, type Material, type Shape, type V } from '../render/tracer';
@@ -30,6 +31,10 @@ export interface TrinketDef {
   grow?: number;
   /** A post from the plinth up to a floating figure: its x, y, radius and top z, in game units. */
   stem?: { at: [number, number]; r: number; top: number };
+  /** The plinth's (and stem's) color if not the default indigo: one close to the figure's own color would share its filament. */
+  plinth?: [number, number, number];
+  /** The filament colors to print with (at most four), when the automatic pick would join two the eye must tell apart. */
+  palette?: Rgb[];
 }
 
 /** Plinth height, the grown skin and the cell of the mesh, in mm. */
@@ -38,7 +43,6 @@ const GROW_MM = 0.45;
 const CELL_MM = 0.95;
 const FILLET_MM = 1.6;
 const PLINTH_COLOR = rgb(52, 40, 120);
-const plinthMat: Material = { color: PLINTH_COLOR };
 
 const roundBox = (x: number, y: number, z: number, cx: number, cy: number, hx: number, hy: number, r: number, h: number) => {
   const qx = Math.abs(x - cx) - hx + r;
@@ -75,6 +79,13 @@ const SUPPORT_AREA = 25;
 const SPECK = 150;
 /** What the surface is eroded by for the check that nothing is joined by less than a millimeter, in mm. */
 const ERODE_MM = 0.5;
+/** How far, in mm, thinning a mesh may move its surface: well under what a 0.4 mm nozzle prints. */
+const SIMPLIFY_MM = 0.15;
+/** The same for the color bodies and the supports, which are only for slicing, and the grid of the bodies. */
+const BODY_SIMPLIFY_MM = 0.2;
+const BODY_CELL_MM = 1.5;
+/** Colors closer than this (0-255 steps) share a filament. */
+const PALETTE_MERGE = 40;
 
 export function makeTrinket(def: TrinketDef): Trinket {
   const fields = def.shapes().map(fieldOf);
@@ -94,7 +105,8 @@ export function makeTrinket(def: TrinketDef): Trinket {
   const coarse = surfaceNets((x, y, z) => Math.max(s0 * raw.d(x / s0 + (lo[0] + hi[0]) / 2, y / s0 + (lo[1] + hi[1]) / 2, z / s0), -z), {
     min: [(lo[0] - hi[0]) * s0 * 0.5 - 3, (lo[1] - hi[1]) * s0 * 0.5 - 3, 0],
     max: [(hi[0] - lo[0]) * s0 * 0.5 + 3, (hi[1] - lo[1]) * s0 * 0.5 + 3, top * s0 + 3],
-    cell: 0.8,
+    cell: 1.1,
+    attempts: 1,
   });
   const cmin = [Infinity, Infinity];
   const cmax = [-Infinity, -Infinity];
@@ -109,6 +121,7 @@ export function makeTrinket(def: TrinketDef): Trinket {
   // the final scale: the plinth's margin counts toward the width
   const width = Math.max(halfX, halfY) * 2;
   const scale = Math.min((def.height - 0) / top, def.maxWidth / width);
+  const plinthMat: Material = { color: def.plinth ? rgb(...def.plinth) : PLINTH_COLOR };
   const ph = PLINTH_MM / scale;
   const grow = (def.grow ?? GROW_MM) / scale;
   const all: Field[] = fields.map((f) => ({ d: (x, y, z) => f.d(x, y, z) - grow, mat: f.mat }));
@@ -126,51 +139,57 @@ export function makeTrinket(def: TrinketDef): Trinket {
   const f: Field = { d: (x, y, z) => cuts.reduce((m, c) => Math.max(m, -c(x, y, z)), joined.d(x, y, z)), mat: joined.mat };
   const toUnits = (x: number, y: number, z: number): V => [x / scale + mid[0], y / scale + mid[1], z / scale];
   const mm = (x: number, y: number, z: number) => Math.max(f.d(...toUnits(x, y, z)) * scale, -z);
-  const box = { min: [-halfX * scale - 2, -halfY * scale - 2, 0] as V, max: [halfX * scale + 2, halfY * scale + 2, top * scale + 2] as V };
-  const mesh = surfaceNets(mm, { ...box, cell: CELL_MM, maxPieces: 1 });
+  const box = { min: [-halfX * scale - 3, -halfY * scale - 3, 0] as V, max: [halfX * scale + 3, halfY * scale + 3, top * scale + 3] as V };
+  // the figure is sampled once; the mesh, the eroded check, the colors and the supports all read these samples
+  const g = sampledField(mm, { ...box, cell: CELL_MM });
+  const fine = surfaceNets(g, { ...box, cell: CELL_MM, maxPieces: 1 });
   // a color per triangle, from the material at its middle
-  const tris = mesh.indices.length / 3;
+  const tris = fine.indices.length / 3;
   const colors = new Uint8Array(tris * 3);
-  const p = mesh.positions;
+  const p = fine.positions;
   for (let t = 0; t < tris; t++) {
     let cx = 0;
     let cy = 0;
     let cz = 0;
     for (let c = 0; c < 3; c++) {
-      const v = mesh.indices[t * 3 + c] * 3;
+      const v = fine.indices[t * 3 + c] * 3;
       cx += p[v] / 3;
       cy += p[v + 1] / 3;
       cz += p[v + 2] / 3;
     }
     const u = toUnits(cx, cy, cz);
     const m = f.mat(...u);
-    const e0 = 0.4 / scale;
-    const nrm = normalize([
-      f.d(u[0] + e0, u[1], u[2]) - f.d(u[0] - e0, u[1], u[2]),
-      f.d(u[0], u[1] + e0, u[2]) - f.d(u[0], u[1] - e0, u[2]),
-      f.d(u[0], u[1], u[2] + e0) - f.d(u[0], u[1], u[2] - e0),
-    ]);
+    const e0 = 0.4;
+    const nrm = normalize([g(cx + e0, cy, cz) - g(cx - e0, cy, cz), g(cx, cy + e0, cz) - g(cx, cy - e0, cz), g(cx, cy, cz + e0) - g(cx, cy, cz - e0)]);
     const col = colorOf(m, u, nrm);
     const e = m.emit ?? [0, 0, 0];
     for (let a = 0; a < 3; a++) colors[t * 3 + a] = Math.round(Math.min(1, Math.max(0, col[a] + e[a] * 0.4)) * 255);
   }
-  mesh.colors = colors;
-  const eroded = inspectMesh(surfaceNets((x, y, z) => mm(x, y, z) + ERODE_MM, { ...box, cell: CELL_MM }));
-  const bodies = colorBodies(mesh, pickPalette(mesh, MAX_COLORS), mm, { ...box, cell: CELL_MM });
-  const wholeVolume = inspectMesh(tetraMesh(mm, { ...box, cell: CELL_MM })).volume;
-  const over = overhang(mesh);
-  const support = over.area > SUPPORT_AREA ? supportBody(mm, { ...box, cell: 1, gap: 0.4 }) : undefined;
+  fine.colors = colors;
+  const eroded = inspectMesh(surfaceNets((x, y, z) => g(x, y, z) + ERODE_MM, { ...box, cell: CELL_MM, attempts: 3 }));
+  const over = overhang(fine);
+  const rawSupport = over.area > SUPPORT_AREA ? supportBody(g, { ...box, cell: 1, gap: 0.4 }) : undefined;
+  const support = rawSupport && decimate(rawSupport, { maxError: 0.1 });
+  // the file's mesh: the sampled one with its flats and gentle curves cut down to what holds the shape
+  const mesh = decimate(fine, { maxError: SIMPLIFY_MM });
+  const report = inspectMesh(mesh);
+  const bodies = colorBodies(fine, def.palette ?? pickPalette(fine, MAX_COLORS, PALETTE_MERGE), g, {
+    ...box,
+    cell: BODY_CELL_MM,
+    simplify: BODY_SIMPLIFY_MM,
+    volume: report.volume,
+  });
   return {
     mesh,
-    report: inspectMesh(mesh),
+    report,
     scale,
     erodedPieces: eroded.pieceTriangles.filter((n) => n >= SPECK).length,
     erodedSpecks: eroded.pieceTriangles.filter((n) => n < SPECK).length,
     overhang: over,
     support,
     bodies,
-    wholeVolume,
-    field: mm,
+    wholeVolume: report.volume,
+    field: g,
   };
 }
 
