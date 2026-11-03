@@ -230,6 +230,12 @@ export interface CodeWheelItem extends ItemBase {
    * ring, or several, outermost first, each at its own distance from the pin so each window shows its own.
    */
   hidden?: string[] | string[][];
+  /**
+   * Three-disc wheels: a cell of a hidden ring that is '' is a hole cut through the middle disc, so the window
+   * above it looks straight through to the big disc. `behind` holds the rings printed there, on the big disc
+   * (one per hidden ring, each as many as `outer`), seen only through a window over a hole.
+   */
+  behind?: string[][];
   /** Windows cut through the turning disc: the place in its ring each is beside, its label, and the hidden ring it opens on (0 by default). */
   windows?: { at: number; label?: string; ring?: number }[];
   /** Pictures for symbols: a name, and rows of '#' (ink) and '.' (paper), every row as wide. */
@@ -239,10 +245,17 @@ export interface CodeWheelItem extends ItemBase {
   /**
    * The puzzles it solves: the scenes they are on (the 1994 desk lays the wheel beside the monitor there), the
    * question, and the setting (the turning disc's `inner` symbol and the outer disc's `outer` one, and on a
-   * three-disc wheel the middle disc's `middle` one, together under the arrow). The answer is what the wheel shows then: the symbol in window `window` (an index into `windows`),
+   * three-disc wheel the middle disc's `middle` one, together under the arrow). The answer is what the wheel shows then: the symbol in window `window` (an index into `windows`), or, with `windowsRead`, the symbols in those windows read in order,
    * or, for decoding a word, a short `answer`.
    */
-  puzzles?: { scenes: number[]; ask: string; turn: { inner: string; outer: string; middle?: string }; window?: number; answer?: string }[];
+  puzzles?: {
+    scenes: number[];
+    ask: string;
+    turn: { inner: string; outer: string; middle?: string };
+    window?: number;
+    windowsRead?: number[];
+    answer?: string;
+  }[];
 }
 
 /**
