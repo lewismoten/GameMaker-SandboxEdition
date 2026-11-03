@@ -25,6 +25,7 @@ export const GUIDE_CHAPTERS: [id: string, title: string][] = [
   ['players', 'Designing for Every Player'],
   ['limits', 'Where Game-Maker Runs Out'],
   ['shareware', 'Tricks From the Shareware Authors'],
+  ['box', 'What Goes in the Box'],
   ['numbers', 'The Numbers to Remember'],
   ['upload', 'Before You Upload'],
 ];

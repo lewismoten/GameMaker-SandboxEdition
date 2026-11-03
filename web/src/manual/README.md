@@ -105,7 +105,9 @@ The Ultimate Owner's Guide in the Game-Maker box.
   `limitsClock.ts` and ideas to try in `limitIdeas.ts`), and 17 tricks from the shareware authors
   (`chaptersShareware.ts`, with the second survey's "More from the archive" in
   `archiveTricks.ts`), whose table of the words the DOS player shows, and where they sit in
-  the CD's `XFERPLAY.EXE`, is `playerWords.ts` (its test reads the .EXE).
+  the CD's `XFERPLAY.EXE`, is `playerWords.ts` (its test reads the .EXE), and 18 what goes in the box
+  (`chaptersBox.ts`: code wheels, code sheets, cloth maps, hint books under red film and plastic
+  trinkets, what they cost and protect, and paper puzzles built from links and look-alike blocks).
 - Figures are drawn from real files (`ultimateFigures.ts`, `paletteFigures.ts`).
   `openUltimate.ts` and `openInManual.ts` open it from outside the desk.
 
