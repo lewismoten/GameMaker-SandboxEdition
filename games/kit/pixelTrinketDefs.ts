@@ -95,7 +95,3 @@ GAMES.teddy2 = [
   hero('teddy', 'teddy', 'main', 'Teddy', 'Sniffing out Gwinn’s trail.', 'teddy'),
   mon('farm', 23, 'farm', 'main', 'hen', 'Hen', 'A hen at the farm.'),
 ];
-GAMES.teddy3 = [
-  hero('gwinn', 'gwinn', 'road', 'Gwinn', 'Playing the meanwhile.', 'gwinn'),
-  hero('runner', 'runner', 'road', 'The runner', 'Out for a run.', 'runner'),
-];
