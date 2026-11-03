@@ -60,7 +60,7 @@ export const APPENDIX_B: ChecklistItem[] = [
   },
   {
     text: 'Nothing shown can’t be used: no doors or links that lead nowhere, no prizes out of reach, none your own shots destroy',
-    checks: ['fake-exit', 'prize-in-view', 'shot-prize', 'link-shadow', 'start-on-link', 'link-corner', 'link-solid', 'off-map'],
+    checks: ['fake-exit', 'hidden-exit', 'prize-in-view', 'shot-prize', 'link-shadow', 'start-on-link', 'link-corner', 'link-solid', 'off-map'],
     play: true,
     full: true,
   },

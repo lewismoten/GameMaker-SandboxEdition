@@ -100,7 +100,7 @@ Part of the [source map](../README.md).
     fire key that roots the hero, ammunition for each key and keys whose job changes between
     levels; `screenText.ts` long help or story and placeholder pages; `dosChars.ts` in-game words
     with characters 128-255, which DOS's player draws as scribbles; `levelExits.ts` doors that
-    lead nowhere, a level with no link out and levels with no music (or a song DOS won't play);
+    lead nowhere, `hiddenExit.ts` links out on plain background with no door, sign or arrow near, a level with no link out and levels with no music (or a song DOS won't play);
     `flashing.ts` blocks that flash faster than three times a second; `stakes.ts` many lives and
     an unarmed start among enemies; `playerChecks.ts` a tap that moves twice, scenery that looks like
     a prize and keys never taught at the start; `fliCheck.ts` animations DOS can't play, from
