@@ -102,10 +102,6 @@ GAMES.needle = [
   hero('saddled', 'saddled', 'city', 'Brother Camel', 'The camel with the saddlebags full of gold.', 'camel'),
   mon('city', 15, 'things', 'city', 'needle', 'The needle', 'The eye of the needle itself.'),
 ];
-GAMES.realm = [
-  hero('pip', 'pip', 'town', 'Pip', 'The hero of the Quest for the Round Tuit.', 'pip'),
-  mon('flats', 8, 'flats', 'flats', 'crab', 'Crab', 'A scuttling crab.'),
-];
 GAMES.reckoning = [
   hero('leo', 'reckon', 'fridge', 'Doc Leo', 'Tiptoeing to the fridge at 3:17 a.m.', 'leo'),
   mon('bedroom', 17, 'reckon', 'bedroom', 'imp', 'Little devil', 'A little red devil with a cape.'),
