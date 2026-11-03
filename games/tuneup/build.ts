@@ -77,7 +77,7 @@ const TOOLS: Record<number, Tool> = {
 };
 // Cartoons go without the ring frame nothing plays, and cut where the picture changes anyway.
 // Clips run up to 6 s (Esc answers a little slower) so each Hat Sting cuts at its scene change.
-const CLIPS: ClipOptions = { noLoopFrame: true, cheapCuts: true };
+const CLIPS: ClipOptions = { noLoopFrame: true, cheapCuts: true, shrink: [{ step: 'sparsePalettes' }] };
 const CLIP_SECONDS = 6;
 /** A cartoon cut into clips (Esc skips within a few seconds), its files on the disk, its entries for a list. */
 const reel = (name: string, fli: Uint8Array) => {

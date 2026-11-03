@@ -4,7 +4,7 @@
 // toys under it, THE CHEZ's charger on the right wall (it's electric: no gas cans), and a
 // concrete slab with its seams. Everything is placed from the floor line, so any floor works.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { gradient } from '../../../snowbound/src/art/draw';
+import { gradient, shadeAt } from '../../../snowbound/src/art/draw';
 import { SP } from './art';
 
 const c = SP.c;
@@ -152,13 +152,18 @@ function slab(p: Pixels, F: number): void {
 }
 
 /** The garage at dawn with the floor from `floor`. */
-export function garage(floor = 160): Pixels {
+export function garage(floor = 160, cell = 1): Pixels {
   const p = new Pixels(320, 200, c('wall', 3));
-  gradient(p, 0, 0, 320, floor, SP.r('wall'), 2, 4);
+  /** The wall's and window's gradients dithered in cells `cell` pixels wide: runs an FLI stores in fewer bytes. */
+  const shade = (x0: number, y0: number, w: number, h: number, ramp: number[], lo: number, hi: number) => {
+    for (let y = y0; y < y0 + h; y++)
+      for (let x = x0; x < x0 + w; x++) p.set(x, y, shadeAt(ramp, lo, hi, (y - y0) / Math.max(1, h - 1), Math.floor(x / cell), y));
+  };
+  shade(0, 0, 320, floor, SP.r('wall'), 2, 4);
   for (let y = 8; y < floor - 4; y += 10) for (let x = 6; x < 320; x += 10) p.set(x, y, c('wall', 1));
   // the window: sunrise through it
   p.rect(200, 20, 96, 64, c('mach', 1));
-  gradient(p, 204, 24, 88, 56, SP.r('lamp'), 1, 4);
+  shade(204, 24, 88, 56, SP.r('lamp'), 1, 4);
   p.rect(246, 24, 4, 56, c('mach', 1)).rect(204, 50, 88, 4, c('mach', 1));
   light(p);
   pegboard(p, floor);
