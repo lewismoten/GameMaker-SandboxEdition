@@ -7,6 +7,7 @@ import type { Computer } from '../retro/computer';
 import type { MonitorMode } from '../retro/computer/setup';
 import { installCrtWarp } from './pc/crtWarp';
 import { captureStub } from './pc/captureStub';
+import { crtWarmUp } from './pc/crtWarmUp';
 import type { BootSounds } from './pc/bootSounds';
 import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { TURBO_OFF } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
@@ -83,8 +84,9 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
   const fetchAhead = () => void Promise.all([pcCode(), bootCode()]);
   powerBtn.addEventListener('pointerenter', fetchAhead, { once: true });
   powerBtn.addEventListener('focus', fetchAhead, { once: true });
-  // the tube warming up from black at each switch-on (crtOn.css), done when its fade ends
-  crt.addEventListener('animationend', (e) => e.animationName === 'crt-warm' && crt.classList.remove('warming-up'));
+  // the tube warming up at each switch-on (pc/crtWarmUp.ts), done when its fade ends
+  let stopWarmUp = () => {};
+  crt.addEventListener('animationend', (e) => e.animationName.startsWith('crt-warm') && stopWarmUp());
   // the screenshot and record buttons: the capture tool loads on the first press
   let capture: { el: HTMLElement; dispose(): void } | undefined;
   const captureCode = () => import('./pc/capture');
@@ -131,7 +133,8 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     modem.power(true);
     spk.power(true);
     setTurbo(turbo);
-    crt.classList.add('warming-up');
+    stopWarmUp = crtWarmUp(crt);
+    cd.busy(2000); // the CD-ROM drive resets as the power comes on: its light, and no sound
     poweringOn = Promise.all([loadPc(), bootCode()]).then(([pc, { bootSounds }]) => {
       const boot = (whir = bootSounds());
       // at the prompt (or switched off while booting) the fans and the drives fade away
@@ -164,7 +167,7 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     spk.power(false);
     modem.power(false);
     deskView.set({ disk: undefined, run: undefined, open: undefined });
-    crt.classList.remove('warming-up');
+    stopWarmUp();
     crt.classList.add('switching-off');
     setTimeout(() => {
       crt.classList.remove('switching-off');

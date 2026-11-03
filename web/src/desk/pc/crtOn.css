@@ -1,9 +1,12 @@
-/* switching the monitor on (deskPc.ts): the tube warms up. The glass stays dark a moment while
-   the heater comes up, then the picture rises out of the black, a little soft at first, and the
-   glow on the bezel (desk.css, pc/screenGlow.ts) comes up with it. The picture's own filter is
-   the glass's bulge (crtWarp.ts), so the warm-up fades what is inside it instead. */
+/* switching the monitor on (pc/crtWarmUp.ts): the tube warms up. The glass stays dark a moment
+   while the heater comes up; the beam's first bright line flickers across the middle and fades;
+   the picture rises out of the black, flickering and torn into jagged rows (the crt-jag filter,
+   which crtWarmUp.ts settles) until the deflection locks; and the glow on the bezel
+   (desk.css, pc/screenGlow.ts) comes up with it. The picture's own filter is the glass's bulge
+   (crtWarp.ts), so the warm-up works on what is inside it. */
 .crt.warming-up .crt-picture > * {
-  animation: crt-warm 3s ease-in both;
+  filter: url(#crt-jag);
+  animation: crt-warm 3s linear both;
 }
 
 .crt.warming-up {
@@ -12,16 +15,84 @@
 
 @keyframes crt-warm {
   0%,
-  20% {
+  11% {
     opacity: 0;
-    filter: blur(1.5px);
   }
-  70% {
-    filter: blur(0.3px);
+  16% {
+    opacity: 0.25;
+  }
+  19% {
+    opacity: 0.08;
+  }
+  24% {
+    opacity: 0.35;
+  }
+  27% {
+    opacity: 0.2;
+  }
+  35% {
+    opacity: 0.5;
   }
   100% {
     opacity: 1;
-    filter: blur(0);
+  }
+}
+
+/* the beam's first line across the middle of the glass */
+.crt.warming-up::before {
+  content: '';
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 50%;
+  z-index: 5;
+  height: 2px;
+  margin-top: -1px;
+  background: #eaf2ff;
+  box-shadow: 0 0 6px 2px rgba(190, 220, 255, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  animation: crt-beam 3s linear both;
+}
+
+@keyframes crt-beam {
+  0%,
+  4% {
+    opacity: 0;
+    transform: scaleX(0.3);
+  }
+  6% {
+    opacity: 0.9;
+    transform: scaleX(1);
+  }
+  8% {
+    opacity: 0.2;
+    transform: translateY(-3px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(2px);
+  }
+  12% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  14% {
+    opacity: 0.95;
+    transform: scaleY(1);
+  }
+  17% {
+    opacity: 0.35;
+    transform: scaleY(1);
+  }
+  20% {
+    opacity: 0.7;
+    transform: scaleY(1.5);
+  }
+  28%,
+  100% {
+    opacity: 0;
+    transform: scaleY(3);
   }
 }
 
@@ -36,5 +107,27 @@
   0%,
   20% {
     --glow-a: 0;
+  }
+}
+
+/* Reduced motion: the picture just fades up from black (no line, flicker or tear). */
+@media (prefers-reduced-motion: reduce) {
+  .crt.warming-up .crt-picture > * {
+    filter: none;
+    animation-name: crt-warm-plain;
+  }
+
+  .crt.warming-up::before {
+    content: none;
+  }
+
+  @keyframes crt-warm-plain {
+    0%,
+    15% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 }
