@@ -14,11 +14,11 @@ import { CHEZ_BODY, CHEZ_WHEELS, CHEZ_AXLE } from '../../../kit/chez';
 /** Side-view units (kit/chez.ts: x along the car, y down, the ground at 20) to the car's frame. */
 const K = 1.8 / 30.8;
 const RX = 5.2; // the rear, at x = 0
-const U = (u: number) => (u - RX) * K;
-const Z = (v: number) => (20 - v) * K;
+export const U = (u: number) => (u - RX) * K;
+export const Z = (v: number) => (20 - v) * K;
 
 /** The side window, the stripes and the seams, in the car's frame (x along, z up). */
-const WIN: [number, number][] = [
+export const WIN: [number, number][] = [
   [U(12.5), Z(2.8)],
   [U(18.5), Z(2.8)],
   [U(24.5), Z(8.3)],

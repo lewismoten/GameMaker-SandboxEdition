@@ -119,5 +119,5 @@ export function union(fields: Field[], fillet = 0): Field {
   };
 }
 
-/** The albedo of a material at a point. */
-export const colorOf = (m: Material, p: V): V => resolveColor(m, p, [0, 0, 1]);
+/** The albedo of a material at a point of a surface facing `n`. */
+export const colorOf = (m: Material, p: V, n: V = [0, 0, 1]): V => resolveColor(m, p, n);

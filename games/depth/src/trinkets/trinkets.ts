@@ -5,6 +5,7 @@ import { count, docLeo, gwinn, teapotModel, teddy } from '../models/cast';
 import { citicar } from '../models/citicar';
 import { rayModel } from '../models/ray';
 import type { TrinketDef } from './make';
+import { chezWindows, docLeoJoins, gwinnLegs, teddyLegs } from './figures';
 
 export const TRINKETS: TrinketDef[] = [
   {
@@ -30,6 +31,7 @@ export const TRINKETS: TrinketDef[] = [
     title: 'THE CHEZ',
     blurb: 'A 1976½ CitiCar, tomato red with a black roof.',
     shapes: () => citicar(0, 0, 1, [0, 0, 0]),
+    pockets: chezWindows,
     height: 50,
     maxWidth: 90,
   },
@@ -45,7 +47,7 @@ export const TRINKETS: TrinketDef[] = [
     id: 'docleo',
     title: 'Doc Leo and the chicken',
     blurb: 'Doc Leo, his hat, and the rubber chicken on its red leash.',
-    shapes: () => docLeo(0),
+    shapes: () => [...docLeo(0), ...docLeoJoins()],
     height: 58,
     maxWidth: 70,
   },
@@ -53,7 +55,7 @@ export const TRINKETS: TrinketDef[] = [
     id: 'teddy',
     title: 'Teddy',
     blurb: 'The corgi, ears up and tongue out.',
-    shapes: () => teddy(2),
+    shapes: () => [...teddy(2), ...teddyLegs()],
     grow: 0.8, // his feet are a hair apart from his chest in the model
     height: 52,
     maxWidth: 70,
@@ -62,7 +64,8 @@ export const TRINKETS: TrinketDef[] = [
     id: 'gwinn',
     title: 'Gwinn',
     blurb: 'The troublemaker, sitting pretty in her pink collar.',
-    shapes: () => gwinn(0),
+    shapes: () => [...gwinn(0), ...gwinnLegs()],
+    grow: 0.8,
     height: 56,
     maxWidth: 70,
   },

@@ -4,6 +4,9 @@
 import { inspectMesh, type MeshReport } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshCheck';
 import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
 import { surfaceNets } from '@lewismoten/gamemaker-sandbox-tools/mesh/surfaceNets';
+import { tetraMesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/tetraMesh';
+import { colorBodies, pickPalette, type Rgb } from '@lewismoten/gamemaker-sandbox-tools/mesh/colorBodies';
+import { overhang, supportBody, type Overhang } from '@lewismoten/gamemaker-sandbox-tools/mesh/overhang';
 import { rgb, type Material, type Shape, type V } from '../render/tracer';
 import { colorOf, fieldOf, union, type Field } from './fields';
 
@@ -19,6 +22,10 @@ export interface TrinketDef {
   height: number;
   /** Printed width or depth, at most, in mm. */
   maxWidth: number;
+  /** Recesses cut into the finished figure: given the mm in game units and the figure's own field, the distance (negative outside) of each pocket. */
+  pockets?: (ctx: { mm: number; d: (x: number, y: number, z: number) => number }) => ((x: number, y: number, z: number) => number)[];
+  /** The width of the smooth fillet where parts meet, in mm (default 1.6): wider cradles a floating part. */
+  fillet?: number;
   /** How much to thicken the figure's skin, in mm (default 0.45): thin sheets need more. */
   grow?: number;
   /** A post from the plinth up to a floating figure: its x, y, radius and top z, in game units. */
@@ -45,7 +52,29 @@ export interface Trinket {
   report: MeshReport;
   /** Millimeters per game unit. */
   scale: number;
+  /** The pieces left when the surface is eroded by half a millimeter: 1 means nothing is joined by less than a millimeter. */
+  erodedPieces: number;
+  /** Specks (tiny pieces) the eroded surface leaves, parts thinner than a millimeter that would not print. */
+  erodedSpecks: number;
+  /** Faces leaning out over nothing at more than 45 degrees. */
+  overhang: Overhang;
+  /** One closed body per color (at most four, chosen from the game's materials), for a multi-filament print. */
+  bodies: { color: Rgb; mesh: Mesh }[];
+  /** The volume of the whole solid meshed the way the color bodies are, to check the bodies fill it. */
+  wholeVolume: number;
+  field: (x: number, y: number, z: number) => number;
+  /** Support pillars as a body of their own, for a printer with a second material, when overhangs are more than a little. */
+  support?: Mesh;
 }
+
+/** Overhanging area, in mm squared, above which the trinket comes with a support body of its own. */
+/** Colors a multi-filament printer can be expected to manage. */
+const MAX_COLORS = 4;
+const SUPPORT_AREA = 25;
+/** A piece of the eroded surface with fewer triangles than this is a speck, not a body. */
+const SPECK = 150;
+/** What the surface is eroded by for the check that nothing is joined by less than a millimeter, in mm. */
+const ERODE_MM = 0.5;
 
 export function makeTrinket(def: TrinketDef): Trinket {
   const fields = def.shapes().map(fieldOf);
@@ -92,13 +121,13 @@ export function makeTrinket(def: TrinketDef): Trinket {
       mat: () => plinthMat,
     });
   }
-  const f = union(all, FILLET_MM / scale);
+  const joined = union(all, (def.fillet ?? FILLET_MM) / scale);
+  const cuts = def.pockets?.({ mm: 1 / scale, d: joined.d }) ?? [];
+  const f: Field = { d: (x, y, z) => cuts.reduce((m, c) => Math.max(m, -c(x, y, z)), joined.d(x, y, z)), mat: joined.mat };
   const toUnits = (x: number, y: number, z: number): V => [x / scale + mid[0], y / scale + mid[1], z / scale];
-  const mesh = surfaceNets((x, y, z) => Math.max(f.d(...toUnits(x, y, z)) * scale, -z), {
-    min: [-halfX * scale - 2, -halfY * scale - 2, 0],
-    max: [halfX * scale + 2, halfY * scale + 2, top * scale + 2],
-    cell: CELL_MM,
-  });
+  const mm = (x: number, y: number, z: number) => Math.max(f.d(...toUnits(x, y, z)) * scale, -z);
+  const box = { min: [-halfX * scale - 2, -halfY * scale - 2, 0] as V, max: [halfX * scale + 2, halfY * scale + 2, top * scale + 2] as V };
+  const mesh = surfaceNets(mm, { ...box, cell: CELL_MM, maxPieces: 1 });
   // a color per triangle, from the material at its middle
   const tris = mesh.indices.length / 3;
   const colors = new Uint8Array(tris * 3);
@@ -115,10 +144,37 @@ export function makeTrinket(def: TrinketDef): Trinket {
     }
     const u = toUnits(cx, cy, cz);
     const m = f.mat(...u);
-    const col = colorOf(m, u);
+    const e0 = 0.4 / scale;
+    const nrm = normalize([
+      f.d(u[0] + e0, u[1], u[2]) - f.d(u[0] - e0, u[1], u[2]),
+      f.d(u[0], u[1] + e0, u[2]) - f.d(u[0], u[1] - e0, u[2]),
+      f.d(u[0], u[1], u[2] + e0) - f.d(u[0], u[1], u[2] - e0),
+    ]);
+    const col = colorOf(m, u, nrm);
     const e = m.emit ?? [0, 0, 0];
     for (let a = 0; a < 3; a++) colors[t * 3 + a] = Math.round(Math.min(1, Math.max(0, col[a] + e[a] * 0.4)) * 255);
   }
   mesh.colors = colors;
-  return { mesh, report: inspectMesh(mesh), scale };
+  const eroded = inspectMesh(surfaceNets((x, y, z) => mm(x, y, z) + ERODE_MM, { ...box, cell: CELL_MM }));
+  const bodies = colorBodies(mesh, pickPalette(mesh, MAX_COLORS), mm, { ...box, cell: CELL_MM });
+  const wholeVolume = inspectMesh(tetraMesh(mm, { ...box, cell: CELL_MM })).volume;
+  const over = overhang(mesh);
+  const support = over.area > SUPPORT_AREA ? supportBody(mm, { ...box, cell: 1, gap: 0.4 }) : undefined;
+  return {
+    mesh,
+    report: inspectMesh(mesh),
+    scale,
+    erodedPieces: eroded.pieceTriangles.filter((n) => n >= SPECK).length,
+    erodedSpecks: eroded.pieceTriangles.filter((n) => n < SPECK).length,
+    overhang: over,
+    support,
+    bodies,
+    wholeVolume,
+    field: mm,
+  };
 }
+
+const normalize = (v: V): V => {
+  const l = Math.hypot(v[0], v[1], v[2]) || 1;
+  return [v[0] / l, v[1] / l, v[2] / l];
+};
