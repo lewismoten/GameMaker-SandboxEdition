@@ -1,7 +1,7 @@
 // Tests: the laser SVG builder and pixel text (tools kit/laserSvg, laserPixels, laserClearance), and every wooden nickel the build
 // has made (web/public/laser/<game>/): red stroke-only cuts and blue fill-only engraving (never magenta score), real millimeter
 // sizes, closed cuts that enclose the engraving, no cut on the back files, a series number and hidden letter, wood around
-// holes, and no two elements too close.
+// holes, and no two elements too close. (Folders whose manifest says kind: 'kit' are laser kits, tested in laserStageBox.test.ts.)
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -50,7 +50,9 @@ describe('laser SVG builder', () => {
 });
 
 const dir = join(__dirname, '../public/laser');
-const games = existsSync(dir) ? readdirSync(dir).filter((g) => existsSync(join(dir, g, 'manifest.json'))) : [];
+const games = existsSync(dir)
+  ? readdirSync(dir).filter((g) => existsSync(join(dir, g, 'manifest.json')) && JSON.parse(readFileSync(join(dir, g, 'manifest.json'), 'utf8')).kind !== 'kit')
+  : [];
 const read = (g: string, f: string) => readFileSync(join(dir, g, f), 'utf8');
 
 describe.skipIf(!games.length)('wooden nickels the build made', () => {
