@@ -129,6 +129,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   already, where only the unearned frame and lock tell earned from not. Hidden badges show their id, not their
   title. Writes `../../.for-lewis/research/badges-similar/index.html` (git-ignored; pairs at 4x, pixelated), prints a table, exits 0
   unless `--strict`. Parts: `badgeSimilarMetrics.ts` (+ test), `badgePng.ts`, `badgeSimilarPng.ts`, `badgeSimilarReport.ts`.
+- `replayLog.ts` (`npm run replay:log -- <log.jsonl> [--session id] [--play n] [--out dir] [--frames snaps|clock,clock] [--dir game folder]`) replays a game the dev interaction log recorded (see `src/devLog/gameLog.ts`): the logged seed and keys go into the headless engine at the game clock they were applied, every logged snapshot is checked, and `--out` writes PNG frames of what the player saw. Exits 1 at the first divergence and says where, 2 when the log cannot be replayed. Its command line and log reading are in `replayLogArgs.ts`.
 - `walkAuto.ts` (`npm run walk:auto -- <folder | .zip> [--budget ms] [--game NAME.GAM] [--out walkthrough.json]`) runs the
   editor's "Make a walkthrough…" bot (`autoWalk`, 60 s a scene by default) on a game folder or zip and prints each scene's
   style, tries, play time and outcome, and why it stopped (a door that stayed shut). `--out` writes the walkthrough; it

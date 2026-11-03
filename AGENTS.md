@@ -54,6 +54,7 @@ npx vite-node ../games/kit/versionCheck.ts         # a game changed since the la
 npm run check:games                                # all of the game checks above, every game, a table
 npm run check:games -- --game <id> --quick         # one game, without the reproducibility rebuild
 npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win
+npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game the dev interaction log (the 🐵 switch) recorded, headless; checks each snapshot; PNG frames with --out; exits 1 on divergence
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run domains:check                              # every made-up domain is still unregistered (whois + DNS; needs network)
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox
