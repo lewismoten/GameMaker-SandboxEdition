@@ -11,9 +11,7 @@ import { micro } from '../../../snowbound/src/art/font';
 import type { Kit } from '../blocks/common';
 import { SHIELD, STRIP } from '../levels/beltwayPlan';
 import { bench, dashFace, sides } from './cabInterior';
-import { driver, teddy, wheel } from './cabPeople';
-
-export { teddyPant } from './cabPeople';
+import { driver, teddy, teddyPant, wheel } from './cabPeople';
 
 /** The lane lamp's lens in its strip cell (the driver's picture lights it). */
 export const LENS = { x: 10, y: 9, r: 5 } as const;
@@ -36,7 +34,9 @@ function shield(k: Kit, p: Pixels): void {
   gradient(p, x0, 20, x1 - x0, SHIELD.horizon - 20, R('sky'), 3, 6);
   // THE CHEZ's red body divider across the top of the glass (a tomato-red header with a rubber seal under it), so the windshield
   // ends at the body rather than running into the roof
-  p.rect(x0, 20, x1 - x0, 8, c('red', 2)).rect(x0, 20, x1 - x0, 2, c('red', 3)).rect(x0, 26, x1 - x0, 2, c('red', 1));
+  p.rect(x0, 20, x1 - x0, 8, c('red', 2))
+    .rect(x0, 20, x1 - x0, 2, c('red', 3))
+    .rect(x0, 26, x1 - x0, 2, c('red', 1));
   p.rect(x0, 28, x1 - x0, 1, c('ink', 0));
   for (let y = SHIELD.horizon; y < 100; y++) {
     const [l, r] = roadEdges(y);
@@ -48,7 +48,7 @@ function shield(k: Kit, p: Pixels): void {
     }
   }
   // the one wiper's arm, parked along the base (the driver's side), its blade's rubber under it
-  p.rect(50, 95, 92, 2, c('ink', 0)).rect(50, 97, 92, 1, c('ink', 1)).rect(46, 94, 6, 5, c('metal', 1));
+  p.rect(50, 95, 90, 2, c('ink', 0)).rect(50, 97, 90, 1, c('ink', 1)).rect(46, 94, 6, 5, c('metal', 1));
 }
 
 /** The far skyline, a 20-pixel strip that repeats (row 2): the hills' haze, a few buildings and a water tower, drifting left. */
@@ -115,8 +115,14 @@ export function playPic(k: Kit, on: boolean): Pixels {
   return p;
 }
 
-/** The whole driver's seat, still: every block not on a ring is cut from it. */
-export function paintCab(k: Kit, doorPhase = 0): Pixels {
+/**
+ * The car's rumble lifts Doc Leo's head and Teddy's: `lift` pixels up on the up beat, everything of the figure above the row
+ * `cut` (the rest stays on the seat, the lift's seam hidden in the torso). Only the cells a lift changes become rings.
+ */
+const BOUNCE = { leo: { lift: 1, cut: 60 }, teddy: { lift: 2, cut: 80 } } as const;
+
+/** The whole driver's seat, with the roadside at `doorPhase` and the car's rumble: `up` lifts the two heads, `pant` puts Teddy's tongue out. */
+export function paintCab(k: Kit, doorPhase = 0, up = false, pant = false): Pixels {
   const { c, R } = k;
   const p = new Pixels(320, 200, c('wall', 2));
   // the headliner, the mirror's stem and its glass over three cells (a pale reflection of the road behind)
@@ -153,8 +159,17 @@ export function paintCab(k: Kit, doorPhase = 0): Pixels {
   radio(k, p, 140, 140);
   p.blit(playPic(k, true), GAUGE.play[0] * 20, GAUGE.play[1] * 20);
   bench(k, p);
-  teddy(k, p);
-  driver(k, p);
+  // the people, each drawn whole on its own layer: the part below `cut` stays put, the part above it lifts (and covers the seam)
+  for (const [draw, { lift, cut }] of [
+    [(l: Pixels) => (teddy(k, l), pant && teddyPant(k, l)), BOUNCE.teddy],
+    [(l: Pixels) => driver(k, l), BOUNCE.leo],
+  ] as const) {
+    const layer = new Pixels(320, 200, 255);
+    draw(layer);
+    const dy = up ? lift : 0;
+    p.blit(layer.crop(0, cut - dy, 320, 200 - cut + dy), 0, cut - dy, 255);
+    p.blit(layer.crop(0, 0, 320, cut), 0, -dy, 255);
+  }
   return p;
 }
 

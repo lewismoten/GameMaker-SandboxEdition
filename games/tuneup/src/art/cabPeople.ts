@@ -75,7 +75,7 @@ export function driver(k: Kit, p: Pixels): void {
   for (let i = 0; i <= 14; i++) p.disc(30 + i * 1.1, 152 + i * 0.5, 6, c('coat', i < 3 ? 1 : 2));
   for (let i = 0; i < 8; i++) p.line(31 + i, 144 + (i >> 1), 40 + i, 150 + (i >> 1), c('coat', 1));
   p.disc(49, 161, 5, c('purple', 2)).rect(44, 156, 4, 10, c('purple', 3));
-  p.disc(57, 163, 5, c('skin', 3)).rect(53, 164, 9, 4, c('skin', 2)).rect(53, 167, 9, 1, c('skin', 0)).rect(55, 159, 4, 3, c('skin', 3));
+  p.disc(57, 163, 4.9, c('skin', 3)).rect(53, 164, 9, 4, c('skin', 2)).rect(53, 167, 9, 1, c('skin', 0)).rect(55, 159, 4, 3, c('skin', 3));
   for (const x of [55, 58, 61]) p.rect(x, 164, 1, 3, c('skin', 0));
 }
 
