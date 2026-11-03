@@ -70,7 +70,7 @@
       }
     },
     {
-      "text": "ON THE BEAT",
+      "text": "BA-DUM-TSS!",
       "sub": "THE TIMING BEAT",
       "shape": "cut",
       "color": "#7a3fb8",
@@ -78,7 +78,7 @@
       "sprite": {
         "blocks": "beat1.bbl",
         "pal": "beat1.pal",
-        "grid": [[27]]
+        "grid": [[62], [66]]
       }
     },
     {

@@ -221,7 +221,7 @@ function gameSpecs(ctx: PrintContext): MixedSticker[] {
   return [
     ...(ctx.printables.stickers ?? []),
     ...(shot ? [{ text: 'Screenshot', shot: { map: shot[0], x: shot[1] + 3, y: shot[2] + 2, w: 10, h: 7 } }] : []),
-    { text: 'I ♥ SHAREWARE', shape: 'heart', color: '#d81e1e', ink: '#fff' },
+    { text: 'I ♥', sub: 'SHAREWARE', shape: 'heart', color: '#d81e1e', ink: '#fff' },
     { text: '', special: 'sandbox' },
   ];
 }
