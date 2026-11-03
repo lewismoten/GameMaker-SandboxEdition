@@ -183,7 +183,7 @@ export function makeRoom(actions: RoomActions): { el: HTMLElement; refresh(): vo
   const [outX, outY] = proj(DESK.x + DESK.w / 2 + 0.35, 0, DESK.z + 0.85);
   joe.dataset.out = `${pctX(outX).toFixed(2)},${pctY(outY).toFixed(2)}`;
   place(trashBtn, DESK.x + 1.35, DESK.z - 0.05, 0.5);
-  place(toybox, -0.7, -2.4, 0.8);
+  place(toybox, 0.3, -2.62, 0.5);
   place(notebook, DESK.x - 0.35, DESK.z - 0.02, 0.42, DESK.h);
   const el = h(
     'section',

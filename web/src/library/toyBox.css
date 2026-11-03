@@ -4,11 +4,23 @@
 }
 
 .toy-box {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 18px;
   width: min(1060px, 88vw);
   max-width: 100%;
   min-width: 0;
+}
+
+.toy-box > .lead {
+  flex: 1 0 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.toy-game {
+  max-width: 100%;
 }
 
 .toy-game h3 {
@@ -22,15 +34,16 @@
 }
 
 .toy-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
-  gap: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .toy-card {
+  flex: 0 0 160px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -45,7 +58,7 @@
 .toy-art {
   display: grid;
   place-items: center;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 6px;
   background: radial-gradient(circle at 50% 35%, #5a6272, #2a2f3a);
@@ -129,5 +142,11 @@
   .toy-dl {
     min-height: 44px;
     min-width: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toy-card {
+    flex-basis: calc(50% - 5px);
   }
 }

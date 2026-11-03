@@ -9,7 +9,7 @@ import { loadCatalog } from '../project/files';
 import { toyBoxGames, type ToyGame } from './toyBoxList';
 import type { TrinketItem } from '../desk/boxes/trinketData';
 
-const SIZE = { w: 200, h: 250 };
+const SIZE = { w: 180, h: 180 };
 const mb = (bytes: number) => `${(bytes / 1e6).toFixed(1)} MB`;
 
 type Data = typeof import('../desk/boxes/trinketData');
