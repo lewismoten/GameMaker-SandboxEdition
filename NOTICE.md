@@ -915,6 +915,14 @@ permission notice appear in all copies."). It ships as `web/public/library/tiny-
 (a lossless conversion). The photocopier beside the cabinet and the plaque were drawn in CSS by
 Claude Sonnet 5.5 under Lewis Moten's direction.
 
+### Sandscript, the Sandbox games' secret alphabet
+
+Sandscript (`games/kit/sandscript.ts`), the alphabet for little messages hidden in the Sandbox
+games, and its key on the folded note in the Library room (`web/src/library/sandNote.ts`) were
+designed for this project by Claude Opus 5.5 under Lewis Moten's direction, under the project's
+MIT License. Its letters were drawn fresh (strokes and dots hanging from a rim on a 3 × 3 grid);
+they are not copied from any existing alphabet, cipher or game's script.
+
 ### Ready-made palette references
 
 The tools package's `palettePresetData.ts` contains Atari NTSC/PAL swatches by Ricardo
