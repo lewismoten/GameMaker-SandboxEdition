@@ -55,12 +55,18 @@ void main() {
   gl_FragColor = vec4(pow(col, vec3(1.0 / 2.2)), 1.0);
 }`;
 
-/** Smooth per-vertex normals (area weighted) and per-vertex colors (the mean of the triangles around). */
+/** How much of a corner's color is the mean round its vertex, the rest the triangle's own: soft enough to hide the stair of a color's border, crisp enough to keep a thin stripe. */
+const SOFT = 0.4;
+
+/**
+ * Three vertices for every triangle: smooth normals (area weighted, shared by the triangles round a point) and the
+ * triangle's own flat color, so a stripe or an eye keeps its edge however large the triangles the mesh was thinned to.
+ */
 function vertexData(mesh: Mesh): Float32Array {
   const { positions: p, indices: ix, colors } = mesh;
-  const n = p.length / 3;
-  const data = new Float32Array(n * 9);
-  const count = new Float32Array(n);
+  const normals = new Float32Array(p.length);
+  const tint = new Float32Array(p.length);
+  const count = new Float32Array(p.length / 3);
   for (let t = 0; t < ix.length; t += 3) {
     const a = ix[t] * 3;
     const b = ix[t + 1] * 3;
@@ -75,21 +81,24 @@ function vertexData(mesh: Mesh): Float32Array {
     const ny = uz * wx - ux * wz;
     const nz = ux * wy - uy * wx;
     for (let k = 0; k < 3; k++) {
-      const v = ix[t + k];
-      data[v * 9 + 3] += nx;
-      data[v * 9 + 4] += ny;
-      data[v * 9 + 5] += nz;
-      for (let ch = 0; ch < 3; ch++) data[v * 9 + 6 + ch] += colors ? colors[(t / 3) * 3 + ch] / 255 : 0.85;
-      count[v]++;
+      const v = ix[t + k] * 3;
+      normals[v] += nx;
+      normals[v + 1] += ny;
+      normals[v + 2] += nz;
+      for (let ch = 0; ch < 3; ch++) tint[v + ch] += colors ? colors[(t / 3) * 3 + ch] / 255 : 0.85;
+      count[ix[t + k]]++;
     }
   }
-  for (let v = 0; v < n; v++) {
-    data[v * 9] = p[v * 3];
-    data[v * 9 + 1] = p[v * 3 + 1];
-    data[v * 9 + 2] = p[v * 3 + 2];
-    const l = Math.hypot(data[v * 9 + 3], data[v * 9 + 4], data[v * 9 + 5]) || 1;
-    for (let k = 3; k < 6; k++) data[v * 9 + k] /= l;
-    for (let k = 6; k < 9; k++) data[v * 9 + k] /= count[v] || 1;
+  const data = new Float32Array(ix.length * 9);
+  for (let i = 0; i < ix.length; i++) {
+    const v = ix[i] * 3;
+    const l = Math.hypot(normals[v], normals[v + 1], normals[v + 2]) || 1;
+    for (let k = 0; k < 3; k++) {
+      data[i * 9 + k] = p[v + k];
+      data[i * 9 + 3 + k] = normals[v + k] / l;
+      const own = colors ? colors[Math.floor(i / 3) * 3 + k] / 255 : 0.85;
+      data[i * 9 + 6 + k] = own * (1 - SOFT) + (tint[v + k] / count[ix[i]]) * SOFT;
+    }
   }
   return data;
 }
@@ -114,15 +123,12 @@ function program(gl: WebGLRenderingContext): WebGLProgram | undefined {
 /** Sets up a viewer on `canvas`, or returns undefined when the browser has no WebGL for it. */
 export function createTrinketView(canvas: HTMLCanvasElement, mesh: Mesh): TrinketView | undefined {
   const gl = canvas.getContext('webgl', { antialias: true, alpha: true, premultipliedAlpha: false, preserveDrawingBuffer: false });
-  if (!gl || !gl.getExtension('OES_element_index_uint')) return undefined;
+  if (!gl) return undefined;
   const prog = program(gl);
   if (!prog) return undefined;
   const vbo = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
   gl.bufferData(gl.ARRAY_BUFFER, vertexData(mesh), gl.STATIC_DRAW);
-  const ibo = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, mesh.indices, gl.STATIC_DRAW);
   gl.useProgram(prog);
   for (const [name, offset] of [
     ['aPos', 0],
@@ -184,11 +190,10 @@ export function createTrinketView(canvas: HTMLCanvasElement, mesh: Mesh): Trinke
       const near = dist - radius * 1.5;
       const far = dist + radius * 1.5;
       gl.uniformMatrix4fv(uProj, false, [f / aspect, 0, 0, 0, 0, f, 0, 0, 0, 0, (far + near) / (near - far), -1, 0, 0, (2 * far * near) / (near - far), 0]);
-      gl.drawElements(gl.TRIANGLES, mesh.indices.length, gl.UNSIGNED_INT, 0);
+      gl.drawArrays(gl.TRIANGLES, 0, mesh.indices.length);
     },
     dispose() {
       gl.deleteBuffer(vbo);
-      gl.deleteBuffer(ibo);
       gl.deleteProgram(prog);
     },
   };
