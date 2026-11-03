@@ -442,9 +442,9 @@ export function castFor(chicken: Chicken): CastMember[] {
       art: {
         ...m.art,
         file: 'chicken-lady',
-        alt: 'Lady Regina Cluckington III, a yellow rubber chicken with a red comb and a gold tiara with a pink jewel, standing tall',
+        alt: 'Lady Regina Cluckington III, a yellow rubber chicken with a red comb and a silver tiara with a pink jewel, standing tall',
       },
-      bio: 'Doc Leo’s rubber chicken, walked on a dog leash wherever Doc Leo goes. Once Sir Reginald, she laid an egg on the way to a tune-up, and the paperwork was corrected (in triplicate). Now she wears a gold tiara in front of her comb and answers to “Regina”, but only on Tuesdays. She has slipped her leash more than once (do not ask how a rubber chicken swims), and when she squawks, it counts as an extra life.',
+      bio: 'Doc Leo’s rubber chicken, walked on a dog leash wherever Doc Leo goes. Once Sir Reginald, she laid an egg on the way to a tune-up, and the paperwork was corrected (in triplicate). Now she wears a silver tiara in front of her comb and answers to “Regina”, but only on Tuesdays. She has slipped her leash more than once (do not ask how a rubber chicken swims), and when she squawks, it counts as an extra life.',
       appears: m.appears.map((a) => (a.game === 'tuneup' ? { ...a, as: 'Sir Reginald III, then Lady Regina III, doing the fiddly repairs' } : a)),
     };
   });

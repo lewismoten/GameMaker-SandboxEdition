@@ -4,7 +4,7 @@ Part of the [source map](../README.md).
 
 Doc Leo's rubber chicken follows Tune-Up's story. In Tune-Up, after Muffled (level 9), the
 8-track changes programs and Sir Reginald lays an egg; from The Rain Delay on, the card break
-has made her Lady Regina Cluckington III, the same bird with a gold tiara in front of her comb.
+has made her Lady Regina Cluckington III, the same bird with a silver tiara in front of her comb.
 The site's own pages follow along.
 
 - `chickenState.ts`: the state (`'sir'` or `'lady'`), one localStorage key (`gm-chicken`, absent
