@@ -1,5 +1,5 @@
 ;==============================================================================
-; THE PHONE OF THE FUTURE - PIC16F84A firmware (gpasm)
+; THE PHONE OF THE FUTURE - PIC16F628A firmware (gpasm; ported from the PIC16F84A, same 18-pin pinout)
 ; Designed by Claude Sonnet 5.5 under Lewis Moten's direction. UNTESTED ON HARDWARE.
 ;
 ; Clock: 3.579545 MHz (the MT8870 crystal) -> 894886 instruction cycles per second.
@@ -13,11 +13,15 @@
 ; 24-cycle loop (sample rate FS = 894886/24 = 37286 Hz): phase += inc, pin = top bit.
 ; Reference: DTMF row/column frequencies, ITU-T Q.23; MT8870D and MAX7219 datasheets.
 ;==============================================================================
-        list    p=16f84a
+; Port notes (16F84A -> 16F628A): the pins and the instruction set are the same. Differences handled here:
+;  - CMCON = 7 turns the comparators off, or RA0..RA3 would not read as digital inputs;
+;  - the general registers start at 0x20 (0x0C..0x1F are peripheral registers on the 628A);
+;  - config: LVP off (RB3 is a tone output, not PGM), brown-out off, MCLR on, data-EEPROM code protect off.
+        list    p=16f628a
         radix   dec
         errorlevel -302,-305
-        #include <p16f84a.inc>
-        __CONFIG _XT_OSC & _WDT_OFF & _PWRTE_ON & _CP_OFF
+        #include <p16f628a.inc>
+        __CONFIG _XT_OSC & _WDT_OFF & _PWRTE_ON & _MCLRE_ON & _BODEN_OFF & _LVP_OFF & _CP_OFF & _CPD_OFF
 
 FS      equ     d'37286'                ; tone loop rate in Hz (894886 / 24 cycles)
 PDEB    equ     d'12'                   ; pulse debounce, in main-loop polls (about 1 ms)
@@ -40,7 +44,7 @@ INC1633 equ     (((1633*65536)+(FS/2))/FS)
 #define PULSE   PORTB,0
 #define OFFN    PORTB,1
 
-        cblock  0x0C
+        cblock  0x20
         tmp, maddr, mdat, sh, bitn, i, val
         ndig, digit, pcount
         plev, pdeb, olev, odeb, tlast
@@ -64,6 +68,8 @@ start:
         movlw   b'00001111'             ; RBPU = 0 (weak pull-ups on), prescaler to the watchdog
         movwf   OPTION_REG
         bcf     STATUS,RP0
+        movlw   0x07
+        movwf   CMCON                   ; comparators off: RA0..RA3 are plain digital pins
         movlw   0x03
         movwf   PCLATH                  ; the lookup tables live at 0x300
         clrf    PORTB
