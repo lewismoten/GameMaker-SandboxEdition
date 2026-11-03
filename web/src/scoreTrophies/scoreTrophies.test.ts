@@ -1,7 +1,7 @@
 // The score trophies' bookkeeping: a game's best counts only when beaten, the total adds every
 // finished play, the tiers come from the sums, only catalog games' real plays are kept, and
 // EGG.EXE's overrides show another tier and go back to the earned one.
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi, beforeAll, beforeEach, afterEach } from 'vitest';
 
 const saves: Record<string, Record<string, Uint8Array>> = {};
 vi.mock('../project/storage', () => ({
@@ -18,6 +18,13 @@ import { scoreHook } from './hook';
 
 const store = new Map<string, string>();
 const flush = () => new Promise((r) => setTimeout(r, 0));
+
+// earned() loads these with a dynamic import, fire and forget; loading them first keeps a cold
+// import from landing after a test's flush (or in the next test)
+beforeAll(async () => {
+  await import('../achievements/store');
+  await import('../achievements/resetMark');
+});
 
 beforeEach(() => {
   for (const k of Object.keys(saves)) delete saves[k];
