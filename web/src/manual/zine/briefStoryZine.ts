@@ -81,7 +81,7 @@ export function classicMiniZineReadingOrder(cells: readonly MiniZineCell[]): num
 const sourceStories = (): Story[] => WINGS.flatMap((wing) => wing.books.map(story)).sort((a, b) => a.n - b.n);
 
 const instructions =
-  'Fold on the faint lines, then cut only the dashed center slot. spine-notch rubber band recommended: the two notch marks keep a band on the fold without piercing pages. The center punch mark is optional, but a hole can tear and does not hold the folded stack closed as reliably. Laurence Simon’s weekly 100 Word Stories challenge and podcast inspired these stories.';
+  'Fold on the faint lines, then cut only the dashed center slot. A rubber band is recommended: the two spine notch marks keep a band on the fold without piercing pages. The center punch mark is optional, but a hole can tear and does not hold the folded stack closed as reliably. Laurence Simon’s weekly 100 Word Stories challenge and podcast inspired these stories.';
 
 function cover(volume: number, stories: Story[]): BriefStoryZinePage {
   return {
@@ -92,14 +92,17 @@ function cover(volume: number, stories: Story[]): BriefStoryZinePage {
   };
 }
 
-function filler(page: number, volume: number): BriefStoryZinePage {
+/** An index page: a share of the story titles, each with its volume, taken from the stories themselves. */
+function filler(page: number, entries: { volume: number; story: Story }[], part: number, parts: number): BriefStoryZinePage {
   return {
     page,
     kind: 'index',
-    title: 'TINY POCKETS INDEX',
-    text: `Volume ${volume} is a short stack: this pocket is reserved for the next story. Keep this zine with the rest of the Tiny Pockets Press run.`,
+    title: parts > 1 ? `TINY POCKETS INDEX ${part}/${parts}` : 'TINY POCKETS INDEX',
+    text: entries.map(({ volume, story: entry }) => `Vol. ${volume} · ${entry.title}`).join('\n'),
   };
 }
+
+const NUMBER_WORDS = ['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT'];
 
 function back(volume: number): BriefStoryZinePage {
   return {
@@ -110,10 +113,18 @@ function back(volume: number): BriefStoryZinePage {
   };
 }
 
+/** The short volumes fill their spare pockets with the title index of every volume, split evenly. */
+function indexPages(number: number, used: number): BriefStoryZinePage[] {
+  const parts = STORIES_PER_VOLUME - used;
+  const all = sourceStories().map((entry, i) => ({ volume: Math.floor(i / STORIES_PER_VOLUME) + 1, story: entry }));
+  const size = Math.ceil(all.length / Math.max(parts, 1));
+  return Array.from({ length: parts }, (_, i) => filler(used + i + 2, all.slice(i * size, (i + 1) * size), i + 1, parts));
+}
+
 function volume(number: number, stories: Story[]): BriefStoryZineVolume {
   const interior = [
     ...stories.map((entry, i) => ({ page: i + 2, kind: 'story' as const, title: entry.title, text: entry.text, story: entry })),
-    ...Array.from({ length: STORIES_PER_VOLUME - stories.length }, (_, i) => filler(stories.length + i + 2, number)),
+    ...indexPages(number, stories.length),
   ];
   return { number, stories, pages: [cover(number, stories), ...interior, back(number)], printInstructions: instructions };
 }
@@ -154,7 +165,11 @@ function pagePanel(page: BriefStoryZinePage, volume: BriefStoryZineVolume): HTML
       h('p', { class: 'brief-zine-kicker' }, 'TINY POCKETS PRESS PRESENTS'),
       h('h1', null, page.title),
       h('p', { class: 'brief-zine-volume' }, `VOL. ${volume.number}`),
-      h('p', { class: 'brief-zine-blurb' }, 'SIX TINY TALES! BIG FOLD! ONE RAD SHEET!'),
+      h(
+        'p',
+        { class: 'brief-zine-blurb' },
+        `${NUMBER_WORDS[volume.stories.length] ?? volume.stories.length} TINY ${volume.stories.length === 1 ? 'TALE' : 'TALES'}! BIG FOLD! ONE RAD SHEET!`,
+      ),
       h('p', { class: 'brief-zine-stamp' }, '1994 COPY MACHINE MAGIC'),
     );
   } else if (page.kind === 'story' && page.story) {
@@ -177,7 +192,11 @@ function pagePanel(page: BriefStoryZinePage, volume: BriefStoryZineVolume): HTML
       h('p', { class: 'brief-zine-tiny' }, 'Cut the dashed slot only. Fold on the faint rules.'),
     );
   } else {
-    article.append(h('h2', null, page.title), h('p', null, page.text), h('p', { class: 'brief-zine-tiny' }, 'Tiny Pockets Press · keep this pocket close.'));
+    article.append(
+      h('h2', null, page.title),
+      h('ul', { class: 'brief-zine-titles' }, ...page.text.split('\n').map((line) => h('li', null, line))),
+      h('p', { class: 'brief-zine-tiny' }, 'Tiny Pockets Press · every title, every volume.'),
+    );
   }
   return article;
 }
@@ -188,10 +207,10 @@ function foldMarks(): HTMLElement[] {
     h('i', { class: 'brief-zine-fold v two', 'aria-hidden': 'true' }),
     h('i', { class: 'brief-zine-fold v three', 'aria-hidden': 'true' }),
     h('i', { class: 'brief-zine-fold h', 'aria-hidden': 'true' }),
-    h('i', { class: 'brief-zine-cut', 'aria-label': 'Cut this dashed center slot after folding' }, '✂ CUT'),
-    h('i', { class: 'brief-zine-notch top', 'aria-label': 'Top rubber-band notch cut-out mark' }),
-    h('i', { class: 'brief-zine-notch bottom', 'aria-label': 'Bottom rubber-band notch cut-out mark' }),
-    h('i', { class: 'brief-zine-punch', 'aria-label': 'Optional center-spine punch-hole mark' }),
+    h('i', { class: 'brief-zine-cut', role: 'img', 'aria-label': 'Cut this dashed center slot after folding' }, '✂ CUT'),
+    h('i', { class: 'brief-zine-notch top', role: 'img', 'aria-label': 'Top rubber-band notch cut-out mark' }),
+    h('i', { class: 'brief-zine-notch bottom', role: 'img', 'aria-label': 'Bottom rubber-band notch cut-out mark' }),
+    h('i', { class: 'brief-zine-punch', role: 'img', 'aria-label': 'Optional center-spine punch-hole mark' }),
   ];
 }
 

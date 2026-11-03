@@ -305,3 +305,17 @@
     -webkit-print-color-adjust: exact;
   }
 }
+
+.brief-zine-titles {
+  margin: 3pt 0;
+  padding: 0;
+  list-style: none;
+  font:
+    8pt/1.25 Arial,
+    sans-serif;
+}
+
+.brief-zine-titles li {
+  padding: 1pt 0;
+  border-bottom: 0.5pt dotted #3a3060;
+}

@@ -46,9 +46,18 @@ describe('KEEP IT BRIEF! one-sheet zines', () => {
     }
   });
 
+  it('names the real story count on each cover and indexes every title in the spare pockets', () => {
+    const last = BRIEF_STORY_ZINE_VOLUMES.at(-1)!;
+    expect(last.pages.filter((page) => page.kind === 'index')).toHaveLength(4);
+    const titles = BRIEF_STORY_ZINE_VOLUMES.flatMap((volume) => volume.stories.map((entry) => entry.title));
+    const indexed = last.pages.filter((page) => page.kind === 'index').flatMap((page) => page.text.split('\n'));
+    expect(indexed.map((line) => line.split(' · ')[1])).toEqual(titles);
+  });
+
   it('carries the sheet cutting, folding, and retention instructions', () => {
     const first = BRIEF_STORY_ZINE_VOLUMES[0];
-    expect(first.printInstructions).toContain('spine-notch');
+    expect(first.printInstructions).toMatch(/^Fold on/);
+    expect(first.printInstructions).toContain('spine notch');
     expect(first.printInstructions).toContain('punch');
     expect(first.printInstructions).toContain('Laurence Simon');
   });
