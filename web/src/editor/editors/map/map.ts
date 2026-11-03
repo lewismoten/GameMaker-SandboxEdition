@@ -32,6 +32,8 @@ import type { Level } from '../../../manual/printables/levelMapLayout';
 import { monsterName } from '../monsters/monsterNames';
 import { blockLabel } from '../blocks/blockNames';
 import { linkMarkers } from './links/linkMarkers';
+import { touchGestures } from './mapTouchGestures';
+import { assetMenu, type AssetAction } from '../../shell/assetMenu';
 import './mapExport.css';
 import './tools/mapTools.css';
 
@@ -165,11 +167,14 @@ registerEditor(['map'], (host, project, file) => {
     undoBtn.disabled = !history.canUndo;
     redoBtn.disabled = !history.canRedo;
   };
+  let remembered = 0;
   const remember = () => {
+    remembered++;
     history.record({ map: serializeMap(map) });
     syncHistory();
   };
   const rememberLinks = () => {
+    remembered++;
     history.record({ map: serializeMap(map), gam: project.files.get(project.gam) });
     syncHistory();
   };
@@ -198,7 +203,7 @@ registerEditor(['map'], (host, project, file) => {
       role: 'region',
       'aria-label': 'The map (scroll with the arrow keys)',
       style:
-        'overflow:auto;max-height:max(280px, var(--map-room, calc(100dvh - 320px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000',
+        'overflow:auto;max-height:max(280px, var(--map-room, calc(100dvh - 320px)));max-width:100%;border:1px solid var(--border);border-radius:6px;background:#000;touch-action:none',
     },
     h('div', { class: 'mt-stack' }, canvas, over),
   );
@@ -1049,7 +1054,7 @@ registerEditor(['map'], (host, project, file) => {
   const modeBar = h('div', { class: 'toolbar mt-modes' });
   function setMode(m: Mode): void {
     mode = m;
-    canvas.style.touchAction = m === 'pan' ? 'auto' : 'none';
+    canvas.style.touchAction = 'none';
     clear(
       modeBar,
       h(
@@ -1167,6 +1172,60 @@ registerEditor(['map'], (host, project, file) => {
     },
     { passive: false },
   );
+  // fingers: two pinch and pan with any tool; one held still opens a menu; the Hand tool scrolls (mapTouchGestures.ts)
+  let strokeFrom = 0;
+  touchGestures({
+    el: scroller,
+    scroller,
+    zoom: () => zoom,
+    setZoom,
+    hand: () => mode === 'pan',
+    begin: () => (strokeFrom = remembered),
+    abort: (undo) => {
+      tools.cancel();
+      painting = false;
+      lastPaint = undefined;
+      if (undo && remembered > strokeFrom) {
+        strokeFrom = remembered;
+        step(true);
+      }
+    },
+    longPress: (at) => {
+      const p = viewport.cell({ clientX: at.x, clientY: at.y });
+      if (p.x < 0 || p.y < 0 || p.x >= MLEN || p.y >= MWID) return false;
+      const mon = map.monsters.find((m) => m.monnum < LASTMON && m.curx === p.x && m.cury === p.y);
+      const actions: AssetAction[] = [];
+      if (mon && !project.readOnly)
+        actions.push({
+          label: 'Erase monster',
+          run: () => {
+            remember();
+            placeMonster(p.x, p.y, true);
+          },
+        });
+      actions.push({
+        label: 'Pick this block',
+        run: () => {
+          brush = map.blocks[p.y * MLEN + p.x];
+          rebuildPickers();
+          setMode('paint');
+          redrawOverlay();
+        },
+      });
+      if (showLinks && !project.readOnly && markers.hasExit())
+        actions.push({ label: "Use as the exit's place", run: () => markers.moveExit({ x: p.x, y: p.y }) });
+      // the menu opens as the finger lifts: a popover opened under a held finger closes when it lifts
+      const open = () => {
+        removeEventListener('pointerup', lifted, true);
+        removeEventListener('pointercancel', lifted, true);
+        setTimeout(() => assetMenu(scroller, actions, at, 'Map actions'), 0);
+      };
+      const lifted = open;
+      addEventListener('pointerup', lifted, true);
+      addEventListener('pointercancel', lifted, true);
+      return true;
+    },
+  });
   const blockPanel = h('div', { class: 'stack' }, picker);
   const monsterPanel = h('div', { class: 'stack' }, monPicker, monCount);
   const optionsPanel = h(

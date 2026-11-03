@@ -411,6 +411,15 @@ are real previews too; a blank idle can fall back to a movement frame.
   block, alongside the original and enlarged sizes. These sizes apply to the
   downloaded PNG; editing and native game files keep their original dimensions.
 
+- **Touch gestures.** `editors/map/mapTouchGestures.ts` gives the map and the block
+  canvas fingers: two fingers pinch to zoom and drag their midpoint to pan, whatever
+  tool is chosen, and the second finger never reaches the tool (a first finger under
+  150 ms old is taken back, so a pinch leaves no dot). On the map, one finger held still
+  for 500 ms opens a menu (`shell/assetMenu.ts`: Erase monster, Pick this block, Use as
+  the exit's place), the touch stand-in for a right click, and the Hand tool scrolls with
+  one finger. The block canvas zooms inside a `.blk-zoom` box. Editor-only: no saved or
+  exported byte changes. Unit tests use fake timers (`mapTouchGestures.test.ts`).
+
 - **Map wheel zoom.** `editors/map/mapZoom.ts` zooms continuously from one screen
   pixel per block (5%) to 400%: the wheel and a trackpad pinch change the zoom by a
   small factor per event (one change per animation frame), keeping the map coordinate
