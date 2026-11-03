@@ -3,7 +3,8 @@
 //
 // This file is the power switch and running programs (DOS commands, Game-Maker's designers,
 // games); the drives and game folders are in computer/drives.ts and computer/folders.ts.
-import { attr } from './text/textScreen';
+import { attr, COLS, ROWS } from './text/textScreen';
+import { biosId } from './biosId';
 import { type ProgramRef } from './dos/vfs';
 import { swapsDisks } from './diskSwap';
 import { ProgramAborted } from './text/textInput';
@@ -49,6 +50,8 @@ export class Computer extends ComputerFolders {
     s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
     const postStart = Date.now();
     drawEnergySnore(s);
+    // the BIOS ID string along the bottom, as POST screens had (its board code is the build's commit)
+    s.write(0, ROWS - 1, attr(7, 0), biosId());
     for (let k = 0; k <= 4096; k += 256) {
       s.cursorX = 0;
       s.print(`Memory Test: ${String(k).padStart(5)}K${k === 4096 ? ' OK' : ''}`);
@@ -72,6 +75,7 @@ export class Computer extends ComputerFolders {
     await sleep(Math.max(0, POST_HOLD_MS - (Date.now() - postStart)));
     if (!this.powered) return;
     clearEnergySnore(s);
+    s.fill(0, ROWS - 1, COLS - 1, ROWS - 1, attr(7, 0));
     // CONFIG.SYS
     reads('C', 300);
     s.print('HIMEM is testing extended memory...');
