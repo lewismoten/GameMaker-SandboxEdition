@@ -108,8 +108,9 @@ function offlineFiles(bundle: Bundle): [string, number, number][] {
   for (const [f, item] of Object.entries(bundle)) sources.set(f, () => (item.type === 'chunk' ? item.code : item.source));
   const wanted = (f: string) =>
     !secret.some((dir) => f.startsWith(dir)) &&
-    // the web player plays loose game folders from a web server, never from the offline copy
-    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|web-player\.html$|player\/)/.test(f) &&
+    // the web player plays loose game folders from a web server, never from the offline copy; the 3D-print trinkets (several
+    // megabytes of STL and 3MF) download when a box or link asks for one
+    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|web-player\.html$|player\/|trinkets\/)/.test(f) &&
     (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
