@@ -4,7 +4,7 @@
   "company": "Sandbox Software",
   "year": 1994,
   "price": "$15",
-  "version": "1.4",
+  "version": "1.5",
   "blurb": "King Dillydally IX will save the kingdom as soon as he gets a round tuit, and Lord Deadline has stolen it. A full role-playing adventure across Procrastia: four towns, four dungeons, side quests, a horseless carriage and a jester with a rubber chicken on a leash.",
   "exe": "TUIT.EXE",
   "sound": "sb",
@@ -40,7 +40,7 @@
       ["port.map", 70, 1]
     ],
     "rating": "Ages 8 and up",
-    "hours": 4,
+    "hours": 5,
     "reviews": [
       { "quote": "The best RPG we got around to reviewing this year.", "source": "Modem Morning News" },
       { "quote": "Those rivers! Those shorelines! In Game-Maker?", "source": "Megapixel Monthly" }
