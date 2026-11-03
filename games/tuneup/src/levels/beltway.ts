@@ -31,8 +31,8 @@ export const HONK = -25;
 /** The 8-track's PLAY lamp: ticks lit, ticks dark (about a beat of the song). */
 const PLAY_BLINK = [6, 3];
 /** The skyline's strip: pixels a frame and ticks a frame; the trees'. */
-const SKYLINE = { shift: 5, ntime: 15 } as const;
-const TREES = { shift: 5, ntime: 3 } as const;
+const SKYLINE = { shift: 10, ntime: 30 } as const;
+const TREES = { shift: 10, ntime: 6 } as const;
 /** Row 3's shoulder cells where the trees go by. */
 const TREE_COLS = [2, 3, 4, 5, 10, 11];
 

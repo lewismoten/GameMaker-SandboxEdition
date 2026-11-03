@@ -144,18 +144,22 @@ Before level 14 Doc Leo and Lady Regina un-shrink (he drives from there on). The
   score-down slot plays the camera and siren) and turns into the camera's smiley card, or toots
   on green and turns plain; one touch a corner. Stop signs are a ring of four: three dots
   (fines), then GO (a pass).
-- **The Beltway** (`src/levels/beltway.ts`, `src/art/cab.ts`, `src/beltMonsters.ts`): the
-  driver's seat, one screen that never scrolls, drawn in its own set (`beltway` theme). The
-  frame is fixed scenery: the headliner with the rear-view mirror (row 0, columns 7-9), the
-  windshield (rows 1-4, columns 2-11) between the A-pillars, the passenger door window on the
-  right with Teddy's head looking out of it, the one wiper's arm parked at the windshield's
-  base, and the dash (rows 5-9): the steering wheel, the speedometer pinned at a blazing 25 MPH,
-  the AM dial and the 8-track (its PLAY lamp blinking: it plays the level's song), the charge
-  gauge and the trip meter counting the miles to the exit.
+- **The Beltway** (`src/levels/beltway.ts`, `src/art/cab.ts`, `cabInterior.ts`, `cabPeople.ts`,
+  `src/beltMonsters.ts`): THE CHEZ's cab seen from the back wall and roof on the passenger side,
+  looking forward, in its own set (`beltway` theme); one screen that never scrolls. The frame is
+  fixed scenery: the headliner with the rear-view mirror (row 0, columns 7-9) and the passenger's
+  sun visor, the windshield (rows 1-4, columns 2-11) between the A-pillars, the driver's door
+  window at the left with Doc Leo at the wheel (seen from behind and the right: short hair,
+  glasses' arm over his ear, a gray T-shirt, a hand on the thin wheel's rim), the passenger's door
+  window at the right with Teddy on the bench seat looking out of it, the one wiper's arm parked
+  at the windshield's base, and the wood-grain dash (rows 5-9) with its row of switches, the
+  speedometer pinned at a blazing 25 MPH, the AM dial and the 8-track (its PLAY lamp blinking: it
+  plays the level's song), the charge gauge and the trip meter counting the miles to the exit. The
+  scene has all 150 background blocks: the wood grain repeats over a block so its cells share one.
   - **The windshield**: the ring road bends gently right toward a vanishing point right of
     center, so the horizon slides left in parallax: the far skyline (a 40-pixel strip shifted
-    4 pixels every 12 ticks, a ring per column) slowly, the roadside trees (a block shifted 5
-    pixels every 3 ticks) fast, and the sky's clouds not at all. The lane dashes and the
+    10 pixels every 30 ticks, a ring per column) slowly, the roadside trees (a block shifted 10
+    pixels every 6 ticks) fast, and the sky's clouds not at all. The lane dashes and the
     shoulder posts are monsters born at the vanishing point every few ticks by blocks off the
     right edge, sliding down their lines and growing as they come (kit/road3d.ts, as In The
     Year 2000!'s Cloud Lane does), and they end at the windshield's base, so nothing is drawn
@@ -178,7 +182,9 @@ Before level 14 Doc Leo and Lady Regina un-shrink (he drives from there on). The
     off the right edge giving birth once. The car is born in the rear-view mirror over its
     lane's third of the glass (left lane on the left), a glint that grows for 36 ticks (2 s) as
     it catches up; then it becomes the passing car, which leaps to the windshield's base in its
-    lane and slides away up the lane to the vanishing point, shrinking. Honk or not, it passes.
+    lane and slides away up the lane to the vanishing point, shrinking, its tires always on the road (its
+    picture's bottom stays on its cell's last row, so the smallest car ends on the horizon, never above
+    it). Honk or not, it passes.
     Teach, pattern, test: three cars one at a time in each lane (the first in the lane you start
     in), three more on a steady 5-second beat, then two pairs 30 ticks apart that leave only one
     lane clear each. Every warning comes at least 36 ticks ahead, and no two moves are needed
