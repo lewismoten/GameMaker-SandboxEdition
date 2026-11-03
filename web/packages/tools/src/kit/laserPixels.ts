@@ -51,31 +51,61 @@ export function engraveRects(sheet: LaserSheet, rects: Rect[], map: (x: number, 
   for (const [x, y, w, h] of rects) sheet.add({ op: 'engrave', k: 'poly', pts: [map(x, y), map(x + w, y), map(x + w, y + h), map(x, y + h)] });
 }
 
+/**
+ * Letters the 3x5 micro font can't make readable at coin size, drawn 5 pixels wide for the laser only (the micro font itself
+ * stays as it is, since the games' own art uses it): its 3-wide M and W read as H once engraved.
+ */
+const WIDE_MICRO: Record<string, string[]> = {
+  M: ['10001', '11011', '10101', '10001', '10001'],
+  W: ['10001', '10001', '10101', '10101', '01010'],
+};
+
+/** How many pixels wide a letter is drawn. */
+const glyphWidth = (font: FontName, ch: string) => (font === 'micro' && WIDE_MICRO[ch] ? WIDE_MICRO[ch][0].length : FONTS[font].gw);
+/** How far the pen moves after a letter: its width and a one-pixel gap. */
+const advance = (font: FontName, ch: string) => FONTS[font].adv - FONTS[font].gw + glyphWidth(font, ch);
+
 const glyph = (font: FontName, ch: string): Bitmap => {
   const { cap, adv } = FONTS[font];
   if (font === 'pc') {
     const c = ch.charCodeAt(0);
     return { w: adv, h: cap, on: (x, y) => c < 128 && ((FONT8X8[c * 8 + y] >> x) & 1) === 1 };
   }
+  const wide = WIDE_MICRO[ch];
+  if (wide) return { w: wide[0].length + 1, h: cap, on: (x, y) => wide[y]?.[x] === '1' };
   const g = MICRO_GLYPHS[ch];
   return { w: adv, h: cap, on: (x, y) => x < 3 && !!g && g[y * 3 + x] === '1' };
+};
+/** Where each letter of `t` starts, in pixels from the line's left edge. */
+const starts = (font: FontName, t: string) => {
+  let x = 0;
+  return [...t].map((ch) => {
+    const at = x;
+    x += advance(font, ch);
+    return at;
+  });
 };
 /** Only what a font can draw, in capitals (anything else is dropped, so a name never throws). */
 export const drawable = (font: FontName, s: string) =>
   [...s.toUpperCase()].filter((c) => c === ' ' || (font === 'micro' ? c in MICRO_GLYPHS : c.charCodeAt(0) > 32 && c.charCodeAt(0) < 127)).join('');
 
 /** The width of `s` in pixels (the last letter's trailing gap left out). */
-export const textPixels = (font: FontName, s: string) => (s.length ? (s.length - 1) * FONTS[font].adv + FONTS[font].gw : 0);
+export const textPixels = (font: FontName, s: string) => {
+  if (!s.length) return 0;
+  const last = s[s.length - 1];
+  return starts(font, s)[s.length - 1] + glyphWidth(font, last);
+};
 
 /** One line of text, centered on (cx, cy), each pixel `px` mm. Returns the text's width and height in mm. */
 export function lineText(sheet: LaserSheet, s: string, font: FontName, cx: number, cy: number, px: number): { w: number; h: number } {
   const t = drawable(font, s);
-  const { cap, adv } = FONTS[font];
+  const { cap } = FONTS[font];
   const w = textPixels(font, t);
+  const at = starts(font, t);
   const rects: Rect[] = [];
   [...t].forEach((ch, i) => {
     if (ch === ' ') return;
-    for (const [x, y, rw, rh] of mergeRuns(glyph(font, ch))) rects.push([x + i * adv, y, rw, rh]);
+    for (const [x, y, rw, rh] of mergeRuns(glyph(font, ch))) rects.push([x + at[i], y, rw, rh]);
   });
   engraveRects(sheet, rects, (x, y) => [cx + (x - w / 2) * px, cy + (y - cap / 2) * px]);
   return { w: w * px, h: cap * px };
@@ -88,13 +118,17 @@ export function lineText(sheet: LaserSheet, s: string, font: FontName, cx: numbe
  */
 export function arcText(sheet: LaserSheet, s: string, font: FontName, cx: number, cy: number, r: number, px: number, top: boolean): number {
   const t = drawable(font, s);
-  const { cap, adv, gw } = FONTS[font];
+  const { cap } = FONTS[font];
   const sgn = top ? 1 : -1;
   const mid = r + (sgn * cap * px) / 2;
-  const step = (adv * px) / mid;
+  const at = starts(font, t);
+  const total = textPixels(font, t);
   [...t].forEach((ch, i) => {
     if (ch === ' ') return;
-    const th = (top ? Math.PI / 2 : (3 * Math.PI) / 2) + (top ? -1 : 1) * (i - (t.length - 1) / 2) * step;
+    const gw = glyphWidth(font, ch);
+    // the angle of this letter's center, measured from the middle of the whole line
+    const off = ((at[i] + gw / 2 - total / 2) * px) / mid;
+    const th = (top ? Math.PI / 2 : (3 * Math.PI) / 2) + (top ? -1 : 1) * off;
     const er = [Math.cos(th), -Math.sin(th)];
     const tg = [(top ? -1 : 1) * -Math.sin(th), (top ? -1 : 1) * -Math.cos(th)];
     engraveRects(sheet, mergeRuns(glyph(font, ch)), (x, y) => {
@@ -103,7 +137,7 @@ export function arcText(sheet: LaserSheet, s: string, font: FontName, cx: number
       return [cx + rho * er[0] + u * tg[0], cy + rho * er[1] + u * tg[1]];
     });
   });
-  return (((t.length - 1) * step + (gw * px) / mid) * 180) / Math.PI;
+  return (((total * px) / mid) * 180) / Math.PI;
 }
 
 export type Rgb = readonly [number, number, number];
