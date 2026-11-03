@@ -405,6 +405,9 @@ export function buildTheater(act: 1 | 2, bs: BlockSet, monsters: Placed[]): Thea
     const p = at(x, y);
     map.blocks[p.y * 100 + p.x] = bs.id(name);
   }
+  // a doorway stands on the link at the vestibule's far end, so the way out is a visible door
+  const ex = at(27, 2);
+  map.blocks[ex.y * 100 + ex.x] = bs.id('doorway');
   monsters.forEach((m, i) => {
     const p = at(m.x, m.y);
     map.monsters[i] = { monnum: m.mon, status: 0, xtra: 0, curx: p.x, cury: p.y, extra: 0 };
