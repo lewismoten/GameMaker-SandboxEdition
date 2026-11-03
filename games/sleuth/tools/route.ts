@@ -4,6 +4,7 @@
 import { Bot } from './bot';
 import { SCAN, CTR } from '../src/ids';
 import { at } from '../src/levels/theater';
+import { DOOR_ANSWER, PRINT_SPECS } from '../src/prints/prints';
 import { buildParlorBlocks, buildParlorMap, center, LINEUP, ROOM, SUSPECTS } from '../src/levels/parlor';
 
 const PL = buildParlorMap(buildParlorBlocks()).links;
@@ -11,6 +12,27 @@ const PL = buildParlorMap(buildParlorBlocks()).links;
 const expectScene = (bot: Bot, scene: number, what: string) => {
   if (bot.sim.scene !== scene) throw new Error(`Expected to be in ${what} (scene ${scene}), but in scene ${bot.sim.scene}`);
 };
+
+/**
+ * The stage door: Dobbs asks whose card the dagger's print matches. The bot steps on a wrong
+ * card first (a page, nothing lost: same lives, same room), then the right one, then goes in.
+ */
+export async function stageDoor(bot: Bot, ix: { door: number; doorYes: number; doorNo: number; act1: number }): Promise<void> {
+  expectScene(bot, ix.door, 'the stage door');
+  const lives = bot.sim.ci.lives;
+  const card = (who: string) => PL.door.cards[PRINT_SPECS.findIndex((p) => p.who === who)][0];
+  const wrong = PRINT_SPECS.find((p) => p.who !== DOOR_ANSWER)!.who;
+  await bot.wait(40);
+  if ((await bot.goto(card(wrong).x, card(wrong).y, `the wrong card (${wrong})`)) !== 'link') throw new Error('No card');
+  expectScene(bot, ix.doorNo, 'a wrong card');
+  await bot.wait(30);
+  if ((await bot.goto(card(DOOR_ANSWER).x, card(DOOR_ANSWER).y, `the dagger's card (${DOOR_ANSWER})`)) !== 'link') throw new Error('No card');
+  expectScene(bot, ix.doorYes, 'the right card');
+  await bot.wait(30);
+  if ((await bot.goto(PL.door.in.x, PL.door.in.y, 'in through the stage door')) !== 'link') throw new Error('No way in');
+  expectScene(bot, ix.act1, 'Act One');
+  if (bot.sim.ci.lives !== lives) throw new Error('The stage door cost a chance');
+}
 
 /** Act One, up to the green room door. `demo` stops after the lens and the prop table. */
 export async function act1(bot: Bot, demo = false): Promise<void> {

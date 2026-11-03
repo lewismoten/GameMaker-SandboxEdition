@@ -37,6 +37,7 @@ import {
   readme,
   wide,
 } from './text';
+import { DOOR_INTRO, DOOR_NO, DOOR_YES } from './doorText';
 import { PIN_FILES, SUSPECT_LETTER, WRONG_KEYS } from '../game';
 import { SUSPECTS } from '../levels/parlor';
 import type { Who } from '../art/people';
@@ -158,6 +159,9 @@ export function buildScreens(views: { act1: MapView; act2: MapView }): Record<st
   say('gr1', 'dobbs', GR1_INTRO);
   say('gr2', 'dobbs', GR2_INTRO);
   say('acc', 'ada', ACC_INTRO);
+  say('door', 'dobbs', DOOR_INTRO);
+  say('dooryes', 'dobbs', DOOR_YES);
+  say('doorno', 'dobbs', DOOR_NO);
   say('how', 'pike', HOW_INTRO);
   say('why', 'pike', WHY_INTRO);
   for (const who of SUSPECTS) {

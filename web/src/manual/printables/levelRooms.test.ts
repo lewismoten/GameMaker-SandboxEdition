@@ -189,7 +189,7 @@ describe('on the real disks', () => {
 
   it("draws Final Curtain's green room once, with its five suspects beside it, and its stage rooms apart", () => {
     const green = load('sleuth').levels.filter((l) => l.group.map === 'green.map');
-    expect(green.map((l) => l.name)).toEqual(['The Green Room', 'Dawn', 'How?', 'Why?', 'The Commissioner']);
+    expect(green.map((l) => l.name)).toEqual(['The Green Room', 'Dawn', 'How?', 'Why?', 'The Commissioner', 'Stage Door']);
     expect(green[0].area).toEqual({ x: 0, y: 0, w: 16, h: 10 });
     expect(green[0].cast!.people).toHaveLength(5);
     expect(green[0].cast!.people.every((p) => p.visits.every((v) => v.scenes.length === 4))).toBe(true);

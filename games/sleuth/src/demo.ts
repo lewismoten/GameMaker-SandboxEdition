@@ -1,15 +1,17 @@
 // demo.rec: what the title screen plays when nobody touches the keyboard. The bot plays
-// the start of Act One (the key and the seating chart in the box office, through the
+// the stage door (a wrong card, then the right one) and the start of Act One (the key and the seating chart in the box office, through the
 // house to the wings, the lens from the props room, the ticket stub it reveals under the
 // prop table and Felix's checklist), then presses Esc.
 import { serializeRecording } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { GameSim } from '../tools/sim';
 import { Bot } from '../tools/bot';
-import { act1 } from '../tools/route';
+import { act1, stageDoor } from '../tools/route';
+import { sceneIndex } from '../tools/whole';
 import { SCAN } from './ids';
 
 export async function demoRecording(files: Map<string, Uint8Array>): Promise<Uint8Array> {
   const bot = new Bot(new GameSim(files));
+  await stageDoor(bot, sceneIndex());
   await act1(bot, true);
   await bot.key(SCAN.z, 2, 30);
   const keys = bot.sim.keys;
