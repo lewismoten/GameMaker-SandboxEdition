@@ -126,10 +126,11 @@ Checking the games:
 - `checkGames.ts` — `cd web && npm run check:games`: every game's checks and a table (builds one at a time, then `--jobs N` games checked at once, default half the CPUs; a lock in the temp folder makes a second run wait); exits 1 on
   any failure. Per game: two builds into temporary folders (`GAME_DISK_OUT`) that must match each other byte for
   byte and cut off no text (`textBounds.ts`); unchanged working output is kept in place, `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
-  `playerCheck.ts` (when the game has a player.json), `controlsCheck.ts` (when it has a controls.json); then `tinHearts.ts check`,
+  `playerCheck.ts` (when the game has a player.json), `controlsCheck.ts` (when it has a controls.json), `palCheck.ts`; then `tinHearts.ts check`,
   `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no reproducibility rebuild), `--jobs N`, `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
+- `palCheck.ts` — `npx vite-node ../games/kit/palCheck.ts [<id>...]`: fails when a game's `disk/` holds byte-identical `.pal` files. Every game's `Disk.write()` merges them first (`tools/src/kit/palMerge.ts`: the first palette in scene order is kept, every scene that opened a duplicate opens it, the duplicates are dropped; scenes keep their numbers, and a DOS saved game stores scene numbers, not file names), so a failure means a build bypassed the shared writer.
 - `controlsCheck.ts` — `npx vite-node ../games/kit/controlsCheck.ts [<id>...]`: a game's `controls.json` (keys by scan code, joystick
   buttons, counters by meter, sound names by slot; the shape of `editor/core/gameControls.ts`) describes exactly what its built disk uses, by the
   editor's `gameKeyMap`, `counterUses` and `soundUses` (a custom slot past the engine's nine that a character plays must be named): lists used-but-not-described, described-but-not-used and text over the limits (32/240/80, sound names 40).

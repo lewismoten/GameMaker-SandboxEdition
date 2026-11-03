@@ -47,6 +47,7 @@ npx vite-node ../games/kit/clipCheck.ts <id>       # no voice clip cut off at a 
 npx vite-node ../games/kit/textfitCheck.ts <id>    # text fits its DOS screens
 npx vite-node ../games/kit/hiddenView.ts <id>      # tin hearts and eggs are out of sight
 npx vite-node ../games/kit/levelCheck.ts <id>      # the editor's Level check finds nothing new
+npx vite-node ../games/kit/palCheck.ts [id]        # no byte-identical .pal files on a disk (the build merges them)
 npx vite-node ../games/kit/tinHearts.ts check      # every heart is found when touched
 npx vite-node ../games/kit/playtime.ts             # the only writer of box play hours
 npx vite-node ../games/kit/versionCheck.ts         # a game changed since the last push to master has a higher version
