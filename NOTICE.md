@@ -928,8 +928,9 @@ they are not copied from any existing alphabet, cipher or game's script.
 The desk scene in `docs/social-preview-*.png` (the README's top image and GitHub's link
 preview) was painted by **ChatGPT** (OpenAI) from Lewis Moten's prompt and a pack of the site's
 own renders: the desk's props, the Game-Maker box, TURBO BUTTON's cover and the room. Claude
-Opus 5.5 laid the real DOS Game-Maker Map Maker screen into its monitor and lettered the title
-and the sticky note, under Lewis Moten's direction.
+Opus 5.5 laid the real DOS Game-Maker Map Maker screen into its monitor, drew the tablet on its
+stand (showing a screenshot of the site's home page) in CSS, and lettered the title and the
+sticky note, under Lewis Moten's direction.
 
 ### Ready-made palette references
 
