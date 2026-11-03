@@ -231,6 +231,14 @@ identical block already there) and renumbers the moved set's maps; the kept set 
 Pickups, required and starting items and block 0 keep their number or the join is refused.
 Import from `@lewismoten/gamemaker-sandbox-tools/block-merge`.
 
+### Meshes for 3D printing
+
+`mesh/surfaceNets` turns a signed distance field (negative inside) into a closed triangle mesh
+(`surfaceNets(field, { min, max, cell })`; it retries with a shifted grid until every edge is in exactly two
+triangles), `mesh/stl` writes and reads binary STL (`writeStl`, `readStl`; a color per triangle goes in the
+attribute bytes the VisCAM way, which slicers ignore) and `mesh/meshCheck` reports whether a mesh is closed,
+how many pieces it has, its size and volume (`inspectMesh`). They are browser safe.
+
 ### Disk comparison
 
 `diffDisks(a, b)` takes two `Map<name, bytes>` disks and returns the added, removed and changed files, with a plain-text

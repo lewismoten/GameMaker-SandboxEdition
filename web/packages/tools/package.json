@@ -63,6 +63,11 @@
       "gamemaker-source": "./src/music/*.ts",
       "import": "./dist/music/*.js"
     },
+    "./mesh/*": {
+      "types": "./dist/types/mesh/*.d.ts",
+      "gamemaker-source": "./src/mesh/*.ts",
+      "import": "./dist/mesh/*.js"
+    },
     "./image/*": {
       "types": "./dist/types/image/*.d.ts",
       "gamemaker-source": "./src/image/*.ts",
