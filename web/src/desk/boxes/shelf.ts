@@ -104,18 +104,21 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   };
   const complete = new Map<string, Promise<BoxFaces | undefined>>();
   const whole = new Set<string>();
+  const covered = new Set<string>();
   const completed = (g: CatalogEntry): Promise<BoxFaces | undefined> => {
     let p = complete.get(g.id);
     if (!p) {
-      void drawBox(g, { shots: false }).then(
-        (f) => {
-          if (!f || whole.has(g.id)) return;
-          releaseFacesOf(g.id);
-          faces.set(g.id, f);
-          slots.get(g.id)?.replaceChildren(boxModel(f));
-        },
-        () => undefined,
-      );
+      // the cover first; not for the box already drawn with it (the one face out as the shelf went up)
+      if (!covered.has(g.id))
+        void drawBox(g, { shots: false }).then(
+          (f) => {
+            if (!f || whole.has(g.id)) return;
+            releaseFacesOf(g.id);
+            faces.set(g.id, f);
+            slots.get(g.id)?.replaceChildren(boxModel(f));
+          },
+          () => undefined,
+        );
       p = drawBox(g)
         .catch(() => undefined)
         .then((f) => {
@@ -189,8 +192,10 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
     // let the page paint and answer between boxes: drawing one is most of a frame's worth of work
     if (i) await new Promise<void>((r) => setTimeout(r));
     // the box face out gets its cover painting now and its screenshots after the shelf is up
-    const f = await drawBox(g, { shots: false, cover: g.id === front, blobs: true }).catch(() => undefined);
+    const withCover = g.id === front;
+    const f = await drawBox(g, { shots: false, cover: withCover, blobs: true }).catch(() => undefined);
     if (!f) continue;
+    if (withCover) covered.add(g.id);
     faces.set(g.id, f);
     uvGame(f, g);
     const slot = h(
