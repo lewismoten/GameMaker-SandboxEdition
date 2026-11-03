@@ -590,6 +590,11 @@
   box-shadow: 0 0 6px var(--led-amber);
 }
 
+.led.on.red {
+  background: var(--led-red);
+  box-shadow: 0 0 6px var(--led-red);
+}
+
 /* the MHz readout: a seven-segment LED behind a dark red window */
 .mhz {
   display: flex;

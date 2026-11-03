@@ -44,6 +44,8 @@ export class Computer extends ComputerFolders {
     const turbo = !this.opts.speed.slowPc;
     // a quick boot (the DOS page, on its way to Game-Maker) says the same in a quarter of the time
     const pause = (ms: number) => sleep(this.opts.quickBoot ? ms / 4 : ms);
+    // a drive read as the PC starts (its light, and on the desk its sound), as long as a quick boot's pauses
+    const reads = (drive: string, ms: number) => this.opts.onDriveAccess?.(drive, this.opts.quickBoot ? ms / 4 : ms);
     s.print(`AwkWard Modular BIOS v4.20  (C) 1993 AwkWard Software\n${turbo ? '486DX2-66 Turbo' : '486DX2-66 (Turbo off)'}\n\n`);
     const postStart = Date.now();
     drawEnergySnore(s);
@@ -53,7 +55,16 @@ export class Computer extends ComputerFolders {
       await pause(30);
       if (!this.powered) return; // switched off while booting
     }
+    // the floppy seek test: drive A:'s light, its motor and its head stepping out and back
+    reads('A', 1100);
+    await pause(1000);
+    if (!this.powered) return;
     this.postBeep(); // one short beep: the power-on self test passed
+    // the boot: A: is tried for a disk first, then the hard disk
+    reads('A', 450);
+    await pause(450);
+    if (!this.powered) return;
+    reads('C', 500);
     s.print('\n\nStarting MS-DOS...\n\n');
     await pause(500);
     if (!this.powered) return;
@@ -62,21 +73,36 @@ export class Computer extends ComputerFolders {
     if (!this.powered) return;
     clearEnergySnore(s);
     // CONFIG.SYS
+    reads('C', 300);
     s.print('HIMEM is testing extended memory...');
     await pause(turbo ? 350 : 1100);
     if (!this.powered) return;
     s.print('done.\n');
     await pause(150);
     if (!this.powered) return;
+    reads('C', 250);
     s.print('EMM386 successfully installed.\n  Available Upper Memory     :  91 KB\n\n');
     await pause(250);
     if (!this.powered) return;
-    s.print('  ATAPI CD-ROM Device Driver  Version 2.14\n  Drive 0: CD-ROM 2X (MSCD001)\n\n');
-    await pause(turbo ? 400 : 900);
+    reads('C', 250);
+    s.print('  ATAPI CD-ROM Device Driver  Version 2.14\n');
+    // the driver tests the drive: its light, the laser sled and the motor spinning up
+    reads('D', 1500);
+    await pause(turbo ? 1200 : 1600);
+    if (!this.powered) return;
+    s.print('  Drive 0: CD-ROM 2X (MSCD001)\n\n');
+    await pause(200);
     if (!this.powered) return;
     // AUTOEXEC.BAT
     for (const l of AUTOEXEC.slice(1)) {
+      if (l.startsWith('LH ')) {
+        // a program loaded from the hard disk (PROMPT, PATH and SET are DOS's own)
+        reads('C', 200);
+        await pause(150);
+        if (!this.powered) return;
+      }
       if (l.includes('MSCDEX')) {
+        reads('D', 600);
         s.print('MSCDEX Version 2.23\n        Drive D: = Driver MSCD001 unit 0\n');
         await pause(300);
         if (!this.powered) return;

@@ -2,7 +2,7 @@
 // disk box on the left, the Game-Maker box on the right, and the PC (case, drives, lights,
 // keyboard, monitor). desk.ts gives it what the buttons do and works the parts it hands back.
 import { h } from '../editor/core/ui';
-import { sevenSegment, floppyDrive, cdDrive } from './pc/caseParts';
+import { sevenSegment, floppyDrive, cdDrive, hddLight } from './pc/caseParts';
 import { keyboard } from './pc/keyboard';
 import { keyboardTray } from './pc/tray';
 import { speakers } from './pc/speakers';
@@ -60,6 +60,7 @@ export function deskScene(on: DeskActions) {
   const cd = cdDrive(() => on.ejectCd());
   const powerLed = h('span', { class: 'led green' });
   const turboLed = h('span', { class: 'led amber' });
+  const hdd = hddLight();
   const mhz = sevenSegment(2);
   const powerBtn = h(
     'button',
@@ -180,6 +181,7 @@ export function deskScene(on: DeskActions) {
             { class: 'leds' },
             h('span', null, powerLed, 'POWER'),
             h('span', null, turboLed, 'TURBO'),
+            h('span', null, hdd.led, 'HDD'),
             h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')),
           ),
           h('span'),
@@ -216,7 +218,7 @@ export function deskScene(on: DeskActions) {
     ),
     h('button', { class: 'zoom-exit primary', onclick: () => on.setZoom(false) }, 'Back to the desk'),
   );
-  return { desk, crt, floppy, driveActions, cd, powerLed, turboLed, mhz, powerBtn, turboBtn, box, keyCard, spk, lamp, modem, boxTiles };
+  return { desk, crt, floppy, driveActions, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, box, keyCard, spk, lamp, modem, boxTiles };
 }
 
 /** Homage: the winter of 1992-93, shoveling snow to buy Game-Maker. */

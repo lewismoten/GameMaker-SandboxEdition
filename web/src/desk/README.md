@@ -10,10 +10,10 @@ points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned
 `overlayFocus.ts` moves the keyboard into an overlay and back. `wallTrophies.ts` also puts Teddy's Forte Locks toy safe ([`fortKnox/`](../fortKnox/README.md)) at the desk's right end after a catalog win, including the zero left by games with no money counter. Its combination is scribbled in pencil on the sticky note under the phone (`room/phoneNotes.ts`). `deskTour.ts` is the guided tour's BBS chapter on this PC: it
 calls The Sandbox BBS and types for the tour, then puts back what the call changed.
 
-- `pc/`: the case (`caseParts.ts`), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
+- `pc/`: the case (`caseParts.ts`, with the hard disk's flickering HDD light beside POWER and TURBO), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
   the colors of the picture on the tube; `crtOn.css` warms the tube up from black at switch-on,
-  `crtOff.css` collapses it at switch-off), the fans and hard disk spinning up at switch-on and
-  fading out at the DOS prompt (`bootSounds.ts`), the keyboard (`keyboard.ts`) and the keyboard tray
+  `crtOff.css` collapses it at switch-off), the fans whining up and the drives the boot reads (floppy seek test,
+  hard disk seeks, the CD-ROM's test), fading out slowly at the DOS prompt (`bootSounds.ts`), the keyboard (`keyboard.ts`) and the keyboard tray
   (`tray.ts`) with its mouse pad (its print, `padPrints.ts`, chosen in `padChooser.ts` from the
   magazine's mouse pad ad and remembered by `padChoice.ts`), the GRAVITAS game pad
   (`gamePad.ts`; its drawing `gamePadArt.ts`, its SVG parts `gamePadSvg.ts`, its large controls

@@ -7,6 +7,7 @@ import type { Computer } from '../retro/computer';
 import type { MonitorMode } from '../retro/computer/setup';
 import { installCrtWarp } from './pc/crtWarp';
 import { captureStub } from './pc/captureStub';
+import type { BootSounds } from './pc/bootSounds';
 import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { TURBO_OFF } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 import type { viewState } from '../urlState';
@@ -25,7 +26,7 @@ interface PcHooks {
 }
 
 export function deskPc(scene: Scene, hooks: PcHooks) {
-  const { desk, crt, floppy, cd, powerLed, turboLed, mhz, powerBtn, turboBtn, keyCard, spk, modem } = scene;
+  const { desk, crt, floppy, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, keyCard, spk, modem } = scene;
   const { deskView } = hooks;
   // the PC starts in turbo every visit; the button slows it down until you leave
   let turbo = true;
@@ -45,6 +46,8 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
   let computer: Computer | undefined;
   let pcLoad: Promise<Computer> | undefined;
   let removeWarp = () => {};
+  /** The boot's fans and drives (pc/bootSounds.ts), until DOS is at its prompt. */
+  let whir: BootSounds | undefined;
   const pcCode = () => import('../retro/computer');
   const loadPc = (): Promise<Computer> =>
     (pcLoad ??= pcCode().then(({ Computer }) => {
@@ -63,10 +66,13 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
           deskView.set({
             run: !p ? 'dos' : p.kind === 'game' ? 'play' : p.kind === 'gm' ? (p.drive === 'A' ? 'design' : 'gm') : p.kind === 'terminal' ? 'bbs' : 'dos',
           }),
-        // the drive lights of A: and D: (even an empty drive lights up while DOS tries it; C: has no light on this case)
-        onDriveAccess: (drive) => {
-          if (drive === 'A') floppy.busy(700);
-          else if (drive === 'D') cd.busy(900);
+        // the drive lights (even an empty drive lights up while DOS tries it; C:'s is the case's HDD
+        // light), and while the PC starts, the drives' sounds
+        onDriveAccess: (drive, ms) => {
+          if (drive === 'A') floppy.busy(ms ?? 700);
+          else if (drive === 'D') cd.busy(ms ?? 900);
+          else if (drive === 'C') hdd.busy(ms);
+          whir?.access(drive, ms);
         },
       });
       removeWarp = installCrtWarp(crt.querySelector<HTMLElement>('.crt-picture')!);
@@ -127,9 +133,12 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     setTurbo(turbo);
     crt.classList.add('warming-up');
     poweringOn = Promise.all([loadPc(), bootCode()]).then(([pc, { bootSounds }]) => {
-      const whir = bootSounds();
-      // at the prompt (or switched off while booting) the fans and the disk fade away
-      return pc.powerOn().finally(() => whir?.settle());
+      const boot = (whir = bootSounds());
+      // at the prompt (or switched off while booting) the fans and the drives fade away
+      return pc.powerOn().finally(() => {
+        boot?.settle();
+        if (whir === boot) whir = undefined;
+      });
     });
     await poweringOn;
     if (!computer?.powered) return; // switched off again while it booted
@@ -150,6 +159,7 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     switchingOff = true;
     pc.powerOff();
     powerLed.classList.remove('on');
+    hdd.off();
     powerBtn.setAttribute('aria-pressed', 'false');
     spk.power(false);
     modem.power(false);

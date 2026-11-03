@@ -23,8 +23,8 @@ export interface ComputerOptions {
   onModeChange?: (mode: MonitorMode) => void;
   /** The disks changed (a download, a new game); `insert` names one to put in drive A:. */
   onDisksChanged?: (insert?: string) => void;
-  /** A drive is being read (DIR, loading a game or Game-Maker, ...): light its LED. */
-  onDriveAccess?: (drive: string) => void;
+  /** A drive is being read (DIR, loading a game or Game-Maker, the boot's drive tests...): light its LED, for `ms` if given. */
+  onDriveAccess?: (drive: string, ms?: number) => void;
   /** A game starts on the monitor (its files), or stops (undefined): the desk sets out its key card. */
   onGame?: (game?: { files: GameFiles; gam: string; title: string }) => void;
   /** A program starts (Game-Maker, a game, the terminal…, and the drive it started on) or ends (undefined). */
