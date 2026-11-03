@@ -52,13 +52,9 @@ def spec(kind, variant=""):
     if kind == "elec":
         if variant == "big":
             return [cyl(0, 0, 0, 6.3, 11.0, BLUE)]
-        if variant == "tant":
-            return [box(0, 0, 0, 5.0, 3.0, 8.0, YELLOW)]
         return [cyl(0, 0, 0, 5.0, 8.0, BLUE)]
-    if kind == "to92":
+    if kind in ("to92", "to92r"):
         return [box(0, 0.2, 0.3, 4.8, 3.8, 4.6, BLACK)]
-    if kind == "to220":
-        return [box(0, 4.4, 0.3, 10.2, 4.5, 9.0, BLACK), box(0, 4.4, 9.3, 10.2, 4.5, 0.6, SILVER)]
     if kind == "xtal":
         return [box(0, 0, 0.3, 11.0, 4.6, 3.8, SILVER)]
     if kind == "led":      # 5 mm LED lying down, dome toward -y (off the top edge)

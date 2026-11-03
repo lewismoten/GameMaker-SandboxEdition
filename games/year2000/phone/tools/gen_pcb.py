@@ -70,8 +70,6 @@ def rot(x, y, a):
 def variant(ref):
     if ref in ("C21",):
         return "big"
-    if ref in ("C2",):
-        return "tant"
     return ""
 
 
@@ -482,7 +480,7 @@ silk.append(label("F.SilkS", "MIC", CX, 158.4, 1.0))
 silk.append(label("F.SilkS", "IR", 16.51, 15.6, 0.9))
 silk.append(label("F.SilkS", "EYE", 57.15, 15.6, 0.9))
 silk.append(label("B.SilkS", "THE PHONE OF THE FUTURE", CX, 12.0, 1.9, True))
-silk.append(label("B.SilkS", "rev B  untested design", CX, 15.0, 0.9, True))
+silk.append(label("B.SilkS", "rev C  untested design", CX, 15.0, 0.9, True))
 silk.append(label("B.SilkS", "Claude Sonnet 5.5 + KiCad", CX, 17.0, 0.9, True))
 silk.append(label("B.SilkS", "OPTIONAL VOLUME: RV1 INSTEAD OF R20 R21", CX, 165.0, 0.8, True))
 items += silk

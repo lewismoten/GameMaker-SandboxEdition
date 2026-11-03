@@ -30,7 +30,7 @@ def toward(ref, c):
 
 
 m = {
-    "about": "THE PHONE OF THE FUTURE board, rev A. Untested design. Units mm; origin top-left seen from the front; +x right, +y down.",
+    "about": "THE PHONE OF THE FUTURE board, rev C. Untested design. Units mm; origin top-left seen from the front; +x right, +y down.",
     "board": {"width": W, "height": H, "thickness": 1.6, "corner_radius": 4.0,
               "outline": "rounded rectangle, corner radius 4 mm",
               "mounting_holes": [{"x": x, "y": y, "drill": 3.2, "keepout_diameter": 7.2} for x, y in
@@ -79,7 +79,7 @@ m = {
         "power_switch": {"ref": "SW1", "center": at("SW1"), "handle_direction": [1, 0], "body": [10.0, 6.0], "height": 6.0,
                          "note": "slide switch near the right edge; the shell needs a slot there"},
         "regulator": {"ref": "U6", "center": at("U6"), "height": 4.6},
-        "tallest_parts": ["BT1 13 mm (behind the dial)", "C21 220 uF electrolytic 11 mm", "ICs 4 mm", "LM2940 lying flat 9 mm"],
+        "tallest_parts": ["BT1 13 mm (behind the dial)", "C21 220 uF electrolytic 11 mm", "ICs 4 mm", "MCP1702 TO-92 4.6 mm"],
     },
     "silkscreen": {"front_title": "THE PHONE OF THE FUTURE near the top, orbit rings and rays around the dial and speaker, a YEAR 2000 badge at the bottom left", "labels": ["TALK", "CLEAR", "MIC"]},
 }
