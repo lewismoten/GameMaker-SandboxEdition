@@ -1,7 +1,6 @@
 // What each game's pixel trinkets (pixelTrinkets.ts) are made from: its hero and one signature figure, read from the
 // game's own character, monster and palette files on its built disk. Secret games are left out on purpose.
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { chicken } from '../tuneup/src/art/chicken';
 
 export interface Def {
   id: string;
@@ -29,24 +28,6 @@ const mon = (mon_: string, n: number, mbl: string, pal: string, id: string, titl
 });
 
 export const GAMES: Record<string, Def[]> = {
-  tuneup: [
-    {
-      id: 'leo',
-      title: 'Doc Leo',
-      blurb: 'The hobo clown mechanic in his gray fedora, ready to tune up anything.',
-      source: { chr: 'leo.chr', cbl: 'leo.cbl' },
-      pal: 'gear1.pal',
-      keep: [9, 44, 157, 175],
-    },
-    {
-      id: 'regina',
-      title: 'Lady Regina III',
-      blurb: 'The rubber chicken who laid the egg.',
-      source: { draw: () => chicken(1, { lady: true, stand: true }) },
-      pal: 'gear1.pal',
-      keep: [9, 197, 179, 83],
-    },
-  ],
   teddy: [
     {
       id: 'teddy',
@@ -122,10 +103,6 @@ GAMES.smirked = [
   hero('smirked', 'smirked', 'exit', 'The scaredy-dad', 'Taking Lily through the haunted house.', 'hero'),
   mon('exit', 8, 'smirked', 'exit', 'ghost', 'Pink ghost', 'A friendly pink ghost.'),
 ];
-GAMES.snowbound = [
-  hero('kid', 'kid', 'noon', 'The shoveler', 'A dollar a scoop on the way to $89.', 'kid'),
-  mon('bowden', 22, 'snow', 'noon', 'cardinal', 'Cardinal', 'A red bird in the snow.'),
-];
 GAMES.sweats = [
   hero('poet', 'poet', 'ants', 'Will', 'Open-mic poet in a starched ruff.', 'will'),
   mon('ants', 17, 'errands', 'ants', 'goose', 'Goose', 'A goose out on errands.'),
@@ -141,8 +118,4 @@ GAMES.teddy3 = [
 GAMES.tickle = [
   hero('leo', 'tickle', 'course', 'Doc Leo', 'Certified in rat tickling.', 'leo'),
   mon('course', 7, 'tickle', 'course', 'rat', 'Rat', 'A rat, waiting to be tickled.'),
-];
-GAMES.year2000 = [
-  hero('dex', 'dex', 'y2k', 'Dex Dynamo', 'Looking for his science fair project.', 'dex'),
-  mon('y2k', 32, 'y2k', 'y2k', 'robodog', 'Robot dog', 'The robot dog who ate the project.'),
 ];
