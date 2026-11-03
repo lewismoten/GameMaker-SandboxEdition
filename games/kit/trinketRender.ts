@@ -85,18 +85,21 @@ export function renderBodies(bodies: Body[], yaw: number, pitch: number, w: numb
   return { w, h, rgba };
 }
 
-/** Images side by side with a gap. */
-export function sheet(images: Image[], gap = 8, bg: [number, number, number] = [236, 232, 224]): Image {
-  const h = Math.max(...images.map((i) => i.h));
-  const w = images.reduce((n, i) => n + i.w, 0) + gap * (images.length + 1);
-  const rgba = new Uint8Array(w * (h + 2 * gap) * 4);
+/** Images in rows of `cols` (all in one row by default) with a gap. */
+export function sheet(images: Image[], gap = 8, bg: [number, number, number] = [236, 232, 224], cols = images.length): Image {
+  const rows = Math.ceil(images.length / cols);
+  const cw = Math.max(...images.map((i) => i.w));
+  const ch = Math.max(...images.map((i) => i.h));
+  const w = cols * (cw + gap) + gap;
+  const h = rows * (ch + gap) + gap;
+  const rgba = new Uint8Array(w * h * 4);
   for (let i = 0; i < rgba.length; i += 4) rgba.set([...bg, 255], i);
-  let x = gap;
-  for (const im of images) {
-    for (let y = 0; y < im.h; y++) rgba.set(im.rgba.subarray(y * im.w * 4, (y + 1) * im.w * 4), ((y + gap) * w + x) * 4);
-    x += im.w + gap;
-  }
-  return { w, h: h + 2 * gap, rgba };
+  images.forEach((im, k) => {
+    const x = gap + (k % cols) * (cw + gap);
+    const y0 = gap + Math.floor(k / cols) * (ch + gap);
+    for (let y = 0; y < im.h; y++) rgba.set(im.rgba.subarray(y * im.w * 4, (y + 1) * im.w * 4), ((y0 + y) * w + x) * 4);
+  });
+  return { w, h, rgba };
 }
 
 const CRC = new Uint32Array(256).map((_, n) => {

@@ -888,6 +888,10 @@ its open license): a ZIP package with `3D/3dmodel.model`, `[Content_Types].xml` 
 object per color with a base material color. The ZIP container is written by this project's own small
 writer (`web/packages/tools/src/mesh/zipFile.ts`); no 3MF or ZIP library is used.
 
+The other games' pixel-figure trinkets (`games/kit/pixelTrinkets.ts`) are made from each game's own
+hero and monster pictures and palette, one pixel to one block, with no outside art; the code was
+written with Anthropic Claude Sonnet 5.5 under Lewis Moten's direction.
+
 The meshes are thinned (`web/packages/tools/src/mesh/decimate.ts`) by quadric edge collapse, the
 method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quadric Error Metrics"
 (SIGGRAPH 1997), written from the paper with no code from any library; the published method is an

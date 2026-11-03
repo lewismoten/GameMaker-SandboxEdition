@@ -217,6 +217,21 @@ const trinkets =
     : Promise.resolve();
 if (pending.some((id) => logoUsers.has(id))) void logo();
 await Promise.all([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker)]);
+// The pixel-figure trinkets of the other games (games/kit/pixelTrinkets.ts: web/public/trinkets/<game>/) are meshed from the
+// built disks, so they run after the games; each game is skipped when its figures and the mesh code are unchanged (a key
+// in its manifest.json), which makes an up-to-date tree cost one process start. A secret game has none.
+if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => ids.includes(id)))) {
+  const started = Date.now();
+  const made = await runEntry(
+    'pixel-trinkets',
+    { file: join(root, 'games/kit/pixelTrinkets.ts') },
+    '../games/kit/pixelTrinkets.ts',
+    [...(only.length ? ['--game', only.join(',')] : []), ...(process.argv.includes('--force') ? ['--force'] : [])],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'pixel trinkets',
+  );
+  if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+}
 if (timing)
   console.log(
     `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,
