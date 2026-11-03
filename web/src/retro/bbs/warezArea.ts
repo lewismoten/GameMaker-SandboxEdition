@@ -18,6 +18,7 @@ import { DIZ_BYTES, pkunzip } from './pkunzip';
 import { GMCRACK_DIZ, GMCRACK_NFO } from '../hacks/gmcrackText';
 import { SAVEHACK_DIZ, SAVEHACK_DOC } from '../hacks/saveHackText';
 import { FASTPLAY_DIZ, FASTPLAY_DOC } from '../hacks/fastPlayText';
+import { REGGIE_DIZ, REGGIE_DOC } from '../hacks/reggieText';
 import { FLAGS_DIZ, FLAGS_NFO } from '../hacks/flagsText';
 import { PLAYHACK_DIZ, PLAYHACK_NFO } from '../hacks/playHackText';
 import { GM30_DIZ, GM30_NFO, GM30_PART_BYTES, GM30_PARTS } from '../hacks/gm30Text';
@@ -98,6 +99,16 @@ export const WAREZ: WarezRelease[] = [
     files: [
       { name: 'FASTPLAY.EXE', size: 6_144, run: { kind: 'fastplay' } },
       { name: 'FASTPLAY.DOC', size: 0, text: FASTPLAY_DOC },
+    ],
+  },
+  {
+    id: 'reggie',
+    zip: 'REGGIE.ZIP',
+    bytes: 5_632,
+    diz: REGGIE_DIZ,
+    files: [
+      { name: 'REGGIE.EXE', size: 7_168, run: { kind: 'reggie' } },
+      { name: 'REGGIE.DOC', size: 0, text: REGGIE_DOC },
     ],
   },
   {

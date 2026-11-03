@@ -40,6 +40,7 @@ export type ProgramRef =
   | { kind: 'savehack' }
   | { kind: 'playhack' }
   | { kind: 'fastplay' }
+  | { kind: 'reggie' }
   | { kind: 'backup' }
   | { kind: 'hexedit' }
   | { kind: 'achieve' }

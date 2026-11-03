@@ -40,6 +40,9 @@ picture; `host.ts` is what programs on it can use.
   run `C:\DOWNLOAD\FASTPLAY\FASTPLAY ON`, `OFF` or `STATUS`. These are the retro PC's
   simulated programs, like the other BBS tools; the downloaded EXE is not a native DOS binary.
   The shared player supplies the same controls on its start screen; previews and recordings skip them.
+- `hacks/reggie.ts` (manual and FILE_ID.DIZ in `hacks/reggieText.ts`): REGGIE shows who the rubber
+  chicken is, `REGGIE SIR` restores Sir Reginald and `REGGIE LADY` crowns Lady Regina again
+  (`chicken/`). Download REGGIE.ZIP from the W)arez area; the site follows at once.
 - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, PLAYHACK, the GM30 installer and the
   rest (`saveHack.ts`, `backupExe.ts`, `playHack.ts`, which edits a game of yours' DOS player
   patches as the editor's panel does, picking a kind of game first in `playHackGroups.ts` or the game on the disk in A: in `playHackDisk.ts`, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,
