@@ -21,6 +21,7 @@ function sourceKey(): string {
   const h = createHash('sha1');
   const dirs = [join(here, '../src/models'), join(here, '../src/trinkets'), join(here, '../../../web/packages/tools/src/mesh')];
   for (const f of [
+    fileURLToPath(import.meta.url),
     join(here, '../src/render/shapes.ts'),
     join(here, '../src/render/vec.ts'),
     join(here, '../src/render/look.ts'),
