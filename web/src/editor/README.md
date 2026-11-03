@@ -255,6 +255,14 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   (`editors/recording/botDemoDialog.ts`) runs `botDemoWorker.ts` (through `botDemoClient.ts`): the
   walkthrough bot plays to the chosen scene, and `botDemo.ts` plays its walkthrough on the engine
   and writes the keys down at the demo recorder's ticks as a `.REC`.
+- **Make it smaller.** The animation editor's Frames tab has a "Make it smaller…" dialog
+  (`editors/animation/shrink/`): `shrinkPanel.ts` shows the `.FLI` size report and findings from
+  `fliReport`, the options (lossless always; lossy adds max colors, snap near colors, reduce
+  dithering, hold still areas and keep every other frame), and the original beside the real
+  re-encoded result, with KB and % saved and `describeVisibility` words. `shrinkOptions.ts` maps
+  options to `fliShrink` steps; `shrinkRun.ts` runs them; `shrinkWorker.ts` and `shrinkClient.ts`
+  do it off the page's thread. Apply writes the bytes as one undo step; a look-only game gets a
+  copy in My Games (`disk/makeOptimizedCopy.ts`).
 - **Scene maker.** The animation editor's Scene maker (`editors/animation/scene/`) draws an `.FLI`
   from a scene kept in the companion file: `sceneModel.ts` (backgrounds and tracks of timed items),
   `sceneText.ts` (the 8x8 font, text motions, and the warnings and fit that keep text inside

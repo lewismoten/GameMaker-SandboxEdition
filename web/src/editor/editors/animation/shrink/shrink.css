@@ -1,0 +1,66 @@
+/* "Make it smaller" dialog of the .FLI animation editor. */
+.shrink {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: min(760px, 92vw);
+  max-height: 80dvh;
+  overflow-y: auto;
+}
+.shrink h3 {
+  margin: 4px 0 0;
+}
+.shrink p {
+  margin: 2px 0;
+}
+.shrink-options {
+  display: grid;
+  gap: 6px;
+}
+.shrink-field {
+  display: grid;
+  grid-template-columns: 9em 5em 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.shrink-field input {
+  min-height: 24px;
+}
+.shrink-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.shrink-preview figure {
+  margin: 0;
+}
+.shrink-preview canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  image-rendering: pixelated;
+  background: #000;
+}
+.shrink-stats {
+  transition: opacity 0.2s;
+}
+.shrink-stats[aria-busy='true'] {
+  opacity: 0.5;
+}
+.shrink-stats ul,
+.shrink-findings {
+  margin: 4px 0 0;
+  padding-left: 1.2em;
+}
+.shrink-actions {
+  position: sticky;
+  bottom: 0;
+}
+@media (max-width: 520px) {
+  .shrink-field {
+    grid-template-columns: 1fr 5em;
+  }
+  .shrink-field small {
+    grid-column: 1 / -1;
+  }
+}
