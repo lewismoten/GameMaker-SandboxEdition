@@ -67,6 +67,12 @@ export const MASTERS: MagSection = {
           ),
           p('**Timing by hand.** RSD’s own *Penguin Pete* gives a crowd of one creature slightly different frame times, so they never blink in step.'),
           p(
+            '**A floor that falls apart in stages.** The ice in RSD’s *Penguin Pete* sample is one picture drawn on a dozen block numbers. Each is solid and each melts on its own timer: 110 ticks, 400, 1,000, 2,000 and on past 5,000. Same look, different fuse, so the whole maze comes apart over five minutes and you never know which square is next. Mind where you stand.',
+          ),
+          p(
+            '**Start from the samples.** *Cap’n Zap’n* was built on RSD’s own ANIMATE block set, its timer chains untouched, with new touch blocks added on top. Nobody says you must draw everything first.',
+          ),
+          p(
             '**A fade for next to nothing.** RSD’s text box animation changes only the colors, never the pixels: 40 frames in 27 KB. A full-screen animation can run a megabyte.',
           ),
         ]),
@@ -118,6 +124,9 @@ export const MASTERS: MagSection = {
           ),
           p(
             '**The ghost move.** Monsters only hit the hero where his pixels touch theirs, and see-through pixels never touch. Show a frame that’s all see-through and nothing can lay a finger on him. Spikes still sting, though: blocks hit by the square.',
+          ),
+          p(
+            '**A prize with a mood.** In *Cap’n Zap’n* a bonus block and a heart block turn into each other every 400 ticks. Touch what you see: take the points now, or wait for the heart. Reader tip: it costs no monster, and it hides a heart in plain sight.',
           ),
           p(
             '**One world, five copies.** One author kept a copy of every scene for each boss beaten. The links in each copy lead to the same copy, so when you go back, the world remembers. It costs scenes, not maps.',
