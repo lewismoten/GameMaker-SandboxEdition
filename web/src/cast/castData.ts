@@ -87,6 +87,7 @@ const LISTED: CastMember[] = [
       { game: 'remote', as: 'following you round the kitchen' },
       { game: 'risi', as: 'a good Roman dog (CAVE CANEM)' },
       { game: 'sweats', as: 'asleep in the audience, awake for the bow' },
+      { game: 'tuneup', as: 'rides shotgun in THE\u00a0CHEZ and plays the brake lamps' },
     ],
   },
   {
@@ -108,6 +109,7 @@ const LISTED: CastMember[] = [
       { game: 'reckoning', as: 'asleep, until she isn’t' },
       { game: 'risi', as: 'a Roman dog' },
       { game: 'sweats', as: 'in the audience' },
+      { game: 'tuneup', as: 'buried the toolbox, then slept on the 8-track tapes' },
     ],
   },
   {
@@ -137,6 +139,7 @@ const LISTED: CastMember[] = [
       { game: 'smirked', as: 'the haunted house’s friendly portrait' },
       { game: 'sweats', as: 'host of open-mic night' },
       { game: 'risi', as: 'a rooftop philosopher and the theater’s jester' },
+      { game: 'tuneup', as: 'shrunk small, tuning THE\u00a0CHEZ up by ear' },
     ],
   },
   {
@@ -164,6 +167,7 @@ const LISTED: CastMember[] = [
       { game: 'tickle', as: 'through the classroom window, charging' },
       { game: 'sweats', as: 'at The Hive’s curb' },
       { game: 'risi', as: 'by the gate: QVID EST?' },
+      { game: 'tuneup', as: 'the patient: tuned up, test driven, leading the parade' },
     ],
   },
   {
@@ -220,6 +224,7 @@ const LISTED: CastMember[] = [
       { game: 'sleuth', as: 'Case 13, never closed' },
       { game: 'brief', as: 'a recipe card filed under 641.5' },
       { game: 'year2000', as: 'a postcard about the thirteenth ingredient' },
+      { game: 'tuneup', as: 'a frosty mug on the parade’s curb' },
     ],
   },
   {
