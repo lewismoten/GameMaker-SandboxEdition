@@ -29,6 +29,8 @@ const sources = {
   'mesh/zipFile': 'mesh/zipFile',
   'mesh/threeMf': 'mesh/threeMf',
   'mesh/colorBodies': 'mesh/colorBodies',
+  'mesh/decimate': 'mesh/decimate',
+  'mesh/sampledField': 'mesh/sampledField',
   images: 'images',
   'kit/blit': 'kit/blit',
   'kit/clips': 'kit/clips',

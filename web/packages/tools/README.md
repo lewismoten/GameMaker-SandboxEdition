@@ -241,7 +241,10 @@ how many pieces it has, its size and volume (`inspectMesh`). `mesh/tetraMesh` is
 the triangles, but closed for any field, and neighbors meet on the same vertices); `mesh/overhang` measures what
 an FDM printer cannot print (`overhang`) and builds the support pillars as a body of their own (`supportBody`);
 `mesh/colorBodies` picks at most four colors from a colored mesh (`pickPalette`) and splits the solid into one
-closed body per color (`colorBodies`); `mesh/threeMf` writes and reads multi-color 3MF files (`write3mf(parts,
+closed body per color (`colorBodies`, thinned and grown to the volume you give it); `mesh/decimate` takes the triangles a
+closed mesh does not need out by quadric edge collapse (`decimate(mesh, { maxError })`: stays closed and in one piece, and the
+borders between a triangle color and the next stay put); `mesh/sampledField` samples a field once on a grid and reads it back
+by trilinear interpolation, for the many passes over one figure (`sampledField`); `mesh/threeMf` writes and reads multi-color 3MF files (`write3mf(parts,
 title, codec)`, `read3mf`: parts are a mesh and a color), over the small ZIP writer `mesh/zipFile` (pass Node's
 `deflateRawSync` as `codec.deflate` to compress). `mesh/voxel` meshes filled voxels (`voxelMesh`: coplanar faces merged into
 rectangles, no T-junctions, so it stays closed) and `mesh/pixelFigure` turns a pixel sprite into a standee on a base with at
