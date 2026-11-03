@@ -248,7 +248,17 @@ by trilinear interpolation, for the many passes over one figure (`sampledField`)
 title, codec)`, `read3mf`: parts are a mesh and a color), over the small ZIP writer `mesh/zipFile` (pass Node's
 `deflateRawSync` as `codec.deflate` to compress). `mesh/voxel` meshes filled voxels (`voxelMesh`: coplanar faces merged into
 rectangles, no T-junctions, so it stays closed) and `mesh/pixelFigure` turns a pixel sprite into a standee on a base with at
-most four color bodies (`pixelFigure`). They are browser safe.
+most four color bodies (`pixelFigure`). They are browser safe, except `mesh/trinketTool`.
+
+Trinkets made of distance fields (Depth Perception's, Quest for the Round Tuit's) share one pipeline, all in millimeters
+with the floor at z = 0: `mesh/sdfShapes` has the 2D shapes (circle, rounded rectangle, polygon, ring, capsule and
+`pixelText2`, lettering in the 3x5 micro font), `extrude` and the solid combiners; `mesh/trinketKinds` builds a `plate` (coin,
+token, key-chain tag or badge: outline, raised rim, raised relief, sunk art, holes) and a `die`; `mesh/fieldTrinket`
+(`meshFieldTrinket`) meshes a field with a color per triangle and gives the checks (eroded pieces and specks, overhang),
+up to four color bodies and supports; `mesh/trinketTool` (`runTrinketTool`, Node only) writes the STL, 3MF and manifest.json
+of a game's trinkets, with a source key so an unchanged game is skipped, in worker threads when `--workers N` runs a bundle.
+A game keeps its designs in `games/<id>/src/trinkets/` (`TRINKETS` and `makeTrinket`) and a four-line `tools/trinkets.ts`.
+Surface nets need a cell smaller than half of any gap between pieces (a 0.6 mm kerf wants a 0.26 mm cell).
 
 ### Disk comparison
 

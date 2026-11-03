@@ -20,6 +20,8 @@ export interface FieldTrinketInput {
   box: { min: V3; max: V3 };
   /** Filament colors (at most four), when the automatic pick would join two the eye must tell apart. */
   palette?: Rgb[];
+  /** The grid of the color bodies in mm (default 1.5): finer when the trinket has gaps or details under 1.5 mm. */
+  bodyCell?: number;
   /** How many separate solids the trinket is made of (default 1): a coin cut into pieces is 3. */
   pieces?: number;
 }
@@ -90,7 +92,7 @@ export function meshFieldTrinket(input: FieldTrinketInput, cell = 0.95): FieldTr
   const report = inspectMesh(mesh);
   const bodies = colorBodies(fine, input.palette ?? pickPalette(fine, MAX_COLORS, PALETTE_MERGE), g, {
     ...box,
-    cell: BODY_CELL_MM,
+    cell: input.bodyCell ?? BODY_CELL_MM,
     simplify: BODY_SIMPLIFY_MM,
     volume: report.volume,
   });
