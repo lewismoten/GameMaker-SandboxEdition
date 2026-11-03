@@ -8,6 +8,7 @@ import { serializeRecording, type RecordedKey } from '@lewismoten/gamemaker-sand
 import { SCAN } from './ids';
 import type { Built } from './game';
 import { simFor } from '../tools/verify';
+import { throughGate } from '../tools/gate';
 import type { Sim } from '../tools/sim';
 
 export async function buildDemo(b: Built): Promise<{ rec: Uint8Array; ticks: number; reached: boolean }> {
@@ -45,7 +46,8 @@ export async function buildDemo(b: Built): Promise<{ rec: Uint8Array; ticks: num
   ev(SCAN.right, true);
   let lastX = sim.pos.x;
   let stuck = 0;
-  while (t < 900 && sim.link < 0 && !sim.dead) {
+  // (up in the pod bay, the clearance gate is next)
+  while (t < 900 && sim.link < 0 && !sim.dead && !(sim.pos.bx >= 74 && sim.pos.by < 48)) {
     await step();
     stuck = sim.pos.x === lastX ? stuck + 1 : 0;
     lastX = sim.pos.x;
@@ -64,8 +66,21 @@ export async function buildDemo(b: Built): Promise<{ rec: Uint8Array; ticks: num
       ev(SCAN.space, false);
     }
   }
-  const reached = sim.link >= 0;
   ev(SCAN.right, false);
+  // the pod bay: up the ledge to the right hatch (the one wearing the form's code) and on into the airlock
+  {
+    const base = t;
+    const before = sim.ticks;
+    sim.onKey = (k) => {
+      const now = base + (sim.ticks - before) + 1;
+      keys.push({ delta: now - last, key: k });
+      last = now;
+    };
+    await throughGate(sim);
+    sim.onKey = undefined;
+    t += sim.ticks - before;
+  }
+  const reached = sim.link === 0;
   // then the pod: out across the galaxy chart to the warp ring of The Cradle
   const galaxy = b.scenes.find((s) => s.file === 'galaxy')!;
   const pod = simFor(b, galaxy, 2, sim.w.ci);

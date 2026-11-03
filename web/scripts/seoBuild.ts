@@ -19,8 +19,9 @@
 import type { IndexHtmlTransformContext, Plugin } from 'vite';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { cdCatalog, cdFiles, type CdCatalogEntry } from './cdGames';
+import { cdCatalog, cdFiles, cdSecretCatalog, type CdCatalogEntry } from './cdGames';
 import { gameCardPng } from './ogImage';
+import { DOWNLOADS_STYLE, cardPictures, downloadCard } from './downloadsList';
 import { readScoopDates, SCOOP_TITLE, scoopRss } from './scoopFeed';
 import { GUIDE_SECTIONS } from '../src/manual/guideSections';
 import {
@@ -361,26 +362,28 @@ function versionOf(cdRoot: string, id: string): string | undefined {
 /**
  * downloads.html: a plain, crawlable page linking the ZIP of every listed Sandbox Software and
  * Bizarre game (the same permanent files the player fetches, games/originals/<id>/<game>.zip),
- * for the Internet Archive and search engines. Secret games are not in the catalog, so not here.
+ * for the Internet Archive and search engines. The secret games are listed here too, after the
+ * others, with no play page (Lewis's choice: this page only; nothing else names them).
  */
-export function downloadsPageHtml(catalog: CdCatalogEntry[], cdRoot: string): string {
+export function downloadsPageHtml(catalog: CdCatalogEntry[], cdRoot: string, secretCatalog: CdCatalogEntry[] = []): string {
   const games = playable(catalog).filter((g) => g.original && g.pack);
+  const secret = secretCatalog.filter((g) => g.original && g.pack);
   const bizarre = hasBizarreTab(games) ? games.filter(isBizarreGame) : [];
   const sections: [string, string, CdCatalogEntry[]][] = [
     ['Sandbox Software games', 'Made for this project with Game-Maker.', games.filter((g) => !bizarre.includes(g))],
     ['Bizarre games', 'Songs by The Bard of Bizarre, turned into games.', bizarre],
+    ['Hidden games', 'Games the desk keeps hidden until you find them.', secret],
   ];
-  const item = (g: CdCatalogEntry) => {
-    const v = versionOf(cdRoot, g.id);
-    return `          <li id="game-${escapeHtml(g.id)}"><a href="./${escapeHtml(g.path + g.pack)}">${escapeHtml(g.title)} (ZIP)</a>${v ? ` <small>version ${escapeHtml(v)}</small>` : ''}${g.blurb ? ` — ${escapeHtml(clip(g.blurb, 160))}` : ''} <a href="./${gamePage(g.id)}">Play it in your browser</a></li>`;
-  };
+  const pics = new Map([...cardPictures(games, cdRoot), ...cardPictures(secret, cdRoot, true)]);
+  const item = (g: CdCatalogEntry, i: number, list: CdCatalogEntry[]) =>
+    downloadCard(g, versionOf(cdRoot, g.id), secret.includes(g) ? undefined : `./${gamePage(g.id)}`, list === sections[0][2] && i < 2, pics.get(g.id));
   const body = sections
     .filter(([, , list]) => list.length)
     .map(
       ([head, about, list]) => `<section>
         <h2>${escapeHtml(head)}</h2>
         <p>${escapeHtml(about)}</p>
-        <ul>
+        <ul class="dl-list">
 ${list.map(item).join('\n')}
         </ul>
       </section>`,
@@ -395,6 +398,7 @@ ${list.map(item).join('\n')}
     <title>${escapeHtml(ROUTES.downloads.title)}</title>
     ${meta}
     ${STYLE}
+    ${DOWNLOADS_STYLE}
   </head>
   <body>
     <main class="seo-static">
@@ -505,7 +509,7 @@ function generated(cdRoot: string): Record<string, { type: string; body: () => s
   return {
     'robots.txt': { type: 'text/plain; charset=utf-8', body: robotsTxt },
     'sitemap.xml': { type: 'application/xml; charset=utf-8', body: () => sitemapXml(cdCatalog(cdRoot), new Date().toISOString().slice(0, 10)) },
-    'downloads.html': { type: 'text/html; charset=utf-8', body: () => downloadsPageHtml(cdCatalog(cdRoot), cdRoot) },
+    'downloads.html': { type: 'text/html; charset=utf-8', body: () => downloadsPageHtml(cdCatalog(cdRoot), cdRoot, cdSecretCatalog(cdRoot)) },
     'llms.txt': { type: 'text/plain; charset=utf-8', body: () => llmsTxt(cdCatalog(cdRoot)) },
     'scoop.xml': { type: 'application/rss+xml; charset=utf-8', body: () => scoopRss(cdCatalog(cdRoot), readScoopDates()) },
   };

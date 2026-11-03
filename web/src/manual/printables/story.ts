@@ -8,6 +8,7 @@ import { paginate } from './paginate';
 import { fitSheet } from './fitSheet';
 import { printsSheets, spyglassSheets } from './sleuthPrints';
 import { hintBookCover } from './hintCover';
+import { codeWheelSheets } from './codeWheel';
 import type {
   ChartItem,
   HintBookItem,
@@ -408,6 +409,8 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return spyglassSheets(it);
     case 'prints':
       return printsSheets(it);
+    case 'codewheel':
+      return codeWheelSheets(it);
   }
 }
 

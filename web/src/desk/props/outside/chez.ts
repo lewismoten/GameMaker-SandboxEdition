@@ -3,6 +3,7 @@
 // it for a honk of Doc Leo's bike horn.
 import { drawChez } from '../chezArt';
 import { roomSound } from '../propSound';
+import { chickenWords } from '../../../chicken/chickenWords';
 import { turns } from '../propKit';
 import { across, STREET, type OutsideEvent } from './outside';
 
@@ -10,7 +11,7 @@ const K = 1.5; // the view's pixels to the kit's unit: 60 x 30, on the street in
 const HONKS = turns([
   'Honk honk! Doc Leo waves from THE\u00a0CHEZ, Lewis’s red CitiCar. Not a sound from the motor: it’s electric.',
   'Honk honk! THE\u00a0CHEZ hums by at a stately 25 mph, Doc Leo at the wheel, racing stripes and all.',
-  'Honk honk! Doc Leo tips his fedora. Sir Reginald Cluckington III is riding shotgun, buckled in.',
+  '',
 ]);
 
 export const chez: OutsideEvent = {
@@ -27,6 +28,7 @@ export const chez: OutsideEvent = {
   },
   press() {
     roomSound.honk();
-    return HONKS();
+    // (the third honk names the chicken as she is now)
+    return HONKS() || `Honk honk! Doc Leo tips his fedora. ${chickenWords().full} is riding shotgun, buckled in.`;
   },
 };

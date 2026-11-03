@@ -18,6 +18,7 @@ export interface EggsPayload {
 type Overrides = Record<string, 'added' | 'broken'>;
 const KEY = 'gm-eggs';
 const TAPS = 'gm-egg-taps';
+const CHICKEN = 'gm-chicken';
 
 const overrides = (local: Record<string, string>): Overrides => {
   const o = json<Overrides>(local[KEY]);
@@ -49,7 +50,7 @@ export const eggs: Section<EggsPayload> = {
   id: 'eggs',
   title: 'Felt eggs and bonus eggs',
   short: 'Eggs',
-  description: 'Which eggs you have found, EGG.EXE’s changes and how far the rotten egg is cracked.',
+  description: 'Which eggs you have found, EGG.EXE’s changes, how far the rotten egg is cracked and who the rubber chicken is.',
   unit: ['egg found', 'eggs found'],
   async extract(w) {
     const local = localOf('eggs', w.local);
@@ -71,6 +72,10 @@ export const eggs: Section<EggsPayload> = {
     const taps = ctx.prefer === 'theirs' && theirs.local[TAPS] !== undefined ? tapsOf(theirs.local) : Math.max(tapsOf(mine.local), tapsOf(theirs.local));
     if (taps) local[TAPS] = String(taps);
     if (theirs.local['gm-egg-hatched'] && !mine.local['gm-egg-hatched'] && !local[TAPS]) local['gm-egg-hatched'] = theirs.local['gm-egg-hatched'];
+    // Lady Regina stays Lady Regina (the chicken, chicken/chickenState.ts); "theirs" decides only when asked to
+    const chicken = ctx.prefer === 'theirs' ? theirs.local[CHICKEN] : (mine.local[CHICKEN] ?? theirs.local[CHICKEN]);
+    if (chicken) local[CHICKEN] = chicken;
+    else delete local[CHICKEN];
     const mineSaved = new Set(mine.inSaves);
     const next = withFound(
       local,

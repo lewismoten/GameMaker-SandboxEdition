@@ -12,6 +12,7 @@ import './wallClock.css';
 import { h } from '../../editor/core/ui';
 import { deskClockSet, deskNow } from '../../retro/dos/deskClock';
 import { LUME_VISIBLE, nextCharge } from './lumeCharge';
+import { deskLifetime } from '../lifetime';
 
 const CX = 90;
 const CY = 262;
@@ -128,7 +129,7 @@ export function wallClock(): HTMLElement {
     charge = -1;
     lume();
   };
-  addEventListener('gm-lume-reset', recharge);
+  addEventListener('gm-lume-reset', recharge, { signal: deskLifetime() });
   // quartz: the second hand jumps once a second
   const timer = setInterval(() => (el.isConnected ? tick() : clearInterval(timer)), 1000);
   return el;

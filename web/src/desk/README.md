@@ -10,8 +10,10 @@ points out a prop, and `wallTrophies.ts` hangs the eggs and trophies once earned
 `overlayFocus.ts` moves the keyboard into an overlay and back. `wallTrophies.ts` also puts Teddy's Forte Locks toy safe ([`fortKnox/`](../fortKnox/README.md)) at the desk's right end after a catalog win, including the zero left by games with no money counter. Its combination is scribbled in pencil on the sticky note under the phone (`room/phoneNotes.ts`). `deskTour.ts` is the guided tour's BBS chapter on this PC: it
 calls The Sandbox BBS and types for the tour, then puts back what the call changed.
 
-- `pc/`: the case (`caseParts.ts`), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
-  the colors of the picture on the tube), the keyboard (`keyboard.ts`) and the keyboard tray
+- `pc/`: the case (`caseParts.ts`, with the hard disk's flickering HDD light beside POWER and TURBO; the key lock beside the buttons is drawn only), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
+  the colors of the picture on the tube; `crtWarmUp.ts` and `crtOn.css` warm the tube up at switch-on: dark, the beam's flickering line, the picture fading up torn into jagged rows that settle;
+  `crtOff.css` collapses it at switch-off), the fans whining up and the drives the boot reads (floppy seek test,
+  hard disk seeks, the CD-ROM's test), fading out slowly at the DOS prompt (`bootSounds.ts`), a game's paper code wheel lying beside the monitor on its puzzles' scenes, to turn or be told the answer (`codeWheelSpot.ts`, the wheel itself `manual/printables/codeWheel.ts`; the PC passes the scene with `onScene`), the keyboard (`keyboard.ts`) and the keyboard tray
   (`tray.ts`) with its mouse pad (its print, `padPrints.ts`, chosen in `padChooser.ts` from the
   magazine's mouse pad ad and remembered by `padChoice.ts`), the GRAVITAS game pad
   (`gamePad.ts`; its drawing `gamePadArt.ts`, its SVG parts `gamePadSvg.ts`, its large controls
@@ -22,14 +24,18 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   Narrow layouts hide the physical speakers and expose a 32px Sound Boaster switch beneath
   the key strip. Both controls share the remembered state and apply it to the current player.
 - `boxes/`: the retail boxes and their shelf (`shelf.ts`, `shelfLayout.ts`), turned in the box
-  viewer (`boxViewer.ts`). A game's box (`gameBox.ts`) is drawn from the game itself
+  viewer (`boxViewer.ts`). The box in the viewer is kept in the address (`boxAddress.ts`): `#/desk?open=box:<game id>`, with `&turn=<y>,<x>,<zoom>` once turned by hand. Opening pushes a history entry (Back closes the viewer), stepping along the shelf replaces it; a reload or shared link opens it again, but only for a box on this visitor's shelf (an unknown id, or a secret game not yet revealed, opens nothing and is dropped from the address). A game's box (`gameBox.ts`) is drawn from the game itself
   (`boxFacts.ts`, its play hours from its walkthrough in `playtime.ts`) with `boxPaint.ts`,
   `boxSeals.ts`, shelf wear (`boxWear.ts`), a glow under the black light (`boxUv.ts`) and a
   painted cover (`covers/<id>.ts`, with the brushes in `covers/paint.ts`); what came in it is
-  `gameBoxContents.ts`, `boxList.ts` and `printContext.ts`. `gmBox.ts` is the Game-Maker box.
+  `gameBoxContents.ts`, `boxList.ts` and `printContext.ts`. `gmBox.ts` is the Game-Maker box. A game's plastic trinkets (3D-printable STL, 3MF and support files its build
+  makes into `public/trinkets/<id>/`) are listed as `trinketShelf.ts` in the box viewer: choosing one takes the turning box's place
+  (choosing it again, or "Back to the box", returns the box), with a labeled STL (one color) / 3MF (colors,
+  the default) switch; Depth's trinkets and the pixel figures of the other games (`games/kit/pixelTrinkets.ts`,
+  whose items name a color-carrying `preview` STL) share it. It is drawn by the small WebGL viewer `trinketGl.ts`, turned by `trinketTurntable.ts` (spinning, drag and arrow keys; shared with the Library toy box's closer look). `trinketData.ts` reads the manifests and STL meshes (shared with the Library's toy box, `library/toyBox.ts`) and `trinketSnap.ts` draws a trinket once as a still PNG for lists.
 - `disks/`: the disk box (`diskBox.ts`; closed on the desk, `diskBoxFill.ts`), the buttons for
   the disk in drive A: (`driveActions.ts`) and the disks' labels (`diskLabel.ts`, RSD's own in
-  `rsdLabel.ts`).
+  `rsdLabel.ts`, whose level strips `stripQueue.ts` draws one at a time, only once on screen).
 - `mug/`: the BBS mug (`mug.ts`, drawn in 3D by `mug3d.ts`, turned in `mugViewer.ts`). Its
   pictures (`mugArt.ts`) are badges: one for every public game (a Sandbox game's, and The Bard
   of Bizarre's in a group of their own) cut from its title screen (`gameBadge.ts`,

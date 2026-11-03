@@ -11,6 +11,7 @@ import type { Rect } from './worldMapLayout';
 import { PIC_R, NAME_LINE, crossings, overlaps, placeBox, throughPlaces, type DrawnPath } from './worldMapMeasure';
 import { routePaths } from './worldMapRoute';
 import { bandCells } from './worldMapBands';
+import type { WorldMapHints } from './types';
 import { regionsOf } from './worldMapRegions';
 
 /** A place's cell: room for its picture, ribbon and a path or two either side. */
@@ -94,7 +95,7 @@ const pathLength = (p: DrawnPath) => p.line.reduce((n, q, k) => (k ? n + Math.hy
  * The plan for a game's places: `name(i)` is the name on place i's ribbon and `lines(i)` how
  * many lines of names it lists; places start at `origin`.
  */
-export function planWorld(game: Game, name: (i: number) => string, lines: (i: number) => number, origin: Point = { x: 0, y: 0 }): Plan {
+export function planWorld(game: Game, name: (i: number) => string, lines: (i: number) => number, origin: Point = { x: 0, y: 0 }, hints?: WorldMapHints): Plan {
   const g = graphOf(game);
   if (!g.nodes.length) return { at: new Map(), boxes: new Map(), paths: [], bounds: { x: origin.x, y: origin.y, w: 0, h: 0 } };
   const room = Math.max(0, ...g.nodes.map(lines)) * NAME_LINE;
@@ -107,7 +108,7 @@ export function planWorld(game: Game, name: (i: number) => string, lines: (i: nu
   };
   // the start goes before the ways it leads (paths are ordered: neighbors first)
   const pairs = [...g.pairs];
-  const regions = regionsOf(game, g)
+  const regions = regionsOf(game, g, hints)
     .map((r) => r.ids)
     .filter((ids) => ids.length >= 2);
   // a game with very many ways is judged on its shape and length alone (straight lines cross everywhere)

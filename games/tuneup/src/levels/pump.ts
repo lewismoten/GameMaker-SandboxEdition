@@ -13,6 +13,8 @@ import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { poodle } from '../sprites/balloonDogs';
 import { AIR, countedDoor, kit, LEDGE, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
+import { addCameo, placeCameo } from '../blocks/cameo';
+import { lewieCameo } from '../../../kit/cameos';
 import type { Pal } from '../art/palette';
 import { CTR, MON } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
@@ -195,6 +197,8 @@ export function pumpBlocks(pal: Pal): Kit {
   top.rect(2, 4, 16, 16, c('mach', 3)).frame(2, 4, 16, 16, c('mach', 0)).rect(2, 2, 16, 2, c('mach', 1));
   top.rect(8, 8, 4, 4, c('lamp', 3)).frame(8, 8, 4, 4, c('mach', 0));
   book.add('gateTop', top, AIR);
+  // Teenage Lewie (Snowbound), on the curb holding the pump hose
+  addCameo(k, 'lewie', `air${PUMP.floor - 1}`, (host, use) => lewieCameo(host, 'down0', { use }));
   addFork(k, `air${AWNING_ROW - 1}`);
   glint(k, `air${AWNING_ROW - 2}`);
   return k;
@@ -226,6 +230,11 @@ export function pump(book: Kit['book']): Level {
   ] as const)
     m.set(x, floor - 1, `tuft${t}`);
   m.set(12, floor - 1, 'bottlecap');
+  placeCameo(m, 'lewie', `air${floor - 1}`, [
+    [9, floor - 1],
+    [15, floor - 1],
+    [20, floor - 1],
+  ]);
   for (const [a, b] of AWNINGS) {
     m.fill(a, AWNING_ROW, b - a + 1, 1, 'awning');
     for (let y = AWNING_ROW + 1; y < floor; y++) m.set(b, y, `post${y}`);
@@ -241,7 +250,7 @@ export function pump(book: Kit['book']): Level {
   m.set(t1 + 1, floor - 3, 'slide').set(t1 + 2, floor - 3, 'slide');
   m.set(PUMP.door, floor - 2, 'gateTop').set(PUMP.door, floor - 1, 'gate');
   m.set(w - 1, 0, 'fence.top').fill(w - 1, 1, 1, floor - 1, 'fence');
-  m.link(PUMP.exit, floor - 1);
+  m.link(PUMP.door, floor - 1);
   m.mon(MON.reggie, 4, floor - 1);
   m.mon(MON.pigeon, PIGEON[0], PIGEON[1]);
   return { m, start: at(8, 5), size: [w, 10] };

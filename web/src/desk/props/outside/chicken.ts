@@ -1,8 +1,11 @@
-// Sir Reginald Cluckington III, Doc Leo's rubber chicken, sailing past the window in a long
+// Sir Reginald Cluckington III (Lady Regina, in a tiara, once Tune-Up's egg is laid), Doc Leo's rubber chicken, sailing past the window in a long
 // arc, spinning end over end. Rubber chickens can't fly. Nobody told him.
 import { roomSound } from '../propSound';
 import { VIEW } from '../../room/snowWindow';
 import type { OutsideEvent } from './outside';
+import { chickenNow } from '../../../chicken/chickenState';
+import { chickenWords } from '../../../chicken/chickenWords';
+import { drawTiara } from '../../../chicken/chickenArt';
 
 export const chicken: OutsideEvent = {
   kind: 'chicken',
@@ -37,6 +40,7 @@ export const chicken: OutsideEvent = {
     c.fill();
     c.fillStyle = '#111';
     c.fillRect(8.4, -9.8, 1, 1);
+    if (chickenNow() === 'lady') drawTiara(c);
     // its dangling feet
     c.strokeStyle = '#f08a1c';
     c.lineWidth = 1;
@@ -51,6 +55,7 @@ export const chicken: OutsideEvent = {
   },
   press() {
     roomSound.squawk(1);
-    return 'SQUAWK! Sir Reginald Cluckington III sails past the window. Rubber chickens can’t fly. Nobody told him.';
+    const w = chickenWords();
+    return `SQUAWK! ${w.full} sails past the window. Rubber chickens can’t fly. Nobody told ${w.him}.`;
   },
 };

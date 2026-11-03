@@ -13,6 +13,8 @@ import { BLEED, CUT_H, CUT_W, cutSvg, layoutStickers, pngWithDpi, sheetBounds, t
 import { CUT_OFFSET, MIN_SIZE, outline, type Pt } from './stickerGeom';
 import { bbsSticker, dieCut, floppy, gmSticker, polyPath, sandboxSticker, shaped, tvShot, type Sticker, type Words } from './stickerPaint';
 import type { StickerSpec } from './types';
+import { drawnArt } from './stickerDrawn';
+import { chickenNow } from '../../chicken/chickenState';
 
 type Special = 'bbs' | 'gm' | 'sandbox';
 
@@ -94,13 +96,20 @@ function mini(name: string, img: HTMLCanvasElement, color: string): Sticker | un
 }
 
 /** A spec made ready: its picture loaded, its kind and shape chosen. Also its mini, if it has a character. */
-async function resolveSticker(spec: MixedSticker, ctx: PrintContext | undefined, shrink = 0): Promise<{ sticker: Sticker; mini?: Sticker }> {
+async function resolveSticker(given: MixedSticker, ctx: PrintContext | undefined, shrink = 0): Promise<{ sticker: Sticker; mini?: Sticker }> {
+  // the rubber chicken follows the site (chicken/): once she is Lady Regina her sticker says so
+  const spec = given.lady && chickenNow() === 'lady' ? { ...given, ...given.lady } : given;
   if (spec.special === 'bbs') return { sticker: bbsSticker() };
   if (spec.special === 'gm') return { sticker: gmSticker() };
   if (spec.special === 'sandbox') return { sticker: sandboxSticker() };
   const name = nameOf(spec);
   const words = wordsOf(spec);
   const shape = spec.shape ?? 'rect';
+  if (spec.drawn) {
+    const img = drawnArt(spec.drawn);
+    const px = spec.px ?? 13;
+    return { sticker: dieCut(name, img, px, words) };
+  }
   if (ctx && (spec.hero || spec.sprite)) {
     const src = spec.hero ? await portrait(ctx.entry, spec.hero) : await spriteArt(ctx.entry, spec.sprite!);
     const loaded = await loadImage(src);
@@ -212,7 +221,7 @@ function gameSpecs(ctx: PrintContext): MixedSticker[] {
   return [
     ...(ctx.printables.stickers ?? []),
     ...(shot ? [{ text: 'Screenshot', shot: { map: shot[0], x: shot[1] + 3, y: shot[2] + 2, w: 10, h: 7 } }] : []),
-    { text: 'I ♥ SHAREWARE', shape: 'heart', color: '#d81e1e', ink: '#fff' },
+    { text: 'I ♥', sub: 'SHAREWARE', shape: 'heart', color: '#d81e1e', ink: '#fff' },
     { text: '', special: 'sandbox' },
   ];
 }

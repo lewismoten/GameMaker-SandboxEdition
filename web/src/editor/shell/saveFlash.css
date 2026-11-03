@@ -1,0 +1,39 @@
+/* The small "✓ Saved" pill (saveNote.ts) for screens where the file list, and its save note, is
+   folded away (below 1200px). It fades after a moment; "Not saved" stays until the next save. */
+.save-flash {
+  display: none;
+}
+@media (max-width: 1199px) {
+  .save-flash {
+    display: block;
+    position: fixed;
+    left: 50%;
+    bottom: 12px;
+    z-index: 90;
+    margin: 0;
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--muted);
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%);
+    transition: opacity 0.4s;
+  }
+  .save-flash.on {
+    opacity: 1;
+  }
+  .save-flash.failed {
+    border-color: var(--danger);
+    color: var(--danger);
+    font-weight: 600;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .save-flash {
+    transition: none;
+  }
+}

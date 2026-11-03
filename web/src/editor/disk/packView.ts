@@ -33,6 +33,8 @@ export function packView(
   busy: boolean,
   find: () => void,
   apply: (p: PackPlan) => void,
+  /** The button makes an optimized copy instead of changing this game (a game open to look at only). */
+  asCopy = false,
 ): HTMLElement {
   const body: (HTMLElement | null)[] = [];
   const plan = set?.[mode];
@@ -93,7 +95,13 @@ export function packView(
         : null,
       h('ol', { class: 'disk-steps' }, ...plan.units.map((u) => h('li', { class: 'disk-step' }, u.title))),
       ...plan.stuck.map((s) => h('p', { class: 'hint' }, `${s}.`)),
-      h('button', { type: 'button', class: 'primary', onclick: () => apply(plan) }, `Apply ${plural(plan.units.length, 'step')} (saves ${kb(plan.saves)})`),
+      h(
+        'button',
+        { type: 'button', class: 'primary', onclick: () => apply(plan) },
+        asCopy
+          ? `Make an optimized copy (${plural(plan.units.length, 'step')}, saves ${kb(plan.saves)})`
+          : `Apply ${plural(plan.units.length, 'step')} (saves ${kb(plan.saves)})`,
+      ),
       h('button', { type: 'button', onclick: find }, 'Look again'),
     );
   }

@@ -10,6 +10,8 @@ export interface WalkAutoArgs {
   budgetMs: number;
   game?: string;
   out?: string;
+  /** Only the arrows, Space and Enter (editor/check/keyLimit.ts): a keyboard accessibility check. */
+  basicKeys?: boolean;
 }
 
 export function parseArgs(argv: string[]): WalkAutoArgs | string {
@@ -17,8 +19,13 @@ export function parseArgs(argv: string[]): WalkAutoArgs | string {
   let budgetMs = DEFAULT_BUDGET_S * 1000;
   let game: string | undefined;
   let out: string | undefined;
+  let basicKeys = false;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
+    if (a === '--basic-keys') {
+      basicKeys = true;
+      continue;
+    }
     if (a === '--budget' || a === '--game' || a === '--out') {
       const v = argv[++i];
       if (v === undefined) return `${a} needs a value.`;
@@ -33,8 +40,8 @@ export function parseArgs(argv: string[]): WalkAutoArgs | string {
     else if (source === undefined) source = a;
     else return `Unexpected argument ${a}.`;
   }
-  if (source === undefined) return 'Usage: npm run walk:auto -- <game folder | .zip> [--budget ms] [--game NAME.GAM] [--out walkthrough.json]';
-  return { source, budgetMs, game, out };
+  if (source === undefined) return 'Usage: npm run walk:auto -- <game folder | .zip> [--budget ms] [--game NAME.GAM] [--out walkthrough.json] [--basic-keys]';
+  return { source, budgetMs, game, out, ...(basicKeys ? { basicKeys } : {}) };
 }
 
 /** The .gam to use among a folder's file names: the one asked for, the only one, or an error that lists them. */

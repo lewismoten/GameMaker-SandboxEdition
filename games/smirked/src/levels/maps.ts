@@ -58,10 +58,12 @@ class MapBuilder {
   /**
    * A walk-in hall of `len` blocks of `floor` from (x, y) the way (dx, dy), with the link at
    * its far end: the door's voice (a counter spent) plays on while you walk it, so it has
-   * finished before the scene changes (the next picture cuts a clip still playing).
+   * finished before the scene changes (the next picture cuts a clip still playing). A doorway
+   * block (`door`) stands at the far end, on the link, so the way out is plainly a door.
    */
-  hall(x: number, y: number, dx: number, dy: number, len: number, floor: string, toScene: LinkSpec['toScene']): this {
-    for (let i = 0; i < len; i++) this.set(x + dx * i, y + dy * i, floor);
+  hall(x: number, y: number, dx: number, dy: number, len: number, floor: string, toScene: LinkSpec['toScene'], door: string): this {
+    for (let i = 0; i < len - 1; i++) this.set(x + dx * i, y + dy * i, floor);
+    this.set(x + dx * (len - 1), y + dy * (len - 1), door);
     return this.link(x + dx * (len - 1), y + dy * (len - 1), toScene);
   }
 
@@ -155,7 +157,7 @@ export function fogHall(book: BlockBook): Level {
   m.patch(0, 0, map.lines);
   m.mon(MON.lily, 15, 13).mon(MON.bat, 5, 7).mon(MON.bat, 20, 3).mon(MON.bat, 11, 11).mon(MON.ghost, 18, 9).mon(MON.ghost, 3, 4);
   // the dark hallway, behind its door: "the sign said mild scares for all ages" plays out
-  m.hall(30, 2, 1, 0, FOG_HALL, '.', 'next');
+  m.hall(30, 2, 1, 0, FOG_HALL, '.', 'next', 'hallDoorBoards');
   return { m, start: at(14, 14), size: [map.w + FOG_HALL, map.h] };
 }
 
@@ -218,7 +220,7 @@ export function zombieParade(book: BlockBook): Level {
   m.mon(MON.zombie, 3, 7).mon(MON.zombie, 15, 5).mon(MON.zombie, 24, 4).mon(MON.zombie, 11, 14).mon(MON.zombie, 25, 10);
   m.mon(MON.lily, 2, 14).mon(MON.goat, 17, 8).mon(MON.seed, 29, 12).mon(MON.bat, 8, 9);
   // the staff corridor, behind the STAFF ONLY door: "She strolls like it's Target"
-  m.hall(32, 8, 1, 0, STAFF_HALL, '.', 'next');
+  m.hall(32, 8, 1, 0, STAFF_HALL, '.', 'next', 'hallDoorFlags');
   return { m, start: at(1, 8), size: [map.w + STAFF_HALL, map.h] };
 }
 
@@ -278,7 +280,7 @@ export function fakeWoods(book: BlockBook): Level {
     .mon(MON.bill, 19, 13)
     .mon(MON.bill, 28, 3);
   // the way through, past the register: "I get a souvenir sword"
-  m.hall(34, 13, 1, 0, SHOP_HALL, '.', 'next');
+  m.hall(34, 13, 1, 0, SHOP_HALL, '.', 'next', 'hallDoorDirt');
   return { m, start: at(1, 2), size: [map.w + SHOP_HALL, map.h] };
 }
 

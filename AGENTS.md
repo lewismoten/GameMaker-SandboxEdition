@@ -47,15 +47,19 @@ npx vite-node ../games/kit/clipCheck.ts <id>       # no voice clip cut off at a 
 npx vite-node ../games/kit/textfitCheck.ts <id>    # text fits its DOS screens
 npx vite-node ../games/kit/hiddenView.ts <id>      # tin hearts and eggs are out of sight
 npx vite-node ../games/kit/levelCheck.ts <id>      # the editor's Level check finds nothing new
+npx vite-node ../games/kit/palCheck.ts [id]        # no byte-identical .pal files on a disk (the build merges them)
 npx vite-node ../games/kit/tinHearts.ts check      # every heart is found when touched
 npx vite-node ../games/kit/playtime.ts             # the only writer of box play hours
 npx vite-node ../games/kit/versionCheck.ts         # a game changed since the last push to master has a higher version
 npm run check:games                                # all of the game checks above, every game, a table
 npm run check:games -- --game <id> --quick         # one game, without the reproducibility rebuild
-npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win
+npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json] [--basic-keys]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win; --basic-keys: arrows, Space and Enter only
+npm run check:keys [-- id ...]                     # keyboard accessibility: each walkthrough's share of arrows/Space/Enter presses, its diagonals and other keys; suggestions
+npm run editor:touch -- <route> [--out dir]       # touch audit of one editor route at iPad and iPhone sizes: controls under 44 px, overflow, axe, screenshots
+npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game the dev interaction log (the 🐵 switch) recorded, headless; checks each snapshot; PNG frames with --out; exits 1 on divergence
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run domains:check                              # every made-up domain is still unregistered (whois + DNS; needs network)
-npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox
+npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox (open DOSBox or any window only when Lewis is away)
 npm run voice                                      # tour voice clips for new or changed lines (local Pocket TTS; -- --only <id> retakes one)
 npm run voice:all                                  # every tour voice clip again
 npm run voice:check                                # Whisper hears every tour clip and lists words said wrong (retake those)
@@ -91,12 +95,28 @@ preserve what was there.
 
 ## Working rules
 
+- **Branches (git flow):** `master` holds releases and `develop` collects finished work.
+  Nobody commits on either directly, and several agents (a remote one included) work at once,
+  so every task gets its own branch from an up-to-date `develop`:
+  - start: `git switch develop && git pull --ff-only && git switch -c feature/<short-name>`
+  - finish, once its checks pass: bring `develop` in first and settle any conflicts on the
+    feature branch (`git merge develop`), then
+    `git switch develop && git pull --ff-only && git merge --no-ff feature/<short-name> && git push origin develop`,
+    so the other agents can pull it. Then delete the feature branch, locally and on origin
+    (`git branch -d feature/<short-name> && git push origin --delete feature/<short-name>`),
+    unless work on it is still going on.
+  - an agent you start (a subagent, a worktree) gets its own `feature/` branch from `develop`
+    the same way; tell it to in its brief.
+  - a pull request from `develop` into `master` only when the maintainer says it's time.
 - **Commits:** commit small and often: one game or one feature per commit, with no more
   than about 3 uncommitted files at a time. Use `git commit -- <paths>` so you only commit
-  your own files. Never push, and never rewrite history.
+  your own files. Every 5 to 10 minutes, if there are new commits, push your feature branch
+  (`git push -u origin HEAD` the first time, then `git push`), so the maintainer can see on
+  GitHub what everyone is working on, even away from home. No workflow runs on a branch push.
+  Never push `master`, never force-push, and never rewrite history that has been pushed.
 - **Dev server:** the maintainer keeps a dev server open on port 5173. Never restart or stop
-  it, and never make that page reload. Verify with your own headless browser (playwright-core,
-  channel `chrome`) against it. For production checks, use a scratch build
+  it, and never make that page reload. Verify with your own headless browser (Playwright's
+  bundled Chromium, no `channel`, closed in a `finally`) against it. For production checks, use a scratch build
   (`vite build --outDir <tmp>`) previewed on another port, and stop it afterwards. Edits to
   `web/index.html` and `web/vite.config.ts` should be rare and deliberate.
 - **Formatting and lint:** run `npm run format` and `npm run lint` (from `web/`) before
@@ -143,9 +163,10 @@ preserve what was there.
 - **Scope:** do what was asked. Don't add games, features or settings nobody asked for, and
   don't turn off a setting you weren't asked to touch. When told to wrap up, finish what you
   have and pick up nothing new.
-- **Pull requests:** open one only when asked. GitHub defaults to the upstream repository
-  (gandrewstone/GameMaker), and a pull request opened there can't be deleted, so always pass
-  `--repo lewismoten/GameMaker-SandboxEdition` and check the base before creating it.
+- **Pull requests:** open one only when asked, from `develop` into `master`. GitHub defaults
+  to the upstream repository (gandrewstone/GameMaker), and a pull request opened there can't
+  be deleted, so always pass `--repo lewismoten/GameMaker-SandboxEdition --base master --head develop`
+  and check the base before creating it.
 - **Claims:** search before saying something exists or doesn't, and point to the file and
   line. Mark an inference as one ("appears to be"); don't state it as fact.
 - **Bots and checks:**
@@ -176,6 +197,9 @@ preserve what was there.
 - **Trademarks:** use generic words instead of casual trademarks ("building blocks", not a
   brand). Lyrics quoted word for word and historical tech names (Sound Blaster, MS-DOS,
   VGA…) stay; NOTICE.md lists them.
+- **US English:** color, gray, center, everywhere.
+- **One voice:** site text outside the 1990s in-story voice is one person, so no "we", "our" or
+  "us".
 - **Spelling:** these notes are for you, not the player. Don't repeat them in game or site
   text ("two n's", "no clown nose", "never Dr."); just get them right.
   - **Gwinn** (two n's) is the troublemaker dog.
@@ -230,5 +254,6 @@ in your report what credits you added.
 Run format, lint, tsc and vitest. Run the game checks above for any game you touched. Look at
 art, printables and screens, and listen to voices, before calling them done. Then report what
 changed, the commits, how you verified it, and anything left undone, keeping checks that
-passed apart from what still needs a live test. Give times in a timeline with the weekday and
+passed apart from what still needs a live test, and any server, browser or vite-node run you
+started and couldn't stop (never port 5173). Give times in a timeline with the weekday and
 time.

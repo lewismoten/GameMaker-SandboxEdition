@@ -39,7 +39,9 @@ export const SPARK = {
   exit: 36,
 } as const;
 /** Ticks the wire's foot glows before its spark runs (a warning; it doesn't frizz). */
-export const WARN = 10;
+export const WARN = 20;
+/** Ticks of quiet at the scene's start (a lap of the cycle) before the first spark: nothing hurts the moment he lands. */
+export const LEAD = CYCLE;
 /** Energy a spark takes. */
 const FRIZZ = -2;
 
@@ -78,13 +80,13 @@ export function sparkBlocks(pal: Pal): Kit {
     const id = `w${i + 1}`;
     const off = CYCLE - w.on;
     // the ring: a lead-in to the wire's slot, then on (it frizzes) and off, round and round
-    const pre = w.slot * SLOT;
-    if (pre) book.add(`${id}.pre`, wire(0), { ...CLIMB, ntime: pre, next: `${id}.on` });
+    const pre = LEAD + w.slot * SLOT;
+    book.add(`${id}.pre`, wire(0), { ...CLIMB, ntime: pre, next: `${id}.on` });
     book.add(`${id}.on`, wire(1 + i), { ...CLIMB, hp: FRIZZ, ntime: w.on, next: `${id}.off` });
     book.add(`${id}.off`, wire(0), { ...CLIMB, ntime: off, next: `${id}.on` });
     // the foot: the same ring, but it glows for WARN ticks before each spark
     const f = `${id}.foot`;
-    if (pre > WARN) book.add(`${f}.pre`, wire(0), { ...CLIMB, ntime: pre - WARN, next: `${f}.warn` });
+    book.add(`${f}.pre`, wire(0), { ...CLIMB, ntime: pre - WARN, next: `${f}.warn` });
     book.add(`${f}.warn`, glow(), { ...CLIMB, ntime: WARN, next: `${f}.on` });
     book.add(`${f}.on`, wire(1 + i), { ...CLIMB, hp: FRIZZ, ntime: w.on, next: `${f}.off` });
     book.add(`${f}.off`, wire(0), { ...CLIMB, ntime: off - WARN, next: `${f}.warn` });
@@ -150,10 +152,9 @@ export function spark(book: Kit['book']): Level {
   WIRES.forEach((wr, i) => {
     const id = `w${i + 1}`;
     m.set(wr.x, 1, `plug${i + 1}`).set(wr.x, WIRE_TOP, 'wire.top');
-    for (const y of SPARK_ROWS.slice(0, -1)) m.set(wr.x, y, wr.slot ? `${id}.pre` : `${id}.on`);
-    // the foot's ring starts where its glow lines up with the spark (a first spark at tick 0 can't be warned)
-    const pre = wr.slot * SLOT;
-    m.set(wr.x, SPARK_ROWS[SPARK_ROWS.length - 1], !pre ? `${id}.foot.on` : pre > WARN ? `${id}.foot.pre` : `${id}.foot.warn`);
+    for (const y of SPARK_ROWS.slice(0, -1)) m.set(wr.x, y, `${id}.pre`);
+    // the foot's ring starts where its glow lines up with the spark
+    m.set(wr.x, SPARK_ROWS[SPARK_ROWS.length - 1], `${id}.foot.pre`);
     // the ledge off the top to the right, to walk off and down
     m.fill(wr.x + 1, WIRE_TOP + 1, 3, 1, '_');
   });

@@ -25,6 +25,7 @@ import { shotPrize } from './checks/shotPrize';
 import { changingKeys, keyHabits } from './checks/keyHabits';
 import { screenText } from './checks/screenText';
 import { fakeExits, music, noWayOut } from './checks/levelExits';
+import { hiddenExits } from './checks/hiddenExit';
 import { flashing } from './checks/flashing';
 import { stakes } from './checks/stakes';
 import { landings } from './checks/landings';
@@ -144,6 +145,7 @@ export async function runChecks(files: GameFiles, opt: CheckOptions = {}): Promi
       ...shotPrize(d),
       ...keyHabits(d),
       ...fakeExits(d),
+      ...hiddenExits(game, d),
       ...noWayOut(d, game),
       ...music(d, game, files),
       ...flashing(d),

@@ -394,6 +394,68 @@ It's Sir Reginald Cluckington III! Red harness, leash trailing, looking extremel
 Squeak. He'll find his way back to Doc Leo's tent, he says. (Squeak.) Rubber chickens always do.`,
     'chick',
   ),
+  // ---------------------------------------------------------------- the Royal Code Wheel's puzzles
+  runes1: {
+    ...t(
+      'runes1',
+      'pip',
+      'Runes in the Floor',
+      'dark',
+      'The Snooze Barrows',
+      `Old Procrastian runes, cut into the floor. Nobody has read them in four hundred years. Nobody got around to it.
+
+The two brass ones are the key: a letter and a rune.
+
+The Royal Code Wheel reads the rest. Turn its small disc until the brass rune sits against the brass letter. Then every rune sits against its own letter.
+
+(The Code Wheel comes in the box. Ask a grown-up where the box went.)`,
+    ),
+    before: ['carve1.gif'],
+  },
+  minekey: {
+    ...t(
+      'minekey',
+      'pip',
+      "The Miners' Plate",
+      'dark',
+      'The Putoff Mines',
+      `A brass plate by the bulkhead, scratched by a hundred miners' boots:
+
+MINERS! SET YOUR WHEELS BY THIS PLATE. THE TRUE DOOR WEARS THE MARKS YOUR WINDOWS SHOW, 1 2 3, LEFT TO RIGHT.
+
+THE OTHER DOORS ARE CUPBOARDS. WE MEANT TO LABEL THEM.
+
+- THE MANAGEMENT`,
+    ),
+    before: ['plate.gif'],
+  },
+  falsedr: t(
+    'falsedr',
+    'pip',
+    'A Cupboard',
+    'dark',
+    'The Putoff Mines',
+    `The door opens on a broom cupboard. In it: a broom, a bucket, and a very old miner fast asleep under a sign that says BACK IN 5 MINUTES.
+
+Pip tiptoes out the back way, round and round, and comes out in the passage south of the stopes.
+
+The true door wears the marks the Code Wheel's windows show.`,
+  ),
+  runes2: {
+    ...t(
+      'runes2',
+      'pip',
+      'Runes in the Floor',
+      'dark',
+      'Deadline Keep',
+      `More runes, these ones polished every morning by Lord Deadline's staff. On time.
+
+A brass letter and a brass rune for the key, as before. Set the Code Wheel by them and read.
+
+Somebody has scratched a little clock beside them, running.`,
+    ),
+    before: ['carve2.gif'],
+  },
   // ---------------------------------------------------------------- the pieces of the Tuit
   piece1: t(
     'piece1',

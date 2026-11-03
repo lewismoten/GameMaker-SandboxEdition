@@ -6,7 +6,7 @@
 // browser whose demo sound is "None" starts muted.
 import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { channelGain, onMix } from '@lewismoten/gamemaker-sandbox-engine/audio/mix';
-import { fetchGameFile, loadGameList } from '../project/files';
+import { peekGameFile, loadGameList } from '../project/files';
 import { BARKS, MUSIC, SOUNDS, barkUrl, type MusicId, type SoundId } from './steps';
 
 const KEY = 'gm-tour-sound';
@@ -42,7 +42,7 @@ export class TourSound {
       const [game, name] = path.split('/');
       p = loadGameList()
         .then((list) => list.find((g) => g.id === game))
-        .then((entry) => (entry ? fetchGameFile(entry, name) : undefined))
+        .then((entry) => (entry ? peekGameFile(entry, name) : undefined))
         .catch(() => undefined);
       this.files.set(path, p);
     }

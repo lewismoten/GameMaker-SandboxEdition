@@ -3,10 +3,12 @@
 // site's music worklet like the cast stage (cast/castSound.ts). It starts only after a click or key
 // press on the page (the browser's autoplay rule), sits low under the visitor's Music setting (the
 // sound settings dialog; the engine follows it live) and the demo sound choice ("None" keeps it
-// silent), pauses while the tab is hidden, and stops when the room leaves the page. The engine is
+// silent), pauses while the tab is hidden or the guided tour plays (it has its own song; tour/, its
+// 'gm-tour' events), and stops when the room leaves the page (a new address, or the desk taking over: pageLife.ts). The engine is
 // imported when the first gesture comes, so the page loads none of it.
 import { demoAudio } from '../media/demoAudio';
-import { fetchGameFile, loadCatalog } from '../project/files';
+import { peekGameFile, loadCatalog } from '../project/files';
+import { pageLife } from '../pageLife';
 
 const GAME = 'brief';
 const SONG = 'library.cmf';
@@ -23,13 +25,16 @@ export function startLibraryMusic(room: HTMLElement): void {
     engine = undefined;
     for (const e of ['pointerdown', 'keydown']) removeEventListener(e, onGesture, true);
     removeEventListener('hashchange', check);
+    removeEventListener('gm-tour', onVisible);
     document.removeEventListener('visibilitychange', onVisible);
   };
   /** The room left the page (the next page may draw a moment after the address changes). */
   const check = () => {
     for (const ms of [100, 600, 2000]) setTimeout(() => !room.isConnected && stop(), ms);
   };
-  const onVisible = () => engine?.pauseMusic(document.hidden);
+  /** Hushed while the tab is hidden or the tour is on (its class is set before 'gm-tour' starts, removed before it ends). */
+  const hushed = () => document.hidden || document.documentElement.classList.contains('tour-on');
+  const onVisible = () => engine?.pauseMusic(hushed());
   const onGesture = () => {
     if (begun || ended || !room.isConnected || demoAudio() === 'none') return;
     begun = true;
@@ -40,13 +45,16 @@ export function startLibraryMusic(room: HTMLElement): void {
       e.setLevel(LEVEL);
       await e.resume();
       const entry = (await loadCatalog()).find((g) => g.id === GAME);
-      const bytes = entry && (await fetchGameFile(entry, SONG));
+      const bytes = entry && (await peekGameFile(entry, SONG));
       if (ended || engine !== e) return;
       await e.playSong(bytes);
-      if (document.hidden) e.pauseMusic(true);
+      if (hushed()) e.pauseMusic(true);
     });
   };
   for (const e of ['pointerdown', 'keydown']) addEventListener(e, onGesture, { capture: true });
   addEventListener('hashchange', check);
+  // switching to the desk replaces the page without a hashchange (main.ts startDesk): the page's life ends
+  pageLife().addEventListener('abort', stop, { once: true });
+  addEventListener('gm-tour', onVisible);
   document.addEventListener('visibilitychange', onVisible);
 }

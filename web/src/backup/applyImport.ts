@@ -13,6 +13,7 @@ const CHANGED = [
   'gm-scores-changed',
   'gm-score-trophies-changed',
   'gm-eggs-changed',
+  'gm-chicken-changed',
   'gm-tin-hearts-changed',
   'gm-imported-notes-changed',
 ];

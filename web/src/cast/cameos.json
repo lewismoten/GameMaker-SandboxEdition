@@ -28,6 +28,7 @@
     { "game": "maximus", "as": "up under the training deck’s windows, past the practice range" }
   ],
   "will": [
+    { "game": "tuneup", "as": "on the curb, bowing to the Clown Club" },
     { "game": "sleuth", "as": "a playbill in the lobby: ALAS, BARD" },
     { "game": "realm", "as": "a visiting playwright on Someday Harbor’s quay" },
     { "game": "smirked", "as": "peeking out of the gift shop’s curtains" },
@@ -36,6 +37,7 @@
     { "game": "maximus", "as": "visiting Maxima Station’s pod bay" }
   ],
   "watt": [
+    { "game": "tuneup", "as": "seeing to the dash’s wiring" },
     { "game": "blaster", "as": "blinking on Memory Lane" },
     { "game": "needle", "as": "under the tailor’s sewing table, seeing to the treadle" },
     { "game": "carl", "as": "seeing to the stereo’s left speaker" },
@@ -45,10 +47,12 @@
     { "game": "depth", "as": "beside THE\u00a0CHEZ in Teapot Temple, minding its charge port" }
   ],
   "carl": [
+    { "game": "tuneup", "as": "walking the windshield in the rain" },
     { "game": "blaster", "as": "the bug in Memory Lane: FOUND IT: CARL" },
     { "game": "logic", "as": "the bug in The Home Computer’s chip" }
   ],
   "joe": [
+    { "game": "tuneup", "as": "counting the 8-track tapes by the crate" },
     { "game": "realm", "as": "night librarian by the Royal Library’s door" },
     { "game": "tickle", "as": "counting rats by the course’s chalkboard" },
     { "game": "teddy2", "as": "in the Dog Show’s stands, keeping count" },
@@ -57,6 +61,7 @@
     { "game": "maximus", "as": "keeping count at the training deck’s practice range" }
   ],
   "lewie": [
+    { "game": "tuneup", "as": "on the curb, holding the pump hose" },
     { "game": "realm", "as": "helping with Farmer Hodge’s turnips, shovel and all" },
     { "game": "teddy", "as": "by Puddlewick Park’s gate with his shovel, helping plant the flower beds" },
     { "game": "goat", "as": "mucking out the stable’s back corner, shovel and all" },

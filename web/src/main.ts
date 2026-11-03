@@ -16,6 +16,7 @@ import { tourButton } from './tour/tourButton';
 import { parseHash } from './urlState';
 import { noteLibraryContext } from './libraryStart';
 import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
+import { beginPage } from './pageLife';
 
 const modernUi = () => import('./modernUi');
 
@@ -59,6 +60,7 @@ function webShowing(): string | undefined {
 
 /** The desk; `hash` (#/desk?disk=…) says what to put in its drive. */
 async function startDesk(hash?: string): Promise<void> {
+  beginPage();
   ui = 'desk';
   rememberUi('desk');
   document.documentElement.dataset.ui = 'desk'; // the page background (index.html)
@@ -87,6 +89,7 @@ async function startDesk(hash?: string): Promise<void> {
 // ---- today's web ---------------------------------------------------------------------
 
 function startModern(hash?: string): void {
+  beginPage();
   ui = 'modern';
   rememberUi('modern');
   document.documentElement.dataset.ui = 'modern';
@@ -388,10 +391,18 @@ registerServiceWorker();
 // achievements: the gm-achievement event, other tabs, and the counted ones kept current
 void import('./achievements/start').then((m) => m.startAchievements());
 
-// The first AudioContext costs a long task (about 150 ms in headless Chrome) if it is made inside
-// the first click; made while the page is idle it starts suspended, and that click only resumes it.
+// The first AudioContext costs a long task (about 150 ms in headless Chrome). Made inside the
+// first click it delays that click; made at load it delays every visitor, even one who only
+// reads. So it is made at the first sign of a hand (mouse move, press or touch), while the page
+// is idle: it starts suspended, and the click only resumes it (the same context; the gesture
+// listeners that unlock iOS are added when it is made, before the touch ends).
 const warmSound = () => void import('@lewismoten/gamemaker-sandbox-engine/audio/context').then((m) => m.audioContext());
-setTimeout(() => ('requestIdleCallback' in window ? requestIdleCallback(warmSound, { timeout: 4000 }) : warmSound()), 800);
+const HANDS = ['pointermove', 'pointerdown', 'touchstart'] as const;
+const onHand = () => {
+  for (const t of HANDS) removeEventListener(t, onHand, true);
+  'requestIdleCallback' in window ? requestIdleCallback(warmSound, { timeout: 300 }) : setTimeout(warmSound, 0);
+};
+for (const t of HANDS) addEventListener(t, onHand, { capture: true, passive: true });
 
 watchForUpdates();
 // dev server on localhost only: the opt-in interaction log (its switch is in the corner)

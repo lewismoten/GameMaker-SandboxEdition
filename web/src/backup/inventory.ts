@@ -55,7 +55,7 @@ export const LOCAL_KEYS: Record<SectionId, { keys: string[]; prefixes?: string[]
   saves: { keys: [] },
   trophies: { keys: ['gm-score-trophies'] },
   achievements: { keys: [] },
-  eggs: { keys: ['gm-eggs', 'gm-egg-taps', 'gm-egg-hatched'] },
+  eggs: { keys: ['gm-eggs', 'gm-egg-taps', 'gm-egg-hatched', 'gm-chicken'] },
   hearts: { keys: ['gm-tin-hearts', 'gm-clock-heart', 'gm-clock-pops', 'gm-hearts-before-clock', 'gm-heart-reveal'] },
   desk: {
     keys: [

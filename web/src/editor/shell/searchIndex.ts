@@ -6,15 +6,7 @@
 // the search box is first used (the parsers and the player's patch table are loaded then).
 import { kindOf, type FileKind, type Project } from '../core/project';
 import { matchingParts, type Part } from './searchMatch';
-
-export type SearchGroup = 'files' | 'text' | 'controls' | 'player';
-
-export const GROUP_TITLES: Record<SearchGroup, string> = {
-  files: 'File names',
-  text: 'Words inside files',
-  controls: 'Companion notes and names',
-  player: 'DOS player fields',
-};
+import type { SearchGroup } from './searchGroups';
 
 /** One thing a query can find. */
 export interface SearchEntry {

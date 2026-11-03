@@ -15,6 +15,25 @@
 }
 .asset-heading {
   flex: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.asset-titles {
+  min-width: 0;
+}
+.asset-optimize {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+.asset-optimize-pic canvas {
+  display: block;
+  height: 32px;
+  width: auto;
 }
 .asset-heading h1 {
   margin: 0;

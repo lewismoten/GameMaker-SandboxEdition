@@ -1,0 +1,198 @@
+/* The game design contest page (sections/contestAd.ts), in the loud early-'90s look of the spread
+   it parodies: a sky-to-peach gradient strewn with big pastel arrows, a squiggle, a dashed ring
+   and rows of dashes (all inline SVG), a banner set on a tilt, the title in tall purple
+   letters, CONTEST in magenta on a starburst, and the rules in small print. Like every printed
+   page it keeps these colors in light and dark. */
+.mag-page[data-page='contest-ad'] .mag-adframe {
+  gap: 0.5em;
+  padding: 1em 1.2em 0.8em;
+  border: 0;
+  outline: 0.3em solid #5b2d91;
+  outline-offset: -0.3em;
+  color: #1b1030;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800' preserveAspectRatio='none'%3E%3Cpath d='M-20 120 L230 40 L215 10 L310 70 L200 120 L215 90 L-20 170Z' fill='%23ffb27a' fill-opacity='.7'/%3E%3Cpath d='M620 330 L420 400 L430 370 L330 420 L440 450 L430 430 L620 390Z' fill='%23c9a6ff' fill-opacity='.65'/%3E%3Cpath d='M-20 560 Q80 470 160 560 T330 560 T500 540' fill='none' stroke='%23fff27a' stroke-width='26' stroke-linecap='round' stroke-opacity='.8'/%3E%3Ccircle cx='330' cy='520' r='190' fill='none' stroke='%23fff27a' stroke-width='16' stroke-dasharray='34 22' stroke-opacity='.75'/%3E%3Cpath d='M20 700 L120 640 L170 740Z' fill='%23ff9ec7' fill-opacity='.6'/%3E%3Cpath d='M520 700 L600 640 L610 790 L540 760Z' fill='%23a5f0d0' fill-opacity='.7'/%3E%3Cpath d='M0 405 H70 M0 425 H70 M0 445 H70' stroke='%23ff9ec7' stroke-width='9' stroke-dasharray='7 9' stroke-opacity='.8'/%3E%3Cpath d='M530 640 H600 M530 660 H600 M530 680 H600' stroke='%23ffd44d' stroke-width='9' stroke-dasharray='7 9'/%3E%3C/svg%3E")
+      center / 100% 100% no-repeat,
+    linear-gradient(#a6d8ff, #cfe8ff 45%, #ffe2c2);
+}
+
+.mag-page[data-page='contest-ad'] .mag-adframe h2 {
+  margin: 0;
+  padding: 0;
+  color: #4b2a8c;
+  font:
+    900 4.4em/0.88 Impact,
+    'Arial Narrow',
+    'Arial Black',
+    sans-serif;
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-shadow:
+    0.04em 0.04em 0 #fff,
+    0.07em 0.07em 0 #1b1030;
+}
+
+/* "TURBO BUTTON and Sandbox Software Present", on a tilt like the original's curved banner */
+.mag-page[data-page='contest-ad'] .mag-ad-sub {
+  order: -1;
+  align-self: center;
+  margin: 0.2em 0 0.3em;
+  padding: 0.1em 0.9em;
+  border-radius: 0.5em;
+  background: #fff27a;
+  color: #7a2b00;
+  font:
+    italic 700 1.1em/1.2 Georgia,
+    'Times New Roman',
+    serif;
+  transform: rotate(-3deg);
+  box-shadow: 0.12em 0.12em 0 #1b1030;
+}
+
+.mag-page[data-page='contest-ad'] .mag-ad-sub strong {
+  color: #b01e55;
+}
+
+.mag-page[data-page='contest-ad'] .mag-burst {
+  top: 0.4em;
+  right: 0.3em;
+  width: 5.4em;
+  height: 5.4em;
+  background: #ff5fa2;
+  color: #fff;
+  font:
+    900 1em/1 Impact,
+    'Arial Black',
+    sans-serif;
+  text-align: center;
+  transform: rotate(12deg);
+}
+
+.mag-page[data-page='contest-ad'] .mag-burst + h2 {
+  padding-right: 0;
+}
+
+/* CONTEST! on its starburst */
+.mag-page[data-page='contest-ad'] .mag-big {
+  justify-content: center;
+  padding: 0.1em 0.2em;
+  background: #ffb347;
+  clip-path: polygon(
+    0 40%,
+    8% 30%,
+    5% 10%,
+    20% 20%,
+    30% 0,
+    40% 18%,
+    50% 5%,
+    60% 18%,
+    72% 0,
+    80% 20%,
+    95% 10%,
+    92% 30%,
+    100% 42%,
+    92% 58%,
+    98% 80%,
+    82% 76%,
+    72% 100%,
+    60% 82%,
+    50% 96%,
+    40% 82%,
+    28% 100%,
+    18% 76%,
+    2% 82%,
+    8% 60%
+  );
+}
+
+.mag-page[data-page='contest-ad'] .mag-big-text {
+  color: #d81b78;
+  font:
+    900 2.5em/1 Impact,
+    'Arial Narrow',
+    'Arial Black',
+    sans-serif;
+  text-shadow: 0.04em 0.04em 0 #fff;
+}
+
+.mag-page[data-page='contest-ad'] .mag-grid {
+  grid-template-columns: 1fr 1.6fr 1fr;
+  align-items: center;
+}
+
+.mag-page[data-page='contest-ad'] .mag-cell {
+  gap: 0.5em;
+}
+
+.mag-page[data-page='contest-ad'] .mag-shot {
+  border: 0.15em solid #1b1030;
+  box-shadow: 0.15em 0.15em 0 rgba(27, 16, 48, 0.55);
+}
+
+.mag-page[data-page='contest-ad'] .mag-adframe p {
+  margin: 0;
+  font:
+    700 0.9em/1.22 Georgia,
+    'Times New Roman',
+    serif;
+  text-align: center;
+}
+
+.mag-page[data-page='contest-ad'] .mag-adframe .mag-cols {
+  column-gap: 1em;
+  font-size: 0.92em;
+}
+
+.mag-page[data-page='contest-ad'] .mag-adframe .mag-cols p {
+  margin-bottom: 0.4em;
+}
+
+/* the fine print, set dense and dark on a pale panel so it reads */
+.mag-page[data-page='contest-ad'] .mag-adframe p.mag-small {
+  margin: 0;
+  font-weight: 400;
+  padding: 0.4em 0.6em;
+  background: rgba(255, 255, 255, 0.82);
+  border: 0.08em solid #4b2a8c;
+  color: #1b1030;
+  font-size: 0.72em;
+  line-height: 1.25;
+  font-family: Helvetica, Arial, sans-serif;
+  opacity: 1;
+  text-align: justify;
+}
+
+/* a phone's width: the title steps down, the pitch comes first and the shots sit in two columns under it */
+@container (max-width: 560px) {
+  .mag-page[data-page='contest-ad'] .mag-adframe h2 {
+    font-size: 2.6em;
+  }
+
+  .mag-page[data-page='contest-ad'] .mag-burst {
+    top: -0.6em;
+    right: -0.2em;
+    width: 4.6em;
+    height: 4.6em;
+    padding: 0 0.3em;
+    font-size: 0.62em;
+  }
+
+  .mag-page[data-page='contest-ad'] .mag-ad-sub {
+    margin-right: 3em;
+    align-self: start;
+    font-size: 1em;
+  }
+
+  .mag-page[data-page='contest-ad'] .mag-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mag-page[data-page='contest-ad'] .mag-cell:nth-child(2) {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .mag-page[data-page='contest-ad'] .mag-adframe .mag-cols {
+    column-count: 1;
+  }
+}

@@ -197,8 +197,60 @@ async function worker() {
   }
 }
 const began = Date.now();
+// The plastic trinkets of the games that mesh them from distance fields (STL, 3MF and support files the site serves from
+// web/public/trinkets/<game>): Depth's from its models, Realm's from its coins and tags. Each is made beside the games
+// rather than after them: worker threads of one bundle (games/<game>/tools/trinkets.ts, the shared pipeline of
+// web/packages/tools/src/mesh/trinketTool.ts), skipped when already made from the same sources (a key in manifest.json).
+// Depth's takes about 15 s of CPU, which the games' own workers share.
+const fieldTrinketGames = [
+  ['depth', 'Depth'],
+  ['realm', 'Realm'],
+  ['remote', 'Remote'],
+  ['reckoning', 'Reckoning'],
+  ['teddy3', 'Teddy3'],
+  ['sleuth', 'Sleuth'],
+  ['smirked', 'Smirked'],
+  ['sandcast', 'Sandcast'],
+  ['tickle', 'Tickle'],
+  ['maximus', 'Maximus'],
+  ['year2000', 'Year2000'],
+  ['tuneup', 'TuneUp'],
+  ['snowbound', 'Snowbound'],
+  ['blaster', 'Blaster'],
+];
+const trinkets = Promise.all(
+  fieldTrinketGames
+    .filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)))
+    .map(async ([id, name]) => {
+      const started = Date.now();
+      const made = await runEntry(
+        `${id}-trinkets`,
+        { file: join(root, `games/${id}/tools/trinkets.ts`) },
+        `../games/${id}/tools/trinkets.ts`,
+        ['--workers', String(Math.min(3, jobs)), ...(process.argv.includes('--force') ? ['--force'] : [])],
+        { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+        `${id}-trinkets`,
+      );
+      if (timing) console.log(`${name} trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+    }),
+);
 if (pending.some((id) => logoUsers.has(id))) void logo();
-await Promise.all(Array.from({ length: Math.min(jobs, pending.length) }, worker));
+await Promise.all([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker)]);
+// The pixel-figure trinkets of the other games (games/kit/pixelTrinkets.ts: web/public/trinkets/<game>/) are meshed from the
+// built disks, so they run after the games; each game is skipped when its figures and the mesh code are unchanged (a key
+// in its manifest.json), which makes an up-to-date tree cost one process start. A secret game has none.
+if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => ids.includes(id)))) {
+  const started = Date.now();
+  const made = await runEntry(
+    'pixel-trinkets',
+    { file: join(root, 'games/kit/pixelTrinkets.ts') },
+    '../games/kit/pixelTrinkets.ts',
+    [...(only.length ? ['--game', only.join(',')] : []), ...(process.argv.includes('--force') ? ['--force'] : [])],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'pixel trinkets',
+  );
+  if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+}
 if (timing)
   console.log(
     `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,

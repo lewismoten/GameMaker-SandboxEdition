@@ -22,6 +22,7 @@ import { autoArrange } from '../../web/src/editor/editors/integrator/integratorL
 import { untangle } from './src/layout';
 import { WALK_PATHS } from './src/build/walkPaths';
 import { writeWalkPaths } from '../kit/walkPaths';
+import { checkWheelScenes } from './src/build/wheelScenes';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
@@ -69,6 +70,7 @@ world.scene.links.push(
   { from: [70, 49], to: 'flats', at: flats.east },
 );
 const { game, ids } = assemble(specs, { start: { to: 'nowish', at: towns.start } });
+checkWheelScenes(ids, join(here, 'printables.json'));
 // links in an order Auto-arrange draws without crossing arrows, and the scene boxes where it puts them
 const left = untangle(game, ids.get('world')!);
 if (left) throw new Error(`The scene graph still has ${left} crossing arrows`);

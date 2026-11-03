@@ -4,6 +4,7 @@
 import '../retro/computer/monitor.css';
 import './desk.css';
 import './deskStage.css';
+import './pc/crtOn.css';
 import './pc/crtOff.css';
 import { clear, toast } from '../editor/core/ui';
 import { loadDisks, type Disk } from '../retro/dos/disks';
@@ -30,6 +31,7 @@ import { pointOut } from './deskLook';
 import { restoreDesk } from './deskRestore';
 import { wallTrophies } from './wallTrophies';
 import { deskTour } from './deskTour';
+import { beginDesk, endDesk } from './lifetime';
 
 // What is opened or read on the desk loads when it first is: the manuals and the catalog (the
 // boxes' insides, deskGmBox.ts and deskShelf.ts).
@@ -68,6 +70,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     }
   };
 
+  beginDesk();
   const scene = deskScene({
     power: (onlyOn) => void pc.power(onlyOn),
     toggleTurbo: () => pc.toggleTurbo(),
@@ -256,7 +259,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   /** The shelf on the wall: a box for each original game (desk/boxes/shelf.ts). */
-  const shelf = deskShelf(desk, { insert: (id) => void insertOriginal(id), manual: (g, front) => gameManual(g, front) });
+  const shelf = deskShelf(desk, {
+    insert: (id) => void insertOriginal(id),
+    manual: (g, front) => gameManual(g, front),
+    restoreBox: wanted.open?.startsWith('box:') ? wanted.open : undefined, // even a malformed one, so it is cleared
+  });
 
   async function insertOriginal(id: string): Promise<void> {
     const d = (await diskList()).find((x) => x.id === `cd:${id}`);
@@ -374,5 +381,6 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     unWall();
     unTour();
     pc.dispose();
+    endDesk();
   };
 }

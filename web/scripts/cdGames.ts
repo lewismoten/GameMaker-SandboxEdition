@@ -469,7 +469,8 @@ export function cdGames(cdRoot: string): Plugin {
       server.watcher.add([cdRoot, gamesRoot]);
       let preview: { catalog: CdCatalogEntry[]; secret: CdCatalogEntry[]; shots: Map<string, Uint8Array> } | undefined;
       const worker = archiveWorker(cdRoot);
-      const archives = createArchiveQueue(worker);
+      // the worker deflates on libuv's threads, so four at once is faster with the same bytes
+      const archives = createArchiveQueue(worker, 4);
       const listed = () => [...get().catalog, ...get().secret].map((e) => `${e.path}${e.pack}`);
       // build every archive in the background so most are ready before they are asked for
       server.httpServer?.once('listening', () => setTimeout(() => archives.enqueue(listed()), 500));
@@ -570,13 +571,24 @@ export function cdGames(cdRoot: string): Plugin {
       // A standard ZIP replaces both custom GMPK and duplicate loose/gzip game payloads.
       const packs = new Map<string, Uint8Array>();
       const archives = new Map<string, string>();
-      for (const e of [...get().catalog, ...get().secret]) {
-        const zip = await gameArchive(e, files);
+      // four zips at a time; their bytes don't depend on order (fixed dates), and the maps keep catalog order
+      const entries = [...get().catalog, ...get().secret];
+      const zips = new Array<Uint8Array>(entries.length);
+      let next = 0;
+      await Promise.all(
+        Array.from({ length: 4 }, async () => {
+          while (next < entries.length) {
+            const i = next++;
+            zips[i] = await gameArchive(entries[i], files);
+          }
+        }),
+      );
+      entries.forEach((e, i) => {
         // Stable public links: service-worker group hashes version changed ZIP contents.
         const name = gameZipName(e.id);
         archives.set(e.path, name);
-        packs.set(`${e.path}${name}`, zip);
-      }
+        packs.set(`${e.path}${name}`, zips[i]);
+      });
       // what the pages would otherwise fetch game files to work out: the quick check, the box's facts, the pack's size
       const known = (e: CdCatalogEntry): CdCatalogEntry => {
         const box = boxGameOf(e, files);

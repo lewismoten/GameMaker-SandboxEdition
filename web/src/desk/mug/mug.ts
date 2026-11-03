@@ -6,6 +6,7 @@ import { h } from '../../editor/core/ui';
 import { designCanvas, isDesign, loadDesign, type MugDesignId } from './mugArt';
 import { MUG_SIZES, printPlacement, type MugSize } from './mugSizes';
 import { MUG_COLORS, drawMug, wrapAngle, wrapCanvas, type MugColors } from './mug3d';
+import { deskLifetime } from '../lifetime';
 
 export interface MugChoice {
   design: MugDesignId;
@@ -102,7 +103,7 @@ export function deskMug(open: () => void): HTMLElement {
   // a game's picture comes from its files: paint again once it's here
   void loadDesign(loadMug().design).then(() => el.isConnected && paint());
   const changed = () => (el.isConnected ? paint() : window.removeEventListener(CHANGED, changed));
-  window.addEventListener(CHANGED, changed);
+  window.addEventListener(CHANGED, changed, { signal: deskLifetime() });
   el.addEventListener('click', open);
   el.addEventListener('keydown', (e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), open()));
   return el;

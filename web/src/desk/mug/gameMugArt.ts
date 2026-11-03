@@ -2,7 +2,7 @@
 // own files: a round medallion cut from its title screen (TITLE.GIF), the title's lettering on
 // a ribbon across it, and its hero standing in front (the first frame of the hero's .CHR, drawn
 // from its .CBL blocks in the palette of a level the hero plays in).
-import { fetchGameFile, loadGameList, type CatalogEntry } from '../../project/files';
+import { peekGameFile, loadGameList, type CatalogEntry } from '../../project/files';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
@@ -24,7 +24,23 @@ export const GAME_MUGS: GameMug[] = [
   { game: 'teddy', hero: 'teddy', title: [16, 0, 304, 82], centerX: 200, side: 'left' },
   { game: 'teddy2', hero: 'teddy', title: [6, 0, 314, 80], ink: [87, 83, 81, 70, 9], centerX: 212, strip: true, hide: [[40, 182, 290, 200]] },
   { game: 'teddy3', hero: 'teddy', title: [6, 0, 314, 80], ink: [87, 83, 81, 70, 9], centerX: 170, strip: true, hide: [[40, 182, 290, 200]] },
-  { game: 'tuneup', hero: 'leo', title: [44, 10, 276, 62], centerX: 160 },
+  {
+    game: 'tuneup',
+    hero: 'leo',
+    title: [44, 10, 276, 62],
+    // the title's own yellow, outline, red shadow and white tagline, so the ribbon is solid behind them
+    ink: [87, 9, 80, 44],
+    // slid left so the screen's own Doc Leo is out of the medallion; the hero steps in over the rim
+    centerX: 215,
+    heroIn: 24,
+    // shelf things, a window highlight, a cloud and the sun's top in those colors, under the ribbon
+    hide: [
+      [219, 33, 221, 35],
+      [124, 47, 136, 49],
+      [262, 45, 276, 50],
+      [221, 60, 232, 62],
+    ],
+  },
   { game: 'year2000', hero: 'dex', title: [8, 2, 312, 90], centerX: 160 },
   { game: 'blaster', hero: 'ship', title: [4, 6, 316, 90], centerX: 160 },
   {
@@ -200,15 +216,15 @@ export const GAME_ART_H = BADGE_H;
 /** The hero, 20 x 40 (top and bottom block), or undefined. */
 async function hero(entry: CatalogEntry, name: string): Promise<Rgba | undefined> {
   const [gam, chrB, cblB] = await Promise.all([
-    entry.gam ? fetchGameFile(entry, entry.gam) : undefined,
-    fetchGameFile(entry, `${name}.chr`),
-    fetchGameFile(entry, `${name}.cbl`),
+    entry.gam ? peekGameFile(entry, entry.gam) : undefined,
+    peekGameFile(entry, `${name}.chr`),
+    peekGameFile(entry, `${name}.cbl`),
   ]);
   if (!gam || !chrB || !cblB) return undefined;
   // the palette of a level the hero plays in
   const scenes = parseGame(gam).scenes.filter((s) => s.gametype === 10);
   const scene = scenes.find((s) => s.files[5]?.toLowerCase() === `${name}.chr`) ?? scenes[0];
-  const palB = scene?.files[0] ? await fetchGameFile(entry, scene.files[0]) : undefined;
+  const palB = scene?.files[0] ? await peekGameFile(entry, scene.files[0]) : undefined;
   if (!palB) return undefined;
   const lut = paletteToRGBA(parsePalette(palB));
   const frame = parseCharacter(chrB).sequences[0]?.frames[0];
@@ -226,7 +242,7 @@ async function hero(entry: CatalogEntry, name: string): Promise<Rgba | undefined
 export async function gameMugArt(mug: GameMug): Promise<HTMLCanvasElement | undefined> {
   const entry = (await loadGameList().catch(() => [])).find((c) => c.id === mug.game);
   if (!entry) return undefined;
-  const [titleB, sprite] = await Promise.all([fetchGameFile(entry, 'title.gif'), hero(entry, mug.hero).catch(() => undefined)]);
+  const [titleB, sprite] = await Promise.all([peekGameFile(entry, 'title.gif'), hero(entry, mug.hero).catch(() => undefined)]);
   if (!titleB || !isGif(titleB)) return undefined;
   const badge = composeBadge(decodeGif(titleB), sprite && trimSprite(sprite), entry.original?.box ?? {}, mug);
   const c = document.createElement('canvas');

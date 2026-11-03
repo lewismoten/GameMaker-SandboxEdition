@@ -2,6 +2,7 @@
 // the pad (`.gp-switch`, made in gamePadArt.ts; the pointer throws it), and the large labeled
 // one on the large controls' panel, a real switch for a finger or the keyboard.
 import { h } from '../../editor/core/ui';
+import { deskLifetime } from '../lifetime';
 import { onTurbo, setTurbo, turboOn } from '../../input/padTurbo';
 
 /** A press on a drawn switch throws it; true when the press was on one. */
@@ -39,6 +40,7 @@ export function bigSwitch(): HTMLElement {
   sw.addEventListener('click', () => setTurbo(!turboOn()));
   // the row is gone with the panel; the listener leaves with it once the page's pad does
   const stop = onTurbo(() => (row.isConnected ? show() : stop()));
+  deskLifetime().addEventListener('abort', stop); // or with the desk, whichever is first
   show();
   return row;
 }

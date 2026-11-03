@@ -12,6 +12,7 @@ import { set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { makeBook } from '../../snowbound/src/sprites/kidArt';
 import { CB } from '../../teddy2/src/characters/character';
+import { addTeddyLeftHandKeys } from './altKeys';
 import { CTR, KEY, MON, MONEY, SEQ, SND } from './ids';
 
 export { CB as TEDDY_BLOCKS };
@@ -61,6 +62,7 @@ export function buildTeddy(): Character {
   const side = (dx: number, mirror: boolean) => [f('hop', 1, { x: dx, y: -HOP, mirror }), f('hop', 1, { x: dx, y: -HOP, mirror })];
   set(S[SEQ.hopLeft], side(-HOP_STEP, true), { key: KEY.q, jstkMov: JOY.upLeft, sound: SND.hop });
   set(S[SEQ.hopRight], side(HOP_STEP, false), { key: KEY.e, jstkMov: JOY.upRight, sound: SND.hop });
+  addTeddyLeftHandKeys(S);
   TRICKS.forEach((frames, k) =>
     set(S[SEQ.trick0 + k], [...frames, sparkle(k), f('front', 2)], { key: KEY[TRICK_KEYS[k]], sound: SND.trick0 + k, ground: 1, norepeat: 1 }),
   );

@@ -282,6 +282,13 @@ export function linkMarkers(host: MarkersHost) {
       el?.focus();
       if (el) void open(`out:${scene}:${link}`, el);
     },
+    /** Whether the map has an exit to move. */
+    hasExit: () => marks.some((m) => m.kind === 'out'),
+    /** Moves the first exit's block to `at` (the long-press menu's "Use as the exit's place"). */
+    moveExit(at: Point): void {
+      const m = marks.find((x) => x.kind === 'out');
+      if (m) moveTo(m, at);
+    },
     dispose(): void {
       off();
       popover?.close();

@@ -4,6 +4,7 @@ import { hardwareSetup } from './hardwareSetup';
 import { Machine, GameAborted } from '@lewismoten/gamemaker-sandbox-engine/engine/machine';
 import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { Keyboard } from '@lewismoten/gamemaker-sandbox-engine/input/keyboard';
+import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { runGame, type RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
 import type { GameFiles } from '../project/files';
 import { readGamepad } from '../input/gamepad';
@@ -69,6 +70,7 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
   canvas.setAttribute('role', 'application');
   container.append(canvas);
   const machine = new Machine(canvas, files, opts.audio);
+  const devGameLog = import.meta.env.DEV ? import('../devLog/gameLog') : (undefined as never);
   machine.audio.setGame(true); // a game's sound follows the Games setting too
   const piggy = piggyBankHook(opts.saveId);
   if (opts.preview) {
@@ -223,8 +225,17 @@ export function mountPlayer(container: HTMLElement, files: GameFiles, gamFile: s
           onFrame: touch ? (w) => touch.setSequences(w.chr.sequences) : undefined,
           ...opts,
           noSoundCard: opts.noSoundCard || hardware?.sound === 'speaker',
-          ...((hearts || piggy) && {
-            onSession: (s) => (hearts?.onSession(s), piggy?.onSession?.(s), opts.onSession?.(s)),
+          // (dev only) the replay log of games, when the 🐵 switch is on: devLog/gameLog.ts
+          ...((hearts || piggy || import.meta.env.DEV) && {
+            onSession: (s: Session) => {
+              hearts?.onSession(s);
+              piggy?.onSession?.(s);
+              opts.onSession?.(s);
+              if (import.meta.env.DEV)
+                void devGameLog.then((g) =>
+                  g.attachGameLog(s, machine, { gam: gamFile, gamBytes: files.get(gamFile), title: opts.title, saveId: opts.saveId }),
+                );
+            },
             ...(hearts && { onTouched: (...a) => (hearts.onTouched(...a), opts.onTouched?.(...a)) }),
           }),
           ...((scores || piggy) && { onPlayEnd: (...a) => (scores?.(...a), piggy?.onPlayEnd?.(...a), opts.onPlayEnd?.(...a)) }),

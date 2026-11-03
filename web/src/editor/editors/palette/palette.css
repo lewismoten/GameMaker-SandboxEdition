@@ -246,19 +246,20 @@ dialog.modal:has(.pal-zero) {
   border: 1px solid var(--border);
 }
 
-/* Reservations stay visible alongside the existing selection outline. */
+/* Reservations: one outline round each range (palette.ts draws only its outer sides, in --res), so
+   the ranges read as blocks of the grid; the selection outline still shows on top. */
 .pal-swatches [data-reservation='character'] {
-  box-shadow: inset 0 0 0 2px #388cfc;
+  --res: #388cfc;
 }
 .pal-swatches [data-reservation='background'] {
-  box-shadow: inset 0 0 0 2px #bf7900;
+  --res: #bf7900;
 }
 .pal-swatches [data-reservation='monster'] {
-  box-shadow: inset 0 0 0 2px #ce40c6;
+  --res: #ce40c6;
 }
 .pal-swatches [data-reservation='menu'],
 .pal-swatches [data-reservation='transparent'] {
-  box-shadow: inset 0 0 0 2px #808080;
+  --res: #808080;
 }
 .pal-reservations p {
   margin: 8px 0;

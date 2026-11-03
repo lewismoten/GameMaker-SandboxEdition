@@ -9,6 +9,7 @@ import { copiedAsset, onAssetCopy } from './assetClipboard';
 import { assetMenu } from './assetMenu';
 import { fileThumb, KIND_ICON } from '../widgets/thumbs';
 import { PLAYABLE, playButton, stopThumbPlayback } from '../widgets/thumbPlayButton';
+import { diskStatus, floppyFor, openOptimize } from '../disk/diskCard';
 import { assetSearch } from './assetSearch';
 import { companionPatches } from '../../dosPlayer/playerRecord';
 import { companionOrigin, originText } from '../../dosPlayer/playerOrigin';
@@ -32,6 +33,17 @@ interface BrowserHost {
   openPlayerField?: (patch: string) => void;
 }
 
+/** The floppy that opens Optimize (the Tools card's picture and dialog), small enough to sit beside the heading. */
+function optimizeEntry(project: Project): HTMLElement {
+  const floppy = floppyFor(project, 40);
+  return h(
+    'button',
+    { type: 'button', class: 'asset-optimize', title: diskStatus(project), onclick: () => openOptimize(project) },
+    floppy ? h('span', { class: 'asset-optimize-pic', 'aria-hidden': 'true' }, floppy) : null,
+    'Optimize…',
+  );
+}
+
 export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): void } {
   const { project, kind } = host;
   const commands = assetCommands(project, host.open);
@@ -45,9 +57,14 @@ export function assetBrowser(host: BrowserHost): { el: HTMLElement; dispose(): v
     h(
       'header',
       { class: 'asset-heading' },
-      h('div', { class: 'row' }, kind ? h('button', { type: 'button', onclick: host.all }, '← All assets') : null, h('h1', null, title)),
-      h('p', { class: 'asset-project' }, project.name),
-      count,
+      h(
+        'div',
+        { class: 'asset-titles' },
+        h('div', { class: 'row' }, kind ? h('button', { type: 'button', onclick: host.all }, '← All assets') : null, h('h1', null, title)),
+        h('p', { class: 'asset-project' }, project.name),
+        count,
+      ),
+      kind ? null : optimizeEntry(project),
     ),
     searchSlot,
     grid,

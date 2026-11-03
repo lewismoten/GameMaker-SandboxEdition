@@ -13,7 +13,7 @@ export const SHARED_SETS: Record<string, string[]> = {
   street: ['band1', 'band2', 'band3', 'road1', 'road2'],
   curb: ['cups1', 'cups2', 'cups3', 'horn1', 'horn2', 'horn3'],
   garage: ['jump', 'brake', 'hush'],
-  engine: ['spark', 'fan1', 'fan2', 'oil'],
+  engine: ['fan1', 'fan2', 'oil'],
   gear: ['gear1', 'gear2', 'gear3', 'gear4'],
   dash: ['dash1', 'dash2'],
 };

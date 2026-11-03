@@ -9,6 +9,7 @@
 // (hidden.json, scripts/castHidden.ts), so a new game shows up with no edit here. A cameo in a game not in CAST_GAMES fails the test: add the game there first.
 import CAMEOS from './cameos.json';
 import HIDDEN from './hidden.json';
+import type { Chicken } from '../chicken/chickenState';
 
 export type Family = 'sandbox' | 'bizarre';
 
@@ -58,7 +59,7 @@ export interface CastMember {
   /** What they say when they walk on stage (castStage.ts). */
   hi: string;
   /** public/cast/<id>.png, drawn from this game's files (scripts/castArt.ts). */
-  art: { game: CastGame; width: number; height: number; alt: string };
+  art: { game: CastGame; width: number; height: number; alt: string; /** The picture's name when it isn't the id (the chicken in her tiara). */ file?: string };
   bio: string;
   appears: Appearance[];
 }
@@ -86,6 +87,7 @@ const LISTED: CastMember[] = [
       { game: 'remote', as: 'following you round the kitchen' },
       { game: 'risi', as: 'a good Roman dog (CAVE CANEM)' },
       { game: 'sweats', as: 'asleep in the audience, awake for the bow' },
+      { game: 'tuneup', as: 'rides shotgun in THE\u00a0CHEZ and plays the brake lamps' },
     ],
   },
   {
@@ -107,6 +109,7 @@ const LISTED: CastMember[] = [
       { game: 'reckoning', as: 'asleep, until she isn’t' },
       { game: 'risi', as: 'a Roman dog' },
       { game: 'sweats', as: 'in the audience' },
+      { game: 'tuneup', as: 'buried the toolbox, then slept on the 8-track tapes' },
     ],
   },
   {
@@ -136,6 +139,7 @@ const LISTED: CastMember[] = [
       { game: 'smirked', as: 'the haunted house’s friendly portrait' },
       { game: 'sweats', as: 'host of open-mic night' },
       { game: 'risi', as: 'a rooftop philosopher and the theater’s jester' },
+      { game: 'tuneup', as: 'shrunk small, tuning THE\u00a0CHEZ up by ear' },
     ],
   },
   {
@@ -163,6 +167,7 @@ const LISTED: CastMember[] = [
       { game: 'tickle', as: 'through the classroom window, charging' },
       { game: 'sweats', as: 'at The Hive’s curb' },
       { game: 'risi', as: 'by the gate: QVID EST?' },
+      { game: 'tuneup', as: 'the patient: tuned up, test driven, leading the parade' },
     ],
   },
   {
@@ -219,6 +224,7 @@ const LISTED: CastMember[] = [
       { game: 'sleuth', as: 'Case 13, never closed' },
       { game: 'brief', as: 'a recipe card filed under 641.5' },
       { game: 'year2000', as: 'a postcard about the thirteenth ingredient' },
+      { game: 'tuneup', as: 'a frosty mug on the parade’s curb' },
     ],
   },
   {
@@ -424,3 +430,27 @@ export const CAST: CastMember[] = LISTED.map((m) => {
 
 /** The families a member belongs to, from the games they appear in. */
 export const familiesOf = (m: CastMember): Family[] => [...new Set(m.appears.map((a) => CAST_GAMES[a.game][1]))];
+
+/**
+ * The cast as the chicken is now (chicken/chickenState.ts): Lady Regina Cluckington III once a
+ * player has gotten past Tune-Up's egg, with her tiara, her name and her pronouns, and Doc Leo
+ * asking after her. Everyone else is the same object.
+ */
+export function castFor(chicken: Chicken): CastMember[] {
+  if (chicken !== 'lady') return CAST;
+  return CAST.map((m) => {
+    if (m.id === 'leo') return { ...m, hi: 'Smile on: showtime! Has anyone seen my chicken? She answers to Regina. On Tuesdays.' };
+    if (m.id !== 'chicken') return m;
+    return {
+      ...m,
+      name: 'Lady Regina Cluckington III',
+      art: {
+        ...m.art,
+        file: 'chicken-lady',
+        alt: 'Lady Regina Cluckington III, a yellow rubber chicken with a red comb and a silver tiara with a pink jewel, standing tall',
+      },
+      bio: 'Doc Leo’s rubber chicken, walked on a dog leash wherever Doc Leo goes. Once Sir Reginald, she laid an egg on the way to a tune-up, and the paperwork was corrected (in triplicate). Now she wears a silver tiara in front of her comb and answers to “Regina”, but only on Tuesdays. She has slipped her leash more than once (do not ask how a rubber chicken swims), and when she squawks, it counts as an extra life.',
+      appears: m.appears.map((a) => (a.game === 'tuneup' ? { ...a, as: 'Sir Reginald III, then Lady Regina III, doing the fiddly repairs' } : a)),
+    };
+  });
+}

@@ -127,7 +127,7 @@ interface Showcase {
   readonly game: HomeGame | undefined;
 }
 
-export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
+export function showcase(nav: HomeNav, refresh: () => Promise<void>, life?: AbortSignal): Showcase {
   // the monitor: a bezel around the glass, where the picture and the demo go
   const screen = h('div', { class: 'sc-glass' });
   const label = h('p', { class: 'sc-label' });
@@ -153,7 +153,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
     if (!el.isConnected) return window.removeEventListener('gm-tour-demo', onTourDemo);
     tourPlay?.((e as CustomEvent<'play' | 'stop'>).detail);
   };
-  window.addEventListener('gm-tour-demo', onTourDemo);
+  window.addEventListener('gm-tour-demo', onTourDemo, { signal: life });
   // leaving the game list stops its demo: the picture is gone, so its sound must go too (the
   // next page may draw a moment after the address changes, so look again shortly after)
   const gone = () => {
@@ -166,7 +166,7 @@ export function showcase(nav: HomeNav, refresh: () => Promise<void>): Showcase {
   const onLeave = () => {
     if (!gone()) for (const ms of [100, 600, 2000]) setTimeout(gone, ms);
   };
-  window.addEventListener('hashchange', onLeave);
+  window.addEventListener('hashchange', onLeave, { signal: life });
   let generation = 0;
   let saves: ReturnType<typeof savesButton> = null;
 

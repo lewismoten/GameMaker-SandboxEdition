@@ -5,7 +5,7 @@ import { h } from '../../editor/core/ui';
 import { centerSpread, spreadAt, stepSpread, bookletSheets } from './imposition';
 import { PAGE_H, PAGE_W, pageElement, type BookPage } from './manualPages';
 import type { Sheet } from './kit';
-import { RedFilm, RedLens } from './redFilm';
+import { RedFilm, RedLens, flushRedCode } from './redFilm';
 import { spyglassElement } from './spyglass';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { crispShots, enlarge, isShot, zoomOpen } from './crisp';
@@ -465,6 +465,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
           else for (const s of await it.render()) out.push(sheetPage(s));
       }
       printRoot.replaceChildren(...out);
+      flushRedCode(); // the hidden answers are drawn one per task otherwise
       document.documentElement.classList.add('gmb-printing');
       await Promise.all([...printRoot.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined)));
       window.print();
@@ -521,6 +522,8 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     window.addEventListener('gm-tour-act', onTourAct);
     const onKey = (e: KeyboardEvent) => {
       if (zoomOpen()) return; // an enlarged screen shot takes the keys
+      // a control that turns with these keys (a code wheel's disc, any slider) has them while it has the focus
+      if (/^(Arrow|Home$|End$)/.test(e.key) && (e.target as Element | null)?.closest?.('[role="slider"]')) return;
       e.stopImmediatePropagation(); // not for the PC underneath
       if (!sizes.el.hidden && zoomKey(e, sizes, view === 'pages' ? 'page' : 'width')) return;
       const turn = (dir: 1 | -1) => (reader?.step ? reader.step(dir) : go(dir));

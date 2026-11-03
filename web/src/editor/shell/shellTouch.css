@@ -1,0 +1,77 @@
+/* The editor shell on a touch screen: the file list, play buttons, Overview tabs, search box,
+   "Used by" links, Download, Optimize and dialog buttons are at least 44px (Lewis's touch rule).
+   Desktop pointers keep their compact sizes. */
+@media (hover: none) and (pointer: coarse) {
+  .sidebar .files-toggle,
+  .sidebar .side-play,
+  .sidebar .pb-main,
+  .sidebar .pb-arrow,
+  .sidebar .asset-home,
+  .sidebar .rail-toggle,
+  .sidebar .side-actions button,
+  .sidebar .file-row button.file,
+  .sidebar h2.file-kind .fold,
+  .sidebar .file-search input,
+  .overview > .panel-tabs .panel-tabs-list button,
+  .released-bar button,
+  .released-bar a,
+  .asset-optimize,
+  .asset-more,
+  .asset-search input[type='search'],
+  .used-by-link,
+  dialog.modal .buttons button,
+  dialog.modal input,
+  dialog.modal select {
+    min-height: 44px;
+  }
+  .sidebar .pb-arrow,
+  .sidebar .icon-btn,
+  .sidebar .rail-toggle,
+  .asset-more,
+  .overview > .panel-tabs .panel-tabs-list button,
+  dialog.modal .buttons button,
+  .released-bar button {
+    min-width: 44px;
+  }
+  .sidebar .icon-btn {
+    height: 44px;
+    opacity: 1;
+  }
+  /* "Used by" is a line of text links: each gets a finger-sized box without a taller line */
+  .used-by-link {
+    display: inline-flex;
+    align-items: center;
+    padding-block: 0;
+  }
+  .meta.used-by {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 10px;
+    align-items: center;
+  }
+  dialog.modal .buttons {
+    flex-wrap: wrap;
+  }
+}
+
+/* "More" (an editor's file actions menu and its opening tip), the file fields and the menus
+   that open from a card: beaten here where the widget's own rule has the same weight. */
+@media (hover: none) and (pointer: coarse) {
+  html .file-more > summary,
+  html .file-acts button,
+  html .file-more-menu > button,
+  html .hint-toggle,
+  html .file-field-choose,
+  html .asset-menu button,
+  html .asset-search input[type='search'],
+  html .ovc-play,
+  html .editor .assistant-btn,
+  html .used-by-link,
+  html .file-title + .toolbar > button,
+  html .topbar .topbar-gear {
+    box-sizing: border-box;
+    flex: none;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

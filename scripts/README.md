@@ -14,6 +14,7 @@ only that game (repeatable), `GM_BUILD_JOBS=n` sets the workers (two by default,
 set). `game-import-keys.mjs` makes the keys: the files a game's `build.ts` really imports (an esbuild
 metafile), its own folder, the data files in `games/kit` and the packages, the stock player and the
 lockfile, so editing a page under `web/src` that no game imports rebuilds nothing.
+`build-games.mjs` also runs `games/kit/pixelTrinkets.ts` (after the games, about 0.6 s, 60 ms when nothing changed; `GM_SKIP_PIXEL_TRINKETS=1` skips it) for the 3D-printable pixel figures in `web/public/trinkets/<game>/`, each game keyed by its figures and the mesh code.
 `logo-build-entry.mjs` renders the Sand logo sting (about 7 s of ray tracing, the same in 17 games) once per run into the render cache; `build-games.mjs` hands the file to each game as `SANDLOGO_FLI`, keyed by the files `sandlogo.ts` imports.
 `game-bundle.mjs` bundles a build entry (each game's `build.ts`, the Depth frame shards, the logo) with esbuild so `build-games.mjs` runs the child under plain `node`, not vite-node (about 16% less CPU, no 1.7 s startup per child); `GM_VITE_NODE=1` or any bundle failure runs vite-node as before.
 `game-build-entry.mjs` runs one `build.ts` and exits at once (vite-node sometimes lingered after a finished

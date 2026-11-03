@@ -105,7 +105,9 @@ The Ultimate Owner's Guide in the Game-Maker box.
   `limitsClock.ts` and ideas to try in `limitIdeas.ts`), and 17 tricks from the shareware authors
   (`chaptersShareware.ts`, with the second survey's "More from the archive" in
   `archiveTricks.ts`), whose table of the words the DOS player shows, and where they sit in
-  the CD's `XFERPLAY.EXE`, is `playerWords.ts` (its test reads the .EXE).
+  the CD's `XFERPLAY.EXE`, is `playerWords.ts` (its test reads the .EXE), and 18 what goes in the box
+  (`chaptersBox.ts`: code wheels, code sheets, cloth maps, hint books under red film and plastic
+  trinkets, what they cost and protect, and paper puzzles built from links and look-alike blocks).
 - Figures are drawn from real files (`ultimateFigures.ts`, `paletteFigures.ts`).
   `openUltimate.ts` and `openInManual.ts` open it from outside the desk.
 
@@ -121,7 +123,7 @@ address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues f
 - Putting it together: `issue.ts` holds the running order (page numbers, the contents page, the
   advertiser index, and house ads from `sections/houseAd.ts` to fill whole folded sheets);
   `masthead.ts` its name, the two `ISSUES` and `issueFor` (an address to an issue); `SECTIONS` is
-  No. 2's running order and `SECTIONS_1` No. 1's (`sections/spring93/`: its cover, letter,
+  No. 2's running order and `SECTIONS_1` No. 1's (`sections/spring93/`: its cover, letter, PC News page (`pcNews.ts`, with Teddy's hint line number and rate in `hintLineFacts.ts`, checked against the desk phone's; `magazine/pcNews.ts` and `pcNews.css` draw it: an outlined banner over a ruled header, italic headlines, big light-blue drop caps, a yellow box and a pink box with a real block-designer shot; its "Write to us" box replaced the old Next Month page, which kept No. 1 at whole folded sheets),
   interview, Critic's Corner page, Snowbound tips, free-disk page and back cover; `floppy.ts` draws
   the taped-on floppy with the game's real printed disk label); `games.ts` the games it may name (never a secret one).
 - `pageRefs.ts`: the page numbers pages give each other once placed (a jumped story's "Continued
@@ -134,7 +136,8 @@ address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues f
   tested in Node. Among them: the cover, contents, news, reviews, the Critic's Corner, the
   strategy guide, the interviews (`lewis.ts`, `claude.ts`), the Maximus feature, the web edition
   feature, `dosBugs.ts` (what testing in real DOS found), the Mail Bag (with its Design Desk of
-  readers' level troubles), `gripes.ts` (what players hate, and how to fix it), `readersPicks.ts` (polish
+  readers' level troubles), `gripes.ts` (what players hate, and how to fix it), `boxExtras.ts` (what's in
+  the box: code wheels, code sheets, cloth maps, red film and trinkets, with Wheel Mail), `readersPicks.ts` (polish
   over size: a finished four-level game beats a huge one and a tiny one), the character spotlight,
   the game directory, the BBS listings, the store, the reader service card and the ads
   (`ads.ts`; its inside front cover on the Owner's Guide's blueprint, `sandboxEditionAd.css`).
@@ -169,9 +172,15 @@ address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues f
     (`sections/bitsBytesAd.ts`, `sections/bitsBytes.test.ts` checks it faces itself): three turned
     boxes rendered from the desk's box art (`public/magazine/box-*.webp`, how to retake them is in the
     file's header), the store's logo, raised-cents prices, vertical tabs and Bitsy the floppy disk;
+  - `sections/contestAd.ts` and `contestAd.css`: a parody of the 1993 Game-Maker game design contest spread (banner,
+    starburst title, pastel arrows and squiggles as inline SVG, real `shot` screenshots down both sides,
+    jokey prizes, rules whose points total 100), placed before the reader service card;
   - `blankDisk.ts`, a stack of bulk disks without labels, for the Floppy Barn ad;
   - `notcherArt.ts`, the HOLE-Y MOLEY disk notcher and a disk before and after it, for its ad,
     `sections/notcherAd.ts` (its charcoal page `notcherAd.css`);
+  - `sections/columnAd.ts` and `columnAd.css`, the tall salmon column ad for Game-Maker that stands
+    up the left of the Back Issues page (a `beside` ad with `look: 'column'`, after RSD's 1992
+    magazine ads): stacked condensed-serif headlines, real screenshots, a price and a toll-free number;
   - `joeyDrawing.ts`, a reader's crayon drawing of Teddy driving THE CHEZ to the moon, for the
     Mail Bag;
   - `bossChain.ts`, the Design Workshop's diagram of a boss with hit points as a chain of states;

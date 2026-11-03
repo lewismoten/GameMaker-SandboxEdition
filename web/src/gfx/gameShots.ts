@@ -1,15 +1,16 @@
 // "Screenshots" of a game drawn from its real maps (the area where its first level starts):
 // for the desk's boxes and disk labels, the play page's poster, the home page's cards, the
 // cast and the printed manuals. And a game's title screen, for the home page's tiles.
-import { GameFiles, fetchGameFile, type CatalogEntry } from '../project/files';
+import { GameFiles, peekGameFile, type CatalogEntry } from '../project/files';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { BUILT_SHOTS, builtMapShotPath, builtMapViews, builtShotPath, busiest, firstLevels, levelPixels, scenePixels, type MapView } from './levelPicture';
 import { paintIndexed } from '../editor/core/draw';
 import { builtTitlePath, titlePixels, titleSource } from './titlePicture';
 
 async function fetchFile(entry: CatalogEntry, name: string): Promise<Uint8Array | undefined> {
-  // the CD stores A-J.BKD as a_j.bkd (ISO 9660 names); fetched once, shared
-  return fetchGameFile(entry, name);
+  // the CD stores A-J.BKD as a_j.bkd (ISO 9660 names); fetched once, shared. A peek reads the
+  // stored file without the zip's player .exe (adoptPlayer, preservedRegions), which no shot needs
+  return peekGameFile(entry, name);
 }
 
 /** A picture the build drew (games/shots/), or undefined if it is not there. */

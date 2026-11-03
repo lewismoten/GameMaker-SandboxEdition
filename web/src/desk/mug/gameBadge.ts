@@ -35,6 +35,8 @@ export interface BadgeLook {
   centerY?: number;
   /** Which side the hero stands on; right if left out. */
   side?: 'left' | 'right';
+  /** How far the hero steps in from the badge's edge toward the middle, over the medallion's rim; 0 if left out. */
+  heroIn?: number;
   /** Bits of the screen to paint out in the color round them, such as small print the medallion would cut through. */
   hide?: Box[];
   /** Bits of the screen to paint over by tiling (mirrored) the columns `from` to `to` of the same rows across them, such as a character that would echo the hero; unlike `hide`, no flat box shows in a starry sky. */
@@ -390,7 +392,7 @@ export function composeBadge(screen: Indexed, hero: Rgba | undefined, colors: Bo
     const big = blank(hero.width * k, hero.height * k);
     stamp(big, hero, 0, 0, k, !left);
     const fig = outlined(big, [OUTLINE, OUTLINE, WHITE, WHITE]);
-    const fx = left ? 0 : BADGE_W - fig.width;
+    const fx = left ? (look.heroIn ?? 0) : BADGE_W - fig.width - (look.heroIn ?? 0);
     stamp(out, fig, fx, BADGE_CY + RING + FEET + 4 - fig.height);
   }
   return out;

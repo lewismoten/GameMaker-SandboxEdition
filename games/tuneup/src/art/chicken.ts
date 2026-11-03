@@ -134,19 +134,19 @@ function drawHead(p: Pixels, S: Scale, s: number, o: ChickenPose, hx: number, hy
   if (s >= 3) p.disc(ex, ey, S(0.7), c('paint', 3)).disc(ex, ey, S(0.4), ink);
   else p.set(ex, ey, ink);
   if (o.lady) {
-    // a gold tiara in front of the comb, three points and a pink jewel
+    // a silver tiara in front of the comb, three points and a pink jewel
     const y0 = Math.round(S(hy - 1.7));
     const x0 = Math.round(S(hx - 1.9));
     const x1 = Math.round(S(hx + 1.3));
     const t = Math.max(1, Math.round(S(0.5)));
-    p.rect(x0, y0, x1 - x0 + 1, t, c('gold', 1));
+    p.rect(x0, y0, x1 - x0 + 1, t, c('steel', 3));
     for (const [dx, h] of [
       [-1.7, 2.4],
       [-0.3, 3.4],
       [1.1, 2.4],
     ]) {
       const x = Math.round(S(hx + dx));
-      for (let y = Math.round(S(hy - 1.7 - h)); y < y0; y++) p.rect(x - Math.floor(t / 2), y, t, 1, c('gold', 1));
+      for (let y = Math.round(S(hy - 1.7 - h)); y < y0; y++) p.rect(x - Math.floor(t / 2), y, t, 1, c('steel', 3));
       p.rect(x - Math.floor(t / 2), Math.round(S(hy - 1.7 - h)), t, t, c('paint', 3));
     }
     p.disc(S(hx - 0.3), S(hy - 2.4), Math.max(0.6, S(0.7)), c('pink', 1));

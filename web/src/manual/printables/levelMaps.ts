@@ -673,6 +673,9 @@ async function courseSheets(entry: CatalogEntry, game: Game, l: Level, paint: Co
   return out;
 }
 
+/** Each game's levels as laid out (courses and all), shared by the thumbnail and the reader, which both want them. */
+const laidOut = new WeakMap<Game, Level[]>();
+
 /** The Level Maps of a game: printed pages, and the on-screen viewer. Undefined when it gets none. */
 export function levelMaps(ctx: PrintContext):
   | {
@@ -694,9 +697,9 @@ export function levelMaps(ctx: PrintContext):
     (source ??= loadLevels(ctx.entry)).then((x) => {
       if (!x) return undefined;
       // the states of one place (near and far planes) print as one map
-      const seen = mergeStates(
-        x.game,
-        levelsOf(
+      let laid = laidOut.get(x.game);
+      if (!laid) {
+        laid = levelsOf(
           x.game,
           x.files,
           secret,
@@ -706,8 +709,10 @@ export function levelMaps(ctx: PrintContext):
           listedCourses(ctx.entry.id),
           // the biggest blocks that fit, up to twice full size, so a course's details read, on at most half as many pages again
           { pageW: COURSE_AREA.w, pageH: COURSE_AREA.h, padW: 2 * GUTTER + PANEL_GAP, padH: 2 * PANEL_HEAD + PANEL_GAP, most: 2, least: FULL, growth: 1.5 },
-        ),
-      );
+        );
+        laidOut.set(x.game, laid);
+      }
+      const seen = mergeStates(x.game, laid);
       // every block of the map as it is on the map, not as the player goes through it
       const every = seen.map((l) => ({ ...l, area: l.whole, marks: l.mapMarks ?? l.marks, unrolled: undefined, course: undefined }));
       return {

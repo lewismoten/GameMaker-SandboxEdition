@@ -76,6 +76,11 @@ interface RenderOptions {
   seed?: number;
   /** Only this rectangle (x0, y0, x1, y1 exclusive). */
   area?: [number, number, number, number];
+  /** Luminance spread of the first samples above which a pixel is an edge (default 0.06). */
+  edgeAt?: number;
+  /** A pixel whose spread is between `edgeAt` and `hardAt` gets only `softSpp` samples (default: no softer tier). */
+  hardAt?: number;
+  softSpp?: number;
   /** Trace the ghost (out-of-focus) layer only, returning coverage in `alpha`. */
   ghost?: boolean;
 }
@@ -85,6 +90,8 @@ export interface Picture {
   h: number;
   rgb: Float32Array;
   alpha?: Float32Array;
+  /** A stand-in for a frame another shard renders (frameCache.ts): the finishing touches skip it. */
+  placeholder?: boolean;
 }
 
 const hash = (x: number, y: number, s: number) => {
@@ -99,6 +106,9 @@ const hash = (x: number, y: number, s: number) => {
 export function render(world: World, cam: Camera, w: number, h: number, opts: RenderOptions = {}): Picture {
   const spp = opts.spp ?? 4;
   const edge = opts.edgeSpp ?? 16;
+  const edgeAt = opts.edgeAt ?? 0.06;
+  const hardAt = opts.hardAt ?? 0;
+  const soft = opts.softSpp ?? edge;
   const rgb = new Float32Array(w * h * 3);
   const alpha = opts.ghost ? new Float32Array(w * h) : undefined;
   const [ax0, ay0, ax1, ay1] = opts.area ?? [0, 0, w, h];
@@ -132,7 +142,10 @@ export function render(world: World, cam: Camera, w: number, h: number, opts: Re
         n++;
       };
       for (let k = 0; k < spp; k++) shoot(k, spp);
-      if (edge > spp && (hi - lo > 0.06 || (opts.ghost && cover > 0 && cover < n))) for (let k = 0; k < edge; k++) shoot(k, edge);
+      if (edge > spp && (hi - lo > edgeAt || (opts.ghost && cover > 0 && cover < n))) {
+        const e = hi - lo > hardAt || opts.ghost ? edge : Math.min(edge, soft);
+        for (let k = 0; k < e; k++) shoot(k, e);
+      }
       const i = y * w + x;
       rgb[i * 3] = acc[0] / n;
       rgb[i * 3 + 1] = acc[1] / n;
@@ -158,19 +171,30 @@ export function blur(p: Picture, sigma: number): Picture {
     src[i * ch + 2] = p.rgb[i * 3 + 2] * a;
     if (p.alpha) src[i * ch + 3] = a;
   }
+  // the same sums in the same order as clamping every tap, with the clamped index worked out per pixel
   const pass = (from: Float32Array, horiz: boolean) => {
     const to = new Float32Array(from.length);
+    const stride = horiz ? ch : w * ch;
+    const len = horiz ? w : h;
     for (let y = 0; y < h; y++)
-      for (let x = 0; x < w; x++)
+      for (let x = 0; x < w; x++) {
+        const at = horiz ? x : y;
+        const base = (y * w + x) * ch;
+        const interior = at - r >= 0 && at + r <= len - 1;
         for (let c = 0; c < ch; c++) {
           let s = 0;
-          for (let j = -r; j <= r; j++) {
-            const xx = horiz ? Math.min(w - 1, Math.max(0, x + j)) : x;
-            const yy = horiz ? y : Math.min(h - 1, Math.max(0, y + j));
-            s += from[(yy * w + xx) * ch + c] * k[j + r];
+          if (interior) {
+            let i = base + c - r * stride;
+            for (let j = 0; j <= 2 * r; j++, i += stride) s += from[i] * k[j];
+          } else {
+            for (let j = -r; j <= r; j++) {
+              const q = Math.min(len - 1, Math.max(0, at + j));
+              s += from[base + c + (q - at) * stride] * k[j + r];
+            }
           }
-          to[(y * w + x) * ch + c] = s / sum;
+          to[base + c] = s / sum;
         }
+      }
     return to;
   };
   const out = pass(pass(src, true), false);
@@ -205,6 +229,7 @@ export function over(base: Picture, top: Picture, opacity = 1, dx = 0, dy = 0): 
 
 /** Bright parts bleed light around them (the glow every 1995 renderer's users added in post). */
 export function bloom(p: Picture, threshold = 0.85, sigma = 3, strength = 0.6): Picture {
+  if (p.placeholder) return p;
   const bright: Picture = { w: p.w, h: p.h, rgb: new Float32Array(p.rgb.length) };
   for (let i = 0; i < p.rgb.length; i++) bright.rgb[i] = Math.max(0, p.rgb[i] - threshold);
   const b = blur(bright, sigma);
@@ -214,6 +239,7 @@ export function bloom(p: Picture, threshold = 0.85, sigma = 3, strength = 0.6): 
 
 /** A lens flare at (fx, fy): hot core, a streak, a halo and a row of ghosts toward the center. */
 export function flare(p: Picture, fx: number, fy: number, intensity: number, tint: V = [1, 0.95, 0.85], aspect = 1.2): Picture {
+  if (p.placeholder) return p;
   const { w, h } = p;
   const ghosts: [number, number, V][] = [
     [-0.3, 7, [0.35, 0.9, 0.55]],
@@ -221,6 +247,8 @@ export function flare(p: Picture, fx: number, fy: number, intensity: number, tin
     [0.42, 5, [1.0, 0.65, 0.3]],
     [-1.15, 20, [0.35, 0.6, 1.0]],
   ];
+  const ghostX = ghosts.map(([pos]) => w / 2 + (fx - w / 2) * pos);
+  const ghostY = ghosts.map(([pos]) => h / 2 + (fy - h / 2) * pos);
   for (let y = 0; y < h; y++)
     for (let x = 0; x < w; x++) {
       const dx = x + 0.5 - fx;
@@ -232,10 +260,13 @@ export function flare(p: Picture, fx: number, fy: number, intensity: number, tin
       const streak = Math.abs(dy) < 2.5 && Math.abs(dx) < w * 0.45 ? (1 - Math.abs(dy) / 2.5) ** 2 * (1 - Math.abs(dx) / (w * 0.45)) ** 2 * 0.8 : 0;
       const k = (y * w + x) * 3;
       const add3: V = [(core + halo + streak) * tint[0], (core + halo * 0.85 + streak) * tint[1], (core * 0.9 + halo * 0.6 + streak * 1.1) * tint[2]];
-      for (const [pos, rad, gt] of ghosts) {
-        const gx = w / 2 + (fx - w / 2) * pos;
-        const gy = h / 2 + (fy - h / 2) * pos;
-        const gr = Math.hypot(x + 0.5 - gx, (y + 0.5 - gy) * aspect);
+      for (let g = 0; g < ghosts.length; g++) {
+        const [, rad, gt] = ghosts[g];
+        const ox = x + 0.5 - ghostX[g];
+        const oy = (y + 0.5 - ghostY[g]) * aspect;
+        // the distance is at least its larger part, and a ghost adds nothing at or past its radius
+        if (Math.abs(ox) >= rad || Math.abs(oy) >= rad) continue;
+        const gr = Math.hypot(ox, oy);
         const a = clamp01((rad - gr) / 1.5) * (0.1 + 0.1 * (gr / rad) ** 3);
         for (let c = 0; c < 3; c++) add3[c] += gt[c] * a;
       }

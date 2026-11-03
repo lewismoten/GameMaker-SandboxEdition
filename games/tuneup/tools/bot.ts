@@ -16,6 +16,9 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
   /** The bot's hand: a reaction of 1 to 3 ticks, seeded so a run is the same every time. */
   readonly hand: () => number;
 
+  /** Slower hands: ticks to rest after any tap at least (6 is about 300 ms at 18 ticks a second). */
+  slowRest = 0;
+
   constructor(sim: GameSim, seed = 1) {
     super(sim, { scan: SCAN, origin: ORIGIN, meter: { name: 'hits', n: CTR.hits }, traced: [72, 75, 77, 80, 16, 18, 57] });
     this.hand = rng(seed * 7919 + 13);
@@ -59,6 +62,6 @@ export class Bot extends HopBot<GameSim, typeof SCAN> {
     const r = await this.tick();
     this.sim.release(SCAN[key]);
     if (r) return r;
-    return this.wait(rest);
+    return this.wait(Math.max(rest, this.slowRest));
   }
 }

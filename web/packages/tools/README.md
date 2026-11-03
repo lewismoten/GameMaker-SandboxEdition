@@ -180,7 +180,12 @@ project data under the MIT License; recordings and complete songs are not includ
 `kit/fadeOut` adds palette-only FLI fades. `kit/fliClips` splits long animations at stable
 palette boundaries and builds their slide-list entries; its opt-in `ClipOptions` leave out
 the closing ring frame no player shows (`noLoopFrame`, also an `encodeFli` option) and put
-cuts where a whole frame costs the fewest extra bytes (`cheapCuts`). `kit/recordedDemo` turns delta/key
+cuts where a whole frame costs the fewest extra bytes (`cheapCuts`), and run `shrink` steps first.
+`kit/fliShrink` is the size report (`fliReport`: bytes per chunk type per frame, and why) and the shrink
+steps (`sparsePalettesStep` lossless; `holdStillStep`, `snapColorsStep`, `maxColorsStep`,
+`flattenDitherStep`, `dropFramesStep` lossy), each returning the new frames, the bytes saved and how
+visible the change is (`Visibility`: mean, worst, changed share); `decodeFli`/`encodeFrames` convert,
+`shrinkFrames` chains steps. `kit/recordedDemo` turns delta/key
 pairs into a native title demo with configurable Escape press and release delays.
 
 ### Shared block sets
@@ -225,6 +230,35 @@ in delta E. Import from `@lewismoten/gamemaker-sandbox-tools/palette-reserve`.
 identical block already there) and renumbers the moved set's maps; the kept set is not renumbered.
 Pickups, required and starting items and block 0 keep their number or the join is refused.
 Import from `@lewismoten/gamemaker-sandbox-tools/block-merge`.
+
+### Meshes for 3D printing
+
+`mesh/surfaceNets` turns a signed distance field (negative inside) into a closed triangle mesh
+(`surfaceNets(field, { min, max, cell })`; it retries with a shifted grid until every edge is in exactly two
+triangles), `mesh/stl` writes and reads binary STL (`writeStl`, `readStl`; a color per triangle goes in the
+attribute bytes the VisCAM way, which slicers ignore) and `mesh/meshCheck` reports whether a mesh is closed,
+how many pieces it has, its size and volume (`inspectMesh`). `mesh/tetraMesh` is the other mesher (four times
+the triangles, but closed for any field, and neighbors meet on the same vertices); `mesh/overhang` measures what
+an FDM printer cannot print (`overhang`) and builds the support pillars as a body of their own (`supportBody`);
+`mesh/colorBodies` picks at most four colors from a colored mesh (`pickPalette`) and splits the solid into one
+closed body per color (`colorBodies`, thinned and grown to the volume you give it); `mesh/decimate` takes the triangles a
+closed mesh does not need out by quadric edge collapse (`decimate(mesh, { maxError })`: stays closed and in one piece, and the
+borders between a triangle color and the next stay put); `mesh/sampledField` samples a field once on a grid and reads it back
+by trilinear interpolation, for the many passes over one figure (`sampledField`); `mesh/threeMf` writes and reads multi-color 3MF files (`write3mf(parts,
+title, codec)`, `read3mf`: parts are a mesh and a color), over the small ZIP writer `mesh/zipFile` (pass Node's
+`deflateRawSync` as `codec.deflate` to compress). `mesh/voxel` meshes filled voxels (`voxelMesh`: coplanar faces merged into
+rectangles, no T-junctions, so it stays closed) and `mesh/pixelFigure` turns a pixel sprite into a standee on a base with at
+most four color bodies (`pixelFigure`). They are browser safe, except `mesh/trinketTool`.
+
+Trinkets made of distance fields (Depth Perception's, Quest for the Round Tuit's) share one pipeline, all in millimeters
+with the floor at z = 0: `mesh/sdfShapes` has the 2D shapes (circle, rounded rectangle, polygon, ring, capsule and
+`pixelText2`, lettering in the 3x5 micro font), `extrude` and the solid combiners; `mesh/strokeText` (`strokeText2`, `ringText2`) letters raised or sunk text in smooth capsule strokes (capitals, digits, marks; use it instead of the stair-stepped `pixelText2` for anything printed); `mesh/figureShapes` has ellipsoids, round cones, a smooth union and `place3` for 3D figures; `mesh/trinketKinds` builds a `plate` (coin,
+token, key-chain tag or badge: outline, raised rim, raised relief, sunk art, holes, a pin-back `pocket` from `pinBack`), a key-chain `ringTab`, a faceted `gem` (also a crystal shard) and a `die`; `mesh/fieldTrinket`
+(`meshFieldTrinket`) meshes a field with a color per triangle and gives the checks (eroded pieces and specks, overhang),
+up to four color bodies and supports; `mesh/trinketTool` (`runTrinketTool`, Node only) writes the STL, 3MF and manifest.json
+of a game's trinkets, with a source key so an unchanged game is skipped, in worker threads when `--workers N` runs a bundle.
+A game keeps its designs in `games/<id>/src/trinkets/` (`TRINKETS` and `makeTrinket`) and a four-line `tools/trinkets.ts`.
+Surface nets need a cell smaller than half of any gap between pieces (a 0.6 mm kerf wants a 0.26 mm cell).
 
 ### Disk comparison
 

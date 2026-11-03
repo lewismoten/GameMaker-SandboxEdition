@@ -59,6 +59,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
   time.
 - [`devReload.ts`](devReload.ts): development only, a Reload button in place of reloading the page; the dev server keeps serving the old code until it is pressed (`manualReload` in `vite.config.ts` holds back Vite's invalidation)
 - [`devLog/interactionLog.ts`](devLog/interactionLog.ts): development on localhost only, opt in with the 🙈/🐵 corner switch (remembered): logs screen size, pointer, clicks, keys (never what is typed in a field), routes, slow paints, long tasks and every JavaScript error to `.for-lewis/debug/interaction-log/<date>.jsonl` through `scripts/devLog.ts`; it pauses after 5 minutes with no mouse or keyboard
+- [`devLog/gameLog.ts`](devLog/gameLog.ts), [`devLog/replayCore.ts`](devLog/replayCore.ts): with the 🐵 switch on, a running game also logs `game-start` (game, .gam hash, random seed, hardware), `game-input` (the keys the game applied, `[clock, scan, ...]`), `game-snap` (scene, hero, hit points, lives, score, about every second and on scene change, hurt, death, pickup and win), `game-note` and `game-end`; `npm run replay:log -- <log.jsonl>` (`scripts/replayLog.ts`) replays it headless and checks each snapshot
   (which would switch off the desk's PC) whenever a source file changes.
 - [`firstLoad.test.ts`](firstLoad.test.ts) and [`importWalk.ts`](importWalk.ts): the up-front
   download checks (above).
@@ -160,6 +161,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`retro/`](retro/README.md): the PC shared by the desk and `dos.html`: DOS, Game-Maker's menus and
   registration, the utilities and the BBSes.
 - [`vga/`](vga/README.md): Game-Maker's eight designers, ported from their C source.
+- [`chicken/`](chicken/README.md): the rubber chicken's state (Sir Reginald or Lady Regina, following Tune-Up's story), its words and tiara, and the desk's restore utility.
 - [`eggs/`](eggs/README.md): the felt eggs hidden in the Sandbox games, their shadow box and
   EGG.EXE.
 - [`tinHearts/`](tinHearts/README.md): the tin heart hunt and its trophy.

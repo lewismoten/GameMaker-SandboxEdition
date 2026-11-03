@@ -59,6 +59,31 @@
   }
 }
 
+/* a finger (44px targets in touch mode): the tools, the buttons beside them and the brush
+   actions; the chosen tool is named in a line of its own because a title never shows on touch */
+.mt-now {
+  display: none;
+}
+@media (hover: none) and (pointer: coarse) {
+  .mt-modes button,
+  .mt-modes select,
+  .mt-big,
+  .mt-tool,
+  .mt-brush-actions button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .mt-modes,
+  .mt-toolset {
+    gap: 6px;
+  }
+  .mt-now {
+    display: block;
+    flex: 1 0 100%;
+    margin: 0;
+  }
+}
+
 .mt-panel {
   padding: 6px;
   border: 1px solid var(--border);

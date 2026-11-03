@@ -36,8 +36,8 @@ const fontPx = (ctx: CanvasRenderingContext2D) => Number(/([\d.]+)px/.exec(ctx.f
 /** Width of text that may hold the marked name. */
 const widths = new Map<string, number>();
 /** measureText, remembered by font and text: wrapping at several widths asks for the same lines again and again. */
-function widthOf(ctx: CanvasRenderingContext2D, text: string): number {
-  const key = `${ctx.font}|${ctx.letterSpacing}|${text}`;
+function widthOf(ctx: CanvasRenderingContext2D, text: string, fkey = `${ctx.font}|${ctx.letterSpacing}`): number {
+  const key = `${fkey}|${text}`;
   let w = widths.get(key);
   if (w === undefined) {
     if (widths.size > 4000) widths.clear();
@@ -46,12 +46,12 @@ function widthOf(ctx: CanvasRenderingContext2D, text: string): number {
   return w;
 }
 
-function measure(ctx: CanvasRenderingContext2D, text: string): number {
-  if (!text.includes(NAME_MARK)) return widthOf(ctx, text);
+function measure(ctx: CanvasRenderingContext2D, text: string, fkey?: string): number {
+  if (!text.includes(NAME_MARK)) return widthOf(ctx, text, fkey);
   let w = 0;
   for (const [i, part] of text.split(NAME_MARK).entries()) {
-    if (i === 0) w += widthOf(ctx, part);
-    else w += bbsNameWidth(ctx, fontPx(ctx), part[0] === 'F') + widthOf(ctx, part.slice(1));
+    if (i === 0) w += widthOf(ctx, part, fkey);
+    else w += bbsNameWidth(ctx, fontPx(ctx), part[0] === 'F') + widthOf(ctx, part.slice(1), fkey);
   }
   return w;
 }
@@ -324,18 +324,26 @@ export function barcode(ctx: CanvasRenderingContext2D, x: number, y: number, w: 
 }
 
 /** How many lines text wraps to (the same breaks wrap() makes), counting paragraph gaps as 0.4 line. */
+const wrapped = new Map<string, number>();
 export function wrapLines(ctx: CanvasRenderingContext2D, text: string, width: number): number {
+  // the font is read once (reading ctx.font serializes it) and the answer is kept: the box's layout asks again and again
+  const fkey = `${ctx.font}|${ctx.letterSpacing}`;
+  const memo = `${fkey}|${width}|${text}`;
+  const had = wrapped.get(memo);
+  if (had !== undefined) return had;
   let n = 0;
   for (const para of marked(text).split(/\n+/)) {
     let line = '';
     for (const word of boxWords(para)) {
       const test = line ? `${line} ${word}` : word;
-      if (measure(ctx, test) > width && line) (n++, (line = word));
+      if (measure(ctx, test, fkey) > width && line) (n++, (line = word));
       else line = test;
     }
     if (line) n++;
     n += 0.4;
   }
+  if (wrapped.size > 4000) wrapped.clear();
+  wrapped.set(memo, n);
   return n;
 }
 

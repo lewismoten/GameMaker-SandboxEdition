@@ -13,6 +13,10 @@ describe('walk:auto arguments', () => {
     expect(parseArgs(['d', '--wat'])).toMatch(/Unknown/);
     expect(parseArgs(['a', 'b'])).toMatch(/Unexpected/);
   });
+  it('reads --basic-keys, the keyboard accessibility run', () => {
+    expect(parseArgs(['d', '--basic-keys'])).toMatchObject({ source: 'd', basicKeys: true });
+    expect(parseArgs(['d'])).not.toHaveProperty('basicKeys');
+  });
 });
 
 describe('pickGam', () => {

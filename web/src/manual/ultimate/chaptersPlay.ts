@@ -355,7 +355,10 @@ export const SCENES: Chapter = {
   <p>The fix is a <b>walk-off</b>: put the link a few blocks <i>past</i> the gate, so the clip
   finishes while the hero walks there. Shakespeare in Sweatpants plays each monologue’s punch
   line at its last gate, and every stage runs on for several more blocks before the exit,
-  up to eighteen of them.</p>
+  up to eighteen of them. End the walk at a door the player can see, and put the link on
+  the door itself, so touching it is leaving. A link on a bare cell beyond the door leaves the
+  hero standing in the doorway wondering why nothing happens. And walk it yourself at an
+  ordinary pace: a player who strolls takes longer than a tester who runs.</p>
   <figure data-fig="walkoff"></figure>
   <p>The same goes for a scene’s first line. A voice that starts as a level opens is cut by
   the first digital sound after it, often the hero’s own first jump. Keep the opening seconds

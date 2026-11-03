@@ -180,6 +180,9 @@ export function jump(book: Kit['book']): Level {
   m.set(...JUMP.black, 'clamp.black');
   // the shelf up on the wall with the red clamp
   m.fill(20, 3, 9, 1, 's');
+  // and its first plank low, against the bench end: two steps of one block (Up, then Right once over
+  // each: the hop the tires taught) instead of a hop to aim sideways across a gap
+  m.set(19, 4, 's');
   m.set(...JUMP.red, 'clamp.red');
   m.set(JUMP.fork[0] - 2, 1, 'wall.glint').set(...JUMP.fork, 'fork');
   // the terminals, the crank, the drum (Sir Reginald's perch) and the headlight

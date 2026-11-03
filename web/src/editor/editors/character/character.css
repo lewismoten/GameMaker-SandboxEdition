@@ -827,3 +827,19 @@
   align-items: center;
   gap: 6px;
 }
+
+/* a finger (44px targets in touch mode): tabs, Undo/Redo, the buttons, menus and number boxes */
+@media (hover: none) and (pointer: coarse) {
+  .chr-editor .chr-tab,
+  .chr-editor button,
+  .chr-groups .panel-tabs-list button,
+  .chr-editor select,
+  .chr-editor input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  .chr-editor .chr-tab,
+  .chr-groups .panel-tabs-list button,
+  .chr-editor button {
+    min-width: 44px;
+  }
+}

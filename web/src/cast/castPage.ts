@@ -4,7 +4,8 @@
 import './cast.css';
 import { h, clear } from '../editor/core/ui';
 import { viewState } from '../urlState';
-import { CAST, CAST_GAMES, familiesOf, type CastMember } from './castData';
+import { chickenNow } from '../chicken/chickenState';
+import { CAST_GAMES, castFor, familiesOf, type CastMember } from './castData';
 import { castStage } from './castStage';
 import { seenIn } from './castThumbs';
 import { heartProgress, joeAllAlong } from '../tinHearts/progress';
@@ -29,7 +30,7 @@ function card(m: CastMember, pick: (m: CastMember, e: Event) => void): HTMLEleme
       'div',
       { class: 'cast-pic' },
       h('img', {
-        src: `./cast/${m.id}.png`,
+        src: `./cast/${m.art.file ?? m.id}.png`,
         ...shown(m),
         alt: m.art.alt,
         loading: 'lazy',
@@ -140,6 +141,8 @@ const families = () =>
 export function renderCast(el: HTMLElement): void {
   unlockAchievement('cast-visit');
   const state = viewState(['cast']);
+  // the chicken as she is now (chicken/): Lady Regina once Tune-Up's egg is laid
+  const CAST = castFor(chickenNow());
   const want = state.get('tab');
   let tab: Tab = TABS.some((t) => t.id === want) ? (want as Tab) : 'people';
   // a name is a link to its card; here it marks the card without leaving the page

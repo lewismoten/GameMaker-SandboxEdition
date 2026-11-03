@@ -96,11 +96,16 @@ Making the files:
   Cuts fall where the palette holds and least changes; the clips play exactly the frames of the whole one
   (`web/src/formats/fliClips.test.ts`). Opt-in `ClipOptions`: `noLoopFrame` drops each clip's ring frame
   (PLAYGAME plays only the header's frame count), `cheapCuts` cuts where opening on a whole frame adds the
-  fewest bytes (a scene change), in no more clips.
+  fewest bytes (a scene change), in no more clips; `shrink` runs `fliShrink.ts` steps (e.g. `sparsePalettes`: a fade
+  sends only the colors a frame draws) on each FLI before it is cut.
 - `photo.ts` — real photos for the endings: the small scans in `scans/` (made once from the owner's photos by
   `scans/scan.ts`) resized for VGA's tall pixels, given a picture's unused palette entries and dithered in; polaroid frames.
 - `chez.ts` — THE CHEZ, the red CitiCar, as a two-block side view (or smaller, seen through a window) for a
   cameo in a game's lot or at its curb, drawn in the game's own palette; facing left shows the charge port for a cord.
+- `sandscript.ts` — Sandscript, the Sandbox games' own secret alphabet for little hidden messages: 26 letters
+  hanging from a rim (strokes and pebbles on a 3 × 3 grid), and `sandPixels(text, scale)` to stamp a message as
+  pixels (scale 2: 5 × 5 letters, three to a 20-pixel block). Its only key is the folded note in the Library
+  room (`web/src/library/sandNote.ts`); keep it out of manuals, hint books and site pages.
 - `tinHeart.ts` — the tin heart, a small riveted heart that ticks, as a 20x20 block in any game's palette, with a
   glint across its frames and a soft tick-tock on the PC speaker; `looksLikeTinHeart` knows the block in any palette.
 - `tinHearts.ts` / `tinHeartDisk.ts` — the tin heart hunt: writes web/src/tinHearts/hearts.json from each about.json
@@ -126,10 +131,12 @@ Checking the games:
 - `checkGames.ts` — `cd web && npm run check:games`: every game's checks and a table (builds one at a time, then `--jobs N` games checked at once, default half the CPUs; a lock in the temp folder makes a second run wait); exits 1 on
   any failure. Per game: two builds into temporary folders (`GAME_DISK_OUT`) that must match each other byte for
   byte and cut off no text (`textBounds.ts`); unchanged working output is kept in place, `tools/check.ts`, `walkCheck.ts`, `textfitCheck.ts`, `hiddenView.ts`, `levelCheck.ts` and
-  `playerCheck.ts` (when the game has a player.json), `controlsCheck.ts` (when it has a controls.json); then `tinHearts.ts check`,
+  `playerCheck.ts` (when the game has a player.json), `controlsCheck.ts` (when it has a controls.json), `palCheck.ts`; then `tinHearts.ts check`,
   `saveSignCheck.ts`, `syncCheck.ts` and `versionCheck.ts` once. `--game <id>` (repeatable), `--quick` (no reproducibility rebuild), `--jobs N`, `--no-level`, `--verbose`, and `--play`
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
+- `keyAccess.ts` — `npm run check:keys [-- <id>...]`: keyboard accessibility. Each game's walkthrough's share of presses on the basic keys (the arrows, Space and Enter; `web/src/editor/check/keyLimit.ts`), its number-pad diagonals and every other key it presses, with suggestions where extra keys carry more than a fifth of the play or a diagonal is pressed (games may use extra keys, but less often: many laptops have no number pad and most players stick to the arrows). Never fails; `npm run walk:auto -- <disk> --basic-keys` tries a game with the basic keys alone. Secret games are left out unless named or `--all`.
+- `palCheck.ts` — `npx vite-node ../games/kit/palCheck.ts [<id>...]`: fails when a game's `disk/` holds byte-identical `.pal` files. Every game's `Disk.write()` merges them first (`tools/src/kit/palMerge.ts`: the first palette in scene order is kept, every scene that opened a duplicate opens it, the duplicates are dropped; scenes keep their numbers, and a DOS saved game stores scene numbers, not file names), so a failure means a build bypassed the shared writer.
 - `controlsCheck.ts` — `npx vite-node ../games/kit/controlsCheck.ts [<id>...]`: a game's `controls.json` (keys by scan code, joystick
   buttons, counters by meter, sound names by slot; the shape of `editor/core/gameControls.ts`) describes exactly what its built disk uses, by the
   editor's `gameKeyMap`, `counterUses` and `soundUses` (a custom slot past the engine's nine that a character plays must be named): lists used-but-not-described, described-but-not-used and text over the limits (32/240/80, sound names 40).
@@ -221,6 +228,7 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
   joins up across block edges. Each game's `tools/align.ts` names its objects; its `tools/check.ts` runs it.
 - `playtime.ts` — sets each box's "Over N hours of gameplay!" (`about.json` `box.hours`) from the walkthroughs:
   `cd web && npx vite-node ../games/kit/playtime.ts` after any walkthrough changes.
+- `pixelTrinkets.ts` (with `trinketRender.ts`, and `pixelTrinketDefs.ts` listing each game's figures) — pixel-figure 3D-print trinkets: each non-secret game's hero and one signature figure (Logic's Watt has none), a character's standing frame or a monster's picture from the game's own built disk as a standee on a base, a multi-color 3MF (at most 4 bodies) and a single-color STL into git-ignored `web/public/trinkets/<game>/` with a `manifest.json` that carries a `source` key (figures, options, mesh code): `build-games.mjs` runs it after the games and a game whose key matches is skipped (`--force` remakes). `--png DIR` writes front, three-quarter and contact-sheet renders (never skipped): `cd web && npx vite-node ../games/kit/pixelTrinkets.ts [--game id[,id]] [--force] [--colors 3|4] [--out ROOT] [--png DIR]`. To add a game, add its entries to `pixelTrinketDefs.ts` and look at the `--png` sheet.
 - `scoreAudit.ts` — replays committed walkthroughs without rebuilding disks and prints each completed game's final score plus its score at every scene entrance. Use it to compare score curves before changing a game's point values: `cd web && npx vite-node ../games/kit/scoreAudit.ts [id...]`.
 - `dosStates.ts` — replays each CD game's `demo.rec` through the web engine and compares it with the DOS-recorded tables in `dosStates/` (see its README), printing the first differing line per game: `cd web && npx vite-node ../games/kit/dosStates.ts [game...]`. Local only (nebula and peach are long).
 - `png.ts` — a PNG writer and block sheets for design previews (used by the games' `tools/`, never on a disk).
@@ -238,3 +246,5 @@ recordings or converting compressed sources such as Ogg. Keep `.wav` authoring s
 
 `versionDisks.ts` compares current build output to a Git revision. It reads legacy tracked disk blobs directly; for source-only revisions it extracts a temporary source snapshot, reuses installed third-party dependencies, resolves workspace packages from that snapshot, and builds the historical disk. `files(id)` returns a game's disk at the revision as name to bytes (used by `npm run disk:diff -- <id> --since`), and `lastPushToMaster(root)` picks the default revision. This stays local, outside CI.
 `moneyAudit.ts` replays the committed walkthroughs without rebuilding disks and reports each game's visible money counter at scene starts and its win.
+
+Depth Perception's plastic trinkets (STL files for its box) are made by `games/depth/tools/trinkets.ts`, from `games/depth/src/trinkets/` (`fields.ts` turns the tracer's shapes into distance fields, `make.ts` builds one's field and hands it to the shared `meshFieldTrinket`; the tool is the shared `runTrinketTool`). Quest for the Round Tuit's (`games/realm/src/trinkets/`: the Round Tuit in three pieces, a crown coin, a key tag) use the same pipeline with the shared `sdfShapes` and `trinketKinds`, and are made by `games/realm/tools/trinkets.ts`; `trinketSheet.ts <game>` writes a contact sheet (top, three-quarter and side views of the color bodies) and mesh stats for either: `cd web && npx vite-node ../games/kit/trinketSheet.ts realm`. `node scripts/build-games.mjs` runs it beside the games (worker threads of one bundle, `--workers N`) and it skips when its sources are unchanged. Each trinket is sampled once, thinned by `mesh/decimate`, and written as an STL, a 3MF of at most four color bodies and, where it leans out over nothing, a supports STL (about 5 MB for all seven); `plinth` and `palette` in a trinket's entry choose its stand's color and its filaments.

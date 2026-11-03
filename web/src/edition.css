@@ -256,3 +256,31 @@
     padding-block: 0;
   }
 }
+
+/* a finger: the header's links, ⋯ and settings menus and their items are 44px tall (Lewis's
+   touch rule). A phone held sideways gives up its 28px compact bar for it. */
+@media (hover: none) and (pointer: coarse) {
+  .topbar > a,
+  .topbar .nav-link,
+  .topbar .topbar-more > summary,
+  .topbar .tour-btn,
+  .topbar .topbar-gear,
+  .topbar .topbar-menu > button,
+  .topbar .topbar-menu > a {
+    box-sizing: border-box;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .topbar > a,
+  .topbar .nav-link {
+    display: inline-flex;
+    align-items: center;
+  }
+  .topbar .topbar-more > summary,
+  .topbar .tour-btn,
+  .topbar .topbar-gear {
+    height: auto;
+    display: grid;
+    place-items: center;
+  }
+}

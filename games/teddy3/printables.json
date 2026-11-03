@@ -263,6 +263,363 @@
       "back": "Please keep this pass hidden from the guest of honor until the lights come up. If you find a corgi reading it, he has not seen anything."
     },
     {
+      "kind": "codewheel",
+      "title": "The Clown Club Face Dial",
+      "note": "Join a face to light the gate",
+      "promised": true,
+      "heading": "THE CLOWN CLUB FACE DIAL · JOIN A FACE",
+      "center": "CLUB",
+      "split": true,
+      "outer": [
+        "Teddy",
+        "Gwinn",
+        "Doc Leo",
+        "Juggles",
+        "Honker",
+        "Pratfall",
+        "Crier",
+        "Goose",
+        "Poodle"
+      ],
+      "inner": [
+        "Teddy",
+        "Pratfall",
+        "Gwinn",
+        "Crier",
+        "Doc Leo",
+        "Goose",
+        "Juggles",
+        "Poodle",
+        "Honker"
+      ],
+      "hidden": [
+        [
+          "bone",
+          "heart",
+          "heart",
+          "nose",
+          "slice",
+          "star",
+          "hat",
+          "star",
+          "slice"
+        ],
+        [
+          "paw",
+          "bone",
+          "paw",
+          "balloon",
+          "heart",
+          "balloon",
+          "nose",
+          "slice",
+          "paw"
+        ],
+        [
+          "bone",
+          "nose",
+          "bone",
+          "heart",
+          "paw",
+          "paw",
+          "hat",
+          "slice",
+          "balloon"
+        ],
+        [
+          "nose",
+          "balloon",
+          "balloon",
+          "star",
+          "star",
+          "bone",
+          "paw",
+          "slice",
+          "balloon"
+        ],
+        [
+          "paw",
+          "paw",
+          "nose",
+          "star",
+          "bone",
+          "slice",
+          "heart",
+          "star",
+          "slice"
+        ],
+        [
+          "bone",
+          "balloon",
+          "paw",
+          "heart",
+          "balloon",
+          "slice",
+          "nose",
+          "bone",
+          "paw"
+        ],
+        [
+          "hat",
+          "paw",
+          "heart",
+          "balloon",
+          "slice",
+          "hat",
+          "star",
+          "balloon",
+          "nose"
+        ]
+      ],
+      "windows": [
+        {
+          "at": 0,
+          "ring": 0,
+          "label": "1"
+        },
+        {
+          "at": 1,
+          "ring": 1,
+          "label": "2"
+        },
+        {
+          "at": 2,
+          "ring": 2,
+          "label": "3"
+        },
+        {
+          "at": 3,
+          "ring": 3,
+          "label": "4"
+        },
+        {
+          "at": 4,
+          "ring": 4,
+          "label": "5"
+        },
+        {
+          "at": 5,
+          "ring": 5,
+          "label": "6"
+        },
+        {
+          "at": 6,
+          "ring": 6,
+          "label": "7"
+        }
+      ],
+      "glyphs": {
+        "Teddy": [
+          ".##......##.",
+          "#..#....#..#",
+          "#...####...#",
+          "#..........#",
+          "#.##....##.#",
+          "#..........#",
+          ".#...##...#.",
+          ".#..####..#.",
+          "..#.#..#.#..",
+          "..#.#..#.#..",
+          "...######...",
+          "....#..#...."
+        ],
+        "Gwinn": [
+          "#.#..#.#....",
+          "##.#.#.#.##.",
+          ".#..###..#.#",
+          "#..........#",
+          "#..##..##..#",
+          "#..........#",
+          ".#...##...#.",
+          ".#..####..#.",
+          "..#.#..#.#..",
+          "..#..##..#..",
+          "...#....#...",
+          "....####...."
+        ],
+        "Doc Leo": [
+          ".....##.....",
+          "....####....",
+          "...#.##.#...",
+          "..#..##..#..",
+          ".##########.",
+          "#..........#",
+          "#.##....##.#",
+          "#..........#",
+          ".#..####..#.",
+          ".#...##...#.",
+          "..#.####.#..",
+          "...######..."
+        ],
+        "Juggles": [
+          ".#.#.##.#.#.",
+          "#.#.#..#.#.#",
+          "#..........#",
+          "#..#....#..#",
+          "#.#......#.#",
+          "#..........#",
+          ".#.######.#.",
+          ".#..####..#.",
+          "..#......#..",
+          "..#.####.#..",
+          "...#....#...",
+          "....####...."
+        ],
+        "Honker": [
+          "..###..###..",
+          ".#...##...#.",
+          ".#...##...#.",
+          "############",
+          ".#........#.",
+          "#..........#",
+          "#.##....##.#",
+          "#..........#",
+          "#.########.#",
+          ".##########.",
+          "..#......#..",
+          "...######..."
+        ],
+        "Pratfall": [
+          "############",
+          ".##########.",
+          "..#......#..",
+          "############",
+          "#..........#",
+          "#.###..###.#",
+          "#.#.#..#.#.#",
+          "#.###..###.#",
+          "#..........#",
+          ".#.##..##.#.",
+          "..#......#..",
+          "...######..."
+        ],
+        "Crier": [
+          "....####....",
+          "...#.##.#...",
+          "..#..##..#..",
+          ".####..####.",
+          "############",
+          "#..........#",
+          "#.##....##.#",
+          "#..........#",
+          "#..#....#..#",
+          "#.########.#",
+          ".#.#.##.#.#.",
+          "..#.#..#.#.."
+        ],
+        "Goose": [
+          "..###..###..",
+          ".#...##...#.",
+          "#....##....#",
+          "#..##..##..#",
+          "#.#.#..#.#.#",
+          "#.#......#.#",
+          "#.#.####.#.#",
+          ".###.##.###.",
+          ".#..####..#.",
+          ".#...##...#.",
+          "..#..##..#..",
+          "...######..."
+        ],
+        "Poodle": [
+          "...##..##...",
+          "..#..##..#..",
+          "##.##..##.##",
+          "#..#....#..#",
+          "##........##",
+          ".#.##..##.#.",
+          ".#........#.",
+          ".#..####..#.",
+          "..#.#..#.#..",
+          ".##.#..#.##.",
+          "#..######..#",
+          ".###....###."
+        ],
+        "bone": [
+          "......",
+          "......",
+          "##..##",
+          "######",
+          "##..##",
+          "......"
+        ],
+        "balloon": [
+          ".####.",
+          "######",
+          "######",
+          ".####.",
+          "..##..",
+          "..#..."
+        ],
+        "slice": [
+          "#.....",
+          "##....",
+          "###...",
+          "####..",
+          "#####.",
+          "######"
+        ],
+        "star": [
+          "..##..",
+          "..##..",
+          "######",
+          ".####.",
+          ".#..#.",
+          "#....#"
+        ],
+        "heart": [
+          ".#..#.",
+          "######",
+          "######",
+          ".####.",
+          "..##..",
+          "......"
+        ],
+        "paw": [
+          ".#..#.",
+          ".#..#.",
+          "#.##.#",
+          ".####.",
+          "######",
+          ".####."
+        ],
+        "hat": [
+          "..##..",
+          "..##..",
+          ".####.",
+          ".####.",
+          "######",
+          "######"
+        ],
+        "nose": [
+          "......",
+          ".####.",
+          "######",
+          "######",
+          ".####.",
+          "......"
+        ]
+      },
+      "howto": [
+        "Every face is split in two. The top halves are printed round the big disc, and the bottom halves round the small one, in a different order.",
+        "Turn the small disc until a face joins up: its top and its bottom meet under the red arrow, and the face is whole.",
+        "The seven windows in the spiral now show a code of signs. Window 1 is the outside one; read them 1 to 7, the way a board reads left to right."
+      ],
+      "puzzles": [
+        {
+          "scenes": [
+            15
+          ],
+          "ask": "Firefly Meadow: a sign by the road says GWINN'S FACE. Three garden gates stand in the hedge, each with a board of seven signs. Which one opens?",
+          "turn": {
+            "inner": "Gwinn",
+            "outer": "Gwinn"
+          },
+          "answer": "The middle gate, up the first plank step. Its board reads slice, paw, nose, balloon, star, balloon, hat."
+        }
+      ]
+    },
+    {
       "kind": "hintbook",
       "title": "Teddy's Birthday Hint Book",
       "note": "Answers hidden: use the red film",
@@ -445,6 +802,10 @@
             {
               "q": "It's too dark to go on.",
               "a": "Sniff (S) the sleepy firefly in the grass. Its light melts the dark."
+            },
+            {
+              "q": "Three gates across the road, and two won't open.",
+              "a": "A shut gate costs nothing: try the one on the ground, then hop up the plank steps to the others. Only one opens. Or find GWINN'S FACE on the Face Dial: turn the small disc until its two halves join, and the gate that wears the seven signs in the windows is the one."
             }
           ]
         },
@@ -502,5 +863,6 @@
         }
       ]
     }
-  ]
+  ],
+  "worldMap": { "regions": [[4, 19, 20]] }
 }

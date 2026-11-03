@@ -198,8 +198,44 @@ export interface RecipeItem extends ItemBase {
   back?: string;
 }
 
+/**
+ * A paper code wheel (codeWheel.ts): an outer disc with a ring of symbols, and a smaller disc pinned over it
+ * that turns, with a ring of its own facing the outer one and windows cut through it onto a ring printed on
+ * the outer disc underneath. It decodes the game's lettering (runes, an alien script, symbols) and answers its
+ * puzzles; printed, it is two discs to cut out and pin together; on screen it turns.
+ */
+export interface CodeWheelItem extends ItemBase {
+  kind: 'codewheel';
+  /** Round the outer disc's rim. */
+  heading: string;
+  /** In the middle of the turning disc. */
+  center?: string;
+  /** The outer disc's ring, clockwise from the top: letters, words, or glyph names (`glyphs`). */
+  outer: string[];
+  /** The turning disc's ring, as many as `outer`, each facing one of them. */
+  inner: string[];
+  /**
+   * Rings on the outer disc under the turning one, seen only through its windows (each as many as `outer`): one
+   * ring, or several, outermost first, each at its own distance from the pin so each window shows its own.
+   */
+  hidden?: string[] | string[][];
+  /** Windows cut through the turning disc: the place in its ring each is beside, its label, and the hidden ring it opens on (0 by default). */
+  windows?: { at: number; label?: string; ring?: number }[];
+  /** Pictures for symbols: a name, and rows of '#' (ink) and '.' (paper), every row as wide. */
+  glyphs?: Record<string, string[]>;
+  /** How to use it, printed with the discs and shown beside the wheel on screen. */
+  howto?: string[];
+  /**
+   * The puzzles it solves: the scenes they are on (the 1994 desk lays the wheel beside the monitor there), the
+   * question, and the setting (the turning disc's `inner` symbol and the outer disc's `outer` one, together under
+   * the arrow). The answer is what the wheel shows then: the symbol in window `window` (an index into `windows`),
+   * or, for decoding a word, a short `answer`.
+   */
+  puzzles?: { scenes: number[]; ask: string; turn: { inner: string; outer: string }; window?: number; answer?: string }[];
+}
+
 export type PrintableItem =
-  SpyglassItem | PrintsItem | MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem;
+  SpyglassItem | PrintsItem | MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem | CodeWheelItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {
@@ -219,6 +255,10 @@ export interface StickerSpec {
   sprite?: SpriteArt;
   /** A character from his .CHR file, standing (drawn instead of `sprite`). */
   hero?: Portrait;
+  /** A picture drawn in code, not from the game's files: Lady Regina's tiara, in silver (stickerDrawn.ts). */
+  drawn?: 'tiara';
+  /** What changes once the rubber chicken is Lady Regina (chicken/chickenState.ts): this sticker's fields, replaced. */
+  lady?: Partial<StickerSpec>;
   /** A die-cut's size: each pixel of its picture prints this many 1/150 inch (default: about 1.3" tall). */
   px?: number;
   /** Leave it out of the little cut-outs that fill the sheet's gaps. */
@@ -230,6 +270,8 @@ export interface SpriteArt {
   blocks: string;
   pal: string;
   grid: number[][];
+  /** Only this part of the picture, in pixels: [x, y, width, height] (Doc Leo's hat from his front block). */
+  crop?: [number, number, number, number];
   /**
    * The plain ground block a background thing is drawn on (or a grid of them, like `grid`): its
    * pixels round the thing are cut away. "edge" cuts away the colors along the picture's edge instead
@@ -262,6 +304,12 @@ export interface WorldMapHints {
     /** What its land lists (default: the folded scenes' numbers and names). */
     labels?: string[];
   }[];
+  /**
+   * The game's regions, drawn as one land each (scene numbers, "9-18" or names), instead of the ones
+   * worldMapRegions.ts finds. Palette files that are the same are one file in a built game, so what
+   * a level's own palette once told is not in the disk: a game says where its levels are here.
+   */
+  regions?: (number | string)[][];
 }
 
 /** games/<id>/printables.json */

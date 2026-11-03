@@ -5,7 +5,8 @@
 // the game passes through, like a passage, doesn't count).
 import { ENDTYPE, STARTTYPE, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Graph } from '../../editor/editors/integrator/layoutCells';
-import { sceneLabel } from './worldMapGroups';
+import type { WorldMapHints } from './types';
+import { sceneLabel, sceneRefs } from './worldMapGroups';
 
 interface Region {
   /** Its places, the first one naming it. */
@@ -27,8 +28,12 @@ function linkedGroups(ids: number[], key: (i: number) => string | undefined, g: 
   return [...groups.values()];
 }
 
-/** The regions of a game's places (`g`, the graph of its places). */
-export function regionsOf(game: Game, g: Graph): Region[] {
+/** The regions of a game's places (`g`, the graph of its places); `hints.regions` names them when the game does. */
+export function regionsOf(game: Game, g: Graph, hints?: WorldMapHints): Region[] {
+  if (hints?.regions) {
+    const ids = hints.regions.map((refs) => refs.flatMap((r) => sceneRefs(game, r)).filter((i) => g.nodes.includes(i)));
+    return ids.filter((r) => r.length).map((r) => ({ ids: r, name: sceneLabel(game.scenes[r[0]].desc) }));
+  }
   const adventure = (i: number) => game.scenes[i].gametype !== STARTTYPE && game.scenes[i].gametype !== ENDTYPE;
   const near = (i: number) => new Set([...(g.out.get(i) ?? []), ...(g.inn.get(i) ?? [])]);
   const out: Region[] = [];
