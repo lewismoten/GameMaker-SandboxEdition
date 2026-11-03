@@ -87,10 +87,6 @@ GAMES.risi = [
   hero('marcus', 'marcus', 'banquet', 'Marcus Iocundus', 'The comic poet of Rome.', 'marcus'),
   mon('banquet', 6, 'risi', 'banquet', 'rufus', 'Rufus', 'Marcus’s dog.'),
 ];
-GAMES.sandcast = [
-  hero('sandcast', 'sandcast', 'sandcast', 'Teddy the knight', 'The corgi knight of the sandbox.', 'knight'),
-  mon('sandcast', 29, 'sandcast', 'sandcast', 'gwinn', 'Gwinn', 'Teddy’s big sister, ready to zoom.'),
-];
 GAMES.sleuth = [
   hero('ada', 'ada', 'dawn', 'Inspector Ada Penn', 'The inspector of the Paragon Theatre.', 'ada'),
   mon('people', 9, 'people', 'dawn', 'ghost', 'The ghost', 'A little ghost of the theater.'),
