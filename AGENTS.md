@@ -108,10 +108,10 @@ preserve what was there.
   - a pull request from `develop` into `master` only when the maintainer says it's time.
 - **Commits:** commit small and often: one game or one feature per commit, with no more
   than about 3 uncommitted files at a time. Use `git commit -- <paths>` so you only commit
-  your own files. Push your feature branch after every commit (`git push -u origin HEAD` the
-  first time, then `git push`), so the maintainer can see on GitHub what everyone is working
-  on, even away from home. No workflow runs on a branch push. Never push `master`, never
-  force-push, and never rewrite history that has been pushed.
+  your own files. Every 5 to 10 minutes, if there are new commits, push your feature branch
+  (`git push -u origin HEAD` the first time, then `git push`), so the maintainer can see on
+  GitHub what everyone is working on, even away from home. No workflow runs on a branch push.
+  Never push `master`, never force-push, and never rewrite history that has been pushed.
 - **Dev server:** the maintainer keeps a dev server open on port 5173. Never restart or stop
   it, and never make that page reload. Verify with your own headless browser (Playwright's
   bundled Chromium, no `channel`, closed in a `finally`) against it. For production checks, use a scratch build
