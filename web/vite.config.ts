@@ -7,12 +7,22 @@ import { hashText } from './src/export/serviceWorker';
 import { groupKey, groupOf, isHashed, siteWorkerSource } from './src/siteWorker';
 import { cdGames, cdSecretCatalog } from './scripts/cdGames';
 import { gzipSync } from 'node:zlib';
+import { execFileSync } from 'node:child_process';
 import { singlePagePlayer } from './scripts/singlePageBuild';
 import { hostedPlayer } from './scripts/hostedPlayerBuild';
 import { seoPages } from './scripts/seoBuild';
 import { devLog } from './scripts/devLog';
 
 const publicDir = resolve(__dirname, 'public');
+
+/** The commit this build comes from, for the boot screen's BIOS ID line (src/retro/biosId.ts). */
+function gitCommit(): string {
+  try {
+    return execFileSync('git', ['rev-parse', 'HEAD'], { cwd: __dirname, encoding: 'utf8' }).trim();
+  } catch {
+    return process.env.GITHUB_SHA ?? '';
+  }
+}
 
 /** Top-level public files (icons, manifest). */
 function publicFiles(): string[] {
@@ -283,6 +293,7 @@ export default defineConfig({
   resolve: { conditions: ['gamemaker-source', 'module', 'browser', 'development|production'] },
   ssr: { noExternal: [/^@lewismoten\/gamemaker-sandbox-/], resolve: { conditions: ['gamemaker-source', 'module', 'node', 'development|production'] } },
   base: './',
+  define: { 'import.meta.env.VITE_COMMIT': JSON.stringify(gitCommit()) },
   plugins: [
     cdGames(resolve(__dirname, '../cd')),
     seoPages(resolve(__dirname, '../cd')),
