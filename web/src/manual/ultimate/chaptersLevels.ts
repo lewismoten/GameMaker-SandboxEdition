@@ -107,6 +107,12 @@ export const LEVELS: Chapter = {
     kills a monster weaker than itself. Give moving prizes at least the shot’s power (still under
     100, so the hero’s touch collects them), or a stray shot can destroy the very thing the
     level asks for.</li>
+    <li><b>A prize that changes with the clock.</b> Draw two pickups, say a bonus worth 500 and a
+    block that gives +1 hit point, and set each one’s <i>Becomes block</i> to the other with a
+    <i>Time</i> of 400 ticks (about 22 seconds). Both are picked up by touch, so whichever shows
+    when the hero arrives is what he gets, and waiting beside it is a choice: greed or need. A
+    player who is hurt will watch for the heart, and a heart in plain sight is no longer a gift.
+    (Every copy of a block shares one clock, so all the pairs on the map swap together.)</li>
     <li><b>No padding.</b> An enemy usually earns its place by teaching, testing or guarding
     something. Three more monsters dropped beside the exit tend to make a level meaner rather
     than harder.</li>
