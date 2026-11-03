@@ -269,7 +269,8 @@ function innerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   });
   discRing(it, g0, top, it.inner, g);
   for (const w of it.windows ?? [])
-    if (w.label) {
+    // (several windows on one ring crowd the hub: their names are in the readout beside the wheel instead)
+    if (w.label && (rings > 1 || (it.windows?.length ?? 0) < 2)) {
       // one ring: the label inside the window, toward the pin; several: beside its window, along its ring
       const b = band(g0, w.ring ?? 0, rings);
       const [r, deg] = rings <= 1 ? [g0.single.in - 6, w.at * step] : [(b.in + b.out) / 2, w.at * step + step * 0.5 + 1];
