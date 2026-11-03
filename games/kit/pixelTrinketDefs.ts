@@ -91,10 +91,6 @@ GAMES.sleuth = [
   hero('ada', 'ada', 'dawn', 'Inspector Ada Penn', 'The inspector of the Paragon Theatre.', 'ada'),
   mon('people', 9, 'people', 'dawn', 'ghost', 'The ghost', 'A little ghost of the theater.'),
 ];
-GAMES.smirked = [
-  hero('smirked', 'smirked', 'exit', 'The scaredy-dad', 'Taking Lily through the haunted house.', 'hero'),
-  mon('exit', 8, 'smirked', 'exit', 'ghost', 'Pink ghost', 'A friendly pink ghost.'),
-];
 GAMES.sweats = [
   hero('poet', 'poet', 'ants', 'Will', 'Open-mic poet in a starched ruff.', 'will'),
   mon('ants', 17, 'errands', 'ants', 'goose', 'Goose', 'A goose out on errands.'),
