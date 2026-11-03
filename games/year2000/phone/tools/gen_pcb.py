@@ -54,7 +54,7 @@ FIXED = {k: (sn(x), sn(y), r) for k, (x, y, r) in {
     "D2": (13.0, 6.35, 0), "D1": (86.0, 6.35, 0),
     "DS1": (33.5, 24.0, 0), "DS2": (65.5, 24.0, 0),
     "LS1": (SPK[0], SPK[1], 0),
-    "SW2": (DIAL[0] - 7.62, DIAL[1] - 5.08, 0), "SW3": (DIAL[0] + 7.62, DIAL[1] + 5.08, 0),
+    "SW2": (DIAL[0] - 7.62, DIAL[1], 0), "SW3": (DIAL[0] + 7.62, DIAL[1] + 5.08, 0),
     "SW4": (13.0, 92.0, 0), "SW5": (86.0, 92.0, 0), "MK1": (CX, 91.5, 0), "BT1": (31.0, 93.5, 0), "J1": (68.0, 94.0, 0),
 }.items()}
 NEAR = {"X1": "U2", "C12": "U1", "C13": "U3", "R25": "U3", "C14": "U1", "R1": "U1", "C15": "U2", "C16": "U4", "C17": "U5", "C18": "U5",
@@ -207,6 +207,10 @@ for ref, pl in placed.items():
             rt.blockers.append((pl.x + rx, pl.y + ry, r))
 for mx, my in MOUNT:
     rt.blockers.append((mx, my, 2.1))
+for ref, pl in placed.items():             # small pin marks (silkscreen) of the front parts must not sit on copper
+    for t, tx, ty in (pl.fp.marks if ref.startswith("MK") else []):
+        rx, ry = rot(tx, ty, pl.a)
+        rt.blockers.append((pl.x + (-rx if pl.side == "B" else rx), pl.y + ry, 0.9))
 rt.fzones += [(DIAL[0], DIAL[1], DIAL_KEEP_F), (SPK[0], SPK[1], SPK_KEEP_F)]
 widths = {nid[GND]: WIDE, nid[V5]: WIDE}
 base = [nid[GND], nid[V5]]
@@ -271,6 +275,9 @@ for ref, pl in placed.items():
                  (c[0] - w / 2 - 0.6, c[1]), (c[2] + w / 2 + 0.6, c[3])]
         if key == "val":
             cands = cands[1:2] + cands[0:1] + cands[3:4] + cands[2:3] + cands[4:]
+        for dy_ in (0.9, 1.9, 2.9, 3.9):
+            for dx_ in (1.5, -1.5, 3.0, -3.0, 4.5, -4.5):
+                cands += [(xm + dx_, c[3] + dy_), (xm + dx_, c[1] - dy_)] if key == "val" else [(xm + dx_, c[1] - dy_), (xm + dx_, c[3] + dy_)]
         chosen = None
         for cx_, cy_ in cands:
             b = tbox(cx_, cy_, s)

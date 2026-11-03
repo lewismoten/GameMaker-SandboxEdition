@@ -56,7 +56,7 @@ def _disp():
     pads += [Pad(str(7 + i), 6.35 - 2.54 * i, -5.08) for i in range(6)]
     # 3641AS-style 0.36 in module: 30 x 14 x 7.2 mm body, rows 10.16 mm apart (G-NOR GNQ-3641 drawing)
     return Fp("DISP4_CC_0.36in_12pin", pads, (-15, -7, 15, 7), (-15.3, -7.3, 15.3, 7.3),
-              [("1", -8.5, 7.4), ("12", -8.5, -7.4)], desc="4-digit 7-segment module (3641AS style), 12 pins, rows 10.16 mm apart")
+              [], desc="4-digit 7-segment module (3641AS style), 12 pins, rows 10.16 mm apart")
 
 
 def _tact():
@@ -81,7 +81,7 @@ FP = {
     "led": _row("LED_5mm_BigPads", ["1", "2"], 2.54, (-3.5, -3.5, 3.5, 3.5), "5 mm IR LED, leads bent so the dome points off the board edge; pin 1 is the cathode (K)",
                 square="1", marks=[("K", -2.9, 2.6), ("A", 2.7, 2.6)]),
     "mic": Fp("Mic_Electret_9.7mm_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
-              (-5.1, -5.1, 5.1, 5.1), (-5.4, -5.4, 5.4, 5.4), [("+", -4.6, -3.2)], extra=[(0, 0, 4.85)],
+              (-5.1, -5.1, 5.1, 5.1), (-5.4, -5.4, 5.4, 5.4), [("+", -2.54, -2.4)], extra=[(0, 0, 4.85)],
               desc="electret capsule wired to two pads, + is the pad that goes to the bias resistor"),
     "spk": Fp("Speaker_28mm_BigPads", [Pad("1", -2.54, 19.05, 2.4, 1.2, True), Pad("2", 2.54, 19.05, 2.4, 1.2)],
               (-14.2, -14.2, 14.2, 21.4), (-14.2, -14.2, 14.2, 21.4), [("+", -4.6, 19.05)], extra=[(0, 0, 14)],
