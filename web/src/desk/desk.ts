@@ -66,7 +66,9 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     try {
       await open();
     } finally {
-      if (deskView.get('open') === name) deskView.set({ open: undefined });
+      const now = deskView.get('open');
+      // a game's box switched to another game by its picker keeps the address on the new one
+      if (now === name || (name.startsWith('manual:') && now?.startsWith('manual:'))) deskView.set({ open: undefined });
     }
   };
 
@@ -213,7 +215,10 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   /** A game's manual, kept in the address while it is open (open=manual:<game>). */
-  const gameManual = (g: CatalogEntry, front?: string) => opened(`manual:${g.id}`, async () => (await lazy.gameManual()).openGameManual(g, front));
+  const gameManual = (g: CatalogEntry, front?: string) =>
+    opened(`manual:${g.id}`, async () =>
+      (await lazy.gameManual()).openGameManual(g, front, undefined, undefined, (id) => deskView.set({ open: `manual:${id}` })),
+    );
   /** Game-Maker's own Owner's Guide (open=gm-manual). */
   const dosManual = () => opened('gm-manual', async () => (await lazy.dosManual()).openDosManual());
 

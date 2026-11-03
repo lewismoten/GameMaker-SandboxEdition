@@ -14,6 +14,7 @@ import { readView, viewToggle, type Reader, type ReaderOptions, type ReadView } 
 import { percentOf, pinchZoom, readSize, sizeControl, widthAt, zoomKey, type ReadSize, type Room } from '../readSize';
 import { scrollPages, type ScrollPages } from '../scrollPages';
 import { epubControl, type EpubSource } from '../epub/save';
+import { gamePicker, type PickerGame } from './gamePicker';
 
 /** A thing in the box. */
 export interface BoxItem {
@@ -75,6 +76,11 @@ export interface BoxOptions {
   address?: BoxAddress;
   /** The manual as an ePub. */
   epub?: EpubSource;
+  /** The shelf's games, for the bar's Game picker (gamePicker.ts); `gameId` is the one open. */
+  games?: PickerGame[];
+  gameId?: string;
+  /** The reader chose another game: the viewer has closed; open that game's box at `piece`. */
+  onGame?: (id: string, piece: string) => void;
 }
 
 const COMB_HOW = 'two pages a side, printed on both sides (flip on the short edge): fold the stack, or cut it and bind it';
@@ -520,6 +526,15 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       if ((e as CustomEvent<{ do: string }>).detail.do === 'film-over' && answer) film.over(answer);
     };
     window.addEventListener('gm-tour-act', onTourAct);
+    // another game's box, in the same viewer: this one closes and the next opens at the same kind of piece
+    const gameBar =
+      options.games && options.gameId && options.onGame
+        ? gamePicker(options.games, options.gameId, (id) => {
+            const piece = current;
+            close();
+            options.onGame!(id, piece);
+          })
+        : undefined;
     const onKey = (e: KeyboardEvent) => {
       if (zoomOpen()) return; // an enlarged screen shot takes the keys
       // a control that turns with these keys (a code wheel's disc, any slider) has them while it has the focus
@@ -532,6 +547,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       else if ((e.key === 'PageDown' || e.key === 'PageUp') && column) stage.scrollBy({ top: (e.key === 'PageDown' ? 0.9 : -0.9) * stage.clientHeight });
       else if (e.key === 'PageDown') turn(1);
       else if (e.key === 'PageUp') turn(-1);
+      else if ((e.key === '[' || e.key === ']') && gameBar) gameBar.step(e.key === ']' ? 1 : -1);
       else if (e.key === 'Home') ((at = 0), isBook() && showManual());
       else if (e.key === 'End' && column) ((at = total - 1), showManual());
       else if (e.key === 'Escape') menu.hidden ? close() : (menu.hidden = true);
@@ -556,6 +572,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       h(
         'div',
         { class: 'gmb-bar' },
+        gameBar?.el ?? null,
         h('strong', null, title),
         h('span', { class: 'gmb-spacer' }),
         toggle.el,
