@@ -10,7 +10,7 @@ import { CTR } from '../src/ids';
 import { diskNumber } from '../src/blocks/shared';
 import { GAUGES, PANEL, RADIO_X, STATIONS, dialRing, panelBlocks } from '../src/levels/panel';
 import type { Bot } from './bot';
-import { leave, must, takeFork } from './route';
+import { grab, leave, must, takeFork } from './route';
 
 /** The raindrops' blocks, and each section's just-wiped frames, as each part's block book numbers them. */
 const rainParts = RAIN_PARTS.map((part) => {
@@ -115,12 +115,16 @@ export function keyChange(room: number) {
     expect(bot, 22 + room, `key change, gear ${room + 1}`);
     await must(bot, bot.land(), 'into the gearbox');
     const score = bot.sim.ci.score;
+    const thermos = bot.shownNum(21, GEARS.floor - 1);
+    const energy0 = bot.sim.ci.hitpts;
     for (const x of GEARS.towers) {
       await must(bot, bot.walk(x, `under the tower at ${x}`), 'to the tower');
       await onTooth(bot, room, x, false);
       await onTooth(bot, room, x, true);
       await must(bot, bot.walk(x + 4, 'along the ledge and over the wall'), 'over');
     }
+    // third gear's thermos, on the floor before the door (src/levels/key.ts)
+    if (room === 2) await grab(bot, 21, GEARS.floor - 1, 'the thermos in third gear', thermos, energy0);
     await must(bot, bot.walk(GEARS.door - 1, 'to the door'), 'door');
     if (bot.sim.ci.score < score + 150) throw new Error(`gear ${room + 1}: missed a note`);
     await must(
@@ -149,6 +153,8 @@ const needleRight = (j: number) => diskNumber('dash1', dashBook.n(`dial${j}.${di
 export async function tuneRadio(bot: Bot): Promise<void> {
   expect(bot, 26, 'the instrument panel, the radio');
   await must(bot, bot.land(), 'onto the dash');
+  // the Clown Club red nose on the dash's floor, an extra life (src/levels/panel.ts)
+  await grab(bot, 7, PANEL.floor - 1, 'the red nose');
   for (const [s, i] of STATIONS.entries()) {
     const x = PANEL.dialX + i;
     await must(bot, bot.walk(x, `under preset ${s + 1}`), 'to the preset');

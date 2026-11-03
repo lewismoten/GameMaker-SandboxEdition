@@ -23,6 +23,18 @@ export async function leave(bot: Bot, r: Promise<string | undefined>, what: stri
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
 
+/**
+ * Takes a visible pickup the way a person does: walks to its column (unless the route already
+ * crossed it) and checks the block there changed (a touched pickup is gone). `row` is the level
+ * row it stands on; `was` is the block seen there before the route could have touched it.
+ */
+export async function grab(bot: Bot, x: number, row: number, what: string, was = bot.shownNum(x, row), energy = bot.sim.ci.hitpts): Promise<void> {
+  const lives = bot.sim.ci.lives;
+  if (bot.shownNum(x, row) === was) await must(bot, bot.walk(x, `to ${what}`), what);
+  if (bot.shownNum(x, row) === was) throw new Error(`${what} at ${x} wasn't picked up`);
+  console.log(`  picked up ${what}: energy ${energy} -> ${bot.sim.ci.hitpts}, lives ${lives} -> ${bot.sim.ci.lives}`);
+}
+
 /** Takes a tuning fork the way a person does: walks to its column, and checks the counter went up. */
 export async function takeFork(bot: Bot, x: number, what: string): Promise<void> {
   const before = bot.count(CTR.forks);
