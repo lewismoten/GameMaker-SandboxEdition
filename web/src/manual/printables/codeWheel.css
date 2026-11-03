@@ -1,0 +1,162 @@
+/* a game's paper code wheel (codeWheel.ts): card-stock discs, printed or turning on screen */
+.cw-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.cw-paper {
+  fill: #f4ecd8;
+  stroke: #3b2f1f;
+  stroke-width: 0.6;
+}
+
+.cw-inner-paper {
+  fill: #fbf5e6;
+  filter: drop-shadow(0 0.8px 1.2px rgba(0, 0, 0, 0.35));
+}
+
+.cw-cell {
+  fill: none;
+  stroke: #8a7556;
+  stroke-width: 0.3;
+}
+
+.cw-hidden-cell {
+  fill: #e8dcc0;
+}
+
+.cw-sym text,
+.cw-center,
+.cw-label {
+  fill: #2a2016;
+}
+
+.cw-glyph {
+  fill: #2a2016;
+}
+
+.cw-rim {
+  fill: #6b1f12;
+  letter-spacing: 0.6px;
+}
+
+.cw-pointer {
+  fill: #a32a18;
+}
+
+.cw-hub {
+  fill: #efe3c6;
+  stroke: #8a7556;
+  stroke-width: 0.4;
+}
+
+.cw-pin {
+  fill: #b08a3a;
+}
+
+/* printed: cut lines are dashed and the paper is plain white */
+.cw-print .cw-paper {
+  fill: #fff;
+  filter: none;
+}
+
+.cw-print .cw-cut {
+  stroke-dasharray: 2 1.4;
+}
+
+.cw-print .cw-hidden-cell {
+  fill: #f2f2f2;
+}
+
+.cw-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 2cqw;
+  padding: 5cqw;
+}
+
+.cw-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 2.4cqw;
+}
+
+.cw-sheet .cw-svg {
+  width: 82cqw;
+  margin: 0 auto;
+}
+
+.cw-sheet .cw-howto,
+.cw-sheet .cw-steps {
+  font-size: 2cqw;
+  line-height: 1.4;
+}
+
+/* on screen: the wheel to turn, and how to use it beside it */
+.cw-live {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.cw-dial {
+  flex: 1 1 320px;
+  max-width: 560px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.cw-dial:active {
+  cursor: grabbing;
+}
+
+.cw-dial:focus-visible {
+  outline: 3px solid var(--accent, #4a7bd0);
+  outline-offset: 4px;
+}
+
+.cw-inner {
+  transition: transform 0.35s ease-out;
+}
+
+.cw-side {
+  flex: 1 1 220px;
+  min-width: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.cw-side p {
+  margin: 0 0 0.6em;
+  font-size: inherit;
+}
+
+.cw-asks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 1.2em;
+}
+
+.cw-asks li span {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cw-tell {
+  min-height: 32px;
+}
+
+.cw-answer {
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-inner {
+    transition: none;
+  }
+}

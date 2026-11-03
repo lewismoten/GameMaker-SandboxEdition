@@ -10,6 +10,7 @@ import type { PrintableItem } from '../manual/printables/types';
 export const SHELF_TYPES = [
   ['manual', 'Manuals'],
   ['hintbook', 'Hint books'],
+  ['codewheel', 'Code wheels'],
   ['worldmap', 'World Maps'],
   ['levelmap', 'Level Maps'],
   ['map', 'Other maps and plans'],
@@ -128,6 +129,8 @@ function ownType(kind: PrintableItem['kind'], title: string): ShelfType {
     case 'journal':
     case 'recipe':
       return 'letter';
+    case 'codewheel':
+      return 'codewheel';
   }
 }
 

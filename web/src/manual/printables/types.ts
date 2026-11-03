@@ -196,7 +196,39 @@ export interface RecipeItem extends ItemBase {
   back?: string;
 }
 
-export type PrintableItem = MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem;
+/**
+ * A paper code wheel (codeWheel.ts): an outer disc with a ring of symbols, and a smaller disc pinned over it
+ * that turns, with a ring of its own facing the outer one and windows cut through it onto a ring printed on
+ * the outer disc underneath. It decodes the game's lettering (runes, an alien script, symbols) and answers its
+ * puzzles; printed, it is two discs to cut out and pin together; on screen it turns.
+ */
+export interface CodeWheelItem extends ItemBase {
+  kind: 'codewheel';
+  /** Round the outer disc's rim. */
+  heading: string;
+  /** In the middle of the turning disc. */
+  center?: string;
+  /** The outer disc's ring, clockwise from the top: letters, words, or glyph names (`glyphs`). */
+  outer: string[];
+  /** The turning disc's ring, as many as `outer`, each facing one of them. */
+  inner: string[];
+  /** A ring on the outer disc under the turning one, seen only through its windows (as many as `outer`). */
+  hidden?: string[];
+  /** Windows cut through the turning disc: the place in its ring each is beside, and its label. */
+  windows?: { at: number; label?: string }[];
+  /** Pictures for symbols: a name, and rows of '#' (ink) and '.' (paper), every row as wide. */
+  glyphs?: Record<string, string[]>;
+  /** How to use it, printed with the discs and shown beside the wheel on screen. */
+  howto?: string[];
+  /**
+   * The puzzles it solves: the scenes they are on (the 1994 desk lays the wheel beside the monitor there), the
+   * question, the setting (the turning disc's `inner` symbol against the outer disc's `outer` one) and the answer.
+   */
+  puzzles?: { scenes: number[]; ask: string; turn: { inner: string; outer: string }; answer: string }[];
+}
+
+export type PrintableItem =
+  MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem | CodeWheelItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {
