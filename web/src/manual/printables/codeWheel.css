@@ -95,15 +95,22 @@
 }
 
 /* on screen: the wheel to turn, and how to use it beside it */
+/* a grid, not a wrapping row: the columns keep their widths whatever the answer line says */
 .cw-live {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
   gap: 16px;
-  align-items: flex-start;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .cw-live {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .cw-dial {
-  flex: 1 1 320px;
+  width: 100%;
   max-width: 560px;
   border-radius: 50%;
   cursor: grab;
@@ -127,7 +134,6 @@
 }
 
 .cw-side {
-  flex: 1 1 220px;
   min-width: 0;
   font-size: 0.95rem;
   line-height: 1.45;
@@ -154,7 +160,9 @@
   min-height: 32px;
 }
 
+/* room for a two-line answer kept, so a shorter or longer one doesn't move what's under it */
 .cw-answer {
+  min-height: 2.9em;
   font-weight: 600;
 }
 
