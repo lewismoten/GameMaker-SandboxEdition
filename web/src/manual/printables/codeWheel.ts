@@ -58,6 +58,19 @@ function symbol(it: CodeWheelItem, name: string, r: number, deg: number, size: n
   return g;
 }
 
+/**
+ * A window: a plain rectangle square to the radius (straight edges cut cleanly with scissors or a craft knife,
+ * where a curved wedge doesn't), as wide as it is tall where its ring allows, inside its cell at `deg`.
+ */
+function windowBox(deg: number, r0: number, r1: number, n: number): string {
+  const rx = Math.cos(rad(deg));
+  const ry = Math.sin(rad(deg));
+  const [i, o] = [r0 + 1, r1 - 1];
+  const half = Math.min(((r0 * 2 * Math.PI) / n) * 0.4, (o - i) / 2 + 1);
+  const pt = (r: number, u: number) => `${(r * rx - u * ry).toFixed(2)},${(r * ry + u * rx).toFixed(2)}`;
+  return `M${pt(o, -half)}L${pt(o, half)}L${pt(i, half)}L${pt(i, -half)}Z`;
+}
+
 /** Text running clockwise round a circle of radius r, centered at the top. */
 function rimText(id: string, r: number, text: string, size: number, cls: string): SVGElement {
   const path = el('path', { id, d: `M${-r},0A${r},${r} 0 1 1 ${r},0A${r},${r} 0 1 1 ${-r},0`, fill: 'none' });
@@ -112,13 +125,13 @@ function innerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   const rings = hiddenRings(it).length;
   for (const w of it.windows ?? []) {
     const b = band(w.ring ?? 0, rings);
-    d += sector(b.in + 1, b.out - 1, w.at * step - step / 2 + 2, w.at * step + step / 2 - 2);
+    d += windowBox(w.at * step, b.in, b.out, n);
   }
   g.append(el('path', { d, class: `cw-paper cw-inner-paper${cut ? ' cw-cut' : ''}`, 'fill-rule': 'evenodd' }));
   // each window's outline, lit when it holds a puzzle's answer
   (it.windows ?? []).forEach((w, i) => {
     const b = band(w.ring ?? 0, rings);
-    g.append(el('path', { d: sector(b.in + 1, b.out - 1, w.at * step - step / 2 + 2, w.at * step + step / 2 - 2), class: 'cw-win', 'data-win': i }));
+    g.append(el('path', { d: windowBox(w.at * step, b.in, b.out, n), class: 'cw-win', 'data-win': i }));
   });
   for (let i = 0; i < n; i++) {
     g.append(el('path', { d: sector(R.innerRingIn, R.inner - 2, i * step - step / 2, i * step + step / 2), class: 'cw-cell' }));
