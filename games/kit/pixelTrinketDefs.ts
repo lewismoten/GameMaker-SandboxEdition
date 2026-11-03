@@ -75,10 +75,6 @@ GAMES.needle = [
   hero('saddled', 'saddled', 'city', 'Brother Camel', 'The camel with the saddlebags full of gold.', 'camel'),
   mon('city', 15, 'things', 'city', 'needle', 'The needle', 'The eye of the needle itself.'),
 ];
-GAMES.remote = [
-  hero('remote', 'remote', 'den', 'The couch potato', 'On the hunt for the remote.', 'hero'),
-  mon('den', 4, 'remote', 'den', 'cat', 'The cat', 'Look under the cat.'),
-];
 GAMES.risi = [
   hero('marcus', 'marcus', 'banquet', 'Marcus Iocundus', 'The comic poet of Rome.', 'marcus'),
   mon('banquet', 6, 'risi', 'banquet', 'rufus', 'Rufus', 'Marcus’s dog.'),
