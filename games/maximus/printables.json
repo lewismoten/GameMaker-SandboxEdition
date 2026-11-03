@@ -572,6 +572,72 @@
       ]
     },
     {
+      "kind": "codewheel",
+      "title": "The Courier's Star Wheel",
+      "note": "Three discs: a world and a courier badge give a clearance code",
+      "promised": true,
+      "heading": "THE COURIER'S STAR WHEEL · Maxima Station clearance codes",
+      "center": "MAX",
+      "outer": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+      "middle": ["world Ambermoor", "world Brightwater", "world Cinderfall", "world Hot Springs", "world Pearlbed", "world Mushroom Moon", "world Prism", "world Glass Abyss", "world Hollow Sun", "world Ghost Station"],
+      "inner": ["mark Dot", "mark Ring", "mark Bar", "mark Plus", "mark Cross", "mark Square", "mark Frame", "mark Chevron", "mark Triangle", "mark Pair"],
+      "hidden": [
+        ["code Rocket", "code Star", "code Bolt", "code Flag", "code Key", "code Heart", "code Rocket", "code Bolt", "code Star", "code Flag"]
+      ],
+      "windows": [
+        {
+          "at": 0,
+          "ring": 0,
+          "label": "CODE"
+        }
+      ],
+      "glyphs": {
+        "world Ambermoor": [".........", ".........", "...###...", "#######..", "..#####..", "..#######", "...###...", ".........", "........."],
+        "world Brightwater": ["....#....", "..#####..", ".........", ".#######.", "#########", ".........", ".#######.", "..#####..", "........."],
+        "world Cinderfall": ["....#....", "..#####..", ".#######.", ".##.####.", "#####.###", ".##.####.", ".####.##.", "..#####..", "....#...."],
+        "world Hot Springs": ["...###...", "..#...#..", ".#.....#.", "#...#...#", "#...#...#", "#...#...#", ".#.....#.", "..#...#..", "...###..."],
+        "world Pearlbed": ["....#....", "..##.....", ".##......", ".##......", "###......", ".###.....", ".####....", "..#####..", "....#...."],
+        "world Mushroom Moon": [".........", "...###...", ".#######.", "#########", "#########", "...###...", "...###...", "...###...", "...###..."],
+        "world Prism": [".........", "....#....", "....#....", "...#.#...", "...#.#...", "..#...#..", ".#.....#.", ".#######.", "........."],
+        "world Glass Abyss": ["....#....", "...###...", "..##.##..", ".##...##.", "##.....##", ".##...##.", "..##.##..", "...###...", "....#...."],
+        "world Hollow Sun": ["....#....", ".#.....#.", "...###...", "..##.##..", "#.#...#.#", "..##.##..", "...###...", ".#.....#.", "....#...."],
+        "world Ghost Station": ["....#....", ".#######.", ".#..#..#.", ".#..#..#.", "#########", ".#..#..#.", ".#..#..#.", ".#######.", "....#...."],
+        "mark Dot": [".........", ".........", "....#....", "...###...", "..#####..", "...###...", "....#....", ".........", "........."],
+        "mark Ring": ["...###...", "..#####..", ".##...##.", "##.....##", "##.....##", "##.....##", ".##...##.", "..#####..", "...###..."],
+        "mark Bar": [".........", ".........", ".........", "#########", "#########", "#########", ".........", ".........", "........."],
+        "mark Plus": ["...###...", "...###...", "...###...", "#########", "#########", "#########", "...###...", "...###...", "...###..."],
+        "mark Cross": ["##.....##", "###...###", ".###.###.", "..#####..", "...###...", "..#####..", ".###.###.", "###...###", "##.....##"],
+        "mark Square": [".........", ".#######.", ".#######.", ".#######.", ".#######.", ".#######.", ".#######.", ".#######.", "........."],
+        "mark Frame": ["#########", "#########", "##.....##", "##.....##", "##.....##", "##.....##", "##.....##", "#########", "#########"],
+        "mark Chevron": [".........", "##.....##", ".#.....#.", ".##...##.", "..#...#..", "..##.##..", "...#.#...", "...###...", "....#...."],
+        "mark Triangle": [".........", "....#....", "....#....", "...###...", "...###...", "..#####..", ".#######.", ".#######.", "........."],
+        "mark Pair": [".........", ".........", ".........", ".###.###.", ".###.###.", ".###.###.", ".........", ".........", "........."],
+        "code Rocket": ["....#....", "...###...", "...###...", "..#####..", "..#####..", "..#####..", ".#######.", ".#.###.#.", "...#.#..."],
+        "code Star": ["....#....", "....#....", "...###...", "#########", ".#######.", "..#####..", "..##.##..", ".##...##.", ".#.....#."],
+        "code Bolt": [".....###.", "....###..", "...###...", "..#####..", "....###..", "...###...", "..###....", ".###.....", ".#......."],
+        "code Flag": ["#........", "########.", "#########", "#########", "########.", "#........", "#........", "#........", "#........"],
+        "code Key": ["..###....", ".#...#...", ".#...#...", "..###....", "...#.....", "...#.....", "...###...", "...#.....", "...###..."],
+        "code Heart": [".##...##.", "####.####", "#########", "#########", "#########", ".#######.", "..#####..", "...###...", "....#...."]
+      },
+      "howto": ["Every departure form on Maxima Station carries three stamps: a dock letter, a world of origin and a courier badge.", "Turn the middle disc until the form's world is under the arrow, and the small disc until its badge is. Line up the dock letter on the big disc as well: it changes nothing, but the clerk checks the arrow by eye.", "The CODE window in the small disc now shows a picture. That is your clearance code: press the hatch in the pod bay that wears it."],
+      "puzzles": [
+        {
+          "scenes": [
+            2,
+            101
+          ],
+          "ask": "Maxima Station's pod bay: the clerk's form says dock F, world Prism, badge Chevron. Which of the three hatches opens?",
+          "turn": {
+            "outer": "F",
+            "middle": "world Prism",
+            "inner": "mark Chevron"
+          },
+          "window": 0,
+          "answer": "The code is the flag: the middle hatch, the one between the star and the rocket. The others only sigh."
+        }
+      ]
+    },
+    {
       "kind": "hintbook",
       "title": "Maximus Hint Book",
       "note": "Answers hidden: use the red film",
@@ -583,7 +649,11 @@
           "hints": [
             {
               "q": "How do I get off the training deck?",
-              "a": "Pay the credit door with the credits you pick up, ride the lift, and walk into the airlock. The pod is waiting."
+              "a": "Pay the credit door with the credits you pick up, ride the lift, and get through the clearance gate in the pod bay (see the next question). Then walk into the airlock. The pod is waiting."
+            },
+            {
+              "q": "Which of the three hatches in the pod bay opens?",
+              "a": "Climb the ledge to the clerk's window and step into it: the form shows your dock, world and badge. Turn the Courier's Star Wheel from the box to that world and badge and read its CODE window; the hatch wearing that picture is the one. No wheel? It is the middle one. The others only sigh and send you back, and nothing is lost."
             },
             {
               "q": "How do I land on a planet?",

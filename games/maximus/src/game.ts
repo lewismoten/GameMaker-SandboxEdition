@@ -11,7 +11,9 @@ import type { SetBuilder } from './blocks/blockset';
 import { courier, vehicle, type CharSet } from './characters/chars';
 import { heartMap, maelstromMap } from './levels/core';
 import { tidyUnreachable } from './levels/tidy';
-import { homeMap } from './levels/home';
+import { GATE, homeMap } from './levels/home';
+import { homeSet } from './blocks/homeSet';
+import { WHEEL_SCENES } from './wheel/wheel';
 import { harder, landFauna, mechFauna, seaFauna, spaceFauna } from './characters/fauna';
 import { heartFauna } from './characters/fauna/heart';
 import { Grid, W, reachable } from './levels/mapkit';
@@ -67,7 +69,7 @@ export function buildGame(): Built {
   const put = (name: string, bytes: Uint8Array) => files.set(name.toLowerCase(), bytes);
 
   // ---------------------------------------------------------------- block sets
-  const sets = { surface: surfaceSet(), ocean: oceanSet(), station: stationSet(), space: spaceSet(), heart: heartSet() };
+  const sets = { surface: surfaceSet(), ocean: oceanSet(), station: stationSet(), space: spaceSet(), heart: heartSet(), home: homeSet() };
 
   // ---------------------------------------------------------------- monsters (two editions per family)
   const fam = {
@@ -153,7 +155,7 @@ export function buildGame(): Built {
   const chrOf = (kind: WorldKind) => (kind === 'ocean' ? 'diver' : kind === 'rover' ? 'rover' : kind === 'surface' ? 'courier' : 'courier');
 
   // home: the training deck of Maxima Station
-  const home = homeMap(sets.station, monsters.mech1);
+  const home = homeMap(sets.home, monsters.mech1);
   // galaxy
   const galaxy = galaxyMap(sets.space);
   // star whales: thirteen in a ring on the galaxy chart, and a pod in The Cradle that spells a name
@@ -194,8 +196,17 @@ export function buildGame(): Built {
 
   // home scene
   {
-    const sc = setup(SCENE.home, 'Maxima Station', { pal: 'home.pal', map: 'home.map', bbl: 'station.bbl', mon: 'mech1.mon', mbl: 'mech.mbl', chr: 'courier' });
+    const sc = setup(SCENE.home, 'Maxima Station', { pal: 'home.pal', map: 'home.map', bbl: 'home.bbl', mon: 'mech1.mon', mbl: 'mech.mbl', chr: 'courier' });
     sc.links[0] = link(SCENE.galaxy, home.uplink, galaxy.arriveHome);
+    // the clearance gate (wheel/wheel.ts): the clerk's window shows the form; each wrong hatch has its say.
+    // Their scenes (below) start Max on the galaxy chart's knot beacon, where their one link sends him back.
+    const gate = galaxy.knot.beacon;
+    const cells = (x: number, y0: number) => [y0, y0 + 1].map((y) => ({ x, y }));
+    [
+      [cells(GATE.desk.x, GATE.desk.rows[0]), WHEEL_SCENES.form],
+      [cells(GATE.wall, GATE.hatchRows[0]), WHEEL_SCENES.wrong[0]],
+      [cells(GATE.wall, GATE.hatchRows[2]), WHEEL_SCENES.wrong[1]],
+    ].forEach(([at, scene], k) => (at as { x: number; y: number }[]).forEach((from, j) => (sc.links[1 + k * 2 + j] = link(scene as number, from, gate))));
     sc.pos = { x: 30, y: 60 };
     record({
       scene: SCENE.home,
@@ -205,7 +216,7 @@ export function buildGame(): Built {
       biome: 'station',
       arrive: home.arrive,
       map: home.grid,
-      bbl: 'station',
+      bbl: 'home',
       chr: 'courier',
       palette: buildPalette(ROLES, themeFor('station', 1995)).pal,
     });
@@ -428,7 +439,18 @@ export function buildGame(): Built {
     sc.links[0] = link(SCENE.galaxy, galaxy.knot.beacon, galaxy.knot.out);
     sc.pos = { x: 157, y: 30 };
   }
-  if (game.scenes.length !== 101) problems.push(`${game.scenes.length} scenes`);
+  // the clearance gate's pages: the clerk's form and the two wrong hatches (each shows a slide show, then
+  // sends Max back to the pod bay, as Between Worlds does)
+  [
+    [WHEEL_SCENES.form, 'Clearance Desk', GATE.back.desk],
+    [WHEEL_SCENES.wrong[0], 'Hatch One', GATE.back.bottom],
+    [WHEEL_SCENES.wrong[1], 'Hatch Three', GATE.back.top],
+  ].forEach(([n, name, back], k) => {
+    const sc = setup(n as number, name as string, { pal: 'dark.pal', map: 'galaxy.map', bbl: 'galaxy.bbl', chr: 'pod' });
+    sc.links[0] = link(SCENE.home, galaxy.knot.beacon, back as { x: number; y: number });
+    sc.pos = { x: 157, y: 30 + (k + 1) * 8 };
+  });
+  if (game.scenes.length !== 104) problems.push(`${game.scenes.length} scenes`);
   put('maximus.gam', serializeGame(game));
   return { files, game, scenes, sets, monsters, chars, problems };
 }
