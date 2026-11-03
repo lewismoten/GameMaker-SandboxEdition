@@ -3,6 +3,7 @@
 // ones merged); `colorBodies` cuts the solid into one body for each, every point taking the color of the
 // nearest surface point, so the bodies fit together to make exactly the solid.
 import type { Mesh, Vec3 } from './mesh';
+import { decimate } from './decimate';
 import { tetraMesh } from './tetraMesh';
 
 export type Rgb = [number, number, number];
@@ -66,6 +67,10 @@ export interface BodiesOptions {
   min: Vec3;
   max: Vec3;
   cell: number;
+  /** Thin each body's mesh to within this distance of its surface (see decimate.ts). */
+  simplify?: number;
+  /** The volume the bodies together should have (the whole figure's): they are grown a hair if the mesher left them short. */
+  volume?: number;
 }
 
 /** Squared distance transform along one line (Felzenszwalb and Huttenlocher), in place. */
@@ -156,24 +161,64 @@ function colorDistances(mesh: Mesh, palette: Rgb[], o: BodiesOptions): (x: numbe
   };
 }
 
+const triangleVolume = (m: Mesh) => {
+  const p = m.positions;
+  let v = 0;
+  for (let t = 0; t < m.indices.length; t += 3) {
+    const a = m.indices[t] * 3;
+    const b = m.indices[t + 1] * 3;
+    const c = m.indices[t + 2] * 3;
+    v +=
+      (p[a] * (p[b + 1] * p[c + 2] - p[b + 2] * p[c + 1]) - p[a + 1] * (p[b] * p[c + 2] - p[b + 2] * p[c]) + p[a + 2] * (p[b] * p[c + 1] - p[b + 1] * p[c])) /
+      6;
+  }
+  return v;
+};
+const triangleArea = (m: Mesh) => {
+  const p = m.positions;
+  let area = 0;
+  for (let t = 0; t < m.indices.length; t += 3) {
+    const a = m.indices[t] * 3;
+    const b = m.indices[t + 1] * 3;
+    const c = m.indices[t + 2] * 3;
+    const ux = p[b] - p[a];
+    const uy = p[b + 1] - p[a + 1];
+    const uz = p[b + 2] - p[a + 2];
+    const wx = p[c] - p[a];
+    const wy = p[c + 1] - p[a + 1];
+    const wz = p[c + 2] - p[a + 2];
+    area += Math.hypot(uy * wz - uz * wy, uz * wx - ux * wz, ux * wy - uy * wx) / 2;
+  }
+  return area;
+};
+
 /** One closed body per palette color (a color with no solid of its own is left out). */
 export function colorBodies(mesh: Mesh, palette: Rgb[], field: (x: number, y: number, z: number) => number, o: BodiesOptions): { color: Rgb; mesh: Mesh }[] {
   const distance = colorDistances(mesh, palette, o);
-  const out: { color: Rgb; mesh: Mesh }[] = [];
-  palette.forEach((color, index) => {
-    try {
-      const body = tetraMesh((x, y, z) => {
-        const f = field(x, y, z);
-        if (f > 8 * o.cell) return f;
-        let other = Infinity;
-        for (let k = 0; k < palette.length; k++) if (k !== index) other = Math.min(other, distance(x, y, z, k) + k * TIE);
-        // inside, the color whose surface is nearest owns the point: this one where its distance is the smaller
-        return Math.max(f, distance(x, y, z, index) + index * TIE - other);
-      }, o);
-      if (body.indices.length) out.push({ color, mesh: body });
-    } catch {
-      /* a color with no solid of its own */
-    }
-  });
-  return out;
+  const make = (grow: number) => {
+    const out: { color: Rgb; mesh: Mesh }[] = [];
+    palette.forEach((color, index) => {
+      try {
+        const body = tetraMesh((x, y, z) => {
+          const f = field(x, y, z) - grow;
+          if (f > 8 * o.cell) return f;
+          let other = Infinity;
+          for (let k = 0; k < palette.length; k++) if (k !== index) other = Math.min(other, distance(x, y, z, k) + k * TIE);
+          // inside, the color whose surface is nearest owns the point: this one where its distance is the smaller
+          return Math.max(f, distance(x, y, z, index) + index * TIE - other);
+        }, o);
+        if (body.indices.length) out.push({ color, mesh: body });
+      } catch {
+        /* a color with no solid of its own */
+      }
+    });
+    return out;
+  };
+  let bodies = make(0);
+  if (o.volume) {
+    // marching tetrahedra on a coarse grid cut a little off the surface: grow every body by what the surface area makes up the volume
+    const have = bodies.reduce((n, b) => n + triangleVolume(b.mesh), 0);
+    if (Math.abs(have / o.volume - 1) > 0.004) bodies = make((o.volume - have) / triangleArea(mesh));
+  }
+  return o.simplify ? bodies.map((b) => ({ color: b.color, mesh: decimate(b.mesh, { maxError: o.simplify! }) })) : bodies;
 }

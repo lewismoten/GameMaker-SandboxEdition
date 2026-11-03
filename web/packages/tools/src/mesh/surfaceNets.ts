@@ -103,7 +103,7 @@ function once(field: (x: number, y: number, z: number) => number, o: NetsOptions
   const idx: number[] = [];
   const quad = (a: number, b: number, c: number, d: number, flip: boolean) => {
     // split along the shorter diagonal
-    const dist = (p: number, q: number) => Math.hypot(pos[p * 3] - pos[q * 3], pos[p * 3 + 1] - pos[q * 3 + 1], pos[p * 3 + 2] - pos[q * 3 + 2]);
+    const dist = (p: number, q: number) => (pos[p * 3] - pos[q * 3]) ** 2 + (pos[p * 3 + 1] - pos[q * 3 + 1]) ** 2 + (pos[p * 3 + 2] - pos[q * 3 + 2]) ** 2;
     const [p, q, r, s] = flip ? [a, d, c, b] : [a, b, c, d];
     if (dist(p, r) <= dist(q, s)) idx.push(p, q, r, p, r, s);
     else idx.push(p, q, s, q, r, s);

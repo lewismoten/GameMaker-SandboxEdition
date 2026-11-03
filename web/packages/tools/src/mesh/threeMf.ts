@@ -19,7 +19,7 @@ const hex = (c: [number, number, number]) =>
     .join('')
     .toUpperCase()}`;
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const num = (v: number) => String(+v.toFixed(4));
+const num = (v: number) => String(+v.toFixed(3));
 
 /** The parts as a 3MF file. */
 export function write3mf(parts: Part[], title: string, codec: ZipCodec = {}): Uint8Array {

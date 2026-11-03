@@ -3,7 +3,7 @@
 // distance field as a separate closed mesh, for a printer with a second material to print them in.
 import { inspectMesh } from './meshCheck';
 import type { Mesh, Vec3 } from './mesh';
-import { surfaceNets } from './surfaceNets';
+import { tetraMesh } from './tetraMesh';
 
 export interface Overhang {
   /** Area of the faces tipped more than the limit from upright and off the bed, in the mesh's units squared. */
@@ -92,6 +92,7 @@ export function supportBody(field: (x: number, y: number, z: number) => number, 
     return i >= 0 && j >= 0 && k >= 0 && i < nx && j < ny && k < nz && mark[at(i, j, k)] ? -1 : 1;
   };
   // the floor is flat: nothing below the bed
-  const mesh = surfaceNets((x, y, z) => Math.max(lookup(x, y, z), -z), { min: o.min, max: o.max, cell });
+  // marching tetrahedra: the voxel body's corners would pinch surface nets into a mesh that is not closed
+  const mesh = tetraMesh((x, y, z) => Math.max(lookup(x, y, z), -z), { min: o.min, max: o.max, cell });
   return inspectMesh(mesh).triangles ? mesh : undefined;
 }

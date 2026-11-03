@@ -27,8 +27,9 @@ export function inspectMesh(mesh: Mesh): MeshReport {
   const { positions: p, indices: ix } = mesh;
   const tris = ix.length / 3;
   const verts = p.length / 3;
-  const edges = new Map<number, number>();
-  const directed = new Map<number, number>();
+  // every edge as a number (low end * vertices + high end), once undirected and once directed, counted after sorting
+  const edges = new Float64Array(ix.length);
+  const directed = new Float64Array(ix.length);
   const parent = Int32Array.from({ length: verts }, (_, i) => i);
   const find = (a: number): number => {
     while (parent[a] !== a) a = parent[a] = parent[parent[a]];
@@ -41,15 +42,11 @@ export function inspectMesh(mesh: Mesh): MeshReport {
     const a = ix[t * 3];
     const b = ix[t * 3 + 1];
     const c = ix[t * 3 + 2];
-    for (const [u, v] of [
-      [a, b],
-      [b, c],
-      [c, a],
-    ]) {
-      const key = Math.min(u, v) * verts + Math.max(u, v);
-      edges.set(key, (edges.get(key) ?? 0) + 1);
-      const dk = u * verts + v;
-      directed.set(dk, (directed.get(dk) ?? 0) + 1);
+    for (let k = 0; k < 3; k++) {
+      const u = ix[t * 3 + k];
+      const v = ix[t * 3 + ((k + 1) % 3)];
+      edges[t * 3 + k] = Math.min(u, v) * verts + Math.max(u, v);
+      directed[t * 3 + k] = u * verts + v;
       parent[find(u)] = find(v);
     }
     const [ax, ay, az] = [p[a * 3], p[a * 3 + 1], p[a * 3 + 2]];
@@ -59,14 +56,21 @@ export function inspectMesh(mesh: Mesh): MeshReport {
     const nx = (by - ay) * (cz - az) - (bz - az) * (cy - ay);
     const ny = (bz - az) * (cx - ax) - (bx - ax) * (cz - az);
     const nz = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
-    const twice = Math.hypot(nx, ny, nz);
+    const twice = Math.sqrt(nx * nx + ny * ny + nz * nz);
     area += twice / 2;
     if (twice < 1e-12) degenerate++;
   }
+  edges.sort();
+  directed.sort();
   let badEdges = 0;
-  for (const n of edges.values()) if (n !== 2) badEdges++;
+  for (let i = 0; i < edges.length;) {
+    let j = i;
+    while (j < edges.length && edges[j] === edges[i]) j++;
+    if (j - i !== 2) badEdges++;
+    i = j;
+  }
   let flippedEdges = 0;
-  for (const n of directed.values()) if (n > 1) flippedEdges++;
+  for (let i = 1; i < directed.length; i++) if (directed[i] === directed[i - 1] && directed[i] !== directed[i - 2]) flippedEdges++;
   const used = new Set<number>();
   const perPiece = new Map<number, number>();
   for (let i = 0; i < ix.length; i++) {
