@@ -102,6 +102,10 @@ Making the files:
   `scans/scan.ts`) resized for VGA's tall pixels, given a picture's unused palette entries and dithered in; polaroid frames.
 - `chez.ts` — THE CHEZ, the red CitiCar, as a two-block side view (or smaller, seen through a window) for a
   cameo in a game's lot or at its curb, drawn in the game's own palette; facing left shows the charge port for a cord.
+- `sandscript.ts` — Sandscript, the Sandbox games' own secret alphabet for little hidden messages: 26 letters
+  hanging from a rim (strokes and pebbles on a 3 × 3 grid), and `sandPixels(text, scale)` to stamp a message as
+  pixels (scale 2: 5 × 5 letters, three to a 20-pixel block). Its only key is the folded note in the Library
+  room (`web/src/library/sandNote.ts`); keep it out of manuals, hint books and site pages.
 - `tinHeart.ts` — the tin heart, a small riveted heart that ticks, as a 20x20 block in any game's palette, with a
   glint across its frames and a soft tick-tock on the PC speaker; `looksLikeTinHeart` knows the block in any palette.
 - `tinHearts.ts` / `tinHeartDisk.ts` — the tin heart hunt: writes web/src/tinHearts/hearts.json from each about.json
