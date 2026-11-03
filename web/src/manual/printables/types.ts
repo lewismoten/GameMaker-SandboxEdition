@@ -2,6 +2,8 @@
 // its paper extras ("printables"). Every game gets a set of generated extras; a game adds its
 // own in games/<id>/printables.json (see README.md in this folder for the full guide).
 
+import type { PrintsItem, SpyglassItem } from './sleuthTypes';
+
 /** Extras every game gets, made from its catalog entry, manual and disk files. */
 export type GeneratedKind =
   | 'postcard' // registration postcard
@@ -37,7 +39,7 @@ export interface MapPanel {
   course?: boolean;
 }
 
-interface ItemBase {
+export interface ItemBase {
   /** The name in the "What's in the box" tray. */
   title: string;
   /** True when the manual promises it to registered players (it shows a "Registered" seal). */
@@ -196,7 +198,8 @@ export interface RecipeItem extends ItemBase {
   back?: string;
 }
 
-export type PrintableItem = MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem;
+export type PrintableItem =
+  SpyglassItem | PrintsItem | MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {

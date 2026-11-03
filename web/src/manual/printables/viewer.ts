@@ -6,6 +6,7 @@ import { centerSpread, spreadAt, stepSpread, bookletSheets } from './imposition'
 import { PAGE_H, PAGE_W, pageElement, type BookPage } from './manualPages';
 import type { Sheet } from './kit';
 import { RedFilm, RedLens } from './redFilm';
+import { spyglassElement } from './spyglass';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { crispShots, enlarge, isShot, zoomOpen } from './crisp';
 import { chapterPicker, chapterStops, findStop, linkContents, stopAt, type ChapterStop } from './chapterJump';
@@ -35,6 +36,8 @@ export interface BoxItem {
   reader?(o: ReaderOptions): Promise<Reader>;
   /** Shows the red film button. */
   redFilm?: boolean;
+  /** Shows the red film button for a sheet read through the box's spyglass (no circle follows the pointer). */
+  glass?: boolean;
   /**
    * A booklet of its own (a second manual): shown, turned and printed page by page like the
    * manual. `render` then gives only its cover, for the box's list of pieces.
@@ -132,12 +135,18 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
     const stage = h('div', { class: 'gmb-stage', tabindex: 0, role: 'region', 'aria-label': 'The piece shown' });
     const tray = h('ul', { class: 'gmb-tray-list' });
     const counter = h('span', { class: 'gmb-counter' });
+    const hasGlass = items.some((i) => i.glass);
     const filmBtn = h(
       'button',
-      { class: 'gmb-film-btn', onclick: () => film.toggle(), title: 'A whole sheet of red film to drag over the page (or just point at an answer)' },
-      '🟥 Red film',
+      {
+        class: 'gmb-film-btn',
+        onclick: () => film.toggle(),
+        title: hasGlass ? 'The spyglass: its red lens to drag over the page' : 'A whole sheet of red film to drag over the page (or just point at an answer)',
+      },
+      hasGlass ? '🔎 Spyglass' : '🟥 Red film',
     );
-    const film = new RedFilm();
+    // a box with its own spyglass drags that over a page instead of the plain sheet of film
+    const film = new RedFilm(hasGlass ? spyglassElement() : undefined);
     const epub = epubControl();
     // over a page with hidden answers the pointer carries a circle of red film
     const lens = new RedLens();
@@ -369,9 +378,10 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
       toggle.el.hidden = !(id === 'manual' || item?.pages || item?.reader);
       sizeShown();
       if (!item?.pages && id !== 'manual') (picker.use([]), tell(undefined));
-      filmBtn.hidden = !item?.redFilm;
+      filmBtn.hidden = !(item?.redFilm || item?.glass);
       epub.use(id === 'manual' ? options.epub : item?.epub);
-      if (!item?.redFilm) (film.hide(), lens.hide());
+      if (!item?.redFilm && !item?.glass) film.hide();
+      if (!item?.redFilm) lens.hide();
       bookletBtn.firstChild!.textContent = item?.pages ? 'Print booklet: this one' : 'Print booklet: the manual';
       bookletBtn.lastChild!.textContent = !item?.pages && comb ? COMB_HOW : STAPLE_HOW;
       pieceLabel();

@@ -225,6 +225,73 @@
       "back": "Interviewed by Insp. A. Penn, October 31, 1936. Detain until dawn. Do not let this suspect read the other cards."
     },
     {
+      "kind": "spyglass",
+      "title": "Inspector Penn's spyglass",
+      "note": "Cut it out; red film in the lens",
+      "promised": true,
+      "heading": "THE INSPECTOR'S SPYGLASS",
+      "steps": [
+        "Cut along the dashed line round the whole spyglass, then cut out the round lens hole.",
+        "Tape a piece of red cellophane (a red gel or a red plastic folder works too) behind the hole, pulled flat.",
+        "Hold it over the Evidence sheet. Print cards that look like scribble come up as ridges through the red.",
+        "No scissors? In the box viewer press Spyglass and drag it over the Evidence sheet."
+      ],
+      "caption": "Prop department issue, Paragon Theatre. Not for use on the real dagger."
+    },
+    {
+      "kind": "prints",
+      "title": "Evidence sheet: fingerprints",
+      "note": "Five cards and the dagger's print; use the spyglass",
+      "promised": true,
+      "heading": "LATENT PRINTS: THE TRICK DAGGER",
+      "intro": "The lab took a print from each suspect tonight and lifted one from the dagger's handle. Which card does it match? The stage door's sergeant will want to know.",
+      "suspects": [
+        {
+          "name": "Lila Fontaine",
+          "role": "Leading lady",
+          "pattern": "whorl",
+          "seed": 1936,
+          "ridges": 19
+        },
+        {
+          "name": "Edgar Bliss",
+          "role": "Understudy",
+          "pattern": "loop-l",
+          "seed": 3610,
+          "ridges": 22
+        },
+        {
+          "name": "Agatha Crane",
+          "role": "Victor’s widow",
+          "pattern": "arch",
+          "seed": 1031,
+          "ridges": 20
+        },
+        {
+          "name": "Felix Morrow",
+          "role": "Stage manager",
+          "pattern": "spiral",
+          "seed": 5040,
+          "ridges": 18
+        },
+        {
+          "name": "Oliver Pike",
+          "role": "Critic",
+          "pattern": "loop-r",
+          "seed": 7077,
+          "ridges": 21
+        }
+      ],
+      "lifted": {
+        "label": "Lifted: the dagger",
+        "suspect": 0,
+        "turn": 14,
+        "shift": [0.07, -0.05],
+        "seed": 361
+      },
+      "tell": "The dagger's print matches {name}. It was in her hand on stage in Act III, so it proves who touched the prop, not who swapped it."
+    },
+    {
       "kind": "map",
       "title": "Floor plan of the Paragon",
       "note": "From the fire marshal's file",
@@ -412,8 +479,16 @@
               "sketch": {
                 "rows": ["------------", "|o        o|", "|          |", "|o        o|", "|      o @X|", "-==---------"],
                 "labels": [
-                  { "x": 2, "y": 2, "text": "GREEN ROOM, 2 AM" },
-                  { "x": 8, "y": 3, "text": "SOFA" }
+                  {
+                    "x": 2,
+                    "y": 2,
+                    "text": "GREEN ROOM, 2 AM"
+                  },
+                  {
+                    "x": 8,
+                    "y": 3,
+                    "text": "SOFA"
+                  }
                 ]
               }
             }
@@ -573,7 +648,7 @@
     },
     {
       "head": "Around the Sandbox: Trick or treat",
-      "html": "<p>On Halloween night Doc Leo will be at the office door with balloon animals for the trick-or-treaters: dogs, swords and, by special request, one very long giraffe. Teddy is going as a knight again. Gwinn is going as Gwinn; she ate the other costume. THE\u00a0CHEZ is going as a pumpkin, which, being tomato red, it already mostly is.</p>"
+      "html": "<p>On Halloween night Doc Leo will be at the office door with balloon animals for the trick-or-treaters: dogs, swords and, by special request, one very long giraffe. Teddy is going as a knight again. Gwinn is going as Gwinn; she ate the other costume. THE CHEZ is going as a pumpkin, which, being tomato red, it already mostly is.</p>"
     },
     {
       "head": "In the workshop: A library in a box",

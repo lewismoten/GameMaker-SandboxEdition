@@ -23,6 +23,8 @@ const ICONS: Record<PrintableItem['kind'], string> = {
   chart: '📋',
   starchart: '🌌',
   recipe: '🥄',
+  spyglass: '🔎',
+  prints: '🖐️',
 };
 
 export function boxItems(ctx: PrintContext): BoxItem[] {
@@ -38,6 +40,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     first: it.kind === 'hintbook' ? () => hintBookCover(ctx, it) : undefined,
     screen: it.kind === 'starchart' ? foldOut : undefined,
     redFilm: it.kind === 'hintbook',
+    glass: it.kind === 'spyglass' || it.kind === 'prints',
     epub:
       it.kind === 'hintbook'
         ? { file: `${ctx.entry.id}-hint-book.epub`, make: () => import('../epub/hintBook').then((m) => m.hintBookEpub(ctx, it)) }
