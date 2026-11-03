@@ -173,7 +173,7 @@ function drawWorld(entry: CatalogEntry, scenes: Game, files: GameFiles, hints: W
   if (grouping) for (const i of new Set([...grouping.folded.keys(), ...grouping.labels.keys()])) names.set(i, wrapNames(placeLabels(scenes, grouping, i)));
   const kindOf = (i: number) => (game.scenes[i].gametype === STARTTYPE ? 'start' : game.scenes[i].gametype === ENDTYPE ? 'end' : 'scene');
   const label = (i: number) => fit(game.scenes[i].desc || { start: 'Title', end: 'The end', scene: 'Untitled' }[kindOf(i)], 24);
-  const plan = planWorld(game, label, (i) => names.get(i)?.length ?? 0);
+  const plan = planWorld(game, label, (i) => names.get(i)?.length ?? 0, undefined, hints);
   // the plan (places and paths) between the title and the key, in the middle of a narrow sheet
   const b = plan.bounds;
   const W = Math.max(PAGE.w, b.w + 2 * (M + 2));
@@ -194,7 +194,7 @@ function drawWorld(entry: CatalogEntry, scenes: Game, files: GameFiles, hints: W
   }
   const paths = plan.paths.map((p) => ({ ...p, line: p.line.map((q) => moved(q, d)) }));
   const all = [...places.values()];
-  const regions = regionsOf(game, graph).filter((r) => r.ids.length >= 2 && r.ids.every((i) => places.has(i)));
+  const regions = regionsOf(game, graph, hints).filter((r) => r.ids.length >= 2 && r.ids.every((i) => places.has(i)));
   const land = ground({ theme: theme.id, W, H, seed, places: all, regions: regions.map((r) => r.ids), lines: paths.map((p) => p.line) });
 
   const svg = el('svg', { xmlns: NS, viewBox: `0 0 ${W} ${H}`, class: `wm-svg wm-theme-${theme.id}`, 'font-family': SERIF }) as SVGSVGElement;

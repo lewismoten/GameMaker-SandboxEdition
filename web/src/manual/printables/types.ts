@@ -265,6 +265,12 @@ export interface WorldMapHints {
     /** What its land lists (default: the folded scenes' numbers and names). */
     labels?: string[];
   }[];
+  /**
+   * The game's regions, drawn as one land each (scene numbers, "9-18" or names), instead of the ones
+   * worldMapRegions.ts finds. Palette files that are the same are one file in a built game, so what
+   * a level's own palette once told is not in the disk: a game says where its levels are here.
+   */
+  regions?: (number | string)[][];
 }
 
 /** games/<id>/printables.json */

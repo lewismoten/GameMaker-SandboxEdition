@@ -55,6 +55,8 @@ Made from the catalog entry, the manual and the disk. Turn any off with `"skip"`
 
 `worldMap.groups` gathers scenes into one place on the World Map: the first scene is the place, the rest fold into it. A scene is a number, a range (`"5-8"`) or a name only one scene has; `name` renames the place and `labels` replaces the list of folded scenes on its land. Scenes under an all-black palette fold on their own, so a game only needs groups for other scenes that aren't places (Final Curtain's interview rooms, for one).
 
+`worldMap.regions` lists a game's regions, one land each (`[[8, 9, 36], ["15-16"]]`), in place of the ones `worldMapRegions.ts` finds. A built disk keeps one palette file per distinct palette, so the finder can no longer tell a level's own palette from two levels that look alike; a game whose regions came from its palette names says where they are here (an empty list is no regions).
+
 ### World Map themes and layout
 
 The theme comes from the game's title and blurb (`worldMapThemes.ts`, first match wins), or from `HINTS` there, keyed by game id, where the words would mislead (Ohm Sweet Ohm's blurb says "circuit boards", but its map is the house):
