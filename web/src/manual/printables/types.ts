@@ -235,7 +235,18 @@ export interface CodeWheelItem extends ItemBase {
 }
 
 export type PrintableItem =
-  SpyglassItem | PrintsItem | MapItem | HintBookItem | LetterItem | NewspaperItem | JournalItem | IdCardItem | ChartItem | StarChartItem | RecipeItem | CodeWheelItem;
+  | SpyglassItem
+  | PrintsItem
+  | MapItem
+  | HintBookItem
+  | LetterItem
+  | NewspaperItem
+  | JournalItem
+  | IdCardItem
+  | ChartItem
+  | StarChartItem
+  | RecipeItem
+  | CodeWheelItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {
