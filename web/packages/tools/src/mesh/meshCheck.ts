@@ -13,6 +13,8 @@ export interface MeshReport {
   degenerate: number;
   /** Separate pieces; a print wants 1 (or pieces that rest on the bed). */
   pieces: number;
+  /** Triangles in each piece, largest first. */
+  pieceTriangles: number[];
   min: Vec3;
   max: Vec3;
   /** Enclosed volume (positive when the triangles face outward). */
@@ -66,12 +68,29 @@ export function inspectMesh(mesh: Mesh): MeshReport {
   let flippedEdges = 0;
   for (const n of directed.values()) if (n > 1) flippedEdges++;
   const used = new Set<number>();
-  for (let i = 0; i < ix.length; i++) used.add(find(ix[i]));
+  const perPiece = new Map<number, number>();
+  for (let i = 0; i < ix.length; i++) {
+    const r = find(ix[i]);
+    used.add(r);
+    if (i % 3 === 0) perPiece.set(r, (perPiece.get(r) ?? 0) + 1);
+  }
   const min: Vec3 = [Infinity, Infinity, Infinity];
   const max: Vec3 = [-Infinity, -Infinity, -Infinity];
   for (let i = 0; i < p.length; i++) {
     min[i % 3] = Math.min(min[i % 3], p[i]);
     max[i % 3] = Math.max(max[i % 3], p[i]);
   }
-  return { triangles: tris, vertices: verts, badEdges, flippedEdges, degenerate, pieces: used.size, min, max, volume, area };
+  return {
+    triangles: tris,
+    vertices: verts,
+    badEdges,
+    flippedEdges,
+    degenerate,
+    pieces: used.size,
+    pieceTriangles: [...perPiece.values()].sort((a, b) => b - a),
+    min,
+    max,
+    volume,
+    area,
+  };
 }

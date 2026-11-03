@@ -3,7 +3,7 @@
 // cell's edges), and a quad between the four cells around every grid edge it crosses. It makes
 // about a quarter of the triangles marching tetrahedra do, and smoother ones. The grid is padded
 // so the surface never meets its edge, which keeps the mesh closed. A cell that holds two
-// separate bits of surface can pinch an edge; `surfaceNets` shifts the grid and changes its spacing a hair (after ten tries it also blurs the samples a little) and tries
+// separate bits of surface can pinch an edge; `surfaceNets` shifts the grid and changes its spacing a hair (later it also blurs the samples a little) and tries
 // again until the mesh is a clean 2-manifold (every edge in exactly two triangles).
 import { inspectMesh } from './meshCheck';
 import type { Mesh, Vec3 } from './mesh';
@@ -14,6 +14,10 @@ export interface NetsOptions {
   max: Vec3;
   /** The grid spacing, in the field's units. */
   cell: number;
+  /** Retry a grid that splits the surface into more separate pieces than this (default: any number is fine). */
+  maxPieces?: number;
+  /** How many grids to try before settling for the best (default 30). */
+  attempts?: number;
 }
 
 // the twelve edges of a cube: pairs of corner numbers (corner bits are x, y, z)
@@ -32,7 +36,7 @@ const EDGES: [number, number][] = [
   [3, 7],
 ];
 
-function once(field: (x: number, y: number, z: number) => number, o: NetsOptions, shift: Vec3, blur = false): Mesh {
+function once(field: (x: number, y: number, z: number) => number, o: NetsOptions, shift: Vec3, blur = 0): Mesh {
   const { cell } = o;
   const nx = Math.ceil((o.max[0] - o.min[0]) / cell) + 6;
   const ny = Math.ceil((o.max[1] - o.min[1]) / cell) + 6;
@@ -55,7 +59,7 @@ function once(field: (x: number, y: number, z: number) => number, o: NetsOptions
         vals[i + nx * (j + ny * k)] = v === 0 ? 1e-9 : v;
       }
   const at = (i: number, j: number, k: number) => i + nx * (j + ny * k);
-  if (blur) {
+  for (let pass = 0; pass < blur; pass++) {
     // a light blur of the samples closes slivers narrower than a cell
     const src = vals.slice();
     for (let k = 1; k < nz - 1; k++)
@@ -124,11 +128,12 @@ function once(field: (x: number, y: number, z: number) => number, o: NetsOptions
 export function surfaceNets(field: (x: number, y: number, z: number) => number, o: NetsOptions): Mesh {
   let best: Mesh | undefined;
   let bestBad = Infinity;
-  for (let attempt = 0; attempt < 21; attempt++) {
+  for (let attempt = 0; attempt < (o.attempts ?? 30); attempt++) {
     // shift the grid by a fraction of a cell, different each time
     const f = attempt * 0.137;
-    const mesh = once(field, { ...o, cell: o.cell * (1 + 0.013 * attempt) }, [f % 1, (f * 1.7) % 1, (f * 2.3) % 1], attempt >= 10);
-    const bad = inspectMesh(mesh).badEdges;
+    const mesh = once(field, { ...o, cell: o.cell * (1 + 0.013 * attempt) }, [f % 1, (f * 1.7) % 1, (f * 2.3) % 1], attempt >= 22 ? 2 : attempt >= 10 ? 1 : 0);
+    const report = inspectMesh(mesh);
+    const bad = report.badEdges + Math.max(0, report.pieces - (o.maxPieces ?? Infinity));
     if (bad === 0) return mesh;
     if (bad < bestBad) [best, bestBad] = [mesh, bad];
   }

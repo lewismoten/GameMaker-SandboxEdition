@@ -237,7 +237,13 @@ Import from `@lewismoten/gamemaker-sandbox-tools/block-merge`.
 (`surfaceNets(field, { min, max, cell })`; it retries with a shifted grid until every edge is in exactly two
 triangles), `mesh/stl` writes and reads binary STL (`writeStl`, `readStl`; a color per triangle goes in the
 attribute bytes the VisCAM way, which slicers ignore) and `mesh/meshCheck` reports whether a mesh is closed,
-how many pieces it has, its size and volume (`inspectMesh`). They are browser safe.
+how many pieces it has, its size and volume (`inspectMesh`). `mesh/tetraMesh` is the other mesher (four times
+the triangles, but closed for any field, and neighbors meet on the same vertices); `mesh/overhang` measures what
+an FDM printer cannot print (`overhang`) and builds the support pillars as a body of their own (`supportBody`);
+`mesh/colorBodies` picks at most four colors from a colored mesh (`pickPalette`) and splits the solid into one
+closed body per color (`colorBodies`); `mesh/threeMf` writes and reads multi-color 3MF files (`write3mf(parts,
+title, codec)`, `read3mf`: parts are a mesh and a color), over the small ZIP writer `mesh/zipFile` (pass Node's
+`deflateRawSync` as `codec.deflate` to compress). They are browser safe.
 
 ### Disk comparison
 
