@@ -42,7 +42,9 @@ for (const l of LEVELS.filter((l) => !only.length || only.includes(l.file))) {
   const level = l.build(l.blocks(buildPalette(l.theme)).book);
   const [w, h] = level.size;
   const pic = renderRegion(map, bbl, mbl, parseMonsters(disk(monOf(l.file))), ORIGIN, ORIGIN + rowOffset(l.file), w, h);
-  writePng(join(out, `${l.file}.png`), pic, parsePalette(disk(`${l.file}.pal`)), 2);
+  // a scene whose .pal was merged into an identical one (kit/palMerge) is drawn with its theme's palette
+  const pal = existsSync(join(diskDir, `${l.file}.pal`)) ? parsePalette(disk(`${l.file}.pal`)) : buildPalette(l.theme).pal;
+  writePng(join(out, `${l.file}.png`), pic, pal, 2);
   wrote(`${l.file}.png`);
 }
 if (only.length) process.exit(0);
