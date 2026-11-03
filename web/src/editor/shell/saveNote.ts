@@ -3,6 +3,7 @@
 // Ctrl+S / ⌘S saves at once and says so, instead of the browser saving the web page.
 import { h, toast } from '../core/ui';
 import type { Project } from '../core/project';
+import './saveFlash.css';
 
 /** The note (kept across sidebar redraws) and a clean-up that stops listening. */
 export function saveNote(project: Project): { el: HTMLElement; dispose: () => void } {
@@ -11,6 +12,18 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
     role: 'status',
     title: 'Every change is kept in this browser as you go. Download a .zip now and then to keep it safe.',
   });
+  // Below 1200px the file list (and this note with it) folds away, so a small pill says it too:
+  // "✓ Saved" fades after a moment; a failure stays until the next save (saveFlash.css).
+  const flash = h('p', { class: 'save-flash', role: 'status' });
+  let fade = 0;
+  const flashIt = (text: string, failed: boolean) => {
+    window.clearTimeout(fade);
+    flash.textContent = text;
+    flash.classList.toggle('failed', failed);
+    flash.classList.add('on');
+    if (!failed) fade = window.setTimeout(() => flash.classList.remove('on'), 2200);
+  };
+  document.body.append(flash);
   const show = (text: string, failed = false) => {
     el.textContent = text;
     el.classList.toggle('failed', failed);
@@ -20,8 +33,11 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
   const stop = project.onSaveState((state, error) => {
     window.clearTimeout(shown);
     if (state === 'saving') shown = window.setTimeout(() => show('Saving…'), 300);
-    else if (state === 'saved') show('✓ Saved in this browser');
-    else show(`Not saved (${error?.message || 'the browser refused'}). Download a .zip to keep your work.`, true);
+    else if (state === 'saved') (show('✓ Saved in this browser'), flashIt('✓ Saved', false));
+    else {
+      show(`Not saved (${error?.message || 'the browser refused'}). Download a .zip to keep your work.`, true);
+      flashIt('Not saved. Download a .zip', true);
+    }
   });
   const onKey = (e: KeyboardEvent) => {
     if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey || e.key.toLowerCase() !== 's') return;
@@ -33,5 +49,5 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
     );
   };
   document.addEventListener('keydown', onKey);
-  return { el, dispose: () => (stop(), window.clearTimeout(shown), document.removeEventListener('keydown', onKey)) };
+  return { el, dispose: () => (stop(), window.clearTimeout(shown), window.clearTimeout(fade), flash.remove(), document.removeEventListener('keydown', onKey)) };
 }
