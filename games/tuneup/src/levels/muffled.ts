@@ -282,7 +282,11 @@ export function muffled(book: Kit['book']): Level {
   TOYS.forEach((x, i) => m.set(x, floor - 1, `toy${i}`));
   for (const x of TUCKS) m.set(x, floor - 1, 'tuck');
   m.set(M.crate, floor - 1, 'c').set(M.crate, floor - 2, 'tapes');
-  placeCameo(m, 'joe', 'wall', [[M.crate + 2, floor - 1], [M.crate + 3, floor - 1], [M.crate + 4, floor - 1]]);
+  placeCameo(m, 'joe', 'wall', [
+    [M.crate + 2, floor - 1],
+    [M.crate + 3, floor - 1],
+    [M.crate + 4, floor - 1],
+  ]);
   m.set(M.door, floor - 2, 'door.top').set(M.door, floor - 1, 'door');
   m.fill(w - 1, 0, 1, floor, 'slab');
   m.link(M.door, floor - 1);

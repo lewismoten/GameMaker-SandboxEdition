@@ -175,7 +175,19 @@ export function panelBlocks(scene: 'tune' | 'gauges') {
       });
     }
     // a Clown Club red nose with a glint: an extra life (on the tuning scene's floor)
-    book.add('life', k.pic(`face${PANEL.floor - 1}`).disc(10, 12, 6, c('ink', 0)).disc(10, 12, 5, c('red', 2)).disc(9, 11, 3, c('red', 3)).disc(8, 10, 1, c('cloud', 2)).rect(3, 4, 3, 1, c('lamp', 4)).rect(4, 3, 1, 3, c('lamp', 4)).rect(15, 5, 2, 1, c('lamp', 4)), { ...AIR, effect: 1, eamt: 1, score: 500, touch: `face${PANEL.floor - 1}` });
+    book.add(
+      'life',
+      k
+        .pic(`face${PANEL.floor - 1}`)
+        .disc(10, 12, 6, c('ink', 0))
+        .disc(10, 12, 5, c('red', 2))
+        .disc(9, 11, 3, c('red', 3))
+        .disc(8, 10, 1, c('cloud', 2))
+        .rect(3, 4, 3, 1, c('lamp', 4))
+        .rect(4, 3, 1, 3, c('lamp', 4))
+        .rect(15, 5, 2, 1, c('lamp', 4)),
+      { ...AIR, effect: 1, eamt: 1, score: 500, touch: `face${PANEL.floor - 1}` },
+    );
     // Watt, the repair robot, seeing to the dash's wiring (placed in the gauges' scene)
     addCameo(k, 'watt', `face${PANEL.floor - 1}`, (host, use) => wattCameo(host, 'side', 0, 'ok', { use }));
     return k;

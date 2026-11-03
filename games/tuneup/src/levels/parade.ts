@@ -300,7 +300,12 @@ export const parade = (scene: ParadeScene) =>
     if (scene.fork !== undefined) m.set(scene.fork, row, 'fork').set(scene.fork, top, 'corner.glint');
     for (const x of scene.gates ?? []) m.set(x, CUE_ROW, 'gate');
     m.set(scene.ribbon, row, 'ribbon');
-    placeCameo(m, 'mug', 'crowdwall1', [15, 11, 19, 7].map((x): [number, number] => [x, row]));
+    placeCameo(
+      m,
+      'mug',
+      'crowdwall1',
+      [15, 11, 19, 7].map((x): [number, number] => [x, row]),
+    );
     // the Clown Club falls in behind THE CHEZ (paradeMonsters.ts): they start where they will keep
     scene.line.forEach((f, k) => m.mon(MON.parade + f, startX(scene) + FIRST_PLACE + k, row));
     m.link(EXIT_X, row);

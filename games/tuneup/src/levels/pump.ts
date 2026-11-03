@@ -230,7 +230,11 @@ export function pump(book: Kit['book']): Level {
   ] as const)
     m.set(x, floor - 1, `tuft${t}`);
   m.set(12, floor - 1, 'bottlecap');
-  placeCameo(m, 'lewie', `air${floor - 1}`, [[9, floor - 1], [15, floor - 1], [20, floor - 1]]);
+  placeCameo(m, 'lewie', `air${floor - 1}`, [
+    [9, floor - 1],
+    [15, floor - 1],
+    [20, floor - 1],
+  ]);
   for (const [a, b] of AWNINGS) {
     m.fill(a, AWNING_ROW, b - a + 1, 1, 'awning');
     for (let y = AWNING_ROW + 1; y < floor; y++) m.set(b, y, `post${y}`);

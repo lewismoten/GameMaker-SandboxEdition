@@ -12,7 +12,13 @@ import type { BlockBook } from './common';
 const GUEST_RAMPS = ['ink', 'cloud', 'skin', 'red', 'yellow', 'gold', 'blue', 'purple', 'pink', 'metal', 'steel', 'gray', 'coat', 'paint', 'water', 'wood'];
 
 /** Adds block `name`: `draw`'s 20x20 picture on top of block `back`. */
-export function addCameo(k: Kit, name: string, back: string, draw: (host: Uint8Array, use: number[]) => Pixels, attrs: Parameters<BlockBook['add']>[2] = AIR): void {
+export function addCameo(
+  k: Kit,
+  name: string,
+  back: string,
+  draw: (host: Uint8Array, use: number[]) => Pixels,
+  attrs: Parameters<BlockBook['add']>[2] = AIR,
+): void {
   const use = GUEST_RAMPS.flatMap((r) => k.R(r));
   k.book.add(name, k.pic(back).blit(draw(k.pal.pal, use), 0, 0, CLEAR), attrs);
 }

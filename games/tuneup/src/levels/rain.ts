@@ -202,7 +202,17 @@ export const rainBlocks =
     // Carl the fly (A Fly Named Carl), walking the glass out of the wipers' reach (the first scene)
     if (part.thermos === undefined)
       addCameo(k, 'carl', `sky${RAIN.floor - 2}`, () =>
-        carlPic({ ink: c('ink', 0), fly: [0, 1, 2, 3, 4].map((i) => c('steel', i)), eye: [0, 1, 2, 3].map((i) => c('red', i)), wing: [c('gray', 1), c('gray', 2), c('gray', 3)], white: c('cloud', 2), red: c('red', 2) }, { view: 'front', wing: 0, mood: 'smug' }),
+        carlPic(
+          {
+            ink: c('ink', 0),
+            fly: [0, 1, 2, 3, 4].map((i) => c('steel', i)),
+            eye: [0, 1, 2, 3].map((i) => c('red', i)),
+            wing: [c('gray', 1), c('gray', 2), c('gray', 3)],
+            white: c('cloud', 2),
+            red: c('red', 2),
+          },
+          { view: 'front', wing: 0, mood: 'smug' },
+        ),
       );
     return k;
   };
@@ -229,7 +239,13 @@ export const rain = (part: RainPart) =>
         .set(RAIN.sign + 1, floor - 1, 'post.r');
     else m.set(part.thermos, floor - 1, 'thermos');
     if (part.fork !== undefined) m.set(part.fork, floor - 1, 'fork').set(part.fork - 1, floor - 2, `sky${floor - 2}.glint`);
-    if (part.thermos === undefined) placeCameo(m, 'carl', `sky${floor - 2}`, [[8, floor - 2], [9, floor - 2], [10, floor - 2], [11, floor - 2]]);
+    if (part.thermos === undefined)
+      placeCameo(m, 'carl', `sky${floor - 2}`, [
+        [8, floor - 2],
+        [9, floor - 2],
+        [10, floor - 2],
+        [11, floor - 2],
+      ]);
     m.link(part.exit, floor - 1);
     if (part.thermos === undefined) m.mon(MON.regina, 6, floor - 1);
     // variants here and there so the walls and floors don't repeat
