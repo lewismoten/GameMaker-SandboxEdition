@@ -3,6 +3,7 @@
 // sessions. 'auto' follows the system setting. index.html sets data-theme before the
 // first paint (the same rule as here) so the page never flashes the wrong colors.
 import { h, clear } from './editor/core/ui';
+import { pageLife } from './pageLife';
 
 type Theme = 'dark' | 'light' | 'auto';
 const KEY = 'gm-theme';
@@ -48,7 +49,7 @@ export function themeItem(attrs: Record<string, string> = {}): HTMLButtonElement
     applyTheme(ORDER[(ORDER.indexOf(getTheme()) + 1) % ORDER.length]);
     document.dispatchEvent(new Event(CHANGED));
   });
-  document.addEventListener(CHANGED, show);
+  document.addEventListener(CHANGED, show, { signal: pageLife() });
   applyTheme(getTheme());
   show();
   return btn;

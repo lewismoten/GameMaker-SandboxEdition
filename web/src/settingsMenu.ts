@@ -4,6 +4,7 @@
 import { h, toast } from './editor/core/ui';
 import { themeItem } from './theme';
 import { wholeTourItem } from './tour/tourButton';
+import { pageLife } from './pageLife';
 
 const SOURCE_URL = 'https://github.com/lewismoten/GameMaker-SandboxEdition';
 
@@ -121,6 +122,6 @@ export function settingsMenu(): HTMLElement {
     if (!wrap.isConnected) document.removeEventListener('click', outside);
     else if (!wrap.contains(e.target as Node)) close(false);
   };
-  document.addEventListener('click', outside);
+  document.addEventListener('click', outside, { signal: pageLife() });
   return wrap;
 }

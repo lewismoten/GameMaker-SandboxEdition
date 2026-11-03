@@ -16,6 +16,7 @@ import { tourButton } from './tour/tourButton';
 import { parseHash } from './urlState';
 import { noteLibraryContext } from './libraryStart';
 import { parseLinkRequest, type LinkRequest } from './linkIn/protocol';
+import { beginPage } from './pageLife';
 
 const modernUi = () => import('./modernUi');
 
@@ -59,6 +60,7 @@ function webShowing(): string | undefined {
 
 /** The desk; `hash` (#/desk?disk=…) says what to put in its drive. */
 async function startDesk(hash?: string): Promise<void> {
+  beginPage();
   ui = 'desk';
   rememberUi('desk');
   document.documentElement.dataset.ui = 'desk'; // the page background (index.html)
@@ -87,6 +89,7 @@ async function startDesk(hash?: string): Promise<void> {
 // ---- today's web ---------------------------------------------------------------------
 
 function startModern(hash?: string): void {
+  beginPage();
   ui = 'modern';
   rememberUi('modern');
   document.documentElement.dataset.ui = 'modern';
