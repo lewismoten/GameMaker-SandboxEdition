@@ -67,7 +67,7 @@ export function squareMap(set: BlockSet, mons: Bestiary, seven: boolean): Stampe
     ...SQUARE_LEGEND,
     L: seven ? 'leoGlad' : 'leo',
     p: { tile: 'cobble', mon: 'pigeon' },
-    S: seven ? 'swing' : 'cobble',
+    S: seven ? 'exitSquare' : 'cobble',
   };
   return stamp(seven ? SQUARE7_ROWS : SQUARE_ROWS, legend, set, 'hedge', mons, 'dL@SJk');
 }
