@@ -1,9 +1,11 @@
-// The plastic trinkets that came in a game's box (the game's figures as 3D printable toys), one at a
-// time: a shiny model to turn in the browser (drag, or the arrow keys) with buttons (and PageUp and
-// PageDown) to go to the next, and links to its STL, and to the STL of its supports when a plain
-// printer would need them. The files are build output (games/<id>/tools/trinkets.ts writes them to
-// trinkets/<id>/ on the site); a game without any gets no shelf. The viewer (trinketGl.ts) loads when
-// the shelf first shows.
+// The plastic trinkets that came in a game's box (the game's figures as 3D printable toys), listed as
+// items under the box: choosing one takes the turning box's place in the viewer with that trinket, a
+// shiny model to turn (drag, or the arrow keys), and choosing it again, or "Back to the box", brings
+// the box back. A labeled STL / 3MF switch shows it in one color (the STL) or in the colors of the 3MF
+// (the default). There are links to its files, and to the STL of its supports when a plain printer would
+// need them. The files are build output (games/depth/tools/trinkets.ts and games/kit/pixelTrinkets.ts
+// write them to trinkets/<id>/ on the site); a game without any gets no shelf. The viewer (trinketGl.ts)
+// loads when a trinket is first chosen.
 import './trinketShelf.css';
 import { h } from '../../editor/core/ui';
 import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
@@ -14,6 +16,8 @@ interface TrinketItem {
   title: string;
   blurb: string;
   file: string;
+  /** An STL that carries a color on each triangle, to show the 3MF's colors (the plain file may be one color). */
+  preview?: string;
   triangles: number;
   bytes: number;
   mm: [number, number, number];
@@ -56,7 +60,8 @@ export function trinketShelf(id: string): HTMLElement {
 }
 
 function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
-  let at = 0;
+  let at = -1; // -1: the box is showing
+  let colors = true; // the 3MF's colors, or the STL's one color
   let view: TrinketView | undefined;
   let visible = true;
   let spinning = !reduced();
@@ -64,12 +69,10 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
   let raf = 0;
   let showing = 0; // which load is current, so a slow file can't replace a later one
 
-  const canvas = h('canvas', {
-    class: 'trk-canvas',
-    tabindex: 0,
-    role: 'img',
-    'aria-describedby': 'trk-help',
-  });
+  const canvas = h('canvas', { class: 'trk-canvas', tabindex: 0, role: 'img', 'aria-describedby': 'trk-help' });
+  const status = h('span', { class: 'trk-flat', hidden: '' }, '3D is not available here; the files still download.');
+  const back = h('button', { class: 'trk-btn', type: 'button', onclick: () => void choose(-1) }, 'Back to the box');
+  const float = h('div', { class: 'trk-float', hidden: '' }, canvas, status);
   const title = h('strong', { class: 'trk-title' });
   const blurb = h('span', { class: 'trk-blurb' });
   const size = h('span', { class: 'trk-size' });
@@ -78,20 +81,25 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
   const dlColors = h('a', { class: 'trk-dl', download: '' }, '3D printer, up to 4 colors (3MF)');
   const swatches = h('span', { class: 'trk-swatches', 'aria-hidden': 'true' });
   const dlSupports = h('a', { class: 'trk-dl', download: '' }, 'Supports for a second material (STL)');
-  const count = h('span', { class: 'trk-count', 'aria-live': 'polite' });
-  const status = h('span', { class: 'trk-flat', hidden: '' }, '3D is not available here; the STL still downloads.');
-  const nav = (dir: 1 | -1) =>
-    h(
-      'button',
-      {
-        class: 'trk-nav',
-        type: 'button',
-        'aria-label': dir > 0 ? 'Next trinket' : 'Previous trinket',
-        title: dir > 0 ? 'Next trinket (PageDown)' : 'Previous trinket (PageUp)',
-        onclick: () => step(dir),
-      },
-      dir > 0 ? '▶' : '◀',
-    );
+  const mode = (label: string, on: boolean) =>
+    h('button', { class: 'trk-btn', type: 'button', 'aria-pressed': String(on), onclick: () => setColors(on) }, label);
+  const modeColors = mode('3MF: colors', true);
+  const modeOne = mode('STL: one color', false);
+  const info = h(
+    'div',
+    { class: 'trk-info', hidden: '' },
+    title,
+    blurb,
+    size,
+    print,
+    h('div', { class: 'trk-mode', role: 'group', 'aria-label': 'Show the trinket as' }, modeColors, modeOne),
+    back,
+    h('span', { class: 'trk-links' }, dl, h('span', { class: 'trk-colorline' }, dlColors, swatches), dlSupports),
+  );
+  const chips = items.map((item, i) =>
+    h('button', { class: 'trk-chip', type: 'button', 'aria-pressed': 'false', title: item.blurb, onclick: () => void choose(at === i ? -1 : i) }, item.title),
+  );
+  const list = h('div', { class: 'trk-list', role: 'group', 'aria-label': 'Trinkets in this box' }, ...chips);
 
   const frame = (t: number) => {
     raf = 0;
@@ -100,7 +108,7 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
       last = t;
     }
     view?.draw();
-    if (spinning && visible) raf = requestAnimationFrame(frame);
+    if (spinning && visible && at >= 0) raf = requestAnimationFrame(frame);
   };
   const wake = () => {
     if (!raf) {
@@ -116,10 +124,55 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
     wake();
   };
 
-  const show = async (i: number) => {
-    at = (i + items.length) % items.length;
+  /** The mesh shown: with the 3MF's colors, or the same shape in one color. */
+  const meshOf = async (item: TrinketItem) => {
+    const mesh = await loadMesh(`${base}${item.preview ?? item.file}`);
+    return colors || !mesh.colors ? mesh : { positions: mesh.positions, indices: mesh.indices };
+  };
+  const show = async () => {
     const item = items[at];
     const mine = ++showing;
+    canvas.classList.add('loading');
+    try {
+      const [{ createTrinketView }, mesh] = await Promise.all([import('./trinketGl'), meshOf(item)]);
+      if (mine !== showing) return;
+      const keep = view && { yaw: view.yaw, pitch: view.pitch };
+      view?.dispose();
+      view = createTrinketView(canvas, mesh);
+      if (!view) throw new Error('no WebGL');
+      if (keep) Object.assign(view, keep);
+      status.hidden = true;
+      canvas.hidden = false;
+      canvas.classList.remove('loading');
+      wake();
+    } catch {
+      if (mine !== showing) return;
+      canvas.hidden = true;
+      status.hidden = false;
+    }
+  };
+  function setColors(on: boolean) {
+    colors = on;
+    modeColors.setAttribute('aria-pressed', String(on));
+    modeOne.setAttribute('aria-pressed', String(!on));
+    if (at >= 0) void show();
+  }
+  /** Chooses trinket `i` (in the box viewer's place), or -1 for the box again. */
+  async function choose(i: number) {
+    const was = at;
+    at = i;
+    chips.forEach((c, k) => c.setAttribute('aria-pressed', String(k === i)));
+    const viewer = list.closest('.box-viewer');
+    viewer?.classList.toggle('trinket-on', i >= 0);
+    float.hidden = info.hidden = i < 0;
+    if (i < 0) {
+      showing++;
+      view?.dispose();
+      view = undefined;
+      if (was >= 0) chips[was].focus({ preventScroll: true });
+      return;
+    }
+    const item = items[i];
     const dims = item.mm.map((v) => Math.round(v)).join(' × ');
     title.textContent = item.title;
     blurb.textContent = item.blurb;
@@ -138,29 +191,15 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
       dlSupports.href = `${base}${item.supports.file}`;
       dlSupports.setAttribute('download', item.supports.file);
     }
-    count.textContent = `${at + 1} of ${items.length}`;
     canvas.setAttribute(
       'aria-label',
       `${item.title}: ${item.blurb} A plastic trinket, ${dims} millimeters. Drag it, or use the arrow keys, to turn it; Home puts it back.`,
     );
-    canvas.classList.add('loading');
-    try {
-      const [{ createTrinketView }, mesh] = await Promise.all([import('./trinketGl'), loadMesh(`${base}${item.file}`)]);
-      if (mine !== showing) return;
-      view?.dispose();
-      view = createTrinketView(canvas, mesh);
-      if (!view) throw new Error('no WebGL');
-      status.hidden = true;
-      canvas.hidden = false;
-      canvas.classList.remove('loading');
-      wake();
-    } catch {
-      if (mine !== showing) return;
-      canvas.hidden = true;
-      status.hidden = false;
-    }
-  };
-  const step = (dir: 1 | -1) => void show(at + dir);
+    spinning = !reduced();
+    await show();
+    if (was < 0) canvas.focus({ preventScroll: true });
+  }
+  const step = (dir: 1 | -1) => void choose((at + dir + items.length) % items.length);
 
   canvas.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') turn(-TURN, 0);
@@ -197,27 +236,20 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
     visible = e.isIntersecting;
     if (visible) wake();
   }).observe(canvas);
-  void show(0);
 
   return [
-    h('h2', null, 'Plastic trinkets'),
     h(
       'div',
-      { class: 'trk-body' },
-      nav(-1),
-      h('div', { class: 'trk-stage' }, canvas, status),
-      nav(1),
+      { class: 'trk-panel' },
+      h('h2', null, 'Plastic trinkets'),
+      list,
+      info,
       h(
-        'div',
-        { class: 'trk-info' },
-        title,
-        blurb,
-        size,
-        print,
-        h('span', { class: 'trk-links' }, dl, h('span', { class: 'trk-colorline' }, dlColors, swatches), dlSupports),
-        count,
+        'p',
+        { class: 'trk-help', id: 'trk-help' },
+        'Choose one to see it in place of the box. Drag it, or use the arrow keys, to turn it; PageUp and PageDown change trinket.',
       ),
     ),
-    h('p', { class: 'trk-help', id: 'trk-help' }, 'Drag it, or use the arrow keys, to turn it. PageUp and PageDown, or the buttons, change trinket.'),
+    float,
   ];
 }

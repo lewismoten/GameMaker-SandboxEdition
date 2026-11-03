@@ -21,6 +21,7 @@ import { pixelFigure, type PixelPicture } from '@lewismoten/gamemaker-sandbox-to
 import { writeStl } from '@lewismoten/gamemaker-sandbox-tools/mesh/stl';
 import { write3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMf';
 import { GAMES, type Def } from './pixelTrinketDefs';
+import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
 import { encodePng, renderBodies, sheet, type Image } from './trinketRender';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -51,6 +52,20 @@ function picture(game: string, d: Def): PixelPicture {
   const cells = new Uint8Array(BLEN * BLEN).fill(TRANSPARENT);
   draw(blocks(d.source.mbl, 100)[mon.pic[0][0]].pixels, 0, cells, BLEN, 0);
   return { w: BLEN, h: BLEN, cells, palette };
+}
+
+/** The color bodies as one mesh with a color on each triangle: what the desk's viewer shows (an STL that carries colors; the printable files are the STL and 3MF). */
+function colored(bodies: { color: [number, number, number]; mesh: Mesh }[]): Mesh {
+  const positions: number[] = [];
+  const indices: number[] = [];
+  const colors: number[] = [];
+  for (const b of bodies) {
+    const base = positions.length / 3;
+    positions.push(...b.mesh.positions);
+    for (const i of b.mesh.indices) indices.push(base + i);
+    for (let t = 0; t < b.mesh.indices.length / 3; t++) colors.push(...b.color);
+  }
+  return { positions: Float32Array.from(positions), indices: Uint32Array.from(indices), colors: Uint8Array.from(colors) };
 }
 
 /** Everything a game's trinkets are made from: its pictures and palettes, the options and the code that meshes them. */
@@ -96,12 +111,15 @@ for (const game of games) {
   const pics = GAMES[game].map((d) => picture(game, d));
   const source = sourceKey(pics, { colors, block, layers, keys: GAMES[game].map((d) => [d.id, d.title, d.blurb, d.keep]) });
   try {
-    const have = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8')) as { source?: string; items: { file: string; colors: { file: string } }[] };
+    const have = JSON.parse(readFileSync(join(out, 'manifest.json'), 'utf8')) as {
+      source?: string;
+      items: { file: string; preview?: string; colors: { file: string } }[];
+    };
     if (
       !pngDir &&
       !args.includes('--force') &&
       have.source === source &&
-      have.items.every((i) => existsSync(join(out, i.file)) && existsSync(join(out, i.colors.file)))
+      have.items.every((i) => existsSync(join(out, i.file)) && existsSync(join(out, i.colors.file)) && !!i.preview && existsSync(join(out, i.preview)))
     ) {
       console.log(`${game}: up to date`);
       continue;
@@ -119,6 +137,7 @@ for (const game of games) {
     const ms = performance.now() - t0;
     writeFileSync(join(out, `${d.id}.stl`), stl);
     writeFileSync(join(out, `${d.id}.3mf`), mf);
+    writeFileSync(join(out, `${d.id}.view.stl`), writeStl(colored(fig.bodies), { name: `${game} ${d.title} (colors, for viewing)` }));
     const rep = inspectMesh(fig.solid);
     const bodyReps = fig.bodies.map((b) => inspectMesh(b.mesh));
     const oh = overhang(fig.solid);
@@ -128,6 +147,7 @@ for (const game of games) {
       title: d.title,
       blurb: d.blurb,
       file: `${d.id}.stl`,
+      preview: `${d.id}.view.stl`,
       triangles: rep.triangles,
       bytes: stl.length,
       mm,

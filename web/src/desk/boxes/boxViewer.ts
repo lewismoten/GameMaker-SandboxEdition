@@ -235,6 +235,7 @@ export function openBoxViewer(
     const fill = () => {
       const { entry: e, actions: a } = current;
       overlay.setAttribute('aria-label', `${e.title} box`);
+      overlay.classList.remove('trinket-on'); // another box has its own trinkets (trinketShelf.ts)
       extrasSlot.replaceChildren(...(a.extras ? [a.extras] : []));
       bar.replaceChildren(
         h('strong', null, e.title),

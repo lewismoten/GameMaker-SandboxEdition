@@ -27,8 +27,10 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   `boxSeals.ts`, shelf wear (`boxWear.ts`), a glow under the black light (`boxUv.ts`) and a
   painted cover (`covers/<id>.ts`, with the brushes in `covers/paint.ts`); what came in it is
   `gameBoxContents.ts`, `boxList.ts` and `printContext.ts`. `gmBox.ts` is the Game-Maker box. A game's plastic trinkets (3D-printable STL, 3MF and support files its build
-  makes into `public/trinkets/<id>/`) turn in the box, one at a time, as `trinketShelf.ts`, drawn by the small WebGL
-  viewer `trinketGl.ts`.
+  makes into `public/trinkets/<id>/`) are listed as `trinketShelf.ts` in the box viewer: choosing one takes the turning box's place
+  (choosing it again, or "Back to the box", returns the box), with a labeled STL (one color) / 3MF (colors,
+  the default) switch; Depth's trinkets and the pixel figures of the other games (`games/kit/pixelTrinkets.ts`,
+  whose items name a color-carrying `preview` STL) share it. It is drawn by the small WebGL viewer `trinketGl.ts`.
 - `disks/`: the disk box (`diskBox.ts`; closed on the desk, `diskBoxFill.ts`), the buttons for
   the disk in drive A: (`driveActions.ts`) and the disks' labels (`diskLabel.ts`, RSD's own in
   `rsdLabel.ts`).

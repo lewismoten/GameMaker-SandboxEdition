@@ -1,12 +1,20 @@
-/* the plastic trinkets in a game's box (desk/boxes/trinketShelf.ts): one at a time, along the bottom of the box viewer */
+/* the plastic trinkets in a game's box (desk/boxes/trinketShelf.ts): a list under the box viewer; a chosen one takes the box's place */
 .bc-trinkets {
+  display: contents;
+}
+
+.bc-trinkets[hidden] {
+  display: none;
+}
+
+.trk-panel {
   position: absolute;
   bottom: 74px;
   /* between the disks and manual on the left and the "In the box" list on the right (gameBoxContents.css) */
   left: calc(max(10px, 3vw) + 70px + 180px);
   right: calc(max(10px, 3vw) + 70px + min(290px, 26vw) + 12px);
-  z-index: 2;
-  max-height: 60vh;
+  z-index: 3;
+  max-height: 34vh;
   padding: 8px 12px 10px;
   overflow: auto;
   border: 1px solid rgba(239, 229, 204, 0.25);
@@ -18,11 +26,7 @@
     sans-serif;
 }
 
-.bc-trinkets[hidden] {
-  display: none;
-}
-
-.bc-trinkets h2 {
+.trk-panel h2 {
   margin: 0 0 6px;
   font:
     700 12px system-ui,
@@ -31,23 +35,60 @@
   text-transform: uppercase;
 }
 
-.trk-body {
-  display: grid;
-  grid-template-columns: 32px 220px 32px 1fr;
-  gap: 8px;
-  align-items: center;
+.trk-list,
+.trk-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.trk-stage {
+.trk-chip,
+.trk-btn {
+  min-height: 28px;
+  padding: 2px 10px;
+  border: 1px solid rgba(239, 229, 204, 0.4);
+  border-radius: 6px;
+  background: rgba(239, 229, 204, 0.12);
+  color: #efe5cc;
+  font: inherit;
+  cursor: pointer;
+}
+
+.trk-chip:hover,
+.trk-btn:hover {
+  background: rgba(239, 229, 204, 0.25);
+}
+
+.trk-chip[aria-pressed='true'],
+.trk-btn[aria-pressed='true'] {
+  border-color: #ffd84a;
+  background: rgba(255, 216, 74, 0.22);
+  font-weight: 700;
+}
+
+/* the chosen trinket stands where the turning box was, over the box viewer's stage */
+.trk-float {
+  position: absolute;
+  inset: 0 0 calc(74px + 36vh);
+  z-index: 1;
   display: grid;
   place-items: center;
-  width: 220px;
-  height: 220px;
+  align-content: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.trk-float > * {
+  pointer-events: auto;
+}
+
+.box-viewer.trinket-on .box-stage .box3d {
+  visibility: hidden;
 }
 
 .trk-canvas {
-  width: 220px;
-  height: 220px;
+  width: min(44vh, 80vw, 520px);
+  height: min(44vh, 80vw, 520px);
   border-radius: 10px;
   background: radial-gradient(circle at 50% 38%, #3a3150, #14101c 80%);
   cursor: grab;
@@ -64,25 +105,10 @@
 
 .trk-canvas:focus-visible,
 .trk-dl:focus-visible,
-.trk-nav:focus-visible {
+.trk-chip:focus-visible,
+.trk-btn:focus-visible {
   outline: 2px solid #ffd84a;
   outline-offset: 2px;
-}
-
-.trk-nav {
-  min-width: 32px;
-  min-height: 48px;
-  padding: 0;
-  border: 1px solid rgba(239, 229, 204, 0.4);
-  border-radius: 6px;
-  background: rgba(239, 229, 204, 0.12);
-  color: #efe5cc;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.trk-nav:hover {
-  background: rgba(239, 229, 204, 0.25);
 }
 
 .trk-info {
@@ -90,6 +116,11 @@
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+  margin-top: 8px;
+}
+
+.trk-info[hidden] {
+  display: none;
 }
 
 .trk-title {
@@ -97,7 +128,6 @@
 }
 
 .trk-size,
-.trk-count,
 .trk-help {
   opacity: 0.75;
 }
@@ -140,36 +170,44 @@
 
 .trk-dl[hidden],
 .trk-flat[hidden],
-.trk-canvas[hidden] {
+.trk-canvas[hidden],
+.trk-float[hidden] {
   display: none;
 }
 
 .trk-flat {
   padding: 8px;
   text-align: center;
+  color: #efe5cc;
   opacity: 0.8;
 }
 
+@media (pointer: coarse) {
+  .trk-chip,
+  .trk-btn,
+  .trk-dl {
+    min-height: 44px;
+  }
+}
+
 @media (max-width: 700px) {
-  .bc-trinkets {
+  .trk-panel {
     right: 58px;
     bottom: 120px;
     left: 58px;
-    max-height: 52vh;
+    max-height: 40vh;
   }
 
-  .trk-body {
-    grid-template-columns: 32px 1fr 32px;
+  .trk-float {
+    inset: 0 0 calc(120px + 42vh);
   }
 
-  .trk-stage,
   .trk-canvas {
-    width: min(100%, 170px);
-    height: 170px;
-    justify-self: center;
+    width: min(34vh, 80vw);
+    height: min(34vh, 80vw);
   }
+}
 
-  .trk-info {
-    grid-column: 1 / -1;
-  }
+.trk-info > .trk-btn {
+  align-self: flex-start;
 }
