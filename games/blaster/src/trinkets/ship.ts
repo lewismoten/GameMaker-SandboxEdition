@@ -23,15 +23,15 @@ const both = (f: (s: number) => D3): D3 => union3(f(1), f(-1));
 
 const SHIP = figure(
   [
-    { d: ellipsoid3(0, 0, 3.4, 6.2, 27, 6.4), color: STEEL },
+    { d: ellipsoid3(0, 0, 0, 6.6, 27, 9.4), color: STEEL },
     { d: wings, color: STEEL },
-    { d: both((s) => roundCone3(10 * s, -4, 2.3, 2.3, 10 * s, 21, 2.3, 1.9)), color: STEEL },
-    { d: both((s) => sphere3(10 * s, 21.6, 2.3, 1.8)), color: CYAN },
-    { d: ellipsoid3(0, 7, 6.6, 3.8, 8.5, 4.6), color: CYAN },
+    { d: both((s) => roundCone3(10 * s, -4, 2.3, 2.3, 10 * s, 21, 1.9, 1.9)), color: STEEL },
+    { d: both((s) => sphere3(10 * s, 21.6, 1.9, 1.9)), color: CYAN },
+    { d: ellipsoid3(0, 6, 5.4, 3.6, 8.5, 4.6), color: CYAN },
     { d: both((s) => roundBox3(21.2 * s, -19, 7, 1.4, 5.5, 7, 0.9)), color: CYAN },
-    { d: both((s) => sphere3(22.4 * s, -15.6, 3.2, 2.6)), color: RED },
-    { d: roundCone3(0, -24, 3.6, 4.4, 0, -30, 3.4, 3.3), color: STEEL },
-    { d: roundCone3(0, -30, 3.2, 3.2, 0, -41, 2.6, 0.9), color: FIRE },
+    { d: both((s) => sphere3(21.8 * s, -15.6, 2.4, 2.4)), color: RED },
+    { d: roundCone3(0, -24, 4.4, 4.4, 0, -30, 3.3, 3.3), color: STEEL },
+    { d: roundCone3(0, -30, 3.2, 3.2, 0, -41, 0.9, 0.9), color: FIRE },
   ],
   0.8,
 );
