@@ -119,7 +119,7 @@ export function fliReport(fli: Uint8Array): FliReport {
   const big = [...frames].sort((x, y) => y.bytes - x.bytes)[0];
   if (big && big.bytes > total * 0.25)
     findings.push(
-      `Frame ${big.frame} is ${Math.round((big.bytes / total) * 100)}% of the file: a whole new picture. Dithered or speckled art costs the most there; flatter shading costs less.`,
+      `Frame ${big.frame + 1} is ${Math.round((big.bytes / total) * 100)}% of the file: a whole new picture. Dithered or speckled art costs the most there; flatter shading costs less.`,
     );
   const color = byChunk.COLOR64 ?? 0;
   if (color > total * 0.04)
@@ -143,7 +143,7 @@ export function fliReport(fli: Uint8Array): FliReport {
 const channel = (pal: Uint8Array, i: number, j: number): number => Math.round(((pal[i * 3 + j] & 63) * 255) / 63);
 
 /** What shows, original against `result` (frame i of the original is `map(i)` of the result). */
-function visibilityOf(orig: FliFrames, result: FliFrames, map: (i: number) => number = (i) => i): Visibility {
+export function visibilityOf(orig: FliFrames, result: FliFrames, map: (i: number) => number = (i) => i): Visibility {
   let sum = 0;
   let worst = 0;
   let changed = 0;
@@ -307,6 +307,8 @@ export type ShrinkStep =
   | { step: 'snapColors'; tolerance: number }
   | { step: 'flattenDither'; tolerance: number }
   | { step: 'maxColors'; colors: number }
+  | { step: 'onePalette'; colors: number }
+  | ({ step: 'frame' } & FrameOptions)
   | { step: 'dropFrames' };
 
 /** Runs the steps in order, each on the one before's frames; the last result's `frames` and `encode` make the file. */
@@ -326,10 +328,228 @@ export function shrinkFrames(orig: FliFrames, steps: ShrinkStep[]): StepResult[]
               ? flattenDitherStep(cur, s, enc)
               : s.step === 'maxColors'
                 ? maxColorsStep(cur, s, enc)
-                : dropFramesStep(cur, enc);
+                : s.step === 'onePalette'
+                  ? onePaletteStep(cur, s, enc)
+                  : s.step === 'frame'
+                    ? frameStep(cur, s, enc)
+                    : dropFramesStep(cur, enc);
     out.push(r);
     cur = r.frames;
     enc = r.encode;
   }
   return out;
+}
+
+/** What shows over a whole chain of steps: the end result against the original, exactly (a dropped frame's picture stands for the two it replaces). */
+export function chainVisibility(orig: FliFrames, last: FliFrames): Visibility {
+  const n = orig.frames.length;
+  const m = last.frames.length;
+  return visibilityOf(orig, last, m === n ? (i) => i : (i) => (i >= n - 1 ? m - 1 : i >> 1));
+}
+
+/** A 6-bit RGB key (18 bits) for a palette entry. */
+const rgbKey = (pal: Uint8Array, i: number): number => ((pal[i * 3] & 63) << 12) | ((pal[i * 3 + 1] & 63) << 6) | (pal[i * 3 + 2] & 63);
+
+/** At most `n` colors for a weighted set of colors, by median cut: the box with the most to lose is split at its weighted middle. */
+function medianCut(keys: number[], weight: Map<number, number>, n: number): number[] {
+  const ch = (k: number, c: number) => (k >> (12 - 6 * c)) & 63;
+  const boxes: number[][] = [keys];
+  const range = (b: number[]) => {
+    let best = 0;
+    let at = 0;
+    for (let c = 0; c < 3; c++) {
+      const v = b.map((k) => ch(k, c));
+      const r = Math.max(...v) - Math.min(...v);
+      if (r > best) [best, at] = [r, c];
+    }
+    return { best, at };
+  };
+  while (boxes.length < n) {
+    let pick = -1;
+    let score = 0;
+    boxes.forEach((b, i) => {
+      if (b.length < 2) return;
+      const sc = range(b).best * b.reduce((s, k) => s + weight.get(k)!, 0);
+      if (sc > score) [pick, score] = [i, sc];
+    });
+    if (pick < 0) break;
+    const b = boxes[pick];
+    const { at } = range(b);
+    b.sort((x, y) => ch(x, at) - ch(y, at));
+    const half = b.reduce((s, k) => s + weight.get(k)!, 0) / 2;
+    let acc = 0;
+    let cut = 1;
+    for (let i = 0; i < b.length - 1; i++) {
+      acc += weight.get(b[i])!;
+      cut = i + 1;
+      if (acc >= half) break;
+    }
+    boxes.splice(pick, 1, b.slice(0, cut), b.slice(cut));
+  }
+  return boxes.map((b) => {
+    const w = b.reduce((s, k) => s + weight.get(k)!, 0) || 1;
+    const avg = [0, 1, 2].map((c) => Math.round(b.reduce((s, k) => s + ch(k, c) * weight.get(k)!, 0) / w));
+    return (avg[0] << 12) | (avg[1] << 6) | avg[2];
+  });
+}
+
+/**
+ * Lossy (lossless when the animation already draws no more than `colors` shades): one palette
+ * for the whole animation, the `colors` (up to 256) that best stand for every shade it shows, and
+ * every frame redrawn in it. No COLOR chunk follows the first frame, so a fade becomes pixel
+ * changes, which often cost more than the palette changes did. The numbers say which way it went.
+ */
+export function onePaletteStep(orig: FliFrames, opts: { colors: number }, base: FliEncodeOptions = {}): StepResult {
+  const n = Math.max(1, Math.min(256, Math.round(opts.colors)));
+  const weight = new Map<number, number>();
+  orig.frames.forEach((f, i) => {
+    const pal = orig.palettes[i];
+    const seen = new Uint32Array(256);
+    for (let x = 0; x < f.length; x++) seen[f[x]]++;
+    for (let c = 0; c < 256; c++) if (seen[c]) weight.set(rgbKey(pal, c), (weight.get(rgbKey(pal, c)) ?? 0) + seen[c]);
+  });
+  const keys = [...weight.keys()];
+  const chosen = keys.length <= n ? keys : medianCut(keys, weight, n);
+  const palette = new Uint8Array(768);
+  chosen.forEach((k, i) => {
+    palette[i * 3] = k >> 12;
+    palette[i * 3 + 1] = (k >> 6) & 63;
+    palette[i * 3 + 2] = k & 63;
+  });
+  const at = new Map<number, number>();
+  const nearestOf = (k: number): number => {
+    let hit = at.get(k);
+    if (hit !== undefined) return hit;
+    let bd = Infinity;
+    hit = 0;
+    chosen.forEach((c, i) => {
+      const d = [12, 6, 0].reduce((s, sh) => s + (((k >> sh) & 63) - ((c >> sh) & 63)) ** 2, 0);
+      if (d < bd) [hit, bd] = [i, d];
+    });
+    at.set(k, hit);
+    return hit;
+  };
+  const frames = orig.frames.map((f, i) => {
+    const pal = orig.palettes[i];
+    const map = Uint8Array.from({ length: 256 }, (_, c) => nearestOf(rgbKey(pal, c)));
+    return f.map((v) => map[v]);
+  });
+  const out: FliFrames = { ...orig, frames, palettes: frames.map(() => palette) };
+  return result('one palette', keys.length <= n, orig, out, {}, base);
+}
+
+/** How `frameStep` frames the picture; every number is in pixels except `zoom`. */
+export interface FrameOptions {
+  /** Solid bands left at each edge. */
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+  /** The picture's scale inside the bands: 1 = its own pixels, under 1 shrinks it, over 1 magnifies it. */
+  zoom: number;
+  /** Where the picture's center sits in the original's pixels, from the middle (0 = centered). */
+  panX: number;
+  panY: number;
+}
+
+/** The palette entry bands are drawn in: color 0 when the first palette makes it black, else its darkest color. */
+export function bandColor(pal: Uint8Array): number {
+  let best = 0;
+  let bl = Infinity;
+  for (let c = 0; c < 256; c++) {
+    const l = (pal[c * 3] & 63) + (pal[c * 3 + 1] & 63) + (pal[c * 3 + 2] & 63);
+    if (l < bl) [best, bl] = [c, l];
+    if (c === 0 && l === 0) return 0;
+  }
+  return best;
+}
+
+/**
+ * Lossy (lossless when nothing is set): the picture stays the same size, but only the area inside
+ * the bands shows it. The bands are one solid color (`bandColor`) and never change after the first
+ * frame, so they cost next to nothing. At zoom 1 the bands just cover the picture's edges. Otherwise the picture is scaled by `zoom` about its center, moved by
+ * the pan, into the middle of that area: smaller by averaging the pixels it covers into the nearest
+ * color of the frame's own palette, larger by repeating pixels (no new colors, edges stay crisp).
+ */
+export function frameStep(orig: FliFrames, o: FrameOptions, base: FliEncodeOptions = {}): StepResult {
+  const { width: w, height: h } = orig;
+  const clamp = (v: number, hi: number) => Math.max(0, Math.min(hi, Math.round(v) || 0));
+  const left = clamp(o.left, w - 1);
+  const right = clamp(o.right, w - 1 - left);
+  const top = clamp(o.top, h - 1);
+  const bottom = clamp(o.bottom, h - 1 - top);
+  const z = Math.max(0.05, Math.min(8, o.zoom || 1));
+  const identity = !left && !right && !top && !bottom && z === 1 && !o.panX && !o.panY;
+  if (identity) return result('frame it', true, orig, orig, {}, base);
+  const band = bandColor(orig.palettes[0]);
+  const iw = w - left - right;
+  const ih = h - top - bottom;
+  // at 100% with no pan the bands only cover the picture's edges; any other zoom centers it in the area
+  const mask = z === 1 && !o.panX && !o.panY;
+  const icx = mask ? w / 2 : left + iw / 2;
+  const icy = mask ? h / 2 : top + ih / 2;
+  const frames = orig.frames.map((src, fi) => {
+    const out = new Uint8Array(w * h).fill(band);
+    const pal = orig.palettes[fi];
+    const used = new Uint8Array(256);
+    for (let x = 0; x < src.length; x++) used[src[x]] = 1;
+    const cands = [...used.keys()].filter((c) => used[c]);
+    const cache = new Map<number, number>();
+    const rgb = (c: number, j: number) => pal[c * 3 + j] & 63;
+    for (let y = 0; y < ih; y++) {
+      const dy = top + y;
+      // the rows of the original this row covers
+      const sy0 = h / 2 + o.panY + (dy - icy) / z;
+      const sy1 = sy0 + 1 / z;
+      for (let x = 0; x < iw; x++) {
+        const dx = left + x;
+        const sx0 = w / 2 + o.panX + (dx - icx) / z;
+        const sx1 = sx0 + 1 / z;
+        if (z >= 1) {
+          const sx = Math.floor(sx0 + 0.5 / z);
+          const sy = Math.floor(sy0 + 0.5 / z);
+          if (sx >= 0 && sx < w && sy >= 0 && sy < h) out[dy * w + dx] = src[sy * w + sx];
+          continue;
+        }
+        const ax = Math.max(0, Math.floor(sx0));
+        const bx = Math.min(w - 1, Math.ceil(sx1) - 1);
+        const ay = Math.max(0, Math.floor(sy0));
+        const by = Math.min(h - 1, Math.ceil(sy1) - 1);
+        if (ax > bx || ay > by) continue;
+        const first = src[ay * w + ax];
+        let same = true;
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        let n = 0;
+        for (let yy = ay; yy <= by; yy++)
+          for (let xx = ax; xx <= bx; xx++) {
+            const c = src[yy * w + xx];
+            if (c !== first) same = false;
+            r += rgb(c, 0);
+            g += rgb(c, 1);
+            b += rgb(c, 2);
+            n++;
+          }
+        if (same) {
+          out[dy * w + dx] = first;
+          continue;
+        }
+        const key = (Math.round(r / n) << 12) | (Math.round(g / n) << 6) | Math.round(b / n);
+        let hit = cache.get(key);
+        if (hit === undefined) {
+          let bd = Infinity;
+          hit = first;
+          for (const c of cands) {
+            const d = (rgb(c, 0) - (key >> 12)) ** 2 + (rgb(c, 1) - ((key >> 6) & 63)) ** 2 + (rgb(c, 2) - (key & 63)) ** 2;
+            if (d < bd) [hit, bd] = [c, d];
+          }
+          cache.set(key, hit);
+        }
+        out[dy * w + dx] = hit;
+      }
+    }
+    return out;
+  });
+  return result('frame it', false, orig, { ...orig, frames }, {}, base);
 }

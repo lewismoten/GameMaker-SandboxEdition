@@ -3,6 +3,7 @@
 // re-encoded result, and applies it (or, for a game open to look at only, makes a copy). The work
 // runs in a Web Worker (shrinkClient.ts), restarted on each change, so typing never blocks.
 import { decodeFliFrames, type FliFrames } from '@lewismoten/gamemaker-sandbox-engine/formats/fliFrames';
+import { bandColor } from '@lewismoten/gamemaker-sandbox-tools/kit/fliShrink';
 import type { FliReport } from '@lewismoten/gamemaker-sandbox-tools/kit/fliShrink';
 import { paintIndexed } from '../../../core/draw';
 import type { Project } from '../../../core/project';
@@ -21,31 +22,68 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
   const opts: ShrinkOptions = { ...DEFAULT_OPTIONS };
   let outcome: ShrinkOutcome | undefined;
   let running: { cancel(): void } | undefined;
-  let stopPlay = () => undefined as void;
 
   const reportBox = h('div', { class: 'shrink-report', 'aria-busy': 'true' }, 'Reading the file…');
   const stats = h('div', { class: 'shrink-stats', role: 'status', 'aria-live': 'polite' }, 'Working…');
-  const origCanvas = h('canvas', { class: 'pixel', 'aria-label': 'Original, playing' });
-  const newCanvas = h('canvas', { class: 'pixel', 'aria-label': 'Smaller result, playing' });
+  const origCanvas = h('canvas', { class: 'pixel', 'aria-label': 'Original' });
+  const newCanvas = h('canvas', { class: 'pixel', 'aria-label': 'Smaller result' });
+  const newCaption = h('figcaption', null, 'Smaller');
   const applyBtn = h('button', { class: 'primary', disabled: true }, locked ? 'Make a smaller copy' : 'Use the smaller file');
 
-  const play = (orig: FliFrames, next: FliFrames) => {
-    stopPlay();
-    let raf = 0;
-    const start = performance.now();
-    const len = (a: FliFrames) => (a.frames.length * Math.max(1, a.speed) * 1000) / RETRACE;
-    const at = (a: FliFrames, t: number) => Math.min(a.frames.length - 1, Math.floor(((t % len(a)) / 1000) * (RETRACE / Math.max(1, a.speed))));
-    const tick = (now: number) => {
-      const t = Math.max(0, now - start);
-      const o = orig.frames[at(orig, t)];
-      const n = next.frames[at(next, t)];
-      paintIndexed(origCanvas, o.pixels, orig.width, orig.height, o.palette);
+  // ---- the preview: both sides on one clock, looping, from the first moment (the original plays
+  // while the result is made, and keeps playing while it is made again) ----
+  const origFrames = decodeFliFrames(original);
+  let next: FliFrames | undefined;
+  let pos = 0; // ms into the animation
+  const still = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let playing = !still;
+  const wait = (a: FliFrames) => (Math.max(1, a.speed) * 1000) / RETRACE;
+  const total = (a: FliFrames) => a.frames.length * wait(a);
+  const frameAt = (a: FliFrames, t: number) => Math.max(0, Math.min(a.frames.length - 1, Math.floor((t % total(a)) / wait(a))));
+  const playBtn = h('button', { type: 'button', class: 'shrink-play' });
+  const scrub = h('input', { type: 'range', min: 0, max: Math.max(0, origFrames.frames.length - 1), value: 0, 'aria-label': 'Frame' });
+  const counter = h('span', { class: 'shrink-counter' });
+  const state = h('span', { class: 'shrink-state' });
+  const paint = () => {
+    const i = frameAt(origFrames, pos);
+    const o = origFrames.frames[i];
+    paintIndexed(origCanvas, o.pixels, origFrames.width, origFrames.height, o.palette);
+    if (next) {
+      const n = next.frames[frameAt(next, pos)];
       paintIndexed(newCanvas, n.pixels, next.width, next.height, n.palette);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    stopPlay = () => cancelAnimationFrame(raf);
+    }
+    scrub.value = String(i);
+    counter.textContent = `Frame ${i + 1} of ${origFrames.frames.length}`;
   };
+  const syncPlay = () => {
+    playBtn.textContent = playing ? '⏸ Pause' : '▶ Play';
+    state.textContent = playing ? 'Playing, looping' : 'Paused';
+    state.classList.toggle('on', playing);
+  };
+  let raf = 0;
+  let last = 0;
+  const tick = (now: number) => {
+    if (playing) {
+      pos = (pos + Math.max(0, Math.min(250, now - (last || now)))) % total(origFrames);
+      paint();
+    }
+    last = now;
+    raf = requestAnimationFrame(tick);
+  };
+  const stopPlay = () => cancelAnimationFrame(raf);
+  playBtn.addEventListener('click', () => {
+    playing = !playing;
+    syncPlay();
+  });
+  scrub.addEventListener('input', () => {
+    playing = false;
+    pos = Number(scrub.value) * wait(origFrames);
+    syncPlay();
+    paint();
+  });
+  syncPlay();
+  paint();
+  raf = requestAnimationFrame(tick);
 
   const showOutcome = (o: ShrinkOutcome) => {
     outcome = o;
@@ -54,19 +92,21 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
       stats,
       h('strong', null, describeSaved(o.before, o.bytes.length)),
       h('span', { class: `shrink-level shrink-${v.level}` }, o.lossless ? ' Lossless: every pixel and color is the same.' : ` ${v.words}`),
-      o.lossless ? '' : h('small', null, ' (an upper bound, from the steps added together)'),
       h('small', null, 'Each step against re-encoding the one before it:'),
       h('ul', null, ...o.steps.map((s) => h('li', null, `${s.name}: ${s.savedBytes >= 0 ? 'saves' : 'adds'} ${kb(Math.abs(s.savedBytes))}`))),
     );
     applyBtn.disabled = o.bytes.length >= o.before;
     applyBtn.title = applyBtn.disabled ? 'The result is no smaller, so there is nothing to apply' : '';
-    play(decodeFliFrames(original), decodeFliFrames(o.bytes));
+    next = decodeFliFrames(o.bytes);
+    newCaption.textContent = 'Smaller';
+    paint();
   };
 
   const run = () => {
     running?.cancel();
     applyBtn.disabled = true;
     stats.setAttribute('aria-busy', 'true');
+    newCaption.textContent = next ? 'Smaller (updating…)' : 'Smaller (working…)';
     const job = startShrink(original, stepsFor(opts));
     running = job;
     job.done.then(
@@ -87,9 +127,74 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
     later();
   };
 
+  // ---- Frame it: the bands drawn over the original, each edge draggable and keyboard operable ----
+  type Edge = 'top' | 'bottom' | 'left' | 'right';
+  const W = origFrames.width;
+  const H = origFrames.height;
+  const stage = h('div', { class: 'shrink-stage' }, origCanvas);
+  const shades = Object.fromEntries(
+    (['top', 'bottom', 'left', 'right'] as Edge[]).map((e) => [e, h('div', { class: `shrink-shade ${e}`, 'aria-hidden': 'true' })]),
+  ) as unknown as Record<Edge, HTMLElement>;
+  const handles = {} as Record<Edge, HTMLElement>;
+  const limit = (e: Edge) =>
+    (e === 'top' || e === 'bottom' ? H : W) - 1 - (e === 'top' ? opts.bottom : e === 'bottom' ? opts.top : e === 'left' ? opts.right : opts.left);
+  const setEdge = (e: Edge, v: number) => set({ lossy: true, [e]: Math.max(0, Math.min(limit(e), Math.round(v))) });
+  const names: Record<Edge, string> = { top: 'Top band', bottom: 'Bottom band', left: 'Left band', right: 'Right band' };
+  for (const e of ['top', 'bottom', 'left', 'right'] as Edge[]) {
+    const vertical = e === 'left' || e === 'right';
+    const hd = h('div', {
+      class: `shrink-handle ${e}`,
+      role: 'slider',
+      tabIndex: 0,
+      'aria-label': `${names[e]} edge, in pixels`,
+      'aria-orientation': vertical ? 'vertical' : 'horizontal',
+      'aria-valuemin': '0',
+      'aria-valuemax': String((vertical ? W : H) - 1),
+    });
+    hd.addEventListener('keydown', (ev) => {
+      const step = ev.shiftKey ? 10 : 1;
+      const grow = (vertical ? 'ArrowRight' : 'ArrowDown') === ev.key ? 1 : (vertical ? 'ArrowLeft' : 'ArrowUp') === ev.key ? -1 : 0;
+      const dir = grow * (e === 'bottom' || e === 'right' ? -1 : 1);
+      if (!grow) return;
+      ev.preventDefault();
+      setEdge(e, opts[e] + dir * step);
+    });
+    hd.addEventListener('pointerdown', (ev) => {
+      ev.preventDefault();
+      hd.setPointerCapture(ev.pointerId);
+      hd.focus();
+      const move = (m: PointerEvent) => {
+        const r = origCanvas.getBoundingClientRect();
+        const px = vertical ? ((m.clientX - r.left) / r.width) * W : ((m.clientY - r.top) / r.height) * H;
+        setEdge(e, e === 'top' || e === 'left' ? px : (vertical ? W : H) - px);
+      };
+      const up = () => {
+        hd.removeEventListener('pointermove', move);
+        hd.removeEventListener('pointerup', up);
+      };
+      hd.addEventListener('pointermove', move);
+      hd.addEventListener('pointerup', up);
+    });
+    handles[e] = hd;
+  }
+  stage.append(...Object.values(shades), ...Object.values(handles));
+  const placeEdges = () => {
+    const pct = (v: number, of: number) => `${(v / of) * 100}%`;
+    for (const e of ['top', 'bottom', 'left', 'right'] as Edge[]) {
+      const vertical = e === 'left' || e === 'right';
+      const size = pct(opts[e], vertical ? W : H);
+      shades[e].style[vertical ? 'width' : 'height'] = size;
+      handles[e].style[e] = `calc(${size} - 12px)`;
+      handles[e].setAttribute('aria-valuenow', String(opts[e]));
+      handles[e].setAttribute('aria-valuetext', `${opts[e]} pixels`);
+    }
+  };
+
   // ---- controls ----
   const lossyBox = h('input', { type: 'checkbox' });
   lossyBox.addEventListener('change', () => set({ lossy: lossyBox.checked }));
+  const oneBox = h('input', { type: 'checkbox', 'aria-describedby': 'shrink-onePalette' });
+  oneBox.addEventListener('change', () => set({ onePalette: oneBox.checked }));
   const dropBox = h('input', { type: 'checkbox' });
   dropBox.addEventListener('change', () => set({ dropFrames: dropBox.checked }));
   const num = (key: 'maxColors' | 'snapTolerance' | 'ditherTolerance' | 'holdTolerance', label: string, hint: string, max: number, on: number) => {
@@ -108,9 +213,78 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
     num('ditherTolerance', 'Reduce dithering', '0 = off; else flatten speckle between shades this close.', 255, GENTLE.ditherTolerance),
     num('holdTolerance', 'Hold still areas', '0 = off; else a pixel that moves this little stays put.', 255, GENTLE.holdTolerance),
   ];
+  const edgeInputs = (['top', 'bottom', 'left', 'right'] as const).map((e) => {
+    const input = h('input', { type: 'number', min: 0, max: e === 'top' || e === 'bottom' ? H - 1 : W - 1, step: 1, value: '0' });
+    input.addEventListener('change', () => setEdge(e, Number(input.value) || 0));
+    return { e, input, label: h('label', { class: 'shrink-field' }, h('span', null, `${names[e]} (px)`), input, h('small', null, '')) };
+  });
+  const zoomIn = h('input', { type: 'range', min: 25, max: 400, step: 5, value: '100', 'aria-describedby': 'shrink-zoomnote' });
+  const zoomOut = h('output', { class: 'shrink-zoomval', 'aria-live': 'off' }, '100%');
+  zoomIn.addEventListener('input', () => set({ zoom: Number(zoomIn.value) / 100 }));
+  const panFields = (['panX', 'panY'] as const).map((k) => {
+    const input = h('input', { type: 'number', step: 1, value: '0' });
+    input.addEventListener('change', () => set({ [k]: Math.round(Number(input.value) || 0) }));
+    return {
+      k,
+      input,
+      label: h(
+        'label',
+        { class: 'shrink-field' },
+        h('span', null, k === 'panX' ? 'Move picture sideways (px)' : 'Move picture up/down (px)'),
+        input,
+        h('small', null, ''),
+      ),
+    };
+  });
+  const band = bandColor(origFrames.frames[0].palette);
+  const frameBox = h(
+    'fieldset',
+    { class: 'shrink-frame' },
+    h('legend', null, 'Frame it'),
+    h(
+      'small',
+      { id: 'shrink-zoomnote', class: 'hint' },
+      `The animation stays ${W}×${H}. Solid bands at the edges (drag them on the Original, use the arrow keys, or type pixels) never change after the first frame, so they cost almost nothing. ${band === 0 ? 'Bands use color 0, which is black here.' : `Color 0 is not black here, so the bands use color ${band}, the darkest.`} At 100% the bands just cover the picture's edges. Any other zoom centers the picture in the area between them, and “Fit to bands” sizes it to fill that area. Zoom scales the picture: smaller averages pixels into the nearest of its own colors; larger repeats pixels.`,
+    ),
+    ...edgeInputs.map((x) => x.label),
+    h('label', { class: 'shrink-field shrink-zoom' }, h('span', null, 'Zoom'), zoomIn, zoomOut),
+    h(
+      'div',
+      { class: 'toolbar' },
+      h(
+        'button',
+        {
+          type: 'button',
+          title: 'Shrink the whole picture to fill the area between the bands',
+          onclick: () =>
+            set({
+              lossy: true,
+              zoom: Math.max(0.25, Math.min(1, Math.floor(Math.min((W - opts.left - opts.right) / W, (H - opts.top - opts.bottom) / H) * 20) / 20)),
+            }),
+        },
+        'Fit to bands',
+      ),
+    ),
+    ...panFields.map((x) => x.label),
+  );
   function syncControls() {
+    placeEdges();
+    for (const x of edgeInputs) {
+      x.input.value = String(opts[x.e]);
+      x.input.disabled = !opts.lossy;
+      handles[x.e].setAttribute('aria-disabled', String(!opts.lossy));
+    }
+    zoomIn.value = String(Math.round(opts.zoom * 100));
+    zoomIn.disabled = !opts.lossy;
+    zoomOut.textContent = `${Math.round(opts.zoom * 100)}%`;
+    for (const x of panFields) {
+      x.input.value = String(opts[x.k]);
+      x.input.disabled = !opts.lossy;
+    }
     lossyBox.checked = opts.lossy;
     dropBox.checked = opts.dropFrames;
+    oneBox.checked = opts.onePalette;
+    oneBox.disabled = !opts.lossy;
     dropBox.disabled = !opts.lossy;
     for (const n of nums) {
       const key = n.input.getAttribute('aria-describedby')!.slice(7) as keyof ShrinkOptions;
@@ -181,6 +355,13 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
             h('label', { class: 'check' }, lossyBox, h('span', null, 'Allow lossy changes (the pictures may differ a little)')),
             h('p', { class: 'hint' }, 'Lossless always runs: palette changes only for the colors a frame draws, with the same pictures.'),
             ...nums.map((n) => n.label),
+            frameBox,
+            h('label', { class: 'check' }, oneBox, h('span', null, 'One palette for the whole animation')),
+            h(
+              'small',
+              { id: 'shrink-onePalette', class: 'hint' },
+              'An .FLI changes its colors with palette chunks, as in a fade. This picks one palette (Most colors sets how many, up to 256) for every frame and drops those chunks, so fades become pixel changes. That can cost more bytes than it saves: the saving shown says which.',
+            ),
             h('label', { class: 'check' }, dropBox, h('span', null, 'Keep every other frame (each shown twice as long, so it lasts the same time)')),
             h('div', { class: 'toolbar' }, gentle, lossless),
           ),
@@ -189,11 +370,12 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
           'section',
           { class: 'shrink-right' },
           h('h3', null, 'Preview'),
+          h('div', { class: 'shrink-transport' }, playBtn, scrub, counter, state),
           h(
             'div',
             { class: 'shrink-preview' },
-            h('figure', null, origCanvas, h('figcaption', null, 'Original')),
-            h('figure', null, newCanvas, h('figcaption', null, 'Smaller')),
+            h('figure', null, stage, h('figcaption', null, 'Original (drag the edges to frame it)')),
+            h('figure', null, newCanvas, newCaption),
           ),
           stats,
         ),

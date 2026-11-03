@@ -260,7 +260,9 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   `fliReport`, the options (lossless always; lossy adds max colors, snap near colors, reduce
   dithering, hold still areas and keep every other frame), and the original beside the real
   re-encoded result, with KB and % saved and `describeVisibility` words. `shrinkOptions.ts` maps
-  options to `fliShrink` steps; `shrinkRun.ts` runs them; `shrinkWorker.ts` and `shrinkClient.ts`
+  options to `fliShrink` steps (also one palette for the whole animation, and Frame it: solid bands
+  you drag on the original, plus zoom and pan); the preview plays both sides looping with a shared
+  Play/Pause and frame scrubber; `shrinkRun.ts` runs them; `shrinkWorker.ts` and `shrinkClient.ts`
   do it off the page's thread. Apply writes the bytes as one undo step; a look-only game gets a
   copy in My Games (`disk/makeOptimizedCopy.ts`).
 - **Scene maker.** The animation editor's Scene maker (`editors/animation/scene/`) draws an `.FLI`

@@ -9,8 +9,33 @@ describe('stepsFor', () => {
     expect(stepsFor({ ...DEFAULT_OPTIONS, dropFrames: true, maxColors: 16 })).toEqual([{ step: 'sparsePalettes' }]);
   });
   it('orders the lossy steps and skips those left off', () => {
-    const o = { lossy: true, maxColors: 32, dropFrames: true, snapTolerance: 8, ditherTolerance: 0, holdTolerance: 4 };
+    const o = {
+      lossy: true,
+      onePalette: false,
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      zoom: 1,
+      panX: 0,
+      panY: 0,
+      maxColors: 32,
+      dropFrames: true,
+      snapTolerance: 8,
+      ditherTolerance: 0,
+      holdTolerance: 4,
+    };
     expect(stepsFor(o).map((s) => s.step)).toEqual(['sparsePalettes', 'holdStill', 'snapColors', 'maxColors', 'dropFrames']);
+  });
+  it('one palette replaces the color cap and takes its count', () => {
+    const o = { ...DEFAULT_OPTIONS, lossy: true, onePalette: true, maxColors: 48 };
+    expect(stepsFor(o)).toEqual([{ step: 'sparsePalettes' }, { step: 'onePalette', colors: 48 }]);
+    expect(stepsFor({ ...o, maxColors: 0 })[1]).toEqual({ step: 'onePalette', colors: 256 });
+  });
+  it('frame it comes first among the lossy steps, only when something is set', () => {
+    expect(stepsFor({ ...DEFAULT_OPTIONS, lossy: true }).map((s) => s.step)).toEqual(['sparsePalettes']);
+    const o = { ...DEFAULT_OPTIONS, lossy: true, top: 8, zoom: 0.9, holdTolerance: 4 };
+    expect(stepsFor(o).map((s) => s.step)).toEqual(['sparsePalettes', 'frame', 'holdStill']);
   });
   it('a 256 color cap is no cap', () => {
     expect(stepsFor({ ...DEFAULT_OPTIONS, lossy: true, maxColors: 256 })).toHaveLength(1);

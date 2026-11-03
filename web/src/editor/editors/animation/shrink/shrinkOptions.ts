@@ -8,6 +8,16 @@ export interface ShrinkOptions {
   lossy: boolean;
   /** 0 = off, else the most colors any picture may use (2 to 256). */
   maxColors: number;
+  /** One palette for the whole animation (no color changes after the first frame); `maxColors` then sets how many colors it has (0 = 256). */
+  onePalette: boolean;
+  /** Frame it: solid bands (pixels) and the picture's zoom (1 = as is) and pan inside them. */
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+  zoom: number;
+  panX: number;
+  panY: number;
   /** Keep every other frame and show each twice as long. */
   dropFrames: boolean;
   /** 0 = off, else near colors within this many (0 to 255 per channel) merge. */
@@ -19,7 +29,22 @@ export interface ShrinkOptions {
 }
 
 /** Starts lossless, with each lossy step set to a gentle strength for when it is switched on. */
-export const DEFAULT_OPTIONS: ShrinkOptions = { lossy: false, maxColors: 0, dropFrames: false, snapTolerance: 0, ditherTolerance: 0, holdTolerance: 0 };
+export const DEFAULT_OPTIONS: ShrinkOptions = {
+  lossy: false,
+  maxColors: 0,
+  onePalette: false,
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+  zoom: 1,
+  panX: 0,
+  panY: 0,
+  dropFrames: false,
+  snapTolerance: 0,
+  ditherTolerance: 0,
+  holdTolerance: 0,
+};
 
 /** What each control starts at when the author turns it on. */
 export const GENTLE = { maxColors: 64, snapTolerance: 8, ditherTolerance: 24, holdTolerance: 6 } as const;
@@ -28,10 +53,13 @@ export const GENTLE = { maxColors: 64, snapTolerance: 8, ditherTolerance: 24, ho
 export function stepsFor(o: ShrinkOptions): ShrinkStep[] {
   const steps: ShrinkStep[] = [{ step: 'sparsePalettes' }];
   if (!o.lossy) return steps;
+  if (o.top || o.bottom || o.left || o.right || o.zoom !== 1 || o.panX || o.panY)
+    steps.push({ step: 'frame', top: o.top, bottom: o.bottom, left: o.left, right: o.right, zoom: o.zoom, panX: o.panX, panY: o.panY });
   if (o.holdTolerance > 0) steps.push({ step: 'holdStill', tolerance: o.holdTolerance });
   if (o.snapTolerance > 0) steps.push({ step: 'snapColors', tolerance: o.snapTolerance });
   if (o.ditherTolerance > 0) steps.push({ step: 'flattenDither', tolerance: o.ditherTolerance });
-  if (o.maxColors >= 2 && o.maxColors < 256) steps.push({ step: 'maxColors', colors: Math.round(o.maxColors) });
+  if (o.onePalette) steps.push({ step: 'onePalette', colors: o.maxColors >= 2 ? Math.min(256, Math.round(o.maxColors)) : 256 });
+  else if (o.maxColors >= 2 && o.maxColors < 256) steps.push({ step: 'maxColors', colors: Math.round(o.maxColors) });
   if (o.dropFrames) steps.push({ step: 'dropFrames' });
   return steps;
 }

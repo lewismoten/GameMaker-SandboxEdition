@@ -8,7 +8,11 @@ import {
   fliReport,
   flattenDitherStep,
   holdStillStep,
+  bandColor,
+  chainVisibility,
+  frameStep,
   maxColorsStep,
+  onePaletteStep,
   shrinkFrames,
   snapColorsStep,
   type FliFrames,
@@ -115,5 +119,84 @@ describe('shrink steps', () => {
   it('steps chain, each on the one before', () => {
     const out = shrinkFrames(s, [{ step: 'sparsePalettes' }, { step: 'dropFrames' }]);
     expect(out[1].encode.sparsePalettes).toBe(true);
+  });
+
+  it('one palette: no COLOR chunk after frame 0, same frames and timing, and it plays back as measured', () => {
+    const r = onePaletteStep(s, { colors: 256 });
+    const bytes = encodeFrames(r.frames, r.encode);
+    const a = parseFli(bytes);
+    expect(a.frameCount).toBe(s.frames.length);
+    expect(a.speed).toBe(s.speed);
+    const dv = new DataView(bytes.buffer, bytes.byteOffset);
+    let p = 128;
+    for (let f = 0; f < a.frameCount; f++) {
+      const n = dv.getUint16(p + 6, true);
+      let q = p + 16;
+      for (let c = 0; c < n; c++) {
+        if (f > 0) expect([11, 4]).not.toContain(dv.getUint16(q + 4, true));
+        q += dv.getUint32(q, true);
+      }
+      p += dv.getUint32(p, true);
+    }
+    // the player's screen matches the step's frames
+    const shown = play(bytes);
+    const rgb = (px: Uint8Array, pal: Uint8Array, x: number) => [0, 1, 2].map((j) => pal[px[x] * 3 + j] & 63).join();
+    for (let f = 0; f < s.frames.length; f++) {
+      for (const x of [0, 4, 8 * f + 40 * 320 + 3, 12345]) expect(rgb(shown[f].px, shown[f].pal, x)).toBe(rgb(r.frames.frames[f], r.frames.palettes[f], x));
+    }
+  });
+  it('one palette is lossless when the colors fit, and fewer colors cost visibility', () => {
+    expect(onePaletteStep(s, { colors: 256 }).lossless).toBe(true);
+    const few = onePaletteStep(s, { colors: 3 });
+    expect(few.lossless).toBe(false);
+    expect(new Set(few.frames.frames.flatMap((f) => [...new Set(f)])).size).toBeLessThanOrEqual(3);
+  });
+  it('chainVisibility compares a dropped-frame result with the original', () => {
+    const d = dropFramesStep(s);
+    const v = chainVisibility(s, d.frames);
+    expect(v.worst).toBeGreaterThan(0);
+    expect(chainVisibility(s, s).changedShare).toBe(0);
+  });
+
+  it('frame it: nothing set is the same picture', () => {
+    const r = frameStep(s, { top: 0, bottom: 0, left: 0, right: 0, zoom: 1, panX: 0, panY: 0 });
+    expect(r.lossless).toBe(true);
+    expect(r.frames.frames).toEqual(s.frames);
+  });
+  it('frame it: bands are exactly the band color, frames and timing stay, and it round trips', () => {
+    const r = frameStep(s, { top: 20, bottom: 30, left: 16, right: 40, zoom: 1, panX: 0, panY: 0 });
+    const band = bandColor(s.palettes[0]);
+    expect(r.frames.frames.length).toBe(s.frames.length);
+    expect(r.frames.speed).toBe(s.speed);
+    let bad = 0;
+    r.frames.frames.forEach((f, fi) => {
+      for (let y = 0; y < 200; y++)
+        for (let x = 0; x < 320; x++) {
+          const inside = y >= 20 && y < 170 && x >= 16 && x < 280;
+          if (inside ? f[y * 320 + x] !== s.frames[fi][y * 320 + x] : f[y * 320 + x] !== band) bad++;
+        }
+    });
+    expect(bad).toBe(0);
+    const back = decodeFli(encodeFrames(r.frames, r.encode));
+    expect(back.frames).toEqual(r.frames.frames);
+    expect(back.speed).toBe(s.speed);
+    expect(r.savedBytes).toBeGreaterThan(0);
+  });
+  it('frame it: at zoom 1 the picture stays put under the bands, at other zooms it is centered in the area', () => {
+    const r = frameStep(s, { top: 0, bottom: 0, left: 100, right: 0, zoom: 1, panX: 0, panY: 0 });
+    expect(r.frames.frames[3][50 * 320 + 150]).toBe(s.frames[3][50 * 320 + 150]);
+    const z = frameStep(s, { top: 0, bottom: 0, left: 100, right: 0, zoom: 1.0001, panX: 0, panY: 0 });
+    // the original's middle column sits in the middle of the area (x = 100 + 110)
+    expect(z.frames.frames[3][100 * 320 + 210]).toBe(s.frames[3][100 * 320 + 160]);
+  });
+  it('frame it: zoom out averages into existing colors, zoom in repeats pixels', () => {
+    const small = frameStep(s, { top: 0, bottom: 0, left: 0, right: 0, zoom: 0.5, panX: 0, panY: 0 });
+    const used = new Set(s.frames.flatMap((f) => [...new Set(f)]));
+    for (const f of small.frames.frames) for (const c of new Set(f)) expect(used.has(c) || c === bandColor(s.palettes[0])).toBe(true);
+    expect(small.frames.frames[0][0]).toBe(bandColor(s.palettes[0]));
+    const big = frameStep(s, { top: 0, bottom: 0, left: 0, right: 0, zoom: 2, panX: 0, panY: 0 });
+    // a 2x zoom shows each pixel twice across: neighbors in a pair match
+    const f = big.frames.frames[0];
+    for (let x = 0; x < 320; x += 2) expect(f[100 * 320 + x]).toBe(f[100 * 320 + x + 1]);
   });
 });
