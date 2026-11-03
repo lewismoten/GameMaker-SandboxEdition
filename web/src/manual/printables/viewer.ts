@@ -5,7 +5,7 @@ import { h } from '../../editor/core/ui';
 import { centerSpread, spreadAt, stepSpread, bookletSheets } from './imposition';
 import { PAGE_H, PAGE_W, pageElement, type BookPage } from './manualPages';
 import type { Sheet } from './kit';
-import { RedFilm, RedLens } from './redFilm';
+import { RedFilm, RedLens, flushRedCode } from './redFilm';
 import { decorateBbsName } from '../../retro/bbs/bbsName';
 import { crispShots, enlarge, isShot, zoomOpen } from './crisp';
 import { chapterPicker, chapterStops, findStop, linkContents, stopAt, type ChapterStop } from './chapterJump';
@@ -455,6 +455,7 @@ export function openBox(title: string, pages: BookPage[], items: BoxItem[], opti
           else for (const s of await it.render()) out.push(sheetPage(s));
       }
       printRoot.replaceChildren(...out);
+      flushRedCode(); // the hidden answers are drawn one per task otherwise
       document.documentElement.classList.add('gmb-printing');
       await Promise.all([...printRoot.querySelectorAll('img')].map((i) => i.decode().catch(() => undefined)));
       window.print();

@@ -107,14 +107,20 @@ function camouflage(c: CanvasRenderingContext2D, rnd: () => number, w: number, h
   );
 }
 
+/** How wide a word's picture is, in pixels (the word and a little room), without drawing it. */
+function wordWidth(word: string): number {
+  const c0 = document.createElement('canvas').getContext('2d');
+  if (!c0) return 0;
+  c0.font = FONT;
+  return Math.ceil(c0.measureText(word).width + PX * 0.3);
+}
+
 /** One word (with the space after it) hidden in noise, as a canvas `PX` pixels to the em. */
 function hiddenWord(word: string, seed = fnv1a(word), ink = CYAN_INK): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
-  const c0 = canvas.getContext('2d');
-  if (!c0) return canvas;
-  c0.font = FONT;
+  if (!canvas.getContext('2d')) return canvas;
   const pad = PX * 0.3;
-  const w = Math.ceil(c0.measureText(word).width + pad);
+  const w = wordWidth(word);
   const hh = Math.ceil(PX * LINE);
   canvas.width = w;
   canvas.height = hh;
@@ -136,29 +142,55 @@ function hiddenWord(word: string, seed = fnv1a(word), ink = CYAN_INK): HTMLCanva
   return canvas;
 }
 
+/** Pictures waiting to be drawn, one word per task: a hint book's page has dozens, and each costs tens of milliseconds. */
+const drawing: (() => void)[] = [];
+
+function drawNext(): void {
+  drawing.shift()?.();
+  if (drawing.length) setTimeout(drawNext, 0);
+}
+
+/** Draws every waiting picture now (before printing, which cannot wait for the next task). */
+export function flushRedCode(): void {
+  while (drawing.length) drawing.shift()!();
+}
+
 /** An answer hidden among red lines: each word is its own picture so the answer wraps like text
- * (one picture for the screen, one in a stronger cyan for printing). */
+ * (one picture for the screen, one in a stronger cyan for printing). The pictures are drawn one
+ * per task after the answer is built, so a page of answers doesn't hold up the click that opened it. */
 export function redCode(text: string): HTMLElement {
   const words = text.split(/\s+/).filter(Boolean);
   const base = fnv1a(text);
-  const picture = (word: string, seed: number, ink: string, cls: string) => {
-    const cv = hiddenWord(word, seed, ink);
-    const img = h('img', { class: `rf-word ${cls}`, alt: '', draggable: false, src: cv.toDataURL('image/png') });
-    img.style.width = `${cv.width / PX}em`;
-    img.style.height = `${LINE}em`;
-    return img;
-  };
-  const box = h(
-    'span',
-    { class: 'rf-code', role: 'img', 'aria-label': 'Hidden answer: lay the red film over it' },
-    ...words.flatMap((word, i) => [picture(word, base + i * 7919, CYAN_INK, 'rf-screen'), picture(word, base + i * 7919, PRINT_CYAN_INK, 'rf-print')]),
+  const imgs = words.flatMap((word, i) =>
+    [
+      [CYAN_INK, 'rf-screen'],
+      [PRINT_CYAN_INK, 'rf-print'],
+    ].map(([ink, cls]) => ({ word, seed: base + i * 7919, ink, cls, img: h('img', { class: `rf-word ${cls}`, alt: '', draggable: false }) })),
   );
+  for (const { word, img } of imgs) {
+    img.style.width = `${wordWidth(word) / PX}em`; // the room is kept, so the words don't jump when drawn
+    img.style.height = `${LINE}em`;
+  }
+  const box = h('span', { class: 'rf-code', role: 'img', 'aria-label': 'Hidden answer: lay the red film over it' }, ...imgs.map((p) => p.img));
   // the box is as wide as the column, so the space after the last word is filled with the
   // same noise (no letters in it) and every answer box looks alike, whatever its length
-  const tile = filler();
-  if (tile) {
-    box.style.backgroundImage = `url(${tile.src})`;
-    box.style.backgroundSize = `${tile.width / PX}em ${LINE}em`;
+  const fillBackground = () => {
+    const tile = filler();
+    if (tile) {
+      box.style.backgroundImage = `url(${tile.src})`;
+      box.style.backgroundSize = `${tile.width / PX}em ${LINE}em`;
+    }
+  };
+  const queue = (job: () => void) => {
+    drawing.push(job);
+    if (drawing.length === 1) setTimeout(drawNext, 0);
+  };
+  queue(fillBackground);
+  for (const { word, seed, ink, img } of imgs) {
+    queue(() => {
+      const cv = hiddenWord(word, seed, ink);
+      img.src = cv.toDataURL('image/png');
+    });
   }
   return box;
 }
