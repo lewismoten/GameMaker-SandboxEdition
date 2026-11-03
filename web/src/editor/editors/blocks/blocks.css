@@ -339,3 +339,36 @@ dialog.modal label.recolor-check {
 .block-choice[aria-pressed='true'] {
   outline: 2px solid var(--accent, currentColor);
 }
+
+/* Erase and Darken are the right button for a finger: shown only without a mouse */
+.blk-paint .toolbar button.blk-touch-only {
+  display: none;
+}
+/* a finger (44px targets in touch mode): tools, actions, the shift arrows, tabs and buttons in the
+   side panels. The 256 color cells stay 24px (a dense grid; "Bigger colors" opens 32px+ cells). */
+@media (hover: none) and (pointer: coarse) {
+  .blk-paint .toolbar button.blk-touch-only {
+    display: inline-flex;
+  }
+  .blk-paint .toolbar,
+  .blk-shift {
+    gap: 6px;
+  }
+  .blk-paint button,
+  .blk-paint select,
+  .blk-paint summary,
+  .blk-side button:not(.swatches button),
+  .blk-side summary,
+  .blk-side input,
+  .blk-side .color-choice input,
+  .blk-head input,
+  .blk-use-link {
+    min-height: 44px;
+  }
+  .blk-paint button,
+  .blk-shift button,
+  .blk-side .panel-tabs-list button,
+  .blk-side .color-choice-big {
+    min-width: 44px;
+  }
+}

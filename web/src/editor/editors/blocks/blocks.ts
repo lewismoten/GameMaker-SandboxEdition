@@ -34,7 +34,8 @@ import { blockProperties } from './blockProperties';
 import { blockLabel } from './blockNames';
 import { blockNameField } from './blockNameField';
 
-type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect';
+// erase and darken stand in for the right button, which a finger does not have
+type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect' | 'erase' | 'darken';
 
 /** The painter's own settings, kept in the companion file (never in the block set). */
 interface PainterExtras {
@@ -401,9 +402,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     canvas.setPointerCapture(e.pointerId);
     before = s.read();
     stroke = before.slice();
-    if (tool === 'shade') {
+    if (tool === 'shade' || tool === 'darken') {
       shaded = new Set();
-      shadeAt(p.x, p.y, e.button === 2 ? -1 : 1);
+      shadeAt(p.x, p.y, e.button === 2 || tool === 'darken' ? -1 : 1);
       renderBlock();
       return;
     }
@@ -416,7 +417,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       lineStart = p;
       return;
     }
-    plot(stroke, p.x, p.y, e.button === 2 ? (sprites ? TRANSPARENT : 0) : color);
+    plot(stroke, p.x, p.y, e.button === 2 || tool === 'erase' ? (sprites ? TRANSPARENT : 0) : color);
     write(stroke);
     renderBlock();
   });
@@ -427,13 +428,13 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       renderBlock(shapePixels(lineStart, p, before));
       return;
     }
-    if (tool === 'draw' && !e.altKey) {
-      plot(stroke, p.x, p.y, e.buttons === 2 ? (sprites ? TRANSPARENT : 0) : color);
+    if ((tool === 'draw' || tool === 'erase') && !e.altKey) {
+      plot(stroke, p.x, p.y, e.buttons === 2 || tool === 'erase' ? (sprites ? TRANSPARENT : 0) : color);
       write(stroke);
       renderBlock();
     }
-    if (tool === 'shade') {
-      shadeAt(p.x, p.y, e.buttons === 2 ? -1 : 1);
+    if (tool === 'shade' || tool === 'darken') {
+      shadeAt(p.x, p.y, e.buttons === 2 || tool === 'darken' ? -1 : 1);
       renderBlock();
     }
   });
@@ -512,16 +513,20 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const tools = h(
     'div',
     { class: 'toolbar' },
-    ...(['draw', 'shade', 'fill', 'pick', 'line', 'rect'] as Tool[]).map((t) =>
+    ...(['draw', 'shade', 'fill', 'pick', 'line', 'rect', 'erase', 'darken'] as Tool[]).map((t) =>
       h(
         'button',
         {
-          class: t === tool ? 'active primary' : '',
+          class: `${t === tool ? 'active primary' : ''} ${t === 'erase' || t === 'darken' ? 'blk-touch-only' : ''}`.trim(),
           dataset: { tool: t },
-          title: t === 'shade' ? 'Lighten a color one step along its palette ramp; right-drag darkens' : undefined,
+          title: {
+            shade: 'Lighten a color one step along its palette ramp; right-drag darkens',
+            erase: 'Paint transparent (or color 0): what right-drag does with a mouse',
+            darken: 'Darken a color one step along its palette ramp: what right-drag does with Shade',
+          }[t as string],
           onclick: () => setTool(t),
         },
-        { draw: 'Pencil', shade: 'Shade', fill: 'Fill', pick: 'Pick color', line: 'Line', rect: 'Box' }[t],
+        { draw: 'Pencil', shade: 'Shade', fill: 'Fill', pick: 'Pick color', line: 'Line', rect: 'Box', erase: 'Erase', darken: 'Darken' }[t],
       ),
     ),
     mirrorSel,
