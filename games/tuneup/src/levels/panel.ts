@@ -194,7 +194,7 @@ export function panel(scene: 'tune' | 'gauges') {
       m.set(RADIO_X, floor - 1, 'radio');
     }
     m.set(PANEL.door, floor - 2, 'door.top').set(PANEL.door, floor - 1, 'door');
-    m.link(PANEL.exit, floor - 1);
+    m.link(PANEL.door, floor - 1);
     m.mon(MON.regina, 2, floor - 1);
     return { m, start: at(8, 5), size: [w, 10] };
   };

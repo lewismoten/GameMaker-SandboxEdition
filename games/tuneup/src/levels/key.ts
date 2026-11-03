@@ -189,7 +189,7 @@ export function keyRoom(book: Kit['book']): Level {
   GEARS.notes.forEach(([x, y], i) => m.set(x, y, `note${i}`));
   m.set(GEARS.door, floor - 2, 'lamp.shut').set(GEARS.door, floor - 1, 'door.shut');
   m.fill(w - 1, 0, 1, floor, '#');
-  m.link(GEARS.exit, floor - 1);
+  m.link(GEARS.door, floor - 1);
   m.mon(MON.regina, 5, floor - 1);
   // variants here and there so the walls and floors don't repeat
   m.vary('bay.ribs', ['bay.bolts'], 13).vary('casting', ['casting.plate'], 7);

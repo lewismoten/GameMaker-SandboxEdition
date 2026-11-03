@@ -241,7 +241,7 @@ export function pump(book: Kit['book']): Level {
   m.set(t1 + 1, floor - 3, 'slide').set(t1 + 2, floor - 3, 'slide');
   m.set(PUMP.door, floor - 2, 'gateTop').set(PUMP.door, floor - 1, 'gate');
   m.set(w - 1, 0, 'fence.top').fill(w - 1, 1, 1, floor - 1, 'fence');
-  m.link(PUMP.exit, floor - 1);
+  m.link(PUMP.door, floor - 1);
   m.mon(MON.reggie, 4, floor - 1);
   m.mon(MON.pigeon, PIGEON[0], PIGEON[1]);
   return { m, start: at(8, 5), size: [w, 10] };

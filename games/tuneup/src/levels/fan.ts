@@ -273,7 +273,7 @@ export function fan(v: FanVerse) {
     if (v.lever) m.set(v.exit - 1, R.floor - 2, 'lever.top').set(v.exit - 1, R.floor - 1, 'lever.bot');
     if (v.fork) m.set(...v.fork, 'fork').set(v.fork[0] - 1, v.fork[1] - 1, 'vent.glint');
     m.fill(w - 1, 0, 1, R.floor, '#');
-    m.link(v.exit + 1, R.floor - 1);
+    m.link(v.exit, R.floor - 1);
     m.mon(MON.reggie, 1, R.floor - 1);
     // variants here and there so the walls and floors don't repeat
     m.vary('vent', ['vent.dent'], 11).vary('casting', ['casting.plate'], 7);

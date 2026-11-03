@@ -73,9 +73,9 @@ export const ROUTES: Route[] = [
   { file: 'road1', w: 94, signals: [stop(80), light(68, 9), light(57, 4), stop(46), light(35, 11), light(24, 1), light(12, 7)], fork: 55, tower: 48 },
   { file: 'road2', w: 94, signals: [light(81, 6), light(71, 10), light(61, 2), light(51, 8), stop(40), light(29, 5), light(18, 0), light(8, 9)], tower: 45 },
 ];
-/** Where the car starts (level x) and where the street leaves the scene. */
+/** Where the car starts (level x) and where the street leaves the scene: the last shop door, touched. */
 export const startX = (r: Route) => r.w - 9;
-export const EXIT_X = 1;
+export const EXIT_X = 2;
 
 /** A light's phase at ring member `m`. */
 export const phaseOf = (m: number) => LIGHT[m % LIGHT.length];

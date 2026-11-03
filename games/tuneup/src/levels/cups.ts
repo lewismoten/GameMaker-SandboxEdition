@@ -149,7 +149,7 @@ export function cups(book: Kit['book']): Level {
     m.fill(9, CUPS.row + 1, 7, 2, 't').set(12, CUPS.row + 1, 'table.star');
     SLOTS.forEach((x, i) => m.mon(MON.cap0 + i, x, CUPS.row));
     m.set(CUPS.door, floor - 2, 'door.top').set(CUPS.door, floor - 1, 'door');
-    m.link(CUPS.exit, floor - 1);
+    m.link(CUPS.door, floor - 1);
     m.mon(MON.reggie, 5, floor - 1);
     // variants here and there so the walls and floors don't repeat
     m.vary('curtain', ['curtain.fold'], 5);

@@ -280,7 +280,7 @@ export function muffled(book: Kit['book']): Level {
   m.set(M.crate, floor - 1, 'c').set(M.crate, floor - 2, 'tapes');
   m.set(M.door, floor - 2, 'door.top').set(M.door, floor - 1, 'door');
   m.fill(w - 1, 0, 1, floor, 'slab');
-  m.link(M.exit, floor - 1);
+  m.link(M.door, floor - 1);
   m.mon(MON.reggie, 3, floor - 1);
   decorate(m, [
     ['light', 12, 0],
