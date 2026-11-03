@@ -13,7 +13,7 @@ import { firstStepsState, stepsDone, STEPS } from './firstSteps';
 import { projectTarget, showHealthReport } from './gameHealth';
 import { visionPalette } from './visionPalette';
 import { versionCard } from './overviewVersion';
-import { diskStatus, floppyFor } from '../disk/diskCard';
+import { diskStatus, floppyFor, openOptimize } from '../disk/diskCard';
 
 interface ToolsHost {
   open: (file: string) => void;
@@ -156,7 +156,7 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
       diskStatus(project),
       'What the game takes to run as a DOS game, how many 3.5″ disks that is, files (monster files, block sets, palettes) that could share one, blocks that look the same, colors outside their range, and checkpoints to compare against.',
       'Open Optimize…',
-      () => void import('../disk/diskTool').then((m) => m.diskTool(project)),
+      () => openOptimize(project),
     ),
   );
 
