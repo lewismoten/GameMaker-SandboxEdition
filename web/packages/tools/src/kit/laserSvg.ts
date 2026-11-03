@@ -1,10 +1,11 @@
 // A small laser-cutter SVG builder: sizes in real millimeters, and one color per operation, the way the Glowforge app
-// separates steps (cut: red outline strokes, score: blue thin strokes, engrave: black filled shapes). Everything is
+// groups steps (the person picks Cut, Score or Engrave for each color): cut is red outline strokes, engrave is blue filled
+// shapes, and score is magenta thin strokes, kept for paper kits (folds); nothing on wood or acrylic uses it. Everything is
 // absolute millimeter coordinates (no transforms, no fonts: text is pixel shapes from laserPixels.ts), so the file opens
 // the same everywhere.
 export const CUT = '#ff0000';
-export const SCORE = '#0000ff';
-export const ENGRAVE = '#000000';
+export const SCORE = '#ff00ff';
+export const ENGRAVE = '#0000ff';
 export const HAIRLINE = 0.1;
 export type Pt = readonly [number, number];
 export type Op = 'cut' | 'score' | 'engrave';
@@ -54,7 +55,7 @@ export class LaserSheet {
       `<svg xmlns="http://www.w3.org/2000/svg" width="${n(this.w)}mm" height="${n(this.h)}mm" viewBox="0 0 ${n(this.w)} ${n(this.h)}">\n` +
       `<title>${title.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</title>\n` +
       `<g id="cut" fill="none" stroke="${CUT}" stroke-width="${HAIRLINE}">${stroke('cut')}</g>\n` +
-      `<g id="score" fill="none" stroke="${SCORE}" stroke-width="${HAIRLINE}">${stroke('score')}</g>\n` +
+      (by('score').length ? `<g id="score" fill="none" stroke="${SCORE}" stroke-width="${HAIRLINE}">${stroke('score')}</g>\n` : '') +
       `<g id="engrave" fill="${ENGRAVE}" stroke="none">${fillD ? `<path d="${fillD}"/>` : ''}${rings}</g>\n</svg>\n`
     );
   }

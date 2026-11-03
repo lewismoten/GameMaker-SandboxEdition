@@ -1,24 +1,28 @@
-// Laser-cut wooden nickels for the Sandbox games: one 1.5 inch (38.1 mm) round per game with an engraved rim band, a front
-// (the game's name round the top and its hero and signature figure, drawn from the game's own built disk) and a back
-// ("GOOD FOR ONE ..." from the game's world, SANDBOX SOFTWARE and the year), for a Glowforge (cut: red, score: blue,
-// engrave: black).
+// Laser-cut wooden nickels for the Sandbox games: one 1.5 inch (38.1 mm) token per game, a 1994 collectible in a series of 26,
+// each the money of its game's own world (laserNickelDefs.ts). Every one has a reeded rim, a front (the game's name round the
+// top, the token's art, a line round the bottom, sometimes a hole cut through) and a back ("GOOD FOR ..." in the game's words,
+// its number in the series, the year, SM for Sandbox Mint, and one letter of a hidden Sandscript message), for a Glowforge
+// (cut: red, score: blue, engrave: black).
 //   cd web && npx vite-node ../games/kit/laserNickels.ts [--game id[,id]] [--force] [--out ROOT]
 // Writes web/public/laser/<game>/ (git-ignored build output): front.svg, back.svg (each exactly 38.1 x 38.1 mm), sheet.svg
 // (twelve fronts in a 4 x 3 grid with their cut lines, and the flip jig), sheet-back.svg (the back placed on the jig, the
 // same page size, for the second pass), a PNG preview of each, and manifest.json with a `source` key: a game whose figures,
-// words and builder code match it is skipped (--force remakes). Secret games and games without a built disk are skipped.
-// Text is drawn from pixels (8x8 PC font, 3x5 micro font), so no font is needed. How to use the files: docs in games/kit/README.md.
+// words and builder code match it is skipped (--force remakes). Also web/public/laser/checklist.svg and .png, the collector's
+// checklist of all 26. Secret games and games without a built disk are skipped.
+// Text is drawn from pixels (8x8 PC font, 3x5 micro font, Sandscript), so no font is needed. Docs: games/kit/README.md.
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { TRANSPARENT } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { arcSpanDeg, arcText, engraveRects, figureBitmap, inkBox, lineText, mergeRuns, type Bitmap } from '@lewismoten/gamemaker-sandbox-tools/kit/laserPixels';
+import { tooClose } from '@lewismoten/gamemaker-sandbox-tools/kit/laserClearance';
+import { arcSpanDeg, arcText, engraveRects, lineText, mergeRuns } from '@lewismoten/gamemaker-sandbox-tools/kit/laserPixels';
 import { pngFromRgb, renderPreview } from '@lewismoten/gamemaker-sandbox-tools/kit/laserPreview';
 import { CUT, ENGRAVE, LaserSheet, SCORE } from '@lewismoten/gamemaker-sandbox-tools/kit/laserSvg';
 import { GAMES, type Def } from './pixelTrinketDefs';
 import { picture } from './pixelPicture';
-import { NICKELS, heroDef } from './laserNickelDefs';
+import { MESSAGE, NICKELS, heroDef } from './laserNickelDefs';
+import { Art, R, figureOf } from './laserNickelParts';
+import { sandPixels } from './sandscript';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -27,115 +31,90 @@ const flag = (name: string) => (args.includes(name) ? args[args.indexOf(name) + 
 /** Real sizes in millimeters. */
 const DIM = {
   coin: 38.1, // 1.5 inch
-  band: [16.9, 18.2], // the engraved rim band's inner and outer radius
-  score: 15.5, // the thin line inside the lettering
+  rim: [16.9, 18.2], // the reeded rim's inner and outer radius
   face: 15.1, // nothing is engraved farther out than this (inside the score line)
   jigHole: 38.0, // the flip jig's cut-out: 0.1 mm under the coin, for the laser's kerf to open to a snug fit
   sheet: [270, 150],
   pitch: 44,
   jigAt: [235, 75],
+  wood: 3, // wood left between a cut-out and the rim, at the least
 } as const;
-const R = DIM.coin / 2;
 const PC_PX = 0.36; // 8x8 letters: 7 pixels tall = 2.52 mm
 const MICRO_PX = 0.5; // 3x5 letters: 5 pixels tall = 2.5 mm
 const MIN_CAP = 2.45;
+const ORDER = Object.keys(NICKELS);
+const OF = ORDER.length;
 
-interface Face {
-  sheet: LaserSheet;
-  texts: { text: string; capMm: number }[];
-}
-const newFace = (cut: boolean): Face => {
+const newFace = (cut: boolean, figs: ConstructorParameters<typeof Art>[1]) => {
   const sheet = new LaserSheet(DIM.coin, DIM.coin);
   if (cut) sheet.add({ op: 'cut', k: 'circle', cx: R, cy: R, r: R });
-  sheet.add({ op: 'engrave', k: 'ring', cx: R, cy: R, r0: DIM.band[0], r1: DIM.band[1] });
-  sheet.add({ op: 'score', k: 'circle', cx: R, cy: R, r: DIM.score });
-  return { sheet, texts: [] };
+  const a = new Art(sheet, figs);
+  // the reeded rim: engraved ticks, 90 of them, round a thin solid ring, all inside the cut
+  a.mark('rim');
+  sheet.add({ op: 'engrave', k: 'ring', cx: R, cy: R, r0: DIM.rim[0] - 0.35, r1: DIM.rim[0] - 0.05 });
+  for (let i = 0; i < 90; i++) {
+    const t = (i * 4 * Math.PI) / 180;
+    a.bar((DIM.rim[0] + 0.1) * Math.cos(t), (DIM.rim[0] + 0.1) * Math.sin(t), (DIM.rim[1] - 0.1) * Math.cos(t), (DIM.rim[1] - 0.1) * Math.sin(t), 0.55);
+  }
+  return a.mark('motif');
 };
-const line = (f: Face, s: string, y: number) => {
-  const m = lineText(f.sheet, s, 'pc', R, R + y, PC_PX);
-  f.texts.push({ text: s, capMm: m.h });
-};
-const arc = (f: Face, s: string, top: boolean) => {
+const arc = (a: Art, s: string, top: boolean) => {
+  a.mark(`arc ${s}`);
   const r = top ? 12.5 : 15.0;
   // the 8x8 letters when the line fits round the coin in them, else the smaller 3x5 ones (both at least 2.5 mm tall)
   const pc = arcSpanDeg(s, 'pc', r, PC_PX, top) <= 140;
-  const span = arcText(f.sheet, s, pc ? 'pc' : 'micro', R, R, r, pc ? PC_PX : MICRO_PX, top);
+  const span = arcText(a.sheet, s, pc ? 'pc' : 'micro', R, R, r, pc ? PC_PX : MICRO_PX, top);
   if (span > 140) throw new Error(`"${s}" spans ${span.toFixed(0)} degrees round the coin: shorten it`);
-  f.texts.push({ text: s, capMm: pc ? 7 * PC_PX : 5 * MICRO_PX });
+  a.texts.push({ text: s, capMm: pc ? 7 * PC_PX : 5 * MICRO_PX });
+  a.mark('motif');
 };
 
-interface Fig {
-  bm: Bitmap;
-  box: [number, number, number, number];
-}
-/** The figure's engraving bitmap (a hero's or a monster's picture from the built disk) and where its ink is. */
-function figureOf(game: string, d: Def): Fig {
-  const pic = picture(game, d);
-  const scale = Math.max(...pic.palette) <= 63 ? 63 : 255;
-  const lum = (cx: number, cy: number) => {
-    const c = pic.cells[cy * pic.w + cx];
-    if (c === TRANSPARENT) return -1;
-    return (0.3 * pic.palette[c * 3] + 0.59 * pic.palette[c * 3 + 1] + 0.11 * pic.palette[c * 3 + 2]) / scale;
-  };
-  const bm = figureBitmap(pic.w, pic.h, lum, 0.5);
-  return { bm, box: inkBox(bm) ?? [0, 0, pic.w, pic.h] };
-}
-
-/** One or two figures side by side on a common floor, as large as fits inside the lettering (at most 0.6 mm a pixel). */
-function figures(f: Face, figs: Fig[]) {
-  const gap = 2;
-  const wp = figs.reduce((n, g) => n + g.box[2] - g.box[0], 0);
-  const hp = Math.max(...figs.map((g) => g.box[3] - g.box[1]));
-  let px = 0.6;
-  const fits = (p: number) => Math.hypot((wp * p + gap * (figs.length - 1)) / 2, (hp * p) / 2) <= 11.4;
-  while (!fits(px) && px > 0.3) px -= 0.01;
-  const W = wp * px + gap * (figs.length - 1);
-  let x = -W / 2;
-  const floor = (hp * px) / 2 + 0.2;
-  for (const g of figs) {
-    const [x0, , x1, y1] = g.box;
-    engraveRects(f.sheet, mergeRuns(g.bm), (cx, cy) => [R + x + (cx - x0) * px, R + floor - (y1 - cy) * px]);
-    x += (x1 - x0) * px + gap;
-  }
-  return px;
-}
-
-function front(game: string, year: number, hero?: Def, second?: Def): Face {
+function front(game: string, year: number, figs: ReturnType<typeof figureOf>[]): Art {
   const n = NICKELS[game];
-  const f = newFace(true);
-  arc(f, n.top, true);
-  arc(f, n.bottom ?? `* ${year} *`, false);
-  if (game === 'realm') {
-    // the Round Tuit itself: a boss in the middle of the face, ringed, as the game draws it
-    f.sheet.add({ op: 'engrave', k: 'circle', cx: R, cy: R, r: 3.6 });
-    f.sheet.add({ op: 'score', k: 'circle', cx: R, cy: R, r: 5.6 });
-    f.sheet.add({ op: 'score', k: 'circle', cx: R, cy: R, r: 9.2 });
-    for (let i = 0; i < 12; i++) {
-      const a = (i * Math.PI) / 6;
-      f.sheet.add({ op: 'engrave', k: 'circle', cx: R + 7.4 * Math.cos(a), cy: R + 7.4 * Math.sin(a), r: 0.45 });
-    }
-  } else if (hero) {
-    figures(f, [figureOf(game, hero), ...(second ? [figureOf(game, second)] : [])]);
-  }
-  return f;
+  const a = newFace(true, figs);
+  arc(a, n.top, true);
+  arc(a, n.bottom ?? `* ${year} *`, false);
+  const from = a.sheet.items.length;
+  n.art(a);
+  const out = reach(a, from);
+  if (out > (n.zone ?? 12.3)) throw new Error(`${game}: the art reaches ${out.toFixed(1)} mm out, into the lettering (limit ${n.zone ?? 12.3})`);
+  return a;
 }
 
-function back(game: string, year: number): Face {
+/** A Sandscript letter (laserNickelDefs MESSAGE), centered on (x, y), `px` mm a pixel. */
+function sandLetter(a: Art, ch: string, x: number, y: number, px: number) {
+  a.mark('sandscript letter');
+  const s = sandPixels(ch, 3);
+  engraveRects(a.sheet, mergeRuns({ w: s.cols, h: s.rows, on: (cx, cy) => s.px[cy * s.cols + cx] === 1 }), (cx, cy) => [
+    R + x + (cx - s.cols / 2) * px,
+    R + y + (cy - s.rows / 2) * px,
+  ]);
+  a.texts.push({ text: `sandscript ${ch}`, capMm: s.rows * px });
+  a.mark('motif');
+}
+
+function back(game: string, year: number): Art {
   const n = NICKELS[game];
-  const f = newFace(false);
-  arc(f, n.arc ?? 'GOOD FOR', true); // most games' lines start "ONE ..."
-  arc(f, 'SANDBOX SOFTWARE', false);
-  n.good.forEach((s, i) => line(f, s, -1.5 + (i - (n.good.length - 1) / 2) * 4));
-  line(f, String(year), 8);
-  return f;
+  const no = ORDER.indexOf(game) + 1;
+  const a = newFace(false, []);
+  arc(a, n.arc ?? 'GOOD FOR', true); // most games' lines start "ONE ..."
+  arc(a, 'SANDBOX SOFTWARE', false);
+  // the joke lines in the middle, the number and the year with the mint mark below, the Sandscript letter alone above
+  n.good.forEach((s, i) => a.text(s, 0, -2.6 + (i - (n.good.length - 1) / 2) * 3.2));
+  a.text(`NO.${String(no).padStart(2, '0')}/${OF}`, 0, 4.2, MICRO_PX, 'micro');
+  a.text(`${year} SM`, 0, 7.7, MICRO_PX, 'micro');
+  sandLetter(a, MESSAGE[no - 1], 0, -9.9, PC_PX);
+  return a;
 }
 
-/** Everything engraved stays inside the face (not under the cut or on the band). */
-function reach(f: Face): number {
+/** The farthest an engraved shape reaches from the center, and whether the holes leave wood. */
+function reach(a: Art, from = 0): number {
   let m = 0;
-  for (const it of f.sheet.items)
-    if (it.op === 'engrave' && it.k === 'poly') for (const [x, y] of it.pts) m = Math.max(m, Math.hypot(x - R, y - R));
-    else if (it.k === 'circle' && it.op === 'engrave') m = Math.max(m, Math.hypot(it.cx - R, it.cy - R) + it.r);
+  for (const it of a.sheet.items.slice(from))
+    if (it.op === 'engrave' && it.k === 'poly') {
+      const r = Math.max(...it.pts.map(([x, y]) => Math.hypot(x - R, y - R)));
+      if (r < DIM.rim[0] - 0.4) m = Math.max(m, r); // the rim's own ticks are out past this
+    } else if (it.k === 'circle' && it.op === 'engrave') m = Math.max(m, Math.hypot(it.cx - R, it.cy - R) + it.r);
   return m;
 }
 
@@ -144,6 +123,8 @@ const codeKey = (() => {
   for (const f of [
     fileURLToPath(import.meta.url),
     join(here, 'laserNickelDefs.ts'),
+    join(here, 'laserNickelParts.ts'),
+    join(here, 'sandscript.ts'),
     join(here, 'pixelPicture.ts'),
     join(here, '../../web/packages/tools/src/kit/laserSvg.ts'),
     join(here, '../../web/packages/tools/src/kit/laserPixels.ts'),
@@ -162,26 +143,28 @@ const secret = (game: string) => {
 };
 
 const only = flag('--game')?.split(',');
-const games = Object.keys(NICKELS).filter((g) => (!only || only.includes(g)) && !secret(g));
+const games = ORDER.filter((g) => (!only || only.includes(g)) && !secret(g));
 const rootOut = resolve(flag('--out') ?? join(here, '../../web/public/laser'));
 const table: string[] = [];
-
 let failed = 0;
+const checklist: { no: number; name: string }[] = [];
+
 for (const game of games)
   try {
     const about = JSON.parse(readFileSync(join(here, '..', game, 'about.json'), 'utf8')) as { title: string; year: number };
     const n = NICKELS[game];
-    const hero = n.noFigure ? undefined : (GAMES[game]?.[0] ?? heroDef(game, n));
-    const second = n.noFigure ? undefined : GAMES[game]?.[1];
+    const defs: Def[] = n.figs ? [GAMES[game]?.[0] ?? heroDef(game, n), GAMES[game]?.[1]].filter((d): d is Def => !!d).slice(0, n.figs) : [];
+    const hero = n.hero ? heroDef(game, n) : undefined;
+    if (hero) defs[0] = hero;
     const out = join(rootOut, game);
-    if (hero && !existsSync(join(here, '..', game, 'disk', hero.pal))) {
+    if (defs.some((d) => !existsSync(join(here, '..', game, 'disk', d.pal)))) {
       console.log(`${game}: skipped (its disk isn't built)`);
       continue;
     }
     const h = createHash('sha1')
       .update(codeKey)
-      .update(JSON.stringify([n, about.year, about.title]));
-    for (const d of [hero, second]) if (d) h.update(picture(game, d).cells).update(picture(game, d).palette);
+      .update(JSON.stringify([n.top, n.bottom, n.good, n.arc, n.figs, n.hero, about.year, about.title, ORDER, MESSAGE, String(n.art)]));
+    for (const d of defs) h.update(picture(game, d).cells).update(picture(game, d).palette);
     const source = h.digest('hex').slice(0, 16);
     const files = ['front.svg', 'back.svg', 'sheet.svg', 'sheet-back.svg', 'front.png', 'back.png', 'sheet.png', 'manifest.json'];
     try {
@@ -194,16 +177,25 @@ for (const game of games)
       // no manifest yet
     }
     mkdirSync(out, { recursive: true });
-    const fr = front(game, about.year, hero, second);
+    const fr = front(
+      game,
+      about.year,
+      defs.map((d) => figureOf(game, d)),
+    );
     const bk = back(game, about.year);
     for (const [name, f] of [
       ['front', fr],
       ['back', bk],
     ] as const) {
+      f.done();
+      const close = tooClose(f.sheet, f.elements);
+      if (close.length) throw new Error(`${game} ${name} too close: ${close.map((c) => `${c.a} / ${c.b} ${c.mm} mm`).join('; ')}`);
       if (reach(f) > DIM.face + 0.05) throw new Error(`${game} ${name}: engraving reaches ${reach(f).toFixed(2)} mm from the center (limit ${DIM.face})`);
       const small = f.texts.filter((t) => t.capMm < MIN_CAP);
       if (small.length) throw new Error(`${game} ${name}: letters under ${MIN_CAP} mm tall: ${small.map((t) => t.text).join(', ')}`);
     }
+    for (const hole of fr.holes)
+      if (R - (Math.hypot(hole.x, hole.y) + hole.r) < DIM.wood) throw new Error(`${game}: a hole leaves under ${DIM.wood} mm of wood to the rim`);
     const [sw, sh] = DIM.sheet;
     const sheet = new LaserSheet(sw, sh);
     for (let row = 0; row < 3; row++)
@@ -220,10 +212,9 @@ for (const game of games)
       ],
     }); // 12 o'clock
     const sheetBack = new LaserSheet(sw, sh).place(bk.sheet, jx - R, jy - R);
-    const view = (s: LaserSheet, mm: number) => renderPreview(s, mm, mm > 6 ? 2 : 3);
     const write = (name: string, s: LaserSheet, title: string, mm: number) => {
       writeFileSync(join(out, `${name}.svg`), s.svg(`${about.title}: ${title}`));
-      const p = view(s, mm);
+      const p = renderPreview(s, mm, mm > 6 ? 2 : 3);
       writeFileSync(join(out, `${name}.png`), pngFromRgb(p.w, p.h, p.rgb));
     };
     write('front', fr.sheet, 'wooden nickel, front', 14);
@@ -237,9 +228,14 @@ for (const game of games)
           key: 'laser-nickel',
           game,
           title: about.title,
+          concept: n.concept,
           source,
-          mm: { coin: DIM.coin, sheet: DIM.sheet, jigHole: DIM.jigHole, jigAt: DIM.jigAt, pitch: DIM.pitch },
+          mm: { coin: DIM.coin, sheet: DIM.sheet, jigHole: DIM.jigHole, jigAt: DIM.jigAt, pitch: DIM.pitch, wood: DIM.wood },
           colors: { cut: CUT, score: SCORE, engrave: ENGRAVE },
+          series: { no: ORDER.indexOf(game) + 1, of: OF, letter: MESSAGE[ORDER.indexOf(game)], message: MESSAGE },
+          holes: fr.holes,
+          clearance: { front: tooClose(fr.sheet, fr.elements), back: tooClose(bk.sheet, bk.elements) },
+          reach: { front: +reach(fr).toFixed(2), back: +reach(bk).toFixed(2) },
           texts: { front: fr.texts, back: bk.texts },
           paths: { front: fr.sheet.items.length, back: bk.sheet.items.length, sheet: sheet.items.length },
           files,
@@ -249,11 +245,42 @@ for (const game of games)
       ) + '\n',
     );
     table.push(
-      `${game}: front ${fr.sheet.items.length} shapes, back ${bk.sheet.items.length}, sheet ${sheet.items.length} (cut ${sheet.count('cut')}, reach ${reach(fr).toFixed(1)}/${reach(bk).toFixed(1)} mm)`,
+      `${game}: front ${fr.sheet.items.length} shapes, back ${bk.sheet.items.length}, sheet ${sheet.items.length} (holes ${fr.holes.length}, reach ${reach(fr).toFixed(1)}/${reach(bk).toFixed(1)} mm)`,
     );
   } catch (e) {
     failed++;
     table.push(`${game}: FAILED ${(e as Error).message}`);
   }
+
+// the collector's checklist: all 26 tokens by number, a tick box each (score), and the series' hidden message line
+if (!only) {
+  for (const g of ORDER) if (!secret(g)) checklist.push({ no: ORDER.indexOf(g) + 1, name: NICKELS[g].top });
+  const W = 190;
+  const rowH = 9.5;
+  const sheet = new LaserSheet(W, 28 + rowH * 13);
+  lineText(sheet, 'SANDBOX MINT 1994 SERIES', 'pc', W / 2, 8, 0.6);
+  lineText(sheet, `WOODEN NICKELS: ${OF} TO COLLECT`, 'micro', W / 2, 17, 0.5);
+  checklist.forEach((c, i) => {
+    const col = Math.floor(i / 13);
+    const x = 10 + col * 92;
+    const y = 30 + (i % 13) * rowH;
+    sheet.add({
+      op: 'score',
+      k: 'poly',
+      pts: [
+        [x, y - 3],
+        [x + 6, y - 3],
+        [x + 6, y + 3],
+        [x, y + 3],
+      ],
+    });
+    const t = `${String(c.no).padStart(2, '0')} ${c.name}`;
+    lineText(sheet, t, 'micro', x + 9 + (t.length * 4 * 0.5) / 2, y, 0.5);
+  });
+  mkdirSync(rootOut, { recursive: true });
+  writeFileSync(join(rootOut, 'checklist.svg'), sheet.svg('Wooden nickel checklist'));
+  const p = renderPreview(sheet, 5, 3);
+  writeFileSync(join(rootOut, 'checklist.png'), pngFromRgb(p.w, p.h, p.rgb));
+}
 console.log(table.join('\n'));
 if (failed) process.exitCode = 1;

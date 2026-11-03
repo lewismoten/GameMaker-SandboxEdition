@@ -61,6 +61,17 @@ export function renderPreview(sheet: LaserSheet, pxPerMm: number, ss = 3): { w: 
         fill(
           it,
           (x, y) => {
+            if (op !== 'engrave') {
+              // a cut or score outline: near any edge
+              for (let i = 0; i < p.length; i++) {
+                const [ax, ay] = p[i];
+                const [bx, by] = p[(i + 1) % p.length];
+                const L = (bx - ax) ** 2 + (by - ay) ** 2 || 1;
+                const t = Math.max(0, Math.min(1, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / L));
+                if (Math.hypot(x - ax - t * (bx - ax), y - ay - t * (by - ay)) <= strokeW / 2) return true;
+              }
+              return false;
+            }
             let pos = false;
             let neg = false;
             for (let i = 0; i < p.length; i++) {

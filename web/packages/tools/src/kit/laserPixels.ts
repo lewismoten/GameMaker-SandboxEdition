@@ -106,20 +106,44 @@ export function arcText(sheet: LaserSheet, s: string, font: FontName, cx: number
   return (((t.length - 1) * step + (gw * px) / mid) * 180) / Math.PI;
 }
 
+export type Rgb = readonly [number, number, number];
+
+/** Skin and other warm light colors (orange-ish hue, fairly light) stay bare wood. */
+const skinLike = (r: number, g: number, b: number, l: number) =>
+  l > 0.42 && r > g && g > b && r - b > 0.12 && (g - b) / (r - b + 1e-6) > 0.2 && (g - b) / (r - b + 1e-6) < 0.85;
+
 /**
- * A picture as one-color engraving: opaque pixels darker than a share (`dark`) of the picture's own lightness range, and
- * every opaque pixel on the figure's edge, so the outline always shows. `lum` is a pixel's lightness (0 to 1), or -1 where clear.
+ * A picture engraved by tone from its own colors (0 to 1 per channel; `rgb` gives undefined where clear): dark colors solid,
+ * mid colors (clothes, hair, hats) as a checker or lines coarse enough to read at coin size, skin and very light colors left
+ * as wood. Every edge pixel stays solid, and so does a mid pixel that touches skin or light wood, so collars, sleeves, belts
+ * and hems read as outlines and a figure never looks bare.
  */
-export function figureBitmap(w: number, h: number, lum: (x: number, y: number) => number, dark = 0.5): Bitmap {
-  const ls: number[] = [];
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (lum(x, y) >= 0) ls.push(lum(x, y));
-  ls.sort((a, b) => a - b);
-  const cut = ls.length ? ls[Math.min(ls.length - 1, Math.floor(ls.length * dark))] : 0;
-  const opaque = (x: number, y: number) => x >= 0 && y >= 0 && x < w && y < h && lum(x, y) >= 0;
+export function toneBitmap(w: number, h: number, rgb: (x: number, y: number) => Rgb | undefined): Bitmap {
+  const lum = (x: number, y: number) => {
+    const c = x >= 0 && y >= 0 && x < w && y < h ? rgb(x, y) : undefined;
+    return c ? 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2] : -1;
+  };
+  // 0 clear, 1 wood (light or skin), 2 light mid, 3 dark mid, 4 solid
+  const tone = (x: number, y: number) => {
+    const c = x >= 0 && y >= 0 && x < w && y < h ? rgb(x, y) : undefined;
+    if (!c) return 0;
+    const l = lum(x, y);
+    if (l < 0.3) return 4;
+    if (l > 0.68 || skinLike(c[0], c[1], c[2], l)) return 1;
+    return l < 0.46 ? 3 : 2;
+  };
   return {
     w,
     h,
-    on: (x, y) => opaque(x, y) && (lum(x, y) < cut || !opaque(x - 1, y) || !opaque(x + 1, y) || !opaque(x, y - 1) || !opaque(x, y + 1)),
+    on: (x, y) => {
+      const t = tone(x, y);
+      if (t === 0) return false;
+      const n = [tone(x - 1, y), tone(x + 1, y), tone(x, y - 1), tone(x, y + 1)];
+      if (t === 4 || n.includes(0)) return true;
+      if (t === 1) return false;
+      if (n.includes(1)) return true;
+      return t === 3 ? (x + y) % 2 === 0 : y % 2 === 0;
+    },
   };
 }
 
