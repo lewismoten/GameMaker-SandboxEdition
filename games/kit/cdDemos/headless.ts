@@ -76,6 +76,8 @@ interface RunHooks {
   onFrame?: (w: World, s: Session, m: Machine) => void;
   /** Called with the scene number each time play enters a scene. */
   onScene?: (scene: number) => void;
+  /** Called with the session as it starts (e.g. to set Session.rand). */
+  onSession?: (s: Session) => void;
 }
 
 interface RunResult {
@@ -114,6 +116,7 @@ export async function runHeadless(
     onSession: (s) => {
       session = s;
       if (o.onScene) s.onScene = o.onScene;
+      o.onSession?.(s);
     },
     onFrame: (w) => {
       if (stop || !session) return;

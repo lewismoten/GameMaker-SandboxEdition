@@ -57,7 +57,8 @@ function game(opts: { sharedPalette?: boolean; otherUse?: boolean } = {}): GameF
   return f;
 }
 
-const draw = (f: GameFiles) => parseGame(f.get('t.gam')!).scenes.map((s) => scenePixels(f, s, 0, 0, 100, 100));
+// 8 x 2 blocks hold the only drawn cell (5, 0); the rest of the map is background
+const draw = (f: GameFiles) => parseGame(f.get('t.gam')!).scenes.map((s) => scenePixels(f, s, 0, 0, 8, 2));
 const rgb = (p: ReturnType<typeof scenePixels>) =>
   !p ? 'none' : Array.from(p.pixels, (v) => `${p.palette[v * 3]}.${p.palette[v * 3 + 1]}.${p.palette[v * 3 + 2]}`).join();
 

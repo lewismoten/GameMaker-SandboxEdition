@@ -7,6 +7,7 @@ import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
 import { fitSheet } from './fitSheet';
 import { hintBookCover } from './hintCover';
+import { codeWheelSheets } from './codeWheel';
 import type {
   ChartItem,
   HintBookItem,
@@ -403,6 +404,8 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return starChart(ctx, it);
     case 'recipe':
       return recipe(it);
+    case 'codewheel':
+      return codeWheelSheets(it);
   }
 }
 

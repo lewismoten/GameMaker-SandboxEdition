@@ -9,7 +9,7 @@ import { BACKBL, BLEN, MONBL, TRANSPARENT, parseBlocks, type Block } from '@lewi
 import { MLEN, MWID, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { defaultPalette, matchColor, parsePalette, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { fetchGameFile, type CatalogEntry } from '../../project/files';
+import { peekGameFile, type CatalogEntry } from '../../project/files';
 
 export type Tool = 'palette' | 'blocks' | 'monsters' | 'map';
 
@@ -25,13 +25,13 @@ interface Level {
 
 /** The files of the game's first level (palette, map, blocks, monsters). */
 async function firstLevel(entry: CatalogEntry): Promise<Level | undefined> {
-  const gam = entry.gam && (await fetchGameFile(entry, entry.gam));
+  const gam = entry.gam && (await peekGameFile(entry, entry.gam));
   if (!gam) return undefined;
   const game = parseGame(gam);
   const [first] = [...firstLevels(game, 1)];
   const scene = first && game.scenes[first[0]];
   if (!scene) return undefined;
-  const get = (k: number) => (scene.files[k] ? fetchGameFile(entry, scene.files[k]) : Promise.resolve(undefined));
+  const get = (k: number) => (scene.files[k] ? peekGameFile(entry, scene.files[k]) : Promise.resolve(undefined));
   const [pal, map, bbl, mon, mbl] = await Promise.all([0, 1, 2, 3, 4].map(get));
   return {
     pal: pal ? parsePalette(pal) : defaultPalette(),

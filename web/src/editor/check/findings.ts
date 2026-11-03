@@ -420,6 +420,12 @@ export const CHECKS = {
     taste: true,
     guide: L('Footing you can trust'),
   },
+  'hidden-exit': {
+    name: 'Exits the player can’t see',
+    why: 'A link on plain wallpaper or floor ends the level when a player wanders onto it, and a player looking for the way out has nothing to find. A door, sign or arrow shows where to go.',
+    taste: true,
+    guide: L('Footing you can trust'),
+  },
   music: {
     name: 'Levels without music',
     why: 'A level with no song, or one DOS won’t play, is silent. Quiet can set a mood; players may take it for a problem.',

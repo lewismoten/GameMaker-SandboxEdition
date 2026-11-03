@@ -18,7 +18,7 @@ export function cachedFrame<T extends object = Picture>(key: string, render: () 
       for (const ch of group) owner = (owner * 31 + ch.charCodeAt(0)) >>> 0;
       owner %= count;
     }
-    if (owner !== index) return { w: 320, h: 200, rgb: new Float32Array(320 * 200 * 3) } as unknown as T; // a placeholder: the shard that owns it renders the real one
+    if (owner !== index) return { w: 320, h: 200, rgb: new Float32Array(320 * 200 * 3), placeholder: true } as unknown as T; // a placeholder: the shard that owns it renders the real one
   }
   const file = join(dir, `${key}.bin.gz`);
   if (existsSync(file)) return deserialize(gunzipSync(readFileSync(file))) as T;

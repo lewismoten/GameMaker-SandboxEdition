@@ -11,6 +11,7 @@ import { addFork, glint } from '../blocks/fork';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, countedDoor, GRAV, kit, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
+import { addThermos } from '../blocks/thermos';
 import type { Pal } from '../art/palette';
 import { CTR, MON } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
@@ -20,7 +21,11 @@ export const FAN_BEAT = 10;
 /** The rows: the ceiling, the ledges, the floor (Doc Leo stands two blocks over a floor). */
 export const FAN_ROW = { ceiling: 0, cap: 1, high: 2, ledge: 5, low: 6, floor: 9 } as const;
 /** The hot gust's ring: ticks idle, glowing (the warning) and puffing (it stings). */
-export const GUST = { idle: 50, warn: 12, hot: 10 } as const;
+export const GUST = { idle: 50, warn: 30, hot: 10 } as const;
+/** Energy the thermos past the grate gives back (the hot verse's refill). */
+const WARMTH = 4;
+/** Where it stands: past the grate, under the last ledge. */
+const THERMOS_X = 29;
 /** Energy the gust takes. */
 const SCORCH = -1;
 /** The temperature gauge: its notches, and the ticks the warming motor takes for each. */
@@ -208,6 +213,8 @@ export function fanBlocks(v: FanVerse) {
           }
         return p;
       };
+      // a thermos on the floor past the grate: energy back after the stings
+      addThermos(k, 'thermos', 'vent', WARMTH);
       book.add('gust', grate('idle'), { ...AIR, ntime: GUST.idle, next: 'gust.warn' });
       book.add('gust.warn', grate('warn'), { ...AIR, ntime: GUST.warn, next: 'gust.hot' });
       book.add('gust.hot', grate('hot'), { ...AIR, hp: SCORCH, ntime: GUST.hot, next: 'gust' });
@@ -267,13 +274,13 @@ export function fan(v: FanVerse) {
     for (const [a, b] of v.ledges) m.fill(a, R.ledge, b - a + 1, 1, 'l');
     for (const [x, y] of v.fans) m.set(x, y, 'fan');
     for (const x of v.chests) m.set(x, R.floor - 1, 'chest');
-    if (v.gust !== undefined) m.set(v.gust, R.floor - 1, 'gust');
+    if (v.gust !== undefined) m.set(v.gust, R.floor - 1, 'gust').set(THERMOS_X, R.floor - 1, 'thermos');
     for (const x of v.gauges) m.set(x, 2, `thermo${v.heat[0]}`).set(x, 3, `thermo${v.heat[0]}.b`);
     m.set(v.exit, R.floor - 2, 'flap.top').set(v.exit, R.floor - 1, 'flap');
     if (v.lever) m.set(v.exit - 1, R.floor - 2, 'lever.top').set(v.exit - 1, R.floor - 1, 'lever.bot');
     if (v.fork) m.set(...v.fork, 'fork').set(v.fork[0] - 1, v.fork[1] - 1, 'vent.glint');
     m.fill(w - 1, 0, 1, R.floor, '#');
-    m.link(v.exit + 1, R.floor - 1);
+    m.link(v.exit, R.floor - 1);
     m.mon(MON.reggie, 1, R.floor - 1);
     // variants here and there so the walls and floors don't repeat
     m.vary('vent', ['vent.dent'], 11).vary('casting', ['casting.plate'], 7);

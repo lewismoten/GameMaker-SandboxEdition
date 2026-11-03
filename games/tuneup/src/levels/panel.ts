@@ -11,6 +11,8 @@
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, countedDoor, kit, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
+import { addCameo, placeCameo } from '../blocks/cameo';
+import { wattCameo } from '../../../kit/cameos';
 import type { Pal } from '../art/palette';
 import { CTR, MONEY, MON } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
@@ -172,6 +174,22 @@ export function panelBlocks(scene: 'tune' | 'gauges') {
         p.disc(10, 12, 3, c('accent', 3));
       });
     }
+    // a Clown Club red nose with a glint: an extra life (on the tuning scene's floor)
+    book.add(
+      'life',
+      k
+        .pic(`face${PANEL.floor - 1}`)
+        .disc(10, 12, 6, c('ink', 0))
+        .disc(10, 12, 5, c('red', 2))
+        .disc(9, 11, 3, c('red', 3))
+        .disc(8, 10, 1, c('cloud', 2))
+        .rect(3, 4, 3, 1, c('lamp', 4))
+        .rect(4, 3, 1, 3, c('lamp', 4))
+        .rect(15, 5, 2, 1, c('lamp', 4)),
+      { ...AIR, effect: 1, eamt: 1, score: 500, touch: `face${PANEL.floor - 1}` },
+    );
+    // Watt, the repair robot, seeing to the dash's wiring (placed in the gauges' scene)
+    addCameo(k, 'watt', `face${PANEL.floor - 1}`, (host, use) => wattCameo(host, 'side', 0, 'ok', { use }));
     return k;
   };
 }
@@ -184,6 +202,7 @@ export function panel(scene: 'tune' | 'gauges') {
     m.fill(0, 0, w, 2, 'n').fill(0, floor, w, 1, '=');
     m.fill(0, 0, 1, floor, '|').fill(w - 1, 0, 1, floor, '|');
     if (scene === 'tune') {
+      m.set(7, floor - 1, 'life');
       m.fill(PANEL.dialX - 1, PANEL.dial - 1, DIAL.cells + 2, 1, 'trim.top').fill(PANEL.dialX - 1, PANEL.dial + 1, DIAL.cells + 2, 1, 'trim.bottom');
       m.set(PANEL.dialX - 1, PANEL.dial, 'knob').set(PANEL.dialX + DIAL.cells, PANEL.dial, 'knob');
       for (let i = 0; i < DIAL.cells; i++) m.set(PANEL.dialX + i, PANEL.dial, `dial${i}.0`);
@@ -192,9 +211,10 @@ export function panel(scene: 'tune' | 'gauges') {
       m.fill(1, PANEL.dial + 1, w - 2, 1, 'trim.bottom');
       GAUGES.forEach((x, g) => m.set(x, PANEL.buttons, `gauge${g}`));
       m.set(RADIO_X, floor - 1, 'radio');
+      placeCameo(m, 'watt', `face${floor - 1}`, [[9, floor - 1]]);
     }
     m.set(PANEL.door, floor - 2, 'door.top').set(PANEL.door, floor - 1, 'door');
-    m.link(PANEL.exit, floor - 1);
+    m.link(PANEL.door, floor - 1);
     m.mon(MON.regina, 2, floor - 1);
     return { m, start: at(8, 5), size: [w, 10] };
   };

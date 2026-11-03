@@ -26,6 +26,8 @@ import { introFli, launchFli, warpFli, wonFli } from './screens/flics';
 import { DESCENT_BIOMES, descentFile, descentFli } from './screens/descent';
 import { BETWEEN, CREDITS, INSTRUCTIONS } from './screens/text';
 import { HAILS, hailPages } from './screens/hails';
+import { clearancePages } from './screens/clearance';
+import { WHEEL_SCENES } from './wheel/wheel';
 import { buildDemo } from './demo';
 import { SCENE, SECTORS, allWorlds } from './universe';
 import { drawCourier } from './sprites/courier';
@@ -88,6 +90,7 @@ export async function present(b: Built): Promise<void> {
   );
   put('orbit.txt', dosText(BETWEEN));
   put('orbit.lst', serializeSlideList([{ name: 'orbit.gif', pause: 0 }, { name: 'orbit.txt' }]));
+  putAll(clearancePages());
   put('hiscore.gif', hiscoreScreen());
   put('maximus.his', startingScores());
   put('load.gif', slotScreen('LOAD GAME', 91));
@@ -220,6 +223,15 @@ export async function present(b: Built): Promise<void> {
     const sc = g.scenes[SCENE.between];
     sc.files[8] = 'galaxy.cmf';
     sc.files[9] = 'orbit.lst';
+  }
+  // the clearance gate's pages, each played as its scene opens
+  for (const [scene, list] of [
+    [WHEEL_SCENES.form, 'clear.lst'],
+    [WHEEL_SCENES.wrong[0], 'wrong1.lst'],
+    [WHEEL_SCENES.wrong[1], 'wrong2.lst'],
+  ] as const) {
+    g.scenes[scene].files[8] = 'cradle.cmf';
+    g.scenes[scene].files[9] = list;
   }
   put('maximus.gam', serializeGame(g));
 }

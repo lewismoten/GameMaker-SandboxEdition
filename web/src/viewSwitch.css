@@ -64,3 +64,11 @@
     padding: 0 4px;
   }
 }
+
+/* a finger: the switch's links are 44px tall */
+@media (hover: none) and (pointer: coarse) {
+  .view-switch a {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

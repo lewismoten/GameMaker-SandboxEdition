@@ -139,7 +139,6 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
   // stitched arrows in the fabric: a trail of gold thread toward the pay TV (walk on them)
   for (const [dir, dx, dy] of [
     ['R', 1, 0],
-    ['L', -1, 0],
     ['D', 0, 1],
     ['U', 0, -1],
   ] as const) {
@@ -148,6 +147,22 @@ export function voidBlocks(ctx: Ctx, lr: LivingRoom): void {
     for (let k = -6; k <= 6; k++) if ((k + 6) % 3 !== 2) st(10 + dx * k, 10 + dy * k);
     for (let k = 1; k <= 4; k++) (st(10 + dx * (6 - k) - dy * k, 10 + dy * (6 - k) - dx * k), st(10 + dx * (6 - k) + dy * k, 10 + dy * (6 - k) + dx * k));
     book.add(`trail${dir}`, p);
+  }
+  // the way out of the void: a gold archway round the pay TV's warm picture, a bright arrow pointing in (on the link, past the TV)
+  {
+    const p = fabric(76);
+    p.disc(10, 9, 9, c('gold', 1)).rect(1, 9, 18, 11, c('gold', 1)).rect(1, 9, 2, 11, c('gold', 3)).rect(1, 9, 18, 0, c('gold', 3));
+    p.disc(10, 9, 7, ink).rect(3, 9, 14, 11, ink);
+    p.disc(10, 9, 6, c('screen', 3)).rect(4, 9, 12, 11, c('screen', 3));
+    for (let y = 6; y < 20; y += 3) p.rect(4, y, 12, 1, c('screen', 2));
+    // the arrow, ink-edged gold, pointing right into the picture
+    const arrow = (g: number, col: number) => {
+      p.rect(5 - g, 12 - g, 6 + g, 3 + 2 * g, col);
+      for (let k = 0; k < 5; k++) p.rect(10 + k - g, 9 + k - g, 1 + 2 * g, 9 - 2 * k + 2 * g, col);
+    };
+    arrow(1, ink);
+    arrow(0, c('gold', 2));
+    book.add('voidDoor', p);
   }
   // a sign in the void
   const sign = deep(74);

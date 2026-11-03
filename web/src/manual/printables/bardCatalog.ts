@@ -7,7 +7,7 @@
 import './paper.css'; // first: this piece's own styles build on the paper's
 import './bardCatalog.css';
 import { h } from '../../editor/core/ui';
-import { fetchGameFile, loadCatalog, type CatalogEntry } from '../../project/files';
+import { peekGameFile, loadCatalog, type CatalogEntry } from '../../project/files';
 import { byCollection, COLLECTIONS, isBizarreGame } from '../../project/bizarre';
 
 export { byCollection };
@@ -30,7 +30,7 @@ const LOGO = [190, 10, 102, 108] as const;
 
 /** A GIF from a game's disk, drawn on a canvas (undefined if the game hasn't got it). */
 async function gif(g: CatalogEntry, name: string): Promise<HTMLCanvasElement | undefined> {
-  const bytes = await fetchGameFile(g, name).catch(() => undefined);
+  const bytes = await peekGameFile(g, name).catch(() => undefined);
   if (!bytes) return undefined;
   const bmp = await createImageBitmap(new Blob([bytes as BlobPart], { type: 'image/gif' })).catch(() => undefined);
   if (!bmp) return undefined;

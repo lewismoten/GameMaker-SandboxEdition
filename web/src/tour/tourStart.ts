@@ -4,6 +4,7 @@ import { h } from '../editor/core/ui';
 import { Actor, loadSprites } from './actor';
 import { CHAPTERS } from './chapters/index';
 import { editorChapterIds } from './editorChoice';
+import { setAllGuides } from './tourPages';
 import { Tour, tourPlaying } from './tourEngine';
 import type { PageKey } from './steps';
 
@@ -45,7 +46,17 @@ export async function showDock(page: PageKey): Promise<void> {
       h('button', { type: 'button', class: 'primary', onclick: () => startTour(undefined, { page }) }, 'Show me around'),
       h(
         'button',
-        { type: 'button', class: 'tour-dock-x', 'aria-label': 'Hide the guides for now', title: 'Hide the guides for now', onclick: () => hideDock() },
+        {
+          type: 'button',
+          class: 'tour-dock-x',
+          'aria-label': 'Stop the guides waiting on every page',
+          title: 'Stop the guides waiting on every page (the ? menu or the Tour switch brings them back)',
+          // closing them is a "no thanks" for the whole site, so they don't come back on the next page
+          onclick: () => {
+            setAllGuides(false);
+            hideDock(true);
+          },
+        },
         '×',
       ),
     ),

@@ -6,6 +6,7 @@ import type { Session } from '@lewismoten/gamemaker-sandbox-engine/engine/scene'
 import { EDIT_KINDS } from './editKinds';
 import { noteFinished, notePlayed, noteWatched, noteOutcome } from './goals';
 import { tally, unlockAchievement } from './store';
+import { noteChickenScene } from '../chicken/chickenStory';
 import { finishedIn, watchRun, type PlayView } from './playedOn';
 
 export { unlockAchievement, progress, tally } from './store';
@@ -106,6 +107,7 @@ export function playAchievements(
         run = undefined;
         void noteFinished(saveId);
         gameSpot(catalogGame, undefined, true);
+        noteChickenScene(catalogGame, undefined, true);
         return;
       }
       if (typeof window !== 'undefined') run ??= watchRun();
@@ -115,6 +117,7 @@ export function playAchievements(
         void notePlayed(saveId);
       }
       gameSpot(catalogGame, session.game.scenes[scene]?.desc);
+      noteChickenScene(catalogGame, session.game.scenes[scene]?.desc);
     },
   };
   return hooks;

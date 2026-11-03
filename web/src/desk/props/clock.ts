@@ -1,6 +1,6 @@
 // The giant wristwatch on the wall (room/wallClock.ts), pressed: it ticks and beeps the
 // hour like a sport watch, and now and then, where a cuckoo would be, Sir Reginald
-// Cluckington III (Doc Leo's rubber chicken) pops out of it and squawks. At 3:17 a.m. the
+// Cluckington III, or Lady Regina once Tune-Up's egg is laid (chicken/), (Doc Leo's rubber chicken) pops out of it and squawks. At 3:17 a.m. the
 // fridge downstairs stirs (The Great Dairy Reckoning of 3:17 A.M.); at midnight the chicken
 // comes out in a party hat for the brand-new day. After he has come out a few times, a small tin
 // heart drops out with him (clockHeart.ts). Where the clock isn't drawn, every third TIME at the
@@ -11,6 +11,9 @@ import { roomSound } from './propSound';
 import { deskNow } from '../../retro/dos/deskClock';
 import { DOS_TIME_EVENT } from '../../retro/dos/dosTimeEvent';
 import { clockHeart } from './clockHeart';
+import { chickenNow } from '../../chicken/chickenState';
+import { chickenWords } from '../../chicken/chickenWords';
+import { TIARA_SVG } from '../../chicken/chickenArt';
 
 const time = (d: Date) => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
@@ -21,7 +24,7 @@ const BEEPS = [
   (t: string) => `Beep-beep! ${t}, and it’s still water resistant (please don’t test that).`,
 ];
 
-/** Sir Reginald Cluckington III: a yellow rubber chicken with a red comb, beak open. */
+/** Sir Reginald Cluckington III (or Lady Regina, with a tiara): a yellow rubber chicken with a red comb, beak open. */
 function chickenArt(party: boolean): SVGElement {
   const el = h('span');
   el.innerHTML = `<svg viewBox="0 0 60 60" width="66" height="66" aria-hidden="true">
@@ -34,6 +37,7 @@ function chickenArt(party: boolean): SVGElement {
     <path d="M49 20 q2 6 -1 7 q-3 -2 -1 -7 z" fill="#e0242c"/>
     <circle cx="47" cy="13" r="1.8" fill="#111"/>
     <path d="M26 46 l-2 10 M34 46 l2 10 M21 56 h6 M33 56 h6" stroke="#f08a1c" stroke-width="2" stroke-linecap="round"/>
+    ${chickenNow() === 'lady' ? TIARA_SVG : ''}
     ${party ? '<path d="M41 7 l5 -7 4 8 z" fill="#3a6ee8" stroke="#fff" stroke-width="0.8"/><circle cx="45.5" cy="0.8" r="1.8" fill="#ffd400"/>' : ''}
   </svg>`;
   return el.firstElementChild as SVGElement;
@@ -59,6 +63,7 @@ export function clockProp(clock: HTMLElement): () => void {
       say(clock, `3:17 a.m. Somewhere downstairs a fridge door creaks open. The dairy is stirring…`);
       return;
     }
+    const w = chickenWords();
     const midnight = hr === 0 && min < 5;
     if (midnight || presses % 3 === 0) {
       bird.replaceChildren(chickenArt(midnight));
@@ -69,9 +74,9 @@ export function clockProp(clock: HTMLElement): () => void {
       say(
         clock,
         (midnight
-          ? `Midnight! The date flips to the ${now.getDate()}${ordinal(now.getDate())}. SQUAWK! Sir Reginald Cluckington III, in a party hat: happy brand-new day.`
-          : `SQUAWK! Sir Reginald Cluckington III pops out of the watch. (Nobody knows how a rubber chicken got in there.) It’s ${t}.`) +
-          withHeart(out, 'Something small and shiny drops out after him. Tick, tock.'),
+          ? `Midnight! The date flips to the ${now.getDate()}${ordinal(now.getDate())}. SQUAWK! ${w.full}, in a party hat: happy brand-new day.`
+          : `SQUAWK! ${w.full} pops out of the watch. (Nobody knows how a rubber chicken got in there.) It’s ${t}.`) +
+          withHeart(out, `Something small and shiny drops out after ${w.him}. Tick, tock.`),
         chickenArt(midnight),
       );
       return;

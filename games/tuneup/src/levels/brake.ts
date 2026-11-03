@@ -118,7 +118,7 @@ export function brake(book: Kit['book']): Level {
     .set(16, BRAKE_FORK[1] - 1, 'wall.glint');
   m.set(BRAKE.exit, floor - 2, 'door.top').set(BRAKE.exit, floor - 1, 'door');
   m.fill(w - 1, 0, 1, floor, 'slab');
-  m.link(BRAKE.exit + 1, floor - 1);
+  m.link(BRAKE.exit, floor - 1);
   m.mon(MON.reggie, 4, floor - 1);
   decorate(m, [
     ['board', 3, 4],

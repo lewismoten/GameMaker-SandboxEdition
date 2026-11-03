@@ -44,3 +44,4 @@ __pycache__/
 .env.*
 *.pem
 *.p12
+/web/public/trinkets/

@@ -49,10 +49,10 @@ export const STORY = pages(
 
 export const INSTRUCTIONS = pages(
   [
-    'Left and Right walk.',
-    'Up hops (Q and E hop left',
-    'and right). On a wire, Up',
-    'climbs and Down climbs down.',
+    'Arrows walk and hop; W A S D',
+    'do too. Q and E (Home and',
+    'PgUp) hop sideways. On a wire,',
+    'Up climbs, Down climbs down.',
     '',
     'Space reaches up. Hold it',
     'under a crank to turn it.',

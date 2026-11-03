@@ -436,6 +436,23 @@ export function beatBlocks(v: Verse) {
       return p;
     };
     book.add('works', works(), AIR);
+    // the way out, at the side room's end: a doorway in the works, a lit EXIT sign over it
+    // a lit EXIT sign (letters 3 pixels wide, drawn by hand: the DOS font is too wide) over a doorway
+    const GLYPH: Record<string, string[]> = {
+      E: ['111', '100', '110', '100', '111'],
+      X: ['101', '101', '010', '101', '101'],
+      I: ['111', '010', '010', '010', '111'],
+      T: ['111', '010', '010', '010', '010'],
+    };
+    const exitTop = works().rect(2, 12, 16, 8, c('ink', 0)).frame(2, 12, 16, 8, c('mach', 4)).rect(5, 14, 10, 6, c('wall', 0));
+    exitTop.rect(1, 1, 18, 9, c('green', 1)).frame(1, 1, 18, 9, c('ink', 0));
+    [...'EXIT'].forEach((ch, i) => GLYPH[ch].forEach((row, y) => [...row].forEach((on, x) => on === '1' && exitTop.set(3 + i * 4 + x, 3 + y, c('paint', 3)))));
+    book.add('exit.top', exitTop, AIR);
+    book.add(
+      'exit.door',
+      works().rect(2, 0, 16, 20, c('ink', 0)).frame(2, 0, 16, 20, c('mach', 4)).rect(5, 0, 10, 18, c('wall', 0)).rect(13, 9, 2, 2, c('lamp', 3)),
+      AIR,
+    );
     book.add('shelf', works().rect(0, 0, 20, 4, c('mach', 4)).rect(0, 0, 20, 1, c('mach', 6)), { solid: LEDGE, ...AIR });
     if (v.nook === 'heart') {
       // the engine's ticker, at the top of the works: it ticks; touched, it leaves the wall
@@ -484,6 +501,7 @@ export function beat(v: Verse) {
     m.fill(16, 6, 2, 1, 's').fill(19, 4, 2, 1, 's');
     if (v.nook === 'heart') m.set(...NOOK, 'tinHeart');
     m.mon(MON.dreamBird, 15, ROW.feet);
+    m.set(EXIT_X, ROW.head, 'exit.top').set(EXIT_X, ROW.feet, 'exit.door');
     m.link(EXIT_X, ROW.feet);
     // he starts mid-screen between the keys and drops onto the rail
     return { m, start: at(8, 5), size: [W, 10] };

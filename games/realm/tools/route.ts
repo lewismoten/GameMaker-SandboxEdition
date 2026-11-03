@@ -3,8 +3,11 @@
 // Deadline Keep, where Lord Deadline fights on out of his armor. No side quests beyond what the
 // money needs, no egg.
 import { Bot } from './bot';
+import { MINE_DOORS } from '../src/wheel/wheel';
 
 type Step = (b: Bot) => Promise<void>;
+/** The Putoff Mines' true door in the bulkhead (src/levels/dungeons.ts lays the doors 4 apart from x 72). */
+const DOOR: [number, number] = [72 + MINE_DOORS.open * 4, 36];
 const set = (...cells: [number, number][]) => new Set(cells.map(([x, y]) => `${x},${y}`));
 
 const nowish: Step = async (b) => {
@@ -21,6 +24,8 @@ const toKing: Step = async (b) => {
 const barrows: Step = async (b) => {
   await b.retry(() => b.enter(40, 24, 'the Snooze Barrows'));
   await b.retry(async () => {
+    // the runes by the way in: read close up (the Royal Code Wheel says FOGHORN WEST)
+    await b.talk(45, 77, 'the runes in the floor');
     // the writ opens the sealed door
     await b.goto(50, 64, 'through the sealed door', set([50, 67]));
     await b.goto(25, 41, 'the foghorn');
@@ -118,7 +123,9 @@ async function onFoot(b: Bot): Promise<void> {
     const near = b.foeList().find((f) => f[2] === runner());
     if (near && Math.hypot(near[0], near[1]) > b.reach - 0.4) {
       const dir = Math.abs(near[0]) > Math.abs(near[1]) ? (near[0] > 0 ? 'right' : 'left') : near[1] > 0 ? 'down' : 'up';
-      const m = b.stepTouchesLink(dir) ? undefined : await b.push(dir, 1);
+      // (cornered up by the Round Tuit, whose link is in the way: walk back out into the throne
+      // room and let him come; he charges)
+      const m = !b.stepTouchesLink(dir) ? await b.push(dir, 1) : await b.goto(50, 24, process.env.BOT_LOG ? 'back into the room' : '');
       if (m) throw new Error(`Lord Deadline on foot: ${m}`);
     }
     const r = (await b.fight(4)) ?? (await b.wait(1));
@@ -171,6 +178,9 @@ const mines: Step = async (b) => {
   await b.retry(() => b.enter(78, 38, 'the Putoff Mines'));
   await b.retry(async () => {
     await b.goto(50, 66, 'through the lamp door', set([50, 70]));
+    // the miners' plate gives the Code Wheel's key; its windows pick the true door of the four
+    await b.talk(74, 38, "the miners' plate");
+    await b.goto(DOOR[0], DOOR[1] - 1, 'through the true door', set(DOOR));
     await bossFight(b, 50, 26, 'Tick-Tock');
     await b.talk(50, 22, 'the third piece');
     await b.enter(50, 83, 'the stairs out');
@@ -180,6 +190,8 @@ const mines: Step = async (b) => {
 const keep: Step = async (b) => {
   await b.retry(() => b.enter(76, 76, 'Deadline Keep'));
   await b.retry(async () => {
+    // the runes in the Hall of Sockets: SWING AS HE COMES, for Lord Deadline on foot
+    await b.talk(38, 47, 'the runes in the floor');
     await b.goto(50, 35, 'through the sockets', set([50, 39], [50, 38], [50, 37]));
     await bossFight(b, 50, 19, 'Lord Deadline');
     await onFoot(b);

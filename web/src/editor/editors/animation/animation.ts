@@ -5,6 +5,7 @@
 // back as an .FLI with only what changed between frames, as Animator did. The Scene maker
 // tab builds one instead from moving text, characters, monsters and blocks (scene/).
 import './animation.css';
+import './shrink/shrink.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
 import { h, clear, download, pickFiles, toast } from '../../core/ui';
@@ -21,6 +22,9 @@ import type { Project } from '../../core/project';
 import { sceneEditor, storedScene } from './scene/sceneEditor';
 
 const RETRACE = 70;
+
+/** The exact bytes of an animation when they were not made by encodeFliFrames (Make it smaller), so undo and redo restore them. */
+const exactBytes = new WeakMap<FliFrames, Uint8Array>();
 const SPEEDS: [number, string][] = [
   [1, 'Fastest'],
   [3, 'Fast'],
@@ -42,6 +46,7 @@ function framePng(f: FliFrame, w: number, hgt: number): Promise<Uint8Array> {
 /** The frames view: the animation as a strip of whole frames. */
 function framesView(host: HTMLElement, project: Project, file: string): () => void {
   let anim: FliFrames = decodeFliFrames(project.files.get(file)!);
+  exactBytes.set(anim, project.files.get(file)!);
   const base = file.replace(/\.fli$/, '');
   const undo: FliFrames[] = [];
   const redo: FliFrames[] = [];
@@ -208,7 +213,18 @@ function framesView(host: HTMLElement, project: Project, file: string): () => vo
     to.push(anim);
     anim = prev;
     cur = Math.min(cur, anim.frames.length - 1);
-    project.files.set(file, encodeFliFrames(anim));
+    project.files.set(file, exactBytes.get(anim) ?? encodeFliFrames(anim));
+    render();
+  };
+  /** Replaces the file with bytes made elsewhere (Make it smaller) as one undoable step. */
+  const applyBytes = (bytes: Uint8Array) => {
+    const next = decodeFliFrames(bytes);
+    exactBytes.set(next, bytes);
+    undo.push(anim);
+    redo.length = 0;
+    anim = next;
+    cur = Math.min(cur, next.frames.length - 1);
+    project.files.set(file, bytes);
     render();
   };
   const withFrames = (frames: FliFrame[], select?: number) => commit({ ...anim, frames }, select);
@@ -404,6 +420,14 @@ function framesView(host: HTMLElement, project: Project, file: string): () => vo
         h('button', { onclick: () => void exportAll() }, '⬇ All frames (.zip of PNGs)'),
         gifBtn,
         mp4Btn,
+        h(
+          'button',
+          {
+            title: 'See why this file is the size it is, and try lossless or lossy ways to shrink it, with a preview',
+            onclick: () => void import('./shrink/shrinkPanel').then((m) => m.openShrinkPanel(project, file, applyBytes)),
+          },
+          '✂ Make it smaller…',
+        ),
         h('span', { class: 'spacer' }),
         undoBtn,
         redoBtn,

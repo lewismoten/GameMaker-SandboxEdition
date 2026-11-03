@@ -14,6 +14,7 @@ import { runs } from './inline';
 import { floppyFigure } from './floppy';
 import { MAG } from './masthead';
 import { mugShelf } from './mugShelf';
+import { pcNewsPage } from './pcNews';
 import { shelfList } from './shelf';
 import { replyMail } from './replyMail';
 import type { Tool } from './toolShots';
@@ -279,6 +280,12 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
       return mugShelf(b, pending);
     case 'shelf':
       return shelfList(b);
+    case 'pcnews':
+      return pcNewsPage(
+        b,
+        (t) => inline(t, where),
+        (s) => shotFigure(s.game, s.view, s.alt, env, pending, 'mag-shot', s.caption),
+      );
     case 'jump': {
       const n = b.folio === undefined ? '' : ` ${b.folio}`;
       if (b.dir === 'on') {
@@ -293,7 +300,9 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
     case 'halfad':
       return halfAdBox(b, env, pending);
     case 'beside':
-      return h('div', { class: 'mag-beside' }, h('div', { class: 'mag-beside-main' }, ...all(b.blocks)), halfAdBox(b.ad, env, pending));
+      return b.ad.look === 'column'
+        ? h('div', { class: 'mag-beside ad-column' }, halfAdBox(b.ad, env, pending), h('div', { class: 'mag-beside-main' }, ...all(b.blocks)))
+        : h('div', { class: 'mag-beside' }, h('div', { class: 'mag-beside-main' }, ...all(b.blocks)), halfAdBox(b.ad, env, pending));
     case 'rule':
       return h('hr');
   }
@@ -304,7 +313,7 @@ function halfAdBox(b: HalfAd, env: RenderEnv, pending: Promise<unknown>[]): HTML
   const { where } = env;
   return h(
     'aside',
-    { class: 'mag-halfad', 'aria-label': `Advertisement: ${b.advertiser}` },
+    { class: `mag-halfad${b.look ? ` look-${b.look}` : ''}`, 'aria-label': `Advertisement: ${b.advertiser}` },
     h('p', { class: 'mag-halfad-label', 'aria-hidden': 'true' }, 'ADVERTISEMENT'),
     h(
       'div',

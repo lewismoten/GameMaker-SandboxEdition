@@ -103,6 +103,8 @@ export type Block =
    * for each run of titles, with who made each and when; `mark` titles get a check and `markText`.
    */
   | { t: 'shelf'; items: ShelfItem[]; markText: string }
+  /** A page of short news in columns under a ruled, outlined banner (pcNews.ts): `banner` is the repeated title. */
+  | { t: 'pcnews'; banner: string; items: PcNewsItem[] }
   /**
    * Where a jumped article stops or picks up, as magazines split a long story: `on` ends its page
    * with "Continued on page N ▸", `from` starts the rest at the back of the book with the story's
@@ -128,6 +130,8 @@ export interface HalfAd {
   small?: Inline;
   tone?: Tone;
   burst?: string;
+  /** 'column': a tall narrow ad standing up the side of the page (columnAd.css), its picture first. */
+  look?: 'column';
 }
 
 /** One title on a `shelf`. */
@@ -158,6 +162,15 @@ export interface MiniCover {
  * tools at work on that level's files (toolShots.ts): the palette, the block editor, the
  * monsters' animation frames, or the whole map. Or, for the pass-through feature, a walk-in or a page.
  */
+/** One news item: an italic headline, a drop cap, and a pink or yellow box when it has a `tone`. `slot` places it (pcNews.ts). */
+export interface PcNewsItem {
+  slot: 'a' | 'b' | 'c' | 'wide' | 'd' | 'e';
+  title: string;
+  tone?: 'pink' | 'yellow';
+  body: Inline[];
+  shot?: { game: string; view: ShotView; alt: string; caption: Inline };
+}
+
 export type ShotView = 'title' | 'level' | 'palette' | 'blocks' | 'monsters' | 'map' | `walk:${string}` | `page:${string}`;
 // `walk:<scene>` is the level where the hero stands on the link into a pass-through scene of that
 // name, `page:<scene>` the picture and page that scene shows (passShots.ts).

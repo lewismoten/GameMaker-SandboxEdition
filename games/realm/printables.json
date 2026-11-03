@@ -303,6 +303,31 @@
           ]
         },
         {
+          "head": "The Royal Code Wheel",
+          "hints": [
+            {
+              "q": "How do I use the Code Wheel?",
+              "a": "Every carving starts with a brass letter and a brass rune. Turn the small disc until that rune sits against that letter. Then read each rune of the carving off the big disc."
+            },
+            {
+              "q": "What do the runes in the Snooze Barrows say?",
+              "a": "Set rune Yawn against P: FOGHORN WEST. The foghorn is in the west room."
+            },
+            {
+              "q": "Which door in the Putoff Mines?",
+              "a": "The miners' plate says M and rune Putter. Set them, and the windows show bell, lamp, gem: the third door from the west."
+            },
+            {
+              "q": "What do the runes in Deadline Keep say?",
+              "a": "Set rune Snooze against D: SWING AS HE COMES. It's about Lord Deadline on foot."
+            },
+            {
+              "q": "I picked a cupboard.",
+              "a": "No harm done: you come out in the passage south of the stopes. Walk back up and try the door the wheel shows you."
+            }
+          ]
+        },
+        {
           "head": "Side Quests",
           "hints": [
             {
@@ -348,6 +373,206 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "kind": "codewheel",
+      "title": "The Royal Code Wheel",
+      "note": "Turns Old Procrastian runes into plain letters",
+      "promised": true,
+      "heading": "The Royal Code Wheel of Procrastia · Old Procrastian into plain letters",
+      "center": "ROYAL",
+      "outer": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+      "inner": [
+        "rune Mull",
+        "rune Snooze",
+        "rune Snore",
+        "rune Nap",
+        "rune Drift",
+        "rune Doze",
+        "rune Putter",
+        "rune Lag",
+        "rune Rest",
+        "rune Maybe",
+        "rune Wait",
+        "rune Shrug",
+        "rune Sigh",
+        "rune Later",
+        "rune Loll",
+        "rune Whenever",
+        "rune Tarry",
+        "rune Yawn",
+        "rune Idle",
+        "rune Soon",
+        "rune Linger",
+        "rune Mope",
+        "rune Stall",
+        "rune Someday",
+        "rune Muse",
+        "rune Pause"
+      ],
+      "hidden": [
+        [
+          "gem",
+          "snail",
+          "cart",
+          "pick",
+          "moon",
+          "bell",
+          "moon",
+          "key",
+          "snail",
+          "pick",
+          "bell",
+          "key",
+          "lamp",
+          "snail",
+          "lamp",
+          "gear",
+          "gem",
+          "key",
+          "gear",
+          "cart",
+          "bell",
+          "moon",
+          "pick",
+          "gear",
+          "lamp",
+          "cart"
+        ],
+        [
+          "gem",
+          "pick",
+          "key",
+          "pick",
+          "lamp",
+          "gem",
+          "snail",
+          "cart",
+          "bell",
+          "gear",
+          "lamp",
+          "pick",
+          "moon",
+          "bell",
+          "cart",
+          "key",
+          "snail",
+          "gear",
+          "gem",
+          "lamp",
+          "moon",
+          "gear",
+          "cart",
+          "bell",
+          "moon",
+          "key"
+        ],
+        [
+          "lamp",
+          "snail",
+          "gem",
+          "bell",
+          "cart",
+          "bell",
+          "snail",
+          "pick",
+          "snail",
+          "gear",
+          "lamp",
+          "moon",
+          "key",
+          "pick",
+          "gear",
+          "bell",
+          "moon",
+          "key",
+          "pick",
+          "moon",
+          "key",
+          "cart",
+          "gear",
+          "gem",
+          "lamp",
+          "gem"
+        ]
+      ],
+      "windows": [
+        { "at": 4, "ring": 0, "label": "1" },
+        { "at": 13, "ring": 1, "label": "2" },
+        { "at": 22, "ring": 2, "label": "3" }
+      ],
+      "glyphs": {
+        "rune Yawn": [".#.#.", "#...#", "#...#", ".#.#.", "..#..", "..#..", ".###."],
+        "rune Nap": ["##...", ".#...", ".#...", ".###.", "...#.", "...#.", "...##"],
+        "rune Snore": ["..#..", ".#...", "..#..", "...#.", "..#..", ".#...", "..#.."],
+        "rune Doze": ["..#..", ".###.", "..#..", "..#..", "..#..", "..#..", "#####"],
+        "rune Loll": ["#....", ".#...", "..#..", "..#..", "..#..", "...#.", "....#"],
+        "rune Idle": ["#...#", "#...#", "#####", "..#..", "..#..", "..#..", "..#.."],
+        "rune Mull": ["..#..", "..#..", "#.#.#", ".###.", "..#..", "..#..", "..#.."],
+        "rune Putter": ["###..", "#.#..", "###..", "..#..", "..#..", "..###", "....#"],
+        "rune Lag": ["..#..", "..#..", "..#..", "..#..", "..#.#", "..#.#", "..###"],
+        "rune Stall": ["#####", "#...#", "#...#", "#####", "..#..", "..#..", "..#.."],
+        "rune Tarry": ["..#..", ".#.#.", "#...#", "..#..", "..#..", "..#..", "..#.."],
+        "rune Linger": ["#....", "##...", "#.#..", "#..#.", "#...#", "#....", "#...."],
+        "rune Drift": ["....#", "...#.", "..#..", ".#...", "#....", ".#...", "..#.."],
+        "rune Mope": ["..#..", ".#.#.", "..#..", ".###.", "#.#.#", "..#..", ".#.#."],
+        "rune Muse": [".###.", "#...#", ".###.", "..#..", "..#..", ".#.#.", "#...#"],
+        "rune Pause": ["#...#", "#...#", "#...#", "#...#", "#...#", "#...#", "#...#"],
+        "rune Rest": [".....", ".....", "#####", ".....", "#####", ".....", "....."],
+        "rune Wait": ["#####", ".#.#.", "..#..", "..#..", "..#..", ".#.#.", "#####"],
+        "rune Later": ["#....", ".#...", "..#..", "...#.", "..#..", ".#...", "#...."],
+        "rune Soon": ["..#.#", "..#.#", "..###", "..#..", "..#..", "..#..", "..#.."],
+        "rune Someday": ["..#..", "..#..", "#####", "..#..", "#####", "..#..", "..#.."],
+        "rune Maybe": [".###.", "#...#", "...#.", "..#..", "..#..", ".....", "..#.."],
+        "rune Whenever": ["#...#", ".#.#.", "..#..", ".#.#.", "#...#", ".#.#.", "..#.."],
+        "rune Shrug": ["#...#", ".#.#.", "..#..", ".###.", "..#..", "..#..", "..#.."],
+        "rune Sigh": ["..#..", "..#..", "..#..", "..#..", ".#.#.", "#...#", "#...#"],
+        "rune Snooze": ["#####", "...#.", "..#..", ".#...", "#####", "...#.", "..##."],
+        "pick": ["#####", "#.#.#", "..#..", "..#..", "..#.."],
+        "lamp": [".###.", ".#.#.", ".###.", "#.#.#", "#####"],
+        "bell": [".###.", "#...#", "#...#", "#####", "..#.."],
+        "gear": ["#.#.#", ".###.", "##.##", ".###.", "#.#.#"],
+        "moon": [".##..", "#....", "#....", "#....", ".##.."],
+        "gem": ["..#..", ".###.", "#####", ".###.", "..#.."],
+        "snail": [".##..", "#..#.", "#.##.", "#...#", "#####"],
+        "key": [".....", "###..", "#.###", "###.#", "....."],
+        "cart": [".....", "#####", "#...#", "#####", ".#.#."]
+      },
+      "howto": [
+        "Every carving in Procrastia begins with its key, set in brass: a letter, then a rune.",
+        "Turn the small disc until the key's rune sits against the key's letter on the big disc.",
+        "Now read the carving: each rune sits against the letter it stands for. A blank stone is a gap between words.",
+        "The three windows show the miners' marks for that key. Marks on a door read left to right: window 1, then 2, then 3."
+      ],
+      "puzzles": [
+        {
+          "scenes": [32, 33],
+          "ask": "The Snooze Barrows: what do the runes in the floor by the way in say?",
+          "turn": {
+            "inner": "rune Yawn",
+            "outer": "P"
+          },
+          "answer": "FOGHORN WEST. The Harbor Master's foghorn lies in the barrow's west room. Take it before you go."
+        },
+        {
+          "scenes": [37, 38, 39],
+          "ask": "The Putoff Mines: which of the four doors in the bulkhead is the true one?",
+          "turn": {
+            "inner": "rune Putter",
+            "outer": "M"
+          },
+          "answer": "The windows show bell, lamp, gem: the third door from the west. The other three are cupboards."
+        },
+        {
+          "scenes": [41, 42],
+          "ask": "Deadline Keep: what do the runes in the Hall of Sockets say?",
+          "turn": {
+            "inner": "rune Snooze",
+            "outer": "D"
+          },
+          "answer": "SWING AS HE COMES. When Lord Deadline charges at you on foot, face him and swing as he arrives."
         }
       ]
     }

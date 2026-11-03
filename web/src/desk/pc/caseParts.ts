@@ -1,5 +1,5 @@
-// The front of the PC case: a two-digit seven-segment MHz display, a 3.5" floppy drive
-// (slot with its spring flap, activity light and eject button) and a CD-ROM drive
+// The front of the PC case: a two-digit seven-segment MHz display, the hard disk's light, a 3.5"
+// floppy drive (slot with its spring flap, activity light and eject button) and a CD-ROM drive
 // (tray, headphone jack, volume wheel, busy light and the eject button under the tray).
 import { h } from '../../editor/core/ui';
 
@@ -61,6 +61,32 @@ export function sevenSegment(digits = 2): HTMLElement & { show(text: string): vo
   };
   el.show('');
   return el;
+}
+
+/** The hard disk's light beside POWER and TURBO (C: has no bay of its own): it flickers as the disk is read. */
+export function hddLight(): { led: HTMLElement; busy(ms?: number): void; off(): void } {
+  const led = h('span', { class: 'led red' });
+  let until = 0;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const flicker = () => {
+    const left = until - Date.now();
+    if (left <= 0) return void (led.classList.remove('on'), (timer = undefined));
+    led.classList.toggle('on', !led.classList.contains('on') || Math.random() < 0.4);
+    timer = setTimeout(flicker, Math.min(left, 30 + Math.random() * 70));
+  };
+  return {
+    led,
+    busy(ms = 400) {
+      until = Math.max(until, Date.now() + ms);
+      if (!timer) flicker();
+    },
+    off() {
+      until = 0;
+      clearTimeout(timer);
+      timer = undefined;
+      led.classList.remove('on');
+    },
+  };
 }
 
 interface FloppyDrive {

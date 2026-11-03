@@ -435,7 +435,7 @@
   "warning start-threat s2 The hero starts with nothing to fire, and 2 enemies are on the first screen"
  ],
  "realm": [
-  "warning density s36 6 enemies on one screen at (42, 24)",
+  "warning density s37 6 enemies on one screen at (42, 24)",
   "warning start-threat s2 Monster 11 starts 2 blocks from where the hero comes in",
   "warning start-threat s2 Monster 9 starts 1 blocks from where the hero comes in"
  ],

@@ -11,6 +11,8 @@ import { gradient } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { blob } from '../../../snowbound/src/art/draw';
 import { AIR, kit, LEDGE, SOLID, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
+import { addCameo, placeCameo } from '../blocks/cameo';
+import { willCameo } from '../../../kit/cameos';
 import type { Pal } from '../art/palette';
 import { CTR, MONEY, MON } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
@@ -73,6 +75,8 @@ export function hornBlocks(r: HornRound) {
     const sheet = gradient(new Pixels(20, HORN_ROW.floor * 20, 0), 0, 0, 20, HORN_ROW.floor * 20, R('wall'), 4, 1);
     for (let y = 0; y < HORN_ROW.floor; y++) book.add(`sky${y}`, sheet.crop(0, y * 20, 20, 20), AIR);
     const sky = (row: number = HORN_ROW.pads) => k.pic(`sky${row}`);
+    // Will (Shakespeare in Sweatpants), on the curb bowing to the Clown Club
+    addCameo(k, 'will', `sky${HORN_ROW.floor - 1}`, (host, use) => willCameo(host, { face: 'front' }, { use }));
     // a bulb horn: the rubber bulb in its color, the brass bell; lit, it glows and honks
     const horn = (h: number, lit: boolean, p = sky()) => {
       const col = HORN_COLORS[h];
@@ -183,6 +187,7 @@ export function horn(r: HornRound) {
       m.mon(MON.clown0 + ((k + HORN_ROUNDS.indexOf(r)) % 4), sx + 11, R.floor - 1);
     });
     m.fill(w - 1, 0, 1, R.floor, '#');
+    placeCameo(m, 'will', `sky${R.floor - 1}`, [[stageX(0) + 14, R.floor - 1]]);
     m.link(exit, R.floor - 1);
     m.mon(MON.regina, 7, R.floor - 1);
     // variants here and there so the walls and floors don't repeat

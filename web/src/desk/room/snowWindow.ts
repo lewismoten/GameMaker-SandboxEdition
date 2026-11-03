@@ -9,6 +9,7 @@ import { daylight } from './daylight';
 import { onDeskClock } from '../../retro/dos/deskClock';
 import { PhoneSounds } from './phone/sounds';
 import { moonPath, moonPhase } from '../props/moonPhase';
+import { deskLifetime } from '../lifetime';
 
 type RGB = [number, number, number];
 const mix = (night: RGB, day: RGB, t: number) => `rgb(${night.map((n, i) => Math.round(n + (day[i] - n) * t)).join(',')})`;
@@ -317,7 +318,7 @@ export function snowyWindow(): HTMLElement {
       requestAnimationFrame(loop);
     }
   };
-  addEventListener('gm-house-fire', onFire);
+  addEventListener('gm-house-fire', onFire, { signal: deskLifetime() });
 
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let light = daylight();
@@ -398,5 +399,6 @@ export function snowyWindow(): HTMLElement {
     shine();
     if (still) draw(false);
   });
+  deskLifetime().addEventListener('abort', offClock);
   return el;
 }

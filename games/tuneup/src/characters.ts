@@ -11,10 +11,12 @@ import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon, pace, set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
+import { addLeftHandKeys } from './altKeys';
 import { CTR, KEY, MON, MONEY, OIL_KEYS, SEQ, SND } from './ids';
 import type { LeoBlocks, MonsterBlocks } from './sprites/cast';
 import { addRealMonsters, type CapGame } from './realMonsters';
 import { addBeltMonsters } from './beltMonsters';
+import { addParadeMonsters } from './paradeMonsters';
 
 const JOY = { up: 1, upRight: 2, right: 3, downRight: 4, down: 5, downLeft: 6, left: 7, upLeft: 8, any: 9 };
 /** Both blocks flipped left-right (low nibble the top, high nibble the bottom). */
@@ -71,6 +73,8 @@ function leo(cb: LeoBlocks, mode: 'leo' | 'piano' | 'oil' | 'pump'): Character {
     set(S[SEQ.hopRight], side(HOP_STEP, false), { key: KEY.e, jstkMov: JOY.upRight, sound: SND.hop });
   }
   set(S[SEQ.down], [f({ pose: 'climb', y: CLIMB_DOWN })], { key: KEY.down, jstkMov: JOY.down });
+  // (the oil can's D is a note: its Doc Leo has no left-handed set)
+  if (mode !== 'oil') addLeftHandKeys(S);
   // Space: hands up into the block over his hat for one tick (so a key counts its touch once), and
   // back; again while held
   set(S[SEQ.boop], [f({ pose: 'hop', y: -REACH, pause: 1 }), f({ pose: 'front', y: REACH, pause: 3 })], {
@@ -128,6 +132,8 @@ export interface MonsterOptions {
   reach?: number;
   /** Hubcaps and Balls: this round's shell game. */
   caps?: CapGame;
+  /** The Parade Route: blocks behind THE CHEZ each follower keeps (paradeMonsters.ts); the parade's .MON has these instead of the Beltway's traffic. */
+  parade?: number[];
 }
 
 /**
@@ -183,6 +189,7 @@ export function buildMonsters(mb: MonsterBlocks, o: MonsterOptions = {}): Monste
   for (let i = 0; i < 5; i++)
     out[MON.drop0 + i] = mon(anim('drop0', 'drop1', 2), { power: POWER.drop, thru: 0, end: -1 }, [corner(0, 0, 8), corner(-reach, 0, 8, 4)]);
   addRealMonsters(out, n, o.caps);
-  addBeltMonsters(out, n);
+  if (o.parade) addParadeMonsters(out, n, o.parade);
+  else addBeltMonsters(out, n);
   return out;
 }

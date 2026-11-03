@@ -25,6 +25,8 @@ import { reduceView } from './reduceView';
 import { sizeUp, type SizeUp } from './size';
 import { floppyFor } from './diskCard';
 import type { Plan, Step } from './types';
+import type { GameFiles } from '../../project/files';
+import type { storeFor } from './optimizedCopy';
 import './diskTool.css';
 
 interface Kept {
@@ -76,15 +78,28 @@ async function copyAll(project: Project, steps: Step[]): Promise<string> {
   });
 }
 
+function applyPack(project: Project, p: PackPlan, files: GameFiles, store: ReturnType<typeof storeFor>): void {
+  if (p.proposed) setSection(store.companion, project.gam, PALETTE_RESERVATIONS, p.roles);
+  for (const u of p.units) {
+    u.apply(files, project.gam);
+    if (u.moves) remapExtras(store, u.moves);
+  }
+}
+
 async function copyPack(project: Project, p: PackPlan): Promise<string> {
   const { makeOptimizedCopy } = await import('./makeOptimizedCopy');
-  return makeOptimizedCopy(project, (files, store) => {
-    if (p.proposed) setSection(store.companion, project.gam, PALETTE_RESERVATIONS, p.roles);
-    for (const u of p.units) {
-      u.apply(files, project.gam);
-      if (u.moves) remapExtras(store, u.moves);
-    }
-  });
+  return makeOptimizedCopy(project, (files, store) => applyPack(project, p, files, store));
+}
+
+/** Makes the copy for a look-only game (every change it would make in place is refused) and says so. */
+async function copyThen(project: Project, run: (files: GameFiles, store: ReturnType<typeof storeFor>) => void): Promise<void> {
+  try {
+    const { makeOptimizedCopy } = await import('./makeOptimizedCopy');
+    const name = await makeOptimizedCopy(project, run);
+    toast(`Made “${name}” in My Games. This game and its saved games are unchanged.`);
+  } catch (e) {
+    toast(`Could not make the copy: ${(e as Error).message}`, 'error');
+  }
 }
 
 function sizeTable(s: SizeUp): HTMLElement {
@@ -137,6 +152,8 @@ export async function diskTool(project: Project): Promise<void> {
       const now = project.files.entries();
       return now.length !== packSeen.length || now.some(([n, b], i) => packSeen[i][0] !== n || packSeen[i][1] !== b);
     };
+    // a game opened only to look inside refuses every change in place, so each action makes a copy in My Games instead
+    const locked = !!project.readOnly;
     const keep = historyFor(project);
     const hist = keep.hist;
     keep.redraw = () => {
@@ -227,7 +244,7 @@ export async function diskTool(project: Project): Promise<void> {
               : null,
           ),
         ),
-        checkpoint.option,
+        locked ? null : checkpoint.option,
         h('h3', null, 'Files that can share'),
         plan.steps.length
           ? h(
@@ -239,30 +256,32 @@ export async function diskTool(project: Project): Promise<void> {
                 `${plural(plan.steps.length, 'step')} would give back ${kb(saves)}. A DOS file is the same size however little is in it, so a monster file or block set that is mostly empty can take another’s place; blocks that look the same become one so sets fit together. Each opens to show what changes; nothing changes until you apply them.`,
               ),
               h('ol', { class: 'disk-steps' }, ...plan.steps.map(stepView)),
-              h(
-                'button',
-                {
-                  type: 'button',
-                  class: 'primary',
-                  onclick: async () => {
-                    if (!(await checkpoint.ensure('Before optimization'))) return;
-                    try {
-                      keep.before(...new Set(plan.steps.flatMap((s) => s.touches)));
-                      for (const s of plan.steps) {
-                        s.apply(project.files, project.gam);
-                        if (s.moves) remapExtras(project, s.moves);
-                      }
-                      project.forgetParsed();
-                      applied = `Applied ${plural(plan.steps.length, 'step')}, saving ${kb(saves)}.`;
-                      toast(applied);
-                    } catch (e) {
-                      toast(`Could not merge: ${(e as Error).message}`, 'error');
-                    }
-                    render();
-                  },
-                },
-                `Apply ${plural(plan.steps.length, 'step')} (saves ${kb(saves)})`,
-              ),
+              locked
+                ? null
+                : h(
+                    'button',
+                    {
+                      type: 'button',
+                      class: 'primary',
+                      onclick: async () => {
+                        if (!(await checkpoint.ensure('Before optimization'))) return;
+                        try {
+                          keep.before(...new Set(plan.steps.flatMap((s) => s.touches)));
+                          for (const s of plan.steps) {
+                            s.apply(project.files, project.gam);
+                            if (s.moves) remapExtras(project, s.moves);
+                          }
+                          project.forgetParsed();
+                          applied = `Applied ${plural(plan.steps.length, 'step')}, saving ${kb(saves)}.`;
+                          toast(applied);
+                        } catch (e) {
+                          toast(`Could not merge: ${(e as Error).message}`, 'error');
+                        }
+                        render();
+                      },
+                    },
+                    `Apply ${plural(plan.steps.length, 'step')} (saves ${kb(saves)})`,
+                  ),
             )
           : h('p', null, nSaves > 0 && held ? 'Nothing is left that keeps your saved games working.' : 'Nothing is left to merge.'),
         all.steps.length
@@ -275,11 +294,18 @@ export async function diskTool(project: Project): Promise<void> {
                     null,
                     `${plural(held, 'more step')} would renumber blocks or monsters, and saved games remember them by number (this game has ${plural(nSaves, 'saved game')}). They are not applied here.`,
                   )
-                : h('p', { class: 'hint' }, 'Prefer to keep this game as it is? Make a copy and optimize that instead.'),
+                : h(
+                    'p',
+                    { class: 'hint' },
+                    locked
+                      ? 'This game is open to look at only, so optimizing makes a new game in My Games and leaves this one as released.'
+                      : 'Prefer to keep this game as it is? Make a copy and optimize that instead.',
+                  ),
               h(
                 'button',
                 {
                   type: 'button',
+                  class: locked ? 'primary' : undefined,
                   onclick: async () => {
                     try {
                       const name = await copyAll(project, all.steps);
@@ -295,6 +321,7 @@ export async function diskTool(project: Project): Promise<void> {
           : null,
         lookAlikeView(looks),
         reduceView(reduce, async (r) => {
+          if (locked) return copyThen(project, (files) => r.apply(files, project.gam));
           if (!(await checkpoint.ensure('Before color reduction'))) return;
           try {
             keep.before(...r.touches);
@@ -308,6 +335,7 @@ export async function diskTool(project: Project): Promise<void> {
           render();
         }),
         reserveProposalView(proposal, (p) => {
+          if (locked) return void copyThen(project, (_files, store) => setSection(store.companion, project.gam, PALETTE_RESERVATIONS, p.roles));
           keep.before();
           project.setExtras(project.gam, PALETTE_RESERVATIONS, p.roles);
           applied = `Saved ${p.roles.length} palette reservation${p.roles.length === 1 ? '' : 's'} to the project.`;
@@ -343,6 +371,7 @@ export async function diskTool(project: Project): Promise<void> {
             }, 30);
           },
           async (p) => {
+            if (locked) return copyThen(project, (files, store) => applyPack(project, p, files, store));
             const risky = p.units.filter((u) => u.risk);
             if (nSaves > 0 && risky.length) {
               const ok = await confirmDialog(
@@ -376,8 +405,10 @@ export async function diskTool(project: Project): Promise<void> {
             pack = undefined;
             render();
           },
+          locked,
         ),
         rangeSyncView(sync.syncs, sync.stuck, async (r) => {
+          if (locked) return copyThen(project, (files) => r.apply(files, project.gam));
           if (!(await checkpoint.ensure('Before syncing reserved colors'))) return;
           try {
             keep.before(...r.touches);
@@ -402,8 +433,8 @@ export async function diskTool(project: Project): Promise<void> {
               h('button', { type: 'button', onclick: () => void import('../widgets/walkDialog').then((m) => m.walkDialog(project)) }, 'Make a walkthrough…'),
             )
           : null,
-        undoBar,
-        checkpoint.el,
+        locked ? null : undoBar,
+        locked ? null : checkpoint.el,
         plan.notes.length
           ? h(
               'div',

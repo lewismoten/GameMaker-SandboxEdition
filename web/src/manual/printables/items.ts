@@ -12,6 +12,7 @@ import { bbsAd, catalog, hintOffer, keycard, newsletter, postcard, warranty } fr
 import { stickerScreen, stickers } from './stickers';
 import { worldMap, worldMapScreen } from './worldMap';
 import { levelMaps } from './levelMaps';
+import { codeWheelLive } from './codeWheel';
 
 const ICONS: Record<PrintableItem['kind'], string> = {
   map: '🗺️',
@@ -23,6 +24,7 @@ const ICONS: Record<PrintableItem['kind'], string> = {
   chart: '📋',
   starchart: '🌌',
   recipe: '🥄',
+  codewheel: '🎡',
 };
 
 export function boxItems(ctx: PrintContext): BoxItem[] {
@@ -37,6 +39,8 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     render: () => renderItem(ctx, it),
     first: it.kind === 'hintbook' ? () => hintBookCover(ctx, it) : undefined,
     screen: it.kind === 'starchart' ? foldOut : undefined,
+    // a code wheel turns on screen; its sheets (render) are the discs to cut out, for printing
+    live: it.kind === 'codewheel' ? () => Promise.resolve(codeWheelLive(it)) : undefined,
     redFilm: it.kind === 'hintbook',
     epub:
       it.kind === 'hintbook'

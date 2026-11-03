@@ -1,5 +1,7 @@
 # Game-Maker: Sandbox Edition
 
+![Game-Maker: Sandbox Edition. Make 1994 DOS games. No programming. A painted 1994 desk at night by a snowy window: the beige PC shows DOS Game-Maker's Map Maker menu, with a sticky note reading "Too retro? Use today's web" pointing to a tablet showing the site's home page, and around it sit a disk box, TURBO BUTTON magazine, the keyboard, a mug of pencils and the Game-Maker box](docs/social-preview-600x300.png)
+
 Make and play DOS-style games in your web browser, with no programming. A modified fork of
 **RSD Game-Maker 3.0**, the 1991–1995 game construction kit by Recreational Software
 Designs, whose source Andy Stone released under the MIT License in 2014.

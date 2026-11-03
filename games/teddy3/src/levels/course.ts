@@ -172,6 +172,7 @@ export function course(): Level {
   ];
   for (const [x, y] of treats) m.treat(x, y);
   m.mark('start', 2, 39);
+  for (let y = 37; y <= 39; y++) m.set(C.ring, y, `ringDoor0${y - 37}`);
   m.mark('exit', C.ring, 39);
   return {
     file: 'course',

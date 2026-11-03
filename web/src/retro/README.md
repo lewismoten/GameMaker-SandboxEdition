@@ -7,7 +7,7 @@ page around it supplies `computer/setup.ts` `ComputerOptions`; `computer/monitor
 picture; `host.ts` is what programs on it can use.
 
 - `energySnore.ts`: the parody power-saving logo (a sleepy star, ENERGY SNORE) in the BIOS boot screen's top-right corner, drawn as 136x80 pixel art (`energySnoreArt.ts`, readable ASCII rows in white and cyan) cut into redefined 8x16 character glyphs, as the 1990s BIOSes did (`TextScreen.defineGlyphs` / `resetGlyphs`). The POST screen with the logo stays up about 2.5 s, also on a quick boot.
-- `computer.ts`: power and programs, with `computer/` (`drives.ts`, game folders in
+- `computer.ts`: power and programs (the boot reads its drives as a PC did: the floppy's seek test, a try of A: for a boot disk, the hard disk, the CD-ROM driver's test of its drive; `onDriveAccess` lights them), with `computer/` (`drives.ts`, game folders in
   `folders.ts`, its sound line `pcAudio.ts`, the Sound Blaster card `soundBlaster.ts`, and the boot's mouse line `mouseDriver.ts`, which now and then has a day of its own).
   `leaveProgram.ts` and `saveFirst.ts` get it back to the DOS prompt for a disk; `diskSwap.ts` says
   which utilities keep running while the disk in A: is swapped instead.
@@ -32,7 +32,7 @@ picture; `host.ts` is what programs on it can use.
   (`structure.ts` the map and its Builder; `structureGm.ts` Game-Maker's formats,
   `structureMedia.ts` the media files). `view/`: VPIC.EXE (`vpic.ts`) and the VGA/SVGA picture
   screen (`picture.ts`).
-- `hacks/fastPlay.ts`: FASTPLAY ON bypasses first-run hardware setup; OFF restores it for
+- `hacks/fastPlay.ts` (its manual and FILE_ID.DIZ in `hacks/fastPlayText.ts`, for the BBS list): FASTPLAY ON bypasses first-run hardware setup; OFF restores it for
   unconfigured games and STATUS reports the choice. CONFIG.BAT and PLAYGAME’s Configure
   menu force a game’s setup. Hardware choices live in browser preferences, outside DOS files.
   Download FASTPLAY.ZIP from the Sandbox BBS W)arez area (the access code is in its bulletins).
@@ -40,6 +40,9 @@ picture; `host.ts` is what programs on it can use.
   run `C:\DOWNLOAD\FASTPLAY\FASTPLAY ON`, `OFF` or `STATUS`. These are the retro PC's
   simulated programs, like the other BBS tools; the downloaded EXE is not a native DOS binary.
   The shared player supplies the same controls on its start screen; previews and recordings skip them.
+- `hacks/reggie.ts` (manual and FILE_ID.DIZ in `hacks/reggieText.ts`): REGGIE shows who the rubber
+  chicken is, `REGGIE SIR` restores Sir Reginald and `REGGIE LADY` crowns Lady Regina again
+  (`chicken/`). Download REGGIE.ZIP from the W)arez area; the site follows at once.
 - `hacks/`: the BBS's utilities, SAVEHACK, BACKUP, GMCRACK, PLAYHACK, the GM30 installer and the
   rest (`saveHack.ts`, `backupExe.ts`, `playHack.ts`, which edits a game of yours' DOS player
   patches as the editor's panel does, picking a kind of game first in `playHackGroups.ts` or the game on the disk in A: in `playHackDisk.ts`, `gmcrack.ts` with its serials and RESERIAL in `gmcrackSerial.ts`,

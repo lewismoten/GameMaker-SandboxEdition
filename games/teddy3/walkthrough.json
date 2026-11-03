@@ -60,7 +60,7 @@
   },
   {
    "scene": 15,
-   "keys": "AU0UzQFNAc0DHwKfCE0CSAjII80BTQHNAx8CnwhNAkgIyA8SBpICzQFNA0gCyAVIAsgMSAjIBM0BTQTNAU0BzQMfAp8ITQJICMgbSArIDM0BSAjIDBIEkgxICMgMSwTLAUsEywEfAp82SwfLDE1EzQEhAqEITR3N"
+   "keys": "AU0UzQFNAc0DHwKfCE0CSAjII80BTQHNAx8CnwhNAkgIyA8SBpICzQFNA0gCyAVIAsgMSAjIBM0BTQTNAU0BzQMfAp8ITQJICMgbSArIDM0BSAjIDBIEkgxICMgMSwTLAUsEywEfAp82SwfLDE1EzQEhAqEITRDNW00IzT1LBMsBTQFIBsgEzR5NQ80="
   },
   {
    "scene": 16,
@@ -147,91 +147,112 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 59055,
+  "frames": 59912,
   "chapters": [
    {
     "title": "Opening",
-    "frame": 0
+    "frame": 0,
+    "time": 0
    },
    {
     "title": "Story",
-    "frame": 2181
+    "frame": 2181,
+    "time": 36350.00000000044
    },
    {
     "title": "Level 1: Doc Leo's Garage",
-    "frame": 5046
+    "frame": 5046,
+    "time": 84100.00000000159
    },
    {
     "title": "Level 2: Maple Street",
-    "frame": 7382
+    "frame": 7382,
+    "time": 123033.33333334625
    },
    {
     "title": "Level 3: Puddlewick Park",
-    "frame": 9536
+    "frame": 9536,
+    "time": 158933.33333333238
    },
    {
     "title": "Level 4: Gwinn's Invitations",
-    "frame": 12282
+    "frame": 12282,
+    "time": 204699.9999999724
    },
    {
     "title": "Level 5: Downtown",
-    "frame": 14754
+    "frame": 14754,
+    "time": 245899.99999994843
    },
    {
     "title": "Level 6: Doc Leo's Balloons",
-    "frame": 17951
+    "frame": 17951,
+    "time": 299183.33333331544
    },
    {
     "title": "Level 7: The River Road",
-    "frame": 20600
+    "frame": 20600,
+    "time": 343333.33333336684
    },
    {
     "title": "Level 8: The Old Mill",
-    "frame": 22988
+    "frame": 22988,
+    "time": 383133.3333334132
    },
    {
     "title": "Level 9: Gwinn's Buried Treasure",
-    "frame": 25907
+    "frame": 25907,
+    "time": 431783.3333334698
    },
    {
     "title": "Level 10: Pie Practice",
-    "frame": 28272
+    "frame": 28272,
+    "time": 471200.00000018236
    },
    {
     "title": "Level 11: The Funhouse",
-    "frame": 31277
+    "frame": 31277,
+    "time": 521283.333333574
    },
    {
     "title": "Level 12: Teddy's Dream Run",
-    "frame": 34167
+    "frame": 34167,
+    "time": 569450.000000139
    },
    {
     "title": "Level 13: Lookout Hill",
-    "frame": 38435
+    "frame": 38435,
+    "time": 640583.3333333067
    },
    {
     "title": "Level 14: Firefly Meadow",
-    "frame": 40936
+    "frame": 40936,
+    "time": 682266.666666543
    },
    {
     "title": "Level 15: Gwinn Hides Backstage",
-    "frame": 43378
+    "frame": 44235,
+    "time": 737249.9999997483
    },
    {
     "title": "Level 16: Doc Leo Hangs the Lights",
-    "frame": 46070
+    "frame": 46927,
+    "time": 782116.6666663105
    },
    {
     "title": "Level 17: The Teddy Course",
-    "frame": 49448
+    "frame": 50305,
+    "time": 838416.6666661794
    },
    {
     "title": "Ending",
-    "frame": 52981
+    "frame": 53838,
+    "time": 897299.9999993757
    },
    {
     "title": "Credits",
-    "frame": 55922
+    "frame": 56779,
+    "time": 946316.6666659282
    }
   ]
  }

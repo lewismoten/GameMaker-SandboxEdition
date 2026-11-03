@@ -1,4 +1,5 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
+import { touchGestures } from '../map/mapTouchGestures';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { panelTabs } from '../../widgets/panelTabs';
 import { colorChoice } from '../../widgets/colorChoice';
@@ -34,7 +35,8 @@ import { blockProperties } from './blockProperties';
 import { blockLabel } from './blockNames';
 import { blockNameField } from './blockNameField';
 
-type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect';
+// erase and darken stand in for the right button, which a finger does not have
+type Tool = 'draw' | 'shade' | 'fill' | 'pick' | 'line' | 'rect' | 'erase' | 'darken';
 
 /** The painter's own settings, kept in the companion file (never in the block set). */
 interface PainterExtras {
@@ -401,9 +403,9 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     canvas.setPointerCapture(e.pointerId);
     before = s.read();
     stroke = before.slice();
-    if (tool === 'shade') {
+    if (tool === 'shade' || tool === 'darken') {
       shaded = new Set();
-      shadeAt(p.x, p.y, e.button === 2 ? -1 : 1);
+      shadeAt(p.x, p.y, e.button === 2 || tool === 'darken' ? -1 : 1);
       renderBlock();
       return;
     }
@@ -416,7 +418,7 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       lineStart = p;
       return;
     }
-    plot(stroke, p.x, p.y, e.button === 2 ? (sprites ? TRANSPARENT : 0) : color);
+    plot(stroke, p.x, p.y, e.button === 2 || tool === 'erase' ? (sprites ? TRANSPARENT : 0) : color);
     write(stroke);
     renderBlock();
   });
@@ -427,13 +429,13 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
       renderBlock(shapePixels(lineStart, p, before));
       return;
     }
-    if (tool === 'draw' && !e.altKey) {
-      plot(stroke, p.x, p.y, e.buttons === 2 ? (sprites ? TRANSPARENT : 0) : color);
+    if ((tool === 'draw' || tool === 'erase') && !e.altKey) {
+      plot(stroke, p.x, p.y, e.buttons === 2 || tool === 'erase' ? (sprites ? TRANSPARENT : 0) : color);
       write(stroke);
       renderBlock();
     }
-    if (tool === 'shade') {
-      shadeAt(p.x, p.y, e.buttons === 2 ? -1 : 1);
+    if (tool === 'shade' || tool === 'darken') {
+      shadeAt(p.x, p.y, e.buttons === 2 || tool === 'darken' ? -1 : 1);
       renderBlock();
     }
   });
@@ -512,16 +514,20 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
   const tools = h(
     'div',
     { class: 'toolbar' },
-    ...(['draw', 'shade', 'fill', 'pick', 'line', 'rect'] as Tool[]).map((t) =>
+    ...(['draw', 'shade', 'fill', 'pick', 'line', 'rect', 'erase', 'darken'] as Tool[]).map((t) =>
       h(
         'button',
         {
-          class: t === tool ? 'active primary' : '',
+          class: `${t === tool ? 'active primary' : ''} ${t === 'erase' || t === 'darken' ? 'blk-touch-only' : ''}`.trim(),
           dataset: { tool: t },
-          title: t === 'shade' ? 'Lighten a color one step along its palette ramp; right-drag darkens' : undefined,
+          title: {
+            shade: 'Lighten a color one step along its palette ramp; right-drag darkens',
+            erase: 'Paint transparent (or color 0): what right-drag does with a mouse',
+            darken: 'Darken a color one step along its palette ramp: what right-drag does with Shade',
+          }[t as string],
           onclick: () => setTool(t),
         },
-        { draw: 'Pencil', shade: 'Shade', fill: 'Fill', pick: 'Pick color', line: 'Line', rect: 'Box' }[t],
+        { draw: 'Pencil', shade: 'Shade', fill: 'Fill', pick: 'Pick color', line: 'Line', rect: 'Box', erase: 'Erase', darken: 'Darken' }[t],
       ),
     ),
     mirrorSel,
@@ -747,7 +753,25 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     view.get('tab') ?? undefined,
     (tab) => view.set({ tab }),
   );
-  const pictureArea = characterFrames ? h('div', { class: 'blk-character-workbench' }, canvas) : canvas;
+  // a box the painting area zooms inside (two fingers pinch and pan it; a second finger never paints)
+  const zoomBox = h('div', { class: 'blk-zoom' }, canvas);
+  let canvasZoom = 1;
+  touchGestures({
+    el: zoomBox,
+    scroller: zoomBox,
+    zoom: () => canvasZoom,
+    setZoom: (value, at) => {
+      value = Math.max(1, Math.min(6, value));
+      const oldW = canvas.offsetWidth,
+        oldH = canvas.offsetHeight;
+      canvasZoom = value;
+      canvas.style.width = `${value * 100}%`;
+      zoomBox.scrollLeft = ((zoomBox.scrollLeft + at.x) / oldW) * canvas.offsetWidth - at.x;
+      zoomBox.scrollTop = ((zoomBox.scrollTop + at.y) / oldH) * canvas.offsetHeight - at.y;
+    },
+    abort: () => finishStroke(false),
+  });
+  const pictureArea = characterFrames ? h('div', { class: 'blk-character-workbench' }, zoomBox) : zoomBox;
   const columns = [
     h('div', { class: 'blk-picker' }, picker),
     h(

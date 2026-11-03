@@ -14,6 +14,7 @@ import { floppyElement, disksIn } from '../disks/diskBox';
 import { printContext } from './printContext';
 import { boxList } from './boxList';
 import { manualCover } from '../../manual/printables/manualCover';
+import { trinketShelf } from './trinketShelf';
 import '../../manual/booklet.css';
 
 let disks: Promise<Disk[]> | undefined;
@@ -74,6 +75,7 @@ export function sandboxBoxContents(entry: CatalogEntry, _front: string | undefin
     'div',
     { class: 'box-contents' },
     h('div', { class: 'bc-left' }, diskSet, manual),
+    trinketShelf(entry.id),
     entry.original?.manual ? boxList({ label: `What’s in the ${entry.title} box`, items, open, class: 'bc-list' }) : null,
   );
 }

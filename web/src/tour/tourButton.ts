@@ -8,6 +8,7 @@ import { h } from '../editor/core/ui';
 import { currentRoute, withParams } from '../urlState';
 import { CHAPTER_PAGES, guidesOn, onDosPage, pageHere, setGuidesOn, tourRequest } from './tourPages';
 import type { PageKey } from './steps';
+import { pageLife } from '../pageLife';
 
 const tour = () => import('./tourStart');
 
@@ -135,7 +136,7 @@ export function tourButton(look = 'topbar-gear'): HTMLElement {
     if (!wrap.isConnected) document.removeEventListener('click', outside);
     else if (!wrap.contains(e.target as Node)) close(false);
   };
-  document.addEventListener('click', outside);
+  document.addEventListener('click', outside, { signal: pageLife() });
   return wrap;
 }
 

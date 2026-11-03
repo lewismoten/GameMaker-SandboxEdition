@@ -13,7 +13,7 @@ import { goat } from '../sprites/friends';
 import { leo } from '../sprites/people';
 import { addKeepsakes, heart } from './keepsakes';
 import { BlockSet, SOLID } from './sets';
-import { ONE_WAY_SOUTH, addRope, noise, on, swingGate, water } from './tiles';
+import { ONE_WAY_SOUTH, addRope, exitDoor, noise, on, swingGate, water } from './tiles';
 
 // ------------------------------------------------------------------ the toy shop
 
@@ -267,6 +267,10 @@ export function nightSet(): BlockSet {
   s.add('carlTile', on(sd, carlPicture()));
   addRope(s, sd, 6);
   s.add('swing6', swingGate(sd), { solid: ONE_WAY_SOUTH });
+  // (last) the way out of the shop, the lot and the cove, where each link leaves: a doorway of each place's own posts and a bright arrow, open to walk through
+  s.add('exitShop', exitDoor(fl, c('wood', 3)));
+  s.add('exitLot', exitDoor(lf, c('stone', 2)));
+  s.add('exitCove', exitDoor(sd, c('wood', 2)));
   addKeepsakes(s, fl, 'shopFloor', { fuse: 'lot', lens: 'sand' });
   return s;
 }

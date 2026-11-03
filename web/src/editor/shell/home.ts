@@ -59,10 +59,17 @@ function showPath(path: string[]): void {
 
 /** The last home page's watch on the catalog (one home page at a time). */
 let unwatchHome: (() => void) | undefined;
+/** Ends with the last home page: what it listens for on window goes with it. */
+let homeLife = new AbortController();
 
 export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void> {
   unwatchHome?.();
   unwatchHome = undefined;
+  homeLife.abort(null);
+  homeLife = new AbortController();
+  const life = homeLife.signal;
+  /** When this page is replaced (or at once, if another render already replaced it while this one was loading). */
+  const atEnd = (f: () => void) => (life.aborted ? f() : life.addEventListener('abort', f, { once: true }));
   const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
   const libTitle = h('h2', { id: 'lib-title' });
   // the collection in a line (cut short with … if it must be); More shows all of it
@@ -194,7 +201,9 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
 
   const packer = tilePacker(tiles);
   const pack = () => packer.pack(isByMaker(current), !!search.value.trim(), current === 'imported');
-  new ResizeObserver(() => pack()).observe(tiles);
+  const packWatch = new ResizeObserver(() => pack());
+  packWatch.observe(tiles);
+  atEnd(() => packWatch.disconnect()); // or it holds this page for good
 
   const markSelected = () => {
     const key = top.game?.key;
@@ -353,7 +362,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     await select(current);
   };
 
-  const top = showcase(nav, refreshProjects);
+  const top = showcase(nav, refreshProjects, life);
   const start = gettingStarted();
 
   clear(
@@ -375,7 +384,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   );
 
   // On a wide window Getting started fills the space under the game only when it fits there.
-  start.fit(root.querySelector<HTMLElement>('.home-start')!, top.el);
+  start.fit(root.querySelector<HTMLElement>('.home-start')!, top.el, life);
 
   // on My games and Imported, files dropped anywhere in the library come in (the tile lights up)
   libraryDrops(
@@ -440,6 +449,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     if (key && !lib.findGame(key)) showStart();
     await select(current);
   }));
+  atEnd(unwatch); // not only at the next page: two renders can overlap, and the first one's watch would be lost
   // a rating or note changed (the panel's stars, the note dialog): Imported's tiles redraw, once a frame at most
   let redraw = 0;
   const onNotes = () => {
@@ -452,5 +462,5 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
       void select(current).then(() => key && tiles.querySelector<HTMLElement>(`.game-tile[data-key="${CSS.escape(key)}"] .tile-select`)?.focus());
     });
   };
-  addEventListener(NOTES_CHANGED, onNotes);
+  addEventListener(NOTES_CHANGED, onNotes, { signal: life });
 }

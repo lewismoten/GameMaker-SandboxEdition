@@ -872,6 +872,32 @@ public-domain data and this project's additions keep their existing attribution.
 OpenAI Codex consolidated the helpers and consumers, preserved the existing game output,
 and implemented the shared rendering adapters and verification under Lewis Moten's direction.
 
+### Depth Perception's plastic trinkets
+
+The 3D-printable STL files in Depth Perception's box (Roll Ray, Count Polygon, THE CHEZ, the teapot,
+Doc Leo with the rubber chicken, Teddy and Gwinn) are meshed by code from the game's own
+distance-field models, with no hand-made meshes: surface nets, the binary STL writer and the
+mesh checks are in `web/packages/tools/src/mesh`, and the small WebGL viewer in the desk's box is
+original code, with no 3D library. They were written with Anthropic Claude Sonnet 5.5 under Lewis
+Moten's direction, under the project's MIT License. The teapot is a nod to the Utah teapot
+(Martin Newell, University of Utah, 1975); it is drawn from ellipsoids, a torus and a cone, and
+none of Newell's patch data is used.
+
+The multi-color 3MF files follow the 3MF Core Specification (3MF Consortium, https://3mf.io, published under
+its open license): a ZIP package with `3D/3dmodel.model`, `[Content_Types].xml` and `_rels/.rels`, one
+object per color with a base material color. The ZIP container is written by this project's own small
+writer (`web/packages/tools/src/mesh/zipFile.ts`); no 3MF or ZIP library is used.
+
+The other games' pixel-figure trinkets (`games/kit/pixelTrinkets.ts`) are made from each game's own
+hero and monster pictures and palette, one pixel to one block, with no outside art; the code was
+written with Anthropic Claude Sonnet 5.5 under Lewis Moten's direction.
+
+The meshes are thinned (`web/packages/tools/src/mesh/decimate.ts`) by quadric edge collapse, the
+method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quadric Error Metrics"
+(SIGGRAPH 1997), written from the paper with no code from any library; the published method is an
+algorithm, not licensed code. It was written with Anthropic Claude Sonnet 5.5 under Lewis Moten's
+direction.
+
 ### Tiny Shelf Classification
 
 The Library's call numbers (such as 614-MAH) use the **Tiny Shelf Classification**, dedicated to
@@ -888,6 +914,23 @@ purpose with or without fee is hereby granted, provided that the above copyright
 permission notice appear in all copies."). It ships as `web/public/library/tiny-pockets-press.webp`
 (a lossless conversion). The photocopier beside the cabinet and the plaque were drawn in CSS by
 Claude Sonnet 5.5 under Lewis Moten's direction.
+
+### Sandscript, the Sandbox games' secret alphabet
+
+Sandscript (`games/kit/sandscript.ts`), the alphabet for little messages hidden in the Sandbox
+games, and its key on the folded note in the Library room (`web/src/library/sandNote.ts`) were
+designed for this project by Claude Opus 5.5 under Lewis Moten's direction, under the project's
+MIT License. Its letters were drawn fresh (strokes and dots hanging from a rim on a 3 × 3 grid);
+they are not copied from any existing alphabet, cipher or game's script.
+
+### The repository's social preview
+
+The desk scene in `docs/social-preview-*.png` (the README's top image and GitHub's link
+preview) was painted by **ChatGPT** (OpenAI) from Lewis Moten's prompt and a pack of the site's
+own renders: the desk's props, the Game-Maker box, TURBO BUTTON's cover and the room. Claude
+Opus 5.5 laid the real DOS Game-Maker Map Maker screen into its monitor, drew the tablet on its
+stand (showing a screenshot of the site's home page) in CSS, and lettered the title and the
+sticky note, under Lewis Moten's direction.
 
 ### Ready-made palette references
 

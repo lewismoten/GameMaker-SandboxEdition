@@ -5,6 +5,8 @@
 // the chart's corners meet (the felt egg is in there): every route is planned with that
 // corner of the chart walled off.
 import { buildGame, type Built, type SceneInfo } from '../src/game';
+import { WHEEL_SCENES } from '../src/wheel/wheel';
+import { crossDeck, throughGate, visitDesk } from './gate';
 import { ITEM_BASE, MODULES, SCAN, SEAL_COUNTER, SEQ, SHARD_BASE, SHARD_COUNTER, SHARDS } from '../src/ids';
 import { SCENE } from '../src/universe';
 import { field, idx, seek, wrap, type Grab, type P, type SeekOpts } from './drive';
@@ -131,22 +133,15 @@ export class Route {
     const d = this.d;
     await d.enter(SCENE.home);
     this.chapter(SCENE.home, 'Maxima Station');
-    // the training deck: hold right, hop when stuck
-    d.press(SCAN.right);
-    let last = d.pos.x;
-    let stuck = 0;
-    for (let t = 0; t < 1500 && d.link < 0; t++) {
-      await d.tick();
-      if (d.link >= 0) break;
-      stuck = d.pos.x === last ? stuck + 1 : 0;
-      last = d.pos.x;
-      if (stuck > 2) {
-        d.press(SCAN.up);
-        await d.tick();
-        d.release(SCAN.up);
-        stuck = 0;
-      }
-    }
+    // the training deck: hold right, hop when stuck, up to the pod bay
+    await crossDeck(d);
+    // the clearance gate: read the clerk's form (a page, then back to the pod bay), then through the right hatch
+    this.chapter(SCENE.home, 'The clearance gate');
+    if (await visitDesk(d)) {
+      await d.enter(WHEEL_SCENES.form);
+      await d.enter(SCENE.home);
+    } else throw new Error("the bot never reached the clerk's window");
+    await throughGate(d);
     await d.enter(SCENE.galaxy);
     this.chapter(SCENE.galaxy, 'The Galaxy');
     this.status('the galaxy');

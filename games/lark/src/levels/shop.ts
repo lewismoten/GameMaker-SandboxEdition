@@ -46,7 +46,7 @@ export function shopMap(set: BlockSet, playing: boolean): Stamped {
       J: 'rope4',
       V: 'swing4',
       '@': 'shopFloor',
-      S: 'shopFloor',
+      S: playing ? 'exitShop' : 'shopFloor',
     },
     set,
     'toys',

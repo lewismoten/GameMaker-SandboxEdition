@@ -4,6 +4,7 @@
 // mouth of the alcove where a piece of the Round Tuit waits.
 import { Plan, type Pt } from './plan';
 import type { MonBook } from '../characters/monbook';
+import { CARVINGS, MINE_DOORS, carve, type Carving } from '../wheel/wheel';
 
 export interface DungeonPlan {
   plan: Plan;
@@ -40,6 +41,19 @@ function boss(p: Plan, mons: MonBook, name: string, x: number, y: number): void 
   p.npc(mons.n(`${name}TR`), [x + 1, y]);
   p.npc(mons.n(`${name}BL`), [x, y + 1]);
   p.npc(mons.n(`${name}BR`), [x + 1, y + 1]);
+}
+
+/**
+ * A rune carving in the floor, its top left at (x, y): the brass key (letter, rune), then its
+ * lines one under another, three blocks along. Stepping on the key reads it close up (`talk`).
+ */
+function carving(p: Plan, c: Carving, x: number, y: number, talk: string): void {
+  p.put(`keyL:${c.key.letter}`, x, y);
+  p.put(`keyR:${c.key.rune}`, x + 1, y);
+  c.lines.forEach((line, i) => carve(line, c.key).forEach((r, j) => p.put(r ? `carve:${r}` : 'slab', x + 3 + j, y + i)));
+  p.link([x, y], talk, [0, 0]);
+  p.link([x + 1, y], talk, [0, 0]);
+  p.spot[talk] = [x, y];
 }
 
 const foes = (p: Plan, mon: number, list: Pt[]) => list.forEach((at) => p.npc(mon, at));
@@ -88,6 +102,7 @@ export function barrowsPlan(mons: MonBook): DungeonPlan {
   p.put('stairs', 50, 83);
   p.put('torch', 44, 74);
   p.put('torch', 56, 74);
+  carving(p, CARVINGS.barrows, 45, 77, 'runes1');
   // the snoring drafts: they blow you east across the hall
   for (const y of [53, 61]) p.row('pushE', 39, 61, y);
   p.put('foghorn', 25, 41);
@@ -122,7 +137,7 @@ export function barrowsPlan(mons: MonBook): DungeonPlan {
     [56, 38],
   ]);
   foes(p, mons.n('slime'), [
-    [46, 78],
+    [54, 78],
     [30, 40],
   ]);
   boss(p, mons, 'snoozalot', 49, 28);
@@ -300,6 +315,19 @@ export function minesPlan(mons: MonBook): DungeonPlan {
   ]);
   p.put('lampdoor', 49, 70);
   p.put('lampdoor', 50, 70);
+  // the bulkhead across the timber stopes: four doors, one true (the Code Wheel's windows say
+  // which); the others are cupboards that let Pip out in the passage below
+  p.row('bulkhead', 69, 85, 36);
+  MINE_DOORS.doors.forEach((_, i) => {
+    const x = 72 + i * 4;
+    p.put(`mdoor${i}`, x, 36);
+    if (i !== MINE_DOORS.open) p.link([x, 36], 'falsedr', [78, 50]);
+  });
+  p.spot.trueDoor = [72 + MINE_DOORS.open * 4, 36];
+  p.put(`keyL:${MINE_DOORS.key.letter}`, 74, 38);
+  p.put(`keyR:${MINE_DOORS.key.rune}`, 75, 38);
+  p.link([74, 38], 'minekey', [0, 0]);
+  p.link([75, 38], 'minekey', [0, 0]);
   p.put('stairs', 50, 83);
   p.put('torch', 46, 76);
   p.put('torch', 54, 76);
@@ -337,7 +365,7 @@ export function minesPlan(mons: MonBook): DungeonPlan {
     [40, 63],
     [60, 63],
     [22, 34],
-    [80, 36],
+    [77, 33],
     [44, 32],
     [56, 32],
   ]);
@@ -407,6 +435,7 @@ export function keepPlan(mons: MonBook): DungeonPlan {
   p.put('socket2', 50, 38);
   p.put('socket3', 50, 37);
   p.put('stairs', 50, 85);
+  carving(p, CARVINGS.keep, 38, 47, 'runes2');
   for (const [x, y] of [
     [44, 78],
     [56, 78],

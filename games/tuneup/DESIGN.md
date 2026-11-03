@@ -144,18 +144,31 @@ Before level 14 Doc Leo and Lady Regina un-shrink (he drives from there on). The
   score-down slot plays the camera and siren) and turns into the camera's smiley card, or toots
   on green and turns plain; one touch a corner. Stop signs are a ring of four: three dots
   (fines), then GO (a pass).
-- **The Beltway** (`src/levels/beltway.ts`, `src/art/cab.ts`, `src/beltMonsters.ts`): the
-  driver's seat, one screen that never scrolls, drawn in its own set (`beltway` theme). The
-  frame is fixed scenery: the headliner with the rear-view mirror (row 0, columns 7-9), the
-  windshield (rows 1-4, columns 2-11) between the A-pillars, the passenger door window on the
-  right with Teddy's head looking out of it, the one wiper's arm parked at the windshield's
-  base, and the dash (rows 5-9): the steering wheel, the speedometer pinned at a blazing 25 MPH,
-  the AM dial and the 8-track (its PLAY lamp blinking: it plays the level's song), the charge
-  gauge and the trip meter counting the miles to the exit.
+- **The Beltway** (`src/levels/beltway.ts`, `src/art/cab.ts`, `cabInterior.ts`, `cabPeople.ts`,
+  `src/beltMonsters.ts`): THE CHEZ's cab seen from the back wall and roof on the passenger side,
+  looking forward, in its own set (`beltway` theme); one screen that never scrolls. The frame is
+  fixed scenery: the headliner with the rear-view mirror (row 0, columns 7-9) and the passenger's
+  sun visor, the windshield (rows 1-4, columns 2-11) between the A-pillars, the driver's door
+  window at the left with Doc Leo at the wheel (seen from behind and the right: his chewed gray
+  fedora over dark brown hair, white greasepaint and his pink nose at the cheek, the glasses' arm
+  over his ear, a navy corduroy jacket joined to his head by the neck and collar, a hand on the
+  wheel's rim), the passenger's door
+  window at the right with Teddy on the bench seat looking out of it, the one wiper's arm parked
+  at the windshield's base, and the wood-grain dash (rows 5-9) with its row of switches, the
+  speedometer pinned at a blazing 25 MPH, the AM dial and the 8-track (its PLAY lamp blinking: it
+  plays the level's song), the charge gauge and the trip meter counting the miles to the exit. The
+  scene has all 150 background blocks: the wood grain repeats over a block so its cells share one.
+  The red body divider of THE CHEZ runs across the top of the glass. The car's rumble is block
+  rings too (`RUMBLE` in `beltway.ts`): every 2 ticks the up frame lifts Doc Leo's hat and head
+  top 1 pixel and Teddy's ears and head top 2 (the part of each figure above a cut row; the rest
+  stays on the seat), and Teddy's tongue is out for half of each lap. Only the cells a lift
+  changes are rings. To fit 150 blocks: the control row alone is solid (any picture it uses is
+  solid wherever it appears, so cells below it share blocks), the wiper arm is 2 pixels
+  shorter (two cells became one) and Doc Leo's hand is a hair smaller (so two dash cells match).
   - **The windshield**: the ring road bends gently right toward a vanishing point right of
     center, so the horizon slides left in parallax: the far skyline (a 40-pixel strip shifted
-    4 pixels every 12 ticks, a ring per column) slowly, the roadside trees (a block shifted 5
-    pixels every 3 ticks) fast, and the sky's clouds not at all. The lane dashes and the
+    10 pixels every 30 ticks, a ring per column) slowly, the roadside trees (a block shifted 10
+    pixels every 6 ticks) fast, and the sky's clouds not at all. The lane dashes and the
     shoulder posts are monsters born at the vanishing point every few ticks by blocks off the
     right edge, sliding down their lines and growing as they come (kit/road3d.ts, as In The
     Year 2000!'s Cloud Lane does), and they end at the windshield's base, so nothing is drawn
@@ -178,7 +191,9 @@ Before level 14 Doc Leo and Lady Regina un-shrink (he drives from there on). The
     off the right edge giving birth once. The car is born in the rear-view mirror over its
     lane's third of the glass (left lane on the left), a glint that grows for 36 ticks (2 s) as
     it catches up; then it becomes the passing car, which leaps to the windshield's base in its
-    lane and slides away up the lane to the vanishing point, shrinking. Honk or not, it passes.
+    lane and slides away up the lane to the vanishing point, shrinking, its tires always on the road (its
+    picture's bottom stays on its cell's last row, so the smallest car ends on the horizon, never above
+    it). Honk or not, it passes.
     Teach, pattern, test: three cars one at a time in each lane (the first in the lane you start
     in), three more on a steady 5-second beat, then two pairs 30 ticks apart that leave only one
     lane clear each. Every warning comes at least 36 ticks ahead, and no two moves are needed
@@ -190,6 +205,13 @@ Before level 14 Doc Leo and Lady Regina un-shrink (he drives from there on). The
 - **The parade's cue lamps** (`src/levels/parade.ts`) are solid underneath in the row over the
   car; the bounce touches them. Both kinds count on the stations counter (spent to nothing by
   level 13's door), and the ribbon spends four.
+- **The parade's followers** (`src/paradeMonsters.ts`, art in `src/sprites/paradeSprites.ts`): two
+  small cars and four Clown Club walkers (waver, juggler, horn honker, unicycle rider) trail THE
+  CHEZ. Each is an attack-march monster with `activate` 2 (corners are offsets from the hero, re-aimed
+  every tick), so it keeps a fixed place 1 to 6 blocks behind the car at 16 pixels a tick. The
+  range to start is 8 blocks, so no place may be further than 6. They are non-solid, power 200 and
+  have no effects, so they never hurt, block or trap. They use the Beltway's monster slots
+  (`MON.parade` = `MON.belt`) in the parade scenes' own .MON files (`mons: { parade }`).
 
 ## Structure
 

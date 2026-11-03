@@ -98,7 +98,11 @@ export const VOICE: Chapter = {
   <ul>
     <li>A clip that starts as a level opens is cut by the next digital sound. Leave the first
     second or so quiet (Chapter 5).</li>
-    <li>A clip at a gate needs a walk-off before the next link (Chapter 5).</li>
+    <li>A clip at a gate needs a walk-off before the next link (Chapter 5): a visible door a
+    few blocks on, with the link on the door itself.</li>
+    <li>Players walk at their own pace, and some stop to look. A line they have to hear (a
+    clue, a joke’s punch line) is safer when the hero can’t reach the exit until it is nearly
+    done.</li>
     <li>A clip on a sequence the player can start again before it ends cuts itself off; keep
     the sounds of repeatable moves short.</li>
   </ul>

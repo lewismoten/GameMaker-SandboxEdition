@@ -26,3 +26,8 @@ export function diskStatus(project: Project): string {
     return 'Not measured';
   }
 }
+
+/** Opens the Optimize dialog (loaded when first used); the Tools card and the Files tab's floppy both open it. */
+export function openOptimize(project: Project): void {
+  void import('./diskTool').then((m) => m.diskTool(project));
+}

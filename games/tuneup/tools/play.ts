@@ -12,9 +12,10 @@ import { GameSim } from './sim';
 export const SEED = 1;
 const LEVELS = [jumpStart, sparkPlucks, timingBeat(0), timingBeat(1), timingBeat(2), oilsWell, ...REAL_LEVELS, ...LEVELS_10_13, beltway, ...LEVELS_15_16];
 
-export async function play(seed = SEED, upTo = LEVELS.length): Promise<{ sim: GameSim; bot: Bot }> {
+export async function play(seed = SEED, upTo = LEVELS.length, slowRest = 0): Promise<{ sim: GameSim; bot: Bot }> {
   const sim = new GameSim(undefined, seed);
   const bot = new Bot(sim, seed);
+  bot.slowRest = slowRest;
   await playLevels(bot, LEVELS, upTo);
   return { sim, bot };
 }

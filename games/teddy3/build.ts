@@ -20,11 +20,13 @@ import { buildScreens } from './src/screens/screens';
 import { buildCartoons } from './src/screens/cartoons';
 import { demoRecording } from './src/demo';
 import { licenseText } from '../kit/license';
+import { checkWheelScenes } from './src/build/wheelScenes';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const disk = new Disk(join(here, 'disk'));
 
 const levels = LEVELS.map((make) => make());
+checkWheelScenes(levels, join(here, 'printables.json'));
 for (const hero of new Set(levels.map((l) => l.hero))) {
   disk.put(`${hero}.chr`, serializeCharacter(HEROES[hero].chr));
   disk.put(`${hero}.cbl`, serializeBlocks(HEROES[hero].cbl));

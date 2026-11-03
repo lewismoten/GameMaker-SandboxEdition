@@ -11,12 +11,15 @@ import { drawBox, releaseFaces, type BoxFaces } from './gameBox';
 import { dressUv, uvGame } from './boxUv';
 import { hideWallPoster, setPosterWall, showWallPoster } from '../room/wallPoster';
 import { shelfLayout } from './shelfLayout';
+import { boxIdFromOpen, boxInAddress, dropBoxFromAddress, restorableBox, turnInAddress, type BoxTurn } from './boxAddress';
 
 interface ShelfHooks {
   /** Put the game's disk in drive A:. */
   insert: (id: string) => void;
   /** Open the game's manual (only for games that have one); settles when it is closed. */
   manual?: (entry: CatalogEntry, front: string) => Promise<void> | void;
+  /** The box the address asked to have open (a reload or shared link); it is only opened if it is on this shelf. */
+  restore?: string;
 }
 
 const FRONT_KEY = 'gm-shelf-front';
@@ -101,18 +104,21 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   };
   const complete = new Map<string, Promise<BoxFaces | undefined>>();
   const whole = new Set<string>();
+  const covered = new Set<string>();
   const completed = (g: CatalogEntry): Promise<BoxFaces | undefined> => {
     let p = complete.get(g.id);
     if (!p) {
-      void drawBox(g, { shots: false }).then(
-        (f) => {
-          if (!f || whole.has(g.id)) return;
-          releaseFacesOf(g.id);
-          faces.set(g.id, f);
-          slots.get(g.id)?.replaceChildren(boxModel(f));
-        },
-        () => undefined,
-      );
+      // the cover first; not for the box already drawn with it (the one face out as the shelf went up)
+      if (!covered.has(g.id))
+        void drawBox(g, { shots: false }).then(
+          (f) => {
+            if (!f || whole.has(g.id)) return;
+            releaseFacesOf(g.id);
+            faces.set(g.id, f);
+            slots.get(g.id)?.replaceChildren(boxModel(f));
+          },
+          () => undefined,
+        );
       p = drawBox(g)
         .catch(() => undefined)
         .then((f) => {
@@ -153,6 +159,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
             })
         : undefined;
     return {
+      id: g.id,
       entry: g,
       faces: f,
       actions: {
@@ -173,11 +180,11 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       },
     };
   };
-  const open = async (g: CatalogEntry) => {
+  const open = async (g: CatalogEntry, restored?: { turn?: BoxTurn }) => {
     face(g.id);
     await completed(g);
     const p = page(g);
-    void openBoxViewer(p.entry, p.faces, p.actions);
+    void openBoxViewer(p.entry, p.faces, p.actions, { id: g.id, restored: !!restored, turn: restored?.turn });
   };
 
   // draw the boxes one by one, so the first ones appear while the rest are drawn
@@ -185,8 +192,10 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
     // let the page paint and answer between boxes: drawing one is most of a frame's worth of work
     if (i) await new Promise<void>((r) => setTimeout(r));
     // the box face out gets its cover painting now and its screenshots after the shelf is up
-    const f = await drawBox(g, { shots: false, cover: g.id === front, blobs: true }).catch(() => undefined);
+    const withCover = g.id === front;
+    const f = await drawBox(g, { shots: false, cover: withCover, blobs: true }).catch(() => undefined);
     if (!f) continue;
+    if (withCover) covered.add(g.id);
     faces.set(g.id, f);
     uvGame(f, g);
     const slot = h(
@@ -210,6 +219,24 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   tubeWatch.observe(desk, { attributes: true, attributeFilter: ['class'] });
   tube();
 
+  // a reload or shared link names a box: open it if it stands on this shelf; any other id
+  // (not on the shelf yet, a secret game not found, a typo) opens nothing and shows nothing
+  if (hooks.restore) {
+    const id = restorableBox(boxIdFromOpen(hooks.restore), faces.keys());
+    const g = games.find((x) => x.id === id);
+    if (g) {
+      slots.get(g.id)?.focus({ preventScroll: true });
+      void open(g, { turn: turnInAddress() });
+    } else dropBoxFromAddress();
+  }
+
+  // Forward onto a box's history entry (after Back closed its viewer) takes it down again
+  const onPop = () => {
+    const g = games.find((x) => x.id === restorableBox(boxInAddress(), faces.keys()));
+    if (g && shelf.isConnected && !document.querySelector('.box-viewer')) void open(g, { turn: turnInAddress() });
+  };
+  window.addEventListener('popstate', onPop);
+
   // follow drive A: — the desk lists "<title> in A:" beside the drive
   let inDrive: string | undefined;
   const watch = () => {
@@ -231,6 +258,7 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
     face,
     dispose: () => {
       observer.disconnect();
+      window.removeEventListener('popstate', onPop);
       tubeWatch.disconnect();
       hideWallPoster();
       // the shelf's page-only picture addresses (gameBox.ts drawBox `blobs`) go with it

@@ -1,11 +1,12 @@
 // The printed label on Recreational Software Designs' own gameware disks, styled after the
 // Game-Maker box: a black band with the slanted yellow GAME-MAKER logo, the title on the
 // box's pink, a strip of the game's first level with its hero (drawn from the game's own
-// files), and who made it.
+// files), and who made it.  The strips are drawn by stripQueue.ts.
 import './rsdLabel.css';
 import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { renderShot } from '../../gfx/gameShots';
+import { whenShown } from './stripQueue';
 
 const shots = new Map<string, Promise<string | undefined>>();
 
@@ -51,7 +52,7 @@ export function rsdDiskLabel(g: CatalogEntry | undefined, title: string, disk: s
         .join(' · '),
     ),
   );
-  if (g?.gam) void levelStrip(g).then((url) => url && (strip.style.backgroundImage = `url(${url})`));
+  if (g?.gam) whenShown(strip, () => levelStrip(g).then((url) => void (url && (strip.style.backgroundImage = `url(${url})`))));
   else strip.classList.add('none');
   return label;
 }

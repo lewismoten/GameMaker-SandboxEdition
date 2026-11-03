@@ -52,6 +52,11 @@
       "gamemaker-source": "./src/kit/tar.ts",
       "import": "./dist/kit/tar.js"
     },
+    "./kit/fliShrink": {
+      "types": "./dist/types/kit/fliShrink.d.ts",
+      "gamemaker-source": "./src/kit/fliShrink.ts",
+      "import": "./dist/kit/fliShrink.js"
+    },
     "./kit/*": {
       "types": "./dist/types/kit/*.d.ts",
       "browser": null,
@@ -62,6 +67,11 @@
       "types": "./dist/types/music/*.d.ts",
       "gamemaker-source": "./src/music/*.ts",
       "import": "./dist/music/*.js"
+    },
+    "./mesh/*": {
+      "types": "./dist/types/mesh/*.d.ts",
+      "gamemaker-source": "./src/mesh/*.ts",
+      "import": "./dist/mesh/*.js"
     },
     "./image/*": {
       "types": "./dist/types/image/*.d.ts",

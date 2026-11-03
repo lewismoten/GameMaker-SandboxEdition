@@ -21,6 +21,12 @@ export const SEQ = {
   twist: 12,
 } as const;
 
+/**
+ * Second keys (the left-handed set) sit in free sequences: Doc Leo's and the piano's in 13..18,
+ * Teddy's in 10 (he cannot climb down) and 16..19 (his tricks hold 12..15). The oil can's Doc Leo has none.
+ */
+export const ALT_SEQ = { leo: [13, 14, 15, 16, 17, 18], teddy: [10, 16, 17, 18, 19] } as const;
+
 /** Keys (scan code << 8 | ASCII). */
 export const KEY = {
   up: 0x4800,
@@ -29,6 +35,11 @@ export const KEY = {
   right: 0x4d00,
   space: 0x3920,
   q: 0x1071,
+  w: 0x1177,
+  a: 0x1e61,
+  s: 0x1f73,
+  home: 0x4700,
+  pgup: 0x4900,
   e: 0x1265,
   z: 0x2c7a,
   x: 0x2d78,
@@ -121,6 +132,8 @@ export const MON = {
   dreamWalk: 40,
   /** The Beltway: the traffic, the lane dashes, the shoulder posts and the EXIT sign (beltMonsters.ts BELTMON). */
   belt: 41,
+  /** The Parade Route: the cars and clowns that follow THE CHEZ (paradeMonsters.ts); the parade's own .MON reuses the Beltway's slots. */
+  parade: 41,
   /** Pump Up the Volume: a friendly pigeon flying back and forth over the awnings (bumping it costs points, never energy). */
   pigeon: 61,
 } as const;

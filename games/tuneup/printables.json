@@ -34,14 +34,17 @@
         "chr": "leo.chr",
         "cbl": "leo.cbl",
         "pal": "jump.pal"
-      }
+      },
+      "px": 7
     },
     {
       "text": "BAWK.",
       "sub": "SIR REGINALD III",
-      "shape": "bubble",
+      "shape": "cut",
       "color": "#fff6e0",
-      "ink": "#2a1408"
+      "ink": "#2a1408",
+      "sprite": { "blocks": "cast.mbl", "pal": "rain.pal", "grid": [[0]] },
+      "lady": { "sub": "LADY REGINA III", "sprite": { "blocks": "cast.mbl", "pal": "rain.pal", "grid": [[7]] } }
     },
     {
       "text": "CLAMP ON",
@@ -68,7 +71,7 @@
       }
     },
     {
-      "text": "ON THE BEAT",
+      "text": "BA-DUM-TSS!",
       "sub": "THE TIMING BEAT",
       "shape": "cut",
       "color": "#7a3fb8",
@@ -76,7 +79,7 @@
       "sprite": {
         "blocks": "beat1.bbl",
         "pal": "beat1.pal",
-        "grid": [[27]]
+        "grid": [[62], [66]]
       }
     },
     {
@@ -89,9 +92,26 @@
     {
       "text": "HONK-ZOO!",
       "sub": "THE CHEZ",
-      "shape": "bubble",
-      "color": "#fff6e0",
-      "ink": "#2a1408"
+      "shape": "cut",
+      "color": "#2a1408",
+      "ink": "#ffd23f",
+      "hero": { "chr": "chez.chr", "cbl": "chez.cbl", "pal": "jump.pal" }
+    },
+    {
+      "text": "",
+      "shape": "cut",
+      "color": "#7a7f8a",
+      "ink": "#2a1408",
+      "sprite": { "blocks": "leo.cbl", "pal": "jump.pal", "grid": [[0]], "crop": [3, 0, 16, 8] },
+      "px": 15
+    },
+    {
+      "text": "",
+      "shape": "cut",
+      "color": "#c4cad4",
+      "ink": "#2a1408",
+      "drawn": "tiara",
+      "px": 13
     },
     {
       "text": "OOPS.",
@@ -264,5 +284,6 @@
         }
       ]
     }
-  ]
+  ],
+  "worldMap": { "regions": [[9, 10], [12, 13, 14], [17, 18], [19, 20, 21], [22, 23, 24, 25], [26, 27], [29, 30], [31, 32, 33]] }
 }

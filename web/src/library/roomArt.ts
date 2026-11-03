@@ -194,6 +194,7 @@ const STROKE = 'stroke="var(--wood-dark)" stroke-width="2" stroke-linejoin="roun
 
 /** The icon for each object in the room, a viewBox of 80 x 80 (the card catalog is taller than wide). */
 export const ICONS = {
+  toybox: `<svg viewBox="0 0 80 64"><ellipse cx="40" cy="58" rx="34" ry="4" fill="rgba(0,0,0,.4)"/><rect x="16" y="6" width="14" height="22" rx="3" fill="#d94f4f" ${STROKE}/><circle cx="52" cy="16" r="10" fill="#4f86d9" ${STROKE}/><path d="M36 28l8-18 8 18z" fill="#e6c13d" ${STROKE}/><rect x="6" y="26" width="68" height="28" rx="3" fill="var(--wood)" ${STROKE}/><path d="M6 36h68" stroke="var(--wood-dark)" stroke-width="2"/><rect x="34" y="32" width="12" height="12" rx="2" fill="var(--brass)" ${STROKE}/><rect x="10" y="26" width="6" height="28" fill="var(--wood-lo)"/><rect x="64" y="26" width="6" height="28" fill="var(--wood-lo)"/></svg>`,
   stacks: `<svg viewBox="0 0 80 80"><rect x="6" y="6" width="68" height="68" rx="3" fill="var(--wood)" ${STROKE}/>${[0, 1, 2]
     .map(
       (r) =>

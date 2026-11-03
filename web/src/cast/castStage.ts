@@ -15,6 +15,8 @@
 // poses, and who has which business, are castStageGags.ts.
 import { h } from '../editor/core/ui';
 import { currentRoute, type ViewState } from '../urlState';
+import { chickenNow } from '../chicken/chickenState';
+import { ladySprite } from '../chicken/chickenArt';
 import { spriteCanvases, type CastSprite } from './castSprite';
 import type { CastMember } from './castData';
 import { StageSound, type Effect } from './castSound';
@@ -23,6 +25,7 @@ import { castMini } from './castMini';
 import { backdrop, cutSprite, FLOOR, H, newFlakes, newProp, stagePut, stepFlakes, stepProps, W, type Prop, type Sprite } from './castStageDraw';
 import { stageGags } from './castStageGags';
 import { drawScene, type Helper, type Phase } from './castStageScene';
+import { pageLife } from '../pageLife';
 
 /** Logical pixels a second. */
 const SPEED = 40;
@@ -355,8 +358,7 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
   const onVisibility = () => loop();
   document.addEventListener('visibilitychange', onVisibility);
   // leaving the cast page: stop the music and the frames
-  const onLeave = () => {
-    if (currentRoute().path[0] === 'cast' && root.isConnected) return;
+  const end = () => {
     sound.dispose();
     seen.disconnect();
     cancelAnimationFrame(raf);
@@ -365,14 +367,23 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     document.removeEventListener('visibilitychange', onVisibility);
     window.removeEventListener('hashchange', onLeave);
   };
+  const onLeave = () => {
+    if (currentRoute().path[0] === 'cast' && root.isConnected) return;
+    end();
+  };
   window.addEventListener('hashchange', onLeave);
+  // switching to the desk replaces the page without a hashchange (main.ts startDesk): the page's life ends
+  pageLife().addEventListener('abort', end, { once: true });
 
   void fetch('./cast/sprites.json')
     .then((r) => (r.ok ? (r.json() as Promise<Record<string, CastSprite>>) : {}))
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- without it the chain's value is unknown
     .catch(() => ({}) as Record<string, CastSprite>)
     .then((all) => {
-      for (const [id, sprite] of Object.entries(all)) sprites.set(id, cutSprite(sprite, spriteCanvases(sprite)));
+      for (const [id, found] of Object.entries(all)) {
+        const sprite = id === 'chicken' && chickenNow() === 'lady' ? ladySprite(found) : found;
+        sprites.set(id, cutSprite(sprite, spriteCanvases(sprite)));
+      }
       lineup = cast.filter((m) => sprites.has(m.id));
       pick.replaceChildren(...lineup.map((m) => h('option', { value: m.id }, m.name)));
       const want = state.get('on');

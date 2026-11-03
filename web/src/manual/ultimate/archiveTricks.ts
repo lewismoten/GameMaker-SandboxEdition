@@ -66,6 +66,15 @@ export const ARCHIVE_TRICKS = `<h2>More from the archive</h2>
   block shares one clock that starts when the scene loads, so all the doors open together, and
   they shut again on a return visit. Show the wait: a lamp that turns from red to green, or the
   countdown below. A long wait with nothing to see is the Level check’s <i>Long waits</i>.</p>
+  <p>A clock can also be staggered. One of RSD’s own 1.0 samples paints a whole icy floor with
+  one picture drawn on a dozen block numbers. Each is solid, and each has its own <i>Becomes
+  block</i> and <i>Time</i>: 110 ticks, 400, 1,000, 2,000, and on up past 5,000 (about six
+  seconds to five and a half minutes). They turn into look-alikes that sink in further steps,
+  slush, then a hole that hurts. Because the blocks look alike, the player can’t tell which tile
+  is next: the floor breaks up across the map over minutes, with no monster and no script. The
+  same recipe makes a bridge that fails piece by piece or a flood that creeps in. Keep the
+  numbers apart (a long wait with nothing to see is still a long wait), and leave a few tiles
+  on the longest delay near the exit.</p>
   <h2>A countdown you can read</h2>
   <p>Ten digit blocks in a ring, each showing for 18 ticks, count down one second at a time.
   Beside them, a chain of ten blocks each lasting 180 ticks counts the tens. Both start when the

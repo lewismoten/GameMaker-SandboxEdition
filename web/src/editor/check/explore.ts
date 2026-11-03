@@ -10,6 +10,7 @@ import { DIESEQ, HURTSEQ } from '@lewismoten/gamemaker-sandbox-engine/formats/ch
 import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { LASTMM, LASTMON, type CharInfo, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 import { keyRoles, movesFor, steadyMoves, type Move } from './inputs';
+import { keysAllowed } from './keyLimit';
 import { SceneSim, changedCells, type FileSource, type Snap } from './sim';
 import { driveMove } from './drive';
 import { frees, getsAway } from './escape';
@@ -190,7 +191,7 @@ export async function explore(game: Game, scene: number, files: FileSource, entr
   const w = sim.w;
   const bg = w.bg;
   const gravity = bg.some((b) => b.grav !== 0);
-  const all = movesFor(keyRoles(w.chr, gravity), gravity).filter((m) => !opt.moveFilter || opt.moveFilter(m));
+  const all = movesFor(keyRoles(w.chr, gravity), gravity).filter((m) => keysAllowed(m) && (!opt.moveFilter || opt.moveFilter(m)));
   const moves = opt.steadyTicks ? steadyMoves(all, opt.steadyTicks) : all;
   const goal = opt.goal?.map((c) => ({ x: c % MLEN, y: Math.floor(c / MLEN) }));
   /** Blocks from the nearest goal cell (wrapping as the map does). */

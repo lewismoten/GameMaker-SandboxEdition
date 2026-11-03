@@ -13,7 +13,10 @@ import { ORIGIN } from '../src/levels/maps';
 import { MUFFLED, TOYS, TUCKS, WATCHED } from '../src/levels/muffled';
 import { AWNINGS, AWNING_ROW, POODLE, PUMP, TWISTS } from '../src/levels/pump';
 import type { Bot } from './bot';
-import { leave, must, takeFork } from './route';
+import { grab, leave, must, takeFork } from './route';
+
+/** Where the hot verse's thermos stands (src/levels/fan.ts). */
+const FAN_THERMOS_X = 29;
 
 /** The swim: nobody steers; the scene ends by itself. */
 export async function theSwim(bot: Bot): Promise<void> {
@@ -91,6 +94,8 @@ export function fanBand(verse: number) {
     }
     if (v.fork && bot.count(CTR.forks) !== forks + 1) throw new Error('walked the ledge past the tuning fork');
     if (bot.count(CTR.fans) - before !== v.fans.length) throw new Error(`only ${bot.count(CTR.fans) - before} fans`);
+    // the hot verse's thermos on the floor past the grate: its energy is worth the few steps
+    if (v.gust !== undefined) await grab(bot, FAN_THERMOS_X, FAN_ROW.floor - 1, 'the thermos past the grate');
     await leave(bot, bot.walk(v.exit + 1, 'through the flap'), 'out');
   };
   Object.defineProperty(run, 'name', { value: `fanBand${verse + 1}` });

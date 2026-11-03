@@ -5,7 +5,7 @@
 // builders put each ramp (games/<id>/src/art/pal.ts, which match the .PAL files on the disks).
 import { h } from '../../editor/core/ui';
 import { paintIndexed } from '../../editor/core/draw';
-import { fetchGameFile, loadCatalog, withDetails, type CatalogEntry } from '../../project/files';
+import { peekGameFile, loadCatalog, withDetails, type CatalogEntry } from '../../project/files';
 import { BACKBL, BLEN, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { MLEN, parseMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { parsePalette, vga8, type Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -107,7 +107,7 @@ function game(id: string): Promise<CatalogEntry | undefined> {
 async function files(id: string, names: string[]): Promise<(Uint8Array | undefined)[]> {
   const g = await game(id);
   if (!g) return names.map(() => undefined);
-  return Promise.all(names.map((n) => fetchGameFile(g, n).catch(() => undefined)));
+  return Promise.all(names.map((n) => peekGameFile(g, n).catch(() => undefined)));
 }
 
 const same = (a: Palette, b: Palette, i: number) => a[i * 3] === b[i * 3] && a[i * 3 + 1] === b[i * 3 + 1] && a[i * 3 + 2] === b[i * 3 + 2];

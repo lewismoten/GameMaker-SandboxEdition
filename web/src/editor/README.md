@@ -32,7 +32,7 @@ Part of the [source map](../README.md).
     button at its top (`playButtons.ts`; its menu of every way the game's links bring the player
     into a level, the pick it plays and the copy of the game that starts there in `playLevel.ts`,
     the last pick per game in `playPickStore.ts`), the open file's actions
-    (`fileActions.ts`), accessible file-card context menus (`assetMenu.ts` and `assetMenu.css`), native asset categories (`fileKinds.ts`), the selected GAM’s Integrator context (`gameProject.ts`, preserving the owner’s primary game and autosaves), the Overview page every game opens on (`overview.ts`, with tabs Files = the lazy category/file galleries in `assetBrowser.ts` and `assetBrowser.css` plus the search box above them: `assetSearch.ts` (box, debounce, grouped results; its index is built in the background on first focus), `searchIndex.ts` (names, words inside .txt/.lst/.gam/.his/.snd/.bkd, companion strings, DOS player patches), `searchNav.ts` (arrow keys: Up/Down pick the card visually above or below by x center, across groups), `searchMatch.ts` (matching and highlight snippets) and `searchCards.ts` (thumbnail and field cards; player fields open through `editors/integrator/dosPlayer/playerTarget.ts`), Controls = `overviewControls.ts`, DOS player = `integrator/dosPlayer/playerPanel.ts`, and a read-only Player card (also under the file list) for a game imported with its own player .EXE, opening `playerInfo.ts` (its build, settings read, bytes kept and About text), and Tools = `overviewTools.ts` (cards for the game-wide tools, each with a picture or live status read from what is saved and a button that opens it: Level check, Before You Upload, Make a walkthrough, Health check, Disk space, Game version (`overviewVersion.ts`), First steps, Color vision check, Play Game and Download; the tools keep their own entry points; Game version keeps the author's version and a switch, "Show the version on the title menu", in the companion, off by default, with a real preview of the menu picture, and `project/composeFiles.ts` letters it on the copy Play, play tests and downloads hand the engine, never on the saved files); its tab is the address's `?tab=controls|player|tools`, `overviewLink.ts` builds those links, `counterUse.ts` finds where each counter is used),
+    (`fileActions.ts`), accessible file-card context menus (`assetMenu.ts` and `assetMenu.css`), native asset categories (`fileKinds.ts`), the selected GAM’s Integrator context (`gameProject.ts`, preserving the owner’s primary game and autosaves), the Overview page every game opens on (`overview.ts`, with tabs Files = the lazy category/file galleries in `assetBrowser.ts` and `assetBrowser.css` plus an Optimize floppy beside the "Game assets" heading (the Tools card's floppy, opening the same dialog; `disk/diskCard.ts` `openOptimize`) and the search box above them: `assetSearch.ts` (box, debounce, grouped results; its index is built in the background on first focus), `searchIndex.ts` (names, words inside .txt/.lst/.gam/.his/.snd/.bkd, companion strings, DOS player patches; its result groups' titles are in `searchGroups.ts`, so the box doesn't load it up front), `searchNav.ts` (arrow keys: Up/Down pick the card visually above or below by x center, across groups), `searchMatch.ts` (matching and highlight snippets) and `searchCards.ts` (thumbnail and field cards; player fields open through `editors/integrator/dosPlayer/playerTarget.ts`), Controls = `overviewControls.ts`, DOS player = `integrator/dosPlayer/playerPanel.ts`, and a read-only Player card (also under the file list) for a game imported with its own player .EXE, opening `playerInfo.ts` (its build, settings read, bytes kept and About text), and Tools = `overviewTools.ts` (cards for the game-wide tools, each with a picture or live status read from what is saved and a button that opens it: Level check, Before You Upload, Make a walkthrough, Health check, Disk space, Game version (`overviewVersion.ts`), First steps, Color vision check, Play Game and Download; the tools keep their own entry points; Game version keeps the author's version and a switch, "Show the version on the title menu", in the companion, off by default, with a real preview of the menu picture, and `project/composeFiles.ts` letters it on the copy Play, play tests and downloads hand the engine, never on the saved files); its tab is the address's `?tab=controls|player|tools`, `overviewLink.ts` builds those links, `counterUse.ts` finds where each counter is used),
     the cross-project native file clipboard (`assetClipboard.ts`, bytes plus file-local companion extras),
     exact file snapshot/replacement helpers (`assetFiles.ts`, including unknown extensions and extensionless DOS files),
     gallery commands (`assetCommands.ts`: duplicate, copy/paste, matching-type replacement, delete and non-overwriting file drops), "Used by" (`usedBy.ts`), the save note (`saveNote.ts`), the quick switcher
@@ -100,7 +100,7 @@ Part of the [source map](../README.md).
     fire key that roots the hero, ammunition for each key and keys whose job changes between
     levels; `screenText.ts` long help or story and placeholder pages; `dosChars.ts` in-game words
     with characters 128-255, which DOS's player draws as scribbles; `levelExits.ts` doors that
-    lead nowhere, a level with no link out and levels with no music (or a song DOS won't play);
+    lead nowhere, `hiddenExit.ts` links out on plain background with no door, sign or arrow near, a level with no link out and levels with no music (or a song DOS won't play);
     `flashing.ts` blocks that flash faster than three times a second; `stakes.ts` many lives and
     an unarmed start among enemies; `playerChecks.ts` a tap that moves twice, scenery that looks like
     a prize and keys never taught at the start; `fliCheck.ts` animations DOS can't play, from
@@ -255,6 +255,16 @@ makes Ctrl+S save at once). Files are always written in the original binary form
   (`editors/recording/botDemoDialog.ts`) runs `botDemoWorker.ts` (through `botDemoClient.ts`): the
   walkthrough bot plays to the chosen scene, and `botDemo.ts` plays its walkthrough on the engine
   and writes the keys down at the demo recorder's ticks as a `.REC`.
+- **Make it smaller.** The animation editor's Frames tab has a "Make it smaller…" dialog
+  (`editors/animation/shrink/`): `shrinkPanel.ts` shows the `.FLI` size report and findings from
+  `fliReport`, the options (lossless always; lossy adds max colors, snap near colors, reduce
+  dithering, hold still areas and keep every other frame), and the original beside the real
+  re-encoded result, with KB and % saved and `describeVisibility` words. `shrinkOptions.ts` maps
+  options to `fliShrink` steps (also one palette for the whole animation, and Frame it: solid bands
+  you drag on the original, plus zoom and pan); the preview plays both sides looping with a shared
+  Play/Pause and frame scrubber; `shrinkRun.ts` runs them; `shrinkWorker.ts` and `shrinkClient.ts`
+  do it off the page's thread. Apply writes the bytes as one undo step; a look-only game gets a
+  copy in My Games (`disk/makeOptimizedCopy.ts`).
 - **Scene maker.** The animation editor's Scene maker (`editors/animation/scene/`) draws an `.FLI`
   from a scene kept in the companion file: `sceneModel.ts` (backgrounds and tracks of timed items),
   `sceneText.ts` (the 8x8 font, text motions, and the warnings and fit that keep text inside
@@ -400,6 +410,15 @@ are real previews too; a blank idle can fall back to a movement frame.
 - **Small map pictures.** Download map picture includes 1, 5 and 10 pixels per
   block, alongside the original and enlarged sizes. These sizes apply to the
   downloaded PNG; editing and native game files keep their original dimensions.
+
+- **Touch gestures.** `editors/map/mapTouchGestures.ts` gives the map and the block
+  canvas fingers: two fingers pinch to zoom and drag their midpoint to pan, whatever
+  tool is chosen, and the second finger never reaches the tool (a first finger under
+  150 ms old is taken back, so a pinch leaves no dot). On the map, one finger held still
+  for 500 ms opens a menu (`shell/assetMenu.ts`: Erase monster, Pick this block, Use as
+  the exit's place), the touch stand-in for a right click, and the Hand tool scrolls with
+  one finger. The block canvas zooms inside a `.blk-zoom` box. Editor-only: no saved or
+  exported byte changes. Unit tests use fake timers (`mapTouchGestures.test.ts`).
 
 - **Map wheel zoom.** `editors/map/mapZoom.ts` zooms continuously from one screen
   pixel per block (5%) to 400%: the wheel and a trackpad pinch change the zoom by a

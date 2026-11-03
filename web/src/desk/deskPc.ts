@@ -1,11 +1,14 @@
 // The PC on the desk, switched on and off: its insides (DOS, Game-Maker, the BBS, the VGA) load
-// when first needed, the power and turbo buttons and their lights, the tube collapsing when it
+// when first needed, the power and turbo buttons and their lights, the tube warming up when it is
+// switched on (with the fans and hard disk spinning up, pc/bootSounds.ts) and collapsing when it
 // is switched off, the enlarged screen, and typing a command at the prompt.
 import { toast } from '../editor/core/ui';
 import type { Computer } from '../retro/computer';
 import type { MonitorMode } from '../retro/computer/setup';
 import { installCrtWarp } from './pc/crtWarp';
 import { captureStub } from './pc/captureStub';
+import { crtWarmUp } from './pc/crtWarmUp';
+import type { BootSounds } from './pc/bootSounds';
 import type { SpeedSetting } from '@lewismoten/gamemaker-sandbox-engine/engine/scene';
 import { TURBO_OFF } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 import type { viewState } from '../urlState';
@@ -24,7 +27,7 @@ interface PcHooks {
 }
 
 export function deskPc(scene: Scene, hooks: PcHooks) {
-  const { desk, crt, floppy, cd, powerLed, turboLed, mhz, powerBtn, turboBtn, keyCard, spk, modem } = scene;
+  const { desk, crt, floppy, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, keyCard, wheelSpot, spk, modem } = scene;
   const { deskView } = hooks;
   // the PC starts in turbo every visit; the button slows it down until you leave
   let turbo = true;
@@ -44,6 +47,8 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
   let computer: Computer | undefined;
   let pcLoad: Promise<Computer> | undefined;
   let removeWarp = () => {};
+  /** The boot's fans and drives (pc/bootSounds.ts), until DOS is at its prompt. */
+  let whir: BootSounds | undefined;
   const pcCode = () => import('../retro/computer');
   const loadPc = (): Promise<Computer> =>
     (pcLoad ??= pcCode().then(({ Computer }) => {
@@ -54,7 +59,11 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
         // vga stays in the monitor like the real thing.
         onModeChange: (mode: MonitorMode) => computer?.powered && setZoom(mode === 'gfx' ? 'gfx' : enlarged ? 'manual' : false),
         onDisksChanged: (insert) => hooks.disksChanged(insert),
-        onGame: (game) => keyCard.show(game),
+        onGame: (game) => {
+          keyCard.show(game);
+          wheelSpot.game(game?.saveId); // its code wheel, on its puzzles' scenes (onScene)
+        },
+        onScene: (n) => wheelSpot.scene(n),
         // what the PC runs: a game (play), Game-Maker from a disk (design) or the hard disk / CD (gm), the BBS
         // (a PC switched off says nothing more)
         onProgram: (p) =>
@@ -62,17 +71,26 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
           deskView.set({
             run: !p ? 'dos' : p.kind === 'game' ? 'play' : p.kind === 'gm' ? (p.drive === 'A' ? 'design' : 'gm') : p.kind === 'terminal' ? 'bbs' : 'dos',
           }),
-        // the drive lights of A: and D: (even an empty drive lights up while DOS tries it; C: has no light on this case)
-        onDriveAccess: (drive) => {
-          if (drive === 'A') floppy.busy(700);
-          else if (drive === 'D') cd.busy(900);
+        // the drive lights (even an empty drive lights up while DOS tries it; C:'s is the case's HDD
+        // light), and while the PC starts, the drives' sounds
+        onDriveAccess: (drive, ms) => {
+          if (drive === 'A') floppy.busy(ms ?? 700);
+          else if (drive === 'D') cd.busy(ms ?? 900);
+          else if (drive === 'C') hdd.busy(ms);
+          whir?.access(drive, ms);
         },
       });
       removeWarp = installCrtWarp(crt.querySelector<HTMLElement>('.crt-picture')!);
       return computer;
     }));
-  powerBtn.addEventListener('pointerenter', () => void pcCode(), { once: true });
-  powerBtn.addEventListener('focus', () => void pcCode(), { once: true });
+  // the fans and the hard disk spinning up, loaded with the PC's insides
+  const bootCode = () => import('./pc/bootSounds');
+  const fetchAhead = () => void Promise.all([pcCode(), bootCode()]);
+  powerBtn.addEventListener('pointerenter', fetchAhead, { once: true });
+  powerBtn.addEventListener('focus', fetchAhead, { once: true });
+  // the tube warming up at each switch-on (pc/crtWarmUp.ts), done when its fade ends
+  let stopWarmUp = () => {};
+  crt.addEventListener('animationend', (e) => e.animationName.startsWith('crt-warm') && stopWarmUp());
   // the screenshot and record buttons: the capture tool loads on the first press
   let capture: { el: HTMLElement; dispose(): void } | undefined;
   const captureCode = () => import('./pc/capture');
@@ -119,7 +137,16 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     modem.power(true);
     spk.power(true);
     setTurbo(turbo);
-    poweringOn = loadPc().then((pc) => pc.powerOn());
+    stopWarmUp = crtWarmUp(crt);
+    cd.busy(2000); // the CD-ROM drive resets as the power comes on: its light, and no sound
+    poweringOn = Promise.all([loadPc(), bootCode()]).then(([pc, { bootSounds }]) => {
+      const boot = (whir = bootSounds());
+      // at the prompt (or switched off while booting) the fans and the drives fade away
+      return pc.powerOn().finally(() => {
+        boot?.settle();
+        if (whir === boot) whir = undefined;
+      });
+    });
     await poweringOn;
     if (!computer?.powered) return; // switched off again while it booted
     setTurbo(turbo);
@@ -139,10 +166,12 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     switchingOff = true;
     pc.powerOff();
     powerLed.classList.remove('on');
+    hdd.off();
     powerBtn.setAttribute('aria-pressed', 'false');
     spk.power(false);
     modem.power(false);
     deskView.set({ disk: undefined, run: undefined, open: undefined });
+    stopWarmUp();
     crt.classList.add('switching-off');
     setTimeout(() => {
       crt.classList.remove('switching-off');
@@ -155,6 +184,7 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
       pcLoad = undefined;
       poweringOn = undefined;
       keyCard.show(undefined);
+      wheelSpot.game(undefined);
       hooks.switchedOff();
       cd.setDisc(undefined);
       desk.querySelector('.gm-box')?.classList.remove('cd-in');
