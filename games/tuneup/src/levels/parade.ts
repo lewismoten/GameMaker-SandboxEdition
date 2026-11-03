@@ -18,6 +18,9 @@ import { CTR } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
 import { DRIVE } from './drive';
 import { SHOP_SIGNS, shopSign } from '../art/shopSigns';
+import { MON } from '../ids';
+import { FIRST_PLACE } from '../paradeMonsters';
+import { PARADE_FOLLOWERS } from '../sprites/paradeSprites';
 
 /** Solid underneath only: the bounce reaches up into it. */
 const UNDER = 4;
@@ -39,7 +42,12 @@ export interface ParadeScene {
   fork?: number;
   /** The encore gates (fireworks only): building columns over the street after the last side street, each taking FORKS_PER_GATE forks. */
   gates?: number[];
+  /** The followers behind THE CHEZ, nearest first (PARADE_FOLLOWERS indexes). */
+  line: number[];
 }
+
+/** Blocks behind the car each follower keeps, by follower (what the scene's monsters are built with). */
+export const placesOf = (s: ParadeScene) => PARADE_FOLLOWERS.map((_, i) => FIRST_PLACE + s.line.indexOf(i));
 
 /** Tuning forks each encore gate takes (nine forks open all three); the gates are a bonus, never in the way. */
 export const FORKS_PER_GATE = 3;
@@ -47,9 +55,9 @@ export const FORKS_PER_GATE = 3;
 export const GATE_POINTS = 1000;
 
 export const PARADES: ParadeScene[] = [
-  { file: 'band1', w: 70, cues: [54, 42, 30, 18], ribbon: 8, fireworks: false, fork: 43 },
-  { file: 'band2', w: 70, cues: [56, 45, 32, 20], ribbon: 8, fireworks: false },
-  { file: 'band3', w: 70, cues: [53, 41, 29, 17], ribbon: 8, fireworks: true, gates: [14, 12, 10] },
+  { file: 'band1', w: 70, cues: [54, 42, 30, 18], ribbon: 8, fireworks: false, fork: 43, line: [0, 2, 1, 3, 5, 4] },
+  { file: 'band2', w: 70, cues: [56, 45, 32, 20], ribbon: 8, fireworks: false, line: [2, 1, 4, 0, 3, 5] },
+  { file: 'band3', w: 70, cues: [53, 41, 29, 17], ribbon: 8, fireworks: true, gates: [14, 12, 10], line: [5, 0, 3, 4, 1, 2] },
 ];
 /** The row the cue lamps hang in, just over the car's roof: the car is one block tall (its
  * top block is clear, so only its bottom block touches), and the bounce reaches up into it. */
@@ -282,6 +290,8 @@ export const parade = (scene: ParadeScene) =>
     if (scene.fork !== undefined) m.set(scene.fork, row, 'fork').set(scene.fork, top, 'corner.glint');
     for (const x of scene.gates ?? []) m.set(x, CUE_ROW, 'gate');
     m.set(scene.ribbon, row, 'ribbon');
+    // the Clown Club falls in behind THE CHEZ (paradeMonsters.ts): they start where they will keep
+    scene.line.forEach((f, k) => m.mon(MON.parade + f, startX(scene) + FIRST_PLACE + k, row));
     m.link(EXIT_X, row);
     // variants here and there so the street doesn't repeat
     m.vary('road', ['road.patch'], 13);

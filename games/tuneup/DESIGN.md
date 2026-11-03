@@ -196,6 +196,13 @@ Before level 14 Doc Leo and Lady Regina un-shrink (he drives from there on). The
 - **The parade's cue lamps** (`src/levels/parade.ts`) are solid underneath in the row over the
   car; the bounce touches them. Both kinds count on the stations counter (spent to nothing by
   level 13's door), and the ribbon spends four.
+- **The parade's followers** (`src/paradeMonsters.ts`, art in `src/sprites/paradeSprites.ts`): two
+  small cars and four Clown Club walkers (waver, juggler, horn honker, unicycle rider) trail THE
+  CHEZ. Each is an attack-march monster with `activate` 2 (corners are offsets from the hero, re-aimed
+  every tick), so it keeps a fixed place 1 to 6 blocks behind the car at 16 pixels a tick. The
+  range to start is 8 blocks, so no place may be further than 6. They are non-solid, power 200 and
+  have no effects, so they never hurt, block or trap. They use the Beltway's monster slots
+  (`MON.parade` = `MON.belt`) in the parade scenes' own .MON files (`mons: { parade }`).
 
 ## Structure
 

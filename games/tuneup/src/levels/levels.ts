@@ -27,7 +27,7 @@ import { keyBlocks, keyRoom } from './key';
 import { horn, hornBlocks, HORN_ROUNDS } from './horn';
 import { drive, driveBlocks, ROUTES } from './drive';
 import { driveSong, paradeSong } from '../sound/finaleSongs';
-import { parade, paradeBlocks, PARADES } from './parade';
+import { parade, paradeBlocks, PARADES, placesOf } from './parade';
 import { beltway, beltwayBlocks } from './beltway';
 import { beltSong } from '../sound/beltSong';
 
@@ -273,7 +273,7 @@ export const LEVELS: LevelDef[] = [
     chr: 'chez',
     snd: (['parade1', 'parade2', 'parade3'] as const)[i],
     song: () => paradeSong(i),
-    mons: {},
+    mons: { parade: placesOf(p) },
     wide: true,
   })),
 ];

@@ -121,6 +121,8 @@ export const MON = {
   dreamWalk: 40,
   /** The Beltway: the traffic, the lane dashes, the shoulder posts and the EXIT sign (beltMonsters.ts BELTMON). */
   belt: 41,
+  /** The Parade Route: the cars and clowns that follow THE CHEZ (paradeMonsters.ts); the parade's own .MON reuses the Beltway's slots. */
+  parade: 41,
   /** Pump Up the Volume: a friendly pigeon flying back and forth over the awnings (bumping it costs points, never energy). */
   pigeon: 61,
 } as const;
