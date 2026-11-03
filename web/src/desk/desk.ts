@@ -74,6 +74,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   const scene = deskScene({
     power: (onlyOn) => void pc.power(onlyOn),
     toggleTurbo: () => pc.toggleTurbo(),
+    reset: () => void pc.reset(),
     eject: () => eject(),
     ejectCd: () => void ejectCd(),
     command: (cmd) => void pc.command(cmd),

@@ -53,6 +53,12 @@ export class Shell {
     this.stopped = true;
   }
 
+  /** As DOS starts: drive C:, every drive at its root. */
+  reset(): void {
+    this.drive = 'C';
+    this.cwd.clear();
+  }
+
   async loop(): Promise<void> {
     this.stopped = false;
     while (!this.stopped) {

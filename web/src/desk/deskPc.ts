@@ -119,6 +119,8 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
 
   let poweringOn: Promise<void> | undefined;
   let switchingOff = false;
+  // a boot under way (power-on or reset): the reset button waits for the prompt
+  let booting = false;
   async function power(onlyOn = false): Promise<void> {
     // a desk already left (a click, a key or restore() arriving late) never switches its PC on
     if (!desk.isConnected) return;
@@ -147,7 +149,12 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
         if (whir === boot) whir = undefined;
       });
     });
-    await poweringOn;
+    booting = true;
+    try {
+      await poweringOn;
+    } finally {
+      booting = false;
+    }
     if (!computer?.powered) return; // switched off again while it booted
     setTurbo(turbo);
     if (!deskView.get('run')) deskView.set({ run: 'dos' });
@@ -196,6 +203,22 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     }, 1700);
   }
 
+  /** The reset button: a PC that is on (and done booting) starts again; the tube stays lit. */
+  async function reset(): Promise<void> {
+    const pc = computer;
+    if (!pc?.powered || switchingOff || booting) return;
+    booting = true;
+    keyCard.show(undefined);
+    wheelSpot.game(undefined);
+    setZoom(false);
+    try {
+      await pc.reset();
+    } finally {
+      booting = false;
+    }
+    if (computer?.powered) deskView.set({ run: 'dos' });
+  }
+
   /** Types a command at the prompt (booting first if needed). */
   async function command(cmd: string): Promise<void> {
     await power(true);
@@ -209,6 +232,7 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
     },
     load: loadPc,
     power,
+    reset,
     command,
     setZoom,
     setTurbo,
