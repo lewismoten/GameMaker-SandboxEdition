@@ -243,7 +243,9 @@ an FDM printer cannot print (`overhang`) and builds the support pillars as a bod
 `mesh/colorBodies` picks at most four colors from a colored mesh (`pickPalette`) and splits the solid into one
 closed body per color (`colorBodies`); `mesh/threeMf` writes and reads multi-color 3MF files (`write3mf(parts,
 title, codec)`, `read3mf`: parts are a mesh and a color), over the small ZIP writer `mesh/zipFile` (pass Node's
-`deflateRawSync` as `codec.deflate` to compress). They are browser safe.
+`deflateRawSync` as `codec.deflate` to compress). `mesh/voxel` meshes filled voxels (`voxelMesh`: coplanar faces merged into
+rectangles, no T-junctions, so it stays closed) and `mesh/pixelFigure` turns a pixel sprite into a standee on a base with at
+most four color bodies (`pixelFigure`). They are browser safe.
 
 ### Disk comparison
 
