@@ -203,6 +203,17 @@ if (timing)
   console.log(
     `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,
   );
+// Depth's plastic trinkets (STL files the site serves from web/public/trinkets/depth): made from its models, and
+// skipped when they are already made from the same sources (games/depth/tools/trinkets.ts)
+if (ids.includes('depth') && (!only.length || only.includes('depth'))) {
+  const began = Date.now();
+  const made = await run(process.execPath, [...viteNode, '../games/depth/tools/trinkets.ts', ...(process.argv.includes('--force') ? ['--force'] : [])], {
+    cwd: join(root, 'web'),
+    maxBuffer: 16 << 20,
+    timeout: 240_000,
+  });
+  if (timing) console.log(`Depth trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - began) / 1000).toFixed(1)} s)`);
+}
 if (fallbacks.length) console.log(`Ran under vite-node (bundle failed): ${fallbacks.join(', ')}`);
 save(true);
 console.log('Game build outputs are ready.');

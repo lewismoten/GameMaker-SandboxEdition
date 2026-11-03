@@ -240,3 +240,5 @@ recordings or converting compressed sources such as Ogg. Keep `.wav` authoring s
 
 `versionDisks.ts` compares current build output to a Git revision. It reads legacy tracked disk blobs directly; for source-only revisions it extracts a temporary source snapshot, reuses installed third-party dependencies, resolves workspace packages from that snapshot, and builds the historical disk. `files(id)` returns a game's disk at the revision as name to bytes (used by `npm run disk:diff -- <id> --since`), and `lastPushToMaster(root)` picks the default revision. This stays local, outside CI.
 `moneyAudit.ts` replays the committed walkthroughs without rebuilding disks and reports each game's visible money counter at scene starts and its win.
+
+Depth Perception's plastic trinkets (STL files for its box) are made by `games/depth/tools/trinkets.ts`, from `games/depth/src/trinkets/` (`fields.ts` turns the tracer's shapes into distance fields, `make.ts` meshes one); `node scripts/build-games.mjs` runs it after the games and it skips when its sources are unchanged.
