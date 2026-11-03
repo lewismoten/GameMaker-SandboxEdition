@@ -346,6 +346,18 @@ export function buildParlorBlocks(): BlockSet {
     })(),
   );
   for (const [w, ic] of [...HOW, ...WHY]) cardBlocks(`a_${w}`, w, ic, ST);
+  // the stage door: a name card per suspect, and the way in
+  for (const who of SUSPECTS) cardBlocks(`d_${who.toUpperCase()}`, who.toUpperCase());
+  add(
+    'stagedoor',
+    ((): Pixels => {
+      const p = clone(RUG);
+      p.rect(2, 4, 16, 12, c('navy', 1)).frame(2, 4, 16, 12, c('gold', 2));
+      microC(p, 10, 6, 'GO', c('gold', 4));
+      microC(p, 10, 12, 'IN', c('gold', 4));
+      return p;
+    })(),
+  );
   add(
     'backdoor',
     ((): Pixels => {

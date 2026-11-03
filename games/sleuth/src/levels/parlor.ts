@@ -56,6 +56,7 @@ export const ROOM = {
   why: { x: 32, y: 30 },
   wrong: { x: 48, y: 30 },
   curtain: { x: 64, y: 30 },
+  door: { x: 0, y: 40 },
 };
 
 export const center = (o: { x: number; y: number }) => ({ x: o.x + 8, y: o.y + 5 });
@@ -114,6 +115,19 @@ const CHOICE = [
   '#..............#',
   'ffffffffffffffff',
 ];
+/** The stage door at the start: five name cards (two cells each) and the way in. */
+const DOOR = [
+  '################',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#11.22.33.44.55#',
+  '#..............#',
+  '#..............#',
+  '#..............#',
+  '#.E............#',
+  '#ww#############',
+];
 const WRONG = [
   '################',
   '#..............#',
@@ -140,6 +154,8 @@ export interface ParlorLinks {
   why: { x: number; y: number }[][];
   accBack: { x: number; y: number };
   wrongExit: { x: number; y: number };
+  /** The stage door: a name card per suspect (two cells each, in SUSPECTS order) and the way in. */
+  door: { cards: { x: number; y: number }[][]; in: { x: number; y: number } };
   /** The second round's sofa (see blocks/egg.ts). */
   sofa: { x: number; y: number };
 }
@@ -211,6 +227,7 @@ export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks
     accBack: { x: 0, y: 0 },
     wrongExit: { x: 0, y: 0 },
     sofa: { x: ROOM.gr2.x + 13, y: ROOM.gr2.y + 8 },
+    door: { cards: [[], [], [], [], []], in: { x: 0, y: 0 } },
   };
 
   // the green room, both rounds
@@ -272,6 +289,20 @@ export function buildParlorMap(bs: BlockSet): { map: GameMap; links: ParlorLinks
       links.ivExit[round].push({ x: o.x + 2, y: o.y + 8 });
     });
   }
+
+  // the stage door: the sergeant, five name cards, and the way into the theater
+  stamp(ROOM.door, DOOR, (ch, x, y) => {
+    const wf = wallOrFloor(ch, x, y, 'rug');
+    if (wf) return wf;
+    if (ch === 'E') {
+      links.door.in = { x: ROOM.door.x + x, y: ROOM.door.y + y };
+      return 'stagedoor';
+    }
+    const q = Number(ch) - 1;
+    links.door.cards[q].push({ x: ROOM.door.x + x, y: ROOM.door.y + y });
+    return `d_${SUSPECTS[q].toUpperCase()}${links.door.cards[q].length - 1}`;
+  });
+  monster('dobbs', ROOM.door.x + 8, ROOM.door.y + 2);
 
   // the stage at dawn: who, how, why, a wrong answer, and the curtain
   const stage = (ch: string, _x: number, y: number): string | undefined => {
