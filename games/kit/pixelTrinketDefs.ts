@@ -67,10 +67,6 @@ GAMES.loofah = [
   hero('loofah', 'loofah', 'aisle', 'The loofah', 'Peach or coral, smelling of grapefruit.', 'loofah'),
   mon('aisle', 18, 'loofah', 'aisle', 'imp', 'Horned imp', 'A cheerful little horned imp from the aisle.'),
 ];
-GAMES.maximus = [
-  hero('courier', 'courier', 'heart', 'Courier Max', 'The courier crossing a galaxy of worlds.', 'max'),
-  mon('heart', 0, 'heart', 'heart', 'cyclops', 'Blue cyclops', 'A one-eyed blue blob from the heart worlds.'),
-];
 GAMES.mustard = [
   hero('seed', 'mustard', 'dust', 'The mustard seed', 'The smallest thing in all the land, with the greatest feet.', 'seed'),
   mon('dust', 19, 'mustard', 'dust', 'bee', 'Bee', 'A bee buzzing the garden.'),
@@ -114,8 +110,4 @@ GAMES.teddy2 = [
 GAMES.teddy3 = [
   hero('gwinn', 'gwinn', 'road', 'Gwinn', 'Playing the meanwhile.', 'gwinn'),
   hero('runner', 'runner', 'road', 'The runner', 'Out for a run.', 'runner'),
-];
-GAMES.tickle = [
-  hero('leo', 'tickle', 'course', 'Doc Leo', 'Certified in rat tickling.', 'leo'),
-  mon('course', 7, 'tickle', 'course', 'rat', 'Rat', 'A rat, waiting to be tickled.'),
 ];
