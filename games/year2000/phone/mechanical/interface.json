@@ -1,0 +1,368 @@
+{
+  "about": "THE PHONE OF THE FUTURE board, rev A. Untested design. Units mm; origin top-left seen from the front; +x right, +y down.",
+  "board": {
+    "width": 68.58,
+    "height": 160.02,
+    "thickness": 1.6,
+    "corner_radius": 3.0,
+    "outline": "rounded rectangle, 4 corner radius arcs of 3 mm",
+    "mounting_holes": [
+      {
+        "x": 3.81,
+        "y": 3.81,
+        "drill": 3.2,
+        "keepout_diameter": 7.2
+      },
+      {
+        "x": 64.77,
+        "y": 3.81,
+        "drill": 3.2,
+        "keepout_diameter": 7.2
+      },
+      {
+        "x": 3.81,
+        "y": 156.21,
+        "drill": 3.2,
+        "keepout_diameter": 7.2
+      },
+      {
+        "x": 64.77,
+        "y": 156.21,
+        "drill": 3.2,
+        "keepout_diameter": 7.2
+      }
+    ]
+  },
+  "front": {
+    "note": "Everything the user sees or touches is on the front. Solder tails of the front parts stick out of the back.",
+    "antenna_end": "top edge (y = 0)",
+    "ir_led": {
+      "ref": "D2",
+      "center": [
+        15.24,
+        6.35
+      ],
+      "dome_points": [
+        0,
+        -1
+      ],
+      "dome_diameter": 5.0,
+      "axis_height_above_board": 3.5,
+      "note": "5 mm LED with leads bent 90 degrees, dome beyond the top edge; pin 1 (square pad) is the cathode"
+    },
+    "ir_receiver": {
+      "ref": "D1",
+      "center": [
+        53.34,
+        6.35
+      ],
+      "faces": [
+        0,
+        -1
+      ],
+      "body": [
+        5.4,
+        4.3
+      ],
+      "axis_height_above_board": 3.0,
+      "note": "BPW34-style photodiode bent to face the top edge; its package needs a clear IR window about 6 x 5 mm"
+    },
+    "display": {
+      "refs": [
+        "DS1",
+        "DS2"
+      ],
+      "centers": [
+        [
+          17.78,
+          27.94
+        ],
+        [
+          50.8,
+          27.94
+        ]
+      ],
+      "module_body": [
+        30.0,
+        14.0
+      ],
+      "module_height": 7.0,
+      "window_rect": {
+        "x": 2.78,
+        "y": 20.94,
+        "w": 63.02,
+        "h": 14.0
+      },
+      "note": "two 4-digit modules side by side; ASSUMED 30 x 14 mm bodies and 7 mm height: confirm with the module bought"
+    },
+    "speaker": {
+      "ref": "LS1",
+      "center": [
+        34.29,
+        49.53
+      ],
+      "diameter": 28.0,
+      "thickness": 4.0,
+      "faces": "front (grille holes over the cone)",
+      "solder_pads": [
+        [
+          31.75,
+          49.53
+        ],
+        [
+          36.83,
+          49.53
+        ]
+      ]
+    },
+    "microphone": {
+      "ref": "MK1",
+      "center": [
+        34.29,
+        151.13
+      ],
+      "diameter": 9.7,
+      "height": 6.5,
+      "faces": "front, bottom end (mouth end)",
+      "solder_pads": [
+        [
+          31.75,
+          151.13
+        ],
+        [
+          36.83,
+          151.13
+        ]
+      ]
+    },
+    "buttons": {
+      "TALK": {
+        "ref": "SW4",
+        "center": [
+          16.51,
+          141.22
+        ],
+        "body": [
+          6.0,
+          6.0
+        ],
+        "height_above_board": 4.3,
+        "stem_diameter": 3.5,
+        "cap_travel": 0.25
+      },
+      "CLEAR": {
+        "ref": "SW5",
+        "center": [
+          52.07,
+          141.22
+        ],
+        "body": [
+          6.0,
+          6.0
+        ],
+        "height_above_board": 4.3,
+        "stem_diameter": 3.5,
+        "cap_travel": 0.25,
+        "note": "also the hang-up button: it resets the PIC and clears the display"
+      }
+    }
+  },
+  "dial": {
+    "center": [
+      34.29,
+      92.71
+    ],
+    "radius": 28.5,
+    "number_ring_radius": 20.32,
+    "suggested_finger_hole_diameter": 9.5,
+    "rotation_to_dial": "clockwise from the digit to the finger stop",
+    "finger_stop_angle_cw_from_top_deg": 120,
+    "degrees_per_digit_of_travel": 30,
+    "digit_positions": [
+      {
+        "digit": "1",
+        "angle_cw_from_top_deg": 60,
+        "x": 51.89,
+        "y": 82.55
+      },
+      {
+        "digit": "2",
+        "angle_cw_from_top_deg": 30,
+        "x": 44.45,
+        "y": 75.11
+      },
+      {
+        "digit": "3",
+        "angle_cw_from_top_deg": 0,
+        "x": 34.29,
+        "y": 72.39
+      },
+      {
+        "digit": "4",
+        "angle_cw_from_top_deg": 330,
+        "x": 24.13,
+        "y": 75.11
+      },
+      {
+        "digit": "5",
+        "angle_cw_from_top_deg": 300,
+        "x": 16.69,
+        "y": 82.55
+      },
+      {
+        "digit": "6",
+        "angle_cw_from_top_deg": 270,
+        "x": 13.97,
+        "y": 92.71
+      },
+      {
+        "digit": "7",
+        "angle_cw_from_top_deg": 240,
+        "x": 16.69,
+        "y": 102.87
+      },
+      {
+        "digit": "8",
+        "angle_cw_from_top_deg": 210,
+        "x": 24.13,
+        "y": 110.31
+      },
+      {
+        "digit": "9",
+        "angle_cw_from_top_deg": 180,
+        "x": 34.29,
+        "y": 113.03
+      },
+      {
+        "digit": "0",
+        "angle_cw_from_top_deg": 150,
+        "x": 44.45,
+        "y": 110.31
+      }
+    ],
+    "note": "digits are silkscreened at the hole centers (cw angle from the top). Digit n travels 30 degrees x (n+1) back to the stop... 1 is 60 degrees from the stop, 0 is 330 degrees. Pulse switch closes once per digit step on the return; off-normal is closed while the dial is off rest.",
+    "microswitches": {
+      "pulse": {
+        "ref": "SW2",
+        "center": [
+          24.13,
+          87.63
+        ],
+        "pads": [
+          [
+            21.59,
+            87.63
+          ],
+          [
+            26.67,
+            87.63
+          ]
+        ],
+        "body": [
+          12.8,
+          6.5
+        ],
+        "height_above_board": 10.2,
+        "lever_direction_toward_dial_center": [
+          0.894,
+          0.447
+        ],
+        "closes_on": "each cam tooth during the return stroke (10 teeth for 10 pulses max)"
+      },
+      "off_normal": {
+        "ref": "SW3",
+        "center": [
+          44.45,
+          97.79
+        ],
+        "pads": [
+          [
+            41.91,
+            97.79
+          ],
+          [
+            46.99,
+            97.79
+          ]
+        ],
+        "body": [
+          12.8,
+          6.5
+        ],
+        "height_above_board": 10.2,
+        "lever_direction_toward_dial_center": [
+          -0.894,
+          -0.447
+        ],
+        "closes_on": "held closed whenever the dial is off its rest position"
+      }
+    },
+    "keep_clear": "the front surface inside the dial radius carries only silkscreen, the two microswitches and the TALK/CLEAR clear zone below it: the dial can sit 11 mm above the board"
+  },
+  "back": {
+    "note": "Electronics and the battery holder are on the back. Back parts are mirrored footprints.",
+    "max_part_height": 16.0,
+    "battery_holder": {
+      "ref": "BT1",
+      "center": [
+        34.29,
+        134.62
+      ],
+      "body": [
+        50.0,
+        47.0
+      ],
+      "height": 15.0,
+      "pads": [
+        [
+          39.37,
+          113.03
+        ],
+        [
+          29.21,
+          113.03
+        ]
+      ],
+      "note": "4 x AAA side by side, long axis along x; pad positions are placeholders until the holder's drawing is checked"
+    },
+    "power_switch": {
+      "ref": "SW1",
+      "center": [
+        63.5,
+        87.63
+      ],
+      "handle_direction": [
+        1,
+        0
+      ],
+      "body": [
+        10.0,
+        6.0
+      ],
+      "height": 6.0,
+      "note": "slide switch near the right edge; the shell needs a slot there"
+    },
+    "regulator": {
+      "ref": "U6",
+      "center": [
+        48.26,
+        91.44
+      ],
+      "height": 4.6
+    },
+    "tallest_parts": [
+      "BT1 15 mm",
+      "C21 220 uF electrolytic 12 mm",
+      "X1 crystal 4.7 mm lying down",
+      "ICs 5 mm"
+    ]
+  },
+  "silkscreen": {
+    "front_title": "THE PHONE OF THE FUTURE at y = 14.6",
+    "labels": [
+      "TALK",
+      "CLEAR",
+      "MIC"
+    ]
+  }
+}

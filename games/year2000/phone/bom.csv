@@ -1,0 +1,45 @@
+Refs,Qty,Value,Description,Footprint,Side,MPN,Order_at,Stock_status
+U1,1,PIC16F84A-04/P,"8-bit microcontroller, 1K-word flash, 18-pin DIP",dip18,back,Microchip PIC16F84A-04/P,Digi-Key PIC16F84A-04/P-ND,"checked 2026-11-03: Digi-Key regional pages (bg, th, au) showed it in stock; the US page was not read"
+U2,1,MT8870DE1,"DTMF tone decoder, 18-pin DIP",dip18,back,Microchip MT8870DE1 (or CM8870P / HT9170B equivalents),Digi-Key MT8870DE1-ND,checked 2026-11-03: Digi-Key lists it OBSOLETE; some brokers list stock. Replacement choice is an open question
+U3,1,MAX7219CNG+,"8-digit LED display driver, 24-pin 0.3in DIP",dip24,back,Maxim/Analog Devices MAX7219CNG+,Jameco 312160 (MAX7219CNG),"checked 2026-11-03: Jameco listing found, stock not read; Digi-Key lists it obsolete"
+U4,1,LM358N,"Dual op-amp (mic preamp and IR receive amp), 8-pin DIP",dip8,back,TI LM358N (LM358P),Digi-Key LM358N/NOPB,unchecked
+U5,1,LM386N-1,"Audio power amplifier, 8-pin DIP",dip8,back,TI LM386N-1,Digi-Key LM386N-1/NOPB,unchecked
+U6,1,LM2940CT-5.0,"5 V low-dropout regulator, TO-220 (pin 1 in, 2 gnd, 3 out)",to220,back,TI LM2940CT-5.0/NOPB,Digi-Key LM2940CT-5.0/NOPB,unchecked
+Q1,1,2N3904,"NPN transistor, IR LED driver",to92,back,onsemi 2N3904 (TO-92),Jameco / Digi-Key 2N3904,unchecked
+Q2,1,2N3904,"NPN transistor, mutes the receiver while TALK is held",to92,back,onsemi 2N3904 (TO-92),Jameco / Digi-Key 2N3904,unchecked
+X1,1,3.579545 MHz,"Crystal 3.579545 MHz, HC-49 (the MT8870 clock, shared with the PIC)",xtal,back,Abracon ABL-3.579545MHZ-B2 (HC-49/US),Digi-Key 535-9099-ND (verify),unchecked
+D1,1,BPW34,Silicon PIN photodiode (IR receiver),photo,front,Vishay BPW34 (PIN photodiode),Digi-Key / Mouser BPW34,unchecked
+"DS1,DS2",2,4-digit CC 0.36in,"4-digit 7-segment LED module, common cathode, red, 12 pins",disp4,front,"4-digit 0.36 in common-cathode red module, 12 pins (5641AS-style pinout)",Mouser/Digi-Key: choose by pinout; verify pin rows vs footprint,unchecked
+D2,1,TSAL6200,"IR LED 940 nm, 5 mm",led,front,"Vishay TSAL6200 (940 nm, 5 mm)",Digi-Key / Mouser TSAL6200,unchecked
+MK1,1,Electret 9.7mm,"Electret microphone capsule, solder pads",mic,front,"Electret capsule 9.7 mm, e.g. CUI CMC-9745 series",Digi-Key / Mouser CUI CMC-97,unchecked
+LS1,1,8 ohm 28mm,"Small 8 ohm speaker, 28 mm, solder tabs",spk,front,"8 ohm 0.25 W speaker, about 28 mm",Jameco / Digi-Key (any 28 mm 8 ohm),unchecked
+SW1,1,POWER,Slide switch SPDT (one throw unused),slide,back,C&K OS102011MA1QN1 slide switch,Digi-Key / Mouser OS102011MA1QN1,unchecked
+"SW2,SW3",2,PULSE / OFF NORMAL,Subminiature lever microswitch (dial pulse cam); Subminiature lever microswitch (dial off-normal),usw,front,Omron SS-5GL2 (verify terminals),Digi-Key / Mouser SS-5GL2,unchecked
+"SW4,SW5",2,TALK / CLEAR,6 mm tactile switch,tact,front,Omron B3F-1000 (6 mm tactile),Digi-Key / Mouser B3F-1000,unchecked
+BT1,1,4xAAA,"4 x AAA battery holder, PC pins",batt,back,"Keystone 2481 (4 x AAA, PC pins)",Digi-Key / Mouser 2481 (Newark lists it as through hole),checked 2026-11-03: Newark listing found; Digi-Key page not found
+"R1,R6,R7,R12,R13,R14,R22",7,10k,"resistors, see the schematic for each one's job",axial,back,"CFR-12JB-52-10K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-10K,unchecked
+"R2,R23,R24",3,100k,TALK line pull-down; MT8870 input resistor; MT8870 feedback (unity gain),axial,back,"CFR-12JB-52-100K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-100K,unchecked
+R3,1,2.2k,mic bias (powered only while TALK is held),axial,back,"CFR-12JB-52-2.2K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-2.2K,unchecked
+R4,1,1k,mic amp input,axial,back,"CFR-12JB-52-1K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-1K,unchecked
+"R5,R15,R20,R21",4,47k,mic amp feedback (gain 47); tones into the IR driver; receiver to speaker amp; speaker amp input load,axial,back,"CFR-12JB-52-47K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-47K,unchecked
+R8,1,6.8k,IR LED bias,axial,back,"CFR-12JB-52-6.8K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-6.8K,unchecked
+R9,1,2.7k,IR LED bias,axial,back,"CFR-12JB-52-2.7K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-2.7K,unchecked
+R10,1,56,IR LED emitter resistor,axial,back,"CFR-12JB-52-56 (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-56,unchecked
+R11,1,100,IR LED series resistor,axial,back,"CFR-12JB-52-100 (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-100,unchecked
+R16,1,470k,tones to the speaker,axial,back,"CFR-12JB-52-470K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-470K,unchecked
+R17,1,22k,photodiode load,axial,back,"CFR-12JB-52-22K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-22K,unchecked
+R18,1,4.7k,receive amp input,axial,back,"CFR-12JB-52-4.7K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-4.7K,unchecked
+R19,1,220k,receive amp feedback (gain 47),axial,back,"CFR-12JB-52-220K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-220K,unchecked
+R25,1,390k,MT8870 steering resistor,axial,back,"CFR-12JB-52-390K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-390K,unchecked
+R26,1,30k,MAX7219 segment current (about 7 mA),axial,back,"CFR-12JB-52-30K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-30K,unchecked
+R27,1,10,speaker output Zobel network,axial,back,"CFR-12JB-52-10 (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-10,unchecked
+C1,1,0.47uF,regulator input,ceramic,back,Vishay K104K15X7RF5TL2 style 5.08 mm ceramic (0.47uF),Mouser 594-K104K15X7RF5TL2 (100 nF); other values similar,unchecked
+C2,1,47uF 10V tant,"regulator output (22 uF min, low ESR)",elec,back,Kemet T350 radial tantalum (47uF10Vtant),Digi-Key / Mouser T350E476K010AT,unchecked
+"C3,C5,C7,C10",4,1uF,mic coupling; mic amp to IR driver coupling; tone coupling; receive coupling,ceramic,back,Vishay K104K15X7RF5TL2 style 5.08 mm ceramic (1uF),Mouser 594-K104K15X7RF5TL2 (100 nF); other values similar,unchecked
+"C4,C14,C20",3,10uF,half-supply filter; MAX7219 supply; LM386 bypass,elec,back,Panasonic EEU-FR radial electrolytic (10uF),Digi-Key / Mouser EEU-FR1A (10 V),unchecked
+C6,1,10nF,tone low-pass,ceramic,back,Vishay K104K15X7RF5TL2 style 5.08 mm ceramic (10nF),Mouser 594-K104K15X7RF5TL2 (100 nF); other values similar,unchecked
+"C8,C11,C12,C15,C16,C17,C18,C19",8,100nF,"capacitors, see the schematic for each one's job",ceramic,back,Vishay K104K15X7RF5TL2 style 5.08 mm ceramic (100nF),Mouser 594-K104K15X7RF5TL2 (100 nF); other values similar,unchecked
+C9,1,100pF,receive amp roll-off,ceramic,back,Vishay K104K15X7RF5TL2 style 5.08 mm ceramic (100pF),Mouser 594-K104K15X7RF5TL2 (100 nF); other values similar,unchecked
+C13,1,30pF,clock tap from MT8870 to PIC (datasheet Fig. 7 style),ceramic,back,Vishay K104K15X7RF5TL2 style 5.08 mm ceramic (30pF),Mouser 594-K104K15X7RF5TL2 (100 nF); other values similar,unchecked
+C21,1,220uF 10V,speaker coupling,elec,back,Panasonic EEU-FR radial electrolytic (220uF10V),Digi-Key / Mouser EEU-FR1A (10 V),unchecked
+C22,1,47nF,speaker output Zobel network,ceramic,back,Vishay K104K15X7RF5TL2 style 5.08 mm ceramic (47nF),Mouser 594-K104K15X7RF5TL2 (100 nF); other values similar,unchecked
