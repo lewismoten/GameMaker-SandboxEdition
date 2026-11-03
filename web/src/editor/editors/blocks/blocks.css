@@ -44,6 +44,16 @@
   grid-area: paint;
   min-width: 0;
 }
+.blk-zoom {
+  width: 100%;
+  max-width: min(520px, max(260px, calc(var(--ws-vh, 100dvh) - 350px)));
+  overflow: auto;
+  flex: none;
+  touch-action: none;
+}
+.blk-zoom > .blk-canvas {
+  max-width: none;
+}
 .blk-canvas {
   display: block;
   width: 100%;
@@ -122,7 +132,8 @@
     overflow-x: auto;
     overflow-y: hidden;
   }
-  .blk-canvas {
+  .blk-canvas,
+  .blk-zoom {
     max-width: 100%;
   }
   .blk-side {

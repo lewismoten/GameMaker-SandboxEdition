@@ -1,4 +1,5 @@
 // Block set editor (BLOCEDIT.EXE): 20x20 pictures plus each block's game behavior.
+import { touchGestures } from '../map/mapTouchGestures';
 import { rovingGrid } from '../../widgets/rovingGrid';
 import { panelTabs } from '../../widgets/panelTabs';
 import { colorChoice } from '../../widgets/colorChoice';
@@ -752,7 +753,25 @@ registerEditor(['bbl', 'mbl', 'cbl'], (host, project, file) => {
     view.get('tab') ?? undefined,
     (tab) => view.set({ tab }),
   );
-  const pictureArea = characterFrames ? h('div', { class: 'blk-character-workbench' }, canvas) : canvas;
+  // a box the painting area zooms inside (two fingers pinch and pan it; a second finger never paints)
+  const zoomBox = h('div', { class: 'blk-zoom' }, canvas);
+  let canvasZoom = 1;
+  touchGestures({
+    el: zoomBox,
+    scroller: zoomBox,
+    zoom: () => canvasZoom,
+    setZoom: (value, at) => {
+      value = Math.max(1, Math.min(6, value));
+      const oldW = canvas.offsetWidth,
+        oldH = canvas.offsetHeight;
+      canvasZoom = value;
+      canvas.style.width = `${value * 100}%`;
+      zoomBox.scrollLeft = ((zoomBox.scrollLeft + at.x) / oldW) * canvas.offsetWidth - at.x;
+      zoomBox.scrollTop = ((zoomBox.scrollTop + at.y) / oldH) * canvas.offsetHeight - at.y;
+    },
+    abort: () => finishStroke(false),
+  });
+  const pictureArea = characterFrames ? h('div', { class: 'blk-character-workbench' }, zoomBox) : zoomBox;
   const columns = [
     h('div', { class: 'blk-picker' }, picker),
     h(
