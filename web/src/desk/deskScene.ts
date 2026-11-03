@@ -33,6 +33,7 @@ const withCover = (el: HTMLElement, name: string): HTMLElement => (cover(el, nam
 interface DeskActions {
   power(onlyOn?: boolean): void;
   toggleTurbo(): void;
+  reset(): void;
   eject(): void;
   ejectCd(): void;
   /** Types a command at the DOS prompt. */
@@ -77,6 +78,11 @@ export function deskScene(on: DeskActions) {
     class: 'case-btn',
     'aria-label': 'Turbo',
     onclick: () => on.toggleTurbo(),
+  });
+  const resetBtn = h('button', {
+    class: 'case-btn reset',
+    'aria-label': 'Reset',
+    onclick: () => on.reset(),
   });
   const box = h('div', { class: 'box' });
   // the playing game's key card, taped to the monitor
@@ -181,7 +187,7 @@ export function deskScene(on: DeskActions) {
             'div',
             { class: 'case-buttons' },
             h('label', null, powerBtn, 'POWER'),
-            h('label', null, turboBtn, 'TURBO'),
+            h('label', null, resetBtn, 'RESET'),
             // the key lock beside them (the key is long lost: it stays unlocked)
             h('span', { class: 'keylock-label', 'aria-hidden': 'true' }, h('span', { class: 'keylock' }), 'LOCK'),
           ),
@@ -191,7 +197,8 @@ export function deskScene(on: DeskActions) {
             h('span', null, powerLed, 'POWER'),
             h('span', null, turboLed, 'TURBO'),
             h('span', null, hdd.led, 'HDD'),
-            h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')),
+            // the turbo button beside the speed it sets
+            h('span', { class: 'speed' }, h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')), h('label', { class: 'case-label' }, turboBtn, 'TURBO')),
           ),
           h('span'),
           h('div', { class: 'drives' }, cd.el, floppy.el),

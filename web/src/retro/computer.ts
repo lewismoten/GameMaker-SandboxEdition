@@ -136,6 +136,19 @@ export class Computer extends ComputerFolders {
     this.shell.stop();
   }
 
+  /**
+   * The reset button: whatever is running stops, as at power-off, but the screen stays lit and
+   * the PC boots again from the BIOS, at C:\ with its disks still in.
+   */
+  async reset(): Promise<void> {
+    if (!this.powered) return;
+    this.powerOff();
+    await sleep(300);
+    this.keys.resume();
+    this.shell.reset();
+    await this.powerOn();
+  }
+
   /** The BIOS's single beep through the PC speaker: a short square wave. */
   protected postBeep(): void {
     const ctx = this.audioCtx;
