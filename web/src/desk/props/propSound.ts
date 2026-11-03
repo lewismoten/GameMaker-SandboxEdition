@@ -293,7 +293,7 @@ export const roomSound = {
         gameAudio ??= new AudioEngine();
         gameAudio.setGame(true);
         const entry = (await files.loadGameList()).find((g) => g.id === game);
-        const bytes = entry && (await files.fetchGameFile(entry, name));
+        const bytes = entry && (await files.peekGameFile(entry, name));
         await gameAudio.resume();
         gameAudio.playVoc(bytes);
       })

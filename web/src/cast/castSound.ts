@@ -7,7 +7,7 @@
 // tour plays (the tour has its own song and effects; tour/, its 'gm-tour' events and `tour-on` class).
 import { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
 import { demoAudio, setDemoAudio } from '../media/demoAudio';
-import { fetchGameFile, loadGameList } from '../project/files';
+import { peekGameFile, loadGameList } from '../project/files';
 
 const SONG = 'title.cmf';
 /** A digitized effect: Teddy's own by name, or another game's as 'game/name' (goat/scream). */
@@ -40,7 +40,7 @@ export class StageSound {
     if (!p) {
       p = loadGameList()
         .then((list) => list.find((g) => g.id === game))
-        .then((entry) => (entry ? fetchGameFile(entry, name) : undefined))
+        .then((entry) => (entry ? peekGameFile(entry, name) : undefined))
         .catch(() => undefined);
       this.files.set(key, p);
     }

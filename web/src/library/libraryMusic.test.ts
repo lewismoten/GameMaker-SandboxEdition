@@ -22,7 +22,7 @@ vi.mock('@lewismoten/gamemaker-sandbox-engine/audio/engine', () => ({
 }));
 vi.mock('../project/files', () => ({
   loadCatalog: () => Promise.resolve([{ id: 'brief' }]),
-  fetchGameFile: () => Promise.resolve(new Uint8Array(1)),
+  peekGameFile: () => Promise.resolve(new Uint8Array(1)),
 }));
 vi.mock('../media/demoAudio', () => ({ demoAudio: () => 'blaster' }));
 

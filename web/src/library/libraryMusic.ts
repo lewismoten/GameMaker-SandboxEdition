@@ -7,7 +7,7 @@
 // 'gm-tour' events), and stops when the room leaves the page. The engine is
 // imported when the first gesture comes, so the page loads none of it.
 import { demoAudio } from '../media/demoAudio';
-import { fetchGameFile, loadCatalog } from '../project/files';
+import { peekGameFile, loadCatalog } from '../project/files';
 
 const GAME = 'brief';
 const SONG = 'library.cmf';
@@ -44,7 +44,7 @@ export function startLibraryMusic(room: HTMLElement): void {
       e.setLevel(LEVEL);
       await e.resume();
       const entry = (await loadCatalog()).find((g) => g.id === GAME);
-      const bytes = entry && (await fetchGameFile(entry, SONG));
+      const bytes = entry && (await peekGameFile(entry, SONG));
       if (ended || engine !== e) return;
       await e.playSong(bytes);
       if (hushed()) e.pauseMusic(true);

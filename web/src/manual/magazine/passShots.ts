@@ -8,7 +8,7 @@ import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/g
 import { parseBackdrop, parseSlideList, textLines } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { FONT8X8 } from '@lewismoten/gamemaker-sandbox-engine/gfx/font8x8';
 import { matchColor, parsePalette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
-import { GameFiles, fetchGameFile, type CatalogEntry } from '../../project/files';
+import { GameFiles, peekGameFile, type CatalogEntry } from '../../project/files';
 import { paintIndexed } from '../../editor/core/draw';
 import { levelPixels } from '../../gfx/levelPicture';
 
@@ -19,12 +19,12 @@ const INTRO = 9;
 
 /** The whole game's files, fetched by name as they are wanted. */
 async function load(entry: CatalogEntry, names: string[]): Promise<GameFiles> {
-  const bytes = await Promise.all(names.map((n) => fetchGameFile(entry, n)));
+  const bytes = await Promise.all(names.map((n) => peekGameFile(entry, n)));
   return new GameFiles(names.flatMap((n, k) => (bytes[k] ? [[n, bytes[k]] as [string, Uint8Array]] : [])));
 }
 
 async function gameOf(entry: CatalogEntry): Promise<Game | undefined> {
-  const gam = entry.gam && (await fetchGameFile(entry, entry.gam));
+  const gam = entry.gam && (await peekGameFile(entry, entry.gam));
   return gam ? parseGame(gam) : undefined;
 }
 
@@ -74,7 +74,7 @@ async function pageShot(entry: CatalogEntry, name: string): Promise<HTMLCanvasEl
     if (!bytes) continue;
     if (/\.(gif|bkd)$/i.test(file)) {
       const b = /\.bkd$/i.test(file) ? parseBackdrop(bytes) : { gif: file, x: 0, y: 0 };
-      const gif = files.get(b.gif) ?? (await fetchGameFile(entry, b.gif));
+      const gif = files.get(b.gif) ?? (await peekGameFile(entry, b.gif));
       if (!gif || !isGif(gif)) continue;
       const img = decodeGif(gif);
       for (let y = 0; y < img.height && y + b.y < H; y++)
