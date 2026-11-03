@@ -17,6 +17,8 @@ import { overhang } from '@lewismoten/gamemaker-sandbox-tools/mesh/overhang';
 import { pixelFigure, type PixelPicture } from '@lewismoten/gamemaker-sandbox-tools/mesh/pixelFigure';
 import { writeStl } from '@lewismoten/gamemaker-sandbox-tools/mesh/stl';
 import { write3mf } from '@lewismoten/gamemaker-sandbox-tools/mesh/threeMf';
+import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
+import { chicken } from '../tuneup/src/art/chicken';
 import { encodePng, renderBodies, sheet, type Image } from './trinketRender';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -28,8 +30,10 @@ interface Def {
   title: string;
   blurb: string;
   /** A hero (character file: its standing frame) or a monster (monster file and number: its first picture). */
-  source: { chr: string; cbl: string } | { mon: string; mbl: string; n: number };
+  source: { chr: string; cbl: string; seq?: number } | { draw: () => Pixels } | { mon: string; mbl: string; n: number };
   pal: string;
+  /** Palette indices that keep a color of their own (the first is the outline and base). */
+  keep?: number[];
 }
 const GAMES: Record<string, Def[]> = {
   tuneup: [
@@ -39,17 +43,25 @@ const GAMES: Record<string, Def[]> = {
       blurb: 'The hobo clown mechanic in his gray fedora, ready to tune up anything.',
       source: { chr: 'leo.chr', cbl: 'leo.cbl' },
       pal: 'gear1.pal',
+      keep: [9, 44, 157, 175],
     },
     {
       id: 'regina',
       title: 'Lady Regina III',
       blurb: 'The rubber chicken who laid the egg.',
-      source: { mon: 'cast.mon', mbl: 'cast.mbl', n: 1 },
+      source: { draw: () => chicken(1, { lady: true, stand: true }) },
       pal: 'gear1.pal',
+      keep: [9, 197, 179, 83],
     },
   ],
   teddy: [
-    { id: 'teddy', title: 'Teddy', blurb: 'The little corgi with a ton of tricks.', source: { chr: 'teddy.chr', cbl: 'teddy.cbl' }, pal: 'backyard.pal' },
+    {
+      id: 'teddy',
+      title: 'Teddy',
+      blurb: 'The little corgi with a ton of tricks.',
+      source: { chr: 'teddy.chr', cbl: 'teddy.cbl', seq: 5 },
+      pal: 'backyard.pal',
+    },
     {
       id: 'gwinn',
       title: 'Gwinn',
@@ -68,8 +80,12 @@ function picture(game: string, d: Def): PixelPicture {
   const draw = (pixels: Uint8Array, orient: number, cells: Uint8Array, w: number, row: number) => {
     for (let y = 0; y < BLEN; y++) for (let x = 0; x < BLEN; x++) cells[(row + y) * w + x] = pixels[orientIndex(orient, x, y)];
   };
+  if ('draw' in d.source) {
+    const p = d.source.draw();
+    return { w: p.w, h: p.h, cells: Uint8Array.from(p.px), palette };
+  }
   if ('chr' in d.source) {
-    const frame = parseCharacter(disk(d.source.chr)).sequences[0].frames[0];
+    const frame = parseCharacter(disk(d.source.chr)).sequences[d.source.seq ?? 0].frames[0];
     const bl = blocks(d.source.cbl, CHARBL);
     const cells = new Uint8Array(BLEN * BLEN * 2).fill(TRANSPARENT);
     if (frame.pic1 < CHARBL) draw(bl[frame.pic1].pixels, frame.orient & 15, cells, BLEN, 0);
@@ -97,7 +113,7 @@ for (const game of games) {
   const items = [];
   for (const d of GAMES[game]) {
     const t0 = performance.now();
-    const fig = pixelFigure(picture(game, d), { colors, block, layers });
+    const fig = pixelFigure(picture(game, d), { colors, block, layers, keep: d.keep });
     const stl = writeStl(fig.solid, { name: `${game} ${d.title}` });
     const parts = fig.bodies.map((b, i) => ({ name: i === 0 ? 'outline and base' : `color ${i + 1}`, mesh: b.mesh, color: b.color }));
     const mf = write3mf(parts, d.title, { deflate: (x) => deflateRawSync(x) });

@@ -19,6 +19,8 @@ export interface PixelPicture {
 export interface FigureOptions {
   /** Most colors (the base counts as the outline color): 4, or 3. */
   colors?: number;
+  /** Palette indices that must keep a color of their own, the first one being the outline and base; the rest of the colors are chosen farthest-first. */
+  keep?: number[];
   /** Millimeters per pixel block. */
   block?: number;
   /** Blocks deep the figure is. */
@@ -45,13 +47,14 @@ type Lab = [number, number, number];
 const dE = (a: Lab, b: Lab) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
 /** Colors used, cut to `max` seeds: the darkest first (the outline), then the farthest from those chosen, weighted by use. */
-function seedColors(pic: PixelPicture, max: number): { seeds: number[]; of: Map<number, number> } {
+function seedColors(pic: PixelPicture, max: number, keep: number[]): { seeds: number[]; of: Map<number, number> } {
   const count = new Map<number, number>();
   for (const c of pic.cells) if (c !== TRANSPARENT) count.set(c, (count.get(c) ?? 0) + 1);
   const used = [...count.keys()];
   const lab = new Map(used.map((c) => [c, labOf(pic.palette, c)]));
   const total = [...count.values()].reduce((a, b) => a + b, 0);
-  const seeds = [used.reduce((a, b) => (lab.get(b)![0] < lab.get(a)![0] ? b : a))];
+  const kept = keep.filter((c) => count.has(c)).slice(0, max);
+  const seeds = kept.length ? kept : [used.reduce((a, b) => (lab.get(b)![0] < lab.get(a)![0] ? b : a))];
   while (seeds.length < max && seeds.length < used.length) {
     let best = -1;
     let score = 0;
@@ -80,8 +83,8 @@ function seedColors(pic: PixelPicture, max: number): { seeds: number[]; of: Map<
 
 /** The figure of a picture. */
 export function pixelFigure(pic: PixelPicture, o: FigureOptions = {}): Figure {
-  const { colors = 4, block = 1.5, layers = 4, baseRows = 2, baseMargin = 1 } = o;
-  const { seeds, of } = seedColors(pic, colors);
+  const { colors = 4, keep = [], block = 1.5, layers = 4, baseRows = 2, baseMargin = 1 } = o;
+  const { seeds, of } = seedColors(pic, colors, keep);
   // crop to the drawn pixels
   let x0 = pic.w,
     x1 = -1,

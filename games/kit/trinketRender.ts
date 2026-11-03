@@ -59,7 +59,7 @@ export function renderBodies(bodies: Body[], yaw: number, pitch: number, w: numb
       const nl = Math.hypot(...n) || 1;
       // the camera looks along +z (away); a face is seen when its normal points toward the camera (-z)
       if (n[2] / nl > -1e-6) continue;
-      const shade = 0.45 + 0.55 * Math.max(0, -(n[0] * light[0] + n[1] * light[1] + n[2] * light[2]) / nl) * 0.9 + 0.1;
+      const shade = 0.72 + 0.28 * Math.max(0, -(n[0] * light[0] + n[1] * light[1] + n[2] * light[2]) / nl);
       const s = v.map((q) => [ox + q[0] * scale, oy - q[1] * scale, q[2]]);
       const minX = Math.max(0, Math.floor(Math.min(s[0][0], s[1][0], s[2][0])));
       const maxX = Math.min(w - 1, Math.ceil(Math.max(s[0][0], s[1][0], s[2][0])));
