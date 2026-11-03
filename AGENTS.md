@@ -95,9 +95,21 @@ preserve what was there.
 
 ## Working rules
 
+- **Branches (git flow):** `master` holds releases and `develop` collects finished work.
+  Nobody commits on either directly, and several agents (a remote one included) work at once,
+  so every task gets its own branch from an up-to-date `develop`:
+  - start: `git switch develop && git pull --ff-only && git switch -c feature/<short-name>`
+  - finish, once its checks pass: bring `develop` in first and settle any conflicts on the
+    feature branch (`git merge develop`), then
+    `git switch develop && git pull --ff-only && git merge --no-ff feature/<short-name> && git push origin develop`,
+    so the other agents can pull it.
+  - an agent you start (a subagent, a worktree) gets its own `feature/` branch from `develop`
+    the same way; tell it to in its brief.
+  - a pull request from `develop` into `master` only when the maintainer says it's time.
 - **Commits:** commit small and often: one game or one feature per commit, with no more
   than about 3 uncommitted files at a time. Use `git commit -- <paths>` so you only commit
-  your own files. Never push, and never rewrite history.
+  your own files. Push only `develop` (and your feature branch when another agent needs
+  it). Never force-push, and never rewrite history that has been pushed.
 - **Dev server:** the maintainer keeps a dev server open on port 5173. Never restart or stop
   it, and never make that page reload. Verify with your own headless browser (Playwright's
   bundled Chromium, no `channel`, closed in a `finally`) against it. For production checks, use a scratch build
@@ -147,9 +159,10 @@ preserve what was there.
 - **Scope:** do what was asked. Don't add games, features or settings nobody asked for, and
   don't turn off a setting you weren't asked to touch. When told to wrap up, finish what you
   have and pick up nothing new.
-- **Pull requests:** open one only when asked. GitHub defaults to the upstream repository
-  (gandrewstone/GameMaker), and a pull request opened there can't be deleted, so always pass
-  `--repo lewismoten/GameMaker-SandboxEdition` and check the base before creating it.
+- **Pull requests:** open one only when asked, from `develop` into `master`. GitHub defaults
+  to the upstream repository (gandrewstone/GameMaker), and a pull request opened there can't
+  be deleted, so always pass `--repo lewismoten/GameMaker-SandboxEdition --base master --head develop`
+  and check the base before creating it.
 - **Claims:** search before saying something exists or doesn't, and point to the file and
   line. Mark an inference as one ("appears to be"); don't state it as fact.
 - **Bots and checks:**
