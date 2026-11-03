@@ -44,7 +44,7 @@ add("U4", "Amplifier_Operational:LM2904", "LM358N", "dip8", "B", {
 add("U5", "Amplifier_Audio:LM386", "LM386N-1", "dip8", "B", {
     "1": None, "2": GND, "3": "AIN", "4": GND, "5": "SPKO", "6": V5, "7": "LMBYP", "8": None},
     desc="Audio power amplifier, 8-pin DIP")
-add("U6", "Regulator_Linear:L7805", "LM2940CT-5.0", "to220", "B",
+add("U6", "Regulator_Linear:L7805", "LM2940T-5.0", "to220", "B",
     {"1": "VBAT", "2": GND, "3": V5}, desc="5 V low-dropout regulator, TO-220 (pin 1 in, 2 gnd, 3 out)")
 add("Q1", "Transistor_BJT:Q_NPN_EBC", "2N3904", "to92", "B", {"E": "TXE", "B": "TXB", "C": "LEDC"},
     desc="NPN transistor, IR LED driver")
@@ -63,7 +63,7 @@ for ref, digs in (("DS1", ["DIG7", "DIG6", "DIG5", "DIG4"]), ("DS2", ["DIG3", "D
     pins = {}
     for i, nm in enumerate(MODPIN, 1):
         pins[str(i)] = SEG[nm] if nm in SEG else digs[int(nm[1]) - 1]
-    add(ref, "Local:DISPLAY_4DIGIT_CC", "4-digit CC 0.36in", "disp4", "F", pins,
+    add(ref, "Local:DISPLAY_4DIGIT_CC", "3641AS 4-digit CC", "disp4", "F", pins,
         desc="4-digit 7-segment LED module, common cathode, red, 12 pins")
 add("MK1", "Device:Microphone", "Electret 9.7mm", "mic", "F", {"1": "MICB", "2": GND},
     desc="Electret microphone capsule, solder pads")
@@ -102,7 +102,7 @@ R(18, "4.7k", "PD_AC", "RXINV", "receive amp input")
 R(19, "220k", "RXAMP", "RXINV", "receive amp feedback (gain 47)")
 R(20, "47k", "RX_AC", "AIN", "receiver to speaker amp (fixed volume; leave out if RV1 is fitted)")
 R(21, "47k", "AIN", GND, "speaker amp input load (leave out if RV1 is fitted)")
-add("RV1", "Device:R_Potentiometer", "10k trimmer (optional)", "trim", "B", {"1": "RX_AC", "2": "AIN", "3": GND},
+add("RV1", "Device:R_Potentiometer", "10k trim", "trim", "B", {"1": "RX_AC", "2": "AIN", "3": GND},
     desc="OPTIONAL volume trimmer: fit it INSTEAD of R20 and R21 (wiper to the speaker amp)")
 R(22, "10k", "TALK_H", "Q2B", "receiver mute base resistor")
 R(23, "100k", "M_IN_AC", "M_INN", "MT8870 input resistor")

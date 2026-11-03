@@ -1,28 +1,29 @@
 Refs,Qty,Value,Description,Footprint,Side,MPN,Order_at,Stock_status
 U1,1,PIC16F84A-04/P,"8-bit microcontroller, 1K-word flash, 18-pin DIP",dip18,back,Microchip PIC16F84A-04/P,Digi-Key PIC16F84A-04/P-ND,"checked 2026-11-03: Digi-Key regional pages (bg, th, au) showed it in stock; the US page was not read"
-U2,1,MT8870DE1,"DTMF tone decoder, 18-pin DIP",dip18,back,Microchip MT8870DE1 (or CM8870P / HT9170B equivalents),Digi-Key MT8870DE1-ND,checked 2026-11-03: Digi-Key lists it OBSOLETE; some brokers list stock. Replacement choice is an open question
-U3,1,MAX7219CNG+,"8-digit LED display driver, 24-pin 0.3in DIP",dip24,back,Maxim/Analog Devices MAX7219CNG+,Jameco 312160 (MAX7219CNG),"checked 2026-11-03: Jameco listing found, stock not read; Digi-Key lists it obsolete"
+U2,1,CM8870P,"DTMF tone decoder, 18-pin DIP; CM8870P, MT8870D and HT9170B are pin-compatible here (pins 5 and 6 tied low)",dip18,back,"California Micro Devices CM8870P (or Zarlink MT8870DE, Holtek HT9170B: same 18-DIP pinout, pins 5 and 6 to ground)",Futurlec MT8870DE $1.45 / HT9170B $0.50 (no US retailer found with a plain CM8870P; Digi-Key's MT8870DE1 is obsolete),"checked 2026-11-03: pin compatibility from the CM8870 and HT9170 datasheets; Futurlec prices read, stock not shown"
+U3,1,MAX7219CNG+,"8-digit LED display driver, 24-pin 0.3in DIP",dip24,back,Maxim/Analog Devices MAX7219CNG+ (clone: HGSEMI MAX7219N),Digi-Key MAX7219CNG (about $24); Jameco 312160,checked 2026-11-03: Digi-Key price read; clone price and stock unconfirmed
 U4,1,LM358N,"Dual op-amp (mic preamp and IR receive amp), 8-pin DIP",dip8,back,TI LM358N (LM358P),Digi-Key LM358N/NOPB,unchecked
 U5,1,LM386N-1,"Audio power amplifier, 8-pin DIP",dip8,back,TI LM386N-1,Digi-Key LM386N-1/NOPB,unchecked
-U6,1,LM2940CT-5.0,"5 V low-dropout regulator, TO-220 (pin 1 in, 2 gnd, 3 out)",to220,back,TI LM2940CT-5.0/NOPB,Digi-Key LM2940CT-5.0/NOPB,unchecked
+U6,1,LM2940T-5.0,"5 V low-dropout regulator, TO-220 (pin 1 in, 2 gnd, 3 out)",to220,back,"TI LM2940T-5.0/LF08 (TO-220); cheaper swap MCP1702-5002E/TO (TO-92, 250 mA, check the pin order)",Digi-Key LM2940T-5.0/LF08 $2.22; MCP1702-5002E/TO $0.65,"checked 2026-11-03: Digi-Key (LM2940CT-5.0 was 0 in stock; LF08 1,571 in stock)"
 Q1,1,2N3904,"NPN transistor, IR LED driver",to92,back,onsemi 2N3904 (TO-92),Jameco / Digi-Key 2N3904,unchecked
-Q2,1,2N3904,"NPN transistor, mutes the receiver while TALK is held",to92,back,onsemi 2N3904 (TO-92),Jameco / Digi-Key 2N3904,unchecked
+Q2,1,2N3904,"NPN transistor, mutes the receiver while TALK is held or a digit is being sent",to92,back,onsemi 2N3904 (TO-92),Jameco / Digi-Key 2N3904,unchecked
 X1,1,3.579545 MHz,"Crystal 3.579545 MHz, HC-49 (the MT8870 clock, shared with the PIC)",xtal,back,Abracon ABL-3.579545MHZ-B2 (HC-49/US),Digi-Key 535-9099-ND (verify),unchecked
 D1,1,BPW34,Silicon PIN photodiode (IR receiver),photo,front,Vishay BPW34 (PIN photodiode),Digi-Key / Mouser BPW34,unchecked
-"DS1,DS2",2,4-digit CC 0.36in,"4-digit 7-segment LED module, common cathode, red, 12 pins",disp4,front,"4-digit 0.36 in common-cathode red module, 12 pins (5641AS-style pinout)",Mouser/Digi-Key: choose by pinout; verify pin rows vs footprint,unchecked
+"DS1,DS2",2,3641AS 4-digit CC,"4-digit 7-segment LED module, common cathode, red, 12 pins",disp4,front,Futurlec 7FR3641AS 4-digit 0.36 in common-cathode red module (3641AS pinout),"Futurlec 7FR3641AS $1.20 (Tayda A-1775 about $0.88, stock unconfirmed)","checked 2026-11-03: pinout, 10.16 mm row spacing and 30 x 14 x 7.2 mm from the GNQ-3641 datasheet; the retailer unit was not seen"
 D2,1,TSAL6200,"IR LED 940 nm, 5 mm",led,front,"Vishay TSAL6200 (940 nm, 5 mm)",Digi-Key / Mouser TSAL6200,unchecked
 MK1,1,Electret 9.7mm,"Electret microphone capsule, solder pads",mic,front,"Electret capsule 9.7 mm, e.g. CUI CMC-9745 series",Digi-Key / Mouser CUI CMC-97,unchecked
 LS1,1,8 ohm 28mm,"Small 8 ohm speaker, 28 mm, solder tabs",spk,front,"8 ohm 0.25 W speaker, about 28 mm",Jameco / Digi-Key (any 28 mm 8 ohm),unchecked
-SW1,1,POWER,Slide switch SPDT (one throw unused),slide,back,C&K OS102011MA1QN1 slide switch,Digi-Key / Mouser OS102011MA1QN1,unchecked
+SW1,1,POWER,Slide switch SPDT (one throw unused),slide,back,"SPDT slide switch, 2.54 mm pins (Adafruit 805 style)",Adafruit 805 $0.95,"checked 2026-11-03: Adafruit page, in stock"
 "SW2,SW3",2,PULSE / OFF NORMAL,Subminiature lever microswitch (dial pulse cam); Subminiature lever microswitch (dial off-normal),usw,front,Omron SS-5GL2 (verify terminals),Digi-Key / Mouser SS-5GL2,unchecked
-"SW4,SW5",2,TALK / CLEAR,6 mm tactile switch,tact,front,Omron B3F-1000 (6 mm tactile),Digi-Key / Mouser B3F-1000,unchecked
-BT1,1,4xAAA,"4 x AAA battery holder, PC pins",batt,back,"Keystone 2481 (4 x AAA, PC pins)",Digi-Key / Mouser 2481 (Newark lists it as through hole),checked 2026-11-03: Newark listing found; Digi-Key page not found
+"SW4,SW5",2,TALK / CLEAR,6 mm tactile switch,tact,front,Omron B3F-1000 (6 mm tactile),Digi-Key SW400-ND $0.35,"checked 2026-11-03: Digi-Key 21,251 in stock"
+BT1,1,4xAAA,"4 x AAA battery holder with wire leads (stuck behind the dial), leads soldered to two pads",batt,back,Pololu 1145 4 x AAA holder with 6 in leads (53 x 50 x 13 mm),Pololu 1145 $2.54; Digi-Key SBH441A-ND $3.48,"checked 2026-11-03: prices read, Digi-Key 88 in stock"
 "R1,R6,R7,R12,R13,R14,R22",7,10k,"resistors, see the schematic for each one's job",axial,back,"CFR-12JB-52-10K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-10K,unchecked
+RV1,1,10k trimmer (optional),OPTIONAL volume trimmer: fit it INSTEAD of R20 and R21 (wiper to the speaker amp),trim,back,"CFR-12JB-52-10Ktrimmer(optional) (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-10Ktrimmer(optional),unchecked
 "R2,R23,R24",3,100k,TALK line pull-down; MT8870 input resistor; MT8870 feedback (unity gain),axial,back,"CFR-12JB-52-100K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-100K,unchecked
 R3,1,2.2k,mic bias (powered only while TALK is held),axial,back,"CFR-12JB-52-2.2K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-2.2K,unchecked
 R4,1,1k,mic amp input,axial,back,"CFR-12JB-52-1K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-1K,unchecked
-"R5,R15,R20,R21",4,47k,mic amp feedback (gain 47); tones into the IR driver; receiver to speaker amp; speaker amp input load,axial,back,"CFR-12JB-52-47K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-47K,unchecked
-R8,1,6.8k,IR LED bias,axial,back,"CFR-12JB-52-6.8K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-6.8K,unchecked
+"R5,R15,R20,R21",4,47k,mic amp feedback (gain 47); tones into the IR driver; receiver to speaker amp (fixed volume; leave out if RV1 is fitted); speaker amp input load (leave out if RV1 is fitted),axial,back,"CFR-12JB-52-47K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-47K,unchecked
+R8,1,6.8k,IR LED bias: on only while TALK is held or a digit is sent (the PIC drives TALK_H),axial,back,"CFR-12JB-52-6.8K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-6.8K,unchecked
 R9,1,2.7k,IR LED bias,axial,back,"CFR-12JB-52-2.7K (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-2.7K,unchecked
 R10,1,56,IR LED emitter resistor,axial,back,"CFR-12JB-52-56 (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-56,unchecked
 R11,1,100,IR LED series resistor,axial,back,"CFR-12JB-52-100 (Yageo 1/8 W, 5%)",Digi-Key CFR-12JB-52-100,unchecked

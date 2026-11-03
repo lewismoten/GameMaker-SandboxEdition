@@ -19,25 +19,28 @@ R_ = "CFR-12JB-52-{v} (Yageo 1/8 W carbon film; Digi-Key/Mouser/Jameco carry the
 MPN = {
     "U1": ("Microchip PIC16F84A-04/P", "Digi-Key PIC16F84A-04/P-ND",
            "checked 2026-11-03: Digi-Key regional pages (bg, th, au) showed it in stock; the US page was not read"),
-    "U2": ("Microchip MT8870DE1 (or CM8870P / HT9170B equivalents)", "Digi-Key MT8870DE1-ND",
-           "checked 2026-11-03: Digi-Key lists it OBSOLETE; some brokers list stock. Replacement choice is an open question"),
-    "U3": ("Maxim/Analog Devices MAX7219CNG+", "Jameco 312160 (MAX7219CNG)",
-           "checked 2026-11-03: Jameco listing found, stock not read; Digi-Key lists it obsolete"),
+    "U2": ("California Micro Devices CM8870P (or Zarlink MT8870DE, Holtek HT9170B: same 18-DIP pinout, pins 5 and 6 to ground)",
+           "Futurlec MT8870DE $1.45 / HT9170B $0.50 (no US retailer found with a plain CM8870P; Digi-Key's MT8870DE1 is obsolete)",
+           "checked 2026-11-03: pin compatibility from the CM8870 and HT9170 datasheets; Futurlec prices read, stock not shown"),
+    "U3": ("Maxim/Analog Devices MAX7219CNG+ (clone: HGSEMI MAX7219N)", "Digi-Key MAX7219CNG (about $24); Jameco 312160",
+           "checked 2026-11-03: Digi-Key price read; clone price and stock unconfirmed"),
     "U4": ("TI LM358N (LM358P)", "Digi-Key LM358N/NOPB", UN),
     "U5": ("TI LM386N-1", "Digi-Key LM386N-1/NOPB", UN),
-    "U6": ("TI LM2940CT-5.0/NOPB", "Digi-Key LM2940CT-5.0/NOPB", UN),
+    "U6": ("TI LM2940T-5.0/LF08 (TO-220); cheaper swap MCP1702-5002E/TO (TO-92, 250 mA, check the pin order)", "Digi-Key LM2940T-5.0/LF08 $2.22; MCP1702-5002E/TO $0.65",
+           "checked 2026-11-03: Digi-Key (LM2940CT-5.0 was 0 in stock; LF08 1,571 in stock)"),
     "Q": ("onsemi 2N3904 (TO-92)", "Jameco / Digi-Key 2N3904", UN),
     "X1": ("Abracon ABL-3.579545MHZ-B2 (HC-49/US)", "Digi-Key 535-9099-ND (verify)", UN),
     "D2": ("Vishay TSAL6200 (940 nm, 5 mm)", "Digi-Key / Mouser TSAL6200", UN),
     "D1": ("Vishay BPW34 (PIN photodiode)", "Digi-Key / Mouser BPW34", UN),
-    "DS": ("4-digit 0.36 in common-cathode red module, 12 pins (5641AS-style pinout)", "Mouser/Digi-Key: choose by pinout; verify pin rows vs footprint", UN),
+    "DS": ("Futurlec 7FR3641AS 4-digit 0.36 in common-cathode red module (3641AS pinout)", "Futurlec 7FR3641AS $1.20 (Tayda A-1775 about $0.88, stock unconfirmed)",
+           "checked 2026-11-03: pinout, 10.16 mm row spacing and 30 x 14 x 7.2 mm from the GNQ-3641 datasheet; the retailer unit was not seen"),
     "MK1": ("Electret capsule 9.7 mm, e.g. CUI CMC-9745 series", "Digi-Key / Mouser CUI CMC-97", UN),
     "LS1": ("8 ohm 0.25 W speaker, about 28 mm", "Jameco / Digi-Key (any 28 mm 8 ohm)", UN),
     "SW2": ("Omron SS-5GL2 (verify terminals)", "Digi-Key / Mouser SS-5GL2", UN),
-    "SW4": ("Omron B3F-1000 (6 mm tactile)", "Digi-Key / Mouser B3F-1000", UN),
-    "BT1": ("Keystone 2481 (4 x AAA, PC pins)", "Digi-Key / Mouser 2481 (Newark lists it as through hole)",
-            "checked 2026-11-03: Newark listing found; Digi-Key page not found"),
-    "SW1": ("C&K OS102011MA1QN1 slide switch", "Digi-Key / Mouser OS102011MA1QN1", UN),
+    "SW4": ("Omron B3F-1000 (6 mm tactile)", "Digi-Key SW400-ND $0.35", "checked 2026-11-03: Digi-Key 21,251 in stock"),
+    "BT1": ("Pololu 1145 4 x AAA holder with 6 in leads (53 x 50 x 13 mm)", "Pololu 1145 $2.54; Digi-Key SBH441A-ND $3.48", "checked 2026-11-03: prices read, Digi-Key 88 in stock"),
+    "RV1": ("10k 3-pin trimmer, 2.54 mm pins (Adafruit 356 style) - OPTIONAL, fit instead of R20 and R21", "Adafruit 356 $1.25 (out of stock 2026-11-03); any 10k trimmer", "checked 2026-11-03: Adafruit page"),
+    "SW1": ("SPDT slide switch, 2.54 mm pins (Adafruit 805 style)", "Adafruit 805 $0.95", "checked 2026-11-03: Adafruit page, in stock"),
 }
 GEN = {
     "R": ("CFR-12JB-52-{v} (Yageo 1/8 W, 5%)", "Digi-Key CFR-12JB-52-{v}", UN),
@@ -53,6 +56,8 @@ def key(p):
         return (r[0] + ("E" if p["sym"].endswith("Polarized") else "0") if r[0] == "C" else "R", p["value"], p["fp"])
     if r.startswith("SW"):
         return ("SW", p["fp"], "")
+    if r.startswith("RV"):
+        return ("RV", p["fp"], "")
     if r.startswith("DS"):
         return ("DS", p["fp"], "")
     return (r, p["value"], p["fp"])
