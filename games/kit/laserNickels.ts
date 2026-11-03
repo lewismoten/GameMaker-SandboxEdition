@@ -123,7 +123,7 @@ function front(game: string, year: number, hero?: Def, second?: Def): Face {
 function back(game: string, year: number): Face {
   const n = NICKELS[game];
   const f = newFace(false);
-  arc(f, 'GOOD FOR ONE', true);
+  arc(f, n.arc ?? 'GOOD FOR', true); // most games' lines start "ONE ..."
   arc(f, 'SANDBOX SOFTWARE', false);
   n.good.forEach((s, i) => line(f, s, -1.5 + (i - (n.good.length - 1) / 2) * 4));
   line(f, String(year), 8);

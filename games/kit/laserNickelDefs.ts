@@ -1,7 +1,7 @@
 // What each game's laser wooden nickel (laserNickels.ts) says and shows. The figures come from the game's own built disk:
 // pixelTrinketDefs.ts names a hero and a signature figure for most games, and the rest are named here. The words are the
 // game's own world (its about.json): `top` and `bottom` are the arcs on the front (micro 3x5 letters, 15 characters at
-// most), `good` is the back's "GOOD FOR ONE ..." in up to three lines of 8x8 letters (11 characters at most a line).
+// most), `good` is the back's lines under its "GOOD FOR" arc (each starts "ONE ...") in up to three lines of 8x8 letters (11 characters at most a line).
 // Secret games are not listed here and never get a nickel.
 import type { Def } from './pixelTrinketDefs';
 
@@ -10,6 +10,8 @@ export interface NickelDef {
   /** The front's lower arc; the year between stars when left out. */
   bottom?: string;
   good: string[];
+  /** The back's top arc, when it isn't "GOOD FOR" (realm's lines don't start "ONE"). */
+  arc?: string;
   /** A figure for games pixelTrinketDefs.ts has none for: character file, its block file, a palette. */
   hero?: { chr: string; cbl: string; pal: string; seq?: number };
   /** Draw no figure (the game's own thing is drawn by hand, like the Round Tuit). */
@@ -30,7 +32,7 @@ export const NICKELS: Record<string, NickelDef> = {
   maximus: { top: 'MAXIMUS', bottom: 'HUNDRED WORLDS', good: ['ONE STAR', 'SHARD'], hero: h('courier', 'courier', 'galaxy') },
   mustard: { top: 'MUSTARD SEED', bottom: 'HUSTLE', good: ['ONE MOVED', 'MOUNTAIN'] },
   needle: { top: 'BROTHER CAMEL', good: ['ONE CAMEL', 'THROUGH', 'THE EYE'] },
-  realm: { top: 'A ROUND TUIT', bottom: 'GET AROUND TO IT', good: ['GETTING', 'AROUND', 'TO IT'], noFigure: true },
+  realm: { top: 'A ROUND TUIT', bottom: 'GET AROUND TO IT', arc: 'GOOD FOR ONE', good: ['GETTING', 'AROUND', 'TO IT'], noFigure: true },
   reckoning: { top: 'DAIRY RECKONING', bottom: '3:17 A.M.', good: ['ONE SLICE', 'AT 3:17 AM'], hero: h('leo', 'reckon', 'bedroom') },
   remote: { top: 'THE REMOTE?!', good: ['ONE LOOK', 'UNDER THE', 'COUCH'], hero: h('remote', 'remote', 'den') },
   risi: { top: 'VENI VIDI RISI', good: ['ONE LAUGH', 'IN ROME'] },
