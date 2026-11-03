@@ -320,7 +320,7 @@ export function theVoid(book: BlockBook): Level {
   // the pay TV's picture is the way home: two steps on through it, so its warming up plays out
   // an Easter egg at the far bend of the fabric, past the pen nobody wants
   m.set(30, 2, 'easterEgg');
-  m.set(33, 17, 'payTvOn').link(33, 17, 'next');
+  m.set(33, 17, 'voidDoor').link(33, 17, 'next');
   return { m, start: at(1, 1), size: [map.w, map.h] };
 }
 
