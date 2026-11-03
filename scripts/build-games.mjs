@@ -1,7 +1,7 @@
 // Rebuild ignored game outputs before development, tests, and releases; cache source and output hashes.
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { availableParallelism } from 'node:os';
 import { gameSourceHash, root } from './game-build-inputs.mjs';
@@ -195,6 +195,14 @@ async function worker() {
     times.push([secret ? 'a game' : id, (Date.now() - started) / 1000]);
     if (!secret) console.log(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
   }
+}
+// The phone kit's 3D parts (games/year2000/phone/viewer, committed) reach the site beside the trinkets, where the box viewer's
+// phone viewer loads them (web/src/desk/boxes/phone/). Copied on every run (about 1.8 MB).
+const phoneViewer = join(root, 'games/year2000/phone/viewer');
+if (existsSync(join(phoneViewer, 'parts.json'))) {
+  const out = join(root, 'web/public/trinkets/phone');
+  mkdirSync(out, { recursive: true });
+  for (const f of ['parts.json', 'parts.bin']) copyFileSync(join(phoneViewer, f), join(out, f));
 }
 const began = Date.now();
 // The plastic trinkets of the games that mesh them from distance fields (STL, 3MF and support files the site serves from
