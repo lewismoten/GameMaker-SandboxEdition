@@ -23,6 +23,7 @@ import { playButtons } from './playButtons';
 import { currentPick, gameFor, parsePick, pickParam, playChoices, type PlayPick } from './playLevel';
 import { keepPick, lastPick } from './playPickStore';
 import './workspace.css';
+import './shellTouch.css';
 import { noteLastPlace, resumeLastPlace, watchLastPlace } from './lastPlace';
 import { FILE_ORDER as ORDER, ADD_KINDS as SECTIONS, FILE_KIND_HELP as KIND_HELP } from './fileKinds';
 import { fileActions } from './fileActions';
