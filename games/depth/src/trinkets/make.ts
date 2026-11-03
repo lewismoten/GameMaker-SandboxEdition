@@ -1,13 +1,9 @@
 // Meshes one of the game's models for 3D printing: the model's distance field, grown a little so
 // no part is too thin to print, standing on a plinth (and a stem if it floats), scaled to
 // millimeters with its floor at z = 0, then turned into a closed mesh with a color per triangle.
-import { inspectMesh, type MeshReport } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshCheck';
-import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
 import { surfaceNets } from '@lewismoten/gamemaker-sandbox-tools/mesh/surfaceNets';
-import { decimate } from '@lewismoten/gamemaker-sandbox-tools/mesh/decimate';
-import { sampledField } from '@lewismoten/gamemaker-sandbox-tools/mesh/sampledField';
-import { colorBodies, pickPalette, type Rgb } from '@lewismoten/gamemaker-sandbox-tools/mesh/colorBodies';
-import { overhang, supportBody, type Overhang } from '@lewismoten/gamemaker-sandbox-tools/mesh/overhang';
+import { meshFieldTrinket, type FieldTrinket } from '@lewismoten/gamemaker-sandbox-tools/mesh/fieldTrinket';
+import type { Rgb } from '@lewismoten/gamemaker-sandbox-tools/mesh/colorBodies';
 import { rgb, type Material, type Shape, type V } from '../render/tracer';
 import { colorOf, fieldOf, union, type Field } from './fields';
 
@@ -51,41 +47,10 @@ const roundBox = (x: number, y: number, z: number, cx: number, cy: number, hx: n
   return Math.max(flat, Math.abs(z - h / 2) - h / 2);
 };
 
-export interface Trinket {
-  mesh: Mesh;
-  report: MeshReport;
+export interface Trinket extends FieldTrinket {
   /** Millimeters per game unit. */
   scale: number;
-  /** The pieces left when the surface is eroded by half a millimeter: 1 means nothing is joined by less than a millimeter. */
-  erodedPieces: number;
-  /** Specks (tiny pieces) the eroded surface leaves, parts thinner than a millimeter that would not print. */
-  erodedSpecks: number;
-  /** Faces leaning out over nothing at more than 45 degrees. */
-  overhang: Overhang;
-  /** One closed body per color (at most four, chosen from the game's materials), for a multi-filament print. */
-  bodies: { color: Rgb; mesh: Mesh }[];
-  /** The volume of the whole solid meshed the way the color bodies are, to check the bodies fill it. */
-  wholeVolume: number;
-  field: (x: number, y: number, z: number) => number;
-  /** Support pillars as a body of their own, for a printer with a second material, when overhangs are more than a little. */
-  support?: Mesh;
 }
-
-/** Overhanging area, in mm squared, above which the trinket comes with a support body of its own. */
-/** Colors a multi-filament printer can be expected to manage. */
-const MAX_COLORS = 4;
-const SUPPORT_AREA = 25;
-/** A piece of the eroded surface with fewer triangles than this is a speck, not a body. */
-const SPECK = 150;
-/** What the surface is eroded by for the check that nothing is joined by less than a millimeter, in mm. */
-const ERODE_MM = 0.5;
-/** How far, in mm, thinning a mesh may move its surface: well under what a 0.4 mm nozzle prints. */
-const SIMPLIFY_MM = 0.15;
-/** The same for the color bodies and the supports, which are only for slicing, and the grid of the bodies. */
-const BODY_SIMPLIFY_MM = 0.2;
-const BODY_CELL_MM = 1.5;
-/** Colors closer than this (0-255 steps) share a filament. */
-const PALETTE_MERGE = 40;
 
 export function makeTrinket(def: TrinketDef): Trinket {
   const fields = def.shapes().map(fieldOf);
@@ -140,60 +105,14 @@ export function makeTrinket(def: TrinketDef): Trinket {
   const toUnits = (x: number, y: number, z: number): V => [x / scale + mid[0], y / scale + mid[1], z / scale];
   const mm = (x: number, y: number, z: number) => Math.max(f.d(...toUnits(x, y, z)) * scale, -z);
   const box = { min: [-halfX * scale - 3, -halfY * scale - 3, 0] as V, max: [halfX * scale + 3, halfY * scale + 3, top * scale + 3] as V };
-  // the figure is sampled once; the mesh, the eroded check, the colors and the supports all read these samples
-  const g = sampledField(mm, { ...box, cell: CELL_MM });
-  const fine = surfaceNets(g, { ...box, cell: CELL_MM, maxPieces: 1 });
-  // a color per triangle, from the material at its middle
-  const tris = fine.indices.length / 3;
-  const colors = new Uint8Array(tris * 3);
-  const p = fine.positions;
-  for (let t = 0; t < tris; t++) {
-    let cx = 0;
-    let cy = 0;
-    let cz = 0;
-    for (let c = 0; c < 3; c++) {
-      const v = fine.indices[t * 3 + c] * 3;
-      cx += p[v] / 3;
-      cy += p[v + 1] / 3;
-      cz += p[v + 2] / 3;
-    }
+  const colorAt = (cx: number, cy: number, cz: number, nrm: V): Rgb => {
     const u = toUnits(cx, cy, cz);
     const m = f.mat(...u);
-    const e0 = 0.4;
-    const nrm = normalize([g(cx + e0, cy, cz) - g(cx - e0, cy, cz), g(cx, cy + e0, cz) - g(cx, cy - e0, cz), g(cx, cy, cz + e0) - g(cx, cy, cz - e0)]);
     const col = colorOf(m, u, nrm);
     const e = m.emit ?? [0, 0, 0];
-    for (let a = 0; a < 3; a++) colors[t * 3 + a] = Math.round(Math.min(1, Math.max(0, col[a] + e[a] * 0.4)) * 255);
-  }
-  fine.colors = colors;
-  const eroded = inspectMesh(surfaceNets((x, y, z) => g(x, y, z) + ERODE_MM, { ...box, cell: CELL_MM, attempts: 3 }));
-  const over = overhang(fine);
-  const rawSupport = over.area > SUPPORT_AREA ? supportBody(g, { ...box, cell: 1, gap: 0.4 }) : undefined;
-  const support = rawSupport && decimate(rawSupport, { maxError: 0.1 });
-  // the file's mesh: the sampled one with its flats and gentle curves cut down to what holds the shape
-  const mesh = decimate(fine, { maxError: SIMPLIFY_MM });
-  const report = inspectMesh(mesh);
-  const bodies = colorBodies(fine, def.palette ?? pickPalette(fine, MAX_COLORS, PALETTE_MERGE), g, {
-    ...box,
-    cell: BODY_CELL_MM,
-    simplify: BODY_SIMPLIFY_MM,
-    volume: report.volume,
-  });
-  return {
-    mesh,
-    report,
-    scale,
-    erodedPieces: eroded.pieceTriangles.filter((n) => n >= SPECK).length,
-    erodedSpecks: eroded.pieceTriangles.filter((n) => n < SPECK).length,
-    overhang: over,
-    support,
-    bodies,
-    wholeVolume: report.volume,
-    field: g,
+    const c = (a: number) => Math.round(Math.min(1, Math.max(0, col[a] + e[a] * 0.4)) * 255);
+    return [c(0), c(1), c(2)];
   };
+  const made = meshFieldTrinket({ mm, colorAt, box, palette: def.palette }, CELL_MM);
+  return { ...made, scale };
 }
-
-const normalize = (v: V): V => {
-  const l = Math.hypot(v[0], v[1], v[2]) || 1;
-  return [v[0] / l, v[1] / l, v[2] / l];
-};
