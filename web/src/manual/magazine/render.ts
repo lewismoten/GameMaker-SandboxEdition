@@ -293,7 +293,9 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
     case 'halfad':
       return halfAdBox(b, env, pending);
     case 'beside':
-      return h('div', { class: 'mag-beside' }, h('div', { class: 'mag-beside-main' }, ...all(b.blocks)), halfAdBox(b.ad, env, pending));
+      return b.ad.look === 'column'
+        ? h('div', { class: 'mag-beside ad-column' }, halfAdBox(b.ad, env, pending), h('div', { class: 'mag-beside-main' }, ...all(b.blocks)))
+        : h('div', { class: 'mag-beside' }, h('div', { class: 'mag-beside-main' }, ...all(b.blocks)), halfAdBox(b.ad, env, pending));
     case 'rule':
       return h('hr');
   }
@@ -304,7 +306,7 @@ function halfAdBox(b: HalfAd, env: RenderEnv, pending: Promise<unknown>[]): HTML
   const { where } = env;
   return h(
     'aside',
-    { class: 'mag-halfad', 'aria-label': `Advertisement: ${b.advertiser}` },
+    { class: `mag-halfad${b.look ? ` look-${b.look}` : ''}`, 'aria-label': `Advertisement: ${b.advertiser}` },
     h('p', { class: 'mag-halfad-label', 'aria-hidden': 'true' }, 'ADVERTISEMENT'),
     h(
       'div',

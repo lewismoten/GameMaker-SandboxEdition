@@ -128,6 +128,8 @@ export interface HalfAd {
   small?: Inline;
   tone?: Tone;
   burst?: string;
+  /** 'column': a tall narrow ad standing up the side of the page (columnAd.css), its picture first. */
+  look?: 'column';
 }
 
 /** One title on a `shelf`. */

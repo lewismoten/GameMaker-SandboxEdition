@@ -172,6 +172,9 @@ address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues f
   - `blankDisk.ts`, a stack of bulk disks without labels, for the Floppy Barn ad;
   - `notcherArt.ts`, the HOLE-Y MOLEY disk notcher and a disk before and after it, for its ad,
     `sections/notcherAd.ts` (its charcoal page `notcherAd.css`);
+  - `sections/columnAd.ts` and `columnAd.css`, the tall salmon column ad for Game-Maker that stands
+    up the left of the Back Issues page (a `beside` ad with `look: 'column'`, after RSD's 1992
+    magazine ads): stacked condensed-serif headlines, real screenshots, a price and a toll-free number;
   - `joeyDrawing.ts`, a reader's crayon drawing of Teddy driving THE CHEZ to the moon, for the
     Mail Bag;
   - `bossChain.ts`, the Design Workshop's diagram of a boss with hit points as a chain of states;
