@@ -1,0 +1,79 @@
+/* a game's code wheel, lying beside the monitor on a puzzle's scenes (desk/pc/codeWheelSpot.ts) */
+.cw-spot {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: min(220px, 70%);
+  margin: 12px auto 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #f4ecd8;
+  cursor: zoom-in;
+  filter: drop-shadow(2px 5px 5px rgba(0, 0, 0, 0.45));
+  transform: rotate(4deg);
+  transition:
+    transform 0.15s,
+    filter 0.15s;
+}
+
+.cw-spot[hidden] {
+  display: none;
+}
+
+.cw-spot-tag {
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: #a32a18;
+  font:
+    700 12px/1.3 system-ui,
+    sans-serif;
+}
+
+.cw-spot:hover,
+.cw-spot:focus-visible {
+  transform: rotate(2deg) scale(1.05);
+  filter: drop-shadow(4px 10px 10px rgba(0, 0, 0, 0.5));
+  outline: none;
+}
+
+.cw-spot:focus-visible .cw-spot-tag {
+  box-shadow: 0 0 0 3px #ffd400;
+}
+
+/* phones: under the screen, inside the bezel */
+@media (max-width: 960px) {
+  .monitor:has(> .cw-spot:not([hidden])) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .monitor > .cw-spot {
+    order: 2;
+  }
+}
+
+/* on the stage: off the bezel's right side, out over the speaker (the key card hangs off the left) */
+@media (min-width: 961px) {
+  .cw-spot {
+    position: absolute;
+    right: -230px;
+    bottom: 40px;
+    width: 200px;
+    margin: 0;
+  }
+}
+
+/* opened: the wheel to turn, over the desk */
+.cw-desk-overlay .cw-desk-large {
+  width: min(900px, 94vw);
+  max-height: 86vh;
+  overflow: auto;
+  padding: 16px;
+  border-radius: 8px;
+  background: #f8f1df;
+  color: #2a2016;
+}

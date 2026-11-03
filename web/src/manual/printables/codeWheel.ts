@@ -120,6 +120,11 @@ function innerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   return g;
 }
 
+/** The wheel as it lies, both discs, as a picture (the desk's small view of it). */
+export function codeWheelPicture(it: CodeWheelItem): SVGSVGElement {
+  return el('svg', { viewBox: '-102 -102 204 204', class: 'cw-svg', 'aria-hidden': 'true' }, outerDisc(it, false), innerDisc(it, false));
+}
+
 /** The turn (in places) that puts the turning disc's `inner` symbol against the outer disc's `outer`. */
 export function turnFor(it: CodeWheelItem, inner: string, outer: string): number {
   const n = it.outer.length;

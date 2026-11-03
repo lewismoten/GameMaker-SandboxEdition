@@ -27,7 +27,7 @@ interface PcHooks {
 }
 
 export function deskPc(scene: Scene, hooks: PcHooks) {
-  const { desk, crt, floppy, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, keyCard, spk, modem } = scene;
+  const { desk, crt, floppy, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, keyCard, wheelSpot, spk, modem } = scene;
   const { deskView } = hooks;
   // the PC starts in turbo every visit; the button slows it down until you leave
   let turbo = true;
@@ -59,7 +59,11 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
         // vga stays in the monitor like the real thing.
         onModeChange: (mode: MonitorMode) => computer?.powered && setZoom(mode === 'gfx' ? 'gfx' : enlarged ? 'manual' : false),
         onDisksChanged: (insert) => hooks.disksChanged(insert),
-        onGame: (game) => keyCard.show(game),
+        onGame: (game) => {
+          keyCard.show(game);
+          wheelSpot.game(game?.saveId); // its code wheel, on its puzzles' scenes (onScene)
+        },
+        onScene: (n) => wheelSpot.scene(n),
         // what the PC runs: a game (play), Game-Maker from a disk (design) or the hard disk / CD (gm), the BBS
         // (a PC switched off says nothing more)
         onProgram: (p) =>
@@ -180,6 +184,7 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
       pcLoad = undefined;
       poweringOn = undefined;
       keyCard.show(undefined);
+      wheelSpot.game(undefined);
       hooks.switchedOff();
       cd.setDisc(undefined);
       desk.querySelector('.gm-box')?.classList.remove('cd-in');

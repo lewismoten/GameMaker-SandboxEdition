@@ -13,7 +13,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
 - `pc/`: the case (`caseParts.ts`, with the hard disk's flickering HDD light beside POWER and TURBO; the key lock beside the buttons is drawn only), the CRT (`crtWarp.ts`; `screenGlow.ts` lights the bezel with
   the colors of the picture on the tube; `crtWarmUp.ts` and `crtOn.css` warm the tube up at switch-on: dark, the beam's flickering line, the picture fading up torn into jagged rows that settle;
   `crtOff.css` collapses it at switch-off), the fans whining up and the drives the boot reads (floppy seek test,
-  hard disk seeks, the CD-ROM's test), fading out slowly at the DOS prompt (`bootSounds.ts`), the keyboard (`keyboard.ts`) and the keyboard tray
+  hard disk seeks, the CD-ROM's test), fading out slowly at the DOS prompt (`bootSounds.ts`), a game's paper code wheel lying beside the monitor on its puzzles' scenes, to turn or be told the answer (`codeWheelSpot.ts`, the wheel itself `manual/printables/codeWheel.ts`; the PC passes the scene with `onScene`), the keyboard (`keyboard.ts`) and the keyboard tray
   (`tray.ts`) with its mouse pad (its print, `padPrints.ts`, chosen in `padChooser.ts` from the
   magazine's mouse pad ad and remembered by `padChoice.ts`), the GRAVITAS game pad
   (`gamePad.ts`; its drawing `gamePadArt.ts`, its SVG parts `gamePadSvg.ts`, its large controls

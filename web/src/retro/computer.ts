@@ -372,7 +372,7 @@ export class Computer extends ComputerFolders {
     this.setMode('game');
     const host = h('div', { class: 'crt-game' });
     clear(this.layer, host);
-    this.opts.onGame?.({ files, gam, title });
+    this.opts.onGame?.({ files, gam, title, saveId });
     // the game player (the engine) loads with the first game played (the desk fetches it ahead)
     return new Promise<void>((resolve) => {
       // a game of yours plays with its DOS player choices (PLAYHACK, the editor's panel), a catalog
@@ -385,6 +385,16 @@ export class Computer extends ComputerFolders {
           : catalogId
             ? import('../dosPlayer/catalogPatches').then((m) => m.catalogPatchesById(catalogId))
             : Promise.resolve(undefined);
+      // the achievements' hooks, and the scene the game is on passed on to the host
+      const achieve = playAchievements(saveId, this.opts.view ?? 'desk');
+      const onSession: typeof achieve.onSession = (s) => {
+        achieve.onSession?.(s);
+        const previous = s.onScene;
+        s.onScene = (n) => {
+          previous?.(n);
+          this.opts.onScene?.(n);
+        };
+      };
       const mount = () =>
         void Promise.all([import('../player/player'), patches, import('@lewismoten/gamemaker-sandbox-engine/audio/engine')]).then(
           ([{ mountPlayer }, player, { AudioEngine }]) => {
@@ -408,7 +418,8 @@ export class Computer extends ComputerFolders {
               onQuit: () => false, // back to DOS
               onFileWrite: saveId ? (name, bytes) => (playWrote(saveId, name), void writeSaveFile(saveId, name, bytes)) : undefined,
               saveId,
-              ...playAchievements(saveId, this.opts.view ?? 'desk'),
+              ...achieve,
+              onSession,
               onExit: () => {
                 this.player = undefined;
                 this.opts.onGame?.(undefined);

@@ -14,6 +14,7 @@ import { snowyWindow } from './room/snowWindow';
 import './boxes/gmBox.css';
 import { SANDBOX_SHOTS, sandboxShots } from '../gfx/sandboxShots';
 import { keyCardSpot } from './pc/keyCard';
+import { codeWheelSpot } from './pc/codeWheelSpot';
 import { newsClipping } from './room/newsClipping';
 import { phoneNotes } from './room/phoneNotes';
 import { wallClock } from './room/wallClock';
@@ -82,6 +83,7 @@ export function deskScene(on: DeskActions) {
   // the PC's keyboard, and (on a phone) the strip of large keys under the PC
   const keys = keyboard(() => on.power(true));
   const keyCard = keyCardSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
+  const wheelSpot = codeWheelSpot(() => crt.querySelector<HTMLElement>('.crt-game canvas[tabindex]')?.focus());
   const soundCardControls = {
     gamePlaying: () => on.gamePlaying(),
     setSoundCard: (enabled: boolean) => on.setSoundCard(enabled),
@@ -215,6 +217,7 @@ export function deskScene(on: DeskActions) {
             '⤢',
           ),
           keyCard.el,
+          wheelSpot.el,
           h('div', { class: 'screen-bezel' }, crt),
           h('span', { class: 'brand' }, 'PIXELMAX 14" SVGA'),
           h('span', { class: 'monitor-led' }),
@@ -225,7 +228,7 @@ export function deskScene(on: DeskActions) {
     ),
     h('button', { class: 'zoom-exit primary', onclick: () => on.setZoom(false) }, 'Back to the desk'),
   );
-  return { desk, crt, floppy, driveActions, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, box, keyCard, spk, lamp, modem, boxTiles };
+  return { desk, crt, floppy, driveActions, cd, hdd, powerLed, turboLed, mhz, powerBtn, turboBtn, box, keyCard, wheelSpot, spk, lamp, modem, boxTiles };
 }
 
 /** Homage: the winter of 1992-93, shoveling snow to buy Game-Maker. */
