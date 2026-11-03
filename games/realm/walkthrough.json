@@ -1,218 +1,255 @@
 {
- "version": 1,
- "game": "realm",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 4,
-   "keys": "AUgFyAFL"
+  "version": 1,
+  "game": "realm",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 6,
-   "keys": ""
-  },
-  {
-   "scene": 4,
-   "keys": "AU0ZzQFQLdABTQXNAVAU0AFNCs0BUDfQAU0FzQFQ"
-  },
-  {
-   "scene": 2,
-   "keys": "AUgoyAFNA80ATQHNADkCuQRNAc0AOQK5Bk0FzQFICsgBTQXNAUgpyABNAc0AOQK5BE0BzQA5ArkGSwLLAVAB0AFIBcgBTQXNAUgtyAFNBc0BSAXIAU0FzQFIBcgBTQrNAUgFyAFNBc0BSA=="
-  },
-  {
-   "scene": 3,
-   "keys": "AUiCAcgBSwXLAUg8yAFNBc0BSA=="
-  },
-  {
-   "scene": 12,
-   "keys": ""
-  },
-  {
-   "scene": 3,
-   "keys": "AVB40AFLBcsBUJYB0AFNBc0BUA=="
-  },
-  {
-   "scene": 2,
-   "keys": "AU0ozQFIWMgATQHNADkCuQRNAc0AOQK5BksCywFIAsgBSArIAU0BzQBIAcgAOQK5BEgByAA5ArkGSwHLAVAC0AFNBc0BSA=="
-  },
-  {
-   "scene": 32,
-   "keys": "AUhVyAFICsgBSwjLAEsBywA5ArkGSwHLAUsFywFLLcsBSAHIAEgByAA5ArkETQHNADkCuQZLAcsBUALQAUgUyABICsgBSy3LAUgFyAFLBcsBSCHIAEgByAA5ArkESAHIADkCuQRNAc0AOQK5BksBywFICsgBSxTLAUsEywJLAcsBUAXQAU0PzQFQBdABTQ/NAUgjyAFND80BSATIAksjywFNHs0BTQPNAkgDyAJNAs0BUB7QAUsPywFQBdABSwXLAVAo0AFNI80BSAXIAU0FzQFIBcgBTV/NAVAF0AFNBc0BUAXQAU0MzQBNAc0AOQK5BE0BzQA5ArkEUAHQADkCuQZNAc0BSAHIAU03zQFIBcgBTQXNAUgUyABIGcgBSw/LAUsEywJLAcsBSBnIAU0UzQBNGc0BSATIAkgDyAJQHtABSw/LAVAF0AFLBcsBUCjQAUsoywFIBcgBSwXLAUgPyAFLBcsBSAXIAUsFywFIBcgBSzLLAUgFyAFLBcsBSBXIAEgByAA5ArkGUALQAUgKyAFIKcgASwHLADkCuQRLAcsAOQK5Bk0CzQFQAdABSAXIAUsFywFIAcgASwHLADkCuQRLAcsAOQK5Bk0CzQFQAdABSAHIAE0BzQA5ArkGSwHLAVAB0AFIE8gASAHIADkCuQZNBc0BSAHIADkCuQRIAcgAOQK5BEgByAA5ArkESwHLADkCuQRLAcsAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFLBcsBSAHIADkCuQRQAdABSAHIADkCuQRQAdABSAHIADkCuQRQAdABSAHIAEsBywA5ArkGTQHNAVAB0AFIAcgATQHNADkCuQZLAcsBUAHQAUgUyAFN"
-  },
-  {
-   "scene": 33,
-   "keys": ""
-  },
-  {
-   "scene": 32,
-   "keys": "AVA="
-  },
-  {
-   "scene": 2,
-   "keys": "AVAB0ABLAcsAOQK5BEsBywA5ArkGTQLNAUgByAFQB9AASwHLADkCuQRLAcsAOQK5BEgByAA5ArkGTQLNAVAC0AFQZNABSy3LAUg="
-  },
-  {
-   "scene": 3,
-   "keys": "AUiCAcgBSwXLAUgeyAFLI8sBSAbIAk1LzQFIBsgCTQXNAUgGyAJQMtABSyPLAVBz0AFLBcsBUA=="
-  },
-  {
-   "scene": 2,
-   "keys": "AVAF0AFLVcsBSA=="
-  },
-  {
-   "scene": 20,
-   "keys": "AVCbAdABSyjLAVA="
-  },
-  {
-   "scene": 34,
-   "keys": "AVBB0AFNBc0BUBTQAU0OzQBNAc0AOQK5BE0BzQA5ArkGSwHLAU0ozQFQBdABTQXNAVAP0AFNLc0BUAXQAU0FzQFQZ9AATQHNADkCuQRNAc0AOQK5BksBywBIAcgAOQK5BEgByAA5ArkESwHLAUgByAFNBc0BUB7QAU0ezQFQBNACSA/IAUtpywFQBdABSwXLAVAt0AFLBcsBUA/QAUsZywFQBdABSwXLAVAZ0ABNAc0AOQK5BFAB0AA5ArkGSwHLAUgByAFQCtABSwLLAEsBywA5ArkESwHLADkCuQRLAcsAOQK5BEsBywA5ArkEUAHQADkCuQRQAdAAOQK5Bk0BzQFQAdAAOQK5BEgByAFQAdAAOQK5BEgByAFQAdAAOQK5BE0BzQA5ArkESwHLAUgByAFQAdAAOQK5BEgByAFQAdAAOQK5BEgByAFLBcsBUAHQADkCuQRQAdAAOQK5BFAB0AA5ArkESAHIAVAB0AA5ArkESwHLADkCuQRNAc0BSAHIAVAB0AA5ArkESAHIAVAB0AA5ArkESAHIAVAB0ABNAc0AOQK5BksBywFIAcgBUBnQAU0="
-  },
-  {
-   "scene": 35,
-   "keys": ""
-  },
-  {
-   "scene": 34,
-   "keys": "AUg="
-  },
-  {
-   "scene": 20,
-   "keys": "AUhQyAFNI80BSF/IAU0ozQFI"
-  },
-  {
-   "scene": 39,
-   "keys": "AUgEyAFNGM0BSATIAU0EzQFIBMgBTQTNAUgHyAFNKM0ATRDNAVAE0AFNBM0BUATQAU0YzQFQBNACTVDNAFAE0AFNLM0BUATQAk0IzQFIBMgBTQjNAUgEyAFNIM0BSATIAU0EzQFIBMgBTQTNAUgEyAFN"
-  },
-  {
-   "scene": 2,
-   "keys": "AU0KzQFQFNABTQXNAVAF0AFNGc0BUArQAU0EzQBNAc0AOQK5BFAB0AA5ArkETQHNADkCuQRQAdAAOQK5BE0BzQA5ArkGSwLLAUgCyAFQBdABTQXNAVAK0AFL"
-  },
-  {
-   "scene": 19,
-   "keys": "AUiRAcgBSyPLAUgUyAFLCssBSAbIAlAZ0AFNKM0BUF/QAU0FzQFQ"
-  },
-  {
-   "scene": 2,
-   "keys": "AUgKyAFLBcsBSAXIAUsZywFIQcgBTQXNAUgFyAFNBc0BSAXIAU0FzQFIBcgBTQXNAUg="
-  },
-  {
-   "scene": 36,
-   "keys": "AUhKyABIAcgAOQK5BE0BzQA5ArkGSwHLAUg3yAFNPM0ATQHNADkCuQRNAc0AOQK5BksCywFNBc0BTUHNAUgFyAFNBc0BSErIAEgByAA5ArkGSB7IAU0IzQBNAc0AOQK5BE0BzQA5ArkETQHNADkCuQRQAdAAOQK5BksBywFIAcgBTRnNAUgEyAJQBdABS27LAUgFyAFLBcsBSAHIAEgByAA5ArkGUALQAUgZyAFLBMsASwHLADkCuQZIBcgBSwXLAUgFyAFLFssAUAHQADkCuQZNAs0BSAHIAUsWywBLAcsAOQK5BksCywFIAcgAOQK5BEgByAA5ArkESAHIADkCuQRIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BEsBywA5ArkESwHLADkCuQRNAc0AOQK5BE0BzQFLBcsBSAHIADkCuQRIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BEsBywA5ArkESwHLADkCuQRNAs0BUAHQAUgByAA5ArkEUAHQAUgByABNAc0AOQK5BksBywFQAdABSBTIAU0="
-  },
-  {
-   "scene": 37,
-   "keys": ""
-  },
-  {
-   "scene": 36,
-   "keys": "AVA="
-  },
-  {
-   "scene": 2,
-   "keys": "AUsBywBLAcsAOQK5Bk0CzQFLBcsBUAXQAUsFywFQBdABSwHLAEsBywA5ArkESwHLADkCuQRLAcsAOQK5BEsBywA5ArkESwHLADkCuQZNAc0BUAXQAUsFywFQKtAAUAHQADkCuQRQAdAAOQK5BlAB0AFQFNABTQHNAEsBywA5ArkESwHLADkCuQRQAdAAOQK5BEsBywA5ArkGTQLNAUgByAFNFM0BUDfQAU0FzQFQMtABSw/LAUg="
-  },
-  {
-   "scene": 38,
-   "keys": "AUhQyAFNMs0BSAXIAU0CzQBNAc0AOQK5BE0BzQA5ArkGTQHNAUgUyAFNLc0BSAXIAUgEyAJNBc0BSCjIAEgUyAFLBcsBUATQAlAB0AFID8gBSx7LAUgFyAFLBcsBSArIAUsBywBLAcsAOQK5Bk0CzQFLBcsBSAXIAUsFywFIBcgBSwrLAFAB0AA5ArkEUAHQADkCuQZIAsgBSx/LAFAB0AA5ArkEUAHQADkCuQZNAc0BSALIAVAF0AFIBcgBSwrLAUgFyAFLBcsBSB7IAUhQyAFIAcgAOQK5BEgByAA5ArkESAHIADkCuQRLAcsAOQK5BE0BzQFLBcsBSAHIADkCuQRIAcgAOQK5BEgByAA5ArkESAHIADkCuQRIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BEsBywA5ArkESAHIADkCuQRQAdABSAHIADkCuQRNAc0AOQK5BE0BzQA5ArkESwHLAVAB0AFIAcgAOQK5BFAB0AFNBc0BSAHIADkCuQRQAdABSAHIADkCuQRQAdABSAHIADkCuQRQAdABSAHIADkCuQRLAcsAOQK5BEsBywA5ArkETQHNADkCuQRNAc0BUAHQAUgByAA5ArkEUAHQAUgByAA5ArkESAHIAkgByAA5ArkFSAHIDxQClAxLAcsAOQK5BEsBywA5ArkESAHIADkCuQRIAcgAOQK5BRQClA1IAcgDSAHIA0gByBlIAcgDSAHIA0gByANIAcgDSAHIA0gByA9QAdAAOQK5BUgByAI5ArlFOQK5BDkCuUg5ArkFTQLNAUsFywFICsgBTQXNAVA="
-  }
- ],
- "chapters": [
-  {
-   "scene": 4,
-   "title": "Nowish"
-  },
-  {
-   "scene": 3,
-   "title": "Laterburg"
-  },
-  {
-   "scene": 32,
-   "title": "The Snooze Barrows"
-  },
-  {
-   "scene": 20,
-   "title": "Someday Harbor"
-  },
-  {
-   "scene": 34,
-   "title": "The Soggy Vaults"
-  },
-  {
-   "scene": 39,
-   "title": "THE CHEZ and the Dawdle Flats"
-  },
-  {
-   "scene": 19,
-   "title": "Eventually Falls"
-  },
-  {
-   "scene": 36,
-   "title": "The Putoff Mines"
-  },
-  {
-   "scene": 38,
-   "title": "Deadline Keep"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 47396,
+  "segments": [
+    {
+      "scene": 4,
+      "keys": "AUgFyAFL"
+    },
+    {
+      "scene": 6,
+      "keys": ""
+    },
+    {
+      "scene": 4,
+      "keys": "AU0ZzQFQLdABTQXNAVAU0AFNCs0BUDfQAU0FzQFQ"
+    },
+    {
+      "scene": 2,
+      "keys": "AUgoyAFNA80ATQHNADkCuQRNAc0AOQK5Bk0FzQFICsgBTQXNAUgpyABNAc0AOQK5BE0BzQA5ArkGSwLLAVAB0AFIBcgBTQXNAUgtyAFNBc0BSAXIAU0FzQFIBcgBTQrNAUgFyAFNBc0BSA=="
+    },
+    {
+      "scene": 3,
+      "keys": "AUiCAcgBSwXLAUg8yAFNBc0BSA=="
+    },
+    {
+      "scene": 12,
+      "keys": ""
+    },
+    {
+      "scene": 3,
+      "keys": "AVB40AFLBcsBUJYB0AFNBc0BUA=="
+    },
+    {
+      "scene": 2,
+      "keys": "AU0ozQFIWMgATQHNADkCuQRNAc0AOQK5BksCywFIAsgBSArIAU0BzQBIAcgAOQK5BEgByAA5ArkGSwHLAVAC0AFNBc0BSA=="
+    },
+    {
+      "scene": 32,
+      "keys": "AUgPyAFLGcsBSA=="
+    },
+    {
+      "scene": 33,
+      "keys": ""
+    },
+    {
+      "scene": 32,
+      "keys": "AU0KzQFIHsgBTQXNAUgFyAFNBc0BSA/IAU0FzQFIFMgBSArIAUsJywBLAcsAOQK5BFAB0AA5ArkGSAHIAUsyywFIHsgBSy3LAUgFyAFLBcsBSCjIAEgFyAFLFMsBSwTLAksBywFIGcgBTQrNAU0jzQFIBMgCSwXLAU0DzQJIA8gCTQLNAVAe0AFLD8sBUAXQAUsFywFQKNABTSPNAUgFyAFNBc0BSAXIAU0PzQBQAdAAOQK5BkgByAFQCtABSArIAU1GzQBNAc0AOQK5BE0BzQA5ArkETQHNADkCuQZNAs0BTQXNAVAF0AFNBc0BUAXQAU1GzQFIBcgBTQXNAUgUyABIGcgBSw/LAUsEywJLAcsBSATIAE0BzQA5ArkGSwHLAUgByAFNCs0BSBTIAU0jzQFIBMgCSAPIAlAE0ABNAc0AOQK5BE0BzQA5ArkGSwLLAVAB0AFNBc0BUBTQAUsFywFQBdABSwLLAEgByAA5ArkESAHIADkCuQRLAcsAOQK5BksCywFQAtABSwrLAVAF0AFLBcsBUCjQAUssywFIBcgBSwXLAUgEyABIAcgAOQK5BEgByAA5ArkESAHIADkCuQZQAtABSArIAUsFywFIBcgBSwXLAUgFyAFLMssBSAXIAUsFywFIX8gBSAHIADkCuQRLAcsAOQK5BE0BzQA5ArkESAHIADkCuQRIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFLBcsBSAHIADkCuQRLAcsAOQK5BE0BzQFIAcgAOQK5BEgByAA5ArkETQHNADkCuQRLAcsBUAHQAUgByAA5ArkEUAHQAUgByAA5ArkEUAHQAUgByAA5ArkEUAHQAUgUyAFN"
+    },
+    {
+      "scene": 34,
+      "keys": ""
+    },
+    {
+      "scene": 32,
+      "keys": "AVA="
+    },
+    {
+      "scene": 2,
+      "keys": "AVAB0ABLAcsAOQK5BEsBywA5ArkGTQLNAUgByAFQB9AASwHLADkCuQRLAcsAOQK5BEgByAA5ArkGTQLNAVAC0AFQZNABSy3LAUg="
+    },
+    {
+      "scene": 3,
+      "keys": "AUiCAcgBSwXLAUgeyAFLI8sBSAbIAk1LzQFIBsgCTQXNAUgGyAJQMtABSyPLAVBz0AFLBcsBUA=="
+    },
+    {
+      "scene": 2,
+      "keys": "AVAF0AFLVcsBSA=="
+    },
+    {
+      "scene": 20,
+      "keys": "AVCbAdABSyjLAVA="
+    },
+    {
+      "scene": 35,
+      "keys": "AVBB0AFNBc0BUBTQAU0OzQBNAc0AOQK5BE0BzQA5ArkGSwHLAU0ozQFQBdABTQXNAVAP0AFNLc0BUAXQAU0FzQFQZ9AATQHNADkCuQRNAc0AOQK5BksBywBIAcgAOQK5BEgByAA5ArkESwHLAUgByAFNBc0BUB7QAU0ezQFQBNACSA/IAUtpywFQBdABSwXLAVAt0AFLBcsBUA/QAUsZywFQBdABSwXLAVAZ0ABNAc0AOQK5BFAB0AA5ArkGSwHLAUgByAFQCtABSwLLAEsBywA5ArkESwHLADkCuQRLAcsAOQK5BEsBywA5ArkEUAHQADkCuQRQAdAAOQK5Bk0BzQFQAdAAOQK5BEgByAFQAdAAOQK5BEgByAFQAdAAOQK5BE0BzQA5ArkESwHLAUgByAFQAdAAOQK5BEgByAFQAdAAOQK5BEgByAFLBcsBUAHQADkCuQRQAdAAOQK5BFAB0AA5ArkESAHIAVAB0AA5ArkESwHLADkCuQRNAc0BSAHIAVAB0AA5ArkESAHIAVAB0AA5ArkESAHIAVAB0ABNAc0AOQK5BksBywFIAcgBUBnQAU0="
+    },
+    {
+      "scene": 36,
+      "keys": ""
+    },
+    {
+      "scene": 35,
+      "keys": "AUg="
+    },
+    {
+      "scene": 20,
+      "keys": "AUhQyAFNI80BSF/IAU0ozQFI"
+    },
+    {
+      "scene": 43,
+      "keys": "AUgEyAFNGM0BSATIAU0EzQFIBMgBTQTNAUgHyAFNKM0ATRDNAVAE0AFNBM0BUATQAU0YzQFQBNACTVDNAFAE0AFNLM0BUATQAk0IzQFIBMgBTQjNAUgEyAFNIM0BSATIAU0EzQFIBMgBTQTNAUgEyAFN"
+    },
+    {
+      "scene": 2,
+      "keys": "AU0KzQFQFNABTQXNAVAF0AFNGc0BUArQAU0EzQBNAc0AOQK5BFAB0AA5ArkETQHNADkCuQRQAdAAOQK5BE0BzQA5ArkGSwLLAUgCyAFQBdABTQXNAVAK0AFL"
+    },
+    {
+      "scene": 19,
+      "keys": "AUiRAcgBSyPLAUgUyAFLCssBSAbIAlAZ0AFNKM0BUF/QAU0FzQFQ"
+    },
+    {
+      "scene": 2,
+      "keys": "AUgKyAFLBcsBSAXIAUsZywFIQcgBTQXNAUgFyAFNBc0BSAXIAU0FzQFIBcgBTQXNAUg="
+    },
+    {
+      "scene": 37,
+      "keys": "AUhKyABIAcgAOQK5BE0BzQA5ArkGSwHLAUg3yAFNQc0ASAHIADkCuQRIAcgAOQK5BEgByAA5ArkETQHNADkCuQZLAcsBSALIAVAF0AFNQc0BSAXIAU0FzQFIS8gBSw/LAUsJywFIBcgBSwTLAksBywFNAc0ASAHIADkCuQRIAcgAOQK5BksBywFQAtABSAXIAVAF0AFN"
+    },
+    {
+      "scene": 39,
+      "keys": ""
+    },
+    {
+      "scene": 37,
+      "keys": "AUsFywFIBcgBSwTLAksBywFIBcgBTSjNAUgKyAFICsgBTRjNAUgEyAJQBdABSxbLAEgByAA5ArkESAHIADkCuQRIAcgAOQK5Bk0CzQFIAsgBUAXQAUtaywFIBcgBSwXLAUgDyABIAcgAOQK5BEsBywA5ArkGTQHNAUgByAFIFMgBSwHLAEsBywA5ArkESwHLADkCuQRLAcsAOQK5BEsBywA5ArkESwHLADkCuQRLAcsAOQK5Bk0CzQFIBcgBSwXLAUgFyAFLCMsASwHLADkCuQZLAcsBSxzLAEsBywA5ArkGSwHLAUsFywFIAcgAOQK5BEgByAA5ArkESAHIADkCuQRIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BEsBywA5ArkETQHNADkCuQRQAdABSAHIADkCuQRQAdABSwXLAUgByAA5ArkESAHIADkCuQRIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BEsBywA5ArkETQHNAVAB0AFIAcgAOQK5BE0BzQA5ArkESwHLAVAB0AFIAcgAOQK5BFAB0AFIFMgBTQ=="
+    },
+    {
+      "scene": 40,
+      "keys": ""
+    },
+    {
+      "scene": 37,
+      "keys": "AVA="
+    },
+    {
+      "scene": 2,
+      "keys": "AUsBywBLAcsAOQK5Bk0CzQFLBcsBUAXQAUsFywFQBdABSwHLAEsBywA5ArkESwHLADkCuQRLAcsAOQK5BEsBywA5ArkESwHLADkCuQZNAc0BUAXQAUsFywFQKtAAUAHQADkCuQRQAdAAOQK5BlAB0AFQFNABTQHNAEsBywA5ArkESwHLADkCuQRQAdAAOQK5BEsBywA5ArkGTQLNAUgByAFNFM0BUDfQAU0FzQFQMtABSw/LAUg="
+    },
+    {
+      "scene": 41,
+      "keys": "AUhQyAFLN8sBSAXIAUsFywFIFMgBSy3LAUgFyAFIBMgCSwXLAUgoyABIFMgBTQXNAVAE0AJQAdABSATIAE0BzQA5ArkESAHIADkCuQRIAcgAOQK5BE0BzQA5ArkETQHNADkCuQRNAc0AOQK5BE0BzQA5ArkETQHNADkCuQRNAc0AOQK5BE0BzQA5ArkETQHNADkCuQRNAc0AOQK5BE0BzQA5ArkGUAHQAUgHyABNAc0AOQK5BE0BzQA5ArkGSwLLAVAC0AFNBc0BSAXIAU0="
+    },
+    {
+      "scene": 42,
+      "keys": ""
+    },
+    {
+      "scene": 41,
+      "keys": "AU0IzQBNAc0AOQK5Bk0BzQFID8gBTQXNAUgPyAFNI80BSAXIAU0FzQFIBcgBTQHNAFAB0AA5ArkEUAHQADkCuQRNAc0AOQK5BksCywFIAsgBTQXNAUgZyAFIL8gASAHIADkCuQRNAc0AOQK5BksBywFIAsgBSAXIAVAF0AFNBc0BSAXIAE0BzQA5ArkGSwHLAUgDyABLAcsAOQK5Bk0BzQFIAsgBSBTIAUsFywFIAcgAOQK5BEgByAA5ArkESAHIADkCuQRIAcgAOQK5BEgByAA5ArkESwHLADkCuQRLAcsAOQK5BBQClAxIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFIAcgAOQK5BFAB0AFLAcsASwHLADkCuQRNAc0AOQK5Bk0BzQFLCcsBSAHIADkCuQRIAcgAOQK5BEgByAA5ArkEUAHQAUgByAA5ArkEUAHQAUgByAA5ArkEUAHQAUgByAA5ArkESwHLADkCuQRIAcgAOQK5BFAB0AFIAcgAOQK5BE0BzQA5ArkEFAKUDUgByANIAcgCSAHIADkCuQ5IAcgDSAHIA0gByANIAcgDSAHIA0gByAtQAdAAOQK5BFAB0AA5ArkEUAHQADkCuQRQAdAAOQK5BUgByAA5ArkMSAHIA0gByANIAcgDSAHIA0gByANIAcgDSAHIA0gByANLAcsBUAbQAFAB0AA5ArkEUAHQADkCuQQUApQOUALQAVAe0AFNBc0CSAHIAksBywA5ArkESAHIADkCuQVIAcgDSAHIA0gByANIAcgDSAHIA0gByANIAcgDSAHIA0gByANIAcgDSAHIB0sBywA5ArkETQHNADkCuQRIAcgAOQK5BEgByAA5ArkFSAHIAkgByAA5ArkFSAHIA0gByAJIAcgAOQK5C0gByANIAcgDSAHIA0gByAhLAcsAOQK5BE0BzQA5ArkETQHNADkCuQRIAcgAOQK5BUgKyAFI"
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0
-   },
-   {
-    "title": "Story",
-    "frame": 1477
-   },
-   {
-    "title": "Nowish",
-    "frame": 3837
-   },
-   {
-    "title": "Laterburg",
-    "frame": 6760
-   },
-   {
-    "title": "The Snooze Barrows",
-    "frame": 10773
-   },
-   {
-    "title": "Someday Harbor",
-    "frame": 20732
-   },
-   {
-    "title": "The Soggy Vaults",
-    "frame": 21728
-   },
-   {
-    "title": "THE CHEZ and the Dawdle Flats",
-    "frame": 27247
-   },
-   {
-    "title": "Eventually Falls",
-    "frame": 29330
-   },
-   {
-    "title": "The Putoff Mines",
-    "frame": 31532
-   },
-   {
-    "title": "Deadline Keep",
-    "frame": 37383
-   },
-   {
-    "title": "Ending",
-    "frame": 41529
-   },
-   {
-    "title": "Credits",
-    "frame": 45360
-   }
-  ]
- }
+    {
+      "scene": 4,
+      "title": "Nowish"
+    },
+    {
+      "scene": 3,
+      "title": "Laterburg"
+    },
+    {
+      "scene": 32,
+      "title": "The Snooze Barrows"
+    },
+    {
+      "scene": 20,
+      "title": "Someday Harbor"
+    },
+    {
+      "scene": 35,
+      "title": "The Soggy Vaults"
+    },
+    {
+      "scene": 43,
+      "title": "THE CHEZ and the Dawdle Flats"
+    },
+    {
+      "scene": 19,
+      "title": "Eventually Falls"
+    },
+    {
+      "scene": 37,
+      "title": "The Putoff Mines"
+    },
+    {
+      "scene": 41,
+      "title": "Deadline Keep"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 53010,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 1477,
+        "time": 24616.666666667028
+      },
+      {
+        "title": "Nowish",
+        "frame": 3837,
+        "time": 63949.99999999642
+      },
+      {
+        "title": "Laterburg",
+        "frame": 6760,
+        "time": 112666.66666667657
+      },
+      {
+        "title": "The Snooze Barrows",
+        "frame": 10773,
+        "time": 179549.99999998705
+      },
+      {
+        "title": "Someday Harbor",
+        "frame": 22482,
+        "time": 374700.00000007
+      },
+      {
+        "title": "The Soggy Vaults",
+        "frame": 23478,
+        "time": 391300.00000008935
+      },
+      {
+        "title": "THE CHEZ and the Dawdle Flats",
+        "frame": 28997,
+        "time": 483283.33333352976
+      },
+      {
+        "title": "Eventually Falls",
+        "frame": 31080,
+        "time": 518000.00000023685
+      },
+      {
+        "title": "The Putoff Mines",
+        "frame": 33282,
+        "time": 554700.0000001733
+      },
+      {
+        "title": "Deadline Keep",
+        "frame": 40986,
+        "time": 683099.9999998744
+      },
+      {
+        "title": "Ending",
+        "frame": 47143,
+        "time": 785716.6666663021
+      },
+      {
+        "title": "Credits",
+        "frame": 50974,
+        "time": 849566.6666661535
+      }
+    ]
+  }
 }
