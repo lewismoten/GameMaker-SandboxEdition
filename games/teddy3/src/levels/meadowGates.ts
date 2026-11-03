@@ -7,7 +7,7 @@ import type { Tiles, LevelMap } from './level';
 import { GATE_CODES, GATES } from '../wheel/wheel';
 import { SYMBOLS } from '../wheel/symbols';
 import { c } from '../blocks/tiles';
-import { G, HEDGE } from './meadowTiles';
+import { G } from './meadowTiles';
 import { bandAt, wideSign } from './common';
 
 /**
