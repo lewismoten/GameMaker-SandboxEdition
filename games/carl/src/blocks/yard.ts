@@ -359,5 +359,11 @@ export function buildYard(pal: Pal): BlockBook {
   book.add('sugarS', sugarCube(sky(1), pal), { effect: SUGAR, eamt: SUGAR_CUBE, touch: 'skyFlown' });
   // (last too) scenery for the site's achievement badges
   yardBadges(book, pal, { sky: () => sky(1) });
+  // (after the badges' scenery) the rift in the tall grass where the broken clock lets time out: a dark-rimmed doorway of white light, its two clock hands stopped, the way out of the documentary
+  const rift = tall(26, false);
+  rift.rect(3, 4, 14, 12, c('ink', 1)).disc(10, 4, 7, c('ink', 1)).disc(10, 15, 7, c('ink', 1));
+  rift.rect(5, 4, 10, 12, c('white', 3)).disc(10, 4, 5, c('white', 3)).disc(10, 15, 5, c('white', 3));
+  rift.line(10, 10, 10, 5, c('ink', 0)).line(10, 10, 13, 12, c('ink', 0)).set(10, 10, c('red', 2));
+  book.add('timeRift', rift, AIR);
   return book;
 }
