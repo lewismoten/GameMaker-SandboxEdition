@@ -1,5 +1,5 @@
 {
-  "about": "THE PHONE OF THE FUTURE board, rev A. Untested design. Units mm; origin top-left seen from the front; +x right, +y down.",
+  "about": "THE PHONE OF THE FUTURE board, rev C. Untested design. Units mm; origin top-left seen from the front; +x right, +y down.",
   "board": {
     "width": 73.66,
     "height": 175.26,
@@ -364,7 +364,7 @@
       "ref": "U6",
       "center": [
         43.18,
-        142.24
+        143.51
       ],
       "height": 4.6
     },
@@ -372,7 +372,7 @@
       "BT1 13 mm (behind the dial)",
       "C21 220 uF electrolytic 11 mm",
       "ICs 4 mm",
-      "LM2940 lying flat 9 mm"
+      "MCP1702 TO-92 4.6 mm"
     ]
   },
   "silkscreen": {
