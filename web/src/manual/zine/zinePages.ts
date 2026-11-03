@@ -113,7 +113,8 @@ export const ZINE: ZinePage[] = [
     title: 'PAPER CRACKS',
     lines: [
       'Some games ask for a word from the manual, a square off a code sheet or a spin of a code wheel before they let you in. Paper copy protection. Paper. LOL.',
-      'THE LIBRARY METHOD: take the wheel apart (careful, the brass fastener bends back), lay the discs flat on the library copier. Cut the copies out, poke a pencil through the middle, done.',
+      'THE LIBRARY METHOD: take the wheel apart (careful, the brass fastener bends back), lay the discs flat on the library copier. Cut the copies out.',
+      "PUTTING IT BACK TOGETHER: you need a brass paper fastener. Gold brad, split pin, same thing: a smooth round head and two flat prongs underneath. Poke a hole dead center in every disc, stack them biggest on the bottom, push the prongs through from the front, then bend them apart flat against the back. Not too tight or the dial won't turn. Swipe one from the school office, or steal the one off the real wheel and put it back after.",
       "THE FRIEND METHOD: borrow a buddy's sheet for one afternoon and copy every answer into a big list in a notebook. Works great when it's only letters and numbers. A grid of 400 squares is a LOT of afternoon, so bring snacks.",
       'BUT: some sheets are printed dark on DARK RED paper. The copier sees red as black and you get a black square. LIGHT CYAN is the other trick: the copier barely sees it, so the copy comes out blank. Pencil time.',
       "AND: a fancy wheel with windows that aren't plain squares, and symbols that are all different widths, is murder to cut out of a photocopy. Shave a window a hair too wide and it shows half of the next symbol. Ask me how I know.",
