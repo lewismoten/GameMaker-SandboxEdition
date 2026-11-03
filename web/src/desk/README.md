@@ -32,7 +32,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   makes into `public/trinkets/<id>/`) are listed as `trinketShelf.ts` in the box viewer: choosing one takes the turning box's place
   (choosing it again, or "Back to the box", returns the box), with a labeled STL (one color) / 3MF (colors,
   the default) switch; Depth's trinkets and the pixel figures of the other games (`games/kit/pixelTrinkets.ts`,
-  whose items name a color-carrying `preview` STL) share it. It is drawn by the small WebGL viewer `trinketGl.ts`. `trinketData.ts` reads the manifests and STL meshes (shared with the Library's toy box, `library/toyBox.ts`) and `trinketSnap.ts` draws a trinket once as a still PNG for lists.
+  whose items name a color-carrying `preview` STL) share it. It is drawn by the small WebGL viewer `trinketGl.ts`, turned by `trinketTurntable.ts` (spinning, drag and arrow keys; shared with the Library toy box's closer look). `trinketData.ts` reads the manifests and STL meshes (shared with the Library's toy box, `library/toyBox.ts`) and `trinketSnap.ts` draws a trinket once as a still PNG for lists.
 - `disks/`: the disk box (`diskBox.ts`; closed on the desk, `diskBoxFill.ts`), the buttons for
   the disk in drive A: (`driveActions.ts`) and the disks' labels (`diskLabel.ts`, RSD's own in
   `rsdLabel.ts`, whose level strips `stripQueue.ts` draws one at a time, only once on screen).

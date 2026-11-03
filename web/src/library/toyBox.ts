@@ -2,12 +2,12 @@
 // game's 3D-printable trinkets in one place, grouped by game. Each shows a real picture of itself
 // (the box viewer's renderer, drawn once: desk/boxes/trinketSnap.ts, when it scrolls near), a 3MF colors /
 // STL one color switch that redraws it, and links to both files. The desk's code loads only when the toy
-// box opens (AGENTS.md "Loading"); which games are listed is toyBoxList.ts.
+// box opens (AGENTS.md "Loading"); which games are listed is toyBoxList.ts. Pressing a picture opens a closer
+// look at that trinket, turning (toyCloseUp.ts).
 import './toyBox.css';
 import { h } from '../editor/core/ui';
 import { loadCatalog } from '../project/files';
 import { toyBoxGames, type ToyGame } from './toyBoxList';
-import type { TrinketItem } from '../desk/boxes/trinketData';
 
 const SIZE = { w: 180, h: 180 };
 const mb = (bytes: number) => `${(bytes / 1e6).toFixed(1)} MB`;
@@ -15,8 +15,9 @@ const mb = (bytes: number) => `${(bytes / 1e6).toFixed(1)} MB`;
 type Data = typeof import('../desk/boxes/trinketData');
 type Snap = typeof import('../desk/boxes/trinketSnap');
 
-/** One trinket: its picture, name, switch and downloads. */
-function card(base: string, item: TrinketItem, data: Data, snap: Snap, near: IntersectionObserver, watch: Map<Element, () => void>): HTMLElement {
+/** One trinket: its picture (pressed: a close look, turning, toyCloseUp.ts), name, switch and downloads. */
+function card(game: ToyGame, base: string, i: number, data: Data, snap: Snap, near: IntersectionObserver, watch: Map<Element, () => void>): HTMLElement {
+  const item = game.items[i];
   const dims = item.mm.map((v) => Math.round(v)).join(' × ');
   const img = h('img', {
     class: 'toy-pic',
@@ -26,7 +27,22 @@ function card(base: string, item: TrinketItem, data: Data, snap: Snap, near: Int
     hidden: '',
   });
   const note = h('span', { class: 'toy-note' }, 'Drawing it…');
-  const pic = h('div', { class: 'toy-art' }, img, note);
+  const pic = h(
+    'button',
+    {
+      class: 'toy-art',
+      type: 'button',
+      title: 'A closer look, turning',
+      'aria-label': `A closer look at ${item.title}, turning`,
+      onclick: async () => {
+        const { toyCloseUp } = await import('./toyCloseUp');
+        await toyCloseUp(game.title, base, game.items, i);
+        pic.focus();
+      },
+    },
+    img,
+    note,
+  );
   let colors = true;
   let drawing = 0;
   const paint = async () => {
@@ -100,7 +116,7 @@ function section(game: ToyGame, data: Data, snap: Snap, near: IntersectionObserv
     'section',
     { class: 'toy-game', 'aria-labelledby': id },
     h('h3', { id }, game.title, h('span', { class: 'toy-count' }, ` · ${game.items.length}`)),
-    h('ul', { class: 'toy-list' }, ...game.items.map((item) => card(base, item, data, snap, near, watch))),
+    h('ul', { class: 'toy-list' }, ...game.items.map((_, i) => card(game, base, i, data, snap, near, watch))),
   );
 }
 

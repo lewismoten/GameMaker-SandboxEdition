@@ -1,18 +1,15 @@
 // The plastic trinkets that came in a game's box (the game's figures as 3D printable toys), listed as
 // items under the box: choosing one takes the turning box's place in the viewer with that trinket, a
 // shiny model to turn (drag, or the arrow keys), and choosing it again, or "Back to the box", brings
-// the box back. A labeled STL / 3MF switch shows it in one color (the STL) or in the colors of the 3MF
+// the box back (the turning is trinketTurntable.ts). A labeled STL / 3MF switch shows it in one color (the STL) or in the colors of the 3MF
 // (the default). There are links to its files, and to the STL of its supports when a plain printer would
 // need them. The files are build output (games/depth/tools/trinkets.ts and games/kit/pixelTrinkets.ts
-// write them to trinkets/<id>/ on the site); a game without any gets no shelf. The viewer (trinketGl.ts)
-// loads when a trinket is first chosen.
+// write them to trinkets/<id>/ on the site); a game without any gets no shelf.
 import './trinketShelf.css';
 import { h } from '../../editor/core/ui';
-import type { TrinketView } from './trinketGl';
+import { trinketTurntable } from './trinketTurntable';
 import { loadTrinkets, trinketBase, trinketMesh, type TrinketItem } from './trinketData';
 
-const TURN = 0.3;
-const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 /** The shelf for game `id`, or an element that stays hidden when the game has no trinkets. */
 export function trinketShelf(id: string): HTMLElement {
   const base = trinketBase(id);
@@ -29,15 +26,15 @@ export function trinketShelf(id: string): HTMLElement {
 function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
   let at = -1; // -1: the box is showing
   let colors = true; // the 3MF's colors, or the STL's one color
-  let view: TrinketView | undefined;
-  let visible = true;
-  let spinning = !reduced();
-  let last = 0;
-  let raf = 0;
-  let showing = 0; // which load is current, so a slow file can't replace a later one
 
-  const canvas = h('canvas', { class: 'trk-canvas', tabindex: 0, role: 'img', 'aria-describedby': 'trk-help' });
-  const status = h('span', { class: 'trk-flat', hidden: '' }, '3D is not available here; the files still download.');
+  // PageUp and PageDown change trinket; the turntable has the rest of the keys
+  const table = trinketTurntable((e) => {
+    if (e.key !== 'PageDown' && e.key !== 'PageUp') return false;
+    step(e.key === 'PageDown' ? 1 : -1);
+    return true;
+  });
+  const { canvas, status } = table;
+  canvas.setAttribute('aria-describedby', 'trk-help');
   const back = h('button', { class: 'trk-btn', type: 'button', onclick: () => void choose(-1) }, 'Back to the box');
   const float = h('div', { class: 'trk-float', hidden: '' }, canvas, status);
   const title = h('strong', { class: 'trk-title' });
@@ -68,57 +65,12 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
   );
   const list = h('div', { class: 'trk-list', role: 'group', 'aria-label': 'Trinkets in this box' }, ...chips);
 
-  const frame = (t: number) => {
-    raf = 0;
-    if (spinning && visible && view) {
-      view.yaw += Math.min(t - last, 50) * 0.0006;
-      last = t;
-    }
-    view?.draw();
-    if (spinning && visible && at >= 0) raf = requestAnimationFrame(frame);
-  };
-  const wake = () => {
-    if (!raf) {
-      last = performance.now();
-      raf = requestAnimationFrame(frame);
-    }
-  };
-  const turn = (dyaw: number, dpitch: number) => {
-    if (!view) return;
-    spinning = false;
-    view.yaw += dyaw;
-    view.pitch = Math.max(-1.2, Math.min(1.2, view.pitch + dpitch));
-    wake();
-  };
-
   const meshOf = (item: TrinketItem) => trinketMesh(base, item, colors);
-  const show = async () => {
-    const item = items[at];
-    const mine = ++showing;
-    canvas.classList.add('loading');
-    try {
-      const [{ createTrinketView }, mesh] = await Promise.all([import('./trinketGl'), meshOf(item)]);
-      if (mine !== showing) return;
-      const keep = view && { yaw: view.yaw, pitch: view.pitch };
-      view?.dispose();
-      view = createTrinketView(canvas, mesh);
-      if (!view) throw new Error('no WebGL');
-      if (keep) Object.assign(view, keep);
-      status.hidden = true;
-      canvas.hidden = false;
-      canvas.classList.remove('loading');
-      wake();
-    } catch {
-      if (mine !== showing) return;
-      canvas.hidden = true;
-      status.hidden = false;
-    }
-  };
   function setColors(on: boolean) {
     colors = on;
     modeColors.setAttribute('aria-pressed', String(on));
     modeOne.setAttribute('aria-pressed', String(!on));
-    if (at >= 0) void show();
+    if (at >= 0) void table.show(() => meshOf(items[at]));
   }
   /** Chooses trinket `i` (in the box viewer's place), or -1 for the box again. */
   async function choose(i: number) {
@@ -129,9 +81,7 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
     viewer?.classList.toggle('trinket-on', i >= 0);
     float.hidden = info.hidden = i < 0;
     if (i < 0) {
-      showing++;
-      view?.dispose();
-      view = undefined;
+      table.clear();
       if (was >= 0) chips[was].focus({ preventScroll: true });
       return;
     }
@@ -158,47 +108,10 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
       'aria-label',
       `${item.title}: ${item.blurb} A plastic trinket, ${dims} millimeters. Drag it, or use the arrow keys, to turn it; Home puts it back.`,
     );
-    spinning = !reduced();
-    await show();
+    await table.show(() => meshOf(item), { spin: true });
     if (was < 0) canvas.focus({ preventScroll: true });
   }
   const step = (dir: 1 | -1) => void choose((at + dir + items.length) % items.length);
-
-  canvas.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') turn(-TURN, 0);
-    else if (e.key === 'ArrowRight') turn(TURN, 0);
-    else if (e.key === 'ArrowUp') turn(0, -0.2);
-    else if (e.key === 'ArrowDown') turn(0, 0.2);
-    else if (e.key === 'Home' && view) {
-      view.yaw = 0.6;
-      view.pitch = 0.28;
-      turn(0, 0);
-    } else if (e.key === 'PageDown') step(1);
-    else if (e.key === 'PageUp') step(-1);
-    else return;
-    e.preventDefault();
-  });
-  let drag: { x: number; y: number } | undefined;
-  canvas.addEventListener('pointerdown', (e) => {
-    drag = { x: e.clientX, y: e.clientY };
-    canvas.setPointerCapture(e.pointerId);
-    canvas.classList.add('turning');
-  });
-  canvas.addEventListener('pointermove', (e) => {
-    if (!drag) return;
-    turn((e.clientX - drag.x) * 0.012, (e.clientY - drag.y) * 0.008);
-    drag = { x: e.clientX, y: e.clientY };
-  });
-  const release = () => {
-    drag = undefined;
-    canvas.classList.remove('turning');
-  };
-  canvas.addEventListener('pointerup', release);
-  canvas.addEventListener('pointercancel', release);
-  new IntersectionObserver(([e]) => {
-    visible = e.isIntersecting;
-    if (visible) wake();
-  }).observe(canvas);
 
   return [
     h(

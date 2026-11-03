@@ -56,6 +56,10 @@
 }
 
 .toy-art {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
   display: grid;
   place-items: center;
   aspect-ratio: 1 / 1;
@@ -148,5 +152,80 @@
 @media (max-width: 480px) {
   .toy-card {
     flex-basis: calc(50% - 5px);
+  }
+}
+
+.toy-art:hover .toy-pic,
+.toy-art:focus-visible .toy-pic {
+  transform: scale(1.04);
+}
+
+.toy-pic {
+  transition: transform 0.15s ease-out;
+}
+
+/* a closer look (library/toyCloseUp.ts): the trinket large and turning, its details beside it */
+.toy-big {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: min(820px, 90vw);
+  max-width: 100%;
+}
+
+.toy-big-stage {
+  flex: 1 1 380px;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  max-height: 70vh;
+  border-radius: 8px;
+  background: radial-gradient(circle at 50% 35%, #5a6272, #2a2f3a);
+  color: #efe5cc;
+}
+
+.toy-big-canvas {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.toy-big-canvas.turning {
+  cursor: grabbing;
+}
+
+.toy-big-info {
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.toy-big-name {
+  font-size: 1.15rem;
+}
+
+.toy-big-count {
+  color: var(--muted, inherit);
+  font-size: 0.85rem;
+}
+
+.toy-big-steps {
+  display: flex;
+  gap: 8px;
+}
+
+.toy-big-help {
+  margin: 0;
+  color: var(--muted, inherit);
+  font-size: 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toy-pic {
+    transition: none;
   }
 }
