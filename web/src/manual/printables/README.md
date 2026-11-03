@@ -150,6 +150,24 @@ in blocks; it is drawn from the game's real blocks and monsters.
 | `codewheel` | `heading`, `center`, `outer` and `inner` (the two rings, as many each: letters, words or names in `glyphs`), `hidden` (one ring under the turning disc, or several, outermost first, each at its own distance from the pin, seen through its `windows: [{ at, label, ring }]`, each window onto its own ring), `middle` (a third disc between the two, turning on its own, its own ring; the hidden rings are then printed on it), `split` (the big disc's ring holds the top halves of the `glyphs` pictures and the next disc's the bottom halves, drawn flush to their shared edge, so a picture joins when its halves line up), `glyphs` (name → rows of `#` and `.`), `howto`, `puzzles: [{ scenes, ask, turn: { inner, outer, middle }, window, answer }]` (the answer is the symbol window `window` shows at that setting, or a short `answer` for a decoded word). A paper code wheel (`codeWheel.ts`); five hidden rings or more make a spiral of windows toward the pin, with a smaller hub and bigger numbers: on screen either disc turns (drag, arrow keys) under a red arrow fixed over the top, and each puzzle has Tell me the answer, which turns both discs, lights the window and shows its symbol; printed, the two discs on their own sheets with cut lines, windows and the pin's mark, to cut out and fasten with a brass paper fastener |
 | `codesheet` | `heading`, `paper` (`red`, the default, or `cyan`), `howto`, `grids: [{ title, rowHead, colHead, rows, cols, cells }]` (`cells[row][col]`), `glyphs`, `foot`, `puzzles: [{ scenes, ask, grid, row, col, answer }]`. A look-up code sheet (`codeSheet.ts`): black print on dark red (or light cyan) card, the colors a photocopier can't copy, with grids read by row and column; on screen a click or Enter lights a square's row and column, and each puzzle has Tell me the answer, which lights its square; printed, one letter sheet in its color                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
+### Final Curtain's spyglass and evidence sheet
+
+Two kinds for `games/sleuth/printables.json` (`sleuthTypes.ts`, drawn by `sleuthPrints.ts`):
+
+- `spyglass`: `heading`, `steps`, `caption`. A magnifying glass in black ink to cut out (a dashed
+  cut line, a knurled rim, an engraved handle with a maker's mark), its lens a round hole for red
+  cellophane (`spyglass.ts`). In the box viewer a box with a spyglass swaps the red film button
+  for it (`BoxItem.glass`, `RedFilm` takes the spyglass as its element): drag it over a page and
+  its round lens shows what red film would, through the same red view as the hint book's circle.
+- `prints`: `heading`, `intro`, `suspects: [{ name, role, pattern, seed, ridges }]`, `lifted: {
+label, suspect, turn, shift, seed }` (the print lifted from the dagger: that suspect's, turned,
+  shifted and patchy) and `tell` (the screen-only "Tell me the answer"). `fingerprint.ts` makes each
+  print from its pattern (`whorl`, `spiral`, `arch`, `tented`, `loop-l`, `loop-r`), seed and ridge
+  count, so it always comes out the same, and `redPicture` (`redFilm.ts`) hides it in the red
+  film's noise like a hint book answer. The answer is shared with the game: the suspects and the
+  right stage-door card are `games/sleuth/src/prints/prints.ts`, and `sleuthPrints.test.ts` keeps
+  the JSON in step.
+
 The catalog announces the games in `COMING` (`gen.ts`: `year2000`, `teddy`) as
 coming soon until they appear in the catalog; then their own entries (title, blurb, price, box
 shots, `pitch`) are used. Both are out now, so nothing is announced; add an entry there to

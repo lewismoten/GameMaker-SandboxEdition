@@ -5,6 +5,7 @@
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game, type Link, type Scene } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import type { Theater } from './levels/theater';
 import { LINEUP, ROOM, SOLVED, SUSPECTS, ZCELL, center, type ParlorLinks } from './levels/parlor';
+import { DOOR_ANSWER } from './prints/prints';
 
 const TITLE = 'FINAL CURTAIN';
 
@@ -53,6 +54,10 @@ interface SceneIndex {
   w: Record<string, number>;
   /** Between the 2 AM green room's sofa cushions: the green room again, with EGG.LST. */
   egg: number;
+  /** The stage door at the start: the question, the right card's page, a wrong card's page. */
+  door: number;
+  doorYes: number;
+  doorNo: number;
 }
 
 export function buildGame(acts: Theater[], pl: ParlorLinks): { game: Game; ix: SceneIndex } {
@@ -132,7 +137,6 @@ export function buildGame(acts: Theater[], pl: ParlorLinks): { game: Game; ix: S
 
   // ---- links
   const link = (scene: number, n: number, from: Pt, toScene: number, to: Pt) => (game.scenes[scene].links[n] = { toScene, from, to });
-  title.links[0] = { toScene: ix.act1, from: { x: 0, y: 0 }, to: acts[0].start };
   link(ix.act1, 0, acts[0].exit, ix.gr1a, center(ROOM.gr1));
   link(ix.act2, 0, acts[1].exit, ix.gr2a, center(ROOM.gr2));
 
@@ -188,5 +192,22 @@ export function buildGame(acts: Theater[], pl: ParlorLinks): { game: Game; ix: S
   ix.egg = add('Green Room 2 (sofa)', { ...green, intro: 'egg.lst' }, false, 104, 112);
   hubLinks([ix.egg], 'gr2', ix.iv2, g2.evs, ix.acca, center(ROOM.who));
   for (const s of [g2.a, g2.plain, ...g2.evs, ix.egg]) link(s, MAXSCENELINKS - 1, pl.sofa, ix.egg, center(ROOM.gr2));
+
+  // The stage door, the first scene: Dobbs asks whose card the dagger's print matches. A right
+  // card, a wrong card and the way in all lead on; nothing is lost either way. (Scenes are
+  // added last, so no earlier scene changes its number.)
+  // the stage door
+  ix.door = add('Stage Door', { ...green, intro: 'door.lst' }, false, 0, 40);
+  ix.doorYes = add('Stage Door (match)', { ...green, intro: 'dooryes.lst' }, false, 12, 40);
+  ix.doorNo = add('Stage Door (no match)', { ...green, intro: 'doorno.lst' }, false, 24, 40);
+
+  title.links[0] = { toScene: ix.door, from: { x: 0, y: 0 }, to: center(ROOM.door) };
+  for (const s of [ix.door, ix.doorYes, ix.doorNo]) {
+    // a name card to step on: the dagger's owner is the right one, the rest ask again (nothing is lost)
+    SUSPECTS.forEach((who, i) =>
+      pl.door.cards[i].forEach((cell, j) => link(s, i * 2 + j, cell, who === DOOR_ANSWER ? ix.doorYes : ix.doorNo, center(ROOM.door))),
+    );
+    link(s, 10, pl.door.in, ix.act1, acts[0].start);
+  }
   return { game, ix };
 }

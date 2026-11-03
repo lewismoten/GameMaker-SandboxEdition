@@ -25,6 +25,8 @@ const ICONS: Record<PrintableItem['kind'], string> = {
   chart: '📋',
   starchart: '🌌',
   recipe: '🥄',
+  spyglass: '🔎',
+  prints: '🖐️',
   codewheel: '🎡',
   codesheet: '🟥',
 };
@@ -44,6 +46,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     // a code wheel turns and a code sheet lights its squares on screen; their sheets (render) are for printing
     live: it.kind === 'codewheel' ? () => Promise.resolve(codeWheelLive(it)) : it.kind === 'codesheet' ? () => Promise.resolve(codeSheetLive(it)) : undefined,
     redFilm: it.kind === 'hintbook',
+    glass: it.kind === 'spyglass' || it.kind === 'prints',
     epub:
       it.kind === 'hintbook'
         ? { file: `${ctx.entry.id}-hint-book.epub`, make: () => import('../epub/hintBook').then((m) => m.hintBookEpub(ctx, it)) }

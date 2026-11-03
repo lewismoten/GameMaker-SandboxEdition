@@ -129,6 +129,10 @@ function ownType(kind: PrintableItem['kind'], title: string): ShelfType {
     case 'journal':
     case 'recipe':
       return 'letter';
+    case 'spyglass': // a cut-out tool: with the box inserts
+      return 'insert';
+    case 'prints': // an evidence sheet: with the letters and papers
+      return 'letter';
     case 'codewheel':
     case 'codesheet': // on the wheels' shelf until a game ships a code sheet (its own shelf would add an achievement kind nobody can finish)
       return 'codewheel';

@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GameSim } from './sim';
 import { Bot } from './bot';
-import { act1, act2, accuse, findEgg, greenRoom } from './route';
+import { act1, act2, accuse, findEgg, greenRoom, stageDoor } from './route';
 import { buildGame } from '../src/game';
 import { buildActs } from '../src/levels/acts';
 import { buildTheaterBlocks } from '../src/blocks/tiles';
@@ -23,6 +23,7 @@ export async function playWhole(files: Map<string, Uint8Array>, opts: { quick?: 
   const ix = sceneIndex();
   const bot = new Bot(new GameSim(files));
   try {
+    await stageDoor(bot, ix);
     await act1(bot);
     if (bot.sim.scene !== ix.gr1a) throw new Error(`Act One led to scene ${bot.sim.scene}`);
     await greenRoom(bot, 1, { hub: ix.gr1, ivs: ix.iv1, evs: ix.ev1 }, !opts.quick);
