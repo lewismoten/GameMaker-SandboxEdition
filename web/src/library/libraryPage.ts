@@ -294,7 +294,12 @@ export function renderLibrary(el: HTMLElement): void {
       fromRoom('catalog'),
     );
   const showCopier = () => dialog('copier', 'Copier', [copier.el], fromRoom('copier'));
-  const dialogs: Record<string, () => unknown> = { stacks: showStacks, catalog: showCatalog, copier: showCopier };
+  // the toy box (toyBox.ts) loads when opened
+  const showToyBox = async () => {
+    const { makeToyBox } = await import('./toyBox');
+    return dialog('toybox', 'Toy box: 3D-printable trinkets', [makeToyBox()], fromRoom('toybox'), 'lib-toy');
+  };
+  const dialogs: Record<string, () => unknown> = { stacks: showStacks, catalog: showCatalog, copier: showCopier, toybox: showToyBox };
   const room = makeRoom({
     status: () => count.textContent ?? '',
     mark,
@@ -302,6 +307,7 @@ export function renderLibrary(el: HTMLElement): void {
       if (where === 'stacks') void showStacks();
       else if (where === 'catalog') void showCatalog();
       else if (where === 'copier') void showCopier();
+      else if (where === 'toybox') void showToyBox();
       else if (shelf)
         void lSpaceTrip(groupShelf(shelf.items, 'game').map(pickOf), (id) => {
           order = 'game';

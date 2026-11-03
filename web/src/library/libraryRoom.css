@@ -156,6 +156,7 @@
 
 .lib-o-joe,
 .lib-o-notebook,
+.lib-o-toybox,
 .lib-o-trash {
   left: var(--l);
   bottom: var(--b);
@@ -194,7 +195,8 @@
   z-index: 4;
 }
 
-.lib-o-trash {
+.lib-o-trash,
+.lib-o-toybox {
   z-index: 3;
 }
 
