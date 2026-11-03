@@ -256,7 +256,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   }
 
   /** The shelf on the wall: a box for each original game (desk/boxes/shelf.ts). */
-  const shelf = deskShelf(desk, { insert: (id) => void insertOriginal(id), manual: (g, front) => gameManual(g, front) });
+  const shelf = deskShelf(desk, {
+    insert: (id) => void insertOriginal(id),
+    manual: (g, front) => gameManual(g, front),
+    restoreBox: wanted.open?.startsWith('box:') ? wanted.open : undefined, // even a malformed one, so it is cleared
+  });
 
   async function insertOriginal(id: string): Promise<void> {
     const d = (await diskList()).find((x) => x.id === `cd:${id}`);

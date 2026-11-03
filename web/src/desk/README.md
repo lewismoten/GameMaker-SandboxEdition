@@ -22,7 +22,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   Narrow layouts hide the physical speakers and expose a 32px Sound Boaster switch beneath
   the key strip. Both controls share the remembered state and apply it to the current player.
 - `boxes/`: the retail boxes and their shelf (`shelf.ts`, `shelfLayout.ts`), turned in the box
-  viewer (`boxViewer.ts`). A game's box (`gameBox.ts`) is drawn from the game itself
+  viewer (`boxViewer.ts`). The box in the viewer is kept in the address (`boxAddress.ts`): `#/desk?open=box:<game id>`, with `&turn=<y>,<x>,<zoom>` once turned by hand. Opening pushes a history entry (Back closes the viewer), stepping along the shelf replaces it; a reload or shared link opens it again, but only for a box on this visitor's shelf (an unknown id, or a secret game not yet revealed, opens nothing and is dropped from the address). A game's box (`gameBox.ts`) is drawn from the game itself
   (`boxFacts.ts`, its play hours from its walkthrough in `playtime.ts`) with `boxPaint.ts`,
   `boxSeals.ts`, shelf wear (`boxWear.ts`), a glow under the black light (`boxUv.ts`) and a
   painted cover (`covers/<id>.ts`, with the brushes in `covers/paint.ts`); what came in it is
