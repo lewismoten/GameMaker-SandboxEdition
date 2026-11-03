@@ -25,7 +25,9 @@ const dialHoles = Array.from({ length: 8 }, (_, i) => {
 const dial = subtract3(extrude(circle2(12.2, ...dialCenter), 13.2, 17), ...dialHoles);
 const hub = extrude(circle2(2.9, ...dialCenter), 13.2, 17.5);
 
-const horizontal = (x: number, y: number): D3 => roundBox3(x, y, 17, 1.55, 0.55, 0.8, 0.35);
+// Keep the face at z = 17.8, but sink the horizontal bars into the screen by 1.85 mm.
+// Their middle bars otherwise lose the screen after the 0.5 mm thin-part erosion check.
+const horizontal = (x: number, y: number): D3 => roundBox3(x, y, 16.25, 1.55, 0.55, 1.55, 0.35);
 const vertical = (x: number, y: number): D3 => roundBox3(x, y, 17, 0.55, 1.35, 0.8, 0.35);
 const segments = (digit: '0' | '2', x: number, y: number): D3[] => {
   const all = {
