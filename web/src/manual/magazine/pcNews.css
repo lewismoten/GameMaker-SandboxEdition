@@ -1,0 +1,165 @@
+/* pcNews.ts: the PC News page. Sizes are in em of the magazine page's own font size. */
+.pcn {
+  --pcn-blue: #8fbde0;
+  --pcn-head: italic 400 2.05em/0.95 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  font-size: 0.92em;
+  color: #141210;
+}
+
+.pcn-top {
+  position: relative;
+  padding-top: 2.7em;
+}
+.pcn-ghost {
+  position: absolute;
+  top: -0.35em;
+  right: 0;
+  font:
+    italic 900 5.6em/1 Impact,
+    'Arial Black',
+    sans-serif;
+  letter-spacing: -0.02em;
+  color: var(--pcn-blue);
+  white-space: nowrap;
+  opacity: 0.9;
+  height: 0.78em;
+  overflow: hidden;
+}
+.pcn-rule {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6em;
+  padding-bottom: 0.15em;
+  border-bottom: 0.28em solid #141210;
+  box-shadow:
+    0 0.42em 0 -0.1em #f3eedd,
+    0 0.5em 0 #141210;
+  font:
+    900 1.9em/1 'Arial Black',
+    Impact,
+    sans-serif;
+  text-decoration: underline;
+  text-decoration-thickness: 0.1em;
+  text-underline-offset: 0.12em;
+}
+.pcn-rule span {
+  -webkit-text-stroke: 0.03em #141210;
+}
+
+.pcn-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.2em 1.4em;
+  align-items: start;
+  margin-top: 0.7em;
+}
+.pcn-item {
+  min-width: 0;
+}
+.pcn-item h3 {
+  margin: 0 0 0.45em;
+  font: var(--pcn-head);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  text-align: center;
+}
+.pcn-item p {
+  margin: 0 0 0.45em;
+  text-align: justify;
+  hyphens: auto;
+}
+.pcn-item p + p {
+  text-indent: 1.4em;
+}
+/* the huge light-blue drop cap, dropped three lines */
+.pcn-first::first-letter {
+  float: left;
+  margin: 0.02em 0.1em 0 0;
+  font:
+    italic 900 4.6em/0.78 Impact,
+    'Arial Black',
+    sans-serif;
+  color: var(--pcn-blue);
+}
+
+.slot-a,
+.slot-b,
+.slot-c {
+  grid-column: span 2;
+}
+.slot-a,
+.slot-b {
+  border-right: 0.06em solid #141210;
+  padding-right: 1.4em;
+  margin-right: -0.7em;
+}
+.slot-d,
+.slot-e {
+  grid-column: span 3;
+}
+.slot-wide {
+  grid-column: 1 / -1;
+  padding: 0.6em 1.1em 0.7em;
+}
+.slot-wide .pcn-body {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.4em;
+  align-items: start;
+}
+.slot-wide .pcn-text {
+  column-count: 2;
+  column-gap: 1.4em;
+}
+.slot-wide h3 {
+  text-align: left;
+}
+.slot-wide .mag-shot {
+  float: none;
+  width: 100%;
+  margin: 0 0 0.5em;
+  break-inside: avoid;
+}
+.tone-pink {
+  background: #f3b6cf;
+}
+.tone-yellow {
+  background: #fbe96a;
+  border: 0.22em solid #141210;
+  padding: 0.7em 0.9em;
+}
+
+@media (max-width: 700px) {
+  .pcn-grid {
+    grid-template-columns: 1fr;
+  }
+  .pcn-item {
+    grid-column: 1 / -1 !important;
+  }
+  .slot-a,
+  .slot-b {
+    border-right: 0;
+    margin-right: 0;
+    padding-right: 0;
+  }
+  .slot-wide .pcn-body {
+    grid-template-columns: 1fr;
+  }
+  .slot-wide .pcn-text {
+    column-count: 1;
+  }
+  .slot-wide .mag-shot {
+    float: none;
+    width: 100%;
+  }
+  .pcn-ghost {
+    font-size: 4em;
+  }
+  .pcn-rule {
+    font-size: 1.3em;
+  }
+}

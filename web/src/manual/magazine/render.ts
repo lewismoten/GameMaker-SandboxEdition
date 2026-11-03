@@ -14,6 +14,7 @@ import { runs } from './inline';
 import { floppyFigure } from './floppy';
 import { MAG } from './masthead';
 import { mugShelf } from './mugShelf';
+import { pcNewsPage } from './pcNews';
 import { shelfList } from './shelf';
 import { replyMail } from './replyMail';
 import type { Tool } from './toolShots';
@@ -279,6 +280,12 @@ function block(b: Block, env: RenderEnv, pending: Promise<unknown>[]): HTMLEleme
       return mugShelf(b, pending);
     case 'shelf':
       return shelfList(b);
+    case 'pcnews':
+      return pcNewsPage(
+        b,
+        (t) => inline(t, where),
+        (s) => shotFigure(s.game, s.view, s.alt, env, pending, 'mag-shot', s.caption),
+      );
     case 'jump': {
       const n = b.folio === undefined ? '' : ` ${b.folio}`;
       if (b.dir === 'on') {

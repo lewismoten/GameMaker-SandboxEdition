@@ -121,7 +121,7 @@ address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues f
 - Putting it together: `issue.ts` holds the running order (page numbers, the contents page, the
   advertiser index, and house ads from `sections/houseAd.ts` to fill whole folded sheets);
   `masthead.ts` its name, the two `ISSUES` and `issueFor` (an address to an issue); `SECTIONS` is
-  No. 2's running order and `SECTIONS_1` No. 1's (`sections/spring93/`: its cover, letter,
+  No. 2's running order and `SECTIONS_1` No. 1's (`sections/spring93/`: its cover, letter, PC News page (`pcNews.ts`, with Teddy's hint line number and rate in `hintLineFacts.ts`, checked against the desk phone's; `magazine/pcNews.ts` and `pcNews.css` draw it: an outlined banner over a ruled header, italic headlines, big light-blue drop caps, a yellow box and a pink box with a real block-designer shot; its "Write to us" box replaced the old Next Month page, which kept No. 1 at whole folded sheets),
   interview, Critic's Corner page, Snowbound tips, free-disk page and back cover; `floppy.ts` draws
   the taped-on floppy with the game's real printed disk label); `games.ts` the games it may name (never a secret one).
 - `pageRefs.ts`: the page numbers pages give each other once placed (a jumped story's "Continued

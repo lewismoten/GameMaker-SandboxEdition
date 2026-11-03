@@ -41,10 +41,11 @@ import { houseAd } from './sections/houseAd';
 import { COVER_1 } from './sections/spring93/cover';
 import { LETTER_1 } from './sections/spring93/letter';
 import { LEWIS_1 } from './sections/spring93/interview';
+import { PC_NEWS_1 } from './sections/spring93/pcNews';
 import { REVIEW_1 } from './sections/spring93/review';
 import { TIPS_1 } from './sections/spring93/tips';
 import { DISK_1 } from './sections/spring93/disk';
-import { NEXT_1, BACK_COVER_1 } from './sections/spring93/next';
+import { BACK_COVER_1 } from './sections/spring93/next';
 import { halfAds, numberRefs } from './pageRefs';
 
 /** No. 2 (Vol. 3, No. 1, January 1995): the running order. The contents page is filled in once every page has its number. */
@@ -91,7 +92,7 @@ export const SECTIONS: MagSection[] = [
 ];
 
 /** No. 1 (Vol. 1, No. 4, April 1993, a back issue): the interview up to spring 1993, the Snowbound review and strategy, and the free disk. */
-export const SECTIONS_1: MagSection[] = [COVER_1, CONTENTS, LETTER_1, LEWIS_1, REVIEW_1, TIPS_1, DISK_1, NEXT_1, BACK_COVER_1];
+export const SECTIONS_1: MagSection[] = [COVER_1, CONTENTS, LETTER_1, PC_NEWS_1, LEWIS_1, REVIEW_1, TIPS_1, DISK_1, BACK_COVER_1];
 
 /** Every section's pages, numbered, with the contents page filled in and house ads to a multiple of four. */
 export async function buildIssue(ctx: MagContext, sections: MagSection[] = ctx.mag.which === 1 ? SECTIONS_1 : SECTIONS): Promise<Issue> {
