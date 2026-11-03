@@ -33,29 +33,35 @@ export function wheel(k: Kit, p: Pixels): void {
 /** Doc Leo at the wheel, from behind and the right. He stays left of x 40: the skyline and trees are rings there. */
 export function driver(k: Kit, p: Pixels): void {
   const { c, R } = k;
-  // the seat's bolster, then his back and shoulders in the navy corduroy jacket (its cords every 4 px, so like cells stay alike)
-  blob(p, 18, 108, 26, 14, R('coat'), 1, 3);
-  p.rect(0, 108, 40, 92, c('coat', 2));
-  for (let x = 0; x < 40; x += 4) p.rect(x, 104, 1, 96, c('coat', 1));
-  // the purple shirt's collar at his neck, the jacket's collar over it
-  p.rect(12, 84, 17, 5, c('purple', 2)).rect(12, 84, 17, 1, c('purple', 3));
-  p.rect(10, 88, 22, 4, c('coat', 3)).rect(10, 91, 22, 1, c('coat', 1));
-  // his neck, his cheek and right ear: white greasepaint round the mouth, a sunburned pink cheek, painted gray stubble
-  p.rect(13, 70, 14, 15, c('skin', 2)).rect(13, 70, 14, 3, c('skin', 0));
-  blob(p, 20, 62, 13, 13, R('skin'), 1, 3);
-  p.disc(30, 70, 4, c('paint', 3)).disc(31, 71, 2.5, c('paint', 4));
-  p.disc(28, 63, 3, c('nose', 2));
+  // the seat's bolster and his back and shoulders in the navy corduroy jacket, rising straight from the collar
+  // (its cords every 4 px, so like cells stay alike)
+  blob(p, 19, 104, 25, 16, R('coat'), 1, 3);
+  p.rect(0, 104, 40, 100, c('coat', 2));
+  for (let x = 0; x < 40; x += 4) p.rect(x, 100, 1, 104, c('coat', 1));
+  // his neck, the purple shirt's collar at it, the jacket's collar over that
+  p.rect(13, 70, 14, 20, c('skin', 2)).rect(13, 70, 14, 3, c('skin', 0)).rect(13, 78, 2, 10, c('skin', 1));
+  p.rect(11, 84, 19, 5, c('purple', 2)).rect(11, 84, 19, 1, c('purple', 3));
+  p.rect(9, 88, 23, 5, c('coat', 3)).rect(9, 92, 23, 1, c('coat', 1));
+  // the back of his head and his dark brown hair under the hat's brim, a sideburn down to his ear
+  blob(p, 19, 62, 13, 13, R('skin'), 1, 3);
+  blob(p, 15, 62, 9, 11, R('dirt'), 0, 2);
+  p.rect(12, 70, 9, 6, c('dirt', 1)).rect(13, 76, 7, 2, c('dirt', 0));
+  p.rect(22, 56, 2, 11, c('dirt', 1)).set(23, 66, c('dirt', 0));
+  // his cheek, turned toward the road: white greasepaint round the mouth and eye, painted gray stubble, his sunburned pink nose
+  p.disc(31, 71, 4.5, c('paint', 3)).disc(31, 72, 3, c('paint', 4)).rect(29, 74, 5, 1, c('nose', 1));
+  p.disc(30, 61, 4, c('paint', 3)).set(31, 61, c('ink', 0));
+  p.disc(36, 66, 3.5, c('nose', 2)).disc(35, 65, 1.2, c('nose', 3));
   for (const [x, y] of [
-    [22, 72],
-    [25, 74],
-    [19, 75],
-    [24, 77],
-    [27, 71],
+    [24, 74],
+    [26, 77],
+    [22, 77],
+    [28, 78],
+    [20, 74],
   ])
     p.set(x, y, c('hat', 2));
-  p.disc(27, 60, 3.5, c('skin', 2)).rect(26, 58, 1, 4, c('skin', 0));
+  p.disc(24, 63, 3, c('skin', 2)).rect(23, 61, 1, 4, c('skin', 0));
   // the glasses' arm over the ear and the wire rim past his cheek
-  p.line(26, 56, 36, 58, c('steel', 3)).rect(34, 55, 4, 6, c('steel', 3)).rect(35, 56, 2, 4, c('water', 2));
+  p.line(24, 57, 33, 59, c('steel', 3)).rect(31, 57, 4, 6, c('steel', 3)).rect(32, 58, 2, 4, c('water', 2));
   // the chewed gray fedora: its crown, a dark band with two pins in it, and a brim with bites out of its edge
   blob(p, 18, 40, 14, 11, R('hat'), 1, 3);
   p.rect(6, 42, 13, 1, c('hat', 0)).rect(20, 38, 1, 9, c('hat', 0));
