@@ -18,7 +18,7 @@ export function neighbor(games: PickerGame[], id: string, dir: 1 | -1): PickerGa
 /** The picker, or nothing when the open game is the only one (or isn't on the list). */
 export function gamePicker(games: PickerGame[], id: string, pick: (id: string) => void): { el: HTMLElement; step: (dir: 1 | -1) => void } | undefined {
   if (games.length < 2 || !games.some((g) => g.id === id)) return undefined;
-  const select = h<HTMLSelectElement>('select', {
+  const select = h<'select'>('select', {
     id: 'gmb-game',
     title: 'Look at another game’s box ([ and ] step through them)',
     onchange: () => pick(select.value),
