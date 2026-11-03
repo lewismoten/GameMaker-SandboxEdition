@@ -224,7 +224,7 @@ PAPER = (841, 594)
 X0, Y0, MAXX = 25.4, 25.4, 800
 cx, cy, rowh = X0, Y0, 0
 ORDER = ["U1", "U2", "U3", "U4", "U5", "U6", "Q1", "Q2", "X1", "DS1", "DS2", "D1", "D2", "MK1", "LS1",
-         "SW1", "SW2", "SW3", "SW4", "SW5", "BT1"]
+         "J1", "SW2", "SW3", "SW4", "SW5", "BT1"]
 parts_sorted = sorted(parts, key=lambda p: (ORDER.index(p["ref"]) if p["ref"] in ORDER else 99, int(re.sub(r"\D", "", p["ref"]) or 0)))
 lib_used = {}
 for part in parts_sorted:
@@ -278,7 +278,6 @@ for part in parts_sorted:
 fx, fy = snap(X0 + 20), snap(cy + rowh + 20)
 pwr_flag(fx, fy, "VBAT")
 pwr_flag(snap(fx + 30), fy, "GND")
-pwr_flag(snap(fx + 60), fy, "VBAT_RAW")
 
 lib_syms = "\n  ".join(s.text for s in ([sym(k) for k in ("power:+5V", "power:GND", "power:PWR_FLAG")] + list(lib_used.values())) if False) if False else None
 need = {}
@@ -286,9 +285,9 @@ for k in list(lib_used) + ["power:+5V", "power:GND", "power:PWR_FLAG"]:
     need[k] = sym(k)
 lib_txt = "\n  ".join(s.text for s in need.values())
 
-title = '''(title_block (title "THE PHONE OF THE FUTURE") (date "2026-11-03") (rev "A")
+title = '''(title_block (title "THE PHONE OF THE FUTURE") (date "2026-11-03") (rev "C")
     (company "Game-Maker: Sandbox Edition. Untested design; designed by Claude Sonnet 5.5 under Lewis Moten's direction")
-    (comment 1 "Half-duplex infrared voice and DTMF handset, PIC16F84A, MT8870, MAX7219")
+    (comment 1 "Half-duplex infrared voice and DTMF handset, PIC16F628A, MT8870, MAX7219")
     (comment 2 "References: DTMF frequencies (ITU-T Q.23), MT8870D and MAX7219 datasheets"))'''
 doc = f'''(kicad_sch (version 20250114) (generator "eeschema") (generator_version "9.0")
   (uuid "{ROOT}")
