@@ -31,6 +31,7 @@ import { pointOut } from './deskLook';
 import { restoreDesk } from './deskRestore';
 import { wallTrophies } from './wallTrophies';
 import { deskTour } from './deskTour';
+import { beginDesk, endDesk } from './lifetime';
 
 // What is opened or read on the desk loads when it first is: the manuals and the catalog (the
 // boxes' insides, deskGmBox.ts and deskShelf.ts).
@@ -69,6 +70,7 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     }
   };
 
+  beginDesk();
   const scene = deskScene({
     power: (onlyOn) => void pc.power(onlyOn),
     toggleTurbo: () => pc.toggleTurbo(),
@@ -379,5 +381,6 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
     unWall();
     unTour();
     pc.dispose();
+    endDesk();
   };
 }

@@ -12,6 +12,7 @@ import { mapShot } from '../../gfx/gameShots';
 import type { BoxExtras } from '../boxes/boxFacts';
 import { seeded } from '../boxes/boxFacts';
 import { uvPoster } from './posterUv';
+import { deskLifetime } from '../lifetime';
 
 type Poster = NonNullable<BoxExtras['poster']>;
 
@@ -24,6 +25,10 @@ const drawn = new Map<string, Promise<HTMLCanvasElement | undefined>>();
 export function setPosterWall(wall: HTMLElement, entries: CatalogEntry[]): void {
   scene = wall;
   games = entries;
+  // leaving the desk lets go of its scene (this module outlives the desk)
+  deskLifetime().addEventListener('abort', () => {
+    if (scene === wall) ((scene = undefined), (shown = undefined));
+  });
 }
 
 function posterOf(entry: CatalogEntry): Poster | undefined {

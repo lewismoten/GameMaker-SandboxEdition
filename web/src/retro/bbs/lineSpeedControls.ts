@@ -8,7 +8,7 @@ const value = (s: LineSpeed) => String(s);
 const parse = (v: string): LineSpeed => (v === 'unlimited' ? v : (Number(v) as LineSpeed));
 
 /** One choice a line: "300 baud" … "Unlimited", the current one checked. */
-export function speedRadios(): HTMLFieldSetElement {
+export function speedRadios(signal?: AbortSignal): HTMLFieldSetElement {
   const name = `line-speed-${Math.random().toString(36).slice(2, 8)}`;
   const radios = LINE_SPEEDS.map((s) => {
     const input = h('input', { type: 'radio', name, value: value(s) });
@@ -17,9 +17,13 @@ export function speedRadios(): HTMLFieldSetElement {
     return h('label', { class: 'speed-choice' }, input, h('span', null, speedWords(s)));
   });
   const set = h('fieldset', { class: 'speed-radios' }, h('legend', null, 'Modem speed'), ...radios);
-  addEventListener('gm-line-speed', () => {
-    for (const r of set.querySelectorAll('input')) r.checked = r.value === value(lineSpeed());
-  });
+  addEventListener(
+    'gm-line-speed',
+    () => {
+      for (const r of set.querySelectorAll('input')) r.checked = r.value === value(lineSpeed());
+    },
+    { signal },
+  );
   return set;
 }
 

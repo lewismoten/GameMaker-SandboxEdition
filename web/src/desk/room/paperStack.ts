@@ -5,6 +5,7 @@
 // lifts its paper off the stack.
 import './paperStack.css';
 import { h } from '../../editor/core/ui';
+import { deskLifetime } from '../lifetime';
 
 type Pick = 'catalog' | 'magazine';
 
@@ -118,6 +119,6 @@ export function paperStack(open: Record<Pick, () => void>): HTMLElement {
     if (!stack.isConnected) document.removeEventListener('pointerdown', away);
     else if (isOpen() && !stack.contains(e.target as Node)) hide(false);
   };
-  document.addEventListener('pointerdown', away);
+  document.addEventListener('pointerdown', away, { signal: deskLifetime() });
   return stack;
 }

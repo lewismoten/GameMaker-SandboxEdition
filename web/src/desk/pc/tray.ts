@@ -11,6 +11,7 @@ import { deskMouse } from '@lewismoten/gamemaker-sandbox-engine/input/deskMouse'
 import { deskGamePad } from './gamePad';
 import { PAD_CHANGED, loadPad, padName, type PadPrint } from './padChoice';
 import { padSvg } from './padPrints';
+import { deskLifetime } from '../lifetime';
 
 let squeakCtx: AudioContext | undefined;
 
@@ -147,7 +148,7 @@ function mousePad(): HTMLElement {
   printPad(loadPad());
   // chosen again from the magazine while the desk is open
   const changed = () => (pad.isConnected ? printPad(loadPad()) : window.removeEventListener(PAD_CHANGED, changed));
-  window.addEventListener(PAD_CHANGED, changed);
+  window.addEventListener(PAD_CHANGED, changed, { signal: deskLifetime() });
 
   const place = () => {
     mouse.style.left = `${pos.x}px`;
