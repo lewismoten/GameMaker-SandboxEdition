@@ -169,6 +169,11 @@
   image-rendering: pixelated;
 }
 
+/* a picture not yet drawn holds its place */
+.mugv-design img:not([src]) {
+  aspect-ratio: 4 / 3;
+}
+
 /* a game's badge is see-through round the edge: show it on the mug's white */
 .mugv-design[data-group='game'] img {
   background: #f7f5ee;
