@@ -49,6 +49,7 @@ const NOT_KEYS = new Set([
   'gm-osk-toggle',
   'gm-osk-abc',
   'gm-osk-row',
+  'gm-chicken-changed',
 ]);
 
 function files(dir: string): string[] {

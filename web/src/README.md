@@ -160,6 +160,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`retro/`](retro/README.md): the PC shared by the desk and `dos.html`: DOS, Game-Maker's menus and
   registration, the utilities and the BBSes.
 - [`vga/`](vga/README.md): Game-Maker's eight designers, ported from their C source.
+- [`chicken/`](chicken/README.md): the rubber chicken's state (Sir Reginald or Lady Regina, following Tune-Up's story), its words and tiara, and the desk's restore utility.
 - [`eggs/`](eggs/README.md): the felt eggs hidden in the Sandbox games, their shadow box and
   EGG.EXE.
 - [`tinHearts/`](tinHearts/README.md): the tin heart hunt and its trophy.
