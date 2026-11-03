@@ -11,6 +11,7 @@ import { MONBL } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { INF_REPEAT, emptyFrame, newCharacter, type Character, type Frame } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { newMonsterSet, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { corner, mon, pace, set } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
+import { addLeftHandKeys } from './altKeys';
 import { CTR, KEY, MON, MONEY, OIL_KEYS, SEQ, SND } from './ids';
 import type { LeoBlocks, MonsterBlocks } from './sprites/cast';
 import { addRealMonsters, type CapGame } from './realMonsters';
@@ -72,6 +73,8 @@ function leo(cb: LeoBlocks, mode: 'leo' | 'piano' | 'oil' | 'pump'): Character {
     set(S[SEQ.hopRight], side(HOP_STEP, false), { key: KEY.e, jstkMov: JOY.upRight, sound: SND.hop });
   }
   set(S[SEQ.down], [f({ pose: 'climb', y: CLIMB_DOWN })], { key: KEY.down, jstkMov: JOY.down });
+  // (the oil can's D is a note: its Doc Leo has no left-handed set)
+  if (mode !== 'oil') addLeftHandKeys(S);
   // Space: hands up into the block over his hat for one tick (so a key counts its touch once), and
   // back; again while held
   set(S[SEQ.boop], [f({ pose: 'hop', y: -REACH, pause: 1 }), f({ pose: 'front', y: REACH, pause: 3 })], {
