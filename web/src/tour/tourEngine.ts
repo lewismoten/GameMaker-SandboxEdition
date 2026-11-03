@@ -461,9 +461,14 @@ export class Tour {
           a.place({ x: room.left + (room.width * out[0]) / 100 - a.size.w / 2, y: room.top + (room.height * out[1]) / 100 - a.size.h });
         else a.place({ x: r.left + r.width / 2 - a.size.w / 2, y: r.bottom - a.size.h });
         visitor?.remove();
-        // Joe starts as big as he stands in the room, then shrinks to tour size as he slides to his spot
-        if (!visitor && r.width > a.size.w && !this.still) a.startAt({ w: r.width, h: (r.width * a.size.h) / a.size.w });
-      } else a.place(offStage(a.size, this.view(), this.floor(), false));
+        // Joe or the visitor starts as big as they stand in the room (a visitor is drawn bigger than a tour
+        // host), then shrinks to tour size as they walk to their spot, never popping smaller where they stood
+        if (r.width > a.size.w && !this.still) a.startAt({ w: r.width, h: (r.width * a.size.h) / a.size.w });
+      } else {
+        a.place(offStage(a.size, this.view(), this.floor(), false));
+        // a visitor still walking in from the edge is the same person: the host takes their place, never a second copy
+        visitor?.remove();
+      }
       a.el.dataset.host = id;
       this.layer.append(a.el);
       this.hosts.set(id, a);
