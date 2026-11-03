@@ -210,6 +210,12 @@ export interface CodeWheelItem extends ItemBase {
   heading: string;
   /** In the middle of the turning disc. */
   center?: string;
+  /** A picture on the turning disc's hub: 'nose' is "CLOWN CLUB" round a red rubber nose (the center text is then left out). */
+  emblem?: 'nose';
+  /** Colors for glyphs: a glyph's name and 12 rows of letters over its picture (`fillColors` has the colors; a capital also covers ink). */
+  fills?: Record<string, string[]>;
+  /** A letter's color, for `fills`. */
+  fillColors?: Record<string, string>;
   /** The outer disc's ring, clockwise from the top: letters, words, or glyph names (`glyphs`). */
   outer: string[];
   /** The turning disc's ring, as many as `outer`, each facing one of them. */

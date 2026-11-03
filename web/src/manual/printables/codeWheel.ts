@@ -80,6 +80,33 @@ function sector(r0: number, r1: number, a0: number, a1: number): string {
   return `M${x0},${y0}A${r1},${r1} 0 ${big} 1 ${x1},${y1}L${x2},${y2}A${r0},${r0} 0 ${big} 0 ${x3},${y3}Z`;
 }
 
+/**
+ * The colors under a picture's ink (it.fills: rows of letters; it.fillColors: their colors; a capital also covers
+ * ink), drawn first so the ink outline stays on top. `top` gives each row's y (null: skip the row).
+ */
+function colorFills(it: CodeWheelItem, g: SVGElement, name: string, rows: string[], cell: number, x0: number, top: (ry: number) => number | null): Set<string> {
+  const cover = new Set<string>(); // 'rx,ry' of ink cells a capital covers
+  const fill = it.fills?.[name];
+  if (!fill || !it.fillColors) return cover;
+  const byColor = new Map<string, string>();
+  fill.forEach((row, ry) => {
+    const y = top(ry);
+    if (y === null) return;
+    for (let rx = 0; rx < row.length; rx++) {
+      const ch = row[rx];
+      const color = it.fillColors?.[ch.toLowerCase()];
+      if (ch === '.' || !color) continue;
+      if (ch !== ch.toLowerCase() && rows[ry][rx] === '#') cover.add(`${rx},${ry}`);
+      byColor.set(
+        color,
+        (byColor.get(color) ?? '') + `M${(x0 + rx * cell).toFixed(2)},${y.toFixed(2)}h${cell.toFixed(2)}v${cell.toFixed(2)}h${(-cell).toFixed(2)}z`,
+      );
+    }
+  });
+  for (const [color, d] of byColor) g.append(el('path', { d, fill: color, class: 'cw-fill' }));
+  return cover;
+}
+
 /** One symbol, upright to the ring (its top toward the rim), `size` tall, centered at radius r and angle deg. */
 function symbol(it: CodeWheelItem, name: string, r: number, deg: number, size: number, cls: string): SVGElement {
   const [x, y] = at(r, deg);
@@ -89,9 +116,10 @@ function symbol(it: CodeWheelItem, name: string, r: number, deg: number, size: n
     const cell = size / rows.length;
     const w = rows[0].length * cell;
     let d = '';
+    const cov = colorFills(it, g, name, rows, cell, -w / 2, (ry) => ry * cell - size / 2);
     rows.forEach((row, ry) => {
       for (let rx = 0; rx < row.length; rx++)
-        if (row[rx] === '#')
+        if (row[rx] === '#' && !cov.has(`${rx},${ry}`))
           d += `M${(rx * cell - w / 2).toFixed(2)},${(ry * cell - size / 2).toFixed(2)}h${cell.toFixed(2)}v${cell.toFixed(2)}h${(-cell).toFixed(2)}z`;
     });
     g.append(el('path', { d, class: 'cw-glyph' }));
@@ -116,11 +144,13 @@ function halfPic(it: CodeWheelItem, name: string, seam: number, deg: number, hal
   const cell = Math.min((2 * half) / rows.length, (((seam * 2 * Math.PI) / n) * 0.85) / rows[0].length);
   const w = rows[0].length * cell;
   let d = '';
+  const cov = colorFills(it, g, name, rows, cell, -w / 2, (ry) => ((part === 'top' ? ry >= k : ry < k) ? null : (ry - k) * cell));
   rows.forEach((row, ry) => {
     if (part === 'top' ? ry >= k : ry < k) return;
     const top = (ry - k) * cell; // above the seam for the top half, below it for the bottom
     for (let rx = 0; rx < row.length; rx++)
-      if (row[rx] === '#') d += `M${(rx * cell - w / 2).toFixed(2)},${top.toFixed(2)}h${cell.toFixed(2)}v${cell.toFixed(2)}h${(-cell).toFixed(2)}z`;
+      if (row[rx] === '#' && !cov.has(`${rx},${ry}`))
+        d += `M${(rx * cell - w / 2).toFixed(2)},${top.toFixed(2)}h${cell.toFixed(2)}v${cell.toFixed(2)}h${(-cell).toFixed(2)}z`;
   });
   g.append(el('path', { d, class: 'cw-glyph' }));
   return g;
@@ -220,6 +250,31 @@ function middleDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   return g;
 }
 
+/**
+ * The hub's emblem: "CLOWN CLUB" round the hub with the O of "CLOWN" a red rubber nose, and a big red nose in the
+ * middle with a shine on it. The brass fastener's pin sits on the nose's middle, so the pivot is still marked.
+ */
+function noseEmblem(hub: number): SVGElement {
+  const id = `cw-emblem-${uid++}`;
+  const r = hub * 0.6;
+  const path = el('path', { id, d: `M${-r},0A${r},${r} 0 1 1 ${r},0A${r},${r} 0 1 1 ${-r},0`, fill: 'none' });
+  const tp = el('textPath', { href: `#${id}`, startOffset: '25%' });
+  const o = el('tspan', { class: 'cw-nose-o' });
+  o.textContent = 'O';
+  tp.append(document.createTextNode('CL'), o, document.createTextNode('WN CLUB'));
+  const t = el('text', { 'font-size': (hub * 0.23).toFixed(2), class: 'cw-emblem-text', 'text-anchor': 'middle' }, tp);
+  const nose = el('circle', { r: (hub * 0.36).toFixed(2), class: 'cw-nose' });
+  const shine = el('ellipse', {
+    cx: (-hub * 0.12).toFixed(2),
+    cy: (-hub * 0.14).toFixed(2),
+    rx: (hub * 0.1).toFixed(2),
+    ry: (hub * 0.06).toFixed(2),
+    class: 'cw-nose-shine',
+    transform: 'rotate(-35)',
+  });
+  return el('g', { class: 'cw-emblem' }, el('defs', {}, path), t, nose, shine);
+}
+
 /** The turning disc: its ring facing the outer one, the windows cut through it, its hub and pointer. */
 function innerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   const g0 = geo(it);
@@ -261,7 +316,8 @@ function innerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
     }
   // the hub with its name
   g.append(el('circle', { r: g0.hub, class: 'cw-hub' }));
-  if (it.center) {
+  if (it.emblem === 'nose') g.append(noseEmblem(g0.hub));
+  else if (it.center) {
     const t = el('text', { 'text-anchor': 'middle', y: g0.spiral ? -2.5 : -4, 'font-size': g0.spiral ? 2.6 : 4.2, class: 'cw-center' });
     t.textContent = it.center;
     g.append(t);

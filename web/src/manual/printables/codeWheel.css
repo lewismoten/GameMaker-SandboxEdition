@@ -37,6 +37,26 @@
   fill: #2a2016;
 }
 
+.cw-nose {
+  fill: #e0262b;
+  stroke: #2a2016;
+  stroke-width: 0.35;
+}
+
+.cw-nose-shine {
+  fill: #fff;
+  opacity: 0.8;
+}
+
+.cw-emblem-text {
+  fill: #2a2016;
+  font-weight: bold;
+}
+
+.cw-emblem-text .cw-nose-o {
+  fill: #e0262b;
+}
+
 .cw-rim {
   fill: #6b1f12;
   letter-spacing: 0.6px;
