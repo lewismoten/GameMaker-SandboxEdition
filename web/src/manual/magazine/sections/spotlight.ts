@@ -3,14 +3,16 @@
 // links taken from the cast page's own list (cast/castData.ts); then the things hidden in the
 // games (the felt eggs, tin hearts, painted eggs, cameos and the nods to history), said as
 // "look for…", never where.
-import { CAST, type CastMember } from '../../../cast/castData';
+import { castFor, type CastMember } from '../../../cast/castData';
+import { chickenNow } from '../../../chicken/chickenState';
+import { chickenWords } from '../../../chicken/chickenWords';
 import { EGGS } from '../../../eggs/eggs';
 import HEARTS from '../../../tinHearts/hearts.json';
 import { button, cols, grid, head, note, p, portrait, side } from '../blocks';
 import type { Block, MagContext, MagSection } from '../types';
 
 const member = (id: string): CastMember => {
-  const m = CAST.find((c) => c.id === id);
+  const m = castFor(chickenNow()).find((c) => c.id === id);
   if (!m) throw new Error(`no cast member ${id}`);
   return m;
 };
@@ -26,7 +28,12 @@ function seenIn(ctx: MagContext, m: CastMember, max: number): string {
 /** A spotlight: portrait, name, what they are, our bio and where to find them. */
 function star(ctx: MagContext, id: string, bio: string, max: number): Block[] {
   const m = member(id);
-  return [portrait(m.id, m.art.alt, m.art.width, m.art.height), head(m.name, { kicker: m.role, size: 's', level: 3 }), p(bio), p(seenIn(ctx, m, max))];
+  return [
+    portrait(m.art.file ?? m.id, m.art.alt, m.art.width, m.art.height),
+    head(m.name, { kicker: m.role, size: 's', level: 3 }),
+    p(bio),
+    p(seenIn(ctx, m, max)),
+  ];
 }
 
 /** Games that hide a tin heart (hearts.json), counted among the games the magazine lists. */
@@ -102,7 +109,7 @@ export const SPOTLIGHT: MagSection = {
             star(
               ctx,
               'chicken',
-              'Doc Leo’s rubber chicken, Reggie to his friends (on Tuesdays). He has slipped his leash more than once, and when he squawks it counts as an extra life.',
+              `Doc Leo’s rubber chicken, ${chickenWords().nick} to ${chickenWords().his} friends (on Tuesdays). ${chickenWords().He} has slipped ${chickenWords().his} leash more than once, and when ${chickenWords().he} squawks it counts as an extra life.`,
               3,
             ),
             star(

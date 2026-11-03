@@ -15,6 +15,8 @@
 // poses, and who has which business, are castStageGags.ts.
 import { h } from '../editor/core/ui';
 import { currentRoute, type ViewState } from '../urlState';
+import { chickenNow } from '../chicken/chickenState';
+import { ladySprite } from '../chicken/chickenArt';
 import { spriteCanvases, type CastSprite } from './castSprite';
 import type { CastMember } from './castData';
 import { StageSound, type Effect } from './castSound';
@@ -372,7 +374,10 @@ export function castStage(cast: CastMember[], state: ViewState): HTMLElement {
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- without it the chain's value is unknown
     .catch(() => ({}) as Record<string, CastSprite>)
     .then((all) => {
-      for (const [id, sprite] of Object.entries(all)) sprites.set(id, cutSprite(sprite, spriteCanvases(sprite)));
+      for (const [id, found] of Object.entries(all)) {
+        const sprite = id === 'chicken' && chickenNow() === 'lady' ? ladySprite(found) : found;
+        sprites.set(id, cutSprite(sprite, spriteCanvases(sprite)));
+      }
       lineup = cast.filter((m) => sprites.has(m.id));
       pick.replaceChildren(...lineup.map((m) => h('option', { value: m.id }, m.name)));
       const want = state.get('on');
