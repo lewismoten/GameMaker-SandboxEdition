@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createZip } from '@lewismoten/gamemaker-sandbox-archives/project/zip';
 import { peekGameFile } from './files';
-import { onlyStockPlayers } from './hostedZip';
+import { findZipFile, onlyStockPlayers } from './hostedZip';
 
 const path = new URL('../../../cd/gm/xferplay.exe', import.meta.url);
 const stock = existsSync(path) ? new Uint8Array(readFileSync(path)) : undefined;
@@ -50,5 +50,44 @@ describe('peekGameFile', () => {
     expect([...a!]).toEqual([1, 2, 3]);
     expect([...b!]).toEqual([1, 2, 3]);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps peeked zips up to the file budget, dropping the oldest', async () => {
+    const big = new Uint8Array(13 << 20);
+    const zips = await Promise.all(['d.zip', 'e.zip'].map(() => createZip([{ name: 'x.gam', data: big, store: true }])));
+    const fetchMock = vi.fn((url: string) => Promise.resolve(new Response(zips[url.includes('/e/') ? 1 : 0] as unknown as BodyInit)));
+    vi.stubGlobal('fetch', fetchMock);
+    await peekGameFile(entry, 'x.gam', './d/');
+    await peekGameFile(entry, 'x.gam', './e/');
+    await peekGameFile(entry, 'x.gam', './e/');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    await peekGameFile(entry, 'x.gam', './d/'); // 26 MB was past the budget: d's was dropped
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('findZipFile', () => {
+  it('inflates only the files asked for, each once', async () => {
+    const data = (n: number) => new Uint8Array(4096).fill(n);
+    const zip = await createZip([1, 2, 3].map((n) => ({ name: `x.${n}`, data: data(n) })));
+    let inflated = 0;
+    const Real = DecompressionStream;
+    vi.stubGlobal(
+      'DecompressionStream',
+      class extends Real {
+        constructor(format: CompressionFormat) {
+          super(format);
+          inflated++;
+        }
+      },
+    );
+    try {
+      expect([...(await findZipFile(zip, ['x.2']))!]).toEqual([...data(2)]);
+      expect(await findZipFile(zip, ['x.2'])).toBe(await findZipFile(zip, ['x.2'])); // the same bytes, not inflated again
+      expect(await findZipFile(zip, ['x.9'])).toBeUndefined();
+      expect(inflated).toBe(1);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

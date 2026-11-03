@@ -265,6 +265,7 @@ function startPack(url: string): Pack {
     try {
       const peeked = peekedZips.get(url);
       peekedZips.delete(url);
+      peekedSize.delete(url);
       if (peeked && /\.zip$/i.test(url)) {
         // the bytes a peek at the .gam (peekGameFile) already fetched
         const raw = await peeked;
@@ -408,8 +409,22 @@ export async function fetchGameFile(entry: Pick<CatalogEntry, 'path' | 'files' |
   return fetchSiteFile(`${base}${entry.path}${n}`, entry.gz);
 }
 
-/** Zips fetched for a peek, kept for the pack that reads the same zip next (one request). */
+/**
+ * Zips fetched for a peek, kept for the pack that reads the same zip next (one request), up
+ * to the file budget: the oldest are dropped past it, and a later peek fetches again.
+ */
 const peekedZips = new Map<string, Promise<Uint8Array | undefined>>();
+const peekedSize = new Map<string, number>();
+
+function trimPeekedZips(): void {
+  let total = [...peekedSize.values()].reduce((a, n) => a + n, 0);
+  for (const [url, n] of peekedSize) {
+    if (total <= FILE_CACHE_BYTES) return;
+    peekedZips.delete(url);
+    peekedSize.delete(url);
+    total -= n;
+  }
+}
 
 /**
  * A file of a hosted game's zip as it is stored, without reading the zip's player .exe (which
@@ -423,11 +438,16 @@ export async function peekGameFile(entry: Pick<CatalogEntry, 'path' | 'files' | 
   if (!url || !/\.zip$/i.test(url) || packs.has(url)) return fetchGameFile(entry, name, base);
   let zip = peekedZips.get(url);
   if (!zip) {
-    zip = fetchArchive(url).then(
+    const got = (zip = fetchArchive(url).then(
       async (res) => (res.ok ? new Uint8Array(await res.arrayBuffer()) : undefined),
       () => undefined,
-    );
-    peekedZips.set(url, zip);
+    ));
+    peekedZips.set(url, got);
+    void got.then((b) => {
+      if (!b || peekedZips.get(url) !== got) return;
+      peekedSize.set(url, b.length);
+      trimPeekedZips();
+    });
   }
   const bytes = await zip;
   if (bytes) {

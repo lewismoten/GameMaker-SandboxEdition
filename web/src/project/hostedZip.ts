@@ -1,5 +1,5 @@
 // Read a catalog's DOS distribution through the archives SDK, recovering native extensions.
-import { readZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
+import { listZip, readZip, type ZipListing } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { GameFiles, IGNORED_FILE, cdName } from '@lewismoten/gamemaker-sandbox-engine/core/gameFiles';
 
 /** The CD's own player (cd/gm/xferplay.exe): its size and SHA-256 (hostedZip.test.ts checks them against that file). */
@@ -37,12 +37,16 @@ export async function readHostedZip(bytes: Uint8Array): Promise<Map<string, Uint
   return out;
 }
 
-/** Unzipped entries per zip, so the many files a box or label reads from one zip inflate it once. */
-const unzipped = new WeakMap<Uint8Array, ReturnType<typeof readZip>>();
+/** Each zip's directory and the entries read from it so far: a box or label that reads a few files inflates only those, once each. */
+const listed = new WeakMap<Uint8Array, { list: ZipListing[]; read: Map<ZipListing, Promise<Uint8Array | undefined>> }>();
 
 /** One file of a zip by any of `names` (compared in lower case), as stored: no player is read. */
 export async function findZipFile(bytes: Uint8Array, names: string[]): Promise<Uint8Array | undefined> {
-  let entries = unzipped.get(bytes);
-  if (!entries) unzipped.set(bytes, (entries = readZip(bytes)));
-  return (await entries).find((e) => names.includes(e.name.toLowerCase()))?.data;
+  let zip = listed.get(bytes);
+  if (!zip) listed.set(bytes, (zip = { list: listZip(bytes), read: new Map() }));
+  const e = zip.list.find((l) => names.includes(l.name.toLowerCase()));
+  if (!e) return undefined;
+  let data = zip.read.get(e);
+  if (!data) zip.read.set(e, (data = e.read()));
+  return data;
 }
