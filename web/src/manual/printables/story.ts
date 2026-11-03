@@ -9,6 +9,7 @@ import { fitSheet } from './fitSheet';
 import { printsSheets, spyglassSheets } from './sleuthPrints';
 import { hintBookCover } from './hintCover';
 import { codeWheelSheets } from './codeWheel';
+import { codeSheetSheets } from './codeSheet';
 import type {
   ChartItem,
   HintBookItem,
@@ -411,6 +412,8 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return printsSheets(it);
     case 'codewheel':
       return codeWheelSheets(it);
+    case 'codesheet':
+      return codeSheetSheets(it);
   }
 }
 

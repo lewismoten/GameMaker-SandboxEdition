@@ -30,9 +30,16 @@ describe('code wheels', () => {
   it.each(all)('%s: rings, glyphs, windows and puzzles fit together', (_id, it) => {
     const n = it.outer.length;
     expect(it.inner).toHaveLength(n);
+    if (it.middle) expect(it.middle).toHaveLength(n);
+    // split pictures: every half on the big disc and the next one is a picture, and each has its other half there
+    if (it.split) {
+      const next = it.middle ?? it.inner;
+      for (const name of [...it.outer, ...next]) expect(it.glyphs?.[name], `split picture ${name}`).toBeDefined();
+      expect([...next].sort()).toEqual([...it.outer].sort());
+    }
     const rings: string[][] = !it.hidden?.length ? [] : Array.isArray(it.hidden[0]) ? (it.hidden as string[][]) : [it.hidden as string[]];
     for (const r of rings) expect(r).toHaveLength(n);
-    for (const name of [...it.outer, ...it.inner, ...rings.flat()]) if (name.length > 1) expect(it.glyphs?.[name], name).toBeDefined();
+    for (const name of [...it.outer, ...it.inner, ...(it.middle ?? []), ...rings.flat()]) if (name.length > 1) expect(it.glyphs?.[name], name).toBeDefined();
     for (const [name, rows] of Object.entries(it.glyphs ?? {})) {
       expect(rows.length, name).toBeGreaterThan(0);
       for (const r of rows) expect(r, name).toMatch(new RegExp(`^[#.]{${rows[0].length}}$`));
@@ -44,6 +51,8 @@ describe('code wheels', () => {
     for (const p of it.puzzles ?? []) {
       expect(it.inner, p.ask).toContain(p.turn.inner);
       expect(it.outer, p.ask).toContain(p.turn.outer);
+      if (it.middle) expect(it.middle, p.ask).toContain(p.turn.middle);
+      if (p.window !== undefined) expect(it.windows?.[p.window], p.ask).toBeDefined();
       expect(p.scenes.length, p.ask).toBeGreaterThan(0);
     }
   });
