@@ -2,7 +2,7 @@
 // own files: a round medallion cut from its title screen (TITLE.GIF), the title's lettering on
 // a ribbon across it, and its hero standing in front (the first frame of the hero's .CHR, drawn
 // from its .CBL blocks in the palette of a level the hero plays in).
-import { fetchGameFile, loadGameList, type CatalogEntry } from '../../project/files';
+import { peekGameFile, loadGameList, type CatalogEntry } from '../../project/files';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { parseGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
@@ -216,15 +216,15 @@ export const GAME_ART_H = BADGE_H;
 /** The hero, 20 x 40 (top and bottom block), or undefined. */
 async function hero(entry: CatalogEntry, name: string): Promise<Rgba | undefined> {
   const [gam, chrB, cblB] = await Promise.all([
-    entry.gam ? fetchGameFile(entry, entry.gam) : undefined,
-    fetchGameFile(entry, `${name}.chr`),
-    fetchGameFile(entry, `${name}.cbl`),
+    entry.gam ? peekGameFile(entry, entry.gam) : undefined,
+    peekGameFile(entry, `${name}.chr`),
+    peekGameFile(entry, `${name}.cbl`),
   ]);
   if (!gam || !chrB || !cblB) return undefined;
   // the palette of a level the hero plays in
   const scenes = parseGame(gam).scenes.filter((s) => s.gametype === 10);
   const scene = scenes.find((s) => s.files[5]?.toLowerCase() === `${name}.chr`) ?? scenes[0];
-  const palB = scene?.files[0] ? await fetchGameFile(entry, scene.files[0]) : undefined;
+  const palB = scene?.files[0] ? await peekGameFile(entry, scene.files[0]) : undefined;
   if (!palB) return undefined;
   const lut = paletteToRGBA(parsePalette(palB));
   const frame = parseCharacter(chrB).sequences[0]?.frames[0];
@@ -242,7 +242,7 @@ async function hero(entry: CatalogEntry, name: string): Promise<Rgba | undefined
 export async function gameMugArt(mug: GameMug): Promise<HTMLCanvasElement | undefined> {
   const entry = (await loadGameList().catch(() => [])).find((c) => c.id === mug.game);
   if (!entry) return undefined;
-  const [titleB, sprite] = await Promise.all([fetchGameFile(entry, 'title.gif'), hero(entry, mug.hero).catch(() => undefined)]);
+  const [titleB, sprite] = await Promise.all([peekGameFile(entry, 'title.gif'), hero(entry, mug.hero).catch(() => undefined)]);
   if (!titleB || !isGif(titleB)) return undefined;
   const badge = composeBadge(decodeGif(titleB), sprite && trimSprite(sprite), entry.original?.box ?? {}, mug);
   const c = document.createElement('canvas');

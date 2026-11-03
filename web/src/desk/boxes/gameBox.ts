@@ -5,7 +5,7 @@
 // turns it are in boxViewer.ts. On the shelf the boxes lean against the wall; click one and
 // it comes forward in the viewer.
 import { drawSandboxMark } from '../../manual/printables/sandboxMark';
-import { fetchGameFile, type CatalogEntry } from '../../project/files';
+import { peekGameFile, type CatalogEntry } from '../../project/files';
 import { splitTitle } from '../../project/gameTitle';
 import { gameDisks, installedBytes, sizeText } from '../../project/diskFacts';
 import { renderShot } from '../../gfx/gameShots';
@@ -51,7 +51,7 @@ export interface BoxFaces {
 }
 
 async function readGame(entry: CatalogEntry): Promise<Game | undefined> {
-  const gam = entry.gam ? await fetchGameFile(entry, entry.gam) : undefined;
+  const gam = entry.gam ? await peekGameFile(entry, entry.gam) : undefined;
   try {
     return gam && parseGame(gam);
   } catch {
