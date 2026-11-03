@@ -4,10 +4,11 @@
 // press on the page (the browser's autoplay rule), sits low under the visitor's Music setting (the
 // sound settings dialog; the engine follows it live) and the demo sound choice ("None" keeps it
 // silent), pauses while the tab is hidden or the guided tour plays (it has its own song; tour/, its
-// 'gm-tour' events), and stops when the room leaves the page. The engine is
+// 'gm-tour' events), and stops when the room leaves the page (a new address, or the desk taking over: pageLife.ts). The engine is
 // imported when the first gesture comes, so the page loads none of it.
 import { demoAudio } from '../media/demoAudio';
 import { peekGameFile, loadCatalog } from '../project/files';
+import { pageLife } from '../pageLife';
 
 const GAME = 'brief';
 const SONG = 'library.cmf';
@@ -52,6 +53,8 @@ export function startLibraryMusic(room: HTMLElement): void {
   };
   for (const e of ['pointerdown', 'keydown']) addEventListener(e, onGesture, { capture: true });
   addEventListener('hashchange', check);
+  // switching to the desk replaces the page without a hashchange (main.ts startDesk): the page's life ends
+  pageLife().addEventListener('abort', stop, { once: true });
   addEventListener('gm-tour', onVisible);
   document.addEventListener('visibilitychange', onVisible);
 }
