@@ -45,3 +45,4 @@ __pycache__/
 *.pem
 *.p12
 /web/public/trinkets/
+/web/public/laser/

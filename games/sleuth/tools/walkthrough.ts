@@ -18,6 +18,7 @@ await writeWalkthrough('sleuth', {
   hold: 15,
   segments: [{ scene: first, keys: encodeKeys(s.keys) }],
   chapters: [
+    { scene: ix.door, title: 'The Stage Door' },
     { scene: ix.act1, title: 'Act One: The Paragon Theatre' },
     { scene: ix.gr1a, title: 'The Green Room, Midnight' },
     { scene: ix.act2, title: 'Act Two: The Theater at Night' },

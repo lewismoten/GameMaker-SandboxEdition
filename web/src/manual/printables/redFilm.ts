@@ -195,6 +195,48 @@ export function redCode(text: string): HTMLElement {
   return box;
 }
 
+/**
+ * Any picture of your own hidden the same way (the Final Curtain evidence sheet's fingerprints):
+ * `ink(c, color)` draws it in `color` on a w by h canvas, and the noise goes over it. The box is
+ * as wide as its column (a picture for the screen and one in a stronger cyan for printing).
+ */
+export function redPicture(
+  w: number,
+  hh: number,
+  seed: number,
+  pen: number,
+  draw: (c: CanvasRenderingContext2D, ink: string) => void,
+  alt: string,
+): HTMLElement {
+  const picture = (ink: string, cls: string) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = hh;
+    const c = canvas.getContext('2d');
+    if (c) {
+      const rnd = mulberry32(seed);
+      camouflage(
+        c,
+        rnd,
+        w,
+        hh,
+        () => pen * (0.8 + rnd() * 0.4),
+        () => draw(c, ink),
+        20,
+      );
+    }
+    const img = h('img', { class: `rf-word rf-sketch ${cls}`, alt: '', draggable: false, src: canvas.toDataURL('image/png') });
+    img.style.aspectRatio = `${w} / ${hh}`;
+    return img;
+  };
+  return h(
+    'span',
+    { class: 'rf-code rf-sketch-box rf-picture', role: 'img', 'aria-label': alt },
+    picture(CYAN_INK, 'rf-screen'),
+    picture(PRINT_CYAN_INK, 'rf-print'),
+  );
+}
+
 let fillerTile: { src: string; width: number } | undefined;
 /** A strip of the answers' noise with nothing hidden in it (its "letters" are a decoy ink). */
 function filler(): { src: string; width: number } | undefined {
@@ -406,7 +448,7 @@ export function redSketch(sketch: HintSketch): HTMLElement {
  */
 const RED_VIEW_ID = 'rf-red-view';
 
-function ensureRedView(): void {
+export function ensureRedView(): void {
   if (document.getElementById(RED_VIEW_ID)) return;
   const ns = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(ns, 'svg');
@@ -466,7 +508,7 @@ export class RedLens {
 
 /** The draggable red cellophane. */
 export class RedFilm {
-  private el = h(
+  private el: HTMLElement = h(
     'div',
     { class: 'rf-film', hidden: true, role: 'img', 'aria-label': 'Red film (drag it over the answers)' },
     h('span', { class: 'rf-film-label' }, 'RED FILM · drag me'),
@@ -474,7 +516,9 @@ export class RedFilm {
   private x = 0;
   private y = 0;
 
-  constructor() {
+  /** `el`: a different thing to drag as the film (Final Curtain's spyglass, spyglass.ts); it brings its own red lens. */
+  constructor(el?: HTMLElement) {
+    if (el) this.el = el;
     let start: { px: number; py: number; x: number; y: number } | undefined;
     this.el.addEventListener('pointerdown', (e) => {
       start = { px: e.clientX, py: e.clientY, x: this.x, y: this.y };

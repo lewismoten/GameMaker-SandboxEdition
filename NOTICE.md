@@ -116,6 +116,7 @@ game folder opens in the browser unchanged.
 - **Continuous course maps** (`web/src/manual/printables/levelCourseSvg.ts`): shared-coordinate image assembly and map annotations implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Game artwork retains its existing authors and credits.
 - **Fictional hint line** (`web/src/desk/room/phone/hintBill.ts`, `hintLine.ts`): local elapsed-time accounting, backup integration, phone menu and cancellation, achievement, original Teddy dialogue and regression tests implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. The charges are simulated game data; no payment service is used.
 - **BBS callback signup** (`web/src/retro/bbs/signup*.ts`): local verified-handle records, simulated incoming modem callbacks, signup flow, tests and playful lines implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten. Manual `ATA` answering and `RING` result codes follow the [U.S. Robotics modem command reference](https://ads.usr.com/support/3cxm756/3cxm756-ug/ATCOMS.HTM). This is a behavioral reference; no vendor source, documentation text or modem binaries are bundled.
+- **Final Curtain's paper spyglass and evidence sheet** (`web/src/manual/printables/spyglass.ts`, `fingerprint.ts`, `sleuthPrints.ts`; the stage door in `games/sleuth/`): the black-ink spyglass drawing, the seeded fingerprint patterns and the stage-door puzzle were written by **Claude Sonnet 5.5** (Anthropic), from Lewis Moten's idea. The prints are hidden with the red-film technique the hint book uses (`redFilm.ts`), after Daniel C. Wilson's "red reveal" (danielcwilson.com/blog/2018/02/optical-fun-red-reveal/); no code was copied from it. No third-party artwork or fingerprint data was used.
 - **FLAGS.EXE** (`web/src/retro/hacks/flags*.ts`): the debugging utility that lists, sets, clears, resets, backs up and restores the desk PC's remembered browser state, its BBS Warez listing and tests, written with **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten.
 - **DOS clock shortcuts** (`web/src/retro/dos/`): named room times, command help, and clock regression checks implemented with **OpenAI Codex (GPT-6)**, directed by Lewis Moten.
 - **Website game ZIP distributions** (`web/scripts/gameArchive.ts`, `web/src/project/hostedZip.ts`): the reproducible DOS distribution builder, shared browser ZIP loading, permanent links and Vite serving were implemented and verified with **OpenAI Codex**, directed by Lewis Moten. Original game data stays intact; DOS runtime and game notices travel in each archive.
@@ -895,6 +896,13 @@ The other games' pixel-figure trinkets (`games/kit/pixelTrinkets.ts`) are made f
 hero and monster pictures and palette, one pixel to one block, with no outside art; the code was
 written with Anthropic Claude Sonnet 5.5 under Lewis Moten's direction.
 
+The laser-cut wooden nickels (`games/kit/laserNickels.ts`, with `laserNickelDefs.ts`, and the SVG builder, pixel
+text and preview in `web/packages/tools/src/kit/laser*.ts`) are made for Lewis Moten's Glowforge from each game's own
+hero and monster pictures, drawn as pixel engraving, with the words from each game's own text. Their letters are the
+engine's 8×8 PC font (Daniel Hepper's public-domain `font8x8_basic`, credited above) and the project's 3×5 micro
+font; no outline font and no other outside art is used. The code was written by Claude Sonnet 5.5 (Anthropic) under
+Lewis Moten's direction.
+
 The meshes are thinned (`web/packages/tools/src/mesh/decimate.ts`) by quadric edge collapse, the
 method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quadric Error Metrics"
 (SIGGRAPH 1997), written from the paper with no code from any library; the published method is an
@@ -951,3 +959,14 @@ _Technical Reference: Options and Adapters_ and Maxim / SMS Power's palette docu
 linked in the tools notices. The monochrome ramps, added skin/hair ramps and four LCD-green
 shades are project designs made by Lewis Moten using OpenAI Codex, under the project's MIT License.
 Exported player-page and native-download notices carry the reference palette credits.
+
+### The Phone of the Future (electronics kit)
+
+`games/year2000/phone/` holds a solderable toy-phone design: a KiCad 9 schematic and two-layer
+board, a PIC16F84A firmware in assembly, a bill of materials and a mechanical interface file.
+It was designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction, using KiCad
+(kicad-cli for ERC, DRC and exports) and gputils/gpasm. The circuit, footprints, generators and
+a small PIC16F84A simulator are project-owned MIT code. The schematic embeds symbols copied from
+the KiCad stock libraries (CC-BY-SA 4.0 with the KiCad libraries exception, KiCad Libraries
+Development Team). References: the ITU-T Q.23 DTMF frequencies, the MT8870D (Mitel/Zarlink/
+Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated) and GNQ-3641 (G-NOR) datasheets. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.

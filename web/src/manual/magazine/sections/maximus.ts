@@ -25,8 +25,8 @@ export const TEXT_READ = 31;
 
 /** What Maximus holds, as its disk has it (maximus.test.ts counts each one again). */
 export const COUNTS = {
-  /** Scene records in MAXIMUS.GAM: title, ending, 98 places and the one-tick Between Worlds. */
-  scenes: 101,
+  /** Scene records in MAXIMUS.GAM: title, ending, 98 places, the one-tick Between Worlds and the three pages of the clearance gate. */
+  scenes: 104,
   maps: 98,
   /** The most links any one scene uses (each sector chart). */
   links: 20,
@@ -38,7 +38,7 @@ export const COUNTS = {
   monFiles: 9,
   /** Creatures in each .MON whose animation fills every step. */
   fullAnimations: 44,
-  bblFiles: 6,
+  bblFiles: 7,
   mblFiles: 5,
   heroes: 4,
   /** Sequences each hero has on a key (the rest are standing, dying and getting hurt). */
@@ -50,9 +50,9 @@ export const COUNTS = {
   colors: 255,
   /** The widest line on any of its text screens. */
   textWidth: 30,
-  files: 516,
+  files: 526,
   /** Megabytes on the disk, to one decimal. */
-  megabytes: 6.9,
+  megabytes: 7.0,
 };
 
 const n = (x: number) => x.toLocaleString('en-US');
@@ -62,7 +62,8 @@ const NUMBERS: ListingRow[] = [
   {
     title: 'Scenes in one game',
     price: `${COUNTS.scenes} / ${SCENE_CAP}`,
-    blurb: 'Title, ending, a home station, the galaxy, 5 sector charts, 88 worlds, 3 stops at the Core and a one-tick pass between worlds.',
+    blurb:
+      'Title, ending, a home station, the galaxy, 5 sector charts, 88 worlds, 3 stops at the Core, a one-tick pass between worlds and 3 pages at the clearance gate.',
   },
   { title: 'Links out of a scene', price: `${COUNTS.links} / ${MAXSCENELINKS}`, blurb: 'Each sector chart: the warp home, 18 planets and a jump ring onward.' },
   {

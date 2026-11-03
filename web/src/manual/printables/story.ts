@@ -6,8 +6,10 @@ import { fnv1a, xorshift32 } from '../../seededRandom';
 import { redCode, redSketch } from './redFilm';
 import { paginate } from './paginate';
 import { fitSheet } from './fitSheet';
+import { printsSheets, spyglassSheets } from './sleuthPrints';
 import { hintBookCover } from './hintCover';
 import { codeWheelSheets } from './codeWheel';
+import { codeSheetSheets } from './codeSheet';
 import type {
   ChartItem,
   HintBookItem,
@@ -404,8 +406,14 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return starChart(ctx, it);
     case 'recipe':
       return recipe(it);
+    case 'spyglass':
+      return spyglassSheets(it);
+    case 'prints':
+      return printsSheets(it);
     case 'codewheel':
       return codeWheelSheets(it);
+    case 'codesheet':
+      return codeSheetSheets(it);
   }
 }
 

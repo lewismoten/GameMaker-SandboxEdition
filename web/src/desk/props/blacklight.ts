@@ -8,7 +8,7 @@
 // eggs on the shelf show patterns only black light brings out (eggGlow.ts). Pressed, the
 // poster's tube flickers (desk-blacklight). Once in a long while Doc Leo glances to one side
 // and smiles, for a moment, then goes back to his sad hobo look (glance prints, same script);
-// seen on screen, or pressed while he looks, that is desk-glance.
+// pressing the poster while he looks, or within 20 seconds after, is desk-glance.
 import { h } from '../../editor/core/ui';
 import { watchDaylight } from '../room/daylight';
 import { achieve, flash, pressable, say, stillMotion, turns } from './propKit';
@@ -38,6 +38,8 @@ const printSrc = (when: 'day' | 'night', look: '' | '-left' | '-right' = '') => 
 /** Doc Leo's glance: rare, brief. Seconds until the next one, and how long it lasts. */
 const GLANCE_EVERY = [90, 300] as const;
 const GLANCE_MS = 1600;
+/** A press this long after a glance ends still counts as catching him. */
+const CAUGHT_AFTER_MS = 20_000;
 
 /** The two prints (games/kit/scans/blacklight.py, from Lewis's own hobo clown photo). */
 const PRINT = (when: 'day' | 'night') =>
@@ -81,7 +83,8 @@ export function blackLight(desk: HTMLElement): () => void {
     poster,
     'Black-light poster of Doc Leo: flicker the black light',
     () => {
-      if (glancing) achieve('desk-glance'); // pressed while he glanced aside
+      // pressed while he glanced aside, or within 20 seconds after
+      if (glancing || performance.now() - glancedAt <= CAUGHT_AFTER_MS) achieve('desk-glance');
       roomSound.flicker();
       flash(desk, stillMotion() ? 'bl-blink' : 'bl-flicker', 1000);
       say(poster, uv ? night1() : day1());
@@ -115,11 +118,7 @@ export function blackLight(desk: HTMLElement): () => void {
   // now and then he glances aside and smiles (not with reduced motion, nor in a hidden tab)
   let glanceTimer = 0;
   let glancing = false;
-  /** The poster is on screen (the room shown, the poster not scrolled away). */
-  const inView = () => {
-    const r = poster.getBoundingClientRect();
-    return r.width > 0 && r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth;
-  };
+  let glancedAt = -Infinity; // when the last glance ended
   const prints = [...poster.querySelectorAll<HTMLImageElement>('.bl-print')];
   const look = (side: '' | '-left' | '-right') => prints.forEach((img) => (img.src = printSrc(img.classList.contains('night') ? 'night' : 'day', side)));
   const nextGlance = () => {
@@ -129,9 +128,9 @@ export function blackLight(desk: HTMLElement): () => void {
         if (!stillMotion() && document.visibilityState === 'visible') {
           look(Math.random() < 0.5 ? '-left' : '-right');
           glancing = true;
-          if (inView()) achieve('desk-glance');
           glanceTimer = window.setTimeout(() => {
             glancing = false;
+            glancedAt = performance.now();
             look('');
             nextGlance();
           }, GLANCE_MS);
