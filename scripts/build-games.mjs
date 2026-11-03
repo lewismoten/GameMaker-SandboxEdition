@@ -1,7 +1,7 @@
 // Rebuild ignored game outputs before development, tests, and releases; cache source and output hashes.
 import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { availableParallelism } from 'node:os';
 import { gameSourceHash, root } from './game-build-inputs.mjs';
@@ -196,6 +196,14 @@ async function worker() {
     if (!secret) console.log(`Built ${id}${timing ? ` in ${times.at(-1)[1].toFixed(1)} s` : ''}`);
   }
 }
+// The phone kit's 3D parts (games/year2000/phone/viewer, committed) reach the site beside the trinkets, where the box viewer's
+// phone viewer loads them (web/src/desk/boxes/phone/). Copied on every run (about 1.8 MB).
+const phoneViewer = join(root, 'games/year2000/phone/viewer');
+if (existsSync(join(phoneViewer, 'parts.json'))) {
+  const out = join(root, 'web/public/trinkets/phone');
+  mkdirSync(out, { recursive: true });
+  for (const f of ['parts.json', 'parts.bin']) copyFileSync(join(phoneViewer, f), join(out, f));
+}
 const began = Date.now();
 // The plastic trinkets of the games that mesh them from distance fields (STL, 3MF and support files the site serves from
 // web/public/trinkets/<game>): Depth's from its models, Realm's from its coins and tags. Each is made beside the games
@@ -250,6 +258,21 @@ if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => id
     'pixel trinkets',
   );
   if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+}
+// The laser wooden nickels (games/kit/laserNickels.ts: SVGs and PNG previews in web/public/laser/<game>/) are drawn from the
+// built disks too; a game whose figures, words and builder code are unchanged (a key in its manifest.json) is skipped. A
+// secret game has none.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.some((id) => ids.includes(id)))) {
+  const started = Date.now();
+  const made = await runEntry(
+    'laser-nickels',
+    { file: join(root, 'games/kit/laserNickels.ts') },
+    '../games/kit/laserNickels.ts',
+    [...(only.length ? ['--game', only.join(',')] : []), ...(process.argv.includes('--force') ? ['--force'] : [])],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'laser nickels',
+  );
+  if (timing) console.log(`Laser nickels: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
 }
 if (timing)
   console.log(

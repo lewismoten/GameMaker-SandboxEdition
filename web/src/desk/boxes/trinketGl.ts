@@ -103,7 +103,8 @@ function vertexData(mesh: Mesh): Float32Array {
   return data;
 }
 
-function program(gl: WebGLRenderingContext): WebGLProgram | undefined {
+/** Compiles the shiny-plastic program (the phone viewer, phone/phoneGl.ts, draws with it too). */
+export function program(gl: WebGLRenderingContext): WebGLProgram | undefined {
   const compile = (type: number, src: string) => {
     const s = gl.createShader(type)!;
     gl.shaderSource(s, src);

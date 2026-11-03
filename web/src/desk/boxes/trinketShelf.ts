@@ -9,22 +9,34 @@ import './trinketShelf.css';
 import { h } from '../../editor/core/ui';
 import { trinketTurntable } from './trinketTurntable';
 import { loadTrinkets, trinketBase, trinketMesh, type TrinketItem } from './trinketData';
+import { hasPhone } from './phone/phoneData';
+import type { PhoneViewer } from './phone/phoneViewer';
+
+/** The game whose box also holds the phone kit, shown in 3D with its own views (phone/phoneViewer.ts). */
+const PHONE_GAME = 'year2000';
+const PHONE_TITLE = 'The Phone of the Future (kit)';
+/** The shelf's name when it also holds the kit. */
+const SHELF_KITS = 'Trinkets and kits';
 
 /** The shelf for game `id`, or an element that stays hidden when the game has no trinkets. */
 export function trinketShelf(id: string): HTMLElement {
   const base = trinketBase(id);
   const shelf = h('section', { class: 'bc-trinkets', hidden: '', 'aria-label': 'Plastic trinkets' });
-  void loadTrinkets(id).then((items) => {
-    if (items.length) {
-      shelf.append(...viewer(base, items));
+  void Promise.all([loadTrinkets(id), id === PHONE_GAME ? hasPhone() : false]).then(([items, phone]) => {
+    if (items.length || phone) {
+      if (phone) shelf.setAttribute('aria-label', SHELF_KITS); // a solderable kit isn't a plastic trinket
+      shelf.append(...viewer(base, items, phone));
       shelf.hidden = false;
     }
   });
   return shelf;
 }
 
-function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
+function viewer(base: string, items: TrinketItem[], phone: boolean): HTMLElement[] {
+  const PHONE = items.length; // the phone kit's place after the trinkets, when there is one
+  const total = items.length + (phone ? 1 : 0);
   let at = -1; // -1: the box is showing
+  let pv: PhoneViewer | undefined;
   let colors = true; // the 3MF's colors, or the STL's one color
 
   // PageUp and PageDown change trinket; the turntable has the rest of the keys
@@ -63,6 +75,21 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
   const chips = items.map((item, i) =>
     h('button', { class: 'trk-chip', type: 'button', 'aria-pressed': 'false', title: item.blurb, onclick: () => void choose(at === i ? -1 : i) }, item.title),
   );
+  if (phone) {
+    chips.push(
+      h(
+        'button',
+        {
+          class: 'trk-chip',
+          type: 'button',
+          'aria-pressed': 'false',
+          title: 'An untested build-it-yourself phone, in 3D',
+          onclick: () => void choose(at === PHONE ? -1 : PHONE),
+        },
+        PHONE_TITLE,
+      ),
+    );
+  }
   const list = h('div', { class: 'trk-list', role: 'group', 'aria-label': 'Trinkets in this box' }, ...chips);
 
   const meshOf = (item: TrinketItem) => trinketMesh(base, item, colors);
@@ -79,10 +106,32 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
     chips.forEach((c, k) => c.setAttribute('aria-pressed', String(k === i)));
     const viewer = list.closest('.box-viewer');
     viewer?.classList.toggle('trinket-on', i >= 0);
-    float.hidden = info.hidden = i < 0;
+    const onPhone = phone && i === PHONE;
+    float.hidden = i < 0;
+    info.hidden = i < 0 || onPhone;
+    if (pv) pv.info.hidden = !onPhone;
+    if (phone && was === PHONE && !onPhone) {
+      pv?.close();
+      float.replaceChildren(canvas, status);
+    }
     if (i < 0) {
       table.clear();
       if (was >= 0) chips[was].focus({ preventScroll: true });
+      return;
+    }
+    if (onPhone) {
+      table.clear();
+      const { createPhoneViewer } = await import('./phone/phoneViewer');
+      if (at !== i) return;
+      if (!pv) {
+        pv = createPhoneViewer();
+        pv.canvas.setAttribute('aria-describedby', 'trk-help');
+        info.after(pv.info);
+      }
+      pv.info.hidden = false;
+      float.replaceChildren(pv.canvas, pv.status);
+      await pv.open();
+      if (was < 0) pv.canvas.focus({ preventScroll: true });
       return;
     }
     const item = items[i];
@@ -111,19 +160,19 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
     await table.show(() => meshOf(item), { spin: true });
     if (was < 0) canvas.focus({ preventScroll: true });
   }
-  const step = (dir: 1 | -1) => void choose((at + dir + items.length) % items.length);
+  const step = (dir: 1 | -1) => void choose((at + dir + total) % total);
 
   return [
     h(
       'div',
       { class: 'trk-panel' },
-      h('h2', null, 'Plastic trinkets'),
+      h('h2', null, phone ? SHELF_KITS : 'Plastic trinkets'),
       list,
       info,
       h(
         'p',
         { class: 'trk-help', id: 'trk-help' },
-        'Choose one to see it in place of the box. Drag it, or use the arrow keys, to turn it; PageUp and PageDown change trinket.',
+        `Choose one to see it in place of the box. Drag it, or use the arrow keys, to turn it; PageUp and PageDown change trinket.${phone ? ' The phone also zooms (scroll or pinch), pans (shift-drag or two fingers) and resets (double-click or Home).' : ''}`,
       ),
     ),
     float,

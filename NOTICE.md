@@ -98,6 +98,10 @@ game folder opens in the browser unchanged.
   Codex made no new levels, art, music or story text for the games. The entries below that say
   "OpenAI Codex (GPT-6)" are part of the same work.
 
+- **The Year 2000 pocket phone trinket** (`games/year2000/src/trinkets/pocketPhone.ts`): its
+  original printable shape and registration were implemented with **GPT-5.6 Terra** through
+  **OpenAI Codex**, directed by Lewis Moten.
+
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
@@ -893,6 +897,13 @@ The other games' pixel-figure trinkets (`games/kit/pixelTrinkets.ts`) are made f
 hero and monster pictures and palette, one pixel to one block, with no outside art; the code was
 written with Anthropic Claude Sonnet 5.5 under Lewis Moten's direction.
 
+The laser-cut wooden nickels (`games/kit/laserNickels.ts`, with `laserNickelDefs.ts`, and the SVG builder, pixel
+text and preview in `web/packages/tools/src/kit/laser*.ts`) are made for Lewis Moten's Glowforge from each game's own
+hero and monster pictures, drawn as pixel engraving, with the words from each game's own text. Their letters are the
+engine's 8×8 PC font (Daniel Hepper's public-domain `font8x8_basic`, credited above) and the project's 3×5 micro
+font; no outline font and no other outside art is used. The code was written by Claude Sonnet 5.5 (Anthropic) under
+Lewis Moten's direction.
+
 The meshes are thinned (`web/packages/tools/src/mesh/decimate.ts`) by quadric edge collapse, the
 method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quadric Error Metrics"
 (SIGGRAPH 1997), written from the paper with no code from any library; the published method is an
@@ -949,3 +960,14 @@ _Technical Reference: Options and Adapters_ and Maxim / SMS Power's palette docu
 linked in the tools notices. The monochrome ramps, added skin/hair ramps and four LCD-green
 shades are project designs made by Lewis Moten using OpenAI Codex, under the project's MIT License.
 Exported player-page and native-download notices carry the reference palette credits.
+
+### The Phone of the Future (electronics kit)
+
+`games/year2000/phone/` holds a solderable toy-phone design: a KiCad 9 schematic and two-layer
+board, a PIC16F84A firmware in assembly, a bill of materials and a mechanical interface file.
+It was designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction, using KiCad
+(kicad-cli for ERC, DRC and exports) and gputils/gpasm. The circuit, footprints, generators and
+a small PIC16F84A simulator are project-owned MIT code. The schematic embeds symbols copied from
+the KiCad stock libraries (CC-BY-SA 4.0 with the KiCad libraries exception, KiCad Libraries
+Development Team). References: the ITU-T Q.23 DTMF frequencies, the MT8870D (Mitel/Zarlink/
+Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated) and GNQ-3641 (G-NOR) datasheets. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.
