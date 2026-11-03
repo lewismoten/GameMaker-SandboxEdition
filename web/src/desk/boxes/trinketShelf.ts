@@ -15,6 +15,8 @@ import type { PhoneViewer } from './phone/phoneViewer';
 /** The game whose box also holds the phone kit, shown in 3D with its own views (phone/phoneViewer.ts). */
 const PHONE_GAME = 'year2000';
 const PHONE_TITLE = 'The Phone of the Future (kit)';
+/** The shelf's name when it also holds the kit. */
+const SHELF_KITS = 'Trinkets and kits';
 
 /** The shelf for game `id`, or an element that stays hidden when the game has no trinkets. */
 export function trinketShelf(id: string): HTMLElement {
@@ -22,6 +24,7 @@ export function trinketShelf(id: string): HTMLElement {
   const shelf = h('section', { class: 'bc-trinkets', hidden: '', 'aria-label': 'Plastic trinkets' });
   void Promise.all([loadTrinkets(id), id === PHONE_GAME ? hasPhone() : false]).then(([items, phone]) => {
     if (items.length || phone) {
+      if (phone) shelf.setAttribute('aria-label', SHELF_KITS); // a solderable kit isn't a plastic trinket
       shelf.append(...viewer(base, items, phone));
       shelf.hidden = false;
     }
@@ -163,7 +166,7 @@ function viewer(base: string, items: TrinketItem[], phone: boolean): HTMLElement
     h(
       'div',
       { class: 'trk-panel' },
-      h('h2', null, 'Plastic trinkets'),
+      h('h2', null, phone ? SHELF_KITS : 'Plastic trinkets'),
       list,
       info,
       h(
