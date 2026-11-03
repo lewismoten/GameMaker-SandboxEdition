@@ -81,6 +81,7 @@ const MODEM_SPEEDS = ['300', '1200', '2400', '4800', '9600', '14400', '28800', '
 export const LIBRARY_KINDS = [
   'manual',
   'hintbook',
+  'codewheel',
   'worldmap',
   'levelmap',
   'map',
