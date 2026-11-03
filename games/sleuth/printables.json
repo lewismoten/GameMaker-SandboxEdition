@@ -378,6 +378,10 @@
           "head": "Act One",
           "hints": [
             {
+              "q": "Sergeant Dobbs asks whose card the dagger's print matches.",
+              "a": "Lila Fontaine's, the first name. The lab sheet's lifted print is her round whorl, turned and smudged. A wrong card costs nothing, and the GO IN door is open either way."
+            },
+            {
               "q": "Where do I start?",
               "a": "The box office, off the west side of the lobby. There is a key on the floor and the seating chart on the desk."
             },
