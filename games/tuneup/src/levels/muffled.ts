@@ -16,6 +16,8 @@ import { ZZZ } from '../../../teddy2/src/sprites/teddy';
 import { rubberEgg } from '../art/egg';
 import { AIR, countedDoor, kit, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
+import { addCameo, placeCameo } from '../blocks/cameo';
+import { joeCameo } from '../../../kit/cameos';
 import type { Pal } from '../art/palette';
 import { CTR, MON } from '../ids';
 import { decorate } from './decor';
@@ -131,6 +133,8 @@ export function muffledBlocks(pal: Pal): Kit {
   baseSet(k, 'garage');
   const { book, c, R } = k;
   const wall = () => k.pic('wall');
+  // Mystery Robot Joe (Keep It Brief!), counting the tapes by the crate
+  addCameo(k, 'joe', 'wall', (host, use) => joeCameo(host, 'down', 0, { use }));
   // a squeaky toy: a rubber bone, a ball or a ring; squeaked, it bulges and lets out a "!"
   const toy = (kind: number, squeaked: boolean) => {
     const p = wall();
@@ -278,6 +282,7 @@ export function muffled(book: Kit['book']): Level {
   TOYS.forEach((x, i) => m.set(x, floor - 1, `toy${i}`));
   for (const x of TUCKS) m.set(x, floor - 1, 'tuck');
   m.set(M.crate, floor - 1, 'c').set(M.crate, floor - 2, 'tapes');
+  placeCameo(m, 'joe', 'wall', [[M.crate + 2, floor - 1], [M.crate + 3, floor - 1], [M.crate + 4, floor - 1]]);
   m.set(M.door, floor - 2, 'door.top').set(M.door, floor - 1, 'door');
   m.fill(w - 1, 0, 1, floor, 'slab');
   m.link(M.door, floor - 1);
