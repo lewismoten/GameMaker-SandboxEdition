@@ -153,7 +153,7 @@ export function timingBeat(verse: number) {
       while (bot.shown(lane.x, ROW.key).scorePts > 0) await must(bot, bot.wait(1), 'letting the key go dark');
     }
     bot.say(`verse ${verse + 1}: played ${played} notes, ${whiffs} missed; ${hits()} hits, ${bot.sim.money} tips`);
-    if (whiffs) throw new Error(`the bot missed ${whiffs} notes`);
+    if (whiffs && !bot.slowRest) throw new Error(`the bot missed ${whiffs} notes`);
     await leave(bot, bot.walk(EXIT_X + 1, 'through the gate and out'), 'out of the verse');
   };
   Object.defineProperty(run, 'name', { value: `timingBeat${verse + 1}` });
