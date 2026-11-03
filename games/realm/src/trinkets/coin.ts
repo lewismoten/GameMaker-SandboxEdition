@@ -1,6 +1,7 @@
 // The coin of the realm: King Dillydally IX's crown over his numeral on a gold disc with a raised rim.
-import { circle2, polygon2, pixelText2, union2, type D2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
+import { circle2, polygon2, union2, type D2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
 import { plate } from '@lewismoten/gamemaker-sandbox-tools/mesh/trinketKinds';
+import { strokeText2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/strokeText';
 import type { FieldTrinketInput } from '@lewismoten/gamemaker-sandbox-tools/mesh/fieldTrinket';
 import type { Rgb } from '@lewismoten/gamemaker-sandbox-tools/mesh/colorBodies';
 
@@ -27,7 +28,7 @@ const crown: D2 = union2(
   circle2(1.2, 8, 9.4),
 );
 const jewels: D2 = union2(circle2(1, -4, 0), circle2(1, 0, 0), circle2(1, 4, 0));
-const numeral: D2 = pixelText2(['IX'], 2, 0, -10);
+const numeral: D2 = strokeText2(['IX'], 7, 1.4, 0, -10);
 const relief = union2(crown, numeral);
 const coin = plate({
   outline: circle2(R),

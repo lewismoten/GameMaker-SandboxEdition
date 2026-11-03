@@ -1,8 +1,9 @@
 // The Royal Round Tuit: an oak disc ringed in brass, broken in three. Each piece is a wedge of the disc cut along a wavy
 // line with a round tab one side and a matching socket the other, so the three press back together. Every wall stands
 // straight up, so it prints flat without supports. The brass ring is the band around the edge, the lettering walnut.
-import { circle2, pixelText2, union3, type D2, type D3 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
+import { circle2, union3, type D2, type D3 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
 import { plate } from '@lewismoten/gamemaker-sandbox-tools/mesh/trinketKinds';
+import { strokeText2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/strokeText';
 import type { FieldTrinketInput } from '@lewismoten/gamemaker-sandbox-tools/mesh/fieldTrinket';
 import type { Rgb } from '@lewismoten/gamemaker-sandbox-tools/mesh/colorBodies';
 
@@ -11,12 +12,11 @@ const THICK = 4;
 const RIM = { width: 2.4, height: 1 };
 const RELIEF = 0.9;
 const KERF = 0.3;
-const TEXT_PX = 1.4;
 const OAK: Rgb = [178, 120, 66];
 const BRASS: Rgb = [228, 186, 58];
 const WALNUT: Rgb = [70, 40, 24];
 
-const text: D2 = pixelText2(['ROUND', 'TUIT'], TEXT_PX);
+const text: D2 = strokeText2(['ROUND', 'TUIT'], 6, 1.3);
 const disc = plate({ outline: circle2(R), thick: THICK, rim: RIM, relief: { shape: text, height: RELIEF } });
 
 /** The tab: how far the cut is pushed sideways at distance r along its arm. */

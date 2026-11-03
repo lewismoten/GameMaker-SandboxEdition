@@ -1,6 +1,7 @@
 // Pip's key tag: a green plate with a hole for the ring and "DO IT TODAY" raised in cream, the way Pip does things.
-import { circle2, pixelText2, ring2, union2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
+import { circle2, ring2, union2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
 import { plate, tagOutline } from '@lewismoten/gamemaker-sandbox-tools/mesh/trinketKinds';
+import { strokeText2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/strokeText';
 import type { FieldTrinketInput } from '@lewismoten/gamemaker-sandbox-tools/mesh/fieldTrinket';
 import type { Rgb } from '@lewismoten/gamemaker-sandbox-tools/mesh/colorBodies';
 
@@ -12,7 +13,7 @@ const HOLE = { x: 0, y: 19, r: 3.2 };
 const GREEN: Rgb = [44, 118, 82];
 const CREAM: Rgb = [244, 232, 196];
 
-const lettering = pixelText2(['DO IT', 'TODAY'], 1.2, 0, -4);
+const lettering = strokeText2(['DO IT', 'TODAY'], 5.4, 1.2, 0, -4);
 // a cream collar round the hole
 const collar = ring2(HOLE.r, HOLE.r + 2);
 const eyelet = (x: number, y: number) => collar(x - HOLE.x, y - HOLE.y);
@@ -32,6 +33,6 @@ export const keyTag = (): FieldTrinketInput => ({
     return raised || (edge && z > THICK - 0.2) ? CREAM : GREEN;
   },
   box: { min: [-HX - 1, -HY - 1, -0.5], max: [HX + 1, HY + 1, THICK + 2] },
-  bodyCell: 0.3,
+  bodyCell: 0.2,
   palette: [GREEN, CREAM],
 });
