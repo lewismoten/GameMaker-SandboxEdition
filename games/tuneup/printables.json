@@ -34,7 +34,8 @@
         "chr": "leo.chr",
         "cbl": "leo.cbl",
         "pal": "jump.pal"
-      }
+      },
+      "px": 7
     },
     {
       "text": "BAWK.",
