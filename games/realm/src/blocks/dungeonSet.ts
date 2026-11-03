@@ -11,6 +11,9 @@ import { type Shader } from '../art/terrain';
 import { gate } from './town';
 import { paintEgg } from '../art/egg';
 import { C, BLK } from '../ids';
+import { slab, brass, letterRows, mineDoor, mineDoorOpen, bulkhead } from '../art/runes';
+import { RUNES, MARKS } from '../wheel/glyphs';
+import { CARVINGS, MINE_DOORS, carve } from '../wheel/wheel';
 
 export type Theme = 'barrows' | 'vaults' | 'mines' | 'keep';
 
@@ -252,6 +255,26 @@ export function dungeonBook(theme: Theme): BlockBook {
   book.add('tuit', tuitBlock(onFloor()), { score: 10000 });
   // birth blocks: hidden vents that let out a foe now and then (the monster is set per dungeon)
   book.add('vent', vent(onFloor(), m), { birthMon: 0, birthTime: 0 });
+  // the Royal Code Wheel's puzzles: rune carvings in the floor (only the runes they use), their
+  // brass keys, and the Mines' bulkhead with its four marked doors (the true one opens when
+  // walked into; the others are links to a broom cupboard)
+  const keys = [...Object.values(CARVINGS).map((c) => c.key), MINE_DOORS.key];
+  const cut = new Set(Object.values(CARVINGS).flatMap((c) => c.lines.flatMap((l) => carve(l, c.key))));
+  for (const r of [...cut].filter((r) => r !== null).sort()) book.add(`carve:${r}`, slab(onFloor(), RUNES[r]));
+  book.add('slab', slab(onFloor()));
+  for (const k of keys) {
+    book.add(`keyL:${k.letter}`, brass(onFloor(), letterRows(k.letter), 3));
+    book.add(`keyR:${k.rune}`, brass(onFloor(), RUNES[k.rune], 2));
+  }
+  MINE_DOORS.doors.forEach((d, i) => {
+    const pic = mineDoor(
+      onFloor(),
+      d.map((n) => MARKS[n]),
+    );
+    book.add(`mdoor${i}`, pic, i === MINE_DOORS.open ? { solid: ALL, touch: 'mdoorOpen' } : {});
+  });
+  book.add('mdoorOpen', mineDoorOpen(onFloor()));
+  book.add('bulkhead', bulkhead(onFloor()), { solid: ALL });
   book.add('egg', eggOn(onFloor()), { obj: 1, effect: C.egg, eamt: 1 });
   return book;
 }
