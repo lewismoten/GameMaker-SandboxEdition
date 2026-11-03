@@ -16,11 +16,11 @@ export const TRINKETS: RealmTrinket[] = [
   {
     id: 'round-tuit',
     title: 'The Royal Round Tuit',
-    blurb: 'An old oak disc ringed in brass, broken in three by Lord Deadline. Press the three pieces back together, one at a time.',
+    blurb: 'The oak disc ringed in brass, TUIT carved round it: whole again, and pocket-sized, for when you get around to it.',
     height: 5,
     maxWidth: 40,
-    pieces: 3,
-    cell: 0.26,
+    pieces: 1,
+    cell: 0.3,
     input: tuit,
   },
   {

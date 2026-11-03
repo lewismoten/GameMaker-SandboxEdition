@@ -1,7 +1,7 @@
-// The Royal Round Tuit: an oak disc ringed in brass, broken in three. Each piece is a wedge of the disc cut along a wavy
-// line with a round tab one side and a matching socket the other, so the three press back together. Every wall stands
-// straight up, so it prints flat without supports. The brass ring is the band around the edge, the lettering walnut.
-import { circle2, union3, type D2, type D3 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
+// The Royal Round Tuit, whole: one oak coin ringed in brass, as the game draws it on its title and in its intro
+// (src/screens/scenery.ts tuit): TUIT carved round the top of the face, each letter upright, and a round boss in the
+// middle. One piece, so it can ride in a pocket. Every wall stands straight up, so it prints flat without supports.
+import { circle2, union2, type D2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
 import { plate } from '@lewismoten/gamemaker-sandbox-tools/mesh/trinketKinds';
 import { strokeText2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/strokeText';
 import type { FieldTrinketInput } from '@lewismoten/gamemaker-sandbox-tools/mesh/fieldTrinket';
@@ -10,48 +10,39 @@ import type { Rgb } from '@lewismoten/gamemaker-sandbox-tools/mesh/colorBodies';
 const R = 20;
 const THICK = 4;
 const RIM = { width: 2.4, height: 1 };
-const RELIEF = 0.9;
-const KERF = 0.3;
+const CARVE = 0.9;
+const BOSS = { r: 0.16 * R, height: 0.8 };
 const OAK: Rgb = [178, 120, 66];
 const BRASS: Rgb = [228, 186, 58];
 const WALNUT: Rgb = [70, 40, 24];
+const KNOT: Rgb = [120, 80, 36];
 
-const text: D2 = strokeText2(['ROUND', 'TUIT'], 6, 1.3);
-const disc = plate({ outline: circle2(R), thick: THICK, rim: RIM, relief: { shape: text, height: RELIEF } });
-
-/** The tab: how far the cut is pushed sideways at distance r along its arm. */
-const tab = (r: number) => 2.8 * Math.exp(-(((r - 11) / 2.2) ** 2));
-const arm = (k: number) => {
-  const a = ((90 + 120 * k) * Math.PI) / 180;
-  return { ux: Math.cos(a), uy: Math.sin(a) };
-};
-/** Distance to the left of arm k's cut (positive counter-clockwise of it). */
-const side = (k: number, x: number, y: number) => {
-  const { ux, uy } = arm(k % 3);
-  const along = x * ux + y * uy;
-  const left = -x * uy + y * ux;
-  return along > 0 ? left - tab(along) : left;
-};
-
-/** One of the three pieces (0..2): the wedge between arm k and the next, set apart from its neighbors by the kerf. */
-const piece =
-  (k: number): D3 =>
-  (x, y, z) =>
-    Math.max(disc(x, y, z), KERF - side(k, x, y), side(k + 1, x, y) + KERF);
-
-const whole = union3(piece(0), piece(1), piece(2));
+/** The letters as the game places them, on an arc over the top 0.58 of the way out (a little further apart, to print clear). */
+const letters: D2 = union2(
+  ...[...'TUIT'].map((ch, i) => {
+    const a = Math.PI / 2 - ((i - 1.5) * Math.PI) / 4.6;
+    return strokeText2([ch], 7, 1.6, Math.cos(a) * R * 0.58, Math.sin(a) * R * 0.58);
+  }),
+);
+const coin = plate({
+  outline: circle2(R),
+  thick: THICK,
+  rim: RIM,
+  relief: { shape: circle2(BOSS.r), height: BOSS.height },
+  engrave: { shape: letters, depth: CARVE },
+});
 
 export const tuit = (): FieldTrinketInput => ({
-  mm: (x, y, z) => Math.max(whole(x, y, z), -z),
+  mm: (x, y, z) => Math.max(coin(x, y, z), -z),
   colorAt: (x, y, z) => {
     const r = Math.hypot(x, y);
     if (r > R - RIM.width - 0.3) return BRASS;
-    if (z > THICK - 0.2 && text(x, y) < 0.15) return WALNUT;
+    if (r < BOSS.r + 0.2 && z > THICK - 0.1) return KNOT;
+    if (z < THICK + 0.05 && letters(x, y) < 0.15) return WALNUT;
     return OAK;
   },
   box: { min: [-R - 1, -R - 1, -0.5], max: [R + 1, R + 1, THICK + RIM.height + 1] },
-  palette: [OAK, BRASS, WALNUT],
-  // the cuts are 0.5 mm wide: sampled finer than that, or the pieces would join
+  palette: [OAK, BRASS, WALNUT, KNOT],
+  // the colors follow the letters and the rim's edge closely, not in coarse steps
   bodyCell: 0.3,
-  pieces: 3,
 });
