@@ -56,16 +56,18 @@ function stamp(c: Canvas, rows: string[], x: number, y: number, k: number, color
 
 type Stamp = [label: string, draw: (c: Canvas, x: number, y: number) => void];
 
-/** A picture with a strip of boxed stamps (31 pixels square, a label over each) above the text page. */
+/** A picture with a strip of boxed stamps (30 pixels square, a label beside each) above the text page. */
 function formPicture(stamps: Stamp[]): Uint8Array {
   const c = new Canvas();
   spaceBg(c, 97, false);
-  c.panel(30, 40, 262, 142, C('space')[1], C('violet')[3], C('violet')[1]);
+  c.panel(30, 34, 262, 148, C('space')[1], C('violet')[3], C('violet')[1]);
   stamps.forEach(([label, draw], i) => {
-    const cx = Math.round(160 + (i - (stamps.length - 1) / 2) * 74);
-    c.text(cx - (label.length * 8) / 2, 0, label, C('yellow')[4]);
-    c.panel(cx - 16, 9, 31, 31, C('space')[0], C('violet')[3], C('violet')[1]);
-    draw(c, cx - 14, 11);
+    // a label, then its box, side by side (the text page below starts at row 40)
+    const width = label.length * 8 + 4 + 30;
+    const x = Math.round(160 + (i - (stamps.length - 1) / 2) * 104 - width / 2);
+    c.text(x, 14, label, C('yellow')[4]);
+    c.panel(x + label.length * 8 + 4, 2, 30, 30, C('space')[0], C('violet')[3], C('violet')[1]);
+    draw(c, x + label.length * 8 + 4 + 2, 3);
   });
   return encodeGif({ width: c.w, height: c.h, pixels: c.px, palette: SCREEN.pal });
 }
