@@ -130,6 +130,14 @@ export const BLOCKS: Chapter = {
     <tr><td>Rewards, doors, switches and their “after” blocks</td><td>15–25</td></tr>
     <tr><td>Secrets and spares</td><td>the rest</td></tr>
   </table>
+  <h2>Trade art for blocks</h2>
+  <p>When a scene runs out of blocks, don’t draw smaller; choose what the player won’t miss.
+  A door handle, a sun visor or a crease in an armrest is a block or two that nobody sees at
+  the size the game plays. A long skyline can repeat: a strip that repeats every 20 pixels
+  costs one block a column, where a 40-pixel strip of fresh drawing costs about five. Sort
+  your scenes by how they are drawn, too. Scenes drawn with the same palette roles can share one
+  block set, and scenes with the same layout one map, so thirty files can become a dozen. Spend the blocks you
+  saved on the thing that makes the level: the sign, the character, the animation.</p>
   <p>Monsters and the hero can show a block turned or mirrored (eight ways in all), set on
   each step of a monster’s path and on each frame of the hero’s sequences. Draw a walker
   facing one way and let the turns do the other side. Background blocks can’t be turned on

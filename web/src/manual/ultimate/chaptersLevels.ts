@@ -132,11 +132,17 @@ export const LEVELS: Chapter = {
     <li><b>Let him glimpse the goal.</b> Show the exit, the castle or the prize early, through a
     window, across a pit, at the far end of the first screen, so the whole level is the way to
     it.</li>
+    <li><b>Put the exit on the door.</b> The link belongs on the doorway the player sees, so
+    walking into the door is leaving. When it sits a block or two past a door, the hero stands
+    in the frame and the game does nothing, and players decide it is broken. Where a voice line
+    has to finish first, lengthen the walk to the door (Chapter 5), never the gap behind it.</li>
     <li><b>Make the exit a beacon.</b> Draw the way out unlike anything else in the level, and
     animate it: every copy of an animated block changes at once, so a doorway that glows or a
     flag that waves catches the eye from across the screen.</li>
     <li><b>Signs at the turns.</b> An arrow block at a crossroads costs one block of the 150.
-    Letter a few words on a sign where the level asks for something new.</li>
+    Letter a few words on a sign where the level asks for something new, and give a street of
+    shops a picture over each door (a pizza slice, a floppy disk, a badge) so the player knows
+    which one is the way on without trying them all.</li>
     <li><b>Landmarks for the long walk.</b> On a big map, give each part its own color or object
     (the red pipes, the big tree), so a player who comes back to it knows he has been there.</li>
     <li><b>Say the goal.</b> Put it in one line on the level’s intro picture and in the
@@ -148,6 +154,14 @@ export const LEVELS: Chapter = {
   usually open again within about three seconds. Longer, and the player is mostly standing
   there. A pause can build tension, and a long one can be right; then give them something to do
   meanwhile: a coin to grab, a foe to dodge.</p>
+  <h2>Collecting is not a game</h2>
+  <p>A level whose whole job is to gather twenty of something is a chore, however nicely the
+  coins are drawn. Give each pickup a reason: it opens a gate, feeds a character, fills a
+  meter the story cares about, or sits where reaching it takes a new skill. Then give the
+  level one idea of its own, a puzzle, a joke, a change of scenery halfway through, so the
+  player remembers it for something besides the count. Sandbox games aim for a first
+  play of fifteen minutes or more, and what fills the time is variety: a ride, a puzzle, a
+  chase and a quiet room, not more of the same.</p>
   <h2>Detours worth taking</h2>
   <p>The best levels offer a choice: the safe way on, or a risky side path with a prize. Keep
   the side path optional, and its way back as fair as its way in; an extra life that costs two
