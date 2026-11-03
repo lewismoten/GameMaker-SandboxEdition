@@ -4,8 +4,33 @@
   flex-direction: column;
   gap: 8px;
   max-width: min(760px, 92vw);
-  max-height: 80dvh;
+  max-height: 82dvh;
+  min-width: min(720px, 86vw);
+}
+.shrink-body {
+  display: grid;
+  gap: 12px;
   overflow-y: auto;
+  min-height: 0;
+  text-align: left;
+}
+@media (min-width: 900px) {
+  .shrink {
+    min-width: min(1000px, 90vw);
+    max-width: 1000px;
+  }
+  .shrink-body {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+.shrink .check {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  text-align: left;
+  align-items: center;
+  gap: 8px;
 }
 .shrink h3 {
   margin: 4px 0 0;
@@ -17,9 +42,11 @@
   display: grid;
   gap: 6px;
 }
-.shrink-field {
+.shrink .shrink-field {
   display: grid;
-  grid-template-columns: 9em 5em 1fr;
+  justify-items: start;
+  text-align: left;
+  grid-template-columns: 9em 6.5em 1fr;
   align-items: center;
   gap: 8px;
 }
@@ -53,14 +80,24 @@
   padding-left: 1.2em;
 }
 .shrink-actions {
-  position: sticky;
-  bottom: 0;
+  flex: none;
+  align-items: center;
+}
+.shrink-preview canvas {
+  max-height: 34dvh;
 }
 @media (max-width: 520px) {
-  .shrink-field {
-    grid-template-columns: 1fr 5em;
+  .shrink .shrink-field {
+    grid-template-columns: 1fr 6.5em;
   }
   .shrink-field small {
     grid-column: 1 / -1;
   }
+}
+.shrink input[type='checkbox'] {
+  width: 24px;
+  height: 24px;
+}
+.shrink-stats small {
+  display: block;
 }

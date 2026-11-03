@@ -52,6 +52,11 @@
       "gamemaker-source": "./src/kit/tar.ts",
       "import": "./dist/kit/tar.js"
     },
+    "./kit/fliShrink": {
+      "types": "./dist/types/kit/fliShrink.d.ts",
+      "gamemaker-source": "./src/kit/fliShrink.ts",
+      "import": "./dist/kit/fliShrink.js"
+    },
     "./kit/*": {
       "types": "./dist/types/kit/*.d.ts",
       "browser": null,

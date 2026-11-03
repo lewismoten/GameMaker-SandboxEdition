@@ -36,7 +36,7 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
     const len = (a: FliFrames) => (a.frames.length * Math.max(1, a.speed) * 1000) / RETRACE;
     const at = (a: FliFrames, t: number) => Math.min(a.frames.length - 1, Math.floor(((t % len(a)) / 1000) * (RETRACE / Math.max(1, a.speed))));
     const tick = (now: number) => {
-      const t = now - start;
+      const t = Math.max(0, now - start);
       const o = orig.frames[at(orig, t)];
       const n = next.frames[at(next, t)];
       paintIndexed(origCanvas, o.pixels, orig.width, orig.height, o.palette);
@@ -55,9 +55,10 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
       h('strong', null, describeSaved(o.before, o.bytes.length)),
       h('span', { class: `shrink-level shrink-${v.level}` }, o.lossless ? ' Lossless: every pixel and color is the same.' : ` ${v.words}`),
       o.lossless ? '' : h('small', null, ' (an upper bound, from the steps added together)'),
+      h('small', null, 'Each step against re-encoding the one before it:'),
       h('ul', null, ...o.steps.map((s) => h('li', null, `${s.name}: ${s.savedBytes >= 0 ? 'saves' : 'adds'} ${kb(Math.abs(s.savedBytes))}`))),
     );
-    applyBtn.disabled = o.bytes.length >= o.before && o.lossless;
+    applyBtn.disabled = o.bytes.length >= o.before;
     applyBtn.title = applyBtn.disabled ? 'The result is no smaller, so there is nothing to apply' : '';
     play(decodeFliFrames(original), decodeFliFrames(o.bytes));
   };
@@ -161,29 +162,42 @@ export async function openShrinkPanel(project: Project, file: string, apply: (by
       (e: Error) => clear(reportBox, `The report failed: ${e.message}`),
     );
     run();
+    requestAnimationFrame(() => document.querySelector('.shrink-body')?.scrollTo(0, 0));
     return h(
       'div',
       { class: 'shrink' },
-      h('h3', null, `${file} now`),
-      reportBox,
-      h('h3', null, 'Options'),
       h(
         'div',
-        { class: 'shrink-options' },
-        h('label', { class: 'check' }, lossyBox, h('span', null, 'Allow lossy changes (the pictures may differ a little)')),
-        h('p', { class: 'hint' }, 'Lossless always runs: palette changes only for the colors a frame draws, with the same pictures.'),
-        ...nums.map((n) => n.label),
-        h('label', { class: 'check' }, dropBox, h('span', null, 'Keep every other frame (each shown twice as long, so it lasts the same time)')),
-        h('div', { class: 'toolbar' }, gentle, lossless),
+        { class: 'shrink-body' },
+        h(
+          'section',
+          { class: 'shrink-left' },
+          h('h3', null, `${file} now`),
+          reportBox,
+          h('h3', null, 'Options'),
+          h(
+            'div',
+            { class: 'shrink-options' },
+            h('label', { class: 'check' }, lossyBox, h('span', null, 'Allow lossy changes (the pictures may differ a little)')),
+            h('p', { class: 'hint' }, 'Lossless always runs: palette changes only for the colors a frame draws, with the same pictures.'),
+            ...nums.map((n) => n.label),
+            h('label', { class: 'check' }, dropBox, h('span', null, 'Keep every other frame (each shown twice as long, so it lasts the same time)')),
+            h('div', { class: 'toolbar' }, gentle, lossless),
+          ),
+        ),
+        h(
+          'section',
+          { class: 'shrink-right' },
+          h('h3', null, 'Preview'),
+          h(
+            'div',
+            { class: 'shrink-preview' },
+            h('figure', null, origCanvas, h('figcaption', null, 'Original')),
+            h('figure', null, newCanvas, h('figcaption', null, 'Smaller')),
+          ),
+          stats,
+        ),
       ),
-      h('h3', null, 'Preview'),
-      h(
-        'div',
-        { class: 'shrink-preview' },
-        h('figure', null, origCanvas, h('figcaption', null, 'Original')),
-        h('figure', null, newCanvas, h('figcaption', null, 'Smaller')),
-      ),
-      stats,
       h(
         'div',
         { class: 'toolbar shrink-actions' },
