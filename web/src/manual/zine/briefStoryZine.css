@@ -1,0 +1,321 @@
+/* KEEP IT BRIEF!: classic single-sheet eight-page zine, landscape letter at print size. */
+.pp-brief-zine-sheet {
+  display: grid;
+  grid-template: repeat(2, 1fr) / repeat(4, 1fr);
+  overflow: hidden;
+  background: #f7efc9;
+}
+
+.brief-zine-panel {
+  position: relative;
+  z-index: 0;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.12in;
+}
+
+.brief-zine-panel.upside-down {
+  transform: rotate(180deg);
+}
+
+.brief-zine-page {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
+  padding: 0.06in 0.08in;
+  border: 0.8pt solid #20172b;
+  color: #16101a;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(58, 30, 78, 0.1) 0 0.35pt, transparent 0.5pt) 0 0 / 8pt 8pt,
+    #fff9dc;
+  font:
+    8pt/1.03 Georgia,
+    'Times New Roman',
+    serif;
+}
+
+.brief-zine-page h1,
+.brief-zine-page h2,
+.brief-zine-page p {
+  margin: 0;
+}
+
+.brief-zine-page h1,
+.brief-zine-page h2 {
+  font-family: Impact, 'Arial Black', sans-serif;
+  line-height: 0.94;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.brief-zine-page h2 {
+  margin-bottom: 2pt;
+  font-size: 9.5pt;
+}
+
+.brief-zine-page p + p {
+  margin-top: 2pt;
+}
+
+.brief-zine-story {
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  letter-spacing: -0.12pt;
+}
+
+.brief-zine-story p + p {
+  margin-top: 1pt;
+}
+
+.brief-zine-story-26 {
+  line-height: 1;
+}
+
+.brief-zine-story-no,
+.brief-zine-meta,
+.brief-zine-tiny {
+  font:
+    6.2pt/1.14 'Courier New',
+    monospace;
+  letter-spacing: 0.02em;
+}
+
+.brief-zine-story-no {
+  color: #d4232a;
+  font-weight: 700;
+}
+
+.brief-zine-meta {
+  margin-bottom: 4pt !important;
+  color: #3c2a58;
+  font-weight: 700;
+}
+
+.brief-zine-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fffae6;
+  border: 2pt solid #e71e5b;
+  background:
+    linear-gradient(30deg, transparent 47%, rgba(255, 242, 78, 0.72) 48% 52%, transparent 53%) 0 0 / 21pt 21pt,
+    repeating-radial-gradient(circle at 50% 50%, #351d72 0 4pt, #fa3966 4pt 8pt, #ffda26 8pt 11pt, #28144f 11pt 15pt);
+  text-align: center;
+  text-shadow: 1pt 1pt 0 #251034;
+}
+
+.brief-zine-kicker {
+  margin-bottom: 8pt !important;
+  font:
+    700 6.4pt/1 'Courier New',
+    monospace;
+  letter-spacing: 0.12em;
+}
+
+.brief-zine-cover h1 {
+  font-size: 24pt;
+  transform: rotate(-5deg) skewY(-4deg);
+}
+
+.brief-zine-volume {
+  margin-top: 8pt !important;
+  color: #ffe42b;
+  font:
+    900 17pt/1 'Arial Black',
+    sans-serif;
+  transform: rotate(4deg);
+}
+
+.brief-zine-blurb {
+  margin-top: 10pt !important;
+  padding: 3pt;
+  border: 1pt dashed #fffded;
+  font:
+    700 7pt/1.15 'Courier New',
+    monospace;
+}
+
+.brief-zine-stamp {
+  align-self: center;
+  margin-top: 10pt !important;
+  padding: 2pt 4pt;
+  border: 1pt solid #fffbda;
+  font:
+    700 5.8pt/1 Arial,
+    sans-serif;
+  transform: rotate(-8deg);
+}
+
+.brief-zine-back,
+.brief-zine-index {
+  background: #e8f2ff;
+}
+
+.brief-zine-retention {
+  margin-top: 4pt !important;
+  padding-top: 3pt;
+  border-top: 0.75pt dashed #3a3060;
+  font:
+    700 6.4pt/1.15 Arial,
+    sans-serif;
+}
+
+.brief-zine-fold-diagram {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2pt 4pt;
+  align-items: center;
+  margin-top: 5pt;
+  padding: 3pt;
+  border: 0.75pt solid #2a2350;
+  background: #fffde9;
+  font:
+    700 6pt/1 'Courier New',
+    monospace;
+}
+
+.brief-zine-fold-diagram b {
+  color: #d4232a;
+}
+
+.brief-zine-fold,
+.brief-zine-cut,
+.brief-zine-notch,
+.brief-zine-punch {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.brief-zine-fold {
+  opacity: 0.42;
+  border-color: #655c75;
+}
+
+.brief-zine-fold.v {
+  top: 0;
+  bottom: 0;
+  border-left: 0.6pt dotted;
+}
+
+.brief-zine-fold.v.one {
+  left: 25%;
+}
+.brief-zine-fold.v.two {
+  left: 50%;
+}
+.brief-zine-fold.v.three {
+  left: 75%;
+}
+
+.brief-zine-fold.h {
+  right: 0;
+  bottom: 50%;
+  left: 0;
+  border-top: 0.6pt dotted;
+}
+
+.brief-zine-cut {
+  right: 25%;
+  bottom: calc(50% - 0.5pt);
+  left: 25%;
+  height: 0;
+  border-top: 1pt dashed #9b1233;
+  color: #9b1233;
+  font:
+    700 7pt/1 Arial,
+    sans-serif;
+  text-align: center;
+}
+
+.brief-zine-cut::first-letter {
+  font-size: 10pt;
+}
+
+.brief-zine-notch {
+  left: calc(50% - 4pt);
+  width: 8pt;
+  height: 6pt;
+  border: 0.9pt solid #9b1233;
+  background: #fff;
+}
+
+.brief-zine-notch.top {
+  top: -0.9pt;
+  border-top: 0;
+  border-radius: 0 0 5pt 5pt;
+}
+
+.brief-zine-notch.bottom {
+  bottom: -0.9pt;
+  border-bottom: 0;
+  border-radius: 5pt 5pt 0 0;
+}
+
+.brief-zine-punch {
+  top: calc(50% - 2.6pt);
+  left: calc(50% - 2.6pt);
+  width: 5.2pt;
+  height: 5.2pt;
+  border: 0.75pt solid #9b1233;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.pp-brief-zine-reader {
+  overflow: visible;
+}
+
+.pp-brief-zine-reader .brief-zine-page {
+  position: absolute;
+  inset: 0;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.brief-zine-turner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+.brief-zine-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #f2efe6;
+  font:
+    600 14px/1 system-ui,
+    sans-serif;
+}
+
+.brief-zine-bar button[disabled] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+@media print {
+  .pp-brief-zine-sheet {
+    box-shadow: none;
+  }
+
+  .brief-zine-page {
+    background-color: #fff9dc;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+.brief-zine-titles {
+  margin: 3pt 0;
+  padding: 0;
+  list-style: none;
+  font:
+    8pt/1.25 Arial,
+    sans-serif;
+}
+
+.brief-zine-titles li {
+  padding: 1pt 0;
+  border-bottom: 0.5pt dotted #3a3060;
+}

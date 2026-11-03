@@ -14,6 +14,7 @@ import { worldMap, worldMapScreen } from './worldMap';
 import { levelMaps } from './levelMaps';
 import { codeWheelLive } from './codeWheel';
 import { codeSheetLive } from './codeSheet';
+import { briefStoryZineItem } from '../zine/briefStoryZine';
 
 const ICONS: Record<PrintableItem['kind'], string> = {
   map: '🗺️',
@@ -119,5 +120,5 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
       : []),
     { kind: 'stickers', id: 'stickers', title: 'Sticker sheet', note: 'Cut them out', icon: '⭐', render: () => stickers(ctx), screen: stickerScreen },
   ];
-  return [...items, ...gen.filter((g) => !skip.has(g.kind))];
+  return [...items, ...gen.filter((g) => !skip.has(g.kind)), ...(ctx.entry.id === 'brief' ? [briefStoryZineItem()] : [])];
 }
