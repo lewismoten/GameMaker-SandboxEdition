@@ -124,13 +124,15 @@
   cursor: grabbing;
 }
 
-.cw-dial:focus-visible {
-  outline: 3px solid var(--accent, #4a7bd0);
-  outline-offset: 4px;
+/* either disc turns (a slider each); the one with the focus has its edge lit */
+.cw-turn {
+  transition: transform 0.35s ease-out;
+  outline: none;
 }
 
-.cw-inner {
-  transition: transform 0.35s ease-out;
+.cw-turn:focus-visible > .cw-paper {
+  stroke: #e0a000;
+  stroke-width: 1.8;
 }
 
 .cw-side {
@@ -160,6 +162,28 @@
   min-height: 32px;
 }
 
+/* a window's outline, lit when it holds the answer */
+.cw-win {
+  fill: none;
+  stroke: none;
+}
+
+.cw-win.on {
+  stroke: #e0a000;
+  stroke-width: 1.6;
+}
+
+/* the answer's symbol, drawn as on the wheel */
+.cw-answer-sym {
+  display: inline-block;
+  width: 1.8em;
+  height: 1.8em;
+  vertical-align: middle;
+  background: #fbf5e6;
+  border: 1px solid #8a7556;
+  border-radius: 3px;
+}
+
 /* room for a two-line answer kept, so a shorter or longer one doesn't move what's under it */
 .cw-answer {
   min-height: 2.9em;
@@ -167,7 +191,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cw-inner {
+  .cw-turn {
     transition: none;
   }
 }

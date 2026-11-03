@@ -2,8 +2,9 @@
 // pinned over it that turns, its own ring facing the outer one and windows cut through it onto a ring printed
 // on the outer disc underneath. Drawn once as SVG for both uses: printed (codeWheelSheets), the two discs on
 // their own letter sheets with cut lines, the windows to cut out and the pin's mark, to cut out and fasten with
-// a brass paper fastener; on screen (codeWheelLive), the turning disc turns (drag it, or the arrow keys, a
-// place at a time) and each puzzle has a "Tell me the answer" that sets the wheel and says it. The 1994 desk
+// a brass paper fastener; on screen (codeWheelLive), either disc turns (drag it, or the arrow keys, a place at
+// a time) under a red arrow fixed over the top, the symbols that meet under it read together, and each puzzle
+// has a "Tell me the answer" that turns both discs to it and says it. The 1994 desk
 // lays the same wheel beside its monitor on a puzzle's scenes (desk/codeWheelOnDesk.ts).
 import './codeWheel.css';
 import { h } from '../../editor/core/ui';
@@ -69,6 +70,17 @@ function rimText(id: string, r: number, text: string, size: number, cls: string)
 
 let uid = 0;
 
+/** The hidden rings, outermost first (one ring or several). */
+const hiddenRings = (it: CodeWheelItem): string[][] =>
+  !it.hidden?.length ? [] : Array.isArray(it.hidden[0]) ? (it.hidden as string[][]) : [it.hidden as string[]];
+/** Hidden ring k's band, between the hub and the turning disc's own ring; one ring keeps the classic place. */
+function band(k: number, count: number): { out: number; in: number } {
+  if (count <= 1) return { out: R.hiddenOut, in: R.hiddenIn };
+  const top = R.innerRingIn - 3;
+  const w = (top - (R.hub + 5)) / count;
+  return { out: top - k * w, in: top - (k + 1) * w + 1 };
+}
+
 /** The outer disc: its rim lettering, its ring of symbols, and the hidden ring under the turning disc. */
 function outerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   const n = it.outer.length;
@@ -77,10 +89,12 @@ function outerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   for (let i = 0; i < n; i++) {
     g.append(el('path', { d: sector(R.ringIn, R.rimBand, i * step - step / 2, i * step + step / 2), class: 'cw-cell' }));
     g.append(symbol(it, it.outer[i], (R.ringIn + R.rimBand) / 2, i * step, Math.min(13, (R.ringIn * 2 * Math.PI) / n) * 0.8, 'cw-sym'));
-    if (it.hidden) {
-      g.append(el('path', { d: sector(R.hiddenIn, R.hiddenOut, i * step - step / 2, i * step + step / 2), class: 'cw-cell cw-hidden-cell' }));
-      g.append(symbol(it, it.hidden[i], (R.hiddenIn + R.hiddenOut) / 2, i * step, Math.min(11, (R.hiddenIn * 2 * Math.PI) / n) * 0.8, 'cw-sym'));
-    }
+    hiddenRings(it).forEach((ring, k, all) => {
+      const b = band(k, all.length);
+      g.append(el('path', { d: sector(b.in, b.out, i * step - step / 2, i * step + step / 2), class: 'cw-cell cw-hidden-cell' }));
+      const size = Math.min(11, ((b.in * 2 * Math.PI) / n) * 0.8, (b.out - b.in) * 0.75);
+      g.append(symbol(it, ring[i], (b.in + b.out) / 2, i * step, size, 'cw-sym'));
+    });
   }
   // the heading in the band between the ring and the rim
   g.append(rimText(`cw-rim${++uid}`, R.rimBand + 2.2, it.heading.toUpperCase(), 4.2, 'cw-rim'));
@@ -95,21 +109,38 @@ function innerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   const g = el('g', { class: 'cw-inner' });
   // the disc with its windows as holes (evenodd), so the outer disc shows through them on screen
   let d = `M0,${-R.inner}A${R.inner},${R.inner} 0 1 1 0,${R.inner}A${R.inner},${R.inner} 0 1 1 0,${-R.inner}Z`;
-  for (const w of it.windows ?? []) d += sector(R.hiddenIn + 1, R.hiddenOut - 1, w.at * step - step / 2 + 2, w.at * step + step / 2 - 2);
+  const rings = hiddenRings(it).length;
+  for (const w of it.windows ?? []) {
+    const b = band(w.ring ?? 0, rings);
+    d += sector(b.in + 1, b.out - 1, w.at * step - step / 2 + 2, w.at * step + step / 2 - 2);
+  }
   g.append(el('path', { d, class: `cw-paper cw-inner-paper${cut ? ' cw-cut' : ''}`, 'fill-rule': 'evenodd' }));
+  // each window's outline, lit when it holds a puzzle's answer
+  (it.windows ?? []).forEach((w, i) => {
+    const b = band(w.ring ?? 0, rings);
+    g.append(el('path', { d: sector(b.in + 1, b.out - 1, w.at * step - step / 2 + 2, w.at * step + step / 2 - 2), class: 'cw-win', 'data-win': i }));
+  });
   for (let i = 0; i < n; i++) {
     g.append(el('path', { d: sector(R.innerRingIn, R.inner - 2, i * step - step / 2, i * step + step / 2), class: 'cw-cell' }));
     g.append(symbol(it, it.inner[i], (R.innerRingIn + R.inner - 2) / 2, i * step, Math.min(12, (R.innerRingIn * 2 * Math.PI) / n) * 0.8, 'cw-sym'));
   }
   for (const w of it.windows ?? [])
     if (w.label) {
-      const [x, y] = at(R.hiddenIn - 6, w.at * step);
-      const t = el('text', { x: x.toFixed(2), y: y.toFixed(2), 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': 4, class: 'cw-label' });
+      // one ring: the label inside the window, toward the pin; several: beside its window, along its ring
+      const b = band(w.ring ?? 0, rings);
+      const [r, deg] = rings <= 1 ? [R.hiddenIn - 6, w.at * step] : [(b.in + b.out) / 2, w.at * step + step * 0.5 + 1];
+      const [x, y] = at(r, deg);
+      const t = el('text', {
+        transform: `translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${rings <= 1 ? 0 : deg + 90})`,
+        'text-anchor': rings <= 1 ? 'middle' : 'start',
+        'dominant-baseline': 'central',
+        'font-size': rings <= 1 ? 4 : 3.2,
+        class: 'cw-label',
+      });
       t.textContent = w.label;
       g.append(t);
     }
-  // the pointer at the top, and the hub with its name
-  g.append(el('path', { d: `M0,${-R.inner + 0.5}l-3,-5h6z`, class: 'cw-pointer' }));
+  // the hub with its name
   g.append(el('circle', { r: R.hub, class: 'cw-hub' }));
   if (it.center) {
     const t = el('text', { 'text-anchor': 'middle', y: -4, 'font-size': 4.2, class: 'cw-center' });
@@ -120,9 +151,14 @@ function innerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   return g;
 }
 
-/** The wheel as it lies, both discs, as a picture (the desk's small view of it). */
+/** On screen, room above the wheel for the reading arrow. */
+const VIEW = '-102 -114 204 216';
+/** The red arrow over the top of the wheel, fixed: the symbols that meet under it are read together. */
+const arrow = () => el('path', { d: `M0,${-R.outer + 1}l-5,-9h10z`, class: 'cw-pointer' });
+
+/** The wheel as it lies, both discs and the reading arrow, as a picture (the desk's small view of it). */
 export function codeWheelPicture(it: CodeWheelItem): SVGSVGElement {
-  return el('svg', { viewBox: '-102 -102 204 204', class: 'cw-svg', 'aria-hidden': 'true' }, outerDisc(it, false), innerDisc(it, false));
+  return el('svg', { viewBox: VIEW, class: 'cw-svg', 'aria-hidden': 'true' }, outerDisc(it, false), innerDisc(it, false), arrow());
 }
 
 /** The turn (in places) that puts the turning disc's `inner` symbol against the outer disc's `outer`. */
@@ -159,59 +195,95 @@ export function codeWheelSheets(it: CodeWheelItem): Promise<Sheet[]> {
 
 const howto = (it: CodeWheelItem) => (it.howto?.length ? h('div', { class: 'cw-howto' }, ...it.howto.map((l) => h('p', null, l))) : null);
 
-/** The wheel to turn on screen; with `only`, just the puzzles on that scene. */
+/** The wheel to turn on screen (either disc; the arrow over the top stays put); with `only`, just the puzzles on that scene. */
 export function codeWheelLive(it: CodeWheelItem, only?: number): HTMLElement {
   const n = it.outer.length;
   const step = 360 / n;
-  let turn = 0;
+  const outer = outerDisc(it, false);
   const inner = innerDisc(it, false);
-  const svg = el('svg', { viewBox: '-102 -102 204 204', class: 'cw-svg' }, outerDisc(it, false), inner);
-  const facing = (k: number) => `${it.inner[0]} against ${it.outer[k % n]}`;
-  const dial = h('div', {
-    class: 'cw-dial',
-    role: 'slider',
-    tabindex: 0,
-    'aria-label': `${it.title}: the turning disc`,
-    'aria-valuemin': 0,
-    'aria-valuemax': n - 1,
-  });
-  dial.append(svg);
+  const svg = el('svg', { viewBox: VIEW, class: 'cw-svg' }, outer, inner, arrow());
+  /** Each disc: its group, its ring, and which of its places is under the arrow. */
+  const discs = [
+    { g: outer, ring: it.outer, name: 'the big disc', pos: 0 },
+    { g: inner, ring: it.inner, name: 'the small disc', pos: 0 },
+  ];
+  const place = (pos: number) => ((pos % n) + n) % n;
   const answer = h('p', { class: 'cw-answer', 'aria-live': 'polite' });
-  const set = (k: number, animate = true) => {
-    turn = ((k % n) + n) % n;
-    inner.style.transition = animate ? '' : 'none';
-    inner.style.transform = `rotate(${turn * step}deg)`;
-    dial.setAttribute('aria-valuenow', String(turn));
-    dial.setAttribute('aria-valuetext', facing(turn));
+  // a disc's position counts on past a full turn (never wrapping back), so each move turns it the short way
+  const show = (d: (typeof discs)[number], animate = true) => {
+    d.g.style.transition = animate ? '' : 'none';
+    d.g.style.transform = `rotate(${-d.pos * step}deg)`;
+    d.g.setAttribute('aria-valuenow', String(place(d.pos)));
+    d.g.setAttribute('aria-valuetext', `${d.ring[place(d.pos)]} under the arrow`);
   };
-  set(0, false);
-  dial.addEventListener('keydown', (e) => {
-    const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
-    if (d) set(turn + d);
-    else if (e.key === 'Home') set(0);
-    else return;
-    e.preventDefault();
-    answer.textContent = '';
-  });
-  // drag: the disc follows the pointer's angle round the pin, and settles on the nearest place
-  let grab: { a: number; t: number } | undefined;
-  const angle = (e: PointerEvent) => {
+  /** Moves a disc to position `pos` (any whole number; its place under the arrow is pos mod n). */
+  const move = (d: (typeof discs)[number], pos: number, animate = true) => {
+    d.pos = pos;
+    show(d, animate);
+    for (const w of inner.querySelectorAll('.cw-win.on')) w.classList.remove('on');
+  };
+  /** What window `i` shows now: the hidden ring's symbol under it. */
+  const inWindow = (i: number) => {
+    const w = it.windows![i];
+    return hiddenRings(it)[w.ring ?? 0][place(w.at - discs[1].pos + discs[0].pos)];
+  };
+  /** Turns a disc the short way round until its place `k` is under the arrow. */
+  const set = (d: (typeof discs)[number], k: number) => {
+    let by = place(k - d.pos);
+    if (by > n / 2) by -= n;
+    move(d, d.pos + by);
+  };
+  for (const d of discs) {
+    d.g.classList.add('cw-turn'); // beside its cw-outer / cw-inner
+    Object.entries({ tabindex: 0, role: 'slider', 'aria-label': `${it.title}: ${d.name}`, 'aria-valuemin': 0, 'aria-valuemax': n - 1 }).forEach(([k, v]) =>
+      d.g.setAttribute(k, String(v)),
+    );
+    move(d, 0, false);
+    d.g.addEventListener('keydown', (e) => {
+      const by = { ArrowRight: -1, ArrowDown: -1, ArrowLeft: 1, ArrowUp: 1 }[e.key];
+      if (by) move(d, d.pos + by);
+      else if (e.key === 'Home') set(d, 0);
+      else return;
+      e.preventDefault();
+      answer.textContent = '';
+    });
+  }
+  const dial = h('div', { class: 'cw-dial', role: 'group', 'aria-label': `${it.title}: turn either disc` }, svg);
+  // drag: the disc under the pointer (the big one by its outer ring) follows its angle round the pin, and settles on the nearest place
+  // the angle is followed move by move (its jump from +180 to -180 taken out), so a drag past the left side doesn't spin it
+  let grab: { d: (typeof discs)[number]; last: number; turned: number } | undefined;
+  const where = (e: PointerEvent) => {
     const b = svg.getBoundingClientRect();
-    return (Math.atan2(e.clientY - (b.top + b.height / 2), e.clientX - (b.left + b.width / 2)) * 180) / Math.PI;
+    const unit = b.width / 204; // the drawing's units per pixel
+    const x = e.clientX - (b.left + b.width / 2);
+    const y = e.clientY - (b.top + (114 / 216) * b.height);
+    return { angle: (Math.atan2(y, x) * 180) / Math.PI, r: Math.hypot(x, y) / unit };
   };
   dial.addEventListener('pointerdown', (e) => {
-    e.preventDefault(); // no text selection starting under the drag (focus is given back below)
-    dial.focus({ preventScroll: true });
-    grab = { a: angle(e), t: turn * step };
+    e.preventDefault(); // no text selection starting under the drag
+    const p = where(e);
+    if (p.r > R.outer) return;
+    const d = p.r > R.inner ? discs[0] : discs[1];
+    d.g.focus({ preventScroll: true });
+    grab = { d, last: p.angle, turned: 0 };
     dial.setPointerCapture(e.pointerId);
-    inner.style.transition = 'none';
+    d.g.style.transition = 'none';
   });
+  const follow = (e: PointerEvent) => {
+    if (!grab) return;
+    const a = where(e).angle;
+    grab.turned += ((a - grab.last + 540) % 360) - 180;
+    grab.last = a;
+  };
   dial.addEventListener('pointermove', (e) => {
-    if (grab) inner.style.transform = `rotate(${grab.t + angle(e) - grab.a}deg)`;
+    if (!grab) return;
+    follow(e);
+    grab.d.g.style.transform = `rotate(${-grab.d.pos * step + grab.turned}deg)`;
   });
   const drop = (e: PointerEvent) => {
     if (!grab) return;
-    set(Math.round((grab.t + angle(e) - grab.a) / step));
+    follow(e);
+    move(grab.d, grab.d.pos - Math.round(grab.turned / step));
     grab = undefined;
     answer.textContent = '';
   };
@@ -230,8 +302,21 @@ export function codeWheelLive(it: CodeWheelItem, only?: number): HTMLElement {
           type: 'button',
           class: 'cw-tell',
           onclick: () => {
-            set(turnFor(it, p.turn.inner, p.turn.outer));
-            answer.textContent = `Turn ${p.turn.inner} to ${p.turn.outer}: ${p.answer}`;
+            // the pair meets under the arrow (the small disc's turn from the big one's is turnFor)
+            set(discs[0], it.outer.indexOf(p.turn.outer));
+            set(discs[1], it.inner.indexOf(p.turn.inner));
+            const how = `${p.turn.outer} and ${p.turn.inner} under the arrow`;
+            if (p.window !== undefined && it.windows?.[p.window]) {
+              // the answer is what the wheel shows: that window's symbol, its window lit
+              const sym = inWindow(p.window);
+              inner.querySelector(`.cw-win[data-win="${p.window}"]`)?.classList.add('on');
+              const pic = el('svg', { viewBox: '-8 -8 16 16', class: 'cw-answer-sym', role: 'img', 'aria-label': sym }, symbol(it, sym, 0, 0, 12, 'cw-sym'));
+              answer.replaceChildren(
+                h('span', null, `${how}. ${it.windows[p.window].label ?? 'The'} window: `),
+                pic,
+                p.answer ? h('span', null, ` ${p.answer}`) : '',
+              );
+            } else answer.textContent = `${how}: ${p.answer ?? ''}`;
           },
         },
         'Tell me the answer',
@@ -245,7 +330,11 @@ export function codeWheelLive(it: CodeWheelItem, only?: number): HTMLElement {
     h(
       'div',
       { class: 'cw-side' },
-      h('p', { class: 'cw-help' }, 'Drag the small disc round, or use the arrow keys, to line its symbols up with the big disc’s.'),
+      h(
+        'p',
+        { class: 'cw-help' },
+        'Turn either disc: drag it (the big one by its outer ring), or Tab to it and use the arrow keys. Read the symbols that meet under the red arrow.',
+      ),
       howto(it),
       asks.length ? h('ol', { class: 'cw-asks' }, ...asks) : null,
       answer,

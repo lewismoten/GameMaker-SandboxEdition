@@ -38,7 +38,7 @@ function open(wheel: Wheel, it: CodeWheelItem, scene: number, onClose: () => voi
   overlay.addEventListener('keyup', (e) => e.stopPropagation());
   overlay.addEventListener('click', (e) => e.target === overlay && close());
   document.body.append(overlay);
-  holder.querySelector<HTMLElement>('.cw-dial')?.focus();
+  holder.querySelector<SVGElement>('.cw-inner')?.focus(); // the small disc, ready for the arrow keys
 }
 
 export function codeWheelSpot(refocus: () => void): { el: HTMLElement; game(saveId?: string): void; scene(n: number): void } {

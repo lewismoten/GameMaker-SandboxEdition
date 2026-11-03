@@ -212,19 +212,24 @@ export interface CodeWheelItem extends ItemBase {
   outer: string[];
   /** The turning disc's ring, as many as `outer`, each facing one of them. */
   inner: string[];
-  /** A ring on the outer disc under the turning one, seen only through its windows (as many as `outer`). */
-  hidden?: string[];
-  /** Windows cut through the turning disc: the place in its ring each is beside, and its label. */
-  windows?: { at: number; label?: string }[];
+  /**
+   * Rings on the outer disc under the turning one, seen only through its windows (each as many as `outer`): one
+   * ring, or several, outermost first, each at its own distance from the pin so each window shows its own.
+   */
+  hidden?: string[] | string[][];
+  /** Windows cut through the turning disc: the place in its ring each is beside, its label, and the hidden ring it opens on (0 by default). */
+  windows?: { at: number; label?: string; ring?: number }[];
   /** Pictures for symbols: a name, and rows of '#' (ink) and '.' (paper), every row as wide. */
   glyphs?: Record<string, string[]>;
   /** How to use it, printed with the discs and shown beside the wheel on screen. */
   howto?: string[];
   /**
    * The puzzles it solves: the scenes they are on (the 1994 desk lays the wheel beside the monitor there), the
-   * question, the setting (the turning disc's `inner` symbol against the outer disc's `outer` one) and the answer.
+   * question, and the setting (the turning disc's `inner` symbol and the outer disc's `outer` one, together under
+   * the arrow). The answer is what the wheel shows then: the symbol in window `window` (an index into `windows`),
+   * or, for decoding a word, a short `answer`.
    */
-  puzzles?: { scenes: number[]; ask: string; turn: { inner: string; outer: string }; answer: string }[];
+  puzzles?: { scenes: number[]; ask: string; turn: { inner: string; outer: string }; window?: number; answer?: string }[];
 }
 
 export type PrintableItem =
