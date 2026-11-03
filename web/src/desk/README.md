@@ -33,7 +33,7 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   whose items name a color-carrying `preview` STL) share it. It is drawn by the small WebGL viewer `trinketGl.ts`. `trinketData.ts` reads the manifests and STL meshes (shared with the Library's toy box, `library/toyBox.ts`) and `trinketSnap.ts` draws a trinket once as a still PNG for lists.
 - `disks/`: the disk box (`diskBox.ts`; closed on the desk, `diskBoxFill.ts`), the buttons for
   the disk in drive A: (`driveActions.ts`) and the disks' labels (`diskLabel.ts`, RSD's own in
-  `rsdLabel.ts`).
+  `rsdLabel.ts`, whose level strips `stripQueue.ts` draws one at a time, only once on screen).
 - `mug/`: the BBS mug (`mug.ts`, drawn in 3D by `mug3d.ts`, turned in `mugViewer.ts`). Its
   pictures (`mugArt.ts`) are badges: one for every public game (a Sandbox game's, and The Bard
   of Bizarre's in a group of their own) cut from its title screen (`gameBadge.ts`,
