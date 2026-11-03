@@ -1,7 +1,7 @@
-# THE PHONE OF THE FUTURE (electronics, rev B)
+# THE PHONE OF THE FUTURE (electronics, rev C)
 
 A solderable toy kit that goes with In The Year 2000!: "a real working wireless phone", the way a 1993 game
-imagined one. Infrared voice and touch tones, an eight-digit red display, a real pulse dial, a PIC16F84A and a
+imagined one. Infrared voice and touch tones, an eight-digit red display, a real pulse dial, a PIC16F628A and a
 CM8870 tone decoder, through-hole parts only. Two phones are needed to play: digits dialed on one appear on any
 phone in sight (no call set-up).
 
@@ -18,7 +18,7 @@ and the 3D parts file in `viewer/`.
 | --- | --- |
 | `kicad/phone.kicad_sch`, `phone.kicad_pcb` | The KiCad 9 project (written by the scripts below; open it in KiCad to look or edit) |
 | `kicad/phone.pretty/`, `phone.kicad_sym`, `models/` | Big-pad footprints, the two local symbols (CM8870, 4-digit display), and the simple 3D models (`.wrl` and `.step`) |
-| `firmware/phone.asm` | PIC16F84A firmware, gpasm |
+| `firmware/phone.asm` | PIC16F628A firmware, gpasm (ported from the PIC16F84A; same 18-pin pinout) |
 | `bom.csv`, `PARTS.md` | Bill of materials and readable parts list (`tools/bom.py`) |
 | `mechanical/interface.json` | Board outline, holes, where everything sits and how tall (for the shell) |
 | `viewer/parts.json`, `parts.bin` | The board and every part as a compact triangle set for the site's 3D viewer (`tools/export3d.sh`) |
@@ -78,7 +78,7 @@ One infrared beam carries live voice and touch-tone digits, half duplex.
 "IC" (must be tied to ground, as here), 17 is St/GT, 4.75 to 5.25 V supply. The Holtek `HT9170B` is also pin-compatible (pins 5 and 6
 are INH and PWDN, tied low), though Holtek lists it as phased out. A socket takes any of them. Where to buy singly: see `PARTS.md`.
 
-### Pin budget (PIC16F84A, 13 I/O)
+### Pin budget (PIC16F628A, 13 I/O used)
 
 | Pin | Use | | Pin | Use |
 | --- | --- | --- | --- | --- |
@@ -92,14 +92,14 @@ All 13 are used. CLEAR takes none (it is MCLR), and the pulsed IR bias costs no 
 
 ### Power: four AAA cells and a 5 V low-dropout regulator
 
-Limits: MAX7219 4.0 to 5.5 V; PIC16F84A 2.0 to 5.5 V; CM8870/MT8870 4.75 to 5.25 V (6.0 V absolute); LM386-1 4 to 12 V; LM358 3 to 32 V.
+Limits: MAX7219 4.0 to 5.5 V; PIC16F628A 3.0 to 5.5 V; CM8870/MT8870 4.75 to 5.25 V (6.0 V absolute); LM386-1 4 to 12 V; LM358 3 to 32 V.
 Three cells (4.5 V fresh) fall under the MAX7219's 4.0 V early, and four fresh alkaline cells (6.4 V) are over the decoder's limit, so
-**four AAA cells into a 5.0 V LDO** (LM2940T-5.0: 0.5 V dropout, 1 A). Expected (calculated, not measured): a steady 5 V until the cells
+**four AAA cells into a 5.0 V LDO** (MCP1702-5002E/TO, TO-92: 0.65 V dropout max at 250 mA, 250 mA). Expected (calculated, not measured): a steady 5 V until the cells
 average about 1.3 V each, and a draw of roughly 70 to 100 mA with eight digits lit (the IR LED no longer adds 9 mA while idle),
-so roughly 10 to 15 hours from alkalines. A cheaper TO-92 swap, MCP1702-5002E/TO (250 mA), is listed in `PARTS.md`; its pin order differs and
-its dropout at the LM386's peaks is untested, so it is not the default.
+so roughly 10 to 15 hours from alkalines. Rev C swapped the LM2940 for it to save about $1.60; the 250 mA limit at the LM386's loudest peaks is untested
+(the LM2940 gave 1 A), and the 5 V rail now holds only until the pack sags to about 5.65 V under full load.
 
-## Board layout (rev B)
+## Board layout (rev C)
 
 Everything the user sees is on the front; electronics and the battery are on the back. The front under the **dial** (radius 24 mm) and
 the **speaker** (24 mm) is clear of pads, vias and copper tracks: only silkscreen and the two dial microswitches sit under the dial, so the
@@ -111,14 +111,14 @@ stuck behind the dial, its leads soldered to two pads. Preview images: `out/fron
 ## Build order for a beginner
 
 You need a 25 to 40 W iron, thin rosin-core solder, flush cutters, a multimeter and four AAA cells; a programmer that can program a
-PIC16F84A (it needs 12 to 13 V programming, see `.for-lewis` notes) or a pre-programmed chip. Use sockets for the four ICs. Parts on the back
+PIC16F628A (a blank chip takes low-voltage programming once; the firmware then turns that off, so a re-burn needs 12 to 13 V on MCLR, which a PICkit 3 or 5 supplies; PICkit 5 support for this chip is unconfirmed) or a pre-programmed chip. Socket the PIC only; solder the other ICs. Parts on the back
 (battery side) go in first and are soldered from the front; front parts (display, buttons, switches, LED, photodiode) go in last and are soldered from the back.
 
 1. Check the board against the Gerbers when it arrives (`out/phone-gerbers.zip` in a Gerber viewer); no bridged pads.
-2. Back side, power only: slide switch, regulator (lying flat), C1 and C2 (tantalum: mind the + mark). **Fit no ICs.** Wire the battery holder
+2. Back side, power only: slide switch, regulator (TO-92, flat side up, pin 1 GND at the "G" mark), C1 and C2 (C2 is electrolytic: mind the + mark). **Fit no ICs.** Wire the battery holder
    to the two BT pads (red +). Switch on: the multimeter must read 5.0 V (+/-0.1) from the regulator's pin 3 to pin 2. Stop if not.
-3. Sockets, then resistors and capacitors (shortest first). Electrolytics have polarity: the square pad is +.
-4. Crystal, Q1 and Q2, then the ICs with the power off. Pin 1 is the square pad.
+3. The PIC's socket, then resistors and capacitors (shortest first). Electrolytics have polarity: the square pad is +.
+4. Crystal, Q1 and Q2, then the soldered ICs (U2 to U5; pin 1 is the square pad) and, with the power off, the PIC in its socket. Pin 1 is the square pad.
 5. Front: the two display modules (pin 1 square pad, bottom left of each). Power up: a dash appears at the left. If blank, check R26 and the 5 V.
 6. TALK and CLEAR, then the two microswitches. CLEAR restarts the display. Mimic a dial by hand: close SW3, tap SW2 three times, open SW3: a 3 appears.
 7. Speaker and microphone (short wires from the pads). A dialed digit makes a tone from the speaker.
@@ -135,7 +135,7 @@ Likely first things to adjust: R19 (receive gain), R20/R21 or RV1 (speaker level
 | KiCad DRC | 0 violations, 0 unconnected, with **all silkscreen rules on**. One rule is set to *ignore* in `kicad/phone.kicad_pro`: `lib_footprint_mismatch` (back parts are mirrored copies of the library footprints). For two parts (U1 and C9) the value text did not fit clear of pads and is on the fab layer, not the silkscreen |
 | Schematic vs board parity | not run |
 | gpasm | assembles (`tools/build_firmware.sh`) |
-| Firmware simulation | passes `tools/picsim.py` (my own PIC16F84A instruction simulator): start-up and display, dialing at 33 ms and 8 ms pulses, all ten digits' tone pairs (Goertzel), 10 pulses = 0, 11 ignored, received digits, TALK mutes and lights the point, and the IR bias line (RA0) is driven only for the tone |
+| Firmware simulation | passes `tools/picsim.py` (my own PIC16F84A instruction simulator, run on the PIC16F628A build; it does not model the comparators, so CMCON = 7 is untested): start-up and display, dialing at 33 ms and 8 ms pulses, all ten digits' tone pairs (Goertzel), 10 pulses = 0, 11 ignored, received digits, TALK mutes and lights the point, and the IR bias line (RA0) is driven only for the tone |
 | 3D export | `kicad-cli pcb export glb` works; `tools/glb_check.py` checks each part's mesh against its footprint |
 | Not tested | the analog parts, the IR link's range, real CM8870 timing, the regulator, the Gerbers in a viewer or at a board house. gpsim was installed but not used |
 | Parts | see `PARTS.md` and the cost sheet; prices and stock were read from retailer pages on 2026-11-03 where marked |
@@ -157,3 +157,8 @@ checked with `kicad-cli`). Firmware assembled with gputils/gpasm. The firmware s
 - KiCad stock symbols (CC-BY-SA 4.0 with the KiCad library exception) are embedded in the schematic. See `NOTICE.md`.
 
 No real phone brand is named. The game it goes with is `games/year2000`.
+
+## Rev C (cost) notes
+
+- Parts: PIC16F628A, an HGSEMI MAX7219N clone (stock unconfirmed), MCP1702 TO-92 regulator, one socket, two fewer capacitor values. Prices: the parts sheet in `.for-lewis/research/` (about $38.78 per phone against $67.85 for rev B).
+- Board size is unchanged, 73.66 x 175.26 mm: it is the shell's size, so it cannot fit JLCPCB's 100 x 100 mm tier. Shrinking it would mean redesigning the shell and moving the dial, the two displays, the speaker and the battery holder.
