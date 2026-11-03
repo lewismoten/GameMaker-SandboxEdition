@@ -1,4 +1,4 @@
-/* a game's code wheel, lying beside the monitor on a puzzle's scenes (desk/pc/codeWheelSpot.ts) */
+/* a game's code wheel or code sheet, lying beside the monitor on a puzzle's scenes (desk/pc/codeWheelSpot.ts) */
 .cw-spot {
   position: relative;
   z-index: 3;
@@ -76,4 +76,16 @@
   border-radius: 8px;
   background: #f8f1df;
   color: #2a2016;
+}
+
+/* a code sheet on the desk: the card drawn full size and shrunk to the spot */
+.cs-spot-pic {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+
+.cs-spot-pic > .cs-card {
+  width: 600px;
+  zoom: 0.33;
 }
