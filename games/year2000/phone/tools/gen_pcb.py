@@ -19,7 +19,7 @@ from footprints import FP, NAMES  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 KDIR = os.path.join(HERE, "..", "kicad")
-W, H = 68.58, 149.86
+W, H = 68.58, 160.02
 TW, CLR, VD, VDR = 0.30, 0.20, 0.8, 0.4      # track, clearance, via pad, via drill
 G = 0.254
 NX, NY = int(W / G) + 1, int(H / G) + 1
@@ -47,15 +47,15 @@ FIXED = {
     "DS1": (17.78, 27.94, 0), "DS2": (50.8, 27.94, 0),
     "LS1": (34.29, 49.53, 0),
     "SW2": (24.13, 87.63, 0), "SW3": (44.45, 97.79, 0),
-    "SW4": (16.51, 131.06, 0), "SW5": (52.07, 131.06, 0), "MK1": (34.29, 143.51, 0),
+    "SW4": (16.51, 141.22, 0), "SW5": (52.07, 141.22, 0), "MK1": (34.29, 151.13, 0),
     "U3": (34.29, 41.91, 90), "U1": (19.05, 58.42, 90), "U2": (50.8, 58.42, 90),
     "U4": (19.05, 72.39, 90), "U5": (31.75, 72.39, 90), "X1": (50.8, 68.58, 0),
-    "BT1": (34.29, 124.46, 0), "SW1": (62.23, 104.14, 90), "U6": (53.34, 90.17, 0),
+    "BT1": (34.29, 134.62, 0), "SW1": (63.5, 87.63, 90), "U6": (48.26, 91.44, 0),
 }
 NEAR = {"C15": "U3", "C14": "U3", "C26": "U3", "R26": "U3", "C16": "U1", "R1": "U1", "C17": "U2", "C18": "U4",
         "C19": "U5", "C20": "U5", "C21": "U5", "R27": "U5", "C22": "U5", "C1": "U6", "C2": "U6", "Q1": "D2",
         "R10": "Q1", "R11": "D2", "Q2": "U5", "R22": "Q2"}
-MOUNT = [(3.81, 3.81), (64.77, 3.81), (3.81, 146.05), (64.77, 146.05)]
+MOUNT = [(3.81, 3.81), (64.77, 3.81), (3.81, 156.21), (64.77, 156.21)]
 
 
 def rot(x, y, a):
@@ -116,7 +116,7 @@ def place_passives():
     todo = [p for p in parts if p["ref"] not in placed]
     # order: those with a NEAR anchor first, then by number of nets shared with placed parts
     todo.sort(key=lambda p: (p["ref"] not in NEAR, p["ref"]))
-    region = (4.5, 12.5, W - 4.5, 99.5)
+    region = (4.5, 12.5, W - 4.5, 109.5)
     for p in todo:
         ref = p["ref"]
         best = None
@@ -178,11 +178,12 @@ for ref, pl in placed.items():
     for pad, rx, ry in pl.pads:
         n = netlist[ref].get(pad.num)
         if n:
-            padnets.setdefault(n, []).append((ref, pad.num, pl.x + rx, pl.y + ry, pad.d / 2))
+            padnets.setdefault(n, []).append((ref, pad.num, pl.x + rx, pl.y + ry, pad.d / 2 * (1.42 if pad.square else 1)))
 
 # ---- router ---------------------------------------------------------------------------------------------
 owner = [[0] * (NX * NY) for _ in range(2)]   # 0 free, net id, -1 shared (blocked for all)
 ctr = [[0] * (NX * NY) for _ in range(2)]
+viaban = bytearray(NX * NY)
 
 
 def disc(r):
@@ -192,7 +193,7 @@ def disc(r):
 
 D_TRACK = disc(TW + CLR)            # 0.5
 D_VIA = disc(VD / 2 + CLR + TW / 2)  # 0.75
-D_VIA_CTR = disc(VD / 2 + CLR + TW / 2)
+D_VIA_CTR = disc(VD / 2 + CLR + TW / 2 + 0.2)
 EDGE = 0.7
 cell = lambda v: int(round(v / G))  # noqa: E731
 
@@ -216,11 +217,17 @@ def init_obstacles():
             for L in (0, 1):
                 stamp(L, cell(x), cell(y), disc(r + CLR + TW / 2), nid[n])
                 stamp(L, cell(x), cell(y), disc(r), nid[n], ctr)
+            for dx, dy in disc(r + 0.8):
+                xx, yy = cell(x) + dx, cell(y) + dy
+                if 0 <= xx < NX and 0 <= yy < NY:
+                    viaban[yy * NX + xx] = 1
     for pl in placed.values():     # pads with no net
         for pad, rx, ry in pl.pads:
             if not netlist[pl.ref].get(pad.num):
                 for L in (0, 1):
-                    stamp(L, cell(pl.x + rx), cell(pl.y + ry), disc(pad.d / 2 + CLR + TW / 2), -1)
+                    stamp(L, cell(pl.x + rx), cell(pl.y + ry), disc(pad.d / 2 * (1.42 if pad.square else 1) + CLR + TW / 2), -1)
+                for dx, dy in disc(pad.d / 2 * (1.42 if pad.square else 1) + 0.8):
+                    viaban[(cell(pl.y + ry) + dy) * NX + cell(pl.x + rx) + dx] = 1
     for mx, my in MOUNT:
         for L in (0, 1):
             stamp(L, cell(mx), cell(my), disc(1.6 + 0.5 + CLR + TW / 2), -1)
@@ -329,6 +336,8 @@ def astar(tree, gx, gy, n):
 
 
 def via_ok(x, y, n):
+    if viaban[y * NX + x]:
+        return False
     for dx, dy in D_VIA_CTR:
         xx, yy = x + dx, y + dy
         if 0 <= xx < NX and 0 <= yy < NY:
@@ -368,17 +377,26 @@ def path_to_geom(path):
     return segs, vias
 
 
-init_obstacles()
-order = sorted([n for n in padnets if n != GND],
-               key=lambda n: (n == V5, (max(p[2] for p in padnets[n]) - min(p[2] for p in padnets[n])) + (max(p[3] for p in padnets[n]) - min(p[3] for p in padnets[n]))))
-order += [GND]
-all_segs, all_vias, failed = {}, {}, []
-for n in order:
-    s, v, ok = route(n)
-    all_segs[n], all_vias[n] = s, v
-    if not ok:
-        failed.append(n)
-    print("routed", n, len(padnets[n]), "pads", len(s), "segs", len(v), "vias", flush=True)
+base_order = sorted([n for n in padnets if n != GND],
+                    key=lambda n: (n == V5, (max(p[2] for p in padnets[n]) - min(p[2] for p in padnets[n])) + (max(p[3] for p in padnets[n]) - min(p[3] for p in padnets[n]))))
+base_order.insert(len(base_order) - 1, GND)
+order = list(base_order)
+for attempt in range(5):     # rip-up and retry: nets that failed go first next time
+    for L in (0, 1):
+        owner[L][:] = [0] * (NX * NY)
+        ctr[L][:] = [0] * (NX * NY)
+    viaban[:] = bytes(NX * NY)
+    init_obstacles()
+    all_segs, all_vias, failed = {}, {}, []
+    for n in order:
+        s_, v_, ok = route(n)
+        all_segs[n], all_vias[n] = s_, v_
+        if not ok:
+            failed.append(n)
+    print("attempt", attempt, "failed:", failed, flush=True)
+    if not failed:
+        break
+    order = failed + [x for x in order if x not in failed]
 print("FAILED NETS:", failed)
 
 # ---- output --------------------------------------------------------------------------------------------
@@ -387,7 +405,7 @@ LAY = ("F.Cu", "B.Cu")
 
 def txt(layer, s, x, y, size=0.8, mirror=False, ang=0, bold=False):
     return (f'(gr_text "{s}" (at {f(x)} {f(y)} {ang}) (layer "{layer}") (uuid "{uid()}") '
-            f'(effects (font (size {size} {size}) (thickness {0.15 if size < 1.2 else 0.3})) (justify {"mirror" if mirror else "center"})))')
+            f'(effects (font (size {size} {size}) (thickness {0.15 if size < 1.2 else 0.3})) {"(justify mirror)" if mirror else ""}))')
 
 
 def line(layer, x1, y1, x2, y2, w=0.12):
@@ -461,7 +479,7 @@ for ref in sorted(placed):
     items.append(board_footprint(placed[ref]))
 for i, (mx, my) in enumerate(MOUNT):
     items.append(f'''(footprint "phone:MountingHole_3.2mm_M3" (layer "F.Cu") (uuid "{uid()}") (at {mx} {my})
-    (property "Reference" "H{i + 1}" (at 0 -4.2 0) (layer "F.SilkS") (uuid "{uid()}") (effects (font (size 0.8 0.8) (thickness 0.12))))
+    (property "Reference" "H{i + 1}" (at 0 -4.2 0) (layer "F.Fab") (uuid "{uid()}") (effects (font (size 0.8 0.8) (thickness 0.12))))
     (property "Value" "M3" (at 0 4.2 0) (layer "F.Fab") (hide yes) (uuid "{uid()}") (effects (font (size 0.8 0.8) (thickness 0.12))))
     (attr exclude_from_pos_files exclude_from_bom)
     (fp_circle (center 0 0) (end 3.3 0) (stroke (width 0.05) (type solid)) (fill no) (layer "F.CrtYd") (uuid "{uid()}"))
@@ -505,13 +523,13 @@ a = math.radians(120)
 silk.append(f'(gr_line (start {f(cx + 25 * math.sin(a))} {f(cy - 25 * math.cos(a))}) (end {f(cx + 28 * math.sin(a))} {f(cy - 28 * math.cos(a))}) (stroke (width 0.3) (type solid)) (layer "F.SilkS") (uuid "{uid()}"))')
 for s, x, y in (("IR LED", 15.24, 11.2), ("IR EYE", 53.34, 11.2)):
     pass
-silk.append(txt("F.SilkS", "TALK", 16.51, 126.4, 1.0))
-silk.append(txt("F.SilkS", "CLEAR", 52.07, 126.4, 1.0))
-silk.append(txt("F.SilkS", "MIC", 34.29, 138.3, 1.0))
+silk.append(txt("F.SilkS", "TALK", 16.51, 136.56, 1.0))
+silk.append(txt("F.SilkS", "CLEAR", 52.07, 136.56, 1.0))
+silk.append(txt("F.SilkS", "MIC", 34.29, 145.8, 1.0))
 silk.append(txt("B.SilkS", "THE PHONE OF THE FUTURE", W / 2, 17.0, 1.9, True))
 silk.append(txt("B.SilkS", "rev A  untested design", W / 2, 20.4, 1.0, True))
 silk.append(txt("B.SilkS", "Claude Sonnet 5.5 + KiCad", W / 2, 22.4, 1.0, True))
-silk.append(txt("B.SilkS", "+ BATTERY SIDE", W / 2, 148.2, 0.9, True))
+silk.append(txt("B.SilkS", "+ BATTERY SIDE", W / 2, 158.2, 0.9, True))
 items += silk
 
 nets_txt = '(net 0 "")\n  ' + "\n  ".join(f'(net {i} "{n}")' for n, i in nid.items())
