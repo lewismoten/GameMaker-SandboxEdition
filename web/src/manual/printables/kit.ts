@@ -205,7 +205,12 @@ export async function spriteArt(entry: CatalogEntry, s: SpriteArt): Promise<stri
     if (s.under === 'edge') edgeGround(px, ground, W, rows * BLEN);
     if (s.under !== undefined) cutAway(px, ground, W, rows * BLEN);
     const c = document.createElement('canvas');
-    paintIndexed(c, px, W, rows * BLEN, parsePalette(palB), true);
+    if (s.crop) {
+      const [cx, cy, cw, ch] = s.crop;
+      const part = new Uint8Array(cw * ch).fill(TRANSPARENT);
+      for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) if (cx + x < W && cy + y < rows * BLEN) part[y * cw + x] = px[(cy + y) * W + cx + x];
+      paintIndexed(c, part, cw, ch, parsePalette(palB), true);
+    } else paintIndexed(c, px, W, rows * BLEN, parsePalette(palB), true);
     return c.toDataURL();
   } catch {
     return undefined;

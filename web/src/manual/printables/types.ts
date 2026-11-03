@@ -216,6 +216,10 @@ export interface StickerSpec {
   sprite?: SpriteArt;
   /** A character from his .CHR file, standing (drawn instead of `sprite`). */
   hero?: Portrait;
+  /** A picture drawn in code, not from the game's files: Lady Regina's tiara, in silver (stickerDrawn.ts). */
+  drawn?: 'tiara';
+  /** What changes once the rubber chicken is Lady Regina (chicken/chickenState.ts): this sticker's fields, replaced. */
+  lady?: Partial<StickerSpec>;
   /** A die-cut's size: each pixel of its picture prints this many 1/150 inch (default: about 1.3" tall). */
   px?: number;
   /** Leave it out of the little cut-outs that fill the sheet's gaps. */
@@ -227,6 +231,8 @@ export interface SpriteArt {
   blocks: string;
   pal: string;
   grid: number[][];
+  /** Only this part of the picture, in pixels: [x, y, width, height] (Doc Leo's hat from his front block). */
+  crop?: [number, number, number, number];
   /**
    * The plain ground block a background thing is drawn on (or a grid of them, like `grid`): its
    * pixels round the thing are cut away. "edge" cuts away the colors along the picture's edge instead

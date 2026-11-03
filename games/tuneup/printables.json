@@ -39,9 +39,11 @@
     {
       "text": "BAWK.",
       "sub": "SIR REGINALD III",
-      "shape": "bubble",
+      "shape": "cut",
       "color": "#fff6e0",
-      "ink": "#2a1408"
+      "ink": "#2a1408",
+      "sprite": { "blocks": "cast.mbl", "pal": "rain.pal", "grid": [[0]] },
+      "lady": { "sub": "LADY REGINA III", "sprite": { "blocks": "cast.mbl", "pal": "rain.pal", "grid": [[7]] } }
     },
     {
       "text": "CLAMP ON",
@@ -89,9 +91,26 @@
     {
       "text": "HONK-ZOO!",
       "sub": "THE CHEZ",
-      "shape": "bubble",
-      "color": "#fff6e0",
-      "ink": "#2a1408"
+      "shape": "cut",
+      "color": "#2a1408",
+      "ink": "#ffd23f",
+      "hero": { "chr": "chez.chr", "cbl": "chez.cbl", "pal": "jump.pal" }
+    },
+    {
+      "text": "",
+      "shape": "cut",
+      "color": "#7a7f8a",
+      "ink": "#2a1408",
+      "sprite": { "blocks": "leo.cbl", "pal": "jump.pal", "grid": [[0]], "crop": [3, 0, 16, 8] },
+      "px": 15
+    },
+    {
+      "text": "",
+      "shape": "cut",
+      "color": "#c4cad4",
+      "ink": "#2a1408",
+      "drawn": "tiara",
+      "px": 13
     },
     {
       "text": "OOPS.",
