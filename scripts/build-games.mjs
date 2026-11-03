@@ -251,6 +251,21 @@ if (!process.env.GM_SKIP_PIXEL_TRINKETS && (!only.length || only.some((id) => id
   );
   if (timing) console.log(`Pixel trinkets: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
 }
+// The laser wooden nickels (games/kit/laserNickels.ts: SVGs and PNG previews in web/public/laser/<game>/) are drawn from the
+// built disks too; a game whose figures, words and builder code are unchanged (a key in its manifest.json) is skipped. A
+// secret game has none.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.some((id) => ids.includes(id)))) {
+  const started = Date.now();
+  const made = await runEntry(
+    'laser-nickels',
+    { file: join(root, 'games/kit/laserNickels.ts') },
+    '../games/kit/laserNickels.ts',
+    [...(only.length ? ['--game', only.join(',')] : []), ...(process.argv.includes('--force') ? ['--force'] : [])],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'laser nickels',
+  );
+  if (timing) console.log(`Laser nickels: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+}
 if (timing)
   console.log(
     `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,
