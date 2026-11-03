@@ -215,7 +215,7 @@ export function kitchen(book: BlockBook): Level {
   // scenery by the phone: a modem and a disk going into a drive
   m.set(24, 3, 'modem').set(22, 3, 'diskDrive');
   m.mon(MON.teddy, 6, 8).mon(MON.cat, 20, 6).mon(MON.roach, 3, 9).mon(MON.roach, 17, 3).mon(MON.roach, 24, 8);
-  m.link(30, 2, 'next');
+  m.set(30, 2, 'hallDoor').link(30, 2, 'next');
   return { m, start: at(1, 3), size: [map.w + 4, map.h] };
 }
 
@@ -320,7 +320,7 @@ export function theVoid(book: BlockBook): Level {
   // the pay TV's picture is the way home: two steps on through it, so its warming up plays out
   // an Easter egg at the far bend of the fabric, past the pen nobody wants
   m.set(30, 2, 'easterEgg');
-  m.link(33, 17, 'next');
+  m.set(33, 17, 'payTvOn').link(33, 17, 'next');
   return { m, start: at(1, 1), size: [map.w, map.h] };
 }
 

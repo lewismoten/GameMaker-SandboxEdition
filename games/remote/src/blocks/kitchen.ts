@@ -19,6 +19,13 @@ export function kitchenBlocks(ctx: Ctx): void {
     return p;
   };
   book.add('lino', lino(21));
+  // the hall doorway at the end of the phone cord (the link sits in it): a wooden frame round the dark hall, a gold arrow, on the same linoleum
+  {
+    const p = lino(21).map((_x, _y, v) => v);
+    p.rect(3, 1, 14, 19, c('wood', 1)).rect(3, 1, 14, 1, c('wood', 3)).rect(3, 1, 1, 19, c('wood', 3));
+    p.rect(5, 3, 10, 17, ink).rect(7, 10, 5, 1, c('gold', 2)).rect(11, 8, 1, 5, c('gold', 2)).rect(12, 9, 1, 3, c('gold', 2)).set(13, 10, c('gold', 2));
+    book.add('hallDoor', p);
+  }
   // the backsplash (the kitchen's back wall): white tile and a strip of wallpaper
   const tileWall = P().rect(0, 0, 20, 20, c('white', 2));
   for (let k = 0; k < 20; k += 5) tileWall.rect(k, 6, 1, 14, c('white', 0)).rect(0, 6 + k, 20, 1, c('white', 0));
