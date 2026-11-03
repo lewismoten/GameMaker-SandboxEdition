@@ -190,7 +190,6 @@ export function createTrinketView(canvas: HTMLCanvasElement, mesh: Mesh): Trinke
       gl.deleteBuffer(vbo);
       gl.deleteBuffer(ibo);
       gl.deleteProgram(prog);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
     },
   };
   return view;

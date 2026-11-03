@@ -883,6 +883,11 @@ Moten's direction, under the project's MIT License. The teapot is a nod to the U
 (Martin Newell, University of Utah, 1975); it is drawn from ellipsoids, a torus and a cone, and
 none of Newell's patch data is used.
 
+The multi-color 3MF files follow the 3MF Core Specification (3MF Consortium, https://3mf.io, published under
+its open license): a ZIP package with `3D/3dmodel.model`, `[Content_Types].xml` and `_rels/.rels`, one
+object per color with a base material color. The ZIP container is written by this project's own small
+writer (`web/packages/tools/src/mesh/zipFile.ts`); no 3MF or ZIP library is used.
+
 ### Tiny Shelf Classification
 
 The Library's call numbers (such as 614-MAH) use the **Tiny Shelf Classification**, dedicated to

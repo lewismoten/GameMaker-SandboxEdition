@@ -1,4 +1,4 @@
-/* the plastic trinkets in a game's box (desk/boxes/trinketShelf.ts), along the bottom of the box viewer */
+/* the plastic trinkets in a game's box (desk/boxes/trinketShelf.ts): one at a time, along the bottom of the box viewer */
 .bc-trinkets {
   position: absolute;
   bottom: 74px;
@@ -6,13 +6,16 @@
   left: calc(max(10px, 3vw) + 70px + 180px);
   right: calc(max(10px, 3vw) + 70px + min(290px, 26vw) + 12px);
   z-index: 2;
-  max-height: 46vh;
+  max-height: 60vh;
   padding: 8px 12px 10px;
   overflow: auto;
   border: 1px solid rgba(239, 229, 204, 0.25);
   border-radius: 10px;
-  background: rgba(20, 16, 10, 0.78);
+  background: rgba(20, 16, 10, 0.82);
   color: #efe5cc;
+  font:
+    12px/1.3 system-ui,
+    sans-serif;
 }
 
 .bc-trinkets[hidden] {
@@ -20,8 +23,7 @@
 }
 
 .bc-trinkets h2 {
-  display: inline;
-  margin: 0 12px 0 0;
+  margin: 0 0 6px;
   font:
     700 12px system-ui,
     sans-serif;
@@ -29,39 +31,24 @@
   text-transform: uppercase;
 }
 
-.bc-trinkets .trk-note {
-  display: inline;
-  margin: 0;
-  font:
-    12px system-ui,
-    sans-serif;
-  opacity: 0.8;
-}
-
-.trk-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
-  margin-top: 6px;
-}
-
-.trk {
-  display: flex;
-  flex-direction: column;
+.trk-body {
+  display: grid;
+  grid-template-columns: 32px 220px 32px 1fr;
+  gap: 8px;
   align-items: center;
-  width: 96px;
-  margin: 0;
-  font:
-    11px/1.25 system-ui,
-    sans-serif;
-  text-align: center;
+}
+
+.trk-stage {
+  display: grid;
+  place-items: center;
+  width: 220px;
+  height: 220px;
 }
 
 .trk-canvas {
-  width: 92px;
-  height: 92px;
-  border-radius: 8px;
+  width: 220px;
+  height: 220px;
+  border-radius: 10px;
   background: radial-gradient(circle at 50% 38%, #3a3150, #14101c 80%);
   cursor: grab;
   touch-action: pan-y;
@@ -71,64 +58,118 @@
   cursor: grabbing;
 }
 
+.trk-canvas.loading {
+  opacity: 0.5;
+}
+
 .trk-canvas:focus-visible,
-.trk-dl:focus-visible {
+.trk-dl:focus-visible,
+.trk-nav:focus-visible {
   outline: 2px solid #ffd84a;
   outline-offset: 2px;
 }
 
-.trk.loading .trk-canvas {
-  opacity: 0.5;
+.trk-nav {
+  min-width: 32px;
+  min-height: 48px;
+  padding: 0;
+  border: 1px solid rgba(239, 229, 204, 0.4);
+  border-radius: 6px;
+  background: rgba(239, 229, 204, 0.12);
+  color: #efe5cc;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-.trk figcaption {
+.trk-nav:hover {
+  background: rgba(239, 229, 204, 0.25);
+}
+
+.trk-info {
   display: flex;
   flex-direction: column;
-  min-height: 28px;
+  gap: 4px;
+  min-width: 0;
 }
 
-.trk .trk-size {
-  opacity: 0.7;
+.trk-title {
+  font-size: 15px;
+}
+
+.trk-size,
+.trk-count,
+.trk-help {
+  opacity: 0.75;
+}
+
+.trk-help {
+  margin: 6px 0 0;
+}
+
+.trk-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.trk-colorline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trk-swatches {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.trk-swatches i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 3px;
 }
 
 .trk-dl {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 24px;
   min-height: 24px;
-  padding: 2px 4px;
   color: #ffd84a;
   text-decoration: underline;
 }
 
+.trk-dl[hidden],
+.trk-flat[hidden],
+.trk-canvas[hidden] {
+  display: none;
+}
+
 .trk-flat {
-  width: 92px;
-  padding: 8px 0;
-  font-size: 11px;
+  padding: 8px;
+  text-align: center;
   opacity: 0.8;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .bc-trinkets {
     right: 58px;
     bottom: 120px;
     left: 58px;
-    max-height: 38vh;
+    max-height: 52vh;
   }
 
-  .trk {
-    width: 84px;
+  .trk-body {
+    grid-template-columns: 32px 1fr 32px;
   }
 
+  .trk-stage,
   .trk-canvas {
-    width: 76px;
-    height: 76px;
+    width: min(100%, 170px);
+    height: 170px;
+    justify-self: center;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .trk-canvas {
-    transition: none;
+  .trk-info {
+    grid-column: 1 / -1;
   }
 }
