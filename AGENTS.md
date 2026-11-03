@@ -102,7 +102,9 @@ preserve what was there.
   - finish, once its checks pass: bring `develop` in first and settle any conflicts on the
     feature branch (`git merge develop`), then
     `git switch develop && git pull --ff-only && git merge --no-ff feature/<short-name> && git push origin develop`,
-    so the other agents can pull it.
+    so the other agents can pull it. Then delete the feature branch, locally and on origin
+    (`git branch -d feature/<short-name> && git push origin --delete feature/<short-name>`),
+    unless work on it is still going on.
   - an agent you start (a subagent, a worktree) gets its own `feature/` branch from `develop`
     the same way; tell it to in its brief.
   - a pull request from `develop` into `master` only when the maintainer says it's time.
