@@ -175,7 +175,14 @@ export function deskScene(on: DeskActions) {
           { class: 'case' },
           // the modem sits on top of the case, beside the monitor stand
           modem.el,
-          h('div', { class: 'case-buttons' }, h('label', null, powerBtn, 'POWER'), h('label', null, turboBtn, 'TURBO')),
+          h(
+            'div',
+            { class: 'case-buttons' },
+            h('label', null, powerBtn, 'POWER'),
+            h('label', null, turboBtn, 'TURBO'),
+            // the key lock beside them (the key is long lost: it stays unlocked)
+            h('span', { class: 'keylock-label', 'aria-hidden': 'true' }, h('span', { class: 'keylock' }), 'LOCK'),
+          ),
           h(
             'div',
             { class: 'leds' },

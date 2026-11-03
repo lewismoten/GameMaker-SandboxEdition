@@ -1,7 +1,8 @@
-// The PC's insides coming to life at the power switch: the fans whine up to speed and the hard
-// disk's motor winds up and its heads unpark; then each drive the boot reads makes its sound
-// (access, from the PC's drive reads): the floppy's seek test, the hard disk's heads knocking
-// through CONFIG.SYS and AUTOEXEC.BAT, the CD-ROM driver's test of its drive. Made on the spot
+// The PC's insides coming to life at the power switch: the case fan's air and hum, the hard disk's
+// own little fan whining up to pitch, its motor winding up and its heads unparking; then each
+// drive the boot reads makes its sound (access, from the PC's drive reads): the floppy's seek
+// test (the loudest), the hard disk's heads knocking through CONFIG.SYS and AUTOEXEC.BAT, the
+// CD-ROM driver's test of its drive (barely heard). Made on the spot
 // (no files), through the PC's own line (retro/computer/pcAudio.ts), so switching off cuts them at
 // once. Once DOS is at its prompt (settle) they fade away slowly: a moment of nostalgia, not a hum
 // under everything that follows. They follow the Sound effects setting, and play only after a
@@ -147,25 +148,24 @@ export function bootSounds(): BootSounds | undefined {
     src.stop(at + len + 0.05);
   };
 
-  // the fans: the power supply's whine rising to pitch (and wavering a little), the CPU's small
-  // fan above it, and a little air
-  const psu = tone('sawtooth', 40, 290, t0, SPIN_UP, 2.5);
-  const psuTone = ctx.createBiquadFilter();
-  psuTone.type = 'lowpass';
-  psuTone.frequency.value = 900;
-  psu.connect(psuTone).connect(swell(t0, SPIN_UP, 0.02));
-  const cpuFan = tone('triangle', 80, 520, t0, SPIN_UP, 4);
-  cpuFan.connect(swell(t0, SPIN_UP, 0.008));
-  const air = hiss('lowpass', 400, 0.7);
+  // the case fan: mostly air, with the low hum of its blades coming up to speed
+  const caseFan = tone('triangle', 30, 118, t0, SPIN_UP, 1.5);
+  caseFan.connect(swell(t0, SPIN_UP, 0.012));
+  const air = hiss('lowpass', 500, 0.7);
   air.f.frequency.setValueAtTime(120, t0);
-  air.f.frequency.exponentialRampToValueAtTime(400, t0 + SPIN_UP);
-  air.f.connect(swell(t0, SPIN_UP, 0.05));
+  air.f.frequency.exponentialRampToValueAtTime(500, t0 + SPIN_UP);
+  air.f.connect(swell(t0, SPIN_UP, 0.09));
+  // the hard disk's own little fan: the high whine, rising to pitch and wavering a little
+  const diskFan = tone('triangle', 120, 700, t0, SPIN_UP, 6);
+  diskFan.connect(swell(t0, SPIN_UP, 0.014));
+  const diskFanOvertone = tone('sine', 240, 1400, t0, SPIN_UP, 9);
+  diskFanOvertone.connect(swell(t0, SPIN_UP, 0.004));
   // the hard disk's motor winding up: a low hum and a faint high whine above it
   const spindle = tone('triangle', 40, 90, t0, SPIN_UP);
   spindle.connect(swell(t0, SPIN_UP, 0.012));
   const whine = tone('sine', 300, 1800, t0, SPIN_UP);
   whine.connect(swell(t0, SPIN_UP, 0.004));
-  for (const s of [psu, cpuFan, air.s, spindle, whine]) (s.start(t0), running.push(s));
+  for (const s of [caseFan, air.s, diskFan, diskFanOvertone, spindle, whine]) (s.start(t0), running.push(s));
   // up to speed, the heads unpark with a clunk
   knock(t0 + SPIN_UP, [...SEEK, [300, 4, 1]], 2.2);
 
@@ -178,35 +178,25 @@ export function bootSounds(): BootSounds | undefined {
     }
   };
 
-  /** The floppy: its motor, and the head stepping out 40 tracks and back (the BIOS's seek test) or a few (a read). */
+  /** The floppy, the loudest thing in the boot: its motor, and the head stepping out 40 tracks and back (the BIOS's seek test) or a few (a read). */
   const floppy = (at: number, len: number) => {
     const m = hiss('bandpass', 180, 1.5);
-    motor(m.s, m.f, at, len, 0.08);
+    motor(m.s, m.f, at, len, 0.15);
     const hum = tone('triangle', 95, 95, at, 0.01);
-    motor(hum, hum, at, len, 0.012);
+    motor(hum, hum, at, len, 0.02);
     const tracks = len >= 0.9 ? 40 : 3;
     let t = at + 0.15;
     for (const dir of [0, 1]) {
-      for (let i = 0; i < tracks; i++, t += tracks > 3 ? 0.007 : 0.02) knock(t, STEP, 1.6);
+      for (let i = 0; i < tracks; i++, t += tracks > 3 ? 0.007 : 0.02) knock(t, STEP, 3.2);
       t += 0.1;
-      if (!dir && tracks > 3) knock(t - 0.05, STEP, 2.2); // the head stops at the last track
+      if (!dir && tracks > 3) knock(t - 0.05, STEP, 4); // the head stops at the last track
     }
   };
 
-  /** The CD-ROM: the driver's test (sled, focus, the motor spinning up and down), or a short read. */
+  /** The CD-ROM, barely heard: the sled's soft clack and, in the driver's test, the focus coil's ticks (no disc to spin). */
   const cdRom = (at: number, len: number) => {
-    knock(at + 0.05, SLED, 2);
-    const test = len >= 1;
-    if (test) for (const dt of [0.22, 0.32, 0.42, 0.6]) knock(at + dt, FOCUS, 0.8);
-    const start = at + (test ? 0.65 : 0.1);
-    const spin = Math.max(0.3, at + len - start);
-    const m = tone('sine', 30, test ? 170 : 150, start, Math.min(0.6, spin));
-    motor(m, m, start, spin, 0.02, 0.25);
-    const whoosh = hiss('bandpass', 300, 2);
-    whoosh.f.frequency.setValueAtTime(300, start);
-    whoosh.f.frequency.exponentialRampToValueAtTime(1400, start + Math.min(0.6, spin));
-    motor(whoosh.s, whoosh.f, start, spin, 0.03, 0.25);
-    if (!test) knock(at + len * 0.6, SLED, 1.4);
+    knock(at + 0.05, SLED, 0.5);
+    if (len >= 1) for (const dt of [0.22, 0.32, 0.42, 0.6]) knock(at + dt, FOCUS, 0.25);
   };
 
   const fadeAt = (at: number) => {
