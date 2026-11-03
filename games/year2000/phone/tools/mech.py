@@ -12,8 +12,10 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 pl = json.load(open(os.path.join(HERE, "..", "kicad", "placement.json")))
-W, H = 68.58, 160.02
-DIAL = (34.29, 92.71)
+W, H = pl['_board']['w'], pl['_board']['h']
+DIAL = tuple(pl['_dial']['c'])
+DIAL_R, RING_R = pl['_dial']['r'], pl['_dial']['ring']
+SPK = pl['_speaker']['c']
 
 
 def at(ref):
@@ -29,10 +31,10 @@ def toward(ref, c):
 
 m = {
     "about": "THE PHONE OF THE FUTURE board, rev A. Untested design. Units mm; origin top-left seen from the front; +x right, +y down.",
-    "board": {"width": W, "height": H, "thickness": 1.6, "corner_radius": 3.0,
-              "outline": "rounded rectangle, 4 corner radius arcs of 3 mm",
+    "board": {"width": W, "height": H, "thickness": 1.6, "corner_radius": 4.0,
+              "outline": "rounded rectangle, corner radius 4 mm",
               "mounting_holes": [{"x": x, "y": y, "drill": 3.2, "keepout_diameter": 7.2} for x, y in
-                                 ((3.81, 3.81), (64.77, 3.81), (3.81, 156.21), (64.77, 156.21))]},
+                                 ((3.81, 3.81), (W - 3.81, 3.81), (3.81, H - 3.81), (W - 3.81, H - 3.81))]},
     "front": {
         "note": "Everything the user sees or touches is on the front. Solder tails of the front parts stick out of the back.",
         "antenna_end": "top edge (y = 0)",
@@ -40,11 +42,13 @@ m = {
                    "note": "5 mm LED with leads bent 90 degrees, dome beyond the top edge; pin 1 (square pad) is the cathode"},
         "ir_receiver": {"ref": "D1", "center": at("D1"), "faces": [0, -1], "body": [5.4, 4.3], "axis_height_above_board": 3.0,
                         "note": "BPW34-style photodiode bent to face the top edge; its package needs a clear IR window about 6 x 5 mm"},
-        "display": {"refs": ["DS1", "DS2"], "centers": [at("DS1"), at("DS2")], "module_body": [30.0, 14.0], "module_height": 7.0,
-                    "window_rect": {"x": 2.78, "y": 20.94, "w": 63.02, "h": 14.0},
-                    "note": "two 4-digit modules side by side; ASSUMED 30 x 14 mm bodies and 7 mm height: confirm with the module bought"},
-        "speaker": {"ref": "LS1", "center": at("LS1"), "diameter": 28.0, "thickness": 4.0, "faces": "front (grille holes over the cone)",
-                    "solder_pads": [pl["LS1"]["pads"]["1"], pl["LS1"]["pads"]["2"]]},
+        "display": {"refs": ["DS1", "DS2"], "centers": [at("DS1"), at("DS2")], "module_body": [30.0, 14.0], "module_height": 7.2, "digit_height": 9.2,
+                    "window_rect": {"x": at("DS1")[0] - 15, "y": at("DS1")[1] - 7, "w": at("DS2")[0] - at("DS1")[0] + 30, "h": 14.0},
+                    "note": "two 3641AS-style 4-digit modules side by side (30 x 14 x 7.2 mm, pin rows 10.16 mm apart), checked against the GNQ-3641 datasheet"},
+        "speaker": {"ref": "LS1", "center": list(SPK), "diameter": 28.0, "thickness": 4.0, "faces": "front (grille holes over the cone)",
+                    "front_clear_zone_radius": 13.5,
+                    "solder_pads": [pl["LS1"]["pads"]["1"], pl["LS1"]["pads"]["2"]],
+                    "note": "the speaker is glued over the clear zone; the board under it carries only silkscreen on the front, two short wires reach the pads"},
         "microphone": {"ref": "MK1", "center": at("MK1"), "diameter": 9.7, "height": 6.5, "faces": "front, bottom end (mouth end)",
                        "solder_pads": [pl["MK1"]["pads"]["1"], pl["MK1"]["pads"]["2"]]},
         "buttons": {
@@ -53,7 +57,7 @@ m = {
                       "note": "also the hang-up button: it resets the PIC and clears the display"}},
     },
     "dial": {
-        "center": list(DIAL), "radius": 28.5, "number_ring_radius": 20.32, "suggested_finger_hole_diameter": 9.5,
+        "center": list(DIAL), "radius": DIAL_R, "front_clear_zone_radius": 25.5, "number_ring_radius": RING_R, "suggested_finger_hole_diameter": 8.5,
         "rotation_to_dial": "clockwise from the digit to the finger stop",
         "finger_stop_angle_cw_from_top_deg": 120, "degrees_per_digit_of_travel": 30,
         "digit_positions": pl["_digits"],
@@ -64,19 +68,20 @@ m = {
                       "lever_direction_toward_dial_center": toward("SW2", DIAL), "closes_on": "each cam tooth during the return stroke (10 teeth for 10 pulses max)"},
             "off_normal": {"ref": "SW3", "center": at("SW3"), "pads": [pl["SW3"]["pads"]["1"], pl["SW3"]["pads"]["2"]], "body": [12.8, 6.5], "height_above_board": 10.2,
                            "lever_direction_toward_dial_center": toward("SW3", DIAL), "closes_on": "held closed whenever the dial is off its rest position"}},
-        "keep_clear": "the front surface inside the dial radius carries only silkscreen, the two microswitches and the TALK/CLEAR clear zone below it: the dial can sit 11 mm above the board",
+        "keep_clear": "inside the dial radius the front carries only silkscreen and the two microswitches (no pads, vias or front copper tracks): the dial can sit about 11 mm above the board",
     },
     "back": {
         "note": "Electronics and the battery holder are on the back. Back parts are mirrored footprints.",
-        "max_part_height": 16.0,
-        "battery_holder": {"ref": "BT1", "center": at("BT1"), "body": [50.0, 47.0], "height": 15.0, "pads": [pl["BT1"]["pads"]["1"], pl["BT1"]["pads"]["2"]],
-                           "note": "4 x AAA side by side, long axis along x; pad positions are placeholders until the holder's drawing is checked"},
+        "max_part_height": 13.0,
+        "battery_holder": {"ref": "BT1", "body_center": list(DIAL), "body": [53.0, 50.0], "height": 13.0, "lead_pads": [pl["BT1"]["pads"]["1"], pl["BT1"]["pads"]["2"]],
+                           "note": "a 4 x AAA holder with wire leads (Pololu 1145 size), stuck to the back behind the dial; its 6 in leads are shortened and soldered to the two pads (red to +)"},
+        "volume_trimmer": {"ref": "RV1", "center": at("RV1"), "optional": True, "body": [9.5, 9.5], "height": 4.9, "note": "optional: fit instead of R20 and R21; needs a screwdriver hole in the shell's back"},
         "power_switch": {"ref": "SW1", "center": at("SW1"), "handle_direction": [1, 0], "body": [10.0, 6.0], "height": 6.0,
                          "note": "slide switch near the right edge; the shell needs a slot there"},
         "regulator": {"ref": "U6", "center": at("U6"), "height": 4.6},
-        "tallest_parts": ["BT1 15 mm", "C21 220 uF electrolytic 12 mm", "X1 crystal 4.7 mm lying down", "ICs 5 mm"],
+        "tallest_parts": ["BT1 13 mm (behind the dial)", "C21 220 uF electrolytic 11 mm", "ICs 4 mm", "LM2940 lying flat 9 mm"],
     },
-    "silkscreen": {"front_title": "THE PHONE OF THE FUTURE at y = 14.6", "labels": ["TALK", "CLEAR", "MIC"]},
+    "silkscreen": {"front_title": "THE PHONE OF THE FUTURE near the top, orbit rings and rays around the dial and speaker, a YEAR 2000 badge at the bottom left", "labels": ["TALK", "CLEAR", "MIC"]},
 }
 os.makedirs(os.path.join(HERE, "..", "mechanical"), exist_ok=True)
 json.dump(m, open(os.path.join(HERE, "..", "mechanical", "interface.json"), "w"), indent=2)

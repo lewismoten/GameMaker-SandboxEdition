@@ -128,8 +128,19 @@ def pack(path, outdir, budget_mb=2.0):
     parts = []
     for name, m, mesh in walk(js):
         for k, (nm, col, vs, idx) in enumerate(prims(js, bin_, name, m, mesh)):
-            parts.append(dict(name=nm, col=col, vs=vs, idx=idx))
-    # one part per primitive; merge nothing. Decimate by snapping vertices to a grid if over budget.
+            parts.append(dict(name=nm, col=col, vs=[(v[0] * 1000, v[1] * 1000, v[2] * 1000) for v in vs], idx=idx))   # metres -> mm
+    merged = {}
+    for p in parts:
+        k = (p["name"], tuple(round(c, 3) for c in p["col"]))
+        if k in merged:
+            m0 = merged[k]
+            base = len(m0["vs"])
+            m0["vs"] = m0["vs"] + p["vs"]
+            m0["idx"] = m0["idx"] + [i + base for i in p["idx"]]
+        else:
+            merged[k] = dict(name=p["name"], col=p["col"], vs=list(p["vs"]), idx=list(p["idx"]))
+    parts = list(merged.values())
+    # one part per (node name, color); decimate by snapping vertices to a grid if over budget. Decimate by snapping vertices to a grid if over budget.
     snap = 0.0
     while True:
         verts, inds, meta = [], [], []
@@ -157,9 +168,10 @@ def pack(path, outdir, budget_mb=2.0):
         ys = [v[1] for v in nv] or [0]
         zs = [v[2] for v in nv] or [0]
         nm = p["name"]
-        kind = "board" if "board" in nm.lower() or ("PCB" in nm) else "component"
-        zc = (min(zs) + max(zs)) / 2
-        parts_out.append(dict(id=nm, kind=kind, side="back" if zc < 0 else "front", color=[round(c, 3) for c in p["col"]],
+        import re
+        kind = "component" if re.match(r"^[A-Z]{1,2}\d+$", nm) else "board"
+        yc = (min(ys) + max(ys)) / 2          # glTF y is up: negative = on the back of the board
+        parts_out.append(dict(id=nm, kind=kind, side="back" if yc < 0 else "front", color=[round(c, 3) for c in p["col"]],
                               bbox=[round(min(xs), 3), round(min(ys), 3), round(min(zs), 3), round(max(xs), 3), round(max(ys), 3), round(max(zs), 3)],
                               pos=dict(offset=len(vf), count=len(nv) * 3), idx=dict(offset=len(ii), count=len(ix))))
         for v in nv:
@@ -168,7 +180,7 @@ def pack(path, outdir, budget_mb=2.0):
     blob = struct.pack(f"<{len(vf)}f", *vf) + struct.pack(f"<{len(ii)}I", *ii)
     import os
     os.makedirs(outdir, exist_ok=True)
-    meta_json = dict(format="potf-parts-1", units="mm, as exported by KiCad (y is up in glTF)", snap_mm=snap,
+    meta_json = dict(format="potf-parts-1", units="mm; x = board x, y = height above the board mid-plane (up, negative on the back), z = board y (down the board)", snap_mm=snap,
                      floats=len(vf), indices=len(ii), binary="parts.bin", parts=parts_out)
     json.dump(meta_json, open(os.path.join(outdir, "parts.json"), "w"), separators=(",", ":"))
     open(os.path.join(outdir, "parts.bin"), "wb").write(blob)

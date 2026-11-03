@@ -959,4 +959,4 @@ It was designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction, 
 a small PIC16F84A simulator are project-owned MIT code. The schematic embeds symbols copied from
 the KiCad stock libraries (CC-BY-SA 4.0 with the KiCad libraries exception, KiCad Libraries
 Development Team). References: the ITU-T Q.23 DTMF frequencies, the MT8870D (Mitel/Zarlink/
-Microchip) and MAX7219 (Maxim Integrated) datasheets. The design is untested hardware.
+Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated) and GNQ-3641 (G-NOR) datasheets. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.

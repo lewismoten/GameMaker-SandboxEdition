@@ -9,8 +9,12 @@ start at pin 1 and would need per-part offsets for the rotated and mirrored copi
 """
 import math
 import os
+import sys
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "kicad", "3d")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from step_writer import write_step  # noqa: E402
+
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "kicad", "models")
 
 BLACK, GREY, SILVER = (0.08, 0.08, 0.09), (0.45, 0.45, 0.48), (0.78, 0.78, 0.8)
 TAN, BLUE, ORANGE, YELLOW = (0.80, 0.68, 0.48), (0.12, 0.25, 0.6), (0.9, 0.5, 0.12), (0.9, 0.8, 0.2)
@@ -113,8 +117,25 @@ def wrl(prims):
     return "\n".join(s) + "\n"
 
 
-def write_model(kind, variant, rot):
+def _poly(p):
+    """(CCW polygon in model coordinates (y up), z0, z1, color) for one primitive."""
+    if p[0] == "box":
+        _, cx, cy, z0, sx, sy, sz, col = p
+        cy = -cy
+        pts = [(cx - sx / 2, cy - sy / 2), (cx + sx / 2, cy - sy / 2), (cx + sx / 2, cy + sy / 2), (cx - sx / 2, cy + sy / 2)]
+        return pts, z0, z0 + sz, col
+    _, cx, cy, z0, d, h, col = p
+    cy = -cy
+    pts = [(cx + d / 2 * math.cos(2 * math.pi * i / 24), cy + d / 2 * math.sin(2 * math.pi * i / 24)) for i in range(24)]
+    return pts, z0, z0 + h, col
+
+
+def write_model(kind, variant, rot, side="F"):
+    """KiCad flips a back-side model about the x axis; the footprint's pads are already mirrored, so the baked
+    geometry for the back is turned 180 degrees extra (checked against the GLB export by glb_check.py)."""
     os.makedirs(OUT, exist_ok=True)
-    name = f"{kind}{'_' + variant if variant else ''}_r{rot % 360}.wrl"
-    open(os.path.join(OUT, name), "w").write(wrl(rotate(spec(kind, variant), rot)))
-    return name
+    base = f"{kind}{'_' + variant if variant else ''}_r{rot % 360}{'_back' if side == 'B' else ''}"
+    prims = rotate(spec(kind, variant), rot + (180 if side == "B" else 0))
+    open(os.path.join(OUT, base + ".wrl"), "w").write(wrl(prims))
+    write_step(os.path.join(OUT, base + ".step"), base, [_poly(p) for p in prims])
+    return base + ".wrl"

@@ -276,7 +276,10 @@ for ref, pl in placed.items():
                 chosen = (cx_, cy_, b)
                 break
         if chosen is None:
-            print("  no clear spot for", ref, key, s)
+            print("  no clear spot for", ref, key, s, "(value moved to the fab layer)" if key == "val" else "")
+            if key == "val":
+                TP[ref][key] = None
+                continue
             chosen = (cands[0][0], cands[0][1], tbox(*cands[0], s))
         TAKEN.append(chosen[2])
         TP[ref][key] = (chosen[0] - pl.x, chosen[1] - pl.y)
@@ -324,13 +327,18 @@ def footprint(fp, ref, value, side, a, nets, lib=False, kind=None, tp=None):
     bot = max(p[1] for p in cc) + 0.9
     xm = (min(p[0] for p in cc) + max(p[0] for p in cc)) / 2
     rp, vp = (xm, top), (xm, bot)
+    vlayer = silk
     if tp:
-        rp, vp = tp["ref"], tp["val"]
+        rp = tp["ref"]
+        if tp["val"] is None:
+            vlayer = fab
+        else:
+            vp = tp["val"]
     eff = f'(effects (font (size {TXT} {TXT}) (thickness 0.12)){mir})'
     hid = '(layer "%s") (hide yes) ' % fab
     props = [
         f'(property "Reference" "{ref}" (at {f(rp[0])} {f(rp[1])} 0) (layer "{silk}") (uuid "{uid()}") {eff})',
-        f'(property "Value" "{value}" (at {f(vp[0])} {f(vp[1])} 0) (layer "{silk}") (uuid "{uid()}") {eff})',
+        f'(property "Value" "{value}" (at {f(vp[0])} {f(vp[1])} 0) (layer "{vlayer}") (uuid "{uid()}") {eff})',
         f'(property "Footprint" "phone:{fp.name}" (at 0 0 0) {hid}(uuid "{uid()}") (effects (font (size 1 1) (thickness 0.15))))',
         f'(property "Datasheet" "" (at 0 0 0) {hid}(uuid "{uid()}") (effects (font (size 1 1) (thickness 0.15))))',
         f'(property "Description" "{fp.desc}" (at 0 0 0) {hid}(uuid "{uid()}") (effects (font (size 1 1) (thickness 0.15))))',
@@ -347,8 +355,8 @@ def footprint(fp, ref, value, side, a, nets, lib=False, kind=None, tp=None):
         pads.append(f'(pad "{pad.num}" thru_hole {shape} (at {f(px)} {f(py)}) (size {pad.d} {pad.d}) (drill {pad.drill}) (layers "*.Cu" "*.Mask") (remove_unused_layers no){net} (uuid "{uid()}"))')
     model = ""
     if kind and not lib:
-        mn = models3d.write_model(kind, variant(ref), a)
-        model = f'(model "${{KIPRJMOD}}/3d/{mn}" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))'
+        mn = models3d.write_model(kind, variant(ref), a, side)
+        model = f'(model "${{KIPRJMOD}}/models/{mn}" (offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 0)))'
     return props, out, pads, model
 
 

@@ -6,3 +6,4 @@ kicad/*.bak
 kicad/*-backups/
 kicad/fp-info-cache
 __pycache__/
+kicad/3d/

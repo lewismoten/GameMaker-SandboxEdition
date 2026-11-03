@@ -24,7 +24,7 @@ Untested design. Part numbers are examples to start a search; check each one's d
 | SW4,SW5 | 2 | TALK / CLEAR | 6 mm tactile switch | front | Omron B3F-1000 (6 mm tactile) | Digi-Key SW400-ND $0.35 | checked 2026-11-03: Digi-Key 21,251 in stock |
 | BT1 | 1 | 4xAAA | 4 x AAA battery holder with wire leads (stuck behind the dial), leads soldered to two pads | back | Pololu 1145 4 x AAA holder with 6 in leads (53 x 50 x 13 mm) | Pololu 1145 $2.54; Digi-Key SBH441A-ND $3.48 | checked 2026-11-03: prices read, Digi-Key 88 in stock |
 | R1,R6,R7,R12,R13,R14,R22 | 7 | 10k | resistors, see the schematic for each one's job | back | CFR-12JB-52-10K (Yageo 1/8 W, 5%) | Digi-Key CFR-12JB-52-10K | unchecked |
-| RV1 | 1 | 10k trimmer (optional) | OPTIONAL volume trimmer: fit it INSTEAD of R20 and R21 (wiper to the speaker amp) | back | CFR-12JB-52-10Ktrimmer(optional) (Yageo 1/8 W, 5%) | Digi-Key CFR-12JB-52-10Ktrimmer(optional) | unchecked |
+| RV1 | 1 | 10k trim | OPTIONAL volume trimmer: fit it INSTEAD of R20 and R21 (wiper to the speaker amp) | back | CFR-12JB-52-10Ktrim (Yageo 1/8 W, 5%) | Digi-Key CFR-12JB-52-10Ktrim | unchecked |
 | R2,R23,R24 | 3 | 100k | TALK line pull-down; MT8870 input resistor; MT8870 feedback (unity gain) | back | CFR-12JB-52-100K (Yageo 1/8 W, 5%) | Digi-Key CFR-12JB-52-100K | unchecked |
 | R3 | 1 | 2.2k | mic bias (powered only while TALK is held) | back | CFR-12JB-52-2.2K (Yageo 1/8 W, 5%) | Digi-Key CFR-12JB-52-2.2K | unchecked |
 | R4 | 1 | 1k | mic amp input | back | CFR-12JB-52-1K (Yageo 1/8 W, 5%) | Digi-Key CFR-12JB-52-1K | unchecked |
