@@ -136,7 +136,8 @@ address with no issue, open No. 2. `go:issue/1` and `go:issue/2` switch issues f
   tested in Node. Among them: the cover, contents, news, reviews, the Critic's Corner, the
   strategy guide, the interviews (`lewis.ts`, `claude.ts`), the Maximus feature, the web edition
   feature, `dosBugs.ts` (what testing in real DOS found), the Mail Bag (with its Design Desk of
-  readers' level troubles), `gripes.ts` (what players hate, and how to fix it), `readersPicks.ts` (polish
+  readers' level troubles), `gripes.ts` (what players hate, and how to fix it), `boxExtras.ts` (what's in
+  the box: code wheels, code sheets, cloth maps, red film and trinkets, with Wheel Mail), `readersPicks.ts` (polish
   over size: a finished four-level game beats a huge one and a tiny one), the character spotlight,
   the game directory, the BBS listings, the store, the reader service card and the ads
   (`ads.ts`; its inside front cover on the Owner's Guide's blueprint, `sandboxEditionAd.css`).

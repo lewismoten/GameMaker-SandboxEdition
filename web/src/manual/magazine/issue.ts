@@ -17,6 +17,7 @@ import { CLAUDE, CLAUDE_JUMP } from './sections/claude';
 import { WEB_EDITION, WEB_EDITION_JUMP } from './sections/webEdition';
 import { DOS_BUGS } from './sections/dosBugs';
 import { STRATEGY } from './sections/strategy';
+import { BOX_EXTRAS } from './sections/boxExtras';
 import { PASS_THROUGH } from './sections/passThrough';
 import { DIRECTORY } from './sections/directory';
 import { REVIEWS } from './sections/reviews';
@@ -66,6 +67,7 @@ export const SECTIONS: MagSection[] = [
   DOS_BUGS,
   CATALOGS_AD,
   STRATEGY,
+  BOX_EXTRAS,
   PASS_THROUGH,
   DIRECTORY,
   REVIEWS,
