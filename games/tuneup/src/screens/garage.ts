@@ -4,7 +4,6 @@
 // toys under it, THE CHEZ's charger on the right wall (it's electric: no gas cans), and a
 // concrete slab with its seams. Everything is placed from the floor line, so any floor works.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { gradient, shadeAt } from '../../../snowbound/src/art/draw';
 import { SP } from './art';
 
 const c = SP.c;
@@ -137,13 +136,13 @@ function light(p: Pixels): void {
   p.rect(132, 5, 56, 4, c('metal', 3)).rect(132, 5, 56, 1, c('metal', 4)).rect(134, 9, 52, 2, c('lamp', 4));
 }
 
-/** The slab: speckled concrete with its saw-cut seams running back to the wall. */
+/** The slab: flat concrete with a few chips and its saw-cut seams running back to the wall. */
 function slab(p: Pixels, F: number): void {
-  gradient(p, 0, F, 320, 200 - F, SP.r('floor'), 1, 3);
+  p.rect(0, F, 320, 200 - F, c('floor', 2));
   let s = 11;
-  for (let i = 0; i < (200 - F) * 5; i++) {
+  for (let i = 0; i < 40; i++) {
     s = (s * 1103515245 + 12345) & 0x7fffffff;
-    p.set((s >> 8) % 320, F + 2 + ((s >> 17) % (200 - F - 2)), c('floor', (s >> 4) % 2 ? 1 : 4));
+    p.set((s >> 8) % 320, F + 4 + ((s >> 17) % (200 - F - 4)), c('floor', (s >> 4) % 2 ? 1 : 3));
   }
   const vy = F - 70; // where the seams would meet
   for (const x of [40, 160, 280]) p.line(x, F + 2, 160 + ((x - 160) * (200 - vy)) / (F - vy), 200, c('floor', 1));
@@ -151,19 +150,23 @@ function slab(p: Pixels, F: number): void {
   p.rect(0, F, 320, 2, c('floor', 4));
 }
 
-/** The garage at dawn with the floor from `floor`. */
-export function garage(floor = 160, cell = 1): Pixels {
+/**
+ * The garage at dawn with the floor from `floor`. Flat colors and crisp lines (wood-panel
+ * seams, a sunrise in three bands, concrete with seams), not dithered gradients: long runs of
+ * one color are what an FLI stores in few bytes.
+ */
+export function garage(floor = 160): Pixels {
   const p = new Pixels(320, 200, c('wall', 3));
-  /** The wall's and window's gradients dithered in cells `cell` pixels wide: runs an FLI stores in fewer bytes. */
-  const shade = (x0: number, y0: number, w: number, h: number, ramp: number[], lo: number, hi: number) => {
-    for (let y = y0; y < y0 + h; y++)
-      for (let x = x0; x < x0 + w; x++) p.set(x, y, shadeAt(ramp, lo, hi, (y - y0) / Math.max(1, h - 1), Math.floor(x / cell), y));
-  };
-  shade(0, 0, 320, floor, SP.r('wall'), 2, 4);
-  for (let y = 8; y < floor - 4; y += 10) for (let x = 6; x < 320; x += 10) p.set(x, y, c('wall', 1));
-  // the window: sunrise through it
+  // wood panels: a seam and its highlight every 20 rows, a darker wainscot below the pegboard
+  for (let y = 18; y < floor - 2; y += 20) p.rect(0, y, 320, 1, c('wall', 2)).rect(0, y + 1, 320, 1, c('wall', 4));
+  p.rect(0, floor - 36, 320, 36, c('wall', 2)).rect(0, floor - 36, 320, 2, c('wall', 4));
+  for (let x = 40; x < 320; x += 60) p.rect(x, floor - 34, 1, 34, c('wall', 1));
+  // the window: sunrise through it in three flat bands, a sun and two clouds
   p.rect(200, 20, 96, 64, c('mach', 1));
-  shade(204, 24, 88, 56, SP.r('lamp'), 1, 4);
+  p.rect(204, 24, 88, 18, c('lamp', 2)).rect(204, 42, 88, 18, c('lamp', 3)).rect(204, 60, 88, 20, c('lamp', 4));
+  p.disc(226, 68, 9, c('yellow', 3)).disc(226, 68, 6, c('paint', 3));
+  p.rect(216, 36, 18, 3, c('paint', 3)).rect(220, 33, 10, 3, c('paint', 3));
+  p.rect(262, 48, 22, 3, c('paint', 3)).rect(268, 45, 10, 3, c('paint', 3));
   p.rect(246, 24, 4, 56, c('mach', 1)).rect(204, 50, 88, 4, c('mach', 1));
   light(p);
   pegboard(p, floor);

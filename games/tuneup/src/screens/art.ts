@@ -272,9 +272,9 @@ let blueprintPaper: Pixels | undefined;
 function blueprint(): Pixels {
   if (blueprintPaper) return blueprintPaper;
   const p = new Pixels(320, 200, c('navy', 0));
-  // blueprint paper: a grid
-  for (let y = 0; y < 200; y += 10) p.rect(0, y, 320, 1, c('navy', 1));
-  for (let x = 0; x < 320; x += 10) p.rect(x, 0, 1, 200, c('navy', 1));
+  // blueprint paper: a grid of 20-pixel squares (a finer one costs an FLI a packet per line crossed)
+  for (let y = 0; y < 200; y += 20) p.rect(0, y, 320, 1, c('navy', 1));
+  for (let x = 0; x < 320; x += 20) p.rect(x, 0, 1, 200, c('navy', 1));
   chezSide(p, 40, 30, { ...CHEZ_INK, outline: c('paint', 3) }, 'left', 6);
   return (blueprintPaper = p);
 }

@@ -30,11 +30,9 @@ import {
   toolPic,
   type Tool,
 } from './art';
-import { garage as garageWall } from './garage';
+import { garage } from './garage';
 
 const c = SP.c;
-/** The garage for a cartoon: its gradients dither in cells 4 wide (the FLI stores runs, not speckle). */
-const garage = (floor?: number) => garageWall(floor, 4);
 /** Frames a second: a wait of 5/70 s a frame. */
 export const SPEED = 5;
 
