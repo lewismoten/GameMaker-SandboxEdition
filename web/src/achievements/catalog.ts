@@ -803,7 +803,7 @@ export const ACHIEVEMENTS: readonly Achievement[] = [
     icon: '😉',
     category: 'found',
     hidden: true,
-    hint: 'Keep an eye on the velvet poster. Now and then it looks back.',
+    hint: 'Keep an eye on the velvet poster. Now and then it looks back: catch him at it.',
   },
   {
     id: 'desk-lume',
