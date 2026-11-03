@@ -4,7 +4,7 @@
 // With --workers N under a plain-node bundle (scripts/build-games.mjs) the trinkets are made in worker threads.
 // Lifted from Depth Perception's trinket tool; its output is byte for byte what it was.
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Worker, isMainThread, parentPort } from 'node:worker_threads';
 import { deflateRawSync } from 'node:zlib';
@@ -168,5 +168,9 @@ export async function runTrinketTool<D extends TrinketToolDef>(tool: TrinketTool
     delete (item as { log?: string }).log;
   }
   writeFileSync(manifestFile, JSON.stringify({ key, game, items }, null, 1) + '\n');
+  // the folder is build output the site serves: files no longer in the manifest (a game's earlier designs) go
+  const files = (i: Item) => [i.file, (i.colors as { file: string }).file, (i.supports as { file: string } | null)?.file ?? ''] as string[];
+  const kept = new Set(['manifest.json', ...items.flatMap(files)]);
+  for (const name of readdirSync(out)) if (!kept.has(name) && statSync(join(out, name)).isFile()) rmSync(join(out, name));
   process.stdout.write(`${`trinkets: ${items.length} made in ${((Date.now() - began) / 1000).toFixed(1)} s`}\n`);
 }

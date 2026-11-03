@@ -38,8 +38,12 @@ export function plate(k: FlatKind): D3 {
 export const tagOutline = (hx: number, hy: number, r: number): D2 => roundRect2(hx, hy, r);
 export const holeAt = (x: number, y: number, r: number): D2 => circle2(r, x, y);
 
-/** A die: a rounded cube of `size` mm with a dimple of radius `pipR` for each pip (the usual 1..6 on opposite faces summing to 7). */
-export function die(size: number, pipR: number, corner = size * 0.18): D3 {
+/**
+ * A die: a rounded cube of `size` mm with a dimple of radius `pipR` for each pip (the usual 1..6 on opposite faces summing to 7).
+ * The dimples are deep (about three quarters of a radius), so the pips read in plain light; `pips` is the union of them, to color
+ * the pips apart (a point on a dimple's surface has `pips` near zero).
+ */
+export function die(size: number, pipR: number, corner = size * 0.18): D3 & { pips: D3 } {
   const h = size / 2;
   const cube = roundBox3(0, 0, h, h, h, h, corner);
   const s = size * 0.25;
@@ -83,14 +87,16 @@ export function die(size: number, pipR: number, corner = size * 0.18): D3 {
       const [x, y, z] = map(u, v);
       dimples.push(sphere3(x, y, z, pipR));
     });
-  const sink = pipR * 0.35;
+  const sink = pipR * 0.75;
   place(1, (u, v) => [u, v, size + pipR - sink]);
   place(6, (u, v) => [u, v, -pipR + sink]);
   place(2, (u, v) => [h + pipR - sink, u, h + v]);
   place(5, (u, v) => [-h - pipR + sink, u, h + v]);
   place(3, (u, v) => [u, h + pipR - sink, h + v]);
   place(4, (u, v) => [u, -h - pipR + sink, h + v]);
-  return subtract3(cube, ...dimples);
+  const field = subtract3(cube, ...dimples) as D3 & { pips: D3 };
+  field.pips = union3(...dimples);
+  return field;
 }
 
 /** A regular polygon outline (a hexagonal badge, a shield point up), `n` sides, radius `r`. */
