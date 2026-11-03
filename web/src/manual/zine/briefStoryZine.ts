@@ -114,7 +114,7 @@ function back(volume: number): BriefStoryZinePage {
 }
 
 /** The short volumes fill their spare pockets with the title index of every volume, split evenly. */
-function indexPages(number: number, used: number): BriefStoryZinePage[] {
+function indexPages(used: number): BriefStoryZinePage[] {
   const parts = STORIES_PER_VOLUME - used;
   const all = sourceStories().map((entry, i) => ({ volume: Math.floor(i / STORIES_PER_VOLUME) + 1, story: entry }));
   const size = Math.ceil(all.length / Math.max(parts, 1));
@@ -124,7 +124,7 @@ function indexPages(number: number, used: number): BriefStoryZinePage[] {
 function volume(number: number, stories: Story[]): BriefStoryZineVolume {
   const interior = [
     ...stories.map((entry, i) => ({ page: i + 2, kind: 'story' as const, title: entry.title, text: entry.text, story: entry })),
-    ...indexPages(number, stories.length),
+    ...indexPages(stories.length),
   ];
   return { number, stories, pages: [cover(number, stories), ...interior, back(number)], printInstructions: instructions };
 }
