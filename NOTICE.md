@@ -956,3 +956,14 @@ _Technical Reference: Options and Adapters_ and Maxim / SMS Power's palette docu
 linked in the tools notices. The monochrome ramps, added skin/hair ramps and four LCD-green
 shades are project designs made by Lewis Moten using OpenAI Codex, under the project's MIT License.
 Exported player-page and native-download notices carry the reference palette credits.
+
+### The Phone of the Future (electronics kit)
+
+`games/year2000/phone/` holds a solderable toy-phone design: a KiCad 9 schematic and two-layer
+board, a PIC16F84A firmware in assembly, a bill of materials and a mechanical interface file.
+It was designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction, using KiCad
+(kicad-cli for ERC, DRC and exports) and gputils/gpasm. The circuit, footprints, generators and
+a small PIC16F84A simulator are project-owned MIT code. The schematic embeds symbols copied from
+the KiCad stock libraries (CC-BY-SA 4.0 with the KiCad libraries exception, KiCad Libraries
+Development Team). References: the ITU-T Q.23 DTMF frequencies, the MT8870D (Mitel/Zarlink/
+Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated) and GNQ-3641 (G-NOR) datasheets. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.
