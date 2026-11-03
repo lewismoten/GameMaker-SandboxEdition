@@ -254,7 +254,8 @@ for (const game of games)
 
 // the collector's checklist: all 26 tokens by number, a tick box each (score), and the series' hidden message line
 if (!only) {
-  for (const g of ORDER) if (!secret(g)) checklist.push({ no: ORDER.indexOf(g) + 1, name: NICKELS[g].top });
+  for (const g of ORDER)
+    if (!secret(g)) checklist.push({ no: ORDER.indexOf(g) + 1, name: NICKELS[g].bottom ? `${NICKELS[g].top} - ${NICKELS[g].bottom}` : NICKELS[g].top });
   const W = 190;
   const rowH = 9.5;
   const sheet = new LaserSheet(W, 28 + rowH * 13);
