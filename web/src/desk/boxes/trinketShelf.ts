@@ -8,54 +8,21 @@
 // loads when a trinket is first chosen.
 import './trinketShelf.css';
 import { h } from '../../editor/core/ui';
-import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
 import type { TrinketView } from './trinketGl';
-
-interface TrinketItem {
-  id: string;
-  title: string;
-  blurb: string;
-  file: string;
-  /** An STL that carries a color on each triangle, to show the 3MF's colors (the plain file may be one color). */
-  preview?: string;
-  triangles: number;
-  bytes: number;
-  mm: [number, number, number];
-  overhangMm2: number;
-  supports: { file: string; bytes: number } | null;
-  colors: { file: string; bytes: number; palette: [number, number, number][] };
-}
+import { loadTrinkets, trinketBase, trinketMesh, type TrinketItem } from './trinketData';
 
 const TURN = 0.3;
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-const meshes = new Map<string, Promise<Mesh>>();
-
-function loadMesh(url: string): Promise<Mesh> {
-  let p = meshes.get(url);
-  if (!p) {
-    p = Promise.all([import('@lewismoten/gamemaker-sandbox-tools/mesh/stl'), fetch(url)]).then(async ([{ readStl }, res]) => {
-      if (!res.ok) throw new Error(`${res.status}`);
-      return readStl(new Uint8Array(await res.arrayBuffer()));
-    });
-    p.catch(() => meshes.delete(url));
-    meshes.set(url, p);
-  }
-  return p;
-}
-
 /** The shelf for game `id`, or an element that stays hidden when the game has no trinkets. */
 export function trinketShelf(id: string): HTMLElement {
-  const base = `./trinkets/${id}/`;
+  const base = trinketBase(id);
   const shelf = h('section', { class: 'bc-trinkets', hidden: '', 'aria-label': 'Plastic trinkets' });
-  void fetch(`${base}manifest.json`)
-    .then((res) => (res.ok && res.headers.get('content-type')?.includes('json') ? (res.json() as Promise<{ items: TrinketItem[] }>) : undefined))
-    .then((m) => {
-      if (m?.items.length) {
-        shelf.append(...viewer(base, m.items));
-        shelf.hidden = false;
-      }
-    })
-    .catch(() => undefined);
+  void loadTrinkets(id).then((items) => {
+    if (items.length) {
+      shelf.append(...viewer(base, items));
+      shelf.hidden = false;
+    }
+  });
   return shelf;
 }
 
@@ -124,11 +91,7 @@ function viewer(base: string, items: TrinketItem[]): HTMLElement[] {
     wake();
   };
 
-  /** The mesh shown: with the 3MF's colors, or the same shape in one color. */
-  const meshOf = async (item: TrinketItem) => {
-    const mesh = await loadMesh(`${base}${item.preview ?? item.file}`);
-    return colors || !mesh.colors ? mesh : { positions: mesh.positions, indices: mesh.indices };
-  };
+  const meshOf = (item: TrinketItem) => trinketMesh(base, item, colors);
   const show = async () => {
     const item = items[at];
     const mine = ++showing;
