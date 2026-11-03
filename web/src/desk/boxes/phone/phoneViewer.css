@@ -1,0 +1,43 @@
+/* the phone kit in the box viewer (desk/boxes/phone/phoneViewer.ts); the buttons, panel and float are trinketShelf.css's */
+.trk-canvas.phone-canvas {
+  width: min(52vh, 90vw, 560px);
+  height: min(46vh, 80vw, 500px);
+  touch-action: none;
+}
+
+.phone-info[hidden] {
+  display: none;
+}
+
+.phone-explode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+}
+
+.phone-slider {
+  flex: 1;
+  min-width: 80px;
+  max-width: 260px;
+  min-height: 24px;
+  accent-color: #ffd84a;
+  cursor: pointer;
+}
+
+.phone-slider:focus-visible {
+  outline: 2px solid #ffd84a;
+  outline-offset: 2px;
+}
+
+.phone-say {
+  margin: 2px 0 0;
+  opacity: 0.75;
+}
+
+@media (max-width: 700px) {
+  .trk-canvas.phone-canvas {
+    width: min(34vh, 80vw);
+    height: min(34vh, 80vw);
+  }
+}
