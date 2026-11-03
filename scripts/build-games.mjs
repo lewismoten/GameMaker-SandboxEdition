@@ -197,24 +197,31 @@ async function worker() {
   }
 }
 const began = Date.now();
-// Depth's plastic trinkets (STL, 3MF and support files the site serves from web/public/trinkets/depth) are made from its models,
-// beside the games rather than after them: worker threads of one bundle (games/depth/tools/trinkets.ts), skipped when
-// they are already made from the same sources. They take about 15 s of CPU, which the games' own workers share.
-const trinkets =
-  ids.includes('depth') && (!only.length || only.includes('depth'))
-    ? (async () => {
-        const started = Date.now();
-        const made = await runEntry(
-          'trinkets',
-          { file: join(root, 'games/depth/tools/trinkets.ts') },
-          '../games/depth/tools/trinkets.ts',
-          ['--workers', String(Math.min(3, jobs)), ...(process.argv.includes('--force') ? ['--force'] : [])],
-          { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
-          'trinkets',
-        );
-        if (timing) console.log(`Depth trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
-      })()
-    : Promise.resolve();
+// The plastic trinkets of the games that mesh them from distance fields (STL, 3MF and support files the site serves from
+// web/public/trinkets/<game>): Depth's from its models, Realm's from its coins and tags. Each is made beside the games
+// rather than after them: worker threads of one bundle (games/<game>/tools/trinkets.ts, the shared pipeline of
+// web/packages/tools/src/mesh/trinketTool.ts), skipped when already made from the same sources (a key in manifest.json).
+// Depth's takes about 15 s of CPU, which the games' own workers share.
+const fieldTrinketGames = [
+  ['depth', 'Depth'],
+  ['realm', 'Realm'],
+];
+const trinkets = Promise.all(
+  fieldTrinketGames
+    .filter(([id]) => ids.includes(id) && (!only.length || only.includes(id)))
+    .map(async ([id, name]) => {
+      const started = Date.now();
+      const made = await runEntry(
+        `${id}-trinkets`,
+        { file: join(root, `games/${id}/tools/trinkets.ts`) },
+        `../games/${id}/tools/trinkets.ts`,
+        ['--workers', String(Math.min(3, jobs)), ...(process.argv.includes('--force') ? ['--force'] : [])],
+        { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+        `${id}-trinkets`,
+      );
+      if (timing) console.log(`${name} trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+    }),
+);
 if (pending.some((id) => logoUsers.has(id))) void logo();
 await Promise.all([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker)]);
 // The pixel-figure trinkets of the other games (games/kit/pixelTrinkets.ts: web/public/trinkets/<game>/) are meshed from the
