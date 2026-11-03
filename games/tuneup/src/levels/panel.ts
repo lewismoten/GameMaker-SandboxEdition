@@ -11,6 +11,8 @@
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { AIR, countedDoor, kit, type Kit } from '../blocks/common';
 import { baseSet } from '../blocks/sets';
+import { addCameo, placeCameo } from '../blocks/cameo';
+import { wattCameo } from '../../../kit/cameos';
 import type { Pal } from '../art/palette';
 import { CTR, MONEY, MON } from '../ids';
 import { MapBuilder, at, type Level } from './maps';
@@ -172,6 +174,8 @@ export function panelBlocks(scene: 'tune' | 'gauges') {
         p.disc(10, 12, 3, c('accent', 3));
       });
     }
+    // Watt, the repair robot, seeing to the dash's wiring (placed in the gauges' scene)
+    addCameo(k, 'watt', `face${PANEL.floor - 1}`, (host, use) => wattCameo(host, 'side', 0, 'ok', { use }));
     return k;
   };
 }
@@ -192,6 +196,7 @@ export function panel(scene: 'tune' | 'gauges') {
       m.fill(1, PANEL.dial + 1, w - 2, 1, 'trim.bottom');
       GAUGES.forEach((x, g) => m.set(x, PANEL.buttons, `gauge${g}`));
       m.set(RADIO_X, floor - 1, 'radio');
+      placeCameo(m, 'watt', `face${floor - 1}`, [[9, floor - 1]]);
     }
     m.set(PANEL.door, floor - 2, 'door.top').set(PANEL.door, floor - 1, 'door');
     m.link(PANEL.door, floor - 1);
