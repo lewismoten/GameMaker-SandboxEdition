@@ -197,23 +197,30 @@ async function worker() {
   }
 }
 const began = Date.now();
+// Depth's plastic trinkets (STL, 3MF and support files the site serves from web/public/trinkets/depth) are made from its models,
+// beside the games rather than after them: worker threads of one bundle (games/depth/tools/trinkets.ts), skipped when
+// they are already made from the same sources. They take about 15 s of CPU, which the games' own workers share.
+const trinkets =
+  ids.includes('depth') && (!only.length || only.includes('depth'))
+    ? (async () => {
+        const started = Date.now();
+        const made = await runEntry(
+          'trinkets',
+          { file: join(root, 'games/depth/tools/trinkets.ts') },
+          '../games/depth/tools/trinkets.ts',
+          ['--workers', String(Math.min(3, jobs)), ...(process.argv.includes('--force') ? ['--force'] : [])],
+          { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+          'trinkets',
+        );
+        if (timing) console.log(`Depth trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - started) / 1000).toFixed(1)} s)`);
+      })()
+    : Promise.resolve();
 if (pending.some((id) => logoUsers.has(id))) void logo();
-await Promise.all(Array.from({ length: Math.min(jobs, pending.length) }, worker));
+await Promise.all([trinkets, ...Array.from({ length: Math.min(jobs, pending.length) }, worker)]);
 if (timing)
   console.log(
     `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,
   );
-// Depth's plastic trinkets (STL files the site serves from web/public/trinkets/depth): made from its models, and
-// skipped when they are already made from the same sources (games/depth/tools/trinkets.ts)
-if (ids.includes('depth') && (!only.length || only.includes('depth'))) {
-  const began = Date.now();
-  const made = await run(process.execPath, [...viteNode, '../games/depth/tools/trinkets.ts', ...(process.argv.includes('--force') ? ['--force'] : [])], {
-    cwd: join(root, 'web'),
-    maxBuffer: 16 << 20,
-    timeout: 240_000,
-  });
-  if (timing) console.log(`Depth trinkets: ${made.stdout.trim().split('\n').at(-1)} (${((Date.now() - began) / 1000).toFixed(1)} s)`);
-}
 if (fallbacks.length) console.log(`Ran under vite-node (bundle failed): ${fallbacks.join(', ')}`);
 save(true);
 console.log('Game build outputs are ready.');
