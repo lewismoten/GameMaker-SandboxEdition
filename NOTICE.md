@@ -888,6 +888,12 @@ its open license): a ZIP package with `3D/3dmodel.model`, `[Content_Types].xml` 
 object per color with a base material color. The ZIP container is written by this project's own small
 writer (`web/packages/tools/src/mesh/zipFile.ts`); no 3MF or ZIP library is used.
 
+The meshes are thinned (`web/packages/tools/src/mesh/decimate.ts`) by quadric edge collapse, the
+method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quadric Error Metrics"
+(SIGGRAPH 1997), written from the paper with no code from any library; the published method is an
+algorithm, not licensed code. It was written with Anthropic Claude Sonnet 5.5 under Lewis Moten's
+direction.
+
 ### Tiny Shelf Classification
 
 The Library's call numbers (such as 614-MAH) use the **Tiny Shelf Classification**, dedicated to
