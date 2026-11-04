@@ -169,6 +169,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | teddy3            | `npx vite-node ../games/teddy3/tools/one.ts <file>`               | the bot plays one level module alone, before it joins the game                                                                                        |
 | year2000          | `npx vite-node ../games/year2000/tools/check.ts`                  | the bot plays all six levels in a row (`GOD=1` keeps it alive)                                                                                        |
 | year2000          | `npx vite-node ../games/year2000/tools/gendemo.ts`                | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                           |
+| switches          | `npx vite-node ../games/switches/tools/check.ts`                  | the bot pulls the lever and crosses six planks, falls in at the red planks with only the blue lever pulled, then crosses both bridges                 |
+| switches          | `npx vite-node ../games/switches/tools/demoCheck.ts`              | plays the title demo headless: scenes 2 3 3 (the one fall in level 2), no game over                                                                   |
+| switches          | `npx vite-node ../games/switches/tools/gendemo.ts`                | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                           |
+| switches          | `npx vite-node ../games/switches/tools/preview.ts [dir]`          | PNGs of the blocks, the hero, each level and every picture                                                                                            |
+| switches          | `npx vite-node ../games/switches/tools/shots.ts <dir>`            | pictures of the lessons (never on the disk) for the progress shots                                                                                    |
 
 The felt eggs have checks of their own where a game's route never goes near one
 (`depth/tools/egg.ts`, `realm/tools/eggcheck.ts`, `sleuth/tools/check.ts --egg`). The other
