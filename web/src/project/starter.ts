@@ -11,8 +11,40 @@ interface Listed {
 /** One of the Starters: an original game marked "series": "starter". */
 export const isStarterGame = (g: Listed): boolean => !!g.original && g.series === 'starter';
 
-/** The order the Starters are meant to be played in, easiest first (games/<id>); a starter not listed here goes after these, A to Z. */
-export const STARTER_ORDER = ['first-steps', 'keys-and-doors', 'meet-the-monsters', 'room-to-room', 'coins-and-score', 'watch-your-step'];
+/** The Starters' groups, in learning order, like the Bard's COLLECTIONS (bizarre.ts): a name, a line about it and the game ids in order. A group with no built game is hidden. Each group's title screens have their own look (games/kit/starter groupStyle). */
+export const STARTER_GROUPS: { name: string; tag: string; games: string[] }[] = [
+  {
+    name: 'The Basics',
+    tag: 'One idea at a time: moving, doors, monsters, rooms.',
+    games: ['first-steps', 'keys-and-doors', 'meet-the-monsters', 'room-to-room', 'coins-and-score', 'watch-your-step'],
+  },
+  {
+    name: 'Game Feel',
+    tag: 'How a game moves and pushes back.',
+    games: ['power-up', 'throw-it', 'health-and-hearts', 'slippery-and-bouncy', 'gravity-on-gravity-off'],
+  },
+  { name: 'Telling a Story', tag: 'Words, pictures and sound.', games: ['say-something', 'pictures-and-cartoons', 'sounds-and-music'] },
+  { name: 'Putting It Together', tag: 'Timing, switches and a whole small game.', games: ['beat-the-clock', 'switches', 'your-first-game'] },
+  { name: 'Showcase Tricks', tag: 'How the big games do their big moments.', games: [] },
+];
+
+/** The order the Starters are meant to be played in, easiest first: the groups' games in order (games/<id>); a starter not listed goes after these, A to Z. */
+export const STARTER_ORDER: string[] = STARTER_GROUPS.flatMap((g) => g.games);
+
+/** The Starters sorted into their groups (in the groups' order, each in learning order); a starter in no group goes last under `More Starters`. Groups with no game are left out. */
+export function byStarterGroup<T extends { id: string; title: string }>(list: readonly T[]): { name: string; tag?: string; games: T[] }[] {
+  const filed = new Set(STARTER_ORDER);
+  const out: { name: string; tag?: string; games: T[] }[] = STARTER_GROUPS.map((g) => ({
+    name: g.name,
+    tag: g.tag,
+    games: byStarterOrder(list.filter((x) => g.games.includes(x.id))),
+  }));
+  out.push({ name: 'More Starters', games: byStarterOrder(list.filter((x) => !filed.has(x.id))) });
+  return out.filter((g) => g.games.length);
+}
+
+/** The group a Starter is in, or undefined. */
+export const starterGroupOf = (id: string): string | undefined => STARTER_GROUPS.find((g) => g.games.includes(id))?.name;
 
 /** The Starters in learning order (STARTER_ORDER), then any others A to Z by title. */
 export function byStarterOrder<T extends { id: string; title: string }>(list: readonly T[]): T[] {

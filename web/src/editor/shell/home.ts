@@ -207,7 +207,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     setTimeout(() => (live.textContent = text), 50);
   };
   const packer = tilePacker(tiles);
-  const pack = () => packer.pack(isByMaker(current), !!search.value.trim(), current === 'imported');
+  const pack = () => packer.pack(isByMaker(current), !!search.value.trim(), current === 'imported' || current === 'starter');
   const packWatch = new ResizeObserver(() => pack());
   packWatch.observe(tiles);
   atEnd(() => packWatch.disconnect()); // or it holds this page for good

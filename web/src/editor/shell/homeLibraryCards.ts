@@ -4,6 +4,7 @@
 import { walkTile } from './homeWalkBadge';
 import { h } from '../core/ui';
 import { byCollection } from '../../project/bizarre';
+import { byStarterGroup } from '../../project/starter';
 import { allNotes, ratingOf } from '../../imported/gameNotes';
 import { groupByRating, ratingName, starsText } from '../../imported/ratings';
 import { gameTile, type HomeGame } from './homeCards';
@@ -40,28 +41,31 @@ export function libraryCards(lib: HomeLibrary, c: Category, ratingFilter: Return
     // the Bard's games under his collections, in the flyer's order, and Gameware and
     // Shareware by who made them (homeAuthors.ts), packed into as few rows as they fit
     // (homeTilePack.ts), each tile telling its group
-    const sections: { name: string; count?: number; games: { g: HomeGame }[] }[] =
-      c === 'bizarre'
-        ? byCollection(lib.gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g }))).map((sec) => ({
-            ...sec,
-            games: [...sec.games].sort((a, b) => a.g.title.localeCompare(b.g.title, undefined, { numeric: true, sensitivity: 'base' })),
-          }))
-        : isByMaker(c)
-          ? byMaker(lib.gamesOf(c)).map((m) => ({ name: m.name, count: m.games.length, games: m.games.map((g) => ({ g })) }))
-          : c === 'imported' && lib.sort === 'rating'
-            ? groupByRating(rated, (g) => ratingOf(g.project!.id, notes)).map((grp) => ({
-                name: grp.rating ? `${starsText(grp.rating)} ${ratingName(grp.rating)}` : 'Unrated',
-                count: grp.items.length,
-                games: grp.items.map((g) => ({ g })),
-              }))
-            : [];
+    const sections: { name: string; tag?: string; count?: number; games: { g: HomeGame }[] }[] =
+      c === 'starter'
+        ? byStarterGroup(lib.gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', title: g.title, g })))
+        : c === 'bizarre'
+          ? byCollection(lib.gamesOf(c).map((g) => ({ id: g.entry?.id ?? '', g }))).map((sec) => ({
+              ...sec,
+              games: [...sec.games].sort((a, b) => a.g.title.localeCompare(b.g.title, undefined, { numeric: true, sensitivity: 'base' })),
+            }))
+          : isByMaker(c)
+            ? byMaker(lib.gamesOf(c)).map((m) => ({ name: m.name, count: m.games.length, games: m.games.map((g) => ({ g })) }))
+            : c === 'imported' && lib.sort === 'rating'
+              ? groupByRating(rated, (g) => ratingOf(g.project!.id, notes)).map((grp) => ({
+                  name: grp.rating ? `${starsText(grp.rating)} ${ratingName(grp.rating)}` : 'Unrated',
+                  count: grp.items.length,
+                  games: grp.items.map((g) => ({ g })),
+                }))
+              : [];
     cards =
-      sections.length > 1
+      sections.length > 1 || c === 'starter'
         ? sections.flatMap((sec, n) => [
             h(
               'h3',
               { class: `lib-sub${sec.games.length === 1 ? ' lib-sub-one' : ''}`, id: `lib-sub-${n}`, dataset: { group: String(n) } },
               sec.name,
+              sec.tag ? h('span', { class: 'lib-sub-tag' }, ` · ${sec.tag}`) : null,
               sec.count ? h('span', { class: 'lib-sub-count' }, ` · ${sec.count} game${sec.count === 1 ? '' : 's'}`) : null,
             ),
             ...sec.games.map((x) => {
