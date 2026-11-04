@@ -64,7 +64,7 @@ function coin(p: Pixels, pal: Pal, x: number, y: number): void {
   p.disc(x, y, 5, pal.c('gold', 0)).disc(x, y, 4, pal.c('gold', 3)).disc(x, y, 2.4, pal.c('gold', 4));
 }
 
-/** A gold key, about 40x20, with its ring at (x, y): a floating prize well above the hero's head. */
+/** A gold key, about 40x20, with its ring at (x, y): a floating prize at the hero's waist height. */
 function bigKey(p: Pixels, pal: Pal, x: number, y: number): void {
   const g = pal.r('gold');
   p.disc(x + 9, y + 9, 9, g[1])
@@ -79,7 +79,7 @@ function bigKey(p: Pixels, pal: Pal, x: number, y: number): void {
 
 /**
  * The title picture: the name over a sunny scene with the hero and a door. `prize` is what floats
- * high above the way between them: a straight row of coins (the hero in mid-jump) or a key (walking).
+ * between them: a straight row of coins at head height (the hero ready to hop) or a key at his waist (walking).
  */
 export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string, prize: 'coins' | 'key' = 'coins'): Pixels {
   const p = scene(pal, book, 160);
@@ -91,11 +91,11 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, n
   if (prize === 'coins') {
     // a shadow on the grass, and the hero a little off it
     p.rect(44, 158, 32, 3, pal.c('grass', 1));
-    scaleBlit(p, hero, 40, 160 - 80 - 18, 2);
-    for (let i = 0; i < 4; i++) coin(p, pal, 124 + i * 26, 82);
+    scaleBlit(p, hero, 40, 160 - 80 - 4, 2);
+    for (let i = 0; i < 4; i++) coin(p, pal, 124 + i * 26, 76);
   } else {
     standing(p, hero, 40, 160, 2);
-    bigKey(p, pal, 130, 70);
+    bigKey(p, pal, 130, 118);
   }
   standing(p, door, 236, 160, 2);
   return p;
