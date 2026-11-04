@@ -52,6 +52,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- The editor's file list no longer jumps when you click a file: scrolled far down (the Slide shows group, say), each click used to slide the list by a few lines, so you had to scroll again after every click. It now stays where you left it.
 - The home page's games list works by keyboard: it is one Tab stop, the arrows, Home and End move between games, and Enter or a click on a game features it and moves focus to its Play button, so a second Enter plays. Each game says its collection and place ("3 of 18"), picking one is announced, and the focus ring on games and on Play no longer looks like the blue button style.
 - Small phones (375 px iPhones, 360 px Android): the header's ⋯ menu is no longer cut off, the "Building…" notice closes when the file is saved (one notice at a time on a phone, at the bottom edge), a second tap on Download while it builds does nothing instead of saving the file twice, and Game assets has room for the cards: search waits behind a 🔍 button, the card count lines go, card names are short, and a game opened to look inside has a one-row read-only bar.
 - Depth Perception 1.4: THE CHEZ shows its back window, lamps and plate as it drives off in the ending, and turned figures keep their paint (Doc Leo's green tie on his purple shirt).
