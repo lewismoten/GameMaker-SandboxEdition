@@ -5,6 +5,8 @@ Changes to `@lewismoten/gamemaker-sandbox-engine`, released as `engine-v*` tags.
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-11-04
+
 Live sound control, a hook for life losses, and fixes to scrolling and picture decoding.
 
 ### Added
@@ -36,5 +38,6 @@ for every Game-Maker file format, OPL2 and CMF audio, screen, input and fonts.
 
 - The engine, scoped as `@lewismoten/gamemaker-sandbox-engine` and published to GitHub Packages from version tags.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.1.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.3.0...HEAD
+[3.3.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/engine-v3.1.0...engine-v3.3.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/engine-v3.1.0

@@ -5,6 +5,8 @@ Changes to `@lewismoten/gamemaker-sandbox-tools`, released as `tools-v*` tags. T
 
 ## [Unreleased]
 
+## [3.4.0] - 2026-11-04
+
 Most of the game-building kit moves into the package, with new tools for FLI shrinking, palettes, disk diffs,
 embroidery and 3D-printable and laser models.
 
@@ -46,5 +48,6 @@ The first release of the development tools as an npm package: drawing, palettes,
 - CP437 and micro text drawn as indexed game pixels, with documented font, text-effect and lighting APIs.
 - Reusable color ramps and time-of-day VGA lighting.
 
-[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.1.0...HEAD
+[Unreleased]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.4.0...HEAD
+[3.4.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/compare/tools-v3.1.0...tools-v3.4.0
 [3.1.0]: https://github.com/lewismoten/GameMaker-SandboxEdition/releases/tag/tools-v3.1.0
