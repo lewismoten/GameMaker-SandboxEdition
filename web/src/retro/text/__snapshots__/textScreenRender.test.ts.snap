@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TextScreen render > gives the reference pixels for a scripted run 1`] = `
+[
+  "d187afca7b9f9debd0cb66a4e7e7902592c6bf69",
+  "a86e8f6e7042e52fc55cdd6de72b8e612b5324c8",
+  "8606198398a15e9ec0652ff33e3b1d9fa1f8cbd8",
+  "2a63be155e99131b4442d9d2211b5f9e9069bf86",
+  "09dbf87c68e37e14d3ba4026cb1ca4cdb5faade4",
+  "0226fe68fbd1e3152c9a881a7ac5edfe22ecebd2",
+  "9d5e5d21bf3376a659657699aeb1802c3699f6c6",
+  "0226fe68fbd1e3152c9a881a7ac5edfe22ecebd2",
+  "9d5e5d21bf3376a659657699aeb1802c3699f6c6",
+  "9d5e5d21bf3376a659657699aeb1802c3699f6c6",
+  "1a536cc5a6428babfda8e15f1ed61a9480ed8531",
+  "baab36449b0432a66d124a625419c37b4d302af3",
+  "5afa3e8632845798f7d93394e482b71a5085e78d",
+  "83dbedabc1ef23a309e9da24e2b7693a37e05e6e",
+  "a1304dfa2fc3d01265c714633158510c3cd94f92",
+]
+`;
