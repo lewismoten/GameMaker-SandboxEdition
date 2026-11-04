@@ -120,7 +120,7 @@ function offlineFiles(bundle: Bundle): [string, number, number][] {
     !secret.some((dir) => f.startsWith(dir)) &&
     // the web player plays loose game folders from a web server, never from the offline copy; the 3D-print trinkets (several
     // megabytes of STL and 3MF) download when a box or link asks for one
-    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|web-player\.html$|player\/|trinkets\/|laser\/)/.test(f) &&
+    !/^(og\/|og-image\.|robots\.txt$|sitemap\.xml$|llms\.txt$|sw\.js$|index\.html$|archive\.html$|web-player\.html$|player\/|trinkets\/|laser\/)/.test(f) &&
     (!/^games\/(gameware|shareware|originals)\//.test(f) || /\.(zip|gmpak)$|\/walkthrough\.json\.gz$/.test(f));
   return [...sources]
     .filter(([f]) => wanted(f))
@@ -311,6 +311,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         play: resolve(__dirname, 'play.html'),
         dos: resolve(__dirname, 'dos.html'), // the PC on its own (src/dosPage)
+        archive: resolve(__dirname, 'archive.html'), // fetches every file for a web archive; nothing links to it (src/archive)
       },
       output: { manualChunks: playChunks(), onlyExplicitManualChunks: true },
     },
