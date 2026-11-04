@@ -3,11 +3,12 @@
 // another. Each room is painted on a Grid (a block a character, see games/kit/starter/map.ts),
 // given its signs, and told where its exits are and where a hero arrives.
 //
-//   Level 1, Out the Door: START has a door to INSIDE; INSIDE has no door, only an open archway in its right wall.
+//   Level 1, Out the Door: START has a door to INSIDE; INSIDE has no door, only a brick archway near its right end.
 //   Level 2, There and Back: a house. The HALL has a door to the KITCHEN and one to the BEDROOM, each
 //     with a door back; a gold door up on the HALL's ledge is shut until the kitchen's key comes along.
 //   Level 3, Two Doors: the FORK has two doors, to the GARDEN and to the ATTIC, and each leads on to the end.
 import { Book } from '../../kit/starter/book';
+import { addArchBrick } from './archBrick';
 import { addStarterBlocks } from '../../kit/starter/blocks';
 import { Grid } from '../../kit/starter/grid';
 import { addLockBlocks } from '../../kit/starter/locks';
@@ -68,6 +69,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   addLockBlocks(book, pal);
   const signs = {} as Record<SignName, Sign>;
   for (const [key, [name, words, w]] of Object.entries(SIGNS)) signs[key as SignName] = addSign(book, pal, name, words, w, key === 'exit' ? 1 : 2);
+  addArchBrick(book, pal);
   return { book, signs };
 }
 
@@ -127,9 +129,10 @@ function start(book: Book, s: Record<SignName, Sign>): Room {
 function inside(book: Book, s: Record<SignName, Sign>): Room {
   const g = base(30);
   doorway(g, 3);
-  // the archway: a brick wall two blocks thick at the right end with a gap two blocks high at ground level;
-  // the hero walks through the gap, and touching its far block is the exit
-  g.col(29, 0, 9, ' ').fill(28, 0, 2, 8, 'B');
+  // the archway: two brick pillars stand on the ground (x 24 and 28), a two-block lintel spans them (rows 6-7),
+  // and sky shows above and through it; the opening is 3 wide and 2 high, and touching its middle block is the exit.
+  // Its bricks ('a') are background, so the hero walks in under it from the left
+  g.fill(24, 6, 5, 2, 'a').col(24, 8, 9, 'a').col(28, 8, 9, 'a');
   g.row(9, 11, 15, 'c');
   scenery(
     g,
@@ -137,13 +140,13 @@ function inside(book: Book, s: Record<SignName, Sign>): Room {
       [8, 1],
       [20, 2],
     ],
-    [10, 26],
-    [17, 24],
+    [10, 17],
+    [8, 23],
   );
   const m = built(book, g);
   place(m, 5, s.came);
-  place(m, 22, s.out);
-  return room('inside', 'Inside', m, { archway: at(29, 9) }, { door: at(3, 9) });
+  place(m, 19, s.out);
+  return room('inside', 'Inside', m, { archway: at(26, 9) }, { door: at(3, 9) });
 }
 
 /** Level 2, the hall: a kitchen door on the left, a bedroom door on the right, and a gold door on the ledge above. */

@@ -5,6 +5,7 @@
 //   H ladder       c coin      k key      ^ spikes   b bush     f flower    ( ) a cloud
 //   s S the entrance (top, bottom): you start in it    e E the exit door (top, bottom)
 //   g gumdrop      z buzzer    n shelly   X a hedge you can't walk through
+//   a archBrick (Room to Room's archway: brick the hero walks in front of)
 //   (locks.ts) K silver key   L gold gate, l its arch   M silver gate, m its arch
 //
 // Signs are stamped on top with sign(): the board's top-left block, the words' name.
@@ -37,6 +38,7 @@ const LEGEND: Record<string, string> = {
   e: 'doorTop',
   E: 'doorBottom',
   X: 'edge',
+  a: 'archBrick',
   K: 'keySilver',
   L: 'gate',
   l: 'gateTop',

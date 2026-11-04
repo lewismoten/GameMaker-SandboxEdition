@@ -53,7 +53,7 @@ export async function outTheDoor(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(16, 'the coins'), 'the second room: coins');
   coins(bot, score, 10, 'level 1 before the archway');
   const second = here(bot);
-  await leave(bot, bot.walk(29, 'the archway'), 'the archway');
+  await leave(bot, bot.walk(26, 'the archway'), 'the archway');
   if (here(bot) === second) throw new Error('the archway did not change the scene');
 }
 
