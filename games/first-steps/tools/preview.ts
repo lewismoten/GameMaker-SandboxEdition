@@ -29,8 +29,8 @@ const poses: [string, string][] = [
   ['stand.top', 'walk2'],
   ['stand.top', 'walk3'],
   ['cheer.top', 'jump'],
-  ['front.top', 'climb0'],
-  ['look.top', 'climb1'],
+  ['back.top', 'climb0'],
+  ['back.top', 'climb1'],
   ['hurt.top', 'hurt'],
 ];
 const sheet = new Pixels(poses.length * 24 + 4, 44, sky);

@@ -29,5 +29,6 @@
       ["climb.map", 12, 6]
     ],
     "rating": "Everyone"
-  }
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
 }
