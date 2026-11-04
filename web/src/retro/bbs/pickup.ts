@@ -4,17 +4,12 @@
 // call drops. Returns what was said, for the screen.
 import { pcOutput } from '../computer/pcAudio';
 import { dataNoise, Line } from './modem';
+import { YELLS } from '../../audio/phone/phoneScript';
 
 export interface Overheard {
   who: string;
   words: string;
 }
-
-const YELLS: [who: 'mom' | 'dad', words: string][] = [
-  ['mom', 'Hello? Hello?! What is that screeching? Is that the computer again? Get off the phone, I need to make a call!'],
-  ['dad', 'Hello? HELLO? What in the world is that racket? Are you on that bulletin board again? I am expecting a call from work!'],
-  ['mom', 'Hello? Who is this? Oh, for crying out loud, it is that modem again! I have been trying to call Grandma all evening!'],
-];
 
 /** The click of an extension lifted, and the line's crackle after it (seconds of sound). */
 function click(ctx: AudioContext): number {
@@ -45,12 +40,12 @@ function click(ctx: AudioContext): number {
  * call drops while they are still at it).
  */
 export async function pickUpExtension(ctx: AudioContext | undefined): Promise<Overheard> {
-  const [who, words] = YELLS[Math.floor(Math.random() * YELLS.length)];
+  const { voice: who, text: words } = YELLS[Math.floor(Math.random() * YELLS.length)];
   const wait = ctx ? click(ctx) : 0.6;
-  const { speak, VOICES } = await import('../../audio/voices');
+  const [{ VOICES }, { speakLine }] = await Promise.all([import('../../audio/voices'), import('../../audio/phone/phonePlayer')]);
   const v = VOICES[who];
   await new Promise((r) => setTimeout(r, wait * 1000));
   // louder and faster than on the phone: they are upset
-  void speak(words, { ...v, rate: v.rate * 1.1, pitch: v.pitch * 1.05 }, new AbortController().signal);
+  void speakLine(words, words, { ...v, rate: v.rate * 1.1, pitch: v.pitch * 1.05 }, new AbortController().signal);
   return { who: v.who, words };
 }

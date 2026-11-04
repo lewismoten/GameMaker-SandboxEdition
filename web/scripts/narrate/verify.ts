@@ -37,6 +37,7 @@ function args(argv: string[]): Record<string, string | true> {
 }
 
 async function loadLines(file?: string): Promise<(Line & { speaker?: string })[]> {
+  if (file === 'phone') return (await import('./phoneLines')).phoneLines();
   if (file) return JSON.parse(readFileSync(file, 'utf8'));
   const path = fileURLToPath(new URL('../../src/tour/lines', import.meta.url));
   const { tourLines } = (await import(/* @vite-ignore */ path)) as { tourLines: () => (Line & { speaker: string })[] };

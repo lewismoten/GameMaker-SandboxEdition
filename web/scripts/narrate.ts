@@ -20,7 +20,7 @@ import { CLIP_OGG, clearestWindow, normalize, readMono, shiftVoice, writeOgg } f
 import { clipPath, indexJson, spokenOf, lineProblems, planTakes, refreshPlaces, staleIds, textHash, type Line, type VoiceIndex } from './narrate/lineIndex';
 import { joinPieces, splitMode, splitStops, stopGaps, stretchPauses } from './narrate/split';
 import { PocketTts, randomSource } from './narrate/pocketTts';
-import { voiceReadme } from './narrate/voiceReadme';
+import { voiceReadme, PHONE_README } from './narrate/voiceReadme';
 import { loadKokoro, type Kokoro } from './narrate/kokoro';
 
 const WORKSPACE = join(homedir(), 'Documents/rivers-of-memory-workspace');
@@ -61,6 +61,7 @@ function args(argv: string[]) {
 }
 
 async function loadLines(o: Record<string, string | true>): Promise<Line[]> {
+  if (o.lines === 'phone') return (await import('./narrate/phoneLines')).phoneLines();
   if (typeof o.lines === 'string') return JSON.parse(readFileSync(need(o.lines, 'lines file'), 'utf8'));
   // a path worked out at run time, so this file builds without the tour
   const path = fileURLToPath(new URL('../src/tour/lines', import.meta.url));
@@ -118,7 +119,7 @@ async function main() {
     refreshPlaces(lines, index);
     mkdirSync(out, { recursive: true });
     writeFileSync(indexFile, indexJson(index));
-    writeFileSync(join(out, 'README.md'), voiceReadme(lines, index));
+    writeFileSync(join(out, 'README.md'), voiceReadme(lines, index, o.lines === 'phone' ? PHONE_README : undefined));
   };
   if (!todo.length) return void save();
 
