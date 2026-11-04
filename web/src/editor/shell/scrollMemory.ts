@@ -38,11 +38,28 @@ export const savedScroll = (): Pos => seen.get(location.hash);
 export function restoreScroll(main: HTMLElement, at: Pos): void {
   const hash = location.hash;
   if (!at || (!at.top && !at.win)) return;
-  for (const wait of [0, 250, 800]) {
-    setTimeout(() => {
-      if (location.hash !== hash) return;
-      main.scrollTop = at.top;
-      window.scrollTo(0, at.win);
-    }, wait);
-  }
+  // Content arrives late (editors load on demand): try now, again whenever the page changes size
+  // (until it is tall enough to reach the spot), and give up after 3 s or when the reader scrolls.
+  const apply = () => {
+    main.scrollTop = at.top;
+    window.scrollTo(0, at.win);
+  };
+  const reached = () => main.scrollTop >= at.top - 1 && Math.abs(window.scrollY - at.win) <= 1;
+  apply();
+  const watch = new ResizeObserver(() => {
+    if (location.hash !== hash) return stop();
+    apply();
+    if (reached()) stop();
+  });
+  const timer = setTimeout(() => stop(), 3000);
+  const stop = () => {
+    clearTimeout(timer);
+    watch.disconnect();
+    main.removeEventListener('wheel', stop);
+    main.removeEventListener('touchstart', stop);
+  };
+  for (const e of main.children) watch.observe(e);
+  watch.observe(main);
+  main.addEventListener('wheel', stop, { passive: true, once: true });
+  main.addEventListener('touchstart', stop, { passive: true, once: true });
 }

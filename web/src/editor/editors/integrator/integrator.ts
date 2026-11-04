@@ -47,6 +47,8 @@ import { boardsController } from './boardsController';
 import { BOARD_WORLD } from './boardLayout';
 import type { Stub } from './boardPaint';
 import { viewState } from '../../../urlState';
+import { onViewChange } from '../../shell/viewSync';
+import { usesLine } from '../../shell/usedBy';
 import { startingAt } from './startAt';
 import { fileUndo } from '../../core/fileUndo';
 import { screensAndSongs } from './sceneSlots';
@@ -697,6 +699,7 @@ registerEditor(['gam'], (host, owner, file) => {
           { style: 'margin:0' },
           kind === 'start' ? 'Start scene (title & menu)' : kind === 'end' ? 'End scene (game won / lost)' : `Level scene #${selected}`,
         ),
+        usesLine(project, s.files),
         textField(
           `Description (the start scene’s is the game title; ${upTo(SCENEDESCLEN - 1)})`,
           () => s.desc,
@@ -892,7 +895,20 @@ registerEditor(['gam'], (host, owner, file) => {
   toolsSize.observe(boards.el);
   toolsSize.observe(boards.tabs);
   requestAnimationFrame(fit);
+  // a link to this game with another ?scene= (Used by, Uses, Back, Forward) selects that scene
+  const stopView = onViewChange(() => {
+    const n = view.num('scene');
+    if (n === undefined || n === selected || !usedScenes(game).includes(n)) return;
+    selected = n;
+    boards.reveal(n);
+    centerOn(n);
+    boards.refresh();
+    renderPanel();
+    renderSide();
+    draw();
+  });
   return () => {
+    stopView();
     stopKeys();
     stopWatching();
     resize.disconnect();

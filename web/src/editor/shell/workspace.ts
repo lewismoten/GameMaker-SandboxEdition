@@ -31,7 +31,8 @@ import { fileActions } from './fileActions';
 import { foldHint } from './hintFold';
 import { SHORT } from '../../edition';
 import { noteOpened, quickOpen } from './quickOpen';
-import { usedByLine, deleteMessage } from './usedBy';
+import { usedByLine, mapUsesLine, deleteMessage } from './usedBy';
+import { viewChanged } from './viewSync';
 import { firstStepsState, notePlayed } from './firstSteps';
 import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
@@ -595,6 +596,7 @@ export class Workspace implements AssistantHost {
   navigate(file?: string): void {
     if (file && this.project.files.has(file)) {
       if (this.current !== file) this.open(file);
+      else viewChanged(); // same file, other settings (?scene=…): the editor follows the address
       return;
     }
     const raw = currentRoute().params.assets;
@@ -755,6 +757,7 @@ export class Workspace implements AssistantHost {
         ),
       ),
       isGam ? this.nextSteps() : usedByLine(this.project, file),
+      kindOf(file) === 'map' ? mapUsesLine(this.project, file) : null,
       body,
     );
     void this.mountEditor(body, file);

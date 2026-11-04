@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- A "Uses" line beside "Used by": a scene lists the files it is made of and a map its block sets and monsters, each a link that keeps Back and the breadcrumb working. A link to the open game with another scene now selects that scene (and Back and Forward step through them), and a page you go Back to waits up to 3 seconds for its content before giving up on its scroll spot.
 - A breadcrumb above every open file (Overview › Maps › bus2.map) and a Back to the file you came from. "Used by" links now open the scene they name, and Back to an Overview page lands where you left it.
 - A Privacy page (Settings, then Privacy): what the site keeps on this device, how to clear it, and what is sent and when. There is no tracking.
 - The box viewer's Feelies strip: every trinket, laser kit, code wheel and printed piece in the box, with its downloads, a 3D coin and a compact phone panel.
