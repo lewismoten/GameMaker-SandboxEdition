@@ -59,21 +59,45 @@ function standing(p: Pixels, hero: Pixels, x: number, ground: number, scale: num
   scaleBlit(p, hero, x, ground - 40 * scale, scale);
 }
 
-/** The title picture: the name over a sunny walk from the hero to a door. */
-export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string): Pixels {
+/** A gold coin of radius 5 at (x, y). */
+function coin(p: Pixels, pal: Pal, x: number, y: number): void {
+  p.disc(x, y, 5, pal.c('gold', 0)).disc(x, y, 4, pal.c('gold', 3)).disc(x, y, 2.4, pal.c('gold', 4));
+}
+
+/** A gold key, about 40x20, with its ring at (x, y): a floating prize well above the hero's head. */
+function bigKey(p: Pixels, pal: Pal, x: number, y: number): void {
+  const g = pal.r('gold');
+  p.disc(x + 9, y + 9, 9, g[1])
+    .disc(x + 9, y + 9, 7.5, g[4])
+    .disc(x + 9, y + 9, 3.6, pal.c('sky', 2));
+  p.rect(x + 17, y + 7, 22, 5, g[1])
+    .rect(x + 17, y + 8, 22, 3, g[3])
+    .rect(x + 17, y + 8, 22, 1, g[5]);
+  p.rect(x + 29, y + 12, 4, 7, g[1]).rect(x + 30, y + 12, 2, 6, g[3]);
+  p.rect(x + 35, y + 12, 4, 9, g[1]).rect(x + 36, y + 12, 2, 8, g[3]);
+}
+
+/**
+ * The title picture: the name over a sunny scene with the hero and a door. `prize` is what floats
+ * high above the way between them: a straight row of coins (the hero in mid-jump) or a key (walking).
+ */
+export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, name: string, tagline: string, prize: 'coins' | 'key' = 'coins'): Pixels {
   const p = scene(pal, book, 160);
   lettering(p, pal, 14, name, name.length > 11 ? 2 : 3);
   const ribbon = textWidth(tagline) + 20;
   const rx = Math.round((W - ribbon) / 2);
   bevel(p, rx, 50, ribbon, 14, pal.r('parch'), 3, 2);
   text(p, rx + 10, 54, tagline, pal.c('ink', 0));
-  standing(p, hero, 40, 160, 2);
-  standing(p, door, 236, 160, 2);
-  for (let i = 0; i < 6; i++) {
-    const x = 100 + i * 20;
-    const y = 122 - Math.round(Math.sin((i / 5) * Math.PI) * 26);
-    p.disc(x, y, 5, pal.c('gold', 0)).disc(x, y, 4, pal.c('gold', 3)).disc(x, y, 2.4, pal.c('gold', 4));
+  if (prize === 'coins') {
+    // a shadow on the grass, and the hero a little off it
+    p.rect(44, 158, 32, 3, pal.c('grass', 1));
+    scaleBlit(p, hero, 40, 160 - 80 - 18, 2);
+    for (let i = 0; i < 4; i++) coin(p, pal, 124 + i * 26, 82);
+  } else {
+    standing(p, hero, 40, 160, 2);
+    bigKey(p, pal, 130, 70);
   }
+  standing(p, door, 236, 160, 2);
   return p;
 }
 
