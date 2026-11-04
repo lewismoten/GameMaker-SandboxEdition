@@ -178,7 +178,7 @@ take the project over in KiCad from here on.
 
 ```sh
 python3 tools/gen_sch.py && python3 tools/gen_pcb.py   # rewrite the schematic and board (routing takes a few minutes)
-tools/export.sh          # sexp check, ERC, DRC, out/phone-gerbers.zip, out/phone-schematic.pdf
+tools/export.sh          # sexp check, ERC, DRC, gerbers/ (tracked), out/phone-gerbers.zip, out/phone-schematic.pdf
 tools/export3d.sh        # out/phone.glb, out/phone-bare.glb, out/front.png, out/back.png, then viewer/parts.json + parts.bin
 tools/build_firmware.sh  # gpasm -> out/firmware/phone.hex, then the simulator checks
 python3 tools/bom.py && python3 tools/mech.py
