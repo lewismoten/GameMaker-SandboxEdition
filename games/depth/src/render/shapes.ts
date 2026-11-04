@@ -10,7 +10,7 @@ const { add, clamp01, cross, dot, hypot2, hypot3, len, mul, norm, sub } = vec;
 // ---------------------------------------------------------------- materials
 
 export interface Material {
-  /** Albedo, or a texture of the hit point (world space) and normal. */
+  /** Albedo, or a texture of the hit point and normal (world space; inside a Moved shape, that shape's own frame). */
   color: V | ((p: V, n: V) => V);
   /** How much the key light and fill light it takes (default 1). */
   diffuse?: number;
@@ -379,10 +379,21 @@ export class Moved implements Shape {
     const n = tmp.n;
     h.t = tmp.t * s;
     h.n = [r[0] * n[0] + r[1] * n[1] + r[2] * n[2], r[3] * n[0] + r[4] * n[1] + r[5] * n[2], r[6] * n[0] + r[7] * n[1] + r[8] * n[2]];
-    h.mat = tmp.mat;
+    h.mat = typeof tmp.mat.color === 'function' ? this.painted(tmp.mat) : tmp.mat;
     h.part = tmp.part;
     h.shape = this;
     return true;
+  }
+  private readonly paints = new WeakMap<Material, Material>();
+  /** The material with its texture read in the inner shape's own frame, so a turned car keeps its back window on its back. */
+  private painted(m: Material): Material {
+    let w = this.paints.get(m);
+    if (!w) {
+      const color = m.color as (p: V, n: V) => V;
+      w = { ...m, color: (p, n) => color(mul(this.local(sub(p, this.at)), 1 / this.scale), this.local(n)) };
+      this.paints.set(m, w);
+    }
+    return w;
   }
   occludes(o: V, d: V, tmax: number): boolean {
     const s = this.scale;
