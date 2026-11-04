@@ -5,6 +5,8 @@ import type { GameFiles } from '../project/files';
 import { slug } from './exportWebApp';
 import { encodeGame, fillPage } from './singlePage';
 import { titleImage } from './titleImage';
+import { insideGame } from './insideGame';
+import type { AboutGame } from '../project/aboutGame';
 import { gameAbout } from './gameAbout';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
@@ -22,6 +24,9 @@ interface SinglePageOptions {
   fiction?: string;
   /** The project's DOS player customizations, so the page shows XFERPLAY's screens as the DOS export does. */
   player?: PlayerPatches;
+  /** "About this game" and the game's version (project/aboutGame.ts): visible credits and search-engine data on the page. */
+  about?: AboutGame;
+  version?: string;
   /** An imported game's own About text and first build, so F10 shows what Play's does (dosPlayer/playerOrigin.ts). */
   playerAbout?: PlayerAbout;
 }
@@ -39,14 +44,24 @@ export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions
   // renamed file extensions are for the DOS download only
   const look = opts.player && withoutExtensions(opts.player);
   const player = look && Object.keys(look).length ? look : undefined;
+  const about = opts.about ?? {};
+  const inside = insideGame(entries, { title: opts.title, about, version: opts.version });
   const game = await encodeGame(
     { id, title: opts.title, gam: opts.gam, notice, player, ...(opts.playerAbout ? { playerAbout: opts.playerAbout } : {}) },
     entries,
+    inside.external,
   );
   return {
     name: `${id}.html`,
     html: fillPage(template, game, {
-      blurb,
+      blurb: about.description ?? blurb,
+      author: about.author,
+      company: about.company,
+      year: /^\d{4}$/.test(about.year ?? '') ? Number(about.year) : undefined,
+      about,
+      version: opts.version,
+      inside: inside.html,
+      pictures: inside.pictures,
       fiction: opts.fiction,
       audio: recordedAudioNotice(recordedClips(files)),
       poster: await titleImage(files, opts.gam),
