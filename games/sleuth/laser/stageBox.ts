@@ -1,7 +1,7 @@
 // Final Curtain's Stage Box: a laser-cut puzzle box for a Glowforge (3 mm plywood or MDF). Builds three cut/engrave sheets,
-// PNG previews, an assembly diagram and a manifest into web/public/laser/finalcurtain/ (git-ignored).
+// PNG previews, an assembly diagram and a manifest into web/public/laser/sleuth/stage-box/ (ignored by version control; the box shelf lists it beside the nickels).
 //   cd web && npx vite-node ../games/sleuth/laser/stageBox.ts [--kerf 0.2] [--out DIR]
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BED } from '@lewismoten/gamemaker-sandbox-tools/kit/laserLayout';
@@ -16,7 +16,7 @@ function main() {
   const args = process.argv.slice(2);
   const flag = (n: string) => (args.includes(n) ? args[args.indexOf(n) + 1] : undefined);
   const kerf = Number(flag('--kerf') ?? 0.2);
-  const out = flag('--out') ?? join(here, '../../../web/public/laser/finalcurtain');
+  const out = flag('--out') ?? join(here, '../../../web/public/laser/sleuth/stage-box');
   const b = buildStageBox(kerf);
   const bad = Object.entries(b.clearance).filter(([, c]) => c.length);
   if (bad.length || b.problems.length) {
@@ -32,6 +32,7 @@ function main() {
     return { svg: `${s.file}.svg`, preview: `${s.file}.png`, title: s.title, w: s.sheet.w, h: s.sheet.h, parts: s.placed };
   });
   writeFileSync(join(out, 'assembly.svg'), assemblySvg(dims()));
+  copyFileSync(join(here, 'README.md'), join(out, 'README.md'));
   const list = Object.values(b.parts).map((m) => ({ name: m.part.name, qty: m.qty, note: m.note, w: m.part.w, h: m.part.h }));
   writeFileSync(
     join(out, 'manifest.json'),
@@ -49,7 +50,19 @@ function main() {
         parts: list,
         mechanism: b.mechanism,
         clearance: b.clearance,
-        readme: 'games/sleuth/laser/README.md',
+        readme: 'README.md',
+        // what the desk's box shelf (web/src/desk/boxes/laserKits.ts) lists
+        kit: {
+          title: 'Final Curtain: Stage Box',
+          summary:
+            'A laser-cut puzzle box for a Glowforge, 3 mm plywood or MDF. Cut the sheets, glue it up, and work the dagger and curtains in the playbill order.',
+          previews: files.map((f) => ({ file: f.preview, alt: f.title })),
+          downloads: [
+            ...files.map((f) => ({ file: f.svg, label: `${f.title} (SVG)` })),
+            { file: 'assembly.svg', label: 'Assembly diagram (SVG)' },
+            { file: 'README.md', label: 'Build notes' },
+          ],
+        },
       },
       null,
       2,

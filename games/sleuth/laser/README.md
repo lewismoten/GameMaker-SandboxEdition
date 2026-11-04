@@ -9,7 +9,7 @@ theater."
 cd web && npx vite-node ../games/sleuth/laser/stageBox.ts [--kerf 0.2] [--out DIR]
 ```
 
-It writes `web/public/laser/finalcurtain/` (ignored by version control): `sheet-1-box.svg`, `sheet-2-inside.svg`,
+It writes `web/public/laser/sleuth/stage-box/` (ignored by version control): `sheet-1-box.svg`, `sheet-2-inside.svg`,
 `sheet-3-drawer.svg` (each with a `.png` preview), `assembly.svg` and `manifest.json` (`kind: "kit"`, with the sheets,
 previews, parts and checks). The tests are `web/test/laserStageBox.test.ts`.
 

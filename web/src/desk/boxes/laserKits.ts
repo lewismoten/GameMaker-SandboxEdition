@@ -67,15 +67,22 @@ export function kitOf(manifest: unknown, base: string): LaserKit | null {
   };
 }
 
+/** Folders under laser/<id>/ that each hold one kit's manifest.json: the wooden nickel's is the folder itself. */
+const KIT_FOLDERS = ['', 'stage-box/'];
+
 /** Game `id`'s laser kits, or none when it has no manifest (a dev server answers a missing file with the page, so the type is checked). */
 export async function loadLaserKits(id: string): Promise<LaserKit[]> {
-  const base = laserBase(id);
-  try {
-    const res = await fetch(`${base}manifest.json`);
-    if (!res.ok || !res.headers.get('content-type')?.includes('json')) return [];
-    const kit = kitOf(await res.json(), base);
-    return kit ? [kit] : [];
-  } catch {
-    return [];
-  }
+  const found = await Promise.all(
+    KIT_FOLDERS.map(async (sub) => {
+      const base = `${laserBase(id)}${sub}`;
+      try {
+        const res = await fetch(`${base}manifest.json`);
+        if (!res.ok || !res.headers.get('content-type')?.includes('json')) return null;
+        return kitOf(await res.json(), base);
+      } catch {
+        return null;
+      }
+    }),
+  );
+  return found.filter((k): k is LaserKit => k !== null);
 }
