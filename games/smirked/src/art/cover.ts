@@ -444,6 +444,9 @@ export function coverRgb(t: number): Uint8Array {
     );
     ellipse(mx - 15, my + 80, 9, 4, () => [230, 230, 236]);
     ellipse(mx + 16, my + 80, 9, 4, () => [230, 230, 236]);
+    // the khakis meet in the middle under the shirt
+    rect(mx - 2, my + 46, 4, 24, () => [205, 181, 132]);
+    rect(mx, my + 58, 1, 12, [170, 148, 104]);
     // the flannel shirt
     poly(
       [
@@ -460,7 +463,6 @@ export function coverRgb(t: number): Uint8Array {
       },
     );
     rect(mx - 24, my + 44, 48, 4, [60, 40, 26]);
-    rect(mx - 2, my + 44, 5, 4, [230, 190, 80]);
     // the collar and the neck
     rect(mx - 5, my, 10, 6, [240, 196, 160]);
     poly(
@@ -519,16 +521,29 @@ export function coverRgb(t: number): Uint8Array {
     );
     ellipse(gx, gy, 5, 5, (nx, ny) => shade([248, 200, 160], nx, ny));
     ellipse(gx + 7, gy + 3, 5, 5, (nx, ny) => shade([248, 200, 160], nx, ny));
-    // the foam sword: gray blade pointed up and away, yellow crossguard, the price tag still on
+    // the foam sword: a fat orange foam blade, soft rounded edges and tip, a darker underside, a white
+    // stripe and FOAM lettered on it, a yellow crossguard, the price tag still on
     const ang = -2.05 + shake * 0.02;
     const bx = gx - 3;
     const by = gy - 5;
-    for (let k = 0; k < 62; k++) {
-      const x = bx + Math.cos(ang) * k;
-      const y = by + Math.sin(ang) * k;
-      const w = k > 56 ? (62 - k) / 2 : 3;
-      for (let j = -w; j <= w; j++) put(x - Math.sin(ang) * j, y + Math.cos(ang) * j, j > 1 ? [150, 156, 170] : [214, 220, 232]);
+    const BL = 60;
+    const BW = 4.5;
+    const along = (u: number, v: number): [number, number] => [
+      bx + Math.cos(ang) * u - Math.sin(ang) * v,
+      by + Math.sin(ang) * u + Math.cos(ang) * v,
+    ];
+    for (let u = 0; u <= BL; u += 0.5) {
+      // a rounded tip: the half width follows a quarter circle over the last 6 pixels
+      const tip = BL - u < 6 ? Math.sqrt(Math.max(0, 1 - ((6 - (BL - u)) / 6) ** 2)) : 1;
+      const w = BW * tip;
+      for (let v = -w; v <= w; v += 0.5) {
+        const edge = Math.abs(v) > w - 1.1;
+        const [x, y] = along(u, v);
+        put(x, y, edge ? [214, 100, 24] : v > 1.5 ? [240, 126, 34] : [255, 160, 60]);
+      }
     }
+    // a white stripe near the guard (FOAM was tried as lettering; too small to read at this size)
+    for (let u = 8; u < 10; u += 0.5) for (let v = -BW + 1; v <= BW - 1; v += 0.5) put(...along(u, v), [255, 238, 210]);
     line(bx - 8, by - 3, bx + 8, by + 4, [250, 210, 60], 3);
     rect(bx + 1, by + 2, 4, 8, [200, 40, 40]);
     // the $12 tag dangling off the guard
