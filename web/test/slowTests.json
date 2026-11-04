@@ -4,6 +4,7 @@
     "scripts/versionDisksFiles.test.ts",
     "src/assistant/chat/makeGame.test.ts",
     "src/dosPage/boundary.test.ts",
+    "src/export/singlePageFile.test.ts",
     "src/editor/check/fastBirth.test.ts",
     "src/editor/check/regressions.test.ts",
     "src/editor/check/walk/autoWalk.test.ts",
