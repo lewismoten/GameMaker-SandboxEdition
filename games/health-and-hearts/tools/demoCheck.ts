@@ -1,6 +1,6 @@
 // Plays the built title demo (disk/demo.rec) on the real engine and checks it shows each lesson once:
-// level 1, level 2 entered, level 2 entered again (the one life lost to the pool), then level 3 (so the
-// second try got across) and no game over. The recording's keys play as one unbroken list, as the demo
+// level 1, level 2, level 3, level 3 entered again (the one life lost to the spikes) and then the ending
+// (so the second try got across). The recording's keys play as one unbroken list, as the demo
 // recorder counts game ticks across scene changes.
 //   cd web && npx vite-node ../games/health-and-hearts/tools/demoCheck.ts
 import { readFileSync } from 'node:fs';
@@ -19,13 +19,13 @@ const r = await replay(
     chapters: [],
     timeline: { fps: 30, frames: 0, chapters: [] },
   },
-  { maxMinutes: 1.4 },
+  { maxMinutes: 3 },
 );
-const seen = r.scenes.slice(0, 4).join(' ');
+const seen = r.scenes.slice(0, 5).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3 3 4' || r.keysLeft || r.scenes.includes(1)) {
-  console.error(`demoCheck: expected scenes 2 3 3 4 with every key played and no ending; got ${seen}`);
+if (seen !== '2 3 4 4 1' || r.keysLeft) {
+  console.error(`demoCheck: expected scenes 2 3 4 4 1 (three levels, level 3 twice, the ending) with every key played; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: hurt once by the spike, fell in the pool once and came back, crossed, no game over');
+console.log('demoCheck ok: hit once, healed, lost a life to the spikes once and came back, reached the ending');

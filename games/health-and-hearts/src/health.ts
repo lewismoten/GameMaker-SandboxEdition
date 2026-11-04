@@ -43,7 +43,6 @@ function flat(pal: Pal): Pixels {
   return outline(p, pal.c('ink', 0), { transparent: skyOf(pal) });
 }
 
-
 /** A plump red heart with a bright upper left and a darker lower right. */
 function heart(pal: Pal): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));

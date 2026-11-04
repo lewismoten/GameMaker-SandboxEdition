@@ -4,7 +4,7 @@ import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { scaleBlit } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
 import { bevel } from '@lewismoten/gamemaker-sandbox-tools/kit/shading';
 import { outlined, text, textWidth } from '@lewismoten/gamemaker-sandbox-tools/kit/pcText';
-import type { Pal } from '../../kit/starter/palette';
+import { skyOf, type Pal } from '../../kit/starter/palette';
 import type { Book } from '../../kit/starter/book';
 import { W } from '../../kit/starter/screens';
 import { backdrop, frameOf, lookOf } from '../../kit/starter/titleStyles';
@@ -21,7 +21,8 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, n
   text(p, rx + 10, 54, tagline, look.ribbonText);
   p.rect(44, 158, 32, 3, look.floorShadow);
   scaleBlit(p, hero, 40, 160 - 80 - 4, 2);
-  for (let i = 0; i < 3; i++) scaleBlit(p, book.pics.get('heart')!, 112 + i * 36, 160 - 76 - (i === 1 ? 10 : 0), 2);
+  const heart = book.pics.get('heart')!.map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
+  for (let i = 0; i < 3; i++) scaleBlit(p, heart, 112 + i * 36, 160 - 76 - (i === 1 ? 10 : 0), 2);
   scaleBlit(p, door, 236, 160 - 80, 2);
   frameOf(p, pal, 'sunset');
   return p;

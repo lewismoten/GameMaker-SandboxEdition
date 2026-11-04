@@ -1,5 +1,5 @@
-// Pictures of the lessons (never on the disk), for the progress shots: Kit before the lone spike, hurt
-// by it (the spike flat), before the pool, and back at the way in after the fall; and the safe way.
+// Pictures of the lessons (never on the disk), for the progress shots: Kit before the spike and hurt by it
+// (the spike flat), by the hearts in level 2, and at the spikes and the ledge hearts in level 3.
 //   cd web && npx vite-node ../games/health-and-hearts/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -33,16 +33,16 @@ const region = (map: ReturnType<(typeof levels)[0]['map']['done']>, col: number,
   renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
 
 const m1 = levels[0].map.done();
-writePng(join(out, 'spikes-1-before.png'), region(m1, 8, 12, kit(['stand.top', 'stand'], 11)), pal.pal, 3);
+writePng(join(out, 'hit-1-before.png'), region(m1, 11, 12, kit(['stand.top', 'stand'], 14)), pal.pal, 3);
 // the moment after the touch: the spike under him is the flat one
 const flat = levels[0].map.done();
-flat.blocks[(GROUND - 1 + ORIGIN) * MLEN + 14 + ORIGIN] = book.n('spikeFlat');
-writePng(join(out, 'spikes-2-hurt.png'), region(flat, 8, 12, kit(['hurt.top', 'hurt'], 13)), pal.pal, 3);
+flat.blocks[(GROUND - 1 + ORIGIN) * MLEN + 17 + ORIGIN] = book.n('spikeFlat');
+writePng(join(out, 'hit-2-hurt.png'), region(flat, 11, 12, kit(['hurt.top', 'hurt'], 17)), pal.pal, 3);
 
 const m2 = levels[1].map.done();
-writePng(join(out, 'pool-1-before.png'), region(m2, 6, 14, kit(['stand.top', 'stand'], 10)), pal.pal, 3);
-writePng(join(out, 'pool-2-back-at-the-way-in.png'), region(m2, 0, 14, kit(['stand.top', 'stand'], 3)), pal.pal, 3);
+writePng(join(out, 'hearts-1-before.png'), region(m2, 10, 14, kit(['stand.top', 'stand'], 14)), pal.pal, 3);
+writePng(join(out, 'hearts-2-cheer.png'), region(m2, 10, 14, kit(['cheer.top', 'jump'], 21)), pal.pal, 3);
 
 const m3 = levels[2].map.done();
-writePng(join(out, 'safe-way.png'), renderRegion(m3, bbl, mbl, set, ORIGIN, ORIGIN + 3, 36, 9), pal.pal, 2);
-console.log(`shots in ${out}`);
+writePng(join(out, 'lives-1-spikes.png'), region(m3, 12, 22, kit(['stand.top', 'stand'], 20)), pal.pal, 3);
+writePng(join(out, 'lives-2-ledge.png'), region(m3, 8, 16, kit(['cheer.top', 'jump'], 16)), pal.pal, 3);

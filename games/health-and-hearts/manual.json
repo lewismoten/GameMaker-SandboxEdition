@@ -2,86 +2,94 @@
   "title": "Health and Hearts",
   "howDoI": [
     {
-      "id": "spikes",
-      "q": "How do I make a block that hurts when touched?",
+      "id": "hit-points",
+      "q": "How do I choose how many hit points my hero starts with?",
       "scene": 2,
-      "x": 14,
-      "y": 9,
-      "level": 1
-    },
-    {
-      "id": "hurt-once",
-      "q": "How do I make a hazard hurt only once?",
-      "scene": 2,
-      "x": 26,
-      "y": 9,
-      "level": 1
-    },
-    {
-      "id": "pool",
-      "q": "How do I make a pool or a pit that costs a life?",
-      "scene": 3,
       "x": 13,
-      "y": 10,
-      "level": 2
+      "y": 19,
+      "level": 1
     },
     {
-      "id": "way-in",
-      "q": "How do I choose where my hero starts again after he falls?",
+      "id": "spike",
+      "q": "How do I make a block that takes hit points?",
+      "scene": 2,
+      "x": 27,
+      "y": 19,
+      "level": 1
+    },
+    {
+      "id": "heart",
+      "q": "How do I make a pickup that gives hit points back?",
       "scene": 3,
-      "x": 3,
-      "y": 9,
+      "x": 27,
+      "y": 19,
       "level": 2
     },
     {
-      "id": "planks",
-      "q": "How do I give my hero a safe path over a hazard?",
+      "id": "carry",
+      "q": "Do hit points carry from one level to the next?",
+      "scene": 3,
+      "x": 33,
+      "y": 19,
+      "level": 2
+    },
+    {
+      "id": "lose-life",
+      "q": "How do I make my hero lose a life when his hit points run out?",
       "scene": 4,
-      "x": 10,
-      "y": 8,
+      "x": 31,
+      "y": 19,
       "level": 3
     },
     {
-      "id": "bridge",
-      "q": "How do I put a bridge over a pool?",
+      "id": "past-full",
+      "q": "Can a heart give my hero more than he started with?",
       "scene": 4,
-      "x": 21,
-      "y": 10,
+      "x": 26,
+      "y": 17,
+      "level": 3
+    },
+    {
+      "id": "one-up",
+      "q": "How do I give my hero an extra life?",
+      "scene": 4,
+      "x": 49,
+      "y": 17,
       "level": 3
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Health and Hearts</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about things that hurt, and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each hazard is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your lives, hit points and score. Walk into the door at the end of a level to go on.</p>"
+      "html": "<h1>Welcome</h1><p><b>Health and Hearts</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about hit points, hearts and lives, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p>"
     },
     {
-      "head": "Level 1: Spikes",
-      "html": "<h1>Level 1: Spikes</h1><p>The <b>SPIKES HURT</b> sign stands before a single spike. Walk into it and it stings: you lose 10 of your 50 hit points, the hero shows his hurt pose, and the spike lies flat, harmless, for the rest of the level. The <b>JUMP OVER THEM</b> sign stands before two more. Jump, and you lose nothing. Walk into them instead and each one stings once.</p><p>It takes five stings to lose a life, so there is room to try it. Coins are worth ten points each. There are four, and they float where only a jump reaches.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>A block that hurts.</b> Open <b>hearts.bbl</b> in the blocks editor and pick <b>spikeUp</b>. Its <b>Hit points</b> is &minus;10. The engine adds that to the hero on <i>every tick</i> that the block overlaps him, not once per touch. A block that only hurts would take all his hit points in a second.</li><li><b>Hurt once.</b> The same block has <b>Becomes block</b> set to <b>spikeFlat</b>. The moment the hero touches a spike, the engine swaps that one block on the map for a flat, harmless one, with no hit points. One touch, one sting. This is the same rule a coin uses to disappear when you take it.</li><li><b>Nothing holds him.</b> The spike is not <b>solid</b>, and it pulls down like air. The hero walks through it while it hurts and nothing keeps him inside to be hurt again. A solid block that hurt without turning into something else could trap him in a hurt that never ends.</li><li><b>You see it.</b> The hero's <b>Hurt</b> sequence plays, with its sound, each time his hit points drop. Open <b>hero.chr</b> in the character editor. He starts with 50 hit points and 3 lives.</li><li><b>Where they are.</b> Open <b>one.map</b> in the map editor. A single spike block sits on the grass, and two more side by side further along, one block high. They are ordinary blocks you paint like grass.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures. Change the words in the blocks editor and play again.</li><li><b>The exit.</b> A scene link joins the door at the end to the next level. Open <b>hearts.gam</b> in the scenes editor and look at the links of the Spikes scene.</li></ul>"
-    },
-    {
-      "head": "Level 2: The Pool",
-      "html": "<h1>Level 2: The Pool</h1><p>You come out of level 1 into a short room. The <b>FALL IN AND YOU START THIS ROOM AGAIN</b> sign stands before a pool in the ground, three blocks wide. Walk in. The hero falls over, you lose a life, and the room starts again: you are back at the doorway where you came in, with all 50 hit points, and the coins are back too. Press <kbd>F2</kbd> to see that you have one life fewer.</p><p>Then jump across. There are three coins above the pool, and the exit is on the far side.</p>"
+      "head": "Level 1: Hit Points",
+      "html": "<h1>Level 1: Hit Points</h1><p>The <b>F2 SHOWS YOUR HIT POINTS</b> sign comes first: press <kbd>F2</kbd> and Kit&rsquo;s numbers appear. He starts with 30 hit points and 3 lives. The <b>A SPIKE TAKES 10 HIT POINTS</b> sign stands before a single spike. Walk into it and it stings: Kit shows his hurt pose and has 20 left. The spike then lies flat and harmless. Press <kbd>F2</kbd> again to see.</p><p>Four coins are worth ten points each.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>A hazard that costs a life.</b> Open <b>hearts.bbl</b> and pick <b>waterTop</b> or <b>water</b>. Their <b>Hit points</b> is &minus;200, far more than the hero's 50. Game-Maker has no block that takes a life directly: a life is spent when the hero's hit points reach zero. A big enough hurt does that in one touch. Any number above his hit points will do.</li><li><b>Not solid.</b> The pool has no solid sides and pulls down like air, so he drops straight in and touches it.</li><li><b>Where he comes back.</b> When a life is lost, the game starts the same level again with one life fewer and his hit points full. He stands where he arrived the first time: the block that the link from level 1 put him on. Open <b>two.map</b> in the map editor. The <b>cyan marker</b> on the doorway is that spot. Drag it, and every fall brings him back somewhere else.</li><li><b>What starts over.</b> The map is read from its file again, so a coin you took is back. Your score stays. With no lives left, the game ends instead.</li><li><b>Keep the room short.</b> This room is only 24 blocks wide, so starting it again costs a few seconds, not a minute. A long level with a pool near its end would punish the player most for a small mistake. Put a hazard that costs a life in a short room.</li><li><b>The pool.</b> In <b>two.map</b> it is three blocks wide and two deep, cut out of the grass and dirt. The top row is <b>waterTop</b>, with the waves, and the row under it is <b>water</b>. The dirt under that stops anything from falling off the world.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Hit points to start.</b> Open <b>hero.chr</b> in the character editor. The first counter, <b>Hit points</b>, is 30, and <b>Lives</b> is 3. Each time a life is lost, the room starts again with the hit points back at that number.</li><li><b>A block that takes them.</b> Open <b>hearts.bbl</b> in the blocks editor and pick <b>spikeUp</b>. Its <b>Hit points</b> is &minus;10. The engine adds that to the hero each tick the block overlaps him, so a block that only hurts would drain him in a second.</li><li><b>Once.</b> The same block has <b>Becomes block</b> set to <b>spikeFlat</b>, which has no hit points. One touch, one sting, the way a coin vanishes when you take it.</li><li><b>You see it.</b> The hero&rsquo;s <b>Hurt</b> sequence plays, with its sound, each time his hit points drop. The count itself is on <kbd>F2</kbd>, the game&rsquo;s own status screen.</li><li><b>Where it is.</b> Open <b>one.map</b> in the map editor. The spike is one block on the grass, painted like grass.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with words drawn in their pictures.</li><li><b>The exit.</b> A scene link joins the door to the next level. Open <b>hearts.gam</b> in the scenes editor.</li></ul>"
     },
     {
-      "head": "Level 3: The Safe Way",
-      "html": "<h1>Level 3: The Safe Way</h1><p>The <b>FIND A SAFE WAY ACROSS</b> sign stands before a row of spikes and a pool. Neither is in your way if you look up and across. A row of planks hangs over the spikes: jump up through it from the side, and walk along the top. Further on, a plank bridge lies across the pool, level with the grass. Walk over it.</p><p>There are three coins on the planks. This level costs nothing if you take the safe way.</p>"
+      "head": "Level 2: Hearts Heal",
+      "html": "<h1>Level 2: Hearts Heal</h1><p>Kit arrives with the 20 hit points he left level 1 with. The <b>A HEART GIVES 10 HIT POINTS BACK</b> sign comes first. Another spike takes him down to 10, and then two hearts in a row bring him up to 30. Each heart is gone once he touches it. The <b>HIT POINTS GO WITH YOU TO THE NEXT ROOM</b> sign is by the exit, because they do.</p><p>Three coins are on the way.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 3 is made</h1><ul><li><b>Planks.</b> The <b>plank</b> block is solid on its top side only, so the hero can jump up through it from below and stand on it. In <b>three.map</b> a row of five planks sits two blocks above the grass, over three spikes. Standing on a plank he is above the spikes, and a block only touches the hero if it overlaps him.</li><li><b>The bridge.</b> Four planks take the place of the grass on top of the pool, with <b>waterTop</b> and <b>water</b> under them. The hero walks across on the planks and never overlaps the pool. Fall off the end, though, and you are in it.</li><li><b>A safe path is a choice.</b> The hazards are the same blocks as in levels 1 and 2. The level just gives the hero somewhere else to go. A hazard is only fair if the player can see what to do about it, so each one has its way round in view from the start.</li></ul>"
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A pickup that heals.</b> In <b>hearts.bbl</b> pick <b>heart</b>. Its <b>Hit points</b> is +10: the same field as the spike, above zero instead of below. The engine plays a soft sound for it.</li><li><b>Gone when touched.</b> <b>Becomes block</b> is set to the sky block, so the heart disappears and gives its 10 only once.</li><li><b>No stop at 30.</b> Nothing in the engine keeps hit points at the number a hero started with. Level 3 uses that.</li><li><b>They carry on.</b> Hit points are kept as the hero goes through a door. They only go back to the starting number when a life is lost or a new game starts.</li><li><b>Where they are.</b> Open <b>two.map</b>. The spike and the two hearts stand on the grass, painted like anything else.</li></ul>"
+    },
+    {
+      "head": "Level 3: Lives",
+      "html": "<h1>Level 3: Lives</h1><p>Four spikes stand along the ground, spaced out so each stings on its own. That is 40, and Kit has 30. The <b>AT ZERO HIT POINTS YOU LOSE A LIFE</b> sign says what happens: walk straight along the ground and the third spike takes his last hit point. He falls over, a life is gone (press <kbd>F2</kbd>) and the room starts again, with 30 hit points.</p><p>This time jump up onto the ledge first. Two hearts sit on it, and the <b>HEARTS CAN TAKE YOU PAST 30</b> sign says why that is fine: 50 hit points get him past all four spikes. Near the end a ledge holds a smiling face in a teal beanie. The <b>A FACE ADDS A LIFE</b> sign says the rest.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>Zero costs a life.</b> No block takes a life here. When the hero&rsquo;s hit points reach zero the engine plays his <b>Die</b> sequence, takes one life and starts the same level again. With no lives left, the game ends.</li><li><b>Where he comes back.</b> At the place he arrived the first time: the cyan marker on the doorway of <b>three.map</b>. Drag it to change that.</li><li><b>What starts over.</b> The map is read again, so hearts, spikes and coins are all back. Your score stays.</li><li><b>Past where he started.</b> Two <b>heart</b> blocks on a ledge of planks bring 30 to 50. The planks are solid on top only, so Kit jumps up through them and stands on top.</li><li><b>An extra life.</b> Pick <b>oneUp</b> in <b>hearts.bbl</b>. Its <b>Effect</b> is counter 1 (lives) and the <b>Amount</b> is 1. It is gone when touched.</li><li><b>Spaced spikes.</b> Spikes in a row can share one sting while Kit is in his hurt pose. Three blocks apart, each one counts.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Make <b>spikeUp</b> take 25 hit points instead of 10, so two stings cost a life.</li><li>Make a spike hurt every time: set its <b>Becomes block</b> to its own number. Walk into it and watch what happens in a second.</li><li>Change <b>waterTop</b> and <b>water</b> to &minus;20, so the pool is only a splash.</li><li>Drag the cyan marker on the doorway in <b>two.map</b> to move where the hero comes back.</li><li>Give the hero 5 lives in <b>hero.chr</b>.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Give Kit 50 hit points in <b>hero.chr</b> and see how level 3 changes.</li><li>Make <b>heart</b> give 30 instead of 10.</li><li>Make <b>spikeUp</b> take 15, and count how many Kit can walk through.</li><li>Give Kit 1 life in <b>hero.chr</b>, and lose it in level 3.</li><li>Move a <b>oneUp</b> face somewhere harder to reach.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }
