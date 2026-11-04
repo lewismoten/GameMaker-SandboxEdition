@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- The Starters tab groups its games the way the Bizarre tab groups its songs, each group with a heading and a line about it (The Basics today), and the "How do I…?" list says which group a question's game is in.
 - Kit, the hero of the Starter games, joins the Cast page with a new Starters section. Kit also moves more in the four Starters: arms up on the way into a jump and out as he comes down, a glance around while he stands, and a shovel dig, a star toss and a cheer in the character file for a game to play.
 - A "How do I…?" list on the Starters tab and in the Guide: search a question ("How do I make a door that needs a key?"), then choose Play this level, which starts the game at that level, or See how it's made, which opens its map in the read-only editor at the right spot with a button for the manual's "How this level is made" page. The Guide's new "How do I…?" section and its Try it boxes use the same buttons. A new Starter adds its questions with a `howDoI` list in its manual.json.
 - "About this game" (Overview, Tools): title, author, company, year, a short description, story, genre, website, license and credits, kept with the project but never in the game's files. The DOS download gets a FILE_ID.DIZ made from them (10 lines of 45 characters, shown live as you type), and importing a zip with a FILE_ID.DIZ fills them in. The one-page web download adds a visible, folded "Inside this game" section with the game's pictures (each stored once, as an image the page reads back), its text screens as real text, a preview of each animation and sound, and the credits, plus structured data for search engines. The Download dialog has "Include animation and sound previews" (on by default, remembered per game) and says how much page size they add. A starter's title is shown from its animation's first frame.
@@ -60,6 +61,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Fixed
 
+- The Loofah game's title and cover now show the friendly golden bath monster from its levels, with googly eyes and a wide smile, instead of the little horns (version 1.5).
+- Choosing the Starters tab twice in a quick keyboard burst no longer shows a second "How do I…?" list.
 - The editor's file list no longer jumps when you click a file: scrolled far down (the Slide shows group, say), each click used to slide the list by a few lines, so you had to scroll again after every click. It now stays where you left it.
 - Music editor: a song's tracks and instruments take their preset's family color (a Classic piano is red-orange, bass green) instead of every Classic sound showing the same cyan, and two tracks of one family get different shades.
 - The home page's games list works by keyboard: it is one Tab stop, the arrows, Home and End move between games, and Enter or a click on a game features it and moves focus to its Play button, so a second Enter plays. Each game says its collection and place ("3 of 18"), picking one is announced, and the focus ring on games and on Play no longer looks like the blue button style.
