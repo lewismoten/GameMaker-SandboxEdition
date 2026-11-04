@@ -129,6 +129,7 @@ function ownType(kind: PrintableItem['kind'], title: string): ShelfType {
       return /hint book postcard/i.test(title) ? 'hintcard' : /postcard/i.test(title) ? 'registration' : 'letter';
     case 'journal':
     case 'recipe':
+    case 'dexreport': // a school report: with the letters and papers
       return 'letter';
     case 'spyglass': // a cut-out tool: with the box inserts
       return 'insert';

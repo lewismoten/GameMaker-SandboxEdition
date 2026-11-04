@@ -414,6 +414,8 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return codeWheelSheets(it);
     case 'codesheet':
       return codeSheetSheets(it);
+    case 'dexreport':
+      return import('./dexReport').then((m) => m.dexReportSheets(it));
   }
 }
 

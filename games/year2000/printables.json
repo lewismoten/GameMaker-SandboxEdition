@@ -178,6 +178,11 @@
         ["TELEPORT RATES", "Still 25 cents a call. Booth 4 at the exchange is out of order again."],
         ["WEATHER ON THE MOON", "Sunny. Meteor showers this afternoon. Bring a helmet."]
       ]
+    },
+    {
+      "kind": "dexreport",
+      "title": "THE POCKET TELEPHONE",
+      "note": "Dex's science fair report: the pages Sparky ate (and a few teeth marks)"
     }
   ],
   "stickers": [

@@ -1,12 +1,12 @@
 // Renders two top-down photos of the Phone of the Future board (front and back) from the 3D viewer
 // data in games/year2000/phone/viewer (parts.json + parts.bin): a small z-buffer rasterizer with flat
 // shading. They are taped into Dex Dynamo's science report (manual/printables/dexReport*.ts).
-// Run: npx vite-node scripts/phoneBoardPhotos.ts   (writes public/phone/dex/board-front.png and board-back.png)
+// Run: npx vite-node scripts/phoneBoardPhotos.ts   (writes src/manual/printables/dexReport/board-front.png and board-back.png)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { pngFromRgb } from '@lewismoten/gamemaker-sandbox-tools/kit/laserPreview';
 
 const DIR = new URL('../../games/year2000/phone/viewer/', import.meta.url);
-const OUT = new URL('../public/phone/dex/', import.meta.url);
+const OUT = new URL('../src/manual/printables/dexReport/', import.meta.url);
 interface Part {
   kind: string;
   side: string;

@@ -291,7 +291,17 @@ export interface CodeSheetItem extends ItemBase {
   puzzles?: { scenes: number[]; ask: string; grid: number; row: string; col: string; answer?: string }[];
 }
 
+/**
+ * A school science report in a character's hand (dexReport.ts): a cover and twenty pages of pencil on lined and
+ * graph paper, with sketches, taped-in photos, a teacher's red pen and a grade sticker. Its text is in
+ * dexReportPages*.ts; the item only names it for the box.
+ */
+export interface DexReportItem extends ItemBase {
+  kind: 'dexreport';
+}
+
 export type PrintableItem =
+  | DexReportItem
   | SpyglassItem
   | PrintsItem
   | MapItem
