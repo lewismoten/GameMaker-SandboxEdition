@@ -99,7 +99,7 @@ const circuit1 = (() => {
 
 const p8 = `
 <h2>Circuit 1: Sending</h2>
-<p>I copied this from the real schematic and made it look like how I'd draw it. Zig-zags are <b>resistors</b>, two bars are <b>capacitors</b>, the ground is the 3 lines that get shorter.</p>
+<p>This is my circuit, copied neat from the big messy drawing in my lab notebook. Zig-zags are <b>resistors</b>, two bars are <b>capacitors</b>, the ground is the 3 lines that get shorter.</p>
 ${gsk(31, 'Circuit diagram: the battery feeds a 5 volt regulator; two brain pins go through 1 kilo-ohm resistors and a capacitor into the base of a transistor that switches the infrared LED', circuit1, 'margin-top:1cqw')}
 ${red('Check your resistor values against the parts list.', 'margin:1.5cqw 2cqw 0 auto')}`;
 
@@ -157,7 +157,7 @@ const circuit2 = (() => {
   s += L(12.5, 23.6, 12.5, 25) + CAPV(12.5, 24.9) + T(13.4, 26, 'C12 100 nF', 0.75);
   s += L(12.5, 26.9, 12.5, 27.2) + L(12.5, 27.2, 19, 27.2) + ARROW(18.4, 27.2, 20, 27.2) + T(20.4, 27.5, 'brain clock pin', 0.8, 'start', 'cr');
   s += T(0, 29.6, 'The crystal runs the ears AND, through C12, the brain.', 0.85, 'start', 'cb');
-  s += T(0, 30.6, '(R23 + R24 + C11 hold the decoder steady: see the real schematic)', 0.8, 'start');
+  s += T(0, 30.6, '(R23 + R24 + C11 hold the decoder steady: see my big drawing)', 0.8, 'start');
   return s;
 })();
 
