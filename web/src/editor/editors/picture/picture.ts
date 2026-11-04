@@ -1,6 +1,7 @@
 // Pictures (.GIF): view, import, and copy 20x20 areas into blocks (IMAGE.EXE).
 import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
+import { rovingGrid } from '../../widgets/rovingGrid';
 import { h, clear, selectField, pickFiles, toast, download, confirmDialog } from '../../core/ui';
 import { blockCanvas, paintBlock, paintIndexed } from '../../core/draw';
 import './picture.css';
@@ -87,7 +88,8 @@ registerEditor(['gif'], (host, project, file) => {
   let blocks: Block[] = [];
   let destPal: Palette = img.palette;
   let kind: BlockKind = 'bbl';
-  const slots = h('div', { class: 'pic-slots', role: 'listbox', 'aria-label': 'Block to replace' });
+  // one Tab stop for the 48 slots; the arrow keys choose (the same as the block pickers)
+  const slots = rovingGrid(h('div', { class: 'pic-slots' }), 'Block to replace');
   const before = h('canvas', { class: 'pixel checker', width: BLEN, height: BLEN });
   const after = h('canvas', { class: 'pixel checker', width: BLEN, height: BLEN });
   const beforeCap = h('figcaption');
@@ -123,7 +125,7 @@ registerEditor(['gif'], (host, project, file) => {
         h(
           'button',
           {
-            class: `${i === targetBlock ? 'target' : ''} ${isBlankBlock(b.pixels, sprite()) ? 'blank' : ''}`,
+            class: `${i === targetBlock ? 'target selected' : ''} ${isBlankBlock(b.pixels, sprite()) ? 'blank' : ''}`,
             role: 'option',
             'aria-selected': String(i === targetBlock),
             title: `Block ${i}${isBlankBlock(b.pixels, sprite()) ? ' (empty)' : ''}`,
@@ -154,6 +156,7 @@ registerEditor(['gif'], (host, project, file) => {
     copyBtn.textContent = blank ? `Copy into block ${targetBlock}` : `Replace block ${targetBlock}`;
     [...slots.children].forEach((el, i) => {
       el.classList.toggle('target', i === targetBlock);
+      el.classList.toggle('selected', i === targetBlock);
       el.setAttribute('aria-selected', String(i === targetBlock));
     });
     // scroll the block list only, never the page around it
