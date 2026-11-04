@@ -115,7 +115,7 @@ export const barkUrl = (name: string): string => `./tour/sfx/${name}.ogg`;
 export const MUSIC = {
   teddyTitle: 'teddy/title.cmf',
   teddyPark: 'teddy/park.cmf',
-  clownClub: 'teddy/klub.cmf',
+  clownClub: 'teddy/club.cmf',
   briefLibrary: 'brief/library.cmf',
   y2kTitle: 'year2000/title.cmf',
   sleuthParlor: 'sleuth/parlor.cmf',

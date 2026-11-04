@@ -1,7 +1,6 @@
-// The people and things that turn up in every level: Doc Leo's red CitiCar, THE CHEZ,
-// waiting at each level's end with Doc Leo beside it (its door only opens once Teddy brings
-// what Gwinn dropped on that stop), the things she dropped, and Doc Leo's costume pieces
-// (for the cartoons). Pockets drove it in the first adventure; he is still in the code.
+// The Clown Club's people and things that turn up in every level: Doc Leo's red CitiCar
+// waiting at each level's end (it only opens for the piece of Doc Leo's costume Teddy
+// fetched), Pockets who drives it for him today, and the costume pieces themselves.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { chezSide, type ChezInk } from '../../../kit/chez';
 import { CLEAR, blob, over, sprite } from '../art/draw';
@@ -43,7 +42,7 @@ export const CK: Record<string, number> = {
 };
 
 /** Doc Leo's costume pieces: Gwinn scattered them all over town. */
-export const PROPS: Record<string, string[]> = {
+const PROPS: Record<string, string[]> = {
   // His felt fedora, chewed at the brim (Gwinn again).
   hat: ['....oooooo....', '...okkOkkko...', '...okkkkkko...', '...oooooooo...', '..okkkkkkkko..', 'ooOkkkkkkkkOoo', 'okkkkkkkkkk.oo', '.ooooooooo....'],
   // His green tie, with a little pattern.
@@ -63,61 +62,6 @@ export const PROPS: Record<string, string[]> = {
     '....qoooooo.q.',
     '...q..j..j..q.',
     '....qqq...qq..',
-  ],
-  // The things Gwinn dropped along her way. Her pink collar, the tag still on it.
-  collar: [
-    '...ppppp....',
-    '..pP...Pp...',
-    '.pP.....Pp..',
-    '.p.......p..',
-    '.pP.....Pp..',
-    '..pP...Pp...',
-    '...ppppp....',
-    '.....oeo....',
-    '.....oeeo...',
-    '......oo....',
-  ],
-  // Her pink rope leash, in a tangle.
-  leash: [
-    '....pppp......',
-    '..ppPPPPpp....',
-    '.pP......Pp...',
-    'pP..pppp..Pp..',
-    'p..pP..Pp..p..',
-    'pP.p....p.Pp..',
-    '.pPp...pP.p...',
-    '..ppPPPp..p...',
-    '.........pP..m',
-    '.........pPmmm',
-    '..........ppm.',
-  ],
-  // A corn dog stick, licked clean. She has been at the corn dogs.
-  stick: [
-    '.........yyo',
-    '........yyjo',
-    '.......yjjo.',
-    '......yjjo..',
-    '.....hHo....',
-    '....hHo.....',
-    '...hHo......',
-    '..hHo.......',
-    '.hHo........',
-    'hHo.........',
-  ],
-  // Her dog show entry card: number 13. (She has entered herself.)
-  tag: [
-    'oooooooooooo',
-    'owwwwwwwwwwo',
-    'owbbwbbbbwwo',
-    'owwbwwwwbwwo',
-    'owwbwwbbbwwo',
-    'owwbwwwwbwwo',
-    'owbbbwbbbwwo',
-    'owwwwwwwwwwo',
-    'oqqqqqqqqqqo',
-    'oooooooooooo',
-    '.....rr.....',
-    '....r..r....',
   ],
   // The red nose (on means showtime).
   nose: ['..oooo..', '.oRRRRo.', 'oRwRRRRo', 'oRRRRRRo', 'oRRRRRqo', 'oqRRRqqo', '.oqqqqo.', '..oooo..'],
@@ -142,7 +86,7 @@ export function propOn(base: Pixels, name: string): Pixels {
  * quarter. `open` opens the door (only the lower left block changes, as that is the block
  * Teddy walks into).
  */
-export function klownCar(base: (bx: number, by: number) => Pixels, open: boolean): Pixels[][] {
+export function clownCar(base: (bx: number, by: number) => Pixels, open: boolean): Pixels[][] {
   const p = canvas(2, 2, base);
   citiCar(p, 0, 0, open);
   return cut(p);

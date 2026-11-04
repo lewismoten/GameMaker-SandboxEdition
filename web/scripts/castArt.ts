@@ -74,8 +74,8 @@ const CAST_ART: Record<string, Source> = {
   easterEgg: { game: 'teddy', paint: eggShine()[1], colors: EGG_PAL },
   rootbeer: {
     game: 'teddy',
-    blocks: 'klub.bbl',
-    pal: 'klub.pal',
+    blocks: 'club.bbl',
+    pal: 'club.pal',
     grid: [
       [76, 77],
       [79, 81],

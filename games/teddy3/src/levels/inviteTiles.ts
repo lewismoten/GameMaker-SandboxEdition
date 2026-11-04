@@ -11,7 +11,7 @@ import { bricks, c, canvas, cloud, copy, cut, dirt, hedge, r, sky, tuft, windowO
 import { bandAt, road, sidewalk, sign, wideSign } from './common';
 import { CTR } from '../ids';
 import { townCrier } from '../sprites/townfolk';
-import { KLUB } from '../sprites/klubfolk';
+import { CLUB } from '../sprites/clubfolk';
 import { juggler } from '../sprites/folks';
 import { leoOn } from '../sprites/leo';
 import { errandSprite } from '../sprites/errands';
@@ -126,7 +126,7 @@ export function inviteTiles(): Tiles {
     p.rect(3, 6, 14, 34, c('ink', 1)).frame(2, 5, 16, 35, c('wood', 1));
     return p;
   };
-  const figures: Record<(typeof FRIENDS)[number], Pixels> = { crier: townCrier(false), honker: KLUB.honker, pratfall: KLUB.pratfall };
+  const figures: Record<(typeof FRIENDS)[number], Pixels> = { crier: townCrier(false), honker: CLUB.honker, pratfall: CLUB.pratfall };
   for (const who of FRIENDS) {
     const p = doorway();
     over(p, figures[who], 1, 0);

@@ -3,7 +3,7 @@
 import type { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { sprite } from '../art/draw';
 import { P } from '../art/pal';
-import { CK } from './klown';
+import { CK } from './clown';
 
 const c = (n: string, k: number) => P.c(n, k);
 const K: Record<string, number> = {

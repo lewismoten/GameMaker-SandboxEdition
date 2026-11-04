@@ -8,7 +8,7 @@
 // view, games/teddy3/src/sprites/leo.ts.)
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, outline } from '../../games/teddy/src/art/draw';
-import { CK } from '../../games/teddy/src/sprites/klown';
+import { CK } from '../../games/teddy/src/sprites/clown';
 import { P } from '../../games/teddy/src/art/pal';
 
 // docLeo's own colors (people.ts K)

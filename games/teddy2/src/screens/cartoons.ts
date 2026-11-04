@@ -6,12 +6,12 @@ import { encodeFliFadeOut } from '@lewismoten/gamemaker-sandbox-tools/kit/fadeOu
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, centered, clubArt, micro, outlined, scaleBlit } from '../art/draw';
 import { GWINN } from '../sprites/gwinn';
-import { CHEZ } from '../sprites/klown';
+import { CHEZ } from '../sprites/clown';
 import { chezRide } from '../../../teddy/src/screens/ride';
 import { docLeo, FULL } from '../sprites/people';
 import { SP, landscape } from './screens';
 import { castFli } from './cast';
-import { KLUB } from '../sprites/klubfolk';
+import { CLUB } from '../sprites/clubfolk';
 import { POSES } from '../sprites/teddy';
 
 const c = (n: string, k: number) => SP.c(n, k);
@@ -227,7 +227,7 @@ function gustFli(): Uint8Array {
   bg.rect(10, 50, 110, 8, c('red', 2)).rect(14, 58, 4, 102, c('paint', 3)).rect(112, 58, 4, 102, c('paint', 3));
   for (let x = 10; x < 120; x += 10) bg.rect(x, 58, 5, 3, c('paint', 3));
   bg.rect(10, 140, 110, 6, c('wood', 3));
-  scaleBlit(bg, KLUB.honker, 26, 60, 2);
+  scaleBlit(bg, CLUB.honker, 26, 60, 2);
   const card = (p: Pixels, x: number, y: number, tilt: number) => {
     const w = tilt ? 10 : 16;
     p.rect(x - w / 2, y - 6, w, 12, c('paint', 3)).frame(x - w / 2, y - 6, w, 12, c('ink', 0));

@@ -188,7 +188,7 @@ export function citySong(): Uint8Array {
 }
 
 /** Level 5, the Clown Club: the theme as a breakneck circus march. */
-export function klubSong(): Uint8Array {
+export function clubSong(): Uint8Array {
   const chords = ['C', 'C', 'G7', 'G7', 'G7', 'G7', 'C', 'C', 'C', 'C7', 'F', 'Fm', 'C', 'G7', 'C', 'C'];
   const run = 'G4 e, G#4 e, A4 e, A#4 e, B4 e, C5 e, C#5 e, D5 e';
   const m1 = join('E5 q, E5 e, D#5 e, E5 q, G5 q', 'C5 q, G4 q, E4 q, G4 q', 'F5 q, F5 e, E5 e, F5 q, A5 q', 'D5 q, B4 q, G4 q, B4 q');
