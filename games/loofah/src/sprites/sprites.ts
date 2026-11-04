@@ -4,7 +4,7 @@
 // screaming towel and its cousins from the linen closet, soap bubbles, wild loofahs off the vine
 // in the forest-dark aisle (and tame ones, splashed clean), an owl's eyes, three friends from
 // other songs (Carl the fly, Loaf #13 and the mustard seed), Teddy and Gwinn asleep, her snoring,
-// Scrubbus Maximus the demon sponge (two blocks tall, coral, horned and smug, four stages of
+// Scrubbus Maximus the bath monster, a goofy fuzzy sponge (two blocks tall, golden and grinning, four stages of
 // being cleansed), its citrus suds, their splats, the brine splash and the pink one, clean
 // again. Every sprite is drawn from shapes and given a dark outline.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
@@ -413,23 +413,34 @@ export function buildMonsterBlocks(pal: Pal) {
   book.add('zzz0', zzz(0));
   book.add('zzz1', zzz(1));
 
-  // ---- IV. Scrubbus Maximus, the demon sponge: A its horns and smug face, B its mesh body and
-  // the loop it hangs by; four stages, each splash of brine washing a little of the coral out
+  // ---- IV. Scrubbus Maximus, the bath monster (a goofy fuzzy sponge): A its fuzzy head and goofy
+  // smile, B its mesh body and the loop it hangs by; four stages, each splash of brine washing a
+  // little of the golden color out
   const sponge = (half: 'A' | 'B', stage: number, f: number) => {
     const p = P();
-    const ramp = stage >= 3 ? 'pink' : 'coral';
+    const ramp = stage >= 3 ? 'pink' : 'mango';
     const light = stage >= 2 ? 3 : 2;
+    // fuzz: stray bits round the edge of a blob (the outline then makes it a soft, shaggy rim)
+    const fuzz = (cx: number, cy: number, rx: number, ry: number, seed: number) => {
+      for (let k = 0; k < 18; k++) {
+        const a = (k / 18) * Math.PI * 2 + seed;
+        const r = 1.12 + ((k * 7 + seed * 5) % 3) * 0.06;
+        if (k % 2 === 0) p.set(Math.round(cx + Math.cos(a) * rx * r), Math.round(cy + Math.sin(a) * ry * r), c(ramp, 2));
+      }
+    };
     if (half === 'A') {
       blob(p, 10, 13, 8, 7, pal.r(ramp), 1, light + 1);
-      // the horns (they droop as it's cleansed)
-      const droop = stage >= 2 ? 3 : 0;
-      p.line(4, 8, 2, 1 + droop, c('demon', 1))
-        .line(5, 8, 3, 1 + droop, c('demon', 2))
-        .line(16, 8, 18, 1 + droop, c('demon', 1))
-        .line(15, 8, 17, 1 + droop, c('demon', 2));
-      mesh(p, 2, 6, 19, 20, c(ramp, 0));
-      p.set(7, 11, c('eye', stage >= 3 ? 0 : 1)).set(13, 11, c('eye', stage >= 3 ? 0 : 1));
-      face(p, 10, 11, { smug: stage < 2, grin: stage >= 2 && f === 0 });
+      fuzz(10, 13, 8, 7, f);
+      mesh(p, 2, 6, 19, 20, c(ramp, 0), 4);
+      // goofy googly eyes, looking two ways, and a wide wobbly smile with a tongue
+      for (const [ex, dx] of [
+        [7, f ? 1 : 0],
+        [13, f ? 0 : 1],
+      ]) {
+        p.rect(ex - 1, 9, 3, 3, c('white', 2));
+        p.set(ex + dx, 10 + (f ? 1 : 0), ink);
+      }
+      p.set(6, 14, ink).set(14, 14, ink).line(7, 15, 13, 15, ink).rect(8, 16, 5, 1, c('red', 2)).set(11, 17, c('pink', 2));
       if (stage >= 1)
         for (const [x, y] of [
           [5, 15],
@@ -438,12 +449,13 @@ export function buildMonsterBlocks(pal: Pal) {
         ])
           p.set(x, y, c('suds', 2));
       // a wisp of grapefruit scent
-      if (stage < 3) p.set(18, 4 + f, c('citrus', 3)).set(19, 2 + f, c('citrus', 2));
+      if (stage < 3) p.set(17, 5 + f, c('citrus', 3)).set(18, 3 + f, c('citrus', 2));
     } else {
       blob(p, 10, 8, 8, 8, pal.r(ramp), 1, light);
       mesh(p, 2, 0, 19, 17, c(ramp, 0));
-      // little claws, and the loop of cord
-      for (const x of [5, 9, 13]) p.line(x + f, 15, x - 1 + f, 19, c('demon', 1));
+      // little round feet, and the loop of cord
+      fuzz(10, 8, 8, 8, f);
+      for (const x of [5, 10, 14]) p.rect(x + f, 16, 3, 2, c(ramp, 1));
       p.ring(17, 15, 2.4, c('wax', 1));
       if (stage >= 1) p.rect(5, 3, 3, 2, c('suds', 2));
       if (stage >= 2) p.rect(12, 9, 3, 3, c('suds', 2));
