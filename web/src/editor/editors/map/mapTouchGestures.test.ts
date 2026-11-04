@@ -1,9 +1,9 @@
-// Touch gestures: pinch and pan, the 150 ms take-back, long-press, and the Hand tool.
+// Touch gestures: pinch and pan, the 300 ms take-back, long-press, and the Hand tool.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LONG_PRESS_MS, pinchOf, touchGestures, type TouchHost } from './mapTouchGestures';
 
 function setup(over: Partial<TouchHost> = {}) {
-  const el = new EventTarget() as unknown as HTMLElement;
+  const el = Object.assign(new EventTarget(), { style: {}, children: [] }) as unknown as HTMLElement;
   const scroller = { scrollLeft: 100, scrollTop: 100, clientLeft: 0, clientTop: 0, getBoundingClientRect: () => ({ left: 0, top: 0 }) };
   let zoom = 1;
   const seen: string[] = [];
@@ -57,17 +57,23 @@ describe('two fingers', () => {
     expect(t.scroller.scrollTop).toBe(110);
   });
 
-  it('take back a first finger younger than 150 ms, and keep an older one', () => {
+  it('take back a first finger younger than 300 ms or one that has barely moved, and keep a real stroke', () => {
     const quick = setup();
     quick.fire('pointerdown', 1, 0, 0);
-    vi.advanceTimersByTime(100);
+    vi.advanceTimersByTime(250);
     quick.fire('pointerdown', 2, 50, 0);
     expect(quick.abort).toHaveBeenCalledWith(true);
-    const slow = setup();
-    slow.fire('pointerdown', 1, 0, 0);
-    vi.advanceTimersByTime(200);
-    slow.fire('pointerdown', 2, 50, 0);
-    expect(slow.abort).toHaveBeenCalledWith(false);
+    const still = setup();
+    still.fire('pointerdown', 1, 0, 0);
+    vi.advanceTimersByTime(450);
+    still.fire('pointerdown', 2, 50, 0);
+    expect(still.abort).toHaveBeenCalledWith(true);
+    const stroke = setup();
+    stroke.fire('pointerdown', 1, 0, 0);
+    stroke.fire('pointermove', 1, 100, 0);
+    vi.advanceTimersByTime(450);
+    stroke.fire('pointerdown', 2, 50, 0);
+    expect(stroke.abort).toHaveBeenCalledWith(false);
   });
 
   it('send nothing more to the tool until every finger is up', () => {
