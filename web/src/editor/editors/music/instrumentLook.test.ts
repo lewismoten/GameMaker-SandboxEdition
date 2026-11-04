@@ -28,4 +28,15 @@ describe('instrumentLook', () => {
   it('different groups get different colors', () => {
     expect(groupColor('keys')).not.toBe(groupColor('strings'));
   });
+  it('a Classic preset takes its home family color, not a shared Classic one', () => {
+    const colors = ['piano', 'bass', 'pluck'].map((id) => {
+      const p = OPL_PRESETS.find((x) => x.group === 'classic' && x.id === id)!;
+      return instrumentLook(p.patch).color;
+    });
+    expect(new Set(colors).size).toBe(3);
+    expect(colors[0]).toBe(groupColor('keys'));
+    expect(colors[1]).toBe(groupColor('bass'));
+    expect(colors[2]).toBe(groupColor('strings'));
+    expect(groupColor('synth', 1)).not.toBe(groupColor('synth'));
+  });
 });
