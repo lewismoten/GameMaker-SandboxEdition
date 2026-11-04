@@ -36,3 +36,6 @@ chosen). It saves what this site keeps in a browser to one file and brings it ba
   this browser, Replace what's here), which each row can set apart.
 
 Tests: `backup.test.ts` (round trip, merges, untouched sections, partial and damaged files).
+
+Old backups, companions, saves and settings keep opening: `test/oldSaves.test.ts` opens the dated
+fixtures in `test/fixtures/saves/`. When a stored format changes, add a migration and a fixture there in the same commit.
