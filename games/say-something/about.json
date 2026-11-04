@@ -1,0 +1,48 @@
+{
+  "title": "Say Something",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short rooms about putting words in a game. Signs are boards with words drawn on them, and three friends talk when Kit walks into them: a picture with a speech bubble, then a page of words, then you are back in the room. Signs in the levels say how. Play it, then open it in Game-Maker and change what they say.",
+  "exe": "SAY.EXE",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#8a3a7c",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#8a3a7c",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Say it with a sign.",
+    "back": "A small explorer in a teal beanie crosses two short rooms of signs and friendly faces. A board is a picture of words, and a friend with a speech bubble will talk if you walk right into them. Read the signs, listen, then open the game in Game-Maker and change what everyone says.",
+    "features": [
+      "Signs in the levels explain each idea",
+      "A friend's talk is a picture and pages of words, then back to the room",
+      "Made to be copied and taken apart"
+    ],
+    "shots": [
+      [
+        "hello.map",
+        22,
+        6
+      ],
+      [
+        "chat.map",
+        24,
+        6
+      ]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": [
+    "facing s3 The hero climbs side on"
+  ]
+}
