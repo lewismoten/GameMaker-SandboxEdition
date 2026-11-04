@@ -1,8 +1,8 @@
 // Quick pre-merge check: only what this branch touched against a base (default origin/develop).
 // `npm run verify` stays the full check. Usage: npm run verify:changed [-- --base <ref>]
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
-import { dirname, relative, resolve } from 'node:path';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -58,6 +58,36 @@ step(
   ['vitest', 'run', '--changed', mergeBase, '--maxWorkers=2', '--passWithNoTests'],
   'vitest --changed (related tests only)',
 );
+
+// vitest --changed follows imports only. A test that reads a changed JSON or Markdown file with
+// fs (NOTICE.md, about.json...) is not "related", so find tests naming such a file and run them too.
+function testFiles(dir, out = []) {
+  for (const e of readdirSync(dir)) {
+    const f = join(dir, e);
+    if (e === 'node_modules') continue;
+    if (statSync(f).isDirectory()) testFiles(f, out);
+    else if (e.endsWith('.test.ts')) out.push(f);
+  }
+  return out;
+}
+const dataNames = [...new Set(changed.filter((f) => /\.(json|md|txt)$/.test(f)).map((f) => basename(f)))].filter(
+  (n) => n !== 'README.md' && n !== 'package.json' && n !== 'CHANGELOG.md',
+);
+if (dataNames.length) {
+  const all = [...testFiles(resolve(root, 'web/src')), ...testFiles(resolve(root, 'web/test'))];
+  const reads = all.filter((f) => {
+    const text = readFileSync(f, 'utf8');
+    return dataNames.some((n) => text.includes(n));
+  });
+  if (reads.length)
+    step(
+      'vitest (reads)',
+      resolve(root, 'web'),
+      'npx',
+      ['vitest', 'run', '--maxWorkers=2', ...reads.map((f) => relative(resolve(root, 'web'), f))],
+      `${reads.length} tests naming ${dataNames.join(', ')}`.slice(0, 80),
+    );
+}
 
 const games = [...new Set(changed.map((f) => /^games\/([^/]+)\//.exec(f)?.[1]).filter((g) => g && g !== 'kit'))];
 const kitChanged = changed.some((f) => f.startsWith('games/kit/'));
