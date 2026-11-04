@@ -34,6 +34,8 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- Map editor on iPhone: two fingers over the map pinch the map, not Safari's page, and never leave a stray stroke; a Zoom tool (tap to zoom in) and visible + and − buttons beside the zoom menu; the block highlighter is now "Find block".
+
 - Editors: 44 px touch targets throughout, one Tab stop with arrow keys for the file list, slide tray and path tabs, and a small Saved pill where the file list folds away.
 - PC games ask for setup on PLAYGAME's own Configure screen, as the DOS program does.
 - Box viewer on a phone: the Feelies strip sits above the disks and manual, and dragging always turns the model.

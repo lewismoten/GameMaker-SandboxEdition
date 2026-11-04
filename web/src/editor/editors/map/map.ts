@@ -38,7 +38,7 @@ import './mapExport.css';
 import './tools/mapTools.css';
 import { playSpot } from './playSpot';
 
-type Mode = 'paint' | 'fill' | 'pick' | 'monster' | 'pan' | ToolMode;
+type Mode = 'paint' | 'fill' | 'pick' | 'monster' | 'pan' | 'zoom' | ToolMode;
 const TOOL_MODES = new Set<string>(['line', 'rect', 'select', 'terrain', 'stamp', 'building', 'paste']);
 const isTool = (m: Mode): m is ToolMode => TOOL_MODES.has(m);
 
@@ -58,7 +58,8 @@ const TOOLS: [Mode, string, string, string, string][] = [
   ['stamp', '★', 'Stamp', 'P', 'Place a saved stamp (a house, a tree…)'],
   ['building', '⌂', 'Building', 'H', 'Drag out a rectangle to build a house of that size from its parts'],
   ['monster', '👾', 'Monsters', 'M', 'Click to place the chosen monster; right-click to remove one'],
-  ['pan', '✋', 'Scroll', '', 'Touch screens: drag to scroll the map instead of drawing'],
+  ['pan', '✋', 'Scroll', '', 'Touch screens: drag to scroll the map instead of drawing; pinch to zoom'],
+  ['zoom', '🔍', 'Zoom', '', 'Tap the map to zoom in there (Shift-click or the − button zooms out)'],
 ];
 
 /** The map picture's choices for the whole map, the level and a game screen. */
@@ -711,6 +712,7 @@ registerEditor(['map'], (host, project, file) => {
 
   canvas.addEventListener('pointerdown', (e) => {
     if (mode === 'pan') return;
+    if (mode === 'zoom') return;
     const p = cell(e);
     if (isTool(mode)) {
       canvas.setPointerCapture(e.pointerId);
@@ -738,6 +740,12 @@ registerEditor(['map'], (host, project, file) => {
     const at = viewport.gestureCell(e);
     paintCell(at.x, at.y);
     viewport.render();
+  });
+  // the Zoom tool zooms when a finger lifts, so a pinch (whose fingers the gesture code swallows) never also taps
+  canvas.addEventListener('pointerup', (e) => {
+    if (mode !== 'zoom') return;
+    const r = scroller.getBoundingClientRect();
+    setZoom(zoom * (e.shiftKey ? 1 / 1.5 : 1.5), { x: e.clientX - r.left - scroller.clientLeft, y: e.clientY - r.top - scroller.clientTop });
   });
   let lastPaint: { x: number; y: number } | undefined;
   canvas.addEventListener('pointermove', (e) => {
@@ -926,8 +934,14 @@ registerEditor(['map'], (host, project, file) => {
   );
   const findBtn = h(
     'button',
-    { type: 'button', class: 'mt-tool', 'aria-label': 'Find', title: 'Highlight every use of the chosen block', onclick: () => toggleFind() },
-    '🔍',
+    {
+      type: 'button',
+      class: 'mt-tool',
+      'aria-label': 'Find block',
+      title: 'Find block: highlight every use of the chosen block on the map',
+      onclick: () => toggleFind(),
+    },
+    '◎',
     h('span', { class: 'mt-label' }, 'Find'),
   );
   const replaceBtn = h(
@@ -1110,7 +1124,7 @@ registerEditor(['map'], (host, project, file) => {
       redoBtn,
     );
     tools.enter(isTool(m) ? m : undefined);
-    canvas.style.cursor = m === 'pan' ? 'grab' : m === 'pick' ? 'copy' : 'crosshair';
+    canvas.style.cursor = m === 'pan' ? 'grab' : m === 'zoom' ? 'zoom-in' : m === 'pick' ? 'copy' : 'crosshair';
   }
   setMode('paint');
 
@@ -1159,6 +1173,12 @@ registerEditor(['map'], (host, project, file) => {
   /** The menu shows a round preset, or the exact percentage the wheel reached. */
   const zoomSelect = zoomControl.querySelector('select')!;
   zoomSelect.classList.add('mt-big');
+  // visible + and − beside the menu: a finger has no wheel (44 px on touch, mapTools.css)
+  const zoomStep = (label: string, name: string, factor: number) =>
+    h('button', { type: 'button', class: 'mt-zoom-step', 'aria-label': name, title: name, onclick: () => setZoom(zoom * factor) }, label);
+  const zoomRow = h('div', { class: 'mt-zoom-row' });
+  zoomSelect.replaceWith(zoomRow);
+  zoomRow.append(zoomSelect, zoomStep('−', 'Zoom out', 1 / 1.5), zoomStep('+', 'Zoom in', 1.5));
   const zoomCustom = h('option', { value: 'custom', hidden: true });
   zoomSelect.append(zoomCustom);
   function showZoom(): void {
