@@ -137,7 +137,7 @@ Checking the games:
   (also lists each game's play findings from `levelCheck.ts --play`; slow, and never fails). Secret games are left
   out unless named.
 - `keyAccess.ts` — `npm run check:keys [-- <id>...]`: keyboard accessibility. Each game's walkthrough's share of presses on the basic keys (the arrows, Space and Enter; `web/src/editor/check/keyLimit.ts`), its number-pad diagonals and every other key it presses, with suggestions where extra keys carry more than a fifth of the play or a diagonal is pressed (games may use extra keys, but less often: many laptops have no number pad and most players stick to the arrows). Never fails; `npm run walk:auto -- <disk> --basic-keys` tries a game with the basic keys alone. Secret games are left out unless named or `--all`.
-- `palCheck.ts` — `npx vite-node ../games/kit/palCheck.ts [<id>...]`: fails when a game's `disk/` holds byte-identical `.pal` files. Every game's `Disk.write()` merges them first (`tools/src/kit/palMerge.ts`: the first palette in scene order is kept, every scene that opened a duplicate opens it, the duplicates are dropped; scenes keep their numbers, and a DOS saved game stores scene numbers, not file names), so a failure means a build bypassed the shared writer.
+- `palCheck.ts` — `npx vite-node ../games/kit/palCheck.ts [<id>...]`: fails when a game's `disk/` holds byte-identical `.pal` files. Every game's `Disk.write()` merges them first (`web/packages/tools/src/kit/palMerge.ts`: the first palette in scene order is kept, every scene that opened a duplicate opens it, the duplicates are dropped; scenes keep their numbers, and a DOS saved game stores scene numbers, not file names), so a failure means a build bypassed the shared writer.
 - `controlsCheck.ts` — `npx vite-node ../games/kit/controlsCheck.ts [<id>...]`: a game's `controls.json` (keys by scan code, joystick
   buttons, counters by meter, sound names by slot; the shape of `editor/core/gameControls.ts`) describes exactly what its built disk uses, by the
   editor's `gameKeyMap`, `counterUses` and `soundUses` (a custom slot past the engine's nine that a character plays must be named): lists used-but-not-described, described-but-not-used and text over the limits (32/240/80, sound names 40).
@@ -150,7 +150,7 @@ Checking the games:
   opens with it (`shippedBoards.ts`, found with `import.meta.glob`). Editor-only: never in `disk/`, a download or the DOS export.
 - `player.ts` / `playerCheck.ts` — a game's DOS player look, `games/<id>/player.json`: the `{ "base": "xferplay-3.00",
 "patches": { … } }` record a project keeps in its companion (`web/src/dosPlayer/playerRecord.ts`; ids and limits in
-  `web/src/dosPlayer/patchTable.ts`). The site shows it wherever the game plays or ships (`web/src/dosPlayer/
+  `web/packages/engine/src/player/patchTable.ts`). The site shows it wherever the game plays or ships (`web/src/dosPlayer/
 catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never goes on `disk/`, so Game-Maker's own
   PLAYGAME still shows the stock words (keep in-game text that names an F2 label neutral: "F2 counts your sugar").
   Words, colors, frames and positions only: no timing or F-key patch (they would change play, and the bots and
