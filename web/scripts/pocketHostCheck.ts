@@ -5,7 +5,7 @@
 // same data files, and the two are compared tick by tick. Exits 1 on the first difference.
 //   cd web && npx vite-node scripts/pocketHostCheck.ts [--ticks N] [--keep dir]
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync, readFileSync, copyFileSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { renderWorld, VISIBLE_H, VISIBLE_W } from '@lewismoten/gamemaker-sandbox-engine/engine/render';
@@ -33,7 +33,8 @@ const hash = (): number => {
 const script: string[] = [];
 const expected: string[] = [];
 let tickNo = 0;
-const P = GameSim.prototype as unknown as Record<string, (...a: unknown[]) => unknown>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const P = GameSim.prototype as unknown as Record<string, any>;
 const origTick = P.tick;
 const origEvent = P.event;
 P.event = function (this: GameSim, k: number) {
@@ -51,7 +52,30 @@ P.tick = async function (this: GameSim) {
   const c = w.chr;
   const s = w.scroll;
   expected.push(
-    ['S', tickNo, code, lv, c.x[0], c.x[1], c.y[0], c.y[1], c.cseq, c.cframe, w.mx, w.my, s.nx, s.ny, s.littleShiftx, s.littleShifty, w.ci.score, w.ci.nextx, w.ci.nexty, w.ci.scrx, w.ci.scry, hash()].join(' '),
+    [
+      'S',
+      tickNo,
+      code,
+      lv,
+      c.x[0],
+      c.x[1],
+      c.y[0],
+      c.y[1],
+      c.cseq,
+      c.cframe,
+      w.mx,
+      w.my,
+      s.nx,
+      s.ny,
+      s.littleShiftx,
+      s.littleShifty,
+      w.ci.score,
+      w.ci.nextx,
+      w.ci.nexty,
+      w.ci.scrx,
+      w.ci.scry,
+      hash(),
+    ].join(' '),
   );
   return r;
 };
@@ -67,21 +91,32 @@ writeFileSync(join(work, 'expected.txt'), expected.join('\n') + '\n');
 
 const exe = join(work, 'hosttest');
 execFileSync('c++', ['-std=c++17', '-O1', '-Wall', '-Wformat', '-I', here + 'src', here + 'host/hosttest.cpp', '-o', exe], { stdio: 'inherit' });
-const got = execFileSync(exe, [here + 'data', join(work, 'keys.txt')], { maxBuffer: 1 << 28 }).toString().trim().split('\n');
+const got = execFileSync(exe, [here + 'data', join(work, 'keys.txt')], { maxBuffer: 1 << 28 })
+  .toString()
+  .trim()
+  .split('\n');
 copyFileSync(join(work, 'expected.txt'), join(work, 'expected.keep.txt'));
 
 const names = 'S tick code level x0 x1 y0 y1 seq frame mx my nx ny lsx lsy score nextx nexty scrx scry hash'.split(' ');
 let bad = -1;
 for (let i = 0; i < total; i++) {
-  if (got[i] !== expected[i]) { bad = i; break; }
+  if (got[i] !== expected[i]) {
+    bad = i;
+    break;
+  }
 }
 if (bad >= 0) {
-  const a = expected[bad].split(' '), b = (got[bad] ?? '').split(' ');
+  const a = expected[bad].split(' '),
+    b = (got[bad] ?? '').split(' ');
   console.log(`FAIL at tick ${bad + 1} of ${total}`);
-  names.forEach((n, k) => { if (a[k] !== b[k]) console.log(`  ${n}: engine ${a[k]}, board code ${b[k]}`); });
+  names.forEach((n, k) => {
+    if (a[k] !== b[k]) console.log(`  ${n}: engine ${a[k]}, board code ${b[k]}`);
+  });
   console.log(`  last matching: ${bad > 0 ? expected[bad - 1] : '(none)'}`);
   process.exit(1);
 }
 const lastCode = (re: RegExp) => expected.filter((l) => re.test(l)).length;
-console.log(`OK: ${total} ticks match the engine (position, sequence, scroll, score and the picture hash each tick); ${lastCode(/^S \d+ L /)} level change(s), ${lastCode(/^S \d+ D /)} death(s), ${lastCode(/^S \d+ W /)} win.`);
+console.log(
+  `OK: ${total} ticks match the engine (position, sequence, scroll, score and the picture hash each tick); ${lastCode(/^S \d+ L /)} level change(s), ${lastCode(/^S \d+ D /)} death(s), ${lastCode(/^S \d+ W /)} win.`,
+);
 console.log(`files in ${work}`);
