@@ -30,6 +30,16 @@
   outline-offset: 2px;
 }
 
+.phone-build {
+  display: block;
+  margin-top: 4px;
+}
+
+.phone-size {
+  margin: 2px 0 0;
+  opacity: 0.85;
+}
+
 .phone-say {
   margin: 2px 0 0;
   opacity: 0.75;

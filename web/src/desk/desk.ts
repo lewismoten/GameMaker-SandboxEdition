@@ -32,6 +32,7 @@ import { restoreDesk } from './deskRestore';
 import { wallTrophies } from './wallTrophies';
 import { deskTour } from './deskTour';
 import { beginDesk, endDesk } from './lifetime';
+import { ejectRefusal } from './ejectRule';
 
 // What is opened or read on the desk loads when it first is: the manuals and the catalog (the
 // boxes' insides, deskGmBox.ts and deskShelf.ts).
@@ -161,9 +162,11 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
 
   function eject(): void {
     const computer = pc.computer;
-    // a utility like PLAYHACK carries on with the drive empty (retro/diskSwap.ts)
-    if (computer?.busy && !computer.diskSwappable) {
-      toast('The drive light is on — quit the running program first.');
+    // the button is mechanical: it works any time but while A:'s light is really on. A game
+    // already loaded plays on; a later read of A: gets "Not ready reading drive A" (ejectRule.ts)
+    const refusal = ejectRefusal(floppy.isBusy());
+    if (refusal) {
+      toast(refusal);
       return;
     }
     computer?.eject();

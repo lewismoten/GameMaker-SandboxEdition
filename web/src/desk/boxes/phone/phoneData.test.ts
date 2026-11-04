@@ -2,13 +2,17 @@
 // offsets are worked out from the data, so extra parts (a shell, a dial) need no code.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { groupOf, parseParts, shows, type PartsFile } from './phoneData';
+import { groupOf, parseParts, phoneSize, shows, variantBase, type PartsFile, type PhoneVariant } from './phoneData';
 import { explodeStacks, moved, stackOf } from './phoneExplode';
 
-const dir = new URL('../../../../../games/year2000/phone/viewer/', import.meta.url);
-const file = JSON.parse(readFileSync(new URL('parts.json', dir), 'utf8')) as PartsFile;
-const bin = readFileSync(new URL('parts.bin', dir));
-const parts = parseParts(file, bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength));
+const read = (sub: string) => {
+  const dir = new URL(`../../../../../games/year2000/phone/${sub}viewer/`, import.meta.url);
+  const file = JSON.parse(readFileSync(new URL('parts.json', dir), 'utf8')) as PartsFile;
+  const bin = readFileSync(new URL('parts.bin', dir));
+  return { file, parts: parseParts(file, bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength)) };
+};
+const builds: Record<PhoneVariant, ReturnType<typeof read>> = { cheap: read(''), deluxe: read('deluxe/') };
+const parts = builds.cheap.parts;
 
 const box = (group: string, side: 'front' | 'back', lo: number, hi: number) => ({
   group,
@@ -18,17 +22,56 @@ const box = (group: string, side: 'front' | 'back', lo: number, hi: number) => (
 
 describe('groups', () => {
   it('reads every part with its own vertices and indices', () => {
-    expect(parts).toHaveLength(115);
-    for (const p of parts) {
+    expect(parts.length).toBeGreaterThan(100);
+    for (const p of [...parts, ...builds.deluxe.parts]) {
       expect(p.positions.length).toBeGreaterThan(0);
       expect(p.indices.length % 3).toBe(0);
       expect(Math.max(...p.indices)).toBeLessThan(p.positions.length / 3);
     }
   });
-  it('sorts parts into board, components and battery', () => {
-    expect(parts.filter((p) => p.group === 'board')).toHaveLength(5);
-    expect(parts.filter((p) => p.group === 'battery').every((p) => p.id.startsWith('BT'))).toBe(true);
-    expect(new Set(parts.map((p) => p.group))).toEqual(new Set(['board', 'components', 'battery']));
+  it('sorts every build into board, components, battery, shell and dial', () => {
+    for (const { parts: ps } of Object.values(builds)) {
+      expect(ps.filter((p) => p.group === 'board')).toHaveLength(5);
+      expect(ps.filter((p) => p.group === 'battery').every((p) => p.id.startsWith('BT'))).toBe(true);
+      expect(new Set(ps.map((p) => p.group))).toEqual(new Set(['board', 'components', 'battery', 'shell', 'dial']));
+    }
+  });
+  it('gives each build its shell, dial, caps and a battery box of four labeled AAA cells', () => {
+    for (const { parts: ps } of Object.values(builds)) {
+      const ids = new Set(ps.map((p) => p.id));
+      for (const id of [
+        'front-frame',
+        'back-tray',
+        'battery-door',
+        'dial-plate',
+        'dial-cam',
+        'dial-spring',
+        'dial-post',
+        'dial-stop',
+        'cap-talk',
+        'cap-clear',
+        'BT1',
+      ])
+        expect(ids.has(id), id).toBe(true);
+      for (let k = 1; k <= 4; k++) {
+        expect(ids.has(`BT1-cell${k}`)).toBe(true);
+        expect(ps.find((p) => p.id === `BT1-label${k}`)?.label).toContain('AAA 1.5V');
+      }
+      expect(ps.filter((p) => p.group === 'shell' && p.side === 'front').length).toBeGreaterThan(0);
+    }
+    // only the cheap build has a handle past the board's edge
+    expect(parts.some((p) => p.id === 'back-handle')).toBe(true);
+    expect(builds.deluxe.parts.some((p) => p.id === 'back-handle')).toBe(false);
+  });
+  it('knows its two builds and their sizes, the cheap board being the smaller', () => {
+    expect(builds.cheap.file.variant?.board).toEqual({ width: 99, height: 99 });
+    expect(builds.deluxe.file.variant?.board).toEqual({ width: 73.66, height: 175.26 });
+    const [cw, ch] = phoneSize(builds.cheap.parts);
+    const [dw, dh] = phoneSize(builds.deluxe.parts);
+    expect(cw).toBeGreaterThan(99);
+    expect(dh).toBeGreaterThan(ch * 0.9);
+    expect(dw).toBeLessThan(cw);
+    expect(variantBase('cheap')).not.toBe(variantBase('deluxe'));
   });
   it('takes a part’s own group, or its kind', () => {
     expect(groupOf({ id: 'X1', kind: 'component', group: 'dial' })).toBe('dial');

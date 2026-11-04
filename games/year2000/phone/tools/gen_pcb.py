@@ -18,6 +18,8 @@ from design import parts, GND, V5  # noqa: E402
 from footprints import FP  # noqa: E402
 from router import Router  # noqa: E402
 import models3d  # noqa: E402
+import silkart  # noqa: E402
+import dex_art  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 KDIR = os.path.join(HERE, "..", "kicad")
@@ -237,6 +239,12 @@ print("FAILED NETS:", [netnames[n - 1] for n in failed])
 padpts = [(pl.x + rx, pl.y + ry, pad.d / 2 * (1.42 if pad.square else 1)) for pl in placed.values() for pad, rx, ry in pl.pads]
 padpts += [(mx, my, 2.0) for mx, my in MOUNT]
 TAKEN = []          # text boxes already used (board coordinates)
+# Back-side advertising, in the three blank spots of the back (found from the back preview): QR codes and Dex.
+PARTS_URL = "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/games/year2000/phone"
+SITE_URL = "https://lewismoten.github.io/GameMaker-SandboxEdition"
+QR_PARTS = (27.5, 44.0, 0.44)      # x, y (top-left, board coordinates), module mm: 41 modules = 18.0 mm
+QR_SITE = (65.0, 47.0, 0.5)        # 33 modules = 16.5 mm
+DEX_AT = (17.5, 65.5, 0.8)         # 16 x 18 pixels = 12.8 x 14.4 mm
 
 
 def box_ok(b, margin=0.45):
@@ -409,6 +417,9 @@ def eline(x1, y1, x2, y2):
 items += [eline(r, 0, W - r, 0), eline(W, r, W, H - r), eline(W - r, H, r, H), eline(0, H - r, 0, r),
           arc(r, r, 180, 270), arc(W - r, r, 270, 360), arc(W - r, H - r, 0, 90), arc(r, H - r, 90, 180)]
 
+TAKEN += [(QR_PARTS[0] - 0.3, QR_PARTS[1] - 0.3, QR_PARTS[0] + 18.3, QR_PARTS[1] + 18.3),
+          (QR_SITE[0] - 0.3, QR_SITE[1] - 0.3, QR_SITE[0] + 18.3, QR_SITE[1] + 18.3),
+          (DEX_AT[0] - 0.3, DEX_AT[1] - 0.3, DEX_AT[0] + 13.1, DEX_AT[1] + 14.7)]   # kept clear of silk text (after the reference text is placed: the back is blank here)
 # ---- silkscreen: lettering, number ring, retro-future art (clipped away from pads) -----------------------
 def clear(x, y, margin=0.55):
     if x < 1.0 or y < 1.0 or x > W - 1.0 or y > H - 1.0:
@@ -452,8 +463,25 @@ def ring(cx, cy, rad, a0=0, a1=360, w=0.2, step=3, dash=0):
     return out
 
 
+def near_label(layer, s, x, y, w, h, size=0.9):
+    """Back-side text hugging a picture: below, above, then beside it (mirrored text), else the nearest free spot."""
+    tw = len(s) * size * 0.85 + 0.3
+    for cx, cy in ((x + w / 2, y + h + 1.0), (x + w / 2, y - 1.0), (x + w / 2, y + h + 2.0), (x + w / 2, y - 2.0)):
+        b = (cx - tw / 2, cy - size / 2 - 0.1, cx + tw / 2, cy + size / 2 + 0.1)
+        if box_ok(b):
+            TAKEN.append(b)
+            return txt(layer, s, cx, cy, size, True)
+    return label(layer, s, x + w / 2, y + h + 1.0, size, True)
+
+
 silk = []
 silk.append(label("F.SilkS", "THE PHONE OF THE FUTURE", CX, 11.6, 1.6))
+# the project name and advertising lines go in before the orbits and rays, so those keep clear of them
+silk.append(label("F.SilkS", "SCIENCE PROJECT NO. 2", CX, 4.2, 1.2))
+silk.append(label("F.SilkS", "JUNIOR LAB EDITION", CX, 7.0, 1.0))
+silk.append(label("F.SilkS", "IN THE YEAR 2000!", 50.0, 15.5, 1.1))
+silk.append(label("F.SilkS", "SANDBOX SOFTWARE", 50.0, 18.0, 1.0))
+silk.append(label("F.SilkS", "MADE WITH GAME-MAKER", 50.0, 20.5, 1.0))
 cx, cy = DIAL
 DIGITS = []
 for k in range(1, 11):
@@ -493,9 +521,20 @@ silk.append(label("F.SilkS", "EYE", 86.0, 13.2, 0.9))
 silk.append(label("B.SilkS", "THE PHONE OF THE FUTURE", CX, 12.0, 1.9, True))
 silk.append(label("B.SilkS", "rev C  untested design", CX, 15.0, 0.9, True))
 silk.append(label("B.SilkS", "Claude Sonnet 5.5 + KiCad", CX, 17.0, 0.9, True))
-silk.append(label("B.SilkS", "PROGRAM WITH U2 OUT", 68.0, 88.5, 0.9, True))
+silk.append(label("B.SilkS", "PROGRAM: U2 OUT", 68.0, 88.5, 0.8, True))
+# name and advertising: the front lines go to the nearest free spot (label); the QR codes and Dex are on the back
+silk.append(label("B.SilkS", "THE POCKET TELEPHONE", CX, 7.0, 1.1, True))
+QR_INFO = {}
+for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SITE, SITE_URL, "PLAY THE GAME")):
+    items_, size_, n_ = silkart.qr_plate("B.SilkS", qx, qy, qm, qtext, uid, f)
+    QR_INFO["parts" if qtext == PARTS_URL else "site"] = dict(x=qx, y=qy, size=round(size_, 2), modules=n_, module_mm=qm, url=qtext)
+    silk += items_
+    silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))
+silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f)[0]
+silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], 12.8, 14.4))
 items += silk
 
+json.dump(dict(board_width=W, codes=QR_INFO, dex=dict(x=DEX_AT[0], y=DEX_AT[1], width=round(DEX_AT[2] * 16, 2), height=round(DEX_AT[2] * 18, 2))), open(os.path.join(KDIR, "qr_spots.json"), "w"), indent=1)
 nets_txt = '(net 0 "")\n  ' + "\n  ".join(f'(net {i} "{n}")' for n, i in nid.items())
 pcb = f'''(kicad_pcb (version 20241229) (generator "pcbnew") (generator_version "9.0")
   (general (thickness 1.6) (legacy_teardrops no))

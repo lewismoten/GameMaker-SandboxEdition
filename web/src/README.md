@@ -91,7 +91,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`input/`](input): Mac keys for keyboards without a keypad (`macKeys.ts`), keys pressed with the mouse or
   a finger (`virtualKeys.ts`), the gamepad (`gamepad.ts`), and the desk's game pad and ball mouse
   as the PC's joystick and mouse (`deskJoystick.ts`, with the pad's TURBO switch in `padTurbo.ts`; the portable mouse state lives in the engine package).
-- [`player/`](player): the embeddable player (`player.ts`): canvas, start overlay, optional first-run video/audio setup (`hardwareSetup.ts`) and remembered per-game choices (`hardwarePrefs.ts`, backed up with preferences), whole-pixel
+- [`player/`](player): the embeddable player (`player.ts`): canvas, start overlay, optional first-run video/audio setup (`hardwareSetup.ts`) and remembered per-game choices (`hardwarePrefs.ts`, backed up with preferences; on the 1994 PC the setup is PLAYGAME's own DOS Configure screen, `dosConfig/`), whole-pixel
   scaling (`exactScale.ts`), touch controls (`touch.ts`, with what the d-pad sends for each
   direction and which keys that leaves off the touch strip in `moveKeys.ts`), on-screen keys (`screenKeys.ts`) and a
   pointer that hides itself (`cursorHide.ts`). Used by `play.ts`, the editor's play test, the desk

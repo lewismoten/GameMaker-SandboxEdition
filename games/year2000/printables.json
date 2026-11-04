@@ -178,6 +178,27 @@
         ["TELEPORT RATES", "Still 25 cents a call. Booth 4 at the exchange is out of order again."],
         ["WEATHER ON THE MOON", "Sunny. Meteor showers this afternoon. Bring a helmet."]
       ]
+    },
+    {
+      "kind": "ballooncube",
+      "title": "The wrong-number die (fold your own)",
+      "note": "A square of paper that blows up into a die",
+      "heading": "The Wrong-Number Die",
+      "intro": "Cut out the square, fold it and blow it up into a six-sided die for choosing which booth to dial in the Exchange. Nothing about it is right: its faces are 1, 2, 3, a 4 that is out of order, a 7 (there is no booth 7) and a 0, which is the hole you blow in. Opposite faces add up to 4, 6 and 7. Roll it, then dial whatever it says.",
+      "faces": {
+        "top": { "pips": 0, "caption": "WRONG NUMBER" },
+        "bottom": { "pips": 7, "caption": "NO SUCH BOOTH" },
+        "ne": { "pips": 1, "caption": "BOCA RATON" },
+        "nw": { "pips": 2, "caption": "SEA FLOOR" },
+        "sw": { "pips": 3, "caption": "INSIDE A TV" },
+        "se": { "pips": 4, "caption": "OUT OF ORDER", "dead": true }
+      },
+      "foot": "If you roll the 4, the booth is out of order. Roll again."
+    },
+    {
+      "kind": "dexreport",
+      "title": "THE POCKET TELEPHONE",
+      "note": "Dex's science fair report: the pages Sparky ate (and a few teeth marks)"
     }
   ],
   "stickers": [

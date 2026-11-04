@@ -186,3 +186,7 @@ Invalid assets retain no invented metadata.
 Palette facts include the canonical 768 VGA bytes in base64 for previews, so browsing
 a palette list needs no game archive download. These library-only facts are omitted
 from the slim home-page catalog. Copying a selected file still reads its original ZIP.
+
+- `phoneBoardPhotos.ts`: renders the Phone of the Future's front and back as top-down PNGs (a small z-buffer
+  rasterizer over `games/year2000/phone/viewer/parts.json` + `parts.bin`) into
+  `src/manual/printables/dexReport/`, for Dex Dynamo's science report. `npx vite-node scripts/phoneBoardPhotos.ts`.

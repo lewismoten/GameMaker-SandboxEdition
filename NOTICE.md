@@ -98,10 +98,6 @@ game folder opens in the browser unchanged.
   Codex made no new levels, art, music or story text for the games. The entries below that say
   "OpenAI Codex (GPT-6)" are part of the same work.
 
-- **The Year 2000 pocket phone trinket** (`games/year2000/src/trinkets/pocketPhone.ts`): its
-  original printable shape and registration were implemented with **GPT-5.6 Terra** through
-  **OpenAI Codex**, directed by Lewis Moten.
-
 - **The npm engine package** (`web/packages/engine/`): extracted and documented with
   **OpenAI Codex (GPT-6)** through Visual Studio Code, directed by Lewis, from this fork's
   existing TypeScript web engine.
@@ -556,7 +552,10 @@ formats from their published descriptions and from Game-Maker's own source.
   Project Authors"), under the SIL Open Font License 1.1. Its 600 weight, cut to Latin-1
   with fontTools (its name and license kept inside it), is kept with the site as
   `web/src/manual/fonts/caveat-600.woff2`, with the license beside it (`Caveat-OFL.txt`), so
-  the page asks no font server for it. It isn't in exported games.
+  the page asks no font server for it. It isn't in exported games. It is also the pencil hand of Dex Dynamo's
+  science report in In The Year 2000!'s box (`web/src/manual/printables/dexReport.css`), loaded from the same file.
+  The report's text and pencil drawings, and the board photos in it (renders of the kit's 3D viewer data), were made
+  by Claude Sonnet 5.5 (Anthropic) for this project.
 - **ChatGPT**, **Riffusion** (later **Producer.ai**, now Google's **Google Flow Music**:
   one service under its successive names) and **DeepAI** are their owners' names for the
   tools used to make the Bard of Bizarre songs and art, and **ChatGPT** and **Gemini** for
@@ -991,3 +990,10 @@ a small PIC16F84A-style simulator are project-owned MIT code. The schematic embe
 the KiCad stock libraries (CC-BY-SA 4.0 with the KiCad libraries exception, KiCad Libraries
 Development Team). References: the ITU-T Q.23 DTMF frequencies, the MT8870D (Mitel/Zarlink/
 Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated), GNQ-3641 (G-NOR), PIC16F628A and MCP1702 (Microchip) datasheets. The README's programming steps use ZEPPP (Zero External Parts PIC Programmer by battlecoder, MIT License, https://github.com/battlecoder/zeppp); none of its code is copied. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.
+
+The two builds of the kit (the 99 x 99 mm Junior Lab Edition and the 73.66 x 175.26 mm Deluxe Model) carry silkscreen QR codes
+made with **OpenCV**'s `QRCodeEncoder` (Apache-2.0, the OpenCV team; `games/year2000/phone/tools/silkart.py`) and checked by its
+QR detector, and block art of Dex Dynamo taken from the game's own sprite (`games/year2000/src/sprites/sprites.ts`).
+The 3D-printed shell, dial, button caps and battery box (`tools/shell.ts`, `shellParts.ts`) are signed-distance shapes meshed
+by this repository's trinket tools, designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction. The AAA cells'
+maker "ZORP" is invented. The shell is untested: nothing has been printed.

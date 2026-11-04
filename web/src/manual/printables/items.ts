@@ -32,6 +32,8 @@ const ICONS: Record<PrintableItem['kind'], string> = {
   codewheel: '🎡',
   codesheet: '🟥',
   postcardgrille: '💌',
+  ballooncube: '🎲',
+  dexreport: '✏️',
 };
 
 export function boxItems(ctx: PrintContext): BoxItem[] {
