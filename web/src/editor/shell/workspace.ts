@@ -7,6 +7,7 @@ import { migrateCounterNames } from '../core/gameControls';
 import { h, clear, download, pickFiles, toast, promptText, confirmDialog, modal } from '../core/ui';
 import { Project, kindOf, KIND_LABELS, validDosName, type FileKind } from '../core/project';
 import { pickFile } from '../widgets/filePicker';
+import { rovingFocus } from '../widgets/rovingFocus';
 import { MAKERS } from '../tools/makers';
 import { KIND_ICON } from '../widgets/thumbs';
 import { keyboardIcon, showShortcuts, wantsShortcuts } from '../widgets/shortcuts';
@@ -371,6 +372,25 @@ export class Workspace implements AssistantHost {
       ),
     );
     this.filter();
+    this.roveFiles();
+  }
+
+  /** The file buttons are one Tab stop: arrows, Home/End and typed letters move between them; Delete removes the focused file. */
+  private roveFiles(): void {
+    const box = this.sidebar.querySelector<HTMLElement>('.side-files');
+    if (!box) return;
+    rovingFocus(box, '.file-row .file', { list: true, label: (el) => el.closest<HTMLElement>('.file-row')?.dataset.name ?? '' });
+    // the focused row's Delete button joins the Tab order (it is visible then), the others stay out
+    box.addEventListener('focusin', () => {
+      for (const b of box.querySelectorAll<HTMLElement>('.file-row .icon-btn.danger'))
+        b.tabIndex = b.closest('.file-row')?.contains(document.activeElement) ? 0 : -1;
+    });
+    box.addEventListener('keydown', (e) => {
+      const t = e.target as HTMLElement;
+      if (e.key !== 'Delete' || !t.matches('.file-row .file')) return;
+      e.preventDefault();
+      t.closest('.file-row')?.querySelector<HTMLElement>('.icon-btn.danger')?.click();
+    });
   }
 
   /** Wide screens: the button that folds the file list into a thin bar and back (remembered per browser). */
@@ -519,7 +539,11 @@ export class Workspace implements AssistantHost {
           h('button', { class: 'icon-btn', title: `Edit ${n}`, tabindex: '-1', 'aria-hidden': 'true', onclick: () => this.open(n) }, '✎'),
           n === p.gam || this.looking
             ? null
-            : h('button', { class: 'icon-btn danger', title: `Delete ${n}`, 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) }, '🗑'),
+            : h(
+                'button',
+                { class: 'icon-btn danger', title: `Delete ${n}`, tabindex: '-1', 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) },
+                '🗑',
+              ),
         ),
       ),
     ];
