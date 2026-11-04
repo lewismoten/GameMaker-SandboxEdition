@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Every room is a place of its own, and a door is only a way from one to the next.
 
-A small explorer in a teal beanie goes out of one room and into another, through doors and across an open edge. Read the signs: they say what each door does.
+A small explorer in a teal beanie goes out of one room and into another, through doors and through an open archway. Read the signs: they say what each door does.
 
 Then open this game in Game-Maker and move a door.
 `);

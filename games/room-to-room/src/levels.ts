@@ -3,7 +3,7 @@
 // another. Each room is painted on a Grid (a block a character, see games/kit/starter/map.ts),
 // given its signs, and told where its exits are and where a hero arrives.
 //
-//   Level 1, Out the Door: START has a door to INSIDE; INSIDE has no door, only its right edge left open.
+//   Level 1, Out the Door: START has a door to INSIDE; INSIDE has no door, only an open archway in its right wall.
 //   Level 2, There and Back: a house. The HALL has a door to the KITCHEN and one to the BEDROOM, each
 //     with a door back; a gold door up on the HALL's ledge is shut until the kitchen's key comes along.
 //   Level 3, Two Doors: the FORK has two doors, to the GARDEN and to the ATTIC, and each leads on to the end.
@@ -18,7 +18,7 @@ import { addSign, type Sign } from '../../kit/starter/sign';
 const SIGNS = {
   door: ['door', 'THIS DOOR GOES TO ANOTHER ROOM', 4],
   came: ['came', 'YOU CAME IN HERE', 4],
-  edge: ['edge', 'WALK OFF THIS EDGE TO LEAVE', 4],
+  out: ['out', 'THIS WAY OUT →', 4],
   kitchen: ['kitchen', 'KITCHEN', 4],
   bedroom: ['bedroom', 'BEDROOM', 4],
   locked: ['locked', 'LOCKED. THE KEY IS IN THE KITCHEN', 4],
@@ -71,7 +71,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   return { book, signs };
 }
 
-/** A flat room `w` wide: ground, dirt, invisible walls at both ends, and a doorway or the open edge. */
+/** A flat room `w` wide: ground, dirt, hedge walls at both ends, and a doorway. */
 function base(w: number): Grid {
   const g = new Grid(w, 15);
   g.row(GROUND, 0, w - 1, 'G').fill(0, GROUND + 1, w, 4, 'D');
@@ -123,11 +123,13 @@ function start(book: Book, s: Record<SignName, Sign>): Room {
   return room('start', 'Out the Door', m, { door: at(19, 9) }, { start: at(3, 9) });
 }
 
-/** Level 1, room 2: you came in by a door; the way out is the open right edge. */
+/** Level 1, room 2: you came in by a door; the way out is an open archway in the right-hand wall (a gap, no door). */
 function inside(book: Book, s: Record<SignName, Sign>): Room {
   const g = base(30);
   doorway(g, 3);
-  g.col(29, 0, 9, ' '); // the open edge: no wall here, so the hero walks out
+  // the archway: a brick wall two blocks thick at the right end with a gap two blocks high at ground level;
+  // the hero walks through the gap, and touching its far block is the exit
+  g.col(29, 0, 9, ' ').fill(28, 0, 2, 8, 'B');
   g.row(9, 11, 15, 'c');
   scenery(
     g,
@@ -140,8 +142,8 @@ function inside(book: Book, s: Record<SignName, Sign>): Room {
   );
   const m = built(book, g);
   place(m, 5, s.came);
-  place(m, 18, s.edge);
-  return room('inside', 'Inside', m, { edge: at(29, 9) }, { door: at(3, 9) });
+  place(m, 22, s.out);
+  return room('inside', 'Inside', m, { archway: at(29, 9) }, { door: at(3, 9) });
 }
 
 /** Level 2, the hall: a kitchen door on the left, a bedroom door on the right, and a gold door on the ledge above. */
@@ -299,7 +301,7 @@ export interface Link {
 
 export const LINKS: Link[] = [
   { from: 'start', exit: 'door', to: 'inside', way: 'door' },
-  { from: 'inside', exit: 'edge', to: 'hall', way: 'in' },
+  { from: 'inside', exit: 'archway', to: 'hall', way: 'in' },
   { from: 'hall', exit: 'kitchen', to: 'kitchen', way: 'hall' },
   { from: 'kitchen', exit: 'back', to: 'hall', way: 'kitchen' },
   { from: 'hall', exit: 'bedroom', to: 'bedroom', way: 'hall' },
