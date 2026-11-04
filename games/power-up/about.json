@@ -6,32 +6,31 @@
   "year": 1994,
   "price": "Free",
   "version": "1.0",
-  "blurb": "Three short levels about things that hurt. Spikes cost a few hit points, and only once. A pool in the ground costs a whole life, and the room starts again where you came in. The third level has a safe way past both. Signs say how. Play it, then open it in Game-Maker and change a hazard.",
+  "blurb": "Two short levels about powers. The exit is up on a ledge too high to jump, until a star gives you high jumps. A canyon is too wide to cross, until a pair of sneakers lets you run and leap twice as far. A power is a block that adds to a counter, so it lasts for jumps or strides, not seconds. Signs say how. Play it, then open it in Game-Maker and change how much a star gives.",
   "exe": "POWER.EXE",
   "sound": "sb",
   "label": {
-    "background": "#e8f6ff",
-    "band": "#2fae9a",
+    "background": "#fff3d6",
+    "band": "#f08a2c",
     "ink": "#1a1830",
     "logo": "SANDBOX SOFTWARE"
   },
   "box": {
-    "levels": "3 short levels",
+    "levels": "2 short levels",
     "hours": 1,
-    "background": "#2fae9a",
+    "background": "#f08a2c",
     "accent": "#ffd23f",
     "ink": "#ffffff",
-    "tagline": "Look down before you leap.",
-    "back": "A small explorer in a teal beanie has three short levels to cross. A patch of spikes stings a little, a pool in the ground is worth a whole life, and the third room has a safe way past both. Read the signs, then open the game in Game-Maker and change a hazard.",
+    "tagline": "Higher. Faster. Farther.",
+    "back": "A small explorer in a teal beanie has two short levels to cross. The exit sits on a ledge too high to reach, until a star gives him high jumps. A canyon is too wide to jump, until a pair of sneakers lets him run and leap twice as far. Read the signs, then open the game in Game-Maker and change how much a star gives.",
     "features": [
       "Signs in the levels explain each idea",
-      "Spikes hurt once; a pool costs a life and the room starts again",
+      "A star gives four high jumps; sneakers give fifty fast strides",
       "Made to be copied and taken apart"
     ],
     "shots": [
-      ["one.map", 16, 6],
-      ["two.map", 12, 6],
-      ["three.map", 16, 6]
+      ["one.map", 22, 4],
+      ["two.map", 36, 6]
     ],
     "rating": "Everyone"
   }
