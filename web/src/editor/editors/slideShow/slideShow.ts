@@ -22,6 +22,7 @@ import { isFli, parseFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fl
 import { PALETTE_SIZE } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { showGraphic } from '@lewismoten/gamemaker-sandbox-engine/engine/showGraphic';
 import { normalize } from '../../../project/files';
+import { rovingFocus } from '../../widgets/rovingFocus';
 import { gamePreview } from '../../widgets/mediaShared';
 import { blankScreen, mediaThumb, pictureScreen, screenCanvas, textPages, TEXT_PAGE_LINES, type ScreenPicture } from '../../widgets/mediaPictures';
 import { clipKind, clipTiming, clipWidth, MAX_SLIDES, moveEntry, showLength, type ClipFacts, type ClipTiming, type Then } from './slideTimeline';
@@ -190,7 +191,9 @@ registerEditor(['lst'], (host, project, file) => {
     marker,
   );
   const length = h('span', { class: 'sl-length' });
+  // the tiles are one Tab stop; arrows, Home and End move between them; Enter or Space adds (timelineInput.ts)
   const bin = h('div', { class: 'sl-bin-grid' });
+  rovingFocus(bin, '.sl-media', { label: (el) => el.dataset.name ?? '' });
   const zoom = h('input', { type: 'range', min: 3, max: 40, value: String(pps), 'aria-label': 'Zoom' });
   zoom.addEventListener('input', () => {
     pps = Number(zoom.value);
@@ -537,7 +540,6 @@ registerEditor(['lst'], (host, project, file) => {
           'div',
           {
             class: `sl-media k-${clipKind(n)}`,
-            tabIndex: 0,
             role: 'button',
             title: `${n.toUpperCase()}: drag onto the timeline, or tap to add it after the selected slide`,
             dataset: { name: n },
