@@ -4,7 +4,7 @@ import { isSandboxGame, loadGameList, loadHostedGame, type CatalogEntry, GameFil
 import { listProjects, loadProject } from '../../project/storage';
 import { isBizarreGame } from '../../project/bizarre';
 import { fnv1a } from '../../seededRandom';
-import { sampleFolders, type SampleFolder } from './sampleDisk';
+import { floppyFolders, type SampleFolder } from './sampleDisk';
 
 export const FLOPPY_BYTES = 1_457_664; // 1.44 MB formatted capacity
 /** The games RSD made to show off Game-Maker. */
@@ -143,7 +143,7 @@ export async function loadDisks(): Promise<Disk[]> {
     });
   }
   // The Sample Disk with the Starters, once there are any (secret games are never on it)
-  const folders = sampleFolders(catalog);
+  const folders = floppyFolders(catalog);
   if (folders.length) {
     disks.push({
       id: SAMPLE_DISK_ID,
@@ -153,7 +153,7 @@ export async function loadDisks(): Promise<Disk[]> {
       color: '#3a8ee6',
       stripe: '#ffd23f',
       density: 'HD',
-      bytes: 0, // one diskette's worth of small games: no size to count
+      bytes: 0, // the first three Starters, about 950 KB of a 1.44 MB diskette
       writeProtected: true,
       folders,
       load: async () => new GameFiles(),

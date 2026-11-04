@@ -1,5 +1,6 @@
-// The Game-Maker Sample Disk: the Starters (project/starter.ts) as small games on one
-// diskette, each in a folder with its dosName (games/<id>/about.json) (A:\FIRSTSTP, A:\KEYSDOOR...), as the Owner's
+// The Sample Disk and the Sample CD: the Starters (project/starter.ts) as small games, three on one
+// diskette (floppyFolders) and all of them on the CD's D:\SAMPLES, each in a folder named by its dosName
+// (games/<id>/about.json) (A:\FIRSTSTP, A:\KEYSDOOR...), as the Owner's
 // Guide says. Never a secret game: only a catalog's Starters are put on it.
 import type { CatalogEntry } from '../../project/files';
 import { dosDir } from '../../project/dosDir';
@@ -24,9 +25,17 @@ function sampleDirName(id: string, taken: Set<string>): string {
   return name;
 }
 
+/** How many Starters fit on the diskette: the first ones, in learning order. A built Starter is 300 to 450 KB, so three (about 950 KB) fit a 1.44 MB disk; every Starter is on the Sample CD. */
+export const SAMPLE_DISK_COUNT = 3;
+
 /** The Starters of a catalog in learning order, each with its folder name (all different). */
 export function sampleFolders(catalog: readonly CatalogEntry[]): SampleFolder[] {
   const starters = byStarterOrder(catalog.filter((g) => isStarterGame(g) && !!g.gam));
   const taken = new Set(starters.filter((e) => e.dosName).map((e) => dosDir(e)));
   return starters.map((entry) => ({ dir: entry.dosName ? dosDir(entry) : sampleDirName(entry.id, taken), entry }));
+}
+
+/** The Starters that fit the Sample Disk (a 1.44 MB diskette): the first SAMPLE_DISK_COUNT. */
+export function floppyFolders(catalog: readonly CatalogEntry[]): SampleFolder[] {
+  return sampleFolders(catalog).slice(0, SAMPLE_DISK_COUNT);
 }
