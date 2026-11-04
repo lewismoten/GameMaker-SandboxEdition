@@ -237,3 +237,16 @@
     max-height: 50vh;
   }
 }
+
+/* Touch: the fix buttons, line links, page arrows and background select are 44 px. */
+@media (hover: none) and (pointer: coarse) {
+  .ts-layout button,
+  .ts-layout select,
+  .ts-layout summary,
+  .ts-layout input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  .ts-layout button {
+    min-width: 44px;
+  }
+}
