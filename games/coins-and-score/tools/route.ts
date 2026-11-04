@@ -34,7 +34,7 @@ async function upAndAlong(bot: StarterBot, col: number, to: number): Promise<voi
 /** 1. Coins Add Points: six coins on the ground, five along the ledge, 110 in all. */
 export async function coinsAddPoints(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
-  await must(bot, bot.walk(16, 'the coins'), 'the ground coins');
+  await must(bot, bot.walk(18, 'the coins'), 'the ground coins');
   scored(bot, score, 60, 'six coins');
   await upAndAlong(bot, 19, 26);
   scored(bot, score, 110, 'eleven coins');
