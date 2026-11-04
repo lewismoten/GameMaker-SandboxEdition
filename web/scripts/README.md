@@ -44,7 +44,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
 - `deadCode.ts` (`npm run dead:code [-- --only exports|files|css] [--json]`): lists exports no other file imports (marked `~` when the file still uses the name itself, so only `export` is extra), files nothing imports, and CSS classes no TS or HTML names. Static and dynamic imports, `import.meta.glob`, `new URL(..., import.meta.url)`, HTML script tags, package `exports` entries (public API) and tests count as uses. Suggestions only: classes built at run time (`` `ug-b${i}` ``) and files named from build scripts by path show up as false positives.
 - `forceTheme.ts`: for headless checks. `forceTheme(ctx, 'light')` before `newPage()` stores the site's
   own theme (`gm-theme`), because the theme defaults to dark and Playwright's `colorScheme` doesn't
-  change it; `pageTheme(page)` reads `data-theme` back so a check can confirm it (`dos.html` and the
+  change it; `pageTheme(page)` reads `data-theme` back and `assertTheme(page, theme)` throws on a mismatch (`dos.html` and the
   web player don't set one). Without it a "light" screenshot or axe run is probably dark.
 - `tourCheck.ts` (`npm run tour:check -- <chapter>[,<chapter>]`, or `all`): starts its own vite on a
   free port from 5190 (never 5173) with a scratch cache, plays the tour chapters in headless Chrome

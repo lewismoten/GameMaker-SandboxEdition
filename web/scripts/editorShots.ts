@@ -8,6 +8,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { Page } from 'playwright-core';
 import { arg, launch, target } from './perfLib';
+import { assertTheme, forceTheme } from './forceTheme';
 
 const routes: [string, string, string][] = [
   ['integrator', '/#/p/look:blaster/blaster.gam', '.grator-main'],
@@ -40,6 +41,7 @@ try {
   const shots: string[] = [];
   for (const scheme of ['light', 'dark'] as const) {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, colorScheme: scheme });
+    await forceTheme(ctx, scheme);
     for (const [name, route, wait] of routes) {
       if (only && !only.includes(name)) continue;
       const page = await ctx.newPage();
@@ -48,6 +50,7 @@ try {
       await page.waitForSelector(wait, { timeout: 90000 }).catch(() => console.log(`${name}: "${wait}" never appeared; shot anyway`));
       await page.waitForTimeout(1500);
       await settle(page);
+      await assertTheme(page, scheme);
       await page.screenshot({ path: `${out}/${name}-${scheme}.png` });
       shots.push(`${name}-${scheme}`);
       await page.close();

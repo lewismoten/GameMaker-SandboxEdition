@@ -5,7 +5,7 @@
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { arg, launch, target } from './perfLib';
-import { forceTheme } from './forceTheme';
+import { assertTheme, forceTheme } from './forceTheme';
 
 const route = process.argv[2]?.startsWith('--') ? undefined : process.argv[2];
 if (!route) throw new Error('Give a route, e.g. "/#/p/look:blaster/bus2.map".');
@@ -42,6 +42,7 @@ try {
         await page.click(sel, { timeout: 5000 }).catch(() => console.log(`(could not click ${sel})`));
         await page.waitForTimeout(500);
       }
+      await assertTheme(page, scheme);
       await page.screenshot({ path: `${out}/${tag}-${name}-${scheme}.png` });
       const r = await page.evaluate((deviceWidth) => {
         const sel = 'button, a[href], input, select, textarea, summary, [role=button], [role=tab], [tabindex]:not([tabindex="-1"])';
