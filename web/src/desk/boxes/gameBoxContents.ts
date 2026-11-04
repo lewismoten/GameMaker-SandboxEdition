@@ -79,7 +79,11 @@ export function sandboxBoxContents(entry: CatalogEntry, _front: string | undefin
     'div',
     { class: 'box-contents' },
     h('div', { class: 'bc-left' }, diskSet, manual),
-    trinketShelf(entry.id),
+    trinketShelf(
+      entry.id,
+      items.then((all) => all.filter((i) => i.feelie)),
+      open,
+    ),
     entry.original?.manual ? boxList({ label: `What’s in the ${entry.title} box`, items, open, class: 'bc-list' }) : null,
   );
 }

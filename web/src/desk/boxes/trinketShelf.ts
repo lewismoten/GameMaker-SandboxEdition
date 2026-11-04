@@ -12,19 +12,27 @@ import { loadFeelies, type Feelie } from './feelies';
 import { viewMaker } from './feelieModels';
 import { thumbnail } from './feelieThumbs';
 import type { PhoneViewer } from './phone/phoneViewer';
+import { paperFeelieTiles } from './paperFeelies';
+import type { BoxItem } from '../../manual/printables/viewer';
 
-/** The strip for game `id`, or an element that stays hidden when the game has no feelies. */
-export function trinketShelf(id: string): HTMLElement {
+/**
+ * The strip for game `id`, or an element that stays hidden when the game has no feelies. `paper` are the box's feelies on
+ * paper (code wheel, fingerprint card, spyglass…), shown beside the 3D ones; `open` opens the box's contents at one.
+ */
+export function trinketShelf(id: string, paper: Promise<BoxItem[]> = Promise.resolve([]), open: () => void = () => {}): HTMLElement {
   const shelf = h('section', { class: 'bc-trinkets', hidden: '', 'aria-label': 'Feelies' });
-  void loadFeelies(id).then((list) => {
-    if (!list.length) return;
-    shelf.append(...strip(list));
+  void Promise.all([loadFeelies(id), paper.catch((): BoxItem[] => [])]).then(([list, sheets]) => {
+    if (!list.length && !sheets.length) return;
+    shelf.append(...strip(list, paperFeelieTiles(sheets, open)));
     shelf.hidden = false;
   });
   return shelf;
 }
 
-function strip(list: Feelie[]): HTMLElement[] {
+const ABOUT =
+  'Feelies are physical extras packed in a game box. Infocom began the habit in the 1980s, and the name stuck. Some were copy protection, like a code wheel that had to be turned to answer the game. Others set a box apart from its shelf neighbors, helped during play, made the story feel real, or carried it beyond the screen.';
+
+function strip(list: Feelie[], paperTiles: HTMLElement[]): HTMLElement[] {
   let at = -1; // -1: the box is showing
   let pv: PhoneViewer | undefined;
   const total = list.length;
@@ -61,7 +69,15 @@ function strip(list: Feelie[]): HTMLElement[] {
     return button;
   });
   const label = h('span', { class: 'fl-label', id: 'feelies-label' }, 'Feelies');
-  const row = h('div', { class: 'fl-row', role: 'group', 'aria-labelledby': 'feelies-label' }, ...thumbs);
+  const row = h('div', { class: 'fl-row', role: 'group', 'aria-labelledby': 'feelies-label' }, ...thumbs, ...paperTiles);
+  // a button and its note side by side (a <details> would hold the note in a box of its own that clips it)
+  const note = h('p', { class: 'fl-note', id: 'feelies-about', hidden: '' }, ABOUT);
+  const ask = h('button', { class: 'fl-about', type: 'button', 'aria-expanded': 'false', 'aria-controls': 'feelies-about' }, 'What are feelies?');
+  ask.onclick = () => {
+    note.hidden = !note.hidden;
+    ask.setAttribute('aria-expanded', String(!note.hidden));
+  };
+  const about = h('div', { class: 'fl-ask' }, ask, note);
 
   /** Chooses feelie `i` (in the box viewer's place), or -1 for the box again. */
   async function choose(i: number) {
@@ -108,5 +124,5 @@ function strip(list: Feelie[]): HTMLElement[] {
   }
   const step = (dir: 1 | -1) => total > 0 && void choose((at + dir + total) % total);
 
-  return [h('div', { class: 'fl-bar' }, label, row), float];
+  return [h('div', { class: 'fl-bar' }, label, row, about), float];
 }
