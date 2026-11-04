@@ -35,7 +35,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10964,
+  "frames": 10939,
   "chapters": [
    {
     "title": "Opening",
@@ -44,33 +44,33 @@
    },
    {
     "title": "Story",
-    "frame": 922,
-    "time": 15366.666666666466
+    "frame": 896,
+    "time": 14933.333333333148
    },
    {
     "title": "Level 1: One Key, One Door",
-    "frame": 1670,
-    "time": 27833.33333333393
+    "frame": 1644,
+    "time": 27400.000000000564
    },
    {
     "title": "Level 2: Two Keys, One Door",
-    "frame": 3765,
-    "time": 62749.999999996595
+    "frame": 3739,
+    "time": 62316.666666663325
    },
    {
     "title": "Level 3: Two Keys, Two Doors",
-    "frame": 5837,
-    "time": 97283.33333333876
+    "frame": 5812,
+    "time": 96866.66666667197
    },
    {
     "title": "Ending",
-    "frame": 7678,
-    "time": 127966.66666668102
+    "frame": 7653,
+    "time": 127550.00000001423
    },
    {
     "title": "Credits",
-    "frame": 9890,
-    "time": 164833.33333332895
+    "frame": 9865,
+    "time": 164416.66666666252
    }
   ]
  }
