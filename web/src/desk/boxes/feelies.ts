@@ -12,7 +12,7 @@ export const PHONE_TITLE = 'The Phone of the Future (kit)';
 
 export type Feelie =
   | { kind: 'trinket'; key: string; title: string; item: TrinketItem; base: string }
-  | { kind: 'nickel' | 'box' | 'kit'; key: string; title: string; kit: LaserKit }
+  | { kind: 'nickel' | 'box' | 'kit' | 'patch'; key: string; title: string; kit: LaserKit }
   | { kind: 'phone'; key: 'phone'; title: string };
 
 /** The list in shelf order: trinkets, then the laser kits, then the phone kit. */

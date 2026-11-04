@@ -47,7 +47,9 @@ if (process.argv.includes('--zoom')) {
   writeFileSync(join(out, 'zoom.png'), pngFromRgb(z.w, z.h, z.rgb));
 }
 
-const threads = design.blocks.map((b, i) => `${i + 1}. ${b.thread.name}  rgb(${b.thread.rgb.join(', ')})  #${b.thread.rgb.map((v) => v.toString(16).padStart(2, '0')).join('')}`);
+const threads = design.blocks.map(
+  (b, i) => `${i + 1}. ${b.thread.name}  rgb(${b.thread.rgb.join(', ')})  #${b.thread.rgb.map((v) => v.toString(16).padStart(2, '0')).join('')}`,
+);
 const size = `${(RADIUS * 2).toFixed(0)} mm (${((RADIUS * 2) / 25.4).toFixed(2)} in) across`;
 writeFileSync(
   join(out, 'threads.txt'),
@@ -81,7 +83,12 @@ writeFileSync(
       kit: {
         title: 'Embroidered patch',
         summary: `A machine-embroidered Courier patch, ${size}, in ${design.blocks.length} thread colors and ${stitches.toLocaleString('en-US')} stitches. For a 4 x 4 in hoop. Written for DST (most machines), EXP (Melco, Bernina) and PES (Brother, Baby Lock); not yet sewn on a real machine.`,
-        previews: [{ file: 'preview.png', alt: 'Stitch simulation of the Maximus patch: a ten-point amber star on midnight navy with COURIER and MAXIMUS round the rim' }],
+        previews: [
+          {
+            file: 'preview.png',
+            alt: 'Stitch simulation of the Maximus patch: a ten-point amber star on midnight navy with COURIER and MAXIMUS round the rim',
+          },
+        ],
         downloads: [
           { file: 'maximus-patch.dst', label: 'Stitch file for most machines (DST, Tajima)' },
           { file: 'maximus-patch.exp', label: 'Stitch file for Melco and Bernina (EXP)' },

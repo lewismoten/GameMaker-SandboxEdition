@@ -54,7 +54,8 @@ export function validate(list: Stitch[], want: Expect): Report {
   const problems: string[] = [];
   const width = ext[2] - ext[0];
   const height = ext[3] - ext[1];
-  if (width > want.hoop[0] || height > want.hoop[1]) problems.push(`design ${width.toFixed(1)} x ${height.toFixed(1)} mm does not fit the ${want.hoop.join(' x ')} mm hoop`);
+  if (width > want.hoop[0] || height > want.hoop[1])
+    problems.push(`design ${width.toFixed(1)} x ${height.toFixed(1)} mm does not fit the ${want.hoop.join(' x ')} mm hoop`);
   if (colorChanges !== want.colors - 1) problems.push(`${colorChanges} color changes for ${want.colors} colors`);
   if (maxStitch > want.maxRecord + 1e-6) problems.push(`a stitch of ${maxStitch.toFixed(2)} mm is longer than ${want.maxRecord} mm`);
   if (maxJump > want.maxRecord + 1e-6) problems.push(`a jump record of ${maxJump.toFixed(2)} mm is longer than ${want.maxRecord} mm`);

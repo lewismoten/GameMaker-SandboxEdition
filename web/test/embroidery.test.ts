@@ -22,13 +22,26 @@ const small: Design = {
   hoop: [100, 100],
   blocks: [
     { thread: { name: 'a', rgb: [0, 0, 0] }, items: [{ kind: 'fill', polys: [circle(0, 0, 5, 32)], angle: 0 }] },
-    { thread: { name: 'b', rgb: [255, 0, 0] }, items: [{ kind: 'satin', path: [[30, 30], [40, 35]], width: 2 }] },
+    {
+      thread: { name: 'b', rgb: [255, 0, 0] },
+      items: [
+        {
+          kind: 'satin',
+          path: [
+            [30, 30],
+            [40, 35],
+          ],
+          width: 2,
+        },
+      ],
+    },
   ],
 };
 
 /** The sewn points of a pattern in whole tenths of a mm, to compare with what a file reads back. */
 const sewn = (p: Pattern) => p.stitches.filter((s) => s.cmd === 'stitch').map((s) => [Math.round(s.x * 10) + 0, Math.round(s.y * 10) + 0]);
-const readBack = (s: { x: number; y: number; cmd: string }[]) => s.filter((q) => q.cmd === 'stitch').map((q) => [Math.round(q.x * 10) + 0, Math.round(q.y * 10) + 0]);
+const readBack = (s: { x: number; y: number; cmd: string }[]) =>
+  s.filter((q) => q.cmd === 'stitch').map((q) => [Math.round(q.x * 10) + 0, Math.round(q.y * 10) + 0]);
 
 describe('stitch generation', () => {
   it('caps every stitch at 7 mm', () => {
@@ -48,8 +61,30 @@ describe('stitch generation', () => {
   });
 
   it('splits a satin column wider than 7 mm into lanes', () => {
-    expect(satin([[0, 0], [20, 0]], 6, 0.4, false, 7)).toHaveLength(1);
-    expect(satin([[0, 0], [20, 0]], 15, 0.4, false, 7)).toHaveLength(3);
+    expect(
+      satin(
+        [
+          [0, 0],
+          [20, 0],
+        ],
+        6,
+        0.4,
+        false,
+        7,
+      ),
+    ).toHaveLength(1);
+    expect(
+      satin(
+        [
+          [0, 0],
+          [20, 0],
+        ],
+        15,
+        0.4,
+        false,
+        7,
+      ),
+    ).toHaveLength(3);
   });
 });
 

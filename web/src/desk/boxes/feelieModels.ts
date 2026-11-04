@@ -46,6 +46,16 @@ async function coin(kit: LaserKit): Promise<ViewMaker> {
   return (canvas) => createTexturedView(canvas, pieces);
 }
 
+async function patch(kit: LaserKit): Promise<ViewMaker> {
+  const [face, { patchPieces }, { createTexturedView }] = await Promise.all([
+    picture(`${kit.base}${kit.previews[0]?.file ?? 'preview.png'}`),
+    import('./patchModel'),
+    import('./texturedGl'),
+  ]);
+  const pieces = patchPieces(kit.coin ?? 88, kit.thickness ?? 2.4, kit.pictureMm ?? 92, face);
+  return (canvas) => createTexturedView(canvas, pieces);
+}
+
 async function stageBox(kit: LaserKit): Promise<ViewMaker> {
   const sheets = kit.sheets ?? [];
   const [{ boxSize, boxPieces }, { createTexturedView }, ...sheetImages] = await Promise.all([
@@ -70,5 +80,6 @@ export async function viewMaker(f: Feelie, colors = true): Promise<ViewMaker> {
   }
   if (f.kind === 'nickel') return coin(f.kit);
   if (f.kind === 'box') return stageBox(f.kit);
+  if (f.kind === 'patch') return patch(f.kit);
   throw new Error('no 3D view');
 }

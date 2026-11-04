@@ -25,7 +25,7 @@ export function readExp(bytes: Uint8Array): { stitches: Stitch[]; colorChanges: 
   let colorChanges = 0;
   let x = 0;
   let y = 0;
-  for (let i = 0; i < bytes.length; ) {
+  for (let i = 0; i < bytes.length;) {
     if (bytes[i] === 0x80 && i + 1 < bytes.length) {
       const c = bytes[i + 1];
       if (c === 0x01) {

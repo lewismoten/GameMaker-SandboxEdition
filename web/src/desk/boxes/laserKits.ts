@@ -36,12 +36,14 @@ export interface LaserSheet {
 
 export interface LaserKit {
   /** 'nickel': a wooden coin; 'box': the Final Curtain Stage Box (drawn in 3D from its parts); 'kit': any other. */
-  kind: 'nickel' | 'box' | 'kit';
+  kind: 'nickel' | 'box' | 'kit' | 'patch';
   title: string;
   /** Material thickness in mm (the nickel's wood, the box's plywood). */
   thickness?: number;
-  /** The coin's diameter in mm (a nickel). */
+  /** The coin's or patch's diameter in mm. */
   coin?: number;
+  /** The width in mm of the square picture of a patch (its stitch simulation), which the 3D face is cut from. */
+  pictureMm?: number;
   /** The sheets of a kit that lists its parts (the Stage Box). */
   sheets?: LaserSheet[];
   /** One line: what it is and what it is cut on. */
@@ -79,7 +81,9 @@ export function kitOf(manifest: unknown, base: string): LaserKit | null {
       return str(s.preview) && safe(s.preview) && typeof s.w === 'number' && typeof s.h === 'number' ? { preview: s.preview, w: s.w, h: s.h, parts } : null;
     });
     return {
-      kind: m.id === 'stage-box' && sheets.length ? 'box' : 'kit',
+      kind: m.id === 'stage-box' && sheets.length ? 'box' : m.id === 'embroidery-patch' ? 'patch' : 'kit',
+      coin: typeof m.diameter === 'number' ? m.diameter : undefined,
+      pictureMm: typeof m.pictureMm === 'number' ? m.pictureMm : undefined,
       title: kit.title,
       thickness: typeof material === 'number' ? material : undefined,
       sheets: sheets.length ? sheets : undefined,
@@ -115,7 +119,7 @@ export function kitOf(manifest: unknown, base: string): LaserKit | null {
 }
 
 /** Folders under laser/<id>/ that each hold one kit's manifest.json: the wooden nickel's is the folder itself. */
-const KIT_FOLDERS = ['', 'stage-box/'];
+const KIT_FOLDERS = ['', 'stage-box/', 'patch/'];
 
 /** Game `id`'s laser kits, or none when it has no manifest (a dev server answers a missing file with the page, so the type is checked). */
 export async function loadLaserKits(id: string): Promise<LaserKit[]> {

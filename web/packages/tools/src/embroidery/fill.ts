@@ -83,4 +83,3 @@ export function tatami(polys: Poly[], angle: number, spacing: number, len: numbe
   }
   return chains;
 }
-

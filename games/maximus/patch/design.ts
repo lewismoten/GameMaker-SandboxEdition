@@ -65,4 +65,3 @@ export function maximusPatch(): Design {
   };
   return { name: 'MAXIMUS PATCH', hoop: [100, 100], blocks: [field, amber, cyan, white, ruby] };
 }
-

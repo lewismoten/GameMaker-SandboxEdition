@@ -24,7 +24,8 @@ function thumb(segs: [number, number, number, number][], ext: [number, number, n
     }
   }
   const out: number[] = [];
-  for (let y = 0; y < H; y++) for (let bx = 0; bx < W / 8; bx++) out.push(Array.from({ length: 8 }, (_, b) => bits[y * W + bx * 8 + b] << (7 - b)).reduce((a, c) => a | c, 0));
+  for (let y = 0; y < H; y++)
+    for (let bx = 0; bx < W / 8; bx++) out.push(Array.from({ length: 8 }, (_, b) => bits[y * W + bx * 8 + b] << (7 - b)).reduce((a, c) => a | c, 0));
   return out;
 }
 
