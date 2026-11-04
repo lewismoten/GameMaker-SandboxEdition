@@ -1,5 +1,7 @@
 # Repository scripts
 
+`verify-changed.mjs` runs through `npm run verify:changed` (root or `web/`): the quick pre-merge check of only what the branch touched against `origin/develop` (or `--base <ref>`). `npm run verify` is the full check.
+
 `verify-packages.mjs` runs through root `npm run verify:packages`. It copies each SDK
 workspace outside the monorepo, installs declared development dependencies plus locally
 packed SDK dependencies, and invokes that package's own build and packed-consumer tests.
