@@ -24,6 +24,7 @@ interface Row {
   kind: string;
   side: string;
   group?: string;
+  stack?: string;
   label?: string;
   made?: string;
   color: number[];
@@ -133,6 +134,7 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
         kind: 'component',
         side: p.side,
         group: p.group,
+        stack: p.stack,
         label: p.label,
         made: 'shell.ts',
         color: p.color.map((c) => Math.round(c * 1000) / 1000),

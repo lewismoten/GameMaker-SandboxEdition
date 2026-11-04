@@ -70,7 +70,7 @@ def spec(kind, variant=""):
     if kind == "spk":
         return [cyl(0, 0, 0.5, 28.0, 4.0, BLACK), cyl(0, 0, 4.5, 8.0, 0.4, GREY)]
     if kind in ("wire2", "earpiece"):    # two wire stubs: the switch is in the dial module, the speaker in the front cover
-        return [box(-2.54, 0, -3.4, 0.8, 0.8, 3.8, RED), box(2.54, 0, -3.4, 0.8, 0.8, 3.8, BLACK), box(-2.54, 3.0, -3.4, 1.0, 6.0, 1.0, RED), box(2.54, 3.0, -3.4, 1.0, 6.0, 1.0, BLACK)]
+        return [box(-2.54, 0, -3.4, 0.8, 0.8, 3.8, RED), box(2.54, 0, -3.4, 0.8, 0.8, 3.8, BLACK)]
     if kind == "tact":
         return [box(0, 0, 0.3, 6.0, 6.0, 3.6, BLACK), cyl(0, 0, 3.9, 3.5, 0.8, GREY)]
     if kind == "thumb":    # side thumbwheel pot: body on the board, a 10 mm wheel (axis along the pin row) standing 1.5 mm past the board edge

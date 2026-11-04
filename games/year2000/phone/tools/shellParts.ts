@@ -17,6 +17,8 @@ export interface ShellPart {
   id: string;
   label: string;
   group: 'shell' | 'dial' | 'battery' | 'components';
+  /** Explodes on its own in the viewer (the dial module's parts) instead of with its group. */
+  stack?: string;
   side: 'front' | 'back';
   color: V3;
   /** Printed as one piece on the bed (false for the bought AAA cells). */
