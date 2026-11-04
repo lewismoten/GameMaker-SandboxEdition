@@ -14,7 +14,7 @@ import { serializeSoundSet } from '@lewismoten/gamemaker-sandbox-engine/formats/
 import { clipEveryList } from '@lewismoten/gamemaker-sandbox-tools/kit/fliClips';
 import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
-import { SANDLOGO, sandLogoFli } from '../kit/sandlogo';
+import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
 import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
 import { buildHero } from '../kit/starter/heroChar';
 import { buildMonsterBlocks, buildMonsters } from '../kit/starter/monsters';
@@ -65,11 +65,11 @@ const text = (base: string, heading: string, body: string) => {
   disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 0 }, { name: `${base}.txt` }]));
 };
 disk.put('title.gif', gif(titlePicture(pal, book, hero, door, farDoor, TITLE, 'A STARTER GAME'), pal));
-disk.put(SANDLOGO, sandLogoFli());
+disk.put(STARTER_STING, starterStingFli());
 disk.put(
   'title.lst',
   serializeSlideList([
-    { name: SANDLOGO, pause: 0 },
+    { name: STARTER_STING, pause: 0 },
     { name: 'title.gif', pause: 12 },
   ]),
 );
