@@ -23,7 +23,7 @@ const polar = (r: number, a: number): Pt => [r * Math.cos(a), r * Math.sin(a)];
 function kites(): Poly[] {
   return Array.from({ length: 10 }, (_, k) => {
     const a = deg(90 + 18 + 36 * k);
-    return [polar(17.8, a), polar(22.6, a + deg(5)), polar(27.2, a), polar(22.6, a - deg(5))];
+    return [polar(17.2, a), polar(21.9, a + deg(5)), polar(26.2, a), polar(21.9, a - deg(5))];
   });
 }
 
@@ -36,9 +36,9 @@ const diamond = (cx: number): Poly => [
 ];
 
 function text(): Item[] {
-  const common = { cx: 0, cy: 0, height: 5.2, gap: 1.5, stretch: 1.25 };
-  const strokes = [...arcText('COURIER', { ...common, baseline: 34.0, side: 'top' }), ...arcText('MAXIMUS', { ...common, baseline: 39.2, side: 'bottom' })];
-  return strokes.map((path): Item => ({ kind: 'satin', path, width: 1.1 }));
+  const common = { cx: 0, cy: 0, height: 6.3, gap: 2.2, stretch: 1.1 };
+  const strokes = [...arcText('COURIER', { ...common, baseline: 32.6, side: 'top' }), ...arcText('MAXIMUS', { ...common, baseline: 38.9, side: 'bottom' })];
+  return strokes.map((path): Item => ({ kind: 'satin', path, width: 1.2 }));
 }
 
 export function maximusPatch(): Design {
@@ -46,8 +46,8 @@ export function maximusPatch(): Design {
   const amber: Block = {
     thread: AMBER,
     items: [
-      { kind: 'fill', polys: [star(0, 0, 15, 28, 10)], angle: 75 },
-      { kind: 'satin', path: circle(0, 0, 31.6, 120), width: 1.2, closed: true },
+      { kind: 'fill', polys: [star(0, 0, 14.5, 27, 10)], angle: 75 },
+      { kind: 'satin', path: circle(0, 0, 30.4, 120), width: 1.2, closed: true },
       { kind: 'fill', polys: [diamond(-36.6)], angle: 90 },
       { kind: 'fill', polys: [diamond(36.6)], angle: 90 },
       // the merrow border: a thick satin edge all round, to cut along

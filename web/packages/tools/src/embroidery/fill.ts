@@ -1,6 +1,6 @@
 // Tatami fill: parallel rows of stitches `spacing` mm apart, needle holes staggered in a brick pattern so they don't line up
 // into a visible seam. A shape with notches (a star) breaks into several chains, each sewn from row to row.
-import { dist, rotate } from './geom';
+import { rotate } from './geom';
 import type { Poly, Pt } from './types';
 
 interface Span {
@@ -84,5 +84,3 @@ export function tatami(polys: Poly[], angle: number, spacing: number, len: numbe
   return chains;
 }
 
-/** Length of a chain, mm. */
-export const chainLength = (c: Pt[]): number => c.reduce((n, p, i) => (i ? n + dist(c[i - 1], p) : 0), 0);

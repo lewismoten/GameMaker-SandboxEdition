@@ -3,13 +3,16 @@
 import { evenly } from './geom';
 import type { Pt } from './types';
 
+/** Samples each side of a point that its direction is read from, so a bumpy line gives smooth stitch angles. */
+const SMOOTH = 2;
+
 /** The left and right edge points across the path at each of its sample points. */
 function edges(path: Pt[], width: number, step: number, closed: boolean): [Pt, Pt][] {
   const p = evenly(path, step, closed);
   const n = p.length;
   return p.map((q, i) => {
-    const a = p[closed ? (i + n - 2) % (n - 1) : Math.max(0, i - 1)];
-    const b = p[closed ? (i + 1) % (n - 1) : Math.min(n - 1, i + 1)];
+    const a = p[closed ? (i + n - 1 - SMOOTH) % (n - 1) : Math.max(0, i - SMOOTH)];
+    const b = p[closed ? (i + SMOOTH) % (n - 1) : Math.min(n - 1, i + SMOOTH)];
     const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
     const nx = (-(b[1] - a[1]) / l) * (width / 2);
     const ny = ((b[0] - a[0]) / l) * (width / 2);

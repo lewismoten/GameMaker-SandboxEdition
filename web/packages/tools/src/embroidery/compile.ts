@@ -9,6 +9,7 @@ import { DEFAULTS, type Design, type FillItem, type Item, type Params, type Patt
 class Needle {
   readonly out: Stitch[] = [];
   private at: Pt | undefined;
+  private before: Pt | undefined;
   constructor(private readonly p: Params) {}
 
   get pos(): Pt | undefined {
@@ -21,27 +22,38 @@ class Needle {
     if (!from) throw new Error('stitchTo before moveTo');
     const n = Math.ceil(dist(from, to) / this.p.maxStitch);
     for (let k = 1; k <= n; k++) this.out.push({ x: from[0] + ((to[0] - from[0]) * k) / n, y: from[1] + ((to[1] - from[1]) * k) / n, cmd: 'stitch' });
+    this.before = from;
     this.at = to;
   }
 
   /** Gets to `to`: a plain stitch when it is within `join` mm (and `ok`), else a trim and a jump, with lock stitches around the cut. */
-  moveTo(to: Pt, join: number, ok: (a: Pt, b: Pt) => boolean = () => true): void {
+  moveTo(to: Pt, join: number, ok: (a: Pt, b: Pt) => boolean = () => true): boolean {
     const from = this.at;
-    if (from && dist(from, to) <= join && ok(from, to)) return this.stitchTo(to);
+    if (from && dist(from, to) <= join && ok(from, to)) {
+      this.stitchTo(to);
+      return false;
+    }
     if (from) {
       this.lock();
       this.out.push({ x: from[0], y: from[1], cmd: 'trim' });
     }
     this.out.push({ x: to[0], y: to[1], cmd: 'jump' });
     this.at = to;
-    this.lock();
+    this.before = undefined;
+    return true;
   }
 
-  /** Three tiny back-and-forth stitches that tie the thread. */
+  /** Tie-off: two tiny stitches back along the stitching just sewn and out again (not out across the design). */
   private lock(): void {
-    const a = this.at;
-    if (!a) return;
-    for (const d of [0.5, 0, 0.5, 0]) this.out.push({ x: a[0] + d, y: a[1], cmd: 'stitch' });
+    if (this.at && this.before) this.tie(this.at, this.before);
+  }
+
+  /** Two short out-and-back stitches from `a` toward `b`, which lie along stitching already there or about to be. */
+  private tie(a: Pt, b: Pt): void {
+    const l = Math.min(0.6, dist(a, b) / 2);
+    if (l < 0.1) return;
+    const e: Pt = [a[0] + ((b[0] - a[0]) / dist(a, b)) * l, a[1] + ((b[1] - a[1]) / dist(a, b)) * l];
+    for (const q of [e, a, e, a]) this.out.push({ x: q[0], y: q[1], cmd: 'stitch' });
   }
 
   colorChange(): void {
@@ -64,7 +76,7 @@ class Needle {
   /** Sews the points in order, starting by getting to the first. */
   sew(pts: Pt[], join: number, ok?: (a: Pt, b: Pt) => boolean): void {
     if (!pts.length) return;
-    this.moveTo(pts[0], join, ok);
+    if (this.moveTo(pts[0], join, ok) && pts.length > 1) this.tie(pts[0], pts[1]);
     for (let i = 1; i < pts.length; i++) this.stitchTo(pts[i]);
   }
 }

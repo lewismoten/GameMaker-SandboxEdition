@@ -17,6 +17,8 @@ export interface SimOptions {
   thread?: number;
   /** Backing fabric color. */
   backing?: RGB;
+  /** The mm point at the middle of the picture (default 0,0), to look closely at one part. */
+  center?: [number, number];
 }
 
 const clamp = (v: number) => Math.max(0, Math.min(255, v));
@@ -33,8 +35,9 @@ export function simulate(pattern: Pattern, o: SimOptions): Picture {
     }
   }
   const half = ((o.thread ?? 0.42) * o.pxPerMm) / 2;
-  const px = (v: number) => (v + o.size / 2) * o.pxPerMm;
-  const py = (v: number) => (o.size / 2 - v) * o.pxPerMm;
+  const [mx, my] = o.center ?? [0, 0];
+  const px = (v: number) => (v - mx + o.size / 2) * o.pxPerMm;
+  const py = (v: number) => (o.size / 2 - (v - my)) * o.pxPerMm;
   let color = 0;
   let ax = 0;
   let ay = 0;

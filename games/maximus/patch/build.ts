@@ -40,6 +40,12 @@ const reports = {
 };
 const stitches = reports.dst.stitches;
 const pic = simulate(pattern, { size: PICTURE_MM, pxPerMm: 10 });
+if (process.argv.includes('--zoom')) {
+  // a close look: --zoom cx,cy,size writes zoom.png, 30 px per mm, centered on that point (mm)
+  const [cx, cy, size] = flag('--zoom').split(',').map(Number);
+  const z = simulate(pattern, { size, pxPerMm: 30, center: [cx, cy] });
+  writeFileSync(join(out, 'zoom.png'), pngFromRgb(z.w, z.h, z.rgb));
+}
 
 const threads = design.blocks.map((b, i) => `${i + 1}. ${b.thread.name}  rgb(${b.thread.rgb.join(', ')})  #${b.thread.rgb.map((v) => v.toString(16).padStart(2, '0')).join('')}`);
 const size = `${(RADIUS * 2).toFixed(0)} mm (${((RADIUS * 2) / 25.4).toFixed(2)} in) across`;
