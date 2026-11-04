@@ -274,6 +274,18 @@ if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.some((id) => ids
   );
   if (timing) console.log(`Laser nickels: ${made.stdout.trim().split('\n').length} lines (${((Date.now() - started) / 1000).toFixed(1)} s)`);
 }
+// Final Curtain's laser Stage Box (games/sleuth/laser/stageBox.ts) writes web/public/laser/sleuth/stage-box/; it is cheap, so it
+// is redrawn whenever its game is built.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('sleuth')) && ids.includes('sleuth')) {
+  await runEntry(
+    'laser-stage-box',
+    { file: join(root, 'games/sleuth/laser/stageBox.ts') },
+    '../games/sleuth/laser/stageBox.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'laser stage box',
+  );
+}
 if (timing)
   console.log(
     `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,

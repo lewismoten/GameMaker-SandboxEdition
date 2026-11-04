@@ -14,7 +14,7 @@ n = 0
 for ref, p in pl.items():
     if ref.startswith("_") or p["fp"] not in bykind:
         continue
-    var = "big" if ref == "C21" else ""
+    var = "big" if ref == "C21" else "tant" if ref == "C2" else ""
     models3d.write_model(bykind[p["fp"]], var, p["rot"], p["side"])
     n += 1
 print("models for", n, "parts")

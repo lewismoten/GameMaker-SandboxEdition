@@ -211,3 +211,49 @@
 .trk-info > .trk-btn {
   align-self: flex-start;
 }
+
+/* the laser kits under the trinkets (laserKitList.ts) */
+.lk-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 8px;
+}
+
+.lk-kit {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lk-title {
+  margin: 0 0 2px;
+  font-size: 13px;
+}
+
+.lk-summary {
+  margin: 0 0 4px;
+  max-width: 34em;
+  opacity: 0.85;
+}
+
+.lk-previews {
+  display: flex;
+  gap: 6px;
+}
+
+.lk-preview {
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  background: #efe5cc;
+  object-fit: contain;
+}
+
+.lk-downloads {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}

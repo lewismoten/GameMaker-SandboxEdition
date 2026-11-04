@@ -35,7 +35,7 @@ function page(text: string): string {
 export const FORM_TEXT = page(`DEPARTURE CLEARANCE 27-B
 Maxima Station, in triplicate
 
-The stamps above are your dock, your world of origin and your courier badge. Set them on the Star Wheel from your box, read its CODE window, then press the hatch that wears that code.
+The stamps above are your dock, your world of origin and your courier badge. Set them on the Star Wheel from your box, read its two windows in order, then press the hatch that wears those two pictures.
 
 No wheel? Press a hatch. The wrong ones only sigh, and Clerk Pim has all day.`);
 
@@ -94,7 +94,13 @@ export function clearancePages(): Map<string, Uint8Array> {
   out.set('clear.lst', serializeSlideList([{ name: 'clear.gif', pause: 0 }, { name: 'clear.txt' }]));
   [0, 2].forEach((hatch, i) => {
     const n = `wrong${i + 1}`;
-    out.set(`${n}.gif`, formPicture([['HATCH CODE', glyph(HATCHES[hatch])]]));
+    out.set(
+      `${n}.gif`,
+      formPicture([
+        ['CODE', glyph(HATCHES[hatch][0])],
+        ['THEN', glyph(HATCHES[hatch][1])],
+      ]),
+    );
     out.set(`${n}.txt`, dosText(WRONG_TEXT[i]));
     out.set(`${n}.lst`, serializeSlideList([{ name: `${n}.gif`, pause: 0 }, { name: `${n}.txt` }]));
   });

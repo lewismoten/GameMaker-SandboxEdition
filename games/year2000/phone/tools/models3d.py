@@ -46,37 +46,32 @@ def spec(kind, variant=""):
         L = n // 2 * 2.54 - 0.6
         return [box(0, 0, 0.6, 6.4, L, 3.4, BLACK), box(0, -L / 2 + 0.9, 4.0, 1.2, 0.8, 0.1, GREY)] + pins_dip(n)
     if kind == "axial":
-        return [box(0, 0, 0.4, 3.2, 1.8, 1.8, TAN if variant != "alt" else BLUE), box(-1.9, 0, 0.9, 0.7, 0.7, 0.7, SILVER), box(1.9, 0, 0.9, 0.7, 0.7, 0.7, SILVER)]
+        return [box(0, 0, 0.4, 6.3, 2.4, 2.4, TAN), box(-3.4, 0, 0.9, 1.0, 0.7, 0.7, SILVER), box(3.4, 0, 0.9, 1.0, 0.7, 0.7, SILVER)]
     if kind == "ceramic":
         return [box(0, 0, 0.5, 4.0, 2.6, 4.6, ORANGE)]
     if kind == "elec":
         if variant == "big":
             return [cyl(0, 0, 0, 6.3, 11.0, BLUE)]
-        return [cyl(0, 0, 0, 5.0, 8.0, BLUE)]
-    if kind in ("to92", "to92r"):
+        return [cyl(0, 0, 0, 5.0, 11.0, BLUE)]
+    if kind in ("to92", "to92reg"):
         return [box(0, 0.2, 0.3, 4.8, 3.8, 4.6, BLACK)]
     if kind == "xtal":
-        return [box(0, 0, 0.3, 11.0, 4.6, 3.8, SILVER)]
-    if kind == "led":      # 5 mm LED lying down, dome toward -y (off the top edge)
-        return [box(0, -4.5, 1.0, 5.0, 8.6, 5.0, (0.85, 0.2, 0.2)), box(0, 0, 0.0, 6.0, 1.0, 0.6, (0.85, 0.2, 0.2))]
-    if kind == "photo":    # PIN photodiode on its side, window toward -y
-        return [box(0, -1.5, 0.8, 5.4, 2.7, 4.3, IRBLACK)]
+        return [box(0, 0, 0.3, 11.0, 4.7, 4.7, SILVER)]
+    if kind == "led":      # 5 mm LED or photodiode lying down, dome toward -y (off the top edge)
+        c = IRBLACK if variant == "ir" else (0.85, 0.2, 0.2)
+        return [box(0, -4.5, 1.0, 5.0, 8.6, 5.0, c), box(0, 0, 0.0, 6.0, 1.0, 0.6, c)]
+    if kind == "hdr6":
+        return [box(0, 0, 0.0, 15.24, 2.54, 2.5, BLACK)] + [box((i - 2.5) * 2.54, 0, 2.5, 0.64, 0.64, 6.0, SILVER) for i in range(6)]
     if kind == "disp4":
         return [box(0, 0, 0.5, 30.0, 14.0, 7.0, DARKRED), box(0, 0, 7.5, 28.0, 12.0, 0.2, RED)]
     if kind == "mic":
         return [cyl(0, 0, 0.5, 9.7, 6.5, SILVER)]
     if kind == "spk":
-        return [cyl(0, 0, 0.5, 24.0, 4.0, BLACK), cyl(0, 0, 4.5, 8.0, 0.4, GREY)]
-    if kind == "usw":
-        return [box(0, 0, 0.3, 12.8, 6.5, 10.2, BLUE), box(5.0, 0.0, 10.5, 8.0, 0.8, 0.4, SILVER)]
+        return [cyl(0, 0, 0.5, 28.0, 4.0, BLACK), cyl(0, 0, 4.5, 8.0, 0.4, GREY)]
     if kind == "tact":
         return [box(0, 0, 0.3, 6.0, 6.0, 3.6, BLACK), cyl(0, 0, 3.9, 3.5, 0.8, GREY)]
-    if kind == "slide":
-        return [box(0, 0, 0.3, 10.0, 4.6, 5.0, SILVER), box(0, -1.0, 5.3, 3.0, 2.0, 3.0, BLACK)]
-    if kind == "trim":
-        return [box(0, 0, 0.3, 9.5, 9.5, 4.9, BLUE), cyl(0, 0, 5.2, 4.0, 0.4, SILVER)]
-    if kind == "batt":     # 4 x AAA holder, stuck behind the dial; two wires to the pads
-        return [box(0, -63.5, 0.4, 52.0, 47.0, 13.0, GREY), box(-5.08, -20.0, 0.4, 1.4, 40.0, 1.4, RED), box(5.08, -20.0, 0.4, 1.4, 40.0, 1.4, BLACK)]
+    if kind == "batt":     # 4 x AAA holder with cover and switch in the shell's handle, below the board's bottom edge; two wires to the pads
+        return [box(0, 32.0, 0.4, 60.0, 52.0, 17.0, GREY), box(-5.08, 8.0, 0.4, 1.4, 16.0, 1.4, RED), box(5.08, 8.0, 0.4, 1.4, 16.0, 1.4, BLACK)]
     raise KeyError(kind)
 
 

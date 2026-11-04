@@ -8,6 +8,7 @@ import type { CodeWheelItem } from './types';
 import { turnFor } from './codeWheel';
 import { OUTER, INNER, HIDDEN, WINDOWS, GLYPHS, GATES, GATE_CODES, codeOf, turnOf } from '../../../../games/teddy3/src/wheel/wheel';
 import { FACES } from '../../../../games/teddy3/src/wheel/faces';
+import { FACE_FILLS, FILL_COLORS } from '../../../../games/teddy3/src/wheel/faceColors';
 
 const file = join(__dirname, '../../../../games/teddy3/printables.json');
 const it0 = (JSON.parse(readFileSync(file, 'utf8')).items as { kind: string }[]).find((i) => i.kind === 'codewheel') as CodeWheelItem;
@@ -47,5 +48,18 @@ describe("Teddy's Little Biggest Adventure: the Face Dial matches the game", () 
     expect(GATE_CODES.findIndex((c) => c.join() === codeOf('Gwinn').join())).toBe(GATES.open);
     expect(new Set(GATE_CODES.map((c) => c.join())).size).toBe(GATE_CODES.length);
     expect(p.answer).toContain(codeOf('Gwinn').join(', '));
+  });
+
+  it('colors every face on both discs the same as the game, over the same 12 by 12 picture', () => {
+    expect(it0.fills).toEqual(FACE_FILLS);
+    expect(it0.fillColors).toEqual(FILL_COLORS);
+    expect(it0.emblem).toBe('nose');
+    for (const name of OUTER) {
+      expect(FACE_FILLS[name], name).toHaveLength(12);
+      for (const row of FACE_FILLS[name]) {
+        expect(row).toMatch(/^[.a-zA-Z]{12}$/);
+        for (const ch of row) if (ch !== '.') expect(FILL_COLORS[ch.toLowerCase()], ch).toBeDefined();
+      }
+    }
   });
 });

@@ -56,46 +56,41 @@ def _disp():
     pads += [Pad(str(7 + i), 6.35 - 2.54 * i, -5.08) for i in range(6)]
     # 3641AS-style 0.36 in module: 30 x 14 x 7.2 mm body, rows 10.16 mm apart (G-NOR GNQ-3641 drawing)
     return Fp("DISP4_CC_0.36in_12pin", pads, (-15, -7, 15, 7), (-15.3, -7.3, 15.3, 7.3),
-              [("1", -8.5, 7.4), ("12", -8.5, -7.4)], desc="4-digit 7-segment module (3641AS style), 12 pins, rows 10.16 mm apart")
+              [], desc="4-digit 7-segment module (3641AS style), 12 pins, rows 10.16 mm apart")
 
 
 def _tact():
     pads = [Pad("1", -3.302, -2.286, 2.0, 1.1), Pad("1", -3.302, 2.286, 2.0, 1.1),
             Pad("2", 3.302, -2.286, 2.0, 1.1), Pad("2", 3.302, 2.286, 2.0, 1.1)]
     return Fp("SW_Tactile_6mm_BigPads", pads, (-3.0, -3.0, 3.0, 3.0), (-5.6, -4.1, 5.6, 4.1), [],
-              extra=[(0, 0, 1.75)], desc="6 mm tactile switch (ASSUMED 6.6 x 4.6 mm pin spacing; pins 1-1 and 2-2 are joined inside)")
+              extra=[(0, 0, 1.75)], desc="6 mm tactile switch (6.6 x 4.6 mm pin spacing; pins 1-1 and 2-2 are joined inside); standard 6 x 6 mm switches are 6.5 x 4.5 mm")
 
 
 FP = {
     "dip8": _dip(8), "dip18": _dip(18), "dip24": _dip(24),
-    "axial": _axial("R_Axial_P5.08mm_BigPads", 5.08, 3.0, 2.0, "1/8 W resistor, lying flat, 5.08 mm hole spacing"),
+    "axial": _axial("R_Axial_P7.62mm_BigPads", 7.62, 6.4, 2.4, "1/4 W resistor, lying flat, 7.62 mm hole spacing"),
     "ceramic": _axial("C_Disc_P5.08mm_BigPads", 5.08, 3.0, 4.2, "disc or multilayer ceramic capacitor"),
     "elec": Fp("C_Radial_P2.54mm_BigPads", [Pad("1", -1.27, 0, square=True), Pad("2", 1.27, 0)],
                (-3.6, -3.6, 3.6, 3.6), (-3.9, -3.9, 3.9, 3.9), [("+", -3.0, -2.2)],
                desc="radial electrolytic or tantalum; pin 1 is plus"),
     "to92": _row("TO-92_Inline_BigPads", ["1", "2", "3"], 2.54, (-3.2, -2.0, 3.2, 3.4), "TO-92, flat face up, pins E B C", marks=[("E", -2.54, 3.9)]),
-    "to92r": _row("TO-92_Regulator_BigPads", ["1", "2", "3"], 2.54, (-3.2, -2.0, 3.2, 3.4), "TO-92 regulator, flat face up, pins GND IN OUT", marks=[("G", -2.54, 3.9)]),
+    "to92reg": Fp("TO-92_MCP1702_BigPads", [Pad("2", -2.54, 0, square=True), Pad("1", 0, 0), Pad("3", 2.54, 0)],
+                  (-3.2, -2.0, 3.2, 3.4), (-4.0, -2.3, 4.0, 3.7), [("G", -2.54, 3.9), ("I", 0, 3.9), ("O", 2.54, 3.9)],
+                  desc="MCP1702 TO-92, flat face up: physical pin 1 GND (square), 2 IN, 3 OUT; the pads carry the symbol's numbers (GND is 2, IN is 1)"),
     "xtal": _row("Crystal_HC49_BigPads", ["1", "2"], 5.08, (-6.0, -2.6, 6.0, 2.6), "HC-49 crystal, lying flat", d=2.0, drill=1.0),
     "led": _row("LED_5mm_BigPads", ["1", "2"], 2.54, (-3.5, -3.5, 3.5, 3.5), "5 mm IR LED, leads bent so the dome points off the board edge; pin 1 is the cathode (K)",
                 square="1", marks=[("K", -2.9, 2.6), ("A", 2.7, 2.6)]),
-    "photo": _row("Photodiode_BPW34_BigPads", ["1", "2"], 2.54, (-3.5, -3.5, 3.5, 3.5), "PIN photodiode (BPW34 style), pin 1 cathode (K)",
-                  square="1", marks=[("K", -2.9, 2.6), ("A", 2.7, 2.6)]),
     "mic": Fp("Mic_Electret_9.7mm_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
-              (-5.1, -5.1, 5.1, 5.1), (-5.4, -5.4, 5.4, 5.4), [("+", -4.6, -3.2)], extra=[(0, 0, 4.85)],
+              (-5.1, -5.1, 5.1, 5.1), (-5.4, -5.4, 5.4, 5.4), [("+", -2.54, -2.4)], extra=[(0, 0, 4.85)],
               desc="electret capsule wired to two pads, + is the pad that goes to the bias resistor"),
-    "spk": Fp("Speaker_28mm_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
-              (-4.2, -2.4, 4.2, 2.4), (-14.2, -14.2, 14.2, 14.2), [("+", -4.6, 1.8)], extra=[(0, 0, 14)],
-              desc="28 mm speaker glued over the pads, two short wires"),
-    "usw": Fp("Microswitch_Lever_BigPads", [Pad("1", -2.54, 0, 2.2, 1.1, True), Pad("2", 2.54, 0, 2.2, 1.1)],
-              (-6.4, -3.2, 6.4, 3.2), (-6.7, -3.5, 6.7, 3.5), [("C", -2.54, 3.2), ("NO", 2.54, 3.2)],
-              desc="subminiature lever microswitch, common and normally-open pins (ASSUMED 5.08 mm apart)"),
-    "slide": _row("SW_Slide_SPDT_BigPads", ["1", "2", "3"], 2.54, (-5.0, -3.0, 5.0, 3.0), "SPDT slide switch, pins 2.54 mm apart (ASSUMED)",
-                  d=2.0, drill=1.1, square="1"),
+    "spk": Fp("Speaker_28mm_BigPads", [Pad("1", -2.54, 19.05, 2.4, 1.2, True), Pad("2", 2.54, 19.05, 2.4, 1.2)],
+              (-14.2, -14.2, 14.2, 21.4), (-14.2, -14.2, 14.2, 21.4), [("+", -4.6, 19.05)], extra=[(0, 0, 14)],
+              desc="28 mm speaker centered on the footprint origin (glued over a clear zone); two short wires reach the pads 19 mm below its center"),
     "batt": Fp("BatteryLeads_2pad_BigPads", [Pad("1", -5.08, 0, 2.6, 1.4, True), Pad("2", 5.08, 0, 2.6, 1.4)],
                (-8.0, -3.2, 8.0, 3.2), (-8.3, -3.5, 8.3, 3.5), [("+", -5.08, 3.9), ("-", 5.08, 3.9)],
                desc="two pads for the 4 x AAA holder's wire leads (red to +, black to -)"),
-    "trim": _row("Trimmer_10k_3pin_BigPads", ["1", "2", "3"], 2.54, (-5.0, -5.0, 5.0, 5.0), "10k trimmer, 3 pins 2.54 mm apart in a row (Adafruit 356 style, 9.5 mm body)",
-                 square="1", marks=[("1", -2.54, 5.8)]),
+    "hdr6": _row("PinHeader_1x6_BigPads", ["1", "2", "3", "4", "5", "6"], 2.54, (-7.62, -1.5, 7.62, 1.5), "1x6 pin header, 2.54 mm", square="1",
+                 marks=[("1", -7.0, 2.6)]),
     "disp4": _disp(), "tact": _tact(),
 }
 # the netlist pins "1".."3" of the slide switch follow the schematic symbol (checked by gen_pcb)
