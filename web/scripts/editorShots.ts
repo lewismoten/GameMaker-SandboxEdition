@@ -6,6 +6,7 @@
 // Usage: npm run editor:shots -- --out <dir> [--compare <earlier dir>] [--only map,music] [--port 5281] [--dist dir] [--url u]
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import type { Page } from 'playwright-core';
 import { arg, launch, target } from './perfLib';
 
 const routes: [string, string, string][] = [
@@ -45,7 +46,8 @@ try {
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto(srv.base + route);
       await page.waitForSelector(wait, { timeout: 90000 }).catch(() => console.log(`${name}: "${wait}" never appeared; shot anyway`));
-      await page.waitForTimeout(2500);
+      await page.waitForTimeout(1500);
+      await settle(page);
       await page.screenshot({ path: `${out}/${name}-${scheme}.png` });
       shots.push(`${name}-${scheme}`);
       await page.close();
@@ -80,7 +82,11 @@ try {
           const D = new ImageData(A.width, A.height);
           let n = 0;
           for (let i = 0; i < A.data.length; i += 4) {
-            const d = A.data[i] !== B.data[i] || A.data[i + 1] !== B.data[i + 1] || A.data[i + 2] !== B.data[i + 2] || A.data[i + 3] !== B.data[i + 3];
+            const d =
+              Math.abs(A.data[i] - B.data[i]) > 8 ||
+              Math.abs(A.data[i + 1] - B.data[i + 1]) > 8 ||
+              Math.abs(A.data[i + 2] - B.data[i + 2]) > 8 ||
+              A.data[i + 3] !== B.data[i + 3]; // up to 8 levels of edge anti-aliasing vary between runs of one build
             if (d) n++;
             D.data[i] = d ? 255 : 0;
             D.data[i + 3] = 255;
@@ -100,17 +106,31 @@ try {
       if (r.n !== 0) diffs.push(s);
       if (r.png) writeFileSync(`${out}/diff/${s}.png`, Buffer.from(r.png, 'base64'));
     }
-    console.log(
-      diffs.length
-        ? `\nFAIL: ${diffs.length} of ${shots.length} differ. Animated or clock content can differ on its own; look at the diff images.`
-        : `\nAll ${shots.length} identical.`,
-    );
+    console.log(diffs.length ? `\nFAIL: ${diffs.length} of ${shots.length} differ. Look at the diff images.` : `\nAll ${shots.length} identical.`);
   }
 } finally {
   await browser.close();
   srv.stop();
 }
 process.exitCode = diffs.length ? 1 : 0;
+
+/** Quiet the page, then wait until two screenshots in a row are byte-identical (late fonts and canvases). */
+async function settle(page: Page) {
+  await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}' });
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    (document.activeElement as HTMLElement | null)?.blur?.();
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  });
+  await page.mouse.move(0, 0);
+  let last = await page.screenshot();
+  for (let i = 0; i < 20; i++) {
+    await page.waitForTimeout(500);
+    const now = await page.screenshot();
+    if (now.equals(last)) return;
+    last = now;
+  }
+}
 
 function dataUrl(file: string) {
   return `data:image/png;base64,${readFileSync(file).toString('base64')}`;

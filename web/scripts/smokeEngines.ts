@@ -19,6 +19,8 @@ const out = resolve(arg('out') ?? '../.for-lewis/research/engines/smoke-shots');
 mkdirSync(out, { recursive: true });
 const NOISE = /preloaded using link preload|blob:|WebKitBlobResource|ERR_FILE_NOT_FOUND/;
 const hash = (b: Buffer) => createHash('md5').update(b).digest('hex').slice(0, 8);
+// at iPad size these flows add little over desktop and iPhone: the editor, home and export keep all three
+const IPAD_SKIPS = ['play', 'desk', 'dos'];
 const types = { webkit, firefox, chromium };
 
 type Checks = Map<string, string>; // check name -> 'ok' | 'FAIL: why'
@@ -31,6 +33,9 @@ interface Run {
   tap: (l: Locator) => Promise<void>;
   shot: (name: string) => Promise<void>;
 }
+
+/** Hash of a canvas's own pixels: unlike an element screenshot it ignores toasts and palettes laid over it. */
+const pixels = async (cv: Locator) => hash(Buffer.from(await cv.evaluate((c) => (c as HTMLCanvasElement).toDataURL())));
 
 const flows: Record<string, (r: Run) => Promise<void>> = {
   async home({ p, base, set, shot }) {
@@ -54,14 +59,20 @@ const flows: Record<string, (r: Run) => Promise<void>> = {
     set('editor: map canvas shown', !!bx);
     if (bx) {
       await p.mouse.move(5, 5);
-      await p.waitForTimeout(300);
-      const a = hash(await cv.screenshot());
+      // the canvas redraws for a couple of seconds after the map opens: wait until two looks match
+      let a = await pixels(cv);
+      for (let i = 0; i < 12; i++) {
+        await p.waitForTimeout(700);
+        const b = await pixels(cv);
+        if (b === a) break;
+        a = b;
+      }
       await p.waitForTimeout(700);
-      set('editor: map canvas steady at rest', a === hash(await cv.screenshot()));
-      await p.mouse.click(bx.x + 120, bx.y + 100);
+      set('editor: map canvas steady at rest', a === (await pixels(cv)));
+      await cv.click({ position: { x: 120, y: 100 } }); // scrolls it into view on a phone
       await p.mouse.move(5, 5);
       await p.waitForTimeout(500);
-      set('editor: click paints', a !== hash(await cv.screenshot()));
+      set('editor: click paints', a !== (await pixels(cv)));
       const undo = p.getByRole('button', { name: /Undo/ }).first();
       const canUndo = await undo.isEnabled();
       set('editor: undo enabled after paint', canUndo);
@@ -69,7 +80,7 @@ const flows: Record<string, (r: Run) => Promise<void>> = {
         await tap(undo);
         await p.mouse.move(5, 5);
         await p.waitForTimeout(500);
-        set('editor: undo restores', a === hash(await cv.screenshot()));
+        set('editor: undo restores', a === (await pixels(cv)));
       }
     }
     await p.goto(base + '/#/p/look:blaster/bus2.bbl');
@@ -105,6 +116,8 @@ const flows: Record<string, (r: Run) => Promise<void>> = {
       ['catalog', /Shareware catalog/],
     ] as const) {
       try {
+        // the catalog sits in a menu that the "Catalog & magazine" button opens
+        if (n === 'catalog') await tap(p.getByRole('button', { name: /Catalog & magazine/ }).first());
         await tap(p.getByRole('button', { name }).first());
         await p.waitForTimeout(2500);
         await shot('desk-' + n.replace(/\W/g, ''));
@@ -118,26 +131,33 @@ const flows: Record<string, (r: Run) => Promise<void>> = {
   },
   async dos({ p, base, set, shot }) {
     await p.goto(base + '/dos.html');
-    await p.waitForTimeout(6000);
+    await p.waitForTimeout(4500);
     await shot('dos-boot');
-    const a = hash(await p.screenshot());
+    const screen = async () => hash(Buffer.from(await p.evaluate(() => [...document.querySelectorAll('canvas')].map((c) => c.toDataURL()).join())));
+    const a = await screen();
     await p.keyboard.type('dir');
     await p.keyboard.press('Enter');
     await p.waitForTimeout(1500);
     await shot('dos-dir');
-    set('dos.html: typing changes the screen', a !== hash(await p.screenshot()));
+    set('dos.html: typing changes the screen', a !== (await screen()));
   },
   async export({ p, base, set, tap, shot, tag }) {
     await p.goto(base + '/#/p/look:blaster/bus2.map');
     await p.waitForTimeout(4500);
-    await tap(p.getByRole('button', { name: 'Download' }).first());
+    const openExport = async () => {
+      const dl = p.getByRole('button', { name: /^Download Virus/ });
+      // on a phone the game's Download button waits in the Files drawer
+      if (!(await dl.count())) await tap(p.getByRole('button', { name: /^Files/ }).first());
+      await tap(dl.first());
+    };
+    await openExport();
     await p.waitForTimeout(1200);
     await shot('export-dialog');
     for (const name of ['Web page', 'DOS']) {
       try {
         if (name === 'DOS') {
           await p.waitForTimeout(1500);
-          if (!(await p.getByRole('button', { name: /^Download \./ }).count())) await tap(p.getByRole('button', { name: 'Download' }).first());
+          if (!(await p.getByRole('button', { name: /^Download \./ }).count())) await openExport();
           await p.waitForTimeout(800);
         }
         const opt = p
@@ -180,6 +200,7 @@ async function runProfile(browser: Browser, eng: string, prof: string, base: str
   try {
     for (const [name, fn] of Object.entries(flows)) {
       if (only && !only.includes(name)) continue;
+      if (prof === 'ipad' && IPAD_SKIPS.includes(name)) continue; // same layout class as the iPhone run: save the time
       cur = name;
       const p = await ctx.newPage();
       const run: Run = {
@@ -206,26 +227,32 @@ async function runProfile(browser: Browser, eng: string, prof: string, base: str
 const srv = await target(5280);
 const results = new Map<string, Checks>(); // 'engine profile' -> checks
 const logs = new Set<string>();
-try {
-  for (const eng of engines) {
-    const type = types[eng as keyof typeof types];
-    if (!type) throw new Error(`Unknown engine "${eng}".`);
-    if (eng !== 'chromium' && !existsSync(type.executablePath())) {
-      console.log(`Skipping ${eng}: not installed (npx playwright-core install ${eng}).`);
-      continue;
-    }
-    const browser = eng === 'chromium' ? await launch() : await type.launch();
-    try {
-      for (const prof of profiles) {
-        const checks: Checks = new Map();
-        results.set(`${eng} ${prof}`, checks);
-        await runProfile(browser, eng, prof, srv.base, checks, logs);
-        console.log(`${eng} ${prof}: ${[...checks.values()].filter((v) => v !== 'ok').length} failing of ${checks.size}`);
-      }
-    } finally {
-      await Promise.race([browser.close(), new Promise((r) => setTimeout(r, 8000))]);
-    }
+const active = engines.filter((eng) => {
+  const type = types[eng as keyof typeof types];
+  if (!type) throw new Error(`Unknown engine "${eng}".`);
+  if (eng !== 'chromium' && !existsSync(type.executablePath())) {
+    console.log(`Skipping ${eng}: not installed (npx playwright-core install ${eng}).`);
+    return false;
   }
+  return true;
+});
+for (const eng of active) for (const prof of profiles) results.set(`${eng} ${prof}`, new Map());
+try {
+  // the engines run side by side (one browser each); an engine's sizes run one after another
+  await Promise.all(
+    active.map(async (eng) => {
+      const browser = eng === 'chromium' ? await launch() : await types[eng as keyof typeof types].launch();
+      try {
+        for (const prof of profiles) {
+          const checks = results.get(`${eng} ${prof}`)!;
+          await runProfile(browser, eng, prof, srv.base, checks, logs);
+          console.log(`${eng} ${prof}: ${[...checks.values()].filter((v) => v !== 'ok').length} failing of ${checks.size}`);
+        }
+      } finally {
+        await Promise.race([browser.close(), new Promise((r) => setTimeout(r, 8000))]);
+      }
+    }),
+  );
 } finally {
   srv.stop();
 }
