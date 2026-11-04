@@ -40,10 +40,13 @@ export const RES = (x: number, y: number): string => P(`M${n(x)} ${n(y)}h.5l.25-
 /** Vertical resistor from (x, y) going down, 3 cells long. */
 export const RESV = (x: number, y: number): string => P(`M${n(x)} ${n(y)}v.5l-.45.25l.9.4l-.9.4l.9.4l-.9.4l.45.25v.4`);
 /** Capacitor in a horizontal wire: leads either side of two plates at (x, y). */
-export const CAP = (x: number, y: number): string => L(x - 1, y, x - 0.15, y) + L(x - 0.15, y - 0.6, x - 0.15, y + 0.6) + L(x + 0.15, y - 0.6, x + 0.15, y + 0.6) + L(x + 0.15, y, x + 1, y);
+export const CAP = (x: number, y: number): string =>
+  L(x - 1, y, x - 0.15, y) + L(x - 0.15, y - 0.6, x - 0.15, y + 0.6) + L(x + 0.15, y - 0.6, x + 0.15, y + 0.6) + L(x + 0.15, y, x + 1, y);
 /** Capacitor from (x, y) going down: plates across the wire. */
-export const CAPV = (x: number, y: number): string => L(x, y, x, y + 0.85) + L(x - 0.6, y + 0.85, x + 0.6, y + 0.85) + L(x - 0.6, y + 1.15, x + 0.6, y + 1.15) + L(x, y + 1.15, x, y + 2);
-export const GND = (x: number, y: number): string => L(x, y, x, y + 0.4) + L(x - 0.6, y + 0.4, x + 0.6, y + 0.4) + L(x - 0.38, y + 0.7, x + 0.38, y + 0.7) + L(x - 0.16, y + 1, x + 0.16, y + 1);
+export const CAPV = (x: number, y: number): string =>
+  L(x, y, x, y + 0.85) + L(x - 0.6, y + 0.85, x + 0.6, y + 0.85) + L(x - 0.6, y + 1.15, x + 0.6, y + 1.15) + L(x, y + 1.15, x, y + 2);
+export const GND = (x: number, y: number): string =>
+  L(x, y, x, y + 0.4) + L(x - 0.6, y + 0.4, x + 0.6, y + 0.4) + L(x - 0.38, y + 0.7, x + 0.38, y + 0.7) + L(x - 0.16, y + 1, x + 0.16, y + 1);
 export const DOT = (x: number, y: number): string => `<circle class="pd" cx="${n(x)}" cy="${n(y)}" r=".17"/>`;
 /** A sine wave: from (x, y) across w cells, amplitude a, `cycles` of it. */
 export function SINE(x: number, y: number, w: number, a: number, cycles: number, c = ''): string {
@@ -64,11 +67,13 @@ export function sparky(x: number, y: number, s = 1): string {
   return (
     `<g transform="translate(${n(x)} ${n(y)}) scale(${s})">` +
     P('M0 0h3.2v2.4h-3.2z') + // head
-    P('M.2 0L.4-1.1L1.1 0') + P('M2.1 0L2.8-1.1L3 0') + // ears
+    P('M.2 0L.4-1.1L1.1 0') +
+    P('M2.1 0L2.8-1.1L3 0') + // ears
     P('M3.2 1.1h1v1.1h-1') + // snout
     `<circle class="pn" cx="1" cy="1" r=".28"/><circle class="pn" cx="2.2" cy="1" r=".28"/><circle class="pd" cx="1.05" cy="1.02" r=".1"/><circle class="pd" cx="2.25" cy="1.02" r=".1"/>` +
     P('M0 2.4v1.4M3.2 2.4v1.4M0 3.8h3.2') + // body hint
-    P('M-.1 1.2q-1-.1-1.4-1.1') + `<circle class="pn cr" cx="-1.5" cy="0" r=".28" style="fill:#c0392b"/>` + // antenna tail with a red light
+    P('M-.1 1.2q-1-.1-1.4-1.1') +
+    `<circle class="pn cr" cx="-1.5" cy="0" r=".28" style="fill:#c0392b"/>` + // antenna tail with a red light
     P('M3.3 1.8q.5.4 1 0', 'cr') + // tongue
     '</g>'
   );

@@ -7,7 +7,7 @@ import backUrl from './dexReport/board-back.png';
 // ---- 13 and 14: building it
 const p13 = `
 <h2>Building It (1)</h2>
-<p><b>Safety first:</b> the iron is hot enough to burn. Grandpa watches. Hair back. Open the window.</p>
+<p><b>Safety first:</b> the iron can burn you. Grandpa watches. Hair back. Open a window.</p>
 <p>The board has the <b>boring parts on the back</b> and the <b>parts you touch on the front</b>. Back parts go in first and get soldered from the front. Front parts go in <b>last</b>.</p>
 <ol>
 <li><b>Check the board.</b> No two pads stuck together with copper.</li>
@@ -27,7 +27,7 @@ const p14 = `
 ${photo(
   backUrl,
   'The back of the board: the PIC, the decoder, the display driver, the amplifiers, the crystal, the regulator and the programming header, with pencil labels.',
-  { width: 54, rot: -1.2, caption: 'the back (where the brains live)', style: 'float:right;margin:0 0 7cqw 3cqw' },
+  { width: 46, rot: -1.2, caption: 'the back (where the brains live)', style: 'float:right;margin:0 0 7cqw 3cqw' },
   [
     ['<-- BRAIN', 49, 80],
     ['EARS --', 15, 74],
@@ -53,11 +53,11 @@ ${photo(
 <li>[ ] number shows on the OTHER phone</li>
 </ul>
 <p>If something is off, tune by ear: R18 and R19 (how well it hears), R20 (how loud), R9 (how bright the IR light is).</p>
-${red('A test after each step. This is how real engineers work!', 'position:absolute;right:7cqw;bottom:12cqw;max-width:34cqw')}`;
+${red('A test after each step. This is how real engineers work!', 'margin:1.5cqw 2cqw 0 auto')}`;
 
 // ---- 15: attempt 1, the switch box (graph)
 const switchBoard = (() => {
-  let s = RECT(0, 0, 28, 15, 'th') + T(14, 1.2, 'DEX MARK 1 HAND PROGRAMMER', 1, 'middle', 'cr');
+  let s = RECT(0, 0, 28, 13.5, 'th') + T(14, 1.2, 'DEX MARK 1 HAND PROGRAMMER', 1, 'middle', 'cr');
   const word = [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1]; // 0x2805, bit 13 down to bit 0
   s += T(0.5, 2.6, 'WORD (to remember where I am):', 0.8);
   for (let i = 0; i < 14; i++) {
@@ -66,28 +66,32 @@ const switchBoard = (() => {
   }
   s += T(0.5, 8.6, '14 switches: bit 13 ... bit 0   (0x2805 = goto 5)', 0.8);
   // controls
-  s += `<circle class="pn th" cx="5" cy="12" r="1.6"/>` + T(5, 14.5, 'CLOCK', 0.9, 'middle', 'cr');
-  s += RECT(10.4, 11, 1.2, 2) + L(11, 12, 11, 10.4, 'th') + T(11, 14.5, 'DIN', 0.9, 'middle', 'cb');
-  s += RECT(16.4, 11, 1.2, 2) + L(17, 12, 17, 13.6, 'th') + T(17, 14.5, 'Vpp', 0.9, 'middle', 'cg');
-  s += `<circle class="pn" cx="22.6" cy="11.4" r=".7"/>` + `<circle class="pn" cx="25" cy="11.4" r=".7"/>` + T(22.6, 13.6, 'PGD', 0.75, 'middle') + T(25, 13.6, 'PGC', 0.75, 'middle');
-  s += ARROW(7.6, 12, 9.6, 12) + T(8.6, 11.5, '', 0.7);
+  s += `<circle class="pn th" cx="5" cy="11.2" r="1.4"/>` + T(5, 13.3, 'CLOCK', 0.9, 'middle', 'cr');
+  s += RECT(10.4, 10.2, 1.2, 2) + L(11, 11.2, 11, 9.6, 'th') + T(11, 13.3, 'DIN', 0.9, 'middle', 'cb');
+  s += RECT(16.4, 10.2, 1.2, 2) + L(17, 11.2, 17, 12.8, 'th') + T(17, 13.3, 'Vpp', 0.9, 'middle', 'cg');
+  s +=
+    `<circle class="pn" cx="22.6" cy="11" r=".7"/>` +
+    `<circle class="pn" cx="25" cy="11" r=".7"/>` +
+    T(22.6, 12.9, 'PGD', 0.75, 'middle') +
+    T(25, 12.9, 'PGC', 0.75, 'middle');
+  s += ARROW(7, 11.2, 9.4, 11.2);
   return s;
 })();
 
 const p15 = `
 <h2>Programming (1): Switches</h2>
-<p>The brain is empty when you buy it. The program (<b>337 words</b>, the assembler said) has to be put in. My first idea: <b>do it by hand</b>, like the card computer in the library book, with toggle switches.</p>
-${gsk(15, 'Drawing of a hand programmer: fourteen word switches, a clock push-button, a data switch, a Vpp switch and two lamps', switchBoard, 'margin-top:1cqw')}
-<p style="margin-top:2cqw"><b>The chip wants one bit at a time.</b> Set DIN, press CLOCK. Each word is a 6-bit command (LOAD DATA) and then 16 bits (a 0, the 14 bits of the word, a 0).</p>
-<p><b>My math:</b> 6 + 16 = <b>22</b> presses a word. x 337 = <span class="x">7,414</span> ... <b>wait!</b> I forgot BEGIN PROGRAMMING (6) and NEXT ADDRESS (6): <b>34</b> a word. x 337 = <b>11,458</b>. And the empty spaces (463 of them) still need NEXT ADDRESS, 6 each = <b>2,778</b> more. <b>14,236 presses!</b> At one a second that is <b>4 hours</b>, no mistakes, no sneezing.</p>
-<p>I tried. I got to <b>word 41</b> (1,394 presses). I flipped DIN wrong somewhere. There is no way to see which bit.</p>
-<p class="box"><b>Paper tape idea:</b> 337 words x 2 rows = 674 rows. 10 rows to the inch = <b>67 inches</b> (5 and a half feet!), about 2,400 holes with my hole punch. And I have no tape reader. <b>Out.</b></p>
-<p class="rd" style="font-size:4.4cqw;transform:rotate(-2deg);margin-top:1.5cqw;color:#45474f">GAVE UP AT WORD 41.</p>
-${red('Failure is data. What did you try next?', 'position:absolute;right:9cqw;bottom:11cqw;max-width:32cqw')}`;
+<p>The brain is empty when you buy it. My program is <b>337 words</b> (the assembler said). First idea: <b>do it by hand</b> with toggle switches, like the card computer in the library book.</p>
+${gsk(13.5, 'Drawing of a hand programmer: fourteen word switches, a clock push-button, a data switch, a Vpp switch and two lamps', switchBoard, 'margin-top:1cqw')}
+<p style="margin-top:2cqw"><b>The chip takes one bit at a time:</b> set DIN, press CLOCK. A word is a 6-bit command (LOAD DATA) and 16 bits (a 0, the 14 bits, a 0).</p>
+<p><b>My math:</b> 6 + 16 = <b>22</b> presses a word. x 337 = <span class="x">7,414</span> ... <b>wait!</b> I forgot BEGIN PROGRAMMING (6) and NEXT ADDRESS (6): <b>34</b> a word. x 337 = <b>11,458</b>. And the empty spaces (463 of them) still need NEXT ADDRESS, 6 each = <b>2,778</b> more. <b>14,236 presses!</b> One a second = <b>4 hours</b>, no sneezing.</p>
+<p>I tried. I got to <b>word 41</b> (1,394 presses) and flipped DIN wrong somewhere. No way to see which bit.</p>
+<p class="box"><b>Paper tape?</b> 337 words x 2 rows = 674 rows, 10 to the inch = <b>67 inches</b> of tape and about 2,400 holes with my hole punch. And no tape reader. <b>Out.</b></p>
+<p style="font-size:4.4cqw;transform:rotate(-2deg);margin:1cqw 0 0 4cqw">GAVE UP AT WORD 41.</p>
+${red('Failure is data. What did you try next?', 'margin:1.5cqw 2cqw 0 auto')}`;
 
 // ---- 16: the config word troubles
 const p16 = `
-<h2>Programming (2): What Went Wrong</h2>
+<h2>Programming (2): Oops</h2>
 <p>A program is not enough. A chip also has a <b>configuration word</b>: settings like "which clock?" and "watchdog on?". It is stored with the program, at the very end, in the hex file as a line starting <b>:02400E00</b>. I got it wrong three ways.</p>
 <h3>Try A: dead chip</h3>
 <p>I left out the <b>__CONFIG</b> line. The chip kept its factory word, <b>0x3FFF</b> (line <b>:02400E00FF3F10</b>). That means "wait for a clock from a resistor". I had no resistor. <b>The chip did NOTHING.</b> No dash. Nothing.</p>
@@ -98,7 +102,7 @@ const p16 = `
 <p><b>LVP</b> = low-voltage programming. With it ON, the chip's pin RB4 is stuck being the "PGM" pin. But RB4 is where the ears' <b>Q1</b> wire comes in! Word <b>0x3FA1</b> (<b>:02400E00A13FD0</b>): odd numbers came out wrong, like a 5 showing up as a 4.</p>
 <p class="box" style="transform:rotate(0.6deg)"><b>The right word is 0x3F21</b> (:02400E00213F50): XT clock, watchdog OFF, power-up timer ON, reset pin ON, brown-out OFF, <b>LVP OFF</b>, no code protection.</p>
 <p><b>WARNING:</b> once LVP is off, the plain Nano can't program that chip again (it needs 12 to 13 volts). Get it right the first time, or use a new chip.</p>
-${red('Great detective work with the hex lines!', 'position:absolute;right:7cqw;top:111cqw;max-width:30cqw')}`;
+`;
 
 // ---- 17: the method that works
 const nano = (() => {
@@ -125,8 +129,8 @@ const nano = (() => {
 })();
 
 const p17 = `
-<h2>Programming (3): The Way That Works</h2>
-<p>A <b>$9 Arduino Nano</b> plus a free program called <b>ZEPPP</b> (Zero External Parts PIC Programmer, by battlecoder) can talk to the chip through the board's 6-pin header, <b>J1</b>. No extra parts!</p>
+<h2>Programming (3): It Works</h2>
+<p>A small <b>Arduino Nano</b> plus a free program called <b>ZEPPP</b> (Zero External Parts PIC Programmer, by battlecoder) can talk to the chip through the board's 6-pin header, <b>J1</b>. No extra parts!</p>
 ${ins(28, 14.4, 'Wiring chart: six wires from the Arduino Nano pins D6, 5V, GND, D7, D8 and D9 to header J1 pins 1 to 6', nano, { width: 76, rot: 0.6, caption: 'Six wires. Pin 1 of J1 is the square pad.', style: 'margin:1cqw 0 6cqw 0' })}
 <ol>
 <li>Make the hex file: <b>phone.hex</b>.</li>
@@ -138,7 +142,7 @@ ${ins(28, 14.4, 'Wiring chart: six wires from the Arduino Nano pins D6, 5V, GND,
 <li>Unplug the Nano. Ears in their socket. Now go on to step 6 on page 14.</li>
 </ol>
 <p class="ghost">(Nano's USB complains? use the phone's own batteries and leave the 5 V wire off.)</p>
-${red('Verify then read it back: very careful!', 'position:absolute;right:7cqw;bottom:11cqw;max-width:32cqw')}`;
+${red('Verify then read it back: very careful!', 'margin:1.5cqw 2cqw 0 auto')}`;
 
 // ---- 18: results
 const freqRows = [
@@ -172,7 +176,7 @@ ${freqRows}
 </table>
 <h3>Battery life: <u>ESTIMATE</u></h3>
 <p>8 digits lit, amp, LED: about <b>60 to 80 mA</b>. A set of AAA batteries is about 1000 mA-hours. 1000 / 70 = about <b>14 hours</b>. So <b>maybe 12 to 16 hours</b>. <b>This is a guess from math. I have NOT run it down.</b></p>
-${red('Calculated vs measured: you labeled them. A+ for honesty.', 'position:absolute;right:6cqw;bottom:11cqw;max-width:34cqw')}`;
+${red('Calculated vs measured: you labeled them. A+ for honesty.', 'margin:1.5cqw 2cqw 0 auto')}`;
 
 // ---- 19: conclusion
 const p19 = `
@@ -195,7 +199,7 @@ const p19 = `
 <p><b>What I would do next:</b> a box so it really fits in a pocket, and more phones, so a whole class can call each other.</p>
 <p class="big c" style="margin-top:3cqw">THE END (almost).</p>
 <span class="dr-sticker" style="position:absolute;right:10cqw;bottom:18cqw"><span>A-<small>NICE WORK</small></span></span>
-${red('A fine report, Dex! Next time, please keep it away from the dog.', 'position:absolute;left:18cqw;bottom:12cqw;max-width:36cqw')}`;
+${red('A fine report, Dex! Next time, please keep it away from the dog.', 'margin:1.5cqw 2cqw 0 auto')}`;
 
 // ---- 20: bibliography and thanks
 const p20 = `
@@ -217,7 +221,7 @@ const p20 = `
 </ul>
 <svg class="dr-sk" style="position:absolute;right:9cqw;bottom:12cqw;width:36cqw;height:auto" viewBox="0 0 14 8" role="img" aria-label="Doodle of Sparky and the Moon"><g filter="url(#dr-rough)">${sparky(1, 3, 1.3)}${moon(11, 2.5, 1.8)}</g></svg>
 <p class="ghost" style="margin-top:3cqw">THE END (really).</p>
-${red('Wonderful. Good luck at the Science Fair!', 'position:absolute;left:18cqw;bottom:14cqw;max-width:32cqw')}`;
+${red('Wonderful. Good luck at the Science Fair!', 'margin:1.5cqw 2cqw 0 auto')}`;
 
 export const pagesC: DrPage[] = [
   { paper: 'lined', body: p13 },

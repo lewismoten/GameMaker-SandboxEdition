@@ -15,11 +15,11 @@ const cover = `
   Science Fair: 3:00 PM (on the Moon)<br>
   <i>20 pages! With diagrams!</i>
 </div>
-${photo(frontUrl, 'The front of the finished phone board: two red displays, the dial, the speaker and four buttons.', { width: 30, rot: 4, style: 'position:absolute;left:8cqw;bottom:12cqw' }, [])}
-<svg class="dr-sk" style="position:absolute;right:9cqw;top:36cqw;width:30cqw;height:auto" viewBox="0 0 12 9" role="img" aria-label="Doodle of Sparky and the Moon">
+${photo(frontUrl, 'The front of the finished phone board: two red displays, the dial, the speaker and four buttons.', { width: 26, rot: 4, style: 'position:absolute;left:9cqw;bottom:7cqw' }, [])}
+<svg class="dr-sk" style="position:absolute;left:40cqw;bottom:5cqw;width:30cqw;height:auto" viewBox="0 0 12 9" role="img" aria-label="Doodle of Sparky and the Moon">
   <g filter="url(#dr-rough)">${sparky(2, 3, 1.1)}${moon(10, 2.2, 1.5)}</g></svg>
-<span class="dr-sticker" style="position:absolute;right:11cqw;bottom:30cqw"><span>A-<small>NICE WORK</small></span></span>
-<p class="dr-red" style="position:absolute;left:46cqw;bottom:14cqw;max-width:34cqw;color:#c0242b;font-size:3.4cqw;line-height:3.2cqw;transform:rotate(-4deg);border:.3cqw solid #c0242b;border-radius:50%/40%;padding:.8cqw 1.6cqw">Impressive! See me about the bite marks.</p>
+<span class="dr-sticker" style="position:absolute;right:7cqw;bottom:14cqw"><span>A-<small>NICE WORK</small></span></span>
+<p class="dr-red" style="position:absolute;left:40cqw;bottom:34cqw;max-width:36cqw;color:#c0242b;font-size:3.4cqw;line-height:3.2cqw;transform:rotate(-4deg);border:.3cqw solid #c0242b;border-radius:50%/40%;padding:.8cqw 1.6cqw">Impressive! See me about the bite marks.</p>
 <i class="bite" aria-hidden="true"></i>`;
 
 // the dial tone: two sine waves and their sum, 20 milliseconds of each
@@ -40,7 +40,7 @@ const dialTone = ins(
     T(15, 14.4, '', 0.7),
     T(26.7, 14.9, '20 ms', 0.8),
   ].join(''),
-  { width: 66, rot: -0.8, caption: 'Two notes at once = dial tone (20 thousandths of a second)', style: 'margin:2cqw 0 5cqw 2cqw' },
+  { width: 66, rot: -0.8, caption: 'Two notes at once = dial tone', style: 'margin:2cqw 0 5cqw 2cqw' },
 );
 
 // a wired telephone: voice in, electricity along the wire, voice out
@@ -91,8 +91,8 @@ ${wirePhone}
 <h3>Dial tone</h3>
 <p>Lift the handset and you hear the dial tone. It is <b>two notes at the same time</b>: <b>350 Hz</b> and <b>440 Hz</b>. (Hz = hertz = wiggles per second. 350 Hz is 350 wiggles every second.) It says: "I am ready, go ahead and dial."</p>
 ${dialTone}
-<p class="ghost" style="margin-top:-1cqw">(is 440 the same as a tuning fork A? yes!)</p>
-${red('Good. Why two notes and not one?', 'position:absolute;right:6cqw;top:56cqw;max-width:25cqw')}
+<p class="ghost" style="margin-top:1cqw">(is 440 the same as a tuning fork A? yes!)</p>
+${red('Good. Why two notes and not one?', 'margin:1.5cqw 2cqw 0 auto')}
 <p style="position:absolute;right:6cqw;top:74cqw;max-width:26cqw;transform:rotate(1.5deg)" class="bl">Answer: so a person humming can not fake it. (I think.)</p>`;
 
 // pulse dialing: the loop opens (break) 60 ms and closes (make) 40 ms for each pulse
@@ -165,8 +165,8 @@ ${ins(28, 19, 'Table of touch-tone keys: rows are 697, 770, 852 and 941 hertz, c
 <p>The 4th column (1633 Hz) has the letters <b>A B C D</b>. No phone I have seen has those buttons, but my decoder chip knows all <b>16</b>, so it can hear them anyway.</p>
 <h3>Why my phone needs a decoder</h3>
 <p>Sending is easy: the brain makes the two tones. <b>Listening</b> is hard. The CM8870 chip does it: it hears a tone pair and tells the brain <b>which button</b>, using 4 wires (a number from 0 to 15 in <b>binary</b>) and a flag wire called <b>StD</b> that means "I heard something!"</p>
-${red('Excellent! (Source for the frequencies?)', 'position:absolute;right:5cqw;bottom:13cqw')}
-<svg class="dr-sk dr-note" style="left:16cqw;bottom:11cqw;width:14cqw;height:9cqw" viewBox="0 0 12 6" role="img" aria-label="Doodle of the Moon"><g filter="url(#dr-rough)">${moon(4, 3.6, 1.6)}</g></svg>`;
+${red('Excellent! (Source for the frequencies?)', 'margin:1.5cqw 2cqw 0 auto')}
+`;
 
 // materials: the brain and ears chips drawn as little DIP icons
 const dip = (x: number, y: number, label: string, pins = 4): string =>
@@ -182,13 +182,13 @@ const p5 = `
 <tr><td><b>MAX7219</b> (a copy)<br>DISPLAY BOSS</td><td class="n">1</td><td>Runs all 8 digits by itself, so the brain only needs <b>3 wires</b>.</td></tr>
 <tr><td><b>LM358</b></td><td class="n">1</td><td>Two amplifiers in one chip: one makes my voice bigger (x47), one makes the light signal bigger (x21).</td></tr>
 <tr><td><b>LM386</b></td><td class="n">1</td><td>The loud amplifier that drives the speaker.</td></tr>
-<tr><td><b>Crystal 3.579545 MHz</b></td><td class="n">1</td><td>A tiny quartz clock that rings 3,579,545 times a second. It is the same one color TVs use, so it is cheap. It keeps the decoder in tune <b>and</b> runs the brain!</td></tr>
+<tr><td><b>Crystal 3.579545 MHz</b></td><td class="n">1</td><td>A tiny quartz clock that rings 3,579,545 times a second. It is the same one color TVs use, so it is easy to get. It keeps the decoder in tune <b>and</b> runs the brain!</td></tr>
 <tr><td><b>Electret mic</b></td><td class="n">1</td><td>Listens to my voice.</td></tr>
 <tr><td><b>Speaker</b> 8 ohm, 28 mm</td><td class="n">1</td><td>Makes the sound.</td></tr>
 </table>
 <p class="ghost" style="margin-top:1cqw">(MHz = million wiggles a second. Does the quartz really wiggle? YES.)</p>
 <svg class="dr-sk" style="width:60cqw;height:12cqw;margin-top:1cqw" viewBox="0 0 24 5" role="img" aria-label="Little drawings of chips with a notch at pin 1"><g filter="url(#dr-rough)">${dip(0.5, 0.3, 'pin 1 = notch', 3)}${dip(12, 0.3, 'square pad = pin 1', 3)}</g></svg>
-${red('Great list!', 'position:absolute;right:6cqw;bottom:12cqw;transform:rotate(3deg)')}`;
+${red('Great list!', 'margin:1.5cqw 2cqw 0 auto')}`;
 
 const p6 = `
 <h2>Materials (2)</h2>

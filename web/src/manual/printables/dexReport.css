@@ -14,42 +14,40 @@
   --cell: 2.941cqw;
   color: var(--ink);
   font:
-    600 3.5cqw/3.5cqw Caveat,
+    600 3.3cqw/3.5cqw Caveat,
     'Bradley Hand',
     'Segoe Print',
     cursive;
   text-shadow: 0 0 0.25px var(--ink);
 }
-.pp-dr.dr-lined {
+.pp-dr.pp-dr-lined {
   background:
     linear-gradient(90deg, transparent 10.6cqw, #e6a0a0 10.6cqw 10.85cqw, transparent 10.85cqw),
     repeating-linear-gradient(transparent 0 3.36cqw, #a9c3dd 3.36cqw 3.5cqw) 0 0 / 100% 3.5cqw,
     var(--grain, none),
     #fbf9f1 !important;
 }
-.pp-dr.dr-graph {
+.pp-dr.pp-dr-graph {
   background:
     linear-gradient(90deg, #b6d6c9 0 0.14cqw, transparent 0.14cqw) 0 0 / var(--cell) var(--cell),
     linear-gradient(#b6d6c9 0 0.14cqw, transparent 0.14cqw) 0 0 / var(--cell) var(--cell),
     var(--grain, none),
     #fbfcf6 !important;
 }
-.pp-dr.dr-cover {
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.5), transparent 55%),
-    #e9d9b6 !important;
+.pp-dr.pp-dr-cover {
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.5), transparent 55%), #e9d9b6 !important;
 }
 .pp-dr .dr-in {
   position: absolute;
   inset: 0;
   padding: 7cqw 7cqw 9cqw 14cqw;
 }
-.pp-dr.dr-graph .dr-in {
+.pp-dr.pp-dr-graph .dr-in {
   padding: 8.8cqw 8.8cqw 8cqw 8.8cqw;
-  font-size: 3.3cqw;
+  font-size: 3.1cqw;
   line-height: var(--cell);
 }
-.pp-dr.dr-cover .dr-in {
+.pp-dr.pp-dr-cover .dr-in {
   padding: 8cqw 9cqw;
   text-align: center;
 }
@@ -111,7 +109,7 @@
   letter-spacing: 0.05em;
 }
 .dr-in h2 {
-  font-size: 5.6cqw;
+  font-size: 5cqw;
   line-height: 7cqw;
   text-transform: uppercase;
   border-bottom: 0.4cqw solid var(--ink);
@@ -265,7 +263,9 @@
 }
 .dr-sticker small {
   display: block;
-  font: 700 2cqw/1 Arial, sans-serif;
+  font:
+    700 2cqw/1 Arial,
+    sans-serif;
   letter-spacing: 0.1em;
 }
 
@@ -315,7 +315,10 @@
   font-size: 3cqw;
   line-height: 3cqw;
   color: #1f3f8a;
-  text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 3px #fff;
+  text-shadow:
+    0 0 2px #fff,
+    0 0 2px #fff,
+    0 0 3px #fff;
   white-space: nowrap;
 }
 .dr-tape {
@@ -327,8 +330,8 @@
   box-shadow: 0 0 0.4cqw rgba(0, 0, 0, 0.18);
 }
 .dr-tape.a {
-  left: -2.6cqw;
-  top: -0.8cqw;
+  left: -5.2cqw;
+  top: -0.2cqw;
   transform: rotate(-35deg);
 }
 .dr-tape.b {
@@ -393,15 +396,15 @@
 }
 
 /* the cover */
-.dr-cover .dr-title {
-  margin: 12cqw 0 0;
+.pp-dr-cover .dr-title {
+  margin: 6cqw 0 0;
   font-size: 11.5cqw;
-  line-height: 11cqw;
+  line-height: 13.5cqw;
   letter-spacing: 0.04em;
   text-shadow: 0.3cqw 0.3cqw 0 rgba(0, 0, 0, 0.12);
 }
-.dr-cover .dr-card {
-  margin: 8cqw auto 0;
+.pp-dr-cover .dr-card {
+  margin: 5cqw auto 0;
   width: 70cqw;
   padding: 3cqw 2cqw;
   background: #fffef9;
@@ -411,16 +414,16 @@
   font-size: 4.2cqw;
   line-height: 5cqw;
 }
-.dr-cover .bite {
+.pp-dr-cover .bite {
   position: absolute;
   right: -5cqw;
   bottom: -5cqw;
-  width: 22cqw;
-  height: 22cqw;
+  width: 16cqw;
+  height: 16cqw;
   border-radius: 50%;
-  background: #4d4944;
+  background: #3d3a36;
   box-shadow:
-    -9cqw -6cqw 0 -2.5cqw #4d4944,
-    -13cqw 3cqw 0 -3cqw #4d4944,
-    -3cqw -12cqw 0 -3cqw #4d4944;
+    -7cqw -5cqw 0 -2cqw #3d3a36,
+    -10cqw 2cqw 0 -2.5cqw #3d3a36,
+    -2cqw -9cqw 0 -2.5cqw #3d3a36;
 }

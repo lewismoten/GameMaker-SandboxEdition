@@ -556,7 +556,10 @@ formats from their published descriptions and from Game-Maker's own source.
   Project Authors"), under the SIL Open Font License 1.1. Its 600 weight, cut to Latin-1
   with fontTools (its name and license kept inside it), is kept with the site as
   `web/src/manual/fonts/caveat-600.woff2`, with the license beside it (`Caveat-OFL.txt`), so
-  the page asks no font server for it. It isn't in exported games.
+  the page asks no font server for it. It isn't in exported games. It is also the pencil hand of Dex Dynamo's
+  science report in In The Year 2000!'s box (`web/src/manual/printables/dexReport.css`), loaded from the same file.
+  The report's text and pencil drawings, and the board photos in it (renders of the kit's 3D viewer data), were made
+  by Claude Sonnet 5.5 (Anthropic) for this project.
 - **ChatGPT**, **Riffusion** (later **Producer.ai**, now Google's **Google Flow Music**:
   one service under its successive names) and **DeepAI** are their owners' names for the
   tools used to make the Bard of Bizarre songs and art, and **ChatGPT** and **Gemini** for

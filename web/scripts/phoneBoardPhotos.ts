@@ -47,23 +47,36 @@ function render(back: boolean): Uint8Array {
       const a = v(u32[p.idx.offset + t]),
         b = v(u32[p.idx.offset + t + 1]),
         c = v(u32[p.idx.offset + t + 2]);
-      const ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2];
-      const vx = c[0] - a[0], vy = c[1] - a[1], vz = c[2] - a[2];
-      let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+      const ux = b[0] - a[0],
+        uy = b[1] - a[1],
+        uz = b[2] - a[2];
+      const vx = c[0] - a[0],
+        vy = c[1] - a[1],
+        vz = c[2] - a[2];
+      let nx = uy * vz - uz * vy,
+        ny = uz * vx - ux * vz,
+        nz = ux * vy - uy * vx;
       const nl = Math.hypot(nx, ny, nz) || 1;
       nx /= nl;
       ny /= nl;
       nz /= nl;
-      if (nz < 0) { nx = -nx; ny = -ny; nz = -nz; }
+      if (nz < 0) {
+        nx = -nx;
+        ny = -ny;
+        nz = -nz;
+      }
       const shade = 0.55 + 0.45 * Math.max(0, (nx * L[0] + ny * L[1] + nz * L[2]) / ln);
       const col = p.color.map((q) => Math.min(255, Math.round(255 * Math.pow(q, 0.8) * shade)));
-      const minx = Math.max(0, Math.floor(Math.min(a[0], b[0], c[0]))), maxx = Math.min(W - 1, Math.ceil(Math.max(a[0], b[0], c[0])));
-      const miny = Math.max(0, Math.floor(Math.min(a[1], b[1], c[1]))), maxy = Math.min(H - 1, Math.ceil(Math.max(a[1], b[1], c[1])));
+      const minx = Math.max(0, Math.floor(Math.min(a[0], b[0], c[0]))),
+        maxx = Math.min(W - 1, Math.ceil(Math.max(a[0], b[0], c[0])));
+      const miny = Math.max(0, Math.floor(Math.min(a[1], b[1], c[1]))),
+        maxy = Math.min(H - 1, Math.ceil(Math.max(a[1], b[1], c[1])));
       const den = (b[1] - c[1]) * (a[0] - c[0]) + (c[0] - b[0]) * (a[1] - c[1]);
       if (Math.abs(den) < 1e-9) continue;
       for (let y = miny; y <= maxy; y++)
         for (let x = minx; x <= maxx; x++) {
-          const px = x + 0.5, py = y + 0.5;
+          const px = x + 0.5,
+            py = y + 0.5;
           const w0 = ((b[1] - c[1]) * (px - c[0]) + (c[0] - b[0]) * (py - c[1])) / den;
           const w1 = ((c[1] - a[1]) * (px - c[0]) + (a[0] - c[0]) * (py - c[1])) / den;
           const w2 = 1 - w0 - w1;
