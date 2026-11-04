@@ -37,6 +37,11 @@ export abstract class ComputerFolders extends ComputerDrives {
       if (!d || d.disk.kind === 'blank') return undefined;
       return { title: d.disk.title, files: d.files, where: path, kind: 'disk' };
     }
+    // the Sample Disk's Starters: A:\FIRSTSTP (a game on a disk that can't be changed, like the CD's)
+    if (drive === 'A' && parts.length === 1) {
+      const f = this.inserted?.disk.folders?.find((x) => x.dir === parts[0]);
+      return f ? { title: f.entry.title, files: new GameFiles(await this.catalogFiles(f.entry)), where: path, kind: 'disk', catalogId: f.entry.id } : undefined;
+    }
     const [top, dir] = parts;
     if (parts.length !== 2 || !dir) return undefined;
     const cat = await this.catalog();
@@ -66,7 +71,7 @@ export abstract class ComputerFolders extends ComputerDrives {
 
   /** A project for editing the game in a folder: copies read-only games to the hard disk first. */
   async editableGameIn(drive: string, parts: string[]): Promise<Project | undefined> {
-    if (drive === 'A') return this.writableProject();
+    if (drive === 'A' && !(parts.length && this.inserted?.disk.folders)) return this.writableProject();
     const g = await this.gameIn(drive, parts);
     if (!g) {
       if (this.quiet) return undefined;
@@ -91,7 +96,8 @@ export abstract class ComputerFolders extends ComputerDrives {
       return undefined;
     }
     const gam = g.files.mainGame();
-    return this.copyToHardDisk(g.title, g.files, gam, g.catalogId, `${g.where} is on the CD-ROM, which can't be changed.`);
+    const why = g.kind === 'disk' ? `${g.where} is on the Sample Disk, which is write-protected.` : `${g.where} is on the CD-ROM, which can't be changed.`;
+    return this.copyToHardDisk(g.title, g.files, gam, g.catalogId, why);
   }
 
   /** Copies a game into C:\GM (or into its installed folder, if it is one of those). */

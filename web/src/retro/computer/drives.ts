@@ -169,6 +169,26 @@ export abstract class ComputerDrives {
       root: async () => {
         const d = this.inserted;
         if (!d || d.disk.kind === 'blank') return null;
+        // the Sample Disk: a folder for each Starter, holding its files as the transfer left a game
+        if (d.disk.folders) {
+          return d.disk.folders.map(({ dir, entry: g }) =>
+            folder(
+              dir,
+              async () => {
+                const own = gameDownloadNodes(g, DOS_DATE, {
+                  kind: 'game',
+                  title: g.title,
+                  gam: g.gam!,
+                  files: () => this.catalogFiles(g),
+                  saveId: `game:${g.id}`,
+                });
+                const files = (await gameFolder(g).list!()).filter((n) => !own.some((o) => o.name === n.name));
+                return [...own, ...files];
+              },
+              DOS_DATE,
+            ),
+          );
+        }
         const nodes = d.files.entries().map(([n, b]) => file(n, b.length, { read: async () => b }));
         if (d.disk.gam) {
           const exe = d.disk.gam.replace(/\.gam$/i, '.exe');
