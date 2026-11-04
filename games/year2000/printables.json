@@ -194,6 +194,11 @@
         "se": { "pips": 4, "caption": "OUT OF ORDER", "dead": true }
       },
       "foot": "If you roll the 4, the booth is out of order. Roll again."
+    },
+    {
+      "kind": "dexreport",
+      "title": "THE POCKET TELEPHONE",
+      "note": "Dex's science fair report: the pages Sparky ate (and a few teeth marks)"
     }
   ],
   "stickers": [

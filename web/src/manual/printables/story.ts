@@ -420,6 +420,8 @@ export function renderItem(ctx: PrintContext, it: PrintableItem): Promise<Sheet[
       return balloonCubeSheets(it);
     case 'postcardgrille':
       return postcardGrilleSheets(it);
+    case 'dexreport':
+      return import('./dexReport').then((m) => m.dexReportSheets(it));
   }
 }
 
