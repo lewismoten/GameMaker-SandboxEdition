@@ -193,7 +193,7 @@ function rawTable(keys: RecordedKey[], endAt: (index: number) => void): HTMLElem
   return h(
     'table',
     { class: 'data' },
-    h('thead', null, h('tr', null, h('th', null, 'Time'), h('th', null, 'Key'), h('th', null, ''))),
+    h('thead', null, h('tr', null, h('th', null, 'Time'), h('th', null, 'Key'), h('th', null, h('span', { class: 'sr-only' }, 'Action')))),
     h(
       'tbody',
       null,
@@ -216,7 +216,7 @@ function rawTable(keys: RecordedKey[], endAt: (index: number) => void): HTMLElem
                 ? `${scanName(k.key)}: screen key${read.get(i) ? ', seen again' : ''} (the screen read it; the game never saw it)`
                 : `${scanName(k.key & 0x7f)} ${k.key & 0x80 ? 'up' : 'down'}`,
           ),
-          h('td', null, h('button', { title: 'End the demo here: drop this and every later key', onclick: () => endAt(i) }, '✂ End here')),
+          h('td', null, h('button', { class: 'rec-end', title: 'End the demo here: drop this and every later key', onclick: () => endAt(i) }, '✂ End here')),
         );
       }),
     ),

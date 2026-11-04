@@ -125,7 +125,8 @@ dialog.modal .rec-bot label.check {
   .rec-tl input,
   .rec-raw summary,
   .rec-raw button,
-  .rec-bot button {
+  .rec-bot button,
+  html .rec-raw button.rec-end {
     min-height: 44px;
   }
   .rec-tl-bar button {
