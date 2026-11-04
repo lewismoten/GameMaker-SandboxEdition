@@ -5,6 +5,7 @@
 import './sample.css';
 import { registerEditor } from '../registry';
 import { h, clear, download, toast } from '../../core/ui';
+import { windowUndoKeys } from '../../core/windowUndoKeys';
 import { encodeWav, toPcm8 } from '../../../media/wav';
 import { decodeVoc, encodeVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { audio } from '../../widgets/mediaShared';
@@ -405,7 +406,13 @@ registerEditor(['voc'], (host, project, file) => {
   const ro = new ResizeObserver(() => draw());
   ro.observe(wave);
   refresh();
+  const offKeys = windowUndoKeys(
+    host,
+    () => history(undo, redo),
+    () => history(redo, undo),
+  );
   return () => {
+    offKeys();
     stop();
     ro.disconnect();
     if (recording) void recording.stop().catch(() => undefined);

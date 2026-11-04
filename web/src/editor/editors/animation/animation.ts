@@ -281,12 +281,12 @@ function framesView(host: HTMLElement, project: Project, file: string): () => vo
     // in this animation's colors (the current frame's), so the palette doesn't jump
     const palette = anim.frames[cur].palette;
     const added: FliFrame[] = [];
-    const odd: [number, number][] = [];
+    const odd: { name: string; w: number; h: number }[] = [];
     try {
       for (const f of files) {
         const { frames } = await decodeFrames(f);
         for (const bm of frames) {
-          if (bm.width !== anim.width || bm.height !== anim.height) odd.push([bm.width, bm.height]);
+          if (bm.width !== anim.width || bm.height !== anim.height) odd.push({ name: f.name, w: bm.width, h: bm.height });
           added.push({ pixels: remap(rgbaOf(bm, anim.width, anim.height, 'fit'), palette, { dither: true }), palette });
         }
       }
