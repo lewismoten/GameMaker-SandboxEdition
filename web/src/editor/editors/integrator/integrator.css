@@ -247,13 +247,26 @@
   html .grator-side button,
   html .grator-side select,
   html .grator-side input:not([type='checkbox'], [type='radio'], [type='range']),
+  html .grator-panel button,
+  html .grator-panel select,
+  html .grator-panel input:not([type='checkbox'], [type='radio'], [type='range']),
   html .grator button,
   html .grator select,
   html .grator summary,
   html .grator input:not([type='checkbox'], [type='radio'], [type='range']) {
     min-height: 44px;
   }
-  html .grator button {
+  html .grator button,
+  html .grator-panel button {
     min-width: 44px;
+  }
+  /* the scene panel sits beside the board or, on a phone, under it (outside .grator); its Edit links are text links, so they grow into a 44 px tap area */
+  html .grator-panel a.grator-edit,
+  html .grator-side a.grator-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
   }
 }
