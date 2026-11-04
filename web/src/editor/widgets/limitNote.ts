@@ -25,3 +25,13 @@ export function dosStem(name: string, tell: (msg: string) => void): string {
   tell(`DOS file names hold 8 letters, so ${stem.toUpperCase()} is saved as ${cut.toUpperCase()}.`);
   return cut;
 }
+
+/** Says a typed number was moved into the range the editor keeps, or '' when it was already inside. */
+export function heldText(asked: number, kept: number, what: string, range: string): string {
+  return asked === kept ? '' : `${what} is kept between ${range}; ${asked} became ${kept}.`;
+}
+
+/** Says a picture of another size was fitted or stretched into the DOS size, or '' when it already was that size. */
+export function resizedText(fromW: number, fromH: number, toW: number, toH: number, how: string): string {
+  return fromW === toW && fromH === toH ? '' : `The picture was ${fromW}×${fromH}; DOS pictures here are ${toW}×${toH}, so it was ${how}.`;
+}
