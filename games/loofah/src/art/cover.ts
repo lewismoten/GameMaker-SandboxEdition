@@ -173,7 +173,8 @@ export function coverRgb(t: number): Uint8Array {
     put(sx + x, y + 1, [60, 24, 16]);
   }
   for (let y = 0; y < 5; y++) for (let x = -4; x <= 4; x++) if ((x / 4) ** 2 + (y / 5) ** 2 <= 1) put(sx + 3 + x, sy + 17 + y, [240, 90, 110]);
-  for (const side of [-1, 1]) for (let y = -2; y <= 2; y++) for (let x = -3; x <= 3; x++) if (x * x + y * y <= 6) add(sx + side * 21 + x, sy + 8 + y, [255, 120, 120], 0.35);
+  for (const side of [-1, 1])
+    for (let y = -2; y <= 2; y++) for (let x = -3; x <= 3; x++) if (x * x + y * y <= 6) add(sx + side * 21 + x, sy + 8 + y, [255, 120, 120], 0.35);
 
   // ---- candles on the shelves, their flames, their glow
   for (const [x0, x1, y] of [
