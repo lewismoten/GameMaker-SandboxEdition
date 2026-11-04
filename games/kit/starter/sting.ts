@@ -53,7 +53,8 @@ function cells(): Cell[] {
   const lit = new Set<string>();
   [...'STARTER'].forEach((ch, i) => FONT[ch].forEach((row, y) => [...row].forEach((v, x) => v === '1' && lit.add(`${i * (COLS + 1) + x},${y}`))));
   const out: Cell[] = [];
-  for (let col = 0; col < 7 * (COLS + 1) - 1; col++) for (let y = ROWS - 1; y >= 0; y--) if (lit.has(`${col},${y}`)) out.push({ x: col, y, grass: !lit.has(`${col},${y - 1}`) });
+  for (let col = 0; col < 7 * (COLS + 1) - 1; col++)
+    for (let y = ROWS - 1; y >= 0; y--) if (lit.has(`${col},${y}`)) out.push({ x: col, y, grass: !lit.has(`${col},${y - 1}`) });
   return out;
 }
 

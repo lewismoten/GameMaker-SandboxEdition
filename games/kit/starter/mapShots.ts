@@ -24,7 +24,12 @@ const only = process.argv.slice(3);
 mkdirSync(out, { recursive: true });
 for (const id of Object.keys(LOADERS).filter((s) => !only.length || only.includes(s))) {
   const mod = (await LOADERS[id]()) as {
-    buildLevels(): { book: { finish(): never[]; index: Map<string, number> }; pal: { pal: Uint8Array | number[] }; levels?: { file: string; map: StarterMap }[]; rooms?: { file: string; map: StarterMap }[] };
+    buildLevels(): {
+      book: { finish(): never[]; index: Map<string, number> };
+      pal: { pal: Uint8Array | number[] };
+      levels?: { file: string; map: StarterMap }[];
+      rooms?: { file: string; map: StarterMap }[];
+    };
   };
   const { book, pal, levels, rooms } = mod.buildLevels();
   const bbl = book.finish() as never;

@@ -11,7 +11,7 @@
 // Around the level the world is 100x100 blocks: the sky and the ground carry on past its
 // edges (a visible hedge or wall keeps you inside; nothing solid is ever drawn as sky), so the screen never shows the end of the map.
 import { newMap, reindexMonsters, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
-import { SOLID, type Book } from './book';
+import type { Book } from './book';
 import { MON } from './ids';
 import type { Sign } from './sign';
 
