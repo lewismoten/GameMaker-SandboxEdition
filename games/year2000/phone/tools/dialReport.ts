@@ -34,7 +34,7 @@ function returnRun(eta: number, gapMm: number, dragNmm: number, preloadDeg: numb
   return { t, wMax: (wMax * 180) / Math.PI, c };
 }
 
-export function dialReport(levels: Record<string, number>, screws: [number, number][], SCREW: { length: number; count: number; insertLen: number }): Report {
+export function dialReport(levels: Record<string, number>, screws: [number, number][], SCREW: { length: number; count: number }): Report {
   const lines: string[] = [];
   const failed: string[] = [];
   const data: Record<string, unknown> = { levels };
@@ -141,13 +141,13 @@ export function dialReport(levels: Record<string, number>, screws: [number, numb
 
   // 6. the six case screws
   lines.push(
-    `case screws: ${SCREW.count} x M3 x ${SCREW.length}, heads on the back, into M3 heat-set inserts (${SCREW.insertLen} mm) in six bosses of the front cover:`,
+    `case screws: ${SCREW.count} x M3 x ${SCREW.length} thread-forming (self-tapping), heads on the back, into 2.5 mm pilot holes in six bosses of the front cover:`,
   );
   screws.forEach(([x, z], i) =>
     lines.push(`  ${i < 2 ? 'top corner (through the board hole)' : i < 4 ? 'board lower hole' : 'lower outer corner'}: x ${f1(x)}, z ${f1(z)}`),
   );
   lines.push(
-    `  head seat y ${f1(levels.fbB)}, tip y ${f1(levels.fbB + SCREW.length)}, insert mouth y 1.6 (the board's front face), cover roof underside y ${f1(levels.Hf - 2.2)}`,
+    `  head seat y ${f1(levels.fbB)}, tip y ${f1(levels.fbB + SCREW.length)}, pilot mouth y 1.6 (the board's front face), cover roof underside y ${f1(levels.Hf - 2.2)}`,
   );
   data.screws = screws;
   return { lines, failed, data };

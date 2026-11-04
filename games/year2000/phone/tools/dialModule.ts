@@ -4,11 +4,11 @@
 //   dial-cam     pulse cam wheel: internal 12-tooth ratchet (the plate's pawls drive it only on the return), 12 lobes on its rim that press
 //                SW2 sideways, 12 detent teeth for the hold-back leaf, a smooth band for the brake leaf, a grease groove under its web
 //   dial-spring  printed flat spiral spring in one piece with its own frame ring (parameters below), 6 preload slots in the hub ring
-//   dial-base    backplate: center post with a heat-set insert, 10 digit pedestals (digits under the holes), SW2 and SW3 cradles, the
+//   dial-base    backplate: center post with a 2.5 mm pilot for the screw, 10 digit pedestals (digits under the holes), SW2 and SW3 cradles, the
 //                hold-back and brake leaves on one pillar, the rest post, an ear for the finger-stop clip, pins that key the spring
 //   dial-stop    clip-on finger stop (C-clip over the base's ear, arm over the plate), printed on its side
 //   dial-bushing the spacer the washer clamps (the plate turns on the post, the screw clamps only the bushing)
-// Bought: two 6 x 6 mm tactile switches, an M3 x 10 screw, an M3 fender washer (9 mm), an M3 heat-set insert. The dials's numbers shared
+// Bought: two 6 x 6 mm tactile switches, an M3 x 10 thread-forming screw and an M3 fender washer (9 mm). The dials's numbers shared
 // with the mechanism check are in dialParams.json. Untested: nobody has printed this. z is the module's own height (0 = base bottom).
 import { circle2, capsule2, extrude, subtract3, union3, type D2, type D3 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
 import { strokeText2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/strokeText';
@@ -30,8 +30,8 @@ export const DM = {
   plateTop: 14.4,
   postR: 4.2,
   postTop: 11.8,
-  insertHoleR: 2.1,
-  insertDepth: 6.0,
+  insertHoleR: 1.25,
+  insertDepth: 7.5,
   bushingTop: 14.2,
   washerTop: 15.0,
   headTop: 17.4,
@@ -44,7 +44,7 @@ export const DM = {
   camRoot: 16.8,
   camCrest: 15.6,
   /** Printed spiral spring: strip thickness t, pitch, turns, height h (all mm), PETG modulus (N/mm2) and the preload (deg). */
-  spring: { t: 1.6, pitch: 2.8, turns: 3.8, h: 3.0, r0: 8.9, E: 2000, preloadDeg: 60 },
+  spring: { t: 1.6, pitch: 2.8, turns: 4.0, h: 3.0, r0: 8.6, E: 2000, preloadDeg: 60 },
 };
 /** Torque (N mm) and strain (%) of the printed spiral at a given turn angle (deg). Flat strip: T = E I theta / L, strain = (t/2) theta / L. */
 export function springAt(deg: number): { torque: number; strainPct: number; length: number } {
@@ -206,7 +206,7 @@ export function buildDialModule(ctx: ModuleCtx): DialModule {
     const z1 = DM.springTop;
     const strip = (x: number, v: number): number => {
       const r = Math.hypot(x, v);
-      const th = (Math.atan2(v, x) + 2 * Math.PI) % (2 * Math.PI);
+      const th = (Math.atan2(v, x) - 0.52 + 4 * Math.PI) % (2 * Math.PI);
       let best = Infinity;
       const k0 = Math.floor((r - s.r0) / s.pitch - th / (2 * Math.PI)) - 1;
       for (let k = Math.max(0, k0); k <= k0 + 3; k++) {
@@ -232,7 +232,7 @@ export function buildDialModule(ctx: ModuleCtx): DialModule {
       printed: true,
       field: (u, v, w) => f(u, v, z0 + w),
       box: { min: [-26, -26, -1], max: [26, 26, z1 - z0 + 1] },
-      cell: 0.3,
+      cell: 0.25,
       place: (u, v, w) => up(u, v, z0 + w),
     });
   }
@@ -292,14 +292,14 @@ export function buildDialModule(ctx: ModuleCtx): DialModule {
     const f = subtract3(base, insert, ...sw3Holes, ...eng);
     out.push({
       id: 'dial-base',
-      label: 'Dial base: post for the M3 insert, digit pedestals, switch cradles, detent and brake leaves, rest post, stop ear',
+      label: 'Dial base: post with a 2.5 mm screw pilot, digit pedestals, switch cradles, detent and brake leaves, rest post, stop ear',
       group: 'dial',
       side: 'front',
       color: [0.78, 0.5, 0.18],
       printed: true,
       field: f,
       box: { min: [-DM.baseR - 8, -DM.baseR - 8, -1], max: [DM.baseR + 8, DM.baseR + 8, DM.postTop + 1] },
-      cell: 0.4,
+      cell: 0.37,
       place: up,
     });
   }
@@ -390,7 +390,7 @@ export function buildDialModule(ctx: ModuleCtx): DialModule {
   tact('SW3-dial', 'SW3 off-normal switch (6 mm tactile, flat; the plate wall presses it)', polar(DM.sw3Deg, 36.25), DM.sw3Deg, true);
   out.push({
     id: 'dial-screw',
-    label: 'M3 x 10 screw and 9 mm washer (into the heat-set insert in the post)',
+    label: 'M3 x 10 thread-forming screw and 9 mm washer (into the 2.5 mm pilot in the post)',
     group: 'dial',
     side: 'front',
     color: [0.7, 0.7, 0.74],
@@ -407,5 +407,6 @@ export function buildDialModule(ctx: ModuleCtx): DialModule {
     place: (u, v, z) => up(u, v, z),
   });
 
+  for (const p of out) p.stack = p.id; // each part of the module explodes on its own in the viewer
   return { parts: out, info: { stopDeg: P.stopDeg, clipRho, clipSlotWidth: 5.6 + 1.6, sw2: polar(DM.sw2Deg, sw2r), sw3: polar(DM.sw3Deg, 36.25) } };
 }

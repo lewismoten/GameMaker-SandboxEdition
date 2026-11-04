@@ -3,7 +3,7 @@
 //   board      the 99 x 99 board between the cover's walls and the tray's, clamped by the corner bosses
 //   lower body the dial module (dialModule.ts) in the cover, the 4 x AAA holder behind it in the tray (the module's base lies 0.2 mm
 //              over the holder like a lid, with a groove for the microphone wires), the mouthpiece at the chin
-// Six M3 x 25 screws go in from the back (heads on the back) into M3 heat-set inserts in six bosses of the front cover: the case's four
+// Six M3 x 30 screws go in from the back (heads on the back) into 2.5 mm pilot holes in six bosses of the front cover: the case's four
 // outer corners and the board's two lower mounting holes (the two top ones pass through the board's top holes and clamp it too).
 // The front cover covers everything except the dial opening, the display window, the grilles and the TALK / CLEAR caps.
 // Printed face down (cover) and floor down (tray). An untested design: every clearance is a starting guess.
@@ -35,8 +35,8 @@ import {
 } from './shellParts';
 import { DM, buildDialModule } from './dialModule';
 
-/** The six screws: M3 x 25 from the back into M3 heat-set inserts (4.6 mm OD, 5.7 mm long) in the cover's bosses. */
-export const SCREW = { length: 25, count: 6, insertHole: 2.1, insertLen: 5.7, pilot: 1.6, clearance: 1.65, headRadius: 3.3 };
+/** The six screws: M3 x 30 thread-forming (self-tapping) screws from the back into 2.5 mm pilot holes in the cover's bosses. */
+export const SCREW = { length: 30, count: 6, pilot: 1.25, clearance: 1.65 };
 const SPK_R = 14.0;
 
 export function buildCheapShell(v: Variant): {
@@ -56,11 +56,12 @@ export function buildCheapShell(v: Variant): {
   const hFront = Hf - 1.6;
   const plateTopY = Hf + 0.8;
   const y0m = plateTopY - DM.plateTop; // the dial base's bottom
-  const fbB = -(v.backMax + 1.5 + FLOOR); // the tray's floor over the board
   const { L: hL, Wd: hW, T: hT } = v.holder;
   const hy1 = y0m - 0.2; // the holder's top: the base is its lid
   const hy0 = hy1 - hT;
-  const fb2 = Math.min(fbB, hy0 - 0.5 - FLOOR); // the tray's floor under the lower body
+  // one flat floor under the whole case (a stepped floor would print as a 11000 mm2 overhang): deep enough for the holder under the dial module
+  const fb2 = Math.min(-(v.backMax + 1.5 + FLOOR), hy0 - 0.5 - FLOOR);
+  const fbB = fb2;
   const hTray = -fb2;
   const slabY = (d2: D2, y0: number, y1: number): D3 => slabW(d2, y0 - fb2, y1 - fb2);
   const roundBox = (x0: number, z0: number, x1: number, z1: number, r = 1.5): D2 => rect(x0, z0, x1, z1, r);
@@ -78,8 +79,8 @@ export function buildCheapShell(v: Variant): {
   const bayPocket = roundBox(-FIT, pz0, W + FIT, pz1, 1.5);
   // the earpiece pod above the board's top end, between the infrared parts (x 13 and 86)
   const zsp = -(SPK_R + 1.5);
-  const podOuter = roundBox(bx - SPK_R - 1.5 - WALL, zsp - SPK_R - 1.5 - WALL, bx + SPK_R + 1.5 + WALL, 2.0, 3);
-  const podPocket = roundBox(bx - SPK_R - 1.5, zsp - SPK_R - 1.5, bx + SPK_R + 1.5, 1.0, 2);
+  const podOuter = roundBox(bx - SPK_R - 3.5 - WALL, zsp - SPK_R - 3.5 - WALL, bx + SPK_R + 3.5 + WALL, 2.0, 3);
+  const podPocket = roundBox(bx - SPK_R - 3.5, zsp - SPK_R - 3.5, bx + SPK_R + 3.5, 1.0, 2);
   const capY1 = Hf - LIP - 0.6;
   const capY0 = capY1 - 6.5;
   const bayInfo = { holder: [hx0, hy0, hz0, hx1, hy1, hz1], capsule: [bx - 4.85, capY0, zm - 4.85, bx + 4.85, capY1, zm + 4.85] };
@@ -96,8 +97,8 @@ export function buildCheapShell(v: Variant): {
   ];
   const boardScrews = screws.slice(0, 4);
   const lowScrews = screws.slice(4);
-  const seatY = fbB; // every head seats at the board part's back plane; the lower body counterbores down to it
-  const insertY0 = 1.6; // the insert's mouth (the board's front face); the pilot continues above it
+  const seatY = fbB; // every head seats at the board part's back plane
+  const insertY0 = 1.6; // the pilot's mouth (the board's front face)
   const screwTipY = seatY + SCREW.length;
 
   const btIn = { x0: hx0 + 2, z0: hz0 + 2, x1: hx1 - 2, z1: hz1 - 2 };
@@ -113,7 +114,7 @@ export function buildCheapShell(v: Variant): {
       slabY(bayPocket, fb2 + FLOOR, 1),
       slabY(podPocket, fbB + FLOOR, 1),
     );
-    const bossR = (x: number, z: number) => Math.max(3.4, Math.min(4.6, roomAt(v, 'back', x, z, BACK_Y, fbB)));
+    const bossR = (x: number, z: number) => Math.max(2.3, Math.min(4.6, roomAt(v, 'back', x, z, BACK_Y, fbB)));
     tray = union3(
       tray,
       ...boardScrews.map(([x, z]) => extrude(circle2(bossR(x, z), x, z), fbB - fb2 - 1, -0.075 - fb2)),
@@ -131,10 +132,7 @@ export function buildCheapShell(v: Variant): {
     }
     const cuts: D3[] = [...notchesFor(v, 'back')];
     for (const [x, z] of boardScrews) cuts.push(extrude(circle2(SCREW.clearance, x, z), fbB - fb2 - 1, 5 - fb2));
-    for (const [x, z] of lowScrews) {
-      cuts.push(extrude(circle2(SCREW.clearance, x, z), -1, 5 - fb2));
-      cuts.push(extrude(circle2(SCREW.headRadius, x, z), -1, seatY - fb2)); // the head's counterbore, down to the same seat as the other four
-    }
+    for (const [x, z] of lowScrews) cuts.push(extrude(circle2(SCREW.clearance, x, z), -1, 5 - fb2));
     cuts.push(slabY(rect(btIn.x0, btIn.z0, btIn.x1, btIn.z1, 3), fb2 - 1, fb2 + FLOOR + 1)); // the battery door's window
     cuts.push(slabY(rect(wx0, H + FIT - 0.1, wx1, pz0 + 0.1, 0.3), -3.8, 5)); // the leads' slot through the divider, open at the top
     if (v.wheel) {
@@ -180,13 +178,11 @@ export function buildCheapShell(v: Variant): {
     const r2 = (d2: D2): D3 => slabW(d2, -1, LIP + 0.01);
     const outer = union3(slabW(board(WALL), 0, hFront), slabW(bayOuter, 0, Hf), slabW(podOuter, 0, Hf));
     const pockets = [slabW(board(FIT), LIP, Hf + 1), slabW(bayPocket, LIP, Hf + 1), slabW(podPocket, LIP, Hf + 1)];
-    const bossR = (x: number, z: number) => Math.max(3.4, Math.min(4.6, roomAt(v, 'front', x, z, FRONT_Y, FRONT_Y + hFront - 1.6)));
+    const bossR = (x: number, z: number) => Math.max(2.4, Math.min(4.6, roomAt(v, 'front', x, z, FRONT_Y, FRONT_Y + hFront - 1.6)));
     const bosses = union3(...screws.map(([x, z], i) => cyl(x, z, i < 4 ? bossR(x, z) : 4.6, 0, i < 4 ? hFront : Hf - insertY0)));
-    // heat-set insert hole from the boss's mouth up 6.2 mm, then a 3.2 mm pilot a little past the screw's tip
+    // a 2.5 mm pilot from the boss's mouth to a little past the screw's tip (the thread-forming screw cuts its own thread)
     const mouthW = (i: number) => (i < 4 ? hFront : Hf - insertY0);
-    const inserts = screws
-      .map(([x, z], i) => [cyl(x, z, SCREW.insertHole, mouthW(i) - 6.2, mouthW(i) + 1), cyl(x, z, SCREW.pilot, Hf - screwTipY - 0.4, mouthW(i) + 1)])
-      .flat();
+    const inserts = screws.map(([x, z], i) => cyl(x, z, SCREW.pilot, Hf - screwTipY - 0.4, mouthW(i) + 1));
     const holes: D3[] = [];
     holes.push(r2(circle2(38.2, bx, cz))); // the dial plate's opening (the plate is 74 mm)
     for (const [x0, z0, x1, z1] of v.displays) holes.push(r2(rect(x0 - 1.2, z0 - 1.2, x1 + 1.2, z1 + 1.2, 1)));
@@ -211,16 +207,25 @@ export function buildCheapShell(v: Variant): {
     // the dial tube: the base's rim seats against its end (y = base top), the plate passes through the roof opening
     const tube: D3 = extrude((x, z) => Math.max(40.0 - Math.hypot(x - bx, z - cz), Math.hypot(x - bx, z - cz) - 41.6), LIP - 0.01, Hf - (y0m + DM.baseTop));
     const collar: D3 = subtract3(cyl(bx, zm, CUP_R, LIP - 0.01, LIP + 4.5), cyl(bx, zm, 5.25, LIP - 0.5, LIP + 5));
-    // three speaker clips: flexure tabs hanging from the roof with a barb over the speaker's back rim
-    const clipSpan = Hf - 4.9; // down to y = 4.9
-    const clips = [90, 210, 330].map((deg): D3 => {
-      const ca = (deg * Math.PI) / 180;
+    // three speaker clips: each is two 2 mm thick arms that follow the speaker's rim for 40 degrees each way (printed standing on the roof, so it bends
+    // in the layer plane), fixed to the pod wall by a rib at one end, with a barb over the speaker's back rim at its free end
+    const clipSpan = Hf - 5.3; // the arms hang down to y = 5.3
+    const clips = [0, 90, 270].map((a0): D3 => {
+      const s0 = Math.sin((a0 * Math.PI) / 180);
+      const c0 = Math.cos((a0 * Math.PI) / 180);
       return (x, z, w) => {
-        const rad = (x - bx) * Math.cos(ca) + (z - zsp) * Math.sin(ca);
-        const tan = -(x - bx) * Math.sin(ca) + (z - zsp) * Math.cos(ca);
+        const rx = x - bx;
+        const rz = z - zsp;
+        const r = Math.hypot(rx, rz);
+        const dc = ((((Math.atan2(rx, -rz) * 180) / Math.PI - a0) % 360) + 360) % 360; // degrees clockwise of the rib
+        const d = Math.min(dc, 360 - dc); // an arm runs each way from the rib
         const wy = Hf - w;
-        const bump = wy < 4.9 ? 0 : wy < 5.7 ? (1.2 * (wy - 4.9)) / 0.8 : wy < 6.6 ? 1.2 : 0; // barb over the speaker's back rim, a chamfer to push the speaker past
-        return Math.max(SPK_R + 0.4 - bump - rad, rad - (SPK_R + 1.6), Math.abs(tan) - 3.0, LIP - 0.01 - w, w - clipSpan);
+        const barb = d > 34 && d < 46 ? (wy < 5.3 ? 0 : wy < 6.1 ? (0.8 * (wy - 5.3)) / 0.8 : wy < 6.6 ? 0.8 : 0) : 0; // a chamfer to push the speaker past, then a ledge under its back rim
+        const arm = Math.max(SPK_R + 0.4 - barb - r, r - (SPK_R + 2.4), 6 - d, d - 46);
+        const rho = rx * s0 - rz * c0;
+        const tan = rx * c0 + rz * s0;
+        const rib = Math.max(SPK_R + 0.4 - rho, rho - (SPK_R + 4.2), Math.abs(tan) - 1.9);
+        return Math.max(Math.min(arm, rib), LIP - 0.01 - w, w - clipSpan);
       };
     });
     out.push({
