@@ -22,6 +22,7 @@ export interface Hit {
 
 const ROT_MIN = 0.9;
 const ROT_EXACT_MIN = 0.7;
+const CONTRAST_MIN = 45; // brightness levels of 255
 const MIRROR_MAX = 0.72; // a drawn swastika scores about 0.64 at any size
 
 function lum(c: number): number {
@@ -58,7 +59,33 @@ function tips(pts: [number, number][], cx: number, cy: number): number {
   return arcs;
 }
 
-function test(pts: [number, number][], w: number, h: number, mask: number, allowEdge: boolean): Hit | undefined {
+/** The shape must stand out: its pixels and the ring of pixels around it differ in brightness. */
+function stands(pts: [number, number][], set: Set<number>, p: Pix): boolean {
+  let inL = 0;
+  let outL = 0;
+  let outN = 0;
+  const ring = new Set<number>();
+  for (const [x, y] of pts) {
+    inL += lum(p.px[y * p.w + x]);
+    for (const [dx, dy] of [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ]) {
+      const nx = x + dx;
+      const ny = y + dy;
+      if (nx < 0 || ny < 0 || nx >= p.w || ny >= p.h || set.has(ny * 4096 + nx) || ring.has(ny * 4096 + nx)) continue;
+      ring.add(ny * 4096 + nx);
+      outL += lum(p.px[ny * p.w + nx]);
+      outN++;
+    }
+  }
+  return outN === 0 || Math.abs(inL / pts.length - outL / outN) >= CONTRAST_MIN;
+}
+
+function test(pts: [number, number][], p: Pix, mask: number, allowEdge: boolean): Hit | undefined {
+  const [w, h] = [p.w, p.h];
   let x0 = 1e9;
   let y0 = 1e9;
   let x1 = -1;
@@ -77,8 +104,16 @@ function test(pts: [number, number][], w: number, h: number, mask: number, allow
   const bh = y1 - y0 + 1;
   if (bw < 7 || bh < 7 || bw / bh > 1.4 || bh / bw > 1.4) return undefined;
   if (!allowEdge && (x0 === 0 || y0 === 0 || x1 === w - 1 || y1 === h - 1)) return undefined;
+  // a shape that touches three or four sides is the picture's own background, not a mark on it
+  if ([x0 === 0, y0 === 0, x1 === w - 1, y1 === h - 1].filter(Boolean).length >= 3) return undefined;
   const fill = pts.length / (bw * bh);
-  if (fill < 0.2 || fill > 0.75) return undefined;
+  if (fill < 0.2 || fill > 0.6) return undefined;
+  // arms are thin: a blob has most of its pixels inside, with all four neighbors in the shape
+  const inside = new Set(pts.map(([x, y]) => y * 4096 + x));
+  let interior = 0;
+  for (const [x, y] of pts)
+    if (inside.has(y * 4096 + x - 1) && inside.has(y * 4096 + x + 1) && inside.has((y - 1) * 4096 + x) && inside.has((y + 1) * 4096 + x)) interior++;
+  if (interior / pts.length > 0.4) return undefined;
   const cx = sx / pts.length;
   const cy = sy / pts.length;
   const set = new Set(pts.map(([x, y]) => y * 4096 + x));
@@ -97,6 +132,7 @@ function test(pts: [number, number][], w: number, h: number, mask: number, allow
   );
   if (process.env.DAST_DEBUG) console.log('mirror', mirror);
   if (mirror > MIRROR_MAX) return undefined;
+  if (!stands(pts, set, p)) return undefined;
   const t = tips(pts, cx, cy);
   if (t < 4 || t > 8) return undefined;
   return { x: x0, y: y0, w: bw, h: bh, mask, rot, mirror };
@@ -163,7 +199,7 @@ export function findSwastikaLike(p: Pix, allowEdge = false): Hit[] {
       if (size < 12 || size > 1500 || x1 - x0 < 6 || y1 - y0 < 6) continue;
       const pts: [number, number][] = [];
       for (let k = 0; k < size; k++) pts.push([comp[k] % p.w, Math.floor(comp[k] / p.w)]);
-      const hit = test(pts, p.w, p.h, byColor ? v : v === 1 ? -1 : -2, allowEdge);
+      const hit = test(pts, p, byColor ? v : v === 1 ? -1 : -2, allowEdge);
       if (hit) hits.push(hit);
     }
   }
