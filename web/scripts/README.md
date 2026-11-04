@@ -42,6 +42,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   Needs the network, so it isn't in CI or vitest. `oldWebShots.ts` re-renders the article's pictures
   from the same JSON.
 - `deadCode.ts` (`npm run dead:code [-- --only exports|files|css] [--json]`): lists exports no other file imports (marked `~` when the file still uses the name itself, so only `export` is extra), files nothing imports, and CSS classes no TS or HTML names. Static and dynamic imports, `import.meta.glob`, `new URL(..., import.meta.url)`, HTML script tags, package `exports` entries (public API) and tests count as uses. Suggestions only: classes built at run time (`` `ug-b${i}` ``) and files named from build scripts by path show up as false positives.
+- `themeRecheck.ts` (`npm run theme:recheck -- [--url u|--port p] [--out dir] [--only a,b] [--themes light,dark] [--widths 1440,390,375]`): opens a list of screens (Privacy, breadcrumb, recording keys, integrator lists, feelies note, update notice, Settings, Starters, map zoom, compact assets) in the really-forced light and dark themes at each width, runs axe and measures sideways overflow, saves a screenshot each; exits 1 on a finding. Add a screen to its `screens` list.
 - `forceTheme.ts`: for headless checks. `forceTheme(ctx, 'light')` before `newPage()` stores the site's
   own theme (`gm-theme`), because the theme defaults to dark and Playwright's `colorScheme` doesn't
   change it; `pageTheme(page)` reads `data-theme` back and `assertTheme(page, theme)` throws on a mismatch (`dos.html` and the

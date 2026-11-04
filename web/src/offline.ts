@@ -54,9 +54,10 @@ let notice: HTMLElement | undefined;
 
 /**
  * "A new version is ready": Reload now, or Later (it is used the next time the site opens).
- * Without a worker, another tab has already switched to it: Reload just reloads.
+ * Without a worker, another tab has already switched to it: Reload just reloads. Exported so a headless
+ * check can show the notice (scripts: import("/src/offline.ts") in a dev page, then offerUpdate(undefined)).
  */
-function offerUpdate(worker: ServiceWorker | undefined): void {
+export function offerUpdate(worker: ServiceWorker | undefined): void {
   waiting = worker;
   const doReload = () => {
     asked = true;
