@@ -17,9 +17,9 @@ async function leave(bot: StarterBot, r: Promise<Result>, what: string): Promise
   if (out !== 'link' && out !== 'end') throw new Error(`${what}: ${out ?? 'still here'}\n${bot.log.slice(-8).join('\n')}`);
 }
 
-/** Every coin is 10 points and every bonk 50: a level that should give `n` coins (and `bonks` pops) must have. */
-function coins(bot: StarterBot, from: number, n: number, what: string, bonks = 0): void {
-  const got = (bot.sim.ci.score - from - bonks * 50) / 10;
+/** Every coin is 10 points and every pop 50: a level that should give `n` coins (and how many `pops`) must have. */
+function coins(bot: StarterBot, from: number, n: number, what: string, pops = 0): void {
+  const got = (bot.sim.ci.score - from - pops * 50) / 10;
   if (got !== n) {
     const left: string[] = [];
     const coin = bot.sim.w.bg.findIndex((b) => b.scorePts === 10);
@@ -61,8 +61,8 @@ export async function walkAndHurt(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(43, 'the exit'), 'the exit');
 }
 
-/** 2. Bonk and Lives: drop onto the mint gumdrops in the first pit, hop the walking one, drop onto the next pair. */
-export async function bonkAndLives(bot: StarterBot): Promise<void> {
+/** 2. Pop and Lives: drop onto the mint gumdrops in the first pit, hop the walking one, drop onto the next pair. */
+export async function popAndLives(bot: StarterBot): Promise<void> {
   const score = start(bot);
   await must(bot, bot.walk(14, 'the first pit'), 'into the first pit');
   await must(bot, bot.jump('left', 13), 'back onto the other one');

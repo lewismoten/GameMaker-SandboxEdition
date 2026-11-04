@@ -3,7 +3,7 @@
 //
 //   1. Walk and Hurt: a gumdrop walks a path back and forth; a snail creeps and hurts when
 //      touched. Jump over both.
-//   2. Bonk and Lives: two mint gumdrops sit at the bottom of a pit. Drop onto them and they
+//   2. Pop and Lives: two mint gumdrops sit at the bottom of a pit. Drop onto them and they
 //      pop into stars. Game-Maker has no "top only" rule, so the pit is what makes the way in
 //      from above; a hurting gumdrop and another pit follow.
 import { Book } from '../../kit/starter/book';
@@ -12,7 +12,7 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
-import { BONK } from './monsters';
+import { POP } from './monsters';
 
 export type SignName = 'path' | 'hurts' | 'over' | 'land' | 'lives' | 'exit';
 
@@ -24,7 +24,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
     path: addSign(book, pal, 'path', 'MONSTERS WALK A PATH', 4, 2),
     hurts: addSign(book, pal, 'hurts', 'TOUCHING HURTS', 4, 2),
     over: addSign(book, pal, 'over', 'JUMP OVER IT', 4, 2),
-    land: addSign(book, pal, 'land', 'LAND ON TOP TO BONK', 4, 2),
+    land: addSign(book, pal, 'land', 'LAND ON TOP TO POP IT', 4, 2),
     lives: addSign(book, pal, 'lives', 'WATCH YOUR LIVES', 4, 2),
     exit: addSign(book, pal, 'exit', 'EXIT →', 3),
   };
@@ -86,9 +86,9 @@ function walkAndHurt(book: Book, signs: Record<SignName, Sign>): StarterMap {
 }
 
 /** Level 2: drop onto the mint gumdrops in a pit, mind a gumdrop that hurts. 46 blocks wide. */
-function bonkAndLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
+function popAndLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(46, 42);
-  // two pits, two blocks wide and two deep, a bonk gumdrop at the bottom of each side
+  // two pits, two blocks wide and two deep, a pop gumdrop at the bottom of each side
   for (const x of [13, 35]) g.fill(x, GROUND, 2, 2, ' ');
   g.put(25, GROUND - 1, 'g');
   g.row(8, 13, 14, 'c').row(8, 35, 36, 'c').row(7, 26, 29, 'c');
@@ -107,7 +107,7 @@ function bonkAndLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.sign(5, onGround(GROUND, signs.land), signs.land);
   m.sign(16, onGround(GROUND, signs.lives), signs.lives);
   m.sign(38, onGround(GROUND, signs.exit), signs.exit);
-  for (const x of [13, 14, 35, 36]) m.mon(BONK, x, GROUND + 1);
+  for (const x of [13, 14, 35, 36]) m.mon(POP, x, GROUND + 1);
   return m;
 }
 
@@ -117,7 +117,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Walk and Hurt', hint: 'Some monsters walk a path.', map: walkAndHurt(book, signs) },
-    { file: 'two', title: 'Bonk and Lives', hint: 'Land on a monster to bonk it.', map: bonkAndLives(book, signs) },
+    { file: 'two', title: 'Pop and Lives', hint: 'Land on a monster to pop it.', map: popAndLives(book, signs) },
   ];
   return { book, pal, levels };
 }

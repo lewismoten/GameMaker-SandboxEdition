@@ -20,7 +20,7 @@ export function titlePicture(pal: Pal, book: Book, mb: Book, hero: Pixels, door:
   const put = (pic: Pixels, x: number, scale: number) => scaleBlit(p, pic, x, 160 - 20 * scale, scale);
   scaleBlit(p, hero, 30, 160 - 80, 2);
   put(mb.pics.get('gumdrop0')!, 96, 2);
-  put(mb.pics.get('bonk0')!, 146, 2);
+  put(mb.pics.get('pop0')!, 146, 2);
   put(mb.pics.get('shelly0')!, 190, 2);
   scaleBlit(p, mb.pics.get('star0')!, 150, 78, 2);
   scaleBlit(p, door, 260, 160 - 80, 2);

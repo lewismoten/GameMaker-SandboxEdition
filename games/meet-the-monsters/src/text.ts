@@ -47,7 +47,7 @@ One of the Starters: small games that each show one idea.
 export const WON = wrap(`
 |HELLO, MONSTERS!
 
-Two levels, five monsters, and nobody minded.
+Two levels, five monsters, and every one said hi.
 
 A monster is a picture, a path and a power. Walk it back and forth, make it hurt a little, or make it pop into a star when you touch it.
 

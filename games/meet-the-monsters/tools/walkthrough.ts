@@ -8,6 +8,6 @@ import { SEED, play } from './play';
 const { sim } = await play(SEED);
 const titles: Record<number, string> = {
   2: 'Level 1: Walk and Hurt',
-  3: 'Level 2: Bonk and Lives',
+  3: 'Level 2: Pop and Lives',
 };
 await writeSimWalkthrough('meet-the-monsters', sim, SEED, titles);

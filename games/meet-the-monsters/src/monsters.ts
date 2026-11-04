@@ -1,6 +1,6 @@
 // MEET THE MONSTERS' monsters: the kit's three that hurt (gumdrop, buzzer, shelly, kit/starter/
 // monsters.ts) and two more of this game's own:
-//   bonk  a mint-green gumdrop that is harmless: touch it and it pops into a star (and 50 points)
+//   pop  a mint-green gumdrop that is harmless: touch it and it pops into a star (and 50 points)
 //   star  the pop: a star that floats up and is gone
 // What the engine does when a monster is touched (code/GM/PLAYGAME.C, the monster loop): the
 // monster block's effects are applied to the hero (hit points, score, a counter), and a monster
@@ -16,7 +16,7 @@ import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
 import type { Pal } from '../../kit/starter/palette';
 
 /** The monster numbers this game adds after the kit's gumdrop 0, buzzer 1 and shelly 2. */
-export const BONK = 3;
+export const POP = 3;
 export const STAR = 4;
 
 /** Hit points a hurting monster takes when touched, and the hero's own (so three touches cost a life). */
@@ -63,13 +63,13 @@ function star(pal: Pal, big: boolean): Pixels {
   return outline(p, c('ink', 0), { transparent: T });
 }
 
-/** The monster pictures: the kit's, then bonk and star. */
+/** The monster pictures: the kit's, then pop and star. */
 export function monsterPictures(pal: Pal): Book {
   const mb = buildMonsterBlocks(pal);
   // harmless: no hit points taken, 50 points for the pop
   const rules = { score: 50 };
-  mb.add('bonk0', mint(pal, mb.pics.get('gumdrop0')!), rules);
-  mb.add('bonk1', mint(pal, mb.pics.get('gumdrop1')!), rules);
+  mb.add('pop0', mint(pal, mb.pics.get('gumdrop0')!), rules);
+  mb.add('pop1', mint(pal, mb.pics.get('gumdrop1')!), rules);
   mb.add('star0', star(pal, true), {});
   mb.add('star1', star(pal, false), {});
   return mb;
@@ -82,14 +82,14 @@ export function finishMonsterPictures(mb: Book): Block[] {
   return blocks;
 }
 
-/** The .MON: the kit's three, then bonk (power 1: it pops, into a star) and star (it floats up and ends). */
+/** The .MON: the kit's three, then pop (power 1: it pops, into a star) and star (it floats up and ends). */
 export function monsterSet(mb: Book): Monster[] {
   const set = buildMonsters(mb, { gumdrop: 4, shelly: 2 });
   const anim = (name: string, t: number): [number, number][] => [
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],
   ];
-  set[BONK] = mon(anim('bonk', 4), { power: 1, thru: 1, newmon: STAR });
+  set[POP] = mon(anim('pop', 4), { power: 1, thru: 1, newmon: STAR });
   set[STAR] = mon(anim('star', 5), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(0, -3, 1), corner(0, 0, 0)]);
   return set;
 }
