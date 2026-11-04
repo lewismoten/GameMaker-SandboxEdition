@@ -27,6 +27,8 @@ interface SinglePageOptions {
   /** "About this game" and the game's version (project/aboutGame.ts): visible credits and search-engine data on the page. */
   about?: AboutGame;
   version?: string;
+  /** Animation and sound previews on the page; on unless false (project/companion.ts exportPreviewsOf). */
+  previews?: boolean;
   /** An imported game's own About text and first build, so F10 shows what Play's does (dosPlayer/playerOrigin.ts). */
   playerAbout?: PlayerAbout;
 }
@@ -45,7 +47,7 @@ export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions
   const look = opts.player && withoutExtensions(opts.player);
   const player = look && Object.keys(look).length ? look : undefined;
   const about = opts.about ?? {};
-  const inside = insideGame(entries, { title: opts.title, about, version: opts.version });
+  const inside = insideGame(entries, { title: opts.title, about, version: opts.version, previews: opts.previews });
   const game = await encodeGame(
     { id, title: opts.title, gam: opts.gam, notice, player, ...(opts.playerAbout ? { playerAbout: opts.playerAbout } : {}) },
     entries,

@@ -48,6 +48,8 @@ export interface Companion {
   showVersion?: boolean;
   /** "About this game" (aboutGame.ts): title, author, description, credits… Editor-only; absent unless set. */
   about?: unknown;
+  /** False to leave the animation and sound previews out of the one-page web export (export/insideGame.ts). On when absent. */
+  exportPreviews?: boolean;
   /** Anything else a newer version wrote. */
   [key: string]: unknown;
 }
@@ -179,4 +181,15 @@ export function setMenuVersion(c: Companion, version: string, show: boolean): vo
   else delete c.gameVersion;
   if (show) c.showVersion = true;
   else delete c.showVersion;
+}
+
+/** Whether the one-page web export includes animation and sound previews (an export preference, on unless turned off). */
+export function exportPreviewsOf(c: Companion | undefined): boolean {
+  return c?.exportPreviews !== false;
+}
+
+/** Saves the preference in place; on is the default, so it leaves nothing behind. */
+export function setExportPreviews(c: Companion, on: boolean): void {
+  if (on) delete c.exportPreviews;
+  else c.exportPreviews = false;
 }

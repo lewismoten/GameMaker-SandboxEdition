@@ -24,12 +24,16 @@ export interface InsideOptions {
   title: string;
   about?: AboutGame;
   version?: string;
+  /** Animation and sound previews (an FLI's GIF, a VOC's WAV player). On unless false. */
+  previews?: boolean;
 }
 
 export interface Inside {
   /** The section's HTML, or '' when there is nothing to show. */
   html: string;
   external: External[];
+  /** Bytes of the page that are animation and sound previews, so a page without them is that much smaller. */
+  previewBytes: number;
   /** Data: URLs of pictures, for the search-engine data. */
   pictures: { name: string; width: number; height: number; alt: string }[];
 }
@@ -157,7 +161,7 @@ export function insideGame(files: [string, Uint8Array][], opts: InsideOptions): 
         break;
       }
       case 'fli': {
-        if (!isFli(bytes)) break;
+        if (!isFli(bytes) || opts.previews === false) break;
         const gif = fliPreview(bytes);
         if (gif)
           motion.push(
@@ -166,7 +170,7 @@ export function insideGame(files: [string, Uint8Array][], opts: InsideOptions): 
         break;
       }
       case 'voc': {
-        if (!isVoc(bytes)) break;
+        if (!isVoc(bytes) || opts.previews === false) break;
         const wav = vocPreview(bytes);
         if (wav)
           sounds.push(
@@ -192,11 +196,12 @@ export function insideGame(files: [string, Uint8Array][], opts: InsideOptions): 
     music.length ? `<h2>Music</h2><ul>${music.join('')}</ul>` : '',
   ].join('');
   const credits = aboutBlock(about, opts.version);
-  if (!folded && !credits) return { html: '', external, pictures };
+  const previewBytes = [...motion, ...sounds].reduce((n, x) => n + x.length, 0);
+  if (!folded && !credits) return { html: '', external, pictures, previewBytes };
   const html =
     `<section id="gm-inside" class="gm-inside" aria-label="About this game" style="max-width:48rem;margin:0 auto;padding:24px 16px;font:16px/1.5 system-ui,sans-serif;color:#ccc">` +
     credits +
     (folded ? `<details><summary style="cursor:pointer;font-weight:bold;color:#ff5;min-height:24px">Inside this game</summary>${folded}</details>` : '') +
     `</section>`;
-  return { html, external, pictures };
+  return { html, external, pictures, previewBytes };
 }

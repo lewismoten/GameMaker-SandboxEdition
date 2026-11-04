@@ -35,10 +35,10 @@ const ABOUT = {
   credits: [{ role: 'Music', name: 'Pat' }],
 };
 
-async function exportOne(id: string, about?: typeof ABOUT) {
+async function exportOne(id: string, about?: typeof ABOUT, previews?: boolean) {
   const { files, gam } = load(id);
   vi.stubGlobal('fetch', async () => new Response(TEMPLATE));
-  const { html } = await exportSinglePage(files, { title: `Game ${id}`, gam, appBase: 'http://localhost/', about, version: '1.2' });
+  const { html } = await exportSinglePage(files, { title: `Game ${id}`, gam, appBase: 'http://localhost/', about, version: '1.2', previews });
   return { files, html, gam };
 }
 
@@ -83,6 +83,17 @@ describe('Inside this game', () => {
     expect(html).toMatch(/GOAT\.CMF|\.CMF, music/);
     const got = await gameFromPageHtml(html);
     for (const n of files.names().filter((x) => /\.(fli|voc|cmf)$/.test(x))) expect(got!.files.get(n), n).toEqual(files.get(n));
+  });
+
+  it.skipIf(!have('goat'))('with previews off: no animation or sound previews, everything else stays', async () => {
+    const on = await exportOne('goat', ABOUT, true);
+    const off = await exportOne('goat', ABOUT, false);
+    expect(off.html).not.toMatch(/<audio|animation preview/);
+    expect(off.html).toContain('<dd>Pat</dd>');
+    expect(off.html).toContain('application/ld+json');
+    expect(off.html.length).toBeLessThan(on.html.length);
+    const got = await gameFromPageHtml(off.html);
+    for (const n of off.files.names()) expect(got!.files.get(n), n).toEqual(off.files.get(n));
   });
 
   it('the JSON-LD is a valid VideoGame', async () => {
@@ -141,7 +152,10 @@ describe('Inside this game', () => {
       const { encodeGame, fillPage } = await import('../src/export/singlePage');
       const game = await encodeGame({ id: 'x', title: `Game ${id}`, gam: 'x.gam' }, files.entries());
       const old = fillPage(TEMPLATE, game);
-      rows.push(`${id}: ${old.length} -> ${html.length} bytes (+${html.length - old.length}, ${(html.length / old.length).toFixed(2)}x)`);
+      const { html: noPreviews } = await exportOne(id, ABOUT, false);
+      rows.push(
+        `${id}: ${old.length} -> ${html.length} bytes with previews (${(html.length / old.length).toFixed(2)}x), ${noPreviews.length} without (${(noPreviews.length / old.length).toFixed(2)}x)`,
+      );
     }
     console.warn(`Page size growth\n${rows.join('\n')}`);
     expect(rows.length).toBeGreaterThan(0);

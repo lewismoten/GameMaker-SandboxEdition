@@ -7,7 +7,7 @@ import { defaultPalette, parsePalette, type Palette } from '@lewismoten/gamemake
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { debounce } from './ui';
 import { isSolidPalette, mostReadable } from './readablePalette';
-import { emptyCompanion, getSection, renameInCompanion, setMenuVersion, setSection, type Companion } from '../../project/companion';
+import { emptyCompanion, getSection, renameInCompanion, setExportPreviews, setMenuVersion, setSection, type Companion } from '../../project/companion';
 import { setAbout, type AboutGame } from '../../project/aboutGame';
 import { editedFile, unlockAchievement } from '../../achievements';
 import { MEMORY_SECTIONS, refuse, type ReadOnlyGuard } from './readOnly';
@@ -160,6 +160,14 @@ export class Project {
     if (this.readOnly) refuse(this, 'version');
     this.companion ??= emptyCompanion();
     setMenuVersion(this.companion, version, show);
+    this.persist();
+  }
+
+  /** Whether the one-page export includes animation and sound previews (companion.ts); the game's files are not touched. */
+  setExportPreviews(on: boolean): void {
+    if (this.readOnly) refuse(this, 'export');
+    this.companion ??= emptyCompanion();
+    setExportPreviews(this.companion, on);
     this.persist();
   }
 
