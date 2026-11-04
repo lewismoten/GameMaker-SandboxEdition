@@ -12,12 +12,14 @@ import {
   GameReader,
   gameFromFiles,
   scanFile,
+  scanImport,
   type FoundGame,
   type ReadGame,
   type ScanFile,
   type ScanReport,
 } from '@lewismoten/gamemaker-sandbox-archives/scan';
 import * as chooser from './importChooser';
+import { openImportPanel, pickedLabel, type ImportPanel } from './importPanel';
 import { markBatch, newBatch } from './importBatch';
 import { looksLikeGamePieces } from './importLoose';
 import { alreadyHave } from '../../imported/alreadyHave';
@@ -171,11 +173,12 @@ function removedBefore(r: RemovedGame): string {
 }
 
 /** `missing`: how many files the game's .gam names that were not among those given. */
-async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, missing = 0): Promise<void> {
+async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, missing = 0, panel?: ImportPanel): Promise<void> {
   const { files } = imported;
-  if (!files.size) return;
+  if (!files.size) return panel?.end();
   const shareware = await sharewareMatch(files);
   if (shareware) {
+    panel?.end();
     // Shareware is copyrighted by its author: play it as released, but don't open it for editing.
     await modal(`${shareware.title} is shareware`, (close) => [
       h(
@@ -194,6 +197,7 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, mis
     return;
   }
   const had = alreadyHave(origin.fingerprint);
+  await panel?.step('Opening', 'saving the game and opening it');
   const { project: p, note, madeGam } = await saveImported(imported);
   noteImport(p.id, origin.source, origin.fingerprint);
   if (madeGam) toast('No .gam file found — a new one was created for these files.');
@@ -208,6 +212,7 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, mis
   toast(
     `Opened ${p.name} (${files.size} files). It is listed under Imported.${had ? ' You already had a copy of this game, so this is a second one; delete either from its ⋯ More menu.' : ''}`,
   );
+  panel?.end();
   nav.openProject(p.id);
 }
 
@@ -267,24 +272,40 @@ async function importChosen(report: ScanReport, given: ScanFile[], onAdded?: () 
  * (importScan.ts). One game opens as it always has; several are listed to pick from; files
  * with no game make a new one around them, and zips with no game say so.
  */
-async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdded?: () => void): Promise<void> {
-  if (!given.length) return;
+async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdded?: () => void, panel?: ImportPanel): Promise<void> {
+  if (!given.length) return panel?.end();
   // A page made by "Export as one web page" carries the whole game inside it.
   if (list.some((f) => /\.html?$/i.test(f.name))) {
     const { gameFromPageFiles } = await import('../../project/importPage'); // loaded with the first import, not the home page
+    await panel?.step('Reading', 'the web page');
     const page = await gameFromPageFiles(list).catch((e: Error) => (toast(e.message, 'error'), undefined));
     if (page)
       return importFiles(
         nav,
         { files: page.files, players: [], name: page.title, gam: page.gam },
         { source: list.find((f) => /\.html?$/i.test(f.name))!.name, fingerprint: fingerprintOfFiles(Object.fromEntries(page.files.entries())) },
+        0,
+        panel,
       );
+    panel?.end();
+    return;
   }
-  const report = await chooser.scanWithProgress(given);
-  if (!report) return;
+  const report = panel
+    ? await scanImport(given, {
+        signal: panel.signal,
+        onProgress: (done, total, path) => void (path && panel.step('Reading', path, done, total)),
+        onStep: (step, path) => void panel.step(step === 'unpack' ? 'Unpacking' : 'Finding the game', path),
+      })
+    : await chooser.scanWithProgress(given);
+  if (!report) return panel?.end();
+  // the games to pick from (or the notes on finding none) are their own dialogs
+  if (report.games.length !== 1 || removedMatch(fingerprintOf(report.games[0]))) panel?.end();
   // one game opens as it always has, unless it was removed before: then it is listed, unticked, to say so
   const one = report.games.length === 1 && report.games[0];
-  if (one && !removedMatch(fingerprintOf(one))) return importFiles(nav, await new GameReader(given).read(one), originOf(one), one.missing);
+  if (one && !removedMatch(fingerprintOf(one))) {
+    const read = await new GameReader(given).read(one, (done, total, path) => panel?.step('Unpacking', path.split('/').pop(), done, total));
+    return importFiles(nav, read, originOf(one), one.missing, panel);
+  }
   if (report.games.length) return importChosen(report, given, onAdded);
   // no .gam anywhere: loose files (no zips) still make a new game around them, as they always have
   const files = await gameFromFiles(report.loose);
@@ -294,34 +315,58 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
 }
 
 /** Opens the files picked on the home page; `onAdded` is told when several games were imported at once. */
-export async function importPicked(nav: HomeNav, list: File[], onAdded?: () => void): Promise<void> {
-  await importGiven(
-    nav,
-    list.map((f) => scanFile(f)),
-    list,
-    onAdded,
+export async function importPicked(nav: HomeNav, list: File[], onAdded?: () => void, panel?: ImportPanel): Promise<void> {
+  panel ??= openImportPanel(pickedLabel(list.map((f) => f.name)));
+  if (!panel) return;
+  await guarded(
+    panel,
+    importGiven(
+      nav,
+      list.map((f) => scanFile(f)),
+      list,
+      onAdded,
+      panel,
+    ),
   );
 }
 
+/** Ends the panel when the import does: a failure is shown in it, and Cancel is not one. */
+async function guarded(panel: ImportPanel, work: Promise<void>): Promise<void> {
+  try {
+    await work;
+  } catch (e) {
+    if (panel.signal.aborted) return;
+    panel.fail((e as Error).message || 'Something went wrong while reading the file.');
+    return;
+  }
+  panel.end();
+}
+
 /** Opens what was dropped: the drop's entries (folders walked, keeping their paths), or its files when it has none. */
-export async function importDropped(nav: HomeNav, entries: FileSystemEntry[], files: File[], onAdded?: () => void): Promise<void> {
-  const collected: File[] = [];
-  const given: ScanFile[] = [];
-  const walk = async (entry: FileSystemEntry): Promise<void> => {
-    if (entry.isFile) {
-      const f = await new Promise<File>((res, rej) => (entry as FileSystemFileEntry).file(res, rej));
-      collected.push(f);
-      given.push(scanFile(f, entry.fullPath));
-    } else if (entry.isDirectory) {
-      const reader = (entry as FileSystemDirectoryEntry).createReader();
-      for (;;) {
-        const batch = await new Promise<FileSystemEntry[]>((res, rej) => reader.readEntries(res, rej));
-        if (!batch.length) break;
-        for (const e of batch) await walk(e);
+export async function importDropped(nav: HomeNav, entries: FileSystemEntry[], files: File[], onAdded?: () => void, panel?: ImportPanel): Promise<void> {
+  panel ??= openImportPanel(pickedLabel([...entries.map((e) => e.name), ...(entries.length ? [] : files.map((f) => f.name))]));
+  if (!panel) return;
+  const shown = panel;
+  await guarded(shown, walkAndImport());
+  async function walkAndImport(): Promise<void> {
+    const collected: File[] = [];
+    const given: ScanFile[] = [];
+    const walk = async (entry: FileSystemEntry): Promise<void> => {
+      if (entry.isFile) {
+        const f = await new Promise<File>((res, rej) => (entry as FileSystemFileEntry).file(res, rej));
+        collected.push(f);
+        given.push(scanFile(f, entry.fullPath));
+      } else if (entry.isDirectory) {
+        const reader = (entry as FileSystemDirectoryEntry).createReader();
+        for (;;) {
+          const batch = await new Promise<FileSystemEntry[]>((res, rej) => reader.readEntries(res, rej));
+          if (!batch.length) break;
+          for (const e of batch) await walk(e);
+        }
       }
-    }
-  };
-  if (entries.length) for (const e of entries) await walk(e);
-  else for (const f of files) (collected.push(f), given.push(scanFile(f)));
-  await importGiven(nav, given, collected, onAdded);
+    };
+    if (entries.length) for (const e of entries) await walk(e);
+    else for (const f of files) (collected.push(f), given.push(scanFile(f)));
+    await importGiven(nav, given, collected, onAdded, shown);
+  }
 }
