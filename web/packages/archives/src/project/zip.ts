@@ -222,7 +222,15 @@ export function listZip(bytes: Uint8Array, limits?: ZipLimits): ZipListing[] {
       const start = localOffset + 30 + lNameLen + lExtraLen;
       const body = bytes.subarray(start, start + size);
       if (method === 0) return body.slice();
-      if (method === 8) return limits ? inflateCapped(body, unpacked) : transform(body, new DecompressionStream('deflate-raw'));
+      if (method === 8) {
+        // The stream's own errors are TypeErrors with little or no message; say what is wrong.
+        try {
+          return await (limits ? inflateCapped(body, unpacked) : transform(body, new DecompressionStream('deflate-raw')));
+        } catch (e) {
+          if (e instanceof TypeError) throw new Error(`The ZIP entry ${name} is damaged (its compressed data does not unpack)`, { cause: e });
+          throw e;
+        }
+      }
       return undefined;
     };
     out.push({ name, size: unpacked, read });

@@ -14,6 +14,7 @@
     "test": "vitest run",
     "walk:auto": "vite-node scripts/walkAuto.ts",
     "roundtrip": "vite-node scripts/roundTrip.ts",
+    "fuzz:files": "vite-node scripts/fuzzFiles.ts --",
     "check:keys": "vite-node ../games/kit/keyAccess.ts --",
     "replay:log": "vite-node scripts/replayLog.ts",
     "optimize:proof": "vite-node ../games/kit/optimizeProof.ts",

@@ -199,3 +199,10 @@ from the slim home-page catalog. Copying a selected file still reads its origina
 - `phoneBoardPhotos.ts`: renders the Phone of the Future's front and back as top-down PNGs (a small z-buffer
   rasterizer over `games/year2000/phone/viewer/parts.json` + `parts.bin`) into
   `src/manual/printables/dexReport/`, for Dex Dynamo's science report. `npx vite-node scripts/phoneBoardPhotos.ts`.
+
+- `fuzzFiles.ts` (`npm run fuzz:files -- [--seed n] [--rounds n] [--type gam,fli,zip,folder,...] [--limit ms] [--save dir] [--out report.txt]`)
+  malformed-file test. Starts from real CD files and archive zips (read in memory), makes truncated, bit-flipped,
+  huge-header, padded and wrong-type copies, and feeds them to every engine reader, the zip readers and the archive
+  importer (`unpackGames`, with one file of a game folder swapped). Each case runs in a child process with a time limit
+  and a heap cap. Prints a table per reader (ok, clear Error, bad = TypeError/RangeError from deep inside, hang, memory);
+  exits 1 on any bad, hang or memory. Same `--seed`, same cases. `--save` writes the failing inputs to a folder.

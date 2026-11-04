@@ -29,6 +29,8 @@ interface FliCanvas {
   palette: Uint8Array;
 }
 
+/** A picture bigger than this (4096 x 4096) is a lie in the header, not an animation: refused before any canvas is made. */
+export const FLI_MAX_PIXELS = 4096 * 4096;
 const FLI_MAGIC = 0xaf11;
 const FLC_MAGIC = 0xaf12;
 const FRAME_MAGIC = 0xf1fa;
@@ -39,12 +41,14 @@ export function isFli(bytes: Uint8Array): boolean {
 }
 
 export function parseFli(bytes: Uint8Array): FliAnimation {
+  if (bytes.length < 128) throw new Error('Not an FLI file: shorter than its 128-byte header');
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const magic = view.getUint16(4, true);
   if (magic !== FLI_MAGIC && magic !== FLC_MAGIC) throw new Error('Not an FLI file');
   const frameCount = view.getUint16(6, true);
   const width = view.getUint16(8, true) || 320;
   const height = view.getUint16(10, true) || 200;
+  if (width * height > FLI_MAX_PIXELS) throw new Error(`FLI picture ${width} x ${height} is too large to open`);
   let speed = view.getUint16(16, true);
   if (magic === FLC_MAGIC) speed = Math.round((view.getUint32(16, true) * 70) / 1000);
   // FLC stores the offset of frame 1 at byte 80; FLI frames always start after the header.

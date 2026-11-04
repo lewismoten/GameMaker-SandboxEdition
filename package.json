@@ -30,6 +30,7 @@
     "release:cut": "npm run release:cut -w gamemaker-web --",
     "release:check": "npm run release:check -w gamemaker-web --",
     "walk:auto": "npm run walk:auto -w gamemaker-web --",
+    "fuzz:files": "npm run fuzz:files -w gamemaker-web --",
     "check:keys": "npm run check:keys -w gamemaker-web --",
     "replay:log": "npm run replay:log -w gamemaker-web --",
     "domains:check": "npm run domains:check -w gamemaker-web --",
