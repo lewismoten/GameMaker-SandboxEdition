@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Writes kicad/phone.kicad_pcb, kicad/phone.pretty/*.kicad_mod, kicad/3d/*.wrl, kicad/placement.json.
 
-Rev B layout rules: the front under the dial and the speaker carries nothing but silkscreen (and the two
+Rev C layout rules: the front under the dial and the speaker carries nothing but silkscreen (and the two
 dial microswitches): no pads, vias or F.Cu tracks inside those circles. Everything else goes around them.
 Placement is fixed for the parts that matter to the shell and the ICs; passives are dropped by a greedy placer.
 Routing is router.py. Silkscreen art (orbits, rays, badge) is clipped away from pads.
@@ -21,16 +21,16 @@ import models3d  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 KDIR = os.path.join(HERE, "..", "kicad")
-W, H = 73.66, 175.26
+W, H = 99.0, 99.0                      # inside JLCPCB's and PCBWay's cheapest tier (100 x 100 mm)
 CX = W / 2
 TW, WIDE = 0.30, 0.50
-DIAL = (CX, 88.9)
-DIAL_R, RING_R = 24.0, 17.5
-DIAL_KEEP_F, DIAL_KEEP_PAD = 25.5, 27.5      # F.Cu copper / pad centers stay outside these
-SPK = (CX, 46.99)
+DIAL = (30.0, 61.0)
+DIAL_R, RING_R = 20.0, 14.5
+DIAL_KEEP_F, DIAL_KEEP_PAD = 21.5, 23.5      # F.Cu copper / pad centers stay outside these
+SPK = (74.0, 56.0)
 SPK_R = 12.0
 SPK_KEEP_F, SPK_KEEP_PAD = 13.5, 14.8
-BADGE = (13.0, 166.0, 6.8)                    # x, y, radius reserved for the YEAR 2000 badge
+BADGE = (89.5, 37.0, 6.8)                    # x, y, radius reserved for the YEAR 2000 badge
 _k = [0]
 
 
@@ -46,19 +46,20 @@ def f(v):
 netlist = json.load(open(os.path.join(KDIR, "netlist.json")))
 byref = {p["ref"]: p for p in parts}
 
-FIXED = {
-    "D2": (16.51, 6.35, 0), "D1": (57.15, 6.35, 0),
-    "DS1": (20.32, 22.86, 0), "DS2": (53.34, 22.86, 0),
-    "LS1": (64.77, 66.04, 90),
-    "SW2": (29.21, 83.82, 0), "SW3": (44.45, 93.98, 0),
-    "SW4": (15.24, 152.4, 0), "SW5": (58.42, 152.4, 0), "MK1": (CX, 166.37, 0), "BT1": (CX, 152.4, 0),
-    "U3": (12.7, 48.26, 0), "U2": (55.88, 48.26, 0), "U1": (67.31, 48.26, 0),
-    "U4": (24.13, 128.27, 90), "U5": (43.18, 128.27, 90),
-    "SW1": (66.04, 108.0, 90), "RV1": (66.04, 121.92, 90),
-}
-NEAR = {"X1": "U2", "C13": "U1", "C15": "U3", "C14": "U3", "R26": "U3", "C16": "U1", "R1": "U1", "C17": "U2",
-        "C18": "U4", "C19": "U5", "C20": "U5", "C21": "U5", "R27": "U5", "C22": "U5", "U6": "BT1", "C1": "U6",
-        "C2": "U6", "Q1": "D2", "R10": "Q1", "R11": "D2", "Q2": "U5", "R22": "Q2", "R12": "Q1", "R8": "Q1", "R9": "Q1"}
+def sn(v):
+    return round(v / 0.254) * 0.254      # the router's grid: every pad center sits on it
+
+
+FIXED = {k: (sn(x), sn(y), r) for k, (x, y, r) in {
+    "D2": (13.0, 6.35, 0), "D1": (86.0, 6.35, 0),
+    "DS1": (33.5, 24.0, 0), "DS2": (65.5, 24.0, 0),
+    "LS1": (SPK[0], SPK[1], 0),
+    "SW2": (DIAL[0] - 7.62, DIAL[1], 0), "SW3": (DIAL[0] + 7.62, DIAL[1] + 5.08, 0),
+    "SW4": (13.0, 92.0, 0), "SW5": (86.0, 92.0, 0), "MK1": (CX, 91.5, 0), "BT1": (31.0, 93.5, 0), "J1": (68.0, 94.0, 0),
+}.items()}
+NEAR = {"X1": "U2", "C12": "U1", "C13": "U3", "R25": "U3", "C14": "U1", "R1": "U1", "C15": "U2", "C16": "U4", "C17": "U5", "C18": "U5",
+        "C19": "U5", "U6": "BT1", "C1": "U6", "C2": "U6", "Q1": "D2", "R10": "Q1", "R11": "D2", "Q2": "U5", "R21": "Q2",
+        "R12": "Q1", "R8": "Q1", "R9": "Q1"}
 MOUNT = [(3.81, 3.81), (W - 3.81, 3.81), (3.81, H - 3.81), (W - 3.81, H - 3.81)]
 TXT = 0.8          # reference and value text height on the silkscreen
 
@@ -68,8 +69,10 @@ def rot(x, y, a):
 
 
 def variant(ref):
-    if ref in ("C21",):
+    if ref in ("C19",):
         return "big"
+    if ref in ("D1",):
+        return "ir"
     return ""
 
 
@@ -125,13 +128,13 @@ def place_rest():
     for pl in placed.values():
         occ[pl.side].append(pl.rect(pl.fp.court, 0.35))
         for pad, rx, ry in pl.pads:
-            padbox.append((pl.x + rx - 1.3, pl.y + ry - 1.3, pl.x + rx + 1.3, pl.y + ry + 1.3))
+            padbox.append((pl.x + rx - 1.2, pl.y + ry - 1.2, pl.x + rx + 1.2, pl.y + ry + 1.2))
         txtbox += pl.texts()
     for mx, my in MOUNT:
         padbox.append((mx - 3.6, my - 3.6, mx + 3.6, my + 3.6))
     todo = [p for p in parts if p["ref"] not in placed]
-    todo.sort(key=lambda p: (p["ref"] not in ("X1", "U6"), p["ref"] not in NEAR, p["ref"]))
-    region = (4.5, 12.5, W - 4.5, 147.0)
+    todo.sort(key=lambda p: (p["ref"] not in ("U3", "U1", "U2", "U4", "U5"), p["ref"] not in ("X1", "U6"), p["ref"] not in NEAR, p["ref"]))
+    region = (3.0, 3.0, W - 3.0, H - 3.0)
     for p in todo:
         ref = p["ref"]
         pts = []
@@ -153,10 +156,10 @@ def place_rest():
         for a in (0, 90):
             tmp = Placed(ref, 0, 0, a)
             r0 = tmp.rect(tmp.fp.court, 0.35)
-            for xi in range(int(region[0] / 1.27), int(region[2] / 1.27) + 1):
-                x = xi * 1.27
-                for yi in range(int(region[1] / 1.27), int(region[3] / 1.27) + 1):
-                    y = yi * 1.27
+            for xi in range(int(region[0] / 0.508), int(region[2] / 0.508) + 1):
+                x = xi * 0.508
+                for yi in range(int(region[1] / 0.508), int(region[3] / 0.508) + 1):
+                    y = yi * 0.508
                     rr = (x + r0[0], y + r0[1], x + r0[2], y + r0[3])
                     if rr[0] < region[0] - 1 or rr[2] > region[2] + 1 or rr[1] < region[1] - 1 or rr[3] > region[3] + 1:
                         continue
@@ -164,7 +167,7 @@ def place_rest():
                         continue
                     if any(overlaps(rr, o) for o in occ[p["side"]]):
                         continue
-                    pbs = [(x + rx - 1.3, y + ry - 1.3, x + rx + 1.3, y + ry + 1.3) for _, rx, ry in tmp.pads]
+                    pbs = [(x + rx - 1.2, y + ry - 1.2, x + rx + 1.2, y + ry + 1.2) for _, rx, ry in tmp.pads]
                     if any(overlaps(pb, k) for pb in pbs for k in padbox):
                         continue
                     t2 = tmp.texts()
@@ -177,13 +180,14 @@ def place_rest():
                     if best is None or cost < best[0]:
                         best = (cost, x, y, a)
         if best is None:
+            print({r: (round(q.x, 1), round(q.y, 1), q.a, q.side) for r, q in placed.items()})
             raise SystemExit(f"no room for {ref}")
         _, x, y, a = best
         pl = Placed(ref, x, y, a)
         placed[ref] = pl
         occ[pl.side].append(pl.rect(pl.fp.court, 0.35))
         for pad, rx, ry in pl.pads:
-            padbox.append((x + rx - 1.3, y + ry - 1.3, x + rx + 1.3, y + ry + 1.3))
+            padbox.append((x + rx - 1.2, y + ry - 1.2, x + rx + 1.2, y + ry + 1.2))
         txtbox += [(t[0], t[1], t[2], t[3]) for t in pl.texts()]
 
 
@@ -203,6 +207,10 @@ for ref, pl in placed.items():
             rt.blockers.append((pl.x + rx, pl.y + ry, r))
 for mx, my in MOUNT:
     rt.blockers.append((mx, my, 2.1))
+for ref, pl in placed.items():             # small pin marks (silkscreen) of the front parts must not sit on copper
+    for t, tx, ty in (pl.fp.marks if ref.startswith("MK") else []):
+        rx, ry = rot(tx, ty, pl.a)
+        rt.blockers.append((pl.x + (-rx if pl.side == "B" else rx), pl.y + ry, 0.9))
 rt.fzones += [(DIAL[0], DIAL[1], DIAL_KEEP_F), (SPK[0], SPK[1], SPK_KEEP_F)]
 widths = {nid[GND]: WIDE, nid[V5]: WIDE}
 base = [nid[GND], nid[V5]]
@@ -267,6 +275,9 @@ for ref, pl in placed.items():
                  (c[0] - w / 2 - 0.6, c[1]), (c[2] + w / 2 + 0.6, c[3])]
         if key == "val":
             cands = cands[1:2] + cands[0:1] + cands[3:4] + cands[2:3] + cands[4:]
+        for dy_ in (0.9, 1.9, 2.9, 3.9):
+            for dx_ in (1.5, -1.5, 3.0, -3.0, 4.5, -4.5):
+                cands += [(xm + dx_, c[3] + dy_), (xm + dx_, c[1] - dy_)] if key == "val" else [(xm + dx_, c[1] - dy_), (xm + dx_, c[3] + dy_)]
         chosen = None
         for cx_, cy_ in cands:
             b = tbox(cx_, cy_, s)
@@ -474,22 +485,22 @@ silk.append(txt("F.SilkS", "2000", bx, by + 0.7, 1.6, thick=0.25))
 for k in range(8):                          # twinkles
     a = math.radians(k * 45 + 22)
     silk += seg("F.SilkS", bx + (br + 0.8) * math.cos(a), by + (br + 0.8) * math.sin(a), bx + (br + 2.2) * math.cos(a), by + (br + 2.2) * math.sin(a), 0.18)
-silk.append(label("F.SilkS", "TALK", 15.24, 146.9, 1.0))
-silk.append(label("F.SilkS", "CLEAR", 58.42, 146.9, 1.0))
-silk.append(label("F.SilkS", "MIC", CX, 158.4, 1.0))
-silk.append(label("F.SilkS", "IR", 16.51, 15.6, 0.9))
-silk.append(label("F.SilkS", "EYE", 57.15, 15.6, 0.9))
+silk.append(label("F.SilkS", "TALK", 13.0, 86.6, 1.0))
+silk.append(label("F.SilkS", "CLEAR", 86.0, 86.6, 1.0))
+silk.append(label("F.SilkS", "MIC", CX, 85.6, 1.0))
+silk.append(label("F.SilkS", "IR", 13.0, 13.2, 0.9))
+silk.append(label("F.SilkS", "EYE", 86.0, 13.2, 0.9))
 silk.append(label("B.SilkS", "THE PHONE OF THE FUTURE", CX, 12.0, 1.9, True))
 silk.append(label("B.SilkS", "rev C  untested design", CX, 15.0, 0.9, True))
 silk.append(label("B.SilkS", "Claude Sonnet 5.5 + KiCad", CX, 17.0, 0.9, True))
-silk.append(label("B.SilkS", "OPTIONAL VOLUME: RV1 INSTEAD OF R20 R21", CX, 165.0, 0.8, True))
+silk.append(label("B.SilkS", "PROGRAM WITH U2 OUT", 68.0, 88.5, 0.9, True))
 items += silk
 
 nets_txt = '(net 0 "")\n  ' + "\n  ".join(f'(net {i} "{n}")' for n, i in nid.items())
 pcb = f'''(kicad_pcb (version 20241229) (generator "pcbnew") (generator_version "9.0")
   (general (thickness 1.6) (legacy_teardrops no))
   (paper "A3")
-  (title_block (title "THE PHONE OF THE FUTURE") (date "2026-11-03") (rev "B")
+  (title_block (title "THE PHONE OF THE FUTURE") (date "2026-11-03") (rev "C")
     (company "Untested design; Claude Sonnet 5.5 under Lewis Moten's direction, with KiCad"))
   (layers
     (0 "F.Cu" signal) (2 "B.Cu" signal)
