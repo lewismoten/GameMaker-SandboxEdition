@@ -9,7 +9,7 @@ import { FLIP } from '../characters/mons';
 import { CTR, POWER } from '../ids';
 import { newBestiary } from './level';
 import { pacer, popUp, scent } from './common';
-import { propSprite } from '../sprites/klown';
+import { propSprite } from '../sprites/clown';
 
 /** Gwinn's paw prints making an arrow (which way she went). */
 function pawArrow(dir: 'up' | 'down' | 'left' | 'right'): Pixels {

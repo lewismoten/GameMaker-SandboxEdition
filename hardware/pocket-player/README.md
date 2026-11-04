@@ -12,6 +12,7 @@ A test firmware for the ESP32-3248S035 board (3.5 inch, 480 by 320, ST7796). It 
 
 1. The backlight comes on and the screen reads "Game-Maker Pocket Player", with a line under it: `Touch: GT911 at 0x5D` (or 0x14), or `Touch: no GT911, trying XPT2046`. About 2.5 seconds.
 2. The first screen of First Steps level 1: sky, a ground strip with dirt, a sign and a coin, 16 by 10 blocks at 1.5 times, with a black 20 pixel strip along the bottom reading like `heap 2xxxxx  block 1xxxxx  draw NNN ms  GT911`.
+   Colors (fixed after the first flash, which showed a mint sky, magenta grass and teal dirt): the sky is light blue, the grass edge green, the dirt brown, the sign cream with a brown frame. At the right end of the black strip are 4 swatches drawn by the display library itself (red, green, blue, white), a small gap, then the palette's first 16 colors in order. The first four of the 16 are palette entries, not necessarily red, green, blue and white; what matters is that the four reference swatches look pure and the 16 look like colors, with no mint, magenta or teal where the picture is blue or brown. A photo of that strip shows whether the byte order is right.
 3. Touch the glass: a red dot should appear under your finger.
 
 ## Report back
@@ -21,6 +22,10 @@ A test firmware for the ESP32-3248S035 board (3.5 inch, 480 by 320, ST7796). It 
 - Which touch chip it said, and whether the dot lands under your finger. If it is mirrored or swapped, tell me which way (left-right, up-down, or x and y swapped): one line in `src/main.cpp` fixes it.
 - The numbers in the strip: heap, block and draw ms.
 - If nothing shows: open the serial monitor at 115200 and send me the lines. The same numbers print there.
+
+## Colors check (on the Mac)
+
+`cd web && npx vite-node scripts/pocketColorCheck.ts out.png` repeats `level.h`'s color math on the same files, models the panel reading the pushed bytes, and writes the engine's own render, the current firmware and the old one side by side. It exits 1 if a color is off by more than 565 rounding allows. The cause it confirmed: pushImage sent each 16 bit value low byte first and the ST7796 reads it high byte first, so the buffer now holds byte-swapped RGB565 (`panel565` in `level.h`).
 
 ## Rebuild
 

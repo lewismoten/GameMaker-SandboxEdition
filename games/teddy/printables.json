@@ -24,7 +24,7 @@
       "intro": "A little dog. A big town. A ton of tricks. Hang it over your computer so Teddy can watch you play!",
       "panels": [
         {
-          "map": "klub.map",
+          "map": "club.map",
           "x": 58,
           "y": 26,
           "w": 24,
@@ -274,8 +274,8 @@
       "color": "#d9381e",
       "ink": "#ffffff",
       "sprite": {
-        "blocks": "klub.mbl",
-        "pal": "klub.pal",
+        "blocks": "club.mbl",
+        "pal": "club.pal",
         "grid": [[48]]
       }
     },

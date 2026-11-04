@@ -1,8 +1,8 @@
 // COINS AND SCORE's three levels. Each is painted on a Grid (a block a character, see
 // games/kit/starter/map.ts for what the letters mean), then given its signs.
 //
-//   1. Coins Add Points: coins on the ground and along a ledge, each worth 10. Two signs: what a
-//      coin does, and that F2 shows the score (PLAYGAME draws no score on the play screen).
+//   1. Coins Add Points: coins on the ground and along a ledge, each worth 10. Two signs before the ladder: what a
+//      coin does, and that F2 shows the score, with the coins right after it (PLAYGAME draws no score on the play screen).
 //   2. Some Are Worth More: a coin is 10, a gem 50 (up on a ledge), and a rock takes 20 away.
 //   3. Points Are Not Lives: a row of coins changes the score and nothing else; a heart on a
 //      ledge adds a life. Game-Maker has no "extra life at a score": a block that adds to the
@@ -78,14 +78,14 @@ function coinsAddPoints(book: Book, signs: Record<SignName, Sign>): StarterMap {
       [33, 1],
       [38, 2],
     ],
-    [9, 26, 44],
-    [7, 17, 43],
+    [12, 26, 44],
+    [2, 21, 43],
   );
   ledge(g, 3, 20, 27, 19);
-  g.row(GROUND - 1, 10, 15, 'c').row(2, 21, 25, 'c');
+  g.row(GROUND - 1, 13, 18, 'c').row(2, 21, 25, 'c');
   const m = new StarterMap(book, g.rows());
-  m.sign(5, onGround(GROUND, signs.coinsAdd), signs.coinsAdd);
-  m.sign(30, onGround(GROUND, signs.scoreKey), signs.scoreKey);
+  m.sign(4, onGround(GROUND, signs.coinsAdd), signs.coinsAdd);
+  m.sign(8, onGround(GROUND, signs.scoreKey), signs.scoreKey);
   m.sign(38, onGround(GROUND, signs.exit), signs.exit);
   return m;
 }
@@ -145,7 +145,7 @@ export function buildLevels(): { book: Book; pal: Pal; levels: Level[] } {
   const { book, signs } = buildBlocks(pal);
   const levels: Level[] = [
     { file: 'one', title: 'Coins Add Points', hint: 'Touch a coin and the score goes up.', map: coinsAddPoints(book, signs) },
-    { file: 'two', title: 'Some Are Worth More', hint: 'Gems pay more. Rocks take points away.', map: worthMore(book, signs) },
+    { file: 'two', title: 'Some Are Worth More', hint: 'A gem pays more. A rock costs.', map: worthMore(book, signs) },
     { file: 'three', title: 'Points Are Not Lives', hint: 'Only a heart adds a life.', map: heartsAddLives(book, signs) },
   ];
   return { book, pal, levels };

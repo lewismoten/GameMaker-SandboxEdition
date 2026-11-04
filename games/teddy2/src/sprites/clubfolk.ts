@@ -4,7 +4,7 @@
 // for science). Plus the things around the ring: bowling pins, pies, bubbles.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, sprite } from '../art/draw';
-import { CK } from './klown';
+import { CK } from './clown';
 import { P } from '../art/pal';
 
 const K: Record<string, number> = {
@@ -25,7 +25,7 @@ const S = (rows: string[], dx = 0) => sprite(rows, K, dx, 40 - rows.length, 20, 
 /** A white-faced clown head with a red nose and a big smile (5 rows wide 8). */
 const FACE = ['....owwwwwwo........', '...owwbwwbwwo.......', '...owwwRRwwwo.......', '...owRwwwwRwo.......', '....owRRRRwo........', '.....owwwwo.........'];
 
-export const KLUB: Record<string, Pixels> = {
+export const CLUB: Record<string, Pixels> = {
   // Honker: yellow polka dots, a bulb horn, one hand held up for a high five.
   honker: S([
     '.......oo...........',

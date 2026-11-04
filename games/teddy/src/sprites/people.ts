@@ -6,7 +6,7 @@
 // across town; `wearing` says which pieces he has on.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, sprite } from '../art/draw';
-import { CK } from './klown';
+import { CK } from './clown';
 import { P } from '../art/pal';
 
 const K: Record<string, number> = {

@@ -265,7 +265,7 @@ export function streetTiles(): Tiles {
 
   nook(t);
 
-  t.klownCar(
+  t.clownCar(
     (_bx, by) => (by === 0 ? t.pic('hedge') : t.pic('lawn')),
     'tie',
     t.pic('hedgeTop'),

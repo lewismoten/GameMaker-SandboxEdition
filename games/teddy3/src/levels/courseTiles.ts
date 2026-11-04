@@ -12,7 +12,7 @@ import { rail, tent, wing } from './stageTiles';
 import { hub } from './millTiles';
 import { art } from './parts';
 import { leoOn } from '../sprites/leo';
-import { KLUB } from '../sprites/klubfolk';
+import { CLUB } from '../sprites/clubfolk';
 
 export const G = 40;
 /** Ticks a blinking board stays, warns, and is gone (the same for both colors). */
@@ -146,7 +146,7 @@ export function courseTiles(): Tiles {
   }
 
   // Station 6: Professor Pratfall, practicing pies (his hand gives birth to them).
-  const [prof0, prof1] = leoOn(KLUB.pratfall.flipX(), bg, bg);
+  const [prof0, prof1] = leoOn(CLUB.pratfall.flipX(), bg, bg);
   t.air('profTop', prof0);
   t.air('profBot', prof1);
   // Station 7 and 8 are the Club's own asks (monsters): SIT?, and the turnstile.

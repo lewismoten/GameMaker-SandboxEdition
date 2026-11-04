@@ -6,12 +6,12 @@ import { backyard } from './levels/level1';
 import { street } from './levels/level2';
 import { park } from './levels/level3';
 import { city } from './levels/level4';
-import { klub } from './levels/level5';
+import { club } from './levels/level5';
 
-export const LEVELS: (() => Level)[] = [backyard, street, park, city, klub];
+export const LEVELS: (() => Level)[] = [backyard, street, park, city, club];
 
 /** Songs per level (CMF file names), in level order. */
-const LEVEL_SONGS = ['backyard.cmf', 'street.cmf', 'park.cmf', 'city.cmf', 'klub.cmf'];
+const LEVEL_SONGS = ['backyard.cmf', 'street.cmf', 'park.cmf', 'city.cmf', 'club.cmf'];
 
 const TITLE = "TEDDY'S ADVENTURE";
 

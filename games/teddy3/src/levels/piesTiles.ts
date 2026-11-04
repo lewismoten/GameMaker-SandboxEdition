@@ -11,7 +11,7 @@ import { GRAV, Tiles } from './level';
 import { c, copy, r } from '../blocks/tiles';
 import { sign, wideSign } from './common';
 import { art } from './parts';
-import { KLUB } from '../sprites/klubfolk';
+import { CLUB } from '../sprites/clubfolk';
 import { leoOn } from '../sprites/leo';
 import { cakeOn, thrower, type Pose, type Who } from '../sprites/pies';
 
@@ -211,7 +211,7 @@ export function piesTiles(): Tiles {
       p.rect(58, 44, 9, 2, c('cloud', 2)).rect(57, 46, 11, 2, c('wood', 3));
     },
   );
-  const [prof0, prof1] = leoOn(KLUB.pratfall.flipX(), cloth, cloth);
+  const [prof0, prof1] = leoOn(CLUB.pratfall.flipX(), cloth, cloth);
   t.air('profTop', prof0);
   t.air('profBot', prof1);
   t.add('cake', cakeOn(cloth), { obj: true, effect: CTR.clues, eamt: 1, score: 100, touch: 'tent', grav: GRAV.down });

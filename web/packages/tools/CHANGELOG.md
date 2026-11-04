@@ -12,6 +12,7 @@ embroidery and 3D-printable and laser models.
 
 - `image/animatedGif`: a looping animated GIF from indexed frames that each carry their own VGA palette, as an FLI's do.
 - Shared game-building APIs: DOS disk writing, native character and text-screen builders, FLI clipping fades, route checks and the engine-backed simulator, perspective roads, photo processing, level previews, CMF arrangement effects and synthesis pieces.
+- Text-fit audit: `levelCards` and `cardOverflow` find words baked into a Starter level card that run past its parchment box.
 - Audio: native PCM WAV decoding and Node-only conversion of source audio to native VOC files.
 - Color: the original Library palette, reusable palette templates with hardware references, pixel-based color reduction, RGB and HSV helpers, and configurable ramps.
 - Indexed surface painting and transforms, plus palette reservation planning that scores colors by delta E.

@@ -10,14 +10,14 @@ import { rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { LevelMap, type Level } from './level';
 import { bandOf } from './level1Tiles';
 import { c, cut } from '../blocks/tiles';
-import { G, klubTiles } from './level5Tiles';
-import { klubBeasts } from './level5Beasts';
+import { G, clubTiles } from './level5Tiles';
+import { clubBeasts } from './level5Beasts';
 
 export const P_ = (n: string, k: number) => c(n, k);
 
-export function klub(): Level {
-  const bs = klubTiles();
-  const beasts = klubBeasts();
+export function club(): Level {
+  const bs = clubTiles();
+  const beasts = clubBeasts();
   bs.def('bubblesBot').birthMon = beasts.id('bubble');
   bs.def('bubblesBot').birthTime = 30;
   bs.def('launcherBot').birthMon = beasts.id('pie');
@@ -159,7 +159,7 @@ export function klub(): Level {
   void pick;
   void cut;
   return {
-    file: 'klub',
+    file: 'club',
     title: 'The Clown Club',
     time: 'show',
     bs,

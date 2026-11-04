@@ -14,7 +14,7 @@ import { POSES } from '../sprites/teddy';
 import { GWINN } from '../sprites/gwinn';
 import { GWINN_HERO } from '../sprites/gwinnHero';
 import { docLeo, type Costume } from '../sprites/people';
-import { CHEZ, citiCar } from '../sprites/klown';
+import { CHEZ, citiCar } from '../sprites/clown';
 import { chezRide } from '../../../teddy/src/screens/ride';
 import { renderRegion } from '../art/render';
 import type { Level } from '../levels/level';
@@ -36,7 +36,7 @@ import {
 } from '../sound/music';
 import { CREDITS, EGG, HELP, LOST, README, STORY, WON, CARDS } from './text';
 import { drawEgg } from '../sprites/egg';
-import { gwinnSits } from '../sprites/klubfolk';
+import { gwinnSits } from '../sprites/clubfolk';
 import { dosText } from '@lewismoten/gamemaker-sandbox-tools/kit/disk';
 import { SANDLOGO, sandLogoFli } from '../../../kit/sandlogo';
 

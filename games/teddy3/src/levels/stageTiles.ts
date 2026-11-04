@@ -11,7 +11,7 @@ import { Tiles } from './level';
 import { boxFace, c, copy, r } from '../blocks/tiles';
 import { floorboards, sign, wideSign } from './common';
 import { art } from './parts';
-import { KLUB } from '../sprites/klubfolk';
+import { CLUB } from '../sprites/clubfolk';
 import { juggler } from '../sprites/folks';
 import { leoOn } from '../sprites/leo';
 
@@ -198,8 +198,8 @@ export function stageTiles(): Tiles {
     t.air(`${name}Top`, a, def);
     t.air(`${name}Bot`, b, def);
   };
-  two('pratfall', KLUB.pratfall);
-  two('honker', KLUB.honker);
+  two('pratfall', CLUB.pratfall);
+  two('honker', CLUB.honker);
   for (const ph of [0, 1]) {
     const [a, b] = leoOn(juggler(ph), bg, bg);
     t.air(`juggles${ph}Top`, a, { next: `juggles${1 - ph}Top`, ntime: 7 });

@@ -227,7 +227,8 @@ catalogPatches.ts`) and the DOS download writes it into XFERPLAY.EXE; it never g
 - `textfit.ts` — the text-fit audit: every screen where PLAYGAME draws text over a game's own pictures must
   have the text on plain paper with enough contrast. `textfitCheck.ts` also fails any character 128-255 in the
   words the player draws in play (text pages, the menu's name, a shipped .his), which DOS draws as scribbles
-  (the Level check's `dos-chars`). Run it with
+  (the Level check's `dos-chars`). It also checks each level's card (the picture shown between levels, words
+  baked in) and fails words that run past the edge of its parchment box (`cardOverflow`). Run it with
   `cd web && npx vite-node ../games/kit/textfitCheck.ts <id> [--png <dir>] [--all]`.
 - `textBounds.ts` — no text cut off at the edge of its picture: the games' text helpers (`text`, `micro`, a canvas's
   `text`) report each string's ink, and a build run with `TEXT_BOUNDS=<file>` writes every string that runs past its

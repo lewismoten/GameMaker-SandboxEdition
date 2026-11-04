@@ -135,12 +135,12 @@ export const NICKELS: Record<string, NickelDef> = {
     art: omega,
   },
   loofah: {
-    concept: 'A scrub token: the loofah beside the horned imp, "CLEANSE ME".',
+    concept: 'A scrub token: the loofah beside the friendly bath monster, "CLEANSE ME".',
     top: 'CLEANSE ME',
     bottom: 'O LOOFAH',
     good: ['ONE SCRUB', 'LEAVING', 'MY SOUL'],
     figs: 2,
-    art: (a) => a.figure(0, -5.5, 0, 12).figure(1, 5.5, 2, 9),
+    art: (a) => a.figure(0, -5.5, 0, 12).figure(1, 5.5, 2, 8.5),
   },
   maximus: {
     concept: 'A Galactic Courier star credit: a rocket along a dotted star route, "PAID ON DELIVERY".',
