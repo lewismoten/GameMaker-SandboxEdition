@@ -32,3 +32,5 @@ f20dce2e0146ddf35f5f56747d8059d657af90dc
 8f8f4d89bbcc59ab9fdc171f5c53013fcf44342a
 # Tune-Up cameo and thermos lines, Prettier only
 a456f051ebf80c7562dd27c745f0f93735f70c59
+# Release prep: formatting only (archives changelog, storage.ts, uses.ts)
+ded7ce363f38045b68e7da8cdd8370ef969e953e
