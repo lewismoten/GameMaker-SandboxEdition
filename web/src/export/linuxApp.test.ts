@@ -1,5 +1,6 @@
 // The Linux download: the prebuilt players, the tar writer and reader, and the game's folder and
 // script.
+// Stays slow (the script test): it runs real sh processes to prove the scripts install and uninstall.
 import { describe, expect, it } from 'vitest';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';

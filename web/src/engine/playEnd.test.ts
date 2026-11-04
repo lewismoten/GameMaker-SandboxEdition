@@ -1,6 +1,6 @@
 // The engine's end-of-play listener (Session.onPlayEnd, for the desk's score trophies): it hears
 // the final score as play ends, and never during a demo's or walkthrough's playback.
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { GameFiles } from '../project/files';
 import { testGame } from '../editor/check/testGame';
 import { autoWalk } from '../editor/check/walk/autoWalk';
@@ -15,9 +15,15 @@ const ROWS = [
 ];
 
 /** Plays the bot's walkthrough of the test game; `real` makes play look like a player's at the end. */
+// The bot's walkthrough is found once for both tests (it does not depend on `real`).
+let t: ReturnType<typeof testGame>;
+let r: Awaited<ReturnType<typeof autoWalk>>;
+beforeAll(async () => {
+  t = testGame(ROWS);
+  r = await autoWalk(t.game, t, 'test');
+}, 60_000);
+
 async function playThrough(real: boolean): Promise<{ ends: [number, string, number][]; score: number; won: boolean }> {
-  const t = testGame(ROWS);
-  const r = await autoWalk(t.game, t, 'test');
   const run = new WalkRun(headlessCanvas(), new GameFiles(t.files), 'test.gam', { ...r.walk!, story: false });
   await run.start();
   const s = run.session!;

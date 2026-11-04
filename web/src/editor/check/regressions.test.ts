@@ -1,6 +1,7 @@
 // The level check still finds the real bugs it found in the Sandbox games, on their disks from
 // before each fix (read with git: gitDisk.ts), and not on the fixed ones. Skipped where git or
 // those commits aren't there (CI's shallow clone).
+// Stays slow: each case plays the real Level check over a real game's disk.
 import { describe, expect, it } from 'vitest';
 import { GameFiles } from '../../project/files';
 import { landings } from './checks/landings';

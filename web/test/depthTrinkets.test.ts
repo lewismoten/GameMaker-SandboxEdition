@@ -1,5 +1,6 @@
 // Tests: Depth Perception's plastic trinkets (games/depth/src/trinkets): each model meshes to one closed
 // solid standing on z = 0 at about its stated size.
+// Stays slow: each case meshes a real printable trinket.
 import { describe, expect, it } from 'vitest';
 import { inspectMesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/meshCheck';
 import { makeTrinket } from '../../games/depth/src/trinkets/make';

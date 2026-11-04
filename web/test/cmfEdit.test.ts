@@ -80,7 +80,7 @@ describe('CMF editing model', () => {
       for (const f of unique) {
         const bytes = new Uint8Array(readFileSync(f));
         const out = writeSong(readSong(bytes));
-        expect(out, f).toEqual(bytes);
+        expect(Buffer.compare(out, bytes) === 0, f).toBe(true); // toEqual on big arrays is slow
       }
     },
     SLOW,
