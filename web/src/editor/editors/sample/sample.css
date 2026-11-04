@@ -156,3 +156,22 @@
   border-left: 3px solid #e0a030;
   padding: 4px 8px;
 }
+
+/* Touch: the trim, effect and record buttons are 44 px. */
+@media (hover: none) and (pointer: coarse) {
+  .voc-edit button,
+  .voc-edit select,
+  .voc-edit summary,
+  .voc-edit input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  .voc-edit button {
+    min-width: 44px;
+  }
+  .voc-slider input[type='range'] {
+    min-height: 44px;
+  }
+  .voc-tools-row {
+    row-gap: 8px;
+  }
+}
