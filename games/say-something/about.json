@@ -29,20 +29,10 @@
       "Made to be copied and taken apart"
     ],
     "shots": [
-      [
-        "hello.map",
-        22,
-        6
-      ],
-      [
-        "chat.map",
-        24,
-        6
-      ]
+      ["hello.map", 22, 6],
+      ["chat.map", 24, 6]
     ],
     "rating": "Everyone"
   },
-  "acceptedFindings": [
-    "facing s3 The hero climbs side on"
-  ]
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
 }
