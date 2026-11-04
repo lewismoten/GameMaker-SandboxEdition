@@ -211,6 +211,12 @@
 }
 
 @media (max-width: 600px) {
+  /* the hint stays between the ◀ ▶ arrows, not under them */
+  .box-viewer-bar .hint {
+    margin-inline: 52px;
+    text-align: center;
+  }
+
   .box-nav {
     top: auto;
     bottom: 120px;

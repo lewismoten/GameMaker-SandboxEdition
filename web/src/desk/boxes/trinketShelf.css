@@ -186,23 +186,24 @@
 }
 
 @media (max-width: 700px) {
+  /* above the disks and manual (gameBoxContents.css), so nothing sits on them; six tiles fit one row */
   .fl-bar {
-    right: 58px;
-    bottom: 180px;
-    left: 58px;
+    right: 8px;
+    bottom: 316px;
+    left: 8px;
   }
 
   .feelie {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
   }
 
   .fl-row {
-    gap: 4px;
+    gap: 3px;
   }
 
   .trk-float {
-    inset: 0 0 calc(180px + 180px);
+    inset: 0 0 calc(316px + 112px);
   }
 
   .trk-canvas {
