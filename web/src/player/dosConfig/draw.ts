@@ -80,7 +80,7 @@ export function drawConfigScreen(s: Canvas, st: ConfigState): void {
   s.write(INTX, INTY + (l + 1) * 0x10, ink++, '10');
   for (let v = 0; v < 10; v++, ink++) s.write(VGACARDX, VGACARDY + v * VGACARDSEP, ink, VGA_TYPES[v]);
   s.write(171, 181, ink++, 'Help');
-  s.write(221, 181, ink++, 'Done');
+  s.write(221, 181, ink, 'Done');
 
   for (const g of ['port', 'int', 'vga', 'sound'] as const) markChoice(s, st, g, 8, 9);
 }
