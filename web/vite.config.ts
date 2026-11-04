@@ -293,7 +293,8 @@ export default defineConfig({
   resolve: { conditions: ['gamemaker-source', 'module', 'browser', 'development|production'] },
   ssr: { noExternal: [/^@lewismoten\/gamemaker-sandbox-/], resolve: { conditions: ['gamemaker-source', 'module', 'node', 'development|production'] } },
   base: './',
-  define: { 'import.meta.env.VITE_COMMIT': JSON.stringify(gitCommit()) },
+  // VITE_REPO_ROOT: only the dev server's devLocalWalk.ts reads it (a production build drops that module)
+  define: { 'import.meta.env.VITE_COMMIT': JSON.stringify(gitCommit()), 'import.meta.env.VITE_REPO_ROOT': JSON.stringify(resolve(__dirname, '..')) },
   plugins: [
     cdGames(resolve(__dirname, '../cd')),
     seoPages(resolve(__dirname, '../cd')),
