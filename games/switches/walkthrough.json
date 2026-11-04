@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "game": "switches",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
+  },
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU0ozQNNCs0rTTLNA00ozQNNI80DTQ=="
+    },
+    {
+      "scene": 3,
+      "keys": "AU0tzQNNZM0DTQw5ArkTOQK5ME1GzQNNBc0DSCfIA00jzQNNCM0QTRnNA00ozQNNGc0DTSjNA0sAywNN"
+    }
+  ],
+  "chapters": [
+    {
+      "scene": 2,
+      "title": "Level 1: Pull the Lever"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Red and Blue"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 9160,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 896,
+        "time": 14933.333333333148
+      },
+      {
+        "title": "Level 1: Pull the Lever",
+        "frame": 2125,
+        "time": 35416.66666666724
+      },
+      {
+        "title": "Level 2: Red and Blue",
+        "frame": 3318,
+        "time": 55299.99999999768
+      },
+      {
+        "title": "Ending",
+        "frame": 5878,
+        "time": 97966.66666667229
+      },
+      {
+        "title": "Credits",
+        "frame": 8086,
+        "time": 134766.66666667978
+      }
+    ]
+  }
+}

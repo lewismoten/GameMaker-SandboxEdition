@@ -19,13 +19,13 @@ const r = await replay(
     chapters: [],
     timeline: { fps: 30, frames: 0, chapters: [] },
   },
-  { maxMinutes: 1.4 },
+  { maxMinutes: 4 },
 );
-const seen = r.scenes.slice(0, 4).join(' ');
+const seen = r.scenes.slice(0, 3).join(' ');
 if (r.error) console.log(r.error);
 console.log(`demo: scenes entered ${r.scenes.join(' ')}; ${r.keysLeft} keys unplayed`);
-if (seen !== '2 3 3 4' || r.keysLeft || r.scenes.includes(1)) {
-  console.error(`demoCheck: expected scenes 2 3 3 4 with every key played and no ending; got ${seen}`);
+if (seen !== '2 3 3' || r.keysLeft || r.scenes.includes(1)) {
+  console.error(`demoCheck: expected scenes 2 3 3 with every key played and no ending; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: hurt once by the spike, fell in the pool once and came back, crossed, no game over');
+console.log('demoCheck ok: pulled the lever and crossed, fell in at the red planks with only the blue lever pulled, came back, no game over');

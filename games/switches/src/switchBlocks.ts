@@ -47,16 +47,12 @@ function lever(pal: Pal, color: Color, pulled: boolean): Pixels {
 function ghost(pal: Pal, color: Color): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const c = pal.r(color);
-  const dot = c[2];
-  // a dashed outline two pixels thick, a pale fill and a dashed grain line, so it reads as a plank that is not there yet
-  p.rect(1, 1, 18, 6, c[4]);
-  for (let x = 0; x < 20; x += 5) {
-    p.rect(x, 0, 3, 2, dot).rect(x, 6, 3, 2, dot);
-  }
-  for (let y = 0; y < 8; y += 4) {
-    p.rect(0, y, 2, 2, dot).rect(18, y, 2, 2, dot);
-  }
-  for (let x = 2; x < 18; x += 4) p.rect(x, 3, 2, 1, dot);
+  const dot = c[1]; // not a shade the pool uses, so the Level check does not take the pool for sky
+  // a dashed outline two pixels thick with a dashed grain line and two nail dots: no fill, so the sky shows through
+  for (let x = 0; x < 20; x += 6) p.rect(x, 0, 4, 2, dot).rect(x, 6, 4, 2, dot);
+  p.rect(0, 0, 2, 3, dot).rect(0, 5, 2, 3, dot).rect(18, 0, 2, 3, dot).rect(18, 5, 2, 3, dot);
+  for (let x = 4; x < 16; x += 4) p.rect(x, 3, 2, 1, dot);
+  p.set(3, 4, dot).set(16, 4, dot);
   return p;
 }
 

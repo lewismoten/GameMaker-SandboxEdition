@@ -71,7 +71,7 @@ export async function redAndBlue(bot: StarterBot): Promise<void> {
   await must(bot, bot.walk(L2.blueLever + 1, 'through the blue lever'), 'into the blue lever');
   counter(bot, BLUE, PLANKS, 'after the blue lever');
   await must(bot, bot.walk(L2.redPool - 1, 'the red planks'), 'to the red planks');
-  // what RED PLANKS WANT THE RED LEVER teaches, once, on purpose: the blue counter does not pay for red planks
+  // what RED PLANKS WANT RED teaches, once, on purpose: the blue counter does not pay for red planks
   const out = await bot.walk(L2.redPool + 3, 'onto the red planks');
   if (out !== 'dead') throw new Error(`walking onto the red planks with only the blue lever pulled should cost a life; got ${out ?? 'nothing'}`);
   await must(bot, bot.wait(LOOK), 'watching the room start again');

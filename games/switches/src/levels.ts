@@ -27,9 +27,9 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
     spend: addSign(book, pal, 'spend.sign', 'EACH DOTTED PLANK SPENDS ONE', 4, 3),
     six: addSign(book, pal, 'six.sign', 'ONE PULL, SIX PLANKS', 4, 2),
     colors: addSign(book, pal, 'colors.sign', 'EACH COLOR HAS ITS OWN COUNTER', 4, 3),
-    ladder: addSign(book, pal, 'ladder.sign', 'THE RED LEVER IS UP THE LADDER', 4, 3),
-    red: addSign(book, pal, 'red.sign', 'RED PLANKS WANT THE RED LEVER', 4, 3),
-    blue: addSign(book, pal, 'blue.sign', 'BLUE PLANKS WANT THE BLUE LEVER', 4, 3),
+    ladder: addSign(book, pal, 'ladder.sign', 'RED LEVER UP THE LADDER', 4, 3),
+    red: addSign(book, pal, 'red.sign', 'RED PLANKS WANT RED', 4, 3),
+    blue: addSign(book, pal, 'blue.sign', 'BLUE PLANKS WANT BLUE', 4, 3),
     exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),
   };
   addSwitchBlocks(book, pal);

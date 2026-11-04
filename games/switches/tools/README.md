@@ -1,11 +1,10 @@
-# Watch Your Step: tools
+# Switches: tools
 
-- `check.ts`: the bot plays all three levels. `route.ts` asserts what each sign teaches: the lone spike costs exactly one sting (10 hit points), the pool exactly one life (the room starts again at its way in, hit points back to 50, lives one less), and the planks and the bridge cost nothing. The run wins; the one life the pool takes is on purpose (`play.ts` allows exactly that one).
-- `bumpCheck.ts`: a scripted player stays in the spikes for 2 seconds (standing, then pushing on). He must live and lose at most 10 hit points per spike: they turn flat when touched, so nothing holds him in a hurt that never ends.
-- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is levels 1 and 2 as one unbroken list of keys (the demo recorder counts game ticks across scene changes), so it shows the sting and the fall once each.
-- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks it enters scenes 2 3 3 4 (the fall re-enters scene 3) with no game over.
-- `preview.ts`: PNGs of the blocks, the hero, each level and every picture.
+- `check.ts`: the bot plays both levels. `route.ts` asserts what each sign teaches: the lever puts six on the red counter, the six dotted planks take them off one by one (the counter is back to empty and the bridge holds), and in level 2 the blue lever does not pay for red planks (Kit falls in, one life, back at the way in). Both bridges are crossed and every coin taken. The run wins; the one life the red planks take is on purpose (`play.ts` allows exactly that one).
+- `walkthrough.ts`, `gendemo.ts`: re-record the walkthrough and the title demo. The demo is both levels as one unbroken list of keys (the demo recorder counts game ticks across scene changes), stopped before the last door, so it shows the lever, the bridge and the wrong lever once each.
+- `demoCheck.ts`: plays the built `demo.rec` on the real engine and checks it enters scenes 2 3 3 (the fall re-enters scene 3) with no game over.
+- `preview.ts`: PNGs of the blocks, the hero, each level and every picture. `shots.ts`: pictures of the lessons for the progress shots.
 
-## Starter rule: show the bad thing once
+## What the engine does here, and what it does not
 
-A Starter's demo and walkthrough show what each sign teaches, including the bad thing happening once. Here the bot walks into one spike, pauses so a watcher sees the hit points drop and the hurt pose, then falls into the pool once and comes back. A run that loses any other life, or the game, fails.
+A block changes only itself when touched. A lever cannot change a plank across the room: they share a counter (22 red, 23 blue). A counter from 20 up refuses a touch that would take it to zero or less, which is why a dotted plank with nothing on the counter stays a dotted plank. A counter keeps its number when a life is lost, but the room's blocks (levers included) start again.
