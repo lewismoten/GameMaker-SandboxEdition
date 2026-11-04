@@ -23,7 +23,7 @@ export const TRINKETS: Year2000Trinket[] = [
   {
     id: 'wrong-number-die',
     title: 'The wrong-number die',
-    blurb: 'Roll it to choose which booth to dial. Most numbers in the exchange are wrong.',
+    blurb: 'Roll it to choose which booth to dial. Nothing about it is right: a 7, a blank 0, a 4 whose last pip is out of order, and opposite faces that never add up to 7.',
     height: 20,
     maxWidth: 20,
     cell: 0.5,
