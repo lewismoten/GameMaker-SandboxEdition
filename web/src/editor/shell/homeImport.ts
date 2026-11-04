@@ -197,7 +197,7 @@ async function importFiles(nav: HomeNav, imported: Imported, origin: Origin, mis
     return;
   }
   const had = alreadyHave(origin.fingerprint);
-  await panel?.step('Opening', 'saving the game and opening it');
+  await panel?.step('Opening', 'saving the game, then opening it');
   const { project: p, note, madeGam } = await saveImported(imported);
   noteImport(p.id, origin.source, origin.fingerprint);
   if (madeGam) toast('No .gam file found — a new one was created for these files.');
@@ -303,7 +303,7 @@ async function importGiven(nav: HomeNav, given: ScanFile[], list: File[], onAdde
   // one game opens as it always has, unless it was removed before: then it is listed, unticked, to say so
   const one = report.games.length === 1 && report.games[0];
   if (one && !removedMatch(fingerprintOf(one))) {
-    const read = await new GameReader(given).read(one, (done, total, path) => panel?.step('Unpacking', path.split('/').pop(), done, total));
+    const read = await new GameReader(given).read(one, (done, total, path) => panel?.step('Extracting', path.split('/').pop(), done, total));
     return importFiles(nav, read, originOf(one), one.missing, panel);
   }
   if (report.games.length) return importChosen(report, given, onAdded);

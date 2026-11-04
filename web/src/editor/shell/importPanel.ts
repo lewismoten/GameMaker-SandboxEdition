@@ -5,8 +5,8 @@
 import { h, modal } from '../core/ui';
 import './importChooser.css';
 
-/** The steps in the order they come; the bar fills a quarter at each. */
-const STEPS = ['Reading', 'Unpacking', 'Finding the game', 'Opening'] as const;
+/** The steps in the order they come; the bar fills a fifth at each. */
+const STEPS = ['Reading', 'Unpacking', 'Finding the game', 'Extracting', 'Opening'] as const;
 export type ImportStep = (typeof STEPS)[number];
 
 export interface ImportPanel {
@@ -35,16 +35,18 @@ export function openImportPanel(label: string): ImportPanel | undefined {
   if (running) return undefined;
   running = true;
   const ctl = new AbortController();
-  const bar = h('progress', { max: '4', value: '0', 'aria-label': 'Import progress' });
+  const bar = h('progress', { max: '5', value: '0', 'aria-label': 'Import progress' });
   const name = h('p', { class: 'ic-line' }, h('strong', null, label));
   const line = h('p', { class: 'ic-line', 'aria-hidden': 'true' }, 'Reading…');
-  const status = h('p', { class: 'vh', role: 'status', 'aria-live': 'polite' }, `Reading ${label}`);
+  const status = h('p', { class: 'ic-status', role: 'status', 'aria-live': 'polite' }, `Reading ${label}`);
   const buttons = h('div', { class: 'buttons' });
+  const cancel = h('button', { type: 'button' }, 'Cancel');
   let ended = false;
   let finish: (() => void) | undefined;
   let spoke = -1;
   let last = 0;
 
+  cancel.addEventListener('click', () => (ctl.abort(), finish?.()));
   void modal<void>('Importing', (close) => {
     finish = () => {
       if (ended) return;
@@ -52,7 +54,7 @@ export function openImportPanel(label: string): ImportPanel | undefined {
       running = false;
       close(undefined);
     };
-    buttons.append(h('button', { type: 'button', onclick: () => (ctl.abort(), finish?.()) }, 'Cancel'));
+    buttons.append(cancel);
     return h('div', { class: 'ic-work' }, name, line, bar, status, buttons);
   }).finally(() => {
     ended = true;
@@ -65,15 +67,17 @@ export function openImportPanel(label: string): ImportPanel | undefined {
     async step(step, detail, done, total) {
       if (ended) return;
       const at = STEPS.indexOf(step);
+      // saving the game can't be stopped half way
+      cancel.hidden = step === 'Opening';
       const inside = total && done !== undefined ? Math.min(1, done / total) : 0;
       bar.value = at + inside;
       const where = total ? ` (${done! + 1} of ${total})` : '';
-      line.textContent = `Step ${at + 1} of ${STEPS.length}: ${step}${detail ? ` ${detail}` : ''}${where}`;
+      line.textContent = `Step ${at + 1} of ${STEPS.length}: ${step}${detail ? `: ${detail}` : ''}${where}`;
       // read aloud at each step, and at each fifth of a step's files
       const mark = at * 10 + (total ? Math.floor(inside * 5) : 0);
       if (mark !== spoke) {
         spoke = mark;
-        status.textContent = `${step}${detail ? ` ${detail}` : ''}${total ? `, ${Math.round(inside * 100)} percent` : ''}`;
+        status.textContent = `${step}${detail ? `: ${detail}` : ''}${total ? `, ${Math.round(inside * 100)} percent` : ''}`;
       }
       // let the page draw between files
       const now = performance.now();

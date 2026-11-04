@@ -19,7 +19,7 @@ Part of the [source map](../README.md).
     the panel's Walkthrough (`walkthrough/button.ts`) loads when first used (`homeWalkOpen.ts`: a
     CD game look-only),
     `homeProjectActions.ts`, `homeImport.ts` (new game and importing, loaded when first used; an import holding several games
-    lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`,
+    lists them to tick, with progress and Cancel while looking and importing: `importChooser.ts`; the panel from the moment a file is picked, with its steps, files n of m, errors and the one-import-at-a-time guard: `importPanel.ts`,
     each row with a small title screen drawn as it scrolls into view: `importThumbs.ts`; removing all
     the imported games, or one import's, which `importBatch.ts` remembers: `importRemove.ts`) and
     `projectExport.ts`; the health badge (`gameHealth.ts`). Imported games' ratings on the home

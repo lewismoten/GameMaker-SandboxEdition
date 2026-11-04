@@ -43,7 +43,7 @@ export function exportHead(m: ExportMeta): string {
 export function exportAbout(m: ExportMeta): string {
   const p = (s: string) => `<p>${s}</p>`;
   return [
-    `<div class="gm-about" style="max-width:40rem;margin:0 auto;padding:24px 16px;font:16px/1.5 system-ui,sans-serif;color:#ccc">`,
+    `<main class="gm-about" style="max-width:40rem;margin:0 auto;padding:24px 16px;font:16px/1.5 system-ui,sans-serif;color:#ccc">`,
     `<h1 style="font:bold 1.6rem monospace;color:#ff5">${escapeHtml(m.title)}</h1>`,
     m.poster
       ? `<img src="${m.poster}" width="320" height="200" alt="${escapeHtml(`${m.title}: the game's title screen`)}" style="display:block;width:100%;max-width:640px;height:auto;aspect-ratio:8/5;margin:0 auto 16px;image-rendering:pixelated;image-rendering:crisp-edges" />`
@@ -61,7 +61,7 @@ export function exportAbout(m: ExportMeta): string {
         ` · <a style="color:#9cf" href="${REPO_URL}">source code</a>` +
         ` · the player is <a style="color:#9cf" href="${REPO_URL}/blob/master/LICENSE">MIT licensed</a></small>`,
     ),
-    `</div>`,
+    `</main>`,
   ].join('');
 }
 
