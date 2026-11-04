@@ -51,6 +51,7 @@ npx vite-node ../games/kit/palCheck.ts [id]        # no byte-identical .pal file
 npx vite-node ../games/kit/tinHearts.ts check      # every heart is found when touched
 npx vite-node ../games/kit/playtime.ts             # the only writer of box play hours
 npx vite-node ../games/kit/versionCheck.ts         # a game changed since the last push to master has a higher version
+npm run heavy -- <command...>                  # a heavy job (build, full vitest, verify:perf, check:games, walkthrough recording) in one of 2 shared slots; waits while the load is over 20; log in ~/.cache/gamemaker-heavy/log.tsv
 npm run check:games                                # all of the game checks above, every game, a table
 npm run check:games -- --game <id> --quick         # one game, without the reproducibility rebuild
 npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json] [--basic-keys]  # the editor's walkthrough bot on any game; a table per scene; exits 1 if it didn't win; --basic-keys: arrows, Space and Enter only
