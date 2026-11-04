@@ -34,7 +34,7 @@ export async function openSaves(target: SavesTarget, initial?: string): Promise<
   // messages show in the dialog's footer (a toast would sit under the dialog's backdrop)
   const sayEl = h('p', { class: 'sv-say', role: 'status', 'aria-live': 'polite' });
   let sayTimer: ReturnType<typeof setTimeout> | undefined;
-  const nav = h('nav', { class: 'sv-nav', 'aria-label': 'Save slots, high scores and backups' });
+  const nav = h('nav', { class: 'sv-nav', 'data-list-area': 'slots', 'aria-label': 'Save slots, high scores and backups' });
   const main = h('section', { class: 'sv-main', 'aria-live': 'off' });
   const body = h('div', { class: 'sv' }, nav, main);
   const keepView = () => target.key && setHashParams({ saves: viewParam(p.view) }, ['game', target.key]);

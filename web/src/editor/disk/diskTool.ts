@@ -138,7 +138,7 @@ function stepView(step: Step): HTMLElement {
 export async function diskTool(project: Project): Promise<void> {
   let stopKeys = () => undefined as void;
   await modal<void>('Optimize', () => {
-    const root = h('div', { class: 'disk-tool' });
+    const root = h('div', { class: 'disk-tool', 'data-list-area': 'steps' });
     const undoBar = h('div', { class: 'disk-undo' });
     let applied = '';
     let pack: PackSet | undefined;

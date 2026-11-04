@@ -102,7 +102,7 @@ export function renderScores(p: Panel): void {
     status,
     h(
       'div',
-      { class: 'sv-table-wrap' },
+      { class: 'sv-table-wrap', 'data-list-area': 'high scores' },
       h(
         'table',
         { class: 'sv-scores' },

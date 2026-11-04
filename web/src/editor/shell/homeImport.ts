@@ -35,6 +35,12 @@ import { noteImport } from '../../imported/noteMoves';
 import { removedGames, removedMatch, type RemovedGame } from '../../imported/removedGames';
 import { starsText } from '../../imported/ratings';
 
+// The three starts' descriptions: on the cards, and as their tooltips (a phone's cards show two lines).
+const READY_TEXT = 'A first level with scenery, monsters, a hero and sounds from the CD library, to change as you like.';
+const EMPTY_TEXT = 'Just a title and an ending. Add every file yourself.';
+const DESCRIBE_TEXT =
+  'Say what the game should be, and your own AI (Ollama or OpenAI) builds a first level from the starter, play-tests it and says what to add next.';
+
 export async function newGame(nav: HomeNav): Promise<void> {
   const opening = openingFields();
   const choice = await modal<{ name: string; start: 'starter' | 'empty' | 'describe'; opening: { style: OpeningStyle; name: string } }>('New game', (close) => {
@@ -57,27 +63,18 @@ export async function newGame(nav: HomeNav): Promise<void> {
       h(
         'div',
         { class: 'start-choices' },
+        h('button', { type: 'submit', class: 'start-choice primary', title: READY_TEXT }, h('strong', null, '▶ Ready to play'), h('small', null, READY_TEXT)),
         h(
           'button',
-          { type: 'submit', class: 'start-choice primary' },
-          h('strong', null, '▶ Ready to play'),
-          h('small', null, 'A first level with scenery, monsters, a hero and sounds from the CD library, to change as you like.'),
-        ),
-        h(
-          'button',
-          { type: 'button', class: 'start-choice', onclick: () => go('empty') },
+          { type: 'button', class: 'start-choice', title: EMPTY_TEXT, onclick: () => go('empty') },
           h('strong', null, '◻ Empty'),
-          h('small', null, 'Just a title and an ending. Add every file yourself.'),
+          h('small', null, EMPTY_TEXT),
         ),
         h(
           'button',
-          { type: 'button', class: 'start-choice start-describe', onclick: () => go('describe') },
+          { type: 'button', class: 'start-choice start-describe', title: DESCRIBE_TEXT, onclick: () => go('describe') },
           h('strong', null, h('span', { 'aria-hidden': 'true' }, '✦ '), 'Describe it to your AI…'),
-          h(
-            'small',
-            null,
-            'Say what the game should be, and your own AI (Ollama or OpenAI) builds a first level from the starter, play-tests it and says what to add next.',
-          ),
+          h('small', null, DESCRIBE_TEXT),
         ),
       ),
     );

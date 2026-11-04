@@ -1,0 +1,89 @@
+/* Dialogs on a phone (Lewis's rule: a pop-up must not need scrolling on a 375x812 screen; npm run check:dialogs).
+   Tighter spacing, descriptions that fold, and the one scrolling list area of a dialog whose content is a long list
+   (the title and the actions stay put). Each dialog's own rules are beside it; this file is the shared part. */
+@media (max-width: 600px), (max-height: 500px) {
+  dialog.modal {
+    max-width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+    padding: 12px 14px;
+  }
+
+  dialog.modal .modal-head {
+    margin: -2px 0 8px;
+  }
+
+  dialog.modal .buttons {
+    margin-top: 10px;
+  }
+
+  /* a dialog with one long list: head and actions fixed, the list scrolls (data-list-area marks it) */
+  dialog.modal[open]:has([data-list-area]) {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  dialog.modal[open] > :has([data-list-area]) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  dialog.modal [data-list-area] {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+  }
+}
+
+/* "New game": the three ways to start sit in one row of short cards; the long description is the card's tooltip. */
+@media (max-width: 600px), (max-height: 500px) {
+  .start-choices {
+    gap: 6px;
+  }
+
+  .start-choice {
+    gap: 2px;
+    padding: 8px 10px;
+  }
+
+  .start-choice small {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 12px;
+  }
+}
+
+/* The opening's fields (New game, Opening sting): the one-line descriptions become tooltips, and the preview sits beside the list. */
+@media (max-width: 600px), (max-height: 500px) {
+  .opening-fields {
+    gap: 6px;
+  }
+
+  .opening-pick {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .opening-styles {
+    flex: 1 1 0;
+    gap: 0;
+    padding: 2px 8px 4px;
+  }
+
+  dialog.modal .opening-choice small {
+    display: none;
+  }
+
+  .opening-preview {
+    flex: 0 0 112px;
+  }
+
+  .opening-preview figcaption {
+    display: none;
+  }
+}
