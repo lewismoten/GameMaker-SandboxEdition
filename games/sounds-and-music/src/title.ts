@@ -39,7 +39,15 @@ export function titlePicture(pal: Pal, _book: Book, hero: Pixels, door: Pixels, 
   text(p, rx + 10, 54, tagline, look.ribbonText);
   p.rect(44, 158, 32, 3, look.floorShadow);
   scaleBlit(p, hero, 40, 160 - 80 - 4, 2);
-  [false, true, false].forEach((pair, i) => scaleBlit(p, note(pal, pair).map((_x, _y, c) => (c === skyOf(pal) ? 255 : c)), 112 + i * 36, 160 - 76 - (i === 1 ? 10 : 0), 2));
+  [false, true, false].forEach((pair, i) =>
+    scaleBlit(
+      p,
+      note(pal, pair).map((_x, _y, c) => (c === skyOf(pal) ? 255 : c)),
+      112 + i * 36,
+      160 - 76 - (i === 1 ? 10 : 0),
+      2,
+    ),
+  );
   scaleBlit(p, door, 236, 160 - 80, 2);
   frameOf(p, pal, 'stage');
   return p;

@@ -74,7 +74,6 @@ function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers:
   for (const x of flowers) g.put(x, GROUND - 1, 'f');
 }
 
-
 /** Level 1: three signs about the room's song, and four coins. 40 blocks wide. */
 function songRoom(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(40, 36);

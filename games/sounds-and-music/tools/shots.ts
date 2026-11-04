@@ -1,6 +1,6 @@
 // Pictures of the lessons (never on the disk), for the progress shots: Kit before the spike and hurt by it
-// (the spike flat), by the hearts in level 2, and at the spikes and the ledge hearts in level 3.
-//   cd web && npx vite-node ../games/health-and-hearts/tools/shots.ts <outDir>
+// (the spike flat), by the hearts in level 2, and in the quiet room in level 3.
+//   cd web && npx vite-node ../games/sounds-and-music/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -9,7 +9,7 @@ import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPictu
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
-import { GROUND, buildLevels } from '../src/levels';
+import { GROUND, SPIKE_X, buildLevels } from '../src/levels';
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
@@ -32,17 +32,18 @@ const kit = (pose: [string, string], col: number) => {
 const region = (map: ReturnType<(typeof levels)[0]['map']['done']>, col: number, w: number, extra: ReturnType<typeof kit> = []) =>
   renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
 
+const region2 = (map: ReturnType<(typeof levels)[0]['map']['done']>, col: number, w: number, extra: ReturnType<typeof kit> = []) => region(map, col, w, extra);
+
 const m1 = levels[0].map.done();
-writePng(join(out, 'hit-1-before.png'), region(m1, 11, 12, kit(['stand.top', 'stand'], 14)), pal.pal, 3);
-// the moment after the touch: the spike under him is the flat one
-const flat = levels[0].map.done();
-flat.blocks[(GROUND - 1 + ORIGIN) * MLEN + 17 + ORIGIN] = book.n('spikeFlat');
-writePng(join(out, 'hit-2-hurt.png'), region(flat, 11, 12, kit(['hurt.top', 'hurt'], 17)), pal.pal, 3);
+writePng(join(out, 'song-1-signs.png'), region2(m1, 3, 14, kit(['stand.top', 'stand'], 9)), pal.pal, 3);
 
 const m2 = levels[1].map.done();
-writePng(join(out, 'hearts-1-before.png'), region(m2, 10, 14, kit(['stand.top', 'stand'], 14)), pal.pal, 3);
-writePng(join(out, 'hearts-2-cheer.png'), region(m2, 10, 14, kit(['cheer.top', 'jump'], 21)), pal.pal, 3);
+writePng(join(out, 'pickups-1-bags.png'), region2(m2, 10, 14, kit(['stand.top', 'stand'], 17)), pal.pal, 3);
+const flat = levels[1].map.done();
+flat.blocks[(GROUND - 1 + ORIGIN) * MLEN + SPIKE_X + ORIGIN] = book.n('spikeFlat');
+writePng(join(out, 'pickups-2-hurt.png'), region2(flat, 22, 14, kit(['hurt.top', 'hurt'], SPIKE_X)), pal.pal, 3);
+writePng(join(out, 'pickups-3-hearts.png'), region2(m2, 28, 14, kit(['cheer.top', 'jump'], 36)), pal.pal, 3);
 
 const m3 = levels[2].map.done();
-writePng(join(out, 'lives-1-spikes.png'), region(m3, 12, 22, kit(['stand.top', 'stand'], 20)), pal.pal, 3);
-writePng(join(out, 'lives-2-ledge.png'), region(m3, 8, 16, kit(['cheer.top', 'jump'], 16)), pal.pal, 3);
+writePng(join(out, 'quiet-1-jump.png'), region2(m3, 10, 16, kit(['cheer.top', 'jump'], 17)), pal.pal, 3);
+writePng(join(out, 'quiet-2-coins.png'), region2(m3, 26, 16, kit(['stand.top', 'stand'], 32)), pal.pal, 3);

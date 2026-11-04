@@ -27,4 +27,4 @@ if (seen !== '2 3 4 1' || r.keysLeft) {
   console.error(`demoCheck: expected scenes 2 3 4 1 (three levels, the ending) with every key played; got ${seen}`);
   process.exit(1);
 }
-console.log('demoCheck ok: heard the song, a spike's hurt and the hearts' help, jumped in the quiet room, reached the ending');
+console.log('demoCheck ok: heard the song, the spike hurt and the heart help, jumped in the quiet room, reached the ending');

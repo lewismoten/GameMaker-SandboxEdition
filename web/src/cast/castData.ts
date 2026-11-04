@@ -40,6 +40,7 @@ export const CAST_GAMES = {
   'health-and-hearts': ['Health and Hearts', 'starter'],
   'say-something': ['Say Something', 'starter'],
   'beat-the-clock': ['Beat the Clock', 'starter'],
+  'sounds-and-music': ['Sounds and Music', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -125,6 +126,7 @@ const LISTED: CastMember[] = [
       { game: 'health-and-hearts', as: 'counts hit points, mends with hearts and keeps an eye on his lives' },
       { game: 'say-something', as: 'reads the signs and talks to Pip, Moss and Dot' },
       { game: 'beat-the-clock', as: 'races a bar of light to a gate before it shuts' },
+      { game: 'sounds-and-music', as: 'listens to a song in every room and a beep for every pickup' },
     ],
   },
   {

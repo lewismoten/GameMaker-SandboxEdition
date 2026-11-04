@@ -1,87 +1,99 @@
 {
-  "title": "Health and Hearts",
+  "title": "Sounds and Music",
   "howDoI": [
     {
-      "id": "hit-points",
-      "q": "How do I choose how many hit points my hero starts with?",
+      "id": "room-song",
+      "q": "How do I make a room play a song?",
       "scene": 2,
       "x": 13,
       "y": 19,
       "level": 1
     },
     {
-      "id": "spike",
-      "q": "How do I make a block that takes hit points?",
-      "scene": 2,
-      "x": 27,
-      "y": 19,
-      "level": 1
-    },
-    {
-      "id": "heart",
-      "q": "How do I make a pickup that gives hit points back?",
+      "id": "new-song",
+      "q": "How do I give the next room a different song?",
       "scene": 3,
-      "x": 27,
+      "x": 13,
       "y": 19,
       "level": 2
     },
     {
-      "id": "carry",
-      "q": "How do I keep my hero's hit points from one level to the next?",
+      "id": "quiet",
+      "q": "How do I make a room with no music?",
+      "scene": 4,
+      "x": 13,
+      "y": 19,
+      "level": 3
+    },
+    {
+      "id": "pickup-sound",
+      "q": "How do I make a pickup play a sound?",
       "scene": 3,
-      "x": 33,
+      "x": 29,
       "y": 19,
       "level": 2
     },
     {
-      "id": "lose-life",
-      "q": "How do I make my hero lose a life when his hit points run out?",
-      "scene": 4,
-      "x": 31,
+      "id": "hurt-sound",
+      "q": "How do I play a sound when my hero is hurt?",
+      "scene": 3,
+      "x": 39,
       "y": 19,
+      "level": 2
+    },
+    {
+      "id": "jump-sound",
+      "q": "How do I play a sound when my hero jumps?",
+      "scene": 4,
+      "x": 28,
+      "y": 18,
       "level": 3
     },
     {
-      "id": "one-up",
-      "q": "How do I give my hero an extra life?",
-      "scene": 4,
-      "x": 49,
-      "y": 17,
-      "level": 3
+      "id": "own-sound",
+      "q": "How do I change what a sound sounds like?",
+      "scene": 3,
+      "x": 46,
+      "y": 19,
+      "level": 2
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Health and Hearts</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about hit points, hearts and lives, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p>"
+      "html": "<h1>Welcome</h1><p><b>Sounds and Music</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about songs and sound effects, and takes a few minutes to finish. Turn your sound up.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p>"
     },
     {
-      "head": "Level 1: Hit Points",
-      "html": "<h1>Level 1: Hit Points</h1><p>The <b>F2 SHOWS YOUR HIT POINTS</b> sign comes first: press <kbd>F2</kbd> and Kit&rsquo;s numbers appear. He starts with 30 hit points and 3 lives. The <b>A SPIKE TAKES 10 HIT POINTS</b> sign stands before a single spike. Walk into it and it stings: Kit shows his hurt pose and has 20 left. The spike then lies flat and harmless. Press <kbd>F2</kbd> again to see.</p><p>Four coins are worth ten points each.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>Hit points to start.</b> Open <b>hero.chr</b> in the character editor. The first counter, <b>Hit points</b>, is 30, and <b>Lives</b> is 3. Each time a life is lost, the room starts again with the hit points back at that number.</li><li><b>A block that takes them.</b> Open <b>hearts.bbl</b> in the blocks editor and pick <b>spikeUp</b>. Its <b>Hit points</b> is &minus;10. The engine adds that to the hero each tick the block overlaps him, so a block that only hurts would drain him in a second.</li><li><b>Once.</b> The same block has <b>Becomes block</b> set to <b>spikeFlat</b>, which has no hit points. One touch, one sting, the way a coin vanishes when you take it.</li><li><b>You see it.</b> The hero&rsquo;s <b>Hurt</b> sequence plays, with its sound, each time his hit points drop. The count itself is on <kbd>F2</kbd>, the game&rsquo;s own status screen.</li><li><b>Where it is.</b> Open <b>one.map</b> in the map editor. The spike is one block on the grass, painted like grass.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with words drawn in their pictures.</li><li><b>The exit.</b> A scene link joins the door to the next level. Open <b>hearts.gam</b> in the scenes editor.</li></ul>"
-    },
-    {
-      "head": "Level 2: Hearts Heal",
-      "html": "<h1>Level 2: Hearts Heal</h1><p>Kit arrives with the 20 hit points he left level 1 with. The <b>A HEART GIVES 10 HIT POINTS BACK</b> sign comes first. Another spike takes him down to 10, and then two hearts in a row bring him up to 30. Each heart is gone once he touches it. The <b>HIT POINTS GO WITH YOU TO THE NEXT ROOM</b> sign is by the exit, because they do.</p><p>Three coins are on the way.</p>"
+      "head": "Level 1: A Song Per Room",
+      "html": "<h1>Level 1: A Song Per Room</h1><p>This room has a song, and it starts the moment the room loads. The <b>EACH ROOM HAS ITS OWN SONG</b> sign comes first, then <b>A SONG REPEATS UNTIL YOU LEAVE</b>: wait a little and you will hear it start over. Four coins are on the way. The <b>THE NEXT ROOM PLAYS A NEW SONG</b> sign stands by the exit, because it does.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>A pickup that heals.</b> In <b>hearts.bbl</b> pick <b>heart</b>. Its <b>Hit points</b> is +10: the same field as the spike, above zero instead of below. The engine plays a soft sound for it.</li><li><b>Gone when touched.</b> <b>Becomes block</b> is set to the sky block, so the heart disappears and gives its 10 only once.</li><li><b>No stop at 30.</b> Nothing in the engine keeps hit points at the number a hero started with. Level 3 uses that.</li><li><b>They carry on.</b> Hit points are kept as the hero goes through a door. They only go back to the starting number when a life is lost or a new game starts.</li><li><b>Where they are.</b> Open <b>two.map</b>. The spike and the two hearts stand on the grass, painted like anything else.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The song is a file.</b> <b>meadow.cmf</b> is a Sound Blaster song. You can open it in the music editor and play it there.</li><li><b>The scene names it.</b> Open <b>sounds.gam</b> in the scenes editor and pick the first level&rsquo;s scene. One of its file slots is <b>Sound Blaster music</b>, and it holds <b>meadow.cmf</b>. The room plays that file whenever the scene loads.</li><li><b>It repeats.</b> When the song reaches its end the engine starts it again, so a room needs no loop of its own.</li><li><b>The title and menu</b> are scenes too, each with its own music slot. This game gives them the same song.</li><li><b>The coins</b> are 10 points each, and each plays the score sound. Level 2 says more about that.</li></ul>"
     },
     {
-      "head": "Level 3: Lives",
-      "html": "<h1>Level 3: Lives</h1><p>Four spikes stand along the ground, spaced out so each stings on its own. That is 40, and Kit has 30. The <b>AT ZERO HIT POINTS YOU LOSE A LIFE</b> sign says what happens: walk straight along the ground and the third spike takes his last hit point. He falls over, a life is gone (press <kbd>F2</kbd>) and the room starts again, with 30 hit points.</p><p>This time jump up onto the ledge first. Two hearts sit on it, and the <b>HEARTS CAN TAKE YOU PAST 30</b> sign says why that is fine: 50 hit points get him past all four spikes. Near the end a ledge holds a smiling face in a teal beanie. The <b>A FACE ADDS A LIFE</b> sign says the rest.</p>"
+      "head": "Level 2: Sounds on Pickups",
+      "html": "<h1>Level 2: Sounds on Pickups</h1><p>A new room, and a new song, a waltz. The signs name four sounds in turn: <b>COINS PLAY THE SCORE SOUND</b> (three coins), <b>A BAG PLAYS THE MONEY SOUND</b> (two bags), <b>A SPIKE PLAYS THE HURT SOUND</b> (one spike, which takes 10 of Kit&rsquo;s 30 hit points, once) and <b>A HEART PLAYS THE HELP SOUND</b> (two hearts, which give the 20 back). Listen: they are all different beeps.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 3 is made</h1><ul><li><b>Zero costs a life.</b> No block takes a life here. When the hero&rsquo;s hit points reach zero the engine plays his <b>Die</b> sequence, takes one life and starts the same level again. With no lives left, the game ends.</li><li><b>Where he comes back.</b> At the place he arrived the first time: the cyan marker on the doorway of <b>three.map</b>. Drag it to change that.</li><li><b>What starts over.</b> The map is read again, so hearts, spikes and coins are all back. Your score stays.</li><li><b>Past where he started.</b> Two <b>heart</b> blocks on a ledge of planks bring 30 to 50. The planks are solid on top only, so Kit jumps up through them and stands on top.</li><li><b>An extra life.</b> Pick <b>oneUp</b> in <b>hearts.bbl</b>. Its <b>Effect</b> is counter 1 (lives) and the <b>Amount</b> is 1. It is gone when touched.</li><li><b>Spaced spikes.</b> Spikes in a row can share one sting while Kit is in his hurt pose. Three blocks apart, each one counts.</li></ul>"
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A different song.</b> The second level&rsquo;s scene names <b>waltz.cmf</b> in its music slot, and the first named <b>meadow.cmf</b>. Going through the door loads the new scene, so the old song stops and the new one starts from its first note.</li><li><b>One sound a counter.</b> Game-Maker plays a sound by itself when a counter changes: score up plays <b>Add score</b>, money up plays <b>Add money</b>, hit points up plays <b>Help</b>, a life up plays <b>Add life</b>. They are the first nine entries in <b>sounds.snd</b>, in the sound editor.</li><li><b>The bag.</b> Open <b>sounds.bbl</b> in the blocks editor and pick <b>bag</b>. Its Touch tab says <b>Effect</b> counter 3 (money) and <b>Amount</b> 1. Money is a counter like hit points, so Kit needs a starting number for it in <b>hero.chr</b>.</li><li><b>The coin</b> is the Starter blocks&rsquo; own: <b>Score points</b> 10 and nothing else.</li><li><b>The hurt.</b> The spike takes 10 hit points, and the engine plays the sound written on the hero&rsquo;s <b>Hurt</b> sequence in <b>hero.chr</b>. That is sound 10 here.</li><li><b>Changing one.</b> Open <b>sounds.snd</b> and change the PC speaker notes of one entry. Play the level again and that pickup has a new beep.</li></ul>"
+    },
+    {
+      "head": "Level 3: A Quiet Room",
+      "html": "<h1>Level 3: A Quiet Room</h1><p>No song plays here, which makes the sounds easy to hear. The <b>THIS ROOM HAS NO SONG</b> sign comes first. Then <b>JUMPING HAS A SOUND TOO</b>: press <kbd>Space</kbd> and Kit&rsquo;s jump beeps. Hop up onto the ledge for its three coins. Near the end the <b>A NEW SOUND CUTS OFF THE LAST ONE</b> sign stands before a row of five coins. Run through them and hear each beep cut short by the next.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>No song.</b> This level&rsquo;s scene leaves the <b>Sound Blaster music</b> slot empty. When a scene loads, the engine stops the old song first and then plays whatever the slot holds, so an empty slot is silence.</li><li><b>A sound on a move.</b> Open <b>hero.chr</b> in the character editor and pick the <b>Jump</b> sequence. Its <b>Sound</b> is 9. Any of Kit&rsquo;s sequences can name any of the 30 sounds in <b>sounds.snd</b>, and it plays each time the sequence starts.</li><li><b>One at a time.</b> The engine has one sound voice. A new sound replaces the one still playing, so five coins in a row play only the start of each beep.</li><li><b>The ledge</b> is planks, solid on top only, so Kit jumps up through them and stands on top.</li></ul>"
+    },
+    {
+      "head": "What it can and can't do",
+      "html": "<h1>What the engine can and can't do</h1><ul><li><b>A song belongs to a scene.</b> It starts when the scene loads and repeats. There is no block, monster or key that starts or stops a song in the middle of a room. To change the music, link to another scene.</li><li><b>A song starts over</b> whenever its scene loads again, even if the same file plays next door.</li><li><b>Songs need a Sound Blaster.</b> Without one the room is silent. Only the sound effects have a PC speaker version.</li><li><b>A sound set has 30 sounds.</b> The first nine are played by counters changing (score, money, a life, hit points and a monster squashed). Each of the other 21 is played only when a character sequence names it.</li><li><b>A block can&rsquo;t play a sound by itself.</b> It plays one by changing a counter or hit points. A block that must make a noise gets a counter, or the hero a sequence.</li><li><b>One sound at a time,</b> and no volume or pan for either songs or sounds.</li><li><b>Recorded sounds.</b> Each entry can also name a recorded <b>.voc</b> file for the Sound Blaster to play in place of the beep. This game uses only beeps.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Give Kit 50 hit points in <b>hero.chr</b> and see how level 3 changes.</li><li>Make <b>heart</b> give 30 instead of 10.</li><li>Make <b>spikeUp</b> take 15, and count how many Kit can walk through.</li><li>Give Kit 1 life in <b>hero.chr</b>, and lose it in level 3.</li><li>Move a <b>oneUp</b> face somewhere harder to reach.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Give level 3 a song: put <b>meadow.cmf</b> in its scene&rsquo;s music slot.</li><li>Swap the songs of levels 1 and 2.</li><li>Open <b>waltz.cmf</b> in the music editor and change a few notes.</li><li>Give the Hurt sequence the sound the coin uses, and hear spikes sound friendly.</li><li>Make the bag give 5 money instead of 1.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

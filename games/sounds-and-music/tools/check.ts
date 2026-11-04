@@ -35,7 +35,8 @@ for (const name of [MEADOW, WALTZ]) {
 const snd = parseSoundSet(disk('sounds.snd'));
 const heroChar = parseCharacter(disk('hero.chr'));
 const named = { score: 5, money: 2, help: 0, hurt: heroChar.sequences[SEQ.hurt].sound, jump: heroChar.sequences[SEQ.jump].sound };
-if (named.hurt !== SND.hurt || named.jump !== SND.jump) fail(`Kit's hurt and jump should play sounds ${SND.hurt} and ${SND.jump}, not ${named.hurt} and ${named.jump}`);
+if (named.hurt !== SND.hurt || named.jump !== SND.jump)
+  fail(`Kit's hurt and jump should play sounds ${SND.hurt} and ${SND.jump}, not ${named.hurt} and ${named.jump}`);
 const shapes = Object.entries(named).map(([what, n]) => {
   const f = snd.freqs[n];
   if (!f.some((hz) => hz > 0)) fail(`the ${what} sound (${n}) is silent`);
