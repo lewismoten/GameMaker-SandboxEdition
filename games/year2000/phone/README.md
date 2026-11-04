@@ -180,7 +180,7 @@ take the project over in KiCad from here on.
 python3 tools/gen_sch.py && python3 tools/gen_pcb.py   # rewrite the schematic and board (routing takes a few minutes)
 tools/export.sh          # sexp check, ERC, DRC, gerbers/ (tracked), out/phone-gerbers.zip, out/phone-schematic.pdf
 tools/export3d.sh        # out/phone.glb, out/phone-bare.glb, out/front.png, out/back.png, then viewer/parts.json + parts.bin
-tools/build_firmware.sh  # gpasm -> out/firmware/phone.hex, then the simulator checks
+tools/build_firmware.sh  # gpasm -> firmware/phone.hex (tracked, both builds), then the simulator checks
 python3 tools/bom.py && python3 tools/mech.py
 ```
 
@@ -336,7 +336,7 @@ register in the firmware.
 Uno or Pro Mini into a low-voltage programmer for PIC16F6xx parts; its list names the 16F628A. A Nano clone is about $9 (Jameco KS0173,
 2026-11-03). It needs no parts on the board but the six-pin header, J1.
 
-1. `tools/build_firmware.sh` (or take `phone.hex` from a release): `out/firmware/phone.hex`.
+1. `tools/build_firmware.sh` (or take `phone.hex` from the circuit board ZIP): `firmware/phone.hex`.
 2. Load `ZEPPP/ZEPPP.ino` from the ZEPPP repository onto the Nano with the Arduino IDE (once). Install Java and download `zeppp-cli.jar`.
 3. Phone switched off, batteries out of the way, the CM8870 socket **empty**. Wire the Nano to J1 (pin 1 is the square pad, marked "1"):
 
