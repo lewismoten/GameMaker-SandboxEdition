@@ -22,7 +22,7 @@ describe('fetchOrder', () => {
     expect(paths.slice(0, 3)).toEqual(['./', 'assets/main-a.js', 'icon.svg']);
     expect(paths.indexOf('assets/desk-c.js')).toBeLessThan(paths.indexOf('assets/zzz-b.js'));
     expect(paths.indexOf('desk/y.png')).toBeLessThan(paths.indexOf('bbs/x.bin'));
-    expect(paths.some((p) => /^(games\/(?!catalog|index)|phone\/)/.test(p))).toBe(false);
+    expect(paths.some((p) => /^(games\/.*\.zip$|phone\/)/.test(p))).toBe(false);
     expect(paths).toContain('games/catalog.json');
     expect(new Set(paths).size).toBe(paths.length);
   });

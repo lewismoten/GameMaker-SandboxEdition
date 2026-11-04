@@ -38,6 +38,7 @@ front (the magazine, the desk, the level check's explorer, the engine…), walki
 
 - [`main.ts`](main.ts), [`modernUi.ts`](modernUi.ts): the site's entry and today's web interface
   (see Main flows).
+- `archive.html` → [`archive/archive.ts`](archive/archive.ts) (nothing links to it): fetches every file in `offline.json`, four at a time with a progress bar, so a web archive's "Save page" records them ([`archive/plan.ts`](archive/plan.ts) orders them: shell, home and desk, the rest, then game packs with `?games=1`; `?part=N` slices). [`offline/replay.ts`](offline/replay.ts) spots a Wayback replay (its `__wm` / `_WBWombat` globals or a `/web/<14 digits>/` address); there `offline.ts` registers no service worker and a missing chunk gets a calm note, not the reload notice.
 - [`play.ts`](play.ts): the play page's entry. [`dosPage/`](dosPage) is `dos.html`'s.
 - [`libraryStart.ts`](libraryStart.ts): the game the Library starts on, noted from the last game page, look or
   project view (`library/libraryPage.ts` reads it once).

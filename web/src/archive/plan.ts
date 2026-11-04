@@ -21,7 +21,7 @@ const FIRST_DATA = /^((desk|frames|opening|dos|gm)\/|games\/(catalog|index)\.jso
 /** The game lists the build writes after offline.json is made: the page asks for them, so they are listed here. */
 const LISTS = ['games/catalog.json', 'games/index.json'];
 /** The big packs: games and the phone's files. */
-const LAST = /^(games|phone)\//;
+const LAST = /^(games\/.*\.(zip|gmpak)$|phone\/)/;
 
 const tierOf = (path: string, shell: Set<string>): number => {
   if (shell.has(path)) return 0;
