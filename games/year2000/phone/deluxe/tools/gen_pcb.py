@@ -234,6 +234,10 @@ padpts += [(mx, my, 2.0) for mx, my in MOUNT]
 # Back-side advertising in the three blank spots of the back (found from the back preview): QR codes and Dex.
 PARTS_URL = "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/games/year2000/phone"
 SITE_URL = "https://lewismoten.github.io/GameMaker-SandboxEdition"
+URL_LINES = {      # what is printed beside each QR code (1.0 mm letters); together each is the address the QR code holds, without https://
+    SITE_URL: ["lewismoten.github.io/", "GameMaker-SandboxEdition"],
+    PARTS_URL: ["github.com/lewismoten/", "GameMaker-SandboxEdition/", "tree/master/games/", "year2000/phone"],
+}
 QR_PARTS = (25.41, 36.25, 0.5)     # x, y (top-left, board coordinates), module mm: 41 modules = 20.5 mm (blankspots.py)
 QR_SITE = (52.5, 156.8, 0.45)      # 33 modules = 14.85 mm (the battery holder covers the middle of the back)
 DEX_AT = (8.0, 157.0, 0.8)         # 16 x 18 pixels = 12.8 x 14.4 mm
@@ -522,6 +526,8 @@ for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SI
     QR_INFO["parts" if qtext == PARTS_URL else "site"] = dict(x=qx, y=qy, size=round(size_, 2), modules=n_, module_mm=qm, url=qtext)
     silk += items_
     silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))
+    for ln in URL_LINES[qtext]:       # the address in words, split at the slashes, never shortened
+        silk.append(near_label("B.SilkS", ln, qx, qy, size_, size_, size=1.0))
 silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f)[0]
 silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], 12.8, 14.4))
 items += silk
