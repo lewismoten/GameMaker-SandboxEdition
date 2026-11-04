@@ -171,20 +171,26 @@ export function addStarterBlocks(book: Book, pal: Pal): void {
     book.add('doorBottom', bottom, air);
   }
   {
+    // the entrance: an open doorway glowing warm inside, the door swung back against its side
     const w = r('wood');
+    const g = r('gold');
     const arch = new Pixels(20, 40, skyOf(pal));
-    arch.rect(2, 4, 16, 36, c('ink', 0));
-    for (let y = 4; y < 40; y++) arch.rect(3, y, 14, 1, y < 14 ? c('gold', 1) : c('ink', 1));
-    arch.rect(3, 4, 14, 3, c('ink', 0));
-    arch.disc(10, 6, 0, c('ink', 0));
-    // an open door swung back against the left side
-    arch.rect(0, 4, 3, 36, w[2]).rect(0, 4, 1, 36, w[4]).rect(2, 4, 1, 36, w[1]);
-    // the frame
-    arch.rect(2, 2, 16, 2, w[1]).rect(17, 4, 2, 36, w[1]).rect(18, 4, 1, 36, w[0]);
-    // a doormat at the foot
-    arch.rect(4, 38, 12, 2, c('red', 2)).rect(4, 38, 12, 1, c('red', 3));
-    // light spilling in
-    for (let y = 8; y < 34; y++) arch.rect(5, y, 4, 1, y < 20 ? c('gold', 2) : c('gold', 1));
+    arch.rect(2, 2, 16, 38, w[1]).rect(2, 2, 16, 1, w[3]);
+    for (let y = 5; y < 40; y++) arch.rect(4, y, 12, 1, g[y < 18 ? 5 : y < 30 ? 4 : 3]);
+    for (const [x, y] of [
+      [2, 2],
+      [17, 2],
+      [4, 5],
+      [15, 5],
+    ] as const)
+      arch.set(x, y, x < 4 || x > 15 ? skyOf(pal) : w[1]);
+    arch.rect(4, 5, 12, 1, w[2]).rect(4, 6, 1, 34, w[2]).rect(15, 6, 1, 34, w[2]);
+    // the door itself, edge on, with two panels
+    arch.rect(4, 7, 3, 33, w[2]).rect(4, 7, 1, 33, w[4]).rect(6, 7, 1, 33, w[1]);
+    arch.rect(5, 10, 1, 10, w[4]).rect(5, 23, 1, 12, w[4]);
+    // a green mat at the foot, and a little shine on the floor
+    arch.rect(8, 37, 8, 3, c('green', 2)).rect(8, 37, 8, 1, c('green', 3));
+    arch.rect(9, 20, 3, 1, g[5]).rect(11, 26, 2, 1, g[5]);
     book.add('doorwayTop', arch.crop(0, 0, 20, 20), air);
     book.add('doorwayBottom', arch.crop(0, 20, 20, 20), air);
   }

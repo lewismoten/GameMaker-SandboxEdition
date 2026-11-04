@@ -59,7 +59,7 @@ export class StarterMap {
 
   constructor(
     private readonly book: Book,
-    private readonly rows: string[],
+    rows: string[],
   ) {
     this.width = rows[0].length;
     this.height = rows.length;

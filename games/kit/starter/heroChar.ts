@@ -21,8 +21,8 @@ export const JUMP_PUSH = 12;
 export const CLIMB_STEP = 4;
 
 const JOY = { up: 1, right: 3, down: 5, left: 7, any: 9 };
-const MIRROR = 0x40; // the bottom block flipped left to right
-const MIRROR_BOTH = 0x44; // and the top block too
+/** Both blocks flipped left to right (0x40 flips the bottom block, 0x04 the top). */
+const MIRROR_BOTH = 0x44;
 
 interface F {
   top: string;
