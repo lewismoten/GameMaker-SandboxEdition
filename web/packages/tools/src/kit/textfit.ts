@@ -360,3 +360,63 @@ export function renderRgb(s: TextScreen, marks?: Uint8Array): Uint8Array {
   }
   return out;
 }
+
+/** A picture shown between levels (a level scene's intro or ending list), with its palette. */
+export interface CardScreen {
+  name: string;
+  pixels: Uint8Array;
+  palette: Uint8Array;
+}
+
+/** The pictures every level scene shows around play (slots 9 and 10), as the player sees them. */
+export function levelCards(files: Map<string, Uint8Array>): CardScreen[] {
+  const gam = [...files.keys()].find((f) => f.endsWith('.gam'));
+  if (!gam) throw new Error('no .gam on the disk');
+  const game = parseGame(files.get(gam)!);
+  const out: CardScreen[] = [];
+  const seen = new Set<string>();
+  game.scenes.forEach((_, i) => {
+    if (i < 2) return;
+    for (const slot of [9, 10]) {
+      const f = sceneFile(game, i, slot);
+      if (!f || seen.has(f) || !files.has(f)) continue;
+      seen.add(f);
+      const pic = picture(files, f);
+      out.push({ name: `scene ${i} ${f}`, pixels: pic.pixels, palette: pic.palette });
+    }
+  });
+  return out;
+}
+
+/**
+ * Words baked into a Starter card (games/kit/starter/screens.ts cardPicture) that run past its
+ * parchment box. The box is found from the pixel at (24, 16): the run of that color left, right,
+ * up and down. Text colors are the other colors inside the box; the frame's colors (read just
+ * outside the box above the text) are not counted. Returns a problem per side, or none. A picture
+ * with no such box (a card of another design) is skipped, since there is no box to measure.
+ */
+export function cardOverflow(c: CardScreen): string[] {
+  const at = (x: number, y: number) => c.pixels[y * W + x];
+  const fill = at(24, 16);
+  let [x0, x1, y0, y1] = [24, 24, 16, 16];
+  while (x0 > 0 && at(x0 - 1, 16) === fill) x0--;
+  while (x1 < W - 1 && at(x1 + 1, 16) === fill) x1++;
+  while (y0 > 0 && at(24, y0 - 1) === fill) y0--;
+  while (y1 < H - 1 && at(24, y1 + 1) === fill) y1++;
+  if (x1 - x0 < 100 || y1 - y0 < 30) return [];
+  const frame = new Set<number>();
+  for (let x = Math.max(0, x0 - 6); x <= Math.min(W - 1, x1 + 6); x++) for (let y = Math.max(0, y0 - 6); y < y0; y++) frame.add(at(x, y));
+  for (let y = y0; y <= y1; y++) for (const x of [x0 - 1, x0 - 2, x0 - 3, x1 + 1, x1 + 2, x1 + 3]) frame.add(at(x, y));
+  const ink = new Set<number>();
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (at(x, y) !== fill && !frame.has(at(x, y))) ink.add(at(x, y));
+  const problems: string[] = [];
+  for (const [side, from, to] of [
+    ['left', x0 - 14, x0 - 1],
+    ['right', x1 + 1, x1 + 14],
+  ] as const) {
+    let n = 0;
+    for (let y = y0; y <= y1; y++) for (let x = Math.max(0, from); x <= Math.min(W - 1, to); x++) if (ink.has(at(x, y))) n++;
+    if (n) problems.push(`text runs past the ${side} edge of its box (${n} pixels outside it)`);
+  }
+  return problems;
+}
