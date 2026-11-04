@@ -47,7 +47,7 @@ export function floppyElement(d: Disk, small = false, n = 1): HTMLElement {
   const sub =
     d.kind === 'project'
       ? ['my game', d.updated ? savedAt(d.updated) : ''].filter(Boolean).join('\n')
-      : d.kind === 'blank'
+      : d.kind === 'blank' || d.kind === 'sample'
         ? ''
         : [g?.author ?? g?.company, [g?.year, g?.price].filter(Boolean).join('  ')].filter(Boolean).join('\n');
   return h(
@@ -65,16 +65,18 @@ export function floppyElement(d: Disk, small = false, n = 1): HTMLElement {
     h('div', { class: 'shutter' }),
     d.kind === 'original'
       ? printedLabel(d, n)
-      : d.kind === 'rsd' || d.kind === 'gameware'
-        ? // the CD's disks have printed labels; hand-written ones (with a scribbled note) are the user's
-          rsdDiskLabel(g, label, diskTag(d, n), d.kind === 'gameware' ? { name: g?.company ?? g?.author ?? 'CD Library', band: d.color } : undefined)
-        : h(
-            'div',
-            { class: 'label' },
-            h('span', { class: 'hand-title' }, h('span', null, label), count > 1 ? h('span', { class: 'hand-disk' }, `Disk ${n}`) : null),
-            h('small', null, sub),
-            d.note ? h('span', { class: 'marker-note' }, d.note) : null,
-          ),
+      : d.kind === 'sample'
+        ? rsdDiskLabel(undefined, label, '', undefined, d.folders?.[0]?.entry)
+        : d.kind === 'rsd' || d.kind === 'gameware'
+          ? // the CD's disks have printed labels; hand-written ones (with a scribbled note) are the user's
+            rsdDiskLabel(g, label, diskTag(d, n), d.kind === 'gameware' ? { name: g?.company ?? g?.author ?? 'CD Library', band: d.color } : undefined)
+          : h(
+              'div',
+              { class: 'label' },
+              h('span', { class: 'hand-title' }, h('span', null, label), count > 1 ? h('span', { class: 'hand-disk' }, `Disk ${n}`) : null),
+              h('small', null, sub),
+              d.note ? h('span', { class: 'marker-note' }, d.note) : null,
+            ),
     h('div', { class: 'wp' }),
     d.density === 'HD' ? h('div', { class: 'density-hole' }) : null,
     d.density === 'HD' ? h('div', { class: 'hd' }, 'HD') : null,
@@ -90,15 +92,17 @@ function sizeText(bytes: number): string {
 /** A line about the disk: what it is, who made it, its size. */
 export function diskFacts(d: Disk): string {
   return [
-    d.kind === 'rsd'
-      ? 'One of the games RSD made with Game-Maker'
-      : d.kind === 'original'
-        ? 'Shareware from Sandbox Software, this edition’s own games: play them or open them in Game-Maker'
-        : d.kind === 'gameware'
-          ? 'Free gameware from the Game-Maker CD'
-          : d.kind === 'project'
-            ? 'Your game (also in C:\\GM on the hard disk)'
-            : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
+    d.kind === 'sample'
+      ? `${d.folders?.length ?? 0} small games, each in its own folder (${(d.folders ?? []).map((f) => f.dir).join(', ')}): load one in Game-Maker`
+      : d.kind === 'rsd'
+        ? 'One of the games RSD made with Game-Maker'
+        : d.kind === 'original'
+          ? 'Shareware from Sandbox Software, this edition’s own games: play them or open them in Game-Maker'
+          : d.kind === 'gameware'
+            ? 'Free gameware from the Game-Maker CD'
+            : d.kind === 'project'
+              ? 'Your game (also in C:\\GM on the hard disk)'
+              : 'A blank disk: Game-Maker’s Utilities ▸ Transfer copies a game onto it',
     d.catalog ? creditLine(d.catalog) : '',
     sizeText(d.bytes),
     disksIn(d) > 1 ? `${disksIn(d)} disks: disk 1 goes in A:` : '',

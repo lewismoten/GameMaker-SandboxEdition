@@ -584,6 +584,10 @@ export class Computer extends ComputerFolders {
       await this.swapInProject(project);
       return project;
     }
+    if (d.disk.folders) {
+      if (!this.quiet) await errorBox(this, 'Choose a game folder first (such as FIRSTSTP\\).', 'The Sample Disk has one folder for each game.  (C)ontinue');
+      return undefined;
+    }
     if (d.disk.writeProtected)
       return this.copyToHardDisk(d.disk.title, d.files, d.disk.gam, d.disk.catalog?.id, `${d.disk.title}: the disk is write-protected.`);
     const stored = d.disk.projectId ? await loadProject(d.disk.projectId) : undefined;
