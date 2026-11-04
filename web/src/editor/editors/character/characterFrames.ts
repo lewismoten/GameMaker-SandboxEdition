@@ -148,7 +148,18 @@ export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number,
   const tool = (label: string, icon: string, fn: () => void, disabled = false, why = '') =>
     why
       ? // Stays focusable (aria-disabled) so a keyboard user can reach the reason, which also shows as a toast.
-        h('button', { type: 'button', class: 'chr-tool', title: `${label}: ${why}`, 'aria-label': `${label} (unavailable: ${why})`, 'aria-disabled': 'true', onclick: () => toast(why) }, icon)
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'chr-tool',
+            title: `${label}: ${why}`,
+            'aria-label': `${label} (unavailable: ${why})`,
+            'aria-disabled': 'true',
+            onclick: () => toast(why),
+          },
+          icon,
+        )
       : h('button', { type: 'button', class: 'chr-tool', title: label, 'aria-label': label, disabled, onclick: () => (ctx.edit(fn), ctx.redraw()) }, icon);
   const monster = () => {
     const get = () => f.pic1;
