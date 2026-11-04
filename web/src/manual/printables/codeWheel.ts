@@ -191,11 +191,27 @@ function band(g: Geo, k: number, count: number): { out: number; in: number } {
   return { out: g.top - k * w, in: g.top - (k + 1) * w + 1 };
 }
 
+/** The holes cut through the middle disc, as one path of boxes (a hidden ring's '' cells). */
+function holePath(it: CodeWheelItem, g: Geo): string {
+  const n = it.outer.length;
+  const rings = hiddenRings(it);
+  let d = '';
+  rings.forEach((ring, k) => {
+    const b = band(g, k, rings.length);
+    ring.forEach((c, i) => {
+      if (!c) d += windowBox((i * 360) / n, b.in, b.out, n);
+    });
+  });
+  return d;
+}
+
 /** The hidden rings' cells and symbols at place `i`, printed on the disc under the top one. */
-function hiddenCells(it: CodeWheelItem, g: Geo, i: number, into: SVGElement): void {
+function hiddenCells(it: CodeWheelItem, g: Geo, i: number, into: SVGElement, rings = hiddenRings(it)): void {
   const n = it.outer.length;
   const step = 360 / n;
-  hiddenRings(it).forEach((ring, k, all) => {
+  rings.forEach((ring, k, all) => {
+    // a hole in the middle disc has no cell: the big disc's own print shows there
+    if (!ring[i]) return;
     const b = band(g, k, all.length);
     into.append(el('path', { d: sector(b.in, b.out, i * step - step / 2, i * step + step / 2), class: 'cw-cell cw-hidden-cell' }));
     // a spiral's narrow rings fill more of their band, so their numbers stay big enough to read
@@ -218,6 +234,8 @@ function outerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
         : symbol(it, it.outer[i], (R.ringIn + R.rimBand) / 2, i * step, Math.min(13, (R.ringIn * 2 * Math.PI) / n) * 0.8, 'cw-sym'),
     );
     if (!it.middle?.length) hiddenCells(it, g0, i, g);
+    // under the middle disc: the print its holes let a window see
+    else if (it.behind) hiddenCells(it, g0, i, g, it.behind);
   }
   // the heading in the band between the ring and the rim
   g.append(rimText(`cw-rim${++uid}`, R.rimBand + 2.2, it.heading.toUpperCase(), 4.2, 'cw-rim'));
@@ -243,7 +261,14 @@ function discRing(it: CodeWheelItem, g0: Geo, k: number, ring: string[], into: S
 /** The middle disc of a three-disc wheel: its ring, and the hidden rings the top disc's windows open onto. */
 function middleDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   const g0 = geo(it);
-  const g = el('g', { class: 'cw-middle' }, el('circle', { r: g0.discs[0].edge, class: `cw-paper cw-mid-paper${cut ? ' cw-cut' : ''}` }));
+  const holes = holePath(it, g0);
+  const edge = g0.discs[0].edge;
+  const cls = `cw-paper cw-mid-paper${cut ? ' cw-cut' : ''}`;
+  // holes (evenodd) let the big disc's print show through on screen and are cut out on paper
+  const paper = holes
+    ? el('path', { d: `M0,${-edge}A${edge},${edge} 0 1 1 0,${edge}A${edge},${edge} 0 1 1 0,${-edge}Z${holes}`, class: cls, 'fill-rule': 'evenodd' })
+    : el('circle', { r: edge, class: cls });
+  const g = el('g', { class: 'cw-middle' }, paper);
   discRing(it, g0, 0, it.middle!, g);
   for (let i = 0; i < it.outer.length; i++) hiddenCells(it, g0, i, g);
   g.append(el('circle', { r: 1.4, class: 'cw-pin' }));
@@ -299,7 +324,8 @@ function innerDisc(it: CodeWheelItem, cut: boolean): SVGElement {
   });
   discRing(it, g0, top, it.inner, g);
   for (const w of it.windows ?? [])
-    if (w.label) {
+    // (several windows on one ring crowd the hub: their names are in the readout beside the wheel instead)
+    if (w.label && (rings > 1 || (it.windows?.length ?? 0) < 2)) {
       // one ring: the label inside the window, toward the pin; several: beside its window, along its ring
       const b = band(g0, w.ring ?? 0, rings);
       const [r, deg] = rings <= 1 ? [g0.single.in - 6, w.at * step] : [(b.in + b.out) / 2, w.at * step + step * 0.5 + 1];
@@ -421,16 +447,21 @@ export function codeWheelLive(it: CodeWheelItem, only?: number): HTMLElement {
   const [under, top] = discs.slice(-2);
   const place = (pos: number) => ((pos % n) + n) % n;
   // what each window shows, drawn upright beside the wheel, so nobody has to read the wheel upside down
+  /** Window `i` with the middle disc, the small disc and the big disc at these places: the middle disc's print, or the big disc's through a hole. */
+  const seen = (i: number, midPos: number, topPos: number, backPos: number) => {
+    const w = it.windows![i];
+    const at = w.at - topPos;
+    return hiddenRings(it)[w.ring ?? 0][place(at + midPos)] || it.behind![w.ring ?? 0][place(at + backPos)];
+  };
   const readRows = (it.windows ?? []).map((w, i) => {
     const pic = h('span', { class: 'cw-read-sym' });
     return { row: h('div', { class: 'cw-read-row' }, h('dt', null, w.label ?? `Window ${i + 1}`), h('dd', null, pic)), pic };
   });
   const readout = readRows.length ? h('dl', { class: 'cw-readout', 'aria-label': 'What the windows show' }, ...readRows.map((r) => r.row)) : null;
   /** Fills the readout for the discs at these positions (a drag passes the place it would settle on). */
-  function showReadout(outerPos = under.pos, innerPos = top.pos) {
+  function showReadout(outerPos = under.pos, innerPos = top.pos, backPos = discs[0].pos) {
     readRows.forEach((r, i) => {
-      const w = it.windows![i];
-      const sym = hiddenRings(it)[w.ring ?? 0][place(w.at - innerPos + outerPos)];
+      const sym = seen(i, outerPos, innerPos, backPos);
       if (r.pic.dataset.sym === sym) return;
       r.pic.dataset.sym = sym;
       r.pic.replaceChildren(el('svg', { viewBox: '-8 -8 16 16', class: 'cw-answer-sym', role: 'img', 'aria-label': sym }, symbol(it, sym, 0, 0, 12, 'cw-sym')));
@@ -452,10 +483,7 @@ export function codeWheelLive(it: CodeWheelItem, only?: number): HTMLElement {
     showReadout();
   };
   /** What window `i` shows now: the hidden ring's symbol under it. */
-  const inWindow = (i: number) => {
-    const w = it.windows![i];
-    return hiddenRings(it)[w.ring ?? 0][place(w.at - top.pos + under.pos)];
-  };
+  const inWindow = (i: number) => seen(i, under.pos, top.pos, discs[0].pos);
   /** Turns a disc the short way round until its place `k` is under the arrow. */
   const set = (d: (typeof discs)[number], k: number) => {
     let by = place(k - d.pos);
@@ -511,7 +539,7 @@ export function codeWheelLive(it: CodeWheelItem, only?: number): HTMLElement {
     follow(e);
     grab.d.g.style.transform = `rotate(${-grab.d.pos * step + grab.turned}deg)`;
     const settle = grab.d.pos - Math.round(grab.turned / step);
-    showReadout(grab.d === under ? settle : under.pos, grab.d === top ? settle : top.pos);
+    showReadout(grab.d === under ? settle : under.pos, grab.d === top ? settle : top.pos, grab.d === discs[0] ? settle : discs[0].pos);
   });
   const drop = (e: PointerEvent) => {
     if (!grab) return;
@@ -542,7 +570,15 @@ export function codeWheelLive(it: CodeWheelItem, only?: number): HTMLElement {
             const how = three
               ? `${p.turn.outer}, ${p.turn.middle ?? it.middle![0]} and ${p.turn.inner} under the arrow`
               : `${p.turn.outer} and ${p.turn.inner} under the arrow`;
-            if (p.window !== undefined && it.windows?.[p.window]) {
+            if (p.windowsRead?.length) {
+              // several windows, read in order round the ring: each lit, each symbol drawn
+              const pics = p.windowsRead.map((wi) => {
+                const sym = inWindow(wi);
+                inner.querySelector(`.cw-win[data-win="${wi}"]`)?.classList.add('on');
+                return el('svg', { viewBox: '-8 -8 16 16', class: 'cw-answer-sym', role: 'img', 'aria-label': sym }, symbol(it, sym, 0, 0, 12, 'cw-sym'));
+              });
+              answer.replaceChildren(h('span', null, `${how}. The windows, in order: `), ...pics, p.answer ? h('span', null, ` ${p.answer}`) : '');
+            } else if (p.window !== undefined && it.windows?.[p.window]) {
               // the answer is what the wheel shows: that window's symbol, its window lit
               const sym = inWindow(p.window);
               inner.querySelector(`.cw-win[data-win="${p.window}"]`)?.classList.add('on');

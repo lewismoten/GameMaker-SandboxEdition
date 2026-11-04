@@ -10,8 +10,11 @@ import { R } from './common';
 import { OUTLINE, S, WHITE } from '../art/palette';
 import { GLYPHS, HATCHES, HATCH_OPEN } from '../wheel/wheel';
 
-/** A hatch 20 by 40: steel, rivets, hazard stripes, and a dark plate with its code in glowing ink. */
-export function hatchPicture(code: string): Pixels {
+/** Where the code's pictures sit on the plate: the first's top left, and how far down the second is. */
+export const HATCH_PIC = { x: 5, y: 10, step: 11 };
+
+/** A hatch 20 by 40: steel, rivets, hazard stripes, and a dark plate with its two-picture code in glowing ink. */
+export function hatchPicture(codes: string[]): Pixels {
   const t = R('tech');
   const g = R('glow');
   const hz = R('hazard');
@@ -26,12 +29,13 @@ export function hatchPicture(code: string): Pixels {
   }
   p.rect(1, 9, 18, 22, OUTLINE);
   p.frame(0, 8, 20, 24, t[5]);
-  // the code, nine squares of two pixels
-  const rows = GLYPHS[code];
-  rows.forEach((row, y) =>
-    [...row].forEach((ch, x) => {
-      if (ch === '#') p.rect(1 + x * 2, 11 + y * 2, 2, 2, g[4]);
-    }),
+  // the code: two pictures, one above the other, read top to bottom, a pixel to each square
+  codes.forEach((code, k) =>
+    GLYPHS[code].forEach((row, y) =>
+      [...row].forEach((ch, x) => {
+        if (ch === '#') p.set(HATCH_PIC.x + x, HATCH_PIC.y + k * HATCH_PIC.step + y, g[4]);
+      }),
+    ),
   );
   for (const [x, y] of [
     [3, 5],
