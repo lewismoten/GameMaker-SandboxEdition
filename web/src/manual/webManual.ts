@@ -54,6 +54,8 @@ export function renderWebManual(el: HTMLElement, sectionId?: string): void {
       article.querySelector<HTMLElement>('.guide-open-ultimate')?.focus({ preventScroll: true });
       return m.openUltimateGuide(chapter);
     });
+  // the How do I…? index and the Try it boxes fill in from the Starters' manuals
+  if (article.querySelector('.guide-how-do-i, aside.try-it')) void import('../editor/shell/tryIt').then((m) => m.enhanceTryIt(article));
   decorateBbsName(article);
   clear(el, h('div', { class: 'guide' }, toc, article));
 }

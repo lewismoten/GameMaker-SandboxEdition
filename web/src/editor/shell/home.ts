@@ -72,6 +72,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
   const atEnd = (f: () => void) => (life.aborted ? f() : life.addEventListener('abort', f, { once: true }));
   const catNav = h('div', { class: 'lib-cats', role: 'tablist', 'aria-label': 'Game collections' });
   const libTitle = h('h2', { id: 'lib-title' });
+  const howDoI = h('div', { class: 'lib-hdi', hidden: true });
   // the collection in a line (cut short with … if it must be); More shows all of it
   const libLeadText = h('span', { class: 'lib-lead-text' });
   const leadMore = h(
@@ -334,6 +335,9 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
     showLead(false);
     sortBox.hidden = !isOwn(c) || lib.own(c).length < 2;
     removeAllBtn.hidden = c !== 'imported' || !lib.own(c).length;
+    // the Starters' "How do I…?" questions, loaded when that tab is first shown
+    howDoI.hidden = c !== 'starter';
+    if (c === 'starter' && !howDoI.firstChild) void import('./howDoIIndex').then((m) => howDoI.append(m.howDoIIndex({ compact: true })));
     ratingBox.hidden = c !== 'imported' || !lib.own(c).length;
     newGameBtn.hidden = c === 'community';
     communityBtn.hidden = c !== 'community';
@@ -384,6 +388,7 @@ export async function renderHome(root: HTMLElement, nav: HomeNav): Promise<void>
         { id: 'library', class: 'library', 'aria-labelledby': 'lib-title' },
         h('div', { class: 'lib-bar' }, catNav, h('div', { class: 'lib-find' }, search, newGameBtn, communityBtn)),
         h('div', { class: 'lib-about' }, libTitle, libLead, sortBox, ratingBox, removeAllBtn, start.howBtn),
+        howDoI,
         tiles,
         live,
       ),

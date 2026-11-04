@@ -1,0 +1,107 @@
+/* The "How do I…?" index (howDoIIndex.ts): on the Starters tab (compact) and in the Guide. */
+.hdi {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+}
+.hdi-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+.hdi-head label {
+  font-weight: 700;
+}
+.hdi-head input[type='search'] {
+  flex: 1 1 14em;
+  min-width: 0;
+  min-height: 28px;
+}
+.hdi-count {
+  color: var(--muted);
+  font-size: 13px;
+}
+.hdi-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+.hdi-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'q go' 'where go';
+  align-items: center;
+  gap: 0 12px;
+  padding: 5px 0;
+  border-top: 1px solid var(--border);
+}
+.hdi-q {
+  grid-area: q;
+}
+.hdi-where {
+  grid-area: where;
+  color: var(--muted);
+  font-size: 13px;
+}
+.hdi-actions {
+  grid-area: go;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hdi-actions button {
+  min-height: 28px;
+  padding: 3px 10px;
+  font-size: 13px;
+}
+.hdi-none {
+  display: block !important;
+  color: var(--muted);
+}
+/* the Starters tab: a short list that scrolls, so the game tiles stay on the screen */
+.hdi.compact .hdi-list {
+  max-height: 11em;
+  overflow-y: auto;
+}
+.lib-hdi {
+  flex: none; /* the library is a flex column that can shrink its children (home.css) */
+  margin: 0 0 4px;
+}
+.lib-hdi .hdi {
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .lib-hdi {
+    margin-top: 18px; /* clear of How it works, which wraps under the line about the collection */
+  }
+  .hdi-list li {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'q' 'where' 'go';
+    gap: 2px;
+  }
+  .hdi.compact .hdi-list {
+    max-height: 10em;
+  }
+}
+
+/* the Guide's Try it boxes (tryIt.ts) */
+.try-it {
+  margin: 12px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-soft);
+}
+.try-it > strong {
+  margin-right: 6px;
+}
+.try-it .hdi-actions {
+  margin-top: 6px;
+}
+.try-it-line {
+  margin: 6px 0 0;
+}

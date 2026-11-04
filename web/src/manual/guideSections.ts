@@ -205,7 +205,8 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
       <tr><td><code>.CHR</code></td><td>Character</td><td>The player’s animation sequences (idle, die, hurt, pick up, drop and up to 15 of your own), the keys that start them, and what they need.</td></tr>
       <tr><td><code>.SND</code></td><td>Sounds</td><td>30 effects, each a PC-speaker tune or a Sound Blaster <code>.VOC</code> sample.</td></tr>
       <tr><td><code>.GIF .FLI .CMF .VOC .TXT</code> and more</td><td>Media</td><td>View pictures and animations, hear music and samples, edit songs on a piano roll, and edit text screens, slide shows, backdrops, high-score tables and demos.</td></tr>
-    </table>`,
+    </table>
+    <aside class="try-it" data-try="room-to-room/door-link meet-the-monsters/path first-steps/gravity"><strong>Try it:</strong> the Integrator’s links, the Monsters editor’s paths and the Blocks editor’s gravity, each in a Starter.</aside>`,
   ],
   [
     'tools',
@@ -220,6 +221,41 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
       <tr><td>A block’s picture</td><td>In the block editor, <b>Make a texture</b> draws a seamless 20×20 texture (grass, brick, water…) in the nearest colors your palette has.</td></tr>
       <tr><td>A demo (<code>.REC</code>)</td><td><b>Record one by playing…</b> starts the game in its first level and records your keys; watch it back, and trim the end. Choose it as the start scene’s demo recording.</td></tr>
     </table>`,
+  ],
+  [
+    'how-do-i',
+    'How do I…?',
+    `<p>The Starters are small games that each show one idea: walking and jumping, keys and doors,
+    monsters, and rooms joined by doors. Each question below is answered by one level. <b>Play this
+    level</b> starts the game at it. <b>See how it’s made</b> opens its map at the spot, to look at
+    only, with a <b>How this level is made</b> button for the manual’s page about it. To change
+    something, choose <b>Edit a copy</b> on the bar above the map.</p>
+    <div class="guide-how-do-i"><p>The searchable list shows here once the page has loaded.</p></div>
+    <h3>Moving and jumping</h3>
+    <p>The hero walks with the arrow keys and jumps with Space. A wall two blocks high is too tall to
+    walk through, so the level asks for a jump.</p>
+    <aside class="try-it" data-try="first-steps/walls"><strong>Try it:</strong> First Steps, level 1.</aside>
+    <h3>Gravity</h3>
+    <p>A block can pull the hero down. Walk off an edge and the pull of the sky block does the rest.</p>
+    <aside class="try-it" data-try="first-steps/gravity"><strong>Try it:</strong> First Steps, level 1.</aside>
+    <h3>Ladders</h3>
+    <p>A ladder is a block with no pull and no solid side, so Up lifts the hero.</p>
+    <aside class="try-it" data-try="first-steps/ladder"><strong>Try it:</strong> First Steps, level 2.</aside>
+    <h3>Keys and doors</h3>
+    <p>A key adds one to a counter, and a locked door spends one from it.</p>
+    <aside class="try-it" data-try="keys-and-doors/key keys-and-doors/locked-door"><strong>Try it:</strong> Keys and Doors, level 1.</aside>
+    <h3>Counters</h3>
+    <p>A door can cost two keys, and a second counter gives a second kind of key.</p>
+    <aside class="try-it" data-try="keys-and-doors/two-keys keys-and-doors/two-counters"><strong>Try it:</strong> Keys and Doors, levels 2 and 3.</aside>
+    <h3>Monsters</h3>
+    <p>A monster walks a short path of corners, back and forth.</p>
+    <aside class="try-it" data-try="meet-the-monsters/path"><strong>Try it:</strong> Meet the Monsters, level 1.</aside>
+    <h3>Hurting</h3>
+    <p>A monster’s picture can take hit points away. Another can be popped by touching it.</p>
+    <aside class="try-it" data-try="meet-the-monsters/hurts meet-the-monsters/pop"><strong>Try it:</strong> Meet the Monsters, levels 1 and 2.</aside>
+    <h3>Scene links and exits</h3>
+    <p>A door, or the open edge of a room, is a link to another scene.</p>
+    <aside class="try-it" data-try="room-to-room/door-link room-to-room/open-edge room-to-room/two-exits"><strong>Try it:</strong> Room to Room, levels 1 and 3.</aside>`,
   ],
   [
     'play',
