@@ -23,6 +23,8 @@ export interface BoxItem {
   note?: string;
   icon: string;
   promised?: boolean;
+  /** A feelie on paper (a code wheel, the fingerprint card, the spyglass…): the Feelies strip lists it too (trinketShelf.ts). */
+  feelie?: boolean;
   /** Fresh sheets every call (the screen and each print get their own copies). */
   render(): Promise<Sheet[]>;
   /** Just the first sheet, built without the rest (the small picture in the box's list). Falls back to `render`. */

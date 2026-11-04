@@ -17,6 +17,9 @@ import { codeSheetLive } from './codeSheet';
 import { postcardGrilleLive } from './postcardGrille';
 import { briefStoryZineItem } from '../zine/briefStoryZine';
 
+/** The own items that count as feelies: copy protection, the spyglass, the fingerprint card and other things to handle. */
+const FEELIE_KINDS = new Set<PrintableItem['kind']>(['codewheel', 'codesheet', 'postcardgrille', 'spyglass', 'prints', 'ballooncube']);
+
 const ICONS: Record<PrintableItem['kind'], string> = {
   map: '🗺️',
   hintbook: '🔍',
@@ -45,6 +48,7 @@ export function boxItems(ctx: PrintContext): BoxItem[] {
     note: it.note,
     promised: it.promised,
     icon: ICONS[it.kind],
+    feelie: FEELIE_KINDS.has(it.kind) || undefined,
     render: () => renderItem(ctx, it),
     first: it.kind === 'hintbook' ? () => hintBookCover(ctx, it) : undefined,
     screen: it.kind === 'starchart' ? foldOut : undefined,
