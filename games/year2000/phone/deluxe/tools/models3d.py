@@ -65,7 +65,7 @@ def spec(kind, variant=""):
         return [box(0, 0, 0.5, 30.0, 14.0, 7.0, DARKRED), box(0, 0, 7.5, 28.0, 12.0, 0.2, RED)]
     if kind == "mic":
         # the capsule is in the shell: leads through the pads, then a twisted pair along the back of the board toward the bottom edge
-        return [box(-1.27, 0, -3.4, 0.8, 0.8, 3.8, RED), box(1.27, 0, -3.4, 0.8, 0.8, 3.8, BLACK), box(-1.27, 3.0, -3.4, 1.0, 6.0, 1.0, RED), box(1.27, 3.0, -3.4, 1.0, 6.0, 1.0, BLACK)]
+        return [box(-2.54, 0, -3.4, 0.8, 0.8, 3.8, RED), box(2.54, 0, -3.4, 0.8, 0.8, 3.8, BLACK), box(-2.54, 3.0, -3.4, 1.0, 6.0, 1.0, RED), box(2.54, 3.0, -3.4, 1.0, 6.0, 1.0, BLACK)]
     if kind == "spk":
         return [cyl(0, 0, 0.5, 24.0, 4.0, BLACK), cyl(0, 0, 4.5, 8.0, 0.4, GREY)]
     if kind == "usw":
@@ -77,7 +77,7 @@ def spec(kind, variant=""):
     if kind == "thumb":    # side thumbwheel pot: body on the board, a 10 mm wheel (axis along the pin row) standing 1.5 mm past the board edge
         return [box(0, 0, 0.3, 10.0, 8.0, 4.9, BLUE), box(0, 0, 3.55, 3.2, 10.0, 4.1, SILVER), box(0, 0, 0.6, 3.2, 4.1, 10.0, SILVER), box(0, 0, 1.6, 3.2, 8.0, 8.0, SILVER)]
     if kind == "batt":     # 4 x AAA holder in the shell's battery bay below the board; two wires to the pads (shell.ts continues them)
-        return [box(-5.08, 3.5, 0.4, 1.4, 7.0, 1.4, RED), box(5.08, 3.5, 0.4, 1.4, 7.0, 1.4, BLACK)]
+        return [box(-5.08, 1.75, 0.4, 1.4, 3.5, 1.4, RED), box(5.08, 1.75, 0.4, 1.4, 3.5, 1.4, BLACK)]
     raise KeyError(kind)
 
 

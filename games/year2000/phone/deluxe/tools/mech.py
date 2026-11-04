@@ -49,8 +49,9 @@ m = {
                     "front_clear_zone_radius": 13.5,
                     "solder_pads": [pl["LS1"]["pads"]["1"], pl["LS1"]["pads"]["2"]],
                     "note": "the speaker is glued over the clear zone; the board under it carries only silkscreen on the front, two short wires reach the pads"},
-        "microphone": {"ref": "MK1", "center": at("MK1"), "diameter": 9.7, "height": 6.5, "faces": "front, bottom end (mouth end)",
-                       "solder_pads": [pl["MK1"]["pads"]["1"], pl["MK1"]["pads"]["2"]]},
+        "microphone": {"ref": "MK1", "diameter": 9.7, "height": 6.5, "in_shell": True, "faces": "front, in the shell's mouthpiece past the bottom end (grille holes in the front cover)",
+                       "solder_pads": [pl["MK1"]["pads"]["1"], pl["MK1"]["pads"]["2"]],
+                       "note": "the electret capsule is NOT on the board: a printed collar under the front cover's grille grips it. Two short wires (a twisted pair) run from the pads, through the wire slot in the shell and across the battery bay, to the capsule (+ is pad 1, the bias side, marked + on the silkscreen)"},
         "buttons": {
             "TALK": {"ref": "SW4", "center": at("SW4"), "body": [6.0, 6.0], "height_above_board": 4.3, "stem_diameter": 3.5, "cap_travel": 0.25},
             "CLEAR": {"ref": "SW5", "center": at("SW5"), "body": [6.0, 6.0], "height_above_board": 4.3, "stem_diameter": 3.5, "cap_travel": 0.25,
