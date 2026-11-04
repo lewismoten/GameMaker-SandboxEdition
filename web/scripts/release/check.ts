@@ -19,7 +19,10 @@ for (const t of Object.values(TARGETS)) {
   const text = readFileSync(file, 'utf8');
   const tag = lastTag(root, t);
   const src = commitsSince(root, t, tag).filter((c) => c.files.some((f) => t.path === '' || f.startsWith(`${t.path}/src/`)));
-  if (src.length && hasNoChanges(extractSection(text, 'Unreleased')))
+  // A version cut but not yet tagged covers the commits since the last tag (the window between merge and tag).
+  const latestCut = latestVersion(text);
+  const cutUntagged = !!latestCut && tag !== `${t.prefix}-v${latestCut}` && !hasNoChanges(extractSection(text, latestCut));
+  if (src.length && !cutUntagged && hasNoChanges(extractSection(text, 'Unreleased')))
     problems.push(`${src.length} commits since ${tag || 'the start'}, but Unreleased lists nothing`);
   if (t.manifest) {
     const version = (JSON.parse(readFileSync(join(root, t.manifest), 'utf8')) as { version: string }).version;

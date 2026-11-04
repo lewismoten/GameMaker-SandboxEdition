@@ -78,6 +78,7 @@ const sources = {
   'kit/songFx': 'kit/songFx',
   'kit/fadeOut': 'kit/fadeOut',
   'kit/fliClips': 'kit/fliClips',
+  'kit/fliShrink': 'kit/fliShrink',
   'kit/recordedDemo': 'kit/recordedDemo',
   'kit/hopBot': 'kit/hopBot',
   'kit/align': 'kit/align',
@@ -140,3 +141,8 @@ function finish(dir) {
   }
 }
 finish(resolve(here, 'dist/types'));
+// Every export without a wildcard must name a file the build made, or the published package breaks on import.
+const missing = Object.entries(JSON.parse(readFileSync(resolve(here, 'package.json'), 'utf8')).exports)
+  .filter(([key, v]) => !key.includes('*') && v && typeof v === 'object' && v.import && !existsSync(resolve(here, v.import)))
+  .map(([key]) => key);
+if (missing.length) throw new Error(`Exports with no built file (add them to build.js): ${missing.join(', ')}`);
