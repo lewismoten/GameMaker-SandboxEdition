@@ -90,6 +90,8 @@ export class Tour {
   private props: Actor[] = [];
   /** Menus and overlays the tour opened, by their handle's key (tourOpen.ts). */
   private opened = new Map<unknown, Opened>();
+  /** Openers whose control was not on the page, so later steps behind them wait less for it. */
+  private unopenable = new Set<unknown>();
   /** Where the keyboard goes back once a menu that kept it for a press is done with (focusBack). */
   private focusLater?: HTMLElement;
   /** Steps whose page act was asked for (once a tour), and the chapters they were in. */
@@ -261,16 +263,19 @@ export class Tour {
     for (const [k, m] of this.opened) if (k !== need?.key) (this.closeKeepingFocus(m), this.opened.delete(k));
     let target = step.target ? findTarget(step.target) : undefined;
     this.focusBack();
+    // an opener that failed already is tried briefly, not for the full wait again
+    const patience = step.target?.in && this.unopenable.has(step.target.in) ? 300 : 3000;
     if (need && step.target && (!target || !need.isOpen())) {
       await this.openKeepingFocus(need, step.action === 'press' && !!step.click);
       if (!this.live(token)) return;
       // a menu opens at once; a panel may load first
-      for (let t = 0; t < 3000 && !(target = findTarget(step.target)); t += 100) {
+      for (let t = 0; t < patience && !(target = findTarget(step.target)); t += 100) {
         await sleep(100);
         if (!this.live(token)) return;
       }
     }
     if (step.target && !target) {
+      if (step.target.in) this.unopenable.add(step.target.in);
       console.warn(`Tour: nothing on the page for ${step.id} (${cssList(step.target.css).join(', ')})`);
       this.bar.dataset.missing = step.id;
       if (step.optional) return this.go(this.i + 1);
