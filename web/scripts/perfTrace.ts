@@ -57,6 +57,25 @@ const metric = async (cdp: CDPSession) => {
   return (n: string) => metrics.find((m) => m.name === n)?.value ?? 0;
 };
 
+interface CpuProfile {
+  nodes: { id: number; callFrame: { functionName: string; url: string; lineNumber: number } }[];
+  samples?: number[];
+  timeDeltas?: number[];
+}
+
+/** Prints the 15 functions with the most self time in a V8 CPU profile (ms). */
+function topSelf(name: string, profile: CpuProfile) {
+  const frames = new Map(profile.nodes.map((n) => [n.id, n.callFrame]));
+  const self = new Map<string, number>();
+  (profile.samples ?? []).forEach((id, i) => {
+    const f = frames.get(id)!;
+    const key = `${f.functionName || '(anonymous)'} ${f.url.split('/').pop() ?? ''}:${f.lineNumber}`;
+    self.set(key, (self.get(key) ?? 0) + (profile.timeDeltas?.[i] ?? 0) / 1000);
+  });
+  const top = [...self].sort((a, b) => b[1] - a[1]).slice(0, 15);
+  console.log(`\n${name}: top self time\n` + top.map(([k, ms]) => `  ${ms.toFixed(1).padStart(7)} ms  ${k}`).join('\n'));
+}
+
 async function trace(page: Page, cdp: CDPSession, name: string, url: string, traceDir?: string, profileDir?: string): Promise<Row> {
   const reqs = new Map<string, { url: string; type: string; bytes: number }>();
   cdp.on('Network.requestWillBeSent', (e: { requestId: string; request: { url: string }; type?: string }) =>
@@ -93,6 +112,7 @@ async function trace(page: Page, cdp: CDPSession, name: string, url: string, tra
     const { profile } = await cdp.send('Profiler.stop');
     mkdirSync(profileDir, { recursive: true });
     writeFileSync(join(profileDir, `${name.replace(/\W+/g, '-')}.cpuprofile`), JSON.stringify(profile));
+    topSelf(name, profile);
   }
   await page.waitForTimeout(1500); // idle work (sound warm-up, prefetch) runs after the page is quiet
   const p = await page.evaluate(() => {
