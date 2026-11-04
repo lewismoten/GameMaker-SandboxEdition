@@ -2,7 +2,8 @@
 // choose, use buttons to turn or flip), or the monster it fires; its move and pause; and the
 // buttons that move, copy or delete it. Also the key a sequence runs on. character.ts
 // builds them, passing what they need to read and change (FrameContext).
-import { h, numberField, selectField } from '../../core/ui';
+import { h, numberField, selectField, toast } from '../../core/ui';
+import { fullText } from '../../widgets/limitNote';
 import { paintBlock } from '../../core/draw';
 import { chooseBlock, type BlockExtra } from '../../widgets/blockChooser';
 import { BLEN, CHARBL, MONBL, type Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
@@ -144,8 +145,11 @@ function frameCell(ctx: FrameContext, f: Frame, top: boolean): HTMLElement {
 
 export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number, n: number): HTMLElement {
   const fires = firesMonster(f);
-  const tool = (label: string, icon: string, fn: () => void, disabled = false) =>
-    h('button', { type: 'button', class: 'chr-tool', title: label, 'aria-label': label, disabled, onclick: () => (ctx.edit(fn), ctx.redraw()) }, icon);
+  const tool = (label: string, icon: string, fn: () => void, disabled = false, why = '') =>
+    why
+      ? // Stays focusable (aria-disabled) so a keyboard user can reach the reason, which also shows as a toast.
+        h('button', { type: 'button', class: 'chr-tool', title: `${label}: ${why}`, 'aria-label': `${label} (unavailable: ${why})`, 'aria-disabled': 'true', onclick: () => toast(why) }, icon)
+      : h('button', { type: 'button', class: 'chr-tool', title: label, 'aria-label': label, disabled, onclick: () => (ctx.edit(fn), ctx.redraw()) }, icon);
   const monster = () => {
     const get = () => f.pic1;
     const set = (value: number) => {
@@ -187,7 +191,7 @@ export function frameCard(ctx: FrameContext, seq: Sequence, f: Frame, i: number,
       fires ? null : tool('Swap halves', '⇅', () => (swapHalves(f), ctx.listChanged())),
       tool('Move earlier', '◀', () => moveFrame(seq, i, -1), i === 0),
       tool('Move later', '▶', () => moveFrame(seq, i, 1), i >= n - 1),
-      tool('Duplicate', '⧉', () => insertFrame(seq, i), n >= MAXFRAME),
+      tool('Duplicate', '⧉', () => insertFrame(seq, i), false, n >= MAXFRAME ? fullText(MAXFRAME, 'frames', 'a sequence') : ''),
       tool('Delete', '✕', () => deleteFrame(seq, i)),
     ),
     action,

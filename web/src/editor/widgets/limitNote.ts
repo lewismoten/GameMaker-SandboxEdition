@@ -16,3 +16,12 @@ export function fullNote(max: number, things: string, where: string): HTMLElemen
 export function upTo(max: number, unit = 'letters'): string {
   return `up to ${max} ${unit} in DOS`;
 }
+
+/** A short DOS file stem: the first 8 letters. Says so (toast) when that cuts the name, so the author sees the DOS name. */
+export function dosStem(name: string, tell: (msg: string) => void): string {
+  const stem = name.replace(/\.[^.]*$/, '');
+  if (stem.length <= 8) return stem;
+  const cut = stem.slice(0, 8);
+  tell(`DOS file names hold 8 letters, so ${stem.toUpperCase()} is saved as ${cut.toUpperCase()}.`);
+  return cut;
+}

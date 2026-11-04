@@ -24,11 +24,11 @@ async function convertDialog(project: Project, animate: boolean): Promise<string
     delays.push(...(animate ? d.delays : d.delays.slice(0, 1)));
   }
   if (!frames.length) return undefined;
-  const base =
-    normalize(files[0].name)
-      .replace(/\..*$/, '')
-      .replace(/[^a-z0-9_]/g, '')
-      .slice(0, 8) || 'picture';
+  const full = normalize(files[0].name)
+    .replace(/\..*$/, '')
+    .replace(/[^a-z0-9_]/g, '');
+  const base = full.slice(0, 8) || 'picture';
+  if (full.length > 8) toast(`DOS file names hold 8 letters, so ${full.toUpperCase()} is offered as ${base.toUpperCase()}. You can change it.`);
   const ext = animate ? 'fli' : 'gif';
 
   return modal<string>(animate ? 'Make an animation' : 'Make a picture', (close) => {

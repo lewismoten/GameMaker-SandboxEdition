@@ -9,3 +9,14 @@ describe('limit notes', () => {
     expect(upTo(19)).toBe('up to 19 letters in DOS');
   });
 });
+
+describe('dosStem', () => {
+  it('tells when it cuts', async () => {
+    const { dosStem } = await import('./limitNote');
+    const said: string[] = [];
+    expect(dosStem('longername.voc', (m) => said.push(m))).toBe('longerna');
+    expect(said[0]).toContain('LONGERNA');
+    expect(dosStem('short', (m) => said.push(m))).toBe('short');
+    expect(said).toHaveLength(1);
+  });
+});
