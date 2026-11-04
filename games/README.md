@@ -114,6 +114,11 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | power-up          | `npx vite-node ../games/power-up/tools/gendemo.ts`                | re-records the title demo (both levels) into `src/demo.ts` (then rebuild)                                                                    |
 | power-up          | `npx vite-node ../games/power-up/tools/demoCheck.ts`              | plays the title demo on the real engine: scenes 2 3 1                                                                                        |
 | power-up          | `npx vite-node ../games/power-up/tools/preview.ts [dir]`          | PNGs of the blocks, the hero, each level and every picture                                                                                   |
+| throw-it | `npx vite-node ../games/throw-it/tools/check.ts` | the bot throws a star that pops a gumdrop, one that falls short, one from close by, one the wrong way, and one that clears the grump, with every coin |
+| throw-it | `npx vite-node ../games/throw-it/tools/bumpCheck.ts` | Kit pushing on into the grump loses nothing and cannot pass; a star after a jump flies up, after a step it flies level |
+| throw-it | `npx vite-node ../games/throw-it/tools/gendemo.ts` | re-records the title demo (a pop, a short star, a pop) into `src/demo.ts` (then rebuild) |
+| throw-it | `npx vite-node ../games/throw-it/tools/demoCheck.ts` | plays the title demo headless: pop, miss, pop |
+| throw-it | `npx vite-node ../games/throw-it/tools/preview.ts [dir]` | PNGs of the blocks, the hero, the monsters, each level and every picture |
 | goat              | `npx vite-node ../games/goat/tools/check.ts`                      | the bot eats, gathers wool and screams its way to the manger                                                                                 |
 | goat              | `npx vite-node ../games/goat/tools/gendemo.ts`                    | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                  |
 | mustard           | `npx vite-node ../games/mustard/tools/check.ts`                   | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze                                                            |
