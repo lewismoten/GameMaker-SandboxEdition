@@ -442,6 +442,7 @@ records every clip again.
 | [box-hello.ogg](box/box-hello.ogg) | Inspector Ada Penn, on a new case: what a 1994 software box held. Far more than a disk, as you’ll see. | Box: Inspector Penn comes on | 7.80 |
 | [box-shelf.ogg](box/box-shelf.ogg) | Take a box down off the shelf, and the whole thing turns up in your hands. | Box: Inspector Penn presses the box standing face out | 5.15 |
 | [box-outside.ogg](box/box-outside.ogg) | Outside, art up front. The back sells the game with its features, reviews and pictures. | Box: Inspector Penn points at the box, turning | 6.00 |
+| [box-feelies.ogg](box/box-feelies.ogg) | Under the box are the feelies. Click one and it turns in your hands. | Box: Inspector Penn points at the Feelies under the box | 4.72 |
 | [box-disks.ogg](box/box-disks.ogg) | The disks, fanned out as a set. Click them and disk one goes in drive A: to play. | Box: Inspector Penn points at the disks in the box | 5.98 |
 | [box-manual.ogg](box/box-manual.ogg) | The manual, stapled, with a cover of its own. Click it to read. | Box: Inspector Penn points at the manual in the box | 4.63 |
 | [box-list.ogg](box/box-list.ogg) | Then the paper. Each piece has a little picture; click one to look closer. So much, and on purpose! | Box: Inspector Penn points at the list of what else came in the box | 6.93 |

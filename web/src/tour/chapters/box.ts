@@ -74,7 +74,7 @@ export const boxChapter: Chapter = {
       action: 'point',
       // under the box, only for a game that has trinkets, laser kits or the phone kit
       target: { label: 'the Feelies under the box', css: '.box-viewer .bc-trinkets', in: box },
-      say: 'Under the box, the feelies: little extras you can print or cut. Click one and it turns in your hands.',
+      say: 'Under the box are the feelies. Click one and it turns in your hands.',
       optional: true,
     },
     {
