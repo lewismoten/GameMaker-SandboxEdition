@@ -27,6 +27,8 @@ async function draw(f: Feelie): Promise<string | undefined> {
     const view = createPhoneView(canvas, mine.parts, other?.parts ?? []);
     if (!view) return undefined;
     view.snap = true;
+    view.yaw = 0.45; // the front, with its dial and display
+    view.pitch = -0.2;
     return snap(canvas, view);
   }
   const view = (await viewMaker(f))(canvas);

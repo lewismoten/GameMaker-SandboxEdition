@@ -62,7 +62,7 @@ async function openOne(
     const pages = await buildBooklet(entry, cover, host);
     const family = (await loadCatalog().catch(() => [] as CatalogEntry[])).filter(isSandboxGame);
     const ctx: PrintContext = { entry, family, printables: entry.original?.printables ?? {}, manual, shot: shotCache(entry) };
-    const items = boxItems(ctx);
+    const items = [...boxItems(ctx), ...(await import('./printables/feelieItems').then((m) => m.feelieItems(entry.id)).catch(() => []))];
     onReady?.();
     const epub = { file: `${entry.id}-manual.epub`, make: () => import('./epub/manualBook').then((m) => m.manualBook(entry)) };
     await openBox(title, pages, items, { start, epub, games, gameId: entry.id, onGame });
