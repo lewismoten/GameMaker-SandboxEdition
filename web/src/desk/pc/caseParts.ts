@@ -107,15 +107,16 @@ function sound(kind: DriveSound, ms?: number): void {
 }
 
 /**
- * A 3.5" drive in its own 3.5" bay (25.4 x 101.6 mm), mounted on its side as in some cases of the
- * day: the disk slot runs up and down the right edge, the activity light sits at the top and the
- * round eject push-button at the bottom. Sizes are in mm (desk.css --mm).
+ * A 3.5" drive in its own 3.5" bay (101.6 x 25.4 mm), laid flat like the drive in the 1990s photo it
+ * follows: the disk slot with its spring-door flap across the top, a stepped recess under it, the
+ * green activity light and the maker's name (KELVO, made up) at the lower left and the rectangular
+ * eject push-button at the lower right. Sizes are in mm (desk.css --mm).
  */
 export function floppyDrive(onEject: () => void): FloppyDrive {
   const led = h('span', { class: 'drive-led' });
   const flap = h('span', { class: 'flap' });
   const btn = h('button', {
-    class: 'eject-btn round',
+    class: 'eject-btn flat',
     'aria-label': 'Eject the disk from drive A:',
     onclick: () => {
       btn.classList.add('pushed');
@@ -127,7 +128,9 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
     'div',
     { class: 'drive fdd', title: 'Drive A: 3.5" 1.44 MB' },
     h('span', { class: 'slot' }, flap),
+    h('span', { class: 'well' }),
     led,
+    h('span', { class: 'brand-print' }, 'KELVO'),
     btn,
     h('span', { class: 'bay-label' }, 'A:'),
   );
@@ -154,6 +157,11 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
     },
     isBusy: () => led.classList.contains('on'),
   };
+}
+
+/** An empty 5.25" half-height bay cover (or, with `filler`, the blank plate that squares off the cage): decoration only. */
+export function blankBay(filler = false): HTMLElement {
+  return h('div', { class: `drive blank${filler ? ' filler' : ''}`, 'aria-hidden': 'true' });
 }
 
 interface CdDrive {
