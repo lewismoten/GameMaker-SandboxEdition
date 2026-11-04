@@ -213,4 +213,6 @@ from the slim home-page catalog. Copying a selected file still reads its origina
   and a heap cap. Prints a table per reader (ok, clear Error, bad = TypeError/RangeError from deep inside, hang, memory);
   exits 1 on any bad, hang or memory. Same `--seed`, same cases. `--save` writes the failing inputs to a folder.
 
-- `pocketColorCheck.ts`: host check of the Pocket Player's level colors (`hardware/pocket-player/src/level.h`): the same palette and byte-order math, compared with the engine's render, written as a side-by-side PNG (`npx vite-node scripts/pocketColorCheck.ts out.png`).
+- `pocketColorCheck.ts`: host check of the Pocket Player's level colors (`hardware/pocket-player/data/`): the same palette and byte-order math, compared with the engine's render, written as a side-by-side PNG (`npx vite-node scripts/pocketColorCheck.ts out.png`).
+- `pocketHostCheck.ts`: the Pocket Player's play rules (`hardware/pocket-player/src/gmcore.h`) against the real engine: the bot plays First Steps, the same keys replay through `host/hosttest.cpp` (built with `c++`), and position, frame, scroll, score and a picture hash must match on every tick (`npx vite-node scripts/pocketHostCheck.ts`).
+- `pocketData.ts`: refreshes `hardware/pocket-player/data/` from First Steps' built disk.
