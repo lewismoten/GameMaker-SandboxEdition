@@ -1,6 +1,7 @@
 // The front of the PC case: a two-digit seven-segment MHz display, the hard disk's light, and two
-// 5.25" bays: a CD-ROM drive (tray, headphone jack, volume wheel, busy light, eject button) and a
-// 3.5" floppy drive on an adapter plate (slot, activity light and eject push-button under it).
+// 5.25" bay for the CD-ROM drive (bright white faceplate, tray, headphone jack, volume wheel, busy
+// light, eject button), a smaller 3.5" bay with the floppy drive turned on its side (slot, activity
+// light and eject push-button), the key lock and the brand badge. Sizes are mm from one factor.
 import { h } from '../../editor/core/ui';
 import type { DriveSound } from './driveSounds';
 
@@ -96,6 +97,8 @@ interface FloppyDrive {
   setDisk(title: string | undefined, color?: string): void;
   /** Blinks the activity light (reading). */
   busy(ms?: number): void;
+  /** True while the activity light is on: the one time a real drive's disk shouldn't be pulled. */
+  isBusy(): boolean;
 }
 
 /** Plays a drive sound (pc/driveSounds.ts, loaded on first use; silent before a gesture or when muted). */
@@ -104,9 +107,9 @@ function sound(kind: DriveSound, ms?: number): void {
 }
 
 /**
- * A 3.5" drive in a 5.25" bay, as cases of the day had it: a bezel plate the bay's size with the
- * drive's own face centered in it. The face has the disk slot on top, then the activity light at
- * lower left and the round eject push-button at lower right. Sizes are in mm (desk.css --mm).
+ * A 3.5" drive in its own 3.5" bay (25.4 x 101.6 mm), mounted on its side as in some cases of the
+ * day: the disk slot runs up and down the right edge, the activity light sits at the top and the
+ * round eject push-button at the bottom. Sizes are in mm (desk.css --mm).
  */
 export function floppyDrive(onEject: () => void): FloppyDrive {
   const led = h('span', { class: 'drive-led' });
@@ -123,19 +126,10 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
   const el = h(
     'div',
     { class: 'drive fdd', title: 'Drive A: 3.5" 1.44 MB' },
-    h('span', { class: 'screw tl' }),
-    h('span', { class: 'screw tr' }),
-    h('span', { class: 'screw bl' }),
-    h('span', { class: 'screw br' }),
-    h(
-      'div',
-      { class: 'face' },
-      h('span', { class: 'slot' }, flap),
-      led,
-      btn,
-      h('span', { class: 'bay-label' }, 'A:'),
-      h('span', { class: 'capacity' }, '1.44 MB'),
-    ),
+    h('span', { class: 'slot' }, flap),
+    led,
+    btn,
+    h('span', { class: 'bay-label' }, 'A:'),
   );
   let timer: ReturnType<typeof setTimeout> | undefined;
   return {
@@ -158,6 +152,7 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
       clearTimeout(timer);
       timer = setTimeout(() => led.classList.remove('on'), ms);
     },
+    isBusy: () => led.classList.contains('on'),
   };
 }
 
@@ -167,7 +162,7 @@ interface CdDrive {
   busy(ms?: number): void;
 }
 
-/** A CD-ROM drive filling its 5.25" bay: the tray across the top (its seam), the controls under it. */
+/** A CD-ROM drive filling its 5.25" bay behind a bright white faceplate: the tray across the top (its seam), the controls under it. */
 export function cdDrive(onEject: () => void): CdDrive {
   const led = h('span', { class: 'drive-led amber' });
   const tray = h('div', { class: 'tray' }, h('span', { class: 'cd-logo' }, 'COMPACT', h('b', null, 'disc'), h('small', null, 'DIGITAL DATA')));

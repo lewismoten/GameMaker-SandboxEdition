@@ -49,15 +49,20 @@ describe('the bays', () => {
   const mm = (sel: string, prop: string) =>
     Number(new RegExp(`${sel.replace(/[.]/g, '\\.')} \\{[^}]*?${prop}: calc\\(([\\d.]+) \\* var\\(--mm\\)\\)`).exec(css)?.[1]);
 
-  it('are 146 x 41.3 mm, one factor for both drives', () => {
+  it('the CD-ROM bay is 146 x 41.3 mm', () => {
     expect(mm('.drive', 'width')).toBe(146);
     expect(mm('.drive', 'height')).toBe(41.3);
   });
 
-  it('seat the 3.5 inch face (101.6 mm, slot 93 mm) centered in the bay; the CD tray is 130 mm', () => {
-    expect(mm('.drive.fdd .face', 'width')).toBe(101.6);
-    expect(mm('.drive.fdd .face', 'left')).toBeCloseTo((146 - 101.6) / 2, 1);
-    expect(mm('.drive.fdd .slot', 'width')).toBe(93);
+  it('the floppy has its own 3.5 inch bay, 25.4 x 101.6 mm, on its side with a 93 mm slot; the CD tray is 130 mm', () => {
+    expect(mm('.drive.fdd', 'width')).toBe(25.4);
+    expect(mm('.drive.fdd', 'height')).toBe(101.6);
+    expect(mm('.drive.fdd .slot', 'height')).toBe(93);
     expect(mm('.drive.cdrom .tray-slot', 'width')).toBe(130);
+  });
+
+  it('the brand badge is one inch square', () => {
+    expect(mm('.brand-badge', 'width')).toBe(25.4);
+    expect(mm('.brand-badge', 'height')).toBe(25.4);
   });
 });

@@ -3,6 +3,7 @@
 // keyboard, monitor). desk.ts gives it what the buttons do and works the parts it hands back.
 import { h } from '../editor/core/ui';
 import { sevenSegment, floppyDrive, cdDrive, hddLight } from './pc/caseParts';
+import { keyLock, brandBadge } from './pc/caseFace';
 import { keyboard } from './pc/keyboard';
 import { keyboardTray } from './pc/tray';
 import { speakers } from './pc/speakers';
@@ -189,18 +190,17 @@ export function deskScene(on: DeskActions) {
             h('label', null, powerBtn, 'POWER'),
             h('label', null, resetBtn, 'RESET'),
             // the key lock beside them (the key is long lost: it stays unlocked)
-            h('span', { class: 'keylock-label', 'aria-hidden': 'true' }, h('span', { class: 'keylock' }), 'LOCK'),
+            h('span', { class: 'keylock-label', 'aria-hidden': 'true' }, keyLock()),
           ),
           h(
             'div',
             { class: 'leds' },
-            h('span', null, powerLed, 'POWER'),
-            h('span', null, turboLed, 'TURBO'),
-            h('span', null, hdd.led, 'HDD'),
+            // the three lights in a column, each with its name printed beside it
+            h('div', { class: 'led-stack' }, h('span', null, powerLed, 'POWER'), h('span', null, turboLed, 'TURBO'), h('span', null, hdd.led, 'H.D.D.')),
             // the turbo button beside the speed it sets
             h('span', { class: 'speed' }, h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')), h('label', { class: 'case-label' }, turboBtn, 'TURBO')),
           ),
-          h('span'),
+          brandBadge(),
           h('div', { class: 'drives' }, cd.el, floppy.el),
           driveActions,
         ),
