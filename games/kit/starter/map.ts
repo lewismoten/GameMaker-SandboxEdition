@@ -4,12 +4,12 @@
 //   ' ' sky        G grass     D dirt     B brick    = plank (stand on it, jump up through it)
 //   H ladder       c coin      k key      ^ spikes   b bush     f flower    ( ) a cloud
 //   s S the entrance (top, bottom): you start in it    e E the exit door (top, bottom)
-//   g gumdrop      z buzzer    n shelly   X sky you can't walk through
+//   g gumdrop      z buzzer    n shelly   X a hedge you can't walk through
 //   (locks.ts) K silver key   L gold gate, l its arch   M silver gate, m its arch
 //
 // Signs are stamped on top with sign(): the board's top-left block, the words' name.
 // Around the level the world is 100x100 blocks: the sky and the ground carry on past its
-// edges (and a wall of air keeps you inside), so the screen never shows the end of the map.
+// edges (a visible hedge or wall keeps you inside; nothing solid is ever drawn as sky), so the screen never shows the end of the map.
 import { newMap, reindexMonsters, MLEN, type GameMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { SOLID, type Book } from './book';
 import { MON } from './ids';
@@ -73,8 +73,8 @@ export class StarterMap {
       if (row.length !== this.width) throw new Error(`Level row ${y} is ${row.length} wide, not ${this.width}`);
     });
     const dirt = book.n('dirt');
-    const edge = book.n('edge');
-    for (let y = 0; y < MLEN; y++) for (let x = 0; x < MLEN; x++) this.map.blocks[y * MLEN + x] = y < ORIGIN + this.height ? edge : dirt;
+    const sky = book.n('sky');
+    for (let y = 0; y < MLEN; y++) for (let x = 0; x < MLEN; x++) this.map.blocks[y * MLEN + x] = y < ORIGIN + this.height ? sky : dirt;
     rows.forEach((row, y) =>
       [...row].forEach((ch, x) => {
         const name = LEGEND[ch];
@@ -113,18 +113,19 @@ export class StarterMap {
   /** The finished map: the ground and the walls carry on past the level's edges. */
   done(): GameMap {
     const at = (x: number, y: number) => y * MLEN + x;
-    const edge = this.book.n('edge');
+    const sky = this.book.n('sky');
     for (let y = ORIGIN; y < ORIGIN + this.height; y++) {
       const left = this.map.blocks[at(ORIGIN, y)];
       const right = this.map.blocks[at(ORIGIN + this.width - 1, y)];
-      for (let x = 0; x < ORIGIN; x++) this.map.blocks[at(x, y)] = this.solidOf(left) ? left : edge;
-      for (let x = ORIGIN + this.width; x < MLEN; x++) this.map.blocks[at(x, y)] = this.solidOf(right) ? right : edge;
+      for (let x = 0; x < ORIGIN; x++) this.map.blocks[at(x, y)] = this.isGround(left) ? left : sky;
+      for (let x = ORIGIN + this.width; x < MLEN; x++) this.map.blocks[at(x, y)] = this.isGround(right) ? right : sky;
     }
     reindexMonsters(this.map);
     return this.map;
   }
 
-  private solidOf(block: number): boolean {
-    return this.book.isSolid(block, SOLID);
+  /** Only ground (grass and dirt) carries on past a level's edge; a wall or hedge ends there. */
+  private isGround(block: number): boolean {
+    return block === this.book.n('grass') || block === this.book.n('dirt');
   }
 }

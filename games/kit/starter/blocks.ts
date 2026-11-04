@@ -3,7 +3,7 @@
 // here, and its rules (solid, pull, score, what it turns into) are on the same tab.
 //
 // The order matters (a block's number is its place) and is the same in every Starter:
-//   air:      sky, edge (sky you can't walk through), cloudL + cloudR (one cloud, two blocks wide)
+//   air:      sky, edge (a hedge you can't walk through, never see-through), cloudL + cloudR (one cloud, two blocks wide)
 //   ground:   grass, dirt, brick, plank (a floor you can jump up through)
 //   scenery:  bush, flower
 //   climbing: ladder
@@ -28,7 +28,25 @@ export function addStarterBlocks(book: Book, pal: Pal): void {
 
   // ---- air
   book.add('sky', sky(), air);
-  book.add('edge', sky(), { ...air, solid: SOLID });
+  {
+    // the hedge that ends a room: leafy and plainly a wall, so nothing a player bumps into is invisible
+    const g = r('grass');
+    const p = new Pixels(20, 20, g[2]);
+    const rand = rng(31);
+    for (let i = 0; i < 26; i++) {
+      const x = Math.floor(rand() * 20);
+      const y = Math.floor(rand() * 20);
+      p.disc(x, y, 3, g[i % 3 === 0 ? 1 : 3]);
+    }
+    for (let i = 0; i < 22; i++) {
+      const x = Math.floor(rand() * 19);
+      const y = Math.floor(rand() * 19);
+      p.rect(x, y, 2, 1, g[4]).set(x, y + 1, g[3]);
+    }
+    p.rect(0, 0, 1, 20, g[0]).rect(19, 0, 1, 20, g[0]);
+    p.rect(1, 0, 1, 20, g[1]).rect(18, 0, 1, 20, g[1]);
+    book.add('edge', p, { ...air, solid: SOLID });
+  }
   {
     // one fluffy cloud, two blocks wide
     const p = new Pixels(40, 20, skyOf(pal));
