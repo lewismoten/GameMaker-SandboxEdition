@@ -33,6 +33,7 @@ export const CAST_GAMES = {
   'keys-and-doors': ['Keys and Doors', 'starter'],
   'meet-the-monsters': ['Meet the Monsters', 'starter'],
   'room-to-room': ['Room to Room', 'starter'],
+  'coins-and-score': ['Coins and Score', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -111,6 +112,7 @@ const LISTED: CastMember[] = [
       { game: 'keys-and-doors', as: 'finds a silver key for each locked door' },
       { game: 'meet-the-monsters', as: 'meets the gumdrops, the buzzer and the snail' },
       { game: 'room-to-room', as: 'walks through doors from room to room' },
+      { game: 'coins-and-score', as: 'collects coins and gems, and finds a heart for a life' },
     ],
   },
   {

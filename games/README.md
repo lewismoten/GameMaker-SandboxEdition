@@ -102,6 +102,9 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | room-to-room      | `npx vite-node ../games/room-to-room/tools/check.ts`              | the bot goes through a door and off an open edge, fetches the key and comes back, picks a door at the fork, with every coin |
 | room-to-room      | `npx vite-node ../games/room-to-room/tools/gendemo.ts`            | re-records the title demo into `src/demo.ts` (then rebuild) |
 | room-to-room      | `npx vite-node ../games/room-to-room/tools/preview.ts [dir]`      | PNGs of the blocks, the hero, the monsters, each room and every picture |
+| coins-and-score   | `npx vite-node ../games/coins-and-score/tools/check.ts`           | the bot takes every coin, gem and heart, walks into the rock, and checks the score and the lives |
+| coins-and-score   | `npx vite-node ../games/coins-and-score/tools/gendemo.ts`         | re-records the title demo into `src/demo.ts` (then rebuild) |
+| coins-and-score   | `npx vite-node ../games/coins-and-score/tools/preview.ts [dir]`   | PNGs of the blocks, the hero, the monsters, each level and every picture |
 | goat              | `npx vite-node ../games/goat/tools/check.ts`                      | the bot eats, gathers wool and screams its way to the manger                                                                                 |
 | goat              | `npx vite-node ../games/goat/tools/gendemo.ts`                    | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                  |
 | mustard           | `npx vite-node ../games/mustard/tools/check.ts`                   | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze                                                            |
