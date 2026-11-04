@@ -174,3 +174,27 @@
     min-height: 170px;
   }
 }
+
+/* Touch: every control 44 px; the frame and path rows wrap. */
+@media (hover: none) and (pointer: coarse) {
+  .mon-detail button,
+  .mon-detail select,
+  .mon-detail input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  .mon-detail button,
+  .mon-detail .mpath-zoom button {
+    min-width: 44px;
+  }
+  .mon-detail summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .mon-detail .mpath-row,
+  .mon-detail .mpath-toolbar,
+  .mon-detail .mpath-tabs {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+}
