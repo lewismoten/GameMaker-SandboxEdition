@@ -205,20 +205,49 @@ export function cdDrive(onEject: () => void): CdDrive {
   };
 }
 
-/** Slides the tray out and back, as pressing eject did: the motor's whirr and a clunk each way, then the disc spins up. */
-export function openTray(drive: CdDrive): Promise<void> {
+type TrayState = 'closed' | 'opening' | 'open' | 'closing';
+/** How long the tray slides (desk.css .tray transition), and how long it waits open before closing by itself. */
+export const TRAY_SLIDE_MS = 600;
+export const TRAY_WAIT_MS = 10000;
+const trays = new WeakMap<CdDrive, { state: TrayState; timer?: ReturnType<typeof setTimeout>; closed: (() => void)[] }>();
+const trayOf = (drive: CdDrive) => {
+  let t = trays.get(drive);
+  if (!t) trays.set(drive, (t = { state: 'closed', closed: [] }));
+  return t;
+};
+
+/** Where the tray is: out or on its way out (eject then closes it), closing (eject does nothing), or closed. */
+export const trayState = (drive: CdDrive): TrayState => trayOf(drive).state;
+
+/** Slides the tray out: the motor's whirr and a clunk. It closes by itself after `wait` ms (or when closeTray is called); resolves once it has closed. */
+export function openTray(drive: CdDrive, wait = TRAY_WAIT_MS): Promise<void> {
+  const t = trayOf(drive);
+  const done = new Promise<void>((r) => t.closed.push(r));
+  if (t.state !== 'closed') return done; // already out, or closing: a press never sends it back out mid-close
+  t.state = 'opening';
   drive.el.classList.add('open');
   sound('tray-open');
-  return new Promise((r) =>
-    setTimeout(() => {
-      drive.el.classList.remove('open');
-      sound('tray-close');
-      if (drive.el.dataset.disk)
-        setTimeout(() => {
-          drive.busy(1800);
-          sound('cd-spin', 1800);
-        }, 700);
-      r();
-    }, 1600),
-  );
+  t.timer = setTimeout(() => {
+    t.state = 'open';
+    t.timer = setTimeout(() => closeTray(drive), wait);
+  }, TRAY_SLIDE_MS);
+  return done;
+}
+
+/** Slides the tray back in (a second press of eject, or its wait running out); then a disc in it spins up. */
+export function closeTray(drive: CdDrive): void {
+  const t = trayOf(drive);
+  if (t.state === 'closed' || t.state === 'closing') return;
+  clearTimeout(t.timer);
+  t.state = 'closing';
+  drive.el.classList.remove('open');
+  sound('tray-close');
+  t.timer = setTimeout(() => {
+    t.state = 'closed';
+    t.closed.splice(0).forEach((r) => r());
+    if (drive.el.dataset.disk) {
+      drive.busy(1800);
+      sound('cd-spin', 1800);
+    }
+  }, TRAY_SLIDE_MS);
 }
