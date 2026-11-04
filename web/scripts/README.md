@@ -150,6 +150,7 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   with the engine's reader, writes it back with the matching serializer and compares bytes: one table per type
   (identical, different, unreadable) and the first differing offset. Zips are read in memory. It defaults to the
   archive in `.for-lewis/reference/archive` and `cd/`, and writes a `.md` and `.tsv`.
+- `test/formatProperties.test.ts` (vitest; `GM_PROPERTY_CASES=<n>` sets the cases per format, default 200, `GM_PROPERTY_SEED=<n>` repeats one failing seed) is the generated-file side of `roundtrip`: a seeded generator makes valid game, map, block, character, monster, palette, sound set, recording, slide list and backdrop structures within DOS's limits; each is written, read back (deep equal) and written again (identical bytes).
 - `diskDiff.ts` (`npm run disk:diff -- <a> <b> [--json|--notes]`, or `-- <game-id> --since [rev]`) compares two disks, each a folder (such as `games/<id>/disk`) or a
   `.zip`: how many files changed, were added or removed, then for each changed file a plain-text summary by type, picked from
   the file's contents where it can (GIF, FLI, VOC) and else its extension: `.gam` scenes, `.pal` colors, `.bbl/.mbl/.cbl`
