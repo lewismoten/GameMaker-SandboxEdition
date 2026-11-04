@@ -23,3 +23,21 @@ sound of 64 KB or more is cut short or fails. The limit used is 65,535 bytes, he
 (`VOC_MAX_BYTES`), which is `VOC_MAX_SAMPLES` (65,502) 8-bit samples as `encodeVoc` writes
 them: about 5.9 s at 11 kHz. The web engine plays a larger file anyway; the editor only warns
 (the Level check's `voc-size` finding, an import warning) and stops a recording at the limit.
+
+## The wall phone's voices (`phone/`)
+
+The 1994 desk's wall phone and the picked-up kitchen extension speak recorded clips
+(`public/phone/voice/<caller>/<id>.ogg`, with its own README and `index.json`), falling back to the
+browser's speech (`voices.ts`) only for a line with no clip or a clip that fails to load.
+
+- `phoneScript.ts`: every fixed line and who says it (calls.ts, hintLine.ts, phone.ts and the
+  extension take their words from it, so none can lack a clip).
+- `phoneCast.ts`: each caller's voice, cast like the tour's hosts (Kokoro stock voices, or Pocket
+  TTS clones of voice samples; never Lewis's own).
+- `phoneClips.ts`: cuts a line into sentence clips and splices the two lines with numbers (the
+  time; Teddy's pretend bill, up to $99.99, above which the browser speaks it).
+- `phonePlayer.ts`: plays them through one shared phone line (300 to 3400 Hz band-pass, a little
+  hiss) in Web Audio, following the Voice channel.
+
+Record with `npm run voice:phone`, check with `npm run voice:phone:check` (`web/scripts/README.md`).
+The test `scripts/narrate/phoneLines.test.ts` fails if a line has no clip.
