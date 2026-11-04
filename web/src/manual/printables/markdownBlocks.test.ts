@@ -53,7 +53,16 @@ describe('readMarkdown', () => {
 
 describe('a numbered list a table splits in two', () => {
   it('keeps the number its second half starts at, so “step 6” still names the sixth step', () => {
-    const blocks = readMarkdown('# T\n\n1. One\n2. Two\n\n| a | b |\n| - | - |\n| 1 | 2 |\n\n4. Four\n5. Five\n')[0].blocks;
+    const blocks = readMarkdown('# T\n\n1. One\n2. Two\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n4. Four\n5. Five\n')[1].blocks;
     expect(blocks.filter((b) => b.tag === 'ol').map((b) => (b as { start?: number }).start)).toEqual([undefined, 4]);
   });
+});
+
+describe('a pipe line that is not a table', () => {
+  it('reads as paragraph text and finishes at once (it once never advanced, filling the heap)', () => {
+    const t = Date.now();
+    const s = readMarkdown('before\n| not a table\nafter\n\n|\n\n| last line');
+    expect(Date.now() - t).toBeLessThan(500);
+    expect(s[0].blocks.map(blockText)).toEqual(['before', '| not a table after', '|', '| last line']);
+  }, 5000);
 });
