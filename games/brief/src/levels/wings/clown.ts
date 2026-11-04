@@ -1,9 +1,9 @@
 // Clown Alley: The Scissor Situation,
 // A very Cultured Performance, Bubble Rap and The Interest We Lost.
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
-import { bevel, blob, micro } from '../../art/draw';
+import { CLEAR, bevel, blob, micro } from '../../art/draw';
 import { c, r } from '../../art/pal';
-import { blank, bubble, docLeoSide, figure, figureBack, figureSide, floor, on, plinth, rot90, sign, wall } from '../../art/kit';
+import { blank, bubble, docLeoSide, figure, figureBack, figureSide, floor, on, plinth, sign, wall } from '../../art/kit';
 import type { Area } from '../area';
 import type { WingSpec } from '../wing';
 import { WINGS } from '../../stories';
@@ -168,13 +168,33 @@ function cloud(dy: number): Pixels {
   return p;
 }
 
+/**
+ * Tippy after the fall: sitting up on the ground with his legs stretched out, wide eyes, a downturned mouth and
+ * tears running down both cheeks. Sad, but plainly fine (he sat up and cried; nothing is hurt).
+ */
+function tippySitting(): Pixels {
+  const p = figure({ face: 'whiteface', shirt: ['blue', 4], pants: ['blue', 4], hat: { kind: 'cap', color: ['red', 3] } });
+  const face = c('paper', 4);
+  const ink = c('ink', 0);
+  // the mouth: a frown instead of the smile, with a big wobble
+  p.rect(8, 7, 4, 2, face).rect(9, 7, 2, 1, ink).set(8, 8, ink).set(11, 8, ink);
+  // the eyes squeezed a little wetter, and the tears: two bright streams down the cheeks
+  for (const x of [8, 11]) p.set(x, 5, ink).set(x, 6, c('blue', 4)).set(x, 7, c('blue', 4));
+  p.set(7, 7, c('blue', 4)).set(12, 8, c('blue', 4));
+  // the legs go out in front, sitting: pants, then a pair of red shoes
+  p.rect(5, 15, 15, 5, CLEAR);
+  p.rect(7, 15, 10, 4, ink).rect(8, 15, 9, 3, c('blue', 4)).rect(8, 15, 9, 1, c('blue', 3));
+  p.rect(16, 14, 4, 5, ink).rect(17, 15, 3, 3, c('red', 3));
+  return p;
+}
+
 function art(a: Area): void {
   // The Scissor Situation
   a.tile('saw', floor('sawdust', 1));
   a.solid('ringc', curb());
   a.solid('kids1', kids(1));
   a.solid('kids2', kids(2));
-  a.prop('tippy', 'saw', rot90(figure({ face: 'whiteface', shirt: ['blue', 4], pants: ['blue', 4], hat: { kind: 'cap', color: ['red', 3] } })));
+  a.prop('tippy', 'saw', tippySitting());
   const molly = figure({ face: 'auguste', hairStyle: 'wild', hair: ['orange', 3], shirt: ['yellow', 3], pants: ['green', 2], arms: 'up' });
   micro(molly, 0, 0, 'STOP', c('red', 3));
   a.prop('molly', 'saw', molly);

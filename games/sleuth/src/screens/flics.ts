@@ -121,6 +121,19 @@ function umbrellaManFli(): Uint8Array {
     const p = copy(base);
     const x = -30 + i * 7;
     p.blit(man, x, 74, CLEAR);
+    // a polite mystery guest: a fedora on his shadowed head, and as he passes the middle of the room he tips it,
+    // his near hand (a white evening glove) lifting the brim
+    const lift = i < 13 || i > 21 ? 0 : Math.round(Math.sin(((i - 13) / 8) * Math.PI) * 10);
+    const hx = x + 14;
+    const hy = 80 - lift;
+    p.rect(hx + 1, hy - 8, 16, 8, c('black', 0)).rect(hx + 1, hy - 3, 16, 1, c('panel', 2));
+    p.rect(hx - 4 - (lift ? 2 : 0), hy, 26 + (lift ? 2 : 0), 3, c('black', 0));
+    if (lift > 3) {
+      // the arm bends up from the shoulder to the brim
+      for (let k = 0; k <= 12; k++)
+        p.rect(x + 10 - Math.round(Math.sin((k / 12) * Math.PI) * 6), 110 - Math.round(k * ((110 - hy - 2) / 12)), 3, 3, c('black', 1));
+      p.rect(hx - 6, hy - 1, 4, 4, c('paper', 5));
+    }
     // the umbrella, furled, dripping
     p.line(x + 40, 112, x + 46, 150, c('black', 0)).line(x + 41, 112, x + 47, 150, c('navy', 2));
     for (let d = 0; d < 3; d++) p.set(x + 46 - d * 6, 152 + ((i * 5 + d * 7) % 20), c('rain', 5));
