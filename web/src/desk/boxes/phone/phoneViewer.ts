@@ -9,7 +9,6 @@ import { h } from '../../../editor/core/ui';
 import { loadPhone, phoneSize, VARIANTS, type Part, type PhoneSet, type PhoneVariant, type ViewFilter } from './phoneData';
 import { createPhoneView, type PhoneView } from './phoneGl';
 
-const REPO = 'https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/games/year2000/phone/';
 const TURN = 0.3;
 const FIRST = { yaw: Math.PI + 0.6, pitch: -0.25 };
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -66,25 +65,15 @@ export function createPhoneViewer(): PhoneViewer {
   const buildButtons = VARIANTS.map((v) =>
     h('button', { class: 'trk-btn', type: 'button', 'aria-pressed': String(v === variant), onclick: () => chooseBuild(v) }, BUILDS[v].button),
   );
-  const buildTitle = h('strong', { class: 'trk-title phone-build' });
-  const sizeNote = h('p', { class: 'phone-size', role: 'status' });
+  const sizeNote = h('span', { class: 'phone-size' });
+  // a small panel over the floating phone: the build, the view, how far apart, and the size in one line
   const info = h(
     'div',
-    { class: 'trk-info phone-info', hidden: '' },
-    h('strong', { class: 'trk-title' }, 'The Phone of the Future (kit)'),
-    h('div', { class: 'trk-mode', role: 'group', 'aria-label': 'Which build to show, both drawn at the same scale' }, ...buildButtons),
-    buildTitle,
-    sizeNote,
-    h(
-      'span',
-      { class: 'trk-blurb' },
-      'An untested build-it-yourself design: a phone you solder and print, not one that has been built. ',
-      h('a', { class: 'trk-dl', href: `${REPO}PARTS.md`, target: '_blank', rel: 'noopener' }, 'Parts list'),
-      ' · ',
-      h('a', { class: 'trk-dl', href: `${REPO}README.md#build-order-for-a-beginner`, target: '_blank', rel: 'noopener' }, 'Build steps'),
-    ),
-    h('div', { class: 'trk-mode', role: 'group', 'aria-label': 'Show the phone as' }, ...buttons),
+    { class: 'phone-info', role: 'group', 'aria-label': 'The phone: build and view', hidden: '' },
+    h('div', { class: 'trk-mode', role: 'group', 'aria-label': 'Build' }, ...buildButtons),
+    h('div', { class: 'trk-mode', role: 'group', 'aria-label': 'View' }, ...buttons),
     h('label', { class: 'phone-explode', for: 'phone-explode' }, h('span', null, 'Explode'), slider),
+    sizeNote,
     say,
   );
 
@@ -120,11 +109,10 @@ export function createPhoneViewer(): PhoneViewer {
 
   function describe() {
     const m = MODES.find((x) => x.mode === mode)!;
-    buildTitle.textContent = BUILDS[variant].title;
     if (parts.length) {
       const [w, hh, d] = phoneSize(parts);
-      const b = sets[variant]?.meta?.board;
-      sizeNote.textContent = `With its shell: ${mmText(w)} × ${mmText(hh)} × ${mmText(d)} mm (${inches(w)} × ${inches(hh)} × ${inches(d)} in)${b ? `; the circuit board is ${b.width} × ${b.height} mm (${inches(b.width)} × ${inches(b.height)} in)` : ''}. Both builds are drawn at the same scale.`;
+      sizeNote.textContent = `${mmText(w)} × ${mmText(hh)} × ${mmText(d)} mm (${inches(w)} × ${inches(hh)} × ${inches(d)} in)`;
+      sizeNote.title = `${BUILDS[variant].title}: with its shell; both builds are drawn at the same scale`;
     }
     const groups = new Set(parts.map((p) => p.group)).size;
     say.textContent = `${m.label}: ${m.what}. ${parts.length} parts in ${groups} groups.`;

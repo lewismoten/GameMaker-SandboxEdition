@@ -8,6 +8,10 @@ import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
 export interface TrinketView {
   yaw: number;
   pitch: number;
+  /** 1 fits the model in the canvas; more comes closer (the wheel, a pinch). */
+  zoom: number;
+  /** Draws at this many pixels square instead of the canvas's size (a thumbnail drawn on a canvas that isn't in the page). */
+  fixed?: number;
   /** Draws the trinket at its current angles (resizes to the canvas first). */
   draw(): void;
   dispose(): void;
@@ -154,19 +158,21 @@ export function createTrinketView(canvas: HTMLCanvasElement, mesh: Mesh): Trinke
   const c = lo.map((v, i) => (v + hi[i]) / 2);
   const radius = Math.hypot(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) / 2;
   const fov = (28 * Math.PI) / 180;
-  const dist = (radius / Math.sin(fov / 2)) * 1.02;
+  const baseDist = (radius / Math.sin(fov / 2)) * 1.02;
 
   const view: TrinketView = {
     yaw: 0.6,
+    zoom: 1,
     pitch: 0.28,
     draw() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = Math.max(1, Math.round(canvas.clientWidth * dpr));
-      const h = Math.max(1, Math.round(canvas.clientHeight * dpr));
+      const w = view.fixed ?? Math.max(1, Math.round(canvas.clientWidth * dpr));
+      const h = view.fixed ?? Math.max(1, Math.round(canvas.clientHeight * dpr));
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;
       }
+      const dist = baseDist / view.zoom;
       gl.viewport(0, 0, w, h);
       gl.clearColor(0, 0, 0, 0);
       gl.enable(gl.DEPTH_TEST);

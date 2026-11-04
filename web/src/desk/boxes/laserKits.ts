@@ -17,8 +17,33 @@ export interface LaserDownload {
   label: string;
 }
 
+/** A flat part on a sheet, in millimeters from the sheet's top left (the Stage Box's manifest lists them). */
+export interface LaserPart {
+  name: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/** A sheet of a kit with its preview PNG and where each part lies on it (for the 3D box's face pictures). */
+export interface LaserSheet {
+  preview: string;
+  w: number;
+  h: number;
+  parts: LaserPart[];
+}
+
 export interface LaserKit {
+  /** 'nickel': a wooden coin; 'box': the Final Curtain Stage Box (drawn in 3D from its parts); 'kit': any other. */
+  kind: 'nickel' | 'box' | 'kit';
   title: string;
+  /** Material thickness in mm (the nickel's wood, the box's plywood). */
+  thickness?: number;
+  /** The coin's diameter in mm (a nickel). */
+  coin?: number;
+  /** The sheets of a kit that lists its parts (the Stage Box). */
+  sheets?: LaserSheet[];
   /** One line: what it is and what it is cut on. */
   summary: string;
   previews: LaserPreview[];
@@ -44,12 +69,32 @@ export function kitOf(manifest: unknown, base: string): LaserKit | null {
   if (kit && str(kit.title) && str(kit.summary)) {
     const previews = list(kit.previews, (p) => (str(p.file) && str(p.alt) && safe(p.file) ? { file: p.file, alt: p.alt } : null));
     const downloads = list(kit.downloads, (d) => (str(d.file) && str(d.label) && safe(d.file) ? { file: d.file, label: d.label } : null));
-    return { title: kit.title, summary: kit.summary, previews, downloads, base };
+    const material = m.material && typeof m.material === 'object' ? (m.material as { thickness?: unknown }).thickness : undefined;
+    const sheets = list(m.sheets, (s) => {
+      const parts = list(s.parts, (p) =>
+        str(p.name) && [p.x, p.y, p.w, p.h].every((n) => typeof n === 'number') ? { name: p.name, x: p.x as number, y: p.y as number, w: p.w as number, h: p.h as number } : null,
+      );
+      return str(s.preview) && safe(s.preview) && typeof s.w === 'number' && typeof s.h === 'number' ? { preview: s.preview, w: s.w, h: s.h, parts } : null;
+    });
+    return {
+      kind: m.id === 'stage-box' && sheets.length ? 'box' : 'kit',
+      title: kit.title,
+      thickness: typeof material === 'number' ? material : undefined,
+      sheets: sheets.length ? sheets : undefined,
+      summary: kit.summary,
+      previews,
+      downloads,
+      base,
+    };
   }
   if (m.key !== 'laser-nickel') return null;
   const coin = typeof m.mm === 'object' && m.mm ? (m.mm as { coin?: unknown }).coin : undefined;
   const inches = typeof coin === 'number' && coin > 0 ? `${+(coin / 25.4).toFixed(1)} in` : '1.5 in';
+  const wood = typeof m.mm === 'object' && m.mm ? (m.mm as { wood?: unknown }).wood : undefined;
   return {
+    kind: 'nickel',
+    coin: typeof coin === 'number' && coin > 0 ? coin : 38.1,
+    thickness: typeof wood === 'number' ? wood : 3,
     title: 'Wooden nickel',
     summary: `A laser-cut wooden nickel, ${inches} across, for a Glowforge. Cut the sheet, flip it onto the jig, then run the back.`,
     previews: [
