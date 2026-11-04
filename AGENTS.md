@@ -57,6 +57,7 @@ npm run walk:auto -- <folder|.zip> [--budget ms] [--game NAME.GAM] [--out w.json
 npm run check:keys [-- id ...]                     # keyboard accessibility: each walkthrough's share of arrows/Space/Enter presses, its diagonals and other keys; suggestions
 npm run editor:touch -- <route> [--out dir]       # touch audit of one editor route at iPad and iPhone sizes: controls under 44 px, overflow, axe, screenshots
 npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game the dev interaction log (the 🐵 switch) recorded, headless; checks each snapshot; PNG frames with --out; exits 1 on divergence
+npm run verify:perf                            # performance budgets (bytes, requests, INP at 4x) on a scratch production build, about 70 s; --update rewrites web/scripts/perfBudgets.json on purpose
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run release:draft -- <pages|engine|archives|tools>  # a draft Unreleased body from the commits since that target's last tag (prints; never writes)
 npm run release:cut -- <target> <version>          # Unreleased becomes a dated version; sets a package's version
