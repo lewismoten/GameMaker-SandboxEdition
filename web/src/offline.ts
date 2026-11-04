@@ -6,7 +6,7 @@
 // A new version of the site waits until the visitor says so: a small notice offers to
 // reload (a game on the desk's PC, or one being played, is never switched off by itself).
 
-import { watchLoadFailures } from './offline/loadFailure';
+import { reloadForNewest, watchLoadFailures } from './offline/loadFailure';
 
 const HOUR = 60 * 60 * 1000;
 
@@ -47,6 +47,8 @@ export function registerServiceWorker(): void {
 }
 
 let asked = false;
+/** The new version waiting for a Reload, if one is. */
+let waiting: ServiceWorker | undefined;
 let notice: HTMLElement | undefined;
 
 /**
@@ -54,6 +56,7 @@ let notice: HTMLElement | undefined;
  * Without a worker, another tab has already switched to it: Reload just reloads.
  */
 function offerUpdate(worker: ServiceWorker | undefined): void {
+  waiting = worker;
   if (notice?.isConnected) notice.remove();
   const button = (label: string, primary: boolean, onclick: () => void) => {
     const b = document.createElement('button');
@@ -77,8 +80,7 @@ function offerUpdate(worker: ServiceWorker | undefined): void {
     button('Reload', true, () => {
       asked = true;
       text.textContent = 'Updating…';
-      if (worker) worker.postMessage({ type: 'skip-waiting' });
-      else location.reload();
+      reloadForNewest(worker, () => location.reload());
     }),
     button('Later', false, () => notice?.remove()),
   );
@@ -95,6 +97,16 @@ function showNotice(message: string): void {
   close.textContent = 'OK';
   close.style.cssText = 'font:inherit;padding:4px 12px;border-radius:4px;cursor:pointer;border:1px solid #fff;background:transparent;color:#fff';
   close.addEventListener('click', () => notice?.remove());
+  // online, a part that would not load is usually one a deploy replaced: Reload brings the newest
+  const reload = document.createElement('button');
+  reload.type = 'button';
+  reload.textContent = 'Reload';
+  reload.style.cssText = 'font:inherit;padding:4px 12px;border-radius:4px;cursor:pointer;border:1px solid #fff;background:#fff;color:#000080;font-weight:bold';
+  reload.addEventListener('click', () => {
+    asked = true;
+    text.textContent = 'Reloading…';
+    reloadForNewest(waiting, () => location.reload());
+  });
   notice = document.createElement('div');
   notice.className = 'gm-update';
   notice.setAttribute('role', 'status');
@@ -102,6 +114,6 @@ function showNotice(message: string): void {
     'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483000;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;' +
     'max-width:calc(100vw - 32px);box-sizing:border-box;padding:10px 14px;border-radius:6px;background:#000080;color:#fff;' +
     'font:14px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.45)';
-  notice.append(text, close);
+  notice.append(text, ...(navigator.onLine === false ? [] : [reload]), close);
   document.body.append(notice);
 }
