@@ -1,11 +1,11 @@
 ;==============================================================================
-; THE PHONE OF THE FUTURE - PIC16F628A firmware (gpasm; ported from the PIC16F84A, same 18-pin pinout)
+; THE PHONE OF THE FUTURE - PIC16F628A firmware (gpasm), rev C
 ; Designed by Claude Sonnet 5.5 under Lewis Moten's direction. UNTESTED ON HARDWARE.
 ;
 ; Clock: 3.579545 MHz (the MT8870 crystal) -> 894886 instruction cycles per second.
 ; Pins:  RA0 TALK in (high = held)   RA1 DIN  RA2 CLK  RA3 LOAD  (MAX7219)
 ;        RA4 StD in (MT8870)         RB0 PULSE in (low = closed)  RB1 OFF-NORMAL in (low = closed)
-;        RB2/RB3 tone outputs (square waves, summed by two 10k resistors)
+;        RB2/RB3 tone outputs (square waves, summed by two 1k resistors and 100 nF)
 ;        RB4..RB7 = MT8870 Q1..Q4 in.  CLEAR is the MCLR reset button.
 ; The IR LED is only biased on while TALK is held or a digit is sent: RA0 is the TALK line, and
 ; the PIC drives it high for the length of a tone (R8 feeds the LED bias from it).
@@ -13,15 +13,13 @@
 ; 24-cycle loop (sample rate FS = 894886/24 = 37286 Hz): phase += inc, pin = top bit.
 ; Reference: DTMF row/column frequencies, ITU-T Q.23; MT8870D and MAX7219 datasheets.
 ;==============================================================================
-; Port notes (16F84A -> 16F628A): the pins and the instruction set are the same. Differences handled here:
-;  - CMCON = 7 turns the comparators off, or RA0..RA3 would not read as digital inputs;
-;  - the general registers start at 0x20 (0x0C..0x1F are peripheral registers on the 628A);
-;  - config: LVP off (RB3 is a tone output, not PGM), brown-out off, MCLR on, data-EEPROM code protect off.
         list    p=16f628a
         radix   dec
         errorlevel -302,-305
         #include <p16f628a.inc>
-        __CONFIG _XT_OSC & _WDT_OFF & _PWRTE_ON & _MCLRE_ON & _BODEN_OFF & _LVP_OFF & _CP_OFF & _CPD_OFF
+        ; LVP off: RB4 is the MT8870 Q1 input, so it cannot be the low-voltage programming pin (PGM).
+        ; A blank chip is programmed with LVP on (the erased state); this word then turns it off.
+        __CONFIG _XT_OSC & _WDT_OFF & _PWRTE_ON & _MCLRE_ON & _BODEN_OFF & _LVP_OFF & _CP_OFF & DATA_CP_OFF
 
 FS      equ     d'37286'                ; tone loop rate in Hz (894886 / 24 cycles)
 PDEB    equ     d'12'                   ; pulse debounce, in main-loop polls (about 1 ms)
@@ -44,7 +42,7 @@ INC1633 equ     (((1633*65536)+(FS/2))/FS)
 #define PULSE   PORTB,0
 #define OFFN    PORTB,1
 
-        cblock  0x20
+        cblock  0x20                    ; PIC16F628A general registers start at 0x20
         tmp, maddr, mdat, sh, bitn, i, val
         ndig, digit, pcount
         plev, pdeb, olev, odeb, tlast
@@ -60,6 +58,8 @@ BUF     equ     0x40                    ; 8 digits typed so far (0..9), left to 
 
 ;---- start-up ----------------------------------------------------------------
 start:
+        movlw   0x07
+        movwf   CMCON                   ; comparators off: RA0..RA3 are plain digital pins
         bsf     STATUS,RP0
         movlw   b'00010001'             ; RA0, RA4 inputs; RA1..RA3 outputs
         movwf   TRISA
@@ -68,8 +68,6 @@ start:
         movlw   b'00001111'             ; RBPU = 0 (weak pull-ups on), prescaler to the watchdog
         movwf   OPTION_REG
         bcf     STATUS,RP0
-        movlw   0x07
-        movwf   CMCON                   ; comparators off: RA0..RA3 are plain digital pins
         movlw   0x03
         movwf   PCLATH                  ; the lookup tables live at 0x300
         clrf    PORTB
@@ -288,7 +286,7 @@ max_init:
         call    max_write
         movlw   0x0A
         movwf   maddr
-        movlw   0x05                    ; medium brightness
+        movlw   0x01                    ; dim: with R25 = 10k the segment current is ~40 mA peak; 0x01 is 3/32 of that
         movwf   mdat
         call    max_write
         movlw   0x0F

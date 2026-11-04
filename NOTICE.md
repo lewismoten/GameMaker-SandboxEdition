@@ -970,10 +970,10 @@ Exported player-page and native-download notices carry the reference palette cre
 ### The Phone of the Future (electronics kit)
 
 `games/year2000/phone/` holds a solderable toy-phone design: a KiCad 9 schematic and two-layer
-board, a PIC16F628A firmware (ported from the PIC16F84A) in assembly, a bill of materials and a mechanical interface file.
+board, a PIC16F628A firmware in assembly, a bill of materials and a mechanical interface file.
 It was designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction, using KiCad
 (kicad-cli for ERC, DRC and exports) and gputils/gpasm. The circuit, footprints, generators and
-a small PIC16F84A simulator are project-owned MIT code. The schematic embeds symbols copied from
+a small PIC16F84A-style simulator are project-owned MIT code. The schematic embeds symbols copied from
 the KiCad stock libraries (CC-BY-SA 4.0 with the KiCad libraries exception, KiCad Libraries
 Development Team). References: the ITU-T Q.23 DTMF frequencies, the MT8870D (Mitel/Zarlink/
-Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated) and GNQ-3641 (G-NOR) datasheets. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.
+Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated), GNQ-3641 (G-NOR), PIC16F628A and MCP1702 (Microchip) datasheets. The README's programming steps use ZEPPP (Zero External Parts PIC Programmer by battlecoder, MIT License, https://github.com/battlecoder/zeppp); none of its code is copied. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.

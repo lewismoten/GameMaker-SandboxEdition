@@ -15,37 +15,37 @@ from design import parts  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(__file__), "..")
 UN = "unchecked"
-R_ = "CFR-12JB-52-{v} (Yageo 1/8 W carbon film; Digi-Key/Mouser/Jameco carry the family)"
+D = "2026-11-03"
 MPN = {
-    "U1": ("Microchip PIC16F628A-I/P (18-DIP, pin-compatible with the PIC16F84A; socketed)", "Digi-Key PIC16F628A-I/P-ND $2.88",
-           "checked 2026-11-03: Digi-Key page read, 5,817 in stock"),
-    "U2": ("California Micro Devices CM8870P (or Zarlink MT8870DE, Holtek HT9170B: same 18-DIP pinout, pins 5 and 6 to ground)",
-           "Futurlec MT8870DE $1.45 / HT9170B $0.50 (no US retailer found with a plain CM8870P; Digi-Key's MT8870DE1 is obsolete)",
-           "checked 2026-11-03: pin compatibility from the CM8870 and HT9170 datasheets; Futurlec prices read, stock not shown"),
-    "U3": ("HGSEMI MAX7219N (clone, DIP-24; Maxim MAX7219CNG+ also fits)", "LCSC C492111 about $1.57 (the Maxim part is $23.97 at Digi-Key MAX7219CNG+-ND)",
-           "checked 2026-11-03: LCSC page names part and package; its stock and price were not on the page I read (a search snippet showed 26 to 28 in stock, 1+ $1.57): unconfirmed"),
-    "U4": ("TI LM358N (LM358P)", "Digi-Key LM358N/NOPB", UN),
-    "U5": ("TI LM386N-1", "Digi-Key LM386N-1/NOPB", UN),
-    "U6": ("Microchip MCP1702-5002E/TO (TO-92, 5.0 V, 250 mA, 0.65 V dropout max at 250 mA, 13.2 V max in; pin 1 GND, 2 IN, 3 OUT)", "Digi-Key MCP1702-5002E/TO-ND $0.65",
-           "checked 2026-11-03: Digi-Key page read, 2,783 in stock; pinout and dropout from the MCP1702 datasheet DS22008E"),
-    "Q": ("onsemi 2N3904 (TO-92)", "Jameco / Digi-Key 2N3904", UN),
-    "X1": ("Abracon ABL-3.579545MHZ-B2 (HC-49/US)", "Digi-Key 535-9099-ND (verify)", UN),
-    "D2": ("Vishay TSAL6200 (940 nm, 5 mm)", "Digi-Key / Mouser TSAL6200", UN),
-    "D1": ("Vishay BPW34 (PIN photodiode)", "Digi-Key / Mouser BPW34", UN),
-    "DS": ("Futurlec 7FR3641AS 4-digit 0.36 in common-cathode red module (3641AS pinout)", "Futurlec 7FR3641AS $1.20 (Tayda A-1775 about $0.88, stock unconfirmed)",
-           "checked 2026-11-03: pinout, 10.16 mm row spacing and 30 x 14 x 7.2 mm from the GNQ-3641 datasheet; the retailer unit was not seen"),
-    "MK1": ("Electret capsule 9.7 mm, e.g. CUI CMC-9745 series", "Digi-Key / Mouser CUI CMC-97", UN),
-    "LS1": ("8 ohm 0.25 W speaker, about 28 mm", "Jameco / Digi-Key (any 28 mm 8 ohm)", UN),
-    "SW2": ("Omron SS-5GL2 (verify terminals)", "Digi-Key / Mouser SS-5GL2", UN),
-    "SW4": ("Omron B3F-1000 (6 mm tactile)", "Digi-Key SW400-ND $0.35", "checked 2026-11-03: Digi-Key 21,251 in stock"),
-    "BT1": ("Pololu 1145 4 x AAA holder with 6 in leads (53 x 50 x 13 mm)", "Pololu 1145 $2.54; Digi-Key SBH441A-ND $3.48", "checked 2026-11-03: prices read, Digi-Key 88 in stock"),
-    "RV1": ("10k 3-pin trimmer, 2.54 mm pins (Adafruit 356 style) - OPTIONAL, fit instead of R20 and R21", "Adafruit 356 $1.25 (out of stock 2026-11-03); any 10k trimmer", "checked 2026-11-03: Adafruit page"),
-    "SW1": ("SPDT slide switch, 2.54 mm pins (Adafruit 805 style)", "Adafruit 805 $0.95", "checked 2026-11-03: Adafruit page, in stock"),
+    "U1": ("Microchip PIC16F628A-I/P (18-pin DIP; PIC16F627A-I/P also works but has half the flash; 18-pin socket)", "Futurlec PIC16F628A $2.20; Digi-Key PIC16F628A-I/P-ND $2.88; Mouser $2.87",
+           f"checked {D}: Futurlec price read; Digi-Key and Mouser prices and stock read from search results (about 8,700 in stock each)"),
+    "U2": ("Zarlink/Microchip MT8870DE (or California Micro Devices CM8870P, Holtek HT9170B: same 18-DIP pinout, pins 5 and 6 to ground; 18-pin socket)",
+           "Futurlec MT8870DE $1.45 / HT9170B $0.50 (Holtek lists the HT9170B as phased out)",
+           f"checked {D}: Futurlec prices read, stock not shown"),
+    "U3": ("HGSEMI MAX7219N (DIP-24 clone of the MAX7219CNG; LCSC C492111). Genuine MAX7219CNG+ is pin-compatible",
+           "LCSC C492111 (about $1; the page showed no price when fetched, a search snippet said from $0.96); genuine: Jameco MAX7219CNG $7.95, Futurlec MAX7219CNG $8.50",
+           f"checked {D}: genuine prices read; the clone's price is from a search snippet only, so confirm it at LCSC"),
+    "U4": ("LM358N (TI, onsemi or ST: any 8-pin DIP LM358)", "Futurlec LM358N $0.22", f"checked {D}: Futurlec price read"),
+    "U5": ("LM386N-3 (or LM386N-1: same pinout; either works at 5 V)", "Futurlec LM386N-3 $0.55; Digi-Key LM386N-1/NOPB $1.18", f"checked {D}: Futurlec price read, supply range 4 to 12 V"),
+    "U6": ("Microchip MCP1702-5002E/TO (TO-92, 250 mA; pins 1 GND, 2 IN, 3 OUT)", "Digi-Key MCP1702-5002E/TO $0.65",
+           f"checked {D}: Digi-Key price and stock (2,783) read for the Rev B sheet the same day; pin order and 1 to 22 uF output capacitor from the datasheet"),
+    "Q": ("2N3904 (TO-92, pins E B C)", "Futurlec 2N3904 $0.06", f"checked {D}: Futurlec price read"),
+    "X1": ("3.579545 MHz crystal, HC-49/U (any load capacitance: the MT8870 oscillator is built for it)", "Futurlec CRY3579545 $0.30", f"checked {D}: Futurlec price read"),
+    "D2": ("IR LED 940 nm, 5 mm clear (any)", "Futurlec INF5940 $0.16", f"checked {D}: Futurlec price read"),
+    "D1": ("IR photodiode 940 nm, 5 mm (Futurlec INFD5940DIODE; a PIN photodiode, not a phototransistor)", "Futurlec INFD5940DIODE $0.25", f"checked {D}: Futurlec price read; sensitivity and speed not checked"),
+    "DS": ("4-digit 0.36 in common-cathode red module, 12 pins (3641AS pinout)", "Futurlec 7FR3641AS $1.20",
+           f"checked {D}: pinout, 10.16 mm row spacing and 30 x 14 x 7.2 mm from the GNQ-3641 datasheet in Rev B; the retailer unit was not seen"),
+    "MK1": ("Electret capsule with solder pads (Futurlec KEB6538TF, 4.5 V, over 1 k; size not shown on the page)", "Futurlec KEB6538TF $0.45", f"checked {D}: Futurlec price read; diameter not confirmed (any capsule with two pads fits, the mechanical file assumes 9.7 mm)"),
+    "LS1": ("8 ohm speaker, 28 mm, about 4.5 mm thick (Adafruit 1890)", "Adafruit 1890 $1.95; Jameco 2507231", "checked 2026-11-03 (Rev B sheet): Adafruit listed it out of stock; Jameco price not read"),
+    "SW2": ("6 x 6 mm tactile switch, through-hole, 4 pins (Futurlec TACT001 small black)", "Futurlec TACT001 $0.25", f"checked {D}: Futurlec price read; height and pin spacing not shown, standard 6 x 6 mm switches use 6.5 x 4.5 mm"),
+    "BT1": ("4 x AAA holder with cover, ON/OFF switch and 6 in leads (Parts Express 142-254)", "Parts Express 142-254 $1.93; Tayda A-8634 4 x AA with cover and switch $0.69 (bigger: AA)",
+            f"checked {D}: prices from search snippets (Parts Express 2 in stock); the pages themselves returned 403"),
+    "J1": ("1 x 6 pin header, 2.54 mm (break off a long strip)", "any maker-shop strip of 40 pins, about $0.10 for 6", "estimate"),
 }
 GEN = {
-    "R": ("CFR-12JB-52-{v} (Yageo 1/8 W, 5%)", "Digi-Key CFR-12JB-52-{v}", UN),
-    "C0": ("Vishay K104K15X7RF5TL2 style 5.08 mm ceramic ({v})", "Mouser 594-K104K15X7RF5TL2 (100 nF); other values similar", UN),
-    "CE": ("Panasonic EEU-FR radial electrolytic ({v})", "Digi-Key / Mouser EEU-FR1A (10 V)", UN),
+    "R": ("1/4 W 5% carbon film resistor, {v} (axial)", "Futurlec 1/4 W pack of 10, $0.10 per value", f"checked {D}: Futurlec resistor page, all seven values listed in stock"),
+    "C0": ("Ceramic capacitor {v} (radial, 5.08 mm leads; 50 V)", "Futurlec C100UC (0.1 uF 50 V) $0.10", f"checked {D}: Futurlec price for 100 nF; 1 uF not priced"),
+    "CE": ("Radial electrolytic {v} (16 V or more; 2.5 mm lead spacing)", "Futurlec C010U16E (10 uF 16 V) $0.05; C100U25E (100 uF 25 V) $0.08", f"checked {D}: Futurlec prices read"),
 }
 
 
@@ -90,8 +90,8 @@ for k, ps in sorted(rows.items(), key=sortkey):
         mpn, ord_, st = tpl[0].format(v=v), tpl[1].format(v=v), tpl[2]
     else:
         m = MPN.get(r0) or MPN.get(r0.rstrip("0123456789")) or MPN.get(r0[0])
-        if r0.startswith("SW") and r0 not in MPN:
-            m = MPN["SW2"] if p0["fp"] == "usw" else MPN["SW4"]
+        if r0.startswith("SW"):
+            m = MPN["SW2"]
         mpn, ord_, st = m
     out.append(dict(Refs=refs, Qty=len(ps), Value=" / ".join(dict.fromkeys(q["value"] for q in ps)), Description=("; ".join(dict.fromkeys(q["desc"] for q in ps)) if len(ps) < 6 or not r0.startswith(("R", "C")) else {"R": "resistors, see the schematic for each one's job", "C": "capacitors, see the schematic for each one's job"}[r0[0]]), Footprint=p0["fp"],
                     Side="back" if p0["side"] == "B" else "front", MPN=mpn, Order_at=ord_, Stock_status=st))
@@ -103,7 +103,7 @@ with open(os.path.join(OUT, "bom.csv"), "w", newline="") as f:
 
 total = sum(r["Qty"] for r in out)
 md = ["# Parts list: THE PHONE OF THE FUTURE (rev C)", "",
-      "Untested design. Part numbers are examples to start a search; check each one's drawing against the footprint before buying.",
+      "Untested design. Part numbers are examples to start a search; check each one's drawing against the footprint before buying. Prices and the full cost sheet: see the README.",
       f"{total} parts on the board, {len(out)} different lines. Generated by `tools/bom.py` from `tools/design.py`.", "",
       "| Refs | Qty | Value | Description | Side | Example part | Order at | Stock status |", "|---|---|---|---|---|---|---|---|"]
 for r in out:
