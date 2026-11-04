@@ -18,6 +18,9 @@ import {
   type FliFrames,
 } from '@lewismoten/gamemaker-sandbox-tools/kit/fliShrink';
 
+// Under a second on a fast machine; the 5 s default timed out on a slower one under load.
+const SLOW = 30_000;
+
 /** A small animation: a gray picture with a moving block that fades out over the last frames (320x200). */
 function sample(): FliFrames {
   const frames: Uint8Array[] = [];
@@ -48,19 +51,23 @@ function play(fli: Uint8Array) {
 }
 
 describe('sparse palettes', () => {
-  it('show the same colors for every pixel drawn, and take fewer bytes', () => {
-    const s = sample();
-    const full = encodeFli(s.frames, s.palettes[0], { palettes: s.palettes, runs: true, noLoopFrame: true });
-    const sparse = encodeFrames(s, { sparsePalettes: true });
-    expect(sparse.length).toBeLessThan(full.length);
-    const a = play(full);
-    const b = play(sparse);
-    for (let f = 0; f < a.length; f++) {
-      expect(b[f].px).toEqual(a[f].px);
-      const used = new Set(a[f].px);
-      for (const c of used) for (let j = 0; j < 3; j++) expect(b[f].pal[c * 3 + j]).toBe(a[f].pal[c * 3 + j]);
-    }
-  });
+  it(
+    'show the same colors for every pixel drawn, and take fewer bytes',
+    () => {
+      const s = sample();
+      const full = encodeFli(s.frames, s.palettes[0], { palettes: s.palettes, runs: true, noLoopFrame: true });
+      const sparse = encodeFrames(s, { sparsePalettes: true });
+      expect(sparse.length).toBeLessThan(full.length);
+      const a = play(full);
+      const b = play(sparse);
+      for (let f = 0; f < a.length; f++) {
+        expect(b[f].px).toEqual(a[f].px);
+        const used = new Set(a[f].px);
+        for (const c of used) for (let j = 0; j < 3; j++) expect(b[f].pal[c * 3 + j]).toBe(a[f].pal[c * 3 + j]);
+      }
+    },
+    SLOW,
+  );
 
   it('send a color a frame did not draw once a later frame does', () => {
     const s = sample();
@@ -163,25 +170,29 @@ describe('shrink steps', () => {
     expect(r.lossless).toBe(true);
     expect(r.frames.frames).toEqual(s.frames);
   });
-  it('frame it: bands are exactly the band color, frames and timing stay, and it round trips', () => {
-    const r = frameStep(s, { top: 20, bottom: 30, left: 16, right: 40, zoom: 1, panX: 0, panY: 0 });
-    const band = bandColor(s.palettes[0]);
-    expect(r.frames.frames.length).toBe(s.frames.length);
-    expect(r.frames.speed).toBe(s.speed);
-    let bad = 0;
-    r.frames.frames.forEach((f, fi) => {
-      for (let y = 0; y < 200; y++)
-        for (let x = 0; x < 320; x++) {
-          const inside = y >= 20 && y < 170 && x >= 16 && x < 280;
-          if (inside ? f[y * 320 + x] !== s.frames[fi][y * 320 + x] : f[y * 320 + x] !== band) bad++;
-        }
-    });
-    expect(bad).toBe(0);
-    const back = decodeFli(encodeFrames(r.frames, r.encode));
-    expect(back.frames).toEqual(r.frames.frames);
-    expect(back.speed).toBe(s.speed);
-    expect(r.savedBytes).toBeGreaterThan(0);
-  });
+  it(
+    'frame it: bands are exactly the band color, frames and timing stay, and it round trips',
+    () => {
+      const r = frameStep(s, { top: 20, bottom: 30, left: 16, right: 40, zoom: 1, panX: 0, panY: 0 });
+      const band = bandColor(s.palettes[0]);
+      expect(r.frames.frames.length).toBe(s.frames.length);
+      expect(r.frames.speed).toBe(s.speed);
+      let bad = 0;
+      r.frames.frames.forEach((f, fi) => {
+        for (let y = 0; y < 200; y++)
+          for (let x = 0; x < 320; x++) {
+            const inside = y >= 20 && y < 170 && x >= 16 && x < 280;
+            if (inside ? f[y * 320 + x] !== s.frames[fi][y * 320 + x] : f[y * 320 + x] !== band) bad++;
+          }
+      });
+      expect(bad).toBe(0);
+      const back = decodeFli(encodeFrames(r.frames, r.encode));
+      expect(back.frames).toEqual(r.frames.frames);
+      expect(back.speed).toBe(s.speed);
+      expect(r.savedBytes).toBeGreaterThan(0);
+    },
+    SLOW,
+  );
   it('frame it: at zoom 1 the picture stays put under the bands, at other zooms it is centered in the area', () => {
     const r = frameStep(s, { top: 0, bottom: 0, left: 100, right: 0, zoom: 1, panX: 0, panY: 0 });
     expect(r.frames.frames[3][50 * 320 + 150]).toBe(s.frames[3][50 * 320 + 150]);
