@@ -27,6 +27,7 @@ embroidery and 3D-printable and laser models.
 - `kit/tar` is browser-safe, so the web app's production build can import it.
 - Text-fit audits and level rendering live in the package.
 
+- Merging two background sets is much faster: finding blank block slots no longer re-serializes a block for every byte.
 ### Fixed
 
 - Indexed-pixel shifts that are invalid are rejected, and fractional flood-fill seeds are ignored.
