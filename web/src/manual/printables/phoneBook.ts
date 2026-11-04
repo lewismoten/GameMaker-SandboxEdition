@@ -6,7 +6,7 @@ import { h } from '../../editor/core/ui';
 import { bookletPageCount } from './imposition';
 import { measurer, type BookPage } from './manualPages';
 import { paginate } from './paginate';
-import { blockText, element, readMarkdown, type Block } from './markdownBlocks';
+import { blockText, element, readMarkdown, type Block, type Inline } from './markdownBlocks';
 
 const BOOK = 'The Phone of the Future';
 const BASE = './trinkets/phone/';
@@ -51,10 +51,25 @@ export function phoneChapters(readme: string, parts: string): Chapter[] {
     .map((c) => ({ head: c.head.replace(/\s*\(.*$/, ''), blocks: c.blocks.map((b) => (b.tag === 'ol' ? fixSteps(b) : b)) }));
 }
 
-/** The first build step points to a file made on the builder's own machine; in the book it points to the ZIP. */
+/** Steps that point to files made on the builder's own machine point to the ZIPs in the book: the Gerbers, and the firmware's hex. */
 function fixSteps(b: Block): Block {
-  const swap = (s: unknown): unknown => (typeof s === 'string' ? s.replace(/out\/phone-gerbers\.zip/g, 'the circuit board ZIP’s gerbers folder') : s);
-  return JSON.parse(JSON.stringify(b, (_, v) => swap(v))) as Block;
+  if (b.tag !== 'ol') return b;
+  const swap = (s: unknown): unknown =>
+    typeof s === 'string'
+      ? s.replace(/out\/phone-gerbers\.zip/g, 'the circuit board ZIP’s gerbers folder').replace(/out\/firmware\/phone\.hex/g, 'phone.hex')
+      : s;
+  const flat = (k: Inline[]): string => k.map((x) => (typeof x === 'string' ? x : flat(x.kids))).join('');
+  const hex: Inline[] = [
+    { tag: 'code', kids: ['phone.hex'] },
+    ' is in the firmware folder of the circuit board ZIP. If the ZIP has only ',
+    { tag: 'code', kids: ['phone.asm'] },
+    ', assemble it with gpasm (gputils): ',
+    { tag: 'code', kids: ['gpasm -p p16f628a -o phone.hex phone.asm'] },
+    '.',
+  ];
+  const fixed = JSON.parse(JSON.stringify(b, (_, v) => swap(v))) as Extract<Block, { items: Inline[][] }>;
+  fixed.items = fixed.items.map((it) => (flat(it).startsWith('tools/build_firmware.sh') ? hex : it));
+  return fixed;
 }
 
 const notes = (): HTMLElement[] => [h('h2', null, 'Notes'), h('div', { class: 'mp-ruled' })];

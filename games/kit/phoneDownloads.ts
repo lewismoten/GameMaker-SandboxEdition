@@ -1,9 +1,12 @@
 // The Phone of the Future kit's downloads for the box (web/public/trinkets/phone/, git-ignored build output): a ZIP of
 // the 3D-printer parts (the shell STLs of both builds), a ZIP of the circuit board files (each build's KiCad project, with
-// its Gerbers, which tools/export.sh writes to the tracked gerbers/), the two parts lists (CSV) and the
+// its Gerbers, which tools/export.sh writes to the tracked gerbers/, and the PIC firmware: phone.asm, and phone.hex when gpasm is installed
+// to assemble it, which the book's "Programming the PIC" chapter loads), the two parts lists (CSV) and the
 // kit's README and parts lists as Markdown, which the box reads as its instructions book (manual/printables/phoneBook.ts).
 // Run by scripts/build-games.mjs; `cd web && npx vite-node ../games/kit/phoneDownloads.ts` by hand.
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
 import { createZip, type ZipEntry } from '@lewismoten/gamemaker-sandbox-archives/zip';
 
@@ -26,6 +29,23 @@ function* walk(dir: string): Generator<string> {
 }
 
 const entry = (name: string, file: string): ZipEntry => ({ name, data: new Uint8Array(readFileSync(file)) });
+/** The firmware as the board ZIP carries it: its source, and the hex gpasm makes of it (left out where gpasm is not installed). */
+function firmware(dir: string, folder: string): ZipEntry[] {
+  const asm = join(dir, 'firmware/phone.asm');
+  if (!existsSync(asm)) return [];
+  const files = [entry(`${folder}/firmware/phone.asm`, asm)];
+  const tmp = mkdtempSync(join(tmpdir(), 'phone-hex-'));
+  try {
+    execFileSync('gpasm', ['-p', 'p16f628a', '-w2', '-o', join(tmp, 'phone.hex'), asm], { stdio: 'ignore' });
+    files.push(entry(`${folder}/firmware/phone.hex`, join(tmp, 'phone.hex')));
+  } catch {
+    // no gpasm here: the source goes alone, and the book says to assemble it
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+  return files;
+}
+
 const text = (name: string, body: string): ZipEntry => ({ name, data: new TextEncoder().encode(body) });
 
 async function main() {
@@ -42,11 +62,13 @@ async function main() {
     text(
       'READ-ME.txt',
       'The Phone of the Future: circuit board files. Each build has its KiCad 9 project (open phone.kicad_pro) in kicad/ and its\n' +
-        'Gerber and drill files in gerbers/, ready for a board house. An untested design.\n',
+        'Gerber and drill files in gerbers/, ready for a board house, and the PIC16F628A firmware in firmware/ (phone.asm, and phone.hex\n' +
+        'when the ZIP was made where gpasm is installed; otherwise assemble phone.asm with gpasm -p p16f628a). An untested design.\n',
     ),
   ];
   for (const b of BUILDS) {
     for (const f of walk(join(b.dir, 'shell'))) if (f.endsWith('.stl')) stl.push(entry(`${b.folder}/${relative(join(b.dir, 'shell'), f)}`, f));
+    board.push(...firmware(b.dir, b.folder));
     for (const f of walk(join(b.dir, 'kicad'))) board.push(entry(`${b.folder}/kicad/${relative(join(b.dir, 'kicad'), f)}`, f));
     const gerbers = join(b.dir, 'gerbers');
     if (existsSync(gerbers)) for (const f of walk(gerbers)) board.push(entry(`${b.folder}/gerbers/${relative(gerbers, f)}`, f));

@@ -50,3 +50,10 @@ describe('readMarkdown', () => {
     expect(blockText(b)).toBe('A <b>tag</b> and <img src=x>');
   });
 });
+
+describe('a numbered list a table splits in two', () => {
+  it('keeps the number its second half starts at, so “step 6” still names the sixth step', () => {
+    const blocks = readMarkdown('# T\n\n1. One\n2. Two\n\n| a | b |\n| - | - |\n| 1 | 2 |\n\n4. Four\n5. Five\n')[0].blocks;
+    expect(blocks.filter((b) => b.tag === 'ol').map((b) => (b as { start?: number }).start)).toEqual([undefined, 4]);
+  });
+});
