@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "coins-and-score",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU1BzQNND80DSEXIA00jzQNNEs0LTQ=="
+  },
+  {
+   "scene": 3,
+   "keys": "AU03zQNNKM0DSEXIA00ozQNNDc0QTSPNA00ZzQNN"
+  },
+  {
+   "scene": 4,
+   "keys": "AU1VzQNNI80DSEXIA00ZzQNNEs0QTQ=="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Coins Add Points"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: Some Are Worth More"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: Points Are Not Lives"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 9027,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 922,
+    "time": 15366.666666666466
+   },
+   {
+    "title": "Level 1: Coins Add Points",
+    "frame": 1670,
+    "time": 27833.33333333393
+   },
+   {
+    "title": "Level 2: Some Are Worth More",
+    "frame": 2944,
+    "time": 49066.66666666525
+   },
+   {
+    "title": "Level 3: Points Are Not Lives",
+    "frame": 4355,
+    "time": 72583.33333333157
+   },
+   {
+    "title": "Ending",
+    "frame": 5745,
+    "time": 95750.00000000498
+   },
+   {
+    "title": "Credits",
+    "frame": 7953,
+    "time": 132550.0000000144
+   }
+  ]
+ }
+}
