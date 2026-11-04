@@ -8,7 +8,8 @@ export type Inline = string | { tag: 'code' | 'strong' | 'em'; kids: Inline[] };
 export type Block =
   | { tag: 'p'; kids: Inline[] }
   | { tag: 'pre'; text: string }
-  | { tag: 'ul' | 'ol'; items: Inline[][] }
+  /** `start`: the number an ordered list's first item carries in the Markdown, when it isn't 1 (a list a table split in two). */
+  | { tag: 'ul' | 'ol'; items: Inline[][]; start?: number }
   | { tag: 'table'; head: Inline[][]; rows: Inline[][][] };
 
 /** Inline marks inside one line of text: code, bold, italic, links (kept as their words). */
@@ -80,7 +81,8 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
         else if (!m || /^\s+\S/.test(lines[i])) items[items.length - 1] += ` ${lines[i].trim()}`;
         else break;
       }
-      add({ tag: ordered ? 'ol' : 'ul', items: items.map(inline) });
+      const first = ordered ? Number(/\d+/.exec(bullet.exec(line)![2])![0]) : 1;
+      add({ tag: ordered ? 'ol' : 'ul', items: items.map(inline), ...(first > 1 ? { start: first } : {}) });
     } else {
       const text: string[] = [];
       for (; i < lines.length && lines[i].trim() && !/^(#{1,6}\s|```|\s*\|)/.test(lines[i]) && !bullet.test(lines[i]); i++) text.push(lines[i].trim());
@@ -103,7 +105,7 @@ export function element(b: Block): HTMLElement {
       h('thead', null, h('tr', null, ...b.head.map((c) => h('th', null, ...nodes(c))))),
       h('tbody', null, ...b.rows.map((r) => h('tr', null, ...r.map((c) => h('td', null, ...nodes(c)))))),
     );
-  return h(b.tag, null, ...b.items.map((it) => h('li', null, ...nodes(it))));
+  return h(b.tag, b.start ? { start: String(b.start) } : null, ...b.items.map((it) => h('li', null, ...nodes(it))));
 }
 
 /** The words of a block, for a test or a filter. */
