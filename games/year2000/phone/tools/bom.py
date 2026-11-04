@@ -35,6 +35,7 @@ MPN = {
     "D1": ("IR photodiode 940 nm, 5 mm (Futurlec INFD5940DIODE; a PIN photodiode, not a phototransistor)", "Futurlec INFD5940DIODE $0.25", f"checked {D}: Futurlec price read; sensitivity and speed not checked"),
     "DS": ("4-digit 0.36 in common-cathode red module, 12 pins (3641AS pinout)", "Futurlec 7FR3641AS $1.20",
            f"checked {D}: pinout, 10.16 mm row spacing and 30 x 14 x 7.2 mm from the GNQ-3641 datasheet in Rev B; the retailer unit was not seen"),
+    "RV1": ("100k side thumbwheel potentiometer, right-angle, 3 pins 2.54 mm apart, wheel about 10 mm across", "Digi-Key / Mouser 'thumbwheel potentiometer 100k' (about $1 to $2 each; price not confirmed)", UN),
     "MK1": ("Electret capsule with solder pads (Futurlec KEB6538TF, 4.5 V, over 1 k; size not shown on the page)", "Futurlec KEB6538TF $0.45", f"checked {D}: Futurlec price read; diameter not confirmed (any capsule with two pads fits, the mechanical file assumes 9.7 mm)"),
     "LS1": ("8 ohm speaker, 28 mm, about 4.5 mm thick (Adafruit 1890)", "Adafruit 1890 $1.95; Jameco 2507231", "checked 2026-11-03 (Rev B sheet): Adafruit listed it out of stock; Jameco price not read"),
     "SW2": ("6 x 6 mm tactile switch, through-hole, 4 pins (Futurlec TACT001 small black)", "Futurlec TACT001 $0.25", f"checked {D}: Futurlec price read; height and pin spacing not shown, standard 6 x 6 mm switches use 6.5 x 4.5 mm"),

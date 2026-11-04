@@ -65,7 +65,7 @@ for ref, digs in (("DS1", ["DIG7", "DIG6", "DIG5", "DIG4"]), ("DS2", ["DIG3", "D
         pins[str(i)] = SEG[nm] if nm in SEG else digs[int(nm[1]) - 1]
     add(ref, "Local:DISPLAY_4DIGIT_CC", "3641AS 4-digit CC", "disp4", "F", pins,
         desc="4-digit 7-segment LED module, common cathode, red, 12 pins")
-add("MK1", "Device:Microphone", "Electret", "mic", "F", {"1": "MICB", "2": GND},
+add("MK1", "Device:Microphone", "Electret", "mic", "B", {"1": "MICB", "2": GND},
     desc="Electret microphone capsule, solder pads")
 add("LS1", "Device:Speaker", "8 ohm 28mm", "spk", "F", {"1": "SPKC", "2": GND},
     desc="Small 8 ohm speaker, 28 mm, solder tabs")
@@ -98,7 +98,9 @@ R(16, "470k", "TONE_AC", "AIN", "tones to the speaker (the speaker amp input has
 R(17, "47k", "PD", GND, "photodiode load")
 R(18, "4.7k", "PD_AC", "RXINV", "receive amp input")
 R(19, "100k", "RXAMP", "RXINV", "receive amp feedback (gain 21)")
-R(20, "47k", "RX_AC", "AIN", "receiver to speaker amp (sets the volume against the amp's own 50k input)")
+R(20, "33k", "RX_AC", "VOLHI", "receiver to the volume pot RV1 (with RV1 at full and the amp's own 50k input, the level matches the old fixed 47k within 0.3 dB)")
+add("RV1", "Device:R_Potentiometer", "100k thumbwheel", "thumb", "B", {"1": "VOLHI", "2": "AIN", "3": GND},
+    desc="Volume: a side thumbwheel pot at the board edge, its wheel through a slot in the shell (wiper to the speaker amp input)")
 R(21, "10k", "TALK_H", "Q2B", "receiver mute base resistor")
 R(22, "100k", "M_IN_AC", "M_INN", "MT8870 input resistor")
 R(23, "100k", "M_GS", "M_INN", "MT8870 feedback (unity gain)")

@@ -57,7 +57,7 @@ FIXED = {
     "SW4": (15.24, 152.4, 0), "SW5": (58.42, 152.4, 0), "MK1": (CX, 166.37, 0), "BT1": (CX, 152.4, 0),
     "U3": (12.7, 48.26, 0), "U2": (55.88, 48.26, 0), "U1": (67.31, 48.26, 0),
     "U4": (24.13, 128.27, 90), "U5": (43.18, 128.27, 90),
-    "SW1": (66.04, 108.0, 90), "RV1": (66.04, 121.92, 90),
+    "SW1": (66.04, 108.0, 90), "RV1": (W - 3.5, 121.92, 90),
 }
 NEAR = {"X1": "U2", "C13": "U1", "C15": "U3", "C14": "U3", "R26": "U3", "C16": "U1", "R1": "U1", "C17": "U2",
         "C18": "U4", "C19": "U5", "C20": "U5", "C21": "U5", "R27": "U5", "C22": "U5", "U6": "BT1", "C1": "U6",
@@ -516,7 +516,7 @@ silk.append(label("F.SilkS", "EYE", 57.15, 15.6, 0.9))
 silk.append(label("B.SilkS", "THE PHONE OF THE FUTURE", CX, 12.0, 1.9, True))
 silk.append(label("B.SilkS", "rev C  untested design", CX, 15.0, 0.9, True))
 silk.append(label("B.SilkS", "Claude Sonnet 5.5 + KiCad", CX, 17.0, 0.9, True))
-silk.append(label("B.SilkS", "OPTIONAL VOLUME: RV1 INSTEAD OF R20 R21", CX, 165.0, 0.8, True))
+silk.append(label("B.SilkS", "VOLUME WHEEL: RV1 ON THE SIDE", CX, 165.0, 0.8, True))
 
 silk.append(label("B.SilkS", "THE POCKET TELEPHONE", CX, 20.0, 1.1, True))
 silk.append(label("B.SilkS", "NO. 1 DELUXE MODEL", CX, 22.6, 0.9, True))

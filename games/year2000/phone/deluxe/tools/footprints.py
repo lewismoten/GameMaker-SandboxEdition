@@ -80,9 +80,9 @@ FP = {
                 square="1", marks=[("K", -2.9, 2.6), ("A", 2.7, 2.6)]),
     "photo": _row("Photodiode_BPW34_BigPads", ["1", "2"], 2.54, (-3.5, -3.5, 3.5, 3.5), "PIN photodiode (BPW34 style), pin 1 cathode (K)",
                   square="1", marks=[("K", -2.9, 2.6), ("A", 2.7, 2.6)]),
-    "mic": Fp("Mic_Electret_9.7mm_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
-              (-5.1, -5.1, 5.1, 5.1), (-5.4, -5.4, 5.4, 5.4), [("+", -4.6, -3.2)], extra=[(0, 0, 4.85)],
-              desc="electret capsule wired to two pads, + is the pad that goes to the bias resistor"),
+    "mic": Fp("Mic_Electret_2pad_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
+              (-4.2, -2.4, 4.2, 2.4), (-4.5, -2.7, 4.5, 2.7), [("+", -2.54, 3.6), ("-", 2.54, 3.6)],
+              desc="two pads for the electret capsule's twisted-pair wires (the capsule sits in the shell's mouthpiece); + is the pad that goes to the bias resistor"),
     "spk": Fp("Speaker_28mm_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
               (-4.2, -2.4, 4.2, 2.4), (-14.2, -14.2, 14.2, 14.2), [("+", -4.6, 1.8)], extra=[(0, 0, 14)],
               desc="28 mm speaker glued over the pads, two short wires"),
@@ -96,6 +96,8 @@ FP = {
                desc="two pads for the 4 x AAA holder's wire leads (red to +, black to -)"),
     "trim": _row("Trimmer_10k_3pin_BigPads", ["1", "2", "3"], 2.54, (-5.0, -5.0, 5.0, 5.0), "10k trimmer, 3 pins 2.54 mm apart in a row (Adafruit 356 style, 9.5 mm body)",
                  square="1", marks=[("1", -2.54, 5.8)]),
+    "thumb": _row("Thumbwheel_10k_3pin_BigPads", ["1", "2", "3"], 2.54, (-6.0, -4.0, 6.0, 4.0), "side thumbwheel volume pot, 3 pins 2.54 mm apart in a row; the wheel stands off the board edge (the part's pin 1 is the top of the divider, 2 the wiper, 3 ground)",
+                  square="1", marks=[("1", -2.54, 5.0)]),
     "disp4": _disp(), "tact": _tact(),
 }
 # the netlist pins "1".."3" of the slide switch follow the schematic symbol (checked by gen_pcb)

@@ -80,9 +80,9 @@ FP = {
     "xtal": _row("Crystal_HC49_BigPads", ["1", "2"], 5.08, (-6.0, -2.6, 6.0, 2.6), "HC-49 crystal, lying flat", d=2.0, drill=1.0),
     "led": _row("LED_5mm_BigPads", ["1", "2"], 2.54, (-3.5, -3.5, 3.5, 3.5), "5 mm IR LED, leads bent so the dome points off the board edge; pin 1 is the cathode (K)",
                 square="1", marks=[("K", -2.9, 2.6), ("A", 2.7, 2.6)]),
-    "mic": Fp("Mic_Electret_9.7mm_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
-              (-5.1, -5.1, 5.1, 5.1), (-5.4, -5.4, 5.4, 5.4), [("+", -2.54, -2.4)], extra=[(0, 0, 4.85)],
-              desc="electret capsule wired to two pads, + is the pad that goes to the bias resistor"),
+    "mic": Fp("Mic_Electret_2pad_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
+              (-4.2, -2.4, 4.2, 2.4), (-4.5, -2.7, 4.5, 2.7), [("+", -2.54, 3.6), ("-", 2.54, 3.6)],
+              desc="two pads for the electret capsule's twisted-pair wires (the capsule sits in the shell's mouthpiece); + is the pad that goes to the bias resistor"),
     "spk": Fp("Speaker_28mm_BigPads", [Pad("1", -2.54, 19.05, 2.4, 1.2, True), Pad("2", 2.54, 19.05, 2.4, 1.2)],
               (-14.2, -14.2, 14.2, 21.4), (-14.2, -14.2, 14.2, 21.4), [("+", -4.6, 19.05)], extra=[(0, 0, 14)],
               desc="28 mm speaker centered on the footprint origin (glued over a clear zone); two short wires reach the pads 19 mm below its center"),
@@ -91,6 +91,8 @@ FP = {
                desc="two pads for the 4 x AAA holder's wire leads (red to +, black to -)"),
     "hdr6": _row("PinHeader_1x6_BigPads", ["1", "2", "3", "4", "5", "6"], 2.54, (-7.62, -1.5, 7.62, 1.5), "1x6 pin header, 2.54 mm", square="1",
                  marks=[("1", -7.0, 2.6)]),
+    "thumb": _row("Thumbwheel_10k_3pin_BigPads", ["1", "2", "3"], 2.54, (-6.0, -4.0, 6.0, 4.0), "side thumbwheel volume pot, 3 pins 2.54 mm apart in a row; the wheel stands off the board edge (the part's pin 1 is the top of the divider, 2 the wiper, 3 ground)",
+                  square="1", marks=[("1", -2.54, 5.0)]),
     "disp4": _disp(), "tact": _tact(),
 }
 # the netlist pins "1".."3" of the slide switch follow the schematic symbol (checked by gen_pcb)

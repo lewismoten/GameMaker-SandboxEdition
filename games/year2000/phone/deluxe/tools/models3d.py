@@ -64,7 +64,7 @@ def spec(kind, variant=""):
     if kind == "disp4":
         return [box(0, 0, 0.5, 30.0, 14.0, 7.0, DARKRED), box(0, 0, 7.5, 28.0, 12.0, 0.2, RED)]
     if kind == "mic":
-        return [cyl(0, 0, 0.5, 9.7, 6.5, SILVER)]
+        return [box(-1.27, 3.0, 0.4, 1.0, 6.0, 1.0, RED), box(1.27, 3.0, 0.4, 1.0, 6.0, 1.0, BLACK)]     # the capsule is in the shell; twisted-pair stubs
     if kind == "spk":
         return [cyl(0, 0, 0.5, 24.0, 4.0, BLACK), cyl(0, 0, 4.5, 8.0, 0.4, GREY)]
     if kind == "usw":
@@ -73,10 +73,10 @@ def spec(kind, variant=""):
         return [box(0, 0, 0.3, 6.0, 6.0, 3.6, BLACK), cyl(0, 0, 3.9, 3.5, 0.8, GREY)]
     if kind == "slide":
         return [box(0, 0, 0.3, 10.0, 4.6, 5.0, SILVER), box(0, -1.0, 5.3, 3.0, 2.0, 3.0, BLACK)]
-    if kind == "trim":
-        return [box(0, 0, 0.3, 9.5, 9.5, 4.9, BLUE), cyl(0, 0, 5.2, 4.0, 0.4, SILVER)]
-    if kind == "batt":     # 4 x AAA holder, behind the dial, held 6.3 mm off the board: the tallest parts under it (C5) are 5.2 mm, and the shell keeps 1 mm from them; two wires to the pads
-        return [box(0, -63.5, 6.3, 52.0, 47.0, 13.0, GREY), box(-5.08, -20.0, 0.4, 1.4, 40.0, 1.4, RED), box(5.08, -20.0, 0.4, 1.4, 40.0, 1.4, BLACK)]
+    if kind == "thumb":    # side thumbwheel pot: body on the board, a 10 mm wheel (axis along the pin row) standing 1.5 mm past the board edge
+        return [box(0, 0, 0.3, 10.0, 8.0, 4.9, BLUE), box(0, 0, 3.55, 3.2, 10.0, 4.1, SILVER), box(0, 0, 0.6, 3.2, 4.1, 10.0, SILVER), box(0, 0, 1.6, 3.2, 8.0, 8.0, SILVER)]
+    if kind == "batt":     # 4 x AAA holder in the shell's battery bay below the board; two wires to the pads (shell.ts continues them)
+        return [box(-5.08, 3.5, 0.4, 1.4, 7.0, 1.4, RED), box(5.08, 3.5, 0.4, 1.4, 7.0, 1.4, BLACK)]
     raise KeyError(kind)
 
 

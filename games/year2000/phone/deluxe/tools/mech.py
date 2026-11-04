@@ -73,13 +73,13 @@ m = {
     "back": {
         "note": "Electronics and the battery holder are on the back. Back parts are mirrored footprints.",
         "max_part_height": 13.0,
-        "battery_holder": {"ref": "BT1", "body_center": list(DIAL), "body": [53.0, 50.0], "height": 13.0, "lead_pads": [pl["BT1"]["pads"]["1"], pl["BT1"]["pads"]["2"]],
-                           "note": "a 4 x AAA holder with wire leads (Pololu 1145 size), held 6.3 mm off the back behind the dial (the shell leaves 1 mm over the tallest parts under it); its 6 in leads are shortened and soldered to the two pads (red to +)"},
-        "volume_trimmer": {"ref": "RV1", "center": at("RV1"), "optional": True, "body": [9.5, 9.5], "height": 4.9, "note": "optional: fit instead of R20 and R21; needs a screwdriver hole in the shell's back"},
+        "battery_holder": {"ref": "BT1", "outside_board": True, "body_center": [round(W / 2, 2), round(H + 30.0, 2)], "body": [53.0, 50.0], "height": 13.0, "lead_pads": [pl["BT1"]["pads"]["1"], pl["BT1"]["pads"]["2"]],
+                           "note": "a 4 x AAA holder with wire leads (Pololu 1145 size), lying flat in the shell's battery bay past the bottom end of the board; its 6 in leads are shortened and soldered to the two pads (red to +)"},
+        "volume_wheel": {"ref": "RV1", "center": at("RV1"), "body": [10.0, 8.0], "height": 4.9, "wheel_diameter": 10.0, "note": "side thumbwheel pot: its wheel stands 1.5 mm past the board edge, through a slot in the tray's side wall"},
         "power_switch": {"ref": "SW1", "center": at("SW1"), "handle_direction": [1, 0], "body": [10.0, 6.0], "height": 6.0,
                          "note": "slide switch near the right edge; the shell needs a slot there"},
         "regulator": {"ref": "U6", "center": at("U6"), "height": 4.6},
-        "tallest_parts": ["BT1 13 mm, held 6.3 mm off the board (behind the dial)", "C21 220 uF electrolytic 11 mm", "ICs 4 mm", "MCP1702 TO-92 4.6 mm"],
+        "tallest_parts": ["BT1 13 mm (outside the board, in the battery bay)", "C21 220 uF electrolytic 11 mm", "ICs 4 mm", "MCP1702 TO-92 4.6 mm"],
     },
     "silkscreen": {"front_title": "THE PHONE OF THE FUTURE near the top, orbit rings and rays around the dial and speaker, a YEAR 2000 badge at the bottom left", "labels": ["TALK", "CLEAR", "MIC"]},
 }
