@@ -29,3 +29,9 @@ export async function forceTheme(ctx: ThemeContext, theme: SiteTheme): Promise<v
 export async function pageTheme(page: ThemePage): Promise<string | undefined> {
   return page.evaluate(() => document.documentElement.dataset.theme);
 }
+
+/** Throws when the loaded page isn't in the theme asked for (pages that don't theme themselves pass). */
+export async function assertTheme(page: ThemePage, theme: 'light' | 'dark'): Promise<void> {
+  const got = await pageTheme(page);
+  if (got !== undefined && got !== theme) throw new Error(`Expected the ${theme} theme but the page has data-theme="${got}".`);
+}
