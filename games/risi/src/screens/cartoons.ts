@@ -62,6 +62,42 @@ function say(p: Pixels, pal: Pal, x: number, y: number, words: string, ramp = 'g
 }
 
 /** A dining couch with a senator on it, at (x, y: the couch's top), scaled 2. */
+/**
+ * Rufus the dog lying down, drawn from his middle (cx, cy), facing left: a body with a tail, a head with a snout, a
+ * nose, floppy ears, front paws and a hind paw. Asleep: closed eyes (little arcs). Awake: an open eye and a tongue.
+ */
+function dog(p: Pixels, pal: Pal, cx: number, cy: number, s: number, asleep: boolean): void {
+  const c = pal.c;
+  const o = (v: number) => Math.round(v * s);
+  const R = pal.r('rufus');
+  // the tail, up and wagging at the back, with a pale tip
+  p.line(cx + o(24), cy - o(2), cx + o(33), cy - o(9), c('rufus', 1)).line(cx + o(24), cy - o(1), cx + o(33), cy - o(8), c('rufus', 1));
+  p.set(cx + o(34), cy - o(10), c('rufus', 3)).set(cx + o(33), cy - o(10), c('rufus', 3));
+  // body, hind haunch, paws
+  blob(p, cx, cy, o(28), o(8), R, 0, 2);
+  blob(p, cx + o(16), cy + o(1), o(11), o(7), R, 1, 3);
+  blob(p, cx + o(22), cy + o(7), o(5), o(2), R, 0, 3);
+  blob(p, cx - o(18), cy + o(7), o(6), o(2), R, 0, 3);
+  blob(p, cx - o(10), cy + o(7), o(5), o(2), R, 0, 3);
+  // head, snout, nose
+  blob(p, cx - o(24), cy - o(4), o(9), o(7), R, 1, 3);
+  blob(p, cx - o(32), cy - o(1), o(5), o(4), R, 0, 3);
+  p.disc(cx - o(36), cy - o(2), Math.max(1, o(2)), c('ink', 0));
+  // floppy ears: darker, hanging over the cheek
+  blob(p, cx - o(20), cy - o(5), o(4), o(6), R, 0, 1);
+  blob(p, cx - o(27), cy - o(10), o(3), o(4), R, 0, 1);
+  // eyes
+  const ex = cx - o(28);
+  const ey = cy - o(6);
+  if (asleep) {
+    p.line(ex - 2, ey, ex, ey + 1, c('ink', 0)).line(ex, ey + 1, ex + 2, ey, c('ink', 0));
+    p.line(ex + o(7) - 2, ey, ex + o(7), ey + 1, c('ink', 0)).line(ex + o(7), ey + 1, ex + o(7) + 2, ey, c('ink', 0));
+  } else {
+    p.set(ex, ey, c('ink', 0)).set(ex, ey - 1, c('ink', 0)).set(ex + o(7), ey, c('ink', 0));
+    p.rect(cx - o(34), cy + o(2), Math.max(2, o(3)), Math.max(1, o(3)), c('red', 2));
+  }
+}
+
 function couch(p: Pixels, pal: Pal, x: number, y: number, cough: boolean): void {
   const c = pal.c;
   p.rect(x, y + 10, 70, 12, c('purple', 1))
@@ -180,10 +216,8 @@ export function storyFli(cast: Cast): Uint8Array {
     ])
       blob(p, fx, fy, 4, 4, pal.r('grape'), 0, 2);
     p.rect(110, 126, 100, 24, c('ink', 1));
-    blob(p, 160, 142, 30, 8, pal.r('rufus'), 0, 2);
-    blob(p, 136, 138, 9, 7, pal.r('rufus'), 1, 3);
-    p.set(132, 137, c('ink', 0)).line(128, 132, 125, 141, c('rufus', 0));
-    if (k < 12) say(p, pal, 190, 130, 'z z', 'marble', 3);
+    dog(p, pal, 150, 140, 1, true);
+    if (k < 12) say(p, pal, 120, 128, 'z z', 'marble', 3);
     if (k >= 12) {
       const g = Math.min(1, (k - 12) / 8);
       for (let i = 0; i < 6; i++) blob(p, 160 + Math.cos(i) * 40 * g, 130 - g * 40 - i * 6, 14 * g + 4, 10 * g + 3, pal.r('gas'), 1, 3);
@@ -474,9 +508,7 @@ export function wonFlis(cast: Cast): Record<string, Uint8Array> {
       ];
       line.forEach(([set, name], i) => scaleBlit(p, sprite(set, name), 22 + i * 40, 112 + (bow && i % 2 ? 2 : 0), 2));
       // and Rufus, front and center, very pleased with himself
-      blob(p, 160, 166, 18, 7, pal.r('rufus'), 1, 3);
-      blob(p, 146, 160, 7, 6, pal.r('rufus'), 1, 3);
-      p.set(143, 158, c('ink', 0)).set(149, 158, c('ink', 0)).rect(144, 163, 4, 1, c('ink', 0));
+      dog(p, pal, 168, 164, 0.7, false);
       say(p, pal, 120, 140, 'RUFUS', 'rufus', 3);
       caption(p, pal, [`${AUTHOR} (c) 1994`, 'Thank you for laughing!']);
     };
