@@ -332,6 +332,11 @@
   .topbar .brand-title {
     letter-spacing: 0.04em;
   }
+  .topbar .topbar-gear,
+  .topbar .tour-wrap,
+  .topbar .topbar-more {
+    flex: none; /* a 44 px target stays 44 px wide */
+  }
   .topbar .spacer {
     flex: 0 1 0;
   }

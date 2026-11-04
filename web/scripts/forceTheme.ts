@@ -4,7 +4,7 @@
 
 /** The part of a Playwright BrowserContext this needs. */
 interface ThemeContext {
-  addInitScript: (script: (theme: string) => void, arg: string) => Promise<void>;
+  addInitScript: (script: (theme: string) => void, arg: string) => Promise<unknown>;
 }
 
 /** The part of a Playwright Page this needs. */

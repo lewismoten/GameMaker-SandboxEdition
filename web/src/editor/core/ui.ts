@@ -64,11 +64,20 @@ export function toastMs(message: string, kind: 'info' | 'error' = 'info'): numbe
 }
 
 let toastHost: HTMLElement | undefined;
+/** Shows a message for a while. */
 export function toast(message: string, kind: 'info' | 'error' = 'info'): void {
+  void notice(message, kind);
+}
+
+/** Like toast, and the returned function closes the message early (a "Building…" notice closes when the build is done). */
+export function notice(message: string, kind: 'info' | 'error' = 'info'): () => void {
   toastHost ??= document.body.appendChild(h('div', { class: 'toasts', role: 'status', 'aria-live': 'polite' }));
   const close = h('button', { class: 'toast-close', 'aria-label': 'Dismiss', title: 'Dismiss' }, '×');
   const t = h('div', { class: `toast ${kind}` }, h('span', null, message), close);
   toastHost.append(t);
+  // never a tall pile over the page: the newest three stay, on a phone only the newest
+  const keep = window.matchMedia('(max-width: 430px)').matches ? 1 : 3;
+  while (toastHost.children.length > keep) toastHost.firstElementChild?.remove();
   // the clock stops while the pointer or focus is on the toast, and starts over when it leaves
   let timer = 0;
   const start = () => (timer = window.setTimeout(() => t.remove(), toastMs(message, kind)));
@@ -79,6 +88,7 @@ export function toast(message: string, kind: 'info' | 'error' = 'info'): void {
   t.addEventListener('focusin', stop);
   t.addEventListener('focusout', start);
   start();
+  return () => (stop(), t.remove());
 }
 
 /** A modal <dialog>. Resolves with the value passed to close(). */
