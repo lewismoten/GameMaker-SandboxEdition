@@ -4,7 +4,7 @@
 import './textScreen.css';
 import { registerEditor } from '../registry';
 import { viewState } from '../../../urlState';
-import { h, clear, debounce } from '../../core/ui';
+import { h, clear } from '../../core/ui';
 import { kindOf, type Project } from '../../core/project';
 import { latin1Text, textBytes } from '@lewismoten/gamemaker-sandbox-engine/formats/binary';
 import { parseSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
@@ -12,6 +12,8 @@ import { displayFile, match, RGB_PURPLE } from '@lewismoten/gamemaker-sandbox-en
 import { gamePreview } from '../../widgets/mediaShared';
 import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
 import { blankScreen, pictureScreen, screenCanvas, textPages, type ScreenPicture } from '../../widgets/mediaPictures';
+import { fileUndo } from '../../core/fileUndo';
+import { editKind, textGrouping, TEXT_MERGE_MS } from './textUndo';
 import { layoutText, pageOfLine, wrapLongLines, LINE_CHARS, PAGE_LINES, type TextLayout } from './textLayout';
 
 const BACKGROUND_KINDS = ['gif', 'bkd', 'fli'];
@@ -61,6 +63,27 @@ registerEditor(['txt'], (host, project, file) => {
   const nextBtn = h('button', { title: 'Next page', 'aria-label': 'Next page' }, '▶');
 
   let layout: TextLayout = layoutText(area.value);
+  const steps = fileUndo(
+    project.files,
+    () => {
+      undo.reset();
+      const now = project.files.get(file);
+      if (now) {
+        area.value = latin1Text(now)
+          .replace(/\x1a.*$/s, '')
+          .replace(/\r\n/g, '\n');
+        layout = layoutText(area.value);
+        renderGuides();
+        renderStatus();
+        fit();
+        follow = true;
+        syncPage();
+      }
+    },
+    { merge: TEXT_MERGE_MS },
+  );
+  const undo = textGrouping(steps, file);
+  const stopKeys = steps.listenKeys();
   // the address keeps the page shown, counted from 1 (…/HELP.TXT?page=2)
   const view = viewState(['p', project.id, file]);
   const urlPage = view.num('page');
@@ -158,7 +181,11 @@ registerEditor(['txt'], (host, project, file) => {
       h('strong', null, `${layout.screenLines} screen line${layout.screenLines === 1 ? '' : 's'}`),
       ` · ${layout.pages} page${layout.pages === 1 ? '' : 's'} of ${PAGE_LINES} lines · ${LINE_CHARS} characters a line`,
     );
-    const fix = h('button', { class: 'ts-fix', onclick: () => ((area.value = wrapLongLines(area.value)), changed()) }, 'Wrap long lines at words');
+    const fix = h(
+      'button',
+      { class: 'ts-fix', onclick: () => (undo.edit('other'), (area.value = wrapLongLines(area.value)), changed()) },
+      'Wrap long lines at words',
+    );
     clear(
       warnings,
       ...blank.map(([l, i]) =>
@@ -195,7 +222,8 @@ registerEditor(['txt'], (host, project, file) => {
     drawPage();
   };
 
-  const save = debounce(() => project.files.set(file, textBytes(area.value.replace(/\n/g, '\r\n'))), 300);
+  // the file is written at every change, so each Undo step holds the text as it was
+  const save = () => project.files.set(file, textBytes(area.value.replace(/\n/g, '\r\n')));
   const changed = () => {
     layout = layoutText(area.value);
     renderGuides();
@@ -206,6 +234,13 @@ registerEditor(['txt'], (host, project, file) => {
     save();
   };
 
+  area.addEventListener('beforeinput', (e) => {
+    // the browser's own undo (Edit menu, shake to undo) would fight ours
+    if (e.inputType === 'historyUndo') (e.preventDefault(), steps.undo());
+    else if (e.inputType === 'historyRedo') (e.preventDefault(), steps.redo());
+    else undo.edit(editKind(e.inputType));
+  });
+  area.addEventListener('keydown', (e) => undo.keyHandler(e));
   area.addEventListener('input', changed);
   for (const ev of ['click', 'keyup', 'focus']) area.addEventListener(ev, () => ((follow = true), syncPage()));
   prevBtn.addEventListener('click', () => ((follow = false), page--, drawPage()));
@@ -240,6 +275,8 @@ registerEditor(['txt'], (host, project, file) => {
           { class: 'ts-bar' },
           h('label', { class: 'field ts-over' }, h('span', null, 'Shown over'), bgSelect),
           h('span', { class: 'spacer' }),
+          steps.undoBtn,
+          steps.redoBtn,
           prevBtn,
           pageLabel,
           nextBtn,
@@ -256,6 +293,7 @@ registerEditor(['txt'], (host, project, file) => {
   ro.observe(paper);
   return () => {
     ro.disconnect();
+    stopKeys();
     preview.stop();
   };
 });
