@@ -178,7 +178,7 @@ export function openBoxViewer(
         pinch = dist;
         px += dx / 2;
         py += dy / 2;
-      } else if (e.shiftKey || e.buttons === 4 || zoom > 1.6) {
+      } else if (e.shiftKey || e.buttons === 4) {
         px += dx;
         py += dy;
       } else {

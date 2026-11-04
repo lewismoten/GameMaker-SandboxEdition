@@ -240,7 +240,7 @@ export function createPhoneViewer(): PhoneViewer {
       view.panX += dx / 2;
       view.panY += dy / 2;
       wake();
-    } else if (e.shiftKey || e.buttons === 4 || view.zoom > 1.6) {
+    } else if (e.shiftKey || e.buttons === 4) {
       view.panX += dx;
       view.panY += dy;
       wake();
