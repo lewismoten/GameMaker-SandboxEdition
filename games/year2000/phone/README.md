@@ -47,6 +47,22 @@ explodes the case around the board with no viewer code.
   from above, one raised sector for the off-normal switch), a flat spiral return spring, a pivot post and a **finger stop** (feet glued to the board), and the
   two button caps (TALK green, CLEAR red) that press onto the switches.
 
+**Lead and solder clearance.** Every pad is a plated through-hole, so a part on one face has its trimmed lead and solder fillet standing out of the
+other: most parts are on the back, so their stubs stand out the front, under and around the dial; the front parts' stubs reach toward the back
+tray's floor. The viewer's models leave them out, so `tools/clearance.ts` adds them (a 0.9 mm radius fillet 1 mm tall, then a 0.3 mm wire, to
+**LEAD = 2.5 mm** from the board face, at every pad of `kicad/placement.json`) and measures every printed part (frame, tray and its floor, dial
+plate, cam teeth, spring, post, stop, caps, battery box and door) against those stubs and against every part body. `shell.ts` fails the build, and
+`web/src/desk/boxes/phone/phoneClearance.test.ts` fails the tests, if any gap is under 1 mm; the numbers go to `viewer/clearance.json`. The 2.5 mm is an
+**assumption**: IPC-A-610 allows a through-hole lead to stand 0.5 mm at least and 1.5 mm at most from a board up to 2.3 mm thick (quoted from memory,
+not checked against the standard), and a hobbyist trims to about 1 to 2 mm. Closest approaches, in mm (Junior Lab / Deluxe): cam's lowest tooth to a
+lead 5.4 / 11.4 (its tip is 6.1 / 12.2 above the board, the stubs end at 4.1 / 4.1), dial plate to a lead 5.2 / 10.8 and to the switch tops 1.7 / 1.7,
+back tray floor to a lead 9.7 / 18.0, tightest of all 1.06 (stop foot to a lead) / 1.07. The cams press the pulse and off-normal switches on purpose
+and the caps cover theirs, so those pairs are not counted. The check changed the shell: corner screw bosses and the pivot post, finger stop and spring are
+sized from the room the stubs and parts leave (the spring is thinner and shorter, and the Deluxe's pivot is a 1.5 mm pin because its two big switches
+sit 3.7 mm apart at the dial's center), the stop moves out where a lead is in its way, and a part that overhangs the board's edge (the Deluxe's speaker)
+gets a notch in the frame. The Deluxe's battery holder had been drawn on the back against the board, inside the crystal and capacitor C5; it is now
+drawn held 6.3 mm off the board, over the tallest parts under it. Not shown in the viewer: the stubs themselves.
+
 Nothing was printed. The clearances (0.3 mm), the cam's travel (0.3 mm of press) and the glued feet are starting guesses. In Rev C the two dial switches
 sit only about 1.5 mm apart in radius from the dial's center, so the pulse teeth may brush the off-normal switch: print the cam first and check.
 
@@ -55,7 +71,7 @@ sit only about 1.5 mm apart in radius from the dial's center, so the pulse teeth
 Front: the project name ("SCIENCE PROJECT NO. 2" and "JUNIOR LAB EDITION", or "NO. 1" and "DELUXE MODEL"), "IN THE YEAR 2000!", "SANDBOX SOFTWARE" and
 "MADE WITH GAME-MAKER". The front of the 99 x 99 board is full of through-hole pads, and the dial and speaker cover their circles, so there is no
 room there for a code. On the back, in the blank spots: two QR codes (the game's site, and this folder's parts list and build steps on GitHub) and a
-block-art picture of Dex (`tools/dex_art.py`, from his sprite): one color of silkscreen, with tone shown by diagonal hatching and cross-hatching and his
+block-art picture of Dex (`tools/dex_art.py`, from his sprite, as big as the back's pads leave room for: 16.8 x 18.9 mm on the Junior Lab board, with the few pixels that would land on a pad left out like the front's art clipped away from pads): one color of silkscreen, with tone shown by diagonal hatching and cross-hatching and his
 face and hands left bare, so he is never an undressed outline. A code is silkscreen where a module is light and bare soldermask where it is dark.
 `tools/silkart.py` draws them (QR from OpenCV's encoder, Apache-2.0). Modules are 0.5 mm, except the parts code on the Junior Lab board (0.44 mm) and the
 site code on the Deluxe board (0.45 mm), which had to be a little smaller to fit. `tools/qrscan.py` decodes the rendered preview and compares it with the URL:
@@ -230,7 +246,7 @@ soldered from the back. Electrolytic capacitors: the square pad is +, and the + 
 2. Back side, power only: regulator (lying flat, mind its G, I, O marks), C1 and C2 (the + marks). **Fit no ICs.** Solder the battery
    holder's two leads to the BT pads (red +) and switch the holder on: the multimeter must read 5.0 V (+/-0.1) between the regulator's
    OUT and GND pads. Stop if not.
-3. Resistors and ceramic capacitors (shortest first), then the electrolytics, then the two 18-pin sockets. Pin 1 is the square pad.
+3. Resistors and ceramic capacitors (shortest first), then the electrolytics (C1, C2, C4, C5 and C18: the square pad is +; C5 is a 1 uF electrolytic with + on the LM358's output side, the pad marked +), then the two 18-pin sockets. C3, the other 1 uF coupling capacitor, stays ceramic because the DC across it reverses (0 V on the microphone side while TALK is up, about 2.5 V on the amplifier side; with TALK held the microphone side is the electret's bias, which depends on the capsule). Pin 1 is the square pad.
 4. Crystal, the two 2N3904s (flat side as drawn), the LM358, LM386 and MAX7219 (pin 1 square pad, notch toward it). The two socketed
    chips wait.
 5. **Program the PIC** (next section) with the CM8870 socket empty, then put the PIC in its socket and the CM8870 in the other.
