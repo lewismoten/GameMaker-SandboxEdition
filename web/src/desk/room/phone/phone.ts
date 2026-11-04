@@ -6,7 +6,9 @@ import { lineInterrupted, phoneLine } from '../../../retro/bbs/term';
 import { callFor, dialComplete, HungUp, type Call, type CallLine } from './calls';
 import { openDialPad, type DialPad } from './dialPad';
 import { PhoneSounds } from './sounds';
-import { speak } from '../../../audio/voices';
+import { VOICES } from '../../../audio/voices';
+import { speakLine } from '../../../audio/phone/phonePlayer';
+import { SCRIPT } from '../../../audio/phone/phoneScript';
 import { captionPieces } from './captionPieces';
 
 type State = 'hung-up' | 'dialing' | 'call' | 'ended';
@@ -40,9 +42,9 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
       if (state !== 'dialing' || !sounds || !call) return;
       state = 'ended';
       sounds.stop();
-      const text = 'If you’d like to make a call, please hang up and try again.';
+      const text = SCRIPT.find((l) => l.id === 'off-hook')!.text;
       pad?.caption('Recording', text);
-      void speak(text, { who: 'Recording', pitch: 1.1, rate: 0.95, prefer: [] }, call.signal).then(() => {
+      void speakLine(text, text, VOICES.recording, call.signal).then(() => {
         if (state !== 'ended' || !sounds) return;
         sounds.howler();
         status('Off the hook! Hang up the phone.');
@@ -83,7 +85,7 @@ export function phoneLineFor(el: HTMLElement): WallPhoneLine {
           for (const piece of captionPieces(text)) {
             if (current.signal.aborted) break;
             pad?.caption(v.who, piece);
-            await speak(piece, v, current.signal);
+            await speakLine(piece, text, v, current.signal);
           }
           live();
         } finally {

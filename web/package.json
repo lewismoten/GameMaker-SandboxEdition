@@ -30,6 +30,8 @@
     "badges:similar": "vite-node scripts/badgeSimilar.ts --",
     "voice": "vite-node scripts/narrate.ts --",
     "voice:all": "vite-node scripts/narrate.ts -- --force",
+    "voice:phone": "vite-node scripts/narrate.ts -- --lines phone --out public/phone/voice",
+    "voice:phone:check": "vite-node scripts/narrate/verify.ts -- --lines phone --out public/phone/voice",
     "voice:check": "vite-node scripts/narrate/verify.ts --",
     "voice:setup": "npm install --prefix ../.narrate --no-save kokoro-js@1.2.1",
     "dosbox:open": "../dosbox/DOSBOX.command",

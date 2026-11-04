@@ -102,6 +102,9 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   record. Each line is said in the spoken form `narrate/spoken.ts` gives it (numbers in words,
   BBS, DOS, PLAYGAME, THE CHEZ and the like spelled for the voice, straight quotes for Pocket TTS),
   or a step's own `spoken` where even that comes out wrong; the bubbles keep their written words,
+  `npm run voice:phone` / `voice:phone:check` do the same for the desk's wall phone (`--lines phone`:
+  `narrate/phoneLines.ts` lists a clip per sentence and the spliced number clips, recorded into
+  `../public/phone/voice/` and cast by `src/audio/phone/phoneCast.ts`),
   and the index's hash is of the spoken form. `npm run voice:check` (`narrate/verify.ts`) hears every
   clip with Whisper, locally (whisper.cpp's `whisper-cli` with `ggml-large-v3.bin` from
   `~/.cache/whisper-cpp`, or `--model <name>` for openai-whisper's `whisper`, e.g. `medium.en`), and

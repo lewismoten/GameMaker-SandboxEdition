@@ -1,0 +1,2522 @@
+{
+  "dad-1-1": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Hello?",
+    "seconds": 1.58,
+    "hash": "0da72197e898",
+    "voice": "24a011153f36"
+  },
+  "dad-1-2": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Did somebody page me?",
+    "seconds": 2.51,
+    "hash": "f482074e2753",
+    "voice": "24a011153f36"
+  },
+  "dad-1-3": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "I was up to my elbows in a busted boiler across town, and I had to go find a pay phone!",
+    "seconds": 8.58,
+    "hash": "597977aeb3fb",
+    "voice": "24a011153f36"
+  },
+  "dad-1-4": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Is anybody bleeding?",
+    "seconds": 2.65,
+    "hash": "92bfc19a2896",
+    "voice": "24a011153f36"
+  },
+  "dad-1-5": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Is the house on fire?",
+    "seconds": 2.73,
+    "hash": "1461a93224c1",
+    "voice": "24a011153f36"
+  },
+  "dad-2-1": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "No?",
+    "seconds": 0.65,
+    "hash": "2b5f13fb5e90",
+    "voice": "24a011153f36"
+  },
+  "dad-2-2": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Then why are you paging me?",
+    "seconds": 3.65,
+    "hash": "2442d8ddcbcf",
+    "voice": "24a011153f36"
+  },
+  "dad-2-3": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "The pager is for EMERGENCIES ONLY.",
+    "seconds": 4.15,
+    "hash": "9f35200f4318",
+    "voice": "24a011153f36"
+  },
+  "dad-2-4": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "We are going to have a long talk when I get home.",
+    "seconds": 4.37,
+    "hash": "c45799357b60",
+    "voice": "24a011153f36"
+  },
+  "dad-2-5": {
+    "chapter": "dad",
+    "where": "Dad calls back after the page",
+    "text": "Now go do your homework!",
+    "seconds": 3.51,
+    "hash": "361c246814f9",
+    "voice": "24a011153f36"
+  },
+  "grandma-1-1": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Hello? …",
+    "seconds": 2.16,
+    "hash": "47ea373d186a",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-2": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Hello?",
+    "seconds": 1.92,
+    "hash": "0da72197e898",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-3": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Who is this? …",
+    "seconds": 2.31,
+    "hash": "d706d216004d",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-4": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Oh!",
+    "seconds": 1.76,
+    "hash": "56723edcd935",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-5": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Is that you, sweetie?",
+    "seconds": 2.65,
+    "hash": "d1e27bfb20ab",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-1-6": {
+    "chapter": "grandma",
+    "where": "Grandma: picks up",
+    "text": "Grandma was out filling the bird feeder, I nearly didn’t hear it ring!",
+    "seconds": 5.7,
+    "hash": "f9600044c25f",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-1": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "Have you eaten anything today?",
+    "seconds": 3.2,
+    "hash": "a99b907c5504",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-2": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "You sound skinny.",
+    "seconds": 2.47,
+    "hash": "52c348680da5",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-3": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "Mister Whiskers says hello.",
+    "seconds": 3.08,
+    "hash": "b79344f1472d",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-4": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "He knocked the African violet off the windowsill again.",
+    "seconds": 4.79,
+    "hash": "09a9d1f9cacc",
+    "voice": "3c25b62de6ac"
+  },
+  "grandma-2-5": {
+    "chapter": "grandma",
+    "where": "Grandma: chats",
+    "text": "Okay, bye-bye now, I love you!",
+    "seconds": 3.38,
+    "hash": "1b038a4ae0d7",
+    "voice": "3c25b62de6ac"
+  },
+  "gus-1": {
+    "chapter": "shop",
+    "where": "Dad’s work: the maintenance shop",
+    "text": "Maintenance, this is Gus.",
+    "seconds": 2.81,
+    "hash": "c7d64172a1cf",
+    "voice": "9ab2894f4828"
+  },
+  "gus-2": {
+    "chapter": "shop",
+    "where": "Dad’s work: the maintenance shop",
+    "text": "Dave?",
+    "seconds": 1.15,
+    "hash": "7a480ba0e1c5",
+    "voice": "9ab2894f4828"
+  },
+  "gus-3": {
+    "chapter": "shop",
+    "where": "Dad’s work: the maintenance shop",
+    "text": "Nah, he’s out on a job across town, fixing somebody’s boiler.",
+    "seconds": 4.72,
+    "hash": "b3330babaf61",
+    "voice": "9ab2894f4828"
+  },
+  "gus-4": {
+    "chapter": "shop",
+    "where": "Dad’s work: the maintenance shop",
+    "text": "Try his pager, kiddo.",
+    "seconds": 2.69,
+    "hash": "324f73d8d286",
+    "voice": "9ab2894f4828"
+  },
+  "jenny-1": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Hello?",
+    "seconds": 1.17,
+    "hash": "0da72197e898",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-2": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Oh, hey!",
+    "seconds": 1.3,
+    "hash": "58c7da6da2f7",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-3": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "I can’t talk, I’m on the other line.",
+    "seconds": 2.44,
+    "hash": "156fce3a324f",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-4": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Is your mom paying me Friday?",
+    "seconds": 2.34,
+    "hash": "9296e58f1848",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-5": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Okay, call me later.",
+    "seconds": 2.03,
+    "hash": "44c090d9114e",
+    "voice": "37f01238e2d9"
+  },
+  "jenny-6": {
+    "chapter": "jenny",
+    "where": "Jenny (867-5309): when not busy",
+    "text": "Bye!",
+    "seconds": 1.09,
+    "hash": "c330978d1165",
+    "voice": "37f01238e2d9"
+  },
+  "linda-1": {
+    "chapter": "receptionist",
+    "where": "Mom’s work: Linda answers",
+    "text": "Good afternoon, Three Rivers Insurance, this is Linda.",
+    "seconds": 4.05,
+    "hash": "0a94a50b5239",
+    "voice": "e015f27505c3"
+  },
+  "linda-2": {
+    "chapter": "receptionist",
+    "where": "Mom’s work: Linda answers",
+    "text": "How may I direct your call? …",
+    "seconds": 2.66,
+    "hash": "aa65a2d73e96",
+    "voice": "e015f27505c3"
+  },
+  "linda-3": {
+    "chapter": "receptionist",
+    "where": "Mom’s work: Linda answers",
+    "text": "One moment, please.",
+    "seconds": 2.43,
+    "hash": "3b665e919adb",
+    "voice": "e015f27505c3"
+  },
+  "machine-henderson-1": {
+    "chapter": "henderson",
+    "where": "An answering machine (by number)",
+    "text": "Hello, you have reached the Hendersons.",
+    "seconds": 3.08,
+    "hash": "318fb424c1cb",
+    "voice": "95a54cef465b"
+  },
+  "machine-henderson-2": {
+    "chapter": "henderson",
+    "where": "An answering machine (by number)",
+    "text": "Please leave your name, number, and the time you called, and we will get back to you.",
+    "seconds": 5.23,
+    "hash": "ec4d7fb041b9",
+    "voice": "95a54cef465b"
+  },
+  "machine-kowalski-1": {
+    "chapter": "kowalski",
+    "where": "An answering machine (by number)",
+    "text": "Hi!",
+    "seconds": 1.46,
+    "hash": "ca51ce1fb15a",
+    "voice": "dd700bb69c87"
+  },
+  "machine-kowalski-2": {
+    "chapter": "kowalski",
+    "where": "An answering machine (by number)",
+    "text": "You’ve reached the Kowalskis.",
+    "seconds": 2.5,
+    "hash": "cb65f01de62e",
+    "voice": "dd700bb69c87"
+  },
+  "machine-kowalski-3": {
+    "chapter": "kowalski",
+    "where": "An answering machine (by number)",
+    "text": "We can’t come to the phone right now, so leave a message after the beep!",
+    "seconds": 4.07,
+    "hash": "575bfd096e3e",
+    "voice": "dd700bb69c87"
+  },
+  "machine-rick-1": {
+    "chapter": "rick",
+    "where": "An answering machine (by number)",
+    "text": "Yo, this is Rick.",
+    "seconds": 1.9,
+    "hash": "972d32f73576",
+    "voice": "d53ce247b77a"
+  },
+  "machine-rick-2": {
+    "chapter": "rick",
+    "where": "An answering machine (by number)",
+    "text": "I’m not here, or maybe I am and I’m screening.",
+    "seconds": 3.29,
+    "hash": "ff1a8c881176",
+    "voice": "d53ce247b77a"
+  },
+  "machine-rick-3": {
+    "chapter": "rick",
+    "where": "An answering machine (by number)",
+    "text": "Leave a message.",
+    "seconds": 1.74,
+    "hash": "c98e1680421c",
+    "voice": "d53ce247b77a"
+  },
+  "mom-work-1": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Hi honey, is everything okay?",
+    "seconds": 2.69,
+    "hash": "3d0214aef3d8",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-2": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Is anybody hurt?",
+    "seconds": 2.08,
+    "hash": "bf7ed90ecc4a",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-3": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "No?",
+    "seconds": 1.58,
+    "hash": "2b5f13fb5e90",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-4": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Then why are you calling me at work?",
+    "seconds": 2.55,
+    "hash": "d4c0352a7e98",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-5": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Do your homework, and don’t touch the stove.",
+    "seconds": 2.96,
+    "hash": "5f0da085a571",
+    "voice": "b4caa961aa41"
+  },
+  "mom-work-6": {
+    "chapter": "mom",
+    "where": "Mom’s work: Mom, after the hold music",
+    "text": "Love you, bye!",
+    "seconds": 1.88,
+    "hash": "06c8d73345d3",
+    "voice": "b4caa961aa41"
+  },
+  "movies-1-1": {
+    "chapter": "movies",
+    "where": "Movie line: press 1",
+    "text": "The Santa Clause.",
+    "seconds": 1.99,
+    "hash": "1dd82648f675",
+    "voice": "be765e07dd29"
+  },
+  "movies-1-2": {
+    "chapter": "movies",
+    "where": "Movie line: press 1",
+    "text": "Rated PG.",
+    "seconds": 2.75,
+    "hash": "90b4e973e1dd",
+    "voice": "be765e07dd29"
+  },
+  "movies-1-3": {
+    "chapter": "movies",
+    "where": "Movie line: press 1",
+    "text": "Today’s showtimes: 1:10, 3:20, 5:30, 7:40, and 9:50.",
+    "seconds": 9.68,
+    "hash": "3538f144b77e",
+    "voice": "be765e07dd29"
+  },
+  "movies-2-1": {
+    "chapter": "movies",
+    "where": "Movie line: press 2",
+    "text": "Star Trek Generations.",
+    "seconds": 3.89,
+    "hash": "dc7604511c2a",
+    "voice": "be765e07dd29"
+  },
+  "movies-2-3": {
+    "chapter": "movies",
+    "where": "Movie line: press 2",
+    "text": "Today’s showtimes: 1:30, 4:15, 7:00, and 9:35.",
+    "seconds": 7.86,
+    "hash": "9da7544325af",
+    "voice": "be765e07dd29"
+  },
+  "movies-3-1": {
+    "chapter": "movies",
+    "where": "Movie line: press 3",
+    "text": "The Lion King.",
+    "seconds": 2.68,
+    "hash": "4105853454f5",
+    "voice": "be765e07dd29"
+  },
+  "movies-3-2": {
+    "chapter": "movies",
+    "where": "Movie line: press 3",
+    "text": "Rated G.",
+    "seconds": 2.29,
+    "hash": "cfbea2f4c078",
+    "voice": "be765e07dd29"
+  },
+  "movies-3-3": {
+    "chapter": "movies",
+    "where": "Movie line: press 3",
+    "text": "Today’s showtimes: 12:45, 2:50, 4:55, and 7:00.",
+    "seconds": 6.41,
+    "hash": "891aa11fbaf0",
+    "voice": "be765e07dd29"
+  },
+  "movies-4-1": {
+    "chapter": "movies",
+    "where": "Movie line: press 4",
+    "text": "Dumb and Dumber.",
+    "seconds": 2.9,
+    "hash": "c7087b6c928a",
+    "voice": "be765e07dd29"
+  },
+  "movies-4-2": {
+    "chapter": "movies",
+    "where": "Movie line: press 4",
+    "text": "Rated PG-13.",
+    "seconds": 3.82,
+    "hash": "dbe609400179",
+    "voice": "be765e07dd29"
+  },
+  "movies-4-3": {
+    "chapter": "movies",
+    "where": "Movie line: press 4",
+    "text": "Today’s showtimes: 2:00, 4:30, 7:15, and 9:40.",
+    "seconds": 10.14,
+    "hash": "a140c5d6ad1b",
+    "voice": "be765e07dd29"
+  },
+  "movies-bye": {
+    "chapter": "movies",
+    "where": "Movie line: hangs up",
+    "text": "Thank you for calling the Movie Line!",
+    "seconds": 3.59,
+    "hash": "5ed600b794e1",
+    "voice": "be765e07dd29"
+  },
+  "movies-hello-1": {
+    "chapter": "movies",
+    "where": "Movie line: answers",
+    "text": "Hello!",
+    "seconds": 1,
+    "hash": "334d016f755c",
+    "voice": "be765e07dd29"
+  },
+  "movies-hello-2": {
+    "chapter": "movies",
+    "where": "Movie line: answers",
+    "text": "And welcome to the Movie Line!",
+    "seconds": 2.75,
+    "hash": "c5b51aec7c49",
+    "voice": "be765e07dd29"
+  },
+  "movies-hello-3": {
+    "chapter": "movies",
+    "where": "Movie line: answers",
+    "text": "Now showing at the Starlite Cinema 8.",
+    "seconds": 4.28,
+    "hash": "0379fab10c10",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-1": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "For The Santa Clause, press 1.",
+    "seconds": 3.82,
+    "hash": "5e8ff9abff29",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-2": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "For Star Trek Generations, press 2.",
+    "seconds": 4.88,
+    "hash": "ee0310f60aaf",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-3": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "For The Lion King, press 3.",
+    "seconds": 3.97,
+    "hash": "33f6415a17fd",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-4": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "For Dumb and Dumber, press 4.",
+    "seconds": 5.19,
+    "hash": "545b189a33ff",
+    "voice": "be765e07dd29"
+  },
+  "movies-menu-5": {
+    "chapter": "movies",
+    "where": "Movie line: the menu",
+    "text": "To hear this again, press 0.",
+    "seconds": 3.89,
+    "hash": "7ac35ac2591e",
+    "voice": "be765e07dd29"
+  },
+  "movies-what": {
+    "chapter": "movies",
+    "where": "Movie line: no key pressed",
+    "text": "Why don’t you just tell me the name of the movie you’ve selected?",
+    "seconds": 3.06,
+    "hash": "fbd46d633b82",
+    "voice": "be765e07dd29"
+  },
+  "nine-one-one": {
+    "chapter": "dispatcher",
+    "where": "911: answers",
+    "text": "Nine one one, what is your emergency?",
+    "seconds": 4.31,
+    "hash": "5aed4a9a381e",
+    "voice": "ee31dffc045d"
+  },
+  "nine-one-one-again-1": {
+    "chapter": "dispatcher",
+    "where": "911: you freeze up",
+    "text": "Hello?",
+    "seconds": 1.72,
+    "hash": "0da72197e898",
+    "voice": "ee31dffc045d"
+  },
+  "nine-one-one-again-2": {
+    "chapter": "dispatcher",
+    "where": "911: you freeze up",
+    "text": "Are you there?",
+    "seconds": 2,
+    "hash": "9d83ff719dde",
+    "voice": "ee31dffc045d"
+  },
+  "nine-one-one-fire-1": {
+    "chapter": "dispatcher",
+    "where": "911: the house fire",
+    "text": "Hold on.",
+    "seconds": 1.93,
+    "hash": "357fd513128b",
+    "voice": "ee31dffc045d"
+  },
+  "nine-one-one-fire-2": {
+    "chapter": "dispatcher",
+    "where": "911: the house fire",
+    "text": "We’re getting calls about a house fire on your street right now.",
+    "seconds": 5.98,
+    "hash": "4f0245e71abb",
+    "voice": "ee31dffc045d"
+  },
+  "nine-one-one-fire-3": {
+    "chapter": "dispatcher",
+    "where": "911: the house fire",
+    "text": "A truck is on the way.",
+    "seconds": 2.65,
+    "hash": "323806ccb65b",
+    "voice": "ee31dffc045d"
+  },
+  "nine-one-one-fire-4": {
+    "chapter": "dispatcher",
+    "where": "911: the house fire",
+    "text": "Stay inside, and please, only call nine one one for a real emergency.",
+    "seconds": 7.69,
+    "hash": "aa17838ca916",
+    "voice": "ee31dffc045d"
+  },
+  "not-in-service-1": {
+    "chapter": "recording",
+    "where": "Any unassigned number",
+    "text": "We’re sorry.",
+    "seconds": 1.82,
+    "hash": "13890686f3a9",
+    "voice": "d60aea1b9096"
+  },
+  "not-in-service-2": {
+    "chapter": "recording",
+    "where": "Any unassigned number",
+    "text": "The number you have reached is not in service.",
+    "seconds": 3.61,
+    "hash": "45190ca5d5a0",
+    "voice": "d60aea1b9096"
+  },
+  "not-in-service-3": {
+    "chapter": "recording",
+    "where": "Any unassigned number",
+    "text": "Please check the number and dial again.",
+    "seconds": 3.24,
+    "hash": "51398d22cc37",
+    "voice": "d60aea1b9096"
+  },
+  "off-hook": {
+    "chapter": "recording",
+    "where": "Off the hook too long",
+    "text": "If you’d like to make a call, please hang up and try again.",
+    "seconds": 4.27,
+    "hash": "c3334f3b8e2d",
+    "voice": "d60aea1b9096"
+  },
+  "ratings-1-1": {
+    "chapter": "robot",
+    "where": "Ratings council: answers",
+    "text": "Thank you for calling the Home Software Rating Council.",
+    "seconds": 3.98,
+    "hash": "a9c211447e35",
+    "voice": "c4de1ea499e6"
+  },
+  "ratings-1-2": {
+    "chapter": "robot",
+    "where": "Ratings council: answers",
+    "text": "Your call is important to us.",
+    "seconds": 2.73,
+    "hash": "7dea23df4e73",
+    "voice": "c4de1ea499e6"
+  },
+  "ratings-1-3": {
+    "chapter": "robot",
+    "where": "Ratings council: answers",
+    "text": "Please hold for the next available rating specialist.",
+    "seconds": 4.3,
+    "hash": "3d9a4a5df78a",
+    "voice": "c4de1ea499e6"
+  },
+  "ratings-hold-2": {
+    "chapter": "robot",
+    "where": "Ratings council: after each hold",
+    "text": "Please continue to hold.",
+    "seconds": 2.51,
+    "hash": "dd7e5410ef0d",
+    "voice": "c4de1ea499e6"
+  },
+  "tb-and": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "and",
+    "seconds": 0.86,
+    "hash": "6201111b83a0",
+    "voice": "771812683fc2"
+  },
+  "tb-cent": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "cent",
+    "seconds": 0.64,
+    "hash": "c388fa9a5270",
+    "voice": "771812683fc2"
+  },
+  "tb-cents": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "cents",
+    "seconds": 1,
+    "hash": "92ca7d1adfaa",
+    "voice": "771812683fc2"
+  },
+  "tb-dollar": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "dollar",
+    "seconds": 0.86,
+    "hash": "588d2c1d1f23",
+    "voice": "771812683fc2"
+  },
+  "tb-dollars": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "dollars",
+    "seconds": 1.07,
+    "hash": "d444019213e4",
+    "voice": "771812683fc2"
+  },
+  "tb-lead": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "Your parents' pretend phone bill is",
+    "seconds": 2.36,
+    "hash": "a1639ff7272f",
+    "voice": "771812683fc2"
+  },
+  "tb-n0": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "zero",
+    "seconds": 0.93,
+    "hash": "f9194e73f9e9",
+    "voice": "771812683fc2"
+  },
+  "tb-n1": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "one",
+    "seconds": 0.78,
+    "hash": "7692c3ad3540",
+    "voice": "771812683fc2"
+  },
+  "tb-n10": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ten",
+    "seconds": 0.78,
+    "hash": "e4432baa9081",
+    "voice": "771812683fc2"
+  },
+  "tb-n11": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eleven",
+    "seconds": 0.86,
+    "hash": "e979074ebd56",
+    "voice": "771812683fc2"
+  },
+  "tb-n12": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twelve",
+    "seconds": 0.78,
+    "hash": "d1a749ad879b",
+    "voice": "771812683fc2"
+  },
+  "tb-n13": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirteen",
+    "seconds": 0.93,
+    "hash": "9ecc81f0a4b6",
+    "voice": "771812683fc2"
+  },
+  "tb-n14": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fourteen",
+    "seconds": 0.93,
+    "hash": "fef8f41cdcd2",
+    "voice": "771812683fc2"
+  },
+  "tb-n15": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifteen",
+    "seconds": 0.93,
+    "hash": "c463967e5708",
+    "voice": "771812683fc2"
+  },
+  "tb-n16": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixteen",
+    "seconds": 1.14,
+    "hash": "f2ce341fdaa6",
+    "voice": "771812683fc2"
+  },
+  "tb-n17": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventeen",
+    "seconds": 1.14,
+    "hash": "2c5abdef2a0e",
+    "voice": "771812683fc2"
+  },
+  "tb-n18": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighteen",
+    "seconds": 1.07,
+    "hash": "34357b18abdd",
+    "voice": "771812683fc2"
+  },
+  "tb-n19": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "nineteen",
+    "seconds": 1.07,
+    "hash": "cde4e100efd2",
+    "voice": "771812683fc2"
+  },
+  "tb-n2": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "two",
+    "seconds": 0.78,
+    "hash": "3fc4ccfe7458",
+    "voice": "771812683fc2"
+  },
+  "tb-n20": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty",
+    "seconds": 0.86,
+    "hash": "7c2c4df740f7",
+    "voice": "771812683fc2"
+  },
+  "tb-n21": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-one",
+    "seconds": 0.86,
+    "hash": "a69edb489f4e",
+    "voice": "771812683fc2"
+  },
+  "tb-n22": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-two",
+    "seconds": 0.86,
+    "hash": "2a8daa7aac7a",
+    "voice": "771812683fc2"
+  },
+  "tb-n23": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-three",
+    "seconds": 1,
+    "hash": "328e51fcaeaf",
+    "voice": "771812683fc2"
+  },
+  "tb-n24": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-four",
+    "seconds": 0.86,
+    "hash": "1bcbce780ddd",
+    "voice": "771812683fc2"
+  },
+  "tb-n25": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-five",
+    "seconds": 0.93,
+    "hash": "ac3164d59c69",
+    "voice": "771812683fc2"
+  },
+  "tb-n26": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-six",
+    "seconds": 0.93,
+    "hash": "60b7d1f7ad42",
+    "voice": "771812683fc2"
+  },
+  "tb-n27": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-seven",
+    "seconds": 1,
+    "hash": "412866d80035",
+    "voice": "771812683fc2"
+  },
+  "tb-n28": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-eight",
+    "seconds": 0.78,
+    "hash": "96c2a8346189",
+    "voice": "771812683fc2"
+  },
+  "tb-n29": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "twenty-nine",
+    "seconds": 0.93,
+    "hash": "a0d9676cc598",
+    "voice": "771812683fc2"
+  },
+  "tb-n3": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "three",
+    "seconds": 0.78,
+    "hash": "8b5b9db0c13d",
+    "voice": "771812683fc2"
+  },
+  "tb-n30": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty",
+    "seconds": 0.86,
+    "hash": "aca5fb59db69",
+    "voice": "771812683fc2"
+  },
+  "tb-n31": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-one",
+    "seconds": 0.93,
+    "hash": "dfa5c4c47fb2",
+    "voice": "771812683fc2"
+  },
+  "tb-n32": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-two",
+    "seconds": 0.93,
+    "hash": "7a78c7548928",
+    "voice": "771812683fc2"
+  },
+  "tb-n33": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-three",
+    "seconds": 1,
+    "hash": "3c218b98f1bf",
+    "voice": "771812683fc2"
+  },
+  "tb-n34": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-four",
+    "seconds": 0.86,
+    "hash": "ee9764b6b133",
+    "voice": "771812683fc2"
+  },
+  "tb-n35": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-five",
+    "seconds": 0.86,
+    "hash": "49fa6fb4bad9",
+    "voice": "771812683fc2"
+  },
+  "tb-n36": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-six",
+    "seconds": 0.93,
+    "hash": "56d89c668162",
+    "voice": "771812683fc2"
+  },
+  "tb-n37": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-seven",
+    "seconds": 1,
+    "hash": "ee0d8e38580a",
+    "voice": "771812683fc2"
+  },
+  "tb-n38": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-eight",
+    "seconds": 0.86,
+    "hash": "518ce854e4d7",
+    "voice": "771812683fc2"
+  },
+  "tb-n39": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "thirty-nine",
+    "seconds": 0.93,
+    "hash": "c19e6b18f754",
+    "voice": "771812683fc2"
+  },
+  "tb-n4": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "four",
+    "seconds": 0.78,
+    "hash": "04efaf080f5a",
+    "voice": "771812683fc2"
+  },
+  "tb-n40": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty",
+    "seconds": 0.78,
+    "hash": "9cee2304bd63",
+    "voice": "771812683fc2"
+  },
+  "tb-n41": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-one",
+    "seconds": 0.86,
+    "hash": "074ec9ddfe44",
+    "voice": "771812683fc2"
+  },
+  "tb-n42": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-two",
+    "seconds": 0.86,
+    "hash": "5cc47001f7c1",
+    "voice": "771812683fc2"
+  },
+  "tb-n43": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-three",
+    "seconds": 0.93,
+    "hash": "fbcb14038f6b",
+    "voice": "771812683fc2"
+  },
+  "tb-n44": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-four",
+    "seconds": 0.86,
+    "hash": "9a56bd594d93",
+    "voice": "771812683fc2"
+  },
+  "tb-n45": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-five",
+    "seconds": 0.86,
+    "hash": "ce8cdef089ac",
+    "voice": "771812683fc2"
+  },
+  "tb-n46": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-six",
+    "seconds": 0.93,
+    "hash": "17b42cc951ba",
+    "voice": "771812683fc2"
+  },
+  "tb-n47": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-seven",
+    "seconds": 0.93,
+    "hash": "11d5b531ae2c",
+    "voice": "771812683fc2"
+  },
+  "tb-n48": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-eight",
+    "seconds": 0.86,
+    "hash": "2b8de4d500dd",
+    "voice": "771812683fc2"
+  },
+  "tb-n49": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "forty-nine",
+    "seconds": 0.86,
+    "hash": "0f09c0097e47",
+    "voice": "771812683fc2"
+  },
+  "tb-n5": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "five",
+    "seconds": 0.86,
+    "hash": "222b0bd51fce",
+    "voice": "771812683fc2"
+  },
+  "tb-n50": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty",
+    "seconds": 0.78,
+    "hash": "f8d807ee15e9",
+    "voice": "771812683fc2"
+  },
+  "tb-n51": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-one",
+    "seconds": 1,
+    "hash": "76bcec87152d",
+    "voice": "771812683fc2"
+  },
+  "tb-n52": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-two",
+    "seconds": 0.86,
+    "hash": "7236b63e2db5",
+    "voice": "771812683fc2"
+  },
+  "tb-n53": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-three",
+    "seconds": 1.07,
+    "hash": "6382cd3f5ae1",
+    "voice": "771812683fc2"
+  },
+  "tb-n54": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-four",
+    "seconds": 0.93,
+    "hash": "7da3c4346e00",
+    "voice": "771812683fc2"
+  },
+  "tb-n55": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-five",
+    "seconds": 0.93,
+    "hash": "25102b4dfe05",
+    "voice": "771812683fc2"
+  },
+  "tb-n56": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-six",
+    "seconds": 0.86,
+    "hash": "ee41e5464eec",
+    "voice": "771812683fc2"
+  },
+  "tb-n57": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-seven",
+    "seconds": 1,
+    "hash": "d376c3658fc4",
+    "voice": "771812683fc2"
+  },
+  "tb-n58": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-eight",
+    "seconds": 0.93,
+    "hash": "dcf2928126cc",
+    "voice": "771812683fc2"
+  },
+  "tb-n59": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "fifty-nine",
+    "seconds": 0.93,
+    "hash": "69193cd7186a",
+    "voice": "771812683fc2"
+  },
+  "tb-n6": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "six",
+    "seconds": 0.93,
+    "hash": "44778d82365e",
+    "voice": "771812683fc2"
+  },
+  "tb-n60": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty",
+    "seconds": 1.07,
+    "hash": "df41164e1512",
+    "voice": "771812683fc2"
+  },
+  "tb-n61": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-one",
+    "seconds": 1.21,
+    "hash": "ccfe4766f535",
+    "voice": "771812683fc2"
+  },
+  "tb-n62": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-two",
+    "seconds": 1,
+    "hash": "e904d40a691e",
+    "voice": "771812683fc2"
+  },
+  "tb-n63": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-three",
+    "seconds": 1.29,
+    "hash": "e2a062cc5c47",
+    "voice": "771812683fc2"
+  },
+  "tb-n64": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-four",
+    "seconds": 1.14,
+    "hash": "bf9d197ad7d4",
+    "voice": "771812683fc2"
+  },
+  "tb-n65": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-five",
+    "seconds": 1.07,
+    "hash": "4a8692d5b7e3",
+    "voice": "771812683fc2"
+  },
+  "tb-n66": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-six",
+    "seconds": 1.14,
+    "hash": "f63dbf1efd6c",
+    "voice": "771812683fc2"
+  },
+  "tb-n67": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-seven",
+    "seconds": 1.36,
+    "hash": "07943fed3e15",
+    "voice": "771812683fc2"
+  },
+  "tb-n68": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-eight",
+    "seconds": 1.36,
+    "hash": "783524f5ac6e",
+    "voice": "771812683fc2"
+  },
+  "tb-n69": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "sixty-nine",
+    "seconds": 1.14,
+    "hash": "db3a6068f1db",
+    "voice": "771812683fc2"
+  },
+  "tb-n7": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seven",
+    "seconds": 0.78,
+    "hash": "3ba8d02b16fd",
+    "voice": "771812683fc2"
+  },
+  "tb-n70": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy",
+    "seconds": 1.07,
+    "hash": "ab0e4b1a7839",
+    "voice": "771812683fc2"
+  },
+  "tb-n71": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-one",
+    "seconds": 1,
+    "hash": "f02086f9f5f5",
+    "voice": "771812683fc2"
+  },
+  "tb-n72": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-two",
+    "seconds": 1.07,
+    "hash": "84c4b20b93e4",
+    "voice": "771812683fc2"
+  },
+  "tb-n73": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-three",
+    "seconds": 1.14,
+    "hash": "9b9c69560bb2",
+    "voice": "771812683fc2"
+  },
+  "tb-n74": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-four",
+    "seconds": 1.07,
+    "hash": "392e02f565ae",
+    "voice": "771812683fc2"
+  },
+  "tb-n75": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-five",
+    "seconds": 0.93,
+    "hash": "4dc2e8075c6c",
+    "voice": "771812683fc2"
+  },
+  "tb-n76": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-six",
+    "seconds": 1.14,
+    "hash": "3ba5ea68a8eb",
+    "voice": "771812683fc2"
+  },
+  "tb-n77": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-seven",
+    "seconds": 1.07,
+    "hash": "cffdc28faeaa",
+    "voice": "771812683fc2"
+  },
+  "tb-n78": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-eight",
+    "seconds": 0.86,
+    "hash": "1377c1880450",
+    "voice": "771812683fc2"
+  },
+  "tb-n79": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "seventy-nine",
+    "seconds": 1.21,
+    "hash": "14493e55e60a",
+    "voice": "771812683fc2"
+  },
+  "tb-n8": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eight",
+    "seconds": 0.71,
+    "hash": "c195d2d87562",
+    "voice": "771812683fc2"
+  },
+  "tb-n80": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty",
+    "seconds": 0.93,
+    "hash": "0dbc3407a708",
+    "voice": "771812683fc2"
+  },
+  "tb-n81": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-one",
+    "seconds": 0.93,
+    "hash": "ad5070bcac4c",
+    "voice": "771812683fc2"
+  },
+  "tb-n82": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-two",
+    "seconds": 1,
+    "hash": "e80f294b0b49",
+    "voice": "771812683fc2"
+  },
+  "tb-n83": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-three",
+    "seconds": 1.14,
+    "hash": "dbcb538af292",
+    "voice": "771812683fc2"
+  },
+  "tb-n84": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-four",
+    "seconds": 0.86,
+    "hash": "c3dc190dd3a7",
+    "voice": "771812683fc2"
+  },
+  "tb-n85": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-five",
+    "seconds": 0.93,
+    "hash": "d4e7456af463",
+    "voice": "771812683fc2"
+  },
+  "tb-n86": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-six",
+    "seconds": 1.07,
+    "hash": "964899f3dfc0",
+    "voice": "771812683fc2"
+  },
+  "tb-n87": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-seven",
+    "seconds": 1,
+    "hash": "16898b9b8503",
+    "voice": "771812683fc2"
+  },
+  "tb-n88": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-eight",
+    "seconds": 1,
+    "hash": "1bbfc0a45053",
+    "voice": "771812683fc2"
+  },
+  "tb-n89": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "eighty-nine",
+    "seconds": 0.93,
+    "hash": "5c64a2202314",
+    "voice": "771812683fc2"
+  },
+  "tb-n9": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "nine",
+    "seconds": 0.78,
+    "hash": "edcd8e701a2d",
+    "voice": "771812683fc2"
+  },
+  "tb-n90": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety",
+    "seconds": 1,
+    "hash": "521c74a4d582",
+    "voice": "771812683fc2"
+  },
+  "tb-n91": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-one",
+    "seconds": 1.07,
+    "hash": "009a3a2549a0",
+    "voice": "771812683fc2"
+  },
+  "tb-n92": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-two",
+    "seconds": 1,
+    "hash": "1a79274e8f29",
+    "voice": "771812683fc2"
+  },
+  "tb-n93": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-three",
+    "seconds": 1.07,
+    "hash": "2acfc7ff4195",
+    "voice": "771812683fc2"
+  },
+  "tb-n94": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-four",
+    "seconds": 1,
+    "hash": "17901bab2d97",
+    "voice": "771812683fc2"
+  },
+  "tb-n95": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-five",
+    "seconds": 1,
+    "hash": "8562e935d3b8",
+    "voice": "771812683fc2"
+  },
+  "tb-n96": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-six",
+    "seconds": 1,
+    "hash": "1ceeaf17724b",
+    "voice": "771812683fc2"
+  },
+  "tb-n97": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-seven",
+    "seconds": 1.07,
+    "hash": "0bdb23f9e3ec",
+    "voice": "771812683fc2"
+  },
+  "tb-n98": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-eight",
+    "seconds": 0.93,
+    "hash": "60e6dda7a5e4",
+    "voice": "771812683fc2"
+  },
+  "tb-n99": {
+    "chapter": "teddy",
+    "where": "Hint line: spliced into the pretend bill",
+    "text": "ninety-nine",
+    "seconds": 0.86,
+    "hash": "1a2516bbaf9c",
+    "voice": "771812683fc2"
+  },
+  "teddy-bad-key-1": {
+    "chapter": "teddy",
+    "where": "Hint line: a wrong key",
+    "text": "That key leads to the biscuit cupboard.",
+    "seconds": 2.57,
+    "hash": "ec6b77607d63",
+    "voice": "771812683fc2"
+  },
+  "teddy-bad-key-2": {
+    "chapter": "teddy",
+    "where": "Hint line: a wrong key",
+    "text": "The cupboard has declined to comment.",
+    "seconds": 2.07,
+    "hash": "f68369cbe077",
+    "voice": "771812683fc2"
+  },
+  "teddy-bad-key-3": {
+    "chapter": "teddy",
+    "where": "Hint line: a wrong key",
+    "text": "Try 1 through 5, or 0 to leave.",
+    "seconds": 3.57,
+    "hash": "3077ca0ca5f8",
+    "voice": "771812683fc2"
+  },
+  "teddy-bill-tail-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 5",
+    "text": "Gwinn has offered to pay in lint.",
+    "seconds": 2.29,
+    "hash": "b4d45752a2c5",
+    "voice": "771812683fc2"
+  },
+  "teddy-bill-tail-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 5",
+    "text": "The telephone company is considering it.",
+    "seconds": 2,
+    "hash": "6b62c85f1c67",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-1-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 1",
+    "text": "Save with F5 before trying a tricky stretch.",
+    "seconds": 3.21,
+    "hash": "cdb422576757",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-1-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 1",
+    "text": "Use different save slots so one unfortunate landing does not become family history.",
+    "seconds": 7.07,
+    "hash": "8fbc41b58fcc",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-1-3": {
+    "chapter": "teddy",
+    "where": "Hint line: press 1",
+    "text": "Teddy saves before jumping.",
+    "seconds": 2.07,
+    "hash": "bbbdc30b6e32",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-1-4": {
+    "chapter": "teddy",
+    "where": "Hint line: press 1",
+    "text": "Gwinn saves after saying, watch this.",
+    "seconds": 2.93,
+    "hash": "7b0d6bbe48aa",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-2-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 2",
+    "text": "Open the game box and choose Level Maps.",
+    "seconds": 2.86,
+    "hash": "f3099526f5b5",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-2-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 2",
+    "text": "Follow the marked start and exits.",
+    "seconds": 2.21,
+    "hash": "695fe236fbe9",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-2-3": {
+    "chapter": "teddy",
+    "where": "Hint line: press 2",
+    "text": "Dashed wrap edges join: leaving one side can bring you back on the other.",
+    "seconds": 4.5,
+    "hash": "6c7ab97e0fe1",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-2-4": {
+    "chapter": "teddy",
+    "where": "Hint line: press 2",
+    "text": "Teddy calls this geography with a revolving door.",
+    "seconds": 2.86,
+    "hash": "590061b62120",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-3-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 3",
+    "text": "Watch an enemy before charging in.",
+    "seconds": 3.36,
+    "hash": "1a19c3567834",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-3-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 3",
+    "text": "Look for a gap in its movement, keep an escape route, and check whether your character can shoot.",
+    "seconds": 6.21,
+    "hash": "cff17dff15f9",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-3-3": {
+    "chapter": "teddy",
+    "where": "Hint line: press 3",
+    "text": "A boss may have another stage.",
+    "seconds": 3.14,
+    "hash": "abdd6a0e6791",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-3-4": {
+    "chapter": "teddy",
+    "where": "Hint line: press 3",
+    "text": "Teddy recommends waiting until the victory is actually victorious.",
+    "seconds": 4.07,
+    "hash": "2cbbe8654fa1",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-4-1": {
+    "chapter": "teddy",
+    "where": "Hint line: press 4",
+    "text": "The game box may include a hint book, and the walkthrough shows a route through the game.",
+    "seconds": 5.35,
+    "hash": "1b1673d86f5a",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-4-2": {
+    "chapter": "teddy",
+    "where": "Hint line: press 4",
+    "text": "Those are free.",
+    "seconds": 1.29,
+    "hash": "3e2d2baf0846",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-4-3": {
+    "chapter": "teddy",
+    "where": "Hint line: press 4",
+    "text": "Asking for help is clever.",
+    "seconds": 1.78,
+    "hash": "221aeea5dcec",
+    "voice": "771812683fc2"
+  },
+  "teddy-hint-4-4": {
+    "chapter": "teddy",
+    "where": "Hint line: press 4",
+    "text": "Paying a corgi to tell you where the free help lives is extremely 1994.",
+    "seconds": 4.36,
+    "hash": "e5f91b0c039a",
+    "voice": "771812683fc2"
+  },
+  "teddy-kennel": {
+    "chapter": "teddy",
+    "where": "Hint line: answers",
+    "text": "Teddy's Hint Kennel!",
+    "seconds": 1.5,
+    "hash": "690fcec72fa8",
+    "voice": "771812683fc2"
+  },
+  "teddy-menu": {
+    "chapter": "teddy",
+    "where": "Hint line: the menu",
+    "text": "Press 1 for saving, 2 for maps, 3 for enemies, 4 for free help, 5 for the pretend bill, or 0 to hang up.",
+    "seconds": 9.14,
+    "hash": "82d99c31ff64",
+    "voice": "771812683fc2"
+  },
+  "teddy-rate-1": {
+    "chapter": "teddy",
+    "where": "Hint line: the greeting",
+    "text": "This game charges a fictional $1.99 per minute, never real money.",
+    "seconds": 6.21,
+    "hash": "c7f7dba7c08c",
+    "voice": "771812683fc2"
+  },
+  "teddy-rate-2": {
+    "chapter": "teddy",
+    "where": "Hint line: the greeting",
+    "text": "Press 1 to start the meter, or 0 to leave free.",
+    "seconds": 4.28,
+    "hash": "bfd4c2f8094f",
+    "voice": "771812683fc2"
+  },
+  "teddy-rate-3": {
+    "chapter": "teddy",
+    "where": "Hint line: the greeting",
+    "text": "Teddy accepts neither credit cards nor stolen sandwiches.",
+    "seconds": 3.28,
+    "hash": "7fafeb782a2d",
+    "voice": "771812683fc2"
+  },
+  "time-lead": {
+    "chapter": "time-lady",
+    "where": "Time: every other call",
+    "text": "Riverbend Savings & Loan time and temperature.",
+    "seconds": 4.48,
+    "hash": "bdc5e9814006",
+    "voice": "f9f845e5385c"
+  },
+  "time-temp": {
+    "chapter": "time-lady",
+    "where": "Time: after the tone",
+    "text": "The temperature is 28 degrees.",
+    "seconds": 3.79,
+    "hash": "a4b1e1270f08",
+    "voice": "f9f845e5385c"
+  },
+  "tl-exactly": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "exactly",
+    "seconds": 2,
+    "hash": "24065231df1b",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n1": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "one",
+    "seconds": 1.48,
+    "hash": "7692c3ad3540",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n10": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "ten",
+    "seconds": 1.4,
+    "hash": "e4432baa9081",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n11": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "eleven",
+    "seconds": 1.74,
+    "hash": "e979074ebd56",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n12": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twelve",
+    "seconds": 1.42,
+    "hash": "d1a749ad879b",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n13": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirteen",
+    "seconds": 1.79,
+    "hash": "9ecc81f0a4b6",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n14": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fourteen",
+    "seconds": 1.85,
+    "hash": "fef8f41cdcd2",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n15": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifteen",
+    "seconds": 1.9,
+    "hash": "c463967e5708",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n16": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "sixteen",
+    "seconds": 1.74,
+    "hash": "f2ce341fdaa6",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n17": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "seventeen",
+    "seconds": 2.11,
+    "hash": "2c5abdef2a0e",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n18": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "eighteen",
+    "seconds": 1.69,
+    "hash": "34357b18abdd",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n19": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "nineteen",
+    "seconds": 1.9,
+    "hash": "cde4e100efd2",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n2": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "two",
+    "seconds": 1.21,
+    "hash": "3fc4ccfe7458",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n20": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty",
+    "seconds": 1.48,
+    "hash": "7c2c4df740f7",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n21": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-one",
+    "seconds": 1.87,
+    "hash": "a69edb489f4e",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n22": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-two",
+    "seconds": 1.85,
+    "hash": "2a8daa7aac7a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n23": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-three",
+    "seconds": 2.11,
+    "hash": "328e51fcaeaf",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n24": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-four",
+    "seconds": 2.03,
+    "hash": "1bcbce780ddd",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n25": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-five",
+    "seconds": 2.06,
+    "hash": "ac3164d59c69",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n26": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-six",
+    "seconds": 1.9,
+    "hash": "60b7d1f7ad42",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n27": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-seven",
+    "seconds": 2.32,
+    "hash": "412866d80035",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n28": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-eight",
+    "seconds": 1.77,
+    "hash": "96c2a8346189",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n29": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "twenty-nine",
+    "seconds": 2.27,
+    "hash": "a0d9676cc598",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n3": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "three",
+    "seconds": 1.5,
+    "hash": "8b5b9db0c13d",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n30": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty",
+    "seconds": 1.74,
+    "hash": "aca5fb59db69",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n31": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-one",
+    "seconds": 2.11,
+    "hash": "dfa5c4c47fb2",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n32": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-two",
+    "seconds": 1.9,
+    "hash": "7a78c7548928",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n33": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-three",
+    "seconds": 2.24,
+    "hash": "3c218b98f1bf",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n34": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-four",
+    "seconds": 2.27,
+    "hash": "ee9764b6b133",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n35": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-five",
+    "seconds": 2.14,
+    "hash": "49fa6fb4bad9",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n36": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-six",
+    "seconds": 2.11,
+    "hash": "56d89c668162",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n37": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-seven",
+    "seconds": 2.24,
+    "hash": "ee0d8e38580a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n38": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-eight",
+    "seconds": 1.9,
+    "hash": "518ce854e4d7",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n39": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "thirty-nine",
+    "seconds": 2.11,
+    "hash": "c19e6b18f754",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n4": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "four",
+    "seconds": 1.48,
+    "hash": "04efaf080f5a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n40": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty",
+    "seconds": 1.77,
+    "hash": "9cee2304bd63",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n41": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-one",
+    "seconds": 2.19,
+    "hash": "074ec9ddfe44",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n42": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-two",
+    "seconds": 1.92,
+    "hash": "5cc47001f7c1",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n43": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-three",
+    "seconds": 2.34,
+    "hash": "fbcb14038f6b",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n44": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-four",
+    "seconds": 2.21,
+    "hash": "9a56bd594d93",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n45": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-five",
+    "seconds": 2.14,
+    "hash": "ce8cdef089ac",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n46": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-six",
+    "seconds": 2.08,
+    "hash": "17b42cc951ba",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n47": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-seven",
+    "seconds": 2.27,
+    "hash": "11d5b531ae2c",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n48": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-eight",
+    "seconds": 1.79,
+    "hash": "2b8de4d500dd",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n49": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "forty-nine",
+    "seconds": 2.06,
+    "hash": "0f09c0097e47",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n5": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "five",
+    "seconds": 1.37,
+    "hash": "222b0bd51fce",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n50": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty",
+    "seconds": 1.56,
+    "hash": "f8d807ee15e9",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n51": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-one",
+    "seconds": 2,
+    "hash": "76bcec87152d",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n52": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-two",
+    "seconds": 1.95,
+    "hash": "7236b63e2db5",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n53": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-three",
+    "seconds": 2.21,
+    "hash": "6382cd3f5ae1",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n54": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-four",
+    "seconds": 2.24,
+    "hash": "7da3c4346e00",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n55": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-five",
+    "seconds": 2.19,
+    "hash": "25102b4dfe05",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n56": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-six",
+    "seconds": 2.03,
+    "hash": "ee41e5464eec",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n57": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-seven",
+    "seconds": 2.29,
+    "hash": "d376c3658fc4",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n58": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-eight",
+    "seconds": 1.87,
+    "hash": "dcf2928126cc",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n59": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "fifty-nine",
+    "seconds": 2.27,
+    "hash": "69193cd7186a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n6": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "six",
+    "seconds": 1.29,
+    "hash": "44778d82365e",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n7": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "seven",
+    "seconds": 1.56,
+    "hash": "3ba8d02b16fd",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n8": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "eight",
+    "seconds": 1.24,
+    "hash": "c195d2d87562",
+    "voice": "f9f845e5385c"
+  },
+  "tl-n9": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "nine",
+    "seconds": 1.71,
+    "hash": "edcd8e701a2d",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oclock": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "o’clock",
+    "seconds": 1.45,
+    "hash": "e40c0d5d47ec",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-1": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh one",
+    "seconds": 1.92,
+    "hash": "11ba9926f584",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-2": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh two",
+    "seconds": 1.79,
+    "hash": "6646e89f534a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-3": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh three",
+    "seconds": 2.06,
+    "hash": "45f01f238d6a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-4": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh four",
+    "seconds": 2,
+    "hash": "cc6d3e8dd86a",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-5": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh five",
+    "seconds": 2.06,
+    "hash": "44ff8463a3f8",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-6": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh six",
+    "seconds": 2.16,
+    "hash": "80f8bd48f170",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-7": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh seven",
+    "seconds": 2.21,
+    "hash": "fe819b8ce921",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-8": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh eight",
+    "seconds": 1.92,
+    "hash": "110bbf28cf51",
+    "voice": "f9f845e5385c"
+  },
+  "tl-oh-9": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "oh nine",
+    "seconds": 2.14,
+    "hash": "21eccca1f715",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-10": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and ten seconds",
+    "seconds": 2.61,
+    "hash": "a474680addf2",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-20": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and twenty seconds",
+    "seconds": 2.61,
+    "hash": "19995e2e9a19",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-30": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and thirty seconds",
+    "seconds": 2.69,
+    "hash": "f6576d0601df",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-40": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and forty seconds",
+    "seconds": 2.63,
+    "hash": "eec3c72ce70b",
+    "voice": "f9f845e5385c"
+  },
+  "tl-sec-50": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "and fifty seconds",
+    "seconds": 2.66,
+    "hash": "6fba292b7aa8",
+    "voice": "f9f845e5385c"
+  },
+  "tl-tone": {
+    "chapter": "time-lady",
+    "where": "Time: spliced into the time of day",
+    "text": "At the tone, the time will be",
+    "seconds": 3.24,
+    "hash": "c3f724dba199",
+    "voice": "f9f845e5385c"
+  },
+  "weather-1": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "National Weather Service forecast for Pittsburgh and vicinity.",
+    "seconds": 4.5,
+    "hash": "3905ba94fee8",
+    "voice": "2a9126714f4e"
+  },
+  "weather-2": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "This afternoon, snow showers.",
+    "seconds": 2.94,
+    "hash": "206de2d983e2",
+    "voice": "2a9126714f4e"
+  },
+  "weather-3": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Accumulation of two to four inches.",
+    "seconds": 3.37,
+    "hash": "5690bcbaa43d",
+    "voice": "2a9126714f4e"
+  },
+  "weather-4": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "High 29.",
+    "seconds": 2.17,
+    "hash": "632338ccaaba",
+    "voice": "2a9126714f4e"
+  },
+  "weather-5": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Tonight, cloudy with flurries.",
+    "seconds": 2.73,
+    "hash": "10a74559ad37",
+    "voice": "2a9126714f4e"
+  },
+  "weather-6": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Low 18.",
+    "seconds": 2.05,
+    "hash": "f18ec29e8d86",
+    "voice": "2a9126714f4e"
+  },
+  "weather-7": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Tomorrow, partly sunny and cold.",
+    "seconds": 3.19,
+    "hash": "dc46a53115b0",
+    "voice": "2a9126714f4e"
+  },
+  "weather-8": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "High 31.",
+    "seconds": 2.17,
+    "hash": "6b262fdb8a2f",
+    "voice": "2a9126714f4e"
+  },
+  "weather-9": {
+    "chapter": "weather",
+    "where": "Weather line",
+    "text": "Currently in Pittsburgh, light snow, and 28 degrees.",
+    "seconds": 4.39,
+    "hash": "7c2515f0a292",
+    "voice": "2a9126714f4e"
+  },
+  "yell-1-mom-1": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Hello?",
+    "seconds": 1.62,
+    "hash": "0da72197e898",
+    "voice": "b4caa961aa41"
+  },
+  "yell-1-mom-2": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Hello?!",
+    "seconds": 1.69,
+    "hash": "3357d4b269ae",
+    "voice": "b4caa961aa41"
+  },
+  "yell-1-mom-3": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "What is that screeching?",
+    "seconds": 2.05,
+    "hash": "d5d565e292c8",
+    "voice": "b4caa961aa41"
+  },
+  "yell-1-mom-4": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Is that the computer again?",
+    "seconds": 2.36,
+    "hash": "cd33976c215d",
+    "voice": "b4caa961aa41"
+  },
+  "yell-1-mom-5": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Get off the phone, I need to make a call!",
+    "seconds": 2.88,
+    "hash": "f277d32c7724",
+    "voice": "b4caa961aa41"
+  },
+  "yell-2-dad-2": {
+    "chapter": "dad",
+    "where": "Picking up the extension during a BBS call",
+    "text": "HELLO?",
+    "seconds": 2.3,
+    "hash": "0da72197e898",
+    "voice": "24a011153f36"
+  },
+  "yell-2-dad-3": {
+    "chapter": "dad",
+    "where": "Picking up the extension during a BBS call",
+    "text": "What in the world is that racket?",
+    "seconds": 2.79,
+    "hash": "8e6734770983",
+    "voice": "24a011153f36"
+  },
+  "yell-2-dad-4": {
+    "chapter": "dad",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Are you on that bulletin board again?",
+    "seconds": 3.65,
+    "hash": "e6cd7955a589",
+    "voice": "24a011153f36"
+  },
+  "yell-2-dad-5": {
+    "chapter": "dad",
+    "where": "Picking up the extension during a BBS call",
+    "text": "I am expecting a call from work!",
+    "seconds": 3.58,
+    "hash": "2ce70c11f434",
+    "voice": "24a011153f36"
+  },
+  "yell-3-mom-2": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Who is this?",
+    "seconds": 1.84,
+    "hash": "b7f28b09afe4",
+    "voice": "b4caa961aa41"
+  },
+  "yell-3-mom-3": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "Oh, for crying out loud, it is that modem again!",
+    "seconds": 3.79,
+    "hash": "0860319dcc6d",
+    "voice": "b4caa961aa41"
+  },
+  "yell-3-mom-4": {
+    "chapter": "mom",
+    "where": "Picking up the extension during a BBS call",
+    "text": "I have been trying to call Grandma all evening!",
+    "seconds": 3.22,
+    "hash": "d864adea2666",
+    "voice": "b4caa961aa41"
+  }
+}

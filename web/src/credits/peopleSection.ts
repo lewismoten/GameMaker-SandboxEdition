@@ -91,15 +91,15 @@ export function aiToolsSection(): HTMLElement {
       tool(
         'Pocket TTS',
         'Kyutai · CC BY 4.0',
-        'Tour voices cloned from Lewis’s recordings.',
-        'The guided tour’s voices cloned from Lewis’s own recordings, with his consent: Doc Leo’s, Joe’s, teenage Lewie’s, Courier Max’s, Watt’s and Professor Fiddlesticks’ (and Teddy’s when he talks). Runs on the developer’s computer.',
+        'Tour and phone voices cloned from voice samples.',
+        'The guided tour’s voices cloned from Lewis’s own recordings, with his consent: Doc Leo’s, Joe’s, teenage Lewie’s, Courier Max’s, Watt’s and Professor Fiddlesticks’ (and Teddy’s when he talks); and, from other voice samples, Dad, the Movie Line and Teddy on the desk’s wall phone. Runs on the developer’s computer.',
         'Kyutai’s model, in vlapky’s ONNX conversion (pocket-tts-onnx), run by a script ported from vlapky’s pocket-tts-js (MIT) with Microsoft’s ONNX Runtime (MIT). Its built-in voices are never used; only the clips it makes ship.',
       ),
       tool(
         'Kokoro',
         'hexgrad · Apache-2.0',
-        'Tour voices from its stock ones.',
-        'Voices in the guided tour from Kokoro’s stock ones: Gwinn’s (“Sky”, pitched up), Dex Dynamo’s (“Puck”), Inspector Ada Penn’s (“Emma”) and Courier Max’s (“Michael”). Runs on the developer’s computer.',
+        'Tour and phone voices from its stock ones.',
+        'Voices in the guided tour from Kokoro’s stock ones: Gwinn’s (“Sky”, pitched up), Dex Dynamo’s (“Puck”), Inspector Ada Penn’s (“Emma”) and Courier Max’s (“Michael”), and most of the callers on the desk’s wall phone (Mom, Grandma, Jenny, Linda, Gus, the 911 dispatcher, the time and weather lines and the answering machines). Runs on the developer’s computer.',
         'Kokoro-82M in the ONNX Community’s conversion, run by kokoro-js (Apache-2.0) with Hugging Face’s Transformers.js (Apache-2.0), the phonemizer package (Apache-2.0) and Microsoft’s ONNX Runtime (MIT). Only the clips it makes ship.',
       ),
       tool(
