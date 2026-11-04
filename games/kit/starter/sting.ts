@@ -1,6 +1,7 @@
 // The Starters' sting (STARTER.FLI), about 3 seconds before a Starter's title: grass and dirt blocks
-// drop in one at a time and stack into the word STARTER, Kit hops up onto the last letter and cheers,
-// and a sign below reads "A STARTER GAME". It uses the Starters' own palette and Kit from hero.ts, and
+// drop in and stack into the word STARTER (letters 5 blocks wide and 7 tall, a block apart, so no two
+// letters run together), Kit hops up onto the last letter and cheers, and a sign below reads "A STARTER
+// GAME". The words STARTER GAMES are also lettered in the plain 8x8 font across the top from the first frame. It uses the Starters' own palette and Kit from hero.ts, and
 // it replaces the Sandbox Software sting (games/kit/sandlogo.ts) in the four Starters. No sound: a
 // slide list plays an FLI silently, as with the other sting.
 import { encodeFli } from '@lewismoten/gamemaker-sandbox-engine/formats/fli';
@@ -18,25 +19,27 @@ const W = 320;
 const H = 200;
 /** FLI speed in 1/70 s: 5 is 14 frames a second. */
 const SPEED = 5;
-const FRAMES = 40;
+const FRAMES = 34;
 const FADE = 2;
-const B = 8; // a block is 8x8 pixels
+const B = 6; // a block is 6x6 pixels
 const GROUND = 150;
-const WORD_X = 52;
-const SIGN_AT = 16;
+const WORD_X = 14;
+const ROWS = 7;
+const COLS = 5;
+const SIGN_AT = 14;
 /** Blocks start dropping in fives per frame and fall for FALL frames. */
-const PER_FRAME = 5;
+const PER_FRAME = 7;
 const FALL = 3;
-const HOP_AT = 19;
+const HOP_AT = 20;
 const HOP = 4;
 
-// each letter is 3 blocks wide and 5 tall
+// each letter is 5 blocks wide and 7 tall
 const FONT: Record<string, string[]> = {
-  S: ['111', '100', '111', '001', '111'],
-  T: ['111', '010', '010', '010', '010'],
-  A: ['111', '101', '111', '101', '101'],
-  R: ['111', '101', '111', '110', '101'],
-  E: ['111', '100', '111', '100', '111'],
+  S: ['11111', '10000', '10000', '11111', '00001', '00001', '11111'],
+  T: ['11111', '00100', '00100', '00100', '00100', '00100', '00100'],
+  A: ['01110', '10001', '10001', '11111', '10001', '10001', '10001'],
+  R: ['11110', '10001', '10001', '11110', '10100', '10010', '10001'],
+  E: ['11111', '10000', '10000', '11110', '10000', '10000', '11111'],
 };
 
 interface Cell {
@@ -48,9 +51,10 @@ interface Cell {
 /** The cells of STARTER in the order they drop (column by column, each from the bottom up). */
 function cells(): Cell[] {
   const lit = new Set<string>();
-  [...'STARTER'].forEach((ch, i) => FONT[ch].forEach((row, y) => [...row].forEach((v, x) => v === '1' && lit.add(`${i * 4 + x},${y}`))));
+  [...'STARTER'].forEach((ch, i) => FONT[ch].forEach((row, y) => [...row].forEach((v, x) => v === '1' && lit.add(`${i * (COLS + 1) + x},${y}`))));
   const out: Cell[] = [];
-  for (let col = 0; col < 27; col++) for (let y = 4; y >= 0; y--) if (lit.has(`${col},${y}`)) out.push({ x: col, y, grass: !lit.has(`${col},${y - 1}`) });
+  for (let col = 0; col < 7 * (COLS + 1) - 1; col++)
+    for (let y = ROWS - 1; y >= 0; y--) if (lit.has(`${col},${y}`)) out.push({ x: col, y, grass: !lit.has(`${col},${y - 1}`) });
   return out;
 }
 
@@ -59,10 +63,10 @@ function block(pal: Pal, grass: boolean, seed: number): Pixels {
   const r = rng(seed);
   for (let y = 0; y < B; y++)
     for (let x = 0; x < B; x++) {
-      const cap = grass && y < 3;
+      const cap = grass && y < 2;
       p.set(x, y, cap ? pal.c('grass', 3 + (r() < 0.2 ? 1 : 0)) : pal.c('dirt', 2 + (r() < 0.25 ? 1 : 0)));
     }
-  if (grass) for (let x = 0; x < B; x++) p.set(x, 3, pal.c('grass', x % 3 === 0 ? 1 : 2));
+  if (grass) for (let x = 0; x < B; x++) p.set(x, 2, pal.c('grass', x % 3 === 0 ? 1 : 2));
   for (let i = 0; i < B; i++) p.set(i, B - 1, pal.c('dirt', 0)).set(B - 1, i, pal.c('dirt', 0));
   return p;
 }
@@ -73,8 +77,8 @@ function backdrop(pal: Pal): Pixels {
   // flat bands (not dithered) keep the delta frames small
   for (let y = 0; y < GROUND; y++) p.rect(0, y, W, 1, pal.c('sky', 5 - Math.min(3, Math.floor((y / GROUND) * 4))));
   for (const [cx, cy] of [
-    [60, 30],
-    [230, 20],
+    [40, 62],
+    [250, 50],
   ]) {
     p.disc(cx, cy, 8, pal.c('white', 3))
       .disc(cx + 10, cy - 4, 10, pal.c('white', 3))
@@ -98,13 +102,13 @@ function sign(p: Pixels, pal: Pal): void {
 
 /** Kit's pose (top and bottom block names), left x and feet y at frame f. */
 function kitAt(f: number): [[string, string], number, number] {
-  const start = 276;
-  const land = 236;
-  const top = GROUND - 5 * B;
+  const start = 270;
+  const land = 225;
+  const top = GROUND - ROWS * B;
   if (f < HOP_AT) return [f % 12 > 9 ? ['blink.top', 'stand'] : f % 12 > 5 ? ['look.top', 'stand'] : ['stand.top', 'stand'], start, GROUND];
   if (f < HOP_AT + HOP) {
     const t = (f - HOP_AT + 1) / HOP;
-    const y = GROUND + (top - GROUND) * t - Math.sin(Math.PI * t) * 36;
+    const y = GROUND + (top - GROUND) * t - Math.sin(Math.PI * t) * 18;
     const pose: [string, string] = t < 0.45 ? ['up.top', 'jumpup'] : t < 1 ? ['oh.top', 'fall'] : ['stand.top', 'stand'];
     return [pose, Math.round(start + (land - start) * t), Math.round(y)];
   }
@@ -131,7 +135,7 @@ export function starterStingFli(): Uint8Array {
     list.forEach((c, i) => {
       const t = f - Math.floor(i / PER_FRAME);
       if (t < 0) return;
-      const y = GROUND - (5 - c.y) * B;
+      const y = GROUND - (ROWS - c.y) * B;
       const dy = t >= FALL ? 0 : -Math.round((y + B) * (1 - (t + 1) / FALL) ** 2);
       p.blit(blocks[(c.grass ? 1 : 0) + 2 * ((c.x + c.y) % 3)], WORD_X + c.x * B, y + dy);
     });
@@ -140,6 +144,7 @@ export function starterStingFli(): Uint8Array {
     if (!poses.has(key)) poses.set(key, heroPicture(hero, top, bottom));
     scaleBlit(p, poses.get(key)!, kx, ky - 80, 2);
     if (f >= SIGN_AT) sign(p, pal);
+    centered(p, 2, 'STARTER GAMES', pal.c('white', 3), 2, pal.c('ink', 0), W / 2, pal.c('ink', 0));
     frames.push(p.px);
   }
   const palettes = frames.map((_, f) => {

@@ -128,7 +128,7 @@ Making the files:
   shelly), `grid.ts` + `map.ts` (a level painted on a `Grid`, then `StarterMap` rows of text: what each letter means is
   at its top; `.sign()` stamps a sign), `screens.ts` (title, menu, paper, cards, ending pictures), `sting.ts` (STARTER.FLI, the 3 second sting every Starter plays before its title: blocks stack into STARTER, Kit cheers on top), `text.ts` (`wrap`
   to 30 columns), `locks.ts` (`addLockBlocks`: a silver key, and one-block locked doors that spend a counter, for games about keys), `sounds.ts`, `ids.ts` (sequences, keys, monsters, sounds) and `bot.ts` (`StarterBot`: walk, jump,
-  climb with arrows and Space only). A game adds its songs, words, levels and route.
+  climb with arrows and Space only). A game adds its songs, words, levels and route. `invisibleWalls.ts` (`assertNoInvisibleWalls`, run by each Starter's `tools/check.ts`: no solid block may be drawn as sky) and `mapShots.ts` (`vite-node mapShots.ts <outDir> [id]`: every Starter map with 9 blocks of its surroundings, as PNGs) look after the rule that nothing a player bumps into is invisible; the `edge` block is a hedge.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
 - `road3d.ts` — a road that comes at you, the pseudo-3D one-screen scene of year2000's Cloud Lane and blaster's data
   bus rides: the road's perspective (`roadView`), the spawner chains that turn a timetable into blocks giving birth once

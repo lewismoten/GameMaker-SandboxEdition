@@ -254,8 +254,8 @@ export const GUIDE_SECTIONS: [id: string, title: string, html: string][] = [
     <p>A monster’s picture can take hit points away. Another can be popped by touching it.</p>
     <aside class="try-it" data-try="meet-the-monsters/hurts meet-the-monsters/pop"><strong>Try it:</strong> Meet the Monsters, levels 1 and 2.</aside>
     <h3>Scene links and exits</h3>
-    <p>A door, or the open edge of a room, is a link to another scene.</p>
-    <aside class="try-it" data-try="room-to-room/door-link room-to-room/open-edge room-to-room/two-exits"><strong>Try it:</strong> Room to Room, levels 1 and 3.</aside>`,
+    <p>A door, or an open archway in a room's wall, is a link to another scene.</p>
+    <aside class="try-it" data-try="room-to-room/door-link room-to-room/open-archway room-to-room/two-exits"><strong>Try it:</strong> Room to Room, levels 1 and 3.</aside>`,
   ],
   [
     'play',

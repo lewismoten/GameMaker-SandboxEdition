@@ -1,6 +1,6 @@
 // The way through the game, as orders for the bot (kit/starter/bot.ts): the keys a person
 // would press, level by level, taking every coin on the way. Each level acts out its lesson once:
-// level 1 goes through a door and then off an open edge; level 2 meets a shut door, fetches the key
+// level 1 goes through a door and then through an archway; level 2 meets a shut door, fetches the key
 // from another room, comes back, and returns to a room to see it start over; level 3 picks one of two doors.
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { SCAN } from '../../kit/starter/ids';
@@ -43,7 +43,7 @@ async function bump(bot: StarterBot, col: number, what: string): Promise<void> {
 /** The block at level (x, y) of the scene now playing. */
 const cell = (bot: StarterBot, x: number, y: number): number => bot.sim.w.map[(y + ORIGIN) * MLEN + x + ORIGIN];
 
-/** 1. Out the Door: through a door into another room, then off the open edge of that room. */
+/** 1. Out the Door: through a door into another room, then out through the archway in that room's right wall. */
 export async function outTheDoor(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   await must(bot, bot.walk(12, 'the coins'), 'the coins');
@@ -51,10 +51,10 @@ export async function outTheDoor(bot: StarterBot): Promise<void> {
   await leave(bot, bot.walk(19, 'the door'), 'the door');
   if (here(bot) === first) throw new Error('the door did not change the scene');
   await must(bot, bot.walk(16, 'the coins'), 'the second room: coins');
-  coins(bot, score, 10, 'level 1 before the edge');
+  coins(bot, score, 10, 'level 1 before the archway');
   const second = here(bot);
-  await leave(bot, bot.walk(29, 'the open edge'), 'the open edge');
-  if (here(bot) === second) throw new Error('the open edge did not change the scene');
+  await leave(bot, bot.walk(29, 'the archway'), 'the archway');
+  if (here(bot) === second) throw new Error('the archway did not change the scene');
 }
 
 /** 2. There and Back: the shut door, the kitchen and its key, the hall again, the bedroom twice, then the gold door. */

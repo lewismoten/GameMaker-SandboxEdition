@@ -27,7 +27,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 7501,
+  "frames": 7475,
   "chapters": [
    {
     "title": "Opening",
@@ -36,28 +36,28 @@
    },
    {
     "title": "Story",
-    "frame": 922,
-    "time": 15366.666666666466
+    "frame": 896,
+    "time": 14933.333333333148
    },
    {
     "title": "Level 1: Walk and Hurt",
-    "frame": 2151,
-    "time": 35850.00000000051
+    "frame": 2125,
+    "time": 35416.66666666724
    },
    {
     "title": "Level 2: Pop and Lives",
-    "frame": 3390,
-    "time": 56499.999999997504
+    "frame": 3364,
+    "time": 56066.666666664234
    },
    {
     "title": "Ending",
-    "frame": 4702,
-    "time": 78366.66666666658
+    "frame": 4676,
+    "time": 77933.33333333312
    },
    {
     "title": "Credits",
-    "frame": 6429,
-    "time": 107150.0000000083
+    "frame": 6403,
+    "time": 106716.66666667484
    }
   ]
  }

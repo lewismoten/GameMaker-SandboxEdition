@@ -41,6 +41,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - Update notice: it waits while a game plays and fades after about 15 seconds, and Settings keeps a New version ready item.
 - Level check: the hidden-exit finding suggests a door, sign or arrow where a link leaves plain background.
 - `npm run editor:touch`, `smoke:engines` and `editor:shots` for checking the editors on phones and across browsers.
+- The Starters' opening sting is easier to read: STARTER is built from letters five blocks wide and seven tall with a gap between them, and the words STARTER GAMES are lettered in plain type across the top from the first frame.
 
 ### Changed
 
@@ -58,6 +59,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - Games with identical palettes share one file, and the cartoons' FLI clips are smaller; Depth's full-screen stills render faster.
 - Opening a game and the shelf are faster: zips are peeked for the files asked for, four zips build at a time, and the home page lets go of what it watches.
 - Games revised: Final Curtain 1.5, Teddy's Little Biggest Adventure 1.6, Quest for the Round Tuit 1.5, Tune-Up's Beltway and Timing Beat, with visible doorways at the ends of several levels.
+- The Starters have no invisible walls: each room ends in a hedge you can see, and a check fails if a solid block is ever drawn as sky. Room to Room's second room now leaves by an open archway with a THIS WAY OUT sign instead of an invisible edge.
 
 ### Fixed
 
