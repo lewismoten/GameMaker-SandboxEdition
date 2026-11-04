@@ -768,7 +768,7 @@
 }
 
 .eject-btn.wide::before {
-  inset-inline: 0;
+  inset: -10px -6px;
 }
 
 .case button.case-btn::before {
@@ -890,7 +890,7 @@
 }
 
 .drive.fdd .eject-btn.round::before {
-  inset: -10px -6px;
+  inset: -10px -8px;
 }
 
 /* pressed in: the button sinks into the face until the disk is out */

@@ -79,7 +79,8 @@ export function deskPc(scene: Scene, hooks: PcHooks) {
           else if (drive === 'C') hdd.busy(ms);
           if (whir) whir.access(drive, ms);
           // after the boot, the floppy's and CD-ROM's own read sounds (the hard disk's knocks are the boot's)
-          else if (drive === 'A' || drive === 'D') void import('./pc/driveSounds').then((m) => m.driveSound(drive === 'A' ? 'floppy-read' : 'cd-read', ms ?? (drive === 'A' ? 700 : 900)));
+          else if (drive === 'A' || drive === 'D')
+            void import('./pc/driveSounds').then((m) => m.driveSound(drive === 'A' ? 'floppy-read' : 'cd-read', ms ?? (drive === 'A' ? 700 : 900)));
         },
       });
       removeWarp = installCrtWarp(crt.querySelector<HTMLElement>('.crt-picture')!);

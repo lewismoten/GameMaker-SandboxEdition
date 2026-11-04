@@ -127,7 +127,15 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
     h('span', { class: 'screw tr' }),
     h('span', { class: 'screw bl' }),
     h('span', { class: 'screw br' }),
-    h('div', { class: 'face' }, h('span', { class: 'slot' }, flap), led, btn, h('span', { class: 'bay-label' }, 'A:'), h('span', { class: 'capacity' }, '1.44 MB')),
+    h(
+      'div',
+      { class: 'face' },
+      h('span', { class: 'slot' }, flap),
+      led,
+      btn,
+      h('span', { class: 'bay-label' }, 'A:'),
+      h('span', { class: 'capacity' }, '1.44 MB'),
+    ),
   );
   let timer: ReturnType<typeof setTimeout> | undefined;
   return {
