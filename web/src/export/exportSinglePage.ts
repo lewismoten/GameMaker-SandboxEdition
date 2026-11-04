@@ -4,6 +4,7 @@ import type { PlayerAbout } from '@lewismoten/gamemaker-sandbox-engine/engine/pl
 import type { GameFiles } from '../project/files';
 import { slug } from './exportWebApp';
 import { encodeGame, fillPage } from './singlePage';
+import { titleImage } from './titleImage';
 import { gameAbout } from './gameAbout';
 import { recordedAudioNotice, recordedClips } from './recordedAudio';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
@@ -42,5 +43,13 @@ export async function exportSinglePage(files: GameFiles, opts: SinglePageOptions
     { id, title: opts.title, gam: opts.gam, notice, player, ...(opts.playerAbout ? { playerAbout: opts.playerAbout } : {}) },
     entries,
   );
-  return { name: `${id}.html`, html: fillPage(template, game, { blurb, fiction: opts.fiction, audio: recordedAudioNotice(recordedClips(files)) }) };
+  return {
+    name: `${id}.html`,
+    html: fillPage(template, game, {
+      blurb,
+      fiction: opts.fiction,
+      audio: recordedAudioNotice(recordedClips(files)),
+      poster: await titleImage(files, opts.gam),
+    }),
+  };
 }

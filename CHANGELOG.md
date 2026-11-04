@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Importing a game shows a panel the moment you pick or drop the file: its name, a progress bar with the step (reading, unpacking, finding the game, extracting, opening), the file being extracted (n of m), a Cancel button, and a message if it fails. A second pick waits until the first import ends. The exported one-page game, opened where scripts don't run (such as a Files preview on iPhone), now shows a dark page with the game's title screen and a note on how to open it in a browser to play.
 - A "Uses" line beside "Used by": a scene lists the files it is made of and a map its block sets and monsters, each a link that keeps Back and the breadcrumb working. A link to the open game with another scene now selects that scene (and Back and Forward step through them), and a page you go Back to waits up to 3 seconds for its content before giving up on its scroll spot.
 - A breadcrumb above every open file (Overview › Maps › bus2.map) and a Back to the file you came from. "Used by" links now open the scene they name, and Back to an Overview page lands where you left it.
 - A Starters tab on the home page, just before Sandbox: small games that each show one idea, with signs in the levels that say what you are looking at. The first two are First Steps (walking, jumping, gravity and ladders) and Keys and Doors (a key adds to a counter, and a locked door spends it). Each can be copied and edited, and they do not count as Sandbox games.

@@ -3,7 +3,7 @@
 Part of the [source map](../README.md).
 
 Publishing a game: as an offline web app (`exportWebApp.ts`), a single web
-page (`exportSinglePage.ts`, `singlePage.ts`, played by `standalonePlayer.ts`), the web player
+page (`exportSinglePage.ts`, `singlePage.ts` (its no-script view: `pageSeo.ts`, `titleImage.ts`), played by `standalonePlayer.ts`), the web player
 (`exportWebPlayer.ts`), or a DOS folder with PLAYGAME (`exportDos.ts`); plus the service worker
 (`serviceWorker.ts`). How a download is made is below.
 
