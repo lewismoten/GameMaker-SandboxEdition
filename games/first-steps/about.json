@@ -1,0 +1,34 @@
+{
+  "title": "First Steps",
+  "author": "Claude",
+  "company": "Sandbox Software",
+  "series": "starter",
+  "year": 1994,
+  "price": "Free",
+  "version": "1.0",
+  "blurb": "Two short levels that teach what a platform game is made of: walking, jumping, gravity and ladders. Signs in the levels say what each thing does. Play it, then open it in Game-Maker and change a sign.",
+  "exe": "STEPS.EXE",
+  "sound": "sb",
+  "label": {
+    "background": "#e8f6ff",
+    "band": "#3a8ee6",
+    "ink": "#1a1830",
+    "logo": "SANDBOX SOFTWARE"
+  },
+  "box": {
+    "levels": "2 short levels",
+    "hours": 1,
+    "background": "#3a8ee6",
+    "accent": "#ffd23f",
+    "ink": "#ffffff",
+    "tagline": "Every game starts with a first step.",
+    "back": "A small explorer in a teal beanie has two short walks to take. Read the signs: they say how walking, jumping, gravity and ladders work. Then open the game in Game-Maker and change one.",
+    "features": ["Signs in the levels explain each idea", "Walk, jump, fall and climb", "Made to be copied and taken apart"],
+    "shots": [
+      ["walk.map", 22, 6],
+      ["climb.map", 12, 6]
+    ],
+    "rating": "Everyone"
+  },
+  "acceptedFindings": ["facing s3 The hero climbs side on"]
+}

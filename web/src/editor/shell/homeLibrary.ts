@@ -1,6 +1,7 @@
 // What the home page's library holds: the catalog's games and your own (My games and Imported),
 // which collection each is in, in the order shown, and one HomeGame per game for the page's life
 // (so its files load once). No DOM: home.ts draws it.
+import { isStarterGame } from '../../project/starter';
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
 import { byCollection, hasBizarreTab, isBizarreGame } from '../../project/bizarre';
 import type { listProjects } from '../../project/storage';
@@ -97,13 +98,15 @@ export function homeLibrary() {
     const { catalog } = lib;
     return c === 'gameware'
       ? gameware()
-      : c === 'sandbox'
-        ? catalog.filter((g) => isSandboxGame(g) && g.gam)
-        : c === 'shareware'
-          ? catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && g.gam && !(isBizarreGame(g) && hasBizarreTab(catalog)))
-          : c === 'bizarre' && hasBizarreTab(catalog)
-            ? byCollection(catalog.filter((g) => isBizarreGame(g) && g.gam)).flatMap((s) => s.games)
-            : [];
+      : c === 'starter'
+        ? catalog.filter((g) => isStarterGame(g) && g.gam)
+        : c === 'sandbox'
+          ? catalog.filter((g) => isSandboxGame(g) && g.gam)
+          : c === 'shareware'
+            ? catalog.filter((g) => g.kind === 'shareware' && !isSandboxGame(g) && !isStarterGame(g) && g.gam && !(isBizarreGame(g) && hasBizarreTab(catalog)))
+            : c === 'bizarre' && hasBizarreTab(catalog)
+              ? byCollection(catalog.filter((g) => isBizarreGame(g) && g.gam)).flatMap((s) => s.games)
+              : [];
   };
   const sorted = () =>
     lib.sort === 'walk'

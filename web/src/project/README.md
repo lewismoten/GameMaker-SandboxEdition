@@ -22,7 +22,8 @@ archive consumers can reuse them without loading the site's catalog or UI.
 
 - The secret games (`secretGames.ts`; `catalogWatch.ts` keeps the listings live when one is
   revealed or hidden).
-- The Bard of Bizarre's collections (`bizarre.ts`), a game's title as boxes print it
+- The Starters, small games that each show one idea (`starter.ts`: about.json `"series": "starter"`, not
+  counted as Sandbox games), and the Bard of Bizarre's collections (`bizarre.ts`), a game's title as boxes print it
   (`gameTitle.ts`), its DOS folder name (`dosDir.ts`) and what a 1990s buyer asked first:
   floppies, hard disk and download time (`diskFacts.ts`).
 - A game's version, "major.minor" (`gameVersion.ts`): `games/<id>/about.json` `"version"`, which the

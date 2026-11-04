@@ -13,6 +13,7 @@
 import { h, modal, toast, confirmDialog } from '../core/ui';
 import { Project } from '../core/project';
 import { isReadOnlyError, makeReadOnly, restoreFiles } from '../core/readOnly';
+import { isStarterGame } from '../../project/starter';
 import { GameFiles, loadGameList, loadHostedGame, isSandboxGame, type CatalogEntry } from '../../project/files';
 import { isBizarreGame } from '../../project/bizarre';
 import { currentRoute, formatHash } from '../../urlState';
@@ -22,7 +23,7 @@ import type { Workspace } from './workspace';
 import './released.css';
 
 /** Shareware by someone else: play and look only (as Edit a copy is left off its card). */
-const isPlayOnly = (e: CatalogEntry): boolean => e.kind === 'shareware' && !isSandboxGame(e) && !isBizarreGame(e);
+const isPlayOnly = (e: CatalogEntry): boolean => e.kind === 'shareware' && !isSandboxGame(e) && !isBizarreGame(e) && !isStarterGame(e);
 
 interface Released {
   entry: CatalogEntry;

@@ -118,6 +118,17 @@ Making the files:
   posts, put into any game's palette by nearest color. Each felt-egg game has exactly one, in the level after the egg's
   (about.json `"saveSign"`: `{ map, at, after }`); ordinary save reminders keep the game's own look. `putSaveSign` gives a
   game whose block set is full a copy of the set for that one map, with the sign in blocks the map never shows.
+- `starter/` — the kit every Starter game (about.json `"series": "starter"`: small games that each show one idea) is
+  built from, so they look alike and a person who copies one gets a matching set of parts. Copy `games/first-steps`
+  for a new one. `palette.ts` (the shared bright ramps, `skyOf`), `book.ts` (`Book`, a block set built one named
+  block at a time, with `SOLID`, `LEDGE` and `PULL`), `blocks.ts` (`addStarterBlocks`: sky, edge, cloud, grass, dirt,
+  brick, plank, bush, flower, ladder, exit door, entrance, coin, key, spikes, in that order), `sign.ts` (`addSign`:
+  words as a string on a 2 to 4 block board, in the PC's 8x8 letters, two posts under it), `hero.ts` and `heroChar.ts`
+  (the red-capped hero's blocks and character: walk, Space jump, ladder climb), `monsters.ts` (gumdrop, buzzer and
+  shelly), `grid.ts` + `map.ts` (a level painted on a `Grid`, then `StarterMap` rows of text: what each letter means is
+  at its top; `.sign()` stamps a sign), `screens.ts` (title, menu, paper, cards, ending pictures), `text.ts` (`wrap`
+  to 30 columns), `sounds.ts`, `ids.ts` (sequences, keys, monsters, sounds) and `bot.ts` (`StarterBot`: walk, jump,
+  climb with arrows and Space only). A game adds its songs, words, levels and route.
 - `carlCameo.ts` — Carl the fly (A Fly Named Carl) as a guest in another game, drawn in the host game's palette.
 - `road3d.ts` — a road that comes at you, the pseudo-3D one-screen scene of year2000's Cloud Lane and blaster's data
   bus rides: the road's perspective (`roadView`), the spawner chains that turn a timetable into blocks giving birth once

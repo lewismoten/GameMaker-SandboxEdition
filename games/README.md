@@ -90,6 +90,9 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | brief     | `npx vite-node ../games/brief/tools/check.ts`        | the bot restores all 32 books, passes the eight stamp gates, opens the 33rd     |
 | depth     | `npx vite-node ../games/depth/tools/check.ts`        | the bot rolls all six scenes, pulls focus, beats Count Polygon                  |
 | depth     | `npx vite-node ../games/depth/tools/gendemo.ts`      | re-records the title demo into `src/demo.ts` (then rebuild)                     |
+| first-steps | `npx vite-node ../games/first-steps/tools/check.ts` | the bot walks both levels: over the wall, up the step, up the ladder, down the drops, through the doors |
+| first-steps | `npx vite-node ../games/first-steps/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild)                   |
+| first-steps | `npx vite-node ../games/first-steps/tools/preview.ts [dir]` | PNGs of the blocks, the hero, the monsters, each level and every picture |
 | goat      | `npx vite-node ../games/goat/tools/check.ts`         | the bot eats, gathers wool and screams its way to the manger                    |
 | goat      | `npx vite-node ../games/goat/tools/gendemo.ts`       | re-records the title demo into `src/demo.ts` (then rebuild)                     |
 | mustard   | `npx vite-node ../games/mustard/tools/check.ts`      | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze |
