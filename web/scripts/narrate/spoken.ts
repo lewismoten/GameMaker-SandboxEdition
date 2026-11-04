@@ -49,6 +49,7 @@ const SAY: [RegExp, string][] = [
   [/\bGM\b/g, 'G M'],
   [/\bOPL2\b/g, 'O P L two'],
   [/\bLinux\b/g, 'Linnix'],
+  [/\bInfocom\b/g, 'Infocomm'],
   // a drive letter: "drive A:" is said "drive A"
   [/\b([A-D]):(?=[\s.,;!?]|$)/g, '$1'],
   // money and halves before the plain numbers
