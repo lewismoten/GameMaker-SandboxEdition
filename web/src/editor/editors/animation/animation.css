@@ -231,3 +231,24 @@
     padding: 8px;
   }
 }
+
+/* Touch: the tabs, transport, speed presets and the frame slider are 44 px. */
+@media (hover: none) and (pointer: coarse) {
+  .fli-tabs button,
+  .fli-edit button,
+  .fli-edit select,
+  .fli-edit input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  .fli-transport button,
+  .fli-speed-row button {
+    min-width: 44px;
+  }
+  .fli-speed-row {
+    row-gap: 8px;
+  }
+  .fli-scrub {
+    min-height: 44px;
+    margin: 0;
+  }
+}
