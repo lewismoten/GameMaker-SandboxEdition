@@ -117,7 +117,9 @@ export function readSong(bytes: Uint8Array): CmfSong {
   const musicBlk = u16(8);
   const instNum = u16(36);
   const headerLen = Math.max(40, Math.min(instBlk, bytes.length));
-  const header = bytes.slice(0, headerLen);
+  // A file shorter than the 40-byte fixed header is zero-padded to it, so writing the song back never runs off the end.
+  const header = new Uint8Array(headerLen);
+  header.set(bytes.subarray(0, headerLen));
   // load_file reads inst_num as a 16-bit int even in a CMF 1.0 file, whose count is one byte
   // (audio/cmfLoad.ts): the records then run on into the music, which it still reads from
   // music_blk. Only the first 128 can be played (writeSong keeps no more).

@@ -22,6 +22,8 @@ Live sound control, a hook for life losses, and fixes to scrolling and picture d
 
 ### Fixed
 
+- A too-short or oversized-header FLI, and a CMF cut short, give a clear error (or play) instead of a RangeError or a huge allocation.
+
 - Scroll speed wraps like DOS's 16-bit integers.
 - Progressive JPEG prefixes decode only from complete MCU data.
 
