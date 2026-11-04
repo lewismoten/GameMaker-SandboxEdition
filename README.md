@@ -181,7 +181,7 @@ npx vite-node scripts/linuxTar.ts teddy           # a Linux .tar.gz, in ../dist/
 To check every game at once (each one rebuilt and compared with its committed disk, played
 by its bot, its walkthrough replayed, its text, hidden items and levels checked), run
 `npm run check:games` from `web/`. It prints a table and fails on any regression; add
-`--game teddy` for one game or `--quick` to skip the rebuild compare.
+`-- --game teddy` for one game or `-- --quick` to skip the rebuild compare.
 
 Pushing a `pages-v*` version tag (for example, `pages-v3.1.0`) publishes the tagged commit
 to GitHub Pages through [`.github/workflows/pages.yml`](.github/workflows/pages.yml).

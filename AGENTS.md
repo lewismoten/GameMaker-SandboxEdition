@@ -37,7 +37,7 @@ lives under `web/packages/*/src/`. See `docs/monorepo.md`.
 npm ci                                            # uses the root workspace lockfile
 npm run format                                     # Prettier: web/, games/*.ts, code/README.md
 npm run format:check                               # checking only (part of the root npm run verify)
-npm run lint                                       # ESLint (type-aware) on web/; lint:fix fixes
+npm run lint                                       # ESLint (type-aware) on web/; lint:fix fixes; lint:full skips the cache
 npx tsc --noEmit -p .                              # typecheck
 npx vitest run                                     # tests
 npx vite-node ../games/<id>/build.ts               # rebuild a game's disk/
