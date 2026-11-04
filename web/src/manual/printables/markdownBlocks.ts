@@ -84,8 +84,9 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
       const first = ordered ? Number(/\d+/.exec(bullet.exec(line)![2])![0]) : 1;
       add({ tag: ordered ? 'ol' : 'ul', items: items.map(inline), ...(first > 1 ? { start: first } : {}) });
     } else {
-      const text: string[] = [];
-      for (; i < lines.length && lines[i].trim() && !/^(#{1,6}\s|```|\s*\|)/.test(lines[i]) && !bullet.test(lines[i]); i++) text.push(lines[i].trim());
+      // The first line always belongs to the paragraph: a pipe line that is not a table's head stops the loop below at once, and without this it never advanced (a heap crash).
+      const text: string[] = [line.trim()];
+      for (i++; i < lines.length && lines[i].trim() && !/^(#{1,6}\s|```|\s*\|)/.test(lines[i]) && !bullet.test(lines[i]); i++) text.push(lines[i].trim());
       add({ tag: 'p', kids: inline(text.join(' ')) });
     }
   }
