@@ -12,7 +12,7 @@ import { MLEN, MWID } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { INF_REPEAT, LASTMM, LASTMON, type World } from '@lewismoten/gamemaker-sandbox-engine/engine/world';
 
 /** A locked door: its cells (touching blocks of one kind side by side are one door), the counter it reads and what it takes. */
-export interface Gate {
+interface Gate {
   cells: number[];
   block: number;
   counter: number;
@@ -34,10 +34,10 @@ interface Source {
 }
 
 /** A block that refuses its touch while its counter is short, and opens (turns into another block) when it takes. */
-export const isGate = (b: Block | undefined, n: number): boolean => !!b && b.solid !== 0 && (b.effect >= 20 || b.effect === 3) && b.eamt < 0 && b.touchBl !== n;
+const isGate = (b: Block | undefined, n: number): boolean => !!b && b.solid !== 0 && (b.effect >= 20 || b.effect === 3) && b.eamt < 0 && b.touchBl !== n;
 
 /** The scene's locked doors still shut, from the map as it is (block numbers as drawn: blkmap). */
-export function gatesOf(map: ArrayLike<number>, bg: Block[], shown: (n: number) => number = (n) => n): Gate[] {
+function gatesOf(map: ArrayLike<number>, bg: Block[], shown: (n: number) => number = (n) => n): Gate[] {
   const seen = new Uint8Array(MLEN * MWID);
   const out: Gate[] = [];
   for (let c = 0; c < MLEN * MWID; c++) {
@@ -229,7 +229,7 @@ export function locksOf(w: World): Locks {
 }
 
 /** A counter's name as the editor shows it. */
-export const counterName = (c: number): string => (c === 3 ? 'money' : `counter ${c}`);
+const counterName = (c: number): string => (c === 3 ? 'money' : `counter ${c}`);
 
 /** The door a counter is for: its own, or the one the key it buys opens. */
 function doorFor(l: Locks, c: number): Gate | undefined {

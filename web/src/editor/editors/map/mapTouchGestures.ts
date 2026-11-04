@@ -6,7 +6,7 @@
 // capture phase, so the tools' own pointer handlers never see a finger that belongs to a gesture.
 import { clampZoom } from './mapZoom';
 
-export const PINCH_JOIN_MS = 150;
+const PINCH_JOIN_MS = 150;
 export const LONG_PRESS_MS = 500;
 const LONG_PRESS_SLOP = 10;
 

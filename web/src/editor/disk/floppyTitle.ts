@@ -1,7 +1,7 @@
 // Fits a game's title onto a floppy label that has no title picture: the largest font size at
 // which the words wrap into at most `maxLines` lines that each fit `maxWidth`. A word too long for
 // a line keeps shrinking the font down to `minSize`, then is cut with an ellipsis, never overflowing.
-export interface TitleFit {
+interface TitleFit {
   size: number;
   lines: string[];
 }

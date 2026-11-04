@@ -7,7 +7,7 @@ import type { Project } from '../core/project';
 
 const LIMIT = 50;
 
-export interface NotesUndo {
+interface NotesUndo {
   /** Call with each file snapshot (fileUndo's before): keeps the notes as they are now. */
   mark(): void;
   step(dir: 'undo' | 'redo'): void;

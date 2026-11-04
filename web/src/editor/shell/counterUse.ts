@@ -5,7 +5,7 @@ import { BLOCK_COUNTS, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/
 import { INF_REPEAT, METERS, parseCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import type { Project } from '../core/project';
 
-export interface CounterUse {
+interface CounterUse {
   /** Characters that count it: "HERO.CHR" for a hidden counter, "HERO.CHR (sequence 7)" for a repetition counter. */
   characters: string[];
   /** Block files with blocks that change it: "FOREST.BBL: 3 blocks". */

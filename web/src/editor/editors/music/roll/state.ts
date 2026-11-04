@@ -16,7 +16,7 @@ export interface Drawn {
   flags: number;
 }
 
-export interface Shown {
+interface Shown {
   /** This track's notes by start. */
   notes: Note[];
   /** The tick each of this track's notes is cut off at by a later one (its end when not). */

@@ -25,7 +25,7 @@ interface Step {
 const ORDER_SECTION = 'trackOrder';
 
 /** One color per MIDI channel, from the EGA palette. */
-export const TRACK_COLORS = [
+const TRACK_COLORS = [
   '#55ffff',
   '#ff55ff',
   '#ffff55',
@@ -63,7 +63,7 @@ export const SNAPS: [number, string][] = [
 ];
 
 /** A track's color: its instrument's group color, else its channel's own. */
-export function trackColorOf(song: CmfSong, ch: number): string {
+function trackColorOf(song: CmfSong, ch: number): string {
   const inst = song.instruments[startProgram(song, ch)];
   return instrumentLook(inst).color ?? TRACK_COLORS[ch];
 }

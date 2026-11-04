@@ -4,7 +4,7 @@ import type { Palette } from '@lewismoten/gamemaker-sandbox-engine/formats/palet
 import type { Project } from '../../core/project';
 import { normalize } from '../../../project/files';
 
-export interface VisionPicture {
+interface VisionPicture {
   width: number;
   height: number;
   pixels: Uint8Array;

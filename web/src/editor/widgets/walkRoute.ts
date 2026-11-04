@@ -5,7 +5,7 @@
 import type { SavedWalk } from '../check/walk/keptWalk';
 import type { CatalogEntry } from '../../project/files';
 
-export type WalkSource = 'kept' | 'shipped';
+type WalkSource = 'kept' | 'shipped';
 
 export function walkSource(saved: SavedWalk | undefined, shipped: CatalogEntry | undefined): WalkSource | undefined {
   if (saved?.walk?.timeline.frames) return 'kept';

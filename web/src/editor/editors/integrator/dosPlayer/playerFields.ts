@@ -15,7 +15,7 @@ import { formatCodes, frameLimit, isStock, patchEntry, type PatchValue } from '@
 import { fieldTools, type FieldToolsOptions } from './fieldTools';
 import { COLOR_LABELS } from '../../../../dosPlayer/describePatches';
 
-export interface FieldContext {
+interface FieldContext {
   /** Prefix for element ids, unique to the dialog. */
   id: string;
   current: (e: PatchEntry) => PatchValue;

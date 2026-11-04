@@ -16,7 +16,7 @@ import { guideLink } from './guideLink';
 import { unlockAchievement } from '../../achievements';
 
 /** One line of Appendix B, and the checks that can speak for it. */
-export interface ChecklistItem {
+interface ChecklistItem {
   text: string;
   checks: CheckId[];
   /** The checks cover all of it (else the designer ticks it once they agree). */

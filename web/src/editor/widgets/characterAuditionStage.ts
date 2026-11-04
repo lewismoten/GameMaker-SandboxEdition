@@ -28,7 +28,7 @@ interface Shot {
   monster: number;
   orient: number;
 }
-export interface CharacterAuditionStage {
+interface CharacterAuditionStage {
   advance(seconds: number, events: AuditionEvent[], sequence: CharacterAudition): void;
   paint(frame: Frame | undefined): void;
   wander(on: boolean): void;

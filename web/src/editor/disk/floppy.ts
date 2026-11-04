@@ -21,8 +21,8 @@ export interface FloppyArt {
 }
 
 /** The disk's design size (3.50 x 3.66 inches, as on the real case), in canvas units. */
-export const FLOPPY_W = 350;
-export const FLOPPY_H = 366;
+const FLOPPY_W = 350;
+const FLOPPY_H = 366;
 
 const shade = ([r, g, b]: number[], k: number): string => {
   const f = (v: number) => Math.max(0, Math.min(255, Math.round(k >= 0 ? v + (255 - v) * k : v * (1 + k))));

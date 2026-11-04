@@ -22,7 +22,7 @@ import type { Workspace } from './workspace';
 import './released.css';
 
 /** Shareware by someone else: play and look only (as Edit a copy is left off its card). */
-export const isPlayOnly = (e: CatalogEntry): boolean => e.kind === 'shareware' && !isSandboxGame(e) && !isBizarreGame(e);
+const isPlayOnly = (e: CatalogEntry): boolean => e.kind === 'shareware' && !isSandboxGame(e) && !isBizarreGame(e);
 
 interface Released {
   entry: CatalogEntry;

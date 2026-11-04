@@ -8,7 +8,7 @@ import { scanName } from '@lewismoten/gamemaker-sandbox-engine/input/scancodes';
 import { characterClips, type Clip } from './animClip';
 import type { BlockGroup } from './blockGroups';
 
-export interface CharacterAnimation {
+interface CharacterAnimation {
   file: string;
   sequence: number;
   label: string;

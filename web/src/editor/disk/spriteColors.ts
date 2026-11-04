@@ -13,7 +13,7 @@ export type SpriteSlot = 'mbl' | 'cbl';
 export const SPRITE_ROLE = { mbl: 'monster', cbl: 'character' } as const;
 const SIZE = { bbl: BACKBL, mbl: MONBL, cbl: CHARBL } as const;
 
-export interface SpriteFile {
+interface SpriteFile {
   name: string;
   blocks: Block[];
   shown: Set<number>;

@@ -12,7 +12,7 @@ import { BACKBL, INF_REPEAT } from '@lewismoten/gamemaker-sandbox-engine/engine/
 import { PATCHES, type ColorName } from '@lewismoten/gamemaker-sandbox-engine/player/patchTable';
 import { cleanPatches, type PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 
-export interface ZeroScreen {
+interface ZeroScreen {
   id: string;
   title: string;
   /** The F-key that shows it, when the player's patches can turn it off. */
@@ -89,7 +89,7 @@ export const ZERO_SCREENS: ZeroScreen[] = [
 
 const BY_ID = new Map(PATCHES.map((e) => [e.id, e]));
 
-export interface Matched {
+interface Matched {
   /** What the selector colors (the customizer's label). */
   label: string;
   /** The target it looks for, and its levels (0 to 63). */

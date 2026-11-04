@@ -25,7 +25,7 @@ export interface BoardDef {
 interface Spot extends Point {
   board: string;
 }
-export interface GroupDef extends Point {
+interface GroupDef extends Point {
   id: string;
   name: string;
   board: string;

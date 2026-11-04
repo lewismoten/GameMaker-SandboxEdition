@@ -26,7 +26,7 @@ export function matchingParts(parts: Part[], words: string[]): Part[] {
 }
 
 /** A piece of a snippet, `hit` when it is matched text. */
-export interface Piece {
+interface Piece {
   text: string;
   hit: boolean;
 }

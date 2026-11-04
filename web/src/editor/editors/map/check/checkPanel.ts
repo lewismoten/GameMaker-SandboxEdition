@@ -37,7 +37,7 @@ import { COMPARE_COLORS, combineSteps, compareSteps } from './myHeat';
 import { myHeatControls } from './myHeatControls';
 import { checkExtras } from './checkExtras';
 
-export interface CheckHost {
+interface CheckHost {
   project: Project;
   /** The map file being edited. */
   file: string;
@@ -79,7 +79,7 @@ const LABEL: Record<Kind, string> = { error: 'Problem', warning: 'Warning', sugg
 const ICON: Record<Kind, string> = { error: '⛔', warning: '⚠', suggestion: '💡', info: 'ℹ' };
 
 /** Heat as steps: how often (log of ticks spent) or how soon (first tick reached). */
-export function heatSteps(run: Pick<RunSummary, 'heat' | 'first'>, soon: boolean): Uint8Array {
+function heatSteps(run: Pick<RunSummary, 'heat' | 'first'>, soon: boolean): Uint8Array {
   const out = new Uint8Array(run.heat.length);
   const n = HEAT_COLORS.length;
   if (soon) {

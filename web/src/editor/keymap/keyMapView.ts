@@ -228,7 +228,7 @@ class Pictures {
 // ---- the view -------------------------------------------------------------------------------
 
 /** The key map of a game as an element (keyboard, list, joystick, global keys, instructions). */
-export function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = gameKeyMap(files, gamFile), controls?: GameControls): HTMLElement {
+function keyMapView(files: GameFiles, gamFile?: string, km: GameKeyMap = gameKeyMap(files, gamFile), controls?: GameControls): HTMLElement {
   const pics = new Pictures(files);
   const chrs = [...new Set(km.levels.map((l) => l.chr))].filter((c) => !km.missing.includes(c));
   let only = ''; // '' = every character

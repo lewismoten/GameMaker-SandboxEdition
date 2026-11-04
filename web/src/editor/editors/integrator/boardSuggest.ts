@@ -5,7 +5,7 @@
 import { NOSCENE, sceneKind, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { arrival } from './layoutCells';
 
-export interface Suggestion {
+interface Suggestion {
   /** Stable text for "dismissed". */
   key: string;
   name: string;
@@ -16,7 +16,7 @@ export interface Suggestion {
 const MIN = 3;
 
 /** Where a pass-through scene sends the hero at once, or undefined for a scene that is played. */
-export function passesTo(game: Game, i: number): number | undefined {
+function passesTo(game: Game, i: number): number | undefined {
   const s = game.scenes[i];
   if (sceneKind(s) !== 'adventure') return undefined;
   const at = arrival(game, i);
