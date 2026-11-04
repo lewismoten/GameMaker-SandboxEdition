@@ -18,7 +18,7 @@ const p13 = `
 <div class="gap"></div>
 <p class="box" style="transform:rotate(-0.8deg)"><b>Why check 5 V first?</b> If something is wrong with the power, you find out before it can hurt the chips. A 5 V part given 6.4 V can cook. (4 new batteries = 6.4 V! That is why the regulator is there.)</p>
 <div class="gap"></div>
-${red('Good safety notes. Chips are cheaper than fingers.', 'margin:1cqw 0 0 36cqw')}
+${red('Good safety notes. Chips can be replaced. Fingers cannot.', 'margin:1cqw 0 0 36cqw')}
 <svg class="dr-sk dr-note" style="left:17cqw;bottom:11cqw;width:15cqw;height:9cqw" viewBox="0 0 12 6" role="img" aria-label="Doodle of Sparky"><g filter="url(#dr-rough)">${sparky(4, 1.6, 1)}</g></svg>
 <p class="dr-note ghost" style="right:9cqw;bottom:11cqw">stay back, Sparky!!</p>`;
 
@@ -219,7 +219,7 @@ const p20 = `
 <li><b>Sparky 3000</b>, assistant: for testing every page. <span class="x">for eating</span> <span class="ghost">no comment</span></li>
 <li>The judges at the Moon School Science Fair, for reading all 20 pages.</li>
 </ul>
-<svg class="dr-sk" style="position:absolute;right:9cqw;bottom:12cqw;width:36cqw;height:auto" viewBox="0 0 14 8" role="img" aria-label="Doodle of Sparky and the Moon"><g filter="url(#dr-rough)">${sparky(1, 3, 1.3)}${moon(11, 2.5, 1.8)}</g></svg>
+<svg class="dr-sk" style="position:absolute;right:9cqw;bottom:7cqw;width:32cqw;height:auto" viewBox="0 0 14 8" role="img" aria-label="Doodle of Sparky and the Moon"><g filter="url(#dr-rough)">${sparky(1, 3, 1.3)}${moon(11, 2.5, 1.8)}</g></svg>
 <p class="ghost" style="margin-top:3cqw">THE END (really).</p>
 ${red('Wonderful. Good luck at the Science Fair!', 'margin:1.5cqw 2cqw 0 auto')}`;
 

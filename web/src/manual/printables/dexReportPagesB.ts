@@ -27,7 +27,7 @@ const blocks = [
   T(13, 6.7, 'two tones', 0.8, 'middle'),
   BOX(6, 13, 5, 3, 'EARS|CM8870', 0.85, 'cb'),
   ARROW(8.5, 13, 8.5, 10.5, 'cb'),
-  T(9, 11.9, '4 wires + StD', 0.8, 'start', 'cb'),
+  T(8.2, 12.6, '4 wires + StD', 0.8, 'end', 'cb'),
   BOX(0, 19, 4, 3, 'PHOTO-|DIODE', 0.8, 'cr'),
   BOX(6, 19, 5, 3, 'AMP|x21', 0.85),
   BOX(13, 19, 6, 3, 'POWER|AMP', 0.85),
@@ -208,7 +208,7 @@ ${ins(18, 11.5, 'A gray LCD digit 3 next to a red LED digit 3', digits, { width:
 <p><b>LED</b> (light-emitting diode): <b>each segment is a tiny glowing light</b>. Red numbers show in the dark and in the sun. A pocket phone needs to be seen.</p>
 <div class="gap"></div>
 <table class="tight">
-<tr><th></th><th>LCD</th><th>LED</th></tr>
+<tr><th>feature</th><th>LCD</th><th>LED</th></tr>
 <tr><td>Own light?</td><td>no</td><td>YES</td></tr>
 <tr><td>Power</td><td>very low</td><td>more (but I dim it)</td></tr>
 <tr><td>Driver</td><td>special, AC</td><td>MAX7219 does it</td></tr>
