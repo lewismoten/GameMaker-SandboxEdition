@@ -86,7 +86,7 @@ describe('the hint line’s phone tree', () => {
     const spoken = (texts.join(' ') + JSON.stringify(HINT_GAMES)).toLowerCase();
     for (const id of secrets) {
       expect(HINT_GAMES.some((g) => g.id === id)).toBe(false);
-      const title = String(read(id, 'about.json').title ?? '').toLowerCase();
+      const title = (read(id, 'about.json').title as string).toLowerCase();
       expect(title).not.toBe('');
       expect(spoken.includes(title)).toBe(false);
     }

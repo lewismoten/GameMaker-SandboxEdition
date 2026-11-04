@@ -14,7 +14,7 @@ export interface CastVoice {
 }
 
 export const CAST: Record<string, CastVoice> = {
-  dispatcher: { who: '911 dispatcher', sample: 'kokoro:af_nicole', semitones: 0, tempo: 1.05 },
+  dispatcher: { who: '911 dispatcher (brisk and clear, not soft)', sample: 'kokoro:am_liam', semitones: 0, tempo: 1.08 },
   receptionist: { who: 'Linda, Three Rivers Insurance', sample: 'kokoro:af_sarah', semitones: 1, tempo: 1.1 },
   mom: { who: 'Mom', sample: 'kokoro:af_heart', semitones: 0, tempo: 1.05 },
   dad: { who: 'Dad', sample: 'olden-mon', semitones: -1, tempo: 1.12 },

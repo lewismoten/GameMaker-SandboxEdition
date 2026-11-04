@@ -319,7 +319,7 @@ game folder opens in the browser unchanged.
   mon", "Snooty Wiz" and "Scroobie", the last also Teddy's tour voice, here a little lower and slower), shifted in pitch and
   speed; Lewis's own voice is not used. The others use **Kokoro-82M**'s stock voices (hexgrad,
   Apache-2.0): `af_heart` (Mom), `af_sarah` (Linda), `am_onyx` (Gus), `af_jessica` (Jenny),
-  `af_aoede` (Grandma), `af_nicole` (the 911 dispatcher), `af_alloy` (time and temperature),
+  `af_aoede` (Grandma), `am_liam` (the 911 dispatcher), `af_alloy` (time and temperature),
   `am_adam` (the weather line), `af_kore` (the phone company's recording), `am_fenrir` (the
   ratings council), and `af_river`, `am_eric` and `am_echo` (the answering machines). The phone-line sound
   (a 300 to 3400 Hz band and a little hiss) is made live in the browser. Words with no clip are
