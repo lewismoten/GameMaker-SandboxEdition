@@ -1,6 +1,7 @@
 // Tests: a new saved game made outside the game (project/saveData newGameSave, for SAVEHACK's and
 // the Saves & scores panel's "New save") starts where Play starts, with the first level's
 // character's hit points, lives, counters and inventory, and loads (F6's restoreSaved) and plays.
+// Stays slow: each case loads a real game disk, saves, restores and plays it.
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';

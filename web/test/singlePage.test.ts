@@ -22,7 +22,8 @@ const files: [string, Uint8Array][] = [
 
 // toEqual walks a 100,000-byte array element by element; this compares names and bytes directly.
 const sameBytes = (a: Uint8Array, b: Uint8Array): boolean => a.length === b.length && Buffer.compare(a, b) === 0;
-const sameFiles = (a: [string, Uint8Array][], b: [string, Uint8Array][]): boolean => a.length === b.length && a.every(([n, d], i) => n === b[i][0] && sameBytes(d, b[i][1]));
+const sameFiles = (a: [string, Uint8Array][], b: [string, Uint8Array][]): boolean =>
+  a.length === b.length && a.every(([n, d], i) => n === b[i][0] && sameBytes(d, b[i][1]));
 
 describe('one-page export', () => {
   it('packs and unpacks files end to end', () => {

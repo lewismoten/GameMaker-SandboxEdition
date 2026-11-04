@@ -64,6 +64,7 @@ describe.skipIf(!hasDisk)('unpackGame', () => {
     expect(await reasonOf(unpackGame([['bad.gam', new Uint8Array([1, 2, 3])]]))).toBe('invalid');
     expect(await reasonOf(unpackGame([['bad.gam', crypto.getRandomValues(new Uint8Array(4000))]]))).not.toMatch(/crash/);
   });
+  // stays slow: it really deflates and inflates 60 MB to cross the limit
   it('stops a zip that unpacks past the limit', async () => {
     const big = new Uint8Array(20 * 1024 * 1024); // zeros: a few KB once deflated
     const zip = await createZip([0, 1, 2].map((i) => ({ name: `z${i}.fli`, data: big })));

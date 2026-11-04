@@ -2,6 +2,7 @@
 // panel and SAVEHACK) gives a save F6 loads (restoreSaved) in the new level at its start, with
 // the score, lives, inventory and counters kept; moving the hero checks the blocks he stands
 // in; the picture is the playing view around him.
+// Stays slow: each case loads every level of a real game.
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';

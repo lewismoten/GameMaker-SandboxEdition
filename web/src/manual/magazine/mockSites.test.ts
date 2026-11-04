@@ -2,6 +2,7 @@
 // mockSites.json (mockDomains, reservedDomains or realDomains). A new fictional domain goes into
 // mockDomains so `npm run domains:check` keeps proving it is unregistered. Also checks each article
 // site belongs to a registered mock domain.
+// Stays slow: it scans every source file in the repository for domain names.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';

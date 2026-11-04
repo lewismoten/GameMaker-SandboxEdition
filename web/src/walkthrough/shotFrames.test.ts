@@ -2,6 +2,7 @@
 // pages write them in, and every frame the site ships (public/frames/) matching the screen a
 // replay of the game's walkthrough on the real engine shows at that tick (else rerun
 // scripts/shotFrames.ts).
+// Stays slow: each case replays a whole-game walkthrough.
 import { describe, expect, it } from 'vitest';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
