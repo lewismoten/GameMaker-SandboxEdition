@@ -153,7 +153,7 @@ export async function loadDisks(): Promise<Disk[]> {
       color: '#3a8ee6',
       stripe: '#ffd23f',
       density: 'HD',
-      bytes: folders.reduce((n, f) => n + (f.entry.bytes ?? 0), 0),
+      bytes: 0, // one diskette's worth of small games: no size to count
       writeProtected: true,
       folders,
       load: async () => new GameFiles(),

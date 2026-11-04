@@ -157,19 +157,16 @@ export function frontPages(shots: GameShot[]): BookletPage[] {
       title menu for 30 seconds, the game plays its demo: a recording its designer made with the
       Integrator.</p>
       <h3>Six small sample games</h3>
-      <p>The sample disk holds six short games, each with one idea, and each in a folder of its own.
-      Put the disk in drive A:, choose <b>Play</b>, and load a game by its folder name (say,
-      <code>FIRSTSTP</code>). Play them in this order:</p>
+      <p>The sample disk holds six short games, one idea each:</p>
       <table>
-        <tr><td><b>First Steps</b> <code>FIRSTSTP</code></td><td>Walking, jumping and reaching the exit.</td></tr>
-        <tr><td><b>Keys and Doors</b> <code>KEYSDOOR</code></td><td>Picking up a key and opening the door it fits.</td></tr>
-        <tr><td><b>Meet the Monsters</b> <code>MONSTERS</code></td><td>Foes that patrol, chase and shoot, and how to get past them.</td></tr>
-        <tr><td><b>Room to Room</b> <code>ROOMS</code></td><td>Doors and stairs that join one map to the next.</td></tr>
-        <tr><td><b>Coins and Score</b> <code>COINS</code></td><td>Treasure, points and the counters on your status line.</td></tr>
-        <tr><td><b>Watch Your Step</b> <code>HAZARDS</code></td><td>Hazards, hit points and lives.</td></tr>
+        <tr><td><b>First Steps</b></td><td><code>FIRSTSTP</code></td><td>Walking, jumping, the exit.</td></tr>
+        <tr><td><b>Keys and Doors</b></td><td><code>KEYSDOOR</code></td><td>A key and the door it fits.</td></tr>
+        <tr><td><b>Meet the Monsters</b></td><td><code>MONSTERS</code></td><td>Foes that patrol, chase, shoot.</td></tr>
+        <tr><td><b>Room to Room</b></td><td><code>ROOMS</code></td><td>Doors and stairs between maps.</td></tr>
+        <tr><td><b>Coins and Score</b></td><td><code>COINS</code></td><td>Treasure, points and counters.</td></tr>
+        <tr><td><b>Watch Your Step</b></td><td><code>HAZARDS</code></td><td>Hazards, hit points and lives.</td></tr>
       </table>
-      <p>To see how one is made, pick it with <b>Design</b> instead of <b>Play</b> and open its
-      maps in the Map Maker. Copy it first if you mean to change it.</p>`,
+      <p>Load one by its folder (<code>FIRSTSTP</code>, say); <b>Design</b> shows how it is made.</p>`,
     ),
   ];
 }
