@@ -84,7 +84,9 @@ function offerUpdate(worker: ServiceWorker | undefined): void {
     }),
     button('Later', false, () => notice?.remove()),
   );
-  document.body.append(notice);
+  // first in the page, so a keyboard user's first Tab reaches it (it is fixed at the bottom, so
+  // the order on screen is unchanged); at the end of the body it took every control to get there
+  document.body.prepend(notice);
 }
 
 /** A short status notice (dismissible), for a part of the site that would not load. */
@@ -115,5 +117,7 @@ function showNotice(message: string): void {
     'max-width:calc(100vw - 32px);box-sizing:border-box;padding:10px 14px;border-radius:6px;background:#000080;color:#fff;' +
     'font:14px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.45)';
   notice.append(text, ...(navigator.onLine === false ? [] : [reload]), close);
-  document.body.append(notice);
+  // first in the page, so a keyboard user's first Tab reaches it (it is fixed at the bottom, so
+  // the order on screen is unchanged); at the end of the body it took every control to get there
+  document.body.prepend(notice);
 }
