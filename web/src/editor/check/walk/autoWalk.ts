@@ -309,7 +309,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
       if (locks.wanted.size) {
         outcome.tried.push('keys');
         if (opt.progress?.(scene, 'Fetch the keys, then go on', 0)) canceled = true;
-        const replay =
+        const keys =
           !canceled &&
           (await fetchKeys(game, files, scene, entry, locks, {
             goal,
@@ -320,7 +320,7 @@ export async function autoWalk(game: Game, files: FileSource, gameId: string, op
             unreached,
             progress: (places) => (opt.progress?.(scene, 'Fetch the keys, then go on', places) ? (canceled = true) : canceled),
           }));
-        if (replay) found = { replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
+        if (keys && keys.replay) found = { replay: keys.replay, strategy: STRATEGIES.find((x) => x.id === 'keys')! };
       }
       lockWhy = lockedWhy(locks, unreached, otherScenesAdding(game, files, scene, locks.missing));
     }

@@ -65,10 +65,16 @@ describe('fetching keys', () => {
     const t = lockedGame();
     const entry = { start: { x: 7, y: 3 }, ci: startCharInfo(), clock: 1 };
     const locks = locksAtEntry(t.game, t, 2, entry);
-    const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 10_000 });
-    expect(r?.link).toBe(0);
+    const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 10_000, now: () => 0 });
+    expect(r.replay?.link).toBe(0);
+    expect(r.diagnostics.rounds).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ source: { counter: 20, cell: 3 * MLEN + 1 }, complete: false, cutoff: null }),
+        expect.objectContaining({ kind: 'exit', source: null, complete: false, cutoff: null }),
+      ]),
+    );
     // the key is 6 cells back, the door 4 forward: far more than the direct 7 cells to the exit
-    expect(r!.ticks).toBeGreaterThan(60);
+    expect(r.replay!.ticks).toBeGreaterThan(60);
   }, 60_000);
 
   it('still finishes the level, and the engine agrees', async () => {
@@ -84,7 +90,7 @@ describe('fetching keys', () => {
     const entry = { start: { x: 7, y: 3 }, ci: startCharInfo(), clock: 1 };
     const locks = locksAtEntry(t.game, t, 2, entry);
     const r = await fetchKeys(t.game, t, 2, entry, locks, { goal: [3 * MLEN + 14], wanted: new Set([0]), budgetMs: 10_000 });
-    expect(r?.link).toBe(0);
+    expect(r.replay?.link).toBe(0);
   }, 60_000);
 
   it('says plainly when a key exists but was never reached', () => {
