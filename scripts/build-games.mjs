@@ -220,6 +220,7 @@ const fieldTrinketGames = [
   ['realm', 'Realm'],
   ['remote', 'Remote'],
   ['reckoning', 'Reckoning'],
+  ['goat', 'Goat'],
   ['teddy3', 'Teddy3'],
   ['sleuth', 'Sleuth'],
   ['smirked', 'Smirked'],
