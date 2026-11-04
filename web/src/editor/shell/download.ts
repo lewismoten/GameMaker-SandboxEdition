@@ -21,6 +21,7 @@ import { downloaded } from '../../achievements';
 import { icon } from './homeIcons';
 import type { CatalogEntry, GameFiles } from '../../project/files';
 import type { Companion } from '../../project/companion';
+import { aboutOf, isAboutEmpty, type AboutGame } from '../../project/aboutGame';
 import type { PlayerPatches } from '@lewismoten/gamemaker-sandbox-engine/player/patchRules';
 import { REPO_URL } from '../../seo/site';
 import { fetchArchive } from '../../project/archiveWait';
@@ -258,6 +259,14 @@ async function gameKept(game: DownloadGame) {
   return keptParts(companionOrigin(game.companion?.(), game.gam));
 }
 
+/** "About this game" and the version of a game of yours, for FILE_ID.DIZ and the web page's credits (project/aboutGame.ts). */
+async function aboutOptions(game: DownloadGame): Promise<{ about?: AboutGame; version?: string }> {
+  const c = game.project ? game.companion?.() : undefined;
+  if (!c) return {};
+  const about = aboutOf(c);
+  return isAboutEmpty(about) ? {} : { about, version: typeof c.gameVersion === 'string' ? c.gameVersion : undefined };
+}
+
 /** The options the native downloads share. */
 
 async function nativeOptions(game: DownloadGame, files: GameFiles) {
@@ -273,6 +282,7 @@ async function nativeOptions(game: DownloadGame, files: GameFiles) {
     fiction: aboutNote(game),
     player: await gamePatches(game),
     playerAbout: await gameAbout(game),
+    ...(await aboutOptions(game)),
   });
   return {
     title: game.title,
@@ -368,6 +378,7 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
         fiction: aboutNote(game),
         player: await gamePatches(game),
         playerAbout: await gameAbout(game),
+        ...(await aboutOptions(game)),
       });
       save(name, html, 'text/html', 'Open it in any browser to play, no internet needed.');
     } else if (kind === 'player') {
@@ -381,6 +392,7 @@ async function build(game: DownloadGame, kind: DownloadKind, alt: boolean): Prom
         gam: game.gam,
         player: await gamePatches(game),
         kept: await gameKept(game),
+        ...(await aboutOptions(game)),
       });
       save(name, zip, 'application/zip', `In DOSBox, run ${exe} from the unzipped folder.`);
     } else {

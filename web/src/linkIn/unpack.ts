@@ -9,6 +9,7 @@ import { decodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
 import { fromBase64, readSinglePage, unpack, type SinglePageGame } from '../export/singlePage';
 import { parseGame, gameTitle } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { takeCompanion, type Companion } from '../project/companion';
+import { takeFileIdDiz } from '../project/importDiz';
 import { LinkError, MAX_FILES, MAX_TOTAL_BYTES, checkLimits, cleanName } from './protocol';
 
 export interface UnpackedGame {
@@ -135,6 +136,7 @@ export async function unpackGame(input: [string, Uint8Array][], opts: { name?: s
     // a damaged companion (editor-only extras) is left behind; the game itself is fine
     for (const n of files.byExtension('gmx')) files.delete(n);
   }
+  companion = takeFileIdDiz(files, companion);
   const gam = files.mainGame(preferred);
   if (!gam)
     throw new LinkError(
