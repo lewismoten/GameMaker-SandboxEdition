@@ -314,6 +314,20 @@ game folder opens in the browser unchanged.
   Face's **Transformers.js** (Apache-2.0), the **phonemizer** package (Apache-2.0) and ONNX
   Runtime (MIT). These are installed by `npm run voice:setup` into a git-ignored folder outside
   the app's own packages, and the model stays on Lewis's computer.
+- **The wall phone's voices** (`web/public/phone/voice`, on the 1994 desk): every caller's lines
+  (Mom, Dad, Grandma, Jenny, Linda, Gus, the 911 dispatcher, the time and weather lines, the Movie
+  Line, the ratings council's recording, three answering machines and Teddy's Hint Kennel) are
+  recorded clips made on the developer's computer by `web/scripts/narrate.ts --lines phone`, with
+  the same tools as the tour's voices (above). Dad, the Movie Line and Teddy are spoken in voices
+  cloned by **Pocket TTS** (Kyutai, CC BY 4.0) from voice samples kept on Lewis's computer ("olden
+  mon", "Snooty Wiz" and "Scroobie", the last also Teddy's tour voice), shifted in pitch and
+  speed; Lewis's own voice is not used. The others use **Kokoro-82M**'s stock voices (hexgrad,
+  Apache-2.0): `af_heart` (Mom), `af_sarah` (Linda), `am_onyx` (Gus), `af_jessica` (Jenny),
+  `af_aoede` (Grandma), `af_nicole` (the 911 dispatcher), `af_alloy` (time and temperature),
+  `am_adam` (the weather line), `af_kore` (the phone company's recording), `am_fenrir` (the
+  ratings council), and `af_river`, `am_eric` and `am_echo` (the answering machines). The phone-line sound
+  (a 300 to 3400 Hz band and a little hiss) is made live in the browser. Words with no clip are
+  spoken by the browser's own speech. Checked with OpenAI's **Whisper** (MIT).
 - **Teddy's and Gwinn's barks** (`web/public/tour/sfx`): Lewis Moten's own recordings of his
   dogs, cut into short clips for the guided tour. Five of the clips are Tune-Up's barks too
   (`games/tuneup/src/sound/barks`, as 8-bit WAVs for its VOCs). The whole recordings stay on
