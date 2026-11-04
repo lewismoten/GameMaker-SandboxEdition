@@ -284,3 +284,21 @@
     place-items: center;
   }
 }
+
+/* the rule above gives every .nav-link display:inline-flex, which beat the narrow header's
+   .hide-narrow (display:none): on a touch phone or tablet Library, Achievements and Cast stayed
+   in the bar next to the ⋯ menu, and the bar ran 235 px past the screen at 390 px wide (found in
+   WebKit with an iPhone profile; Chromium's mobile emulation widens its viewport and hides it). */
+@media (hover: none) and (pointer: coarse) and (max-width: 1199px) {
+  .topbar .hide-narrow {
+    display: none;
+  }
+}
+
+/* even then 44 px targets leave the bar 31 px too wide on a 390 px phone: the logo already links
+   to the games list, so Games waits in it there. */
+@media (hover: none) and (pointer: coarse) and (max-width: 430px) {
+  .topbar-nav > a.nav-games {
+    display: none;
+  }
+}
