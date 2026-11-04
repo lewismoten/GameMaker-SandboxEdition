@@ -44,7 +44,7 @@
     }
   },
   "counters": {
-    "20": "Gold keys carried: a gold key adds one, a gold door takes one.",
+    "20": "Gold keys carried: a gold key adds one, a gold door takes one or two.",
     "21": "Silver keys carried: a silver key adds one, a silver door takes one."
   },
   "sounds": {

@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some doors do not open just because you ask nicely.
 
-A small explorer in a teal beanie has two locked doors to get through. Keys are lying around. Read the signs: they say what a key does, and which door it fits.
+A small explorer in a teal beanie has locked doors to get through. The first one is shut before you find a key, so look around. Read the signs: they say what a key does, and which door it fits.
 
 Then open this game in Game-Maker and move a key, or lock a new door.
 `);
@@ -22,7 +22,7 @@ export const HOWTO = wrap(`
 
 Touch a key and it is yours: the key counter goes up by one.
 
-Walk into a locked door while you carry its key. The door opens and the counter goes down by one.
+Walk into a locked door while you carry its key. The door opens and the counter goes down by one. A door with two key holes needs two keys.
 
 Coins add to your score. The door at the end of the level takes you on.
 
@@ -45,7 +45,7 @@ One of the Starters: small games that each show one idea.
 export const WON = wrap(`
 |UNLOCKED!
 
-Two levels, three locked doors, and every key put to use.
+Three levels, four locked doors, and every key put to use.
 
 A key is only a counter that goes up. A locked door only asks that the counter is high enough, and then takes one away.
 
