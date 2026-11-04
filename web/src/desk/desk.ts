@@ -18,6 +18,7 @@ import { regSideLater } from '../retro/gmReg/regSideLater';
 // the PC switched on and off (with the capture buttons' capture.css)
 import { deskPc } from './deskPc';
 import { deskProps } from './props';
+import { warmDeskAudio } from './deskAudioWarm';
 import { loadCatalog, loadGameList, type CatalogEntry } from '../project/files';
 import { Project } from '../editor/core/project';
 import { viewState } from '../urlState';
@@ -382,7 +383,9 @@ export function renderDesk(root: HTMLElement, nav: DeskNav): () => void {
   // the guided tour's BBS chapter calls the board on this PC, and puts everything back after
   const unTour = deskTour(desk, pc);
   drawBoxTiles(boxTiles);
+  const unWarm = warmDeskAudio();
   return () => {
+    unWarm();
     window.dispatchEvent(new Event('gm-desk-close'));
     window.removeEventListener('keydown', onKey);
     reg.dispose();
