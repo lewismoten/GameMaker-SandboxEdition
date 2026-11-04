@@ -13,6 +13,7 @@
     "verify:packages": "node scripts/verify-packages.mjs",
     "verify:perf": "npm run verify:perf -w gamemaker-web --",
     "verify:changed": "node scripts/verify-changed.mjs",
+    "heavy": "node scripts/heavy.mjs",
     "phone:build": "bash games/year2000/phone/tools/build_all.sh",
     "verify": "npm run format:check -w gamemaker-web && npm run lint && npm run typecheck && npm run test && npm run verify:packages && npm run release:check",
     "backup:local": "node scripts/backup-local.mjs backup",

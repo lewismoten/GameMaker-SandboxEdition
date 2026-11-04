@@ -30,3 +30,17 @@ Site build-time tools remain in [`web/scripts`](../web/scripts/README.md).
 backs up the work Git doesn't keep: `.for-lewis`, `.narrate`'s results (not its `node_modules` or
 models), `dosbox-saves`, `.claude/agents` and Claude's memory folder, into one dated archive encrypted
 with AES-256-GCM (passphrase from `BACKUP_PASSPHRASE`, or asked). Restore into an empty folder for a drill.
+
+`heavy.mjs` (`npm run heavy -- <command...>`, root or `web/`) runs a heavy job (a build, full vitest,
+`verify:perf`, `check:games`, a walkthrough recording) in one of 2 shared slots, so agents on one Mac don't
+run them all at once. Slots are lock files in `~/.cache/gamemaker-heavy/` (outside any worktree) holding the
+holder's pid; a dead holder's slot is freed. It waits while the 1-minute load average is over
+`HEAVY_MAX_LOAD` (default 20), passes the command's exit code through, frees the slot on exit or signal and
+appends start, wait, duration, exit code, cwd and command to `log.tsv` there. Env: `HEAVY_DIR`,
+`HEAVY_SLOTS`, `HEAVY_MAX_LOAD`, `HEAVY_POLL_MS`. Tests: `web/test/agentGuards.test.mjs`.
+
+`hooks/` holds Claude Code `PreToolUse` hooks for the Bash tool (they read the call's JSON on stdin and exit
+2 with a reason on stderr to block; a parse error allows). Wire them in `.claude/settings.json`
+`hooks.PreToolUse`. `noMainCheckoutMerge.mjs` blocks `git merge`, `git pull` and `git rebase` in the main
+checkout while something listens on 5173. `noSymlinkedDiskBuild.mjs` blocks game builds while any
+`games/*/disk` is a symlink. `commitTrailer.mjs` blocks `git commit -m` with no `Co-Authored-By: Claude` line.
