@@ -89,6 +89,17 @@
 .about-card {
   grid-column: 1 / -1;
 }
+.about-card .tool-body {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+.about-fields,
+.about-credits {
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
 .about-fields {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(14em, 1fr));

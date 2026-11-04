@@ -29,7 +29,7 @@ export function aboutCard(project: Project): HTMLElement {
     const long = WIDE.has(k);
     const input = long
       ? h('textarea', { id, rows: k === 'story' ? '4' : '2', autocomplete: 'off' })
-      : h('input', { id, type: k === 'website' ? 'url' : 'text', autocomplete: 'off', maxlength: k === 'year' ? '4' : '120' });
+      : h('input', { id, type: 'text', ...(k === 'website' ? { inputmode: 'url' } : {}), autocomplete: 'off', maxlength: k === 'year' ? '4' : '120' });
     input.value = now[k] ?? '';
     input.addEventListener('input', save);
     inputs.set(k, input);

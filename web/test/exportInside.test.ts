@@ -2,7 +2,7 @@
 // page byte for byte; its schema.org data is valid; and its growth over the old export is reported.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import Ajv from 'ajv';
+import AjvImport from 'ajv';
 import { GameFiles } from '../src/project/files';
 import { exportSinglePage } from '../src/export/exportSinglePage';
 import { decodeGame, readSinglePage, ABOUT_MARK, GAME_MARK, HEAD_MARK, TITLE_MARK } from '../src/export/singlePage';
@@ -123,6 +123,9 @@ describe('Inside this game', () => {
         },
       },
     };
+    // ajv's CommonJS default export types as a namespace under this tsconfig
+    type AjvLike = { validate: (schema: object, data: unknown) => boolean; errorsText: () => string };
+    const Ajv = AjvImport as unknown as new (opts: object) => AjvLike;
     const ajv = new Ajv({ strict: false });
     const ok = ajv.validate(schema, game);
     expect(ajv.errorsText()).toBe('No errors');

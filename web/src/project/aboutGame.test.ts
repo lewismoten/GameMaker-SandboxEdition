@@ -66,7 +66,7 @@ describe('FILE_ID.DIZ', () => {
   });
 
   it('uses CRLF and gives nothing when there is no title', () => {
-    expect(new TextDecoder().decode(fileIdDiz({ title: 'A' }, 'a')!)).toBe('A\r\n');
+    expect(new TextDecoder().decode(fileIdDiz({ title: 'A' }, 'a'))).toBe('A\r\n');
     expect(fileIdDiz({}, '')).toBeUndefined();
   });
 

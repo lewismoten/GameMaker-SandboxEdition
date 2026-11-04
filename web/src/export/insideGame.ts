@@ -102,10 +102,9 @@ function aboutBlock(a: AboutGame, version?: string): string {
     a.license && `License: ${a.license}`,
   ].filter(Boolean) as string[];
   const parts: string[] = [];
-  if (a.description) parts.push(`<p>${esc(a.description)}</p>`);
   if (a.story)
     parts.push(
-      `<h3>Story</h3>${a.story
+      `<h2>Story</h2>${a.story
         .split(/\n{2,}/)
         .map((p) => `<p>${esc(p)}</p>`)
         .join('')}`,
@@ -113,7 +112,7 @@ function aboutBlock(a: AboutGame, version?: string): string {
   if (facts.length) parts.push(`<ul>${facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>`);
   if (a.website) parts.push(`<p>Website: <a style="color:#9cf" href="${esc(a.website)}" rel="noopener">${esc(a.website)}</a></p>`);
   if (a.credits?.length)
-    parts.push(`<h3>Credits</h3><dl>${a.credits.map((c) => `${c.role ? `<dt>${esc(c.role)}</dt>` : ''}<dd>${esc(c.name)}</dd>`).join('')}</dl>`);
+    parts.push(`<h2>Credits</h2><dl>${a.credits.map((c) => `${c.role ? `<dt>${esc(c.role)}</dt>` : ''}<dd>${esc(c.name)}</dd>`).join('')}</dl>`);
   return parts.length ? `<div class="gm-credits">${parts.join('')}</div>` : '';
 }
 
@@ -153,7 +152,7 @@ export function insideGame(files: [string, Uint8Array][], opts: InsideOptions): 
         const id = nextId();
         external.push([name, id, bytes.length]);
         texts.push(
-          `<h4>${esc(upper)}</h4><pre id="${id}" data-gm-file="${esc(name)}" data-gm-code="${t.layout.code}" data-gm-eol="${t.layout.eol}"${t.layout.eof ? ' data-gm-eof="1"' : ''} style="white-space:pre-wrap;font:13px/1.3 monospace;overflow-x:auto">\n${esc(t.text)}</pre>`,
+          `<h3>${esc(upper)}</h3><pre id="${id}" data-gm-file="${esc(name)}" data-gm-code="${t.layout.code}" data-gm-eol="${t.layout.eol}"${t.layout.eof ? ' data-gm-eof="1"' : ''} style="white-space:pre-wrap;font:13px/1.3 monospace;overflow-x:auto">\n${esc(t.text)}</pre>`,
         );
         break;
       }
@@ -183,14 +182,14 @@ export function insideGame(files: [string, Uint8Array][], opts: InsideOptions): 
 
   const folded = [
     figures.length
-      ? `<h3>Pictures</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px">${figures.join('')}</div>`
+      ? `<h2>Pictures</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px">${figures.join('')}</div>`
       : '',
-    texts.length ? `<h3>Text screens</h3>${texts.join('')}` : '',
+    texts.length ? `<h2>Text screens</h2>${texts.join('')}` : '',
     motion.length
-      ? `<h3>Animations</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px">${motion.join('')}</div>`
+      ? `<h2>Animations</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:12px">${motion.join('')}</div>`
       : '',
-    sounds.length ? `<h3>Sounds</h3><ul style="list-style:none;padding:0">${sounds.join('')}</ul>` : '',
-    music.length ? `<h3>Music</h3><ul>${music.join('')}</ul>` : '',
+    sounds.length ? `<h2>Sounds</h2><ul style="list-style:none;padding:0">${sounds.join('')}</ul>` : '',
+    music.length ? `<h2>Music</h2><ul>${music.join('')}</ul>` : '',
   ].join('');
   const credits = aboutBlock(about, opts.version);
   if (!folded && !credits) return { html: '', external, pictures };
