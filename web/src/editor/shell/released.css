@@ -93,3 +93,13 @@
     white-space: nowrap;
   }
 }
+
+/* the lesson page a "How do I…?" question opens (lessonButton.ts) */
+.lesson-page {
+  max-width: 60ch;
+  line-height: 1.5;
+}
+.lesson-page h1 {
+  margin: 0 0 8px;
+  font-size: 1.2em;
+}

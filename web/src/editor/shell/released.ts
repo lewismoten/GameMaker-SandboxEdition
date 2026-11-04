@@ -19,6 +19,7 @@ import { isBizarreGame } from '../../project/bizarre';
 import { currentRoute, formatHash } from '../../urlState';
 import { copyCatalogGame, showNotice } from './homeCards';
 import { lookId } from './lookId';
+import { lessonButton } from './lessonButton';
 import type { Workspace } from './workspace';
 import './released.css';
 
@@ -136,6 +137,7 @@ export function readOnlyBar(project: Project): HTMLElement | null {
       { class: 'released-text' },
       playOnly ? `${title} is its author’s shareware: play it and look inside.` : [h('span', { class: 'released-title' }, `${title} `), 'as released.'],
     ),
+    lessonButton(r.entry),
     playOnly
       ? h('button', { onclick: () => void showNotice(r.entry) }, 'Notice')
       : h(
