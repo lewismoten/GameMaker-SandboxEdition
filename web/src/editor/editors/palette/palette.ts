@@ -432,7 +432,7 @@ registerEditor(['pal'], (host, project, file) => {
     h(
       'p',
       { class: 'hint' },
-      'Click a color to edit it. Shift-click a second color to select a range, then “Spread” to blend between them. Color 255 is drawn as transparent in monster and character blocks. Color 0 is drawn as menu ',
+      'DOS has 256 colors, and each of red, green and blue goes from 0 to 63 (the VGA palette), so a value outside that is held at 0 or 63. Click a color to edit it. Shift-click a second color to select a range, then “Spread” to blend between them. Color 255 is drawn as transparent in monster and character blocks. Color 0 is drawn as menu ',
       zeroLink(),
       '.',
     ),
