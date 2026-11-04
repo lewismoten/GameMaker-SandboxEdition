@@ -215,3 +215,22 @@
   gap: 4px 8px;
   margin-top: 4px;
 }
+
+/* Touch: the replace button, selects and the checkbox rows are 44 px. */
+@media (hover: none) and (pointer: coarse) {
+  .pic-layout button,
+  .pic-layout select,
+  .pic-layout summary,
+  .pic-layout label:has(input[type='checkbox']) {
+    min-height: 44px;
+  }
+  .pic-layout label:has(input[type='checkbox']) {
+    display: flex;
+    align-items: center;
+  }
+  .pic-layout input[type='checkbox'] {
+    width: 28px;
+    height: 28px;
+    margin: 8px;
+  }
+}
