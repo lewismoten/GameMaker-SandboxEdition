@@ -36,7 +36,9 @@ writePng(join(out, 'hero.png'), sheet, pal.pal, 5);
 // Kit from above: four facings, three steps each
 const top = buildTopHeroBlocks(pal);
 const grid = new Pixels(3 * 24 + 4, 4 * 24 + 4, pal.r('grass')[2]);
-['down', 'up', 'right', 'left'].forEach((f, row) => ['0', 'stand', '1'].forEach((st, col) => grid.blit(top.pics.get(`${f}.${st}`)!, 4 + col * 24, 4 + row * 24, 255)));
+['down', 'up', 'right', 'left'].forEach((f, row) =>
+  ['0', 'stand', '1'].forEach((st, col) => grid.blit(top.pics.get(`${f}.${st}`)!, 4 + col * 24, 4 + row * 24, 255)),
+);
 writePng(join(out, 'hero-top.png'), grid, pal.pal, 6);
 
 const mb = buildMonsterBlocks(pal);

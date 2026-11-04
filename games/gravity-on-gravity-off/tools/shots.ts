@@ -1,48 +1,55 @@
-// Pictures of the lessons (never on the disk), for the progress shots: Kit before the spike and hurt by it
-// (the spike flat), by the hearts in level 2, and at the spikes and the ledge hearts in level 3.
-//   cd web && npx vite-node ../games/health-and-hearts/tools/shots.ts <outDir>
+// Pictures of the lessons (never on the disk), for the progress shots: level 1 with Kit before the wall and in
+// the air over it, level 2 (the same place from above) with Kit at the wall and on the deck, and Kit's four
+// facings from above.
+//   cd web && npx vite-node ../games/gravity-on-gravity-off/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { writePng } from '@lewismoten/gamemaker-sandbox-tools/kit/png';
 import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPicture';
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
-import { GROUND, buildLevels } from '../src/levels';
+import { GROUND, PATH_Y, WALL_X, buildLevels } from '../src/levels';
+import { buildTopHeroBlocks } from '../src/topHero';
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
 mkdirSync(out, { recursive: true });
-const { book, pal, levels } = buildLevels();
+const { book, topBook, pal, levels } = buildLevels();
 const bbl = book.finish();
+const tbl = topBook.finish();
 const mb = buildMonsterBlocks(pal);
 const mbl = mb.finish();
 const set = buildMonsters(mb);
 const hero = buildHeroBlocks(pal);
+const top = buildTopHeroBlocks(pal);
 
-/** Kit standing in column `col` (in the level) in `pose`, as two sprites for renderRegion. */
-const kit = (pose: [string, string], col: number) => {
+/** Kit from the side, with his feet at level block (col, row), as two sprites for renderRegion. */
+const side = (pose: [string, string], col: number, row: number) => {
   const h = heroPicture(hero, pose[0], pose[1]);
   return [
-    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + GROUND - 2 },
-    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + GROUND - 1 },
+    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + row - 1 },
+    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + row },
   ];
 };
-const region = (map: ReturnType<(typeof levels)[0]['map']['done']>, col: number, w: number, extra: ReturnType<typeof kit> = []) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
+/** Kit from above on level block (col, row). */
+const above = (name: string, col: number, row: number) => [{ pixels: Uint8Array.from(top.pics.get(name)!.px), x: ORIGIN + col, y: ORIGIN + row }];
 
 const m1 = levels[0].map.done();
-writePng(join(out, 'hit-1-before.png'), region(m1, 11, 12, kit(['stand.top', 'stand'], 14)), pal.pal, 3);
-// the moment after the touch: the spike under him is the flat one
-const flat = levels[0].map.done();
-flat.blocks[(GROUND - 1 + ORIGIN) * MLEN + 17 + ORIGIN] = book.n('spikeFlat');
-writePng(join(out, 'hit-2-hurt.png'), region(flat, 11, 12, kit(['hurt.top', 'hurt'], 17)), pal.pal, 3);
-
 const m2 = levels[1].map.done();
-writePng(join(out, 'hearts-1-before.png'), region(m2, 10, 14, kit(['stand.top', 'stand'], 14)), pal.pal, 3);
-writePng(join(out, 'hearts-2-cheer.png'), region(m2, 10, 14, kit(['cheer.top', 'jump'], 21)), pal.pal, 3);
+const r1 = (col: number, w: number, extra: ReturnType<typeof side> = []) => renderRegion(m1, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
+const r2 = (col: number, w: number, extra: ReturnType<typeof above> = []) => renderRegion(m2, tbl, mbl, set, ORIGIN + col, ORIGIN, w, 11, extra);
+writePng(join(out, 'on-1-before.png'), r1(8, 14, side(['stand.top', 'stand'], 11, GROUND - 1)), pal.pal, 3);
+writePng(join(out, 'on-2-over.png'), r1(8, 14, side(['cheer.top', 'jump'], WALL_X, GROUND - 4)), pal.pal, 3);
+writePng(join(out, 'on-3-ledge.png'), r1(17, 14, side(['stand.top', 'stand'], 22, 7)), pal.pal, 3);
+writePng(join(out, 'off-1-start.png'), r2(1, 16, above('down.stand', 3, PATH_Y)), pal.pal, 3);
+writePng(join(out, 'off-2-wall.png'), r2(8, 16, above('right.stand', WALL_X - 1, PATH_Y)), pal.pal, 3);
+writePng(join(out, 'off-3-deck.png'), r2(16, 16, above('right.0', 22, 4)), pal.pal, 3);
 
-const m3 = levels[2].map.done();
-writePng(join(out, 'lives-1-spikes.png'), region(m3, 12, 22, kit(['stand.top', 'stand'], 20)), pal.pal, 3);
-writePng(join(out, 'lives-2-ledge.png'), region(m3, 8, 16, kit(['cheer.top', 'jump'], 16)), pal.pal, 3);
+// Kit's four facings from above, two strides each
+const sheet = new Pixels(5 * 24 + 4, 4 * 24 + 4, pal.r('grass')[2]);
+['down', 'up', 'right', 'left'].forEach((f, row) =>
+  ['0', 'stand', '1'].forEach((s, col) => sheet.blit(top.pics.get(`${f}.${s}`)!, 4 + col * 24, 4 + row * 24, 255)),
+);
+writePng(join(out, 'kit-from-above.png'), sheet, pal.pal, 6);

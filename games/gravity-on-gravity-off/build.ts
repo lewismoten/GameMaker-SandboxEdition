@@ -4,7 +4,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serializeBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
-import { serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
+import { INF_REPEAT, serializeCharacter } from '@lewismoten/gamemaker-sandbox-engine/formats/character';
 import { serializeGame } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
 import { serializeSlideList } from '@lewismoten/gamemaker-sandbox-engine/formats/graphicScripts';
 import { serializeMap } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
@@ -16,6 +16,7 @@ import { Disk } from '../kit/disk';
 import { licenseText } from '../kit/license';
 import { STARTER_STING, starterStingFli } from '../kit/starter/sting';
 import { buildHeroBlocks, heroPicture } from '../kit/starter/hero';
+import { KEYS } from '../kit/starter/blocks';
 import { buildHero } from '../kit/starter/heroChar';
 import { buildMonsterBlocks, buildMonsters } from '../kit/starter/monsters';
 import { cardPicture, endPicture, gif, menuPicture, paper, scoresPicture, slotsPicture } from '../kit/starter/screens';
@@ -47,6 +48,7 @@ disk.put('grav.mbl', serializeBlocks(monsterBlocks.finish()));
 disk.put('grav.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
 const heroChar = buildHero(heroBlocks);
+heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 disk.put('hero.chr', serializeCharacter(heroChar));
 // level 2's hero: Kit from above, one block, walking in four directions
 disk.put('top.cbl', serializeBlocks(topBlocks.finish()));

@@ -82,13 +82,19 @@ function sideLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
 /** Level 2: the same scene from above, 40 blocks wide and 11 high. */
 function topLevel(book: Book, signs: Record<SignName, Sign>): TopMap {
   const g = new Grid(40, TOP_HEIGHT);
-  g.row(0, 0, 39, 'X').row(TOP_HEIGHT - 1, 0, 39, 'X').col(0, 0, TOP_HEIGHT - 1, 'X').col(39, 0, TOP_HEIGHT - 1, 'X');
+  g.row(0, 0, 39, 'X')
+    .row(TOP_HEIGHT - 1, 0, 39, 'X')
+    .col(0, 0, TOP_HEIGHT - 1, 'X')
+    .col(39, 0, TOP_HEIGHT - 1, 'X');
   // the path: along the room, down and round the wall, and on
   g.row(PATH_Y, 4, 12, 'G').col(12, PATH_Y, ROUND_Y, 'G').row(ROUND_Y, 12, 16, 'G').col(16, PATH_Y, ROUND_Y, 'G').row(PATH_Y, 16, 36, 'G');
   g.col(WALL_X, 1, WALL_BOTTOM, 'W');
   g.fill(LEDGE_X[0], 3, LEDGE_X[1] - LEDGE_X[0] + 1, 3, '='); // the deck
   g.row(4, LEDGE_X[0], LEDGE_X[1], 'c');
-  g.put(3, PATH_Y - 1, 's').put(3, PATH_Y, 'S').put(EXIT_X, PATH_Y - 1, 'e').put(EXIT_X, PATH_Y, 'E');
+  g.put(3, PATH_Y - 1, 's')
+    .put(3, PATH_Y, 'S')
+    .put(EXIT_X, PATH_Y - 1, 'e')
+    .put(EXIT_X, PATH_Y, 'E');
   for (const x of [21, 28, 34]) g.put(x, ROUND_Y, 'b');
   for (const x of [10, 17, 30]) g.put(x, ROUND_Y + 1, 'f');
   const m = new TopMap(book, g.rows());

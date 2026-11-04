@@ -24,7 +24,8 @@ function lawnTile(pal: Pal): Pixels {
 }
 
 /** `pic` with its sky colored pixels showing the lawn instead. */
-const onLawn = (pic: Pixels, pal: Pal, lawn: Pixels): Pixels => pic.crop(0, 0, pic.w, pic.h).map((x, y, c) => (c === skyOf(pal) ? lawn.get(x % 20, y % 20) : c));
+const onLawn = (pic: Pixels, pal: Pal, lawn: Pixels): Pixels =>
+  pic.crop(0, 0, pic.w, pic.h).map((x, y, c) => (c === skyOf(pal) ? lawn.get(x % 20, y % 20) : c));
 
 /** A sign for the top-down book: the side view's wooden board and posts, standing on the lawn. */
 export function addTopSign(book: Book, pal: Pal, lawn: Pixels, name: string, text: string, w: number, h: number): Sign {
@@ -74,7 +75,10 @@ export function addTopBlocks(book: Book, pal: Pal, side: Book): Pixels {
     // the deck: boards laid across
     const w = r('wood');
     const p = new Pixels(20, 20, w[2]);
-    for (const y of [0, 5, 10, 15]) p.rect(0, y, 20, 1, w[4]).rect(0, y + 4, 20, 1, w[0]).rect(0, y + 1, 20, 3, w[y % 10 ? 3 : 2]);
+    for (const y of [0, 5, 10, 15])
+      p.rect(0, y, 20, 1, w[4])
+        .rect(0, y + 4, 20, 1, w[0])
+        .rect(0, y + 1, 20, 3, w[y % 10 ? 3 : 2]);
     p.set(2, 2, w[0]).set(17, 2, w[0]).set(2, 12, w[0]).set(17, 12, w[0]);
     book.add('deck', p);
   }

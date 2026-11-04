@@ -55,7 +55,9 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   } else {
     // one arm swinging, seen edge on
     const a = step === 2 ? 0 : step === 0 ? 3 : -3;
-    p.rect(8 + a, 12, 4, 4, orange[2]).rect(8 + a, 12, 4, 1, orange[3]).disc(10 + a, 16.5, 1.5, skin[2]);
+    p.rect(8 + a, 12, 4, 4, orange[2])
+      .rect(8 + a, 12, 4, 1, orange[3])
+      .disc(10 + a, 16.5, 1.5, skin[2]);
   }
   // the head: hair at the back, the round face, then the knit beanie over the top
   if (facing === 'up') blob(p, 10, 8.5, 6.4, 5.4, hair, 0, 2);
@@ -71,7 +73,10 @@ function pose(pal: Pal, facing: Facing, step: Step): Pixels {
   p.rect(cx, 6, cw, 3, teal[3]).rect(cx, 6, cw, 1, teal[4]).rect(cx, 8, cw, 1, teal[2]);
   for (let x = cx + 1; x < cx + cw; x += 2) p.set(x, 7, teal[2]);
   const pom = side ? 8 : 10;
-  p.disc(pom + 0.5, 3.5, 3.3, teal[1]).disc(pom + 0.5, 3.5, 2.7, white[3]).set(pom + 2, 5, white[2]).set(pom + 1, 5, white[2]);
+  p.disc(pom + 0.5, 3.5, 3.3, teal[1])
+    .disc(pom + 0.5, 3.5, 2.7, white[3])
+    .set(pom + 2, 5, white[2])
+    .set(pom + 1, 5, white[2]);
   // the face, when it shows
   if (facing === 'down') {
     for (const x of [7, 12]) p.rect(x, 10, 2, 2, ink).set(x + 1, 10, white[3]);
@@ -119,7 +124,12 @@ export function buildTopHero(cb: Book): Character {
   set(S[SEQ.hurt], [f('down.stand', { pause: 2 }), f('down.stand')], { sound: SND.hurt, jstkBut: 0 });
   set(S[3], [f('down.stand')], { key: 0 });
   set(S[4], [f('down.stand')], { key: 0 });
-  const walk = (face: Facing, dx: number, dy: number) => [f(`${face}.0`, { x: dx, y: dy }), f(`${face}.stand`, { x: dx, y: dy }), f(`${face}.1`, { x: dx, y: dy }), f(`${face}.stand`, { x: dx, y: dy })];
+  const walk = (face: Facing, dx: number, dy: number) => [
+    f(`${face}.0`, { x: dx, y: dy }),
+    f(`${face}.stand`, { x: dx, y: dy }),
+    f(`${face}.1`, { x: dx, y: dy }),
+    f(`${face}.stand`, { x: dx, y: dy }),
+  ];
   set(S[SEQ.right], walk('right', STEP, 0), { key: KEY.right, jstkMov: 3 });
   set(S[SEQ.left], walk('left', -STEP, 0), { key: KEY.left, jstkMov: 7 });
   set(S[SEQ.up], walk('up', 0, -STEP), { key: KEY.up, jstkMov: 1 });

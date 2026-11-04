@@ -48,5 +48,7 @@
     "10": "Getting hurt",
     "11": "Falling over"
   },
-  "counters": {}
+  "counters": {
+    "20": "Keys: not used here, but a copy can add them."
+  }
 }

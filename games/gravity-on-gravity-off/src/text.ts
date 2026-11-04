@@ -20,11 +20,11 @@ export const HOWTO = wrap(`
 
 |LEFT, RIGHT   walk
 |SPACE         jump
-|UP, DOWN      level 2 walks
+|UP, DOWN      walk (2nd place)
 
-Level 1: gravity pulls you down. Jump the wall, and walk off the ledge to see.
+In the first place gravity pulls you down. Jump the wall, and walk off the ledge to see.
 
-Level 2: no gravity. The arrows walk you every way. Space does nothing.
+In the second there is no gravity. The arrows walk you every way, and Space does nothing.
 
 |ESC for the menu.
 `);

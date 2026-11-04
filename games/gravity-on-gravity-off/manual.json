@@ -1,87 +1,79 @@
 {
-  "title": "Health and Hearts",
+  "title": "Gravity On, Gravity Off",
   "howDoI": [
     {
-      "id": "hit-points",
-      "q": "How do I choose how many hit points my hero starts with?",
+      "id": "gravity",
+      "q": "How do I make my hero fall down?",
       "scene": 2,
       "x": 13,
       "y": 19,
       "level": 1
     },
     {
-      "id": "spike",
-      "q": "How do I make a block that takes hit points?",
+      "id": "jump",
+      "q": "How do I let my hero jump and come back down?",
       "scene": 2,
-      "x": 27,
+      "x": 15,
       "y": 19,
       "level": 1
     },
     {
-      "id": "heart",
-      "q": "How do I make a pickup that gives hit points back?",
-      "scene": 3,
-      "x": 27,
+      "id": "wall",
+      "q": "How do I make a wall my hero has to jump over?",
+      "scene": 2,
+      "x": 24,
       "y": 19,
+      "level": 1
+    },
+    {
+      "id": "gravity-off",
+      "q": "How do I turn gravity off?",
+      "scene": 3,
+      "x": 13,
+      "y": 15,
       "level": 2
     },
     {
-      "id": "carry",
-      "q": "How do I keep my hero's hit points from one level to the next?",
+      "id": "four-ways",
+      "q": "How do I let my hero walk up and down as well as sideways?",
       "scene": 3,
-      "x": 33,
-      "y": 19,
+      "x": 15,
+      "y": 15,
       "level": 2
     },
     {
-      "id": "lose-life",
-      "q": "How do I make my hero lose a life when his hit points run out?",
-      "scene": 4,
-      "x": 31,
-      "y": 19,
-      "level": 3
-    },
-    {
-      "id": "one-up",
-      "q": "How do I give my hero an extra life?",
-      "scene": 4,
-      "x": 49,
-      "y": 17,
-      "level": 3
+      "id": "from-above",
+      "q": "How do I make a level that looks down from above?",
+      "scene": 3,
+      "x": 20,
+      "y": 16,
+      "level": 2
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Health and Hearts</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about hit points, hearts and lives, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p>"
+      "html": "<h1>Welcome</h1><p><b>Gravity On, Gravity Off</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels, and they are the same place twice. Level 1 shows it from the side, with gravity. Level 2 shows it from above, with gravity off. It takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p>In level 1, <kbd>Left</kbd> and <kbd>Right</kbd> walk and <kbd>Space</kbd> jumps. In level 2, all four arrows walk, and <kbd>Space</kbd> does nothing. Walk into the door at the end of a level to go on. Nothing in this game hurts Kit.</p>"
     },
     {
-      "head": "Level 1: Hit Points",
-      "html": "<h1>Level 1: Hit Points</h1><p>The <b>F2 SHOWS YOUR HIT POINTS</b> sign comes first: press <kbd>F2</kbd> and Kit&rsquo;s numbers appear. He starts with 30 hit points and 3 lives. The <b>A SPIKE TAKES 10 HIT POINTS</b> sign stands before a single spike. Walk into it and it stings: Kit shows his hurt pose and has 20 left. The spike then lies flat and harmless. Press <kbd>F2</kbd> again to see.</p><p>Four coins are worth ten points each.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>Hit points to start.</b> Open <b>hero.chr</b> in the character editor. The first counter, <b>Hit points</b>, is 30, and <b>Lives</b> is 3. Each time a life is lost, the room starts again with the hit points back at that number.</li><li><b>A block that takes them.</b> Open <b>hearts.bbl</b> in the blocks editor and pick <b>spikeUp</b>. Its <b>Hit points</b> is &minus;10. The engine adds that to the hero each tick the block overlaps him, so a block that only hurts would drain him in a second.</li><li><b>Once.</b> The same block has <b>Becomes block</b> set to <b>spikeFlat</b>, which has no hit points. One touch, one sting, the way a coin vanishes when you take it.</li><li><b>You see it.</b> The hero&rsquo;s <b>Hurt</b> sequence plays, with its sound, each time his hit points drop. The count itself is on <kbd>F2</kbd>, the game&rsquo;s own status screen.</li><li><b>Where it is.</b> Open <b>one.map</b> in the map editor. The spike is one block on the grass, painted like grass.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with words drawn in their pictures.</li><li><b>The exit.</b> A scene link joins the door to the next level. Open <b>hearts.gam</b> in the scenes editor.</li></ul>"
-    },
-    {
-      "head": "Level 2: Hearts Heal",
-      "html": "<h1>Level 2: Hearts Heal</h1><p>Kit arrives with the 20 hit points he left level 1 with. The <b>A HEART GIVES 10 HIT POINTS BACK</b> sign comes first. Another spike takes him down to 10, and then two hearts in a row bring him up to 30. Each heart is gone once he touches it. The <b>HIT POINTS GO WITH YOU TO THE NEXT ROOM</b> sign is by the exit, because they do.</p><p>Three coins are on the way.</p>"
+      "head": "Level 1: Gravity On",
+      "html": "<h1>Level 1: Gravity On</h1><p>Kit stands on the ground, and gravity pulls him down. The <b>GRAVITY IS ON</b> sign comes first: press <kbd>Space</kbd> and he lifts up, then gravity brings him back to the ground where he started. The <b>A WALL IS A STEP</b> sign stands before a low brick wall. Walk into it and Kit is stopped. Jump and he clears it.</p><p>The ledge holds five coins, ten points each. Jump up onto it from the left, walk along it, and walk off the end: the <b>WALK OFF THE LEDGE</b> sign says what happens. Gravity pulls him straight down to the ground.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>A pickup that heals.</b> In <b>hearts.bbl</b> pick <b>heart</b>. Its <b>Hit points</b> is +10: the same field as the spike, above zero instead of below. The engine plays a soft sound for it.</li><li><b>Gone when touched.</b> <b>Becomes block</b> is set to the sky block, so the heart disappears and gives its 10 only once.</li><li><b>No stop at 30.</b> Nothing in the engine keeps hit points at the number a hero started with. Level 3 uses that.</li><li><b>They carry on.</b> Hit points are kept as the hero goes through a door. They only go back to the starting number when a life is lost or a new game starts.</li><li><b>Where they are.</b> Open <b>two.map</b>. The spike and the two hearts stand on the grass, painted like anything else.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Gravity is a block setting.</b> Open <b>side.bbl</b> in the blocks editor and pick the sky, the very first block. Under <b>Gravity pulls</b>, <b>Down</b> is ticked. The engine looks at the block Kit is standing in, and if it pulls down he speeds up toward the ground. Every blank block in the level, and the bushes, clouds, coins and signs, have the same tick, so he falls wherever he is in the air.</li><li><b>Solid blocks stop it.</b> The ground, the wall and the ledge have <b>Solid sides</b> ticked, so the pull stops when he lands on one. The ledge has only its top side solid, so he can jump up through it from below.</li><li><b>Jumping.</b> Open <b>hero.chr</b> in the character editor. The <b>Jump</b> sequence is one push upward, with <b>Momentum</b> on. The push carries him up, and gravity takes it back. Nothing in the engine says how high: the push and the pull do.</li><li><b>The wall.</b> Two brick blocks stacked on the grass, with all four <b>Solid sides</b> ticked. A jump rises a little over three blocks, so two is easy to clear.</li><li><b>Where it is.</b> Open <b>one.map</b> in the map editor. The signs are a few ordinary blocks side by side, with words drawn in their pictures.</li><li><b>The exit.</b> A scene link joins the door to the next level. Open <b>grav.gam</b> in the scenes editor.</li></ul><p><b>What it cannot do.</b> Gravity is for the hero only. Monsters are not pulled by it, and there is no one setting for a whole level: each block says it.</p>"
     },
     {
-      "head": "Level 3: Lives",
-      "html": "<h1>Level 3: Lives</h1><p>Four spikes stand along the ground, spaced out so each stings on its own. That is 40, and Kit has 30. The <b>AT ZERO HIT POINTS YOU LOSE A LIFE</b> sign says what happens: walk straight along the ground and the third spike takes his last hit point. He falls over, a life is gone (press <kbd>F2</kbd>) and the room starts again, with 30 hit points.</p><p>This time jump up onto the ledge first. Two hearts sit on it, and the <b>HEARTS CAN TAKE YOU PAST 30</b> sign says why that is fine: 50 hit points get him past all four spikes. Near the end a ledge holds a smiling face in a teal beanie. The <b>A FACE ADDS A LIFE</b> sign says the rest.</p>"
+      "head": "Level 2: Gravity Off",
+      "html": "<h1>Level 2: Gravity Off</h1><p>The same place, from above. The wall is now a strip of stones along its top, the ledge a wooden deck, the bushes round shrubs. Kit is drawn from above too, facing whichever way he walks. The <b>GRAVITY IS OFF</b> sign comes first: all four arrows walk him, up and down as well as sideways.</p><p>The <b>SPACE DOES NOTHING NOW</b> sign stands before the wall. Press <kbd>Space</kbd> and nothing happens. Walk into the wall and he is stopped, so follow the path down, along and up to go around it. The deck holds the same five coins. Walk off its end and nothing pulls him down: it is only lawn.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 3 is made</h1><ul><li><b>Zero costs a life.</b> No block takes a life here. When the hero&rsquo;s hit points reach zero the engine plays his <b>Die</b> sequence, takes one life and starts the same level again. With no lives left, the game ends.</li><li><b>Where he comes back.</b> At the place he arrived the first time: the cyan marker on the doorway of <b>three.map</b>. Drag it to change that.</li><li><b>What starts over.</b> The map is read again, so hearts, spikes and coins are all back. Your score stays.</li><li><b>Past where he started.</b> Two <b>heart</b> blocks on a ledge of planks bring 30 to 50. The planks are solid on top only, so Kit jumps up through them and stands on top.</li><li><b>An extra life.</b> Pick <b>oneUp</b> in <b>hearts.bbl</b>. Its <b>Effect</b> is counter 1 (lives) and the <b>Amount</b> is 1. It is gone when touched.</li><li><b>Spaced spikes.</b> Spikes in a row can share one sting while Kit is in his hurt pose. Three blocks apart, each one counts.</li></ul>"
+      "html": "<h1>How level 2 is made</h1><ul><li><b>One setting.</b> Open <b>top.bbl</b> in the blocks editor and pick the lawn, the first block. Under <b>Gravity pulls</b>, nothing is ticked. In <b>side.bbl</b> the sky had <b>Down</b> ticked. That tick is the whole difference between level 1 and level 2: with no pull, Kit stays where he is, and a key that moves him up or down just moves him.</li><li><b>The view is only pictures.</b> Game-Maker has no top-down mode. The map is the same grid of blocks, and <b>top.bbl</b> draws each one as seen from above: the lawn, the stone wall top, the deck, the round shrubs. The wall is solid in both levels. The shrubs are solid only in this one, because their blocks have <b>Solid sides</b> ticked here and not in <b>side.bbl</b>.</li><li><b>Walking up and down.</b> Open <b>top.chr</b>. Up and Down are ordinary walking sequences, each moving Kit four pixels a frame, with a picture of him facing that way. In <b>hero.chr</b> the same two keys climb ladders and show his back. Left and Right are mirrored pictures of the same walk. Kit is one block tall here (his picture has only a bottom block), because from above there is no head over a body.</li><li><b>Space does nothing.</b> <b>top.chr</b> gives no sequence the Space key, so pressing it changes nothing. A jump needs gravity to bring him back, and here there is none.</li><li><b>The wall to walk around.</b> A column of wall blocks in <b>two.map</b>, with all four <b>Solid sides</b> ticked. The path is only a picture of packed earth, so it leads the eye round the end of the wall.</li><li><b>The hedge.</b> The whole map outside the room is hedge, with <b>Solid sides</b> ticked, so Kit never stops at something he cannot see.</li><li><b>Which files each level uses.</b> Open <b>grav.gam</b> in the scenes editor. Each level's scene lists its own block file and its own character file, which is how one game has a hero who climbs and a hero who walks.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Give Kit 50 hit points in <b>hero.chr</b> and see how level 3 changes.</li><li>Make <b>heart</b> give 30 instead of 10.</li><li>Make <b>spikeUp</b> take 15, and count how many Kit can walk through.</li><li>Give Kit 1 life in <b>hero.chr</b>, and lose it in level 3.</li><li>Move a <b>oneUp</b> face somewhere harder to reach.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>top.bbl</b>, tick <b>Down</b> under <b>Gravity pulls</b> for the lawn, and watch level 2 turn into a room Kit falls through.</li><li>In <b>side.bbl</b>, clear <b>Down</b> on the sky and see Kit float.</li><li>Tick <b>Up</b> instead of <b>Down</b> on the sky, and he falls upward.</li><li>Tick <b>Right</b>, and he is pushed along the ground.</li><li>Make the wall in <b>one.map</b> three blocks high, then four.</li><li>Move the coins somewhere harder to reach.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

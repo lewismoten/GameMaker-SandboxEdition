@@ -11,4 +11,6 @@ const built = buildLevels();
 assertNoInvisibleWalls({ book: built.book, pal: built.pal, levels: [built.levels[0]] });
 assertNoInvisibleWalls({ book: built.topBook, pal: built.pal, levels: [built.levels[1]] });
 const { sim } = await play();
-console.log(`gravity-on-gravity-off: the bot played both levels; ${sim.deaths} lives lost, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
+console.log(
+  `gravity-on-gravity-off: the bot played both levels; ${sim.deaths} lives lost, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`,
+);
