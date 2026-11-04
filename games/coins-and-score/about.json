@@ -8,6 +8,7 @@
   "version": "1.0",
   "blurb": "Three short levels about points. Coins add to your score, gems are worth more and a rock takes points away, and a heart adds a life. Game-Maker has no extra life at a certain score, so the last level says so plainly. Signs in the levels say how. Play it, then open it in Game-Maker and change what a gem is worth.",
   "exe": "COINS.EXE",
+  "dosName": "COINS",
   "sound": "sb",
   "label": {
     "background": "#e8f6ff",

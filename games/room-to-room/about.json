@@ -8,6 +8,7 @@
   "version": "1.0",
   "blurb": "Three short levels about getting from one room to another. A door leads out of one room and into the next, a house has doors that go back the way you came, and a fork has two doors to two rooms. Signs in the rooms say how. Play it, then open it in Game-Maker and move a door.",
   "exe": "ROOM.EXE",
+  "dosName": "ROOMS",
   "sound": "sb",
   "label": {
     "background": "#e8f6ff",
