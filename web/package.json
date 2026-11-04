@@ -18,6 +18,7 @@
     "optimize:proof": "vite-node ../games/kit/optimizeProof.ts",
     "check:games": "vite-node ../games/kit/checkGames.ts",
     "editor:touch": "vite-node scripts/editorTouch.ts",
+    "editor:shots": "vite-node scripts/editorShots.ts",
     "smoke:engines": "vite-node scripts/smokeEngines.ts",
     "perf:check": "vite-node scripts/perfCheck.ts",
     "perf:trace": "vite-node scripts/perfTrace.ts",
