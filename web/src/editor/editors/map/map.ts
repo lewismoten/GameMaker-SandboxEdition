@@ -1,4 +1,5 @@
 // Map editor (MAPMAKER.EXE): paint background blocks onto the 100x100 map and place monsters.
+import { lastZoom, recallView, rememberView, type MapView } from './mapViews';
 import { MAX_ZOOM, MIN_ZOOM, clampZoom, pictureScale, wheelZoom, zoomFromUrl, zoomToUrl } from './mapZoom';
 import { drawTile } from './mapTile';
 import { mapViewport } from './mapViewport';
@@ -135,7 +136,17 @@ registerEditor(['map'], (host, project, file) => {
   // the address keeps where the map is scrolled to (the block at the middle) and the zoom
   // (…/PLANET1.MAP?x=40&y=12&zoom=2)
   const view = viewState(['p', project.id, file]);
-  let zoom = zoomFromUrl(view.get('zoom'));
+  // An address with a spot (a shared link, Back, a reload) wins; else the view this map was left at;
+  // else the zoom of the map looked at last.
+  const urlSpot = view.num('x') !== undefined && view.num('y') !== undefined;
+  const urlZoom = zoomFromUrl(view.get('zoom'));
+  const lastView = recallView(project.id, file);
+  // the address keeps whole blocks, the saved view keeps the exact spot: the same place, so use the exact one
+  const saved =
+    lastView && (!urlSpot || (Math.abs(lastView.x - view.num('x')!) < 1 && Math.abs(lastView.y - view.num('y')!) < 1 && Math.abs(lastView.z - urlZoom) < 0.002))
+      ? lastView
+      : undefined;
+  let zoom = saved ? clampZoom(saved.z) : urlSpot || view.get('zoom') ? urlZoom : clampZoom(lastZoom());
   /** The scale the map picture and its layers are drawn at (a power of two); the browser scales it to `zoom`. */
   let drawnScale = pictureScale(zoom);
   const scale = () => drawnScale;
@@ -1145,6 +1156,7 @@ registerEditor(['map'], (host, project, file) => {
   function setZoom(value: number, pointer = { x: scroller.clientWidth / 2, y: scroller.clientHeight / 2 }): void {
     value = clampZoom(value);
     if (value === zoom) return;
+    stopRestoring();
     tools.cancel();
     if (painting) save();
     painting = false;
@@ -1163,6 +1175,31 @@ registerEditor(['map'], (host, project, file) => {
     }
     viewport.goTo(anchor, pointer);
     if (!viewport.wrapped && marks.any()) marks.redraw();
+    noteView();
+  }
+  let viewReady = false;
+  /** True while the opening spot may still be put back; no view is saved until the reader acts or it ends. */
+  let restoring = true;
+  let stopRestoring = () => {};
+  let rememberTimer: ReturnType<typeof setTimeout> | undefined;
+  let latest: MapView | undefined;
+  /** Notes the view now (zoom and the block at the middle); it is saved once things settle. */
+  function noteView(): void {
+    if (!viewReady || restoring) return;
+    const at = viewport.at();
+    const c = wrapping ? nativeCell({ x: Math.round(at.x), y: Math.round(at.y) }) : at;
+    latest = { z: zoom, x: c.x, y: c.y };
+    if (!wrapping) {
+      const s = BLEN * zoom;
+      Object.assign(latest, { sx: scroller.scrollLeft / s, sy: scroller.scrollTop / s, w: scroller.clientWidth, h: scroller.clientHeight });
+    }
+    clearTimeout(rememberTimer);
+    rememberTimer = setTimeout(flushView, 300);
+  }
+  function flushView(): void {
+    clearTimeout(rememberTimer);
+    if (latest) rememberView(project.id, file, latest);
+    latest = undefined;
   }
   const zoomControl = selectField(
     'Zoom',
@@ -1427,9 +1464,44 @@ registerEditor(['map'], (host, project, file) => {
     const urlX = view.num('x');
     const urlY = view.num('y');
     const start = linkMarks().find((m) => m.kind === 'to') ?? map.monsters.find((m) => m.monnum < LASTMON) ?? undefined;
-    const at =
-      urlX !== undefined && urlY !== undefined ? { x: urlX, y: urlY } : start ? ('curx' in start ? { x: start.curx, y: start.cury } : start) : undefined;
-    if (at) viewport.goTo(at);
+    const at = saved
+      ? { x: saved.x, y: saved.y }
+      : urlX !== undefined && urlY !== undefined
+        ? { x: urlX, y: urlY }
+        : start
+          ? 'curx' in start
+            ? { x: start.curx, y: start.cury }
+            : start
+          : undefined;
+    // the same window size (a scroll bar aside): the exact scroll; else the same middle
+    const place = () => {
+      if (
+        saved?.sx !== undefined &&
+        saved.sy !== undefined &&
+        !wrapping &&
+        Math.abs((saved.w ?? 0) - scroller.clientWidth) < 40 &&
+        Math.abs((saved.h ?? 0) - scroller.clientHeight) < 40
+      )
+        viewport.goTo({ x: saved.sx, y: saved.sy }, { x: 0, y: 0 });
+      else if (at) viewport.goTo(at);
+    };
+    place();
+    viewReady = true;
+    if (saved) view.set({ zoom: zoomToUrl(zoom) }); // the address says the zoom the map opened at
+    // The window may still change size as the editor settles, which would shift the middle: keep
+    // putting the spot back until the reader does something.
+    const keepSpot = new ResizeObserver(() => {
+      if (restoring) place();
+    });
+    keepSpot.observe(scroller);
+    const stopKeeping = () => {
+      restoring = false;
+      keepSpot.disconnect();
+      noteView();
+    };
+    for (const e of ['wheel', 'pointerdown', 'keydown', 'touchstart'] as const) scroller.addEventListener(e, stopKeeping, { passive: true, once: true });
+    setTimeout(stopKeeping, 800);
+    stopRestoring = stopKeeping;
     // from now on, scrolling updates the address (once it settles)
     let settle: ReturnType<typeof setTimeout> | undefined;
     scroller.addEventListener('scroll', () => {
@@ -1439,10 +1511,12 @@ registerEditor(['map'], (host, project, file) => {
         const center = wrapping ? nativeCell({ x: Math.round(at.x), y: Math.round(at.y) }) : { x: Math.round(at.x), y: Math.round(at.y) };
         view.set({ x: center.x, y: center.y });
       }, 300);
+      noteView();
     });
   });
   return () => {
     hideTip();
+    flushView();
     tip.remove();
     clearTimeout(redrawTimer);
     markers.dispose();

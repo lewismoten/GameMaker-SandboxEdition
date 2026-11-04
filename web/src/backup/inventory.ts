@@ -142,6 +142,7 @@ export const KEYS_NOT_BACKED_UP: Record<string, string> = {
   'gm-dev-log': 'the dev server’s interaction-log switch (localhost only)',
   'gm-last-place': 'where the editor was last open, to pick up there',
   'gm-file-clip': 'the asset browser’s copied native file and editor extras (this tab only)',
+  'gm-map-views': 'the zoom and spot each map was last looked at, so a map opens as you left it (up to 200 maps)',
   'gm-map-clip': 'the map editor’s clipboard (this visit only)',
   'gm-mus-preset-tab': 'the music editor’s preset picker tab (this tab only)',
   'gm-ach-tab': 'the achievements page’s chosen tab (this tab only)',
