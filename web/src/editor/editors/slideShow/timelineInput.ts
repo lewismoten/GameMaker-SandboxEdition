@@ -189,7 +189,14 @@ export function timelineInput(ctx: TimelineInput): { dragging(): boolean } {
     const m = (ev.target as HTMLElement).closest<HTMLElement>('.sl-media');
     if (m && (ev.key === 'Enter' || ev.key === ' ')) {
       ev.preventDefault();
-      ctx.insert(m.dataset.name!, ctx.selected() + 1);
+      const name = m.dataset.name!;
+      ctx.insert(name, ctx.selected() + 1);
+      // the tray is redrawn by the insert, which drops focus; put it back on the same tile
+      const tile = ctx.bin.querySelector<HTMLElement>(`.sl-media[data-name="${CSS.escape(name)}"]`);
+      if (tile) {
+        tile.tabIndex = 0;
+        tile.focus();
+      }
     }
   });
   ctx.track.addEventListener('keydown', (ev) => {
