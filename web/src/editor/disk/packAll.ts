@@ -16,7 +16,7 @@ import { backgroundsKept } from './backgroundsKept';
 import { savesRisk } from './savesSafe';
 import type { BlockMove, Step } from './types';
 
-export interface PackUnit {
+interface PackUnit {
   kind: 'reduce' | 'sync' | 'merge';
   title: string;
   touches: string[];

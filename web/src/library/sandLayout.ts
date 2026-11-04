@@ -10,7 +10,7 @@ const SPACE = 2;
 /** The letters the key lists, A to Z. */
 export const KEY_LETTERS = Object.keys(SANDSCRIPT).sort();
 
-export interface SandLayout {
+interface SandLayout {
   width: number;
   /** One rim along each word: [x0, x1] at the top. */
   rims: [number, number][];

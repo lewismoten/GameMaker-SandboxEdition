@@ -11,7 +11,7 @@ import { listProjects } from '../../project/storage';
 import { originId, rememberOrigin } from '../../editor/shell/homeOrigin';
 
 /** What choosing the disk does: nothing to patch, patch it as it is, or patch a copy on C:. */
-export type DiskChoice = 'empty' | 'mine' | 'protected';
+type DiskChoice = 'empty' | 'mine' | 'protected';
 
 type DiskFacts = Pick<Disk, 'kind' | 'gam' | 'writeProtected' | 'projectId'>;
 

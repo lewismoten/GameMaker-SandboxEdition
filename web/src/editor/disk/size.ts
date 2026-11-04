@@ -17,7 +17,7 @@ export const RUNTIME_FILES: [string, number][] = [
   ['README.TXT', 1500],
 ];
 
-export interface Density {
+interface Density {
   label: string;
   /** Bytes a formatted disk holds (clusters x cluster size) and the root directory's entries. */
   clusters: number;
@@ -39,7 +39,7 @@ export interface SizeUp {
 }
 
 /** Every file the .gam, and the pictures, slide shows and sound sets it names, open (stored names). */
-export function namedFiles(files: GameFiles, gam: string): Set<string> {
+function namedFiles(files: GameFiles, gam: string): Set<string> {
   const out = new Set<string>([normalize(gam)]);
   const add = (n: string | undefined) => {
     const at = files.resolve(n);

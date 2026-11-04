@@ -2,7 +2,7 @@
 // registry of every fictional domain in the project). Change a domain, path or title in the JSON.
 import registry from './mockSites.json';
 
-export interface MockSite {
+interface MockSite {
   id: string;
   domain: string;
   scheme: string;

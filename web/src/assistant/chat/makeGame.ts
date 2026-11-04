@@ -27,7 +27,7 @@ export function starterChange(ctx: GameContext, lib: GameFiles): Change | undefi
   return { summary: 'Started the game from the starter level', files: out };
 }
 
-export interface BuildResult {
+interface BuildResult {
   won: boolean;
   /** The bot's last report. */
   report: string;

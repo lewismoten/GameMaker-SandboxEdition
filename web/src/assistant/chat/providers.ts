@@ -55,7 +55,7 @@ type Fetch = typeof fetch;
 // ---- addresses ---------------------------------------------------------------------------------
 
 /** Ollama's root, without a /v1 or /api someone typed after it. */
-export function ollamaRoot(url: string): string {
+function ollamaRoot(url: string): string {
   return url
     .trim()
     .replace(/\/+$/, '')
@@ -63,7 +63,7 @@ export function ollamaRoot(url: string): string {
 }
 
 /** An OpenAI-compatible base ending in /v1 (or whatever the person typed), without /chat/completions. */
-export function openaiBase(url: string): string {
+function openaiBase(url: string): string {
   return url
     .trim()
     .replace(/\/+$/, '')
@@ -176,7 +176,7 @@ function argsOf(raw: unknown): Pick<ToolCall, 'args' | 'badArgs'> {
 }
 
 /** A reply's words without a thinking model's <think>…</think>. */
-export function stripThinking(s: string): string {
+function stripThinking(s: string): string {
   return s.replace(/<think>[\s\S]*?(<\/think>|$)/g, '').replace(/^\s+/, '');
 }
 
@@ -212,7 +212,7 @@ export function parseOllamaReply(body: unknown): ChatReply {
 }
 
 /** The provider's token counts for one call. */
-export interface Usage {
+interface Usage {
   prompt: number;
   completion: number;
 }
@@ -379,7 +379,7 @@ export async function listModels(s: AiSettings, f: Fetch = fetch, signal?: Abort
   return names.filter(Boolean).sort((a, b) => a.localeCompare(b));
 }
 
-export interface ModelInfo {
+interface ModelInfo {
   /** "tools", "vision", "thinking"… (undefined: the server didn't say). */
   capabilities?: string[];
   /** The longest context the model was made for. */

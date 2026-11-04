@@ -33,7 +33,7 @@ export function heldRuns(events: { clock: number; scan: number }[]): [number, nu
 }
 
 /** A small seeded generator (mulberry32). */
-export function seeded(seed: number): () => number {
+function seeded(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;

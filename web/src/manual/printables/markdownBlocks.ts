@@ -13,7 +13,7 @@ export type Block =
   | { tag: 'table'; head: Inline[][]; rows: Inline[][][] };
 
 /** Inline marks inside one line of text: code, bold, italic, links (kept as their words). */
-export function inline(text: string): Inline[] {
+function inline(text: string): Inline[] {
   const out: Inline[] = [];
   const re = /`([^`]+)`|\*\*([^*]+)\*\*|(?<![\w*])\*([^\s*][^*]*?)\*(?![\w*])|\[([^\]]+)\]\(([^)]*)\)/g;
   let at = 0;
@@ -39,7 +39,7 @@ const cells = (line: string): string[] =>
 const isRule = (line: string) => /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$/.test(line);
 const bullet = /^(\s*)([-*]|\d+\.)\s+(.*)$/;
 
-export interface Section {
+interface Section {
   /** The heading's text ('' for what comes before the first heading). */
   title: string;
   level: number;

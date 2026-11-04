@@ -1,6 +1,6 @@
 // Project-wide joystick descriptions are companion metadata; native button numbers stay intact.
 export const JOYSTICK_BUTTONS = 'joystickButtons';
-export interface JoystickButtonDescription {
+interface JoystickButtonDescription {
   short: string;
   long: string;
 }

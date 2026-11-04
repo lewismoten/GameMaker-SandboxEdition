@@ -4,7 +4,7 @@
 import { h, clear } from '../../editor/core/ui';
 import { addTodo, clearDone, grouped, removeTodo, setDoing, setDone, todos, type TodoHost, type TodoItem } from './todo';
 
-export interface TodoView {
+interface TodoView {
   el: HTMLElement;
   render(): void;
 }

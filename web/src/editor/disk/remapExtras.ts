@@ -15,7 +15,7 @@ const COUNT = 256;
 const GROUPS = 'groups';
 
 /** The names and groups of these files, as plain data. */
-export type ExtrasSnapshot = Map<string, { names: unknown; groups: unknown }>;
+type ExtrasSnapshot = Map<string, { names: unknown; groups: unknown }>;
 
 export function snapshotExtras(store: Store, files: Iterable<string>): ExtrasSnapshot {
   const out: ExtrasSnapshot = new Map();

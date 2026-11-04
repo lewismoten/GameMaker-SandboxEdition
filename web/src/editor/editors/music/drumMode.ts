@@ -26,7 +26,7 @@ export function drumConfirmText(doc: MusicDoc, p: OplPreset): string {
 }
 
 /** The track a drum preset belongs to (its drum's channel), or the given one for a melodic preset. */
-export const trackForPreset = (p: OplPreset, ch: number): number => (p.drum ? DRUM_SLOTS[p.drum].ch : ch);
+const trackForPreset = (p: OplPreset, ch: number): number => (p.drum ? DRUM_SLOTS[p.drum].ch : ch);
 
 /**
  * Gives track ch a preset's sound, as one undo step: in the instrument it starts with, or in

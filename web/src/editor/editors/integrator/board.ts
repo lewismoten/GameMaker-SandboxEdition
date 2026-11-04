@@ -37,7 +37,7 @@ export function roundRect(ctx: CanvasRenderingContext2D, r: Rect, rad: number): 
 }
 
 /** Where a line from the center of `r` towards (tx, ty) leaves the rectangle. */
-export function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
+function edgePoint(r: Rect, tx: number, ty: number, pad = 4): Point {
   const cx = r.x + r.w / 2;
   const cy = r.y + r.h / 2;
   const dx = tx - cx;
@@ -122,7 +122,7 @@ function drawThumb(ctx: CanvasRenderingContext2D, img: HTMLCanvasElement | undef
 }
 
 /** A group's card stands for its members: shown as a stack, with the group's name and size. */
-export interface GroupFace {
+interface GroupFace {
   name: string;
   count: number;
   /** Any member is the selected scene. */

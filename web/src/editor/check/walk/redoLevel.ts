@@ -9,7 +9,7 @@ import type { Walkthrough } from '../../../walkthrough/format';
 import type { Reused, SceneOutcome } from './autoWalk';
 
 /** A level of a walkthrough that can be redone: a scene its segments start in, with the name its chapter has. */
-export interface RedoLevel {
+interface RedoLevel {
   scene: number;
   title: string;
 }

@@ -6,7 +6,7 @@ import { HEART_FILE, localOf } from '../inventory';
 import type { World } from '../world';
 import { describeKeys, injectLocal, isRecord, json, need, plural, stringMap, type Section } from './types';
 
-export interface HeartsPayload {
+interface HeartsPayload {
   /** Save id -> its tinheart.dat. */
   found: Record<string, Uint8Array>;
   local: Record<string, string>;

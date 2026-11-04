@@ -1,7 +1,7 @@
 // The chicken's name and pronouns for site text, from chickenNow() (chickenState.ts).
 import { chickenNow, type Chicken } from './chickenState';
 
-export interface Words {
+interface Words {
   /** "Sir Reginald Cluckington III" / "Lady Regina Cluckington III". */
   full: string;
   /** "Sir Reginald" / "Lady Regina". */

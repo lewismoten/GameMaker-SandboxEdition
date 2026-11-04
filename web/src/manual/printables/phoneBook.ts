@@ -22,7 +22,7 @@ const CHAPTERS = [
 /** A paragraph about the repository, not the kit, stays out of the book. */
 const DEV = /\.for-lewis|\btools\/|viewer\/|games\/year2000|vite-node|\bnpm\b/;
 
-export interface Chapter {
+interface Chapter {
   head: string;
   blocks: Block[];
 }

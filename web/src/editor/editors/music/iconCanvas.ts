@@ -2,7 +2,7 @@
 // outlined boxes and ellipses, lines, and small sprites, so each instrument is drawn in code
 // rather than as a wall of letters. `rows()` hands back the 20 rows presetIcons.ts expects.
 
-export const SIZE = 20;
+const SIZE = 20;
 
 export class Canvas {
   private g: string[][];

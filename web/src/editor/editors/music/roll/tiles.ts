@@ -4,7 +4,7 @@
 // (view width + 3 tiles) × height × 4 bytes × devicePixelRatio².
 export const TILE = 256;
 
-export type PaintFn = (g: CanvasRenderingContext2D, ox: number, a: number, b: number) => void;
+type PaintFn = (g: CanvasRenderingContext2D, ox: number, a: number, b: number) => void;
 
 export class Tiles {
   private tiles = new Map<number, HTMLCanvasElement>();

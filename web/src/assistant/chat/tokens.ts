@@ -11,7 +11,7 @@ export function estimateTokens(text: string): number {
 /** A picture's rough cost for a model that sees (a small one, as the tools draw them). */
 const PICTURE_TOKENS = 600;
 
-export function messageTokens(m: ChatMessage): number {
+function messageTokens(m: ChatMessage): number {
   let n = 4 + estimateTokens(m.content);
   if (m.role === 'user' && m.images) n += m.images.length * PICTURE_TOKENS;
   if (m.role === 'assistant' && m.toolCalls) n += estimateTokens(JSON.stringify(m.toolCalls));

@@ -32,14 +32,14 @@ function target(c: ToolCall, game?: Game): string {
 }
 
 /** "✎ set_map Level 2": an icon for the kind of call, its name and what it works on. */
-export function callLabel(c: ToolCall, writes: boolean, game?: Game): { icon: string; text: string } {
+function callLabel(c: ToolCall, writes: boolean, game?: Game): { icon: string; text: string } {
   const icon = writes ? '✎' : CHECKS.has(c.name) ? '▶' : PICTURES.has(c.name) ? '◫' : '⌕';
   const t = target(c, game);
   return { icon, text: `${c.name}${t ? ` ${t}` : ''}` };
 }
 
 /** A play-test's or Level check's result in a few words, for its line. */
-export function resultSummary(name: string, words: string): string | undefined {
+function resultSummary(name: string, words: string): string | undefined {
   try {
     const v = JSON.parse(words) as {
       won?: boolean;

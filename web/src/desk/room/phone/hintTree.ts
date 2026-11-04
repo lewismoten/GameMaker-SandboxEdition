@@ -15,7 +15,7 @@ export type HintNode = { kind: 'menu'; page: number } | { kind: 'hint'; game: nu
 export const START: HintNode = { kind: 'menu', page: 0 };
 export const pageCount = (): number => Math.ceil(HINT_GAMES.length / PAGE_SIZE);
 /** The game a key picks on a menu page, if any. */
-export const gameOnPage = (page: number, key: string): HintGame | undefined => {
+const gameOnPage = (page: number, key: string): HintGame | undefined => {
   const i = Number(key) - 1;
   return /^[1-8]$/.test(key) && i < PAGE_SIZE ? HINT_GAMES[page * PAGE_SIZE + i] : undefined;
 };
@@ -29,7 +29,7 @@ export function nodeText(node: HintNode): string {
   return node.n === 0 ? `${hintIntro(g.title)} ${hint}` : hint;
 }
 
-export type Move = { node: HintNode } | { bill: true } | { hangup: true } | { bad: true };
+type Move = { node: HintNode } | { bill: true } | { hangup: true } | { bad: true };
 
 export function press(node: HintNode, key: string): Move {
   if (key === '#') return { bill: true };

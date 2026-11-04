@@ -7,7 +7,7 @@ import type { PlayerLook } from '@lewismoten/gamemaker-sandbox-engine/engine/pla
 import type { PreviewScreen } from './playerPreview';
 
 /** x, y, width, height in screen pixels. */
-export type Rect = [number, number, number, number];
+type Rect = [number, number, number, number];
 
 /** Where a frame was taken: by its line (move) or by a corner (resize). */
 export type Grip = 'move' | 'tl' | 'tr' | 'bl' | 'br';

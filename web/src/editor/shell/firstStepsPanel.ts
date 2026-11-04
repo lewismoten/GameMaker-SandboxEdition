@@ -8,7 +8,7 @@ import type { Project } from '../core/project';
 import { unlockAchievement } from '../../achievements';
 import { STEPS, firstStepsState, stepsDone, updateFirstSteps, type Step } from './firstSteps';
 
-export interface FirstStepsNav {
+interface FirstStepsNav {
   /** Opens a file in the workspace. */
   open: (file: string) => void;
   /** Starts a play test from the title screen. */

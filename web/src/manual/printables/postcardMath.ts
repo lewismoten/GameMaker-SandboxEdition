@@ -57,7 +57,7 @@ export function slots(g: Grille, place: Place): [{ side: keyof Border; i: number
 }
 
 /** The border pictures marks A and B look out to at this place. */
-export function hits(g: Grille, border: Border, place: Place): [string, string] {
+function hits(g: Grille, border: Border, place: Place): [string, string] {
   const [a, b] = slots(g, place);
   return [border[a.side][a.i], border[b.side][b.i]];
 }

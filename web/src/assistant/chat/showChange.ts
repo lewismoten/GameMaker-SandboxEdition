@@ -3,7 +3,7 @@
 import { normalize } from '../../project/files';
 import type { ToolCall } from './providers';
 
-export interface ChangePlace {
+interface ChangePlace {
   file: string;
   /** The editor's address settings: a map's x and y, a block set's block, a monster's number. */
   params?: Record<string, number>;

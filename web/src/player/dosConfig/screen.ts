@@ -11,7 +11,7 @@ import { type Arrow, type ConfigState, BUT_C, DRVR_C, choose, moveCursor } from 
 const SCAN: Record<number, Arrow> = { 72: 'up', 80: 'down', 75: 'left', 77: 'right' };
 
 /** The `colors` array AskConfigData fades to: the panels' bevel purples, the yellows, and a blue ramp that peaks at the cursor. */
-export function configPalette(cursor: number): Uint8Array {
+function configPalette(cursor: number): Uint8Array {
   const pal = new Uint8Array(768);
   const set = (i: number, r: number, g: number, b: number) => pal.set([r & 63, g & 63, b & 63], i * 3);
   for (let l = 50; l < 76; l++) set(l, 0, 30, 63 - Math.abs(l - 50 - cursor) * 2);

@@ -6,7 +6,7 @@ import { toXhtml, type XhtmlOptions } from './xhtml';
 
 const text = (el: Element) => (el.textContent ?? '').replace(/\s+/g, ' ').trim();
 
-export interface ChapterOptions extends XhtmlOptions {
+interface ChapterOptions extends XhtmlOptions {
   /** The heading tags listed as its parts (default h2). */
   parts?: string;
   unlisted?: boolean;

@@ -46,7 +46,7 @@ export function standBy(target: Rect, size: Size, view: Size, floor: number, pre
   return { x: clamp(target.x + 8, 0, maxX), y: feet };
 }
 
-export type Side = 'above' | 'below' | 'right' | 'left';
+type Side = 'above' | 'below' | 'right' | 'left';
 
 /**
  * A speech bubble of `size` for a speaker at `anchor`: above it if there is room, else below,

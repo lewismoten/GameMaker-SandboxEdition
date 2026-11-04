@@ -5,7 +5,7 @@ import { parseMonsters } from '@lewismoten/gamemaker-sandbox-engine/formats/mons
 import { normalize, type GameFiles } from '../../project/files';
 import type { Project } from '../core/project';
 
-export interface BirthSource {
+interface BirthSource {
   id: string;
   label: string;
   mon: string;

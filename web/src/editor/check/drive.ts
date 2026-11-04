@@ -26,7 +26,7 @@ interface DriveHooks {
  * that hurts. Let go here, he drops onto it. (Landing half on an edge, PLAYGAME slides him to the
  * side his middle is over, MoveCharGrav, so the footing must be under his middle.)
  */
-export function overLanding(w: World, startCols: readonly number[]): boolean {
+function overLanding(w: World, startCols: readonly number[]): boolean {
   const c = w.chr;
   const cols = colsOf(w);
   const mid = c.x[1] >= BLEN / 2 ? cols[cols.length - 1] : cols[0];

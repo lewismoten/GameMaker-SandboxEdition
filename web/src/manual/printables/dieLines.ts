@@ -52,7 +52,7 @@ export const rect = (x: number, y: number, w: number, h: number, r = 0): Shape =
 });
 
 /** The colors: cut red, fold green (dashed), safe cyan (dashed), bleed a gray band. */
-export const DIE_INK = { cut: '#e4002b', fold: '#00a651', safe: '#1aa3e0', bleed: 'rgba(120, 120, 120, 0.35)' } as const;
+const DIE_INK = { cut: '#e4002b', fold: '#00a651', safe: '#1aa3e0', bleed: 'rgba(120, 120, 120, 0.35)' } as const;
 
 function trace(g: CanvasRenderingContext2D | Path2D, s: Shape): void {
   if (s.kind === 'circle') {

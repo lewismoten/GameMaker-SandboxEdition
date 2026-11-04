@@ -14,7 +14,7 @@ import type { PrintsItem, SpyglassItem, SuspectPrint } from './sleuthTypes';
 const SIZE = 360;
 
 /** The suspect the lifted print matches. */
-export const liftedOwner = (it: PrintsItem): SuspectPrint => it.suspects[it.lifted.suspect];
+const liftedOwner = (it: PrintsItem): SuspectPrint => it.suspects[it.lifted.suspect];
 
 /** One print hidden in noise: the ridges are painted from a mask in whatever ink the picture uses. */
 function hiddenPrint(s: SuspectPrint, lift: Lift | undefined, alt: string): HTMLElement {

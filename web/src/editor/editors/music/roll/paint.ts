@@ -29,7 +29,7 @@ export interface Scene {
 export const FONT = '10px ui-monospace, Menlo, Consolas, monospace';
 
 /** The steps of the beat lines at this zoom. */
-export function beatStepOf(beat: number, zoom: number): number {
+function beatStepOf(beat: number, zoom: number): number {
   return beat * zoom >= 8 ? beat : beat * 4 * zoom >= 8 ? beat * 4 : beat * 16;
 }
 

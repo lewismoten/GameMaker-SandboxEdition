@@ -11,7 +11,7 @@ const INK = '#141414';
 const PAPER = '#f3ead2';
 
 /** The drawing's size and where its lens is. */
-export const GLASS = { w: 200, h: 340, cx: 100, cy: 100, hole: 78 };
+const GLASS = { w: 200, h: 340, cx: 100, cy: 100, hole: 78 };
 
 /** The cut line: round the rim, down the handle and back. */
 const OUTLINE = 'M70,199.6A104,104 0 1,1 130,199.6L134,320Q134,338 116,338L84,338Q66,338 66,320Z';

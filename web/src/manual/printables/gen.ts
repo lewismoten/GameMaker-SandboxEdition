@@ -252,7 +252,7 @@ export async function keycard(ctx: PrintContext): Promise<Sheet[]> {
 
 // ------------------------------------------------------------------ catalog
 /** The catalog's running head on each page: the logo, GAMES CATALOG, the season and the page. */
-export const catalogHead = (page: string): HTMLElement =>
+const catalogHead = (page: string): HTMLElement =>
   h(
     'header',
     { class: 'cat-head' },

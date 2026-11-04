@@ -14,7 +14,7 @@ import type { FloppyArt } from './floppy';
 const SCREEN = { width: 320, height: 200 };
 
 /** The first palette (in scene order) with more than one color, as raw .pal bytes. */
-export function firstRealPalette(files: GameFiles, gam: string): Uint8Array | undefined {
+function firstRealPalette(files: GameFiles, gam: string): Uint8Array | undefined {
   for (const s of parseGame(files.get(gam)!).scenes) {
     if (s.gametype !== ADVTYPE) continue;
     const bytes = files.get(s.files[0]);

@@ -2,7 +2,7 @@
 // open game before the dialog plays it. Editor-only: nothing is saved to the game or companion.
 import type { Walkthrough } from '../../walkthrough/format';
 
-export type WalkFileCheck = { ok: true; walk: Walkthrough } | { ok: false; why: string };
+type WalkFileCheck = { ok: true; walk: Walkthrough } | { ok: false; why: string };
 
 const stem = (gam: string) => gam.replace(/\.gam$/i, '').toLowerCase();
 

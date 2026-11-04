@@ -12,7 +12,7 @@ import { genericIcon, presetIcon } from './presetIcons';
 /** A patch differing from a preset in this many of its 11 bytes or fewer still counts as it. */
 const CLOSE_BYTES = 2;
 
-export interface InstrumentLook {
+interface InstrumentLook {
   preset?: OplPreset;
   /** The patch is exactly the preset (else only close to it). */
   exact: boolean;
@@ -33,7 +33,7 @@ const hueOf = (group: string): number => {
 /** The group's strong color (track names, notes on the roll). */
 export const groupColor = (group: string): string => `hsl(${hueOf(group)} 65% 50%)`;
 /** The group's pale tile color (behind a picture). */
-export const groupTile = (group: string): string => `hsl(${hueOf(group)} 70% 84%)`;
+const groupTile = (group: string): string => `hsl(${hueOf(group)} 70% 84%)`;
 const NEUTRAL_TILE = '#e4e4ea';
 
 function closest(inst: Uint8Array): { preset: OplPreset; diff: number } | undefined {

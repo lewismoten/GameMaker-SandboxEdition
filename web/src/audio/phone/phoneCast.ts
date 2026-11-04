@@ -4,7 +4,7 @@
 // two semitones down, slow, so the pay-per-minute line rings up minutes. Mom and Dad also yell from the extension.
 // Lewis's own voice is only for Doc Leo, so nobody here uses it.
 
-export interface CastVoice {
+interface CastVoice {
   /** 'kokoro:<voice>' (hexgrad's stock voices) or a cloned sample's name (scripts/narrate.ts SAMPLES). */
   sample: string;
   semitones: number;

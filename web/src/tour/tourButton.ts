@@ -13,7 +13,7 @@ import { pageLife } from '../pageLife';
 const tour = () => import('./tourStart');
 
 /** Starts the whole tour (Settings' item, the menu's). */
-export const watchWholeTour = (record = false): void => void tour().then((m) => m.startTour('all', { record }));
+const watchWholeTour = (record = false): void => void tour().then((m) => m.startTour('all', { record }));
 
 /** The Settings menu's item for the whole tour. */
 export const wholeTourItem = (attrs: Record<string, string> = {}): HTMLElement =>

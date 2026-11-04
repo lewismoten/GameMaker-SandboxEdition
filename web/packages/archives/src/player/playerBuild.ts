@@ -7,7 +7,7 @@ import { md5Hex } from './md5';
 import { crc32 } from '../project/zip';
 import { BLOCK, BUILD_DATA, type BuildData } from './playerBuildData';
 
-export type Confidence = 'high' | 'medium' | 'low';
+type Confidence = 'high' | 'medium' | 'low';
 
 export interface PlayerIdentity {
   /** '1.0', '1.04', '2.00', '2.02', '2.04', '3.00', '3.00-playgame', or 'unknown'. */
@@ -36,7 +36,7 @@ export function buildLabel(id: string): string {
 }
 
 /** The NUL-ended string at `o`. */
-export function stringAt(exe: Uint8Array, o: number, max = 80): string {
+function stringAt(exe: Uint8Array, o: number, max = 80): string {
   let s = '';
   for (let i = o; i < exe.length && exe[i] && s.length < max; i++) s += String.fromCharCode(exe[i]);
   return s;
@@ -90,7 +90,7 @@ export function aboutChanged(b: BuildData, blocks: number[]): boolean {
 }
 
 /** True for a player squeezed by PKLITE or LZEXE (its strings can't be read). */
-export function isCompressed(exe: Uint8Array): boolean {
+function isCompressed(exe: Uint8Array): boolean {
   const head = String.fromCharCode(...exe.subarray(0, 120));
   return /PKLITE|PKlite|LZ09|LZ91/.test(head);
 }

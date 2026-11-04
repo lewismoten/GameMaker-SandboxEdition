@@ -6,7 +6,7 @@ import { h, clear } from '../core/ui';
 /** Renders an editor into host. May return a cleanup function. */
 export type EditorFn = (host: HTMLElement, project: Project, file: string) => void | (() => void);
 
-export const editors: Partial<Record<FileKind, EditorFn>> = {};
+const editors: Partial<Record<FileKind, EditorFn>> = {};
 
 /** Each kind's editor module (it calls registerEditor when it loads). */
 const modules: Partial<Record<FileKind, () => Promise<unknown>>> = {

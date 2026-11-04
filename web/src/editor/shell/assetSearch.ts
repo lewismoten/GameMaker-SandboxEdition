@@ -11,7 +11,7 @@ import { queryWords } from './searchMatch';
 import { GROUP_TITLES, type SearchGroup } from './searchGroups';
 import type { SearchEntry } from './searchIndex';
 
-export interface SearchHost {
+interface SearchHost {
   project: Project;
   /** Where results go (the file grid, so thumbnails draw as they scroll into view). */
   grid: HTMLElement;

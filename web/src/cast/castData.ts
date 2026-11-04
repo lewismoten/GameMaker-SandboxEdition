@@ -11,7 +11,7 @@ import CAMEOS from './cameos.json';
 import HIDDEN from './hidden.json';
 import type { Chicken } from '../chicken/chickenState';
 
-export type Family = 'sandbox' | 'bizarre';
+type Family = 'sandbox' | 'bizarre';
 
 /** The new games the cast appears in: their catalog title and who published them. */
 export const CAST_GAMES = {

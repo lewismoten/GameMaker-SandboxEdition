@@ -18,7 +18,7 @@ import { startingAt } from '../editors/integrator/startAt';
 import { PlaySession, keepHeat } from '../editors/map/check/playSession';
 import { unlockAchievement } from '../../achievements';
 
-export interface PlayResult {
+interface PlayResult {
   /** Ticks of play this session added to the map's heat map. */
   heatTicks: number;
   /** The play kept for the walkthrough (the latest, when several were). */

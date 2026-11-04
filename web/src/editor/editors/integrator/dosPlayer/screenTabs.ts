@@ -7,7 +7,7 @@ import { PATCHES, type PatchEntry, type PatchGroup, type PatchScreen } from '@le
 /** A tab: a screen's, or the Files tab. */
 export type PanelTab = PatchScreen | 'files';
 
-export interface ScreenTab {
+interface ScreenTab {
   screen: PanelTab;
   label: string;
 }
