@@ -39,7 +39,7 @@ MPN = {
     "SW2": ("Omron SS-5GL2 (verify terminals)", "Digi-Key / Mouser SS-5GL2", UN),
     "SW4": ("Omron B3F-1000 (6 mm tactile)", "Digi-Key SW400-ND $0.35", "checked 2026-11-03: Digi-Key 21,251 in stock"),
     "BT1": ("Pololu 1145 4 x AAA holder with 6 in leads (53 x 50 x 13 mm)", "Pololu 1145 $2.54; Digi-Key SBH441A-ND $3.48", "checked 2026-11-03: prices read, Digi-Key 88 in stock"),
-    "RV1": ("10k 3-pin trimmer, 2.54 mm pins (Adafruit 356 style) - OPTIONAL, fit instead of R20 and R21", "Adafruit 356 $1.25 (out of stock 2026-11-03); any 10k trimmer", "checked 2026-11-03: Adafruit page"),
+    "RV1": ("10k side thumbwheel potentiometer, right-angle, 3 pins 2.54 mm apart, wheel about 10 mm across", "Digi-Key / Mouser 'thumbwheel potentiometer 10k' (about $1 to $2 each; price not confirmed)", UN),
     "SW1": ("SPDT slide switch, 2.54 mm pins (Adafruit 805 style)", "Adafruit 805 $0.95", "checked 2026-11-03: Adafruit page, in stock"),
 }
 GEN = {

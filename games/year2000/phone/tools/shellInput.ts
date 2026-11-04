@@ -22,8 +22,14 @@ export interface Variant {
   swTop: number;
   frontMax: number;
   backMax: number;
-  /** The battery holder's envelope in viewer coordinates, and whether it sits past the board's edge (the handle). */
-  bt: { x0: number; x1: number; z0: number; z1: number; y0: number; y1: number; handle: boolean };
+  /** The 4 x AAA holder (x length, z width, y thickness; it lies in the bay past the board's bottom end), the pads its leads and the
+   *  microphone's wires go to (board x, z), the thumbwheel pot's (x, z), the speaker's center and the displays' boxes (x0, z0, x1, z1). */
+  holder: { L: number; Wd: number; T: number };
+  btPads: [number, number][];
+  micPads: [number, number][];
+  wheel: [number, number] | null;
+  speaker: [number, number];
+  displays: [number, number, number, number][];
   /** Part bodies (boxes) on each face, and the lead stubs the opposite parts' pads leave on each (clearance.ts). */
   bodies: { id: string; side: string; bbox: number[] }[];
   leads: Lead[];
@@ -48,11 +54,11 @@ export function loadVariant(id: 'cheap' | 'deluxe', dir: string): Variant {
     return [(b[0] + b[3]) / 2, (b[2] + b[5]) / 2];
   };
   const d = mech.dial;
-  const bt: number[] = rd('viewer/parts.json').variant?.holder ?? first('BT1').bbox; // shell.ts remembers the holder's box when it replaces the block
+  const sec = (k: string) => mech.front?.[k] ?? mech.back?.[k]; // the interface file groups its parts under front and back
+  const hold = sec('battery_holder');
   const W: number = mech.board.width;
   const H: number = mech.board.height;
-  const handle = bt[5] > H;
-  const rest = parts.filter((p) => !p.id.startsWith('BT'));
+  const rest = parts.filter((p) => !p.id.startsWith('BT') && !p.id.startsWith('MK'));
   const win = (o: { x: number; y: number; size?: number; width?: number; height?: number }, what: string) => ({
     x: o.x,
     z: o.y,
@@ -85,7 +91,15 @@ export function loadVariant(id: 'cheap' | 'deluxe', dir: string): Variant {
     swTop: Math.max(...parts.filter((p) => p.id === 'SW2').map((p) => p.bbox[4])),
     frontMax: Math.max(...rest.filter((p) => p.side === 'front').map((p) => p.bbox[4])),
     backMax: -Math.min(...rest.filter((p) => p.side === 'back').map((p) => p.bbox[1])),
-    bt: { x0: bt[0], x1: bt[3], z0: bt[2], z1: bt[5], y0: bt[1], y1: bt[4], handle },
+    holder: { L: hold.body[0], Wd: hold.body[1], T: hold.height },
+    btPads: hold.lead_pads as [number, number][],
+    micPads: sec('microphone').solder_pads as [number, number][],
+    wheel: sec('volume_wheel') ? (sec('volume_wheel').center as [number, number]) : null,
+    speaker: sec('speaker').center as [number, number],
+    displays: ['DS1', 'DS2'].map((r) => {
+      const b = first(r).bbox;
+      return [b[0], b[2], b[3], b[5]] as [number, number, number, number];
+    }),
     bodies: rest.map((p) => ({ id: p.id, side: p.side, bbox: p.bbox })),
     leads: leadsFrom(rd('kicad/placement.json') as never),
     windows: [win(spots.codes.parts, 'parts list QR'), win(spots.codes.site, 'site QR'), win(spots.dex, 'Dex Dynamo')],

@@ -40,7 +40,7 @@ describe('groups', () => {
     for (const { parts: ps } of Object.values(builds)) {
       const ids = new Set(ps.map((p) => p.id));
       for (const id of [
-        'front-frame',
+        'front-cover',
         'back-tray',
         'battery-door',
         'dial-plate',
@@ -59,9 +59,12 @@ describe('groups', () => {
       }
       expect(ps.filter((p) => p.group === 'shell' && p.side === 'front').length).toBeGreaterThan(0);
     }
-    // only the cheap build has a handle past the board's edge
-    expect(parts.some((p) => p.id === 'back-handle')).toBe(true);
-    expect(builds.deluxe.parts.some((p) => p.id === 'back-handle')).toBe(false);
+    // one continuous case (no separate handle); the microphone capsule and the holder's leads are modeled
+    for (const { parts: ps } of Object.values(builds)) {
+      expect(ps.some((p) => p.id === 'back-handle')).toBe(false);
+      expect(ps.some((p) => p.id === 'MK1-capsule')).toBe(true);
+      expect(ps.some((p) => p.id === 'BT1-lead1')).toBe(true);
+    }
   });
   it('knows its two builds and their sizes, the cheap board being the smaller', () => {
     expect(builds.cheap.file.variant?.board).toEqual({ width: 99, height: 99 });

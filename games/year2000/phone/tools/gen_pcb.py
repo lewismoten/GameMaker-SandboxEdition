@@ -57,7 +57,7 @@ FIXED = {k: (sn(x), sn(y), r) for k, (x, y, r) in {
     "DS1": (33.5, 24.0, 0), "DS2": (65.5, 24.0, 0),
     "LS1": (SPK[0], SPK[1], 0),
     "SW2": (DIAL[0] - 7.62, DIAL[1], 0), "SW3": (DIAL[0] + 7.62, DIAL[1] + 5.08, 0),
-    "SW4": (13.0, 92.0, 0), "SW5": (86.0, 92.0, 0), "MK1": (CX, 91.5, 0), "BT1": (31.0, 93.5, 0), "J1": (68.0, 94.0, 0),
+    "SW4": (13.0, 92.0, 0), "SW5": (86.0, 92.0, 0), "MK1": (CX, 91.5, 0), "BT1": (31.0, 93.5, 0), "J1": (68.0, 94.0, 0), "RV1": (W - 3.5, 70.0, 90),
 }.items()}
 NEAR = {"X1": "U2", "C12": "U1", "C13": "U3", "R25": "U3", "C14": "U1", "R1": "U1", "C15": "U2", "C16": "U4", "C17": "U5", "C18": "U5",
         "C19": "U5", "U6": "BT1", "C1": "U6", "C2": "U6", "Q1": "D2", "R10": "Q1", "R11": "D2", "Q2": "U5", "R21": "Q2",
@@ -242,6 +242,10 @@ TAKEN = []          # text boxes already used (board coordinates)
 # Back-side advertising, in the three blank spots of the back (found from the back preview): QR codes and Dex.
 PARTS_URL = "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/games/year2000/phone"
 SITE_URL = "https://lewismoten.github.io/GameMaker-SandboxEdition"
+URL_LINES = {      # what is printed beside each QR code (1.0 mm letters); together each is the address the QR code holds, without https://
+    SITE_URL: ["lewismoten.github.io/", "GameMaker-SandboxEdition"],
+    PARTS_URL: ["github.com/lewismoten/", "GameMaker-SandboxEdition/", "tree/master/games/", "year2000/phone"],
+}
 QR_PARTS = (27.5, 44.0, 0.44)      # x, y (top-left, board coordinates), module mm: 41 modules = 18.0 mm
 QR_SITE = (65.0, 47.0, 0.5)        # 33 modules = 16.5 mm
 QR_KEEP = [(QR_PARTS[0], QR_PARTS[1], QR_PARTS[0] + 18.1, QR_PARTS[1] + 18.1), (QR_SITE[0], QR_SITE[1], QR_SITE[0] + 16.6, QR_SITE[1] + 16.6)]
@@ -353,6 +357,80 @@ def box_ok(b, margin=0.45):
         if math.hypot(px - qx, py - qy) < pr + margin:
             return False
     return not any(overlaps(b, t) for t in TAKEN)
+
+
+RESERVED = {}      # (layer, text) -> (x, y): back lines that must not lose their place to the reference and value text
+
+
+def _reserve_back_lines():
+    """The back's title and credit lines take their spots before any reference or value text, so a crowded back cannot push them off the board."""
+    for s_, y_, size_ in [('THE PHONE OF THE FUTURE', 12.0, 1.9), ('rev C  untested design', 15.0, 0.9), ('Claude Sonnet 5.5 + KiCad', 17.0, 0.9), ('THE POCKET TELEPHONE', 7.0, 1.1)]:
+        w_ = len(s_) * size_ * 0.85 + 0.3
+        for d in [0] + [k * 1.0 for k in range(1, 40)]:
+            hit = None
+            for dx, dy in ((0, 0),) if d == 0 else ((d, 0), (-d, 0), (0, d), (0, -d), (d, d), (-d, d), (d, -d), (-d, -d)):
+                b = (CX + dx - w_ / 2, y_ + dy - size_ / 2 - 0.1, CX + dx + w_ / 2, y_ + dy + size_ / 2 + 0.1)
+                if box_ok(b):
+                    TAKEN.append(b)
+                    hit = (CX + dx, y_ + dy)
+                    break
+            if hit:
+                RESERVED[("B.SilkS", s_)] = hit
+                break
+
+
+_reserve_back_lines()
+
+
+def _place_urls():
+    """Each QR code's address in 1.0 mm letters, reserved before any reference or value text so it sits right beside its code:
+    a stack of lines below it, above it, or to its right or left, shifted along the code until clear of pads and other text."""
+    spots = {}
+    for qr, qtext in ((QR_PARTS, PARTS_URL), (QR_SITE, SITE_URL)):
+        qx, qy, qm = qr
+        qs = 18.1 if qr is QR_PARTS else 16.6
+        lines = URL_LINES[qtext]
+        n = len(lines)
+        wmax = max(len(ln) for ln in lines) * 0.85 + 0.3
+        stackh = 1.25 * (n - 1)
+        cands = []
+        for sh in (0, 1, -1, 2, -2, 3, -3, 4, -4, 6, -6, 8, -8, 10, -10):
+            cands.append((qx + qs / 2 + sh, qy + qs + 1.0))                      # below
+            cands.append((qx + qs / 2 + sh, qy - 1.0 - stackh))                  # above
+            cands.append((qx + qs + 1.0 + wmax / 2, qy + qs / 2 - stackh / 2 + sh))   # right
+            cands.append((qx - 1.0 - wmax / 2, qy + qs / 2 - stackh / 2 + sh))        # left
+        for cx, dy0 in cands:
+            boxes = []
+            for i, ln in enumerate(lines):
+                cy = dy0 + i * 1.25
+                w = len(ln) * 0.85 + 0.3
+                boxes.append((ln, cx, cy, (cx - w / 2, cy - 0.6, cx + w / 2, cy + 0.6)))
+            if all(box_ok(b[3]) for b in boxes) and not any(overlaps(boxes[i][3], boxes[j][3]) for i in range(n) for j in range(i + 1, n)):
+                for b in boxes:
+                    TAKEN.append(b[3])
+                spots[qtext] = [(b[0], b[1], b[2]) for b in boxes]
+                break
+        if qtext not in spots:       # no room for one stack: each line goes to the nearest free spot around the code
+            print("  no room for one stack beside", qtext, "- placing its lines one by one")
+            mid = (qx + qs / 2, qy + qs / 2)
+            grid = sorted(((mid[0] + dx * 0.5, mid[1] + dy * 0.5) for dx in range(-90, 91) for dy in range(-90, 91)),
+                          key=lambda c: (c[0] - mid[0]) ** 2 + (c[1] - mid[1]) ** 2)
+            got = []
+            for ln in lines:
+                w = len(ln) * 0.85 + 0.3
+                for cx, cy in grid:
+                    b = (cx - w / 2, cy - 0.6, cx + w / 2, cy + 0.6)
+                    if box_ok(b):
+                        TAKEN.append(b)
+                        got.append((ln, cx, cy))
+                        break
+                else:
+                    print("  no spot for the line", ln)
+            spots[qtext] = got
+    return spots
+
+
+URL_SPOTS = _place_urls()
 
 
 def tbox(cx, cy, s):
@@ -528,6 +606,9 @@ def clear(x, y, margin=0.55):
 
 def label(layer, s, x, y, size, mirror=False, thick=None):
     """Silk text near (x, y), moved to the nearest spot clear of pads and other silk."""
+    if (layer, s) in RESERVED:
+        rx, ry = RESERVED.pop((layer, s))
+        return txt(layer, s, rx, ry, size, mirror, thick)
     w = len(s) * size * 0.85 + 0.3
     for d in [0] + [k * 1.0 for k in range(1, 40)]:
         for dx, dy in ((0, 0),) if d == 0 else ((d, 0), (-d, 0), (0, d), (0, -d), (d, d), (-d, d), (d, -d), (-d, -d)):
@@ -569,6 +650,18 @@ def near_label(layer, s, x, y, w, h, size=0.9):
             TAKEN.append(b)
             return txt(layer, s, cx, cy, size, True)
     return label(layer, s, x + w / 2, y + h + 1.0, size, True)
+
+
+def _dex_avoid(x0, y0, x1, y1, margin=0.15):
+    """True where an outline segment would come within `margin` of a pad or via (silk over exposed copper is clipped)."""
+    pts = list(padpts) + [(x, y, 0.4) for v in vias.values() for x, y in v]
+    for px_, py_, r_ in pts:
+        dx, dy = x1 - x0, y1 - y0
+        t = 0.0 if dx == dy == 0 else max(0.0, min(1.0, ((px_ - x0) * dx + (py_ - y0) * dy) / (dx * dx + dy * dy)))
+        if math.hypot(px_ - (x0 + t * dx), py_ - (y0 + t * dy)) < r_ + margin + 0.125:
+            return True
+    return False
+
 
 
 silk = []
@@ -627,7 +720,9 @@ for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SI
     QR_INFO["parts" if qtext == PARTS_URL else "site"] = dict(x=qx, y=qy, size=round(size_, 2), modules=n_, module_mm=qm, url=qtext)
     silk += items_
     silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))
-silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f, skip=DEX_SKIP)[0]
+    for ln, lx, ly in URL_SPOTS.get(qtext, []):       # the address in words, split at the slashes, never shortened
+        silk.append(txt("B.SilkS", ln, lx, ly, 1.0, True))
+silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f, skip=DEX_SKIP, outline=0.25, avoid=_dex_avoid)[0]
 silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], DEX_W, DEX_H))
 items += silk
 

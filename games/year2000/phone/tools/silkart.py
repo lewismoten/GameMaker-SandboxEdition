@@ -75,7 +75,7 @@ def _hatch(kind, layer, px0, py0, size, ox, oy, step, w, uid, f):
     return out
 
 
-def block_art(layer, rows, tones, x, y, px, uid, f, w=0.15, skip=()):
+def block_art(layer, rows, tones, x, y, px, uid, f, w=0.15, skip=(), outline=0.0, avoid=None):
     """rows: strings, one char per pixel; tones: char -> ("solid",) or (hatch kinds like "/\\\\", spacing mm).
     `skip` is a set of (row, col) pixels left out (where a pad is). On a B layer the picture is mirrored so it reads from the back. Returns (items, width_mm, height_mm)."""
     back = layer.startswith("B.")
@@ -92,4 +92,24 @@ def block_art(layer, rows, tones, x, y, px, uid, f, w=0.15, skip=()):
                 out.append(_rect(layer, x0, y0, x0 + px, y0 + px, uid, f))
             else:
                 out += _hatch(t[0], layer, x0, y0, px, x, y, t[1], w, uid, f)
+    if outline:       # a thin silk line just outside the silhouette (every non-blank pixel), so dark bare edges still read
+        fill = {(r, c) for r, row in enumerate(rows) for c, ch in enumerate(row) if ch != '.'}
+        o = outline / 2 + 0.1
+        for r, c in sorted(fill):
+            if (r, c) in skip:
+                continue
+            cc = (cols - 1 - c) if back else c
+            x0, y0 = x + cc * px, y + r * px
+            for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                if (r + dr, c + dc) in fill:
+                    continue
+                dcc = -dc if back else dc            # the picture is mirrored on the back
+                if dr:
+                    yy = y0 - o if dr < 0 else y0 + px + o
+                    if not (avoid and avoid(x0 - o, yy, x0 + px + o, yy)):
+                        out.append(_line(layer, x0 - o, yy, x0 + px + o, yy, outline, uid, f))
+                else:
+                    xx = x0 - o if dcc < 0 else x0 + px + o
+                    if not (avoid and avoid(xx, y0 - o, xx, y0 + px + o)):
+                        out.append(_line(layer, xx, y0 - o, xx, y0 + px + o, outline, uid, f))
     return out, cols * px, len(rows) * px

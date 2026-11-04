@@ -117,13 +117,10 @@
     },
     "microphone": {
       "ref": "MK1",
-      "center": [
-        49.53,
-        91.44
-      ],
       "diameter": 9.7,
       "height": 6.5,
-      "faces": "front, bottom end (mouth end)",
+      "in_shell": true,
+      "faces": "front, in the shell's mouthpiece past the bottom end (grille holes in the front cover)",
       "solder_pads": [
         [
           46.99,
@@ -133,7 +130,22 @@
           52.07,
           91.44
         ]
-      ]
+      ],
+      "note": "the electret capsule is NOT on the board: a printed collar under the front cover's grille grips it. Two short wires (a twisted pair) run from the pads, through the wire slot in the shell and across the battery bay, to the capsule (+ is pad 1, the bias side, marked + on the silkscreen)"
+    },
+    "volume_wheel": {
+      "ref": "RV1",
+      "center": [
+        95.504,
+        70.104
+      ],
+      "body": [
+        10.0,
+        8.0
+      ],
+      "height": 4.9,
+      "wheel_diameter": 10.0,
+      "note": "side thumbwheel pot: its wheel stands 1.5 mm past the board edge, through a slot in the tray's side wall"
     },
     "buttons": {
       "TALK": {
@@ -299,14 +311,14 @@
     "keep_clear": "inside the dial radius the front carries only silkscreen and the two tactile switches (no pads, vias or front copper tracks): the dial can sit about 6 mm above the board"
   },
   "back": {
-    "note": "Electronics are on the back. Back parts are mirrored footprints. The battery holder is NOT on the board: it sits in the shell's handle below the bottom edge.",
+    "note": "Electronics are on the back. Back parts are mirrored footprints. The battery holder is NOT on the board: it lies flat in the shell's battery bay, past the bottom end of the board (the shell is one continuous case).",
     "max_part_height": 11.0,
     "battery_holder": {
       "ref": "BT1",
       "outside_board": true,
       "body_center": [
-        30.99,
-        127.0
+        49.5,
+        129.0
       ],
       "body": [
         60.0,
@@ -323,7 +335,7 @@
           93.472
         ]
       ],
-      "note": "4 x AAA holder with cover, switch and 6 in leads (typical 60 x 52 x 17 mm: measure the one bought); the ON/OFF switch is on the holder, so the handle needs a window for it. The leads are shortened and soldered to the two pads (red to +)"
+      "note": "4 x AAA holder with cover, switch and 6 in leads (typical 60 x 52 x 17 mm: measure the one bought); the ON/OFF switch is on the holder, so the bay needs a window for it (NOT cut yet: place it once the holder is chosen). The leads are shortened and soldered to the two pads (red to +)"
     },
     "programming_header": {
       "ref": "J1",
@@ -363,13 +375,13 @@
     "regulator": {
       "ref": "U6",
       "center": [
-        23.876,
+        38.1,
         85.344
       ],
       "height": 4.6
     },
     "tallest_parts": [
-      "BT1 17 mm (outside the board, in the handle)",
+      "BT1 17 mm (outside the board, in the battery bay)",
       "C19 100 uF electrolytic 11 mm",
       "C1 C2 C4 C18 10 uF electrolytics 11 mm",
       "J1 header 8.5 mm",

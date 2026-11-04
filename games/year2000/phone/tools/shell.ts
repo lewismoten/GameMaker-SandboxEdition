@@ -44,6 +44,20 @@ const volumeSign = (pos: ArrayLike<number>, idx: ArrayLike<number>): number => {
   return Math.sign(vol);
 };
 
+/** A cylinder standing along y (its bounding box given) as a plus-shaped set of boxes and a square, all inside its circle. */
+function capsuleBoxes(b: number[]): { id: string; bbox: number[] }[] {
+  const r = (b[3] - b[0]) / 2;
+  const cx = (b[0] + b[3]) / 2;
+  const cz = (b[2] + b[5]) / 2;
+  const q = r * 0.7; // corners at 0.99 r: inside the circle
+  const k = 0.38 * r;
+  return [
+    { id: 'capsule', bbox: [cx - 0.92 * r, b[1], cz - k, cx + 0.92 * r, b[4], cz + k] },
+    { id: 'capsule', bbox: [cx - k, b[1], cz - 0.92 * r, cx + k, b[4], cz + 0.92 * r] },
+    { id: 'capsule', bbox: [cx - q, b[1], cz - q, cx + q, b[4], cz + q] },
+  ];
+}
+
 function det(place: ShellPart['place']): number {
   const o = place(0, 0, 0);
   const sub = (p: V3): V3 => [p[0] - o[0], p[1] - o[1], p[2] - o[2]];
@@ -55,7 +69,7 @@ function det(place: ShellPart['place']): number {
 
 function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
   const v: Variant = loadVariant(id, dir);
-  const parts = buildShell(v);
+  const { parts, bay } = buildShell(v);
   const jsonPath = join(dir, 'viewer/parts.json');
   const file = JSON.parse(readFileSync(jsonPath, 'utf8')) as { floats: number; indices: number; parts: Row[]; [k: string]: unknown };
   const buf = readFileSync(join(dir, 'viewer/parts.bin'));
@@ -63,12 +77,12 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
   const floats = new Float32Array(ab, 0, file.floats);
   const index = new Uint32Array(ab, file.floats * 4, file.indices);
   // the convention of the file: the sign of the placeholder battery block's signed volume
-  const bigBt = file.parts.filter((p) => p.id === 'BT1').sort((a, b) => b.pos.count - a.pos.count)[0];
+  const bigBt = file.parts.find((p) => p.id === 'BT1' && p.made !== 'shell.ts');
   const refSign = bigBt
     ? volumeSign(floats.subarray(bigBt.pos.offset, bigBt.pos.offset + bigBt.pos.count), index.subarray(bigBt.idx.offset, bigBt.idx.offset + bigBt.idx.count)) ||
       1
     : 1;
-  const keep = file.parts.filter((p) => p !== bigBt && p.made !== 'shell.ts');
+  const keep = file.parts.filter((p) => p.made !== 'shell.ts');
   const outDir = join(dir, 'shell');
   mkdirSync(outDir, { recursive: true });
 
@@ -178,7 +192,40 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
       bad.push(`${g.id} is ${g.lead.gap.toFixed(2)} mm from a lead of ${g.lead.other} at ${g.lead.at.map((n) => n.toFixed(1)).join(', ')}`);
     if (g.body.gap < MIN_GAP) bad.push(`${g.id} is ${g.body.gap.toFixed(2)} mm from ${g.body.other} at ${g.body.at.map((n) => n.toFixed(1)).join(', ')}`);
   }
-  writeFileSync(join(dir, 'viewer/clearance.json'), JSON.stringify({ lead: LEAD, leadRadius: LEAD_R, min: MIN_GAP, parts: gaps }, null, 1));
+  // the holder and the capsule in the bay: the printed case parts (not the stand-in box) must stay clear of them, with only a little slack (ribs at 0.2 mm)
+  const HOLDER_GAP = 0.15;
+  const printedIds = new Set(parts.filter((p) => p.printed && p.id !== 'BT1').map((p) => p.id));
+  const bayGaps = measure(
+    placed.filter((p) => printedIds.has(p.row.id)).map((p) => ({ id: p.row.id, pos: p.pos, idx: p.idx })),
+    [],
+    [
+      { id: 'holder', bbox: bay.holder },
+      ...capsuleBoxes(bay.capsule), // the round capsule as three boxes inside its circle (a bounding square would wrongly collide with the collar)
+    ],
+    regionOf,
+  );
+  console.log(
+    `bay (holder ${bay.holder.map((n) => n.toFixed(1)).join(' ')}; capsule ${bay.capsule.map((n) => n.toFixed(1)).join(' ')}): mm to the holder / capsule, must stay >= ${HOLDER_GAP}`,
+  );
+  for (const g of bayGaps) {
+    console.log(' ', g.id.padEnd(14), fmt(g.body));
+    if (g.body.gap < HOLDER_GAP)
+      bad.push(`${g.id} is ${g.body.gap.toFixed(2)} mm from the ${g.body.other} at ${g.body.at.map((n) => n.toFixed(1)).join(', ')}`);
+  }
+  writeFileSync(
+    join(dir, 'viewer/clearance.json'),
+    JSON.stringify(
+      {
+        lead: LEAD,
+        leadRadius: LEAD_R,
+        min: MIN_GAP,
+        parts: gaps,
+        bay: { min: HOLDER_GAP, ...bay, gaps: bayGaps.map((g) => ({ id: g.id, gap: Number.isFinite(g.body.gap) ? g.body.gap : null, other: g.body.other })) },
+      },
+      null,
+      1,
+    ),
+  );
   if (bad.length) {
     console.log(`!! clearance below ${MIN_GAP} mm:\n  ${bad.join('\n  ')}`);
     process.exitCode = 1;
@@ -187,7 +234,7 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
     ...file,
     floats: fo,
     indices: io,
-    variant: { id, name: v.name, subtitle: v.subtitle, board: { width: v.W, height: v.H }, holder: [v.bt.x0, v.bt.y0, v.bt.z0, v.bt.x1, v.bt.y1, v.bt.z1] },
+    variant: { id, name: v.name, subtitle: v.subtitle, board: { width: v.W, height: v.H }, bay },
     parts: rows,
   };
   writeFileSync(join(dir, 'viewer/parts.bin'), out);

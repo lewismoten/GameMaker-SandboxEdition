@@ -77,7 +77,7 @@ add("SW4", "Switch:SW_Push", "TALK", "tact", "F", {"1": V5, "2": "TALK_H"}, desc
 add("SW5", "Switch:SW_Push", "CLEAR", "tact", "F", {"1": "MCLR", "2": GND}, desc="6 mm tactile switch")
 # ---- battery ----------------------------------------------------------------------------------
 add("BT1", "Device:Battery", "4xAAA", "batt", "B", {"1": "VBAT", "2": GND},
-    desc="4 x AAA battery holder with cover, ON/OFF switch and wire leads (lives in the shell's handle), leads soldered to two pads")
+    desc="4 x AAA battery holder with cover, ON/OFF switch and wire leads (lies in the shell's battery bay), leads soldered to two pads")
 # ---- passives ---------------------------------------------------------------------------------
 R(1, "10k", V5, "MCLR", "MCLR pull-up")
 R(2, "100k", "TALK_H", GND, "TALK line pull-down")
@@ -98,7 +98,9 @@ R(16, "470k", "TONE_AC", "AIN", "tones to the speaker (the speaker amp input has
 R(17, "47k", "PD", GND, "photodiode load")
 R(18, "4.7k", "PD_AC", "RXINV", "receive amp input")
 R(19, "100k", "RXAMP", "RXINV", "receive amp feedback (gain 21)")
-R(20, "47k", "RX_AC", "AIN", "receiver to speaker amp (sets the volume against the amp's own 50k input)")
+R(20, "33k", "RX_AC", "VOLHI", "receiver to the volume pot RV1 (with RV1 at full and the amp's own 50k input, the level matches the old fixed 47k within 0.3 dB)")
+add("RV1", "Device:R_Potentiometer", "100k thumbwheel", "thumb", "B", {"1": "VOLHI", "2": "AIN", "3": GND},
+    desc="Volume: a side thumbwheel pot at the board edge, its wheel through a slot in the shell (wiper to the speaker amp input)")
 R(21, "10k", "TALK_H", "Q2B", "receiver mute base resistor")
 R(22, "100k", "M_IN_AC", "M_INN", "MT8870 input resistor")
 R(23, "100k", "M_GS", "M_INN", "MT8870 feedback (unity gain)")
