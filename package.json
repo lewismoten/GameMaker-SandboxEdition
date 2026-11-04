@@ -35,6 +35,7 @@
     "walk:auto": "npm run walk:auto -w gamemaker-web --",
     "fuzz:files": "npm run fuzz:files -w gamemaker-web --",
     "check:keys": "npm run check:keys -w gamemaker-web --",
+    "dast": "npm run dast -w gamemaker-web --",
     "replay:log": "npm run replay:log -w gamemaker-web --",
     "domains:check": "npm run domains:check -w gamemaker-web --",
     "dead:code": "npm run dead:code -w gamemaker-web --",
