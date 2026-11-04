@@ -72,7 +72,7 @@ Part of the [source map](../README.md).
   (what moves and the clamped math, no DOM) and `dragStage.ts` (pointer, Move list, arrow keys)), `sounds/`, `sample/`, `music/` (the piano roll in `music/roll/`, drawn from cached tiles
   (`tiles.ts`, `paint.ts`) that an edit repaints only where it changed (`state.ts`), accompaniment in
   `music/arrange/`), `picture/`, `animation/` (the Scene maker in `animation/scene/`), `backdrop/`,
-  `slideShow/`, `textScreen/`, `recording/` and `highScores/`.
+  `slideShow/`, `textScreen/` (Undo and Redo steps in `textUndo.ts`: a burst of typing is one step, a paste, cut or new line its own) , `recording/` and `highScores/`.
 - `tools/`: ways to make files beyond "new": importing pictures (`importPicture.ts`,
   `convert.ts`), composing songs (`songMaker.ts`), recording or synthesizing samples
   (`vocMaker.ts`, `sfxMaker.ts`; a recording stops itself where the .VOC would reach 64 KB, with the
