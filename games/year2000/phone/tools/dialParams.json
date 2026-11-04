@@ -1,0 +1,16 @@
+{
+  "_note": "Junior Lab dial module: the numbers the mechanism check (dialMechanism.ts, picsim.py) and the parts (dialModule.ts) share. Degrees are clockwise from the top of the phone; mm.",
+  "pitchDeg": 30,
+  "teeth": 12,
+  "stopDeg": 120,
+  "holeOneDeg": 90,
+  "ringR": 29,
+  "holeD": 13,
+  "plateR": 37,
+  "pulseClosedFromDeg": 5,
+  "pulseClosedToDeg": 17,
+  "holdBackSnapDeg": 8,
+  "offNormalOpenWithinDeg": 4,
+  "returnRateDegPerS": [240, 450],
+  "bounceMs": 1.5
+}
