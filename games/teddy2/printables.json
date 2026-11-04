@@ -506,6 +506,229 @@
      ]
     }
    ]
+  },
+  {
+   "kind": "postcardgrille",
+   "title": "The Corn Maze Postcard and Grille",
+   "note": "Lay the card over the postcard to read the way through",
+   "heading": "GREETINGS FROM THE TRI-COUNTY FAIR",
+   "caption": "The Corn Maze",
+   "address": [
+    "To: Doc Leo",
+    "P.O. Box 000"
+   ],
+   "rows": [
+    [
+     "Ask",
+     "the",
+     "bale.",
+     "More",
+     "hole",
+     "soon.",
+     "Try",
+     "bell",
+     "first."
+    ],
+    [
+     "Hole",
+     "or",
+     "bale?",
+     "That",
+     "bale",
+     "again!",
+     "Same",
+     "bell",
+     "again."
+    ],
+    [
+     "Hole",
+     "was",
+     "huge!",
+     "Hole",
+     "smelled",
+     "good.",
+     "Bell",
+     "next,",
+     "please."
+    ],
+    [
+     "One",
+     "bale",
+     "left.",
+     "Popcorn",
+     "for",
+     "lunch.",
+     "No",
+     "bale",
+     "here."
+    ],
+    [
+     "Back",
+     "soon,",
+     "promise.",
+     "Behind",
+     "the",
+     "pie.",
+     "Big",
+     "hole",
+     "ahead!"
+    ]
+   ],
+   "border": {
+    "top": [
+     "stick",
+     "mouse",
+     "paw",
+     "mouse",
+     "corn",
+     "mouse",
+     "corn",
+     "bone",
+     "bone"
+    ],
+    "bottom": [
+     "bone",
+     "stick",
+     "corn",
+     "bone",
+     "stick",
+     "paw",
+     "bone",
+     "corn",
+     "bone"
+    ],
+    "left": [
+     "bone",
+     "corn",
+     "stick",
+     "mouse",
+     "crow"
+    ],
+    "right": [
+     "mouse",
+     "bone",
+     "corn",
+     "stick",
+     "bone"
+    ]
+   },
+   "grille": {
+    "n": 3,
+    "holes": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      2
+     ],
+     [
+      2,
+      1
+     ],
+     [
+      0,
+      2
+     ]
+    ],
+    "a": {
+     "name": "stick",
+     "row": 2
+    },
+    "b": {
+     "name": "paw",
+     "col": 0
+    }
+   },
+   "glyphs": {
+    "stick": [
+     "...###...",
+     "..#####..",
+     "..#####..",
+     "..#####..",
+     "..#####..",
+     "...###...",
+     "....#....",
+     "....#....",
+     "....#...."
+    ],
+    "bone": [
+     ".........",
+     "##.....##",
+     "###...###",
+     ".#######.",
+     ".#######.",
+     "###...###",
+     "##.....##",
+     ".........",
+     "........."
+    ],
+    "paw": [
+     ".##...##.",
+     ".##...##.",
+     "...###...",
+     "#..###..#",
+     "#..###..#",
+     "..#####..",
+     "..#####..",
+     "...###...",
+     "........."
+    ],
+    "mouse": [
+     ".##...##.",
+     ".##...##.",
+     "..#####..",
+     ".#.###.#.",
+     ".#######.",
+     "..#####..",
+     "...#.#...",
+     "..#...#..",
+     "........."
+    ],
+    "crow": [
+     "...##....",
+     "..####...",
+     ".#.####..",
+     ".#######.",
+     "..#######",
+     "...#####.",
+     "....###..",
+     "....#.#..",
+     "...##.##."
+    ],
+    "corn": [
+     "...##....",
+     "..####...",
+     ".#.##.#..",
+     ".######..",
+     ".#.##.#..",
+     ".######..",
+     "..####...",
+     ".#.##.#..",
+     "..#..#..."
+    ]
+   },
+   "howto": [
+    "The postcard is written in a hurry, and almost all of it is plain news. Cut out the grille card (glue its two faces back to back) and cut its four numbered holes.",
+    "The grille has two pictures on its edges: a corn dog stick and a paw print. Slide, turn and flip the card until each picture looks straight out along its row or column, to the same picture printed on the postcard.",
+    "Read the holes in number order. BALE means hop up a hay bale step; HOLE means drop down a hole. Most places read nonsense, and a few read a wrong way through the maze."
+   ],
+   "puzzles": [
+    {
+     "scenes": [
+      7
+     ],
+     "ask": "The Corn Maze: three tiers of paths between the corn, and some paths only end. Which way up and down is the real way through?",
+     "place": {
+      "r": 0,
+      "c": 2,
+      "rot": 0,
+      "flip": false
+     },
+     "answer": "Bale, bale, hole, hole: up two hay bale steps, then down two holes."
+    }
+   ]
   }
  ]
 }

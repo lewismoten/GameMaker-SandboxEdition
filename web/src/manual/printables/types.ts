@@ -272,6 +272,31 @@ export interface CodeSheetItem extends ItemBase {
   puzzles?: { scenes: number[]; ask: string; grid: number; row: string; col: string; answer?: string }[];
 }
 
+/**
+ * A postcard and a grille card (postcardGrille.ts, math in postcardMath.ts): a postcard whose message is a grid of
+ * ordinary words with small pictures printed along its border, and a card with a few numbered holes to lay over it.
+ * Two marks on the grille's edges each look along their row or column out to the border; where both meet their own
+ * picture, the holes read the code. Printed: the card's two sides and the grille's two faces (cut out and glue);
+ * on screen the grille is dragged, turned and flipped over the card.
+ */
+export interface PostcardGrilleItem extends ItemBase {
+  kind: 'postcardgrille';
+  /** Across the picture side, and the line under it. */
+  heading: string;
+  caption: string;
+  /** The address lines on the message side's stamp corner. */
+  address?: string[];
+  /** The message: rows of words (a multiple of three across), one word to a cell. */
+  rows: string[][];
+  border: import('./postcardMath').Border;
+  grille: import('./postcardMath').Grille;
+  /** Pictures for the border and the marks: a name, and rows of '#' (ink) and '.' (paper), every row as wide. */
+  glyphs: Record<string, string[]>;
+  howto?: string[];
+  /** The puzzles: the scenes they are on, the question, the placement that answers it and what it reads. */
+  puzzles?: { scenes: number[]; ask: string; place: import('./postcardMath').Place; answer?: string }[];
+}
+
 export type PrintableItem =
   | SpyglassItem
   | PrintsItem
@@ -285,7 +310,8 @@ export type PrintableItem =
   | StarChartItem
   | RecipeItem
   | CodeWheelItem
-  | CodeSheetItem;
+  | CodeSheetItem
+  | PostcardGrilleItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {
