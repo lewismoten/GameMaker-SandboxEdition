@@ -43,6 +43,10 @@ function scripted(replies: ChatReply[]) {
 }
 const step = (name: string, args: Record<string, unknown>): ChatReply => ({ content: '', toolCalls: [{ id: '', name, args }] });
 
+// The bot's budget is wall-clock time; it stops when it wins, so a roomy one costs nothing on a
+// fast machine and keeps a slow or loaded one from running out before it finds the way.
+const BOT_MS = 60_000;
+
 // a row of the walled area: wall, 28 cells, wall
 const row = (inside: number[]) => [31, ...inside, 31];
 
@@ -64,7 +68,7 @@ describe('making a game from a description', () => {
       step('set_map', { file: 'picnic.map', monsters: [{ monster: 1, x: 40, y: 55 }] }),
       // the exit: a link to scene 1 (game won) in the far corner
       step('set_links', { scene: 2, links: [{ index: 0, to_scene: 1, from_x: 62, from_y: 57 }] }),
-      step('bot_playtest', { budget_ms: 5000 }),
+      step('bot_playtest', { budget_ms: BOT_MS }),
       step('level_check', { severity: 'error' }),
       {
         content:
@@ -125,7 +129,7 @@ describe('making a game from a description', () => {
       },
       step('set_map', { file: 'picnic.map', monsters: [{ monster: 1, x: 40, y: 55 }] }),
       step('set_links', { scene: 2, links: [{ index: 0, to_scene: 1, from_x: 62, from_y: 57 }] }),
-      step('bot_playtest', { budget_ms: 5000 }),
+      step('bot_playtest', { budget_ms: BOT_MS }),
       { content: 'Penguin Cave: an icy cave with a wall to slide round, a friendly seal and an exit. The bot won.', toolCalls: [] },
     ];
     const chat = async (req: ChatRequest): Promise<ChatReply> => {

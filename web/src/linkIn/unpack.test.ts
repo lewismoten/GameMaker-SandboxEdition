@@ -1,7 +1,7 @@
 // Unpacking a sent game (unpack.ts): every way in gives the same game, and bad data gives a
 // friendly LinkError, never a crash.
 import { describe, expect, it } from 'vitest';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { createZip } from '@lewismoten/gamemaker-sandbox-archives/zip';
 import { encodePack } from '@lewismoten/gamemaker-sandbox-archives/pack';
@@ -10,7 +10,9 @@ import { LinkError } from './protocol';
 import { unpackGame } from './unpack';
 
 const DISK = join(__dirname, '../../../games/teddy/disk');
-const files: [string, Uint8Array][] = readdirSync(DISK).map((n) => [n, new Uint8Array(readFileSync(join(DISK, n)))]);
+// The built disk is git-ignored output (npm ci builds it); without it these tests are skipped.
+const hasDisk = existsSync(DISK);
+const files: [string, Uint8Array][] = (hasDisk ? readdirSync(DISK) : []).map((n) => [n, new Uint8Array(readFileSync(join(DISK, n)))]);
 
 const gzip = async (b: Uint8Array) =>
   new Uint8Array(await new Response(new Blob([b as BlobPart]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer());
@@ -20,7 +22,7 @@ const reasonOf = (p: Promise<unknown>) =>
     (e: unknown) => (e instanceof LinkError ? e.reason : `crash: ${String(e)}`),
   );
 
-describe('unpackGame', () => {
+describe.skipIf(!hasDisk)('unpackGame', () => {
   it('reads the folder’s files as they are', async () => {
     const g = await unpackGame(files);
     expect(g.gam).toBe('teddy.gam');

@@ -11,6 +11,9 @@ import { SCRIPT, billSentence, timeSentence, TIME_LEAD, HINT_KENNEL, HINT_RATE }
 import { HINT_CENTS_PER_MINUTE, MAX_MINUTES } from '../../src/desk/room/phone/hintBill';
 import { phoneLines } from './phoneLines';
 
+// Under a second on a fast machine; the 5 s default timed out on a slower one under load.
+const SLOW = 30_000;
+
 const VOICE = join(__dirname, '../../public/phone/voice');
 const clipFile = (path: string) => join(VOICE, `${path}.ogg`);
 
@@ -44,17 +47,21 @@ describe('the phone’s recorded lines', () => {
         }
   });
 
-  it('splices the pretend bill from clips that exist, up to $99.99', () => {
-    for (let cents = 0; cents < 10000; cents++) {
-      const amount = `$${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, '0')}`;
-      const text = `${HINT_KENNEL} ${billSentence(amount)} ${HINT_RATE}`;
-      for (const piece of captionPieces(text)) {
-        const clips = clipsFor(piece, text);
-        expect(clips, text).toBeDefined();
-        for (const c of clips!) expect(have.has(c), `${amount}: ${c}`).toBe(true);
+  it(
+    'splices the pretend bill from clips that exist, up to $99.99',
+    () => {
+      for (let cents = 0; cents < 10000; cents++) {
+        const amount = `$${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, '0')}`;
+        const text = `${HINT_KENNEL} ${billSentence(amount)} ${HINT_RATE}`;
+        for (const piece of captionPieces(text)) {
+          const clips = clipsFor(piece, text);
+          expect(clips, text).toBeDefined();
+          for (const c of clips!) expect(have.has(c), `${amount}: ${c}`).toBe(true);
+        }
       }
-    }
-  });
+    },
+    SLOW,
+  );
 
   it('says every bill the per-minute billing can reach (multiples of the price, up to the cap) in the Hint Giant’s voice', () => {
     for (let minutes = 1; minutes <= MAX_MINUTES; minutes++) {

@@ -1,6 +1,6 @@
 // The game badges: see-through outside the medallion, and the title's ribbon shows only lettering
 // and the ribbon (no title-screen background caught between the letters), on Teddy's own title.
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { decodeGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
 import { paletteToRGBA } from '@lewismoten/gamemaker-sandbox-engine/formats/palette';
@@ -11,10 +11,16 @@ import { GAME_MUGS } from './gameMugArt';
 
 const game = (id: string) => new URL(`../../../../games/${id}/`, import.meta.url);
 const teddy = GAME_MUGS.find((m) => m.game === 'teddy')!;
-const screen = decodeGif(new Uint8Array(readFileSync(new URL('disk/title.gif', game('teddy')))));
-const box = JSON.parse(readFileSync(new URL('about.json', game('teddy')), 'utf8')).box;
+// The built disks are git-ignored output (npm ci builds them); without them the tests that
+// need a title picture are skipped (the blank picture stands in so the suites still collect).
+const titleOf = (id: string) => new URL('disk/title.gif', game(id));
+const hasDisks = ['teddy', 'depth', ...GAME_MUGS.filter((m) => m.ink).map((m) => m.game)].every((id) => existsSync(titleOf(id)));
+const blank = { width: 320, height: 200, pixels: new Uint8Array(320 * 200), palette: new Uint8Array(768) };
+const picture = (id: string) => (hasDisks ? decodeGif(new Uint8Array(readFileSync(titleOf(id)))) : blank);
+const screen = picture('teddy');
+const box = hasDisks ? JSON.parse(readFileSync(new URL('about.json', game('teddy')), 'utf8')).box : {};
 
-describe('composeBadge', () => {
+describe.skipIf(!hasDisks)('composeBadge', () => {
   const badge = composeBadge(screen, undefined, box, teddy);
 
   it('is see-through at the corners', () => {
@@ -59,7 +65,7 @@ describe('composeBadge', () => {
   });
 });
 
-describe('centerY', () => {
+describe.skipIf(!hasDisks)('centerY', () => {
   const at = (b: { data: Uint32Array }, x: number, y: number) => b.data[y * BADGE_W + x];
   const plain = composeBadge(screen, undefined, box, { ...teddy, strip: false });
   const lowered = composeBadge(screen, undefined, box, { ...teddy, strip: false, centerY: 90 });
@@ -79,9 +85,9 @@ describe('centerY', () => {
   });
 });
 
-describe('lettering', () => {
+describe.skipIf(!hasDisks)('lettering', () => {
   const base = { title: [56, 40, 264, 112] as [number, number, number, number], centerX: 160 };
-  const depth = decodeGif(new Uint8Array(readFileSync(new URL('disk/title.gif', game('depth')))));
+  const depth = picture('depth');
   const lettering = { lines: ['DEPTH', 'PERCEPTION'], scales: [6, 3], fill: ['#ffffff', '#7fc4ff'], extrude: '#0a1c5a', centerY: 80 };
   const fresh = composeBadge(depth, undefined, {}, { ...base, lettering });
 
@@ -100,7 +106,7 @@ describe('lettering', () => {
   });
 });
 
-describe('mend', () => {
+describe.skipIf(!hasDisks)('mend', () => {
   it('tiles the columns beside a box over it, row by row', () => {
     const base = { title: [6, 10, 312, 86] as [number, number, number, number], centerX: 160 };
     const flat = { width: 320, height: 200, pixels: new Uint8Array(320 * 200), palette: screen.palette };
@@ -121,7 +127,7 @@ describe('ink: a solid ribbon behind the lettering', () => {
     expect(m.mask.every((v) => v === 1)).toBe(true);
   });
 
-  it('shows no picture between or inside the letters of any badge that names its ink', () => {
+  it.skipIf(!hasDisks)('shows no picture between or inside the letters of any badge that names its ink', () => {
     for (const mug of GAME_MUGS.filter((m) => m.ink)) {
       const scr = decodeGif(new Uint8Array(readFileSync(new URL('disk/title.gif', game(mug.game)))));
       const about = JSON.parse(readFileSync(new URL('about.json', game(mug.game)), 'utf8')).box ?? {};

@@ -17,6 +17,9 @@ import { fliFaults } from '@lewismoten/gamemaker-sandbox-engine/formats/fliLimit
 import { NAME_MAX, addOpening, nameProblem, openingOf, removeOpening, type OpeningProject } from './openingWire';
 import { CLASSIC_SITE, INTROS, introOf, type OpeningStyle } from './openingIntros';
 
+// Under a second on a fast machine; the 5 s default timed out on a slower one under load.
+const SLOW = 30_000;
+
 const PUBLIC = join(__dirname, '../../../../public');
 const CD = join(__dirname, '../../../../../cd');
 /** An intro's file where the site serves it from: public/, or the CD's games (scripts/cdGames.ts serves cd/gameware/ as games/gameware/). */
@@ -94,11 +97,15 @@ describe('the classic RSD intro', () => {
     expect(openingOf(p, p.start)?.style).toBe('classic');
   });
 
-  it('shows the same pictures as TEXTBOX3.FLI (they differ only in a color no pixel of theirs uses)', () => {
-    const shown = (file: string) =>
-      decodeFliFrames(readFileSync(join(CD, file))).frames.map((f) => [...f.pixels].map((c) => f.palette.subarray(c * 3, c * 3 + 3).join()).join(' '));
-    expect(shown('gameware/heart/textbox3.fli')).toEqual(shown('gameware/donut/rsdtbox.fli'));
-  });
+  it(
+    'shows the same pictures as TEXTBOX3.FLI (they differ only in a color no pixel of theirs uses)',
+    () => {
+      const shown = (file: string) =>
+        decodeFliFrames(readFileSync(join(CD, file))).frames.map((f) => [...f.pixels].map((c) => f.palette.subarray(c * 3, c * 3 + 3).join()).join(' '));
+      expect(shown('gameware/heart/textbox3.fli')).toEqual(shown('gameware/donut/rsdtbox.fli'));
+    },
+    SLOW,
+  );
 });
 
 describe('the opening in a new game', () => {
