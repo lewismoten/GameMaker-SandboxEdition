@@ -1,5 +1,47 @@
 {
   "title": "Room to Room",
+  "howDoI": [
+    {
+      "id": "door-link",
+      "q": "How do I send my hero through a door to another room?",
+      "scene": 2,
+      "x": 19,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "open-edge",
+      "q": "How do I let my hero leave a room by walking off its edge?",
+      "scene": 3,
+      "x": 29,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "way-back",
+      "q": "How do I make a door that leads back to the room before?",
+      "scene": 5,
+      "x": 3,
+      "y": 9,
+      "level": 2
+    },
+    {
+      "id": "carry-key",
+      "q": "How do I keep a key from one room to the next?",
+      "scene": 5,
+      "x": 20,
+      "y": 9,
+      "level": 2
+    },
+    {
+      "id": "two-exits",
+      "q": "How do I give a room two exits?",
+      "scene": 7,
+      "x": 4,
+      "y": 9,
+      "level": 3
+    }
+  ],
   "pages": [
     {
       "head": "Welcome",

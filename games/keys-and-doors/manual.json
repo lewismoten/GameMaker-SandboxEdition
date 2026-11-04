@@ -1,5 +1,39 @@
 {
   "title": "Keys and Doors",
+  "howDoI": [
+    {
+      "id": "key",
+      "q": "How do I make a key my hero picks up and carries?",
+      "scene": 2,
+      "x": 26,
+      "y": 2,
+      "level": 1
+    },
+    {
+      "id": "locked-door",
+      "q": "How do I make a door that needs a key?",
+      "scene": 2,
+      "x": 28,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "two-keys",
+      "q": "How do I make a door that needs two keys?",
+      "scene": 3,
+      "x": 29,
+      "y": 9,
+      "level": 2
+    },
+    {
+      "id": "two-counters",
+      "q": "How do I make two kinds of key, each with its own door?",
+      "scene": 4,
+      "x": 34,
+      "y": 9,
+      "level": 3
+    }
+  ],
   "pages": [
     {
       "head": "Welcome",

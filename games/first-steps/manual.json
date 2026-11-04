@@ -1,5 +1,47 @@
 {
   "title": "First Steps",
+  "howDoI": [
+    {
+      "id": "walls",
+      "q": "How do I make a wall my hero has to jump over?",
+      "scene": 2,
+      "x": 34,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "gravity",
+      "q": "How do I make my hero fall off an edge?",
+      "scene": 2,
+      "x": 48,
+      "y": 8,
+      "level": 1
+    },
+    {
+      "id": "coins",
+      "q": "How do I make a coin that gives points?",
+      "scene": 2,
+      "x": 22,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "door",
+      "q": "How do I join one level to the next with a door?",
+      "scene": 2,
+      "x": 55,
+      "y": 10,
+      "level": 1
+    },
+    {
+      "id": "ladder",
+      "q": "How do I make a ladder my hero can climb?",
+      "scene": 3,
+      "x": 14,
+      "y": 10,
+      "level": 2
+    }
+  ],
   "pages": [
     {
       "head": "Welcome",
