@@ -2,7 +2,7 @@
 // disk box on the left, the Game-Maker box on the right, and the PC (case, drives, lights,
 // keyboard, monitor). desk.ts gives it what the buttons do and works the parts it hands back.
 import { h } from '../editor/core/ui';
-import { sevenSegment, floppyDrive, cdDrive, hddLight } from './pc/caseParts';
+import { sevenSegment, floppyDrive, cdDrive, hddLight, blankBay } from './pc/caseParts';
 import { keyLock, brandBadge } from './pc/caseFace';
 import { keyboard } from './pc/keyboard';
 import { keyboardTray } from './pc/tray';
@@ -76,12 +76,12 @@ export function deskScene(on: DeskActions) {
     '⏻',
   );
   const turboBtn = h('button', {
-    class: 'case-btn',
+    class: 'case-btn round',
     'aria-label': 'Turbo',
     onclick: () => on.toggleTurbo(),
   });
   const resetBtn = h('button', {
-    class: 'case-btn reset',
+    class: 'case-btn round reset',
     'aria-label': 'Reset',
     onclick: () => on.reset(),
   });
@@ -184,24 +184,22 @@ export function deskScene(on: DeskActions) {
           { class: 'case' },
           // the modem sits on top of the case, beside the monitor stand
           modem.el,
+          brandBadge(),
+          // the three lights in a row above the strip, each with its name beside it (as on the 1990s case)
+          h('div', { class: 'led-row' }, h('span', null, powerLed, 'POWER'), h('span', null, turboLed, 'TURBO'), h('span', null, hdd.led, 'H.D.D.')),
           h(
             'div',
-            { class: 'case-buttons' },
-            h('label', null, powerBtn, 'POWER'),
-            h('label', null, resetBtn, 'RESET'),
-            // the key lock beside them (the key is long lost: it stays unlocked)
+            { class: 'case-strip' },
+            // the speed it shows, TURBO beside it and RESET to the right of TURBO
+            h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')),
+            h('label', { class: 'case-label' }, turboBtn, 'TURBO'),
+            h('label', { class: 'case-label' }, resetBtn, 'RESET'),
+            // POWER with the key lock next to it (the key is long lost: it stays unlocked)
+            h('label', { class: 'case-label' }, powerBtn, 'POWER'),
             h('span', { class: 'keylock-label', 'aria-hidden': 'true' }, keyLock()),
           ),
-          h(
-            'div',
-            { class: 'leds' },
-            // the three lights in a column, each with its name printed beside it
-            h('div', { class: 'led-stack' }, h('span', null, powerLed, 'POWER'), h('span', null, turboLed, 'TURBO'), h('span', null, hdd.led, 'H.D.D.')),
-            // the turbo button beside the speed it sets
-            h('span', { class: 'speed' }, h('span', { class: 'mhz' }, mhz, h('small', null, 'MHz')), h('label', { class: 'case-label' }, turboBtn, 'TURBO')),
-          ),
-          brandBadge(),
-          h('div', { class: 'drives' }, cd.el, floppy.el),
+          // the drive cage: one stack of bays that touch, with no gaps
+          h('div', { class: 'drives' }, cd.el, floppy.el, blankBay(), blankBay(), blankBay(true)),
           driveActions,
         ),
         keyboardTray(keys.board),
