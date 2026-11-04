@@ -28,7 +28,10 @@ describe('readMarkdown', () => {
   it('splits sections at headings and reads each kind of block', () => {
     const s = readMarkdown(sample);
     expect(s.map((x) => x.title)).toEqual(['', 'Title', 'Steps']);
-    expect(s[1].blocks[0]).toEqual({ tag: 'p', kids: ['Intro with ', { tag: 'strong', kids: ['bold'] }, ', ', { tag: 'code', kids: ['code'] }, ' and a ', 'link', '.'] });
+    expect(s[1].blocks[0]).toEqual({
+      tag: 'p',
+      kids: ['Intro with ', { tag: 'strong', kids: ['bold'] }, ', ', { tag: 'code', kids: ['code'] }, ' and a ', 'link', '.'],
+    });
     const steps = s[2].blocks;
     expect(steps.map((b) => b.tag)).toEqual(['ol', 'ul', 'table', 'pre']);
     expect(blockText(steps[0])).toBe('First step that wraps onto a second line. Second step.');

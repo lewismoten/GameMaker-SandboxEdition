@@ -73,4 +73,3 @@ export function coinPieces(diameter: number, thickness: number, front?: TexImage
   }
   return [cap(1, front), cap(-1, back), { positions: new Float32Array(pos), normals: new Float32Array(nor), color: [0.7, 0.53, 0.34] }];
 }
-

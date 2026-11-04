@@ -58,7 +58,9 @@
   border-radius: 10px;
   background: radial-gradient(circle at 50% 38%, #3a3150, #14101c 85%);
   color: #efe5cc;
-  font: 600 11px/1.15 system-ui, sans-serif;
+  font:
+    600 11px/1.15 system-ui,
+    sans-serif;
   cursor: pointer;
 }
 

@@ -11,7 +11,14 @@ import { blockText, element, readMarkdown, type Block } from './markdownBlocks';
 const BOOK = 'The Phone of the Future';
 const BASE = './trinkets/phone/';
 /** The README's chapters a builder reads, by the start of their headings; their ### parts come with them. */
-const CHAPTERS = ['The 3D-printed shell', 'What is printed on the board', 'Build order for a beginner', 'Programming the PIC', 'Checked and not checked', 'Assumptions to confirm'];
+const CHAPTERS = [
+  'The 3D-printed shell',
+  'What is printed on the board',
+  'Build order for a beginner',
+  'Programming the PIC',
+  'Checked and not checked',
+  'Assumptions to confirm',
+];
 /** A paragraph about the repository, not the kit, stays out of the book. */
 const DEV = /\.for-lewis|\btools\/|viewer\/|games\/year2000|vite-node|\bnpm\b/;
 
@@ -32,7 +39,10 @@ export function phoneChapters(readme: string, parts: string): Chapter[] {
   for (const s of sections) {
     if (s.level === 2) inside = CHAPTERS.some((c) => s.title.startsWith(c));
     if (!inside || s.level < 2) continue;
-    chapters.push({ head: s.title, blocks: [...(s.level > 2 ? [{ tag: 'p', kids: [{ tag: 'strong', kids: [s.title] }] } as Block] : []), ...s.blocks.filter(readable)] });
+    chapters.push({
+      head: s.title,
+      blocks: [...(s.level > 2 ? [{ tag: 'p', kids: [{ tag: 'strong', kids: [s.title] }] } as Block] : []), ...s.blocks.filter(readable)],
+    });
   }
   const list = readMarkdown(parts, ['Refs', 'Qty', 'Value', 'Description']).find((s) => s.level === 1);
   if (list) chapters.push({ head: 'Parts list', blocks: list.blocks.filter(readable) });
@@ -69,7 +79,8 @@ export async function phoneBookPages(): Promise<BookPage[]> {
             'div',
             {
               class: 'game-cover',
-              style: 'background:#1b1630;color:#fff;display:flex;flex-direction:column;justify-content:center;gap:.7em;padding:12%;text-align:center;font-family:system-ui,sans-serif',
+              style:
+                'background:#1b1630;color:#fff;display:flex;flex-direction:column;justify-content:center;gap:.7em;padding:12%;text-align:center;font-family:system-ui,sans-serif',
             },
             h('div', { style: 'font-size:2.1em;font-weight:800;line-height:1.1' }, BOOK.toUpperCase()),
             h('div', { style: 'font-size:1.2em' }, 'Build book'),

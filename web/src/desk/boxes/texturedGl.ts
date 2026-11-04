@@ -103,7 +103,7 @@ export function createTexturedView(canvas: HTMLCanvasElement, pieces: TexPiece[]
       data[i * 8 + 6] = p.uvs?.[i * 2] ?? 0;
       data[i * 8 + 7] = p.uvs?.[i * 2 + 1] ?? 0;
     }
-    const vbo = gl.createBuffer()!;
+    const vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
     let tex: WebGLTexture | null = null;

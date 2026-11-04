@@ -53,7 +53,7 @@ export function readMarkdown(source: string, columns?: string[]): Section[] {
   const lines = source.replace(/\r\n?/g, '\n').split('\n');
   const sections: Section[] = [{ title: '', level: 0, blocks: [] }];
   const add = (b: Block) => sections[sections.length - 1].blocks.push(b);
-  for (let i = 0; i < lines.length; ) {
+  for (let i = 0; i < lines.length;) {
     const line = lines[i];
     const heading = /^(#{1,6})\s+(.*?)\s*#*\s*$/.exec(line);
     if (!line.trim()) i++;

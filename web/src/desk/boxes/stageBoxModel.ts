@@ -46,12 +46,30 @@ export function panelBoxes(s: BoxSize): Record<string, [V3, V3]> {
   const z = s.h / 2;
   const t = s.t;
   return {
-    P: [[-x, y - t, -z], [x, y, z]],
-    K: [[-x, -y, -z], [x, -y + t, z]],
-    L: [[-x, -y + t, -z], [-x + t, y - t, z]],
-    R: [[x - t, -y + t, -z], [x, y - t, z]],
-    T: [[-x + t, -y + t, z - t], [x - t, y - t, z]],
-    B: [[-x + t, -y + t, -z], [x - t, y - t, -z + t]],
+    P: [
+      [-x, y - t, -z],
+      [x, y, z],
+    ],
+    K: [
+      [-x, -y, -z],
+      [x, -y + t, z],
+    ],
+    L: [
+      [-x, -y + t, -z],
+      [-x + t, y - t, z],
+    ],
+    R: [
+      [x - t, -y + t, -z],
+      [x, y - t, z],
+    ],
+    T: [
+      [-x + t, -y + t, z - t],
+      [x - t, y - t, z],
+    ],
+    B: [
+      [-x + t, -y + t, -z],
+      [x - t, y - t, -z + t],
+    ],
   };
 }
 

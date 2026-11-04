@@ -27,7 +27,9 @@ export function trinketAttachments(f: Extract<Feelie, { kind: 'trinket' }>): Att
   return [
     { href: `${base}${item.file}`, file: item.file, label: '3D printer parts, one color (STL)', bytes: item.bytes },
     { href: `${base}${item.colors.file}`, file: item.colors.file, label: '3D printer parts, up to 4 colors (3MF)', bytes: item.colors.bytes },
-    ...(item.supports ? [{ href: `${base}${item.supports.file}`, file: item.supports.file, label: 'Supports for a second material (STL)', bytes: item.supports.bytes }] : []),
+    ...(item.supports
+      ? [{ href: `${base}${item.supports.file}`, file: item.supports.file, label: 'Supports for a second material (STL)', bytes: item.supports.bytes }]
+      : []),
   ];
 }
 
@@ -40,7 +42,11 @@ export function kitAttachments(f: Extract<Feelie, { kind: 'nickel' | 'box' | 'ki
 export function phoneAttachments(): Attachment[] {
   return [
     { href: `${phoneBase}phone-3d-printer-parts.zip`, file: 'phone-3d-printer-parts.zip', label: '3D printer parts (ZIP of the STLs, both builds)' },
-    { href: `${phoneBase}phone-circuit-board.zip`, file: 'phone-circuit-board.zip', label: 'Circuit board files (ZIP: KiCad project and Gerbers, both builds)' },
+    {
+      href: `${phoneBase}phone-circuit-board.zip`,
+      file: 'phone-circuit-board.zip',
+      label: 'Circuit board files (ZIP: KiCad project for both builds, with Gerbers when the build had KiCad)',
+    },
     { href: `${phoneBase}parts-list.csv`, file: 'phone-parts-list-junior-lab.csv', label: 'Parts list, Junior Lab build (CSV)' },
     { href: `${variantBase('deluxe')}parts-list.csv`, file: 'phone-parts-list-deluxe.csv', label: 'Parts list, Deluxe build (CSV)' },
   ];
@@ -92,14 +98,19 @@ function pieceOf(f: Feelie): BoxItem | undefined {
   };
   if (f.kind === 'trinket') {
     const { item } = f;
-    const supports = item.supports ? 'On a plain printer it needs supports: print the supports body in a second material, or let your slicer add them.' : 'Prints without supports.';
+    const supports = item.supports
+      ? 'On a plain printer it needs supports: print the supports body in a second material, or let your slicer add them.'
+      : 'Prints without supports.';
     return {
       ...lead,
       note: `Plastic trinket · ${mm(item.mm)} mm`,
       icon: '🧸',
       first,
       render,
-      live: () => thumbnail(f).then((src) => card(item.title, [item.blurb, `${mm(item.mm)} mm. ${supports}`], src ? [img(src, `${item.title}, rendered`)] : [], trinketAttachments(f))),
+      live: () =>
+        thumbnail(f).then((src) =>
+          card(item.title, [item.blurb, `${mm(item.mm)} mm. ${supports}`], src ? [img(src, `${item.title}, rendered`)] : [], trinketAttachments(f)),
+        ),
     };
   }
   const { kit } = f;
@@ -109,7 +120,13 @@ function pieceOf(f: Feelie): BoxItem | undefined {
     icon: kit.kind === 'nickel' ? '🪙' : '📦',
     first,
     render,
-    live: async () => card(kit.title, [kit.summary], kit.previews.map((p) => img(`${kit.base}${p.file}`, p.alt)), kitAttachments(f)),
+    live: async () =>
+      card(
+        kit.title,
+        [kit.summary],
+        kit.previews.map((p) => img(`${kit.base}${p.file}`, p.alt)),
+        kitAttachments(f),
+      ),
   };
 }
 
@@ -138,12 +155,16 @@ function phoneItems(f: Feelie): BoxItem[] {
       icon: '📎',
       first,
       render,
-      live: async () =>
-        card(
-          PHONE_TITLE,
-          ['A build-it-yourself phone: print the shell, solder the board. An untested design; nobody has built one. Both builds, the Junior Lab Edition and the Deluxe Model, are in each ZIP.'],
-          [],
-          files,
+      live: () =>
+        thumbnail(f).then((src) =>
+          card(
+            PHONE_TITLE,
+            [
+              'A build-it-yourself phone: print the shell, solder the board. An untested design; nobody has built one. Both builds, the Junior Lab Edition and the Deluxe Model, are in each ZIP.',
+            ],
+            src ? [img(src, 'The phone, rendered')] : [],
+            files,
+          ),
         ),
     },
   ];

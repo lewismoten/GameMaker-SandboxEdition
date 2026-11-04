@@ -72,7 +72,9 @@ export function kitOf(manifest: unknown, base: string): LaserKit | null {
     const material = m.material && typeof m.material === 'object' ? (m.material as { thickness?: unknown }).thickness : undefined;
     const sheets = list(m.sheets, (s) => {
       const parts = list(s.parts, (p) =>
-        str(p.name) && [p.x, p.y, p.w, p.h].every((n) => typeof n === 'number') ? { name: p.name, x: p.x as number, y: p.y as number, w: p.w as number, h: p.h as number } : null,
+        str(p.name) && [p.x, p.y, p.w, p.h].every((n) => typeof n === 'number')
+          ? { name: p.name, x: p.x as number, y: p.y as number, w: p.w as number, h: p.h as number }
+          : null,
       );
       return str(s.preview) && safe(s.preview) && typeof s.w === 'number' && typeof s.h === 'number' ? { preview: s.preview, w: s.w, h: s.h, parts } : null;
     });

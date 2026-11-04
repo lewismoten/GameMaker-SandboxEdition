@@ -99,7 +99,10 @@ function strip(list: Feelie[]): HTMLElement[] {
       if (was < 0) pv.canvas.focus({ preventScroll: true });
       return;
     }
-    canvas.setAttribute('aria-label', `${f.title}, a 3D model. Drag it, or use the arrow keys, to turn it; the wheel or + and - zoom; Home puts it back; Escape returns to the box.`);
+    canvas.setAttribute(
+      'aria-label',
+      `${f.title}, a 3D model. Drag it, or use the arrow keys, to turn it; the wheel or + and - zoom; Home puts it back; Escape returns to the box.`,
+    );
     await table.showModel(() => viewMaker(f), { spin: true, fresh: true });
     if (was < 0) canvas.focus({ preventScroll: true });
   }
