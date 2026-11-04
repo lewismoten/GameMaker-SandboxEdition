@@ -264,3 +264,35 @@ dialog.modal:has(.pal-zero) {
 .pal-reservations p {
   margin: 8px 0;
 }
+
+/* Touch: tabs, number boxes, sliders, Undo/Redo, summaries, selects and buttons are 44 px.
+   The 256 color swatches stay small (the "Bigger colors" button enlarges them). */
+@media (hover: none) and (pointer: coarse) {
+  .pal-tab,
+  .pal-icon,
+  [id^='pal-pane-'] button:not(.pal-swatches *),
+  [id^='pal-pane-'] select,
+  [id^='pal-pane-'] summary,
+  [id^='pal-pane-'] input:not([type='checkbox'], [type='radio']),
+  .pal-tools summary,
+  .pal-uses-panel summary,
+  .pal-zero-link,
+  .pal-tools select,
+  .pal-tools button,
+  .pal-use-link,
+  .color-choice-num,
+  .color-choice-big {
+    min-height: 44px;
+  }
+  .pal-icon {
+    min-width: 44px;
+  }
+  .pal-zero-link {
+    min-width: 44px;
+  }
+  .pal-tools summary,
+  .pal-uses-panel summary {
+    display: flex;
+    align-items: center;
+  }
+}
