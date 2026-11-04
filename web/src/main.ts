@@ -208,7 +208,12 @@ async function route(): Promise<void> {
     }
     workspace?.dispose();
     workspace = undefined;
-    const opened = await openStored(id, content, file);
+    let storageError = false;
+    const opened = await openStored(id, content, file).catch(() => ((storageError = true), undefined));
+    if (storageError) {
+      storageGone();
+      return;
+    }
     if (!opened) {
       notHere();
       return;
@@ -324,6 +329,26 @@ function notHere(): void {
         'Games you make are kept in the browser that made them, so a link to one only opens there. If someone shared this link, ask them to send the game itself: its Download button saves its files as a .zip, or a one-page .html you can open here.',
       ),
       h('p', null, 'Links to the finished games on the home page work everywhere.'),
+      h('p', null, h('a', { class: 'button primary', href: '#/' }, 'See all games')),
+    ),
+  );
+}
+
+/** This browser would not open its game storage (a private window, or storage turned off): say so instead of a blank page. */
+function storageGone(): void {
+  clear(titleSlot);
+  document.title = `Can’t reach saved games · ${SHORT}`;
+  clear(
+    content,
+    h(
+      'main',
+      { class: 'not-here', style: 'max-width:42rem;margin:48px auto;padding:0 16px' },
+      h('h1', null, 'This browser won’t open its saved games'),
+      h(
+        'p',
+        { role: 'status', 'aria-live': 'polite' },
+        'Saved games live in the browser’s own storage, and it is not available now. A private window or a setting that blocks site data does this. Open the page in a normal window to reach your games; nothing was changed.',
+      ),
       h('p', null, h('a', { class: 'button primary', href: '#/' }, 'See all games')),
     ),
   );

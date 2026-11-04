@@ -8,6 +8,7 @@
   "version": "1.0",
   "blurb": "Two short levels about throwing a star. Press Enter and Kit tosses one the way he last walked: it pops a mint green gumdrop sitting still, falls short if you stand too far away, and clears a grump out of a narrow way. Signs in the levels say how. Play it, then open it in Game-Maker and change the star.",
   "exe": "THROW.EXE",
+  "dosName": "THROWIT",
   "sound": "sb",
   "label": {
     "background": "#e8f6ff",

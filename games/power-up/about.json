@@ -8,6 +8,7 @@
   "version": "1.0",
   "blurb": "Two short levels about powers. The exit is up on a ledge too high to jump, until a star gives you high jumps. A canyon is too wide to cross, until a pair of sneakers lets you run and leap twice as far. A power is a block that adds to a counter, so it lasts for jumps or strides, not seconds. Signs say how. Play it, then open it in Game-Maker and change how much a star gives.",
   "exe": "POWER.EXE",
+  "dosName": "POWERUP",
   "sound": "sb",
   "label": {
     "background": "#fff3d6",
