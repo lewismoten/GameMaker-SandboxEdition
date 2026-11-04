@@ -34,7 +34,9 @@ function flat(pal: Pal): Pixels {
   const s = pal.r('stone');
   p.rect(0, 16, 20, 4, s[1]).rect(0, 16, 20, 1, s[3]);
   for (const x of [1, 7, 13]) {
-    p.rect(x, 13, 6, 3, s[3]).rect(x, 13, 6, 1, s[4]).rect(x + 4, 13, 2, 3, s[2]);
+    p.rect(x, 13, 6, 3, s[3])
+      .rect(x, 13, 6, 1, s[4])
+      .rect(x + 4, 13, 2, 3, s[2]);
   }
   return outline(p, pal.c('ink', 0), { transparent: skyOf(pal) });
 }
@@ -50,7 +52,12 @@ function pool(pal: Pal, top: boolean): Pixels {
     for (const x of [1, 6, 11, 16]) p.rect(x, y0 - 1, 3, 1, b[4]).rect(x + 1, y0 - 2, 1, 1, b[4]);
     for (const x of [3, 12]) p.rect(x, y0 + 4, 3, 1, b[4]);
   } else {
-    for (const [x, y] of [[4, 4], [13, 9], [8, 15]] as const) p.rect(x, y, 3, 1, b[3]);
+    for (const [x, y] of [
+      [4, 4],
+      [13, 9],
+      [8, 15],
+    ] as const)
+      p.rect(x, y, 3, 1, b[3]);
     p.rect(0, 17, 20, 3, b[1]);
   }
   return p;

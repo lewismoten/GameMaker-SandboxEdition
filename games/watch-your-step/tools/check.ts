@@ -5,4 +5,6 @@
 import { play } from './play';
 
 const { sim } = await play();
-console.log(`watch-your-step: the bot played all three levels; ${sim.deaths} life lost on purpose, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
+console.log(
+  `watch-your-step: the bot played all three levels; ${sim.deaths} life lost on purpose, ${sim.ci.lives} left, score ${sim.ci.score}, ${sim.trail.length} scenes entered`,
+);
