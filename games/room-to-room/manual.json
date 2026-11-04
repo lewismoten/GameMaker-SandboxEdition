@@ -1,0 +1,37 @@
+{
+  "title": "Room to Room",
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Room to Room</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the rooms that say what you are looking at. It has three short levels, eight rooms in all, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each door in the rooms is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. Walk into a door to go through it. There is nothing to fight and nothing that hurts.</p>"
+    },
+    {
+      "head": "Level 1: Out the Door",
+      "html": "<h1>Level 1: Out the Door</h1><p>You start in a small room with a door and the <b>THIS DOOR GOES TO ANOTHER ROOM</b> sign. Walk into the door. The game puts you down in a second room, beside the <b>YOU CAME IN HERE</b> sign. This room has no door out. Its right edge is open instead, and the <b>WALK OFF THIS EDGE TO LEAVE</b> sign says so: keep walking right and you are in the next level.</p><p>Coins are worth ten points each. There are ten in these two rooms.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>A link.</b> Every way out of a room is a <b>scene link</b>. It says: when the hero touches this block of this map, go to that scene and stand on that block of its map. Open <b>start.map</b> in the map editor. The <b>gold marker</b> on the bottom block of the door is the exit: the block you touch. Click it (or focus it and press Enter) to see where it goes.</li><li><b>A way in.</b> Open <b>inside.map</b>. The <b>cyan marker</b> on the doorway is where the hero stands when he arrives. A cyan marker is not a link of its own: it only shows where another room's link lands. Drag it, and the arrival moves.</li><li><b>The doors are only pictures.</b> A link works on any block. The door and the doorway are ordinary blocks that look the part. Take the picture away and the link still works, so a sign should say where one is.</li><li><b>An open edge.</b> The rooms have invisible walls at each end, so you cannot walk off the world. <b>inside.map</b> leaves the right one out and puts an exit marker on the last column, so walking into the edge is the exit. A link can sit on empty sky.</li><li><b>Where the links live.</b> In the <b>scenes editor</b>, open <b>room.gam</b>. Each room is a scene, drawn as a card, and its links are arrows between the cards. A scene can have up to 20 links.</li><li><b>Do not arrive on an exit.</b> If the hero lands on a block that is itself a link, he is sent straight on. Here every way in is a few blocks from the exit beside it.</li></ul>"
+    },
+    {
+      "head": "Level 2: There and Back",
+      "html": "<h1>Level 2: There and Back</h1><p>You come out of level 1 into a hall with three doors. The left one is the <b>KITCHEN</b>, the right one is the <b>BEDROOM</b>, and up the ladder is a gold door with a sign: <b>LOCKED. THE KEY IS IN THE KITCHEN</b>. Bump the gold door first to see that it stays shut.</p><p>Go to the kitchen and take the key. The <b>THIS DOOR GOES BACK</b> sign marks the door you came in by, and it takes you to the hall. Your key came with you: the gold door opens.</p><p>The bedroom has coins and two signs. Take them, go out, and come back in: the coins are there again, and your score is the same. <b>A ROOM STARTS OVER EACH TIME</b>, and <b>YOUR SCORE STAYS</b>.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>There and back are two links.</b> A link goes one way. The hall's kitchen door is a link in <b>hall.map</b>'s scene; the kitchen's door back is another link in the kitchen's scene, and it lands beside the kitchen door in the hall. In the map editor each map shows its own gold markers and the cyan ones where other rooms land. <b>hall.map</b> has three cyan markers: one from level 1, one from the kitchen and one from the bedroom.</li><li><b>What stays with the hero.</b> PLAYGAME keeps the hero's numbers from one scene to the next: score, hit points, lives and the key counters. The kitchen key adds one to <b>Gold keys</b>, so it is still there in the hall, and the gold door takes it. The key block and the gold door are set up as in Keys and Doors (the <b>Effect</b> of each block in the blocks editor).</li><li><b>What does not.</b> The game reads a scene's map from its file each time the hero enters it. A coin you took, a door you opened or a monster you stopped is back as the file made it. Game-Maker has no switch that makes a room remember. If a room has to change, the way to do it is a second copy of the room.</li><li><b>If the hero falls over</b> in a room, the game starts that room again on the block he arrived at, with his lives one less.</li><li><b>The ledge.</b> The hall has a ladder up to a ledge so the doors do not all stand along one path: a door touched on the way past would send you through it. Keep doors off each other's path.</li></ul>"
+    },
+    {
+      "head": "Level 3: Two Doors",
+      "html": "<h1>Level 3: Two Doors</h1><p>You come out of the gold door into a room with a door on each side and a doorway between. The left door has a sign: <b>LEFT: THE GARDEN</b>. The right one: <b>RIGHT: THE ATTIC</b>. Pick one. The room behind it has its own sign (<b>YOU TOOK THE LEFT DOOR</b> or <b>YOU TOOK THE RIGHT DOOR</b>), some coins and an exit. In the attic a plank is a short jump up, with coins on it.</p><p>Both rooms end the game. Play it twice to see both.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>Two exits, two links.</b> Open <b>fork.map</b>. It has two gold markers, one on each door, and the scene has two links. Each lands in a different scene: click a marker to see which.</li><li><b>The choice is where you touch.</b> Nothing asks which door you want. The game follows whichever link block the hero touches first. The doors stand apart, with the way in between them, so you cannot walk through one on the way to the other.</li><li><b>What the next room knows.</b> Only where you arrive. The garden and the attic do not know which room you came from, and the game does not remember it either. A sign in each room says what you did, but it says it for everyone.</li><li><b>The end.</b> Each last door links to the <b>The End</b> scene in <b>room.gam</b>, which plays the ending. Scene 1 is always the end.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>inside.map</b>, drag the cyan marker to the other side of the room.</li><li>Move the kitchen's door in <b>hall.map</b> and drag its gold marker to match.</li><li>Add a third door to the fork, and a new scene for it in <b>room.gam</b>.</li><li>Make the garden link back to the fork, and see the fork start over.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
