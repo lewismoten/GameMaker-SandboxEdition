@@ -3,7 +3,7 @@
 // per step, INP, long tasks, time until quiet, frames while playing, and the hottest functions from
 // a CPU profile of every step that ran long. --throttle N slows the CPU N times (4 is a middling
 // laptop; Lewis's reported INP was 6.9 s). Never 5173.
-//   (add --desk-only 1 to run only the desk steps; --budget 1 for the short set verifyPerf.ts uses:
+//   (add --desk-only 1 to run only the desk steps; --budget 1 for the short set; --repeat N opens and closes each desk overlay N times; --profiles <folder> keeps slow steps' CPU profiles verifyPerf.ts uses:
 //    home, the map editor and its tabs, the desk, the Virus Blaster box)
 //   npm run perf:tasks -- [--dist <scratch vite build>] [--port 5195] [--url http://…] [--throttle 4] [--out <folder>]
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -74,6 +74,7 @@ async function measure(page: Page, step: string, action: () => Promise<unknown>)
       }),
   );
   const { profile } = await cdp.send('Profiler.stop');
+  const keepDir = arg('profiles');
   const r = await page.evaluate(() => {
     const m = (window as unknown as { __perf: PerfState }).__perf;
     return { inp: Math.max(0, ...m.events.values()), long: m.long };
@@ -88,6 +89,11 @@ async function measure(page: Page, step: string, action: () => Promise<unknown>)
     heapMb: Math.round((metrics.find((m) => m.name === 'JSHeapUsedSize')?.value ?? 0) / 1048576),
   };
   if (out.inpMs > SLOW || out.longestMs > SLOW || out.readyMs > 600) out.hot = hottest(profile);
+  // --profiles <folder>: keep the whole CPU profile (open in DevTools) of every slow step
+  if (keepDir && out.inpMs > SLOW) {
+    mkdirSync(keepDir, { recursive: true });
+    writeFileSync(join(keepDir, `${steps.length}-${step.replace(/\W+/g, '-')}.cpuprofile`), JSON.stringify(profile));
+  }
   console.log(`  ${step}: ready ${out.readyMs} ms, INP ${out.inpMs}, longest ${out.longestMs}`);
   steps.push(out);
   return out;
@@ -231,8 +237,15 @@ try {
   ).slice(0, budget ? 1 : 99)) {
     // the catalog and the magazine lie in a stack: its menu opens first (not timed), then the choice
     if (then) await click(page.locator(`[aria-label="The 1994 desk"] ${sel}`))();
-    await measure(page, `desk: open ${name}`, click(page.locator(`[aria-label="The 1994 desk"] ${then ?? sel}`)));
-    await measure(page, `desk: close ${name}`, () => page.keyboard.press('Escape'));
+    // --repeat N: open and close it N times, waiting a different extra time (0 to 6 s) after each open
+    const waits = [0, 400, 1000, 2000, 3500, 6000];
+    for (let i = 0; i < Number(arg('repeat') ?? 1); i++) {
+      const tag = Number(arg('repeat') ?? 1) > 1 ? ` #${i + 1}` : '';
+      await measure(page, `desk: open ${name}${tag}`, click(page.locator(`[aria-label="The 1994 desk"] ${then ?? sel}`)));
+      const extra = Number(arg('repeat') ?? 1) > 1 ? waits[i % waits.length] : 0;
+      if (extra) await page.waitForTimeout(extra);
+      await measure(page, `desk: close ${name}${tag}${extra ? ` (+${extra} ms after open)` : ''}`, () => page.keyboard.press('Escape'));
+    }
   }
   await measure(page, 'desk: leave to home', () => go('#/'));
 } finally {
