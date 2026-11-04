@@ -54,7 +54,8 @@ export function loadVariant(id: 'cheap' | 'deluxe', dir: string): Variant {
     return [(b[0] + b[3]) / 2, (b[2] + b[5]) / 2];
   };
   const d = mech.dial;
-  const hold = mech.battery_holder;
+  const sec = (k: string) => mech.front?.[k] ?? mech.back?.[k]; // the interface file groups its parts under front and back
+  const hold = sec('battery_holder');
   const W: number = mech.board.width;
   const H: number = mech.board.height;
   const rest = parts.filter((p) => !p.id.startsWith('BT') && !p.id.startsWith('MK'));
@@ -92,9 +93,9 @@ export function loadVariant(id: 'cheap' | 'deluxe', dir: string): Variant {
     backMax: -Math.min(...rest.filter((p) => p.side === 'back').map((p) => p.bbox[1])),
     holder: { L: hold.body[0], Wd: hold.body[1], T: hold.height },
     btPads: hold.lead_pads as [number, number][],
-    micPads: mech.microphone.solder_pads as [number, number][],
-    wheel: mech.volume_wheel ? (mech.volume_wheel.center as [number, number]) : null,
-    speaker: mech.speaker.center as [number, number],
+    micPads: sec('microphone').solder_pads as [number, number][],
+    wheel: sec('volume_wheel') ? (sec('volume_wheel').center as [number, number]) : null,
+    speaker: sec('speaker').center as [number, number],
     displays: ['DS1', 'DS2'].map((r) => {
       const b = first(r).bbox;
       return [b[0], b[2], b[3], b[5]] as [number, number, number, number];

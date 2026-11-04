@@ -21,7 +21,7 @@ const clearance = (sub: string) => {
   const ab = bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength);
   const floats = new Float32Array(ab, 0, file.floats);
   const index = new Uint32Array(ab, file.floats * 4);
-  const printed = (r: Row) => r.made === 'shell.ts' && !/^BT1-(cell|label)/.test(r.id);
+  const printed = (r: Row) => r.made === 'shell.ts' && !/^BT1-(cell|label|lead)|^MK1-/.test(r.id);
   const meshes = file.parts.filter(printed).map((r) => ({
     id: r.id,
     pos: floats.subarray(r.pos.offset, r.pos.offset + r.pos.count),
@@ -39,7 +39,7 @@ describe(`printed parts keep ${MIN_GAP} mm from a ${LEAD} mm lead stub and from 
   ] as const) {
     it(name, () => {
       const gaps = clearance(sub);
-      expect(gaps.map((g) => g.id)).toEqual(expect.arrayContaining(['front-frame', 'back-tray', 'dial-plate', 'dial-cam', 'dial-spring', 'BT1']));
+      expect(gaps.map((g) => g.id)).toEqual(expect.arrayContaining(['front-cover', 'back-tray', 'dial-plate', 'dial-cam', 'dial-spring', 'BT1']));
       for (const g of gaps) {
         expect(g.lead.gap, `${g.id} to a lead of ${g.lead.other}`).toBeGreaterThanOrEqual(MIN_GAP);
         expect(g.body.gap, `${g.id} to ${g.body.other}`).toBeGreaterThanOrEqual(MIN_GAP);

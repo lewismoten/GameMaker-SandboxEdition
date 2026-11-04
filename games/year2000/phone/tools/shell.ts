@@ -44,6 +44,20 @@ const volumeSign = (pos: ArrayLike<number>, idx: ArrayLike<number>): number => {
   return Math.sign(vol);
 };
 
+/** A cylinder standing along y (its bounding box given) as a plus-shaped set of boxes and a square, all inside its circle. */
+function capsuleBoxes(b: number[]): { id: string; bbox: number[] }[] {
+  const r = (b[3] - b[0]) / 2;
+  const cx = (b[0] + b[3]) / 2;
+  const cz = (b[2] + b[5]) / 2;
+  const q = r * 0.7;
+  const k = 0.4 * r;
+  return [
+    { id: 'capsule', bbox: [cx - r, b[1], cz - k, cx + r, b[4], cz + k] },
+    { id: 'capsule', bbox: [cx - k, b[1], cz - r, cx + k, b[4], cz + r] },
+    { id: 'capsule', bbox: [cx - q, b[1], cz - q, cx + q, b[4], cz + q] },
+  ];
+}
+
 function det(place: ShellPart['place']): number {
   const o = place(0, 0, 0);
   const sub = (p: V3): V3 => [p[0] - o[0], p[1] - o[1], p[2] - o[2]];
@@ -186,7 +200,7 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
     [],
     [
       { id: 'holder', bbox: bay.holder },
-      { id: 'capsule', bbox: bay.capsule },
+      ...capsuleBoxes(bay.capsule), // the round capsule as three boxes inside its circle (a bounding square would wrongly collide with the collar)
     ],
     regionOf,
   );

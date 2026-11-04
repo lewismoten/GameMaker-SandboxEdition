@@ -361,31 +361,49 @@ def box_ok(b, margin=0.45):
 
 def _place_urls():
     """Each QR code's address in 1.0 mm letters, reserved before any reference or value text so it sits right beside its code:
-    a stack of lines below the code, else above it, shifted sideways until clear of pads and other text."""
+    a stack of lines below it, above it, or to its right or left, shifted along the code until clear of pads and other text."""
     spots = {}
     for qr, qtext in ((QR_PARTS, PARTS_URL), (QR_SITE, SITE_URL)):
         qx, qy, qm = qr
         qs = 18.1 if qr is QR_PARTS else 16.6
         lines = URL_LINES[qtext]
-        for dy0, step in ((qy + qs + 1.0, 1.25), (qy - 1.0 - 1.25 * (len(lines) - 1), 1.25)):
-            done = False
-            for dx in (0, 2, -2, 4, -4, 6, -6, 8, -8, 10, -10):
-                cx = qx + qs / 2 + dx
-                boxes = []
-                for i, ln in enumerate(lines):
-                    cy = dy0 + i * step
-                    w = len(ln) * 0.85 + 0.3
-                    boxes.append((ln, cx, cy, (cx - w / 2, cy - 0.6, cx + w / 2, cy + 0.6)))
-                if all(box_ok(b[3]) for b in boxes) and not any(overlaps(boxes[i][3], boxes[j][3]) for i in range(len(boxes)) for j in range(i + 1, len(boxes))):
-                    for b in boxes:
-                        TAKEN.append(b[3])
-                    spots[qtext] = [(b[0], b[1], b[2]) for b in boxes]
-                    done = True
-                    break
-            if done:
+        n = len(lines)
+        wmax = max(len(ln) for ln in lines) * 0.85 + 0.3
+        stackh = 1.25 * (n - 1)
+        cands = []
+        for sh in (0, 1, -1, 2, -2, 3, -3, 4, -4, 6, -6, 8, -8, 10, -10):
+            cands.append((qx + qs / 2 + sh, qy + qs + 1.0))                      # below
+            cands.append((qx + qs / 2 + sh, qy - 1.0 - stackh))                  # above
+            cands.append((qx + qs + 1.0 + wmax / 2, qy + qs / 2 - stackh / 2 + sh))   # right
+            cands.append((qx - 1.0 - wmax / 2, qy + qs / 2 - stackh / 2 + sh))        # left
+        for cx, dy0 in cands:
+            boxes = []
+            for i, ln in enumerate(lines):
+                cy = dy0 + i * 1.25
+                w = len(ln) * 0.85 + 0.3
+                boxes.append((ln, cx, cy, (cx - w / 2, cy - 0.6, cx + w / 2, cy + 0.6)))
+            if all(box_ok(b[3]) for b in boxes) and not any(overlaps(boxes[i][3], boxes[j][3]) for i in range(n) for j in range(i + 1, n)):
+                for b in boxes:
+                    TAKEN.append(b[3])
+                spots[qtext] = [(b[0], b[1], b[2]) for b in boxes]
                 break
-        if qtext not in spots:
-            print("  no room for the address beside", qtext)
+        if qtext not in spots:       # no room for one stack: each line goes to the nearest free spot around the code
+            print("  no room for one stack beside", qtext, "- placing its lines one by one")
+            mid = (qx + qs / 2, qy + qs / 2)
+            grid = sorted(((mid[0] + dx * 0.5, mid[1] + dy * 0.5) for dx in range(-90, 91) for dy in range(-90, 91)),
+                          key=lambda c: (c[0] - mid[0]) ** 2 + (c[1] - mid[1]) ** 2)
+            got = []
+            for ln in lines:
+                w = len(ln) * 0.85 + 0.3
+                for cx, cy in grid:
+                    b = (cx - w / 2, cy - 0.6, cx + w / 2, cy + 0.6)
+                    if box_ok(b):
+                        TAKEN.append(b)
+                        got.append((ln, cx, cy))
+                        break
+                else:
+                    print("  no spot for the line", ln)
+            spots[qtext] = got
     return spots
 
 

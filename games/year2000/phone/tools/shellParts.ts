@@ -117,11 +117,11 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
   const floorBottom = -(v.backMax + 1.5 + FLOOR);
   const hTray = -floorBottom;
   const floorTop = floorBottom + FLOOR;
-  const hy0 = floorTop + 0.2; // the holder rests on the floor (the door's plug is flush with it)
+  const hy0 = floorTop + 0.5; // the holder rests on the floor (the door's plug is flush with it)
   const hy1 = hy0 + hT;
   const hyc = (hy0 + hy1) / 2;
   if (hy1 > Hf - LIP - 0.4) throw new Error('the holder does not fit under the cover: top ' + hy1.toFixed(1) + ', cover underside ' + (Hf - LIP).toFixed(1));
-  const capY1 = Hf - LIP - 0.2; // the capsule's face, 0.2 mm under the cover (the grille holes are in the cover over it)
+  const capY1 = Hf - LIP - 0.6; // the capsule's face, 0.2 mm under the cover (the grille holes are in the cover over it)
   const capY0 = capY1 - 6.5;
   const bayInfo = { holder: [hx0, hy0, hz0, hx1, hy1, hz1], capsule: [bx - 4.85, capY0, zm - 4.85, bx + 4.85, capY1, zm + 4.85] };
   const wireXs = [...v.btPads, ...v.micPads].map((p) => p[0]);
@@ -134,15 +134,15 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
   {
     let tray: D3 = subtract3(union3(slabW(board(WALL), 0, hTray), slabW(bayOuter, 0, hTray)), slabW(board(FIT), FLOOR, hTray + 1), slabW(bayPocket, FLOOR, hTray + 1));
     tray = union3(tray, ...v.holes.map(([x, z]) => cyl(x, z, Math.max(2.6, Math.min(4.6, roomAt(v, 'back', x, z, BACK_Y, -hTray))), 0, hTray)));
-    // crush ribs that keep the holder from rattling: 0.2 mm off it when it sits centered (SLK - 0.2 out from each wall)
-    const wTop = hy1 - floorBottom;
+    // crush ribs that keep the holder from rattling: 0.6 mm off it when it sits centered
+    const wTop = Math.min(hy1 - floorBottom, hTray - 0.2); // the tray ends at the board's back plane; a taller holder is held by the cover's ribs above
     const ribs: D3[] = [];
     for (const zr of [hz0 + 8, hz1 - 9.2]) {
-      ribs.push(slabW(rect(px0 - 0.5, zr, px0 + SLK - 0.2, zr + 1.2, 0.3), FLOOR - 0.5, wTop));
-      ribs.push(slabW(rect(px1 - SLK + 0.2, zr, px1 + 0.5, zr + 1.2, 0.3), FLOOR - 0.5, wTop));
+      ribs.push(slabW(rect(px0 - 0.5, zr, px0 + SLK - 0.6, zr + 1.2, 0.3), FLOOR - 0.5, wTop));
+      ribs.push(slabW(rect(px1 - SLK + 0.6, zr, px1 + 0.5, zr + 1.2, 0.3), FLOOR - 0.5, wTop));
     }
     for (const xr of [hx0 + 6, hx1 - 7.2]) {
-      ribs.push(slabW(rect(xr, hz1 + 0.2, xr + 1.2, hz1 + 1.4, 0.3), FLOOR - 0.5, wTop));
+      ribs.push(slabW(rect(xr, hz1 + 0.6, xr + 1.2, hz1 + 1.8, 0.3), FLOOR - 0.5, wTop));
       ribs.push(slabW(rect(xr, pz0 - 0.5, xr + 1.2, hz0 - 0.2, 0.3), FLOOR - 0.5, wTop)); // on the divider; stands off 0.2 mm from the holder's end
     }
     const cuts: D3[] = [...notchesFor(v, 'back'), ...v.holes.map(([x, z]) => cyl(x, z, 1.7, -1, hTray + 1))];
@@ -150,20 +150,18 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
     cuts.push(slabW(rect(wx0, H + FIT - 0.1, wx1, pz0 + 0.1, 0.3), -3.8 - floorBottom, hTray + 1)); // the leads' slot through the divider, open at the top
     if (v.wheel) {
       const [wxp, wzp] = v.wheel;
-      cuts.push(slabW(rect(wxp - 4, wzp - 3.3, W + WALL + 1, wzp + 3.3, 0.3), -11.8 - floorBottom, hTray + 1)); // the thumbwheel's slot in the side wall
+      cuts.push(slabW(rect(wxp - 4, wzp - 6.3, W + WALL + 1, wzp + 6.3, 0.3), -11.8 - floorBottom, hTray + 1)); // the thumbwheel's slot in the side wall
     }
-    for (const win of v.windows)
-      if (win.z + win.h < H - 1) cuts.push(slabW(rect(win.x - 1.2, win.z - 1.2, win.x + win.w + 1.2, win.z + win.h + 1.2, 1), -1, FLOOR + 1));
     out.push({
       id: 'back-tray',
-      label: 'Back tray with the battery bay (windows over the QR codes and Dex)',
+      label: 'Back tray with the battery bay (closed back: the QR codes and Dex are seen when the case is open)',
       group: 'shell',
       side: 'back',
       color: [0.3, 0.44, 0.72],
       printed: true,
       field: subtract3(union3(tray, ...ribs), ...cuts),
       box: boxAround(-WALL, -WALL, W + WALL, pz1 + WALL, hTray, 1),
-      cell: 0.95,
+      cell: 0.6,
       place: up(floorBottom),
     });
   }
@@ -359,8 +357,8 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
     const name = strokeText2(['THE POCKET', 'TELEPHONE'], 3.4, 0.6, 0, 0);
     const engrave: D3 = (x, z, w) => Math.max(name(x - bx, z - (pz0 + hz1) / 2), w - 0.5);
     // the capsule's collar hangs from the roof; two ribs hold the holder down
-    const collar: D3 = subtract3(cyl(bx, zm, CUP_R, LIP - 0.01, LIP + 4.5), cyl(bx, zm, 4.95, LIP - 0.5, LIP + 5));
-    const wRib = Hf - hy1 - 0.2;
+    const collar: D3 = subtract3(cyl(bx, zm, CUP_R, LIP - 0.01, LIP + 4.5), cyl(bx, zm, 5.25, LIP - 0.5, LIP + 5));
+    const wRib = Hf - hy1 - 0.6;
     const roofRibs = [hx0 + 4, hx1 - 5.2].map((xr) => slabW(rect(xr, hz0 + 3, xr + 1.2, hz1 - 3, 0.3), LIP - 0.01, wRib));
     out.push({
       id: 'front-cover',
