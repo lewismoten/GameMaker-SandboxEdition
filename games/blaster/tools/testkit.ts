@@ -53,6 +53,9 @@ export function arenaGoal(s: Sim): { x: number; y: number } {
 /** How long the bot may take on a leg: a diagonal leg is several laps of the map. */
 export const maxTicksOf = (l: Leg): number => (l.kind === 'boss' ? 2400 : l.kind === 'diag' ? 4000 : 1600);
 
+/** Extra settling time where the cooling-fan fins and alternating drafts need straight, held moves without the side-leg pilot's momentum bias. */
+export const flyOptionsOf = (file: string): { every?: number; horizon?: number; stick?: number } => (file === 's5l' ? { every: 5, horizon: 5, stick: 0 } : {});
+
 /**
  * The walkthrough's pilot on a diagonal leg: keep to the middle of the lane at cruising speed,
  * aiming at the lane's middle where it would be in a moment (on the slant where the drift alone

@@ -9,9 +9,9 @@ import { encodeKeys, type WalkChapterMark, type WalkSegment } from '../../../web
 import type { RecordedKey } from '@lewismoten/gamemaker-sandbox-engine/formats/recording';
 import { writeWalkthrough } from '../../kit/walkthrough';
 import { STAGES } from '../src/stages/stages';
-import { fly } from './bot';
+import { fly, isBasicKey } from './bot';
 import { rideBus } from './busBot';
-import { diagGoal, goalOf, maxTicksOf, simOf } from './testkit';
+import { diagGoal, flyOptionsOf, goalOf, maxTicksOf, simOf } from './testkit';
 
 const ci = newCharInfo();
 const segments: WalkSegment[] = [];
@@ -26,6 +26,7 @@ for (const make of STAGES) {
     let last = 0;
     // a key pressed between ticks t and t+1 is played back on tick t+1 (the recorder counts from 1)
     sim.onKey = (k) => {
+      if (!isBasicKey(k)) throw new Error(`${l.file}: recorded a non-basic key ${k & 0x7f}`);
       const at = sim.ticks + 1;
       keys.push({ delta: at - last, key: k });
       last = at;
@@ -34,7 +35,9 @@ for (const make of STAGES) {
     // on a side leg, steady hands too
     const cable = l.kind === 'diag' ? { goal: diagGoal(l), stick: 80, every: 3 } : l.kind === 'side' || l.kind === 'left' ? { stick: 30, every: 3 } : {};
     // on the data bus, a pilot who only sees traffic once it is well on its way and lets each lane change settle
-    const r = l.bus ? await rideBus(sim, l.bus, { notice: 72, calm: 4 }) : await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...cable });
+    const r = l.bus
+      ? await rideBus(sim, l.bus, { notice: 72, calm: 4 })
+      : await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...cable, ...flyOptionsOf(l.file) });
     if (!r.ok) throw new Error(`${l.file}: the bot did not get through (${r.dead ? 'died' : 'timed out'}; ${r.log.slice(-1)[0] ?? ''})`);
     if (st.side?.from === l.file && sim.link >= l.grid.links.length) throw new Error(`${l.file}: the bot took the side room's way in`);
     console.log(`${l.file} ${l.title}: ${r.ticks} ticks, lost ${r.hpLost}, energy ${ci.hitpts}, score ${ci.score}`);
