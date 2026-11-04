@@ -258,6 +258,39 @@ def box_ok(b, margin=0.45):
     return not any(overlaps(b, t) for t in TAKEN)
 
 
+def _place_urls():
+    """Each QR code's address in 1.0 mm letters, reserved before any reference or value text so it sits right beside its code:
+    a stack of lines below the code, else above it, shifted sideways until clear of pads and other text."""
+    spots = {}
+    for qr, qtext in ((QR_PARTS, PARTS_URL), (QR_SITE, SITE_URL)):
+        qx, qy, qm = qr
+        qs = 18.1 if qr is QR_PARTS else 16.6
+        lines = URL_LINES[qtext]
+        for dy0, step in ((qy + qs + 1.0, 1.25), (qy - 1.0 - 1.25 * (len(lines) - 1), 1.25)):
+            done = False
+            for dx in (0, 2, -2, 4, -4, 6, -6, 8, -8, 10, -10):
+                cx = qx + qs / 2 + dx
+                boxes = []
+                for i, ln in enumerate(lines):
+                    cy = dy0 + i * step
+                    w = len(ln) * 0.85 + 0.3
+                    boxes.append((ln, cx, cy, (cx - w / 2, cy - 0.6, cx + w / 2, cy + 0.6)))
+                if all(box_ok(b[3]) for b in boxes) and not any(overlaps(boxes[i][3], boxes[j][3]) for i in range(len(boxes)) for j in range(i + 1, len(boxes))):
+                    for b in boxes:
+                        TAKEN.append(b[3])
+                    spots[qtext] = [(b[0], b[1], b[2]) for b in boxes]
+                    done = True
+                    break
+            if done:
+                break
+        if qtext not in spots:
+            print("  no room for the address beside", qtext)
+    return spots
+
+
+URL_SPOTS = _place_urls()
+
+
 def tbox(cx, cy, s):
     w = len(s) * TXT * 0.85 + 0.3
     return (cx - w / 2, cy - TXT / 2 - 0.35, cx + w / 2, cy + TXT / 2 + 0.35)
@@ -526,8 +559,8 @@ for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SI
     QR_INFO["parts" if qtext == PARTS_URL else "site"] = dict(x=qx, y=qy, size=round(size_, 2), modules=n_, module_mm=qm, url=qtext)
     silk += items_
     silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))
-    for ln in URL_LINES[qtext]:       # the address in words, split at the slashes, never shortened
-        silk.append(near_label("B.SilkS", ln, qx, qy, size_, size_, size=1.0))
+    for ln, lx, ly in URL_SPOTS.get(qtext, []):       # the address in words, split at the slashes, never shortened
+        silk.append(txt("B.SilkS", ln, lx, ly, 1.0, True))
 silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f)[0]
 silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], 12.8, 14.4))
 items += silk

@@ -65,7 +65,7 @@ for ref, digs in (("DS1", ["DIG7", "DIG6", "DIG5", "DIG4"]), ("DS2", ["DIG3", "D
         pins[str(i)] = SEG[nm] if nm in SEG else digs[int(nm[1]) - 1]
     add(ref, "Local:DISPLAY_4DIGIT_CC", "3641AS 4-digit CC", "disp4", "F", pins,
         desc="4-digit 7-segment LED module, common cathode, red, 12 pins")
-add("MK1", "Device:Microphone", "Electret", "mic", "B", {"1": "MICB", "2": GND},
+add("MK1", "Device:Microphone", "Electret", "mic", "F", {"1": "MICB", "2": GND},
     desc="Electret microphone capsule, solder pads")
 add("LS1", "Device:Speaker", "8 ohm 28mm", "spk", "F", {"1": "SPKC", "2": GND},
     desc="Small 8 ohm speaker, 28 mm, solder tabs")

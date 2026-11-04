@@ -64,7 +64,8 @@ def spec(kind, variant=""):
     if kind == "disp4":
         return [box(0, 0, 0.5, 30.0, 14.0, 7.0, DARKRED), box(0, 0, 7.5, 28.0, 12.0, 0.2, RED)]
     if kind == "mic":
-        return [box(-1.27, 3.0, 0.4, 1.0, 6.0, 1.0, RED), box(1.27, 3.0, 0.4, 1.0, 6.0, 1.0, BLACK)]     # the capsule is in the shell; twisted-pair stubs
+        # the capsule is in the shell: leads through the pads, then a twisted pair along the back of the board toward the bottom edge
+        return [box(-1.27, 0, -3.4, 0.8, 0.8, 3.8, RED), box(1.27, 0, -3.4, 0.8, 0.8, 3.8, BLACK), box(-1.27, 3.0, -3.4, 1.0, 6.0, 1.0, RED), box(1.27, 3.0, -3.4, 1.0, 6.0, 1.0, BLACK)]
     if kind == "spk":
         return [cyl(0, 0, 0.5, 24.0, 4.0, BLACK), cyl(0, 0, 4.5, 8.0, 0.4, GREY)]
     if kind == "usw":
