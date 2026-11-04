@@ -1,7 +1,7 @@
 // What the home page's library holds: the catalog's games and your own (My games and Imported),
 // which collection each is in, in the order shown, and one HomeGame per game for the page's life
 // (so its files load once). No DOM: home.ts draws it.
-import { isStarterGame } from '../../project/starter';
+import { byStarterOrder, isStarterGame } from '../../project/starter';
 import { isSandboxGame, type CatalogEntry } from '../../project/files';
 import { byCollection, hasBizarreTab, isBizarreGame } from '../../project/bizarre';
 import type { listProjects } from '../../project/storage';
@@ -65,7 +65,8 @@ export function homeLibrary() {
     },
     /** The collections this catalog has: Bizarre only with enough of the Bard's games. */
     shownCats: () => CATEGORIES.filter((c) => c.id !== 'bizarre' || hasBizarreTab(lib.catalog)),
-    entriesOf: (c: Category): CatalogEntry[] => byTitle(entriesIn(c)),
+    // the Starters in learning order (First Steps first), every other list A to Z
+    entriesOf: (c: Category): CatalogEntry[] => (c === 'starter' ? byStarterOrder(entriesIn(c)) : byTitle(entriesIn(c))),
     mine: (p: Projects[number]) => remember(projectGame(p, findOriginal(p, lib.catalog))),
     /** Your games made here (My games) or imported. */
     own: (c: Category) => (isOwn(c) ? lib.projects.filter((p) => isImported(p.id) === (c === 'imported')) : []),
