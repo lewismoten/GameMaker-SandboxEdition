@@ -71,7 +71,7 @@ static bool gtRead(int& x, int& y) {
 }
 
 static void strip(const char* msg) {
-  tft.fillRect(0, 300, 480, 20, TFT_BLACK);
+  tft.fillRect(0, 300, 288, 20, TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextSize(1);
   tft.setCursor(2, 306);
@@ -121,6 +121,7 @@ void setup() {
            (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_8BIT), ms, touchKind == GT911 ? "GT911" : "XPT2046");
   Serial.println(line);
   strip(line);
+  drawSwatches(tft);
 }
 
 void loop() {
