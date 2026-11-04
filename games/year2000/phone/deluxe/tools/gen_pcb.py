@@ -546,7 +546,7 @@ def near_label(layer, s, x, y, w, h, size=0.9):
     return label(layer, s, x + w / 2, y + h + 1.0, size, True)
 
 
-def _dex_avoid(x0, y0, x1, y1, margin=0.45):
+def _dex_avoid(x0, y0, x1, y1, margin=0.15):
     """True where an outline segment would come within `margin` of a pad or via (silk over exposed copper is clipped)."""
     pts = list(padpts) + [(x, y, 0.4) for v in vias.values() for x, y in v]
     for px_, py_, r_ in pts:
