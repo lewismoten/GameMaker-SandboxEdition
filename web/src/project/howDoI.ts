@@ -2,7 +2,7 @@
 // the level (a scene of the .gam) that answers it, a map spot to show, and which "How this
 // level is made" page explains it (`level`, counting from 1). A new Starter adds its questions
 // just by having the list. No DOM here; the index is editor/shell/howDoIIndex.ts.
-import { isStarterGame } from './starter';
+import { byStarterOrder, isStarterGame } from './starter';
 import { loadGameList, withDetails, type CatalogEntry } from './files';
 
 /** One question as written in manual.json. */
@@ -67,10 +67,10 @@ export function filterQuestions(all: readonly Question[], text: string): Questio
 
 let loading: Promise<{ entries: Map<string, CatalogEntry>; questions: Question[] }> | undefined;
 
-/** Every Starter's questions, in the catalog's order, with the entries (and their manuals) they came from. */
+/** Every Starter's questions, in learning order (First Steps first), with the entries (and their manuals) they came from. */
 export function loadQuestions(): Promise<{ entries: Map<string, CatalogEntry>; questions: Question[] }> {
   loading ??= (async () => {
-    const list = (await loadGameList()).filter(isStarterGame);
+    const list = byStarterOrder((await loadGameList()).filter(isStarterGame));
     const full = await Promise.all(list.map((e) => withDetails(e)));
     return { entries: new Map(full.map((e) => [e.id, e])), questions: full.flatMap(questionsOf) };
   })().catch((err) => {
