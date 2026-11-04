@@ -7,7 +7,7 @@
     },
     {
       "head": "Level 1: Coins Add Points",
-      "html": "<h1>Level 1: Coins Add Points</h1><p>Walk right and touch the coins. Each one is worth ten points and is gone once you have it. Six lie along the ground, and five more run along a ledge up a ladder. That makes 110 points. The <b>COINS ADD POINTS</b> sign says so, and <b>F2 SHOWS YOUR SCORE</b> says where to look: the score is not drawn on the play screen. Press <kbd>F2</kbd> to see it, then any key to carry on.</p>"
+      "html": "<h1>Level 1: Coins Add Points</h1><p>Walk right and touch the coins. Each one is worth ten points and is gone once you have it. Six lie along the ground, and five more run along a ledge up a ladder. That makes 110 points. The <b>COINS ADD POINTS</b> sign says so, and just after it the <b>F2 SHOWS YOUR SCORE</b> sign says where to look: the score is not drawn on the play screen. Press <kbd>F2</kbd> to see it, then any key to carry on.</p>"
     },
     {
       "head": "How this level is made",
@@ -32,6 +32,40 @@
     {
       "head": "Make it yours",
       "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Change a gem&rsquo;s <b>Score points</b> to 100 and play level 2 again.</li><li>Make the rock cost 50, or cost nothing.</li><li>Put a heart on the ground in level 3 where you cannot miss it.</li><li>Give the hero 5 lives in <b>hero.chr</b> and press <kbd>F2</kbd> on the first level.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ],
+  "howDoI": [
+    {
+      "id": "coin",
+      "q": "How do I make a coin that gives points?",
+      "scene": 2,
+      "x": 13,
+      "y": 9,
+      "level": 1
+    },
+    {
+      "id": "worth-more",
+      "q": "How do I make a pickup worth more points?",
+      "scene": 3,
+      "x": 27,
+      "y": 2,
+      "level": 2
+    },
+    {
+      "id": "take-away",
+      "q": "How do I make something take points away?",
+      "scene": 3,
+      "x": 39,
+      "y": 9,
+      "level": 2
+    },
+    {
+      "id": "extra-life",
+      "q": "How do I give the player an extra life?",
+      "scene": 4,
+      "x": 31,
+      "y": 2,
+      "level": 3
     }
   ]
 }
