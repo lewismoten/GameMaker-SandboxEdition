@@ -11,7 +11,7 @@ import CAMEOS from './cameos.json';
 import HIDDEN from './hidden.json';
 import type { Chicken } from '../chicken/chickenState';
 
-type Family = 'sandbox' | 'bizarre';
+type Family = 'sandbox' | 'bizarre' | 'starter';
 
 /** The new games the cast appears in: their catalog title and who published them. */
 export const CAST_GAMES = {
@@ -29,6 +29,10 @@ export const CAST_GAMES = {
   teddy3: ['Teddy’s Little Biggest Adventure', 'sandbox'],
   tuneup: ['Tune-Up', 'sandbox'],
   year2000: ['In The Year 2000!', 'sandbox'],
+  'first-steps': ['First Steps', 'starter'],
+  'keys-and-doors': ['Keys and Doors', 'starter'],
+  'meet-the-monsters': ['Meet the Monsters', 'starter'],
+  'room-to-room': ['Room to Room', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -88,6 +92,25 @@ const LISTED: CastMember[] = [
       { game: 'risi', as: 'a good Roman dog (CAVE CANEM)' },
       { game: 'sweats', as: 'asleep in the audience, awake for the bow' },
       { game: 'tuneup', as: 'rides shotgun in THE\u00a0CHEZ and plays the brake lamps' },
+    ],
+  },
+  {
+    id: 'kit',
+    name: 'Kit',
+    role: 'The Starters’ explorer, in a teal beanie',
+    hi: 'Hi! Jump with Space, climb with Up. Nobody minds if you fall; I do it all the time.',
+    art: {
+      game: 'first-steps',
+      width: 20,
+      height: 40,
+      alt: 'Kit, a small cheerful kid in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers',
+    },
+    bio: 'A small, cheerful explorer in a teal knit beanie with a white pom-pom, an orange hoodie with a pocket and drawstrings, gray pants and white sneakers. Kit walks, jumps, falls, climbs ladders (seen from behind), digs with a little shovel, tosses a star and cheers when a level is done. A bump only hurts a little, and the same Kit is there in every Starter, so what you learn in one carries to the next.',
+    appears: [
+      { game: 'first-steps', as: 'learns to walk, jump and climb' },
+      { game: 'keys-and-doors', as: 'finds a silver key for each locked door' },
+      { game: 'meet-the-monsters', as: 'meets the gumdrops, the buzzer and the snail' },
+      { game: 'room-to-room', as: 'walks through doors from room to room' },
     ],
   },
   {

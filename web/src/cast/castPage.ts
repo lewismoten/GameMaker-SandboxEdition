@@ -79,7 +79,7 @@ const TABS: { id: Tab; label: string; blurb: string; ids: string[] }[] = [
     id: 'people',
     label: 'Characters',
     blurb: 'The faces that keep turning up: the dog, the clown, the maker and a couple of robots.',
-    ids: ['teddy', 'gwinn', 'leo', 'lewis', 'lewie', 'joe', 'watt'],
+    ids: ['teddy', 'gwinn', 'leo', 'lewis', 'lewie', 'kit', 'joe', 'watt'],
   },
   {
     id: 'things',
@@ -112,6 +112,17 @@ const families = () =>
         'Fourteen new games made for this edition in the style of 1990s retail and shareware: each comes in a box with a printed manual, a disk label and paper extras to print, and plays in real DOS too. Sandbox Software is made up; it is where Teddy, Gwinn and THE\u00a0CHEZ live. Look closely and most of them also hide a little felt egg.',
       ),
       h('a', { href: tabHref('sandbox') }, 'Browse Sandbox →'),
+    ),
+    h(
+      'section',
+      { class: 'cast-fam fam-starter', 'aria-labelledby': 'fam-starter-h' },
+      h('h3', { id: 'fam-starter-h' }, 'The Starters'),
+      h(
+        'p',
+        null,
+        'Small, free games from Sandbox Software that each show one Game-Maker idea, with signs in the levels saying how it works. Kit, a kid in a teal beanie, is the hero of all of them, and each is made to be opened in the editor and taken apart.',
+      ),
+      h('a', { href: tabHref('starter') }, 'Browse Starters →'),
     ),
     h(
       'section',
