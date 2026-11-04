@@ -105,10 +105,10 @@ finger stop with an arm over the holes at 4 o'clock, hole 1 at 3 o'clock, 30 deg
 - **Speed.** A free printed dial returns in about 50 ms, far too fast; the cam wheel is slowed by the grease film between its web and the spring (a 0.4 mm gap, a
   groove to hold the grease) and by the brake leaf's friction. `shell.ts` prints an estimate for several greases; the first print decides (thin the grease or add a
   shim to change the film). The firmware accepts 8 to 15 pulses a second.
-- **Credit.** Inspired by "Rotary Dial mechanism" by dAcid (Thingiverse 3153349, CC BY 4.0, https://www.thingiverse.com/thing:3153349). Ideas we took: a printed
-  spiral spring in one piece with a frame, a clip-on finger stop, a headed center screw through a stack that prints flat, and digits printed under the holes. Ours
-  differs: a ratchet clutch so that only the return counts (that dial reads both ways with an optical sensor and software), tactile switches in place of the
-  optical slotted disc, a bigger plate with 13 mm holes, a separate cam wheel, a grease damper, a heat-free self-tapping screw, and every dimension is our own
+- **Credit.** Inspired by "Rotary Dial mechanism" by dAcid (Thingiverse 3153349, CC BY 4.0, https://www.thingiverse.com/thing:3153349). Ideas taken from it: a printed
+  spiral spring in one piece with a frame, a clip-on finger stop, a headed center screw through a stack that prints flat, and digits printed under the holes. This
+  dial differs: a ratchet clutch so that only the return counts (that dial reads both ways with an optical sensor and software), tactile switches in place of the
+  optical slotted disc, a bigger plate with 13 mm holes, a separate cam wheel, a grease damper, a heat-free self-tapping screw, and every dimension is new
   (no STL, mesh or spring parameter was copied or adapted, so NOTICE.md has no entry for it).
 
 ### Assemble the module and the case
