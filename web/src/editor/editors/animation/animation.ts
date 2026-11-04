@@ -11,6 +11,7 @@ import { viewState } from '../../../urlState';
 import { h, clear, download, pickFiles, toast } from '../../core/ui';
 import { paintIndexed } from '../../core/draw';
 import { pickFile } from '../../widgets/filePicker';
+import { heldText, resizedText } from '../../widgets/limitNote';
 import { fitToPane } from '../../core/fitPane';
 import { decodeFrames, remap, rgbaOf } from '../../tools/convert';
 import { decodeGif, isGif } from '@lewismoten/gamemaker-sandbox-engine/formats/gif';
@@ -257,7 +258,11 @@ function framesView(host: HTMLElement, project: Project, file: string): () => vo
   };
 
   speedInput.addEventListener('change', () => {
-    const v = Math.max(0, Math.min(1000, Math.round(Number(speedInput.value) || 0)));
+    const asked = Math.round(Number(speedInput.value) || 0);
+    const v = Math.max(0, Math.min(1000, asked));
+    const held = heldText(asked, v, 'Speed', '0 and 1000 (1/70 s each)');
+    if (held) toast(held);
+    speedInput.value = String(v);
     if (v !== anim.speed) commit({ ...anim, speed: v });
   });
 
@@ -275,15 +280,20 @@ function framesView(host: HTMLElement, project: Project, file: string): () => vo
     // in this animation's colors (the current frame's), so the palette doesn't jump
     const palette = anim.frames[cur].palette;
     const added: FliFrame[] = [];
+    const odd: [number, number][] = [];
     try {
       for (const f of files) {
         const { frames } = await decodeFrames(f);
-        for (const bm of frames) added.push({ pixels: remap(rgbaOf(bm, anim.width, anim.height, 'fit'), palette, { dither: true }), palette });
+        for (const bm of frames) {
+          if (bm.width !== anim.width || bm.height !== anim.height) odd.push([bm.width, bm.height]);
+          added.push({ pixels: remap(rgbaOf(bm, anim.width, anim.height, 'fit'), palette, { dither: true }), palette });
+        }
       }
     } catch {
       toast('That picture could not be read.', 'error');
     }
     insert(added);
+    if (odd.length) toast(resizedText(odd[0][0], odd[0][1], anim.width, anim.height, 'fitted into the frame'));
   };
 
   const exportFrame = async () =>

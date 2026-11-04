@@ -20,3 +20,16 @@ describe('dosStem', () => {
     expect(said).toHaveLength(1);
   });
 });
+
+describe('heldText and resizedText', () => {
+  it('say nothing when nothing was changed', async () => {
+    const { heldText, resizedText } = await import('./limitNote');
+    expect(heldText(70, 70, 'Speed', '0 and 1000')).toBe('');
+    expect(resizedText(320, 200, 320, 200, 'fitted')).toBe('');
+  });
+  it('say what was held and what was resized', async () => {
+    const { heldText, resizedText } = await import('./limitNote');
+    expect(heldText(5000, 1000, 'Speed', '0 and 1000')).toBe('Speed is kept between 0 and 1000; 5000 became 1000.');
+    expect(resizedText(640, 480, 320, 200, 'stretched')).toBe('The picture was 640×480; DOS pictures here are 320×200, so it was stretched.');
+  });
+});
