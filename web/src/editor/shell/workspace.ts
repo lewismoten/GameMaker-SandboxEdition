@@ -38,6 +38,7 @@ import type { FirstStepsPanel } from './firstStepsPanel';
 import { readOnlyBar } from './released';
 import { saveNote } from './saveNote';
 import { crumbs } from './crumbs';
+import { keepScroll } from './keepScroll';
 import { restoreScroll, savedScroll, stampEntry, watchScroll } from './scrollMemory';
 import { assistantHost, setAssistantHost, type AssistantHost } from '../../assistant/hostSlot';
 import type { RunOptions } from '@lewismoten/gamemaker-sandbox-engine/engine/game';
@@ -311,6 +312,11 @@ export class Workspace implements AssistantHost {
   }
 
   private renderSidebar(): void {
+    // the list keeps its place (the phone's drop-down list is the other scroller)
+    keepScroll(this.sidebar, '.side-files', () => this.drawSidebar());
+  }
+
+  private drawSidebar(): void {
     const p = this.project;
     const names = p.files.names();
     this.listed = new Set(names);
