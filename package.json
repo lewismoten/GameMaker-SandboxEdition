@@ -1,6 +1,7 @@
 {
   "name": "gamemaker-sandbox-monorepo",
   "private": true,
+  "version": "0.0.0",
   "type": "module",
   "workspaces": [
     "web",
@@ -11,7 +12,7 @@
     "prepare": "npm run build:packages && npm run build:games",
     "verify:packages": "node scripts/verify-packages.mjs",
     "phone:build": "bash games/year2000/phone/tools/build_all.sh",
-    "verify": "npm run format:check -w gamemaker-web && npm run lint && npm run typecheck && npm run test && npm run verify:packages",
+    "verify": "npm run format:check -w gamemaker-web && npm run lint && npm run typecheck && npm run test && npm run verify:packages && npm run release:check",
     "backup:local": "node scripts/backup-local.mjs backup",
     "backup:restore": "node scripts/backup-local.mjs restore",
     "dev": "npm run dev -w gamemaker-web",
@@ -25,6 +26,9 @@
     "check:games": "npm run check:games -w gamemaker-web --",
     "optimize:proof": "npm run optimize:proof -w gamemaker-web --",
     "test:fast": "npm run test:fast -w gamemaker-web --",
+    "release:draft": "npm run release:draft -w gamemaker-web --",
+    "release:cut": "npm run release:cut -w gamemaker-web --",
+    "release:check": "npm run release:check -w gamemaker-web --",
     "walk:auto": "npm run walk:auto -w gamemaker-web --",
     "check:keys": "npm run check:keys -w gamemaker-web --",
     "replay:log": "npm run replay:log -w gamemaker-web --",
