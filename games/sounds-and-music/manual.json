@@ -48,14 +48,6 @@
       "x": 28,
       "y": 18,
       "level": 3
-    },
-    {
-      "id": "own-sound",
-      "q": "How do I change what a sound sounds like?",
-      "scene": 3,
-      "x": 46,
-      "y": 19,
-      "level": 2
     }
   ],
   "pages": [

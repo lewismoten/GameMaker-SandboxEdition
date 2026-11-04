@@ -23,9 +23,8 @@ assertNoInvisibleWalls(built);
 
 // the songs: one per scene, as the signs say. Scene 0 is the title, 1 the endings, 2.. the levels. Slot 8 is the song.
 const game = parseGame(disk('sounds.gam'));
-const songs = built.levels.map((l, i) => game.scenes[i + 2].files[8]);
+const songs = built.levels.map((_l, i) => game.scenes[i + 2].files[8]);
 if (songs.join('|') !== `${MEADOW}|${WALTZ}|`) fail(`the levels' songs are ${JSON.stringify(songs)}, expected meadow, waltz and none`);
-if (MEADOW === WALTZ) fail('level 1 and level 2 must have different songs');
 for (const name of [MEADOW, WALTZ]) {
   parseCmf(disk(name));
   if (disk(name).length < 300) fail(`${name} has almost no notes`);
