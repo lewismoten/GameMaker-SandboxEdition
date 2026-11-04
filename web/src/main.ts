@@ -146,6 +146,7 @@ function startModern(hash?: string): void {
         h(
           'div',
           { class: 'topbar-menu' },
+          h('a', { class: 'menu-games', href: '#/' }, '🎮 Games'),
           h('a', { class: 'show-tiny', href: '#/help' }, '📖 Guide'),
           h('a', { class: 'nav-library', href: '#/library' }, '📚 Library'),
           h('a', { href: '#/achievements' }, '🏆 What you’ve done'),

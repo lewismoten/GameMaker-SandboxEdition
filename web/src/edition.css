@@ -302,3 +302,13 @@
     display: none;
   }
 }
+
+/* the ⋯ menu's Games item shows only where the bar hides its Games link (the rule above) */
+.topbar .topbar-menu > .menu-games {
+  display: none;
+}
+@media (hover: none) and (pointer: coarse) and (max-width: 430px) {
+  .topbar .topbar-menu > .menu-games {
+    display: block;
+  }
+}
