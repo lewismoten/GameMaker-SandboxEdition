@@ -1,4 +1,4 @@
-/* the plastic trinkets in a game's box (desk/boxes/trinketShelf.ts): a list under the box viewer; a chosen one takes the box's place */
+/* the Feelies strip under a game's turning box (desk/boxes/trinketShelf.ts): a row of thumbnails; a chosen one takes the box's place */
 .bc-trinkets {
   display: contents;
 }
@@ -7,42 +7,96 @@
   display: none;
 }
 
-.trk-panel {
+.fl-bar {
   position: absolute;
   bottom: 74px;
   /* between the disks and manual on the left and the "In the box" list on the right (gameBoxContents.css) */
   left: calc(max(10px, 3vw) + 70px + 180px);
   right: calc(max(10px, 3vw) + 70px + min(290px, 26vw) + 12px);
   z-index: 3;
-  max-height: 34vh;
-  padding: 8px 12px 10px;
-  overflow: auto;
-  border: 1px solid rgba(239, 229, 204, 0.25);
-  border-radius: 10px;
-  background: rgba(20, 16, 10, 0.82);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   color: #efe5cc;
   font:
     12px/1.3 system-ui,
     sans-serif;
+  pointer-events: none;
 }
 
-.trk-panel h2 {
-  margin: 0 0 6px;
+.fl-bar > * {
+  pointer-events: auto;
+}
+
+.fl-label {
   font:
     700 12px system-ui,
     sans-serif;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
+  text-shadow: 0 1px 2px #000;
   text-transform: uppercase;
 }
 
-.trk-list,
+.fl-row,
 .trk-mode {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
 }
 
-.trk-chip,
+/* a thumbnail: a real render of the feelie, its name only while it is being drawn (or with no WebGL) */
+.feelie {
+  display: grid;
+  width: 76px;
+  height: 76px;
+  padding: 0;
+  place-items: center;
+  overflow: hidden;
+  border: 2px solid rgba(239, 229, 204, 0.4);
+  border-radius: 10px;
+  background: radial-gradient(circle at 50% 38%, #3a3150, #14101c 85%);
+  color: #efe5cc;
+  font:
+    600 11px/1.15 system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+
+.feelie:hover {
+  border-color: rgba(239, 229, 204, 0.8);
+}
+
+.feelie[aria-pressed='true'] {
+  border-color: #ffd84a;
+  box-shadow: 0 0 0 2px rgba(255, 216, 74, 0.35);
+}
+
+.feelie:focus-visible,
+.trk-canvas:focus-visible,
+.trk-btn:focus-visible {
+  outline: 2px solid #ffd84a;
+  outline-offset: 2px;
+}
+
+.fl-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.fl-img[hidden],
+.fl-name[hidden] {
+  display: none;
+}
+
+.fl-name {
+  padding: 4px;
+  text-align: center;
+}
+
 .trk-btn {
   min-height: 28px;
   padding: 2px 10px;
@@ -54,27 +108,25 @@
   cursor: pointer;
 }
 
-.trk-chip:hover,
 .trk-btn:hover {
   background: rgba(239, 229, 204, 0.25);
 }
 
-.trk-chip[aria-pressed='true'],
 .trk-btn[aria-pressed='true'] {
   border-color: #ffd84a;
   background: rgba(255, 216, 74, 0.22);
   font-weight: 700;
 }
 
-/* the chosen trinket stands where the turning box was, over the box viewer's stage */
+/* the chosen feelie stands where the turning box was, over the box viewer's stage */
 .trk-float {
   position: absolute;
-  inset: 0 0 calc(74px + 36vh);
+  inset: 0 0 calc(74px + 128px);
   z-index: 1;
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 8px;
+  gap: 6px;
   pointer-events: none;
 }
 
@@ -87,12 +139,12 @@
 }
 
 .trk-canvas {
-  width: min(44vh, 80vw, 520px);
-  height: min(44vh, 80vw, 520px);
+  width: min(52vh, 80vw, 560px);
+  height: min(52vh, 80vw, 560px);
   border-radius: 10px;
   background: radial-gradient(circle at 50% 38%, #3a3150, #14101c 80%);
   cursor: grab;
-  touch-action: pan-y;
+  touch-action: none;
 }
 
 .trk-canvas.turning {
@@ -103,72 +155,17 @@
   opacity: 0.5;
 }
 
-.trk-canvas:focus-visible,
-.trk-dl:focus-visible,
-.trk-chip:focus-visible,
-.trk-btn:focus-visible {
-  outline: 2px solid #ffd84a;
-  outline-offset: 2px;
+.fl-hint {
+  margin: 0;
+  color: #efe5cc;
+  font:
+    12px/1.3 system-ui,
+    sans-serif;
+  opacity: 0.8;
+  text-shadow: 0 1px 2px #000;
 }
 
-.trk-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-  margin-top: 8px;
-}
-
-.trk-info[hidden] {
-  display: none;
-}
-
-.trk-title {
-  font-size: 15px;
-}
-
-.trk-size,
-.trk-help {
-  opacity: 0.75;
-}
-
-.trk-help {
-  margin: 6px 0 0;
-}
-
-.trk-links {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.trk-colorline {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.trk-swatches {
-  display: inline-flex;
-  gap: 2px;
-}
-
-.trk-swatches i {
-  width: 12px;
-  height: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 3px;
-}
-
-.trk-dl {
-  display: inline-flex;
-  align-items: center;
-  min-height: 24px;
-  color: #ffd84a;
-  text-decoration: underline;
-}
-
-.trk-dl[hidden],
+.fl-hint[hidden],
 .trk-flat[hidden],
 .trk-canvas[hidden],
 .trk-float[hidden] {
@@ -183,77 +180,33 @@
 }
 
 @media (pointer: coarse) {
-  .trk-chip,
-  .trk-btn,
-  .trk-dl {
+  .trk-btn {
     min-height: 44px;
   }
 }
 
 @media (max-width: 700px) {
-  .trk-panel {
+  .fl-bar {
     right: 58px;
-    bottom: 120px;
+    bottom: 180px;
     left: 58px;
-    max-height: 40vh;
+  }
+
+  .feelie {
+    width: 48px;
+    height: 48px;
+  }
+
+  .fl-row {
+    gap: 4px;
   }
 
   .trk-float {
-    inset: 0 0 calc(120px + 42vh);
+    inset: 0 0 calc(180px + 180px);
   }
 
   .trk-canvas {
     width: min(34vh, 80vw);
     height: min(34vh, 80vw);
   }
-}
-
-.trk-info > .trk-btn {
-  align-self: flex-start;
-}
-
-/* the laser kits under the trinkets (laserKitList.ts) */
-.lk-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 16px;
-  margin-top: 8px;
-}
-
-.lk-kit {
-  min-width: 0;
-  max-width: 100%;
-}
-
-.lk-title {
-  margin: 0 0 2px;
-  font-size: 13px;
-}
-
-.lk-summary {
-  margin: 0 0 4px;
-  max-width: 34em;
-  opacity: 0.85;
-}
-
-.lk-previews {
-  display: flex;
-  gap: 6px;
-}
-
-.lk-preview {
-  width: 72px;
-  height: 72px;
-  border-radius: 6px;
-  background: #efe5cc;
-  object-fit: contain;
-}
-
-.lk-downloads {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: 6px 0 0;
-  padding: 0;
-  list-style: none;
 }

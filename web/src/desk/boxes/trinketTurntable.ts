@@ -15,12 +15,14 @@ export interface Turntable {
   status: HTMLElement;
   /** Shows a mesh at the angle of the one before (or the first angle, `fresh`), spinning again with `spin`. */
   show(mesh: () => Promise<Mesh>, opts?: { fresh?: boolean; spin?: boolean }): Promise<void>;
+  /** Shows any model: `make` loads it and gives the function that builds its view on the canvas (feelieModels.ts). */
+  showModel(make: () => Promise<(canvas: HTMLCanvasElement) => TrinketView | undefined>, opts?: { fresh?: boolean; spin?: boolean }): Promise<void>;
   /** Lets the trinket go (its GPU buffers too). */
   clear(): void;
 }
 
 /** A turntable; `keys` sees each key the canvas gets first and returns true for one it used. */
-export function trinketTurntable(keys?: (e: KeyboardEvent) => boolean): Turntable {
+export function trinketTurntable(keys?: (e: KeyboardEvent) => boolean, { zoom = false } = {}): Turntable {
   let view: TrinketView | undefined;
   let visible = true;
   let spinning = !reduced();
@@ -63,22 +65,61 @@ export function trinketTurntable(keys?: (e: KeyboardEvent) => boolean): Turntabl
     else if (e.key === 'Home' && view) {
       view.yaw = 0.6;
       view.pitch = 0.28;
+      view.zoom = 1;
       turn(0, 0);
     } else return;
     e.preventDefault();
   });
   let drag: { x: number; y: number } | undefined;
+  // with `zoom`: the wheel and a two-finger pinch come closer or go back, + and - too
+  const zoomBy = (k: number) => {
+    if (!view) return;
+    spinning = false;
+    view.zoom = Math.max(0.5, Math.min(4, view.zoom * k));
+    wake();
+  };
+  const fingers = new Map<number, { x: number; y: number }>();
+  let pinch = 0;
+  if (zoom) {
+    canvas.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault();
+        zoomBy(Math.exp(-e.deltaY / 400));
+      },
+      { passive: false },
+    );
+    canvas.addEventListener('keydown', (e) => {
+      if (e.key === '+' || e.key === '=') zoomBy(1.2);
+      else if (e.key === '-') zoomBy(1 / 1.2);
+      else return;
+      e.preventDefault();
+    });
+  }
   canvas.addEventListener('pointerdown', (e) => {
     drag = { x: e.clientX, y: e.clientY };
+    fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     canvas.setPointerCapture(e.pointerId);
     canvas.classList.add('turning');
   });
   canvas.addEventListener('pointermove', (e) => {
     if (!drag) return;
+    if (zoom && fingers.size === 2) {
+      fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      const [a, b] = [...fingers.values()];
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinch) zoomBy(dist / pinch);
+      pinch = dist;
+      return;
+    }
+    fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     turn((e.clientX - drag.x) * 0.012, (e.clientY - drag.y) * 0.008);
     drag = { x: e.clientX, y: e.clientY };
   });
-  const release = () => {
+  const release = (e: PointerEvent) => {
+    fingers.delete(e.pointerId);
+    pinch = 0;
+    if (fingers.size) return;
     drag = undefined;
     canvas.classList.remove('turning');
   };
@@ -89,31 +130,39 @@ export function trinketTurntable(keys?: (e: KeyboardEvent) => boolean): Turntabl
     if (visible) wake();
   }).observe(canvas);
 
+  async function showModel(make: () => Promise<(c: HTMLCanvasElement) => TrinketView | undefined>, { fresh = false, spin = false } = {}) {
+    const mine = ++showing;
+    if (spin) spinning = !reduced();
+    canvas.classList.add('loading');
+    try {
+      const build = await make();
+      if (mine !== showing) return;
+      const keep = !fresh && view && { yaw: view.yaw, pitch: view.pitch };
+      view?.dispose();
+      view = build(canvas);
+      if (!view) throw new Error('no WebGL');
+      if (keep) Object.assign(view, keep);
+      status.hidden = true;
+      canvas.hidden = false;
+      canvas.classList.remove('loading');
+      wake();
+    } catch {
+      if (mine !== showing) return;
+      canvas.hidden = true;
+      status.hidden = false;
+    }
+  }
+
   return {
     canvas,
     status,
-    async show(mesh, { fresh = false, spin = false } = {}) {
-      const mine = ++showing;
-      if (spin) spinning = !reduced();
-      canvas.classList.add('loading');
-      try {
+    show(mesh, opts) {
+      return showModel(async () => {
         const [{ createTrinketView }, m] = await Promise.all([import('./trinketGl'), mesh()]);
-        if (mine !== showing) return;
-        const keep = !fresh && view && { yaw: view.yaw, pitch: view.pitch };
-        view?.dispose();
-        view = createTrinketView(canvas, m);
-        if (!view) throw new Error('no WebGL');
-        if (keep) Object.assign(view, keep);
-        status.hidden = true;
-        canvas.hidden = false;
-        canvas.classList.remove('loading');
-        wake();
-      } catch {
-        if (mine !== showing) return;
-        canvas.hidden = true;
-        status.hidden = false;
-      }
+        return (c) => createTrinketView(c, m);
+      }, opts);
     },
+    showModel,
     clear() {
       showing++;
       view?.dispose();

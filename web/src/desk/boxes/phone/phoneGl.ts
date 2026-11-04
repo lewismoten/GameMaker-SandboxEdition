@@ -20,6 +20,8 @@ export interface PhoneView {
   filter: ViewFilter;
   /** True: jump to the framing at once (reduced motion). */
   snap: boolean;
+  /** Draws at this many pixels square instead of the canvas's size (a thumbnail drawn on a canvas that isn't in the page). */
+  fixed?: number;
   /** Draws a frame; true while the framing is still easing, so the caller keeps drawing. */
   draw(): boolean;
   dispose(): void;
@@ -93,8 +95,8 @@ export function createPhoneView(canvas: HTMLCanvasElement, parts: Part[], scaleW
     snap: false,
     draw() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = Math.max(1, Math.round(canvas.clientWidth * dpr));
-      const h = Math.max(1, Math.round(canvas.clientHeight * dpr));
+      const w = view.fixed ?? Math.max(1, Math.round(canvas.clientWidth * dpr));
+      const h = view.fixed ?? Math.max(1, Math.round(canvas.clientHeight * dpr));
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;

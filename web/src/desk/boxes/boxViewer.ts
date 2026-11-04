@@ -137,6 +137,13 @@ export function openBoxViewer(
     const onKey = (e: KeyboardEvent) => {
       // a trinket in the box turns with the arrow keys itself (trinketShelf.ts)
       if (e.key !== 'Escape' && (e.target as Element | null)?.closest?.('.bc-trinkets')) return;
+      // Esc with a feelie out (trinketShelf.ts) puts the box back first; the next Esc closes the viewer
+      if (e.key === 'Escape' && overlay.classList.contains('trinket-on')) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        overlay.querySelector<HTMLButtonElement>('.feelie[aria-pressed="true"]')?.click();
+        return;
+      }
       e.stopImmediatePropagation();
       if (e.key === 'Escape') close();
       else if (e.key === 'PageDown' || e.key === ']') void step(1);
