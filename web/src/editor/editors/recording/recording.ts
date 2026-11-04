@@ -2,6 +2,7 @@
 // back when the menu sits idle. Record one by playing, watch it, and trim it.
 import { registerEditor } from '../registry';
 import { h, clear, modal, toast } from '../../core/ui';
+import { fileUndo } from '../../core/fileUndo';
 import { registerMaker } from '../../tools/makers';
 import type { Project } from '../../core/project';
 import { GameFiles } from '../../../project/files';
@@ -99,24 +100,21 @@ registerMaker('rec', { label: '🤖 Let the bot play…', run: botRecording });
 
 registerEditor(['rec'], (host, project, file) => {
   let keys: RecordedKey[] = parseRecording(project.files.get(file)!);
-  const undo: Uint8Array[] = [];
+  // Undo and Redo put the file's bytes back (core/fileUndo.ts); the timeline and the key table redraw from them
+  const undo = fileUndo(project.files, () => {
+    keys = parseRecording(project.files.get(file)!);
+    refresh();
+  });
   const uses = project.usesOf(file).some((u) => u.scene === 0 && u.slot === 11);
   // the words go in a span: the shell may fold the hint on a phone, adding a More button to it (shell/hintFold.ts)
   const summaryText = h('span');
   const summary = h('p', { class: 'hint' }, summaryText);
-  const undoButton = h('button', { title: 'Undo the last change', disabled: true, onclick: () => restore() }, '↶ Undo');
   const raw = h('div');
   const store = (next: RecordedKey[]) => {
-    undo.push(serializeRecording(keys));
+    undo.before(file);
+    undo.split();
     keys = next;
     project.files.set(file, serializeRecording(keys));
-    refresh();
-  };
-  const restore = () => {
-    const prev = undo.pop();
-    if (!prev) return;
-    keys = parseRecording(prev);
-    project.files.set(file, prev);
     refresh();
   };
   const timeline = editTimeline(toEvents(keys), (events) => store(toKeys(events)));
@@ -132,7 +130,6 @@ registerEditor(['rec'], (host, project, file) => {
     summaryText.textContent = `${presses} key presses (${keys.length} of ${RECLEN} key events) over ${clock(new TimeMap(1, [], screens).play(duration(events)))} of play${during}. ${
       uses ? 'This is the title screen’s demo.' : 'Choose it as the start scene’s “Demo recording” to show it on the title screen.'
     }`;
-    undoButton.disabled = !undo.length;
     timeline.set(events);
     clear(
       raw,
@@ -174,13 +171,15 @@ registerEditor(['rec'], (host, project, file) => {
         },
         '🤖 Let the bot play…',
       ),
-      undoButton,
+      undo.undoBtn,
+      undo.redoBtn,
     ),
     timeline.el,
     h('details', { class: 'rec-raw' }, h('summary', null, 'Key events, one by one'), raw),
   );
   refresh();
-  return () => timeline.destroy();
+  const stopKeys = undo.listenKeys();
+  return () => (stopKeys(), timeline.destroy());
 });
 
 /** Every event as recorded, with the time it happens and a way to end the demo there. */
