@@ -20,6 +20,10 @@ const files: [string, Uint8Array][] = [
   ['big.pal', Uint8Array.from({ length: 100_000 }, (_, i) => (i * 7) & 255)],
 ];
 
+// toEqual walks a 100,000-byte array element by element; this compares names and bytes directly.
+const sameBytes = (a: Uint8Array, b: Uint8Array): boolean => a.length === b.length && Buffer.compare(a, b) === 0;
+const sameFiles = (a: [string, Uint8Array][], b: [string, Uint8Array][]): boolean => a.length === b.length && a.every(([n, d], i) => n === b[i][0] && sameBytes(d, b[i][1]));
+
 describe('one-page export', () => {
   it('packs and unpacks files end to end', () => {
     const { files: index, blob } = pack(files);
@@ -28,20 +32,20 @@ describe('one-page export', () => {
       ['empty.snd', 0],
       ['big.pal', 100_000],
     ]);
-    expect(unpack(index, blob)).toEqual(files);
+    expect(sameFiles(unpack(index, blob), files)).toBe(true);
     expect(() => unpack(index, blob.slice(0, 50))).toThrow(/cut short/);
   });
 
   it('round-trips base64, including large inputs', () => {
     const bytes = files[2][1];
-    expect(fromBase64(toBase64(bytes))).toEqual(bytes);
+    expect(sameBytes(fromBase64(toBase64(bytes)), bytes)).toBe(true);
     expect(toBase64(new Uint8Array([255, 0, 128]))).toBe('/wCA');
   });
 
   it('encodes and decodes a game (gzip when available)', async () => {
     const game = await encodeGame({ id: 'test', title: 'Test', gam: 'game.gam' }, files);
     expect(game.enc).toBe(typeof CompressionStream === 'undefined' ? 'raw' : 'gzip');
-    expect(await decodeGame(game)).toEqual(files);
+    expect(sameFiles(await decodeGame(game), files)).toBe(true);
   });
 
   it('keeps script-breaking text out of the page', () => {
@@ -63,7 +67,7 @@ describe('reading a one-page export back', () => {
     const page = fillPage(`<html><head><title>${TITLE_MARK}</title></head><body>${GAME_MARK}<script>var a=1</script></body></html>`, game);
     const back = readSinglePage(page)!;
     expect(back.title).toBe('A </script> title');
-    expect(await decodeGame(back)).toEqual(files);
+    expect(sameFiles(await decodeGame(back), files)).toBe(true);
     expect(readSinglePage('<html><body>nothing</body></html>')).toBeUndefined();
     expect(() => readSinglePage('<script type="application/json" id="gm-game">{oops</script>')).toThrow(/damaged/);
   });
