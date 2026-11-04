@@ -143,6 +143,10 @@ This folder holds the build's Vite plugins and the scripts run by hand (from
   style, tries, play time and outcome, and why it stopped (a door that stayed shut). `--out` writes the walkthrough; it
   exits 1 when the bot doesn't win. Arguments, `.gam` picking and the table line are in `walkAutoArgs.ts`. It skips the
   author's own plays and walking paths, which live in a project's companion file.
+- `roundTrip.ts` (`npm run roundtrip -- [<folder | .zip>...] [--type gam,map,...] [--out base]`) reads every original file
+  with the engine's reader, writes it back with the matching serializer and compares bytes: one table per type
+  (identical, different, unreadable) and the first differing offset. Zips are read in memory. It defaults to the
+  archive in `.for-lewis/reference/archive` and `cd/`, and writes a `.md` and `.tsv`.
 - `diskDiff.ts` (`npm run disk:diff -- <a> <b> [--json|--notes]`, or `-- <game-id> --since [rev]`) compares two disks, each a folder (such as `games/<id>/disk`) or a
   `.zip`: how many files changed, were added or removed, then for each changed file a plain-text summary by type, picked from
   the file's contents where it can (GIF, FLI, VOC) and else its extension: `.gam` scenes, `.pal` colors, `.bbl/.mbl/.cbl`
