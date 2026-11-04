@@ -91,7 +91,9 @@ registerEditor(['gam'], (host, owner, file) => {
     [undo.redoBtn, 'Redo'],
   ] as const) {
     b.textContent = name === 'Undo' ? '↶' : '↷';
-    b.setAttribute('aria-label', name);
+    // the boards have their own Undo/Redo (cards moved on a board), so this pair says what it takes back
+    b.setAttribute('aria-label', `${name} game change`);
+    b.title = `${name} the last change to the game: scenes, files, links (${name === 'Undo' ? 'Ctrl+Z' : 'Ctrl+Y'})`;
     b.classList.add('grator-undo');
   }
   const stopKeys = undo.listenKeys();

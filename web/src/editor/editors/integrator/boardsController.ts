@@ -324,8 +324,8 @@ export function boardsController(c: Host) {
         ),
         tool('Spread out', 'Move cards apart so none hides another, keeping your arrangement', () => arrange('spread'), '✥ Spread out'),
         tool('Close gaps', 'Bring cards closer together, keeping your arrangement', () => arrange('gaps'), '⇲ Close gaps'),
-        tool('Undo', 'Undo the last change to the boards (Ctrl+Z on the board)', undoBoards, '↶'),
-        tool('Redo', 'Redo (Ctrl+Shift+Z on the board)', redoBoards, '↷'),
+        tool('Undo board layout', 'Undo the last change to the boards: cards moved, boards added (Ctrl+Z on the board)', undoBoards, '↶ Layout'),
+        tool('Redo board layout', 'Redo the last undone change to the boards (Ctrl+Shift+Z on the board)', redoBoards, '↷ Layout'),
         data.boards.length > 1
           ? h(
               'button',

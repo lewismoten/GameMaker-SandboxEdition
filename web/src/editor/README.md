@@ -588,3 +588,7 @@ seams; Find, grid, link and Level check overlays keep their native positions.
 Project URLs without a file open the asset overview; `?assets=map` opens a category.
 Direct file links keep their editor and view parameters. Browser Back and Forward,
 the Assets button in a file editor, and stopping a play test return to the appropriate view.
+
+## Two Undo/Redo pairs in the integrator
+
+The integrator keeps two histories: the game file's (`fileUndo.ts`: scenes, files, links, positions in the .gam) and the boards' (companion data: cards moved, boards added). They cannot be one stack, because the boards are editor-only and never part of the .gam. People could not tell the pairs apart, so each says what it takes back: the file pair is "Undo game change" (title and label, small arrows), the board pair "↶ Layout" / "↷ Layout" (label "Undo board layout").
