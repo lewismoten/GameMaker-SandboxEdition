@@ -1,4 +1,4 @@
-// hearts.gam: scene 0 is the title and menu, scene 1 the endings, then one scene a level.
+// slip.gam: scene 0 is the title and menu, scene 1 the endings, then one scene a level.
 // A level's scene lists the files it loads in slots (palette, map, blocks, monsters, monster
 // blocks, character, character blocks, sounds, song, card) and links its door to the next scene.
 import { ADVTYPE, MAXSCENELINKS, NOSCENE, emptyScene, newGame, type Game } from '@lewismoten/gamemaker-sandbox-engine/formats/game';
@@ -12,11 +12,11 @@ export function buildGame(levels: Level[]): Game {
   const [title, end] = game.scenes;
   title.files = [
     'title.lst',
-    'hearts.cmf',
+    'slip.cmf',
     'menu.gif',
-    'hearts.cmf',
+    'slip.cmf',
     'story.lst',
-    'hearts.cmf',
+    'slip.cmf',
     'howto.lst',
     'credits.lst',
     'scores.gif',
@@ -26,22 +26,22 @@ export function buildGame(levels: Level[]): Game {
     ...new Array(8).fill(''),
   ];
   end.desc = 'The End';
-  end.files = ['won.lst', 'hearts.cmf', 'lost.lst', 'hearts.cmf', ...new Array(16).fill('')];
+  end.files = ['won.lst', 'slip.cmf', 'lost.lst', 'slip.cmf', ...new Array(16).fill('')];
 
   levels.forEach((l, i) => {
     const scene = emptyScene(ADVTYPE);
     scene.desc = l.title.slice(0, 19);
     scene.pos = { x: 60 + i * 80, y: 110 };
     scene.files = [
-      'hearts.pal',
+      'slip.pal',
       `${l.file}.map`,
-      'hearts.bbl',
-      'hearts.mon',
-      'hearts.mbl',
+      'slip.bbl',
+      'slip.mon',
+      'slip.mbl',
       'hero.chr',
       'hero.cbl',
-      'hearts.snd',
-      'hearts.cmf',
+      'slip.snd',
+      'slip.cmf',
       `${l.file}.lst`,
       '',
       ...new Array(9).fill(''),

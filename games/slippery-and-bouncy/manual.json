@@ -2,86 +2,90 @@
   "title": "Slippery and Bouncy",
   "howDoI": [
     {
-      "id": "hit-points",
-      "q": "How do I choose how many hit points my hero starts with?",
+      "id": "ice",
+      "q": "How do I make ice that my hero slides on?",
       "scene": 2,
-      "x": 13,
+      "x": 24,
       "y": 19,
       "level": 1
     },
     {
-      "id": "spike",
-      "q": "How do I make a block that takes hit points?",
+      "id": "pull-direction",
+      "q": "How do I change which way a block pulls my hero?",
       "scene": 2,
-      "x": 27,
+      "x": 24,
       "y": 19,
       "level": 1
     },
     {
-      "id": "heart",
-      "q": "How do I make a pickup that gives hit points back?",
+      "id": "ledge",
+      "q": "How do I make a ledge my hero can jump up through?",
+      "scene": 2,
+      "x": 40,
+      "y": 17,
+      "level": 1
+    },
+    {
+      "id": "belt",
+      "q": "How do I make a floor that carries my hero along?",
       "scene": 3,
-      "x": 27,
+      "x": 22,
       "y": 19,
       "level": 2
     },
     {
-      "id": "carry",
-      "q": "How do I keep my hero's hit points from one level to the next?",
-      "scene": 3,
-      "x": 33,
-      "y": 19,
-      "level": 2
-    },
-    {
-      "id": "lose-life",
-      "q": "How do I make my hero lose a life when his hit points run out?",
+      "id": "wind",
+      "q": "How do I make a block that blows my hero up into the air?",
       "scene": 4,
-      "x": 31,
+      "x": 34,
       "y": 19,
       "level": 3
     },
     {
-      "id": "one-up",
-      "q": "How do I give my hero an extra life?",
+      "id": "spring",
+      "q": "How do I make a spring pad that bounces my hero?",
       "scene": 4,
-      "x": 49,
-      "y": 17,
+      "x": 19,
+      "y": 19,
       "level": 3
     }
   ],
   "pages": [
     {
       "head": "Welcome",
-      "html": "<h1>Welcome</h1><p><b>Slippery and Bouncy</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about hit points, hearts and lives, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p>"
+      "html": "<h1>Welcome</h1><p><b>Slippery and Bouncy</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has three short levels about blocks that pull, and takes a few minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each idea is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>F2</kbd> shows your hit points, lives and score. Walk into the door at the end of a level to go on.</p><h2>The one idea</h2><p>Every block has a <b>Gravity pulls</b> setting: which of four ways it pulls, up, down, left or right, in any mix. Kit is pulled by the block his feet are in. Down is ordinary gravity. Add right and it drags him along. Up lifts him. Nothing else in these three levels is special.</p>"
     },
     {
-      "head": "Level 1: Hit Points",
-      "html": "<h1>Level 1: Hit Points</h1><p>The <b>F2 SHOWS YOUR HIT POINTS</b> sign comes first: press <kbd>F2</kbd> and Kit&rsquo;s numbers appear. He starts with 30 hit points and 3 lives. The <b>A SPIKE TAKES 10 HIT POINTS</b> sign stands before a single spike. Walk into it and it stings: Kit shows his hurt pose and has 20 left. The spike then lies flat and harmless. Press <kbd>F2</kbd> again to see.</p><p>Four coins are worth ten points each.</p>"
-    },
-    {
-      "head": "How this level is made",
-      "html": "<h1>How level 1 is made</h1><ul><li><b>Hit points to start.</b> Open <b>hero.chr</b> in the character editor. The first counter, <b>Hit points</b>, is 30, and <b>Lives</b> is 3. Each time a life is lost, the room starts again with the hit points back at that number.</li><li><b>A block that takes them.</b> Open <b>hearts.bbl</b> in the blocks editor and pick <b>spikeUp</b>. Its <b>Hit points</b> is &minus;10. The engine adds that to the hero each tick the block overlaps him, so a block that only hurts would drain him in a second.</li><li><b>Once.</b> The same block has <b>Becomes block</b> set to <b>spikeFlat</b>, which has no hit points. One touch, one sting, the way a coin vanishes when you take it.</li><li><b>You see it.</b> The hero&rsquo;s <b>Hurt</b> sequence plays, with its sound, each time his hit points drop. The count itself is on <kbd>F2</kbd>, the game&rsquo;s own status screen.</li><li><b>Where it is.</b> Open <b>one.map</b> in the map editor. The spike is one block on the grass, painted like grass.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with words drawn in their pictures.</li><li><b>The exit.</b> A scene link joins the door to the next level. Open <b>hearts.gam</b> in the scenes editor.</li></ul>"
-    },
-    {
-      "head": "Level 2: Hearts Heal",
-      "html": "<h1>Level 2: Hearts Heal</h1><p>Kit arrives with the 20 hit points he left level 1 with. The <b>A HEART GIVES 10 HIT POINTS BACK</b> sign comes first. Another spike takes him down to 10, and then two hearts in a row bring him up to 30. Each heart is gone once he touches it. The <b>HIT POINTS GO WITH YOU TO THE NEXT ROOM</b> sign is by the exit, because they do.</p><p>Three coins are on the way.</p>"
+      "head": "Level 1: Ice",
+      "html": "<h1>Level 1: Ice</h1><p>The <b>ICE DRAGS YOU RIGHT, AND YOU SLIDE ON</b> sign comes first. A patch of pale blue ice lies on the ground, with a spike a little way past its end. Step onto the ice and it speeds Kit up. Let go of every key and he keeps going, all the way off the end and into the spike, which stings him once for 10 hit points and lies flat. Jump near the end of the ice and he sails over it.</p><p>The <b>JUMP UP THROUGH A LEDGE AND LAND ON TOP</b> sign stands before a plank ledge with four coins on it. Stand under it, press <kbd>Space</kbd>, and Kit rises through the plank and lands on top. He cannot drop back down through it: he walks off the end. Three more coins are on the ground before the door.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 2 is made</h1><ul><li><b>A pickup that heals.</b> In <b>hearts.bbl</b> pick <b>heart</b>. Its <b>Hit points</b> is +10: the same field as the spike, above zero instead of below. The engine plays a soft sound for it.</li><li><b>Gone when touched.</b> <b>Becomes block</b> is set to the sky block, so the heart disappears and gives its 10 only once.</li><li><b>No stop at 30.</b> Nothing in the engine keeps hit points at the number a hero started with. Level 3 uses that.</li><li><b>They carry on.</b> Hit points are kept as the hero goes through a door. They only go back to the starting number when a life is lost or a new game starts.</li><li><b>Where they are.</b> Open <b>two.map</b>. The spike and the two hearts stand on the grass, painted like anything else.</li></ul>"
+      "html": "<h1>How level 1 is made</h1><ul><li><b>Two layers.</b> The ground block <b>ice</b> is plain and solid on every side. The pull is in the <b>slickAir</b> blocks in the two rows above it. Open <b>slip.bbl</b> in the blocks editor and pick <b>slickAir</b>: <b>Gravity pulls</b> has <b>down</b> and <b>right</b> ticked. Kit is pulled by the block his feet are in, not by the floor under him, so the pulling air has to sit where he walks.</li><li><b>Down and right.</b> Down is still ticked, so Kit is held to the ground. Right makes him a little faster every tick he stands in it, up to the game&rsquo;s top speed.</li><li><b>Sliding on.</b> Outside the pulling air the sideways speed fades away in a few ticks. That is why he slides a block or two past the end of the ice and then stops.</li><li><b>The spike.</b> <b>spikeUp</b> has <b>Hit points</b> &minus;10 and <b>Becomes block</b> <b>spikeFlat</b>, so it stings once.</li><li><b>The ledge.</b> The block <b>plank</b> is solid on its top side only (<b>Solid sides</b>). Kit can jump up through it from below and stand on it from above. Its Gravity pulls is down, like air, so he falls when he walks off.</li><li><b>The exit.</b> A scene link joins the door to the next level. Open <b>slip.gam</b> in the scenes editor.</li></ul>"
     },
     {
-      "head": "Level 3: Lives",
-      "html": "<h1>Level 3: Lives</h1><p>Four spikes stand along the ground, spaced out so each stings on its own. That is 40, and Kit has 30. The <b>AT ZERO HIT POINTS YOU LOSE A LIFE</b> sign says what happens: walk straight along the ground and the third spike takes his last hit point. He falls over, a life is gone (press <kbd>F2</kbd>) and the room starts again, with 30 hit points.</p><p>This time jump up onto the ledge first. Two hearts sit on it, and the <b>HEARTS CAN TAKE YOU PAST 30</b> sign says why that is fine: 50 hit points get him past all four spikes. Near the end a ledge holds a smiling face in a teal beanie. The <b>A FACE ADDS A LIFE</b> sign says the rest.</p>"
+      "head": "Level 2: The Belt",
+      "html": "<h1>Level 2: The Belt</h1><p>The <b>A BELT CARRIES YOU. JUMP NEAR THE END</b> sign comes first. An orange-chevroned belt runs along the ground, and past its end waits another spike. Step onto it and stand still: the belt carries Kit the whole way, faster and faster, and into the spike. Walk right and he goes faster still. Jump near the end and he clears the spike; jump too early and he lands back on the belt. Five coins lie on the ground after it.</p>"
     },
     {
       "head": "How this level is made",
-      "html": "<h1>How level 3 is made</h1><ul><li><b>Zero costs a life.</b> No block takes a life here. When the hero&rsquo;s hit points reach zero the engine plays his <b>Die</b> sequence, takes one life and starts the same level again. With no lives left, the game ends.</li><li><b>Where he comes back.</b> At the place he arrived the first time: the cyan marker on the doorway of <b>three.map</b>. Drag it to change that.</li><li><b>What starts over.</b> The map is read again, so hearts, spikes and coins are all back. Your score stays.</li><li><b>Past where he started.</b> Two <b>heart</b> blocks on a ledge of planks bring 30 to 50. The planks are solid on top only, so Kit jumps up through them and stands on top.</li><li><b>An extra life.</b> Pick <b>oneUp</b> in <b>hearts.bbl</b>. Its <b>Effect</b> is counter 1 (lives) and the <b>Amount</b> is 1. It is gone when touched.</li><li><b>Spaced spikes.</b> Spikes in a row can share one sting while Kit is in his hurt pose. Three blocks apart, each one counts.</li></ul>"
+      "html": "<h1>How level 2 is made</h1><ul><li><b>Same setting as the ice.</b> The <b>beltAir</b> blocks above the belt have <b>Gravity pulls</b> down and right, exactly like <b>slickAir</b>. Only the picture and the length differ. A longer stretch means Kit reaches a higher speed, so the belt feels like a moving walkway where the short ice patch feels like a slip.</li><li><b>Why it carries him.</b> The belt is eight blocks long and Kit&rsquo;s feet are in pulling air the whole way. Standing still changes nothing, because the pull keeps adding speed every tick.</li><li><b>Chevrons and dashes.</b> The orange chevrons on the <b>belt</b> block and the white dashes in the air show the direction. The engine does not need them; they are there so you can see where the pull is.</li><li><b>Jumping off.</b> Up in the air Kit leaves the pulling air, so his sideways speed starts to fade right away. Jump a block or two before the end and he lands past the spike. Jump too early and he lands back in the pull and is carried on.</li><li><b>Where it is.</b> Open <b>two.map</b> in the map editor: eight belt blocks on the ground row, and sixteen <b>beltAir</b> blocks in two rows above them.</li></ul>"
+    },
+    {
+      "head": "Level 3: Wind",
+      "html": "<h1>Level 3: Wind</h1><p>The <b>A SPRING IS A SHORT WIND</b> sign comes first. Three spring pads sit in the ground. Step on them and Kit bounces, over and over, a little higher than a jump. Hold <kbd>Right</kbd> on the way up and he lands on the plank ledge, with four coins on it. Walk off its end.</p><p>The <b>WIND BLOWS YOU UP</b> sign is before a floor fan. Walk into the column of wind above it and Kit rises, through the one-way shelf, and settles on top. A spike is on the shelf a few steps from where he lands, and the door is beyond it, with four more coins on the way.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 3 is made</h1><ul><li><b>Wind is up.</b> The <b>windAir</b> blocks above the fan have <b>Gravity pulls</b> <b>up</b> only. Down is not ticked, so nothing pulls Kit back while he is in the column. He speeds up as he rises, then leaves the top of the column into ordinary air and gravity takes him back down.</li><li><b>How high.</b> The height he reaches is set by how many wind blocks he passes through: the column here is four blocks tall, which is enough to lift him through the shelf. Make it taller and he rises higher.</li><li><b>A spring is a short wind.</b> <b>springAir</b> is the same block, three tall, over solid <b>spring</b> blocks. Kit stands on the spring, the wind lifts him, he falls back, and it lifts him again.</li><li><b>One-way shelf.</b> The shelf is the same <b>plank</b> block as the ledge in level 1, solid on top only, so the wind carries him up through it and he lands on top.</li><li><b>The spike.</b> The shelf spike is the same <b>spikeUp</b>: 10 hit points, once.</li><li><b>Where it is.</b> Open <b>three.map</b> in the map editor. The door stands on the shelf, so the wind is the way there.</li></ul>"
+    },
+    {
+      "head": "What it cannot do",
+      "html": "<h1>What it cannot do</h1><p>These are the engine&rsquo;s limits, so you can plan around them.</p><ul><li><b>No ice that is slippery on a sliding scale.</b> A pull is on or off. You cannot make ice a little slippery and another patch very slippery; only its length changes how fast Kit gets.</li><li><b>No friction to hold on to.</b> Once Kit is in pulling air, holding the other way does not stop him: the pull wins in a few ticks. To leave the ice or the belt against its pull, jump out.</li><li><b>The pull is in the air, not the floor.</b> It belongs to the block his feet are in, so a floor alone is never slippery. Ice always needs the pulling blocks above it.</li><li><b>There is a top speed.</b> The pull adds speed every tick up to a limit, so a long belt gets fast but never faster than that.</li><li><b>Ledges are one way up only.</b> A ledge is solid on its top side. You can jump up through it. There is no way to drop down through one on purpose: you walk off its end or use a ladder.</li><li><b>Wind has no gusts.</b> It blows all the time, always the same way. Making it come and go needs blocks that change by themselves, which is a different Starter.</li></ul>"
     },
     {
       "head": "Make it yours",
-      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Give Kit 50 hit points in <b>hero.chr</b> and see how level 3 changes.</li><li>Make <b>heart</b> give 30 instead of 10.</li><li>Make <b>spikeUp</b> take 15, and count how many Kit can walk through.</li><li>Give Kit 1 life in <b>hero.chr</b>, and lose it in level 3.</li><li>Move a <b>oneUp</b> face somewhere harder to reach.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>In <b>slickAir</b>, untick <b>right</b> and tick <b>left</b>, and the ice drags the other way.</li><li>Make the ice patch in <b>one.map</b> twice as long, and see how fast Kit gets.</li><li>Give <b>windAir</b> both <b>up</b> and <b>right</b> and watch the wind carry him sideways as it lifts.</li><li>Add one more <b>springAir</b> block above a spring and see Kit bounce higher.</li><li>Move the shelf up or down a row and find the height where the wind no longer reaches it.</li></ul><p>The home page&rsquo;s <b>Starters</b> tab has more small games like this one.</p>"
     }
   ]
 }

@@ -42,18 +42,18 @@ const cheer = heroPicture(heroBlocks, 'cheer.top', 'jump');
 const door = heroPicture(book, 'doorTop', 'doorBottom').map((_x, _y, c) => (c === skyOf(pal) ? 255 : c));
 
 // the game's shared data: one block set, one palette, one hero, an (empty) set of monsters, one song
-disk.put('hearts.pal', serializePalette(pal.pal));
-disk.put('hearts.bbl', serializeBlocks(book.finish()));
-disk.put('hearts.mbl', serializeBlocks(monsterBlocks.finish()));
-disk.put('hearts.mon', serializeMonsters(buildMonsters(monsterBlocks)));
+disk.put('slip.pal', serializePalette(pal.pal));
+disk.put('slip.bbl', serializeBlocks(book.finish()));
+disk.put('slip.mbl', serializeBlocks(monsterBlocks.finish()));
+disk.put('slip.mon', serializeMonsters(buildMonsters(monsterBlocks)));
 disk.put('hero.cbl', serializeBlocks(heroBlocks.finish()));
 const heroChar = buildHero(heroBlocks);
 heroChar.meter[KEYS] = INF_REPEAT; // no keys in this game
 heroChar.meter[0] = HERO_HIT_POINTS; // three spikes' worth of hit points
 heroChar.meter[1] = HERO_LIVES;
 disk.put('hero.chr', serializeCharacter(heroChar));
-disk.put('hearts.snd', serializeSoundSet(buildSounds()));
-disk.put('hearts.cmf', song());
+disk.put('slip.snd', serializeSoundSet(buildSounds()));
+disk.put('slip.cmf', song());
 
 // each level's map and its card
 levels.forEach((l, i) => {
@@ -94,7 +94,7 @@ disk.put('lost.txt', LOST);
 disk.put('lost.lst', serializeSlideList([{ name: 'lostpic.gif', pause: 5 }, { name: 'lost.gif', pause: 0 }, { name: 'lost.txt' }]));
 
 disk.put('demo.rec', demoRecording());
-disk.put('hearts.gam', serializeGame(buildGame(levels)));
+disk.put('slip.gam', serializeGame(buildGame(levels)));
 disk.put('license.txt', licenseText('Slippery and Bouncy'));
 clipEveryList(disk.files);
 disk.write();

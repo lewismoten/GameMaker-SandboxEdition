@@ -1,7 +1,7 @@
 // Re-records the title screen's demo into src/demo.ts: the bot's own whole run through the three levels, one
 // unbroken list of keys (the demo recorder counts game ticks across scene changes, so the second level's
-// keys follow the first's after the ticks between them). It shows each lesson once: the spike's sting,
-// the two hearts that mend it, the four spikes that cost a life and the room starting again, then the ledge hearts and the face. Rebuild afterwards.
+// keys follow the first's after the ticks between them). It shows each lesson once: the slide into the spike,
+// the ride on the belt, the spring and the wind. Rebuild afterwards.
 //   cd web && npx vite-node ../games/slippery-and-bouncy/tools/gendemo.ts && npx vite-node ../games/slippery-and-bouncy/build.ts
 //   cd web && npx vite-node ../games/slippery-and-bouncy/tools/demoCheck.ts      (plays the recording on the real engine)
 import { recordDemo } from '../../kit/demoRecord';

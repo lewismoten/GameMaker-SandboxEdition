@@ -23,7 +23,7 @@ function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sign> } {
   const signs = {
     ice: addSign(book, pal, 'ice.sign', 'ICE DRAGS YOU RIGHT, AND YOU SLIDE ON', 4, 3),
     ledge: addSign(book, pal, 'ledge.sign', 'JUMP UP THROUGH A LEDGE AND LAND ON TOP', 4, 3),
-    belt: addSign(book, pal, 'belt.sign', 'A BELT CARRIES YOU. JUMP OFF BEFORE THE END', 4, 3),
+    belt: addSign(book, pal, 'belt.sign', 'A BELT CARRIES YOU. JUMP NEAR THE END', 4, 3),
     spring: addSign(book, pal, 'spring.sign', 'A SPRING IS A SHORT WIND', 4, 2),
     wind: addSign(book, pal, 'wind.sign', 'WIND BLOWS YOU UP', 4, 2),
     exit: addSign(book, pal, 'exit.sign', 'EXIT →', 3),

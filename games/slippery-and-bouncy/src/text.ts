@@ -6,13 +6,13 @@ import about from '../about.json';
 export const STORY = wrap(`
 |SLIPPERY AND BOUNCY
 
-Hit points are how much a hit Kit can take. Lives are how many tries he gets.
+Some blocks do more than stand there. They pull.
 
-A small explorer in a teal beanie has three short levels to cross. A spike takes ten hit points. A heart gives them back. At zero, a life is gone and the room starts again.
+A small explorer in a teal beanie has three short rooms to cross. Ice drags him along and he slides on. A belt carries him. A spring pad bounces him up, and a fan blows him through a shelf.
 
-Read the signs, and press F2 to see your numbers.
+Read the signs, and keep an eye on the spikes.
 
-Then open this game in Game-Maker and change a hazard.
+Then open this game in Game-Maker and change a pull.
 `);
 
 export const HOWTO = wrap(`
@@ -22,9 +22,9 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            your numbers
 
-A spike takes 10 hit points, and only once. A heart gives 10 back. You start with 30.
+Ice and belts pull you to the right while you stand in them. Wind pulls you up. A ledge lets you jump up through it, then holds you.
 
-At zero hit points you lose a life, and the room starts again where you came in with your 30 back. A face adds a life.
+A spike takes 10 hit points, and only once. You start with 50.
 
 |ESC for the menu.
 `);
@@ -43,13 +43,13 @@ One of the Starters: small games that each show one idea.
 );
 
 export const WON = wrap(`
-|WELL MENDED!
+|WHEE!
 
-Three levels, and now you know the numbers.
+Three rooms, and now you know how a pull works.
 
-Hit points are one counter and lives are another. A spike block takes hit points when you touch it, and a heart block gives them back. At zero hit points the engine takes a life and starts the room over. A face block adds a life.
+Every block has a gravity setting: which ways it pulls, and the hero is pulled by the block his feet are in. Down is ordinary gravity. Down and right is ice or a belt. Up is wind. A ledge is a block you can only stand on from above.
 
-Open the game in Game-Maker and find them on the Blocks tab. Change how much a heart heals, then play your change.
+Open the game in Game-Maker and find them on the Blocks tab. Make the wind pull to the left, then play it.
 `);
 
 export const LOST = wrap(`
@@ -57,6 +57,6 @@ export const LOST = wrap(`
 
 Out of lives.
 
-Try again: mind the spikes, take the hearts on the ledge first, and keep an eye on F2.
+Try again: ice and belts carry you, so jump before the spikes, and keep an eye on F2.
 
 `);
