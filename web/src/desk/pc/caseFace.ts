@@ -8,7 +8,7 @@ const el = (tag: string, attrs: Record<string, string>, ...kids: Element[]): SVG
   const e = document.createElementNS(NS, tag);
   for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
   e.append(...kids);
-  return e as SVGElement;
+  return e;
 };
 
 const stops = (...s: [string, string][]): SVGElement[] => s.map(([offset, c]) => el('stop', { offset, 'stop-color': c }));
