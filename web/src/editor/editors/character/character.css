@@ -468,6 +468,12 @@
   line-height: 1;
 }
 
+/* Full list: dimmed like a disabled button but still focusable, so its reason can be read. */
+.chr-tool[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* The 20x40 sprite and persistent transform buttons, reachable by mouse, touch and keyboard. */
 .chr-sprite {
   padding-right: 52px;
