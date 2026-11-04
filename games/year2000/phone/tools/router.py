@@ -26,6 +26,7 @@ class Router:
         self.pads = {}        # net id -> [(x, y, r, tag)]
         self.blockers = []    # (x, y, r) no-net pads and holes, block every net and vias
         self.fzones = []      # (x, y, r): no F.Cu copper at all (tracks, vias)
+        self.vrects = []      # (x0, y0, x1, y1): no via inside (tracks may cross): the silkscreen QR codes sit on the back there
         self.owner = None
 
     def cell(self, v):
@@ -198,6 +199,10 @@ class Router:
     def _via_ok(self, x, y, n):
         if self.viaban[y * self.nx + x]:
             return False
+        mx, my = x * G, y * G
+        for x0, y0, x1, y1 in self.vrects:
+            if x0 <= mx <= x1 and y0 <= my <= y1:
+                return False
         for dx, dy in self._dv:
             xx, yy = x + dx, y + dy
             if 0 <= xx < self.nx and 0 <= yy < self.ny:

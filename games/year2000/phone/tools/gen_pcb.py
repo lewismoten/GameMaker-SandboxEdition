@@ -214,6 +214,8 @@ for ref, pl in placed.items():             # small pin marks (silkscreen) of the
         rx, ry = rot(tx, ty, pl.a)
         rt.blockers.append((pl.x + (-rx if pl.side == "B" else rx), pl.y + ry, 0.9))
 rt.fzones += [(DIAL[0], DIAL[1], DIAL_KEEP_F), (SPK[0], SPK[1], SPK_KEEP_F)]
+_QR0, _QR1 = (27.5, 44.0, 18.1), (65.0, 47.0, 16.6)      # the two silkscreen QR codes on the back (QR_PARTS, QR_SITE below): a via under a module clips it
+rt.vrects += [(x - 1.6, y - 1.6, x + s + 1.6, y + s + 1.6) for x, y, s in (_QR0, _QR1)]
 widths = {nid[GND]: WIDE, nid[V5]: WIDE}
 base = [nid[GND], nid[V5]]
 rest = [nid[n] for n in netnames if n not in (GND, V5)]
