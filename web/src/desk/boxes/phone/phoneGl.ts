@@ -36,7 +36,7 @@ interface Drawn {
 const FOV = (28 * Math.PI) / 180;
 
 /** Sets up the view on `canvas`, or returns undefined when the browser has no WebGL. */
-export function createPhoneView(canvas: HTMLCanvasElement, parts: Part[]): PhoneView | undefined {
+export function createPhoneView(canvas: HTMLCanvasElement, parts: Part[], scaleWith: Part[] = []): PhoneView | undefined {
   const gl = canvas.getContext('webgl', { antialias: true, alpha: true, premultipliedAlpha: false });
   if (!gl) return undefined;
   const prog = program(gl);
@@ -44,6 +44,9 @@ export function createPhoneView(canvas: HTMLCanvasElement, parts: Part[]): Phone
 
   const stacks = explodeStacks(parts);
   const offset = new Map(stacks.map((s) => [s.key, s.offset]));
+  // another build drawn at the same scale: the frame never shrinks below that build's reach, so switching builds keeps a millimeter the same size
+  const otherOffset = new Map(explodeStacks(scaleWith).map((s) => [s.key, s.offset]));
+  const others: Drawn[] = scaleWith.map((p) => ({ first: 0, count: 0, group: p.group, stack: stackOf(p), bbox: p.bbox }));
   const chunks: Float32Array[] = [];
   const drawn: Drawn[] = [];
   let at = 0;
@@ -102,24 +105,28 @@ export function createPhoneView(canvas: HTMLCanvasElement, parts: Part[]): Phone
       gl.enable(gl.CULL_FACE);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-      const lo = [Infinity, Infinity, Infinity];
-      const hi = [-Infinity, -Infinity, -Infinity];
       const lift = (d: Drawn) => moved(offset.get(d.stack) ?? 0, view.explode);
-      for (const d of drawn) {
-        if (!shows(view.filter, d.group)) continue;
-        const dz = lift(d);
-        const b = d.bbox;
-        // viewer axes: (x, y, z) -> (x, -z, height)
-        const min = [b[0], -b[5], b[1] + dz];
-        const max = [b[3], -b[2], b[4] + dz];
-        for (let k = 0; k < 3; k++) {
-          lo[k] = Math.min(lo[k], min[k]);
-          hi[k] = Math.max(hi[k], max[k]);
+      const extent = (items: Drawn[], off: Map<string, number>) => {
+        const lo = [Infinity, Infinity, Infinity];
+        const hi = [-Infinity, -Infinity, -Infinity];
+        for (const d of items) {
+          if (!shows(view.filter, d.group)) continue;
+          const dz = moved(off.get(d.stack) ?? 0, view.explode);
+          const b = d.bbox;
+          // viewer axes: (x, y, z) -> (x, -z, height)
+          const min = [b[0], -b[5], b[1] + dz];
+          const max = [b[3], -b[2], b[4] + dz];
+          for (let k = 0; k < 3; k++) {
+            lo[k] = Math.min(lo[k], min[k]);
+            hi[k] = Math.max(hi[k], max[k]);
+          }
         }
-      }
+        return { lo, hi, reach: isFinite(lo[0]) ? Math.hypot(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) / 2 : 0 };
+      };
+      const { lo, hi, reach: own } = extent(drawn, offset);
       if (!isFinite(lo[0])) return false;
       const goal = lo.map((v, k) => (v + hi[k]) / 2);
-      const reach = Math.hypot(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) / 2;
+      const reach = Math.max(own, others.length ? extent(others, otherOffset).reach : 0);
       let easing = false;
       if (view.snap || frame.fresh) {
         frame.c = goal;

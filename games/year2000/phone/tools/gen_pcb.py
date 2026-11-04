@@ -523,14 +523,17 @@ silk.append(label("F.SilkS", "IN THE YEAR 2000!", 50.0, 15.5, 1.1))
 silk.append(label("F.SilkS", "SANDBOX SOFTWARE", 50.0, 18.0, 1.0))
 silk.append(label("F.SilkS", "MADE WITH GAME-MAKER", 50.0, 20.5, 1.0))
 silk.append(label("B.SilkS", "THE POCKET TELEPHONE", CX, 7.0, 1.1, True))
+QR_INFO = {}
 for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SITE, SITE_URL, "PLAY THE GAME")):
     items_, size_, n_ = silkart.qr_plate("B.SilkS", qx, qy, qm, qtext, uid, f)
+    QR_INFO["parts" if qtext == PARTS_URL else "site"] = dict(x=qx, y=qy, size=round(size_, 2), modules=n_, module_mm=qm, url=qtext)
     silk += items_
     silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))
 silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f)[0]
 silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], 12.8, 14.4))
 items += silk
 
+json.dump(dict(board_width=W, codes=QR_INFO, dex=dict(x=DEX_AT[0], y=DEX_AT[1], width=round(DEX_AT[2] * 16, 2), height=round(DEX_AT[2] * 18, 2))), open(os.path.join(KDIR, "qr_spots.json"), "w"), indent=1)
 nets_txt = '(net 0 "")\n  ' + "\n  ".join(f'(net {i} "{n}")' for n, i in nid.items())
 pcb = f'''(kicad_pcb (version 20241229) (generator "pcbnew") (generator_version "9.0")
   (general (thickness 1.6) (legacy_teardrops no))

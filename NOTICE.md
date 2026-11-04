@@ -977,3 +977,10 @@ a small PIC16F84A-style simulator are project-owned MIT code. The schematic embe
 the KiCad stock libraries (CC-BY-SA 4.0 with the KiCad libraries exception, KiCad Libraries
 Development Team). References: the ITU-T Q.23 DTMF frequencies, the MT8870D (Mitel/Zarlink/
 Microchip), CM8870 (California Micro Devices), HT9170 (Holtek), MAX7219 (Maxim Integrated), GNQ-3641 (G-NOR), PIC16F628A and MCP1702 (Microchip) datasheets. The README's programming steps use ZEPPP (Zero External Parts PIC Programmer by battlecoder, MIT License, https://github.com/battlecoder/zeppp); none of its code is copied. The 3D models are simple boxes and cylinders written by project code. The design is untested hardware.
+
+The two builds of the kit (the 99 x 99 mm Junior Lab Edition and the 73.66 x 175.26 mm Deluxe Model) carry silkscreen QR codes
+made with **OpenCV**'s `QRCodeEncoder` (Apache-2.0, the OpenCV team; `games/year2000/phone/tools/silkart.py`) and checked by its
+QR detector, and block art of Dex Dynamo taken from the game's own sprite (`games/year2000/src/sprites/sprites.ts`).
+The 3D-printed shell, dial, button caps and battery box (`tools/shell.ts`, `shellParts.ts`) are signed-distance shapes meshed
+by this repository's trinket tools, designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction. The AAA cells'
+maker "ZORP" is invented. The shell is untested: nothing has been printed.

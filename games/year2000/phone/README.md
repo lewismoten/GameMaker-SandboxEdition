@@ -15,8 +15,60 @@ parts, a 99 x 99 mm board in the cheapest tier at JLCPCB and PCBWay, and a progr
 sources are in the cost sheet (`.for-lewis/research/phone-of-the-future-parts.md`, not in the repository); the short version is
 in "What Rev C changed" below.
 
-This folder is the electronics only. The 3D-printed shell and dial will come from `mechanical/interface.json`
-and the 3D parts file in `viewer/`.
+## Two builds, named the way Dex would
+
+Dex Dynamo (age 11) wrote a twenty-page science fair report, THE POCKET TELEPHONE, and Sparky 3000 ate it. This kit is
+what he would build from it, in two sizes. Both names are on the silkscreen (front and back) and in the desk's 3D viewer.
+
+| | **Science Project No. 2: The Pocket Telephone, Junior Lab Edition (parts from any hobby shop)** | **Science Project No. 1: The Pocket Telephone (Deluxe Model)** |
+| --- | --- | --- |
+| Where | this folder | `deluxe/` (the earlier Rev C: sources restored from commit `7e8548a11`, see `deluxe/README-earlier-rev-c.md`) |
+| Board | 99 x 99 mm, the cheapest board tier | 73.66 x 175.26 mm |
+| Parts | PIC16F628A, clone MAX7219, 6 mm tactile switches, ZEPPP programmer; the battery holder is off the board, in the shell's handle | the long board with the 4 x AAA holder on it |
+| Shell | front frame, back tray, battery handle, battery door | front frame, back tray (battery door in its floor) |
+
+Each folder rebuilds on its own (`deluxe/tools/` has its own generators and shares `tools/silkart.py` and `tools/dex_art.py`).
+The rest of this file describes the Junior Lab Edition; the Deluxe Model differs in its board and its on-board battery holder.
+
+## The 3D-printed shell
+
+`tools/shell.ts` (with `shellInput.ts` and `shellParts.ts`) builds each variant's shell as distance fields with the repository's trinket
+tools (`web/packages/tools/src/mesh/`), sized from its own `mechanical/interface.json`, `kicad/qr_spots.json` and `viewer/parts.json`.
+It writes one binary STL per printed part, in printing orientation, to `<variant>/shell/`, checks each (size, triangles, pieces, thin specks,
+overhang) and merges every part into `viewer/parts.json` + `parts.bin`, in the groups `shell`, `dial` and `battery`, so the desk's viewer
+explodes the case around the board with no viewer code.
+
+- **Front frame**: an open bezel. The board is the face, so its silkscreen (title, lines, orbits, digits) stays visible. Corner posts take M3 screws.
+- **Back tray**: walls and a floor with windows over the back's QR codes and Dex. The Junior Lab Edition adds a **battery handle** below the board's
+  bottom edge; the Deluxe Model's tray has the battery door in its floor.
+- **Battery box and cells**: a box with four off-brand AAA cells ("ZORP", invented), each with raised lettering "AAA 1.5V", and a **battery door**
+  (plate, plug and finger notch).
+- **Dial group**: the rotary dial plate (ten finger holes), the **pulse cam and off-normal cam** (ten ramped teeth that press the 6 mm tactile switches
+  from above, one raised sector for the off-normal switch), a flat spiral return spring, a pivot post and a **finger stop** (feet glued to the board), and the
+  two button caps (TALK green, CLEAR red) that press onto the switches.
+
+Nothing was printed. The clearances (0.3 mm), the cam's travel (0.3 mm of press) and the glued feet are starting guesses. In Rev C the two dial switches
+sit only about 1.5 mm apart in radius from the dial's center, so the pulse teeth may brush the off-normal switch: print the cam first and check.
+
+## What is printed on the board
+
+Front: the project name ("SCIENCE PROJECT NO. 2" and "JUNIOR LAB EDITION", or "NO. 1" and "DELUXE MODEL"), "IN THE YEAR 2000!", "SANDBOX SOFTWARE" and
+"MADE WITH GAME-MAKER". The front of the 99 x 99 board is full of through-hole pads, and the dial and speaker cover their circles, so there is no
+room there for a code. On the back, in the blank spots: two QR codes (the game's site, and this folder's parts list and build steps on GitHub) and a
+block-art picture of Dex (`tools/dex_art.py`, from his sprite): one color of silkscreen, with tone shown by diagonal hatching and cross-hatching and his
+face and hands left bare, so he is never an undressed outline. A code is silkscreen where a module is light and bare soldermask where it is dark.
+`tools/silkart.py` draws them (QR from OpenCV's encoder, Apache-2.0). Modules are 0.5 mm, except the parts code on the Junior Lab board (0.44 mm) and the
+site code on the Deluxe board (0.45 mm), which had to be a little smaller to fit. `tools/qrscan.py` decodes the rendered preview and compares it with the URL:
+the layout scans; whether a phone camera reads these small modules from a real board has not been tried.
+
+## Rebuild everything
+
+From the repository root, one command rebuilds both variants (schematic, board, ERC and DRC, Gerbers, 3D parts file, BOM, previews, QR scan, shell)
+and writes `games/year2000/phone/out/build.log`:
+
+```sh
+npm run phone:build
+```
 
 ## What is here
 
