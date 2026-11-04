@@ -11,8 +11,8 @@ import type { Project } from './project';
 import { formatHash } from '../../urlState';
 
 /** Opens another of the project's files in the workspace (as following a link to it would). */
-export function openInEditor(project: Project, file: string): void {
-  location.hash = formatHash(['p', project.id, file]);
+export function openInEditor(project: Project, file: string, params: Record<string, number | string> = {}): void {
+  location.hash = formatHash(['p', project.id, file], params);
 }
 
 interface Use {
@@ -21,6 +21,8 @@ interface Use {
   /** What it is, in a few words: "level 3 · map: 42 cells". */
   text: string;
   count: number;
+  /** For a use in a scene: the scene's number, so the link opens the integrator on that scene. */
+  scene?: number;
 }
 
 /** A scene's name as the integrator shows it. */
@@ -40,7 +42,12 @@ function slotName(project: Project, scene: number, slot: number): string {
 export function sceneUses(project: Project, file: string): Use[] {
   return project
     .usesOf(file)
-    .map((u) => ({ file: project.gam, text: `${sceneName(project, u.scene)} · ${slotName(project, u.scene, u.slot).toLowerCase()}`, count: 1 }));
+    .map((u) => ({
+      file: project.gam,
+      text: `${sceneName(project, u.scene)} · ${slotName(project, u.scene, u.slot).toLowerCase()}`,
+      count: 1,
+      scene: u.scene,
+    }));
 }
 
 /** Slide shows (.lst) and backdrops (.bkd) that show the file. */
