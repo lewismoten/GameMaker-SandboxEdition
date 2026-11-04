@@ -36,6 +36,7 @@ import { touchGestures } from './mapTouchGestures';
 import { assetMenu, type AssetAction } from '../../shell/assetMenu';
 import './mapExport.css';
 import './tools/mapTools.css';
+import { playSpot } from './playSpot';
 
 type Mode = 'paint' | 'fill' | 'pick' | 'monster' | 'pan' | ToolMode;
 const TOOL_MODES = new Set<string>(['line', 'rect', 'select', 'terrain', 'stamp', 'building', 'paste']);
@@ -887,7 +888,7 @@ registerEditor(['map'], (host, project, file) => {
       disabled: !set.scenes.length || !project.playAt,
       onclick: () => {
         const at = viewport.at();
-        project.playAt?.(set.scenes[0], { x: Math.min(MLEN - 1, Math.floor(at.x)), y: Math.min(MWID - 1, Math.floor(at.y)) });
+        project.playAt?.(set.scenes[0], playSpot(at, MLEN, MWID));
       },
     },
     '▶',
