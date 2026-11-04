@@ -24,23 +24,24 @@
   inset: 0;
 }
 
-/* the words sit in a grid of 0.55 inch squares inside the border (0.525 in at the sides, 0.625 in above and below) */
+/* the lines of writing sit on a grid of 0.3 inch squares (12 by 12) inside the ribbon: x 0.34 in, y 0.22 in */
 .pg-words {
   position: absolute;
-  left: 8.75%;
-  top: 15.625%;
-  width: 82.5%;
-  height: 68.75%;
+  left: 5.6667%;
+  top: 5.5%;
+  width: 60%;
+  height: 90%;
   display: grid;
 }
 
 .pg-word {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-width: 0;
   font-family: 'Segoe Print', 'Bradley Hand', 'Marker Felt', 'Comic Sans MS', cursive;
-  font-size: max(8px, 2cqw);
+  font-size: 1.85cqw;
+  padding-left: 0.25em; /* a hole's edge never cuts the first letter */
   white-space: nowrap;
   color: #26325f;
 }
@@ -61,15 +62,7 @@
   outline-offset: 2px;
 }
 
-.pg-live {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: flex-start;
-}
-
 .pg-stage {
-  flex: 1 1 320px;
   min-width: 0;
   max-width: 6in;
 }
@@ -85,17 +78,49 @@
   margin-top: 10px;
 }
 
+/* the same cream paper and brown edge as the code wheel's answer boxes */
 .pg-btn {
   min-width: 44px;
   min-height: 44px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   font: inherit;
+  font-weight: 600;
+  color: #3b2f1c;
+  background: #fbf5e6;
+  border: 1px solid #8a7556;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 #8a7556;
   cursor: pointer;
 }
 
-.pg-reads {
-  margin: 8px 0 0;
-  font-weight: 700;
+.pg-btn:hover {
+  background: #f3e8c8;
+}
+
+.pg-btn:active {
+  box-shadow: none;
+  transform: translateY(1px);
+}
+
+.pg-btn:focus-visible {
+  outline: 3px solid #e0a000;
+  outline-offset: 2px;
+}
+
+.pg-readout {
+  margin-top: 10px;
+}
+
+/* what a hole shows, in a box like the wheel's answer picture */
+.pg-box {
+  min-width: 3.2em;
+  padding: 2px 8px;
+  text-align: center;
+  font-weight: 600;
+  background: #fbf5e6;
+  color: #3b2f1c;
+  border: 1px solid #8a7556;
+  border-radius: 3px;
 }
 
 .visually-hidden {
@@ -141,9 +166,10 @@
   font-size: 0.14in;
 }
 
+/* true size: 3 squares of 0.3 in and a 0.2 in margin each side */
 .pg-grille-print {
-  width: 2.4in;
-  height: 2.4in;
+  width: 1.3in;
+  height: 1.3in;
 }
 
 .pg-howto {

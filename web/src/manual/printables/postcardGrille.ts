@@ -10,10 +10,11 @@ import { sheet, type Sheet } from './kit';
 import type { PostcardGrilleItem } from './types';
 import { bare, holeCells, reading, turn, type Place } from './postcardMath';
 
-const CELL = 0.55; // a word's square, in inches
-const SIDE = 0.525; // the border beside the words (left, right)
-const TOP = 0.625; // and above and below them
-const MARGIN = 0.28; // the grille's margin, where its marks sit; it lies over the border's inner edge only
+const CELL = 0.3; // a word's square, in inches (the invisible grid the lines of writing sit on)
+const X0 = 0.34; // where the grid starts across (the ribbon lies left of it) and down (the ribbon lies above)
+const Y0 = 0.22;
+const MARGIN = 0.2; // the grille's margin, where its marks sit; it lies over the ribbon's inner edge only
+const DIVIDER = 4.32; // the line down the card between the message and the address side
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 const html = (svg: string): HTMLElement => {
@@ -66,16 +67,48 @@ function front(it: PostcardGrilleItem): HTMLElement {
   return h('div', { class: 'pg-card pg-front' }, html(svg));
 }
 
-/** The message side: the border's pictures all round, the words in their squares. */
+/** The stamp: a drawn generic fair stamp (a perforated edge, an ear of corn), no real postage design. */
+function stamp(): string {
+  const x = 5.0;
+  const y = 0.3;
+  const w = 0.72;
+  const ht = 0.88;
+  const kernels = Array.from({ length: 5 }, (_, k) => `<path d="M${x + 0.25 + k * 0.045} ${y + 0.2}v0.3" stroke="#b78a1c" stroke-width="0.012"/>`).join('');
+  return (
+    `<rect x="${x}" y="${y}" width="${w}" height="${ht}" fill="#fff8e0" stroke="${RED}" stroke-width="0.04" stroke-dasharray="0.03 0.03"/>` +
+    `<rect x="${x + 0.07}" y="${y + 0.07}" width="${w - 0.14}" height="${ht - 0.14}" fill="#bfe0ea" stroke="${RED}" stroke-width="0.012"/>` +
+    `<path d="M${x + 0.18} ${y + 0.68}Q${x + 0.2} ${y + 0.45} ${x + 0.36} ${y + 0.2}Q${x + 0.52} ${y + 0.45} ${x + 0.54} ${y + 0.68}Z" fill="#6e9a3c"/>` +
+    `<ellipse cx="${x + 0.36}" cy="${y + 0.35}" rx="0.11" ry="0.19" fill="#e4b934" stroke="#b78a1c" stroke-width="0.012"/>${kernels}` +
+    `<path d="M${x + 0.12} ${y + 0.68}Q${x + 0.2} ${y + 0.38} ${x + 0.3} ${y + 0.5}Q${x + 0.26} ${y + 0.62} ${x + 0.36} ${y + 0.7}Z M${x + 0.6} ${y + 0.68}Q${x + 0.52} ${y + 0.38} ${x + 0.42} ${y + 0.5}Q${x + 0.46} ${y + 0.62} ${x + 0.36} ${y + 0.7}Z" fill="#4f7a2a"/>` +
+    `<text x="${x + w / 2}" y="${y + 0.78}" font-size="0.085" font-weight="800" fill="${RED}" font-family="Georgia,serif" text-anchor="middle">FAIR POST</text>`
+  );
+}
+
+/** The message side: the fair's ribbon of little pictures round the writing, a divider, a stamp and the address. */
 function message(it: PostcardGrilleItem): HTMLElement {
   const R = it.rows.length;
   const C = it.rows[0].length;
+  const X1 = X0 + C * CELL;
+  const Y1 = Y0 + R * CELL;
   const marks: string[] = [];
-  it.border.top.forEach((n, c) => marks.push(glyph(it, n, SIDE + (c + 0.5) * CELL, 0.16, 0.24, RED)));
-  it.border.bottom.forEach((n, c) => marks.push(glyph(it, n, SIDE + (c + 0.5) * CELL, 4 - 0.16, 0.24, RED)));
-  it.border.left.forEach((n, r) => marks.push(glyph(it, n, 0.14, TOP + (r + 0.5) * CELL, 0.24, RED)));
-  it.border.right.forEach((n, r) => marks.push(glyph(it, n, SIDE + C * CELL + 0.14, TOP + (r + 0.5) * CELL, 0.24, RED)));
-  const frame = `<svg viewBox="0 0 6 4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect x="0.04" y="0.04" width="5.92" height="3.92" fill="none" stroke="${RED}" stroke-width="0.02"/>${marks.join('')}</svg>`;
+  it.border.top.forEach((n, c) => marks.push(glyph(it, n, X0 + (c + 0.5) * CELL, 0.11, 0.15, RED)));
+  it.border.bottom.forEach((n, c) => marks.push(glyph(it, n, X0 + (c + 0.5) * CELL, 3.89, 0.15, RED)));
+  it.border.left.forEach((n, r) => marks.push(glyph(it, n, 0.17, Y0 + (r + 0.5) * CELL, 0.15, RED)));
+  it.border.right.forEach((n, r) => marks.push(glyph(it, n, X1 + 0.17, Y0 + (r + 0.5) * CELL, 0.15, RED)));
+  const ink = `font-family="'Segoe Print','Bradley Hand','Marker Felt',cursive" fill="#26325f"`;
+  const to = (it.address ?? []).map((t, i) => {
+    const y = 2.0 + i * 0.4;
+    return `<line x1="4.5" y1="${y + 0.06}" x2="5.8" y2="${y + 0.06}" stroke="#8f8a78" stroke-width="0.012"/><text x="4.52" y="${y}" font-size="0.15" ${ink}>${esc(t)}</text>`;
+  });
+  const wave = [0.5, 0.62, 0.74, 0.86]
+    .map((y) => `<path d="M4.4 ${y}q0.1 -0.06 0.2 0t0.2 0 0.2 0 0.2 0" fill="none" stroke="#8f8a78" stroke-width="0.012"/>`)
+    .join('');
+  const frame =
+    `<svg viewBox="0 0 6 4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">` +
+    `<rect x="0.02" y="0.02" width="5.96" height="3.96" fill="none" stroke="${RED}" stroke-width="0.015"/>` +
+    `<rect x="${X0 - 0.02}" y="${Y0 - 0.02}" width="${C * CELL + 0.04}" height="${R * CELL + 0.04}" fill="none" stroke="${RED}" stroke-width="0.012"/>` +
+    `<line x1="${DIVIDER}" y1="0.25" x2="${DIVIDER}" y2="${Y1 - 0.05}" stroke="#6a6a5a" stroke-width="0.014"/>` +
+    `${marks.join('')}${stamp()}${wave}${to.join('')}</svg>`;
   return h(
     'div',
     { class: 'pg-card pg-message' },
@@ -83,7 +116,15 @@ function message(it: PostcardGrilleItem): HTMLElement {
     h(
       'div',
       { class: 'pg-words', style: `grid-template-columns: repeat(${C}, 1fr); grid-template-rows: repeat(${R}, 1fr)` },
-      ...it.rows.flat().map((w, i) => h('span', { class: 'pg-word', dataset: { r: String(Math.floor(i / C)), c: String(i % C) } }, w)),
+      ...it.rows.flat().map((w, i) => {
+        const r = Math.floor(i / C);
+        const c = i % C;
+        // a pen never sits quite on the line: each word is nudged a little, the same way every time (and never out of its cell)
+        const slack = Math.max(0, 4 - w.length); // a short word wanders a little within its cell, a long one stays put
+        const dx = ((r * 7 + c * 13) % (slack + 1)) * 0.3;
+        const dy = (((r + c * 3) % 3) - 1) * 0.05;
+        return h('span', { class: 'pg-word', dataset: { r: String(r), c: String(c) }, style: w ? `transform: translate(${dx}em, ${dy}em)` : '' }, w);
+      }),
     ),
   );
 }
@@ -98,9 +139,9 @@ function grilleSvg(it: PostcardGrilleItem, rot: number, flip: boolean, live: boo
   const size = n * CELL + 2 * MARGIN;
   const cells = g.holes.map((hole, k) => {
     const [i, j] = turn(g, hole, rot, flip);
-    return { x: MARGIN + j * CELL + 0.04, y: MARGIN + i * CELL + 0.04, k };
+    return { x: MARGIN + j * CELL + 0.015, y: MARGIN + i * CELL + 0.015, k };
   });
-  const s = CELL - 0.08;
+  const s = CELL - 0.03;
   let body: string;
   if (live) {
     const holes = cells.map((c) => `M${c.x} ${c.y}h${s}v${s}h${-s}z`).join('');
@@ -113,11 +154,14 @@ function grilleSvg(it: PostcardGrilleItem, rot: number, flip: boolean, live: boo
         .join('');
   }
   const nums = cells
-    .map((c) => `<text x="${c.x + 0.07}" y="${c.y + 0.17}" font-size="0.15" font-weight="800" fill="#111" font-family="Arial,sans-serif">${c.k + 1}</text>`)
+    .map(
+      (c) =>
+        `<text x="${c.x + s - 0.065}" y="${c.y + s - 0.02}" font-size="0.08" font-weight="800" fill="#111" font-family="Arial,sans-serif">${c.k + 1}</text>`,
+    )
     .join('');
   const put = (p: [number, number], name: string) => {
     const [i, j] = turn(g, p, rot, flip);
-    return glyph(it, name, at(j, n), at(i, n), 0.2, CARD_INK);
+    return glyph(it, name, at(j, n), at(i, n), 0.15, CARD_INK);
   };
   const arrows = `${put([g.a.row, -1], g.a.name)}${put([-1, g.b.col], g.b.name)}`;
   return `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${body}${nums}${arrows}</svg>`;
@@ -175,18 +219,20 @@ export function postcardGrilleLive(it: PostcardGrilleItem, only?: number): HTMLE
     role: 'group',
     'aria-label': 'Grille card. Arrow keys move it a word, R turns it, F flips it over.',
   });
-  const reads = h('p', { class: 'pg-reads', 'aria-live': 'polite' });
+  const reads = h('dl', { class: 'cw-readout pg-readout', 'aria-label': 'What the holes show', 'aria-live': 'polite' });
   const status = h('p', { class: 'pg-status visually-hidden', 'aria-live': 'polite' });
   card.append(slot);
   const apply = () => {
     const size = g.n * CELL + 2 * MARGIN;
-    slot.style.left = `${((SIDE + place.c * CELL - MARGIN) / 6) * 100}%`;
-    slot.style.top = `${((TOP + place.r * CELL - MARGIN) / 4) * 100}%`;
+    slot.style.left = `${((X0 + place.c * CELL - MARGIN) / 6) * 100}%`;
+    slot.style.top = `${((Y0 + place.r * CELL - MARGIN) / 4) * 100}%`;
     slot.style.width = `${(size / 6) * 100}%`;
     slot.style.height = `${(size / 4) * 100}%`;
     slot.innerHTML = grilleSvg(it, place.rot, place.flip, true);
     const words = reading(g, it.rows, place).map(bare);
-    reads.textContent = `The holes read: ${words.join(', ')}`;
+    reads.replaceChildren(
+      ...words.map((w, k) => h('div', { class: 'cw-read-row' }, h('dt', null, `Hole ${k + 1}`), h('dd', { class: 'pg-box' }, w || '(blank)'))),
+    );
     status.textContent = `Row ${place.r + 1}, column ${place.c + 1}, turned ${place.rot * 90} degrees, ${place.flip ? 'face down' : 'face up'}. Holes read ${words.join(', ')}.`;
     for (const [r, c] of holeCells(g, place)) card.querySelector(`.pg-word[data-r="${r}"][data-c="${c}"]`)?.classList.add('pg-seen');
     for (const e of card.querySelectorAll('.pg-seen')) {
@@ -274,7 +320,7 @@ export function postcardGrilleLive(it: PostcardGrilleItem, only?: number): HTMLE
   apply();
   return h(
     'div',
-    { class: 'cw-live pg-live' },
+    { class: 'cw-live' },
     h('div', { class: 'pg-stage' }, card, pad, reads, status),
     h(
       'div',

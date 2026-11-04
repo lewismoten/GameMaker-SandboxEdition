@@ -42,18 +42,24 @@ export function turn(g: Grille, p: [number, number], rot: number, flip: boolean)
   return [i, j];
 }
 
-/** The border pictures marks A and B look out to at this place. */
-export function hits(g: Grille, border: Border, place: Place): [string, string] {
-  const look = (p: [number, number]): string => {
+/** The border slots marks A and B look out to at this place: a side and the row or column along it. */
+export function slots(g: Grille, place: Place): [{ side: keyof Border; i: number }, { side: keyof Border; i: number }] {
+  const look = (p: [number, number]): { side: keyof Border; i: number } => {
     const [i, j] = turn(g, p, place.rot, place.flip);
     const r = place.r + i;
     const c = place.c + j;
-    if (j === -1) return border.left[r];
-    if (j === g.n) return border.right[r];
-    if (i === -1) return border.top[c];
-    return border.bottom[c];
+    if (j === -1) return { side: 'left', i: r };
+    if (j === g.n) return { side: 'right', i: r };
+    if (i === -1) return { side: 'top', i: c };
+    return { side: 'bottom', i: c };
   };
   return [look([g.a.row, -1]), look([-1, g.b.col])];
+}
+
+/** The border pictures marks A and B look out to at this place. */
+export function hits(g: Grille, border: Border, place: Place): [string, string] {
+  const [a, b] = slots(g, place);
+  return [border[a.side][a.i], border[b.side][b.i]];
 }
 
 /** Every place the grille's patch lies wholly on the message of `rows` by `cols` words. */

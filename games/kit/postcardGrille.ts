@@ -1,18 +1,13 @@
-// The postcard-and-grille generator (decoder math: web/src/manual/printables/postcardMath.ts). It draws the pictures
-// along a postcard's border and writes the message's words so that:
-//  - the one placement of the grille the game wants (both marks on matching pictures) reads exactly the answer;
-//  - every other placement whose marks match reads a decoy (a red herring the game does not accept);
-//  - no cell is asked to be two words at once, and the rest of the message is whole sentences.
-// The message is rows of three-word clauses; a clause may hold one slot for a noun, so a cell that must be a given word
-// takes a clause with its slot there, and every other cell reads as ordinary postcard talk. A seed that cannot be
-// satisfied (too few matches, two forced cells in one clause) is skipped and the next one tried, so the result is
-// deterministic. Fails loudly if nothing fits.
-import { bare, holeCells, places, reading, valid, type Border, type Grille, type Place } from '../../web/src/manual/printables/postcardMath';
-
-export interface Clause {
-  /** Three tokens; the one equal to '{}' (if any) takes a noun. */
-  t: [string, string, string];
-}
+// The postcard-and-grille generator (decoder math: web/src/manual/printables/postcardMath.ts). The message is ordinary
+// handwriting-style prose laid on an invisible grid; this tool lays the text on it, finds the one placement of the
+// grille that reads the answer, and draws the border pictures so that:
+//  - the one placement the game wants (both marks on matching pictures) reads exactly the answer, and nothing else does;
+//  - a few other placements whose marks match read decoys (words from the same sentences, nothing the game accepts);
+//  - every other matching placement reads at least two story words, so a wrong try still sounds like the maze.
+// The text is written by hand (see tools/postcard.ts), so the words under the answer's holes sit in real sentences; if
+// the text does not read the answer exactly once, building fails and says where it reads it. The border is drawn from
+// a seed, the first that fits, so the result is deterministic.
+import { bare, places, reading, slots, valid, type Border, type Grille, type Place } from '../../web/src/manual/printables/postcardMath';
 
 export interface PostcardSpec {
   rows: number;
@@ -22,11 +17,14 @@ export interface PostcardSpec {
   symbols: string[];
   /** The words the answer's holes must read, hole 1 first. */
   answer: string[];
-  /** Readings (hole 1 first) for the other matching placements: red herrings. The first is the trap that uses only answer words. */
-  decoys: string[][];
-  /** The nouns any slot may take besides the answer's. */
-  nouns: string[];
-  clauses: Clause[];
+  /** Words a decoy reads; at least `decoys` of the other matching placements read three of their four from these. */
+  plausible: string[];
+  decoys: number;
+  /**
+   * The message. A word takes one cell per 5 characters. `/` ends a line, `|` is an empty cell, `~` is a space inside
+   * one cell (two short words in one: "of~it"); a cell a hole may land on holds one word.
+   */
+  text: string;
   /** How many matching placements to accept (answer included). */
   matches: [number, number];
 }
@@ -38,6 +36,30 @@ export interface PostcardBuilt {
   answer: Place;
   /** Every placement whose marks match, and what it reads. */
   matching: { place: Place; reads: string[] }[];
+}
+
+/** Lays the text on the grid: a word in its first cell, the cells it spills over left empty. */
+export function layout(text: string, rows: number, cols: number): string[][] {
+  const out: string[][] = [];
+  let line: string[] = [];
+  const end = () => {
+    out.push([...line, ...Array<string>(cols - line.length).fill('')]);
+    line = [];
+  };
+  for (const tok of text.split(/\s+/).filter(Boolean)) {
+    if (tok === '/') {
+      end();
+      continue;
+    }
+    const shown = tok === '|' ? '' : tok.replace(/~/g, ' ');
+    const cells = Math.max(1, Math.ceil(shown.length / 5));
+    if (cells > cols) throw new Error(`"${shown}" is wider than a line`);
+    if (line.length + cells > cols) end();
+    line.push(shown, ...Array<string>(cells - 1).fill(''));
+  }
+  if (line.length) end();
+  if (out.length !== rows) throw new Error(`the text makes ${out.length} lines, not ${rows}`);
+  return out;
 }
 
 function rng(seed: number): () => number {
@@ -52,79 +74,29 @@ function rng(seed: number): () => number {
 }
 
 const key = (p: Place) => `${p.r},${p.c},${p.rot},${p.flip}`;
-const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
-
-export const why: Record<number, number> = {};
-const fail = (n: number) => ((why[n] = (why[n] ?? 0) + 1), undefined);
-function attempt(spec: PostcardSpec, seed: number): PostcardBuilt | undefined {
-  const rand = rng(seed);
-  const pick = <T>(a: T[]): T => a[Math.floor(rand() * a.length)];
-  const mk = (n: number) => Array.from({ length: n }, () => pick(spec.symbols));
-  const border: Border = { top: mk(spec.cols), bottom: mk(spec.cols), left: mk(spec.rows), right: mk(spec.rows) };
-  const all = places(spec.grille, spec.rows, spec.cols).filter((p) => valid(spec.grille, border, p));
-  if (all.length < spec.matches[0] || all.length > spec.matches[1] || all.length - 1 > spec.decoys.length) return fail(64);
-  const answer = all[Math.floor(rand() * all.length)];
-  const forced = new Map<string, string>(); // "r,c" -> word
-  const force = (p: Place, words: string[]): boolean => {
-    const cells = holeCells(spec.grille, p);
-    for (let k = 0; k < cells.length; k++) {
-      const cell = cells[k].join(',');
-      if (forced.has(cell) && bare(forced.get(cell)!) !== bare(words[k])) return false;
-      forced.set(cell, words[k]);
-    }
-    return true;
-  };
-  if (!force(answer, spec.answer)) return fail(76);
-  let d = 0;
-  for (const p of all) if (key(p) !== key(answer) && !force(p, spec.decoys[d++])) return fail(78);
-  // write each row's clauses; the text is tried again a few hundred times on this border
-  let words: string[][] = [];
-  let ok = false;
-  for (let tries = 0; tries < 300 && !ok; tries++) {
-    words = [];
-    const used = new Set<Clause>();
-    ok = true;
-    for (let r = 0; r < spec.rows && ok; r++) {
-      const row: string[] = [];
-      for (let k = 0; k < spec.cols / 3 && ok; k++) {
-        const want = [0, 1, 2].map((j) => forced.get(`${r},${k * 3 + j}`));
-        const need = want.map((w, j) => (w ? j : -1)).filter((j) => j >= 0);
-        const free = spec.clauses.filter((c) => !used.has(c));
-        const pool = need.length
-          ? free.filter((c) => need.every((j) => c.t[j].startsWith('{}')) && c.t.filter((t) => t.startsWith('{}')).length === need.length)
-          : free.filter((c) => !c.t.some((t) => t.startsWith('{}')) || rand() < 0.3);
-        if (!pool.length) {
-          ok = false;
-          break;
-        }
-        const c = pick(pool);
-        used.add(c);
-        row.push(
-          ...c.t.map((t, j) => {
-            if (!t.startsWith('{}')) return t;
-            const noun = want[j] ?? pick(spec.nouns);
-            return (j === 0 ? cap(noun) : noun.toLowerCase()) + t.slice(2);
-          }),
-        );
-      }
-      words.push(row);
-    }
-  }
-  if (!ok) return fail(92);
-  // a cell the plan did not ask for must not turn a placement into a reading of its own
-  const matching = all.map((place) => ({ place, reads: reading(spec.grille, words, place) }));
-  const ans = spec.answer.map(bare).join(' ');
-  for (const p of places(spec.grille, spec.rows, spec.cols)) {
-    const says = reading(spec.grille, words, p).map(bare).join(' ');
-    if (says === ans && key(p) !== key(answer)) return fail(105);
-  }
-  return { seed, border, words, answer, matching };
-}
 
 export function buildPostcard(spec: PostcardSpec, from = 1): PostcardBuilt {
-  for (let seed = from; seed < from + 200000; seed++) {
-    const built = attempt(spec, seed);
-    if (built) return built;
+  const g = spec.grille;
+  const words = layout(spec.text, spec.rows, spec.cols);
+  const ans = spec.answer.map(bare).join(' ');
+  const all = places(g, spec.rows, spec.cols);
+  const hits = all.filter((p) => reading(g, words, p).map(bare).join(' ') === ans);
+  if (hits.length !== 1) throw new Error(`the text must read "${ans}" at exactly one placement; it reads it at ${JSON.stringify(hits)}`);
+  const answer = hits[0];
+  const plausible = new Set(spec.plausible);
+  for (let seed = from; seed < from + 100000; seed++) {
+    const rand = rng(seed);
+    const mk = (n: number) => Array.from({ length: n }, () => spec.symbols[Math.floor(rand() * spec.symbols.length)]);
+    const border: Border = { top: mk(spec.cols), bottom: mk(spec.cols), left: mk(spec.rows), right: mk(spec.rows) };
+    const [sa, sb] = slots(g, answer);
+    border[sa.side][sa.i] = g.a.name;
+    border[sb.side][sb.i] = g.b.name;
+    const matching = all.filter((p) => valid(g, border, p)).map((place) => ({ place, reads: reading(g, words, place) }));
+    if (matching.length < spec.matches[0] || matching.length > spec.matches[1]) continue;
+    const others = matching.filter((m) => key(m.place) !== key(answer));
+    if (others.some((m) => m.reads.filter((w) => plausible.has(bare(w))).length < 2)) continue; // every red herring reads at least two story words
+    if (others.filter((m) => m.reads.filter((w) => plausible.has(bare(w))).length >= 3).length < spec.decoys) continue;
+    return { seed, border, words, answer, matching };
   }
-  throw new Error('no postcard fits: add clauses or decoys ' + JSON.stringify(why));
+  throw new Error('no border fits: loosen matches or decoys');
 }

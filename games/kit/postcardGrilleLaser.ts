@@ -10,8 +10,8 @@ import { LaserSheet, type Pt } from '@lewismoten/gamemaker-sandbox-tools/kit/las
 import { turn } from '../../web/src/manual/printables/postcardMath';
 
 const IN = 25.4;
-const CELL = 0.55 * IN;
-const MARGIN = 0.28 * IN;
+const CELL = 0.3 * IN;
+const MARGIN = 0.2 * IN;
 
 type Glyphs = Record<string, string[]>;
 interface Item {
@@ -44,7 +44,7 @@ export function grilleLaser(it: Item, flip: boolean): LaserSheet {
   const put = (p: [number, number], name: string) => {
     const [i, j] = turn(g, p, 0, flip);
     const rows = it.glyphs[name];
-    const px = (0.2 * IN) / Math.max(rows.length, rows[0].length);
+    const px = (0.15 * IN) / Math.max(rows.length, rows[0].length);
     rows.forEach((row, y) =>
       [...row].forEach((ch, x) => {
         if (ch === '#')

@@ -303,7 +303,9 @@ export interface PostcardGrilleItem extends ItemBase {
   /** Across the picture side, and the line under it. */
   heading: string;
   caption: string;
-  /** The message: rows of words (a multiple of three across), one word to a cell. */
+  /** The address lines on the right of the message side (obviously fake). */
+  address?: string[];
+  /** The message: lines of cells (a multiple of three across); a word sits in its first cell, the cells it spills over are ''. */
   rows: string[][];
   border: import('./postcardMath').Border;
   grille: import('./postcardMath').Grille;
