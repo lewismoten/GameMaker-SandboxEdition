@@ -99,7 +99,7 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 10893,
+  "frames": 10843,
   "chapters": [
    {
     "title": "Opening",
@@ -123,38 +123,38 @@
    },
    {
     "title": "Level 2: There and Back (the hall)",
-    "frame": 3028,
-    "time": 50466.66666666505
+    "frame": 2978,
+    "time": 49633.33333333184
    },
    {
     "title": "Level 2: There and Back (the kitchen)",
-    "frame": 4294,
-    "time": 71566.6666666646
+    "frame": 4244,
+    "time": 70733.33333333103
    },
    {
     "title": "Level 2: There and Back (the bedroom)",
-    "frame": 5359,
-    "time": 89316.66666666977
+    "frame": 5309,
+    "time": 88483.3333333362
    },
    {
     "title": "Level 3: Two Doors (the fork)",
-    "frame": 6998,
-    "time": 116633.33333334439
+    "frame": 6948,
+    "time": 115800.00000001081
    },
    {
     "title": "Level 3: Two Doors (the attic)",
-    "frame": 7531,
-    "time": 125516.6666666803
+    "frame": 7481,
+    "time": 124683.33333334673
    },
    {
     "title": "Ending",
-    "frame": 8088,
-    "time": 134800.0000000131
+    "frame": 8038,
+    "time": 133966.66666668025
    },
    {
     "title": "Credits",
-    "frame": 9819,
-    "time": 163649.9999999963
+    "frame": 9769,
+    "time": 162816.66666666346
    }
   ]
  }
