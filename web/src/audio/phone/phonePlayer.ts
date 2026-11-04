@@ -6,13 +6,14 @@ import { audioContext } from '@lewismoten/gamemaker-sandbox-engine/audio/context
 import { channelGain, onMix } from '@lewismoten/gamemaker-sandbox-engine/audio/mix';
 import { output } from '@lewismoten/gamemaker-sandbox-engine/audio/output';
 import { speak, type Voice } from '../voices';
-import { clipGroupsFor } from './phoneClips';
+import { castOf, clipGroupsFor } from './phoneClips';
+import { CAST } from './phoneCast';
 
 /** Seconds of quiet kept after the last sound of a clip (the clips end with a longer silent tail). */
 const TAIL = 0.05;
 /** Seconds between the parts of one sentence (a spliced time or bill). */
 const GAP = 0.12;
-/** Seconds of quiet between one sentence and the next, as a person takes a breath. */
+/** Seconds of quiet between one sentence and the next, as a person takes a breath (a voice may set its own: the Hint Giant takes his time). */
 const SENTENCE_GAP = 0.5;
 /** The line's band, as on a 1994 phone. */
 export const BAND = { low: 300, high: 3400 };
@@ -74,12 +75,12 @@ function load(ctx: AudioContext, clip: string) {
 }
 
 /** Plays the clips in order; false when they can't (so the caller speaks instead), true when done or hung up. */
-async function playClips(groups: string[][], signal: AbortSignal): Promise<boolean> {
+async function playClips(groups: string[][], pause: number, signal: AbortSignal): Promise<boolean> {
   const ctx = audioContext();
   if (!ctx || channelGain('voice') <= 0) return false;
   const clips = groups.flat();
   // the pause after each clip: a breath at the end of a sentence, a short gap inside a splice
-  const after = groups.flatMap((g) => g.map((_, i) => (i === g.length - 1 ? SENTENCE_GAP : GAP)));
+  const after = groups.flatMap((g) => g.map((_, i) => (i === g.length - 1 ? pause : GAP)));
   const loaded = await Promise.all(clips.map((c) => load(ctx, c)));
   if (signal.aborted) return true;
   if (loaded.some((c) => !c)) return false;
@@ -112,7 +113,7 @@ async function playClips(groups: string[][], signal: AbortSignal): Promise<boole
       resolve(true);
     };
     // the line keeps its hiss through the breath after the last sentence, then the next piece speaks
-    sources[sources.length - 1].onended = () => (breath = setTimeout(finish, SENTENCE_GAP * 1000));
+    sources[sources.length - 1].onended = () => (breath = setTimeout(finish, pause * 1000));
     signal.addEventListener('abort', finish);
   });
 }
@@ -120,6 +121,8 @@ async function playClips(groups: string[][], signal: AbortSignal): Promise<boole
 /** Says a caption piece of `whole` (the line `say` was given): its recorded clips, else the browser's speech. */
 export async function speakLine(piece: string, whole: string, v: Voice, signal: AbortSignal): Promise<void> {
   const groups = clipGroupsFor(piece, whole);
-  if (groups && (await playClips(groups, signal))) return;
+  const cast = castOf(whole);
+  const pause = (cast ? CAST[cast]?.pause : undefined) ?? SENTENCE_GAP;
+  if (groups && (await playClips(groups, pause, signal))) return;
   if (!signal.aborted) await speak(piece, v, signal);
 }
