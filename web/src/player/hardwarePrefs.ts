@@ -1,7 +1,11 @@
 // Browser-side hardware choices; never written into a game's native DOS files.
+import type { DosHardware } from './dosConfig/model';
+
 export interface GameHardware {
   sound: 'blaster' | 'speaker';
   video: 'auto' | 'vga';
+  /** What only the 1994 PC's DOS Configure screen (dosConfig/) asks: chip type, port, interrupt, driver. */
+  dos?: DosHardware;
 }
 interface SetupState {
   show: boolean;
