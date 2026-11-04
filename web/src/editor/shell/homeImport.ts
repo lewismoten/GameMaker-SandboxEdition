@@ -27,6 +27,7 @@ import type { HomeNav } from './home';
 import { playLink, showNotice } from './homeCards';
 import { setImported } from './homeOrigin';
 import { takeCompanion } from '../../project/companion';
+import { takeFileIdDiz } from '../../project/importDiz';
 import { openingFields } from '../tools/opening/openingFields';
 import type { OpeningStyle } from '../tools/opening/openingIntros';
 import { fingerprintOf, fingerprintOfFiles, type Fingerprint } from '../../imported/fingerprint';
@@ -137,7 +138,7 @@ async function saveImported({ files, name, gam, players }: Imported): Promise<{ 
   // a hand-edited player (or one that renamed the files' extensions): read before the .gam is looked for
   const player = players.length ? (await import('@lewismoten/gamemaker-sandbox-archives/project/importPlayer')).adoptPlayer(files, players) : undefined;
   // a backup's editor-only extras (<game>.GMX) go back beside the files, not among them
-  const companion = takeCompanion(files);
+  const companion = takeFileIdDiz(files, takeCompanion(files));
   const madeGam = !files.mainGame();
   const p = Project.fromFiles(files, name, undefined, companion);
   if (gam && files.has(gam)) p.gam = gam;

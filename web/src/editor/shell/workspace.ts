@@ -1056,6 +1056,13 @@ export class Workspace implements AssistantHost {
   /** The Download chooser (download.ts) for this game, as it is now. */
   private chooseDownload(): Promise<void> {
     const title = gameTitle(this.project.game()) || this.project.name;
-    return chooseDownload({ title, gam: this.project.gam, files: async () => this.project.files, project: true, companion: () => this.project.companion });
+    return chooseDownload({
+      title,
+      gam: this.project.gam,
+      files: async () => this.project.files,
+      project: true,
+      companion: () => this.project.companion,
+      setPreviews: (on) => this.project.setExportPreviews(on),
+    });
   }
 }

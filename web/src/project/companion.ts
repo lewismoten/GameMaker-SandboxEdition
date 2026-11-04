@@ -12,7 +12,9 @@
 //     "version": 1,
 //     "releaseNotes": { "1.2": "…" },   // text per game version (optional; see releaseNotesOf)
 //     "gameVersion": "1.0",         // the author's version of the game (optional; see gameVersionOf)
-//     "showVersion": true,          // letter it on the menu picture of Play and exports (composeFiles.ts); off when absent
+//     "about": { "title": "…", "author": "…", "credits": [{ "role": "Music", "name": "…" }] },
+//                                   // "About this game" (aboutGame.ts): FILE_ID.DIZ and the web page's credits (optional)
+//     "showVersion": true,         // letter it on the menu picture of Play and exports (composeFiles.ts); off when absent
 //     "files": {                    // extras of one game file, by its normalized name
 //       "forest.bbl": {
 //         "terrains": [ … ],       // map/tools/autotile.ts
@@ -44,6 +46,10 @@ export interface Companion {
   gameVersion?: string;
   /** True to letter `gameVersion` on the menu picture of Play and exports. Off when absent. */
   showVersion?: boolean;
+  /** "About this game" (aboutGame.ts): title, author, description, credits… Editor-only; absent unless set. */
+  about?: unknown;
+  /** False to leave the animation and sound previews out of the one-page web export (export/insideGame.ts). On when absent. */
+  exportPreviews?: boolean;
   /** Anything else a newer version wrote. */
   [key: string]: unknown;
 }
@@ -175,4 +181,15 @@ export function setMenuVersion(c: Companion, version: string, show: boolean): vo
   else delete c.gameVersion;
   if (show) c.showVersion = true;
   else delete c.showVersion;
+}
+
+/** Whether the one-page web export includes animation and sound previews (an export preference, on unless turned off). */
+export function exportPreviewsOf(c: Companion | undefined): boolean {
+  return c?.exportPreviews !== false;
+}
+
+/** Saves the preference in place; on is the default, so it leaves nothing behind. */
+export function setExportPreviews(c: Companion, on: boolean): void {
+  if (on) delete c.exportPreviews;
+  else c.exportPreviews = false;
 }

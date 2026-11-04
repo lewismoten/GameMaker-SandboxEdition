@@ -84,3 +84,75 @@
   width: 8em;
   min-height: 28px;
 }
+
+/* About this game: the fields and the FILE_ID.DIZ they make */
+.about-card {
+  grid-column: 1 / -1;
+}
+.about-card .tool-body {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+.about-fields,
+.about-credits {
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+.about-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14em, 1fr));
+  gap: 8px 12px;
+}
+.about-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.85em;
+}
+.about-fields .about-wide {
+  grid-column: 1 / -1;
+}
+.about-fields input,
+.about-fields textarea {
+  min-height: 28px;
+  font: inherit;
+  box-sizing: border-box;
+  width: 100%;
+}
+.about-credits {
+  display: grid;
+  gap: 6px;
+}
+.about-credit {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.about-credit input {
+  min-height: 28px;
+  flex: 1 1 8em;
+}
+.about-credit button,
+.about-add {
+  min-height: 28px;
+  min-width: 28px;
+}
+.about-diz {
+  margin: 0;
+  padding: 6px 8px;
+  font:
+    13px/1.25 ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
+  background: #000;
+  color: #ddd;
+  border: 1px solid currentcolor;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  min-height: 2.5em;
+}

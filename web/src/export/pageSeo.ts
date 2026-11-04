@@ -7,7 +7,9 @@
 // voice clips, which aren't MIT, are named in the readable text (recordedAudio.ts).
 import { PRODUCT } from '../edition';
 import { PROJECT } from './notices';
-import { escapeHtml, gameDescription, gameJsonLd, jsonLdScript, metaTags, REPO_URL, SITE_URL, type GameSeo } from '../seo/site';
+import { gameLd } from './gameLd';
+import type { AboutGame } from '../project/aboutGame';
+import { escapeHtml, gameDescription, jsonLdScript, metaTags, REPO_URL, SITE_URL, type GameSeo } from '../seo/site';
 
 export interface ExportMeta extends GameSeo {
   /** Shareware: the author's notice (readme / order form). */
@@ -18,6 +20,13 @@ export interface ExportMeta extends GameSeo {
   audio?: string;
   /** The title screen as a PNG data: URL, shown while no script runs (a Files preview) and until the game starts. */
   poster?: string;
+  /** The "Inside this game" section (insideGame.ts), placed after the player. */
+  inside?: string;
+  /** "About this game" and the version (project/aboutGame.ts), for the page's search-engine data. */
+  about?: AboutGame;
+  version?: string;
+  /** Pictures kept in the page, for the search-engine data. */
+  pictures?: { name: string; width: number; height: number; alt: string }[];
 }
 
 /** The page still needs a web engine: a browser, or the one a Windows, Mac or Linux download wraps it in. */
@@ -35,7 +44,7 @@ export function exportHead(m: ExportMeta): string {
     `<!--\n${PROJECT}\n-->`,
     metaTags({ title: m.title, description, siteName: m.title }),
     `<meta name="generator" content="${escapeHtml(PRODUCT)}" />`,
-    jsonLdScript([gameJsonLd(m)]),
+    jsonLdScript([gameLd(m)]),
   ].join('\n');
 }
 

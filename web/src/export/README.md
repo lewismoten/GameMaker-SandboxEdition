@@ -31,3 +31,20 @@ Play's does. The Mac, Windows and Linux downloads embed that same single page, s
 Only those lines travel; the companion never does, and a game that wasn't imported exports byte for
 byte as before (`exportPlayerAbout.test.ts`). The web player download plays a folder with no per-game
 record, so it has none.
+
+## Inside this game (the one-page export's content)
+
+`insideGame.ts` builds a visible, folded section after the player (never hidden text; the player
+hides it while the game runs) so a game is found by more than its title:
+
+- **Kept once, read back:** a GIF is an `<img>` whose data: URL is the file; a `.txt` is a `<pre>` with
+  its code page and line ends in `data-gm-*` attributes (`insideText.ts`, only when the rebuilt
+  bytes match). Their names are in the record's `ext` (version 2) instead of the gzip data; the
+  player (`insideRead.ts` `readExternalDom`), the importer and the link-in unpacker
+  (`readExternalHtml`) read the bytes back, byte for byte (`test/exportInside.test.ts`).
+- **Preview plus original:** an FLI gets a half-size animated GIF (at most 45 KB), a VOC a WAV
+  `<audio preload="none">`, a CMF a line of text. The originals stay in the data. There is no ogg
+  or MIDI preview (no encoder in the repo).
+- **From "About this game"** (`project/aboutGame.ts`, the companion's `about`): visible credits and
+  `gameLd.ts`, the site's `gameJsonLd` plus genre, license, version, abstract, contributors and
+  screenshots. The DOS download writes a `FILE_ID.DIZ` from the same fields (`project/fileIdDiz.ts`).

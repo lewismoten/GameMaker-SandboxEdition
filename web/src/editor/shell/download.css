@@ -92,3 +92,16 @@ dialog.modal:has(.download-chooser) {
   align-items: center;
   min-height: 24px;
 }
+
+.download-chooser .dl-previews {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin: 8px 0;
+}
+.download-chooser .dl-previews input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+}

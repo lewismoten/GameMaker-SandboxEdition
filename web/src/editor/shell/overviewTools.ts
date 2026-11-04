@@ -13,6 +13,7 @@ import { firstStepsState, stepsDone, STEPS } from './firstSteps';
 import { projectTarget, showHealthReport } from './gameHealth';
 import { visionPalette } from './visionPalette';
 import { versionCard } from './overviewVersion';
+import { aboutCard } from './overviewAbout';
 import { diskStatus, floppyFor, openOptimize } from '../disk/diskCard';
 
 interface ToolsHost {
@@ -194,7 +195,7 @@ export function overviewTools(project: Project, host: ToolsHost): { el: HTMLElem
     );
   }
 
-  if (!project.readOnly) cards.push(versionCard(project));
+  if (!project.readOnly) cards.push(versionCard(project), aboutCard(project));
 
   cards.push(
     card('play', 'Play the game', null, 'From the title screen', 'Plays the whole game as a player would; Esc or Stop comes back.', 'Play Game', host.play),
