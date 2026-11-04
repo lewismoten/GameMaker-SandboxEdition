@@ -512,6 +512,10 @@
   "warning hazard-art s2 Block 34 hurts through its whole cell, but its art fills 20% of it",
   "warning start-threat s5 Monster 9 starts 2 blocks from where the hero comes in"
  ],
+ "watch-your-step": [
+  "warning hazard-art s3 Block 62 hurts through its whole cell, but its art fills 17% of it",
+  "warning hazard-art s4 Block 62 hurts through its whole cell, but its art fills 17% of it"
+ ],
  "year2000": [
   "warning start-threat s6 Monster 21 starts 2 blocks from where the hero comes in",
   "warning start-threat s6 Monster 22 starts 3 blocks from where the hero comes in",
