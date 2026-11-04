@@ -3,6 +3,7 @@
 // opens the box's contents at that piece (boxList.ts showInBox), where it can be turned, read or printed.
 import { h } from '../../editor/core/ui';
 import type { BoxItem } from '../../manual/printables/viewer';
+import { whenQuiet } from '../../manual/printables/yieldNow';
 import { showInBox } from './boxList';
 
 const TILE = 70; // the picture's box, in pixels
@@ -23,6 +24,8 @@ export function paperFeelieTiles(items: BoxItem[], open: () => void): HTMLElemen
     );
     void (async () => {
       await new Promise((r) => setTimeout(r, 300 * (i + 1))); // after the box's own list has begun
+      if (!button.isConnected && shown) return;
+      await whenQuiet(); // not while the person is pressing keys
       if (!button.isConnected && shown) return;
       const first = await (item.first ? item.first() : item.render().then((s) => s[0])).catch(() => undefined);
       if (!first) return;

@@ -44,6 +44,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 - Depth Perception 1.4: THE CHEZ shows its back window, lamps and plate as it drives off in the ending, and turned figures keep their paint (Doc Leo's green tie on his purple shirt).
 - The tour's corner guides stay off on every page after their × is pressed.
+- Closing a game box with Escape soon after it opens no longer waits for the sticker sheet, level maps and world map to finish drawing: they are drawn in smaller slices, and only while no keys are being pressed.
 - The Caught looking pause on the desk triggers only when you press Doc Leo's velvet poster while he glances aside.
 - Dragging a code wheel's small disc no longer selects the lettering under the pointer.
 - The top bar, desk and Library no longer leave listeners and music behind when the page changes.

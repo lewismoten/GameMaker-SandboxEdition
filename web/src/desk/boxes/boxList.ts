@@ -6,6 +6,7 @@ import '../../manual/printables/paper.css'; // the pieces' pictures are printed 
 import './boxList.css';
 import { h } from '../../editor/core/ui';
 import type { BoxItem } from '../../manual/printables/viewer';
+import { whenQuiet } from '../../manual/printables/yieldNow';
 
 /** The pictures: THUMB_W x THUMB_H, each piece laid out LAYOUT pixels wide and shrunk to fit. */
 const THUMB_W = 54;
@@ -62,6 +63,8 @@ export function boxList(o: BoxListOptions): HTMLElement {
     for (const [i, item] of items.entries()) {
       if (list.isConnected) shown = true;
       else if (shown) return;
+      await whenQuiet(); // not while the person is pressing keys: a drawing here can be a second long at a slow CPU
+      if (!list.isConnected && shown) return;
       const first = await (item.first ? item.first() : item.render().then((s) => s[0])).catch(() => undefined);
       const thumb = list.children[i]?.querySelector('.box-list-thumb');
       if (!first || !thumb) continue;
