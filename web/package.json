@@ -22,6 +22,7 @@
     "release:draft": "vite-node scripts/release/draft.ts",
     "release:cut": "vite-node scripts/release/cut.ts",
     "release:check": "vite-node scripts/release/check.ts",
+    "verify:changed": "node ../scripts/verify-changed.mjs",
     "editor:touch": "vite-node scripts/editorTouch.ts",
     "check:gestures": "vite-node scripts/touchGestures.ts",
     "check:audio-unlock": "vite-node scripts/audioUnlock.ts",

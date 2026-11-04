@@ -63,6 +63,7 @@ npm run verify:perf                            # performance budgets (bytes, req
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
 npm run release:draft -- <pages|engine|archives|tools>  # a draft Unreleased body from the commits since that target's last tag (prints; never writes)
 npm run release:cut -- <target> <version>          # Unreleased becomes a dated version; sets a package's version
+npm run verify:changed [-- --base <ref>]           # the pre-merge check: prettier + eslint on changed files, tsc (whole project), vitest --changed, release:check if a package src changed; prints the check:games command for a changed game; the full one is root npm run verify
 npm run release:check                              # a package whose src changed since its tag needs an Unreleased line (in root npm run verify)
 npm run domains:check                              # every made-up domain is still unregistered (whois + DNS; needs network)
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox (open DOSBox or any window only when Lewis is away)
