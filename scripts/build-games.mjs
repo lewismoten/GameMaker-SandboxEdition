@@ -198,11 +198,16 @@ async function worker() {
 }
 // The phone kit's 3D parts (games/year2000/phone/viewer, committed) reach the site beside the trinkets, where the box viewer's
 // phone viewer loads them (web/src/desk/boxes/phone/). Copied on every run (about 1.8 MB).
-const phoneViewer = join(root, 'games/year2000/phone/viewer');
-if (existsSync(join(phoneViewer, 'parts.json'))) {
-  const out = join(root, 'web/public/trinkets/phone');
+// Two builds: the cheap one (Junior Lab Edition) in phone/, the deluxe one in phone/deluxe/.
+for (const [from, to] of [
+  ['viewer', 'phone'],
+  ['deluxe/viewer', 'phone/deluxe'],
+]) {
+  const src = join(root, 'games/year2000/phone', from);
+  if (!existsSync(join(src, 'parts.json'))) continue;
+  const out = join(root, 'web/public/trinkets', to);
   mkdirSync(out, { recursive: true });
-  for (const f of ['parts.json', 'parts.bin']) copyFileSync(join(phoneViewer, f), join(out, f));
+  for (const f of ['parts.json', 'parts.bin']) copyFileSync(join(src, f), join(out, f));
 }
 const began = Date.now();
 // The plastic trinkets of the games that mesh them from distance fields (STL, 3MF and support files the site serves from

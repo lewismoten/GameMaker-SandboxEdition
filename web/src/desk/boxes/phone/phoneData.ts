@@ -18,10 +18,28 @@ export interface PartMeta {
   idx: { offset: number; count: number };
 }
 
+/** The two builds: the cheap one with parts from any hobby shop (Junior Lab Edition) and the deluxe one. */
+export type PhoneVariant = 'cheap' | 'deluxe';
+export const VARIANTS: PhoneVariant[] = ['cheap', 'deluxe'];
+
+export interface VariantMeta {
+  id: PhoneVariant;
+  name: string;
+  subtitle: string;
+  board: { width: number; height: number };
+}
+
 export interface PartsFile {
   format: string;
   floats?: number;
+  variant?: VariantMeta;
   parts: PartMeta[];
+}
+
+/** A variant's parts and what the file says about it. */
+export interface PhoneSet {
+  meta?: VariantMeta;
+  parts: Part[];
 }
 
 export interface Part {
@@ -75,16 +93,33 @@ export function parseParts(file: PartsFile, bin: ArrayBuffer): Part[] {
   });
 }
 
-let loading: Promise<Part[]> | undefined;
+const loading: Partial<Record<PhoneVariant, Promise<PhoneSet>>> = {};
 
-/** The parts, fetched once (about 1.8 MB), or rejected when the site has no files for them. */
-export function loadPhone(): Promise<Part[]> {
-  loading ??= Promise.all([fetch(`${phoneBase}parts.json`), fetch(`${phoneBase}parts.bin`)]).then(async ([j, b]) => {
+/** Where a variant's files are served: the cheap build beside the trinkets, the deluxe one in a folder of its own. */
+export const variantBase = (v: PhoneVariant): string => (v === 'deluxe' ? `${phoneBase}deluxe/` : phoneBase);
+
+/** A variant's parts, fetched once (about 2 MB each), or rejected when the site has no files for them. */
+export function loadPhone(v: PhoneVariant = 'cheap'): Promise<PhoneSet> {
+  const base = variantBase(v);
+  const p = (loading[v] ??= Promise.all([fetch(`${base}parts.json`), fetch(`${base}parts.bin`)]).then(async ([j, b]) => {
     if (!j.ok || !b.ok || !j.headers.get('content-type')?.includes('json')) throw new Error('no phone files');
-    return parseParts((await j.json()) as PartsFile, await b.arrayBuffer());
-  });
-  loading.catch(() => (loading = undefined));
-  return loading;
+    const file = (await j.json()) as PartsFile;
+    return { meta: file.variant, parts: parseParts(file, await b.arrayBuffer()) };
+  }));
+  p.catch(() => delete loading[v]);
+  return p;
+}
+
+/** The whole phone's size in mm (width, height, thickness) from every part's box: how big it is to hold. */
+export function phoneSize(parts: Pick<Part, 'bbox'>[]): [number, number, number] {
+  const lo = [Infinity, Infinity, Infinity];
+  const hi = [-Infinity, -Infinity, -Infinity];
+  for (const p of parts)
+    for (let k = 0; k < 3; k++) {
+      lo[k] = Math.min(lo[k], p.bbox[k]);
+      hi[k] = Math.max(hi[k], p.bbox[k + 3]);
+    }
+  return [hi[0] - lo[0], hi[2] - lo[2], hi[1] - lo[1]];
 }
 
 /** True when the site serves the phone files (a dev server answers a missing file with the page, so the type is checked). */
