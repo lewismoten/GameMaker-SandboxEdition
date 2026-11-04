@@ -229,7 +229,8 @@ export const homeChapter: Chapter = {
     {
       id: 'home-games',
       action: 'point',
-      target: { label: 'Games in the header', css: '.topbar-nav .nav-games' },
+      // on a touch phone the bar drops Games, and the logo (the same link) stands in
+      target: { label: 'Games in the header', css: ['.topbar-nav .nav-games', '.topbar > a[href="#/"]'] },
       say: 'Games, up in the bar, always brings you back here.',
     },
     { id: 'home-guide', action: 'point', target: headerLink('Guide in the header', '#/help'), say: 'The Guide explains making games, one part at a time.' },
