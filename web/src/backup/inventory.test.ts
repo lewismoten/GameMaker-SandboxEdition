@@ -21,6 +21,7 @@ const NOT_KEYS = new Set([
   'gm-tin-hearts-changed',
   'gm-eggs-changed',
   'gm-link',
+  'gm-inside', // the exported page's "Inside this game" section id (export/standalonePlayer.ts)
   'gm-link-button',
   'gm-link-buttons',
   'gm-link-primary',
