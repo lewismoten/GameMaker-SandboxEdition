@@ -241,3 +241,16 @@
   align-items: center;
   gap: 6px;
 }
+
+/* Touch: the board's buttons, fields, menus and the side lists are 44 px. */
+@media (hover: none) and (pointer: coarse) {
+  .grator button,
+  .grator select,
+  .grator summary,
+  .grator input:not([type='checkbox'], [type='radio'], [type='range']) {
+    min-height: 44px;
+  }
+  .grator button {
+    min-width: 44px;
+  }
+}
