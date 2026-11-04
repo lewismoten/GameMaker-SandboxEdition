@@ -204,12 +204,28 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
     ],
     regionOf,
   );
-  console.log(`bay (holder ${bay.holder.map((n) => n.toFixed(1)).join(' ')}; capsule ${bay.capsule.map((n) => n.toFixed(1)).join(' ')}): mm to the holder / capsule, must stay >= ${HOLDER_GAP}`);
+  console.log(
+    `bay (holder ${bay.holder.map((n) => n.toFixed(1)).join(' ')}; capsule ${bay.capsule.map((n) => n.toFixed(1)).join(' ')}): mm to the holder / capsule, must stay >= ${HOLDER_GAP}`,
+  );
   for (const g of bayGaps) {
     console.log(' ', g.id.padEnd(14), fmt(g.body));
-    if (g.body.gap < HOLDER_GAP) bad.push(`${g.id} is ${g.body.gap.toFixed(2)} mm from the ${g.body.other} at ${g.body.at.map((n) => n.toFixed(1)).join(', ')}`);
+    if (g.body.gap < HOLDER_GAP)
+      bad.push(`${g.id} is ${g.body.gap.toFixed(2)} mm from the ${g.body.other} at ${g.body.at.map((n) => n.toFixed(1)).join(', ')}`);
   }
-  writeFileSync(join(dir, 'viewer/clearance.json'), JSON.stringify({ lead: LEAD, leadRadius: LEAD_R, min: MIN_GAP, parts: gaps, bay: { min: HOLDER_GAP, ...bay, gaps: bayGaps.map((g) => ({ id: g.id, gap: Number.isFinite(g.body.gap) ? g.body.gap : null, other: g.body.other })) } }, null, 1));
+  writeFileSync(
+    join(dir, 'viewer/clearance.json'),
+    JSON.stringify(
+      {
+        lead: LEAD,
+        leadRadius: LEAD_R,
+        min: MIN_GAP,
+        parts: gaps,
+        bay: { min: HOLDER_GAP, ...bay, gaps: bayGaps.map((g) => ({ id: g.id, gap: Number.isFinite(g.body.gap) ? g.body.gap : null, other: g.body.other })) },
+      },
+      null,
+      1,
+    ),
+  );
   if (bad.length) {
     console.log(`!! clearance below ${MIN_GAP} mm:\n  ${bad.join('\n  ')}`);
     process.exitCode = 1;

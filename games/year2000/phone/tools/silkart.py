@@ -75,7 +75,7 @@ def _hatch(kind, layer, px0, py0, size, ox, oy, step, w, uid, f):
     return out
 
 
-def block_art(layer, rows, tones, x, y, px, uid, f, w=0.15, skip=(), outline=0.0):
+def block_art(layer, rows, tones, x, y, px, uid, f, w=0.15, skip=(), outline=0.0, avoid=None):
     """rows: strings, one char per pixel; tones: char -> ("solid",) or (hatch kinds like "/\\\\", spacing mm).
     `skip` is a set of (row, col) pixels left out (where a pad is). On a B layer the picture is mirrored so it reads from the back. Returns (items, width_mm, height_mm)."""
     back = layer.startswith("B.")
@@ -106,8 +106,10 @@ def block_art(layer, rows, tones, x, y, px, uid, f, w=0.15, skip=(), outline=0.0
                 dcc = -dc if back else dc            # the picture is mirrored on the back
                 if dr:
                     yy = y0 - o if dr < 0 else y0 + px + o
-                    out.append(_line(layer, x0 - o, yy, x0 + px + o, yy, outline, uid, f))
+                    if not (avoid and avoid(x0 - o, yy, x0 + px + o, yy)):
+                        out.append(_line(layer, x0 - o, yy, x0 + px + o, yy, outline, uid, f))
                 else:
                     xx = x0 - o if dcc < 0 else x0 + px + o
-                    out.append(_line(layer, xx, y0 - o, xx, y0 + px + o, outline, uid, f))
+                    if not (avoid and avoid(xx, y0 - o, xx, y0 + px + o)):
+                        out.append(_line(layer, xx, y0 - o, xx, y0 + px + o, outline, uid, f))
     return out, cols * px, len(rows) * px

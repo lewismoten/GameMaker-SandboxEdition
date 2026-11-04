@@ -546,6 +546,18 @@ def near_label(layer, s, x, y, w, h, size=0.9):
     return label(layer, s, x + w / 2, y + h + 1.0, size, True)
 
 
+def _dex_avoid(x0, y0, x1, y1, margin=0.45):
+    """True where an outline segment would come within `margin` of a pad or via (silk over exposed copper is clipped)."""
+    pts = list(padpts) + [(x, y, 0.4) for v in vias.values() for x, y in v]
+    for px_, py_, r_ in pts:
+        dx, dy = x1 - x0, y1 - y0
+        t = 0.0 if dx == dy == 0 else max(0.0, min(1.0, ((px_ - x0) * dx + (py_ - y0) * dy) / (dx * dx + dy * dy)))
+        if math.hypot(px_ - (x0 + t * dx), py_ - (y0 + t * dy)) < r_ + margin + 0.125:
+            return True
+    return False
+
+
+
 silk = []
 silk.append(label("F.SilkS", "THE PHONE OF THE FUTURE", CX, 11.6, 1.6))
 # the project name and advertising lines go in before the orbits and rays, so those keep clear of them
@@ -605,7 +617,7 @@ for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SI
     silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))
     for ln, lx, ly in URL_SPOTS.get(qtext, []):       # the address in words, split at the slashes, never shortened
         silk.append(txt("B.SilkS", ln, lx, ly, 1.0, True))
-silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f, outline=0.25)[0]
+silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f, outline=0.25, avoid=_dex_avoid)[0]
 silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], 12.8, 14.4))
 items += silk
 

@@ -132,7 +132,11 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
   const btIn = { x0: hx0 + 2, z0: hz0 + 2, x1: hx1 - 2, z1: hz1 - 2 };
   const door = rect(btIn.x0, btIn.z0, btIn.x1, btIn.z1, 3);
   {
-    let tray: D3 = subtract3(union3(slabW(board(WALL), 0, hTray), slabW(bayOuter, 0, hTray)), slabW(board(FIT), FLOOR, hTray + 1), slabW(bayPocket, FLOOR, hTray + 1));
+    let tray: D3 = subtract3(
+      union3(slabW(board(WALL), 0, hTray), slabW(bayOuter, 0, hTray)),
+      slabW(board(FIT), FLOOR, hTray + 1),
+      slabW(bayPocket, FLOOR, hTray + 1),
+    );
     tray = union3(tray, ...v.holes.map(([x, z]) => cyl(x, z, Math.max(2.3, Math.min(4.6, roomAt(v, 'back', x, z, BACK_Y, -hTray))), 0, hTray)));
     // crush ribs that keep the holder from rattling: 0.6 mm off it when it sits centered
     const wTop = Math.min(hy1 - floorBottom, hTray - 0.2); // the tray ends at the board's back plane; a taller holder is held by the cover's ribs above
@@ -375,8 +379,10 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
   }
 
   // ---- battery: box, four off-brand AAA cells, door, the leads, the microphone capsule and its wires ----------------
-  const box3 = (x0: number, x1: number, y0: number, y1: number, z0: number, z1: number): D3 => (x, y, z) =>
-    Math.max(x0 - x, x - x1, y0 - y, y - y1, z0 - z, z - z1);
+  const box3 =
+    (x0: number, x1: number, y0: number, y1: number, z0: number, z1: number): D3 =>
+    (x, y, z) =>
+      Math.max(x0 - x, x - x1, y0 - y, y - y1, z0 - z, z - z1);
   const wire = (id: string, label: string, group: 'battery' | 'components', color: V3, segs: number[][]) => {
     const lo = [0, 1, 2].map((k) => Math.min(...segs.map((s) => s[2 * k])) - 1) as V3;
     const hi = [0, 1, 2].map((k) => Math.max(...segs.map((s) => s[2 * k + 1])) + 1) as V3;
@@ -425,12 +431,18 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
     v.micPads.forEach(([x, z], k) => {
       const t = 0.5;
       const zr2 = pz0 + 2.0;
-      wire(`MK1-wire${k + 1}`, k === 0 ? 'Microphone wire (+, red) twisted pair' : 'Microphone wire (-, black) twisted pair', 'components', k === 0 ? red : blk, [
-        [x - t, x + t, -1.8, -0.8, z + 5.2, zr2 + t],
-        [x - t, x + t, Math.min(-1.8, wy - t), Math.max(-0.8, wy + t), zr2 - t, zr2 + t],
-        [x - t, x + t, wy - t, wy + t, zr2 - t, zm + t],
-        [x - t, x + t, Math.min(wy - t, capY0 - 1), Math.max(wy + t, capY0), zm - t, zm + t],
-      ]);
+      wire(
+        `MK1-wire${k + 1}`,
+        k === 0 ? 'Microphone wire (+, red) twisted pair' : 'Microphone wire (-, black) twisted pair',
+        'components',
+        k === 0 ? red : blk,
+        [
+          [x - t, x + t, -1.8, -0.8, z + 5.2, zr2 + t],
+          [x - t, x + t, Math.min(-1.8, wy - t), Math.max(-0.8, wy + t), zr2 - t, zr2 + t],
+          [x - t, x + t, wy - t, wy + t, zr2 - t, zm + t],
+          [x - t, x + t, Math.min(wy - t, capY0 - 1), Math.max(wy + t, capY0), zm - t, zm + t],
+        ],
+      );
     });
   }
   {
@@ -442,7 +454,10 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
       side: 'back',
       color: [0.22, 0.22, 0.25],
       printed: true,
-      field: subtract3(slabW(rect(hx0, hz0, hx1, hz1, 2), 0, hBox), slabW(rect(hx0 + BOX_WALL, hz0 + BOX_WALL, hx1 - BOX_WALL, hz1 - BOX_WALL, 1), BOX_WALL, hBox + 1)),
+      field: subtract3(
+        slabW(rect(hx0, hz0, hx1, hz1, 2), 0, hBox),
+        slabW(rect(hx0 + BOX_WALL, hz0 + BOX_WALL, hx1 - BOX_WALL, hz1 - BOX_WALL, 1), BOX_WALL, hBox + 1),
+      ),
       box: boxAround(hx0, hz0, hx1, hz1, hBox, 1),
       cell: 0.8,
       place: (u, vv, w) => [u, hy1 - w, vv],
