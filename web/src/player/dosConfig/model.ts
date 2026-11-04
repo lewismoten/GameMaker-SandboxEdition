@@ -48,7 +48,7 @@ export interface ConfigState {
 }
 
 /** What DetectCard leaves for a PC without a BLASTER setting: the standard driver in the current directory. */
-export const DEFAULT_DRIVER = '.\\sndblast.drv';
+const DEFAULT_DRIVER = '.\\sndblast.drv';
 const DEFAULT_PORT = 0x220;
 const DEFAULT_IRQ = 7;
 

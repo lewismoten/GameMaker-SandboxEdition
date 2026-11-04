@@ -6,7 +6,7 @@
 import { BILL_LEAD, SCRIPT, TIME_LEAD } from './phoneScript';
 
 /** A clip's path under the voice folder, without ".ogg": "mom/mom-work-2". */
-export type ClipPath = string;
+type ClipPath = string;
 
 /** Sentences of `text`; a fragment with no words ("…") stays with the sentence before it. */
 export function sentences(text: string): string[] {

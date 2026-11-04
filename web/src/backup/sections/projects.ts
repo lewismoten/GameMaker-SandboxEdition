@@ -29,7 +29,7 @@ export function importedIds(w: World): Set<string> {
 }
 
 /** Your own projects' ids (every project not imported). */
-export const ownIds = (w: World): string[] => Object.keys(w.stores.projects).filter((id) => !importedIds(w).has(id));
+const ownIds = (w: World): string[] => Object.keys(w.stores.projects).filter((id) => !importedIds(w).has(id));
 
 const mapOf = (w: World, key: string): Record<string, unknown> => {
   const m = json<unknown>(w.local[key]);

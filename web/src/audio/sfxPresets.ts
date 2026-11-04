@@ -5,7 +5,7 @@ import { SLIDERS, WAVES, cleanParams, defaultParams, type SfxParams, type Wave }
 
 type Rnd = () => number;
 
-export interface SfxPreset {
+interface SfxPreset {
   id: string;
   name: string;
   icon: string;

@@ -6,7 +6,7 @@ import { type ConfigState, INTX, INTY, INT_C, PORTX, PORTY, PORT_C, SNDCARDX, SN
 type Canvas = Pick<Screen, 'boxFill' | 'box' | 'line' | 'point' | 'write'>;
 
 /** CuteBox: a rounded two-color frame around one choice (col1 inside edge, col2 the glow outside it). */
-export function cuteBox(s: Canvas, x: number, y: number, x1: number, y1: number, col1: number, col2: number): void {
+function cuteBox(s: Canvas, x: number, y: number, x1: number, y1: number, col1: number, col2: number): void {
   s.line(x + 1, y, x1 - 1, y, col1);
   s.line(x + 1, y - 1, x1 - 1, y - 1, col2);
   s.line(x + 1, y1, x1 - 1, y1, col1);
@@ -36,7 +36,7 @@ type Group = 'vga' | 'int' | 'port' | 'sound';
 const groupOf = (cursor: number): Group => (cursor >= VCARD_C ? 'vga' : cursor >= INT_C ? 'int' : cursor >= PORT_C ? 'port' : 'sound');
 
 /** The rectangle around the chosen item of one group (the four calls that end DrawConfigScrn). */
-export function markChoice(s: Canvas, st: ConfigState, group: Group, col1: number, col2: number): void {
+function markChoice(s: Canvas, st: ConfigState, group: Group, col1: number, col2: number): void {
   if (group === 'port') cuteBox(s, PORTX - 3, PORTY - 3 + (st.port - 0x220), PORTX + 25, PORTY + 9 + (st.port - 0x220), col1, col2);
   else if (group === 'int') cuteBox(s, INTX - 3, INTY - 3 + (st.irq - 1) * 8, INTX + 18, INTY + 9 + (st.irq - 1) * 8, col1, col2);
   else if (group === 'vga') cuteBox(s, VGACARDX - 3, VGACARDY - 3 + st.vga * VGACARDSEP, VGACARDX + 12 * 8 + 3, VGACARDY + 9 + st.vga * VGACARDSEP, col1, col2);

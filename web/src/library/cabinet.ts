@@ -7,7 +7,7 @@ import { drawerCall } from './tinyShelf';
 
 export const drawerId = (key: string) => `lib-drawer-${key}`;
 
-export interface Cabinet {
+interface Cabinet {
   el: HTMLElement;
   /** Shows these drawers with `open` pulled out (rebuilt only when the drawers changed). */
   update(groups: readonly ShelfGroup[], open: string, order: ShelfOrder): void;

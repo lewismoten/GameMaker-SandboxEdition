@@ -71,7 +71,7 @@ export function setAllGuides(on: boolean): void {
  * &record for recording mode and &cont when a tour carries on from another page (its title card
  * comes straight up, and its sound starts without asking for a click when the browser allows).
  */
-export interface TourRequest {
+interface TourRequest {
   /** 'all', or chapters' ids ('dos', 'desk,dos'). */
   chapters: string;
   record: boolean;

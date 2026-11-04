@@ -56,7 +56,7 @@ export const PROPS = {
   // THE CHEZ, driving by as it does in Quest for the Round Tuit
   chez: { game: 'realm', scale: 2 },
 } as const;
-export type PropId = keyof typeof PROPS;
+type PropId = keyof typeof PROPS;
 
 /** Short sound effects: a Sandbox game's own digitized .VOC files ('game/file', no extension). */
 export const SOUNDS = {
@@ -240,7 +240,7 @@ export interface TourStep {
  * ending): this browser's settings by their localStorage keys, the control that was selected
  * (pressed again: the visitor's own collection tab) and settings in the address.
  */
-export interface Keep {
+interface Keep {
   storage?: string[];
   /** The selected control as the chapter starts (it has an id): pressed again at the end if another is selected. */
   selected?: string;

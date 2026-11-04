@@ -26,7 +26,7 @@ import { onDosPage, pageHere, pageOf } from './tourPages';
 import { parseHash, setHashParams } from '../urlState';
 import type { Sprite } from '../cast/castStageDraw';
 
-export interface TourOptions {
+interface TourOptions {
   record?: boolean;
   /** Carrying on from another page: no Start card when the sound can start without a click. */
   cont?: boolean;

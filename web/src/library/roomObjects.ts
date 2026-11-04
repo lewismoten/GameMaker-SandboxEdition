@@ -120,7 +120,7 @@ export function deskArt(): Spot {
 }
 
 /** A reading table to the left of the desk, with an open book on it: a slab on four legs, drawn back to front. */
-export const TABLE = { x0: -2.0, x1: -1.15, z0: 0.0, z1: 0.6, h: 0.74 };
+const TABLE = { x0: -2.0, x1: -1.15, z0: 0.0, z1: 0.6, h: 0.74 };
 
 export function tableArt(): Spot {
   const { x0, x1, z0, z1, h } = TABLE;
@@ -142,12 +142,12 @@ export function tableArt(): Spot {
 }
 
 /** Two stools left of the reading table, a floor lamp beside them and a book cart on the right: plain props, clear of the desk and the lane in front of it. */
-export const STOOLS: [number, number][] = [
+const STOOLS: [number, number][] = [
   [-1.85, -0.72],
   [-1.4, -0.72],
 ];
-export const LAMP = { x: 1.8, z: 0.25 };
-export const CART = { x0: 2.15, x1: 2.8, z0: -1.2, z1: -0.92 };
+const LAMP = { x: 1.8, z: 0.25 };
+const CART = { x0: 2.15, x1: 2.8, z0: -1.2, z1: -0.92 };
 
 export function stoolsArt(): Spot {
   const body = STOOLS.map(([cx, cz]) => {

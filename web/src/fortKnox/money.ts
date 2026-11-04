@@ -6,7 +6,7 @@ export const SAVE_ID = 'site:scores';
 export const FILE = 'piggy-bank.json';
 export const MONEY_CHANGED = 'gm-piggy-bank-changed';
 
-export type MoneyRecord = Record<string, number>;
+type MoneyRecord = Record<string, number>;
 
 const whole = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n) && n >= 0;
 

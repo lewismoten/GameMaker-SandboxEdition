@@ -6,7 +6,7 @@
 export const EGGS_NEEDED = 13;
 
 /** True once at least EGGS_NEEDED felt eggs count as found. */
-export function eggsOpen(found: number): boolean {
+function eggsOpen(found: number): boolean {
   return found >= EGGS_NEEDED;
 }
 

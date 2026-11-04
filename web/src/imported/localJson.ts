@@ -2,7 +2,7 @@
 // and removed-game records: read whole, written whole, and an empty value when storage is
 // refused (a private window) or the text is damaged. Editor-only, never in a game's files.
 
-export interface LocalJson<T> {
+interface LocalJson<T> {
   read(): T;
   write(value: T): void;
 }

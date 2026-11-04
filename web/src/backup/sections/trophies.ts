@@ -7,7 +7,7 @@ import { FILE as MONEY_FILE, parseMoney } from '../../fortKnox/money';
 import { mergeSafe, parseSafe, SAFE_FILE } from '../../fortKnox/store';
 import { describeKeys, fileMap, fillGaps, injectLocal, isRecord, need, plural, stringMap, type Section } from './types';
 
-export interface TrophiesPayload {
+interface TrophiesPayload {
   files: Record<string, Uint8Array>;
   local: Record<string, string>;
 }

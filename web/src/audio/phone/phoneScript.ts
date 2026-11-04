@@ -82,13 +82,13 @@ export const HINT_BAD_KEY = 'I do not know that button yet. Please try again.';
 export const HINT_BYE = 'Thank you for calling. Come back when you are stuck again. Goodbye!';
 export const HINT_LONG_BREAK = 'Are you still there? I will hang up now. Goodbye!';
 export const hintIntro = (title: string): string => `Hints for ${title}.`;
-export const hintMenuPage = (titles: string[], more: boolean): string =>
+const hintMenuPage = (titles: string[], more: boolean): string =>
   `${titles.map((t, i) => `For ${t}, press ${i + 1}.`).join(' ')} ${more ? 'For more games, press 9.' : 'To go back to the first games, press 9.'} For my pretend phone bill, press pound. To hang up, press 0.`;
 /** The one sentence of the hint line that carries an amount (clips are spliced for it; see phoneClips.ts). */
 export const BILL_LEAD = "Your parents' pretend phone bill is";
 export const billSentence = (dollars: string): string => `${BILL_LEAD} ${dollars}.`;
 
-export const FORECAST =
+const FORECAST =
   'National Weather Service forecast for Pittsburgh and vicinity. This afternoon, snow showers. Accumulation of two to four inches. High 29. Tonight, cloudy with flurries. Low 18. Tomorrow, partly sunny and cold. High 31. Currently in Pittsburgh, light snow, and 28 degrees.';
 
 export const TIME_LEAD = 'Riverbend Savings & Loan time and temperature.';

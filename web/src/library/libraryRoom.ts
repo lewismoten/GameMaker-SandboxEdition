@@ -16,7 +16,7 @@ import { pctX, pctY, proj } from './roomGeo';
 import { noteArt, showSandKey } from './sandNote';
 import { catalogArt, copierArt, deskArt, DESK, place, spineBox, tableArt, stoolsArt, lampArt, cartArt, type Spot } from './roomObjects';
 
-export interface RoomActions {
+interface RoomActions {
   /** Takes the visitor to the shelves, the card catalog or the copier. */
   go(where: 'stacks' | 'catalog' | 'copier' | 'toybox' | 'lspace'): void;
   /** The dialog now open (the address keeps it, so a reload opens it again), or none. */
@@ -79,7 +79,7 @@ function joeHelp(status: string, from: HTMLElement, mark: RoomActions['mark']): 
 }
 
 /** What the room needs to stand a spine on its far wall. */
-export interface RoomShelf {
+interface RoomShelf {
   items: HTMLElement[];
   /** The last spine: opens the whole list. */
   more(): HTMLElement;

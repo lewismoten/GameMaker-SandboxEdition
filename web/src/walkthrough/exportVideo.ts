@@ -21,7 +21,7 @@ const PER_FRAME = RATE / WALKTHROUGH_FPS;
 /** How long a partial walkthrough's closing card stays up (frames). */
 const CARD_FRAMES = 4 * WALKTHROUGH_FPS;
 
-export interface ExportOptions {
+interface ExportOptions {
   files: GameFiles;
   gam: string;
   walk: Walkthrough;

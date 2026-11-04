@@ -9,7 +9,7 @@ import { savesOf, type World } from '../world';
 import { localOf } from '../inventory';
 import { describeKeys, injectLocal, isRecord, json, need, plural, stringMap, type Section } from './types';
 
-export interface EggsPayload {
+interface EggsPayload {
   local: Record<string, string>;
   /** Override keys (a game's id, or bonusKey's "<game>/<id>") of eggs a save here holds. */
   inSaves: string[];

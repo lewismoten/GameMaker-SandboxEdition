@@ -84,7 +84,7 @@ export const withTag = (list: StoredCheckpoint[], id: string, tag: string): Stor
     return tag.trim() ? { ...rest, tag: tag.trim() } : rest;
   });
 
-export const newStampId = (): string => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+const newStampId = (): string => crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 export async function getCheckpoints(id: string): Promise<StoredCheckpoint[]> {
   return checkpointList(await loadRecord(id));

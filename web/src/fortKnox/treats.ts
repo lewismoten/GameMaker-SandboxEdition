@@ -1,5 +1,5 @@
 // The little dog treat store inside the open safe: generic names, prices in pretend coins.
-export interface Treat {
+interface Treat {
   id: string;
   name: string;
   price: number;
