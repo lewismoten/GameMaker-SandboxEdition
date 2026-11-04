@@ -575,3 +575,10 @@
     top: calc(100% - 6px);
   }
 }
+
+/* focus on the dark panel: an orange band against the control and a white one outside it (the primary Play button is blue, so its focus does not look like its style) */
+.home .showcase :focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--focus);
+}

@@ -260,11 +260,6 @@
   outline: none;
 }
 
-.lib-drop-tile:has(.lib-drop-pick:focus-visible) {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
-}
-
 .lib-drop-hint {
   margin: 0;
   padding: 0 10px 5px;
@@ -705,9 +700,12 @@
   outline: none;
 }
 
-.game-tile:has(.tile-select:focus-visible) {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
+/* two bands: an orange one next to the tile and the text color outside it, so it shows on any page color in light and dark, and looks nothing like the primary button */
+.game-tile:has(.tile-select:focus-visible),
+.lib-drop-tile:has(.lib-drop-pick:focus-visible) {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--focus);
 }
 
 .tile-title {
