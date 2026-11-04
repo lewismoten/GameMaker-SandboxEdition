@@ -8,6 +8,7 @@ import { captionPieces } from '../../src/desk/room/phone/captionPieces';
 import { CAST } from '../../src/audio/phone/phoneCast';
 import { castOf, clipsFor, sentences } from '../../src/audio/phone/phoneClips';
 import { SCRIPT, billSentence, timeSentence, TIME_LEAD, HINT_KENNEL, HINT_RATE } from '../../src/audio/phone/phoneScript';
+import { HINT_CENTS_PER_MINUTE, MAX_MINUTES } from '../../src/desk/room/phone/hintBill';
 import { phoneLines } from './phoneLines';
 
 const VOICE = join(__dirname, '../../public/phone/voice');
@@ -55,6 +56,17 @@ describe('the phone’s recorded lines', () => {
     }
   });
 
+  it('says every bill the per-minute billing can reach (multiples of the price, up to the cap) in the Hint Giant’s voice', () => {
+    for (let minutes = 1; minutes <= MAX_MINUTES; minutes++) {
+      const cents = minutes * HINT_CENTS_PER_MINUTE;
+      const amount = `$${(cents / 100).toFixed(2)}`;
+      const text = billSentence(amount);
+      expect(castOf(text), amount).toBe('giant');
+      expect(cents, amount).toBeLessThan(10000);
+      for (const c of clipsFor(text, text)!) expect(have.has(c), `${amount}: ${c}`).toBe(true);
+    }
+  });
+
   it('leaves a bill over $99.99 to the browser’s speech', () => {
     const text = billSentence('$100.00');
     expect(clipsFor(text, `${HINT_KENNEL} ${text}`)).toBeUndefined();
@@ -67,7 +79,7 @@ describe('the phone’s recorded lines', () => {
   it('has no phone file that speaks a quoted string of its own', () => {
     for (const f of ['calls.ts', 'hintLine.ts', 'phone.ts']) {
       const src = readFileSync(join(__dirname, '../../src/desk/room/phone', f), 'utf8');
-      expect(src.match(/\.say\(\s*(?:VOICES\.\w+|teddy),\s*['"]/g) ?? [], f).toEqual([]);
+      expect(src.match(/\.say\(\s*(?:VOICES\.\w+|giant),\s*['"]/g) ?? [], f).toEqual([]);
     }
   });
 });
