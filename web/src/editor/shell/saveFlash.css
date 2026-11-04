@@ -26,6 +26,10 @@
   .save-flash.on {
     opacity: 1;
   }
+  /* Ctrl+S shows a toast with the same news over the pill's spot, so the pill steps aside */
+  body:has(.toasts .toast) .save-flash:not(.failed) {
+    opacity: 0;
+  }
   .save-flash.failed {
     border-color: var(--danger);
     color: var(--danger);
