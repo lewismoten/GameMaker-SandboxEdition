@@ -35,6 +35,7 @@ export const CAST_GAMES = {
   'room-to-room': ['Room to Room', 'starter'],
   'coins-and-score': ['Coins and Score', 'starter'],
   'watch-your-step': ['Watch Your Step', 'starter'],
+  'power-up': ['Power Up', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -115,6 +116,7 @@ const LISTED: CastMember[] = [
       { game: 'room-to-room', as: 'walks through doors from room to room' },
       { game: 'coins-and-score', as: 'collects coins and gems, and finds a heart for a life' },
       { game: 'watch-your-step', as: 'learns that spikes hurt once and a pool costs a life' },
+      { game: 'power-up', as: 'grabs a star for high jumps and sneakers for speed' },
     ],
   },
   {
