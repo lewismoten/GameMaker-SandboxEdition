@@ -7,7 +7,7 @@ on:
       - 'tools-v*'
 
 permissions:
-  contents: read
+  contents: write # the GitHub Release
   packages: write
 
 concurrency:
@@ -61,3 +61,14 @@ jobs:
         run: npm publish --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ github.token }}
+      # The Release body is this version's CHANGELOG section; the SBOM is npm's own (CycloneDX, runtime dependencies).
+      - name: GitHub Release
+        working-directory: .
+        run: |
+          version="${GITHUB_REF_NAME#tools-v}"
+          node scripts/release/section.mjs web/packages/tools/CHANGELOG.md "$version" > "$RUNNER_TEMP/notes.md"
+          sbom="$RUNNER_TEMP/tools-$version.sbom.cdx.json"
+          npm sbom --sbom-format cyclonedx --package-lock-only --omit=dev -w @lewismoten/gamemaker-sandbox-tools > "$sbom"
+          gh release create "$GITHUB_REF_NAME" --title "tools $version" --notes-file "$RUNNER_TEMP/notes.md" "$sbom"
+        env:
+          GH_TOKEN: ${{ github.token }}
