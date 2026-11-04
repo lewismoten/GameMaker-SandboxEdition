@@ -1,0 +1,10 @@
+import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
+import { ORIGIN } from '../../kit/starter/map';
+import { buildLevels } from '../src/levels';
+const { book, levels } = buildLevels();
+const lvl = Number(process.argv[2]);
+const [x0, x1, y0, y1] = process.argv.slice(3).map(Number);
+const names = [...book.index.entries()].map(([n, i]) => [i, n] as const);
+const by = new Map(names);
+const m = levels[lvl - 1].map.done();
+for (let y = y0; y <= y1; y++) console.log(y, Array.from({ length: x1 - x0 + 1 }, (_, i) => (by.get(m.blocks[(y + ORIGIN) * MLEN + x0 + i + ORIGIN]!) ?? '?').slice(0, 5).padEnd(6)).join(''));
