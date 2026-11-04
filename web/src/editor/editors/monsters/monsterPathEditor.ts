@@ -109,7 +109,7 @@ export function monsterPathEditor(o: PathEditorOptions): { el: HTMLElement; refr
   );
   const stage = h('div', { class: 'mpath-stage' }, canvas, zoomBar, pop);
   const readout = h('div', { class: 'mpath-readout' });
-  const tabsEl = h('div', { class: 'mpath-tabs', role: 'tablist' });
+  const tabsEl = h('div', { class: 'mpath-tabs', role: 'tablist', 'aria-label': 'Which path' });
   const toolbar = h('div', { class: 'mpath-toolbar' });
   const notice = h('div', { class: 'mpath-notice' });
   const side = h('div', { class: 'mpath-side-list' });

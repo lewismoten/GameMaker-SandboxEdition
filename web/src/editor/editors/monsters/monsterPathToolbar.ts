@@ -15,6 +15,15 @@ export function renderTabs(ed: PathEd): void {
         role: 'tab',
         class: ed.tab === p ? 'selected' : '',
         'aria-selected': String(ed.tab === p),
+        // one tab stop; the arrow keys, Home and End move between the two (the ARIA tabs pattern)
+        tabIndex: ed.tab === p ? 0 : -1,
+        onkeydown: (e: KeyboardEvent) => {
+          const to = e.key === 'ArrowLeft' || e.key === 'ArrowRight' ? (p === 0 ? 1 : 0) : e.key === 'Home' ? 0 : e.key === 'End' ? 1 : -1;
+          if (to < 0) return;
+          e.preventDefault();
+          ed.tabsEl.querySelectorAll<HTMLElement>('[role=tab]')[to]?.click();
+          ed.tabsEl.querySelectorAll<HTMLElement>('[role=tab]')[to]?.focus();
+        },
         onclick: () => {
           ed.tab = p;
           ed.selected = corners(path(ed), kind(ed))[0]?.i ?? -1;
