@@ -68,6 +68,11 @@
       "gamemaker-source": "./src/music/*.ts",
       "import": "./dist/music/*.js"
     },
+    "./embroidery/*": {
+      "types": "./dist/types/embroidery/*.d.ts",
+      "gamemaker-source": "./src/embroidery/*.ts",
+      "import": "./dist/embroidery/*.js"
+    },
     "./mesh/*": {
       "types": "./dist/types/mesh/*.d.ts",
       "gamemaker-source": "./src/mesh/*.ts",

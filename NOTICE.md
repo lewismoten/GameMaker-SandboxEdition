@@ -997,3 +997,5 @@ QR detector, and block art of Dex Dynamo taken from the game's own sprite (`game
 The 3D-printed shell, dial, button caps and battery box (`tools/shell.ts`, `shellParts.ts`) are signed-distance shapes meshed
 by this repository's trinket tools, designed by Claude Sonnet 5.5 (Anthropic) under Lewis Moten's direction. The AAA cells'
 maker "ZORP" is invented. The shell is untested: nothing has been printed.
+
+- **Embroidery generator and Maximus's patch** (`web/packages/tools/src/embroidery/`, `games/maximus/patch/`, `web/src/desk/boxes/patchModel.ts`): the stitch generator, the DST, EXP and PES writers, the single-line lettering, the stitch simulation and the patch design were written by **Claude Sonnet 5.5** (Anthropic), directed by Lewis Moten. The file layouts follow the public descriptions of the Tajima DST, Melco EXP and Brother PES/PEC formats kept by the open embroidery projects (Embroidermodder's libembroidery, MIT, and pyembroidery, MIT); no code or data was copied, and the PES thread-chart indices are approximate. The patch uses only the game's own colors and words. Nothing has been sewn on a real machine.

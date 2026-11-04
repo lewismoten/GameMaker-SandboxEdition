@@ -34,7 +34,7 @@ export function trinketAttachments(f: Extract<Feelie, { kind: 'trinket' }>): Att
 }
 
 /** A laser kit's downloads, from its manifest (sizes are asked of the site). */
-export function kitAttachments(f: Extract<Feelie, { kind: 'nickel' | 'box' | 'kit' }>): Attachment[] {
+export function kitAttachments(f: Extract<Feelie, { kind: 'nickel' | 'box' | 'kit' | 'patch' }>): Attachment[] {
   return f.kit.downloads.map((d) => ({ href: `${f.kit.base}${d.file}`, file: d.file.split('/').pop() ?? d.file, label: d.label }));
 }
 
@@ -116,8 +116,8 @@ function pieceOf(f: Feelie): BoxItem | undefined {
   const { kit } = f;
   return {
     ...lead,
-    note: kit.kind === 'nickel' ? 'Wooden nickel · laser files' : 'Laser kit · cut files',
-    icon: kit.kind === 'nickel' ? '🪙' : '📦',
+    note: kit.kind === 'nickel' ? 'Wooden nickel · laser files' : kit.kind === 'patch' ? 'Embroidery patch · stitch files' : 'Laser kit · cut files',
+    icon: kit.kind === 'nickel' ? '🪙' : kit.kind === 'patch' ? '🧵' : '📦',
     first,
     render,
     live: async () =>

@@ -304,6 +304,18 @@ if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('sleuth
     'laser stage box',
   );
 }
+// Maximus's embroidered patch (games/maximus/patch/build.ts: stitch files, thread list and stitch simulation in
+// web/public/laser/maximus/patch/); a few seconds, so it is redone whenever its game is built.
+if (!process.env.GM_SKIP_LASER_NICKELS && (!only.length || only.includes('maximus')) && ids.includes('maximus')) {
+  await runEntry(
+    'maximus-patch',
+    { file: join(root, 'games/maximus/patch/build.ts') },
+    '../games/maximus/patch/build.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'maximus patch',
+  );
+}
 if (timing)
   console.log(
     `${times.length} games built with ${jobs} workers in ${((Date.now() - began) / 1000).toFixed(1)} s (sum of builds ${times.reduce((n, [, t]) => n + t, 0).toFixed(1)} s)`,
