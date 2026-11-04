@@ -140,7 +140,7 @@ describe('Inside this game', () => {
       const old = fillPage(TEMPLATE, game);
       rows.push(`${id}: ${old.length} -> ${html.length} bytes (+${html.length - old.length}, ${(html.length / old.length).toFixed(2)}x)`);
     }
-    console.log(`Page size growth\n${rows.join('\n')}`);
+    console.warn(`Page size growth\n${rows.join('\n')}`);
     expect(rows.length).toBeGreaterThan(0);
   });
 });

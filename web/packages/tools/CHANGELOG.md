@@ -10,6 +10,7 @@ embroidery and 3D-printable and laser models.
 
 ### Added
 
+- `image/animatedGif`: a looping animated GIF from indexed frames that each carry their own VGA palette, as an FLI's do.
 - Shared game-building APIs: DOS disk writing, native character and text-screen builders, FLI clipping fades, route checks and the engine-backed simulator, perspective roads, photo processing, level previews, CMF arrangement effects and synthesis pieces.
 - Audio: native PCM WAV decoding and Node-only conversion of source audio to native VOC files.
 - Color: the original Library palette, reusable palette templates with hardware references, pixel-based color reduction, RGB and HSV helpers, and configurable ramps.
@@ -28,6 +29,7 @@ embroidery and 3D-printable and laser models.
 - Text-fit audits and level rendering live in the package.
 
 - Merging two background sets is much faster: finding blank block slots no longer re-serializes a block for every byte.
+
 ### Fixed
 
 - Indexed-pixel shifts that are invalid are rejected, and fractional flood-fill seeds are ignored.
