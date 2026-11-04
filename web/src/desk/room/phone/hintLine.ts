@@ -26,13 +26,18 @@ const recordBill = (cents: number) => {
   return cents;
 };
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
-/** The Giant reads a prompt for this long without a key before it hangs up. */
+/**
+ * The Giant waits this long without a key after he finishes a prompt before he hangs up. He talks slowly
+ * (about half a second a word), so the wait is counted from the end of what he says.
+ */
 const SILENCE_SECONDS = 45;
+const speakingSeconds = (text: string): number => Math.ceil(text.split(/\s+/).length * 0.55);
 
 /** Listen for a menu key while speaking; there is exactly one awaited key reader per prompt. */
-async function ask(line: CallLine, text: string): Promise<string> {
-  const key = line.nextKey(SILENCE_SECONDS);
+async function ask(line: CallLine, text: string, afterStart?: () => void): Promise<string> {
+  const key = line.nextKey(SILENCE_SECONDS + speakingSeconds(text));
   const speech = line.say(giant, text).then(() => undefined);
+  afterStart?.(); // say() puts "Connected" on the LCD; the bill goes back on it
   const first = await Promise.race([key, speech]);
   if (first !== undefined) {
     line.hush();
@@ -76,7 +81,7 @@ export async function hintLine(line: CallLine): Promise<void> {
     let node: HintNode = START;
     let spoken: string | undefined = nodeText(node);
     for (let round = 0; round < 500 && !line.signal.aborted; round++) {
-      const key = await ask(line, spoken);
+      const key = await ask(line, spoken, show);
       if (!key) {
         finish();
         await line.say(giant, HINT_LONG_BREAK).catch(() => undefined);
@@ -92,7 +97,9 @@ export async function hintLine(line: CallLine): Promise<void> {
         node = move.node;
         spoken = nodeText(node);
       } else if ('bill' in move) {
-        await line.say(giant, `${billSentence(dollars(recordBill(meter.checkpoint())))} ${HINT_BILL_TAIL}`);
+        const saying = line.say(giant, `${billSentence(dollars(recordBill(meter.checkpoint())))} ${HINT_BILL_TAIL}`);
+        show();
+        await saying;
         spoken = nodeText(node);
       } else {
         spoken = `${HINT_BAD_KEY} ${nodeText(node)}`;

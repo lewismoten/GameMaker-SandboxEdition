@@ -103,7 +103,7 @@ describe('the Hint Giant’s fictional hint line', () => {
   it('bills the next minute in full the instant it begins, not by the second', async () => {
     const p = phone(['1', '1', '1', '1'], 30000);
     const call = hintLine(p.line);
-    const amounts = () => p.status.mock.calls.map((c) => String(c[0])).filter((t) => t.startsWith('Pretend'));
+    const amounts = () => [...new Set(p.status.mock.calls.map((c) => String(c[0])).filter((t) => t.startsWith('Pretend')))];
     await vi.advanceTimersByTimeAsync(2000 + 30000 + 29000); // the ring, the consent key, 29 s of the first minute
     expect(amounts()).toEqual(['Pretend phone bill: $1.99']);
     await vi.advanceTimersByTimeAsync(32000); // 61 s into the call: the second minute began at 60 s
