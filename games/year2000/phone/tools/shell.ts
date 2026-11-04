@@ -49,11 +49,11 @@ function capsuleBoxes(b: number[]): { id: string; bbox: number[] }[] {
   const r = (b[3] - b[0]) / 2;
   const cx = (b[0] + b[3]) / 2;
   const cz = (b[2] + b[5]) / 2;
-  const q = r * 0.7;
-  const k = 0.4 * r;
+  const q = r * 0.7; // corners at 0.99 r: inside the circle
+  const k = 0.38 * r;
   return [
-    { id: 'capsule', bbox: [cx - r, b[1], cz - k, cx + r, b[4], cz + k] },
-    { id: 'capsule', bbox: [cx - k, b[1], cz - r, cx + k, b[4], cz + r] },
+    { id: 'capsule', bbox: [cx - 0.92 * r, b[1], cz - k, cx + 0.92 * r, b[4], cz + k] },
+    { id: 'capsule', bbox: [cx - k, b[1], cz - 0.92 * r, cx + k, b[4], cz + 0.92 * r] },
     { id: 'capsule', bbox: [cx - q, b[1], cz - q, cx + q, b[4], cz + q] },
   ];
 }

@@ -133,7 +133,7 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
   const door = rect(btIn.x0, btIn.z0, btIn.x1, btIn.z1, 3);
   {
     let tray: D3 = subtract3(union3(slabW(board(WALL), 0, hTray), slabW(bayOuter, 0, hTray)), slabW(board(FIT), FLOOR, hTray + 1), slabW(bayPocket, FLOOR, hTray + 1));
-    tray = union3(tray, ...v.holes.map(([x, z]) => cyl(x, z, Math.max(2.6, Math.min(4.6, roomAt(v, 'back', x, z, BACK_Y, -hTray))), 0, hTray)));
+    tray = union3(tray, ...v.holes.map(([x, z]) => cyl(x, z, Math.max(2.3, Math.min(4.6, roomAt(v, 'back', x, z, BACK_Y, -hTray))), 0, hTray)));
     // crush ribs that keep the holder from rattling: 0.6 mm off it when it sits centered
     const wTop = Math.min(hy1 - floorBottom, hTray - 0.2); // the tray ends at the board's back plane; a taller holder is held by the cover's ribs above
     const ribs: D3[] = [];
@@ -145,7 +145,7 @@ export function buildShell(v: Variant): { parts: ShellPart[]; bay: { holder: num
       ribs.push(slabW(rect(xr, hz1 + 0.6, xr + 1.2, hz1 + 1.8, 0.3), FLOOR - 0.5, wTop));
       ribs.push(slabW(rect(xr, pz0 - 0.5, xr + 1.2, hz0 - 0.2, 0.3), FLOOR - 0.5, wTop)); // on the divider; stands off 0.2 mm from the holder's end
     }
-    const cuts: D3[] = [...notchesFor(v, 'back'), ...v.holes.map(([x, z]) => cyl(x, z, 1.7, -1, hTray + 1))];
+    const cuts: D3[] = [...notchesFor(v, 'back'), ...v.holes.map(([x, z]) => cyl(x, z, 1.6, -1, hTray + 1))];
     cuts.push(slabW(door, -1, FLOOR + 1)); // the door's window
     cuts.push(slabW(rect(wx0, H + FIT - 0.1, wx1, pz0 + 0.1, 0.3), -3.8 - floorBottom, hTray + 1)); // the leads' slot through the divider, open at the top
     if (v.wheel) {

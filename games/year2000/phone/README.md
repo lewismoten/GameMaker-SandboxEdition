@@ -24,8 +24,8 @@ what he would build from it, in two sizes. Both names are on the silkscreen (fro
 | ----- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
 | Where | this folder                                                                                                                    | `deluxe/` (the earlier Rev C: sources restored from commit `7e8548a11`, see `deluxe/README-earlier-rev-c.md`) |
 | Board | 99 x 99 mm, the cheapest board tier                                                                                            | 73.66 x 175.26 mm                                                                                             |
-| Parts | PIC16F628A, clone MAX7219, 6 mm tactile switches, ZEPPP programmer; the battery holder is off the board, in the shell's handle | the long board with the 4 x AAA holder on it                                                                  |
-| Shell | front frame, back tray, battery handle, battery door                                                                           | front frame, back tray (battery door in its floor)                                                            |
+| Parts | PIC16F628A, clone MAX7219, 6 mm tactile switches, ZEPPP programmer; the battery holder and the microphone capsule are off the board, in the shell's battery bay | the long board; the 4 x AAA holder and the microphone are in the bay                                                                  |
+| Shell | front cover, back tray with the battery bay, battery door                                                                        | front cover, back tray with the bay (battery door in its floor)                                                            |
 
 Each folder rebuilds on its own (`deluxe/tools/` has its own generators and shares `tools/silkart.py` and `tools/dex_art.py`).
 The rest of this file describes the Junior Lab Edition; the Deluxe Model differs in its board and its on-board battery holder.
@@ -38,9 +38,24 @@ It writes one binary STL per printed part, in printing orientation, to `<variant
 overhang) and merges every part into `viewer/parts.json` + `parts.bin`, in the groups `shell`, `dial` and `battery`, so the desk's viewer
 explodes the case around the board with no viewer code.
 
-- **Front frame**: an open bezel. The board is the face, so its silkscreen (title, lines, orbits, digits) stays visible. Corner posts take M3 screws.
-- **Back tray**: walls and a floor with windows over the back's QR codes and Dex. The Junior Lab Edition adds a **battery handle** below the board's
-  bottom edge; the Deluxe Model's tray has the battery door in its floor.
+- **One continuous case.** The case is longer than the board: it extends past the board's bottom end into a **battery bay** (the Junior Lab case is
+  103.8 x 178.9 mm, the Deluxe 78.5 x 253.2 mm; the board is 99 x 99 and 73.66 x 175.26). The bay, from the board's edge down: a 3 mm divider wall with a slot
+  for the leads, the 4 x AAA holder lying flat on the floor (60 x 52 x 17 mm Junior Lab, 53 x 50 x 13 mm Deluxe, with 1 mm of room all round and crush
+  ribs that stand 0.6 mm off it), then the microphone's mouthpiece. The holder is NOT on the board and not on its back; its two leads run along the back
+  of the board, through the divider's slot and drop into the holder's end. The board is held by the corner screw bosses, as before.
+- **Front cover** (replaces the open bezel): covers the board and the bay. Openings only where needed: the **dial's well** (the plate, cam and finger stop are
+  separate printed parts that drop in; the well is as wide as the finger stop needs), a window over the two 7-segment displays (a clear or tinted insert is
+  optional and not modeled), the TALK and CLEAR caps (flush-ish **caps through 10.8 mm holes**, each with a flange under the cover that holds it in and a
+  stem standing 0.5 mm proud), an earpiece grille of 2 mm holes over the speaker (the speaker stays on the board under the cover in this version), the IR
+  parts' notches, and the **mouthpiece grille** (seven 1.4 mm holes) over the microphone. THE POCKET TELEPHONE is engraved 0.5 mm into the face over the bay.
+  The front silkscreen is hidden under the cover. It prints face down on the bed, so nothing overhangs.
+- **Microphone**: the 9.7 mm electret capsule is in a printed collar that hangs from the cover's underside past the holder, its face 0.6 mm under the grille.
+  On the board MK1 is two wire pads (+ is marked on the silkscreen, pad 1, the bias side); a twisted pair runs from them along the back of the board,
+  through the divider's slot and over the holder to the capsule.
+- **Volume wheel**: RV1 is a side thumbwheel pot (Deluxe 10k, Junior Lab 100k with R20 changed to 33k so the top of the wheel's range matches the old fixed level
+  within about 0.3 dB). Its 10 mm wheel stands 1.5 mm past the board's edge and shows through a slot in the tray's side wall (a printed wheel cap is not made).
+- **Back tray**: closed (the QR codes and Dex are seen when the case is open). Only the battery door, the volume slot, the screw holes and the divider's slot
+  open it. It is one piece with the bay.
 - **Battery box and cells**: a box with four off-brand AAA cells ("ZORP", invented), each with raised lettering "AAA 1.5V", and a **battery door**
   (plate, plug and finger notch).
 - **Dial group**: the rotary dial plate (ten finger holes), the **pulse cam and off-normal cam** (ten ramped teeth that press the 6 mm tactile switches
@@ -60,8 +75,7 @@ back tray floor to a lead 9.7 / 18.0, tightest of all 1.06 (stop foot to a lead)
 and the caps cover theirs, so those pairs are not counted. The check changed the shell: corner screw bosses and the pivot post, finger stop and spring are
 sized from the room the stubs and parts leave (the spring is thinner and shorter, and the Deluxe's pivot is a 1.5 mm pin because its two big switches
 sit 3.7 mm apart at the dial's center), the stop moves out where a lead is in its way, and a part that overhangs the board's edge (the Deluxe's speaker)
-gets a notch in the frame. The Deluxe's battery holder had been drawn on the back against the board, inside the crystal and capacitor C5; it is now
-drawn held 6.3 mm off the board, over the tallest parts under it. Not shown in the viewer: the stubs themselves.
+gets a notch in the frame. The Deluxe's battery holder had been drawn on the back against the board; it now lies in the battery bay, off the board. Not shown in the viewer: the stubs themselves.
 
 Nothing was printed. The clearances (0.3 mm), the cam's travel (0.3 mm of press) and the glued feet are starting guesses. In Rev C the two dial switches
 sit only about 1.5 mm apart in radius from the dial's center, so the pulse teeth may brush the off-normal switch: print the cam first and check.
@@ -151,7 +165,7 @@ instead of 22 k, so about the same signal).
 
 **Easier to build.** Through-hole only. Resistors are standard 1/4 W parts lying flat on 7.62 mm holes. Only the PIC and the decoder
 sit in sockets (the PIC is the part you program; the decoder is one of three look-alike chips). The battery holder is not on the board:
-it lives in the shell's handle and two wires reach the board.
+it lies in the shell's battery bay and two wires reach the board.
 
 ## Theory of operation
 
@@ -233,7 +247,7 @@ pads are 19 mm below its center. Back copper may cross those areas.
 Power and ground use 0.5 mm tracks (no zone fill is possible without KiCad's Python, so there is no ground pour). Silkscreen art (orbit rings, rays around
 the dial, a YEAR 2000 badge, lettering) is clipped away from pads by the generator. The bottom edge holds TALK, the battery pads, the
 microphone, the programming header and CLEAR. The battery holder (60 x 52 x 17 mm, typical) is not on the board: it goes in the shell's
-handle below the bottom edge, with its leads soldered to the two BT pads. Preview images: `out/front.png` and `out/back.png` after `tools/export3d.sh`.
+battery bay below the bottom edge, with its leads soldered to the two BT pads. Preview images: `out/front.png` and `out/back.png` after `tools/export3d.sh`.
 
 ## Build order for a beginner
 

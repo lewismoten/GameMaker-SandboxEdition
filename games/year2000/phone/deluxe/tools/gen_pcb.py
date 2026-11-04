@@ -258,6 +258,29 @@ def box_ok(b, margin=0.45):
     return not any(overlaps(b, t) for t in TAKEN)
 
 
+RESERVED = {}      # (layer, text) -> (x, y): back lines that must not lose their place to the reference and value text
+
+
+def _reserve_back_lines():
+    """The back's title and credit lines take their spots before any reference or value text, so a crowded back cannot push them off the board."""
+    for s_, y_, size_ in [('THE PHONE OF THE FUTURE', 12.0, 1.9), ('rev C  untested design', 15.0, 0.9), ('Claude Sonnet 5.5 + KiCad', 17.0, 0.9), ('THE POCKET TELEPHONE', 20.0, 1.1), ('NO. 1 DELUXE MODEL', 22.6, 0.9)]:
+        w_ = len(s_) * size_ * 0.85 + 0.3
+        for d in [0] + [k * 1.0 for k in range(1, 40)]:
+            hit = None
+            for dx, dy in ((0, 0),) if d == 0 else ((d, 0), (-d, 0), (0, d), (0, -d), (d, d), (-d, d), (d, -d), (-d, -d)):
+                b = (CX + dx - w_ / 2, y_ + dy - size_ / 2 - 0.1, CX + dx + w_ / 2, y_ + dy + size_ / 2 + 0.1)
+                if box_ok(b):
+                    TAKEN.append(b)
+                    hit = (CX + dx, y_ + dy)
+                    break
+            if hit:
+                RESERVED[("B.SilkS", s_)] = hit
+                break
+
+
+_reserve_back_lines()
+
+
 def _place_urls():
     """Each QR code's address in 1.0 mm letters, reserved before any reference or value text so it sits right beside its code:
     a stack of lines below it, above it, or to its right or left, shifted along the code until clear of pads and other text."""
@@ -477,6 +500,9 @@ def clear(x, y, margin=0.55):
 
 def label(layer, s, x, y, size, mirror=False, thick=None):
     """Silk text near (x, y), moved to the nearest spot clear of pads and other silk."""
+    if (layer, s) in RESERVED:
+        rx, ry = RESERVED.pop((layer, s))
+        return txt(layer, s, rx, ry, size, mirror, thick)
     w = len(s) * size * 0.85 + 0.3
     for d in [0] + [k * 1.0 for k in range(1, 40)]:
         for dx, dy in ((0, 0),) if d == 0 else ((d, 0), (-d, 0), (0, d), (0, -d), (d, d), (-d, d), (d, -d), (-d, -d)):

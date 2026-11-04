@@ -77,7 +77,7 @@ add("SW4", "Switch:SW_Push", "TALK", "tact", "F", {"1": V5, "2": "TALK_H"}, desc
 add("SW5", "Switch:SW_Push", "CLEAR", "tact", "F", {"1": "MCLR", "2": GND}, desc="6 mm tactile switch")
 # ---- battery ----------------------------------------------------------------------------------
 add("BT1", "Device:Battery", "4xAAA", "batt", "B", {"1": "VBAT", "2": GND},
-    desc="4 x AAA battery holder with cover, ON/OFF switch and wire leads (lives in the shell's handle), leads soldered to two pads")
+    desc="4 x AAA battery holder with cover, ON/OFF switch and wire leads (lies in the shell's battery bay), leads soldered to two pads")
 # ---- passives ---------------------------------------------------------------------------------
 R(1, "10k", V5, "MCLR", "MCLR pull-up")
 R(2, "100k", "TALK_H", GND, "TALK line pull-down")
