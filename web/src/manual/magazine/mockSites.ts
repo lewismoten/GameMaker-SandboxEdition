@@ -22,8 +22,6 @@ export interface MockSite {
   updated?: string;
 }
 
-export const MOCK_REGISTRY = registry;
-
 export function mockSite(id: string): MockSite {
   const s = registry.sites.find((x) => x.id === id);
   if (!s) throw new Error(`mockSites.json has no site "${id}"`);

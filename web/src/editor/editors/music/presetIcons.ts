@@ -851,9 +851,6 @@ export function presetRows(id: string, group: string): string[] {
   return ICONS[key] ?? ICONS[BY_GROUP[group] ?? 'note'] ?? ICONS.note;
 }
 
-/** The color a palette letter stands for. */
-export const iconColor = (ch: string): string | undefined => PALETTE[ch];
-
 /**
  * The picture for a preset: an inline 20x20 SVG (one rect per run of a color), hidden from
  * screen readers. `back` fills the tile behind it (a group's color).

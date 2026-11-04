@@ -109,11 +109,6 @@ export async function tagCheckpoint(id: string, stamp: string, tag: string): Pro
   return list;
 }
 
-/** A version as a game directory, for looking at without touching the open game. */
-export function versionFiles(v: Version, make: (entries: [string, Uint8Array][]) => GameFiles): GameFiles {
-  return make([...v.entries()]);
-}
-
 /** What restoring changes: new bytes per file, null where the file did not exist at the checkpoint. Untouched files are left out. */
 export function restoreChanges(current: GameFiles, version: Version): Map<string, Uint8Array | null> {
   const out = new Map<string, Uint8Array | null>();
