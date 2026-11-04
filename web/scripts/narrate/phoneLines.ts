@@ -1,6 +1,6 @@
 // The wall phone's lines for scripts/narrate.ts (`--lines phone`) and voice:check: one clip per
 // sentence of src/audio/phone/phoneScript.ts, plus the spliced number clips (the talking clock's
-// hours, minutes and seconds; Teddy's dollars and cents), each in its caller's voice (phoneCast.ts).
+// hours, minutes and seconds; the Hint Giant's dollars and cents), each in its caller's voice (phoneCast.ts).
 // Clips go in public/phone/voice/<caller>/<id>.ogg. Pure, no models.
 import { CAST } from '../../src/audio/phone/phoneCast';
 import { SAID, SCRIPT } from '../../src/audio/phone/phoneScript';
@@ -11,10 +11,10 @@ import { numberWords } from './spoken';
 
 const range = (from: number, to: number, step = 1): number[] => Array.from({ length: Math.floor((to - from) / step) + 1 }, (_, i) => from + i * step);
 
-/** Every clip the phone's splices can ask for, in the talking clock's and Teddy's voices. */
+/** Every clip the phone's splices can ask for, in the talking clock's and the Hint Giant's voices. */
 function splicedParts(): (Part & { where: string; spoken?: string })[] {
   const tl = (id: string, text: string, spoken?: string) => ({ cast: 'time-lady', id, text, spoken, where: 'Time: spliced into the time of day' });
-  const tb = (id: string, text: string) => ({ cast: 'teddy', id, text, where: 'Hint line: spliced into the pretend bill' });
+  const tb = (id: string, text: string) => ({ cast: 'giant', id, text, where: 'Hint line: spliced into the pretend bill' });
   return [
     tl(tlId.tone, TIME_TONE),
     ...range(1, 59).map((n) => tl(tlId.n(n), numberWords(n))),

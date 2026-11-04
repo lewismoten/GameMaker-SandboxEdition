@@ -50,13 +50,16 @@ calls The Sandbox BBS and types for the tour, then puts back what the call chang
   (`newsClipping.ts`), the clock (`wallClock.ts`; its glow-in-the-dark paint charges and fades in
   `lumeCharge.ts`), the door (`roomDoor.ts`), the waste basket (`wasteBasket.ts`), the wall phone
   (`room/phone/`: `phone.ts`, who answers in `calls.ts`, `dialPad.ts`, `sounds.ts`;
-  `hintBill.ts` meters fictional hint-line listening time at 199 cents per minute, with
-  idempotent checkpoints/hangup and a Desk-backed `gm-hint-phone-bill` balance;
-  `hintLine.ts` answers 1-900-555-0144 (Hints speed dial) with Teddy's saving, map,
-  enemy and free-help tips. A free prompt asks for 1 before starting pretend charges;
-  0, inactivity, six menu rounds, hangup, page exit or leaving the Desk stops the meter.
-  Desk disposal emits `gm-desk-close`, which hangs up an off-hook wall phone. The call's abort
-  signal also cancels speech and key waits; menu keys can interrupt the spoken prompt.
+  `hintBill.ts` bills fictional hint-line time per minute, up front: a full minute's price (199
+  cents) at connect and another the instant each new minute begins (0:01 owes one minute, 1:00 owes
+  two), never by the second; the balance (a `gm-hint-phone-bill` whole-minute count in milliseconds)
+  stops at 50 minutes, $99.50, under the spoken bill's $99.99; `hintTree.ts` is the phone tree and
+  `hintLine.ts` answers 1-900-555-0144 (Hints speed dial) as the Hint Giant: live counselors are
+  unavailable, so a slow automated menu (8 games a page, 9 for more, # the bill, * the first page,
+  0 hang up) leads to each game's three hints (1 next, 2 menu, 0 repeat). A free prompt asks for 1
+  before starting pretend charges; 0, a silent minute, hangup, page exit or leaving the Desk stops
+  the meter. Desk disposal emits `gm-desk-close`, which hangs up an off-hook wall phone. The call's
+  abort signal also cancels speech and key waits; menu keys can interrupt the spoken prompt.
   The cumulative fictional bill advances “An itemized bark” at $10; progress is in pretend
   cents and the bill itself continues past that threshold) and its notes
   (`phoneNotes.ts`), the shareware catalog (`catalog.ts`: a three-column paper catalog in the style of 1990s shareware disk lists, with a disk number per game, Freeware and Shareware sections, a price per disk and an order form) and the magazine lying on the desk

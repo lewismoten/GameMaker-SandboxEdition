@@ -3,6 +3,8 @@
 // so phoneClips.ts can list exactly what needs a recorded clip (public/phone/voice/) and a test can
 // fail when one is missing. Pure data; the cast (voices) is phoneCast.ts.
 
+import { HINT_GAMES, PAGE_SIZE } from './hintGames';
+
 /** Showtimes as written, and as said (a colon in "1:10" would be read as a ratio). */
 export const MOVIES: { title: string; rating: string; times: string; saidRating: string; saidTimes: string }[] = [
   {
@@ -41,6 +43,19 @@ export const movieInfo = (i: number): string => {
   return `${title}. Rated ${rating}. Today’s showtimes: ${times}.`;
 };
 
+/** The game menu, one text per page of PAGE_SIZE games. */
+export function hintMenuTexts(): string[] {
+  const pages: string[] = [];
+  for (let i = 0; i < HINT_GAMES.length; i += PAGE_SIZE)
+    pages.push(
+      hintMenuPage(
+        HINT_GAMES.slice(i, i + PAGE_SIZE).map((g) => g.title),
+        i + PAGE_SIZE < HINT_GAMES.length,
+      ),
+    );
+  return pages;
+}
+
 export const FAMILIES: { voice: string; text: string }[] = [
   { voice: 'kowalski', text: 'Hi! You’ve reached the Kowalskis. We can’t come to the phone right now, so leave a message after the beep!' },
   { voice: 'rick', text: 'Yo, this is Rick. I’m not here, or maybe I am and I’m screening. Leave a message.' },
@@ -53,19 +68,22 @@ export const YELLS: { voice: 'mom' | 'dad'; text: string }[] = [
   { voice: 'mom', text: 'Hello? Who is this? Oh, for crying out loud, it is that modem again! I have been trying to call Grandma all evening!' },
 ];
 
-export const HINTS: Record<string, string> = {
-  '1': 'Save with F5 before trying a tricky stretch. Use different save slots so one unfortunate landing does not become family history. Teddy saves before jumping. Gwinn saves after saying, watch this.',
-  '2': 'Open the game box and choose Level Maps. Follow the marked start and exits. Dashed wrap edges join: leaving one side can bring you back on the other. Teddy calls this geography with a revolving door.',
-  '3': 'Watch an enemy before charging in. Look for a gap in its movement, keep an escape route, and check whether your character can shoot. A boss may have another stage. Teddy recommends waiting until the victory is actually victorious.',
-  '4': 'The game box may include a hint book, and the walkthrough shows a route through the game. Those are free. Asking for help is clever. Paying a corgi to tell you where the free help lives is extremely 1994.',
-};
-
-export const HINT_KENNEL = "Teddy's Hint Kennel!";
+// The hint line: an automated phone tree read by the Hint Giant, a big, slow, friendly recording
+// (Teddy's Hint Kennel owns the line; Teddy barks, so he does not talk). The tree is hintTree.ts.
+export const HINT_KENNEL = 'Hello, and thank you for calling Teddy’s Hint Kennel!';
+export const HINT_GIANT = 'I am the Hint Giant, and I talk nice and slow so nobody misses a thing.';
+export const HINT_AWAY = 'Our live game counselors are not available at this time. Please use our automated hint system, which is open all day and all night.';
 export const HINT_RATE =
-  'This game charges a fictional $1.99 per minute, never real money. Press 1 to start the meter, or 0 to leave free. Teddy accepts neither credit cards nor stolen sandwiches.';
-export const HINT_MENU = 'Press 1 for saving, 2 for maps, 3 for enemies, 4 for free help, 5 for the pretend bill, or 0 to hang up.';
+  'This game charges a fictional $1.99 per minute, never real money. Each minute is billed in full the moment it begins. Press 1 to start the meter, or 0 to leave free.';
+export const HINT_NEXT = 'Press 1 for the next hint, 2 for the game menu, or 0 to hear it again.';
+export const HINT_LAST = 'That was the last hint. Press 2 for the game menu, or 0 to hear it again.';
 export const HINT_BILL_TAIL = 'Gwinn has offered to pay in lint. The telephone company is considering it.';
-export const HINT_BAD_KEY = 'That key leads to the biscuit cupboard. The cupboard has declined to comment. Try 1 through 5, or 0 to leave.';
+export const HINT_BAD_KEY = 'I do not know that button yet. Please try again.';
+export const HINT_BYE = 'Thank you for calling. Come back when you are stuck again. Goodbye!';
+export const HINT_LONG_BREAK = 'Are you still there? I will hang up now. Goodbye!';
+export const hintIntro = (title: string): string => `Hints for ${title}.`;
+export const hintMenuPage = (titles: string[], more: boolean): string =>
+  `${titles.map((t, i) => `For ${t}, press ${i + 1}.`).join(' ')} ${more ? 'For more games, press 9.' : 'To go back to the first games, press 9.'} For my pretend phone bill, press pound. To hang up, press 0.`;
 /** The one sentence of the hint line that carries an amount (clips are spliced for it; see phoneClips.ts). */
 export const BILL_LEAD = "Your parents' pretend phone bill is";
 export const billSentence = (dollars: string): string => `${BILL_LEAD} ${dollars}.`;
@@ -160,18 +178,29 @@ export const SCRIPT: { id: string; voice: string; where: string; text: string }[
   ...MOVIES.map((_, i) => ({ id: `movies-${i + 1}`, voice: 'movies', where: `Movie line: press ${i + 1}`, text: movieInfo(i) })),
   ...FAMILIES.map((f) => ({ id: `machine-${f.voice}`, voice: f.voice, where: 'An answering machine (by number)', text: f.text })),
   ...YELLS.map((y, i) => ({ id: `yell-${i + 1}-${y.voice}`, voice: y.voice, where: 'Picking up the extension during a BBS call', text: y.text })),
-  { id: 'teddy-kennel', voice: 'teddy', where: 'Hint line: answers', text: HINT_KENNEL },
-  { id: 'teddy-rate', voice: 'teddy', where: 'Hint line: the greeting', text: HINT_RATE },
-  { id: 'teddy-menu', voice: 'teddy', where: 'Hint line: the menu', text: HINT_MENU },
-  { id: 'teddy-bill-tail', voice: 'teddy', where: 'Hint line: press 5', text: HINT_BILL_TAIL },
-  { id: 'teddy-bad-key', voice: 'teddy', where: 'Hint line: a wrong key', text: HINT_BAD_KEY },
-  ...Object.entries(HINTS).map(([k, text]) => ({ id: `teddy-hint-${k}`, voice: 'teddy', where: `Hint line: press ${k}`, text })),
+  { id: 'giant-hello', voice: 'giant', where: 'Hint line: answers', text: `${HINT_KENNEL} ${HINT_GIANT}` },
+  { id: 'giant-away', voice: 'giant', where: 'Hint line: no live counselors', text: HINT_AWAY },
+  { id: 'giant-rate', voice: 'giant', where: 'Hint line: the rate', text: HINT_RATE },
+  { id: 'giant-bill-tail', voice: 'giant', where: 'Hint line: press pound', text: HINT_BILL_TAIL },
+  { id: 'giant-bad-key', voice: 'giant', where: 'Hint line: a wrong key', text: HINT_BAD_KEY },
+  { id: 'giant-bye', voice: 'giant', where: 'Hint line: press 0 at the game menu', text: HINT_BYE },
+  { id: 'giant-long-break', voice: 'giant', where: 'Hint line: nobody pressed anything', text: HINT_LONG_BREAK },
+  { id: 'giant-next', voice: 'giant', where: 'Hint line: after each hint', text: HINT_NEXT },
+  { id: 'giant-last', voice: 'giant', where: 'Hint line: after the last hint', text: HINT_LAST },
+  ...hintMenuTexts().map((text, i) => ({ id: `giant-menu-${i + 1}`, voice: 'giant', where: `Hint line: game menu, page ${i + 1}`, text })),
+  ...HINT_GAMES.flatMap((g) => [
+    { id: `giant-${g.id}-intro`, voice: 'giant', where: `Hint line: ${g.title}, welcome`, text: hintIntro(g.title) },
+    ...g.hints.map((text, i) => ({ id: `giant-${g.id}-${i + 1}`, voice: 'giant', where: `Hint line: ${g.title}, hint ${i + 1}`, text })),
+  ]),
 ];
 
 /** What the text-to-speech is handed where a sentence's written words would be misread. */
 export const SAID: Record<string, string> = {
   [TIME_LEAD]: 'Riverbend Savings and Loan time and temperature.',
-  'Save with F5 before trying a tricky stretch.': 'Save with F five before trying a tricky stretch.',
+  'If THE END will not open, press F2.': 'If THE END will not open, press F two.',
+  'Press F2 to tip out the coffee can and see how much money you have.': 'Press F two to tip out the coffee can and see how much money you have.',
+  'Press F2 to see what you have.': 'Press F two to see what you have.',
+  'Press F2 to see your energy.': 'Press F two to see your energy.',
   'This game charges a fictional $1.99 per minute, never real money.':
     'This game charges a fictional one dollar and ninety-nine cents per minute, never real money.',
   'Currently in Pittsburgh, light snow, and 28 degrees.': 'Currently in Pittsburgh, light snow, and twenty-eight degrees.',

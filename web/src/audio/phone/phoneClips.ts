@@ -61,7 +61,7 @@ function timeClips(s: string): ClipPath[] | undefined {
   return ids.map((id) => path({ cast: 'time-lady', id }));
 }
 
-// the pretend bill, said by Teddy: lead-in + dollars + cents ("$1.99": one dollar and ninety-nine cents)
+// the pretend bill, said by the Hint Giant: lead-in + dollars + cents ("$1.99": one dollar and ninety-nine cents)
 export const tbId = {
   lead: 'tb-lead',
   n: (n: number) => `tb-n${n}`,
@@ -82,7 +82,7 @@ function billClips(s: string): ClipPath[] | undefined {
   const ids: string[] = [tbId.lead];
   if (dollars || !cents) ids.push(tbId.n(dollars), dollars === 1 ? tbId.dollar : tbId.dollars);
   if (cents) ids.push(...(dollars ? [tbId.and] : []), tbId.n(cents), cents === 1 ? tbId.cent : tbId.cents);
-  return ids.map((id) => path({ cast: 'teddy', id }));
+  return ids.map((id) => path({ cast: 'giant', id }));
 }
 
 /** Who plays a whole line: the caller of the fixed line, or of a spliced one. */
@@ -91,8 +91,9 @@ export function castOf(text: string): string | undefined {
   if (line) return line.voice;
   const first = sentences(text)[0] ?? '';
   if (first === TIME_LEAD || TIME.test(first)) return 'time-lady';
-  if (first.startsWith(`${BILL_LEAD} $`) || first === "Teddy's Hint Kennel!") return 'teddy';
-  return undefined;
+  if (first.startsWith(`${BILL_LEAD} $`)) return 'giant';
+  // a line made of fixed sentences (a hint and the choices after it): its first sentence names the caller
+  return SCRIPT.find((l) => sentences(l.text)[0] === first)?.voice;
 }
 
 /**

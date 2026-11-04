@@ -1,7 +1,7 @@
 // Who plays each caller on the wall phone: a voice sample or Kokoro stock voice, shifted in pitch and
 // speed, the same way the tour's hosts are cast (HOSTS in src/tour/steps.ts, scripts/narrate.ts).
-// A character keeps one voice everywhere: Teddy is the tour's Teddy voice (Scroobie, up five, a
-// touch faster; the tour never uses it because he barks), Mom and Dad also yell from the extension.
+// A character keeps one voice everywhere: the Hint Giant is the tour's slow Scroobie voice (its gentle giant),
+// two semitones down, slow, so the pay-per-minute line rings up minutes. Mom and Dad also yell from the extension.
 // Lewis's own voice is only for Doc Leo, so nobody here uses it.
 
 export interface CastVoice {
@@ -14,7 +14,7 @@ export interface CastVoice {
 }
 
 export const CAST: Record<string, CastVoice> = {
-  dispatcher: { who: '911 dispatcher', sample: 'kokoro:af_nicole', semitones: 0, tempo: 1.05 },
+  dispatcher: { who: '911 dispatcher (brisk and clear, not soft)', sample: 'kokoro:am_liam', semitones: 0, tempo: 1.08 },
   receptionist: { who: 'Linda, Three Rivers Insurance', sample: 'kokoro:af_sarah', semitones: 1, tempo: 1.1 },
   mom: { who: 'Mom', sample: 'kokoro:af_heart', semitones: 0, tempo: 1.05 },
   dad: { who: 'Dad', sample: 'olden-mon', semitones: -1, tempo: 1.12 },
@@ -29,5 +29,5 @@ export const CAST: Record<string, CastVoice> = {
   kowalski: { who: 'The Kowalskis’ machine', sample: 'kokoro:af_river', semitones: 0, tempo: 1.05 },
   rick: { who: 'Rick’s machine', sample: 'kokoro:am_eric', semitones: 0, tempo: 1.08 },
   henderson: { who: 'The Hendersons’ machine', sample: 'kokoro:am_echo', semitones: 0, tempo: 1 },
-  teddy: { who: 'Teddy, the Hint Kennel', sample: 'scroobie', semitones: 5, tempo: 1.12 },
+  giant: { who: 'The Hint Giant, the Hint Kennel’s automated line', sample: 'scroobie', semitones: -2, tempo: 0.9 },
 };
