@@ -3,6 +3,7 @@
 import { h } from '../core/ui';
 import type { Project } from '../core/project';
 import { openInEditor, sceneUses, scriptUses } from '../core/uses';
+// (Uses, below, is the other direction: the files a scene or map is made of.)
 
 /** The line under the file's name: where it is used, each a link, or a tip when nothing uses it. */
 export function usedByLine(project: Project, file: string): HTMLElement {
@@ -53,6 +54,27 @@ export function usedByLine(project: Project, file: string): HTMLElement {
   };
   show(false);
   return line;
+}
+
+/** "Uses" for a list of files: each a link that opens it (so the breadcrumb and Back work), or nothing when none exist. */
+export function usesLine(project: Project, files: readonly string[]): HTMLElement | null {
+  const seen = new Set<string>();
+  const found = files.filter((f) => f && project.files.has(f) && !seen.has(f.toLowerCase()) && !!seen.add(f.toLowerCase()));
+  if (!found.length) return null;
+  const line = h('p', { class: 'meta used-by uses' }, 'Uses ');
+  found.forEach((f, i) => {
+    if (i) line.append(', ');
+    line.append(h('button', { class: 'used-by-link', title: `Open ${f}`, onclick: () => openInEditor(project, f) }, f));
+  });
+  line.append('.');
+  return line;
+}
+
+/** What a map is played with: the block sets and monsters of the scenes that use it. */
+export function mapUsesLine(project: Project, file: string): HTMLElement | null {
+  const scenes = project.game().scenes;
+  const files = sceneUses(project, file).flatMap((u) => (scenes[u.scene!]?.files ?? []).filter((f) => /\.(bbl|mon)$/i.test(f)));
+  return usesLine(project, files);
 }
 
 /** How many uses the line names before "and N more". */
