@@ -27,7 +27,7 @@
     },
     {
       "id": "carry",
-      "q": "Do hit points carry from one level to the next?",
+      "q": "How do I keep my hero's hit points from one level to the next?",
       "scene": 3,
       "x": 33,
       "y": 19,
@@ -39,14 +39,6 @@
       "scene": 4,
       "x": 31,
       "y": 19,
-      "level": 3
-    },
-    {
-      "id": "past-full",
-      "q": "Can a heart give my hero more than he started with?",
-      "scene": 4,
-      "x": 26,
-      "y": 17,
       "level": 3
     },
     {
