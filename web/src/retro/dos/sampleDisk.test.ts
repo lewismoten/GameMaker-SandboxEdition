@@ -1,4 +1,4 @@
-// The Sample Disk lists the eight Starters, each in its own 8.3 folder with a .GAM file.
+// The Sample Disk lists the built Starters, each in its own 8.3 folder with a .GAM file.
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { CatalogEntry } from '../../project/files';
@@ -24,9 +24,9 @@ describe('the Sample Disk', () => {
   const catalog = [...BUILT].reverse().map((id) => entry(id));
   const folders = sampleFolders(catalog);
 
-  it('lists the eight Starters in learning order', () => {
+  it('lists every built Starter in learning order', () => {
     expect(folders.map((f) => f.entry.id)).toEqual(BUILT);
-    expect(folders).toHaveLength(8);
+    expect(folders.length).toBeGreaterThanOrEqual(8);
   });
 
   it('puts only the first three on the diskette, all of them on the CD', () => {
@@ -36,7 +36,7 @@ describe('the Sample Disk', () => {
 
   it('gives each a different 8.3 folder name', () => {
     const names = folders.map((f) => f.dir);
-    expect(names).toEqual(['FIRSTSTP', 'KEYSDOOR', 'MONSTERS', 'ROOMS', 'COINS', 'HAZARDS', 'POWERUP', 'THROWIT']);
+    expect(names.slice(0, 8)).toEqual(['FIRSTSTP', 'KEYSDOOR', 'MONSTERS', 'ROOMS', 'COINS', 'HAZARDS', 'POWERUP', 'THROWIT']);
     expect(new Set(names).size).toBe(names.length);
     for (const n of names) expect(n).toMatch(/^[A-Z0-9_]{1,8}$/);
   });
@@ -60,7 +60,7 @@ describe('the Sample Disk', () => {
       { ...entry('first-steps'), dosName: undefined, id: 'long-new-starter-2' },
     ] as CatalogEntry[];
     const names = sampleFolders([...catalog, ...later]).map((f) => f.dir);
-    expect(new Set(names).size).toBe(10);
+    expect(new Set(names).size).toBe(catalog.length + 2);
     for (const n of names) expect(n).toMatch(/^[A-Z0-9_~]{1,8}$/);
   });
 });
