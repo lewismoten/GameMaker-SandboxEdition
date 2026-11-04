@@ -75,8 +75,8 @@ def spec(kind, variant=""):
         return [box(0, 0, 0.3, 10.0, 4.6, 5.0, SILVER), box(0, -1.0, 5.3, 3.0, 2.0, 3.0, BLACK)]
     if kind == "trim":
         return [box(0, 0, 0.3, 9.5, 9.5, 4.9, BLUE), cyl(0, 0, 5.2, 4.0, 0.4, SILVER)]
-    if kind == "batt":     # 4 x AAA holder, stuck behind the dial; two wires to the pads
-        return [box(0, -63.5, 0.4, 52.0, 47.0, 13.0, GREY), box(-5.08, -20.0, 0.4, 1.4, 40.0, 1.4, RED), box(5.08, -20.0, 0.4, 1.4, 40.0, 1.4, BLACK)]
+    if kind == "batt":     # 4 x AAA holder, behind the dial, held 6.3 mm off the board: the tallest parts under it (C5) are 5.2 mm, and the shell keeps 1 mm from them; two wires to the pads
+        return [box(0, -63.5, 6.3, 52.0, 47.0, 13.0, GREY), box(-5.08, -20.0, 0.4, 1.4, 40.0, 1.4, RED), box(5.08, -20.0, 0.4, 1.4, 40.0, 1.4, BLACK)]
     raise KeyError(kind)
 
 

@@ -247,43 +247,101 @@ QR_SITE = (65.0, 47.0, 0.5)        # 33 modules = 16.5 mm
 QR_KEEP = [(QR_PARTS[0], QR_PARTS[1], QR_PARTS[0] + 18.1, QR_PARTS[1] + 18.1), (QR_SITE[0], QR_SITE[1], QR_SITE[0] + 16.6, QR_SITE[1] + 16.6)]
 
 
-def find_dex(rows=18, cols=16, reach=26.0, margin=1.2):
-    """Dex as big as fits on the back behind the dial: the largest pixel size (and then the spot nearest the dial's center) whose
-    16 x 18 pixel rectangle keeps `margin` mm from every pad, via and mounting hole, 4 mm from the QR codes (so the shell's windows stay apart),
-    and 1 mm from the board edge. Tracks are under solder mask, so silkscreen may cross them."""
-    obst = [(x, y, r + margin) for x, y, r in padpts] + [(x, y, 0.4 + margin) for v in vias.values() for x, y in v]
-    best = None
-    for k in range(40, 19, -1):             # pixel 2.0 mm down to 1.0 mm in 0.05 steps
+def dex_spot(limit, margin=0.45, max_loss=0.08, px_min=0.8, px_max=2.0):
+    """Dex as big as fits on the back: the largest pixel size (then the spot nearest the dial's center) where the 16 x 18 picture
+    stays inside the board and 3.3 mm from the QR codes (so the shell's windows stay apart), and where the pixels that would land
+    within `margin` mm of a pad, via or mounting hole (those pixels are left out, like the front's art clipped away from pads) are
+    at most `max_loss` of the picture and never an eye or the mouth. Tracks are under solder mask, so silkscreen may cross them.
+    Works on a 0.25 mm raster with summed-area tables. Returns (x, y, pixel mm, set of (row, col) left out) or None."""
+    g = 0.25
+    nx, ny = int(W / g) + 1, int(H / g) + 1
+    soft = [[0] * nx for _ in range(ny)]
+    hard = [[0] * nx for _ in range(ny)]
+
+    def paint(grid, x0, y0, x1, y1, circle=None):
+        for j in range(max(0, int(y0 / g)), min(ny, int(y1 / g) + 1)):
+            for i in range(max(0, int(x0 / g)), min(nx, int(x1 / g) + 1)):
+                if circle is None or math.hypot(i * g - circle[0], j * g - circle[1]) <= circle[2]:
+                    grid[j][i] = 1
+
+    for x, y, r in padpts:
+        paint(soft, x - r - margin, y - r - margin, x + r + margin, y + r + margin, (x, y, r + margin))
+    for v in vias.values():
+        for x, y in v:
+            paint(soft, x - 0.4 - margin, y - 0.4 - margin, x + 0.4 + margin, y + 0.4 + margin, (x, y, 0.4 + margin))
+    for q in QR_KEEP:
+        paint(hard, q[0] - 3.3, q[1] - 3.3, q[2] + 3.3, q[3] + 3.3)
+    paint(hard, 0, 0, W, 1.0)
+    paint(hard, 0, H - 1.0, W, H)
+    paint(hard, 0, 0, 1.0, H)
+    paint(hard, W - 1.0, 0, W, H)
+
+    def table(grid):
+        sat = [[0] * (nx + 1) for _ in range(ny + 1)]
+        for j in range(ny):
+            run = 0
+            for i in range(nx):
+                run += grid[j][i]
+                sat[j + 1][i + 1] = sat[j][i + 1] + run
+        return sat
+
+    ssat, hsat = table(soft), table(hard)
+
+    def count(sat, i0, j0, i1, j1):
+        return sat[j1 + 1][i1 + 1] - sat[j0][i1 + 1] - sat[j1 + 1][i0] + sat[j0][i0]
+
+    rows, cols = len(dex_art.ROWS), max(len(r) for r in dex_art.ROWS)
+    art = [(r, c, ch) for r, row in enumerate(dex_art.ROWS) for c, ch in enumerate(row) if ch in dex_art.TONES]
+    for k in range(int(px_max / 0.05), int(px_min / 0.05) - 1, -1):
         px = k * 0.05
-        w, h = cols * px, rows * px
+        w, h = int(math.ceil(cols * px / g)), int(math.ceil(rows * px / g))
         found = []
-        for ix in range(int(1.0 / 0.5), int((W - 1.0 - w) / 0.5) + 1):
-            for iy in range(int(1.0 / 0.5), int((H - 1.0 - h) / 0.5) + 1):
-                x0, y0 = ix * 0.5, iy * 0.5
-                if math.hypot(x0 + w / 2 - DIAL[0], y0 + h / 2 - DIAL[1]) > reach:
+        for j in range(0, ny - h):
+            for i in range(0, nx - w):
+                d = math.hypot(i * g + cols * px / 2 - DIAL[0], j * g + rows * px / 2 - DIAL[1])
+                if d > limit or count(hsat, i, j, i + w - 1, j + h - 1):
                     continue
-                if any(x0 - 4 < q[2] and x0 + w + 4 > q[0] and y0 - 4 < q[3] and y0 + h + 4 > q[1] for q in QR_KEEP):
-                    continue
+                x0, y0 = i * g, j * g
+                lost = set()
                 ok = True
-                for ox, oy, orr in obst:
-                    if ox + orr < x0 or ox - orr > x0 + w or oy + orr < y0 or oy - orr > y0 + h:
-                        continue
-                    if math.hypot(ox - min(max(ox, x0), x0 + w), oy - min(max(oy, y0), y0 + h)) < orr:
-                        ok = False
-                        break
+                for r, c, ch in art:
+                    cc = cols - 1 - c                       # the back is drawn mirrored
+                    pi0, pj0 = int((x0 + cc * px) / g), int((y0 + r * px) / g)
+                    pi1, pj1 = int((x0 + (cc + 1) * px - 1e-6) / g), int((y0 + (r + 1) * px - 1e-6) / g)
+                    if count(ssat, pi0, pj0, pi1, pj1):
+                        if ch in "em":
+                            ok = False
+                            break
+                        lost.add((r, c))
+                        if len(lost) > max_loss * len(art):
+                            ok = False
+                            break
                 if ok:
-                    found.append((math.hypot(x0 + w / 2 - DIAL[0], y0 + h / 2 - DIAL[1]), x0, y0))
+                    found.append((len(lost) * 3 + d, x0, y0, lost))
         if found:
-            found.sort()
-            best = (found[0][1], found[0][2], px)
-            break
+            found.sort(key=lambda t: t[0])
+            return (found[0][1], found[0][2], px, found[0][3])
+    return None
+
+
+def find_dex(reach=30.0):
+    best = dex_spot(reach)
+    print("Dex search (behind the dial):", None if best is None else best[:3], "left out:", None if best is None else len(best[3]), "pixels")
+    anywhere = dex_spot(1e9)
+    print("Dex search (anywhere on the back):", None if anywhere is None else anywhere[:3])
     return best
 
 
-DEX_AT = find_dex() or (17.5, 65.5, 0.8)
+_dex = find_dex() or (17.5, 65.5, 0.8, set())
+DEX_AT, DEX_SKIP = _dex[:3], _dex[3]
 DEX_W, DEX_H = 16 * DEX_AT[2], 18 * DEX_AT[2]
 print("Dex: pixel %.2f mm, %.1f x %.1f mm at (%.1f, %.1f)" % (DEX_AT[2], DEX_W, DEX_H, DEX_AT[0], DEX_AT[1]))
 TAKEN.append((DEX_AT[0] - 0.3, DEX_AT[1] - 0.3, DEX_AT[0] + DEX_W + 0.3, DEX_AT[1] + DEX_H + 0.3))   # reference and value text keep out of it
+TAKEN += [(q[0] - 0.3, q[1] - 0.3, q[2] + 0.3, q[3] + 0.3) for q in QR_KEEP]   # and the QR codes (their labels are placed later)
+for _dk in range(1, 11):       # the dial's big digits are placed later, but reference and value text keep out of their spots
+    _a = math.radians((120 - 30 * (_dk + 1)) % 360)
+    _x, _y = DIAL[0] + RING_R * math.sin(_a), DIAL[1] - RING_R * math.cos(_a)
+    TAKEN.append((_x - 2.0, _y - 2.4, _x + 2.0, _y + 2.4))
 
 
 def box_ok(b, margin=0.45):
@@ -569,7 +627,7 @@ for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SI
     QR_INFO["parts" if qtext == PARTS_URL else "site"] = dict(x=qx, y=qy, size=round(size_, 2), modules=n_, module_mm=qm, url=qtext)
     silk += items_
     silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))
-silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f)[0]
+silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f, skip=DEX_SKIP)[0]
 silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], DEX_W, DEX_H))
 items += silk
 

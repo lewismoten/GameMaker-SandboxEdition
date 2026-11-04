@@ -75,16 +75,16 @@ def _hatch(kind, layer, px0, py0, size, ox, oy, step, w, uid, f):
     return out
 
 
-def block_art(layer, rows, tones, x, y, px, uid, f, w=0.15):
+def block_art(layer, rows, tones, x, y, px, uid, f, w=0.15, skip=()):
     """rows: strings, one char per pixel; tones: char -> ("solid",) or (hatch kinds like "/\\\\", spacing mm).
-    On a B layer the picture is mirrored so it reads from the back. Returns (items, width_mm, height_mm)."""
+    `skip` is a set of (row, col) pixels left out (where a pad is). On a B layer the picture is mirrored so it reads from the back. Returns (items, width_mm, height_mm)."""
     back = layer.startswith("B.")
     cols = max(len(r) for r in rows)
     out = []
     for r, row in enumerate(rows):
         for c, ch in enumerate(row):
             t = tones.get(ch)
-            if not t:
+            if not t or (r, c) in skip:
                 continue
             cc = (cols - 1 - c) if back else c
             x0, y0 = x + cc * px, y + r * px

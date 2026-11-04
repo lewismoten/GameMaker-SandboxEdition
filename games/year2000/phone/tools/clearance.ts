@@ -48,15 +48,14 @@ export interface PartGap {
 }
 
 /** Pairs that touch on purpose: the cams press the pulse and off-normal switches, the button caps cover theirs. */
-const CONTACT: Record<string, string[]> = { 'dial-cam': ['SW2', 'SW3'], 'cap-talk': ['SW4'], 'cap-clear': ['SW5'] };
+const CONTACT: Record<string, string[]> = { 'dial-cam': ['SW2', 'SW3'], 'cap-talk': ['SW4'], 'cap-clear': ['SW5'], BT1: ['BT1'] };
 const isExempt = (part: string, body: string) => (CONTACT[part] ?? []).some((r) => body === r || body.startsWith(`${r}.`));
 
 /** One stub per pad: a back-side part's lead comes out the front, a front-side part's out the back. */
 export function leadsFrom(placement: Record<string, { side: string; pads: Record<string, [number, number]> }>): Lead[] {
   const out: Lead[] = [];
   for (const [ref, p] of Object.entries(placement))
-    if (p?.pads)
-      for (const [x, z] of Object.values(p.pads)) out.push({ ref, x, z, face: p.side === 'B' ? 'front' : 'back' });
+    if (p?.pads) for (const [x, z] of Object.values(p.pads)) out.push({ ref, x, z, face: p.side === 'B' ? 'front' : 'back' });
   return out;
 }
 
@@ -110,7 +109,9 @@ export function measure(meshes: MeshIn[], leads: Lead[], bodies: Body[], regionO
       const cand: Lead[] = [];
       for (let i = Math.floor(lo[0] / cell); i <= Math.floor(hi[0] / cell); i++)
         for (let j = Math.floor(lo[2] / cell); j <= Math.floor(hi[2] / cell); j++) cand.push(...(grid.get(key(i, j)) ?? []));
-      const bs = near.filter((b) => b.bbox[3] >= lo[0] && b.bbox[0] <= hi[0] && b.bbox[4] >= lo[1] && b.bbox[1] <= hi[1] && b.bbox[5] >= lo[2] && b.bbox[2] <= hi[2]);
+      const bs = near.filter(
+        (b) => b.bbox[3] >= lo[0] && b.bbox[0] <= hi[0] && b.bbox[4] >= lo[1] && b.bbox[1] <= hi[1] && b.bbox[5] >= lo[2] && b.bbox[2] <= hi[2],
+      );
       if (!cand.length && !bs.length) continue;
       const mid = (p: number[], q: number[]) => [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2, (p[2] + q[2]) / 2];
       const pts = [A, B, C, mid(A, B), mid(B, C), mid(C, A), [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3, (A[2] + B[2] + C[2]) / 3]];

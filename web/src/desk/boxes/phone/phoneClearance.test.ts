@@ -39,7 +39,6 @@ describe(`printed parts keep ${MIN_GAP} mm from a ${LEAD} mm lead stub and from 
   ] as const) {
     it(name, () => {
       const gaps = clearance(sub);
-      if (process.env.GM_CLEARANCE) for (const g of gaps) console.log(name, g.id.padEnd(13), g.lead.gap.toFixed(2), g.lead.other, g.lead.at.map((n) => n.toFixed(1)).join(','), '|', g.body.gap.toFixed(2), g.body.other, g.body.at.map((n) => n.toFixed(1)).join(','), JSON.stringify(g.regions));
       expect(gaps.map((g) => g.id)).toEqual(expect.arrayContaining(['front-frame', 'back-tray', 'dial-plate', 'dial-cam', 'dial-spring', 'BT1']));
       for (const g of gaps) {
         expect(g.lead.gap, `${g.id} to a lead of ${g.lead.other}`).toBeGreaterThanOrEqual(MIN_GAP);

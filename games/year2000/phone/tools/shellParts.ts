@@ -49,7 +49,13 @@ const SLACK = MIN_GAP + 0.05;
 function notchesFor(v: Variant, face: 'front' | 'back'): D3[] {
   return v.bodies
     .filter((b) => b.side === face && (b.bbox[0] < 0 || b.bbox[3] > v.W || b.bbox[2] < 0 || b.bbox[5] > v.H))
-    .map((b) => extrude(roundRect2((b.bbox[3] - b.bbox[0]) / 2 + SLACK, (b.bbox[5] - b.bbox[2]) / 2 + SLACK, 1, (b.bbox[0] + b.bbox[3]) / 2, (b.bbox[2] + b.bbox[5]) / 2), -1, 100));
+    .map((b) =>
+      extrude(
+        roundRect2((b.bbox[3] - b.bbox[0]) / 2 + SLACK, (b.bbox[5] - b.bbox[2]) / 2 + SLACK, 1, (b.bbox[0] + b.bbox[3]) / 2, (b.bbox[2] + b.bbox[5]) / 2),
+        -1,
+        100,
+      ),
+    );
 }
 
 /** Largest radius of a disc at (x, z) that keeps SLACK mm from every part body and lead stub on one face, for a printed part
@@ -64,8 +70,7 @@ function roomAt(v: Variant, face: 'front' | 'back', x: number, z: number, y0: nu
   }
   const sLo = (face === 'front' ? FRONT_Y : BACK_Y - LEAD) - SLACK;
   const sHi = (face === 'front' ? FRONT_Y + LEAD : BACK_Y) + SLACK;
-  if (lo <= sHi && hi >= sLo)
-    for (const l of v.leads) if (l.face === face) r = Math.min(r, Math.hypot(l.x - x, l.z - z) - LEAD_R - SLACK);
+  if (lo <= sHi && hi >= sLo) for (const l of v.leads) if (l.face === face) r = Math.min(r, Math.hypot(l.x - x, l.z - z) - LEAD_R - SLACK);
   return r;
 }
 
@@ -87,7 +92,9 @@ export function buildShell(v: Variant): ShellPart[] {
     const frameBody = subtract3(slabW(board(WALL), 0, hFront), slabW(board(FIT), LIP, hFront + 1), slabW(rect(3.4, 3.4, W - 3.4, H - 3.4, 2), -1, hFront + 1));
     // a boss only as wide as the lead stubs and part bodies beside it allow (clearance.ts); a part that overhangs the board edge
     // gets a notch in the wall instead
-    const bosses = union3(...v.holes.map(([x, z]) => cyl(x, z, Math.max(2.6, Math.min(4.6, roomAt(v, 'front', x, z, FRONT_Y, FRONT_Y + hFront - 1.6))), 0, hFront)));
+    const bosses = union3(
+      ...v.holes.map(([x, z]) => cyl(x, z, Math.max(2.6, Math.min(4.6, roomAt(v, 'front', x, z, FRONT_Y, FRONT_Y + hFront - 1.6))), 0, hFront)),
+    );
     const notches = notchesFor(v, 'front');
     const pilot = union3(...v.holes.map(([x, z]) => cyl(x, z, 1.4, -1, hFront + 1)));
     out.push({
