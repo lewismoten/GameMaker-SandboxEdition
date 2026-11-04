@@ -12,6 +12,8 @@ import { writeStl } from '@lewismoten/gamemaker-sandbox-tools/mesh/stl';
 import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
 import { loadVariant, type Variant } from './shellInput';
 import { buildShell, type ShellPart, type V3 } from './shellParts';
+import { buildCheapShell, SCREW } from './shellCheap';
+import { dialReport } from './dialReport';
 import { LEAD, LEAD_R, MIN_GAP, leadsFrom, measure, regionOf } from './clearance';
 
 const here = resolve(fileURLToPath(new URL('.', import.meta.url)));
@@ -22,6 +24,7 @@ interface Row {
   kind: string;
   side: string;
   group?: string;
+  stack?: string;
   label?: string;
   made?: string;
   color: number[];
@@ -69,7 +72,9 @@ function det(place: ShellPart['place']): number {
 
 function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
   const v: Variant = loadVariant(id, dir);
-  const { parts, bay } = buildShell(v);
+  // the Junior Lab Edition has the one-case layout with the dial module; the Deluxe keeps its own shell (shellParts.ts)
+  const cheap = id === 'cheap' ? buildCheapShell(v) : null;
+  const { parts, bay } = cheap ?? buildShell(v);
   const jsonPath = join(dir, 'viewer/parts.json');
   const file = JSON.parse(readFileSync(jsonPath, 'utf8')) as { floats: number; indices: number; parts: Row[]; [k: string]: unknown };
   const buf = readFileSync(join(dir, 'viewer/parts.bin'));
@@ -129,6 +134,7 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
         kind: 'component',
         side: p.side,
         group: p.group,
+        stack: p.stack,
         label: p.label,
         made: 'shell.ts',
         color: p.color.map((c) => Math.round(c * 1000) / 1000),
@@ -229,6 +235,15 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
   if (bad.length) {
     console.log(`!! clearance below ${MIN_GAP} mm:\n  ${bad.join('\n  ')}`);
     process.exitCode = 1;
+  }
+  if (cheap) {
+    const rep = dialReport(cheap.levels, cheap.screws, SCREW);
+    console.log(rep.lines.join('\n'));
+    if (rep.failed.length) {
+      console.log(`!! dial module: ${rep.failed.join('; ')}`);
+      process.exitCode = 1;
+    }
+    writeFileSync(join(dir, 'viewer/dial.json'), JSON.stringify(rep.data, null, 1));
   }
   const next = {
     ...file,

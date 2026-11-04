@@ -94,6 +94,14 @@ FP = {
     "thumb": _row("Thumbwheel_10k_3pin_BigPads", ["1", "2", "3"], 2.54, (-6.0, -4.0, 6.0, 4.0), "side thumbwheel volume pot, 3 pins 2.54 mm apart in a row; the wheel stands off the board edge (the part's pin 1 is the top of the divider, 2 the wiper, 3 ground)",
                   square="1", marks=[("1", -2.54, 5.0)]),
     "disp4": _disp(), "tact": _tact(),
+    # the dial module's two switches sit inside the dial module (dialModule.ts), two wires each: wire pads on the board
+    "wire2": Fp("Wire_2pad_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
+                (-4.2, -2.4, 4.2, 2.4), (-4.5, -2.7, 4.5, 2.7), [("1", -2.54, 3.6), ("2", 2.54, 3.6)],
+                desc="two pads for the wires to a switch in the dial module (pad 1 square: the signal, pad 2: ground)"),
+    # the earpiece speaker sits in the front cover at the top end; two wires reach these pads (origin: the middle of the pad pair)
+    "earpiece": Fp("Earpiece_2pad_BigPads", [Pad("1", -2.54, 0, 2.4, 1.2, True), Pad("2", 2.54, 0, 2.4, 1.2)],
+                   (-4.2, -2.4, 4.2, 2.4), (-4.5, -2.7, 4.5, 2.7), [("+", -4.6, 0)],
+                   desc="two pads for the earpiece speaker's wires (the speaker clips into the cover at the top end); + is the square pad"),
 }
 # the netlist pins "1".."3" of the slide switch follow the schematic symbol (checked by gen_pcb)
 NAMES = {k: v.name for k, v in FP.items()}

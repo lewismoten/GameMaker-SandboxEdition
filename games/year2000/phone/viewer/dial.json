@@ -1,0 +1,134 @@
+{
+ "levels": {
+  "Hf": 13,
+  "plateTopY": 13.8,
+  "y0m": -0.5999999999999996,
+  "hy0": -17.8,
+  "hy1": -0.7999999999999996,
+  "fb2": -20.7,
+  "fbB": -20.7,
+  "cz": 146.5,
+  "zm": 197.95,
+  "pz1": 206.1,
+  "zsp": -15.5
+ },
+ "walk": {
+  "ok": true
+ },
+ "spring": {
+  "restNmm": 6.009389671361504,
+  "fullNmm": 36.05633802816903,
+  "strainPct": 1.4084507042253522,
+  "lengthMm": 356.88492544780047
+ },
+ "speed": [
+  {
+   "etaPas": 5,
+   "ms": 915.5999999999154,
+   "meanPps": 10.921799912626609,
+   "peakPps": 35.72145801976579
+  },
+  {
+   "etaPas": 10,
+   "ms": 1852.5999999998123,
+   "meanPps": 5.397819281011019,
+   "peakPps": 18.619655521953497
+  },
+  {
+   "etaPas": 20,
+   "ms": 3715.700000003417,
+   "meanPps": 2.691282934572437,
+   "peakPps": 9.45335926215659
+  },
+  {
+   "etaPas": 40,
+   "ms": 7436.599999996007,
+   "meanPps": 1.344700535191535,
+   "peakPps": 4.750860910170323
+  }
+ ],
+ "fits": [
+  [
+   "plate underside to the cam wheel top",
+   1.3999999999999986
+  ],
+  [
+   "plate pawl bottom (z 8.0) to the cam web top",
+   1
+  ],
+  [
+   "cam web bottom to the spring top (the grease film)",
+   0.39999999999999947
+  ],
+  [
+   "SW2 body face (r 24.0) to the lobe peak (r 23.6)",
+   0.3999999999999986
+  ],
+  [
+   "SW2 body top (z 10.9) to the plate underside",
+   0.29999999999999893
+  ],
+  [
+   "hub tube (r 6.2) to the cam web bore (r 6.9)",
+   0.7000000000000002
+  ],
+  [
+   "post (r 4.2) to the hub bore (r 4.5)",
+   0.2999999999999998
+  ],
+  [
+   "bushing top to the washer-side lip: free lift of the plate",
+   0.6
+  ],
+  [
+   "rest post (r 35.0) to the off-normal wall (r 35.5)",
+   0.5
+  ],
+  [
+   "pedestal tops (z 8.6) to the rest dog (z 9.0)",
+   0.40000000000000036
+  ],
+  [
+   "finger plate rim (r 37) to the cover opening (r 38.2)",
+   1.2000000000000028
+  ],
+  [
+   "dial base rim (r 43.2) to the case wall inside",
+   6.599999999999997
+  ],
+  [
+   "dial base to the battery holder (the base is its lid)",
+   0.2
+  ],
+  [
+   "SW3 body top (z 6.7) to the wall bottom (z 6.5): press, must be < 0.25 travel",
+   0.20000000000000018
+  ]
+ ],
+ "screws": [
+  [
+   3.81,
+   3.81
+  ],
+  [
+   95.19,
+   3.81
+  ],
+  [
+   3.81,
+   95.19
+  ],
+  [
+   95.19,
+   95.19
+  ],
+  [
+   3.81,
+   202.29
+  ],
+  [
+   95.19,
+   202.29
+  ]
+ ]
+}

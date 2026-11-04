@@ -22,7 +22,7 @@
         __CONFIG _XT_OSC & _WDT_OFF & _PWRTE_ON & _MCLRE_ON & _BODEN_OFF & _LVP_OFF & _CP_OFF & DATA_CP_OFF
 
 FS      equ     d'37286'                ; tone loop rate in Hz (894886 / 24 cycles)
-PDEB    equ     d'12'                   ; pulse debounce, in main-loop polls (about 1 ms)
+PDEB    equ     d'60'                   ; pulse debounce, in main-loop polls (about 5 ms): bounce of a printed dial's switch must not count, pulses at 8 to 15 a second still do
 ODEB    equ     d'200'                  ; off-normal debounce, in polls (about 15 ms)
 TONEHI  equ     d'15'                   ; tone length: 15*256 loops = 103 ms
 INC697  equ     (((697*65536)+(FS/2))/FS)

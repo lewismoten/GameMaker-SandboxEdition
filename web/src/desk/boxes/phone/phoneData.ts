@@ -10,6 +10,8 @@ export interface PartMeta {
   kind: string;
   side?: 'front' | 'back';
   group?: string;
+  /** A part that explodes on its own, apart from the rest of its group (the dial module's plate, cam, spring, base: the module comes apart in the exploded view). */
+  stack?: string;
   label?: string;
   color: Vec3;
   /** x0, y0, z0, x1, y1, z1 (mm): x = board x, y = height (negative on the back), z = board y. */
@@ -46,6 +48,7 @@ export interface Part {
   id: string;
   label: string;
   group: string;
+  stack?: string;
   side: 'front' | 'back';
   color: Vec3;
   bbox: PartMeta['bbox'];
@@ -84,6 +87,7 @@ export function parseParts(file: PartsFile, bin: ArrayBuffer): Part[] {
       id: p.id,
       label: p.label ?? p.id,
       group: groupOf(p),
+      stack: p.stack,
       side: p.side ?? (y < 0 ? 'back' : 'front'),
       color: p.color,
       bbox: p.bbox,

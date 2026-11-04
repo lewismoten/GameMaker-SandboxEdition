@@ -67,12 +67,16 @@ for ref, digs in (("DS1", ["DIG7", "DIG6", "DIG5", "DIG4"]), ("DS2", ["DIG3", "D
         desc="4-digit 7-segment LED module, common cathode, red, 12 pins")
 add("MK1", "Device:Microphone", "Electret", "mic", "F", {"1": "MICB", "2": GND},
     desc="Electret microphone capsule, solder pads")
-add("LS1", "Device:Speaker", "8 ohm 28mm", "spk", "F", {"1": "SPKC", "2": GND},
-    desc="Small 8 ohm speaker, 28 mm, solder tabs")
-add("SW2", "Switch:SW_Push", "PULSE", "tact", "F", {"1": "PULSE", "2": GND},
-    desc="6 mm tactile switch pressed by the dial's pulse cam")
-add("SW3", "Switch:SW_Push", "OFF NORMAL", "tact", "F", {"1": "OFFNORM", "2": GND},
-    desc="6 mm tactile switch pressed by the dial's off-normal cam")
+# The dial module (in the shell) holds the two dial switches, and the earpiece speaker clips into the front cover: wire pads here.
+# Set DIAL_SW_FP = "tact" and EARPIECE_FP = "spk" to put the switches and the speaker back on the board (the old footprints stay in footprints.py).
+DIAL_SW_FP = "wire2"
+EARPIECE_FP = "earpiece"
+add("LS1", "Device:Speaker", "8 ohm 28mm", EARPIECE_FP, "F", {"1": "SPKC", "2": GND},
+    desc="Small 8 ohm speaker, 28 mm, solder tabs: it clips into the front cover at the top end (earpiece); two wires reach the board's pads, + marked")
+add("SW2", "Switch:SW_Push", "PULSE", DIAL_SW_FP, "F", {"1": "PULSE", "2": GND},
+    desc="6 mm tactile switch inside the dial module (pressed by the pulse cam); two wires reach the board's pads")
+add("SW3", "Switch:SW_Push", "OFF NORMAL", DIAL_SW_FP, "F", {"1": "OFFNORM", "2": GND},
+    desc="6 mm tactile switch inside the dial module (pressed whenever the dial is off rest); two wires reach the board's pads")
 add("SW4", "Switch:SW_Push", "TALK", "tact", "F", {"1": V5, "2": "TALK_H"}, desc="6 mm tactile switch")
 add("SW5", "Switch:SW_Push", "CLEAR", "tact", "F", {"1": "MCLR", "2": GND}, desc="6 mm tactile switch")
 # ---- battery ----------------------------------------------------------------------------------

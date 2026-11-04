@@ -34,7 +34,7 @@ for ref, p in sorted(pl.items()):
     zs = [v[2] * 1000 for v in vs]
     cx, cz = (min(xs) + max(xs)) / 2, (min(zs) + max(zs)) / 2
     top, bot = max(ys), min(ys)
-    side_ok = (bot < 0 and top < 0.5) if p["side"] == "B" else (top > 0 and (bot > -0.5 or ref == "MK1"))   # MK1: wires run under the board
+    side_ok = (bot < 0 and top < 0.5) if p["side"] == "B" else (top > 0 and (bot > -0.5 or ref in ("MK1", "LS1", "SW2", "SW3")))   # wire stubs (the mic, the earpiece, the dial module's switches) reach through the board
     near_x = abs(cx - p["x"]) < 40
     near_y = abs(cz - p["y"]) < (70 if ref == "BT1" else 40)      # BT1's holder body sits behind the dial, 63 mm from its pads
     flag = "" if side_ok and near_x and near_y else "  <-- CHECK"

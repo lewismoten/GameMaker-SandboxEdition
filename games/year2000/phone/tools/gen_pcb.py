@@ -55,8 +55,8 @@ def sn(v):
 FIXED = {k: (sn(x), sn(y), r) for k, (x, y, r) in {
     "D2": (13.0, 6.35, 0), "D1": (86.0, 6.35, 0),
     "DS1": (33.5, 24.0, 0), "DS2": (65.5, 24.0, 0),
-    "LS1": (SPK[0], SPK[1], 0),
-    "SW2": (DIAL[0] - 7.62, DIAL[1], 0), "SW3": (DIAL[0] + 7.62, DIAL[1] + 5.08, 0),
+    "LS1": (SPK[0], SPK[1] + 19.05, 0),               # the earpiece wire pads: the same two pads the speaker's tabs used
+    "SW2": (DIAL[0] - 7.62, DIAL[1], 0), "SW3": (DIAL[0] + 7.62, DIAL[1] + 5.08, 0),   # the dial module's switch wires: wire pads where the switches stood
     "SW4": (13.0, 92.0, 0), "SW5": (86.0, 92.0, 0), "MK1": (CX, 91.5, 0), "BT1": (31.0, 93.5, 0), "J1": (68.0, 94.0, 0), "RV1": (W - 3.5, 70.0, 90),
 }.items()}
 NEAR = {"X1": "U2", "C12": "U1", "C13": "U3", "R25": "U3", "C14": "U1", "R1": "U1", "C15": "U2", "C16": "U4", "C17": "U5", "C18": "U5",
@@ -214,6 +214,8 @@ for ref, pl in placed.items():             # small pin marks (silkscreen) of the
         rx, ry = rot(tx, ty, pl.a)
         rt.blockers.append((pl.x + (-rx if pl.side == "B" else rx), pl.y + ry, 0.9))
 rt.fzones += [(DIAL[0], DIAL[1], DIAL_KEEP_F), (SPK[0], SPK[1], SPK_KEEP_F)]
+_QR0, _QR1 = (27.5, 44.0, 18.1), (65.0, 47.0, 16.6)      # the two silkscreen QR codes on the back (QR_PARTS, QR_SITE below): a via under a module clips it
+rt.vrects += [(x - 1.6, y - 1.6, x + s + 1.6, y + s + 1.6) for x, y, s in (_QR0, _QR1)]
 widths = {nid[GND]: WIDE, nid[V5]: WIDE}
 base = [nid[GND], nid[V5]]
 rest = [nid[n] for n in netnames if n not in (GND, V5)]

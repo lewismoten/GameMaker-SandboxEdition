@@ -26,6 +26,8 @@ LOG="$ROOT/out/build.log"
     echo "--- blank spots ($V): out/blank-spots.txt"
     python3 "$ROOT/tools/blankspots.py" "$ROOT/$V" > /dev/null || echo "!! blankspots failed"
   done
+  echo "=== firmware (Junior Lab): gpasm, then the simulator checks, including the dial module's wind-then-return test"
+  ( cd "$ROOT" && tools/build_firmware.sh ) || echo "!! firmware build or picsim failed"
   echo "=== shells"
   ( cd "$ROOT/../../../web" && npx vite-node ../games/year2000/phone/tools/shell.ts ) || echo "!! shell.ts failed"
   # the site's copies (the games build makes them too): web/public/trinkets/phone and phone/deluxe, ignored by the repository
@@ -41,4 +43,4 @@ for V in . deluxe; do
   grep -h "Found .* violations\|Total" "$ROOT/$V/out/erc.rpt" | tr '\n' ' '
   if [ -f "$ROOT/$V/viewer/parts.json" ]; then python3 -I -c "import json,sys;print('viewer parts:',len(json.load(open(sys.argv[1]))['parts']))" "$ROOT/$V/viewer/parts.json"; else echo; fi
 done
-grep -E "^(!!|-->|QR|shell )|->" "$LOG" | head -30
+grep -E "^(!!|-->|QR|shell )|->|^FAIL|ALL PASSED|SOME FAILED|digit .*wind gives" "$LOG" | head -40

@@ -99,10 +99,22 @@
         74.0,
         56.0
       ],
+      "in_shell": true,
+      "earpiece_center": [
+        49.5,
+        -16.5
+      ],
       "diameter": 28.0,
       "thickness": 4.0,
-      "faces": "front (grille holes over the cone)",
-      "front_clear_zone_radius": 13.5,
+      "faces": "front, in the earpiece pod above the board's top end (grille holes in the front cover over the cone)",
+      "freed_circle": {
+        "center": [
+          74.0,
+          56.0
+        ],
+        "radius": 14.0,
+        "area_mm2": 616
+      },
       "solder_pads": [
         [
           71.374,
@@ -113,7 +125,7 @@
           74.93
         ]
       ],
-      "note": "the speaker is glued over the clear zone; the board under it carries only silkscreen on the front, two short wires reach the pads"
+      "note": "the speaker is no longer on the board: it clips into the front cover's earpiece pod at the top end (three flexure clips). Two wires (+ marked, the square pad) run from the pads, along the board's right edge, to the speaker. The 28 mm circle it used is free"
     },
     "microphone": {
       "ref": "MK1",
@@ -181,82 +193,64 @@
   },
   "dial": {
     "center": [
-      30.0,
-      61.0
+      49.5,
+      146.5
     ],
-    "radius": 20.0,
+    "in_module": true,
+    "radius": 37.0,
+    "base_radius": 43.2,
     "front_clear_zone_radius": 21.5,
-    "number_ring_radius": 14.5,
-    "suggested_finger_hole_diameter": 6.5,
+    "number_ring_radius": 29.0,
+    "suggested_finger_hole_diameter": 13.0,
     "rotation_to_dial": "clockwise from the digit to the finger stop",
     "finger_stop_angle_cw_from_top_deg": 120,
     "degrees_per_digit_of_travel": 30,
     "digit_positions": [
       {
         "digit": "1",
-        "angle_cw_from_top_deg": 60,
-        "x": 42.56,
-        "y": 53.75
+        "angle_cw_from_top_deg": 90
       },
       {
         "digit": "2",
-        "angle_cw_from_top_deg": 30,
-        "x": 37.25,
-        "y": 48.44
+        "angle_cw_from_top_deg": 60
       },
       {
         "digit": "3",
-        "angle_cw_from_top_deg": 0,
-        "x": 30.0,
-        "y": 46.5
+        "angle_cw_from_top_deg": 30
       },
       {
         "digit": "4",
-        "angle_cw_from_top_deg": 330,
-        "x": 22.75,
-        "y": 48.44
+        "angle_cw_from_top_deg": 0
       },
       {
         "digit": "5",
-        "angle_cw_from_top_deg": 300,
-        "x": 17.44,
-        "y": 53.75
+        "angle_cw_from_top_deg": 330
       },
       {
         "digit": "6",
-        "angle_cw_from_top_deg": 270,
-        "x": 15.5,
-        "y": 61.0
+        "angle_cw_from_top_deg": 300
       },
       {
         "digit": "7",
-        "angle_cw_from_top_deg": 240,
-        "x": 17.44,
-        "y": 68.25
+        "angle_cw_from_top_deg": 270
       },
       {
         "digit": "8",
-        "angle_cw_from_top_deg": 210,
-        "x": 22.75,
-        "y": 73.56
+        "angle_cw_from_top_deg": 240
       },
       {
         "digit": "9",
-        "angle_cw_from_top_deg": 180,
-        "x": 30.0,
-        "y": 75.5
+        "angle_cw_from_top_deg": 210
       },
       {
         "digit": "0",
-        "angle_cw_from_top_deg": 150,
-        "x": 37.25,
-        "y": 73.56
+        "angle_cw_from_top_deg": 180
       }
     ],
-    "hole_pitch_note": "holes are 30 degrees apart on a 14.5 mm ring, so centers are 7.6 mm apart: 6.5 mm holes leave a 1.1 mm web",
-    "note": "digits are silkscreened at the hole centers (cw angle from the top). Digit n travels 30 degrees x (n+1) back to the stop... 1 is 60 degrees from the stop, 0 is 330 degrees. Pulse switch closes once per digit step on the return; off-normal is closed while the dial is off rest.",
+    "hole_pitch_note": "ten 13 mm holes on a 29 mm ring, 30 degrees apart: webs of 2.0 mm; plate 74 mm across",
+    "note": "the dial is a self-contained module in the lower body of the case, below the board (tools/dialModule.ts, the numbers in tools/dialParams.json). Hole 1 is 30 degrees from the finger stop, so digit n travels 30 x n degrees (0 = 300): a one-way clutch makes the pulse cam move only on the return, giving exactly n pulses. The board only has wire pads for the module's two switches. The board's old dial circle (silkscreen only) is free.",
     "switches": {
-      "kind": "6 x 6 mm tactile switches (the same part as TALK and CLEAR), pressed from above by cams on the dial's underside",
+      "kind": "6 x 6 mm tactile switches inside the dial module, two wires each to the board's wire pads",
       "pulse": {
         "ref": "SW2",
         "center": [
@@ -265,22 +259,16 @@
         ],
         "pads": [
           [
-            19.05,
-            63.246
+            19.812,
+            60.96
           ],
           [
-            25.654,
-            63.246
+            24.892,
+            60.96
           ]
         ],
-        "body": [
-          6.0,
-          6.0
-        ],
-        "height_above_board": 4.3,
-        "stem_diameter": 3.5,
-        "travel": 0.25,
-        "closes_on": "each cam tooth during the return stroke (10 teeth for 10 pulses max); give the teeth a ramp so a sideways-moving cam presses the stem straight down"
+        "in_module": true,
+        "closes_on": "each cam lobe during the return stroke (12 lobes, 30 degrees apart; the clutch keeps the cam still on the wind)"
       },
       "off_normal": {
         "ref": "SW3",
@@ -290,25 +278,19 @@
         ],
         "pads": [
           [
-            34.29,
-            68.326
+            35.052,
+            66.04
           ],
           [
-            40.894,
-            68.326
+            40.132,
+            66.04
           ]
         ],
-        "body": [
-          6.0,
-          6.0
-        ],
-        "height_above_board": 4.3,
-        "stem_diameter": 3.5,
-        "travel": 0.25,
-        "closes_on": "held closed whenever the dial is off its rest position"
+        "in_module": true,
+        "closes_on": "held closed whenever the dial plate is off its rest position (a wall under the plate rim presses it)"
       }
     },
-    "keep_clear": "inside the dial radius the front carries only silkscreen and the two tactile switches (no pads, vias or front copper tracks): the dial can sit about 6 mm above the board"
+    "keep_clear": "the old dial circle on the board is free of parts; it carries only silkscreen and the two wire pads of the module's switches"
   },
   "back": {
     "note": "Electronics are on the back. Back parts are mirrored footprints. The battery holder is NOT on the board: it lies flat in the shell's battery bay, past the bottom end of the board (the shell is one continuous case).",

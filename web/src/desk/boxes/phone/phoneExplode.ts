@@ -6,7 +6,7 @@ import type { Part } from './phoneData';
 
 const GAP_MM = 30;
 
-type Placed = Pick<Part, 'group' | 'side' | 'bbox'>;
+type Placed = Pick<Part, 'group' | 'side' | 'stack' | 'bbox'>;
 
 export interface Stack {
   key: string;
@@ -18,7 +18,8 @@ export interface Stack {
 }
 
 /** The stack a part belongs to: the board in one piece, everything else by group and side. */
-export const stackOf = (p: Pick<Part, 'group' | 'side'>): string => (p.group === 'board' ? 'board' : `${p.group}:${p.side}`);
+export const stackOf = (p: Pick<Part, 'group' | 'side' | 'stack'>): string =>
+  p.group === 'board' ? 'board' : `${p.group}:${p.side}${p.stack ? `:${p.stack}` : ''}`;
 
 /** Every stack and its offset for a full explosion. Front stacks rise above the board, outermost last (a shell reaching past a dial or the parts it covers goes beyond them); back stacks drop below it the same way. */
 export function explodeStacks(parts: Placed[], gap = GAP_MM): Stack[] {
