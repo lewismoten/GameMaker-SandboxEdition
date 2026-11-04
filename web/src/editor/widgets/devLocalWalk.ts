@@ -16,15 +16,9 @@ export interface LocalWalk {
 const NOTE =
   'This walkthrough is a local file from your .for-lewis folder (the dev server only); it is not saved with the game. Redo keeps a new one in the usual place.';
 const FOLDER = '.for-lewis/research/archive-walks';
-let rootCache: Promise<string | undefined> | undefined;
-
-/** The repository root, from the list of folders Vite's 403 page says it serves. */
+/** The repository root, which vite.config.ts defines for the dev server. */
 function repoRoot(): Promise<string | undefined> {
-  rootCache ??= fetch('/@fs/etc/hosts')
-    .then((r) => r.text())
-    .then((t) => /serving allow list\.<br\/><br\/>- ([^<]+)</.exec(t)?.[1])
-    .catch(() => undefined);
-  return rootCache;
+  return Promise.resolve((import.meta.env.VITE_REPO_ROOT as string | undefined) || undefined);
 }
 
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '');
