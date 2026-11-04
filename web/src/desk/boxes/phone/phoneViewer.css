@@ -78,7 +78,7 @@
   }
 
   .phone-info {
-    bottom: calc(120px + 100px);
+    bottom: calc(180px + 76px);
     width: auto;
     right: 16px;
     left: 16px;
@@ -89,6 +89,6 @@
   }
 
   .box-viewer.phone-on .trk-float {
-    inset: 0 0 calc(120px + 230px);
+    inset: 0 0 calc(180px + 270px);
   }
 }

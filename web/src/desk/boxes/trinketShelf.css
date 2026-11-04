@@ -188,21 +188,21 @@
 @media (max-width: 700px) {
   .fl-bar {
     right: 58px;
-    bottom: 120px;
+    bottom: 180px;
     left: 58px;
   }
 
   .feelie {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
   }
 
   .fl-row {
-    gap: 6px;
+    gap: 4px;
   }
 
   .trk-float {
-    inset: 0 0 calc(120px + 150px);
+    inset: 0 0 calc(180px + 180px);
   }
 
   .trk-canvas {
