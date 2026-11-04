@@ -207,11 +207,15 @@ describe('shrink steps', () => {
   it('frame it: zoom out averages into existing colors, zoom in repeats pixels', () => {
     const small = frameStep(s, { top: 0, bottom: 0, left: 0, right: 0, zoom: 0.5, panX: 0, panY: 0 });
     const used = new Set(s.frames.flatMap((f) => [...new Set(f)]));
-    for (const f of small.frames.frames) for (const c of new Set(f)) expect(used.has(c) || c === bandColor(s.palettes[0])).toBe(true);
+    const band = bandColor(s.palettes[0]);
+    const strays = small.frames.frames.flatMap((f) => [...new Set(f)].filter((c) => !used.has(c) && c !== band));
+    expect(strays).toEqual([]);
     expect(small.frames.frames[0][0]).toBe(bandColor(s.palettes[0]));
     const big = frameStep(s, { top: 0, bottom: 0, left: 0, right: 0, zoom: 2, panX: 0, panY: 0 });
     // a 2x zoom shows each pixel twice across: neighbors in a pair match
     const f = big.frames.frames[0];
-    for (let x = 0; x < 320; x += 2) expect(f[100 * 320 + x]).toBe(f[100 * 320 + x + 1]);
+    const odd: number[] = [];
+    for (let x = 0; x < 320; x += 2) if (f[100 * 320 + x] !== f[100 * 320 + x + 1]) odd.push(x);
+    expect(odd).toEqual([]);
   });
 });
