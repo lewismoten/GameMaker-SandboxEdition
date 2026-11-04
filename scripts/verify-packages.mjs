@@ -48,6 +48,10 @@ try {
     // verify performs the isolated source build and then tests the packed output in another consumer.
     run(isolated, ['run', 'verify', '--', ...dependencies]);
     const [pack] = JSON.parse(execFileSync('npm', ['pack', '--ignore-scripts', '--json', '--pack-destination', scratch], { cwd: isolated, encoding: 'utf8' }));
+    assert.ok(
+      pack.files.some((f) => f.path === 'CHANGELOG.md'),
+      `${manifest.name} tarball lacks CHANGELOG.md`,
+    );
     artifacts.push(join(scratch, pack.filename));
     process.stdout.write(`${manifest.name}: independent source build and packed consumer passed\n`);
   }
