@@ -42,7 +42,6 @@ function flat(pal: Pal): Pixels {
   return outline(p, pal.c('ink', 0), { transparent: skyOf(pal) });
 }
 
-
 /** The pulls: down and to the right, and straight up. */
 export const SLIDE_RIGHT = PULL.down | PULL.right;
 export const WIND_UP = PULL.up;
@@ -74,7 +73,11 @@ function slick(pal: Pal): Pixels {
     [11, 17],
     [16, 14],
   ]) {
-    p.set(x, y, w).set(x - 1, y, w).set(x + 1, y, w).set(x, y - 1, w).set(x, y + 1, w);
+    p.set(x, y, w)
+      .set(x - 1, y, w)
+      .set(x + 1, y, w)
+      .set(x, y - 1, w)
+      .set(x, y + 1, w);
   }
   return p;
 }
@@ -102,7 +105,10 @@ function beltAir(pal: Pal): Pixels {
     [2, 14],
     [11, 17],
   ]) {
-    p.rect(x, y, 5, 1, w).set(x + 5, y, w).set(x + 4, y - 1, w).set(x + 4, y + 1, w);
+    p.rect(x, y, 5, 1, w)
+      .set(x + 5, y, w)
+      .set(x + 4, y - 1, w)
+      .set(x + 4, y + 1, w);
   }
   return p;
 }
@@ -135,7 +141,7 @@ function wind(pal: Pal, phase: number): Pixels {
       p.set(x0 + Math.round(1.6 * Math.sin((y + phase + ph * 2) / 2.2)), y, dim);
     }
   }
-  for (let k = 0; k < 4; k++) p.rect(7 + k, 8 + k, 1, 2, w).rect(12 - k, 8 + k, 1, 2, w);
+  for (let k = 0; k < 4; k++) p.rect(7 + k, 11 - k, 1, 2, w).rect(12 - k, 11 - k, 1, 2, w);
   const g = pal.r('green');
   p.rect(9, 15, 3, 1, g[3]).rect(10, 14, 2, 1, g[4]).set(8, 16, g[2]);
   return p;

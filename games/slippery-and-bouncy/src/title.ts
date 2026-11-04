@@ -22,7 +22,15 @@ export function titlePicture(pal: Pal, book: Book, hero: Pixels, door: Pixels, n
   p.rect(44, 158, 32, 3, look.floorShadow);
   scaleBlit(p, hero, 40, 160 - 80 - 4, 2);
   // the ice, the belt and the spring pad stand in a row on the floor line, so each reads at a glance
-  ['ice', 'belt', 'spring'].forEach((name, i) => scaleBlit(p, book.pics.get(name)!.map((_x, _y, c) => (c === skyOf(pal) ? 255 : c)), 112 + i * 40, 160 - 44, 2));
+  ['ice', 'belt', 'spring'].forEach((name, i) =>
+    scaleBlit(
+      p,
+      book.pics.get(name)!.map((_x, _y, c) => (c === skyOf(pal) ? 255 : c)),
+      112 + i * 40,
+      160 - 44,
+      2,
+    ),
+  );
   scaleBlit(p, door, 236, 160 - 80, 2);
   frameOf(p, pal, 'sunset');
   return p;

@@ -60,7 +60,11 @@ export async function ice(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'reading the ice sign');
   await must(bot, bot.walk(ICE[0] - 1, 'the edge of the ice'), 'to the ice');
   // what the ICE sign teaches, once, on purpose: step on, let go of every key, and keep sliding
-  await must(bot, hold(bot, 'right', () => col(bot) >= ICE[0] + 4.2), 'onto the ice');
+  await must(
+    bot,
+    hold(bot, 'right', () => col(bot) >= ICE[0] + 4.2),
+    'onto the ice',
+  );
   const letGo = col(bot);
   if (letGo < ICE[0] + 3 || letGo > ICE[1]) throw new Error(`should let go on the ice, not at ${letGo.toFixed(1)}`);
   await must(bot, bot.wait(90), 'sliding');
@@ -91,7 +95,11 @@ export async function belt(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'reading the belt sign');
   await must(bot, bot.walk(BELT[0] - 1, 'the edge of the belt'), 'to the belt');
   // what the BELT sign teaches, once, on purpose: step on, then stand still
-  await must(bot, hold(bot, 'right', () => col(bot) >= BELT[0] + 0.4), 'onto the belt');
+  await must(
+    bot,
+    hold(bot, 'right', () => col(bot) >= BELT[0] + 0.4),
+    'onto the belt',
+  );
   const from = col(bot);
   await must(bot, bot.wait(80), 'riding the belt');
   const rode = col(bot) - from;
@@ -112,7 +120,11 @@ export async function wind(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'reading the spring sign');
   await must(bot, bot.walk(SPRING[0] - 1, 'the spring'), 'to the spring');
   // the spring: step on, bounce, steer right onto the ledge
-  await must(bot, hold(bot, 'right', () => col(bot) >= 13.3 && row(bot) >= 4.9 && row(bot) <= 5.05, 200), 'bouncing up to the ledge');
+  await must(
+    bot,
+    hold(bot, 'right', () => col(bot) >= 13.3 && row(bot) >= 4.9 && row(bot) <= 5.05, 200),
+    'bouncing up to the ledge',
+  );
   await must(bot, bot.land(), 'landing on the ledge');
   if (row(bot) > 5.1) throw new Error(`the spring should put Kit on the ledge (row 5), not at row ${row(bot).toFixed(2)}`);
   bot.say(`bounced onto the ledge at ${col(bot).toFixed(1)}, row ${row(bot).toFixed(1)}`);
@@ -122,7 +134,11 @@ export async function wind(bot: StarterBot): Promise<void> {
   await must(bot, bot.wait(LOOK), 'reading the wind sign');
   await must(bot, bot.walk(23.4, 'the fan'), 'to the fan');
   // the wind: walk in, and it lifts him up through the one-way shelf and sets him down on top
-  await must(bot, hold(bot, 'right', () => col(bot) >= 25.2, 60), 'into the wind');
+  await must(
+    bot,
+    hold(bot, 'right', () => col(bot) >= 25.2, 60),
+    'into the wind',
+  );
   await must(bot, bot.land(), 'landing on the shelf');
   if (row(bot) > 2.1 || row(bot) < 1.9) throw new Error(`the wind should leave Kit on the shelf (row 2), not at ${row(bot).toFixed(2)}`);
   bot.say(`blown up through the shelf: standing on top at row ${row(bot).toFixed(1)}`);

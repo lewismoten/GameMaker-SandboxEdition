@@ -157,7 +157,7 @@ function windLevel(book: Book, signs: Record<SignName, Sign>): StarterMap {
   }
   for (const x of FAN) {
     m.set(x, GROUND, 'fan');
-    for (let y = SHELF_ROW + 3; y < GROUND; y++) m.set(x, y, "windAir");
+    for (let y = SHELF_ROW + 3; y < GROUND; y++) m.set(x, y, 'windAir');
   }
   m.sign(4, onGround(GROUND, signs.spring), signs.spring);
   m.sign(19, onGround(GROUND, signs.wind), signs.wind);

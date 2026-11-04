@@ -1,5 +1,5 @@
-// Pictures of the lessons (never on the disk), for the progress shots: Kit before the spike and hurt by it
-// (the spike flat), by the hearts in level 2, and at the spikes and the ledge hearts in level 3.
+// Pictures of the lessons (never on the disk), for the progress shots: Kit stepping onto the ice and, hurt, at the
+// spike it slid into; on the belt and at its spike; at the spring; and up on the shelf, blown there by the wind.
 //   cd web && npx vite-node ../games/slippery-and-bouncy/tools/shots.ts <outDir>
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -9,7 +9,7 @@ import { renderRegion } from '@lewismoten/gamemaker-sandbox-tools/kit/levelPictu
 import { buildHeroBlocks, heroPicture } from '../../kit/starter/hero';
 import { ORIGIN } from '../../kit/starter/map';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
-import { GROUND, buildLevels } from '../src/levels';
+import { GROUND, ICE_SPIKE, SHELF_ROW, buildLevels } from '../src/levels';
 
 const out = process.argv[2];
 if (!out) throw new Error('usage: shots.ts <outDir>');
@@ -21,28 +21,31 @@ const mbl = mb.finish();
 const set = buildMonsters(mb);
 const hero = buildHeroBlocks(pal);
 
-/** Kit standing in column `col` (in the level) in `pose`, as two sprites for renderRegion. */
-const kit = (pose: [string, string], col: number) => {
+/** Kit standing at level column `col`, his feet on row `row`, in `pose`, as two sprites for renderRegion. */
+const kit = (pose: [string, string], col: number, row = GROUND - 1) => {
   const h = heroPicture(hero, pose[0], pose[1]);
   return [
-    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + GROUND - 2 },
-    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + GROUND - 1 },
+    { pixels: Uint8Array.from(h.px.subarray(0, 400)), x: ORIGIN + col, y: ORIGIN + row - 1 },
+    { pixels: Uint8Array.from(h.px.subarray(400)), x: ORIGIN + col, y: ORIGIN + row },
   ];
 };
-const region = (map: ReturnType<(typeof levels)[0]['map']['done']>, col: number, w: number, extra: ReturnType<typeof kit> = []) =>
-  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + 4, w, 8, extra);
+const region = (map: ReturnType<(typeof levels)[0]['map']['done']>, col: number, y: number, w: number, extra: ReturnType<typeof kit> = []) =>
+  renderRegion(map, bbl, mbl, set, ORIGIN + col, ORIGIN + y, w, 8, extra);
+const png = (name: string, pic: ReturnType<typeof region>) => writePng(join(out, name), pic, pal.pal, 3);
 
 const m1 = levels[0].map.done();
-writePng(join(out, 'hit-1-before.png'), region(m1, 11, 12, kit(['stand.top', 'stand'], 14)), pal.pal, 3);
-// the moment after the touch: the spike under him is the flat one
+png('ice-1-before.png', region(m1, 11, 4, 16, kit(['stand.top', 'stand'], 12)));
+png('ice-2-sliding.png', region(m1, 11, 4, 16, kit(['stand.top', 'stand'], 20)));
 const flat = levels[0].map.done();
-flat.blocks[(GROUND - 1 + ORIGIN) * MLEN + 17 + ORIGIN] = book.n('spikeFlat');
-writePng(join(out, 'hit-2-hurt.png'), region(flat, 11, 12, kit(['hurt.top', 'hurt'], 17)), pal.pal, 3);
+flat.blocks[(GROUND - 1 + ORIGIN) * MLEN + ICE_SPIKE + ORIGIN] = book.n('spikeFlat');
+png('ice-3-hurt.png', region(flat, 11, 4, 16, kit(['hurt.top', 'hurt'], ICE_SPIKE)));
 
 const m2 = levels[1].map.done();
-writePng(join(out, 'hearts-1-before.png'), region(m2, 10, 14, kit(['stand.top', 'stand'], 14)), pal.pal, 3);
-writePng(join(out, 'hearts-2-cheer.png'), region(m2, 10, 14, kit(['cheer.top', 'jump'], 21)), pal.pal, 3);
+png('belt-1-before.png', region(m2, 9, 4, 16, kit(['stand.top', 'stand'], 11)));
+png('belt-2-riding.png', region(m2, 9, 4, 16, kit(['stand.top', 'stand'], 16)));
 
 const m3 = levels[2].map.done();
-writePng(join(out, 'lives-1-spikes.png'), region(m3, 12, 22, kit(['stand.top', 'stand'], 20)), pal.pal, 3);
-writePng(join(out, 'lives-2-ledge.png'), region(m3, 8, 16, kit(['cheer.top', 'jump'], 16)), pal.pal, 3);
+png('spring-1-bounce.png', region(m3, 5, 2, 16, kit(['cheer.top', 'jump'], 10, 6)));
+png('wind-1-before.png', region(m3, 18, 0, 16, kit(['stand.top', 'stand'], 22)));
+png('wind-2-up.png', region(m3, 18, 0, 16, kit(['cheer.top', 'jump'], 25, 4)));
+png('wind-3-shelf.png', region(m3, 18, 0, 16, kit(['stand.top', 'stand'], 26, SHELF_ROW - 1)));
