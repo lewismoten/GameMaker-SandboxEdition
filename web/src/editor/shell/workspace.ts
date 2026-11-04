@@ -515,7 +515,8 @@ export class Workspace implements AssistantHost {
           'div',
           { class: `file-row ${n === this.current ? 'active' : ''}`, 'data-name': n },
           h('button', { class: 'file', onclick: () => this.open(n), title: `Edit ${n}` }, ...fileLabel(n, k)),
-          h('button', { class: 'icon-btn', title: `Edit ${n}`, 'aria-label': `Edit ${n}`, onclick: () => this.open(n) }, '✎'),
+          // a pointer shortcut to the same action as the file button beside it: out of the Tab order and the reading order
+          h('button', { class: 'icon-btn', title: `Edit ${n}`, tabindex: '-1', 'aria-hidden': 'true', onclick: () => this.open(n) }, '✎'),
           n === p.gam || this.looking
             ? null
             : h('button', { class: 'icon-btn danger', title: `Delete ${n}`, 'aria-label': `Delete ${n}`, onclick: () => void this.remove(n) }, '🗑'),
