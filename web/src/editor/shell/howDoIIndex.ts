@@ -37,7 +37,16 @@ export function questionButtons(entry: CatalogEntry, q: Question): HTMLElement {
   return h('span', { class: 'hdi-actions' }, go('Play this level', playHref, true), go('See how it’s made', seeHref));
 }
 
-/** The index: `compact` keeps it to a search box and a short scrolling list (the Starters tab). */
+/** How many questions the Starters tab shows before "Show all"; a search shows every match. */
+const FIRST = 3;
+
+/** Moves focus to the game grid's one Tab stop (the tile last used, else the first), skipping the questions. */
+function focusGames(): void {
+  const tiles = document.querySelectorAll<HTMLElement>('#lib-panel .game-tile:not([hidden]) .tile-select, #lib-panel .lib-drop-pick');
+  (Array.from(tiles).find((el) => el.tabIndex === 0) ?? tiles[0])?.focus();
+}
+
+/** The index: `compact` keeps it to a search box and a few questions, a button for the rest, and a Skip link (the Starters tab). */
 export function howDoIIndex(opts: { compact?: boolean } = {}): HTMLElement {
   const search = h('input', {
     type: 'search',
@@ -47,19 +56,29 @@ export function howDoIIndex(opts: { compact?: boolean } = {}): HTMLElement {
   });
   const count = h('span', { class: 'hdi-count', role: 'status' });
   const list = h('ul', { class: 'hdi-list' });
+  const more = h('button', { type: 'button', class: 'hdi-more', 'aria-expanded': 'false' });
+  let all = !opts.compact;
+  const skip = opts.compact ? h('button', { type: 'button', class: 'hdi-skip', onclick: focusGames }, 'Skip to the games') : undefined;
   const root = h(
     'div',
     { class: `hdi${opts.compact ? ' compact' : ''}`, role: 'region', 'aria-labelledby': `${search.id}-label` },
+    skip,
     h('div', { class: 'hdi-head' }, h('label', { id: `${search.id}-label`, for: search.id }, 'How do I…?'), search, count),
     list,
+    opts.compact ? more : undefined,
   );
   void loadQuestions().then(
     ({ entries, questions }) => {
       const show = () => {
         const found = filterQuestions(questions, search.value);
+        const searching = !!search.value.trim();
+        const shown = all || searching ? found : found.slice(0, FIRST);
+        more.hidden = searching || found.length <= FIRST;
+        more.textContent = all ? 'Show fewer questions' : `Show all ${found.length} questions`;
+        more.setAttribute('aria-expanded', String(all));
         count.textContent = search.value.trim() ? `${found.length} of ${questions.length}` : `${questions.length} questions`;
         list.replaceChildren(
-          ...found.map((q) => {
+          ...shown.map((q) => {
             const entry = entries.get(q.game)!;
             const lv = levelTitle(entry, q.level);
             const group = starterGroupOf(q.game);
@@ -74,6 +93,10 @@ export function howDoIIndex(opts: { compact?: boolean } = {}): HTMLElement {
         );
         if (!found.length) list.append(h('li', { class: 'hdi-none' }, 'No question matches. Try one word, such as “door”.'));
       };
+      more.addEventListener('click', () => {
+        all = !all;
+        show();
+      });
       search.addEventListener('input', show);
       show();
     },

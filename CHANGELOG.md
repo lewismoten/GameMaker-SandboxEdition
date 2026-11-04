@@ -21,7 +21,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - A "Uses" line beside "Used by": a scene lists the files it is made of and a map its block sets and monsters, each a link that keeps Back and the breadcrumb working. A link to the open game with another scene now selects that scene (and Back and Forward step through them), and a page you go Back to waits up to 3 seconds for its content before giving up on its scroll spot.
 - A breadcrumb above every open file (Overview › Maps › bus2.map) and a Back to the file you came from. "Used by" links now open the scene they name, and Back to an Overview page lands where you left it.
 - A Starters tab on the home page, just before Sandbox: small games that each show one idea, with signs in the levels that say what you are looking at. The first three are First Steps (walking, jumping, gravity and ladders), Keys and Doors (three levels: a door that is shut before you find its key, a door that needs two of the same key, and different keys for different doors) and Meet the Monsters (a monster that walks a path, one that hurts a little, and one you land on to pop). Each can be copied and edited, and they do not count as Sandbox games.
-- Room to Room, a fourth Starter about getting from one room to another: a door into a second room and an open edge out of it, a house whose doors go there and back (the key you carry comes with you; the room itself starts over), and a fork with two doors to two rooms.
+- Room to Room, a fourth Starter about getting from one room to another: a door into a second room and a brick archway out of it, a house whose doors go there and back (the key you carry comes with you; the room itself starts over), and a fork with two doors to two rooms.
 - Coins and Score, a fifth Starter about points: coins add to the score, gems are worth more and a rock takes points away, and a heart adds a life (Game-Maker has no extra life at a score, and the last level says so). F2 shows the score and lives.
 - Watch Your Step, a Starter about things that hurt: a spike that stings once and then lies flat, a pool that costs a life and starts the room again where you came in, and a level whose planks and bridge are the safe way past both.
 - A sting of their own for the four Starters: grass and dirt blocks drop in and stack into the word STARTER, Kit hops up onto the last letter and cheers, and a sign reads "A STARTER GAME". It plays before each Starter's title in place of the Sandbox Software sting.
@@ -46,6 +46,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Changed
 
+- On the Starters tab the "How do I…?" list shows its first three questions with a "Show all" button, and a "Skip to the games" button (visible when the keyboard is on it) jumps past it to the game tiles: 14 Tab stops to the games instead of 62.
 - The Starters tab and its "How do I…?" list show the games in learning order, First Steps first, not A to Z.
 
 - Pictures redrawn after a "what would a child point out?" pass: the sword on I Screamed, She Smirked's title is a fat orange foam sword; the Cleanse Me, O Loofah sponge is a golden, fuzzy, goofy-faced bath monster with no horns; Veni, Vidi, Risi's Rufus is plainly a dog; Tippy in KEEP IT BRIEF!'s The Scissor Situation card sits up crying; and Final Curtain's umbrella man tips his hat.

@@ -7,6 +7,28 @@
   background: var(--panel);
   color: var(--text);
 }
+.hdi {
+  position: relative;
+}
+/* the Starters tab's Skip link: out of sight until the keyboard is on it, then over the box's corner */
+.hdi-skip {
+  position: absolute;
+  right: 8px;
+  top: -9999px;
+  z-index: 5;
+  padding: 4px 10px;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--accent);
+  font-weight: 600;
+}
+.hdi-skip:focus {
+  top: 6px;
+}
+.hdi-more {
+  margin-top: 6px;
+}
 .hdi-head {
   display: flex;
   flex-wrap: wrap;
