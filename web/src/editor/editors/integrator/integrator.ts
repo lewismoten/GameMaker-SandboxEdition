@@ -17,6 +17,7 @@ import { registerEditor } from '../registry';
 import { h, clear, selectField, textField, modal, confirmDialog, download, toast } from '../../core/ui';
 import type { FileKind } from '../../core/project';
 import { fileField } from '../../widgets/filePicker';
+import { upTo } from '../../widgets/limitNote';
 import { GameFiles } from '../../../project/files';
 import type { PlayerHandle } from '../../../player/player';
 import type { AudioEngine } from '@lewismoten/gamemaker-sandbox-engine/audio/engine';
@@ -695,7 +696,7 @@ registerEditor(['gam'], (host, owner, file) => {
           kind === 'start' ? 'Start scene (title & menu)' : kind === 'end' ? 'End scene (game won / lost)' : `Level scene #${selected}`,
         ),
         textField(
-          'Description (the start scene’s is the game title)',
+          `Description (the start scene’s is the game title; ${upTo(SCENEDESCLEN - 1)})`,
           () => s.desc,
           (v) => ((s.desc = v.slice(0, SCENEDESCLEN - 1)), (s.descRaw = undefined), save(), draw(), renderSide()),
           { maxLength: SCENEDESCLEN - 1 },
