@@ -7,6 +7,7 @@
 // reload (a game on the desk's PC, or one being played, is never switched off by itself).
 
 import { reloadForNewest, watchLoadFailures } from './offline/loadFailure';
+import { fadeOutLater, isPlayPage, setPendingUpdate } from './offline/updateState';
 
 const HOUR = 60 * 60 * 1000;
 
@@ -57,6 +58,14 @@ let notice: HTMLElement | undefined;
  */
 function offerUpdate(worker: ServiceWorker | undefined): void {
   waiting = worker;
+  const doReload = () => {
+    asked = true;
+    reloadForNewest(worker, () => location.reload());
+  };
+  // Settings keeps "New version ready" whatever happens to the notice
+  setPendingUpdate(doReload);
+  // a game playing here is never covered: the next page that is not a play page shows the notice
+  if (isPlayPage(location.pathname)) return;
   if (notice?.isConnected) notice.remove();
   const button = (label: string, primary: boolean, onclick: () => void) => {
     const b = document.createElement('button');
@@ -78,12 +87,13 @@ function offerUpdate(worker: ServiceWorker | undefined): void {
   notice.append(
     text,
     button('Reload', true, () => {
-      asked = true;
       text.textContent = 'Updating…';
-      reloadForNewest(worker, () => location.reload());
+      cancelFade();
+      doReload();
     }),
     button('Later', false, () => notice?.remove()),
   );
+  const cancelFade = fadeOutLater(notice);
   // first in the page, so a keyboard user's first Tab reaches it (it is fixed at the bottom, so
   // the order on screen is unchanged); at the end of the body it took every control to get there
   document.body.prepend(notice);
