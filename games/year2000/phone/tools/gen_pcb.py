@@ -244,7 +244,46 @@ PARTS_URL = "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/
 SITE_URL = "https://lewismoten.github.io/GameMaker-SandboxEdition"
 QR_PARTS = (27.5, 44.0, 0.44)      # x, y (top-left, board coordinates), module mm: 41 modules = 18.0 mm
 QR_SITE = (65.0, 47.0, 0.5)        # 33 modules = 16.5 mm
-DEX_AT = (17.5, 65.5, 0.8)         # 16 x 18 pixels = 12.8 x 14.4 mm
+QR_KEEP = [(QR_PARTS[0], QR_PARTS[1], QR_PARTS[0] + 18.1, QR_PARTS[1] + 18.1), (QR_SITE[0], QR_SITE[1], QR_SITE[0] + 16.6, QR_SITE[1] + 16.6)]
+
+
+def find_dex(rows=18, cols=16, reach=26.0, margin=1.2):
+    """Dex as big as fits on the back behind the dial: the largest pixel size (and then the spot nearest the dial's center) whose
+    16 x 18 pixel rectangle keeps `margin` mm from every pad, via and mounting hole, 4 mm from the QR codes (so the shell's windows stay apart),
+    and 1 mm from the board edge. Tracks are under solder mask, so silkscreen may cross them."""
+    obst = [(x, y, r + margin) for x, y, r in padpts] + [(x, y, 0.4 + margin) for v in vias.values() for x, y in v]
+    best = None
+    for k in range(40, 19, -1):             # pixel 2.0 mm down to 1.0 mm in 0.05 steps
+        px = k * 0.05
+        w, h = cols * px, rows * px
+        found = []
+        for ix in range(int(1.0 / 0.5), int((W - 1.0 - w) / 0.5) + 1):
+            for iy in range(int(1.0 / 0.5), int((H - 1.0 - h) / 0.5) + 1):
+                x0, y0 = ix * 0.5, iy * 0.5
+                if math.hypot(x0 + w / 2 - DIAL[0], y0 + h / 2 - DIAL[1]) > reach:
+                    continue
+                if any(x0 - 4 < q[2] and x0 + w + 4 > q[0] and y0 - 4 < q[3] and y0 + h + 4 > q[1] for q in QR_KEEP):
+                    continue
+                ok = True
+                for ox, oy, orr in obst:
+                    if ox + orr < x0 or ox - orr > x0 + w or oy + orr < y0 or oy - orr > y0 + h:
+                        continue
+                    if math.hypot(ox - min(max(ox, x0), x0 + w), oy - min(max(oy, y0), y0 + h)) < orr:
+                        ok = False
+                        break
+                if ok:
+                    found.append((math.hypot(x0 + w / 2 - DIAL[0], y0 + h / 2 - DIAL[1]), x0, y0))
+        if found:
+            found.sort()
+            best = (found[0][1], found[0][2], px)
+            break
+    return best
+
+
+DEX_AT = find_dex() or (17.5, 65.5, 0.8)
+DEX_W, DEX_H = 16 * DEX_AT[2], 18 * DEX_AT[2]
+print("Dex: pixel %.2f mm, %.1f x %.1f mm at (%.1f, %.1f)" % (DEX_AT[2], DEX_W, DEX_H, DEX_AT[0], DEX_AT[1]))
+TAKEN.append((DEX_AT[0] - 0.3, DEX_AT[1] - 0.3, DEX_AT[0] + DEX_W + 0.3, DEX_AT[1] + DEX_H + 0.3))   # reference and value text keep out of it
 
 
 def box_ok(b, margin=0.45):
@@ -419,7 +458,7 @@ items += [eline(r, 0, W - r, 0), eline(W, r, W, H - r), eline(W - r, H, r, H), e
 
 TAKEN += [(QR_PARTS[0] - 0.3, QR_PARTS[1] - 0.3, QR_PARTS[0] + 18.3, QR_PARTS[1] + 18.3),
           (QR_SITE[0] - 0.3, QR_SITE[1] - 0.3, QR_SITE[0] + 18.3, QR_SITE[1] + 18.3),
-          (DEX_AT[0] - 0.3, DEX_AT[1] - 0.3, DEX_AT[0] + 13.1, DEX_AT[1] + 14.7)]   # kept clear of silk text (after the reference text is placed: the back is blank here)
+          (DEX_AT[0] - 0.3, DEX_AT[1] - 0.3, DEX_AT[0] + DEX_W + 0.3, DEX_AT[1] + DEX_H + 0.3)]   # kept clear of silk text (after the reference text is placed: the back is blank here)
 # ---- silkscreen: lettering, number ring, retro-future art (clipped away from pads) -----------------------
 def clear(x, y, margin=0.55):
     if x < 1.0 or y < 1.0 or x > W - 1.0 or y > H - 1.0:
@@ -531,10 +570,10 @@ for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SI
     silk += items_
     silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))
 silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f)[0]
-silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], 12.8, 14.4))
+silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], DEX_W, DEX_H))
 items += silk
 
-json.dump(dict(board_width=W, codes=QR_INFO, dex=dict(x=DEX_AT[0], y=DEX_AT[1], width=round(DEX_AT[2] * 16, 2), height=round(DEX_AT[2] * 18, 2))), open(os.path.join(KDIR, "qr_spots.json"), "w"), indent=1)
+json.dump(dict(board_width=W, codes=QR_INFO, dex=dict(x=DEX_AT[0], y=DEX_AT[1], width=round(DEX_W, 2), height=round(DEX_H, 2))), open(os.path.join(KDIR, "qr_spots.json"), "w"), indent=1)
 nets_txt = '(net 0 "")\n  ' + "\n  ".join(f'(net {i} "{n}")' for n, i in nid.items())
 pcb = f'''(kicad_pcb (version 20241229) (generator "pcbnew") (generator_version "9.0")
   (general (thickness 1.6) (legacy_teardrops no))

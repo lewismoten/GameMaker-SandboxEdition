@@ -8,6 +8,7 @@
 //   battery: the battery box, four off-brand AAA cells with raised "AAA 1.5V" lettering, and the battery door
 import { circle2, capsule2, extrude, roundRect2, subtract3, union3, type D2, type D3 } from '@lewismoten/gamemaker-sandbox-tools/mesh/sdfShapes';
 import { strokeText2 } from '@lewismoten/gamemaker-sandbox-tools/mesh/strokeText';
+import { BACK_Y, FRONT_Y, LEAD, LEAD_R, MIN_GAP } from './clearance';
 import type { Variant } from './shellInput';
 
 export type V3 = [number, number, number];
@@ -42,6 +43,31 @@ const boxAround = (x0: number, z0: number, x1: number, z1: number, w1: number, p
 });
 const slabW = (d2: D2, w0: number, w1: number): D3 => extrude(d2, w0, w1);
 const ceil05 = (v: number) => Math.ceil(v * 2) / 2;
+const SLACK = MIN_GAP + 0.05;
+
+/** Wall notches (full height) around the bodies of one face that overhang the board's outline, SLACK mm bigger on every side. */
+function notchesFor(v: Variant, face: 'front' | 'back'): D3[] {
+  return v.bodies
+    .filter((b) => b.side === face && (b.bbox[0] < 0 || b.bbox[3] > v.W || b.bbox[2] < 0 || b.bbox[5] > v.H))
+    .map((b) => extrude(roundRect2((b.bbox[3] - b.bbox[0]) / 2 + SLACK, (b.bbox[5] - b.bbox[2]) / 2 + SLACK, 1, (b.bbox[0] + b.bbox[3]) / 2, (b.bbox[2] + b.bbox[5]) / 2), -1, 100));
+}
+
+/** Largest radius of a disc at (x, z) that keeps SLACK mm from every part body and lead stub on one face, for a printed part
+ *  that spans heights y0..y1 (viewer coordinates). A horizontal test only, so a little more careful than the 3D one. */
+function roomAt(v: Variant, face: 'front' | 'back', x: number, z: number, y0: number, y1: number, skip: string[] = []): number {
+  const lo = Math.min(y0, y1) - SLACK;
+  const hi = Math.max(y0, y1) + SLACK;
+  let r = Infinity;
+  for (const b of v.bodies) {
+    if (b.side !== face || skip.some((s) => b.id === s) || b.bbox[4] < lo || b.bbox[1] > hi) continue;
+    r = Math.min(r, Math.hypot(Math.max(b.bbox[0] - x, 0, x - b.bbox[3]), Math.max(b.bbox[2] - z, 0, z - b.bbox[5])) - SLACK);
+  }
+  const sLo = (face === 'front' ? FRONT_Y : BACK_Y - LEAD) - SLACK;
+  const sHi = (face === 'front' ? FRONT_Y + LEAD : BACK_Y) + SLACK;
+  if (lo <= sHi && hi >= sLo)
+    for (const l of v.leads) if (l.face === face) r = Math.min(r, Math.hypot(l.x - x, l.z - z) - LEAD_R - SLACK);
+  return r;
+}
 
 export function buildShell(v: Variant): ShellPart[] {
   const out: ShellPart[] = [];
@@ -59,7 +85,10 @@ export function buildShell(v: Variant): ShellPart[] {
   // ---- front frame: lip down on the bed, walls up toward the board ----------------------------------------------
   {
     const frameBody = subtract3(slabW(board(WALL), 0, hFront), slabW(board(FIT), LIP, hFront + 1), slabW(rect(3.4, 3.4, W - 3.4, H - 3.4, 2), -1, hFront + 1));
-    const bosses = union3(...v.holes.map(([x, z]) => cyl(x, z, 4.6, 0, hFront)));
+    // a boss only as wide as the lead stubs and part bodies beside it allow (clearance.ts); a part that overhangs the board edge
+    // gets a notch in the wall instead
+    const bosses = union3(...v.holes.map(([x, z]) => cyl(x, z, Math.max(2.6, Math.min(4.6, roomAt(v, 'front', x, z, FRONT_Y, FRONT_Y + hFront - 1.6))), 0, hFront)));
+    const notches = notchesFor(v, 'front');
     const pilot = union3(...v.holes.map(([x, z]) => cyl(x, z, 1.4, -1, hFront + 1)));
     out.push({
       id: 'front-frame',
@@ -68,7 +97,7 @@ export function buildShell(v: Variant): ShellPart[] {
       side: 'front',
       color: [0.34, 0.5, 0.78],
       printed: true,
-      field: subtract3(union3(frameBody, bosses), pilot),
+      field: subtract3(union3(frameBody, bosses), pilot, ...notches),
       box: boxAround(-WALL, -WALL, W + WALL, H + WALL, hFront, 1),
       cell: 0.95,
       place: (u, w, zz) => [u, Hf - zz, w] as V3,
@@ -92,8 +121,8 @@ export function buildShell(v: Variant): ShellPart[] {
   const hx1 = v.bt.x1 + FIT;
   {
     let tray: D3 = subtract3(slabW(board(WALL), 0, hTray), slabW(board(FIT), FLOOR, hTray + 1));
-    tray = union3(tray, ...v.holes.map(([x, z]) => cyl(x, z, 4.6, 0, hTray)));
-    const cuts: D3[] = v.holes.map(([x, z]) => cyl(x, z, 1.7, -1, hTray + 1));
+    tray = union3(tray, ...v.holes.map(([x, z]) => cyl(x, z, Math.max(2.6, Math.min(4.6, roomAt(v, 'back', x, z, BACK_Y, -hTray))), 0, hTray)));
+    const cuts: D3[] = [...notchesFor(v, 'back'), ...v.holes.map(([x, z]) => cyl(x, z, 1.7, -1, hTray + 1))];
     if (v.bt.handle)
       cuts.push(slabW(rect(hx0, H - 4, hx1, H + 6, 1), FLOOR, hTray + 1)); // the rim opens into the handle
     else cuts.push(slabW(door, -1, FLOOR + 1)); // the door's window
@@ -194,10 +223,14 @@ export function buildShell(v: Variant): ShellPart[] {
     });
   }
   {
-    // flat spiral return spring: 1.8 turns of a 0.9 mm strip, 3 mm tall, printed flat
-    const r0 = 3.1;
-    const pitch = 1.6;
-    const turns = 1.6;
+    // flat spiral return spring under the plate: as many turns of a 0.9 mm strip, as tall, as the switches beside it leave room for
+    const r0 = 2.8;
+    const pitch = 1.2;
+    // the tallest spring (1.4 mm down to 0.6) that still leaves a disc 4.6 mm wide clear of the switch bodies beside it
+    const fit = (h: number) => Math.min(7, roomAt(v, 'front', cx, cz, plateBottom - h, plateBottom));
+    const springH = [1.4, 1.2, 1.0, 0.8].find((h) => fit(h) >= 4.6) ?? 0.6;
+    const rMax = fit(springH);
+    const turns = Math.max(0.6, Math.min(1.6, (rMax - 0.45 - r0) / pitch));
     const strip = (x: number, z: number): number => {
       const r = Math.hypot(x, z);
       const th = (Math.atan2(z, x) + 2 * Math.PI) % (2 * Math.PI);
@@ -216,14 +249,17 @@ export function buildShell(v: Variant): ShellPart[] {
       side: 'front',
       color: [0.75, 0.75, 0.8],
       printed: true,
-      field: (x, z, w) => Math.max(strip(x, z), -w, w - 3),
-      box: dbox(7, 3),
-      cell: 0.4,
+      field: (x, z, w) => Math.max(strip(x, z), -w, w - springH),
+      box: dbox(7, springH),
+      cell: springH < 1 ? 0.2 : 0.4,
       place: toDial(down(plateBottom)),
     });
   }
   {
     const h = plateTop + 0.4 - 1.6;
+    // a pin as thick as the gap between the switch bodies allows (Deluxe: 1.6 mm, no bore), else the 3 mm post with a screw bore
+    const postR = Math.max(0.7, Math.min(1.5, roomAt(v, 'front', cx, cz, FRONT_Y, FRONT_Y + h)));
+    const footR = Math.max(postR, Math.min(4.2, roomAt(v, 'front', cx, cz, FRONT_Y, FRONT_Y + 1.6)));
     out.push({
       id: 'dial-post',
       label: 'Pivot post (glue the foot to the board)',
@@ -231,19 +267,28 @@ export function buildShell(v: Variant): ShellPart[] {
       side: 'front',
       color: [0.9, 0.9, 0.92],
       printed: true,
-      field: subtract3(union3(cyl(0, 0, 4.2, 0, 1.6), cyl(0, 0, 1.5, 0, h)), cyl(0, 0, 0.9, 1.6, h + 1)),
+      field: subtract3(union3(cyl(0, 0, footR, 0, 1.6), cyl(0, 0, postR, 0, h)), cyl(0, 0, postR > 1.3 ? 0.9 : 0, 1.6, h + 1)),
       box: dbox(4.2, h),
       cell: 0.4,
       place: toDial(up(1.6)),
     });
   }
   {
-    const [su, sv] = polar(dial.stopDeg, R + 3.0);
+    const h = plateTop + 2.0 - 1.6;
+    // the stop stands 3 mm outside the plate, or farther out (its arm grows to match) where a lead stub or part is in the way
+    const roomOut = (d: number) => {
+      const [a, b] = polar(dial.stopDeg, R + 3.0 + d);
+      return roomAt(v, 'front', cx + a, cz + b, FRONT_Y, FRONT_Y + h);
+    };
+    const steps = Array.from({ length: 25 }, (_, i) => i * 0.5);
+    const out0 = steps.find((d) => roomOut(d) >= 2.0) ?? steps.reduce((best, d) => (roomOut(d) > roomOut(best) ? d : best), 0);
+    const [su, sv] = polar(dial.stopDeg, R + 3.0 + out0);
     const px = cx + su;
     const pz = cz + sv;
-    const h = plateTop + 2.0 - 1.6;
+    const stopR = Math.max(1.0, Math.min(2.0, roomOut(out0)));
+    const footR = Math.max(stopR, Math.min(3.4, roomAt(v, 'front', px, pz, FRONT_Y, FRONT_Y + 1.2)));
     const toward = polar(dial.stopDeg + 180, 1);
-    const arm = capsule2(0, 0, toward[0] * 5, toward[1] * 5, 1.5);
+    const arm = capsule2(0, 0, toward[0] * (5 + out0), toward[1] * (5 + out0), 1.5);
     const arm3: D3 = (x, z, w) => Math.max(arm(x, z), Math.abs(w - (h - 0.8)) - 0.8);
     out.push({
       id: 'dial-stop',
@@ -252,8 +297,8 @@ export function buildShell(v: Variant): ShellPart[] {
       side: 'front',
       color: [0.9, 0.9, 0.92],
       printed: true,
-      field: union3(cyl(0, 0, 3.4, 0, 1.2), cyl(0, 0, 2.0, 0, h), arm3),
-      box: { min: [-9, -9, -1], max: [9, 9, h + 1] },
+      field: union3(cyl(0, 0, footR, 0, 1.2), cyl(0, 0, stopR, 0, h), arm3),
+      box: { min: [-10 - out0, -10 - out0, -1], max: [10 + out0, 10 + out0, h + 1] },
       cell: 0.4,
       place: (u, vv, w) => [px + u, 1.6 + w, pz + vv],
     });

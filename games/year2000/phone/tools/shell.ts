@@ -12,6 +12,7 @@ import { writeStl } from '@lewismoten/gamemaker-sandbox-tools/mesh/stl';
 import type { Mesh } from '@lewismoten/gamemaker-sandbox-tools/mesh/mesh';
 import { loadVariant, type Variant } from './shellInput';
 import { buildShell, type ShellPart, type V3 } from './shellParts';
+import { LEAD, LEAD_R, MIN_GAP, leadsFrom, measure, regionOf } from './clearance';
 
 const here = resolve(fileURLToPath(new URL('.', import.meta.url)));
 const phone = resolve(here, '..');
@@ -150,6 +151,28 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
   for (const a of ix) {
     Buffer.from(a.buffer, a.byteOffset, a.byteLength).copy(out, off);
     off += a.byteLength;
+  }
+  // lead and solder clearance: the printed parts against the lead stubs and the part bodies (clearance.ts)
+  const placement = JSON.parse(readFileSync(join(dir, 'kicad/placement.json'), 'utf8'));
+  const bodies = keep.filter((p) => p.kind === 'component').map((p) => ({ id: p.id, bbox: p.bbox }));
+  const gaps = measure(
+    placed.filter((_, i) => parts[i].printed).map((p) => ({ id: p.row.id, pos: p.pos, idx: p.idx })),
+    leadsFrom(placement),
+    bodies,
+    regionOf,
+  );
+  const fmt = (g: { gap: number; other: string }) => (Number.isFinite(g.gap) ? `${g.gap.toFixed(2)} (${g.other})` : '> 3');
+  console.log(`clearance (lead stub ${LEAD} mm, fillet radius ${LEAD_R} mm; must stay >= ${MIN_GAP} mm), mm to lead / to a part body:`);
+  const bad: string[] = [];
+  for (const g of gaps) {
+    console.log(' ', g.id.padEnd(14), fmt(g.lead).padEnd(16), fmt(g.body), Object.entries(g.regions).map(([k, r]) => `${k}: ${fmt(r)}`).join('  '));
+    if (g.lead.gap < MIN_GAP) bad.push(`${g.id} is ${g.lead.gap.toFixed(2)} mm from a lead of ${g.lead.other} at ${g.lead.at.map((n) => n.toFixed(1)).join(', ')}`);
+    if (g.body.gap < MIN_GAP) bad.push(`${g.id} is ${g.body.gap.toFixed(2)} mm from ${g.body.other} at ${g.body.at.map((n) => n.toFixed(1)).join(', ')}`);
+  }
+  writeFileSync(join(dir, 'viewer/clearance.json'), JSON.stringify({ lead: LEAD, leadRadius: LEAD_R, min: MIN_GAP, parts: gaps }, null, 1));
+  if (bad.length) {
+    console.log(`!! clearance below ${MIN_GAP} mm:\n  ${bad.join('\n  ')}`);
+    process.exitCode = 1;
   }
   const next = {
     ...file,
