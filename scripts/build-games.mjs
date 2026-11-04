@@ -209,6 +209,18 @@ for (const [from, to] of [
   mkdirSync(out, { recursive: true });
   for (const f of ['parts.json', 'parts.bin']) copyFileSync(join(src, f), join(out, f));
 }
+// The kit's downloads (ZIPs of the printer parts and of the circuit board files, the parts lists, the README the box reads as
+// its instructions book) are made beside them (games/kit/phoneDownloads.ts).
+if (existsSync(join(root, 'games/year2000/phone/kicad')) && (!only.length || only.includes('year2000'))) {
+  await runEntry(
+    'phone-downloads',
+    { file: join(root, 'games/kit/phoneDownloads.ts') },
+    '../games/kit/phoneDownloads.ts',
+    [],
+    { cwd: join(root, 'web'), maxBuffer: 16 << 20, timeout: 240_000 },
+    'phone downloads',
+  );
+}
 const began = Date.now();
 // The plastic trinkets of the games that mesh them from distance fields (STL, 3MF and support files the site serves from
 // web/public/trinkets/<game>): Depth's from its models, Realm's from its coins and tags. Each is made beside the games
