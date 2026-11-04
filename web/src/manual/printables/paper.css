@@ -1095,3 +1095,38 @@
   opacity: 0.5;
   cursor: default;
 }
+
+/* the Game picker (gamePicker.ts): first in the bar, a fixed width so nothing after it moves */
+.gmb-game {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+}
+
+.gmb-game label {
+  font:
+    600 13px system-ui,
+    sans-serif;
+}
+
+.gmb-game select {
+  width: 13em;
+  max-width: 100%;
+  min-height: 28px;
+  min-width: 0;
+  font:
+    13px system-ui,
+    sans-serif;
+}
+
+.gmb-game button {
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.gmb-game select:focus-visible,
+.gmb-game button:focus-visible {
+  outline: 3px solid #ffd35a;
+  outline-offset: 2px;
+}
