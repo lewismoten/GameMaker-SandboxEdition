@@ -36,6 +36,7 @@ import { touchGestures } from './mapTouchGestures';
 import { assetMenu, type AssetAction } from '../../shell/assetMenu';
 import './mapExport.css';
 import './tools/mapTools.css';
+import { playSpot } from './playSpot';
 
 type Mode = 'paint' | 'fill' | 'pick' | 'monster' | 'pan' | ToolMode;
 const TOOL_MODES = new Set<string>(['line', 'rect', 'select', 'terrain', 'stamp', 'building', 'paste']);
@@ -876,6 +877,23 @@ registerEditor(['map'], (host, project, file) => {
     '＋',
     h('span', { class: 'mt-label' }, 'Exit'),
   );
+  // Test the level from where you are looking: a play test that starts in the middle of the view, leaving the game's links alone.
+  const hereBtn = h(
+    'button',
+    {
+      type: 'button',
+      class: 'mt-tool',
+      'aria-label': 'Play from here',
+      title: set.scenes.length ? 'Play test this level starting in the middle of the view (the game’s start does not change)' : 'No scene plays this map yet',
+      disabled: !set.scenes.length || !project.playAt,
+      onclick: () => {
+        const at = viewport.at();
+        project.playAt?.(set.scenes[0], playSpot(at, MLEN, MWID));
+      },
+    },
+    '▶',
+    h('span', { class: 'mt-label' }, 'Play here'),
+  );
   const pressed = (on: boolean) => ({ 'aria-pressed': String(on) });
   const gridBtn = h(
     'button',
@@ -1084,6 +1102,7 @@ registerEditor(['map'], (host, project, file) => {
       linksBtn,
       marksUi.button,
       exitBtn,
+      hereBtn,
       findBtn,
       replaceBtn,
       checkBtn,

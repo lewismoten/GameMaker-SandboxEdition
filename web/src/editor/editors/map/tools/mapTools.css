@@ -24,9 +24,9 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
-  min-width: 32px;
+  min-width: 30px;
   min-height: 32px;
-  padding: 4px 7px;
+  padding: 4px 5px;
   line-height: 1;
 }
 .mt-tool[aria-pressed='true']:not(.primary) {

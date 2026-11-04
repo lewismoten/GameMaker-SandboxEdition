@@ -57,6 +57,8 @@ export class Project {
   private extrasListeners = new Set<(file: string, section: string) => void>();
   /** Set for a game opened only to look inside (readOnly.ts makeReadOnly): every change is refused before it happens, and nothing is saved. */
   readOnly?: ReadOnlyGuard;
+  /** Set by the workspace: play test a level starting at a spot (the map editor's Play here); undefined where nothing can play. */
+  playAt?: (scene: number, at: { x: number; y: number }) => void;
 
   constructor(id: string, name: string, gam: string, files: GameFiles, companion?: Companion) {
     this.id = id;
