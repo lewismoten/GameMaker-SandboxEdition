@@ -10,21 +10,23 @@ describe('handlePoints', () => {
   for (const size of MUG_SIZES.filter((s) => s.handle))
     it(`${size.id}: finite, near the body and never turning back on itself across, at every degree`, () => {
       const H = (radius * 2 * size.height) / size.diameter;
+      // the checks gather what breaks into one list: thousands of single expects cost more than the handle math
+      const bad: string[] = [];
       for (let deg = 0; deg < 360; deg += 1) {
         const pts = handlePoints({ size, rot: (deg * Math.PI) / 180, cx, top, radius });
-        expect(pts.length).toBeGreaterThan(8);
+        if (pts.length <= 8) bad.push(`${deg}: ${pts.length} points`);
         for (const p of pts) {
-          expect(Number.isFinite(p.x) && Number.isFinite(p.y)).toBe(true);
+          if (!(Number.isFinite(p.x) && Number.isFinite(p.y))) bad.push(`${deg}: not finite`);
           // no further out than the handle reaches, and within the body's height (and the rim's tilt)
-          expect(Math.abs(p.x - cx)).toBeLessThanOrEqual(radius * 1.6);
-          expect(p.y).toBeGreaterThanOrEqual(top);
-          expect(p.y).toBeLessThanOrEqual(top + H + radius * 0.2);
+          if (!(Math.abs(p.x - cx) <= radius * 1.6)) bad.push(`${deg}: too far out`);
+          if (!(p.y >= top && p.y <= top + H + radius * 0.2)) bad.push(`${deg}: outside the body's height`);
         }
         // the loop goes out and back once: its distance from the axis rises, then falls
         const d = pts.map((p) => Math.abs(p.x - cx));
         const peak = d.indexOf(Math.max(...d));
-        for (let i = 1; i < d.length; i++) expect(i <= peak ? d[i] >= d[i - 1] - 1e-9 : d[i] <= d[i - 1] + 1e-9).toBe(true);
+        for (let i = 1; i < d.length; i++) if (!(i <= peak ? d[i] >= d[i - 1] - 1e-9 : d[i] <= d[i - 1] + 1e-9)) bad.push(`${deg}: turns back at ${i}`);
       }
+      expect(bad).toEqual([]);
     });
 
   it('seen straight on (handle toward us) it is a single upright line down the middle', () => {
