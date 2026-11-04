@@ -10,6 +10,7 @@ import { blockCanvas, paintBlock } from '../../core/draw';
 import { paletteChooser } from '../../widgets/paletteChooser';
 import { blockButton } from '../../widgets/blockChooser';
 import { fileField } from '../../widgets/filePicker';
+import { fullNote } from '../../widgets/limitNote';
 import { MONBL, newBlockSet, parseBlocks } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import { LASTMON, LASTSL, parseMonsters, serializeMonsters, type Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
 import { monsterPathEditor } from './monsterPathEditor';
@@ -187,6 +188,7 @@ registerEditor(['mon'], (host, project, file) => {
             h(
               'div',
               { class: 'mon-frame-tools' },
+              shown >= LASTSL && fullNote(LASTSL, 'frames', 'a monster'),
               shown < LASTSL &&
                 h(
                   'button',
