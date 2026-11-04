@@ -1,0 +1,16 @@
+{
+  "name": "Game-Maker Pocket Player (spike)",
+  "version": "0.1",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "fw/bootloader.bin", "offset": 4096 },
+        { "path": "fw/partitions.bin", "offset": 32768 },
+        { "path": "fw/firmware.bin", "offset": 65536 },
+        { "path": "fw/littlefs.bin", "offset": 2031616 }
+      ]
+    }
+  ]
+}
