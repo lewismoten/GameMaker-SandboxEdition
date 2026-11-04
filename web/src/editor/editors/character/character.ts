@@ -11,6 +11,7 @@ import './character.css';
 import { registerEditor } from '../registry';
 import { fileField } from '../../widgets/filePicker';
 import { blockButton } from '../../widgets/blockChooser';
+import { fullNote } from '../../widgets/limitNote';
 import { h, clear, numberField, selectField, checkField, debounce } from '../../core/ui';
 import { History } from '../../core/history';
 import { drawBlockTo } from '../../core/draw';
@@ -549,7 +550,7 @@ registerEditor(['chr'], (host, project, file) => {
             h('span', null, '+'),
             'Frame',
           )
-        : null;
+        : fullNote(MAXFRAME, 'frames', 'a sequence');
 
     clear(
       detail,
