@@ -130,6 +130,7 @@ function ownType(kind: PrintableItem['kind'], title: string): ShelfType {
     case 'journal':
     case 'recipe':
       return 'letter';
+    case 'ballooncube': // a cut-and-fold paper toy: with the box inserts too
     case 'spyglass': // a cut-out tool: with the box inserts
       return 'insert';
     case 'prints': // an evidence sheet: with the letters and papers

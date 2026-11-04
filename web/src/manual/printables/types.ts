@@ -3,6 +3,7 @@
 // own in games/<id>/printables.json (see README.md in this folder for the full guide).
 
 import type { PrintsItem, SpyglassItem } from './sleuthTypes';
+import type { BalloonCubeItem } from './balloonCubeTypes';
 
 /** Extras every game gets, made from its catalog entry, manual and disk files. */
 export type GeneratedKind =
@@ -330,7 +331,8 @@ export type PrintableItem =
   | RecipeItem
   | CodeWheelItem
   | CodeSheetItem
-  | PostcardGrilleItem;
+  | PostcardGrilleItem
+  | BalloonCubeItem;
 
 /** A sticker on the sticker sheet. */
 export interface StickerSpec {

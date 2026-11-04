@@ -62,7 +62,7 @@ const corner = (c: V2, spin: 0 | 180): Placement => {
 
 /** Every piece of the sheet that shows on the cube. Cube coordinates: x, y along the base, z up, the lid at z = L. */
 export const PLACEMENTS: Placement[] = [
-  { face: 'bottom', clip: diamond(0, 0), sheet: { o: [0, 0], right: [1, 0], up: [0, 1] }, cube: { o: [0, 0, 0], right: [S, S, 0], up: [S, -S, 0] } },
+  { face: 'bottom', clip: diamond(0, 0), sheet: { o: [0, 0], right: [S, -S], up: [S, S] }, cube: { o: [0, 0, 0], right: [0, 1, 0], up: [1, 0, 0] } },
   side('ne', [0.25, 0.25], [S, S], { o: [L / 2, 0, L / 2], right: [0, 1, 0], up: [0, 0, 1] }),
   side('nw', [-0.25, 0.25], [-S, S], { o: [0, -L / 2, L / 2], right: [1, 0, 0], up: [0, 0, 1] }),
   side('sw', [-0.25, -0.25], [-S, -S], { o: [-L / 2, 0, L / 2], right: [0, -1, 0], up: [0, 0, 1] }),
@@ -75,10 +75,26 @@ export const PLACEMENTS: Placement[] = [
 
 /** The four tucks: triangles on the edge midpoints that fold in half, inside the cube. */
 export const TUCKS: V2[][] = [
-  [[0.25, 0], [0.5, 0.25], [0.5, -0.25]],
-  [[-0.25, 0], [-0.5, 0.25], [-0.5, -0.25]],
-  [[0, 0.25], [0.25, 0.5], [-0.25, 0.5]],
-  [[0, -0.25], [0.25, -0.5], [-0.25, -0.5]],
+  [
+    [0.25, 0],
+    [0.5, 0.25],
+    [0.5, -0.25],
+  ],
+  [
+    [-0.25, 0],
+    [-0.5, 0.25],
+    [-0.5, -0.25],
+  ],
+  [
+    [0, 0.25],
+    [0.25, 0.5],
+    [-0.25, 0.5],
+  ],
+  [
+    [0, -0.25],
+    [0.25, -0.5],
+    [-0.25, -0.5],
+  ],
 ];
 
 export interface Crease {

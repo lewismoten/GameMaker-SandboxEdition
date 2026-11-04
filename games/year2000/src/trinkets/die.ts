@@ -65,7 +65,8 @@ for (const f of FACES) {
   const n = out(f);
   GRIDS[f.pips].forEach(([r, u], i) => {
     const c = [0, 1, 2].map((k) => f.o[k] + r * f.right[k] + u * f.up[k]) as V3;
-    if (f.pips === 4 && i === 3) nub = sphere3(...c, PIP * 0.85); // the dead pip: a nub that sticks out
+    if (f.pips === 4 && i === 3)
+      nub = sphere3(...c, PIP * 0.85); // the dead pip: a nub that sticks out
     else dimples.push(sphere3(...(c.map((v, k) => v + n[k] * (PIP - SINK)) as V3), PIP));
   });
 }

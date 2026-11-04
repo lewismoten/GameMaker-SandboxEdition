@@ -84,6 +84,6 @@ describe('balloon cube fold', () => {
   });
 
   it('pairs opposite faces', () => {
-    for (const [a, b] of Object.entries(OPPOSITE)) expect(OPPOSITE[b as keyof typeof OPPOSITE]).toBe(a);
+    for (const [a, b] of Object.entries(OPPOSITE)) expect(OPPOSITE[b]).toBe(a);
   });
 });
