@@ -904,6 +904,12 @@ engine's 8×8 PC font (Daniel Hepper's public-domain `font8x8_basic`, credited a
 font; no outline font and no other outside art is used. The code was written by Claude Sonnet 5.5 (Anthropic) under
 Lewis Moten's direction.
 
+Final Curtain's laser-cut Stage Box (`games/sleuth/laser/`, with the joint and layout helpers `laserJoints.ts` and
+`laserLayout.ts` beside the nickel builder) was designed and coded by Claude Sonnet 5.5 (Anthropic) from Lewis Moten's
+idea of an etched proscenium box with two curtains and a prop dagger. The mechanism (a stack of plates gated by pegs,
+with a comb on the drawer) is original; finger joints and sliding slots are common woodworking. Its engraving uses only
+words already in Final Curtain, set in the same public-domain 8×8 PC font as the nickels.
+
 The meshes are thinned (`web/packages/tools/src/mesh/decimate.ts`) by quadric edge collapse, the
 method of Michael Garland and Paul Heckbert's "Surface Simplification Using Quadric Error Metrics"
 (SIGGRAPH 1997), written from the paper with no code from any library; the published method is an
