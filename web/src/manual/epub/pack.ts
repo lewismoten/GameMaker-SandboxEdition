@@ -21,7 +21,7 @@ async function bookUuid(key: string): Promise<string> {
 }
 
 /** An XHTML content document around `body`. */
-export function xhtmlPage(title: string, body: string, bodyClass?: string): string {
+function xhtmlPage(title: string, body: string, bodyClass?: string): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="${LANG}" lang="${LANG}">

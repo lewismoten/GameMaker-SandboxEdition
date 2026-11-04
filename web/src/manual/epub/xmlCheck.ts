@@ -8,7 +8,7 @@ export interface XmlElement {
   attrs: Record<string, string>;
 }
 
-export interface XmlResult {
+interface XmlResult {
   errors: string[];
   elements: XmlElement[];
 }

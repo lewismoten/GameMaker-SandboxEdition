@@ -11,7 +11,7 @@ export type ReadSize = 'width' | 'page' | number;
 const KEY = 'gm-read-size';
 
 /** The zoom steps, as percents of the printed size. */
-export const STEPS = [10, 15, 25, 33, 50, 67, 75, 90, 100, 110, 125, 150, 175, 200, 250, 300];
+const STEPS = [10, 15, 25, 33, 50, 67, 75, 90, 100, 110, 125, 150, 175, 200, 250, 300];
 const LEAST = STEPS[0];
 const MOST = STEPS.at(-1)!;
 
@@ -122,7 +122,7 @@ export function sizeControl(start: ReadSize, pick: (size: ReadSize) => void) {
   };
 }
 
-export type SizeControl = ReturnType<typeof sizeControl>;
+type SizeControl = ReturnType<typeof sizeControl>;
 
 /** Ctrl or Cmd with +, − or 0: zooms the pages rather than the browser. True when it was one. */
 export function zoomKey(e: KeyboardEvent, c: SizeControl, reset: ReadSize): boolean {

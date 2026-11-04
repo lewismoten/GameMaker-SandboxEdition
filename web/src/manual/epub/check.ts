@@ -33,7 +33,7 @@ function resolve(from: string, ref: string): string {
 /** Attributes that refer to another file (or a place in one). */
 const REF_ATTRS = ['src', 'href', 'xlink:href', 'poster', 'data'];
 
-export interface EpubReport {
+interface EpubReport {
   problems: string[];
   /** Every file, in zip order, with its size unpacked. */
   files: { name: string; size: number }[];

@@ -9,7 +9,7 @@ import type { Reader, ReaderOptions } from '../readView';
 export const BRIEF_STORY_ZINE_ID = 'brief-story-zines';
 const STORIES_PER_VOLUME = 6;
 
-export interface BriefStoryZinePage {
+interface BriefStoryZinePage {
   page: number;
   kind: 'cover' | 'story' | 'index' | 'back';
   title: string;
@@ -17,14 +17,14 @@ export interface BriefStoryZinePage {
   story?: Story;
 }
 
-export interface BriefStoryZineVolume {
+interface BriefStoryZineVolume {
   number: number;
   stories: Story[];
   pages: BriefStoryZinePage[];
   printInstructions: string;
 }
 
-export interface MiniZineCell {
+interface MiniZineCell {
   page: number;
   rotated: boolean;
 }

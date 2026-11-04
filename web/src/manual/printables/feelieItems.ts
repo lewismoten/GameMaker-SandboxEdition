@@ -11,7 +11,7 @@ import { sheet, type Sheet } from './kit';
 import type { BoxItem } from './viewer';
 
 /** One file to download: its link, what it is, and its size once known. */
-export interface Attachment {
+interface Attachment {
   href: string;
   /** The saved file's name. */
   file: string;
@@ -22,7 +22,7 @@ export interface Attachment {
 const mm = (v: number[]) => v.map((n) => Math.round(n)).join(' × ');
 
 /** A trinket's downloads, from its manifest (which has the sizes). */
-export function trinketAttachments(f: Extract<Feelie, { kind: 'trinket' }>): Attachment[] {
+function trinketAttachments(f: Extract<Feelie, { kind: 'trinket' }>): Attachment[] {
   const { item, base } = f;
   return [
     { href: `${base}${item.file}`, file: item.file, label: '3D printer parts, one color (STL)', bytes: item.bytes },
@@ -34,7 +34,7 @@ export function trinketAttachments(f: Extract<Feelie, { kind: 'trinket' }>): Att
 }
 
 /** A laser kit's downloads, from its manifest (sizes are asked of the site). */
-export function kitAttachments(f: Extract<Feelie, { kind: 'nickel' | 'box' | 'kit' | 'patch' }>): Attachment[] {
+function kitAttachments(f: Extract<Feelie, { kind: 'nickel' | 'box' | 'kit' | 'patch' }>): Attachment[] {
   return f.kit.downloads.map((d) => ({ href: `${f.kit.base}${d.file}`, file: d.file.split('/').pop() ?? d.file, label: d.label }));
 }
 

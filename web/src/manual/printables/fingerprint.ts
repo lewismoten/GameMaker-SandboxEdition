@@ -7,7 +7,7 @@ import { mulberry32 } from '../../seededRandom';
 
 export type PrintPattern = 'whorl' | 'spiral' | 'arch' | 'tented' | 'loop-l' | 'loop-r';
 
-export interface PrintSpec {
+interface PrintSpec {
   pattern: PrintPattern;
   seed: number;
   /** Ridges across the print's width. */
@@ -59,7 +59,7 @@ function phase(spec: PrintSpec, x: number, y: number): number {
  * How much ink the print puts at (x, y), 0..1, with x and y in -1..1 across the print. `lift`
  * maps a lifted print's point back to the original, then adds smudge gaps.
  */
-export function ridgeCoverage(spec: PrintSpec, x: number, y: number, lift?: Lift): number {
+function ridgeCoverage(spec: PrintSpec, x: number, y: number, lift?: Lift): number {
   let px = x;
   let py = y;
   if (lift) {

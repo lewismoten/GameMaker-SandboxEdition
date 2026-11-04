@@ -21,7 +21,7 @@ export interface Frame2 {
   right: V2;
   up: V2;
 }
-export interface Frame3 {
+interface Frame3 {
   o: V3;
   right: V3;
   up: V3;
@@ -97,7 +97,7 @@ export const TUCKS: V2[][] = [
   ],
 ];
 
-export interface Crease {
+interface Crease {
   kind: 'mountain' | 'valley';
   a: V2;
   b: V2;

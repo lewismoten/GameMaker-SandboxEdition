@@ -8,7 +8,7 @@ export interface DrPage {
   body: string;
 }
 
-export interface InsOpts {
+interface InsOpts {
   /** Width on the page, in % of the sheet. */
   width: number;
   /** Tilt in degrees. */

@@ -7,7 +7,7 @@
 import './readView.css';
 import { h } from '../editor/core/ui';
 
-export interface ScrollPagesOptions {
+interface ScrollPagesOptions {
   /** The scrolling element the column sits in. */
   root: HTMLElement;
   count: number;

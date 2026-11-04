@@ -31,7 +31,7 @@ export interface StripPoint {
 }
 
 /** One drawn block of the unrolled map: its unwrapped place (x mod 100 is the map's). */
-export interface CourseCell {
+interface CourseCell {
   x: number;
   y: number;
   /** On the way the hero can get to (else a wall or scenery round it). */
@@ -39,19 +39,19 @@ export interface CourseCell {
 }
 
 /** A mark (an arrival, a way out) moved onto the strip. */
-export interface CourseMark<M> {
+interface CourseMark<M> {
   mark: M;
   at: StripPoint;
 }
 
 /** A place where the way touches itself further on: from the earlier part to the later one. */
-export interface Shortcut {
+interface Shortcut {
   from: StripPoint;
   to: StripPoint;
 }
 
 /** A crossing of the wrap: the seam's line on the strip (two ends), and which edges it joins. */
-export interface Seam {
+interface Seam {
   ends: [StripPoint, StripPoint];
   axis: 'x' | 'y';
 }
@@ -60,7 +60,7 @@ export interface Seam {
  * Along the strip, where the way bends off straight up: a kink in the way itself, or a shortcut
  * taken (the way it left goes on straight ahead, so the path crossed over to another part).
  */
-export interface Kink {
+interface Kink {
   a0: number;
   a1: number;
   at: StripPoint;
@@ -86,7 +86,7 @@ export interface CourseFit {
 }
 
 /** One page-high piece of the strip. */
-export interface CoursePanel {
+interface CoursePanel {
   /** Along, bottom and top (the top runs a few blocks into the next panel's bottom). */
   a0: number;
   a1: number;
