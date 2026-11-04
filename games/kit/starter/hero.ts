@@ -10,7 +10,7 @@ import type { Pal } from './palette';
 
 const T = 255;
 
-type Face = 'smile' | 'blink' | 'ouch' | 'cheer';
+type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'back';
 
 /** The hero's head and cap, 20x20, in side-on three-quarter view (`front` looks at you). */
 function head(pal: Pal, face: Face, front = false, look = 0): Pixels {
@@ -22,6 +22,8 @@ function head(pal: Pal, face: Face, front = false, look = 0): Pixels {
   // hair behind, then the round face
   blob(p, front ? 10 : 7, 11, 4, 4, hair, 0, 2);
   blob(p, 10, 12, 8.6, 8, skin, 0, 3);
+  // seen from behind (climbing): hair all down the back of the head, and no face
+  if (face === 'back') blob(p, 10, 13, 8.2, 7.2, hair, 0, 2);
   // the cap: a dome over the top of the head, and its brim
   const dome = new Pixels(20, 20, T);
   blob(dome, 10, 8, 9.4, 6.4, red, 0, 4);
@@ -29,6 +31,11 @@ function head(pal: Pal, face: Face, front = false, look = 0): Pixels {
   if (front) p.rect(3, 9, 14, 2, red[1]).rect(3, 9, 14, 1, red[3]);
   else p.rect(8, 9, 11, 2, red[1]).rect(9, 9, 10, 1, red[3]).set(19, 9, red[1]);
   p.disc(10, 4.5, 1.5, c('gold', 4)).set(9, 4, c('gold', 5));
+  if (face === 'back') {
+    p.rect(6, 10, 8, 1, red[1]);
+    p.set(2, 13, skin[2]).set(17, 13, skin[2]);
+    return p;
+  }
   // eyes
   const ink = c('ink', 0);
   const eyes: [number, number][] = front
@@ -67,7 +74,7 @@ type Legs = { back: [number, number]; front: [number, number] };
 /** The hero's body, 20x20, in the pose given; hands in `arms`, legs in `legs`. */
 function body(
   pal: Pal,
-  o: { arms: 'down' | 'swingA' | 'swingB' | 'out' | 'upA' | 'upB' | 'rest'; legs: Legs | 'tuck' | 'climbA' | 'climbB'; front?: boolean },
+  o: { arms: 'down' | 'swingA' | 'swingB' | 'out' | 'upA' | 'upB' | 'rest'; legs: Legs | 'tuck' | 'climbA' | 'climbB'; front?: boolean; back?: boolean },
 ): Pixels {
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
@@ -104,10 +111,17 @@ function body(
   p.rect(x0, 0, w, 14, blue[2]);
   p.rect(x0, 0, w, 5, shirt[3]).rect(x0, 0, w, 1, shirt[4]);
   p.rect(x0 + 1, 3, w - 2, 11, blue[2]).rect(x0 + 1, 3, 1, 11, blue[3]);
-  p.rect(x0 + 2, 3, w - 4, 3, blue[3]);
+  if (!o.back) p.rect(x0 + 2, 3, w - 4, 3, blue[3]);
   p.rect(x0 + w - 1, 3, 1, 11, blue[1]).rect(x0, 13, w, 1, blue[1]);
-  p.rect(x0 + 2, 0, 2, 4, blue[3]).rect(x0 + w - 4, 0, 2, 4, blue[3]);
-  p.set(x0 + 2, 4, c('gold', 4)).set(x0 + w - 3, 4, c('gold', 4));
+  if (o.back) {
+    // from behind: the two straps cross over the shirt
+    p.line(x0 + 2, 0, x0 + w - 3, 8, blue[3]).line(x0 + 3, 0, x0 + w - 2, 8, blue[3]);
+    p.line(x0 + w - 3, 0, x0 + 2, 8, blue[3]).line(x0 + w - 4, 0, x0 + 1, 8, blue[3]);
+    p.rect(x0 + 1, 8, w - 2, 6, blue[2]);
+  } else {
+    p.rect(x0 + 2, 0, 2, 4, blue[3]).rect(x0 + w - 4, 0, 2, 4, blue[3]);
+    p.set(x0 + 2, 4, c('gold', 4)).set(x0 + w - 3, 4, c('gold', 4));
+  }
   // arms
   const sleeve = (x: number, y: number, w2: number, h: number) => p.rect(x, y, w2, h, shirt[2]).rect(x, y, 1, h, shirt[4]);
   const hand = (x: number, y: number) => p.disc(x, y, 1.9, skin[2]).set(x - 1, y - 1, skin[3]);
@@ -182,8 +196,9 @@ export function buildHeroBlocks(pal: Pal): Book {
   add('hurt.top', 'hurt', head(pal, 'ouch'), body(pal, { arms: 'out', legs: { back: [4, 0], front: [12, 0] } }));
   add('cheer.top', 'jump', head(pal, 'cheer'), body(pal, { arms: 'out', legs: 'tuck' }));
   walk.forEach((legs, i) => add('stand.top', `walk${i}`, head(pal, 'smile'), body(pal, { arms: i % 2 ? 'swingB' : 'swingA', legs })));
-  add('front.top', 'climb0', head(pal, 'smile', true, 0), body(pal, { arms: 'upA', legs: 'climbA', front: true }));
-  add('look.top', 'climb1', head(pal, 'smile', true, -1), body(pal, { arms: 'upB', legs: 'climbB', front: true }));
+  // climbing shows his back, hands up the ladder
+  add('back.top', 'climb0', head(pal, 'back', true), body(pal, { arms: 'upA', legs: 'climbA', front: true, back: true }));
+  add('back.top', 'climb1', head(pal, 'back', true), body(pal, { arms: 'upB', legs: 'climbB', front: true, back: true }));
   return book;
 }
 

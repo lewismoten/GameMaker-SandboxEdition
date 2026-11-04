@@ -82,8 +82,8 @@ export function menuPicture(pal: Pal, book: Book, hero: Pixels, name: string): P
   const p = scene(pal, book, 170, 7);
   lettering(p, pal, 8, name, name.length > 11 ? 2 : 3);
   const c = pal.c;
-  p.rect(56, 52, 208, 118, c('wood', 1)).rect(58, 54, 204, 114, c('wood', 3));
-  p.rect(62, 58, 196, 106, c('parch', 3)).frame(62, 58, 196, 106, c('wood', 2));
+  p.rect(56, 46, 208, 132, c('wood', 1)).rect(58, 48, 204, 128, c('wood', 3));
+  p.rect(62, 52, 196, 120, c('parch', 4)).frame(62, 52, 196, 120, c('wood', 2));
   scaleBlit(p, hero, 272, 90, 2);
   return p;
 }
@@ -92,8 +92,8 @@ export function menuPicture(pal: Pal, book: Book, hero: Pixels, name: string): P
 export function paper(pal: Pal, book: Book, heading: string): Pixels {
   const c = pal.c;
   const p = scene(pal, book, 176, 11);
-  bevel(p, 22, 6, 276, 186, pal.r('parch'), 3, 2);
-  p.rect(26, 10, 268, 178, c('parch', 3));
+  bevel(p, 22, 0, 276, 200, pal.r('parch'), 3, 2);
+  p.rect(26, 4, 268, 194, c('parch', 4));
   centered(p, 14, heading, c('wood', 1), 2);
   return p;
 }
@@ -101,7 +101,7 @@ export function paper(pal: Pal, book: Book, heading: string): Pixels {
 /** The load and save lists: PLAYGAME writes the names in yellow, so each slot is a dark strip. */
 export function slotsPicture(pal: Pal, book: Book, heading: string): Pixels {
   const p = paper(pal, book, heading);
-  for (let i = 0; i < 10; i++) p.rect(75, 37 + i * 14, 170, 13, pal.c('wood', 0)).rect(75, 49 + i * 14, 170, 1, pal.c('ink', 0));
+  for (let i = 0; i < 10; i++) p.rect(56, 37 + i * 14, 189, 13, pal.c('wood', 0)).rect(56, 49 + i * 14, 189, 1, pal.c('ink', 0));
   return p;
 }
 
@@ -109,7 +109,7 @@ export function slotsPicture(pal: Pal, book: Book, heading: string): Pixels {
 export function scoresPicture(pal: Pal, book: Book, heading: string): Pixels {
   const c = pal.c;
   const p = scene(pal, book, 176, 13);
-  p.rect(4, 0, 312, H, c('parch', 3)).rect(4, 0, 1, H, c('wood', 2)).rect(315, 0, 1, H, c('wood', 2));
+  p.rect(4, 0, 312, H, c('parch', 4)).rect(4, 0, 1, H, c('wood', 2)).rect(315, 0, 1, H, c('wood', 2));
   centered(p, 11, heading, c('wood', 1));
   const rule = textWidth(heading) + 16;
   p.rect(160 - rule / 2, 21, rule, 1, c('wood', 3));

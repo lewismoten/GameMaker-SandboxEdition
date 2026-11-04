@@ -80,7 +80,7 @@ export function buildHero(cb: Book): Character {
     jstkBut: 1,
   });
 
-  const climb = (dy: number) => [f({ top: 'front.top', bottom: 'climb0', y: dy, pause: 2 }), f({ top: 'look.top', bottom: 'climb1', y: dy, pause: 2 })];
+  const climb = (dy: number) => [f({ top: 'back.top', bottom: 'climb0', y: dy, pause: 2 }), f({ top: 'back.top', bottom: 'climb1', y: dy, pause: 2 })];
   set(S[SEQ.up], climb(-CLIMB_STEP), { key: KEY.up, jstkMov: JOY.up });
   set(S[SEQ.upW], climb(-CLIMB_STEP), { key: KEY.w });
   set(S[SEQ.down], climb(CLIMB_STEP), { key: KEY.down, jstkMov: JOY.down });
