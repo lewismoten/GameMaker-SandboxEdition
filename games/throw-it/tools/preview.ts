@@ -31,7 +31,9 @@ const poses: [string, string][] = [
   ['cheer.top', 'jump'],
   ['back.top', 'climb0'],
   ['back.top', 'climb1'],
-  ['hurt.top', 'hurt'],
+  ['stand.top', 'throw0'],
+  ['cheer.top', 'throw1'],
+  ['stand.top', 'throw2'],
 ];
 const sheet = new Pixels(poses.length * 24 + 4, 44, sky);
 poses.forEach(([t, b], i) => sheet.blit(heroPicture(hero, t, b), 4 + i * 24, 2, 255));

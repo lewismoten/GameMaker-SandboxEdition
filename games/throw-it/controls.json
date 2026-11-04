@@ -42,6 +42,10 @@
     }
   },
   "joystick": {
+    "2": {
+      "short": "Throw a star",
+      "long": "Throw a star the way you last walked."
+    },
     "1": {
       "short": "Jump",
       "long": "Jump."
