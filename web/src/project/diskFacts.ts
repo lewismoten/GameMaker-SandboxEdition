@@ -70,8 +70,8 @@ const shrink = (name: string) => SHRINK[name.split('.').pop()!.toLowerCase()] ??
 /** A ZIP's local header (30 bytes) and central directory entry (46), each with the name; then the 22-byte end record. */
 const zipHeaders = (names: string[]) => 22 + names.reduce((n, f) => n + 76 + 2 * f.length, 0);
 
-export const zipName = (g: Pick<CatalogEntry, 'exe' | 'id'>) =>
-  `${(g.exe ?? g.id)
+export const zipName = (g: Pick<CatalogEntry, 'exe' | 'id' | 'dosName'>) =>
+  `${(g.dosName ?? g.exe ?? g.id)
     .replace(/\.EXE$/i, '')
     .slice(0, 8)
     .toUpperCase()}.ZIP`;

@@ -11,6 +11,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 
 ### Added
 
+- Every game's download ZIP and DOS folder now has a short name of up to 8 letters (KEYSDOOR.ZIP, RECKON.ZIP), so DOS shows it whole instead of as `KEYS-A~1`. The web addresses still use the game's name, and the old ZIP links keep working.
 - The Starters tab groups its games the way the Bizarre tab groups its songs, each group with a heading and a line about it (The Basics today), and the "How do I…?" list says which group a question's game is in.
 - Throw It, a Starter for the Game Feel group: press Enter and Kit throws a gold star the way he last walked. It pops a mint green gumdrop, falls short if you stand too far away, and clears a grump out of a narrow brick tunnel. Two levels, with signs and a "How this level is made" page each.
 - The disk box on the desk holds a Game-Maker Sample Disk with the six small games, each in its own folder (A:\FIRSTSTP, KEYSDOOR, MONSTERS, ROOMS, COINS, HAZARDS). Game-Maker loads them to play or design, and the Owner's Guide names the folders.

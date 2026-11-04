@@ -9,8 +9,18 @@ games/originals/teddy/teddy.zip
 
 A link serves the current release of that game. Its URL stays the same when game files,
 player settings or the website change. ZIP filenames use the first eight characters of
-the catalog ID; every native file inside also follows DOS 8.3 naming. Website folder IDs
-are independent of the DOS directory you extract into.
+the catalog ID, or the game's `dosName` when its `about.json` has one (the id is
+longer than 8 characters or has a hyphen: `keys-and-doors` is `KEYSDOOR`, `reckoning` is
+`RECKON`). Every native file inside also follows DOS 8.3 naming. Website folder IDs
+are independent of the DOS directory you extract into, and URLs keep the id
+(`games/originals/keys-and-doors/keysdoor.zip`).
+
+`dosName` is the one source for a game's DOS name: `dosDir()` in `web/src/project/dosDir.ts`
+returns it (upper case) for the ZIP, the desk's `C:\DOWNLOAD\<NAME>` folder, the Sample
+Disk's folder and any CD folder. Without one it is the id when that is already 8.3.
+The ZIP a game had before it had a `dosName` (its id cut to 8 letters, such as `reckonin.zip`)
+still serves the same file. `web/scripts/dosNames.test.ts` checks that every name is 8.3
+and unique.
 
 Playable distributions include the native game files, XFERPLAY named after the `.GAM`,
 SNDBLAST.DRV, CONFIG.BAT, CONFIG.HLP, instructions and notices. The game's own readme is

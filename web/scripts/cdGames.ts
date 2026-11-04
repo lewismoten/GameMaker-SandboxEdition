@@ -21,7 +21,7 @@ import type { Plugin } from 'vite';
 import { createReadStream, existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import { gameArchive, gameZipName } from './gameArchive';
+import { gameArchive, gameZipName, legacyZipName } from './gameArchive';
 import { createArchiveQueue } from './archiveQueue';
 import { archiveWorker } from './archiveWorker';
 import { libraryFacts, type LibraryFileFact } from './libraryFacts';
@@ -53,6 +53,8 @@ export interface CdCatalogEntry {
   bytes: number;
   /** Shareware: the name of its DOS program (listed on the retro PC; never served). */
   exe?: string;
+  /** Original games: the 8.3 name of the ZIP and folders in DOS (about.json), when the id is longer. */
+  dosName?: string;
   /** A few lines from the game's own story or instruction screen. */
   blurb?: string;
   author?: string;
@@ -297,7 +299,7 @@ function scan(cdRoot: string): Scan {
         sizes: names.map((n) => statSync(disk.get(n)!).size),
         bytes: [...disk.values()].reduce((n, p) => n + statSync(p).size, 0),
         blurb: blurbFor(names, disk),
-        pack: gameZipName(id),
+        pack: gameZipName({ id }),
       };
       if (kind === 'shareware' && exe) entry.exe = exe.toUpperCase();
       if (kind === 'shareware') {
@@ -353,7 +355,7 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
     const diskDir = join(base, 'disk');
     if (!existsSync(join(base, 'about.json')) || !existsSync(diskDir)) continue;
     const about = JSON.parse(readFileSync(join(base, 'about.json'), 'utf8')) as GameInfo &
-      OriginalExtras & { blurb?: string; exe?: string; secret?: boolean; series?: string; unlock?: string };
+      OriginalExtras & { blurb?: string; exe?: string; dosName?: string; secret?: boolean; series?: string; unlock?: string };
     const manual = existsSync(join(base, 'manual.json')) ? JSON.parse(readFileSync(join(base, 'manual.json'), 'utf8')) : undefined;
     const printables = existsSync(join(base, 'printables.json')) ? JSON.parse(readFileSync(join(base, 'printables.json'), 'utf8')) : undefined;
     // its DOS player look (games/kit/player.ts): the catalog carries it, never the game's files
@@ -400,7 +402,8 @@ function scanOriginals(root: string, catalog: CdCatalogEntry[], secret: CdCatalo
       ...(walkthrough ? { walkthrough } : {}),
       ...(player ? { player } : {}),
       ...(controls ? { controls } : {}),
-      pack: gameZipName(id),
+      pack: gameZipName({ id, exe: about.exe, dosName: about.dosName }),
+      ...(about.dosName ? { dosName: about.dosName.toUpperCase() } : {}),
     });
     for (const [name, p] of disk) files.set(`${path}${name}`, p);
   }
@@ -538,10 +541,11 @@ export function cdGames(cdRoot: string): Plugin {
           return;
         }
         const packed = /^(games\/[a-z]+\/[a-z0-9_-]+\/)([^/]+\.zip)$/.exec(url);
-        const owner = packed && [...get().catalog, ...get().secret].find((e) => e.path === packed[1] && e.pack === packed[2]);
+        const owner =
+          packed && [...get().catalog, ...get().secret].find((e) => e.path === packed[1] && (e.pack === packed[2] || legacyZipName(e.id) === packed[2]));
         if (owner) {
           // built in a worker process: until it is ready, 202 and ask again (the client retries, client/archiveWait.ts)
-          const bytes = archives.request(url);
+          const bytes = archives.request(`${owner.path}${owner.pack}`);
           res.setHeader('Cache-Control', 'no-store');
           if (!bytes) {
             res.statusCode = 202;
@@ -585,9 +589,12 @@ export function cdGames(cdRoot: string): Plugin {
       );
       entries.forEach((e, i) => {
         // Stable public links: service-worker group hashes version changed ZIP contents.
-        const name = gameZipName(e.id);
+        const name = gameZipName(e);
         archives.set(e.path, name);
         packs.set(`${e.path}${name}`, zips[i]);
+        // the name it had before dosName: old permanent links keep working
+        const old = legacyZipName(e.id);
+        if (old !== name) packs.set(`${e.path}${old}`, zips[i]);
       });
       // what the pages would otherwise fetch game files to work out: the quick check, the box's facts, the pack's size
       const known = (e: CdCatalogEntry): CdCatalogEntry => {

@@ -47,6 +47,8 @@ export interface CatalogEntry {
   gz?: boolean;
   /** Built sites: a downloadable DOS ZIP; older catalogs use gzipped GMPK. Named with a hash of its content. */
   pack?: string;
+  /** Original games: the 8.3 name of its ZIP and folders in DOS (about.json "dosName"), where the id is longer; read it through dosDir(). */
+  dosName?: string;
   /** Built sites: the size of its pack in bytes. */
   packBytes?: number;
   /** Built sites: what the quick check (project/health.ts) finds in it, so no file need be fetched to know. */
