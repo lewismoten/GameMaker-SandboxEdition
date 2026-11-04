@@ -45,17 +45,27 @@ async function hop(bot: StarterBot, to: number, what: string): Promise<void> {
   throw new Error(`${what}: no way across`);
 }
 
+/** Hit points one hurt takes (monsters.ts HURT). */
+const HURT_COST = 10;
+
 /** The score a level starts from, for the check on its coins. */
 const start = (bot: StarterBot) => bot.sim.ci.score;
 
 /** 1. Walk and Hurt: hop over the walking gumdrop and the snail, taking the coins above them. */
 export async function walkAndHurt(bot: StarterBot): Promise<void> {
   const score = start(bot);
+  const hp0 = bot.sim.ci.hitpts;
   await must(bot, bot.walk(10, 'the gumdrop'), 'to the gumdrop');
   await hop(bot, 14, 'the gumdrop');
   await hop(bot, 18, 'past the gumdrop');
+  if (bot.sim.ci.hitpts !== hp0) throw new Error('the first gumdrop hurt: it is meant to be harmless');
   await must(bot, bot.walk(31, 'the snail'), 'to the snail');
-  await hop(bot, 35, 'the snail');
+  // what the TOUCHING HURTS sign teaches, once, on purpose: walk into the snail, take one small hurt, and watch it
+  await must(bot, bot.walk(33, 'into the snail'), 'into the snail');
+  await must(bot, bot.wait(30), 'watching the hurt');
+  if (bot.sim.ci.hitpts !== hp0 - HURT_COST)
+    throw new Error(`the snail should cost exactly ${HURT_COST} hit points once; hit points ${hp0} -> ${bot.sim.ci.hitpts}`);
+  bot.say(`hurt once by the snail: hit points ${hp0} -> ${bot.sim.ci.hitpts} at tick ${bot.sim.ticks}`);
   await hop(bot, 38, 'past the snail');
   coins(bot, score, 8, 'level 1 before the exit');
   await leave(bot, bot.walk(43, 'the exit'), 'the exit');
