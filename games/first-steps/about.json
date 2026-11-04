@@ -22,7 +22,7 @@
     "accent": "#ffd23f",
     "ink": "#ffffff",
     "tagline": "Every game starts with a first step.",
-    "back": "A small explorer in a red cap has two short walks to take. Read the signs: they say how walking, jumping, gravity and ladders work. Then open the game in Game-Maker and change one.",
+    "back": "A small explorer in a teal beanie has two short walks to take. Read the signs: they say how walking, jumping, gravity and ladders work. Then open the game in Game-Maker and change one.",
     "features": ["Signs in the levels explain each idea", "Walk, jump, fall and climb", "Made to be copied and taken apart"],
     "shots": [
       ["walk.map", 22, 6],

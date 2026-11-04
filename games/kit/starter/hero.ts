@@ -1,4 +1,4 @@
-// The Starters' hero: a small, cheerful explorer in a red cap and blue overalls, two blocks
+// The Starters' hero: a small, cheerful kid in a teal knit beanie with a pom-pom, an orange hoodie, gray pants and white sneakers, two blocks
 // tall (a head block over a body block, as Game-Maker characters are). Drawn facing right;
 // the character file mirrors the pictures for walking left. The pictures are the .CBL
 // (character blocks): in the editor's Character tab each frame of a sequence picks two.
@@ -12,27 +12,32 @@ const T = 255;
 
 type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'back';
 
-/** The hero's head and cap, 20x20, in side-on three-quarter view (`front` looks at you). */
+/** The hero's head and beanie, 20x20, in side-on three-quarter view (`front` looks at you). */
 function head(pal: Pal, face: Face, front = false, look = 0): Pixels {
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
   const skin = r('skin');
-  const red = r('red');
+  const teal = r('teal');
+  const white = r('white');
   const hair = r('hair');
   // hair behind, then the round face
   blob(p, front ? 10 : 7, 11, 4, 4, hair, 0, 2);
   blob(p, 10, 12, 8.6, 8, skin, 0, 3);
   // seen from behind (climbing): hair all down the back of the head, and no face
   if (face === 'back') blob(p, 10, 13, 8.2, 7.2, hair, 0, 2);
-  // the cap: a dome over the top of the head, and its brim
+  // the beanie: a knit dome over the top of the head, a ribbed cuff and a pom-pom
   const dome = new Pixels(20, 20, T);
-  blob(dome, 10, 8, 9.4, 6.4, red, 0, 4);
+  blob(dome, 10, 9, 9.4, 6.4, teal, 0, 4);
   for (let y = 0; y < 10; y++) for (let x = 0; x < 20; x++) if (dome.get(x, y) !== T) p.set(x, y, dome.get(x, y));
-  if (front) p.rect(3, 9, 14, 2, red[1]).rect(3, 9, 14, 1, red[3]);
-  else p.rect(8, 9, 11, 2, red[1]).rect(9, 9, 10, 1, red[3]).set(19, 9, red[1]);
-  p.disc(10, 4.5, 1.5, c('gold', 4)).set(9, 4, c('gold', 5));
+  // knit ribs down the dome
+  for (const x of front ? [6, 10, 14] : [8, 12, 16]) p.rect(x, 4, 1, 4, teal[2]);
+  const cx = front ? 3 : 8;
+  const cw = front ? 14 : 11;
+  p.rect(cx, 8, cw, 3, teal[3]).rect(cx, 8, cw, 1, teal[4]).rect(cx, 10, cw, 1, teal[2]);
+  for (let x = cx + 1; x < cx + cw; x += 2) p.set(x, 9, teal[2]);
+  p.disc(10, 4, 3.5, teal[1]).disc(10, 4, 3, white[3]).rect(11, 5, 2, 2, white[2]).set(12, 4, white[2]).set(8, 3, white[2]).set(9, 2, white[2]);
   if (face === 'back') {
-    p.rect(6, 10, 8, 1, red[1]);
+    p.rect(6, 11, 8, 1, teal[1]);
     p.set(2, 13, skin[2]).set(17, 13, skin[2]);
     return p;
   }
@@ -79,48 +84,56 @@ function body(
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
   const shirt = r('orange');
-  const blue = r('blue');
+  const gray = r('stone');
+  const white = r('white');
   const skin = r('skin');
   const front = !!o.front;
   const x0 = front ? 4 : 5;
   const w = front ? 12 : 10;
+  const sneaker = (x: number, y: number, w2: number) => {
+    p.rect(x, y, w2, 3, white[3])
+      .rect(x, y, w2, 1, white[3])
+      .rect(x, y + 2, w2, 1, white[1]);
+    p.set(x + w2 - 2, y + 1, c('teal', 3)).set(x + 1, y, white[2]);
+  };
   const leg = (x: number, lift: number, color: number[]) => {
     p.rect(x, 12 - 0, 4, 4 - lift, color[2]).rect(x, 12, 1, 4 - lift, color[3]);
     const by = 16 - lift;
-    p.rect(x - 1, by, 6, 3, c('red', 1))
-      .rect(x - 1, by, 6, 1, c('red', 3))
-      .rect(x + 4, by + 1, 1, 2, c('red', 2));
+    sneaker(x - 1, by, 6);
   };
   // legs first, behind the body
   if (o.legs === 'tuck') {
-    p.rect(5, 12, 4, 3, blue[2]).rect(5, 14, 5, 3, c('red', 1)).rect(5, 14, 5, 1, c('red', 3));
-    p.rect(11, 12, 4, 3, blue[3]).rect(11, 14, 6, 3, c('red', 1)).rect(11, 14, 6, 1, c('red', 3));
+    p.rect(5, 12, 4, 3, gray[2]);
+    sneaker(5, 14, 5);
+    p.rect(11, 12, 4, 3, gray[3]);
+    sneaker(11, 14, 6);
   } else if (o.legs === 'climbA' || o.legs === 'climbB') {
     const up = o.legs === 'climbA';
-    p.rect(5, up ? 11 : 12, 4, up ? 3 : 4, blue[2])
-      .rect(4, up ? 13 : 16, 6, 3, c('red', 1))
-      .rect(4, up ? 13 : 16, 6, 1, c('red', 3));
-    p.rect(11, up ? 12 : 11, 4, up ? 4 : 3, blue[3])
-      .rect(10, up ? 16 : 13, 6, 3, c('red', 1))
-      .rect(10, up ? 16 : 13, 6, 1, c('red', 3));
+    p.rect(5, up ? 11 : 12, 4, up ? 3 : 4, gray[2]);
+    sneaker(4, up ? 13 : 16, 6);
+    p.rect(11, up ? 12 : 11, 4, up ? 4 : 3, gray[3]);
+    sneaker(10, up ? 16 : 13, 6);
   } else {
-    leg(o.legs.back[0], o.legs.back[1], blue);
-    leg(o.legs.front[0], o.legs.front[1], blue);
+    leg(o.legs.back[0], o.legs.back[1], gray);
+    leg(o.legs.front[0], o.legs.front[1], gray);
   }
-  // the body: yellow-orange shirt, blue overalls with a bib and two gold buttons
-  p.rect(x0, 0, w, 14, blue[2]);
-  p.rect(x0, 0, w, 5, shirt[3]).rect(x0, 0, w, 1, shirt[4]);
-  p.rect(x0 + 1, 3, w - 2, 11, blue[2]).rect(x0 + 1, 3, 1, 11, blue[3]);
-  if (!o.back) p.rect(x0 + 2, 3, w - 4, 3, blue[3]);
-  p.rect(x0 + w - 1, 3, 1, 11, blue[1]).rect(x0, 13, w, 1, blue[1]);
+  // the body: an orange hoodie with a ribbed hem; the front shows a kangaroo pocket and two
+  // drawstrings, the back shows the hood
+  p.rect(x0, 0, w, 14, shirt[3])
+    .rect(x0, 0, 1, 14, shirt[4])
+    .rect(x0 + w - 1, 0, 1, 14, shirt[2]);
+  p.rect(x0, 12, w, 2, shirt[2]).rect(x0, 12, w, 1, shirt[1]);
   if (o.back) {
-    // from behind: the two straps cross over the shirt
-    p.line(x0 + 2, 0, x0 + w - 3, 8, blue[3]).line(x0 + 3, 0, x0 + w - 2, 8, blue[3]);
-    p.line(x0 + w - 3, 0, x0 + 2, 8, blue[3]).line(x0 + w - 4, 0, x0 + 1, 8, blue[3]);
-    p.rect(x0 + 1, 8, w - 2, 6, blue[2]);
+    p.rect(x0 + 1, 0, w - 2, 3, shirt[4]).rect(x0 + 2, 3, w - 4, 1, shirt[2]);
+    p.rect(x0 + 3, 5, w - 6, 1, shirt[2]);
   } else {
-    p.rect(x0 + 2, 0, 2, 4, blue[3]).rect(x0 + w - 4, 0, 2, 4, blue[3]);
-    p.set(x0 + 2, 4, c('gold', 4)).set(x0 + w - 3, 4, c('gold', 4));
+    p.rect(x0 + 1, 0, w - 2, 2, shirt[4]);
+    p.rect(x0 + 2, 6, w - 3, 5, shirt[2]).rect(x0 + 2, 6, w - 3, 1, shirt[1]);
+    p.rect(x0 + 2, 6, 1, 5, shirt[1]);
+    p.set(x0 + 3, 2, white[3])
+      .set(x0 + 3, 3, white[3])
+      .set(x0 + w - 4, 2, white[3])
+      .set(x0 + w - 4, 3, white[3]);
   }
   // arms
   const sleeve = (x: number, y: number, w2: number, h: number) => p.rect(x, y, w2, h, shirt[2]).rect(x, y, 1, h, shirt[4]);

@@ -200,8 +200,9 @@ export function addStarterBlocks(book: Book, pal: Pal): void {
     // a coin: touch it for 10 points and it is gone
     const p = sky();
     p.disc(9.5, 9.5, 7, c('gold', 0)).disc(9.5, 9.5, 6, c('gold', 3)).disc(9.5, 9.5, 4, c('gold', 4));
-    p.rect(9, 6, 2, 8, c('gold', 2)).rect(7, 8, 6, 1, c('gold', 1));
-    p.set(6, 6, c('gold', 5)).set(7, 5, c('gold', 5)).set(6, 7, c('gold', 5));
+    // a plain round coin: a darker rim ring inside, and a shine at the upper left
+    p.disc(9.5, 9.5, 3, c('gold', 3)).disc(9.5, 10, 2, c('gold', 2));
+    p.rect(6, 6, 2, 3, c('gold', 5)).set(8, 5, c('gold', 5)).set(7, 5, c('gold', 5)).set(9, 6, c('gold', 4));
     book.add('coin', p, { ...air, score: 10, touch: 'sky' });
   }
   {

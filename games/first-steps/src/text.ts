@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Every game starts with a first step.
 
-A small explorer in a red cap has two short walks to take. Read the signs along the way: they say how walking, jumping, gravity and ladders work.
+A small explorer in a teal beanie has two short walks to take. Read the signs along the way: they say how walking, jumping, gravity and ladders work.
 
 Find the door at the end of each level, and walk into it.
 
