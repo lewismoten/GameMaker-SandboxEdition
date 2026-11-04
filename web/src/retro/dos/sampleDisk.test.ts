@@ -1,9 +1,12 @@
 // The Sample Disk lists the six Starters, each in its own 8.3 folder with a .GAM file.
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { CatalogEntry } from '../../project/files';
 import { STARTER_ORDER } from '../../project/starter';
-import { SAMPLE_DIRS, sampleFolders } from './sampleDisk';
+import { SAMPLE_DIRS, SAMPLE_DISK_COUNT, floppyFolders, sampleFolders } from './sampleDisk';
+
+/** The Starters built so far (STARTER_ORDER also lists ones not made yet). */
+const BUILT = STARTER_ORDER.filter((id) => existsSync(new URL(`../../../../games/${id}/about.json`, import.meta.url)));
 
 /** A catalog entry as the build lists a Starter, read from the game's own about.json (STEPS.EXE plays STEPS.GAM). */
 function entry(id: string): CatalogEntry {
@@ -17,17 +20,22 @@ function entry(id: string): CatalogEntry {
 }
 
 describe('the Sample Disk', () => {
-  const catalog = [...STARTER_ORDER].reverse().map((id) => entry(id));
+  const catalog = [...BUILT].reverse().map((id) => entry(id));
   const folders = sampleFolders(catalog);
 
   it('lists the six Starters in learning order', () => {
-    expect(folders.map((f) => f.entry.id)).toEqual(STARTER_ORDER);
-    expect(folders).toHaveLength(6);
+    expect(folders.map((f) => f.entry.id)).toEqual(BUILT);
+    expect(folders.length).toBeGreaterThanOrEqual(6);
+  });
+
+  it('puts only the first three on the diskette, all of them on the CD', () => {
+    expect(floppyFolders(catalog).map((f) => f.entry.id)).toEqual(BUILT.slice(0, SAMPLE_DISK_COUNT));
+    expect(SAMPLE_DISK_COUNT).toBe(3);
   });
 
   it('gives each a different 8.3 folder name', () => {
     const names = folders.map((f) => f.dir);
-    expect(names).toEqual(['FIRSTSTP', 'KEYSDOOR', 'MONSTERS', 'ROOMS', 'COINS', 'HAZARDS']);
+    expect(names.slice(0, 6)).toEqual(['FIRSTSTP', 'KEYSDOOR', 'MONSTERS', 'ROOMS', 'COINS', 'HAZARDS']);
     expect(new Set(names).size).toBe(names.length);
     for (const n of names) expect(n).toMatch(/^[A-Z0-9_]{1,8}$/);
   });
@@ -37,12 +45,12 @@ describe('the Sample Disk', () => {
   });
 
   it('names every Starter in STARTER_ORDER', () => {
-    expect(Object.keys(SAMPLE_DIRS).sort()).toEqual([...STARTER_ORDER].sort());
+    expect(Object.keys(SAMPLE_DIRS).sort()).toEqual(STARTER_ORDER.slice(0, 6).sort());
   });
 
   it('leaves out games that are not Starters (a secret game, a Sandbox game)', () => {
     const other = { ...entry('first-steps'), id: 'other', series: undefined } as CatalogEntry;
-    expect(sampleFolders([other, ...catalog]).map((f) => f.entry.id)).toEqual(STARTER_ORDER);
+    expect(sampleFolders([other, ...catalog]).map((f) => f.entry.id)).toEqual(BUILT);
   });
 
   it('gives a Starter added later a name of its own that fits 8.3', () => {
@@ -51,7 +59,7 @@ describe('the Sample Disk', () => {
       { ...entry('first-steps'), id: 'long-new-starter-2' },
     ] as CatalogEntry[];
     const names = sampleFolders([...catalog, ...later]).map((f) => f.dir);
-    expect(new Set(names).size).toBe(8);
+    expect(new Set(names).size).toBe(catalog.length + 2);
     for (const n of names) expect(n).toMatch(/^[A-Z0-9_~]{1,8}$/);
   });
 });

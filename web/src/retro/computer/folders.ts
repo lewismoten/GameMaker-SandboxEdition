@@ -9,6 +9,7 @@ import { Project } from '../../editor/core/project';
 import { download } from '../../editor/core/ui';
 import { ComputerDrives } from './drives';
 import { dosDir } from '../../project/dosDir';
+import { sampleFolders } from '../dos/sampleDisk';
 import { isBizarreGame } from '../../project/bizarre';
 
 export abstract class ComputerFolders extends ComputerDrives {
@@ -61,6 +62,10 @@ export abstract class ComputerFolders extends ComputerDrives {
         notice: g.notice,
         ...(free ? { free, catalogId: g.id } : {}),
       };
+    }
+    if (drive === 'D' && this.cdIn && top === 'SAMPLES') {
+      const f = sampleFolders(cat).find((x) => x.dir === dir);
+      return f ? { title: f.entry.title, files: new GameFiles(await this.catalogFiles(f.entry)), where: path, kind: 'cd', catalogId: f.entry.id } : undefined;
     }
     if (drive === 'D' && this.cdIn && (top === 'GAMEWARE' || top === 'GM')) {
       const g = cat.find((c) => c.kind === 'gameware' && c.id.toUpperCase() === dir);

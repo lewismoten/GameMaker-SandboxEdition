@@ -11,6 +11,7 @@ import { FileSystem, file, folder, liveFolder, textFile, deskDate, DOS_DATE, typ
 import { hardDiskGames, hdFiles, type HdGame } from '../dos/hardDisk';
 import { Downloads, type InsertedDisk } from '../host';
 import type { Disk } from '../dos/disks';
+import { sampleFolders, type SampleFolder } from '../dos/sampleDisk';
 import { loadCatalog, loadHostedGame, type CatalogEntry, GameFiles } from '../../project/files';
 import { Vga } from '../../vga/shared/vga';
 import { h } from '../../editor/core/ui';
@@ -162,6 +163,26 @@ export abstract class ComputerDrives {
         date,
       );
 
+    /** A folder for each Starter (the Sample Disk's, or the Sample CD's D:\SAMPLES), holding its files as the transfer left a game. */
+    const starterFolders = (list: readonly SampleFolder[]): DosNode[] =>
+      list.map(({ dir, entry: g }) =>
+      folder(
+        dir,
+        async () => {
+          const own = gameDownloadNodes(g, DOS_DATE, {
+            kind: 'game',
+            title: g.title,
+            gam: g.gam!,
+            files: () => this.catalogFiles(g),
+            saveId: `game:${g.id}`,
+          });
+          const files = (await gameFolder(g).list!()).filter((n) => !own.some((o) => o.name === n.name));
+          return [...own, ...files];
+        },
+        DOS_DATE,
+      ),
+    );;
+
     this.fs.addDrive({
       letter: 'A',
       label: '',
@@ -170,25 +191,7 @@ export abstract class ComputerDrives {
         const d = this.inserted;
         if (!d || d.disk.kind === 'blank') return null;
         // the Sample Disk: a folder for each Starter, holding its files as the transfer left a game
-        if (d.disk.folders) {
-          return d.disk.folders.map(({ dir, entry: g }) =>
-            folder(
-              dir,
-              async () => {
-                const own = gameDownloadNodes(g, DOS_DATE, {
-                  kind: 'game',
-                  title: g.title,
-                  gam: g.gam!,
-                  files: () => this.catalogFiles(g),
-                  saveId: `game:${g.id}`,
-                });
-                const files = (await gameFolder(g).list!()).filter((n) => !own.some((o) => o.name === n.name));
-                return [...own, ...files];
-              },
-              DOS_DATE,
-            ),
-          );
-        }
+        if (d.disk.folders) return starterFolders(d.disk.folders);
         const nodes = d.files.entries().map(([n, b]) => file(n, b.length, { read: async () => b }));
         if (d.disk.gam) {
           const exe = d.disk.gam.replace(/\.gam$/i, '.exe');
@@ -317,11 +320,27 @@ export abstract class ComputerDrives {
         const cat = await this.catalog();
         return [
           folder('GM', () => this.gmFolder(false)),
+          folder('SAMPLES', () => starterFolders(sampleFolders(cat))),
           folder('GAMEWARE', () => cat.filter((g) => g.kind === 'gameware').map((g) => gameFolder(g))),
           file('INSTALL.EXE', 61_421, { run: { kind: 'install' } }),
           textFile(
             'README.TXT',
-            'Game-Maker: Sandbox Edition 3.00\nBased on Game-Maker 3.00 by\nRecreational Software Designs, 1994\n\nGame-Maker is already installed in C:\\GM. Type GM to start it.\n',
+            [
+              'GAME-MAKER: SANDBOX EDITION 3.00  -  THE SAMPLE CD',
+              'Based on Game-Maker 3.00 by Recreational Software Designs, 1994',
+              '',
+              '  GM         Game-Maker, as shipped (already installed in C:\\GM;',
+              '             type GM to start it)',
+              '  SAMPLES    the Starters: small games, one idea each, one',
+              '             folder apiece (FIRSTSTP is the place to begin)',
+              '  GAMEWARE   games to play, from RSD and friends',
+              '',
+              'Open a sample in Game-Maker to play it or change it. The CD',
+              "can't be written to; copies of a sample go to C:\\GM.",
+              '',
+              'Sandbox Software',
+              '',
+            ].join('\n'),
           ),
         ];
       },
