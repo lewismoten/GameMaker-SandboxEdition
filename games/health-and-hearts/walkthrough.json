@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "health-and-hearts",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU03zQNNDjkCuQ7NMk03zQNN"
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ozQNNCTkCuQ7NMk0PzStND80rTTLNA00="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0tzQNNLDkCuRc5ArkcOQK5EzkCuTBNLc0DOQK5AE0PzQVNFM0rTQjNBk0KzQNNBDkCuQ7NCk0EOQK5Ds0KTQQ5ArkOzTJND80DOQK5AE0PzQVNCs0rTQ3NB00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Spikes"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Pool"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Safe Way"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 10634,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: Spikes",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: The Pool",
+    "frame": 3206,
+    "time": 53433.333333331284
+   },
+   {
+    "title": "Level 3: The Safe Way",
+    "frame": 4570,
+    "time": 76166.66666666594
+   },
+   {
+    "title": "Ending",
+    "frame": 7349,
+    "time": 122483.33333334609
+   },
+   {
+    "title": "Credits",
+    "frame": 9560,
+    "time": 159333.33333333215
+   }
+  ]
+ }
+}
