@@ -119,6 +119,10 @@ multi-block objects for `kit/align.ts`, which their checks run. The other play-t
 | throw-it | `npx vite-node ../games/throw-it/tools/gendemo.ts` | re-records the title demo (a pop, a short star, a pop) into `src/demo.ts` (then rebuild) |
 | throw-it | `npx vite-node ../games/throw-it/tools/demoCheck.ts` | plays the title demo headless: pop, miss, pop |
 | throw-it | `npx vite-node ../games/throw-it/tools/preview.ts [dir]` | PNGs of the blocks, the hero, the monsters, each level and every picture |
+| say-something | `npx vite-node ../games/say-something/tools/check.ts` | the bot reads the signs and walks into Pip, Moss and Dot; each must open its own talk scene and bring Kit back past the friend, with every coin |
+| say-something | `npx vite-node ../games/say-something/tools/demoCheck.ts` | plays the title demo headless: it reads the boards and walks into Pip |
+| say-something | `npx vite-node ../games/say-something/tools/gendemo.ts` | re-records the title demo into `src/demo.ts` (then rebuild) |
+| say-something | `npx vite-node ../games/say-something/tools/preview.ts [dir]` | PNGs of the blocks, the hero, each level and every picture |
 | goat              | `npx vite-node ../games/goat/tools/check.ts`                      | the bot eats, gathers wool and screams its way to the manger                                                                                 |
 | goat              | `npx vite-node ../games/goat/tools/gendemo.ts`                    | re-records the title demo into `src/demo.ts` (then rebuild)                                                                                  |
 | mustard           | `npx vite-node ../games/mustard/tools/check.ts`                   | the bot hops the garden, digs to five drops, moves the mountain, rides the breeze                                                            |

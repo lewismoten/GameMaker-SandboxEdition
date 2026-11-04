@@ -37,6 +37,7 @@ export const CAST_GAMES = {
   'watch-your-step': ['Watch Your Step', 'starter'],
   'power-up': ['Power Up', 'starter'],
   'throw-it': ['Throw It', 'starter'],
+  'say-something': ['Say Something', 'starter'],
   carl: ['A Fly Named Carl', 'bizarre'],
   goat: ['Third Goat from the Left', 'bizarre'],
   loaf: ['Loaf #13 (Left in the Basket)', 'bizarre'],
@@ -119,6 +120,7 @@ const LISTED: CastMember[] = [
       { game: 'watch-your-step', as: 'learns that spikes hurt once and a pool costs a life' },
       { game: 'power-up', as: 'grabs a star for high jumps and sneakers for speed' },
       { game: 'throw-it', as: 'throws a friendly star that pops gumdrops' },
+      { game: 'say-something', as: 'reads the signs and talks to Pip, Moss and Dot' },
     ],
   },
   {
