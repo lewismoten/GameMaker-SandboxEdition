@@ -70,12 +70,12 @@ export interface CatalogEntry {
 const SANDBOX_COMPANY = 'Sandbox Software';
 
 /**
- * A Sandbox Software game: one of ours, with its box, disk and manual. Other games built in
+ * A Sandbox Software game: one of ours, with its box, disk and manual (not a Starter, see starter.ts). Other games built in
  * ../games under another publisher's name (a BBS download such as The Bard of Bizarre's)
  * are listed with the shareware instead.
  */
-export function isSandboxGame(g: Pick<CatalogEntry, 'original' | 'company'>): boolean {
-  return !!g.original && (g.company ?? SANDBOX_COMPANY) === SANDBOX_COMPANY;
+export function isSandboxGame(g: Pick<CatalogEntry, 'original' | 'company'> & { series?: string }): boolean {
+  return !!g.original && (g.company ?? SANDBOX_COMPANY) === SANDBOX_COMPANY && g.series !== 'starter';
 }
 
 const catalogs = new Map<string, Promise<CatalogEntry[]>>();

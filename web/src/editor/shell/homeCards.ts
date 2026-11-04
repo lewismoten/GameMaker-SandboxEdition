@@ -85,7 +85,7 @@ export function playLink(id: string): string {
 /** How much of a game a demo in the panel fetches before it is asked for, in bytes. */
 const PREVIEW_AHEAD = 192 * 1024;
 
-export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre' | 'community';
+export type GameKind = 'mine' | 'gameware' | 'sandbox' | 'shareware' | 'bizarre' | 'starter' | 'community';
 
 type ProjectSummary = Awaited<ReturnType<typeof listProjects>>[number];
 
@@ -134,7 +134,7 @@ export function catalogGame(g: CatalogEntry, kind: GameKind): HomeGame {
   // the CD's library of parts has no game, nor a title of its own
   const title = g.gam ? g.title : 'Parts library';
   const made =
-    kind === 'sandbox'
+    kind === 'sandbox' || kind === 'starter'
       ? [g.company ?? 'Sandbox Software', g.year].filter(Boolean).join(' · ')
       : kind === 'shareware' || kind === 'bizarre'
         ? creditLine(g) || (isBizarreGame(g) ? 'The Bard of Bizarre · free to change' : 'Shareware · play only')

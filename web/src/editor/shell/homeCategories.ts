@@ -1,5 +1,5 @@
 // The home page's collections (its tabs) in the order they show: your own games, then this
-// edition's (Sandbox, and Bizarre once it has enough games), then the CD's (Gameware,
+// edition's (Starters and Sandbox, and Bizarre once it has enough games), then the CD's (Gameware,
 // Shareware). The one opened first, the one remembered, and the featured game a collection
 // shows when it is chosen (pickFeatured) are here too.
 import type { GameKind } from './homeCards';
@@ -23,6 +23,13 @@ export const CATEGORIES: { id: Category; icon: IconName; name: string; short: st
     name: 'Imported',
     short: 'Games brought in from folders, files, .zips or .html exports.',
     lead: 'Games brought in from a folder, files, a .zip or a one-page export, often made by someone else. Kept in this browser; ⋯ More moves one to My games.',
+  },
+  {
+    id: 'starter',
+    icon: 'manual',
+    name: 'Starters',
+    short: 'Small games that each show one idea. Play one, then edit a copy to start your own.',
+    lead: 'Small games that each show one Game-Maker idea, with signs in the levels that say what you are looking at. Play one, then edit a copy: find the sign in the map editor, change a block and play your change.',
   },
   {
     id: 'sandbox',

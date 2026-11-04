@@ -20,6 +20,7 @@ import { fillRating } from './homeRatings';
 const KIND_LABEL: Record<GameKind, string> = {
   mine: 'My game',
   gameware: 'Gameware',
+  starter: 'Starter',
   sandbox: 'Sandbox',
   shareware: 'Shareware',
   bizarre: 'Bizarre',
