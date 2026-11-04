@@ -36,12 +36,12 @@ async function bump(bot: StarterBot, col: number, what: string): Promise<void> {
 export async function oneKey(bot: StarterBot): Promise<void> {
   const score = bot.sim.ci.score;
   await bump(bot, 28, 'locked door');
-  await must(bot, bot.walk(23, 'the ladder'), 'back to the ladder');
-  await must(bot, bot.walk(24, 'the ladder'), 'onto the ladder');
+  await must(bot, bot.walk(20, 'the ladder'), 'back to the ladder');
+  await must(bot, bot.walk(19, 'the ladder'), 'onto the ladder');
   await must(bot, bot.climb('up', 2, 'up the ladder'), 'climb');
-  await must(bot, bot.walk(17, 'the key'), 'along the ledge to the key');
-  await must(bot, bot.walk(23, 'the ladder again'), 'back along the ledge');
-  await must(bot, bot.walk(24, 'the ladder'), 'onto the ladder');
+  await must(bot, bot.walk(26, 'the key'), 'along the ledge to the key');
+  await must(bot, bot.walk(20, 'the ladder again'), 'back along the ledge');
+  await must(bot, bot.walk(19, 'the ladder'), 'onto the ladder');
   await must(bot, bot.climb('down', 8, 'down the ladder'), 'down the ladder');
   await must(bot, bot.walk(27, 'the locked door'), 'to the door');
   await must(bot, bot.walk(29, 'through the door'), 'through the door');

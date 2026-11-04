@@ -2,7 +2,7 @@
 // games/kit/starter/map.ts for what the letters mean), then given its signs.
 //
 //   1. One Key, One Door: you reach the padlocked door first and it stays shut (LOCKED. FIND A KEY.).
-//      The key sits on a ledge in sight of the door, up a ladder.
+//      The key is on a ledge over the door, up a ladder just before it.
 //   2. Two Keys, One Door: one key on the ground, one on a ledge, and a gold door that costs two.
 //   3. Two Keys, Two Doors: a gold key for the gold door, a silver key for the silver door. The
 //      silver key sits up on a ledge you can see from the start, reached by a ladder behind the
@@ -39,8 +39,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   addGateTwo(book, pal);
   const signs = {
     locked: addSign(book, pal, 'locked', 'LOCKED. FIND A KEY.', 4, 2),
-    climbKey: addSign(book, pal, 'climbKey', 'CLIMB UP FOR A KEY', 4, 2),
-    score: addSign(book, pal, 'score', 'F2 SHOWS SCORE: KEY IS 25', 4, 2),
+    findBoth: addSign(book, pal, 'findBoth', 'FIND BOTH KEYS', 4, 2),
     needsTwo: addSign(book, pal, 'needsTwo', 'THIS DOOR NEEDS 2 KEYS', 4, 2),
     two: addSign(book, pal, 'two', 'TWO DOORS, TWO KEYS', 4, 2),
     gold: addSign(book, pal, 'gold', 'GOLD KEY, GOLD DOOR', 4, 2),
@@ -51,7 +50,7 @@ export function buildBlocks(pal: Pal): { book: Book; signs: Record<SignName, Sig
   return { book, signs };
 }
 
-export type SignName = 'locked' | 'climbKey' | 'score' | 'needsTwo' | 'two' | 'gold' | 'climb' | 'silver' | 'exit';
+export type SignName = 'locked' | 'findBoth' | 'needsTwo' | 'two' | 'gold' | 'climb' | 'silver' | 'exit';
 
 export interface Level {
   file: string;
@@ -81,11 +80,11 @@ function oneKey(book: Book, signs: Record<SignName, Sign>): StarterMap {
   g.put(42, 8, 'e').put(42, 9, 'E');
   // the locked door in a wall; the key on a ledge in plain sight of it, a ladder on the near side
   wall(g, 28, GROUND, 'l', 'L');
-  g.row(3, 16, 23, 'G').fill(16, 4, 8, 1, 'D');
-  g.put(18, 2, 'k');
-  g.col(24, 2, 9, 'H');
+  g.row(3, 20, 27, 'G').fill(20, 4, 8, 1, 'D');
+  g.put(26, 2, 'k');
+  g.col(19, 2, 9, 'H');
   // coins along the ledge and past the door
-  g.row(2, 20, 22, 'c').row(9, 31, 35, 'c');
+  g.row(2, 22, 24, 'c').row(9, 31, 35, 'c');
   for (const [x, y] of [
     [6, 2],
     [12, 0],
@@ -96,7 +95,6 @@ function oneKey(book: Book, signs: Record<SignName, Sign>): StarterMap {
   for (const x of [9, 26, 44]) g.put(x, GROUND - 1, 'b');
   for (const x of [6, 17, 43]) g.put(x, GROUND - 1, 'f');
   const m = new StarterMap(book, g.rows());
-  m.sign(12, onGround(GROUND, signs.climbKey), signs.climbKey);
   m.sign(20, onGround(GROUND, signs.locked), signs.locked);
   m.sign(38, onGround(GROUND, signs.exit), signs.exit);
   return m;
@@ -129,7 +127,7 @@ function twoOfAKind(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const m = new StarterMap(book, g.rows());
   // the wall's gold door costs two keys
   m.set(29, GROUND - 1, 'gateTwo');
-  m.sign(5, onGround(GROUND, signs.score), signs.score);
+  m.sign(5, onGround(GROUND, signs.findBoth), signs.findBoth);
   m.sign(24, onGround(GROUND, signs.needsTwo), signs.needsTwo);
   m.sign(38, onGround(GROUND, signs.exit), signs.exit);
   return m;

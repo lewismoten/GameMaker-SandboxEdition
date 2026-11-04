@@ -20,9 +20,9 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |UP, DOWN      climb a ladder
 
-Touch a key and it is yours: the key counter goes up by one. The game does not draw the counter on the screen; F2 shows your score, and a key is worth 25.
+Touch a key and it is yours: the key counter goes up by one.
 
-Walk into a locked door while you carry its key. The door opens and the counter goes down by one. Some doors need two keys.
+Walk into a locked door while you carry its key. The door opens and the counter goes down by one. A door with two key holes needs two keys.
 
 Coins add to your score. The door at the end of the level takes you on.
 
