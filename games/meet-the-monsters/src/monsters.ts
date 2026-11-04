@@ -1,15 +1,15 @@
-// MEET THE MONSTERS' monsters: the kit's three that hurt (gumdrop, buzzer, shelly, kit/starter/
-// monsters.ts) and two more of this game's own:
-//   pop  a mint-green gumdrop that is harmless: touch it and it pops into a star (and 50 points)
-//   star  the pop: a star that floats up and is gone
-// What the engine does when a monster is touched (code/GM/PLAYGAME.C, the monster loop): the
-// monster block's effects are applied to the hero (hit points, score, a counter), and a monster
-// whose "power" is under 100 then dies, or becomes the monster named in "Newmon". It does not
-// matter which side was touched, so the pop is the same from the top, the side or below.
+// MEET THE MONSTERS' monsters. The kit's gumdrop 0, buzzer 1 and shelly 2, then this game's own:
+//   pop    a mint-green gumdrop that is harmless: touch it and it is gone (and 50 points)
+//   dazed  the snail after it hurts: it flickers, can't hurt, and turns back after a moment
+//   grump  a purple gumdrop that hurts a little (level 2), and its dazed twin
+// What the engine does when a monster is touched (code/GM/PLAYGAME.C, the monster loop): on EVERY
+// monster tick the two overlap, the monster block's effects are applied to the hero (hit points,
+// score, a counter), and a monster whose "power" is under 100 then dies, or becomes the monster
+// named in "Newmon". It does not matter which side was touched. So a monster that hurts must not
+// stay a monster that hurts: power 1 and a Newmon of its dazed twin makes one touch cost one hit.
 import type { Block } from '@lewismoten/gamemaker-sandbox-engine/formats/blocks';
 import type { Monster } from '@lewismoten/gamemaker-sandbox-engine/formats/monster';
-import { corner, mon } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
-import { outline } from '@lewismoten/gamemaker-sandbox-tools/kit/blit';
+import { mon, pace } from '@lewismoten/gamemaker-sandbox-tools/kit/actors';
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import type { Book } from '../../kit/starter/book';
 import { buildMonsterBlocks, buildMonsters } from '../../kit/starter/monsters';
@@ -17,11 +17,15 @@ import type { Pal } from '../../kit/starter/palette';
 
 /** The monster numbers this game adds after the kit's gumdrop 0, buzzer 1 and shelly 2. */
 export const POP = 3;
-export const STAR = 4;
+export const SHELLY_DAZED = 4;
+export const GRUMP = 5;
+export const GRUMP_DAZED = 6;
 
-/** Hit points a hurting monster takes when touched, and the hero's own (so three touches cost a life). */
+/** Hit points one bump takes, and the hero's own (so five separate bumps cost a life). */
 export const HURT = -10;
-export const HERO_HIT_POINTS = 30;
+export const HERO_HIT_POINTS = 50;
+/** How many ticks a monster stays dazed (about three seconds) before it can hurt again. */
+const DAZE = 54;
 
 const T = 255;
 
@@ -35,61 +39,52 @@ function mint(pal: Pal, pic: Pixels): Pixels {
   });
 }
 
-/** A five-pointed star with a happy face, twinkling between two sizes. */
-function star(pal: Pal, big: boolean): Pixels {
-  const { c } = pal;
-  const p = new Pixels(20, 20, T);
-  const R = big ? 9.2 : 7.4;
-  const r = R * 0.48;
-  const pts: [number, number][] = [];
-  for (let i = 0; i < 10; i++) {
-    const a = -Math.PI / 2 + (i * Math.PI) / 5;
-    const rad = i % 2 ? r : R;
-    pts.push([9.5 + Math.cos(a) * rad, 10.5 + Math.sin(a) * rad]);
-  }
-  const inside = (x: number, y: number) => {
-    let hit = false;
-    for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
-      const [xi, yi] = pts[i];
-      const [xj, yj] = pts[j];
-      if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) hit = !hit;
-    }
-    return hit;
-  };
-  for (let y = 0; y < 20; y++) for (let x = 0; x < 20; x++) if (inside(x + 0.5, y + 0.5)) p.set(x, y, y < 9 ? c('gold', 4) : c('gold', 3));
-  p.rect(8, 5, 2, 2, c('gold', 5)).set(7, 6, c('gold', 5));
-  p.set(7, 10, c('ink', 0)).set(7, 11, c('ink', 0)).set(12, 10, c('ink', 0)).set(12, 11, c('ink', 0));
-  p.set(8, 13, c('ink', 0)).set(9, 14, c('ink', 0)).set(10, 14, c('ink', 0)).set(11, 13, c('ink', 0));
-  return outline(p, c('ink', 0), { transparent: T });
-}
-
-/** The monster pictures: the kit's, then pop and star. */
+/** The monster pictures: the kit's, then pop, the dazed twins and the purple gumdrop that hurts. */
 export function monsterPictures(pal: Pal): Book {
   const mb = buildMonsterBlocks(pal);
+  const g0 = mb.pics.get('gumdrop0')!;
+  const g1 = mb.pics.get('gumdrop1')!;
+  const s0 = mb.pics.get('shelly0')!;
   // harmless: no hit points taken, 50 points for the pop
-  const rules = { score: 50 };
-  mb.add('pop0', mint(pal, mb.pics.get('gumdrop0')!), rules);
-  mb.add('pop1', mint(pal, mb.pics.get('gumdrop1')!), rules);
-  mb.add('star0', star(pal, true), {});
-  mb.add('star1', star(pal, false), {});
+  mb.add('pop0', mint(pal, g0), { score: 50 });
+  mb.add('pop1', mint(pal, mb.pics.get('gumdrop1')!), { score: 50 });
+  // the purple gumdrop of level 2 hurts; the dazed twins are the same pictures that don't, flickering
+  mb.add('grump0', g0, { hp: HURT });
+  mb.add('grump1', g1, { hp: HURT });
+  mb.add('dazed.shelly', s0, {});
+  mb.add('dazed.grump', g0, {});
+  mb.add('dazed.gone', new Pixels(20, 20, T), {});
   return mb;
 }
 
-/** The finished .MBL: the hurting monsters take HURT hit points. */
+/** The finished .MBL: the kit's gumdrop is harmless (level 1's first meeting); the snail's hurt is HURT and not solid. */
 export function finishMonsterPictures(mb: Book): Block[] {
   const blocks = mb.finish();
-  for (const b of blocks) if (b.chHitPt < 0) b.chHitPt = HURT;
+  for (const n of ['gumdrop0', 'gumdrop1', 'buzzer0', 'buzzer1', 'shelly0', 'shelly1', 'grump0', 'grump1']) {
+    const b = blocks[mb.n(n)];
+    b.solid = 0; // the hero passes through: nothing holds him while it hurts
+    if (n.startsWith('gumdrop')) b.chHitPt = 0;
+    else b.chHitPt = HURT;
+  }
   return blocks;
 }
 
-/** The .MON: the kit's three, then pop (power 1: it pops, into a star) and star (it floats up and ends). */
+/** The .MON: the kit's three, pop (power 1: gone when touched), the dazed twins and the grump. */
 export function monsterSet(mb: Book): Monster[] {
   const set = buildMonsters(mb, { gumdrop: 4, shelly: 2 });
   const anim = (name: string, t: number): [number, number][] => [
     [mb.n(`${name}0`), t],
     [mb.n(`${name}1`), t],
   ];
-  set[POP] = mon(anim('pop', 4), { power: 1, thru: 1, newmon: STAR });
-  set[STAR] = mon(anim('star', 5), { power: 150, thru: 0, end: -1 }, [corner(0, 0, 1), corner(0, -3, 1), corner(0, 0, 0)]);
+  const flicker = (name: string): [number, number][] => [
+    [mb.n(name), 2],
+    [mb.n('dazed.gone'), 2],
+  ];
+  // touched, a hurting monster turns into its dazed twin (power under 100), and the twin turns back after DAZE ticks (end)
+  set[2] = { ...set[2], power: 1, newmon: SHELLY_DAZED };
+  set[SHELLY_DAZED] = mon(flicker('dazed.shelly'), { power: 150, thru: 1, newmon: 2, end: DAZE }, pace(2, 1));
+  set[POP] = mon(anim('pop', 4), { power: 1, thru: 1 });
+  set[GRUMP] = mon(anim('grump', 4), { power: 1, thru: 1, newmon: GRUMP_DAZED }, pace(4, 2));
+  set[GRUMP_DAZED] = mon(flicker('dazed.grump'), { power: 150, thru: 1, newmon: GRUMP, end: DAZE }, pace(4, 2));
   return set;
 }

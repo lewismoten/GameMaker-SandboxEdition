@@ -12,7 +12,7 @@ import { Grid } from '../../kit/starter/grid';
 import { StarterMap } from '../../kit/starter/map';
 import { buildStarterPalette, type Pal } from '../../kit/starter/palette';
 import { addSign, type Sign } from '../../kit/starter/sign';
-import { POP } from './monsters';
+import { GRUMP, POP } from './monsters';
 
 export type SignName = 'path' | 'hurts' | 'over' | 'land' | 'lives' | 'exit';
 
@@ -90,7 +90,6 @@ function popAndLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
   const g = base(46, 42);
   // two pits, two blocks wide and two deep, a pop gumdrop at the bottom of each side
   for (const x of [13, 35]) g.fill(x, GROUND, 2, 2, ' ');
-  g.put(25, GROUND - 1, 'g');
   g.row(8, 13, 14, 'c').row(8, 35, 36, 'c').row(7, 26, 29, 'c');
   scenery(
     g,
@@ -107,6 +106,7 @@ function popAndLives(book: Book, signs: Record<SignName, Sign>): StarterMap {
   m.sign(5, onGround(GROUND, signs.land), signs.land);
   m.sign(16, onGround(GROUND, signs.lives), signs.lives);
   m.sign(38, onGround(GROUND, signs.exit), signs.exit);
+  m.mon(GRUMP, 25, GROUND - 1);
   for (const x of [13, 14, 35, 36]) m.mon(POP, x, GROUND + 1);
   return m;
 }

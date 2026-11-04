@@ -8,7 +8,7 @@ export const STORY = wrap(`
 
 Some monsters are only out for a walk.
 
-A small explorer in a teal beanie has two short levels to cross. A purple gumdrop waddles back and forth. A snail creeps along. They are not mean, but they do hurt a little if you bump them.
+A small explorer in a teal beanie has two short levels to cross. A purple gumdrop waddles back and forth, and a snail creeps along. The snail is not mean, but it does hurt a little if you bump it.
 
 Read the signs. Jump over what hurts, and drop onto what pops.
 
@@ -22,9 +22,9 @@ export const HOWTO = wrap(`
 |SPACE         jump
 |F2            lives, score
 
-Jump over a monster that hurts. Each touch takes some hit points. With none left you lose a life, and the level starts again.
+Jump over a monster that hurts. Each bump takes a few hit points, and it takes several bumps to lose a life. A monster that has just hurt you is dazed for a moment and cannot hurt you again.
 
-A mint green gumdrop is harmless. Touch one and it pops into a star.
+A mint green gumdrop is harmless. Land on one and it pops.
 
 Coins add to your score. The door at the end of the level takes you on.
 
@@ -49,7 +49,7 @@ export const WON = wrap(`
 
 Two levels, five monsters, and every one said hi.
 
-A monster is a picture, a path and a power. Walk it back and forth, make it hurt a little, or make it pop into a star when you touch it.
+A monster is a picture, a path and a power. Walk it back and forth, make it hurt a little, or make it pop when you land on it.
 
 Open the game in Game-Maker and find them on the Monsters tab. Change a path, a speed or what a monster becomes, then play your change.
 `);

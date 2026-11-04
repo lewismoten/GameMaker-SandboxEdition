@@ -5,8 +5,8 @@
   "series": "starter",
   "year": 1994,
   "price": "Free",
-  "version": "1.0",
-  "blurb": "Two short levels about monsters. One walks a path back and forth, one hurts a little when touched, and a mint green one pops into a star. Signs in the levels say how. Play it, then open it in Game-Maker and change a monster.",
+  "version": "1.1",
+  "blurb": "Two short levels about monsters. One walks a path back and forth, one hurts a little when touched, and a mint green one pops when you land on it. Signs in the levels say how. Play it, then open it in Game-Maker and change a monster.",
   "exe": "MEET.EXE",
   "sound": "sb",
   "label": {
@@ -23,16 +23,23 @@
     "ink": "#ffffff",
     "tagline": "Everybody has to walk somewhere.",
     "back": "A small explorer in a teal beanie has two short levels to cross. A purple gumdrop waddles back and forth, a snail creeps along, and a mint green one is waiting to be dropped on. Read the signs, then open the game in Game-Maker and change a monster.",
-    "features": ["Signs in the levels explain each idea", "Monsters walk a path, hurt a little, or pop into stars", "Made to be copied and taken apart"],
+    "features": [
+      "Signs in the levels explain each idea",
+      "Monsters walk a path, hurt a little, or pop",
+      "Made to be copied and taken apart"
+    ],
     "shots": [
-      ["one.map", 22, 6],
-      ["two.map", 14, 6]
+      [
+        "one.map",
+        22,
+        6
+      ],
+      [
+        "two.map",
+        14,
+        6
+      ]
     ],
     "rating": "Everyone"
-  },
-  "acceptedFindings": [
-    "hurt-lock s2 Monster 0 holds the hero while it hurts",
-    "hurt-lock s2 Monster 2 holds the hero while it hurts",
-    "hurt-lock s3 Monster 0 holds the hero while it hurts"
-  ]
+  }
 }
