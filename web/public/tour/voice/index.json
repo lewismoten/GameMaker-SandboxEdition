@@ -250,9 +250,9 @@
   "box-feelies": {
     "chapter": "box",
     "where": "Box: Inspector Penn points at the Feelies under the box",
-    "text": "Under the box are the feelies. Click one and it turns in your hands.",
-    "seconds": 4.72,
-    "hash": "1df0e7a31c29",
+    "text": "Feelies are extras packed in a game box. Infocom started that. Some were copy protection, like a code wheel. Click one.",
+    "seconds": 8.2,
+    "hash": "61e1b3860f9f",
     "voice": "f969522e51c0"
   },
   "box-hello": {
