@@ -10,10 +10,10 @@ import type { Pal } from './palette';
 
 const T = 255;
 
-type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'back';
+type Face = 'smile' | 'blink' | 'ouch' | 'cheer' | 'oh' | 'back';
 
 /** The hero's head and beanie, 20x20, in side-on three-quarter view (`front` looks at you). */
-function head(pal: Pal, face: Face, front = false, look = 0): Pixels {
+function head(pal: Pal, face: Face, front = false, look = 0, raised: 'left' | 'right' | 'both' | '' = ''): Pixels {
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
   const skin = r('skin');
@@ -41,6 +41,17 @@ function head(pal: Pal, face: Face, front = false, look = 0): Pixels {
     p.set(2, 13, skin[2]).set(17, 13, skin[2]);
     return p;
   }
+  // arms raised beside the head (body() carries them up from the shoulders): sleeve and fist at the block's edge
+  const orange = r('orange');
+  const skinHand = (x: number) => p.disc(x, 13, 1.9, skin[2]).set(x - 1, 12, skin[3]);
+  if (raised === 'left' || raised === 'both') {
+    p.rect(0, 15, 3, 5, orange[2]).rect(0, 15, 1, 5, orange[4]);
+    skinHand(1);
+  }
+  if (raised === 'right' || raised === 'both') {
+    p.rect(17, 15, 3, 5, orange[2]).rect(19, 15, 1, 5, orange[1]);
+    skinHand(18);
+  }
   // eyes
   const ink = c('ink', 0);
   const eyes: [number, number][] = front
@@ -53,7 +64,8 @@ function head(pal: Pal, face: Face, front = false, look = 0): Pixels {
         [15, 12 + look],
       ];
   for (const [x, y] of eyes) {
-    if (face === 'blink') p.rect(x - 1, y + 1, 3, 1, ink);
+    if (face === 'oh') p.rect(x, y - 2, 2, 4, ink).set(x + 1, y - 2, c('white', 3));
+    else if (face === 'blink') p.rect(x - 1, y + 1, 3, 1, ink);
     else if (face === 'ouch') p.line(x - 1, y, x + 1, y + 2, ink).line(x - 1, y + 2, x + 1, y, ink);
     else {
       p.rect(x, y - 1, 2, 3, ink);
@@ -63,7 +75,9 @@ function head(pal: Pal, face: Face, front = false, look = 0): Pixels {
   // cheeks and mouth
   const mx = front ? 10 : 12;
   p.set(mx - 4, 15, c('pink', 2)).set(mx + 4, 15, c('pink', 2));
-  if (face === 'cheer' || face === 'ouch') {
+  if (face === 'oh') {
+    p.rect(mx, 16, 3, 3, ink).rect(mx + 1, 17, 1, 1, c('red', 2));
+  } else if (face === 'cheer' || face === 'ouch') {
     p.rect(mx - 1, 16, 4, 2, ink).rect(mx, 17, 2, 1, c('red', 2));
   } else {
     p.set(mx - 1, 16, ink)
@@ -79,7 +93,12 @@ type Legs = { back: [number, number]; front: [number, number] };
 /** The hero's body, 20x20, in the pose given; hands in `arms`, legs in `legs`. */
 function body(
   pal: Pal,
-  o: { arms: 'down' | 'swingA' | 'swingB' | 'out' | 'upA' | 'upB' | 'rest'; legs: Legs | 'tuck' | 'climbA' | 'climbB'; front?: boolean; back?: boolean },
+  o: {
+    arms: 'down' | 'swingA' | 'swingB' | 'out' | 'upA' | 'upB' | 'rest' | 'high' | 'flail' | 'dig0' | 'dig1' | 'windup' | 'release' | 'follow';
+    legs: Legs | 'tuck' | 'dangle' | 'climbA' | 'climbB';
+    front?: boolean;
+    back?: boolean;
+  },
 ): Pixels {
   const { c, r } = pal;
   const p = new Pixels(20, 20, T);
@@ -107,6 +126,11 @@ function body(
     sneaker(5, 14, 5);
     p.rect(11, 12, 4, 3, gray[3]);
     sneaker(11, 14, 6);
+  } else if (o.legs === 'dangle') {
+    // falling: legs hang straight down, a little apart, feet pointing down
+    p.rect(6, 12, 4, 4, gray[2]).rect(11, 12, 4, 4, gray[3]);
+    sneaker(5, 16, 6);
+    sneaker(11, 16, 6);
   } else if (o.legs === 'climbA' || o.legs === 'climbB') {
     const up = o.legs === 'climbA';
     p.rect(5, up ? 11 : 12, 4, up ? 3 : 4, gray[2]);
@@ -173,6 +197,75 @@ function body(
       hand(hi[1], 8);
       break;
     }
+    case 'high':
+      // both arms up in a V: hands at the top corners of the block
+      p.line(x0, 2, x0 - 3, 0, shirt[2])
+        .line(x0, 3, x0 - 3, 1, shirt[2])
+        .line(x0 + w - 1, 2, x0 + w + 2, 0, shirt[2])
+        .line(x0 + w - 1, 3, x0 + w + 2, 1, shirt[2]);
+      hand(x0 - 3, 1);
+      hand(x0 + w + 2, 1);
+      break;
+    case 'flail':
+      // one arm up and out, one out and down
+      p.line(x0, 2, 1, 0, shirt[2]).line(x0, 3, 2, 0, shirt[2]);
+      p.line(x0 + w - 1, 3, x0 + w + 2, 7, shirt[2]).line(x0 + w - 1, 4, x0 + w + 2, 8, shirt[2]);
+      hand(x0 + w + 2, 8);
+      break;
+    case 'dig0':
+    case 'dig1': {
+      // a small garden shovel held in both hands out in front and angled down to the ground:
+      // lifted (dig0), then the blade in the dirt with clods flying (dig1)
+      const down = o.arms === 'dig1';
+      const wood = r('wood');
+      const steel = r('stone');
+      const dirt = r('dirt');
+      const topX = 14;
+      const topY = 6;
+      const tipX = down ? 18 : 17;
+      const tipY = down ? 15 : 13;
+      sleeve(x0 + w - 3, 1, 3, 4);
+      p.line(topX, topY, tipX, tipY, wood[2]).line(topX + 1, topY, tipX + 1, tipY, wood[3]);
+      p.rect(tipX - 1, tipY + 1, 4, 3, steel[3])
+        .rect(tipX - 1, tipY + 1, 4, 1, steel[4])
+        .rect(tipX + 2, tipY + 1, 1, 3, steel[1]);
+      hand(topX, topY);
+      hand(topX - 2, topY - 1);
+      if (down) {
+        p.rect(13, 18, 7, 2, dirt[2]).rect(14, 17, 4, 1, dirt[3]);
+        p.set(19, 12, dirt[3]).set(18, 10, dirt[2]).set(17, 11, dirt[1]);
+      }
+      break;
+    }
+    case 'windup':
+    case 'release':
+    case 'follow': {
+      // an overhand toss of a small star: arm back with the star, arm forward just as it leaves,
+      // then the arm swinging down
+      const gold = r('gold');
+      const starAt = (x: number, y: number) => {
+        p.set(x, y - 1, gold[4])
+          .set(x - 1, y, gold[4])
+          .set(x + 1, y, gold[4])
+          .set(x, y + 1, gold[4])
+          .set(x, y, white[3]);
+      };
+      sleeve(x0 + w - 3, 1, 3, 4);
+      hand(x0 + w - 1.5, 7);
+      if (o.arms === 'windup') {
+        p.line(x0, 2, x0 - 3, 1, shirt[2]).line(x0, 3, x0 - 3, 2, shirt[2]);
+        hand(x0 - 3, 2);
+        starAt(x0 - 4, 1);
+      } else if (o.arms === 'release') {
+        p.line(x0 + w - 1, 2, x0 + w + 2, 3, shirt[2]).line(x0 + w - 1, 3, x0 + w + 2, 4, shirt[2]);
+        hand(x0 + w + 2, 4);
+        starAt(x0 + w + 4, 2);
+      } else {
+        p.line(x0 + w - 1, 3, x0 + w + 1, 8, shirt[2]).line(x0 + w - 1, 4, x0 + w + 1, 9, shirt[2]);
+        hand(x0 + w + 1, 9);
+      }
+      break;
+    }
     case 'rest':
       sleeve(x0 + w - 3, 1, 3, 5);
       hand(x0 + w - 1.5, 8);
@@ -209,6 +302,17 @@ export function buildHeroBlocks(pal: Pal): Book {
   add('hurt.top', 'hurt', head(pal, 'ouch'), body(pal, { arms: 'out', legs: { back: [4, 0], front: [12, 0] } }));
   add('cheer.top', 'jump', head(pal, 'cheer'), body(pal, { arms: 'out', legs: 'tuck' }));
   walk.forEach((legs, i) => add('stand.top', `walk${i}`, head(pal, 'smile'), body(pal, { arms: i % 2 ? 'swingB' : 'swingA', legs })));
+  // jumping up, falling, cheering, digging and throwing (appended after the first blocks, so earlier numbers stay)
+  add('up.top', 'jumpup', head(pal, 'smile', false, 0, 'both'), body(pal, { arms: 'high', legs: 'tuck' }));
+  add('oh.top', 'fall', head(pal, 'oh', false, 0, 'left'), body(pal, { arms: 'flail', legs: 'dangle' }));
+  add('cheer2.top', 'cheer', head(pal, 'cheer', false, 0, 'both'), body(pal, { arms: 'high', legs: { back: [5, 0], front: [11, 0] } }));
+  add('look.top', 'stand', head(pal, 'smile', false, -1), stand);
+  const dig = { back: [3, 0], front: [10, 0] } as Legs;
+  add('stand.top', 'dig0', head(pal, 'smile'), body(pal, { arms: 'dig0', legs: dig }));
+  add('stand.top', 'dig1', head(pal, 'smile'), body(pal, { arms: 'dig1', legs: dig }));
+  add('stand.top', 'throw0', head(pal, 'smile'), body(pal, { arms: 'windup', legs: { back: [5, 0], front: [11, 0] } }));
+  add('cheer.top', 'throw1', head(pal, 'cheer'), body(pal, { arms: 'release', legs: { back: [4, 0], front: [11, 0] } }));
+  add('stand.top', 'throw2', head(pal, 'smile'), body(pal, { arms: 'follow', legs: { back: [5, 0], front: [11, 0] } }));
   // climbing shows his back, hands up the ladder
   add('back.top', 'climb0', head(pal, 'back', true), body(pal, { arms: 'upA', legs: 'climbA', front: true, back: true }));
   add('back.top', 'climb1', head(pal, 'back', true), body(pal, { arms: 'upB', legs: 'climbB', front: true, back: true }));

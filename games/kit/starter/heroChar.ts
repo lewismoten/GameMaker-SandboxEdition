@@ -51,6 +51,10 @@ export function buildHero(cb: Book): Character {
     f({ top: 'stand.top', bottom: 'stand', pause: 36 }),
     f({ top: 'blink.top', bottom: 'stand', pause: 3 }),
     f({ top: 'stand.top', bottom: 'stand', pause: 20 }),
+    f({ top: 'look.top', bottom: 'stand', pause: 14 }),
+    f({ top: 'stand.top', bottom: 'stand', pause: 10 }),
+    f({ top: 'blink.top', bottom: 'stand', pause: 3 }),
+    f({ top: 'stand.top', bottom: 'stand', pause: 12 }),
   ]);
   set(S[SEQ.die], [f({ top: 'hurt.top', bottom: 'hurt', pause: 10 }), f({ top: 'hurt.top', bottom: 'hurt', pause: 24 })], { sound: SND.die, jstkBut: 0 });
   set(
@@ -70,21 +74,52 @@ export function buildHero(cb: Book): Character {
   set(S[SEQ.rightD], walk(WALK_STEP, false), { key: KEY.d });
   set(S[SEQ.leftA], walk(-WALK_STEP, true), { key: KEY.a });
 
-  // Space: one push upward (momentum, so gravity can take it back), then a pose in the air
-  set(S[SEQ.jump], [f({ top: 'cheer.top', bottom: 'jump', y: -JUMP_PUSH, pause: 6 })], {
-    key: KEY.space,
-    sound: SND.jump,
-    norepeat: 1,
-    momentum: 1,
-    jstkMov: JOY.any,
-    jstkBut: 1,
-  });
+  // Space: one push upward (momentum, so gravity can take it back), then poses in the air: arms up
+  // on the way up, arms out as he comes down. The three pauses add up to the old single pose's 6.
+  set(
+    S[SEQ.jump],
+    [
+      f({ top: 'up.top', bottom: 'jumpup', y: -JUMP_PUSH, pause: 2 }),
+      f({ top: 'cheer.top', bottom: 'jump', pause: 2 }),
+      f({ top: 'oh.top', bottom: 'fall', pause: 2 }),
+    ],
+    {
+      key: KEY.space,
+      sound: SND.jump,
+      norepeat: 1,
+      momentum: 1,
+      jstkMov: JOY.any,
+      jstkBut: 1,
+    },
+  );
 
   const climb = (dy: number) => [f({ top: 'back.top', bottom: 'climb0', y: dy, pause: 2 }), f({ top: 'back.top', bottom: 'climb1', y: dy, pause: 2 })];
   set(S[SEQ.up], climb(-CLIMB_STEP), { key: KEY.up, jstkMov: JOY.up });
   set(S[SEQ.upW], climb(-CLIMB_STEP), { key: KEY.w });
   set(S[SEQ.down], climb(CLIMB_STEP), { key: KEY.down, jstkMov: JOY.down });
   set(S[SEQ.downS], climb(CLIMB_STEP), { key: KEY.s });
+
+  // Animations for a game to play (the editor's Character tab lists them); no key starts them
+  set(
+    S[SEQ.dig],
+    [
+      f({ top: 'stand.top', bottom: 'dig0', pause: 3 }),
+      f({ top: 'stand.top', bottom: 'dig1', pause: 3 }),
+      f({ top: 'stand.top', bottom: 'dig0', pause: 3 }),
+      f({ top: 'stand.top', bottom: 'dig1', pause: 3 }),
+    ],
+    { key: 0 },
+  );
+  set(
+    S[SEQ.throw],
+    [
+      f({ top: 'stand.top', bottom: 'throw0', pause: 3 }),
+      f({ top: 'cheer.top', bottom: 'throw1', pause: 2 }),
+      f({ top: 'stand.top', bottom: 'throw2', pause: 3 }),
+    ],
+    { key: 0 },
+  );
+  set(S[SEQ.cheer], [f({ top: 'cheer2.top', bottom: 'cheer', pause: 4 }), f({ top: 'up.top', bottom: 'jumpup', pause: 4 })], { key: 0 });
 
   ch.meter.fill(INF_REPEAT);
   ch.meter[0] = 100; // hit points
