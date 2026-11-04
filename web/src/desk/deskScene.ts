@@ -2,7 +2,7 @@
 // disk box on the left, the Game-Maker box on the right, and the PC (case, drives, lights,
 // keyboard, monitor). desk.ts gives it what the buttons do and works the parts it hands back.
 import { h } from '../editor/core/ui';
-import { sevenSegment, floppyDrive, cdDrive, hddLight, blankBay } from './pc/caseParts';
+import { sevenSegment, floppyDrive, cdDrive, hddLight } from './pc/caseParts';
 import { keyLock, brandBadge } from './pc/caseFace';
 import { keyboard } from './pc/keyboard';
 import { keyboardTray } from './pc/tray';
@@ -198,8 +198,8 @@ export function deskScene(on: DeskActions) {
             h('label', { class: 'case-label' }, powerBtn, 'POWER'),
             h('span', { class: 'keylock-label', 'aria-hidden': 'true' }, keyLock()),
           ),
-          // the drive cage: one stack of bays that touch, with no gaps
-          h('div', { class: 'drives' }, cd.el, floppy.el, blankBay(), blankBay(), blankBay(true)),
+          // the drive cage: the CD-ROM and floppy bays side by side, touching
+          h('div', { class: 'drives' }, cd.el, floppy.el),
           driveActions,
         ),
         keyboardTray(keys.board),

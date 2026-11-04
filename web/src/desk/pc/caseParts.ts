@@ -108,13 +108,13 @@ function sound(kind: DriveSound, ms?: number): void {
 
 /**
  * A 3.5" drive in its own 3.5" bay (101.6 x 25.4 mm), laid flat like the drive in the 1990s photo it
- * follows: the disk slot with its spring-door flap across the top, a stepped recess under it, the
- * green activity light and the maker's name (KELVO, made up) at the lower left and the rectangular
- * eject push-button at the lower right. Sizes are in mm (desk.css --mm).
+ * follows: the long disk slot across the upper face, a recessed finger pocket under its middle (to pinch
+ * the ejected disk), the green activity light and the maker's name (KELVO, made up) at the lower left and
+ * the rectangular eject push-button at the lower right. Sizes are in mm (desk.css --mm).
  */
 export function floppyDrive(onEject: () => void): FloppyDrive {
   const led = h('span', { class: 'drive-led' });
-  const flap = h('span', { class: 'flap' });
+  const diskEdge = h('span', { class: 'disk-edge' });
   const btn = h('button', {
     class: 'eject-btn flat',
     'aria-label': 'Eject the disk from drive A:',
@@ -127,14 +127,16 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
   const el = h(
     'div',
     { class: 'drive fdd', title: 'Drive A: 3.5" 1.44 MB' },
-    h('span', { class: 'slot' }, flap),
-    h('span', { class: 'well' }),
+    h('span', { class: 'slot' }),
+    h('span', { class: 'grip' }),
+    diskEdge,
     led,
     h('span', { class: 'brand-print' }, 'KELVO'),
     btn,
     h('span', { class: 'bay-label' }, 'A:'),
   );
   let timer: ReturnType<typeof setTimeout> | undefined;
+  let popTimer: ReturnType<typeof setTimeout> | undefined;
   return {
     el,
     setDisk(title, color) {
@@ -143,11 +145,19 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
         el.dataset.disk = title;
         el.title = `Drive A: ${title}`;
         el.style.setProperty('--disk-color', color ?? '#222');
+        clearTimeout(popTimer);
+        el.classList.remove('popped');
         if (!had) sound('floppy-insert');
       } else {
         delete el.dataset.disk;
         el.title = 'Drive A: 3.5" 1.44 MB (empty)';
-        if (had) sound('floppy-eject');
+        if (had) {
+          sound('floppy-eject');
+          // the disk sticks out over the finger pocket for a moment, before it is taken
+          el.classList.add('popped');
+          clearTimeout(popTimer);
+          popTimer = setTimeout(() => el.classList.remove('popped'), 1400);
+        }
       }
     },
     busy(ms = 900) {
@@ -157,11 +167,6 @@ export function floppyDrive(onEject: () => void): FloppyDrive {
     },
     isBusy: () => led.classList.contains('on'),
   };
-}
-
-/** An empty 5.25" half-height bay cover (or, with `filler`, the blank plate that squares off the cage): decoration only. */
-export function blankBay(filler = false): HTMLElement {
-  return h('div', { class: `drive blank${filler ? ' filler' : ''}`, 'aria-hidden': 'true' });
 }
 
 interface CdDrive {
