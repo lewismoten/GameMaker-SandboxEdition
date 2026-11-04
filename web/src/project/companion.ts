@@ -28,7 +28,7 @@
 // never drops what a newer one wrote.
 import { normalize, type GameFiles } from './files';
 
-const COMPANION_FORMAT = 'gamemaker-companion';
+export const COMPANION_FORMAT = 'gamemaker-companion';
 const COMPANION_VERSION = 1;
 /** The extension of the companion in a backup zip: <game>.GMX holds JSON. */
 const COMPANION_EXT = 'gmx';

@@ -18,6 +18,9 @@ export async function openStored(id: string, host: HTMLElement, file?: string): 
   // what the home page's "Continue where you left off" shows
   markUsed(id);
   const project = Project.fromFiles(stored.files, stored.record.name, id, stored.record.companion);
-  project.gam = stored.record.gam;
-  return new Workspace(host, project, file);
+  if (stored.record.gam) project.gam = stored.record.gam;
+  const ws = new Workspace(host, project, file);
+  // damaged parts were left out and the whole save kept aside (storage.ts); say what is broken
+  if (stored.damage.length) void import('./editor/shell/recoverNotice').then((m) => m.recoverNotice(project, stored.damage));
+  return ws;
 }
