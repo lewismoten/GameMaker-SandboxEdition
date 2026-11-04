@@ -252,6 +252,13 @@ async function route(): Promise<void> {
     renderCredits(content);
     return;
   }
+  if (kind === 'privacy') {
+    const { renderPrivacy } = await import('./privacy/privacyPage');
+    if (ui !== 'modern') return;
+    document.title = `Privacy · ${PRODUCT}`;
+    renderPrivacy(content);
+    return;
+  }
   if (kind === 'achievements') {
     const { renderAchievements } = await import('./achievements/page');
     if (ui !== 'modern') return;
@@ -338,7 +345,7 @@ window.addEventListener('hashchange', () => {
 // #/help, the cast #/cast, the credits #/credits, the Mac, Windows and Linux pages #/mac, #/windows and #/linux, the magazine #/magazine, the library #/library, the home page #/) open it, #/desk the desk; otherwise use the last choice.
 // index.html makes the same choice for the page background before the first paint.
 /** The pages of today's web an address can name. */
-const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library'];
+const MODERN_PATHS = ['p', 'game', 'help', 'cast', 'credits', 'privacy', 'achievements', 'mac', 'windows', 'linux', 'magazine', 'library'];
 const startHash = location.hash;
 const startPath = parseHash(startHash).path;
 const modernLink = /^#\/?(\?|$)/.test(startHash) ? !!startHash : MODERN_PATHS.includes(startPath[0] ?? '');

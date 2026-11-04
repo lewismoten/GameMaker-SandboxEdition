@@ -66,6 +66,7 @@ export function settingsItems(attrs: Record<string, string> = {}): HTMLElement[]
     ),
     h('a', { ...attrs, href: SOURCE_URL, target: '_blank', rel: 'noopener' }, icon('</>'), ' Source on GitHub'),
     h('a', { ...attrs, href: '#/credits', title: 'Who and what made Game-Maker: Sandbox Edition' }, icon('📜'), ' Credits'),
+    h('a', { ...attrs, href: '#/privacy', title: 'What the site keeps on this device, and what is sent' }, icon('🔒'), ' Privacy'),
     themeItem(attrs),
     h(
       'button',
