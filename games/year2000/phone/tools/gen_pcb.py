@@ -666,7 +666,7 @@ for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SI
     silk.append(near_label("B.SilkS", lab, qx, qy, size_, size_))
     for ln, lx, ly in URL_SPOTS.get(qtext, []):       # the address in words, split at the slashes, never shortened
         silk.append(txt("B.SilkS", ln, lx, ly, 1.0, True))
-silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f, skip=DEX_SKIP)[0]
+silk += silkart.block_art("B.SilkS", dex_art.ROWS, dex_art.TONES, DEX_AT[0], DEX_AT[1], DEX_AT[2], uid, f, skip=DEX_SKIP, outline=0.25)[0]
 silk.append(near_label("B.SilkS", "DEX DYNAMO", DEX_AT[0], DEX_AT[1], DEX_W, DEX_H))
 items += silk
 
