@@ -573,15 +573,18 @@
     inset 0 0 0 calc(1.9 * var(--mm)) #c9a54a,
     0 1px 0 #fff8;
   color: #e9d9a0;
+  /* sized from the badge alone, so the name stays inside the gold rule at every width */
   font:
-    700 clamp(5px, calc(3.6 * var(--mm)), 9px) / 1 Georgia,
+    700 calc(3.1 * var(--mm)) / 1 Georgia,
     serif;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .brand-badge small {
   font:
-    600 clamp(4px, calc(2.4 * var(--mm)), 6px) / 1 system-ui,
+    600 calc(2.3 * var(--mm)) / 1 system-ui,
     sans-serif;
   color: #c9d3de;
 }
