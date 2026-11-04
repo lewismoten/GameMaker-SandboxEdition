@@ -166,22 +166,22 @@ export abstract class ComputerDrives {
     /** A folder for each Starter (the Sample Disk's, or the Sample CD's D:\SAMPLES), holding its files as the transfer left a game. */
     const starterFolders = (list: readonly SampleFolder[]): DosNode[] =>
       list.map(({ dir, entry: g }) =>
-      folder(
-        dir,
-        async () => {
-          const own = gameDownloadNodes(g, DOS_DATE, {
-            kind: 'game',
-            title: g.title,
-            gam: g.gam!,
-            files: () => this.catalogFiles(g),
-            saveId: `game:${g.id}`,
-          });
-          const files = (await gameFolder(g).list!()).filter((n) => !own.some((o) => o.name === n.name));
-          return [...own, ...files];
-        },
-        DOS_DATE,
-      ),
-    );;
+        folder(
+          dir,
+          async () => {
+            const own = gameDownloadNodes(g, DOS_DATE, {
+              kind: 'game',
+              title: g.title,
+              gam: g.gam!,
+              files: () => this.catalogFiles(g),
+              saveId: `game:${g.id}`,
+            });
+            const files = (await gameFolder(g).list!()).filter((n) => !own.some((o) => o.name === n.name));
+            return [...own, ...files];
+          },
+          DOS_DATE,
+        ),
+      );
 
     this.fs.addDrive({
       letter: 'A',
