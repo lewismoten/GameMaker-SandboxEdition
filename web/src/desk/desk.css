@@ -970,7 +970,7 @@
 }
 
 .drive.fdd .eject-btn.flat::before {
-  inset: -9px -6px;
+  inset: -10px -8px;
 }
 
 /* pressed in: the button sinks into the face until the disk is out */
