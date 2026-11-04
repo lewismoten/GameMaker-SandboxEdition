@@ -8,10 +8,13 @@ checks: start-up display, a dialed digit (normal and fast pulses), the tone pair
 usage: picsim.py path/to/phone.hex        exits 1 on a failed check.
 Not a cycle-exact model of every PIC feature (no interrupts, timers or EEPROM): only what phone.asm uses.
 """
+import json
 import math
+import os
 import sys
 
 FCY = 3579545 / 4
+DIAL = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "dialParams.json")))   # the dial module's numbers (shared with dialMechanism.ts)
 
 
 class Pic:
@@ -345,6 +348,59 @@ class Board:
     def display(self):
         return [self.regs.get(r, None) for r in range(8, 0, -1)]
 
+    def _chatter(self, closed, bounce):
+        """A switch change with contact bounce: three short flips (0.25 ms each) before it settles."""
+        if bounce:
+            for k in range(3):
+                self.set_pulse(closed if k % 2 == 0 else not closed)
+                self.run(0.00025)
+        self.set_pulse(closed)
+
+    def dial_mech(self, d, play=0.0, rate=300.0, bounce=True, rigid=False):
+        """Dial a digit with the Junior Lab dial module's one-way clutch (tools/dialParams.json, the angle walk of dialMechanism.ts).
+        Winds the plate (off-normal closes; the held cam leaves the pulse switch open), pauses, then returns it at `rate` degrees a
+        second: the pulse cam moves only on the return, one closure per 30 degrees of cam travel; the off-normal switch opens
+        when the plate is within offNormalOpenWithinDeg of rest. rigid=True is the old cam fixed to the plate (pulses on the wind too):
+        the negative control. Returns the number of pulse closures made on the wind and on the return."""
+        n = 10 if d == 0 else d
+        pitch = DIAL["pitchDeg"]
+        snap = DIAL["holdBackSnapDeg"]
+        lo, hi = DIAL["pulseClosedFromDeg"], DIAL["pulseClosedToDeg"]
+        travel = pitch * n + play
+        self.set_off(True)
+        self.run(0.05)
+        wind_pulses = 0
+        if rigid:
+            for k in range(n):                                  # a cam fixed to the plate closes once per pitch on the wind too
+                self._chatter(True, bounce)
+                self.run(0.6 * pitch / 200.0)
+                self._chatter(False, bounce)
+                self.run(0.4 * pitch / 200.0)
+                wind_pulses += 1
+        else:
+            self.run(travel / 200.0)                            # the held cam: no change on the switch during the wind
+        self.run(0.2)
+        ridges = int((travel + snap) // pitch)
+        contact = ridges * pitch - snap
+        events = []                                              # (plate angle, kind): kind 'p+' / 'p-' for the pulse switch, 'o-' off-normal opens
+        for k in range(n):
+            events.append((contact - (pitch * k + lo), "p+"))
+            events.append((contact - (pitch * k + hi), "p-"))
+        events.append((DIAL["offNormalOpenWithinDeg"], "o-"))
+        events.sort(key=lambda e: -e[0])
+        t_prev = 0.0
+        for ang, kind in events:
+            t = (travel - ang) / rate
+            self.run(max(0.0, t - t_prev))
+            t_prev = max(t, t_prev)
+            if kind == "p+":
+                self._chatter(True, bounce)
+            elif kind == "p-":
+                self._chatter(False, bounce)
+            else:
+                self.set_off(False)
+        return wind_pulses, n
+
 
 def goertzel(samples, fs, f):
     w = 2 * math.pi * f / fs
@@ -477,6 +533,32 @@ def main(hexfile):
     b5.dial(11)
     b5.run(0.5)
     check("11 pulses is ignored", b5.display()[0] == 0x0A, b5.display())
+    # the dial module's one-way clutch: wind (no pulses) then return (n pulses), each digit, with contact bounce
+    for d in (1, 2, 3, 4, 5, 6, 7, 8, 9, 0):
+        bm = Board(hexfile)
+        bm.set_pulse(False)
+        bm.set_off(False)
+        bm.run(0.4)
+        wp, n = bm.dial_mech(d)
+        shown_during = bm.display()[0]
+        bm.run(0.5)
+        check(f"dial module: digit {d}: wind gives {wp} pulses, return gives {n}, shows {d}", wp == 0 and bm.display()[0] == d and shown_during == 0x0A, (shown_during, bm.display()[0]))
+    for rate in (240, 450):
+        for d in (3, 0):
+            bm = Board(hexfile)
+            bm.set_pulse(False)
+            bm.set_off(False)
+            bm.run(0.4)
+            bm.dial_mech(d, play=6.0, rate=rate)
+            bm.run(0.5)
+            check(f"dial module: digit {d} returned at {rate} deg/s ({rate / DIAL['pitchDeg']:.0f} pulses/s, finger play 6 deg, bounce)", bm.display()[0] == d, bm.display()[0])
+    bm = Board(hexfile)
+    bm.set_pulse(False)
+    bm.set_off(False)
+    bm.run(0.4)
+    bm.dial_mech(6, rigid=True)
+    bm.run(0.5)
+    check("negative control: a cam fixed to the plate counts the wind too (12 pulses for a 6): the digit is ignored", bm.display()[0] == 0x0A, bm.display())
     print("ALL PASSED" if ok else "SOME FAILED")
     return 0 if ok else 1
 
