@@ -8,19 +8,19 @@
  "segments": [
   {
    "scene": 2,
-   "keys": "jwFICMgARwLHAEsEywBHAscASwbLCE0WzQxJAskMSxLLAEgYyABJBskASBDIAEcCxwBIBsgATQ7NGlEC0QBLCMsMSwbLMk0MzRxHCscGTxLPAEgOyABNBs0ASRbJAEgJyA=="
+   "keys": "jwFICsgASwzLxgFNFs1YSwbLKksGy1ZICMgATQTNClCeAtAASArI"
   },
   {
    "scene": 3,
-   "keys": "dkgDyFFIQsgAOQG5Ak0DzRJQDNAzSQbJM0cJx2xQDNAeUQbRaUsJywBPA88MTQrN"
+   "keys": "dkgDyFFIQsgAOQG5Ak0DzRJQDNAzSAbIAE0DzTBIBshsUAzQNlAD0GZLCcsAUAPQCU0KzQ=="
   },
   {
    "scene": 4,
-   "keys": "I0cKxwBRDNEAUA7QGFAG0ABPDM8AUAbQAE8IzwBNDs0AUBDQAE8EzwBQCtAASwTLAFEE0SpNBs0AUArQBE8EzwBIBsgARwTHAE8KzyBRBNEETQbNAFAC0ABNBM0AUQLRBE8CzwBLBssAUQTRAEcOxwBNDM0yTQzNBEsWyyxQCtA="
+   "keys": "I0sMy35QBtAATQrNUEgQyABLCss8TRbNAFAy0ABLFstITQjNkAFQCtA="
   },
   {
    "scene": 5,
-   "keys": "/QFIA8gSSwnLAE0DzQBICcgATQPND00DzUJNBs0ASAbIBkg/yABQCdAYSwnLGEgDyEtQUdAASwrL"
+   "keys": "/QFIA8gSSwnLAE0DzQBIA8gMTQPNAEgDyAZNA81CTQbNAEhLyABQCdAYSwPLA0sDyxtIA8hRUAzQRUsKyw=="
   },
   {
    "scene": 6,
@@ -28,7 +28,7 @@
   },
   {
    "scene": 7,
-   "keys": "EVAK0AJIBMgKSwbLEk0IzQ5LAssATwLPAEsCywBQAtAASwzLAEcCxwBNBM0ASQTJBk0GzQo5AbkBTQLNAEgEyAJPBM8GSwjLAFEC0QBQAtAATQrNCEgCyAhLAsscTQTNAFAI0ABJBMkATQbNAEcExwBLDMsYTQjNAksCywJQCNAASwLLAE8CzwBHBscASALIEEkCyQBNBM0GSALICkgOyA=="
+   "keys": "EVAK0AJIBMgKSwbLEk0IzQ5LAssAUALQAEsCywBQAtAASxDLAE0IzQBIAsgATQbNIEsCywBQCNAATQbNCEgGyAxLBMsASALIAEsCyxJNBs0AUArQAE0CzQBLBMsISAjIBEsEyxpNBs0AUBDQAEgEyABLBMsASALICkgCyBZNAs0AUAjQAE0CzQJNBM0ASATIAE0CzQBLBssASATIEEgCyAZID8g="
   },
   {
    "scene": 8,
@@ -36,27 +36,27 @@
   },
   {
    "scene": 9,
-   "keys": "EUsMy05JEMkARwTHAE0CzQxICMgATQrNDksEywBHDscATwTPAEcGxwBIDsgASRjJPksMywBQCNAAOQG5BVAE0AA5AbkBTwLPADkBuQFLCstKSQrJAE0CzQBJAskAUQjRAEcCxwBQAtAARwbHFEgEyABHCMcATQbNCE0GzSJICsg="
+   "keys": "Z0gKyABLDMsWTQzNGEsSy6wBTRLNdE0GzQBLCssASFDI"
   },
   {
    "scene": 10,
-   "keys": "ZzkBuQI5AbkCTQPNhAFLCcsAUBXQADkBuQI5AbkCSQPJAEgGyBhQHtAASAbIIUgGyABLCcsDTwPPeFAD0BJLBssAUAbQAE0JzSo5AbkFSBvIFU8DzwBIA8gAOQG5AkgGyANNA80JTQrN"
+   "keys": "/QFLGMseSAPIGFAe0ABLCcszSwzLVEsJywBIGMgAUAbQD0sJywBIJMgAUAbQLUgeyABLCcshTQPNA00KzQ=="
   },
   {
    "scene": 11,
-   "keys": "AU8GzwBQJtAAURTROEcMxwBRBtEASwTLAEcUxyZQCNAGTQrNEkgGyAZLCMsKTwLPAFAC0BJRBNEATwLPAFEC0QBPAs8AOQG5AVAM0ABPAs8AUArQAEkGyQBNBs0AOQG5ATkBuQFNBM0ASwbLAE0QzQZRAtEmUArQAE8EzwBLFsseSQzJAEsEywBQB9A="
+   "keys": "W00KzS5LFssWTQbNAFAC0ABNBM0AUBTQAEsKywBNBM2gAUgIyABLEMsATQbNLE0GzQZIBMgATQzNBEg0yABQJtASSAbIAE0WzQBLDMsAUALQAE0MzQBLCMsIUArQ"
   },
   {
    "scene": 12,
-   "keys": "Q00DzQBQA9APTwPPjQFIDMgYSAPIAEcDxw9IBshmUAPQBlAY0ABPA88AUAnQAE8DzwBQA9A5TQbNAFEM0QBHBscASAPIADkBuQJJBsk/SwPLD0gDyBtJBskqSwrL"
+   "keys": "Q00DzQBQA9APTQPNADkBuQJQA9BmUCHQAE0PzQBIDMgVSAbIGEgGyF1NGM0VTQPNADkBuQJQA9AJUBvQFUg8yABQCdBFUAPQDzkBuQI5AbkdUAPQBlAJ0AlQA9AASw3L"
   },
   {
    "scene": 13,
-   "keys": "AU0VzQBLJMsAUAnQAE0SzTZNA80GOQG5AksDywxNCc0ASAbIAEsGyw9NBs0AUA/QAEsGyxg5AbkOOQG5AksGy0hNM80ASyfLAFAG0ABNFc0DTQPNAFAJ0CdICcgATTbNA00GzQBIBsg8TQbNAFAJ0ANIBsgATRTN"
+   "keys": "AU0VzQBLJMsAUAnQAE0SzTZNA80GOQG5AjkBuQJLA8swTQnNAFAV0ABLBstyTTPNAEsqywBQBtAATRXNAzkBuQI5AbkCTQbNAEsGyxtIBsgATT/NA0gGyDw5AbkCOQG5Ak0fzQ=="
   },
   {
    "scene": 14,
-   "keys": "G0sEywJLAssESwLLEk0GzQRRAtEAUALQBE0EzQBPAs8ASwbLAFAE0ABHAscCRwLHEk0GzQhNAs0AUATQAEgEyAZHAscASwLLAkgEyABPAs8KUALQAk0MzQBPBM8ASwTLCkcCxwZIAsgGSwbLAFAC0ABNCM0AUATQAEkEyQBHAscMSwTLAEgCyAZLBssARwTHAEgCyABJCsk="
+   "keys": "IUsEyxpNBs0AUATQAlAC0AJLBMsAUATQCEgCyABLAsseTQTNAFAE0AZIBMgASwTLAkgCyBZNBs0AUAbQBEgGyABLBMsGSwLLEFAO0ABICMgYSwTLBkgEyABQBtAATQbNEkgEyARLAssAUA7QAEgayA=="
   },
   {
    "scene": 15,
@@ -64,27 +64,27 @@
   },
   {
    "scene": 16,
-   "keys": "F0gIyABLAssCSRDJBEsOywBIGMgASwTLAE0QzRhIBMgARwzHAE0GzQBJBslQSC7IDlAC0ABHEMcASQTJAk8CzwBJBMkETwjPAEgEyABJAskATQrNAE8CzwBLBMsCSAbIAEcGxwBNDs0KSwbLAEgKyA=="
+   "keys": "F0gIyBRLDMsASBjIAE0WzUBIBsg6SwbLRE0GzQBIBMgQSxbLGkgOyCRNFs0ASALIAlAO0ABIBMgISwLLTksGywhQCtAASAzIAE0IzQpICsg="
   },
   {
    "scene": 17,
-   "keys": "eVAD0CRLA8tLSwPLADkBuQJIA8g2SAPIQlAV0AlICcgASQPJAEcDxy1HA8cPSAPICUsGywxRA9EATQbNHk8DzxhIA8gtSBXIDFAS0ABPBs8nUAPQIU0KzQ=="
+   "keys": "eUsDywBQA9BOUAbQVEgGyEJQFdAJSBLIEkgGyABLA8sAUAPQAEgDyA9IA8gGUCHQAEgDyABLCcsAUAzQAEgGyAxLD8sGTQPNAFAG0GBIEsgPUBXQBlAD0CpNCs0="
   },
   {
    "scene": 18,
-   "keys": "C08GzwBRBNEAUATQAjkBuQFICsgASwzLFlAI0ABRBtEKUQ7RFFAO0ABLBMsATw7PAFAe0ABPAs8KTRDNADkBuQE5AbkDOQG5ATkBuQFICMgETxDPAEgEyABRCNEASwjLAEgEyABJDskAUALQAkhYyABRBNECUQLRAE0CzQBPCM8AUAbQAFEE0QBQDNAOTwLPAFAK0A=="
+   "keys": "R0sMyxJNFs0cSwrLAFAs0ABNBs0ASwbLJFAa0ABLDMsOUA7QLE0OzQBLBssOSwLLAFAI0ABLBss6TQzNSlAK0A=="
   },
   {
    "scene": 19,
-   "keys": "rwFQA9AVUAPQe0gJyBVIEsgAUBLQIU0GzTNHBscASwPLGFAG0ABPA88AUAbQME0DzWBNGM0PSwrL"
+   "keys": "rwE5AbkCOQG5AkgDyCpNA80AOQG5AlAD0F1IA8gbSBLIME0GzU5IBsgbUBLQmQFLA8sASAzIAEsKyw=="
   },
   {
    "scene": 20,
-   "keys": "AU0VzQBLJMsAUAnQAE0PzVpNCc0AUBXQAEgGyABLBsskOQG5AjkBuQJLA8seOQG5AkgDyE5NKs0ASx7LAFAJ0ABND80AOQG5C1AJ0EJNA80hTTbNAEgDyAlNBs0SUCfQAEsDyxJNJ80ASyTLAFAJ0ABND81CTQPNUU0DzUVQBtAMSwPLD1AG0B5NFM0="
+   "keys": "AU0VzQBLJMsAUAnQAE0PzVpNCc0AUBXQAEgGyABLBsskOQG5AjkBuQJLA8seOQG5AkgDyE5NKs0ASx7LAFAJ0ABND80MOQG5AjkBuQJQBtADOQG5AjkBuQJNBs0bOQG5AjkBuQJIBsgkTTPNAEgDyABNA80MOQG5AksDywxNCc0AUBXQAEsGyw9NJ80ASyHLAFAJ0ABND81CTQnNAEsGy0U5AbkCOQG5IDkBuQJLA8s/OQG5AlAG0AlNBs0DSAbIAE0QzQ=="
   },
   {
    "scene": 21,
-   "keys": "I08CzwRLAsseUQTRAFAC0ApLAssGSwLLHE0CzRZPAs8ASwTLAFAG0ABIBsgESQLJAE0EzQ5IAsgUSwLLFEgCyARNAs0WSwTLFlEC0TJNAs0ETQLNAk0CzQ5LBMsUSwLLDk0CzRJPAs8AUALQAEsEywBQAtAMSQTJBk0EzRZLBMscTQTNGEcCxwhLAssaUQLRBFAE0AhHBMcUTQTNCE0EzQBLAssMSALIAkgPyA=="
+   "keys": "I0sEy5IBTQLNGEsEyxRNBM0cSwLLTFAC0ABNBM0aSA3I"
   },
   {
    "scene": 22,
@@ -92,27 +92,27 @@
   },
   {
    "scene": 23,
-   "keys": "EUsMy1hNDs0ASwrLAE0CzQBJAskASALIAEkIyUZQCtACSAbIAEkCyQBNDM0ASwTLAksIy0JHAscAUATQAEsWywBQVtAARwTHADkBuSdPEs80TQ7NAEkCyQBNDs0AUQbRAEkEyQA5AbkXSwbLAEgUyABLBMsAUAbQAE8CzwBLBssASBDIAE0SzQBICsg="
+   "keys": "lQFIPMgATQbNAEsMywBIAshISBjIAEsOywBQKtAATQzNAEsOyzBLCMsATQjNLEsSywBIGsg="
   },
   {
    "scene": 24,
-   "keys": "mAJNBs0JTQnNigFIA8gASQPJAEgGyBhJA8kATQPNM0sDywBQA9AYUGPQAE0KzQ=="
+   "keys": "ngI5AbkCOQG5BU0DzQZNCc2KAUgSyDNICcgqOQG5AjkBuQJQBtAbUFfQAE0KzQ=="
   },
   {
    "scene": 25,
-   "keys": "FU8IzwBRCtEAUATQAEsOywBJAskATwTPAEgIyABNGM0AUQLRAFAC0ABNAs0ATwrPAFAM0ABHBMcEUAbQAFEE0QBLCMsSUBDQAEcCxwZIAsgmUALQAEgKyAA5AbkBUAbQDFEY0QhQBNAASxzLFlAI0ABNFs0cUQLRBkgeyABPCM8ASxLLAE0WzQhQCtA="
+   "keys": "hwFNCs0MSwrLAFAQ0ABNCs0AUBrQDk0CzQBIDsgAUBTQAEhwyABLCssGSw7LJFAo0ABLBMsMSwTLBFAM0ABLDssAUA7Q"
   },
   {
    "scene": 26,
-   "keys": "UjkBuQJQA9B4UCfQAEgGyD9IBsgATQPNAEgDyAA5Abk7UBLQMFED0QBQA9AhTwPPAEsDyzxND80MSAbIFUgtyAZICcgARwPHHksNyw=="
+   "keys": "UjkBuQJQA9B4UCfQAEgGyFFIBsgtUBXQMFAG0DlQA9BCSAbIEkg2yAZIEsgYTQbNEksKyw=="
   },
   {
    "scene": 27,
-   "keys": "AU0VzQBLJMsAUAnQAE0MzU5NBs0zTQbNAFAY0ABLBstyTTPNAEshywBQBtAATQ/NSE0DzQlNP80SOQG5AksGywBNBs0kTRrN"
+   "keys": "AU0VzQBLJMsAUAnQAE0PzTlNA80JOQG5AksDyzBNBs0GUBvQAEsDy3hNM80ASx7LAFAJ0ABND81ITQPNCU0/zUVNG80="
   },
   {
    "scene": 28,
-   "keys": "EzkBuQ1PAs8CTwTPAFAE0ABHAscAUATQAEsEywA5AbkBUATQAE0EzQBIBMgATQLNAEkCyQRRBtEETQLNAFEC0QBJCMkAUArQAEgCyABJBskCRwLHAE0IzQBRBtEASALICEcGxww5AbkBOQG5HUgMyABHAsc="
+   "keys": "JUsEyyhQAtACTQLNAFAE0AJLBMsAUBTQAEgCyARNBM0ASAbIDjkBuQE5AbkBUATQAEgCyFxNAs0GUATQAkgGyAw5AbkRTQLNCDkBuQFQBtAASAjIGk0EzQZNAs00SA/I"
   },
   {
    "scene": 29,
@@ -120,27 +120,27 @@
   },
   {
    "scene": 30,
-   "keys": "C0gEyABHAscASATIAEcExwBJAskASALIAEkGyQpLBMsARwbHAE0EzQBJDskISwTLCEkIyQhQBtAASwTLAEgGyABHBMcASBbIAEkEyTZHAscMTwLPAEsSyxBICsgASQTJAEsGywBJBskCUQLRAEsGyxJIDsgAUFDQAEgEyABNAs0ASQTJAE0GzQBIBMgARxDHFEgKyA=="
+   "keys": "TU0KzQBLBssETQbNAEsIywhIHsgATQjNFEsOy4wBUBjQAE0IzQBIAsgUSwrLAEgGyA5NCs0ASArIAEsCywBIGMgUSAjIDksOyypNCM0mSAjI"
   },
   {
    "scene": 31,
-   "keys": "YVAD0EhIA8gSSAbIElAP0ABPBs8nUAnQCUsDyzxNCc0PSAPID08PzwBQA9AATxLPD1AG0BJIDMgASwbLA0kDySFRBtEPUAbQGEgGyCpLA8sJSwPLHksPyxVNCs0="
+   "keys": "wQFIBsgSUA/QrQNQA9AnUAnQSE0JzRJIA8gMSwPLAFAM0BVQBtAbUAPQG0sGywBIA8gkUAPQDFAG0BhIBshjTQPNA00KzQ=="
   },
   {
    "scene": 32,
-   "keys": "G08EzwBLCssARwLHAEgayABRBtEAUAbQAFEC0QBQBNAATQrNADkBuQlHBscASwLLADkBuQFLCMsAUArQAFEM0QBQCNAATQLNAFAG0AA5AbkDSwbLBEgCyABHBMcATwTPAE0EzQBLAssARwLHAEguyABQFtAaUAbQAEkGyQBLBMtCTQbNAFEG0QBQAtACOQG5BVAK0ABRBtEATwLPAEcMxwBIBMgASQTJBFEC0QBQBtAAUQjRDFAI0ABLBssASAjIAE8EzwBQCtA="
+   "keys": "M1Aa0ABNBM0WUAzQAE0EzQBLFMsOUAjQAE0OzRBLDssAUALQAEgQyABNBM0ASwTLBlAU0IIBSAjIAEsGyyhQCNBoUAjQHlAK0A=="
   },
   {
    "scene": 33,
-   "keys": "jgFIBsgPUAbQGEkJyQBIA8gASwbLAEkGyTBND80DSBjIAE0JzQBPBs8VUAbQGEgGyAxRCdEAUA/QMFAG0AA5AbkFSAPIAE8DzxJPA88ASwPLEk0JzRJID8gzTQnNXUsKyw=="
+   "keys": "kgFIBcgPUAXQGUgFyABLBcsPSAXIAEsFyzJLBcsKSwXLClAK0A9LBcsASArID1AK0DdQBdAATQXNAEsFyzJQBdAPSwXLBUgPyC1NBc0FTQXNWksFywpLBcs="
   },
   {
    "scene": 34,
-   "keys": "AU0VzQBLJMsAUAnQAE0PzQ9NA80AOQG5AksDy0VNCc0AUBXQAEsDywBIA8gASwPLFUsDyxI5AbkCOQG5Ak0GzQxLA8snSwPLM00qzQBLHssAUAnQAE0PzSpNBs0SSwPLVEgGyAxQJNAASwPLJ0sGywlNDM0YSAbIAE0kzQBLHssAUAnQAE0SzS1NM81aOQG5AjkBuQJNBs0hSAbIAE0QzQ=="
+   "keys": "AU0VzQBLJMsAUAnQAE0PzQ9NA80AOQG5AksDy0VNCc0AUBXQAEsDywBIA8gASwPLFUsDyxU5AbkCOQG5AlAD0AA5AbkCOQG5AlAD0AA5AbkCOQG5AlAD0AA5AbkCTQbNVEgGyABNJM0ASyHLAFAG0ABND80nTQPNEksGy2lNDM0AUA/QAEsGyyFLBssMTQbNIU0nzQBLIcsAUAbQAE0PzRJNBs0JSAzIAE0wzRs5AbkjTQPNSE0UzQ=="
   },
   {
    "scene": 35,
-   "keys": "H08CzwpLBMsMTQLNBE0CzRJQCtAATwLPAEcExwBQCtAASATIBEgEyABJAskATQjNBlAE0ABPBs8ARwbHCFAC0ABIAsgAUAbQAFEG0QBJBMkASATIAkgCyAhNAs0CTQLNCEgCyABLCssGUATQAFEE0QBQBNAASQbJAFAE0ABPBs8ARwbHAEgCyARLAssKSQTJAE0IzQxQBNAATwTPAFAC0ABPBM8ARwLHAEgEyBRJAskCTQLNCEgEyAxLAsseTQLNGkgCyAJPAs9OTQLNBEgKyABHA8c="
+   "keys": "ETkBuRVLBMsUTQLNAFAC0A5QFtAASwTLAFAK0ABNCM0ETQLNAEgIyABLBssASALICE0CzQBLBssAUAzQAE0EzQZNAs0ASwLLAE0EzQZNAs0ASAjIAEsKywpQCNAATQbNAEsCywBNBM0ASAbIAE0CzQBIBsgATQLNAFAC0ABIBMgATQLNAFAE0ABNBM0STQLNAk0CzQJNAs0oUALQAEgEyABNBM0MTRDNAFAC0ABIAsgAUAbQAEsSywxLCstaSALIAFAQ0ABLBMsASAjIAEsCywhLAssKSwLLCFAC0ABLAssCSwbLAEgCyABLBssASAbIAk0CzQhQBNACUAbQAE0OzQBIAsgWTQLNBk0CzQZNAs0SSATIAE0CzQBIAsgASwbLAE0GzQJQHtAASwbLAksCywBICMgGTQbNAEgCyARNBM0IUAjQAEsEywJQBNAASwTLCEsCywBIBsgASwLLBlAC0ABIBMgATQjNAEgCyARIAsgESwLLBE0CzQBIDcg="
   }
  ],
  "chapters": [
@@ -283,159 +283,197 @@
  ],
  "timeline": {
   "fps": 60,
-  "frames": 93392,
+  "frames": 100877,
   "chapters": [
    {
     "title": "Opening",
-    "frame": 0
+    "frame": 0,
+    "time": 0
    },
    {
     "title": "Story",
-    "frame": 1645
+    "frame": 1645,
+    "time": 27416.66666666723
    },
    {
     "title": "Stage 1: The Motherboard — The Data Bus",
-    "frame": 3357
+    "frame": 3357,
+    "time": 55949.999999997584
    },
    {
     "title": "Stage 1: The Motherboard — Expansion Slots",
-    "frame": 5529
+    "frame": 6831,
+    "time": 113850.00000001024
    },
    {
     "title": "Stage 1: The Motherboard — The Chipset",
-    "frame": 8294
+    "frame": 9635,
+    "time": 160583.33333333142
    },
    {
     "title": "Stage 1: The Motherboard — The Drive Cage",
-    "frame": 10358
+    "frame": 12292,
+    "time": 204866.66666663898
    },
    {
     "title": "Stage 1: The Motherboard — Copper Traces",
-    "frame": 13064
+    "frame": 15028,
+    "time": 250466.66666661244
    },
    {
     "title": "Stage 1: The Motherboard — The BIOS Bug",
-    "frame": 15843
+    "frame": 17807,
+    "time": 296783.33333331265
    },
    {
     "title": "Stage 2: Memory Lane — The Memory Bus",
-    "frame": 17635
+    "frame": 19793,
+    "time": 329883.3333333512
    },
    {
     "title": "Stage 2: Memory Lane — The Address Bus",
-    "frame": 20154
+    "frame": 22312,
+    "time": 371866.6666667334
    },
    {
     "title": "Stage 2: Memory Lane — The Memory Bank",
-    "frame": 22368
+    "frame": 24704,
+    "time": 411733.33333344647
    },
    {
     "title": "Stage 2: Memory Lane — The Cache",
-    "frame": 25083
+    "frame": 27607,
+    "time": 460116.6666668361
    },
    {
     "title": "Stage 2: Memory Lane — Stack Overflow",
-    "frame": 27162
+    "frame": 30289,
+    "time": 504816.66666688817
    },
    {
     "title": "Stage 2: Memory Lane — The Ring Buffer",
-    "frame": 29907
+    "frame": 33172,
+    "time": 552866.6666668443
    },
    {
     "title": "Stage 2: Memory Lane — The Memory Leech",
-    "frame": 32625
+    "frame": 35898,
+    "time": 598300.0000000718
    },
    {
     "title": "Stage 3: The Sound Card — The ISA Bus",
-    "frame": 34121
+    "frame": 37645,
+    "time": 627416.6666666707
    },
    {
     "title": "Stage 3: The Sound Card — The Big Name",
-    "frame": 36971
+    "frame": 40495,
+    "time": 674916.6666665601
    },
    {
     "title": "Stage 3: The Sound Card — The Waveform",
-    "frame": 38771
+    "frame": 42980,
+    "time": 716333.3333331303
    },
    {
     "title": "Stage 3: The Sound Card — The Woofer",
-    "frame": 41695
+    "frame": 45983,
+    "time": 766383.3333330138
    },
    {
     "title": "Stage 3: The Sound Card — The Mixer",
-    "frame": 43600
+    "frame": 48258,
+    "time": 804299.9999995922
    },
    {
     "title": "Stage 3: The Sound Card — The Score",
-    "frame": 46395
+    "frame": 51093,
+    "time": 851549.9999994822
    },
    {
     "title": "Stage 3: The Sound Card — The Feedback Howler",
-    "frame": 50607
+    "frame": 55193,
+    "time": 919883.3333326564
    },
    {
     "title": "Stage 4: The Hard Disk — The IDE Bus",
-    "frame": 53378
+    "frame": 57015,
+    "time": 950249.9999992524
    },
    {
     "title": "Stage 4: The Hard Disk — The Platter",
-    "frame": 56558
+    "frame": 60195,
+    "time": 1003249.999999129
    },
    {
     "title": "Stage 4: The Hard Disk — Between Platters",
-    "frame": 59327
+    "frame": 62443,
+    "time": 1040716.6666657084
    },
    {
     "title": "Stage 4: The Hard Disk — Bad Sectors",
-    "frame": 61954
+    "frame": 65179,
+    "time": 1086316.6666658658
    },
    {
     "title": "Stage 4: The Hard Disk — The Spindle",
-    "frame": 64044
+    "frame": 67400,
+    "time": 1123333.3333327048
    },
    {
     "title": "Stage 4: The Hard Disk — Fragmented File",
-    "frame": 66818
+    "frame": 70263,
+    "time": 1171049.9999995937
    },
    {
     "title": "Stage 4: The Hard Disk — The Head Crash",
-    "frame": 69566
+    "frame": 73024,
+    "time": 1217066.6666664747
    },
    {
     "title": "Stage 5: The CPU — The Local Bus",
-    "frame": 70791
+    "frame": 74977,
+    "time": 1249616.6666666262
    },
    {
     "title": "Stage 5: The CPU — The Pipeline",
-    "frame": 74298
+    "frame": 78484,
+    "time": 1308066.6666668984
    },
    {
     "title": "Stage 5: The CPU — The Heat Sink",
-    "frame": 76262
+    "frame": 80932,
+    "time": 1348866.6666670884
    },
    {
     "title": "Stage 5: The CPU — The Core",
-    "frame": 79046
+    "frame": 85080,
+    "time": 1418000.0000007437
    },
    {
     "title": "Stage 5: The CPU — The Cooling Fan",
-    "frame": 81095
+    "frame": 87466,
+    "time": 1457766.6666675955
    },
    {
     "title": "Stage 5: The CPU — The Ribbon Cable",
-    "frame": 83899
+    "frame": 90214,
+    "time": 1503566.6666678088
    },
    {
     "title": "Stage 5: The CPU — GLITCH",
-    "frame": 88008
+    "frame": 94287,
+    "time": 1571450.0000014582
    },
    {
     "title": "Ending",
-    "frame": 90193
+    "frame": 97678,
+    "time": 1627966.666668388
    },
    {
     "title": "Credits",
-    "frame": 91840
+    "frame": 99325,
+    "time": 1655416.666668516
    }
   ]
  }

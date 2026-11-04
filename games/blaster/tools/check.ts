@@ -3,7 +3,7 @@
 import { fly } from './bot';
 import { rideBus } from './busBot';
 import { STAGES } from '../src/stages/stages';
-import { arenaGoal, goalOf, maxTicksOf, simOf, watchLanes } from './testkit';
+import { arenaGoal, flyOptionsOf, goalOf, maxTicksOf, simOf, watchLanes } from './testkit';
 import { Sim } from './sim';
 import { MLEN } from '@lewismoten/gamemaker-sandbox-engine/formats/map';
 import { SCAN } from '../src/ids';
@@ -52,7 +52,7 @@ for (const make of STAGES) {
     const t0 = Date.now();
     const human = process.env.HUMAN ? { horizon: 5, every: 5 } : {};
     const lanes = watchLanes(sim, l);
-    const r = l.bus ? await rideBus(sim, l.bus) : await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...human });
+    const r = l.bus ? await rideBus(sim, l.bus) : await fly(sim, { maxTicks: maxTicksOf(l), goal: goalOf(l), ...flyOptionsOf(l.file), ...human });
     for (const line of lanes()) {
       r.log.push(line);
       failed.push(`${l.file}: ${line}`);
