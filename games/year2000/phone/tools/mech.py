@@ -75,7 +75,7 @@ m = {
                       "closes_on": "each cam lobe during the return stroke (12 lobes, 30 degrees apart; the clutch keeps the cam still on the wind)"},
             "off_normal": {"ref": "SW3", "center": at("SW3"), "pads": [pl["SW3"]["pads"]["1"], pl["SW3"]["pads"]["2"]], "in_module": True,
                            "closes_on": "held closed whenever the dial plate is off its rest position (a wall under the plate rim presses it)"}},
-        "keep_clear": "the old dial circle on the board is free of parts; it carries only silkscreen and the two wire pads at its bottom edge",
+        "keep_clear": "the old dial circle on the board is free of parts; it carries only silkscreen and the two wire pads of the module's switches",
     },
     "back": {
         "note": "Electronics are on the back. Back parts are mirrored footprints. The battery holder is NOT on the board: it lies flat in the shell's battery bay, past the bottom end of the board (the shell is one continuous case).",

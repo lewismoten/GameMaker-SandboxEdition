@@ -94,9 +94,9 @@ export function dialReport(levels: Record<string, number>, screws: [number, numb
     const r = returnRun(eta, 0.4, 5, s.preloadDeg, 300);
     const ppsMax = r.wMax / P.pitchDeg;
     const mean = 300 / r.t / P.pitchDeg;
-    const okRate = ppsMax <= P.returnRateDegPerS[1] / P.pitchDeg + 0.5 && mean >= P.returnRateDegPerS[0] / P.pitchDeg - 0.5;
+    const okRate = mean >= P.returnRateDegPerS[0] / P.pitchDeg && mean <= P.returnRateDegPerS[1] / P.pitchDeg;
     lines.push(
-      `  grease ${eta} Pa s: 300 deg in ${(r.t * 1000).toFixed(0)} ms, mean ${mean.toFixed(1)} pulses/s, peak ${ppsMax.toFixed(1)} pulses/s${okRate ? '  <-- inside 8 to 15 per second' : ''}`,
+      `  grease ${eta} Pa s: 300 deg in ${(r.t * 1000).toFixed(0)} ms, mean ${mean.toFixed(1)} pulses/s, peak ${ppsMax.toFixed(1)} pulses/s${okRate ? '  <-- mean rate inside 8 to 15 per second' : ''}`,
     );
     speeds.push({ etaPas: eta, ms: r.t * 1000, meanPps: mean, peakPps: ppsMax });
   }
