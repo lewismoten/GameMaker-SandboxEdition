@@ -25,6 +25,13 @@ describe('phoneChapters (the real README and parts list)', () => {
     expect(all).toContain('circuit board ZIP');
   });
 
+  it('sends the programming step to the firmware in the circuit board ZIP, not to a file only the maker has', () => {
+    const steps = chapters.find((c) => c.head === 'Programming the PIC')!.blocks.find((b) => b.tag === 'ol');
+    const text = blockText(steps!);
+    expect(text).not.toMatch(/out\/firmware|build_firmware/);
+    expect(text).toContain('firmware folder of the circuit board ZIP');
+  });
+
   it('shows the parts as four columns', () => {
     const table = chapters.at(-1)!.blocks.find((b) => b.tag === 'table');
     expect(table).toMatchObject({ tag: 'table', head: [['Refs'], ['Qty'], ['Value'], ['Description']] });

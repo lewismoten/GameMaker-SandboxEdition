@@ -45,7 +45,7 @@ export function phoneAttachments(): Attachment[] {
     {
       href: `${phoneBase}phone-circuit-board.zip`,
       file: 'phone-circuit-board.zip',
-      label: 'Circuit board files (ZIP: KiCad project for both builds, with Gerbers when the build had KiCad)',
+      label: 'Circuit board files (ZIP: KiCad project and PIC firmware for both builds, with Gerbers when the build had KiCad)',
     },
     { href: `${phoneBase}parts-list.csv`, file: 'phone-parts-list-junior-lab.csv', label: 'Parts list, Junior Lab build (CSV)' },
     { href: `${variantBase('deluxe')}parts-list.csv`, file: 'phone-parts-list-deluxe.csv', label: 'Parts list, Deluxe build (CSV)' },
