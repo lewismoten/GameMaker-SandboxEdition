@@ -37,22 +37,12 @@ describe('groups', () => {
     }
   });
   it('gives each build its shell, dial, caps and a battery box of four labeled AAA cells', () => {
-    for (const { parts: ps } of Object.values(builds)) {
+    for (const [name, { parts: ps }] of Object.entries(builds)) {
       const ids = new Set(ps.map((p) => p.id));
-      for (const id of [
-        'front-cover',
-        'back-tray',
-        'battery-door',
-        'dial-plate',
-        'dial-cam',
-        'dial-spring',
-        'dial-post',
-        'dial-stop',
-        'cap-talk',
-        'cap-clear',
-        'BT1',
-      ])
-        expect(ids.has(id), id).toBe(true);
+      const common = ['front-cover', 'back-tray', 'battery-door', 'dial-plate', 'dial-cam', 'dial-spring', 'dial-stop', 'cap-talk', 'cap-clear', 'BT1'];
+      // the Junior Lab's dial is a self-contained module (its own base, bushing, screw and switches) with the earpiece speaker in the cover; the Deluxe keeps a post on the board
+      const own = name === 'cheap' ? ['dial-base', 'dial-bushing', 'dial-screw', 'SW2-dial', 'SW3-dial', 'LS1-earpiece'] : ['dial-post'];
+      for (const id of [...common, ...own]) expect(ids.has(id), `${name} ${id}`).toBe(true);
       for (let k = 1; k <= 4; k++) {
         expect(ids.has(`BT1-cell${k}`)).toBe(true);
         expect(ps.find((p) => p.id === `BT1-label${k}`)?.label).toContain('AAA 1.5V');
@@ -87,6 +77,18 @@ describe('groups', () => {
     expect(shows('electronics', 'battery')).toBe(true);
     expect(shows('bare', 'components')).toBe(false);
     expect(shows('bare', 'board')).toBe(true);
+  });
+});
+
+describe('the dial module explodes apart', () => {
+  it('puts each part of the Junior Lab module in a stack of its own, above the shell stack, in the order of the stack', () => {
+    const mod = parts.filter((p) => p.group === 'dial' && p.stack);
+    expect(mod.length).toBeGreaterThanOrEqual(8);
+    const stacks = explodeStacks(parts);
+    const keys = new Set(mod.map((p) => stackOf(p)));
+    expect(keys.size).toBe(mod.length);
+    const spans = stacks.map((s) => [s.lo + s.offset, s.hi + s.offset]).sort((a, b) => a[0] - b[0]);
+    for (let i = 1; i < spans.length; i++) expect(spans[i][0]).toBeGreaterThan(spans[i - 1][1]);
   });
 });
 

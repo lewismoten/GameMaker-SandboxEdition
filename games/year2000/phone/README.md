@@ -20,65 +20,122 @@ in "What Rev C changed" below.
 Dex Dynamo (age 11) wrote a twenty-page science fair report, THE POCKET TELEPHONE, and Sparky 3000 ate it. This kit is
 what he would build from it, in two sizes. Both names are on the silkscreen (front and back) and in the desk's 3D viewer.
 
-|       | **Science Project No. 2: The Pocket Telephone, Junior Lab Edition (parts from any hobby shop)**                                | **Science Project No. 1: The Pocket Telephone (Deluxe Model)**                                                |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| Where | this folder                                                                                                                    | `deluxe/` (the earlier Rev C: sources restored from commit `7e8548a11`, see `deluxe/README-earlier-rev-c.md`) |
-| Board | 99 x 99 mm, the cheapest board tier                                                                                            | 73.66 x 175.26 mm                                                                                             |
-| Parts | PIC16F628A, clone MAX7219, 6 mm tactile switches, ZEPPP programmer; the battery holder and the microphone capsule are off the board, in the shell's battery bay | the long board; the 4 x AAA holder and the microphone are in the bay                                                                  |
-| Shell | front cover, back tray with the battery bay, battery door                                                                        | front cover, back tray with the bay (battery door in its floor)                                                            |
+|       | **Science Project No. 2: The Pocket Telephone, Junior Lab Edition (parts from any hobby shop)**                                                                 | **Science Project No. 1: The Pocket Telephone (Deluxe Model)**                                                |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Where | this folder                                                                                                                                                     | `deluxe/` (the earlier Rev C: sources restored from commit `7e8548a11`, see `deluxe/README-earlier-rev-c.md`) |
+| Board | 99 x 99 mm, the cheapest board tier                                                                                                                             | 73.66 x 175.26 mm                                                                                             |
+| Parts | PIC16F628A, clone MAX7219, 6 mm tactile switches, ZEPPP programmer; the battery holder and the microphone capsule are off the board, in the shell's battery bay | the long board; the 4 x AAA holder and the microphone are in the bay                                          |
+| Shell | one full-width case: earpiece pod, front cover, back tray with the battery bay behind the dial module, battery door, six screws                                 | front cover, back tray with the bay (battery door in its floor)                                               |
 
 Each folder rebuilds on its own (`deluxe/tools/` has its own generators and shares `tools/silkart.py` and `tools/dex_art.py`).
 The rest of this file describes the Junior Lab Edition; the Deluxe Model differs in its board and its on-board battery holder.
 
-## The 3D-printed shell
+## The 3D-printed shell and the dial module
 
-`tools/shell.ts` (with `shellInput.ts` and `shellParts.ts`) builds each variant's shell as distance fields with the repository's trinket
-tools (`web/packages/tools/src/mesh/`), sized from its own `mechanical/interface.json`, `kicad/qr_spots.json` and `viewer/parts.json`.
-It writes one binary STL per printed part, in printing orientation, to `<variant>/shell/`, checks each (size, triangles, pieces, thin specks,
-overhang) and merges every part into `viewer/parts.json` + `parts.bin`, in the groups `shell`, `dial` and `battery`, so the desk's viewer
-explodes the case around the board with no viewer code.
+`tools/shell.ts` builds each variant's shell as distance fields with the repository's trinket tools (`web/packages/tools/src/mesh/`), sized from its own
+`mechanical/interface.json`, `kicad/qr_spots.json` and `viewer/parts.json`. It writes one binary STL per printed part, in printing orientation, to
+`<variant>/shell/`, checks each (size, triangles, pieces, thin specks, overhang) and merges every part into `viewer/parts.json` + `parts.bin`, in the
+groups `shell`, `dial` and `battery`, so the desk's viewer explodes the case around the board. The Junior Lab case is `tools/shellCheap.ts` (with the dial in
+`tools/dialModule.ts`); the Deluxe keeps its own shell in `tools/shellParts.ts`, which is described in `deluxe/README-earlier-rev-c.md`.
 
-- **One continuous case.** The case is longer than the board: it extends past the board's bottom end into a **battery bay** (the Junior Lab case is
-  103.8 x 178.9 mm, the Deluxe 78.5 x 253.2 mm; the board is 99 x 99 and 73.66 x 175.26). The bay, from the board's edge down: a 3 mm divider wall with a slot
-  for the leads, the 4 x AAA holder lying flat on the floor (60 x 52 x 17 mm Junior Lab, 53 x 50 x 13 mm Deluxe, with 1 mm of room all round and crush
-  ribs that stand 0.6 mm off it), then the microphone's mouthpiece. The holder is NOT on the board and not on its back; its two leads run along the back
-  of the board, through the divider's slot and drop into the holder's end. The board is held by the corner screw bosses, as before.
-- **Front cover** (replaces the open bezel): covers the board and the bay. Openings only where needed: the **dial's well** (the plate, cam and finger stop are
-  separate printed parts that drop in; the well is as wide as the finger stop needs), a window over the two 7-segment displays (a clear or tinted insert is
-  optional and not modeled), the TALK and CLEAR caps (flush-ish **caps through 10.8 mm holes**, each with a flange under the cover that holds it in and a
-  stem standing 0.5 mm proud), an earpiece grille of 2 mm holes over the speaker (the speaker stays on the board under the cover in this version), the IR
-  parts' notches, and the **mouthpiece grille** (seven 1.4 mm holes) over the microphone. THE POCKET TELEPHONE is engraved 0.5 mm into the face over the bay.
-  The front silkscreen is hidden under the cover. It prints face down on the bed, so nothing overhangs.
-- **Microphone**: the 9.7 mm electret capsule is in a printed collar that hangs from the cover's underside past the holder, its face 0.6 mm under the grille.
-  On the board MK1 is two wire pads (+ is marked on the silkscreen, pad 1, the bias side); a twisted pair runs from them along the back of the board,
-  through the divider's slot and over the holder to the capsule.
-- **Volume wheel**: RV1 is a side thumbwheel pot (Deluxe 10k, Junior Lab 100k with R20 changed to 33k so the top of the wheel's range matches the old fixed level
-  within about 0.3 dB). Its 10 mm wheel stands 1.5 mm past the board's edge and shows through a slot in the tray's side wall (a printed wheel cap is not made).
-- **Back tray**: closed (the QR codes and Dex are seen when the case is open). Only the battery door, the volume slot, the screw holes and the divider's slot
-  open it. It is one piece with the bay.
-- **Battery box and cells**: a box with four off-brand AAA cells ("ZORP", invented), each with raised lettering "AAA 1.5V", and a **battery door**
-  (plate, plug and finger notch).
-- **Dial group**: the rotary dial plate (ten finger holes), the **pulse cam and off-normal cam** (ten ramped teeth that press the 6 mm tactile switches
-  from above, one raised sector for the off-normal switch), a flat spiral return spring, a pivot post and a **finger stop** (feet glued to the board), and the
-  two button caps (TALK green, CLEAR red) that press onto the switches.
+### The Junior Lab case: one full-width body
 
-**Lead and solder clearance.** Every pad is a plated through-hole, so a part on one face has its trimmed lead and solder fillet standing out of the
-other: most parts are on the back, so their stubs stand out the front, under and around the dial; the front parts' stubs reach toward the back
-tray's floor. The viewer's models leave them out, so `tools/clearance.ts` adds them (a 0.9 mm radius fillet 1 mm tall, then a 0.3 mm wire, to
-**LEAD = 2.5 mm** from the board face, at every pad of `kicad/placement.json`) and measures every printed part (frame, tray and its floor, dial
-plate, cam teeth, spring, post, stop, caps, battery box and door) against those stubs and against every part body. `shell.ts` fails the build, and
-`web/src/desk/boxes/phone/phoneClearance.test.ts` fails the tests, if any gap is under 1 mm; the numbers go to `viewer/clearance.json`. The 2.5 mm is an
-**assumption**: IPC-A-610 allows a through-hole lead to stand 0.5 mm at least and 1.5 mm at most from a board up to 2.3 mm thick (quoted from memory,
-not checked against the standard), and a hobbyist trims to about 1 to 2 mm. Closest approaches, in mm (Junior Lab / Deluxe): cam's lowest tooth to a
-lead 5.4 / 11.4 (its tip is 6.1 / 12.2 above the board, the stubs end at 4.1 / 4.1), dial plate to a lead 5.2 / 10.8 and to the switch tops 1.7 / 1.7,
-back tray floor to a lead 9.7 / 18.0, tightest of all 1.06 (stop foot to a lead) / 1.07. The cams press the pulse and off-normal switches on purpose
-and the caps cover theirs, so those pairs are not counted. The check changed the shell: corner screw bosses and the pivot post, finger stop and spring are
-sized from the room the stubs and parts leave (the spring is thinner and shorter, and the Deluxe's pivot is a 1.5 mm pin because its two big switches
-sit 3.7 mm apart at the dial's center), the stop moves out where a lead is in its way, and a part that overhangs the board's edge (the Deluxe's speaker)
-gets a notch in the frame. The Deluxe's battery holder had been drawn on the back against the board; it now lies in the battery bay, off the board. Not shown in the viewer: the stubs themselves.
+The case is 103.8 mm wide from the top to the chin (the board is 99 x 99) and about 240 mm long, 34 mm thick. Seen from the front, top to bottom:
 
-Nothing was printed. The clearances (0.3 mm), the cam's travel (0.3 mm of press) and the glued feet are starting guesses. In Rev C the two dial switches
-sit only about 1.5 mm apart in radius from the dial's center, so the pulse teeth may brush the off-normal switch: print the cam first and check.
+1. **Earpiece pod** (above the board, between the two infrared parts): the 28 mm speaker clips under the cover's roof, behind a grille of 2 mm holes. Two
+   2 mm arms per clip follow the speaker's rim and end in a barb (an 0.8 mm ledge under its back rim), so the speaker snaps in from the back and nothing is glued.
+   Two wires (+ is the square pad) run from the board's LS1 pads. This frees the 28 mm circle the speaker used on the board (616 mm2; the pads stay).
+2. **The 99 x 99 board**, clamped between the cover's and the tray's walls by the corner bosses.
+3. **Lower body**: the dial module sits in the cover (its plate stands 0.8 mm proud of the face), the 4 x AAA holder lies behind it in the tray (the module's base
+   lies 0.2 mm over the holder like a lid), the microphone capsule is at the chin under a grille.
+
+_Why this layout._ The dial is below the board where a thumb or finger reaches it best, with room for a 74 mm plate and 13 mm holes. The heaviest part, the
+battery, is directly behind the dial, so the phone's weight sits in the palm of the hand that holds the lower body, the thumb reaches the TALK and CLEAR caps
+on the board's lower edge, the earpiece is at the top and the mouthpiece at the bottom, 190 mm apart, about a real handset's span. The back is flat and closed.
+
+- **Front cover**: covers everything except the dial opening (a 76.4 mm hole), the display window, the speaker and mouthpiece grilles and the TALK / CLEAR
+  caps. The dial module's tube hangs from the roof around the opening; the base's rim seats against its end, so nothing is glued. The finger stop's clip
+  comes through a small slot at 4 o'clock. It prints face down.
+- **Back tray**: closed, one flat floor 20.7 mm under the board's back plane (a stepped floor would print as an 11,000 mm2 overhang). The battery cradle has crush
+  ribs 0.3 mm off the holder on all four sides; the door is in the floor under the holder, so the cells change **without opening the case**. The volume wheel's
+  slot is in the side wall. Six screw seats.
+- **Six screws, all from the back.** M3 x 30 pan-head **thread-forming (self-tapping) screws**, heads on the back, into 2.5 mm pilot holes in six bosses of the
+  front cover: the case's two top corners (they pass through the board's top mounting holes and clamp it), the board's two lower mounting holes (the
+  board is clamped between bosses in both halves), and the two corners of the chin. The cover and tray have no other screw bosses. The dial uses the same kind
+  of screw (M3 x 10, into a 2.5 mm pilot in its post). Why not heat-set inserts: a lead stub of a part on the back stands 3.4 mm from the board's top left hole, which
+  leaves a boss only 2.4 mm in radius, too small for an insert. The pilot holes stop short of the roof (nothing shows on the face).
+- **Battery holder**: held by the tray's cradle (ribs on all four sides, 0.3 mm of slack), crush ribs, and the module's base 0.2 mm over its top. Most 4 x AAA
+  holders have a screw hole in the middle, but the part listed here (Parts Express 142-254) is not checked for one, so no screw is used. If yours has a center
+  hole, a screw from the back into a boss would be an upgrade.
+- **Microphone**: the 9.7 mm capsule in a collar hanging from the cover, at the chin. Its twisted pair runs from the board's MK1 pads, out to the corridor
+  beside the holder (x 2.5 and 4.5 mm), down the lower body and across below the dial's base to the capsule.
+- **Wires to the dial's switches**: SW2 and SW3 are 6 mm tactile switches in the dial module, with two thin wires each to wire pads at the bottom of the board's old
+  dial circle (24, 80 and 36, 80 mm). The wires run along the front of the board's left side, in the cover's cavity, to the module. (Their path is not drawn.)
+
+### The dial module
+
+A self-contained stack, drawn from scratch (no mesh or STL copied) in `tools/dialModule.ts`, numbers shared with the mechanism check in `tools/dialParams.json`.
+Front to back: **plate**, **cam wheel**, **spring**, **base**. Fat-finger sizing: 13 mm finger holes on a 29 mm ring (webs of 2.0 mm), a 74 mm plate, a clip-on
+finger stop with an arm over the holes at 4 o'clock, hole 1 at 3 o'clock, 30 degrees from the stop.
+
+| Part           | What it is                                                                                                                                                                                                                                                          |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dial-plate`   | 74 mm plate, ten 13 mm holes, a hub tube with two drive tabs, two flexure pawls (2 mm thick, 18 mm of arm), a 1.5 mm wall under the rim that presses SW3 whenever the plate is off rest, a rest dog                                                                 |
+| `dial-cam`     | the pulse cam wheel: an internal 12-tooth ratchet the pawls drive only on the return, 12 lobes on its rim that press SW2 sideways, 12 detent teeth, a smooth band for the brake, a grease groove under its web                                                      |
+| `dial-spring`  | the printed flat spiral spring in one piece with its own frame ring (the frame has three lugs that key into a wall on the base, six slots in the hub ring set the preload)                                                                                          |
+| `dial-base`    | the backplate: the center post with a 2.5 mm screw pilot, the **ten digit pedestals** (the digits are engraved on them, 2.6 mm under the plate, so they read through the holes), switch cradles, the hold-back and brake leaves, the rest post, an ear for the clip |
+| `dial-stop`    | the finger stop: a C-clip over the base's ear, a post through the cover's slot, an arm over the plate; printed on its side                                                                                                                                          |
+| `dial-bushing` | the spacer the washer clamps, so the plate turns freely on the post and cannot lift off (the washer overlaps the plate's hub lip by 1.2 mm each side)                                                                                                               |
+| bought         | 2 tactile switches (SW2, SW3, on the BOM already), an M3 x 10 thread-forming screw, an M3 fender washer 9 mm outside diameter                                                                                                                                       |
+
+- **One-way counting (the ratchet clutch).** The plate winds clockwise. Two flexure pawls on the plate ride over a 12-tooth ratchet on the cam wheel, one click
+  every 30 degrees, and a hold-back leaf on the base keeps the cam wheel still, so SW2 does nothing on the wind. On the return the pawls catch the teeth's steep
+  faces and carry the cam wheel back with the plate, and the 12 lobes press SW2 once per 30 degrees of cam travel. Hole 1 is one pitch (30 degrees) from the
+  stop, so digit n travels 30 x n degrees and gives exactly n pulses (0 is 300 degrees, 10 pulses). When the plate stops at rest, the hold-back leaf's gentle
+  forward flank lets the cam coast the last 8 degrees to its parked tooth, which also puts every ridge 8 degrees ahead of the pawl, so a finger that winds up to
+  21 degrees past the stop (or 0.5 degrees short) still crosses the same number of ridges. `shell.ts` runs the **angle walk** (`tools/dialMechanism.ts`, the
+  same arithmetic as the Stage Box's mechanism check) for every digit and fails the build if a wind gives a pulse or a return gives other than n; the phone's
+  firmware simulator (`tools/picsim.py`) plays the same walk into the real hex, with contact bounce.
+- **Retention.** The post stands on the base; the M3 x 10 screw goes through the washer and the bushing into the post's pilot and clamps only the bushing. The plate
+  turns on the post and its hub lip sits between the bushing's flange-free top and the washer, so it can lift only 0.6 mm and never fall out. No snap prongs.
+- **Return spring.** First choice, the printed spiral: strip 1.6 x 3.0 mm, pitch 2.8, 4 turns (about 300 mm), parameters in `DM.spring`. In PETG (E about 2 GPa,
+  an assumption) it gives about 5 N mm at rest (60 degrees of preload) and 30 N mm fully wound (about 1 N at a finger), strain 1.3 % (PETG takes about 2 %, PLA
+  about 1 %, and PLA creeps: use PETG). Fallback: a metal torsion spring, 0.5 mm wire, 13 mm coil, fits around the spring frame's hub ring (OD 16 mm; the printed
+  spiral is snipped off) with one leg in a hub slot and the other in a lug notch of the base's wall.
+- **Speed.** A free printed dial returns in about 50 ms, far too fast; the cam wheel is slowed by the grease film between its web and the spring (a 0.4 mm gap, a
+  groove to hold the grease) and by the brake leaf's friction. `shell.ts` prints an estimate for several greases; the first print decides (thin the grease or add a
+  shim to change the film). The firmware accepts 8 to 15 pulses a second.
+- **Credit.** Inspired by "Rotary Dial mechanism" by dAcid (Thingiverse 3153349, CC BY 4.0, https://www.thingiverse.com/thing:3153349). Ideas we took: a printed
+  spiral spring in one piece with a frame, a clip-on finger stop, a headed center screw through a stack that prints flat, and digits printed under the holes. Ours
+  differs: a ratchet clutch so that only the return counts (that dial reads both ways with an optical sensor and software), tactile switches in place of the
+  optical slotted disc, a bigger plate with 13 mm holes, a separate cam wheel, a grease damper, a heat-free self-tapping screw, and every dimension is our own
+  (no STL, mesh or spring parameter was copied or adapted, so NOTICE.md has no entry for it).
+
+### Assemble the module and the case
+
+Print the plate, cam wheel, spring, base and the clip in **PETG** (the flexure pawls, leaves and the spiral spring crack and creep in PLA); the cover, tray, caps and door can be PLA.
+The STLs in `shell/` are in printing orientation.
+
+1. **Dial module (on the bench).** Press SW3 flat into its low frame on the base (pins down through the four holes) and SW2 on its side into its cradle, button toward the center. Solder
+   two wires to each switch (pulse and ground; about 100 mm). Set the spring plate on the base, its three lugs in the wall's notches. Put the cam wheel over it
+   (a dab of grease on the spring plate's top and in the cam's groove). Wind the plate 60 degrees clockwise from rest and lower it on the cam wheel: the hub tube's two tabs go into two
+   opposite slots of the spring's hub ring, the pawls fall into the cam's teeth. Let it back to its rest dog. Drop the bushing on the post, then the washer, then the M3 x 10 screw: snug, then back off an eighth of a turn
+   so the plate turns freely. Press the clip over the base's ear.
+2. **Check the dial** before the case: wind a digit to the clip's arm and let go; SW3 should close at once and SW2 should click open and shut once per 30 degrees of the return (with a meter, or the board).
+3. **Case.** Cover face down: the speaker (two wires) pops into the pod's clips from behind; the microphone capsule goes in its collar; the caps drop into their holes. Lay the dial module in the
+   tube from behind (the plate through the opening, the clip's post through its slot). Lower the board onto the cover's bosses, solder the dial and speaker wires to their pads, the holder's leads and
+   the microphone's pair, set the holder in the tray's cradle and the tray on the cover. Six M3 x 30 screws from the back, then the battery cells and the door.
+
+### Lead and solder clearance
+
+Every pad is a plated through-hole, so a part on one face has its trimmed lead and solder fillet standing out of the other. The viewer's models leave them out,
+so `tools/clearance.ts` adds them (a 0.9 mm radius fillet 1 mm tall, then a 0.3 mm wire, to **LEAD = 2.5 mm** from the board face, at every pad of
+`kicad/placement.json`) and measures every printed part (including the whole dial module and the six screw bosses) against those stubs and against every part
+body. `shell.ts` fails the build, and `web/src/desk/boxes/phone/phoneClearance.test.ts` fails the tests, if any gap is under 1 mm; the numbers go to
+`viewer/clearance.json`. The 2.5 mm is an **assumption** (IPC-A-610 allows 0.5 to 1.5 mm; a hobbyist trims to about 1 to 2 mm). The dial module is below the board, so
+it is far from every stub; the closest approaches are the screw bosses and the cover over the board.
+
+Nothing was printed. The fits (0.3 mm), the lobes' travel (0.15 mm of overtravel), the spring and the grease are starting guesses.
 
 ## What is printed on the board
 
@@ -186,9 +243,9 @@ One infrared beam carries live voice and touch-tone digits, half duplex.
 - **Display.** The MAX7219 scans two 4-digit common-cathode modules and the PIC writes it over three wires. A digit typed or received
   is added at the right of the number (left-aligned). The left digit's decimal point lights while TALK is held. An empty display shows a dash.
 - **Dial.** SW2 (pulse) closes once per number step on the return; SW3 (off-normal) is closed while the dial is off rest. Both are 6 mm
-  tactile switches under the dial; cams on the dial's underside press them from above. The PIC
-  counts closures after SW3 closes (debounce about 1 ms for pulses and 15 ms for off-normal, so a fast printed dial with no governor
-  still counts); when SW3 opens the count is the digit. 10 pulses are 0, more than 10 are ignored.
+  tactile switches inside the dial module (two wires each to the board's SW2 and SW3 wire pads); the dial's one-way clutch makes the pulse cam move only on the
+  return. The PIC counts closures after SW3 closes (debounce about 5 ms for pulses, so contact bounce does not count and pulses at 8 to 15 a second still do, and 15 ms for
+  off-normal); when SW3 opens the count is the digit. 10 pulses are 0, more than 10 are ignored.
 - **CLEAR** is the PIC's reset button (MCLR): it restarts the phone and clears the number.
 - **Volume.** The side thumbwheel RV1 (100 k) is a divider after R20 (33 k): the amplifier input sees the wiper. At the top of its range the level is within about 0.3 dB of the old fixed R20 (47 k) against the amplifier's own 50 k input (an estimate from the divider alone; the source impedance upstream was not measured). The wheel also scales the tone path through R16 a little. 65 parts become 66 with RV1; one extra part, about $1 to $2 each (price not confirmed: no retailer page was read).
 - **Clock.** One 3.579545 MHz crystal runs the CM8870; the PIC (XT mode) takes the clock from the CM8870's OSC2 through a 100 nF
@@ -240,10 +297,10 @@ TO-220 parts. The footprint carries G, I, O marks and its square pad is GND.
 ## Board layout (rev C)
 
 The board is **99 x 99 mm**, inside JLCPCB's and PCBWay's cheapest tier (100 x 100 mm). Everything the user sees is on the front;
-electronics are on the back. The front under the **dial** (radius 20 mm, number ring 14.5 mm) and
-the **speaker** (28 mm, centered at 74, 56) is clear of pads, vias and F.Cu tracks: only silkscreen and the two dial switches sit under the dial,
-so the silkscreen number ring (1 to 9 and 0, placed where the finger holes show) reads cleanly through the holes. The speaker's two solder
-pads are 19 mm below its center. Back copper may cross those areas.
+electronics are on the back. The dial is no longer on the board: it is a module in the case's lower body, and the speaker is the earpiece in the cover's top pod.
+Both circles (dial radius 20 mm, centered at 30, 61; speaker 28 mm, centered at 74, 56) are still kept free of pads, vias and F.Cu tracks and carry only silkscreen (the speaker's
+616 mm2 circle is free for a future part). Only wire pads remain: SW2 and SW3 (two pads each, where the switches stood) and LS1 (two pads, + is the square one, 19 mm
+below the old speaker center). Back copper may cross those areas.
 Power and ground use 0.5 mm tracks (no zone fill is possible without KiCad's Python, so there is no ground pour). Silkscreen art (orbit rings, rays around
 the dial, a YEAR 2000 badge, lettering) is clipped away from pads by the generator. The bottom edge holds TALK, the battery pads, the
 microphone, the programming header and CLEAR. The battery holder (60 x 52 x 17 mm, typical) is not on the board: it goes in the shell's
@@ -265,8 +322,8 @@ soldered from the back. Electrolytic capacitors: the square pad is +, and the + 
    chips wait.
 5. **Program the PIC** (next section) with the CM8870 socket empty, then put the PIC in its socket and the CM8870 in the other.
 6. Front: the two display modules (pin 1 square pad, bottom left of each). Power up: a dash appears at the left. If blank, check R25 and the 5 V.
-7. TALK and CLEAR, then the two dial switches. CLEAR restarts the display. Mimic a dial by hand: close SW3, tap SW2 three times, open SW3: a 3 appears.
-8. Speaker and microphone (short wires from the pads). A dialed digit makes a tone from the speaker.
+7. TALK and CLEAR, then the two dial-switch wires (SW2, SW3 pads; the switches are in the dial module). CLEAR restarts the display. Mimic a dial by hand: close SW3, tap SW2 three times, open SW3: a 3 appears.
+8. Speaker (two wires from the LS1 pads to the earpiece in the cover's pod) and microphone (two wires from MK1 to the capsule). A dialed digit makes a tone from the speaker.
 9. IR LED and photodiode last (leads bent 90 degrees so they face the top edge). Point two phones at each other a hand's length apart and dial: the digit
    appears on both. Hold TALK and speak: expect quiet, noisy voice on the other. Tune by ear.
 
