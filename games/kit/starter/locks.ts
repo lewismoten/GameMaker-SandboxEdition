@@ -37,7 +37,7 @@ function keyPicture(pal: Pal, ramp: Ramp): Pixels {
 }
 
 /** The gate: a stout door one block high, a padlock and a key hole. */
-function gatePicture(pal: Pal, body: 'wood' | 'blue', plate: Ramp): Pixels {
+export function gatePicture(pal: Pal, body: 'wood' | 'blue', plate: Ramp): Pixels {
   const p = new Pixels(20, 20, skyOf(pal));
   const ink = pal.c('ink', 0);
   const b = pal.r(body);

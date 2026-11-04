@@ -3,4 +3,4 @@
 import { play } from './play';
 
 const { sim } = await play();
-console.log(`keys-and-doors: the bot played both levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);
+console.log(`keys-and-doors: the bot played all three levels; score ${sim.ci.score}, ${sim.trail.length} scenes entered`);

@@ -1,64 +1,77 @@
 {
- "version": 1,
- "game": "keys-and-doors",
- "rand": {
-  "seed": 1,
-  "per": "scene"
- },
- "segments": [
-  {
-   "scene": 2,
-   "keys": "AU08zQNNRs0DTQrNA00ozQNN"
+  "version": 1,
+  "game": "keys-and-doors",
+  "rand": {
+    "seed": 1,
+    "per": "scene"
   },
-  {
-   "scene": 3,
-   "keys": "AU0jzQNND80DTQ/NA00FzQNIRcgDSy3LA00ozQNNA80DUDvQA01QzQNNCs0DTSPNA00="
-  }
- ],
- "chapters": [
-  {
-   "scene": 2,
-   "title": "Level 1: One Key, One Door"
-  },
-  {
-   "scene": 3,
-   "title": "Level 2: Two Keys, Two Doors"
-  }
- ],
- "timeline": {
-  "fps": 60,
-  "frames": 7914,
+  "segments": [
+    {
+      "scene": 2,
+      "keys": "AU14zQNNHs0ASxTLA00FzQNIRcgDSyPLA00ezQNNA80DUDvQA00PzQNNCs0DTSjNA00="
+    },
+    {
+      "scene": 3,
+      "keys": "AU0tzQNNUM0DTR7NAEseywNNBc0DSEXIA0soywNNI80DTQPNA1A70ANNGc0DTQrNA00ozQNN"
+    },
+    {
+      "scene": 4,
+      "keys": "AU0jzQNND80DTQ/NA00FzQNIRcgDSy3LA00ozQNNA80DUDvQA01QzQNNCs0DTSPNA00="
+    }
+  ],
   "chapters": [
-   {
-    "title": "Opening",
-    "frame": 0,
-    "time": 0
-   },
-   {
-    "title": "Story",
-    "frame": 1028,
-    "time": 17133.33333333315
-   },
-   {
-    "title": "Level 1: One Key, One Door",
-    "frame": 1776,
-    "time": 29600.000000000724
-   },
-   {
-    "title": "Level 2: Two Keys, Two Doors",
-    "frame": 2793,
-    "time": 46549.99999999895
-   },
-   {
-    "title": "Ending",
-    "frame": 4635,
-    "time": 77249.99999999959
-   },
-   {
-    "title": "Credits",
-    "frame": 6842,
-    "time": 114033.33333334363
-   }
-  ]
- }
+    {
+      "scene": 2,
+      "title": "Level 1: One Key, One Door"
+    },
+    {
+      "scene": 3,
+      "title": "Level 2: Two Keys, One Door"
+    },
+    {
+      "scene": 4,
+      "title": "Level 3: Two Keys, Two Doors"
+    }
+  ],
+  "timeline": {
+    "fps": 60,
+    "frames": 10939,
+    "chapters": [
+      {
+        "title": "Opening",
+        "frame": 0,
+        "time": 0
+      },
+      {
+        "title": "Story",
+        "frame": 1028,
+        "time": 17133.33333333315
+      },
+      {
+        "title": "Level 1: One Key, One Door",
+        "frame": 1776,
+        "time": 29600.000000000724
+      },
+      {
+        "title": "Level 2: Two Keys, One Door",
+        "frame": 3739,
+        "time": 62316.666666663325
+      },
+      {
+        "title": "Level 3: Two Keys, Two Doors",
+        "frame": 5812,
+        "time": 96866.66666667197
+      },
+      {
+        "title": "Ending",
+        "frame": 7653,
+        "time": 127550.00000001423
+      },
+      {
+        "title": "Credits",
+        "frame": 9865,
+        "time": 164416.66666666252
+      }
+    ]
+  }
 }
