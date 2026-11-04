@@ -2,6 +2,7 @@
 // through the same PlayIt code the games use. Only what Game-Maker plays can be edited:
 // notes and their velocities (loudness), instruments (program changes and SBI settings), the
 // drum kit (rhythm mode), timing.
+import { windowUndoKeys } from '../../core/windowUndoKeys';
 import { registerEditor } from '../registry';
 import { h, clear, toast } from '../../core/ui';
 import { MusicDoc, SNAPS } from './doc';
@@ -305,7 +306,13 @@ registerEditor(['cmf'], (host, project, file) => {
   showTab(tab);
   refresh();
   if (!doc.song.notes.length && !doc.tracks().length) toast('An empty song: add a track to start.');
+  const offKeys = windowUndoKeys(
+    host,
+    () => doc.undo(),
+    () => doc.redo(),
+  );
   return () => {
+    offKeys();
     doc.dispose();
     roll.dispose();
     overview.dispose();
