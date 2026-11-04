@@ -25,8 +25,6 @@ export const DEFAULT_URLS: Record<ProviderKind, string> = {
   openai: 'https://api.openai.com/v1',
 };
 
-export const PROVIDER_NAMES: Record<ProviderKind, string> = { ollama: 'Ollama', openai: 'OpenAI-compatible' };
-
 export function defaultSettings(provider: ProviderKind = 'ollama'): AiSettings {
   return {
     provider,

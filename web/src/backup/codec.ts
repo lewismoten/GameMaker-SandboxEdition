@@ -74,6 +74,3 @@ export function same(a: unknown, b: unknown): boolean {
   }
   return false;
 }
-
-/** Bytes a value takes as backup JSON (before the zip packs it). */
-export const sizeOf = (v: unknown): number => new TextEncoder().encode(encode(v)).length;

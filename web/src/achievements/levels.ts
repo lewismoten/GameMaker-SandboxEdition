@@ -18,8 +18,6 @@ export const COUNT_LEVELS = {
   'walks-watched': { set: 'watched', goals: [3, 10, 20] },
 } as const;
 
-export type CountFamily = keyof typeof COUNT_LEVELS;
-
 /** The levels of `a`'s family in order, or just `a` when it isn't leveled. */
 export function levelsOf(a: Achievement, all: readonly Achievement[]): Achievement[] {
   if (!a.level) return [a];
