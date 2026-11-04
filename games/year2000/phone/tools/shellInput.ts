@@ -30,20 +30,21 @@ interface PartRow {
   id: string;
   side: string;
   bbox: number[];
+  made?: string;
 }
 
 export function loadVariant(id: 'cheap' | 'deluxe', dir: string): Variant {
   const rd = (p: string) => JSON.parse(readFileSync(join(dir, p), 'utf8')) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   const mech = rd('mechanical/interface.json');
   const spots = rd('kicad/qr_spots.json');
-  const parts = (rd('viewer/parts.json').parts as PartRow[]).filter((p) => !p.id.startsWith('=>'));
+  const parts = (rd('viewer/parts.json').parts as PartRow[]).filter((p) => !p.id.startsWith('=>') && !p.made);
   const first = (ref: string) => parts.find((p) => p.id === ref)!;
   const mid = (ref: string): [number, number] => {
     const b = first(ref).bbox;
     return [(b[0] + b[3]) / 2, (b[2] + b[5]) / 2];
   };
   const d = mech.dial;
-  const bt = first('BT1').bbox;
+  const bt: number[] = rd('viewer/parts.json').variant?.holder ?? first('BT1').bbox; // shell.ts remembers the holder's box when it replaces the block
   const W: number = mech.board.width;
   const H: number = mech.board.height;
   const handle = bt[5] > H;

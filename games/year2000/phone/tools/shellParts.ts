@@ -51,7 +51,6 @@ export function buildShell(v: Variant): ShellPart[] {
   const swTop = v.swTop;
 
   // ---- heights the dial and shell share -------------------------------------------------------------------------
-  const camTip = swTop + 0.3; // lowest the cam's teeth reach: 0.6 below the switch top at the lowest point of travel
   const plateBottom = swTop + 1.7;
   const plateTop = plateBottom + 3.2;
   const Hf = ceil05(Math.max(v.frontMax + 1.5, plateTop + 2.5));
@@ -67,7 +66,7 @@ export function buildShell(v: Variant): ShellPart[] {
       label: 'Front frame (open bezel)',
       group: 'shell',
       side: 'front',
-      color: [0.62, 0.72, 0.86],
+      color: [0.34, 0.5, 0.78],
       printed: true,
       field: subtract3(union3(frameBody, bosses), pilot),
       box: boxAround(-WALL, -WALL, W + WALL, H + WALL, hFront, 1),
@@ -105,7 +104,7 @@ export function buildShell(v: Variant): ShellPart[] {
       label: 'Back tray (windows over the QR codes and Dex)',
       group: 'shell',
       side: 'back',
-      color: [0.55, 0.66, 0.82],
+      color: [0.3, 0.44, 0.72],
       printed: true,
       field: subtract3(tray, ...cuts),
       box: boxAround(-WALL, -WALL, W + WALL, H + WALL, hTray, 1),
@@ -123,7 +122,7 @@ export function buildShell(v: Variant): ShellPart[] {
       label: 'Battery handle (below the board)',
       group: 'shell',
       side: 'back',
-      color: [0.55, 0.66, 0.82],
+      color: [0.3, 0.44, 0.72],
       printed: true,
       field: subtract3(slabW(outer, 0, hh), slabW(pocket, FLOOR, hh + 1), slabW(door, -1, FLOOR + 1)),
       box: boxAround(hx0 - WALL, H - 2.4, hx1 + WALL, v.bt.z1 + FIT + WALL, hh, 1),
@@ -174,7 +173,7 @@ export function buildShell(v: Variant): ShellPart[] {
       const ring = (r0: number, r1: number) => Math.max(r0 - r, r - r1);
       const ang = ((Math.atan2(x, -z) * 180) / Math.PI + 360) % 360;
       const dOff = Math.abs(((((ang - offAng) % 360) + 540) % 360) - 180);
-      const hP = 0.6 + 1.4 * tooth(x, z);
+      const hP = 0.6 + 1.4 * Math.min(1, tooth(x, z) * 1.25);
       const hO = dOff < 52 ? 2.0 : 0.6;
       const d1 = Math.max(ring(pulseR - 1.0, pulseR + 1.0), -w, w - hP);
       const d2 = Math.max(ring(offR + 1.0, offR + 2.8), -w, w - hO);
@@ -196,9 +195,9 @@ export function buildShell(v: Variant): ShellPart[] {
   }
   {
     // flat spiral return spring: 1.8 turns of a 0.9 mm strip, 3 mm tall, printed flat
-    const r0 = 3.0;
-    const pitch = 1.4;
-    const turns = 1.8;
+    const r0 = 3.1;
+    const pitch = 1.6;
+    const turns = 1.6;
     const strip = (x: number, z: number): number => {
       const r = Math.hypot(x, z);
       const th = (Math.atan2(z, x) + 2 * Math.PI) % (2 * Math.PI);
@@ -351,7 +350,7 @@ export function buildShell(v: Variant): ShellPart[] {
       label: 'Battery door (plug, plate and finger notch)',
       group: 'shell',
       side: 'back',
-      color: [0.5, 0.62, 0.8],
+      color: [0.4, 0.55, 0.82],
       printed: true,
       field: (x, z, w) => {
         const p = Math.max(plate(x, z), notch(x, z) * -1, -w, w - 1.6);

@@ -476,6 +476,12 @@ def near_label(layer, s, x, y, w, h, size=0.9):
 
 silk = []
 silk.append(label("F.SilkS", "THE PHONE OF THE FUTURE", CX, 11.6, 1.6))
+# the project name and advertising lines go in before the orbits and rays, so those keep clear of them
+silk.append(label("F.SilkS", "SCIENCE PROJECT NO. 2", CX, 4.2, 1.2))
+silk.append(label("F.SilkS", "JUNIOR LAB EDITION", CX, 7.0, 1.0))
+silk.append(label("F.SilkS", "IN THE YEAR 2000!", 50.0, 15.5, 1.1))
+silk.append(label("F.SilkS", "SANDBOX SOFTWARE", 50.0, 18.0, 1.0))
+silk.append(label("F.SilkS", "MADE WITH GAME-MAKER", 50.0, 20.5, 1.0))
 cx, cy = DIAL
 DIGITS = []
 for k in range(1, 11):
@@ -517,11 +523,6 @@ silk.append(label("B.SilkS", "rev C  untested design", CX, 15.0, 0.9, True))
 silk.append(label("B.SilkS", "Claude Sonnet 5.5 + KiCad", CX, 17.0, 0.9, True))
 silk.append(label("B.SilkS", "PROGRAM: U2 OUT", 68.0, 88.5, 0.8, True))
 # name and advertising: the front lines go to the nearest free spot (label); the QR codes and Dex are on the back
-silk.append(label("F.SilkS", "SCIENCE PROJECT NO. 2", CX, 4.2, 1.2))
-silk.append(label("F.SilkS", "JUNIOR LAB EDITION", CX, 7.0, 1.0))
-silk.append(label("F.SilkS", "IN THE YEAR 2000!", 50.0, 15.5, 1.1))
-silk.append(label("F.SilkS", "SANDBOX SOFTWARE", 50.0, 18.0, 1.0))
-silk.append(label("F.SilkS", "MADE WITH GAME-MAKER", 50.0, 20.5, 1.0))
 silk.append(label("B.SilkS", "THE POCKET TELEPHONE", CX, 7.0, 1.1, True))
 QR_INFO = {}
 for (qx, qy, qm), qtext, lab in ((QR_PARTS, PARTS_URL, "PARTS + HOW TO"), (QR_SITE, SITE_URL, "PLAY THE GAME")):

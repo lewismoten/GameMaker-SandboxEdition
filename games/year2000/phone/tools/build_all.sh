@@ -23,9 +23,15 @@ LOG="$ROOT/out/build.log"
       python3 tools/mech.py ) || echo "!! variant $V: a step failed"
     echo "--- QR scan ($V)"
     python3 -I "$ROOT/tools/qrscan.py" "$ROOT/$V" || echo "!! a QR code did not decode"
+    echo "--- blank spots ($V): out/blank-spots.txt"
+    python3 "$ROOT/tools/blankspots.py" "$ROOT/$V" > /dev/null || echo "!! blankspots failed"
   done
   echo "=== shells"
   ( cd "$ROOT/../../../web" && npx vite-node ../games/year2000/phone/tools/shell.ts ) || echo "!! shell.ts failed"
+  # the site's copies (the games build makes them too): web/public/trinkets/phone and phone/deluxe, ignored by the repository
+  mkdir -p "$ROOT/../../../web/public/trinkets/phone/deluxe"
+  cp "$ROOT/viewer/parts.json" "$ROOT/viewer/parts.bin" "$ROOT/../../../web/public/trinkets/phone/"
+  cp "$ROOT/deluxe/viewer/parts.json" "$ROOT/deluxe/viewer/parts.bin" "$ROOT/../../../web/public/trinkets/phone/deluxe/"
   echo "=== done $(date)"
 } >> "$LOG" 2>&1
 echo "build log: $LOG"

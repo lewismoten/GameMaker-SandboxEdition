@@ -11,7 +11,7 @@ import { createPhoneView, type PhoneView } from './phoneGl';
 
 const REPO = 'https://github.com/lewismoten/GameMaker-SandboxEdition/blob/master/games/year2000/phone/';
 const TURN = 0.3;
-const FIRST = { yaw: 0.6, pitch: -0.25 };
+const FIRST = { yaw: Math.PI + 0.6, pitch: -0.25 };
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 type Mode = 'assembled' | 'exploded' | 'electronics' | 'bare';

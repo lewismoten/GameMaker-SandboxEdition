@@ -72,6 +72,7 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
   mkdirSync(outDir, { recursive: true });
 
   const placed: { row: Row; pos: Float32Array; idx: Uint32Array }[] = [];
+  let printedMm3 = 0;
   console.log(`\n== ${v.name}  (${v.W} x ${v.H} mm board)`);
   console.log('part'.padEnd(16), 'size mm (printed)'.padEnd(22), 'tris'.padStart(7), 'pieces'.padStart(7), 'specks'.padStart(7), 'overhang mm2'.padStart(13));
   for (const p of parts) {
@@ -96,6 +97,7 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
         hi[k] = Math.max(hi[k], pos[i + k]);
       }
     const r = t.report;
+    if (p.printed) printedMm3 += r.volume;
     const size = [0, 1, 2].map((k) => (r.max[k] - r.min[k]).toFixed(1)).join(' x ');
     console.log(
       p.id.padEnd(16),
@@ -153,11 +155,14 @@ function buildVariant(id: 'cheap' | 'deluxe', dir: string): void {
     ...file,
     floats: fo,
     indices: io,
-    variant: { id, name: v.name, subtitle: v.subtitle, board: { width: v.W, height: v.H } },
+    variant: { id, name: v.name, subtitle: v.subtitle, board: { width: v.W, height: v.H }, holder: [v.bt.x0, v.bt.y0, v.bt.z0, v.bt.x1, v.bt.y1, v.bt.z1] },
     parts: rows,
   };
   writeFileSync(join(dir, 'viewer/parts.bin'), out);
   writeFileSync(jsonPath, JSON.stringify(next));
+  console.log(
+    `printed volume ${(printedMm3 / 1000).toFixed(0)} cm3; about ${((printedMm3 / 1000) * 1.24 * 0.35).toFixed(0)} g of PLA at roughly 35% of solid (walls plus 15% infill; a guess, not a slicer figure)`,
+  );
   console.log(`viewer: ${rows.length} parts, ${(out.length / 1e6).toFixed(2)} MB, STL files in ${outDir}`);
 }
 

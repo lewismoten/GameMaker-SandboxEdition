@@ -1,4 +1,10 @@
-# THE PHONE OF THE FUTURE (electronics, rev C)
+# THE PHONE OF THE FUTURE (electronics, rev C, the earlier long board)
+
+> **This is the Deluxe Model, "Science Project No. 1".** It is the earlier Rev C (73.66 x 175.26 mm, battery holder on the board),
+> restored from commit `7e8548a11` beside the cheaper 99 x 99 mm board (`../`, "Science Project No. 2, Junior Lab Edition"). The text
+> below is that revision's own README, kept as it was. Its tools in `tools/`
+> rebuild this folder; `npm run phone:build` at the repository root rebuilds both, and `../README.md` explains the pair, the printed shell
+> and the QR codes. Its sources now also write the silkscreen QR codes and Dex (`../tools/silkart.py`, `../tools/dex_art.py`).
 
 A solderable toy kit that goes with In The Year 2000!: "a real working wireless phone", the way a 1993 game
 imagined one. Infrared voice and touch tones, an eight-digit red display, a real pulse dial, a PIC16F628A and a
@@ -14,16 +20,16 @@ and the 3D parts file in `viewer/`.
 
 ## What is here
 
-| Path | What it is |
-| --- | --- |
-| `kicad/phone.kicad_sch`, `phone.kicad_pcb` | The KiCad 9 project (written by the scripts below; open it in KiCad to look or edit) |
+| Path                                                | What it is                                                                                                         |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `kicad/phone.kicad_sch`, `phone.kicad_pcb`          | The KiCad 9 project (written by the scripts below; open it in KiCad to look or edit)                               |
 | `kicad/phone.pretty/`, `phone.kicad_sym`, `models/` | Big-pad footprints, the two local symbols (CM8870, 4-digit display), and the simple 3D models (`.wrl` and `.step`) |
-| `firmware/phone.asm` | PIC16F628A firmware, gpasm (ported from the PIC16F84A; same 18-pin pinout) |
-| `bom.csv`, `PARTS.md` | Bill of materials and readable parts list (`tools/bom.py`) |
-| `mechanical/interface.json` | Board outline, holes, where everything sits and how tall (for the shell) |
-| `viewer/parts.json`, `parts.bin` | The board and every part as a compact triangle set for the site's 3D viewer (`tools/export3d.sh`) |
-| `tools/` | Generators and checks (below) |
-| `out/` (git-ignored) | Gerber zip, schematic PDF, ERC and DRC reports, the `.hex`, the GLB files and the preview PNGs |
+| `firmware/phone.asm`                                | PIC16F628A firmware, gpasm (ported from the PIC16F84A; same 18-pin pinout)                                         |
+| `bom.csv`, `PARTS.md`                               | Bill of materials and readable parts list (`tools/bom.py`)                                                         |
+| `mechanical/interface.json`                         | Board outline, holes, where everything sits and how tall (for the shell)                                           |
+| `viewer/parts.json`, `parts.bin`                    | The board and every part as a compact triangle set for the site's 3D viewer (`tools/export3d.sh`)                  |
+| `tools/`                                            | Generators and checks (below)                                                                                      |
+| `out/` (git-ignored)                                | Gerber zip, schematic PDF, ERC and DRC reports, the `.hex`, the GLB files and the preview PNGs                     |
 
 The KiCad files and `viewer/` are committed on purpose: they are the design, and the site's GitHub build has no KiCad.
 Change `tools/design.py` (circuit) or `tools/gen_pcb.py` (placement, art) and re-run rather than hand-editing, unless you
@@ -80,13 +86,13 @@ are INH and PWDN, tied low), though Holtek lists it as phased out. A socket take
 
 ### Pin budget (PIC16F628A, 13 I/O used)
 
-| Pin | Use | | Pin | Use |
-| --- | --- | --- | --- | --- |
-| RA0 | TALK line (input; driven high by the PIC while it sends a digit) | | RB0 | dial pulse (low = closed, weak pull-up) |
-| RA1 | MAX7219 DIN | | RB1 | dial off-normal (low = closed, weak pull-up) |
-| RA2 | MAX7219 CLK | | RB2 | tone square wave A |
-| RA3 | MAX7219 LOAD | | RB3 | tone square wave B |
-| RA4 | CM8870 StD (input) | | RB4..RB7 | CM8870 Q1..Q4 |
+| Pin | Use                                                              |     | Pin      | Use                                          |
+| --- | ---------------------------------------------------------------- | --- | -------- | -------------------------------------------- |
+| RA0 | TALK line (input; driven high by the PIC while it sends a digit) |     | RB0      | dial pulse (low = closed, weak pull-up)      |
+| RA1 | MAX7219 DIN                                                      |     | RB1      | dial off-normal (low = closed, weak pull-up) |
+| RA2 | MAX7219 CLK                                                      |     | RB2      | tone square wave A                           |
+| RA3 | MAX7219 LOAD                                                     |     | RB3      | tone square wave B                           |
+| RA4 | CM8870 StD (input)                                               |     | RB4..RB7 | CM8870 Q1..Q4                                |
 
 All 13 are used. CLEAR takes none (it is MCLR), and the pulsed IR bias costs no pin (it shares RA0).
 
@@ -129,16 +135,16 @@ Likely first things to adjust: R19 (receive gain), R20/R21 or RV1 (speaker level
 
 ## Checked and not checked
 
-| Check | Result |
-| --- | --- |
-| KiCad ERC | 0 violations |
-| KiCad DRC | 0 violations, 0 unconnected, with **all silkscreen rules on**. One rule is set to *ignore* in `kicad/phone.kicad_pro`: `lib_footprint_mismatch` (back parts are mirrored copies of the library footprints). For two parts (U1 and C9) the value text did not fit clear of pads and is on the fab layer, not the silkscreen |
-| Schematic vs board parity | not run |
-| gpasm | assembles (`tools/build_firmware.sh`) |
-| Firmware simulation | passes `tools/picsim.py` (my own PIC16F84A instruction simulator, run on the PIC16F628A build; it does not model the comparators, so CMCON = 7 is untested): start-up and display, dialing at 33 ms and 8 ms pulses, all ten digits' tone pairs (Goertzel), 10 pulses = 0, 11 ignored, received digits, TALK mutes and lights the point, and the IR bias line (RA0) is driven only for the tone |
-| 3D export | `kicad-cli pcb export glb` works; `tools/glb_check.py` checks each part's mesh against its footprint |
-| Not tested | the analog parts, the IR link's range, real CM8870 timing, the regulator, the Gerbers in a viewer or at a board house. gpsim was installed but not used |
-| Parts | see `PARTS.md` and the cost sheet; prices and stock were read from retailer pages on 2026-11-03 where marked |
+| Check                     | Result                                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| KiCad ERC                 | 0 violations                                                                                                                                                                                                                                                                                                                                                                                    |
+| KiCad DRC                 | 0 violations, 0 unconnected, with **all silkscreen rules on**. One rule is set to _ignore_ in `kicad/phone.kicad_pro`: `lib_footprint_mismatch` (back parts are mirrored copies of the library footprints). For two parts (U1 and C9) the value text did not fit clear of pads and is on the fab layer, not the silkscreen                                                                      |
+| Schematic vs board parity | not run                                                                                                                                                                                                                                                                                                                                                                                         |
+| gpasm                     | assembles (`tools/build_firmware.sh`)                                                                                                                                                                                                                                                                                                                                                           |
+| Firmware simulation       | passes `tools/picsim.py` (my own PIC16F84A instruction simulator, run on the PIC16F628A build; it does not model the comparators, so CMCON = 7 is untested): start-up and display, dialing at 33 ms and 8 ms pulses, all ten digits' tone pairs (Goertzel), 10 pulses = 0, 11 ignored, received digits, TALK mutes and lights the point, and the IR bias line (RA0) is driven only for the tone |
+| 3D export                 | `kicad-cli pcb export glb` works; `tools/glb_check.py` checks each part's mesh against its footprint                                                                                                                                                                                                                                                                                            |
+| Not tested                | the analog parts, the IR link's range, real CM8870 timing, the regulator, the Gerbers in a viewer or at a board house. gpsim was installed but not used                                                                                                                                                                                                                                         |
+| Parts                     | see `PARTS.md` and the cost sheet; prices and stock were read from retailer pages on 2026-11-03 where marked                                                                                                                                                                                                                                                                                    |
 
 ## Assumptions to confirm before ordering
 

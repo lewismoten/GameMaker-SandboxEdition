@@ -83,7 +83,7 @@ export function createPhoneView(canvas: HTMLCanvasElement, parts: Part[], scaleW
   const frame = { c: [0, 0, 0], r: 100, fresh: true };
 
   const view: PhoneView = {
-    yaw: 0.6,
+    yaw: Math.PI + 0.6,
     pitch: -0.25,
     zoom: 1,
     panX: 0,

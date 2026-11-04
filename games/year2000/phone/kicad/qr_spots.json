@@ -1,0 +1,27 @@
+{
+ "board_width": 99.0,
+ "codes": {
+  "parts": {
+   "x": 27.5,
+   "y": 44.0,
+   "size": 18.04,
+   "modules": 41,
+   "module_mm": 0.44,
+   "url": "https://github.com/lewismoten/GameMaker-SandboxEdition/tree/master/games/year2000/phone"
+  },
+  "site": {
+   "x": 65.0,
+   "y": 47.0,
+   "size": 16.5,
+   "modules": 33,
+   "module_mm": 0.5,
+   "url": "https://lewismoten.github.io/GameMaker-SandboxEdition"
+  }
+ },
+ "dex": {
+  "x": 17.5,
+  "y": 65.5,
+  "width": 12.8,
+  "height": 14.4
+ }
+}

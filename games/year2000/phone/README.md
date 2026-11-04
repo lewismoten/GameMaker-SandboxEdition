@@ -20,12 +20,12 @@ in "What Rev C changed" below.
 Dex Dynamo (age 11) wrote a twenty-page science fair report, THE POCKET TELEPHONE, and Sparky 3000 ate it. This kit is
 what he would build from it, in two sizes. Both names are on the silkscreen (front and back) and in the desk's 3D viewer.
 
-| | **Science Project No. 2: The Pocket Telephone, Junior Lab Edition (parts from any hobby shop)** | **Science Project No. 1: The Pocket Telephone (Deluxe Model)** |
-| --- | --- | --- |
-| Where | this folder | `deluxe/` (the earlier Rev C: sources restored from commit `7e8548a11`, see `deluxe/README-earlier-rev-c.md`) |
-| Board | 99 x 99 mm, the cheapest board tier | 73.66 x 175.26 mm |
-| Parts | PIC16F628A, clone MAX7219, 6 mm tactile switches, ZEPPP programmer; the battery holder is off the board, in the shell's handle | the long board with the 4 x AAA holder on it |
-| Shell | front frame, back tray, battery handle, battery door | front frame, back tray (battery door in its floor) |
+|       | **Science Project No. 2: The Pocket Telephone, Junior Lab Edition (parts from any hobby shop)**                                | **Science Project No. 1: The Pocket Telephone (Deluxe Model)**                                                |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| Where | this folder                                                                                                                    | `deluxe/` (the earlier Rev C: sources restored from commit `7e8548a11`, see `deluxe/README-earlier-rev-c.md`) |
+| Board | 99 x 99 mm, the cheapest board tier                                                                                            | 73.66 x 175.26 mm                                                                                             |
+| Parts | PIC16F628A, clone MAX7219, 6 mm tactile switches, ZEPPP programmer; the battery holder is off the board, in the shell's handle | the long board with the 4 x AAA holder on it                                                                  |
+| Shell | front frame, back tray, battery handle, battery door                                                                           | front frame, back tray (battery door in its floor)                                                            |
 
 Each folder rebuilds on its own (`deluxe/tools/` has its own generators and shares `tools/silkart.py` and `tools/dex_art.py`).
 The rest of this file describes the Junior Lab Edition; the Deluxe Model differs in its board and its on-board battery holder.
@@ -72,16 +72,16 @@ npm run phone:build
 
 ## What is here
 
-| Path | What it is |
-| --- | --- |
-| `kicad/phone.kicad_sch`, `phone.kicad_pcb` | The KiCad 9 project (written by the scripts below; open it in KiCad to look or edit) |
+| Path                                                | What it is                                                                                                         |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `kicad/phone.kicad_sch`, `phone.kicad_pcb`          | The KiCad 9 project (written by the scripts below; open it in KiCad to look or edit)                               |
 | `kicad/phone.pretty/`, `phone.kicad_sym`, `models/` | Big-pad footprints, the two local symbols (CM8870, 4-digit display), and the simple 3D models (`.wrl` and `.step`) |
-| `firmware/phone.asm` | PIC16F628A firmware, gpasm |
-| `bom.csv`, `PARTS.md` | Bill of materials and readable parts list (`tools/bom.py`) |
-| `mechanical/interface.json` | Board outline, holes, where everything sits and how tall (for the shell) |
-| `viewer/parts.json`, `parts.bin` | The board and every part as a compact triangle set for the site's 3D viewer (`tools/export3d.sh`) |
-| `tools/` | Generators and checks (below) |
-| `out/` (git-ignored) | Gerber zip, schematic PDF, ERC and DRC reports, the `.hex`, the GLB files and the preview PNGs |
+| `firmware/phone.asm`                                | PIC16F628A firmware, gpasm                                                                                         |
+| `bom.csv`, `PARTS.md`                               | Bill of materials and readable parts list (`tools/bom.py`)                                                         |
+| `mechanical/interface.json`                         | Board outline, holes, where everything sits and how tall (for the shell)                                           |
+| `viewer/parts.json`, `parts.bin`                    | The board and every part as a compact triangle set for the site's 3D viewer (`tools/export3d.sh`)                  |
+| `tools/`                                            | Generators and checks (below)                                                                                      |
+| `out/` (git-ignored)                                | Gerber zip, schematic PDF, ERC and DRC reports, the `.hex`, the GLB files and the preview PNGs                     |
 
 The KiCad files and `viewer/` are committed on purpose: they are the design, and the site's GitHub build has no KiCad.
 Change `tools/design.py` (circuit) or `tools/gen_pcb.py` (placement, art) and re-run rather than hand-editing, unless you
@@ -106,20 +106,20 @@ at the top of `tools/glb_tool.py`. `tools/glb_check.py` checks that every part's
 
 Prices are quantity 1, checked 2026-11-03 (sources and caveats are in the cost sheet).
 
-| Decision | Rev B | Rev C | Saves per phone |
-| --- | --- | --- | --- |
-| Display driver | MAX7219CNG+ $23.97 | clone MAX7219N (HGSEMI, DIP-24, LCSC) about $1; genuine MAX7219CNG is $7.95 at Jameco if a clone is not wanted | $22.97 (or $16.02) |
-| Microcontroller | PIC16F84A $4.95, 12 to 13 V programming | PIC16F628A $2.20, same 18-pin DIP and pinout, programmable at 5 V | $2.75 |
-| Programmer (once) | PICkit 5 $79.68, F84A support unconfirmed | Arduino Nano clone about $9 and the open-source ZEPPP sketch | $70 once |
-| Board | 72 x 172 mm, about $96 for 3 (OSH Park) | 99 x 99 mm, $2 for 5 (JLCPCB) or $5 for 10 (PCBWay), plus shipping | about $75 per order |
-| Regulator | LM2940T-5.0 $2.22, TO-220 | MCP1702-5002E/TO $0.65, TO-92 | $1.57 |
-| Dial switches | two lever microswitches $5.22 | two 6 mm tactile switches $0.50 (the dial's cams press them from above) | $4.72 |
-| Battery and power switch | 4 x AAA holder $2.54 and slide switch $0.95 | one holder with cover and switch, $1.93 | $1.56 |
-| Sockets | four machined sockets $5.48 | two stamped 18-pin sockets $0.16 (the PIC and the decoder) | $5.32 |
-| IR photodiode and LED | BPW34 $1.82, TSAL6200 $0.50 | 5 mm IR photodiode $0.25, 5 mm IR LED $0.16 | $1.91 |
-| Everything else | LM358 $1.18, LM386 $1.18, 2N3904 x2 $0.58, mic $1.49 | $0.22, $0.55, $0.12, $0.45 | $3.09 |
-| Resistors and capacitors | an assortment, about $9 (estimate) | 7 resistor values and 4 capacitor values, about $2.60 | about $6.30 |
-| **Total (one phone, parts)** | **$67.85** | **$17.37** | **$50.48** |
+| Decision                     | Rev B                                                | Rev C                                                                                                          | Saves per phone     |
+| ---------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------- |
+| Display driver               | MAX7219CNG+ $23.97                                   | clone MAX7219N (HGSEMI, DIP-24, LCSC) about $1; genuine MAX7219CNG is $7.95 at Jameco if a clone is not wanted | $22.97 (or $16.02)  |
+| Microcontroller              | PIC16F84A $4.95, 12 to 13 V programming              | PIC16F628A $2.20, same 18-pin DIP and pinout, programmable at 5 V                                              | $2.75               |
+| Programmer (once)            | PICkit 5 $79.68, F84A support unconfirmed            | Arduino Nano clone about $9 and the open-source ZEPPP sketch                                                   | $70 once            |
+| Board                        | 72 x 172 mm, about $96 for 3 (OSH Park)              | 99 x 99 mm, $2 for 5 (JLCPCB) or $5 for 10 (PCBWay), plus shipping                                             | about $75 per order |
+| Regulator                    | LM2940T-5.0 $2.22, TO-220                            | MCP1702-5002E/TO $0.65, TO-92                                                                                  | $1.57               |
+| Dial switches                | two lever microswitches $5.22                        | two 6 mm tactile switches $0.50 (the dial's cams press them from above)                                        | $4.72               |
+| Battery and power switch     | 4 x AAA holder $2.54 and slide switch $0.95          | one holder with cover and switch, $1.93                                                                        | $1.56               |
+| Sockets                      | four machined sockets $5.48                          | two stamped 18-pin sockets $0.16 (the PIC and the decoder)                                                     | $5.32               |
+| IR photodiode and LED        | BPW34 $1.82, TSAL6200 $0.50                          | 5 mm IR photodiode $0.25, 5 mm IR LED $0.16                                                                    | $1.91               |
+| Everything else              | LM358 $1.18, LM386 $1.18, 2N3904 x2 $0.58, mic $1.49 | $0.22, $0.55, $0.12, $0.45                                                                                     | $3.09               |
+| Resistors and capacitors     | an assortment, about $9 (estimate)                   | 7 resistor values and 4 capacitor values, about $2.60                                                          | about $6.30         |
+| **Total (one phone, parts)** | **$67.85**                                           | **$17.37**                                                                                                     | **$50.48**          |
 
 Two phones: $135.70 (Rev B) becomes $34.14; the resistor packs of 10 stretch across both.
 
@@ -186,13 +186,13 @@ instead of 0x0C. The firmware changes are small and all in `firmware/phone.asm`:
 
 ### Pin budget (PIC16F628A, 13 I/O used)
 
-| Pin | Use | | Pin | Use |
-| --- | --- | --- | --- | --- |
-| RA0 | TALK line (input; driven high by the PIC while it sends a digit) | | RB0 | dial pulse (low = closed, weak pull-up) |
-| RA1 | MAX7219 DIN | | RB1 | dial off-normal (low = closed, weak pull-up) |
-| RA2 | MAX7219 CLK | | RB2 | tone square wave A |
-| RA3 | MAX7219 LOAD | | RB3 | tone square wave B |
-| RA4 | CM8870 StD (input; open-drain output, unused as one) | | RB4..RB7 | CM8870 Q1..Q4 |
+| Pin | Use                                                              |     | Pin      | Use                                          |
+| --- | ---------------------------------------------------------------- | --- | -------- | -------------------------------------------- |
+| RA0 | TALK line (input; driven high by the PIC while it sends a digit) |     | RB0      | dial pulse (low = closed, weak pull-up)      |
+| RA1 | MAX7219 DIN                                                      |     | RB1      | dial off-normal (low = closed, weak pull-up) |
+| RA2 | MAX7219 CLK                                                      |     | RB2      | tone square wave A                           |
+| RA3 | MAX7219 LOAD                                                     |     | RB3      | tone square wave B                           |
+| RA4 | CM8870 StD (input; open-drain output, unused as one)             |     | RB4..RB7 | CM8870 Q1..Q4                                |
 
 CLEAR takes none (it is MCLR), and the pulsed IR bias costs no pin (it shares RA0).
 
@@ -253,17 +253,18 @@ Uno or Pro Mini into a low-voltage programmer for PIC16F6xx parts; its list name
 2. Load `ZEPPP/ZEPPP.ino` from the ZEPPP repository onto the Nano with the Arduino IDE (once). Install Java and download `zeppp-cli.jar`.
 3. Phone switched off, batteries out of the way, the CM8870 socket **empty**. Wire the Nano to J1 (pin 1 is the square pad, marked "1"):
 
-   | J1 pin | Signal | Nano |
-   | --- | --- | --- |
-   | 1 | MCLR | D6 |
-   | 2 | +5 V | 5V |
-   | 3 | GND | GND |
-   | 4 | PGD (RB7) | D7 |
-   | 5 | PGC (RB6) | D8 |
-   | 6 | PGM (RB4) | D9 |
+   | J1 pin | Signal    | Nano |
+   | ------ | --------- | ---- |
+   | 1      | MCLR      | D6   |
+   | 2      | +5 V      | 5V   |
+   | 3      | GND       | GND  |
+   | 4      | PGD (RB7) | D7   |
+   | 5      | PGC (RB6) | D8   |
+   | 6      | PGM (RB4) | D9   |
 
    (The 5 V pin powers the whole board for a few seconds: the display, op-amp and audio chip add up to a small load. If the Nano's USB
    port complains, switch the phone's own batteries on instead and leave J1 pin 2 unwired.)
+
 4. Put the blank PIC16F628A in its socket. Run: `java -jar zeppp-cli.jar -c <port> -wait 2000 -d 16f628a -i out/firmware/phone.hex -p`
    (the `-wait` is for the Nano's USB reset; `-p` erases and programs everything), then verify with
    `java -jar zeppp-cli.jar -c <port> -wait 2000 -i out/firmware/phone.hex -va`.
@@ -277,16 +278,16 @@ whose LVP bit is off. The Rev B sheet's PICkit 5 ($79.68) is not needed.
 
 ## Checked and not checked
 
-| Check | Result |
-| --- | --- |
-| KiCad ERC | 0 violations |
-| KiCad DRC | 0 violations, 0 unconnected, with **all silkscreen rules on**. One rule is set to *ignore* in `kicad/phone.kicad_pro`: `lib_footprint_mismatch` (back parts are mirrored copies of the library footprints). Some part values did not fit clear of pads and are on the fab layer, not the silkscreen (the generator prints which) |
-| Schematic vs board parity | not run |
-| gpasm | assembles for p16f628a (`tools/build_firmware.sh`) |
-| Firmware simulation | passes `tools/picsim.py` (my own PIC16F84A-style instruction simulator, which runs the same code on the 628A): start-up and display, dialing at 33 ms and 8 ms pulses, all ten digits' tone pairs (Goertzel), 10 pulses = 0, 11 ignored, received digits, TALK mutes and lights the point, and the IR bias line (RA0) is driven only for the tone. It does not model CMCON, the comparators or the configuration word |
-| 3D export | `kicad-cli pcb export glb` works; `tools/glb_check.py` checks each part's mesh against its footprint |
-| Not tested | the analog parts and the rescaled values, the IR link's range, real CM8870 timing, the regulator under the LM386's peaks, ZEPPP on a 16F628A and its configuration-word handling, the Gerbers in a viewer or at a board house, the 6 mm tactile switches under the dial's cams. gpsim was installed but not used |
-| Parts | see `PARTS.md` and the cost sheet; prices and stock were read from retailer pages on 2026-11-03 where marked |
+| Check                     | Result                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| KiCad ERC                 | 0 violations                                                                                                                                                                                                                                                                                                                                                                                                          |
+| KiCad DRC                 | 0 violations, 0 unconnected, with **all silkscreen rules on**. One rule is set to _ignore_ in `kicad/phone.kicad_pro`: `lib_footprint_mismatch` (back parts are mirrored copies of the library footprints). Some part values did not fit clear of pads and are on the fab layer, not the silkscreen (the generator prints which)                                                                                      |
+| Schematic vs board parity | not run                                                                                                                                                                                                                                                                                                                                                                                                               |
+| gpasm                     | assembles for p16f628a (`tools/build_firmware.sh`)                                                                                                                                                                                                                                                                                                                                                                    |
+| Firmware simulation       | passes `tools/picsim.py` (my own PIC16F84A-style instruction simulator, which runs the same code on the 628A): start-up and display, dialing at 33 ms and 8 ms pulses, all ten digits' tone pairs (Goertzel), 10 pulses = 0, 11 ignored, received digits, TALK mutes and lights the point, and the IR bias line (RA0) is driven only for the tone. It does not model CMCON, the comparators or the configuration word |
+| 3D export                 | `kicad-cli pcb export glb` works; `tools/glb_check.py` checks each part's mesh against its footprint                                                                                                                                                                                                                                                                                                                  |
+| Not tested                | the analog parts and the rescaled values, the IR link's range, real CM8870 timing, the regulator under the LM386's peaks, ZEPPP on a 16F628A and its configuration-word handling, the Gerbers in a viewer or at a board house, the 6 mm tactile switches under the dial's cams. gpsim was installed but not used                                                                                                      |
+| Parts                     | see `PARTS.md` and the cost sheet; prices and stock were read from retailer pages on 2026-11-03 where marked                                                                                                                                                                                                                                                                                                          |
 
 ## Assumptions to confirm before ordering
 
