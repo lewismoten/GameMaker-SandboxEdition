@@ -138,6 +138,8 @@ export class Workspace implements AssistantHost {
   constructor(root: HTMLElement, project: Project, file?: string) {
     this.project = project;
     this.bar = readOnlyBar(project);
+    // the map editor's Play here: a play test from a spot of the open level, without changing the game's links
+    project.playAt = (to, at) => this.play({ to, at, from: 0, link: 0 });
     this.saved = project.readOnly ? undefined : saveNote(project);
     clear(root, h('div', { class: 'workspace' }, this.sidebar, this.main));
     if (storedFolded()) root.querySelector('.workspace')?.classList.add('rail-folded');
@@ -291,6 +293,7 @@ export class Workspace implements AssistantHost {
   }
 
   dispose(): void {
+    this.project.playAt = undefined;
     this.disposed = true;
     this.saved?.dispose();
     this.firstSteps?.dispose();

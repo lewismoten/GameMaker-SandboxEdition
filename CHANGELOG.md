@@ -22,6 +22,7 @@ the Phone of the Future kit grows, and Tune-Up's rubber chicken has a story to f
 - Tune-Up: Lady Regina's tiara once her egg is laid, with a REGGIE.EXE on the BBS to say who the chicken is.
 - A Make it smaller dialog in the animation editor, with a size report and a side-by-side preview of the re-encoded picture.
 - Map editor pinch, pan and long-press menu on touch screens.
+- A + New monster button in the monster editor (a copy of the picked monster in the first unused slot) and a Play here button in the map editor (a play test from the middle of the view, without moving the game's start).
 - Redo in the recording editor, and Ctrl/Cmd+Z, Shift+Z and Y anywhere on the music, animation and sample editors.
 - A Downloads page card for every game, with its real level picture.
 - Update notice: it waits while a game plays and fades after about 15 seconds, and Settings keeps a New version ready item.
