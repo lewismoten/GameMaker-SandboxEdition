@@ -212,3 +212,5 @@ from the slim home-page catalog. Copying a selected file still reads its origina
   importer (`unpackGames`, with one file of a game folder swapped). Each case runs in a child process with a time limit
   and a heap cap. Prints a table per reader (ok, clear Error, bad = TypeError/RangeError from deep inside, hang, memory);
   exits 1 on any bad, hang or memory. Same `--seed`, same cases. `--save` writes the failing inputs to a folder.
+
+- `pocketColorCheck.ts`: host check of the Pocket Player's level colors (`hardware/pocket-player/src/level.h`): the same palette and byte-order math, compared with the engine's render, written as a side-by-side PNG (`npx vite-node scripts/pocketColorCheck.ts out.png`).
