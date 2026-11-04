@@ -58,6 +58,9 @@ npm run check:keys [-- id ...]                     # keyboard accessibility: eac
 npm run editor:touch -- <route> [--out dir]       # touch audit of one editor route at iPad and iPhone sizes: controls under 44 px, overflow, axe, screenshots
 npm run replay:log -- <log.jsonl> [--session id] [--out dir]  # replay a game the dev interaction log (the 🐵 switch) recorded, headless; checks each snapshot; PNG frames with --out; exits 1 on divergence
 npm run badges:similar                             # advisory: achievement badges that look alike in gray or to color-blind eyes; HTML report in .for-lewis/research/badges-similar/
+npm run release:draft -- <pages|engine|archives|tools>  # a draft Unreleased body from the commits since that target's last tag (prints; never writes)
+npm run release:cut -- <target> <version>          # Unreleased becomes a dated version; sets a package's version
+npm run release:check                              # a package whose src changed since its tag needs an Unreleased line (in root npm run verify)
 npm run domains:check                              # every made-up domain is still unregistered (whois + DNS; needs network)
 npm run dosbox                                     # dosbox/ (git-ignored) to mount as C: in DOSBox (open DOSBox or any window only when Lewis is away)
 npm run voice                                      # tour voice clips for new or changed lines (local Pocket TTS; -- --only <id> retakes one)
@@ -146,6 +149,7 @@ preserve what was there.
   when first used (`editor/editors/registry.ts` `loadEditor`, `main.ts`). Import their
   modules dynamically from elsewhere, not statically. `dos.html` must load nothing under
   `src/desk` (`dosPage/boundary.test.ts`).
+- **Release notes:** a merge into `develop` that changes something users or package consumers see adds one line to the right Unreleased section: `CHANGELOG.md` (the site) or `web/packages/<pkg>/CHANGELOG.md`. Plain words, US English, one voice, no secret games (`docs/package-releases.md`).
 - **Docs:** when you add an area, a module with a new job, or a command, add it to the area's
   README (indexed from `web/src/README.md`; `web/scripts/README.md` for build-time code,
   `games/kit/README.md` for the kit) in the same commit. A new area gets its own README and a

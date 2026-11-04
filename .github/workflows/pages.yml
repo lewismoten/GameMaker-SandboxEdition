@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write # the GitHub Release on a pages-v* tag
   pages: write
   id-token: write
 
@@ -69,3 +69,15 @@ jobs:
       - if: github.event_name != 'pull_request'
         id: deployment
         uses: actions/deploy-pages@v5
+      # A tag also gets a GitHub Release: the CHANGELOG section as its body and npm's own SBOM (CycloneDX).
+      - if: startsWith(github.ref, 'refs/tags/pages-v')
+        name: GitHub Release
+        working-directory: .
+        run: |
+          version="${GITHUB_REF_NAME#pages-v}"
+          node scripts/release/section.mjs CHANGELOG.md "$version" > "$RUNNER_TEMP/notes.md"
+          sbom="$RUNNER_TEMP/pages-$version.sbom.cdx.json"
+          npm sbom --sbom-format cyclonedx --package-lock-only --omit=dev > "$sbom"
+          gh release create "$GITHUB_REF_NAME" --title "Site $version" --notes-file "$RUNNER_TEMP/notes.md" "$sbom"
+        env:
+          GH_TOKEN: ${{ github.token }}
