@@ -14,6 +14,7 @@ import { parseBackdrop } from '@lewismoten/gamemaker-sandbox-engine/formats/grap
 import { decodeVoc, isVoc } from '@lewismoten/gamemaker-sandbox-engine/formats/voc';
 import { classifySound, SOUND_GROUPS, type SoundGroup } from '../../audio/soundProfile';
 import { paintIndexed } from '../core/draw';
+import { dosStem } from './limitNote';
 
 interface PickOptions {
   title?: string;
@@ -334,6 +335,7 @@ export function pickFile(project: Project, kind: FileKind, opts: PickOptions = {
       const f = list[0];
       if (!f) return;
       const name = normalize(f.name);
+      dosStem(f.name, toast); // normalize cuts a long file name to 8 letters; say so
       const bytes = new Uint8Array(await f.arrayBuffer());
       project.files.set(name, bytes);
       (await import('./bigVocWarning')).warnBigVocs([[name, bytes]]);
