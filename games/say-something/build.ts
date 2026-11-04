@@ -76,14 +76,7 @@ for (const l of levels)
       disk.put(name, body);
       return { name, pause: 12 };
     });
-    disk.put(
-      `${base}.lst`,
-      serializeSlideList([
-        { name: `${base}.gif`, pause: 4 },
-        { name: 'talk.gif', pause: 0 },
-        ...pages,
-      ]),
-    );
+    disk.put(`${base}.lst`, serializeSlideList([{ name: `${base}.gif`, pause: 4 }, { name: 'talk.gif', pause: 0 }, ...pages]));
   }
 
 // pictures and words

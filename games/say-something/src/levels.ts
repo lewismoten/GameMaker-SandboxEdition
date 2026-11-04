@@ -78,7 +78,9 @@ function scenery(g: Grid, clouds: [number, number][], bushes: number[], flowers:
 /** Stands `who` on the ground at column x with a bubble over his head, and notes the talk. */
 function stand(m: StarterMap, talks: Talk[], who: TalkerName, x: number): void {
   const [top, bottom] = talkerBlocks(who);
-  m.set(x, STAND - 1, top).set(x, STAND, bottom).set(x, STAND - 2, BUBBLE);
+  m.set(x, STAND - 1, top)
+    .set(x, STAND, bottom)
+    .set(x, STAND - 2, BUBBLE);
   talks.push({ who, at: [x + ORIGIN, STAND + ORIGIN], back: [x + 3 + ORIGIN, STAND + ORIGIN] });
 }
 
