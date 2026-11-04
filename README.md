@@ -147,11 +147,13 @@ You need [Node.js](https://nodejs.org/) 22.12 or later.
 ```sh
 npm ci             # from the repository root; builds workspace packages and game output
 npm run dev        # http://localhost:5173
+npm run dev -- -- --port 4174  # use another port; the second -- forwards flags to Vite
 npm test           # the test suite (vitest)
 npm run typecheck  # tsc --noEmit
 npm run build      # refresh game output, typecheck, then the static site in web/dist
 npm run format     # Prettier (config at the repo root)
 npm run lint       # ESLint
+npm run verify     # format check, lint, typecheck, tests, package verification and release checks
 ```
 
 This is an npm workspace monorepo with one root lockfile. The root `package.json` exists to declare

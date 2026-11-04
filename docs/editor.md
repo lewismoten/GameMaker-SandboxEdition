@@ -12,6 +12,7 @@ These pictures were taken in a copy of _Snowbound: The $89 Shovel_, at 1440 × 9
 theme. Some are cropped to the part that matters.
 
 - [The home page and your games](#the-home-page-and-your-games)
+- [Make a first level](#make-a-first-level)
 - [Opening a copy of a Sandbox game](#opening-a-copy-of-a-sandbox-game)
 - [Overview and file galleries](#overview-and-file-galleries)
 - [The map editor](#the-map-editor)
@@ -45,6 +46,19 @@ has your own AI build one from a few lines of description (see
 
 Games you make or copy are kept in this browser under _My games_, newest first, and the side
 panel offers to pick up where you left off. Nothing is uploaded, unless you set up your own AI to work on a game.
+
+## Make a first level
+
+Choose _+ New game_, give it a title, then choose _▶ Ready to play_. It starts with a first
+level containing scenery, monsters, a hero and sounds from the CD library, ready to change.
+
+1. Press _▶ Play Game_ to see the starter. Escape or _Stop_ returns to the editor.
+2. Open _🎓 First steps_ beside _Play Game_. Its ten small jobs take you through changing a
+   color, drawing a block, building the level, changing the hero and a monster, adding a sound,
+   making a way to win and a Game won screen, then running the Level check. Each job ticks itself
+   when it is done and opens the file where you do it.
+3. In the map, press _🩺 Level check_ before sharing the game. It plays the level and points out
+   traps and dead ends it can find.
 
 The Play screen offers **Show setup on first run**. With it checked, a game without saved
 hardware choices opens video/audio setup before playing. Choose Sound Blaster for music and
