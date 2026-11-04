@@ -14,7 +14,7 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
   });
   // Below 1200px the file list (and this note with it) folds away, so a small pill says it too:
   // "✓ Saved" fades after a moment; a failure stays until the next save (saveFlash.css).
-  const flash = h('p', { class: 'save-flash' });
+  const flash = h('p', { class: 'save-flash', 'aria-hidden': 'true' });
   // One polite, visually hidden announcer, quiet until edits pause, so keystrokes don't chatter.
   const announcer = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
   const announce = quietly((t) => (announcer.textContent = t), 1500);
@@ -24,7 +24,7 @@ export function saveNote(project: Project): { el: HTMLElement; dispose: () => vo
     flash.textContent = text;
     flash.classList.toggle('failed', failed);
     flash.classList.add('on');
-    if (!failed) fade = window.setTimeout(() => flash.classList.remove('on'), 2200);
+    if (!failed) fade = window.setTimeout(() => (flash.classList.remove('on'), (fade = window.setTimeout(() => (flash.textContent = ''), 600))), 2200);
   };
   document.body.append(flash, announcer);
   const show = (text: string, failed = false) => {
