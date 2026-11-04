@@ -139,6 +139,7 @@ SDK implementation lives in the packages below; the app imports their declared e
 - [`cast/`](cast/README.md): the Cast page: the regulars on a stage, and the games each appears in.
 - [`credits/`](credits/README.md): the Credits page: software, the original, the games' authors, the
   AI tools and the people.
+- [`errorNotice/`](errorNotice/README.md): the notice with Copy error details when something breaks.
 - [`privacy/`](privacy/README.md): the Privacy page: what the site keeps on the device, how to clear it,
   what is sent and when.
 - [`achievements/`](achievements/README.md): what the visitor has done: the catalog, the record, the

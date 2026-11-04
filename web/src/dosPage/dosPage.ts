@@ -26,6 +26,7 @@ import { TURBO_OFF } from '@lewismoten/gamemaker-sandbox-engine/engine/slowPc';
 import { PRODUCT } from '../edition';
 import { registerServiceWorker } from '../offline';
 import { watchForUpdates } from '../devReload';
+import { watchErrors } from '../errorNotice/watch';
 import { diskMenu } from './diskMenu';
 import { keypad } from './keypad';
 import { viewSwitch } from '../viewSwitch';
@@ -379,4 +380,5 @@ window.addEventListener('gm-tour-act', (e) => {
 
 registerServiceWorker();
 void import('../achievements/start').then((m) => m.startAchievements());
+watchErrors();
 watchForUpdates();
