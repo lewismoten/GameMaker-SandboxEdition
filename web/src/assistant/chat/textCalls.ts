@@ -3,7 +3,7 @@
 // soon as its closing brace arrives, so it can run while the model writes on. The words shown
 // leave the calls out, and hold back a call still being written.
 
-export interface TextCall {
+interface TextCall {
   name: string;
   args: Record<string, unknown>;
   /** Where it was in the text. */

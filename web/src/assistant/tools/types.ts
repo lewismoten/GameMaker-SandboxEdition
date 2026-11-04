@@ -24,7 +24,7 @@ export interface JsonSchema {
   additionalProperties?: boolean;
 }
 
-export type Content = { type: 'text'; text: string } | { type: 'image'; data: string; mimeType: 'image/png' };
+type Content = { type: 'text'; text: string } | { type: 'image'; data: string; mimeType: 'image/png' };
 
 export interface ToolResult {
   content: Content[];

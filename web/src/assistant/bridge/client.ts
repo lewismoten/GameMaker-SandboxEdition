@@ -8,7 +8,7 @@ import { fail } from '../tools/types';
 import type { EditorContext } from './editorContext';
 import type { AssistantHost } from '../hostSlot';
 
-export type BridgeStatus = 'idle' | 'connecting' | 'connected' | 'closed';
+type BridgeStatus = 'idle' | 'connecting' | 'connected' | 'closed';
 
 export class BridgeClient {
   status: BridgeStatus = 'idle';

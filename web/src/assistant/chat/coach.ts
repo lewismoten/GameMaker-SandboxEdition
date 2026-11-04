@@ -6,7 +6,7 @@ import { runTool } from '../tools/run';
 import type { GameContext } from '../tools/types';
 import { resultText } from './agent';
 
-export interface CoachResults {
+interface CoachResults {
   /** The three results as compact text, for the model. */
   text: string;
   /** The findings as to-do items, for when there is no model. */

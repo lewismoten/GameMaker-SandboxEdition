@@ -44,7 +44,7 @@ export async function modelFacts(s: AiSettings): Promise<ModelFacts> {
 }
 
 /** The context the chat keeps within: the setting, but no more than the model was made for. */
-export function contextLimit(s: AiSettings, f: ModelFacts): number {
+function contextLimit(s: AiSettings, f: ModelFacts): number {
   return Math.max(2048, Math.min(s.contextTokens, f.contextLength ?? Infinity));
 }
 
@@ -68,7 +68,7 @@ const resultText = (r: ToolResult) => r.content.map((c) => (c.type === 'text' ? 
 
 let current: { key: string; agent: Agent } | undefined;
 
-export interface SessionNeeds {
+interface SessionNeeds {
   ctx: GameContext;
   projectId: string;
   tab: { specs: Omit<ToolDef, 'run'>[]; run: (name: string, args: Record<string, unknown>) => Promise<ToolResult> };

@@ -52,7 +52,7 @@ export function fixedSummary(old: readonly ChatMessage[], before: string, todos:
 }
 
 /** The turns as compact text for the model to summarize, within `maxChars`. */
-export function transcript(old: readonly ChatMessage[], maxChars: number): string {
+function transcript(old: readonly ChatMessage[], maxChars: number): string {
   const lines = old.map((m) =>
     m.role === 'tool'
       ? `tool ${m.name}: ${short(m.content, 160)}`

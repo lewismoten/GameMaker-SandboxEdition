@@ -6,7 +6,7 @@
 import type { JsonSchema, ToolDef } from '../tools/types';
 import type { AgentTool } from './agent';
 
-export interface Category {
+interface Category {
   id: string;
   about: string;
   tools: string[];
@@ -56,7 +56,7 @@ export function terse<T extends Pick<ToolDef, 'name' | 'description' | 'inputSch
   return { ...d, description: firstSentence(d.description, 140), inputSchema: terseSchema(d.inputSchema) as T['inputSchema'] };
 }
 
-export const categoryOf = (tool: string) => CATEGORIES.find((c) => c.tools.includes(tool));
+const categoryOf = (tool: string) => CATEGORIES.find((c) => c.tools.includes(tool));
 
 /** Which groups are out, and when each was last used. */
 export class ToolSet {
