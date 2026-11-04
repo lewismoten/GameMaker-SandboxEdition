@@ -1,0 +1,77 @@
+{
+ "version": 1,
+ "game": "watch-your-step",
+ "rand": {
+  "seed": 1,
+  "per": "scene"
+ },
+ "segments": [
+  {
+   "scene": 2,
+   "keys": "AU0tzQNNCTkCuQ7NMk0ozQM5ArkATRnNA00="
+  },
+  {
+   "scene": 3,
+   "keys": "AU0ozQNNCTkCuRM5ArkwTS3NAzkCuQBNGc0DTQ=="
+  },
+  {
+   "scene": 4,
+   "keys": "AU0ZzQM5ArkATQrNCk0PzQNNF80DTSPNA00="
+  }
+ ],
+ "chapters": [
+  {
+   "scene": 2,
+   "title": "Level 1: Spikes"
+  },
+  {
+   "scene": 3,
+   "title": "Level 2: The Pool"
+  },
+  {
+   "scene": 4,
+   "title": "Level 3: The Safe Way"
+  }
+ ],
+ "timeline": {
+  "fps": 60,
+  "frames": 8802,
+  "chapters": [
+   {
+    "title": "Opening",
+    "frame": 0,
+    "time": 0
+   },
+   {
+    "title": "Story",
+    "frame": 896,
+    "time": 14933.333333333148
+   },
+   {
+    "title": "Level 1: Spikes",
+    "frame": 2125,
+    "time": 35416.66666666724
+   },
+   {
+    "title": "Level 2: The Pool",
+    "frame": 3222,
+    "time": 53699.99999999791
+   },
+   {
+    "title": "Level 3: The Safe Way",
+    "frame": 4635,
+    "time": 77249.99999999959
+   },
+   {
+    "title": "Ending",
+    "frame": 5521,
+    "time": 92016.66666667056
+   },
+   {
+    "title": "Credits",
+    "frame": 7728,
+    "time": 128800.0000000146
+   }
+  ]
+ }
+}
