@@ -768,9 +768,9 @@ registerEditor(['chr'], (host, project, file) => {
         'aria-controls': `chr-${key}`,
         onclick: () => showTab(key, true),
         onkeydown: (e: KeyboardEvent) => {
-          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+          if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Home' && e.key !== 'End') return;
           e.preventDefault();
-          showTab(key === 'start' ? 'seqs' : 'start', true);
+          showTab(e.key === 'Home' ? 'start' : e.key === 'End' ? 'seqs' : key === 'start' ? 'seqs' : 'start', true);
           tabBar.querySelector<HTMLElement>('[aria-selected="true"]')?.focus();
         },
       },

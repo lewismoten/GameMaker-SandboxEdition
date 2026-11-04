@@ -43,7 +43,7 @@ Part of the [source map](../README.md).
     `lookId.ts`), and the shared stylesheet `editor.css`.
 - `widgets/`: shared pieces: file picker (`filePicker.ts`), block chooser (`blockChooser.ts`), the
   Show with palette choice (`paletteChooser.ts`), thumbnails (`thumbs.ts`), previews (`preview.ts`),
-  waveform (`waveform.ts`), roving grid (`rovingGrid.ts`), big-target color choice
+  waveform (`waveform.ts`), roving grid (`rovingGrid.ts`), roving focus for lists that open or add (`rovingFocus.ts`), big-target color choice
   (`colorChoice.ts`), the ? shortcuts list (`shortcuts.ts`), and the game-accurate graphic previews
   used by the media editors (`mediaPictures.ts`, `mediaShared.ts`).
   - The level check's parts outside the map: badges in the block, monster and sound editors

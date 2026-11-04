@@ -1,6 +1,6 @@
 // Touch audit of one editor route at four touch sizes (iPad 1024x768 and 1366x1024, iPhone 390x844
 // and 844x390, light; the 1024 and 390 portrait ones also dark): visible controls under 44 px, page
-// overflow, axe violations and a screenshot each. Starts its own Vite (never 5173) via perfLib.
+// overflow past the device width (exit 1), axe violations and a screenshot each. Starts its own Vite (never 5173) via perfLib.
 // Usage: npm run editor:touch -- <route> [--out dir] [--tag name] [--wait selector] [--port 5291] [--dist dir] [--url u]
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -20,6 +20,7 @@ const sizes = [
   ['iphone-844x390', 844, 390],
 ] as const;
 
+let failed = 0;
 const srv = await target(5291);
 const browser = await launch();
 try {
@@ -33,7 +34,7 @@ try {
       else await page.waitForLoadState('networkidle').catch(() => undefined);
       await page.waitForTimeout(1500);
       await page.screenshot({ path: `${out}/${tag}-${name}-${scheme}.png` });
-      const r = await page.evaluate(() => {
+      const r = await page.evaluate((deviceWidth) => {
         const sel = 'button, a[href], input, select, textarea, summary, [role=button], [role=tab], [tabindex]:not([tabindex="-1"])';
         const small: string[] = [];
         for (const el of document.querySelectorAll<HTMLElement>(sel)) {
@@ -47,8 +48,10 @@ try {
             );
           }
         }
-        return { small, overflowX: document.documentElement.scrollWidth - innerWidth };
-      });
+        // Compare with the configured device width, not innerWidth: Chromium's mobile emulation widens the layout viewport to fit
+        // overflowing content (innerWidth then equals scrollWidth), while a real iPhone keeps the width and scrolls sideways.
+        return { small, overflowX: document.documentElement.scrollWidth - deviceWidth };
+      }, width);
       await page.addScriptTag({ content: axeSrc });
       const ax = await page.evaluate(async () => {
         // @ts-expect-error axe is a page global once injected
@@ -57,9 +60,14 @@ try {
       });
       console.log(`\n== ${name} ${scheme}: overflowX=${r.overflowX}, ${r.small.length} targets under 44px; axe: ${ax.join(', ') || 'none'}`);
       if (scheme === 'light') console.log([...new Set(r.small)].slice(0, 60).join('\n'));
+      if (r.overflowX > 0) failed++;
       await ctx.close();
     }
 } finally {
   await browser.close();
   srv.stop();
+}
+if (failed) {
+  console.log(`\nFAIL: ${failed} size(s) are wider than the device (sideways scroll on a real phone).`);
+  process.exitCode = 1;
 }
