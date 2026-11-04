@@ -16,8 +16,24 @@ interface Manifest {
 
 const person = (p: string | { name?: string } | undefined) => (typeof p === 'string' ? p.replace(/\s*[<(].*$/, '').trim() : p?.name);
 
+/** Repositories that moved since their package was published (GitHub redirects them; links point at the new home). */
+const MOVED: Record<string, string> = {
+  'https://github.com/egoist/cac': 'https://github.com/cacjs/cac',
+  'https://github.com/visionmedia/node-cookie-signature': 'https://github.com/tj/node-cookie-signature',
+  'https://github.com/ljharb/es-object-atoms': 'https://github.com/es-shims/es-object-atoms',
+  'https://github.com/jonschlinkert/is-extglob': 'https://github.com/micromatch/is-extglob',
+  'https://github.com/JoshuaKGoldberg/ts-api-utils': 'https://github.com/typescript-eslint/ts-api-utils',
+  'https://github.com/isaacs/node-which': 'https://github.com/npm/node-which',
+  'https://github.com/npm/wrappy': 'https://github.com/isaacs/wrappy',
+};
+
 /** A repository field as a web address. */
 function repoUrl(r: Manifest['repository']): string | undefined {
+  const url = rawRepoUrl(r);
+  return url && (MOVED[url] ?? url);
+}
+
+function rawRepoUrl(r: Manifest['repository']): string | undefined {
   const raw = typeof r === 'string' ? r : r?.url;
   if (!raw) return undefined;
   const short = /^(?:github:)?([\w.-]+\/[\w.-]+)$/.exec(raw);
@@ -25,6 +41,7 @@ function repoUrl(r: Manifest['repository']): string | undefined {
   return raw
     .replace(/^git\+/, '')
     .replace(/^git:\/\//, 'https://')
+    .replace(/^http:\/\//, 'https://')
     .replace(/^ssh:\/\/git@/, 'https://')
     .replace(/^git@([^:]+):/, 'https://$1/')
     .replace(/\.git$/, '');
