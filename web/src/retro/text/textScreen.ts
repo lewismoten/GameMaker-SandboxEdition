@@ -54,6 +54,8 @@ export class TextScreen {
   private shrinkTo?: [number, number];
   private full?: CanvasRenderingContext2D;
   private dirty = true;
+  /** What each cell was last drawn as (char, attr, cursor); -1 = must redraw. Palette, glyph, scale and markDirty() reset it. */
+  private drawn = new Int32Array(COLS * ROWS).fill(-1);
   /** Custom 8x16 glyphs (char code to 16 rows, high bit leftmost), like a BIOS that redefines characters. */
   private glyphs = new Map<number, Uint8Array>();
   private raf = 0;
@@ -95,6 +97,7 @@ export class TextScreen {
   setColor(i: number, r: number, g: number, b: number): void {
     const c = (v: number) => ((v & 63) << 2) | ((v & 63) >> 4);
     this.colors[i & 15] = 0xff000000 | (c(b) << 16) | (c(g) << 8) | c(r);
+    this.drawn.fill(-1);
     this.dirty = true;
   }
 
@@ -110,6 +113,7 @@ export class TextScreen {
   }
 
   markDirty(): void {
+    this.drawn.fill(-1);
     this.dirty = true;
   }
 
@@ -141,6 +145,7 @@ export class TextScreen {
       this.image = this.ctx.createImageData(w, h);
     }
     this.px = new Uint32Array(this.image.data.buffer);
+    this.drawn.fill(-1);
     this.dirty = true;
   }
 
@@ -288,11 +293,14 @@ export class TextScreen {
     for (let cy = 0; cy < ROWS; cy++)
       for (let cx = 0; cx < COLS; cx++) {
         const i = cy * COLS + cx;
+        const cursorHere = this.cursorVisible && this.blinkOn && cx === this.cursorX && cy === this.cursorY;
+        const key = this.chars[i] | (this.attrs[i] << 8) | (cursorHere ? 1 << 16 : 0);
+        if (this.drawn[i] === key) continue;
+        this.drawn[i] = key;
         const a = this.attrs[i];
         const fg = colors[a & 15];
         const bg = colors[(a >> 4) & 15];
         const glyph = this.chars[i] * 8;
-        const cursorHere = this.cursorVisible && this.blinkOn && cx === this.cursorX && cy === this.cursorY;
         const custom = this.glyphs.get(this.chars[i]);
         if (custom) {
           for (let line = 0; line < 16; line++) {
