@@ -1,0 +1,29 @@
+{
+  "title": "Keys and Doors",
+  "pages": [
+    {
+      "head": "Welcome",
+      "html": "<h1>Welcome</h1><p><b>Keys and Doors</b> is a Starter: a small game that shows a few Game-Maker ideas, with signs in the levels that say what you are looking at. It has two short levels and takes a couple of minutes to finish.</p><p>Play it first. Then open it in Game-Maker (<b>Edit a copy</b> on the home page keeps the original safe) and read the pages below, which say where each thing in the levels is made.</p><h2>The keys</h2><p><kbd>Left</kbd> and <kbd>Right</kbd> walk. <kbd>Space</kbd> jumps. <kbd>Up</kbd> and <kbd>Down</kbd> climb a ladder. Walk into the door at the end of a level to go on. There is nothing to fight and nothing that hurts.</p>"
+    },
+    {
+      "head": "Level 1: One Key, One Door",
+      "html": "<h1>Level 1: One Key, One Door</h1><p>The <b>A KEY ADDS TO A COUNTER</b> sign stands beside a key. Touch the key and you carry one. Further on, the <b>THE DOOR NEEDS 1 KEY</b> sign warns of a locked door in a brick wall. Walk into it with the key and it opens, and you carry none again. Walk into it with no key and it stays shut. The <b>EXIT &rarr;</b> sign points to the way out.</p><p>Coins are worth ten points each. There are eight, and a key is worth 25.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 1 is made</h1><ul><li><b>The key.</b> Open <b>keys.bbl</b> in the blocks editor and pick the <b>key</b> block. On its <b>Touch</b> tab, <b>Effect counter</b> is set to counter 20 and <b>Effect amount</b> to 1, and <b>Becomes block</b> is sky, so the key is gone once you have it.</li><li><b>The locked door.</b> The <b>gate</b> block is solid on every side, so it stops you. Its <b>Effect counter</b> is also counter 20, but its <b>Effect amount</b> is &minus;1. A counter from 20 up will not go to zero or less, so a touch that cannot be paid for does nothing. With a key, the touch pays one, and <b>Becomes block</b> turns the door into sky.</li><li><b>Why you cannot jump over it.</b> The door is one block high, with an arch block above it that you walk under, and a wall of <b>brick</b> from there up to the top of the level. There is no way around.</li><li><b>The counter itself.</b> Open <b>hero.chr</b> in the character editor. Counter 20 starts at 1, which the game shows as none carried.</li><li><b>The signs.</b> Each sign is a few ordinary blocks side by side, with the words drawn in their pictures. Change the words in the blocks editor and play again.</li><li><b>The exit.</b> A scene link joins the door at the end to the next level. Open <b>keys.gam</b> in the scenes editor and look at the links of the One Key, One Door scene.</li></ul>"
+    },
+    {
+      "head": "Level 2: Two Keys, Two Doors",
+      "html": "<h1>Level 2: Two Keys, Two Doors</h1><p>Two doors, and each wants its own key. A gold key lies on the ground by the <b>GOLD KEY, GOLD DOOR</b> sign. A silver key sits on a ledge high above the start, where you can see it but not yet reach it. Take the gold key and open the gold door. Behind it a ladder climbs to the ledge: climb up, walk back along the ledge for the silver key, and climb down again. The silver key opens the silver door, and the exit is beyond.</p><p>There are eleven coins, some of them along the ledge.</p>"
+    },
+    {
+      "head": "How this level is made",
+      "html": "<h1>How level 2 is made</h1><ul><li><b>A second counter.</b> A silver key adds to counter 21, a gold key to counter 20. Each door spends from its own counter, so a gold key never opens a silver door. Open <b>keys.bbl</b> and compare the <b>key</b>, <b>keySilver</b>, <b>gate</b> and <b>gateSilver</b> blocks. Counter 21 also has to start at 1 in <b>hero.chr</b>.</li><li><b>A door can need more than one key.</b> Change <b>Effect amount</b> on a door to &minus;2 and it takes two keys. A counter holds one more than the keys you carry, so with two keys a door that costs two just works.</li><li><b>The ledge.</b> Open <b>two.map</b> in the map editor. The ledge is a row of <b>grass</b> over <b>dirt</b>. It runs over the gold door, so the only way up is the <b>ladder</b> on the far side of it.</li><li><b>The ladder.</b> The <b>ladder</b> block has no gravity pull and no solid side, so you stay on it and <kbd>Up</kbd> lifts you.</li><li><b>The exit.</b> The last door links to the <b>The End</b> scene in <b>keys.gam</b>, which plays the ending.</li></ul>"
+    },
+    {
+      "head": "Make it yours",
+      "html": "<h1>Make it yours</h1><p>Try one change at a time, and play after each:</p><ul><li>Move a key somewhere harder to reach.</li><li>Make the gold door take two keys, and put a second gold key in the level.</li><li>Draw a third kind of door and key, with counter 22 (set it to start at 1 in <b>hero.chr</b>).</li><li>Draw a platform with the <b>plank</b> block: solid on top only, so you can jump up through it.</li></ul><p>The home page's <b>Starters</b> tab has more small games like this one.</p>"
+    }
+  ]
+}
