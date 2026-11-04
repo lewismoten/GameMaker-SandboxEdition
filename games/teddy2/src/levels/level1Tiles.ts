@@ -287,7 +287,7 @@ export function houseTiles(): Tiles {
   );
   // A framed photo of the Clown Club over the couch.
   t.air(
-    'klubPhoto',
+    'clubPhoto',
     (() => {
       const p = copy(L());
       p.rect(2, 3, 16, 13, c('gold', 1)).rect(4, 5, 12, 9, c('sky', 5));

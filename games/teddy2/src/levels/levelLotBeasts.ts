@@ -7,7 +7,7 @@ import { POWER } from '../ids';
 import { newBestiary } from './level';
 import { pacer } from './common';
 import { CRITTERS } from '../sprites/critters';
-import { pie } from '../sprites/klubfolk';
+import { pie } from '../sprites/clubfolk';
 
 export function lotBeasts() {
   const b = newBestiary();

@@ -14,7 +14,7 @@ import { GRAV, Tiles } from './level';
 import { c, canvas, cloud, copy, cut, dirt, grassTop, hedge, planks, r, sky, tuft } from '../blocks/tiles';
 import { sign, water, wideSign } from './common';
 import { farmTiles } from './level5Tiles';
-import { KLUB } from '../sprites/klubfolk';
+import { CLUB } from '../sprites/clubfolk';
 import { juggler } from '../sprites/folks';
 import { halves } from '../sprites/people';
 
@@ -173,7 +173,7 @@ export function lotTiles(): Tiles {
   const [pieL, pieR] = wideSign(sky(3), 'PIE\nPRACTICE');
   t.air('signPieL', pieL);
   t.air('signPieR', pieR);
-  const [pt, pb] = halves(KLUB.pratfall, sky(3), sky(3));
+  const [pt, pb] = halves(CLUB.pratfall, sky(3), sky(3));
   t.air('pratfallTop', pt);
   t.air('pratfallBot', pb);
 
@@ -379,7 +379,7 @@ export function lotTiles(): Tiles {
       return p;
     })(),
   );
-  const [ht, hb] = halves(KLUB.honker, sky(1), sky(1));
+  const [ht, hb] = halves(CLUB.honker, sky(1), sky(1));
   t.air('honkerTop', ht);
   t.air('honkerBot', hb);
   t.air(

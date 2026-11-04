@@ -13,13 +13,13 @@ import { sprite } from '../art/draw';
 import { CTR, POWER } from '../ids';
 import { newBestiary } from './level';
 import { askBubble, hand } from '../sprites/folks';
-import { CK, propSprite } from '../sprites/klown';
-import { bubble, gwinnSits, pie, pinStack, pinsDown } from '../sprites/klubfolk';
+import { CK, propSprite } from '../sprites/clown';
+import { bubble, gwinnSits, pie, pinStack, pinsDown } from '../sprites/clubfolk';
 import { GWINN } from '../sprites/gwinn';
 import { revolvingDoor } from './level4Beasts';
 import { P_ } from './level5';
 
-export function klubBeasts() {
+export function clubBeasts() {
   const b = newBestiary();
   revolvingDoor(b);
   b.pic('hand', hand());

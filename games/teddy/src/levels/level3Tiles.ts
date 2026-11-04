@@ -279,7 +279,7 @@ export function parkTiles(): Tiles {
       return p;
     })(),
   );
-  t.klownCar(
+  t.clownCar(
     (_bx, by) => (by === 0 ? t.pic('far') : t.pic('lawn')),
     'shoes',
     t.pic('farTop'),

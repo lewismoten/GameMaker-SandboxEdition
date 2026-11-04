@@ -6,7 +6,7 @@ import { POWER } from '../ids';
 import { newBestiary } from './level';
 import { pacer } from './common';
 import { CRITTERS } from '../sprites/critters';
-import { pie } from '../sprites/klubfolk';
+import { pie } from '../sprites/clubfolk';
 import { skidPie } from '../sprites/pies';
 
 /** Each thrower's pie: [name, blocks it flies left, pixels a tick, at the feet?]. */

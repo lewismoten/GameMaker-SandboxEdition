@@ -7,7 +7,7 @@ import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, micro, over, speckle } from '../art/draw';
 import { CTR } from '../ids';
 import { GRAV, Tiles } from './level';
-import { KLUB } from '../sprites/klubfolk';
+import { CLUB } from '../sprites/clubfolk';
 import { DRESSED, FULL, docLeo } from '../sprites/people';
 import { c, canvas, copy, cut, dirt, r, sky } from '../blocks/tiles';
 import { rootBeer } from '../sprites/toys';
@@ -22,7 +22,7 @@ function canvasStripes(seed: number, dark = false): Pixels {
   return p;
 }
 
-export function klubTiles(): Tiles {
+export function clubTiles(): Tiles {
   const t = new Tiles();
   // The night sky and stars outside; the midway.
   for (let k = 0; k < 4; k++) {
@@ -313,7 +313,7 @@ export function klubTiles(): Tiles {
   t.air('stageBack', new Pixels(20, 20, c('purple', 0)));
 
   // The clown club members (two blocks tall, over the midway's tent canvas).
-  for (const [name, fig] of Object.entries(KLUB)) {
+  for (const [name, fig] of Object.entries(CLUB)) {
     // each over the stripe of the column it stands in (honker and twirly on even columns)
     const base = name === 'launcher' ? 'backstage' : name === 'bubbles' ? 'tentOut' : 'tentOut2';
     const top = new Pixels(20, 20);

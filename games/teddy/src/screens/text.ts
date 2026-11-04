@@ -227,7 +227,7 @@ export const CARDS: Record<string, string[]> = {
   street: ['Green tie. Watch sprinklers;', 'borrow a book at the Dog House.', 'NEW: HIGH FIVE (1)'],
   park: ['Red sneakers. Geese guard the', 'bridge; kids want a sit!', 'NEW: SIT PRETTY (2)'],
   city: ['Rubber chicken! Spin the', 'revolving doors; play dead!', 'NEW: SPIN (3)  PLAY DEAD (4)'],
-  klub: ['The red nose! Earn tickets', 'with tricks. Root beer, too.', 'NEW: ROLL OVER (5)'],
+  club: ['The red nose! Earn tickets', 'with tricks. Root beer, too.', 'NEW: ROLL OVER (5)'],
 };
 
 /** Lines on the disk's text files: 31 columns at most. */

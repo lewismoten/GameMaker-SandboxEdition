@@ -10,7 +10,7 @@ import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CTR, KEEPSAKE } from '../ids';
 import { eggBlock } from '../sprites/egg';
 import { P } from '../art/pal';
-import { klownCar } from '../sprites/klown';
+import { clownCar } from '../sprites/clown';
 import { errandOn, wantBubble } from '../sprites/errands';
 import { docLeo, leoOn } from '../sprites/leo';
 
@@ -100,8 +100,8 @@ export class Tiles extends BlockSet {
    * is the way out. Doc Leo's thought bubble shows what he is waiting for.
    */
   chez(base: (bx: number, by: number) => Pixels, want: string, bubbleBase: Pixels, leoBase: (by: number) => Pixels): void {
-    const shut = klownCar(base, false);
-    const open = klownCar(base, true);
+    const shut = clownCar(base, false);
+    const open = clownCar(base, true);
     this.ledge('carRoofL', shut[0][0]);
     this.ledge('carRoofR', shut[0][1]);
     this.air('carOpen', open[1][0]);

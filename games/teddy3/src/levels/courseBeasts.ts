@@ -12,7 +12,7 @@ import { newBestiary } from './level';
 import { pacer, scent } from './common';
 import { CRITTERS } from '../sprites/critters';
 import { askBubble, kid } from '../sprites/folks';
-import { pie } from '../sprites/klubfolk';
+import { pie } from '../sprites/clubfolk';
 import { doorOpen, doorShut, seesawEnd } from '../sprites/gadgets';
 import { SPARK, wiredButton, wiredDoor } from './parts';
 import { SAW_DOWN, SAW_UP, seesawPlank } from './seesaw';

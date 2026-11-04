@@ -108,7 +108,7 @@ export const ROUTES: Record<string, Order[]> = {
     { trick: 'space', after: 20 },
     { walk: 80 },
   ],
-  klub: [
+  club: [
     { walk: 9 },
     { trick: 'five', after: 20 },
     { walk: 10 },

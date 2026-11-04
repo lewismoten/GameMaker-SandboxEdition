@@ -3,7 +3,7 @@
 // Clown Club parade marching down Main Street (each marcher two monsters, top and bottom).
 import { Pixels } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { CLEAR, micro, sprite } from '../art/draw';
-import { CK } from './klown';
+import { CK } from './clown';
 import { P } from '../art/pal';
 
 const K: Record<string, number> = {

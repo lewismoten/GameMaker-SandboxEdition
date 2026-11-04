@@ -121,7 +121,7 @@ export function buildScreens(x: ScreenExtras): Record<string, Uint8Array> {
     outlined(p, 172, 142, 'Bizarre', c('gold', 4), ink);
     text(p, 172, 160, 'writes songs,', c('white', 2));
     text(p, 172, 170, 'makes games,', c('white', 2));
-    text(p, 172, 180, 'humps down.', c('white', 2));
+    text(p, 172, 180, 'squeezes through.', c('white', 2));
     save('bardpic.gif', p, b.pal);
   }
   return files;

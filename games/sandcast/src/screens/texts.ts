@@ -137,7 +137,7 @@ Splash a paw twice (B) and she tucks it in: left paw, then right.
 
 When the dust stirs, a snore blows down the path. Wait.
 
-Her bowls never run dry. Mind the slobbery balls!
+Her bowls never run dry. Mind the slobbery tennis balls!
 `),
   bbs: wrap(`
 |CONNECT 2400

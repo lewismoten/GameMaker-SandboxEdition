@@ -5,7 +5,7 @@
 import { Pixels, rng } from '@lewismoten/gamemaker-sandbox-tools/kit/pixels';
 import { blob, centered, micro, outlined, scaleBlit } from '../art/draw';
 import { errandSprite } from '../sprites/errands';
-import { KLUB, gwinnSits } from '../sprites/klubfolk';
+import { CLUB, gwinnSits } from '../sprites/clubfolk';
 import { CRITTERS } from '../sprites/critters';
 import { H, Reel, W, c, caption, gwinnAt, leoAt, teddyAt } from './reel';
 import { SP } from './screens';
@@ -77,11 +77,11 @@ export function party(f: number, bannerX = 42): Pixels {
     balloon(p, i < 5 ? 14 + i * 14 : 236 + (i - 5) * 16, 70 + Math.floor(R() * 20), ['red', 'yellow', 'blue', 'green', 'pink'][i % 5], ((f + i) % 4) - 2);
   cake(p, 160, 152, f);
   // the Clown Club at the left, Doc Leo at the right in his best fedora, the geese up front
-  scaleBlit(p, KLUB.honker, 0, 72, 2);
-  scaleBlit(p, KLUB.bubbles, 34, 76, 2);
-  scaleBlit(p, KLUB.pratfall, 68, 70, 2);
+  scaleBlit(p, CLUB.honker, 0, 72, 2);
+  scaleBlit(p, CLUB.bubbles, 34, 76, 2);
+  scaleBlit(p, CLUB.pratfall, 68, 70, 2);
   leoAt(p, f % 8 < 4 ? 'wave' : 'front', 268, 72, 2);
-  scaleBlit(p, KLUB.twirly, 232, 76, 2);
+  scaleBlit(p, CLUB.twirly, 232, 76, 2);
   for (let k = 0; k < 3; k++) scaleBlit(p, CRITTERS[(f + k) % 2 ? 'goose1' : 'goose2'], 4 + k * 22, 166, 1, true);
   return p;
 }
