@@ -8,7 +8,7 @@ import { h } from '../../editor/core/ui';
 import type { CatalogEntry } from '../../project/files';
 import { boxModel, openBoxViewer, type BoxViewerPage } from './boxViewer';
 import { drawBox, releaseFaces, type BoxFaces } from './gameBox';
-import { dressUv, uvGame } from './boxUv';
+import { dressUv, releaseUv, uvGame } from './boxUv';
 import { hideWallPoster, setPosterWall, showWallPoster } from '../room/wallPoster';
 import { shelfLayout } from './shelfLayout';
 import { boxIdFromOpen, boxInAddress, dropBoxFromAddress, restorableBox, turnInAddress, type BoxTurn } from './boxAddress';
@@ -100,7 +100,10 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
   // first (quick), then the screenshots.
   const releaseFacesOf = (id: string) => {
     const old = faces.get(id);
-    if (old) releaseFaces(old);
+    if (old) {
+      releaseFaces(old);
+      releaseUv(old);
+    }
   };
   const complete = new Map<string, Promise<BoxFaces | undefined>>();
   const whole = new Set<string>();
@@ -262,7 +265,10 @@ export async function gameShelf(scene: HTMLElement, games: CatalogEntry[], hooks
       tubeWatch.disconnect();
       hideWallPoster();
       // the shelf's page-only picture addresses (gameBox.ts drawBox `blobs`) go with it
-      for (const f of faces.values()) releaseFaces(f);
+      for (const f of faces.values()) {
+        releaseFaces(f);
+        releaseUv(f);
+      }
       faces.clear();
     },
   };

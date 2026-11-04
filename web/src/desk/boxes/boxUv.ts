@@ -39,6 +39,14 @@ export function uvGame(faces: BoxFaces, entry: CatalogEntry): void {
   games.set(faces, entry);
 }
 
+/** Lets go of the glowing sides made (or being made) for these faces, once the box is replaced or the shelf is gone. */
+export function releaseUv(faces: BoxFaces): void {
+  games.delete(faces);
+  const sides = made.get(faces);
+  made.delete(faces);
+  for (const url of sides?.values() ?? []) void url.then((u) => u && URL.revokeObjectURL(u));
+}
+
 /** Waits for a quiet moment. */
 const idle = () => new Promise<void>((done) => ('requestIdleCallback' in window ? requestIdleCallback(() => done(), { timeout: 1500 }) : setTimeout(done, 50)));
 
