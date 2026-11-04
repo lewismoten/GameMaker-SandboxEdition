@@ -12,6 +12,7 @@
   .sidebar .file-row button.file,
   .sidebar h2.file-kind .fold,
   .sidebar .file-search input,
+  .panel-tabs .panel-tabs-list button,
   .overview > .panel-tabs .panel-tabs-list button,
   .released-bar button,
   .released-bar a,
@@ -28,6 +29,7 @@
   .sidebar .icon-btn,
   .sidebar .rail-toggle,
   .asset-more,
+  .panel-tabs .panel-tabs-list button,
   .overview > .panel-tabs .panel-tabs-list button,
   dialog.modal .buttons button,
   .released-bar button {
